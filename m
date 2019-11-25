@@ -2,98 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1491B108BE8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE541108E75
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 14:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727578AbfKYKj7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 05:39:59 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37908 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727553AbfKYKj7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 05:39:59 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY6b5021407
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=Cu9uaPY2wk7F5jNUOhmh8q86aHfO3WsS4vU5O3Rtsjo=;
- b=Ot42vX7ydVrbY7TedEfNu0ePLhVmHcrfsAAb8jT0COPnmLoKa6E2xtYrZzzjy/lKBWjm
- IVNeJ6J/6nqMfVyjB5Zxzg4q0T6t5xNcdDIVsbpJ7sfRGRudgK+fwaw1Xkj6r19//Ruf
- CmiaaYry3vLj9kMn6raQCG5wlPnJH7BTmZQdZqt2QMY8ag50pDXK32VZlcPyTsdNRvCW
- ThE6AAJRVEFFCQAMl8EIKp/cDm00NDSnzbUC+PAeIFzPiHdRUF1Q4QcesiWJCXuw/UDi
- R4bnAQSnmAxojzDpahojxLDbTmQf/QS0dmPgmYEeCPmuV95fwtTvvPLM8l1Lq4bTL3tD Kg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2wevqpxry6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:57 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAX3Ws169585
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2wfewa7asw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:56 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAPAduwW001809
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:56 GMT
-Received: from tp.wifi.oracle.com (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 Nov 2019 02:39:55 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 16/16] btrfs-progs: device scan: add quiet option
-Date:   Mon, 25 Nov 2019 18:39:17 +0800
-Message-Id: <1574678357-22222-17-git-send-email-anand.jain@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
-References: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911250098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911250098
+        id S1727385AbfKYNHm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 08:07:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48752 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725823AbfKYNHm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Nov 2019 08:07:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 26B86AE2E;
+        Mon, 25 Nov 2019 13:07:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A9DDBDA898; Mon, 25 Nov 2019 14:07:39 +0100 (CET)
+Date:   Mon, 25 Nov 2019 14:07:39 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: handle error in btrfs_cache_block_group
+Message-ID: <20191125130739.GA2734@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20191119185900.2985-1-josef@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191119185900.2985-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Enable the quiet option to the btrfs(8) device scan command.
-Does the job quietly. For example:
- btrfs --quiet device scan
+On Tue, Nov 19, 2019 at 01:59:00PM -0500, Josef Bacik wrote:
+> We have a BUG_ON(ret < 0) in find_free_extent from
+> btrfs_cache_block_group.  If we fail to allocate our ctl we'll just
+> panic, which is not good.  Instead just go on to another block group.
+> If we fail to find a block group we don't want to return ENOSPC, because
+> really we got a ENOMEM and that's the root of the problem.  Save our
+> return from btrfs_cache_block_group(), and then if we still fail to make
+> our allocation return that ret so we get the right error back.
+> 
+> Tested with inject-error.py from bcc.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- cmds/device.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/cmds/device.c b/cmds/device.c
-index 2feb1acd031d..2c34defd8249 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -305,6 +305,7 @@ static const char * const cmd_device_scan_usage[] = {
- 	" -u|--forget [<device>...]   unregister a given device or all stale devices if no path ",
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_VERBOSE,
-+	HELPINFO_INSERT_QUIET,
- 	NULL
- };
- 
-@@ -355,7 +356,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
- 				error("cannot unregister devices: %m");
- 			}
- 		} else {
--			printf("Scanning for Btrfs filesystems\n");
-+			pr_verbose(-1, "Scanning for Btrfs filesystems\n");
- 			ret = btrfs_scan_devices(1);
- 			error_on(ret, "error %d while scanning", ret);
- 			ret = btrfs_register_all_devices();
--- 
-1.8.3.1
-
+Added to misc-next, thanks.
