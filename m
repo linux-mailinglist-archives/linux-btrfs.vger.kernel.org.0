@@ -2,63 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4730109A51
+	by mail.lfdr.de (Postfix) with ESMTP id 0251A109A4F
 	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 09:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbfKZIkK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Nov 2019 03:40:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48198 "EHLO mx1.suse.de"
+        id S1726121AbfKZIkJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 03:40:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48200 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725862AbfKZIkJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726049AbfKZIkJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 26 Nov 2019 03:40:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2CA77AE04;
+        by mx1.suse.de (Postfix) with ESMTP id 366DFAE87;
         Tue, 26 Nov 2019 08:40:08 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v4 0/2] remove BUG_ON()s in btrfs_close_one_device()
-Date:   Tue, 26 Nov 2019 09:40:04 +0100
-Message-Id: <20191126084006.23262-1-jthumshirn@suse.de>
+Subject: [PATCH v4 1/2] btrfs: decrement number of open devices after closing the device not before
+Date:   Tue, 26 Nov 2019 09:40:05 +0100
+Message-Id: <20191126084006.23262-2-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191126084006.23262-1-jthumshirn@suse.de>
+References: <20191126084006.23262-1-jthumshirn@suse.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This series attempts to remove the BUG_ON()s in btrfs_close_one_device().
-Therefore some reorganization of btrfs_close_one_device() was needed, to
-avoid the memory allocation.
+In btrfs_close_one_device we're decrementing the number of open devices
+before we're calling btrfs_close_bdev().
 
-This series has passed fstests without any deviation from the baseline.
+As there is no intermediate exit between these points in this function it
+is technically OK to do so, but it makes the code a bit harder to understand.
 
-Changes to v3:
-- Clear BTRFS_DEV_STATE_WRITEABLE after calling btrfs_close_bdev() so
-  btrfs_close_bdev() can call sync_blockdev() and invalidate_bdev() (Nikolay)
+Move both operations closer together and move the decrement step after
+btrfs_close_bdev().
 
-Changes to v2:
-- Completly different approach to the origianl patchset, instead of handling
-  eventual allocation failures.
-- Dropped already merged patches for ' btrfs_fs_devices::rotating' and
-  'btrfs_fs_devices::seeding'
-- Kept the 1st patch of the old series, as it's a nice cleanup
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Changes to v1:
-- Fixed the decremt of btrfs_fs_devices::seeding.
-- In addition to this, I've added two patches changing btrfs_fs_devices::seeding
-  and btrfs_fs_devices::rotating to bool, as they are in fact used as booleans.
-
-Johannes Thumshirn (2):
-  btrfs: decrement number of open devices after closing the device not
-    before
-  btrfs: reset device back to allocation state when removing
-
- fs/btrfs/volumes.c | 41 ++++++++++++++++++-----------------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d8e5560db285..2398b071bcf6 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1067,9 +1067,6 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+ 	struct btrfs_device *new_device;
+ 	struct rcu_string *name;
+ 
+-	if (device->bdev)
+-		fs_devices->open_devices--;
+-
+ 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+ 	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
+ 		list_del_init(&device->dev_alloc_list);
+@@ -1080,6 +1077,8 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+ 		fs_devices->missing_devices--;
+ 
+ 	btrfs_close_bdev(device);
++	if (device->bdev)
++		fs_devices->open_devices--;
+ 
+ 	new_device = btrfs_alloc_device(NULL, &device->devid,
+ 					device->uuid);
 -- 
 2.16.4
 
