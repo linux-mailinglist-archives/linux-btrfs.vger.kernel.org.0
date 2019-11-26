@@ -2,107 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60394109C66
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 11:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C86109C76
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 11:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbfKZKhK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 26 Nov 2019 05:37:10 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42105 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbfKZKhK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Nov 2019 05:37:10 -0500
-Received: by mail-oi1-f195.google.com with SMTP id o12so16142341oic.9;
-        Tue, 26 Nov 2019 02:37:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=zopcK9DsIvrRMoKJaFBKq6wC/oxcFlyic0ael7BkN/8=;
-        b=ZwVGY8zZHU5ZLlSEHGkPOB3WBZlU+FiSvWqw44quKppgl1s6DVA0XOwR/NoRmZKAqp
-         G9F7+R3vQgynRQndg27qMClcfGPlquhPu1hT8D/dAQaWhaPBKgoTm34N4ntgWccIWQ66
-         avgX31kibPnRfWKhTm34CXTORtTEovoNsD1wiQCEmCsw3tTtMySmX8jYycJ6NTQuLfyg
-         XRfU14g70wJgEAV1xQg15my1zL8ZBMpNz8kzq8DNWUfc9JQ4K93SAMe+0OzcVLlbq1V8
-         R1FfmF1LJZGZstb861SXWChE3arTel8q8w2JMU6VsR2HzmZWWifSa4QD9OjM2DGRPSM2
-         bq9A==
-X-Gm-Message-State: APjAAAUV6hPUiPm7vpIBV5oeArCblh2/6Lieo2R4Ae/47reKO//92F8W
-        kIi13oOB9oe5X+t5lupMA7abLXK2qBez588NsHI=
-X-Google-Smtp-Source: APXvYqy4IeHlk78TvbZm1ZoZWnHSVBVTAMMciv5D+d1SOKzarsswVbnPuPy/zEICeY+bC7LzL429WWkDb12wjApJxSY=
-X-Received: by 2002:a05:6808:5d9:: with SMTP id d25mr3047363oij.54.1574764629163;
- Tue, 26 Nov 2019 02:37:09 -0800 (PST)
+        id S1727834AbfKZKnp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 05:43:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35114 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727603AbfKZKnp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Nov 2019 05:43:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F3886ADC8;
+        Tue, 26 Nov 2019 10:43:41 +0000 (UTC)
+Subject: Re: [PATCH 1/5] fs: Export generic_file_buffered_read()
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, hch@infradead.org,
+        darrick.wong@oracle.com, fdmanana@kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20191126031456.12150-1-rgoldwyn@suse.de>
+ <20191126031456.12150-2-rgoldwyn@suse.de>
+ <f3b4b146-face-98d6-70c8-cbb9f9696036@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b55f6033-a062-badc-32d7-0bb5bb2d45cb@suse.de>
+Date:   Tue, 26 Nov 2019 11:43:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20191108213853.16635-1-afaerber@suse.de> <20191108213853.16635-2-afaerber@suse.de>
- <20191111183158.GT3001@twin.jikos.cz>
-In-Reply-To: <20191111183158.GT3001@twin.jikos.cz>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Nov 2019 11:36:58 +0100
-Message-ID: <CAMuHMdVbcfB0FFS=gLDathXFM3x0WYXJEq99S_g7mjAPS94rAQ@mail.gmail.com>
-Subject: Re: [PATCH next 1/2] btrfs: tree-checker: Fix error format string
-To:     David Sterba <dsterba@suse.cz>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f3b4b146-face-98d6-70c8-cbb9f9696036@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
+On 26/11/2019 11:10, Johannes Thumshirn wrote:
+> Apart from Willy's comment
+> Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 
-On Mon, Nov 11, 2019 at 7:32 PM David Sterba <dsterba@suse.cz> wrote:
-> On Fri, Nov 08, 2019 at 10:38:52PM +0100, Andreas Färber wrote:
-> > From: Andreas Färber <afaerber@suse.com>
-> >
-> > Argument BTRFS_FILE_EXTENT_INLINE_DATA_START is defined as offsetof(),
-> > which returns type size_t, so we need %zu instead of %lu.
-> >
-> > This fixes a build warning on 32-bit arm:
-> >
-> >   ../fs/btrfs/tree-checker.c: In function 'check_extent_data_item':
-> >   ../fs/btrfs/tree-checker.c:230:43: warning: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'unsigned int' [-Wformat=]
-> >     230 |     "invalid item size, have %u expect [%lu, %u)",
-> >         |                                         ~~^
-> >         |                                           |
-> >         |                                           long unsigned int
-> >         |                                         %u
->
-> Is there a gcc warning option that can catch that on 64bit too?
-> -Wformat=2 does not and I don't see any other of the option family to do
-> that. We've had fixups of the size_t printk formats and I'd like to
-> catch that when the patches are added to the devel branches. I can't run
-> 32bit build check each time but this seems to be the only way so far.
+On the other hand, you could as well do:
 
-Yep. On 64-bit, size_t _is_ unsigned long.
-So you have to compile for both 32-bit and 64-bit.
+static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
++{
++	ssize_t ret = 0;
++	if (iocb->ki_flags & IOCB_DIRECT)
++		ret = btrfs_dio_read(iocb, to);
++	if (ret < 0)
++		return ret;
++
++	return generic_file_read_iter(iocb, ret);
++}
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+In patch 3/5, if IOCB_DIRECT is set we're branching into
+btrfs_dio_read() above and if not generic_file_read_iter() will then
+directly call generic_file_buffered_read()
 
-> > Fixes: a31ccb4b7ba2 ("btrfs: tree-checker: Check item size before reading file extent type")
->
-> As the patch is still in the devel branch, the commit id is not stable
-
-It indeed is not:
-Fixes: 153a6d299956983d ("btrfs: tree-checker: Check item size before
-reading file extent type")
-
-> and I'll fold the change to to the patch. Thanks.
-
-Apparently that was forgotten, and now the issue is part of Linus' tree.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
