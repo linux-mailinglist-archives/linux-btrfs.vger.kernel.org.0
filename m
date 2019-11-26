@@ -2,24 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C86FD109C26
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 11:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87190109C35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 11:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbfKZKSf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Nov 2019 05:18:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40592 "EHLO mx1.suse.de"
+        id S1727723AbfKZKVS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 05:21:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42742 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727603AbfKZKSf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Nov 2019 05:18:35 -0500
+        id S1727585AbfKZKVS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Nov 2019 05:21:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 41615AB9D;
-        Tue, 26 Nov 2019 10:18:32 +0000 (UTC)
-Subject: Re: [PATCH 4/4] btrfs: use btrfs_can_overcommit in inc_block_group_ro
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, wqu@suse.com
-References: <20191125144011.146722-1-josef@toxicpanda.com>
- <20191125144011.146722-5-josef@toxicpanda.com>
+        by mx1.suse.de (Postfix) with ESMTP id 5C782AB9D;
+        Tue, 26 Nov 2019 10:21:15 +0000 (UTC)
+Subject: Re: [PATCH v4 2/2] btrfs: reset device back to allocation state when
+ removing
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20191126084006.23262-1-jthumshirn@suse.de>
+ <20191126084006.23262-3-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <3decb2b5-49dc-f019-5afc-e055ad916972@suse.com>
-Date:   Tue, 26 Nov 2019 12:18:30 +0200
+Message-ID: <cd73267b-3d6f-2f2d-4e06-b86bdb903139@suse.com>
+Date:   Tue, 26 Nov 2019 12:21:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191125144011.146722-5-josef@toxicpanda.com>
+In-Reply-To: <20191126084006.23262-3-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,168 +83,92 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 25.11.19 г. 16:40 ч., Josef Bacik wrote:
-> inc_block_group_ro does a calculation to see if we have enough room left
-> over if we mark this block group as read only in order to see if it's ok
-> to mark the block group as read only.
+On 26.11.19 г. 10:40 ч., Johannes Thumshirn wrote:
+> When closing a device, btrfs_close_one_device() first allocates a new
+> device, copies the device to close's name, replaces it in the dev_list
+> with the copy and then finally frees it.
 > 
-> The problem is this calculation _only_ works for data, where our used is
-> always less than our total.  For metadata we will overcommit, so this
-> will almost always fail for metadata.
+> This involves two memory allocation, which can potentially fail. As this
+> code path is tricky to unwind, the allocation failures where handled by
+> BUG_ON()s.
 > 
-> Fix this by exporting btrfs_can_overcommit, and then see if we have
-> enough space to remove the remaining free space in the block group we
-> are trying to mark read only.  If we do then we can mark this block
-> group as read only.
+> But this copying isn't strictly needed, all that is needed is resetting
+> the device in question to it's state it had after the allocation.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+Overall looks good one minor nit which can be fixed at commit time (or
+ignored).
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> 
 > ---
->  fs/btrfs/block-group.c | 37 ++++++++++++++++++++++++++-----------
->  fs/btrfs/space-info.c  | 19 ++++++++++---------
->  fs/btrfs/space-info.h  |  3 +++
->  3 files changed, 39 insertions(+), 20 deletions(-)
+> Changes to v3:
+> - Clear DEV_STATE_WRITABLE _after_ btrfs_close_bdev() (Nik)
+> ---
+>  fs/btrfs/volumes.c | 38 +++++++++++++++++---------------------
+>  1 file changed, 17 insertions(+), 21 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 3ffbc2e0af21..7b1f6d2b9621 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1184,7 +1184,6 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 2398b071bcf6..efabffa54a45 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1064,8 +1064,6 @@ static void btrfs_close_bdev(struct btrfs_device *device)
+>  static void btrfs_close_one_device(struct btrfs_device *device)
 >  {
->  	struct btrfs_space_info *sinfo = cache->space_info;
->  	u64 num_bytes;
-> -	u64 sinfo_used;
->  	int ret = -ENOSPC;
+>  	struct btrfs_fs_devices *fs_devices = device->fs_devices;
+> -	struct btrfs_device *new_device;
+> -	struct rcu_string *name;
 >  
->  	spin_lock(&sinfo->lock);
-> @@ -1200,19 +1199,38 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
+>  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+>  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
+> @@ -1073,29 +1071,27 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+>  		fs_devices->rw_devices--;
+>  	}
 >  
->  	num_bytes = cache->length - cache->reserved - cache->pinned -
->  		    cache->bytes_super - cache->used;
-> -	sinfo_used = btrfs_space_info_used(sinfo, true);
->  
->  	/*
-> -	 * sinfo_used + num_bytes should always <= sinfo->total_bytes.
-> -	 *
-> -	 * Here we make sure if we mark this bg RO, we still have enough
-> -	 * free space as buffer.
-> +	 * Data never overcommits, even in mixed mode, so do just the straight
-> +	 * check of left over space in how much we have allocated.
->  	 */
-> -	if (sinfo_used + num_bytes + sinfo->total_bytes) {
-> +	if (sinfo->flags & BTRFS_BLOCK_GROUP_DATA) {
-> +		u64 sinfo_used = btrfs_space_info_used(sinfo, true);
-
-does that mean bytes_may_write is always 0 for DATA?
-
-> +
-> +		/*
-> +		 * sinfo_used + num_bytes should always <= sinfo->total_bytes.
-
-This invariant warrants an ASSERT.
-
-> +		 *
-> +		 * Here we make sure if we mark this bg RO, we still have enough
-> +		 * free space as buffer.
-> +		 */
-> +		if (sinfo_used + num_bytes + sinfo->total_bytes)
-> +			ret = 0;
-> +	} else {
-> +		/*
-> +		 * We overcommit metadata, so we need to do the
-> +		 * btrfs_can_overcommit check here, and we need to pass in
-> +		 * BTRFS_RESERVE_NO_FLUSH to give ourselves the most amount of
-> +		 * leeway to allow us to mark this block group as read only.
-> +		 */
-> +		if (btrfs_can_overcommit(cache->fs_info, sinfo, num_bytes,
-> +					 BTRFS_RESERVE_NO_FLUSH))
-> +			ret = 0;
+> -	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+> +	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
+>  		fs_devices->missing_devices--;
+> +		clear_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
 > +	}
+nit: you can use test_and_clear_bit
+
+>  
+> +	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+>  	btrfs_close_bdev(device);
+> -	if (device->bdev)
+> +	if (device->bdev) {
+>  		fs_devices->open_devices--;
+> -
+> -	new_device = btrfs_alloc_device(NULL, &device->devid,
+> -					device->uuid);
+> -	BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
+> -
+> -	/* Safe because we are under uuid_mutex */
+> -	if (device->name) {
+> -		name = rcu_string_strdup(device->name->str, GFP_NOFS);
+> -		BUG_ON(!name); /* -ENOMEM */
+> -		rcu_assign_pointer(new_device->name, name);
+> -	}
+> -
+> -	list_replace_rcu(&device->dev_list, &new_device->dev_list);
+> -	new_device->fs_devices = device->fs_devices;
+> -
+> -	synchronize_rcu();
+> -	btrfs_free_device(device);
+> +		device->bdev = NULL;
+> +	}
+> +	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
 > +
-> +	if (!ret) {
->  		sinfo->bytes_readonly += num_bytes;
->  		cache->ro++;
->  		list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
-> -		ret = 0;
->  	}
->  out:
->  	spin_unlock(&cache->lock);
-> @@ -1220,9 +1238,6 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
->  	if (ret == -ENOSPC && btrfs_test_opt(cache->fs_info, ENOSPC_DEBUG)) {
->  		btrfs_info(cache->fs_info,
->  			"unable to make block group %llu ro", cache->start);
-> -		btrfs_info(cache->fs_info,
-> -			"sinfo_used=%llu bg_num_bytes=%llu",
-> -			sinfo_used, num_bytes);
->  		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
->  	}
->  	return ret;
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index df5fb68df798..01297c5b2666 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -159,9 +159,9 @@ static inline u64 calc_global_rsv_need_space(struct btrfs_block_rsv *global)
->  	return (global->size << 1);
+> +	/* Verify the device is back in a pristine state  */
+> +	ASSERT(!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state));
+> +	ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state));
+> +	ASSERT(list_empty(&device->dev_alloc_list));
+> +	ASSERT(list_empty(&device->post_commit_list));
+> +	ASSERT(atomic_read(&device->reada_in_flight) == 0);
+> +	ASSERT(atomic_read(&device->dev_stats_ccnt) == 0);
+> +	ASSERT(RB_EMPTY_ROOT(&device->alloc_state.state));
 >  }
 >  
-> -static int can_overcommit(struct btrfs_fs_info *fs_info,
-> -			  struct btrfs_space_info *space_info, u64 bytes,
-> -			  enum btrfs_reserve_flush_enum flush)
-> +int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
-> +			 struct btrfs_space_info *space_info, u64 bytes,
-> +			 enum btrfs_reserve_flush_enum flush)
->  {
->  	u64 profile;
->  	u64 avail;
-> @@ -226,7 +226,8 @@ void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
->  
->  		/* Check and see if our ticket can be satisified now. */
->  		if ((used + ticket->bytes <= space_info->total_bytes) ||
-> -		    can_overcommit(fs_info, space_info, ticket->bytes, flush)) {
-> +		    btrfs_can_overcommit(fs_info, space_info, ticket->bytes,
-> +					 flush)) {
->  			btrfs_space_info_update_bytes_may_use(fs_info,
->  							      space_info,
->  							      ticket->bytes);
-> @@ -639,14 +640,14 @@ btrfs_calc_reclaim_metadata_size(struct btrfs_fs_info *fs_info,
->  		return to_reclaim;
->  
->  	to_reclaim = min_t(u64, num_online_cpus() * SZ_1M, SZ_16M);
-> -	if (can_overcommit(fs_info, space_info, to_reclaim,
-> -			   BTRFS_RESERVE_FLUSH_ALL))
-> +	if (btrfs_can_overcommit(fs_info, space_info, to_reclaim,
-> +				 BTRFS_RESERVE_FLUSH_ALL))
->  		return 0;
->  
->  	used = btrfs_space_info_used(space_info, true);
->  
-> -	if (can_overcommit(fs_info, space_info, SZ_1M,
-> -			   BTRFS_RESERVE_FLUSH_ALL))
-> +	if (btrfs_can_overcommit(fs_info, space_info, SZ_1M,
-> +				 BTRFS_RESERVE_FLUSH_ALL))
->  		expected = div_factor_fine(space_info->total_bytes, 95);
->  	else
->  		expected = div_factor_fine(space_info->total_bytes, 90);
-> @@ -1005,7 +1006,7 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
->  	 */
->  	if (!pending_tickets &&
->  	    ((used + orig_bytes <= space_info->total_bytes) ||
-> -	     can_overcommit(fs_info, space_info, orig_bytes, flush))) {
-> +	     btrfs_can_overcommit(fs_info, space_info, orig_bytes, flush))) {
->  		btrfs_space_info_update_bytes_may_use(fs_info, space_info,
->  						      orig_bytes);
->  		ret = 0;
-> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-> index 1a349e3f9cc1..24514cd2c6c1 100644
-> --- a/fs/btrfs/space-info.h
-> +++ b/fs/btrfs/space-info.h
-> @@ -127,6 +127,9 @@ int btrfs_reserve_metadata_bytes(struct btrfs_root *root,
->  				 enum btrfs_reserve_flush_enum flush);
->  void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
->  				struct btrfs_space_info *space_info);
-> +int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
-> +			 struct btrfs_space_info *space_info, u64 bytes,
-> +			 enum btrfs_reserve_flush_enum flush);
->  
->  static inline void btrfs_space_info_free_bytes_may_use(
->  				struct btrfs_fs_info *fs_info,
+>  static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
 > 
