@@ -2,52 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF0109DE4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 13:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB60109E1C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 13:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727600AbfKZMZh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Nov 2019 07:25:37 -0500
-Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21417 "EHLO
-        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727408AbfKZMZh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Nov 2019 07:25:37 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1574771134; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=lnpFONzipWC54XFq/iJFxVN50amrpIYQXFWd6ylW2gw4SRPGWiUkGtAytga9yp38Du6WoW8eTWe/sVLMgqmAuIJgiOaQ/WwymQGfmZnXSE85yrqt4jJb/onMZSKpjGr/dbDFdxmWo4uT8T/vZ4IMHSpzyWrv2E3aMdOe4apUggw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1574771134; h=Content-Type:Content-Transfer-Encoding:Date:From:MIME-Version:Message-ID:To; 
-        bh=wjunn4+x2QEs4HRrQcozT7INn2DM0lGSHIZkmkDz3T0=; 
-        b=cLR05CNSu7xsKMhseN8FxLUW2xX1olYOpqr0spuk/HICUJSArsm47ZmikIWN8fso7dGfsaUPOJXSSFZzQyc7bLuzaGjDr6VWRk/JYxfArX/tkCfJQN7qwIXOR6BotGBUMWEV+QW3i5lpgnXYiRAakbZGak1ezRkwXJ1TyCgsW6Y=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=gcfam.net;
-        spf=pass  smtp.mailfrom=marcfgrondin@gcfam.net;
-        dmarc=pass header.from=<marcfgrondin@gcfam.net> header.from=<marcfgrondin@gcfam.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574771134;
-        s=mail; d=gcfam.net; i=marcfgrondin@gcfam.net;
-        h=To:From:Message-ID:Date:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wjunn4+x2QEs4HRrQcozT7INn2DM0lGSHIZkmkDz3T0=;
-        b=QcJXDPmKqexu56INdqWOreIVXkWSKoq8gBcPpMkvNQPRZSTDmHgEnq+BxmJvnDtp
-        3zCwz3jxvctoIlTbvG2LZ8QEvIqg2wIDbzceXPuPCNPOn/bSnnyfbKbpl8qB3Z3wJN6
-        zFGwVvb3pOV4veE0RvGtbT9hHYLjCsdJKPxfM+5M=
-Received: from [192.168.2.2] (mctnnbsa45w-156-34-211-51.dhcp-dynamic.fibreop.nb.bellaliant.net [156.34.211.51]) by mx.zohomail.com
-        with SMTPS id 1574771132602557.8403722593891; Tue, 26 Nov 2019 04:25:32 -0800 (PST)
-To:     linux-btrfs@vger.kernel.org
-From:   Marc Grondin <marcfgrondin@gcfam.net>
-Message-ID: <0c469217-afd5-16cd-e171-d1af77387974@gcfam.net>
-Date:   Tue, 26 Nov 2019 08:25:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1725995AbfKZMig (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 07:38:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49248 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725911AbfKZMig (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Nov 2019 07:38:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id DFD08B217;
+        Tue, 26 Nov 2019 12:38:33 +0000 (UTC)
+Subject: Re: [PATCH 4/5] btrfs: Wait for extent bits to release page
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, hch@infradead.org,
+        darrick.wong@oracle.com, fdmanana@kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20191126031456.12150-1-rgoldwyn@suse.de>
+ <20191126031456.12150-5-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <852c6344-4d05-efff-1194-b60363df3f2e@suse.com>
+Date:   Tue, 26 Nov 2019 14:38:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191126031456.12150-5-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-unsubscribe
 
 
+On 26.11.19 г. 5:14 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> While trying to release a page, the extent containing the page may be locked
+> which would stop the page from being released. Wait for the
+> extent lock to be cleared, if blocking is allowed and then clear
+> the bits.
+> 
+> While we are at it, clean the code of try_release_extent_state() to make
+> it simpler.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 33 ++++++++++++++-------------------
+>  1 file changed, 14 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index cceaf05aada2..a7c32276702d 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4367,28 +4367,23 @@ static int try_release_extent_state(struct extent_io_tree *tree,
+
+nit: While on it you can change the return type to bool and propagate it
+up to try_release_extent_mapping and __btrfs_releasepage.
+
+But in any case it looks good :
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+<snip>
