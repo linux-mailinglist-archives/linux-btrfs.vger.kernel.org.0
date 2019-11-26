@@ -2,34 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8149B1097E7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 03:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5BC1097F2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 04:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbfKZCvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 21:51:53 -0500
-Received: from mout.gmx.net ([212.227.17.20]:48551 "EHLO mout.gmx.net"
+        id S1727197AbfKZDBp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 22:01:45 -0500
+Received: from mout.gmx.net ([212.227.17.22]:51587 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbfKZCvx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 21:51:53 -0500
+        id S1725946AbfKZDBp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Nov 2019 22:01:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574736612;
-        bh=IZGlcWAzopY37dn0OGa0aVHUhtF1bI8GYL4mj5nX1kM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ldpTWakWy2DhYY48jhFvK+am9fW6ZHqdT5ar+B2/VneCDOZaRDS8t0ZAp19317zzC
-         1CXlxlcwiGOn/gX3OxcjDi/ePV5kZB7N7c+VXgPQHzNhgGrlZkujkDRz/nU8pZcdua
-         ZI9YIb8KHGprdiF2/rGZ6JMx0CW0XgjdSOJ71bjo=
+        s=badeba3b8450; t=1574737229;
+        bh=9F7v8kxEyCuSOrX0M6RXCwWSvfr3qY5D98d0j6pq6nU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=FUyr0CUmut+FdvFBceWe7ZNJJPwgmttkm0oxaKnIrQqTLPHgtIKE3EbY6LZUNhvZn
+         cLIoBpinFy0/VX6B5fbQRdTVJ7Yz5/2aF6iQZf9IPa6ZCVoTniHRZd0DoZ8zhfmPZZ
+         jzFqnh6Kl7zkGirFrLWLWHO70daCpr/Hlcmz33Bg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mzyyk-1hdbPx2r8Y-00x0G0; Tue, 26
- Nov 2019 03:50:12 +0100
-Subject: Re: [PATCH 2/2] btrfs: qgroup: Return -ENOTCONN instead of -EINVAL
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        anand.jain@oracle.com, Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>
-References: <20191126005851.11813-1-marcos.souza.org@gmail.com>
- <20191126005851.11813-3-marcos.souza.org@gmail.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4z6q-1hqIh62GVo-010vWX; Tue, 26
+ Nov 2019 04:00:29 +0100
+Subject: Re: [PATCH 4/4] btrfs: use btrfs_can_overcommit in inc_block_group_ro
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, wqu@suse.com
+References: <20191125144011.146722-1-josef@toxicpanda.com>
+ <20191125144011.146722-5-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,168 +52,272 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e0c355ac-6446-9b27-12fc-82e05c9e8212@gmx.com>
-Date:   Tue, 26 Nov 2019 10:50:05 +0800
+Message-ID: <bc6ee1c0-b8cd-01c9-a38d-42ac59ed0093@gmx.com>
+Date:   Tue, 26 Nov 2019 11:00:24 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191126005851.11813-3-marcos.souza.org@gmail.com>
+In-Reply-To: <20191125144011.146722-5-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="rxi7JT67L3O8p9aWRcN3scgVICvfBVYEI"
-X-Provags-ID: V03:K1:swRJilVEj+iyhGNliLPhBn8W75JVeggj+5M9zFvK9W/umAtD2Zj
- VdHQJHRTQdoNh7TLsJKM53N2FVV9qILrYIojoKVc148rECiG9uGb5qIktHNpgcH2vIF4X1j
- MOs4fIRE7M49s0KQkzUaEcMbAKg2S6etUJw51hpzsuEkPZ+glqh6uViH82YxNijCcwGdDX3
- W9Nj0zhmg8GJ4PQfDfAmg==
+ boundary="g08m4tOjoygwLERTDEIEfs6khwURHPNmf"
+X-Provags-ID: V03:K1:T6SHXyfHRbQAb5Jclcwkup/zVW32BGQSswbyLTrMty8djMjCl6L
+ SOFyjDQ1h1gpSpv7Tk0WPv3ZSYil6JvFlkH5X/qnChfz3sNHFCq47Cdabg3cmqkp2zyYNHV
+ xQYs524lcisYapVfOGPyR+Zj1SSyfj10Y69jzFizH+Z121mQOBPPy5Pdv2eeM3WbxHaVO0N
+ WBIKovW9fW/8q2MHROuRg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0MQZ4LSmFYo=:W+lwffKRLjAKEH26+k6JFH
- PYLxohe+ZOuBiCPDAtDF9rzrRwCdQ3PahXiznAWGZo5b//jJ+ungMWd8o0pHAY3bJPIarC9yS
- 3w122DTOhD0Sb7fugeDP7ldasu2inF+uoqKyTvghd/IavhCbNsfV2kHvDaArzqOR8rAawwLrT
- +Fp6GTvc7MHuGJFECeqNkDXhUYHZVijikBS31jkanSZqnNOjGPytlHEQvUT8H15Z3WT7Q5Nxm
- PI//dIS1YOUw5OOJ9M/mblupH6QTxGaObyyMNV+CVs1XBZkIAFbyjyGCp/iFG04r+/bJCHNQe
- 8hEVU3FLvPOjjohvC6E/CBbDqBNWWRm4Eku1o7FCJMKCJovSpQV7XDpkd8hJvYkgZyX6QAhxM
- oPasHttYMwO4J4xNP0P4eqVLJEPk6EFuPvUulag5Vua2fxgyg5SyAdp1uDZyk9llE6Q/wy/1M
- CoxfKNEhF7NcRLpdTjexLMS5P1Oke6RiXaV2B96tpMjMIjmlKLDiue2Q8ayE4y61wGK+1AEDJ
- scd20zWhXIx8lAv6UwYsHhlxT5whziGdnzPsYFXhccLdLLOnQQeohQhQxCba9fSu/yIlV4/cf
- FvG46lXpHq+RO7o5qD5HLmXYyVluL7TG179cjhEp+mildVRjQ5320wY4JFu4+GT4Q7ik/4muM
- Xpz2UnVKKEGEs0/YX598YlVIyvzE6o0pk1pdnlt+gAFmPKDM1dJPwj7E2uScHh8lH6ynQxj+b
- PXriMy5D5fVi9CXIdq4krY9O1YfeT9ujK8S9Os3bqNWvgqK2xcZa8DKD6Ewfr33Q5+WH4oE7f
- TNJRH74rZLttaEOXbRDgo1MHm60HulAvztpKZCvcAuKdfPuSzl7TmSZNphRftkdhI8+9DaB6A
- 9S/Y8BvW7FSce5vBCgM1YNs8dI/2LQyT9UIS2PpLSuNm/TUFFlMdEOnBU6J1pUdC1LoMLOGKR
- auA/z806TwZ4UeCqLQRN8eXKtc3NQ2N4CCGlEQRnHC7k2BRRzg1ZqUjSoJKYMOBGWS6nyEPEU
- CjJ0BimmU3+1SYL3jkFQ7Uw2WCcOW4KawlytoI6jH9XLYK7IGjE/nW1LFgf1SDZTERN+Lh/iA
- FYzr3FHqd3JhLXn0OGhTDBW2ShuidvnY3IKDC1x5DPADvz5jf/OlP/yLCsjoRG1xWe4xHa43x
- ZZe8MHprRmC3CZsdMGjosre7URtVALQEA/xFJRqmn4tGU5LN63eemyTAo6DhCUXZAqZbbZwBY
- 4ZQOnoSG7ArOiTo7ImxtfcLoi+CceTRH6Vd63CpcefCd08aADmkbzkMBf4b0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7AZQdD6erUc=:Tc1XYeqfH3vRnnVtc/y48L
+ Uo/gd2uE6T/87x/DPKe7BpWMwMS5Fz228dq7v3OiRcOQP4lCBoCICNmK8IDuv+mDq+GiQk5ZD
+ KiHyyiALz2ayJKxVzVJbuZw1E3fx7De17T9stArvodKFvzsVUjjn/SGne3KHKaH42kwvNfrOD
+ mEys9wclIbNFU1ZnYziogTSbF4CNbudLcyuARCnlyn6IUg1wxU/Mg0vZpAWIIAxLDcQ+28J5y
+ lYDU0s9MPDBF5lubcdX/yBERMAZZp4LxUYGZA/Sf+ceATX/XIwZmJVVfmyStIqGXV58zHWvna
+ EyZsrdG6Ga27pA5DZ70JmSuWYY0v2lMwgJ4T05aij2T1sbeQV1WfWriezZFjIFFl4jac1+8tI
+ 1MiZH53fu96liWkONQBz61bmbuAavTKnjXs05c27hdCW7oAttAg7JSDsBvo+3D7WxAC7fLRLW
+ rcONqRCu4oU6o5DTGToXI0NYWRIgKEWEh7WL53x3iWhKQeGvOV74y4GoCsQQ47tfhlmaRz8PP
+ Jr6TfyAopLOVjBFRh1xDobXOmG3HAHxItJoOt/Cl0jQ3QlykZ71aWE9M1oJQFTtxzIU6lCDgP
+ wKr50rQzD9vx4L5jlGQ30IrDe9ks0zX9jzQ20s5+aw3849AoP+ynmBZ/prtnPtCPhdy9pMqJ0
+ XxSk+KWwrfl+nwoj1vA9qHa/X9ar7zOL6rtwl9qRpBUOhpwM2o5+zmMzU4e/8SAxAIfcWGkO4
+ 2UOdt6GFRqxy3YEcd5bWi0IdupYvMfnoEVOS/Me1mBU80GsSfACQxgU1tJt/a3ET8nKIE1ekT
+ +M785WTY2sADrZoGpBBxB3+5g9ziD/tvPpHyiAgQEElF+oIGuVY3Vk6YGjiphzBtuEBrOnUVc
+ I/6txmNy+Uq7IBuYfb9wUTDL9niykFgL7Ejk31WksuKKO0hrH9iokNGTlmnkS0nAE5XxQu1Zm
+ Z2oYJc2t+Fmdq6YXiC0lJlja0+QMpjKDQn3BgNbLdvuHMUxFFHmSY5HYCJ3e1Crorwlr3IvGY
+ y/RRw0+durf+NtnwDayvilxZUQrf1sLiDW+iUT8yhcy2fKKrtkbc46CKEln3FOOvGs2EK5zJL
+ ZHSXa0qTRN5F9J1VQw2SKXMjSGWECH9ULV3g5xU4GxB1WjqkK31cQv4gxkybS/x2fYj7wi7gd
+ XApDM7sPKogjOtGHV76ZR+k/1zzPYeS531fcOCS1xP0pZB54of68z0uv3nkRNN85mkcx3/0CB
+ lqJvt0eqQivHAlBGharWHKmbwJhq4zQEyzKWaJI5epWae4v1F4jZJpNxfYC4=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rxi7JT67L3O8p9aWRcN3scgVICvfBVYEI
-Content-Type: multipart/mixed; boundary="sk88EurChcutzdNOXDs8TfY1Sv8Udc1zh"
+--g08m4tOjoygwLERTDEIEfs6khwURHPNmf
+Content-Type: multipart/mixed; boundary="5RuKaG0wt7K0iiKeLcRMr0VJpPeMYBLka"
 
---sk88EurChcutzdNOXDs8TfY1Sv8Udc1zh
+--5RuKaG0wt7K0iiKeLcRMr0VJpPeMYBLka
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/11/26 =E4=B8=8A=E5=8D=888:58, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On 2019/11/25 =E4=B8=8B=E5=8D=8810:40, Josef Bacik wrote:
+> inc_block_group_ro does a calculation to see if we have enough room lef=
+t
+> over if we mark this block group as read only in order to see if it's o=
+k
+> to mark the block group as read only.
 >=20
-> [PROBLEM]
-> qgroup create/remove code is currently returning EINVAL when the user
-> tries to create a qgroup on a subvolume without quota enabled. EINVAL i=
+> The problem is this calculation _only_ works for data, where our used i=
 s
-> already being used for too many error scenarios so that is hard to depi=
-ct
-> what is the problem.
+> always less than our total.  For metadata we will overcommit, so this
+> will almost always fail for metadata.
 >=20
-> [FIX]
-> Currently scrub and balance code return -ENOTCONN when the user tries t=
-o
-> cancel/pause and no scrub or balance is currently running for the desir=
-ed
-> subvolume. Do the same here by returning -ENOTCONN  when a user
-> tries to create/delete/assing/list a qgroup on a subvolume without quot=
-a
-> enabled.
+> Fix this by exporting btrfs_can_overcommit, and then see if we have
+> enough space to remove the remaining free space in the block group we
+> are trying to mark read only.  If we do then we can mark this block
+> group as read only.
 
-The generic error string for ENOTCONN is "Transport endpoint is not
-connected", not something user can directly know.
+This patch is indeed much better than my naive RFC patches.
 
-So don't forget to modify btrfs-progs to interprete the error number to
-"qgroup not enabled" error string.
+Instead of reducing over commit threshold, this just increase the check
+to can_overcommit(), brilliant.
 
-Despite that, I think it looks good to me.
+However some small nitpicks below.
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/block-group.c | 37 ++++++++++++++++++++++++++-----------
+>  fs/btrfs/space-info.c  | 19 ++++++++++---------
+>  fs/btrfs/space-info.h  |  3 +++
+>  3 files changed, 39 insertions(+), 20 deletions(-)
+>=20
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 3ffbc2e0af21..7b1f6d2b9621 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1184,7 +1184,6 @@ static int inc_block_group_ro(struct btrfs_block_=
+group *cache, int force)
+Now @force parameter is not used any more.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+We can have a cleanup patch for it.
+
+>  {
+>  	struct btrfs_space_info *sinfo =3D cache->space_info;
+>  	u64 num_bytes;
+> -	u64 sinfo_used;
+>  	int ret =3D -ENOSPC;
+> =20
+>  	spin_lock(&sinfo->lock);
+> @@ -1200,19 +1199,38 @@ static int inc_block_group_ro(struct btrfs_bloc=
+k_group *cache, int force)
+> =20
+>  	num_bytes =3D cache->length - cache->reserved - cache->pinned -
+>  		    cache->bytes_super - cache->used;
+> -	sinfo_used =3D btrfs_space_info_used(sinfo, true);
+> =20
+>  	/*
+> -	 * sinfo_used + num_bytes should always <=3D sinfo->total_bytes.
+> -	 *
+> -	 * Here we make sure if we mark this bg RO, we still have enough
+> -	 * free space as buffer.
+> +	 * Data never overcommits, even in mixed mode, so do just the straigh=
+t
+> +	 * check of left over space in how much we have allocated.
+>  	 */
+> -	if (sinfo_used + num_bytes + sinfo->total_bytes) {
+> +	if (sinfo->flags & BTRFS_BLOCK_GROUP_DATA) {
+> +		u64 sinfo_used =3D btrfs_space_info_used(sinfo, true);
+> +
+> +		/*
+> +		 * sinfo_used + num_bytes should always <=3D sinfo->total_bytes.
+> +		 *
+> +		 * Here we make sure if we mark this bg RO, we still have enough
+> +		 * free space as buffer.
+> +		 */
+> +		if (sinfo_used + num_bytes + sinfo->total_bytes)
+
+The same code copied from patch 3 I guess?
+The same typo.
+
+> +			ret =3D 0;
+> +	} else {
+> +		/*
+> +		 * We overcommit metadata, so we need to do the
+> +		 * btrfs_can_overcommit check here, and we need to pass in
+> +		 * BTRFS_RESERVE_NO_FLUSH to give ourselves the most amount of
+> +		 * leeway to allow us to mark this block group as read only.
+> +		 */
+> +		if (btrfs_can_overcommit(cache->fs_info, sinfo, num_bytes,
+> +					 BTRFS_RESERVE_NO_FLUSH))
+> +			ret =3D 0;
+> +	}
+
+For metadata chunks, allocating a new chunk won't change how we do over
+commit calculation.
+
+I guess we can skip the chunk allocation for metadata chunks in
+btrfs_inc_block_group_ro()?
 
 Thanks,
 Qu
->=20
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->  fs/btrfs/qgroup.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 417fafb4b4f6..b046b04d7cce 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1259,7 +1259,7 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_=
-handle *trans, u64 src,
-> =20
->  	mutex_lock(&fs_info->qgroup_ioctl_lock);
->  	if (!fs_info->quota_root) {
-> -		ret =3D -EINVAL;
-> +		ret =3D -ENOTCONN;
->  		goto out;
+
+> +
+> +	if (!ret) {
+>  		sinfo->bytes_readonly +=3D num_bytes;
+>  		cache->ro++;
+>  		list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
+> -		ret =3D 0;
 >  	}
->  	member =3D find_qgroup_rb(fs_info, src);
-> @@ -1318,7 +1318,7 @@ static int __del_qgroup_relation(struct btrfs_tra=
-ns_handle *trans, u64 src,
->  		return -ENOMEM;
-> =20
->  	if (!fs_info->quota_root) {
-> -		ret =3D -EINVAL;
-> +		ret =3D -ENOTCONN;
->  		goto out;
+>  out:
+>  	spin_unlock(&cache->lock);
+> @@ -1220,9 +1238,6 @@ static int inc_block_group_ro(struct btrfs_block_=
+group *cache, int force)
+>  	if (ret =3D=3D -ENOSPC && btrfs_test_opt(cache->fs_info, ENOSPC_DEBUG=
+)) {
+>  		btrfs_info(cache->fs_info,
+>  			"unable to make block group %llu ro", cache->start);
+> -		btrfs_info(cache->fs_info,
+> -			"sinfo_used=3D%llu bg_num_bytes=3D%llu",
+> -			sinfo_used, num_bytes);
+>  		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
 >  	}
+>  	return ret;
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index df5fb68df798..01297c5b2666 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -159,9 +159,9 @@ static inline u64 calc_global_rsv_need_space(struct=
+ btrfs_block_rsv *global)
+>  	return (global->size << 1);
+>  }
 > =20
-> @@ -1384,7 +1384,7 @@ int btrfs_create_qgroup(struct btrfs_trans_handle=
- *trans, u64 qgroupid)
+> -static int can_overcommit(struct btrfs_fs_info *fs_info,
+> -			  struct btrfs_space_info *space_info, u64 bytes,
+> -			  enum btrfs_reserve_flush_enum flush)
+> +int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
+> +			 struct btrfs_space_info *space_info, u64 bytes,
+> +			 enum btrfs_reserve_flush_enum flush)
+>  {
+>  	u64 profile;
+>  	u64 avail;
+> @@ -226,7 +226,8 @@ void btrfs_try_granting_tickets(struct btrfs_fs_inf=
+o *fs_info,
 > =20
->  	mutex_lock(&fs_info->qgroup_ioctl_lock);
->  	if (!fs_info->quota_root) {
-> -		ret =3D -EINVAL;
-> +		ret =3D -ENOTCONN;
->  		goto out;
->  	}
->  	quota_root =3D fs_info->quota_root;
-> @@ -1418,7 +1418,7 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle=
- *trans, u64 qgroupid)
+>  		/* Check and see if our ticket can be satisified now. */
+>  		if ((used + ticket->bytes <=3D space_info->total_bytes) ||
+> -		    can_overcommit(fs_info, space_info, ticket->bytes, flush)) {
+> +		    btrfs_can_overcommit(fs_info, space_info, ticket->bytes,
+> +					 flush)) {
+>  			btrfs_space_info_update_bytes_may_use(fs_info,
+>  							      space_info,
+>  							      ticket->bytes);
+> @@ -639,14 +640,14 @@ btrfs_calc_reclaim_metadata_size(struct btrfs_fs_=
+info *fs_info,
+>  		return to_reclaim;
 > =20
->  	mutex_lock(&fs_info->qgroup_ioctl_lock);
->  	if (!fs_info->quota_root) {
-> -		ret =3D -EINVAL;
-> +		ret =3D -ENOTCONN;
->  		goto out;
->  	}
+>  	to_reclaim =3D min_t(u64, num_online_cpus() * SZ_1M, SZ_16M);
+> -	if (can_overcommit(fs_info, space_info, to_reclaim,
+> -			   BTRFS_RESERVE_FLUSH_ALL))
+> +	if (btrfs_can_overcommit(fs_info, space_info, to_reclaim,
+> +				 BTRFS_RESERVE_FLUSH_ALL))
+>  		return 0;
 > =20
-> @@ -1469,7 +1469,7 @@ int btrfs_limit_qgroup(struct btrfs_trans_handle =
-*trans, u64 qgroupid,
+>  	used =3D btrfs_space_info_used(space_info, true);
 > =20
->  	mutex_lock(&fs_info->qgroup_ioctl_lock);
->  	if (!fs_info->quota_root) {
-> -		ret =3D -EINVAL;
-> +		ret =3D -ENOTCONN;
->  		goto out;
->  	}
+> -	if (can_overcommit(fs_info, space_info, SZ_1M,
+> -			   BTRFS_RESERVE_FLUSH_ALL))
+> +	if (btrfs_can_overcommit(fs_info, space_info, SZ_1M,
+> +				 BTRFS_RESERVE_FLUSH_ALL))
+>  		expected =3D div_factor_fine(space_info->total_bytes, 95);
+>  	else
+>  		expected =3D div_factor_fine(space_info->total_bytes, 90);
+> @@ -1005,7 +1006,7 @@ static int __reserve_metadata_bytes(struct btrfs_=
+fs_info *fs_info,
+>  	 */
+>  	if (!pending_tickets &&
+>  	    ((used + orig_bytes <=3D space_info->total_bytes) ||
+> -	     can_overcommit(fs_info, space_info, orig_bytes, flush))) {
+> +	     btrfs_can_overcommit(fs_info, space_info, orig_bytes, flush))) {=
+
+>  		btrfs_space_info_update_bytes_may_use(fs_info, space_info,
+>  						      orig_bytes);
+>  		ret =3D 0;
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index 1a349e3f9cc1..24514cd2c6c1 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -127,6 +127,9 @@ int btrfs_reserve_metadata_bytes(struct btrfs_root =
+*root,
+>  				 enum btrfs_reserve_flush_enum flush);
+>  void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
+>  				struct btrfs_space_info *space_info);
+> +int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
+> +			 struct btrfs_space_info *space_info, u64 bytes,
+> +			 enum btrfs_reserve_flush_enum flush);
 > =20
+>  static inline void btrfs_space_info_free_bytes_may_use(
+>  				struct btrfs_fs_info *fs_info,
 >=20
 
 
---sk88EurChcutzdNOXDs8TfY1Sv8Udc1zh--
+--5RuKaG0wt7K0iiKeLcRMr0VJpPeMYBLka--
 
---rxi7JT67L3O8p9aWRcN3scgVICvfBVYEI
+--g08m4tOjoygwLERTDEIEfs6khwURHPNmf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3ckt0ACgkQwj2R86El
-/qgTlwf+KQ6kjSF/4Y2yiY16xTaeo5m4901C/GLFz4ZbVViglte642Zf6GvSg7ei
-kyAOWaTMF0dCzY8S7CeE3nAQyQSxRGlLWEB8ji6xInbkYT/joYV4UR+s5+X2RiCr
-ZyAXeTro0CSJc3EnALg8JTGnouE0qVxaP/yIYcXg5XC7hHdzpfM9Lplia+dKzV98
-jXGY2uA9fzSguI2t97EA2zby5XVuHGijx3SiIV4/LlKWfq3wa+7PysUHJEoSLSvC
-uS9S8MY5lL76lH55oDmkUoijLprNQ/9kb80z3aETDi6fX5MS4zdIzTVQ7+InMCns
-Pxc3P7JBvZc1u9+fi8MXN3hOla/Kbg==
-=PLLN
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3clUgACgkQwj2R86El
+/qhh2Qf/aylZOr7+VCada6xmFRid8FSgUNvBVX+AcPcMhfI3dqog5iuynCN2S73U
+LDzLXDr4n70ap2+EihRdFjaUKSvb8VWXKWyFCmU6YE0mOpFdApcvELL3MgptpEVf
+ozDsUfTdjc1xGeIqzIZhCvcr9/hRFki3aZ+DxB0pyeLgieisTa7CCyckaSwCdc7U
+fO7QehKaVfdPXLzrstLgKNH0+dZ+8e6yujK0ScZMXVLC8mgKB6cvQpvC2SmjTM6U
+4Lujd01te5s9Xywr4HEyIA9S5EQLmbc4jTyALjnsEPYgbJ+F4hRRAf9icJmjUw1l
+UXOD6JG4XIVBKN5dy68hS5gODRDTug==
+=lfqt
 -----END PGP SIGNATURE-----
 
---rxi7JT67L3O8p9aWRcN3scgVICvfBVYEI--
+--g08m4tOjoygwLERTDEIEfs6khwURHPNmf--
