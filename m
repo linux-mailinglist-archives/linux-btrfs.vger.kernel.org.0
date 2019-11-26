@@ -2,52 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC9210959F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 23:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2142F10975E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 01:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbfKYWpG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 17:45:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727139AbfKYWpF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 17:45:05 -0500
-Subject: Re: [GIT PULL] Btrfs updates for 5.5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574721905;
-        bh=ZClY/lm1Iav2NgRbsrICC8kisv5A90msTOuVRsCMpFw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=jLVqA+a23ELumM+o/45vWqUuMQYFFv7MEHwbh2Uxuaz+/dJbs33kvjFaVcVBftSjT
-         9RvWSALk0txJaGhSiN4VN4SQwHdMRSYtPfUCeMefasbwEgQpI+ny02FQ/JHqmcRzi8
-         0grJkwgUGpUDrGUm/UrteCUzNCxLCU0e5TOwBqbA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1574439340.git.dsterba@suse.com>
-References: <cover.1574439340.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1574439340.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-tag
-X-PR-Tracked-Commit-Id: fa17ed069c61286b26382e23b57a62930657b9c1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 97d0bf96a0d0986f466c3ff59f2ace801e33dc69
-Message-Id: <157472190532.22729.17441948611368975877.pr-tracker-bot@kernel.org>
-Date:   Mon, 25 Nov 2019 22:45:05 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1727051AbfKZA4y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 19:56:54 -0500
+Received: from mail-pf1-f172.google.com ([209.85.210.172]:45796 "EHLO
+        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfKZA4y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Nov 2019 19:56:54 -0500
+Received: by mail-pf1-f172.google.com with SMTP id z4so8265670pfn.12;
+        Mon, 25 Nov 2019 16:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4cnOpUKO/ak7wZsq080KRZ4MzliYraExX52z03Tp4QM=;
+        b=tjo40enAbZZJ9Z1cjzPcwDUKEQVyqnE1w/dqgCeYjDl6h8I56wd+br+RGrljaO0/TY
+         Y6gSgS286AKqxJIqPIo+C5UIIsr8IDzdyHAwjN2+xpcPksuKn4ar6NHjl5udAAI0hl4r
+         DQwIRuoxaf9XTeNepC4wl7Qxj1LXfPMZ+rp0hF/SFYNdXRnDdKdKSrHS9R1GHGUoGdSt
+         2HMmPvE2hOc6EqKBZhluepCQ7i55Hz+s4+6jQ0pM5GXquF5mrtguevAw9P4WAMF9PB9A
+         HjiJlKUrptuXuvkKHNI+1Wse740eA3NNrjkPcgphT4ZVIrEB85ZkxmeVfDxduotevxHo
+         m+DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4cnOpUKO/ak7wZsq080KRZ4MzliYraExX52z03Tp4QM=;
+        b=f8WyXBcoUvP8i6DWINFwov33f1PRqRiaVVAHtTVwDNjex9rsq/jbwjDzowT3GyNy+L
+         U2CL7oNVU2kqWWoLMZ7bOXxRwuh4zfsaKUUH5aJGpf+mpVzu/mYW6ZBGVocxNWpF9VII
+         Cbq5UgjPPaFSq7jSz+Aa2PgA26ONfXjp090DXygjgaTj2Ut+yBw+o7hqV8X4lHJAV5I+
+         e/KYZwoqzvcQ78RN4oObixUldbnjGD6xbQ6dSCLUO8F85VwXL/o+vDrIwe15VeqNzmRP
+         Q01N8jWdPy0QZ+L/wayF9pbr8/9f5cnh7PmyG/GUbKqotaIPP1sXSmu9lYSTIB5UDFnN
+         6N2g==
+X-Gm-Message-State: APjAAAWs0UdeZY5cefBmYy9u7innjAEIFMK34BwL5DC78LrBxsuKlhiH
+        YiPDXSPmzgw9fNJohYf2zUCTywX9
+X-Google-Smtp-Source: APXvYqzQVwhggyvhv13YwDNBHVtRnXGuG8o8iTL6coevg4Lm+fbatbrkAjVYkwPvLUqSiy5md92CdA==
+X-Received: by 2002:a63:da13:: with SMTP id c19mr34999229pgh.435.1574729811485;
+        Mon, 25 Nov 2019 16:56:51 -0800 (PST)
+Received: from hephaestus.prv.suse.net ([186.212.48.108])
+        by smtp.gmail.com with ESMTPSA id w15sm9421223pfi.168.2019.11.25.16.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Nov 2019 16:56:50 -0800 (PST)
+From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        anand.jain@oracle.com, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH 0/2] btrfs qgroup cleanup
+Date:   Mon, 25 Nov 2019 21:58:49 -0300
+Message-Id: <20191126005851.11813-1-marcos.souza.org@gmail.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Fri, 22 Nov 2019 17:23:44 +0100:
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-tag
+While reading the qgroup code and doing some tests, I found some two things
+that I would like to change:
+* Remove some useless code that was being set only to check if
+  fs_info->quota_root was not NULL
+* Check why creating a qgroup was returning EINVAL
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/97d0bf96a0d0986f466c3ff59f2ace801e33dc69
+The answer to the second point was: EINVAL is returned when a user tries to
+create/delete/list/assign a qgroup to a subvolume, but this subvolume does
+not have quota enabled. Talking with David, he suggested to change it to
+ENOTCONN, following what is currently being used in balance and scrub.
 
-Thank you!
+So here are the changes. Please take a look!
+
+Marcos Paulo de Souza (2):
+  btrfs: qgroup: Cleanup quota_root checks
+  btrfs: qgroup: Return -ENOTCONN instead of -EINVAL
+
+ fs/btrfs/qgroup.c | 44 +++++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 29 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.23.0
+
