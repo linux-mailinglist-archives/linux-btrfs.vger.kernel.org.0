@@ -2,138 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E9E10A33A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 18:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC72C10A364
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Nov 2019 18:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbfKZRRH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Nov 2019 12:17:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57370 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727532AbfKZRRH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Nov 2019 12:17:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4723DAE47;
-        Tue, 26 Nov 2019 17:17:05 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 982B0DA898; Tue, 26 Nov 2019 18:17:03 +0100 (CET)
-Date:   Tue, 26 Nov 2019 18:17:03 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] btrfs: reset device back to allocation state when
- removing
-Message-ID: <20191126171703.GO2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191126084006.23262-1-jthumshirn@suse.de>
- <20191126084006.23262-3-jthumshirn@suse.de>
+        id S1728191AbfKZRgO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 12:36:14 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:43267 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727279AbfKZRgO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Nov 2019 12:36:14 -0500
+Received: by mail-pl1-f195.google.com with SMTP id q16so4270807plr.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2019 09:36:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=NtvB90Am5ZTLYm+Aanm0y4QmpQ4zRvwI0Pg1w2+PDpk=;
+        b=rGNbv7Q/X/5vfOv3mEOUHT0ifP2BNEzSFwVUFi60A3yjv16WqHdBPaULOwt59Zn5jT
+         gRvE//8RWtJpaj/TRQfMmRf6SBpTz2Y54xeympjIDF/o3ZrhXFas7GBOqXuO4RYEQokq
+         DeGwcPrVZvj6zd6bHf5EGPJOWL4UEEQX7sImp33qn01RPtL3vw9ts8Lg9n4GyoDbCFD9
+         UM3t9zmxGiVNPZatYm0w8uT0PYKSAv1YccttU0918i+7vjV/dtx5Fw2UcVFnXXV8IcOL
+         LJ8UlYU64ghrRk56ahQOTQOWpwcXe1Ss0w/j2aWx47gGCqN2Xnt05Kw4FiDRlZv4LqvY
+         Lj6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=NtvB90Am5ZTLYm+Aanm0y4QmpQ4zRvwI0Pg1w2+PDpk=;
+        b=uMaDImoNBG59MLwGzYF3eEKVwDyrSjAMrhJG9I3sEV3SFh9plkepVWnc0yI+5Rlq3v
+         ZInSP8CCFfPd5XAts8wm7RCnTPiUhxRvo2kh8VHHRavTc5weWrFx6B/PJ3io1y06HTql
+         NZoAFWEs7gb7T5/knlCyDhdu2BAW9lKESZ46s/hcwP/18yA83mSGCI5ZfcOYqJYDBT5R
+         SltJZpE7A3nOImjBaK0iOTvBnWbwFfVwebiND40Z9U0LbFNtWg1lOhxdon6Tu1pYEkt3
+         cf8Optod8hKdXaM6MFAGy++kVn8xiu8WYZMjehMFqIB4Nz2+B22PS9JSmEmO5adWxT+7
+         tCkw==
+X-Gm-Message-State: APjAAAWrH0t5uKxUH6Rfp85QOq5KdPAbwZo/XKtHoxQF8eqtpLz0eyLB
+        Pgz87sfBpUhBQ0/gRgrbeiArTw==
+X-Google-Smtp-Source: APXvYqxQGleSEyUIqfvJa8/NiJsP5dYY2++4KZCeuP6V5fzHKL8ASxLjBD4+U8MsBGYZ6bwvbS0HNA==
+X-Received: by 2002:a17:902:d881:: with SMTP id b1mr35712590plz.170.1574789771532;
+        Tue, 26 Nov 2019 09:36:11 -0800 (PST)
+Received: from vader ([2620:10d:c090:180::92f5])
+        by smtp.gmail.com with ESMTPSA id c28sm13143566pgc.65.2019.11.26.09.36.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Nov 2019 09:36:10 -0800 (PST)
+Date:   Tue, 26 Nov 2019 09:36:07 -0800
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [RFC PATCH v3 03/12] fs: add RWF_ENCODED for reading/writing
+ compressed data
+Message-ID: <20191126173607.GA657777@vader>
+References: <cover.1574273658.git.osandov@fb.com>
+ <07f9cc1969052e94818fa50019e7589d206d1d18.1574273658.git.osandov@fb.com>
+ <d1886c1f-f19e-f3a7-32d6-8803a71a510c@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20191126084006.23262-3-jthumshirn@suse.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d1886c1f-f19e-f3a7-32d6-8803a71a510c@suse.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 09:40:06AM +0100, Johannes Thumshirn wrote:
-> When closing a device, btrfs_close_one_device() first allocates a new
-> device, copies the device to close's name, replaces it in the dev_list
-> with the copy and then finally frees it.
+On Tue, Nov 26, 2019 at 03:53:02PM +0200, Nikolay Borisov wrote:
 > 
-> This involves two memory allocation, which can potentially fail. As this
-> code path is tricky to unwind, the allocation failures where handled by
-> BUG_ON()s.
 > 
-> But this copying isn't strictly needed, all that is needed is resetting
-> the device in question to it's state it had after the allocation.
+> On 20.11.19 г. 20:24 ч., Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
 > 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> <snip>
 > 
-> ---
-> Changes to v3:
-> - Clear DEV_STATE_WRITABLE _after_ btrfs_close_bdev() (Nik)
-> ---
->  fs/btrfs/volumes.c | 38 +++++++++++++++++---------------------
->  1 file changed, 17 insertions(+), 21 deletions(-)
+> >  
+> > +enum {
+> > +	ENCODED_IOV_COMPRESSION_NONE,
+> > +#define ENCODED_IOV_COMPRESSION_NONE ENCODED_IOV_COMPRESSION_NONE
+> > +	ENCODED_IOV_COMPRESSION_ZLIB,
+> > +#define ENCODED_IOV_COMPRESSION_ZLIB ENCODED_IOV_COMPRESSION_ZLIB
+> > +	ENCODED_IOV_COMPRESSION_LZO,
+> > +#define ENCODED_IOV_COMPRESSION_LZO ENCODED_IOV_COMPRESSION_LZO
+> > +	ENCODED_IOV_COMPRESSION_ZSTD,
+> > +#define ENCODED_IOV_COMPRESSION_ZSTD ENCODED_IOV_COMPRESSION_ZSTD
+> > +	ENCODED_IOV_COMPRESSION_TYPES = ENCODED_IOV_COMPRESSION_ZSTD,
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 2398b071bcf6..efabffa54a45 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1064,8 +1064,6 @@ static void btrfs_close_bdev(struct btrfs_device *device)
->  static void btrfs_close_one_device(struct btrfs_device *device)
->  {
->  	struct btrfs_fs_devices *fs_devices = device->fs_devices;
-> -	struct btrfs_device *new_device;
-> -	struct rcu_string *name;
->  
->  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
->  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-> @@ -1073,29 +1071,27 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->  		fs_devices->rw_devices--;
->  	}
->  
-> -	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
-> +	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
->  		fs_devices->missing_devices--;
-> +		clear_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
-> +	}
->  
-> +	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
->  	btrfs_close_bdev(device);
-> -	if (device->bdev)
-> +	if (device->bdev) {
->  		fs_devices->open_devices--;
-> -
-> -	new_device = btrfs_alloc_device(NULL, &device->devid,
-> -					device->uuid);
-> -	BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
-> -
-> -	/* Safe because we are under uuid_mutex */
-> -	if (device->name) {
-> -		name = rcu_string_strdup(device->name->str, GFP_NOFS);
-> -		BUG_ON(!name); /* -ENOMEM */
-> -		rcu_assign_pointer(new_device->name, name);
-> -	}
-> -
-> -	list_replace_rcu(&device->dev_list, &new_device->dev_list);
-> -	new_device->fs_devices = device->fs_devices;
-> -
-> -	synchronize_rcu();
+> This looks very dodgy, what am I missing?
 
-The changelong should say something about RCU as this is being changed
-here.
-
-RCU was for the dev_list and and device name, with some read-only list
-traversal that can run in parallel (like FS_INFO or DEV_INFO ioctls).
-This is safe because the device list hook is not removed and the name is
-not changed.
-
-> -	btrfs_free_device(device);
-> +		device->bdev = NULL;
-> +	}
-> +	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-> +
-> +	/* Verify the device is back in a pristine state  */
-> +	ASSERT(!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state));
-> +	ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state));
-> +	ASSERT(list_empty(&device->dev_alloc_list));
-> +	ASSERT(list_empty(&device->post_commit_list));
-> +	ASSERT(atomic_read(&device->reada_in_flight) == 0);
-> +	ASSERT(atomic_read(&device->dev_stats_ccnt) == 0);
-> +	ASSERT(RB_EMPTY_ROOT(&device->alloc_state.state));
-
-I went through members of the device struct, lots of them are set once
-so don't change. last_flush_error is set and read during commit,
-
-Besides the dev_state bits handled above, I think tre rest should be
-here too, ie.  BTRFS_DEV_STATE_IN_FS_METADATA and
-BTRFS_DEV_STATE_MISSING (though this might be ok to keep as-is).
+This is a somewhat common trick so that enum values can be checked for
+with ifdef/ifndef. See include/uapi/linux.in.h, for example.
