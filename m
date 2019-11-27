@@ -2,118 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EECBA10B297
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 16:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4947E10B2B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 16:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbfK0Pml (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Nov 2019 10:42:41 -0500
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:38736 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbfK0Pml (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Nov 2019 10:42:41 -0500
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 2CC15A4131; Wed, 27 Nov 2019 15:42:39 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1574869359;
-        bh=NL2hTr+R9uJHVTE/CVOUwPOac+DrYejKhrpUSKqzaxw=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=eWwQ3nt6Fhuu5cQrDKN26Ps+p7Qdt552dIe8dyKtZgiyeT96Qh98RYqpKLngHnKap
-         rIbZ5Wn9siaT54VvfI4L6+Lo8D2S1ItnRErmX+wQTwnFKvcYVRxAzSu3W1IHvniP5O
-         zYiBmDZ3AA2g8Ekrhnmv9f/Nv4SYmbGwK0l9jNLRYadB1Vov2qfgVPNrCh7slD75C9
-         44azDKMJFBbhO/EkeIQRdMp5xLVFsHPGltAiy+8TCyycWJ34M/hTry1kY8/9Zsqzm1
-         fP9Qwc+VTHRAUDV/oLlr2kFqIb3G5O6znUv0MnG5JHyjIyCUPhHC6FC3R3Tlc/nEvI
-         4PcgE1kUPaI7A==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id AF732A4130;
-        Wed, 27 Nov 2019 15:42:38 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1574869358;
-        bh=NL2hTr+R9uJHVTE/CVOUwPOac+DrYejKhrpUSKqzaxw=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=Y5kCLgqH92HGwvylcfI+zeZNv4Oao0AnWG8nRwffCyKIjtorf0vibmvo3yIW8+TdO
-         sFHNwF1bbsSSqbwdKdYSTlNSDKsPOsXRyjPnRo8iYa7mbd8yJTT1oaGTJV+lvigPqX
-         CN53gOL4B8h4KRZ+UdskguU6aOqu+NXwKSg/1V3NTvlmbpVzJS5IAGr4On9uUgobLT
-         uhh7e+uHpx/mXVXaPWJvgOzALcESWzCpmCDlm4/tNy5HyANL+ZnY2Cq5XAMAUGO22H
-         LcftkkF7GBzIYQY3JW+28Dqe5WJRoguYnqRuFlKp4fxuDrJJ9lGOMjPGUWiOUcjdRF
-         C6/LA33i591bA==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 76C607C74E;
-        Wed, 27 Nov 2019 15:42:38 +0000 (GMT)
-Subject: Re: bad sector / bad block support
-To:     Christopher Staples <mastercatz@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAGsZeXsEZ8EqPsuU9O+7d+suxBVNQAobASJaLNMZB9LhUe6Q7A@mail.gmail.com>
- <c1473267-688c-201f-11e5-64761ad51f79@gmail.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <dab2a48c-6cdd-984e-50b8-c75b5f1f9455@cobb.uk.net>
-Date:   Wed, 27 Nov 2019 15:42:38 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727028AbfK0PvN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Nov 2019 10:51:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50434 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726634AbfK0PvN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Nov 2019 10:51:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A5FCCBD7C;
+        Wed, 27 Nov 2019 15:51:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 92150DA733; Wed, 27 Nov 2019 16:51:08 +0100 (CET)
+Date:   Wed, 27 Nov 2019 16:51:08 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org
+Subject: Re: [PATCH 0/5 v2] btrfs direct-io using iomap
+Message-ID: <20191127155108.GT2734@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org
+References: <20191126031456.12150-1-rgoldwyn@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <c1473267-688c-201f-11e5-64761ad51f79@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191126031456.12150-1-rgoldwyn@suse.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/11/2019 14:15, Austin S. Hemmelgarn wrote:
-> On 2019-11-26 22:30, Christopher Staples wrote:
->> will their ever be a better way to handle bad sectors ?  I keep
->> getting silent corruption from random bad sectors
->> scrubs keep passing with out showing any errors , but if I do a
->> ddrescue backup to a new drive I find the bad sectors
-> Zygo is correct, if there are no checksum errors, it's almost certainly
-> not the storage device.
+On Mon, Nov 25, 2019 at 09:14:51PM -0600, Goldwyn Rodrigues wrote:
+> This is an effort to use iomap for direct I/O in btrfs. This would
+> change the call from __blockdev_direct_io() to iomap_dio_rw().
 > 
-> Put simply, for a media error to cause corruption without a checksum
-> error, all of the following need to happen at the same time:
+> The main objective is to lose the buffer head and use bio defined by
+> iomap code, and hopefully to use more of generic-FS codebase.
+> 
+> These patches are based on xfs/iomap-for-next, though I tested it
+> against the patches on xfs/iomap-for-next on top of v5.4 (there are no
+> changes to existing iomap patches).
+> 
+> I have tested it against xfstests/btrfs.
+> 
+> Changes since v1
+> - Incorporated back the efficiency change for inode locking
+> - Review comments about coding style and git comments
+> - Merge related patches into one
+> - Direct read to go through btrfs_direct_IO()
+> - Removal of no longer used function dio_end_io()
 
-Or, of course, be using NOCOW (or other no-checksum) files.
+I see a lockdep assertion during test btrfs/004
+
+iomap_dio_rw()
+...
+	lockdep_assert_held(&inode->i_rwsem);
+
+btrfs/004               [15:46:30][   69.749908] run fstests btrfs/004 at 2019-11-27 15:46:30
+[   70.180401] BTRFS info (device vda): disk space caching is enabled
+[   70.183496] BTRFS info (device vda): has skinny extents
+[   70.378865] BTRFS: device fsid a10200b4-f17d-49a0-8c82-b06b69871613 devid 1 transid 5 /dev/vdb scanned by mkfs.btrfs (21271)
+[   70.405858] BTRFS info (device vdb): turning on discard
+[   70.408279] BTRFS info (device vdb): disk space caching is enabled
+[   70.410630] BTRFS info (device vdb): has skinny extents
+[   70.412358] BTRFS info (device vdb): flagging fs with big metadata feature
+[   70.420386] BTRFS info (device vdb): checking UUID tree
+[   70.427675] ------------[ cut here ]------------
+[   70.429375] WARNING: CPU: 2 PID: 21300 at fs/iomap/direct-io.c:413 iomap_dio_rw+0x255/0x560
+[   70.432208] Modules linked in: xxhash_generic btrfs blake2b_generic libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+[   70.437096] CPU: 2 PID: 21300 Comm: fsstress Not tainted 5.4.0-default+ #881
+[   70.439135] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-rebuilt.opensuse.org 04/01/2014
+[   70.442462] RIP: 0010:iomap_dio_rw+0x255/0x560
+[   70.449092] RSP: 0018:ffffa36dc5b37c80 EFLAGS: 00010246
+[   70.450701] RAX: 0000000000000000 RBX: ffffa36dc5b37e78 RCX: 0000000000000001
+[   70.453062] RDX: ffff88d5b3f75500 RSI: ffff88d5a0c29018 RDI: ffff88d5b3f75d10
+[   70.455308] RBP: ffffa36dc5b37d20 R08: 0000000000000001 R09: ffffffffaef84850
+[   70.457479] R10: ffffa36dc5b37d40 R11: 0000000000007000 R12: ffffa36dc5b37e50
+[   70.459479] R13: 0000000000049000 R14: ffff88d5a0c28ec0 R15: 0000000000049000
+[   70.461790] FS:  00007fab1f5cdb80(0000) GS:ffff88d5bda00000(0000) knlGS:0000000000000000
+[   70.464601] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   70.466503] CR2: 000000000041e000 CR3: 0000000061097006 CR4: 0000000000160ee0
+[   70.468475] Call Trace:
+[   70.469477]  ? btrfs_direct_IO+0x215/0x360 [btrfs]
+[   70.471201]  ? __lock_acquired+0x1f0/0x320
+[   70.472837]  ? btrfs_direct_IO+0xda/0x360 [btrfs]
+[   70.474453]  btrfs_direct_IO+0xda/0x360 [btrfs]
+[   70.476101]  ? lockdep_hardirqs_on+0x103/0x190
+[   70.477732]  btrfs_file_write_iter+0x20b/0x5f0 [btrfs]
+[   70.479450]  ? _copy_to_user+0x76/0x90
+[   70.480943]  new_sync_write+0x118/0x1b0
+[   70.482446]  vfs_write+0xde/0x1d0
+[   70.483789]  ksys_write+0x68/0xe0
+[   70.485136]  do_syscall_64+0x50/0x210
+[   70.486578]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[   70.488390] RIP: 0033:0x7fab1f7a8f93
+[   70.495054] RSP: 002b:00007ffea7b21208 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   70.497693] RAX: ffffffffffffffda RBX: 0000000000007000 RCX: 00007fab1f7a8f93
+[   70.499708] RDX: 0000000000007000 RSI: 0000000000416000 RDI: 0000000000000003
+[   70.501754] RBP: 0000000000000003 R08: 0000000000416000 R09: 0000000000000231
+[   70.503682] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
+[   70.505622] R13: 0000000000049000 R14: 0000000000416000 R15: 0000000000000000
+[   70.507683] irq event stamp: 1532
+[   70.508931] hardirqs last  enabled at (1531): [<ffffffffc01d7bfb>] get_alloc_profile+0x1ab/0x2b0 [btrfs]
+[   70.512256] hardirqs last disabled at (1532): [<ffffffffad002a8b>] trace_hardirqs_off_thunk+0x1a/0x1c
+[   70.515039] softirqs last  enabled at (0): [<ffffffffad07efd0>] copy_process+0x680/0x1b70
+[   70.517193] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   70.519153] ---[ end trace 7fa25c75a89dbc97 ]---
+
+The branch is xfs/iomap-for-next + this patchset.
