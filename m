@@ -2,271 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE2D10AED6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 12:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EF710B0F1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 15:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbfK0Lmf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Nov 2019 06:42:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbfK0Lmf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Nov 2019 06:42:35 -0500
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AEE42071E
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2019 11:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574854953;
-        bh=qxB9PIwjt+5FPtI/M+ltyTDxamKf/X8pxFLlmfQ3gI4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DEeBjXynCsfo7iy+LKz87KpL314DWEnCQk0UlUmHZPunzJDPo+A6geTQtvASPua6A
-         uQy/aRADhSViF17cokiPjNlNn9YXm0ssPWE6PubP298vZctP4P6/L047qkqFWbutTt
-         OPlZLFPx5mD0EhNrNZhCZTiski2eDX8VN1BZQw0Y=
-Received: by mail-vs1-f50.google.com with SMTP id u6so15005776vsp.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2019 03:42:33 -0800 (PST)
-X-Gm-Message-State: APjAAAVF0wOOZbavBjxj+KmoUJ1zDOhNb2Fs2Bcr4HFdZhCPwt/HnmNG
-        +l6iRYBgGzEHrYCoZJGIgaM3bAvk/H4aVUft47o=
-X-Google-Smtp-Source: APXvYqw303NubxIF7Icq1G2PKt48Ye5sV5CS3Uz1o43Kwj4cVm08MS+X/PFLsrZ0G+bOSD4a3foj0Dz7wttjJoH+0pw=
-X-Received: by 2002:a67:8010:: with SMTP id b16mr4061514vsd.90.1574854952271;
- Wed, 27 Nov 2019 03:42:32 -0800 (PST)
+        id S1727026AbfK0OPr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Nov 2019 09:15:47 -0500
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:46029 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbfK0OPq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Nov 2019 09:15:46 -0500
+Received: by mail-qt1-f175.google.com with SMTP id 30so25444786qtz.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2019 06:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=bVHtNgvsO+pqoxlp3DiiLUwne81VLxMm55SwI+5rWp8=;
+        b=K5rh3al9XG2h/QwYEtZ75TSRuj9okcgKNDqETlQFwZB4/jWmTComVA2KWc+Oo4kxEH
+         eB4kibVgcu8Aqsfb7WEsbmXoNe9ErTQSXrF9YdA+cejUzvFJEOQqlDDJu3/yFxfc4XK1
+         yFLD6M5K72a4+iDw/gO/tfYCGxYQRKar/1GBfbqkrMCSXu0PGvCX36SurF7A2CVrhHKe
+         VirhbUqLGiZW/7+lNp5efUsHzGQGectXhyjOFZErpeN+efEpZT3r6CSrqowbmBGrXt3s
+         EGs0cnuRzXIdPqRKZM6vdM8sQb53Zc5lYiblpwY42kKPxhHcbT+kUQR563OsIOPGVQlD
+         8Tig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bVHtNgvsO+pqoxlp3DiiLUwne81VLxMm55SwI+5rWp8=;
+        b=Gyv7sEEo6ODG0TEdAlRr3CqY63G+lNZN2Lv5pHhCehMaTE5lDdMjDrod3kFaoZkjvY
+         dZ+mZsQQv3lq2jga2wWMSDog4qeD56l9daydPc6dkkO31+5BxiohRsVc01G/lzjvZiZ8
+         BaLLrL835Em1m+bRxEP4dOgAe2pWOAkz1Nr7wGKhsb3He8cB9CGp1yyeukzKjmMnGklE
+         to6SsSoFF5RKLmGAwHS2E13oucvzzsjuZEUcgE55nBupmJkh1NCgHjgo6vNSCFknwR8f
+         rSYfYFOxUYW5N6eauL7NDk/lbbkNRU+GWMG783raRa4cxMOwLNvOBSYr24FP2ti0gs79
+         earg==
+X-Gm-Message-State: APjAAAW5r+/2voD66WcRI9DM+7DgwvUzeWIqFbsouLDwSv7kRCCo6L12
+        HyhqIzKSX0cN0scrjIsenv1ORwVGus4=
+X-Google-Smtp-Source: APXvYqwuuEUuBPaFAHNpySczfW40dIWoWYbtuGz6Yc2kAdsQHZZIgxyoB1qzuOE1OQ1RpZnMuWCOQA==
+X-Received: by 2002:ac8:7405:: with SMTP id p5mr3838088qtq.113.1574864143913;
+        Wed, 27 Nov 2019 06:15:43 -0800 (PST)
+Received: from [192.168.255.200] (user-12l2ihc.cable.mindspring.com. [69.81.74.44])
+        by smtp.gmail.com with ESMTPSA id i203sm2095393qke.126.2019.11.27.06.15.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Nov 2019 06:15:43 -0800 (PST)
+Subject: Re: bad sector / bad block support
+To:     Christopher Staples <mastercatz@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAGsZeXsEZ8EqPsuU9O+7d+suxBVNQAobASJaLNMZB9LhUe6Q7A@mail.gmail.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <c1473267-688c-201f-11e5-64761ad51f79@gmail.com>
+Date:   Wed, 27 Nov 2019 09:15:41 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20191030122301.25270-1-fdmanana@kernel.org> <20191123052741.GJ22121@hungrycats.org>
- <CAL3q7H52LYCnDdFoObCCWjrCQqLOpcPUYeD28pXtET25-ycM9w@mail.gmail.com>
- <20191124013328.GD1046@hungrycats.org> <CAL3q7H61mTQ6kFU9ER-F=-9xEXE8uSdpa-FjJpoS61x7kMaEjw@mail.gmail.com>
- <20191126230251.GK22121@hungrycats.org>
-In-Reply-To: <20191126230251.GK22121@hungrycats.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 27 Nov 2019 11:42:21 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5RCgs53nBG9HKLMHqUXLM=xiUKTQi8dS8nvuvW9x5bDA@mail.gmail.com>
-Message-ID: <CAL3q7H5RCgs53nBG9HKLMHqUXLM=xiUKTQi8dS8nvuvW9x5bDA@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: send, skip backreference walking for extents with
- many references
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAGsZeXsEZ8EqPsuU9O+7d+suxBVNQAobASJaLNMZB9LhUe6Q7A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 11:03 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Mon, Nov 25, 2019 at 03:31:59PM +0000, Filipe Manana wrote:
-> > On Sun, Nov 24, 2019 at 1:33 AM Zygo Blaxell
-> > <ce3g8jdj@umail.furryterror.org> wrote:
-> > >
-> > > On Sat, Nov 23, 2019 at 01:33:33PM +0000, Filipe Manana wrote:
-> > > > On Sat, Nov 23, 2019 at 5:29 AM Zygo Blaxell
-> > > > <ce3g8jdj@umail.furryterror.org> wrote:
-> > > > >
-> > > > > On Wed, Oct 30, 2019 at 12:23:01PM +0000, fdmanana@kernel.org wrote:
-> > > To be clear, I'm not doubting that the patch fixes a test case.
-> > > It's more like I regularly encounter a lot of performance problems from
-> > > iterate_extent_inodes() and friends, and only a tiny fraction of them
-> > > look like that test case.
-> > >
-> > > TL;DR it looks like LOGICAL_INO has more bugs than I knew about before
-> > > today,
-> >
-> > Which are? Where were they reported?
->
-> The first and least important bug is that LOGICAL_INO is slow.  This is
-> well known, although maybe the magnitude of the problem is not.  In one
-> dedupe test corpus I can produce (with bees or duperemove) a filesystem
-> with extents that have only a few thousand references, but take 45
+On 2019-11-26 22:30, Christopher Staples wrote:
+> will their ever be a better way to handle bad sectors ?  I keep
+> getting silent corruption from random bad sectors
+> scrubs keep passing with out showing any errors , but if I do a
+> ddrescue backup to a new drive I find the bad sectors
+Zygo is correct, if there are no checksum errors, it's almost certainly 
+not the storage device.
 
-Walking the backreferences was always slow, and having a few hundred
-references for an extent is enough to notice a significant slowdown
-already.
-That affects the logical_ino ioctls, send, etc.
+Put simply, for a media error to cause corruption without a checksum 
+error, all of the following need to happen at the same time:
 
-Worst, for logical_ino, is that we do the backreference walking while
-either holding a transaction (if one is currently running) or
-holding a semaphore (commit_root_sem) to prevent transaction commits
-from happening (to ensure consistency and that things don't disappear
-while we're using them).
-So for a slow backreference walking, that can hang a lot of other
-tasks that are trying to commit a transaction.
+* At least one sector in a data block has to go bad without the storage 
+device's built-in error correction catching it. If the ECC functionality 
+of the drive caught it, it would either return the correct data or a 
+read error. This is actually rather unlikely for small numbers of 
+devices (but the likelihood of it happening goes up as you increase the 
+number of devices involved).
+* A mix of similar errors in the block containing the checksum for the 
+data block has to similarly go bad without being detected or corrected 
+and it has to match up with the corrupted data _or_ the checksum for the 
+corrupted data block has to be valid for the corrupted data. This is 
+astronomically unlikely, to a level that you're far more likely to be 
+struck and killed by a meteor than this happening.
+* The above then has to happen for the checksum for the metadata block 
+containing the checksum for that data block, and in turn the same 
+condition has to repeat for each block up the tree to the root (usually 
+3+ times). This is so unlikely to be a statistical impossibility.
 
-There was someone working on improving backreference walking (Mark),
-but I think he's not working on btrfs anymore, and I don't know what
-happened to that work (if it was ever finished, etc).
+So, as Zygo suggests, check your RAM, check your CPU, possibly check 
+your PSU (bad power supplies can cause all kinds of weird things).
+> 
+> 
+> the only thing I can do for now is mark I/O error files as bad buy
+> renaming them and make another file copy onto the file system ,
+> 
+> 
+> I like btrfs for the snapshot ability , but when it comes to keeping
+> data safe ext4 seems better ? at least it looks for bad sectors and
+> marks them , btrfs just seems to write and assumes its written ..
 
-> kernel CPU minutes to process (each).  On this filesystem image I can
-> find backrefs by brute force processing 'btrfs inspect dump-tree' output
-> with a Perl script in only 8 minutes, and the problematic extents only
-> have a few hundred to a few thousand references.  Other extents have half
-> a million references and LOGICAL_INO can find them all in a few seconds
-> (including both CPU and IO time).  I don't know what the kernel's doing,
-> but whatever it is, it's *far* beyond any reasonable amount of processing
-> for the metadata.
->
-> The second bug is a bit more subtle.
->
-> I've been mining the last year of crash and corruption data and
-> tracking about 7 distict frequent failure behaviors in 5.0..5.3 kernels.
-> It turns out that LOGICAL_INO is implicated in half of these as well.
-> I've been running some tests to confirm this and exclude other factors
-> for the past month.  I was intending to post something about it at the
-> conclusion of testing a few weeks, but I have some actionable information
-> today, so here we are...
->
-> The data so far says that a host in the wild running LOGICAL_INO and
-> balance at the same time is 150x more likely to crash compared to hosts
-> that do not run LOGICAL_INO at all, or hosts that run either LOGICAL_INO
-> or balance but not at the same time.
->
-> Simultaneous LOGICAL_INO + balance correlates with these three failure
-> modes:
->
->         https://www.spinics.net/lists/linux-btrfs/msg89425.html
->
->         https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg88892.html
+ext4 wouldn't save you here, because you almost certainly aren't dealing 
+with bad sectors.
 
-For the bug involving btrfs_search_old_slot(), try the following fix:
+BTRFS doesn't include bad sector support like ext4 because it solves the 
+issue a different way, namely by checksumming everything and then 
+validating the checksums on read.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=efad8a853ad2057f96664328a0d327a05ce39c76
-
-Both reports where made before that fix was posted/merged.
-
-(
->
->         [metadata corruption on 5.2 that looks the same as the previously
->         reported corruption on 5.1, except 5.2 has a write time corruption
->         detector that aborts the transaction instead of damaging the
->         filesystem]
->
-> A host in our fleet that rarely or never runs LOGICAL_INO has few or no
-> problems on any kernel from 5.0 to 5.3.  When crashes do occur, they are
-> mostly random non-btrfs bugs (CIFS, wifi drivers, GPU, hardware failure,
-> power failure, etc).  We did have a few 5.2.x kernels hang in testing
-> due to the writeback bug fixed in 5.2.15.
->
-> The specific application we are running that uses LOGICAL_INO is bees.
-> bees spends more time running LOGICAL_INO than any other single activity
-> (other than sleeping).  Other dedupe tools don't seem to have an impact
-> on system uptime, which rules out EXTENT_SAME.  If there was a bug in
-> POSIX API like open() or read() we would all know about it.  That leaves
-> LOGICAL_INO, TREE_SEARCH_V2, and INO_PATHS as the 3 ioctls that bees calls
-> with unusual frequency compared to other software, but TREE_SEARCH_V2
-> and INO_PATHS don't show up in BUG_ON stack traces while LOGICAL_INO does.
->
-> I don't have a nice minimal reproducer yet, but "run bees and btrfs
-> balance start on a big, busy filesystem" triggers some kind of crash
-> (BUG_ON or transaction abort) for me in less than a day, 3x a day on
-> some hosts.  I think that a good reproducer would be a simple program
-> that walks the extent tree and feeds every extent bytenr in random order
-> to LOGICAL_INO in multiple threads while a balance is running, to see
-> if that makes the crashes happen faster.  I have not tried this yet.
->
-> I don't know how the 5.1 and 5.2 metadata corruption is connected,
-> other than the corruption immediately stops happening when we stop
-> running bees on the test host, or arrange for bees and balance to run
-> at separate times.
->
-> The bug is possibly as old as 4.12--based on earlier crash data, it
-> might have been the 4th most frequent crash case in kernels prior to 5.0.
-> The first three most frequent cases in 4.14 were flushoncommit deadlocks,
-> a reclaim/commit deadlock, and the rename/dedupe deadlock, all fixed
-> by 5.0.  LOGICAL_INO-related failures are now the most common crash case
-> in my data up to 5.2.
->
-> I'm running tests on 5.3 kernels, which are crashing in new, different,
-> and possibly unrelated ways.  LOGICAL_INO + balance is not the fastest
-> way to crash a 5.3 kernel, but I don't know yet whether or not it is
-> still a *possible* way to crash a 5.3 kernel.
->
-> That's all I really know about this bug so far:  there seems to be a
-> bug, it's not a new bug, and simultaneous LOGICAL_INO + balance seems
-> to trigger it.
->
-> > > > > LOGICAL_INO_V2 only finds 170 extent references:
-> > > > >
-> > > > >         # btrfs ins log 1344172032 -P . | wc -l
-> > > > >         170
-> > > >
-> > > > Pass "-s 65536", the default buffer is likely not large enough to all
-> > > > inode/root numbers.
-> > >
-> > > The default buffer is SZ_64K.  When I hacked up 'btrfs ins log' to use
-> >
-> > SZ_4K: https://github.com/kdave/btrfs-progs/blob/master/cmds/inspect.c#L151
->
-> ...which is not the SZ_64K I was referring to.  Oops!
->
-> OK, my bad.  I forgot to double check this against the hand-rolled tools
-> I usually use.
->
-> With the right buffer size, `btrfs ins log` produces 1794 references,
-> which is the right number given the extent appears in 2 snapshots.
-
-Ok, one less bug.
-
->
-> > > So I'm kind of stumped there.  If it works as you describe above
-> > > (and the description above is similar to my understanding of how it
-> > > works), then extent_item.refs should be a *lower* bound on the number
-> > > of references.  Snapshots will make the real number of references larger
-> > > than extent_item.refs, but cannot make it smaller (if an EXTENT_ITEM is
-> > > deleted in one of two subvols, the reference count in the EXTENT_DATA
-> > > would remain the same--incremented by the CoW, then decremented by
-> > > the delete).  Yet here is a case where that doesn't hold.
-> > >
-> > > Or...another theory is that LOGICAL_INO is broken, or trying to be
-> > > "helpful" by doing unnecessary work to get the wrong answer (like
-> > > FIEMAP does).  If I look at this extent again, I see that
-> >
-> > Hum, what wrong answers does fiemap gives? Was this reported before somewhere?
->
-> FIEMAP coalesces physically adjacent extents as opposed to reporting
-> btrfs extent item boundaries, and it adjusts the first extent record to
-> match the beginning of the range parameter given to FIEMAP instead of
-> reporting the beginning of the extent.  This does interesting things
-> when the extents are compressed or if you try to iterate over them in
-> reverse order.
->
-> I presume that behavior is either by design, or just an awful compromise
-> to make the output conform to the limited capabilities of the FIEMAP
-> result format.  This would mean FIEMAP's behavior is not really a bug,
-> and I haven't reported it as one; however, it does mean FIEMAP is not an
-> appropriate tool for applications that need accurate information about
-> physical structure on btrfs.
-
-Not sure if it's a bug either, but reading [1] suggests the
-implementation can return merged extents as long as they're flagged
-with FIEMAP_EXTENT_MERGED (on the other hand that flag exists for
-filesystems that don't support extents, are entirely block based).
-
-We try to report extents based on the in-memory state, extent maps,
-rather then iterating the extent items in the btrees, mostly for
-performance reasons, but also because in-memory state reflects the
-current state while stuff in the btrees may be outdated (due to
-delalloc/buffered writes).
-But extent maps can be merged in order to save memory. That's probably
-what you are experiencing.
-The thing is that we don't know if extent maps were merged when we are
-at fiemap, that that can be fixed easily and start setting the flag
-FIEMAP_EXTENT_MERGED. Anyway, right now I'm more inclined to think the
-merging is not correct.
-
-[1] https://www.kernel.org/doc/Documentation/filesystems/fiemap.txt
-
->
-> Computing the 'shared' flag for FIEMAP is prohibitively expensive
-> at scale, and there's no way to skip that work with the current
-> FIEMAP interface if the application is not interested.
-
-Yep, same thing, backreference walking, can slow things down a lot.
-
->
-> I switched to TREE_SEARCH_V2 to get extent item data:  it's faster, more
-> accurate, and more useful than FIEMAP, especially for compressed extents.
->
-> If anyone's interested in improving the generic FIEMAP interface to
-> handle btrfs quirks better, I can write up a proposal--it could be handy
-> to get this data without having to be root as TREE_SEARCH_V2 requires.
-> Alternatively, btrfs could have an unprivileged form of TREE_SEARCH_V2
-> that limits the min/max root/objectid ranges to the inode of the file
-> descriptor that is passed to the ioctl.
+On a slightly separate note, you should never need the ext4 bad block 
+functionality on any modern hardware unless your storage devices are way 
+beyond the point at which they should be replaced.  The original reason 
+for having bad block lists in the filesystem was that disk drives didn't 
+remap bad sectors, which in turn meant that the filesystem had to deal 
+with them. It's been multiple decades since that was the case though, 
+and all modern storage devices (except possibly some really cheap USB 
+flash drives) remap bad sectors and only let the OS see them when they 
+run out of space to remap them to.
