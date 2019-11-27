@@ -2,72 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C1610A93B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 04:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4AE10A936
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 04:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbfK0Dsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Nov 2019 22:48:42 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48102 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726664AbfK0Dsm (ORCPT
+        id S1726526AbfK0Dqq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Nov 2019 22:46:46 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:41949 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726346AbfK0Dqq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Nov 2019 22:48:42 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 028604F84B3; Tue, 26 Nov 2019 22:48:39 -0500 (EST)
-Date:   Tue, 26 Nov 2019 22:48:39 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Christopher Staples <mastercatz@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: bad sector / bad block support
-Message-ID: <20191127034838.GL22121@hungrycats.org>
-References: <CAGsZeXsEZ8EqPsuU9O+7d+suxBVNQAobASJaLNMZB9LhUe6Q7A@mail.gmail.com>
+        Tue, 26 Nov 2019 22:46:46 -0500
+Received: by mail-qv1-f66.google.com with SMTP id g18so8302002qvp.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Nov 2019 19:46:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ie1Mmq6bkhhGUodc+14AGNGGozOUuEPpYBIIbKdsrPM=;
+        b=K2lS68aQbVyknx6XVM759mlEpa4OvQtsipK4i03VPtNiK/iO+I/MFFw+uNMXBwIgpq
+         jE7YsSgng0wxflqYD9a1fnbNNiDIIpK+HVJktfEPv4arnNT+caFiXRwcQBlOurMnqfhm
+         8dcpcGpB7meG0ZnSMCYYHxwLeryjjZ+A+Iv0uwPZxPQlSvsSV8PAXCOpWkoduq2nLRyp
+         z8zkuN72TJWJNUDkkuMXKlHONnB5oFEFfb9pkyHcpPP8PSxBlO5FnW99ndEeIzBxdGHj
+         uvGRSWlXVCY7eKzWfpZlX3CYNeWPccId/ozp0CPZpiBC7AVYEV94xFfjZT4gkds6DOYM
+         2NPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ie1Mmq6bkhhGUodc+14AGNGGozOUuEPpYBIIbKdsrPM=;
+        b=dzOhu7cdyOaodXD6POiGDYHXQU5MG3y5cczZv003GXJMKdESaTR6ZR35O5dN+DhxaF
+         iYmjfQ3blQmxwckV2XDpgAE7vGTEycxbeMtpcvtWnYl+n8sZ3ZcXuLG+8u3Sv/mUQmpt
+         dzOVlF6F+Nax48iOhjCp/XaZ5y4Jb9ptkKeUaQEfdmOYs0tew/e47eyX+mOLxOscF6/g
+         MihKcsFOX7lBqLVTTZi6Q92CMpbvuheuXAjab1IrCPWH3JBeeeYkbdf1XOcHoDbTvPbw
+         fQQJRHM9k0KU2h3R2tlTjGUJzrbuk5+cl+sBGgXtbcIBPeTu3Rdr7hz1TvWtOy+OqVax
+         3WcA==
+X-Gm-Message-State: APjAAAXoYQQHBk3Z0MekBn0tpQahQe/86d9WKsKhwz2o0HIW5fIL/OGb
+        TY72QCsF+BfZUQKWxHnUQq8=
+X-Google-Smtp-Source: APXvYqzXd8o9WEKsecp66q5EbRg7V4chYJC2eTI6rtlGOl3LqNa2qFOpp+WVkVW2frlSTWf0QC59MA==
+X-Received: by 2002:a0c:e7c7:: with SMTP id c7mr2684253qvo.11.1574826405261;
+        Tue, 26 Nov 2019 19:46:45 -0800 (PST)
+Received: from hephaestus.prv.suse.net ([186.212.48.108])
+        by smtp.gmail.com with ESMTPSA id m186sm6326787qkc.39.2019.11.26.19.46.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Nov 2019 19:46:44 -0800 (PST)
+From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        anand.jain@oracle.com, wqu@suse.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs-progs: qgroup: Check for ENOTCONN error on create/assign/limit
+Date:   Wed, 27 Nov 2019 00:48:51 -0300
+Message-Id: <20191127034851.13482-1-marcos.souza.org@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ELMKpCVvjiB+uwRu"
-Content-Disposition: inline
-In-Reply-To: <CAGsZeXsEZ8EqPsuU9O+7d+suxBVNQAobASJaLNMZB9LhUe6Q7A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
---ELMKpCVvjiB+uwRu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Current btrfs code returns ENOTCONN when the user tries to create a
+qgroup on a subvolume without quota enabled. In order to present a
+meaningful message to the user, we now handle ENOTCONN showing
+the message "quota not enabled".
 
-On Wed, Nov 27, 2019 at 01:30:04PM +1000, Christopher Staples wrote:
-> will their ever be a better way to handle bad sectors ?  I keep
-> getting silent corruption from random bad sectors
-> scrubs keep passing with out showing any errors , but if I do a
-> ddrescue backup to a new drive I find the bad sectors
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ This patch survived a full btrfs-progs tests run
 
-That is a typical symptom of host RAM corruption.  Make sure your memory
-and CPU are OK.
+ cmds/qgroup.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-A similar test you can do is to copy a large file or group of files
-(say a few GB) and compare the copy with the original.  If there are
-differences but no btrfs csum errors, chances are good that you are
-looking at some kind of host RAM failure.
+diff --git a/cmds/qgroup.c b/cmds/qgroup.c
+index ba81052a..6bfb4949 100644
+--- a/cmds/qgroup.c
++++ b/cmds/qgroup.c
+@@ -98,7 +98,9 @@ static int _cmd_qgroup_assign(const struct cmd_struct *cmd, int assign,
+ 
+ 	ret = ioctl(fd, BTRFS_IOC_QGROUP_ASSIGN, &args);
+ 	if (ret < 0) {
+-		error("unable to assign quota group: %m");
++		error("unable to assign quota group: %s",
++				errno == ENOTCONN ? "quota not enabled"
++						: strerror(errno));
+ 		close_file_or_dir(fd, dirstream);
+ 		return 1;
+ 	}
+@@ -152,8 +154,10 @@ static int _cmd_qgroup_create(int create, int argc, char **argv)
+ 	ret = ioctl(fd, BTRFS_IOC_QGROUP_CREATE, &args);
+ 	close_file_or_dir(fd, dirstream);
+ 	if (ret < 0) {
+-		error("unable to %s quota group: %m",
+-			create ? "create":"destroy");
++		error("unable to %s quota group: %s",
++			create ? "create":"destroy",
++				errno == ENOTCONN ? "quota not enabled"
++						: strerror(errno));
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -447,7 +451,10 @@ static int cmd_qgroup_limit(const struct cmd_struct *cmd, int argc, char **argv)
+ 	ret = ioctl(fd, BTRFS_IOC_QGROUP_LIMIT, &args);
+ 	close_file_or_dir(fd, dirstream);
+ 	if (ret < 0) {
+-		error("unable to limit requested quota group: %m");
++		error("unable to limit requested quota group: %s",
++				errno == ENOTCONN ? "quota not enabled"
++						: strerror(errno));
++
+ 		return 1;
+ 	}
+ 	return 0;
+-- 
+2.23.0
 
-> the only thing I can do for now is mark I/O error files as bad buy
-> renaming them and make another file copy onto the file system ,
->=20
->=20
-> I like btrfs for the snapshot ability , but when it comes to keeping
-> data safe ext4 seems better ? at least it looks for bad sectors and
-> marks them , btrfs just seems to write and assumes its written ..
-
---ELMKpCVvjiB+uwRu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXd3yEgAKCRCB+YsaVrMb
-nGqaAKDa3txsn/m/zd0b+qy+kXdm2qa+2QCcDNqnIQFGF98hR5HgULIVKFJ0HaQ=
-=i6y6
------END PGP SIGNATURE-----
-
---ELMKpCVvjiB+uwRu--
