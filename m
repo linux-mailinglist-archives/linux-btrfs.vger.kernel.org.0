@@ -2,21 +2,21 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7152110AD58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 11:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D5C10ADC9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Nov 2019 11:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfK0KNi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Nov 2019 05:13:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39820 "EHLO mx1.suse.de"
+        id S1726478AbfK0Kd0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Nov 2019 05:33:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51062 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726194AbfK0KNh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Nov 2019 05:13:37 -0500
+        id S1726149AbfK0KdZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Nov 2019 05:33:25 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E2E3AB4E7;
-        Wed, 27 Nov 2019 10:13:34 +0000 (UTC)
-Subject: Re: [RFC PATCH v3 08/12] btrfs: add ram_bytes and offset to
- btrfs_ordered_extent
+        by mx1.suse.de (Postfix) with ESMTP id 0BFE9B23E;
+        Wed, 27 Nov 2019 10:33:23 +0000 (UTC)
+Subject: Re: [RFC PATCH v3 09/12] btrfs: support different disk extent size
+ for delalloc
 To:     Omar Sandoval <osandov@osandov.com>, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
@@ -24,7 +24,7 @@ Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
         Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1574273658.git.osandov@fb.com>
- <acc02c48287b503195a513e4210d6ddd9e89418a.1574273658.git.osandov@fb.com>
+ <bfa7cb307be92418aee1cec4e23f98bf32a171de.1574273658.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -69,12 +69,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <5f344a25-c537-5bf0-40a8-44b9130b4b3c@suse.com>
-Date:   Wed, 27 Nov 2019 12:13:32 +0200
+Message-ID: <0df9fd0a-e0d1-c8c1-6e2c-d831a20478ce@suse.com>
+Date:   Wed, 27 Nov 2019 12:33:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <acc02c48287b503195a513e4210d6ddd9e89418a.1574273658.git.osandov@fb.com>
+In-Reply-To: <bfa7cb307be92418aee1cec4e23f98bf32a171de.1574273658.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,14 +88,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 20.11.19 г. 20:24 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Currently, we only create ordered extents when ram_bytes == num_bytes
-> and offset == 0. However, RWF_ENCODED writes may create extents which
-> only refer to a subset of the full unencoded extent, so we need to plumb
-> these fields through the ordered extent infrastructure and pass them
-> down to insert_reserved_file_extent().
-> 
-> Since we're changing the btrfs_add_ordered_extent* signature, let's get
-> rid of the trivial wrappers and add a kernel-doc.
+> Currently, we always reserve the same extent size in the file and extent
+> size on disk for delalloc because the former is the worst case for the
+> latter. For RWF_ENCODED writes, we know the exact size of the extent on
+> disk, which may be less than or greater than (for bookends) the size in
+> the file. Add a disk_num_bytes parameter to
+> btrfs_delalloc_reserve_metadata() so that we can reserve the correct
+> amount of csum bytes. Additionally, make
+> btrfs_free_reserve_data_space_noquota() take a number of bytes instead
+> of a range, as it refers to the extent size on disk, not in the file. No
+> functional change.
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
