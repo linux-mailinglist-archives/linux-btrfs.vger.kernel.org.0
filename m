@@ -2,124 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DDB10C605
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 10:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6713F10C738
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 11:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbfK1J3o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Nov 2019 04:29:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44036 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726092AbfK1J3o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Nov 2019 04:29:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B7E36B157;
-        Thu, 28 Nov 2019 09:29:42 +0000 (UTC)
-Subject: Re: [PATCH v4 2/2] btrfs: reset device back to allocation state when
- removing
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191126084006.23262-1-jthumshirn@suse.de>
- <20191126084006.23262-3-jthumshirn@suse.de>
- <20191127170749.GW2734@twin.jikos.cz>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <fe0e706b-1431-743c-bc6f-042fcd81ed08@suse.de>
-Date:   Thu, 28 Nov 2019 10:29:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726653AbfK1KwC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Nov 2019 05:52:02 -0500
+Received: from mout.gmx.net ([212.227.17.21]:40847 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726191AbfK1KwC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Nov 2019 05:52:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1574938249;
+        bh=HdYEtFkUnnZEGJo/Yjg2u20Hw8DryoZwZpfqOgvHGcU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ly2ctU0QuaYFZ7pwdd9TMDVGQ0yWk+UqIqvoxmHZsZk4Zdykk3lVN2odcIrgFJs4N
+         c/TW4WFyTFEvH+hRjpZntf6yTtRiH9iRX56FnXIq+I/F7JBrO5A2+I/Ev4eRxrgJOQ
+         2ohzWCf3BXniz+VRFgM7T5pXNZm3PILQc1LQLiuw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.169] ([34.92.246.95]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mw9UK-1hiJFk2d9A-00s29k; Thu, 28
+ Nov 2019 11:50:49 +0100
+Subject: Re: [PATCH] btrfs: relocation: Output current relocation stage at
+ btrfs_relocate_block_group()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191128075437.10621-1-wqu@suse.com>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <6dbfa97a-837f-7596-1813-04cbfb84167d@gmx.com>
+Date:   Thu, 28 Nov 2019 18:50:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0)
+ Gecko/20100101 Thunderbird/71.0
 MIME-Version: 1.0
-In-Reply-To: <20191127170749.GW2734@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20191128075437.10621-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:v7PZQeeTFWd9+lmgbf+pdjcevMFp+mX3D5RawgWKzRsyb+3XMes
+ 8LFSe7Sca25nmN4m7q+fv1LZGpnxdEvegfqrNOgn7Ke4JoC06aYehtMjYd/SfJg+lkoFVL2
+ RdjbdFR40Py8GKXINkbKeXzq2XACiXIrRh+E7S4kPyalBNLeeF1Byn7cjBoPv1YL6RRIOZi
+ W45R5OMGC3nXGUuj8M5TQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+JuGjNOjydI=:M5EM01Wdq7RP2sNcfVezgZ
+ 4haIlMAMs5jjOO6I9quLw2o6pPUWrC+z16T5sRDRMCwECzgrqM1XNwzU3soNaXDySidGunV9l
+ iLHD46Y+PumeQH/HQcnFYqkVMnggjSRTLVT9WVb14/eAdWYgOEszmFYjB1/sNuFXaRBTleUce
+ dQ9SGG9+EETsC5vLPNNrg0lVCbYPsf9nwnI0PIqGkWdGOo03Mdu36DAhz8YOCJNwSKIcreP31
+ 2LNQCi4lHsOFn2d67OcVpCi3Xb3HPfvN5yM5e+bRgXxUtiKpXFxWzHGAV6A9tFEnxJf/JovxJ
+ la4MFpCgR/kdaGUwVQtLkM8hxPH2AtfxbyV+PKZHrs2tGLux9SSJSOJBd45z0YXko+ev0qmkA
+ vgx8dIAQA9uD6mt3yHaZqTi7riE4c+SRliXBR7XBezOInNdpZzjjyI/HrgUJCu/IkNso45mMw
+ g1KguMum5VcKQmKN0mBAfy2fADtVXYSCXIx/7avSV3aVL0jNGhjr+emZWgQUT6qaVm7cz5bBT
+ LMolGU/Wyfo3nd5DvtqQsI9vwKjAwZea5Ol2Mt9qpmo6I+RZd7js1EHyMLSg0cB1E4iQDjCO0
+ bdRFgbxyRRiquy/rGfWcPwFq83nyFhMKhqynRqRyE47qHRmndD+5mZgqPCDntovfDe3o8RdOk
+ 7Sap9+PXgOq6vS02Qk8kQ+KgVmdIWnMyBQVV2dvcIT28bdyX6SloOPk7CfYc3edBNMunf9TYr
+ RyB0XeZsBfwtKYRMLU216FQg8h7OFa8vVPsGH+z5b9MqqHEXtRh2Y6ptHJulhnTS9q6MS0Skj
+ KDvfXaNDPx0bUU3aKg22t8Ra2isTYCm59FAlSCWResLsNRhpzWysEbjtxnQ6Vp6aKsD6k73k4
+ hTubZZvsYlZ8g8mQjyEKxHHLfJKSLgkCsLjoXi+NPc+JfomGcgkoRAmppw5sKITTERroXWbNP
+ 7veVGe+qFgHG11wnHUR4VIYDtiKLAIHdgvhmfLz1fu9LLhTmFBLFuzlE0ecUgZrnVavsNU7Vm
+ t2cROnngm+ZJ6WDXNprUGh8Pf4yqpK5M3Cddb92KBmYolsp/i5BElx13E024Tn+xF20NLXOb5
+ DPw99mp1g21FTul3IMuKidvVl5HBsZtzzsDraQ6h9GrDbjD9CECpv3AhI3ScfSgNNOp6TNAin
+ NCVc+Au+6w2E0aloc1I0UxSqLJOfjq1vV6W5vQLDqjijevE3csrYAyC5HpHmbZ7f4MdZJ2Tva
+ EZIRqgGoGe05SKOGdn1DFVWjOzhZJN1CaHgi1Z5LVKwfQesnOsJGPIIdo90E=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/11/2019 18:07, David Sterba wrote:
-> On Tue, Nov 26, 2019 at 09:40:06AM +0100, Johannes Thumshirn wrote:
->> +	ASSERT(atomic_read(&device->dev_stats_ccnt) == 0);
-> 
-> btrfs/020               [16:59:58][ 3477.975072] run fstests btrfs/020 at 2019-11-27 16:59:58
-> [ 3478.974314] kworker/dying (5607) used greatest stack depth: 10792 bytes left
-> [ 3479.206988] BTRFS: device fsid 818a4909-467d-4599-979c-3b258fb4fc41 devid 1 transid 5 /dev/loop0 scanned by mkfs.btrfs (27347)
-> [ 3479.234212] BTRFS: device fsid 818a4909-467d-4599-979c-3b258fb4fc41 devid 2 transid 5 /dev/loop1 scanned by mkfs.btrfs (27347)
-> [ 3479.343996] BTRFS info (device loop0): disk space caching is enabled
-> [ 3479.349590] BTRFS info (device loop0): has skinny extents
-> [ 3479.352721] BTRFS info (device loop0): flagging fs with big metadata feature
-> [ 3479.360793] BTRFS info (device loop0): enabling ssd optimizations
-> [ 3479.614065] assertion failed: atomic_read(&device->dev_stats_ccnt) == 0, in fs/btrfs/volumes.c:1093
-> [ 3479.622041] ------------[ cut here ]------------
-> [ 3479.625272] kernel BUG at fs/btrfs/ctree.h:3118!
-
-My test setup was missing loopback device support, fixed that.
 
 
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+On 2019/11/28 3:54 PM, Qu Wenruo wrote:
+> There are several reports of hanging relocation, populating the dmesg
+> with things like:
+>    BTRFS info (device dm-5): found 1 extents
+>
+> The investigation is still on going, but will never hurt to output a
+> little more info.
+>
+> This patch will also output the current relocation stage, making that
+> output something like:
+>
+>    BTRFS info (device dm-5): balance: start -d -m -s
+>    BTRFS info (device dm-5): relocating block group 30408704 flags metad=
+ata|dup
+>    BTRFS info (device dm-5): found 2 extents at MOVE_DATA_EXTENT stage
+>    BTRFS info (device dm-5): relocating block group 22020096 flags syste=
+m|dup
+>    BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
+>    BTRFS info (device dm-5): relocating block group 13631488 flags data
+>    BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
+>    BTRFS info (device dm-5): found 1 extents at UPDATE_DATA_PTRS stage
+>    BTRFS info (device dm-5): balance: ended with status: 0
+>
+> The string "MOVE_DATA_EXTENT" and "UPDATE_DATA_PTRS" is mostly from the
+> macro MOVE_DATA_EXTENTS and UPDATE_DATA_PTRS, but the 'S' from
+> MOVE_DATA_EXTENTS is removed in the output string to make the alignment
+> better.
+>
+> This patch will not increase the number of lines, but with extra info
+> for us to debug the reported problem.
+> (Although it's very likely the bug is sticking at UPDATE_DATA_PTRS
+> stage, even without the patch)
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/relocation.c | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index d897a8e5e430..88fd9182852d 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -4291,6 +4291,15 @@ static void describe_relocation(struct btrfs_fs_i=
+nfo *fs_info,
+>   		   block_group->start, buf);
+>   }
+>
+> +static const char *stage_to_string(int stage)
+> +{
+> +	if (stage =3D=3D MOVE_DATA_EXTENTS)
+> +		return "MOVE_DATA_EXTENT";
+> +	if (stage =3D=3D UPDATE_DATA_PTRS)
+> +		return "UPDATE_DATA_PTRS";
+> +	return "UNKNOWN";
+> +}
+> +
+>   /*
+>    * function to relocate all extents in a block group.
+>    */
+> @@ -4365,12 +4374,15 @@ int btrfs_relocate_block_group(struct btrfs_fs_i=
+nfo *fs_info, u64 group_start)
+>   				 rc->block_group->length);
+>
+>   	while (1) {
+> +		int finishes_stage;
+> +
+
+NIT: the rc::stage is an unsigned integer.
+
+
+>   		mutex_lock(&fs_info->cleaner_mutex);
+>   		ret =3D relocate_block_group(rc);
+>   		mutex_unlock(&fs_info->cleaner_mutex);
+>   		if (ret < 0)
+>   			err =3D ret;
+>
+> +		finishes_stage =3D rc->stage;
+>   		/*
+>   		 * We may have gotten ENOSPC after we already dirtied some
+>   		 * extents.  If writeout happens while we're relocating a
+> @@ -4396,8 +4408,8 @@ int btrfs_relocate_block_group(struct btrfs_fs_inf=
+o *fs_info, u64 group_start)
+>   		if (rc->extents_found =3D=3D 0)
+>   			break;
+>
+> -		btrfs_info(fs_info, "found %llu extents", rc->extents_found);
+> -
+> +		btrfs_info(fs_info, "found %llu extents at %s stage",
+> +			   rc->extents_found, stage_to_string(finishes_stage));
+>   	}
+>
+>   	WARN_ON(rc->block_group->pinned > 0);
+>
