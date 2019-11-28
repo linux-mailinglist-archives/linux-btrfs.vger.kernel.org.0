@@ -2,39 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E21C10C8C6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 13:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6463B10C8C8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 13:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbfK1Mky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Nov 2019 07:40:54 -0500
-Received: from mout.gmx.net ([212.227.17.22]:55475 "EHLO mout.gmx.net"
+        id S1726593AbfK1Mlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Nov 2019 07:41:44 -0500
+Received: from mout.gmx.net ([212.227.17.21]:50005 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbfK1Mky (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Nov 2019 07:40:54 -0500
+        id S1726227AbfK1Mlo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Nov 2019 07:41:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574944776;
-        bh=SKCMaRH936zg97zI02QMPiRAQPGPng8JCMN2Jdah1rw=;
+        s=badeba3b8450; t=1574944797;
+        bh=uO6/jtpMeI5jUMkD82p0OdQAGS5zJXXW8OEuZXfoiLI=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=aYvIuAZolZORvTxxHDjNJLhGr0rmmaK1ftjUm7lHMjfcGHNjn8uCrBTqIOQi2muC3
-         0DGsoXTjnCuzeFaiVgKzjeD4u1AfjuiOsY+wNLMAioC3D41mLOz5lkUCFha8mEttEa
-         p0NPw95FnDRlAmvmtjZ1Zro5H3QQjzhlN0Is1Rrc=
+        b=STuqT2o7yvyi7SXo/C0B8GDV0f4Ied6ZqaZKE9TnUCCmTncpmblSYQWgjuoupL3M9
+         Dqu2zw8hrErvRK/0ZCHubss9/9JhWZbk1cplxAZZkS+HwgZQJqQscIHuzaf6VXHl/R
+         3n8cjRNz8XB60v8rDPXDXflP5rtgj0488+yrytb8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Rm-1iEnxB4ADW-00La9l; Thu, 28
- Nov 2019 13:39:36 +0100
-Subject: Re: [PATCH 3/3] btrfs: volumes: Allocate degraded chunks if rw
- devices can't fullfil a chunk
-To:     Qu WenRuo <wqu@suse.com>, "dsterba@suse.cz" <dsterba@suse.cz>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20191107062710.67964-1-wqu@suse.com>
- <20191107062710.67964-4-wqu@suse.com>
- <6cc25dbd-55e4-43bb-7b95-86c62bee27c7@oracle.com>
- <f928122d-4e77-e83b-9a53-d2eea7ee16d3@gmx.com>
- <20191127192329.GA2734@twin.jikos.cz>
- <8c0a2816-1a7d-7d75-f591-c8712a85efd5@gmx.com>
- <20191128112449.GF2734@twin.jikos.cz>
- <366d5a96-4670-5839-6bef-e8d3a77fd00b@suse.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuUnK-1hikzm1HV4-00rU57; Thu, 28
+ Nov 2019 13:39:57 +0100
+Subject: Re: [PATCH] btrfs-progs: qgroup: Check for ENOTCONN error on
+ create/assign/limit
+To:     dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        anand.jain@oracle.com, wqu@suse.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+References: <20191127034851.13482-1-marcos.souza.org@gmail.com>
+ <0d82cb5f-9d01-0e3a-26bb-33019d8a9e65@gmx.com>
+ <20191128110848.GD2734@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -60,151 +57,104 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <4eb3d18b-b938-c52d-8cc8-c21433c15183@gmx.com>
-Date:   Thu, 28 Nov 2019 20:39:31 +0800
+Message-ID: <aa74dd52-352a-4102-da5b-75855266a1be@gmx.com>
+Date:   Thu, 28 Nov 2019 20:39:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <366d5a96-4670-5839-6bef-e8d3a77fd00b@suse.com>
+In-Reply-To: <20191128110848.GD2734@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="uJWQPLi11BvHrGijVpM4HWv785P6o4D71"
-X-Provags-ID: V03:K1:Jzw7In5czesBgnxpLXYzovjQ4fwWdc2H2hBbTqyNhBlr4apjLgs
- DJYXUDnwKqzo0DUUbqOIHOzpOI5UacWnbb9cyNlvcYI+5I6lRiAsqoUJKB+v8W1nFtxjg8A
- Cn3zdmQ3PqnbFUxbhp7tVVl9Q27/qYiW+U1+mNE5MJBb8P2V+VKtczdHlF6szHr20zMCaAB
- gLaecbVrXQonquK/fPaIQ==
+ boundary="Y7QXVLEePgoEgm15u3clFHcGscxBuPsp7"
+X-Provags-ID: V03:K1:Pm9c3NAt12/XUosVdaWTw4rJFQ0kzDh4JZ93Q6oJmZV+mgIb+9G
+ Gbrq6UrBbJZ8Boz45g2yYFclmmpOAX6/0nXI9pak/PPx6HqJvYFxBj++488PCZWd9yR/WWy
+ /QgnJCl8qATtJqvAa2/mBHH4v6OfjSJ2toZLIVuQ3wkldfYkTW2zT2zHumtwzILW9AM+Iv0
+ bkLHd6P+iyJxUrktqt+nA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xm8t3foxMkQ=:K/1JipKKS38Sg1uybPMzao
- CmtKozhAJr2xNedJbTcyjzyt+sUe/jU6h1RY+T1MifertcOAq1BDrMxiWi9lUY/j//t8GYZ1/
- D/8QBJ/f6JWed6OsWZVqFkbtgsWvd8LwTUTBqNUHYBX1dL8S7OjI8uiMGkTp28otcNByQhBDh
- WwFb9vI1KpUQfyAhFOe+f9mMqzUgF1Rw0Mt1bOgsuuRBMwOVSYEHOBA9nhOb2EhnqgGBs5iwe
- DbSasfLJ+9xYeb/eEW1lYy8rMgEKoASruaofWo+lIBd1yygrlEqnudzLkxPn5Q+v/xrxf+Y1N
- Zv+BXzu/lHo07RD8TrqWGhBK8O8eNlGcgSL/StL+SdGt4j6YppiNgxDcrU54q1qDS3V3zySuE
- 1CBsisx1v1On8IgJRPADKtpsk5CY8oxbsu/vT/7oqlOmfocl1hnsaXdYIIPxRNYkioTNfP2Wq
- v2NufRX0HcEItFFTtt2tgNvNzvtKksc3hdX2KULGvxC5eFBlRaFLnFYxtNF2dotof5I8JUyB4
- QJYXK7/rQQrL+0A8a42sZe2h+2aKOURFSCemc9hGbOyh2aSymKdjcbzXRVAmOYHV1euVyqDbd
- Jrj4Qc5R3fi82Vm/2A8iEHVFt4mmB9u7+PVJLHOrcGqmYnjkRTy0nRQQNlqMCY0MdFxiUj0TL
- kTILl96x1wBIh0j0iSqrOFlUQhTlaosGqATDeNBxjpjbFCapIiljUx/XBGf29gY/cgCzenub6
- /dRdElAM7kispu6+sTJGEX0ao8zYZhHr33CZa2pgiZHmHvSTy4R7/V8PTLbmkjZ/VK5k32bE3
- Vcz08aVClWvowo614j2Ey/e0fudiY43KMQTmHQZkblPSHP9D0oLafNRDy50w5UIPyktHMUcUM
- PWgOCCJ+VdQkCvJznmFCZ8uGOzS58H+5EuSNRV/+q9DQWkbm590Y6G05H3tT4KznuZoLpDy0W
- GsBp3DhKBLid4mjrP8Ur9IXUaqYdpCrYv7VPOVkGksoSpMUlUyxccBpPKWxHa0UN8s7XZsL6D
- YPn6vbc6iA84ORGDpk/zmxuMA2P7axeMXnHDGL8JrFKDdLEngk32ojxUWU7dJoa1J0WuVjOMb
- 8///dAxofPqqRd0iX3Ca/gbKbn5MjDxQCwlpSqJXDq2hfVxe8uA/+D0+66aSAoXO2J1AYBhOO
- sXtgGEVhDEtXT58HCWI1133i67j1YydAqDpfipawvG7ODwJU9NnhZdMcLwJkql3/WIGnjVDVE
- YeycelztpAk80dnP4AFm94piwj6jwpf8lAwzEm7hksLonPQlndO5a8mlXunM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UwXb5zm5FRk=:tJu6vyQW2wR93KfX3Jy2ac
+ 4K1FYOs/bv3jwg00GEpgQbohouhmGRp2kwwdssaC1/9H2NnigGwZ88HsTneno12Bw/9idDH/Z
+ Oqi5cKS/WhyuzCcjGnyg0hB1rrzrQEcdOXKr0BldMnzu23XrHLtdMbCLyVq3bhFwogwLc7Uc3
+ odWEK3ow8QHLMqdltJrDva5BTzs21h+EdEy9A8/NKdb82GFPMGCMefabLL4P/Ji8O1yN22cmE
+ 87eSjMbwAmdHI2A2L0B48YQw9q7k0dzDJWtDWIbXMoxnJ/m02ETMN0laI0nVDcU3KWicCC/sg
+ F1ycQFbOffwbFJ+7Hv2M61lkYzHSTxqt2dbBTeii2lp1w0UIIShwFgK7CPGX3Kjb8WaZxScQW
+ tb/hlotJEZ+XsjJQqWvr4PU6Nwr5IZ1hJN76hbMOL26mhdWOEafvxTFRIdkeFlZ0Pw04pvxvh
+ 60a4p1DC2Q+JjuBzzkPUC1GACUOBFMSVWQ1nxrPE/WLS4zHNYGA31LvSXphoYHMFaxiyQFHQ6
+ w1j1CH+ixNYpmTmz2DHDTnVn25Z0ZEag56irs5zRrvVBoxRjPwO50D8ZJ7QFJTZ3ijf7OUTH0
+ Ggt/XND+MY/QVZhp6Tk83UqZU7jFcedE6laO2QalNAXVKeBffXANhZOi4ntTPAl5KSGTinVuC
+ EjqYQsD1AmE48NqiSkFMPdydg1c6WpHaLu8xiZSmTHtxSjvyyEx0cpMcR4848IsbKJHZpWZf3
+ 1C4xqFCtj8O+eTGNVfsAm1PNMGu2Wyjgh3uuV+z6EJkwFkWo3xGSJvgb3L7tj5fGt600En1Rt
+ +610izzgqxSiEVI3sfYRfl4RBi8rR0erPH/87VN61kASWz16m4Mzkp7THHTGXy3b61rb2dosA
+ oqZCzhjS2BHfEftpyOqXcmlr3YpOwoS1lMclqzNyJIaY87cCXFmeEExJzsuYuo63aSVSkfPk1
+ wjXuRC5QJnTFdq9koODzwS2FoClLeKmOlGUEu7vEMgbOIdfL83EdwRMRcAofbXP6VBiIzh8rp
+ +KyyzFOcqouVihEl5DORMdQWojKMLTiNGWaezetw72V2SpYv9bxeqkhUvkMMsWCErztcGShfn
+ VVO64XnvhTcIVHtj4aLWP2zM8yzx7BvlJ/wnwPpfqsGpCoe7eSChEfBemmBPD1H1QBrwBLIfp
+ niSgM4xraMKEsnMKpcXGXdQq1jPyd1cg5Ei/Lwqi3Wj72BTjEGj0Brusiv95ffLTgrddCzrA5
+ ZdLPEK8FPBf7Vq/vliUuVRbxWwlZhq2U3rbgZrE/0IzPTOzYJIBz1BY36O3Y=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uJWQPLi11BvHrGijVpM4HWv785P6o4D71
-Content-Type: multipart/mixed; boundary="mfwFf28n43XKHGKDlL0gAP0JDVB2q9Xc8"
+--Y7QXVLEePgoEgm15u3clFHcGscxBuPsp7
+Content-Type: multipart/mixed; boundary="pNjSal4sY9uwQ9Yx9Afz07MAljtlBDkYx"
 
---mfwFf28n43XKHGKDlL0gAP0JDVB2q9Xc8
+--pNjSal4sY9uwQ9Yx9Afz07MAljtlBDkYx
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/11/28 =E4=B8=8B=E5=8D=888:30, Qu WenRuo wrote:
->=20
->=20
-> On 2019/11/28 =E4=B8=8B=E5=8D=887:24, David Sterba wrote:
->> On Thu, Nov 28, 2019 at 07:36:41AM +0800, Qu Wenruo wrote:
->>> On 2019/11/28 =E4=B8=8A=E5=8D=883:23, David Sterba wrote:
->>>> On Tue, Nov 19, 2019 at 06:41:49PM +0800, Qu Wenruo wrote:
->>>>> On 2019/11/19 =E4=B8=8B=E5=8D=886:05, Anand Jain wrote:
->>>>>> On 11/7/19 2:27 PM, Qu Wenruo wrote:
->>>>>>> [PROBLEM]
->>>>>>> Btrfs degraded mount will fallback to SINGLE profile if there are=
- not
->>>>>>> enough devices:
->>>>>>
->>>>>> =C2=A0Its better to keep it like this for now until there is a fix=
- for the
->>>>>> =C2=A0write hole. Otherwise hitting the write hole bug in case of =
-degraded
->>>>>> =C2=A0raid1 will be more prevalent.
->>>>>
->>>>> Write hole should be a problem for RAID5/6, not the degraded chunk
->>>>> feature itself.
->>>>>
->>>>> Furthermore, this design will try to avoid allocating chunks using
->>>>> missing devices.
->>>>> So even for 3 devices RAID5, new chunks will be allocated by using
->>>>> existing devices (2 devices RAID5), so no new write hole is introdu=
-ced.
->>>>
->>>> That this would allow a 2 device raid5 (from expected 3) is similar =
-to
->>>> the reduced chunks, but now hidden because we don't have a detailed
->>>> report for stripes on devices. And rebalance would be needed to make=
-
->>>> sure that's the filesystem is again 3 devices (and 1 device lost
->>>> tolerant).
->>>>
->>>> This is different to the 1 device missing for raid1, where scrub can=
-
->>>> fix that (expected), but the balance is IMHO not.
->>>>
->>>> I'd suggest to allow allocation from missing devices only from the
->>>> profiles with redundancy. For now.
+On 2019/11/28 =E4=B8=8B=E5=8D=887:08, David Sterba wrote:
+> On Wed, Nov 27, 2019 at 12:30:38PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2019/11/27 =E4=B8=8A=E5=8D=8811:48, Marcos Paulo de Souza wrote:
+>>> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 >>>
->>> But RAID5 itself supports 2 devices, right?
->>> And even 2 devices RAID5 can still tolerant 1 missing device.
+>>> Current btrfs code returns ENOTCONN when the user tries to create a
+>>> qgroup on a subvolume without quota enabled. In order to present a
+>>> meaningful message to the user, we now handle ENOTCONN showing
+>>> the message "quota not enabled".
+>>>
+>>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 >>
->>> The tolerance hasn't changed in that case, just unbalanced disk usage=
- then.
+>> Don't forget the original -EINVAL.
 >>
->> Ah right, the constraints are still fine. That the usage is unbalanced=
-
->> is something I'd still consider a problem because it's silently changi=
-ng
->> the layout from the one that was set by user.
->>
->> As there are two conflicting ways to continue from the missing device =
-state:
->>
->> - try to use remaining devices to allow writes but change the layout
->> - don't allow writes, let user/admin sort it out
->>
->> I'd rather have more time to understand the implications and try to
->> experiment with that.
->>
-> Ah, makes sense.
+>> So it needs to cover both -EINVAL (for older kernel) and -ENOTCONN (fo=
+r
+>> newer kernel).
 >=20
-> So no need for a new version.
->=20
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
->=20
-> Thanks,
-> Qu
->=20
-Facepalm, that's for another thread....
+> I think for now only ENOTCONN should be interpreted as 'quotas not
+> enabled' as we can be sure it's just that. But EINVAL means 'invalid
+> parameter' and this can be interpreted in that context as if the qgroup=
 
-Reviewing patch from myself, WTF....
+> ids are wrong etc.
+>
+
+Ah, makes sense.
+So no need for a new version.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 
---mfwFf28n43XKHGKDlL0gAP0JDVB2q9Xc8--
+--pNjSal4sY9uwQ9Yx9Afz07MAljtlBDkYx--
 
---uJWQPLi11BvHrGijVpM4HWv785P6o4D71
+--Y7QXVLEePgoEgm15u3clFHcGscxBuPsp7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3fwAMACgkQwj2R86El
-/qiPWQf/bDgLwDe1tQzltFv7emeMqoq0gpDW8sT+raY46rWd1DuP8oYw2Az7kfG6
-A0955olAxHcVbhHhJ7LUHE+/fi+p25UlL5bPAFfbiuiAiPpEe3VtlbeBCsf2pwgM
-+3tr+wLm3rzEkuCg3kDZuZLjp7NYoxr0qa/4ov8wjvuY2y2pM4VEVYWmh6YMEuFy
-AEcJJgnKAlp6stTrUcwLdE5qqW385TUoRrRY5kLtq5V++xnjfa5iKKijA3sW04L/
-XqRk1JOyLECVbISXd/WvaaTFBPTUZYyYoVR+OkzdCbWcSy1VhG9RIcBVb5CMoHzt
-H7Lpw1k1mpdUMUOH8B40J2GjdQWoUQ==
-=niz+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3fwBcACgkQwj2R86El
+/qix7wf/aarKlo5ZN75h7c/K54whqV1USK8mRSjILh0qjheGt5cTwfamXIRNQK4i
+yBOe20xcu5Gx9rsYlDHbP6WGgm0HAjikhRYD+BHkzsqXQ5Hvd8Ipy4essn42eleN
+bb3a+9VXNSaOjFLQDN71J7azdpzCaOkTvkHOCN67hRamn5cVIAtSTMNXEsBfgeNw
+eoM9XS22GpBGQe7YyILKoxl6U5hDbukpjvtzM1JyqsZJwdHI0HjuK1Upj5i7H+7N
+V/tJQ0JZ92nWSxz+Q44UcgSdUTiI/IT45JvV/ds6nonrYurEMJu7yLa8PS8rSLsK
+zz3b0X7W4CUCMqK1wExE5+ZuXXKYoQ==
+=Yi+E
 -----END PGP SIGNATURE-----
 
---uJWQPLi11BvHrGijVpM4HWv785P6o4D71--
+--Y7QXVLEePgoEgm15u3clFHcGscxBuPsp7--
