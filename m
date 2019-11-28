@@ -2,170 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A58010C0EA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 01:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AF810C10E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 01:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbfK1ABk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Nov 2019 19:01:40 -0500
-Received: from mout.gmx.net ([212.227.15.18]:45651 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726947AbfK1ABk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Nov 2019 19:01:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574899298;
-        bh=vAg86OpG68ViyXC8kJ112rpExZmpZQLBCoEgqF+UV4c=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=EsHsEEcYm/VO3AZziTZGmdAkktxig4pwUWKW8zrv9wGm1Fa8YU9JOGdMC3mY88nut
-         1CKOherbkLxLJtHFMQEXAFriAj4hZP/lI1dSI1pqyEg2tv1GgcLFjjyUB5YXOqPbtC
-         vwwk7EVlhvNyaHVgT3rCCATLzlln0mlSYjzfrUFU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFbRs-1iahbz1hyI-00H8jg; Thu, 28
- Nov 2019 01:01:38 +0100
-Subject: Re: RAID5 scrub performance
-To:     Jorge Bastos <jorge.mrbastos@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAHzMYBTXvY1VgcoFDUvc2NFmVKq2HJRHuS0VXzoneUMh79cySA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <2b0e5191-740f-0530-4825-0b0b6b653efb@gmx.com>
-Date:   Thu, 28 Nov 2019 08:01:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727338AbfK1Am1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Nov 2019 19:42:27 -0500
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:39087 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbfK1Am0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Nov 2019 19:42:26 -0500
+Received: by mail-wr1-f43.google.com with SMTP id y11so25832821wrt.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2019 16:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UonRBgGwITaOtlHcm0qWPVMdjBwCooxIFvs6Hl+Iq7g=;
+        b=rN/+a+JO7feH9vD5xiLUF1yEobE+llukSOPNYHzb7zsDyaIvh4Jmj9bAIhR8gymcgd
+         orEX4zS0gGyZJsPpjCEu5WqCEifAR89hwPtAQAOCkBrZi7vvpWGcrvqUbo8jHgQfahxP
+         Ph0X5rkHkXH8vOOqFvW0kQL9KnZN6hxt1XjQOPNVksrI45PM7rSWe9GD1UM3GiMwneP7
+         h0H/ZStOt7JuSWhsQz9Jn54huS07W8M1JX9GeYuCMuBJEzjNfObjC4moeiuoBF1ev7e4
+         r8kxZXJIfcFsSKdM349oqHBc05Vqff8T1EbXBXsjkAZ5qrqtxdo9rnuYKZMCtKDqjRdu
+         sdIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UonRBgGwITaOtlHcm0qWPVMdjBwCooxIFvs6Hl+Iq7g=;
+        b=RAJySp8c8R+RYMFttkkNNmD81O8BOlhT3omUIcVVkcUwK/8gQNqcL/f9lX3bK+4KXg
+         Ko8oAhZICrD19x0yTo+PmeKh5fo0cr3A1Ftldf2vKmywEqLfbbsIXquVGCOMs5CRZmYr
+         2tcTsQo77YbUcIUA/ELQgLS6XipEg+MJznS/eGutW8OMpnddU1QFSczh2hhK4qqED/Tb
+         S7lwQwS7IGXPzXOLyZZH4W3fdWbBWBzUmGRX0tcXsEqMi+EcT96OAwj1XaZlq/7gQxrb
+         WZPbhqSgPL1Ae5I+X6nQG7lHVP2lMigkHuBWqtVrLxlZd9AYAvZ+OoL74wLK9WLj73sZ
+         cVCQ==
+X-Gm-Message-State: APjAAAUimisQiIN4k4AOkTMiH1CdyvP20gQRTfsurSf3qSiZDfc7Fzpk
+        H5k1ST+f9uSrbAt6Et421SwTwbUuQr0Qaqy0MRYoHoAGqds2EQ==
+X-Google-Smtp-Source: APXvYqxpTxHE4jwhSPXsUJpCv7NVOzp9yZzPd7/rwjKjrDRK71IdwteIDjraoWFUfXwXYZaHZ47OZ9OvXOMQIIa027E=
+X-Received: by 2002:adf:f108:: with SMTP id r8mr14434143wro.390.1574901744373;
+ Wed, 27 Nov 2019 16:42:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHzMYBTXvY1VgcoFDUvc2NFmVKq2HJRHuS0VXzoneUMh79cySA@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="CciErR2xCHEusveGqdQMBgT9iFhBSywrH"
-X-Provags-ID: V03:K1:MmZ3pmX2/l+C8xnSbuyrtfxzTtyQYoywIMj8cpE5s0tkNFSBHZL
- T9nwGwGZIMnO4sxqSoseMlovGtls86U10xztSk7XjA8DUjpM1CJy+lx+uFEDTFmMxM4b/d/
- Tt+xiG8DVJ4fDhM3Ywjiw6K/KTjppqk7dgPiyCB8EsZQNiMURHsRAtzA6xyjzE/XQrD+H9r
- 9CKdPgX4S4WiuDQeAh56w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CRpysEp6Dgs=:Jb53RQfPeXMYIBXUIkZ3eC
- q/gRPuq/mp7nvD0RTjkWGsenLzbnjDYlubpTk+/fwdJR3B7cqRKWplhkURJ+wZxxqVJgmizn0
- hP1p3E8jRXAEvoO7JGuOEvXdVGDLSiJfddawq/n6SUTAO4awMWJU4k2+OXBhNuML+1BLVQBf4
- 7kkz171v3bgUBTrAVumHJ7OWND08wEDDcpPqfxqlus30eg+VRcbLUZqXhM864C5Ry0icICic4
- aQrxziZJ2/TJliwtxQ24piE3T8+bFSLX+yuXU/seHdhswwSbVLlEwonnGseDHdAJ8kb6iZCBE
- QHVl1pvT+vtvSj9asrBmn6MAeKXNEHslmL6sExlSARqbbMQPuzu8Q1btXt+3sGW2mBVyyN2PD
- jKgtQq6PYFJ3TsYuu2NAqe47p3U3oowZ2DeJjY53kHvmNAcYX42mQIh9+QnjpLIGc6eN6PYrx
- sDXD5ndsOswcLAHj3RrlWsOvNiUknwVZtWMhXR2n25XtT4WNAf4ScEEwq/uqVFF78xZqBj9IE
- pfBovX6ZcNsaocAJMAiDPu3ey5n/ElMnG5j1of0RB6+ODZHRvItRRnVzUjZ6szNiNkwnJGg83
- SbbX0WWq2deMc1HMCcn4/AmfEI7Dx2ffsVORg9HlrX/yIzGbDhfzJ24vi7yESQI5foiFVt5P2
- PJ9c78edSvcALtoy6wf23tVc/qqctOb+hd+8rT19wrdz58NqUUACa7HprMjU8bU6EKRyBVJUv
- GQkvCI1nXvdd0X4oeZ1y0eJ/M5Y/BAcA2HXnozQlWJiUPO43U7p79uvGEJbDN9Py5GOs4QpcQ
- VPu83EzYtKgdGwoKjHdCgdGaSFf/AR5/C04btdiWu03IJRo+LB1y48j0ck0Gc/9ASzzpHyOta
- I4ennJjlSBms8cDaOpPNEla38z79GEfaZ/ojDLUvEosMPzbSosSrcFZBuE7qVz4TRgElZqSct
- EtcvpkTCs3yPnEftNlRSlN8k++nXCuwS0pIZj/+MPICxaZAfM9Y7Cp78Nu9nW22wqmOOSIH63
- 81d/qtnX8tQs2f3H5az2dMpFusAoLIAPX4r4uTxapSadg37ETfA+D65Fky0+c76RZ4gybKTQV
- dtHzvAydaxKOw7binndbD8NZMSf+Wal4u67s6tFvPg9tEekN2WBYlrRn0WB+1Sv1we8NAfvUu
- xK3EVTXPvpuan7Pm+edV6hm3XwtIvNd6Z9Gb2d0IbdbyqDGXZnyKL4mxJMISBQSx+xIrm1lgj
- KwX9dQHUGTmlatDh179TFVBMqcIQFzz75QWj7iKKi7x2RQViDA64uHuGKHqc=
+References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
+ <a48a6c50-3a03-0420-ad8c-f589fafe6035@libero.it> <CAJCQCtR6zMNKnhL7OZ8ZGCDwPfjC9a1cBOg+wt2VqoJTA_NbCQ@mail.gmail.com>
+ <CAJCQCtS2CP75JTT4a6y=rzqVtkMTqTRoCvJK9z3mMwLRfKo9Xw@mail.gmail.com> <12f98aaa-14f0-a059-379a-1d1a53375f97@inwind.it>
+In-Reply-To: <12f98aaa-14f0-a059-379a-1d1a53375f97@inwind.it>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 27 Nov 2019 17:42:08 -0700
+Message-ID: <CAJCQCtQF6xtBDWc+i3FezWZUqGsj8hJrAzYpWG+=huFkmOK==g@mail.gmail.com>
+Subject: Re: GRUB bug with Btrfs multiple devices
+To:     Goffredo Baroncelli <kreijack@inwind.it>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CciErR2xCHEusveGqdQMBgT9iFhBSywrH
-Content-Type: multipart/mixed; boundary="jf7xapDHyOnncS8rJJaGGtqOOQCYxF708"
+On Tue, Nov 26, 2019 at 11:07 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+>
+> On 27/11/2019 02.35, Chris Murphy wrote:
+> > On Tue, Nov 26, 2019 at 4:53 PM Chris Murphy <lists@colorremedies.com> wrote:
+> >>
+> >> On Tue, Nov 26, 2019 at 2:11 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
+> >>>
+> >>> I think that the errors is due to the "rescan" logic (see grub commit [1]). Could you try a more recent grub (2.04 instead of 2.02) ?
+> >>
+> >> Yes Fedora Rawhide has 2.04 in it, so I'll give that a shot next time
+> >> I rebuild this particular laptop, which should be relatively soon; or
+> >> even maybe I can reproduce this problem in a VM with two virtio
+> >> devices.
+> >
+> > I was able to just update to the Fedora 2.04-4.fc32 packages. It's not
+> > upstream's but it's a quick and dirty way to give it a shot. Turns
+> > out, the same errors happen, although the line number for efidisk.c
+> > has changed:
+> > https://photos.app.goo.gl/aKWRYhJkkJRDtC1W7
+> >
+> > For grins, I dropped to a grub prompt, and issued ls and get a different result:
+> > https://photos.app.goo.gl/MvL9QZa6zGsiktAf9
+>
+> Looking at the second picture, it seems that grub had problem to access the disk 0..3 not only when is doing a btrfs activity.
+> No problem accessing hd4 and hd5*
+>
+> Could you enable the debug, doing
+>
+>         set pager=1
+>         set debug=all
 
---jf7xapDHyOnncS8rJJaGGtqOOQCYxF708
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I need to narrow the scope. Adding 'set debug=all', there's just way
+too much to video, minutes of pages just holding down space bar full
+time which is even too fast to video. There must be over 1000 pages, a
+tiny minority contain efidisk.c references, the vast majority are
+btrfs.c references. As many pages as there are, I was never able to
+stop right on a boundary between efidisk.c and btrfs.c. So I gave up
+on that approach.
 
+Since the errors happen with efidisk.c I've enabled 'set
+debug=efidisk' and captured 74 photos, available at the link below
+(they are in pager order)
 
+https://photos.app.goo.gl/nuDH5hFMRxUVKXpX6
 
-On 2019/11/27 =E4=B8=8B=E5=8D=8811:11, Jorge Bastos wrote:
-> I believe this is a known issue but wonder if there's something I can
-> do do optimize raid5 scrub speed, or if anything is in the works to
-> improve it.
->=20
-> kernel 5.3.8
-> btrfs-progs 5.3.1
->=20
->=20
-> Single disk filesystem is performing as expected:
->=20
-> UUID:             9c0ed213-d9c5-4e93-b9db-218b43533c15
-> Scrub started:    Tue Nov 26 21:58:20 2019
-> Status:           finished
-> Duration:         2:24:32
-> Total to scrub:   1.04TiB
-> Rate:             125.17MiB/s
-> Error summary:    no errors found
->=20
->=20
->=20
-> 4 disk raid5 (raid1 metadata) on the same server using the same model
-> disks as above:
->=20
-> UUID:             b75ee8b5-ae1c-4395-aa39-bebf10993057
-> Scrub started:    Wed Nov 27 07:32:46 2019
-> Status:           running
-> Duration:         7:34:50
-> Time left:        1:52:37
-> ETA:              Wed Nov 27 17:00:18 2019
-> Total to scrub:   1.20TiB
-> Bytes scrubbed:   982.05GiB
-> Rate:             36.85MiB/s
-> Error summary:    no errors found
->=20
->=20
->=20
-> 6 SSD raid5 (raid1 metadata) also on the same server, still slow for
-> SSDs but at least scrub performance is acceptable:
->=20
-> UUID:             e072aa60-33e2-4756-8496-c58cd8ba6053
-> Scrub started:    Wed Nov 27 15:08:31 2019
-> Status:           running
-> Duration:         0:01:40
-> Time left:        1:40:11
-> ETA:              Wed Nov 27 16:50:24 2019
-> Total to scrub:   3.24TiB
-> Bytes scrubbed:   54.37GiB
-> Rate:             556.73MiB/s
-> Error summary:    no errors found
->=20
-> I still have some reservations about btrfs raid5/6, so use mostly for
-> smaller filesystems for now, but this slow scrub performance will
-> result in multi-day scrubs for a large filesystem, which isn't very
-> practical.
+It does seem that the errors only happen in efidisk.c and only when
+trying to read from what might be phantom devices; I do not know how a
+second device in a Btrfs volume triggers this though. There must be
+some interaction between efidisk.c and btrfs.c? The grubx64.efi,
+grubenv, grub.cfg, and grub modules are all on an HFS+ (no journal)
+file system acting as the EFI System partition (as is the default
+behavior in Fedora on Macs for many years now). Only vmlinuz and
+initramfs are on Btrfs. So I'm not really even sure why btrfs.c gets
+called before the GRUB menu is displayed.
 
-Btrfs uses a not-so-optimal way for multi-disks scrub:
-Queuing scrub for each disk at the same time.
-
-So it's common to cause a lot of race and even conflicting seek requests.=
+I'll see about reproducing this with a VM using edk2 UEFI and two
+virtio devices, at least get to a cleaner environment so we're not
+confusing multiple system specific weird things. And I can also leave
+this particular Mac laptop as it is for further study.
 
 
-Have you tried to only scrub one disk for such case?
-
-Thanks,
-Qu
-
->=20
-> Thanks,
-> Jorge
->=20
-
-
---jf7xapDHyOnncS8rJJaGGtqOOQCYxF708--
-
---CciErR2xCHEusveGqdQMBgT9iFhBSywrH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3fDl4XHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgUvAf/YysTIKHoOQ03s+HnTmmfN6gs
-8HAUTMQGdAEwCvjyhEqU1+5i5ZLjVdLJjHLtoxnCSHOHaNb7Oyny+klblzy8H0yu
-pTjFs8aJmRyTb+N7/McAKNjlmIhgO6El2SpntwEWB3qOPxEmvwMVg2yH90M6/x9/
-UVu6uT/omV32ETqVjk2Ci4AY9HJ1x56zzgqeJKnjj56E1O0cQIpZsB8Ht0Rx880Y
-E2YJ7UbaReZiLD3hSMGcPp8jjcmjkbAOl5WbGAAaRyXMjpQTTS9EsDuwOx9JlUCO
-v7AXg8GqoOurRU7RCgyBCSJHgUioLb0/vVNW0HNnNG8Fqsh+SY4RcZW88MtiEw==
-=4FqN
------END PGP SIGNATURE-----
-
---CciErR2xCHEusveGqdQMBgT9iFhBSywrH--
+-- 
+Chris Murphy
