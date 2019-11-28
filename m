@@ -2,111 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CEF10C3BB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 06:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D94910C496
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Nov 2019 08:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbfK1FbC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Nov 2019 00:31:02 -0500
-Received: from mail-ed1-f44.google.com ([209.85.208.44]:40908 "EHLO
-        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbfK1FbB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Nov 2019 00:31:01 -0500
-Received: by mail-ed1-f44.google.com with SMTP id p59so21686461edp.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Nov 2019 21:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=S3OzoTWOroaiWXdIgsq2kez4CqjsEW76UhmY/jecQJg=;
-        b=MJitl2OMKcv2ZroiL9YV9XU4lru77tBx4Yaqp84zvxDcbqkAcYP3TNghGyB+5uHQMu
-         Pa9WLz3oYv6e6HJWvK4g9vzjYAIMRe3DtzyK0JXEo/p0kfOGlE7hDydbnCIL7ZMjd5bh
-         GbvgkMAGmESJZ443mJDGY7RcOquSl8wEBH6oyymxeVv83DZfJzhSrH8RhOcKWLWp7qZ7
-         fEfzrNLwod4d9t311uuP64JqfejqbBbpjwDikoZZtx0fYF3vdB446wDvoCHWth+IT2GL
-         AfUMqWBSe9hp3Ih3i3MXBnr2uFb+PbiYdpj02viqLiRPqSqI2tR65Ra3Tfjr194UoJco
-         /AiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=S3OzoTWOroaiWXdIgsq2kez4CqjsEW76UhmY/jecQJg=;
-        b=NRVMqAEqWsjTjWKY/h+37E5fUfGDpuhoxFxsn6ttbselR3Dv6YpQXPkwWTV6btmOMS
-         P5tuXoYLpZyjYb4eCs06G+IczFclp6FVjFieEiTXb074r+plNJN2eQ+rZc1dEykqqTlk
-         8w3hrRb9+0RZilUmJ6Nu+rFlaWYho1osG2qlF4Jk4nCYurF5jHdBf8MmJX/qTLoQVSnY
-         WEHHz8ZkxcW0b3AiOoQsS2VPtOZ4yFVV0m4hvzm6uHH/6ZK4EnDwBdjCS9AXLZ9rcLaJ
-         1DPr3W0lU5xiZKf8Ok30vVx1kawYEmDCGKI4BFTAPyTxdZOggao2plfh8r8n7cnhdt+M
-         eU9w==
-X-Gm-Message-State: APjAAAUVfe+2K9WIg8CjFRVmqTU0mtcxRJi52WuMzi5pRkbhcbLzY/Xe
-        F8stKlrSd0jGyTdC2nxF6/2n2rluK2RxneYTdjGsH4MX
-X-Google-Smtp-Source: APXvYqxrApLT/fREd3zuErkAdd83yGcR9ZNUReXcfH70EmFRk1bvOUtqw+QMIsjOutdc6CGYkLW7yzHjjMf1fu5b0LQ=
-X-Received: by 2002:a17:906:5246:: with SMTP id y6mr53828040ejm.330.1574919059948;
- Wed, 27 Nov 2019 21:30:59 -0800 (PST)
-MIME-Version: 1.0
-From:   Meng Xu <mengxu.gatech@gmail.com>
-Date:   Thu, 28 Nov 2019 00:30:49 -0500
-Message-ID: <CAAwBoOLzHjTL97oHXCs+j_4nuAWaB9gGENd=wCa5sj8fHL-d-Q@mail.gmail.com>
-Subject: potential data race on BTRFS_I(inode)->root->last_log_commit when
- adding inode while fdatasync
+        id S1726730AbfK1Hyo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Nov 2019 02:54:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52806 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726301AbfK1Hyo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Nov 2019 02:54:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6D6AEAD14
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Nov 2019 07:54:42 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] btrfs: relocation: Output current relocation stage at btrfs_relocate_block_group()
+Date:   Thu, 28 Nov 2019 15:54:36 +0800
+Message-Id: <20191128075437.10621-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Btrfs Developers,
+There are several reports of hanging relocation, populating the dmesg
+with things like:
+  BTRFS info (device dm-5): found 1 extents
 
-While fuzzing btrfs I notice a potential data race on
-BTRFS_I(inode)->root->last_log_commit and log_transid when an inode is
-being added and fdatasync-ed at the same time. Following is the
-execution trace:
+The investigation is still on going, but will never hurt to output a
+little more info.
 
-[Setup]
-mkdir("foo", 511) = 0;
-open("foo", 65536, 511) = 3;
+This patch will also output the current relocation stage, making that
+output something like:
 
-[Thread 1]
-mkdirat(-100, "bar", 246);
+  BTRFS info (device dm-5): balance: start -d -m -s
+  BTRFS info (device dm-5): relocating block group 30408704 flags metadata|dup
+  BTRFS info (device dm-5): found 2 extents at MOVE_DATA_EXTENT stage
+  BTRFS info (device dm-5): relocating block group 22020096 flags system|dup
+  BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
+  BTRFS info (device dm-5): relocating block group 13631488 flags data
+  BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
+  BTRFS info (device dm-5): found 1 extents at UPDATE_DATA_PTRS stage
+  BTRFS info (device dm-5): balance: ended with status: 0
 
-__do_sys_mkdirat
-  do_mkdirat
-    vfs_mkdir
-      btrfs_mkdir
-        btrfs_new_inode
-          btrfs_set_inode_last_trans
-            [READ] BTRFS_I(inode)->last_sub_trans =
-BTRFS_I(inode)->root->log_transid;
+The string "MOVE_DATA_EXTENT" and "UPDATE_DATA_PTRS" is mostly from the
+macro MOVE_DATA_EXTENTS and UPDATE_DATA_PTRS, but the 'S' from
+MOVE_DATA_EXTENTS is removed in the output string to make the alignment
+better.
 
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            [READ] BTRFS_I(inode)->last_log_commit =
-BTRFS_I(inode)->root->last_log_commit;
+This patch will not increase the number of lines, but with extra info
+for us to debug the reported problem.
+(Although it's very likely the bug is sticking at UPDATE_DATA_PTRS
+stage, even without the patch)
 
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/relocation.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index d897a8e5e430..88fd9182852d 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4291,6 +4291,15 @@ static void describe_relocation(struct btrfs_fs_info *fs_info,
+ 		   block_group->start, buf);
+ }
+ 
++static const char *stage_to_string(int stage)
++{
++	if (stage == MOVE_DATA_EXTENTS)
++		return "MOVE_DATA_EXTENT";
++	if (stage == UPDATE_DATA_PTRS)
++		return "UPDATE_DATA_PTRS";
++	return "UNKNOWN";
++}
++
+ /*
+  * function to relocate all extents in a block group.
+  */
+@@ -4365,12 +4374,15 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
+ 				 rc->block_group->length);
+ 
+ 	while (1) {
++		int finishes_stage;
++
+ 		mutex_lock(&fs_info->cleaner_mutex);
+ 		ret = relocate_block_group(rc);
+ 		mutex_unlock(&fs_info->cleaner_mutex);
+ 		if (ret < 0)
+ 			err = ret;
+ 
++		finishes_stage = rc->stage;
+ 		/*
+ 		 * We may have gotten ENOSPC after we already dirtied some
+ 		 * extents.  If writeout happens while we're relocating a
+@@ -4396,8 +4408,8 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
+ 		if (rc->extents_found == 0)
+ 			break;
+ 
+-		btrfs_info(fs_info, "found %llu extents", rc->extents_found);
+-
++		btrfs_info(fs_info, "found %llu extents at %s stage",
++			   rc->extents_found, stage_to_string(finishes_stage));
+ 	}
+ 
+ 	WARN_ON(rc->block_group->pinned > 0);
+-- 
+2.24.0
 
-
-[Thread 2]
-fdatasync(3);
-
-__do_sys_fdatasync
-  do_fsync
-    vfs_fsync
-      vfs_fsync_range
-        btrfs_sync_file
-          btrfs_log_dentry_safe
-            btrfs_log_inode_parent
-              start_log_trans
-                btrfs_add_log_tree
-                  [WRITE] root->log_transid = 0;
-                  [WRITE] root->last_log_commit = 0;
-
-
-The trace seems fine based on the program order. However, if adding
-the memory model into consideration, i.e., the inter-leavings of the
-writes and reads, it is possible that the two [READ] receives
-inconsistent information about BTRFS_I(inode)->root->*. For example,
-BTRFS_I(inode)->root->log_transid is 0 while
-BTRFS_I(inode)->root->last_log_commit is a stale value (or the other
-way round). This may have a negative impact when persisting the
-mkdirat-created inode?
-
-Best Regards,
-Meng
