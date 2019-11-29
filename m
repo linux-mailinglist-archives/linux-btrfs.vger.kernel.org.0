@@ -2,77 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D08E10DAA7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 21:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE27610DACF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 22:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbfK2Uuq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Nov 2019 15:50:46 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:40618 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbfK2Uuq (ORCPT
+        id S1727142AbfK2VLi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Nov 2019 16:11:38 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:33525 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727073AbfK2VLi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Nov 2019 15:50:46 -0500
-Received: by mail-lj1-f179.google.com with SMTP id s22so14214688ljs.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 12:50:45 -0800 (PST)
+        Fri, 29 Nov 2019 16:11:38 -0500
+Received: by mail-wr1-f52.google.com with SMTP id b6so7063276wrq.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 13:11:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C2CcxtAV03AZfVwwFoJpchwMbF1w3hMp5EhRkOQPwSU=;
-        b=ZhzpVTQsyufyJ1vcEHynVkEiUwxdShATgIJJKDTPpli3HTPjEfURL6GXbbz/uPXNtN
-         6yL8Me83Hs4n6LSq77oa2quN1CpkCScwXXc1s1E0Vhgrcfs/LM5l4Um03krSBO4DHege
-         EB7lg7MX6rWblkROnJhFI8xeoFfJp2XXKSRawR90Ue75tLbZ07XZCRQ6MU2R7jStppXs
-         VCxenhu2K1wzoNHTJeBgABX1v7zDcEUmlTUiEiJkOtVfYmjsntmwNXFP6PhyOWnW7gpA
-         zc1iE5q/05IQFC7KBZiRtO7mUCZK1PityXqwmyPgicK3haBdEET55wJiR8qlhagWT/o+
-         +W5g==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BttwyHbsI+YRI/4J0H/+iFpbwe1K8g5Sj3hj4ugS5BQ=;
+        b=G8/xtO9BqtA39ixb92EuhBMOVG6zdDXMImc6tOwrn267ah3geBGFbXG8amLYUuzHJB
+         yG86xNAfUaXNOtRaAuQzpM6JmA5jUsJnxX+4zk56MvZ2pxTiUtx4EuaXe9k6jX2ykyl0
+         I2LnBGWyo2SHmMyyehXXQPgP7IG8Db/d3J04kLP+o/ptZxglo7BzeS500elVuDhAODZ/
+         Fw41V2z58x3WdGe4Re5PxiJFyf/Btyj3oGr4UgephQ6bVLwIElHQJlQskE5Ab+oq86pO
+         vJFI6ufqcK7gvH4FqKi80fM75EG9KOlmEA5JYcxfNUEyZdVfouM+bFHNTW6paeHmMj0V
+         tWSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C2CcxtAV03AZfVwwFoJpchwMbF1w3hMp5EhRkOQPwSU=;
-        b=n73peoN+JUd+Eh5mfYiP3dUUxNgN3mCLv+CM8T7ywneJipPNOzoDyKfmAnj+h9H/Gy
-         oh8wXJfVgPLF8rSByYQzzSmRcF1PEPBrvcHEesh4cFDhluNirGiLrFpugon6PMPLfm6f
-         0xhF2NQ46Tx1lyvDVf//Euf0m8KR51DYXB5KrRRQvCB+aXkEfkCE8ummZ6KMPxd5t1no
-         OJoGNcLKpFTZMpByaU75hSHcAnGpMLrzH4UhVgsZdblOYFcYEwR0cdbZaMpX1UqFFXY9
-         He3Mz2YojXav74cCtv2mKCB0oAOakCcNeND2PVm4NeHEkJiHLH+q8iXWObLpgpkta4Ru
-         VZFQ==
-X-Gm-Message-State: APjAAAVGOZdc289m4inb4xISuSiSA+eCofg8/Us4SyBX38bSF26YDzLp
-        SCwsVWA/soQoO3s+zcOwUBHGTsxk
-X-Google-Smtp-Source: APXvYqw+K8iCA+dh+gdkYTQEfb+19nBEoXCH7xutpQN4Vid06gSPIGGNoJBXjA6ywKhncMzaCM+cIw==
-X-Received: by 2002:a2e:7a1a:: with SMTP id v26mr4667570ljc.76.1575060644222;
-        Fri, 29 Nov 2019 12:50:44 -0800 (PST)
-Received: from [192.168.1.6] ([109.252.90.228])
-        by smtp.gmail.com with ESMTPSA id f3sm10859597lfl.58.2019.11.29.12.50.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Nov 2019 12:50:43 -0800 (PST)
-Subject: Re: GRUB bug with Btrfs multiple devices
-To:     Chris Murphy <lists@colorremedies.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
- <a48a6c50-3a03-0420-ad8c-f589fafe6035@libero.it>
- <CAJCQCtR6zMNKnhL7OZ8ZGCDwPfjC9a1cBOg+wt2VqoJTA_NbCQ@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <be389a15-4659-2cc8-ffe3-f2305f6f4775@gmail.com>
-Date:   Fri, 29 Nov 2019 23:50:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BttwyHbsI+YRI/4J0H/+iFpbwe1K8g5Sj3hj4ugS5BQ=;
+        b=Mpu5XaEI3QQUkWJiJ9kBeyUPMKrzeuUfeQ8xAV6MBgWkv+PERtseBO6vmJ27U7iN6B
+         aUgERy8dCUhSbBrSEZWNSgNdt2TE0w0XNfOzaoLneJs5lfHcOsuBFM2lxB6qtQZ+yIja
+         WCXQR8+NaG2laK/cfvUZlmFMWD0qmZkF7nE9cjqrQWW+gyjYX40ulVlTNHzVjN8WpssV
+         cOI0ZCHopOsJGsZ4K8J5RiTfiAIxZ9EPJND/TScsdljCobm/km1kpIelEF5BeDrJ7S2x
+         kLJdAjLr6u3TsFMCshT3HJj72fUqZ2blLYNZLuMdUDR7pYD5UFIrwvt0QqzQVSt7NI7f
+         MmmA==
+X-Gm-Message-State: APjAAAWPBfVrUKb10A0Mc5c3F5vf6H4UX4yVpC59ZGAkHikaYJvpgJKb
+        ksArKHI3ynghUGXsG2Y1Qzwvn3uckg4Ir6LSekFA4w==
+X-Google-Smtp-Source: APXvYqwU76xlgA6wCmiHVQHA/YMg7PgFCXjCh/GxhCAvXoPCT/VxBqp3ks7h1Zt81LbbPMKaUpWqUD7BHuvmJY1uXIc=
+X-Received: by 2002:adf:82f3:: with SMTP id 106mr11467915wrc.69.1575061896817;
+ Fri, 29 Nov 2019 13:11:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtR6zMNKnhL7OZ8ZGCDwPfjC9a1cBOg+wt2VqoJTA_NbCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
+ <a48a6c50-3a03-0420-ad8c-f589fafe6035@libero.it> <CAJCQCtR6zMNKnhL7OZ8ZGCDwPfjC9a1cBOg+wt2VqoJTA_NbCQ@mail.gmail.com>
+ <be389a15-4659-2cc8-ffe3-f2305f6f4775@gmail.com>
+In-Reply-To: <be389a15-4659-2cc8-ffe3-f2305f6f4775@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 29 Nov 2019 14:11:20 -0700
+Message-ID: <CAJCQCtTuu=k3FsKYmon4zP2b7c9D3zYzJwGZ3pLzFXMoJTepYA@mail.gmail.com>
+Subject: Re: GRUB bug with Btrfs multiple devices
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-27.11.2019 02:53, Chris Murphy пишет:
-> 
-> The storage is one CD-ROM drive and one SSD drive. That's it. So I
-> don't know why there's hd2 and hd3, it seems like GRUB is confused
-> about how many drives there are, but that pre-dates this problem.
-> 
+On Fri, Nov 29, 2019 at 1:50 PM Andrei Borzenkov <arvidjaar@gmail.com> wrot=
+e:
+>
+> 27.11.2019 02:53, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >
+> > The storage is one CD-ROM drive and one SSD drive. That's it. So I
+> > don't know why there's hd2 and hd3, it seems like GRUB is confused
+> > about how many drives there are, but that pre-dates this problem.
+> >
+>
+> grub enumerates what EFI provides. What "lsefi" in grub says?
 
-grub enumerates what EFI provides. What "lsefi" in grub says?
+https://photos.app.goo.gl/pBxLJNdbzz6J9Vo56
+
+--=20
+Chris Murphy
