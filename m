@@ -2,97 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA9210D83B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 17:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5910D890
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 17:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbfK2QGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Nov 2019 11:06:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53764 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726925AbfK2QGo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Nov 2019 11:06:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 33C2FAD05;
-        Fri, 29 Nov 2019 16:06:41 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3D30CDA7D9; Fri, 29 Nov 2019 17:06:35 +0100 (CET)
-Date:   Fri, 29 Nov 2019 17:06:34 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        id S1727166AbfK2QdG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Nov 2019 11:33:06 -0500
+Received: from mga05.intel.com ([192.55.52.43]:43095 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726970AbfK2QdG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 Nov 2019 11:33:06 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Nov 2019 08:33:06 -0800
+X-IronPort-AV: E=Sophos;i="5.69,257,1571727600"; 
+   d="scan'208";a="234751020"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Nov 2019 08:33:05 -0800
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
-Message-ID: <20191129160634.GM2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        David Sterba <dsterba@suse.com>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191129142045.7215-1-agruenba@redhat.com>
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH V3 0/3] Move swap functions out of address space operations
+Date:   Fri, 29 Nov 2019 08:32:57 -0800
+Message-Id: <20191129163300.14749-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191129142045.7215-1-agruenba@redhat.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 03:20:45PM +0100, Andreas Gruenbacher wrote:
-> The check in block_page_mkwrite meant to determine whether an offset is
-> within the inode size is off by one.  This bug has spread to
-> iomap_page_mkwrite and to several filesystems (ubifs, ext4, f2fs, ceph).
-> To fix that, introduce a new page_mkwrite_check_truncate helper that
-> checks for truncate and computes the bytes in the page up to EOF, and
-> use that helper in the above mentioned filesystems and in btrfs.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> 
-> ---
-> 
-> This patch has a trivial conflict with commit "iomap: Fix overflow in
-> iomap_page_mkwrite" in Darrick's iomap pull request for 5.5:
-> 
->   https://lore.kernel.org/lkml/20191125190907.GN6219@magnolia/
-> ---
->  fs/btrfs/inode.c        | 15 ++++-----------
+From: Ira Weiny <ira.weiny@intel.com>
 
-For the btrfs part
+As suggested by Jan Kara, move swap_[de]activate to file_operations to simplify
+address space operations for coming changes.
 
-Acked-by: David Sterba <dsterba@suse.com>
+For this version (V3):
+	1) updated to the latest linux-next
+	2) added documentation patch to the series
+	3) add reviews/acks
+	4) fixed up a slight conflict in btrfs pointed out by David
 
-and reviewed that the change is equivalent.
+Ira Weiny (3):
+  fs: Clean up mapping variable
+  fs: Move swap_[de]activate to file_operations
+  Documentation/fs: Move swap_[de]activate() to file_operations
+
+ Documentation/filesystems/vfs.rst |  24 +--
+ fs/btrfs/file.c                   | 341 ++++++++++++++++++++++++++++++
+ fs/btrfs/inode.c                  | 340 -----------------------------
+ fs/f2fs/data.c                    | 123 -----------
+ fs/f2fs/file.c                    | 122 +++++++++++
+ fs/iomap/swapfile.c               |   3 +-
+ fs/nfs/file.c                     |   4 +-
+ fs/xfs/xfs_aops.c                 |  13 --
+ fs/xfs/xfs_file.c                 |  12 ++
+ include/linux/fs.h                |  10 +-
+ mm/swapfile.c                     |  12 +-
+ 11 files changed, 500 insertions(+), 504 deletions(-)
+
+-- 
+2.21.0
+
