@@ -2,32 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6311410D035
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 01:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A20E10D037
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 01:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbfK2AhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Nov 2019 19:37:25 -0500
-Received: from mout.gmx.net ([212.227.15.15]:33361 "EHLO mout.gmx.net"
+        id S1726663AbfK2Ao3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Nov 2019 19:44:29 -0500
+Received: from mout.gmx.net ([212.227.15.15]:52671 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726616AbfK2AhY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Nov 2019 19:37:24 -0500
+        id S1726582AbfK2Ao3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Nov 2019 19:44:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574987764;
-        bh=M787s1OFD3VahE+W6uwLiar1RXvCmT866hnTMvZkcIw=;
+        s=badeba3b8450; t=1574988263;
+        bh=/lffysegcLXjasZ+Il5ZT7X11aVfopGEPaf/Q2nOZw0=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=XmHSjOKotvzF6iTB4qlDv+Jyegz+fcI8wSxHEnl76nHKEgmVH2b9IZwvsugI7IO2i
-         MD7vDNgw8Uo3uswNeh4S85lVFEZpJFlYtJgTcLRgF8za/qBQuLKzUeGXW8pmd4bcdl
-         /bALzmN9qbUyzNw7FdDzkVTXvp2xVeKK58maxTC0=
+        b=Py2SMxv3l75BBLEQmZhcobUxUoI6pGHIzxyvbq4FSpOJI2ctEEW50eSK7hS+8b2Sj
+         vO9AVygx4c4zpKfmvuJXbLupIzZHDi/nYfWX2kKuuXJUhVyDckb50TvhF3H25XQX0L
+         NY8sGGxGm3prpHbcJaPAE42xX8a7QprXpjHJgY2s=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mg6Zw-1i9h9x2vmg-00hiCa; Fri, 29
- Nov 2019 01:36:04 +0100
-Subject: Re: [PATCH] btrfs: relocation: Output current relocation stage at
- btrfs_relocate_block_group()
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191128075437.10621-1-wqu@suse.com>
- <20191128154002.GH2734@twin.jikos.cz>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M42jK-1iaUOU2zs8-000765; Fri, 29
+ Nov 2019 01:44:23 +0100
+Subject: Re: BTRFS subvolume RAID level
+To:     waxhead@dirtcellar.net, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <494b0df1-2aab-5169-836d-e381498f64db@dirtcellar.net>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,124 +50,104 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9b43b4be-737e-c119-eab2-ae56cae9e0b3@gmx.com>
-Date:   Fri, 29 Nov 2019 08:35:59 +0800
+Message-ID: <f355213c-cd11-a346-b945-74bffe0f5e41@gmx.com>
+Date:   Fri, 29 Nov 2019 08:44:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191128154002.GH2734@twin.jikos.cz>
+In-Reply-To: <494b0df1-2aab-5169-836d-e381498f64db@dirtcellar.net>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="r4Nm7eK32O0rJpDzRe5dYfNXtLfDahhxq"
-X-Provags-ID: V03:K1:MDadbsO8X3SjVztW+tVaA5OEhgdJTtF6IRqG8qtNYGsdlEQ+irE
- w5OOg2UnsTURNwSUKUibJl3fJT+6epMaWR5bzABOHsqoUWJHjHxyTIuHu1sQf/d81oTMqaG
- 4YkWBbBLpq86rq6YBc2MPlsOYucbEley7vpjxWoc5btza9GzWZmnXrcnPksHL0rOEuqht4J
- Hs9LnR7fXem5ubJFbX0gQ==
+ boundary="234ovL1ttQKLA5VwdJMU2mbjGv34vCAqk"
+X-Provags-ID: V03:K1:zKsIvziL4Odirq/+xBYwNaB59lL8L7Vsb0FXEE8ZB9zD1fW0wJC
+ e4Yahki6RI/4ghURuMKfsi5Ef3I+yWNXax+IWbBqWJyQmC+mRj9IJLbqnLXbkCmWMDe2UJN
+ sMAC+pSBHNGEcZGIQerdGmXWfYQ/Tu8TNGbEkf8w3dPtCMgpzOKMzngra3D/+h5XAdSqGby
+ wUU4pKcwsOHSK74G11Gfg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pGNBBXax+tc=:43VgnmxY+xpNk7JN8R68mY
- 1/JsQ+E55zyrp0xpj9CDQJeP7JdW7JC3dSeC3rsl2rE3q6pkK7HXgGiz7kF9YDsZ1P9BFNxhg
- GWIZNs7HY07/9uFosoTaW+KOKTSw5vbglhkb8yJzQK6+QwhSKQtfd8NgC9KuzZzTB+rwlbO1B
- NQ5QG5PbmEoUbU++lHTS6ob/6rioIB3qrsIImtYFXfyQnwnXPI/58Ftyne8n59+B5kpt/Jd77
- ArkYlxdRNH03C/TOou5jUsvEeLBhL6TScwjUV4Rr6HzUZjo1HyutWDbY8h0xPai4881rWfj5s
- NlT4QNkSD7ivD8QlnygciqOVKWQeCqIZcbtKlygHhlEqUNzRX9oJPTjHyqurWvXrqdsVpXrKg
- yByh6sOC7gZId4+zIbmbYybSyP4jg3omSvLuVgq2ssJAzbwK634qtiy8dIKT7WC63LTnsgtoG
- ZN8vLToH8srMfwBxTDYDa8nJcXQonObMZZ5hlE4nl0m2RCyKCw5qeeMgTt0+6C3JHgfzUjRhb
- kKaVwNXck88g+XwTe52d/H01lWj9UUjxVgAj77y4e+IFUiW1647lgUlPesx5DmQYcQAWmkOIX
- WQIq5sEPFZpor9Q/cCtTL7TkHUmYmre3WFvmlQ80pwvJ2YBllzkCWWSheiVrG69VI4PSV7s7d
- fgBgJL7AV5CyuFmKgT/fJS9Uppv98mjdhCRz3Wb/LeaBHmMFPimxsJs/me/uIQw0zzmSb3b7b
- DsNdTGtHKzmBK3GQjWwp3+JiJpgfMKmjAzptXv6vjbZJhvitYnLS9eHzsrmetuM+GSfcJOyrT
- M29tDwFLJI0kjpsHyKut4yVxo77/6nm+PDq5/2gwfit1FX6jN5fyG3th8uYnqVaFhOrKAUeRy
- FueTb0+n6tQSwb30MJqVLKnPdH2j212mX8DpcvSVH6+gSaxAP7KXBfLSQkXHDMY8aDxrhOjeI
- NIGFMAIMqOv7urCVxkB7P4WqEAFyVjFgP/6aiiMMRPJb4b9Z4crTnWXbGxkrsd/GX74SsiRFS
- 7/jnCf0ImZqJazcY6I2hZA+bRs6KiLLg01CxAhN7/YFih9U3k5fspXghE2JkELGm8WPZzsRkh
- bbNrDC8lsT/dkd4BtW+FUD81ayaVlZIwYm1baPhyWxFnDw+qmtqs4JgMBc/hcM6wK1u7KH583
- 7Pz2p9KC8+2Mf5kVBx6qGQp8n82oON2plg1IGCPXoweAK8P4Ph2BwZ7xgb2KY3qIJ37he6iEK
- yeRbJv3E6zcCRCo1VbpNmjqXx0VFxqPjFxrgwL1t3f4pwDFmVuAJ1IILpFAU=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/wsQdJ73XDM=:cFy3Je/D3VgisvwY1qJgft
+ g3hMXss9SvNPWd7RW8SBZKLARHGhRDP2dVbXJBQp4miE9+OkzbpwTqZQJhCkbjxvRDxGRUmGQ
+ o86K6ofiQ6yN+w+nIgtcYfZHJsYPFL6UkFfswqAozjRp9W81LnaFH93eHVujzpk3/7JXVgiMn
+ +PyvaV3I4lgytSCk5LWhZkGRgzspBLQjxhskoacGqZDUJZbWCnQD6B82Md0fKJdVO1JrKJhCe
+ PGfsfI5SNR0PkctkjQt+XdcaNmBi3zLhKt9cocplwRJH1NUZTtJiLYFk3BAHzyn2NVvBsVkwA
+ 9QvKW8AVqnsxcQOEWtTBbqVjtq70Dx38RSko3srW4FZGaer/Cv4sikYCf6mPswJGKtc7swKC2
+ F+mGFpZA5yFS1aKlQobHPyC/sJ9oQAsehlpmcoDL8y5Y1Ly0xWqUhA4v6YhHt0VF7yChOsMp5
+ fazP8IO7f63GYws8n5u28Lwzfau73RIG4b6qgfiwOWXLGtrPDr5ZiIJ7VT3dtEhN1eM7VZvXC
+ GbWsLVtKugrmp5hTbsg1IALi/RpabPavVoSLLhdANoImxlLvFBHksEyz7RwNjYBi5og2rdLNO
+ 4VZwrrNJKBvSLza1fhgpLaBxIPWCzebhFr+pJTTymM6w23HgBRBGb3rXjXpD5ADMRaafYGDHd
+ 1wZ/qKXL6HLZoJl6B8RldFQO+JyT+Dcm+QMVaVJuj2ZCxdvho1LsvW+YQOqZ63ANPGPgr6qjd
+ ToOiQuwhJGxfAQ6DAQVRZY6/bkbYqxTKqN4l9dzOMN+9+0GzWzjMpWXul05+8LCUrsjGaKqaB
+ G5wlINZLvCDwGRf0KQuKupOsNjYOekIsggpdzApKXN6+bUhgK0r9SKx0aISVS7Lh3lBcLvB2J
+ LRPFGvuuodKD7G2Cnm6fiyaC0+UJ8Zsiy3IN4b/Fl0K92pGh3THzPnxtKo4eCUW2u0kr6oMHd
+ 90xfbQWxn30FtSrMG7AiGDm7Q133anNW3hDL/yHAlpGkWjVrPqeyPlHFnVjaPZvmPCXw0BBdT
+ dEMHklZLQp9rce1TJTF/tunbOqoVfUVlMxcbyidMy49TNeG18i6Jaj2zh2/i8bQHvaeshNEiL
+ mLxCbylPN/XHjRM6cuFMiSd4rHgM4E9IPSnm/Gf+c7mSnGw+nDh14C+Ar1xVm49abxvxzJT5d
+ j/Uowk+QY3wfjD0xjfhprhEB72M/hIIvVB8Mps+uQn+ZihTmIoPuEC0ftCYkdl49MQiWYniHK
+ 1RzLMg3NAXYOhpwe1NJGX2U7EzUQMnrOxYR79lzXw+IbpexTqwclj8X2HhTo=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---r4Nm7eK32O0rJpDzRe5dYfNXtLfDahhxq
-Content-Type: multipart/mixed; boundary="UuS4CfTOGayrnI2zrJ3YuBU5B3rm8bain"
+--234ovL1ttQKLA5VwdJMU2mbjGv34vCAqk
+Content-Type: multipart/mixed; boundary="UhYLy1JObTqQwOKkkltN0tUxOBuITmv2L"
 
---UuS4CfTOGayrnI2zrJ3YuBU5B3rm8bain
+--UhYLy1JObTqQwOKkkltN0tUxOBuITmv2L
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/11/28 =E4=B8=8B=E5=8D=8811:40, David Sterba wrote:
-> On Thu, Nov 28, 2019 at 03:54:36PM +0800, Qu Wenruo wrote:
->> There are several reports of hanging relocation, populating the dmesg
->> with things like:
->>   BTRFS info (device dm-5): found 1 extents
->>
->> The investigation is still on going, but will never hurt to output a
->> little more info.
->>
->> This patch will also output the current relocation stage, making that
->> output something like:
->>
->>   BTRFS info (device dm-5): balance: start -d -m -s
->>   BTRFS info (device dm-5): relocating block group 30408704 flags meta=
-data|dup
->>   BTRFS info (device dm-5): found 2 extents at MOVE_DATA_EXTENT stage
->>   BTRFS info (device dm-5): relocating block group 22020096 flags syst=
-em|dup
->>   BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
->>   BTRFS info (device dm-5): relocating block group 13631488 flags data=
-
->>   BTRFS info (device dm-5): found 1 extents at MOVE_DATA_EXTENT stage
->>   BTRFS info (device dm-5): found 1 extents at UPDATE_DATA_PTRS stage
->>   BTRFS info (device dm-5): balance: ended with status: 0
->>
->> The string "MOVE_DATA_EXTENT" and "UPDATE_DATA_PTRS" is mostly from th=
-e
->> macro MOVE_DATA_EXTENTS and UPDATE_DATA_PTRS, but the 'S' from
->> MOVE_DATA_EXTENTS is removed in the output string to make the alignmen=
-t
->> better.
->>
->> This patch will not increase the number of lines, but with extra info
->> for us to debug the reported problem.
+On 2019/11/29 =E4=B8=8A=E5=8D=886:48, waxhead wrote:
+> Just out of curiosity....
 >=20
-> Nice. I'd suggest to make it more user friendly
->=20
-> 	relocation: found 111 extents, stage: move data blocks
-> 	relocation: found 111 extents, stage: update data pointers
+> What are the (potential) show stoppers for implementing subvolume RAID
+> levels in BTRFS? This is more and more interesting now that new RAID
+> levels has been merged (RAID1c3/4) and RAID5/6 is slowly inching toward=
+s
+> usable status.
 
-This is much better, keeps the indent while provide better readability.
+My quick guesses are:
+- Subvolume and RAID aware extent allocator
+  Current extent allocator cares nothing about who is requesting the
+  extent.
+  It cares a little about the RAID profile (only for convert).
+  We need some work here at least.
 
-I'll go this way in the next version.
+- Way to prevent false ENOSPC due to profile restriction
+  If subvolume is using some exotic profile, while extent/csum tree is
+  using regular profile, and subvolume eats too many space, making
+  it impossible to fit extent in their desired profile.
+  We will got ENOSPC and even goes RO.
 
 Thanks,
 Qu
+
 >=20
-> The identifier can be understood what it means but it's IMHO not
-> important to copy it to the message verbatim.
->=20
+> I imagine that RAIDc4 for example could potentially give a grotesque
+> speed increase for parallel read operations once BTRFS learns to
+> distribute reads to the device with the least waitqueue / fastest devic=
+es.
 
 
---UuS4CfTOGayrnI2zrJ3YuBU5B3rm8bain--
+--UhYLy1JObTqQwOKkkltN0tUxOBuITmv2L--
 
---r4Nm7eK32O0rJpDzRe5dYfNXtLfDahhxq
+--234ovL1ttQKLA5VwdJMU2mbjGv34vCAqk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3gZ+8ACgkQwj2R86El
-/qjuwgf/TB00Vz5uAbxXbWVHKPuM+ulOp5oyhMcujoeLy0E5LLG6leXsCSvA6l68
-lfDVx0EI+eVEeGZp+KSV3YjR81XizMMbPhwtXKfp9dNj/eRoHp07o+c5uwbaPUHT
-1sp+usiAeCuilj2CefjC7ly7HMRT5svsa4ZP42mjWlftVfSOORYH6JaSOJPByKsG
-7YwNrFzT9A6Yq+zLLCa8MUTGJZvkFs82L7bXK/zbtr9D9bB+os+nxztt+0sfp0Hl
-gSA7F2zbUVg27f+/8vgl9K55mrBNIQfT7j/F3k4L3PRFJkzdLzi/h28Uwd5I9vrw
-TqEWtKtE0+bglpk4A2UfiejRw1WqpQ==
-=D3ut
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3gaeIACgkQwj2R86El
+/qhHvggAon+T2jw/21EmVbPFePZk7vJZBNkmWhMKRAdU+qNHn7sgewCmNPzD8AYa
+vr/5+9O7ddUWLdvhjE+86n+xfYWWNvFXq/XuhBvDKoG7Ov+BvyALMIGmt48WbM/6
+YvM+F8Imo3GKBUIstiOpxZZWNF5MW/A9x/FRIJgeJaCmpTRZVdDUz3RmDWrqjG6A
+LXWGnO6F97eT0v4YLeK6y79tlaTB5kcWTE81KDNGld+f77AYUd/7bvls95q7S2I0
+MKbzAkbP3YnWxdJAV0Ic0En4ofjXV1q6lQdEmLD1/WyMwsNsf6/vNfuvKqKBGyvI
+vHPSXcjgbftLjvoz8oVzDGMB/mCG2w==
+=Mv7I
 -----END PGP SIGNATURE-----
 
---r4Nm7eK32O0rJpDzRe5dYfNXtLfDahhxq--
+--234ovL1ttQKLA5VwdJMU2mbjGv34vCAqk--
