@@ -2,157 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BEE10D7DC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 16:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA9210D83B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 17:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbfK2PZn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Nov 2019 10:25:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbfK2PZn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Nov 2019 10:25:43 -0500
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8140F215A5
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 15:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575041141;
-        bh=WJ2m92aU/nbbGDK4jIMMxXDIywB7rhYC8GeXnjV/p78=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tp14oRLuA89/73Hti//G9Obp1mr+0cAC22wAsBfZJru/gTV/GrqMIHGWAQr6n7lGd
-         c6Vc8/hQlHcVd50JjUS/iwZrMpOJ1rXC+WJu6gHlbLvw06iZJ32GYEspd7/Wk146Vx
-         UKECIP8XERL2iuhMojG0f7TbdWRv80qJw9vIG0uk=
-Received: by mail-vs1-f51.google.com with SMTP id x123so8113255vsc.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 07:25:41 -0800 (PST)
-X-Gm-Message-State: APjAAAW3+14sqpS/xL8D4VQbIwZc5HQBttMbGPf2LLkBVvtTVqtRP00u
-        KpgCnTmFd+SVpS5TXs1AOsmzx6HIBJl57mRfGN8=
-X-Google-Smtp-Source: APXvYqxpp9XYNtyT7Hns/PW/jKNAvD9IZkLnIeWewvQ0eIDqsKz+y5BoDs5OKu/xiHB7ratt8iIH+2KTaCMiSQfRNQQ=
-X-Received: by 2002:a67:b641:: with SMTP id e1mr5500860vsm.14.1575041140398;
- Fri, 29 Nov 2019 07:25:40 -0800 (PST)
+        id S1727084AbfK2QGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Nov 2019 11:06:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53764 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726925AbfK2QGo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 Nov 2019 11:06:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 33C2FAD05;
+        Fri, 29 Nov 2019 16:06:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3D30CDA7D9; Fri, 29 Nov 2019 17:06:35 +0100 (CET)
+Date:   Fri, 29 Nov 2019 17:06:34 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
+Message-ID: <20191129160634.GM2734@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191129142045.7215-1-agruenba@redhat.com>
 MIME-Version: 1.0
-References: <20191030122301.25270-1-fdmanana@kernel.org> <20191123052741.GJ22121@hungrycats.org>
- <CAL3q7H52LYCnDdFoObCCWjrCQqLOpcPUYeD28pXtET25-ycM9w@mail.gmail.com>
- <20191124013328.GD1046@hungrycats.org> <CAL3q7H61mTQ6kFU9ER-F=-9xEXE8uSdpa-FjJpoS61x7kMaEjw@mail.gmail.com>
- <20191126230251.GK22121@hungrycats.org> <CAL3q7H5RCgs53nBG9HKLMHqUXLM=xiUKTQi8dS8nvuvW9x5bDA@mail.gmail.com>
- <20191127180954.GE1046@hungrycats.org> <20191127182046.GF1046@hungrycats.org>
-In-Reply-To: <20191127182046.GF1046@hungrycats.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 29 Nov 2019 15:25:29 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H754YtTA9vhfKmEzVAJxpZqi-ZBwiU95pLRakbrhqD5Jg@mail.gmail.com>
-Message-ID: <CAL3q7H754YtTA9vhfKmEzVAJxpZqi-ZBwiU95pLRakbrhqD5Jg@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: send, skip backreference walking for extents with
- many references
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191129142045.7215-1-agruenba@redhat.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 27, 2019 at 6:20 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Wed, Nov 27, 2019 at 01:09:55PM -0500, Zygo Blaxell wrote:
-> > On Wed, Nov 27, 2019 at 11:42:21AM +0000, Filipe Manana wrote:
-> > > Walking the backreferences was always slow, and having a few hundred
-> > > references for an extent is enough to notice a significant slowdown
-> > > already.
-> > > That affects the logical_ino ioctls, send, etc.
-> > >
-> > > Worst, for logical_ino, is that we do the backreference walking while
-> > > either holding a transaction (if one is currently running) or
-> > > holding a semaphore (commit_root_sem) to prevent transaction commits
-> > > from happening (to ensure consistency and that things don't disappear
-> > > while we're using them).
-> > > So for a slow backreference walking, that can hang a lot of other
-> > > tasks that are trying to commit a transaction.
-> > >
-> > > There was someone working on improving backreference walking (Mark),
-> > > but I think he's not working on btrfs anymore, and I don't know what
-> > > happened to that work (if it was ever finished, etc).
-> >
-> > Writing a userspace backref walker to replace LOGICAL_INO has been on
-> > my TODO list for a while, but I had to go after the kernel crashing
-> > bugs first.  Now the top of the kernel crashing bug list is LOGICAL_INO
-> > too, so I guess there is no escape.
-> >
-> > I'd love to help with the kernel implementation of backref walking,
-> > but it's used by everything in btrfs, and it's full of wonderful things
-> > like log unwinding and negative reference counting that I know I don't
-> > understand well enough to mess with.
-> >
-> > > > Simultaneous LOGICAL_INO + balance correlates with these three failure
-> > > > modes:
-> > > >
-> > > >         https://www.spinics.net/lists/linux-btrfs/msg89425.html
-> > > >
-> > > >         https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg88892.html
-> > >
-> > > For the bug involving btrfs_search_old_slot(), try the following fix:
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=efad8a853ad2057f96664328a0d327a05ce39c76
-> > >
-> > > Both reports where made before that fix was posted/merged.
-> >
-> > 5.3.13 already contains that commit (backported as
-> > f59d80e2f12b695d38e646f00de1e46e123dfcc9 in 5.3.4), and:
-> >
-> >       [58446.332688][ T4514] ------------[ cut here ]------------
-> >       [58446.336367][ T4514] kernel BUG at fs/btrfs/ctree.c:1222!
->
-> I note this is not exactly the same bug as the one I reported before:
-> it's BUG_ON(tm->slot < n) in case MOD_LOG_KEY_REMOVE_WHILE_FREEING,
-> while the previously reported one (and the one that is much more common
-> and apparently much harder to hit on 5.3.x) is BUG_ON(tm->slot >= n)
-> in case MOD_LOG_KEY_REPLACE.
+On Fri, Nov 29, 2019 at 03:20:45PM +0100, Andreas Gruenbacher wrote:
+> The check in block_page_mkwrite meant to determine whether an offset is
+> within the inode size is off by one.  This bug has spread to
+> iomap_page_mkwrite and to several filesystems (ubifs, ext4, f2fs, ceph).
+> To fix that, introduce a new page_mkwrite_check_truncate helper that
+> checks for truncate and computes the bytes in the page up to EOF, and
+> use that helper in the above mentioned filesystems and in btrfs.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> 
+> ---
+> 
+> This patch has a trivial conflict with commit "iomap: Fix overflow in
+> iomap_page_mkwrite" in Darrick's iomap pull request for 5.5:
+> 
+>   https://lore.kernel.org/lkml/20191125190907.GN6219@magnolia/
+> ---
+>  fs/btrfs/inode.c        | 15 ++++-----------
 
-Interesting. Eventually I'll have to look at it.
+For the btrfs part
 
-Thanks.
+Acked-by: David Sterba <dsterba@suse.com>
 
->
-> >       [58446.339993][ T4514] invalid opcode: 0000 [#1] SMP PTI
-> >       [58446.343408][ T4514] CPU: 3 PID: 4514 Comm: crawl_35277 Not tainted 5.3.13-zb64-c0eaf2b82f8c+ #1
-> >       [58446.348872][ T4514] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> >       [58446.354272][ T4514] RIP: 0010:__tree_mod_log_rewind+0x235/0x240
-> >       [58446.356393][ T4514] Code: 45 31 c0 4c 89 e7 48 89 d6 48 c1 e6 05 48 8d 74 32 65 ba 19 00 00 00 e8 59 d1 04 00 e9 89 fe ff ff 49 63 57 2c e9 18 ff ff ff <0f> 0b 0f 0b 0f 1f 80 00 00 00 00 0f 1f 44 00 00 55 83 c2 01 48 63
-> >       [58446.361072][ T4514] RSP: 0000:ffffa34340e1b830 EFLAGS: 00010293
-> >       [58446.364072][ T4514] RAX: 000003ff696b4000 RBX: 000000000000000f RCX: ffff981b2bf7db00
-> >       [58446.366818][ T4514] RDX: 0000000000000000 RSI: 000000000000007e RDI: ffff981b2bf7d300
-> >       [58446.368673][ T4514] RBP: ffffa34340e1b860 R08: ffffa34340e1b7d8 R09: ffffa34340e1b7e0
-> >       [58446.371392][ T4514] R10: 000000000008b74a R11: 0000000000000000 R12: ffff981c62b2e4a0
-> >       [58446.375829][ T4514] R13: ffff981b2bf7d300 R14: 0000000000000006 R15: ffff981b2bf7db00
-> >       [58446.378642][ T4514] FS:  00007fccbd589700(0000) GS:ffff981cf6800000(0000) knlGS:0000000000000000
-> >       [58446.380289][ T4514] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >       [58446.381567][ T4514] CR2: 00007fcc447d5000 CR3: 0000000205248003 CR4: 00000000001606e0
-> >       [58446.383172][ T4514] Call Trace:
-> >       [58446.383835][ T4514]  btrfs_search_old_slot+0x14a/0x7e0
-> >       [58446.384850][ T4514]  resolve_indirect_refs+0x1f0/0x9a0
-> >       [58446.385864][ T4514]  find_parent_nodes+0x427/0x1330
-> >       [58446.386849][ T4514]  btrfs_find_all_roots_safe+0xc1/0x130
-> >       [58446.387924][ T4514]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-> >       [58446.389055][ T4514]  iterate_extent_inodes+0x134/0x390
-> >       [58446.390078][ T4514]  ? _raw_spin_unlock+0x27/0x40
-> >       [58446.391008][ T4514]  iterate_inodes_from_logical+0x9c/0xd0
-> >       [58446.392090][ T4514]  ? iterate_inodes_from_logical+0x9c/0xd0
-> >       [58446.393245][ T4514]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-> >       [58446.394409][ T4514]  btrfs_ioctl_logical_to_ino+0x10e/0x1b0
-> >       [58446.395554][ T4514]  btrfs_ioctl+0x1417/0x2c30
-> >       [58446.396459][ T4514]  ? kvm_sched_clock_read+0x18/0x30
-> >       [58446.397462][ T4514]  ? __lock_acquire+0x4b2/0x1c00
-> >       [58446.398414][ T4514]  ? retint_kernel+0x10/0x10
-> >       [58446.399329][ T4514]  ? kvm_sched_clock_read+0x18/0x30
-> >       [58446.400357][ T4514]  ? sched_clock+0x9/0x10
-> >       [58446.401219][ T4514]  do_vfs_ioctl+0xa9/0x6f0
-> >       [58446.402099][ T4514]  ? do_vfs_ioctl+0xa9/0x6f0
-> >       [58446.403025][ T4514]  ? __fget+0x11e/0x200
-> >       [58446.403863][ T4514]  ksys_ioctl+0x67/0x90
-> >       [58446.404704][ T4514]  __x64_sys_ioctl+0x1a/0x20
-> >       [58446.405619][ T4514]  do_syscall_64+0x65/0x1b0
-> >       [58446.406529][ T4514]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >
-> > I was finally able to hit this bug on a 5.3.x kernel last night.
->
->
+and reviewed that the change is equivalent.
