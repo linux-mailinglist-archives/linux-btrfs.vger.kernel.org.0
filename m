@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E1E10D7BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 16:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B39610D7BD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Nov 2019 16:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbfK2PON (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Nov 2019 10:14:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S1727084AbfK2PPQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Nov 2019 10:15:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726808AbfK2PON (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Nov 2019 10:14:13 -0500
+        id S1726608AbfK2PPQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 Nov 2019 10:15:16 -0500
 Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37BC2216F4
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 15:14:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22C88216F4;
+        Fri, 29 Nov 2019 15:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575040452;
-        bh=BSeT0Zfz8UG1BNQzR+6kypNIoeZcvoHQP27poZ45Ijk=;
-        h=From:To:Subject:Date:From;
-        b=2Qe1z+Qc18TE92tUJdPjp0wzS0C2y5kn5xRu5rpOVAkXLEsiRHAHXG/E2Y46J47qh
-         I8LPf+wsHGAJVhpL9ChpcRGu4Hu5OE58GmmHPLyYMwgGrHeaCuoH1QCUS1lBRrahs+
-         zX115aBT7GXO//YmKmhH7xw+C9v4rsTwn9A/s1w4=
+        s=default; t=1575040514;
+        bh=DzmFP1g/C4Zu48AgFSs5fvDJ1vZjROCqu/ogxFaXGAg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0wBxqjP8nNTG/9ISEV9/ietE31FkFgMQUZrX2U0zWoB6lVbx+r1waQT3MwINmFgFU
+         +yEGqZJUnXdaeEjmFoPpmYC45yyfE/bAxwwEXglPN6AvwuBEPF7oLOLtyk5D5MDho5
+         qf0lopVpnv+4tj8ZJan1YIwTbVLiPw8bJFhlbdxA=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] Btrfs: make tree checker detect checksum items with overlapping ranges
-Date:   Fri, 29 Nov 2019 15:14:10 +0000
-Message-Id: <20191129151410.32219-1-fdmanana@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test journal/log replay when a file with cloned extents was fsync'ed
+Date:   Fri, 29 Nov 2019 15:15:09 +0000
+Message-Id: <20191129151509.1871-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,68 +37,136 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Having checksum items, either on the checksums tree or in a log tree, that
-represent ranges that overlap each other is a sign of a corruption. Such
-case confuses the checksum lookup code and can result in not being able to
-find checksums or find stale checksums.
+Test that if we clone part of an extent from a file to itself at a
+different offset, fsync it, rewrite (COW) part of the extent from the
+former offset, fsync it again, power fail and then mount the filesystem,
+we are able to read the whole file and it has the correct data.
 
-So add a check for such case.
+This is motivated by a bug found in btrfs which is fixed by a kernel patch
+that has the following subject:
 
-This is motivated by a recent fix for a case where a log tree had checksum
-items covering ranges that overlap each other due to extent cloning, and
-resulted in missing checksums after replaying the log tree. It also helps
-detect past issues such as stale and outdated checksums due to overlapping,
-commit 27b9a8122ff71a ("Btrfs: fix csum tree corruption, duplicate and
-outdated checksums").
+  "Btrfs: fix missing data checksums after replaying a log tree"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-checker.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ tests/generic/586     | 77 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/586.out | 13 +++++++++
+ tests/generic/group   |  1 +
+ 3 files changed, 91 insertions(+)
+ create mode 100755 tests/generic/586
+ create mode 100644 tests/generic/586.out
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 092b8ece36d7..97f3520b8d98 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -332,7 +332,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
- }
- 
- static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
--			   int slot)
-+			   int slot, struct btrfs_key *prev_key)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
- 	u32 sectorsize = fs_info->sectorsize;
-@@ -356,6 +356,20 @@ static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
- 			btrfs_item_size_nr(leaf, slot), csumsize);
- 		return -EUCLEAN;
- 	}
-+	if (slot > 0 && prev_key->type == BTRFS_EXTENT_CSUM_KEY) {
-+		u64 prev_csum_end;
-+		u32 prev_item_size;
+diff --git a/tests/generic/586 b/tests/generic/586
+new file mode 100755
+index 00000000..b889a0d0
+--- /dev/null
++++ b/tests/generic/586
+@@ -0,0 +1,77 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 586
++#
++# Test that if we clone part of an extent from a file to itself at different
++# offset, fsync it, rewrite (COW) part of the extent from the former offset,
++# fsync it again, power fail and then mount the filesystem, we are able to
++# read the whole file and it has the correct data.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
 +
-+		prev_item_size = btrfs_item_size_nr(leaf, slot - 1);
-+		prev_csum_end = (prev_item_size / csumsize) * sectorsize;
-+		prev_csum_end += prev_key->offset;
-+		if (prev_csum_end > key->offset) {
-+			generic_err(leaf, slot - 1,
-+"csum end range (%llu) goes beyond the start range (%llu) of the next csum item",
-+				    prev_csum_end, key->offset);
-+			return -EUCLEAN;
-+		}
-+	}
- 	return 0;
- }
- 
-@@ -1355,7 +1369,7 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 		ret = check_extent_data_item(leaf, key, slot, prev_key);
- 		break;
- 	case BTRFS_EXTENT_CSUM_KEY:
--		ret = check_csum_item(leaf, key, slot);
-+		ret = check_csum_item(leaf, key, slot, prev_key);
- 		break;
- 	case BTRFS_DIR_ITEM_KEY:
- 	case BTRFS_DIR_INDEX_KEY:
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/reflink
++. ./common/dmflakey
++
++# real QA test starts here
++_supported_fs generic
++_supported_os Linux
++_require_scratch_reflink
++_require_dm_target flakey
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our test file with two 256Kb extents, one at file offset 0 and the
++# other at file offset 256Kb.
++$XFS_IO_PROG -f -c "pwrite -S 0xa3 0 256K" \
++	     -c "fsync" \
++	     -c "pwrite -S 0xc7 256K 256K" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++# Now clone the second 64Kb of data from the second extent into file offset 0.
++# After this we get that extent partially shared. Also fsync the file.
++$XFS_IO_PROG -c "reflink $SCRATCH_MNT/foobar 320K 0K 64K" \
++	     -c "fsync" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++# Now COW the first 64Kb of data for that second extent. After this we no longer
++# have the extent fully referenced - its second 64Kb of data are referenced at
++# file offset 0 and its last 192Kb of data are referenced at file offset 320Kb.
++# Fsync the file to make sure everything is durably persisted.
++$XFS_IO_PROG -c "pwrite -S 0xe5 256K 64K" \
++	     -c "fsync" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++echo "File digest before power failure:"
++_md5_checksum $SCRATCH_MNT/foobar
++
++# Simulate a power failure and then check no data loss or corruption happened.
++_flakey_drop_and_remount
++
++echo "File digest after mount:"
++_md5_checksum $SCRATCH_MNT/foobar
++
++_unmount_flakey
++status=0
++exit
+diff --git a/tests/generic/586.out b/tests/generic/586.out
+new file mode 100644
+index 00000000..7bb4cdce
+--- /dev/null
++++ b/tests/generic/586.out
+@@ -0,0 +1,13 @@
++QA output created by 586
++wrote 262144/262144 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 262144/262144 bytes at offset 262144
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++linked 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 65536/65536 bytes at offset 262144
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File digest before power failure:
++b92c7b6e89d6f466cffba1f6e6193e5d
++File digest after mount:
++b92c7b6e89d6f466cffba1f6e6193e5d
+diff --git a/tests/generic/group b/tests/generic/group
+index e5d0c1da..d264cfcf 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -588,3 +588,4 @@
+ 583 auto quick encrypt
+ 584 auto quick encrypt
+ 585 auto rename
++586 auto quick log clone
 -- 
 2.11.0
 
