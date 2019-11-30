@@ -2,53 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7924F10DCF7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2019 08:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D12C10DD18
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2019 09:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbfK3HdR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Nov 2019 02:33:17 -0500
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:35812 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbfK3HdR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Nov 2019 02:33:17 -0500
-Received: by mail-lj1-f170.google.com with SMTP id j6so25196955lja.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Nov 2019 23:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RlI5WkamD9tWaOuozmJ09gHbWsW/E8n/iI2v5quq0fQ=;
-        b=kJaXKI9hebGk7GFBDNwPNm6Q1AfC1ZMZent7uJI8o20sAv+hVrZFBYi/wT5PpRvONn
-         i0b6Gy8lcJOEjqplLKc5x/+14uApx5U2FZQ57J7uXxEJliO3DFY8MH0r+SbpxDq99213
-         Zrg532seMGnYr5Qv4RBIM7vQbfm0g8svVX/PpC6jGlDJOSQlfaF4lcSyfLWQqAuiHJVJ
-         var/SvO38dE6tHb6EVDVtMfAqEfsRi1VrcOb2uWW/k5WbdAFpaIbp9eFzgQOEwj0EY3M
-         Q3JrkR6oxw9nZSFryNQFd3Cde28vW3HoJmHNjoLln82025wDbTOUpLAmWTfKXRvpQFWJ
-         Pzvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RlI5WkamD9tWaOuozmJ09gHbWsW/E8n/iI2v5quq0fQ=;
-        b=A6uTU6RjOIB1Sz5nkAqFeK0Dyu3A+h+38ZiHzS69cfR0O+rTWp7e4mnoeIpWq8AIbt
-         WooPGZVNXY0juQ1sTm7qp7Ui2ZJbt/9Msyw72f3B/d+QMYFuVTq1+AIyjuzKDzhV2uTg
-         MeqqGa1yYiBd/9Lc1ZnPMS9vwnAI97BWnBANDbR/wawr3DklZGovrIZPllnceiJIm8dw
-         PIjk9xIbV6YDSuP3kPySFh1xxHrmq38iSK5IpIfshOOOpio0d8GIi1uK+c0hwKaCblOe
-         0b5wjCFkZLAixaQPK6hmiXaJs3anMNo+mmvplDrtVsZtpeLdEpCOQ2lE2tPnlltRaVaY
-         /Paw==
-X-Gm-Message-State: APjAAAV3gNnZCevjoHCUf0+wTjw+687++oADGSBSsNF7ab5Zml+3/OKN
-        44cz0+mL+biYLKSjrZfW4WY3ra3U
-X-Google-Smtp-Source: APXvYqyLsvfgSbw+T5wDUOS7PgCCWQnGhRyJU4MKu9rUDql+H1rUKawiEWpeZwdB5EIn9+HcRm7DjQ==
-X-Received: by 2002:a2e:8145:: with SMTP id t5mr3544997ljg.144.1575099194782;
-        Fri, 29 Nov 2019 23:33:14 -0800 (PST)
-Received: from [192.168.1.6] ([109.252.90.228])
-        by smtp.gmail.com with ESMTPSA id s7sm11316742ljo.98.2019.11.29.23.33.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Nov 2019 23:33:14 -0800 (PST)
+        id S1725887AbfK3IMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Nov 2019 03:12:35 -0500
+Received: from smtp-31.italiaonline.it ([213.209.10.31]:32981 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725835AbfK3IMf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 30 Nov 2019 03:12:35 -0500
+Received: from venice.bhome ([84.220.25.30])
+        by smtp-31.iol.local with ESMTPA
+        id axrkiFK00iFL3axrki6nFl; Sat, 30 Nov 2019 09:12:32 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1575101552; bh=pYVofLvDzJcEyQck0BiG5klhKIn4aas6FvgBUOcro7E=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=SwpbdM2hmcpZ9bNlfgF8jSO0czgh9OxMCJlR5y3LcagsLynZrTbqh5b8wJz4+sW5w
+         Fj+fWZWKFs2PC+f0qV5ZhA1Hk0bfJdhWkXYm+J9dujheyOv2+kZvb4lEymiTzPyTRF
+         MchCSKVdGaIRmWgXG0eWIAbG+vpo/UXpeeu5ZZP6vNCbfpgaWTmyd62kL6m6iDSyBI
+         EggYlioOUlD5bhTfOiFrOgi7/1crE4mhbbgyKxnl7FgW98yBR1xzCwAvFKNdZPNr8S
+         zGXj+rX/2+1mmboLSZYv/UTd5eEU3846WmmW8oAnNvTtEnaqQitZnP1IR/hLJZeWmY
+         G4ooCN6U7X3aw==
+X-CNFS-Analysis: v=2.3 cv=J77UEzvS c=1 sm=1 tr=0
+ a=zfQl08sXljvZd6EmK9/AFg==:117 a=zfQl08sXljvZd6EmK9/AFg==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=EWzy1JFkAAAA:20
+ a=FgGwSqtrznFWIYmEnAUA:9 a=QEXdDO2ut3YA:10 a=SwgnqPuqv7PglqJc3hzP:22
+ a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+Reply-To: kreijack@inwind.it
 Subject: Re: GRUB bug with Btrfs multiple devices
-To:     Chris Murphy <lists@colorremedies.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
+To:     Chris Murphy <lists@colorremedies.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
  <a48a6c50-3a03-0420-ad8c-f589fafe6035@libero.it>
@@ -62,24 +45,49 @@ References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
  <CAJCQCtQaq7r2G7Ff--n5g2eVknPtKcQjebj-=eoNjM-18hwhKw@mail.gmail.com>
  <0ce1c050-d90c-1351-ff56-4edc054463a4@inwind.it>
  <CAJCQCtQSgTG=r0+i=M7nKgz5ncqcfEkZmQci5Kk12PmDVzgmbg@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <dbb038ee-46be-16c4-3753-6b366d2aa15d@gmail.com>
-Date:   Sat, 30 Nov 2019 10:33:13 +0300
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <7aed9b06-b6e9-abef-0241-f542ffffdfc7@inwind.it>
+Date:   Sat, 30 Nov 2019 09:12:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+ Thunderbird/68.2.2
 MIME-Version: 1.0
 In-Reply-To: <CAJCQCtQSgTG=r0+i=M7nKgz5ncqcfEkZmQci5Kk12PmDVzgmbg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfNo2w8ujxegpYBoGyZsc6dwuPj3/wcfmMPF+SzHfEh8BkqzuE+k3oRKa+ZccyL9SFuaLUvSBKeMZGRRcYCX/u87jUd5hb4Uuj5CmD6XqyIhTr1agVDrL
+ o1P7Zl7tVEhV6JgBW4fNH+nyWL8+SVm2lyeNKDnJi01KdCQCSSIE8CtkSOHcQtO3xNMKBv1P9z7aM24u4LDwBPi2Ux6qGnMw6s8=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-30.11.2019 00:17, Chris Murphy пишет:
+On 29/11/2019 22.17, Chris Murphy wrote:
+> On Fri, Nov 29, 2019 at 12:54 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+>> Could you be so kindly to share the picture of the loading of the kernel/initramdisk ? Something like:
+>>
+>> grub> set debug=all
+>> grub> initrd /boot/initrd....
+>>
+>> I hope that the errors come quickly. I don't think that we need the pictuers of all the download. It would be sufficient the pictures until the first (or better second) error....
+> 
+> I paged through it for minutes, hundreds of pages and never found any
+> errors. But these are the first pages. This might actually be some
+> kind of search, not load of the kernel, because I pressed tab to
+> autocomplete. But it didn't autocomplete it immediately started
+> spitting out debug pages.
+> 
+> https://photos.app.goo.gl/kpa7dJ9spAy29yj26
 > 
 > Is it possible to redirect grub debug output to a FAT file?
+
+It is possible to redirect to a serial console ..
+Did the machine has a serial port ?
+> 
+> 
 > 
 
-No.
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
