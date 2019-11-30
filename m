@@ -2,136 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFEA10DE48
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2019 17:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E32510DE4B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Nov 2019 17:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbfK3Qbc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Nov 2019 11:31:32 -0500
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:34161 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbfK3Qbb (ORCPT
+        id S1726964AbfK3QjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Nov 2019 11:39:11 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34772 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbfK3QjL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Nov 2019 11:31:31 -0500
-Received: by mail-wm1-f51.google.com with SMTP id f4so2451121wmj.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2019 08:31:30 -0800 (PST)
+        Sat, 30 Nov 2019 11:39:11 -0500
+Received: by mail-wr1-f68.google.com with SMTP id t2so38627359wrr.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Nov 2019 08:39:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TKqPmy2aPnYHWztjtEikxbF0iihDCjbvVSjdatW4m2E=;
-        b=wc0SshbuqYreyCD40RNwJu0psO0hmVpPzJuqd3RQibMcm72hfg1eE4vBVZAHeTdWGA
-         rYW4SyeO6WOl1qdz7c5tindtjNDU+al5HidH/0/+cu9rJWg6PRY7X9ZdYirNZo5tm4Zz
-         zie0qQWdz6cIyPRaRyoCyqGq3wcpZX41LtTZxn6UKUg/pCmSXNjp1EqRBQJ0uwWPCpQi
-         /1PbtxKsMpWH/bPROl6zx8ROBEuOtydsPidi2UnhJqGq4mLDI1HcFkq7B0aP/bkJTgas
-         sl48aZa2gc/J3VUVALeVRhFRx5oOgyztH9KBVLPuwMU+sIYuMnbinzapuwNrzoyOcWKq
-         XXkA==
+         :cc;
+        bh=LzWK4Jc6TbhIljX6H92OafYfTdQOR2exz7sE2t2K5Dk=;
+        b=IU0h7Bz3/sR/HBASdp5PrUSBo+l7PugRPA0H3RPIZ92920Q/JdkYqJ13iZkG5nCwyx
+         VUYf5wNaqXV0xk3vusPY2breQPVTeuN7DFCGyq7/7xLRIrBxbA75mGtAX4VQW8E/pyTQ
+         0GScpKhYZ/Fdhn8eZluBAN1mYibKXM8g0I0wlr4Wfd43+a7uFu8fB51+SmGC88h9VkCI
+         hOCfCBUERMVggCFl28Hd00mp8B9zGlZ5mx2wgS4JQrY+UZxX8gbu3wEDbrln+J5Rf8cd
+         z91HS0mGT+BgKsgH6MR/NfhHU3D0hx1QgCqmGonm3IJ9Eq+Fn1v6LoNqjt2SwLX7GBuU
+         5dDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TKqPmy2aPnYHWztjtEikxbF0iihDCjbvVSjdatW4m2E=;
-        b=YO0GpwfFTIWQ3TAYiVfREms25r1xE3VMwIzjk2aNSRNCbekKZXRszHk+mDOqf6Flre
-         CYC0B8i2YCgzZDexB8u0tMnTYlmdILOhqjOHh/PEpOFQ4uyQcy2pgAI4BVa/ZXqP0Auq
-         70vSzWX5HiPLN/ubs4q0XR5pQaCENHKfsY3VPfL7LiPkSL1dDuj36mDd4xyTSeLYLvV3
-         Ug3JY4mRX2QtWu9QgSoJMyF60qw5Ue7Oj1jlZthQ5OSLoXlZ716Cc6ZuRO2mFzT8jYnZ
-         dEgiGM+rbcRREZFEqcvuvE5q+uK8j3umlpX7edzir24gydd92fBEk3Ez/eIu95IWratB
-         5JnA==
-X-Gm-Message-State: APjAAAULjc7s9c9TzQAo32PX8gP62mCGCm7uLytLbRNW2iacSo0Fjute
-        ZpyVcyYgNiwgMWHrSfbDdqpag0ROzSgWEr6+r+mdpg==
-X-Google-Smtp-Source: APXvYqwgRTP2KxdpqRLQjNXWdtDuvmHsDf+0/6jOmiloKGsPZ2It7SBL9Cfb4MPf9Fjml/gbV/DcDYlGI1V1h0eSqPM=
-X-Received: by 2002:a7b:cb4a:: with SMTP id v10mr19485064wmj.106.1575131489653;
- Sat, 30 Nov 2019 08:31:29 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=LzWK4Jc6TbhIljX6H92OafYfTdQOR2exz7sE2t2K5Dk=;
+        b=i5x+KjCtR1Vod7PpY3p6MUOYGdpv7+D2+72Q1g7e5QusJD7C7tpy3TDS/avDDFPhXy
+         YN+fX6abapn2VhDK60mKV+ZX1iINJuFtj0DztWFaBJB9Y1BgdMhvw2tj4/755lWBDtlP
+         O8Hh2RQU2Bl4WqoPdEpb67qOKeWQHGAcQkWKjo51/2p/I7IbcvfhCuDBYzeddAYY6maA
+         VxkrnZPMGW6+HPzIUhJmgWxQ2Gr+JsaN5g8byLDsejFFUiKuLwW+Faj2bjT2Po66Lb8+
+         q0Hz5G4BTPEY4YS1KylP2n+oNYwL+jUEhnPIxUooUoA4VcpJ+k5qSkj1efBCX7TQQp0o
+         4nBw==
+X-Gm-Message-State: APjAAAVzbVLoEwwdUpOZjxlFOOYdH5D5TDJs2VoTul2K7J3a/Deqp2xq
+        dklIA8B+MI+rDuOO314qJYucbXV+pxaGOJiQbjJqOMWEoTs=
+X-Google-Smtp-Source: APXvYqx0OS/5ke2DT5bDmIad5R4/dhcnUAyhxjuDjufJJfDMb9232rzX/hB0xBYzV8wSYBXzV6iaFQHPi6XjQ7UaBnI=
+X-Received: by 2002:adf:82f3:: with SMTP id 106mr15672037wrc.69.1575131948757;
+ Sat, 30 Nov 2019 08:39:08 -0800 (PST)
 MIME-Version: 1.0
 References: <CAJCQCtSeZu8fRzjABXh3wxvBDEajGutAU4LWu0RcJv-6pd+RGQ@mail.gmail.com>
  <a48a6c50-3a03-0420-ad8c-f589fafe6035@libero.it> <CAJCQCtR6zMNKnhL7OZ8ZGCDwPfjC9a1cBOg+wt2VqoJTA_NbCQ@mail.gmail.com>
- <be389a15-4659-2cc8-ffe3-f2305f6f4775@gmail.com> <CAJCQCtTuu=k3FsKYmon4zP2b7c9D3zYzJwGZ3pLzFXMoJTepYA@mail.gmail.com>
- <6bc5b69e-188e-a7b2-e695-bd1bcb6a9ba3@gmail.com>
-In-Reply-To: <6bc5b69e-188e-a7b2-e695-bd1bcb6a9ba3@gmail.com>
+ <CAJCQCtS2CP75JTT4a6y=rzqVtkMTqTRoCvJK9z3mMwLRfKo9Xw@mail.gmail.com>
+ <12f98aaa-14f0-a059-379a-1d1a53375f97@inwind.it> <CAJCQCtQF6xtBDWc+i3FezWZUqGsj8hJrAzYpWG+=huFkmOK==g@mail.gmail.com>
+ <69aaf772-9eb0-945a-5277-40895e6901de@inwind.it> <CAJCQCtS6V+f5hq2Cu4r7g9nXB-nRPwUaL+=rh_Ets2mWtHrMcA@mail.gmail.com>
+ <35b330e9-6ed7-8a34-7e96-601c19ec635c@inwind.it> <CAJCQCtQaq7r2G7Ff--n5g2eVknPtKcQjebj-=eoNjM-18hwhKw@mail.gmail.com>
+ <0ce1c050-d90c-1351-ff56-4edc054463a4@inwind.it> <CAJCQCtQSgTG=r0+i=M7nKgz5ncqcfEkZmQci5Kk12PmDVzgmbg@mail.gmail.com>
+ <7aed9b06-b6e9-abef-0241-f542ffffdfc7@inwind.it>
+In-Reply-To: <7aed9b06-b6e9-abef-0241-f542ffffdfc7@inwind.it>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 30 Nov 2019 09:31:13 -0700
-Message-ID: <CAJCQCtQxR4Xnikz7vVxOX-gzU6aWzu5eHeG95HOKsx40ziTGLg@mail.gmail.com>
+Date:   Sat, 30 Nov 2019 09:38:52 -0700
+Message-ID: <CAJCQCtQSpHLzb8qDDh8eMidoyC5OwyD1aDn=GT0PxYcAoJFmXw@mail.gmail.com>
 Subject: Re: GRUB bug with Btrfs multiple devices
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
+To:     Goffredo Baroncelli <kreijack@inwind.it>
 Cc:     Chris Murphy <lists@colorremedies.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Nov 30, 2019 at 12:31 AM Andrei Borzenkov <arvidjaar@gmail.com> wro=
-te:
+On Sat, Nov 30, 2019 at 1:12 AM Goffredo Baroncelli <kreijack@inwind.it> wrote:
 >
-> 30.11.2019 00:11, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Fri, Nov 29, 2019 at 1:50 PM Andrei Borzenkov <arvidjaar@gmail.com> =
-wrote:
+> On 29/11/2019 22.17, Chris Murphy wrote:
+> > On Fri, Nov 29, 2019 at 12:54 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+> >> Could you be so kindly to share the picture of the loading of the kernel/initramdisk ? Something like:
 > >>
-> >> 27.11.2019 02:53, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>
-> >>> The storage is one CD-ROM drive and one SSD drive. That's it. So I
-> >>> don't know why there's hd2 and hd3, it seems like GRUB is confused
-> >>> about how many drives there are, but that pre-dates this problem.
-> >>>
+> >> grub> set debug=all
+> >> grub> initrd /boot/initrd....
 > >>
-> >> grub enumerates what EFI provides. What "lsefi" in grub says?
+> >> I hope that the errors come quickly. I don't think that we need the pictuers of all the download. It would be sufficient the pictures until the first (or better second) error....
 > >
-> > https://photos.app.goo.gl/pBxLJNdbzz6J9Vo56
+> > I paged through it for minutes, hundreds of pages and never found any
+> > errors. But these are the first pages. This might actually be some
+> > kind of search, not load of the kernel, because I pressed tab to
+> > autocomplete. But it didn't autocomplete it immediately started
+> > spitting out debug pages.
 > >
+> > https://photos.app.goo.gl/kpa7dJ9spAy29yj26
+> >
+> > Is it possible to redirect grub debug output to a FAT file?
 >
-> These are vendor media device paths handles that are children of (some)
-> disk partitions. GRUB already tries to skip such handles:
->
->
->        /* Ghosts proudly presented by Apple.  */
->        if (GRUB_EFI_DEVICE_PATH_TYPE (dp) =3D=3D GRUB_EFI_MEDIA_DEVICE_PA=
-TH_TYPE
->            && GRUB_EFI_DEVICE_PATH_SUBTYPE (dp)
->            =3D=3D GRUB_EFI_VENDOR_MEDIA_DEVICE_PATH_SUBTYPE)
->          {
->            grub_efi_vendor_device_path_t *vendor =3D
-> (grub_efi_vendor_device_path_t *) dp;
->            const struct grub_efi_guid apple =3D GRUB_EFI_VENDOR_APPLE_GUI=
-D;
->
->            if (vendor->header.length =3D=3D sizeof (*vendor)
->                && grub_memcmp (&vendor->vendor_guid, &apple,
->                                sizeof (vendor->vendor_guid)) =3D=3D 0
->                && find_parent_device (devices, d))
->              continue;
->          }
->
-> but these have different GUID. Google search comes with something
-> hinting on Apple still (like
-> https://www.macos86.it/topic/1136-asus-x202e-hm76-vs-n56vb-hm76/page/2/?t=
-ab=3Dcomments#comment-31186).
->   Device paths look like
->
-> PciRoot(0x0)\Pci(0x1F,0x2)\Sata(0x0,0xFFFF,0x0)\HD(4,GPT,A640EF60-F7E9-49=
-45-81A9-B04CCE53EE97,0x176F4800,0x482FC88)\VenMedia(BE74FCF7-0B7C-49F3-9147=
--01F4042E6842,4F20CFA89785973FAAF730597BFC41BA)
->
-> where vendor GUID is BE74FCF7-0B7C-49F3-9147-01F4042E6842
->
-> So we have hard disk, then partition as child and then this vendor media
-> as child of partition.
->
-> This should certainly be reported to grub list. What system is it - is
-> it Apple?
+> It is possible to redirect to a serial console ..
+> Did the machine has a serial port ?
 
-Yes. Macbook Pro 8,2 (2011). I'll report the phantom device problem to
-grub-devel@
+USB and wired ethernet.
 
-But still an open question is what's the instigator or secondary
-factor because this wasn't happening before adding an unused but
-already existing partition as a 2nd Btrfs device. Last time this
-happened, all I did was remove the 2nd device and the problem went
-away. I'm ready to try that again (remove the 2nd device) and see if
-the problem goes away, but has enough information been collected about
-the present state?
+So far I'm unable to reproduce in a VM with 2 partitions used for 2
+device Btrfs. It might be a multi-layer bug where the 1st bug must
+happen before the 2nd one has a chance of being revealed. The 1st bug
+being the issue of phantom devices, which *are* present when the Btrfs
+is a single device volume, but none of the errors show up in the
+GRUB/pre-boot environment until the 2nd device was added (and new
+kernel installed).
+
+It's too bad GRUB doesn't have a debug option to write a file to a FAT
+file system. The btrfs debug output is extremely long.
 
 
---=20
+-- 
 Chris Murphy
