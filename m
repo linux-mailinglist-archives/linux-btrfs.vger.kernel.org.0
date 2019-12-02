@@ -2,242 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7720510E51F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 05:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD09C10E63E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 08:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbfLBEos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Dec 2019 23:44:48 -0500
-Received: from mout.gmx.net ([212.227.17.20]:51671 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727368AbfLBEos (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 1 Dec 2019 23:44:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575261719;
-        bh=CHZQ7vqzlTPLjsjA0gjgb3u8uPhwtKoDK44ayqOw/fM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=EdDD3gI/P72IBG3kXbmE791c+cK0Y5bAyg9/1SCMw0wAbckR+/s6TIue5boD9yqRv
-         GYMQusnT8c9lvKB9rHJlqr1hO8RLWe8MyNI2EO2ztGVS9NyKJ1r4HdSOD64DZIQBHv
-         lU1UkmdPuxLCXGkrLWU6FhfQY9WQzlQlGu53bNGQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9nxt-1ifBtj2flV-005rnX; Mon, 02
- Dec 2019 05:41:59 +0100
-Subject: Re: [PATCH 0/3] btrfs: More intelligent degraded chunk allocator
-To:     Zygo Blaxell <zblaxell@furryterror.org>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191107062710.67964-1-wqu@suse.com>
- <20191118201834.GN3001@twin.jikos.cz>
- <f6dfede7-c65c-2321-ab8f-ba16a6a3c71f@gmx.com>
- <20191202032259.GN22121@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <78acb42f-071f-8d78-c335-71c2af5da841@gmx.com>
-Date:   Mon, 2 Dec 2019 12:41:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726079AbfLBHCo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Dec 2019 02:02:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60446 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726002AbfLBHCo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Dec 2019 02:02:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 37301B2DD
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Dec 2019 07:02:40 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: relocation: Allow 'btrfs balance cancel' to return quicker
+Date:   Mon,  2 Dec 2019 15:02:35 +0800
+Message-Id: <20191202070235.33099-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20191202032259.GN22121@hungrycats.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="KFQU0JV7cghg7OzjfcaayGGJ40yV4gHTS"
-X-Provags-ID: V03:K1:/Ui+/Cw1JdHTD1ejXyH1wAf8FCUpbLaa1qM/SWcWDJHdNOsMr9e
- avD1Xl3OE7GCecZoZspDdYLp/w1mYgFGp0O6ojMV7g3JYlGrWAFiJqt1zcomLJVArBUTwLn
- J0pltfeX2jcPysrPV0EYSEd5XjoDXKEcVVhtlmZrL6eDyKOU0bqP8zZE/JSJTetxOOj/JCK
- ft/JXB/8BaUArGNFKp/qA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:c3htcRt01Kk=:cldyOwN8H4oEZCqqwENYeT
- C+6vEHGalddqcofYonVkEwr1X44pcSo94mf+KtfKpBcnjyu2sk1XXRaoJ8psX8vCwAdUGkLo4
- 8VuXOg7HkWgBruH3ZoUrhoa8xzWESG/9OVa3dfFrSV2XMHU7w58kfqXeyW3d/2/5j9YT6Mkhk
- 7+lN6lMAuAIAjQrTsS/tTv4e6owhBPJoCgyYzJYUZjZdIkoFpVl759HRuRGA0z21RaqBvmjiK
- ZLfQI3lUaa4ToeKFrB/i1ou2Rno9opMPnBG+n+CHelL4uUpcIqyev3ZRch92hktPap8YU4M2q
- 8L6nkTDcFQ9ai+NswBaV2Wah9vjL+P+K60OQP9uQd9feh+VgQeq+bPTHnZpITUysFA4TdS++z
- Gp8hX4jZuTbgoOGjKLLjmJNkHgWMWYowKvq4UKgUDL4Vk9f72p0uhIQa9LxIVnJughyonJF3j
- FuzD6IWsUtFv4mdcEqeYWb/ZtuJzhxy8rkn1iMpP2IocB0aD37KgEEsXspLMKOT7v7Tr9qNSr
- z498YlMX2lJWaLa7DL1MrhLgFvJ/2kHy5sp4CBtGEPV5kZqeQJytsNBQZr8aVuHDzJ2rTiPAG
- riLF+xQH8L6pkz75s7HP4z0fH7T0r43/U1/pPst5Tho2DU3M1B8iGHU/rp2eDr6uk7OhBJak7
- wxwfkmJu/g6ZWvtyz9O1YHvEoZ6mD9RfqCdHEE8sN7lRrnNzXPIwl25fpv5NAsaLfc1UwYgzh
- +kHe+wbmo9PMokccsXsmXIABauC+1FV4yXEt5YM7QFndeYk1YsKqVmvWJ8YoRHLwDRlfXL5mw
- xjuAQ2JYq3eI2nv7PF6PB69cg9JWYdOpYmxauww+BbW+WC5GD1JXo24ODT2t768zyncBjyc2J
- j8dluA561hjAp7EFg409g78mlVKrb0NvZXF+D5qim6mHiBR7uCUcJDrGlwSpw0ywIu9IVrIFK
- CVFkP7qME/ynti5yqJzbdWoItOWhUPGE0zMdipoIpxHdzmd/zaNfN3vHqZ96hdtWMz8XJA0BZ
- uqfJaHQB1xR8LrwSR6wCs65FVNrVzQ08w+M7UIX/BZlmwLEX4cpH2K7JQKXr5mMNT6ddiWwZ8
- LtDkFZi7Bouo+x27rGpKgcBjfuG67vGGXJZwULb69v9nZ80pomyEZxxULPXLTj8sUCJvEcuys
- SraZTUqX7yWbHfug2Bmc8VOXEeoGT21l98QFeYq8tlU0fRll3ZTP9D4T5dTkLHtdI8FLi6kB4
- aiCkG04IKCJi3nSrtrlrR7KGbp0v+4147WAfdUWKJxn3paXpNh5t+yY6NVvU=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KFQU0JV7cghg7OzjfcaayGGJ40yV4gHTS
-Content-Type: multipart/mixed; boundary="Dk92GGEfciifZSzxKWVJb2EnSymUxceGS"
+[PROBLEM]
+There are quite some users reporting that 'btrfs balance cancel' slow to
+cancel current running balance, or even doesn't work for certain dead
+balance loop.
 
---Dk92GGEfciifZSzxKWVJb2EnSymUxceGS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+With the following script showing how long it takes to fully stop a
+balance:
+  #!/bin/bash
+  dev=/dev/test/test
+  mnt=/mnt/btrfs
 
+  umount $mnt &> /dev/null
+  umount $dev &> /dev/null
 
+  mkfs.btrfs -f $dev
+  mount $dev -o nospace_cache $mnt
 
-On 2019/12/2 =E4=B8=8A=E5=8D=8811:22, Zygo Blaxell wrote:
-> On Tue, Nov 19, 2019 at 07:32:26AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2019/11/19 =E4=B8=8A=E5=8D=884:18, David Sterba wrote:
->>> On Thu, Nov 07, 2019 at 02:27:07PM +0800, Qu Wenruo wrote:
->>>> This patchset will make btrfs degraded mount more intelligent and
->>>> provide more consistent profile keeping function.
->>>>
->>>> One of the most problematic aspect of degraded mount is, btrfs may
->>>> create unwanted profiles.
->>>>
->>>>  # mkfs.btrfs -f /dev/test/scratch[12] -m raid1 -d raid1
->>>>  # wipefs -fa /dev/test/scratch2
->>>>  # mount -o degraded /dev/test/scratch1 /mnt/btrfs
->>>>  # fallocate -l 1G /mnt/btrfs/foobar
->>>>  # btrfs ins dump-tree -t chunk /dev/test/scratch1
->>>>         item 7 key (FIRST_CHUNK_TREE CHUNK_ITEM 1674575872) itemoff =
-15511 itemsize 80
->>>>                 length 536870912 owner 2 stripe_len 65536 type DATA
->>>>  New data chunk will fallback to SINGLE or DUP.
->>>>
->>>>
->>>> The cause is pretty simple, when mounted degraded, missing devices c=
-an't
->>>> be used for chunk allocation.
->>>> Thus btrfs has to fall back to SINGLE profile.
->>>>
->>>> This patchset will make btrfs to consider missing devices as last re=
-sort if
->>>> current rw devices can't fulfil the profile request.
->>>>
->>>> This should provide a good balance between considering all missing
->>>> device as RW and completely ruling out missing devices (current main=
-line
->>>> behavior).
->>>
->>> Thanks. This is going to change the behaviour with a missing device, =
-so
->>> the question is if we should make this configurable first and then
->>> switch the default.
->>
->> Configurable then switch makes sense for most cases, but for this
->> degraded chunk case, IIRC the new behavior is superior in all cases.
->>
->> For 2 devices RAID1 with one missing device (the main concern), old
->> behavior will create SINGLE/DUP chunk, which has no tolerance for extr=
-a
->> missing devices.
->>
->> The new behavior will create degraded RAID1, which still lacks toleran=
-ce
->> for extra missing devices.
->>
->> The difference is, for degraded chunk, if we have the device back, and=
+  dd if=/dev/zero bs=1M of=$mnt/large &
+  dd_pid=$!
 
->> do proper scrub, then we're completely back to proper RAID1.
->> No need to do extra balance/convert, only scrub is needed.
->=20
-> I think you meant to say "replace" instead of "scrub" above.
+  sleep 3
+  kill -KILL $dd_pid
+  sync
 
-"scrub" for missing-then-back case.
+  btrfs balance start --bg --full $mnt &
+  sleep 1
 
-As at the time of write, I didn't even take the replace case into
-consideration...
+  echo "cancel request" >> /dev/kmsg
+  time btrfs balance cancel $mnt
+  umount $mnt
 
->=20
->> So the new behavior is kinda of a super set of old behavior, using the=
+It takes around 7~10s to cancel the running balance in my test
+environment.
 
->> new behavior by default should not cause extra concern.
->=20
-> It sounds OK to me, provided that the missing device is going away
-> permanently, and a new device replaces it.
->=20
-> If the missing device comes back, we end up relying on scrub and 32-bit=
+[CAUSE]
+Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cancel
+request are queued.
 
-> CRCs to figure out which disk has correct data, and it will be wrong
-> 1/2^32 of the time.  For nodatasum files there are no CRCs so the data
-> will be wrong much more often.  This patch doesn't change that, but
-> maybe another patch should.
+And btrfs checks this value only in the following call sites:
+btrfs_balance()
+|- atomic_read(&fs_info->balance_cancel_req); <<< 1
+|- __btrfs_balance()
+   |- while (1) {
+   |  /* Per chunk iteration */
+   |-    atomic_read(&fs_info->balance_cancel_req); <<< 2
 
-Yep, the patchset won't change it.
+The first check is near useless, as it happens at the very beginning of
+balance, thus it's too rare to hit.
 
-But this also remind me, so far we are all talking about "degraded"
-mount option.
-Under most case, user is only using "degraded" when they completely
-understands that device is missing, not using that option as a daily opti=
-on.
+The sencond check is the most common hit, but it's too slow, only hit
+after each chunk get relocated.
 
-So that shouldn't be a big problem so far.
+For certain bug reports, like "Found 1 extents" loop where we are
+dead-looping inside btrfs_relocate_block_group(), it's useless.
 
-Thanks,
-Qu
+[FIX]
+This patch will introduce more cancel check at the following call sites:
+btrfs_balance()
+|- __btrfs_balance()
+   |- btrfs_relocate_block_group()
+      |- while (1) { /* Per relocation-stage loop, 2~3 runs */
+      |-    should_cancel_balance()	<<< 1
+      |-    balance_block_group()
+      |- }
 
->=20
->>> How does this work with scrub? Eg. if there are 2 devices in RAID1, o=
-ne
->>> goes missing and then scrub is started. It makes no sense to try to
->>> repair the missing blocks, but given the logic in the patches all the=
+/* Call site 1 workaround dead balance loop */
+Call site 1 will allow user to workaround the mentioned dead balance
+loop by properly canceling it.
 
->>> data will be rewritten, right?
->>
->> Scrub is unchanged at all.
->>
->> Missing device will not go through scrub at all, as scrub is per-devic=
-e
->> based, missing device will be ruled out at very beginning of scrub.
->>
->> Thanks,
->> Qu
->>>
->>
->=20
->=20
->=20
+balance_block_group()
+|- while (1) { /* Per-extent iteration */
+|-    relocate_data_extent()
+|     |- relocate_file_extent_cluster()
+|        |- should_cancel_balance()	<<< 2
+|-    should_cancel_balance()		<<< 3
+|- }
+|- relocate_file_extent_cluster()
 
+/* Call site 2 for data heavy relocation */
+As we spend a lot of time doing page reading for data relocation, such
+check can make exit much quicker for data relocation.
+This check has a bytes based filter (every 32M) to prevent wasting too
+much CPU time checking it.
 
---Dk92GGEfciifZSzxKWVJb2EnSymUxceGS--
+/* Call site 3 for meta heavy relocation */
+The check has a nr_extent based filter (every 256 extents) to prevent
+wasting too much CPU time.
 
---KFQU0JV7cghg7OzjfcaayGGJ40yV4gHTS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+/* Error injection to do full coverage test */
+This patch packs the regular atomic_read() into a separate function,
+should_cancel_balance() to allow error injection.
+So we can do a full coverage test.
 
------BEGIN PGP SIGNATURE-----
+With this patch, the response time has reduced from 7~10s to 0.5~1.5s for
+data relocation.
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3klhEACgkQwj2R86El
-/qhDWQf/Q63Od/j31vXs9eLONQImeaydn5uqkblcmAnrYg4SF7pEQRuKOIq7ErtN
-kY7wAfv9iOCtubvS4y4Wantaw+RvMYyvFtxvx0UvJmZvast2suZ2ejQWZjwhyMGu
-2rjvDML+5B6MoGNJ8jD9ALU9EXQ3yLqgzuEs+ZFMvK5v2EbrpwBvx80dmVaMz4Aa
-PrRDXShj0YqAnTWEW/LL5Y6sUAgRg884+llTd/GcNxk9/utoY1DEDzBtWZFqTCGp
-dniyJsyKgxi5/AWzmGL9G2Ace0+gFeI1MR1ntD6fDOZrSc7gUqdUckWkCvKQ/fRR
-RBemKrNV6cyAtkxMG0DNpqoyx5qr5w==
-=OFn8
------END PGP SIGNATURE-----
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/ctree.h      |  1 +
+ fs/btrfs/relocation.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c    |  6 +++---
+ 3 files changed, 45 insertions(+), 3 deletions(-)
 
---KFQU0JV7cghg7OzjfcaayGGJ40yV4gHTS--
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index b2e8fd8a8e59..a712c18d2da2 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3352,6 +3352,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
+ 			      u64 *bytes_to_reserve);
+ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_pending_snapshot *pending);
++int should_cancel_balance(struct btrfs_fs_info *fs_info);
+ 
+ /* scrub.c */
+ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index d897a8e5e430..c42616750e4b 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -9,6 +9,7 @@
+ #include <linux/blkdev.h>
+ #include <linux/rbtree.h>
+ #include <linux/slab.h>
++#include <linux/error-injection.h>
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "transaction.h"
+@@ -3223,6 +3224,16 @@ int setup_extent_mapping(struct inode *inode, u64 start, u64 end,
+ 	return ret;
+ }
+ 
++int should_cancel_balance(struct btrfs_fs_info *fs_info)
++{
++	return atomic_read(&fs_info->balance_cancel_req);
++}
++/* Allow us to do error injection test to cover all cancel exit branches */
++ALLOW_ERROR_INJECTION(should_cancel_balance, TRUE);
++
++/* Thresholds of when to check if the balance is canceled */
++#define RELOC_CHECK_INTERVAL_NR_EXTENTS		(256)
++#define RELOC_CHECK_INTERVAL_BYTES		(SZ_32M)
+ static int relocate_file_extent_cluster(struct inode *inode,
+ 					struct file_extent_cluster *cluster)
+ {
+@@ -3230,6 +3241,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 	u64 page_start;
+ 	u64 page_end;
+ 	u64 offset = BTRFS_I(inode)->index_cnt;
++	u64 checked_bytes = 0;
+ 	unsigned long index;
+ 	unsigned long last_index;
+ 	struct page *page;
+@@ -3344,6 +3356,14 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+ 		balance_dirty_pages_ratelimited(inode->i_mapping);
+ 		btrfs_throttle(fs_info);
++
++		checked_bytes += PAGE_SIZE;
++		if (checked_bytes >= RELOC_CHECK_INTERVAL_BYTES &&
++		    should_cancel_balance(fs_info)) {
++			ret = -ECANCELED;
++			goto out;
++		}
++		checked_bytes %= RELOC_CHECK_INTERVAL_BYTES;
+ 	}
+ 	WARN_ON(nr != cluster->nr);
+ out:
+@@ -4016,7 +4036,10 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
+ 	struct btrfs_path *path;
+ 	struct btrfs_extent_item *ei;
+ 	u64 flags;
++	u64 checked_bytes = 0;
++	u64 checked_nr_extents = 0;
+ 	u32 item_size;
++	u32 extent_size;
+ 	int ret;
+ 	int err = 0;
+ 	int progress = 0;
+@@ -4080,11 +4103,14 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
+ 		}
+ 
+ 		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++			extent_size = fs_info->nodesize;
+ 			ret = add_tree_block(rc, &key, path, &blocks);
+ 		} else if (rc->stage == UPDATE_DATA_PTRS &&
+ 			   (flags & BTRFS_EXTENT_FLAG_DATA)) {
++			extent_size = key.offset;
+ 			ret = add_data_references(rc, &key, path, &blocks);
+ 		} else {
++			extent_size = key.offset;
+ 			btrfs_release_path(path);
+ 			ret = 0;
+ 		}
+@@ -4125,6 +4151,17 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
+ 				break;
+ 			}
+ 		}
++		checked_bytes += extent_size;
++		checked_nr_extents++;
++
++		if ((checked_bytes >= RELOC_CHECK_INTERVAL_BYTES ||
++		     checked_nr_extents >= RELOC_CHECK_INTERVAL_NR_EXTENTS) &&
++		    should_cancel_balance(fs_info)) {
++			err = -ECANCELED;
++			break;
++		}
++		checked_bytes %= RELOC_CHECK_INTERVAL_BYTES;
++		checked_nr_extents %= RELOC_CHECK_INTERVAL_NR_EXTENTS;
+ 	}
+ 	if (trans && progress && err == -ENOSPC) {
+ 		ret = btrfs_force_chunk_alloc(trans, rc->block_group->flags);
+@@ -4365,6 +4402,10 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
+ 				 rc->block_group->length);
+ 
+ 	while (1) {
++		if (should_cancel_balance(fs_info)) {
++			err= -ECANCELED;
++			goto out;
++		}
+ 		mutex_lock(&fs_info->cleaner_mutex);
+ 		ret = relocate_block_group(rc);
+ 		mutex_unlock(&fs_info->cleaner_mutex);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d8e5560db285..afa3ed1b066d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3505,7 +3505,7 @@ static int __btrfs_balance(struct btrfs_fs_info *fs_info)
+ 
+ 	while (1) {
+ 		if ((!counting && atomic_read(&fs_info->balance_pause_req)) ||
+-		    atomic_read(&fs_info->balance_cancel_req)) {
++		    should_cancel_balance(fs_info)) {
+ 			ret = -ECANCELED;
+ 			goto error;
+ 		}
+@@ -3670,7 +3670,7 @@ static int alloc_profile_is_valid(u64 flags, int extended)
+ static inline int balance_need_close(struct btrfs_fs_info *fs_info)
+ {
+ 	/* cancel requested || normal exit path */
+-	return atomic_read(&fs_info->balance_cancel_req) ||
++	return should_cancel_balance(fs_info) ||
+ 		(atomic_read(&fs_info->balance_pause_req) == 0 &&
+ 		 atomic_read(&fs_info->balance_cancel_req) == 0);
+ }
+@@ -3856,7 +3856,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 
+ 	if (btrfs_fs_closing(fs_info) ||
+ 	    atomic_read(&fs_info->balance_pause_req) ||
+-	    atomic_read(&fs_info->balance_cancel_req)) {
++	    should_cancel_balance(fs_info)) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+-- 
+2.24.0
+
