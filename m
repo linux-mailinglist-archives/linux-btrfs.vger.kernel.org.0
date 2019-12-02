@@ -2,138 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED2C10E4D9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 04:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8727210E4DF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 04:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbfLBDXB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Dec 2019 22:23:01 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:33076 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727312AbfLBDXA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 22:23:00 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id DF771505C14; Sun,  1 Dec 2019 22:22:59 -0500 (EST)
-Date:   Sun, 1 Dec 2019 22:22:59 -0500
-From:   Zygo Blaxell <zblaxell@furryterror.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: More intelligent degraded chunk allocator
-Message-ID: <20191202032259.GN22121@hungrycats.org>
-References: <20191107062710.67964-1-wqu@suse.com>
- <20191118201834.GN3001@twin.jikos.cz>
- <f6dfede7-c65c-2321-ab8f-ba16a6a3c71f@gmx.com>
+        id S1727301AbfLBDaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Dec 2019 22:30:22 -0500
+Received: from mailgw-01.dd24.net ([193.46.215.41]:43590 "EHLO
+        mailgw-01.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727285AbfLBDaV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 22:30:21 -0500
+Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.26])
+        by mailgw-01.dd24.net (Postfix) with ESMTP id 796615FDAD;
+        Mon,  2 Dec 2019 03:30:20 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at
+        mailpolicy-01.live.igb.homer.key-systems.net
+Received: from smtp.dd24.net ([192.168.1.35])
+        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10235)
+        with ESMTP id 5HsfQeMI8I0Q; Mon,  2 Dec 2019 03:30:18 +0000 (UTC)
+Received: from heisenberg.scientia.net (p3E9C206A.dip0.t-ipconnect.de [62.156.32.106])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.dd24.net (Postfix) with ESMTPSA;
+        Mon,  2 Dec 2019 03:30:18 +0000 (UTC)
+Message-ID: <5cea01b65a3cfe773300f69d5847cdc457ab49d1.camel@scientia.net>
+Subject: Re: kernel trace, (nearly) every time on send/receive
+From:   Christoph Anton Mitterer <calestyo@scientia.net>
+To:     Anand Jain <anand.jain@oracle.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Mon, 02 Dec 2019 04:30:17 +0100
+In-Reply-To: <768283ac-99c5-0fd1-2acb-e504cbb1f3fd@oracle.com>
+References: <21cb5e8d059f6e1496a903fa7bfc0a297e2f5370.camel@scientia.net>
+         <768283ac-99c5-0fd1-2acb-e504cbb1f3fd@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.1-2+b1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Hch1Uz/zGPcHFdv8"
-Content-Disposition: inline
-In-Reply-To: <f6dfede7-c65c-2321-ab8f-ba16a6a3c71f@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hey Anand.
 
---Hch1Uz/zGPcHFdv8
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for looking into this.
 
-On Tue, Nov 19, 2019 at 07:32:26AM +0800, Qu Wenruo wrote:
->=20
->=20
-> On 2019/11/19 =E4=B8=8A=E5=8D=884:18, David Sterba wrote:
-> > On Thu, Nov 07, 2019 at 02:27:07PM +0800, Qu Wenruo wrote:
-> >> This patchset will make btrfs degraded mount more intelligent and
-> >> provide more consistent profile keeping function.
-> >>
-> >> One of the most problematic aspect of degraded mount is, btrfs may
-> >> create unwanted profiles.
-> >>
-> >>  # mkfs.btrfs -f /dev/test/scratch[12] -m raid1 -d raid1
-> >>  # wipefs -fa /dev/test/scratch2
-> >>  # mount -o degraded /dev/test/scratch1 /mnt/btrfs
-> >>  # fallocate -l 1G /mnt/btrfs/foobar
-> >>  # btrfs ins dump-tree -t chunk /dev/test/scratch1
-> >>         item 7 key (FIRST_CHUNK_TREE CHUNK_ITEM 1674575872) itemoff 15=
-511 itemsize 80
-> >>                 length 536870912 owner 2 stripe_len 65536 type DATA
-> >>  New data chunk will fallback to SINGLE or DUP.
-> >>
-> >>
-> >> The cause is pretty simple, when mounted degraded, missing devices can=
-'t
-> >> be used for chunk allocation.
-> >> Thus btrfs has to fall back to SINGLE profile.
-> >>
-> >> This patchset will make btrfs to consider missing devices as last reso=
-rt if
-> >> current rw devices can't fulfil the profile request.
-> >>
-> >> This should provide a good balance between considering all missing
-> >> device as RW and completely ruling out missing devices (current mainli=
-ne
-> >> behavior).
-> >=20
-> > Thanks. This is going to change the behaviour with a missing device, so
-> > the question is if we should make this configurable first and then
-> > switch the default.
->=20
-> Configurable then switch makes sense for most cases, but for this
-> degraded chunk case, IIRC the new behavior is superior in all cases.
->=20
-> For 2 devices RAID1 with one missing device (the main concern), old
-> behavior will create SINGLE/DUP chunk, which has no tolerance for extra
-> missing devices.
->=20
-> The new behavior will create degraded RAID1, which still lacks tolerance
-> for extra missing devices.
->=20
-> The difference is, for degraded chunk, if we have the device back, and
-> do proper scrub, then we're completely back to proper RAID1.
-> No need to do extra balance/convert, only scrub is needed.
+On Mon, 2019-12-02 at 10:58 +0800, Anand Jain wrote:
+> Looks like ORPHAN_CLEANUP_DONE is not set on the root.
+> 
+>          WARN_ON(send_root->orphan_cleanup_state !=
+> ORPHAN_CLEANUP_DONE);
+> 
+> ORPHAN_CLEANUP_DONE is set unless it is a readonly FS, which I doubt
+> is,
+> (can be checked using btrfs inspect duper-super <dev>) because you
+> are
+> creating the snapshot for the send.
 
-I think you meant to say "replace" instead of "scrub" above.
+I should perhaps add, that there are two btrfs filesystems involved
+here:
+The first is basically the master, having several snapshots including
+all + one newer which is missing from the second (which is basically a
+backup of the master).
 
-> So the new behavior is kinda of a super set of old behavior, using the
-> new behavior by default should not cause extra concern.
+So it's about:
+/master# btrfs send -p already-on-copy newer-snapshot | btrfs receive /copy/snapshots/ ; 
 
-It sounds OK to me, provided that the missing device is going away
-permanently, and a new device replaces it.
-
-If the missing device comes back, we end up relying on scrub and 32-bit
-CRCs to figure out which disk has correct data, and it will be wrong
-1/2^32 of the time.  For nodatasum files there are no CRCs so the data
-will be wrong much more often.  This patch doesn't change that, but
-maybe another patch should.
-
-> > How does this work with scrub? Eg. if there are 2 devices in RAID1, one
-> > goes missing and then scrub is started. It makes no sense to try to
-> > repair the missing blocks, but given the logic in the patches all the
-> > data will be rewritten, right?
->=20
-> Scrub is unchanged at all.
->=20
-> Missing device will not go through scrub at all, as scrub is per-device
-> based, missing device will be ruled out at very beginning of scrub.
->=20
-> Thanks,
-> Qu
-> >=20
->=20
+In fact /master is mounted ro only here, whereas /copy is of course
+mounted rw.
+Since nothing should be changed on /master I assumed it would be ok to
+have it mounted ro.
 
 
+>  btrfs check --readonly might tell
+> us more about the issue.
+
+I cannot do this right now since I'll be on some diving vacation for ~2
+weeks,... but since --readonly is the standard behaviour (i.e. same
+without --readonly) I'm pretty sure that a fsck (which I always do
+after each snapshot to the /copy) brought now visible errors.
 
 
---Hch1Uz/zGPcHFdv8
-Content-Type: application/pgp-signature; name="signature.asc"
+Does the whole thing imply any corruption to any of the two
+filesystems... or is it just a "cosmetic" issue?
 
------BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXeSDkAAKCRCB+YsaVrMb
-nIZ6AKDGnd+vaqPjt9343OkFVmxrxnbIjwCguznCzvLz/EBJNWqBBhWsQEO1Cjk=
-=PSP4
------END PGP SIGNATURE-----
+Cheers,
+Chris
 
---Hch1Uz/zGPcHFdv8--
