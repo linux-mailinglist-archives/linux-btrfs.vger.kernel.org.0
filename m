@@ -2,124 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BB610EC13
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 16:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C13110EC94
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 16:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727431AbfLBPIh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Dec 2019 10:08:37 -0500
-Received: from mira.cbaines.net ([212.71.252.8]:54092 "EHLO mira.cbaines.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727401AbfLBPIh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Dec 2019 10:08:37 -0500
-Received: from localhost (unknown [105.156.108.87])
-        by mira.cbaines.net (Postfix) with ESMTPSA id A1640177B7;
-        Mon,  2 Dec 2019 15:08:33 +0000 (GMT)
-Received: from phact (localhost [127.0.0.1])
-        by localhost (OpenSMTPD) with ESMTP id 90778d91;
-        Mon, 2 Dec 2019 15:08:30 +0000 (UTC)
-References: <8736e9g1gb.fsf@cbaines.net> <1ac24ca2-4f78-13a8-0b06-8970e8ba6e17@gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Christopher Baines <mail@cbaines.net>
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Slow performance with Btrfs RAID 10 with a failed disk
-In-reply-to: <1ac24ca2-4f78-13a8-0b06-8970e8ba6e17@gmail.com>
-Date:   Mon, 02 Dec 2019 16:08:27 +0100
-Message-ID: <87a78alq8k.fsf@cbaines.net>
+        id S1727459AbfLBPme (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Dec 2019 10:42:34 -0500
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:34639 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727413AbfLBPme (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 10:42:34 -0500
+Received: by mail-vs1-f65.google.com with SMTP id g15so134457vsf.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 07:42:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=XLtt0zHYW0DggB+BGYQaSsqJvNh352Kwrjrx5awlrjU=;
+        b=bcE3tPpFgc6yti8eSuseEzP78BgphK0RS8ldBHWB0oyLFh8l1rPpws1Vt4zcHsZ71x
+         n8CKRw0IfFLlqHCC5Qxb5Puo2LGNmipcop4wujEd+dqMr+tFhL8hKlAPV5qKe0RlDo20
+         8QQBKlgB/zcSM9HyIFMMPrvlGsWZooD4Bhbx3fk2930Y9YPscLwGvf/2niIIKPbq6MJ7
+         FlDaOGKmgH5izrWyyvPTsZCiWu2lbKXI1SIB153j4Id/J4a/wN1u4XIPBTaj7DGa9Zj0
+         3zTq6nTHSl/scDPWP4kAe9O8cOBb3beURw3NJkbq00jsR3aYgcE7aYwWdLp9xcCWfP/R
+         hVyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=XLtt0zHYW0DggB+BGYQaSsqJvNh352Kwrjrx5awlrjU=;
+        b=YqPRIxlUpMvSqYmeT/IB973VOytirsX55UbXttS2Lo4H+b9A0ctq6m4zn5QKbhU3k2
+         b+lmmUo/dj4M3T5M14dKAHfXHYj95bk63p/I7w0lB1ZT9ZK88NzQ61CM+t+b8sVKZkuc
+         DAJxszIj4+BcI7SPXd+bttWQuRHOQnx5he/88q4UZFisoWSquwfmnh51pTgIN8yHBf6Z
+         oY8LdcsNtW/x8BhZDHDJ8op5vUbVrYtaemCKKl1/h0UNjvgn2nYfkuRavw+Aa2jjcx9G
+         HvIemQ/HH2WKSv+D/zhVq5Z4DxO8vI94Kpi5IFwc3Z7uRkeawrbHrdsKJfnZTDgSMLT1
+         s6qw==
+X-Gm-Message-State: APjAAAXqry+IhvqKXKRUh/Y+Wrnh4io6TobYNkfpIL1InhL/l3RMS6TF
+        KccrlS15tE60bYUaXYSIDqYrqlCst1qKcun6Zk8=
+X-Google-Smtp-Source: APXvYqy09CToIy3HxbfLsUCYPdcUcjt0wKT+8qznhxLoSL8eI0cyaMNFCKjLwDCzpzqamxwrGf/p+/oXBMxmDYlk5aE=
+X-Received: by 2002:a67:8703:: with SMTP id j3mr16889400vsd.99.1575301351989;
+ Mon, 02 Dec 2019 07:42:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+References: <20191202094450.1377-1-anand.jain@oracle.com> <1575296676-16470-1-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1575296676-16470-1-git-send-email-anand.jain@oracle.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 2 Dec 2019 15:42:21 +0000
+Message-ID: <CAL3q7H6n3Cwi6WobN1FY5ZZyhwGFLGvXbV5-Sp2q4=xGn6ZBLw@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: fix warn_on for send from readonly mount
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-
-
-Austin S. Hemmelgarn <ahferroin7@gmail.com> writes:
-
-> On 2019-11-27 03:36, Christopher Baines wrote:
->> Hey,
->>
->> I'm using RAID 10, and one of the disks has recently failed [1], and I'm
->> seeing plenty of warning and errors in the dmesg output [2].
->>
->> What kind of performance should be expected from Btrfs when a disk has
->> failed? [3] At the moment, the system seems very slow. One contributing
->> factor may be that all the logging that Btrfs is generating is being
->> written to the btrfs filesystem that's degraded, probably causing more
->> log messages to be produced.
->>
->> I guess that replacing the failed disk is the long term solution to get
->> the filesystem back in to proper operation, but is there anything else
->> that can be done to get it back operating until then?
->>
->> Also, is there anything that can stop btrfs logging so much about the
->> failures, now that I know that a disk has failed?
+On Mon, Dec 2, 2019 at 2:26 PM Anand Jain <anand.jain@oracle.com> wrote:
 >
-> You can solve both problems by replacing the disc, or if possible,
-> just removing it from the array. You should, in theory, be able to
-> convert to regular raid1 and then remove the failed disc, though it
-> will likely take a while. Given your output below, I'd actually drop
-> /dev/sdb as well, and look at replacing both with a single 1TB disc
-> like your other three.
+> We log warning if root::orphan_cleanup_state is not set to
+> ORPHAN_CLEANUP_DONE in btrfs_ioctl_send(). However if the filesystem is
+> mounted as readonly we skip the orphan items cleanup during the lookup
+> and root::orphan_cleanup_state remains at the init state 0 instead of
+> ORPHAN_CLEANUP_DONE (2).
 >
-> The issue here is that BTRFS doesn't see the disc as failed, so it
-> keeps trying to access it. That's what's slowing things down (because
-> it eventually times out on the access attempt) and why it's logging so
-> much (because BTRFS logs every IO error it encounters (like it
-> should)).
+> WARNING: CPU: 0 PID: 2616 at /Volumes/ws/btrfs-devel/fs/btrfs/send.c:7090=
+ btrfs_ioctl_send+0xb2f/0x18c0 [btrfs]
+> ::
+> RIP: 0010:btrfs_ioctl_send+0xb2f/0x18c0 [btrfs]
+> ::
+> Call Trace:
+> ::
+> _btrfs_ioctl_send+0x7b/0x110 [btrfs]
+> btrfs_ioctl+0x150a/0x2b00 [btrfs]
+> ::
+> do_vfs_ioctl+0xa9/0x620
+> ? __fget+0xac/0xe0
+> ksys_ioctl+0x60/0x90
+> __x64_sys_ioctl+0x16/0x20
+> do_syscall_64+0x49/0x130
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Reproducer:
+>   mkfs.btrfs -fq /dev/sdb && mount /dev/sdb /btrfs
+>   btrfs subvolume create /btrfs/sv1
+>   btrfs subvolume snapshot -r /btrfs/sv1 /btrfs/ss1
+>   umount /btrfs && mount -o ro /dev/sdb /btrfs
+>   btrfs send /btrfs/ss1 -f /tmp/f
+>
+> Fix this by removing the warn_on completely because:
+>
+> 1) Having orphan items means we could have files to delete (link count
+> of 0) and dealing with such cases could make send fail for several
+> reasons.
+>    If this happens, it's not longer a problem since the following
+> commit:
+>    46b2f4590aab71d31088a265c86026b1e96c9de4
+>    Btrfs: fix send failure when root has deleted files still open
 
-Thanks for the tips :)
+The convention for mentioning commits is
+first_12_or_slighly_more_hash_characters ("subject").
+scripts/checkpatch.pl warns about it, and given this has been around
+for years, you should already be familiar with it.
 
-I've now remounted the filesystem with the degraded flag.
+>
+> 2) Orphan items used to indicate previously unfinished truncations, in
+> which case it would lead to send creating corrupt files at the
+> destination (i_size incorrect and the file filled with zeroes between
+> real i_size and stale i_size).
+>    We no longer need to create orphans for truncations since commit:
+>    f7e9e8fc792fe2f823ff7d64d23f4363b3f2203a
+>    Btrfs: stop creating orphan items for truncate
 
-However, I haven't managed to remove the disk from the array yet.
+And I didn't expect you to literally copy-paste what I wrote before.
+For a changelog we want something better written, organized and more
+detailed then an informal e-mail reply, like this:
 
-$ sudo btrfs filesystem show /
-Label: none  uuid: 620115c7-89c7-4d79-a0bb-4957057d9991
-	Total devices 6 FS bytes used 1.08TiB
-	devid    1 size 72.70GiB used 72.70GiB path /dev/sda3
-	devid    2 size 72.70GiB used 72.70GiB path /dev/sdb3
-	devid    3 size 931.48GiB used 530.73GiB path /dev/sdc
-	devid    4 size 931.48GiB used 530.73GiB path /dev/sdd
-	devid    5 size 931.48GiB used 530.73GiB path /dev/sde
-	*** Some devices missing
+"
+The warning exists because having orphanized inodes could confuse send
+and cause it to fail or produce incorrect streams.
+The two cases that would cause problems were:
 
-$ sudo btrfs device delete missing /
-ERROR: error removing device 'missing': no missing devices found to remove
+1) Inodes that were unlinked - these are orphanized and remain with a
+link count of 0, having no references (names).
+   These caused send operations to fail because it expected to always
+find at least one path for an inode.
+   This is no longe a problem since send is now able to deal with such
+inodes since
+   commit 46b2f4590aab ("Btrfs: fix send failure when root has deleted
+files still open") and treats them as having
+   been completely removed (the state after a orphan cleanup is performed).
+
+2) Inodes that were in the process of being truncated. These resulted
+in send not knowing about the truncation
+    and potentially issue write operations full of zeroes for the
+range from the new file size to the old file size.
+    This is no longer a problem because we no longer create orphan
+items for truncations since
+    commit  f7e9e8fc792f ("Btrfs: stop creating orphan items for truncate")=
+.
+
+In other words the warning was there to provide a clue in case
+something went wrong. Instead of being a warning
+against the root's "->orphan_cleanup_state" value, it could have been
+more accurate by checking if there were actually
+any orphan items, and then issue a warning only if any exists, but
+that would be more expensive to check.
+Since orphanized inodes no longer cause problems for send, just remove
+the warning.
+"
+
+>
+> Reported-by: Christoph Anton Mitterer <calestyo@scientia.net>
+> Suggested-by: Filipe Manana <fdmanana@gmail.com>
+
+Also s/@gmail.com/@suse.com/ (preferable).
+
+Thanks.
+
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2:
+>  Remove WARN_ON() completely.
+>
+>  fs/btrfs/send.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index ae2db5eb1549..091e5bc8c7ea 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -7084,12 +7084,6 @@ long btrfs_ioctl_send(struct file *mnt_file, struc=
+t btrfs_ioctl_send_args *arg)
+>         spin_unlock(&send_root->root_item_lock);
+>
+>         /*
+> -        * This is done when we lookup the root, it should already be com=
+plete
+> -        * by the time we get here.
+> -        */
+> -       WARN_ON(send_root->orphan_cleanup_state !=3D ORPHAN_CLEANUP_DONE)=
+;
+> -
+> -       /*
+>          * Userspace tools do the checks and warn the user if it's
+>          * not RO.
+>          */
+> --
+> 1.8.3.1
+>
 
 
-So Btrfs knows at some level that a device is missing, from the output
-of the first command, but it won't delete the missing device.
+--=20
+Filipe David Manana,
 
-Am I missing something?
-
-Thanks,
-
-Chris
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQKTBAEBCgB9FiEEPonu50WOcg2XVOCyXiijOwuE9XcFAl3lKOtfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDNF
-ODlFRUU3NDU4RTcyMEQ5NzU0RTBCMjVFMjhBMzNCMEI4NEY1NzcACgkQXiijOwuE
-9XfxiRAAtrSkeSyJfVzhI9trFS1oSDOnaPWvw0A/b1SlMHlwVJaOXqNakBTQZKSg
-gyeTVC5Z5X5IaFQ3acV6q3wFZ/rWRREVOxVzqvya+txO06iHPalwgnKKF7+kqMWK
-MvOuKuur3kT0RvqiPSZ+JmreoAf66g5P9kAlYN8xUF43MbueYH7MZrVGf3oEVipj
-FeTyfxd3h7sgNdw6urpHDgGmhzNzBvBE+x7K+wShcmaqbwq3uUf8eW+lZGdi+QyJ
-MO+YCM/+R+8v9tCUU5w+PRTgr6byDY0p+rimYB6eGyFdfYfQ2iDHRJ9X0FU7RcSJ
-ujs1SdWBjzscFr9oS3wLAu85UjJ/w6Zfjt8KnVh3Vs89xldrD/vdTgfWhAUKN/em
-gqxbpYDfDuZEWhJcXTJYA4iaXa2WAohpsXLv9giazyqCFHvMt6Vc1oY4NSr1Bh2M
-DsgKzv6/jUCJm+zmLiFc+KppnojU/Swim0te3TItuzfYTXT4u1ui2HA3z7fbVixn
-02GU7hIj6QhgMDRIbXHzb4nTHx4XmBSlymGbZp0Q5EBIA9QyYgl3wCWwlykqQOs4
-tbzYM++zFMIa0KLGN8qXMDbqOPmYZ3yU32T+LAU4wNpD065iktf4CKLbbmVB5Jh7
-Mwt2G0Njp2uQ6QS4EKh8MQmAeJEAW5BBkNN+/wbKonXobUXty5s=
-=fHhE
------END PGP SIGNATURE-----
---=-=-=--
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
