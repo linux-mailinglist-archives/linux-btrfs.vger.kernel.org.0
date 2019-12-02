@@ -2,65 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D3710EDB8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 18:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2717C10EF0C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 19:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbfLBRDg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Dec 2019 12:03:36 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:41710 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727493AbfLBRDg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 12:03:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=4Bog2FcHzbVHTGABIFboxW3D8q+dKfFuUFtGCAvbJN8=; b=SbCAbqhl8BRByWXfNxrs1pif9
-        h1kuXOWtY5KlKFGagbhiuSkdoQ8JTC3tVkOtyn7IDbslxfoLacwaCo9JhBbnclgHD6EiMIarWctt4
-        BmfhVDD8DdqCJwKvltRp77ZzUz2+t7BrAuuxTADLlgCvFrdC/Sw6UFGWmY9MucMUflWd6YH2SCb49
-        AxZksLP9TKMgCA7M/p3ge6FA0nY77A+fBYDdZGQY/B1xIiUwbDL9leZ9CoKm16Tz2b47hwQQuu16T
-        sjQENJmZI8qWH53Ebo13NhIo60AsJeRUiBsd0r2yUYqFXTj3rTafZNTQvNrBDM/sFqG0ix3JICDw2
-        Ya7gGk/lw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ibp57-000150-Vc; Mon, 02 Dec 2019 17:01:53 +0000
-Date:   Mon, 2 Dec 2019 09:01:53 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH V3 2/3] fs: Move swap_[de]activate to file_operations
-Message-ID: <20191202170153.GA2870@infradead.org>
-References: <20191129163300.14749-1-ira.weiny@intel.com>
- <20191129163300.14749-3-ira.weiny@intel.com>
+        id S1727900AbfLBSTg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Dec 2019 13:19:36 -0500
+Received: from smtp-18.italiaonline.it ([213.209.10.18]:50457 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727670AbfLBSTg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Dec 2019 13:19:36 -0500
+Received: from venice.bhome ([84.220.25.30])
+        by smtp-18.iol.local with ESMTPA
+        id bqIHizXEsNNGebqIHidLf1; Mon, 02 Dec 2019 19:19:34 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1575310774; bh=Ti4jT7kv1e6aGYIU5onLkxPdWno74c48D0qxxQirqrA=;
+        h=From:To:Cc:Subject:Date;
+        b=WKNEIjMueP/mtGHCovUztj+Wz7l3lUCphycv5sCaqrvPFYLY42F5OkCuQUFir/ZYq
+         5g1aM/7GOyTTB6ESfolRL6QjMlNb0EbijdfgJImQ/ZRLz6NdRTNswfB3UiHa6RUJ0r
+         uLbxuNdt1Gib52qjUo612xqfqub6uCt0MB6HnA0Z5u9Kzrbfpmu+etboi9UevTCGSb
+         HMx/U2B5y/UrgujXjMiOWh6eUVZPzEkOtHGGddz7obgjKVzzv1Dp6q6n66YRwcclw3
+         PYqDbZC7nIcD3wxZ4tGutvhsF7+2pMZb5C9VQENDOOZo3PWHhJYDprHfb7BK8ijTwd
+         XzjXEF38jqlnQ==
+X-CNFS-Analysis: v=2.3 cv=B4jHL9lM c=1 sm=1 tr=0
+ a=zfQl08sXljvZd6EmK9/AFg==:117 a=zfQl08sXljvZd6EmK9/AFg==:17
+ a=NxtcBlksYuj6QNs_dvAA:9
+From:   Goffredo Baroncelli <kreijack@libero.it>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [RFC] GRUB: add support for RAID1C3 and RAID1C4
+Date:   Mon,  2 Dec 2019 19:19:27 +0100
+Message-Id: <20191202181928.3098-1-kreijack@libero.it>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191129163300.14749-3-ira.weiny@intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfBtZ8+d5evT+aAQb5+VPyGdO2xixP9IO1c3C4fWVCTfLFgfzVzcx9Zf/wM20tnu6U/y3AhmRARybpI2VrbF6SMj6YO40aCi4KAVwn4w1sayx5qv+Ridm
+ TMw+t5XNSULMo32jQeKmURqH5p/M7lwySHIuRM0CJ0ABiCUN65rUbfU8+qJCth/lmVvQoEU/BXT1JE4u/CYyv5cUay9tc5smSdZiNPiMt+ncGsZjrODw9Yay
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While the patch itself looks fine, I kinda disagree with the rationale.
-If we want different ops for DAX that applies to file operations just
-as much as to the address space operations.
 
-However I agree that the ops are logically a better fit for the file
-operations, so:
+The enclosed patch adds support for RAID1C3 and RAID1C4 to grub.
+I know that David already told that he want to write one; however
+recently I looked to the grub source and so I make a patch.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I tested the patch as following:
+- computing the checksum of a file bigger than 64KB in a RAID1C3 
+  filesystem (so the file is in a data bG)
+- computing the checksum of a file smaller than 64KB in a RAID1C3
+  filesystem (so the file is in the metadata BG)
+- computing the checksum of a file bigger than 64KB in a RAID1C4 
+  filesystem (so the file is in a data bG)
+- computing the checksum of a file smaller than 64KB in a RAID1C4
+  filesystem (so the file is in the metadata BG)
+- perform the tests abowe removing some disks in order to test all the
+  possible missing disks combination
+
+Of course the test is considered passed if the checksum matches with
+its correct value.
+
+Comments are welcome.
+
+BR
+G.Baroncelli
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
