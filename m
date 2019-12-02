@@ -2,90 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8727210E4DF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 04:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9107B10E4E7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 04:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbfLBDaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Dec 2019 22:30:22 -0500
-Received: from mailgw-01.dd24.net ([193.46.215.41]:43590 "EHLO
-        mailgw-01.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbfLBDaV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 22:30:21 -0500
-Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.26])
-        by mailgw-01.dd24.net (Postfix) with ESMTP id 796615FDAD;
-        Mon,  2 Dec 2019 03:30:20 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at
-        mailpolicy-01.live.igb.homer.key-systems.net
-Received: from smtp.dd24.net ([192.168.1.35])
-        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10235)
-        with ESMTP id 5HsfQeMI8I0Q; Mon,  2 Dec 2019 03:30:18 +0000 (UTC)
-Received: from heisenberg.scientia.net (p3E9C206A.dip0.t-ipconnect.de [62.156.32.106])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.dd24.net (Postfix) with ESMTPSA;
-        Mon,  2 Dec 2019 03:30:18 +0000 (UTC)
-Message-ID: <5cea01b65a3cfe773300f69d5847cdc457ab49d1.camel@scientia.net>
-Subject: Re: kernel trace, (nearly) every time on send/receive
-From:   Christoph Anton Mitterer <calestyo@scientia.net>
-To:     Anand Jain <anand.jain@oracle.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Date:   Mon, 02 Dec 2019 04:30:17 +0100
-In-Reply-To: <768283ac-99c5-0fd1-2acb-e504cbb1f3fd@oracle.com>
-References: <21cb5e8d059f6e1496a903fa7bfc0a297e2f5370.camel@scientia.net>
-         <768283ac-99c5-0fd1-2acb-e504cbb1f3fd@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.1-2+b1 
+        id S1727312AbfLBDoa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Dec 2019 22:44:30 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:40960 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727285AbfLBDoa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 22:44:30 -0500
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
+        by james.kirk.hungrycats.org (Postfix) with ESMTP id 75339505D66;
+        Sun,  1 Dec 2019 22:44:29 -0500 (EST)
+Received: from zblaxell by waya.furryterror.org with local (Exim 4.92)
+        (envelope-from <zblaxell@waya.furryterror.org>)
+        id 1ibcdR-0006rR-8c; Sun, 01 Dec 2019 22:44:29 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH 0/1] btrfs-progs: scrub: add start/end position for scrub
+Date:   Sun,  1 Dec 2019 22:44:19 -0500
+Message-Id: <20191202034420.4634-1-ce3g8jdj@umail.furryterror.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey Anand.
+This patch has some problems that will be a lot of work to fix, and
+before doing any of that I thought I would check to see if anyone else
+thinks the idea is sane.
 
-Thanks for looking into this.
+This patch just adds start (-s) and end (-e) position arguments to 'btrfs
+scrub start', to enable focusing a scrub on specific areas of a device.
+The positions are offsets from the start of the device.
 
-On Mon, 2019-12-02 at 10:58 +0800, Anand Jain wrote:
-> Looks like ORPHAN_CLEANUP_DONE is not set on the root.
-> 
->          WARN_ON(send_root->orphan_cleanup_state !=
-> ORPHAN_CLEANUP_DONE);
-> 
-> ORPHAN_CLEANUP_DONE is set unless it is a readonly FS, which I doubt
-> is,
-> (can be checked using btrfs inspect duper-super <dev>) because you
-> are
-> creating the snapshot for the send.
+The idea is that if you have a disk with a lot of errors, you do a
+loop of:
 
-I should perhaps add, that there are two btrfs filesystems involved
-here:
-The first is basically the master, having several snapshots including
-all + one newer which is missing from the second (which is basically a
-backup of the master).
+	- start a scrub at the beginning of the disk
+	- get some read/uncorrectable errors in dmesg
+	- cancel scrub
+	- fix the errors (delete/replace files)
+	- restart scrub at just before the offset of the first error
+	- repeat from step 2
 
-So it's about:
-/master# btrfs send -p already-on-copy newer-snapshot | btrfs receive /copy/snapshots/ ; 
+The last steps use the '-s' option to skip over parts of the disk that
+have already been scrubbed.  Each pass starts reading just before the
+first detected error in the previous pass to confirm that all references
+to the offending data blocks have been removed from the filesystem.
 
-In fact /master is mounted ro only here, whereas /copy is of course
-mounted rw.
-Since nothing should be changed on /master I assumed it would be ok to
-have it mounted ro.
+Without these options, the process looks like this:
+
+	- start a scrub at the beginning of the disk
+	- get a random sample of read/uncorrectable errors in dmesg
+	- wait for scrub to end
+	- fix the errors (delete/replace files)
+	- repeat from step 1
+
+The current approach need a full scrub to be repeated many times, because
+only a small percentage of a large number of errors will be sampled on
+each pass due to dmesg ratelimiting.
+
+It is possible to cancel the scrub, edit /var/lib/btrfs/scrub.status.*,
+change the "last_physical" field to the desired start position, and then
+resume the scrub to achieve a similar effect to this patch, but that's
+somewhat ugly.
+
+TODO:
+
+This patch does nothing to correct the "Total bytes to scrub" or
+"ETA" fields in various outputs, which are very wrong when the new
+-s and -e options are used.  Fixing that will require joining the
+device tree with block groups to estimate how many bytes will be
+scrubbed.  Alternatively, we could just disable the ETA/TBS fields
+in the status output when -s or -e are used.
 
 
->  btrfs check --readonly might tell
-> us more about the issue.
 
-I cannot do this right now since I'll be on some diving vacation for ~2
-weeks,... but since --readonly is the standard behaviour (i.e. same
-without --readonly) I'm pretty sure that a fsck (which I always do
-after each snapshot to the /copy) brought now visible errors.
-
-
-Does the whole thing imply any corruption to any of the two
-filesystems... or is it just a "cosmetic" issue?
-
-
-Cheers,
-Chris
 
