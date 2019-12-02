@@ -2,229 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7893B10E4C6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 03:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED2C10E4D9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Dec 2019 04:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbfLBC7p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Dec 2019 21:59:45 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:49856 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbfLBC7p (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 21:59:45 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB22xU3m100511;
-        Mon, 2 Dec 2019 02:59:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=knZMNnZrOCP9oGPcZcOJyDAo6Dk6o0TXQ5L3en7nPKM=;
- b=h5IhRNDr/ARFXN2HRjLrSk8jJlJS3+9wa0aQgazNaravbJGIuMUPKzMt7pYYBHPaQvL5
- HFV0XKwy0PoTOw4272GCZ2PU30QlkQ8XY4mU0+Ig4XOfFz0J8mPKNq76fQHUBTQ3fFWn
- CQhEVF05F3Mi2Y8/rQpy3wozOnMBE3My14VTYmfQDf3TyKTBfwg9+h+GZODcpeOgCnmZ
- Yc/XvtyKVhscFaTVNdiXCVoDhcOazrB74gbBPX7MCVqaeCF6a1+z0580CqoR7pj9cfgO
- J9z/gUNXYuYvyaiK52DWiko13a06pCJTixKTRAY2zqjikudqTlXQmF1TF1tiNG9ugtW6 Uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2wkh2qw24j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Dec 2019 02:59:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB22xUeb095436;
-        Mon, 2 Dec 2019 02:59:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2wm2jkm9av-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Dec 2019 02:59:31 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB22wj6e003232;
-        Mon, 2 Dec 2019 02:58:45 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 01 Dec 2019 18:58:45 -0800
-Subject: Re: kernel trace, (nearly) every time on send/receive
-To:     Christoph Anton Mitterer <calestyo@scientia.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <21cb5e8d059f6e1496a903fa7bfc0a297e2f5370.camel@scientia.net>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <768283ac-99c5-0fd1-2acb-e504cbb1f3fd@oracle.com>
-Date:   Mon, 2 Dec 2019 10:58:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1727329AbfLBDXB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Dec 2019 22:23:01 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33076 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbfLBDXA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Dec 2019 22:23:00 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id DF771505C14; Sun,  1 Dec 2019 22:22:59 -0500 (EST)
+Date:   Sun, 1 Dec 2019 22:22:59 -0500
+From:   Zygo Blaxell <zblaxell@furryterror.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: More intelligent degraded chunk allocator
+Message-ID: <20191202032259.GN22121@hungrycats.org>
+References: <20191107062710.67964-1-wqu@suse.com>
+ <20191118201834.GN3001@twin.jikos.cz>
+ <f6dfede7-c65c-2321-ab8f-ba16a6a3c71f@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <21cb5e8d059f6e1496a903fa7bfc0a297e2f5370.camel@scientia.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9458 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912020025
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9458 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912020025
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Hch1Uz/zGPcHFdv8"
+Content-Disposition: inline
+In-Reply-To: <f6dfede7-c65c-2321-ab8f-ba16a6a3c71f@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMjcvMTEvMTkgNjoyNyBBTSwgQ2hyaXN0b3BoIEFudG9uIE1pdHRlcmVyIHdyb3RlOg0K
-PiBIZXkuDQo+IA0KPiBTaW5jZSBhZ2VzIChteSByZXBvcnQgb24gYnVnemlsbGFbMF0sIHdo
-ZXJlIHRoZSBwcm9ibGVtIGV4aXN0ZWQgaG93ZXZlcg0KPiBmb3IgcHJvYmFibHkgYSB5ZWFy
-IG9yIGV2ZW4gbG9uZ2VyLCBpcyBmb3IgNC4xNi4xNiksIGEgY2FsbCB0cmFjZSBsaWtlDQo+
-IHRoZSBmb2xsb3dpbmcgaGFwcGVucyBuZWFybHkgZXZlcnkgdGltZSBJIGRvIGEgc2VuZC9y
-ZWNlaXZlOg0KPiANCj4gDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDog
-LS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+IE5vdiAyNiAyMzoyMjoz
-OCBoZWlzZW5iZXJnIGtlcm5lbDogV0FSTklORzogQ1BVOiAyIFBJRDogNzE4NiBhdCBmcy9i
-dHJmcy9zZW5kLmM6NjY4NCBidHJmc19pb2N0bF9zZW5kLmNvbGQuNTcrMHhjLzB4MTMgW2J0
-cmZzXQ0KDQoNCkxvb2tzIGxpa2UgT1JQSEFOX0NMRUFOVVBfRE9ORSBpcyBub3Qgc2V0IG9u
-IHRoZSByb290Lg0KDQogICAgICAgICBXQVJOX09OKHNlbmRfcm9vdC0+b3JwaGFuX2NsZWFu
-dXBfc3RhdGUgIT0gT1JQSEFOX0NMRUFOVVBfRE9ORSk7DQoNCk9SUEhBTl9DTEVBTlVQX0RP
-TkUgaXMgc2V0IHVubGVzcyBpdCBpcyBhIHJlYWRvbmx5IEZTLCB3aGljaCBJIGRvdWJ0IGlz
-LA0KKGNhbiBiZSBjaGVja2VkIHVzaW5nIGJ0cmZzIGluc3BlY3QgZHVwZXItc3VwZXIgPGRl
-dj4pIGJlY2F1c2UgeW91IGFyZQ0KY3JlYXRpbmcgdGhlIHNuYXBzaG90IGZvciB0aGUgc2Vu
-ZC4gYnRyZnMgY2hlY2sgLS1yZWFkb25seSBtaWdodCB0ZWxsDQp1cyBtb3JlIGFib3V0IHRo
-ZSBpc3N1ZS4NCg0KVGhhbmtzLCBBbmFuZA0KDQoNCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNl
-bmJlcmcga2VybmVsOiBNb2R1bGVzIGxpbmtlZCBpbjogdWFzKEUpIHh0X0NIRUNLU1VNKEUp
-IHh0X01BU1FVRVJBREUoRSkgbmZ0X2NoYWluX25hdChFKSBuZl9uYXQoRSkgdHVuKEUpIGJy
-aWRnZShFKSBzdHAoRSkgbGxjKEUpIGN0cihFKSBjY20oRSkgZnVzZShFKSBjcHVmcmVxX3Vz
-ZXJzcGFjZShFKSBjcHVmcmVxX3Bvd2Vyc2F2ZShFKSBjcHVmcmVxX2NvbnNlcnZhdGl2ZShF
-KSBzbmRfaGRhX2NvZGVjX2hkbWkoRSkgaW50ZWxfcmFwbChFKSBhcmM0KEUpIHg4Nl9wa2df
-dGVtcF90aGVybWFsKEUpIGludGVsX3Bvd2VyY2xhbXAoRSkgY29yZXRlbXAoRSkgc25kX2hk
-YV9jb2RlY19yZWFsdGVrKEUpIGt2bV9pbnRlbChFKSBzbmRfaGRhX2NvZGVjX2dlbmVyaWMo
-RSkgaGlkX2dlbmVyaWMoRSkgbGVkdHJpZ19hdWRpbyhFKSBidHVzYihFKSBpMmNfZGVzaWdu
-d2FyZV9wbGF0Zm9ybShFKSBpMmNfZGVzaWdud2FyZV9jb3JlKEUpIGJ0cnRsKEUpIGt2bShF
-KSBpVENPX3dkdChFKSBidGJjbShFKSBtZWlfd2R0KEUpIGJ0aW50ZWwoRSkgaVRDT192ZW5k
-b3Jfc3VwcG9ydChFKSBpcnFieXBhc3MoRSkgd2F0Y2hkb2coRSkgYmx1ZXRvb3RoKEUpIGlu
-dGVsX3dtaV90aHVuZGVyYm9sdChFKSBzbmRfc29jX3NrbChFKSBzbmRfc29jX3NrbF9pcGMo
-RSkgc25kX3NvY19zc3RfaXBjKEUpIGNyY3QxMGRpZl9wY2xtdWwoRSkgc25kX3NvY19zc3Rf
-ZHNwKEUpIGl3bG12bShFKSBzbmRfaGRhX2V4dF9jb3JlKEUpIHNuZF9zb2NfYWNwaV9pbnRl
-bF9tYXRjaChFKSBzbmRfc29jX2FjcGkoRSkgc25kX3NvY19jb3JlKEUpIGNyYzMyX3BjbG11
-bChFKSBtYWM4MDIxMShFKSB1dmN2aWRlbyhFKSBzbmRfY29tcHJlc3MoRSkgdmlkZW9idWYy
-X3ZtYWxsb2MoRSkgc25kX3VzYl9hdWRpbyhFKSBkcmJnKEUpIHZpZGVvYnVmMl9tZW1vcHMo
-RSkgc25kX2hkYV9pbnRlbChFKSBpOTE1KEUpIHNuZF91c2JtaWRpX2xpYihFKSB2aWRlb2J1
-ZjJfdjQNCj4gICBsMihFKSBnaGFzaF9jbG11bG5pX2ludGVsKEUpDQo+IE5vdiAyNiAyMzoy
-MjozOCBoZWlzZW5iZXJnIGtlcm5lbDogIHNuZF9yYXdtaWRpKEUpIGludGVsX2NzdGF0ZShF
-KSBzbmRfc2VxX2RldmljZShFKSBjZGNfbWJpbShFKSBpbnRlbF91bmNvcmUoRSkgc2RoY2lf
-cGNpKEUpIHNuZF9oZGFfY29kZWMoRSkgY2RjX3dkbShFKSB2aWRlb2J1ZjJfY29tbW9uKEUp
-IGl3bHdpZmkoRSkgc25kX2hkYV9jb3JlKEUpIGNkY19uY20oRSkgaW50ZWxfcmFwbF9wZXJm
-KEUpIHNuZF9od2RlcChFKSBhbnNpX2Nwcm5nKEUpIHBjc3BrcihFKSBjcWhjaShFKSBqb3lk
-ZXYoRSkgdXNiaGlkKEUpIHZpZGVvZGV2KEUpIHNuZF9wY20oRSkgc25kX3RpbWVyKEUpIHVz
-Ym5ldChFKSBkcm1fa21zX2hlbHBlcihFKSBtaWkoRSkgaGlkKEUpIHNuZChFKSBzZGhjaShF
-KSBzb3VuZGNvcmUoRSkgY2ZnODAyMTEoRSkgc2coRSkgaWRtYTY0KEUpIGVjZGhfZ2VuZXJp
-YyhFKSBtZWRpYShFKSBpMmNfaTgwMShFKSBlY2MoRSkgbW1jX2NvcmUoRSkgcmZraWxsKEUp
-IGNyYzE2KEUpIGRybShFKSBpbnRlbF9scHNzX3BjaShFKSBtZWlfbWUoRSkgaW50ZWxfbHBz
-cyhFKSBtZWkoRSkgbWZkX2NvcmUoRSkgaTJjX2FsZ29fYml0KEUpIHdtaShFKSBidXR0b24o
-RSkgYmF0dGVyeShFKSB4dF90Y3B1ZHAoRSkgaXA2dF9SRUpFQ1QoRSkgbmZfcmVqZWN0X2lw
-djYoRSkgcGNjX2NwdWZyZXEoRSkgdHBtX2NyYihFKSB0cG1fdGlzKEUpIGZ1aml0c3VfbGFw
-dG9wKEUpIHRwbV90aXNfY29yZShFKSBzcGFyc2Vfa2V5bWFwKEUpIHZpZGVvKEUpIHRwbShF
-KSBhYyhFKSBhY3BpX3BhZChFKSBybmdfY29yZShFKSBuZnRfY291bnRlcihFKSB4dF9jb21t
-ZW50KEUpIGlwdF9SRUpFQ1QoRSkgbmZfcmVqZWN0X2lwdjQoRSkgeHRfbXVsdGlwb3J0KEUp
-IHh0X3BvbGljeShFKSB4dF9zdGF0ZShFKSB4dF9jb25udHJhY2soRSkgbmZfY29ubnRyYWNr
-KEUpIG5mX2RlZnJhZ19pcHY2KEUpIG5mX2RlZnJhZ19pcHY0KEUpIG5mdF9jb21wYXQoRSkg
-bmZfdGFibGVzKEUpIG5mDQo+ICAgbmV0bGluayhFKSBiaW5mbXRfbWlzYyhFKQ0KPiBOb3Yg
-MjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICBsb29wKEUpIHBhcnBvcnRfcGMoRSkg
-cHBkZXYoRSkgbHAoRSkgcGFycG9ydChFKSBzdW5ycGMoRSkgaXBfdGFibGVzKEUpIHhfdGFi
-bGVzKEUpIGF1dG9mczQoRSkgZG1fY3J5cHQoRSkgZG1fbW9kKEUpIHJhaWQxMChFKSByYWlk
-NDU2KEUpIGFzeW5jX3JhaWQ2X3JlY292KEUpIGFzeW5jX21lbWNweShFKSBhc3luY19wcShF
-KSBhc3luY194b3IoRSkgYXN5bmNfdHgoRSkgcmFpZDEoRSkgcmFpZDAoRSkgbXVsdGlwYXRo
-KEUpIGxpbmVhcihFKSBtZF9tb2QoRSkgYnRyZnMoRSkgbGliY3JjMzJjKEUpIGNyYzMyY19n
-ZW5lcmljKEUpIHhvcihFKSB6c3RkX2RlY29tcHJlc3MoRSkgenN0ZF9jb21wcmVzcyhFKSBy
-YWlkNl9wcShFKSB1aGNpX2hjZChFKSBlaGNpX3BjaShFKSBlaGNpX2hjZChFKSB1c2Jfc3Rv
-cmFnZShFKSBzZF9tb2QoRSkgY3JjMzJjX2ludGVsKEUpIGFlc25pX2ludGVsKEUpIHhoY2lf
-cGNpKEUpIHhoY2lfaGNkKEUpIGV2ZGV2KEUpIGFoY2koRSkgYWVzX3g4Nl82NChFKSBsaWJh
-aGNpKEUpIGdsdWVfaGVscGVyKEUpIGNyeXB0b19zaW1kKEUpIHBzbW91c2UoRSkgY3J5cHRk
-KEUpIHNlcmlvX3JhdyhFKSBlMTAwMGUoRSkgbGliYXRhKEUpIHB0cChFKSBwcHNfY29yZShF
-KSB1c2Jjb3JlKEUpIHNjc2lfbW9kKEUpIHVzYl9jb21tb24oRSkNCj4gTm92IDI2IDIzOjIy
-OjM4IGhlaXNlbmJlcmcga2VybmVsOiBDUFU6IDIgUElEOiA3MTg2IENvbW06IGJ0cmZzIFRh
-aW50ZWQ6IEcgICAgICAgICAgICBFICAgICA1LjIuMC0zLWFtZDY0ICMxIERlYmlhbiA1LjIu
-MTctMQ0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IEhhcmR3YXJlIG5h
-bWU6IEZVSklUU1UgTElGRUJPT0sgVTc1Ny9GSk5CMkE1LCBCSU9TIFZlcnNpb24gMS4yMSAw
-My8xOS8yMDE4DQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogUklQOiAw
-MDEwOmJ0cmZzX2lvY3RsX3NlbmQuY29sZC41NysweGMvMHgxMyBbYnRyZnNdDQo+IE5vdiAy
-NiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogQ29kZTogZmUgZmYgNDggYzcgYzIgZGQg
-MjMgNDggYzAgODkgZGUgNGMgODkgZmYgNDEgYmUgZmIgZmYgZmYgZmYgZTggMTYgZmUgZmYg
-ZmYgZTkgODggY2YgZmUgZmYgNDggYzcgYzcgODggYTEgNDggYzAgZTggMDkgNGIgODcgZDAg
-PDBmPiAwYiBlOSA0MSBkZCBmZSBmZiAwZiAxZiA0NCAwMCAwMCA1NSA1MyA0OCA4OSBmYiA0
-OCA4MyBlYyAzMCA2NQ0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IFJT
-UDogMDAxODpmZmZmYmI0YzhiNjUzYzA4IEVGTEFHUzogMDAwMTAyNDYNCj4gTm92IDI2IDIz
-OjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiBSQVg6IDAwMDAwMDAwMDAwMDAwMjQgUkJYOiBm
-ZmZmOWJhOTM3YTBiM2Y0IFJDWDogMDAwMDAwMDAwMDAwMDAwMA0KPiBOb3YgMjYgMjM6MjI6
-MzggaGVpc2VuYmVyZyBrZXJuZWw6IFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IGZmZmY5
-YmE5M2RiMTc2ODggUkRJOiBmZmZmOWJhOTNkYjE3Njg4DQo+IE5vdiAyNiAyMzoyMjozOCBo
-ZWlzZW5iZXJnIGtlcm5lbDogUkJQOiBmZmZmOWJhMmM2YzU4ODQwIFIwODogMDAwMDAwMDAw
-MDAwMDNkZiBSMDk6IDAwMDAwMDAwMDAwMDAwMzMNCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNl
-bmJlcmcga2VybmVsOiBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiBmZmZmYmI0YzhiNjUz
-YWI4IFIxMjogZmZmZjliYThmOWIwZjEwMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVy
-ZyBrZXJuZWw6IFIxMzogZmZmZjliYTkzN2EwYjAwMCBSMTQ6IDAwMDA3ZmZjNWEzMWIyMzAg
-UjE1OiBmZmZmOWJhN2M3ZWRjMDAwDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtl
-cm5lbDogRlM6ICAwMDAwN2ZmOTc0NGZjOGMwKDAwMDApIEdTOmZmZmY5YmE5M2RiMDAwMDAo
-MDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2Vu
-YmVyZyBrZXJuZWw6IENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAw
-ODAwNTAwMzMNCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiBDUjI6IDAw
-MDA3ZmY5NzQ0ZmFlMzggQ1IzOiAwMDAwMDAwNWI5MTA2MDA1IENSNDogMDAwMDAwMDAwMDM2
-MDZlMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IERSMDogMDAwMDAw
-MDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAwMDAgRFIyOiAwMDAwMDAwMDAwMDAwMDAw
-DQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogRFIzOiAwMDAwMDAwMDAw
-MDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAwMDAwMDA0MDANCj4g
-Tm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiBDYWxsIFRyYWNlOg0KPiBOb3Yg
-MjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICA/IF9fc3dpdGNoX3RvX2FzbSsweDQw
-LzB4NzANCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgPyBfX3N3aXRj
-aF90b19hc20rMHgzNC8weDcwDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5l
-bDogID8gX19zd2l0Y2hfdG9fYXNtKzB4NDAvMHg3MA0KPiBOb3YgMjYgMjM6MjI6MzggaGVp
-c2VuYmVyZyBrZXJuZWw6ICA/IF9fc3dpdGNoX3RvX2FzbSsweDM0LzB4NzANCj4gTm92IDI2
-IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgPyBzeXNjYWxsX3JldHVybl92aWFfc3lz
-cmV0KzB4MTAvMHg3Zg0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICA/
-IF9fc3dpdGNoX3RvX2FzbSsweDM0LzB4NzANCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJl
-cmcga2VybmVsOiAgPyBfX3N3aXRjaF90b19hc20rMHg0MC8weDcwDQo+IE5vdiAyNiAyMzoy
-MjozOCBoZWlzZW5iZXJnIGtlcm5lbDogID8gX19zd2l0Y2hfdG9fYXNtKzB4MzQvMHg3MA0K
-PiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICA/IF9fc3dpdGNoX3RvX2Fz
-bSsweDQwLzB4NzANCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgPyBf
-X3N3aXRjaF90b19hc20rMHgzNC8weDcwDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJn
-IGtlcm5lbDogID8gX19zd2l0Y2hfdG9fYXNtKzB4NDAvMHg3MA0KPiBOb3YgMjYgMjM6MjI6
-MzggaGVpc2VuYmVyZyBrZXJuZWw6ICA/IF9fc3dpdGNoX3RvX2FzbSsweDM0LzB4NzANCj4g
-Tm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgPyBfX3N3aXRjaF90b19hc20r
-MHg0MC8weDcwDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogID8gX19z
-d2l0Y2hfdG9fYXNtKzB4MzQvMHg3MA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBr
-ZXJuZWw6ICA/IF9jb25kX3Jlc2NoZWQrMHgxNS8weDMwDQo+IE5vdiAyNiAyMzoyMjozOCBo
-ZWlzZW5iZXJnIGtlcm5lbDogID8gX19rbWFsbG9jX3RyYWNrX2NhbGxlcisweDE2MC8weDIw
-MA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICA/IF9idHJmc19pb2N0
-bF9zZW5kKzB4ZjYvMHgxMTAgW2J0cmZzXQ0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVy
-ZyBrZXJuZWw6ICA/IF9fY2hlY2tfb2JqZWN0X3NpemUrMHgxNjIvMHgxNzMNCj4gTm92IDI2
-IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgX2J0cmZzX2lvY3RsX3NlbmQrMHhkZC8w
-eDExMCBbYnRyZnNdDQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogID8g
-dGFza19ycV9sb2NrKzB4NDkvMHhiMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBr
-ZXJuZWw6ICA/IHRvbW95b19pbml0X3JlcXVlc3RfaW5mbysweDg0LzB4OTANCj4gTm92IDI2
-IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgYnRyZnNfaW9jdGwrMHhkNDcvMHgyZGMw
-IFtidHJmc10NCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiAgPyBkb192
-ZnNfaW9jdGwrMHhhNC8weDYzMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJu
-ZWw6ICBkb192ZnNfaW9jdGwrMHhhNC8weDYzMA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2Vu
-YmVyZyBrZXJuZWw6ICBrc3lzX2lvY3RsKzB4NjAvMHg5MA0KPiBOb3YgMjYgMjM6MjI6Mzgg
-aGVpc2VuYmVyZyBrZXJuZWw6ICBfX3g2NF9zeXNfaW9jdGwrMHgxNi8weDIwDQo+IE5vdiAy
-NiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogIGRvX3N5c2NhbGxfNjQrMHg1My8weDEz
-MA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6ICBlbnRyeV9TWVNDQUxM
-XzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQo+IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5i
-ZXJnIGtlcm5lbDogUklQOiAwMDMzOjB4N2ZmOTc0NWYwNWI3DQo+IE5vdiAyNiAyMzoyMjoz
-OCBoZWlzZW5iZXJnIGtlcm5lbDogQ29kZTogMDAgMDAgOTAgNDggOGIgMDUgZDkgNzggMGMg
-MDAgNjQgYzcgMDAgMjYgMDAgMDAgMDAgNDggYzcgYzAgZmYgZmYgZmYgZmYgYzMgNjYgMmUg
-MGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgYjggMTAgMDAgMDAgMDAgMGYgMDUgPDQ4PiAzZCAw
-MSBmMCBmZiBmZiA3MyAwMSBjMyA0OCA4YiAwZCBhOSA3OCAwYyAwMCBmNyBkOCA2NCA4OSAw
-MSA0OA0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IFJTUDogMDAyYjow
-MDAwN2ZmYzVhMzFiMTY4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAwMDAwMDAw
-MDAwMTANCj4gTm92IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiBSQVg6IGZmZmZm
-ZmZmZmZmZmZmZGEgUkJYOiAwMDAwMDAwMDAwMDAzNzY1IFJDWDogMDAwMDdmZjk3NDVmMDVi
-Nw0KPiBOb3YgMjYgMjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IFJEWDogMDAwMDdmZmM1
-YTMxYjIzMCBSU0k6IDAwMDAwMDAwNDA0ODk0MjYgUkRJOiAwMDAwMDAwMDAwMDAwMDA0DQo+
-IE5vdiAyNiAyMzoyMjozOCBoZWlzZW5iZXJnIGtlcm5lbDogUkJQOiAwMDAwMDAwMDAwMDAw
-MDA0IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IDAwMDA3ZmY5NzQ0ZmI3MDANCj4gTm92
-IDI2IDIzOjIyOjM4IGhlaXNlbmJlcmcga2VybmVsOiBSMTA6IDAwMDA3ZmY5NzQ0ZmI5ZDAg
-UjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAwMDAwMDAwMDAwMQ0KPiBOb3YgMjYg
-MjM6MjI6MzggaGVpc2VuYmVyZyBrZXJuZWw6IFIxMzogMDAwMDAwMDAwMDAwMDAwMSBSMTQ6
-IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiAwMDAwNTU3YjZmMzkyMjcwDQo+IE5vdiAyNiAyMzoy
-MjozOCBoZWlzZW5iZXJnIGtlcm5lbDogLS0tWyBlbmQgdHJhY2UgOTQ4MmQ2ZTA2MjU2NTg2
-NiBdLS0tDQo+IA0KPiANCj4gQW55IGNoYW5jZSB0byBnZXQgdGhhdCBldmVyIGZpeGVkPyBB
-bnkgZnVydGhlciBkYXRhIG9yIHNvIHRoYXQgd291bGQNCj4gaGVscD8NCj4gDQo+IA0KPiBU
-aGFua3MsDQo+IENocmlzLg0KPiANCj4gDQo+IFswXSBodHRwczovL2J1Z3ppbGxhLmtlcm5l
-bC5vcmcvc2hvd19idWcuY2dpP2lkPTIwMDI1NQ0KPiANCg0K
+
+--Hch1Uz/zGPcHFdv8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 19, 2019 at 07:32:26AM +0800, Qu Wenruo wrote:
+>=20
+>=20
+> On 2019/11/19 =E4=B8=8A=E5=8D=884:18, David Sterba wrote:
+> > On Thu, Nov 07, 2019 at 02:27:07PM +0800, Qu Wenruo wrote:
+> >> This patchset will make btrfs degraded mount more intelligent and
+> >> provide more consistent profile keeping function.
+> >>
+> >> One of the most problematic aspect of degraded mount is, btrfs may
+> >> create unwanted profiles.
+> >>
+> >>  # mkfs.btrfs -f /dev/test/scratch[12] -m raid1 -d raid1
+> >>  # wipefs -fa /dev/test/scratch2
+> >>  # mount -o degraded /dev/test/scratch1 /mnt/btrfs
+> >>  # fallocate -l 1G /mnt/btrfs/foobar
+> >>  # btrfs ins dump-tree -t chunk /dev/test/scratch1
+> >>         item 7 key (FIRST_CHUNK_TREE CHUNK_ITEM 1674575872) itemoff 15=
+511 itemsize 80
+> >>                 length 536870912 owner 2 stripe_len 65536 type DATA
+> >>  New data chunk will fallback to SINGLE or DUP.
+> >>
+> >>
+> >> The cause is pretty simple, when mounted degraded, missing devices can=
+'t
+> >> be used for chunk allocation.
+> >> Thus btrfs has to fall back to SINGLE profile.
+> >>
+> >> This patchset will make btrfs to consider missing devices as last reso=
+rt if
+> >> current rw devices can't fulfil the profile request.
+> >>
+> >> This should provide a good balance between considering all missing
+> >> device as RW and completely ruling out missing devices (current mainli=
+ne
+> >> behavior).
+> >=20
+> > Thanks. This is going to change the behaviour with a missing device, so
+> > the question is if we should make this configurable first and then
+> > switch the default.
+>=20
+> Configurable then switch makes sense for most cases, but for this
+> degraded chunk case, IIRC the new behavior is superior in all cases.
+>=20
+> For 2 devices RAID1 with one missing device (the main concern), old
+> behavior will create SINGLE/DUP chunk, which has no tolerance for extra
+> missing devices.
+>=20
+> The new behavior will create degraded RAID1, which still lacks tolerance
+> for extra missing devices.
+>=20
+> The difference is, for degraded chunk, if we have the device back, and
+> do proper scrub, then we're completely back to proper RAID1.
+> No need to do extra balance/convert, only scrub is needed.
+
+I think you meant to say "replace" instead of "scrub" above.
+
+> So the new behavior is kinda of a super set of old behavior, using the
+> new behavior by default should not cause extra concern.
+
+It sounds OK to me, provided that the missing device is going away
+permanently, and a new device replaces it.
+
+If the missing device comes back, we end up relying on scrub and 32-bit
+CRCs to figure out which disk has correct data, and it will be wrong
+1/2^32 of the time.  For nodatasum files there are no CRCs so the data
+will be wrong much more often.  This patch doesn't change that, but
+maybe another patch should.
+
+> > How does this work with scrub? Eg. if there are 2 devices in RAID1, one
+> > goes missing and then scrub is started. It makes no sense to try to
+> > repair the missing blocks, but given the logic in the patches all the
+> > data will be rewritten, right?
+>=20
+> Scrub is unchanged at all.
+>=20
+> Missing device will not go through scrub at all, as scrub is per-device
+> based, missing device will be ruled out at very beginning of scrub.
+>=20
+> Thanks,
+> Qu
+> >=20
+>=20
+
+
+
+
+--Hch1Uz/zGPcHFdv8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXeSDkAAKCRCB+YsaVrMb
+nIZ6AKDGnd+vaqPjt9343OkFVmxrxnbIjwCguznCzvLz/EBJNWqBBhWsQEO1Cjk=
+=PSP4
+-----END PGP SIGNATURE-----
+
+--Hch1Uz/zGPcHFdv8--
