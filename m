@@ -2,68 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE33E1104E2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 20:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732BD110505
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 20:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727338AbfLCTPi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Dec 2019 14:15:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34096 "EHLO mx1.suse.de"
+        id S1727332AbfLCT0B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Dec 2019 14:26:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36774 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726057AbfLCTPi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Dec 2019 14:15:38 -0500
+        id S1726932AbfLCT0B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Dec 2019 14:26:01 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C30F5B2B38;
-        Tue,  3 Dec 2019 19:15:36 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0ECDCB2BAC;
+        Tue,  3 Dec 2019 19:26:00 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 27479DA7D9; Tue,  3 Dec 2019 20:15:32 +0100 (CET)
-Date:   Tue, 3 Dec 2019 20:15:32 +0100
+        id CEE8DDA7D9; Tue,  3 Dec 2019 20:25:54 +0100 (CET)
+Date:   Tue, 3 Dec 2019 20:25:54 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: relocation: Output current relocation stage at
- btrfs_relocate_block_group()
-Message-ID: <20191203191532.GY2734@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: Opencode ordered_data_tree_panic
+Message-ID: <20191203192553.GZ2734@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20191129044059.46353-1-wqu@suse.com>
+References: <20191129093813.574-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191129044059.46353-1-wqu@suse.com>
+In-Reply-To: <20191129093813.574-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 12:40:59PM +0800, Qu Wenruo wrote:
-> There are several reports of hanging relocation, populating the dmesg
-> with things like:
->   BTRFS info (device dm-5): found 1 extents
+On Fri, Nov 29, 2019 at 11:38:13AM +0200, Nikolay Borisov wrote:
+> It's a simple wrapper over btrfs_panic and is called only once. Just
+> open code it.
 > 
-> The investigation is still on going, but will never hurt to output a
-> little more info.
-> 
-> This patch will also output the current relocation stage, making that
-> output something like:
-> 
->   BTRFS info (device dm-5): balance: start -d -m -s
->   BTRFS info (device dm-5): relocating block group 30408704 flags metadata|dup
->   BTRFS info (device dm-5): found 2 extents, stage: move data extents
->   BTRFS info (device dm-5): relocating block group 22020096 flags system|dup
->   BTRFS info (device dm-5): found 1 extents, stage: move data extents
->   BTRFS info (device dm-5): relocating block group 13631488 flags data
->   BTRFS info (device dm-5): found 1 extents, stage: move data extents
->   BTRFS info (device dm-5): found 1 extents, stage: update data pointers
->   BTRFS info (device dm-5): balance: ended with status: 0
-> 
-> This patch will not increase the number of lines, but with extra info
-> for us to debug the reported problem.
-> (Although it's very likely the bug is sticking at "update data pointers"
-> stage, even without the patch)
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Added to msic-next, thanks.
+Added to misc-next with 1st hunk dropped and fixed coding style, thanks.
