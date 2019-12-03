@@ -2,130 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E79810F467
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 02:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0398210F45F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 02:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbfLCBN3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Dec 2019 20:13:29 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43721 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbfLCBN2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 20:13:28 -0500
-Received: by mail-lj1-f196.google.com with SMTP id a13so1706153ljm.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 17:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f16wPMX3Hv5+5LpFCWWiK7eqWkk4a1TMh+b2JYuh2L4=;
-        b=KquqAkqUVTyG83FELzXx6nZWqrQom0qPebBeM3l4nUnY0IjRxfw5jl9f4rhB4P0Ys1
-         yMMjUqHh9Atftq9/aMH7vPLqvTYv5hjkMQeepjJof4arWmddxk+x0kYqi0oEsm1gm01r
-         c0+/cFEMdOFDQe0735Al7ThhTziCMU1XmN/7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f16wPMX3Hv5+5LpFCWWiK7eqWkk4a1TMh+b2JYuh2L4=;
-        b=Rvg4ciNAKrjoxh06hRfTULNQ9m1KCrbtwrRbD5pB4Z8sX8SbeLGkN1zKz/YpTSuVKW
-         jmM3KafJzEt71s5BWRLx6/kBlYIlbq5gcc41dxIG/6+7Dc7ZIj2kRx3iwjB4D3Ay/tRH
-         XLiL0bNVIHHyKmKeMbYHLXUtgL/yucVddZH9Il8iC4Rw8GOkJ9VqR1OeexVkw5if+v4e
-         jIx7lu1kzIe6iLp4zNHpc6icP5Rhzp+6BcvzTvoL9w8AZX7H+r8berj2PXu90mtsSdk8
-         0c/i8Od8sdRlzwAtpEu6lqGfzDGHMn8a3KDTzJOwGPHmI96kpjerTJ5Vs7TxWKXt6bde
-         SEYQ==
-X-Gm-Message-State: APjAAAXHm3RE+Sn1sOIEtDpwYC5QnJjxYxfwDkLZ67no6vu8MFK36zbs
-        vZM7EQDY73z5cbOo6J1oUv1ndmCn2eg=
-X-Google-Smtp-Source: APXvYqy1WrT5gtwhYSd9U4kYGCswiIS2BM8RqJwz1GKcH+IFx+md6Ck61tU76F2VKRHBKAIAkceMHA==
-X-Received: by 2002:a2e:b537:: with SMTP id z23mr932458ljm.129.1575335606540;
-        Mon, 02 Dec 2019 17:13:26 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id v5sm466692ljk.67.2019.12.02.17.13.26
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Dec 2019 17:13:26 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id e28so1715011ljo.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 17:13:26 -0800 (PST)
-X-Received: by 2002:a2e:86c4:: with SMTP id n4mr889870ljj.97.1575335193641;
- Mon, 02 Dec 2019 17:06:33 -0800 (PST)
+        id S1725954AbfLCBJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Dec 2019 20:09:16 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:48318 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbfLCBJQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 20:09:16 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB319Dfj018537;
+        Tue, 3 Dec 2019 01:09:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=X2t7Pls+qjsu7cx3oWYbrRFxKDnSdDKNAGMjyUPHhEU=;
+ b=nOChwqzyhHnmNje5eX0aI7WQIxT5P9Mc0o0+hu3Dye8l+pJD/AaH0cdL1Kyexjx88BBR
+ wxbx7c/kOLuyQo+myZEcqSqQLJI/zZlsu4LiQ5F1kH5MVcjpy5MkGV4bnC1SmYnW0RQ3
+ f3OxbVNLJ+iMvtGQCRxx5kcc9Ohrn8h1k3Up+SYwf7lu1E52XO22ZDrQr68ViGGHzJ7H
+ 4dWRZQnupvupT95DltGJp04D9DK0dcTXDNwuFMx0GOQ5vIyCV5qEl9ySTki8Slj/rQQr
+ aFG3WC1DQG0/c97g0szFKvTo4Qj04wflX5h0S0y1Nw1eIpg/Ok++TeUtLRNMTkXC+ysp wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2wkgcq3w5e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 01:09:13 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB314LIW155530;
+        Tue, 3 Dec 2019 01:09:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2wn8k1e07k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 01:09:13 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB319C3h005351;
+        Tue, 3 Dec 2019 01:09:12 GMT
+Received: from [192.168.1.145] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Dec 2019 17:09:12 -0800
+Subject: Re: [PATCH 0/6] btrfs-progs: add support for LOGICAL_INO_V2 features
+ in logical-resolve
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20191127035509.15011-1-ce3g8jdj@umail.furryterror.org>
+ <3d8298c5-bab4-67f5-2bf7-8156865d949f@oracle.com>
+ <20191202184203.GH1046@hungrycats.org>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <d885b9d7-8d6e-ba40-3e70-d5ffa97afaef@oracle.com>
+Date:   Tue, 3 Dec 2019 09:08:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20191129142045.7215-1-agruenba@redhat.com>
-In-Reply-To: <20191129142045.7215-1-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 2 Dec 2019 17:06:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
-Message-ID: <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
-Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191202184203.GH1046@hungrycats.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912030008
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912030009
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 6:21 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> +/**
-> + * page_mkwrite_check_truncate - check if page was truncated
-> + * @page: the page to check
-> + * @inode: the inode to check the page against
-> + *
-> + * Returns the number of bytes in the page up to EOF,
-> + * or -EFAULT if the page was truncated.
-> + */
-> +static inline int page_mkwrite_check_truncate(struct page *page,
-> +                                             struct inode *inode)
-> +{
-> +       loff_t size = i_size_read(inode);
-> +       pgoff_t end_index = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
 
-This special end_index calculation seems to be redundant.
 
-You later want "size >> PAGE_SHIFT" for another test, and that's
-actually the important part.
+On 12/3/19 2:42 AM, Zygo Blaxell wrote:
+> On Mon, Dec 02, 2019 at 07:02:26PM +0800, Anand Jain wrote:
+>> On 27/11/19 11:55 AM, Zygo Blaxell wrote:
+>>> This patch set adds support for LOGICAL_INO_V2 features:
+>>>
+>>>           - bigger buffer size (16M instead of 64K, default also increased to 64K)
+>>>
+>>>           - IGNORE_OFFSETS flag to look up references by extent instead of block
+>>>
+>>> If the V2 options are used, it calls the V2 ioctl; otherwise, it calls
+>>> the V1 ioctl for old kernel compatibility.
+>>>
+>>>
+>>
+>> For the whole series.
+>>
+>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>
+>> (Nit: This should be v4 as this patch was submitted before:
+>>
+>> https://lore.kernel.org/linux-btrfs/20170922175847.6071-1-ce3g8jdj@umail.furryterror.org/T/#t
+> 
+> Nit^2:  That was the kernel patch, this is a btrfs-progs patch to use
+> the kernel feature.
+> 
+> I'm assuming kernel and userspace patches get different version
+> numbering...?
 
-The "+ PAGE_SIZE - 1" case is purely to handle the "AT the page
-boundary is special" case, but since you have to calculate
-"offset_in_page(size)" anyway, that's entirely redundant - the answer
-is part of that.
+  Ah. After I commented on the kernel patch at the above link,
+  I remember seeing the progs patches which I can't find now.
+  And I got confused with the kernel patch. Ok this isn't v4.
 
-So I think it would be better to write the logic as
+Thanks, Anand
 
-        loff_t size = i_size_read(inode);
-        pgoff_t index = size >> PAGE_SHIFT;
-        int offset = offset_in_page(size);
-
-        if (page->mapping != inode->i_mapping)
-                return -EFAULT;
-
-        /* Page is wholly past the EOF page */
-        if (page->index > index)
-                return -EFAULT;
-        /* page is wholly inside EOF */
-        if (page->index < index)
-                return PAGE_SIZE;
-        /* bytes in a page? If 0, it's past EOF */
-        return offset ? offset : -PAGE_SIZE;
-
-instead. That avoids the unnecessary "round up" part, and simply uses
-the same EOF index for everything.
-
-              Linus
+>>
+>>
