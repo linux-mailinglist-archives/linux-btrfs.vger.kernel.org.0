@@ -2,116 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B29910F485
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 02:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8060C10F487
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 02:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbfLCBau (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Dec 2019 20:30:50 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38198 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbfLCBau (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 20:30:50 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB31TSLw033678;
-        Tue, 3 Dec 2019 01:30:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=kYpZsmJNXxvJfPlBe4wpFGyhVCrfHOUpOct2VpMBqTs=;
- b=WC6j2H/ZUWkBSnHIhHrnpyFgfU4PJxQHL4ppWQ1bWWgxB105GxANOGH/GPx9mD7FIY6f
- CVJlLGDL2KA+40dpQjkEQVyxa+QxiA43uwfC3BsZIOmle076T9UqvD7YwH0GYDtLzdaR
- uuHk4dkwqqwEfzbk2Wx/KsBjthF2iY3PIokeXo2GTaRPdlCJ73pbd0iso4tUMTdkygti
- cbNdvJf49vh4sFYZf7SVIe+ZKYTm9SSJJ2NqN90mzfimheCwIlD2WNZ/eKGMSbDYNnYZ
- vtB8PvK/6CBdB5WrgtcUKZyVtl997jl7fLptk5wZ6IxqpN6lxay83Aap68e2aqv/QphE CQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2wkgcq402r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 01:30:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB31NmUm127463;
-        Tue, 3 Dec 2019 01:30:40 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2wn4qnr6e7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Dec 2019 01:30:40 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB31UZ7B007854;
-        Tue, 3 Dec 2019 01:30:35 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 02 Dec 2019 17:30:35 -0800
-Subject: Re: BTRFS subvolume RAID level
-To:     waxhead@dirtcellar.net, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <494b0df1-2aab-5169-836d-e381498f64db@dirtcellar.net>
- <ed65c577-3971-8c4f-c690-83e85dd8188e@oracle.com>
- <fcbe2d91-a6ad-5b9b-fa66-aebb2edd14f1@dirtcellar.net>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <422a04ba-2e63-f951-7097-19ecc7a88c53@oracle.com>
-Date:   Tue, 3 Dec 2019 09:30:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1725919AbfLCBee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Dec 2019 20:34:34 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:37992 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbfLCBee (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Dec 2019 20:34:34 -0500
+Received: by mail-pg1-f193.google.com with SMTP id t3so782872pgl.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 17:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dwEsWzwEN/UIHTvzgTNobQ3BhxuHM+FLvbYwmp9pKM8=;
+        b=sZYbXvJDp6lNG+KqU53ZEtMO552MS94pwm8ztVlMdRcT0m76Mw9jdgEYwuaiAIDbyT
+         9GkVO9M39BZ9bMNb14XjFPQe/3pu/6DB1/1DTygqbrUupLl5Lyo8CLlSMJ2lxH4jpT6p
+         ScVJmYKT+0OloIhmRXxVzJ/1m2I4hDpbiwNZAMb7GZLzLHefrJ6YnL0rparzxAdqVyag
+         gtGMFbG8DMJd2ID9Ho8Sy/jDgKi0/ZljkDOuT2G3cfngHJ541QHwwEr42csMAc8XDKlM
+         dHnAGTcbKbEkmFpp/Fv7GujTmSQ14Fur0Ao4nGELKLw+tbXFbnqOH3FK5T32P/IGvVgF
+         pLMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dwEsWzwEN/UIHTvzgTNobQ3BhxuHM+FLvbYwmp9pKM8=;
+        b=R25CwqB0Mf6jDVaDeR5DcY664ewXDEw0dsEtcWBE5RZzZFb4HHxZ2JKcZym1HgboMy
+         FlnCbZfbjjFv5gNArfDul7NI6VV/4jNKUcVnCealI0WkB0gyLLkF8px6rf3g9Npy/dOh
+         +sJjr4XIcsyi3p1iBjPg+GMTCweCZcm5Hkz+aOSVmFpahkDjzQp6IHru4VfUgwpiKnQx
+         XRiyfmZvzxlq+EaEXywsWdS5YpZUAAxGkswuR2vWsZdmJzLVsEmX/Rc4KTf5NB2/yH6n
+         Db7iUlCoEw10M4MAQrWNFb2CGho/H//nGGeLp4yqLIOAWAVpGm+OHM8HHWwe6N+frOH9
+         ix0g==
+X-Gm-Message-State: APjAAAUtfC50HUxgyS93WRusPW/8EWpW8wobCGbg3Lw3cc3wsFvFYUiC
+        QJjed5Y5mJSkTzciEPK/FilIycuW1BkLkg==
+X-Google-Smtp-Source: APXvYqzByuzTiwi7lf22Jlh7WLT8xHovYW/YFD6/rarni+Xi/pmOHrKgAvZtghrOdP869bhlni747g==
+X-Received: by 2002:a63:1b1f:: with SMTP id b31mr2479585pgb.177.1575336872519;
+        Mon, 02 Dec 2019 17:34:32 -0800 (PST)
+Received: from vader.thefacebook.com ([2620:10d:c090:180::6ddc])
+        by smtp.gmail.com with ESMTPSA id u65sm800242pfb.35.2019.12.02.17.34.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2019 17:34:31 -0800 (PST)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH 0/9] btrfs: miscellaneous cleanups
+Date:   Mon,  2 Dec 2019 17:34:16 -0800
+Message-Id: <cover.1575336815.git.osandov@fb.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <fcbe2d91-a6ad-5b9b-fa66-aebb2edd14f1@dirtcellar.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912030011
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912030012
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Omar Sandoval <osandov@fb.com>
 
+Hi,
 
-On 12/3/19 7:27 AM, waxhead wrote:
-> 
-> 
-> Anand Jain wrote:
->>
->>> I imagine that RAIDc4 for example could potentially give a grotesque 
->>> speed increase for parallel read operations once BTRFS learns to 
->>> distribute reads to the device with the least waitqueue / fastest 
->>> devices.
->>
->>   That exactly was the objective of the Readmirror patch in the ML.
->>   It proposed a framework to change the readmirror policy as needed.
->>
->> Thanks, Anand
-> 
-> Indeed. If I remember correctly your patch allowed for deterministic 
-> reading from certain devices.
-  It provides a framework to configure the readmirror policies. And the
-  policies can be based on io-depth, pid, or manual for heterogeneous
-  devices with different latency.
+This series includes several cleanups. Patches 1-3 are the standalone
+cleanups from my RWF_ENCODED series [1] (as requested by Dave). Patches
+4-8 clean up code rot in the writepage codepath. Patch 9 is a trivial
+cleanup in find_free_extent.
 
-> As just a regular btrfs user the problem I 
-> see with this is that you loose a "potential free scrub" that *might* 
-> otherwise happen from often read data. On the other hand that is what 
-> manual scrubbing is for anyway.
+Based on misc-next.
 
-  Ha ha.
+Thanks!
 
-  When it comes to data and its reliability and availability we need
-  guarantee and only deterministic approach can provide it.
+1: https://lore.kernel.org/linux-btrfs/cover.1574273658.git.osandov@fb.com/
 
-  What you are asking for is to route the particular block to
-  the device which was not read before so to avoid scrubbing or to
-  make scrubbing more intelligent to scrub only old never read blocks
-  - this will be challenging we need to keep history of block and the
-  device it used for read - most likely a scope for the bpf based
-  external tools but definitely not with in kernel. With in kernel
-  we can create readmirror like framework so that external tool can
-  achieve it.
+Omar Sandoval (9):
+  btrfs: get rid of trivial __btrfs_lookup_bio_sums() wrappers
+  btrfs: remove dead snapshot-aware defrag code
+  btrfs: make btrfs_ordered_extent naming consistent with
+    btrfs_file_extent_item
+  btrfs: remove unnecessary pg_offset assignments in
+    __extent_writepage()
+  btrfs: remove trivial goto label in __extent_writepage()
+  btrfs: remove redundant i_size check in __extent_writepage_io()
+  btrfs: drop create parameter to btrfs_get_extent()
+  btrfs: simplify compressed/inline check in __extent_writepage_io()
+  btrfs: remove struct find_free_extent.ram_bytes
 
+ fs/btrfs/compression.c       |   4 +-
+ fs/btrfs/ctree.h             |   6 +-
+ fs/btrfs/disk-io.c           |   4 +-
+ fs/btrfs/disk-io.h           |   4 +-
+ fs/btrfs/extent-tree.c       |   2 -
+ fs/btrfs/extent_io.c         |  42 +-
+ fs/btrfs/extent_io.h         |   6 +-
+ fs/btrfs/file-item.c         |  39 +-
+ fs/btrfs/file.c              |  23 +-
+ fs/btrfs/inode.c             | 801 +++--------------------------------
+ fs/btrfs/ioctl.c             |   2 +-
+ fs/btrfs/ordered-data.c      |  69 ++-
+ fs/btrfs/ordered-data.h      |  26 +-
+ fs/btrfs/relocation.c        |   5 +-
+ include/trace/events/btrfs.h |   6 +-
+ 15 files changed, 171 insertions(+), 868 deletions(-)
 
-Thanks, Anand
+-- 
+2.24.0
+
