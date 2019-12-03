@@ -2,283 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACA610F93A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 08:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580CF10F94F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Dec 2019 08:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727551AbfLCHrG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Dec 2019 02:47:06 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:43344 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbfLCHrG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Dec 2019 02:47:06 -0500
-Received: by mail-pj1-f67.google.com with SMTP id g4so1167140pjs.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 23:47:05 -0800 (PST)
+        id S1727510AbfLCHwo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Dec 2019 02:52:44 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:34403 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbfLCHwo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Dec 2019 02:52:44 -0500
+Received: by mail-pf1-f194.google.com with SMTP id n13so1445223pff.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Dec 2019 23:52:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=RzFgH0t2/tGgc3tkkZGZS2S/c43mqydH8uRXaQzXTEw=;
-        b=vBD41ysR0B8fggWZ18RMZ6JovdrelE7JIK0PlKEFhOepOtmNOGiKLN2eXqwqufLmlj
-         32/6JdMzfmupa6NjdkIxRM+RWiZYWPGghcHwCAHQWvGU1wBTO11mZiRWXEFoIjkFeGRF
-         ABsLUQ0ysfsOW0ECztAniH4jdF+EjfiHtsqMuubMZzNTT0TWUT7x5eNsCPN2XSSNrNcU
-         NUN9Etaz/qULcxtrdZ0+ppgQrhdggaQAOQ6aRzCMwlXymjIykvk06wT9VkKduip3sx6a
-         +EkDLSl31Am6E+ekjH5OHzw3OjFAoJd0ShnRIQqR/cR19qEjT4KmGYRMaU7qlMK4oCcs
-         5GpQ==
+        bh=5o2tlvcWEzBRNfbWj++og9/XAB65hoZ4kzJK+w5MHK0=;
+        b=u6yNhP0bH37Ezd9zi1rdnNGEDWpGNuQz5xXTWKCwrpQZttx1ZKU43uTFUVMGGU5aSU
+         1+WPp+ur2RTHkbkzP5VuorrhwVtYEX6YfI8l8fdpC3fwvqg5ktOHEOUNW9SlAzyFdaMB
+         jj+NFbcz0SJA6oBliV2XTXs7tUPWvsXIMfsrzkch4X7DuoCXPgKlw9dqq+qLGp9iLU46
+         5bB7s9a+2BQleGHEquIZC6I4hF+clAVMSr/++mU1I7sNXvAnVawYXWLfPq2X8r/GlR2k
+         nM2V4098mA6BFzzd1Pedc48MQwxdWtfT7K8y4xHu/Y5ZChwbrVEzvCNCg8HKqn/4UdB4
+         6+JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RzFgH0t2/tGgc3tkkZGZS2S/c43mqydH8uRXaQzXTEw=;
-        b=NtecIJafw+rVybKDD7GPdgzHXzCGpHchvj+jADPHHjYOK13EdVGnqWEWo87pR518Uv
-         0rkep9zjWgEMURZhHypIBSupB/keEyG1WQhTcJRVd5BxHWzepaqE6XFcbANJkdlQW9s+
-         WQRIy7WKAnPEP9cl9e2AQeZx5TmgKAmY2S4Tcuxyt+ShAx7HtpVh1jZ9f83jENlx8QUm
-         X/DDnBlawh2gR3GqA6NkEfpbZVFuGXB0/rHN1Rs9AmgeXfEz+6T+h2Gl210/ZRKkA5eI
-         YaQz37TLReL4RW1yM67GsAmYITDlateQzzOf1hyPTPmhklmw+civ3iap2tBPAv19wXTi
-         0oBg==
-X-Gm-Message-State: APjAAAXMQDN35BIbjhVzdqlPMRNyh3NO/AKtdDsFo5POx+tjC7701I/d
-        DHTQlKlafTk4Gmnc4IcPYgVybrH5v+Vm2A==
-X-Google-Smtp-Source: APXvYqw5ZwDttpYAHWa7YMJsrKR9Sfxb80j6Zx1Cpi61vaFmTVOk3uyVUV4nN17EGz6yXpRl/whPpQ==
-X-Received: by 2002:a17:902:9b83:: with SMTP id y3mr3603512plp.111.1575359224250;
-        Mon, 02 Dec 2019 23:47:04 -0800 (PST)
+        bh=5o2tlvcWEzBRNfbWj++og9/XAB65hoZ4kzJK+w5MHK0=;
+        b=IGluJG4BX0oSjuu25/ZbOG+jKZTEx+1Fs6IbvEpKs4jKpoyP1iOPET00Xly4v8HKSs
+         75ZwXRH0BZ57vp4hdSPqTtacVqyXZ/9KiUo6kfABEZc3zOG+qRKbl7NdpXLoXtU34LI6
+         kuxSatJPYY6X5l6zPh4bzkTAPr+iGRSuhX6bczdyuOIRk1N6eqiYY+EDpB3OFHB7nBK5
+         1iwa/Xq4j8nQoUUlaP8kSE+iAvgBH2GsFKMwI/x5YX8R4D5n7S/Ru+yowBCNahi7DqCU
+         IFjPywNghZh/nmRaDrxARDcFQRQpTiGyvZkYqF80UrYsJGCpiUrO6myJRDxOTi6K64oT
+         Yy2Q==
+X-Gm-Message-State: APjAAAX/NYIAFkBPL334gaWam9iwUaaP0tRzxVYHgGD3ZIOrZvj9GYot
+        iYVjawxExC+kYm2V7t4RJwnAgA==
+X-Google-Smtp-Source: APXvYqw10Zb4s5nOdklnVCMrfzePmGDUkUgLPRCy838nYuTwPgVnEGyBJ4vX13HCaXOJIfyhSWJQdw==
+X-Received: by 2002:a63:6787:: with SMTP id b129mr3986325pgc.103.1575359562751;
+        Mon, 02 Dec 2019 23:52:42 -0800 (PST)
 Received: from vader ([2620:10d:c090:180::c0f1])
-        by smtp.gmail.com with ESMTPSA id n15sm2238488pgf.17.2019.12.02.23.47.03
+        by smtp.gmail.com with ESMTPSA id r62sm2531427pfc.89.2019.12.02.23.52.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 23:47:03 -0800 (PST)
-Date:   Mon, 2 Dec 2019 23:47:02 -0800
+        Mon, 02 Dec 2019 23:52:42 -0800 (PST)
+Date:   Mon, 2 Dec 2019 23:52:40 -0800
 From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: Re: [PATCH 7/9] btrfs: drop create parameter to btrfs_get_extent()
-Message-ID: <20191203074702.GA829117@vader>
-References: <cover.1575336815.git.osandov@fb.com>
- <3012e96179bf1427eca8e26332c7c4475f31c76b.1575336816.git.osandov@fb.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Simplify len alignment calculation
+Message-ID: <20191203075240.GB829117@vader>
+References: <20191129093807.525-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3012e96179bf1427eca8e26332c7c4475f31c76b.1575336816.git.osandov@fb.com>
+In-Reply-To: <20191129093807.525-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 05:34:23PM -0800, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Fri, Nov 29, 2019 at 11:38:07AM +0200, Nikolay Borisov wrote:
+> Use ALIGN() directly rather than achieving the same thing in a roundabout way.
+> No semantic changes.
 > 
-> We only pass this as 1 from __extent_writepage_io(). The parameter
-> basically means "pretend I didn't pass in a page". This is silly since
-> we can simply not pass in the page. Get rid of the parameter from
-> btrfs_get_extent(), and since it's used as a get_extent_t callback,
-> remove it from get_extent_t and btree_get_extent(), neither of which
-> need it.
-> 
-> While we're here, let's document btrfs_get_extent().
-> 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > ---
->  fs/btrfs/ctree.h     |  2 +-
->  fs/btrfs/disk-io.c   |  4 ++--
->  fs/btrfs/disk-io.h   |  4 ++--
->  fs/btrfs/extent_io.c |  6 +++---
->  fs/btrfs/extent_io.h |  6 ++----
->  fs/btrfs/file.c      | 17 ++++++++---------
->  fs/btrfs/inode.c     | 41 ++++++++++++++++++++++++-----------------
->  fs/btrfs/ioctl.c     |  2 +-
->  8 files changed, 43 insertions(+), 39 deletions(-)
+>  fs/btrfs/delalloc-space.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+> index 4cdac4d834f5..c08e905b0424 100644
+> --- a/fs/btrfs/delalloc-space.c
+> +++ b/fs/btrfs/delalloc-space.c
+> @@ -142,8 +142,7 @@ int btrfs_check_data_free_space(struct inode *inode,
+>  	int ret;
+> 
+>  	/* align the range */
+> -	len = round_up(start + len, fs_info->sectorsize) -
+> -	      round_down(start, fs_info->sectorsize);
+> +	len = ALIGN(len, fs_info->sectorsize);
 
-I missed the sanity tests. This needs the following folded in (which I
-can do if I have to resend this series):
-
-diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
-index 09ecf7dc7b08..bb8efc5ce9e3 100644
---- a/fs/btrfs/tests/inode-tests.c
-+++ b/fs/btrfs/tests/inode-tests.c
-@@ -263,7 +263,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 
- 	/* First with no extents */
- 	BTRFS_I(inode)->root = root;
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, sectorsize);
- 	if (IS_ERR(em)) {
- 		em = NULL;
- 		test_err("got an error when we shouldn't have");
-@@ -283,7 +283,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	 */
- 	setup_file_extents(root, sectorsize);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, (u64)-1, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, (u64)-1);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -305,7 +305,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -333,7 +333,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -356,7 +356,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* Regular extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -384,7 +384,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* The next 3 are split extents */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -413,7 +413,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -435,7 +435,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -469,7 +469,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* Prealloc extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -498,7 +498,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* The next 3 are a half written prealloc extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -528,7 +528,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -561,7 +561,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -596,7 +596,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* Now for the compressed extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -630,7 +630,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* Split compressed extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -665,7 +665,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -692,7 +692,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -727,8 +727,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	/* A hole between regular extents but no hole extent */
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset + 6,
--			sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset + 6, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -755,7 +754,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, SZ_4M, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, SZ_4M);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -788,7 +787,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
- 	offset = em->start + em->len;
- 	free_extent_map(em);
- 
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, offset, sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -872,7 +871,7 @@ static int test_hole_first(u32 sectorsize, u32 nodesize)
- 	insert_inode_item_key(root);
- 	insert_extent(root, sectorsize, sectorsize, sectorsize, 0, sectorsize,
- 		      sectorsize, BTRFS_FILE_EXTENT_REG, 0, 1);
--	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, 2 * sectorsize, 0);
-+	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, 0, 2 * sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
-@@ -895,7 +894,7 @@ static int test_hole_first(u32 sectorsize, u32 nodesize)
- 	free_extent_map(em);
- 
- 	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, sectorsize,
--			2 * sectorsize, 0);
-+			      2 * sectorsize);
- 	if (IS_ERR(em)) {
- 		test_err("got an error when we shouldn't have");
- 		goto out;
+Consider sectorsize = 4096, start = 4095, len = 2. This range spans two
+blocks, which is what the original compuation gives. Yours returns one
+block instead.
