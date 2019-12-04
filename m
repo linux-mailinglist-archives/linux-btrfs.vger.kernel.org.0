@@ -2,196 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D87B112E9F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 16:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641F3112EF1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 16:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbfLDPhm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 10:37:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59098 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728353AbfLDPhl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Dec 2019 10:37:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 84F7BAF81;
-        Wed,  4 Dec 2019 15:37:39 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 16:37:32 +0100
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 02/28] btrfs: Get zone information of zoned block
- devices
-Message-ID: <20191204153732.GA2083@Johanness-MacBook-Pro.local>
-References: <20191204081735.852438-1-naohiro.aota@wdc.com>
- <20191204081735.852438-3-naohiro.aota@wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191204081735.852438-3-naohiro.aota@wdc.com>
+        id S1728086AbfLDPue convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 4 Dec 2019 10:50:34 -0500
+Received: from [185.35.77.55] ([185.35.77.55]:34771 "EHLO mail.megacandy.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1727878AbfLDPue (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Dec 2019 10:50:34 -0500
+Received: from [192.168.10.160] (26.51-174-238.customer.lyse.net [51.174.238.26])
+        (Authenticated sender: gardv@megacandy.net)
+        by mail.megacandy.net (Postfix) with ESMTPSA id B58C142BD04
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Dec 2019 15:50:32 +0000 (GMT)
+From:   Gard Vaaler <gardv@megacandy.net>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
+Subject: Re: Unrecoverable corruption after loss of cache
+Date:   Wed, 4 Dec 2019 16:50:31 +0100
+References: <7D7AA867-8B53-4CD5-83EF-95EABAD2A77C@megacandy.net>
+To:     linux-btrfs@vger.kernel.org
+In-Reply-To: <7D7AA867-8B53-4CD5-83EF-95EABAD2A77C@megacandy.net>
+Message-Id: <F7C74BD8-4505-4E74-81F2-EB0D603ABCEC@megacandy.net>
+X-Mailer: Apple Mail (2.3601.0.10)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 05:17:09PM +0900, Naohiro Aota wrote:
-[..]
+> 1. des. 2019 kl. 18:27 skrev Gard Vaaler <gardv@megacandy.net>:
+> 
+> Trying to recover a filesystem that was corrupted by losing writes due to a failing caching device, I get the following error:
+>> ERROR: child eb corrupted: parent bytenr=2529690976256 item=0 parent level=2 child level=0
+> 
+> Trying to zero the journal or reinitialising the extent tree yields the same error. Is there any way to recover the filesystem?
 
-> +#define LEN (sizeof(device->fs_info->sb->s_id) + sizeof("(device )") - 1)
-> +	char devstr[LEN];
-> +	const int len = LEN;
-> +#undef LEN
+Update: using 5.4, btrfs claims to have zeroed the journal:
 
-Why not:
-	const int len = sizeof(device->fs_info->sb->s_id)
-					+ sizeof("(device )") - 1;
-	char devstr[len];
+> [liveuser@localhost-live btrfs-progs-5.4]$ sudo ./btrfs rescue zero-log /dev/bcache0
+> Clearing log on /dev/bcache0, previous log_root 2529694416896, level 0
 
-But that's bikeshedding territory I admit.
+... but still complains about the journal on mount:
 
-> +
-> +	if (!bdev_is_zoned(bdev))
-> +		return 0;
-> +
-> +	zone_info = kzalloc(sizeof(*zone_info), GFP_KERNEL);
-> +	if (!zone_info)
-> +		return -ENOMEM;
-> +
-> +	zone_sectors = bdev_zone_sectors(bdev);
-> +	ASSERT(is_power_of_2(zone_sectors));
-> +	zone_info->zone_size = (u64)zone_sectors << SECTOR_SHIFT;
-> +	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
-> +	zone_info->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
-> +	if (nr_sectors & (bdev_zone_sectors(bdev) - 1))
-> +		zone_info->nr_zones++;
+> [  703.964344] BTRFS info (device bcache1): disk space caching is enabled
+> [  703.964347] BTRFS info (device bcache1): has skinny extents
+> [  704.215748] BTRFS error (device bcache1): parent transid verify failed on 2529691090944 wanted 319147 found 310171
+> [  704.216131] BTRFS error (device bcache1): parent transid verify failed on 2529691090944 wanted 319147 found 314912
+> [  704.216137] BTRFS error (device bcache1): failed to read block groups: -5
+> [  704.227110] BTRFS error (device bcache1): open_ctree failed
 
-You've already cached the return of bdev_zone_sectors(bdev) in
-zone_sectors at the beginning of this block and if (x & (y-1)) is the
-IS_ALIGNED() macro so the above should really be:
-	if (!IS_ALIGNED(nr_sectors, zone_sectors))
-		zone_info->nr_zones++;
+-- 
+Gard
 
-
-> +
-> +	zone_info->seq_zones = kcalloc(BITS_TO_LONGS(zone_info->nr_zones),
-> +				       sizeof(*zone_info->seq_zones),
-> +				       GFP_KERNEL);
-
-	zone_info->seq_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
-
-> +	if (!zone_info->seq_zones) {
-> +		ret = -ENOMEM;
-> +		goto free_zone_info;
-> +	}
-> +
-> +	zone_info->empty_zones = kcalloc(BITS_TO_LONGS(zone_info->nr_zones),
-> +					 sizeof(*zone_info->empty_zones),
-> +					 GFP_KERNEL);
-	
-	zone_info->empty_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
-
-> +	if (!zone_info->empty_zones) {
-> +		ret = -ENOMEM;
-> +		goto free_seq_zones;
-> +	}
-> +
-> +	zones = kcalloc(BTRFS_REPORT_NR_ZONES,
-> +			sizeof(struct blk_zone), GFP_KERNEL);
-> +	if (!zones) {
-> +		ret = -ENOMEM;
-> +		goto free_empty_zones;
-> +	}
-> +
-
-I personally would set nreported = 0 here instead in the declaration block. I
-had to scroll up to see what's the initial value, so I think it makes more
-sense to initialize it to 0 here.
-
-> +	/* Get zones type */
-> +	while (sector < nr_sectors) {
-> +		nr_zones = BTRFS_REPORT_NR_ZONES;
-> +		ret = btrfs_get_dev_zones(device, sector << SECTOR_SHIFT, zones,
-> +					  &nr_zones);
-> +		if (ret)
-> +			goto free_zones;
-> +
-> +		for (i = 0; i < nr_zones; i++) {
-> +			if (zones[i].type == BLK_ZONE_TYPE_SEQWRITE_REQ)
-> +				set_bit(nreported, zone_info->seq_zones);
-> +			if (zones[i].cond == BLK_ZONE_COND_EMPTY)
-> +				set_bit(nreported, zone_info->empty_zones);
-> +			nreported++;
-> +		}
-> +		sector = zones[nr_zones - 1].start + zones[nr_zones - 1].len;
-> +	}
-> +
-> +	if (nreported != zone_info->nr_zones) {
-> +		btrfs_err_in_rcu(device->fs_info,
-> +				 "inconsistent number of zones on %s (%u / %u)",
-> +				 rcu_str_deref(device->name), nreported,
-> +				 zone_info->nr_zones);
-> +		ret = -EIO;
-> +		goto free_zones;
-> +	}
-> +
-> +	kfree(zones);
-> +
-> +	device->zone_info = zone_info;
-> +
-> +	devstr[0] = 0;
-> +	if (device->fs_info)
-> +		snprintf(devstr, len, " (device %s)",
-> +			 device->fs_info->sb->s_id);
-> +
-> +	rcu_read_lock();
-> +	pr_info(
-> +"BTRFS info%s: host-%s zoned block device %s, %u zones of %llu sectors",
-> +		devstr,
-> +		bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : "aware",
-> +		rcu_str_deref(device->name), zone_info->nr_zones,
-> +		zone_info->zone_size >> SECTOR_SHIFT);
-> +	rcu_read_unlock();
-
-btrfs_info_in_rcu()?
-
-> +
-> +	return 0;
-> +
-> +free_zones:
-> +	kfree(zones);
-> +free_empty_zones:
-> +	kfree(zone_info->empty_zones);
-	
-	bitmap_free(zone_info->empty_zones);
-
-> +free_seq_zones:
-> +	kfree(zone_info->seq_zones);
- 	
-	bitmap_free(zone_info->seq_zones);
-
-> +free_zone_info:
-> +	kfree(zone_info);
-> +
-> +	return ret;
-> +}
-> +
-> +void btrfs_destroy_dev_zone_info(struct btrfs_device *device)
-> +{
-> +	struct btrfs_zoned_device_info *zone_info = device->zone_info;
-> +
-> +	if (!zone_info)
-> +		return;
-> +
-> +	kfree(zone_info->seq_zones);
-> +	kfree(zone_info->empty_zones);
-
-	bitmap_free(zone_info->seq_zones);
-	bitmap_free(zone_info->empty_zones);
-
-Thanks,
-	Johannes
