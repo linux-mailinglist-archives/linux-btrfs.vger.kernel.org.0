@@ -2,78 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D951130B0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 18:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316E71130FC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 18:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbfLDRWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 12:22:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47756 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727033AbfLDRWl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Dec 2019 12:22:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 88BF6B11A;
-        Wed,  4 Dec 2019 17:22:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 40FE5DA786; Wed,  4 Dec 2019 18:22:34 +0100 (CET)
-Date:   Wed, 4 Dec 2019 18:22:34 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 02/28] btrfs: Get zone information of zoned block
- devices
-Message-ID: <20191204172234.GI2734@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20191204081735.852438-1-naohiro.aota@wdc.com>
- <20191204081735.852438-3-naohiro.aota@wdc.com>
- <20191204153732.GA2083@Johanness-MacBook-Pro.local>
+        id S1728054AbfLDRnD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 12:43:03 -0500
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:39015 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbfLDRnC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 12:43:02 -0500
+Received: by mail-lj1-f173.google.com with SMTP id e10so269065ljj.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 09:43:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=AqMj6FDiFI4TwPB5GhHJClklxkYRJHed2sUujgB5lKM=;
+        b=kL6dGSAN/f9gSZ35g3GWKjaB/oLwMQPQAR+cKzzbyViEAgqzY2JDi0kmEEJyyhLZws
+         sf5OIkaBfcod5eD1HWgKNFSwp0A7q/1ZSxqlklsxfSSRjEHjqHnMo7ElRY+gRVy4IoBP
+         CdQMoFQ9iq/tRFPBR/DisFb2VOs2iXV1k6s/UG/ULLNq9+q66vokllwUPPnEfXgVz00T
+         1jDj9BRh2TJPq8hDjGclRXMbvIHCh4HFGs6PES1s+BT6XZBjuQuLBwOQbD2Sm2wpSHF+
+         LLAY3tFZ3Epap356YY2tf6hMs8YreOeNhPVvhJy28jjTumedGwjq43jxkw5oR5x8DIkZ
+         bw5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=AqMj6FDiFI4TwPB5GhHJClklxkYRJHed2sUujgB5lKM=;
+        b=stGGEffYZBfi5giwYfhpEYaeCq8PY3a/9S/uNcEykDpWvlUayppWLmOjZiX7xEopYo
+         0mERz41WuDJc5pPW37NpvN89tFgW6DyFxEWze9L/g9k7aosW3tNBIzmwo0qTnRf0Qrg0
+         aW9fcl0FvYBrU+hyfxPn9J1xnDfg6N296kQJHbfqiAAfF5a4Td9rVSypgsA7wrm5qgsE
+         n/WUIDbEVLCmpW/csrcMlREm/+BehMYPku/SlPz1Tuc4ej4eNc54v4aQP5PoG4Go0D/l
+         LwsmIct5DRPVhRiMa3LqC5XRsQV3hlJuPu4DyHGo084SXHEHtlmjyiwPM+/4sWHKKtQp
+         T/Jw==
+X-Gm-Message-State: APjAAAUOsuCvdXqH7OTHbRw4P04svj/OaZQmWlDov/QpZSvndhjvc7Jr
+        hMl3s1qVhQs0qaEF/H8owKe/B9OVAcZ3ySsVMzInxZlk
+X-Google-Smtp-Source: APXvYqz15KoCx2I/TJMdgLY7FpUVm45EDiN/Um1wU+nbbzGVGTRYF+sSianMIt5ybI1Ib8RsBUqSZ78nc2vL2ObX3Cw=
+X-Received: by 2002:a2e:7816:: with SMTP id t22mr2793559ljc.161.1575481380997;
+ Wed, 04 Dec 2019 09:43:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191204153732.GA2083@Johanness-MacBook-Pro.local>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   pk <pkoroau@gmail.com>
+Date:   Wed, 4 Dec 2019 18:42:50 +0100
+Message-ID: <CAMNwjE+xs55e6qQLuG-YiwHb3dyq915hRqsnm_c5j9fcvwT5uA@mail.gmail.com>
+Subject: ping for null pointer dereference (cppcheck)
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 04:37:32PM +0100, Johannes Thumshirn wrote:
-> On Wed, Dec 04, 2019 at 05:17:09PM +0900, Naohiro Aota wrote:
-> [..]
-> 
-> > +#define LEN (sizeof(device->fs_info->sb->s_id) + sizeof("(device )") - 1)
-> > +	char devstr[LEN];
-> > +	const int len = LEN;
-> > +#undef LEN
-> 
-> Why not:
-> 	const int len = sizeof(device->fs_info->sb->s_id)
-> 					+ sizeof("(device )") - 1;
-> 	char devstr[len];
-
-len is used only once for snprintf to devstr, so there it can be
-replaced by sizeof(devstr) and the sizeof()+sizeof() can be used for
-devstr declaration.
-
-The size of devstr seems to be one byte shorter than needed:
-
-> > +		snprintf(devstr, len, " (device %s)",
-> > +			 device->fs_info->sb->s_id);
-
-There's a leading " " at the begining that I don't see accounted for.
+https://bugzilla.kernel.org/show_bug.cgi?id=205003
