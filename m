@@ -2,378 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50275112B26
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 13:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E54112BA9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 13:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727537AbfLDMPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 07:15:37 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41246 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727445AbfLDMPg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 07:15:36 -0500
-Received: by mail-lj1-f196.google.com with SMTP id h23so7808400ljc.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 04:15:34 -0800 (PST)
+        id S1727798AbfLDMm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 07:42:59 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43942 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727779AbfLDMm6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 07:42:58 -0500
+Received: by mail-qt1-f196.google.com with SMTP id q8so7536321qtr.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 04:42:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vWnht6CTOsskn3bt1G12tnqOg3gYH7AU+SyNT03jxRE=;
-        b=RU9bXTFU9xZckgMse432oK5kwfBw+93B3UyjSYOpj0Izzi8rme1uDXl6PBaZrhBWhG
-         Jr4jkvnp1YqxO4Rpbvxyp6bUT2A6uvPOrydGRnWQaIt6z2ApcAk9+8baIJMhgtIs1LV0
-         /Kn/0rKgZis12is/xYxLunpG1ga57ahZTDTGR1TS/OiNHJnS0SAIXO4E8Jrhrz3r5wkx
-         F36t+4A1r6LJHyXHb1Fgallq6VjaakA1bAoRAzzy1GEzchad9oZnG4Nwrj6puHPktaFN
-         PTSIx367Jhrc/L+/h/kdOgf5L5R3la4bi/EB9x+OifWNP5HGqCDM9SIhlu5MAWHr+H0r
-         IKnw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=AkbuvF8WWOeGkFuNbpEiUPeHs0D9XYCrvYJnn3sJBPk0l/N+bAJ+lU7by52a8c0/XL
+         X5y/+uJVi5SRPzgKpD7LZp2RSO63H/dWhNB+Sgv8CnTmnW6HnNvEkrD3pvFKiHue+ji0
+         Cyct4Vs7hozR5hYKDh8cJJMkT72K9aPHj93bK1Ew++bIIM698i5hGwNXpwVN8RyOlTlg
+         ekVZP06isuUhwZwFxkLwU0Sye3HMnEDkq9yUmWZzxA1JTm8RzibEufZxYTJilauyHwzc
+         pKJFDkaXtzzvkeOyU7ajhljX9QykaA8Ur2FHYJunK1Sxosbxld4ODKAYs9j7AB06Aipc
+         jW5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vWnht6CTOsskn3bt1G12tnqOg3gYH7AU+SyNT03jxRE=;
-        b=B1W9NL/ZacCghUPW29ODhfcoO7NUfCd3iAuFzP4IH5R8F39j62EfuWRZ3HDl+FWP6+
-         7eryQVDHCkYdmhaSzEGoJRbHBTKXZ53svjukV/eOL4UEjFozFldkydLoKq1ppsdLMt1S
-         4UhsuGOWhZMKvRv9o+a9u2mpp9Xc2m//vRKxyzN75eHG6yNK5nyDp1z0dc34mFpxuV4t
-         YBczUNZLDLA0SIzlwBW8TDhZMtUIa0bsVndCTc477hALiO2RhKT0K4dw2b42OUCZem8A
-         1TxDU2z6FclQtcvacKQeGYhWHc4KY+WWP/eh62vAMF9jp6yD8XAjDjzbgQjOZ6Y0fWOq
-         9E+A==
-X-Gm-Message-State: APjAAAXI4CrhDvQ/rk4Hk9vMWRC4o6j+Md29BsLKvGvIS/fxo/STVZXM
-        9pNTmA7POo82lVK1mP3ECoehEA==
-X-Google-Smtp-Source: APXvYqw4ahdS3HQxyxs5HGPSvr3lkLVW9VkMG/JFwPdiWdvIU8pjfSdJDK3dGLzNOnh9lstsrhw/sw==
-X-Received: by 2002:a2e:9a51:: with SMTP id k17mr1718757ljj.206.1575461734019;
-        Wed, 04 Dec 2019 04:15:34 -0800 (PST)
-Received: from msk1wst115n.omp.ru (mail.omprussia.ru. [5.134.221.218])
-        by smtp.gmail.com with ESMTPSA id m13sm3207063lfk.94.2019.12.04.04.15.32
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Dec 2019 04:15:33 -0800 (PST)
-Message-ID: <5eb099b6886358f3a478658e25a26a42ab674e7f.camel@dubeyko.com>
-Subject: Re: [PATCH] libblkid: implement zone-aware probing for HMZONED btrfs
-From:   Vyacheslav Dubeyko <slava@dubeyko.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Date:   Wed, 04 Dec 2019 15:15:32 +0300
-In-Reply-To: <20191204083023.861495-1-naohiro.aota@wdc.com>
-References: <20191204082513.857320-1-naohiro.aota@wdc.com>
-         <20191204083023.861495-1-naohiro.aota@wdc.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=EmPEeUe+s7tMy+J3Riz2w3/y5BgydjVxRf7/KMK06zNYCtTVfsERbdWwM/H0J4URa3
+         afCD53IMTMyR5Tc5GVxdGBGzBAHg4iVdQAxn18RI/NSggmLQUehgbfnDRHM2k/KnckkQ
+         ISkx0ljyxx2/CiSl1yw6qYpvygXLTMiInOA/0W7AB08F2VEcsvQ2G1ehYtzdS5JfUU53
+         5302Esmv0gkALesp45mSKD2xScXtb+dJsoiRqic6+8Pm3rYnWJCfZlJSYty6HYZYSmdR
+         RzcnLok61/0HdGHRPRdkKN5trpbPwRX0fzg1NqDM1GH0c0sw+LJM+5Kj0Q7XYp43MIJJ
+         E6dQ==
+X-Gm-Message-State: APjAAAW/BxY39ed/dm3cQghwdsOy8LhyEEUheh2vRSSLmQ0dQmimSaXZ
+        wN+PxmUWhVXJhbrBlotx9Rn+j3iP5g2OU0yBfy0=
+X-Google-Smtp-Source: APXvYqzw3gCG5cnmI6368TWfhjS/+LLSHd6b95oZCOsPTpsAjIN23auDStB1pQ1PTnMah1qk6gl8uYsnTPaZ7k01uH0=
+X-Received: by 2002:ac8:4a81:: with SMTP id l1mr2434940qtq.357.1575463377714;
+ Wed, 04 Dec 2019 04:42:57 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:ac8:2f0c:0:0:0:0:0 with HTTP; Wed, 4 Dec 2019 04:42:57 -0800 (PST)
+Reply-To: moneygram.1820@outlook.fr
+From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" 
+        <westernunion.benin982@gmail.com>
+Date:   Wed, 4 Dec 2019 13:42:57 +0100
+Message-ID: <CAP=nHBJXiPmPL21x=_0BHWRk_3N3Yax+tTxcFi=t=AhN7g==1Q@mail.gmail.com>
+Subject: God has remembered your prayers I have already sent you Money Gram
+ payment of $5000.00 today, MG 1029-8096
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2019-12-04 at 17:30 +0900, Naohiro Aota wrote:
-> This is a proof-of-concept patch to make libblkid zone-aware. It can
-> probe the magic located at some offset from the beginning of some
-> specific zone of a device.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  libblkid/src/blkidP.h            |   4 +
->  libblkid/src/probe.c             |  25 +++++-
->  libblkid/src/superblocks/btrfs.c | 132
-> ++++++++++++++++++++++++++++++-
->  3 files changed, 157 insertions(+), 4 deletions(-)
-> 
-> diff --git a/libblkid/src/blkidP.h b/libblkid/src/blkidP.h
-> index f9bbe008406f..5bb6771ee9c6 100644
-> --- a/libblkid/src/blkidP.h
-> +++ b/libblkid/src/blkidP.h
-> @@ -148,6 +148,10 @@ struct blkid_idmag
->  
->  	long		kboff;		/* kilobyte offset of
-> superblock */
->  	unsigned int	sboff;		/* byte offset within
-> superblock */
-> +
-> +	int		is_zone;
-> +	long		zonenum;
-> +	long		kboff_inzone;
->  };
+Attn, dear Beneficiary.
 
-Maybe, it makes sense to add the comments for added fields? How do you
-feel?
+God has remembered your prayers
+I have already sent you Money Gram payment of $5000.00 today, MG 1029-8096
+This is because we have finally concluded to effect your transfer
+funds of $4.8,000.000usd
+through MONEY GRAM International Fund transfer Service
+Each payment will be sending to you by $5000.00 daily until the
+($4.8,000.000usd) is completely transferred
+we have this morning sent  MONEY GRAM payment of $5,000.00 in your name today
+So contact the MONEY GRAM Agent to pick up this first payment of $5000 now
 
->  
->  /*
-> diff --git a/libblkid/src/probe.c b/libblkid/src/probe.c
-> index f6dd5573d5dd..56e42ac28559 100644
-> --- a/libblkid/src/probe.c
-> +++ b/libblkid/src/probe.c
-> @@ -94,6 +94,7 @@
->  #ifdef HAVE_LINUX_CDROM_H
->  #include <linux/cdrom.h>
->  #endif
-> +#include <linux/blkzoned.h>
->  #ifdef HAVE_SYS_STAT_H
->  #include <sys/stat.h>
->  #endif
-> @@ -1009,8 +1010,25 @@ int blkid_probe_get_idmag(blkid_probe pr,
-> const struct blkid_idinfo *id,
->  	/* try to detect by magic string */
->  	while(mag && mag->magic) {
->  		unsigned char *buf;
-> -
-> -		off = (mag->kboff + (mag->sboff >> 10)) << 10;
-> +		uint64_t kboff;
-> +
-> +		if (!mag->is_zone)
-> +			kboff = mag->kboff;
-> +		else {
-> +			uint32_t zone_size_sector;
-> +			int ret;
-> +
-> +			ret = ioctl(pr->fd, BLKGETZONESZ,
-> &zone_size_sector);
-> +			if (ret == EOPNOTSUPP)
+Contact person Mrs. Alan Ude
+Dir. MONEY GRAM Service,Benin
+Phone number: +229 98856728
+E-mail: moneygram.1820@outlook.fr
 
--EOPNOTSUPP??? Or this is the libblk peculiarity?
+Ask him to give you the complete mtcn, sender name, question and
+answer to enable you
+pick up the $5000.00 sent today,
+Also you are instructed to re-confirm your information's
+to Mrs.Alan Ude as listed below to avoid wrong transactions.
 
-> +				goto next;
-> +			if (ret)
-> +				return -errno;
-> +			if (zone_size_sector == 0)
-> +				goto next;
-> +			kboff = (mag->zonenum * (zone_size_sector <<
-> 9)) >> 10;
-> +			kboff += mag->kboff_inzone;
-> +		}
-> +		off = (kboff + (mag->sboff >> 10)) << 10;
->  		buf = blkid_probe_get_buffer(pr, off, 1024);
->  
->  		if (!buf && errno)
-> @@ -1020,13 +1038,14 @@ int blkid_probe_get_idmag(blkid_probe pr,
-> const struct blkid_idinfo *id,
->  				buf + (mag->sboff & 0x3ff), mag->len))
-> {
->  
->  			DBG(LOWPROBE, ul_debug("\tmagic sboff=%u,
-> kboff=%ld",
-> -				mag->sboff, mag->kboff));
-> +				mag->sboff, kboff));
->  			if (offset)
->  				*offset = off + (mag->sboff & 0x3ff);
->  			if (res)
->  				*res = mag;
->  			return BLKID_PROBE_OK;
->  		}
-> +next:
->  		mag++;
->  	}
->  
-> diff --git a/libblkid/src/superblocks/btrfs.c
-> b/libblkid/src/superblocks/btrfs.c
-> index f0fde700d896..4254220ef423 100644
-> --- a/libblkid/src/superblocks/btrfs.c
-> +++ b/libblkid/src/superblocks/btrfs.c
-> @@ -9,6 +9,9 @@
->  #include <unistd.h>
->  #include <string.h>
->  #include <stdint.h>
-> +#include <stdbool.h>
-> +
-> +#include <linux/blkzoned.h>
->  
->  #include "superblocks.h"
->  
-> @@ -59,11 +62,131 @@ struct btrfs_super_block {
->  	uint8_t label[256];
->  } __attribute__ ((__packed__));
->  
-> +#define BTRFS_SUPER_INFO_SIZE 4096
+(1Your Full name:............................................
+(2 Phone number.....................................................
+(3 Contact address:.....................................
+(4 Age:..................................................................
+(5 Country..............................................
+(6) Sex .................................................................
+(7) your occupation...........................................
 
-I believe that 4K is very widely used constant.
-Are you sure that it needs to introduce some
-additional constant? Especially, it looks slightly
-strange to see the BTRFS specialized constant.
-Maybe, it needs to generalize the constant? 
+(8)Passport/By Attach or Drivers License Number:
+Contact Mrs. Alan Ude for your MONEY GRAM payment of $4.8,000.000usd
+Note please: I have paid service fees for you but the only money you
+are required
+to send to Mrs. Alan Ude is $90.00 only Transfer fee before you can
+pick up your transfer today.
 
-> +#define SECTOR_SHIFT 9
+Send it to via Money Gram
+Receiver's Name-----Alan Ude
+Country----------Benin
+Address-----------Cotonou
+Quest--------Honest
+Ans-----------Trust
 
-Are you sure that libblkid hasn't such constant?
+I done all my best for you to receive your transfer now ok.
+We need your urgent reply
+Best Regards
+Rev.Dr Emmanuel Okoye
+CEO Ecobank-benin
 
-> +
-> +#define READ 0
-> +#define WRITE 1
-> +
-> +typedef uint64_t u64;
-> +typedef uint64_t sector_t;
-
-I see the point to introduce the sector_t type.
-But is it really necessary to introduce the u64 type?
-
-> +
-> +static int sb_write_pointer(struct blk_zone *zones, u64 *wp_ret)
-> +{
-> +	bool empty[2];
-> +	bool full[2];
-> +	sector_t sector;
-> +
-> +	if (zones[0].type == BLK_ZONE_TYPE_CONVENTIONAL) {
-> +		*wp_ret = zones[0].start << SECTOR_SHIFT;
-> +		return -ENOENT;
-> +	}
-> +
-> +	empty[0] = zones[0].cond == BLK_ZONE_COND_EMPTY;
-> +	empty[1] = zones[1].cond == BLK_ZONE_COND_EMPTY;
-> +	full[0] = zones[0].cond == BLK_ZONE_COND_FULL;
-> +	full[1] = zones[1].cond == BLK_ZONE_COND_FULL;
-> +
-> +	/*
-> +	 * Possible state of log buffer zones
-> +	 *
-> +	 *   E I F
-> +	 * E * x 0
-> +	 * I 0 x 0
-> +	 * F 1 1 x
-> +	 *
-> +	 * Row: zones[0]
-> +	 * Col: zones[1]
-> +	 * State:
-> +	 *   E: Empty, I: In-Use, F: Full
-> +	 * Log position:
-> +	 *   *: Special case, no superblock is written
-> +	 *   0: Use write pointer of zones[0]
-> +	 *   1: Use write pointer of zones[1]
-> +	 *   x: Invalid state
-> +	 */
-> +
-> +	if (empty[0] && empty[1]) {
-> +		/* special case to distinguish no superblock to read */
-> +		*wp_ret = zones[0].start << SECTOR_SHIFT;
-
-
-So, even if we return the error then somebody will check
-the *wp_ret value? Looks slightly unexpected.
-
-> +		return -ENOENT;
-> +	} else if (full[0] && full[1]) {
-> +		/* cannot determine which zone has the newer superblock
-> */
-> +		return -EUCLEAN;
-> +	} else if (!full[0] && (empty[1] || full[1])) {
-> +		sector = zones[0].wp;
-> +	} else if (full[0]) {
-> +		sector = zones[1].wp;
-> +	} else {
-> +		return -EUCLEAN;
-> +	}
-> +	*wp_ret = sector << SECTOR_SHIFT;
-> +	return 0;
-> +}
-> +
-> +static int sb_log_offset(uint32_t zone_size_sector, blkid_probe pr,
-> +			 uint64_t *offset_ret)
-> +{
-> +	uint32_t zone_num = 0;
-> +	struct blk_zone_report *rep;
-> +	struct blk_zone *zones;
-> +	size_t rep_size;
-> +	int ret;
-> +	uint64_t wp;
-> +
-> +	rep_size = sizeof(struct blk_zone_report) + sizeof(struct
-> blk_zone) * 2;
-> +	rep = malloc(rep_size);
-> +	if (!rep)
-> +		return -errno;
-> +
-> +	memset(rep, 0, rep_size);
-> +	rep->sector = zone_num * zone_size_sector;
-> +	rep->nr_zones = 2;
-> +
-> +	ret = ioctl(pr->fd, BLKREPORTZONE, rep);
-> +	if (ret)
-> +		return -errno;
-
-So, the valid case if ioctl returns 0? Am I correct?
-
-
-> +	if (rep->nr_zones != 2) {
-> +		free(rep);
-> +		return 1;
-> +	}
-> +
-> +	zones = (struct blk_zone *)(rep + 1);
-> +
-> +	ret = sb_write_pointer(zones, &wp);
-> +	if (ret != -ENOENT && ret)
-> +		return -EIO;
-
-
-If ret is positive then we could return the error. Am I correct?
-
-
-> +	if (ret != -ENOENT) {
-> +		if (wp == zones[0].start << SECTOR_SHIFT)
-> +			wp = (zones[1].start + zones[1].len) <<
-> SECTOR_SHIFT;
-> +		wp -= BTRFS_SUPER_INFO_SIZE;
-> +	}
-> +	*offset_ret = wp;
-> +
-> +	return 0;
-> +}
-> +
->  static int probe_btrfs(blkid_probe pr, const struct blkid_idmag
-> *mag)
->  {
->  	struct btrfs_super_block *bfs;
-> +	uint32_t zone_size_sector;
-> +	int ret;
-> +
-> +	ret = ioctl(pr->fd, BLKGETZONESZ, &zone_size_sector);
-> +	if (ret)
-> +		return errno;
-
-You returned -errno for another ioctls above. Is everything correct
-here?
-
-> +	if (zone_size_sector != 0) {
-> +		uint64_t offset = 0;
->  
-> -	bfs = blkid_probe_get_sb(pr, mag, struct btrfs_super_block);
-> +		ret = sb_log_offset(zone_size_sector, pr, &offset);
-> +		if (ret)
-> +			return ret;
-
-What about a positive value of ret? I suppose it needs to return ret
-only if we have an error. Am I correct?
-
-Thanks,
-Viacheslav Dubeyko.
-
-> +		bfs = (struct btrfs_super_block*)
-> +			blkid_probe_get_buffer(pr, offset,
-> +					       sizeof(struct
-> btrfs_super_block));
-> +	} else {
-> +		bfs = blkid_probe_get_sb(pr, mag, struct
-> btrfs_super_block);
-> +	}
->  	if (!bfs)
->  		return errno ? -errno : 1;
->  
-> @@ -88,6 +211,13 @@ const struct blkid_idinfo btrfs_idinfo =
->  	.magics		=
->  	{
->  	  { .magic = "_BHRfS_M", .len = 8, .sboff = 0x40, .kboff = 64
-> },
-> +	  /* for HMZONED btrfs */
-> +	  { .magic = "!BHRfS_M", .len = 8, .sboff = 0x40,
-> +	    .is_zone = 1, .zonenum = 0, .kboff_inzone = 0 },
-> +	  { .magic = "_BHRfS_M", .len = 8, .sboff = 0x40,
-> +	    .is_zone = 1, .zonenum = 0, .kboff_inzone = 0 },
-> +	  { .magic = "_BHRfS_M", .len = 8, .sboff = 0x40,
-> +	    .is_zone = 1, .zonenum = 1, .kboff_inzone = 0 },
->  	  { NULL }
->  	}
->  };
-
+If we did not receive it urgent from you today,
+I will go ahead and release you funds to Mrs. Lyndia Ppaulson as your
+representative.
