@@ -2,102 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA225113576
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 20:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF1A113655
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 21:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbfLDTIu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 14:08:50 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:51174 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728229AbfLDTIu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 14:08:50 -0500
-Received: by mail-wm1-f54.google.com with SMTP id p9so935986wmg.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 11:08:48 -0800 (PST)
+        id S1728295AbfLDUTS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 15:19:18 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46014 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbfLDUTS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 15:19:18 -0500
+Received: by mail-pl1-f193.google.com with SMTP id w7so175241plz.12;
+        Wed, 04 Dec 2019 12:19:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b+LcPjJLoHjjmM9heQx4gS6k83AeDAzwVJYG8bSm96U=;
-        b=qwm8bee1y/+I4/7HGu8jQbLYCqLBsu8k6F/3udRqKIQP3u+LeYIPgQ0y1COwusJ2lB
-         qRvUyadl5GiQDVN8Yakmm6D7M/0mzmQCo23KG706l0hvhJJ2Z/vyFx8j3osYMmuRVN1F
-         ZH0wG8LJ4+b4pR0FJqGbznkTATitIvR+PMhBEm4Q0BzeeA2Tc/0SjMjyv1v/UVI7S//k
-         IafQyokXtv1JAIoi1VOjnrsmEY9HmhqN58qBk4LyVv9cVmYrs4lZwhmTTS2dGlAp272+
-         ZUOrRyuhWuwYNVreoCFp8hvSxhI9QCZgVSS25tcF34AeG7PZjwt409J5YUiHr+CgCQtf
-         eTIw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
+        b=GZ4USlEMGXv34THmiUPdaunV9mU1mXLwjquzOhYT1UTMPxHQXdwfl8TSoecTFZNaLm
+         4gM1RC87AWfGad075jZwJvO8b9Yfm2KDvrnt5mqrmxh4cziVMfaEQBKEZ/0AybZ/xXoz
+         YS2Mfgigc4PcZCQvBCgFFDbxnIj2X2wAh/xCfEH1gdYUlsK+LB1CCoofz+d/jHqQJapf
+         PSpmyHGUncjfB2tcWDiMGG4OP0iI818+PbMGW2MxVg4MIOnTEdaTSctO7ri2XtS2L3JH
+         CHxnyvqr5Q67K1kOmvFRw4AFYG4Y8KSa7KzryXc0iaO7CoEPJC06vXsOsV6+cF/Vys/6
+         0HnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b+LcPjJLoHjjmM9heQx4gS6k83AeDAzwVJYG8bSm96U=;
-        b=IpV+ovfDYcXxmRys0jn1SrHga+LgD4NE4Rffe2RDZnICzn2ly5Kuv7oq8nnR7liD+m
-         gSEw3k1hSkAH3HSCP3fh8do4z0yCDCDVZAAm6S+V1p5dgKGvh8wtttHMiKKoioLNROwY
-         qzFu4sM8C8Q5bVvoJJ0Gk81DeHLu/fN7/Pu7OnhOoUmn5lmHLy4sLTQHzUaCT53C0yXO
-         3amU+SOBE+ybB1cyFs7Ay5HP7ImHm6jF1ivcPfAeaPpMkfrSHD2kvdmb1nvFvt2U2IhG
-         41PcPrIHYm3NMAgjtO78HEoBH8k3RG50UQwSmnt2iPaR4SWGtYtYJIzsEIfQZe9gQumZ
-         OJsg==
-X-Gm-Message-State: APjAAAUI8rXFfXWJpLTs84X6BT65eR3aKCgo/MHkbUHTQM6uQZaYJx56
-        Jtx6ZXmyx406pudP+QjH1rmLqENt2Uac9Oq9GR1qBGtpdQ4=
-X-Google-Smtp-Source: APXvYqyfjm/EkatWf2I1SDBNQRRACcykSYF4woZkcHitVpWJYmh0S6y8JCJUfXpcvLGbbcrNkVf4+7tDAvrQSd1KTKc=
-X-Received: by 2002:a1c:81c9:: with SMTP id c192mr1279759wmd.44.1575486527906;
- Wed, 04 Dec 2019 11:08:47 -0800 (PST)
-MIME-Version: 1.0
-References: <7D7AA867-8B53-4CD5-83EF-95EABAD2A77C@megacandy.net> <F7C74BD8-4505-4E74-81F2-EB0D603ABCEC@megacandy.net>
-In-Reply-To: <F7C74BD8-4505-4E74-81F2-EB0D603ABCEC@megacandy.net>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 4 Dec 2019 12:08:31 -0700
-Message-ID: <CAJCQCtRA2+X-ke4yJ4H8o49ZA9mSOFabLpNeXd=4ULDg99rFgQ@mail.gmail.com>
-Subject: Re: Unrecoverable corruption after loss of cache
-To:     Gard Vaaler <gardv@megacandy.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IdpmGu8iGR4pu9wN40g1Va4Rxg/xN1WVWM43oFtOZuc=;
+        b=JooPbHXhDENfcvMgteyWBITjg5yWSgxtAcnD6jtkfrvUadnrBaSwJA3rZEpTLeGep1
+         u6nCPtByooDHRB3eW4QZ6HozKDBSZWIZ1+z+FGpMekppWuWg57p6j1LnBzw5UWRAF1O1
+         fiiQRFxR4QiNZwWgAcXk2yEunWNvsn16YD8lR2FdOq4oVH5TPKyIQZYF2if+NyrwsHqZ
+         7CgA0ZX42WdAcb8jj1oLIFDTp97lPGmtXeffGDIymMZXLobhaeqHiJoQcwJE1En4D7DY
+         6U0E5P7TBcRVkq/uD30Gp1gmdSSaE5nZukz7XmhTMff93Yge+QNNEYxJVv+2UzTZo1Ia
+         wB0g==
+X-Gm-Message-State: APjAAAUeLkUNhvCgJcwD/9762IbJ62P45qsOiv81ogtGSeVyBSTkWDRT
+        rs8sP1OXFEOav79MrYlf4yk=
+X-Google-Smtp-Source: APXvYqyym3aLJWp4bkO/UDgkjJGP80l8ErW34GumqKw5caVpvJNp1FIFrFHrA4GfR/q8GtM7lsaqFg==
+X-Received: by 2002:a17:90a:200d:: with SMTP id n13mr5388240pjc.16.1575490756959;
+        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:cdb:9473:3984:ab1:9b44:803])
+        by smtp.gmail.com with ESMTPSA id c2sm8882170pfn.55.2019.12.04.12.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 12:19:16 -0800 (PST)
+From:   madhuparnabhowmik04@gmail.com
+To:     clm@fb.com, josef@toxicpanda.com, paulmck@kernel.org,
+        joel@joelfernandes.org
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: [PATCH] fs: btrfs: volumes.h: Annotate rcu_string with __rcu
+Date:   Thu,  5 Dec 2019 01:49:01 +0530
+Message-Id: <20191204201901.22466-1-madhuparnabhowmik04@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 4, 2019 at 8:50 AM Gard Vaaler <gardv@megacandy.net> wrote:
->
-> > 1. des. 2019 kl. 18:27 skrev Gard Vaaler <gardv@megacandy.net>:
-> >
-> > Trying to recover a filesystem that was corrupted by losing writes due to a failing caching device, I get the following error:
-> >> ERROR: child eb corrupted: parent bytenr=2529690976256 item=0 parent level=2 child level=0
-> >
-> > Trying to zero the journal or reinitialising the extent tree yields the same error. Is there any way to recover the filesystem?
->
-> Update: using 5.4, btrfs claims to have zeroed the journal:
->
-> > [liveuser@localhost-live btrfs-progs-5.4]$ sudo ./btrfs rescue zero-log /dev/bcache0
-> > Clearing log on /dev/bcache0, previous log_root 2529694416896, level 0
->
-> ... but still complains about the journal on mount:
->
-> > [  703.964344] BTRFS info (device bcache1): disk space caching is enabled
-> > [  703.964347] BTRFS info (device bcache1): has skinny extents
-> > [  704.215748] BTRFS error (device bcache1): parent transid verify failed on 2529691090944 wanted 319147 found 310171
-> > [  704.216131] BTRFS error (device bcache1): parent transid verify failed on 2529691090944 wanted 319147 found 314912
-> > [  704.216137] BTRFS error (device bcache1): failed to read block groups: -5
-> > [  704.227110] BTRFS error (device bcache1): open_ctree failed
->
+From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
 
-Why do you think it's complaining about the journal? I'm not seeing
-tree log related messages here. Is the output provided complete or are
-there additional messages? What do you get for:
+This patch fixes the following sparse errors in
+fs/btrfs/super.c in function btrfs_show_devname()
 
-btrfs insp dump-s /dev/X
+fs/btrfs/super.c: error: incompatible types in comparison expression (different address spaces):
+fs/btrfs/super.c:    struct rcu_string [noderef] <asn:4> *
+fs/btrfs/super.c:    struct rcu_string *
 
-What kernel version was being used at the time of the first problem instance?
+The error was because of the following line in function btrfs_show_devname():
 
-The transid messages above suggest some kind of failure to actually
-commit what should have ended up on stable media. Also please provide:
+if (first_dev)
+       seq_escape(m, rcu_str_deref(first_dev->name), " \t\n\\");
 
-btrfs-find-root /dev/
-btrfs check --mode=lowmem /dev/
+rcu_str_deref is defined in fs/btrfs/rcu-string.h
 
-The latter will take a while and since it is an offline check will
-need to be done in initramfs, or better from Live media which will
-make it easier to capture the output. I recommend btrfs-progs not
-older than 5.1.1 if possible. It is only for check, not with --repair,
-so the version matters somewhat less if it's not too old.
+And first_dev is of type struct btrfs_device.
 
+struct btrfs_device is defined in fs/btrfs/volumes.h
+
+Annotating the member  "struct rcu_string *name "  of struct btrfs_device
+with __rcu fixes the sparse error.
+
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+---
+ fs/btrfs/volumes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index a7da1f3e3627..de7131ee604d 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -64,7 +64,7 @@ struct btrfs_device {
+ 	struct btrfs_fs_devices *fs_devices;
+ 	struct btrfs_fs_info *fs_info;
+ 
+-	struct rcu_string *name;
++	struct rcu_string __rcu *name;
+ 
+ 	u64 generation;
+ 
 -- 
-Chris Murphy
+2.17.1
+
