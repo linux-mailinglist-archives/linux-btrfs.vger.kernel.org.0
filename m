@@ -2,133 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C861C112CBD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 14:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C668112D94
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 15:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbfLDNhP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 08:37:15 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42590 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbfLDNhO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 08:37:14 -0500
-Received: by mail-wr1-f65.google.com with SMTP id a15so8616561wrf.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 05:37:13 -0800 (PST)
+        id S1727867AbfLDOkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 09:40:06 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:33667 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727828AbfLDOkG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 09:40:06 -0500
+Received: by mail-io1-f65.google.com with SMTP id j13so8309733ioe.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 06:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CeeDtpjMokJukuH1miomF5Oz08aqVjt3ots/YpdA6R8=;
+        b=Ft3qZeNJM/cYkPWQEMjq4nn4isEiaMcBfZFrhdMSb6sBHZeOGywejK7ZZ+P7GCMWrX
+         OzPEK/ki0jPu+2UqtS/OZyxapUEOtXANLIxermUFXE0ykNvi+Kjk476qKxREUR7Q+TY3
+         yqzW1wl0IAiqR9eVHSvCsH5plI4Em6N40sCGgH+bsZ3AwFDakmm0+61kvYp7uiojX5p8
+         LO1QUi7Zzh+IsX1RIiqOA/cz6zRi1h1/7hTLPPzpcXnds8s6Mza3TbwuTgF+1xLWAaXR
+         No7jBE8b2oQnTyb2Y4d8F+RchSVSDxf0BptdwS1Mvrcgo1d+sAjLMPZiK24jDPNvgjBq
+         jdvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eL6SHVGCBkpkreaEUkpbhItxmp0I+pp5HgBAK2WSy0c=;
-        b=soxB5sSAMfBRAJyxpHgkt6olO97mP7ZmKzrceT1iInIfZLf9JhhaKt1JQ+OxS7a0rY
-         gFkRtb0MWtfCb9+84GuYlKbtTNNISA1Ek1F4hoH9YBKX+EGPC3+1ju8XssVIjvOmh7nG
-         6gqhkGJb2FnBVd1HtbWeLfgU3C62nV2AJsGVGMQtUUH61eUYXscIG9udGQ1UGT0sHec8
-         1k0QYFVcOTw/SCSGQlXbb1hPH9wA/1euQWQ9yWfXtc+UijzSXMvGptCIaDL52rn1YWJl
-         lhv8lgF1uLbeqRdTjhWYEBYYzKndY5OBga089XKb91JXS+FGTC8w2/sppDMWcg72BtdF
-         NXHQ==
-X-Gm-Message-State: APjAAAVAjoPj6p460ZrcXEKym6MwPr0Ahlb+6vV0taAwcj1RiuTav0px
-        g+DCBd9nHZ9qm1nzK2tZ7mnZ7erAz8c=
-X-Google-Smtp-Source: APXvYqy70eNj7gSIz+lUQyA0ckoaxQsx7gxo5kKOxz9fEbEizL3+1eKR1THgrTPnY0YPNdeOrdlrAg==
-X-Received: by 2002:adf:e591:: with SMTP id l17mr3780088wrm.139.1575466632629;
-        Wed, 04 Dec 2019 05:37:12 -0800 (PST)
-Received: from localhost.localdomain (ppp-46-244-211-33.dynamic.mnet-online.de. [46.244.211.33])
-        by smtp.gmail.com with ESMTPSA id q3sm8291948wrn.33.2019.12.04.05.37.11
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 04 Dec 2019 05:37:12 -0800 (PST)
-From:   Johannes Thumshirn <jth@kernel.org>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v5 2/2] btrfs: reset device back to allocation state when removing
-Date:   Wed,  4 Dec 2019 14:36:39 +0100
-Message-Id: <20191204133639.2382-3-jth@kernel.org>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20191204133639.2382-1-jth@kernel.org>
-References: <20191204133639.2382-1-jth@kernel.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=CeeDtpjMokJukuH1miomF5Oz08aqVjt3ots/YpdA6R8=;
+        b=mWUvkVD0Y5rM0exaIJw0eY/4Mm/cwzWcO+KeFr1CW0/xUF+8TwKsZNdBlaYyN5nZHg
+         VMKpogZ1KitOpyiZ8q3VY3fobAp2q0/84ETyk4SIcprSCCL8Jv54Hmz6lhcxeq/IGnv9
+         tFSvmu3yhTcZPmnBkr7wap68cj51SR7sQ+ETA2M4Bl/Tj7fxUTP8+etIvg38Yx02qyhN
+         eVbAhuXlQPl7fVI4E1d3M1OVTH03y66gnHmBch8RaFj2ZLdW9Gt4LnH7qL4i3xcxHXOP
+         6cZ2BicH6Fs5bR4c02d3jiHytEMFOVNf4tbPO+0ntzBqjmxvR6hcTpWsV5HeSmNpghMb
+         SYrQ==
+X-Gm-Message-State: APjAAAWFQ3cWx5yMrRpviEXZzdtsuxdE6Y8+93qIzGY7xOhYRL82GwtR
+        kFZu5CwnP2o835LB67quywyUub7gLXLbXGb+OnA=
+X-Google-Smtp-Source: APXvYqw3AY3FRkdIxRrLSZABPRzYtF/bS9y509jUoxxwLBFnQ9i5Ag7wRM7xW+eJyeT3Jon/pJschII7N1ruIzmBIYQ=
+X-Received: by 2002:a5e:9507:: with SMTP id r7mr2272406ioj.152.1575470405943;
+ Wed, 04 Dec 2019 06:40:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a6b:f307:0:0:0:0:0 with HTTP; Wed, 4 Dec 2019 06:40:04 -0800 (PST)
+Reply-To: aakkaavvii@gmail.com
+From:   Abraham Morrison <mrbidokeke@gmail.com>
+Date:   Wed, 4 Dec 2019 06:40:04 -0800
+Message-ID: <CADSEnMp9dbjKDyoaBAQwzmKO7C=7ArpSCT7SJ0Mwpjow-=hiVw@mail.gmail.com>
+Subject: Good day!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Johannes Thumshirn <jthumshirn@suse.de>
-
-When closing a device, btrfs_close_one_device() first allocates a new
-device, copies the device to close's name, replaces it in the dev_list
-with the copy and then finally frees it.
-
-This involves two memory allocation, which can potentially fail. As this
-code path is tricky to unwind, the allocation failures where handled by
-BUG_ON()s.
-
-But this copying isn't strictly needed, all that is needed is resetting
-the device in question to it's state it had after the allocation.
-
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-
----
-Changes to v4:
-- Clear dev_stat_ccnt on removal (Dave)
-- Don't clear BTRFS_DEV_STATE_MISSING and BTRFS_DEV_STATE_FS_METADATA as
-  they'll be handled elsewhere
-- Release extent_io_tree (fstests)
-
-Changes to v3:
-- Clear DEV_STATE_WRITABLE _after_ btrfs_close_bdev() (Nik)
----
- fs/btrfs/volumes.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index ae3980ba3a87..eef0b9ed9ea4 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1066,8 +1066,6 @@ static void btrfs_close_bdev(struct btrfs_device *device)
- static void btrfs_close_one_device(struct btrfs_device *device)
- {
- 	struct btrfs_fs_devices *fs_devices = device->fs_devices;
--	struct btrfs_device *new_device;
--	struct rcu_string *name;
- 
- 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
- 	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-@@ -1079,25 +1077,21 @@ static void btrfs_close_one_device(struct btrfs_device *device)
- 		fs_devices->missing_devices--;
- 
- 	btrfs_close_bdev(device);
--	if (device->bdev)
-+	if (device->bdev) {
- 		fs_devices->open_devices--;
--
--	new_device = btrfs_alloc_device(NULL, &device->devid,
--					device->uuid);
--	BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
--
--	/* Safe because we are under uuid_mutex */
--	if (device->name) {
--		name = rcu_string_strdup(device->name->str, GFP_NOFS);
--		BUG_ON(!name); /* -ENOMEM */
--		rcu_assign_pointer(new_device->name, name);
-+		device->bdev = NULL;
- 	}
-+	clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 
--	list_replace_rcu(&device->dev_list, &new_device->dev_list);
--	new_device->fs_devices = device->fs_devices;
-+	atomic_set(&device->dev_stats_ccnt, 0);
-+	extent_io_tree_release(&device->alloc_state);
- 
--	synchronize_rcu();
--	btrfs_free_device(device);
-+	/* Verify the device is back in a pristine state  */
-+	ASSERT(!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state));
-+	ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state));
-+	ASSERT(list_empty(&device->dev_alloc_list));
-+	ASSERT(list_empty(&device->post_commit_list));
-+	ASSERT(atomic_read(&device->reada_in_flight) == 0);
- }
- 
- static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
--- 
-2.20.1 (Apple Git-117)
-
+RGVhciBGcmllbmQsDQpJIGFtIEJhcnJpc3RlciBBYnJhaGFtIE1vcnJpc29uLCBEaWQgeW91IHJl
+Y2VpdmUgbXkgcHJldmlvdXMgbWVzc2FnZQ0KdG8geW91PyBJIGhhdmUgYW4gaW1wb3J0YW50IGlu
+Zm9ybWF0aW9uIGZvciB5b3UgYWJvdXQgeW91ciBpbmhlcml0YW5jZQ0KZnVuZCB3b3J0aCBvZiAo
+JDIwLDUwMCwwMDAuMDApIE1pbGxpb24gd2hpY2ggd2FzIGxlZnQgZm9yIHlvdSBieSB5b3VyDQps
+YXRlIHJlbGF0aXZlLCBNci4gQ2FybG9zLiBTbyBpZiB5b3UgYXJlIGludGVyZXN0ZWQgZ2V0IGJh
+Y2sgdG8gbWUgZm9yDQptb3JlIGRldGFpbHMuDQpUaGFuayB5b3UuDQpCYXJyaXN0ZXIgQWJyYWhh
+bSBNb3JyaXNvbi4NCi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uDQrQlNC+0YDQvtCz0L7QuSDQtNGA0YPQsywNCtCvINCR0LDRgNGA0LjR
+gdGC0LXRgCDQkNCy0YDQsNCw0Lwg0JzQvtGA0YDQuNGB0L7QvSwg0JLRiyDQv9C+0LvRg9GH0LjQ
+u9C4INC80L7QtSDQv9GA0LXQtNGL0LTRg9GJ0LXQtSDRgdC+0L7QsdGJ0LXQvdC40LUg0LTQu9GP
+DQrQstCw0YE/INCjINC80LXQvdGPINC10YHRgtGMINC00LvRjyDQstCw0YEg0LLQsNC20L3QsNGP
+INC40L3RhNC+0YDQvNCw0YbQuNGPINC+INCy0LDRiNC10Lwg0L3QsNGB0LvQtdC00YHRgtCy0LXQ
+vdC90L7QvA0K0YTQvtC90LTQtSDQvdCwINGB0YPQvNC80YMgKDIwIDUwMCAwMDAsMDAg0LTQvtC7
+0LvQsNGA0L7QsiDQodCo0JApLCDQutC+0YLQvtGA0YvQuSDQvtGB0YLQsNCy0LjQuyDQstCw0Lwg
+0LLQsNGIDQrQv9C+0LrQvtC50L3Ri9C5INGA0L7QtNGB0YLQstC10L3QvdC40LosINC80LjRgdGC
+0LXRgCDQmtCw0YDQu9C+0YEuINCi0LDQuiDRh9GC0L4sINC10YHQu9C4INCy0Ysg0LfQsNC40L3R
+gtC10YDQtdGB0L7QstCw0L3RiywNCtGB0LLRj9C20LjRgtC10YHRjCDRgdC+INC80L3QvtC5INC0
+0LvRjyDQsdC+0LvQtdC1INC/0L7QtNGA0L7QsdC90L7QuSDQuNC90YTQvtGA0LzQsNGG0LjQuC4N
+CtCh0L/QsNGB0LjQsdC+Lg0K0JHQsNGA0YDQuNGB0YLQtdGAINCQ0LLRgNCw0LDQvCDQnNC+0YDR
+gNC40YHQvtC9Lg0K
