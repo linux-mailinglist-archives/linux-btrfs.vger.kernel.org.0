@@ -2,29 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD761122C8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 07:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2696A1122CC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 07:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbfLDGGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 01:06:16 -0500
-Received: from mout.gmx.net ([212.227.15.15]:41555 "EHLO mout.gmx.net"
+        id S1726053AbfLDGIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 01:08:19 -0500
+Received: from mout.gmx.net ([212.227.15.18]:54535 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbfLDGGP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Dec 2019 01:06:15 -0500
+        id S1725791AbfLDGIS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Dec 2019 01:08:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575439574;
-        bh=4IOPHU6cTCc/pa3ogIPlSfORbkTZ6wRbpSq/bGHYx1Q=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=CMlv7p9UCQhyL5RuDGSurBm5wBoPgPCA/NvaFIOfbJEjSHE6KPMS+ZV7zdoqYalAA
-         lGahDK67jo85NQSO6X2bx0FcXcj7lAdUH0nISwH2rot7ySYfjhu5nejJTN3hrXB7xK
-         AbKr7lQ1K2Hqw4TsnT2iveYZISDxmUIVUawHxbnk=
+        s=badeba3b8450; t=1575439697;
+        bh=RyCjTMsz7cyayiZ17QIGzBd62+7BluWxiIDYUeJSNzg=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=VZoRi7JTJwuKp1v4/hIAc9Um7iFJXAgLMzkqdrXTnYsQITy2l90khhGuldnn17Fd5
+         pJ9mOmVadSaEcQNGFpynYYBN8GCUcHt+1E9d1fJkYFSBRCXWuW1HEQVy0ziIqZ5j6B
+         1cxJ5tGJ8sHNkr6HAmurP6BIEqqduu9R4iKx27Q4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1My36T-1hqKuw42Sl-00zW0M for
- <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 07:06:14 +0100
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbFs-1hk0IQ3Cdy-00sbnq for
+ <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 07:08:17 +0100
+Subject: Re: btrfs-progs: misc/016 hangs at ioctl
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: btrfs-progs: misc/016 hangs at ioctl
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <3b8f824f-0c55-b54b-e23d-257ad1b2f239@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -49,88 +50,98 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3b8f824f-0c55-b54b-e23d-257ad1b2f239@gmx.com>
-Date:   Wed, 4 Dec 2019 14:06:11 +0800
+Message-ID: <0a3fa957-b551-022b-8f6a-129e117626a7@gmx.com>
+Date:   Wed, 4 Dec 2019 14:08:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <3b8f824f-0c55-b54b-e23d-257ad1b2f239@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="K82oO81Geonn6SBJTqJkGyLoSSBUASqYW"
-X-Provags-ID: V03:K1:lMYYY6xQaSQRF1DWnEU48h0bs7URP1ywELQGTE9EMO05VChBAng
- 71H+hdf233gyR/l6eCowZh8PX9TG5vSfKVSuyKIfhIr0uWbR40iKGi5z0+f5wrDi5HAcjnI
- R33PZcai656Wooivr3fr9DAuAzN46xw6TM56WNepDVdtrVKmxZQTFxU6C1EP/pTYLMHffX9
- XR9HpQgbQg1P1RbEcfJwQ==
+ boundary="2881cRPyEvPtKgBeDFSPwMbT6cf9kW1Zu"
+X-Provags-ID: V03:K1:79FnLzqpwXKY44qoHoyJCeWq+TuwGISh5pDpTTykTfHkmqY7CyE
+ QJbJ9xP5IJEbbjHbDObi3WwfHOP0DRYO0ef6BUgyJabviURdMPMzzJ4ex3cWf50qySqky4r
+ Ev3Sw/BuOysHDJYRbnF+0AW1geza7cwIekkQq+XUg6eVdKCBdFWGmFHIfCy7v33kRdK20Ir
+ 03T+ZdQaONiVMoVRJI/Iw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9Vh62Ju1du4=:wbadK/vcawcUGt4zssig3a
- VKtdFxyS4okeEIl0iaT+DtmhGwMonF49uQJHebUO6baPr6DAjVBaBjcYbdfQRGB681RLPfdqJ
- hygFdx5JpYMhcUKKLvoe/lEQF1jmrWo6QvwRaOgEq0GIWfaOXQuarKAgO+Z+IjZwhwV8DKCVY
- zCPhiZdqM8upiKWWvurSYCp+/ogOwMv5TlLk5HJpWa+nejL7Ih9mFekqlogf3IIYbDTHSGNbk
- 4b/8UY2Y0ElF7dH/1NFR5sflCcTB/SXJxrFwVOAxFe0VKvNmaleUVbAmhdVQGXERbbDYXoiGC
- Ry+yYy+e7R9PKGn+KsUNa0gMN2/w+jzEYLp5nQgg1b2tMfzgiV3/LaR3J/hwuxdk2u6AxTRv3
- DtW0ErljJifNphB5xyN2KVIUBDveZ8J2YxJkS0MKWotGvQkdn+xcVXS0ALr1QCZ2K0Bfc3Gop
- MKdkBXc4P9q9/6q7So/stQua4CCnn6sJCNOyIA3oSd/wbRpF4GyyHcYfEbywRTFgx+IqgOAEb
- stdF8jwvRaj+4bohfTQu2U/fNKcWJL4mXVbkrzdDBMpKpTxTBMwAGSLRR2oLAD7Th7Q7o5/qj
- +m7iO+xahTLFUx0s5fO/7OYxrh7mPDqrbIdS8ZJckXW7Q5I9UcnvBG2jEizm6rQZSZL7SsdFW
- 7Imo2WwWoy94qiu9QF8Qfg+BwHE/qStXiYaECpz80aEF+f8Xf0ZBVoQSR1nlbYyA/Ly9tEvIF
- cKhMHceRC6aiLYh81nVtN1MbDOjiPKdVAaggx3r4Q3bwzIioS1qS3iGAnFTbZvGQQiQUfw9sV
- 8I+hO3C4VXzDg5QsuDPrfZ6M/beG6onnNcHya3k4uJaCzGJYi8z9B6CrOOn3MO1w+NFJ2MPD/
- 2eoT4ixUBEiRJb4JmNIDAY34P+QBpxVdDiKaL0lO1k6pi5C+BdDNiZAudHKRb860Hh7gbjIMe
- qF2U4CsZuD54wSjcs7OF6Adn7VnKwmJXayD9AHRvgM9443MbvVK/PZ97hfdgjLt0dwHEG0MVn
- y2LcC3YeJ7JxaYjpQO6ghPhiM9I8oRfT8gKATHdINesxNFa9gnVzF3TDgk32gjiyqzGi9k+bl
- Cy//5yk6VnbIjow81yCEKxAp6ITwqCz19DWx0WNsiSMQsU27Uf6ZRoE5wQr/RaugmOljMcUcA
- RddxB+lLMwWYkRRvvA5b3i5G1fyQx/7+YUJtC6BGpHMXtvLME+QmYHEQovNjwVU51U+PWsFTV
- rHOa+4t2dshHgqHkCzqMUYnYKW2UkKxjrdoAyz6URkCJDhWpIwIis+IXZpGk=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7sjArKcHZjU=:SBzVUndVU5mJ3Sj6E3SsTe
+ INx5WxGFTOrrR6350NFAZts9enXyp7EEilbE/lHpjzTiB7me73IBhtwwgPyx/zC+dRSoeGOgx
+ FRnio5v5vuTKoG3F1UH8fVaTjzCrv3VDNVNDLdzj/Icm252ItG6/CRMIT7vvUDVMGvNJhgtP3
+ 6zCbc/QDmHwUcth32pe794ZtjNR2Tw4z5AoYD0m+s8o36AGB5j97Gm636+N38aIHP6D0IZAxo
+ 6gqPdQ7ubjRgdVkrxCXQAmVJ0G9fZ9gyfS0zj/pOJTSyi0kcIUgmPLw5hs1/Zk77O8+3qxtVL
+ sFVn1Tc5cwmOL1B+aJySKL0d8KTF4uBQg9J/mpsevy3LQWJ9kqwco8bJ4IpfKmJ/UCm1Cq5cr
+ 1ujxSmB7sj0MVleenxsGUgfVkNuIIE318wEs9EHp54qiVhdtHF/5QchyVWsdmqdE5I5eFLJdS
+ VW8x3vAL+bbTH/c1A/MPWRymdP3LcjXcHF2TunLkaKEtd/4OtPIpDM6OEhAkOlfsfvT4hTMEz
+ zGENaR4BP7/CQqJamJnLJ+gYAgZpbqnH14cVd0X9cbvwHyI2MjSC/mr0PVGBrVJVRhxXuBZrP
+ 7sSg7BG+maLZwHXzLnLDwQGANME80cRH7EuBtLHWwUYV8oeT3owKf2OOeOcPR53Rw4csXqCZT
+ w0quC+xBn9kYlYCWrOG4RU73AuFS7McqegBYXMB8C/wgZ9dDWgv46MZyzAiCD0DTg4qd8EKZi
+ vwMAHNG+BrH1DMSe09YpEtje7pYe//qIAYvBRDhYyY8v9piqUu4cuOhEL5NybD5NecJkDSgJO
+ 8U8oYNAQIu6dMYAug8xiXsoQdQsKuBnaluPB3pxaBGM2/J44fmxsS2ZQIyku/H0E1LoKhSVX2
+ /uDAzOCsxRu1Q2CbLT9eIjYmHAeUtiA+FAKIh5Z1o3V7waP9cHJbPeZyj4SRJS1/p+6o7YOkM
+ ggyS3mm/Rk5R8cjLNfLttKRa1ZC6J3hmTjg9HUZrbA5ROLwhBHjvqlQn9x/02FJmqKqxe1RR4
+ y8XLsnsd26MtjiVBjwLufpypaFyYkWHOt05h40q9jMrGRZmphjMwv+vOZiJfr7GseWk9AaNhm
+ bcnAj7gIpB9RgxsNS7A7Pl5pTNPmaf7rv8ToblrqCk5spfpzmVtGrsjhbjIR1HxTSd7d1VEhf
+ Ni7XiP4qPHZlroH5TfZUgRa5xpsCqKx7x6Dl4Pd/eRFpds2x54V1ZKst5264sTUFokCXEkt7N
+ D2nlehV4bCTmJhsaYwcJ1X09AyNPy4Lha8KwrgtxbHyrkQdItYRaUs7zIbu0=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---K82oO81Geonn6SBJTqJkGyLoSSBUASqYW
-Content-Type: multipart/mixed; boundary="69ogynLcUzzw5nAc7E5fGF07jUfz5pw3b"
+--2881cRPyEvPtKgBeDFSPwMbT6cf9kW1Zu
+Content-Type: multipart/mixed; boundary="PxR2eSai3TgkeikqzFmSHuZGoWKYPtUgG"
 
---69ogynLcUzzw5nAc7E5fGF07jUfz5pw3b
+--PxR2eSai3TgkeikqzFmSHuZGoWKYPtUgG
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-Found a strange failure at btrfs-progs selftest misc/016.
-
-It hangs at current master 63de37476ebd ("Merge tag
-'tag-chrome-platform-for-v5.5' of
-git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux").
-
-What makes it even more mysterious is, misc-5.5 passes.
-
-Since there is no other btrfs pull, it's caused by some upstream
-non-btrfs commits.
-
-Doing bisecting, but any clue will be appreciated.
-
-Thanks,
-Qu
 
 
---69ogynLcUzzw5nAc7E5fGF07jUfz5pw3b--
+On 2019/12/4 =E4=B8=8B=E5=8D=882:06, Qu Wenruo wrote:
+> Hi,
+>=20
+> Found a strange failure at btrfs-progs selftest misc/016.
+>=20
+> It hangs at current master 63de37476ebd ("Merge tag
+> 'tag-chrome-platform-for-v5.5' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux").
+>=20
+> What makes it even more mysterious is, misc-5.5 passes.
+>=20
+> Since there is no other btrfs pull, it's caused by some upstream
+> non-btrfs commits.
 
---K82oO81Geonn6SBJTqJkGyLoSSBUASqYW
+BTW, no blocked kernel thread, no CPU usage.
+
+And the hang can be canceled with a signal.
+
+>=20
+> Doing bisecting, but any clue will be appreciated.
+>=20
+> Thanks,
+> Qu
+>=20
+
+
+--PxR2eSai3TgkeikqzFmSHuZGoWKYPtUgG--
+
+--2881cRPyEvPtKgBeDFSPwMbT6cf9kW1Zu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3nTNMACgkQwj2R86El
-/qj34Af7BcXWdPZ8vOTRh6ijd1qmKUzdWJX2b75ihGOdQWsISLubpy0FgKx50hoo
-ZqC4tMwc/krJ17wKOswFogWe3ZQ3a3xhaXROC98qQovK16Yx5LQYarVOnwMnXNWt
-pg4D0lr0/rsgiAlWNYQunA34SwZX3vXQkJbSO5kmKZ9aI8vMfBOkdJvk4XzQ2Lfz
-vvczQf6ET/BdrLQsLc09mQIc5lWc/NcS6FhemSUJVmYFQ8lGA/1fYHeX/OwGnMBq
-9wtKACfCMBT2ZYjjhuQ8/fr8f5q6hKilFYj0AXqFWGTgZ9Y8vjyGRdnFHgGT53mZ
-AdgUohaCSulRpfbeUIBSvcquxNfgQg==
-=j8RY
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3nTU4ACgkQwj2R86El
+/qhxnAf9FzqaC9TFdmp1NCHRIqdYst91eX35W9u1Yx43QB+oMkUU66fUJYABim1p
+zTyudpOlbl7AJc/7qjKPBCQEtLvt8mYHeDMRwp3WOheRe+z+lsD0Ta0i/7HNgC40
+21HiwDyQMoV0hvIhx7JaeriGqGCKneraiyF8p+lX/KASY+8qk7DtWa6Ceu16VTcz
+Cv4ApmAttv6eK1yBrLaaqfuZ90IElQZe4YaOn4801HTcuGn/P6H/oYEfZaBvJ5Fg
+Yg26IDkh9FwXw48ahmRY9FXb/puvTbJENCjZdAImhDtBCbL/ooZXzwqmc3b8kY34
+kA6WxpqPr4Zgs4de3Mx3P7p0VNCPdg==
+=shsG
 -----END PGP SIGNATURE-----
 
---K82oO81Geonn6SBJTqJkGyLoSSBUASqYW--
+--2881cRPyEvPtKgBeDFSPwMbT6cf9kW1Zu--
