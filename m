@@ -2,121 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E3B113A21
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 03:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A53A113A41
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 04:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbfLEC6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 21:58:33 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:45086 "EHLO
+        id S1728539AbfLEDPe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 22:15:34 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46946 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728449AbfLEC6d (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 21:58:33 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 7449A50D790; Wed,  4 Dec 2019 21:58:32 -0500 (EST)
-Date:   Wed, 4 Dec 2019 21:58:32 -0500
+        with ESMTP id S1728449AbfLEDPe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 22:15:34 -0500
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
+        by james.kirk.hungrycats.org (Postfix) with ESMTP id 685DB50D7EE;
+        Wed,  4 Dec 2019 22:15:33 -0500 (EST)
+Received: from zblaxell by waya.furryterror.org with local (Exim 4.92)
+        (envelope-from <zblaxell@waya.furryterror.org>)
+        id 1ichc5-0007qj-8Q; Wed, 04 Dec 2019 22:15:33 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: Make balance cancelling response faster
-Message-ID: <20191205025832.GY22121@hungrycats.org>
-References: <20191203064254.22683-1-wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH v2] btrfs-progs: scrub: add start/end position for scrub
+Date:   Wed,  4 Dec 2019 22:15:22 -0500
+Message-Id: <20191205031523.11593-1-ce3g8jdj@umail.furryterror.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="+QmoJrblcRudFCJH"
-Content-Disposition: inline
-In-Reply-To: <20191203064254.22683-1-wqu@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v2 changes:
 
---+QmoJrblcRudFCJH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So far this patch has had one user, who reported a bug:  the manual
+page for btrfs scrub said the start/end position arguments were extent
+bytenr aka logical addresses, when they are in fact device offset aka
+physical addresses.
 
-On Tue, Dec 03, 2019 at 02:42:50PM +0800, Qu Wenruo wrote:
-> [PROBLEM]
-> There are quite some users reporting that 'btrfs balance cancel' slow to
-> cancel current running balance, or even doesn't work for certain dead
-> balance loop.
->=20
-> With the following script showing how long it takes to fully stop a
-> balance:
->   #!/bin/bash
->   dev=3D/dev/test/test
->   mnt=3D/mnt/btrfs
->=20
->   umount $mnt &> /dev/null
->   umount $dev &> /dev/null
->=20
->   mkfs.btrfs -f $dev
->   mount $dev -o nospace_cache $mnt
->=20
->   dd if=3D/dev/zero bs=3D1M of=3D$mnt/large &
->   dd_pid=3D$!
->=20
->   sleep 3
->   kill -KILL $dd_pid
->   sync
->=20
->   btrfs balance start --bg --full $mnt &
->   sleep 1
->=20
->   echo "cancel request" >> /dev/kmsg
->   time btrfs balance cancel $mnt
->   umount $mnt
->=20
-> It takes around 7~10s to cancel the running balance in my test
-> environment.
->=20
-> [CAUSE]
-> Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cancel
-> request are queued.
-> However that cancelling request is only checked after relocating a block
-> group.
->=20
-> That behavior is far from optimal to provide a faster cancelling.
->=20
-> [FIX]
-> This patchset will add more cancelling check points, to make cancelling
-> faster.
+Removed the sanity question at the top of the cover text as this patch
+has now seen real use.  Made some minor changes to the example procedure.
 
-Nice!  I look forward to using this in the future!
+Summary:
 
-Does this cover device delete/resize as well?  I think there needs to be
-a check added for fatal signals for those to work, as they don't respond
-to balance cancel.
+This patch adds start (-s) and end (-e) position arguments to 'btrfs
+scrub start', to enable focusing a scrub on specific areas of a device.
+The positions are offsets from the start of the device.
 
-> And also, introduce a new error injection points to cover these newly
-> introduced and future check points.
->=20
-> Qu Wenruo (4):
->   btrfs: relocation: Introduce error injection points for cancelling
->     balance
->   btrfs: relocation: Check cancel request after each data page read
->   btrfs: relocation: Check cancel request after each extent found
->   btrfs: relocation: Work around dead relocation stage loop
->=20
->  fs/btrfs/ctree.h      |  1 +
->  fs/btrfs/relocation.c | 23 +++++++++++++++++++++++
->  fs/btrfs/volumes.c    |  2 +-
->  3 files changed, 25 insertions(+), 1 deletion(-)
->=20
-> --=20
-> 2.24.0
->=20
+The idea is that if you have a disk with a lot of errors, you do a
+loop of:
 
---+QmoJrblcRudFCJH
-Content-Type: application/pgp-signature; name="signature.asc"
+        - start a scrub at the beginning of the disk
+        - get some read/uncorrectable errors in dmesg
+        - cancel scrub, or use -e to scrub in 1G increments
+        - fix the errors (delete/replace files)
+        - restart scrub at just before the offset of the first error
+        - repeat from step 2
 
------BEGIN PGP SIGNATURE-----
+The last steps use the '-s' option to skip over parts of the disk that
+have already been scrubbed.  Each pass starts reading just before the
+first detected error in the previous pass to confirm that all references
+to the offending data blocks have been removed from the filesystem.
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXehyWAAKCRCB+YsaVrMb
-nGemAJ9XMVE7uyBiImMKmxl41YPtD/j3jgCeN6xAMegBvKvdUEX1uUK6v8zVOaY=
-=B8lB
------END PGP SIGNATURE-----
+Without these options, the process looks like this:
 
---+QmoJrblcRudFCJH--
+        - start a scrub at the beginning of the disk
+        - get a random sample of read/uncorrectable errors in dmesg
+        - wait for scrub to end
+        - fix the errors (delete/replace files)
+        - repeat from step 1
+
+The current approach need a full scrub to be repeated many times, because
+only a small percentage of a large number of errors will be sampled on
+each pass due to dmesg ratelimiting.
+
+It is possible to cancel the scrub, edit /var/lib/btrfs/scrub.status.*,
+change the "last_physical" field to the desired start position, and then
+resume the scrub to achieve a similar effect to this patch, but that's
+somewhat ugly.
+
+TODO:
+
+This patch does nothing to correct the "Total bytes to scrub" or
+"ETA" fields in various outputs, which are very wrong when the new
+-s and -e options are used.  Fixing that will require joining the
+device tree with block groups to estimate how many bytes will be
+scrubbed.  Alternatively, we could just disable the ETA/TBS fields
+in the status output when -s or -e are used.
+
+
+
