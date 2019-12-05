@@ -2,88 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AFE1143B2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 16:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6966E1143CD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 16:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbfLEPep (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 10:34:45 -0500
-Received: from mail-pg1-f175.google.com ([209.85.215.175]:44592 "EHLO
-        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbfLEPep (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 10:34:45 -0500
-Received: by mail-pg1-f175.google.com with SMTP id x7so1757863pgl.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 07:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gQ18rXQIri8Wyt4fLVNfERoR5nBubv7v02vFmodtdiA=;
-        b=ZVCP7mxXF7qo7Gu0nvjl0G0N8DKd9iuFl1F/320k4feVi3PmZG7zJ3izmnm/8MkqQn
-         agjKYWVoRuM19sr4lL1iMjks4xUpqNbDYA6SDOIaBnduQtLA5oW/hXxgnMTCRKPVXKG2
-         t/EgfG2kROXzX4oyjEiZu06t95gz2KwmGJuOL90xc6m9x3KHSNWHHcUGcL56sJKIGhkC
-         YlevtywxGNurcb9ku/G1LgYJH6GEtB191N7IMWF2Vm82ot/8hn20MaKVRvc5Ebr2ReNl
-         SL2fschGHy+9BZNWctU/Sff9Nvrf5hsJprAkHSzv3MMep96wDVc0PpK9Ya8VaUXbQisg
-         VpXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gQ18rXQIri8Wyt4fLVNfERoR5nBubv7v02vFmodtdiA=;
-        b=uBov3JYltfjYpwaxL0jklXf+PJ/A67l7I//jXHcAe5x7TWLM/8HoFKHPiR0CNVmDjy
-         SOD0FWpEYBdIPwL9pbIf0+6+3JRX3IMibMwd4rHt8ZJdzZ7S9MGSD4IA2H/urKG0CrZC
-         xWxqA//RS67jy9m4j6hhadoPzFxGL9TdNCmQSI4XqjW6pw884jZwuJqCGE2rg4ZNgU7Q
-         Vt2Qv8JATMm34o9RXipT41yP+X9DvNgQFO/Ux46x+pBnewNE7HZ/B6LOlW9yRHgm3SWT
-         z4zyzefEpmPLGXhs8SC1xmLrk8Amp0Gx3z2SNs8Mtby2jKBjqHKXwlRjJMa5JDNzyuGj
-         8uoQ==
-X-Gm-Message-State: APjAAAXgmpwq3pimVk4DIdsktJx05QGM3PHj/DoTC4s+l7+7Mib1ete1
-        2PoGTdb4Q/iGGSWuJ04aMe9wXvZ6
-X-Google-Smtp-Source: APXvYqx+W/W4Kr2mMu9jpdPxiaSi4WtSobh2YcCGoYFV6lD5eHNn9am4cnD37MCBs7sm0FIGmfPUHw==
-X-Received: by 2002:a63:2783:: with SMTP id n125mr9960055pgn.431.1575560084252;
-        Thu, 05 Dec 2019 07:34:44 -0800 (PST)
-Received: from hephaestus.prv.suse.net ([179.185.217.252])
-        by smtp.gmail.com with ESMTPSA id z130sm12286914pgz.6.2019.12.05.07.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2019 07:34:43 -0800 (PST)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH 2/2] btrfs-progs: mkfs-tests: Change $dev1 to TEST_DEV
-Date:   Thu,  5 Dec 2019 12:36:47 -0300
-Message-Id: <20191205153647.31961-2-marcos.souza.org@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191205153647.31961-1-marcos.souza.org@gmail.com>
-References: <20191205153647.31961-1-marcos.souza.org@gmail.com>
+        id S1729430AbfLEPkC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 10:40:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53628 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726028AbfLEPkB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 10:40:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5BB51AFAE;
+        Thu,  5 Dec 2019 15:39:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D79DADA733; Thu,  5 Dec 2019 16:39:53 +0100 (CET)
+Date:   Thu, 5 Dec 2019 16:39:53 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 05/28] btrfs: disallow space_cache in HMZONED mode
+Message-ID: <20191205153953.GV2734@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <20191204081735.852438-1-naohiro.aota@wdc.com>
+ <20191204081735.852438-6-naohiro.aota@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191204081735.852438-6-naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Wed, Dec 04, 2019 at 05:17:12PM +0900, Naohiro Aota wrote:
+> As updates to the space cache are in-place, the space cache cannot be
+> located over sequential zones and there is no guarantees that the device
+> will have enough conventional zones to store this cache. Resolve this
+> problem by disabling completely the space cache.  This does not introduces
+> any problems with sequential block groups: all the free space is located
+> after the allocation pointer and no free space before the pointer. There is
+> no need to have such cache.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/hmzoned.c | 18 ++++++++++++++++++
+>  fs/btrfs/hmzoned.h |  5 +++++
+>  fs/btrfs/super.c   | 10 ++++++++--
+>  3 files changed, 31 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/hmzoned.c b/fs/btrfs/hmzoned.c
+> index b74581133a72..1c015ed050fc 100644
+> --- a/fs/btrfs/hmzoned.c
+> +++ b/fs/btrfs/hmzoned.c
+> @@ -253,3 +253,21 @@ int btrfs_check_hmzoned_mode(struct btrfs_fs_info *fs_info)
+>  out:
+>  	return ret;
+>  }
+> +
+> +int btrfs_check_mountopts_hmzoned(struct btrfs_fs_info *info)
+> +{
+> +	if (!btrfs_fs_incompat(info, HMZONED))
+> +		return 0;
+> +
+> +	/*
+> +	 * SPACE CACHE writing is not CoWed. Disable that to avoid
+> +	 * write errors in sequential zones.
 
-It seems to be a typo, since $dev1 was not set, and we are dealing with
-TEST_DEV and not with loop devices.
+Please format comments to 80 columns
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- tests/mkfs-tests/020-basic-checksums-mount/test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	 */
+> +	if (btrfs_test_opt(info, SPACE_CACHE)) {
+> +		btrfs_err(info,
+> +		  "cannot enable disk space caching with HMZONED mode");
 
-diff --git a/tests/mkfs-tests/020-basic-checksums-mount/test.sh b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-index b7252786..42bf5fab 100755
---- a/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-+++ b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-@@ -17,7 +17,7 @@ test_mkfs_mount_checksum()
- 	run_check $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$TEST_DEV"
- 	run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
- 
--	run_check $SUDO_HELPER mount "$dev1" "$TEST_MNT"
-+	run_check $SUDO_HELPER mount "$TEST_DEV" "$TEST_MNT"
- 	run_check "$TOP/btrfs" filesystem df "$TEST_MNT"
- 	run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
- 	run_check $SUDO_HELPER "$TOP/btrfs" device usage "$TEST_MNT"
--- 
-2.23.0
+"space cache v1 not supported in HMZONED mode, use v2 (free-space-tree)"
 
+> +		return -EINVAL;
+
+>  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 616f5abec267..d411574298f4 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -442,8 +442,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+>  	cache_gen = btrfs_super_cache_generation(info->super_copy);
+>  	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
+>  		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
+> -	else if (cache_gen)
+> -		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
+> +	else if (cache_gen) {
+> +		if (btrfs_fs_incompat(info, HMZONED))
+> +			WARN_ON(1);
+
+So this is supposed to catch invalid combination, hmzoned-compatible
+options are verified at the beginning. 'cache_gen' can be potentially
+non-zero (fuzzed image, accidental random overwrite from last time), so
+I think a message should be printed. If it's possible to continue, eg.
+completely ignoring the existing space cache that's more user friendly
+than a plain unexplained WARN_ON.
