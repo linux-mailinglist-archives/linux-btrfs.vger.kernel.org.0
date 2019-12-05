@@ -2,107 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A77AD113BB0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 07:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE90113C3B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbfLEG3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 01:29:23 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:15064 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbfLEG3X (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 01:29:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1575527362; x=1607063362;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=r1ER+U8UNzaMS1CTWDUMQTjuAriAcAs1m9uD1dfeQy0=;
-  b=huNyjBbRkkpRlBBVFdpF0ivLEWGVvuW+CCW6Z2z4vtSqaTA4tk8qG6VN
-   khCL9ie7lPuBccIEgiuktkM9rM9srrmeUF43Q6X+sCu+JbAplI2ek/0Cw
-   hKMYRVWLoA4vSG0/qUwBBd4vx/o0hAGOOWjIlArLGZzMi8iPD1B+zak/Y
-   5XM5YAGFmXNyvcvaCUtL6wbgdC9kPSg1jVe8cNnx05CSXW93dg3CXyCWo
-   rJRRt5a6sjKDIZnJISKZLw/3IwtHXlK6r1Gx7zce0NW4xGIAbCkCeEiJP
-   6P1q7YVnRCKAmeWSJqqazETeUd1sdmEh8UDt3gj7bqdPeqqVS5efqFfxo
-   Q==;
-IronPort-SDR: 6um3IgEJONOb5GGsOV5fPEKRx86H4Tn4aj2XrStftjEgsSsdSgZft3hn5EvN+JzTRGaQhJTJ8U
- vE+ZqWbdY5lfFSQR/zWtqHNfTiFv1i128pqyygjNWIoW160eKaVY16OSJPo3tLoZecavTlp04H
- zCIB2o761AY/H5ac740Oty+u6Z69KKqocsWpduGlmuLdMNII4PRKD5pWqMvOnmiD0fgA43II45
- P/5U6wdjhOIXUwtxPLs0K42Wk+Zs4Lk+NeK3CWjJ8kJC1mrN/CDqCVdrCTInq6/n28UIk4qAk7
- WnQ=
-X-IronPort-AV: E=Sophos;i="5.69,280,1571673600"; 
-   d="scan'208";a="124653449"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Dec 2019 14:29:22 +0800
-IronPort-SDR: eI/pPxJEbJAMyf2iDds8l05HKQ2DEgTG0m0dVBwE6+wySk0aIXDOOxN8w9mUamMoiZRmlvN5H0
- TO0hG+5jomEJ9oas4IMzC4sVUdRXDAzF8RQnoRXNpPYUo4tKkGsvwYt5B1LVnBcgQRY94rMSZG
- qgkCbbJdOG4M0iiU+9EokkP4dYlgpzB1xliWJcYVvwrFVOfjgeYqBbpSyzWJLnhFiPZXOUwp20
- ArD6SZMuZqhM88518IzgQGca+UxPscS6nkdCjr22pMZMzXu/Ka2prvWXNEVJC0KVcbNAyxXaEI
- 81QxK9+zyxfZ/2PRoMVx+hCM
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2019 22:24:08 -0800
-IronPort-SDR: pYmcLFfuaWKWMAFUDkfzRfpDMtgqGUMqCZDJI1w+JLY7sxmCh1I9CufvZrIXaP6vg/9vsHEcCd
- i76i2s3FE05F4mOym65jgcq8Kqu5cOcfJdkupQrLgovCbUr23pNFWu4Ie3h55CQZC6hWUcWXgZ
- i9L3xRg2c7btCDkLzefmhnuG6HlpwSSKFk5HcAxHt1n+QZZSTt2B2UqwCqa+/mhiVKXwtlpu8F
- hJA9Upcv6p8T+9vSR7GMWmbWb2VH6HAG0y6HYWXxlcpV4sC5QmHYdE39x/RPhRPkqyhW4lnpas
- /6Y=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 04 Dec 2019 22:29:21 -0800
-Received: (nullmailer pid 2335473 invoked by uid 1000);
-        Thu, 05 Dec 2019 06:29:19 -0000
-Date:   Thu, 5 Dec 2019 15:29:19 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 02/28] btrfs: Get zone information of zoned block
- devices
-Message-ID: <20191205062919.mgpqe6gnbpahwaic@naota.dhcp.fujisawa.hgst.com>
-References: <20191204081735.852438-1-naohiro.aota@wdc.com>
- <20191204081735.852438-3-naohiro.aota@wdc.com>
- <20191204153732.GA2083@Johanness-MacBook-Pro.local>
- <20191204172234.GI2734@suse.cz>
+        id S1725974AbfLEHVX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 02:21:23 -0500
+Received: from mout.gmx.net ([212.227.17.21]:59413 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbfLEHVX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 02:21:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1575530481;
+        bh=4/ditqWeFl2OGmwy1/GI8cpP4OKmqUNWQNM31cJaL0s=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=P24Iz4HzyJLOF9pmTolczVALHWHLzDEICHsEw98qDpC1jTuzE6hSAM/HaO5BO6ZKj
+         q8flF7K3w+Tkwrl8n0Z1e41S2ff9oBSSSCIK/eni3YHEVJvXCpvxQZZvONMst09nZC
+         Vn/ygpyT3bxbbkpjmZZv7SGVffVjroImBCH5rqTI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6lpG-1igcGc1902-008Lf1; Thu, 05
+ Dec 2019 08:21:21 +0100
+Subject: Re: [PATCH 01/10] btrfs-progs: handle error if
+ btrfs_write_one_block_group() failed
+To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
+Cc:     Su Yue <Damenly_Su@gmx.com>
+References: <20191205042921.25316-1-Damenly_Su@gmx.com>
+ <20191205042921.25316-2-Damenly_Su@gmx.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <45341336-b2e8-2efe-64c3-cc0df59633ce@gmx.com>
+Date:   Thu, 5 Dec 2019 15:21:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20191204172234.GI2734@suse.cz>
+In-Reply-To: <20191205042921.25316-2-Damenly_Su@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="RqjxuxEEkzfKhMhT9sT7RY2vtXtc7sB6C"
+X-Provags-ID: V03:K1:rG9/BZU31RVkcRp7CcqvXjcK8y3FfAzJY8iU193wJywNdCBE8B3
+ a04mVjm+kUOw2o3j0wgrfsRbJYpEgmTRd3RtmdCUoU/HG+3TQufJzs2j/GzFAk9HCr4ZaeR
+ GpTlI+24TlLmFdsjUxomXe8RbF5oIDKurc7YBiCYZ3v58qEcmhMTc04L6ArKmWovw+ssNkE
+ tjjtAJCuNG/nPt1MLsSng==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OVL55XSZazE=:sedBf7Wr1wFjrEoMX92nBi
+ /tjl5XbFGEmfTL66K9osaQdqBl2d7DoGqeU6eZQ9y9FJWcv70CC3yVT150sSg4yJhXCSHZfI6
+ 3TPJSgKPvMglAA686spJw3wft5c4wXS3++DnoTKCBF5ov3p3RUKpJUzHBBy583cbtEsH1MMeg
+ 3V1RY+shz6soXK1ipAXBZVjeIRsgD1LWYzq3mUNN1pBrf9K2d1I4i9fatuJhNHOaZdffsKuGd
+ fHCRLFbTQSo04Wv0aNe1DTSK6LJtZBRK3+5pjOMHuJ+k/0OZt4axckFrAsPX8hwCZjJoY2jLf
+ IfzJuuOo72tB/+Va/Qzoto7y4hSKi2MK/e3RBQOVwFHuU4trFcmVjEdb6IhMZRzl9icQLLHLA
+ C0/fNW52cIsN1cphhBI71NDLDR6AGajxzv7EC+VC76TyAMxFvyG/3SIXyyOeRQZbaov0r8jW4
+ 96E7UcxQ+kTsqYSNSVCYDTEUVTQgo3rlQNMjaTBH7mAJfkcinymSr1avF876bTK548QnMP0P9
+ 4yfy+zA02JOi83F7VuQByLnmd/gkw1y5i2SgKTKNij32FjdT9fX1XQPLdlEdb2WQrN6s/kOkt
+ RLKm3ONRwEiPvF6lqgJXnm59ioWPiudqKDO6GRP7ajmLEogHqdTlq5auS0RjYZIKMSWwdiuyS
+ tz/edM7fQua0orn2sZ5YR1RulnCrWf/Ed1QEkuYLHZNkMjla2Lem8GAtHVG0Dg0pAMfmx+GPe
+ pn9kBX+Fb+hnNREDKimLgUu0EzRfUDLmNZmndugVmFRTu7yZQnPAo4vj9SsKrhcf2W3cKD6NV
+ VLPlKVgmprC5gFi1M686gu2LR40atrGq8Ci9B6fD3JtY3Y3Ou6EcDVRirGCP3gtydDkmdv9yH
+ Wv7ifKs3jI4hNoiUZZtxevHExFuX/7nc3oDQJdRBz5L+TQFYd+D1apqnpHy+q9zS3EWXEWt+W
+ C6wFq2aOlWZQ+oLSjk8kJtlWuDK5LT5uU7mkXiK/6k5mnYSz2P/dCrPXuQfWHwmIxfZr+vhh2
+ f3UGrJhruXLoff/42KKp9pVV4KDMR6unh4MZjO1gTSkiJ8p4oRKJUrAeK6V9uQGNr9Scf5e+r
+ 00IoDaFZTOba7DzOmk9DOA86gTIM00MbnzSKJsbsJ1ybu+//d702C5Hyegjm8QrYPlEAxjP1K
+ uqykGKlP36I/hRGsPsXuzFv2Y11+6/xawrPt1/nQIAQlLVIi2XKUMGWtORYyGhEJCUfWWwbpn
+ 0engR+CVebY1oHVLhuTZQXWkNCj4XEVaAAqdHIDdfX+HVJLpdY7lS22zWLuY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 06:22:34PM +0100, David Sterba wrote:
->On Wed, Dec 04, 2019 at 04:37:32PM +0100, Johannes Thumshirn wrote:
->> On Wed, Dec 04, 2019 at 05:17:09PM +0900, Naohiro Aota wrote:
->> [..]
->>
->> > +#define LEN (sizeof(device->fs_info->sb->s_id) + sizeof("(device )") - 1)
->> > +	char devstr[LEN];
->> > +	const int len = LEN;
->> > +#undef LEN
->>
->> Why not:
->> 	const int len = sizeof(device->fs_info->sb->s_id)
->> 					+ sizeof("(device )") - 1;
->> 	char devstr[len];
->
->len is used only once for snprintf to devstr, so there it can be
->replaced by sizeof(devstr) and the sizeof()+sizeof() can be used for
->devstr declaration.
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RqjxuxEEkzfKhMhT9sT7RY2vtXtc7sB6C
+Content-Type: multipart/mixed; boundary="zXoPxtj5qyGR2mwJmDsbKsQlg1ikoStMk"
 
-That's better. I'll fix in that way.
+--zXoPxtj5qyGR2mwJmDsbKsQlg1ikoStMk
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->The size of devstr seems to be one byte shorter than needed:
->
->> > +		snprintf(devstr, len, " (device %s)",
->> > +			 device->fs_info->sb->s_id);
->
->There's a leading " " at the begining that I don't see accounted for.
 
-Oops, I'll fix. Thanks.
+
+On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
+> From: Su Yue <Damenly_Su@gmx.com>
+>=20
+> Just break loop and return the error code if failed.
+> Functions in the call chain are able to handle it.
+>=20
+> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+> ---
+>  extent-tree.c | 4 +++-
+>  transaction.c | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/extent-tree.c b/extent-tree.c
+> index 53be4f4c7369..4a3db029e811 100644
+> --- a/extent-tree.c
+> +++ b/extent-tree.c
+> @@ -1596,9 +1596,11 @@ int btrfs_write_dirty_block_groups(struct btrfs_=
+trans_handle *trans)
+> =20
+>  		cache =3D (struct btrfs_block_group_cache *)(unsigned long)ptr;
+>  		ret =3D write_one_cache_group(trans, path, cache);
+> +		if (ret)
+> +			break;
+>  	}
+>  	btrfs_free_path(path);
+> -	return 0;
+> +	return ret;
+>  }
+> =20
+>  static struct btrfs_space_info *__find_space_info(struct btrfs_fs_info=
+ *info,
+> diff --git a/transaction.c b/transaction.c
+> index 45bb9e1f9de6..c9035c765a74 100644
+> --- a/transaction.c
+> +++ b/transaction.c
+> @@ -77,7 +77,9 @@ static int update_cowonly_root(struct btrfs_trans_han=
+dle *trans,
+>  					&root->root_item);
+>  		if (ret < 0)
+>  			return ret;
+> -		btrfs_write_dirty_block_groups(trans);
+> +		ret =3D btrfs_write_dirty_block_groups(trans);
+> +		if (ret)
+> +			return ret;
+>  	}
+
+Another hint for later cleanup.
+
+What about killing that while (1) loop in another patch as a cleanup?
+
+Thanks,
+Qu
+
+
+>  	return 0;
+>  }
+>=20
+
+
+--zXoPxtj5qyGR2mwJmDsbKsQlg1ikoStMk--
+
+--RqjxuxEEkzfKhMhT9sT7RY2vtXtc7sB6C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3or+wXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qj5Jwf9FBk/2hIsoOVFDsf+ctoMRfEf
+SZydeMqlVbpJOy0E567/3d0/EAnClMA2RkhA3gpfAZSe04nONuxSUefyT5DfrqaO
+ftbzUyUnlpBx4vESFrHzHHihSfBw2DHPfzAVHDm/tNLkqZ5JbEHX4g4JpYIBA4VI
+Kh/+xF9OBZYJe6gGGFkFDgO9LliXGk7Ez1kI1omt2NGxxGAM4+h1PXUcuyxcOc4S
+637hfH/DrgAYkak0oTbRmlNKs0MW7GTX05UK2JMLHDqHNO2uWfIF3aFWZg1xLWM6
+p/UJUZ2l39RjzMeS7KTvqz9lG/PldYl/c+qiRQGTR4DI9OJFhcZRWAUbDdgLiA==
+=aYje
+-----END PGP SIGNATURE-----
+
+--RqjxuxEEkzfKhMhT9sT7RY2vtXtc7sB6C--
