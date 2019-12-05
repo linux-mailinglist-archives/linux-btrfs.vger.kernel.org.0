@@ -2,76 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6C3113C79
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D62A113C7A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbfLEHmU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 02:42:20 -0500
-Received: from mout.gmx.net ([212.227.17.21]:36619 "EHLO mout.gmx.net"
+        id S1725974AbfLEHnd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 02:43:33 -0500
+Received: from mout.gmx.net ([212.227.17.21]:39793 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbfLEHmU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 02:42:20 -0500
+        id S1725953AbfLEHnd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 02:43:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575531737;
-        bh=2ZBKnZ4SQpvPhPzkWIaB7gg5UuTxvlyKDq8nqo9PY9c=;
+        s=badeba3b8450; t=1575531811;
+        bh=3GJJ3kL0/E7ieGEgn5BRz1tdNSe7qiyoL56r78lzFtU=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=MaAAvs2pC4VD+iHJBdNxJK0PoTKBJkUCrdUMiqMysaQ+fh0621ELhmjo40y8Lp4kr
-         V5BA1w7M5Yu2PSIjvqOJvraGyou6aC1jfHMVsY/dd8SPGeNZWrgx4H1rCxqUtTlHlI
-         U8sWR8tOwthQfEOUBIdfdlGjprOuj/RyPpSX1tJA=
+        b=AspKIa7zSNt9qnvXyTZznWdsH7dUBD0rLQJpgpuQdVenEerQO7M+Y+XYAI3KehzMi
+         LDE+GkAg9ccxzAM7lKiMaIgj017wU7rHGVtPn92mwl9o6jiyoiHHa5y5byv/ufpmSI
+         hRo0A7MOxswceOAK+dLjr87KLOeuKk2FZcs5f15M=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MN5eX-1iMbwC030v-00Iymd; Thu, 05
- Dec 2019 08:42:17 +0100
-Subject: Re: [PATCH 06/10] btrfs-progs: abstract function
- btrfs_add_block_group_cache()
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1iMt6a0c6w-00JFmj; Thu, 05
+ Dec 2019 08:43:30 +0100
+Subject: Re: [PATCH 07/10] block-progs: block_group: add dirty_bgs list
+ related memebers
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191205042921.25316-1-Damenly_Su@gmx.com>
- <20191205042921.25316-7-Damenly_Su@gmx.com>
+ <20191205042921.25316-8-Damenly_Su@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <bb408d9c-446d-35e8-d1ce-0205d018fb2b@gmx.com>
-Date:   Thu, 5 Dec 2019 15:42:11 +0800
+Message-ID: <1e30b37a-539c-5062-4651-368277085cdb@gmx.com>
+Date:   Thu, 5 Dec 2019 15:43:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191205042921.25316-7-Damenly_Su@gmx.com>
+In-Reply-To: <20191205042921.25316-8-Damenly_Su@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="D8MJcoO1xboyyVbZGhfdqnlHL4jx9Tn2w"
-X-Provags-ID: V03:K1:Bl/7qEYRFcBlCZ3mVx/s8HCDO1/ryofQoEQPf3uC0koJRnObYxR
- 6JGhyI7pPsgYkSmIPQjPMkHLuSMQaSxfQr1JWbBaFOcb83ltFuopGLoPuv/lhX2VmN67paA
- v9JlBbgcDXrCeuJUj8VzUHNCskzU0jbYI+QSNACv0qpryfLKI9DNnfdlyJISGlNgIhVEifi
- acyeJw6FxY5yuuAP2W6VA==
+ boundary="GIIQZHmvruCVhIEp67U5SP62uOIqKb9AC"
+X-Provags-ID: V03:K1:nz9QnnRyd9UG8H7R9tm+zt7CjUaf/gAscwRVw3TlWellDC+4rvE
+ lZcL2HmM/VZKHD62z3/TLO4FYLgNJut+EFd2lIBqxZ1a1r6+mzKagWEpJvgJSqKeMnjnI1K
+ 6qlmSIGfUrkl11BQ7v93tNJipbR/QyljiaEH2RjrdfV/gpIYYZvcAdLvFNxh6PFB5dWKzov
+ MjppcP+eNjSUuGsqwickg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:42JlqaqFA40=:AjpxRBuV2Y/jZFa6/+0U2e
- ci2SSNZJ29/sBWtimk/CXMTltmsPgVZUvIxuxMN+H/Wlk2mbT/VsYAtltIDo11Mgn3/xbdZy/
- 6p5CEmpvwukbrmm8Z3y0DcRoAXb4OOBKysk57EA/95ZmveYeaNGfKH7DPZcsGHVP1DCHU4yXP
- Zl7nioYlAK6obeD9Urpqia1TD8+6A547icr4yzAK4tnt+QwylKIVF0hqogSIPRYWj6AMGNht9
- vBFYRHPl8H5UN9MN9x7DumvGFSL413vUfIYxOxvINQ7AVnAzpCIwolcH4IHPWRUXwGXSFHMxg
- +hSR5yjnz51RrnMs9wY2mE0deuywcofMY8ZHn8CRq8PJ3h5Qgx45CLmvNJE/TTn/d9R69xyyH
- HqG3AXbgoXtfkxJKpCbtIxhhOVyTZjkN7uCa6Rzij7tXHn949zz2wI9EkAb/Dmj+JCxf8iNj5
- Rtq2crPXDBLIkn7kcVVby0oWqFidiFcQWu96m6Nli6+vVqKncHsMxqZ1z7Nkg8+mFPbydl4R2
- RadS5PRTVpFbe7DbIOVI89ukxk6svugDOYIYskLHF+ZyK4nCMvPKfHpBe2yJ5fMJfNOp9IJxG
- 5VCmfuXfMtod/V8Oc7aWVhg9l2LuG5nv1mFggtiYZB2upe0MuKl05tjUDVSAUpMqf0afJSS4J
- bcukZUVrnsCn7LozmlcAa4lz7wAdQXcL3JbB5uf/p1dPqSX4dWwjdwrm/D4AcCTooB6bXCl0c
- xirQDXlc+QRw0Kd1PVg2Bl+1fPMttnXHp96viYiaG4q2IdGG+dK5Gz/agvgpQnFI3bge5uNc3
- 1JSHU113Ra/2pS05C5K1m2G7ChLjdA0eHQxDw0/aiNmeQ1gH8DrMtKqcDzLa+fgRYwd9CZavI
- zFdSTDPrTqHf95qDSqJ9FBUsqtYVl6IHrX2F9sFqTbbyJ6GMnNcb+dDuRKX9mN+GZ7/Jjz7u1
- 0lr/cSGEXB7ncmxX+sOiKPhFex8ZLR0SAvjzU74glDkYxIVM/27aSabj7nomJ2BwIqnsUdP/J
- t235JUkoJ+4bNtR577QJ9UjWndRE6Hw1YUlyyGMxYOiy5LVibwK/HXrruBbpSEF8qI4zbbBGp
- 9n0cI2XFJA4PUiRZpKGvfW7aCKvpLQUUZd4Yo4MTrT6CwZHoJU+nFJM8w/yAad2S+/jX94kjC
- M5kjuI6bEVVoBEtlJCu4zuTLyyCF/8cIeEcEpZsPLbR+3cyGuhUtG2Z8B04fUx8gL9GYf6FXU
- ifcnUpPuHri961Bcd5MyPJ4mhP/CbkJU8XmxNdf6hClwWGG23xuu7H3wl43M=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eMRMnfeoPO4=:gKX+htyeamMkRJrpxG1UMC
+ TUyMttBw5vV4wBCNBjWALbB/qbAbUV84aqg9KEVP8WOmiUAc/Ia+g3TevQHqubPQgJp2l7vyI
+ Kc2mCujkYe2F1N0Xdlt1b33lraxEoTCcmurqpUFrGRlh47ujcqw5U7TTSdmRjYBtTv1opBXnS
+ zAcDXqWUSzt0PHvdNpxOGVPvTnViYfzoWmWcgYafB50nxA1gjmsaE/6sdSnZ9JVik+a3R5CEl
+ Teju1hvDM8GWmQX5ZZgF6q68W5FcxJxA3+W9KplieZLPZvYSqNeC+EmEVMhBAkhnHCoznnyyL
+ uaiifXpxLmrJTm9aWMoSXN9SUg8J5nUuloTNhc5e+Z+zoHLd1dsC5CLCsleEp5asOmTBx66Iy
+ t26Al5VxL0H5AfxDi1fnfJbj1Eu5KVTXNNtutOXxlIlsrhhyQWOlZbmLmJdhsPReRJuSm5TUA
+ kgAUxVBj7+aTg7DSJISbjvtJS6NKt8nK7pWixQcs4OK6eQYrUNWSbIJZZ/kYMqTaOP5GbVWMH
+ /AFDx+56kXGzxBgfkla2N5bAQUfdfXoQ0cvrfvI+54xVAUS9r7CaZeQbLyBe+RwuMKZhrTkF+
+ Po1X0pJsk7Me4N6QgKK/14qRPMTq6uRR5tpwi5O74acWzHHOphpQ2rnjHKj1D5RRyqpZFcfxK
+ CsaamcElKeEegzUAnrl0ztDXqJAkko9voeHRwiVKnIRLTYx7v9V6fwI0QJaRM+qTezrx2RP5u
+ 3jxix7K9RYAI5LJe09/Ze4dJ0eT2jVbVWd51r9FHyXzLcILWkXRQsdixsn8nRIX+j39eJQBG9
+ XLu3221YkKMJuZM2qlfKHjJ3wEtcEHW9vRwQqpvxPeWoZmpY2y3oc6+43Ml5DEg/Xn5TCfyD5
+ QuoG33e88N+8mU/H7PFIKJly6sdcm3RY1UtLZd0IW4D4ZukagnZbJrVw/CYrn2fegI/HmoUx+
+ x+ip8uM0Y4bcQSBEwzyHuNPUjmpdTCIwakAJI39NoyGYZqMIHeMP3pnxU9IFdrmzBil+LI/1G
+ xpGPAotr8So/7eXHtTZmtupnZ8DGuPlYUlMv4Khyp8Z7x/YsjBwimeoYYrsVi/lo+ikRSrbhr
+ ++PY5aZViztPFft0kzQC7RQB27XNAvcjuQoFrmNGrSpfHMwOYx1KXA5Rx0/sk4iSTqH9BvPHz
+ fCnUyzeSQcGkUZG0o1UTaiM+FiI3gGfUtx9gZeD3KlXKoJSpmg3x/t/XvEpkO2l86giLlEnDO
+ RZamT2X2M1YU5jQGJl78ApycDxWgcMbLo1OLaeiP1yiQjg6YvgQF7fG6ExKY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---D8MJcoO1xboyyVbZGhfdqnlHL4jx9Tn2w
-Content-Type: multipart/mixed; boundary="hAnDLRmfRF17A1pXy6lgWJP25FOmQIWLd"
+--GIIQZHmvruCVhIEp67U5SP62uOIqKb9AC
+Content-Type: multipart/mixed; boundary="YTaxAO7K6mjotNnFYNMRurWtkwVrp4zS4"
 
---hAnDLRmfRF17A1pXy6lgWJP25FOmQIWLd
+--YTaxAO7K6mjotNnFYNMRurWtkwVrp4zS4
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -81,10 +81,10 @@ Content-Transfer-Encoding: quoted-printable
 On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 >=20
-> The new function btrfs_add_block_group_cache() abstracts the old
-> set_extent_bits and set_state_private operations.
->=20
-> Rename the rb tree version to btrfs_add_block_group_cache_kernel().
+> The old style uses extent bit BLOCK_GROUP_DIRTY to mark dirty block
+> groups in extent cache. To replace it, add btrfs_trans_handle::dirty_bg=
+s
+> and btrfs_block_group_cache::dirty_list.
 >=20
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 
@@ -94,148 +94,113 @@ Thanks,
 Qu
 
 > ---
->  extent-tree.c | 50 ++++++++++++++++++++++++++------------------------
->  1 file changed, 26 insertions(+), 24 deletions(-)
+>  ctree.h       | 3 +++
+>  extent-tree.c | 4 ++++
+>  transaction.c | 1 +
+>  transaction.h | 3 ++-
+>  4 files changed, 10 insertions(+), 1 deletion(-)
 >=20
+> diff --git a/ctree.h b/ctree.h
+> index f3f5f52f2559..61ce53c46302 100644
+> --- a/ctree.h
+> +++ b/ctree.h
+> @@ -1119,6 +1119,9 @@ struct btrfs_block_group_cache {
+> =20
+>  	/* Block group cache stuff */
+>  	struct rb_node cache_node;
+> +
+> +	/* For dirty block groups */
+> +	struct list_head dirty_list;
+>  };
+> =20
+>  struct btrfs_device;
 > diff --git a/extent-tree.c b/extent-tree.c
-> index 274dfe540b1f..ff3db5ca2e0c 100644
+> index ff3db5ca2e0c..981622e37ab7 100644
 > --- a/extent-tree.c
 > +++ b/extent-tree.c
-> @@ -164,10 +164,31 @@ err:
->  	return 0;
->  }
-> =20
-> +static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
-> +				       struct btrfs_block_group_cache *cache,
-> +				       int bits)
-> +{
-> +	int ret;
+> @@ -2819,6 +2819,8 @@ static int read_one_block_group(struct btrfs_fs_i=
+nfo *fs_info,
+>  	cache->pinned =3D 0;
+>  	cache->flags =3D btrfs_block_group_flags(&bgi);
+>  	cache->used =3D btrfs_block_group_used(&bgi);
+> +	INIT_LIST_HEAD(&cache->dirty_list);
 > +
-> +	ret =3D set_extent_bits(&info->block_group_cache, cache->key.objectid=
-,
-> +			      cache->key.objectid + cache->key.offset - 1,
-> +			      bits);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D set_state_private(&info->block_group_cache, cache->key.object=
-id,
-> +				(unsigned long)cache);
-> +	if (ret)
-> +		clear_extent_bits(&info->block_group_cache, cache->key.objectid,
-> +				  cache->key.objectid + cache->key.offset - 1,
-> +				  bits);
-> +	return ret;
-> +}
-> +
->  /*
->   * This adds the block group to the fs_info rb tree for the block grou=
-p cache
->   */
-> -static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
-> +static int btrfs_add_block_group_cache_kernel(struct btrfs_fs_info *in=
-fo,
->  				struct btrfs_block_group_cache *block_group)
->  {
->  	struct rb_node **p;
-> @@ -2769,7 +2790,6 @@ error:
->  static int read_one_block_group(struct btrfs_fs_info *fs_info,
->  				 struct btrfs_path *path)
->  {
-> -	struct extent_io_tree *block_group_cache =3D &fs_info->block_group_ca=
-che;
->  	struct extent_buffer *leaf =3D path->nodes[0];
->  	struct btrfs_space_info *space_info;
->  	struct btrfs_block_group_cache *cache;
-> @@ -2819,11 +2839,7 @@ static int read_one_block_group(struct btrfs_fs_=
-info *fs_info,
->  	}
->  	cache->space_info =3D space_info;
-> =20
-> -	set_extent_bits(block_group_cache, cache->key.objectid,
-> -			cache->key.objectid + cache->key.offset - 1,
-> -			bit | EXTENT_LOCKED);
-> -	set_state_private(block_group_cache, cache->key.objectid,
-> -			  (unsigned long)cache);
-> +	btrfs_add_block_group_cache(fs_info, cache, bit | EXTENT_LOCKED);
->  	return 0;
->  }
-> =20
-> @@ -2875,9 +2891,6 @@ btrfs_add_block_group(struct btrfs_fs_info *fs_in=
+>  	if (cache->flags & BTRFS_BLOCK_GROUP_DATA) {
+>  		bit =3D BLOCK_GROUP_DATA;
+>  	} else if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
+> @@ -2900,6 +2902,7 @@ btrfs_add_block_group(struct btrfs_fs_info *fs_in=
 fo, u64 bytes_used, u64 type,
->  	int ret;
->  	int bit =3D 0;
->  	struct btrfs_block_group_cache *cache;
-> -	struct extent_io_tree *block_group_cache;
-> -
-> -	block_group_cache =3D &fs_info->block_group_cache;
+>  	cache->key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+>  	cache->used =3D bytes_used;
+>  	cache->flags =3D type;
+> +	INIT_LIST_HEAD(&cache->dirty_list);
 > =20
->  	cache =3D kzalloc(sizeof(*cache), GFP_NOFS);
->  	BUG_ON(!cache);
-> @@ -2894,13 +2907,8 @@ btrfs_add_block_group(struct btrfs_fs_info *fs_i=
-nfo, u64 bytes_used, u64 type,
->  	BUG_ON(ret);
-> =20
->  	bit =3D block_group_state_bits(type);
-> -	ret =3D set_extent_bits(block_group_cache, chunk_offset,
-> -			      chunk_offset + size - 1,
-> -			      bit | EXTENT_LOCKED);
-> -	BUG_ON(ret);
-> =20
-> -	ret =3D set_state_private(block_group_cache, chunk_offset,
-> -				(unsigned long)cache);
-> +	ret =3D btrfs_add_block_group_cache(fs_info, cache, bit | EXTENT_LOCK=
-ED);
->  	BUG_ON(ret);
->  	set_avail_alloc_bits(fs_info, type);
-> =20
-> @@ -2950,9 +2958,7 @@ int btrfs_make_block_groups(struct btrfs_trans_ha=
+>  	exclude_super_stripes(fs_info, cache);
+>  	ret =3D update_space_info(fs_info, cache->flags, size, bytes_used,
+> @@ -2997,6 +3000,7 @@ int btrfs_make_block_groups(struct btrfs_trans_ha=
 ndle *trans,
->  	int bit;
->  	struct btrfs_root *extent_root =3D fs_info->extent_root;
->  	struct btrfs_block_group_cache *cache;
-> -	struct extent_io_tree *block_group_cache;
+>  		cache->key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+>  		cache->used =3D 0;
+>  		cache->flags =3D group_type;
+> +		INIT_LIST_HEAD(&cache->dirty_list);
 > =20
-> -	block_group_cache =3D &fs_info->block_group_cache;
->  	total_bytes =3D btrfs_super_total_bytes(fs_info->super_copy);
->  	group_align =3D 64 * fs_info->sectorsize;
-> =20
-> @@ -2996,12 +3002,8 @@ int btrfs_make_block_groups(struct btrfs_trans_h=
-andle *trans,
+>  		ret =3D update_space_info(fs_info, group_type, group_size,
 >  					0, &cache->space_info);
->  		BUG_ON(ret);
->  		set_avail_alloc_bits(fs_info, group_type);
+> diff --git a/transaction.c b/transaction.c
+> index c9035c765a74..269e52c01d29 100644
+> --- a/transaction.c
+> +++ b/transaction.c
+> @@ -52,6 +52,7 @@ struct btrfs_trans_handle* btrfs_start_transaction(st=
+ruct btrfs_root *root,
+>  	root->last_trans =3D h->transid;
+>  	root->commit_root =3D root->node;
+>  	extent_buffer_get(root->node);
+> +	INIT_LIST_HEAD(&h->dirty_bgs);
+> =20
+>  	return h;
+>  }
+> diff --git a/transaction.h b/transaction.h
+> index 750f456b3cc0..8fa65508fa8d 100644
+> --- a/transaction.h
+> +++ b/transaction.h
+> @@ -22,6 +22,7 @@
+>  #include "kerncompat.h"
+>  #include "ctree.h"
+>  #include "delayed-ref.h"
+> +#include "kernel-lib/list.h"
+> =20
+>  struct btrfs_trans_handle {
+>  	struct btrfs_fs_info *fs_info;
+> @@ -35,7 +36,7 @@ struct btrfs_trans_handle {
+>  	unsigned long blocks_used;
+>  	struct btrfs_block_group_cache *block_group;
+>  	struct btrfs_delayed_ref_root delayed_refs;
 > -
-> -		set_extent_bits(block_group_cache, cur_start,
-> -				cur_start + group_size - 1,
-> -				bit | EXTENT_LOCKED);
-> -		set_state_private(block_group_cache, cur_start,
-> -				  (unsigned long)cache);
-> +		btrfs_add_block_group_cache(fs_info, cache,
-> +					    bit | EXTENT_LOCKED);
->  		cur_start +=3D group_size;
->  	}
->  	/* then insert all the items */
+> +	struct list_head dirty_bgs;
+>  };
+> =20
+>  struct btrfs_trans_handle* btrfs_start_transaction(struct btrfs_root *=
+root,
 >=20
 
 
---hAnDLRmfRF17A1pXy6lgWJP25FOmQIWLd--
+--YTaxAO7K6mjotNnFYNMRurWtkwVrp4zS4--
 
---D8MJcoO1xboyyVbZGhfdqnlHL4jx9Tn2w
+--GIIQZHmvruCVhIEp67U5SP62uOIqKb9AC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3otNMXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qiTsAgAoISVdfwJWYPOmA/NuAWs6yEL
-GaCnfqbI4pkFOuqXoVFNrV3uSl8NCRaeBbFce3IiGZZIf1AkDnhUAyuScvKouEP8
-WpT6EyI1usDjauPRGg32E4WcXl/tx28SQ0xURXhpqgcp0zkOmAMIVkcuPvE2/RbF
-DvTSiQNdpLn5jgEYcMM7L/7n/6pqYuRTVifZ3+3J5Vnp00ZvwZFj1g2LuKaUA4nJ
-TW/cbBXsVqBAFbPuBSfgu48q3WB+hJ5PYJcKMPyJFKtKd2jzfIVC3pz7ZN9GiWT8
-/dgvS6zpbLSLMqtKB2/eqwlDzyIyEiIlL+5UkkHY8trZvXQrN2NdCoCiBCeldg==
-=XkAM
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3otR4XHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjXEQf/TEPI9GVx5LW5TRjrHzyav7vI
+AU3VMXtfrbp6D7dcsteQjHawf0fCtlS7MXvAdPOmS1U7jZIFCYQn5I6uQ3F4M8j+
++kqUedSMw6RjaKBGq2hnusbVGrto+8C4tXvBgM2w0s8zTRRs0z1B/6bCfs5VNluR
+RbI8jzVOz6qnAwvNsI80XdbHYRVSey3TmPBKlQorbflv0Z+5dfi1eLnRQ1DJk66f
+0iWTbUyy19ivWUG0CkTONeE3DM84W1ty+Bro0iioPV86fNbiWbGVBfttHyfPpIjf
+BWhcoRxbf1jkcFsa7Dx5sHYdASf+b0+4Eeo8cGparEsS/jw539ZdVAgLA7phZw==
+=qCBu
 -----END PGP SIGNATURE-----
 
---D8MJcoO1xboyyVbZGhfdqnlHL4jx9Tn2w--
+--GIIQZHmvruCVhIEp67U5SP62uOIqKb9AC--
