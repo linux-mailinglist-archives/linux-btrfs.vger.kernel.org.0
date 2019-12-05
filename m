@@ -2,31 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C57113A13
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 03:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E3B113A21
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 03:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbfLECul (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 21:50:41 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:44440 "EHLO
+        id S1728459AbfLEC6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 21:58:33 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:45086 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbfLECul (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 21:50:41 -0500
+        with ESMTP id S1728449AbfLEC6d (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 21:58:33 -0500
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 9390A50D76B; Wed,  4 Dec 2019 21:50:40 -0500 (EST)
-Date:   Wed, 4 Dec 2019 21:50:40 -0500
+        id 7449A50D790; Wed,  4 Dec 2019 21:58:32 -0500 (EST)
+Date:   Wed, 4 Dec 2019 21:58:32 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Christian =?iso-8859-1?Q?H=F6ppner?= <chris@mkaito.net>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: False alert: read time tree block corruption
-Message-ID: <20191205025040.GX22121@hungrycats.org>
-References: <BYWL23M0PMTD.134Q4QBKEGA96@cryptbreaker>
- <6c2d09ca-1483-cd82-c906-e30731baa39f@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] btrfs: Make balance cancelling response faster
+Message-ID: <20191205025832.GY22121@hungrycats.org>
+References: <20191203064254.22683-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="IB2Qao3B4XdnqHmg"
+        protocol="application/pgp-signature"; boundary="+QmoJrblcRudFCJH"
 Content-Disposition: inline
-In-Reply-To: <6c2d09ca-1483-cd82-c906-e30731baa39f@suse.com>
+In-Reply-To: <20191203064254.22683-1-wqu@suse.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -34,83 +32,91 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---IB2Qao3B4XdnqHmg
-Content-Type: text/plain; charset=utf-8
+--+QmoJrblcRudFCJH
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 04, 2019 at 01:32:59PM +0200, Nikolay Borisov wrote:
+On Tue, Dec 03, 2019 at 02:42:50PM +0800, Qu Wenruo wrote:
+> [PROBLEM]
+> There are quite some users reporting that 'btrfs balance cancel' slow to
+> cancel current running balance, or even doesn't work for certain dead
+> balance loop.
 >=20
+> With the following script showing how long it takes to fully stop a
+> balance:
+>   #!/bin/bash
+>   dev=3D/dev/test/test
+>   mnt=3D/mnt/btrfs
 >=20
-> On 4.12.19 =D0=B3. 13:04 =D1=87., Christian H=C3=B6ppner wrote:
-> > Hello,
-> >=20
-> > I'm writing because the kernel wiki page relating to this error[1] says=
- to
-> > write here first.
-> >=20
-> > I'm (was) running Arch Linux, kernel 5.4.1, btrfs-progs 5.3.1
-> >=20
-> > Yesterday during usage, the root file system remounted read-only. I was
-> > dumb enough to react by rebooting the machine, when I was greeted by the
-> > following error:
-> >=20
-> > [  25.634530] BTRFS critical (device nvme0n1p2): corrupf leaf: block=3D=
-810145234944...
+>   umount $mnt &> /dev/null
+>   umount $dev &> /dev/null
 >=20
-> How come you omitted exactly the most useful error that could have
-> pointed at the problem ? If the data is intact on-disk and the leaf
-> checker triggered this means you likely have faulty ram.
+>   mkfs.btrfs -f $dev
+>   mount $dev -o nospace_cache $mnt
+>=20
+>   dd if=3D/dev/zero bs=3D1M of=3D$mnt/large &
+>   dd_pid=3D$!
+>=20
+>   sleep 3
+>   kill -KILL $dd_pid
+>   sync
+>=20
+>   btrfs balance start --bg --full $mnt &
+>   sleep 1
+>=20
+>   echo "cancel request" >> /dev/kmsg
+>   time btrfs balance cancel $mnt
+>   umount $mnt
+>=20
+> It takes around 7~10s to cancel the running balance in my test
+> environment.
+>=20
+> [CAUSE]
+> Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cancel
+> request are queued.
+> However that cancelling request is only checked after relocating a block
+> group.
+>=20
+> That behavior is far from optimal to provide a faster cancelling.
+>=20
+> [FIX]
+> This patchset will add more cancelling check points, to make cancelling
+> faster.
 
-Yesterday on IRC there was a similar case where the metadata in the extent
-tree had nonsense generation values, but the rest of the filesystem
-was fine.  It was very specific:  only the generation fields in several
-extent items (sometimes even consecutive ones!).  Bad RAM is usually much
-more chaotic:  different fields are corrupted, and some or all of them
-will cause a more visible failure than mere mismatched transid.
+Nice!  I look forward to using this in the future!
 
-	https://pastebin.com/raw/GemSDdin
+Does this cover device delete/resize as well?  I think there needs to be
+a check added for fatal signals for those to work, as they don't respond
+to balance cancel.
 
-Also it turned out that the filesystem was made in 2014.  Maybe there was
-an old kernel bug that was putting garbage in extent generation numbers,
-and this is the last remnant of it.
+> And also, introduce a new error injection points to cover these newly
+> introduced and future check points.
+>=20
+> Qu Wenruo (4):
+>   btrfs: relocation: Introduce error injection points for cancelling
+>     balance
+>   btrfs: relocation: Check cancel request after each data page read
+>   btrfs: relocation: Check cancel request after each extent found
+>   btrfs: relocation: Work around dead relocation stage loop
+>=20
+>  fs/btrfs/ctree.h      |  1 +
+>  fs/btrfs/relocation.c | 23 +++++++++++++++++++++++
+>  fs/btrfs/volumes.c    |  2 +-
+>  3 files changed, 25 insertions(+), 1 deletion(-)
+>=20
+> --=20
+> 2.24.0
+>=20
 
-If such a bug was known in 2014, it might explain why btrfs doesn't seem
-to detect it today.  btrfs check, read, and delete all said nothing
-about the mismatched gen field.  I'd expect at least check and delete
-to notice the gen field mismatch--after all, they are inspecting or
-manipulating the extent item and the extent data reference already,
-so there's no significant performance loss compared to not doing the
-check at the same time.
-
-> > [  25.634793] BTRFS error (device nvme0n1p2): block=3D810145234944 read=
- time tree block corruption detected
-> > [  25.634961] BTRFS error (device nvme0n1p2): in __btrfs_free_extent:30=
-80: errno=3D-5 IO failure
-> > [  25.635042] BTRFS error (device nvme0n1p2): in btrfs_run_delayed_refs=
-:2188: errno=3D-5 IO failure
-> > [  34.653440] systemd-journald[483]: Failed to torate /var/log/journal/=
-8f7037b10bbd4f25aadd3d19105ef920/system.journal
-> >=20
-> > After booting to live media, I checked SMART, badblocks, `btrfs check
-> > --readonly` and `btrfs scrub`. All came back clean. I conclude that this
-> > is a false positive, and have downgraded the kernel to 5.3.13 as a
-> > workaround.
-> >=20
-> > How can I provide more information to help?
-> >=20
-> > [1]: https://btrfs.wiki.kernel.org/index.php/Tree-checker#How_to_handle=
-_such_error
-> >=20
-
---IB2Qao3B4XdnqHmg
+--+QmoJrblcRudFCJH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXehwgAAKCRCB+YsaVrMb
-nBUAAJ4wPiOuacmdSmxxUyEjBKBddUmRBACcDZQpi6JmeATK1Ew8WSmRU6jmP7Q=
-=TfwC
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXehyWAAKCRCB+YsaVrMb
+nGemAJ9XMVE7uyBiImMKmxl41YPtD/j3jgCeN6xAMegBvKvdUEX1uUK6v8zVOaY=
+=B8lB
 -----END PGP SIGNATURE-----
 
---IB2Qao3B4XdnqHmg--
+--+QmoJrblcRudFCJH--
