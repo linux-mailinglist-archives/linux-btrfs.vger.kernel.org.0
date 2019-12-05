@@ -2,56 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0339B113ACD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 05:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355B9113ACE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 05:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbfLEE3a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 23:29:30 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:45130 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbfLEE3a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 23:29:30 -0500
-Received: by mail-lf1-f50.google.com with SMTP id 203so1346865lfa.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 20:29:29 -0800 (PST)
+        id S1728548AbfLEE3d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Dec 2019 23:29:33 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:40064 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728374AbfLEE3d (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 23:29:33 -0500
+Received: by mail-lf1-f67.google.com with SMTP id y5so1374390lfy.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 20:29:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mksnn918/RO1lMo+VF/LvsAOFQvine+Ga6NbDFkpuE0=;
-        b=e4sfRw/Um4iAnZ0IvQyaC4bxK1cDb9oZQq1A+YhV3CKZ7k37JfGU0d+FIdPV9J3BFn
-         HmHb6Zbn97w+dKwUYqc5q8epjii4VU06zdQmWbRxvOctH0RYp2jjNyJQkuyhGNmEKNVf
-         eqq94DvHUECK4gMpIsG83Plsm3anv0bzE3tWWPnaN93oTiORJJIxeq2y+gaRK61rDzAE
-         7R2r3PqkkxsntaKWfI2EuQeveq1M1akWfizFQer2witXcxZdlp+4D0Sj9xGfNHJ/TV0y
-         WDImA9vFl14jokWhc+HcQpidh2NUIGqAuTWoc+2aPx1uZDoI/0I1/j+8Zi2rZx+8uhDu
-         sHfw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ef5rNQy/9R2qhyIXv8LAgVHiMMgU/UWmJrYPihoKTNk=;
+        b=VV0EgKFk+KO7ukEQrA1kvfK4VLBUvgI7RX0AXD67K4NkuAlmO1th8Vog5PLTeHt/0H
+         JkSvHciR3I0rcJFGLZM4BUiogo7mkSekGkh+BtxK5PRRY31FTbiSCfzlKPuLtDOBuBCJ
+         +eZD0qJ8NPEry+cFfbrVzn/NLehTb0TUPlwS+Y+Sw7JFt5T3XE6CJCX5/fjpjonlPWsx
+         klZtswN7Uv2WfIFo241MLSR9EmDxn5JbT4TPnOdOd7DVH8JmC+0CYAYaFHvVSJXRco2e
+         wOFlfukvb7KtCggLQHGSDMX8X9GWN7iq/nDoCzBkQVLatTNn5twdv7fiG3UAcW8WMJ3o
+         7aVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mksnn918/RO1lMo+VF/LvsAOFQvine+Ga6NbDFkpuE0=;
-        b=AlhDOFzAEbNsRvSeXlNPxltaSH8BdVu9oiqibVXBMPYG0ljKK+AvvrgR9KKH2GxeC2
-         gac70xhUPsmEMKIlDR3XnLuaaixy7F+kg2xORLZ5Mw1yn3qevcmxgf/N7a15dblCyClL
-         TnNr1yFvlG2uVqgV81IzswJxGWoqaRs65gSEzHr+UTVlYqcMQP5UBATeKHNDsB25lMle
-         yyvoqJTrwkUQg/65aS6d0C2l6fhwmI0UlToUGMqK0+Yltkf8/h0Ans9x3H1QL8C0G9UP
-         sjO/naGRq29vWiWahlC6u68X0NqeY8SOLSybdgqSESEpqFYrG6MfKbI1u4Ek7d+iCkM9
-         IylA==
-X-Gm-Message-State: APjAAAVwgrPxBl3SXaxO/+rm7DEawgLbSXDOAtuBqmgtEQq5ZbKiSVXB
-        evob1wD4C+AcKOhklndEERS8PDwKwrU=
-X-Google-Smtp-Source: APXvYqx08HlWee/W239GFCLCv2TMNBwvIegyv1nK+HTGs/I7JfgaCFtOgPxSsiAsYetkn3NglacYWA==
-X-Received: by 2002:a19:a403:: with SMTP id q3mr386682lfc.66.1575520168145;
-        Wed, 04 Dec 2019 20:29:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ef5rNQy/9R2qhyIXv8LAgVHiMMgU/UWmJrYPihoKTNk=;
+        b=lVckkVIKRqibadQ8CaKKY+L+e5ZexSayjbBu0s9tDOxXv9qvJEgAPWhvzAK2UHa7tr
+         QFkRRFrOlb2OjG+ZbBTiF5JPfRh9nnbQb9BjFj+VTXm/tqBCesQu8fqusEdtLcDuspQc
+         7EMCW5OwmdjFFfU33Q/WJ7riY5wVtqthajUsGEgtAK1kOGjE+IVIk7aYjtyuBT+8a7gS
+         87IYXYQBj1MxdMuS9BL/99K8Zrq7jqsrMl1S2bj05Pd1JZkiiuatu9HrgcthCp9UkAF+
+         +AOIYhWliQcCcphZnxh/HRhfIswIUVOMI0YV996eR3paEJRjTu+0ctZqWB0BihTMFdde
+         AeYA==
+X-Gm-Message-State: APjAAAVzUHmhNNxlYyxB1NuRYFrlsB3X9uEo0oARp1zgUVCRnJuR51j3
+        sjnAaVaI0EIhU6Am92Y5I4hXSek95Bc=
+X-Google-Smtp-Source: APXvYqx0BihXIS9wkmbo3lRlAsxjpB2HDmlTE7hgERSf0ebrLi6yh7TyXO5BgPBDSLVBA+UCqZOstg==
+X-Received: by 2002:ac2:485c:: with SMTP id 28mr4054211lfy.118.1575520170837;
+        Wed, 04 Dec 2019 20:29:30 -0800 (PST)
 Received: from p.lan (95.246.92.34.bc.googleusercontent.com. [34.92.246.95])
-        by smtp.gmail.com with ESMTPSA id c23sm4170865ljj.78.2019.12.04.20.29.25
+        by smtp.gmail.com with ESMTPSA id c23sm4170865ljj.78.2019.12.04.20.29.28
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Dec 2019 20:29:27 -0800 (PST)
+        Wed, 04 Dec 2019 20:29:30 -0800 (PST)
 From:   damenly.su@gmail.com
 X-Google-Original-From: Damenly_Su@gmx.com
 To:     linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
-Subject: [PATCH 00/10] unify origanization structure of block group cache
-Date:   Thu,  5 Dec 2019 12:29:11 +0800
-Message-Id: <20191205042921.25316-1-Damenly_Su@gmx.com>
+Subject: [PATCH 01/10] btrfs-progs: handle error if btrfs_write_one_block_group() failed
+Date:   Thu,  5 Dec 2019 12:29:12 +0800
+Message-Id: <20191205042921.25316-2-Damenly_Su@gmx.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
+In-Reply-To: <20191205042921.25316-1-Damenly_Su@gmx.com>
+References: <20191205042921.25316-1-Damenly_Su@gmx.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,50 +63,47 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Su Yue <Damenly_Su@gmx.com>
 
-Avaiable on https://github.com/Damenly/btrfs-progs/tree/bg_cache_reform
+Just break loop and return the error code if failed.
+Functions in the call chain are able to handle it.
 
-In progs, block group caches are stored in btrfs_fs_info::block_group_cache
-whose type is cache_extent. All block group caches adding/finding/freeing
-are done in the misleading set/clear_extent_bits ways. However, kernel
-side uses red-black tree structure in btrfs_fs_info directly. The
-latter's structure is more reasonable and intuitive.
+Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+---
+ extent-tree.c | 4 +++-
+ transaction.c | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-This patchset transforms structure of block group caches from cache_extent
-to red-black tree and list.
-
-patch[1] handles error to avoid warning after reform.
-patch[2-6] are about rb tree reform things in preparation.
-patch[7-8] are about dirty block groups linked in transaction in preparation.
-patch[9] does replace works in action.
-patch[10] does cleanup.
-
-This patchset passed progs tests and did not cause any regression.
-
-Su Yue (10):
-  btrfs-progs: handle error if btrfs_write_one_block_group() failed
-  btrfs-progs: block_group: add rb tree related memebers
-  btrfs-progs: port block group cache tree insertion and lookup
-    functions
-  btrfs-progs: reform the function block_group_cache_tree_search()
-  btrfs-progs: adjust function btrfs_lookup_first_block_group_kernel
-  btrfs-progs: abstract function btrfs_add_block_group_cache()
-  block-progs: block_group: add dirty_bgs list related memebers
-  btrfs-progs: pass @trans to functions touch dirty block groups
-  btrfs-progs: reform block groups caches structure
-  btrfs-progs: cleanups after block group cache reform
-
- check/main.c                |   6 +-
- check/mode-lowmem.c         |   6 +-
- cmds/rescue-chunk-recover.c |  10 +-
- ctree.h                     |  29 ++--
- disk-io.c                   |   4 +-
- extent-tree.c               | 306 +++++++++++++++---------------------
- extent_io.h                 |   2 -
- image/main.c                |  10 +-
- transaction.c               |   8 +-
- transaction.h               |   3 +-
- 10 files changed, 169 insertions(+), 215 deletions(-)
-
+diff --git a/extent-tree.c b/extent-tree.c
+index 53be4f4c7369..4a3db029e811 100644
+--- a/extent-tree.c
++++ b/extent-tree.c
+@@ -1596,9 +1596,11 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 
+ 		cache = (struct btrfs_block_group_cache *)(unsigned long)ptr;
+ 		ret = write_one_cache_group(trans, path, cache);
++		if (ret)
++			break;
+ 	}
+ 	btrfs_free_path(path);
+-	return 0;
++	return ret;
+ }
+ 
+ static struct btrfs_space_info *__find_space_info(struct btrfs_fs_info *info,
+diff --git a/transaction.c b/transaction.c
+index 45bb9e1f9de6..c9035c765a74 100644
+--- a/transaction.c
++++ b/transaction.c
+@@ -77,7 +77,9 @@ static int update_cowonly_root(struct btrfs_trans_handle *trans,
+ 					&root->root_item);
+ 		if (ret < 0)
+ 			return ret;
+-		btrfs_write_dirty_block_groups(trans);
++		ret = btrfs_write_dirty_block_groups(trans);
++		if (ret)
++			return ret;
+ 	}
+ 	return 0;
+ }
 -- 
 2.21.0 (Apple Git-122)
 
