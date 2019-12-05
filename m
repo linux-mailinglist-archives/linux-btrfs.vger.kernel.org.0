@@ -2,73 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2935B11376F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Dec 2019 23:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDB41138DE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 01:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbfLDWLl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Dec 2019 17:11:41 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39998 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbfLDWLl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Dec 2019 17:11:41 -0500
-Received: by mail-lf1-f66.google.com with SMTP id y5so801596lfy.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 14:11:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WVKObvByZzFzQATgpFkWu+FlO7bTB3f8dGCU4GRmh5k=;
-        b=TstVzrTsZMBsI+79K7XQiFsk5wAWHI8jZ3/n86k5s/j1Ke35zW7BNWoF4VbWLHQJrw
-         NyDyjN6r/GAKGlGMDRy2k88nRlzmBKbK8iEijPyGmwkUsn5cJQnZA3/30zVYWQf+Dq/Q
-         ev2hZiA9uM2arJtS/4AqgcQir2KpWZI078F4bf56qhzKzRJ0YUioUY8vEjvdH4NcW9g4
-         DcJY37E5q1c4CxaH030ReZrgLbV3yIQ8MCPPP2AYxdkqKUt1jpqvhH9SUzt3SSPnCdZo
-         2FmuISHat0pyc0BnTCa6tO+qlChdal1GEvOmcFpChKcAW9lTW0aR6mmsxAnXygQ9Trxz
-         UENA==
-X-Gm-Message-State: APjAAAVo1p7hKVX37xsTQXxX3RP4XhhdqchNMsT3nAj0r2Sxch/PfIHy
-        bS9NyVX2tSYlESFkTlkAfL2oTZzs5h8=
-X-Google-Smtp-Source: APXvYqz7w5caDzTYaHWmB+hit3po3Mv1Hxsfi4zATwcaBqrPsZs19SQzQ3T3vKkFu1TVRFnSJl49Dg==
-X-Received: by 2002:a19:5057:: with SMTP id z23mr3363986lfj.132.1575497499571;
-        Wed, 04 Dec 2019 14:11:39 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id h24sm3840876ljl.80.2019.12.04.14.11.39
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Dec 2019 14:11:39 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id r14so816388lfm.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Dec 2019 14:11:39 -0800 (PST)
-X-Received: by 2002:a19:3f16:: with SMTP id m22mr3321731lfa.116.1575497499149;
- Wed, 04 Dec 2019 14:11:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20191202034420.4634-1-ce3g8jdj@umail.furryterror.org> <20191202034420.4634-2-ce3g8jdj@umail.furryterror.org>
-In-Reply-To: <20191202034420.4634-2-ce3g8jdj@umail.furryterror.org>
-From:   Vladimir Panteleev <git@vladimir.panteleev.md>
-Date:   Wed, 4 Dec 2019 22:11:22 +0000
-X-Gmail-Original-Message-ID: <CAHhfkvzvtDcg7Jv=E3fm4mWnHT80VkGxwEX=6akbebA_Zno3kw@mail.gmail.com>
-Message-ID: <CAHhfkvzvtDcg7Jv=E3fm4mWnHT80VkGxwEX=6akbebA_Zno3kw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: scrub: add start/end position for scrub
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+        id S1728526AbfLEAeQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 4 Dec 2019 19:34:16 -0500
+Received: from [185.35.77.55] ([185.35.77.55]:36114 "EHLO mail.megacandy.net"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1728011AbfLEAeQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Dec 2019 19:34:16 -0500
+Received: from [IPv6:::1] (unknown [185.35.77.55])
+        (Authenticated sender: gardv@megacandy.net)
+        by mail.megacandy.net (Postfix) with ESMTPSA id 564B342BD04;
+        Thu,  5 Dec 2019 00:34:14 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
+Subject: Re: Unrecoverable corruption after loss of cache
+From:   Gard Vaaler <gardv@megacandy.net>
+In-Reply-To: <CAJCQCtQW+-VyATVzi47vtBvN34Ev8j704tiQDVZKxHqT15qccw@mail.gmail.com>
+Date:   Thu, 5 Dec 2019 01:34:13 +0100
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Message-Id: <0CE6AC6A-3D42-44E3-AA9F-AF05AF68897C@megacandy.net>
+References: <7D7AA867-8B53-4CD5-83EF-95EABAD2A77C@megacandy.net>
+ <F7C74BD8-4505-4E74-81F2-EB0D603ABCEC@megacandy.net>
+ <CAJCQCtRA2+X-ke4yJ4H8o49ZA9mSOFabLpNeXd=4ULDg99rFgQ@mail.gmail.com>
+ <B154F1B0-C80A-4E7E-B105-B0E654279E28@megacandy.net>
+ <CAJCQCtQW+-VyATVzi47vtBvN34Ev8j704tiQDVZKxHqT15qccw@mail.gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
+X-Mailer: Apple Mail (2.3601.0.10)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you for this! I've put together a script which uses the added
-switches to rescan observed errors in dmesg:
+> 4. des. 2019 kl. 22:09 skrev Chris Murphy <lists@colorremedies.com>:
+> There's a decent chance this is the cause of the problem. That kernel
+> does not have the fix for this bug:
+> https://www.spinics.net/lists/stable-commits/msg129532.html
+> https://bugzilla.redhat.com/show_bug.cgi?id=1751901
+> 
+> As far as I'm aware the corruption isn't fixable. You might still be
+> able to mount the file system ro to get data out; if not then decent
+> chance you can extract data with btrfs restore, which is an offline
+> scraping tool, but it is a bit tedious to use.
+> https://btrfs.wiki.kernel.org/index.php/Restore
 
-https://gist.github.com/CyberShadow/648a040103fb08738783b6435da376fe
+That was my first thought too, but it seems too coincidental that I should happen across this bug at the same instant as my cache device failing. btrfs-restore doesn't like my filesystem either:
 
-Though, the approach described in the cover letter is probably a
-better idea than what this script does.
+> [liveuser@localhost-live btrfs-progs-5.4]$ sudo ./btrfs restore -Divvv /dev/bcache0 /mnt
+> This is a dry-run, no files are going to be restored
+> parent transid verify failed on 3719816445952 wanted 317513 found 313040
+> parent transid verify failed on 3719816445952 wanted 317513 found 308297
+> parent transid verify failed on 3719816445952 wanted 317513 found 313040
+> Ignoring transid failure
+> leaf parent key incorrect 3719816445952
+> Error searching -1
 
-On Mon, 2 Dec 2019 at 03:47, Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
-> +-s <start_pos>::::
-> +set start position by logical address (btrfs extent bytenr, default 0)
-> +-e <end_pos>::::
-> +set end position by logical address (btrfs extent bytenr, default end of filesystem)
+-- 
+Gard
 
-As mentioned on IRC, I found it confusing that these use the term
-"logical addresses" to describe what the dmesg errors refer to as
-"physical" addresses.
