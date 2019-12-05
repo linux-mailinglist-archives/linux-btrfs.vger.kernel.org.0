@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E35E41143B1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 16:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AFE1143B2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 16:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbfLEPen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 10:34:43 -0500
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:39413 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbfLEPem (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 10:34:42 -0500
-Received: by mail-pj1-f48.google.com with SMTP id v93so1437124pjb.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 07:34:42 -0800 (PST)
+        id S1729711AbfLEPep (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 10:34:45 -0500
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:44592 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbfLEPep (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 10:34:45 -0500
+Received: by mail-pg1-f175.google.com with SMTP id x7so1757863pgl.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 07:34:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBqssDWid5kSZYsGXvtqv/P21KuWVrXmG18GmADihQ4=;
-        b=YgMGssNbx733h+S23TwCqTHyCK8/oBKjYInxg1mQE0/u3iHsZzQfN/cpBHOV9bxJYJ
-         crTFlzl4aMse2R0kPcSCrt8bzaiHBlcxJNbyGuaG/t4MJtrfPGoEl/Kd4Tj+tSYxc/3U
-         4PKQd2207BV+83dieg7hzgwRgnJchoopGeQhZMT7G2up2EpGcfINujC3xlijiwgTj2Fh
-         lB7t8P+7r6aNsl341sMaIhCbzEFoLYyxCkSTciHncPs1y7j0ceCg+joFWL+0MVMl0jm7
-         D3JGtsQVomwtHsxKyrU2AzeNbhWiY70NZLkTYsOWlYK3dzQXZq39JetR3M4RSHij5BjM
-         g5GA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gQ18rXQIri8Wyt4fLVNfERoR5nBubv7v02vFmodtdiA=;
+        b=ZVCP7mxXF7qo7Gu0nvjl0G0N8DKd9iuFl1F/320k4feVi3PmZG7zJ3izmnm/8MkqQn
+         agjKYWVoRuM19sr4lL1iMjks4xUpqNbDYA6SDOIaBnduQtLA5oW/hXxgnMTCRKPVXKG2
+         t/EgfG2kROXzX4oyjEiZu06t95gz2KwmGJuOL90xc6m9x3KHSNWHHcUGcL56sJKIGhkC
+         YlevtywxGNurcb9ku/G1LgYJH6GEtB191N7IMWF2Vm82ot/8hn20MaKVRvc5Ebr2ReNl
+         SL2fschGHy+9BZNWctU/Sff9Nvrf5hsJprAkHSzv3MMep96wDVc0PpK9Ya8VaUXbQisg
+         VpXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBqssDWid5kSZYsGXvtqv/P21KuWVrXmG18GmADihQ4=;
-        b=NbVYiVFtHwAvNY58gpqTnF+1rDOGQuqbsk2ZIO2TsYxwZveCrKbU2uZ/ibL7gvJg2x
-         SmcHaNE/PE7Ya+YPzRUnAhw0c+zL5TaGI/i/fMnYu1fVHB7pUvZmQ0rV9bTxHnhRbsgT
-         KezES/j6un+bZYpbvJjefeuLcgSAY3jPc38yA0kXYvo/WeObLxnpGJgTizYwEcpM4cCb
-         HaLUc8U5r7L8wOx01RIX+OtmWZbWzOxHrIgiePK6b4+9H3T6mwbjl0GJSuYONSTUm9tH
-         a3HhaTWZtQ8u8X7NHuXds6sZvN/vXDFyrf1DtoCVazkqu2KhTIbctVYioTqbzjYFUjcB
-         M0LA==
-X-Gm-Message-State: APjAAAVnmxIWVIzFS8UFC5maMcnO44yUoM630mQLvJWMjPnVoFN6HHKd
-        hwEpunjPa8feB83QjfEcBZ0+FMjf
-X-Google-Smtp-Source: APXvYqwc17l3pFBfQs6nBDmf6U0MvKswuGbQu7TxXomWjeH3y5iwGVtxreyCrI/fCzghkttaTGg+mg==
-X-Received: by 2002:a17:902:82c3:: with SMTP id u3mr8999386plz.73.1575560081890;
-        Thu, 05 Dec 2019 07:34:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gQ18rXQIri8Wyt4fLVNfERoR5nBubv7v02vFmodtdiA=;
+        b=uBov3JYltfjYpwaxL0jklXf+PJ/A67l7I//jXHcAe5x7TWLM/8HoFKHPiR0CNVmDjy
+         SOD0FWpEYBdIPwL9pbIf0+6+3JRX3IMibMwd4rHt8ZJdzZ7S9MGSD4IA2H/urKG0CrZC
+         xWxqA//RS67jy9m4j6hhadoPzFxGL9TdNCmQSI4XqjW6pw884jZwuJqCGE2rg4ZNgU7Q
+         Vt2Qv8JATMm34o9RXipT41yP+X9DvNgQFO/Ux46x+pBnewNE7HZ/B6LOlW9yRHgm3SWT
+         z4zyzefEpmPLGXhs8SC1xmLrk8Amp0Gx3z2SNs8Mtby2jKBjqHKXwlRjJMa5JDNzyuGj
+         8uoQ==
+X-Gm-Message-State: APjAAAXgmpwq3pimVk4DIdsktJx05QGM3PHj/DoTC4s+l7+7Mib1ete1
+        2PoGTdb4Q/iGGSWuJ04aMe9wXvZ6
+X-Google-Smtp-Source: APXvYqx+W/W4Kr2mMu9jpdPxiaSi4WtSobh2YcCGoYFV6lD5eHNn9am4cnD37MCBs7sm0FIGmfPUHw==
+X-Received: by 2002:a63:2783:: with SMTP id n125mr9960055pgn.431.1575560084252;
+        Thu, 05 Dec 2019 07:34:44 -0800 (PST)
 Received: from hephaestus.prv.suse.net ([179.185.217.252])
-        by smtp.gmail.com with ESMTPSA id z130sm12286914pgz.6.2019.12.05.07.34.39
+        by smtp.gmail.com with ESMTPSA id z130sm12286914pgz.6.2019.12.05.07.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2019 07:34:41 -0800 (PST)
+        Thu, 05 Dec 2019 07:34:43 -0800 (PST)
 From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
         Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH 1/2] btrfs-progs: mkfs-tests: Set $csum so mkfs.btrfs does not fail
-Date:   Thu,  5 Dec 2019 12:36:46 -0300
-Message-Id: <20191205153647.31961-1-marcos.souza.org@gmail.com>
+Subject: [PATCH 2/2] btrfs-progs: mkfs-tests: Change $dev1 to TEST_DEV
+Date:   Thu,  5 Dec 2019 12:36:47 -0300
+Message-Id: <20191205153647.31961-2-marcos.souza.org@gmail.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191205153647.31961-1-marcos.souza.org@gmail.com>
+References: <20191205153647.31961-1-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -61,23 +63,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
+It seems to be a typo, since $dev1 was not set, and we are dealing with
+TEST_DEV and not with loop devices.
+
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- tests/mkfs-tests/020-basic-checksums-mount/test.sh | 1 +
- 1 file changed, 1 insertion(+)
+ tests/mkfs-tests/020-basic-checksums-mount/test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tests/mkfs-tests/020-basic-checksums-mount/test.sh b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-index 41ef5417..b7252786 100755
+index b7252786..42bf5fab 100755
 --- a/tests/mkfs-tests/020-basic-checksums-mount/test.sh
 +++ b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-@@ -12,6 +12,7 @@ prepare_test_dev
- 
- test_mkfs_mount_checksum()
- {
-+	csum=$1
- 	run_check_stdout $SUDO_HELPER "$TOP/mkfs.btrfs" -f --csum "$csum" "$TEST_DEV" | grep -q "Checksum:.*$csum"
+@@ -17,7 +17,7 @@ test_mkfs_mount_checksum()
  	run_check $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$TEST_DEV"
  	run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
+ 
+-	run_check $SUDO_HELPER mount "$dev1" "$TEST_MNT"
++	run_check $SUDO_HELPER mount "$TEST_DEV" "$TEST_MNT"
+ 	run_check "$TOP/btrfs" filesystem df "$TEST_MNT"
+ 	run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
+ 	run_check $SUDO_HELPER "$TOP/btrfs" device usage "$TEST_MNT"
 -- 
 2.23.0
 
