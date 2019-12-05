@@ -2,75 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E34DF113C9A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA7D113C9E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbfLEHwA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 02:52:00 -0500
-Received: from mout.gmx.net ([212.227.15.18]:57323 "EHLO mout.gmx.net"
+        id S1726239AbfLEHwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 02:52:50 -0500
+Received: from mout.gmx.net ([212.227.17.21]:48233 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbfLEHwA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 02:52:00 -0500
+        id S1726177AbfLEHwu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 02:52:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575532318;
-        bh=BtLkYp1/Q7b2VDImTsau1sFxFtLA+tN14PV1JJSAMow=;
+        s=badeba3b8450; t=1575532368;
+        bh=prukIuAXjrmQ7OVxyMut49c5OAQSdNAxhgC9AtcKZJI=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=bYIP2c0mGtubv4gNy5WFIMAsLRdXdLipCeMy5hGlGGBAXXFZdmAyq0+IBI95jh7rK
-         LJi+7wpiLi0JKB8LhFoo9sgc70egj5c10LOiZzGGraW6QY5WPTP0m8pzOvv4IH5kjR
-         yhlHub8EUbwpUlagyk5UNFX4lnK7ZsVR0JBlPyiQ=
+        b=IoHG0mD/9E1jXYbE67/JGxmpiWu+RCVv8QGgJaYmWeLodTBTcQSvYlXiwG/RkZEZp
+         pGZmEA1ZSGVnLN8O4+GhsM1QW/M6hRK3LUgA7A6eb2PXexndwyEGdm4BSRNgmG9P1j
+         m9/t7nyc9WJhx2mrcVj0LzAviN7qvrJxdJM4Og8E=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQEn-1i0u4o48Zz-00oagd; Thu, 05
- Dec 2019 08:51:58 +0100
-Subject: Re: [PATCH 09/10] btrfs-progs: refrom block groups caches structure
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Hdq-1ib82n1x4k-002pLf; Thu, 05
+ Dec 2019 08:52:48 +0100
+Subject: Re: [PATCH 10/10] btrfs-progs: cleanups after block group cache
+ reform
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191205042921.25316-1-Damenly_Su@gmx.com>
- <20191205042921.25316-10-Damenly_Su@gmx.com>
+ <20191205042921.25316-11-Damenly_Su@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <ea48239e-3bba-beb7-8960-e847f70b4a6f@gmx.com>
-Date:   Thu, 5 Dec 2019 15:51:53 +0800
+Message-ID: <ca92426f-3ac1-fedd-fdf4-a473b6be5178@gmx.com>
+Date:   Thu, 5 Dec 2019 15:52:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191205042921.25316-10-Damenly_Su@gmx.com>
+In-Reply-To: <20191205042921.25316-11-Damenly_Su@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="2tAlAgva2scVBkpyYfEl84RaAUBhXJag3"
-X-Provags-ID: V03:K1:Z1y2ubgRuctNiFBfPupGX8EB64woiEt0Jmz5cp875WFb9FT4Ozf
- oIyRRwgF3KACzlNkWK8K1sflCZWBui6H7NY3AQr1FrDzyk6SSUCexLf2Tx7zOutfqesSJIc
- j+rE/3tNDJe3f2IZfT6VSYhy+kOX0gxt+TSUCBsUBlf+pfU4zvzYrgf3QNPnIikVjFRbJoB
- g19Zz/jiSsRP5B94W8HCw==
+ boundary="YiJs1FyNykUn8CAO8gFnuFJCVOTGoQFCq"
+X-Provags-ID: V03:K1:WcA7VDqXwlhNyrkS36/dcIUIWTFSaHGCxa7tG58w4tNaFqXlYdy
+ 3hKzZyqlTpMqt2cPqrmP6meMD/javbPgvx+hwOJll8EhVTDabAu6fm/WK5Smo88Av0q7uJt
+ oI02ZiIuc5VUQc59tPcyMB3TOtj0zN+TmAYubkE6SchJrMJLnIUESTQ1AWJa+PQgIHkKrxa
+ LhBEatf448Lve1t14dQHA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AK+NxycoGyo=:8CGVs8FnwUV2GuML2uc9ks
- 3tytln4pj7Co6xZs1zIfe1Cgn7oZUdjwEs/WgtCNw3eQ+KRT7pTwjfCBfs2sS9PTBPMySoIiB
- R2DGOe/bAzp/b4o7Am6L+sHF9yIZ/RcuevF9td8SeTaOgbRQ8BQZKvJNkHRUzGBA/Ug9H0j1F
- ilxZgW/7/fYYeXa5tZfwitH2grU7CuJyfmm7i+IkD2b8h5DO25ywJInQTZFrZu/QYZpkvHVQd
- VkHLdl4o1INcCbBrbeOHU/mJfkKn+FKfGFoZzh5czbxPBuPF8yiJ6hV1DKv5oNbPzdE3WkocA
- 8xMUpXq+p/7JiQaHcJCVwTZ0v/+45eBclUp3G31XnUVbbpoMYTDKB8g42acT0Oad6eEMSGioa
- c8IE9Qk1MtVUMvaW/7JHHAV7rzAPrysoTtDomyzVvfxI6PjKcRB0id0KkPgeFbcXWjK5Gfve0
- z8wmCWWIcsTNQ7n1YZWN3RcV5fQuR/00+z86tPpIBn04LHm0/K6gIvvnu640QmHVHqVO2ZJpC
- VC1JvfuJvc9JznXGWJ2s8rM4Htv+q+afn+y3lv0Zf2GEUnFGD1ct7an8V9qoeLBFPTOH3C1lx
- vo9rcvKD8IvuqvhdZaAKtQ29Dby/dJMjeMhVSu6Iva3HK+8OUZdUTc7Bz4ORIn67rUvMPQb5k
- yXhOFP9ndP+vi6sC/hxQ+F/1H/RZoMjMB5WYI/jezZoZR3w3Ua6GzyIi2SsPVl83ieuzMjxK+
- dilzRCCcGH3Tx/w9DlDsfqc7XaPqIbooe64uwYnISQecwe5LKN2Jt49H6NLF3pMnC5vKJh6rG
- CFpZ5vxWCsgyLEK5mAiWRtyaCRh6Vd0+UO1jA9HgW6WtEWfQ0C7ehuAPuObtAFWHkS0Q+60+C
- 1Hj3MNiRATnR8hczJk+3XX8ZFstcx8b0PQCo3+eIrmbrvupzeb0SyOQc0drC2tcP23mSLsH4z
- YUPfgXbBlPRbo8hdCRt1IjLKA8fg0RQSwsCVB9G4NZnWK3tMiiv8l0gXMlfdi6flgBHHofJ8g
- dkZ2LrO3MbRQ8wDZVNkBhFTXXe/drFnssmC3aSoTTjX2o7vS63Jk0hzpZtjxB++vdt5uulHX+
- O8R+/RmfKjMcVqeUC+/Isr5uSWdLM0xCPHJgbPf7ek2h1UFsYsos6mDWsIvTa1HNPKO8DnW5z
- J/WZEHBV3aMgnA4QVu2z3+z56JISG1mxm4IUZCI7hRfhyeK61JyI3b1eGVba8i3Y1o16bO0dV
- Bel4jiDEn9b8Jh+jvZukBLsa6lSkBvxCaYO9FUW6+BDBFl0CjcpMzD+nCh9c=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:haNoWlv8Fw4=:KMUfiEgGuPklAGwfvL0mGZ
+ 4lOdeptYEbYz1OKEd91cwMWbNP1LdEuWAixmBL4ivzSFpWI//vCZFyrz5rvioqrOB3VCwvaCm
+ 6M60m9p2Z6pBFdqHWZttXruWaqcWUikSLwH4jbzNNUxzDRRUGd/PHbiaplgrdRQRyS3MV/f8+
+ 8WQW28b3dmuCh/7velQwnafopMNqkLdr5TtNtI9SCbL5wMDCDvdCdfpdQsp6jHdCOFba0ut47
+ mnTQ0XctmHTdbjZwChcGkD296tSoGw8fGBXu559H2rmSAL07Xv347TLQoyPO3PzZiIQ7t38jw
+ QYfGalrYbfKtiJZlDXM6DF/RfR1EsSdSWyekVDzGjOoelbsZD5HevMTGfyVMpbEJZYj5oGSay
+ P2oaqJgnzQg+4GdOrzvXPMnHOwK8KeobVqWKHt2kL6xa9JuYVMl8uWuodW0EpvCRPexJV1xs/
+ SBvC8DFtFoTw7MZkB6xPiyXkCOALCvenfuJqZltyVVwdsPHA76Yicthl8TuyzxiY242dHLQw+
+ 1Ua4wUDCKponkiq1jh89/NJb33gIRJWQEN/GUbPTkXWMsF4esgitN2EuRw7BcU9MBR4fiAEPP
+ 4CLQzI+kiothIrQqy8NRx88EDd2WxDo1Q3ZyIxUfTLDCjtndOcGM67kBDaukZRxaCL9qO7xRu
+ Bx482Z2HK6DEhhbtVx4Ou1wOyZlYXCqVNq+CY5LVqZ01AX+K3fFsflAu1LnSJQuFG4F6NCCUu
+ 9oGkOAXwHhJCU5EOTPxxF6C8W21mMHwAnXJjqVnlgWmhBAAaRqfo6HRF28Hi0sUKBU2BT3GS4
+ 9mAYq4/VnAgabOgXci0b9RrBLVAbGBrtYsqFIzNVEEbUR+CeNvaovb0YYPsrp3UR7/SH+ERbL
+ J7u74ZIxFAaoXZ0u5PCS+API4js/EilIY1liq2T85WZR757UNOU1ntGF4XBy9zR+IphXXs8jz
+ PXLJjc6c53CRzIIyJuVHNEPgEjmtAUDPJQi0821Bl0znPmelgX6Sm+9JOIzw9s2uPG1J/jjhG
+ rIMD5AqHmozfSns47Nz7XuO9z47Dhfmcm2j3GfwKk4ZOhuFhpQQcoarqVDgLIPNP+hasiyro6
+ 9cb89vGDXxfpR3qJtzcUQqWSxa6J2mbXl+kcdLmalwYrT6KsSiqoMxzB56fyiOgj/YwojUvIb
+ rTwHeOzUCMO6pstcs+vIcNevnA415Vcq3A7Of9PSGJ+UMvGiwGi57qQQPBF0dATEBu9FqfwxH
+ NdHEPg3ZkYDzsGgzYwN43Z02dIDhK+6YoQjTPj+EJqLLiMrQgF0kMDGdRPnU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2tAlAgva2scVBkpyYfEl84RaAUBhXJag3
-Content-Type: multipart/mixed; boundary="qVQeiQU8RnnLPR12SL2So3pVWFk08DqA8"
+--YiJs1FyNykUn8CAO8gFnuFJCVOTGoQFCq
+Content-Type: multipart/mixed; boundary="K9NlKkleRFY6pCg99kj44xda0Dx1czrqY"
 
---qVQeiQU8RnnLPR12SL2So3pVWFk08DqA8
+--K9NlKkleRFY6pCg99kj44xda0Dx1czrqY
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -80,85 +81,119 @@ Content-Transfer-Encoding: quoted-printable
 On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 >=20
-> This commit organises block groups cache in
-> btrfs_fs_info::block_group_cache_tree. And any dirty block groups are
-> linked in transaction_handle::dirty_bgs.
+> btrfs_fs_info::block_group_cache and the bit BLOCK_GROUP_DIRY are
+> useless. So is the block_group_state_bits().
 >=20
-> To keep coherence of bisect, it does almost replace in place:
-> 1. Replace the old btrfs group lookup functions with new functions
-> introduced in former commits.
-> 2. set_extent_bits(..., BLOCK_GROUP_DIRYT) things are replaced by linki=
-ng
-> the block group cache into trans::dirty_bgs. Checking and clearing bits=
-
-> are transformed too.
-> 3. set_extent_bits(..., bit | EXTENT_LOCKED) things are replaced by
-> new the btrfs_add_block_group_cache() which inserts caches into
-> btrfs_fs_info::block_group_cache_tree directly. Other operations are
-> converted to tree operations.
-
-Great cleanup and code unification.
-
-Overall looks good, just small nitpicks inlined below.
+> Remove them.
 >=20
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 > ---
->  cmds/rescue-chunk-recover.c |   4 +-
->  extent-tree.c               | 211 ++++++------------------------------=
+>  ctree.h       |  1 -
+>  disk-io.c     |  2 --
+>  extent-tree.c | 12 ------------
+>  extent_io.h   |  2 --
+>  4 files changed, 17 deletions(-)
 
->  image/main.c                |   5 +-
->  transaction.c               |   3 +-
->  4 files changed, 38 insertions(+), 185 deletions(-)
->=20
-> diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
-> index 461b66c6e13b..a13acc015d11 100644
+Everyone loves such cleanup.
 
-> @@ -2699,25 +2571,22 @@ int btrfs_free_block_groups(struct btrfs_fs_inf=
-o *info)
->  	struct btrfs_block_group_cache *cache;
->  	u64 start;
->  	u64 end;
-> -	u64 ptr;
->  	int ret;
-> =20
-> -	while(1) {
-> -		ret =3D find_first_extent_bit(&info->block_group_cache, 0,
-> -					    &start, &end, (unsigned int)-1);
-> -		if (ret)
-> +	while (rb_first(&info->block_group_cache_tree)) {
-> +		cache =3D btrfs_lookup_first_block_group(info, 0);
-> +		if (!cache)
-
-Since we're freeing all block groups, what about
-rbtree_postorder_for_each_entry_safe()?
-
-That would be faster than rb_first() as we don't need to balance the tree=
-=2E
-
-Despite that, the patch looks great to me.
-Especially for that -185 part.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+>=20
+> diff --git a/ctree.h b/ctree.h
+> index 53882d04ac03..6d2fad6406d7 100644
+> --- a/ctree.h
+> +++ b/ctree.h
+> @@ -1146,7 +1146,6 @@ struct btrfs_fs_info {
+> =20
+>  	struct extent_io_tree extent_cache;
+>  	struct extent_io_tree free_space_cache;
+> -	struct extent_io_tree block_group_cache;
+>  	struct extent_io_tree pinned_extents;
+>  	struct extent_io_tree extent_ins;
+>  	struct extent_io_tree *excluded_extents;
+> diff --git a/disk-io.c b/disk-io.c
+> index b7ae72a99f59..95958d9706da 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -794,7 +794,6 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writabl=
+e, u64 sb_bytenr)
+> =20
+>  	extent_io_tree_init(&fs_info->extent_cache);
+>  	extent_io_tree_init(&fs_info->free_space_cache);
+> -	extent_io_tree_init(&fs_info->block_group_cache);
+>  	extent_io_tree_init(&fs_info->pinned_extents);
+>  	extent_io_tree_init(&fs_info->extent_ins);
+> =20
+> @@ -1069,7 +1068,6 @@ void btrfs_cleanup_all_caches(struct btrfs_fs_inf=
+o *fs_info)
+>  	free_mapping_cache_tree(&fs_info->mapping_tree.cache_tree);
+>  	extent_io_tree_cleanup(&fs_info->extent_cache);
+>  	extent_io_tree_cleanup(&fs_info->free_space_cache);
+> -	extent_io_tree_cleanup(&fs_info->block_group_cache);
+>  	extent_io_tree_cleanup(&fs_info->pinned_extents);
+>  	extent_io_tree_cleanup(&fs_info->extent_ins);
+>  }
+> diff --git a/extent-tree.c b/extent-tree.c
+> index e227c4db51cf..2815888b6cc5 100644
+> --- a/extent-tree.c
+> +++ b/extent-tree.c
+> @@ -333,18 +333,6 @@ wrapped:
+>  	goto again;
+>  }
+> =20
+> -static int block_group_state_bits(u64 flags)
+> -{
+> -	int bits =3D 0;
+> -	if (flags & BTRFS_BLOCK_GROUP_DATA)
+> -		bits |=3D BLOCK_GROUP_DATA;
+> -	if (flags & BTRFS_BLOCK_GROUP_METADATA)
+> -		bits |=3D BLOCK_GROUP_METADATA;
+> -	if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+> -		bits |=3D BLOCK_GROUP_SYSTEM;
+> -	return bits;
+> -}
+> -
+>  static struct btrfs_block_group_cache *
+>  btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_gro=
+up_cache
+>  		       *hint, u64 search_start, int data, int owner)
+> diff --git a/extent_io.h b/extent_io.h
+> index 1715acc60708..7f88e3f8a305 100644
+> --- a/extent_io.h
+> +++ b/extent_io.h
+> @@ -47,8 +47,6 @@
+>  #define BLOCK_GROUP_METADATA	(1U << 2)
+>  #define BLOCK_GROUP_SYSTEM	(1U << 4)
+> =20
+> -#define BLOCK_GROUP_DIRTY 	(1U)
+> -
+>  /*
+>   * The extent buffer bitmap operations are done with byte granularity =
+instead of
+>   * word granularity for two reasons:
+>=20
 
---qVQeiQU8RnnLPR12SL2So3pVWFk08DqA8--
 
---2tAlAgva2scVBkpyYfEl84RaAUBhXJag3
+--K9NlKkleRFY6pCg99kj44xda0Dx1czrqY--
+
+--YiJs1FyNykUn8CAO8gFnuFJCVOTGoQFCq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3otxkXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qhxQwgAp+ovtUqtEqgpXn6A410zJRiy
-vMU4734mUB5/RUL8gX0xUN+3C5h5fawgRGjIowUWJA/thZzbtRyQeDiJ+Ru1B5VQ
-28105R+9Cc7mpgVI5n4t22xuIBhZK3ve5Ph+GDBl2UYCG9VLRClYTpS2PpnPUdqf
-cGi/oaKgXe5Rta/nIKCILPGQRA3QpKot/ej/a5B7SGS5caDyP27dJs6RGziSs9xO
-pmOpaIYfLK52aVNl87MYhMTVIpX0nWBsXs/fPXU9MxhWsZytpwDbpGzAUZ7ufs7i
-vM1M0BUU6gOHVL7Dc8SvxuY7/TDRz+CDch1AyZQeJDkWkogs+mlCsdCSg+mImw==
-=NCFI
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3ot0sXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjMVgf+PVPptsAbgsuYecdms5q+wxBZ
+ZFiLzHL5v1934AP9XPlXNp9Gqpmz0s8XQAcENerLEGfAuVWVHEXpbpvJBH56NMrO
+HWstPP29JHYnO8YLWn50y84qmej1PJy8mH6D6Wo2CskDG0UtpqBIyEUWiR85I1Pj
+/1xayX9bejt0OWBmepPqLksFgSoZUg4ub/hFlM1yG/OhQxfalvAcYVtuDwqZ6wGP
+hFbIOAvwOXuTkzBM/HiThImaCadRknxvJ9VLqPPLEwl3sJhVHyd0Kc4gKMZwjqo8
++P9RiESj97DFiIUyhybLX3g2Ob5lJwZm8P+lReFnHwe0srUTplmmZBdBLYl+PQ==
+=4Bg9
 -----END PGP SIGNATURE-----
 
---2tAlAgva2scVBkpyYfEl84RaAUBhXJag3--
+--YiJs1FyNykUn8CAO8gFnuFJCVOTGoQFCq--
