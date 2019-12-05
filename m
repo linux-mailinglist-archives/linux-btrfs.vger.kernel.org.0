@@ -2,121 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB72B1146F8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 19:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA68114762
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 19:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729709AbfLESgi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 13:36:38 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46852 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbfLESgi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 13:36:38 -0500
-Received: by mail-pg1-f193.google.com with SMTP id z124so1973488pgb.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 10:36:38 -0800 (PST)
+        id S1729632AbfLES60 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 13:58:26 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:37526 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726946AbfLES60 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 13:58:26 -0500
+Received: by mail-pl1-f193.google.com with SMTP id bb5so1617393plb.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 10:58:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rknafHQQd0fEz6WOANULYovuTGeKMLQRJ02D7s5rFOY=;
-        b=pXrqv+V4dGLFjbro3GrAmKEerUp3z47OJtX8551+skE2SyLg0IQEtrio/s6nYi6ARR
-         r8H7vTfAo/duuXzln31SUL5JmbPQkd4onBKaYloGOnqhkWIrZ5I1FdadZfFOzFCgOwvK
-         njCT4bSwIr8C69gVGNRSQTcdW2d3lfsZdgVh89ytF51oKtUF6tLespluVfTKdLFGeDcK
-         piapBFRhiTRd98+ICPTAFmHpZgt318mW8ILnD2pHiBnUD2uRHRCyhlZ7I3zGvGwUHvHf
-         CWpiCIo55WTqyLTY7xPgxsF++782WYDFaR0kvRt8OdjsWXqB97IAdgec9IISdbJNbz33
-         njpA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m3VZo8UZwHMiRuNQQUqY7rgJ8zqY6lqXNVV5STmF31Y=;
+        b=bE0k3fD+BPwpoluxSJNreDDUDkIK4Kf/E4qPIONcXx08wciHl90LnkTPpVpma+8Q/M
+         dmnJwnodZr1C5fMMVU/xc7BuvFsf9oJeAg1X+jNWvVf5H3rM3oyp+r08i9pecoMo9qJJ
+         qwvY8Oa8WDtCHCCe8khYEs9E3xstecgJ9M0IF6gA127MLkgcZCGN47eq67KSU5aFbDMY
+         JsTz6vG3cieY/U2K++uCXx7RS8ZEnGwdjYyxyg2Zeb8mk708flRMGJcylgmtlnNTH31S
+         TXBwUJVxSHWIi8TeTJPO+h7IG3GOBDd7QYi1jnf05HttmSpVmRcvzq7rEXV25s3TOKck
+         IciQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rknafHQQd0fEz6WOANULYovuTGeKMLQRJ02D7s5rFOY=;
-        b=Gby/SWQQfxQlIPrO6nWVTEH7fX105W95ivsmK/9tns+7Dt567YtJ+R9OA5Q2lvK70O
-         n9COO08ilKA7WyKwVjK4x9ACqX28Btkx0eUs7e1560FNGwItLJzTiGqded9CcJSNzuoJ
-         Hcg32JWtK6X0FdRXMEhHHW7ICuMEfbbCa0yml+KNvQXbl8Zy/rDH4C8ZeMB7GZ2eatbp
-         Kw6X5Th+Ag3JctjSlT9Ol1CLdYsoSZ1OOGblP/H/3gZcy8kRWoNbb24z5k4OjGNAt4FG
-         92DSj4ieE0ELz/FUt92zYkOfuzE3x/h7YBkl4Ohe8mrIFrA+1qbTcjDhNI1EDp3+Fvnp
-         x94A==
-X-Gm-Message-State: APjAAAUuArHWbRm7ip09hM05AddeOcceKVJrStMQ+12c17VXFDtYlgxR
-        AkZr54toeOur+tK21FIk0XES5278bJZ8Ng==
-X-Google-Smtp-Source: APXvYqxKhcxKS/u/7Sc60uz4xOSaFtgnQK3PzqpU2BLD8WiSYQmF7cGbmdVgvfvcIV3JGi8o0n0Kew==
-X-Received: by 2002:a63:770c:: with SMTP id s12mr11195236pgc.25.1575570996588;
-        Thu, 05 Dec 2019 10:36:36 -0800 (PST)
-Received: from vader.thefacebook.com ([2620:10d:c090:200::3:cb2])
-        by smtp.gmail.com with ESMTPSA id o12sm427873pjf.19.2019.12.05.10.36.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m3VZo8UZwHMiRuNQQUqY7rgJ8zqY6lqXNVV5STmF31Y=;
+        b=Ucr4wf3yNKlEhwQYNcGNFqoduZa1r3D24LUxaBWZpAO6OxStgCtEMx5QvK7SW639/S
+         ynqrk8rqxLVfEj7N74OFS5cgJwm7pmxWGZ3Oy6x5m1+y097xKFk2LwRmeU5j0irynx3r
+         EJAal2ZPaUSRt6/GU1LTVNKPEcMUY8sD6HvZeExUEeuSodtHAO0XE2ccluaMZgFbfxAz
+         UhYYB1O1n5xQSRlioW5c8jaRNZIFdjSb/OY3Thhyt1hhHjOQR1BVi7D0kPh7SiOOq9q7
+         F7KiAqQQUoKkKxwRu4xR6IrLbZxWB7vCdb306YYNx55ewsVyWYjcDO9Am0TB2Jiwa5jN
+         6asA==
+X-Gm-Message-State: APjAAAXgfZcn9H/SV76xFMtGEUA9uEeGpM8vrR3uY0+vgbrI5zIzETdw
+        yP+tV7tYR0Fi+RPrcaaqrOLldw==
+X-Google-Smtp-Source: APXvYqx4U8KW8xYiE4vgm2m26+SHXAdrlEokkTP+G731PEQDyP5ZUjTnwZY5L4PH4pUKyh5IIHVbjA==
+X-Received: by 2002:a17:90a:b318:: with SMTP id d24mr9095554pjr.142.1575572305046;
+        Thu, 05 Dec 2019 10:58:25 -0800 (PST)
+Received: from vader ([2620:10d:c090:200::3:cb2])
+        by smtp.gmail.com with ESMTPSA id 9sm13462408pfx.177.2019.12.05.10.58.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2019 10:36:36 -0800 (PST)
+        Thu, 05 Dec 2019 10:58:24 -0800 (PST)
+Date:   Thu, 5 Dec 2019 10:58:23 -0800
 From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] btrfs: use simple_dir_inode_operations for placeholder subvolume directory
-Date:   Thu,  5 Dec 2019 10:36:04 -0800
-Message-Id: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
-X-Mailer: git-send-email 2.24.0
+To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [RFC PATCH v3 00/12] fs: interface for directly reading/writing
+ compressed data
+Message-ID: <20191205185823.GB18377@vader>
+References: <cover.1574273658.git.osandov@fb.com>
+ <4d5bf2e4c2a22a6c195c79e0ae09a4475f1f9bdc.1574274173.git.osandov@fb.com>
+ <cover.1574273658.git.osandov@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1574273658.git.osandov@fb.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+On Wed, Nov 20, 2019 at 10:24:20AM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Hello,
+> 
+> This series adds an API for reading compressed data on a filesystem
+> without decompressing it as well as support for writing compressed data
+> directly to the filesystem. As with the previous submissions, I've
+> included a man page patch describing the API, and test cases and example
+> programs are available [1].
+> 
+> This version reworks the VFS interface to be backward and forward
+> compatible and support for writing inline and bookend extents to the
+> Btrfs implementation.
+> 
+> Patches 1-3 add the VFS support. Patches 4-7 are Btrfs cleanups
+> necessary for the encoded I/O support that can go in independently of
+> this series. Patches 8-10 are Btrfs prep patches. Patch 11 adds Btrfs
+> encoded read support and patch 12 adds Btrfs encoded write support.
+> 
+> A few TODOs remain:
+> 
+> - Once we've settled on the interface, I'll add RWF_ENCODED support to
+>   fsstress and friends and send up the xfstests patches in [1].
+> - btrfs_encoded_read() still doesn't implement repair.
+> 
+> Changes from v2 [2]:
+> 
+> - Rebase on v5.4-rc8
+> - Add patch 1 introducing copy_struct_from_iter() as suggested by Aleksa
+> - Rename O_ENCODED to O_ALLOW_ENCODED as suggested by Amir
+> - Add arch-specific definitions of O_ALLOW_ENCODED for alpha, parisc,
+>   and sparc
+> - Rework the VFS interface to be backward and forward compatible
+> - Document the VFS interface as requested by Dave
+> - Use __aligned_u64 for struct encoded_iov as noted by Aleksa
+> - Fix len/unencoded_len mixup in mm/filemap.c as noted by Nikolay
+> - Add support for writing inline and bookend extents to Btrfs
+> - Use ENOBUFS for "buffers not big enough for encoded extent" case and
+>   E2BIG for "encoded_iov has unsupported fields" case
+> 
+> Please share any comments on the API or implementation. Thanks!
+> 
+> 1: https://github.com/osandov/xfstests/tree/rwf-encoded
+> 2: https://lore.kernel.org/linux-btrfs/cover.1571164762.git.osandov@fb.com/
+> 
+> Omar Sandoval (12):
+>   iov_iter: add copy_struct_from_iter()
+>   fs: add O_ALLOW_ENCODED open flag
+>   fs: add RWF_ENCODED for reading/writing compressed data
+>   btrfs: get rid of trivial __btrfs_lookup_bio_sums() wrappers
+>   btrfs: don't advance offset for compressed bios in
+>     btrfs_csum_one_bio()
+>   btrfs: remove dead snapshot-aware defrag code
+>   btrfs: make btrfs_ordered_extent naming consistent with
+>     btrfs_file_extent_item
+>   btrfs: add ram_bytes and offset to btrfs_ordered_extent
+>   btrfs: support different disk extent size for delalloc
+>   btrfs: optionally extend i_size in cow_file_range_inline()
+>   btrfs: implement RWF_ENCODED reads
+>   btrfs: implement RWF_ENCODED writes
+> 
+>  Documentation/filesystems/encoded_io.rst |   79 +
+>  Documentation/filesystems/index.rst      |    1 +
+>  arch/alpha/include/uapi/asm/fcntl.h      |    1 +
+>  arch/parisc/include/uapi/asm/fcntl.h     |    1 +
+>  arch/sparc/include/uapi/asm/fcntl.h      |    1 +
+>  fs/btrfs/compression.c                   |   15 +-
+>  fs/btrfs/compression.h                   |    5 +-
+>  fs/btrfs/ctree.h                         |   13 +-
+>  fs/btrfs/delalloc-space.c                |   38 +-
+>  fs/btrfs/delalloc-space.h                |    4 +-
+>  fs/btrfs/file-item.c                     |   54 +-
+>  fs/btrfs/file.c                          |   61 +-
+>  fs/btrfs/inode.c                         | 2463 +++++++++++-----------
+>  fs/btrfs/ordered-data.c                  |  106 +-
+>  fs/btrfs/ordered-data.h                  |   28 +-
+>  fs/btrfs/relocation.c                    |    9 +-
+>  fs/fcntl.c                               |   10 +-
+>  fs/namei.c                               |    4 +
+>  include/linux/fcntl.h                    |    2 +-
+>  include/linux/fs.h                       |   16 +
+>  include/linux/uio.h                      |    2 +
+>  include/trace/events/btrfs.h             |    6 +-
+>  include/uapi/asm-generic/fcntl.h         |    4 +
+>  include/uapi/linux/fs.h                  |   33 +-
+>  lib/iov_iter.c                           |   82 +
+>  mm/filemap.c                             |  165 +-
+>  26 files changed, 1807 insertions(+), 1396 deletions(-)
+>  create mode 100644 Documentation/filesystems/encoded_io.rst
 
-When you snapshot a subvolume containing a subvolume, you get a
-placeholder directory where the subvolume would be. These directories
-have their own btrfs_dir_ro_inode_operations.
-
-Al pointed out [1] that these directories can use simple_lookup()
-instead of btrfs_lookup(), as they are always empty. Furthermore, they
-can use the default generic_permission() instead of btrfs_permission();
-the additional checks in the latter don't matter because we can't write
-to the directory anyways. Finally, they can use the default
-generic_update_time() instead of btrfs_update_time(), as the inode
-doesn't exist on disk and doesn't need any special handling.
-
-All together, this means that we can get rid of
-btrfs_dir_ro_inode_operations and use simple_dir_inode_operations
-instead.
-
-1: https://lore.kernel.org/linux-btrfs/20190929052934.GY26530@ZenIV.linux.org.uk/
-
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- fs/btrfs/inode.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fec2a78de037..9dc84a88ef0c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -64,7 +64,6 @@ struct btrfs_dio_data {
- 
- static const struct inode_operations btrfs_dir_inode_operations;
- static const struct inode_operations btrfs_symlink_inode_operations;
--static const struct inode_operations btrfs_dir_ro_inode_operations;
- static const struct inode_operations btrfs_special_inode_operations;
- static const struct inode_operations btrfs_file_inode_operations;
- static const struct address_space_operations btrfs_aops;
-@@ -5846,7 +5845,7 @@ static struct inode *new_simple_dir(struct super_block *s,
- 	set_bit(BTRFS_INODE_DUMMY, &BTRFS_I(inode)->runtime_flags);
- 
- 	inode->i_ino = BTRFS_EMPTY_SUBVOL_DIR_OBJECTID;
--	inode->i_op = &btrfs_dir_ro_inode_operations;
-+	inode->i_op = &simple_dir_inode_operations;
- 	inode->i_opflags &= ~IOP_XATTR;
- 	inode->i_fop = &simple_dir_operations;
- 	inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO;
-@@ -11001,11 +11000,6 @@ static const struct inode_operations btrfs_dir_inode_operations = {
- 	.update_time	= btrfs_update_time,
- 	.tmpfile        = btrfs_tmpfile,
- };
--static const struct inode_operations btrfs_dir_ro_inode_operations = {
--	.lookup		= btrfs_lookup,
--	.permission	= btrfs_permission,
--	.update_time	= btrfs_update_time,
--};
- 
- static const struct file_operations btrfs_dir_file_operations = {
- 	.llseek		= generic_file_llseek,
--- 
-2.24.0
-
+Ping. Al, would you mind taking a look at the generic bits/interface?
