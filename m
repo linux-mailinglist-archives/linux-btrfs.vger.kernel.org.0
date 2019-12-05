@@ -2,76 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA61E113C73
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4BB113C78
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 08:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbfLEHix (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 02:38:53 -0500
-Received: from mout.gmx.net ([212.227.15.19]:59105 "EHLO mout.gmx.net"
+        id S1726007AbfLEHlB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 02:41:01 -0500
+Received: from mout.gmx.net ([212.227.17.21]:52891 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbfLEHix (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 02:38:53 -0500
+        id S1725953AbfLEHlB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 02:41:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575531531;
-        bh=KVx0ad+0D3qvfOdKzY1uM2Pjvj93NJkaSDMbDimjlWw=;
+        s=badeba3b8450; t=1575531659;
+        bh=tCATalrjvgL0dCO3u6n8CMU8WAKgCW1cXeqMLP7SbcE=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=knsCuJgB8wz+2sxxlyLi/ARriT6li+LGfxsIFtJygvl5zNhi/L+JhfadzGAm+GFCm
-         hbo6To1HKiDIcX/OR8BRvOjuD5OnN/3/UT/6qQAENDKN2TivKqYp2o0zNf6SFwGBtK
-         1pkMC7hczwuBAEtuJHw6o3bUq+57vNeqoMrMgj2c=
+        b=jy/uwPb5l+zft5tJxn/zes8smE3daiccnDOn3yhnuNIIB7wDUfA9cSiUGPDzk8Fco
+         +TGMHUJ7IthoPnDGmmHO2AMJrjKU+y74I0XHY5qb7h2vdcrM/aDDds2WxlGul69Ntq
+         rOqL9eREM5nrIVRwihG9tGQUB5dY0mogP0CBfX/U=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDywo-1iV1xu0hIS-00A0jz; Thu, 05
- Dec 2019 08:38:50 +0100
-Subject: Re: [PATCH 04/10] btrfs-progs: reform the function
- block_group_cache_tree_search()
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1hjzLH25W5-00tXS2; Thu, 05
+ Dec 2019 08:40:59 +0100
+Subject: Re: [PATCH 05/10] btrfs-progs: adjust function
+ btrfs_lookup_first_block_group_kernel
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191205042921.25316-1-Damenly_Su@gmx.com>
- <20191205042921.25316-5-Damenly_Su@gmx.com>
+ <20191205042921.25316-6-Damenly_Su@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d491f547-626d-c974-8e70-9e39815a7dab@gmx.com>
-Date:   Thu, 5 Dec 2019 15:38:46 +0800
+Message-ID: <16783ea1-48e7-45ac-ea1a-3e9048aa2616@gmx.com>
+Date:   Thu, 5 Dec 2019 15:40:54 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191205042921.25316-5-Damenly_Su@gmx.com>
+In-Reply-To: <20191205042921.25316-6-Damenly_Su@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="CMIVGH6YmFIWFoKpbi69fS1cxI0feVJtG"
-X-Provags-ID: V03:K1:Db0nj3+cxxqsDRIBPTTz1dAqn6lbEi68PTKJhpt/k+kaqmua2OA
- 6rnNZ1NIziEkwpXbTG3zHAiT9PvDGJLclpiwnpR1F6yB8NJLToPcl8pdCuu11ratiNGNDfa
- KteCeJnTkde3pRn8KDD1TLqcuyzsOpqnqRkkFtnVqpbncNtI2jeko4i0dEvhA4ULZLxk/5E
- rdH7lNHEZArQOXG4ZsrPw==
+ boundary="bQk2yMUU2ZeVKWjVx8spbLusktO497fWE"
+X-Provags-ID: V03:K1:3mpgsSsR6qJvIy+utVdrQ9n+TPf3RqreAK9vNM9vDdiAm6avfxC
+ 0Id+j8iYyhwlFXsEvB4d7jaYVYKR1rE1o4StMd17KvqJGT/drg5DoSm5F3j9/FrHQ5/16+S
+ LURu1lX00CCLL5OMBWiTkpIGzAYmhFE68xO0ipGia4HaKoYENUhMpAZVOIuKSEmzp5c5Hng
+ 7esTlJBT0rlWNe/CXkoLQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qof++Fhz5ZY=:Rh/6X3CMXoQH2lcV8HlHDI
- 7Pk4BGhVGGR+m4QV2rxsYZHTzltAVwa7PmP+7xUNFsIkrxf7KG+lczsMxJIk7WHNZnYc50xnX
- sUQUm8D/Mwu5BMm3HYZXMABTaKHHGQ1hvgCsY9YmCHActRaJd/mgkGXYl61eRFrZuhQV+3c/M
- b6LpyQgvEdfFIx0VHWA4FArl0auykuQFybsyv91OEjYs+ertqhpnkgKM8JNH7bihmruuQMv0q
- vCu8gmbEQQmU/yPP9hOZ5SM+bRjIMj4H+jhRN7HD5seh8dE9ZAvM83Yl2yQr/+mJ2l7YU69a2
- Pvx7vvQDY5Vk3x9VV8o7BDMYnp+rNdBJV52GQZS5N3Z5YiufIrClgI7Y1Ckq5SQVBWcRf1qaB
- lcCWRYwtY33+dCrjfP2a7eu1KAcNey766/DfZ7MaMAeKLHORHwc1Zf7FjsjBSb93E7mi5zbhq
- HFOuekbuF3TsyiZIE1mTATBUbw2f8Pi2lq9dqoB7rwlDVGo9TF73WTD377w8a6kC0p7ce7Q/F
- TEqgqkZXxY1+WT8AqssnIJZX1FFJziMF9l0i1DTQtLMR3JQSjIZdjwMnovdvQhCCY59Gpqb+Q
- Z0263zpsA+RPv0IbG+2EBCtQ7WgZ1y8IGlNrf8xe6+5ViwE/iW8v+QuFjC52zuZlb/GN2gPuX
- HHt6/oq1Hf5LvRseHluJiw32hUb85stDmnMn/frEt38gL8IFmPlLVzIXRseow/YC7zfEHWeSu
- uY3H7Jcja4jvf8YhdX/f/BvY/0pV0blmtiQAcehRuQMEID1WpzecZVOnumftKJI/nArE5oB44
- 9fADaOfRLX7BwcOvAyNkLoQt0m7DPjdLX0IPPJwrZ1Ivvi49S/7Rfsbfd0XahD8iv08VR/AFO
- zBzKG11PfY+iUhGoxBFKfWVc0nA5rSary+nbsnajZJ7k/rzaGVvqT1a5ftu8fXATM3hgErwjo
- 4A0+Z/dUrV6gFHlIw0zZ8G0i/2rcTnwwTJqt1bKT7CpWqw1vPHr/j5RAE0Pp0NUk2KqRcA3pU
- bcOsiIHU8dxMbyOtsqewGE6T6cwBarNBncq/+Zeweu0sHudBPjnejtTux1BHTKBi5zM37nL1m
- lsaoRA1nEkHfmvWw1yC/hODI0xMAB1K/M3f9FUhMSo9cajwVtp6hSz1AkyQdmm90U8wrajoIB
- 8V7KVyg1IZaWJCGaw4HGYVcYdwEtsViLr74PgJ8Bmak9Iw5unsxBZXATw1/dd4rrHwfC/ftfO
- 26Ie3XrnGC9Fz8DX/tlwQebmOoJAoP5/bwGp+gw3UDE+xm3XfHgHUzyOdd7k=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FlBcWOES7Zg=:AIkyQlta0xMTWcGu0zfmo/
+ 7Q3thyQT3hOxboMIs2LzEkQu+LsogE4kyZ77smmck5/yPdJUAggqoz/D+0woae+zOUbhZG8Zn
+ R+q7Sf7drFQAN6qEJ1Lwb4VUlhGaiO+BSJLTqBazD01bjtCnmYSx1IZaNDgSrrQ9xPdC0MuWE
+ PLNjrsCkXxpb+0jCVNN4RacF6os1nkymWj/CW5hS8PY+5YCCnIkD4yBX/z/rf+j40EXUeuEk+
+ z0gY0RJ27OBP6EQjFVCHI7YTIpxgt1iEHdY3n7azEas7h+Hp4WATJu9zqoS9fKMDOeP+Zbp7G
+ btduurYgev1GKaVjNzTgtOyTzg5BZcwKUnr2lCGH2qI7suC6RcBLn7IIPMTXBQy8bNeYeSdLg
+ BI+/0eu0G7odT+/owCkRQkq2OT/fpAwN67jb/A2uoDnag3426/dIfHO6GdJXW0L/6MSqT3nXp
+ CEfkIrE3l5ssfjq62Q6pWpmEv8lOYWs7n0RAVwnd/OMxqMEzXWWf3DQloAR1IUwLTVLfelRXB
+ 7I4INbbA8laUSBAo1ClGNMzKqwzy8glOxldB1+BBTvPmBfFvOmzIsJF7PuAuKof9w+CtJf64z
+ AmZctumYIemMuuebMLu6O2MQYvsiwnndKg3HHiLTGXP/3jJjkVmAAdz9Sc7p8GqLU1PxdM/3g
+ q179lS8zLPYQrLRxpFa0on+PB1HWGnMi5VizpIQPrDLN36rOVb6ICo7tq5/ODMEDtHXk83LlZ
+ wiVBd/bptyjNXPaOdcnhUFnBN0lB7a2eqImKS6a3yzBaiRF9N+iA2DSxDYDjmnoI47XOyKSSz
+ i3mVcbAAgG4hphotX68vcbUZVNrLT0GF3IRKWTG0Yo6irmV8OWaNrOs73l94y1Non98l8twyg
+ dp5AhrSewN1UZRs618MhjfjrnyjVv6h3c85hsMUcb5wNurz0tOA+juxRnejYDK1er1qADJjZE
+ VnyakP48+LCQ5FUglzf6+LnC1kjsWdusmlZee0dsmOAYdWiL9nCrIwaFAt0OfmLptvgt8FNPo
+ QOzxz+Nj8ul3GeP505ZLEk9CB5ECqXJ9/i68LJ1z4AeFmqr8MAQx2vV4twoBIEy+ijWUVsFZA
+ 36VJaNWlnHvyxcwhakjdTyagVHIo4aeqyXWZfYbEU6nWXHMJwyShh0H12AqbAWeFnhGtkQI8H
+ 2cba5m5IhXicc9BH4Lx6ScTH/iPnXjxyDiN/Xn73/SsxrPw3Ve7xvxVnoBw/EJRvjHjP2lHq0
+ sLRLaZlohAfR/JO4rx7uazaTxwK9yJb+4KphCfT+004v74mg9VmfyNtMz1jg=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CMIVGH6YmFIWFoKpbi69fS1cxI0feVJtG
-Content-Type: multipart/mixed; boundary="Edh6RHbQclLUru9CcxP6vxZJloWuyDHUs"
+--bQk2yMUU2ZeVKWjVx8spbLusktO497fWE
+Content-Type: multipart/mixed; boundary="yyJ0lGA1gKqvAMVVKBd09la1NjzuSU1DI"
 
---Edh6RHbQclLUru9CcxP6vxZJloWuyDHUs
+--yyJ0lGA1gKqvAMVVKBd09la1NjzuSU1DI
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -81,108 +81,64 @@ Content-Transfer-Encoding: quoted-printable
 On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 >=20
-> Add the new value 2 of @contains in block_group_cache_tree_search().
-> The new values means the function will return the block group that
-> contains bytenr, otherwise return the next one that starts after
-> @bytenr. Will be used in later commit.
+> The are different behavior of btrfs_lookup_first_block_group() and
+> btrfs_lookup_first_block_group_kernel(). Unify the latter' behavior.
 >=20
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-> ---
->  extent-tree.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
->=20
-> diff --git a/extent-tree.c b/extent-tree.c
-> index ab576f8732a2..1d8535049eaf 100644
-> --- a/extent-tree.c
-> +++ b/extent-tree.c
-> @@ -196,13 +196,16 @@ static int btrfs_add_block_group_cache(struct btr=
-fs_fs_info *info,
->  }
-> =20
->  /*
-> - * This will return the block group at or after bytenr if contains is =
-0, else
-> - * it will return the block group that contains the bytenr
-> + * @contains:
-> + *   if 0, return the block group at or after bytenr if contains is 0.=
 
-> + *   if 1, return the block group that contains the bytenr.
-> + *   if 2, return the block group that contains bytenr, otherwise retu=
-rn the
-> + *     next one that starts after @bytenr.
-
-Thats a creative solution, good job on that.
-
-However since contains is no longer just simple 1 or 0, it's better to
-enum to define the behavior, other than using the immediate numbers.
-
->   */
->  static struct btrfs_block_group_cache *block_group_cache_tree_search(
->  		struct btrfs_fs_info *info, u64 bytenr, int contains)
->  {
-> -	struct btrfs_block_group_cache *cache, *ret =3D NULL;
-> +	struct btrfs_block_group_cache *cache, *ret =3D NULL, *tmp =3D NULL;
->  	struct rb_node *n;
->  	u64 end, start;
-> =20
-> @@ -215,8 +218,8 @@ static struct btrfs_block_group_cache *block_group_=
-cache_tree_search(
->  		start =3D cache->key.objectid;
-> =20
->  		if (bytenr < start) {
-> -			if (!contains && (!ret || start < ret->key.objectid))
-> -				ret =3D cache;
-> +			if (!tmp || start < tmp->key.objectid)
-> +				tmp =3D cache;
-
-This doesn't look correct.
-
-I was expecting something based on last found node, other than doing
-something strange in the rb-tree iteration code.
-
-At least this breaks readability. It would be much better to handle this
-after the rb tree while loop.
+Is it possible to modify the specific callers in btrfs-progs to make
+them use the kernel behavior other than re-inventing some new behavior?
 
 Thanks,
 Qu
->  			n =3D n->rb_left;
->  		} else if (bytenr > start) {
->  			if (contains && bytenr <=3D end) {
-> @@ -229,6 +232,13 @@ static struct btrfs_block_group_cache *block_group=
-_cache_tree_search(
->  			break;
->  		}
->  	}
-> +
-> +	/*
-> +	 * If ret is NULL, means not found any block group cotanins @bytenr.
-> +	 * So just except the case that cotanins equals 1.
-> +	 */
-> +	if (!ret && contains !=3D 1)
-> +		ret =3D tmp;
->  	return ret;
+
+> ---
+>  extent-tree.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/extent-tree.c b/extent-tree.c
+> index 1d8535049eaf..274dfe540b1f 100644
+> --- a/extent-tree.c
+> +++ b/extent-tree.c
+> @@ -243,12 +243,13 @@ static struct btrfs_block_group_cache *block_grou=
+p_cache_tree_search(
 >  }
 > =20
+>  /*
+> - * Return the block group that starts at or after bytenr
+> + * Return the block group that contains @bytenr, otherwise return the =
+next one
+> + * that starts after @bytenr
+>   */
+>  struct btrfs_block_group_cache *btrfs_lookup_first_block_group_kernel(=
+
+>  		struct btrfs_fs_info *info, u64 bytenr)
+>  {
+> -	return block_group_cache_tree_search(info, bytenr, 0);
+> +	return block_group_cache_tree_search(info, bytenr, 2);
+>  }
+> =20
+>  /*
 >=20
 
 
---Edh6RHbQclLUru9CcxP6vxZJloWuyDHUs--
+--yyJ0lGA1gKqvAMVVKBd09la1NjzuSU1DI--
 
---CMIVGH6YmFIWFoKpbi69fS1cxI0feVJtG
+--bQk2yMUU2ZeVKWjVx8spbLusktO497fWE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3otAYXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qiRjQf+OB/oUY+NVqnS6L0pIaUYM5Y3
-QYCL8BJnxpSIHZQiTIddGx+jueM5TRACcbQeMYk06wVTNihFA7J+zEE/6qT9GHPv
-UP5W0lj2sRRL6k1gYJ3QPzm8Pu4uXiIvEYfc1yWLjDsDOGzQCsxkV3FPQoKCG/3i
-0BnleEZQ1fdoMR+4aMopKfnubsUBLaRrXGtCw3yFX9SUHIJGgOYhrhuRou8Flclv
-UtyQXmT7/1emhayal1FXUy4qtkOU6Z6KShWo1ogQoxfElxkhApfGB3rVqWayQY5v
-NGSKzK+LkutZwuhZn4s9tD0eOlsIMipyRVZgU96HHBsGangnmhN2EjWIQgLMNg==
-=WhM9
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3otIYXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjHSwf/Xlfx5NomjDhPfwi1VVs5u+uQ
+tB/isQbiYSuffNIxiZSxFQlIuzVwxolSWguIX2/8NfRcvvu2iZZz2Xu9halwJHyw
+RGpQ8wVGJFyYoaLRrxxOpSWn3ovaLP4R/5qaA/Y1WRtmVhB1zbc/y5PEDlwiuxBA
+5Xz23+Iay6aVc7Sw9tnj6P+asgCqMbTq8r94P1hKweRmgqenU7Hq6gYaiu8zR908
+b7cFOBJOUUAQGZzOkH+/hBfIo6NBiefzU9/P9935vCUTbx141auhFVbjklHI2jGp
+CVxWtrwCbG2wmLnc8CJURAr/TOjK9YqWQp7ahFYHBckyDU9JgZ8152gTXBKxQQ==
+=oink
 -----END PGP SIGNATURE-----
 
---CMIVGH6YmFIWFoKpbi69fS1cxI0feVJtG--
+--bQk2yMUU2ZeVKWjVx8spbLusktO497fWE--
