@@ -2,66 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 653A6113CD5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 09:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158D8113CF4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 09:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfLEIJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 03:09:47 -0500
-Received: from mout.gmx.net ([212.227.15.19]:54257 "EHLO mout.gmx.net"
+        id S1726096AbfLEIUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 03:20:50 -0500
+Received: from mout.gmx.net ([212.227.15.18]:40831 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbfLEIJr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 03:09:47 -0500
+        id S1725974AbfLEIUt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 03:20:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575533385;
-        bh=33TTm3tj9Gb4to4kriRo/hUGGmo7ZxXknRAf99X9uf8=;
+        s=badeba3b8450; t=1575534048;
+        bh=eftQGTs5Y6V/78v79schWVX/CDhQ/2LaeGoT3030Jhc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=McoN6s8i13mnWU3n7Rw3mVg2Omhnncoy3gBZKFOn/uQ7CDyQGOcgWpXN+xYtApvTe
-         i7B/yqcPQBpp1iLq7cISuebpMA2TRMYXquHZili84p9YCqpxvNvU+VmhJnEpfQ/7CL
-         3iPU3dvhPKSDrHDoFNAThZO7DeC4DRWVHdQi5O/o=
+        b=C8vZbx/l6tV3hcmP1Jue2oYgWqEt81XlAxmkMs3pG4+gTSk7s+ed6LbUtWky98jJf
+         KIXxVVbHUONILx8KfA58jsJqzCHHA07gSdOPMjfszXyJdtkerb/ZgcXUr0Qr7NJsnh
+         qEnGl0ecbP60lfwqXwV1B10OwWQ9PaNGBfXUOoCs=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [192.168.2.169] ([34.92.246.95]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1fis-1harxI2INU-011wBB; Thu, 05
- Dec 2019 09:09:45 +0100
-Subject: Re: [PATCH 09/10] btrfs-progs: refrom block groups caches structure
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPXd2-1iQBR70SKA-00Mc8r; Thu, 05
+ Dec 2019 09:20:48 +0100
+Subject: Re: [PATCH 05/10] btrfs-progs: adjust function
+ btrfs_lookup_first_block_group_kernel
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, damenly.su@gmail.com,
         linux-btrfs@vger.kernel.org
 References: <20191205042921.25316-1-Damenly_Su@gmx.com>
- <20191205042921.25316-10-Damenly_Su@gmx.com>
- <ea48239e-3bba-beb7-8960-e847f70b4a6f@gmx.com>
+ <20191205042921.25316-6-Damenly_Su@gmx.com>
+ <16783ea1-48e7-45ac-ea1a-3e9048aa2616@gmx.com>
 From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <c60d03ec-6131-9271-6dd4-66b0b3729b79@gmx.com>
-Date:   Thu, 5 Dec 2019 16:09:40 +0800
+Message-ID: <db7e530f-ca73-8eaf-8fb4-8383d5691f3d@gmx.com>
+Date:   Thu, 5 Dec 2019 16:20:43 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0)
  Gecko/20100101 Thunderbird/71.0
 MIME-Version: 1.0
-In-Reply-To: <ea48239e-3bba-beb7-8960-e847f70b4a6f@gmx.com>
+In-Reply-To: <16783ea1-48e7-45ac-ea1a-3e9048aa2616@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lqg65GoJfZSlTPgH7A3P22ZOOQ74WtKLYmrr65A96IbMXgu75ff
- 07fM+9E27BPe4Z3OOBhnF8raOUMHxqSCq3A5RtIcXav/5v4Pqyf/xDAmH72Emf5KA8IhuKX
- UujHg89ks0Un01X77rWR8g3XPGYiRyTdVxmc3OIHkWEcMwNSeX8CejynRdQu1iXCtYm4vpl
- PO14h43vSvsV1vrqbaa2A==
+X-Provags-ID: V03:K1:9n9F/FyP3qmKMF8eWPXfioZHXviD/IbsyinhPCxbcJMxypemkNn
+ 6y/jx+NYkhCZIL5HUsvBhiQwTojKeJECdDNOpYcvYAZV6OPy2fdR8YcTcSA2VxJP7hMNo8x
+ ZABnhKwrRTwOhnM2oh8c4Nml85KMPw/IxM9g72UoMqpS2/rNI0r0+8MSdvm30J2Cu2LfnZX
+ Gxfoi1gXFePcwgj57c8Wg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:z4oIGGZ+PXA=:hYDTYWWh+2piyMHdyH2QUD
- PeRF7R+QzHo0l5YgKXUtwZs+akB7VMKaVfguCtJyRhtS89H1h4Zajah94/cXy/RSyc3IjtfME
- b3PCHFxA0CLY0oUY82WqRs5bOL3UL7GRvStFHdsTEpVH1rpShA1bDJ6KP3mvusc0Y2EvCbq0N
- l4sOVf8VSCMIWBl7OdJc69zy9LjzkAz0m17Bl86GjRhdPh3ESuQ2+dHpAjs9bOMegqUF+ucly
- Bn7JsEG3F3NT+KSacuHC9AClVAsvadwzoQEU6h3OowoO28sf3PQYN3w4RicbJSn8aJHIluHpv
- LZLND+7gWuY8u3lkv3CYH7lTCUxY3XR9H4PKBEMfc0M4nxc70JHIG4e0CG7LnjUjyfZkW6qFB
- I9J2/t70LCE9flBA6QqXUrjn9qUizhl6SC9HK+EXhEpDzhCE0zk4p7rkw39Mkkway4Yuso3Mz
- gbsiq6WrVc5HJFAdjLmRLxevtXj9yxn/fSwYA54pMn8/GNgfNOG27s0fcjviqOG1ivS7KOi4e
- C4G5g6SypX5bQ29nkO3R/39BO3qcimbvoZIwNWvIQtHlD1t3u0mkkSA58qGjmkKfYilsQBAvp
- 2FiOrKkH966CpXcmpy9HNPTGHEPNN+akq8Vmnmhc33h0FhTyzs0BHpELNUYve/CPeonVgwMLZ
- VGlc/4C1z+9MxczwbgYIwD0CiHkC44+YPeS526rVer2YU5+4TohueNL//xc2qxmGKZtuYwbJm
- 0JxpGuJyg447QC9v+V8RWqqoREAea1O/UPwJC8Q3VR4cPx5CH7sVCVpPc14pDT0B0KYba+LW1
- UOEHGOG0sjtgJI2jSNUFsmwvQRjucvcBL+KssOU2IIO4ShoIRDSBK9dMfwf42ysbjVBnKjSre
- 6TcYziUSsn1RkyL9gWB2jjtnLbwIVsJ6Mnt6wb74sFCG75dvTdRn9XpOXfCZMSreDMtzEB2f8
- o7aq5STZJov4Yp6EXnv2CmcDaCPNVRkmRXbtYleKTWe20SXt79qPkGjjAnATPwo6gRNS3cxUq
- AeW7vHYJI0WatHkpRbgdoVbV89uXWkn6dVDet3dT4Bhr9XoZDm3ZQ+fftN0jbEYVEm2NpermG
- AHeQMxyfoQn9/oeS1/9k9Rh9zDtgjdyBYfLrSfyQy4HcY0rGCcEkyvHHdtj9rj6CQNohlbkmL
- g67chvDJip0E2hr2wOB2v8dmlWslnCI2ek0JJFsyf8paiCVZSAUf6f/BLsVxi72xi1AxiXfrm
- GeLwwfWzOsFd06v7l1p88c0x/2HBjI1gvQIjC3u9/OMssWwuc8ypqAFjsRxs=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FxXxrnjXjSs=:i4gf+OuHfzOEOSViffnuW+
+ KN49Pu/+aVHM/GLFpndUOlCZk26ZpX+AxYxJvkSeIebL0sj6vYYJgu6euzq5/49+js4vgMwuU
+ 76sOlGefHl89L1zBB14Ej5CWkASPmZ8IWiej0WuH6l77+2IQ4ta4uDOEaSiN5BkzmDgHkCOp0
+ YgFqFk9TanTK9YrHpGegOSuC611Ri1Ts7cK/99jx11HFf//EmJ+qmLZro0CGf/55Jh3UsYp/j
+ qeyDx6Ik3nIYKiBiWVKEcXHNPW7LUtXBQ8T/Se8ZafiJf3nuOByo/cimkFnJP3zuEnbsrFBHY
+ KRTeT9BPW+bfdBXIZ+lSKWlXfLzXAH8TYS136qZvBNnbPEIAzYV1vcjTxSbk/tPNhDX5ySqH/
+ zc9g4rL4M8HsUtWJc0mRgwnnfk96VEYvnh8ibhwe6CroLl6e4kFVFMZ8f8sScapG+54xBeD9c
+ XP4avojhKcJ44IhfCRfnKgZ6Jq3q4LnFA1i+q07vS+YAfCPixkxmv8p5cxDSsE0C04hjcoCHB
+ xUKFKDqiIu9vlEtk6r7g4mm2Ih5gWwzDnIA/uDLDWCgOcq2XvI2QKbD7RvLoWVdg2GHcPf7Up
+ PzvUzpMu64CMidONZOiEDIbTJo6wXXfhp2Dz1yFXV3jVg0A7Y5pEmTIYlgMhv0UIllIn4byaQ
+ C/Dwc+PaJZZ0CUVWdGedfi0MW070zGdsJZpnMBMc67S/lEkGtt1rGOliVDboECj53NjKu1LRo
+ Dm+FdyeRqtCuQeIMGoyD/lYiSx+2nVoivz/i4wBxPKkyvOzBMi3eUlR/kp3/ZXOqbli0GPhdN
+ 85Om1LF4PkwH6mu8YOfFaa8pQJFk6hsOvWlnJkvjBrDq3/3l7R0u+HE3heNw/aiIoFwrcQF23
+ HcLKFADpiJFTDbCe/awysO71TZnYz/oW6NNgjKvoZsqvAO+SpScWNB1mcHR78/yYfSx4iZJt3
+ iXsZ6BfRhQ25PNt6I+o0O0eWHkvXJfUQhtKFjHwr5XBy405Z3xdhHYEx5la6XchaoHHsxwhgc
+ U2w48yBqnFOX/LIqSCGjyxAzCzob0AQC31zi9XRtErn+O9ivWPNtSBXa+A7Thhny3hHqhzsng
+ fSw+KC46XTP0GcquyUuTeWX9/CHUrLsvNXTJeH2qzyx1a3AAzMnIfKW9YofbVqajaoLRA1wev
+ qu88Y8dT+SDr1q89vKYzsPYDUvZb+CcqUIUSHNmlzBeMCxpKYYOWEgxDZiSEX/ti79yLZUNPG
+ Lv5o2dRyOwzNJcov5XYyeUBAcSiJ4195EpbeEtWk0fw6bHQ/7+Kt4AF1unjs=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -69,71 +70,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/12/5 3:51 PM, Qu Wenruo wrote:
+On 2019/12/5 3:40 PM, Qu Wenruo wrote:
 >
 >
 > On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
 >> From: Su Yue <Damenly_Su@gmx.com>
 >>
->> This commit organises block groups cache in
->> btrfs_fs_info::block_group_cache_tree. And any dirty block groups are
->> linked in transaction_handle::dirty_bgs.
->>
->> To keep coherence of bisect, it does almost replace in place:
->> 1. Replace the old btrfs group lookup functions with new functions
->> introduced in former commits.
->> 2. set_extent_bits(..., BLOCK_GROUP_DIRYT) things are replaced by linki=
-ng
->> the block group cache into trans::dirty_bgs. Checking and clearing bits
->> are transformed too.
->> 3. set_extent_bits(..., bit | EXTENT_LOCKED) things are replaced by
->> new the btrfs_add_block_group_cache() which inserts caches into
->> btrfs_fs_info::block_group_cache_tree directly. Other operations are
->> converted to tree operations.
->
-> Great cleanup and code unification.
->
-> Overall looks good, just small nitpicks inlined below.
+>> The are different behavior of btrfs_lookup_first_block_group() and
+>> btrfs_lookup_first_block_group_kernel(). Unify the latter' behavior.
 >>
 >> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
->> ---
->>   cmds/rescue-chunk-recover.c |   4 +-
->>   extent-tree.c               | 211 ++++++-----------------------------=
--
->>   image/main.c                |   5 +-
->>   transaction.c               |   3 +-
->>   4 files changed, 38 insertions(+), 185 deletions(-)
->>
->> diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
->> index 461b66c6e13b..a13acc015d11 100644
 >
->> @@ -2699,25 +2571,22 @@ int btrfs_free_block_groups(struct btrfs_fs_inf=
-o *info)
->>   	struct btrfs_block_group_cache *cache;
->>   	u64 start;
->>   	u64 end;
->> -	u64 ptr;
->>   	int ret;
->>
->> -	while(1) {
->> -		ret =3D find_first_extent_bit(&info->block_group_cache, 0,
->> -					    &start, &end, (unsigned int)-1);
->> -		if (ret)
->> +	while (rb_first(&info->block_group_cache_tree)) {
->> +		cache =3D btrfs_lookup_first_block_group(info, 0);
->> +		if (!cache)
+> Is it possible to modify the specific callers in btrfs-progs to make
+> them use the kernel behavior other than re-inventing some new behavior?
 >
-> Since we're freeing all block groups, what about
-> rbtree_postorder_for_each_entry_safe()?
->
-> That would be faster than rb_first() as we don't need to balance the tre=
-e.
->
-Oh! Thanks a lot. Will use the one.
+In technological viewpoint, absolutely say YES.
+But, it requires logic changes in many places (callers, callers of
+callers). I did tries and it pained me.
+And the theme of the whole patchset is doing simple intuitive data
+structure replacing. Touching the logic part is preferable for me in
+another set.
 
-> Despite that, the patch looks great to me.
-> Especially for that -185 part.
->
+Thanks
 > Thanks,
 > Qu
+>
+>> ---
+>>   extent-tree.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/extent-tree.c b/extent-tree.c
+>> index 1d8535049eaf..274dfe540b1f 100644
+>> --- a/extent-tree.c
+>> +++ b/extent-tree.c
+>> @@ -243,12 +243,13 @@ static struct btrfs_block_group_cache *block_grou=
+p_cache_tree_search(
+>>   }
+>>
+>>   /*
+>> - * Return the block group that starts at or after bytenr
+>> + * Return the block group that contains @bytenr, otherwise return the =
+next one
+>> + * that starts after @bytenr
+>>    */
+>>   struct btrfs_block_group_cache *btrfs_lookup_first_block_group_kernel=
+(
+>>   		struct btrfs_fs_info *info, u64 bytenr)
+>>   {
+>> -	return block_group_cache_tree_search(info, bytenr, 0);
+>> +	return block_group_cache_tree_search(info, bytenr, 2);
+>>   }
+>>
+>>   /*
+>>
 >
