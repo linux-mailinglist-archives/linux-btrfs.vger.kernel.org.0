@@ -2,337 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B445114478
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 17:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236BC114538
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 17:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbfLEQIX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 11:08:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44856 "EHLO mail.kernel.org"
+        id S1729598AbfLEQ5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 11:57:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730020AbfLEQIX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 11:08:23 -0500
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726028AbfLEQ5o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 11:57:44 -0500
+Received: from debian5.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEFA624249;
-        Thu,  5 Dec 2019 16:08:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78F0821835
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Dec 2019 16:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575562101;
-        bh=4BBbM4w57ZUGYAZen6Z4sS7m2spu0jjZRJ7n/AxkzNQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=dO9ySgKuhd+dTs2uIHnmBXmTkx0+ZaIVZNTu8iWwCnF73ueH7IvQFP4butiJMIPWF
-         DrHILJMHUlFjMuOZuIePpNG09ojuE33AD3P3sEdbn/qU8mR8Kn5MD046didGRRAJv4
-         rfh3B8BnmLPWjGlyroSsRsXW6d5MmvBprLYDPcEY=
-Message-ID: <388342be7cd03e34bcccb1287d790cac04376e85.camel@kernel.org>
-Subject: Re: [PATCH 1/1] fs: Use inode_lock/unlock class of provided APIs in
- filesystems
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, willy@infradead.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc:     ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org
-Date:   Thu, 05 Dec 2019 11:08:19 -0500
-In-Reply-To: <20191205103902.23618-2-riteshh@linux.ibm.com>
-References: <20191205103902.23618-1-riteshh@linux.ibm.com>
-         <20191205103902.23618-2-riteshh@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        s=default; t=1575565063;
+        bh=nTWp32f8wD7zfY09g2GHSjowwr47G7KZugoRmNJ5j1o=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=VF82SVt/qvhtgRR3RaeVSwUcFzwc2qBPw6+Ie2Njxi1jt1boIj5BzORGpCP7Ojajo
+         27Uo7WsnCNnSYnMlBpXcnWl3Mqi92GQR6DWCveEhJGRayRSdBF41+Pu9PMfs/Z6Lhq
+         oJrSejhoFkyXdrhbKal6LOAFkn5h/AcIfbQpMQyE=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] Btrfs: fix cloning range with a hole when using the NO_HOLES feature
+Date:   Thu,  5 Dec 2019 16:57:39 +0000
+Message-Id: <20191205165739.18381-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20191119120732.24729-1-fdmanana@kernel.org>
+References: <20191119120732.24729-1-fdmanana@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2019-12-05 at 16:09 +0530, Ritesh Harjani wrote:
-> This defines 4 more APIs which some of the filesystem needs
-> and reduces the direct use of i_rwsem in filesystem drivers.
-> Instead those are replaced with inode_lock/unlock_** APIs.
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/btrfs/delayed-inode.c |  2 +-
->  fs/btrfs/ioctl.c         |  4 ++--
->  fs/ceph/io.c             | 24 ++++++++++++------------
->  fs/nfs/io.c              | 24 ++++++++++++------------
->  fs/orangefs/file.c       |  4 ++--
->  fs/overlayfs/readdir.c   |  2 +-
->  fs/readdir.c             |  4 ++--
->  include/linux/fs.h       | 21 +++++++++++++++++++++
->  8 files changed, 53 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index d3e15e1d4a91..c3e92f2fd915 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1644,7 +1644,7 @@ void btrfs_readdir_put_delayed_items(struct inode *inode,
->  	 * The VFS is going to do up_read(), so we need to downgrade back to a
->  	 * read lock.
->  	 */
-> -	downgrade_write(&inode->i_rwsem);
-> +	inode_lock_downgrade(inode);
->  }
->  
->  int btrfs_should_delete_dir_index(struct list_head *del_list,
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index a1ee0b775e65..1cbd763a46d8 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -955,7 +955,7 @@ static noinline int btrfs_mksubvol(const struct path *parent,
->  	struct dentry *dentry;
->  	int error;
->  
-> -	error = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
-> +	error = inode_lock_killable_nested(dir, I_MUTEX_PARENT);
->  	if (error == -EINTR)
->  		return error;
->  
-> @@ -2863,7 +2863,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
->  		goto out;
->  
->  
-> -	err = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
-> +	err = inode_lock_killable_nested(dir, I_MUTEX_PARENT);
->  	if (err == -EINTR)
->  		goto out_drop_write;
->  	dentry = lookup_one_len(vol_args->name, parent, namelen);
-> diff --git a/fs/ceph/io.c b/fs/ceph/io.c
-> index 97602ea92ff4..e94186259c2e 100644
-> --- a/fs/ceph/io.c
-> +++ b/fs/ceph/io.c
-> @@ -53,14 +53,14 @@ ceph_start_io_read(struct inode *inode)
->  	struct ceph_inode_info *ci = ceph_inode(inode);
->  
->  	/* Be an optimist! */
-> -	down_read(&inode->i_rwsem);
-> +	inode_lock_shared(inode);
->  	if (!(READ_ONCE(ci->i_ceph_flags) & CEPH_I_ODIRECT))
->  		return;
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  	/* Slow path.... */
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	ceph_block_o_direct(ci, inode);
-> -	downgrade_write(&inode->i_rwsem);
-> +	inode_lock_downgrade(inode);
->  }
->  
->  /**
-> @@ -73,7 +73,7 @@ ceph_start_io_read(struct inode *inode)
->  void
->  ceph_end_io_read(struct inode *inode)
->  {
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  }
->  
->  /**
-> @@ -86,7 +86,7 @@ ceph_end_io_read(struct inode *inode)
->  void
->  ceph_start_io_write(struct inode *inode)
->  {
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	ceph_block_o_direct(ceph_inode(inode), inode);
->  }
->  
-> @@ -100,7 +100,7 @@ ceph_start_io_write(struct inode *inode)
->  void
->  ceph_end_io_write(struct inode *inode)
->  {
-> -	up_write(&inode->i_rwsem);
-> +	inode_unlock(inode);
->  }
->  
->  /* Call with exclusively locked inode->i_rwsem */
-> @@ -139,14 +139,14 @@ ceph_start_io_direct(struct inode *inode)
->  	struct ceph_inode_info *ci = ceph_inode(inode);
->  
->  	/* Be an optimist! */
-> -	down_read(&inode->i_rwsem);
-> +	inode_lock_shared(inode);
->  	if (READ_ONCE(ci->i_ceph_flags) & CEPH_I_ODIRECT)
->  		return;
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  	/* Slow path.... */
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	ceph_block_buffered(ci, inode);
-> -	downgrade_write(&inode->i_rwsem);
-> +	inode_lock_downgrade(inode);
->  }
->  
->  /**
-> @@ -159,5 +159,5 @@ ceph_start_io_direct(struct inode *inode)
->  void
->  ceph_end_io_direct(struct inode *inode)
->  {
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  }
-> diff --git a/fs/nfs/io.c b/fs/nfs/io.c
-> index 5088fda9b453..bf5ed7bea59d 100644
-> --- a/fs/nfs/io.c
-> +++ b/fs/nfs/io.c
-> @@ -44,14 +44,14 @@ nfs_start_io_read(struct inode *inode)
->  {
->  	struct nfs_inode *nfsi = NFS_I(inode);
->  	/* Be an optimist! */
-> -	down_read(&inode->i_rwsem);
-> +	inode_lock_shared(inode);
->  	if (test_bit(NFS_INO_ODIRECT, &nfsi->flags) == 0)
->  		return;
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  	/* Slow path.... */
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	nfs_block_o_direct(nfsi, inode);
-> -	downgrade_write(&inode->i_rwsem);
-> +	inode_lock_downgrade(inode);
->  }
->  
->  /**
-> @@ -64,7 +64,7 @@ nfs_start_io_read(struct inode *inode)
->  void
->  nfs_end_io_read(struct inode *inode)
->  {
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  }
->  
->  /**
-> @@ -77,7 +77,7 @@ nfs_end_io_read(struct inode *inode)
->  void
->  nfs_start_io_write(struct inode *inode)
->  {
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	nfs_block_o_direct(NFS_I(inode), inode);
->  }
->  
-> @@ -91,7 +91,7 @@ nfs_start_io_write(struct inode *inode)
->  void
->  nfs_end_io_write(struct inode *inode)
->  {
-> -	up_write(&inode->i_rwsem);
-> +	inode_unlock(inode);
->  }
->  
->  /* Call with exclusively locked inode->i_rwsem */
-> @@ -124,14 +124,14 @@ nfs_start_io_direct(struct inode *inode)
->  {
->  	struct nfs_inode *nfsi = NFS_I(inode);
->  	/* Be an optimist! */
-> -	down_read(&inode->i_rwsem);
-> +	inode_lock_shared(inode);
->  	if (test_bit(NFS_INO_ODIRECT, &nfsi->flags) != 0)
->  		return;
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  	/* Slow path.... */
-> -	down_write(&inode->i_rwsem);
-> +	inode_lock(inode);
->  	nfs_block_buffered(nfsi, inode);
-> -	downgrade_write(&inode->i_rwsem);
-> +	inode_lock_downgrade(inode);
->  }
->  
->  /**
-> @@ -144,5 +144,5 @@ nfs_start_io_direct(struct inode *inode)
->  void
->  nfs_end_io_direct(struct inode *inode)
->  {
-> -	up_read(&inode->i_rwsem);
-> +	inode_unlock_shared(inode);
->  }
-> diff --git a/fs/orangefs/file.c b/fs/orangefs/file.c
-> index a5612abc0936..6420503e1275 100644
-> --- a/fs/orangefs/file.c
-> +++ b/fs/orangefs/file.c
-> @@ -328,14 +328,14 @@ static ssize_t orangefs_file_read_iter(struct kiocb *iocb,
->  		ro->blksiz = iter->count;
->  	}
->  
-> -	down_read(&file_inode(iocb->ki_filp)->i_rwsem);
-> +	inode_lock_shared(file_inode(iocb->ki_filp));
->  	ret = orangefs_revalidate_mapping(file_inode(iocb->ki_filp));
->  	if (ret)
->  		goto out;
->  
->  	ret = generic_file_read_iter(iocb, iter);
->  out:
-> -	up_read(&file_inode(iocb->ki_filp)->i_rwsem);
-> +	inode_unlock_shared(file_inode(iocb->ki_filp));
->  	return ret;
->  }
->  
-> diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
-> index 47a91c9733a5..c203e73160b0 100644
-> --- a/fs/overlayfs/readdir.c
-> +++ b/fs/overlayfs/readdir.c
-> @@ -273,7 +273,7 @@ static int ovl_check_whiteouts(struct dentry *dir, struct ovl_readdir_data *rdd)
->  
->  	old_cred = ovl_override_creds(rdd->dentry->d_sb);
->  
-> -	err = down_write_killable(&dir->d_inode->i_rwsem);
-> +	err = inode_lock_killable(dir->d_inode);
->  	if (!err) {
->  		while (rdd->first_maybe_whiteout) {
->  			p = rdd->first_maybe_whiteout;
-> diff --git a/fs/readdir.c b/fs/readdir.c
-> index d26d5ea4de7b..10a34efa0af0 100644
-> --- a/fs/readdir.c
-> +++ b/fs/readdir.c
-> @@ -52,9 +52,9 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
->  		goto out;
->  
->  	if (shared)
-> -		res = down_read_killable(&inode->i_rwsem);
-> +		res = inode_lock_shared_killable(inode);
->  	else
-> -		res = down_write_killable(&inode->i_rwsem);
-> +		res = inode_lock_killable(inode);
->  	if (res)
->  		goto out;
->  
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 98e0349adb52..2b407464fac1 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -831,6 +831,27 @@ static inline void inode_lock_shared_nested(struct inode *inode, unsigned subcla
->  	down_read_nested(&inode->i_rwsem, subclass);
->  }
->  
-> +static inline void inode_lock_downgrade(struct inode *inode)
-> +{
-> +	downgrade_write(&inode->i_rwsem);
-> +}
-> +
-> +static inline int inode_lock_killable(struct inode *inode)
-> +{
-> +	return down_write_killable(&inode->i_rwsem);
-> +}
-> +
-> +static inline int inode_lock_shared_killable(struct inode *inode)
-> +{
-> +	return down_read_killable(&inode->i_rwsem);
-> +}
-> +
-> +static inline int inode_lock_killable_nested(struct inode *inode,
-> +					     unsigned subclass)
-> +{
-> +	return down_write_killable_nested(&inode->i_rwsem, subclass);
-> +}
-> +
->  void lock_two_nondirectories(struct inode *, struct inode*);
->  void unlock_two_nondirectories(struct inode *, struct inode*);
->  
+From: Filipe Manana <fdmanana@suse.com>
 
-Nice little cleanup.
+When using the NO_HOLES feature if we clone a range that contains a hole
+and a temporary ENOSPC happens while dropping extents from the target
+inode's range, we can end up failing and aborting the transaction with
+-EEXIST or with a corrupt file extent item, that has a length greater
+than it should and overlaps with other extents. For example when cloning
+the following range from inode A to inode B:
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+  Inode A:
+
+    extent A1                                          extent A2
+  [ ----------- ]  [ hole, implicit, 4MB length ]  [ ------------- ]
+  0            1MB                                 5MB            6MB
+
+  Range to clone: [1MB, 6MB)
+
+  Inode B:
+
+    extent B1       extent B2        extent B3         extent B4
+  [ ---------- ]  [ --------- ]    [ ---------- ]    [ ---------- ]
+  0           1MB 1MB        2MB   2MB        5MB    5MB         6MB
+
+  Target range: [1MB, 6MB) (same as source, to make it easier to explain)
+
+The following can happen:
+
+1) btrfs_punch_hole_range() gets -ENOSPC from __btrfs_drop_extents();
+
+2) At that point, 'cur_offset' is set to 1MB and __btrfs_drop_extents()
+   set 'drop_end' to 2MB, meaning it was able to drop only extent B2;
+
+3) We then compute 'clone_len' as 'drop_end' - 'cur_offset' = 2MB - 1MB =
+   1MB;
+
+4) We then attempt to insert a file extent item at inode B with a file
+   offset of 5MB, which is the value of clone_info->file_offset. This
+   fails with error -EEXIST because there's already an extent at that
+   offset (extent B4);
+
+5) We abort the current transaction with -EEXIST and return that error
+   to user space as well.
+
+Another example, for extent corruption:
+
+  Inode A:
+
+    extent A1                                           extent A2
+  [ ----------- ]   [ hole, implicit, 10MB length ]  [ ------------- ]
+  0            1MB                                  11MB            12MB
+
+  Inode B:
+
+    extent B1         extent B2
+  [ ----------- ]   [ --------- ]    [ ----------------------------- ]
+  0            1MB 1MB         5MB  5MB                             12MB
+
+  Target range: [1MB, 12MB) (same as source, to make it easier to explain)
+
+1) btrfs_punch_hole_range() gets -ENOSPC from __btrfs_drop_extents();
+
+2) At that point, 'cur_offset' is set to 1MB and __btrfs_drop_extents()
+   set 'drop_end' to 5MB, meaning it was able to drop only extent B2;
+
+3) We then compute 'clone_len' as 'drop_end' - 'cur_offset' = 5MB - 1MB =
+   4MB;
+
+4) We then insert a file extent item at inode B with a file offset of 11MB
+   which is the value of clone_info->file_offset, and a length of 4MB (the
+   value of 'clone_len'). So we get 2 extents items with ranges that
+   overlap and an extent length of 4MB, larger then the extent A2 from
+   inode A (1MB length);
+
+5) After that we end the transaction, balance the btree dirty pages and
+   then start another or join the previous transaction. It might happen
+   that the transaction which inserted the incorrect extent was committed
+   by another task so we end up with extent corruption if a power failure
+   happens.
+
+So fix this by making sure we attempt to insert the extent to clone at
+the destination inode only if we are past dropping the sub-range that
+corresponds to a hole.
+
+Fixes: 690a5dbfc51315 ("Btrfs: fix ENOSPC errors, leading to transaction aborts, when cloning extents")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+
+V2: Fixed the logic, it was broken except for trivial cases.
+
+ fs/btrfs/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0cb43b682789..8d47c76b7bd1 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2599,8 +2599,8 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
+ 			}
+ 		}
+ 
+-		if (clone_info) {
+-			u64 clone_len = drop_end - cur_offset;
++		if (clone_info && drop_end > clone_info->file_offset) {
++			u64 clone_len = drop_end - clone_info->file_offset;
+ 
+ 			ret = btrfs_insert_clone_extent(trans, inode, path,
+ 							clone_info, clone_len);
+-- 
+2.11.0
 
