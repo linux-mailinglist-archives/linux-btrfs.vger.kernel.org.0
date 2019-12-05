@@ -2,67 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D06113CCD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 09:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653A6113CD5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Dec 2019 09:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbfLEIIJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 03:08:09 -0500
-Received: from mout.gmx.net ([212.227.15.18]:36241 "EHLO mout.gmx.net"
+        id S1726589AbfLEIJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 03:09:47 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54257 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbfLEIII (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 03:08:08 -0500
+        id S1726096AbfLEIJr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 03:09:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575533287;
-        bh=Znb+scr0vrlkQpywEUbQdV7FgJ+5jDzbcdNm7zE6KPg=;
+        s=badeba3b8450; t=1575533385;
+        bh=33TTm3tj9Gb4to4kriRo/hUGGmo7ZxXknRAf99X9uf8=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=alKU+5xkBfbc0cs3y+yQfKuoKyRBJoQjfGK5DYT4SBm4MlE1hwwNqyILkdJBYA7X9
-         snMCR2bcyqlFxBQ70eVRc4wTd8YJ2oq3YOTP4QH0Dm60cQ573/IqdEXSxoQcnFhw/+
-         N6pg46g+9WCn3/dcktthpjl4diI2GnXsG1S8Dcvo=
+        b=McoN6s8i13mnWU3n7Rw3mVg2Omhnncoy3gBZKFOn/uQ7CDyQGOcgWpXN+xYtApvTe
+         i7B/yqcPQBpp1iLq7cISuebpMA2TRMYXquHZili84p9YCqpxvNvU+VmhJnEpfQ/7CL
+         3iPU3dvhPKSDrHDoFNAThZO7DeC4DRWVHdQi5O/o=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.169] ([34.92.246.95]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbivM-1i2srj35ZO-00dFpR; Thu, 05
- Dec 2019 09:08:06 +0100
-Subject: Re: [PATCH 04/10] btrfs-progs: reform the function
- block_group_cache_tree_search()
+Received: from [192.168.2.169] ([34.92.246.95]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1fis-1harxI2INU-011wBB; Thu, 05
+ Dec 2019 09:09:45 +0100
+Subject: Re: [PATCH 09/10] btrfs-progs: refrom block groups caches structure
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, damenly.su@gmail.com,
         linux-btrfs@vger.kernel.org
 References: <20191205042921.25316-1-Damenly_Su@gmx.com>
- <20191205042921.25316-5-Damenly_Su@gmx.com>
- <d491f547-626d-c974-8e70-9e39815a7dab@gmx.com>
+ <20191205042921.25316-10-Damenly_Su@gmx.com>
+ <ea48239e-3bba-beb7-8960-e847f70b4a6f@gmx.com>
 From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <f5017974-afcd-693a-1aa0-148292e7a283@gmx.com>
-Date:   Thu, 5 Dec 2019 16:08:02 +0800
+Message-ID: <c60d03ec-6131-9271-6dd4-66b0b3729b79@gmx.com>
+Date:   Thu, 5 Dec 2019 16:09:40 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0)
  Gecko/20100101 Thunderbird/71.0
 MIME-Version: 1.0
-In-Reply-To: <d491f547-626d-c974-8e70-9e39815a7dab@gmx.com>
+In-Reply-To: <ea48239e-3bba-beb7-8960-e847f70b4a6f@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wU3N3yZ7n9oBILu6wEIqWCZrKKy9ZuLR6Uk8pXVeUZ9Z5c2HbN+
- 16eUxEQQfv7eReuJq6Tlj5dANvYdTziUvtqZCVOmdgZh47GYnycUPtcdzWAewhHp+/0UzeR
- rFF3rhsIsuc3JBlZ00XxNIoXwUkXZKLw3+sdvlhsN+BrszJ6qugbc/Py4ghKp+ayWTgq595
- DXeO1uOBKIC8M2W9CfGmQ==
+X-Provags-ID: V03:K1:lqg65GoJfZSlTPgH7A3P22ZOOQ74WtKLYmrr65A96IbMXgu75ff
+ 07fM+9E27BPe4Z3OOBhnF8raOUMHxqSCq3A5RtIcXav/5v4Pqyf/xDAmH72Emf5KA8IhuKX
+ UujHg89ks0Un01X77rWR8g3XPGYiRyTdVxmc3OIHkWEcMwNSeX8CejynRdQu1iXCtYm4vpl
+ PO14h43vSvsV1vrqbaa2A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2Hk48NkPJUM=:urCI+IfUWoPYeIo6ie9alp
- 1mdpbtZ7RqM0PkZXImJpHRSq63nnJTYuWYvlh9kU3obFlBWTi5m7MEusr+v6BIJTFLYgFs385
- Q/lsMd6SGjaHv1GK95FJQeyFsVh882PNWUOClThRMNg69+L4UfNF2QuAoDvAu5bHtgqBBqE/S
- PFNpNAlMjyNg0qBmpeKwScnGMwftjjslRTHyWz0zayeNmeMXNd63+8R9LK5TkM8mmdEVf4Nd5
- HseA0b4ZctkvCcAWo4wzhcu9lNgxr311ddQTjyPc3GM0cQQjl+d6FCGggBJFOo7+SemcCQm7k
- SMKSMJ+Kx7Euxs6PYuH5eJJn/UJTWI6lchgm0JNXz3SRFyCWX4QkV6AlDKnAbDte41bK2J/4z
- ksA0gckZeW9sYKxm9T9r2nWdwkczMMqKBVeQRv7yeUxiobi3CGJB/dBR07gDJ2Y5+SHBpHEzG
- lYGq4t1uDMLVQSJ6cM3rU5ZU7oZp2eJK7uhUy7tJKUToPswUeNiZ7d0VlIzqnXggA20Fs/p9d
- 8isbKF3iaa2bhS3C2PDN/Bx4VrvmaMsr6fzsbXlQf7BxE66wHGfajpvccVVQkeLv+Jyawqpuv
- ie3xKygcaKhO0aLVlo+qzu4ipW6QMkMTbFnXjb5jj4mw6oFYVmj6iedrKGdGU8aooxshGeRuI
- DalHjA3pFCUHFhVoJEz+tBvjB1tM9QlDkvCSmgJzx0rbaouyyXOvAP8Md4UZ3LBO2ICCocJZ4
- p1FFJHLo7ymugI0SaH/9mZ95DyBd3EGBcKRGRZqy3M8SdK8HuprEE3aJvLqI8lWGFkyG8kaG7
- jRL2UYn2jZiKYDJLgGdiubQh2IOY6oqaSKMZuf9QS+0yZwbAxGyRvMIADhhi6v0IUs5rhpDij
- QObu02dRUTt+9apOtXYphIIwCgYY82Jn45qcK70kImSwrLv/48vme7Kz+jr55vnGaOCAGlaAs
- CtZPXiP6KfI8AFbtxT93/S6o8ga1YKc9gvypjys64Gdg+U71q7wqngE/NZGUbzUwd48JFSI0n
- OEvS+AApj0JPN1L0x0uj9T/FT/zqECJs9XK0hKEZvFlotdxvBJY1Q5G6gfNAIdCg0eWBg0jCd
- BZfLWBTKF5y+jtfqskdicVIfdbI0OOQRVIdMkUNmtfoP/oJKh/BibPjuJAzRbxPCBd2H+HJNw
- Fuc4mMiQPhpSkb1YxQi4MwsLG4iih4rjZsHmQndEA8atP30B2XgYjxUwsBhiq4O0uspxWAHnb
- K/hzMdd2Z9MSKUv4drdHKgQDSEgQD1dQoyag2R80WeTzl7y68VoHnaEY/XfM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:z4oIGGZ+PXA=:hYDTYWWh+2piyMHdyH2QUD
+ PeRF7R+QzHo0l5YgKXUtwZs+akB7VMKaVfguCtJyRhtS89H1h4Zajah94/cXy/RSyc3IjtfME
+ b3PCHFxA0CLY0oUY82WqRs5bOL3UL7GRvStFHdsTEpVH1rpShA1bDJ6KP3mvusc0Y2EvCbq0N
+ l4sOVf8VSCMIWBl7OdJc69zy9LjzkAz0m17Bl86GjRhdPh3ESuQ2+dHpAjs9bOMegqUF+ucly
+ Bn7JsEG3F3NT+KSacuHC9AClVAsvadwzoQEU6h3OowoO28sf3PQYN3w4RicbJSn8aJHIluHpv
+ LZLND+7gWuY8u3lkv3CYH7lTCUxY3XR9H4PKBEMfc0M4nxc70JHIG4e0CG7LnjUjyfZkW6qFB
+ I9J2/t70LCE9flBA6QqXUrjn9qUizhl6SC9HK+EXhEpDzhCE0zk4p7rkw39Mkkway4Yuso3Mz
+ gbsiq6WrVc5HJFAdjLmRLxevtXj9yxn/fSwYA54pMn8/GNgfNOG27s0fcjviqOG1ivS7KOi4e
+ C4G5g6SypX5bQ29nkO3R/39BO3qcimbvoZIwNWvIQtHlD1t3u0mkkSA58qGjmkKfYilsQBAvp
+ 2FiOrKkH966CpXcmpy9HNPTGHEPNN+akq8Vmnmhc33h0FhTyzs0BHpELNUYve/CPeonVgwMLZ
+ VGlc/4C1z+9MxczwbgYIwD0CiHkC44+YPeS526rVer2YU5+4TohueNL//xc2qxmGKZtuYwbJm
+ 0JxpGuJyg447QC9v+V8RWqqoREAea1O/UPwJC8Q3VR4cPx5CH7sVCVpPc14pDT0B0KYba+LW1
+ UOEHGOG0sjtgJI2jSNUFsmwvQRjucvcBL+KssOU2IIO4ShoIRDSBK9dMfwf42ysbjVBnKjSre
+ 6TcYziUSsn1RkyL9gWB2jjtnLbwIVsJ6Mnt6wb74sFCG75dvTdRn9XpOXfCZMSreDMtzEB2f8
+ o7aq5STZJov4Yp6EXnv2CmcDaCPNVRkmRXbtYleKTWe20SXt79qPkGjjAnATPwo6gRNS3cxUq
+ AeW7vHYJI0WatHkpRbgdoVbV89uXWkn6dVDet3dT4Bhr9XoZDm3ZQ+fftN0jbEYVEm2NpermG
+ AHeQMxyfoQn9/oeS1/9k9Rh9zDtgjdyBYfLrSfyQy4HcY0rGCcEkyvHHdtj9rj6CQNohlbkmL
+ g67chvDJip0E2hr2wOB2v8dmlWslnCI2ek0JJFsyf8paiCVZSAUf6f/BLsVxi72xi1AxiXfrm
+ GeLwwfWzOsFd06v7l1p88c0x/2HBjI1gvQIjC3u9/OMssWwuc8ypqAFjsRxs=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -70,102 +69,71 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/12/5 3:38 PM, Qu Wenruo wrote:
+On 2019/12/5 3:51 PM, Qu Wenruo wrote:
 >
 >
 > On 2019/12/5 =E4=B8=8B=E5=8D=8812:29, damenly.su@gmail.com wrote:
 >> From: Su Yue <Damenly_Su@gmx.com>
 >>
->> Add the new value 2 of @contains in block_group_cache_tree_search().
->> The new values means the function will return the block group that
->> contains bytenr, otherwise return the next one that starts after
->> @bytenr. Will be used in later commit.
+>> This commit organises block groups cache in
+>> btrfs_fs_info::block_group_cache_tree. And any dirty block groups are
+>> linked in transaction_handle::dirty_bgs.
+>>
+>> To keep coherence of bisect, it does almost replace in place:
+>> 1. Replace the old btrfs group lookup functions with new functions
+>> introduced in former commits.
+>> 2. set_extent_bits(..., BLOCK_GROUP_DIRYT) things are replaced by linki=
+ng
+>> the block group cache into trans::dirty_bgs. Checking and clearing bits
+>> are transformed too.
+>> 3. set_extent_bits(..., bit | EXTENT_LOCKED) things are replaced by
+>> new the btrfs_add_block_group_cache() which inserts caches into
+>> btrfs_fs_info::block_group_cache_tree directly. Other operations are
+>> converted to tree operations.
+>
+> Great cleanup and code unification.
+>
+> Overall looks good, just small nitpicks inlined below.
 >>
 >> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 >> ---
->>   extent-tree.c | 20 +++++++++++++++-----
->>   1 file changed, 15 insertions(+), 5 deletions(-)
+>>   cmds/rescue-chunk-recover.c |   4 +-
+>>   extent-tree.c               | 211 ++++++-----------------------------=
+-
+>>   image/main.c                |   5 +-
+>>   transaction.c               |   3 +-
+>>   4 files changed, 38 insertions(+), 185 deletions(-)
 >>
->> diff --git a/extent-tree.c b/extent-tree.c
->> index ab576f8732a2..1d8535049eaf 100644
->> --- a/extent-tree.c
->> +++ b/extent-tree.c
->> @@ -196,13 +196,16 @@ static int btrfs_add_block_group_cache(struct btr=
-fs_fs_info *info,
->>   }
+>> diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
+>> index 461b66c6e13b..a13acc015d11 100644
+>
+>> @@ -2699,25 +2571,22 @@ int btrfs_free_block_groups(struct btrfs_fs_inf=
+o *info)
+>>   	struct btrfs_block_group_cache *cache;
+>>   	u64 start;
+>>   	u64 end;
+>> -	u64 ptr;
+>>   	int ret;
 >>
->>   /*
->> - * This will return the block group at or after bytenr if contains is =
-0, else
->> - * it will return the block group that contains the bytenr
->> + * @contains:
->> + *   if 0, return the block group at or after bytenr if contains is 0.
->> + *   if 1, return the block group that contains the bytenr.
->> + *   if 2, return the block group that contains bytenr, otherwise retu=
-rn the
->> + *     next one that starts after @bytenr.
+>> -	while(1) {
+>> -		ret =3D find_first_extent_bit(&info->block_group_cache, 0,
+>> -					    &start, &end, (unsigned int)-1);
+>> -		if (ret)
+>> +	while (rb_first(&info->block_group_cache_tree)) {
+>> +		cache =3D btrfs_lookup_first_block_group(info, 0);
+>> +		if (!cache)
 >
-> Thats a creative solution, good job on that.
+> Since we're freeing all block groups, what about
+> rbtree_postorder_for_each_entry_safe()?
 >
-> However since contains is no longer just simple 1 or 0, it's better to
-> enum to define the behavior, other than using the immediate numbers.
+> That would be faster than rb_first() as we don't need to balance the tre=
+e.
+>
+Oh! Thanks a lot. Will use the one.
 
-Nice suggestion, will do.
+> Despite that, the patch looks great to me.
+> Especially for that -185 part.
 >
->>    */
->>   static struct btrfs_block_group_cache *block_group_cache_tree_search(
->>   		struct btrfs_fs_info *info, u64 bytenr, int contains)
->>   {
->> -	struct btrfs_block_group_cache *cache, *ret =3D NULL;
->> +	struct btrfs_block_group_cache *cache, *ret =3D NULL, *tmp =3D NULL;
->>   	struct rb_node *n;
->>   	u64 end, start;
->>
->> @@ -215,8 +218,8 @@ static struct btrfs_block_group_cache *block_group_=
-cache_tree_search(
->>   		start =3D cache->key.objectid;
->>
->>   		if (bytenr < start) {
->> -			if (!contains && (!ret || start < ret->key.objectid))
->> -				ret =3D cache;
->> +			if (!tmp || start < tmp->key.objectid)
->> +				tmp =3D cache;
->
-> This doesn't look correct.
->
-> I was expecting something based on last found node, other than doing
-> something strange in the rb-tree iteration code.
->
-> At least this breaks readability. It would be much better to handle this
-> after the rb tree while loop.
-> Spent much brain power on this trick, this line means we always keep the
-next block block to @bytenr. The original code stores the block group
-cache in the @ret, which here I do is to store it into @tmp.
-
-This method doesn't change efficiency only little memory copies.
-If put the logic after the whole loop, I'm afraid it will require more
-code lines and lower the search efficiency.
-
-Thanks
 > Thanks,
 > Qu
->>   			n =3D n->rb_left;
->>   		} else if (bytenr > start) {
->>   			if (contains && bytenr <=3D end) {
->> @@ -229,6 +232,13 @@ static struct btrfs_block_group_cache *block_group=
-_cache_tree_search(
->>   			break;
->>   		}
->>   	}
->> +
->> +	/*
->> +	 * If ret is NULL, means not found any block group cotanins @bytenr.
->> +	 * So just except the case that cotanins equals 1.
->> +	 */
->> +	if (!ret && contains !=3D 1)
->> +		ret =3D tmp;
->>   	return ret;
->>   }
->>
->>
 >
