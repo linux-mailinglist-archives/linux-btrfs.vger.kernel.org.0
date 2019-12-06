@@ -2,106 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8543115898
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 22:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080391158A0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 22:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbfLFV0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 16:26:07 -0500
-Received: from a4-3.smtp-out.eu-west-1.amazonses.com ([54.240.4.3]:56516 "EHLO
-        a4-3.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726330AbfLFV0H (ORCPT
+        id S1726375AbfLFV3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 16:29:00 -0500
+Received: from st43p00im-ztfb10071701.me.com ([17.58.63.173]:60779 "EHLO
+        st43p00im-ztfb10071701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726370AbfLFV3A (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 16:26:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1575667565;
-        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Kb/J57ZIs2WYs7b7MhI6mDwQCRcOp50kQTRhz0oyNzc=;
-        b=dYpKHT776O7oLa5KJKIFMxb98Fw1EXdTos8xcJ6K+z+0OWu8/P+p79zFypeUiDQA
-        1PDDWCwPu/9ENNpmpoRyXW6IsviW9ksGmJVD08cTuDtN3AEFIe9tcITpNR5n5RmV8iK
-        jVMmw8o+lSjTqgsTJSmup5LhDZv1Df9YFenr3soM=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1575667565;
-        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=Kb/J57ZIs2WYs7b7MhI6mDwQCRcOp50kQTRhz0oyNzc=;
-        b=L1gnkcWqq35LH+8Q3BUPfmvPLb+dql8K62Jt+UsihCH2OU4Qk37fGu8GVQ25QF76
-        gkU3hj5VI1p6cRHkfZBAIPmjBQ++8uyd8L2p2gHI3MsNK74+Vgj9ahcLONt/JF42YUh
-        xGeixupaUq+QWXWSPpc3FmnUZGzpVfZyqiALijtI=
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Martin Raiber <martin@urbackup.org>
-Subject: df shows no available space in 5.4.1
-Message-ID: <0102016edd1b0184-848d9b6d-6b80-4ce3-8428-e472a224e554-000000@eu-west-1.amazonses.com>
-Date:   Fri, 6 Dec 2019 21:26:05 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2019.12.06-54.240.4.3
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+        Fri, 6 Dec 2019 16:29:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1575667738;
+        bh=pL+z+9nZmzpHg/d1Dv71HWMhjzhH/1EWAAlR6eS3dXA=;
+        h=Content-Type:Subject:From:Date:Message-Id:To;
+        b=0eL9RxENPnc0ZO74gbnNBuDCCnBZyl17SgE0F/kBPXnaKZNfrsHVUNbGvTClz57qG
+         GSlSNX3cZrsEXzGtdjidnaXIlxkWztGCMa0pSUn3UYnC8Kg9WDZy9/Zdizagoe+8nw
+         dmVH9tOyWeCzYaT337ZZyx2946YHVY0/EL8UUtuiQA8WKq5m+2B18b3DAB+rchRTZd
+         iPmDN/J6JPhOozwayto09r2eul0zyCPABICz180WpIF7K8ntvQ9BcM4ARVxoXzZprh
+         DlfKhbqeZMCDuLJ23xZ6j1GbamanQLxr8MQBh6zI6oROTgqsx6xDKsel1gLKMsY8QY
+         MCqPFcljqG27Q==
+Received: from [100.98.44.246] (unknown [5.62.51.87])
+        by st43p00im-ztfb10071701.me.com (Postfix) with ESMTPSA id 11936AC03E1;
+        Fri,  6 Dec 2019 21:28:57 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
+Subject: Re: is this the right place for a question on how to repair a broken
+ btrfs file system?
+From:   Christian Wimmer <telefonchris@icloud.com>
+In-Reply-To: <6c1cb788-33b9-eff4-ca0b-7c2ac6b73841@gmx.com>
+Date:   Fri, 6 Dec 2019 18:28:55 -0300
+Cc:     Hugo Mills <hugo@carfax.org.uk>, linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <014BD263-FD4B-4561-ACD8-6A94C4EB9B65@icloud.com>
+References: <A01B0EC4-8E96-486B-A182-76B74AD0F97D@icloud.com>
+ <20191205202449.GH4760@savella.carfax.org.uk>
+ <61D37CED-8564-49BC-9388-4A8511C3AC50@icloud.com>
+ <522495ca-ed55-dd81-a819-dab93e67d0aa@gmx.com>
+ <DBA30D34-E186-4359-A8C5-C13C870F1D81@icloud.com>
+ <6c1cb788-33b9-eff4-ca0b-7c2ac6b73841@gmx.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+X-Mailer: Apple Mail (2.3601.0.10)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-12-06_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=896 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1912060171
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hi Qu and Hugo,
 
-with kernel 5.4.1 I have the problem that df shows 100% space used. I
-can still write to the btrfs volume, but my software looks at the
-available space and starts deleting stuff if statfs() says there is a
-low amount of available space.
+I think all the emails to you were rejected by the your mail server.
 
-# df -h
-Filesystem                                            Size  Used Avail
-Use% Mounted on
-...
-/dev/loop0                                            7.4T  623G     0
-100% /media/backup
-...
+For this reason I am writing here in plain text what happened.
 
-statfs("/media/backup", {f_type=BTRFS_SUPER_MAGIC, f_bsize=4096,
-f_blocks=1985810876, f_bfree=1822074245, f_bavail=0, f_files=0,
-f_ffree=0, f_fsid={val=[3667078581, 2813298474]}, f_namelen=255,
-f_frsize=4096, f_flags=ST_VALID|ST_NOATIME}) = 0
+I could succeed in compiling the latest version of btrfs-progs and I =
+applied the patch you sent and I got a lot of output.
 
-# btrfs fi usage /media/backup
-Overall:
-    Device size:                   7.40TiB
-    Device allocated:            671.02GiB
-    Device unallocated:            6.74TiB
-    Device missing:                  0.00B
-    Used:                        622.49GiB
-    Free (estimated):              6.79TiB      (min: 6.79TiB)
-    Data ratio:                       1.00
-    Metadata ratio:                   1.00
-    Global reserve:              512.00MiB      (used: 0.00B)
+How can I pass this output to you for analysis?
 
-Data,single: Size:666.01GiB, Used:617.95GiB
-   /dev/loop0    666.01GiB
+Thanks for your help,
 
-Metadata,single: Size:5.01GiB, Used:4.54GiB
-   /dev/loop0      5.01GiB
-
-System,single: Size:4.00MiB, Used:96.00KiB
-   /dev/loop0      4.00MiB
-
-Unallocated:
-   /dev/loop0      6.74TiB
-
-# btrfs fi df /media/backup
-Data, single: total=666.01GiB, used=617.95GiB
-System, single: total=4.00MiB, used=96.00KiB
-Metadata, single: total=5.01GiB, used=4.54GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-# mount
-
-...
-/dev/loop0 on /media/backup type btrfs
-(rw,noatime,nossd,discard,space_cache=v2,enospc_debug,skip_balance,commit=86400,subvolid=5,subvol=/)
-...
-
-(I remounted with enospc_debug and the available space did not change...)
-
-Regards,
-Martin Raiber
+Chris
 
