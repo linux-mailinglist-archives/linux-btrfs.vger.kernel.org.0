@@ -2,102 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 153AD1153FF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD0211540E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbfLFPNe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 10:13:34 -0500
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:36894 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbfLFPNe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 10:13:34 -0500
-Received: by mail-vs1-f67.google.com with SMTP id x18so5260876vsq.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 07:13:33 -0800 (PST)
+        id S1726258AbfLFPRm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 10:17:42 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41037 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbfLFPRm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 10:17:42 -0500
+Received: by mail-qt1-f193.google.com with SMTP id v2so7429815qtv.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 07:17:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=7xlzARSx3nOb2fCc4ZlAC7E6r+O9JNiGfs8KLdtlRYA=;
-        b=WfzR97nhikliKdXiQQLPYgyyeB60u4gSLEiWsbqQHBDVskvErBEIWlQMDn/OCDKqBn
-         Kas/Gq+43VwLTrekNexKqchnZD/NzKpsbfegtj5nwD/dluK06CHrNAxqnzVu30GaAe30
-         w1cRyCfU5gH0cTwdQbWpjLl3/tl0zVsFtPpvOc4e8blEuOHmGaVBun/0v3zLsNN8DjkR
-         w57VxiqZFVF5wYFcHrNh+LwpS6LUMcIPxr9v6u3IsXcyRe4J75IX/4NiGphIiQHW2Oil
-         evrVL2IU5FCLJb2BdFEb5swBuRJ44WK2zJiMACqwLfAwkdhqJC1zwo78JBDfg+GpMYYf
-         3AVg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g1N0JPNJVJWsJJaFy1FOBFkR1++V4jh8Zz8NIhenl0A=;
+        b=JGb1dMRAo40Zy7bRzhe7D0gO567VBmoCHe1tsnOtkopjuj8xrZ4bbfURX5zuPZ6ZPW
+         HGLbIgEj5QszH5EzQdA+NhbjaTCNsY0cAcwI9wGNBmHbyH4LNd4YLSM+cKCLuXnmDes0
+         xWSRSlRI5PaoU9rJHTwuBIhw4R9eCY+h9A1HkfznCS0o0QeSVeC2W3FBBQdaOO1lJhhx
+         mpyn0Awf06B5Oj90V6nNg8YOaLakmk2U9UVs6e9id7th5/KbutQ6OOh3K/xRc9AZcF3A
+         Ugzki8+HeMPAOOHZsL3RTQ+2oyQdYZsKfe09CeNNaElxXuxvubfOG5AKzZ5kBrgS0MoZ
+         PL/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=7xlzARSx3nOb2fCc4ZlAC7E6r+O9JNiGfs8KLdtlRYA=;
-        b=h7lpD7uUmoas1Nzoc60khnOzVQw2n1anmV2dSaaKQj2kEDVGvz8yFlyrfadazrF0iG
-         XmekId909XSSAvQXBL2RdVX/pRAmIFzkhtJvyMmmNSXHl4JKmO8xgzGpquMQ3tR1XAcy
-         A5DCuNxi9KpR/DVJIRXocn6vEGv3fRiSykLXxd5Cc0Y9m4Tyu7tbq7Pe45Rq29as8vHF
-         9QELV5zOEmO6upLZPMICUJVIviOCqQPP06SHy54NNffgiKjC0w7MyLoMiYNH7fFV8xch
-         6JDdp1YGLPBOr10GDPaqGfyPlj3fEb6YML+1g77jSTJsrEgsr8sgmxuP881MNT4WbAv0
-         ooIw==
-X-Gm-Message-State: APjAAAXyZj8SOsVoDO92q/l4ciSlJSj7wpsN17/z+WMHc3sjAD40HILj
-        hJkSnAMY3WBM0hNJ6z9fxXDlLraII4SuYsOQk5g=
-X-Google-Smtp-Source: APXvYqxco4LiY4FQoPPeYsMppGj+Dpc/29QqFqNsULQp7liYRJzsVsidQjNQaSeMdpXCpzJN2/iy+WMlpasmIa0wXHU=
-X-Received: by 2002:a67:7acd:: with SMTP id v196mr9287382vsc.95.1575645213116;
- Fri, 06 Dec 2019 07:13:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20191206143718.167998-1-josef@toxicpanda.com> <20191206143718.167998-4-josef@toxicpanda.com>
-In-Reply-To: <20191206143718.167998-4-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 6 Dec 2019 15:13:21 +0000
-Message-ID: <CAL3q7H6BfCF1fN8Wtn=k2-oWFoqojiGjkKZ5q2O=wWXbuEyfYg@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g1N0JPNJVJWsJJaFy1FOBFkR1++V4jh8Zz8NIhenl0A=;
+        b=sR7qJhvafDq1hwJLvvWd3f5fRa/uiXRSGBrJ619p9ZSKEr6Jf78iCzE9h4z4/cDaKs
+         hG9OabBpZRa3BWuMTS5AQ6s+JVP/LRPnR1OqflSsarcymgwt1kkfUX4I88VuiDJVBeZJ
+         1U8bRHLu49MqflMdHQkK4LBW74aUfi2WRz4Il2N+FPmqnEZq8VpQCETJfFJC2PWAoV7p
+         lCMOAHNS7/z1owccP7uHMZivbFQ9D04dTKFSAxIfu4HRkSpWNDj4i9AQG1ZqOYNFwEwh
+         Uk175tbC2IVI1gC+VypI+KpBPk9LOnseZHZSEGOk5/IZwoPop4xxfwSJ8iABQspJvJCH
+         v2QA==
+X-Gm-Message-State: APjAAAX/3xY1E6UmqFDZp/XnJazChUheKIcMe/kGp9AUl1nny/SjubT8
+        obVcT+qcfSi9YUKW+CSacnrwrg==
+X-Google-Smtp-Source: APXvYqyigy4HuR1WDzvgTAnHVOg59lIDWcjWBLtWQpfs5ty/b7Q3Z6M4FcAvOIUkkxqdh4jKqQQ2Zw==
+X-Received: by 2002:aed:2a74:: with SMTP id k49mr7080064qtf.289.1575645461258;
+        Fri, 06 Dec 2019 07:17:41 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id j2sm5826624qka.88.2019.12.06.07.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Dec 2019 07:17:29 -0800 (PST)
+Date:   Fri, 6 Dec 2019 10:17:28 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Subject: Re: [PATCH 3/5] btrfs: handle ENOENT in btrfs_uuid_tree_iterate
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20191206151728.pba2exthz5uxnmne@jbacik-mbp>
+References: <20191206143718.167998-1-josef@toxicpanda.com>
+ <20191206143718.167998-4-josef@toxicpanda.com>
+ <CAL3q7H6BfCF1fN8Wtn=k2-oWFoqojiGjkKZ5q2O=wWXbuEyfYg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H6BfCF1fN8Wtn=k2-oWFoqojiGjkKZ5q2O=wWXbuEyfYg@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 6, 2019 at 2:38 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> If we get an -ENOENT back from btrfs_uuid_iter_rem when iterating the
-> uuid tree we'll just continue and do btrfs_next_item().  However we've
-> done a btrfs_release_path() at this point and no longer have a valid
-> path.  So increment the key and go back and do a normal search.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/uuid-tree.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
-> index 91caab63bdf5..8871e0bb3b69 100644
-> --- a/fs/btrfs/uuid-tree.c
-> +++ b/fs/btrfs/uuid-tree.c
-> @@ -324,6 +324,8 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_=
-info,
->                                 }
->                                 if (ret < 0 && ret !=3D -ENOENT)
->                                         goto out;
-> +                               key.objectid++;
+On Fri, Dec 06, 2019 at 03:13:21PM +0000, Filipe Manana wrote:
+> On Fri, Dec 6, 2019 at 2:38 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > If we get an -ENOENT back from btrfs_uuid_iter_rem when iterating the
+> > uuid tree we'll just continue and do btrfs_next_item().  However we've
+> > done a btrfs_release_path() at this point and no longer have a valid
+> > path.  So increment the key and go back and do a normal search.
+> >
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/btrfs/uuid-tree.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+> > index 91caab63bdf5..8871e0bb3b69 100644
+> > --- a/fs/btrfs/uuid-tree.c
+> > +++ b/fs/btrfs/uuid-tree.c
+> > @@ -324,6 +324,8 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info,
+> >                                 }
+> >                                 if (ret < 0 && ret != -ENOENT)
+> >                                         goto out;
+> > +                               key.objectid++;
+> 
+> Why not key.offset++ instead?
+> By incrementing the objectid it seems we can skip the key for another
+> subvolume with an uuid having the same value for its first 8 bytes as
+> the current one, no?
 
-Why not key.offset++ instead?
-By incrementing the objectid it seems we can skip the key for another
-subvolume with an uuid having the same value for its first 8 bytes as
-the current one, no?
+Oops you're right, I had it in my head the objectid was the subvolid.  I'll fix
+this, thanks,
 
-thanks
-
-> +                               goto again_search_slot;
->                         }
->                         item_size -=3D sizeof(subid_le);
->                         offset +=3D sizeof(subid_le);
-> --
-> 2.23.0
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Josef
