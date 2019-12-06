@@ -2,140 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6EE115065
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 13:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F93115148
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 14:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbfLFM1o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 07:27:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbfLFM1n (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 07:27:43 -0500
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 300332464E
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2019 12:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575635262;
-        bh=IybqZmQDYIGKIJPK7nTeStic2u2uDA6P8dbRxPYYm7I=;
-        h=From:To:Subject:Date:From;
-        b=jBX+8DUzFMxZ1U59+pkkKaGHsH77oWpaCsQmqcIlwd6s981e53VW+KqI3e8jjrwz2
-         Z74RZTCEnh8WXSp9PZMBqF9CKLIdjDnJOGrhBXrLR8SVLM/TDClW5/b/0XML3oRfYB
-         sAPLr9Cmqm+Nmc0+z38aJn+dhcky/9x8AAAhMpxU=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix removal logic of the tree mod log that leads to use-after-free issues
-Date:   Fri,  6 Dec 2019 12:27:39 +0000
-Message-Id: <20191206122739.27195-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1726269AbfLFNrB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 08:47:01 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:51354 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfLFNrB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 08:47:01 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB6DiVuL182113;
+        Fri, 6 Dec 2019 13:46:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=exF4dxzPsJy4RWwTzBIetZM70CNzaQHtDEHLP2Z7ROQ=;
+ b=kSBPBL0PrhtbbbQNGQ84z5arApPI8lYptMqgvHirBKE1mWpTu86C6vq7Apy1mosOpqB7
+ hqrFtbGnDyXPTeCCbXBZVDoJUxhQixynIzrc3EECyZqeF+R+Cyd3B2Ys177NrsRgTX3V
+ 9EeE/i7zL8HviPaMgQGD98K5JerGxrHFa3htDVx8+4jFJ6bXmsa3pyt1zEPV5yycyyi2
+ KkbB9sdBVk8OueipIKb8Pur+JXhhoKz7VqyX7SmSeUdmZxdfVKtp1KsP+59QBKMIzUfE
+ QtWLQuhf/+B4UMMVqGUKkVtvWRwS9TJkNxPWxKqmnAsUvWWPRyr5BwWgDXibCeTgBne+ iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2wkh2rv3vx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Dec 2019 13:46:56 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB6DdEsI161119;
+        Fri, 6 Dec 2019 13:46:55 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2wqm0rqr3g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Dec 2019 13:46:55 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB6DkscT022675;
+        Fri, 6 Dec 2019 13:46:54 GMT
+Received: from [10.186.51.247] (/10.186.51.247)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 06 Dec 2019 05:46:54 -0800
+Subject: Re: [PATCH 0/4] btrfs, sysfs cleanup and add dev_state
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20191205112706.8125-1-anand.jain@oracle.com>
+ <20191205150022.GR2734@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <67aa265f-9eb7-b819-ec07-b1c40600e2cb@oracle.com>
+Date:   Fri, 6 Dec 2019 21:46:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20191205150022.GR2734@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9462 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912060118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9462 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912060119
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-When a tree mod log user no longer needs to use the tree it calls
-btrfs_put_tree_mod_seq() to remove itself from the list of users and
-delete all no longer used elements of the tree's red black tree, which
-should be all elements with a sequence number less then our equals to
-the caller's sequence number. However the logic is broken because it
-can delete and free elements from the red black tree that have a
-sequence number greater then the caller's sequence number:
 
-1) At a point in time we have sequence numbers 1, 2, 3 and 4 in the
-   tree mod log;
+On 5/12/19 11:00 PM, David Sterba wrote:
+> On Thu, Dec 05, 2019 at 07:27:02PM +0800, Anand Jain wrote:
+>> Anand Jain (4):
+>>    btrfs: sysfs, use btrfs_sysfs_remove_fsid in fail return in add_fsid
+>>    btrfs: sysfs, add UUID/devinfo kobject
+>>    btrfs: sysfs, rename device_link add,remove functions
+>>    btrfs: sysfs, add devid/dev_state kobject and attribute
+> 
+> So we can start adding things to devinfo, I did a quick test how the
+> sysfs directory looks like, the base structure seems ok.
+> 
+> Unlike other sources for sysfs file data (like superblock), the devices
+> can appear and disappear during the lifetime of the filesystem and as
+> pointed out in the patches, some synchronization is needed.
+> 
+> But it could be more tricky. Reading from the sysfs files should not
+> block normal operation (no device_list_mutex) but also must not lead to
+> use-after-free in case the device gets deleted.
+> 
+> I haven't found a simple locking scheme that would avoid accessing a
+> freed device structure, the sysfs callback can happen at any time and
+> the structure can be freed already.
+> 
+> So this means that btrfs_sysfs_dev_state_show cannot access it directly
+> (using offsetof(kobj, ...)). The safe (but not necessarily the best) way
+> I have so far is to track the device kobjects in the superblock and add
+> own lock for accessing this structure.
+> 
+> This avoids increasing contention of device_list_mutex, each sysfs
+> callback needs to take the lock first, lookup the device and print the
+> value if it's found. Otherwise we know the device is gone.
 
-2) The task which got assigned the sequence number 1 calls
-   btrfs_put_tree_mod_seq();
 
-3) Sequence number 1 is deleted from the list of sequence numbers;
 
-4) The current minimum sequence number is computed to be the sequence
-   number 2;
+> The lock is rwlock_t, sysfs callbacks take read-side, device deletion
+> takes write possibly outside of the device_list_mutex before the device
+> is actually going to be deleted. This relies on fairness of the lock so
+> the write will happen eventually (even if there are many readers).
+> 
 
-5) A task using sequence number 2 is at tree_mod_log_rewind() and gets
-   a pointer to one of its elements from the red black tree through
-   a call to tree_mod_log_search();
-
-6) The task with sequence number 1 iterates the red black tree of tree
-   modification elements and deletes (and frees) all elements with a
-   sequence number less then or equals to 2 (the computed minimum sequence
-   number) - it ends up only leaving elements with sequence numbers of 3
-   and 4;
-
-7) The task with sequence number 2 now uses the pointer to its element,
-   already freed by the other task, at __tree_mod_log_rewind(), resulting
-   in a use-after-free issue. When CONFIG_DEBUG_PAGEALLOC=y it produces
-   a trace like the following:
-
-  [16804.546854] general protection fault: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
-  [16804.547451] CPU: 0 PID: 28257 Comm: pool Tainted: G        W         5.4.0-rc8-btrfs-next-51 #1
-  [16804.548059] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c8995f-prebuilt.qemu.org 04/01/2014
-  [16804.548666] RIP: 0010:rb_next+0x16/0x50
-  (...)
-  [16804.550581] RSP: 0018:ffffb948418ef9b0 EFLAGS: 00010202
-  [16804.551227] RAX: 6b6b6b6b6b6b6b6b RBX: ffff90e0247f6600 RCX: 6b6b6b6b6b6b6b6b
-  [16804.551873] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff90e0247f6600
-  [16804.552504] RBP: ffff90dffe0d4688 R08: 0000000000000001 R09: 0000000000000000
-  [16804.553136] R10: ffff90dffa4a0040 R11: 0000000000000000 R12: 000000000000002e
-  [16804.553768] R13: ffff90e0247f6600 R14: 0000000000001663 R15: ffff90dff77862b8
-  [16804.554399] FS:  00007f4b197ae700(0000) GS:ffff90e036a00000(0000) knlGS:0000000000000000
-  [16804.555039] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [16804.555683] CR2: 00007f4b10022000 CR3: 00000002060e2004 CR4: 00000000003606f0
-  [16804.556336] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [16804.556968] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [16804.557583] Call Trace:
-  [16804.558207]  __tree_mod_log_rewind+0xbf/0x280 [btrfs]
-  [16804.558835]  btrfs_search_old_slot+0x105/0xd00 [btrfs]
-  [16804.559468]  resolve_indirect_refs+0x1eb/0xc70 [btrfs]
-  [16804.560087]  ? free_extent_buffer.part.19+0x5a/0xc0 [btrfs]
-  [16804.560700]  find_parent_nodes+0x388/0x1120 [btrfs]
-  [16804.561310]  btrfs_check_shared+0x115/0x1c0 [btrfs]
-  [16804.561916]  ? extent_fiemap+0x59d/0x6d0 [btrfs]
-  [16804.562518]  extent_fiemap+0x59d/0x6d0 [btrfs]
-  [16804.563112]  ? __might_fault+0x11/0x90
-  [16804.563706]  do_vfs_ioctl+0x45a/0x700
-  [16804.564299]  ksys_ioctl+0x70/0x80
-  [16804.564885]  ? trace_hardirqs_off_thunk+0x1a/0x20
-  [16804.565461]  __x64_sys_ioctl+0x16/0x20
-  [16804.566020]  do_syscall_64+0x5c/0x250
-  [16804.566580]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  [16804.567153] RIP: 0033:0x7f4b1ba2add7
-  (...)
-  [16804.568907] RSP: 002b:00007f4b197adc88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-  [16804.569513] RAX: ffffffffffffffda RBX: 00007f4b100210d8 RCX: 00007f4b1ba2add7
-  [16804.570133] RDX: 00007f4b100210d8 RSI: 00000000c020660b RDI: 0000000000000003
-  [16804.570726] RBP: 000055de05a6cfe0 R08: 0000000000000000 R09: 00007f4b197add44
-  [16804.571314] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f4b197add48
-  [16804.571905] R13: 00007f4b197add40 R14: 00007f4b100210d0 R15: 00007f4b197add50
-  (...)
-  [16804.575623] ---[ end trace 87317359aad4ba50 ]---
-
-Fix this by making btrfs_put_tree_mod_seq() skip deletion of elements that
-have a sequence number equals to the computed minimum sequence number, and
-not just elements with a sequence number greater then that minimum.
-
-Fixes: bd989ba359f2ac ("Btrfs: add tree modification log functions")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 5b6e86aaf2e1..24658b5a5787 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -379,7 +379,7 @@ void btrfs_put_tree_mod_seq(struct btrfs_fs_info *fs_info,
- 	for (node = rb_first(tm_root); node; node = next) {
- 		next = rb_next(node);
- 		tm = rb_entry(node, struct tree_mod_elem, node);
--		if (tm->seq > min_seq)
-+		if (tm->seq >= min_seq)
- 			continue;
- 		rb_erase(node, tm_root);
- 		kfree(tm);
--- 
-2.11.0
+  Yeah this makes sense to me. I completely forgot about the %device
+  getting deleted while sysfs is reading. Let me fix in the patch 4/4.
 
