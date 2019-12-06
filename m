@@ -2,103 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0D51153FC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153AD1153FF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbfLFPM4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 10:12:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56368 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726234AbfLFPM4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 10:12:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 57547AC10;
-        Fri,  6 Dec 2019 15:12:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 466E3DA783; Fri,  6 Dec 2019 16:12:48 +0100 (CET)
-Date:   Fri, 6 Dec 2019 16:12:48 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 05/28] btrfs: disallow space_cache in HMZONED mode
-Message-ID: <20191206151248.GD2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20191204081735.852438-1-naohiro.aota@wdc.com>
- <20191204081735.852438-6-naohiro.aota@wdc.com>
- <20191205153953.GV2734@twin.jikos.cz>
- <20191206053244.r2en7jydhyohd45k@naota.dhcp.fujisawa.hgst.com>
+        id S1726264AbfLFPNe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 10:13:34 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:36894 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbfLFPNe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 10:13:34 -0500
+Received: by mail-vs1-f67.google.com with SMTP id x18so5260876vsq.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 07:13:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=7xlzARSx3nOb2fCc4ZlAC7E6r+O9JNiGfs8KLdtlRYA=;
+        b=WfzR97nhikliKdXiQQLPYgyyeB60u4gSLEiWsbqQHBDVskvErBEIWlQMDn/OCDKqBn
+         Kas/Gq+43VwLTrekNexKqchnZD/NzKpsbfegtj5nwD/dluK06CHrNAxqnzVu30GaAe30
+         w1cRyCfU5gH0cTwdQbWpjLl3/tl0zVsFtPpvOc4e8blEuOHmGaVBun/0v3zLsNN8DjkR
+         w57VxiqZFVF5wYFcHrNh+LwpS6LUMcIPxr9v6u3IsXcyRe4J75IX/4NiGphIiQHW2Oil
+         evrVL2IU5FCLJb2BdFEb5swBuRJ44WK2zJiMACqwLfAwkdhqJC1zwo78JBDfg+GpMYYf
+         3AVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=7xlzARSx3nOb2fCc4ZlAC7E6r+O9JNiGfs8KLdtlRYA=;
+        b=h7lpD7uUmoas1Nzoc60khnOzVQw2n1anmV2dSaaKQj2kEDVGvz8yFlyrfadazrF0iG
+         XmekId909XSSAvQXBL2RdVX/pRAmIFzkhtJvyMmmNSXHl4JKmO8xgzGpquMQ3tR1XAcy
+         A5DCuNxi9KpR/DVJIRXocn6vEGv3fRiSykLXxd5Cc0Y9m4Tyu7tbq7Pe45Rq29as8vHF
+         9QELV5zOEmO6upLZPMICUJVIviOCqQPP06SHy54NNffgiKjC0w7MyLoMiYNH7fFV8xch
+         6JDdp1YGLPBOr10GDPaqGfyPlj3fEb6YML+1g77jSTJsrEgsr8sgmxuP881MNT4WbAv0
+         ooIw==
+X-Gm-Message-State: APjAAAXyZj8SOsVoDO92q/l4ciSlJSj7wpsN17/z+WMHc3sjAD40HILj
+        hJkSnAMY3WBM0hNJ6z9fxXDlLraII4SuYsOQk5g=
+X-Google-Smtp-Source: APXvYqxco4LiY4FQoPPeYsMppGj+Dpc/29QqFqNsULQp7liYRJzsVsidQjNQaSeMdpXCpzJN2/iy+WMlpasmIa0wXHU=
+X-Received: by 2002:a67:7acd:: with SMTP id v196mr9287382vsc.95.1575645213116;
+ Fri, 06 Dec 2019 07:13:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191206053244.r2en7jydhyohd45k@naota.dhcp.fujisawa.hgst.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20191206143718.167998-1-josef@toxicpanda.com> <20191206143718.167998-4-josef@toxicpanda.com>
+In-Reply-To: <20191206143718.167998-4-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 6 Dec 2019 15:13:21 +0000
+Message-ID: <CAL3q7H6BfCF1fN8Wtn=k2-oWFoqojiGjkKZ5q2O=wWXbuEyfYg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] btrfs: handle ENOENT in btrfs_uuid_tree_iterate
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 06, 2019 at 02:32:44PM +0900, Naohiro Aota wrote:
-> >> +	 */
-> >> +	if (btrfs_test_opt(info, SPACE_CACHE)) {
-> >> +		btrfs_err(info,
-> >> +		  "cannot enable disk space caching with HMZONED mode");
-> >
-> >"space cache v1 not supported in HMZONED mode, use v2 (free-space-tree)"
-> >
-> >> +		return -EINVAL;
-> 
-> Yes, we can technically use free-space-tree on HMZONED mode. But,
-> since HMZONED mode now always allocate extents in a block group
-> sequentially regardless of underlying device zone type, it's no use to
-> enable and maintain the tree anymore.
-> 
-> So, just telling "space cache v1 not supported in HMZONED mode" is
-> better?
+On Fri, Dec 6, 2019 at 2:38 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> If we get an -ENOENT back from btrfs_uuid_iter_rem when iterating the
+> uuid tree we'll just continue and do btrfs_next_item().  However we've
+> done a btrfs_release_path() at this point and no longer have a valid
+> path.  So increment the key and go back and do a normal search.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/uuid-tree.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+> index 91caab63bdf5..8871e0bb3b69 100644
+> --- a/fs/btrfs/uuid-tree.c
+> +++ b/fs/btrfs/uuid-tree.c
+> @@ -324,6 +324,8 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_=
+info,
+>                                 }
+>                                 if (ret < 0 && ret !=3D -ENOENT)
+>                                         goto out;
+> +                               key.objectid++;
 
-Ok. That v2 is possible to use but not necessary is something to put to
-documentation.
+Why not key.offset++ instead?
+By incrementing the objectid it seems we can skip the key for another
+subvolume with an uuid having the same value for its first 8 bytes as
+the current one, no?
 
-> >>  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
-> >> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> >> index 616f5abec267..d411574298f4 100644
-> >> --- a/fs/btrfs/super.c
-> >> +++ b/fs/btrfs/super.c
-> >> @@ -442,8 +442,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
-> >>  	cache_gen = btrfs_super_cache_generation(info->super_copy);
-> >>  	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
-> >>  		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
-> >> -	else if (cache_gen)
-> >> -		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
-> >> +	else if (cache_gen) {
-> >> +		if (btrfs_fs_incompat(info, HMZONED))
-> >> +			WARN_ON(1);
-> >
-> >So this is supposed to catch invalid combination, hmzoned-compatible
-> >options are verified at the beginning. 'cache_gen' can be potentially
-> >non-zero (fuzzed image, accidental random overwrite from last time), so
-> >I think a message should be printed. If it's possible to continue, eg.
-> >completely ignoring the existing space cache that's more user friendly
-> >than a plain unexplained WARN_ON.
-> 
-> We can just ignore the generation value and continue. I'll rewrite to
-> use btrfs_info(info, "ignoring existing space cache in HMZONED mode.")
-> instead of WARN_ON.
+thanks
 
-Sounds good.
+> +                               goto again_search_slot;
+>                         }
+>                         item_size -=3D sizeof(subid_le);
+>                         offset +=3D sizeof(subid_le);
+> --
+> 2.23.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
