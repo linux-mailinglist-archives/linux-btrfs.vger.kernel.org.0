@@ -2,137 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A1C1153E6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CFC1153E8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 16:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbfLFPJM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 10:09:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53830 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726222AbfLFPJM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 10:09:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 14F36AC82;
-        Fri,  6 Dec 2019 15:09:10 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 446EBDA783; Fri,  6 Dec 2019 16:09:04 +0100 (CET)
-Date:   Fri, 6 Dec 2019 16:09:03 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org,
-        nborisov@suse.com, dsterba@suse.cz, jthumshirn@suse.de
-Subject: Re: [PATCH 0/8 v3] btrfs direct-io using iomap
-Message-ID: <20191206150903.GC2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org,
-        nborisov@suse.com, jthumshirn@suse.de
-References: <20191205155630.28817-1-rgoldwyn@suse.de>
+        id S1726262AbfLFPJY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 10:09:24 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35115 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbfLFPJY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 10:09:24 -0500
+Received: by mail-qk1-f195.google.com with SMTP id v23so6764536qkg.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 07:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xu0yrBK9q4xW++w8GJnz1oPOlixvMe5hB1e4B0MXYdA=;
+        b=Ns/mogHnDfQwaURzHnHg+A0T4QmUBJDofbQ211aImzXJ8XjMY+jkHYgDSdl9xRtRdO
+         4BU7E+d0r14mmGPElzThFHma7ugCRQGktVC1aIMSy8ZLreC0b4dn6QoyrGcLezpbru57
+         ksAZFG65d4WpHAghLh5FN5cb8mIg3XW5Vo08E1q0lEJ4t+m9C5oVdLT6F/NpnEtyRBGy
+         R69iJYiXqOrRUAZ4Q5loxekMyZNwqZ/gZOQ6WmDLIBcjdEyXpILpeJvWe279zYt2QD+a
+         fka+O0aCXX6FLeScPVxv8ejudMHZgIRU3Fr/wNLBt+GaQxFowCGdDmBszwWt6E+xiOow
+         mGng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xu0yrBK9q4xW++w8GJnz1oPOlixvMe5hB1e4B0MXYdA=;
+        b=SyJjtebJ3bKxjoZso5q3AOqcAPY7CRpOBF7jLxoIXFbp5Tg1fR7eSezzUJ80P4zCE3
+         NXUTTFh8RTAA89Vxt78nQTkS2Orrp7iwY8akUgDN+OCUxH/cy2fr6UalC/xYfrodx7mE
+         oAJYN3o+HmBIKXFVnLsAVwwOfVmHa4RDADKDxwRmB3nAtuBVpkD7NZlnIW4YhCyl9D9V
+         GjgeCnCLfj/asEr7XzEQlcCxezYkG8OH0akGRJmz59ictCJ8KHA5ibrek5St5D2KfUbj
+         /Lzk1jE2oGuNGAFau4WYXHcu56Nh0iDbPiDd6nvNLCHRExZLEZiXwFaUyHAOaR5sknrA
+         DMKw==
+X-Gm-Message-State: APjAAAVrgJgPJslNFwQn/ueVl2AccileoWxnUEjDcN/go38xRb6CsC0G
+        R46hWXRN9XxQJjZEPXkOFOIxjUeXctkwXg==
+X-Google-Smtp-Source: APXvYqyGcYzPZWDJsxaH6jklfALiRKvRibPv6plzHpgHMLVMYKBS/0gOG17k0wuV3GQXHOt5wyuudg==
+X-Received: by 2002:a37:a40d:: with SMTP id n13mr8079598qke.167.1575644963672;
+        Fri, 06 Dec 2019 07:09:23 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id v125sm2326244qka.47.2019.12.06.07.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Dec 2019 07:09:22 -0800 (PST)
+Date:   Fri, 6 Dec 2019 10:09:21 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] btrfs: use simple_dir_inode_operations for placeholder
+ subvolume directory
+Message-ID: <20191206150921.7npbjlbbgktxgazl@jbacik-mbp>
+References: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191205155630.28817-1-rgoldwyn@suse.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 09:56:22AM -0600, Goldwyn Rodrigues wrote:
-> This is an effort to use iomap for direct I/O in btrfs. This would
-> change the call from __blockdev_direct_io() to iomap_dio_rw().
+On Thu, Dec 05, 2019 at 10:36:04AM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> The main objective is to lose the buffer head and use bio defined by
-> iomap code, and hopefully to use more of generic-FS codebase.
+> When you snapshot a subvolume containing a subvolume, you get a
+> placeholder directory where the subvolume would be. These directories
+> have their own btrfs_dir_ro_inode_operations.
 > 
-> These patches are based on xfs/iomap-for-next, though I tested it
-> against the patches on xfs/iomap-for-next on top of v5.4.1 (there are no
-> changes to existing patches). The tree is available at
-> https://github.com/goldwynr/linux/tree/btrfs-iomap-dio
+> Al pointed out [1] that these directories can use simple_lookup()
+> instead of btrfs_lookup(), as they are always empty. Furthermore, they
+> can use the default generic_permission() instead of btrfs_permission();
+> the additional checks in the latter don't matter because we can't write
+> to the directory anyways. Finally, they can use the default
+> generic_update_time() instead of btrfs_update_time(), as the inode
+> doesn't exist on disk and doesn't need any special handling.
+> 
+> All together, this means that we can get rid of
+> btrfs_dir_ro_inode_operations and use simple_dir_inode_operations
+> instead.
+> 
+> 1: https://lore.kernel.org/linux-btrfs/20190929052934.GY26530@ZenIV.linux.org.uk/
+> 
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-The iomap-for-next seems to be all merged to master, so I'd like to add
-the btrfs part to for-next early so we can have the full dev cycle to
-test.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Fstests got stuck at generic/095, in llseek on the inode mutex. In version
-5.4.1 it's inode_lock while in master it's inode_lock_shared and only used for
-SEEK_DATA/HOLE.
+Thanks,
 
-I've also tested the rebased patchset on current master but due to the hangs
-caused by pipe changes when send is done it only gets to test btrfs/016 (way
-before the generic/095 starts).
-
-generic/095             [21:12:03][ 9153.094902] run fstests generic/095 at 2019-12-05 21:12:03
-[ 9153.355112] BTRFS info (device vda): using free space tree
-[ 9153.357522] BTRFS info (device vda): has skinny extents
-[ 9155.598524] BTRFS: device fsid 8f274c73-27d6-4a7c-96ad-4ae41fcd6916 devid 1 transid 5 /dev/vdb
-[ 9155.626220] BTRFS info (device vdb): enabling free space tree
-[ 9155.628257] BTRFS info (device vdb): using free space tree
-[ 9155.630290] BTRFS info (device vdb): has skinny extents
-[ 9155.632191] BTRFS info (device vdb): flagging fs with big metadata feature
-[ 9155.640732] BTRFS info (device vdb): creating free space tree
-[ 9155.643781] BTRFS info (device vdb): setting compat-ro feature flag for FREE_SPACE_TREE (0x1)
-[ 9155.648664] BTRFS info (device vdb): setting compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-[ 9155.652542] BTRFS info (device vdb): checking UUID tree
-[ 9819.465520] INFO: task fio:19671 blocked for more than 491 seconds.
-[ 9819.470928]       Tainted: G             L    5.4.1-default+ #889
-[ 9819.475441] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 9819.480987] fio             D14632 19671  19669 0x00004000
-[ 9819.483182] Call Trace:
-[ 9819.484360]  ? __schedule+0x2d4/0x8f0
-[ 9819.485779]  schedule+0x49/0xd0
-[ 9819.487050]  rwsem_down_write_slowpath+0x3f6/0x7d0
-[ 9819.488777]  ? down_write+0xa9/0x130
-[ 9819.490203]  down_write+0xa9/0x130
-[ 9819.491571]  btrfs_file_llseek+0x45/0x2b0 [btrfs]
-[ 9819.493074]  ksys_lseek+0x63/0xb0
-[ 9819.494153]  do_syscall_64+0x50/0x1f0
-[ 9819.495122]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 9819.496328] RIP: 0033:0x7f6bce8c0627
-[ 9819.503273] RSP: 002b:00007fffa3fdaab8 EFLAGS: 00000206 ORIG_RAX: 0000000000000008
-[ 9819.505802] RAX: ffffffffffffffda RBX: 00007f6ba393f000 RCX: 00007f6bce8c0627
-[ 9819.508045] RDX: 0000000000000000 RSI: 0000000000007800 RDI: 0000000000000003
-[ 9819.510048] RBP: 00007f6ba393f000 R08: 0000000000000400 R09: 0000000000000000
-[ 9819.512061] R10: fffffffffffffa85 R11: 0000000000000206 R12: 0000000000000000
-[ 9819.514211] R13: 0000000000000400 R14: 00007f6ba393f000 R15: 000055fc96807b40
-[ 9819.516181] INFO: task fio:19672 blocked for more than 491 seconds.
-[ 9819.517970]       Tainted: G             L    5.4.1-default+ #889
-[ 9819.519650] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 9819.522142] fio             D14712 19672  19669 0x00000000
-[ 9819.523696] Call Trace:
-[ 9819.524651]  ? __schedule+0x2d4/0x8f0
-[ 9819.525871]  schedule+0x49/0xd0
-[ 9819.527003]  rwsem_down_write_slowpath+0x3f6/0x7d0
-[ 9819.528480]  ? down_write+0xa9/0x130
-[ 9819.529705]  down_write+0xa9/0x130
-[ 9819.530889]  btrfs_file_llseek+0x45/0x2b0 [btrfs]
-[ 9819.532304]  ksys_lseek+0x63/0xb0
-[ 9819.533482]  do_syscall_64+0x50/0x1f0
-[ 9819.534721]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 9819.536567] RIP: 0033:0x7f6bce8c0627
-[ 9819.544424] RSP: 002b:00007fffa3fdaab8 EFLAGS: 00000206 ORIG_RAX: 0000000000000008
-[ 9819.547483] RAX: ffffffffffffffda RBX: 00007f6ba3958080 RCX: 00007f6bce8c0627
-[ 9819.549937] RDX: 0000000000000000 RSI: 0000000000020800 RDI: 0000000000000003
-[ 9819.552152] RBP: 00007f6ba3958080 R08: 0000000000000400 R09: 0000000000000000
-[ 9819.554479] R10: fffffffffffffa85 R11: 0000000000000206 R12: 0000000000000000
-[ 9819.556515] R13: 0000000000000400 R14: 00007f6ba3958080 R15: 000055fc96807b40
-[ 9819.558536] INFO: task fio:19673 blocked for more than 491 seconds.
-[ 9819.560332]       Tainted: G             L    5.4.1-default+ #889
-[ 9819.562062] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 9819.564494] fio             D13480 19673  19669 0x00000000
-[ 9819.566075] Call Trace:
-[ 9819.567037]  ? __schedule+0x2d4/0x8f0
-[ 9819.568325]  schedule+0x49/0xd0
-[ 9819.569438]  rwsem_down_write_slowpath+0x3f6/0x7d0
-[ 9819.570906]  ? down_write+0xa9/0x130
-[ 9819.572072]  down_write+0xa9/0x130
-[ 9819.573255]  btrfs_file_llseek+0x45/0x2b0 [btrfs]
-[ 9819.574685]  ? vfs_read+0x14e/0x180
-[ 9819.575871]  ksys_lseek+0x63/0xb0
-[ 9819.577066]  do_syscall_64+0x50/0x1f0
-[ 9819.578286]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 9819.579758] RIP: 0033:0x7f6bce8c0627
-
+Josef
