@@ -2,120 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FBF114C20
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 06:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA564114C4B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 07:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbfLFFqA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 00:46:00 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:23714 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbfLFFqA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 00:46:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1575611160; x=1607147160;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YlAk+nLt52VMWFh44naTE5KbNgNM7hmzRme167e7v8s=;
-  b=KGj2fWPDiJ+MvkKhHqu+QUgWzykPkKLIWjNwtzFxsauqpYc7xOYAEJDA
-   LgtBebDSUV1bjCKbVjClpOLjO3fvjDzQc0GSbGfMLXymv09o2qhR8iNU0
-   eSEIemiviWgxEV97f6G7mpUKaK0vFT8llAasRVXIzEyBEgC/Hc3q50dYC
-   DNITiBdoLgq+7eY5BVMf02N22m5qpwnUckMmrUdiMiqJxbAhs+uM4sSoF
-   YZ2JSdVqpkmcrtnNnTqStG0pneS8yNRNKU47Z2Elqi7NbiBoIc5KT5z8n
-   AYvfhULP1+4aYVemdeRbPhrigt6aW4Mlf1emP6gcecYvTyJxlPMY5JSdV
-   A==;
-IronPort-SDR: xCZrPiueKu87lbpp5J2BZHpaa8LlfYnfjSCnoQRRzYxbKkgDkta2UgZZQUuRfwDnJGd8bVT+Jv
- Ve2xULQctaDdb+Tzn/tNOclKPB6yLetulUYfLiPbxEnjuvTvXEFCRNZOXnXB2TjItxsyLHMoF3
- tRYUdlrXFPHa2+WklS6f9C8JcOMD5Q0UZZ4K77XcsUB22Kavd/vHVOL8QxFtIAY0UmQ2pIFaHl
- gNJqMrazn3O8wQJLvEFRTRSKxzDo/laAj46utMFJaRAffzAg33U/hyDzc6QGkOzwi3NTBP9N2d
- FVY=
-X-IronPort-AV: E=Sophos;i="5.69,283,1571673600"; 
-   d="scan'208";a="126363356"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Dec 2019 13:46:00 +0800
-IronPort-SDR: RT1rZnna9AZGeNk5ie5HSVORBQD2sQN8jyKMialirbD6Ch11dPJuP6MYdPav3Kvz53FZarzpO4
- W+P7Y1xiQqx5kmB3IxWljSXCLoM3NZgOy2d5XdNu2vU7ujk82lR+sKx74TVzG1NRa+DNkITU+N
- ho+7U1fsZ1Y5y5RcjCj8fvEK0fDfgp5pCTw21f/MKm2jJa68+Wnc5uNHCb0PlfhHXQDirFhYP2
- klTtJt391/CEdhgguJQOVm2IHyX2vDdjorOfJGRM9gHVPID9BjrXzbx6vcBe7ohq8z8VG6tSeO
- x8+eUOD5/dwCT0e7GU+vEWGR
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2019 21:40:22 -0800
-IronPort-SDR: rJHO4TqeAMDfoD7SAp3MTjAzippAUDnHqA8B5V+LQNj1MASiri8ZBF2imtCFbF9HOpeg082LDi
- biTMUDD3lwANHd4fn2UslD0PFPB37V6l8oB2fXm755OTeNgIOLFCdgkJw8KpOtoMhL7Y+jNjlO
- X3LxepQgfdNg8y+tcyD1uTq7jcA/GsxhyYgo8M0rJkA9L+hGMFBUNRJ5JveiVt8DXAmL7Mu95k
- AnUKHkKg5xxLhdD8Mx0FgRMj1pe/GqBiQ0oLOIaFzzzC1DcH4coKrfGqyyV/kcuVixaOD0zFdo
- obg=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip02.wdc.com with SMTP; 05 Dec 2019 21:45:58 -0800
-Received: (nullmailer pid 3664338 invoked by uid 1000);
-        Fri, 06 Dec 2019 05:45:57 -0000
-Date:   Fri, 6 Dec 2019 14:45:57 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 09/28] btrfs: align device extent allocation to zone
- boundary
-Message-ID: <20191206054557.tdfdfeb2wwisbqoz@naota.dhcp.fujisawa.hgst.com>
-References: <20191204081735.852438-1-naohiro.aota@wdc.com>
- <20191204081735.852438-10-naohiro.aota@wdc.com>
- <20191205085625.GD6051@Johanness-MacBook-Pro.local>
+        id S1726156AbfLFGNK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 01:13:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50822 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbfLFGNK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 01:13:10 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB667BN0009071;
+        Fri, 6 Dec 2019 06:13:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=osWfZe5aILz7HsaBtGkscXW7yjV846UX4fQ9imvmCT0=;
+ b=V2yH0TZX9Kj0RjjMPxwq5HHzxfuEW+ZGDVls/+p+e/nU/uu/Ccuhgx1pWS2UBVB0z5EW
+ a328CvD5V4wuUF2kGHCAS4v4HtYC7i82oQj7WNljblx2xAYZYodSbSfbGscBSXAOnKfW
+ S8AkkuU1YwgXPpwalToKC8D9rN7z3YvewxNl47ML2lwPFrB8mi77dRpNl7TNu1Gow/uM
+ P5ZuDsUIBAFv38c791phi0rVKWPPuxvc4xqbrDk4OBbxr0QZtdEsvqJWWDqqX6rWKm/e
+ rMOtuKmYg8ScV6SjYF7Lyx1eukCsXWXzy5Jw0FBu2NchVHkxp0ZOnmuLZRBD8aaj/fIa ow== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2wkfuut1fw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Dec 2019 06:13:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB660x0m046926;
+        Fri, 6 Dec 2019 06:13:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2wptq07278-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Dec 2019 06:13:03 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB66D0pi031692;
+        Fri, 6 Dec 2019 06:13:01 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 05 Dec 2019 22:13:00 -0800
+Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Christian Wimmer <telefonchris@icloud.com>
+References: <20191206034406.40167-1-wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
+Date:   Fri, 6 Dec 2019 14:12:52 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20191205085625.GD6051@Johanness-MacBook-Pro.local>
+In-Reply-To: <20191206034406.40167-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9462 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912060052
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9462 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912060053
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 09:56:25AM +0100, Johannes Thumshirn wrote:
->On Wed, Dec 04, 2019 at 05:17:16PM +0900, Naohiro Aota wrote:
->[...]
->
->Only commenting on the code, not the design, sorry. I'll leave that to someone
->with more experience in BTRFS.
->
->>  	 * at an offset of at least 1MB.
->>  	 */
->>  	search_start = max_t(u64, search_start, SZ_1M);
->> +	/*
->> +	 * For a zoned block device, skip the first zone of the device
->> +	 * entirely.
->> +	 */
->> +	if (device->zone_info)
->> +		zone_size = device->zone_info->zone_size;
->> +	search_start = max_t(u64, search_start, zone_size);
->> +	search_start = btrfs_zone_align(device, search_start);
->
->	if (device->zone_info) {
->		zone_size = device->zone_info->zone_size;
->		search_start = max_t(u64, search_start, zone_size);
->		search_start = btrfs_zone_align(device, search_start);
->	}
->
->That's the equivalent code, but should make it a bit more clear what's
->happening int the HMZONED and !HMZOED cases.
->
->And I /guess/ we're saving some cycles in the !HMZONED case as we don't have
->to adjust search start there.
->
->[...]
->
->> @@ -4778,6 +4805,7 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>  	int i;
->>  	int j;
->>  	int index;
->> +	int hmzoned = btrfs_fs_incompat(info, HMZONED);
->
->	bool hmzoned = btrfs_fs_incompat(info, HMZONED);
->
+On 6/12/19 11:44 AM, Qu Wenruo wrote:
+> Device tree is one of the least important tree, it only contains:
+> - Device status
+>    Like various error count
+> - Device extents
+>    Only makes sense for chunk allocation and physical->logical map, and
+>    even for that only purpose, we can rebuild it easily from chunk tree.
+> 
+> So device tree even makes less sense compared to extent tree, while we
+> still can't skip it at btrfs-progs.
+> 
+> This makes restore less useful. So this patch will make device tree to
+> follow the same requirement for OPEN_CTREE_PARTIAL.
+> 
+> Reported-by: Christian Wimmer <telefonchris@icloud.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   disk-io.c | 10 ++++------
+>   1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/disk-io.c b/disk-io.c
+> index 659f8b93..22aa2a61 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -947,12 +947,10 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+>   		return ret;
+>   	fs_info->extent_root->track_dirty = 1;
+>   
+> -	ret = find_and_setup_root(root, fs_info, BTRFS_DEV_TREE_OBJECTID,
+> -				  fs_info->dev_root);
+> -	if (ret) {
+> -		printk("Couldn't setup device tree\n");
+> -		return -EIO;
+> -	}
+> +	ret = setup_root_or_create_block(fs_info, flags, fs_info->dev_root,
+> +					 BTRFS_DEV_TREE_OBJECTID, "device");
+> +	if (ret)
+> +		return ret;
+>   	fs_info->dev_root->track_dirty = 1;
+>   
+>   	ret = setup_root_or_create_block(fs_info, flags, fs_info->csum_root,
+> 
 
-Thanks, followed all the change.
+Cool.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+Thanks Anand
 
