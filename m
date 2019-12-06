@@ -2,150 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AF8114AC1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 03:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CAF114AD0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 03:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbfLFCE0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 21:04:26 -0500
-Received: from mail.virtall.com ([46.4.129.203]:60274 "EHLO mail.virtall.com"
+        id S1726209AbfLFCMZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Dec 2019 21:12:25 -0500
+Received: from mout.gmx.net ([212.227.15.18]:57523 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725959AbfLFCE0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Dec 2019 21:04:26 -0500
-Received: from mail.virtall.com (localhost [127.0.0.1])
-        by mail.virtall.com (Postfix) with ESMTP id 0F05F398F986
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2019 02:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wpkg.org; s=default;
-        t=1575597862; bh=/78HoSrkT/HAlguBN1NUcKjFes1BZpH6K7uLvVxEwzU=;
-        h=Date:From:To:Subject;
-        b=YW/4bUyDJ/ScaQvhC19saOseONx8td/fSnGWeOx80xWsQ/tfkbFwL+ZgGEg/EJU7M
-         FQxCD8vg9f2Q7R1YR4KWm7jE/T8aIQX1x4ABEpV/EELZt5dNfzoVS02IxqaQqi9SWH
-         truFr64SnmZq9hTYBLWp1N6QhXFCZ7zkigujL7cR9r2GtPQeW34JfQ/OswhGUapDt8
-         wZ+2flkxBxA9WUMG2IjVP9dkR+CgBvoxhQFtgZsKNzt8zrGl90Hr5mRwaDAsnMWMJT
-         K1ZwD/46BIlw8vRlRlrXOLcXRQgLsOYWxwB/bfYm0mGjrOOHK04fKTmwCQjS/VB/44
-         KOd98366piVaA==
-X-Fuglu-Suspect: c5d3cca83c6b4f1f80cf583d6d35924a
-X-Fuglu-Spamstatus: NO
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.virtall.com
-X-Spam-Status: No, score=-0.4 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        TO_NO_BRKTS_PCNT autolearn=no autolearn_force=no
-Received: from localhost (localhost [127.0.0.1]) (Authenticated sender: tch@virtall.com)
-        by mail.virtall.com (Postfix) with ESMTPSA
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2019 02:04:21 +0000 (UTC)
+        id S1726065AbfLFCMZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Dec 2019 21:12:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1575598340;
+        bh=cR4dvf28cr4yaEVN4ZS76DyI2oBA+CFRfon+SH7QUIc=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=LgeO4BldgHWfj+8sSDcrtlLAIR5ckySLNWZD5fiKYPa5CSUUIX52j4XwxS3NCQVAk
+         YLf7eE/MgJO8vjKP3RKK2k7INtbzQMG7MjeciKQ3Rp/v3MwUhze3dblTc0ri4YFGng
+         rV4tX1dzt4170dIDWVbOTm171coskWvXc9wvFM9A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MK3W0-1iKy1V0dB8-00LTs1; Fri, 06
+ Dec 2019 03:12:20 +0100
+Subject: Re: is this the right place for a question on how to repair a broken
+ btrfs file system?
+To:     Christian Wimmer <telefonchris@icloud.com>
+Cc:     Hugo Mills <hugo@carfax.org.uk>, linux-btrfs@vger.kernel.org
+References: <A01B0EC4-8E96-486B-A182-76B74AD0F97D@icloud.com>
+ <20191205202449.GH4760@savella.carfax.org.uk>
+ <61D37CED-8564-49BC-9388-4A8511C3AC50@icloud.com>
+ <522495ca-ed55-dd81-a819-dab93e67d0aa@gmx.com>
+ <BD72A51F-A536-428C-9993-91A43C99EE30@icloud.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <80206bf5-1475-0020-bad1-ebc96c57be84@gmx.com>
+Date:   Fri, 6 Dec 2019 10:12:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 06 Dec 2019 11:04:20 +0900
-From:   Tomasz Chmielewski <mangoo@wpkg.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: 100% disk usage reported by "df", 60% disk usage reported by "btrfs
- fi usage" - this breaks userspace behaviour
-Message-ID: <eb9cfb919176c239d864f78e5756f1db@wpkg.org>
-X-Sender: mangoo@wpkg.org
+In-Reply-To: <BD72A51F-A536-428C-9993-91A43C99EE30@icloud.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="AsUMlodLnCfjboQX9a7DK2INMx8K6bbt0"
+X-Provags-ID: V03:K1:XejkYejG1dychKkvcEtPi9tD5nJLCU+3ZPKSr4sKqQfodQc6RQI
+ nf4iLeYjJzq4R0dmEJmSqO1wqsSJcIN6/YrduuNKw2/tXJjzZEJsBvDM2BFx2J2H3rfe+z/
+ W/Y0pWV5x4SevSCO3jzHmyTGn5qLTdtcfMkVqJCqnhMoT79W3d0z/jA+wcecgnJME1qkOGm
+ 9kGcBYkw/sSErzTyeKr3Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:05Tb4luZnM0=:PIxo5K5h8xM5ptx2pSwVGx
+ D81X8f8QbAI8yH4L/MilGq2xVJy6tFi6hHSuzSfXwr+/Bp/ZjjdqMbS24op6oRxlFKjeigzuR
+ F+1SeuhD9FklUgw/cED4U007I+v3aaObu18IVg0HbZZnHKeqbZbgGyu7dQhpLm3jZe05PIXhh
+ qj5DfZTTtZv6pX2vjObMLHXhf602B9uuusOtpSP/IYuikgGxuODD7Rl61ajYIBgFr4t6DeJCT
+ /DQfbEIYHnarL77sIoftmWNfctKqASP6OPT5Z2hdTQxAyE992KMMTZC72RF9tNekLpm5GXEBu
+ P19mjdzHqWnttaJydjLC2FU4BXDidiVfzIWHTzmvIZ+a/lRpfGli5M0HdhFKwI9F1cDZykZfC
+ s8A+hADms0ooDBW1yzopNQaO+IAvhEsxTdamAfYARnqAI5DXacfNgTdvqQOJ5Hyz8RGm6g2gB
+ kDDFqIHnvbwFN85PpNnPn6BQycQ/yzSahp0Px4bOG632aIC5Kr/s6W5UvObd0YKSKAkZJ4BAz
+ zKHvWoh/NsSp6WSk1arOmDJXGyBY9dJPaXTiPQ3Ao+Sga3TLyQIpCFInXnnVR+fCrb+K9kahK
+ NzBCDd2IByWNkCSzW3mkOUwvl2PEz2mn9/TkULwLifsGnZnYTzqDQRSenvbaVpAEyCMHfgyws
+ /D/1Of4gMd5vZJ8pk8CZfRP7XXoRk4Y3ZQIzoqgyHk7okNRdVkEyh+e6NYqvk+Pz3xNrIM0oX
+ dEFE+BAuHto/OcmfSIpgK+/9CIZ94OPyzA4Z77IsRfsmZH1hFKRVNi2JpBHEAKqk00uNu4prc
+ qLze3IoMZ9eg2eCk9WxmiZSA+KehZPvRM8FYG81ry9gEMveaMPedwVeoHwvTNF6A0wTVMs5JT
+ r0o16nMHV+5Xs0H78fcLB6+upTx+8j9dYxLWCDyDnjg/nvBJ5Z2LPfWGopuMttjGCmAqn3mOi
+ yK0Z/VZvlJKOhzSkLyEYfH8nqvM4tPHJF7MR9nEMjOPPs0h5DT2vqnAAHATMKBt+rGVx/oT+J
+ P7mnhRRyImEzMwLKeTeO7uGyDCLmZj78QgjyAEWG0Jz7Roc19isLv2rtNZENA6i0IPAwXsZt3
+ u7AvxPYwrhhJfIs5hXyDCFxpFfQJHMGEFuksQBZ9wtSXNAIMvJJeoL/waFhGLMC7d7FBou862
+ uh4N1RMwZNrG5DqH8fKTQ7F6wq/5b1mJ+Z5QUbjbpwnR0ZQZgryFJa/oMw4vZFJwRmEhs/pyn
+ rpMQHblXu//Bw+JgeCUeei0UzRMCS9vhoKAeQ6bvxzlU50cw0Vz5KDJLKXBE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I know that "df -h" is not to be trusted with btrfs, but some userspace 
-tools (i.e. apt, monitoring checks) rely on it.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AsUMlodLnCfjboQX9a7DK2INMx8K6bbt0
+Content-Type: multipart/mixed; boundary="N1lfnfCUZsTiUY5OIuO39TLJh12vgfBmR"
 
-Sometimes, "df -h" will report 100% disk usage on a btrfs filesystem, 
-while there is still space available and writes are possible.
-
-Linux 5.4.1, LXD containers located in /data:
-
-# df -h
-/dev/nvme1n1               1000G  571G     0 100% /data
-
-# btrfs fi usage /data
-Overall:
-     Device size:                1000.00GiB
-     Device allocated:            580.02GiB
-     Device unallocated:          419.98GiB
-     Device missing:                  0.00B
-     Used:                        570.06GiB
-     Free (estimated):            429.45GiB      (min: 429.45GiB)
-     Data ratio:                       1.00
-     Metadata ratio:                   1.00
-     Global reserve:              512.00MiB      (used: 0.00B)
-
-Data,single: Size:578.01GiB, Used:568.54GiB
-    /dev/nvme1n1  578.01GiB
-
-Metadata,single: Size:2.01GiB, Used:1.53GiB
-    /dev/nvme1n1    2.01GiB
-
-System,single: Size:4.00MiB, Used:80.00KiB
-    /dev/nvme1n1    4.00MiB
-
-Unallocated:
-    /dev/nvme1n1  419.98GiB
+--N1lfnfCUZsTiUY5OIuO39TLJh12vgfBmR
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
- From container point of view, it looks like:
 
-container# df -h
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/nvme1n1               1000G  571G     0 100% /
+On 2019/12/6 =E4=B8=8A=E5=8D=889:31, Christian Wimmer wrote:
+> Hi Hugo and Qu,
+>=20
+> here the output from the commands:
+>=20
+> # btrfs ins dump-tree -t root /dev/sde1 2>&1
+> btrfs-progs v4.19.1
+
+Too old. Please use latest version btrfs-progs.
+
+Just as mentioned, SLE is not a good choice for btrfs-progs.
+
+Thanks,
+Qu
+
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> bad tree block 5349895454720, bytenr mismatch, want=3D5349895454720,
+> have=3D14275350892879035392
+> Couldn't setup device tree
+> ERROR: unable to open /dev/sde1
+> #=C2=A0
+>=20
+>=20
+>=20
+> # btrfs ins dump-tree -t extent /dev/sde1 2>&1 >/dev/null
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> bad tree block 5349895454720, bytenr mismatch, want=3D5349895454720,
+> have=3D14275350892879035392
+> Couldn't setup device tree
+> ERROR: unable to open /dev/sde1
+> #=C2=A0
+>=20
+>=20
+> # btrfs ins dump-tree -t chunk /dev/sde1
+> btrfs-progs v4.19.1=C2=A0
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> bad tree block 5349895454720, bytenr mismatch, want=3D5349895454720,
+> have=3D14275350892879035392
+> Couldn't setup device tree
+> ERROR: unable to open /dev/sde1
+> #=C2=A0
+>=20
+>=20
+> # btrfs ins dump-tree -t 5 /dev/sde1 2>&1 >/dev/null
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> checksum verify failed on 5349895454720 found B80B9FA8 wanted C61C3C00
+> bad tree block 5349895454720, bytenr mismatch, want=3D5349895454720,
+> have=3D14275350892879035392
+> Couldn't setup device tree
+> ERROR: unable to open /dev/sde1
+> #=C2=A0
+>=20
+>=20
+> I will try to setup a newer kernel. Which Distro you would suggest for
+> this purpose?
+> The idea is to download and install a small linux just for recovery
+> purpose for now.
+>=20
+> Thanks,
+>=20
+> Chris
+>=20
+>=20
+>=20
+>> On 5. Dec 2019, at 21:04, Qu Wenruo <quwenruo.btrfs@gmx.com
+>> <mailto:quwenruo.btrfs@gmx.com>> wrote:
+>>
+>> btrfs ins dump-tree -t root /dev/sde1 2>&1
+>=20
 
 
-Let's see if we can still write? Yes we can:
+--N1lfnfCUZsTiUY5OIuO39TLJh12vgfBmR--
 
-container# dd if=/dev/urandom of=/bigfile.img bs=1M count=1024
-1024+0 records in
-1024+0 records out
-1073741824 bytes (1.1 GB, 1.0 GiB) copied, 7.28306 s, 147 MB/s
-container# sync
-container# rm /bigfile.img
+--AsUMlodLnCfjboQX9a7DK2INMx8K6bbt0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Let's try to use apt - unfortunately it says that there is not enough 
-space in /var/cache/apt/archives/:
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3puP0XHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjcFwf8C2y4EUCfXuMwhcIAJK8Gd5//
+Wk5i/yUZvNCEmuUW/7xtrtLIrsPPy4KJvvc5s1YMzCnbQRgQwe8+/uIITwB03zQF
+PH4ihyLYw+affvhgYYJ+3/c1TNfWgoEK8/qUA/2q7EXT+/08jMQUFZrbPJyrJgl6
+lQN8qF2HOkt5YFHHNLsVyhMW+twq7tC38yEibHN6gXvClb4rC9t1P7vTRVPEORp5
+icjybIxUZHrjmoAwaMi5JLe+5Kf1GStKMMHCKCT3r7KvPfPjdFIwEcKUw+qDqPh+
+7qC0hBFbfMXAClZq9by3/5ZqMO+EkmiXXkqRctd4o3bNPIU914rAXK842MAqSw==
+=wq/D
+-----END PGP SIGNATURE-----
 
-container# apt install lzop
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-The following additional packages will be installed:
-   liblzo2-2
-The following NEW packages will be installed:
-   liblzo2-2 lzop
-0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
-Need to get 88.5 kB of archives.
-After this operation, 282 kB of additional disk space will be used.
-E: You don't have enough free space in /var/cache/apt/archives/.
-
-
-So let's try to write 1 GB to /var/cache/apt/archives/:
-
-container# dd if=/dev/urandom of=/var/cache/apt/archives/bigfile.img 
-bs=1M count=1024
-sync
-1024+0 records in
-1024+0 records out
-1073741824 bytes (1.1 GB, 1.0 GiB) copied, 7.66032 s, 140 MB/s
-
-container# sync
-container# rm /var/cache/apt/archives/bigfile.img
-
-
-This IMO is a filesystem bug?
-
-
-Some more info:
-
-# btrfs fi df /data
-Data, single: total=580.01GiB, used=569.78GiB
-System, single: total=4.00MiB, used=80.00KiB
-Metadata, single: total=2.01GiB, used=1.53GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-# btrfs fi show /data
-Label: 'data'  uuid: 38fc3739-8695-49f1-bf14-946d0c0869c5
-         Total devices 1 FS bytes used 571.30GiB
-         devid    1 size 1000.00GiB used 582.02GiB path /dev/nvme1n1
-
-
-Tomasz Chmielewski
-https://lxadm.com
+--AsUMlodLnCfjboQX9a7DK2INMx8K6bbt0--
