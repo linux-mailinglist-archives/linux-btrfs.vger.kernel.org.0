@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A79FC115378
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231BD115379
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbfLFOqL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 09:46:11 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35671 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbfLFOqL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:11 -0500
-Received: by mail-qt1-f193.google.com with SMTP id s8so7378170qte.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:10 -0800 (PST)
+        id S1726490AbfLFOqN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 09:46:13 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:40036 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbfLFOqM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:12 -0500
+Received: by mail-qv1-f65.google.com with SMTP id i3so2720427qvv.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=SIQ/P7FQ7arouhkzuzw7ujgnmYAn8fc5SJbQDjIRoc8=;
-        b=xXYBNmkrjhtPCCd7qQ9EuT/RyTK5mGFB0OETubmV/vpFiBR4qg7Oai9edk3UVw3+wX
-         eKCMaqFa9dtEoZJ/VKuq/FU628uyyM/9L+asCeX3GlDM3aWQsMAJH3Lrx5BYJ5bja1Kd
-         oB2ZP2OD7IPGrKG4A/VMVYCGufB83is2XvSXym2EF6RerJ8qKZnjjIBGO5d7qfzZMMeG
-         7mKBXjWQhsHx2Rgmab2GE6VXey6yYjGC6JVI+fcomEObcLSm9oA3dbHZI7A9Stifl23Q
-         b0jg7TcMQ45FM07YHev6sNGuUsn3Q69/VnRCFmeRd6jw0DgpLacRXiZ4XaDRcnMygGej
-         gBfQ==
+        bh=7VlXuMmW6vkmcDdGX4eAWzkcyjFhrGSVL6+MEgHg3UY=;
+        b=dhY/9Vw78RU8eZX43NuLpRJ3Nd+dSU2LBgeCMMib6PUkx0SKwDt6HOlD2w1MGOuqcJ
+         00jCf1/VAj13icfFsd8FKYvAi4BnXHEDr0Xw9tTEXNh5yU+fK+IHqpg/vzql71VuJHgp
+         UJxcDFpzjCHJCQos/IsASWFl457i9dosvRm7RovcQl5kmPGY2dPNHUpMto9qeN2QJ+Ja
+         Zh4WwGlC4+nVf2V5Rh2r03+Zj4KjLwHTVXoyYYJb6iS+xzVY+C6S47htY025zs476Z2S
+         J93SzsqIGuHBPW7iVX1IxDmrr/CaGMyEZDUKjxvcegux65C/jOLV6jPhtCZC4WelVMx+
+         O5Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SIQ/P7FQ7arouhkzuzw7ujgnmYAn8fc5SJbQDjIRoc8=;
-        b=W9YxsboJQQDaIKc1N9lHVibJJ62fg6k4UgxIpKIAmHj2ixtJfKNl79KcGwng9opPGw
-         V4Hb+eQeRkriOxXwrYrZt7uMhJUj6lHFz0+YBc38kKRhDXzDinosBmN06HP3dR2dxcpL
-         Xgi0dcdx4kMR35eoxE8RBSyTDVl/Ug9cgFPPdNIGYQqe6f9ElbFL843ShjbtpsiYyY8z
-         clawt2nzs01wjHrEel/ovz+/oRz09R/Zd2DDXXZlbnCjtSuGe7geJvfBsemB/E0PWMud
-         AgmKc7F6Bp3yQDud2I6Zkms32M2m5yQe3ic+utonnSN/tt8wuHgmyCEhlZCEboe+9YGc
-         llzQ==
-X-Gm-Message-State: APjAAAXy6AU7fe38K/cuEGqoq1LV6SNxg0ba6spAuda00JZbfXH5arl+
-        zx5CzmlJFy4cS4CIhZ4nYU/xa7+bzBGKXQ==
-X-Google-Smtp-Source: APXvYqySOhB6bsGxRJL14qL4zfc7yEEZ6WaPGhECTv6RzAf3qUkWVYVBBPQQfWEucK5zf07UQ/fhVg==
-X-Received: by 2002:ac8:c4f:: with SMTP id l15mr12951958qti.177.1575643569734;
-        Fri, 06 Dec 2019 06:46:09 -0800 (PST)
+        bh=7VlXuMmW6vkmcDdGX4eAWzkcyjFhrGSVL6+MEgHg3UY=;
+        b=sa0B5bVWhwlpS+T6SKIWBXD1JAWkKX1E1r8gOCm5yArp2D7zYojt26qMIu+noZnyBK
+         8aCIRXWHiUQo+Q6EWZO6cUz9vEifacp132JuuRn6ValS+YDUlFYU6Y+6YW5bnxLGgZI/
+         Cb0YzZZEfAmTOj+8raJTdqhXvj1GHlAsZNOwGFfbAMVNzfAXU8Jq7g2CnPP3/U9HNGiD
+         ipif1ahXPoymFJyYvyTTgJ4EK2xlQ7VDc8lPx5K4NW2Gwe0fKbRJkjVhSGZZAdLn60jE
+         eJIWdq7ziy7AB6P46jMD9aMoc7j8OqCWg9GyJIJ7jV0yOTs/5BBE3N2TVYi/JM/utjMJ
+         XFXg==
+X-Gm-Message-State: APjAAAXKDCo/oZ9z+64+Ppt9aGL6udUanjXyGhhjUy6v58qTE1+wGeAR
+        8q/GnwSIMd3w2m2vbpdbvpZmOe005FgVqw==
+X-Google-Smtp-Source: APXvYqz6qP7GiwNZik5O8RMH49TRVR6UJr6H1b7WAhU40+Dx8qIFbgI7eWdsF01W5MBYtKt20aCaqQ==
+X-Received: by 2002:a0c:f792:: with SMTP id s18mr13010839qvn.118.1575643571444;
+        Fri, 06 Dec 2019 06:46:11 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d13sm5990070qkk.136.2019.12.06.06.46.08
+        by smtp.gmail.com with ESMTPSA id r41sm6688039qtr.60.2019.12.06.06.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2019 06:46:09 -0800 (PST)
+        Fri, 06 Dec 2019 06:46:10 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 16/44] btrfs: hold a ref on the root in fixup_tree_root_location
-Date:   Fri,  6 Dec 2019 09:45:10 -0500
-Message-Id: <20191206144538.168112-17-josef@toxicpanda.com>
+Subject: [PATCH 17/44] btrfs: hold a ref on the root in create_subvol
+Date:   Fri,  6 Dec 2019 09:45:11 -0500
+Message-Id: <20191206144538.168112-18-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191206144538.168112-1-josef@toxicpanda.com>
 References: <20191206144538.168112-1-josef@toxicpanda.com>
@@ -59,38 +59,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looking up the inode from an arbitrary tree means we need to hold a ref
-on that root.
+We're creating the new root here, but we should hold the ref until after
+we've initialized the inode for it.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 6 ++++++
+ fs/btrfs/ioctl.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3dc9bc9530e2..5fa39ac23472 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5689,6 +5689,10 @@ static int fixup_tree_root_location(struct btrfs_fs_info *fs_info,
- 		err = PTR_ERR(new_root);
- 		goto out;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 95b0488b7da6..29c363a70fe7 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -672,10 +672,16 @@ static noinline int create_subvol(struct inode *dir,
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto fail;
  	}
 +	if (!btrfs_grab_fs_root(new_root)) {
-+		err = -ENOENT;
-+		goto out;
++		ret = -ENOENT;
++		btrfs_abort_transaction(trans, ret);
++		goto fail;
 +	}
  
- 	*sub_root = new_root;
- 	location->objectid = btrfs_root_dirid(&new_root->root_item);
-@@ -5927,6 +5931,8 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
- 	} else {
- 		inode = btrfs_iget(dir->i_sb, &location, sub_root);
- 	}
-+	if (root != sub_root)
-+		btrfs_put_fs_root(sub_root);
- 	srcu_read_unlock(&fs_info->subvol_srcu, index);
+ 	btrfs_record_root_in_trans(trans, new_root);
  
- 	if (!IS_ERR(inode) && root != sub_root) {
+ 	ret = btrfs_create_subvol_root(trans, new_root, root, new_dirid);
++	btrfs_put_fs_root(new_root);
+ 	if (ret) {
+ 		/* We potentially lose an unused inode item here */
+ 		btrfs_abort_transaction(trans, ret);
 -- 
 2.23.0
 
