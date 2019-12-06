@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4E4115392
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C579115393
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbfLFOq4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 09:46:56 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42070 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbfLFOqz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:55 -0500
-Received: by mail-qk1-f193.google.com with SMTP id a10so6643831qko.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:55 -0800 (PST)
+        id S1726769AbfLFOq6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 09:46:58 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45901 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbfLFOq5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:57 -0500
+Received: by mail-qk1-f195.google.com with SMTP id x1so6612586qkl.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=WX62XFGdRTFAYg+p96wiK+WMiqaGhA7AxwyBRxGzd6Y=;
-        b=LqLWZwR7MCjxf1lAlb2XsNQeqK6RLKAf6uzdq3vvjudktYf+YSSpOXLKDZZxv2dMWt
-         Fjy79tKhCDMaZ1JIqJTyIXrLNY/5mjvJ0F/LvLxcv6ck/He3CLGLsl7kN1XiYWQJDJ76
-         lI2tYiPRdZaBJ3+Zz89cgU1XB7Q730waQV94WYdZo/ozOphJ2BJgQFAVinL77N5tA/yH
-         bsMOJ/E0EUjECg8kPWexYDMP7V05N4Q0dK+CNpAY6KS+dFJqxURwmiBXjoHbpnwd1vJ2
-         kqYssLoI9o/PipXGBCNq5MsDMldIko/X3Qg2Xg5xcTbrqP+siH+U7b3OMTh7Mv95M5G7
-         Ji4Q==
+        bh=myP/GpgOhhc7A0D+0UMbyEYBq7kM0czy8uStOeX9pzU=;
+        b=p+MJtZDii4F7d9WebPTbzGwtc2ocHstDJqCNgm6iiUYedJ17Wfv4zyXdKH96IlsPUc
+         wIMWYRxhBDIddkEn6XRAeTZ25a5BjBHN1aCV8YXgDvFwlm4IgEogjPvf4l21B7TRtWPT
+         BZpwmNlBXTnoTI9CqCzwJoqgZSQXh0XYZjKiKUNkSatZ6iikoB3+eqtdcSZ3c3FiDKsN
+         7HC3hya9KZJV4h+YMPoK7GnzqvWY5V9mxMBW4TmX8vYng/F3yDoEKgIgXNNNeJsKqy4r
+         ff4h3uSfq/LCMp4N9sSnHaVgLrsyHg1FTTjIrnANfSkOWQ0nervljEOkhUEnZ7LFVnvx
+         perw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WX62XFGdRTFAYg+p96wiK+WMiqaGhA7AxwyBRxGzd6Y=;
-        b=ETxHUoCO6l3uabX8hBfPukssBF6wm59u5BhzBEIS7BNwiQtsYREbYwW2Q5th9UFlGQ
-         nUu7TEiH4xSo6pOqumOW0HrMDbcfEf4NRndRayr/rfQJABhmbIaIRfLSkYHLBbrlVY9+
-         i4wlDedoPgIhOPEVRlSimjknHSMjjL/KcZt9/MsklxzIH/X5JftuYpf4qEemk+CEYdGJ
-         8kmXs6mmCJWVEjKjRKbUItNiYS8yux4Tjlnuw09C8f8csDol2UOo9O8cyWe/nXJeDZg2
-         Bimm4qyxo/d0TqJxfJEif5z+pjrEKMjhhla3aDPs3wqjUVPNiO0BVVWKOXvzBCGgD5l1
-         iY8w==
-X-Gm-Message-State: APjAAAVa/MPJZzHy+As7FFptv+n3NXFOEV1x1QQ/Q8MtBR9rJQYH8qja
-        vQkADPA9jae0o+C/MP5YCDfBKfsyxmk//A==
-X-Google-Smtp-Source: APXvYqxckKjVj146KkIaBAsqiKMjSd0JdXypQj6TPr6738Ri+XJRlg6oxFz8M/2juMy6nnngzb7xLQ==
-X-Received: by 2002:a05:620a:10b8:: with SMTP id h24mr14395345qkk.332.1575643614069;
-        Fri, 06 Dec 2019 06:46:54 -0800 (PST)
+        bh=myP/GpgOhhc7A0D+0UMbyEYBq7kM0czy8uStOeX9pzU=;
+        b=KWAVCEwj/bT9hMeBonXiPS8SdIvrtxxmszxshS7vMwrH0tX9XCrCNfigGV+mbLVtsu
+         84qzGX0mXQVtPu9pkjyVAHzHXmRJRjQuF0g+8a+GPtREdndguqEKhLU53gR57QaLWZBE
+         n6ix9qORRMc2+6nYgO4p0rCM5x6h74kvSdLVZcn/07dazkTiDLtLtIeKOmqGlfWvjfHp
+         XoWtxZHCpMZYHx+MWy/4vwtjREb7Hlxf658LX0EZrD8Q0r/YHenV730bbz2NL239vwE6
+         4MZ1D6EQcO6983IMOTJz9kPExNyJJws64G6M0gEPIxLk8Ix8L3NA+Cb3nA282hNwWXv/
+         25pw==
+X-Gm-Message-State: APjAAAV23NarbekbdsqIBYrnp78W1m1JcAQ6zvhjuui+gjYRqzoUCudb
+        ttsACiqvCQo6u/nhL2QXNTkk8qyClnxnVw==
+X-Google-Smtp-Source: APXvYqzFCa/ziGbN4kY/IsEo1msow92Y7kJmMwwtRzgoHUJtCeBO3LDAEko6ZIqdJ/Vc4S3GBZI/dw==
+X-Received: by 2002:a37:8504:: with SMTP id h4mr14231218qkd.276.1575643615814;
+        Fri, 06 Dec 2019 06:46:55 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d143sm526564qke.123.2019.12.06.06.46.53
+        by smtp.gmail.com with ESMTPSA id a185sm710994qkg.68.2019.12.06.06.46.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2019 06:46:53 -0800 (PST)
+        Fri, 06 Dec 2019 06:46:55 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 42/44] btrfs: move fs_info init work into it's own helper function
-Date:   Fri,  6 Dec 2019 09:45:36 -0500
-Message-Id: <20191206144538.168112-43-josef@toxicpanda.com>
+Subject: [PATCH 43/44] btrfs: add a leak check for roots
+Date:   Fri,  6 Dec 2019 09:45:37 -0500
+Message-Id: <20191206144538.168112-44-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191206144538.168112-1-josef@toxicpanda.com>
 References: <20191206144538.168112-1-josef@toxicpanda.com>
@@ -59,225 +59,142 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-open_ctree mixes initialization of fs stuff and fs_info stuff, which
-makes it confusing when doing things like adding the root leak
-detection.  Make a separate function that init's all the static
-structures inside of the fs_info needed for the fs to operate, and then
-call that before we start setting up the fs_info to be mounted.
+Now that we're going to start relying on getting ref counting right for
+roots, add a list to track allocated roots and print out any roots that
+aren't free'd up at free_fs_info time.  Hide this behind
+CONFIG_BTRFS_DEBUG because this will just be used for developers to
+verify they aren't breaking things.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 164 +++++++++++++++++++++++----------------------
- 1 file changed, 83 insertions(+), 81 deletions(-)
+ fs/btrfs/ctree.h   |  8 ++++++++
+ fs/btrfs/disk-io.c | 38 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/disk-io.h |  8 +++++++-
+ 3 files changed, 53 insertions(+), 1 deletion(-)
 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8578c65890b2..59d7e55c94d8 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -902,6 +902,10 @@ struct btrfs_fs_info {
+ 	spinlock_t ref_verify_lock;
+ 	struct rb_root block_tree;
+ #endif
++
++#ifdef CONFIG_BTRFS_DEBUG
++	struct list_head alloced_roots;
++#endif
+ };
+ 
+ static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
+@@ -1103,6 +1107,10 @@ struct btrfs_root {
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	u64 alloc_bytenr;
+ #endif
++
++#ifdef CONFIG_BTRFS_DEBUG
++	struct list_head leak_list;
++#endif
+ };
+ 
+ struct btrfs_clone_extent_info {
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index c7163229effc..6151c828a311 100644
+index 6151c828a311..143519aea1d0 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2649,68 +2649,9 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+@@ -1204,6 +1204,14 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
+ 
+ 	spin_lock_init(&root->root_item_lock);
+ 	btrfs_qgroup_init_swapped_blocks(&root->swapped_blocks);
++#ifdef CONFIG_BTRFS_DEBUG
++	INIT_LIST_HEAD(&root->leak_list);
++	if (!dummy) {
++		spin_lock(&fs_info->fs_roots_radix_lock);
++		list_add_tail(&root->leak_list, &fs_info->alloced_roots);
++		spin_unlock(&fs_info->fs_roots_radix_lock);
++	}
++#endif
+ }
+ 
+ static struct btrfs_root *btrfs_alloc_root(struct btrfs_fs_info *fs_info,
+@@ -1434,6 +1442,7 @@ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+ 		goto find_fail;
+ 	}
+ 	root->commit_root = btrfs_root_node(root);
++
+ out:
+ 	btrfs_free_path(path);
+ 	return root;
+@@ -1533,6 +1542,31 @@ int btrfs_insert_fs_root(struct btrfs_fs_info *fs_info,
  	return ret;
  }
  
--int __cold open_ctree(struct super_block *sb,
--	       struct btrfs_fs_devices *fs_devices,
--	       char *options)
-+static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
- {
--	u32 sectorsize;
--	u32 nodesize;
--	u32 stripesize;
--	u64 generation;
--	u64 features;
--	u16 csum_type;
--	struct btrfs_key location;
--	struct buffer_head *bh;
--	struct btrfs_super_block *disk_super;
--	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
--	struct btrfs_root *tree_root;
--	struct btrfs_root *chunk_root;
- 	int ret;
--	int err = -EINVAL;
--	int clear_free_space_tree = 0;
--	int level;
--
--	tree_root = fs_info->tree_root = btrfs_alloc_root(fs_info,
--					BTRFS_ROOT_TREE_OBJECTID, GFP_KERNEL);
--	chunk_root = fs_info->chunk_root = btrfs_alloc_root(fs_info,
--					BTRFS_CHUNK_TREE_OBJECTID, GFP_KERNEL);
--	if (!tree_root || !chunk_root) {
--		err = -ENOMEM;
--		goto fail;
--	}
--
--	ret = init_srcu_struct(&fs_info->subvol_srcu);
--	if (ret) {
--		err = ret;
--		goto fail;
--	}
--
--	ret = percpu_counter_init(&fs_info->dio_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--
--	ret = percpu_counter_init(&fs_info->dirty_metadata_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--	fs_info->dirty_metadata_batch = PAGE_SIZE *
--					(1 + ilog2(nr_cpu_ids));
--
--	ret = percpu_counter_init(&fs_info->delalloc_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--
--	ret = percpu_counter_init(&fs_info->dev_replace.bio_counter, 0,
--			GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
- 
- 	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
- 	INIT_RADIX_TREE(&fs_info->buffer_radix, GFP_ATOMIC);
-@@ -2774,21 +2715,6 @@ int __cold open_ctree(struct super_block *sb,
- 	INIT_LIST_HEAD(&fs_info->ordered_roots);
- 	spin_lock_init(&fs_info->ordered_root_lock);
- 
--	fs_info->btree_inode = new_inode(sb);
--	if (!fs_info->btree_inode) {
--		err = -ENOMEM;
--		goto fail_srcu;
--	}
--	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
--
--	fs_info->delayed_root = kmalloc(sizeof(struct btrfs_delayed_root),
--					GFP_KERNEL);
--	if (!fs_info->delayed_root) {
--		err = -ENOMEM;
--		goto fail_iput;
--	}
--	btrfs_init_delayed_root(fs_info->delayed_root);
--
- 	btrfs_init_scrub(fs_info);
- #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
- 	fs_info->check_integrity_print_mask = 0;
-@@ -2799,8 +2725,6 @@ int __cold open_ctree(struct super_block *sb,
- 	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
- 	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
- 
--	btrfs_init_btree_inode(fs_info);
--
- 	spin_lock_init(&fs_info->block_group_cache_lock);
- 	fs_info->block_group_cache_tree = RB_ROOT;
- 	fs_info->first_logical_byte = (u64)-1;
-@@ -2845,12 +2769,91 @@ int __cold open_ctree(struct super_block *sb,
- 
- 	fs_info->send_in_progress = 0;
- 
-+	ret = init_srcu_struct(&fs_info->subvol_srcu);
-+	if (ret)
-+		return ret;
++static void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
++{
++#ifdef CONFIG_BTRFS_DEBUG
++	struct btrfs_root *root;
 +
-+	ret = percpu_counter_init(&fs_info->dio_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
++	/*
++	 * If we didn't get to open_ctree our alloced_roots won't be init'ed, so
++	 * do this check just in case.
++	 */
++	if (fs_info->alloced_roots.next == NULL)
++		return;
 +
-+	ret = percpu_counter_init(&fs_info->dirty_metadata_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	fs_info->dirty_metadata_batch = PAGE_SIZE *
-+					(1 + ilog2(nr_cpu_ids));
-+
-+	ret = percpu_counter_init(&fs_info->delalloc_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	ret = percpu_counter_init(&fs_info->dev_replace.bio_counter, 0,
-+			GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	fs_info->delayed_root = kmalloc(sizeof(struct btrfs_delayed_root),
-+					GFP_KERNEL);
-+	if (!fs_info->delayed_root) {
-+		ret = -ENOMEM;
-+		goto fail;
++	while (!list_empty(&fs_info->alloced_roots)) {
++		root = list_first_entry(&fs_info->alloced_roots,
++					struct btrfs_root, leak_list);
++		btrfs_err(fs_info, "leaked root %llu-%llu refcount %d",
++			  root->root_key.objectid, root->root_key.offset,
++			  refcount_read(&root->refs));
++		while (refcount_read(&root->refs) > 1)
++			btrfs_put_fs_root(root);
++		btrfs_put_fs_root(root);
 +	}
-+	btrfs_init_delayed_root(fs_info->delayed_root);
-+
- 	ret = btrfs_alloc_stripe_hash_table(fs_info);
--	if (ret) {
--		err = ret;
--		goto fail_alloc;
-+	if (ret)
-+		goto fail;
-+
-+	return 0;
-+fail:
-+	cleanup_srcu_struct(&fs_info->subvol_srcu);
-+	return ret;
++#endif
 +}
 +
-+int __cold open_ctree(struct super_block *sb,
-+	       struct btrfs_fs_devices *fs_devices,
-+	       char *options)
-+{
-+	u32 sectorsize;
-+	u32 nodesize;
-+	u32 stripesize;
-+	u64 generation;
-+	u64 features;
-+	u16 csum_type;
-+	struct btrfs_key location;
-+	struct buffer_head *bh;
-+	struct btrfs_super_block *disk_super;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_root *tree_root;
-+	struct btrfs_root *chunk_root;
-+	int ret;
-+	int err = -EINVAL;
-+	int clear_free_space_tree = 0;
-+	int level;
-+
-+	err = init_fs_info(fs_info, sb);
-+	if (err)
-+		goto fail;
-+
-+	/* These need to be init'ed before we start creating inodes and such. */
-+	tree_root = fs_info->tree_root = btrfs_alloc_root(fs_info,
-+					BTRFS_ROOT_TREE_OBJECTID, GFP_KERNEL);
-+	chunk_root = fs_info->chunk_root = btrfs_alloc_root(fs_info,
-+					BTRFS_CHUNK_TREE_OBJECTID, GFP_KERNEL);
-+	if (!tree_root || !chunk_root) {
-+		err = -ENOMEM;
-+		goto fail_srcu;
- 	}
+ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+ {
+ 	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+@@ -1553,6 +1587,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+ 	btrfs_put_fs_root(fs_info->uuid_root);
+ 	btrfs_put_fs_root(fs_info->free_space_root);
+ 	btrfs_put_fs_root(fs_info->fs_root);
++	btrfs_check_leaked_roots(fs_info);
+ 	kfree(fs_info->super_copy);
+ 	kfree(fs_info->super_for_commit);
+ 	kvfree(fs_info);
+@@ -2680,6 +2715,9 @@ static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
+ 	INIT_LIST_HEAD(&fs_info->space_info);
+ 	INIT_LIST_HEAD(&fs_info->tree_mod_seq_list);
+ 	INIT_LIST_HEAD(&fs_info->unused_bgs);
++#ifdef CONFIG_BTRFS_DEBUG
++	INIT_LIST_HEAD(&fs_info->alloced_roots);
++#endif
+ 	extent_map_tree_init(&fs_info->mapping_tree);
+ 	btrfs_init_block_rsv(&fs_info->global_block_rsv,
+ 			     BTRFS_BLOCK_RSV_GLOBAL);
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 8fa0c8748db9..3178849ee82d 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -99,8 +99,14 @@ static inline void btrfs_put_fs_root(struct btrfs_root *root)
+ 	if (!root)
+ 		return;
  
-+	fs_info->btree_inode = new_inode(sb);
-+	if (!fs_info->btree_inode) {
-+		err = -ENOMEM;
-+		goto fail_srcu;
+-	if (refcount_dec_and_test(&root->refs))
++	if (refcount_dec_and_test(&root->refs)) {
++#ifdef CONFIG_BTRFS_DEBUG
++		spin_lock(&root->fs_info->fs_roots_radix_lock);
++		list_del_init(&root->leak_list);
++		spin_unlock(&root->fs_info->fs_roots_radix_lock);
++#endif
+ 		kfree(root);
 +	}
-+	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
-+	btrfs_init_btree_inode(fs_info);
-+
- 	invalidate_bdev(fs_devices->latest_bdev);
+ }
  
- 	/*
-@@ -3357,7 +3360,6 @@ int __cold open_ctree(struct super_block *sb,
- 	btrfs_stop_all_workers(fs_info);
- 	btrfs_free_block_groups(fs_info);
- fail_alloc:
--fail_iput:
- 	btrfs_mapping_tree_free(&fs_info->mapping_tree);
- 
- 	iput(fs_info->btree_inode);
+ void btrfs_mark_buffer_dirty(struct extent_buffer *buf);
 -- 
 2.23.0
 
