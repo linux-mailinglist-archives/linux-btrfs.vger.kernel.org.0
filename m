@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 932E311537A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC0711537B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbfLFOqO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 09:46:14 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:34772 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbfLFOqO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:14 -0500
-Received: by mail-qv1-f65.google.com with SMTP id o18so2736171qvf.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:14 -0800 (PST)
+        id S1726511AbfLFOqR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 09:46:17 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44350 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbfLFOqQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:46:16 -0500
+Received: by mail-qt1-f193.google.com with SMTP id g17so1376113qtp.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:46:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=NuQnZrNm+zWRDf4U3gbj/yt1uwasHUr7OtgrIEG2bHM=;
-        b=s7JlJCCeIwuSiKcBxRqn0ukfy1uOqIRNgclWp7zMbPhHi/TP3ImE6FjQAZBHH4joOy
-         UI3bhBuouBVHY8G6UaT5coGzsDXUi4s6hcGexEuj9ksZSCB9m78efY9oO2q+mi+hEgzo
-         8LXh9cYqYwDgmoQOWB2K2gBC3HPTf4DZe209qb2UnNTn2eqs2vCar08DgIT5LtolmRce
-         8XNeLeOcHw5dMEt27N1y9HOX0hFGxJmHjOMcakIRggvmnWWk+0iBkaOM70w17cLBUhjN
-         dxWG1QFC2PoJQXjlQmziMX3m+k3qFUWbnpbLt2kVlVfmvYBmkWOjP1ePt/XXRRRnmQsV
-         0vvg==
+        bh=HltDQJl7stAB1vD8G+8gZKXtWOW2fcNixCaDMOY4h3g=;
+        b=uVE3+hOYCdkUwOFWnOja5PA46E5LJl8rKLa6ielCevlw3vkHBmQL/rhxUFHhFBwWqR
+         HZqMa1vs+WviEGBWVRYctbXUr0zaclHz5FgxS9H1haDrvXgQkn6H6jZwXe+khCA3fewN
+         WXmtaIItPifcb8+Af57y0cLv53zW+OMJKHLGEzN+V/dDrdhFX6a3LwrOB1eeTSejjGB2
+         51tvLivYhTaiq/mzhxJVnUMvDheHL1JxkuCZoTTuIBXVtdm40gNeDp6dMYwkM0Ri8LOf
+         8LAQ66o6C0QgYjpx58nuChTXGpG5sadv0ENzOMrSki4FUYcEcmq6BG11jTww0duGzC0k
+         JdGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NuQnZrNm+zWRDf4U3gbj/yt1uwasHUr7OtgrIEG2bHM=;
-        b=mXzI1WfGpp2F7hlet/2urthjRkWqyFmCzhNhex0hzmHbcsZZYK0nLTyrtNrUvCXPXe
-         Z/eU1SVBFsEdRB30YbOPx2Ma11fAHFOg74pMg0hUtEr8SjhlrwxmGUXPOHuA9Ws4zgB0
-         /M+U9DMLn1xA80wOhk7u5inzGl50wdhUfjlQpleRQzCPfxJutKiX2yKzqyxYSoutp01R
-         naNtawLODhHMKYprRe8tu+2Bbqnj7zooCe0NK341+S4h6NXetpFhwvHdxvwfO6VGSkqE
-         LOGbz9pOYPbetS7o8qNZ9JIlMzuDFP001YYkmHW5+SosS9azJ+u9ADrDa3Sw1IYVCHKh
-         7ObA==
-X-Gm-Message-State: APjAAAWo+dMIslgqGgzfOdtvjk2XSagv6gju9skrHLl2peC9rPQPRE88
-        99ko47UveGS2M7LWF6luGaZ01zcTXHI+iw==
-X-Google-Smtp-Source: APXvYqySAOuj6/RmFePM7E0yOzLMtK9L9Om1UQjy7D9v7rno+2/ipIF3WOnUjQ87R3De5duUPB8Yjw==
-X-Received: by 2002:a0c:d6c8:: with SMTP id l8mr13094291qvi.44.1575643573214;
-        Fri, 06 Dec 2019 06:46:13 -0800 (PST)
+        bh=HltDQJl7stAB1vD8G+8gZKXtWOW2fcNixCaDMOY4h3g=;
+        b=U3nZ9MVH0+YvXJnMeGXW1UXitMHyZNLJAxkXnd0fnwyn6b5IdI5ne5/jxneSXCAfcb
+         UzHS6SAOmnt43h7BaE7jbzothb8LFMn5th1DQLbMUnMH+Xzl1W98KxAZBqjOA2NvsoKM
+         +E/+Xuyw4RQk97XTh6+NJnomPr9llMXkSQwRmB8OYRnw7CbHqJES/Je38SjMZOX3cXov
+         Ljdr59O0M8gBXtGoI+pLf6KiO7hXrGHitldNolxj2J7j+O0NDOhaEFxapSjy+kxcCQDH
+         zGIeHMNUA1ommTgNCBWqkIZlcd8bP2Og2NgS/+ZsCs4BxOJFSmymRzGH2NugzJ22EL0K
+         UHlQ==
+X-Gm-Message-State: APjAAAUJ76gIW8x1fNBkg4DA3kJQFE+eH9Xz5h4AGCBi7DXNN6VE6PFY
+        EXH0eMxiyP7DmP/7gZnRK1Az63GrLzPs0g==
+X-Google-Smtp-Source: APXvYqzeVxi1Wa/7YFRhVNZGHYNh8dcAQmMonAGoeXQNE/XlDqh6SLVsnkWxAhiLTS9VOcAOgCUm0g==
+X-Received: by 2002:ac8:1afc:: with SMTP id h57mr12877188qtk.250.1575643575238;
+        Fri, 06 Dec 2019 06:46:15 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f26sm6462532qtv.77.2019.12.06.06.46.12
+        by smtp.gmail.com with ESMTPSA id y3sm233900qti.57.2019.12.06.06.46.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2019 06:46:12 -0800 (PST)
+        Fri, 06 Dec 2019 06:46:14 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 18/44] btrfs: hold a ref on the root in search_ioctl
-Date:   Fri,  6 Dec 2019 09:45:12 -0500
-Message-Id: <20191206144538.168112-19-josef@toxicpanda.com>
+Subject: [PATCH 19/44] btrfs: hold a ref on the root in btrfs_search_path_in_tree
+Date:   Fri,  6 Dec 2019 09:45:13 -0500
+Message-Id: <20191206144538.168112-20-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191206144538.168112-1-josef@toxicpanda.com>
 References: <20191206144538.168112-1-josef@toxicpanda.com>
@@ -59,44 +59,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We lookup a arbitrary fs root, we need to hold a ref on that root.  If
-we're using our own inodes root then grab a ref on that as well to make
-the cleanup easier.
+We look up an arbitrary fs root, we need to hold a ref on it while we're
+doing our search.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ fs/btrfs/ioctl.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 29c363a70fe7..e01363cd2bbe 100644
+index e01363cd2bbe..b8b5432423e6 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -2180,7 +2180,7 @@ static noinline int search_ioctl(struct inode *inode,
- 
- 	if (sk->tree_id == 0) {
- 		/* search the root of the inode that was passed */
--		root = BTRFS_I(inode)->root;
-+		root = btrfs_grab_fs_root(BTRFS_I(inode)->root);
- 	} else {
- 		key.objectid = sk->tree_id;
- 		key.type = BTRFS_ROOT_ITEM_KEY;
-@@ -2190,6 +2190,10 @@ static noinline int search_ioctl(struct inode *inode,
- 			btrfs_free_path(path);
- 			return PTR_ERR(root);
- 		}
-+		if (!btrfs_grab_fs_root(root)) {
-+			btrfs_free_path(path);
-+			return -ENOENT;
-+		}
+@@ -2328,6 +2328,12 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+ 	root = btrfs_get_fs_root(info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
++		root = NULL;
++		goto out;
++	}
++	if (!btrfs_grab_fs_root(root)) {
++		ret = -ENOENT;
++		root = NULL;
+ 		goto out;
  	}
  
- 	key.objectid = sk->min_objectid;
-@@ -2214,6 +2218,7 @@ static noinline int search_ioctl(struct inode *inode,
- 		ret = 0;
- err:
- 	sk->nr_items = num_found;
-+	btrfs_put_fs_root(root);
+@@ -2378,6 +2384,8 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+ 	name[total_len] = '\0';
+ 	ret = 0;
+ out:
++	if (root)
++		btrfs_put_fs_root(root);
  	btrfs_free_path(path);
  	return ret;
  }
