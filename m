@@ -2,106 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5059114B84
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 04:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A954E114C13
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 06:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbfLFDy2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Dec 2019 22:54:28 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46819 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbfLFDy2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Dec 2019 22:54:28 -0500
-Received: by mail-wr1-f66.google.com with SMTP id z7so6139212wrl.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Dec 2019 19:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=VIJ49er3KGbXs3GRNEumQxYQoJjFQF/TsnCwnyymnSQ=;
-        b=Fqrtum0hn6ZODvGTSuQZgbyJbKtyJpq0KDLlj+ilE7tGVPCQ2WHeHSK5WYfhAWr8gs
-         HHGO/Ncgx+rRCd5LzWAosxRk+7UCG6bpPSJXX6VRe8jEnkLPVn4A8hNa0qdnH7Rw7RQc
-         mSPO0EEzf2mdNKBkUIn+dQk+vdq7ADHUIKEkZgVUpmWBCt/KNpGgLs2l92vqrv5C22RA
-         ssMsmomtFuYyNFX48c/mux6GS/g8t9HeuzXb4mLXfLCDhyH+WaMaT+ZOVkCy+g9WBc2X
-         jRSg2cOTU7tfJ8MqPUP8z/+uoU42ro2T0Ay3uVq3qaJ0cE4uPknND3NUjDNDRd4Cr2NF
-         xq6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=VIJ49er3KGbXs3GRNEumQxYQoJjFQF/TsnCwnyymnSQ=;
-        b=tK8ICAxqqScumYrkZnCJuzanraPAP78srDnZ3EOq2Mi18S20slGuM7tVu5mvbvISNS
-         QnuMQhxK2bPrlV4dOFMaJrzW9rWx18Z/FpEXlAe1Kh1bR3YDQyHFqP/pzXgu7oMVDmlv
-         1fn9xWciAzH5IcjIGb45o+YvVeKyA9a+Ky6+Z3PLb7fF6hysDTqdpbNV0Wa8csLtDwgA
-         QiPRwtJ5SUPg9KJrLELVqPaULadJBBuzkU4hOikTcY9tMA0UcHPn7pX4QVjTmkONC/hi
-         VwwYRcj58P6wqlmxvLsPCQvspOBCJeOwup3E1ZB6YW5NSHyy8b+uvROt1oWC/6dfA6qu
-         tSEA==
-X-Gm-Message-State: APjAAAXrS+OYF3dFGsgAugwxbxJSlkwKgDmw7a6TpNuImRnihLq8QVpE
-        d1EkGrHd3sKw7uJ4Onas3FN7r+7PkMK2p1mwpato9g==
-X-Google-Smtp-Source: APXvYqwdMjdfg47dQU/hedUaiadxbCOIcGoRJ1tpBvbfaydxxd7PbkKdX/AldsAOy09x81Ci+OC9j++OGXvr7A15kNY=
-X-Received: by 2002:adf:f108:: with SMTP id r8mr13361212wro.390.1575604466265;
- Thu, 05 Dec 2019 19:54:26 -0800 (PST)
+        id S1726104AbfLFFdS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 00:33:18 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:23754 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbfLFFdS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 00:33:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1575610397; x=1607146397;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=YPJSarCpmWchZc8jP/nRd6xal0knym22bpqf0CKTQfg=;
+  b=mAhPxJ405XiRapLOFBVB/dBGoOLkD2dwamKiecUNzSaS9ggt8TEAcKp8
+   qEpmOrbl1UYQg3IK6fmkYO9gmgH/blf506Mh80ZG46HePlopf08dso6Fw
+   I61WfmbsTQu6ULhUGgv9c1YOyOWxLgX66owHRF2pbiN/OUZP3gTGAlFO4
+   gk/0tecyb3JFGPXcNHbab8d6lzTgdsuheZNh14iilh3NPAVV21NRBqCM2
+   joegwla/1px/trpQiGf8wcSD4eZfNOB7YOwhN+0DU2YSHuefa1hxJL4O7
+   KHn9EG3x9JhAFgYl7KXh+3ZrCW7H4CY1mLqP4BoDGvsvtPZuTLtiJi9f5
+   A==;
+IronPort-SDR: 7FCQZ+1KMH1dpZjL5VyuLgU3yeF/FLZhPxSFtc5hnK8zJrDmpMzYomKiLSwqXGglN0uFpkApCr
+ Jg/dnuxpeTPt0yUV0vgpvbnz0Cnvp+MuSxBvepJHprIVgQHCXdxHNdJYyfbOU2/7mTVtZxszjR
+ mmQDbaIDV9uDirJCfuQqohXpZf/nCwB3ACtT4WOmt+3a5OLaYcvXGCQWZ2xZPNrFuD8vocnfvM
+ QxYNrLUGpedgMAOVChgwU9NGnOL3POtT1oxp3puohBchRK0nEaFlypO2W/D9+tdopaE2qel+Jm
+ kcs=
+X-IronPort-AV: E=Sophos;i="5.69,283,1571673600"; 
+   d="scan'208";a="232259211"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Dec 2019 13:32:47 +0800
+IronPort-SDR: YMiQXmdAuhEbzxGp7+kpMFY9khcCIKpFv6l/wf/jV97PvoG6Dr7i1KYyzDAo05+cOBh4c+28VP
+ 7Edu4Ln5rPFE6NIM5tEFVxYRHIu0bpbghdFbemiCgz5c5hC/t+CdPS81nUTqXOp/KUp5638Uva
+ J7VJz6S46jRRcQy2lHuLNwTym3H+dOGmoS5JQ2dGsrglkRIi0r798Z30J58gj4SmSNyKyaT6tl
+ jhoy2vvYccPxDd6Cq3AD8Avv0a4IF9Adzu2eXwuEEBOXTEjQEhr8rCeguk5ZOjrnQJLwGoxZCz
+ DhrX0eeW1oryt4xxTJfs1DbE
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2019 21:27:31 -0800
+IronPort-SDR: QEOxGiWl61aUIkE3r+rjWSO/Ji3LnCDuEYESohJYmHArp6ERqFZdyxvnPue1zRQ9D0qonRyYwa
+ iUB/q4CSRBD545fUgsadizidKJCgiF7MHOte1eHNq3kwQD7jx1B6HScYAIFRE6oQMtd1yAW86K
+ ZiJCJ+hGBxn6GV2Ma/yfGFV0WwSjdi4VuRG+1zIqZ7NlLjEbviPx/K22Oi4Qf8vyCq5nEilENK
+ PU2Xpl/U+XUhfG1sUU60K3unvAldrLhKpWyWzk/XTIL8HE2JOdcNKiwCLiJtK0kC70YW/NJRKQ
+ l/M=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip01.wdc.com with SMTP; 05 Dec 2019 21:32:45 -0800
+Received: (nullmailer pid 3646735 invoked by uid 1000);
+        Fri, 06 Dec 2019 05:32:44 -0000
+Date:   Fri, 6 Dec 2019 14:32:44 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 05/28] btrfs: disallow space_cache in HMZONED mode
+Message-ID: <20191206053244.r2en7jydhyohd45k@naota.dhcp.fujisawa.hgst.com>
+References: <20191204081735.852438-1-naohiro.aota@wdc.com>
+ <20191204081735.852438-6-naohiro.aota@wdc.com>
+ <20191205153953.GV2734@twin.jikos.cz>
 MIME-Version: 1.0
-References: <eb9cfb919176c239d864f78e5756f1db@wpkg.org>
-In-Reply-To: <eb9cfb919176c239d864f78e5756f1db@wpkg.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 5 Dec 2019 20:54:10 -0700
-Message-ID: <CAJCQCtQ9Vg9VuT66diid6KdRMDqicxj9xLigTBF4sbMgqD=5jQ@mail.gmail.com>
-Subject: Re: 100% disk usage reported by "df", 60% disk usage reported by
- "btrfs fi usage" - this breaks userspace behaviour
-To:     Tomasz Chmielewski <mangoo@wpkg.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20191205153953.GV2734@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 5, 2019 at 7:04 PM Tomasz Chmielewski <mangoo@wpkg.org> wrote:
+On Thu, Dec 05, 2019 at 04:39:53PM +0100, David Sterba wrote:
+>On Wed, Dec 04, 2019 at 05:17:12PM +0900, Naohiro Aota wrote:
+>> As updates to the space cache are in-place, the space cache cannot be
+>> located over sequential zones and there is no guarantees that the device
+>> will have enough conventional zones to store this cache. Resolve this
+>> problem by disabling completely the space cache.  This does not introduces
+>> any problems with sequential block groups: all the free space is located
+>> after the allocation pointer and no free space before the pointer. There is
+>> no need to have such cache.
+>>
+>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>> ---
+>>  fs/btrfs/hmzoned.c | 18 ++++++++++++++++++
+>>  fs/btrfs/hmzoned.h |  5 +++++
+>>  fs/btrfs/super.c   | 10 ++++++++--
+>>  3 files changed, 31 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/hmzoned.c b/fs/btrfs/hmzoned.c
+>> index b74581133a72..1c015ed050fc 100644
+>> --- a/fs/btrfs/hmzoned.c
+>> +++ b/fs/btrfs/hmzoned.c
+>> @@ -253,3 +253,21 @@ int btrfs_check_hmzoned_mode(struct btrfs_fs_info *fs_info)
+>>  out:
+>>  	return ret;
+>>  }
+>> +
+>> +int btrfs_check_mountopts_hmzoned(struct btrfs_fs_info *info)
+>> +{
+>> +	if (!btrfs_fs_incompat(info, HMZONED))
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * SPACE CACHE writing is not CoWed. Disable that to avoid
+>> +	 * write errors in sequential zones.
 >
-> I know that "df -h" is not to be trusted with btrfs, but some userspace
-> tools (i.e. apt, monitoring checks) rely on it.
+>Please format comments to 80 columns
 >
-> Sometimes, "df -h" will report 100% disk usage on a btrfs filesystem,
-> while there is still space available and writes are possible.
+
+Fixed, thanks.
+
+>> +	 */
+>> +	if (btrfs_test_opt(info, SPACE_CACHE)) {
+>> +		btrfs_err(info,
+>> +		  "cannot enable disk space caching with HMZONED mode");
 >
-> Linux 5.4.1, LXD containers located in /data:
+>"space cache v1 not supported in HMZONED mode, use v2 (free-space-tree)"
 >
-> # df -h
-> /dev/nvme1n1               1000G  571G     0 100% /data
+>> +		return -EINVAL;
+
+Yes, we can technically use free-space-tree on HMZONED mode. But,
+since HMZONED mode now always allocate extents in a block group
+sequentially regardless of underlying device zone type, it's no use to
+enable and maintain the tree anymore.
+
+So, just telling "space cache v1 not supported in HMZONED mode" is
+better?
+
+>>  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
+>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>> index 616f5abec267..d411574298f4 100644
+>> --- a/fs/btrfs/super.c
+>> +++ b/fs/btrfs/super.c
+>> @@ -442,8 +442,12 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+>>  	cache_gen = btrfs_super_cache_generation(info->super_copy);
+>>  	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
+>>  		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
+>> -	else if (cache_gen)
+>> -		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
+>> +	else if (cache_gen) {
+>> +		if (btrfs_fs_incompat(info, HMZONED))
+>> +			WARN_ON(1);
 >
-> # btrfs fi usage /data
-> Overall:
->      Device size:                1000.00GiB
->      Device allocated:            580.02GiB
->      Device unallocated:          419.98GiB
->      Device missing:                  0.00B
->      Used:                        570.06GiB
->      Free (estimated):            429.45GiB      (min: 429.45GiB)
->      Data ratio:                       1.00
->      Metadata ratio:                   1.00
->      Global reserve:              512.00MiB      (used: 0.00B)
+>So this is supposed to catch invalid combination, hmzoned-compatible
+>options are verified at the beginning. 'cache_gen' can be potentially
+>non-zero (fuzzed image, accidental random overwrite from last time), so
+>I think a message should be printed. If it's possible to continue, eg.
+>completely ignoring the existing space cache that's more user friendly
+>than a plain unexplained WARN_ON.
 
+We can just ignore the generation value and continue. I'll rewrite to
+use btrfs_info(info, "ignoring existing space cache in HMZONED mode.")
+instead of WARN_ON.
 
-It does look like a bug. But I'm not sure if this is expected, I
-thought such significant disagreements were long since fixed.
-
-What version of coreutils?
-
-Maybe attach a strace of df? (I'm not sure of the list attach size
-limit but it's preferred, but something like a pastebin is OK also)
-
-And maybe this will be useful for a dev?
-# grep -r . /sys/fs/btrfs/<fs-uuid>/allocation/
-
-You'll need to use the correct fs uuid for the btrfs in question.
-
-
-> Data,single: Size:578.01GiB, Used:568.54GiB
->     /dev/nvme1n1  578.01GiB
-
-df seems to be treating only unallocated space as free, rather than
-both unallocated and allocated that is unused. Color me surprised.
-
-
-
--- 
-Chris Murphy
+Thanks,
