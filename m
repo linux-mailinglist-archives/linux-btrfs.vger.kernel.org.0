@@ -2,108 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3E5114C82
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 08:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7F6114FDE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 12:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbfLFHGS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 02:06:18 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:30773 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbfLFHGS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 02:06:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1575615978; x=1607151978;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FtPqEvBtr6eqL+4+3P1rLy6WssbTHg/1y00fYZ+q90s=;
-  b=Ps22SSgN/7Qn5wNYmTYXRw9GPq5tY8VOHscbcfrLvPf66Qh10XtouhBh
-   siWSV2zwHjC4xEC1zqfW1qpIgOkCR0BEPlwyjLQtgmez4S5zZHA7D8Luc
-   g1vTm83zp5iImq034/DTggye9OVbEkNTFhsF7HRtnlMZLO9POsn+Vj1U3
-   A6ssatXxXJWVc0nRPt74KbEHE9LlMtCiy6bDMP4bzoYFCUSp3vpC6oXEu
-   puye+m9zrXw4pSVJP1td0QfdPzZlFWCkbcdtvt8Q5Meq6Y6g9ofhmBEyM
-   lPznPAwnz9xqqkGgLESavQbrrXiOeOcoqi5BQ6AIU5AqT1W6QWS1Ukirk
-   A==;
-IronPort-SDR: guHPoiFpywQ/jU7aqlCqv9cYdKTvc23Ll34vuGHUBeRUUdsID0ChYgHVVOHSbFZ1LwwCVtPONh
- Y7bVyIuYROcon8MqEXWMOvXBBdUUrbsy9ZywdhKOr9bNrEYYHW44R3zNrtKkuP/JM6Kv3v9RXu
- Nn9T3jyYweO6h+bjpU6GUfuV/6SYoQf8W/R8NNmhay43oqVB/Zs6CM7v07tIDklCvpZ5Z4WXgX
- qoUdluYaMdYmKgqTxrmL4QT5c5UbcUI/ZqPnTmMsNVPhzUxP1Wx15eiJrLRjJINxW8Vp4ahpu2
- J5E=
-X-IronPort-AV: E=Sophos;i="5.69,283,1571673600"; 
-   d="scan'208";a="126367187"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Dec 2019 15:06:17 +0800
-IronPort-SDR: VQUxSTNuKJpVqed1qgvAiH2NTlxUPniWJJwuTutTdh6+XxpGmUHmFlhNfQriKeopes976LMxGc
- rgsWsJR/ME3IZSE/XvO068niokiGTkxTZ5+igapCyazsb8oBdFpLejoOS3CDOD3XRKSjJFFD+k
- Ep0yZ6V/GeGJ3FhUOggUiTe+NnF8PBCMcjKVX2G9su0sRDBnNOFxOSBduvdJSrA1GJrgbUlGx3
- iZ/qDFvdOJxvRw/qHcXjrUi9ljgkq+lO1w5ZJZEEnY+GKl4b4Rr/LTW1xTZixsf5ioaHkb6hGg
- 02eJS1CA1SHS8Ub54fa6M8FD
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2019 23:01:01 -0800
-IronPort-SDR: UY8hBGkPreVCFJns+uIMeEQwc4/2Pkdbld9Y1y2FIEj7h/dXq728HuB6bWr6MJugV/C4caBSYn
- 3vdHo5DMI3p2hGR+bSd1L4O5woHHVCZCoCcJ6i5NiM2u5sKRs6p75F93bSc3Fe/aelixTLK84g
- pZQQJMLLggk7ACPNMfdiOPYuv33i1DU+Z+q/B3EBREDVgMvTWYo48XNOLZqnkNcst0rt0C/Yfy
- R1H5C8TJ9bXIXLiVzOyuvI9ulMiGi0JxGBOHJ7Px3OYWdp7aeHRNFACW8urduwEUk8kQyhA+Xh
- Rdo=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 05 Dec 2019 23:06:16 -0800
-Received: (nullmailer pid 3793491 invoked by uid 1000);
-        Fri, 06 Dec 2019 07:06:14 -0000
-Date:   Fri, 6 Dec 2019 16:06:14 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Karel Zak <kzak@redhat.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] libblkid: implement zone-aware probing for HMZONED btrfs
-Message-ID: <20191206070614.aajb77v5oano2bzo@naota.dhcp.fujisawa.hgst.com>
-References: <20191204082513.857320-1-naohiro.aota@wdc.com>
- <20191204083023.861495-1-naohiro.aota@wdc.com>
- <20191205145102.omyoq6nn5qnximxr@10.255.255.10>
+        id S1726116AbfLFLjt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 6 Dec 2019 06:39:49 -0500
+Received: from rincewind.allchangeplease.de ([85.214.210.89]:58006 "EHLO
+        mail.allchangeplease.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbfLFLjt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 06:39:49 -0500
+X-Greylist: delayed 521 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Dec 2019 06:39:49 EST
+Received: from [192.168.188.27] (dslc-082-082-191-073.pools.arcor-ip.net [82.82.191.73])
+        by mail.allchangeplease.de (Postfix) with ESMTPSA id 007103E88
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Dec 2019 12:31:06 +0100 (CET)
+To:     linux-btrfs@vger.kernel.org
+From:   =?UTF-8?Q?Bernhard_K=c3=bchnel?= <hupf.vger@allchangeplease.de>
+Autocrypt: addr=bkue@allchangeplease.de; prefer-encrypt=mutual; keydata=
+ xsDiBEIt8+0RBACMhYuXdcDegppIKcMEeXZi87ChQbj+MZkdQdVdRTlfzs7GlscWL1tOB3Up
+ OIHPtEkTp8NM1V093dMcpz1HGvjQ+7Q9f1ISkSyeJxmuw3uOSR6bPOvBaZ/kF2hiw6s429FO
+ mNRm+SHEofr4YSWuXs62ebYP7EOtwEA5FyR4IcPVAwCgllE3viTGDpkAHZgiumnL7qYXXsMD
+ /32Jsy8IwDfoGm4dA3tUdTELlfe2GFvQO3YGdCHOfZWpslGMlfL57US5zeLjHO/voqhS8J/S
+ KcZmOb5XD8SejL9msiCy3XtJjVgscdeEzoNI2PjPlBXdRBw7pvX/4M9BkvZUUE23ZSLr2e1c
+ 3azULYWoZ1ZcjeZ9jY+1s+iRJRfkA/9wHvFxcw2LilkAM4j6sYynA4+Q4usxfWG4zJ6/y9c4
+ EPxm0DsVK6JoG/PVUpVBqHtnTRIg1F0OoBjWUU71N46QTv5hVxOMjKafhXaG71apkEkwJ1bw
+ xj2BUqIlLV1vJFq92+Nm29Kk4CKtnNRQVwdOg6yeOpsE8DDgm+PRfk2Eu80qQmVybmhhcmQg
+ S8O8aG5lbCA8Ymt1ZUBhbGxjaGFuZ2VwbGVhc2UuZGU+wmMEExECACMCGwMGCwkIBwMCBBUC
+ CAMEFgIDAQIeAQIXgAUCVNkVBwIZAQAKCRBpM8hPnu8vqYS5AJ9saNopA6+BalUl4HzfO4hf
+ GSK7dwCfZzjp+tebN9EjhkBFs45tUUAdMdbOwU0EQi3z/RAIAL5ncJXepe26Yvnq3C1fJV26
+ ZwUd7MtdBpvcr4dfSpB+sDZqvB6k4gc7vDOPQ24YSXKm4FoVGI/mzm+5MZF5gEEzGcfndaTT
+ rxHzXbB93BVTrPcg5eDrL3A9jihpf9UASYeHx2J+XPjc81Q0twudBOmqwiWPipJE2Dw4GcFf
+ zXgHJr+yWl15setSDkmruOFW7UPuqOf5fkqd+Vo/DmILtAiRZVUHs3xX53xhXiC+YlybgtMt
+ +Q5hvmKqQp7x8I35ESDfOB6Bt/QdMaFSDy9s94PdSUcL4NNiukf00JV/8Gk5ATN6oMNAjhif
+ sh6cpUs0+IOhdlh5+AyQxnxVKLYtiB8ABAsH/izdb5PjUeMbIdWU3hJKPlyTp53VZTE6XN0Z
+ DUXZuJt4NewPurc1zRXqFnBuLP7r+t8UsCxerexoeUOQ3A4WWwR0PUQGJoI1bF3EseS7yywU
+ KRLkWfqRi5qZWBZmexMOdyMiTd4+bqKrzT/J/7pXX87B84iqXbPm7RKQCQdxTbR3CwMbi5jz
+ hdG1MsBmkgZ/ntNOEG4PLp3f4kzgLrD4mP40cANv4YV22H9vefEE7Z3KqDvH7ObpOpSfMJks
+ QvyPSnIr8YZcpPWhyOxDBWR7MmJN1ffSYs4KFshruaA/9fZfFgU906rlGQ116KyBplS1z8aj
+ HVdQ0zFWAQ779TQSmlPCSQQYEQIACQUCQi3z/QIbDAAKCRBpM8hPnu8vqS+zAJ9bcTKdIkhS
+ iUSXPsNcpudm+QS6TwCfWpIKOyQENBso+FUELB/x5pjz0Ko=
+Subject: "btrfs scrub cancel" aborts running replace operation
+Message-ID: <bfec29b7-fd82-d358-02da-c1d3992c0bf4@allchangeplease.de>
+Date:   Fri, 6 Dec 2019 12:31:06 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20191205145102.omyoq6nn5qnximxr@10.255.255.10>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: de-DE
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 03:51:02PM +0100, Karel Zak wrote:
->On Wed, Dec 04, 2019 at 05:30:23PM +0900, Naohiro Aota wrote:
->>  	while(mag && mag->magic) {
->>  		unsigned char *buf;
->> -
->> -		off = (mag->kboff + (mag->sboff >> 10)) << 10;
->> +		uint64_t kboff;
->> +
->> +		if (!mag->is_zone)
->> +			kboff = mag->kboff;
->> +		else {
->> +			uint32_t zone_size_sector;
->> +			int ret;
->> +
->> +			ret = ioctl(pr->fd, BLKGETZONESZ, &zone_size_sector);
->
->I guess this ioctl returns always the same number, right?
->
->If yes, than you don't want to call it always when libmount compares
->any magic string. It would be better call it only once from
->blkid_probe_set_device() and save zone_size_sector to struct
->blkid_probe.
+It seems there's a run-time dependency between scrub and replace
+operations for which I don't find hints in the documentation.
 
-Exactly. That should save much time! I'll update the code in that
-way. Thanks.
+Steps to reproduce (choosing large-ish file[system] just to ensure the
+operations don't finish immediately - I'm not familiar enough with
+rate-limiting setup for a more elegant approach):
 
->    Karel
->
->-- 
-> Karel Zak  <kzak@redhat.com>
-> http://karelzak.blogspot.com
->
+0. Log software information
+
+# uname -r -m; btrfs version
+5.4.1-gentoo x86_64
+btrfs-progs v5.4
+
+1. setup a simple multi-device filesystem with one spare and some data
+
+# for i in {1..3}; do truncate -s 512G loop$i; losetup /dev/loop$i
+loop$i; done
+# mkfs.btrfs -m raid1 -d raid0 /dev/loop{1..2}
+# mkdir /mnt/test && mount /dev/loop1 /mnt/test
+# dd if=/dev/urandom of=/mnt/test/somedata bs=1M count=65536
+
+2. replace one device with the spare
+
+# btrfs scrub status /mnt/test/; btrfs replace start /dev/loop2
+/dev/loop3 /mnt/test/; sleep 1; btrfs scrub status /mnt/test/; btrfs
+replace status -1 /mnt/test; btrfs scrub cancel /mnt/test/; sleep 1;
+btrfs replace status /mnt/test
+
+output from step 2:
+
+UUID:             eafe3cb7-7ea1-405d-98a9-9dfffee2ea9d
+        no stats available
+Total to scrub:   64.15GiB
+Rate:             0.00B/s
+Error summary:    no errors found
+UUID:             eafe3cb7-7ea1-405d-98a9-9dfffee2ea9d
+        no stats available
+Time left:        0:00:00
+ETA:              Fri Dec  6 12:10:03 2019
+Total to scrub:   64.15GiB
+Bytes scrubbed:   0.00B
+Rate:             0.00B/s
+Error summary:    no errors found
+0.1% done, 0 write errs, 0 uncorr. read errs
+scrub cancelled
+Started on  6.Dec 12:10:02, canceled on  6.Dec 12:10:06 at 0.0%, 0 write
+errs, 0 uncorr. read errs
+
+
+Observations: Prior to starting replace, no scrub is running.
+Immediately after issuing replace statement, btrfs scrub status reports
+a running scrub operation. After issuing btrfs scrub cancel, the replace
+operations is being cancelled instead.
+
+
+Expectation: As "btrfs scrub cancel" might be issued as part of other
+maintenance jobs, it should not affect a replace operation in progress. 
+Would it be possible to separate the two operations w.r.t. userspace
+tools? Alternatively, should this behaviour be documented?
+
+
+
+Regards
+
+
+Bernhard Kühnel
+
+
