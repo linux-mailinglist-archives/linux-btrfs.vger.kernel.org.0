@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D86611536E
+	by mail.lfdr.de (Postfix) with ESMTP id AD4B911536F
 	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 15:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbfLFOpx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 09:45:53 -0500
-Received: from mail-qv1-f42.google.com ([209.85.219.42]:33976 "EHLO
-        mail-qv1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbfLFOpx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:45:53 -0500
-Received: by mail-qv1-f42.google.com with SMTP id o18so2735726qvf.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:45:52 -0800 (PST)
+        id S1726397AbfLFOpz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 09:45:55 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33709 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbfLFOpz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 09:45:55 -0500
+Received: by mail-qt1-f193.google.com with SMTP id d5so7378541qto.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 06:45:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=sIkaHJ5188XjF7UhYf4jTNIcOUG/UXpuayeJR6uBMl4=;
-        b=faOe63U7E4UdN69JQJ0Hs1GxNbW47TBskkgMQp3bAcsZAB+LPn7L3y7aeWzXz/J5+R
-         2ZUN2969AxWkmPYScekLPpIPUETzTgNxLHhsj5VxR9kia3yHRGGYaFx/yodJXmjYq0pX
-         23eWIhvu+ioeAKNuJZ041GlVAGpwuefTQswXGxb2YyA9peARjAAQbHVDejBsUly/LDb/
-         COjy8gCmuDdJoCxLko/vhO9ERtdZizpAvVmHyK2qO7y/EPBvM77CQTBcg0ek24sy/te0
-         9wXCoNBFItjt7BPBDqUrgycRGvs2Y9AZ3tu5wf4wvU812mh+qo3zztHNNdPwFN5KVr+0
-         GPIQ==
+        bh=RlO45UzFmp1e7heFJX4bWcaYC6KEXzixfUKphjQntXw=;
+        b=cHWq2FJo51OizX/xKRX3CayWGNuOdNMssi8JkfpWNJrHLrtYn2nPdN4oz5tJwWfftO
+         K7EJAPLE7P2WpSDZcft1WCupD/UCJeyNZJCoIA1C/jfBbvtCAfTxSi17VxewuKRR2pbo
+         3QpHViuwT9BFUJgOavLxriOcdnQ4ky1AdZrV0nMhHBDqIZDbfgbomK2vt8LYqizES0oK
+         nSUkU+nCcniVZArWEEj1+ZdTQPE2xbbOjJJcQeg9t5Iq/8ItMy6SA7ApY9tE0KaTXcMO
+         7JGHuUwSu+MAh6ikeJLRL9Uvc/807mgGgoqXaNr4CKp1sMlcHKctD6s4Xwq0jB8zZBzv
+         hD8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sIkaHJ5188XjF7UhYf4jTNIcOUG/UXpuayeJR6uBMl4=;
-        b=Yvo/VMqTAhekSAMYMRKWNyo7YggoXuPhLiCxpvIZ6dmHhW+TV/ghgafsOMx0KqmVZD
-         HQBE70xvxhB50pvpe5Tif9EiLcAcIpUVwhvNalsAFlFXroS+PzY7l2aRQAP4rST19tkv
-         ZcNWXgT0YJ1eTIGVDsgkdoRWiZcEOo2y+0vihH6Hsob/1zL364Duh5hi4g6aXygdXWrd
-         KXepdi6r8DaWfcthlluuWynbjJidbc10RL6eTLP2SNeGo5z9NgtPogYochYAm3gwShIc
-         h5dbwNzKQ5a8AgAwj6tDIosxkjDGs7vMFCJdVNjn9q95wuQAovFSBCgaCfoOq9Gke7UH
-         2NOg==
-X-Gm-Message-State: APjAAAU3THE/PQizuRsKxKvmJJzZU3Ka3q+tYDEngE6xtilWwaoj9HH3
-        SaWC0gK479KxZMhbnYTl+Cot097EeZGCgg==
-X-Google-Smtp-Source: APXvYqz0/tgUMd9eLtZN9P5HPmAu/YkSC81ycI9/ooCm2WTSgdLIvZ0iZM6pxxEhCf8BsCtfJts+GA==
-X-Received: by 2002:a0c:aacc:: with SMTP id g12mr13013566qvb.217.1575643551836;
-        Fri, 06 Dec 2019 06:45:51 -0800 (PST)
+        bh=RlO45UzFmp1e7heFJX4bWcaYC6KEXzixfUKphjQntXw=;
+        b=eitgxdVvfn0ywM5W/TaYFLOlSpnZFCo6aF34wCqJUmgTVWQ8p7M9GY0hmwICOJaJOG
+         vipF09WWGo1XAuZ7OMFF+RCKe1VrIj1JRLatJmki3BoccRb8cLPzhYmMK6ZN+/+fE7ne
+         DbWeOpGiRb6oD0ira5/soGynTz6VAa7QZOXtJ9dj40xgIIraywsDodrwRTI34psnILq/
+         NpTRo0vnXoneqeGqa6FH7i6quFo9p3UF/FLM8iQ3I7UetsRCovGcEEbPBZN6mAaRuxEN
+         X1B1IxFDb2exF4ETG1sHYFSiKaO0LQcK0oH/tJxtcUvS3+7mWYT7Ul/5NooYkrM7cGfn
+         tpjA==
+X-Gm-Message-State: APjAAAWcpkIquL68MDkTFDC/vqr/n7pGvJcHR/SLsE0PM4cu8m2d7EY3
+        2jDURmm7fqlyHnOQ30hH/qr6VWTAL59ovg==
+X-Google-Smtp-Source: APXvYqxlqWuqsICl2gzA82DIGoXPRiGEhgXoibB3IX4ksW6ikMepjnUZDuht4ZlVQ9APPTNs9scEiw==
+X-Received: by 2002:ac8:42cd:: with SMTP id g13mr12865028qtm.168.1575643553505;
+        Fri, 06 Dec 2019 06:45:53 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 206sm5927195qkf.132.2019.12.06.06.45.50
+        by smtp.gmail.com with ESMTPSA id a85sm2593678qkc.23.2019.12.06.06.45.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Dec 2019 06:45:51 -0800 (PST)
+        Fri, 06 Dec 2019 06:45:52 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 06/44] btrfs: kill btrfs_read_fs_root
-Date:   Fri,  6 Dec 2019 09:45:00 -0500
-Message-Id: <20191206144538.168112-7-josef@toxicpanda.com>
+Subject: [PATCH 07/44] btrfs: kill the btrfs_read_fs_root_no_name helper
+Date:   Fri,  6 Dec 2019 09:45:01 -0500
+Message-Id: <20191206144538.168112-8-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191206144538.168112-1-josef@toxicpanda.com>
 References: <20191206144538.168112-1-josef@toxicpanda.com>
@@ -59,59 +59,258 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All helpers should either be using btrfs_get_fs_root() or
-btrfs_read_tree_root().
+All this does is call btrfs_get_fs_root() with check_ref == true.  Just
+use btrfs_get_fs_root() so we don't have a bunch of different helpers
+that do the same thing.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 13 +------------
- fs/btrfs/disk-io.h |  2 --
- 2 files changed, 1 insertion(+), 14 deletions(-)
+ fs/btrfs/disk-io.c     |  2 +-
+ fs/btrfs/disk-io.h     |  6 ------
+ fs/btrfs/export.c      |  2 +-
+ fs/btrfs/file.c        |  2 +-
+ fs/btrfs/inode.c       |  6 +++---
+ fs/btrfs/ioctl.c       | 12 ++++++------
+ fs/btrfs/scrub.c       |  2 +-
+ fs/btrfs/send.c        |  4 ++--
+ fs/btrfs/super.c       |  2 +-
+ fs/btrfs/transaction.c |  2 +-
+ fs/btrfs/tree-log.c    |  2 +-
+ fs/btrfs/volumes.c     |  2 +-
+ 12 files changed, 19 insertions(+), 25 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2b91c40df27a..e3957d6b6bab 100644
+index e3957d6b6bab..fba2ca4965c4 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -1439,17 +1439,6 @@ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
- 	goto out;
- }
+@@ -3179,7 +3179,7 @@ int __cold open_ctree(struct super_block *sb,
+ 	location.type = BTRFS_ROOT_ITEM_KEY;
+ 	location.offset = 0;
  
--struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
--				      struct btrfs_key *location)
--{
--	struct btrfs_root *root;
--
--	root = btrfs_read_tree_root(tree_root, location);
--	if (IS_ERR(root))
--		return root;
--	return root;
--}
--
- int btrfs_init_fs_root(struct btrfs_root *root)
- {
- 	int ret;
-@@ -1570,7 +1559,7 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
- 		return root;
- 	}
- 
--	root = btrfs_read_fs_root(fs_info->tree_root, location);
-+	root = btrfs_read_tree_root(fs_info->tree_root, location);
- 	if (IS_ERR(root))
- 		return root;
- 
+-	fs_info->fs_root = btrfs_read_fs_root_no_name(fs_info, &location);
++	fs_info->fs_root = btrfs_get_fs_root(fs_info, &location, true);
+ 	if (IS_ERR(fs_info->fs_root)) {
+ 		err = PTR_ERR(fs_info->fs_root);
+ 		btrfs_warn(fs_info, "failed to read fs tree: %d", err);
 diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index cb12dd4825da..614802bd709d 100644
+index 614802bd709d..f5ef9ace903a 100644
 --- a/fs/btrfs/disk-io.h
 +++ b/fs/btrfs/disk-io.h
-@@ -60,8 +60,6 @@ int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
- int btrfs_commit_super(struct btrfs_fs_info *fs_info);
- struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
- 					struct btrfs_key *key);
--struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
--				      struct btrfs_key *location);
- int btrfs_init_fs_root(struct btrfs_root *root);
- struct btrfs_root *btrfs_lookup_fs_root(struct btrfs_fs_info *fs_info,
- 					u64 root_id);
+@@ -70,12 +70,6 @@ void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info);
+ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_key *key,
+ 				     bool check_ref);
+-static inline struct btrfs_root *
+-btrfs_read_fs_root_no_name(struct btrfs_fs_info *fs_info,
+-			   struct btrfs_key *location)
+-{
+-	return btrfs_get_fs_root(fs_info, location, true);
+-}
+ 
+ int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info);
+ void btrfs_btree_balance_dirty(struct btrfs_fs_info *fs_info);
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index 72e312cae69d..08cd8c4a02a5 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -77,7 +77,7 @@ static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
+ 
+ 	index = srcu_read_lock(&fs_info->subvol_srcu);
+ 
+-	root = btrfs_read_fs_root_no_name(fs_info, &key);
++	root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		err = PTR_ERR(root);
+ 		goto fail;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 32e620981485..8baa1b44d514 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -287,7 +287,7 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
+ 
+ 	index = srcu_read_lock(&fs_info->subvol_srcu);
+ 
+-	inode_root = btrfs_read_fs_root_no_name(fs_info, &key);
++	inode_root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(inode_root)) {
+ 		ret = PTR_ERR(inode_root);
+ 		goto cleanup;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index fc0624fbe387..138c21f5ed12 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2514,7 +2514,7 @@ static noinline int record_one_backref(u64 inum, u64 offset, u64 root_id,
+ 	key.type = BTRFS_ROOT_ITEM_KEY;
+ 	key.offset = (u64)-1;
+ 
+-	root = btrfs_read_fs_root_no_name(fs_info, &key);
++	root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		if (PTR_ERR(root) == -ENOENT)
+ 			return 0;
+@@ -2698,7 +2698,7 @@ static noinline int relink_extent_backref(struct btrfs_path *path,
+ 
+ 	index = srcu_read_lock(&fs_info->subvol_srcu);
+ 
+-	root = btrfs_read_fs_root_no_name(fs_info, &key);
++	root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		srcu_read_unlock(&fs_info->subvol_srcu, index);
+ 		if (PTR_ERR(root) == -ENOENT)
+@@ -5675,7 +5675,7 @@ static int fixup_tree_root_location(struct btrfs_fs_info *fs_info,
+ 
+ 	btrfs_release_path(path);
+ 
+-	new_root = btrfs_read_fs_root_no_name(fs_info, location);
++	new_root = btrfs_get_fs_root(fs_info, location, true);
+ 	if (IS_ERR(new_root)) {
+ 		err = PTR_ERR(new_root);
+ 		goto out;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 375befdecc19..95b0488b7da6 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -666,7 +666,7 @@ static noinline int create_subvol(struct inode *dir,
+ 		goto fail;
+ 
+ 	key.offset = (u64)-1;
+-	new_root = btrfs_read_fs_root_no_name(fs_info, &key);
++	new_root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(new_root)) {
+ 		ret = PTR_ERR(new_root);
+ 		btrfs_abort_transaction(trans, ret);
+@@ -2179,7 +2179,7 @@ static noinline int search_ioctl(struct inode *inode,
+ 		key.objectid = sk->tree_id;
+ 		key.type = BTRFS_ROOT_ITEM_KEY;
+ 		key.offset = (u64)-1;
+-		root = btrfs_read_fs_root_no_name(info, &key);
++		root = btrfs_get_fs_root(info, &key, true);
+ 		if (IS_ERR(root)) {
+ 			btrfs_free_path(path);
+ 			return PTR_ERR(root);
+@@ -2314,7 +2314,7 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+ 	key.objectid = tree_id;
+ 	key.type = BTRFS_ROOT_ITEM_KEY;
+ 	key.offset = (u64)-1;
+-	root = btrfs_read_fs_root_no_name(info, &key);
++	root = btrfs_get_fs_root(info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out;
+@@ -2408,7 +2408,7 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
+ 		key.objectid = treeid;
+ 		key.type = BTRFS_ROOT_ITEM_KEY;
+ 		key.offset = (u64)-1;
+-		root = btrfs_read_fs_root_no_name(fs_info, &key);
++		root = btrfs_get_fs_root(fs_info, &key, true);
+ 		if (IS_ERR(root)) {
+ 			ret = PTR_ERR(root);
+ 			goto out;
+@@ -2653,7 +2653,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
+ 	key.objectid = BTRFS_I(inode)->root->root_key.objectid;
+ 	key.type = BTRFS_ROOT_ITEM_KEY;
+ 	key.offset = (u64)-1;
+-	root = btrfs_read_fs_root_no_name(fs_info, &key);
++	root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out;
+@@ -3986,7 +3986,7 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
+ 	location.type = BTRFS_ROOT_ITEM_KEY;
+ 	location.offset = (u64)-1;
+ 
+-	new_root = btrfs_read_fs_root_no_name(fs_info, &location);
++	new_root = btrfs_get_fs_root(fs_info, &location, true);
+ 	if (IS_ERR(new_root)) {
+ 		ret = PTR_ERR(new_root);
+ 		goto out;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index e2c87220600f..eed3a8492092 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -652,7 +652,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
+ 	root_key.objectid = root;
+ 	root_key.type = BTRFS_ROOT_ITEM_KEY;
+ 	root_key.offset = (u64)-1;
+-	local_root = btrfs_read_fs_root_no_name(fs_info, &root_key);
++	local_root = btrfs_get_fs_root(fs_info, &root_key, true);
+ 	if (IS_ERR(local_root)) {
+ 		ret = PTR_ERR(local_root);
+ 		goto err;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index ae2db5eb1549..73e2e350f4a1 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -7200,7 +7200,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 
+ 			index = srcu_read_lock(&fs_info->subvol_srcu);
+ 
+-			clone_root = btrfs_read_fs_root_no_name(fs_info, &key);
++			clone_root = btrfs_get_fs_root(fs_info, &key, true);
+ 			if (IS_ERR(clone_root)) {
+ 				srcu_read_unlock(&fs_info->subvol_srcu, index);
+ 				ret = PTR_ERR(clone_root);
+@@ -7239,7 +7239,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 
+ 		index = srcu_read_lock(&fs_info->subvol_srcu);
+ 
+-		sctx->parent_root = btrfs_read_fs_root_no_name(fs_info, &key);
++		sctx->parent_root = btrfs_get_fs_root(fs_info, &key, true);
+ 		if (IS_ERR(sctx->parent_root)) {
+ 			srcu_read_unlock(&fs_info->subvol_srcu, index);
+ 			ret = PTR_ERR(sctx->parent_root);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index a98c3c71fc54..e387ca1ac0e5 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1077,7 +1077,7 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 		key.objectid = subvol_objectid;
+ 		key.type = BTRFS_ROOT_ITEM_KEY;
+ 		key.offset = (u64)-1;
+-		fs_root = btrfs_read_fs_root_no_name(fs_info, &key);
++		fs_root = btrfs_get_fs_root(fs_info, &key, true);
+ 		if (IS_ERR(fs_root)) {
+ 			ret = PTR_ERR(fs_root);
+ 			goto err;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 55d8fd68775a..e194d3e4e3a9 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1631,7 +1631,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	key.offset = (u64)-1;
+-	pending->snap = btrfs_read_fs_root_no_name(fs_info, &key);
++	pending->snap = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(pending->snap)) {
+ 		ret = PTR_ERR(pending->snap);
+ 		btrfs_abort_transaction(trans, ret);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 881d117a07db..a4321bdcbf3e 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6291,7 +6291,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		tmp_key.type = BTRFS_ROOT_ITEM_KEY;
+ 		tmp_key.offset = (u64)-1;
+ 
+-		wc.replay_dest = btrfs_read_fs_root_no_name(fs_info, &tmp_key);
++		wc.replay_dest = btrfs_get_fs_root(fs_info, &tmp_key, true);
+ 		if (IS_ERR(wc.replay_dest)) {
+ 			ret = PTR_ERR(wc.replay_dest);
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d8e5560db285..904c3e03467f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4372,7 +4372,7 @@ static int btrfs_check_uuid_tree_entry(struct btrfs_fs_info *fs_info,
+ 	key.objectid = subid;
+ 	key.type = BTRFS_ROOT_ITEM_KEY;
+ 	key.offset = (u64)-1;
+-	subvol_root = btrfs_read_fs_root_no_name(fs_info, &key);
++	subvol_root = btrfs_get_fs_root(fs_info, &key, true);
+ 	if (IS_ERR(subvol_root)) {
+ 		ret = PTR_ERR(subvol_root);
+ 		if (ret == -ENOENT)
 -- 
 2.23.0
 
