@@ -2,36 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 027CB115AF4
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 05:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED25115B84
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 08:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbfLGEbi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 23:31:38 -0500
-Received: from mout.gmx.net ([212.227.17.22]:36143 "EHLO mout.gmx.net"
+        id S1725976AbfLGH2i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Dec 2019 02:28:38 -0500
+Received: from mout.gmx.net ([212.227.17.20]:48979 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbfLGEbh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 23:31:37 -0500
+        id S1725923AbfLGH2i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 7 Dec 2019 02:28:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575693080;
-        bh=6Wx2vKdpCUs7dLpNeQtGzN9RsSBo/Gi827oo02sErd8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=WCIYmBsTrcBaTCsI/pOGL0Q6Fx9HOjgz0Vj3yDmFNp4vx72/0nOqjShazPqY2XNsU
-         xKej82iN1kkocuw0nui6AU+qcWOiIg+v7uBcE9StN8Xy31ZqtImblWv0TRkNsaoPzY
-         fzSyts/ZFMe6Bqwpi6UU5Bm7fh61OKlDAE7xo0OU=
+        s=badeba3b8450; t=1575703714;
+        bh=pMl4ficwhAYZPBl4NcV5KRMtdXK2VivuTfSAEkQ7dzw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hakD5AP0EVcdwtN218R47knhE/m5hpr0ceZm/nTJQ7mt5cfwfUuzKonNbanaGq4XR
+         4rgX1XCHK3HyOjaYY+gj5xK3XWoAKKk/pscXQrPEwaOzWz2V8h3w9Hp7ZXPS2rgbWR
+         Mc4+wtzBG9v4i8QUcz27XqdIgfQwJRQJieEaFXLM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Md6R1-1i3YhR3ff9-00aDN3; Sat, 07
- Dec 2019 05:31:20 +0100
-Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
-To:     Christian Wimmer <telefonchris@icloud.com>,
-        Qu WenRuo <wqu@suse.com>
-Cc:     Anand Jain <anand.jain@oracle.com>,
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCtj-1i4hjK47y3-00bJdR; Sat, 07
+ Dec 2019 08:28:34 +0100
+Subject: Re: df shows no available space in 5.4.1
+To:     Martin Raiber <martin@urbackup.org>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
+References: <0102016edd1b0184-848d9b6d-6b80-4ce3-8428-e472a224e554-000000@eu-west-1.amazonses.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -57,129 +51,225 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
-Date:   Sat, 7 Dec 2019 12:31:12 +0800
+Message-ID: <784074e1-667a-a2c7-5b47-7cbe36f5fdf5@gmx.com>
+Date:   Sat, 7 Dec 2019 15:28:29 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
+In-Reply-To: <0102016edd1b0184-848d9b6d-6b80-4ce3-8428-e472a224e554-000000@eu-west-1.amazonses.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="mPouf4pf5NkVDpZx2TV4xIxDEgtmbfkr7"
-X-Provags-ID: V03:K1:+ND9W8Woirnfq2ee9gS8rVFRO4ZjFlbL3Wk6vaBDNZEgmnPTxP9
- tXUHtbT/ie2f5zW+FE52qvCGq2rc/ybNUOMgsUBdvyjB7OV+tgdncqzRQrWjkAGC3JiiJcH
- Asw7cm7x8b5Oc53DoceYEcYU+/+UCkP6aeOn0UTpneGc8bMlEjx2gg7hv0mTKt+yHhFnRtX
- AHi/w7yLEudR0Py+Duyyg==
+ boundary="EWauJQGhzHgkdkHdliSAylMjitGDDWQGf"
+X-Provags-ID: V03:K1:QNSYcXwFOMaONAac7FOhsJp2q0T7DqhTImNVdB7Ye/4P+5Rpl4d
+ kOIJJ2nzIYpnIVlLAXFKPk7IwQnqpkbJsE3DFpxMjDsz+nEZwsakbWA8Mv/G/7i3CtpcByI
+ 4AuxVWhCALD3B0q34zMSm9iLyD8SpJuG2UVL9RKJjmq/T6BmY9sgC9LBNY7f1p0pbCYOB/o
+ 2qld8sWOnFzDwrzpbTgmw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9SRKpM0frv8=:71MuGmz9tAtR5QyfVf0WEm
- wsf2KeerxIW6wCmmWpz5SmQGdPoGfl4Z9vk8YA8TOelHQyAF+P4YTTo8WTKwnQnhLC87FkGtW
- mJg7knQps1erL5q9oiak57E0T/z7vqzWDuGmeHusX52vcEaOo3CY3BQyucEegYeHtt/oFmZAQ
- iaA49418NbGk85x9NBdHVSyIrcmB0BKbEz/kMhmQM0Pw8RaCKlSObPIWqzVgt1Vsb6d9u4rl6
- vzP1nnJvzuaxlcmWJ0rXo88JFHSwHysacuNd/1PZ42yWyeSKerdy57qRmqcctBSxoMumve6a7
- WcX9gXub4LFFiNJwRKZ1tvSYSIErS2q8KRxuS288NuPrLyVdCthB4OdIW7o3JfO3fOoMUYA1U
- JHgElVmBTSd8EFdxs8GfAEKAdXUB8kRaIFDm+qB9fOlHy/sTIF8oDbdrvkdeie09+5gah7gv1
- 7Vbp/ak8frj3DR0likj1o4hsm6HJF+xKrtFZ6Umcvy5AblJcBTWMR5d6VNGWKDEDbH3rnEgbH
- /osfhjRJxupcnOy6QwxnVJCs3U3CyFt1H0GJSYFojvPCmirRv6/w5rd0wf+M6sRvFsfKQxzMg
- Z6yX8rgRjqNDyZbQr+E4DRut+3IKs6N5ovoF2V5+rhF8iL4lfBV9YOn7aelIF0OH3FiWT3FMe
- vhZ0S7Q4HQIVyngc1a0ewxRU1hPJrpaCyBSqQsjw3ooRMKzTGv9TrPgp+ywvFNHwHe0exxGr9
- aHBaWns1E0U4pAJ2XfufK5K9tW0C9LrXCqS4umQuz1kOB/otuNcKT599zuTGEKv7H0Jkt1guU
- hBlx3oGevUWUSRF0gIaXJvnSQegQVwo7WcA9AYPMGvYryGd0e6eINaF/HcX/PjuH1Pp1WP9+7
- +QDbIt2fIemSqhHOa6BNl3Wp7rJuDBlmXmrqRoYNET/PwLGRigaAExdwQ047FIaBXJ5MYn/0t
- I1NZ1n5gABvXskiYSqryQrNIHkVQN26pZoAXs8Iz8n+MoDqutSIr4J8oiGPwW5CFsa2cYByZC
- SVzzSO7XM3fPzQI46JnkvFEvF70H5A2LInB8Gx0uCsA4EvP1lkWMqREM/3HF9ELb3D7z6EUbx
- VD2RUFf8UUxsWDW/cc8v8VG9uAKW4V9zL5f5vCuLm/TanRqRYh7pC06iHAdGjssPeYzcgG41S
- sxfMdJH6FYeevRF4fYnlQ4GDki8VGGV6MIDmhRJ4yPwY1JKlwDlD0AghSNZQ6vFJAVdMK761P
- ExlkSc/dBPe10CUF9sG5g3Px5jGS9+mIq/aix4WGhGGQYhSDyG39kdD/VEi0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TSl1App/5Gg=:sI/gxuqHCxTi0U+tU6sEng
+ FPDK7Jft0/Ad3DZQl4+jNVX8OWTSbm5aw89J+1lghtF9TiAExSyAGxpxEkFtgVpcxjiPRrqTI
+ yKPRgMRCbwpNAMbqnq2Lnymxs5dEv1eKZiXnzd15tyCJNG4/iQcBJQhhYH47n4kgYl17lP6Zf
+ i6u1r8vbuyNbDiaR91rn6XaE7Rjv89u+hkG9MnYgUlcCBJ9WRQBWQw04GzN8ygEQNeYQNw5gv
+ ZwU/A51rIjdvJl/srXwE8QSIdgMtePVSFaOfMRKsIb/hc2Wxa53vOdSQxy1cHPb0rHtOAk+Aj
+ AwBTH8EC2GQLtmJaKVtXSdDd9w7+2Y7I+KBfG5kDhxGvpKDEocWFv09VwVkMFVJlPv/fVo/PE
+ Vq5tV/9uAyJhccleBeHuOIrloXxN6B1OJLORr7dlbOfWvMb4LFIsq+g0VIz9ItS9Xda98Zi4Y
+ LWKmGuqcI39VXo6+r8xBdBXq4Yx2496kI6Bi0vba73RZlrS8KCtz08v8qdVWixpuDK9dfroNo
+ ZHyNXyooNQ37DoYFUBMKqFJIsbVqfLjUp+ExdAKSVX/uKtvGT8N/OTP9NVoKkBVYbrsLWOkYW
+ 46yANbiyNNy2QdF4fYfn4W74A4zZOHuRiHrBB7tiIm/CNKUfxZowYpAZd4cVfkAZqUrxo5xvd
+ kyX7vy0+SPQgCJ0IsBEL83PXzHJ65UUcmB+C29/aYqXbzGI74xlHZ/KwhQKGkmGuQB9tCreMx
+ LGJYsZkOBEOfIkm+m3ReeDNUsJ4FzrbdOBvOrcOQtTIJqlqys1NUOcAuG+871XUp0tVL1/9Ie
+ kQx+k934M9hCXOb+OsIDZ8eeCUGM6tVcOYAEC2GSLTjII+6kT/JAfXbZmcD5kHE3D2HE/FQse
+ y+Ia5XopZy1bNDku0qMgHIBeGExpbm4DKSprj9jLL8ZK+UWyo43/QKy4U85FKDlAyk0SNXlQZ
+ 8AiuQnfOP5VNmgK2jg0zmjEjjTDUrztVKAy69UagmQTTpZG3k1S/LQdwFsTN9b7FNzU5jL40j
+ NKkv00sAy59wDOc72oLrWYt/b+NSgnF0vBM9U2jfuno70dqRLqtdltcvQZRIA1vBK4lfszj51
+ rxTfHyqMMzdu/q6rl9wwPk/BHuqiHs5bo5nUo/nZ2mp/1Q5ybr4a4HSJ1Lm1gCEmeJmjmUsJy
+ 9f5fJGhhTnCdKWEC7a1h0Sxro7X1Qw/Dsz//+D5MM1dxSyNNHTSvv2gx4Go1KWW50OZu6hiX1
+ /xTX1x/Wx2mRVld63uoLQd0FQwGLo77ewor+6r4PHjUtL/q1MUteJglqc1WY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mPouf4pf5NkVDpZx2TV4xIxDEgtmbfkr7
-Content-Type: multipart/mixed; boundary="tqUb97hepEK8KeaH4iUMrZZJjCkdBuDZS"
+--EWauJQGhzHgkdkHdliSAylMjitGDDWQGf
+Content-Type: multipart/mixed; boundary="N3eSZn0Brw8FDCmRSZZF8MiE29VaxlxDI"
 
---tqUb97hepEK8KeaH4iUMrZZJjCkdBuDZS
+--N3eSZn0Brw8FDCmRSZZF8MiE29VaxlxDI
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/7 =E4=B8=8A=E5=8D=8811:47, Christian Wimmer wrote:
-> Hi Qu,
+On 2019/12/7 =E4=B8=8A=E5=8D=885:26, Martin Raiber wrote:
+> Hi,
 >=20
->=20
->> Chunk tree is good, so is root tree and extent tree.
->>
->> You can go btrfs restore without problem. (Of course, need to use
->> patched version)
->>
->> Thanks,
->> Qu
->=20
->=20
-> Unfortunately I can not restore the contents:
->=20
-> # ./btrfs restore /dev/sdb1 test/
-> checksum verify failed on 5349895454720 found 000000A8 wanted 00000000
-> checksum verify failed on 5349895454720 found 000000A8 wanted 00000000
-> checksum verify failed on 5349895454720 found 000000A8 wanted 00000000
-> bad tree block 5349895454720, bytenr mismatch, want=3D5349895454720, ha=
-ve=3D14275350892879035392
-> WARNING: could not setup device tree, skipping it
-> checksum verify failed on 3541835317248 found 00000044 wanted 00000000
-> checksum verify failed on 3541835317248 found 00000061 wanted 0000001C
-> checksum verify failed on 3541835317248 found 00000061 wanted 0000001C
-> bad tree block 3541835317248, bytenr mismatch, want=3D3541835317248, ha=
-ve=3D18445340955138505899
+> with kernel 5.4.1 I have the problem that df shows 100% space used. I
+> can still write to the btrfs volume, but my software looks at the
+> available space and starts deleting stuff if statfs() says there is a
+> low amount of available space.
 
-This is another tree block corrupted, not the one in device tree.
+If the bug still happens, mind to try the snippet to see why this happene=
+d?
 
-And unfortunately, it's the fs tree (from your previews reply), and
-that's not a good news.
-
-This proved one bad news, there are more corruptions than we thought.
-
-BTW, do you have any subvolumes/snapshots?
-Since the corruption is in fs tree, we may have chances for other trees.
-
-You can try "btrfs restore -l <dev>" grab the numbers and pass it to
-"btrfs restore -r <number> <dev>" to try to recover other
-subvolumes/snapshot.
+You will need to:
+- Apply the patch to your kernel code
+- Recompile the kernel or btrfs module
+  So this needs some experience in kernel compile.
+- Reboot to newly compiled kernel or load the debug btrfs module
 
 Thanks,
 Qu
 
-> Error searching -5
-> #=20
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 23aa630f04c9..cf34c05b16d7 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -523,7 +523,8 @@ static int should_ignore_root(struct btrfs_root *root=
+)
+ {
+        struct btrfs_root *reloc_root;
+
+-       if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
++       if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
++           test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+                return 0;
+
+        reloc_root =3D root->reloc_root;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index f452a94abdc3..c2b70d97a63b 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2064,6 +2064,8 @@ static int btrfs_statfs(struct dentry *dentry,
+struct kstatfs *buf)
+                                        found->disk_used;
+                }
+
++               pr_info("%s: found type=3D0x%llx disk_used=3D%llu factor=3D=
+%d\n",
++                       __func__, found->flags, found->disk_used, factor)=
+;
+                total_used +=3D found->disk_used;
+        }
+
+@@ -2071,6 +2073,8 @@ static int btrfs_statfs(struct dentry *dentry,
+struct kstatfs *buf)
+
+        buf->f_blocks =3D div_u64(btrfs_super_total_bytes(disk_super),
+factor);
+        buf->f_blocks >>=3D bits;
++       pr_info("%s: super_total_bytes=3D%llu total_used=3D%llu
+factor=3D%d\n", __func__,
++               btrfs_super_total_bytes(disk_super), total_used, factor);=
+
+        buf->f_bfree =3D buf->f_blocks - (div_u64(total_used, factor) >>
+bits);
+
+        /* Account global block reserve as used, it's in logical size
+already */
+
+
+
 >=20
-> What else can I try?
+> # df -h
+> Filesystem=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Size=C2=A0 Used Avail
+> Use% Mounted on
+> ...
+> /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.4T=C2=A0 623G=C2=A0=C2=A0=
+=C2=A0=C2=A0 0
+> 100% /media/backup
+> ...
 >=20
-> Thanks,
+> statfs("/media/backup", {f_type=3DBTRFS_SUPER_MAGIC, f_bsize=3D4096,
+> f_blocks=3D1985810876, f_bfree=3D1822074245, f_bavail=3D0, f_files=3D0,=
+
+> f_ffree=3D0, f_fsid=3D{val=3D[3667078581, 2813298474]}, f_namelen=3D255=
+,
+> f_frsize=3D4096, f_flags=3DST_VALID|ST_NOATIME}) =3D 0
 >=20
-> Chris
+> # btrfs fi usage /media/backup
+> Overall:
+> =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.40Ti=
+B
+> =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 671.02GiB
+> =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.74TiB
+> =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+> =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 622.49GiB
+> =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.79TiB=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 (min: 6.79TiB)
+> =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 1.00
+> =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.0=
+0
+> =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 512.00MiB=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 (used: 0.00B)
 >=20
+> Data,single: Size:666.01GiB, Used:617.95GiB
+> =C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0 666.01GiB
+>=20
+> Metadata,single: Size:5.01GiB, Used:4.54GiB
+> =C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.01GiB
+>=20
+> System,single: Size:4.00MiB, Used:96.00KiB
+> =C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4.00MiB
+>=20
+> Unallocated:
+> =C2=A0=C2=A0 /dev/loop0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.74TiB
+>=20
+> # btrfs fi df /media/backup
+> Data, single: total=3D666.01GiB, used=3D617.95GiB
+> System, single: total=3D4.00MiB, used=3D96.00KiB
+> Metadata, single: total=3D5.01GiB, used=3D4.54GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>=20
+> # mount
+>=20
+> ...
+> /dev/loop0 on /media/backup type btrfs
+> (rw,noatime,nossd,discard,space_cache=3Dv2,enospc_debug,skip_balance,co=
+mmit=3D86400,subvolid=3D5,subvol=3D/)
+> ...
+>=20
+> (I remounted with enospc_debug and the available space did not change..=
+=2E)
+>=20
+> Regards,
+> Martin Raiber
 >=20
 
 
---tqUb97hepEK8KeaH4iUMrZZJjCkdBuDZS--
+--N3eSZn0Brw8FDCmRSZZF8MiE29VaxlxDI--
 
---mPouf4pf5NkVDpZx2TV4xIxDEgtmbfkr7
+--EWauJQGhzHgkdkHdliSAylMjitGDDWQGf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3rKxAACgkQwj2R86El
-/qju6AgAoS3+0lZWkB/jdKDoHgwmdjheq5cn4ly4lfSI6Wx7VqVxYT5bh3j0IwPh
-mTfGs3PnibrHuD3wwTl7jqDqZWARsLjUW4FNjv0V3YtXYd1pm9tA41ZXtbCPS06M
-p1adbJe1YvNB6hQcOvJbxMQo4FgGFBaGqk+lGQ35VA1mMAld0KZFrqc4LOcFuFpq
-4pM/fEgwkfS1H7t1LzbJA/alAMmlaEdYdhJfH6DFk7Ub6Sv2Kfpy6qrwmb/BEcyD
-Rg2CxqtozEQ3I5RB2aF7s1IRb2OClEFCD34FV+5vfWJ3sog4TrE3RqZkLf3Vt/Tx
-E0WI5XszHH0D+s13If1EwBEQrXI9cQ==
-=LLPG
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3rVJ0ACgkQwj2R86El
+/qgJFwf/fDC1dBiHNNqP38ku8X+6V55C4M3nqQEbsqVuxNJVNwnd6NbhXK6qT9JS
+9mSwm/rkr3D3cNoW6mQsyLiFhK9ir0WCqdLamzTWR2Kr1d10lAc1tClTarKh0d+I
+FKv/ZYZPqkm+ZB8rmR6RYjn08AuLyQGMczozf23yHBvPviYX6FDNoCeHDH9a2S61
+gM7tYgL38+SsNmcQAQ1Qvn/CuJACAMbtEwGqWhE1BlIoPvKEBP1VSraIiHxHa4a4
+c1ZuShZbhn3as4OzwlTopKbIReIqH+U0V+kJ8Y6mvjqZQSngFAclzNvtfYRVC62w
+f8PCiksl9xZUesnJ16kErNBdepDD7A==
+=p69v
 -----END PGP SIGNATURE-----
 
---mPouf4pf5NkVDpZx2TV4xIxDEgtmbfkr7--
+--EWauJQGhzHgkdkHdliSAylMjitGDDWQGf--
