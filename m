@@ -2,79 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D169D115D24
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 15:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81534115D47
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 16:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfLGOZ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Dec 2019 09:25:58 -0500
-Received: from ms11p00im-qufo17281701.me.com ([17.58.38.54]:58635 "EHLO
-        ms11p00im-qufo17281701.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbfLGOZ6 (ORCPT
+        id S1726415AbfLGPCo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Dec 2019 10:02:44 -0500
+Received: from aliyun-cloud.icoremail.net ([47.90.104.110]:32738 "HELO
+        aliyun-sdnproxy-3.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with SMTP id S1726400AbfLGPCo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 7 Dec 2019 09:25:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1575728756;
-        bh=meXdMziLFxFb9/BRGkpQZo5oqM8MuLdBTre49uaIsPs=;
-        h=Content-Type:Subject:From:Date:Message-Id:To;
-        b=GhQAuMtI6/UxCrOkl8CnWtAgq2RuW5i/SZ4qr//OUPMa/2AwOKPUC7hC3r3Tm1RJT
-         9F/U1YtqWt8y5Xh6VWki+j6M67peuCTttycqCtqZeqH9rVrms6OpTHDPkeSdg3VAgC
-         97zkrPui6yBY+AwWfuCws+l31Z/1iGlxpvbWl7dqPNxWpZYi7rSxLVF7B8p6VVp+Fc
-         zjD8ONiNc+mWVVkQUulGs9SJ/08zstKoXFnSCh9IpLaBT/345H8fvsIxlU0NtkgDZK
-         S+4BnZO64sUNMtQBqpyy5sSpR53enkIa0Y8mQhuYDCckuGnrPVnIUE9kjIEQhVbDfy
-         ldElDtF4S2Inw==
-Received: from [192.168.15.24] (unknown [177.27.216.49])
-        by ms11p00im-qufo17281701.me.com (Postfix) with ESMTPSA id 25713BC0959;
-        Sat,  7 Dec 2019 14:25:54 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
-Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
-From:   Christian Wimmer <telefonchris@icloud.com>
-In-Reply-To: <e8b667ab-6b71-7cd8-632a-5483ec4386d8@gmx.com>
-Date:   Sat, 7 Dec 2019 11:25:52 -0300
-Cc:     Qu WenRuo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <43F59C34-A80B-4D79-B57F-7BCDDF8804FF@icloud.com>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <BF872461-4D5F-4125-85E6-719A42F5BD0F@icloud.com>
- <e8b667ab-6b71-7cd8-632a-5483ec4386d8@gmx.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-X-Mailer: Apple Mail (2.3601.0.10)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-12-07_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=941 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1912070125
+        Sat, 7 Dec 2019 10:02:44 -0500
+X-Greylist: delayed 709 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Dec 2019 10:02:42 EST
+Received: from localhost.localdomain (unknown [222.205.62.5])
+        by mail-app2 (Coremail) with SMTP id by_KCgC3vlJPuutdctLMBQ--.24137S3;
+        Sat, 07 Dec 2019 22:42:24 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     pakki001@umn.edu, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: Fix a missing check bug
+Date:   Sat,  7 Dec 2019 22:41:25 +0800
+Message-Id: <20191207144126.14320-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: by_KCgC3vlJPuutdctLMBQ--.24137S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF47GF1kZr47Ww18Xw1rtFb_yoWfWwc_AF
+        ZxAw1jqr4fKr4xuwn8GwnYqrZY9wsYkryFq3WjkFsrGayYvws8XrnrAryfuF9Iga1UGFsF
+        k34kZry7Ga47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VUbkR65UUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-ok, backup device did not work  as well.
+The return value of link_free_space(ctl, info) is checked out-sync. Only one branch of an if statement checks this return value after WARN_ON(ret).
 
-Any ideas?
+Since this path pair is similar in semantic, there might be a missing check bug.
 
-The organisation was like this:
+Fix this by simply adding a check on ret.
 
-mount /dev/sde1 /home/promise
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ fs/btrfs/free-space-cache.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-inside /home/promise was a subvolume =E2=80=9Cprojects=E2=80=9D like:
-
-/home/promise/projects
-
-and inside /home/promise/projects was .snapshots with the snapshots of =
-it.
-
-Anything that I could recover would be fine (but this you know already).
-
-Thanks,
-
-Chris
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 3283da419200..acbb3a59d344 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2437,6 +2437,8 @@ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
+ 			if (info->bytes) {
+ 				ret = link_free_space(ctl, info);
+ 				WARN_ON(ret);
++				if (ret)
++					goto out_lock;
+ 			} else {
+ 				kmem_cache_free(btrfs_free_space_cachep, info);
+ 			}
+-- 
+2.21.0 (Apple Git-122)
 
