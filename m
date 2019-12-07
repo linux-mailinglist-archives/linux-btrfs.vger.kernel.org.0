@@ -2,98 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A193D11596A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Dec 2019 23:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E9F115A32
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 01:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbfLFWvo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Dec 2019 17:51:44 -0500
-Received: from a4-1.smtp-out.eu-west-1.amazonses.com ([54.240.4.1]:45314 "EHLO
-        a4-1.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726371AbfLFWvo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Dec 2019 17:51:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1575672702;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=jOYEpzgqC20aG7poYlSeeJgmw2BcWzAIBQtMCJyAgLc=;
-        b=O4QHu0dX5PIRqxRfCCFK7aiPNtGH+uhc8QT9G2Izg+ifFPoZe39tbRK7/LBgeAmA
-        9f66MuLryWLmjKW9jhndwHeqxjYTwQbTctmd6/g6WGgn2ixeUvp0Xx9m3+Pm8EDbxTG
-        7cENAr8is9N+GUqbGbBrVs0WBmwNozv1akmUoizc=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1575672702;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=jOYEpzgqC20aG7poYlSeeJgmw2BcWzAIBQtMCJyAgLc=;
-        b=FWaGoWqdoaDuTsfUPCo3SFHetXcfNyeeBhC2TSK9nsO6hAT6jwwn3CIprLkbkXby
-        PzZlwurxPDSS6cXF7mbfg+z2LUVFqGflqZogQ8Qfrmom8+FYFj72sM/k8d7GVicuxTp
-        iKWFNX7HsAjypspw/N9fDJVKQ0RkEjqTTnF7zpUQ=
-Subject: Re: df shows no available space in 5.4.1
-To:     Chris Murphy <lists@colorremedies.com>,
-        Tomasz Chmielewski <mangoo@wpkg.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <0102016edd1b0184-848d9b6d-6b80-4ce3-8428-e472a224e554-000000@eu-west-1.amazonses.com>
- <CAJCQCtTMCQBU98hYdzizMsxajB+6cmxYs5CKmNVDh4D9YZgfEg@mail.gmail.com>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <0102016edd69655b-b6d07bce-6036-4add-aa0c-f91b57e78ee5-000000@eu-west-1.amazonses.com>
-Date:   Fri, 6 Dec 2019 22:51:42 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1726534AbfLGA3e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Dec 2019 19:29:34 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:52994 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbfLGA3b (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Dec 2019 19:29:31 -0500
+Received: by mail-wm1-f68.google.com with SMTP id p9so9579145wmc.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Dec 2019 16:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=S7m9By4/eRnSy0vxdfJ6TocT5eJ8gcKLceyHvlHTn3o=;
+        b=UAczeQ0cY+yX9guoET55ezclAqEIwgyAMzPt2ZKBWIbIEt/pMnh3AM4wfp6V+VJf5N
+         /t6chYtkaELTCMsYIAwEqK7Ua++MAsqMO7EBu71mj4Fnlls+x4upb8tVoG2CKNwhblXl
+         GZWv+vxa+pk1bnKGno8f6HZ0ZmxLsefDKEHUp1ThC1gheUMLLO9GE4KYBuoyxwVDBQHN
+         +TWbv9hzxOJ/nyPcm2o6z2SaO7Kv5KPSrhGMjlDOWxjvXF61G6B8vS09UDIp3Kqr/FVJ
+         bo7yk/PV6MjG5BE7V9e+BVzlMyDYxzemK0FCoiLj7UmqPUvOwHSq+EWh2p0uz94KzjFK
+         8hKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=S7m9By4/eRnSy0vxdfJ6TocT5eJ8gcKLceyHvlHTn3o=;
+        b=TE1HCkZUtez7mnY2AKt/vZqbjOKQdDDzvM/4mJQqT0/O8BbqoPTJTxa2ZyBi58Hbl8
+         wrYlPChkTy+Js9TWhiQQSGjFzXGZ4U/TuKC47xhXKNySbaAzs4OULmyuyQgGkGkkV4le
+         pdogSejvjs58kGdggrbrQQqbgnH1MJSc9sMzOqIxavoJruIzWAGmGyjnE2Qh9jaGP50m
+         Hj1ebwhq0vQDWbsI/AYbht5jRONKm5hZk9tgyO97vCEXRQWPq7QJtK0lY1i514+e22bC
+         FpGMVSuchCzWkc/mjuo3e2GBf6cou+SOk9n/WV3S6nIgDA4bCblokwRQI2Fr3UgnjHWU
+         yA1w==
+X-Gm-Message-State: APjAAAXlJ2H51jaQNDXt85RumlG62z8RcZP1rr4SBEvuYJ9/IAkCfg6p
+        PQ477G+cnHW63MPe0DPItRiq6x7VsB7opsMUE5Q=
+X-Google-Smtp-Source: APXvYqyph35gV3V54gW4I7K644Z0gktlmZ+TXi6PJ8di3vm3dUTlaeyqr+FE+GZusDLWVMAtrDQhs4P9pROrLOxshFQ=
+X-Received: by 2002:a1c:96c4:: with SMTP id y187mr13234108wmd.112.1575678569910;
+ Fri, 06 Dec 2019 16:29:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTMCQBU98hYdzizMsxajB+6cmxYs5CKmNVDh4D9YZgfEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-SES-Outgoing: 2019.12.06-54.240.4.1
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+Received: by 2002:a5d:678e:0:0:0:0:0 with HTTP; Fri, 6 Dec 2019 16:29:29 -0800 (PST)
+Reply-To: mrs.aalia.ahmed@gmail.com
+From:   "Mrs.Aalia.Ahmed" <adamhana1907@gmail.com>
+Date:   Sat, 7 Dec 2019 00:29:29 +0000
+Message-ID: <CAOGreOkqZQY02Qc7dHVxdRFWYrTLKw3DvePG3mBc3_8d8rdvmw@mail.gmail.com>
+Subject: OK
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 06.12.2019 23:35 Chris Murphy wrote:
-> On Fri, Dec 6, 2019 at 2:26 PM Martin Raiber <martin@urbackup.org> wrote:
->> Hi,
->>
->> with kernel 5.4.1 I have the problem that df shows 100% space used. I
->> can still write to the btrfs volume, but my software looks at the
->> available space and starts deleting stuff if statfs() says there is a
->> low amount of available space.
-> This is the second bug like this reported in as many days against 5.4.1.
->
-> Does this happen with an older kernel? Any 5.3 kernel or 5.2.15+ or
-> any 5.1 kernel? Or heck, even 5.4? :P
+Greetings My Dearest One.
 
-Sorry, didn't see the other thread. Looks like the same issue.
-Unfortunately, I was previously using 4.19.x, so I can't pinpoint it. I
-think it did not occur when I was testing 5.4-rc7, but it does
-(randomly?) take a few days of runtime to start occuring, so it could
-have just not occurred then.
-
->> # df -h
->> Filesystem                                            Size  Used Avail
->> Use% Mounted on
->> ...
->> /dev/loop0                                            7.4T  623G     0
->> 100% /media/backup
->> ...
->>
->> statfs("/media/backup", {f_type=BTRFS_SUPER_MAGIC, f_bsize=4096,
->> f_blocks=1985810876, f_bfree=1822074245, f_bavail=0, f_files=0,
->> f_ffree=0, f_fsid={val=[3667078581, 2813298474]}, f_namelen=255,
->> f_frsize=4096, f_flags=ST_VALID|ST_NOATIME}) = 0
->
-> f_bavail=0 seems wrong to me.
->
-> What distro and what version of coreutils?
-
-It's debian stretch coreutils 8.26-3, glibc 2.29-3. But that's an
-excerpt of the strace output so that shouldn't matter.
-
-Thanks!
-
->
-> It's the same questions for Tomasz in yesterday's thread with similar subject.
->
-> --
-> Chris Murphy
-
-
+My name is Mrs.Aalia.Ahmed, i saw your profile and became interested
+in you, please contact me through my email address
+(mrs.aalia.ahmed@gmail.com) to know each other and i have something
+very important to tell you, i wait for your response to my email ID.
+(mrs.aalia.ahmed@gmail.com
