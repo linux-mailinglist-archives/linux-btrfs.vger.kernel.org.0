@@ -2,79 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81534115D47
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 16:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43046115D8C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Dec 2019 17:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbfLGPCo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Dec 2019 10:02:44 -0500
-Received: from aliyun-cloud.icoremail.net ([47.90.104.110]:32738 "HELO
-        aliyun-sdnproxy-3.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with SMTP id S1726400AbfLGPCo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 7 Dec 2019 10:02:44 -0500
-X-Greylist: delayed 709 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Dec 2019 10:02:42 EST
-Received: from localhost.localdomain (unknown [222.205.62.5])
-        by mail-app2 (Coremail) with SMTP id by_KCgC3vlJPuutdctLMBQ--.24137S3;
-        Sat, 07 Dec 2019 22:42:24 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     pakki001@umn.edu, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: Fix a missing check bug
-Date:   Sat,  7 Dec 2019 22:41:25 +0800
-Message-Id: <20191207144126.14320-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1726480AbfLGQhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Dec 2019 11:37:41 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:45109 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbfLGQhk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Dec 2019 11:37:40 -0500
+Received: by mail-qv1-f68.google.com with SMTP id c2so1086902qvp.12
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 Dec 2019 08:37:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=17OzSEk/pop55JnY4tDrZuyqHvN0HTfEH+5cXxKJWqo=;
+        b=Q/fASKhLfZBsDw8GJsn/UeSFnRCQpjCD5goQovPN5I/u/s2/nj2jQCootY+FFfwT5q
+         oBZdTbTGA8UeJzw+VwZe61JJcyJNJtRxmQEtEXuQnKoay1AozERMl0PNAsdrhoLQBuTk
+         IWyFtVRx7FCSXJNSBiZJCFHO6NWj0Zlcfed+m4y4pWMP8ZMvxGjrjhxbUkWFwTGPrIbc
+         nHFrZZ6ExMTs2vTFkze5HbkgAbwwV80BUXeumoXkxmeVJaAci7+bDs+K2Ws47wRC9kpG
+         I9BADOah5gR2UMleTw7lMSdFOid/gNhPdmH6OYhMPvpBPpBg3POE75UsMzvAe7Z54oFg
+         LqPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=17OzSEk/pop55JnY4tDrZuyqHvN0HTfEH+5cXxKJWqo=;
+        b=uU0iU3vhyuDVz0FBPQnGpUVco4sP4IDnZ2JURokO2eQT2mb1Kycy2OJU12ihQlnojQ
+         Xje2RjhaA6eS8VRqAJRMEPHgAFo8RUuGmCWN592O2zujCOyNxsi5Cx96Up0BQXDTlUBf
+         QJZoPMG8pgJIFbfKsZ2EIMM/x171nsowLtJeAVm+TK3wWAjjXEh2XwhgtSYz7pKtL+2H
+         7k2nAFO+sp6ynjYBMjMUQqGFuSCl+ocfrkwOV1S99Z10zGjZD+xcylHnXqVm9CjcTJmv
+         4atJfYmUY3of8Q9Os3S2qCArzOkdYH0KuYh2iNCAIynjefK62xmWsN4Oa6NTC8+cWdf+
+         KJXA==
+X-Gm-Message-State: APjAAAWQodtwVRikt5SHJ7dqT1syRBcHSuF7QUMguwYpCwC/4UHfweue
+        dORFzvHMSLDyqY5YorZ6QfCpI9kRVMrswLly4JU=
+X-Google-Smtp-Source: APXvYqx8gmsE9KTPJQTgU2ysmKhvp28zNR9/mg6+eE8Wi5sp4gHY/K4hbe7aDhilXIhT5clmY+AqJiA7FK+7EYE9NzI=
+X-Received: by 2002:ad4:4dc3:: with SMTP id cw3mr17331933qvb.130.1575736659572;
+ Sat, 07 Dec 2019 08:37:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: by_KCgC3vlJPuutdctLMBQ--.24137S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF47GF1kZr47Ww18Xw1rtFb_yoWfWwc_AF
-        ZxAw1jqr4fKr4xuwn8GwnYqrZY9wsYkryFq3WjkFsrGayYvws8XrnrAryfuF9Iga1UGFsF
-        k34kZry7Ga47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUbkR65UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
+Reply-To: ibrahmusa11@gmail.com
+Received: by 2002:ac8:f66:0:0:0:0:0 with HTTP; Sat, 7 Dec 2019 08:37:39 -0800 (PST)
+From:   ibrahim musa <ibrahmusa11@gmail.com>
+Date:   Sat, 7 Dec 2019 17:37:39 +0100
+X-Google-Sender-Auth: udDuW8UuzRUsQHnTbt4RfpLJPBU
+Message-ID: <CA+8bTZr2s2o7zKUz-17PsKk3Jz46drAY0CutO3qZKK4B_hP6dg@mail.gmail.com>
+Subject: URGENT RESPONSE NEEDED.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The return value of link_free_space(ctl, info) is checked out-sync. Only one branch of an if statement checks this return value after WARN_ON(ret).
+Dear friend, i am contacting you independently of my investigation in
+my bank and no one is informed of this communication. I need your
+urgent assistance in transferring the sum of $5.3million dollars to
+your private account,that belongs to one of our foreign customer who
+died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming for the claim of it.
 
-Since this path pair is similar in semantic, there might be a missing check bug.
-
-Fix this by simply adding a check on ret.
-
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- fs/btrfs/free-space-cache.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 3283da419200..acbb3a59d344 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2437,6 +2437,8 @@ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
- 			if (info->bytes) {
- 				ret = link_free_space(ctl, info);
- 				WARN_ON(ret);
-+				if (ret)
-+					goto out_lock;
- 			} else {
- 				kmem_cache_free(btrfs_free_space_cachep, info);
- 			}
--- 
-2.21.0 (Apple Git-122)
-
+I want to release the money to you as the relative to our deceased
+customer , the Banking laws here does not allow such money to stay
+more than 18years, because the money will be recalled to the Bank
+treasury account as unclaimed fund. I am ready to share with you 40%
+for you and 60% will be kept for me, by indicating your interest i
+will send you the full details on how the business will be executed, i
+will be waiting for your urgent response.
