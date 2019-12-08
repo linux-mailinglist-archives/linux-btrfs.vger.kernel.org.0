@@ -2,124 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE618116140
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2019 10:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9001162AD
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Dec 2019 16:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbfLHJa7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Dec 2019 04:30:59 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:34409 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfLHJa7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Dec 2019 04:30:59 -0500
-Received: by mail-pg1-f196.google.com with SMTP id r11so5576611pgf.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Dec 2019 01:30:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ambroffkao-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4myM6M9D7nnaCJGqGdPJH+pjA3ljbGqKvrICB31hv2o=;
-        b=khB5yDJNoeeuUhtTwhix1r2ooukiGMaCe92Qi6xgwjqQ7PqCJ11Db+ADzzpim20SmN
-         YBie/c832bEJP2tckpFP2yWlzhfcVyZO80/NCek8+XEB8GGpqxkXcLdaPloLIEk8GLeJ
-         HjD6Vx7PKO+m9BlJgSC2Ms5d9MCoDO8d/sLKDGPWVgyoJEkiipi6fVND71aQ5nMYA4n5
-         fEZrz/wYQSpv1EAEfeMZ/ZkKxqAqNjjSTEjTifpCEgZ8+C+M8dgOraNuXNUr3TeZYQSR
-         lIjHUC9OwK/qdFY7Cechb3XX1TXWnMpkCf57ZP4uQTf0crY3/sXj7jZqcOSPNV344gjS
-         14JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4myM6M9D7nnaCJGqGdPJH+pjA3ljbGqKvrICB31hv2o=;
-        b=Af3LleoOEElF/RfNCSwr6d/+b/NsGRLam8ZXvmsxsO89ScmrhO15NIYeq42osoCvJ2
-         s5kfinaVPjAPIbqVIGJ/V6lZATMNWAvvG861P9pZophKz/zqvLZVa2zPNt8MWCX1mHEw
-         m73u7Am6Zww+p7vVV6+5/9KToPvLtG1qDJy6pacMKnq4srIskMQR/Y4nB6z/u346/Vur
-         JPCoTiNETT4TRZOz1tl/bemgwIgM1Ha5vaVftn6p6NjU+G9f5IkpeGXt48Uv3gx5YrkW
-         qKP9Pk9N4GMuXuMWG78uH9i43aimlHAu9GKYFhst4Oo7Wnogi1InlNEx8qlp3caD5Jkr
-         BFLQ==
-X-Gm-Message-State: APjAAAWabmFax/qNFge2xBOnSmPgfHmsWiTT3dT8e0+hfWCAnNld915T
-        N0OzPq9MN3BxsAwu9kb5rUNsd0CBrKCpCg==
-X-Google-Smtp-Source: APXvYqwwOOTGYRXJVsaFahfvRCpJ9+5cUYHs8uqBGnD8TCGx3eeS4AMH5HBfbBdGH/H2SDe+28b9qw==
-X-Received: by 2002:a63:3484:: with SMTP id b126mr12719681pga.17.1575797457824;
-        Sun, 08 Dec 2019 01:30:57 -0800 (PST)
-Received: from localhost.localdomain ([66.234.200.130])
-        by smtp.gmail.com with ESMTPSA id m127sm9077978pfm.167.2019.12.08.01.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2019 01:30:57 -0800 (PST)
-From:   Kyle Ambroff-Kao <kyle@ambroffkao.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Kyle Ambroff-Kao <kyle@ambroffkao.com>
-Subject: [PATCH 1/1] btrfs: Allow replacing device with a smaller one if possible
-Date:   Sun,  8 Dec 2019 01:30:45 -0800
-Message-Id: <20191208093045.43433-2-kyle@ambroffkao.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191208093045.43433-1-kyle@ambroffkao.com>
-References: <20191208093045.43433-1-kyle@ambroffkao.com>
+        id S1727059AbfLHO7p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 8 Dec 2019 09:59:45 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36835 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726677AbfLHO6u (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Dec 2019 09:58:50 -0500
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1idy11-0000R1-5N; Sun, 08 Dec 2019 15:58:31 +0100
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B18EC1C2888;
+        Sun,  8 Dec 2019 15:58:30 +0100 (CET)
+Date:   Sun, 08 Dec 2019 14:58:30 -0000
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/rt, btrfs: Use CONFIG_PREEMPTION
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-btrfs@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20191015191821.11479-25-bigeasy@linutronix.de>
+References: <20191015191821.11479-25-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <157581711061.21853.12879571106733700850.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As long as the target device has enough capacity for the total bytes
-of the source device, allow the replacement to occur.
+The following commit has been merged into the sched/urgent branch of tip:
 
-Just changing the size validation isn't enough though, since the
-rest of the replacement code just assumes that the source device is
-identical to the target device. The current code just blindly
-copies the total disk size from the source to the target.
+Commit-ID:     94545870b14b5eb6d8a887fab845d1918f4f62ac
+Gitweb:        https://git.kernel.org/tip/94545870b14b5eb6d8a887fab845d1918f4f62ac
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 15 Oct 2019 21:18:11 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sun, 08 Dec 2019 14:37:36 +01:00
 
-A btrfs resize <devid>:max could be performed, but we might as well
-just set the disk size for the new target device correctly in the
-first place before initiating a scrub, which is what this patch does.
+sched/rt, btrfs: Use CONFIG_PREEMPTION
 
-When initializing the target device, the size in bytes is calculated
-in the same way that btrfs_init_new_device does it.
+CONFIG_PREEMPTION is selected by CONFIG_PREEMPT and by CONFIG_PREEMPT_RT.
+Both PREEMPT and PREEMPT_RT require the same functionality which today
+depends on CONFIG_PREEMPT.
 
-When the replace operation completes, btrfs_dev_replace_finishing no
-longer clobbers the target device size with the source device size.
+Switch the btrfs_device_set_…() macro over to use CONFIG_PREEMPTION.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=112741
-Signed-off-by: Kyle Ambroff-Kao <kyle@ambroffkao.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: David Sterba <dsterba@suse.com>
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-btrfs@vger.kernel.org
+Link: https://lore.kernel.org/r/20191015191821.11479-25-bigeasy@linutronix.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- fs/btrfs/dev-replace.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ fs/btrfs/volumes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index f639dde2a679..6a7a83ccab56 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -216,7 +216,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 
- 
- 	if (i_size_read(bdev->bd_inode) <
--	    btrfs_device_get_total_bytes(srcdev)) {
-+	    btrfs_device_get_bytes_used(srcdev)) {
- 		btrfs_err(fs_info,
- 			  "target device is smaller than source device!");
- 		ret = -EINVAL;
-@@ -243,8 +243,10 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	device->io_width = fs_info->sectorsize;
- 	device->io_align = fs_info->sectorsize;
- 	device->sector_size = fs_info->sectorsize;
--	device->total_bytes = btrfs_device_get_total_bytes(srcdev);
--	device->disk_total_bytes = btrfs_device_get_disk_total_bytes(srcdev);
-+	device->total_bytes = round_down(
-+		i_size_read(bdev->bd_inode),
-+		fs_info->sectorsize);
-+	device->disk_total_bytes = device->total_bytes;
- 	device->bytes_used = btrfs_device_get_bytes_used(srcdev);
- 	device->commit_total_bytes = srcdev->commit_total_bytes;
- 	device->commit_bytes_used = device->bytes_used;
-@@ -671,9 +673,6 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 	memcpy(uuid_tmp, tgt_device->uuid, sizeof(uuid_tmp));
- 	memcpy(tgt_device->uuid, src_device->uuid, sizeof(tgt_device->uuid));
- 	memcpy(src_device->uuid, uuid_tmp, sizeof(src_device->uuid));
--	btrfs_device_set_total_bytes(tgt_device, src_device->total_bytes);
--	btrfs_device_set_disk_total_bytes(tgt_device,
--					  src_device->disk_total_bytes);
- 	btrfs_device_set_bytes_used(tgt_device, src_device->bytes_used);
- 	tgt_device->commit_bytes_used = src_device->bytes_used;
- 
--- 
-2.20.1
-
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index fc1b564..0ee5386 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -168,7 +168,7 @@ btrfs_device_set_##name(struct btrfs_device *dev, u64 size)		\
+ 	write_seqcount_end(&dev->data_seqcount);			\
+ 	preempt_enable();						\
+ }
+-#elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPT)
++#elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
+ #define BTRFS_DEVICE_GETSET_FUNCS(name)					\
+ static inline u64							\
+ btrfs_device_get_##name(const struct btrfs_device *dev)			\
