@@ -2,57 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2119C1173DD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 19:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B012A11741E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 19:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbfLISQ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 13:16:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58188 "EHLO mx1.suse.de"
+        id S1726777AbfLISZy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 13:25:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36084 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726335AbfLISQ1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 13:16:27 -0500
+        id S1726642AbfLISZx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 13:25:53 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DEC37AB98;
-        Mon,  9 Dec 2019 18:16:25 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 5212CAD2D;
+        Mon,  9 Dec 2019 18:25:51 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D1E91DA82A; Mon,  9 Dec 2019 19:16:18 +0100 (CET)
-Date:   Mon, 9 Dec 2019 19:16:18 +0100
+        id EA416DA82A; Mon,  9 Dec 2019 19:25:43 +0100 (CET)
+Date:   Mon, 9 Dec 2019 19:25:43 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/5] Various fixes
-Message-ID: <20191209181618.GP2734@twin.jikos.cz>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: add missing check after link_free_space
+Message-ID: <20191209182543.GQ2734@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20191206143718.167998-1-josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        kjlu@umn.edu, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191209034114.16212-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191206143718.167998-1-josef@toxicpanda.com>
+In-Reply-To: <20191209034114.16212-1-dinghao.liu@zju.edu.cn>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 06, 2019 at 09:37:13AM -0500, Josef Bacik wrote:
-> These were discovered while reworking how we handle root refs.  They are all
-> relatively straightforward and mostly deal with error cases, with the exception
-> of
+On Mon, Dec 09, 2019 at 11:41:14AM +0800, Dinghao Liu wrote:
+> The return value of link_free_space is checked out-sync.
+> One branch of an if statement uses an extra check after
+> WARN_ON() but its peer branch does not. WARN_ON() does
+> not change the control flow, thus only using this check
+> might be insufficient.
 > 
-> [PATCH 1/5] btrfs: drop log root for dropped roots
-> [PATCH 4/5] btrfs: skip log replay on orphaned roots
+> Fix this by simply adding a check on ret.
 > 
-> These two are pretty important and were uncovered with my fsstress patch.  The
-> first fixes a space leak in the case that we delete a subvol that has a tree log
-> attached to it.  The leak does not persist across mounts so it's not too bad,
-> but still pretty important.  The second patch I've only seen in production once
-> in the last 90 days, but could keep us from mounting if we have a subvol that
-> was deleted with a tree log that we didn't finish deleting.
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> --
+> Changes in v2:
+>   - Add memory free for free space entry.
+> ---
+>  fs/btrfs/free-space-cache.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> The rest of these are just for various error conditions and are less important,
-> but should be safe enough to send along now if desired.  Thanks,
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index 3283da419200..ba2e6cea5233 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -2437,6 +2437,10 @@ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
+>  			if (info->bytes) {
+>  				ret = link_free_space(ctl, info);
+>  				WARN_ON(ret);
+> +				if (ret) {
+> +					kmem_cache_free(btrfs_free_space_cachep, info);
+> +					goto out_lock;
+> +				}
+>  			} else {
+>  				kmem_cache_free(btrfs_free_space_cachep, info);
 
-2-5 added to misc-next, 1 has some comments. Thanks.
+There are two link_free_space followed by WARN_ON instances in the
+function, please remove both.
+
+In the above case, the branches can be merged together so there's not
+repeated kmem_cache_free, like
+
+	if (info->bytes)
+		ret = link_free_space(...);
+	kmem_cache_free(btrfs_free_space_cachep, info);
+	if (ret)
+		goto out_unlock;
