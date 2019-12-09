@@ -2,66 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D0F1171CD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 17:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7EC1172BF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 18:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbfLIQdX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 11:33:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59676 "EHLO mx1.suse.de"
+        id S1726483AbfLIRb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 12:31:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37012 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727026AbfLIQdW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 11:33:22 -0500
+        id S1726230AbfLIRb2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 12:31:28 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 00DFCB1D3;
-        Mon,  9 Dec 2019 16:33:21 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B497BABB1;
+        Mon,  9 Dec 2019 17:31:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 20BCEDA783; Mon,  9 Dec 2019 17:33:14 +0100 (CET)
-Date:   Mon, 9 Dec 2019 17:33:14 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] btrfs: use simple_dir_inode_operations for placeholder
- subvolume directory
-Message-ID: <20191209163313.GM2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
+        id A9504DA783; Mon,  9 Dec 2019 18:31:18 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs kconfig update for 5.5-rc2
+Date:   Mon,  9 Dec 2019 18:31:12 +0100
+Message-Id: <cover.1575911345.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 10:36:04AM -0800, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> When you snapshot a subvolume containing a subvolume, you get a
-> placeholder directory where the subvolume would be. These directories
-> have their own btrfs_dir_ro_inode_operations.
-> 
-> Al pointed out [1] that these directories can use simple_lookup()
-> instead of btrfs_lookup(), as they are always empty. Furthermore, they
-> can use the default generic_permission() instead of btrfs_permission();
-> the additional checks in the latter don't matter because we can't write
-> to the directory anyways. Finally, they can use the default
-> generic_update_time() instead of btrfs_update_time(), as the inode
-> doesn't exist on disk and doesn't need any special handling.
-> 
-> All together, this means that we can get rid of
-> btrfs_dir_ro_inode_operations and use simple_dir_inode_operations
-> instead.
-> 
-> 1: https://lore.kernel.org/linux-btrfs/20190929052934.GY26530@ZenIV.linux.org.uk/
-> 
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+Hi,
 
-Added to misc-next, with a comment why we use the simple ops, thanks.
+this is a separate pull request based on 5.5-rc1 that adds config
+dependency integrating the crypto code and btrfs support for blake2b
+(added in this dev cycle, via different trees). Without it the option
+has to be selected manually. Please pull, thanks.
+
+The following changes since commit e42617b825f8073569da76dc4510bfa019b1c35a:
+
+  Linux 5.5-rc1 (2019-12-08 14:57:55 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc1-kconfig
+
+for you to fetch changes up to 78f926f72e43e4b974f69688593a9b682089e82a:
+
+  btrfs: add Kconfig dependency for BLAKE2B (2019-12-09 17:56:06 +0100)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: add Kconfig dependency for BLAKE2B
+
+ fs/btrfs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
