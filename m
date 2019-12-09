@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB57116B64
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 11:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D5D116B7C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 11:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfLIKtM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 05:49:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38298 "EHLO mx1.suse.de"
+        id S1726477AbfLIKwq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 05:52:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39220 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726377AbfLIKtM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 05:49:12 -0500
+        id S1726297AbfLIKwp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 05:52:45 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E28EEAC10;
-        Mon,  9 Dec 2019 10:49:09 +0000 (UTC)
-Subject: Re: [PATCH 2/5] btrfs: don't BUG_ON in create_subvol
+        by mx1.suse.de (Postfix) with ESMTP id 91DA9ACC4;
+        Mon,  9 Dec 2019 10:52:43 +0000 (UTC)
+Subject: Re: [PATCH 3/5][v2] btrfs: handle ENOENT in btrfs_uuid_tree_iterate
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <20191206143718.167998-1-josef@toxicpanda.com>
- <20191206143718.167998-3-josef@toxicpanda.com>
+References: <20191206143718.167998-4-josef@toxicpanda.com>
+ <20191206163900.168465-1-josef@toxicpanda.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +77,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <ac9fdc7e-c250-4689-f20d-630d328d5ac9@suse.de>
-Date:   Mon, 9 Dec 2019 11:49:09 +0100
+Message-ID: <77246eeb-30d7-1779-0a4c-b8c055922b3d@suse.de>
+Date:   Mon, 9 Dec 2019 11:52:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191206143718.167998-3-josef@toxicpanda.com>
+In-Reply-To: <20191206163900.168465-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,9 +91,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 06/12/2019 17:39, Josef Bacik wrote:
+> If we get an -ENOENT back from btrfs_uuid_iter_rem when iterating the
+> uuid tree we'll just continue and do btrfs_next_item().  However we've
+> done a btrfs_release_path() at this point and no longer have a valid
+> path.  So increment the key and go back and do a normal search.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v1->v2:
+> - increase key.offset instead of key.objectid so we don't skip over a bunch of
+>   keys.
+> 
+>  fs/btrfs/uuid-tree.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+> index 91caab63bdf5..76b84f2397b1 100644
+> --- a/fs/btrfs/uuid-tree.c
+> +++ b/fs/btrfs/uuid-tree.c
+> @@ -324,6 +324,8 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info,
+>  				}
+>  				if (ret < 0 && ret != -ENOENT)
+>  					goto out;
+> +				key.offset++;
+> +				goto again_search_slot;
+>  			}
+>  			item_size -= sizeof(subid_le);
+>  			offset += sizeof(subid_le);
+> 
+
 Looks good,
 Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
