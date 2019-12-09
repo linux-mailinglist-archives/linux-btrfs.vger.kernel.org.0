@@ -2,99 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BC01172F2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 18:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620C8117326
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 18:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbfLIRjW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 12:39:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40976 "EHLO mx1.suse.de"
+        id S1726495AbfLIRuF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 12:50:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46882 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbfLIRjW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 12:39:22 -0500
+        id S1726379AbfLIRuE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 12:50:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 06DB4B13E;
-        Mon,  9 Dec 2019 17:39:20 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 312BEB15B;
+        Mon,  9 Dec 2019 17:50:03 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DA431DA783; Mon,  9 Dec 2019 18:39:13 +0100 (CET)
-Date:   Mon, 9 Dec 2019 18:39:13 +0100
+        id 0F44DDA82A; Mon,  9 Dec 2019 18:49:56 +0100 (CET)
+Date:   Mon, 9 Dec 2019 18:49:55 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 1/5] btrfs: drop log root for dropped roots
-Message-ID: <20191209173913.GN2734@twin.jikos.cz>
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs kconfig update for 5.5-rc2
+Message-ID: <20191209174955.GO2734@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20191206143718.167998-1-josef@toxicpanda.com>
- <20191206143718.167998-2-josef@toxicpanda.com>
- <5e60e26f-8993-ca16-2a93-48d5948ed961@suse.com>
+Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1575911345.git.dsterba@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5e60e26f-8993-ca16-2a93-48d5948ed961@suse.com>
+In-Reply-To: <cover.1575911345.git.dsterba@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 06, 2019 at 05:03:36PM +0200, Nikolay Borisov wrote:
-> On 6.12.19 г. 16:37 ч., Josef Bacik wrote:
-> > If we fsync on a subvolume and create a log root for that volume, and
-> > then later delete that subvolume we'll never clean up its log root.  Fix
-> > this by making switch_commit_roots free the log for any dropped roots we
-> > encounter.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/btrfs/transaction.c | 22 ++++++++++++----------
-> >  1 file changed, 12 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> > index cfc08ef9b876..55d8fd68775a 100644
-> > --- a/fs/btrfs/transaction.c
-> > +++ b/fs/btrfs/transaction.c
-> > @@ -147,13 +147,14 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
-> >  	}
-> >  }
-> >  
-> > -static noinline void switch_commit_roots(struct btrfs_transaction *trans)
-> > +static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
-> >  {
-> > +	struct btrfs_transaction *cur_trans = trans->transaction;
-> >  	struct btrfs_fs_info *fs_info = trans->fs_info;
-> >  	struct btrfs_root *root, *tmp;
-> >  
-> >  	down_write(&fs_info->commit_root_sem);
-> > -	list_for_each_entry_safe(root, tmp, &trans->switch_commits,
-> > +	list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
-> >  				 dirty_list) {
-> >  		list_del_init(&root->dirty_list);
-> >  		free_extent_buffer(root->commit_root);
-> > @@ -165,16 +166,17 @@ static noinline void switch_commit_roots(struct btrfs_transaction *trans)
-> >  	}
-> >  
-> >  	/* We can free old roots now. */
-> > -	spin_lock(&trans->dropped_roots_lock);
-> > -	while (!list_empty(&trans->dropped_roots)) {
-> > -		root = list_first_entry(&trans->dropped_roots,
-> > +	spin_lock(&cur_trans->dropped_roots_lock);
-> > +	while (!list_empty(&cur_trans->dropped_roots)) {
-> > +		root = list_first_entry(&cur_trans->dropped_roots,
-> >  					struct btrfs_root, root_list);
-> >  		list_del_init(&root->root_list);
-> > -		spin_unlock(&trans->dropped_roots_lock);
-> > +		spin_unlock(&cur_trans->dropped_roots_lock);
-> > +		btrfs_free_log(trans, root);
+On Mon, Dec 09, 2019 at 06:31:12PM +0100, David Sterba wrote:
+> Hi,
 > 
-> THis patch should really have been this line and converting
-> switch_commit_roots to taking a trans handle another patch. Otherwise
-> this is lost in the mechanical refactoring.
+> this is a separate pull request based on 5.5-rc1 that adds config
+> dependency integrating the crypto code and btrfs support for blake2b
+> (added in this dev cycle, via different trees). Without it the option
+> has to be selected manually. Please pull, thanks.
+> 
+> The following changes since commit e42617b825f8073569da76dc4510bfa019b1c35a:
+> 
+>   Linux 5.5-rc1 (2019-12-08 14:57:55 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc1-kconfig
 
-Agreed, as this is a bugfix, we want it backported to older threes so
-minimizing the potential conflicts is desired. For that the order 1)
-fix 2) cleanup, seems appropriate.
+There's also the signed tag that I forgot to update in the mail:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc1-kconfig-tag
