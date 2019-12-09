@@ -2,83 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8D311717C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 17:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D0F1171CD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 17:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbfLIQX6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 11:23:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53134 "EHLO mx1.suse.de"
+        id S1727035AbfLIQdX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 11:33:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59676 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726230AbfLIQX6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 11:23:58 -0500
+        id S1727026AbfLIQdW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 11:33:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 49F9DABF6;
-        Mon,  9 Dec 2019 16:23:56 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 00DFCB1D3;
+        Mon,  9 Dec 2019 16:33:21 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6347FDA783; Mon,  9 Dec 2019 17:23:48 +0100 (CET)
-Date:   Mon, 9 Dec 2019 17:23:48 +0100
+        id 20BCEDA783; Mon,  9 Dec 2019 17:33:14 +0100 (CET)
+Date:   Mon, 9 Dec 2019 17:33:14 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix hole extent items with a zero size after
- range cloning
-Message-ID: <20191209162348.GL2734@twin.jikos.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] btrfs: use simple_dir_inode_operations for placeholder
+ subvolume directory
+Message-ID: <20191209163313.GM2734@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20191205165841.18524-1-fdmanana@kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191205165841.18524-1-fdmanana@kernel.org>
+In-Reply-To: <3cc2030c10bcef05fe39f0fe2e8cdfb61c6c0faf.1575570955.git.osandov@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 04:58:41PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Dec 05, 2019 at 10:36:04AM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> Normally when cloning a file range if we find an implicit hole at the end
-> of the range we assume it is because the NO_HOLES feature is enabled.
-> However that is not always the case. One well known case [1] is when we
-> have a power failure after mixing buffered and direct IO writes against
-> the same file.
+> When you snapshot a subvolume containing a subvolume, you get a
+> placeholder directory where the subvolume would be. These directories
+> have their own btrfs_dir_ro_inode_operations.
 > 
-> In such cases we need to punch a hole in the destination file, and if
-> the NO_HOLES feature is not enabled, we need to insert explicit file
-> extent items to represent the hole. After commit 690a5dbfc51315
-> ("Btrfs: fix ENOSPC errors, leading to transaction aborts, when cloning
-> extents"), we started to insert file extent items representing the hole
-> with an item size of 0, which is invalid and should be 53 bytes (the size
-> of a btrfs_file_extent_item structure), resulting in all sorts of
-> corruptions and invalid memory accesses. This is detected by the tree
-> checker when we attempt to write a leaf to disk.
+> Al pointed out [1] that these directories can use simple_lookup()
+> instead of btrfs_lookup(), as they are always empty. Furthermore, they
+> can use the default generic_permission() instead of btrfs_permission();
+> the additional checks in the latter don't matter because we can't write
+> to the directory anyways. Finally, they can use the default
+> generic_update_time() instead of btrfs_update_time(), as the inode
+> doesn't exist on disk and doesn't need any special handling.
 > 
-> The problem can be sporadically triggered by test case generic/561 from
-> fstests. That test case does not exercise power failure and creates a new
-> filesystem when it starts, so it does not use a filesystem created by any
-> previous test that tests power failure. However the test does both
-> buffered and direct IO writes (through fsstress) and it's precisely that
-> which is creating the implicit holes in files. That happens even before
-> the commit mentioned earlier. I need to investigate why we get those
-> implicit holes to check if there is a real problem or not. For now this
-> change fixes the regression of introducing file extent items with an item
-> size of 0 bytes.
+> All together, this means that we can get rid of
+> btrfs_dir_ro_inode_operations and use simple_dir_inode_operations
+> instead.
 > 
-> Fix the issue by calling btrfs_punch_hole_range() without passing a
-> btrfs_clone_extent_info structure, which ensures file extent items are
-> inserted to represent the hole with a correct item size. We were passing
-> a btrfs_clone_extent_info with a value of 0 for its 'item_size' field,
-> which was causing the insertion of file extent items with an item size
-> of 0.
+> 1: https://lore.kernel.org/linux-btrfs/20190929052934.GY26530@ZenIV.linux.org.uk/
 > 
-> [1] https://www.spinics.net/lists/linux-btrfs/msg75350.html
-> 
-> Fixes: 690a5dbfc51315 ("Btrfs: fix ENOSPC errors, leading to transaction aborts, when cloning extents")
-> Reported-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Added to misc-next, thanks.
+Added to misc-next, with a comment why we use the simple ops, thanks.
