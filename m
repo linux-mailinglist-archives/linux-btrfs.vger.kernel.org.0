@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C7B116CD9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 13:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EB5116CDE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Dec 2019 13:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbfLIMHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 07:07:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53548 "EHLO mx1.suse.de"
+        id S1727163AbfLIML1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 07:11:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55130 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726687AbfLIMHP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 07:07:15 -0500
+        id S1726687AbfLIML1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Dec 2019 07:11:27 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BF419AD55;
-        Mon,  9 Dec 2019 12:07:12 +0000 (UTC)
-Subject: Re: [PATCH 1/4] btrfs: tree-checker: Clean up fs_info parameter from
- error message wrapper
+        by mx1.suse.de (Postfix) with ESMTP id 1536DAD6B;
+        Mon,  9 Dec 2019 12:11:25 +0000 (UTC)
+Subject: Re: [PATCH 2/4] btrfs: tree-checker: Refactor inode key check into
+ seperate function
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191209105435.36041-1-wqu@suse.com>
+ <20191209105435.36041-2-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <3c29bdbc-e2cf-c187-22ce-90803ba19ec2@suse.com>
-Date:   Mon, 9 Dec 2019 14:07:10 +0200
+Message-ID: <fe1c51bd-a761-6b63-ea90-c8a75d7f5a23@suse.com>
+Date:   Mon, 9 Dec 2019 14:11:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191209105435.36041-1-wqu@suse.com>
+In-Reply-To: <20191209105435.36041-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,15 +81,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.12.19 г. 12:54 ч., Qu Wenruo wrote:
-> The @fs_info parameter can be extracted from extent_buffer structure,
-> and there are already some wrappers getting rid of the @fs_info
-> parameter.
+> Inode key check is not as easy as several lines, and it will be called
+> in more than one location (INODE_ITEM check and
+> DIR_ITEM/DIR_INDEX/XATTR_ITEM location key check).
 > 
-> This patch will finish the cleanup.
+> So here refactor such check into check_inode_key().
+> 
+> And add extra checks for XATTR_ITEM.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-In this particular case I don't think it makes much of a difference but
-the changes itself is ok.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
