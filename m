@@ -2,54 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA25118E28
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 17:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9540118EB0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 18:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727542AbfLJQvE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 11:51:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58356 "EHLO mx1.suse.de"
+        id S1727791AbfLJRMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 12:12:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43826 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727178AbfLJQvD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 11:51:03 -0500
+        id S1727628AbfLJRMN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 12:12:13 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1BF62AE40;
-        Tue, 10 Dec 2019 16:51:02 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C1A8DAE40;
+        Tue, 10 Dec 2019 17:12:11 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9B6A5DA727; Tue, 10 Dec 2019 17:51:02 +0100 (CET)
-Date:   Tue, 10 Dec 2019 17:51:01 +0100
+        id D657CDA727; Tue, 10 Dec 2019 18:12:11 +0100 (CET)
+Date:   Tue, 10 Dec 2019 18:12:10 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3] btrfs: fix warn_on for send from readonly mount
-Message-ID: <20191210165101.GB3929@twin.jikos.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH 1/9] btrfs: get rid of trivial __btrfs_lookup_bio_sums()
+ wrappers
+Message-ID: <20191210171210.GC3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20191202094450.1377-1-anand.jain@oracle.com>
- <20191205113907.8269-1-anand.jain@oracle.com>
- <CAL3q7H635MDHBAEA0UZZKOn6kz=Hwna2YyM7RLZ=MbYqJOcimQ@mail.gmail.com>
- <7b4f1318-eb0f-8d1d-7ea4-c2d7bce93df4@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Nikolay Borisov <nborisov@suse.com>
+References: <cover.1575336815.git.osandov@fb.com>
+ <af5aefd84186419ead73107895ddd6aba02ef8b6.1575336815.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7b4f1318-eb0f-8d1d-7ea4-c2d7bce93df4@oracle.com>
+In-Reply-To: <af5aefd84186419ead73107895ddd6aba02ef8b6.1575336815.git.osandov@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 07:45:10PM +0800, Anand Jain wrote:
-> On 5/12/19 7:43 PM, Filipe Manana wrote:
-> > On Thu, Dec 5, 2019 at 11:39 AM Anand Jain <anand.jain@oracle.com> wrote:
-> >> Reported-by: Christoph Anton Mitterer <calestyo@scientia.net>
-> >> Link: https://lore.kernel.org/linux-btrfs/21cb5e8d059f6e1496a903fa7bfc0a297e2f5370.camel@scientia.net/
-> >> Suggested-by: Filipe Manana <fdmanana@gmail.com>
-> > 
-> > s/gmail.com/suse.com/
-> > (David can probably do that when he picks the patch)
-> > 
->   Oh. Sorry I missed it. Thanks, Anand
+On Mon, Dec 02, 2019 at 05:34:17PM -0800, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Currently, we have two wrappers for __btrfs_lookup_bio_sums():
+> btrfs_lookup_bio_sums_dio(), which is used for direct I/O, and
+> btrfs_lookup_bio_sums(), which is used everywhere else. The only
+> difference is that the _dio variant looks up csums starting at the given
+> offset instead of using the page index, which isn't actually direct
+> I/O-specific. Let's clean up the signature and return value of
+> __btrfs_lookup_bio_sums(), rename it to btrfs_lookup_bio_sums(), and get
+> rid of the trivial helpers.
+> 
+>  				ret = btrfs_lookup_bio_sums(inode, comp_bio,
+> -							    sums);
+> +							    false, 0, sums);
 
-Fixed and added to misc-next, thanks.
+> -		ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+> +		ret = btrfs_lookup_bio_sums(inode, comp_bio, false, 0, sums);
+
+> -			ret = btrfs_lookup_bio_sums(inode, bio, NULL);
+> +			ret = btrfs_lookup_bio_sums(inode, bio, false, 0, NULL);
+
+> -		ret = btrfs_lookup_bio_sums_dio(inode, dip->orig_bio,
+> -						file_offset);
+> +		ret = btrfs_lookup_bio_sums(inode, dip->orig_bio, true,
+> +					    file_offset, NULL);
+
+Can't we also get rid of the at_offset parameter? Encoding that into
+file_offset itself where at_offset=true would be some special
+placeholder like (u64)-1 that can never be a valid file offset.
