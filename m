@@ -2,72 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9540118EB0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 18:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B395118EE1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 18:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbfLJRMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 12:12:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43826 "EHLO mx1.suse.de"
+        id S1727568AbfLJRW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 12:22:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50100 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727628AbfLJRMN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 12:12:13 -0500
+        id S1727561AbfLJRW7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 12:22:59 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C1A8DAE40;
-        Tue, 10 Dec 2019 17:12:11 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 22DDDB256;
+        Tue, 10 Dec 2019 17:22:58 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D657CDA727; Tue, 10 Dec 2019 18:12:11 +0100 (CET)
-Date:   Tue, 10 Dec 2019 18:12:10 +0100
+        id 7E3A7DA727; Tue, 10 Dec 2019 18:22:43 +0100 (CET)
+Date:   Tue, 10 Dec 2019 18:22:42 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Omar Sandoval <osandov@osandov.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH 1/9] btrfs: get rid of trivial __btrfs_lookup_bio_sums()
- wrappers
-Message-ID: <20191210171210.GC3929@twin.jikos.cz>
+Subject: Re: [PATCH 2/9] btrfs: remove dead snapshot-aware defrag code
+Message-ID: <20191210172242.GD3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         Nikolay Borisov <nborisov@suse.com>
 References: <cover.1575336815.git.osandov@fb.com>
- <af5aefd84186419ead73107895ddd6aba02ef8b6.1575336815.git.osandov@fb.com>
+ <e8079362b1884b5f71ebe839f01ab8492c2d5d2e.1575336815.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <af5aefd84186419ead73107895ddd6aba02ef8b6.1575336815.git.osandov@fb.com>
+In-Reply-To: <e8079362b1884b5f71ebe839f01ab8492c2d5d2e.1575336815.git.osandov@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 05:34:17PM -0800, Omar Sandoval wrote:
+On Mon, Dec 02, 2019 at 05:34:18PM -0800, Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Currently, we have two wrappers for __btrfs_lookup_bio_sums():
-> btrfs_lookup_bio_sums_dio(), which is used for direct I/O, and
-> btrfs_lookup_bio_sums(), which is used everywhere else. The only
-> difference is that the _dio variant looks up csums starting at the given
-> offset instead of using the page index, which isn't actually direct
-> I/O-specific. Let's clean up the signature and return value of
-> __btrfs_lookup_bio_sums(), rename it to btrfs_lookup_bio_sums(), and get
-> rid of the trivial helpers.
-> 
->  				ret = btrfs_lookup_bio_sums(inode, comp_bio,
-> -							    sums);
-> +							    false, 0, sums);
+> Snapshot-aware defrag has been disabled since commit 8101c8dbf624
+> ("Btrfs: disable snapshot aware defrag for now") almost 6 years ago.
+> Let's remove the dead code. If someone is up to the task of bringing it
+> back, they can dig it up from git.
 
-> -		ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
-> +		ret = btrfs_lookup_bio_sums(inode, comp_bio, false, 0, sums);
+While I usually stand against code deletionists, in this case I will not
+and apply the patch. This is a good example how not to implement
+features or do post-merge stabilization. There were runtime problems
+with defrag on heavily referenced extents (many snapshots) so this was
+the main reason to disable it. There's a patchset from Josef from 2014
+bitrotting in some of his trees that was supposed to fix it but this
+hasn't happen.
 
-> -			ret = btrfs_lookup_bio_sums(inode, bio, NULL);
-> +			ret = btrfs_lookup_bio_sums(inode, bio, false, 0, NULL);
-
-> -		ret = btrfs_lookup_bio_sums_dio(inode, dip->orig_bio,
-> -						file_offset);
-> +		ret = btrfs_lookup_bio_sums(inode, dip->orig_bio, true,
-> +					    file_offset, NULL);
-
-Can't we also get rid of the at_offset parameter? Encoding that into
-file_offset itself where at_offset=true would be some special
-placeholder like (u64)-1 that can never be a valid file offset.
+Defrag has been known to break reflinks, from what I've heared some
+users want that behaviour while others not. So this would be good to
+make selectable on the defrag ioctl level. This is a broader task and
+from brief look I haven't seen an easy way how to wire that to the
+current ioctl. Which means a deeper analysis and design needs to happen
+first.
