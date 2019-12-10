@@ -2,62 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 503CA119001
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 19:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96216119006
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 19:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbfLJSs5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 13:48:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56716 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727568AbfLJSs5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 13:48:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BE001ACA4;
-        Tue, 10 Dec 2019 18:48:55 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DDB5CDA727; Tue, 10 Dec 2019 19:48:56 +0100 (CET)
-Date:   Tue, 10 Dec 2019 19:48:56 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 3/9] btrfs: make btrfs_ordered_extent naming consistent
- with btrfs_file_extent_item
-Message-ID: <20191210184856.GI3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+        id S1727558AbfLJSul (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 13:50:41 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:33060 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727349AbfLJSul (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 13:50:41 -0500
+Received: by mail-pl1-f193.google.com with SMTP id c13so229753pls.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2019 10:50:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=85RQ9KfJ30s8ThwUy++S6Z2MwgPqd21iyEz8DMTHbuE=;
+        b=GwWsisvjTW/g8hGt+0LxegVBfG6YoePvJtCxvpaZdHVOyaO87wDdT2ct/2vwWbds5t
+         nHOn3Ym8mmDHpAJhWTkaGvncqWLF17UK2QBtsHyiO+yt8uaaPBbUKqn60jToCTvwig4m
+         fhXKNNs+4MoE831msJyQfGoYKgHoJc1DRqFsMutm67zU52HGorUINnVQwnLmS8hmYJdd
+         /nVAWnzzJvZhVVE2LZBRUVHB6w2mrPlz6cdzGtFdeAPV9cJ9qp5s20fUlRuUTVnOTKuQ
+         WjgU1wSeUPGyLkEoDNI1wBdWQ+UT4wr78pKSmW6yaz8iUNCQbJTpxVDxr7Fka6LKTi1t
+         TimQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=85RQ9KfJ30s8ThwUy++S6Z2MwgPqd21iyEz8DMTHbuE=;
+        b=qiJkAdfLUuArgmz/2Gqwo7pZ8+FuTfs/RXa2UI5Te/fQ9lhSfT3Sx8WMxthKnYUrTN
+         +OWQZl1batoSt4GjyVvaDQh6RsL437Zijl9ENtz8dqK2jFAv3CSHkyLBCmCY0X94wgm9
+         I7bnRQncTFUeTVxSNvtzDneA80c6PdO+EjVEro2bsiLUZZ++USm6p5ICeYBnkBRo5AFn
+         WFcN/IHHZOZ0mDXZkBc2jNCXywG6aLL2UQqxlplxHmPiH2igcs+skr3iA/ZWWyekQbNu
+         xemMVrM2MuRPKDT1okNmHc+Zz3qnB2PSrTHRe/dIMa0q2oywuHu5yEHygV2qwY6gWHns
+         Kfog==
+X-Gm-Message-State: APjAAAUY+eA5PzfBWgM55eufzKcjroKoIDceg3QeSrNYU124DhuvtuQU
+        p7fS4VkDbp8IBipZC4ITNwGPHUZpcmASsg==
+X-Google-Smtp-Source: APXvYqxpV7txqAAG722ELQPliZRdhogO2wja9zhxqqE7Bury8Sjzoq3zytSY6K20Ihcni1TimbqsXw==
+X-Received: by 2002:a17:90a:fb45:: with SMTP id iq5mr6950672pjb.93.1576003840079;
+        Tue, 10 Dec 2019 10:50:40 -0800 (PST)
+Received: from vader ([2620:10d:c090:200::1:c519])
+        by smtp.gmail.com with ESMTPSA id s18sm4151423pfh.47.2019.12.10.10.50.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2019 10:50:39 -0800 (PST)
+Date:   Tue, 10 Dec 2019 10:50:38 -0800
+From:   Omar Sandoval <osandov@osandov.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/9] btrfs: miscellaneous cleanups
+Message-ID: <20191210185038.GD204474@vader>
 References: <cover.1575336815.git.osandov@fb.com>
- <1a8119f808ba10f315b4b6a37ce27896f1b113a4.1575336815.git.osandov@fb.com>
- <20191210182252.GF3929@twin.jikos.cz>
- <20191210183257.GB204474@vader>
+ <20191210184744.GH3929@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191210183257.GB204474@vader>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191210184744.GH3929@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 10:32:57AM -0800, Omar Sandoval wrote:
-> On Tue, Dec 10, 2019 at 07:22:52PM +0100, David Sterba wrote:
-> > On Mon, Dec 02, 2019 at 05:34:19PM -0800, Omar Sandoval wrote:
-> > > From: Omar Sandoval <osandov@fb.com>
-> > > 
-> > > ordered->start, ordered->len, and ordered->disk_len correspond to
-> > > fi->disk_bytenr, fi->num_bytes, and fi->disk_num_bytes, respectively.
-> > > It's confusing to translate between the two naming schemes. Since a
-> > > btrfs_ordered_extent is basically a pending btrfs_file_extent_item,
-> > > let's make the former use the naming from the latter.
-> > > 
-> > > Note that I didn't touch the names in tracepoints just in case there are
-> > > scripts depending on the current naming.
+On Tue, Dec 10, 2019 at 07:47:44PM +0100, David Sterba wrote:
+> On Mon, Dec 02, 2019 at 05:34:16PM -0800, Omar Sandoval wrote:
+> > This series includes several cleanups. Patches 1-3 are the standalone
+> > cleanups from my RWF_ENCODED series [1] (as requested by Dave). Patches
+> > 4-8 clean up code rot in the writepage codepath. Patch 9 is a trivial
+> > cleanup in find_free_extent.
 > > 
-> > Ok, though we've changed tracepoint strings as needed, it's sort of ABI
-> > but also not. In this case the change would affect 4 tracepoints.
+> > Based on misc-next.
+> > 
+> > Thanks!
+> > 
+> > 1: https://lore.kernel.org/linux-btrfs/cover.1574273658.git.osandov@fb.com/
+> > 
+> > Omar Sandoval (9):
+> >   btrfs: get rid of trivial __btrfs_lookup_bio_sums() wrappers
+> >   btrfs: remove dead snapshot-aware defrag code
+> >   btrfs: make btrfs_ordered_extent naming consistent with
+> >     btrfs_file_extent_item
+> >   btrfs: remove unnecessary pg_offset assignments in
+> >     __extent_writepage()
+> >   btrfs: remove trivial goto label in __extent_writepage()
+> >   btrfs: remove redundant i_size check in __extent_writepage_io()
+> >   btrfs: drop create parameter to btrfs_get_extent()
+> >   btrfs: simplify compressed/inline check in __extent_writepage_io()
+> >   btrfs: remove struct find_free_extent.ram_bytes
 > 
-> What would you prefer in this case?
+> Added to misc-next with minor fixups, thanks.
 
-No change of the tracepoint strings for now.
+Thank you!
