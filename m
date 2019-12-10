@@ -2,256 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20119118F62
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 18:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C81FE118F6D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 19:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727607AbfLJR54 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 12:57:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36434 "EHLO mx1.suse.de"
+        id S1727627AbfLJSAu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 13:00:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37262 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727611AbfLJR54 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 12:57:56 -0500
+        id S1727625AbfLJSAt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 13:00:49 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B221DADE4;
-        Tue, 10 Dec 2019 17:57:53 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id A8C34AC4B;
+        Tue, 10 Dec 2019 18:00:47 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Move and unexport btrfs_rmap_block
-Date:   Tue, 10 Dec 2019 19:57:51 +0200
-Message-Id: <20191210175751.1618-1-nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Add self-tests for btrfs_rmap_block
+Date:   Tue, 10 Dec 2019 20:00:45 +0200
+Message-Id: <20191210180045.2047-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191126155354.GH2734@twin.jikos.cz>
-References: <20191126155354.GH2734@twin.jikos.cz>
+In-Reply-To: <20191126160439.GI2734@twin.jikos.cz>
+References: <20191126160439.GI2734@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It's used only during initial block group reading to map physical
-address of super block to a list of logical ones. Make it private to
-block-group.c, add proper kernel doc and ensure it's exported only for
-tests.
+This is enough to exercise out of boundary address exclusion as well as
+address matching.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
-
 V2:
- * Export btrfs_rmap_block only if CONFIG_BTRFS_FS_RUN_SANITY_TESTS is set.
- fs/btrfs/block-group.c | 82 ++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/block-group.h |  5 +++
- fs/btrfs/volumes.c     | 69 -----------------------------------
- fs/btrfs/volumes.h     |  2 --
- 4 files changed, 87 insertions(+), 71 deletions(-)
+ * Adjusted comments about some members of struct rmap_test_vector
+ * Fixed inline comments
+ * Correctly handle error when initialising dummy device
+ * Other minor cosmetic changes around comments/braces for single statement 'if'
+ and structure initialization
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 66fa39632cde..41217be64bf5 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -14,6 +14,7 @@
- #include "sysfs.h"
- #include "tree-log.h"
- #include "delalloc-space.h"
-+#include "raid56.h"
+ fs/btrfs/tests/extent-map-tests.c | 146 +++++++++++++++++++++++++++++-
+ 1 file changed, 145 insertions(+), 1 deletion(-)
 
- /*
-  * Return target flags in extended format or 0 if restripe for this chunk_type
-@@ -1502,6 +1503,87 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
- 	write_sequnlock(&fs_info->profiles_lock);
+diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
+index 4a7f796c9900..4878904434af 100644
+--- a/fs/btrfs/tests/extent-map-tests.c
++++ b/fs/btrfs/tests/extent-map-tests.c
+@@ -6,6 +6,10 @@
+ #include <linux/types.h>
+ #include "btrfs-tests.h"
+ #include "../ctree.h"
++#include "../volumes.h"
++#include "../disk-io.h"
++#include "../block-group.h"
++
+
+ static void free_extent_map_tree(struct extent_map_tree *em_tree)
+ {
+@@ -437,11 +441,144 @@ static int test_case_4(struct btrfs_fs_info *fs_info,
+ 	return ret;
  }
 
-+/*
-+ * btrfs_rmap_block - Maps a particular @physical disk address to a list of @logical
-+ * addresses. Used primarily to exclude those portions of a block group that
-+ * contain super block copies.
-+ *
-+ * chunk_start - Logical address of block group
-+ * physical - Physical address to map to logical addresses
-+ * logical - Return array of logical addresses which map to @physical
-+ * naddrs - Length of @logical
-+ * stripe_len - size of IO stripe for the given block group
-+ */
-+EXPORT_FOR_TESTS
-+int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
-+		     u64 physical, u64 **logical, int *naddrs, int *stripe_len)
++struct rmap_test_vector {
++	u64 raid_type;
++	u64 physical_start;
++	u64 data_stripe_size;
++	u64 num_data_stripes;
++	u64 num_stripes;
++	/* Assume we won't have more than 5 physical stripes */
++	u64 data_stripe_phys_start[5];
++	int expected_mapped_addr;
++	/* Physical to logical addresses */
++	u64 mapped_logical[5];
++};
++
++static int test_rmap_block(struct btrfs_fs_info *fs_info,
++			   struct rmap_test_vector *test)
 +{
 +	struct extent_map *em;
-+	struct map_lookup *map;
-+	u64 *buf;
-+	u64 bytenr;
-+	u64 length;
-+	u64 stripe_nr;
-+	u64 rmap_len;
-+	int i, j, nr = 0;
++	struct map_lookup *map = NULL;
++	u64 *logical;
++	int i, out_ndaddrs, out_stripe_len;
++	int ret = -EINVAL;
 +
-+	em = btrfs_get_chunk_map(fs_info, chunk_start, 1);
-+	if (IS_ERR(em))
-+		return -EIO;
-+
-+	map = em->map_lookup;
-+	length = em->len;
-+	rmap_len = map->stripe_len;
-+
-+	if (map->type & BTRFS_BLOCK_GROUP_RAID10)
-+		length = div_u64(length, map->num_stripes / map->sub_stripes);
-+	else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
-+		length = div_u64(length, map->num_stripes);
-+	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-+		length = div_u64(length, nr_data_stripes(map));
-+		rmap_len = map->stripe_len * nr_data_stripes(map);
++	em = alloc_extent_map();
++	if (!em) {
++		test_std_err(TEST_ALLOC_EXTENT_MAP);
++		return -ENOMEM;
 +	}
 +
-+	buf = kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
-+	BUG_ON(!buf); /* -ENOMEM */
++	map = kmalloc(map_lookup_size(test->num_stripes), GFP_KERNEL);
++	if (!map) {
++		kfree(em);
++		test_std_err(TEST_ALLOC_EXTENT_MAP);
++		return -ENOMEM;
++	}
 +
-+	for (i = 0; i < map->num_stripes; i++) {
-+		if (map->stripes[i].physical > physical ||
-+		    map->stripes[i].physical + length <= physical)
-+			continue;
++	set_bit(EXTENT_FLAG_FS_MAPPING, &em->flags);
++	/* Start at 4gb logical address */
++	em->start = SZ_4G;
++	em->len = test->data_stripe_size * test->num_data_stripes;
++	em->block_len = em->len;
++	em->orig_block_len = test->data_stripe_size;
++	em->map_lookup = map;
 +
-+		stripe_nr = physical - map->stripes[i].physical;
-+		stripe_nr = div64_u64(stripe_nr, map->stripe_len);
++	map->num_stripes = test->num_stripes;
++	map->stripe_len = BTRFS_STRIPE_LEN;
++	map->type = test->raid_type;
 +
-+		if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
-+			stripe_nr = stripe_nr * map->num_stripes + i;
-+			stripe_nr = div_u64(stripe_nr, map->sub_stripes);
-+		} else if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
-+			stripe_nr = stripe_nr * map->num_stripes + i;
-+		} /* else if RAID[56], multiply by nr_data_stripes().
-+		   * Alternatively, just use rmap_len below instead of
-+		   * map->stripe_len */
-+
-+		bytenr = chunk_start + stripe_nr * rmap_len;
-+		WARN_ON(nr >= map->num_stripes);
-+		for (j = 0; j < nr; j++) {
-+			if (buf[j] == bytenr)
-+				break;
++	for (i = 0; i < map->num_stripes; i++)
++	{
++		struct btrfs_device *dev = btrfs_alloc_dummy_device(fs_info);
++		if (!dev) {
++			test_err("ENOMEM while allocating dummy device");
++			goto out;
 +		}
-+		if (j == nr) {
-+			WARN_ON(nr >= map->num_stripes);
-+			buf[nr++] = bytenr;
++		map->stripes[i].dev = dev;
++		map->stripes[i].physical = test->data_stripe_phys_start[i];
++	}
++
++	write_lock(&fs_info->mapping_tree.lock);
++	ret = add_extent_mapping(&fs_info->mapping_tree, em, 0);
++	write_unlock(&fs_info->mapping_tree.lock);
++	if (ret)
++		test_err("Error adding block group mapping to mapping tree");
++
++	ret = btrfs_rmap_block(fs_info, em->start, btrfs_sb_offset(1),
++			       &logical, &out_ndaddrs, &out_stripe_len);
++	if (ret || (out_ndaddrs == 0 && test->expected_mapped_addr)) {
++		test_err("Didn't rmap anything but expected %d",
++			 test->expected_mapped_addr);
++		goto out;
++	}
++
++	if (out_stripe_len != BTRFS_STRIPE_LEN) {
++		test_err("Calculated stripe len doesn't match");
++		goto out;
++	}
++
++	if (out_ndaddrs != test->expected_mapped_addr) {
++		for (i = 0; i < out_ndaddrs; i++)
++			test_msg("Mapped %llu", logical[i]);
++		test_err("Unexpected number of mapped addresses: %d", out_ndaddrs);
++		goto out;
++	}
++
++	for (i = 0; i < out_ndaddrs; i++) {
++		if (logical[i] != test->mapped_logical[i]) {
++			test_err("Unexpected logical address mapped");
++			goto out;
 +		}
 +	}
 +
-+	*logical = buf;
-+	*naddrs = nr;
-+	*stripe_len = rmap_len;
-+
++	ret = 0;
++out:
++	write_lock(&fs_info->mapping_tree.lock);
++	remove_extent_mapping(&fs_info->mapping_tree, em);
++	write_unlock(&fs_info->mapping_tree.lock);
++	/* For us */
 +	free_extent_map(em);
-+	return 0;
++	/* For the tree */
++	free_extent_map(em);
++	return ret;
 +}
 +
- static int exclude_super_stripes(struct btrfs_block_group *cache)
+ int btrfs_test_extent_map(void)
  {
- 	struct btrfs_fs_info *fs_info = cache->fs_info;
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 9b409676c4b2..ef982c8921c8 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -248,4 +248,9 @@ static inline int btrfs_block_group_done(struct btrfs_block_group *cache)
- 		cache->cached == BTRFS_CACHE_ERROR;
- }
-
-+#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-+int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
-+		     u64 physical, u64 **logical, int *naddrs, int *stripe_len);
-+#endif
+ 	struct btrfs_fs_info *fs_info = NULL;
+ 	struct extent_map_tree *em_tree;
+-	int ret = 0;
++	int ret = 0, i;
++	struct rmap_test_vector rmap_tests[] = {
++		{
++			/*
++			 * Tests a chunk with 2 data stripes one of which
++			 * interesects the physical address of the super block
++			 * is correctly recognised.
++			 */
++			.raid_type = BTRFS_BLOCK_GROUP_RAID1,
++			.physical_start = SZ_64M - SZ_4M,
++			.data_stripe_size = SZ_256M,
++			.num_data_stripes = 2,
++			.num_stripes = 2,
++			.data_stripe_phys_start = {SZ_64M - SZ_4M, SZ_64M - SZ_4M + SZ_256M},
++			.expected_mapped_addr = 1,
++			.mapped_logical= {SZ_4G + SZ_4M}
++		},
++		{
++			/* test that out of range physical addresses are ignored */
 +
- #endif /* BTRFS_BLOCK_GROUP_H */
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index f5c0c401c330..99ba3540186d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6108,75 +6108,6 @@ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	return __btrfs_map_block(fs_info, op, logical, length, bbio_ret, 0, 1);
- }
++			 /* SINGLE chunk type */
++			.raid_type = 0,
++			.physical_start = SZ_4G,
++			.data_stripe_size = SZ_256M,
++			.num_data_stripes = 1,
++			.num_stripes = 1,
++			.data_stripe_phys_start = {SZ_256M},
++			.expected_mapped_addr = 0,
++			.mapped_logical = {0}
++		}
++	};
 
--int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		     u64 physical, u64 **logical, int *naddrs, int *stripe_len)
--{
--	struct extent_map *em;
--	struct map_lookup *map;
--	u64 *buf;
--	u64 bytenr;
--	u64 length;
--	u64 stripe_nr;
--	u64 rmap_len;
--	int i, j, nr = 0;
--
--	em = btrfs_get_chunk_map(fs_info, chunk_start, 1);
--	if (IS_ERR(em))
--		return -EIO;
--
--	map = em->map_lookup;
--	length = em->len;
--	rmap_len = map->stripe_len;
--
--	if (map->type & BTRFS_BLOCK_GROUP_RAID10)
--		length = div_u64(length, map->num_stripes / map->sub_stripes);
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
--		length = div_u64(length, map->num_stripes);
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--		length = div_u64(length, nr_data_stripes(map));
--		rmap_len = map->stripe_len * nr_data_stripes(map);
--	}
--
--	buf = kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
--	BUG_ON(!buf); /* -ENOMEM */
--
--	for (i = 0; i < map->num_stripes; i++) {
--		if (map->stripes[i].physical > physical ||
--		    map->stripes[i].physical + length <= physical)
--			continue;
--
--		stripe_nr = physical - map->stripes[i].physical;
--		stripe_nr = div64_u64(stripe_nr, map->stripe_len);
--
--		if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
--			stripe_nr = stripe_nr * map->num_stripes + i;
--			stripe_nr = div_u64(stripe_nr, map->sub_stripes);
--		} else if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
--			stripe_nr = stripe_nr * map->num_stripes + i;
--		} /* else if RAID[56], multiply by nr_data_stripes().
--		   * Alternatively, just use rmap_len below instead of
--		   * map->stripe_len */
--
--		bytenr = chunk_start + stripe_nr * rmap_len;
--		WARN_ON(nr >= map->num_stripes);
--		for (j = 0; j < nr; j++) {
--			if (buf[j] == bytenr)
--				break;
--		}
--		if (j == nr) {
--			WARN_ON(nr >= map->num_stripes);
--			buf[nr++] = bytenr;
--		}
--	}
--
--	*logical = buf;
--	*naddrs = nr;
--	*stripe_len = rmap_len;
--
--	free_extent_map(em);
--	return 0;
--}
--
- static inline void btrfs_end_bbio(struct btrfs_bio *bbio, struct bio *bio)
- {
- 	bio->bi_private = bbio->private;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 3c56ef571b00..c929026bb70b 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -417,8 +417,6 @@ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		     struct btrfs_bio **bbio_ret);
- int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
--int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		     u64 physical, u64 **logical, int *naddrs, int *stripe_len);
- int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
+ 	test_msg("running extent_map tests");
+
+@@ -474,6 +611,13 @@ int btrfs_test_extent_map(void)
+ 		goto out;
+ 	ret = test_case_4(fs_info, em_tree);
+
++	test_msg("Running rmap tests.");
++	for (i = 0; i < ARRAY_SIZE(rmap_tests); i++) {
++		ret = test_rmap_block(fs_info, &rmap_tests[i]);
++		if (ret)
++			goto out;
++	}
++
+ out:
+ 	kfree(em_tree);
+ 	btrfs_free_dummy_fs_info(fs_info);
 --
 2.17.1
 
