@@ -2,201 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF0D118A5D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 15:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55DD118B5A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 15:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbfLJOE4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 09:04:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55670 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727131AbfLJOEz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 09:04:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B098AAC82;
-        Tue, 10 Dec 2019 14:04:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7AEA5DA7A1; Tue, 10 Dec 2019 15:04:41 +0100 (CET)
-Date:   Tue, 10 Dec 2019 15:04:39 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v5 00/22] btrfs: async discard support
-Message-ID: <20191210140438.GU2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <cover.1575919745.git.dennis@kernel.org>
+        id S1727519AbfLJOnC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 09:43:02 -0500
+Received: from mout.gmx.net ([212.227.15.18]:45151 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727385AbfLJOnC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 09:43:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1575988975;
+        bh=WYukfoCHegLBV9mpOXKlkPkrd/q4BY5C5JMJFTudtOI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZmAhBC+oTotx5tB5uZIIl90z/ZSStPknyJ4E4D/e+I5hHxYKjkj8TXLXQwtXnd/8f
+         ZDM1sm7rPTOca56gIL3xeMJ23AfYK7IOyXJ1xb6r1bwEi+wNZl0RwTS8bBoiNHF67/
+         QUaPTXNd9aX1s2g/khzuhQueMypcGe576zHPkm4A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.174] ([34.92.249.81]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1ML9yS-1iMbbo0Yug-00IACE; Tue, 10
+ Dec 2019 15:42:55 +0100
+Subject: Re: [PATCH 2/4] btrfs: tree-checker: Refactor inode key check into
+ seperate function
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191209105435.36041-1-wqu@suse.com>
+ <20191209105435.36041-2-wqu@suse.com>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <82d40759-edd1-b4f3-c38f-a98add7d5089@gmx.com>
+Date:   Tue, 10 Dec 2019 22:42:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0)
+ Gecko/20100101 Thunderbird/72.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1575919745.git.dennis@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191209105435.36041-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hnTuV2Dc86r2khwI7PiA48Xsu3OpaOSlzfo2dcCMhf83lOUN07j
+ GoPVqP9fEQxrXQxLgz6TzETITSqod5QmY98rUxoFAu+UYpljvZKntpylOjcu19LjTbq9Baz
+ zmRrG6FLDvgEg7Ws0UouOLVqd2H5ib/ZZcEL+KbkHfFLGv8KPwmjX7KZgiVD89S83CU6M3c
+ hPiUowI4LZkEvfiP23Raw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2VOXh0La6yg=:RWpG4YLP4kxF7GuX3B8N0O
+ JukbnQfUKIen+Pcd/OgZZMPY8Ed6UGucbYnxMVUJG8AZCloTPLZPp6l4AqkUK/DcGv0Zmjd2g
+ oewg3j1EHuYDVkZU/1EX8dbqWP8xT7pNwOTo+FXC9HpjxBSTstvDG2XiqVHQHvcZ2OiQP/oqd
+ j8HkvjfkC5ztMf0sdQ1cwWwRGFx8OGTay6Xf/wBqP/r5UfL3OyVH9XLvBSAnhyXXYpYkJAJeJ
+ LBDEVC5IybI411hLyCceotJ/QIACdauq6V1qfRSWyaQP0fKiOHBafuovYn/5hLI9vJ1d3/rv/
+ gFUMVB+y/2wHbpUwiole3H4gq/mqsLO3BCN+0yXTrDeB0/3AKCgN9Y3wwWpzALljMATtzdDiT
+ mzBNt7hFuU4GfpumVdzPZcG/iKtsPDR+Pvwr0pF8a6o620MugHRgP+ynLnnsX4B51Bt/c+jj9
+ jMCAR0Cw2PIvagtxHCbAmcoH6Yq0FKTjyxAly1IoIUK/w+j2mT63bsKZSA5+wJb0SQnZK8wO5
+ kpxI9N1aQmLlU51M+Q3DcIkr7GwTX2m82ttaJY1uV8hDXXrnKOTe4LtFFYLhpTLQrpdbHUHZB
+ 84zmfKTqNida+RVoC3MRyHWkR1/HkogdI4XjQn/48TdLP0CaiiR4zmoJhFprzI2gtuWHzoHRd
+ 1Ty11MIlbBK9bjyT3uzGsxXQdZ+ebu2QDTh4r2kuEiPhXNNuBoXA+mH9cG7gEOsRTS7oxentl
+ vJAKuphfPwkGw0eLAxECOaV6nTkXkJ5EWkyeEwRZ5jeuCv8qVFctlu44mA52QJ4ZWSHWEaGD/
+ 7Y6adSBZn7BsU1qyVmGX+GAJPUcbI5CRkqQ+p5a6OmWYlPUqTDk0l6rPC8vVQnEBYVZpxYmHz
+ kpKVfWHKhT6nHIY8BvEqKCgpgkuZjpZ2PheaHH9ka0rzXlzS/AWVF3nJ4XI3KtXoKBD+nZTfS
+ inuKA1tacZzrsLFZxYLuLzHGTQiwEwtsnp6XViLSrKjdTa03vMKNEMuPlkRR/C9hQJypbj1CN
+ A/djHXbi3m1tuDhwddwGwcPaKM+SFxalOosbFQAdTiIxskFsh8VcDwSWmxkpvky/eFQQxPtyl
+ g92Sdr32lkbcp1xK408MB+z4VJDnpphbcHBCAIT/7dQHxmdpwOHvGupSqVBiDevLddHJrsXFi
+ Cy+Ayfn+tuaZjY4wSyHRrmuPQjcGHK0EOgn81xq3uPuf7BwRUKB0DI8o2zMxsJTL9Yp0yLM8f
+ JMkgF7fJFsSeCOy6R5rePJkRCXhMVt5fmT7fdFqQ/3qOyxsvhM8LCnhcm8hE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 11:45:45AM -0800, Dennis Zhou wrote:
-> Hello,
-> 
-> Dave reported that with async discard enabled, relocation fails [1].
-> This could be caused by two things. First, if we unpin extents, that
-> means we haven't fully discarded the block group and need to let async
-> discard revisit it. Second, relocation removes block_groups outside of
-> the normal. I fixed both issues and now it successfully passes xfstests
-> btrfs/003.
-> 
-> Changes in v5:
->  - Changed the rules so free space is always added as the right type
->    based on discard settings (see btrfs_add_free_space()), this removes
->    the need to pass around trim_state in unpin_extent_range().
->  - Handled relocation block group deletion (xfstests btrfs/003)
->  - When adding to the discard lists, make sure the work queue is active.
->    (made all additions go through either btrfs_discard_queue_work() or
->    btrfs_discard_check_filter()).
->  - Added 10 sec reuse timeout for fully empty block groups.
 
-btrfs/011 reports potential deadlock:
 
-[ 2233.150902] ======================================================
-[ 2233.155184] WARNING: possible circular locking dependency detected
-[ 2233.159746] 5.5.0-rc1-default+ #902 Not tainted
-[ 2233.162553] ------------------------------------------------------
-[ 2233.165116] btrfs-cleaner/3837 is trying to acquire lock:
-[ 2233.166725] ffff909174ab6218 (&(&ctl->tree_lock)->rlock){+.+.}, at: btrfs_is_free_space_trimmed+0x17/0x70 [btrfs]
-[ 2233.168932]
-[ 2233.168932] but task is already holding lock:
-[ 2233.170626] ffff909160b24c28 (&(&cache->lock)->rlock){+.+.}, at: btrfs_delete_unused_bgs+0x113/0x880 [btrfs]
-[ 2233.173347]
-[ 2233.173347] which lock already depends on the new lock.
-[ 2233.173347]
-[ 2233.176447]
-[ 2233.176447] the existing dependency chain (in reverse order) is:
-[ 2233.179479]
-[ 2233.179479] -> #3 (&(&cache->lock)->rlock){+.+.}:
-[ 2233.182365]        lock_acquire+0x95/0x1a0
-[ 2233.183768]        _raw_spin_lock+0x31/0x80
-[ 2233.185260]        btrfs_add_reserved_bytes+0x3c/0x440 [btrfs]
-[ 2233.186583]        find_free_extent+0x63e/0xf10 [btrfs]
-[ 2233.187736]        btrfs_reserve_extent+0x9b/0x180 [btrfs]
-[ 2233.188923]        btrfs_alloc_tree_block+0xc1/0x350 [btrfs]
-[ 2233.190150]        alloc_tree_block_no_bg_flush+0x4a/0x60 [btrfs]
-[ 2233.200938]        __btrfs_cow_block+0x143/0x7a0 [btrfs]
-[ 2233.202579]        btrfs_cow_block+0x15f/0x310 [btrfs]
-[ 2233.204288]        commit_cowonly_roots+0x55/0x310 [btrfs]
-[ 2233.206106]        btrfs_commit_transaction+0x505/0xaf0 [btrfs]
-[ 2233.207801]        sync_filesystem+0x6e/0x90
-[ 2233.209176]        generic_shutdown_super+0x22/0x100
-[ 2233.210647]        kill_anon_super+0x14/0x30
-[ 2233.212040]        btrfs_kill_super+0x12/0xa0 [btrfs]
-[ 2233.213704]        deactivate_locked_super+0x2c/0x70
-[ 2233.215428]        cleanup_mnt+0x100/0x160
-[ 2233.216996]        task_work_run+0x90/0xc0
-[ 2233.218500]        exit_to_usermode_loop+0x96/0xa0
-[ 2233.220150]        do_syscall_64+0x1df/0x210
-[ 2233.221654]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 2233.223667]
-[ 2233.223667] -> #2 (&(&space_info->lock)->rlock){+.+.}:
-[ 2233.226158]        lock_acquire+0x95/0x1a0
-[ 2233.227665]        _raw_spin_lock+0x31/0x80
-[ 2233.229209]        __btrfs_block_rsv_release+0x1a6/0x440 [btrfs]
-[ 2233.231268]        btrfs_inode_rsv_release+0x4f/0x190 [btrfs]
-[ 2233.232915]        btrfs_clear_delalloc_extent+0x155/0x4b0 [btrfs]
-[ 2233.234643]        clear_state_bit+0x84/0x1c0 [btrfs]
-[ 2233.236127]        __clear_extent_bit+0x22d/0x5b0 [btrfs]
-[ 2233.237741]        clear_extent_bit+0x15/0x20 [btrfs]
-[ 2233.239452]        btrfs_invalidatepage+0x29b/0x2f0 [btrfs]
-[ 2233.241379]        truncate_cleanup_page+0x42/0xa0
-[ 2233.243061]        truncate_inode_pages_range+0x2bf/0xb40
-[ 2233.244935]        truncate_pagecache+0x44/0x60
-[ 2233.246513]        btrfs_setsize+0x11f/0x4d0 [btrfs]
-[ 2233.248233]        btrfs_setattr+0x5c/0xe0 [btrfs]
-[ 2233.249655]        notify_change+0x283/0x415
-[ 2233.251138]        do_truncate+0x76/0xd0
-[ 2233.252472]        do_last+0x4a5/0x7e0
-[ 2233.253775]        path_openat+0xa2/0x250
-[ 2233.255239]        do_filp_open+0x91/0x100
-[ 2233.256626]        do_sys_open+0x184/0x220
-[ 2233.258098]        do_syscall_64+0x50/0x210
-[ 2233.259539]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 2233.261337] -> #1 (&(&tree->lock)->rlock){+.+.}:
-[ 2233.263598]        lock_acquire+0x95/0x1a0
-[ 2233.265134]        _raw_spin_lock+0x31/0x80
-[ 2233.266726]        find_first_extent_bit+0x32/0x150 [btrfs]
-[ 2233.268354]        write_pinned_extent_entries+0xc5/0x100 [btrfs]
-[ 2233.270202]        __btrfs_write_out_cache+0x16d/0x4a0 [btrfs]
-[ 2233.272011]        btrfs_write_out_cache+0x7a/0xf0 [btrfs]
-[ 2233.273581]        btrfs_write_dirty_block_groups+0x286/0x3a0 [btrfs]
-[ 2233.275305]        commit_cowonly_roots+0x24f/0x310 [btrfs]
-[ 2233.276808]        btrfs_commit_transaction+0x505/0xaf0 [btrfs]
-[ 2233.278699]        sync_filesystem+0x6e/0x90
-[ 2233.280351]        generic_shutdown_super+0x22/0x100
-[ 2233.282198]        kill_anon_super+0x14/0x30
-[ 2233.283907]        btrfs_kill_super+0x12/0xa0 [btrfs]
-[ 2233.285774]        deactivate_locked_super+0x2c/0x70
-[ 2233.287660]        cleanup_mnt+0x100/0x160
-[ 2233.289326]        task_work_run+0x90/0xc0
-[ 2233.291035]        exit_to_usermode_loop+0x96/0xa0
-[ 2233.292580]        do_syscall_64+0x1df/0x210
-[ 2233.293892]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 2233.295558]
-[ 2233.295558] -> #0 (&(&ctl->tree_lock)->rlock){+.+.}:
-[ 2233.298058]        check_prev_add+0xa2/0xa90
-[ 2233.299576]        __lock_acquire+0xe97/0x1320
-[ 2233.301189]        lock_acquire+0x95/0x1a0
-[ 2233.302709]        _raw_spin_lock+0x31/0x80
-[ 2233.304283]        btrfs_is_free_space_trimmed+0x17/0x70 [btrfs]
-[ 2233.306283]        btrfs_delete_unused_bgs+0x2b3/0x880 [btrfs]
-[ 2233.308376]        cleaner_kthread+0x162/0x170 [btrfs]
-[ 2233.310020]        kthread+0x122/0x140
-[ 2233.311285]        ret_from_fork+0x24/0x30
-[ 2233.312619]
-[ 2233.312619] other info that might help us debug this:
-[ 2233.312619]
-[ 2233.315394] Chain exists of:
-[ 2233.315394]   &(&ctl->tree_lock)->rlock --> &(&space_info->lock)->rlock --> &(&cache->lock)->rlock
-[ 2233.315394]
-[ 2233.319913]  Possible unsafe locking scenario:
-[ 2233.319913]
-[ 2233.322174]        CPU0                    CPU1
-[ 2233.323685]        ----                    ----
-[ 2233.325156]   lock(&(&cache->lock)->rlock);
-[ 2233.326601]                                lock(&(&space_info->lock)->rlock);
-[ 2233.328588]                                lock(&(&cache->lock)->rlock);
-[ 2233.330542]   lock(&(&ctl->tree_lock)->rlock);
-[ 2233.332055]
-[ 2233.332055]  *** DEADLOCK ***
-[ 2233.332055]
-[ 2233.334678] 3 locks held by btrfs-cleaner/3837:
-[ 2233.336219]  #0: ffff90914c2bfb88 (&fs_info->delete_unused_bgs_mutex){+.+.}, at: btrfs_delete_unused_bgs+0x103/0x880 [btrfs]
-[ 2233.339756]  #1: ffff909160b235c8 (&space_info->groups_sem){++++}, at: btrfs_delete_unused_bgs+0x10b/0x880 [btrfs]
-[ 2233.343098]  #2: ffff909160b24c28 (&(&cache->lock)->rlock){+.+.}, at: btrfs_delete_unused_bgs+0x113/0x880 [btrfs]
-[ 2233.346574]
-[ 2233.346574] stack backtrace:
-[ 2233.348723] CPU: 0 PID: 3837 Comm: btrfs-cleaner Not tainted 5.5.0-rc1-default+ #902
-[ 2233.351558] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-rebuilt.opensuse.org 04/01/2014
-[ 2233.355122] Call Trace:
-[ 2233.356104]  dump_stack+0x71/0xa0
-[ 2233.357228]  check_noncircular+0x177/0x190
-[ 2233.358640]  check_prev_add+0xa2/0xa90
-[ 2233.359958]  ? kvm_sched_clock_read+0x14/0x30
-[ 2233.361305]  __lock_acquire+0xe97/0x1320
-[ 2233.362583]  lock_acquire+0x95/0x1a0
-[ 2233.363853]  ? btrfs_is_free_space_trimmed+0x17/0x70 [btrfs]
-[ 2233.365428]  _raw_spin_lock+0x31/0x80
-[ 2233.366644]  ? btrfs_is_free_space_trimmed+0x17/0x70 [btrfs]
-[ 2233.368228]  btrfs_is_free_space_trimmed+0x17/0x70 [btrfs]
-[ 2233.369861]  btrfs_delete_unused_bgs+0x2b3/0x880 [btrfs]
-[ 2233.371672]  ? __mutex_unlock_slowpath+0x45/0x2a0
-[ 2233.373291]  cleaner_kthread+0x162/0x170 [btrfs]
-[ 2233.374767]  ? __btrfs_btree_balance_dirty+0x60/0x60 [btrfs]
-[ 2233.376396]  kthread+0x122/0x140
-[ 2233.377525]  ? kthread_create_worker_on_cpu+0x70/0x70
-[ 2233.379210]  ret_from_fork+0x24/0x30
+On 2019/12/9 6:54 PM, Qu Wenruo wrote:
+> Inode key check is not as easy as several lines, and it will be called
+> in more than one location (INODE_ITEM check and
+> DIR_ITEM/DIR_INDEX/XATTR_ITEM location key check).
+>
+> So here refactor such check into check_inode_key().
+>
+> And add extra checks for XATTR_ITEM.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/tree-checker.c | 77 +++++++++++++++++++++++++++++++----------
+>   1 file changed, 59 insertions(+), 18 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 6cb49c75c5e1..68dad9ec38dd 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -359,6 +359,60 @@ static int check_csum_item(struct extent_buffer *le=
+af, struct btrfs_key *key,
+>   	return 0;
+>   }
+>
+> +/* Inode item error output has the same format as dir_item_err() */
+> +#define inode_item_err(eb, slot, fmt, ...)			\
+> +	dir_item_err(eb, slot, fmt, __VA_ARGS__)
+> +
+> +static int check_inode_key(struct extent_buffer *leaf, struct btrfs_key=
+ *key,
+> +			   int slot)
+
+The function name is confusing to me. It checks xattr which is not
+inode related obviously.
+
+I saw the 4th patch. How about introduction of new function
+check_location_key(), then calls check_root_key() , check_inode_key()
+and checks xatrr case inside?
+
+Others in the patchset seem fine to me.
+
+
+Thanks
+> +{
+> +	struct btrfs_key item_key;
+> +	bool is_inode_item;
+> +
+> +	btrfs_item_key_to_cpu(leaf, &item_key, slot);
+> +	is_inode_item =3D (item_key.type =3D=3D BTRFS_INODE_ITEM_KEY);
+> +
+> +	/* For XATTR_ITEM, location key should be all 0 */
+> +	if (item_key.type =3D=3D BTRFS_XATTR_ITEM_KEY) {
+> +		if (key->type !=3D 0 || key->objectid !=3D 0 || key->offset !=3D 0)
+> +			return -EUCLEAN;
+> +		return 0;
+> +	}
+> +
+> +	if ((key->objectid < BTRFS_FIRST_FREE_OBJECTID ||
+> +	     key->objectid > BTRFS_LAST_FREE_OBJECTID) &&
+> +	    key->objectid !=3D BTRFS_ROOT_TREE_DIR_OBJECTID &&
+> +	    key->objectid !=3D BTRFS_FREE_INO_OBJECTID) {
+> +		if (is_inode_item)
+> +			generic_err(leaf, slot,
+> +	"invalid key objectid: has %llu expect %llu or [%llu, %llu] or %llu",
+> +				key->objectid, BTRFS_ROOT_TREE_DIR_OBJECTID,
+> +				BTRFS_FIRST_FREE_OBJECTID,
+> +				BTRFS_LAST_FREE_OBJECTID,
+> +				BTRFS_FREE_INO_OBJECTID);
+> +		else
+> +			dir_item_err(leaf, slot,
+> +"invalid location key objectid: has %llu expect %llu or [%llu, %llu] or=
+ %llu",
+> +				key->objectid, BTRFS_ROOT_TREE_DIR_OBJECTID,
+> +				BTRFS_FIRST_FREE_OBJECTID,
+> +				BTRFS_LAST_FREE_OBJECTID,
+> +				BTRFS_FREE_INO_OBJECTID);
+> +		return -EUCLEAN;
+> +	}
+> +	if (key->offset !=3D 0) {
+> +		if (is_inode_item)
+> +			inode_item_err(leaf, slot,
+> +				       "invalid key offset: has %llu expect 0",
+> +				       key->offset);
+> +		else
+> +			dir_item_err(leaf, slot,
+> +				"invalid location key offset:has %llu expect 0",
+> +				key->offset);
+> +		return -EUCLEAN;
+> +	}
+> +	return 0;
+> +}
+> +
+>   static int check_dir_item(struct extent_buffer *leaf,
+>   			  struct btrfs_key *key, struct btrfs_key *prev_key,
+>   			  int slot)
+> @@ -798,25 +852,12 @@ static int check_inode_item(struct extent_buffer *=
+leaf,
+>   	u64 super_gen =3D btrfs_super_generation(fs_info->super_copy);
+>   	u32 valid_mask =3D (S_IFMT | S_ISUID | S_ISGID | S_ISVTX | 0777);
+>   	u32 mode;
+> +	int ret;
+> +
+> +	ret =3D check_inode_key(leaf, key, slot);
+> +	if (ret < 0)
+> +		return ret;
+>
+> -	if ((key->objectid < BTRFS_FIRST_FREE_OBJECTID ||
+> -	     key->objectid > BTRFS_LAST_FREE_OBJECTID) &&
+> -	    key->objectid !=3D BTRFS_ROOT_TREE_DIR_OBJECTID &&
+> -	    key->objectid !=3D BTRFS_FREE_INO_OBJECTID) {
+> -		generic_err(leaf, slot,
+> -	"invalid key objectid: has %llu expect %llu or [%llu, %llu] or %llu",
+> -			    key->objectid, BTRFS_ROOT_TREE_DIR_OBJECTID,
+> -			    BTRFS_FIRST_FREE_OBJECTID,
+> -			    BTRFS_LAST_FREE_OBJECTID,
+> -			    BTRFS_FREE_INO_OBJECTID);
+> -		return -EUCLEAN;
+> -	}
+> -	if (key->offset !=3D 0) {
+> -		inode_item_err(leaf, slot,
+> -			"invalid key offset: has %llu expect 0",
+> -			key->offset);
+> -		return -EUCLEAN;
+> -	}
+>   	iitem =3D btrfs_item_ptr(leaf, slot, struct btrfs_inode_item);
+>
+>   	/* Here we use super block generation + 1 to handle log tree */
+>
