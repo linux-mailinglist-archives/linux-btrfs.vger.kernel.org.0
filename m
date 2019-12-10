@@ -2,86 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 830D3119268
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 21:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4A01194CC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 22:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbfLJUrp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 15:47:45 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33027 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbfLJUro (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 15:47:44 -0500
-Received: by mail-qk1-f195.google.com with SMTP id d71so9708499qkc.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2019 12:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=brfDeAvapVs1IWQAYvqzmBX7BVOnnV+rFYp3VtF2OSA=;
-        b=I5QEypMiWNt3ukq/J3p83EeOyM1WrwFB6VFJj6VsPiz4PgM+VdvTJA6SgsjrzlJ1Yq
-         JgFZT4iDSRXBKeSckqvePdZzu4QUiYtiKckF4bT2pzjrjk7gn6RqTXONfM1pN211RrXJ
-         J4MjdhgEuEylmBSl3VUWNNZWyT152HhqsfEBylDYc7qJk2Fo27BmgPHtT4OS1A9P1Fyv
-         l+Mr6EtqGhNAAitsTlgnZ83NzVhV7WHDSTWmlAQ4Pjt0b73Tz92q5t3t+db52qXM++aO
-         oCg0ZnqEXDvkwomCM47pV4+pn9SK4Ak0JY8R6xM6kedPVicXd1e6E2q0CoHm48ONVegf
-         iriw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=brfDeAvapVs1IWQAYvqzmBX7BVOnnV+rFYp3VtF2OSA=;
-        b=VXLYCtJIiJH9rCTBjYj3oogCbHQAzkiQ5YEwa+vJUNuUXT8m0CTQsDNjLDJFI3Z1PL
-         ENVj4cjDReXfWqWzt0X1va1yVzpbUwGccBxrac0WgI3B918E7hqQ1VgzVOB+ZtcbMkM1
-         JXp+tJGKFFmbYT1Cff2QSicnnqd8RbZH9QXjbjk1/ek2GYvHpie+O+U6GF2twwWH/YtU
-         7oxCTpo5d0Z+wghySoj4Ggstu1yG70ntTO0WzL+Klu4hu0vbvT62V2MFSuYZbKRgIc/t
-         kxiBhPeLJLG34QqUwMmTbhUH/dW7BaLxG4Vcuc9ASdOl/9vcSWOLe1KmJ0xXtDrJtnqL
-         fYdQ==
-X-Gm-Message-State: APjAAAU8eN04oPayvhg0JaaGavvfnJ3jYNJZf7dqt865LLGjDsB16RlD
-        Pxpk6cEkyOQSCFkxHf/phKvhbw==
-X-Google-Smtp-Source: APXvYqwuOeJY4G/7Ncu0F/iN/4LvvesywqyI7RFGsixjVMyTieOnTgWzsky/fnnkJV85WxRfXcfmXg==
-X-Received: by 2002:ae9:f003:: with SMTP id l3mr3880877qkg.457.1576010863399;
-        Tue, 10 Dec 2019 12:47:43 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id h32sm346951qth.2.2019.12.10.12.47.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Dec 2019 12:47:42 -0800 (PST)
-Subject: Re: [PATCH] btrfs: fix format string warning
-To:     Arnd Bergmann <arnd@arndb.de>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20191210204429.3383471-1-arnd@arndb.de>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <215ae20f-7528-6866-bddd-65ef3f73abe1@toxicpanda.com>
-Date:   Tue, 10 Dec 2019 15:47:41 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        id S1729129AbfLJVMy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 16:12:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729126AbfLJVMy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:12:54 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 272EA222C4;
+        Tue, 10 Dec 2019 21:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576012373;
+        bh=u0aHa+I+Jg9B2MxzGcgEWpk6L/1D3U3c2zfgH+wGegg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2Oe3pjyr4pTbr7icGH6edWTuZxhbu+R8ZF88kGQwXxzhEn90ONpdSpLWrbFOMXK6F
+         y9TPmno/CeWCvzSWgxBzFAImIHGcW2kGTNB5mXMhYNrZ9puUTkFipOFzTbKskAQAim
+         iU++NQ5L6bBi2w3u1Yr587qwSKCiH/7LNzPahX/A=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Omar Sandoval <osandov@fb.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 299/350] btrfs: don't prematurely free work in end_workqueue_fn()
+Date:   Tue, 10 Dec 2019 16:06:44 -0500
+Message-Id: <20191210210735.9077-260-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
+References: <20191210210735.9077-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191210204429.3383471-1-arnd@arndb.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/10/19 3:44 PM, Arnd Bergmann wrote:
-> To print a size_t, the format string modifier %z should be used instead
-> of %l:
-> 
-> fs/btrfs/tree-checker.c: In function 'check_extent_data_item':
-> fs/btrfs/tree-checker.c:230:43: error: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'unsigned int' [-Werror=format=]
->       "invalid item size, have %u expect [%lu, %u)",
->                                           ~~^
->                                           %u
-> 
-> Fixes: 153a6d299956 ("btrfs: tree-checker: Check item size before reading file extent type")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Omar Sandoval <osandov@fb.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+[ Upstream commit 9be490f1e15c34193b1aae17da58e14dd9f55a95 ]
 
-Thanks,
+Currently, end_workqueue_fn() frees the end_io_wq entry (which embeds
+the work item) and then calls bio_endio(). This is another potential
+instance of the bug in "btrfs: don't prematurely free work in
+run_ordered_work()".
 
-Josef
+In particular, the endio call may depend on other work items. For
+example, btrfs_end_dio_bio() can call btrfs_subio_endio_read() ->
+__btrfs_correct_data_nocsum() -> dio_read_error() ->
+submit_dio_repair_bio(), which submits a bio that is also completed
+through a end_workqueue_fn() work item. However,
+__btrfs_correct_data_nocsum() waits for the newly submitted bio to
+complete, thus it depends on another work item.
+
+This example currently usually works because we use different workqueue
+helper functions for BTRFS_WQ_ENDIO_DATA and BTRFS_WQ_ENDIO_DIO_REPAIR.
+However, it may deadlock with stacked filesystems and is fragile
+overall. The proper fix is to free the work item at the very end of the
+work function, so let's do that.
+
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/disk-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 402b61bf345cd..3895c21853cc4 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1657,8 +1657,8 @@ static void end_workqueue_fn(struct btrfs_work *work)
+ 	bio->bi_status = end_io_wq->status;
+ 	bio->bi_private = end_io_wq->private;
+ 	bio->bi_end_io = end_io_wq->end_io;
+-	kmem_cache_free(btrfs_end_io_wq_cache, end_io_wq);
+ 	bio_endio(bio);
++	kmem_cache_free(btrfs_end_io_wq_cache, end_io_wq);
+ }
+ 
+ static int cleaner_kthread(void *arg)
+-- 
+2.20.1
+
