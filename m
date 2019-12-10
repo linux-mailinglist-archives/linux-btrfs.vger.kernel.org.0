@@ -2,254 +2,485 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 438DF117D16
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 02:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BEA117F10
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 05:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbfLJBTq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Dec 2019 20:19:46 -0500
-Received: from mout.gmx.net ([212.227.17.21]:58493 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727059AbfLJBTp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Dec 2019 20:19:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1575940783;
-        bh=uUeBZ3M+b7WpVUOQp5Cz5HWO9KB+oLP9j0li9hrURfg=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=lou1VNOeGUiD4uAvUogEwyNR0sJ8Sp9kcHFdusSClZIXjgrQRz+OjIUKe9/fqErJ+
-         dmKVZD69u6AJsV2adDOSsPYv3Gp859N3amXCmkVMB36ux4BUQZX69oqzM2AdVdhFtt
-         B/JIoYn/oR5pFxmNiq/WqG7EbDGBXJGnyggr0YmY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS9C-1htZZc37Va-00l0GF; Tue, 10
- Dec 2019 02:19:43 +0100
-Subject: Re: df shows no available space in 5.4.1
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Martin Raiber <martin@urbackup.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <0102016edd1b0184-848d9b6d-6b80-4ce3-8428-e472a224e554-000000@eu-west-1.amazonses.com>
- <784074e1-667a-a2c7-5b47-7cbe36f5fdf5@gmx.com>
- <0102016eec056406-8dc0180d-5a2d-44e8-9ae2-f02573e62203-000000@eu-west-1.amazonses.com>
- <b0501a9b-34da-e69b-a06b-1946f7917269@gmx.com>
-Message-ID: <2ae7f7c6-37a6-9133-6f97-e245812b005e@gmx.com>
-Date:   Tue, 10 Dec 2019 09:19:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726818AbfLJEl7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Dec 2019 23:41:59 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:36201 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbfLJEl6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Dec 2019 23:41:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1575952919; x=1607488919;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5pDlEDihnp/qCc8R5Kq7ldKvjSjvbRwakWFnJqPV6qA=;
+  b=EKJbSjcMki29VqyHlAcxcP6HiWzMAYjs87zvBLRycCtoOFBQpZ6xvltY
+   8KzMHg+O6kTSBNzBGW9omy716tO/zYamq5NdkPkMtB1K81Y4AsLVRCRzD
+   iK5fQEywYrpQxlg/+pVFMtiLj7BPTmZhWDSggoykJdB3mVROEMZV/7yx7
+   EIIIjNLim4Kkxny9EiH36z3/Em9TUejWuyv/F2fjlbIIJEWbGZ5gPlG2S
+   /T8ADktexzUehvEf0RCC8sqO1iX7F77+i8x6/NETdHsoRmcvvf/RrL7Fi
+   L7sfOdziQyhg7+SGZsPfvQQq0mNk6G9Nm21pEhXPkS2UYLjBZdhdOFluu
+   w==;
+IronPort-SDR: bpL2Oqj4Y7uV22wmBeQTyj8eP2x2AQlcKJRdbm/eDodFMH4MlNMY5XrHMSA9cSSHCUTJIjZza4
+ ViJqOTPa2K4dHBXqgILh2avkp34jYh1VjeW++sQJRZZpZu8jwx9PFRqQuWdLCXT90WzB1KHveA
+ POn+F+KMPjClz0Bg0siFT59nwD/fIxvR7a9qoVGGtJjb3r04lASlQlsW0Lqxppf7VWRPuuFLZD
+ hDZmtVZHPFysCzwMKzea3uozyS6a8U3Hdg7hJMDEqi/1KgdHUIJiQGH7xlGLVHj5+8os3vjghY
+ 8Rw=
+X-IronPort-AV: E=Sophos;i="5.69,298,1571673600"; 
+   d="scan'208";a="129416749"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Dec 2019 12:41:58 +0800
+IronPort-SDR: ReORM+YiIT9nxDFmX2COhFJ5VBRmITwuKsWMUwCqnR+vOWxbElIc+hbwcXRKBd+7RHgJfxGwOM
+ tXAXaR7DBuLQHiDU/GWKIieYRaF1nlyY3gcsNqaek7y7NkBZxImVvwz9EeNM9LPxGRe1WbAeep
+ YFnN7w7MQKmbvyA3W+QeKdgGpWO3MFm/k/jkkfE2oTjsIHnRrjgDiwMniTwN/k4BSdoor7OutH
+ rUBzj5yj9eP4C4VLyavI7UfnnGw8AbDL0X7hrYItQ+nt7urGSWoePSx7B1xtfdnmwEimQYEYZP
+ bZGz4B4WowvHctgNqP3IPzJ0
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2019 20:36:13 -0800
+IronPort-SDR: Yag/vN/7CPUdn0T0f2Svy8RYm+UM4R7IpZgB+OHrm6QfSKm/+xyqmPdio5miKgKmKZXPOkAzJG
+ W2nePo0Ck4n96K6goVuFdnfqlb5VGqJoC3hUPuZfVG5d3Lx86U/qiVHM8LjPuW7AJq14u/TYQJ
+ VuCa/Oig3qgRR/qbDFAxnM4iz4fBC3o541anry/nWVCbGOz3uUTtOFU9HsAG0VaFAVDt+e+miD
+ qeCl6NMbxcceMF5Eem0U9vpvC+4S9gzqjlhwuoDr59TpbRq1ytx2s6HiTUAYibUJBrwnacjkB+
+ bps=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with SMTP; 09 Dec 2019 20:41:55 -0800
+Received: (nullmailer pid 3909794 invoked by uid 1000);
+        Tue, 10 Dec 2019 04:41:54 -0000
+Date:   Tue, 10 Dec 2019 13:41:54 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 02/28] btrfs: Get zone information of zoned block
+ devices
+Message-ID: <20191210044154.ab5sbvn7476gqdxu@naota.dhcp.fujisawa.hgst.com>
+References: <20191204081735.852438-1-naohiro.aota@wdc.com>
+ <20191204081735.852438-3-naohiro.aota@wdc.com>
+ <77a3d8eb-81c5-14bf-d3ac-66eddc1221b1@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <b0501a9b-34da-e69b-a06b-1946f7917269@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cjK6zWdO1VAtZohpKK9WS0eWIRe4fUW4w"
-X-Provags-ID: V03:K1:0+gGczak5uC1FAaARzLYdQ5CGMOucbL4es/xZKp/Qzin86negbF
- LCWJVFIKfrLEus/pWA4hyoldslF4jsVk1iHci7nGguSJ4FsXEVPrBlJHiSxCXJCR1dSIanV
- YIr/wUDpgt8/oZahJ7NxjPraA//owov1dvZ+aGl54soIP4z52a84pxznx2Up6EWbEUGD67e
- bzJK4618aaNcxl0AunDFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dDrB8m3FW94=:Xw5kxipM4HNJQ9Ywdax7w5
- ItsZXbthpttN48/MWg9rXrUJXxdc1fV7gc4gPCnp6HsOEo1iZBBs48MP+8HJ/JQnAC1t5nT5T
- yX2JGctu7kwkn/bJDhCMGFshub3udBm3vuV54E0l6TtCc85ipgtVDpBN/m4+gRX3ABeTh2tnd
- 6FYtR8IYUErhQbMywwThK80U/0V2RDIstHDrwC6tc5KslrCyzFFkZgUTVRTT4QDje1aCXNwog
- IKUqqaraxnUMWU/9LWKCsf4qPacFxltZvFAlJh5b0VfdlY7ZUDM7svgsxLssdVI8NUasxeOUm
- rrLGS+jmifMWBbFkRroBMacHzkKx+uMr7eBI6k8QyZpJrv/XZweKwwP3mvJOorUSIWARg7FTl
- iRh/ya6zqUBipJJZZAzmpTq+fugF2YOP5K1ELS2r8rjz4jxNAzJ2jV28ZmOo9oTE1zuIeK2gm
- npjRhHtuF7U8BkZTR1tgW0XbMA6f8gX5OBN466Hs8ggL1fcFmx5gsySrTlgpsL46l5LkqQVcv
- 9dLPDLsGjxC0k5JhZuEezBtGdugF4ZKFQqD4Ts+P0r0enJK191ssqgmAJJy6wSxtfiigSHYkr
- kxCzSfDnV6AwJGvtEqyYlne/gKHUFc5UWWLb/W35d4qnEkDNzpSHYWzO9RAgqnk49dHJTrOYu
- iQdkEupp6srRJKV7EyKA1Sn/PwwkDU5ut6h4jI3i+PoWepspNvZARq9YtJ+vUrFU6EDGUKEFi
- 7vLAsVn+xg7u50Bk+ZnmnSZnlMl3XR1k0HmJLl9g3OcgSfGgU/fz4rCw2ZmI/hPgQR4LjtuB2
- i7fGMOqBEO9wggrFIHsHbYZB6RedGWnD10D3POV2hpdpY8p/RMFzMPq34C5fwpVELN5VfQJua
- 35aBiLYIQpF5rtzAzTyoFe/mPggKmE9ZTQR8lrvEFMIJVq1412i1w/Wle0JD9fFba+Wvp9byI
- 0rTu1L6PY1NuzMClgiu7V0YmR5HWaiKgNXVP6eoq5uPBNWLHE4jghGqiBjogIanIuHDerSYQf
- n+6ROXgji/Yy1u/XIREopoJ8YbVSkGGwFB82hgNvopgR8y8ZdNrDbvFinvhCw14EWAWQExZox
- xrvQkPAfO89JuLcad+6nTkrKKcpy/tcWXm5M5FVANEd0LS6Jcr5f73ryyIXplXGPdSFrVgFNw
- gsqs9BV7hS/iryc2C5eFKlgMkyhBofBHUGRLe/VEuJZK6c/pFcrX8Cne8Cuz3m/xIZc8fS0B1
- cPP/4UALbkcGx6m+aStga66ioGds1N5ZTo0Y1I+WrGpljufZ7YLv4F+Rx1Mw=
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <77a3d8eb-81c5-14bf-d3ac-66eddc1221b1@oracle.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cjK6zWdO1VAtZohpKK9WS0eWIRe4fUW4w
-Content-Type: multipart/mixed; boundary="b5TR3CFSatYcp5bQvKEzPinplikXQutdW"
-
---b5TR3CFSatYcp5bQvKEzPinplikXQutdW
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2019/12/10 =E4=B8=8A=E5=8D=888:52, Qu Wenruo wrote:
->=20
->=20
-> On 2019/12/10 =E4=B8=8A=E5=8D=882:56, Martin Raiber wrote:
->> On 07.12.2019 08:28 Qu Wenruo wrote:
->>>
->>> On 2019/12/7 =E4=B8=8A=E5=8D=885:26, Martin Raiber wrote:
->>>> Hi,
->>>>
->>>> with kernel 5.4.1 I have the problem that df shows 100% space used. =
-I
->>>> can still write to the btrfs volume, but my software looks at the
->>>> available space and starts deleting stuff if statfs() says there is =
-a
->>>> low amount of available space.
->>> If the bug still happens, mind to try the snippet to see why this hap=
-pened?
->>>
->>> You will need to:
->>> - Apply the patch to your kernel code
->>> - Recompile the kernel or btrfs module
->>>   So this needs some experience in kernel compile.
->>> - Reboot to newly compiled kernel or load the debug btrfs module
->>>
->>> Thanks,
->>> Qu
->>>
->>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->>> index 23aa630f04c9..cf34c05b16d7 100644
->>> --- a/fs/btrfs/relocation.c
->>> +++ b/fs/btrfs/relocation.c
->>> @@ -523,7 +523,8 @@ static int should_ignore_root(struct btrfs_root *=
-root)
->>>  {
->>>         struct btrfs_root *reloc_root;
->>>
->>> -       if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
->>> +       if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
->>> +           test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
->>>                 return 0;
->>>
->>>         reloc_root =3D root->reloc_root;
->>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->>> index f452a94abdc3..c2b70d97a63b 100644
->>> --- a/fs/btrfs/super.c
->>> +++ b/fs/btrfs/super.c
->>> @@ -2064,6 +2064,8 @@ static int btrfs_statfs(struct dentry *dentry,
->>> struct kstatfs *buf)
->>>                                         found->disk_used;
->>>                 }
->>>
->>> +               pr_info("%s: found type=3D0x%llx disk_used=3D%llu fac=
-tor=3D%d\n",
->>> +                       __func__, found->flags, found->disk_used, fac=
-tor);
->>>                 total_used +=3D found->disk_used;
->>>         }
->>>
->>> @@ -2071,6 +2073,8 @@ static int btrfs_statfs(struct dentry *dentry,
->>> struct kstatfs *buf)
->>>
->>>         buf->f_blocks =3D div_u64(btrfs_super_total_bytes(disk_super)=
-,
->>> factor);
->>>         buf->f_blocks >>=3D bits;
->>> +       pr_info("%s: super_total_bytes=3D%llu total_used=3D%llu
->>> factor=3D%d\n", __func__,
->>> +               btrfs_super_total_bytes(disk_super), total_used, fact=
-or);
->>>         buf->f_bfree =3D buf->f_blocks - (div_u64(total_used, factor)=
- >>
->>> bits);
->>>
->>>         /* Account global block reserve as used, it's in logical size=
-
->>> already */
->>>
->> Applied. It's currently 100% used directly after reboot, and I am
->> getting this log output:
->=20
-> Thank you a lot for the debug output!
->=20
+On Sat, Dec 07, 2019 at 05:47:35PM +0800, Anand Jain wrote:
+>On 4/12/19 4:17 PM, Naohiro Aota wrote:
+>>If a zoned block device is found, get its zone information (number of zones
+>>and zone size) using the new helper function btrfs_get_dev_zone_info().  To
+>>avoid costly run-time zone report commands to test the device zones type
+>>during block allocation, attach the seq_zones bitmap to the device
+>>structure to indicate if a zone is sequential or accept random writes. Also
+>>it attaches the empty_zones bitmap to indicate if a zone is empty or not.
 >>
->> [...]
->> [=C2=A0 241.245150] btrfs_statfs: super_total_bytes=3D128835387392
->> total_used=3D93778841600 factor=3D1
->> [=C2=A0 241.904824] btrfs_statfs: found type=3D0x1 disk_used=3D9346400=
-6656 factor=3D1
->> [=C2=A0 241.904824] btrfs_statfs: found type=3D0x4 disk_used=3D3148185=
-60 factor=3D1
->> [=C2=A0 241.904824] btrfs_statfs: found type=3D0x2 disk_used=3D16384 f=
-actor=3D1
->> [=C2=A0 241.904824] btrfs_statfs: super_total_bytes=3D128835387392
->> total_used=3D93778841600 factor=3D1
->=20
-> This proves the on-disk numbers are all correct, so far so good.
->=20
-> The remaining problem is the block_rsv part. Which matches with the new=
+>>This patch also introduces the helper function btrfs_dev_is_sequential() to
+>>test if the zone storing a block is a sequential write required zone and
+>>btrfs_dev_is_empty_zone() to test if the zone is a empty zone.
+>>
+>>Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/Makefile  |   1 +
+>>  fs/btrfs/hmzoned.c | 174 +++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/hmzoned.h |  92 ++++++++++++++++++++++++
+>>  fs/btrfs/volumes.c |  18 ++++-
+>>  fs/btrfs/volumes.h |   4 ++
+>>  5 files changed, 287 insertions(+), 2 deletions(-)
+>>  create mode 100644 fs/btrfs/hmzoned.c
+>>  create mode 100644 fs/btrfs/hmzoned.h
+>>
+>>diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+>>index 82200dbca5ac..64aaeed397a4 100644
+>>--- a/fs/btrfs/Makefile
+>>+++ b/fs/btrfs/Makefile
+>>@@ -16,6 +16,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>>  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+>>  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+>>+btrfs-$(CONFIG_BLK_DEV_ZONED) += hmzoned.o
+>>  btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+>>  	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+>>diff --git a/fs/btrfs/hmzoned.c b/fs/btrfs/hmzoned.c
+>>new file mode 100644
+>>index 000000000000..e37335625f76
+>>--- /dev/null
+>>+++ b/fs/btrfs/hmzoned.c
+>>@@ -0,0 +1,174 @@
+>>+// SPDX-License-Identifier: GPL-2.0
+>>+/*
+>>+ * Copyright (C) 2019 Western Digital Corporation or its affiliates.
+>>+ * Authors:
+>>+ *	Naohiro Aota	<naohiro.aota@wdc.com>
+>>+ *	Damien Le Moal	<damien.lemoal@wdc.com>
+>>+ */
+>>+
+>>+#include <linux/slab.h>
+>>+#include <linux/blkdev.h>
+>>+#include "ctree.h"
+>>+#include "volumes.h"
+>>+#include "hmzoned.h"
+>>+#include "rcu-string.h"
+>>+
+>>+/* Maximum number of zones to report per blkdev_report_zones() call */
+>>+#define BTRFS_REPORT_NR_ZONES   4096
+>>+
+>>+static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+>>+			       struct blk_zone *zones, unsigned int *nr_zones)
+>>+{
+>>+	int ret;
+>>+
+>>+	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT, zones,
+>>+				  nr_zones);
+>
+> Commit d41003513e61 (block: rework zone reporting) has made into the
+> mainline, which changes the definition of this function and fails to
+> compile with the mainline.
 
-> ticket system introduced in v5.4.
->=20
-> Mind to test the new debug snippet?
->=20
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index f452a94abdc3..516969534095 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2076,6 +2076,8 @@ static int btrfs_statfs(struct dentry *dentry,
-> struct kstatfs *buf)
->         /* Account global block reserve as used, it's in logical size
-> already */
->         spin_lock(&block_rsv->lock);
->         /* Mixed block groups accounting is not byte-accurate, avoid
-> overflow */
-> +       pr_info("%s: block_rsv->size=3D%llu block_rsv->reserved=3D%llu\=
-n",
-> __func__,
-> +               block_rsv->size, block_rsv->reserved);
->         if (buf->f_bfree >=3D block_rsv->size >> bits)
->                 buf->f_bfree -=3D block_rsv->size >> bits;
->         else
->=20
-
-And this extra snippet for available space.
+Yes, I'm aware of the blk-zoned API change. This patch series is based
+on kdave/for-5.5 which is basing on v5.4-rc8, thus the basing branch
+does not contain the block layer commits yet. I will add a patch to
+follow the API change in the next version of my patch series.
 
 Thanks,
-Qu
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..f1a3e01a0ef5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1911,6 +1911,7 @@ static inline int
-btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
-         * We aren't under the device list lock, so this is racy-ish,
-but good
-         * enough for our purposes.
-         */
-+       pr_info("%s: original_free_bytes=3D%llu\n", __func__, *free_bytes=
-);
-        nr_devices =3D fs_info->fs_devices->open_devices;
-        if (!nr_devices) {
-                smp_mb();
-@@ -2005,6 +2006,7 @@ static inline int
-btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
-
-        kfree(devices_info);
-        *free_bytes =3D avail_space;
-+       pr_info("%s: calculated_bytes=3D%llu\n", __func__, avail_space);
-        return 0;
- }
-
-
-
---b5TR3CFSatYcp5bQvKEzPinplikXQutdW--
-
---cjK6zWdO1VAtZohpKK9WS0eWIRe4fUW4w
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3u8qoXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgjHQf/VxkIoWw6l8ffaJ+HlDUrLjYu
-KrLWlIZkZVpN/OyqZdP1joKWN2Fc+mF6Qf4/vuh/oj1hW7HBKs5k243Ekf8bedpd
-p2Fnx61hko3vGOi3FaSHtPeJfpqoiPapyoBNQ0A/xBLZdlXbcSSM0jRQd5gR96to
-wARg2c6FNo5lE+16tuUa66zGIq0q3vryTW1MnmnRvR1fG2020+D68AfSIEaRTBCY
-o86q/XROo5CRp0S/Iv1uH+UosauE6pIMKBBniw6IEAbX8AfEj4ZN3JHbOKY3vLFG
-f8V2boCjvg7cMiZmYlFW/bbBb4LbooOX8NA5UL3FbQQ2YgcQ8fGu9ZK2i8rqdA==
-=iQme
------END PGP SIGNATURE-----
-
---cjK6zWdO1VAtZohpKK9WS0eWIRe4fUW4w--
+>Thanks, Anand
+>
+>
+>
+>>+	if (ret != 0) {
+>>+		btrfs_err_in_rcu(device->fs_info,
+>>+				 "get zone at %llu on %s failed %d", pos,
+>>+				 rcu_str_deref(device->name), ret);
+>>+		return ret;
+>>+	}
+>>+	if (!*nr_zones)
+>>+		return -EIO;
+>>+
+>>+	return 0;
+>>+}
+>>+
+>>+int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = NULL;
+>>+	struct block_device *bdev = device->bdev;
+>>+	sector_t nr_sectors = bdev->bd_part->nr_sects;
+>>+	sector_t sector = 0;
+>>+	struct blk_zone *zones = NULL;
+>>+	unsigned int i, nreported = 0, nr_zones;
+>>+	unsigned int zone_sectors;
+>>+	int ret;
+>>+#define LEN (sizeof(device->fs_info->sb->s_id) + sizeof("(device )") - 1)
+>>+	char devstr[LEN];
+>>+	const int len = LEN;
+>>+#undef LEN
+>>+
+>>+	if (!bdev_is_zoned(bdev))
+>>+		return 0;
+>>+
+>>+	zone_info = kzalloc(sizeof(*zone_info), GFP_KERNEL);
+>>+	if (!zone_info)
+>>+		return -ENOMEM;
+>>+
+>>+	zone_sectors = bdev_zone_sectors(bdev);
+>>+	ASSERT(is_power_of_2(zone_sectors));
+>>+	zone_info->zone_size = (u64)zone_sectors << SECTOR_SHIFT;
+>>+	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
+>>+	zone_info->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
+>>+	if (nr_sectors & (bdev_zone_sectors(bdev) - 1))
+>>+		zone_info->nr_zones++;
+>>+
+>>+	zone_info->seq_zones = kcalloc(BITS_TO_LONGS(zone_info->nr_zones),
+>>+				       sizeof(*zone_info->seq_zones),
+>>+				       GFP_KERNEL);
+>>+	if (!zone_info->seq_zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_zone_info;
+>>+	}
+>>+
+>>+	zone_info->empty_zones = kcalloc(BITS_TO_LONGS(zone_info->nr_zones),
+>>+					 sizeof(*zone_info->empty_zones),
+>>+					 GFP_KERNEL);
+>>+	if (!zone_info->empty_zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_seq_zones;
+>>+	}
+>>+
+>>+	zones = kcalloc(BTRFS_REPORT_NR_ZONES,
+>>+			sizeof(struct blk_zone), GFP_KERNEL);
+>>+	if (!zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_empty_zones;
+>>+	}
+>>+
+>>+	/* Get zones type */
+>>+	while (sector < nr_sectors) {
+>>+		nr_zones = BTRFS_REPORT_NR_ZONES;
+>>+		ret = btrfs_get_dev_zones(device, sector << SECTOR_SHIFT, zones,
+>>+					  &nr_zones);
+>>+		if (ret)
+>>+			goto free_zones;
+>>+
+>>+		for (i = 0; i < nr_zones; i++) {
+>>+			if (zones[i].type == BLK_ZONE_TYPE_SEQWRITE_REQ)
+>>+				set_bit(nreported, zone_info->seq_zones);
+>>+			if (zones[i].cond == BLK_ZONE_COND_EMPTY)
+>>+				set_bit(nreported, zone_info->empty_zones);
+>>+			nreported++;
+>>+		}
+>>+		sector = zones[nr_zones - 1].start + zones[nr_zones - 1].len;
+>>+	}
+>>+
+>>+	if (nreported != zone_info->nr_zones) {
+>>+		btrfs_err_in_rcu(device->fs_info,
+>>+				 "inconsistent number of zones on %s (%u / %u)",
+>>+				 rcu_str_deref(device->name), nreported,
+>>+				 zone_info->nr_zones);
+>>+		ret = -EIO;
+>>+		goto free_zones;
+>>+	}
+>>+
+>>+	kfree(zones);
+>>+
+>>+	device->zone_info = zone_info;
+>>+
+>>+	devstr[0] = 0;
+>>+	if (device->fs_info)
+>>+		snprintf(devstr, len, " (device %s)",
+>>+			 device->fs_info->sb->s_id);
+>>+
+>>+	rcu_read_lock();
+>>+	pr_info(
+>>+"BTRFS info%s: host-%s zoned block device %s, %u zones of %llu sectors",
+>>+		devstr,
+>>+		bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : "aware",
+>>+		rcu_str_deref(device->name), zone_info->nr_zones,
+>>+		zone_info->zone_size >> SECTOR_SHIFT);
+>>+	rcu_read_unlock();
+>>+
+>>+	return 0;
+>>+
+>>+free_zones:
+>>+	kfree(zones);
+>>+free_empty_zones:
+>>+	kfree(zone_info->empty_zones);
+>>+free_seq_zones:
+>>+	kfree(zone_info->seq_zones);
+>>+free_zone_info:
+>>+	kfree(zone_info);
+>>+
+>>+	return ret;
+>>+}
+>>+
+>>+void btrfs_destroy_dev_zone_info(struct btrfs_device *device)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = device->zone_info;
+>>+
+>>+	if (!zone_info)
+>>+		return;
+>>+
+>>+	kfree(zone_info->seq_zones);
+>>+	kfree(zone_info->empty_zones);
+>>+	kfree(zone_info);
+>>+	device->zone_info = NULL;
+>>+}
+>>+
+>>+int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
+>>+		       struct blk_zone *zone)
+>>+{
+>>+	unsigned int nr_zones = 1;
+>>+	int ret;
+>>+
+>>+	ret = btrfs_get_dev_zones(device, pos, zone, &nr_zones);
+>>+	if (ret != 0 || !nr_zones)
+>>+		return ret ? ret : -EIO;
+>>+
+>>+	return 0;
+>>+}
+>>diff --git a/fs/btrfs/hmzoned.h b/fs/btrfs/hmzoned.h
+>>new file mode 100644
+>>index 000000000000..0f8006f39aaf
+>>--- /dev/null
+>>+++ b/fs/btrfs/hmzoned.h
+>>@@ -0,0 +1,92 @@
+>>+/* SPDX-License-Identifier: GPL-2.0 */
+>>+/*
+>>+ * Copyright (C) 2019 Western Digital Corporation or its affiliates.
+>>+ * Authors:
+>>+ *	Naohiro Aota	<naohiro.aota@wdc.com>
+>>+ *	Damien Le Moal	<damien.lemoal@wdc.com>
+>>+ */
+>>+
+>>+#ifndef BTRFS_HMZONED_H
+>>+#define BTRFS_HMZONED_H
+>>+
+>>+struct btrfs_zoned_device_info {
+>>+	/*
+>>+	 * Number of zones, zone size and types of zones if bdev is a
+>>+	 * zoned block device.
+>>+	 */
+>>+	u64 zone_size;
+>>+	u8  zone_size_shift;
+>>+	u32 nr_zones;
+>>+	unsigned long *seq_zones;
+>>+	unsigned long *empty_zones;
+>>+};
+>>+
+>>+#ifdef CONFIG_BLK_DEV_ZONED
+>>+int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
+>>+		       struct blk_zone *zone);
+>>+int btrfs_get_dev_zone_info(struct btrfs_device *device);
+>>+void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
+>>+#else /* CONFIG_BLK_DEV_ZONED */
+>>+static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
+>>+				     struct blk_zone *zone)
+>>+{
+>>+	return 0;
+>>+}
+>>+static inline int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>>+{
+>>+	return 0;
+>>+}
+>>+static inline void btrfs_destroy_dev_zone_info(struct btrfs_device *device) { }
+>>+#endif
+>>+
+>>+static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = device->zone_info;
+>>+
+>>+	if (!zone_info)
+>>+		return false;
+>>+
+>>+	return test_bit(pos >> zone_info->zone_size_shift,
+>>+			zone_info->seq_zones);
+>>+}
+>>+
+>>+static inline bool btrfs_dev_is_empty_zone(struct btrfs_device *device, u64 pos)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = device->zone_info;
+>>+
+>>+	if (!zone_info)
+>>+		return true;
+>>+
+>>+	return test_bit(pos >> zone_info->zone_size_shift,
+>>+			zone_info->empty_zones);
+>>+}
+>>+
+>>+static inline void btrfs_dev_set_empty_zone_bit(struct btrfs_device *device,
+>>+						u64 pos, bool set)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = device->zone_info;
+>>+	unsigned int zno;
+>>+
+>>+	if (!zone_info)
+>>+		return;
+>>+
+>>+	zno = pos >> zone_info->zone_size_shift;
+>>+	if (set)
+>>+		set_bit(zno, zone_info->empty_zones);
+>>+	else
+>>+		clear_bit(zno, zone_info->empty_zones);
+>>+}
+>>+
+>>+static inline void btrfs_dev_set_zone_empty(struct btrfs_device *device,
+>>+					    u64 pos)
+>>+{
+>>+	btrfs_dev_set_empty_zone_bit(device, pos, true);
+>>+}
+>>+
+>>+static inline void btrfs_dev_clear_zone_empty(struct btrfs_device *device,
+>>+					      u64 pos)
+>>+{
+>>+	btrfs_dev_set_empty_zone_bit(device, pos, false);
+>>+}
+>>+
+>>+#endif
+>>diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>index d8e5560db285..18ea8dfce244 100644
+>>--- a/fs/btrfs/volumes.c
+>>+++ b/fs/btrfs/volumes.c
+>>@@ -30,6 +30,7 @@
+>>  #include "tree-checker.h"
+>>  #include "space-info.h"
+>>  #include "block-group.h"
+>>+#include "hmzoned.h"
+>>  const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+>>  	[BTRFS_RAID_RAID10] = {
+>>@@ -366,6 +367,7 @@ void btrfs_free_device(struct btrfs_device *device)
+>>  	rcu_string_free(device->name);
+>>  	extent_io_tree_release(&device->alloc_state);
+>>  	bio_put(device->flush_bio);
+>>+	btrfs_destroy_dev_zone_info(device);
+>>  	kfree(device);
+>>  }
+>>@@ -650,6 +652,11 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>>  	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+>>  	device->mode = flags;
+>>+	/* Get zone type information of zoned block devices */
+>>+	ret = btrfs_get_dev_zone_info(device);
+>>+	if (ret != 0)
+>>+		goto error_brelse;
+>>+
+>>  	fs_devices->open_devices++;
+>>  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+>>  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
+>>@@ -2421,6 +2428,14 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>  	}
+>>  	rcu_assign_pointer(device->name, name);
+>>+	device->fs_info = fs_info;
+>>+	device->bdev = bdev;
+>>+
+>>+	/* Get zone type information of zoned block devices */
+>>+	ret = btrfs_get_dev_zone_info(device);
+>>+	if (ret)
+>>+		goto error_free_device;
+>>+
+>>  	trans = btrfs_start_transaction(root, 0);
+>>  	if (IS_ERR(trans)) {
+>>  		ret = PTR_ERR(trans);
+>>@@ -2437,8 +2452,6 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>  					 fs_info->sectorsize);
+>>  	device->disk_total_bytes = device->total_bytes;
+>>  	device->commit_total_bytes = device->total_bytes;
+>>-	device->fs_info = fs_info;
+>>-	device->bdev = bdev;
+>>  	set_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+>>  	clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
+>>  	device->mode = FMODE_EXCL;
+>>@@ -2571,6 +2584,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>  		sb->s_flags |= SB_RDONLY;
+>>  	if (trans)
+>>  		btrfs_end_transaction(trans);
+>>+	btrfs_destroy_dev_zone_info(device);
+>>  error_free_device:
+>>  	btrfs_free_device(device);
+>>  error:
+>>diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+>>index fc1b564b9cfe..70cabe65f72a 100644
+>>--- a/fs/btrfs/volumes.h
+>>+++ b/fs/btrfs/volumes.h
+>>@@ -53,6 +53,8 @@ struct btrfs_io_geometry {
+>>  #define BTRFS_DEV_STATE_REPLACE_TGT	(3)
+>>  #define BTRFS_DEV_STATE_FLUSH_SENT	(4)
+>>+struct btrfs_zoned_device_info;
+>>+
+>>  struct btrfs_device {
+>>  	struct list_head dev_list; /* device_list_mutex */
+>>  	struct list_head dev_alloc_list; /* chunk mutex */
+>>@@ -66,6 +68,8 @@ struct btrfs_device {
+>>  	struct block_device *bdev;
+>>+	struct btrfs_zoned_device_info *zone_info;
+>>+
+>>  	/* the mode sent to blkdev_get */
+>>  	fmode_t mode;
+>>
+>
