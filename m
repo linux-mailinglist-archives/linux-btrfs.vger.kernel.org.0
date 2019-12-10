@@ -2,111 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7847811824C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 09:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9F51182EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 09:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbfLJIeq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 03:34:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50538 "EHLO mx1.suse.de"
+        id S1726890AbfLJI7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 03:59:21 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:7180 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726750AbfLJIeq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 03:34:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3EDA6ACB7;
-        Tue, 10 Dec 2019 08:34:44 +0000 (UTC)
-Subject: Re: [PATCH 2/2] btrfs-progs: mkfs-tests: Change $dev1 to TEST_DEV
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20191205153647.31961-1-marcos.souza.org@gmail.com>
- <20191205153647.31961-2-marcos.souza.org@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <63d9002a-e590-136a-f82c-01affeeb9835@suse.com>
-Date:   Tue, 10 Dec 2019 10:34:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726574AbfLJI7V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 03:59:21 -0500
+Received: from localhost.localdomain (unknown [222.205.61.84])
+        by mail-app3 (Coremail) with SMTP id cC_KCgB3GbxbXu9dno13Aw--.7592S3;
+        Tue, 10 Dec 2019 16:59:07 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] btrfs: add missing check after link_free_space
+Date:   Tue, 10 Dec 2019 16:56:22 +0800
+Message-Id: <20191210085623.17737-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20191205153647.31961-2-marcos.souza.org@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cC_KCgB3GbxbXu9dno13Aw--.7592S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur15XFWUWF43Kr4xJF43ZFb_yoW8XF4xpF
+        9akF1DJw1kZw4rCFWDKw4DWFyFgayvga15uasrAa17Ar43uryqqry0yF15C3W2yr97Jr4I
+        yan8KFyUAr43AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
+        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        U4a0PUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The return value of link_free_space is checked out-sync.
+One branch of an if statement uses an extra check after
+WARN_ON() but its peer branch does not. WARN_ON() does
+not change the control flow, thus only using this check
+might be insufficient.
 
+Fix this by simply adding a check on ret.
 
-On 5.12.19 г. 17:36 ч., Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> It seems to be a typo, since $dev1 was not set, and we are dealing with
-> TEST_DEV and not with loop devices.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+The repeated kmem_cache_free branches have not been merged 
+because this will influence the original control flow. If 
+the control flow does not step into the if (ret) branch, 
+then we actually need not to free memory again.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+--
+Changes in v3:
+  - Remove WARN_ON after link_free_space
+---
+ fs/btrfs/free-space-cache.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> ---
->  tests/mkfs-tests/020-basic-checksums-mount/test.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tests/mkfs-tests/020-basic-checksums-mount/test.sh b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-> index b7252786..42bf5fab 100755
-> --- a/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-> +++ b/tests/mkfs-tests/020-basic-checksums-mount/test.sh
-> @@ -17,7 +17,7 @@ test_mkfs_mount_checksum()
->  	run_check $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$TEST_DEV"
->  	run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
->  
-> -	run_check $SUDO_HELPER mount "$dev1" "$TEST_MNT"
-> +	run_check $SUDO_HELPER mount "$TEST_DEV" "$TEST_MNT"
->  	run_check "$TOP/btrfs" filesystem df "$TEST_MNT"
->  	run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
->  	run_check $SUDO_HELPER "$TOP/btrfs" device usage "$TEST_MNT"
-> 
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 3283da419200..ae4eea12fc9a 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2436,7 +2436,10 @@ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
+ 			info->offset += to_free;
+ 			if (info->bytes) {
+ 				ret = link_free_space(ctl, info);
+-				WARN_ON(ret);
++				if (ret) {
++					kmem_cache_free(btrfs_free_space_cachep, info);
++					goto out_lock;
++				}
+ 			} else {
+ 				kmem_cache_free(btrfs_free_space_cachep, info);
+ 			}
+@@ -2449,7 +2452,6 @@ int btrfs_remove_free_space(struct btrfs_block_group *block_group,
+ 
+ 			info->bytes = offset - info->offset;
+ 			ret = link_free_space(ctl, info);
+-			WARN_ON(ret);
+ 			if (ret)
+ 				goto out_lock;
+ 
+-- 
+2.21.0 (Apple Git-122)
 
