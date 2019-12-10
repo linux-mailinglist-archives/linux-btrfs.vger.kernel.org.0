@@ -2,128 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED39119178
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 21:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B0D119260
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Dec 2019 21:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbfLJUFc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 15:05:32 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46445 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbfLJUFc (ORCPT
+        id S1726683AbfLJUom (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 15:44:42 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:35431 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbfLJUom (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 15:05:32 -0500
-Received: by mail-qt1-f196.google.com with SMTP id 38so3926596qtb.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Dec 2019 12:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=w3hcQIixNJoanH48JscfQYinvbyEIfHOY0XASRkBE/Y=;
-        b=dJOuphUILqibUHrAj9o3Jz6IIgh/3s+qbPKd9uePJZfY+j9tyGsqcJPVGQRNrDzvgN
-         2mVaZZh0p8SLLHInEf7Obmj6J9KH0QEHNL/y8J4zJIMbCL3Kk2BGUF9j7Mbm48NK+LXx
-         R1UXtpbN+8oi1Xoz83CBzrBxFGsWIHh2EU2woZkDyJnjnLTQuRmKRD4A4weFYFoOie5k
-         VMvHUEKB/EzT/0ctC98jQlk4ARCJXxR4xhRc8DFAED9NNzgLX/15vw6isIIjUovYcH4B
-         +Kl03919+YulaSWWeLXUtYpgqChGuI0LNrhIrziUwhC8YY2VO1eqnLC9UMQj53GUe8Ye
-         ioUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w3hcQIixNJoanH48JscfQYinvbyEIfHOY0XASRkBE/Y=;
-        b=U+caX+/HKToNOEADavvt0WKaNsnbDLu17QCPu61/VNWkpLjZLg3tanXhxsWjIpU410
-         V4tKZippzKyuLQRQGZW8B9W/emJSdVMViybniUrRulqWLlJtEgBpIyNXF8It/8NKdwpG
-         polEqCm772h0kJaysTyEpa8+eKj3HPri7x4U6AUoYZQ+VocV/ouzZsjCGDAHy+fmfi6d
-         AnwQ/QbAMSB5j5CDj3L5JsrjGJIZXGaXzLc5UvupBKAt+PeQPszpTjZIFKpyI7Z6PubD
-         +QcId7Wz3+jVCim/bcmH5H20jL5e4wbgGvrtG74nK52wQMF2+A0BQhA9rXOdWzk5/Uv+
-         8nCg==
-X-Gm-Message-State: APjAAAXl8k3Um+NKDrvK1B6lmxRqe2K1N9Tp7mnNkLm23jHqZqNgmRGZ
-        uN5W15IrvnNDGFJFa7qF+QB6pQ==
-X-Google-Smtp-Source: APXvYqxRBjCPFDyvRGCO+QzJCPlKVa+pyQdtIt/x/bDUkl7mGJJO82U01xt3WCsEZcrKA+9xSLA68A==
-X-Received: by 2002:ac8:641:: with SMTP id e1mr32040916qth.319.1576008331334;
-        Tue, 10 Dec 2019 12:05:31 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u52sm204128qta.23.2019.12.10.12.05.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Dec 2019 12:05:30 -0800 (PST)
-Subject: Re: [PATCH 1/5] btrfs: drop log root for dropped roots
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20191206143718.167998-1-josef@toxicpanda.com>
- <20191206143718.167998-2-josef@toxicpanda.com>
- <5e60e26f-8993-ca16-2a93-48d5948ed961@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <802950f7-b762-920b-7747-cfc18ff64e24@toxicpanda.com>
-Date:   Tue, 10 Dec 2019 15:05:29 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        Tue, 10 Dec 2019 15:44:42 -0500
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1M5fQq-1id9Xg41sY-007E8Y; Tue, 10 Dec 2019 21:44:31 +0100
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: fix format string warning
+Date:   Tue, 10 Dec 2019 21:44:16 +0100
+Message-Id: <20191210204429.3383471-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-In-Reply-To: <5e60e26f-8993-ca16-2a93-48d5948ed961@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:fkWU2dqOu7RW9WJgIGMm6dYvGG94Cinc06kMtHqOqNk38iTxfmg
+ k5h9IqQvu5n3E5gEjn2ilcUrVt93b5dMbPlbqjic9mt5UivT5iS6LlhARBRv3M6mUh2SEHx
+ FDEdnLS2YOpxM94nghEDd7AAJ1sTg+mMGmLxA5WvewuxEiCVD7Wz3o2sM4zIId29q2llC50
+ XGfZi2mAR9gfvAPYv/isg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tSW74QnZ+WA=:86kHDUdr9lu5Hyau6Eigur
+ /LIAAzY68Nt59XSEtNSVGAqm3w/ECsvQtcWhoOkf/sJ/ek8X4OyXrn5nhr5EUWM5DgfO7wMVm
+ NDkI3eiWSH5QT0ywy00s2v80DVGePzi3vSw2OPPDD9Iw8NADylRjSSM6h9cLAfK7/two115RX
+ jIeTHC9ZZiJWcvPjfxBydYy3IrZU8TkL3nPKYLgmnRQKXYU5w6GTWp2dnazGDNbhW2Dwb+O0l
+ UuwMnZgWRZqSlGDcic5clXiSwXX6c838y0p+mKoGM4ixNn2cqUyshLZlWoTDXErF565aIvSBB
+ jPxPL38OwkF08Zjsyjj2FnkuuEh6E0wsuegp2c4gXdl3Gd+Srp8TDK/3XrnT9K+cgJbZyjy8f
+ RqPWfx4yc/s3jb/CbS9VMxR5tqP4PRrDNGBnuobvIOQZ1ELY8PLQ1SzRZwQq/E1w5CeUy6IPB
+ f5gLL+7tOTSK8OIsCdLvGC0nqh1+TYv/5ciEXRFAlocGqKjhqgdBBEvwrnElXpM8SzJi9bye4
+ 3nvxe4xm5fER5DTJcbp9D7FGDX03unqJaSfp3Jl0vc2H0kjXvoAjODIrNlASGa/COIq2/8/m1
+ rB4ZjpxqqqVJnZ3EpBl5puakwOcqizaSXuOd94gow99knEkj5Aqtw2A4U6mA3mO2t4eu8CwwR
+ DfQFZsvjX2doTGMdwEinT8qylA3wYS4nqsCqGWfkyEpQLFZfytIV+Wed4LGzJisJw+0shcMX5
+ 477gpw+FG4Wgn33+LT9nxmAjFwsc7m9RsLsztI4t2tvJscwyKyyNFi9v0PKVGi8yeQWW6YUtY
+ i8v85XPmt3G8LHEua30p9ohkpIya5EPAh4adkFGsoNatLbdhLurfliilBnWhJYK/YQNToL1M9
+ oDSgwx3aaR/Qk9eznaoQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/6/19 10:03 AM, Nikolay Borisov wrote:
-> 
-> 
-> On 6.12.19 г. 16:37 ч., Josef Bacik wrote:
->> If we fsync on a subvolume and create a log root for that volume, and
->> then later delete that subvolume we'll never clean up its log root.  Fix
->> this by making switch_commit_roots free the log for any dropped roots we
->> encounter.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   fs/btrfs/transaction.c | 22 ++++++++++++----------
->>   1 file changed, 12 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
->> index cfc08ef9b876..55d8fd68775a 100644
->> --- a/fs/btrfs/transaction.c
->> +++ b/fs/btrfs/transaction.c
->> @@ -147,13 +147,14 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
->>   	}
->>   }
->>   
->> -static noinline void switch_commit_roots(struct btrfs_transaction *trans)
->> +static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
->>   {
->> +	struct btrfs_transaction *cur_trans = trans->transaction;
->>   	struct btrfs_fs_info *fs_info = trans->fs_info;
->>   	struct btrfs_root *root, *tmp;
->>   
->>   	down_write(&fs_info->commit_root_sem);
->> -	list_for_each_entry_safe(root, tmp, &trans->switch_commits,
->> +	list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
->>   				 dirty_list) {
->>   		list_del_init(&root->dirty_list);
->>   		free_extent_buffer(root->commit_root);
->> @@ -165,16 +166,17 @@ static noinline void switch_commit_roots(struct btrfs_transaction *trans)
->>   	}
->>   
->>   	/* We can free old roots now. */
->> -	spin_lock(&trans->dropped_roots_lock);
->> -	while (!list_empty(&trans->dropped_roots)) {
->> -		root = list_first_entry(&trans->dropped_roots,
->> +	spin_lock(&cur_trans->dropped_roots_lock);
->> +	while (!list_empty(&cur_trans->dropped_roots)) {
->> +		root = list_first_entry(&cur_trans->dropped_roots,
->>   					struct btrfs_root, root_list);
->>   		list_del_init(&root->root_list);
->> -		spin_unlock(&trans->dropped_roots_lock);
->> +		spin_unlock(&cur_trans->dropped_roots_lock);
->> +		btrfs_free_log(trans, root);
-> 
-> THis patch should really have been this line and converting
-> switch_commit_roots to taking a trans handle another patch. Otherwise
-> this is lost in the mechanical refactoring.
-> 
+To print a size_t, the format string modifier %z should be used instead
+of %l:
 
-We need the trans handle to even call btrfs_free_log, we're just fixing it so 
-the trans handle can be passed in, making its separate is just superfluous.  Thanks,
+fs/btrfs/tree-checker.c: In function 'check_extent_data_item':
+fs/btrfs/tree-checker.c:230:43: error: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'unsigned int' [-Werror=format=]
+     "invalid item size, have %u expect [%lu, %u)",
+                                         ~~^
+                                         %u
 
-Josef
+Fixes: 153a6d299956 ("btrfs: tree-checker: Check item size before reading file extent type")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/btrfs/tree-checker.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 493d4d9e0f79..092b8ece36d7 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -227,7 +227,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 	 */
+ 	if (item_size < BTRFS_FILE_EXTENT_INLINE_DATA_START) {
+ 		file_extent_err(leaf, slot,
+-				"invalid item size, have %u expect [%lu, %u)",
++				"invalid item size, have %u expect [%zu, %u)",
+ 				item_size, BTRFS_FILE_EXTENT_INLINE_DATA_START,
+ 				SZ_4K);
+ 		return -EUCLEAN;
+-- 
+2.20.0
+
