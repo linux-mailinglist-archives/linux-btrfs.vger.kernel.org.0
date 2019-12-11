@@ -2,57 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A23411B5E0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 16:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF58C11B231
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 16:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbfLKP5A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 10:57:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51172 "EHLO mx1.suse.de"
+        id S2387613AbfLKPea (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 10:34:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37686 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730461AbfLKPPU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 10:15:20 -0500
+        id S1733083AbfLKPe3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Dec 2019 10:34:29 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 433E3AB71;
-        Wed, 11 Dec 2019 15:15:18 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B44E3AD6B;
+        Wed, 11 Dec 2019 15:34:28 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DE4C1DA883; Wed, 11 Dec 2019 16:15:18 +0100 (CET)
-Date:   Wed, 11 Dec 2019 16:15:18 +0100
+        id A68F2DA883; Wed, 11 Dec 2019 16:34:29 +0100 (CET)
+Date:   Wed, 11 Dec 2019 16:34:29 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Subject: Re: [PATCH 2/3] btrfs: relocation: Fix KASAN report on
- create_reloc_tree due to extended reloc tree lifepsan
-Message-ID: <20191211151518.GN3929@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: fixes for relocation to avoid KASAN reports
+Message-ID: <20191211153429.GO3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20191211050004.18414-1-wqu@suse.com>
- <20191211050004.18414-3-wqu@suse.com>
- <e429eb35-16d3-1231-b984-7210b1b6972b@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e429eb35-16d3-1231-b984-7210b1b6972b@toxicpanda.com>
+In-Reply-To: <20191211050004.18414-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 09:55:04AM -0500, Josef Bacik wrote:
-> > +	/*
-> > +	 * We don't need to use reloc tree if:
-> > +	 * - No reloc tree
-> > +	 * - Relocation not running
-> > +	 * - Reloc tree already merged
-> > +	 */
-> > +	if (!root->reloc_root || !rc || test_bit(BTRFS_ROOT_DEAD_RELOC_TREE,
-> > +				&root->state))
+On Wed, Dec 11, 2019 at 01:00:01PM +0800, Qu Wenruo wrote:
+> Due to commit d2311e698578 ("btrfs: relocation: Delay reloc tree
+> deletion after merge_reloc_roots"), reloc tree lifespan is extended.
 > 
-> This is awkward formatting, can we move the test_bit() to the first thing we 
-> check so it's less weird?  Then you can add
+> Although we always set root->reloc_root to NULL before we drop the reloc
+> tree, but that's not multi-core safe since we have no proper memory
+> barrier to ensure other cores can see the same root->reloc_root.
+> 
+> The proper root fix should be some proper root refcount, and make
+> btrfs_drop_snapshot() to wait for all other root owner to release the
+> root before dropping it.
 
-I had the same thought, will move the test_bit on the next line.
+This would block cleaning deleted subvolumes, no? We can skip the dead
+tree (and add it back to the list) in that can and not wait. The
+cleaner thread is able to process the list repeatedly.
+
+> But for now, let's just check the DEAD_RELOC_ROOT bit before accessing
+> root->reloc_root.
+
+Ok, the bit is safe way to sync that as long as the correct order of
+setting/clearing is done.  The ops are atomic wrt to the value itself
+but need barriers around as they're simple atomic ops (not RMW,
+according to Documentation/atomic_bitops.txt) and there's no outer
+synchronization.
+
+Check:
+
+	smp_mb__before_atomic();
+	if (test_bit() ...)
+		return;
+
+Set:
+
+	set_bit()
+	smp_mb__after_atomic();
+	(delete reloc_root)
+	reloc_root = NULL
+
+Clearing of the bit is done when there are not potential other users so
+that part does not need the barrier (I think).
+
+The checking part could use a helper so we don't have barriers scattered
+around code.
