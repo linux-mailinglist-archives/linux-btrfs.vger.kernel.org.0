@@ -2,42 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D017F11A013
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 01:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF79E11A0AD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 02:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbfLKAhB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 19:37:01 -0500
-Received: from mout.gmx.net ([212.227.15.19]:50989 "EHLO mout.gmx.net"
+        id S1727119AbfLKBpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 20:45:23 -0500
+Received: from mout.gmx.net ([212.227.15.19]:58533 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726750AbfLKAhB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 19:37:01 -0500
+        id S1726364AbfLKBpX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 20:45:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576024603;
-        bh=7q3qXuUPUUg3/EyAm5Qd8wlvHi0YjdmFe2h5PhXqQLU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=JyKeSq7dBT8cQ1r06OmSZwJcI4qL7+uw/1YtSKbTw5Z/H1FFAKRY+DZfnUvVo/fdj
-         7Swfn9QMSZpT3H1jbPRbKhIOhRPpJo6Zj23KzYIUe5VaOUvIetSzvyiENGYWe8iNOh
-         8nRh2JjqDxPP3nojN/yi0Tf2uD+8QrlEA3pSBOQI=
+        s=badeba3b8450; t=1576028715;
+        bh=v2OCm99T7xGWMqK2jVE2mw6wplKdfpBpb2mKlquuwiA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=c5JWPiQVNDfSWau725vF462f8hQu9zWvppdEdD2DHbUktVLN471Q9I+shAlcm3SgV
+         +ZAPvz+VYOTscXEM4tHYj41qjUMJMBshOrEI2n5qG0TUMnW8Y3YIg36RWDtz6yQadQ
+         3lzs2+L3NC0NYWcWK80aQlBzLPSxg8Q0eJy+YaHg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MVvPD-1iFr271kqT-00Rm2i; Wed, 11
- Dec 2019 01:36:43 +0100
-Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
-To:     Christian Wimmer <telefonchris@icloud.com>,
-        Qu WenRuo <wqu@suse.com>
-Cc:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <BF872461-4D5F-4125-85E6-719A42F5BD0F@icloud.com>
- <e8b667ab-6b71-7cd8-632a-5483ec4386d8@gmx.com>
- <6538780A-6160-4400-A997-E8324DB61F69@icloud.com>
- <e461ee1a-dc24-dcde-34b5-2ddd53bb1827@suse.com>
- <18F0134D-AFF9-4CB9-A996-E44AC949DCAA@icloud.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTmO-1iBgxY2V0A-00WTBI; Wed, 11
+ Dec 2019 02:45:15 +0100
+Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
+To:     fdmanana@gmail.com, dsterba@suse.cz,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190628022611.2844-1-anand.jain@oracle.com>
+ <20190703132158.GV20977@twin.jikos.cz>
+ <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
+ <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
+ <20190902162230.GY2752@twin.jikos.cz> <20190903120603.GB2752@twin.jikos.cz>
+ <20190912175402.GM2850@twin.jikos.cz>
+ <CAL3q7H7nbp_kmeEZpRL7KpwhXSA6=QCcwzXT-f0szrwRmW-ohw@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,154 +58,119 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <985d1845-d211-9134-4c9b-85a0956e7404@gmx.com>
-Date:   Wed, 11 Dec 2019 08:36:37 +0800
+Message-ID: <3a3acd6a-ed5b-bc35-58aa-f76f7704a240@gmx.com>
+Date:   Wed, 11 Dec 2019 09:45:09 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <18F0134D-AFF9-4CB9-A996-E44AC949DCAA@icloud.com>
+In-Reply-To: <CAL3q7H7nbp_kmeEZpRL7KpwhXSA6=QCcwzXT-f0szrwRmW-ohw@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv"
-X-Provags-ID: V03:K1:vr9gWwTMunp6ECZ2q7V2Sj/BXVQ3ijmerbouccvY+JF19cqIWwh
- t4+bGM/prqhykg+njBS+0B6cAo3RWt5TFhZGPdfDQYbo3b5SVqaWaVFFQ1qL1R0Uo3vwIw+
- HHkWD0cblwmsrZm5uOCawE95HXeWfsfTry97mz8civH8Q1+gTINQ3k1Eo53b30U7kkEPfBx
- ewlNX77vNd0BBB7GGe08A==
+ boundary="kc9ITjOIGHVRKk0aFlGhZfTxQzY6H7H0g"
+X-Provags-ID: V03:K1:8kjK9zdu69/2two/ES+EMTxPsBLawpgV9JERjm1+ZSUZMAXB08t
+ 9L6FqvttCdtS70id9LD+R0I0BKtTArnnF0G77cWP+Gbd4GHA7OlyKjrd8HVbpB0nZ5ZX/FQ
+ IRjod732fb2vsop+qjsTS0iM1VLo9sDsnWlbJn+gB930OI7x7VEKEIT1dPPqJSxdxU6LDSw
+ mHOZWxd6LbZctk/j4aFCA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BHXnfwhVvik=:U7Yor6S1nSd2rE6LTyfaNZ
- Ej6fB9/ASurJ3Q0R6V4XkWgc37CcQTnkGGtpptnaanBL4151gLwajIASPXE/aFvp0e3DYulfn
- t49Uc+MuZtYzXxMuGaY2Gh3bPJuVscOhs1XovD9lcH+OB/++pU92M3ymTWy8EcsfCLOo9lJtc
- /qouwiHxR+ys2JU4LEo4yz8SonBMGWmJWPpU+us/1e3zfi6AON4YgSjjGfvTAFG29xdHED14k
- FQ2yzo3zuEezpUo0USL5LsWSPa2BhOWjABRgmazltahDzDUk4bVh1Y40db3j37AC+NpHj4Ndt
- xDwtX5NAtqF4GywsAM8oiGhlgVNRa6gYWNE0NVNOLGQUFv27OJIomJe1aHQgsJ/IpBsYL2ug7
- Vg6kKF7tGTkYkYcD6cnvxtEOJvgZQ/GH6H11d81o4+BuctbHK9T+I/gtFEyHSDEnE9AAWIASx
- 3cCDK5sFgXqDpTZOF91iMy6uFsWPnbZMgiMdVd4asqLN6j+XojylPkTYvxvWf2kUrCsE8X1KR
- JywYP6clfxI+I8NI+failQSP16v+6oj9uBRBp4ynD1IuJycTa+HKZF9iXjQIpMTTACbf/rM7W
- lnk8VAHE9k7TYBhjoMs4+MIh6q+XtViQcPYDO9lBbm+l8WBsZlw3uKdFqL+awXzI8FSYYMidN
- jCAaklO9mei5muZK6dbTEv82QLtudri0VUVboXOBqZdMcYT/5nxZBFqf8+UwknepPog5A8/qJ
- MwyRZ2DCYeA70+lIiMKq2EZunm2Tb/ZXDA0rtHVvWMzk6Uzh2sRX2aF0fnO6AvAWlUX9/yhri
- mjGcV9IebSZzbZ/XRB4pDZvVY0eVqQFR3+s8+8IISOv0Cp9B2qnAUqmffBe8jphSrVyDRsI5w
- QFvVdtIg+y3SN0azcNsKgfnzWtlxmN8L7agHSScWUD9lebO10JxavKouEezM9UunRM3bhmrbx
- WlVMtaz97FyaHZM182Hyda2WnG4lFpJMYQM/JMVAjnSR9575N2ej8ZinFcaFUTz+Hw2+UuQz0
- ANNpScQ0krI+xODPbbluIfn4p0QpiDHTjMG1Q2tyCq0cgnIOGJXOvNqrCcPwhPNZN73BkswUS
- TG5P66fLsZqQEjUmD1lwHboyqt7VfmJUUyzrEAxh/5sOhmYhkj1WigYI4+1UT+uiYGeZ3rhJW
- Z/TmdFWcf3hyeHUDKmYnbD+PFAFJZxvdwMbxBbonmrQE35txl15yx3diqGNOLJOgLN0Row/iI
- k9MAlORnrqAWdT671BsMGScYsFlMOAV8JTuGP0klf26pAgvNa/NMdmKwsn5k=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:phPpZw89WW8=:ilz7v8WWpLoognvQ5xOZLv
+ f7z5LiCfjclpExCT3yMVQ4lADm6in9Pwj+haHcGsokqSlDq7xclFIJ6G6t0qXLL/xkJfvIrTF
+ QNiPe8kPtFAUk8uW7+/658R6fhK5GGsR1AVFC2Oo0oFE0gNBDVcAqa45MrYQY2GFV4vedvLkA
+ DnoBEBUcMJwiHsQKTKEuBaCE2HfIrEQ8AYzakPu6565SzqNmjFDWy7Y5BIeWqDgdQsl+/xK8u
+ nNDLeEvndbvvGUn2U3XKwgZIl5KVeDRIFGD9KZFehr7n7CDOUUPBoeJV7GM16me1YeETSXk0C
+ mgO82spWK4WezQyBdhJgYNxthujBDnQHlZ9zkMp/bmsPFk0W4YZp6IUq9iElcAYmW9VsWOpPO
+ 1ij/JW322M4SuAq9UokapEJ+6I0UB2ZtvmYrBnArJalhKa/Qt2F96T1MaO3KeL3HR0sW80tGA
+ oX+M9940zTcJK15Pn0+3hmzkv3Sq27d57tZfIbPZyK+qa58LjRJa5A6TIqqcxL8zGByZa/aGE
+ heHX0T8LfI4VX9g238/ceAQN9hGo6vJ9A19xlA5H44Mhnh/tXzRiF+Gh4soSp9cDMAvRi9NeO
+ fUCt44y8QMGnh4YfJPCTEHK0x1VJRaL+HmFnLcrjp2yY4aQdAR4PcxX83Wt9pAgjIW0UqC78t
+ CdIEjHHY+XxEHHG7A5wEutplMkpN7sGfd4fv1LViIHx8+c6PthfEjhcaGlpRdef5XggqZ4Ir/
+ C8puROzMhPV0RSjZU0dOF6ZPmrQn6ppwsvb9COtVNwwmSWj6I3Z4FEtkkkP9aiIDa/4xRbR6W
+ F0DUTDQyi303ZKn5h6iRb9XLproTcejVN+oeEqEO2snvVqkZGP15hIllcr0IYn+RizVc97IBo
+ WS7JPDUnboa6ZHoQIRVKMkMjbDyx628mEcTNzOrJtH1fpNwixDEE6T7dlbXKKtI/r0cB0uDQf
+ liCokcEXU8UmdtFzOWaNPhhlSChKropp76WGx2f1f6H15reF9O5VibmPHZf7rBtHaWm/Di2+Y
+ 7voWK6JrQcHaL+o5y7KWGj8exwElNPdagNcYNPWfxu9vXYayfQ8GlTVzexMD5/896UTRfKxUo
+ 8hvATsen6j2aw5uR1eXgepxIsOX0+12euckMf3xks/g2zhIaiYBmIGvapgy3zdnyBDnazIPGZ
+ NqhN6z4O9auIYcU2+ePYySWJFbu37biVcYmOhb8kZPlUVN3M5bGh0gvPfsnW3srQXJtW1PuSp
+ EP04LV81RQE1Si1KDxb2JEwkaEcPETW3pUmpBPohYWTn9LP32/DfCENAdjmM=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv
-Content-Type: multipart/mixed; boundary="2WDZ57mfbveapze1XFxG38c15Mt6bIKwc"
+--kc9ITjOIGHVRKk0aFlGhZfTxQzY6H7H0g
+Content-Type: multipart/mixed; boundary="Gfbe4uEoEZg0WfmDy8MNUHr3JiZEXWD4H"
 
---2WDZ57mfbveapze1XFxG38c15Mt6bIKwc
+--Gfbe4uEoEZg0WfmDy8MNUHr3JiZEXWD4H
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/11 =E4=B8=8A=E5=8D=885:25, Christian Wimmer wrote:
-> Hi Qu and all others,
+On 2019/12/10 =E4=B8=8B=E5=8D=8811:42, Filipe Manana wrote:
+> On Thu, Sep 12, 2019 at 10:39 PM David Sterba <dsterba@suse.cz> wrote:
+>>
+>> On Tue, Sep 03, 2019 at 02:06:03PM +0200, David Sterba wrote:
+>>> On Mon, Sep 02, 2019 at 06:22:30PM +0200, David Sterba wrote:
+>>>> On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
+>>>>>
+>>>>> David,
+>>>>>
+>>>>>   I don't see this patch is integrated. Can you please integrated t=
+his
+>>>>> patch thanks.
+>>>>
+>>>> I don't know why but the patch got lost somewhere, adding to devel
+>>>> again.
+>>>
+>>> Not lost, but dropped, misc-tests/021 fails. So dropped again, please=
+
+>>> fix it and test before posting again. Thanks.
+>>
+>> With the test misc/021 updated, this patch has been added to devel.
+>> Thanks.
 >=20
-> thanks a lot for your help and patience!
->=20
-> Unfortunately I could not get out any file from the arrive yet but I ca=
-n survive.
->=20
-> I would like just one more answer from you. Do you think with the newes=
-t version of btrfs it would not have happened?
+> So having updated my local btrfs-progs from v5.2.2 to 5.4, I started
+> getting 4 test cases from fstests failing:
 
-=46rom the result, it looks like either btrfs is doing wrong trim, or the=
-
-storage stack below (including the Parallels, the apple fs, and the
-apple drivers) is blowing up data.
-
-In the latter case, it doesn't matter whatever kernel version you're
-using, if it happens, it will take your data along with it.
-
-But for the former case, newer kernel has improved trim check to prevent
-bad trim, so at least newer kernel is a little more safer.
-
-> Should I update to the newest version?
-
-Not always the newest, although we're trying our best to prevent bugs,
-but sometimes we still have some bugs sneaking into latest kernel.
+Was running with btrfs-progs v5.3.1 before, so not hit the bug...
+(And some notrun due to missing make_fail_request config)
 
 >=20
-> I have many partitions with btrfs and I like them a lot. Very nice file=
- system indeed but am I safe with the version that I have (4.19.1)?
+> Am I the only one getting this? It's been a while and I can't have
+> been the only one running fstests with progs 5.3+.
+> Is there any fix around for btrfs-progs I missed in mailing list (with
+> devel branch the tests fail as well), or a plan to update the tests?
 
-Can't say it's unsafe, since SUSE has all necessary backports and quite
-some customers are using (testing) it.
-As long as you're using the latest SUSE updates, it should be safe and
-all found bugs should have fixes backported.
+I'll look into the test case to fix them, since most of them are just
+bad golden output, not a big deal to handle.
 
-Thanks,
+Thanks for the report,
 Qu
->=20
-> BTW, you are welcome to suggest any command or try anything with my bro=
-ken file system that I still have backed up in case that you want to expe=
-riment with it.
->=20
-> Thanks=20
->=20
-> Chris
->=20
->=20
->> On 7. Dec 2019, at 22:21, Qu WenRuo <wqu@suse.com> wrote:
->>
->>
->>
->> On 2019/12/8 =E4=B8=8A=E5=8D=8812:44, Christian Wimmer wrote:
->>> Hi Qu,
->>>
->>> I was reading about chunk-recover. Do you think this could be worth a=
- try?
->>
->> Nope, your chunk tree is good, so that makes no sense.
->>
->>>
->>> Is there any other command that can search for files that make sense =
-to recover?
->>
->> The only sane behavior here is to search the whole disk and grab
->> anything looks like a tree block, and then extract data from it.
->>
->> This is not something supported by btrfs-progs yet, so really not much=
 
->> more can be done here.
->>
->> Thanks,
->> Qu
->>
->>>
->>> Regards,
->>>
->>> Chris
->>>
+>=20
+> thanks
+>=20
 >=20
 
 
---2WDZ57mfbveapze1XFxG38c15Mt6bIKwc--
+--Gfbe4uEoEZg0WfmDy8MNUHr3JiZEXWD4H--
 
---xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv
+--kc9ITjOIGHVRKk0aFlGhZfTxQzY6H7H0g
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3wOhUACgkQwj2R86El
-/qjragf8DY1BSDYxiofc+pNOS7NMoYeP1QP9514B3ZTQ2IG5dqjj149V0FyvMVng
-jFmFxlTmKwNFpW2eTQ73pQ44gMZQnKt90je775pE/O6GlDGfRuw/lTkMSBCHVweT
-vnJ25E9cJbXgtmRFKxUafREiMhaXm5zERZSgZ4u+K6/DCpsQcfLP1xAgSO47ux6u
-iHaOcZYmhAfYJNKlCKuR8TuRamqGOrCvS5QGCIQBVx8CGAOwOTxIuwvJUtkYNgOE
-zFcFlvaMK40aWCUm1IAWKb5R87H6fZG1SZEvbs9JF+KzJGf0/OaGTw7MeNoxY+CR
-eS1gudlIsGk3+TX5TfX+TB1yUOqxFw==
-=uOTy
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3wSiUACgkQwj2R86El
+/qhlVwf8CibVTzkDkXn1RyVVl5wYxq8gvwC5UcN7lUJBdN2Vs1BBbyy/IHyz/F/w
+O+qfVGFmTUuqkgMcjAbpP8qAwshJIO4D4+Er5zsUT/Z8AVEdqj01xb6zk2vtkweh
+Nc1SClgChg6gFU+pN9pqeWsWpiqviw76os7YaS3GbAviet7ZzyKuMvM0go3T0cFp
+Wl51V5ObslPh2IHerTjZzWXavMsWxpAqqci4+7eP0/BWBrmj1cPcFLsYdkkGYd9l
+3zf1W3vGjZL39YxaLeYsnL+oEzNbsfpC21uC4u01xr+i0m56qgGtjAqwN5LVxwug
+7Ig6ddZsm0DPUT4v0efVz7Cq5cQfdA==
+=6e+/
 -----END PGP SIGNATURE-----
 
---xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv--
+--kc9ITjOIGHVRKk0aFlGhZfTxQzY6H7H0g--
