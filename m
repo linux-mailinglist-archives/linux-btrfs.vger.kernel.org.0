@@ -2,197 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EE7119FDF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 01:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D017F11A013
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 01:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbfLKAZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 19:25:13 -0500
-Received: from m9a0014g.houston.softwaregrp.com ([15.124.64.90]:55527 "EHLO
-        m9a0014g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726881AbfLKAZM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 19:25:12 -0500
-Received: FROM m9a0014g.houston.softwaregrp.com (15.121.0.190) BY m9a0014g.houston.softwaregrp.com WITH ESMTP;
- Wed, 11 Dec 2019 00:24:29 +0000
-Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
- M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Wed, 11 Dec 2019 00:24:48 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (15.124.8.13) by
- M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Wed, 11 Dec 2019 00:24:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hvb4b24LtVHtYz0Zg4u6RnUJqpNJMxSIDPuazIj52c+dbEOjKY79by+Ocn5sPPklHGzo0hNDU1734SWTAs6NWPo9O5raX3mIR3SlIFfk3maeKDuOLKeO69pavuJ4hQ9dm6MIxDVU7NusEvw34w6GqBVnQAfdSfsscBo9nCGgeN4lb5KitL45G505afRr4qoJcfkR9zPY6tt/k6IeEhLOQ6Q1TDCKR3uLJXwTpz6COm/gMzjgC1hNxsDrmdFyjNo+2AlmtwPtLL56QZHeTGzDWY1DejCoeo91MbhEBSGriYWovXe91WPBXuoj8L0Y+gMF3u9RTvWgw0POClqermqAhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m+ojixUKTp7aRb4FuRGLNEd9Nb41s7ULwhlgDPvGCV8=;
- b=maBHsdk9oP3oipHrUThXiBWynBRM4R5EUAWVRS7nbQbQttVTDxIJsjmAoE/ZHCXhsT25TRh6BkGZGvkV3V0TnDbgncNUxdArOiBqRXEBYCTzAl/9qPbbDDJ1dd3rQ79oS11oIgHdfhItMV2K3zGk4jfRh44oEFNNwzygBrq8Paq+wcPS8Htk9zfs627xA5VQgRE+k6C/CCfIr7vzbgCExE9YpOR4jnDqA6S7BZVgr4+0+tCapcF2kI93gkmvwvrfefrHmeFUkysVyJRYv/0C91Ev9tzaWrV9rVtPjEWFjYcexvEvat/0oDtwb5KUcOEflaYvTgLEpNAVaffF96iPLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3300.namprd18.prod.outlook.com (10.255.137.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.17; Wed, 11 Dec 2019 00:24:46 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::c9ec:d898:8be0:9f69]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::c9ec:d898:8be0:9f69%5]) with mapi id 15.20.2538.012; Wed, 11 Dec 2019
- 00:24:46 +0000
-From:   Qu WenRuo <wqu@suse.com>
-To:     Su Yue <Damenly_Su@gmx.com>,
+        id S1726841AbfLKAhB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 19:37:01 -0500
+Received: from mout.gmx.net ([212.227.15.19]:50989 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726750AbfLKAhB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 19:37:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1576024603;
+        bh=7q3qXuUPUUg3/EyAm5Qd8wlvHi0YjdmFe2h5PhXqQLU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JyKeSq7dBT8cQ1r06OmSZwJcI4qL7+uw/1YtSKbTw5Z/H1FFAKRY+DZfnUvVo/fdj
+         7Swfn9QMSZpT3H1jbPRbKhIOhRPpJo6Zj23KzYIUe5VaOUvIetSzvyiENGYWe8iNOh
+         8nRh2JjqDxPP3nojN/yi0Tf2uD+8QrlEA3pSBOQI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MVvPD-1iFr271kqT-00Rm2i; Wed, 11
+ Dec 2019 01:36:43 +0100
+Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
+To:     Christian Wimmer <telefonchris@icloud.com>,
+        Qu WenRuo <wqu@suse.com>
+Cc:     Anand Jain <anand.jain@oracle.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/4] btrfs: tree-checker: Refactor inode key check into
- seperate function
-Thread-Topic: [PATCH 2/4] btrfs: tree-checker: Refactor inode key check into
- seperate function
-Thread-Index: AQHVr2gXiKO27nM9C0yf2wMHbKo6FKe0E+2A
-Date:   Wed, 11 Dec 2019 00:24:46 +0000
-Message-ID: <27197a08-f97e-e5d0-2d1e-29d77c260894@suse.com>
-References: <20191209105435.36041-1-wqu@suse.com>
- <20191209105435.36041-2-wqu@suse.com>
- <82d40759-edd1-b4f3-c38f-a98add7d5089@gmx.com>
-In-Reply-To: <82d40759-edd1-b4f3-c38f-a98add7d5089@gmx.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: TYAPR01CA0146.jpnprd01.prod.outlook.com
- (2603:1096:404:7e::14) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [13.231.109.76]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2d9752e1-41da-4787-9e8d-08d77dd08678
-x-ms-traffictypediagnostic: BY5PR18MB3300:
-x-microsoft-antispam-prvs: <BY5PR18MB33007C5FD68E402734503972D65A0@BY5PR18MB3300.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 024847EE92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(199004)(189003)(64756008)(81166006)(53546011)(8676002)(6512007)(316002)(81156014)(66556008)(6506007)(71200400001)(5660300002)(66946007)(66476007)(8936002)(31696002)(186003)(26005)(36756003)(2616005)(52116002)(31686004)(6486002)(66446008)(86362001)(110136005)(478600001)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3300;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uOtNJ0MPWKw4S9S8Mekw+Z3Xe7el6rkL+s7tGXmzBvwG+9PTwwCCRwxnW7DXH2Sg/StMHHjNgyEtC0cbJYA1hKH2dCce3nmmHNR9WZOQ2pY5xaYw+dI1XWMGKE+kbAzzBHIxUXmwt+Rw08VmYdizwczHbgERo4jigJ8CybH2j4e7C4P8ICdJhck1DSLxdrC+MR/GEvvmv3Fb1dWklVCqlkkDkRsVHUj1Ny3R60iQjU0yYZOF7XKN2vwvKBf1VYAG2F/EqKsRHQBAX5YtlqC0dAKKKOYahVx4I1Fo5cvmcqjz9I51pOWqmcXYynfy3yb64w47bI17V0z6cUTCryB0GEjd68vwj+c85eG68KIP9t5lhHCQqaWrMQcp+VZ6ohSdA9mxLoIHp9vFoZwEnKIUfWeaW/JVRkoeE+aIPLar1MU0LJfiUXrjLD/OjMrApi9G
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7DF5895206E33F419A1C8EAF06CEFE2C@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+References: <20191206034406.40167-1-wqu@suse.com>
+ <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
+ <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
+ <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
+ <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
+ <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
+ <BF872461-4D5F-4125-85E6-719A42F5BD0F@icloud.com>
+ <e8b667ab-6b71-7cd8-632a-5483ec4386d8@gmx.com>
+ <6538780A-6160-4400-A997-E8324DB61F69@icloud.com>
+ <e461ee1a-dc24-dcde-34b5-2ddd53bb1827@suse.com>
+ <18F0134D-AFF9-4CB9-A996-E44AC949DCAA@icloud.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <985d1845-d211-9134-4c9b-85a0956e7404@gmx.com>
+Date:   Wed, 11 Dec 2019 08:36:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d9752e1-41da-4787-9e8d-08d77dd08678
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2019 00:24:46.1094
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lbXlVt/tK8PkTIdc/lSaU+fiCnH+JzMT+Mp3H0oWCCZ52CM6YinzXENhef6UKbRf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3300
-X-OriginatorOrg: suse.com
+In-Reply-To: <18F0134D-AFF9-4CB9-A996-E44AC949DCAA@icloud.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv"
+X-Provags-ID: V03:K1:vr9gWwTMunp6ECZ2q7V2Sj/BXVQ3ijmerbouccvY+JF19cqIWwh
+ t4+bGM/prqhykg+njBS+0B6cAo3RWt5TFhZGPdfDQYbo3b5SVqaWaVFFQ1qL1R0Uo3vwIw+
+ HHkWD0cblwmsrZm5uOCawE95HXeWfsfTry97mz8civH8Q1+gTINQ3k1Eo53b30U7kkEPfBx
+ ewlNX77vNd0BBB7GGe08A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BHXnfwhVvik=:U7Yor6S1nSd2rE6LTyfaNZ
+ Ej6fB9/ASurJ3Q0R6V4XkWgc37CcQTnkGGtpptnaanBL4151gLwajIASPXE/aFvp0e3DYulfn
+ t49Uc+MuZtYzXxMuGaY2Gh3bPJuVscOhs1XovD9lcH+OB/++pU92M3ymTWy8EcsfCLOo9lJtc
+ /qouwiHxR+ys2JU4LEo4yz8SonBMGWmJWPpU+us/1e3zfi6AON4YgSjjGfvTAFG29xdHED14k
+ FQ2yzo3zuEezpUo0USL5LsWSPa2BhOWjABRgmazltahDzDUk4bVh1Y40db3j37AC+NpHj4Ndt
+ xDwtX5NAtqF4GywsAM8oiGhlgVNRa6gYWNE0NVNOLGQUFv27OJIomJe1aHQgsJ/IpBsYL2ug7
+ Vg6kKF7tGTkYkYcD6cnvxtEOJvgZQ/GH6H11d81o4+BuctbHK9T+I/gtFEyHSDEnE9AAWIASx
+ 3cCDK5sFgXqDpTZOF91iMy6uFsWPnbZMgiMdVd4asqLN6j+XojylPkTYvxvWf2kUrCsE8X1KR
+ JywYP6clfxI+I8NI+failQSP16v+6oj9uBRBp4ynD1IuJycTa+HKZF9iXjQIpMTTACbf/rM7W
+ lnk8VAHE9k7TYBhjoMs4+MIh6q+XtViQcPYDO9lBbm+l8WBsZlw3uKdFqL+awXzI8FSYYMidN
+ jCAaklO9mei5muZK6dbTEv82QLtudri0VUVboXOBqZdMcYT/5nxZBFqf8+UwknepPog5A8/qJ
+ MwyRZ2DCYeA70+lIiMKq2EZunm2Tb/ZXDA0rtHVvWMzk6Uzh2sRX2aF0fnO6AvAWlUX9/yhri
+ mjGcV9IebSZzbZ/XRB4pDZvVY0eVqQFR3+s8+8IISOv0Cp9B2qnAUqmffBe8jphSrVyDRsI5w
+ QFvVdtIg+y3SN0azcNsKgfnzWtlxmN8L7agHSScWUD9lebO10JxavKouEezM9UunRM3bhmrbx
+ WlVMtaz97FyaHZM182Hyda2WnG4lFpJMYQM/JMVAjnSR9575N2ej8ZinFcaFUTz+Hw2+UuQz0
+ ANNpScQ0krI+xODPbbluIfn4p0QpiDHTjMG1Q2tyCq0cgnIOGJXOvNqrCcPwhPNZN73BkswUS
+ TG5P66fLsZqQEjUmD1lwHboyqt7VfmJUUyzrEAxh/5sOhmYhkj1WigYI4+1UT+uiYGeZ3rhJW
+ Z/TmdFWcf3hyeHUDKmYnbD+PFAFJZxvdwMbxBbonmrQE35txl15yx3diqGNOLJOgLN0Row/iI
+ k9MAlORnrqAWdT671BsMGScYsFlMOAV8JTuGP0klf26pAgvNa/NMdmKwsn5k=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMTkvMTIvMTAg5LiL5Y2IMTA6NDIsIFN1IFl1ZSB3cm90ZToNCj4gDQo+IA0KPiBP
-biAyMDE5LzEyLzkgNjo1NCBQTSwgUXUgV2VucnVvIHdyb3RlOg0KPj4gSW5vZGUga2V5IGNoZWNr
-IGlzIG5vdCBhcyBlYXN5IGFzIHNldmVyYWwgbGluZXMsIGFuZCBpdCB3aWxsIGJlIGNhbGxlZA0K
-Pj4gaW4gbW9yZSB0aGFuIG9uZSBsb2NhdGlvbiAoSU5PREVfSVRFTSBjaGVjayBhbmQNCj4+IERJ
-Ul9JVEVNL0RJUl9JTkRFWC9YQVRUUl9JVEVNIGxvY2F0aW9uIGtleSBjaGVjaykuDQo+Pg0KPj4g
-U28gaGVyZSByZWZhY3RvciBzdWNoIGNoZWNrIGludG8gY2hlY2tfaW5vZGVfa2V5KCkuDQo+Pg0K
-Pj4gQW5kIGFkZCBleHRyYSBjaGVja3MgZm9yIFhBVFRSX0lURU0uDQo+Pg0KPj4gU2lnbmVkLW9m
-Zi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZzL3Ry
-ZWUtY2hlY2tlci5jIHwgNzcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCspLCAxOCBkZWxldGlvbnMo
-LSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvdHJlZS1jaGVja2VyLmMgYi9mcy9idHJm
-cy90cmVlLWNoZWNrZXIuYw0KPj4gaW5kZXggNmNiNDljNzVjNWUxLi42OGRhZDllYzM4ZGQgMTAw
-NjQ0DQo+PiAtLS0gYS9mcy9idHJmcy90cmVlLWNoZWNrZXIuYw0KPj4gKysrIGIvZnMvYnRyZnMv
-dHJlZS1jaGVja2VyLmMNCj4+IEBAIC0zNTksNiArMzU5LDYwIEBAIHN0YXRpYyBpbnQgY2hlY2tf
-Y3N1bV9pdGVtKHN0cnVjdCBleHRlbnRfYnVmZmVyDQo+PiAqbGVhZiwgc3RydWN0IGJ0cmZzX2tl
-eSAqa2V5LA0KPj4gwqDCoMKgwqDCoCByZXR1cm4gMDsNCj4+IMKgIH0NCj4+DQo+PiArLyogSW5v
-ZGUgaXRlbSBlcnJvciBvdXRwdXQgaGFzIHRoZSBzYW1lIGZvcm1hdCBhcyBkaXJfaXRlbV9lcnIo
-KSAqLw0KPj4gKyNkZWZpbmUgaW5vZGVfaXRlbV9lcnIoZWIsIHNsb3QsIGZtdCwgLi4uKcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK8KgwqDCoCBkaXJfaXRlbV9lcnIoZWIsIHNsb3QsIGZt
-dCwgX19WQV9BUkdTX18pDQo+PiArDQo+PiArc3RhdGljIGludCBjaGVja19pbm9kZV9rZXkoc3Ry
-dWN0IGV4dGVudF9idWZmZXIgKmxlYWYsIHN0cnVjdA0KPj4gYnRyZnNfa2V5ICprZXksDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQgc2xvdCkNCj4gDQo+IFRoZSBmdW5jdGlv
-biBuYW1lIGlzIGNvbmZ1c2luZyB0byBtZS4gSXQgY2hlY2tzIHhhdHRyIHdoaWNoIGlzIG5vdA0K
-PiBpbm9kZSByZWxhdGVkIG9idmlvdXNseS4NCg0KSWYgcmVuYW1lZCB0byBjaGVja19sb2NhdGlv
-bl9rZXkoKSB0aGVuIHRoZSBjYWxsIHNpdGUgaW4NCmNoZWNrX2lub2RlX2l0ZW0oKSB3aWxsIGJl
-IHZlcnkgc3RyYW5nZS4uLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0KPiBJIHNhdyB0aGUgNHRoIHBh
-dGNoLiBIb3cgYWJvdXQgaW50cm9kdWN0aW9uIG9mIG5ldyBmdW5jdGlvbg0KPiBjaGVja19sb2Nh
-dGlvbl9rZXkoKSwgdGhlbiBjYWxscyBjaGVja19yb290X2tleSgpICwgY2hlY2tfaW5vZGVfa2V5
-KCkNCj4gYW5kIGNoZWNrcyB4YXRyciBjYXNlIGluc2lkZT8NCj4gDQo+IE90aGVycyBpbiB0aGUg
-cGF0Y2hzZXQgc2VlbSBmaW5lIHRvIG1lLg0KPiANCj4gDQo+IFRoYW5rcw0KPj4gK3sNCj4+ICvC
-oMKgwqAgc3RydWN0IGJ0cmZzX2tleSBpdGVtX2tleTsNCj4+ICvCoMKgwqAgYm9vbCBpc19pbm9k
-ZV9pdGVtOw0KPj4gKw0KPj4gK8KgwqDCoCBidHJmc19pdGVtX2tleV90b19jcHUobGVhZiwgJml0
-ZW1fa2V5LCBzbG90KTsNCj4+ICvCoMKgwqAgaXNfaW5vZGVfaXRlbSA9IChpdGVtX2tleS50eXBl
-ID09IEJUUkZTX0lOT0RFX0lURU1fS0VZKTsNCj4+ICsNCj4+ICvCoMKgwqAgLyogRm9yIFhBVFRS
-X0lURU0sIGxvY2F0aW9uIGtleSBzaG91bGQgYmUgYWxsIDAgKi8NCj4+ICvCoMKgwqAgaWYgKGl0
-ZW1fa2V5LnR5cGUgPT0gQlRSRlNfWEFUVFJfSVRFTV9LRVkpIHsNCj4+ICvCoMKgwqDCoMKgwqDC
-oCBpZiAoa2V5LT50eXBlICE9IDAgfHwga2V5LT5vYmplY3RpZCAhPSAwIHx8IGtleS0+b2Zmc2V0
-ICE9IDApDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVVQ0xFQU47DQo+PiAr
-wqDCoMKgwqDCoMKgwqAgcmV0dXJuIDA7DQo+PiArwqDCoMKgIH0NCj4+ICsNCj4+ICvCoMKgwqAg
-aWYgKChrZXktPm9iamVjdGlkIDwgQlRSRlNfRklSU1RfRlJFRV9PQkpFQ1RJRCB8fA0KPj4gK8Kg
-wqDCoMKgwqDCoMKgwqAga2V5LT5vYmplY3RpZCA+IEJUUkZTX0xBU1RfRlJFRV9PQkpFQ1RJRCkg
-JiYNCj4+ICvCoMKgwqDCoMKgwqDCoCBrZXktPm9iamVjdGlkICE9IEJUUkZTX1JPT1RfVFJFRV9E
-SVJfT0JKRUNUSUQgJiYNCj4+ICvCoMKgwqDCoMKgwqDCoCBrZXktPm9iamVjdGlkICE9IEJUUkZT
-X0ZSRUVfSU5PX09CSkVDVElEKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKGlzX2lub2RlX2l0
-ZW0pDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZW5lcmljX2VycihsZWFmLCBzbG90LA0K
-Pj4gK8KgwqDCoCAiaW52YWxpZCBrZXkgb2JqZWN0aWQ6IGhhcyAlbGx1IGV4cGVjdCAlbGx1IG9y
-IFslbGx1LCAlbGx1XSBvcg0KPj4gJWxsdSIsDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGtleS0+b2JqZWN0aWQsIEJUUkZTX1JPT1RfVFJFRV9ESVJfT0JKRUNUSUQsDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJUUkZTX0ZJUlNUX0ZSRUVfT0JKRUNUSUQs
-DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJUUkZTX0xBU1RfRlJFRV9PQkpF
-Q1RJRCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfRlJFRV9JTk9f
-T0JKRUNUSUQpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGVsc2UNCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGRpcl9pdGVtX2VycihsZWFmLCBzbG90LA0KPj4gKyJpbnZhbGlkIGxvY2F0aW9uIGtl
-eSBvYmplY3RpZDogaGFzICVsbHUgZXhwZWN0ICVsbHUgb3IgWyVsbHUsICVsbHVdDQo+PiBvciAl
-bGx1IiwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga2V5LT5vYmplY3RpZCwg
-QlRSRlNfUk9PVF9UUkVFX0RJUl9PQkpFQ1RJRCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgQlRSRlNfRklSU1RfRlJFRV9PQkpFQ1RJRCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgQlRSRlNfTEFTVF9GUkVFX09CSkVDVElELA0KPj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GUkVFX0lOT19PQkpFQ1RJRCk7DQo+PiArwqDCoMKg
-wqDCoMKgwqAgcmV0dXJuIC1FVUNMRUFOOw0KPj4gK8KgwqDCoCB9DQo+PiArwqDCoMKgIGlmIChr
-ZXktPm9mZnNldCAhPSAwKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKGlzX2lub2RlX2l0ZW0p
-DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbm9kZV9pdGVtX2VycihsZWFmLCBzbG90LA0K
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJpbnZhbGlk
-IGtleSBvZmZzZXQ6IGhhcyAlbGx1IGV4cGVjdCAwIiwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBrZXktPm9mZnNldCk7DQo+PiArwqDCoMKgwqDCoMKg
-wqAgZWxzZQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGlyX2l0ZW1fZXJyKGxlYWYsIHNs
-b3QsDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJpbnZhbGlkIGxvY2F0aW9u
-IGtleSBvZmZzZXQ6aGFzICVsbHUgZXhwZWN0IDAiLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBrZXktPm9mZnNldCk7DQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FVUNM
-RUFOOw0KPj4gK8KgwqDCoCB9DQo+PiArwqDCoMKgIHJldHVybiAwOw0KPj4gK30NCj4+ICsNCj4+
-IMKgIHN0YXRpYyBpbnQgY2hlY2tfZGlyX2l0ZW0oc3RydWN0IGV4dGVudF9idWZmZXIgKmxlYWYs
-DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGJ0cmZzX2tleSAqa2V5
-LCBzdHJ1Y3QgYnRyZnNfa2V5ICpwcmV2X2tleSwNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBpbnQgc2xvdCkNCj4+IEBAIC03OTgsMjUgKzg1MiwxMiBAQCBzdGF0aWMgaW50IGNo
-ZWNrX2lub2RlX2l0ZW0oc3RydWN0IGV4dGVudF9idWZmZXINCj4+ICpsZWFmLA0KPj4gwqDCoMKg
-wqDCoCB1NjQgc3VwZXJfZ2VuID0gYnRyZnNfc3VwZXJfZ2VuZXJhdGlvbihmc19pbmZvLT5zdXBl
-cl9jb3B5KTsNCj4+IMKgwqDCoMKgwqAgdTMyIHZhbGlkX21hc2sgPSAoU19JRk1UIHwgU19JU1VJ
-RCB8IFNfSVNHSUQgfCBTX0lTVlRYIHwgMDc3Nyk7DQo+PiDCoMKgwqDCoMKgIHUzMiBtb2RlOw0K
-Pj4gK8KgwqDCoCBpbnQgcmV0Ow0KPj4gKw0KPj4gK8KgwqDCoCByZXQgPSBjaGVja19pbm9kZV9r
-ZXkobGVhZiwga2V5LCBzbG90KTsNCj4+ICvCoMKgwqAgaWYgKHJldCA8IDApDQo+PiArwqDCoMKg
-wqDCoMKgwqAgcmV0dXJuIHJldDsNCj4+DQo+PiAtwqDCoMKgIGlmICgoa2V5LT5vYmplY3RpZCA8
-IEJUUkZTX0ZJUlNUX0ZSRUVfT0JKRUNUSUQgfHwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgIGtleS0+
-b2JqZWN0aWQgPiBCVFJGU19MQVNUX0ZSRUVfT0JKRUNUSUQpICYmDQo+PiAtwqDCoMKgwqDCoMKg
-wqAga2V5LT5vYmplY3RpZCAhPSBCVFJGU19ST09UX1RSRUVfRElSX09CSkVDVElEICYmDQo+PiAt
-wqDCoMKgwqDCoMKgwqAga2V5LT5vYmplY3RpZCAhPSBCVFJGU19GUkVFX0lOT19PQkpFQ1RJRCkg
-ew0KPj4gLcKgwqDCoMKgwqDCoMKgIGdlbmVyaWNfZXJyKGxlYWYsIHNsb3QsDQo+PiAtwqDCoMKg
-ICJpbnZhbGlkIGtleSBvYmplY3RpZDogaGFzICVsbHUgZXhwZWN0ICVsbHUgb3IgWyVsbHUsICVs
-bHVdIG9yDQo+PiAlbGx1IiwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga2V5
-LT5vYmplY3RpZCwgQlRSRlNfUk9PVF9UUkVFX0RJUl9PQkpFQ1RJRCwNCj4+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfRklSU1RfRlJFRV9PQkpFQ1RJRCwNCj4+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfTEFTVF9GUkVFX09CSkVDVElELA0KPj4g
-LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GUkVFX0lOT19PQkpFQ1RJRCk7
-DQo+PiAtwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FVUNMRUFOOw0KPj4gLcKgwqDCoCB9DQo+PiAt
-wqDCoMKgIGlmIChrZXktPm9mZnNldCAhPSAwKSB7DQo+PiAtwqDCoMKgwqDCoMKgwqAgaW5vZGVf
-aXRlbV9lcnIobGVhZiwgc2xvdCwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJpbnZhbGlk
-IGtleSBvZmZzZXQ6IGhhcyAlbGx1IGV4cGVjdCAwIiwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGtleS0+b2Zmc2V0KTsNCj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVVQ0xFQU47DQo+
-PiAtwqDCoMKgIH0NCj4+IMKgwqDCoMKgwqAgaWl0ZW0gPSBidHJmc19pdGVtX3B0cihsZWFmLCBz
-bG90LCBzdHJ1Y3QgYnRyZnNfaW5vZGVfaXRlbSk7DQo+Pg0KPj4gwqDCoMKgwqDCoCAvKiBIZXJl
-IHdlIHVzZSBzdXBlciBibG9jayBnZW5lcmF0aW9uICsgMSB0byBoYW5kbGUgbG9nIHRyZWUgKi8N
-Cj4+DQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv
+Content-Type: multipart/mixed; boundary="2WDZ57mfbveapze1XFxG38c15Mt6bIKwc"
+
+--2WDZ57mfbveapze1XFxG38c15Mt6bIKwc
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2019/12/11 =E4=B8=8A=E5=8D=885:25, Christian Wimmer wrote:
+> Hi Qu and all others,
+>=20
+> thanks a lot for your help and patience!
+>=20
+> Unfortunately I could not get out any file from the arrive yet but I ca=
+n survive.
+>=20
+> I would like just one more answer from you. Do you think with the newes=
+t version of btrfs it would not have happened?
+
+=46rom the result, it looks like either btrfs is doing wrong trim, or the=
+
+storage stack below (including the Parallels, the apple fs, and the
+apple drivers) is blowing up data.
+
+In the latter case, it doesn't matter whatever kernel version you're
+using, if it happens, it will take your data along with it.
+
+But for the former case, newer kernel has improved trim check to prevent
+bad trim, so at least newer kernel is a little more safer.
+
+> Should I update to the newest version?
+
+Not always the newest, although we're trying our best to prevent bugs,
+but sometimes we still have some bugs sneaking into latest kernel.
+
+>=20
+> I have many partitions with btrfs and I like them a lot. Very nice file=
+ system indeed but am I safe with the version that I have (4.19.1)?
+
+Can't say it's unsafe, since SUSE has all necessary backports and quite
+some customers are using (testing) it.
+As long as you're using the latest SUSE updates, it should be safe and
+all found bugs should have fixes backported.
+
+Thanks,
+Qu
+>=20
+> BTW, you are welcome to suggest any command or try anything with my bro=
+ken file system that I still have backed up in case that you want to expe=
+riment with it.
+>=20
+> Thanks=20
+>=20
+> Chris
+>=20
+>=20
+>> On 7. Dec 2019, at 22:21, Qu WenRuo <wqu@suse.com> wrote:
+>>
+>>
+>>
+>> On 2019/12/8 =E4=B8=8A=E5=8D=8812:44, Christian Wimmer wrote:
+>>> Hi Qu,
+>>>
+>>> I was reading about chunk-recover. Do you think this could be worth a=
+ try?
+>>
+>> Nope, your chunk tree is good, so that makes no sense.
+>>
+>>>
+>>> Is there any other command that can search for files that make sense =
+to recover?
+>>
+>> The only sane behavior here is to search the whole disk and grab
+>> anything looks like a tree block, and then extract data from it.
+>>
+>> This is not something supported by btrfs-progs yet, so really not much=
+
+>> more can be done here.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Regards,
+>>>
+>>> Chris
+>>>
+>=20
+
+
+--2WDZ57mfbveapze1XFxG38c15Mt6bIKwc--
+
+--xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3wOhUACgkQwj2R86El
+/qjragf8DY1BSDYxiofc+pNOS7NMoYeP1QP9514B3ZTQ2IG5dqjj149V0FyvMVng
+jFmFxlTmKwNFpW2eTQ73pQ44gMZQnKt90je775pE/O6GlDGfRuw/lTkMSBCHVweT
+vnJ25E9cJbXgtmRFKxUafREiMhaXm5zERZSgZ4u+K6/DCpsQcfLP1xAgSO47ux6u
+iHaOcZYmhAfYJNKlCKuR8TuRamqGOrCvS5QGCIQBVx8CGAOwOTxIuwvJUtkYNgOE
+zFcFlvaMK40aWCUm1IAWKb5R87H6fZG1SZEvbs9JF+KzJGf0/OaGTw7MeNoxY+CR
+eS1gudlIsGk3+TX5TfX+TB1yUOqxFw==
+=uOTy
+-----END PGP SIGNATURE-----
+
+--xTDKLZrf01Lm97JlkMpgIhHwd4pB23Lsv--
