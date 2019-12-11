@@ -2,80 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA6911A0EA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 02:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A2811A15F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 03:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbfLKB50 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 20:57:26 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:38614 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726417AbfLKB50 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 20:57:26 -0500
-Received: from dread.disaster.area (pa49-195-139-249.pa.nsw.optusnet.com.au [49.195.139.249])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 3E8AC82004B;
-        Wed, 11 Dec 2019 12:57:22 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1ierFh-00073s-0t; Wed, 11 Dec 2019 12:57:21 +1100
-Date:   Wed, 11 Dec 2019 12:57:21 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org,
-        darrick.wong@oracle.com, fdmanana@kernel.org, nborisov@suse.com,
-        dsterba@suse.cz, jthumshirn@suse.de, linux-fsdevel@vger.kernel.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 3/8] iomap: Remove lockdep_assert_held()
-Message-ID: <20191211015720.GF19213@dread.disaster.area>
-References: <20191210230155.22688-1-rgoldwyn@suse.de>
- <20191210230155.22688-4-rgoldwyn@suse.de>
+        id S1727605AbfLKCdt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 21:33:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38932 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727561AbfLKCdt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 21:33:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 02C97ACD9;
+        Wed, 11 Dec 2019 02:22:11 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] fstests: btrfs/157 btrfs/158: Prevent stripe offset to pollute golden output
+Date:   Wed, 11 Dec 2019 10:22:06 +0800
+Message-Id: <20191211022207.15359-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191210230155.22688-4-rgoldwyn@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=KoypXv6BqLCQNZUs2nCMWg==:117 a=KoypXv6BqLCQNZUs2nCMWg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
-        a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8 a=cJ-UA4PGj-_oL9fv718A:9
-        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 05:01:50PM -0600, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> Filesystems such as btrfs can perform direct I/O without holding the
-> inode->i_rwsem in some of the cases like writing within i_size.
-> So, remove the check for lockdep_assert_held().
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/iomap/direct-io.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 1a3bf3bd86fb..41c1e7c20a1f 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -415,8 +415,6 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	struct blk_plug plug;
->  	struct iomap_dio *dio;
->  
-> -	lockdep_assert_held(&inode->i_rwsem);
-> -
->  	if (!count)
->  		return 0;
+Test btrfs/157 and btrfs/158 are verifying the repair functionality of
+supported RAID profile, thus it needs to corrupt the fs data manually using
+physical offset of data.
 
-Please move this up into the existing callers so that we don't lose
-this debug check from those paths.
+However that physical offset of data is dependent on chunk layout, which
+is further dependent on mkfs, so such physical offset is never reliable.
 
-Cheers,
+And btrfs-progs commit c501c9e3b816 ("btrfs-progs: mkfs: match devid
+order to the stripe index") changed the mkfs stripe layout, the golden
+output no longer matches the output.
 
-Dave.
+This patch will remove the physical offset from golden output,
+especially since we already have those offsets output in seqres.full.
+
+Reported-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/157     | 5 +++--
+ tests/btrfs/157.out | 4 ----
+ tests/btrfs/158     | 4 ++--
+ tests/btrfs/158.out | 4 ----
+ 4 files changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/tests/btrfs/157 b/tests/btrfs/157
+index 7f75c407..9895f1fd 100755
+--- a/tests/btrfs/157
++++ b/tests/btrfs/157
+@@ -90,8 +90,9 @@ dev3=`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
+ # step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
+ echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4) and offset $stripe_1 of device_3($dev3)" >>$seqres.full
+ 
+-$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs_io
+-$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs_io
++# These stripe offset is mkfs dependent, don't pollute golden output
++$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 > /dev/null
++$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 > /dev/null
+ 
+ # step 3: read foobar to repair the bitrot
+ echo "step 3......repair the bitrot" >> $seqres.full
+diff --git a/tests/btrfs/157.out b/tests/btrfs/157.out
+index 08d592c4..d69c0f1d 100644
+--- a/tests/btrfs/157.out
++++ b/tests/btrfs/157.out
+@@ -1,10 +1,6 @@
+ QA output created by 157
+ wrote 131072/131072 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 65536/65536 bytes at offset 9437184
+-XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 65536/65536 bytes at offset 9437184
+-XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ 0200000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
+ *
+ 0400000
+diff --git a/tests/btrfs/158 b/tests/btrfs/158
+index 603e8bea..99ee7fb7 100755
+--- a/tests/btrfs/158
++++ b/tests/btrfs/158
+@@ -82,8 +82,8 @@ dev3=`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
+ # step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
+ echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4) and offset $stripe_1 of device_3($dev3)" >>$seqres.full
+ 
+-$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs_io
+-$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs_io
++$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 > /dev/null
++$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 > /dev/null
+ 
+ # step 3: scrub filesystem to repair the bitrot
+ echo "step 3......repair the bitrot" >> $seqres.full
+diff --git a/tests/btrfs/158.out b/tests/btrfs/158.out
+index 1f5ad3f7..95562f49 100644
+--- a/tests/btrfs/158.out
++++ b/tests/btrfs/158.out
+@@ -1,10 +1,6 @@
+ QA output created by 158
+ wrote 131072/131072 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 65536/65536 bytes at offset 9437184
+-XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-wrote 65536/65536 bytes at offset 9437184
+-XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ 0000000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
+ *
+ 0400000
 -- 
-Dave Chinner
-david@fromorbit.com
+2.23.0
+
