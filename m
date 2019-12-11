@@ -2,60 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CD411AC17
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 14:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE911AC68
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 14:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbfLKNdD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 08:33:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47112 "EHLO mx1.suse.de"
+        id S1729238AbfLKNta (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 08:49:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55324 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727477AbfLKNdD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 08:33:03 -0500
+        id S1727554AbfLKNta (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Dec 2019 08:49:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 54722AC22;
-        Wed, 11 Dec 2019 13:33:01 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 68B0AADAA;
+        Wed, 11 Dec 2019 13:49:28 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 21E5BDA883; Wed, 11 Dec 2019 14:33:02 +0100 (CET)
-Date:   Wed, 11 Dec 2019 14:33:02 +0100
+        id 52657DA883; Wed, 11 Dec 2019 14:49:29 +0100 (CET)
+Date:   Wed, 11 Dec 2019 14:49:29 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, wqu@suse.com
-Subject: Re: [PATCHi RFC] fstest: btrfs/158 fix miss-aligned stripe and device
-Message-ID: <20191211133302.GK3929@twin.jikos.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
+Message-ID: <20191211134929.GL3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, wqu@suse.com
-References: <010f5b0e-939a-b2be-70a2-d8670d1696ab@suse.com>
- <1576044519-28313-1-git-send-email-anand.jain@oracle.com>
- <b89463c5-9f0d-b262-0198-2750e0b2aabc@gmx.com>
- <6025418e-25ce-19f9-3c53-6b094609098c@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
+References: <20191206135406.563336e7@canb.auug.org.au>
+ <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6025418e-25ce-19f9-3c53-6b094609098c@oracle.com>
+In-Reply-To: <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 03:23:06PM +0800, Anand Jain wrote:
-> > And I tend to remove the fail_make_request requirement from some tests,
-> > and direct read with multiple try should be enough to trigger repair for
-> > test btrfs/142 and btrfs/143.
+On Fri, Dec 06, 2019 at 08:17:30AM -0800, Randy Dunlap wrote:
+> On 12/5/19 6:54 PM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Please do not add any material for v5.6 to your linux-next included
+> > trees until after v5.5-rc1 has been released.
+> > 
+> > Changes since 20191204:
 > > 
 > 
-> > In fact, I don't believe your current fix is good enough to handle both
-> > old and new mkfs.btrfs.
+> on x86_64:
 > 
->   It was designed to handle only forward compatible.
+> fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
 
-If possible the tests should be robust and check assumptions and also
-not hardcode eg. fixed block offset values that could change for various
-reasons. Forward compatibility makes it hard to test backports, not only
-on enterprise kernels but also on older stable kernels. We're in a state
-where developers have list of tests to ignore because they known to be
-bogus or unreliable.
+Can somebody enlighten me what is one supposed to do to address the
+warnings? Function names reported in the list contain our ASSERT macro
+that conditionally calls BUG() that I believe is what could cause the
+unreachable instructions but I don't see how.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/btrfs/ctree.h#n3113
+
+__cold
+static inline void assfail(const char *expr, const char *file, int line)
+{
+	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
+		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+		BUG();
+	}
+}
+
+#define ASSERT(expr)	\
+	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
