@@ -2,245 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFAC11A527
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 08:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC76911A62C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 09:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfLKHfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 02:35:44 -0500
-Received: from mout.gmx.net ([212.227.17.20]:57905 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbfLKHfn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 02:35:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576049732;
-        bh=qQkXi9zYiISCx/Mu0jLKrkzG6c32juHBWDS+JDrcRK0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ZwsTAL4gl7LcZCZT2NpxBbx8KXod3lzWO7dSTZaj33SVvhKub436foX1qVpBoTser
-         rsxc2zHnH1iVTByX9rcU8SEhkTYC9HB3IVSsqC/lRyLyRM/EHEWsRM0QYaHJKSCHSU
-         aAMUQ7/nDWXBJ/VWNvKHvBLMHQYFGB0xvXvkgWEI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7b6b-1ie5ao419B-007yW7; Wed, 11
- Dec 2019 08:35:32 +0100
-Subject: Re: [PATCHi RFC] fstest: btrfs/158 fix miss-aligned stripe and device
-To:     Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com
-References: <010f5b0e-939a-b2be-70a2-d8670d1696ab@suse.com>
- <1576044519-28313-1-git-send-email-anand.jain@oracle.com>
- <b89463c5-9f0d-b262-0198-2750e0b2aabc@gmx.com>
- <6025418e-25ce-19f9-3c53-6b094609098c@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <1c01a538-2eb8-9e73-9145-93c9fd7c714a@gmx.com>
-Date:   Wed, 11 Dec 2019 15:35:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727829AbfLKIrj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 03:47:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39998 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725973AbfLKIri (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Dec 2019 03:47:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5C9CCAD2D;
+        Wed, 11 Dec 2019 08:47:36 +0000 (UTC)
+Subject: Re: [PATCH 8/8] btrfs: remove BTRFS_INODE_READDIO_NEED_LOCK
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org,
+        dsterba@suse.cz, jthumshirn@suse.de, linux-fsdevel@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20191210230155.22688-1-rgoldwyn@suse.de>
+ <20191210230155.22688-9-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <49aeb440-698d-d837-2493-525afc515ebb@suse.com>
+Date:   Wed, 11 Dec 2019 10:47:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <6025418e-25ce-19f9-3c53-6b094609098c@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="u6AY7VeH0E4D3bfdHfNRDrYlmQMWQMa30"
-X-Provags-ID: V03:K1:7D53C+AzQYRp8M0i83/GQzKY/mwsdaSvs1drUbkGZgopN6ZicHB
- ZkQkQV1DbZlbiHnp6WoXBh3oOw+yCeRlthcM7+NQT3w7xwrXzRPTguTsdhFeFYwrSAi3qL8
- /PkP4EFHFqUC1QXohPkiACzMR79kfNX+A8MpsNUOpKNIlUE1asqfeLRAU8OZ1j8FJatNpJS
- 7aroCuCsTnXEo8353g0Dg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MHILUlY8IPs=:vbKb9fFAiMfpy2OutBTYZ6
- gQr7BQpRc8tN9IzI5dKYbj1Ny1Sd2HZ8hhPqaW5q58iXHU4/Fda4Hc1uwmF95Geb264w+U7Zt
- V421e4rKBRlqBU0+5bolUuttrZI0J0gbkCUOaTmAZoTLA845Ibk6QrlY2zJo+um6L+g/hUfLx
- iE+JCgwAG9323WhheRZn/gCCpDhi6KzUFmXmRtW32SSdvGKP/k68pqRUDBgZQMTiFgAFoDV/i
- /oyUoQc9amj/VDC5SviOdPfQVlsyzzyMNLgjmaJ35sRu5UxRPYtv7DqHyyR3j11xHrOAMMdJO
- 3vtQOSQyiA/7lXcSqwqt8sESs94J5WJsa7VZi9svcOks7+lmSiqISfHoaT0jbMNzQykq3kh4B
- QTXvRiiB5pY01j+A911yTSgnwEeiNpHrVcHr/UUX1D+m+Ax/GNQc6+LEvq1hmb+ka7Rl1F9Fp
- BBoRsnxXVp2RsoWpFvjJbSD0ymPaFjxAEdJZ+YMRhRo0U5AmC2IGCiH3GLcrBL7ju6I2J4Ds4
- GnB4bg74LcyFwIspk2xvQ6ahz+EXZwAbz4QFaSCl4bYaBp/Oh1vbdhewZjMn+vg9LsGj7uEdN
- qjaprQFKgj3jugg6jCef9bR3hSWtXyyjWJ1OpSb6jdbYmHREjx5dwadO9R/LD6NVI3qMYJ2BD
- 24ak3+gNZ148O4S7bfRc58YgHarctKfZnoM5ZyUkinctlMQ3oO9HhCQvuD22OoXPQ4v1D+rxN
- gk5jU+E8y2zeVKC4NIUh9ptXPEbxSild4PCdM+D3b9JW2TlwXQYCGD1Yo1ta2RxcAw7Rx1Z41
- M8EuowETnqhIFkp6HZQzNqMgr3UeK23LfO/4senvtLQ/60IKmX1xR/AafYDiBfn/EtYfcU/VT
- tYSF5+KBkpry2LXM1qdVttv46BBxstbMsvODA1DvMqw1Td1FOzx/Av4YS6zJuvIDmUEOJnQy7
- MJX4DJU4ABKIUBAtJbFujS2irG0RFahSRmQr/7QyDlqTiWQjgIj2caWfnaL3KP11Bs3bVFL54
- IHrczh61omTz8Tcbm7hLU1cQBImPnXGVy6++q/QRMex7zwvDa5HNe9j/DSmpXDdBAoSok6QyB
- 8IyGHAPX20qGmgpWGOw6q4CitpGxdl+eLif3oUz81+iJiwHypxvGhtGA8e4+8My8j+W5J70be
- 37qWdRpI//1bOjQg8ySsbZ1G7IE60pZHYaaAF6AXJKIqgMAgvhxlwI6BIaEhfC5teShXABnsN
- aSHkEjWflNzDkpYCuKZGlYlc996q+YL9S8l1RonymlSc7wAj983xhXZEjAac=
+In-Reply-To: <20191210230155.22688-9-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---u6AY7VeH0E4D3bfdHfNRDrYlmQMWQMa30
-Content-Type: multipart/mixed; boundary="ZAMLx6I0kUu60UYdHlf46pPArZLHfCA6s"
-
---ZAMLx6I0kUu60UYdHlf46pPArZLHfCA6s
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 11.12.19 г. 1:01 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> Since we now perform direct reads using i_rwsem, we can remove this
+> inode flag used to co-ordinate unlocked reads.
+> 
+> The truncate call chain gets the i_rwsem which may conflict with direct
 
-On 2019/12/11 =E4=B8=8B=E5=8D=883:23, Anand Jain wrote:
->=20
->=20
-> On 12/11/19 3:08 PM, Qu Wenruo wrote:
->>
->>
->> On 2019/12/11 =E4=B8=8B=E5=8D=882:08, Anand Jain wrote:
->>> We changed the order of the allocation on the devices, and
->>> so the test cases which are hard coded to find specific stripe
->>> on the specific device gets failed. So fix it with the new layout.
->>>
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>> ---
->>> Qu, Right we need to fix the dev in the test case as well.
->>> =C2=A0=C2=A0=C2=A0=C2=A0 I saw your patches bit late. Here is what I =
-had.. you may
->>> =C2=A0=C2=A0=C2=A0=C2=A0 use it. So I am marking this patch as RFC.
->>
->> I am crafting a better solution, to handle both behavior (and even
->> future behavior), by getting both devid and physical offset.
->=20
-> =C2=A0Yep helper function using either,
-> =C2=A0=C2=A0 devid and btrfs fi show
-> =C2=A0=C2=A0 or
-> =C2=A0=C2=A0 uuid=C2=A0 and blkid
->=20
-> =C2=A0would dynamically find the right device.
+nit: Truncating taking i_rwsem means it's correctly synchronized with
+concurrent DIO reads. So it's protected, just the wording needs to be
+tweaked.
 
-My current helper is going to rely on the fact that all mkfs.btrfs
-assigned devid sequentially.
-Which means "mkfs.btrfs -f $dev1 $dev2" will always assigned devid 1 to
-$dev1, and devid 2 to $dev2.
-
-As long as we don't touch that part, we should be OK.
-(And I really hope we won't touch that part).
-
->=20
-> =C2=A0I am ok with either.
->=20
->> And I tend to remove the fail_make_request requirement from some tests=
-,
->> and direct read with multiple try should be enough to trigger repair f=
-or
->> test btrfs/142 and btrfs/143.
->>
->=20
->> In fact, I don't believe your current fix is good enough to handle bot=
-h
->> old and new mkfs.btrfs.
->=20
-> =C2=A0It was designed to handle only forward compatible.
-
-Then both Oracle and SUSE QA people will hate such tests...
-
-Thanks,
-Qu
-
->=20
-> Thanks, Anand
->=20
->> So we need to investigate more for raid repair test cases to make them=
-
->> future proof.
->>
->> Thanks,
->> Qu
->>> Thanks.
->>>
->>> =C2=A0 tests/btrfs/158=C2=A0=C2=A0=C2=A0=C2=A0 | 10 +++++-----
->>> =C2=A0 tests/btrfs/158.out |=C2=A0 4 ++--
->>> =C2=A0 2 files changed, 7 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/tests/btrfs/158 b/tests/btrfs/158
->>> index 603e8bea9b7e..7f2066384f55 100755
->>> --- a/tests/btrfs/158
->>> +++ b/tests/btrfs/158
->>> @@ -76,14 +76,14 @@ _scratch_unmount
->>> =C2=A0 =C2=A0 stripe_0=3D`get_physical_stripe0`
->>> =C2=A0 stripe_1=3D`get_physical_stripe1`
->>> -dev4=3D`echo $SCRATCH_DEV_POOL | awk '{print $4}'`
->>> -dev3=3D`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
->>> +dev1=3D`echo $SCRATCH_DEV_POOL | awk '{print $1}'`
->>> +dev2=3D`echo $SCRATCH_DEV_POOL | awk '{print $2}'`
->>> =C2=A0 =C2=A0 # step 2: corrupt the 1st and 2nd stripe (stripe 0 and =
-1)
->>> -echo "step 2......simulate bitrot at offset $stripe_0 of
->>> device_4($dev4) and offset $stripe_1 of device_3($dev3)" >>$seqres.fu=
-ll
->>> +echo "step 2......simulate bitrot at offset $stripe_0 of
->>> device_1($dev1) and offset $stripe_1 of device_2($dev2)" >>$seqres.fu=
-ll
->>> =C2=A0 -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 |
->>> _filter_xfs_io
->>> -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 |
->>> _filter_xfs_io
->>> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev1 |
->>> _filter_xfs_io
->>> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev2 |
->>> _filter_xfs_io
->>> =C2=A0 =C2=A0 # step 3: scrub filesystem to repair the bitrot
->>> =C2=A0 echo "step 3......repair the bitrot" >> $seqres.full
->>> diff --git a/tests/btrfs/158.out b/tests/btrfs/158.out
->>> index 1f5ad3f76917..5cdaeb238c62 100644
->>> --- a/tests/btrfs/158.out
->>> +++ b/tests/btrfs/158.out
->>> @@ -1,9 +1,9 @@
->>> =C2=A0 QA output created by 158
->>> =C2=A0 wrote 131072/131072 bytes at offset 0
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> -wrote 65536/65536 bytes at offset 9437184
->>> +wrote 65536/65536 bytes at offset 22020096
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> -wrote 65536/65536 bytes at offset 9437184
->>> +wrote 65536/65536 bytes at offset 1048576
->>> =C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> =C2=A0 0000000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
->>> =C2=A0 *
->>>
->>
-
-
---ZAMLx6I0kUu60UYdHlf46pPArZLHfCA6s--
-
---u6AY7VeH0E4D3bfdHfNRDrYlmQMWQMa30
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3wnD4ACgkQwj2R86El
-/qhi4QgApvHOy1tHXKDg4U/7JQCpkiFWSr/OkuVI4h/Txb3E8Pu0xLVwPwyQpBgE
-nre5eb8VJhoGOMo6xjEu3SHrej2pRJ1ghrMikXMMrerhrLsJDQiMpF1H4iRMKFtq
-N4GuMEAwmYiFq5ur+oQW/AkHVei3VTG+fVS+Unu4yNxOV8oT8tWjneuY4jMDo21C
-uhj+XFOgdQACToDHugq4f9YT3sQn3DXiSuk0iQw85lTZ89/C2MaLlhQKV8pSHD8b
-VctqmgMQzLwKWem2HPMYypPH2fhlJiyQ7M73tFoJIWX4vvNfT1YbcVMuao7KQsdk
-G3FCGF+lqs3QizBjFCQLAohEJrUK0w==
-=onVz
------END PGP SIGNATURE-----
-
---u6AY7VeH0E4D3bfdHfNRDrYlmQMWQMa30--
+> reads:
+> do_truncate <-- calls inode_lock
+>   notify_change
+>    ->setattr/btrfs_setattr
+>      btrfs_setsize
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/btrfs_inode.h | 18 ------------------
+>  fs/btrfs/inode.c       |  5 -----
+>  2 files changed, 23 deletions(-)
+> 
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index 4e12a477d32e..cd8f378ed8e7 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -27,7 +27,6 @@ enum {
+>  	BTRFS_INODE_NEEDS_FULL_SYNC,
+>  	BTRFS_INODE_COPY_EVERYTHING,
+>  	BTRFS_INODE_IN_DELALLOC_LIST,
+> -	BTRFS_INODE_READDIO_NEED_LOCK,
+>  	BTRFS_INODE_HAS_PROPS,
+>  	BTRFS_INODE_SNAPSHOT_FLUSH,
+>  };
+> @@ -317,23 +316,6 @@ struct btrfs_dio_private {
+>  			blk_status_t);
+>  };
+>  
+> -/*
+> - * Disable DIO read nolock optimization, so new dio readers will be forced
+> - * to grab i_mutex. It is used to avoid the endless truncate due to
+> - * nonlocked dio read.
+> - */
+> -static inline void btrfs_inode_block_unlocked_dio(struct btrfs_inode *inode)
+> -{
+> -	set_bit(BTRFS_INODE_READDIO_NEED_LOCK, &inode->runtime_flags);
+> -	smp_mb();
+> -}
+> -
+> -static inline void btrfs_inode_resume_unlocked_dio(struct btrfs_inode *inode)
+> -{
+> -	smp_mb__before_atomic();
+> -	clear_bit(BTRFS_INODE_READDIO_NEED_LOCK, &inode->runtime_flags);
+> -}
+> -
+>  /* Array of bytes with variable length, hexadecimal format 0x1234 */
+>  #define CSUM_FMT				"0x%*phN"
+>  #define CSUM_FMT_VALUE(size, bytes)		size, bytes
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index ce53f2889673..4c76a6d5e6a4 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -5273,11 +5273,6 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
+>  
+>  		truncate_setsize(inode, newsize);
+>  
+> -		/* Disable nonlocked read DIO to avoid the endless truncate */
+> -		btrfs_inode_block_unlocked_dio(BTRFS_I(inode));
+> -		inode_dio_wait(inode);
+> -		btrfs_inode_resume_unlocked_dio(BTRFS_I(inode));
+> -
+>  		ret = btrfs_truncate(inode, newsize == oldsize);
+>  		if (ret && inode->i_nlink) {
+>  			int err;
+> 
