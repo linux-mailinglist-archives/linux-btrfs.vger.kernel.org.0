@@ -2,47 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B92A611B7A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 17:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B3B11B87D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 17:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730703AbfLKQJV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 11 Dec 2019 11:09:21 -0500
-Received: from mailout02.3bbmail.com ([110.164.252.195]:18363 "EHLO
-        mailout03.3bb.co.th" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729870AbfLKQJU (ORCPT
+        id S1730321AbfLKQVm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 11:21:42 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:46738 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728912AbfLKQVl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 11:09:20 -0500
-X-Greylist: delayed 3000 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 11:09:19 EST
-Authentication-Results: 3bb.co.th;
-        spf=fail smtp.mailfrom=infoccfoundation@amazon.com
-Received: from appserv (mx-ll-110.164.149-9.static.3bb.co.th [110.164.149.9] (may be forged))
-        by mailout03.3bb.co.th (8.16.0.27/8.16.0.27) with ESMTP id xBBFFXsc021946;
-        Wed, 11 Dec 2019 22:15:33 +0700
-Message-ID: <41458-2201912311151543590@appserv>
-To:     "a" <skyteamsbiz@gmail.com>
-Reply-To: "CCULVERT FOUNDATION" <skyteamsbiz@gmail.com>
-From:   "CCULVERT FOUNDATION" <infoccfoundation@amazon.com>
-Subject: Mein letzter Wunsch.
-Date:   Wed, 11 Dec 2019 22:15:43 +0700
+        Wed, 11 Dec 2019 11:21:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=AxXuRP6SlO9EYVZsfKYGZTNvOdQRf3h3gzU4Dl8Nq0c=; b=g70pc2kei6mVg+B+h8YjfbGsg
+        mKZeb9t1jKfZKM8HyZWZkFBrKwtlXP8G4ceGlsVyVyzF9AO00JejYenmo4XxrsHfPrw/FSXvisxwb
+        bRiYSzfAhuRtD8shFf9H0KixFRC5QCTuik++EKIAO9xodk1ljCFZEYfSAZb6bS2dBWrmjAosXs3cQ
+        JoYQU3cmJJn1We/+FfugqqzCOVtaKCZnlJa7NDbLXbRkG2tRTu1twvygzBaq10Y/rldyBVDHHr4RK
+        AMMG5jNnzRd16N026VBWH2/TrzhTMgPf1g8Yr1lMDQjJMaql49Ap7FzgjsZhfXmL4BXjMoTpfXX1r
+        UrGFDzjhA==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1if4k7-0006LN-OM; Wed, 11 Dec 2019 16:21:39 +0000
+Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
+To:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20191206135406.563336e7@canb.auug.org.au>
+ <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
+ <20191211134929.GL3929@twin.jikos.cz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
+Date:   Wed, 11 Dec 2019 08:21:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
 MIME-Version: 1.0
-Content-type: text/plain; charset=windows-874
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf1.amazon.com include:spf2.amazon.com
- include:amazonses.com -all
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-25_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=40 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=367
- adultscore=0 classifier=spam adjust=40 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911260048
+In-Reply-To: <20191211134929.GL3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Wenn Sie sich für die Finanzierung der STIFTUNG interessieren, schreiben Sie bitte heute über meinen Anwalt zurück
-Grüße,
-Mrs. Cindy Culvert.
-skyteamsbiz@gmail.com
+[oops, forgot to add Josh and PeterZ]
 
+On 12/11/19 5:49 AM, David Sterba wrote:
+> On Fri, Dec 06, 2019 at 08:17:30AM -0800, Randy Dunlap wrote:
+>> On 12/5/19 6:54 PM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Please do not add any material for v5.6 to your linux-next included
+>>> trees until after v5.5-rc1 has been released.
+>>>
+>>> Changes since 20191204:
+>>>
+>>
+>> on x86_64:
+>>
+>> fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
+> 
+> Can somebody enlighten me what is one supposed to do to address the
+> warnings? Function names reported in the list contain our ASSERT macro
+> that conditionally calls BUG() that I believe is what could cause the
+> unreachable instructions but I don't see how.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/btrfs/ctree.h#n3113
+> 
+> __cold
+> static inline void assfail(const char *expr, const char *file, int line)
+> {
+> 	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
+> 		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+> 		BUG();
+> 	}
+> }
+> 
+> #define ASSERT(expr)	\
+> 	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
+> 
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
