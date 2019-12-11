@@ -2,157 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3E711B5E6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 16:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DECE11B632
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 16:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731858AbfLKP5P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 10:57:15 -0500
-Received: from ms11p00im-qufo17281401.me.com ([17.58.38.51]:40158 "EHLO
-        ms11p00im-qufo17281401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730962AbfLKP5L (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 10:57:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1576079829;
-        bh=8DSEtEZvRVHA7KzRwJUlqJ3kOhZ9hZTWfUBB4qaK9aE=;
-        h=Content-Type:Subject:From:Date:Message-Id:To;
-        b=CXaBRfR/zBQtkDeaBKh15mX4sbALd/UXNL7nZorSnosBPtYqrPnGV++bnG3s9EGJq
-         XvAKR2pFIkOhOn8VLfcoe/po87IPStPveHK7mxHYIihyHmszmjs9KVlRhDoHpsf4Ms
-         z2cPIXyV1c9nfeFdxXgmOr8DHndS0NOYDzbeTTcX0pgxSknI4qJCaBjBX8/nz05Hs9
-         PqOScxi0Br29Hc9frKYAzU9V00MzoPCQ4ckPXtZUYjWzSoLYqfT3RTtcwMqwv6FDCn
-         5rzfRL4WvJZN3yZhiBqHZZZlRdI7V6oFo4UzwP7QXEE+EuA7duldqBBlj4ozXYeG2K
-         Fns2RbQ8g2jtw==
-Received: from [192.168.15.23] (unknown [177.27.216.49])
-        by ms11p00im-qufo17281401.me.com (Postfix) with ESMTPSA id 5323BBC0E91;
-        Wed, 11 Dec 2019 15:57:08 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
-Subject: Re: [PATCH] btrfs-progs: Skip device tree when we failed to read it
-From:   Christian Wimmer <telefonchris@icloud.com>
-In-Reply-To: <985d1845-d211-9134-4c9b-85a0956e7404@gmx.com>
-Date:   Wed, 11 Dec 2019 12:57:05 -0300
-Cc:     Qu WenRuo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <24850F04-1850-42AA-B05D-0E10EC648BBA@icloud.com>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <BF872461-4D5F-4125-85E6-719A42F5BD0F@icloud.com>
- <e8b667ab-6b71-7cd8-632a-5483ec4386d8@gmx.com>
- <6538780A-6160-4400-A997-E8324DB61F69@icloud.com>
- <e461ee1a-dc24-dcde-34b5-2ddd53bb1827@suse.com>
- <18F0134D-AFF9-4CB9-A996-E44AC949DCAA@icloud.com>
- <985d1845-d211-9134-4c9b-85a0956e7404@gmx.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-X-Mailer: Apple Mail (2.3601.0.10)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-12-11_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1912110134
+        id S1732619AbfLKP7d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 10:59:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34194 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731656AbfLKP7d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Dec 2019 10:59:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1EA2EAD1A;
+        Wed, 11 Dec 2019 15:59:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BFFAEDA883; Wed, 11 Dec 2019 16:59:31 +0100 (CET)
+Date:   Wed, 11 Dec 2019 16:59:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <chris@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: 5.5.0-0.rc1 hang, could be zstd compression related
+Message-ID: <20191211155931.GQ3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <chris@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <CAJCQCtS_7vjBnqeDsedBQJYuE_ap+Xo6D=MXY=rOxf66oJZkrA@mail.gmail.com>
+ <4eca86cf-65c3-5aba-d0fd-466d779614e6@toxicpanda.com>
+ <20191211155553.GP3929@twin.jikos.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191211155553.GP3929@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Perfect!
+On Wed, Dec 11, 2019 at 04:55:53PM +0100, David Sterba wrote:
+> On Wed, Dec 11, 2019 at 09:58:45AM -0500, Josef Bacik wrote:
+> > On 12/10/19 11:00 PM, Chris Murphy wrote:
+> > > Could continue to chat in one application, the desktop environment was
+> > > responsive, but no shells worked and I couldn't get to a tty and I
+> > > couldn't ssh into remotely. Looks like the journal has everything up
+> > > until I pressed and held down the power button.
+> > > 
+> > > 
+> > > /dev/nvme0n1p7 on / type btrfs
+> > > (rw,noatime,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=274,subvol=/root)
+> > > 
+> > > dmesg pretty
+> > > https://pastebin.com/pvG3ERnd
+> > > 
+> > > dmesg (likely MUA stomped)
+> > > [10224.184137] flap.local kernel: perf: interrupt took too long (2522
+> > >> 2500), lowering kernel.perf_event_max_sample_rate to 79000
+> > > [14712.698184] flap.local kernel: perf: interrupt took too long (3153
+> > >> 3152), lowering kernel.perf_event_max_sample_rate to 63000
+> > > [17903.211976] flap.local kernel: Lockdown: systemd-logind:
+> > > hibernation is restricted; see man kernel_lockdown.7
+> > > [22877.667177] flap.local kernel: BUG: kernel NULL pointer
+> > > dereference, address: 00000000000006c8
+> > > [22877.667182] flap.local kernel: #PF: supervisor read access in kernel mode
+> > > [22877.667184] flap.local kernel: #PF: error_code(0x0000) - not-present page
+> > > [22877.667187] flap.local kernel: PGD 0 P4D 0
+> > > [22877.667191] flap.local kernel: Oops: 0000 [#1] SMP PTI
+> > > [22877.667194] flap.local kernel: CPU: 2 PID: 14747 Comm: kworker/u8:7
+> > > Not tainted 5.5.0-0.rc1.git0.1.fc32.x86_64+debug #1
+> > > [22877.667196] flap.local kernel: Hardware name: HP HP Spectre
+> > > Notebook/81A0, BIOS F.43 04/16/2019
+> > > [22877.667226] flap.local kernel: Workqueue: btrfs-delalloc
+> > > btrfs_work_helper [btrfs]
+> > > [22877.667233] flap.local kernel: RIP:
+> > > 0010:bio_associate_blkg_from_css+0x1c/0x3b0
+> > 
+> > This looks like the extent_map bdev cleanup thing that was supposed to be fixed, 
+> > did you send the patch without the fix for it Dave?  Thanks,
+> 
+> The fix for NULL bdev was added in 429aebc0a9a063667dba21 (and tested
+> with cgroups v2) and it's in a different function than the one that
+> appears on the stacktrace.
+> 
+> This seems to be another instance where the bdev is needed right after
+> the bio is created but way earlier than it's actually known for real,
+> yet still needed for the blkcg thing.
+> 
+>  443         bio = btrfs_bio_alloc(first_byte);
+>  444         bio->bi_opf = REQ_OP_WRITE | write_flags;
+>  445         bio->bi_private = cb;
+>  446         bio->bi_end_io = end_compressed_bio_write;
+>  447
+>  448         if (blkcg_css) {
+>  449                 bio->bi_opf |= REQ_CGROUP_PUNT;
+>  450                 bio_associate_blkg_from_css(bio, blkcg_css);
+>  451         }
+> 
+> Strange that it takes so long to reproduce, meaning the 'if' branch is
+> not taken often.
 
-Thanks a lot!
+Compile tested only:
 
-Chris
-
-
-> On 10. Dec 2019, at 21:36, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->=20
->=20
->=20
-> On 2019/12/11 =E4=B8=8A=E5=8D=885:25, Christian Wimmer wrote:
->> Hi Qu and all others,
->>=20
->> thanks a lot for your help and patience!
->>=20
->> Unfortunately I could not get out any file from the arrive yet but I =
-can survive.
->>=20
->> I would like just one more answer from you. Do you think with the =
-newest version of btrfs it would not have happened?
->=20
-> =46rom the result, it looks like either btrfs is doing wrong trim, or =
-the
-> storage stack below (including the Parallels, the apple fs, and the
-> apple drivers) is blowing up data.
->=20
-> In the latter case, it doesn't matter whatever kernel version you're
-> using, if it happens, it will take your data along with it.
->=20
-> But for the former case, newer kernel has improved trim check to =
-prevent
-> bad trim, so at least newer kernel is a little more safer.
->=20
->> Should I update to the newest version?
->=20
-> Not always the newest, although we're trying our best to prevent bugs,
-> but sometimes we still have some bugs sneaking into latest kernel.
->=20
->>=20
->> I have many partitions with btrfs and I like them a lot. Very nice =
-file system indeed but am I safe with the version that I have (4.19.1)?
->=20
-> Can't say it's unsafe, since SUSE has all necessary backports and =
-quite
-> some customers are using (testing) it.
-> As long as you're using the latest SUSE updates, it should be safe and
-> all found bugs should have fixes backported.
->=20
-> Thanks,
-> Qu
->>=20
->> BTW, you are welcome to suggest any command or try anything with my =
-broken file system that I still have backed up in case that you want to =
-experiment with it.
->>=20
->> Thanks=20
->>=20
->> Chris
->>=20
->>=20
->>> On 7. Dec 2019, at 22:21, Qu WenRuo <wqu@suse.com> wrote:
->>>=20
->>>=20
->>>=20
->>> On 2019/12/8 =E4=B8=8A=E5=8D=8812:44, Christian Wimmer wrote:
->>>> Hi Qu,
->>>>=20
->>>> I was reading about chunk-recover. Do you think this could be worth =
-a try?
->>>=20
->>> Nope, your chunk tree is good, so that makes no sense.
->>>=20
->>>>=20
->>>> Is there any other command that can search for files that make =
-sense to recover?
->>>=20
->>> The only sane behavior here is to search the whole disk and grab
->>> anything looks like a tree block, and then extract data from it.
->>>=20
->>> This is not something supported by btrfs-progs yet, so really not =
-much
->>> more can be done here.
->>>=20
->>> Thanks,
->>> Qu
->>>=20
->>>>=20
->>>> Regards,
->>>>=20
->>>> Chris
->>>>=20
->>=20
->=20
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -446,6 +446,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+        bio->bi_end_io = end_compressed_bio_write;
+ 
+        if (blkcg_css) {
++               bio_set_bev(bio, fs_info->fs_devices->latest_bdev);
+                bio->bi_opf |= REQ_CGROUP_PUNT;
+                bio_associate_blkg_from_css(bio, blkcg_css);
+        }
 
