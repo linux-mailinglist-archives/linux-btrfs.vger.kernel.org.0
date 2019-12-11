@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A8E11AE80
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 15:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4A711AE98
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 15:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbfLKOzz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 09:55:55 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35789 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbfLKOzz (ORCPT
+        id S1729829AbfLKO6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 09:58:48 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34619 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727477AbfLKO6r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 09:55:55 -0500
-Received: by mail-qt1-f194.google.com with SMTP id s8so6510270qte.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2019 06:55:54 -0800 (PST)
+        Wed, 11 Dec 2019 09:58:47 -0500
+Received: by mail-qk1-f194.google.com with SMTP id d202so19890406qkb.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2019 06:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6PFgLUQNRf4xg/tdXAUVCASsyl/WqwirZPNLIpxzzr4=;
-        b=O/zE0N2UdEsO+A+d1wePXG7YoUqCg/+DImeTG4KyVU7bIhavbmDCNLkU9+yUVQ27W2
-         wgKz/j90MVbSbWZGCwTDym1zAk61IeurfPKjgx3geUqzX5FrrqsOsyoFnPhTOTdrGuE2
-         SbEmMse4cfPq7xicY4XAHMXhAQthZRX9P93F1/g2TL240KaG1DoEXP6J9Q08Fc2fQnU5
-         TFIYLgIGLZ+k8rk/uoJIdrhDhdPvaOXI6aCz73pM3KKkmS2K00PsjAUFtWYyL8Mm+FsM
-         6h8IG5uIo+zJc04YbbHgvqALPUqEjeWWvL5ldCjTJKVGuWGLyNbq91jWJKcf5f/Wgue1
-         MYtw==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=165huzjGadJNRUS46HL3721A3E8SYY2Tk8rls6r0RDM=;
+        b=LC3OIe/1SyyqER9Q7ZR63Ex44I02gRk4PJ1Uf4x9r3O2T31Q9wc1TNVPYUDIy6urpU
+         ih5yO8Iptec3hIge4us/XVsP2LQIYe17j72vIIpanEDBNHdixoCytH66b0O0Km50ZE7/
+         kTcryTNcEzrzzG7TOMft4xvynb4kLFD5ab2zFAOKmOp3d0udiAfKl95I9S2B4dg8aeW2
+         6XBPY1rc2MTqmTHS9Eqc1zZaiW14sJbOeKD/62/iRmbuyR3fjczZBI1p9bjpIy9YkPZc
+         BgmlKoyKnxxwD0366qYDl73XN9G7GBxbt/81HsoS4GExRCLNAlakLO0c6DuMSxjns4/W
+         Bd4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6PFgLUQNRf4xg/tdXAUVCASsyl/WqwirZPNLIpxzzr4=;
-        b=AG2mxh2EYjztwmfM4NC8mMRc7XuZwCNQ++9kpq3TH25mIKnVylNlVjYIrX8GTJPXKq
-         1Mm98NAHbiKZUzfs1HWab1cfeTTdk5IfH4ijHYDtRNSV5xAFgNDJS0vUNiVCL73G2K8u
-         RlGMkwsrZ+DHicSjfHmvtwEr/Wee4Gt2t+ByyRArp6q7sB3LMQIXDMIgwG2pbYSZwqp9
-         7nDHF+lC7i4HQSBgwqhm7PXdejP/RZvDq+Bs+zsXhkwFrr3ywAX+kxayJn0p2jDyS0fY
-         i3/8sBnBBAoYctvxUpg9sjjem+lyH/eSvtkVyR/ZkPDsqzNRdcYpjRQBIRnyt2SX38Ur
-         3cCw==
-X-Gm-Message-State: APjAAAU69qH4lNK2VYtwNjjgFTaVLc20f927755rYoEi6lCfGs9HPJU9
-        nWw7AggTa/tGHQOWyIDmKEbyfw==
-X-Google-Smtp-Source: APXvYqw6+kC9Lp7+xwNZw2AdJipcnZVj/pYjCq9QpQduI3jH+nNor1xgfoYAojR0ZDX1UvNTqWvsdg==
-X-Received: by 2002:ac8:6f73:: with SMTP id u19mr2027087qtv.102.1576076154331;
-        Wed, 11 Dec 2019 06:55:54 -0800 (PST)
+        bh=165huzjGadJNRUS46HL3721A3E8SYY2Tk8rls6r0RDM=;
+        b=ZCzbuhYl75pQ6zCzGhs7THJzVoEsb1X69fhhvbMwV4KYfUQGPTVy4C64eZvy52h0CP
+         Dve6t0jjEOBM4dEuqS8MdOKnYxY0wUuL0zyjin+ocBAkGgeFvLpEdPY85P+a1M4A+joV
+         2ujaOmqjs1OMocugw/doGWEqW3sqyFawvuRxmUyV/g8ndFsKjME/NkCytxOCKFZKWG5p
+         4gZcHtpCOKdRoexs74TUxXj7LN5YyWyti3tNQNn2fZNcF7y6tLpSm/yEk9cOxkEWY1Uj
+         SZRDdywWo4lrEhFD1184NRm8xOJYHvlLvw78AqDOefxjwWN85k1PZJZmip+Gws7Rd4Sj
+         0oUA==
+X-Gm-Message-State: APjAAAVzPZN28i/HaDbqmBlFgCCWAtPfuVQL38vMUE9jDtL3JjlGRWhe
+        Qz9qCLR8TQOXoHeg1SctXB0GChKCBQ7uGA==
+X-Google-Smtp-Source: APXvYqzpn6yjU8igql0I0rGH3ZRIiRIjMVwySop20kQW00pJ7P7qgj7+6C4Pj4zDxefm29Eid97XIg==
+X-Received: by 2002:a37:41d2:: with SMTP id o201mr3485776qka.100.1576076326678;
+        Wed, 11 Dec 2019 06:58:46 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::4149])
-        by smtp.gmail.com with ESMTPSA id k62sm725413qkc.95.2019.12.11.06.55.53
+        by smtp.gmail.com with ESMTPSA id x19sm950291qtm.47.2019.12.11.06.58.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Dec 2019 06:55:53 -0800 (PST)
-Subject: Re: [PATCH 3/3] btrfs: relocation: Fix a KASAN report on
- btrfs_reloc_pre_snapshot() due to extended reloc root lifespan
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <20191211050004.18414-1-wqu@suse.com>
- <20191211050004.18414-4-wqu@suse.com>
+        Wed, 11 Dec 2019 06:58:45 -0800 (PST)
+Subject: Re: 5.5.0-0.rc1 hang, could be zstd compression related
+To:     Chris Murphy <chris@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <CAJCQCtS_7vjBnqeDsedBQJYuE_ap+Xo6D=MXY=rOxf66oJZkrA@mail.gmail.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e95ea11b-304a-92b7-b2ab-b244a17fa7ce@toxicpanda.com>
-Date:   Wed, 11 Dec 2019 09:55:52 -0500
+Message-ID: <4eca86cf-65c3-5aba-d0fd-466d779614e6@toxicpanda.com>
+Date:   Wed, 11 Dec 2019 09:58:45 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191211050004.18414-4-wqu@suse.com>
+In-Reply-To: <CAJCQCtS_7vjBnqeDsedBQJYuE_ap+Xo6D=MXY=rOxf66oJZkrA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,69 +67,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/11/19 12:00 AM, Qu Wenruo wrote:
-> [BUG]
-> When running workload with balance start/cancel, snapshot
-> creation/deletion and fsstress, we can hit the following KASAN report:
->    ==================================================================
->    BUG: KASAN: use-after-free in btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
->    Read of size 4 at addr ffff888157140100 by task btrfs/1822
+On 12/10/19 11:00 PM, Chris Murphy wrote:
+> Could continue to chat in one application, the desktop environment was
+> responsive, but no shells worked and I couldn't get to a tty and I
+> couldn't ssh into remotely. Looks like the journal has everything up
+> until I pressed and held down the power button.
 > 
->    CPU: 2 PID: 1822 Comm: btrfs Tainted: G           O      5.5.0-rc1-custom+ #40
->    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->    Call Trace:
->     dump_stack+0xc2/0x11a
->     print_address_description.constprop.0+0x20/0x210
->     __kasan_report.cold+0x1b/0x41
->     kasan_report+0x12/0x20
->     check_memory_region+0x13c/0x1b0
->     __asan_loadN+0xf/0x20
->     btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
->     create_pending_snapshot+0x209/0x15f0 [btrfs]
->     create_pending_snapshots+0x111/0x140 [btrfs]
->     btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
->     btrfs_mksubvol+0x915/0x960 [btrfs]
->     btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
->     btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
->     btrfs_ioctl+0x241b/0x3e60 [btrfs]
->     do_vfs_ioctl+0x831/0xb10
->     ksys_ioctl+0x67/0x90
->     __x64_sys_ioctl+0x43/0x50
->     do_syscall_64+0x79/0xe0
->     entry_SYSCALL_64_after_hwframe+0x49/0xbe
 > 
-> [CAUSE]
-> Again, we try to access root->reloc_root without verify if that reloc
-> root is already dead (being freed).
+> /dev/nvme0n1p7 on / type btrfs
+> (rw,noatime,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=274,subvol=/root)
 > 
-> [FIX]
-> Check if the root has dead reloc root before accessing it.
+> dmesg pretty
+> https://pastebin.com/pvG3ERnd
 > 
-> Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/relocation.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 619ccb183515..2d2cd1596ec9 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4721,7 +4721,8 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
->   	struct btrfs_root *root = pending->root;
->   	struct reloc_control *rc = root->fs_info->reloc_ctl;
->   
-> -	if (!root->reloc_root || !rc)
-> +	if (!root->reloc_root || !rc || test_bit(BTRFS_ROOT_DEAD_RELOC_TREE,
-> +				&root->state))
->   		return;
->  
+> dmesg (likely MUA stomped)
+> [10224.184137] flap.local kernel: perf: interrupt took too long (2522
+>> 2500), lowering kernel.perf_event_max_sample_rate to 79000
+> [14712.698184] flap.local kernel: perf: interrupt took too long (3153
+>> 3152), lowering kernel.perf_event_max_sample_rate to 63000
+> [17903.211976] flap.local kernel: Lockdown: systemd-logind:
+> hibernation is restricted; see man kernel_lockdown.7
+> [22877.667177] flap.local kernel: BUG: kernel NULL pointer
+> dereference, address: 00000000000006c8
+> [22877.667182] flap.local kernel: #PF: supervisor read access in kernel mode
+> [22877.667184] flap.local kernel: #PF: error_code(0x0000) - not-present page
+> [22877.667187] flap.local kernel: PGD 0 P4D 0
+> [22877.667191] flap.local kernel: Oops: 0000 [#1] SMP PTI
+> [22877.667194] flap.local kernel: CPU: 2 PID: 14747 Comm: kworker/u8:7
+> Not tainted 5.5.0-0.rc1.git0.1.fc32.x86_64+debug #1
+> [22877.667196] flap.local kernel: Hardware name: HP HP Spectre
+> Notebook/81A0, BIOS F.43 04/16/2019
+> [22877.667226] flap.local kernel: Workqueue: btrfs-delalloc
+> btrfs_work_helper [btrfs]
+> [22877.667233] flap.local kernel: RIP:
+> 0010:bio_associate_blkg_from_css+0x1c/0x3b0
 
-Same comment here as the other one, you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Once it's fixed.  Thanks,
+This looks like the extent_map bdev cleanup thing that was supposed to be fixed, 
+did you send the patch without the fix for it Dave?  Thanks,
 
 Josef
