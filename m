@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A2811A15F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 03:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AF11A15E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 03:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbfLKCdt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Dec 2019 21:33:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38932 "EHLO mx1.suse.de"
+        id S1727572AbfLKCdr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Dec 2019 21:33:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38910 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727561AbfLKCdt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Dec 2019 21:33:49 -0500
+        id S1727189AbfLKCdr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Dec 2019 21:33:47 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 02C97ACD9;
-        Wed, 11 Dec 2019 02:22:11 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 1669DB2CB
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2019 02:22:12 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] fstests: btrfs/157 btrfs/158: Prevent stripe offset to pollute golden output
-Date:   Wed, 11 Dec 2019 10:22:06 +0800
-Message-Id: <20191211022207.15359-1-wqu@suse.com>
+Subject: [PATCH] fstests: common: Allow user to keep $seqres.dmesg for all tests
+Date:   Wed, 11 Dec 2019 10:22:07 +0800
+Message-Id: <20191211022207.15359-2-wqu@suse.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191211022207.15359-1-wqu@suse.com>
+References: <20191211022207.15359-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,90 +30,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test btrfs/157 and btrfs/158 are verifying the repair functionality of
-supported RAID profile, thus it needs to corrupt the fs data manually using
-physical offset of data.
+Currently fstests will remove $seqres.dmesg if nothing wrong happened.
+It saves some space, but sometimes it may not provide good enough
+history for developers to check.
+E.g. some unexpected dmesg from fs, but not serious enough to be caught
+by current filter.
 
-However that physical offset of data is dependent on chunk layout, which
-is further dependent on mkfs, so such physical offset is never reliable.
+So instead of deleting the ordinary $seqres.dmesg, provide a new config:
+KEEP_DMESG, to allow user to choose whether to keep the dmesg.
 
-And btrfs-progs commit c501c9e3b816 ("btrfs-progs: mkfs: match devid
-order to the stripe index") changed the mkfs stripe layout, the golden
-output no longer matches the output.
+The default value for it is 0, which keeps the existing behavior by
+deleting ordinary dmesg.
 
-This patch will remove the physical offset from golden output,
-especially since we already have those offsets output in seqres.full.
-
-Reported-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/157     | 5 +++--
- tests/btrfs/157.out | 4 ----
- tests/btrfs/158     | 4 ++--
- tests/btrfs/158.out | 4 ----
- 4 files changed, 5 insertions(+), 12 deletions(-)
+ common/config | 4 ++++
+ common/rc     | 4 +++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/157 b/tests/btrfs/157
-index 7f75c407..9895f1fd 100755
---- a/tests/btrfs/157
-+++ b/tests/btrfs/157
-@@ -90,8 +90,9 @@ dev3=`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
- # step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
- echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4) and offset $stripe_1 of device_3($dev3)" >>$seqres.full
- 
--$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs_io
--$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs_io
-+# These stripe offset is mkfs dependent, don't pollute golden output
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 > /dev/null
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 > /dev/null
- 
- # step 3: read foobar to repair the bitrot
- echo "step 3......repair the bitrot" >> $seqres.full
-diff --git a/tests/btrfs/157.out b/tests/btrfs/157.out
-index 08d592c4..d69c0f1d 100644
---- a/tests/btrfs/157.out
-+++ b/tests/btrfs/157.out
-@@ -1,10 +1,6 @@
- QA output created by 157
- wrote 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 65536/65536 bytes at offset 9437184
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 65536/65536 bytes at offset 9437184
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- 0200000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
- *
- 0400000
-diff --git a/tests/btrfs/158 b/tests/btrfs/158
-index 603e8bea..99ee7fb7 100755
---- a/tests/btrfs/158
-+++ b/tests/btrfs/158
-@@ -82,8 +82,8 @@ dev3=`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
- # step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
- echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4) and offset $stripe_1 of device_3($dev3)" >>$seqres.full
- 
--$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs_io
--$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs_io
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 > /dev/null
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 > /dev/null
- 
- # step 3: scrub filesystem to repair the bitrot
- echo "step 3......repair the bitrot" >> $seqres.full
-diff --git a/tests/btrfs/158.out b/tests/btrfs/158.out
-index 1f5ad3f7..95562f49 100644
---- a/tests/btrfs/158.out
-+++ b/tests/btrfs/158.out
-@@ -1,10 +1,6 @@
- QA output created by 158
- wrote 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 65536/65536 bytes at offset 9437184
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 65536/65536 bytes at offset 9437184
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- 0000000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
- *
- 0400000
+diff --git a/common/config b/common/config
+index 1b75777f..b409f32c 100644
+--- a/common/config
++++ b/common/config
+@@ -22,6 +22,9 @@
+ # RMT_IRIXTAPE_DEV- the IRIX remote tape device for the xfsdump tests
+ # RMT_TAPE_USER -   remote user for tape device
+ # SELINUX_MOUNT_OPTIONS - Options to use when SELinux is enabled.
++# KEEP_DMESG -      whether to keep all dmesg for each test case.
++#                   1: keep all dmesg
++#                   0: only keep dmesg with error/warning (default)
+ #
+ # - These can be added to $HOST_CONFIG_DIR (witch default to ./config)
+ #   below or a separate local configuration file can be used (using
+@@ -757,6 +760,7 @@ if [ -z "$CONFIG_INCLUDED" ]; then
+ 	[ -z "$TEST_FS_MOUNT_OPTS" ] && _test_mount_opts
+ 	[ -z "$MKFS_OPTIONS" ] && _mkfs_opts
+ 	[ -z "$FSCK_OPTIONS" ] && _fsck_opts
++	[ -z "$KEEP_DMESG" ] && export KEEP_DMESG=0
+ else
+ 	# We get here for the non multi section case, on every test that sources
+ 	# common/rc after re-sourcing the HOST_OPTIONS config file.
+diff --git a/common/rc b/common/rc
+index e5535279..a1386f61 100644
+--- a/common/rc
++++ b/common/rc
+@@ -3634,7 +3634,9 @@ _check_dmesg()
+ 		_dump_err "_check_dmesg: something found in dmesg (see $seqres.dmesg)"
+ 		return 1
+ 	else
+-		rm -f $seqres.dmesg
++		if [ "$KEEP_DMESG" != 1 ]; then
++			rm -f $seqres.dmesg
++		fi
+ 		return 0
+ 	fi
+ }
 -- 
 2.23.0
 
