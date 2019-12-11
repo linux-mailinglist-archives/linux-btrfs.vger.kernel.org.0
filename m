@@ -2,94 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B3B11B87D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 17:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186A811B90E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Dec 2019 17:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbfLKQVm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 11:21:42 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46738 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728912AbfLKQVl (ORCPT
+        id S1730618AbfLKQol (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 11:44:41 -0500
+Received: from tartarus.angband.pl ([54.37.238.230]:53122 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730404AbfLKQoj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 11:21:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=AxXuRP6SlO9EYVZsfKYGZTNvOdQRf3h3gzU4Dl8Nq0c=; b=g70pc2kei6mVg+B+h8YjfbGsg
-        mKZeb9t1jKfZKM8HyZWZkFBrKwtlXP8G4ceGlsVyVyzF9AO00JejYenmo4XxrsHfPrw/FSXvisxwb
-        bRiYSzfAhuRtD8shFf9H0KixFRC5QCTuik++EKIAO9xodk1ljCFZEYfSAZb6bS2dBWrmjAosXs3cQ
-        JoYQU3cmJJn1We/+FfugqqzCOVtaKCZnlJa7NDbLXbRkG2tRTu1twvygzBaq10Y/rldyBVDHHr4RK
-        AMMG5jNnzRd16N026VBWH2/TrzhTMgPf1g8Yr1lMDQjJMaql49Ap7FzgjsZhfXmL4BXjMoTpfXX1r
-        UrGFDzjhA==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1if4k7-0006LN-OM; Wed, 11 Dec 2019 16:21:39 +0000
-Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
-To:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20191206135406.563336e7@canb.auug.org.au>
- <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
- <20191211134929.GL3929@twin.jikos.cz>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
-Date:   Wed, 11 Dec 2019 08:21:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        Wed, 11 Dec 2019 11:44:39 -0500
+X-Greylist: delayed 2674 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 11:44:38 EST
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1if4PA-0000Si-Jj; Wed, 11 Dec 2019 17:00:00 +0100
+Date:   Wed, 11 Dec 2019 17:00:00 +0100
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Is it logical to use a disk that scrub fails but smartctl
+ succeeds?
+Message-ID: <20191211160000.GB14837@angband.pl>
+References: <CAN4oSBdH-+BmSLO7DC3u-oBwabNRH2jY2UUO+J0zdxeJTu5FCg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191211134929.GL3929@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN4oSBdH-+BmSLO7DC3u-oBwabNRH2jY2UUO+J0zdxeJTu5FCg@mail.gmail.com>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[oops, forgot to add Josh and PeterZ]
+On Wed, Dec 11, 2019 at 04:11:05PM +0300, Cerem Cem ASLAN wrote:
+> This is the second time after a year that the server's disk throws
+> "INPUT OUTPUT ERROR" and "btrfs scrub" finds some uncorrectable errors
+> along with some corrected errors. However, "smartctl -x" displays
+> "SMART overall-health self-assessment test result: PASSED".
+> 
+> Should we interpret "btrfs scrub"'s "uncorrectable error count" as
+> "time to replace the disk" or are those unrelated events?
 
-On 12/11/19 5:49 AM, David Sterba wrote:
-> On Fri, Dec 06, 2019 at 08:17:30AM -0800, Randy Dunlap wrote:
->> On 12/5/19 6:54 PM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Please do not add any material for v5.6 to your linux-next included
->>> trees until after v5.5-rc1 has been released.
->>>
->>> Changes since 20191204:
->>>
->>
->> on x86_64:
->>
->> fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
-> 
-> Can somebody enlighten me what is one supposed to do to address the
-> warnings? Function names reported in the list contain our ASSERT macro
-> that conditionally calls BUG() that I believe is what could cause the
-> unreachable instructions but I don't see how.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/btrfs/ctree.h#n3113
-> 
-> __cold
-> static inline void assfail(const char *expr, const char *file, int line)
-> {
-> 	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
-> 		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
-> 		BUG();
-> 	}
-> }
-> 
-> #define ASSERT(expr)	\
-> 	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
-> 
+"btrfs scrub" operates on a higher layer, and can detect more errors, some
+of which may have a cause elsewhere.  For example, dodgy memory very often
+corrupts data this way; you can retry the scrub to see if the corruption
+happened during write (so the data is lost) or during read (so retrying
+should work).  In that case, you may want to test and/or replace your
+memory, motherboard, processor, etc.
+
+Or, the disk's firmware may fail to detect errors.  It's supposed to verify
+disk's internal checksum but detecting errors is another place where a dodgy
+manufacturer can shave some costs -- either intentionally, or by neglecting
+testing.
+
+Or, some buggy software (which may even include btrfs itself, albeit
+unlikely) might scribble on wrong areas of the disk.
+
+Or...
 
 
+Anyway, all you know for sure that you have _some_ breakage, which a
+filesystem without data checksums would fail to detect, allowing silent data
+corruption.  Finding the cause is another story.
+
+
+Meow!
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+⢀⣴⠾⠻⢶⣦⠀ A MAP07 (Dead Simple) raspberry tincture recipe: 0.5l 95% alcohol,
+⣾⠁⢠⠒⠀⣿⡁ 1kg raspberries, 0.4kg sugar; put into a big jar for 1 month.
+⢿⡄⠘⠷⠚⠋⠀ Filter out and throw away the fruits (can dump them into a cake,
+⠈⠳⣄⠀⠀⠀⠀ etc), let the drink age at least 3-6 months.
