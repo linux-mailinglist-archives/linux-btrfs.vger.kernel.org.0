@@ -2,28 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A7711D94C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 23:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901DE11D9A4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 23:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbfLLWYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Dec 2019 17:24:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58434 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730868AbfLLWYK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Dec 2019 17:24:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 10FC6ACF1;
-        Thu, 12 Dec 2019 22:24:09 +0000 (UTC)
-Date:   Thu, 12 Dec 2019 16:24:06 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+        id S1730846AbfLLWqP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 17:46:15 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:55030 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730707AbfLLWqO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Dec 2019 17:46:14 -0500
+Received: from dread.disaster.area (pa49-195-139-249.pa.nsw.optusnet.com.au [49.195.139.249])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 9A3BC3A3756;
+        Fri, 13 Dec 2019 09:46:09 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1ifXDl-000626-3W; Fri, 13 Dec 2019 09:46:09 +1100
+Date:   Fri, 13 Dec 2019 09:46:09 +1100
+From:   Dave Chinner <david@fromorbit.com>
 To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, fdmanana@kernel.org, dsterba@suse.cz,
-        jthumshirn@suse.de, nborisov@suse.com
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        fdmanana@kernel.org, dsterba@suse.cz, jthumshirn@suse.de,
+        nborisov@suse.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
 Subject: Re: [PATCH 4/8] iomap: Move lockdep_assert_held() to iomap_dio_rw()
  calls
-Message-ID: <20191212222405.oaceuk63cme2mlkz@fiona>
+Message-ID: <20191212224609.GI19213@dread.disaster.area>
 References: <20191212003043.31093-1-rgoldwyn@suse.de>
  <20191212003043.31093-5-rgoldwyn@suse.de>
  <20191212095044.GD15977@infradead.org>
@@ -31,28 +35,26 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20191212095044.GD15977@infradead.org>
-User-Agent: NeoMutt/20180716
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=KoypXv6BqLCQNZUs2nCMWg==:117 a=KoypXv6BqLCQNZUs2nCMWg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
+        a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8 a=0qbdD3YL78Zpoe-PC_wA:9
+        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  1:50 12/12, Christoph Hellwig wrote:
+On Thu, Dec 12, 2019 at 01:50:44AM -0800, Christoph Hellwig wrote:
 > On Wed, Dec 11, 2019 at 06:30:39PM -0600, Goldwyn Rodrigues wrote:
 > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > > 
 > > Filesystems such as btrfs can perform direct I/O without holding the
 > > inode->i_rwsem in some of the cases like writing within i_size.
 > 
-> How is that safe? 
-
-This (inode_lock release) is only done for writes within i_size.
-We only have to safeguard write against truncates, which is done by
-inode_dio_wait() call in the truncate sequence (I had mistakenly removed
-it in patch 8/8, I shall reinstate that). The commit that introduced this
-optimization is 38851cc19adb ("Btrfs: implement unlocked dio write")
-
-
+> How is that safe?  
 > 
 > > +	lockdep_assert_held(&file_inode(file)->i_rwsem);
 > 
@@ -60,8 +62,24 @@ optimization is 38851cc19adb ("Btrfs: implement unlocked dio write")
 > the iomap helper to ensure the expected calling conventions, as the
 > code is written under the assumption that we have i_rwsem.
 
-Hmm, conflicting opinions from you and Dave. Anyways, I have removed it
-in individual filesystems.
+It's written under the assumption that the caller has already
+performed the appropriate locking they require for serialisation
+against other operations on that inode.
 
+The fact that the filesystems up to this point all used the i_rwsem
+is largely irrelevant, and filesystems don't have to use the i_rwsem
+to serialise their IO. e.g. go back a handful of years and this
+would have needed to take into account an XFS specific rwsem, not
+the VFS inode mutex...
+
+Indeed, the IO range locking patches I have for XFS get rid of this
+lockdep assert in iomap because we no longer use the i_rwsem for IO
+serialisation in XFS - we go back to using an internal XFS construct
+for IO serialisation and don't use the i_rwsem at all.
+
+Cheers,
+
+Dave.
 -- 
-Goldwyn
+Dave Chinner
+david@fromorbit.com
