@@ -2,231 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC5311C111
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 01:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAF011C135
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 01:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbfLLAHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 19:07:12 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43119 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbfLLAHM (ORCPT
+        id S1727162AbfLLAPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Dec 2019 19:15:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10610 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726673AbfLLAPz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 19:07:12 -0500
-Received: by mail-pg1-f194.google.com with SMTP id k197so159056pga.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Dec 2019 16:07:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=9o9hXLuMCVXwdqz28NB4ZO5E9t1mkvuEqYBIwYBDMIk=;
-        b=Gbs+8l8ddaqLZhiqEMBlyR7KLaaC0zqVE1grYfZkTHhLJN+5JZAO39DjANemX1K5eW
-         X4/g1uuFcrwJoj0N1meK2i3fUJ+v4iTbPwQxVBsilRTZxx8Ea9U5vYXsd/dmZDxSyuHD
-         emNzJEqkQhvrRxV49cQbVAgTSfQDvLoK+ATSzlwWHmLXaHw2EYzphuqGatLFVJ2VVF/V
-         dB25DMc7848ZVal3HbENO0RkKH/0qHqoX9IOqtHG/BPiPB4EWcVMG8dwhFTR9ji1dY6J
-         jQn7xv5RJnSC72VLxUDVHMajND8bhipO5RnkNnfvnKlXPfxcKStj8iRPo0yAY/TmroMM
-         L6Xg==
-X-Gm-Message-State: APjAAAXbBbosYZnFz+hK0eNWvoygBVzRTvHNXRJJQS61vVVhEd/6WsR9
-        MaPrWaJ/6r2nN/MJJP6vPiY=
-X-Google-Smtp-Source: APXvYqyO85Z5j9PFA3FgXaqktPzzTub2VqoTTSr64ZbvAVPLHEWGNhFE/jNb5FJMnHzaqsWCBtlrGw==
-X-Received: by 2002:a63:c250:: with SMTP id l16mr7050194pgg.38.1576109231709;
-        Wed, 11 Dec 2019 16:07:11 -0800 (PST)
-Received: from dennisz-mbp.thefacebook.com ([199.201.64.138])
-        by smtp.gmail.com with ESMTPSA id q3sm4470153pfc.114.2019.12.11.16.07.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 11 Dec 2019 16:07:11 -0800 (PST)
-From:   Dennis Zhou <dennis@kernel.org>
-To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
-        Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH 2/2] btrfs: fix compressed write bio attribution
-Date:   Wed, 11 Dec 2019 16:07:07 -0800
-Message-Id: <b3b4b89e7200237d0407c5f0a1f48d2d3736b5ed.1576109087.git.dennis@kernel.org>
-X-Mailer: git-send-email 2.13.5
-In-Reply-To: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
+        Wed, 11 Dec 2019 19:15:55 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBBNv2Pn029081;
+        Wed, 11 Dec 2019 16:15:48 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=i4GjIjjlP7pYQmibYYqUWVltVQELih5Kp25PtBknoQM=;
+ b=l2ET7MKttiHlEYTrA1L5519v3xWSIomk/ascaI65l2V6OwVZzq+rZZFF4k4/wcHyL6NI
+ O0npEIVsEUZjuD0RiW//x2hHm9aOb0AA1EaEhUPmeuwF/VQYc2QvS9DQ4i0MuJ3cqZGg
+ xN74Dp6M7yVE71dOlwxZkoDFQelMdqq7AWg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2wu5w91b3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 11 Dec 2019 16:15:48 -0800
+Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
+ ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 11 Dec 2019 16:15:47 -0800
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 11 Dec 2019 16:15:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bczomAwlQ8BS9J6hbVCft62X4zTihkXDY2gXQFer6N6xOb9OUBVLPw7EQTMgwZUJBy1tfUMp+uFGE4gvhLbjd41EhRrggmTr4rzqLs8tcWdWEr69xj4zejTSXl/Xz5B05GCsygA1JgAOc9FQv3EEWV9Qi2s8VLhDg7THNszB9woMzoKjr6fuqOk6UbyRVex/spG1d4hYBjMmwM1bRMpWGtAxwWL7Ns/sB82FI2xZa7jw/One3EnUh/rn0RCTd+m7zmtvpqarO8c/8AoekRItSp8Bauqi/SmNOkTUMAH939Zjyn/Wo65HJJXqpY4dh3b4OxvXyulHnTk3zB1UAIMuqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i4GjIjjlP7pYQmibYYqUWVltVQELih5Kp25PtBknoQM=;
+ b=JGvit1D+beu5oO4SqMlHSz86FFDvsIqIH0La1wpIae+5HbdPTqGWxgnzlk9+mz24Rl+/8JMvvwSGXUNKb46cseJTor18SDbywc/jJ8hoXI7JNTYOOvwIK8DWuqlHZxkeW/c9kP/SbiJDt2KmiwptcVigdm29eYyZ79t53ChfaZLRACJXJDvTnCwAkm34PtvD+aIBf5u/VFKYlIxE6fDMnKxwXA2nzHYrFdUNRoPpD/IL6/phxfW6QB402BGnWWnRUGgj0W7liJDshnZ6FvVa92/CHZzfnfDqn8xk1EMbiDOaOyyCu6LNhJuT+NTma7VA5BpdG3XaeihLES3zI7QHRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i4GjIjjlP7pYQmibYYqUWVltVQELih5Kp25PtBknoQM=;
+ b=kTLx3ZB6V4ACVQP/HuLnJgkFyQ+xCMQnARGPXctPkMfgSN03XXTcTJbf2NALQpb1mda1iZuCAj1d9V38XZymv+npUaWPiThtynnnl4EJkVLfAH6T3wHNEnIqDy3PDyqh7FbftUhwGqMJxM/qO4u+mh0UcH61aOD7VcusbVUSbqM=
+Received: from SN6PR15MB2446.namprd15.prod.outlook.com (52.135.64.153) by
+ SN6PR15MB2269.namprd15.prod.outlook.com (52.135.64.161) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.16; Thu, 12 Dec 2019 00:15:46 +0000
+Received: from SN6PR15MB2446.namprd15.prod.outlook.com
+ ([fe80::21bd:84c5:4e24:4695]) by SN6PR15MB2446.namprd15.prod.outlook.com
+ ([fe80::21bd:84c5:4e24:4695%6]) with mapi id 15.20.2538.017; Thu, 12 Dec 2019
+ 00:15:46 +0000
+From:   Chris Mason <clm@fb.com>
+To:     Dennis Zhou <dennis@kernel.org>
+CC:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: punt all bios created in
+ btrfs_submit_compressed_write()
+Thread-Topic: [PATCH 1/2] btrfs: punt all bios created in
+ btrfs_submit_compressed_write()
+Thread-Index: AQHVsIAck6kHDrAHR0+vq5RPI6M9CKe1oZWA
+Date:   Thu, 12 Dec 2019 00:15:46 +0000
+Message-ID: <8768C12C-9FD0-4BC5-BB4B-6AC9CB2EE29B@fb.com>
 References: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
 In-Reply-To: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
-References: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: MailMate (1.10r5443)
+x-clientproxiedby: BL0PR1501CA0006.namprd15.prod.outlook.com
+ (2603:10b6:207:17::19) To SN6PR15MB2446.namprd15.prod.outlook.com
+ (2603:10b6:805:22::25)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c091:480::9d49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 56c015e6-631a-42fe-c7f0-08d77e986f11
+x-ms-traffictypediagnostic: SN6PR15MB2269:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR15MB226916337778DB606D9FC77BD3550@SN6PR15MB2269.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0249EFCB0B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(136003)(346002)(396003)(39860400002)(366004)(199004)(189003)(478600001)(4744005)(316002)(52116002)(186003)(54906003)(4326008)(71200400001)(2906002)(5660300002)(86362001)(6486002)(6512007)(53546011)(81156014)(81166006)(6506007)(2616005)(36756003)(66446008)(66556008)(64756008)(66476007)(66946007)(6916009)(8676002)(8936002)(33656002);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR15MB2269;H:SN6PR15MB2446.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0YeysmPcQ2eQ8o/91IAX25iVLo4Aqbudr7mwv8zURRv4SehNXTlvFb5Dbq3MqxtaJORt0Zsz7S2o4SMfHCogb5+F7gwbC6WJdATiBQStJ3p1imFIzqCn0lfHOlGv8FsQYMtXbbCLoCLIrSHr6K8z+M3dDDPmyCtXcLv35jxcH40W4+RN/qveZX3Ok/KNxHqrBI5A8PtXEVo6G9Wtcq1LFriul6r+GCofURGGdC0yU3FICQbkOUSIT/7NDSDz/P8elWy9L05nO2CjsgACd70JEr/B+UpMG1AMfDhzj2cntVIKMRXAA9g6f9gQb9n5BXApq3dJvVKuJWpAfSLGLYyRZxHZXwXhVk92hSviHoQ8gXxLupA+uORNRbqTLYfoSUQUrzTL2pmghPdOkS9pFdVys/ZgCWVEf5fbyscpEONGCYZU1xGIeLBM091rXGNoXbAN
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56c015e6-631a-42fe-c7f0-08d77e986f11
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2019 00:15:46.1388
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wuVSbZ61BmFPDzYo1z7yjUZIUUHMDvQm5GVA3Semj7sX2tNO9MzvehlhxO35jk2D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2269
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-11_07:2019-12-11,2019-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=904
+ bulkscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912110185
+X-FB-Internal: deliver
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Bio attribution is handled at bio_set_dev() as once we have a device, we
-have a corresponding request_queue and then can derive the current css.
-In special cases, we want to attribute to bio to someone else. This can
-be done by calling bio_associate_blkg_from_css(). Btrfs does this for
-compressed writeback as they are handled by kworkers which would be of
-the root cgroup rather than the cgroup designated by the wbc.
+On 11 Dec 2019, at 19:07, Dennis Zhou wrote:
 
-Commit 1a41802701ec ("btrfs: drop bio_set_dev where not needed") removes
-early bio_set_dev() calls prior to submit_stripe_bio(). This breaks the
-above assumption that we'll have a request_queue when we are doing
-association. To fix this, special case passing the bio through just for
-btrfs_submit_compressed_write().
+> Compressed writes happen in the background via kworkers. However, this
+> causes bios to be attributed to root bypassing any cgroup limits from
+> the actual writer. We tag the first bio with REQ_CGROUP_PUNT, which=20
+> will
+> punt the bio to an appropriate cgroup specific workqueue and attribute
+> the IO properly. However, if btrfs_submit_compressed_write() creates a
+> new bio, we don't tag it the same way. Add the appropriate tagging for
+> subsequent bios.
+>
+> Fixes: ec39f7696ccfa ("Btrfs: use REQ_CGROUP_PUNT for worker thread=20
+> submitted bios")
+> Cc: Chris Mason <clm@fb.com>
+> Signed-off-by: Dennis Zhou <dennis@kernel.org>
 
-Without this, we crash in btrfs/024:
-[ 3052.093088] BUG: kernel NULL pointer dereference, address: 0000000000000510
-[ 3052.107013] #PF: supervisor read access in kernel mode
-[ 3052.107014] #PF: error_code(0x0000) - not-present page
-[ 3052.107015] PGD 0 P4D 0
-[ 3052.107021] Oops: 0000 [#1] SMP
-[ 3052.138904] CPU: 42 PID: 201270 Comm: kworker/u161:0 Kdump: loaded Not tainted 5.5.0-rc1-00062-g4852d8ac90a9 #712
-[ 3052.138905] Hardware name: Quanta Tioga Pass Single Side 01-0032211004/Tioga Pass Single Side, BIOS F08_3A18 12/20/2018
-[ 3052.138912] Workqueue: btrfs-delalloc btrfs_work_helper
-[ 3052.191375] RIP: 0010:bio_associate_blkg_from_css+0x1e/0x3c0
-[ 3052.191377] Code: ff 90 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 41 54 49 89 fc 55 53 48 89 f3 48 83 ec 08 48 8b 47 08 65 ff 05 ea 6e 9f 7e <48> 8b a8 10 05 00 00 45 31 c9 45 31 c0 31 d2 31 f6 b9 02 00 00 00
-[ 3052.191379] RSP: 0018:ffffc900210cfc90 EFLAGS: 00010282
-[ 3052.191380] RAX: 0000000000000000 RBX: ffff88bfe5573c00 RCX: 0000000000000000
-[ 3052.191382] RDX: ffff889db48ec2f0 RSI: ffff88bfe5573c00 RDI: ffff889db48ec2f0
-[ 3052.191386] RBP: 0000000000000800 R08: 0000000000203bb0 R09: ffff889db16b2400
-[ 3052.293364] R10: 0000000000000000 R11: ffff88a07fffde80 R12: ffff889db48ec2f0
-[ 3052.293365] R13: 0000000000001000 R14: ffff889de82bc000 R15: ffff889e2b7bdcc8
-[ 3052.293367] FS:  0000000000000000(0000) GS:ffff889ffba00000(0000) knlGS:0000000000000000
-[ 3052.293368] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3052.293369] CR2: 0000000000000510 CR3: 0000000002611001 CR4: 00000000007606e0
-[ 3052.293370] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 3052.293371] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 3052.293372] PKRU: 55555554
-[ 3052.293376] Call Trace:
-[ 3052.402552]  btrfs_submit_compressed_write+0x137/0x390
-[ 3052.402558]  submit_compressed_extents+0x40f/0x4c0
-[ 3052.422401]  btrfs_work_helper+0x246/0x5a0
-[ 3052.422408]  process_one_work+0x200/0x570
-[ 3052.438601]  ? process_one_work+0x180/0x570
-[ 3052.438605]  worker_thread+0x4c/0x3e0
-[ 3052.438614]  kthread+0x103/0x140
-[ 3052.460735]  ? process_one_work+0x570/0x570
-[ 3052.460737]  ? kthread_mod_delayed_work+0xc0/0xc0
-[ 3052.460744]  ret_from_fork+0x24/0x30
+Good catch Dennis.  The compression code should end up limiting the size=20
+of the bio such that we'll never actually fail to bio_add_page(), but=20
+this is still the right thing to do.
 
-Fixes: 1a41802701ec ("btrfs: drop bio_set_dev where not needed")
-Cc: David Sterba <dsterba@suse.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Dennis Zhou <dennis@kernel.org>
----
- fs/btrfs/compression.c | 14 +++++---------
- fs/btrfs/volumes.c     | 18 ++++++++++++++----
- fs/btrfs/volumes.h     |  3 +++
- 3 files changed, 22 insertions(+), 13 deletions(-)
+Reviewed-by: Chris Mason <clm@fb.com>
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 4ce81571f0cd..67d604fcb606 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -444,11 +444,9 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 	bio->bi_opf = REQ_OP_WRITE | write_flags;
- 	bio->bi_private = cb;
- 	bio->bi_end_io = end_compressed_bio_write;
--
--	if (blkcg_css) {
-+	if (blkcg_css)
- 		bio->bi_opf |= REQ_CGROUP_PUNT;
--		bio_associate_blkg_from_css(bio, blkcg_css);
--	}
-+
- 	refcount_set(&cb->pending_bios, 1);
- 
- 	/* create and submit bios for the compressed pages */
-@@ -481,7 +479,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				BUG_ON(ret); /* -ENOMEM */
- 			}
- 
--			ret = btrfs_map_bio(fs_info, bio, 0);
-+			ret = __btrfs_map_bio(fs_info, bio, 0, blkcg_css);
- 			if (ret) {
- 				bio->bi_status = ret;
- 				bio_endio(bio);
-@@ -491,10 +489,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 			bio->bi_opf = REQ_OP_WRITE | write_flags;
- 			bio->bi_private = cb;
- 			bio->bi_end_io = end_compressed_bio_write;
--			if (blkcg_css) {
-+			if (blkcg_css)
- 				bio->bi_opf |= REQ_CGROUP_PUNT;
--				bio_associate_blkg_from_css(bio, blkcg_css);
--			}
- 			bio_add_page(bio, page, PAGE_SIZE, 0);
- 		}
- 		if (bytes_left < PAGE_SIZE) {
-@@ -515,7 +511,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 		BUG_ON(ret); /* -ENOMEM */
- 	}
- 
--	ret = btrfs_map_bio(fs_info, bio, 0);
-+	ret = __btrfs_map_bio(fs_info, bio, 0, blkcg_css);
- 	if (ret) {
- 		bio->bi_status = ret;
- 		bio_endio(bio);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 66377e678504..c68d93a1aae8 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6240,7 +6240,8 @@ static void btrfs_end_bio(struct bio *bio)
- }
- 
- static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
--			      u64 physical, int dev_nr)
-+			      u64 physical, int dev_nr,
-+			      struct cgroup_subsys_state *blkcg_css)
- {
- 	struct btrfs_device *dev = bbio->stripes[dev_nr].dev;
- 	struct btrfs_fs_info *fs_info = bbio->fs_info;
-@@ -6255,6 +6256,8 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
- 		(u_long)dev->bdev->bd_dev, rcu_str_deref(dev->name), dev->devid,
- 		bio->bi_iter.bi_size);
- 	bio_set_dev(bio, dev->bdev);
-+	if (blkcg_css)
-+		bio_associate_blkg_from_css(bio, blkcg_css);
- 
- 	btrfs_bio_counter_inc_noblocked(fs_info);
- 
-@@ -6278,8 +6281,9 @@ static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
- 	}
- }
- 
--blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
--			   int mirror_num)
-+blk_status_t __btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
-+			     int mirror_num,
-+			     struct cgroup_subsys_state *blkcg_css)
- {
- 	struct btrfs_device *dev;
- 	struct bio *first_bio = bio;
-@@ -6348,12 +6352,18 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			bio = first_bio;
- 
- 		submit_stripe_bio(bbio, bio, bbio->stripes[dev_nr].physical,
--				  dev_nr);
-+				  dev_nr, blkcg_css);
- 	}
- 	btrfs_bio_counter_dec(fs_info);
- 	return BLK_STS_OK;
- }
- 
-+blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
-+			   int mirror_num)
-+{
-+	return __btrfs_map_bio(fs_info, bio, mirror_num, NULL);
-+}
-+
- /*
-  * Find a device specified by @devid or @uuid in the list of @fs_devices, or
-  * return NULL.
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 3c56ef571b00..f5fd5a86bbe9 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -423,6 +423,9 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
- void btrfs_mapping_tree_free(struct extent_map_tree *tree);
-+blk_status_t __btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
-+			     int mirror_num,
-+			     struct cgroup_subsys_state *blkcg_css);
- blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			   int mirror_num);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
--- 
-2.17.1
-
+-chris
