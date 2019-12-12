@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62711CBC0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 12:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E7111CBC1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 12:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728968AbfLLLCY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Dec 2019 06:02:24 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39154 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbfLLLCY (ORCPT
+        id S1728971AbfLLLC0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 06:02:26 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:45967 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbfLLLCZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Dec 2019 06:02:24 -0500
-Received: by mail-pg1-f193.google.com with SMTP id b137so971860pga.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2019 03:02:23 -0800 (PST)
+        Thu, 12 Dec 2019 06:02:25 -0500
+Received: by mail-pf1-f194.google.com with SMTP id 2so563419pfg.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Dec 2019 03:02:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=s6RfplAOYpdeeS/qL+EYY/6ygvavVHjtqB/z4E+QHdk=;
-        b=Pxpoer3+kae/lgjrafAI0RDu6KgBuZhZFxXcPwadPSDrip+ZAWpOQfAssl8oJGl71c
-         vkYbPSV+GE52cW/eo+HrX8ATK/ruqK/d4YLbVNRotYka+u8sRLT+fJCpvlnPw74y+diz
-         VQCa6PBe+ADiwP5TcnfRCTI5GZLo+vCLMOk4os5EieJ3QjjsKLPiEy8ttXwQaUZfL4Cg
-         JlHKf4tGoFIF+8lDzX+OBCXT5z+ohRco0o9jUbk9xDHUqp5lEux7RfRSL2lD9MrEO/ew
-         PJwVlKvoTk2UJelqPzTaAedQY5vneT+IFj28pmG4D/5r4KPxerYR0fOvmS09atpR1k3G
-         NIqw==
+        bh=rLvlEok35MafMPzYVV8dLWPKxrqP2gkK5+o2+VtTio0=;
+        b=ojF5EoYwn4/kOfpt55diLmfXR5EAAqoexOhFHM+jTx0C56s9aMyVvo92L/8Rd6mGSo
+         p/Kit3oMU5yDo1HvjNyT18xjFSJ7HbgQI83j6BZvyLWq9DMvdVvS9q7k+gfrANmuhqno
+         UHsbvfd8I67CZEjiRvQcbuwXiAn4fyyL22UtLw9NvG0NrneDYZY43WUArUBsG7To9Kf/
+         AZkmmTYn1CpeImajmZ8rzfUkfuRarCMi2loEcHpj01QcWo7HDbLWi50UWBL+qwhkRQ8g
+         xBIJkWUKRSUPw5agbxHlfRAEyg9/6v9I4qk83jv7x6PLjTDcWCPuemdxkB78sY1sqlf0
+         eCLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=s6RfplAOYpdeeS/qL+EYY/6ygvavVHjtqB/z4E+QHdk=;
-        b=lD1Hg5JruV7qGW4EjepVLcZSDpvZYOeQ+jlri+EEMzR/sZzNiuGEEbf3V4VH1EfbQF
-         7O1k+5Dqz4WmNnfxsq0bPvqMA85plcbXJTmocLkk/wec7UWtJpeEJ0Rjd1hhOG7SwTO4
-         PTP8eMNoPhp3aqnU/7L2tHQ2WPY3TuqfYUK9e56dlsgi0V9udOZQJHJaz64NtAdKI79H
-         t8up4w3TWi7JurueQcE5YbCiUTiDDlpbSBWIqlIrkuUhapfM6srHMAC5os667DNwaHYn
-         mYm8FuGC1HJoMp9qo2aI5tjMIUBFQnIXMxMY4zi8BNN/aJGUalQMbQcDfau3vC+pVBFF
-         iIqA==
-X-Gm-Message-State: APjAAAWOaZSM0bKXErI4bIQtKSc8XouAF/GQhUJdiLnt4TKZhkngur1S
-        m1wG/r+5qw7rrr/bEiWCR+y2gdD60pg=
-X-Google-Smtp-Source: APXvYqz3XM7k1sFKSk7aEgobdigRjLI7D8MYQda/2pQaQ/yhWtWFuQLONSjgOcfNTus2xOe2xdgHcg==
-X-Received: by 2002:a63:d94b:: with SMTP id e11mr9712807pgj.79.1576148543189;
-        Thu, 12 Dec 2019 03:02:23 -0800 (PST)
+        bh=rLvlEok35MafMPzYVV8dLWPKxrqP2gkK5+o2+VtTio0=;
+        b=V/TrrHxPnubtem0Z8RIHUoB7UJ/l4vy/nrnEcTBzZd1XSlxhYlKs9CuR38reZPR7iM
+         gP2/30SJu1tlA3YiODG1cFSDH4ERl7k+/6BGfH5CpUS4z35sB1Fz3hf8xv/zWIiQRiIt
+         11aGXe7yEQhPwrs6sKboJK3KE/hsIFMG4FJDdTD5kycRMJS4BkGSgDTh27/p1KdqnW25
+         fQz+p0JHPySpV67sckEk8Z56UK+FPSqxYNoUDIEXE6DWiU2XlSBPDNyva6gDOzLy6tRJ
+         UW8O8uY4u8aCHR0V3yz4SZ3VtugRPlHEO/orL5rAswTH2zdJZWoju7+efeRK2wDoSni5
+         z0RA==
+X-Gm-Message-State: APjAAAW+Khknr7m43CohGpaCsPPdfvIJPLWo0KtVFQWvufMZFlH7xyAz
+        G0mgCkNQj9Hm4dLOMOscnFDdv8Sv260=
+X-Google-Smtp-Source: APXvYqw4+aTmbIW5vdbTLo9Z5ZhxnGJl60ffCJWIIHiHDK03IKAvNIMPyIXeP03vwNDZqMbr6SCdww==
+X-Received: by 2002:a63:5718:: with SMTP id l24mr9575984pgb.136.1576148544874;
+        Thu, 12 Dec 2019 03:02:24 -0800 (PST)
 Received: from p.lan ([45.58.38.246])
-        by smtp.gmail.com with ESMTPSA id e20sm6587857pff.96.2019.12.12.03.02.21
+        by smtp.gmail.com with ESMTPSA id e20sm6587857pff.96.2019.12.12.03.02.23
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Dec 2019 03:02:22 -0800 (PST)
+        Thu, 12 Dec 2019 03:02:24 -0800 (PST)
 From:   damenly.su@gmail.com
 X-Google-Original-From: Damenly_Su@gmx.com
 To:     linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
-Subject: [PATCH 06/11] btrfs-progs: handle split-brain scenario for scanned changed/unchanged device with INCOMPAT_METADATA_UUID
-Date:   Thu, 12 Dec 2019 19:01:59 +0800
-Message-Id: <20191212110204.11128-7-Damenly_Su@gmx.com>
+Subject: [PATCH 07/11] btrfs-progs: handle split-brain scenario for scanned changed/unchanged device without INCOMPAT_METADATA_UUID
+Date:   Thu, 12 Dec 2019 19:02:00 +0800
+Message-Id: <20191212110204.11128-8-Damenly_Su@gmx.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 In-Reply-To: <20191212110204.11128-1-Damenly_Su@gmx.com>
 References: <20191212110204.11128-1-Damenly_Su@gmx.com>
@@ -68,89 +68,69 @@ For the unchanged/changed device, just need to fs_devices in changing
 state, or devices with same status:
 
 a) The scanned device succeeded to sync into disk. The fs_devices
-can be with INCOMPAT_METADATA_UUID. So their fsid and metadata_uuid
-differs, and metadata_uuid is same as its metada_uuid.
+must be with INCOMPAT_METADATA_UUID. So their fsid and metadata_uuid
+differs, and metadata_uuid is same as its fsid.
 
-b) The scanned device succeeded to sync into disk. The fs_devices
-can be without INCOMPAT_METADATA_UUID. So their fsid and metadata_uuid
-be same, and fsid is same as its metadata_uuid.
+b) The scanned device failed to be into changing state. There
+are some devices whose fsids are same as the device's.
 
-c) The scanned device failed to be into changing state. There
-are some devices whose fsids and metadata_uuids are same as the
-device's.
-
-d) The above cases all are missed, only unchanged devices are same
+c) The above cases all are missed, only unchanged devices are same
 as the device.
 
-Case c and d can be merged into one that both fsid and metadata
-requirements are meet.
+Case b and c can be merged into one that only same fsid requirement is
+meet.
 
 Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 ---
- volumes.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ volumes.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/volumes.c b/volumes.c
-index 0fd41186c54a..d094f85999d4 100644
+index d094f85999d4..94940dd82d0f 100644
 --- a/volumes.c
 +++ b/volumes.c
-@@ -275,6 +275,50 @@ static struct btrfs_fs_devices *find_fsid_changed(
+@@ -319,6 +319,35 @@ static struct btrfs_fs_devices *find_fsid_changing_metadata_uuid(
  	return find_fsid(disk_super->fsid, disk_super->metadata_uuid);
  }
  
-+static struct btrfs_fs_devices *find_fsid_changing_metadata_uuid(
++static struct btrfs_fs_devices *find_fsid_changing(
 +					struct btrfs_super_block *disk_super)
 +{
 +	struct btrfs_fs_devices *fs_devices;
 +
 +	/*
-+	 * Handle scanned device having completed its fsid change but
-+	 * belonging to a fs_devices that was created by first scanning
-+	 * a device which didn't have its fsid/metadata_uuid changed
-+	 * at all and the CHANGING_FSID_V2 flag set.
++	 * Handles the case where scanned device is part of an fs that had
++	 * multiple successful changes of FSID but currently device didn't
++	 * observe it.
++	 * Since the scanned devices does not own the metadata_uuid feature,
++	 * fsid and metadata_uuid of the changing devices must differ, and
++	 * their metadata_uuid must be same as disk_super->fsid.
 +	 */
 +	list_for_each_entry(fs_devices, &fs_uuids, list) {
-+		if (fs_devices->fsid_change &&
-+		    memcmp(disk_super->metadata_uuid, fs_devices->fsid,
-+			   BTRFS_FSID_SIZE) == 0 &&
-+		    memcmp(fs_devices->fsid, fs_devices->metadata_uuid,
-+			   BTRFS_FSID_SIZE) == 0) {
++		if (!fs_devices->fsid_change)
++			continue;
++		if (memcmp(fs_devices->fsid, fs_devices->metadata_uuid,
++			   BTRFS_FSID_SIZE) != 0 &&
++		    memcmp(fs_devices->metadata_uuid, disk_super->fsid,
++			   BTRFS_FSID_SIZE) == 0)
 +			return fs_devices;
-+		}
-+	}
-+	/*
-+	 * Handle scanned device having completed its fsid change but
-+	 * belonging to a fs_devices that was created by a device that
-+	 * has an outdated pair of fsid/metadata_uuid and
-+	 * CHANGING_FSID_V2 flag set.
-+	 */
-+	list_for_each_entry(fs_devices, &fs_uuids, list) {
-+		if (fs_devices->fsid_change &&
-+		    memcmp(fs_devices->metadata_uuid,
-+			   fs_devices->fsid, BTRFS_FSID_SIZE) != 0 &&
-+		    memcmp(disk_super->metadata_uuid,
-+			   fs_devices->metadata_uuid, BTRFS_FSID_SIZE) == 0) {
-+			return fs_devices;
-+		}
 +	}
 +
 +	/*
-+	 * The scanned device is unchanged. Try to find devices which are
-+	 * successful in changing stage. Or old devices failed to be
-+	 * changeing liked current device.
++	 * Back to find newer fs_devices is changeing or some in same stage.
 +	 */
-+	return find_fsid(disk_super->fsid, disk_super->metadata_uuid);
++	return find_fsid(disk_super->fsid, NULL);
 +}
 +
  static int device_list_add(const char *path,
  			   struct btrfs_super_block *disk_super,
  			   u64 devid, struct btrfs_fs_devices **fs_devices_ret)
-@@ -292,6 +336,8 @@ static int device_list_add(const char *path,
- 			fs_devices = find_fsid_inprogress(disk_super);
- 		else
+@@ -338,6 +367,8 @@ static int device_list_add(const char *path,
  			fs_devices = find_fsid_changed(disk_super);
-+	} else if (metadata_uuid) {
-+		fs_devices = find_fsid_changing_metadata_uuid(disk_super);
+ 	} else if (metadata_uuid) {
+ 		fs_devices = find_fsid_changing_metadata_uuid(disk_super);
++	} else {
++		fs_devices = find_fsid_changing(disk_super);
  	}
  
  	if (metadata_uuid && !fs_devices)
