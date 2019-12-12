@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE12611C18E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 01:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DAC11C535
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 06:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbfLLAj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Dec 2019 19:39:57 -0500
-Received: from mout.gmx.net ([212.227.15.19]:52231 "EHLO mout.gmx.net"
+        id S1726382AbfLLFQf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 00:16:35 -0500
+Received: from mout.gmx.net ([212.227.17.20]:56405 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbfLLAj5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Dec 2019 19:39:57 -0500
+        id S1725980AbfLLFQe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Dec 2019 00:16:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576111189;
-        bh=oFMrJuIpva3w8KF9MUG/f7V6uZAecLU9bqYNRIDFolw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BbJ+ttheAMCvnAXVECbSU5Gb3qPfP49Y7RVON7weotkInYfwka3k2FyNDr9uQuBa2
-         vI0GUp+zh/4+aDXAhWQrX84gPXzY0GlnLsZqiDsj/eNUqvulFzPqGdNU3Q6pTOzsez
-         sOsVFL7JsYUOgmV5KufvEpspJoCTSwnOKEtXIxks=
+        s=badeba3b8450; t=1576127785;
+        bh=ugBY3CVTNOzXkuRcabYLjG5oBaCqa6+1QZAqa6wPW3w=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=D2/HUDsLYW2FkVp7RFqloBc1LlfqUHDgdIhduuK/wdRIP4YPU7sTpm9WSzBg01864
+         v3VbJJXxlsDAbvndoBTIVXKeqfRk3fNe7gA9DrTpM1R2kabqqj4PzCeHODRrwb82Nc
+         IPoFW+EJspdqpHCx5zTb+NWWhNnKdr9iKSByFD2k=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRCK6-1iKNqC0nu0-00N9ZK; Thu, 12
- Dec 2019 01:39:48 +0100
-Subject: Re: [PATCH 0/3] btrfs: fixes for relocation to avoid KASAN reports
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191211050004.18414-1-wqu@suse.com>
- <20191211153429.GO3929@twin.jikos.cz>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzSu-1iMVXA3kJY-00PK6r; Thu, 12
+ Dec 2019 06:16:25 +0100
+Subject: Re: fstests: Don't use gawk's strtonum breaking existing fstests
+To:     Nikolay Borisov <nborisov@suse.com>, slash@ac.auone-net.jp
+Cc:     Eryu Guan <guaneryu@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <cc85789a-6143-e4cc-aa12-6c842ef88016@suse.com>
+ <c0dd0b84-776c-a089-0769-913879d9aa9c@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,161 +53,77 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <74a07fa4-ca35-57ee-2cd9-586a8db04712@gmx.com>
-Date:   Thu, 12 Dec 2019 08:39:43 +0800
+Message-ID: <162544f0-9344-9fc9-bbd9-e0ced0eed856@gmx.com>
+Date:   Thu, 12 Dec 2019 13:16:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191211153429.GO3929@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YferTt61zRjXTiWJ4UjEuuEKgXlOnqvBv"
-X-Provags-ID: V03:K1:ChjXBTRwOHWQVHRgUwklvCyOiZFsL3d1KZK++1qaNAcVwPpzQSS
- KLCuVo+ctvxcPPO+31QAVNRuFs7WQ6UqI7VJbnVfJB+AsWU5in77ddwzR1MMidOvvpxn0C0
- /runYNbWG+bqhQOd3a+WqgUZI402R2kB8zzVR3Fsrxu5lFD71y33RZzajNNZPeQ8ttuDzok
- JrTqshnNqpTH67X7Sxf0g==
+In-Reply-To: <c0dd0b84-776c-a089-0769-913879d9aa9c@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5jT4+pa1kFn2TL6htbxDINqR/3Ab/dE5ERN/S/YlhBz8HvnMn7v
+ BR/oddGQIf7BFuUYOj885KgcoZfzfdo+vfMxyxykjBQhO70rpFaLoNROF4gGl60siC4m1sw
+ RBXbXG9yLvKOvIK8jJDWiI3GwYM5fWEFqSBUUnA2EXbTOMtNzfw9zKU+bWgGRutld0ixRnr
+ hlofR/8ApCP+fWdi/kpuA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bKWMpCDQDyQ=:fbCib9ZTD2LUTFQCxQcT6q
- lCTz5Q7kNFbne4NHBp1d/QOoXU50B7WPVCWMT9u11EcgsM4AYMO3YJS9/keX468EI17AOaVY0
- 5RrXsdS2LZRSyOeBk8f52Ek5/t9IPb0dB6D2wGj2RYNgh0FKZNVFSwwbmrV67mn4M+tGBLP4v
- yPtY+zdDEfR9ta854eg+Rec4SaD9fdtW7ORHMAMc4xCZwCQa/slErG21dz8ex0fN7PL6p7t1+
- x5f/aTTbYKPCo2tuWkFAhcI6zOE8ovtWvH4Zt6LcFt5AGf6LMb6/f+yIyTpOjQMkenrPioICl
- TGHJUuEyRbRMZjEFowoy8FIgIXOOfNaS1gb8gXUc2yAL6AyzxK0Hxfy+Q9fNoM33rMBbc/Gnc
- 8VBkgKBMUolU0rxBXp18EI+kH0lAe+XHaEYONeYLzy3bS05X7/rLaj6DcSpGrPqpBrJLFJv+H
- saR4z64k/SSFeH2Zri0c0muM+vI8W/L325/+fpJsDSa5JAacFwzHCCKHcon8UlJz3FQ0JiC9M
- N88/wo5AgElj5bpy571sfK78u8qZwhwweKrM31ofRqwUE32KwaD1lmqjnHrJA//uFdRW4RmfG
- Ex+kr9PoUiBX4Rx++wUHM9FmggOp/jish7z/xP/WPp2WBwllMAz933XzFb9iEJwieQLdPecmF
- sdo/gnad5/khlGexFA5MfXS9/WSm4L0PGyZHLdF1ZFXizadN50WDxM1IkqQKXVQPxHGK8VUis
- 4c4e8vYf9u2UIm31KO+62KseX4Pn7EwWvN9kgyjpOS5QWZkxaa1OyUh8uPQsfWtt+Ls1VmMkE
- olsWosQKQ72JLo7lygkOy1zL86XPXRjKOzalXFGmmB74uNU29qgutNpYjck2AzyKHsArHoVMT
- FfNsoPadJmqTQAMwRJJQARDQvLNBwqgamsf/AmbBrmJ87/ScuPMy/Ip2fw7qORz9+Pux1ltZw
- rs42X9qo2OqpZmiPQ8bwOWif5H27SlqtkWjKG6gkKB3ZEUsbbsVLEKJb9Ed7ywF33iqPhIQxV
- CYXEh1pV0/N/syXTONZo8DLsGQ4oseiF319Xkr2MOR7jkHT8N4hEIpwoQErBJPwuzO7eTRLAc
- bPbp0XrmPcMazlKQ1R+5cczwl6mkOTN8PexQH23bQKKHzLKfTSGj2M/M++yPr664NzDnsonEd
- L8+4cjaiG6tij2AOraLMA+RkiVxr2E7EDW2jPK4V/QwnfC5AW42a/PLKzcUVu9gsjCeWJKigE
- RjoRuWQWzFgiXaK61+lvEjwMyOaToSGNrusjgARRFDce4NsaytqT4V+deKNA=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qX5lPqznymk=:Cy4+9ytLHcA0M4fAEukpJH
+ MtZR46xBobOGX8OuOjK3xPVrS/mee8qx1JBnWW41qvKFaiZnpG6i3JCeRyp9WGu3F8eRE92tY
+ Srx7iotYVGNNUpBBPN1PJjIAV7YUBTqm9/wdhlYFBAN4FdKo50skvvHhlgRTJ1k04xh7Q3wYJ
+ TKObZx41uOX+5OAbilnLhN2J003BxV0b+awf3TDgjlqa4G0DllzquQVnMOUf2DX4rQvJ0Rqn5
+ JoOYiowT86m/DanZTtkjmbIYElR9iCkX8y/nuTI78ohmm4zu/i5kxWQxMbotfkpDo5vTrIIoI
+ SFYF30BorHM8rgZ6oewRLJ8yXcfEy83MeelP+6QU8sEUZICE2TWLHAO/2xIIiJKwHpgZ9g1Vx
+ m3uVqhij4gCPgZ0QnxYXVpE5X4rIy2eFdJjg4U8cSYGJHu0JhSVUx82OUAX+ygBu8HbrbS/WC
+ 79mz0ssylW/1LI4rv2HQsPSEBJ1dJR8Xs/hxUfwJSkhmfmgtzoFsiPI3z2azQPHCsHke22fxL
+ 1COgqgowuhzQyeZ36R1saoc2XVbUBzrKfdAgStG98e7h28gv/N/rFHPIyHNL7zVmV+pQlGH9p
+ NJlKpwrDO4NPZ+l1VTc2IUNxsvsQByxCRC37Y+ZzYaUk0BlRowLepzdmtHEFuKAjZCJjxDHyn
+ EAJWQZ9EFFNW+2WMjUmu96k9FS50e+trYasQoj1dwA3hYxJAFIUkXnFoZq1oJMCrFc5gvhgpW
+ 04uu0n6xMqSbesj626Qwk9umj12RiyilPTu+DJve7Ym+ihNBX5qliR6JigkImoTgJvPm3w+HG
+ FVW2Y/CDEBtKdJkvrL4yYeQ84e3cIhlr9Z1lBG7hSixqsTWKPHgDJlXBMtS6CpJ4TTlRxwpfR
+ ELwAoA1/nNCrw701h2r9JgSHaL+KlGs7CIr79kqRKrAYRBzEk0/v2jTqFt4s+HkwFulU0Ootb
+ MBKCCZFMuOfjJX5M6LActAlMYukmb1zPJLaF5chadqPyKehEJU2Ih7cjigr0zySSIsIes4qdf
+ ZRiVb0xaan89lUC6KcMZibAQjyi//6Yl70E5LZPM8xktUAu6yQ/ph6AzOflaWCtazW10JwHcZ
+ kVr8xn1Gg4Vt5z8GLJn8tHtpfD2LX8Dei0nBH3ItZXiiUj6Fuhiw7oAPcHEG+m9MEhbJJYjRO
+ Ju1FqUIqVttxUbLgUcS0UTk76NkPcwhw8lMaKWF1pPMeKrTxmnhzaAcSdNveszwnt29ie+G6j
+ 0iVORypq6YVv+PmiGsaesJSItp7ltfUx/6+cwWqNqzfPxroQ3vy349UpijxQ=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YferTt61zRjXTiWJ4UjEuuEKgXlOnqvBv
-Content-Type: multipart/mixed; boundary="G1tXFWUjpa4J02MLTlJXScm5GLlEsoUYM"
-
---G1tXFWUjpa4J02MLTlJXScm5GLlEsoUYM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2019/12/11 =E4=B8=8B=E5=8D=8811:34, David Sterba wrote:
-> On Wed, Dec 11, 2019 at 01:00:01PM +0800, Qu Wenruo wrote:
->> Due to commit d2311e698578 ("btrfs: relocation: Delay reloc tree
->> deletion after merge_reloc_roots"), reloc tree lifespan is extended.
+On 2019/12/12 =E4=B8=8A=E5=8D=8812:33, Nikolay Borisov wrote:
+>
+>
+> On 11.12.19 =D0=B3. 17:53 =D1=87., Nikolay Borisov wrote:
+>> Hello,
 >>
->> Although we always set root->reloc_root to NULL before we drop the rel=
-oc
->> tree, but that's not multi-core safe since we have no proper memory
->> barrier to ensure other cores can see the same root->reloc_root.
+>> Following upstream commit:
+>> https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=3D375=
+20a314bd472ed720ed0611c6b69e418be9b61
 >>
->> The proper root fix should be some proper root refcount, and make
->> btrfs_drop_snapshot() to wait for all other root owner to release the
->> root before dropping it.
->=20
-> This would block cleaning deleted subvolumes, no? We can skip the dead
-> tree (and add it back to the list) in that can and not wait. The
-> cleaner thread is able to process the list repeatedly.
+>> breaks btrfs/095 and btrfs/098 tests.
+>>
+>
+> The problem is that the old code was using gawk's strtonum and returning
+> a base 10 number from an octal input. Whereas the existing code gets an
+> octal number which is again parsed as an octal when using printf. So the
+> path in question needs to either by reverted or extended so that the
+> necessary conversion from octal to base 10 is performed _before_ calling
+> printf.
+>
 
-What I mean is:
-- For consumer (reading root->reloc_root)
-  spin_lock(&root->reloc_lock);
-  if (!root->reloc_root) {
-      spin_unlock(&root->reloc_lock);
-      return NULL
-  }
-  refcount_inc(&root->reloc_root->refcount);
-  return(root->reloc_root);
-  spin_unlock(&root->reloc_lock);
+Well, octal values really makes no sense. We should go either hex, or
+human readable decimal.
 
-  And of cource, release it after grabbing reloc_root.
+Octal should only be left for certain historical use cases, like user
+privileges. For content dump, octal is never a good use case to show offse=
+t.
 
-- For cleaner
-  grab reloc_root just like consumer.
-retry:
-  wait_event(refcount_read(&root->reloc_root->ref_count) =3D=3D 1);
-  spin_lock(&root->reloc_lock);
-  if (&root->reloc_root->ref_count !=3D 1){
-      spin_unlock(); goto retry;
-  }
-  root->reloc_root =3D NULL;
-  spin_unlock(&root->reloc_lock);
-  /* Now we're the only owner, delete the root */
-
-
->=20
->> But for now, let's just check the DEAD_RELOC_ROOT bit before accessing=
-
->> root->reloc_root.
->=20
-> Ok, the bit is safe way to sync that as long as the correct order of
-> setting/clearing is done.  The ops are atomic wrt to the value itself
-> but need barriers around as they're simple atomic ops (not RMW,
-> according to Documentation/atomic_bitops.txt) and there's no outer
-> synchronization.
->=20
-> Check:
->=20
-> 	smp_mb__before_atomic();
-> 	if (test_bit() ...)
-> 		return;
->=20
-> Set:
->=20
-> 	set_bit()
-> 	smp_mb__after_atomic();
-> 	(delete reloc_root)
-> 	reloc_root =3D NULL
->=20
-> Clearing of the bit is done when there are not potential other users so=
-
-> that part does not need the barrier (I think).
->=20
-> The checking part could use a helper so we don't have barriers scattere=
-d
-> around code.
->=20
-I'm still not confident enough for the "reloc_root =3D NULL" assignment
-and "reloc_root =3D=3D NULL" test.
-
-But since the set_bit()/test_bit() is safe, and it happens before we
-modify reloc_root, it's safer and is what we used in this quick fix.
-
-Still, I'm really looking forward to Josef's root refcount work, that
-should be the real fix for all the problems.
+Since current filter_od can't handle -Ax yet, what about just use hash
+instead of the problem prone od?
+And put the od output into seqres.full for later debug?
 
 Thanks,
 Qu
-
-
---G1tXFWUjpa4J02MLTlJXScm5GLlEsoUYM--
-
---YferTt61zRjXTiWJ4UjEuuEKgXlOnqvBv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3xjE8ACgkQwj2R86El
-/qjG/ggAlXCqjNxnAwyFrP2Y0boZxQQ4+FZU8piHthuTg1di2meMGqsr0tcgdSMP
-yknE+IOvNhvcrk+GgYrQx8WaWqAJMH0TQicBcoVP/4tme0Qzh3tI5WG4qy3l5CwA
-KX9VAn9pS4BE2NQyE+sAuhfc/Bnyt/e2kxyg3RBtRYh1Z+myk9a0wO/IIKfo+pBw
-2D57DtCp8FtMUApuSDg8Pv6T6bGzVqcRIXC3yyDL6J6/J/c/lvLqrIp4cQtOdw5w
-tubvqfHiF4ETyjiS2i10cPO2GR1wQLk5dnSZxLm3/KJ1YqLK9/6NYuBWlu40yEhC
-kwe4wCS28Lf3UcBIMphLIc3dHegdwg==
-=gU24
------END PGP SIGNATURE-----
-
---YferTt61zRjXTiWJ4UjEuuEKgXlOnqvBv--
