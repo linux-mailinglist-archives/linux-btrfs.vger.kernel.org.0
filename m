@@ -2,179 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9E311CF82
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 15:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B570911CF99
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 15:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbfLLOPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Dec 2019 09:15:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52522 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729392AbfLLOPk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Dec 2019 09:15:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 41293B233;
-        Thu, 12 Dec 2019 14:15:37 +0000 (UTC)
-Subject: Re: [PATCH 1/6] btrfs: metadata_uuid: fix failed assertion due to
- unsuccessful device scan
-To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-Cc:     Su Yue <Damenly_Su@gmx.com>
+        id S1729597AbfLLOUF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 09:20:05 -0500
+Received: from mout.gmx.net ([212.227.15.15]:40563 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729392AbfLLOUE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Dec 2019 09:20:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1576160398;
+        bh=NU1ORZZCsYzDIPHoCF/c+fX7n8YN3XgKpRcJ0tYLL/4=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=fFTX5duOsSVq1cw4CcKF/N5vIB26b5mzc4666zIIX51S+YztneSUd/MvqiP+KPV7k
+         lM38HltjIx0NY+TJAdmMVeangQPbso6jzy0mHZqCocYuPYiGPeoyionaqfKhKJBG81
+         rg2iMzhgJoj+kobBzAQKZ4ccGQRwiKsQgYd5UT4Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.176] ([34.92.249.81]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAONd-1iYYty0HSV-00BuOl; Thu, 12
+ Dec 2019 15:19:57 +0100
+Subject: Re: [PATCH 3/6] btrfs: split-brain case for scanned changing device
+ with INCOMPAT_METADATA_UUID
+To:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
+        linux-btrfs@vger.kernel.org
 References: <20191212110132.11063-1-Damenly_Su@gmx.com>
- <20191212110132.11063-2-Damenly_Su@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <78eab88a-a6be-f87b-34d7-13a1cffbf36b@suse.com>
-Date:   Thu, 12 Dec 2019 16:15:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <20191212110132.11063-4-Damenly_Su@gmx.com>
+ <b430d17b-a51f-dddf-377c-9a253a0d0e50@suse.com>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <3e475fea-32d3-dee6-fd0b-613cab20257e@gmx.com>
+Date:   Thu, 12 Dec 2019 22:19:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191212110132.11063-2-Damenly_Su@gmx.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <b430d17b-a51f-dddf-377c-9a253a0d0e50@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:keZM2DLlIh1vUoj1pza59J2cj33Fn2O6iYnHBvyQq9hEsJxDuTe
+ Medm7zk4lXiK3elQgBskqXWCNKZf23ZAOKF/SB1Banubd+UjOmVHNOn407paJhBigJj82MD
+ rdLQ5lzmEnLIU6kovF3utCA8D+GyBTE3wnQSh++9uaIy/F6NMNSAIdLrz8rT1dAIPvwCtPb
+ Mf4qQG0bA7yEPM0YhasLg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NGYW6DgZ0Ko=:+vrGPqKl6CrwSn8FyE7Dm8
+ tQv06GWhEvtogHDrUEqIGAwsaNPZfXhV4RooRxosN4RdO/pksDjZsNf6mZlkWA9ihSdXkvAwK
+ kjYJrzQNL64+6gGkEqAPF09Xd0gfKwY02ygQfw7RUowBZ+dttZdzRuxzBADd7T+y2IkHHJlU4
+ Kc0q/ELF3TlWEnCCKIIMeJpKSTaE9t3CXmjR1r4damhkD1xG5wuHMv2bQ80VZQTZzTBECB6uX
+ MCdXx0Mu26aZyGdmk3H6oynfYcKSfTW1L/NUVaWmRUhBNeZ6y6/dVi+b29WX7be5sckcV/jl+
+ AWgJq84KfMc920XRXFC7mJWgq+zNU2i807ezwEJqdNpb5QmtWrQ2LT5Vx+7Z+QF7fKsd2mURI
+ swBJ5P7SWVAvq2X/r0wsRx2QB0cLoHMwcT1odcdMg12VO5lDRv+HlKBT3I58c46caw7MS7Xbg
+ DVkAKCEMYb98Xdm5Do9fFhe1A8BEWvS6Je6IpApxF6xmFGDd1KlT4eTIXsoIb0GuGwVBmv7yt
+ IlGoK6o89eFLgpC6n1Ns3YECqeFbNh/pzBLqGTI74VRhFh8/n1ImS7GFbg22fMn+2ZuaA4sho
+ AzlIKxGVphxvtsX92pZXt6CUXnyKNdxX1ybpX7GA2G4kMVuS4FifantF4t0MGL7pyDeT8vlgj
+ RXDCt6fDUcCi4TyDI6A7rD6osGl/vbwu6DIEQ9iHtZa2py3vCR4E9hjA2cGjHTWr7R/EjbbMz
+ oNX29qcJgKm5+XeR3vnpS6eBBpLH9NQ79aYiG2sVyfWcTVz+N2oQBRVhSUf1wUvrTYNB1vxy5
+ 6QUUxokQRGjMQgB2ECLKRhuifinjODyBl7k9O5/V2ZkKHjIcYcWSy8z5NiEnUTiidQDgFW8xO
+ Aa2Ec0O9eZjg8uwWg8KMw3hIzzAP55JKiigbUpJN5GbfdhSXc+7VtsNMEp4nWwq57SzHEQsnM
+ k0XHE4jHg0Rinps+UQehaP23RI5hvovVuCVLCy6AVLqh9OxZSY/0SmhiYxqCUp1SNQGmOiLYw
+ xf/pqKNItNr6sJ7ZFiB7ywhBojT5CxQvmxcaJvWusZ3mP4CF9BOL+dHviZ2i3FsdHjVMokLeZ
+ pkgrjdnR7qsfscgsDaO6AomPjWxR/I2ZzNJ7aCqyYvFxZAjCVQf6i5M4nvP7Rl5i8a6LKjDrY
+ N+WEZezPuPRUwWkDqysPmK1AFS842k6JBovw3UDf4GIedY4AFAGTa/OqlpCZv6B7GRjB89KCU
+ 4i4Qy2feHAtznTx/rPm55JSm87t4DML7Kv3bKYMCZY+2d03pRp336x6rwJNE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2019/12/12 9:34 PM, Nikolay Borisov wrote:
+>
+>
+> On 12.12.19 =D0=B3. 13:01 =D1=87., damenly.su@gmail.com wrote:
+>> From: Su Yue <Damenly_Su@gmx.com>
+>>
+>> This patch adds the case for scanned changing device with
+>> INCOMPAT_METADATA_UUID.
+>> For this situation, the origin code only handles the case
+>> the devices already pulled into disk with INCOMPAT_METADATA_UUID set.
+>> There is an another case that the successful changed devices synced
+>> without INCOMPAT_METADATA_UUID.
+>> So add the check of Heather fsid of scanned device equals
+>> metadata_uuid of fs_devices which is with INCOMPAT_METADATA_UUID
+>> feature.
+>>
+>
+> This is hard for me to parse and correctly understand what you mean.
+>
 
+Sorry..
 
-On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
+>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+>> ---
+>>   fs/btrfs/volumes.c | 29 ++++++++++++++++++++++++++---
+>>   1 file changed, 26 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index b08b06a89a77..61b4a107bb58 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -654,7 +654,6 @@ static struct btrfs_fs_devices *find_fsid_inprogres=
+s(
+>>   	return NULL;
+>>   }
+>>
+>> -
+>>   static struct btrfs_fs_devices *find_fsid_changed(
+>>   					struct btrfs_super_block *disk_super)
+>
+>
+> find_fsid_changed handles the case where a device belongs to a
+> filesystem which had multiple successful fsid changed but it failed on
+> the last one.
+>
+I go it while reading code. And "the last one" is the one where the
+@disk_super read from. It has the metadata_uuid and FSID_CHANGING_V2.
+Right?
+What I want to express in changelog  is that those successful changed
+devices *may*
+not have the metadata_uuid feature. The code in btrfstune.c: line 141
 
-<snip>
+         if (new_uuid && uuid_changed && memcmp(disk_super->metadata_uuid,
+                                                new_fsid,
+BTRFS_FSID_SIZE) =3D=3D 0) {
+                 /*
+                  * Changing fsid to be the same as metadata uuid, so just
+                  * disable the flag
+                  */
+                 memcpy(disk_super->fsid, &new_fsid, BTRFS_FSID_SIZE);
+                 incompat_flags &=3D ~BTRFS_FEATURE_INCOMPAT_METADATA_UUID=
+;
+                 btrfs_set_super_incompat_flags(disk_super, incompat_flags=
+);
+                 memset(disk_super->metadata_uuid, 0, BTRFS_FSID_SIZE);
 
-> Acutally, there are two devices in the fs. Device 2 with
-> FSID_CHANGING_V2 allocated a fs_devices. But, device 1 found the
-> fs_devices but failed to be added into since fs_devices->opened (
+The INCOMPAT_METADATA_UUID can be cleared if changing fsid is same with
+the metadata_uuid in deivce.
 
-It's not clear why device 1 wasn't able to be added to the fs_devices
-allocated by dev 2. Please elaborate?
+>>   {
+>> @@ -663,9 +662,14 @@ static struct btrfs_fs_devices *find_fsid_changed(
+>>   	/*
+>>   	 * Handles the case where scanned device is part of an fs that had
+>>   	 * multiple successful changes of FSID but curently device didn't
+>> -	 * observe it. Meaning our fsid will be different than theirs.
+>> +	 * observe it.
+>> +	 *
+>> +	 * Case 1: the devices already changed still owns the feature, their
+>> +	 * fsid must differ from the disk_super->fsid.
+>
+> What do you mean by device to still owns the feature? Has the bit set or
+> something else?
+>
+The metadata_uuid feature.
+>>   	 */
+>>   	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
+>> +		if (fs_devices->fsid_change)
+>> +			continue;
+>
+> Why do you do this?
 
+Just make cases separated.
 
-> the thread is doing mount device 1). But device 1's fsid was copied
-> to fs_devices->fsid then the assertion failed.
+>
+>>   		if (memcmp(fs_devices->metadata_uuid, fs_devices->fsid,
+>>   			   BTRFS_FSID_SIZE) !=3D 0 &&
+>>   		    memcmp(fs_devices->metadata_uuid, disk_super->metadata_uuid,
+>> @@ -676,7 +680,26 @@ static struct btrfs_fs_devices *find_fsid_changed(
+>>   		}
+>>   	}
+>>
+>> -	return NULL;
+>> +	/*
+>> +	 * Case 2: the synced devices doesn't have the metadata_uuid feature.
+>> +	 * NOTE: the fs_devices has same metadata_uuid and fsid in memory, bu=
+t
+>> +	 * they differs in disk, because fs_id is copied to
+>> +	 * fs_devices->metadata_id while alloc_fs_devices if no metadata
+>
+> It's not possible for the device to have metadata_uuid feature because
+> this function is called from device_list_add iff the device has
+> METADATA_UUID flag:
+>
 
+Get and agree what you mean. As the reply above, the fs_devices already
+allocated there(not the device scanning) may not have METADATA_UUID flag.
 
-dev 1 fsid should be copied iff its transid is newer.
+> if (fsid_change_in_progress) {
+>
+> if (!has_metadata_uuid) {
+> } else {
+>   find_fsid_changed <-- here we are sure our device has METADATA_UUID se=
+t.
+> }
+> }
+>
+>> +	 * feature.
+>> +	 */
+>> +	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
+>> +		if (memcmp(fs_devices->metadata_uuid, fs_devices->fsid,
+>> +			   BTRFS_FSID_SIZE) =3D=3D 0 &&
+>> +		    memcmp(fs_devices->fsid, disk_super->metadata_uuid,
+>> +			   BTRFS_FSID_SIZE) =3D=3D 0 && !fs_devices->fsid_change)
+>> +			return fs_devices;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Okay, can't found any fs_devices already synced, back to
+>> +	 * search devices unchanged or changing like the device.
+>> +	 */
+>> +	return find_fsid(disk_super->fsid, disk_super->metadata_uuid);
+>>   }
+>>
+>>   static struct btrfs_fs_devices *find_fsid_changing_metada_uuid(
+>>
 
-> 
-> The solution is that only if a new device was added into a existing
-> fs_device, then the fs_devices->fsid is allowed to be rewritten.
-
-fs_devices->fsid must be re-written by any device which is _newer_ w.r.t
-to the transid.
-
-> 
-> Fixes: 7a62d0f07377 ("btrfs: Handle one more split-brain scenario during fsid change")
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-> ---
->  fs/btrfs/volumes.c | 36 +++++++++++++++++++++---------------
->  1 file changed, 21 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d8e5560db285..9efa4123c335 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -732,6 +732,9 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
->  	bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
->  					BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
-> +	bool fs_devices_found = false;
-> +
-> +	*new_device_added = false;
->  
->  	if (fsid_change_in_progress) {
->  		if (!has_metadata_uuid) {
-> @@ -772,24 +775,11 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  
->  		device = NULL;
->  	} else {
-> +		fs_devices_found = true;
-> +
->  		mutex_lock(&fs_devices->device_list_mutex);
->  		device = btrfs_find_device(fs_devices, devid,
->  				disk_super->dev_item.uuid, NULL, false);
-> -
-> -		/*
-> -		 * If this disk has been pulled into an fs devices created by
-> -		 * a device which had the CHANGING_FSID_V2 flag then replace the
-> -		 * metadata_uuid/fsid values of the fs_devices.
-> -		 */
-> -		if (has_metadata_uuid && fs_devices->fsid_change &&
-> -		    found_transid > fs_devices->latest_generation) {
-> -			memcpy(fs_devices->fsid, disk_super->fsid,
-> -					BTRFS_FSID_SIZE);
-> -			memcpy(fs_devices->metadata_uuid,
-> -					disk_super->metadata_uuid, BTRFS_FSID_SIZE);
-> -
-> -			fs_devices->fsid_change = false;
-> -		}
->  	}
->  
->  	if (!device) {
-> @@ -912,6 +902,22 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  		}
->  	}
->  
-> +	/*
-> +	 * If the new added disk has been pulled into an fs devices created by
-> +	 * a device which had the CHANGING_FSID_V2 flag then replace the
-> +	 * metadata_uuid/fsid values of the fs_devices.
-> +	 */
-> +	if (*new_device_added && fs_devices_found &&
-> +	    has_metadata_uuid && fs_devices->fsid_change &&
-> +	    found_transid > fs_devices->latest_generation) {
-> +		memcpy(fs_devices->fsid, disk_super->fsid,
-> +		       BTRFS_FSID_SIZE);
-> +		memcpy(fs_devices->metadata_uuid,
-> +		       disk_super->metadata_uuid, BTRFS_FSID_SIZE);
-> +
-> +		fs_devices->fsid_change = false;
-> +	}
-> +
->  	/*
->  	 * Unmount does not free the btrfs_device struct but would zero
->  	 * generation along with most of the other members. So just update
-> 
