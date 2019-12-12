@@ -2,28 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FB211CE7A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 14:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9E311CF82
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 15:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbfLLNhx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Dec 2019 08:37:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58498 "EHLO mx1.suse.de"
+        id S1729560AbfLLOPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 09:15:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52522 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729405AbfLLNhx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Dec 2019 08:37:53 -0500
+        id S1729392AbfLLOPk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Dec 2019 09:15:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3AE3BB033;
-        Thu, 12 Dec 2019 13:37:51 +0000 (UTC)
-Subject: Re: [PATCH 6/6] btrfs: metadata_uuid: move partly logic into
- find_fsid_inprogress()
+        by mx1.suse.de (Postfix) with ESMTP id 41293B233;
+        Thu, 12 Dec 2019 14:15:37 +0000 (UTC)
+Subject: Re: [PATCH 1/6] btrfs: metadata_uuid: fix failed assertion due to
+ unsuccessful device scan
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191212110132.11063-1-Damenly_Su@gmx.com>
- <20191212110132.11063-7-Damenly_Su@gmx.com>
+ <20191212110132.11063-2-Damenly_Su@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
  u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
  bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
@@ -32,44 +33,44 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  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
- 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
-Message-ID: <ca84513a-13be-9d16-6309-0355b43e78ea@suse.com>
-Date:   Thu, 12 Dec 2019 15:37:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <78eab88a-a6be-f87b-34d7-13a1cffbf36b@suse.com>
+Date:   Thu, 12 Dec 2019 16:15:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191212110132.11063-7-Damenly_Su@gmx.com>
+In-Reply-To: <20191212110132.11063-2-Damenly_Su@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,64 +82,99 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
+
+<snip>
+
+> Acutally, there are two devices in the fs. Device 2 with
+> FSID_CHANGING_V2 allocated a fs_devices. But, device 1 found the
+> fs_devices but failed to be added into since fs_devices->opened (
+
+It's not clear why device 1 wasn't able to be added to the fs_devices
+allocated by dev 2. Please elaborate?
+
+
+> the thread is doing mount device 1). But device 1's fsid was copied
+> to fs_devices->fsid then the assertion failed.
+
+
+dev 1 fsid should be copied iff its transid is newer.
+
 > 
-> The partly logic can be moved into find_fsid_inprogress() to
-> make code for fs_devices finding looks more elegant.
+> The solution is that only if a new device was added into a existing
+> fs_device, then the fs_devices->fsid is allowed to be rewritten.
+
+fs_devices->fsid must be re-written by any device which is _newer_ w.r.t
+to the transid.
+
 > 
+> Fixes: 7a62d0f07377 ("btrfs: Handle one more split-brain scenario during fsid change")
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-
-Code-wise the change is correct, on the other hand it's overloading what
-find_fsid_inprogress handles. I did this to make it explicitly clear
-what functions are called in what case as this code is somewhat tricky.
-
-David, do you think this change is worth it.
-
 > ---
->  fs/btrfs/volumes.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
+>  fs/btrfs/volumes.c | 36 +++++++++++++++++++++---------------
+>  1 file changed, 21 insertions(+), 15 deletions(-)
 > 
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index b21ab45e76a0..7e05f96b1575 100644
+> index d8e5560db285..9efa4123c335 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -636,6 +636,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->  /*
->   * Handle scanned device having its CHANGING_FSID_V2 flag set and the fs_devices
->   * being created with a disk that has already completed its fsid change.
-> + * Or it might belong to fs with no UUID changes in effect, handle both.
->   */
->  static struct btrfs_fs_devices *find_fsid_inprogress(
->  					struct btrfs_super_block *disk_super)
-> @@ -651,7 +652,7 @@ static struct btrfs_fs_devices *find_fsid_inprogress(
+> @@ -732,6 +732,9 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+>  	bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
+>  					BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
+> +	bool fs_devices_found = false;
+> +
+> +	*new_device_added = false;
+>  
+>  	if (fsid_change_in_progress) {
+>  		if (!has_metadata_uuid) {
+> @@ -772,24 +775,11 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  
+>  		device = NULL;
+>  	} else {
+> +		fs_devices_found = true;
+> +
+>  		mutex_lock(&fs_devices->device_list_mutex);
+>  		device = btrfs_find_device(fs_devices, devid,
+>  				disk_super->dev_item.uuid, NULL, false);
+> -
+> -		/*
+> -		 * If this disk has been pulled into an fs devices created by
+> -		 * a device which had the CHANGING_FSID_V2 flag then replace the
+> -		 * metadata_uuid/fsid values of the fs_devices.
+> -		 */
+> -		if (has_metadata_uuid && fs_devices->fsid_change &&
+> -		    found_transid > fs_devices->latest_generation) {
+> -			memcpy(fs_devices->fsid, disk_super->fsid,
+> -					BTRFS_FSID_SIZE);
+> -			memcpy(fs_devices->metadata_uuid,
+> -					disk_super->metadata_uuid, BTRFS_FSID_SIZE);
+> -
+> -			fs_devices->fsid_change = false;
+> -		}
+>  	}
+>  
+>  	if (!device) {
+> @@ -912,6 +902,22 @@ static noinline struct btrfs_device *device_list_add(const char *path,
 >  		}
 >  	}
 >  
-> -	return NULL;
-> +	return find_fsid(disk_super->fsid, NULL);
->  }
->  
->  static struct btrfs_fs_devices *find_fsid_changed(
-> @@ -795,19 +796,10 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  	*new_device_added = false;
->  
->  	if (fsid_change_in_progress) {
-> -		if (!has_metadata_uuid) {
-> -			/*
-> -			 * When we have an image which has CHANGING_FSID_V2 set
-> -			 * it might belong to either a filesystem which has
-> -			 * disks with completed fsid change or it might belong
-> -			 * to fs with no UUID changes in effect, handle both.
-> -			 */
-> +		if (!has_metadata_uuid)
->  			fs_devices = find_fsid_inprogress(disk_super);
-> -			if (!fs_devices)
-> -				fs_devices = find_fsid(disk_super->fsid, NULL);
-> -		} else {
-> +		else
->  			fs_devices = find_fsid_changed(disk_super);
-> -		}
->  	} else if (has_metadata_uuid) {
->  		fs_devices = find_fsid_changing_metada_uuid(disk_super);
->  	} else {
+> +	/*
+> +	 * If the new added disk has been pulled into an fs devices created by
+> +	 * a device which had the CHANGING_FSID_V2 flag then replace the
+> +	 * metadata_uuid/fsid values of the fs_devices.
+> +	 */
+> +	if (*new_device_added && fs_devices_found &&
+> +	    has_metadata_uuid && fs_devices->fsid_change &&
+> +	    found_transid > fs_devices->latest_generation) {
+> +		memcpy(fs_devices->fsid, disk_super->fsid,
+> +		       BTRFS_FSID_SIZE);
+> +		memcpy(fs_devices->metadata_uuid,
+> +		       disk_super->metadata_uuid, BTRFS_FSID_SIZE);
+> +
+> +		fs_devices->fsid_change = false;
+> +	}
+> +
+>  	/*
+>  	 * Unmount does not free the btrfs_device struct but would zero
+>  	 * generation along with most of the other members. So just update
 > 
