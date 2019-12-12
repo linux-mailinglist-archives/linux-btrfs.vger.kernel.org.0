@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF9111CE6A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 14:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FB211CE7A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Dec 2019 14:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbfLLNe5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Dec 2019 08:34:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56546 "EHLO mx1.suse.de"
+        id S1729460AbfLLNhx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Dec 2019 08:37:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58498 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729392AbfLLNe5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Dec 2019 08:34:57 -0500
+        id S1729405AbfLLNhx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Dec 2019 08:37:53 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4BF3FABF6;
-        Thu, 12 Dec 2019 13:34:54 +0000 (UTC)
-Subject: Re: [PATCH 3/6] btrfs: split-brain case for scanned changing device
- with INCOMPAT_METADATA_UUID
+        by mx1.suse.de (Postfix) with ESMTP id 3AE3BB033;
+        Thu, 12 Dec 2019 13:37:51 +0000 (UTC)
+Subject: Re: [PATCH 6/6] btrfs: metadata_uuid: move partly logic into
+ find_fsid_inprogress()
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191212110132.11063-1-Damenly_Su@gmx.com>
- <20191212110132.11063-4-Damenly_Su@gmx.com>
+ <20191212110132.11063-7-Damenly_Su@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <b430d17b-a51f-dddf-377c-9a253a0d0e50@suse.com>
-Date:   Thu, 12 Dec 2019 15:34:52 +0200
+Message-ID: <ca84513a-13be-9d16-6309-0355b43e78ea@suse.com>
+Date:   Thu, 12 Dec 2019 15:37:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.1
 MIME-Version: 1.0
-In-Reply-To: <20191212110132.11063-4-Damenly_Su@gmx.com>
+In-Reply-To: <20191212110132.11063-7-Damenly_Su@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,104 +83,62 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 > 
-> This patch adds the case for scanned changing device with
-> INCOMPAT_METADATA_UUID.
-> For this situation, the origin code only handles the case
-> the devices already pulled into disk with INCOMPAT_METADATA_UUID set.
-> There is an another case that the successful changed devices synced
-> without INCOMPAT_METADATA_UUID.
-> So add the check of Heather fsid of scanned device equals
-> metadata_uuid of fs_devices which is with INCOMPAT_METADATA_UUID
-> feature.
+> The partly logic can be moved into find_fsid_inprogress() to
+> make code for fs_devices finding looks more elegant.
 > 
-
-This is hard for me to parse and correctly understand what you mean.
-
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+
+Code-wise the change is correct, on the other hand it's overloading what
+find_fsid_inprogress handles. I did this to make it explicitly clear
+what functions are called in what case as this code is somewhat tricky.
+
+David, do you think this change is worth it.
+
 > ---
->  fs/btrfs/volumes.c | 29 ++++++++++++++++++++++++++---
->  1 file changed, 26 insertions(+), 3 deletions(-)
+>  fs/btrfs/volumes.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
 > 
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index b08b06a89a77..61b4a107bb58 100644
+> index b21ab45e76a0..7e05f96b1575 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -654,7 +654,6 @@ static struct btrfs_fs_devices *find_fsid_inprogress(
->  	return NULL;
->  }
->  
-> -
->  static struct btrfs_fs_devices *find_fsid_changed(
+> @@ -636,6 +636,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  /*
+>   * Handle scanned device having its CHANGING_FSID_V2 flag set and the fs_devices
+>   * being created with a disk that has already completed its fsid change.
+> + * Or it might belong to fs with no UUID changes in effect, handle both.
+>   */
+>  static struct btrfs_fs_devices *find_fsid_inprogress(
 >  					struct btrfs_super_block *disk_super)
-
-
-find_fsid_changed handles the case where a device belongs to a
-filesystem which had multiple successful fsid changed but it failed on
-the last one.
-
->  {
-> @@ -663,9 +662,14 @@ static struct btrfs_fs_devices *find_fsid_changed(
->  	/*
->  	 * Handles the case where scanned device is part of an fs that had
->  	 * multiple successful changes of FSID but curently device didn't
-> -	 * observe it. Meaning our fsid will be different than theirs.
-> +	 * observe it.
-> +	 *
-> +	 * Case 1: the devices already changed still owns the feature, their
-> +	 * fsid must differ from the disk_super->fsid.
-
-What do you mean by device to still owns the feature? Has the bit set or
-something else?
-
->  	 */
->  	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
-> +		if (fs_devices->fsid_change)
-> +			continue;
-
-Why do you do this?
-
->  		if (memcmp(fs_devices->metadata_uuid, fs_devices->fsid,
->  			   BTRFS_FSID_SIZE) != 0 &&
->  		    memcmp(fs_devices->metadata_uuid, disk_super->metadata_uuid,
-> @@ -676,7 +680,26 @@ static struct btrfs_fs_devices *find_fsid_changed(
+> @@ -651,7 +652,7 @@ static struct btrfs_fs_devices *find_fsid_inprogress(
 >  		}
 >  	}
 >  
 > -	return NULL;
-> +	/*
-> +	 * Case 2: the synced devices doesn't have the metadata_uuid feature.
-> +	 * NOTE: the fs_devices has same metadata_uuid and fsid in memory, but
-> +	 * they differs in disk, because fs_id is copied to
-> +	 * fs_devices->metadata_id while alloc_fs_devices if no metadata
-
-It's not possible for the device to have metadata_uuid feature because
-this function is called from device_list_add iff the device has
-METADATA_UUID flag:
-
-if (fsid_change_in_progress) {
-
-if (!has_metadata_uuid) {
-} else {
- find_fsid_changed <-- here we are sure our device has METADATA_UUID set.
-}
-}
-
-> +	 * feature.
-> +	 */
-> +	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
-> +		if (memcmp(fs_devices->metadata_uuid, fs_devices->fsid,
-> +			   BTRFS_FSID_SIZE) == 0 &&
-> +		    memcmp(fs_devices->fsid, disk_super->metadata_uuid,
-> +			   BTRFS_FSID_SIZE) == 0 && !fs_devices->fsid_change)
-> +			return fs_devices;
-> +	}
-> +
-> +	/*
-> +	 * Okay, can't found any fs_devices already synced, back to
-> +	 * search devices unchanged or changing like the device.
-> +	 */
-> +	return find_fsid(disk_super->fsid, disk_super->metadata_uuid);
+> +	return find_fsid(disk_super->fsid, NULL);
 >  }
 >  
->  static struct btrfs_fs_devices *find_fsid_changing_metada_uuid(
+>  static struct btrfs_fs_devices *find_fsid_changed(
+> @@ -795,19 +796,10 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  	*new_device_added = false;
+>  
+>  	if (fsid_change_in_progress) {
+> -		if (!has_metadata_uuid) {
+> -			/*
+> -			 * When we have an image which has CHANGING_FSID_V2 set
+> -			 * it might belong to either a filesystem which has
+> -			 * disks with completed fsid change or it might belong
+> -			 * to fs with no UUID changes in effect, handle both.
+> -			 */
+> +		if (!has_metadata_uuid)
+>  			fs_devices = find_fsid_inprogress(disk_super);
+> -			if (!fs_devices)
+> -				fs_devices = find_fsid(disk_super->fsid, NULL);
+> -		} else {
+> +		else
+>  			fs_devices = find_fsid_changed(disk_super);
+> -		}
+>  	} else if (has_metadata_uuid) {
+>  		fs_devices = find_fsid_changing_metada_uuid(disk_super);
+>  	} else {
 > 
