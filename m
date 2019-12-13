@@ -2,73 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 021AE11E64D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 16:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9031811E6ED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 16:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbfLMPRL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 10:17:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60732 "EHLO mx1.suse.de"
+        id S1727931AbfLMPss (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 10:48:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51682 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727642AbfLMPRL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 10:17:11 -0500
+        id S1727920AbfLMPss (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 10:48:48 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9A082ADEF;
-        Fri, 13 Dec 2019 15:17:09 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 04731AFB2;
+        Fri, 13 Dec 2019 15:48:46 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ABF9ADA82A; Fri, 13 Dec 2019 16:17:08 +0100 (CET)
-Date:   Fri, 13 Dec 2019 16:17:07 +0100
+        id 94169DA82A; Fri, 13 Dec 2019 16:48:46 +0100 (CET)
+Date:   Fri, 13 Dec 2019 16:48:45 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 1/5] btrfs: drop log root for dropped roots
-Message-ID: <20191213151707.GX3929@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Kyle Ambroff-Kao <kyle@ambroffkao.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/1] btrfs: Allow replacing device with a smaller one if
+ possible
+Message-ID: <20191213154845.GY3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20191206143718.167998-1-josef@toxicpanda.com>
- <20191206143718.167998-2-josef@toxicpanda.com>
- <5e60e26f-8993-ca16-2a93-48d5948ed961@suse.com>
- <802950f7-b762-920b-7747-cfc18ff64e24@toxicpanda.com>
- <85a03cbb-d096-bfaf-b841-141d63a4f134@suse.com>
- <9392b4c1-4b7e-b5fb-dafe-0a1a45e0d319@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
+        Kyle Ambroff-Kao <kyle@ambroffkao.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20191208093045.43433-1-kyle@ambroffkao.com>
+ <20191208093045.43433-2-kyle@ambroffkao.com>
+ <CAL3q7H60gNBC_zzU8gjZ_s=7MnN23yFzQqYxanhvzMO50qtXJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9392b4c1-4b7e-b5fb-dafe-0a1a45e0d319@toxicpanda.com>
+In-Reply-To: <CAL3q7H60gNBC_zzU8gjZ_s=7MnN23yFzQqYxanhvzMO50qtXJg@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 04:28:17PM -0500, Josef Bacik wrote:
-> >>>> If we fsync on a subvolume and create a log root for that volume, and
-> >>>> then later delete that subvolume we'll never clean up its log root.  Fix
-> >>>> this by making switch_commit_roots free the log for any dropped roots we
-> >>>> encounter.
-> >>>> +        btrfs_free_log(trans, root);
-> >>>
-> >>> THis patch should really have been this line and converting
-> >>> switch_commit_roots to taking a trans handle another patch. Otherwise
-> >>> this is lost in the mechanical refactoring.
-> >>
-> >> We need the trans handle to even call btrfs_free_log, we're just fixing
-> >> it so the trans handle can be passed in, making its separate is just
-> >> superfluous.  Thanks,
-> > 
-> > Actually no because callees handle the case when trans is not passed
-> > (i.e. walk_log_tree and walk_(up|down)_log_tree. If passing valid
-> > trances changes the call logic then this needs to be explained in the
-> > changelog. And there is currently one caller calling that function
-> > without a trans - btrfs_drop_and_free_fs_root in BTRFS_FS_STATE_ERROR case.
+On Mon, Dec 09, 2019 at 10:26:52AM +0000, Filipe Manana wrote:
+> 2) A simple solution, but often less efficient: before starting the
+> actual replace operation, shrink the source device to the size of the
+> target device - just use the existing btrfs_shrink_device(), which
+> will relocate chunks beyond the new size, and if there's not enough
+> space it just returns -ENOSPC.  This means no changes to the actual
+> way replace copies data - it does extra IO, due to the relocation but
+> keeps things simple, and it should still be significantly more
+> efficient then doing a device remove + device add operation, maybe
+> except if all or most of the allocated chunks (in the device to be
+> replaced) cross or start beyond an offset matching the new device's
+> size.
 > 
-> Yeah, it's clear that NULL is used only in the error case.  I'm not going to 
-> explain the entirety of how the log tree works in a basic fix for not freeing up 
-> a tree log when we should be doing it.  Thanks,
+>    Also, since the shrink can take some time due to relocation of
+>    chunks, we would need to teach btrfs_shrink_device() to check for
+>    device replace cancel requests as well.  And such request is
+>    detected, restore the device's size to the original value.
 
-Sure you can at least note that the parameter type needs to be changed,
-so we don't have to spend too much time looking for the real fix.
+The shrinking can be done completely in userspace, calling one more
+ioctl before device replace. Handling the error cases will be simplified
+(and not necessarily done in kernel at all).
+
+So something like that:
+
+  $ btrfs device replace 2 /dev/sdx /mnt
+  (fail because the device is too small, print a message that the target
+  device needs to be shrunk manually or there's an option eg.
+  --shrink-target that will do that in one go)
+
+  $ btrfs device replace --shrink-target 2 /dev/sdx /mnt
+  Shrink device 2 from 12345678 to 123456 (you can cancel that by 'btrfs resize --cancel)
+  Done
+  Starting devicr replace
+
+> I think option 2 may actually be acceptable for an initial version. Option 1 is
+> complex and increases the risk for data loss. Also, for option 2, there's the
+> possible downside of requiring writes to the source device - one might
+> be replacing
+> it because the device is not healthy, writes into some regions are
+> failing, which
+> can prevent the shrink/relocation process from suceeding, in that case only
+> a device remove followed by a device add operation would work.
+
+That's a good point and giving user more options how to replace the
+device sounds a like a better option than implementing all of that in
+kernel.
