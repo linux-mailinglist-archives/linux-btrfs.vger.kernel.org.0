@@ -2,73 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC8F11E386
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 13:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A47D11E39D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 13:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbfLMMYD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 07:24:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35016 "EHLO mx1.suse.de"
+        id S1726930AbfLMMc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 07:32:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37568 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726421AbfLMMYD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 07:24:03 -0500
+        id S1726903AbfLMMc5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 07:32:57 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C8360ACF1;
-        Fri, 13 Dec 2019 12:24:01 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id D8A75AF13;
+        Fri, 13 Dec 2019 12:32:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B9B57DA82A; Fri, 13 Dec 2019 13:24:01 +0100 (CET)
-Date:   Fri, 13 Dec 2019 13:24:01 +0100
+        id D2924DA82A; Fri, 13 Dec 2019 13:32:55 +0100 (CET)
+Date:   Fri, 13 Dec 2019 13:32:55 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: fix compressed write bio attribution
-Message-ID: <20191213122401.GV3929@suse.cz>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix format string warning
+Message-ID: <20191213123255.GW3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
- <b3b4b89e7200237d0407c5f0a1f48d2d3736b5ed.1576109087.git.dennis@kernel.org>
- <20191212181934.GA33645@dennisz-mbp.dhcp.thefacebook.com>
+Mail-Followup-To: dsterba@suse.cz, Arnd Bergmann <arnd@arndb.de>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191210204429.3383471-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191212181934.GA33645@dennisz-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191210204429.3383471-1-arnd@arndb.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 10:19:34AM -0800, Dennis Zhou wrote:
-> From a0569aebde08e31e994c92d0b70befb84f7f5563 Mon Sep 17 00:00:00 2001
-> From: Dennis Zhou <dennis@kernel.org>
-> Date: Wed, 11 Dec 2019 15:20:15 -0800
+On Tue, Dec 10, 2019 at 09:44:16PM +0100, Arnd Bergmann wrote:
+> To print a size_t, the format string modifier %z should be used instead
+> of %l:
 > 
-> Bio attribution is handled at bio_set_dev() as once we have a device, we
-> have a corresponding request_queue and then can derive the current css.
-> In special cases, we want to attribute to bio to someone else. This can
-> be done by calling bio_associate_blkg_from_css() or
-> kthread_associate_blkcg() depending on the scenario. Btrfs does this for
-> compressed writeback as they are handled by kworkers, so the latter can
-> be done here.
+> fs/btrfs/tree-checker.c: In function 'check_extent_data_item':
+> fs/btrfs/tree-checker.c:230:43: error: format '%lu' expects argument of type 'long unsigned int', but argument 5 has type 'unsigned int' [-Werror=format=]
+>      "invalid item size, have %u expect [%lu, %u)",
+>                                          ~~^
+>                                          %u
 > 
-> Commit 1a41802701ec ("btrfs: drop bio_set_dev where not needed") removes
-> early bio_set_dev() calls prior to submit_stripe_bio(). This breaks the
-> above assumption that we'll have a request_queue when we are doing
-> association. To fix this, switch to using kthread_associate_blkcg().
+> Fixes: 153a6d299956 ("btrfs: tree-checker: Check item size before reading file extent type")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Can be kthread_associate_blkcg used also for submit_extent_page that
-calls bio_associate_blkg_from_css indirectly when initializing wbc?
-
-2996                 bio_set_dev(bio, bdev);
-2997                 wbc_init_bio(wbc, bio);
-2998                 wbc_account_cgroup_owner(wbc, page, page_size);
-
-wbc_init_bio:
-
-	if (wbc)
-		bio_associate_blkg_from_css();
+Thanks, there's already fix for that in our devel queue, I'm going to
+send it to the next rc.
