@@ -2,112 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6089E11E87E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 17:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C41311E899
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 17:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbfLMQjB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 11:39:01 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34675 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727974AbfLMQjB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 11:39:01 -0500
-Received: by mail-qk1-f193.google.com with SMTP id d202so100966qkb.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2019 08:39:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ovf2/AW/iO7NUyaVB6lPFEO6arUdBg/KB8kt2aGi42o=;
-        b=YviHxWUzGPf5SYTTnOo5VAQSiB8G38VGO7O3iRAlU9rN7CbbDcczV3hW58OG/Tlyua
-         jgbzR11eJz+63EoGGanVsAlagba/2hRgR0gqXtm8wu0jcW3LSfHY9QC8hGhpFlJV+uah
-         2ATrZbHgHwWNifDR1PSvQxXz/5ulVp116E2fFsMvDPAUGb6dByZD/blvsi/fmVyPox3L
-         k2dlcwchQmpURo4y69SQfWsYurT0lDHXlMAQfRN9bbfIIZirpr5OR8ZEFICYsRiUE7nB
-         /RqI2eRvxlFUY/BJWE/hgXKsITdrk45H0JsX/SK4VCxgZvbk9UMV0xtq7/zrJvgZwxPx
-         7B6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ovf2/AW/iO7NUyaVB6lPFEO6arUdBg/KB8kt2aGi42o=;
-        b=FUVNIsiu8pb6IadFWAPEH46mGYtZzRDNV2RHFiWTgJzlANilOuzc83Q0UuKYTpuYhS
-         GCYmlAifpDi4LYnxFjDO7/JM0scr1oC5d+RRgQlG5yvbs6Yr5VTFL9jSC10s3mPs3NCZ
-         HfMXn3J02ZO+QdGjIE+V2T8Cteu67RTAhP+yXoBOLPvE5v6FYP00v9hING6XbcQ0jWBu
-         zCB5zXe+5EjF7S10DgE+ZGokDmahdsE59mSp+tHAflZPOievYIHcYtjtSwcMH9vA8IAw
-         kR8I3ewGVHRviWU7zpgEFiXCpvqAdO3D8v0hXG2JHr9AOZM2bI5YSOupC8ufJECa3IL3
-         82IQ==
-X-Gm-Message-State: APjAAAWvSeY2ubD/O+A6qJtZANv08ZFKKClN9BZSA12czb+4GYFZIBON
-        NO7LW+1vOxZU/2jVgHlPozudPQ==
-X-Google-Smtp-Source: APXvYqy3ekLJx1gY0jKZptuwAqmQTzSiMllIqo5i/eTDWckSI6Vc8YWP1TDnwrY6cS4SHV8eKrLdBA==
-X-Received: by 2002:a37:6685:: with SMTP id a127mr14941462qkc.167.1576255139792;
-        Fri, 13 Dec 2019 08:38:59 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::4e65])
-        by smtp.gmail.com with ESMTPSA id g81sm2989046qkb.70.2019.12.13.08.38.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Dec 2019 08:38:59 -0800 (PST)
-Subject: Re: [PATCH v6 08/28] btrfs: implement log-structured superblock for
- HMZONED mode
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-9-naohiro.aota@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e5bdec6e-a38e-7789-922f-5998b4401d02@toxicpanda.com>
-Date:   Fri, 13 Dec 2019 11:38:57 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        id S1728168AbfLMQni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 11:43:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54656 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728126AbfLMQni (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 11:43:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 02899AC68;
+        Fri, 13 Dec 2019 16:43:36 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 48116DA82A; Fri, 13 Dec 2019 17:43:33 +0100 (CET)
+Date:   Fri, 13 Dec 2019 17:43:32 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anandsuveer@gmail.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/4] btrfs: sysfs, add devid/dev_state kobject and
+ attribute
+Message-ID: <20191213164332.GA3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anandsuveer@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191205112706.8125-1-anand.jain@oracle.com>
+ <20191205112706.8125-5-anand.jain@oracle.com>
+ <20191205142148.GQ2734@twin.jikos.cz>
+ <78560abd-7d85-c95d-ed76-7810b1d03789@oracle.com>
+ <20191205151428.GS2734@twin.jikos.cz>
+ <673babd8-90ec-2f7e-532a-df8c98a844cf@oracle.com>
+ <8bd3d9b9-11b1-4c9a-8b59-ccfe0c6d92c4@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20191213040915.3502922-9-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8bd3d9b9-11b1-4c9a-8b59-ccfe0c6d92c4@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/12/19 11:08 PM, Naohiro Aota wrote:
-> Superblock (and its copies) is the only data structure in btrfs which has a
-> fixed location on a device. Since we cannot overwrite in a sequential write
-> required zone, we cannot place superblock in the zone. One easy solution is
-> limiting superblock and copies to be placed only in conventional zones.
-> However, this method has two downsides: one is reduced number of superblock
-> copies. The location of the second copy of superblock is 256GB, which is in
-> a sequential write required zone on typical devices in the market today.
-> So, the number of superblock and copies is limited to be two.  Second
-> downside is that we cannot support devices which have no conventional zones
-> at all.
+On Mon, Dec 09, 2019 at 10:05:39PM +0800, Anand Jain wrote:
+> On 12/6/19 9:49 PM, Anand Jain wrote:
+> > 
+> > 
+> > On 5/12/19 11:14 PM, David Sterba wrote:
+> >> On Thu, Dec 05, 2019 at 10:38:15PM +0800, Anand Jain wrote:
+> >>>> So the values copy the device state macros, that's probably ok.
+> >>>    Yep.
+> >>
+> >> Although, sysfs files should print one value per file, which makes sense
+> >> in many cases, so eg. missing should exist separately too for quick
+> >> checks for the most common device states. The dev_state reflects the
+> >> internal state and is likely useful only for debugging.
+> >>
+> > 
+> >   I agree. Its better to create an individual attribute for each of the
+> >   device states. For instance..
+> > 
+> >     under the 'UUID/devinfo/<devid>' kobject
+> >     attributes will be:
+> >       missing
+> >       in_fs_metadata
+> >       replace_target
+> > 
+> >    cat missing
+> >     0
+> >    cat in_fs_metadata
+> >     1
+> > 
+> >    ..etc
+> > 
+> >   which seems to be more or less standard for block devices.
+> > 
+> >   Will fix it in v2.
 > 
-> To solve these two problems, we employ superblock log writing. It uses two
-> zones as a circular buffer to write updated superblocks. Once the first
-> zone is filled up, start writing into the second buffer and reset the first
-> one. We can determine the postion of the latest superblock by reading write
-> pointer information from a device.
+> This is fixed in v2.
 > 
-> The following zones are reserved as the circular buffer on HMZONED btrfs.
 > 
-> - The primary superblock: zones 0 and 1
-> - The first copy: zones 16 and 17
-> - The second copy: zones 1024 or zone at 256GB which is minimum, and next
->    to it
+> > 
+> >>>>> +static ssize_t btrfs_sysfs_dev_state_show(struct kobject *kobj,
+> >>>>> +                      struct kobj_attribute *a, char *buf)
+> >>>>> +{
+> >>>>> +    struct btrfs_device *device = container_of(kobj, struct 
+> >>>>> btrfs_device,
+> >>>>> +                           devid_kobj);
+> >>>>> +
+> >>>>> +    btrfs_dev_state_to_str(device, buf, PAGE_SIZE);
+> >>>>
+> >>>> The device access is unprotected, you need at least RCU but that still
+> >>>> does not prevent from the device being freed by deletion.
+> >>>
+> >>>    We need RCU let me fix. Device being deleted is fine, there
+> >>>    is nothing to lose, another directory lookup will show that
+> >>>    UUID/devinfo/<devid> is gone is the device is deleted.
+> >>
+> >> The device can be gone from the list but the sysfs files can still
+> >> exist.
+> >>
+> >>      CPU1                                   CPU2
+> >>
+> >> btrfs_rm_device
+> >>                                          open file
+> >>    btrfs_sysfs_rm_device_link
+> >>      btrfs_free_device
+> >>        kfree(device)
+> >>                                          call read, access freed device
+> >>
+> > 
+> >    I completely missed the sysfs synchronization with device delete.
+> >    As in the other email discussion, I think a new rwlock shall suffice.
+> >    And as its lock is only between device delete and sysfs so it shall
+> >    be light weight without affecting the other device_list_mutex holders.
 > 
+>   Looked into this further, actually we don't need any lock here
+>   the device delete thread which calls kobject_put() makes sure
+>   sysfs read is closed. So an existing sysfs read thread will have
+>   to complete before device free.
+> 
+> 
+>        CPU1                                   CPU2
+> 
+>   btrfs_rm_device
+>                                            open file
+>      btrfs_sysfs_rm_device_link
+>                                            call read, access freed device
+>        sysfs waits for the open file
+>        to close.
 
-So the series of events for writing is
-
--> get wp
--> write super block
--> advance wp
-   -> if wp == end of the zone, reset the wp
-
-now assume we crash here.  We'll go to mount the fs and the zone will look like 
-it's empty because we reset the wp, and we'll be unable to mount the fs.  Am I 
-missing something here?  Thanks,
-
-Josef
+How exactly does sysfs wait for the device? Is it eg wait_event checking
+number of references? If the file stays open by an evil process is it
+going to block the device removal indefinitelly?
