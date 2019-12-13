@@ -2,496 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D1311DFE5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 09:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA3011E0CC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 10:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbfLMIvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 03:51:02 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:32966 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbfLMIvC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 03:51:02 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBD8duEW097167;
-        Fri, 13 Dec 2019 08:50:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=RAJYOxPJft6ezCgj9LDLV30ww9fIA908ekuq/cqF5Pk=;
- b=oYM9biZuuIGMe/9JqvW4x6H62Wv8ok4pwhan/bn+7GAtFsDgzan5Z3WEFEvMbRx3iCbJ
- ++m3ttDuXxkeLL21P6zBrdW9m7LwEucQpG/HY+qhT9hraeP1oDMOFO++QWIF1ZgnbPGy
- /fyJJ95inHslaHMGKd7zVhuS4K6l9c8sKgfgL/YmadIUt6ycsZM7iXCUbFfik2wPOdUT
- MNt/hlWaCt0N26qZzxEoqQkdTpYmrQHHvdGmaos201eB0bXdr4GSHEFIMhgAK6u9hAk1
- eVK/QvDRSwFGF4xGmpDTTnWPBsjyAHgFvXFAcOnm+rDfnmZIhsC2s/2UVlU88qeqQWzV QQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2wrw4nmkxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Dec 2019 08:50:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBD8nqUj021040;
-        Fri, 13 Dec 2019 08:50:51 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2wumk7xrja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Dec 2019 08:50:51 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBD8ooZh027797;
-        Fri, 13 Dec 2019 08:50:50 GMT
-Received: from [10.186.52.87] (/10.186.52.87)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 13 Dec 2019 00:50:49 -0800
-Subject: Re: [PATCH 1/6] btrfs: metadata_uuid: fix failed assertion due to
- unsuccessful device scan (reformatted)
-To:     Su Yue <Damenly_Su@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-References: <20191212110132.11063-1-Damenly_Su@gmx.com>
- <20191212110132.11063-2-Damenly_Su@gmx.com>
- <78eab88a-a6be-f87b-34d7-13a1cffbf36b@suse.com>
- <07e99b04-ec0c-f027-079e-b0d3c1e54970@gmx.com>
- <d0da81b4-801d-cb90-6e15-66905f190930@oracle.com>
- <d972b667-83a6-34a1-0b91-e7c6c7a80bad@gmx.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <e0f92849-dd6b-6e07-dcc6-66f681778cbc@oracle.com>
-Date:   Fri, 13 Dec 2019 16:51:01 +0800
+        id S1726004AbfLMJc1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 04:32:27 -0500
+Received: from mout.gmx.net ([212.227.15.19]:59245 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725770AbfLMJc1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 04:32:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1576229538;
+        bh=KcHIVRdTcJ3dF0079OcJadPNHohs16UB3F2tgEXTYIs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=OWwqvFnhPHsUcB1d50FGy53wwaRLzcOKIoHX3fbLdI8ez7jDkaLHLkDRM5LClvrJS
+         7FeiQKxDE2vs5nnnctQ7Ld08NjWCwQq7nGrRkpIxsweEaxCTI+ZAPBs2fzcPdhBCZV
+         MTxYH+KAHhbMNDmmNWIKNrHIrfa+q6uilqXxZOsU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MyKHm-1hnqdp1vGW-00yeCv; Fri, 13
+ Dec 2019 10:32:18 +0100
+Subject: Re: FIDEDUPERANGE woes
+To:     halfdog <me@halfdog.net>, linux-btrfs@vger.kernel.org
+References: <2019-1576167349.500456@svIo.N5dq.dFFD>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <691d3af5-da85-5381-7db3-c4ef011b1e4a@gmx.com>
+Date:   Fri, 13 Dec 2019 17:32:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <d972b667-83a6-34a1-0b91-e7c6c7a80bad@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9469 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912130071
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9469 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912130069
+In-Reply-To: <2019-1576167349.500456@svIo.N5dq.dFFD>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="79LqdkX18NTQkmQSCah1KlEj0X797iUKh"
+X-Provags-ID: V03:K1:q3geigdJ9c3Jtb1/1KTwQ9al3jgahI+joTNPn+nmlPlnShelK1w
+ DZitAcpFy+3UBxD105IbGmcJOmvJH6Qw4WzQgzI9GFuQ9JJVm8FDGozZ1T9EMVk4vHTtdkx
+ +YLg5cwJ+RTJdh9vEuKuqWdLC00EHd3ve8deZx7tLFwiMb0rI7kn9jXNTUvmCEorUYoNDHw
+ /2bDlylcVwB5wZgQmWGzg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L47oknOiXmo=:IHwVSr5NiPZnL31uXHNulf
+ XjjPRHZKyDM24+jEC1rsPnKbNZhsn+VRDZNqNtoh3xUiYGdjAxnv5vS685viOcTH1Kj5/jDSP
+ wm+O9tic7sajVWmbZki1iLJWUtvVoG7t23K4xVpQ3kUijhUa7U3E/qBxja+ur4NM7oyqnTndi
+ UewLQSt1odDqqkeADNAbCpK95+E9XcWpNOlZi2Eaxu+/iWOeW2s/Ium0muSz6BL3hYWVgMOq7
+ S762YCOiO/IQhPvcUr/8gkcEHH+2JIfOKNyWlfY+vuL8YHfWBF13KOEqJoewEjB/fHP/+HChX
+ zSpdPbX0WPRl9bzzikv31sarl+15qCBdLSpugPDoQJzgCDPq8cSJMVy08TRi4KuCh8t87D9/T
+ geUoZb57G7A1pBl2Se2s/N+zgh8djefoH8uxEthEVuVhzALceGnjB2xqSfu8haJ7Ulz8x04nd
+ 1YUhJK9cSJWc4UWGIjDEnqgGTzwp53uagPDL/pQWDV/2vk2hC4w7JFeVbMZVvNkDPXjZzAB4T
+ TW6YabPjvlNOcJLfZ1MkvuS/rNauv/3AMjiL0POzz3LsSdR2YNF9ucENhmVxDUSdjC5B+jEGB
+ hlzgD7W43UtXWL4umSZxIxwbtyraDsMhviUAv76VhkH/MEm8F6Ufml7kJrOITWzb5En5Q91L3
+ oom0G7U2GO552rK/5y7kdf3PiSJGaoi+6cnw7KznDqjCje+IiP4cjt/+W00I4rbMW/w4LBNO1
+ mxjtNDFAGsN3uSrpI/wHD+Km7JriVjOQfwFtFdcYsByB0BIQAdKwJ24LQ3NiCo3HU6us9oB8D
+ lS2DSwtnPTV4DdoL+QDYDq4CROg6bK9Lfu12C04DSj83ZKS4EGbn1LhJLrQxT+KgsGiUvs+YH
+ kHg3JOs8c0L3OyoslajbRzGViDOkwN/vnY4C0mc+QY8rs5SYXGlJgJZ///vItpsYUPho4zGK9
+ oiRW3WYFSzfmtUxAW/cI65Jv7t4T7NnYh7vqwgHu3vPUNjYaIQIe8/q0f5cnyDZfSrIVXP8hb
+ QuBLgMkhwjCVT12/Nce6E/mjHB4UdCwIsrTm5a5TGbHOYHwThnKhj7t3qjodYhuMiumaWNOn7
+ xGwCK6VTKYAxQ2tR7g2PuSINXleWshvUqJDMIjU5Lt27d0t7rvxVV4ij8kCKjLS/orCUtGT3J
+ Zd1vuAQT+/las5OWZL++4lDGonJuLnKveabRYc/C2/yhPNxiPfxwa1VvpLbLbrwaG7d7OqEVR
+ U8c6Zy5LU3fq42evXZGfICGlqIKJ9/ve7uKyTRSt3SRQOX9/Nu8uAd2QJ0tc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--79LqdkX18NTQkmQSCah1KlEj0X797iUKh
+Content-Type: multipart/mixed; boundary="OROGCk7fGUdJwbMsEslMIjTfINY01q3dS"
+
+--OROGCk7fGUdJwbMsEslMIjTfINY01q3dS
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 12/13/19 3:15 PM, Su Yue wrote:
-> On 2019/12/13 1:36 PM, Anand Jain wrote:
->>
->>
->>   metadata_uuid code is too confusing, a lot of if and if-nots
->>   it should be have been better.
->>
-> 
-> Agreed. It costed much brain power of mine.
-> 
->>   more below.
->>
-> 
-> Willing to answer from my understanding.
-> If something wrong, please point at.
-> 
->> On 13/12/19 10:46 AM, Su Yue wrote:
->>> On 2019/12/12 10:15 PM, Nikolay Borisov wrote:
->>>>
->>>>
->>>> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
->>>>
->>>> <snip>
->>>>
->>>>> Acutally, there are two devices in the fs. Device 2 with
->>>>> FSID_CHANGING_V2 allocated a fs_devices. But, device 1 found the
->>>>> fs_devices but failed to be added into since fs_devices->opened (
->>>>
->>>> It's not clear why device 1 wasn't able to be added to the fs_devices
->>>> allocated by dev 2. Please elaborate?
->>>>
->>>>
->>> Sure, of course.
->>>
->>> For example.
->>>
->>> $cat test.sh
->>> ====================================================================
->>> img1="/tmp/test1.img"
->>> img2="/tmp/test2.img"
->>>
->>> [ -f "$img1" ] || fallocate -l 300M "$img1"
->>> [ -f "$img2" ] || fallocate -l 300M "$img2"
->>>
->>> mkfs.btrfs -f $img1 $img2 2>&1 >/dev/null|| exit 1
->>> losetup -D
->>>
->>> dmesg -C
->>> rmmod btrfs
->>> modprobe btrfs
->>>
->>> loop1=$(losetup --find --show "$img1")
->>> loop2=$(losetup --find --show "$img2")
->>
->>   Can you explicitly show what devices should be scanned to make the
->>   device mount (below) successful. Fist you can cleanup the
->>   device list using
->>
->>     btrfs device --forget
->>
-> 
-> Thanks for the tip.
-> The purpose of simple script is to show that there
-> may be uncompleted/unsuccessful device(s) scanning due to
-> fs_devices->opened. Is the issue already known?
+
+On 2019/12/13 =E4=B8=8A=E5=8D=8812:15, halfdog wrote:
+> Hello list,
+>=20
+> Using btrfs on
+>=20
+> Linux version 5.3.0-2-amd64 (debian-kernel@lists.debian.org) (gcc versi=
+on 9.2.1 20191109 (Debian 9.2.1-19)) #1 SMP Debian 5.3.9-3 (2019-11-19)
+>=20
+> the FIDEDUPERANGE exposes weird behaviour on two identical but
+> not too large files that seems to be depending on the file size.
+> Before FIDEDUPERANGE both files have a single extent, afterwards
+> first file is still single extent, second file has all bytes sharing
+> with the extent of the first file except for the last 4096 bytes.
+>=20
+> Is there anything known about a bug fixed since the above mentioned
+> kernel version?
+>=20
+>=20
+>=20
+> If no, does following reproducer still show the same behaviour
+> on current Linux kernel (my Python test tools also attached)?
+>=20
+>> dd if=3D/dev/zero bs=3D1M count=3D32 of=3Ddisk
+>> mkfs.btrfs --mixed --metadata single --data single --nodesize 4096 dis=
+k
+>> mount disk /mnt/test
+>> mkdir /mnt/test/x
+>> dd bs=3D1 count=3D155489 if=3D/dev/urandom of=3D/mnt/test/x/file-0
+
+155489 is not sector size aligned, thus the last extent will be padded
+with zero.
+
+>> cat /mnt/test/x/file-0 > /mnt/test/x/file-1
+
+Same for the new file.
+
+For the tailing padding part, it's not aligned, and it's smaller than
+the inode size.
+
+Thus we won't dedupe that tailing part.
+
+Thanks,
+Qu
+
+>=20
+>> ./SimpleIndexer x > x.json
+>> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
+> dedup.list
+> Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
+/file-1': [(0, 5472256, 155648)]}
+> ...
+>> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
+t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
+src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D=
+0}]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
+>> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
+> dedup.list
+> Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
+/file-1': [(0, 5316608, 151552), (151552, 5623808, 4096)]}
+> ...
+>> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
+t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
+src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D=
+0}]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
+>> strace -s256 -f btrfs-extent-same 4096 /mnt/test/x/file-0 151552 /mnt/=
+test/x/file-1 151552 2>&1 | grep -E -e FIDEDUPERANGE
+> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D151=
+552, src_length=3D4096, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=
+=3D151552}]}) =3D -1 EINVAL (Invalid argument)
+>=20
 
 
-Do you mean at line 803.
+--OROGCk7fGUdJwbMsEslMIjTfINY01q3dS--
 
------------
-  729 static noinline struct btrfs_device *device_list_add(const char *path,
-  730                            struct btrfs_super_block *disk_super,
-  731                            bool *new_device_added)
-  732 {
+--79LqdkX18NTQkmQSCah1KlEj0X797iUKh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-::
+-----BEGIN PGP SIGNATURE-----
 
-  802         if (!device) {
-  803                 if (fs_devices->opened) {
-  804                       mutex_unlock(&fs_devices->device_list_mutex);
-  805                       return ERR_PTR(-EBUSY);
-  806                 }
-------------
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3zWp4ACgkQwj2R86El
+/qiH/gf/djjlL1xhL0d/njCx1KydF3+p+wY1Okm8Ss8V75XLMDaxQCIIUn0KTety
+M1v6FBkl8LAn9AThEGuf097bSWey2hT6n3FQmNFWhtq+SL/uFNTVollmHkjX+622
+8d3v4GXUDNHa9aV2NpynzOwoW93gS5LxS2njynpBmD2saOmsO3/C7w6VfdgbdX9y
+0hZWr0pxtRf5iDD2TqDYTJ9N9LLMgFZIify8NCM0qSgbTFg0Ydl/mL4aM3VXty5x
+kyVatGFYfnHA7Oq5MR5sLCUVAdjLFMnOWlxcq6xBC4SPdKwgsxxlV3i5ga0ipm16
+06E2wSUyT87SXEjXO5ONUqoc8KBLFw==
+=xV/c
+-----END PGP SIGNATURE-----
 
-fs_devices->opened indicates mounted state of the device.
-
-If there is a missing device, the %device will still be there,
-we create a dummy %device with the dev_state set to
-BTRFS_DEV_STATE_MISSING.
-
-So its wrong if we encounter device == NULL for a given fsid
-which is mounted. So by error and return we keep the mounted
-fs safe and fail the hijacking attack.
-
-
->>> mount $loop1 /mnt || exit 1
->>> umount /mnt
->>> ====================================================================
->>>
->>> $dmesg
->>> ====================================================================
->>> [  395.205221] BTRFS: device fsid 5090db22-5e48-4767-8fb7-d037c619c1ee
->>> devid 1 transid 5 /dev/loop0 scanned by systemd-udevd (13620)
->>> [  395.210773] !!!!!!!!fs_device opened
->>> [  395.213875] BTRFS info (device loop0): disk space caching is enabled
->>> [  395.214994] BTRFS info (device loop0): has skinny extents
->>> [  395.215891] BTRFS info (device loop0): flagging fs with big metadata
->>> feature
->>> [  395.222639] BTRFS error (device loop0): devid 2 uuid
->>> adcc8454-695f-4e1d-bde8-94041b7bf761 is missing
->>> [  395.224147] BTRFS error (device loop0): failed to read the system
->>> array: -2
->>> [  395.246163] !!!!!!!!fs_device opened
->>> [  395.338219] BTRFS error (device loop0): open_ctree failed
->>> =====================================================================
->>>
->>> The line "!!!!!!!!fs_device opened" is handy added by me in debug 
->>> purpose.
->>>
->>> =====================================================================
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -794,6 +794,7 @@ static noinline struct btrfs_device
->>> *device_list_add(const char *path,
->>>
->>>          if (!device) {
->>>                  if (fs_devices->opened) {
->>> +                       pr_info("!!!!!!!!fs_device opened\n");
->>>                          mutex_unlock(&fs_devices->device_list_mutex);
->>>                          return ERR_PTR(-EBUSY);
->>>                  }
->>> =====================================================================
->>>
->>> To make it more clear. The following is in metadata_uuid situation.
->>> Device 1 is without FSID_CHANGING_V2 but has IMCOMPAT_METADATA_UUID.
->>> (newer transid).
->>>
->>> Device 2 is with FSID_CHANGING_V2 and IMCOMPAT_METADATA_UUID.(Older
->>> transid).
->>
->> How were you able to set FSID_CHANGING_V2
-
-  Sorry typo, it should be BTRFS_SUPER_FLAG_CHANGING_FSID_V2.
-
->> and BTRFS_FEATURE_INCOMPAT_METADATA_UUID on only devid 2 ?
->>
->>
-> The device2 is simulated to be the device failed to sync due
-> to some expected reason (power loss).
-
-  Ah. power loss before FSID_CHANGING_V2 is cleared. ok.
-
-> mkfs on two devices, use v5.4 progs/btrfstune -m $device.
-> Then both two devices both have the BTRFS_FEATURE_INCOMPAT_METADATA_UUID.
-> Play some tricks in btrfstune.c to avoid final super block
-> write on one deivce. Like the ugly code to delete the device:
-> ========================================================================
-> diff --git a/btrfstune.c b/btrfstune.c
-> index afa3aae3..f678b978 100644
-> --- a/btrfstune.c
-> +++ b/btrfstune.c
-> @@ -101,12 +101,14 @@ static int set_metadata_uuid(struct btrfs_root 
-> *root, const char *uuid_string)
->          struct btrfs_super_block *disk_super;
->          uuid_t new_fsid, unused1, unused2;
->          struct btrfs_trans_handle *trans;
-> +       struct btrfs_device *dev, *next;
->          bool new_uuid = true;
->          u64 incompat_flags;
->          bool uuid_changed;
->          u64 super_flags;
->          int ret;
-> 
->          disk_super = root->fs_info->super_copy;
->          super_flags = btrfs_super_flags(disk_super);
->          incompat_flags = btrfs_super_incompat_flags(disk_super);
-> @@ -170,6 +172,14 @@ static int set_metadata_uuid(struct btrfs_root 
-> *root, const char *uuid_string)
->                  return 0;
->          }
-> 
-> +       list_for_each_entry_safe(dev, next, 
-> &root->fs_info->fs_devices->devices,
-> +                                dev_list) {
-> +               if (dev->devid == 2) {
-> +                       fsync(dev->fd);
-> +                       list_del_init(&dev->dev_list);
-> +               }
-> +       }
-> +==================================================================
-> 
-
-  Not like this. If you want to simulate failed write to the
-  disk its better to do it with IO failing tools / mechanism outside
-  of the btrfs-progs which probably can be a real fstests test case
-  as well.
-
-> Compile again. call btrfstune -m again.
-> Then we get a device with
-> BTRFS_FEATURE_INCOMPAT_METADATA_UUID and FSID_CHANGING_V2.
-> 
->>> The workflow in misc-tests/034 is
->>>
->>> loop1=$(losetup --find --show "$device2")
->>> loop2=$(losetup --find --show "$device1")
->>>
->>> mount $loop1 /mnt ---> fails here
->>>
->>> Assume the fs_devices was allocated by systemd-udevd through
->>> btrfs_control_ioctl() path after finish of scanning of device2.
->>>
->>> Then:
->>>
->>
->> In the two threads which are in race (below), the mount thread can't 
->> be successful unless -o degraded is used, if it does it means the devid 1 
-> 
-> Right.. The dmesg reports the device 1 is missing.
-
-  But then if you aren't using -o degraded then the mount shouldn't
-  be successful. Are you using -o degraded?
-
-> 
->> is already scanned and for that btrfs_device to be in the
->> btrfs_fs_devices list the fsid has to match (does not matter 
->> metadata_uuid).
-> 
-> Sorry, I doesn't make much clear what you mean. In similar but no 
-> metadata_uuid situation, mount will fail too but the assertion won't
-> fail of course. The device1 was scanned but not added into the
-> fs_devices(already found) since the fs_devices was opened by the
-> mounting thread.
-
-  That's correct. But your test case with -o degraded and metadata_uuid
-  is not clearly understood, is it possible to write a real fstests
-  test case? you can use dmerror you will have control when to fail
-  the IO.
-
-
->>
->>> Thread *mounting device2*            Thread *scanning device1*
->>>
->>>
->>> btrfs_mount_root                     btrfs_control_ioctl
->>>
->>>    mutex_lock(&uuid_mutex);
->>>
->>>      btrfs_read_disk_super
->>>      btrfs_scan_one_device
->>>      --> there is only device2
->>>      in the fs_devices
->>>
->>>      btrfs_open_devices
->>>        fs_devices->opened = 1
->>>        fs_devices->latest_bdev = device2
->>>
->>>      mutex_unlock(&uuid_mutex);
->>>
->>>                                        mutex_lock(&uuid_mutex);
->>>                                        btrfs_scan_one_device
->>>                                          btrfs_read_disk_super
->>>
->>>                                          device_list_add
->>>                                            found fs_devices
->>>                                              device = btrfs_find_device
->>>
->>>                                              rewrite fs_deivces->fsid if
->>>                                              scanned device1 is newer
->>>                                               --> Change fs_devices->fsi
->>>                                                    d to device1->fsid
->>>
->>>                                            if (!device)
->>>                                               if(fs_devices->opened)
->>>                           return -EBUSY
->>>                                               --> the device1 adding
->>>                                                   aborts since
->>>                                                   fs_devices was opened
->>>                                        mutex_unlock(&uuid_mutex);
->>>    btrfs_fill_super
->>>      open_ctree
->>>         btrfs_read_dev_super(
->>>         fs_devices->latest_bdev)
->>>         --> the latest_bdev is device2
->>>
->>>         assert fs_devices->fsid equals
->>>         device2's fsid.
->>>         --> fs_device->fsid was rewritten by
->>>             the scanning thread
->>>
->>> The result is fs_device->fsid is from device1 but super->fsid is from
->>> the lastest device2.
->>>
->>
->>   Oops that's not good. However still not able to image various devices
->>   and its fsid to achieve that condition. Is it possible to write a test
->>   case? It would help.
->>
-> It did happened in my test environment.. You can try misc-tests/034 
-> about 20 times on v5.4 progs and v5.5-rc1 kernel. As for the test case,
-> will give a try.
-
-Let me try.
-
-Thanks, Anand
-
-
-> Thanks
->> Thanks, Anand
->>
->>>>> the thread is doing mount device 1). But device 1's fsid was copied
->>>>> to fs_devices->fsid then the assertion failed.
->>>>
->>>>
->>>> dev 1 fsid should be copied iff its transid is newer.
->>>>
->>>
->>> Even it was failed to be added into the fs_devices?
->>>
->>>>>
->>>>> The solution is that only if a new device was added into a existing
->>>>> fs_device, then the fs_devices->fsid is allowed to be rewritten.
->>>>
->>>> fs_devices->fsid must be re-written by any device which is _newer_ 
->>>> w.r.t
->>>> to the transid.
->>>>
->>>
->>> Then the assertion failed in above scenario. Just do not update the
->>> fs_devices->fsid, let later btrfs_read_sys_array() report the device
->>> missing then reject to mount.
->>>
->>> Thanks
->>>
->>>>>
->>>>> Fixes: 7a62d0f07377 ("btrfs: Handle one more split-brain scenario 
->>>>> during fsid change")
->>>>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
->>>>> ---
->>>>>   fs/btrfs/volumes.c | 36 +++++++++++++++++++++---------------
->>>>>   1 file changed, 21 insertions(+), 15 deletions(-)
->>>>>
->>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>>> index d8e5560db285..9efa4123c335 100644
->>>>> --- a/fs/btrfs/volumes.c
->>>>> +++ b/fs/btrfs/volumes.c
->>>>> @@ -732,6 +732,9 @@ static noinline struct btrfs_device 
->>>>> *device_list_add(const char *path,
->>>>>           BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
->>>>>       bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
->>>>>                       BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
->>>>> +    bool fs_devices_found = false;
->>>>> +
->>>>> +    *new_device_added = false;
->>>>>
->>>>>       if (fsid_change_in_progress) {
->>>>>           if (!has_metadata_uuid) {
->>>>> @@ -772,24 +775,11 @@ static noinline struct btrfs_device 
->>>>> *device_list_add(const char *path,
->>>>>
->>>>>           device = NULL;
->>>>>       } else {
->>>>> +        fs_devices_found = true;
->>>>> +
->>>>>           mutex_lock(&fs_devices->device_list_mutex);
->>>>>           device = btrfs_find_device(fs_devices, devid,
->>>>>                   disk_super->dev_item.uuid, NULL, false);
->>>>> -
->>>>> -        /*
->>>>> -         * If this disk has been pulled into an fs devices created by
->>>>> -         * a device which had the CHANGING_FSID_V2 flag then 
->>>>> replace the
->>>>> -         * metadata_uuid/fsid values of the fs_devices.
->>>>> -         */
->>>>> -        if (has_metadata_uuid && fs_devices->fsid_change &&
->>>>> -            found_transid > fs_devices->latest_generation) {
->>>>> -            memcpy(fs_devices->fsid, disk_super->fsid,
->>>>> -                    BTRFS_FSID_SIZE);
->>>>> -            memcpy(fs_devices->metadata_uuid,
->>>>> -                    disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->>>>> -
->>>>> -            fs_devices->fsid_change = false;
->>>>> -        }
->>>>>       }
->>>>>
->>>>>       if (!device) {
->>>>> @@ -912,6 +902,22 @@ static noinline struct btrfs_device 
->>>>> *device_list_add(const char *path,
->>>>>           }
->>>>>       }
->>>>>
->>>>> +    /*
->>>>> +     * If the new added disk has been pulled into an fs devices 
->>>>> created by
->>>>> +     * a device which had the CHANGING_FSID_V2 flag then replace the
->>>>> +     * metadata_uuid/fsid values of the fs_devices.
->>>>> +     */
->>>>> +    if (*new_device_added && fs_devices_found &&
->>>>> +        has_metadata_uuid && fs_devices->fsid_change &&
->>>>> +        found_transid > fs_devices->latest_generation) {
->>>>> +        memcpy(fs_devices->fsid, disk_super->fsid,
->>>>> +               BTRFS_FSID_SIZE);
->>>>> +        memcpy(fs_devices->metadata_uuid,
->>>>> +               disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->>>>> +
->>>>> +        fs_devices->fsid_change = false;
->>>>> +    }
->>>>> +
->>>>>       /*
->>>>>        * Unmount does not free the btrfs_device struct but would zero
->>>>>        * generation along with most of the other members. So just 
->>>>> update
->>>>>
->>>
->>
-> 
+--79LqdkX18NTQkmQSCah1KlEj0X797iUKh--
