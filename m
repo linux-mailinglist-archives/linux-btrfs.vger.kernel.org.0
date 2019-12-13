@@ -2,68 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7A511E8DA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 18:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3D111E94A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 18:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbfLMRCS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 12:02:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58984 "EHLO mx1.suse.de"
+        id S1728474AbfLMRfb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 12:35:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43882 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727480AbfLMRCS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 12:02:18 -0500
+        id S1728109AbfLMRfb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 12:35:31 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8FD0AAE61;
-        Fri, 13 Dec 2019 17:02:16 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id EF350AF2B;
+        Fri, 13 Dec 2019 17:35:28 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 74F53DA82A; Fri, 13 Dec 2019 18:02:16 +0100 (CET)
-Date:   Fri, 13 Dec 2019 18:02:15 +0100
+        id D9995DA82A; Fri, 13 Dec 2019 18:35:27 +0100 (CET)
+Date:   Fri, 13 Dec 2019 18:35:27 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Anand Jain <anandsuveer@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs: sysfs, add devid/dev_state kobject and
- attribute
-Message-ID: <20191213170215.GB3929@twin.jikos.cz>
+To:     Zaslonko Mikhail <zaslonko@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eduard Shishkin <edward6@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] btrfs: Use larger zlib buffer for s390 hardware
+ compression
+Message-ID: <20191213173526.GC3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anandsuveer@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191205112706.8125-1-anand.jain@oracle.com>
- <20191205112706.8125-5-anand.jain@oracle.com>
- <20191205142148.GQ2734@twin.jikos.cz>
- <78560abd-7d85-c95d-ed76-7810b1d03789@oracle.com>
- <20191205151428.GS2734@twin.jikos.cz>
- <673babd8-90ec-2f7e-532a-df8c98a844cf@oracle.com>
- <8bd3d9b9-11b1-4c9a-8b59-ccfe0c6d92c4@oracle.com>
- <20191213164332.GA3929@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz,
+        Zaslonko Mikhail <zaslonko@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eduard Shishkin <edward6@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20191209152948.37080-1-zaslonko@linux.ibm.com>
+ <20191209152948.37080-7-zaslonko@linux.ibm.com>
+ <97b3a11d-2e52-c710-ee25-157e562eb3d0@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191213164332.GA3929@twin.jikos.cz>
+In-Reply-To: <97b3a11d-2e52-c710-ee25-157e562eb3d0@linux.ibm.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 05:43:32PM +0100, David Sterba wrote:
-> >   Looked into this further, actually we don't need any lock here
-> >   the device delete thread which calls kobject_put() makes sure
-> >   sysfs read is closed. So an existing sysfs read thread will have
-> >   to complete before device free.
-> > 
-> > 
-> >        CPU1                                   CPU2
-> > 
-> >   btrfs_rm_device
-> >                                            open file
-> >      btrfs_sysfs_rm_device_link
-> >                                            call read, access freed device
-> >        sysfs waits for the open file
-> >        to close.
+On Fri, Dec 13, 2019 at 05:10:10PM +0100, Zaslonko Mikhail wrote:
+> Hello,
 > 
-> How exactly does sysfs wait for the device? Is it eg wait_event checking
-> number of references? If the file stays open by an evil process is it
-> going to block the device removal indefinitelly?
+> Could you please review the patch for btrfs below.
+> 
+> Apart from falling back to 1 page, I have set the condition to allocate 
+> 4-pages zlib workspace buffer only if s390 Deflate-Conversion facility
+> is installed and enabled. Thus, it will take effect on s390 architecture
+> only.
+> 
+> Currently in zlib_compress_pages() I always copy input pages to the workspace
+> buffer prior to zlib_deflate call. Would that make sense, to pass the page
+> itself, as before, based on the workspace buf_size (for 1-page buffer)?
 
-Yeah, sysfs waits until the file is closed. Eg. umount can be stalled
-that way too.
+Doesn't the copy back and forth kill the improvements brought by the
+hw supported decompression?
+
+> As for calling zlib_deflate with Z_FINISH flush parameter in a loop until
+> Z_STREAM_END is returned, that comes in agreement with the zlib manual.
+
+The concerns are about zlib stream that take 4 pages on input and on the
+decompression side only 1 page is available for the output. Ie. as if
+the filesystem was created on s390 with dflcc then opened on x86 host.
+The zlib_deflate(Z_FINISH) happens on the compresission side.
