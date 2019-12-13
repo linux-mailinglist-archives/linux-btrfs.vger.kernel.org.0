@@ -2,356 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA8511E7CC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 17:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A12011E7F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 17:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbfLMQK0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 11:10:26 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39826 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726404AbfLMQK0 (ORCPT
+        id S1728140AbfLMQS5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 11:18:57 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35368 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728124AbfLMQS5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 11:10:26 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBDG3WjQ090612;
-        Fri, 13 Dec 2019 11:10:15 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wusph5453-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Dec 2019 11:10:15 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id xBDG79qW007188;
-        Fri, 13 Dec 2019 16:10:14 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02dal.us.ibm.com with ESMTP id 2wr3q7p7h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Dec 2019 16:10:14 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBDGACg754460714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Dec 2019 16:10:12 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 977F7124052;
-        Fri, 13 Dec 2019 16:10:12 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F01D124055;
-        Fri, 13 Dec 2019 16:10:11 +0000 (GMT)
-Received: from [9.152.96.21] (unknown [9.152.96.21])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri, 13 Dec 2019 16:10:11 +0000 (GMT)
-Subject: Re: [PATCH v2 6/6] btrfs: Use larger zlib buffer for s390 hardware
- compression
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Fri, 13 Dec 2019 11:18:57 -0500
+Received: by mail-qk1-f195.google.com with SMTP id z76so37384qka.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2019 08:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p+ElOkwYuZmhuEggAYqFWeqRcKURvbMbcbDB8ADBw9E=;
+        b=q6BW2zJ5NaOI/L9MQ4C/pxsZUKCb6HgQKWitgRFUdOinrERr9wEOw98ktZOUHb/ob4
+         2RfKgX8QPwH/edKbdIXGcCFHSgGOs6ILDmU+p3zZ76E+SKEdaQ/GD1uVd4ii3QcBayqV
+         ejxtDwdBat4ViXlb758oBJ86NwhEMjTp8Ub4qHgKg4r+QdFyGm1FSO8Z/ywI9s3sQ3yE
+         mIjio+8xzwIWc1yyWLOqXp95eJ5qsQHkNHt4iRebhZWKpmzV4sLFuKB9Leyts3IA162F
+         bW43sm0YpNoZSBQgzbaIfxu8CQAp2STZLm0Kh03fd1pS3Js9T92oMxUTUSKuWtC6oUcg
+         b22A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p+ElOkwYuZmhuEggAYqFWeqRcKURvbMbcbDB8ADBw9E=;
+        b=hBPy8jXEyKdryCq1x0nHlpVSLg1xfwsUyj7+30AnD1j0co15Bsqelf50MSS5/S0KWe
+         T23UZxNib+dAA7BajVfV7OJUx/igdrDB3bycpDYgJbdFbdmyb/YNR0DND1PABYYTDoF/
+         B83eDd17w7U0Al+ObG9myhl0RBiT0+Rzn0vq5egJgMfo826tRGdxpaxViTNjquZGvSnn
+         vOdNffPdx4PpllG5ow67O8t4v78iw+2b8qGDiTCGVeTFFdM87Jvq1ZDHt015Tx890u1S
+         Pt/z0bzWyUkaFzenPheWspAAXaBm1+bPU/QMsDL2ekniEXuTdXkvJX2sZrayXaYOYSXP
+         qPhA==
+X-Gm-Message-State: APjAAAU8cTut0c2mFUuhSfPrtQd4VHJ/6tDah/iSRxUKWja/JJ9AzVfe
+        60DlviEwrEIpSU2EXNjGDqiVuQ==
+X-Google-Smtp-Source: APXvYqzblLdAg3Ari9GYwdZQr6vkb9XotV55rB2jNuuV9r5FO01Q2Bph9sGltPhx27cVAKAJY6XHgQ==
+X-Received: by 2002:a37:e404:: with SMTP id y4mr14254163qkf.356.1576253935503;
+        Fri, 13 Dec 2019 08:18:55 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::4e65])
+        by smtp.gmail.com with ESMTPSA id z8sm3647407qth.16.2019.12.13.08.18.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Dec 2019 08:18:54 -0800 (PST)
+Subject: Re: [PATCH v6 02/28] btrfs: Get zone information of zoned block
+ devices
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eduard Shishkin <edward6@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20191209152948.37080-1-zaslonko@linux.ibm.com>
- <20191209152948.37080-7-zaslonko@linux.ibm.com>
-From:   Zaslonko Mikhail <zaslonko@linux.ibm.com>
-Message-ID: <97b3a11d-2e52-c710-ee25-157e562eb3d0@linux.ibm.com>
-Date:   Fri, 13 Dec 2019 17:10:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-3-naohiro.aota@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <d4cccf98-a01a-8d2f-40fe-e2f356a037a0@toxicpanda.com>
+Date:   Fri, 13 Dec 2019 11:18:53 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191209152948.37080-7-zaslonko@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20191213040915.3502922-3-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-13_05:2019-12-13,2019-12-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 clxscore=1011
- mlxlogscore=999 malwarescore=0 phishscore=0 spamscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912130131
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-Could you please review the patch for btrfs below.
-
-Apart from falling back to 1 page, I have set the condition to allocate 
-4-pages zlib workspace buffer only if s390 Deflate-Conversion facility
-is installed and enabled. Thus, it will take effect on s390 architecture
-only.
-
-Currently in zlib_compress_pages() I always copy input pages to the workspace
-buffer prior to zlib_deflate call. Would that make sense, to pass the page
-itself, as before, based on the workspace buf_size (for 1-page buffer)?
-
-As for calling zlib_deflate with Z_FINISH flush parameter in a loop until
-Z_STREAM_END is returned, that comes in agreement with the zlib manual.
-
-Please see for more details: 
-https://lkml.org/lkml/2019/12/9/537
-
-Thanks,
-Mikhail
-
-On 09.12.2019 16:29, Mikhail Zaslonko wrote:
-> Due to the small size of zlib buffer (1 page) set in btrfs code, s390
-> hardware compression is rather limited in terms of performance. Increasing
-> the buffer size to 4 pages when s390 zlib hardware support is enabled
-> would bring significant benefit to btrfs zlib (up to 60% better performance
-> compared to the PAGE_SIZE buffer). In case of memory pressure we fall back
-> to a single page buffer during workspace allocation.
+On 12/12/19 11:08 PM, Naohiro Aota wrote:
+> If a zoned block device is found, get its zone information (number of zones
+> and zone size) using the new helper function btrfs_get_dev_zone_info().  To
+> avoid costly run-time zone report commands to test the device zones type
+> during block allocation, attach the seq_zones bitmap to the device
+> structure to indicate if a zone is sequential or accept random writes. Also
+> it attaches the empty_zones bitmap to indicate if a zone is empty or not.
 > 
-> Signed-off-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+> This patch also introduces the helper function btrfs_dev_is_sequential() to
+> test if the zone storing a block is a sequential write required zone and
+> btrfs_dev_is_empty_zone() to test if the zone is a empty zone.
+> 
+> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->  fs/btrfs/compression.c |   2 +-
->  fs/btrfs/zlib.c        | 118 +++++++++++++++++++++++++++--------------
->  2 files changed, 80 insertions(+), 40 deletions(-)
+>   fs/btrfs/Makefile  |   1 +
+>   fs/btrfs/hmzoned.c | 168 +++++++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/hmzoned.h |  92 +++++++++++++++++++++++++
+>   fs/btrfs/volumes.c |  18 ++++-
+>   fs/btrfs/volumes.h |   4 ++
+>   5 files changed, 281 insertions(+), 2 deletions(-)
+>   create mode 100644 fs/btrfs/hmzoned.c
+>   create mode 100644 fs/btrfs/hmzoned.h
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index b05b361e2062..f789b356fd8b 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -1158,7 +1158,7 @@ int btrfs_decompress_buf2page(const char *buf, unsigned long buf_start,
->  	/* copy bytes from the working buffer into the pages */
->  	while (working_bytes > 0) {
->  		bytes = min_t(unsigned long, bvec.bv_len,
-> -				PAGE_SIZE - buf_offset);
-> +				PAGE_SIZE - (buf_offset % PAGE_SIZE));
->  		bytes = min(bytes, working_bytes);
->  
->  		kaddr = kmap_atomic(bvec.bv_page);
-> diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-> index df1aace5df50..0bc0d57ba233 100644
-> --- a/fs/btrfs/zlib.c
-> +++ b/fs/btrfs/zlib.c
-> @@ -20,9 +20,12 @@
->  #include <linux/refcount.h>
->  #include "compression.h"
->  
-> +#define ZLIB_DFLTCC_BUF_SIZE    (4 * PAGE_SIZE)
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index 82200dbca5ac..64aaeed397a4 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -16,6 +16,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>   btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>   btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+>   btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+> +btrfs-$(CONFIG_BLK_DEV_ZONED) += hmzoned.o
+>   
+>   btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+>   	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+> diff --git a/fs/btrfs/hmzoned.c b/fs/btrfs/hmzoned.c
+> new file mode 100644
+> index 000000000000..6a13763d2916
+> --- /dev/null
+> +++ b/fs/btrfs/hmzoned.c
+> @@ -0,0 +1,168 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2019 Western Digital Corporation or its affiliates.
+> + * Authors:
+> + *	Naohiro Aota	<naohiro.aota@wdc.com>
+> + *	Damien Le Moal	<damien.lemoal@wdc.com>
+> + */
 > +
->  struct workspace {
->  	z_stream strm;
->  	char *buf;
-> +	unsigned long buf_size;
->  	struct list_head list;
->  	int level;
->  };
-> @@ -76,7 +79,17 @@ static struct list_head *zlib_alloc_workspace(unsigned int level)
->  			zlib_inflate_workspacesize());
->  	workspace->strm.workspace = kvmalloc(workspacesize, GFP_KERNEL);
->  	workspace->level = level;
-> -	workspace->buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> +	workspace->buf = NULL;
-> +	if (zlib_deflate_dfltcc_enabled()) {
-> +		workspace->buf = kmalloc(ZLIB_DFLTCC_BUF_SIZE,
-> +					 __GFP_NOMEMALLOC | __GFP_NORETRY |
-> +					 __GFP_NOWARN | GFP_NOIO);
-> +		workspace->buf_size = ZLIB_DFLTCC_BUF_SIZE;
+> +#include <linux/slab.h>
+> +#include <linux/blkdev.h>
+> +#include "ctree.h"
+> +#include "volumes.h"
+> +#include "hmzoned.h"
+> +#include "rcu-string.h"
+> +
+> +/* Maximum number of zones to report per blkdev_report_zones() call */
+> +#define BTRFS_REPORT_NR_ZONES   4096
+> +
+> +static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+> +			       struct blk_zone *zones, unsigned int *nr_zones)
+> +{
+> +	int ret;
+> +
+> +	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT, zones,
+> +				  nr_zones);
+> +	if (ret != 0) {
+> +		btrfs_err_in_rcu(device->fs_info,
+> +				 "get zone at %llu on %s failed %d", pos,
+> +				 rcu_str_deref(device->name), ret);
+> +		return ret;
 > +	}
-> +	if (!workspace->buf) {
-> +		workspace->buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> +		workspace->buf_size = PAGE_SIZE;
+> +	if (!*nr_zones)
+> +		return -EIO;
+> +
+> +	return 0;
+> +}
+> +
+> +int btrfs_get_dev_zone_info(struct btrfs_device *device)
+> +{
+> +	struct btrfs_zoned_device_info *zone_info = NULL;
+> +	struct block_device *bdev = device->bdev;
+> +	sector_t nr_sectors = bdev->bd_part->nr_sects;
+> +	sector_t sector = 0;
+> +	struct blk_zone *zones = NULL;
+> +	unsigned int i, nreported = 0, nr_zones;
+> +	unsigned int zone_sectors;
+> +	int ret;
+> +	char devstr[sizeof(device->fs_info->sb->s_id) +
+> +		    sizeof(" (device )") - 1];
+> +
+> +	if (!bdev_is_zoned(bdev))
+> +		return 0;
+> +
+> +	zone_info = kzalloc(sizeof(*zone_info), GFP_KERNEL);
+> +	if (!zone_info)
+> +		return -ENOMEM;
+> +
+> +	zone_sectors = bdev_zone_sectors(bdev);
+> +	ASSERT(is_power_of_2(zone_sectors));
+> +	zone_info->zone_size = (u64)zone_sectors << SECTOR_SHIFT;
+> +	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
+> +	zone_info->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
+> +	if (!IS_ALIGNED(nr_sectors, zone_sectors))
+> +		zone_info->nr_zones++;
+> +
+> +	zone_info->seq_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
+> +	if (!zone_info->seq_zones) {
+> +		ret = -ENOMEM;
+> +		goto free_zone_info;
 > +	}
->  	if (!workspace->strm.workspace || !workspace->buf)
->  		goto fail;
->  
-> @@ -97,6 +110,7 @@ static int zlib_compress_pages(struct list_head *ws,
->  			       unsigned long *total_out)
->  {
->  	struct workspace *workspace = list_entry(ws, struct workspace, list);
-> +	int i;
->  	int ret;
->  	char *data_in;
->  	char *cpage_out;
-> @@ -104,6 +118,7 @@ static int zlib_compress_pages(struct list_head *ws,
->  	struct page *in_page = NULL;
->  	struct page *out_page = NULL;
->  	unsigned long bytes_left;
-> +	unsigned long in_buf_pages;
->  	unsigned long len = *total_out;
->  	unsigned long nr_dest_pages = *out_pages;
->  	const unsigned long max_out = nr_dest_pages * PAGE_SIZE;
-> @@ -121,9 +136,6 @@ static int zlib_compress_pages(struct list_head *ws,
->  	workspace->strm.total_in = 0;
->  	workspace->strm.total_out = 0;
->  
-> -	in_page = find_get_page(mapping, start >> PAGE_SHIFT);
-> -	data_in = kmap(in_page);
-> -
->  	out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
->  	if (out_page == NULL) {
->  		ret = -ENOMEM;
-> @@ -133,12 +145,34 @@ static int zlib_compress_pages(struct list_head *ws,
->  	pages[0] = out_page;
->  	nr_pages = 1;
->  
-> -	workspace->strm.next_in = data_in;
-> +	workspace->strm.next_in = workspace->buf;
-> +	workspace->strm.avail_in = 0;
->  	workspace->strm.next_out = cpage_out;
->  	workspace->strm.avail_out = PAGE_SIZE;
-> -	workspace->strm.avail_in = min(len, PAGE_SIZE);
->  
->  	while (workspace->strm.total_in < len) {
-> +		/* get next set of pages and copy their contents to
-> +		 * the input buffer for the following deflate call
-> +		 */
-> +		if (workspace->strm.avail_in == 0) {
-> +			bytes_left = len - workspace->strm.total_in;
-> +			in_buf_pages = min(DIV_ROUND_UP(bytes_left, PAGE_SIZE),
-> +					   workspace->buf_size / PAGE_SIZE);
-> +			for (i = 0; i < in_buf_pages; i++) {
-> +				in_page = find_get_page(mapping,
-> +							start >> PAGE_SHIFT);
-> +				data_in = kmap(in_page);
-> +				memcpy(workspace->buf + i*PAGE_SIZE, data_in,
-> +				       PAGE_SIZE);
-> +				kunmap(in_page);
-> +				put_page(in_page);
-> +				start += PAGE_SIZE;
-> +			}
-> +			workspace->strm.avail_in = min(bytes_left,
-> +						       workspace->buf_size);
-> +			workspace->strm.next_in = workspace->buf;
-> +		}
 > +
->  		ret = zlib_deflate(&workspace->strm, Z_SYNC_FLUSH);
->  		if (ret != Z_OK) {
->  			pr_debug("BTRFS: deflate in loop returned %d\n",
-> @@ -155,6 +189,7 @@ static int zlib_compress_pages(struct list_head *ws,
->  			ret = -E2BIG;
->  			goto out;
->  		}
+> +	zone_info->empty_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
+> +	if (!zone_info->empty_zones) {
+> +		ret = -ENOMEM;
+> +		goto free_seq_zones;
+> +	}
 > +
->  		/* we need another page for writing out.  Test this
->  		 * before the total_in so we will pull in a new page for
->  		 * the stream end if required
-> @@ -180,33 +215,42 @@ static int zlib_compress_pages(struct list_head *ws,
->  		/* we're all done */
->  		if (workspace->strm.total_in >= len)
->  			break;
-> -
-> -		/* we've read in a full page, get a new one */
-> -		if (workspace->strm.avail_in == 0) {
-> -			if (workspace->strm.total_out > max_out)
-> -				break;
-> -
-> -			bytes_left = len - workspace->strm.total_in;
-> -			kunmap(in_page);
-> -			put_page(in_page);
-> -
-> -			start += PAGE_SIZE;
-> -			in_page = find_get_page(mapping,
-> -						start >> PAGE_SHIFT);
-> -			data_in = kmap(in_page);
-> -			workspace->strm.avail_in = min(bytes_left,
-> -							   PAGE_SIZE);
-> -			workspace->strm.next_in = data_in;
-> -		}
-> +		if (workspace->strm.total_out > max_out)
-> +			break;
->  	}
->  	workspace->strm.avail_in = 0;
-> -	ret = zlib_deflate(&workspace->strm, Z_FINISH);
-> -	zlib_deflateEnd(&workspace->strm);
-> -
-> -	if (ret != Z_STREAM_END) {
-> -		ret = -EIO;
-> -		goto out;
-> +	/* call deflate with Z_FINISH flush parameter providing more output
-> +	 * space but no more input data, until it returns with Z_STREAM_END
-> +	 */
-> +	while (ret != Z_STREAM_END) {
-> +		ret = zlib_deflate(&workspace->strm, Z_FINISH);
-> +		if (ret == Z_STREAM_END)
-> +			break;
-> +		if (ret != Z_OK && ret != Z_BUF_ERROR) {
-> +			zlib_deflateEnd(&workspace->strm);
-> +			ret = -EIO;
-> +			goto out;
-> +		} else if (workspace->strm.avail_out == 0) {
-> +			/* get another page for the stream end */
-> +			kunmap(out_page);
-> +			if (nr_pages == nr_dest_pages) {
-> +				out_page = NULL;
-> +				ret = -E2BIG;
-> +				goto out;
-> +			}
-> +			out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
-> +			if (out_page == NULL) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +			cpage_out = kmap(out_page);
-> +			pages[nr_pages] = out_page;
-> +			nr_pages++;
-> +			workspace->strm.avail_out = PAGE_SIZE;
-> +			workspace->strm.next_out = cpage_out;
+> +	zones = kcalloc(BTRFS_REPORT_NR_ZONES,
+> +			sizeof(struct blk_zone), GFP_KERNEL);
+> +	if (!zones) {
+> +		ret = -ENOMEM;
+> +		goto free_empty_zones;
+> +	}
+> +
+> +	/* Get zones type */
+> +	while (sector < nr_sectors) {
+> +		nr_zones = BTRFS_REPORT_NR_ZONES;
+> +		ret = btrfs_get_dev_zones(device, sector << SECTOR_SHIFT, zones,
+> +					  &nr_zones);
+> +		if (ret)
+> +			goto free_zones;
+> +
+> +		for (i = 0; i < nr_zones; i++) {
+> +			if (zones[i].type == BLK_ZONE_TYPE_SEQWRITE_REQ)
+> +				set_bit(nreported, zone_info->seq_zones);
+> +			if (zones[i].cond == BLK_ZONE_COND_EMPTY)
+> +				set_bit(nreported, zone_info->empty_zones);
+> +			nreported++;
 > +		}
->  	}
-> +	zlib_deflateEnd(&workspace->strm);
->  
->  	if (workspace->strm.total_out >= workspace->strm.total_in) {
->  		ret = -E2BIG;
-> @@ -221,10 +265,6 @@ static int zlib_compress_pages(struct list_head *ws,
->  	if (out_page)
->  		kunmap(out_page);
->  
-> -	if (in_page) {
-> -		kunmap(in_page);
-> -		put_page(in_page);
-> -	}
->  	return ret;
->  }
->  
-> @@ -250,7 +290,7 @@ static int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
->  
->  	workspace->strm.total_out = 0;
->  	workspace->strm.next_out = workspace->buf;
-> -	workspace->strm.avail_out = PAGE_SIZE;
-> +	workspace->strm.avail_out = workspace->buf_size;
->  
->  	/* If it's deflate, and it's got no preset dictionary, then
->  	   we can tell zlib to skip the adler32 check. */
-> @@ -289,7 +329,7 @@ static int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
->  		}
->  
->  		workspace->strm.next_out = workspace->buf;
-> -		workspace->strm.avail_out = PAGE_SIZE;
-> +		workspace->strm.avail_out = workspace->buf_size;
->  
->  		if (workspace->strm.avail_in == 0) {
->  			unsigned long tmp;
-> @@ -340,7 +380,7 @@ static int zlib_decompress(struct list_head *ws, unsigned char *data_in,
->  	workspace->strm.total_in = 0;
->  
->  	workspace->strm.next_out = workspace->buf;
-> -	workspace->strm.avail_out = PAGE_SIZE;
-> +	workspace->strm.avail_out = workspace->buf_size;
->  	workspace->strm.total_out = 0;
->  	/* If it's deflate, and it's got no preset dictionary, then
->  	   we can tell zlib to skip the adler32 check. */
-> @@ -384,7 +424,7 @@ static int zlib_decompress(struct list_head *ws, unsigned char *data_in,
->  			buf_offset = 0;
->  
->  		bytes = min(PAGE_SIZE - pg_offset,
-> -			    PAGE_SIZE - buf_offset);
-> +			    PAGE_SIZE - (buf_offset % PAGE_SIZE));
->  		bytes = min(bytes, bytes_left);
->  
->  		kaddr = kmap_atomic(dest_page);
-> @@ -395,7 +435,7 @@ static int zlib_decompress(struct list_head *ws, unsigned char *data_in,
->  		bytes_left -= bytes;
->  next:
->  		workspace->strm.next_out = workspace->buf;
-> -		workspace->strm.avail_out = PAGE_SIZE;
-> +		workspace->strm.avail_out = workspace->buf_size;
->  	}
->  
->  	if (ret != Z_STREAM_END && bytes_left != 0)
-> 
+> +		sector = zones[nr_zones - 1].start + zones[nr_zones - 1].len;
+> +	}
+> +
+> +	if (nreported != zone_info->nr_zones) {
+> +		btrfs_err_in_rcu(device->fs_info,
+> +				 "inconsistent number of zones on %s (%u / %u)",
+> +				 rcu_str_deref(device->name), nreported,
+> +				 zone_info->nr_zones);
+> +		ret = -EIO;
+> +		goto free_zones;
+> +	}
+> +
+> +	kfree(zones);
+> +
+> +	device->zone_info = zone_info;
+> +
+> +	devstr[0] = 0;
+> +	if (device->fs_info)
+> +		snprintf(devstr, sizeof(devstr), " (device %s)",
+> +			 device->fs_info->sb->s_id);
+> +
+> +	rcu_read_lock();
+> +	pr_info(
+> +"BTRFS info%s: host-%s zoned block device %s, %u zones of %llu sectors",
+> +		devstr,
+> +		bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : "aware",
+> +		rcu_str_deref(device->name), zone_info->nr_zones,
+> +		zone_info->zone_size >> SECTOR_SHIFT);
+> +	rcu_read_unlock();
+> +
+> +	return 0;
+> +
+> +free_zones:
+> +	kfree(zones);
+> +free_empty_zones:
+> +	bitmap_free(zone_info->empty_zones);
+> +free_seq_zones:
+> +	bitmap_free(zone_info->seq_zones);
+> +free_zone_info:
+
+bitmap_free is just a kfree which handles NULL pointers properly, so you only 
+need one goto here for cleaning up the zone_info.  Once that's fixed you can add
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Josef
