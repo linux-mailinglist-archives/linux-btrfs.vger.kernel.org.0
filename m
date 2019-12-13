@@ -2,356 +2,322 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6651611DDD1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 06:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FD211DE7A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Dec 2019 08:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732102AbfLMFhH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 00:37:07 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:43736 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbfLMFhG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 00:37:06 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBD5YGIp155387;
-        Fri, 13 Dec 2019 05:36:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : cc : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=7LCS5+c2UkVY0XW9Z2SDivmk6lk1yb2xcyPQ/IRAmJI=;
- b=Ex5LVAd3HtcD26hlttdHqy0eJNe0/Ydd7hTC6/6I5nz4hn6klrTLtZC16o0sCI5JQmgj
- zSoGSNvXCj0KXgSD2pL/jUFV1/JlQ2RNK+Ir4fQWzQWkkbEN+GOHsH1jSCznOuFH+6LG
- wii3QwVK2Zu5zOlajw5UR8+zwOStOOqGYH2fFYMdHk2Wch17vNbL28H2Dw4agc0ELYRB
- f9/bGaVA0MKKoOeNiug1zjwm3TmxHe2bB5MpW6FcZXWvmoj3d+J6gNWJFTwKRvo4U6kd
- Ik4HIX/CkPsykNU49CQTiPsDJIe1aTiEPC9DjhY3nPvupg+xYQDNBhew0qQTkZ+CVDUy 4g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2wrw4nkv5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Dec 2019 05:36:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBD5Y9sY002431;
-        Fri, 13 Dec 2019 05:36:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2wumk7ec4u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 13 Dec 2019 05:36:58 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBD5as3e008271;
-        Fri, 13 Dec 2019 05:36:54 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Dec 2019 21:36:54 -0800
+        id S1725799AbfLMHQO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 02:16:14 -0500
+Received: from mout.gmx.net ([212.227.15.15]:56463 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbfLMHQN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Dec 2019 02:16:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1576221357;
+        bh=/Qk9QUVk5sdGf+lQn4q8Wk+xe9/JD0wBzSSe3mQDMGg=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Ket22yMvCo1VEZRhJ37OeTLmEyDnbGuMdnx1NsBBTyv9m/Cbj+BD7kwRtguHwDmdk
+         v+F64DklN0gOGtqNnjYbkG2fyfp/+osYzDvEaRPfPA/CtaeyBui4Wj5UjpvTRpqcER
+         zSwHHumptKvJrhmzrqnBMZyZFFt2wiTKWiOZz/sU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.176] ([45.58.38.246]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MatVh-1i7y3L2HxD-00cTl8; Fri, 13
+ Dec 2019 08:15:57 +0100
 Subject: Re: [PATCH 1/6] btrfs: metadata_uuid: fix failed assertion due to
  unsuccessful device scan (reformatted)
-To:     Su Yue <Damenly_Su@gmx.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
+        linux-btrfs@vger.kernel.org
 References: <20191212110132.11063-1-Damenly_Su@gmx.com>
  <20191212110132.11063-2-Damenly_Su@gmx.com>
  <78eab88a-a6be-f87b-34d7-13a1cffbf36b@suse.com>
  <07e99b04-ec0c-f027-079e-b0d3c1e54970@gmx.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-Message-ID: <d0da81b4-801d-cb90-6e15-66905f190930@oracle.com>
-Date:   Fri, 13 Dec 2019 13:36:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+ <d0da81b4-801d-cb90-6e15-66905f190930@oracle.com>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <d972b667-83a6-34a1-0b91-e7c6c7a80bad@gmx.com>
+Date:   Fri, 13 Dec 2019 15:15:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <07e99b04-ec0c-f027-079e-b0d3c1e54970@gmx.com>
+In-Reply-To: <d0da81b4-801d-cb90-6e15-66905f190930@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9469 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912130046
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9469 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912130046
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:z0AVne/zURWdG49JRiEtA3HMzijFVdUPb+UpnXOYwnZFWASP6ug
+ egTjuJTgoE3FGWFC0z7o189OqHAQrF/5YP7G3Mto4w+OqMSuVfljrsbl2domP8+EIA+S9W9
+ ufpWZnji/VDrYXSOIqyXj2ihNMCrz1sinatgDoNArayJnNFp95V8yklx1qNk5l+/DqvIvsM
+ hZnkYVebcCzfTNwrsS3Eg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WBAw8WFQHII=:KWZKU5N/T5tfIarSNltRz+
+ 9njC3pvvISchtgPZRciqDnOm2R2nyeG+c53PnMkuzG1uAmoGybTd8fKiZpfDrytmGYRnN1COl
+ cygw1anXkdqZOg7+wsxvp+sFXSoJ0EXglk6snm7qKxuJu2vbZQ9VKVqTdJHVxyAPu6BDkQjhk
+ 4AW5CI5ZpMeNHblopdyXzb6LOhJjDbJPU5nf6dH1eUPK1oCYxdrEpmxQ15jLIGFK1+j8lUyNE
+ 2V6UI9u2i8Ej1AXc/WrvrZlp+lH+U1Ca1QoggKLWFlSkwUJTUMWDM49KOquXovnyrV0TumtXZ
+ tWYaBoDBiJBHnFyWgafmJIntBEX31AXTLEj8InVdbANcQUP7zWrmHqxjHlwyOwNFjpH8A2af5
+ p3kfdWSncV5rA4FffBG6UAtuVoQpciQYZDfJA1bOBa8f/8WDwvdmw1N2tGkNjgXUpRf15riDh
+ y+UNNKRpz3IEhvTGtXOqQV30SK7Z4b5PhvHpPw5IiHTh66eHbitJgrTThVPiiz4Z0Fh8rgKki
+ /m8cK+290mVMLd3BgoksPxHcRBNNlI+0+RJ1RRN+xbFs2cGR4NNa8RlSMPTcJbkN35wTN5puq
+ 9ddmrJbnGtL1OrvBf9sW99h/rZ3KW/g0zJMW8/HCaXo0Xd7xldiKWxrx1zLjmS3klPxDMbDFs
+ JAXaU+gUc2fZPzLmIZDahKweZrkWA3rDz9WYAapzanfMIJBD0cK6bwcV/DCPcX9lZEMveEdHy
+ 6l4cXOx6d82pZYr5StQcqjYDIwEqq4RJBB8U2HL/eOC16VDNozEA5Tr96DjX35cisyokwwAeH
+ iTWQ6W/zQwv7E0YlT3L0kdAaCUBdznx3AtJ7a1jA5tdmaH80y9ipm8cXsmyVV9YCigjoFIgsW
+ bR8gA+Ib8cY6w2tx/VlOxez1r1Gq50G3ovv+91Y9Qa5zCah6aaP2M5RHyRmX/eF9KBarmeKL7
+ 5VZobg3JkCxb+C/U57nB+eYW2/3PrEHNzth0Y46R0okt6ns9YGeOTx+7i6Kz9C57SrnyZnqok
+ AWaneKRvCz5J7G3IDvHxKjRnvrSq1SGYO+NIx7eomGzi/cEyf+8mrOeE87yfrxDj8E5eqg2xc
+ bv0wx36RgekXhGzLL6wijsMFCEf0Epi9+QLBDQSqQke54GxOfBH7EVjjI87Jwz31BiJpLoswc
+ jzFH/tLU3AOI8OPTMIz7sf6tX9RAu8fXPu+BE764pwW7El5Ho+Td2+OZKAXhwX1+nNqMIVYuX
+ lOfV9jixJp2ijIFogPrM36AbUoUA+YqH1aNZtif1O4bT7L98nw6zS4wjxcUI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-  metadata_uuid code is too confusing, a lot of if and if-nots
-  it should be have been better.
-
-  more below.
-
-On 13/12/19 10:46 AM, Su Yue wrote:
-> On 2019/12/12 10:15 PM, Nikolay Borisov wrote:
->>
->>
->> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
->>
->> <snip>
->>
->>> Acutally, there are two devices in the fs. Device 2 with
->>> FSID_CHANGING_V2 allocated a fs_devices. But, device 1 found the
->>> fs_devices but failed to be added into since fs_devices->opened (
->>
->> It's not clear why device 1 wasn't able to be added to the fs_devices
->> allocated by dev 2. Please elaborate?
->>
->>
-> Sure, of course.
-> 
-> For example.
-> 
-> $cat test.sh
-> ====================================================================
-> img1="/tmp/test1.img"
-> img2="/tmp/test2.img"
-> 
-> [ -f "$img1" ] || fallocate -l 300M "$img1"
-> [ -f "$img2" ] || fallocate -l 300M "$img2"
-> 
-> mkfs.btrfs -f $img1 $img2 2>&1 >/dev/null|| exit 1
-> losetup -D
-> 
-> dmesg -C
-> rmmod btrfs
-> modprobe btrfs
-> 
-> loop1=$(losetup --find --show "$img1")
-> loop2=$(losetup --find --show "$img2")
-
-  Can you explicitly show what devices should be scanned to make the
-  device mount (below) successful. Fist you can cleanup the
-  device list using
-
-    btrfs device --forget
-
-> mount $loop1 /mnt || exit 1
-> umount /mnt
-> ====================================================================
-> 
-> $dmesg
-> ====================================================================
-> [  395.205221] BTRFS: device fsid 5090db22-5e48-4767-8fb7-d037c619c1ee
-> devid 1 transid 5 /dev/loop0 scanned by systemd-udevd (13620)
-> [  395.210773] !!!!!!!!fs_device opened
-> [  395.213875] BTRFS info (device loop0): disk space caching is enabled
-> [  395.214994] BTRFS info (device loop0): has skinny extents
-> [  395.215891] BTRFS info (device loop0): flagging fs with big metadata
-> feature
-> [  395.222639] BTRFS error (device loop0): devid 2 uuid
-> adcc8454-695f-4e1d-bde8-94041b7bf761 is missing
-> [  395.224147] BTRFS error (device loop0): failed to read the system
-> array: -2
-> [  395.246163] !!!!!!!!fs_device opened
-> [  395.338219] BTRFS error (device loop0): open_ctree failed
-> =====================================================================
-> 
-> The line "!!!!!!!!fs_device opened" is handy added by me in debug purpose.
-> 
-> =====================================================================
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -794,6 +794,7 @@ static noinline struct btrfs_device
-> *device_list_add(const char *path,
-> 
->          if (!device) {
->                  if (fs_devices->opened) {
-> +                       pr_info("!!!!!!!!fs_device opened\n");
->                          mutex_unlock(&fs_devices->device_list_mutex);
->                          return ERR_PTR(-EBUSY);
->                  }
-> =====================================================================
-> 
-> To make it more clear. The following is in metadata_uuid situation.
-> Device 1 is without FSID_CHANGING_V2 but has IMCOMPAT_METADATA_UUID.
-> (newer transid).
-> 
-> Device 2 is with FSID_CHANGING_V2 and IMCOMPAT_METADATA_UUID.(Older
-> transid).
-
-How were you able to set both BTRFS_SUPER_FLAG_CHANGING_FSID_V2
-and BTRFS_FEATURE_INCOMPAT_METADATA_UUID on only devid 2 ?
-
-
-> The workflow in misc-tests/034 is
-> 
-> loop1=$(losetup --find --show "$device2")
-> loop2=$(losetup --find --show "$device1")
-> 
-> mount $loop1 /mnt ---> fails here
-> 
-> Assume the fs_devices was allocated by systemd-udevd through
-> btrfs_control_ioctl() path after finish of scanning of device2.
-> 
-> Then:
-> 
-
-In the two threads which are in race (below), the mount thread can't be 
-successful unless -o degraded is used, if it does it means the devid 1 
-is already scanned and for that btrfs_device to be in the
-btrfs_fs_devices list the fsid has to match (does not matter metadata_uuid).
-
-> Thread *mounting device2*            Thread *scanning device1*
-> 
-> 
-> btrfs_mount_root                     btrfs_control_ioctl
-> 
->    mutex_lock(&uuid_mutex);
-> 
->      btrfs_read_disk_super
->      btrfs_scan_one_device
->      --> there is only device2
->      in the fs_devices
-> 
->      btrfs_open_devices
->        fs_devices->opened = 1
->        fs_devices->latest_bdev = device2
-> 
->      mutex_unlock(&uuid_mutex);
-> 
->                                        mutex_lock(&uuid_mutex);
->                                        btrfs_scan_one_device
->                                          btrfs_read_disk_super
-> 
->                                          device_list_add
->                                            found fs_devices
->                                              device = btrfs_find_device
-> 
->                                              rewrite fs_deivces->fsid if
->                                              scanned device1 is newer
->                                               --> Change fs_devices->fsi
->                                                    d to device1->fsid
-> 
->                                            if (!device)
->                                               if(fs_devices->opened)
->                           return -EBUSY
->                                               --> the device1 adding
->                                                   aborts since
->                                                   fs_devices was opened
->                                        mutex_unlock(&uuid_mutex);
->    btrfs_fill_super
->      open_ctree
->         btrfs_read_dev_super(
->         fs_devices->latest_bdev)
->         --> the latest_bdev is device2
-> 
->         assert fs_devices->fsid equals
->         device2's fsid.
->         --> fs_device->fsid was rewritten by
->             the scanning thread
-> 
-> The result is fs_device->fsid is from device1 but super->fsid is from
-> the lastest device2.
-> 
-
-  Oops that's not good. However still not able to image various devices
-  and its fsid to achieve that condition. Is it possible to write a test
-  case? It would help.
-
-Thanks, Anand
-
->>> the thread is doing mount device 1). But device 1's fsid was copied
->>> to fs_devices->fsid then the assertion failed.
->>
->>
->> dev 1 fsid should be copied iff its transid is newer.
->>
-> 
-> Even it was failed to be added into the fs_devices?
-> 
->>>
->>> The solution is that only if a new device was added into a existing
->>> fs_device, then the fs_devices->fsid is allowed to be rewritten.
->>
->> fs_devices->fsid must be re-written by any device which is _newer_ w.r.t
->> to the transid.
->>
-> 
-> Then the assertion failed in above scenario. Just do not update the
-> fs_devices->fsid, let later btrfs_read_sys_array() report the device
-> missing then reject to mount.
-> 
-> Thanks
-> 
->>>
->>> Fixes: 7a62d0f07377 ("btrfs: Handle one more split-brain scenario 
->>> during fsid change")
->>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
->>> ---
->>>   fs/btrfs/volumes.c | 36 +++++++++++++++++++++---------------
->>>   1 file changed, 21 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>> index d8e5560db285..9efa4123c335 100644
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -732,6 +732,9 @@ static noinline struct btrfs_device 
->>> *device_list_add(const char *path,
->>>           BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
->>>       bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
->>>                       BTRFS_SUPER_FLAG_CHANGING_FSID_V2);
->>> +    bool fs_devices_found = false;
->>> +
->>> +    *new_device_added = false;
->>>
->>>       if (fsid_change_in_progress) {
->>>           if (!has_metadata_uuid) {
->>> @@ -772,24 +775,11 @@ static noinline struct btrfs_device 
->>> *device_list_add(const char *path,
->>>
->>>           device = NULL;
->>>       } else {
->>> +        fs_devices_found = true;
->>> +
->>>           mutex_lock(&fs_devices->device_list_mutex);
->>>           device = btrfs_find_device(fs_devices, devid,
->>>                   disk_super->dev_item.uuid, NULL, false);
->>> -
->>> -        /*
->>> -         * If this disk has been pulled into an fs devices created by
->>> -         * a device which had the CHANGING_FSID_V2 flag then replace 
->>> the
->>> -         * metadata_uuid/fsid values of the fs_devices.
->>> -         */
->>> -        if (has_metadata_uuid && fs_devices->fsid_change &&
->>> -            found_transid > fs_devices->latest_generation) {
->>> -            memcpy(fs_devices->fsid, disk_super->fsid,
->>> -                    BTRFS_FSID_SIZE);
->>> -            memcpy(fs_devices->metadata_uuid,
->>> -                    disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->>> -
->>> -            fs_devices->fsid_change = false;
->>> -        }
->>>       }
->>>
->>>       if (!device) {
->>> @@ -912,6 +902,22 @@ static noinline struct btrfs_device 
->>> *device_list_add(const char *path,
->>>           }
->>>       }
->>>
->>> +    /*
->>> +     * If the new added disk has been pulled into an fs devices 
->>> created by
->>> +     * a device which had the CHANGING_FSID_V2 flag then replace the
->>> +     * metadata_uuid/fsid values of the fs_devices.
->>> +     */
->>> +    if (*new_device_added && fs_devices_found &&
->>> +        has_metadata_uuid && fs_devices->fsid_change &&
->>> +        found_transid > fs_devices->latest_generation) {
->>> +        memcpy(fs_devices->fsid, disk_super->fsid,
->>> +               BTRFS_FSID_SIZE);
->>> +        memcpy(fs_devices->metadata_uuid,
->>> +               disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->>> +
->>> +        fs_devices->fsid_change = false;
->>> +    }
->>> +
->>>       /*
->>>        * Unmount does not free the btrfs_device struct but would zero
->>>        * generation along with most of the other members. So just update
->>>
-> 
-
+T24gMjAxOS8xMi8xMyAxOjM2IFBNLCBBbmFuZCBKYWluIHdyb3RlOg0KPiANCj4gDQo+ICDCoG1l
+dGFkYXRhX3V1aWQgY29kZSBpcyB0b28gY29uZnVzaW5nLCBhIGxvdCBvZiBpZiBhbmQgaWYtbm90
+cw0KPiAgwqBpdCBzaG91bGQgYmUgaGF2ZSBiZWVuIGJldHRlci4NCj4gDQoNCkFncmVlZC4gSXQg
+Y29zdGVkIG11Y2ggYnJhaW4gcG93ZXIgb2YgbWluZS4NCg0KPiAgwqBtb3JlIGJlbG93Lg0KPiAN
+Cg0KV2lsbGluZyB0byBhbnN3ZXIgZnJvbSBteSB1bmRlcnN0YW5kaW5nLg0KSWYgc29tZXRoaW5n
+IHdyb25nLCBwbGVhc2UgcG9pbnQgYXQuDQoNCj4gT24gMTMvMTIvMTkgMTA6NDYgQU0sIFN1IFl1
+ZSB3cm90ZToNCj4+IE9uIDIwMTkvMTIvMTIgMTA6MTUgUE0sIE5pa29sYXkgQm9yaXNvdiB3cm90
+ZToNCj4+Pg0KPj4+DQo+Pj4gT24gMTIuMTIuMTkg0LMuIDEzOjAxINGHLiwgZGFtZW5seS5zdUBn
+bWFpbC5jb20gd3JvdGU6DQo+Pj4NCj4+PiA8c25pcD4NCj4+Pg0KPj4+PiBBY3V0YWxseSwgdGhl
+cmUgYXJlIHR3byBkZXZpY2VzIGluIHRoZSBmcy4gRGV2aWNlIDIgd2l0aA0KPj4+PiBGU0lEX0NI
+QU5HSU5HX1YyIGFsbG9jYXRlZCBhIGZzX2RldmljZXMuIEJ1dCwgZGV2aWNlIDEgZm91bmQgdGhl
+DQo+Pj4+IGZzX2RldmljZXMgYnV0IGZhaWxlZCB0byBiZSBhZGRlZCBpbnRvIHNpbmNlIGZzX2Rl
+dmljZXMtPm9wZW5lZCAoDQo+Pj4NCj4+PiBJdCdzIG5vdCBjbGVhciB3aHkgZGV2aWNlIDEgd2Fz
+bid0IGFibGUgdG8gYmUgYWRkZWQgdG8gdGhlIGZzX2RldmljZXMNCj4+PiBhbGxvY2F0ZWQgYnkg
+ZGV2IDIuIFBsZWFzZSBlbGFib3JhdGU/DQo+Pj4NCj4+Pg0KPj4gU3VyZSwgb2YgY291cnNlLg0K
+Pj4NCj4+IEZvciBleGFtcGxlLg0KPj4NCj4+ICRjYXQgdGVzdC5zaA0KPj4gPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0N
+Cj4+IGltZzE9Ii90bXAvdGVzdDEuaW1nIg0KPj4gaW1nMj0iL3RtcC90ZXN0Mi5pbWciDQo+Pg0K
+Pj4gWyAtZiAiJGltZzEiIF0gfHwgZmFsbG9jYXRlIC1sIDMwME0gIiRpbWcxIg0KPj4gWyAtZiAi
+JGltZzIiIF0gfHwgZmFsbG9jYXRlIC1sIDMwME0gIiRpbWcyIg0KPj4NCj4+IG1rZnMuYnRyZnMg
+LWYgJGltZzEgJGltZzIgMj4mMSA+L2Rldi9udWxsfHwgZXhpdCAxDQo+PiBsb3NldHVwIC1EDQo+
+Pg0KPj4gZG1lc2cgLUMNCj4+IHJtbW9kIGJ0cmZzDQo+PiBtb2Rwcm9iZSBidHJmcw0KPj4NCj4+
+IGxvb3AxPSQobG9zZXR1cCAtLWZpbmQgLS1zaG93ICIkaW1nMSIpDQo+PiBsb29wMj0kKGxvc2V0
+dXAgLS1maW5kIC0tc2hvdyAiJGltZzIiKQ0KPiANCj4gIMKgQ2FuIHlvdSBleHBsaWNpdGx5IHNo
+b3cgd2hhdCBkZXZpY2VzIHNob3VsZCBiZSBzY2FubmVkIHRvIG1ha2UgdGhlDQo+ICDCoGRldmlj
+ZSBtb3VudCAoYmVsb3cpIHN1Y2Nlc3NmdWwuIEZpc3QgeW91IGNhbiBjbGVhbnVwIHRoZQ0KPiAg
+wqBkZXZpY2UgbGlzdCB1c2luZw0KPiANCj4gIMKgwqAgYnRyZnMgZGV2aWNlIC0tZm9yZ2V0DQo+
+IA0KDQpUaGFua3MgZm9yIHRoZSB0aXAuDQpUaGUgcHVycG9zZSBvZiBzaW1wbGUgc2NyaXB0IGlz
+IHRvIHNob3cgdGhhdCB0aGVyZQ0KbWF5IGJlIHVuY29tcGxldGVkL3Vuc3VjY2Vzc2Z1bCBkZXZp
+Y2Uocykgc2Nhbm5pbmcgZHVlIHRvDQpmc19kZXZpY2VzLT5vcGVuZWQuIElzIHRoZSBpc3N1ZSBh
+bHJlYWR5IGtub3duPw0KDQo+PiBtb3VudCAkbG9vcDEgL21udCB8fCBleGl0IDENCj4+IHVtb3Vu
+dCAvbW50DQo+PiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ0KPj4NCj4+ICRkbWVzZw0KPj4gPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4+
+IFvCoCAzOTUuMjA1MjIxXSBCVFJGUzogZGV2aWNlIGZzaWQgNTA5MGRiMjItNWU0OC00NzY3LThm
+YjctZDAzN2M2MTljMWVlDQo+PiBkZXZpZCAxIHRyYW5zaWQgNSAvZGV2L2xvb3AwIHNjYW5uZWQg
+Ynkgc3lzdGVtZC11ZGV2ZCAoMTM2MjApDQo+PiBbwqAgMzk1LjIxMDc3M10gISEhISEhISFmc19k
+ZXZpY2Ugb3BlbmVkDQo+PiBbwqAgMzk1LjIxMzg3NV0gQlRSRlMgaW5mbyAoZGV2aWNlIGxvb3Aw
+KTogZGlzayBzcGFjZSBjYWNoaW5nIGlzIGVuYWJsZWQNCj4+IFvCoCAzOTUuMjE0OTk0XSBCVFJG
+UyBpbmZvIChkZXZpY2UgbG9vcDApOiBoYXMgc2tpbm55IGV4dGVudHMNCj4+IFvCoCAzOTUuMjE1
+ODkxXSBCVFJGUyBpbmZvIChkZXZpY2UgbG9vcDApOiBmbGFnZ2luZyBmcyB3aXRoIGJpZyBtZXRh
+ZGF0YQ0KPj4gZmVhdHVyZQ0KPj4gW8KgIDM5NS4yMjI2MzldIEJUUkZTIGVycm9yIChkZXZpY2Ug
+bG9vcDApOiBkZXZpZCAyIHV1aWQNCj4+IGFkY2M4NDU0LTY5NWYtNGUxZC1iZGU4LTk0MDQxYjdi
+Zjc2MSBpcyBtaXNzaW5nDQo+PiBbwqAgMzk1LjIyNDE0N10gQlRSRlMgZXJyb3IgKGRldmljZSBs
+b29wMCk6IGZhaWxlZCB0byByZWFkIHRoZSBzeXN0ZW0NCj4+IGFycmF5OiAtMg0KPj4gW8KgIDM5
+NS4yNDYxNjNdICEhISEhISEhZnNfZGV2aWNlIG9wZW5lZA0KPj4gW8KgIDM5NS4zMzgyMTldIEJU
+UkZTIGVycm9yIChkZXZpY2UgbG9vcDApOiBvcGVuX2N0cmVlIGZhaWxlZA0KPj4gPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQo+Pg0KPj4gVGhlIGxpbmUgIiEhISEhISEhZnNfZGV2aWNlIG9wZW5lZCIgaXMgaGFuZHkg
+YWRkZWQgYnkgbWUgaW4gZGVidWcgDQo+PiBwdXJwb3NlLg0KPj4NCj4+ID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0K
+Pj4gLS0tIGEvZnMvYnRyZnMvdm9sdW1lcy5jDQo+PiArKysgYi9mcy9idHJmcy92b2x1bWVzLmMN
+Cj4+IEBAIC03OTQsNiArNzk0LDcgQEAgc3RhdGljIG5vaW5saW5lIHN0cnVjdCBidHJmc19kZXZp
+Y2UNCj4+ICpkZXZpY2VfbGlzdF9hZGQoY29uc3QgY2hhciAqcGF0aCwNCj4+DQo+PiDCoMKgwqDC
+oMKgwqDCoMKgIGlmICghZGV2aWNlKSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBpZiAoZnNfZGV2aWNlcy0+b3BlbmVkKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcHJfaW5mbygiISEhISEhISFmc19kZXZpY2Ugb3BlbmVk
+XG4iKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBtdXRleF91bmxvY2soJmZzX2RldmljZXMtPmRldmljZV9saXN0X211dGV4KTsNCj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gRVJSX1BU
+UigtRUJVU1kpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4gPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo+Pg0KPj4gVG8gbWFrZSBpdCBtb3JlIGNsZWFyLiBUaGUgZm9sbG93aW5nIGlz
+IGluIG1ldGFkYXRhX3V1aWQgc2l0dWF0aW9uLg0KPj4gRGV2aWNlIDEgaXMgd2l0aG91dCBGU0lE
+X0NIQU5HSU5HX1YyIGJ1dCBoYXMgSU1DT01QQVRfTUVUQURBVEFfVVVJRC4NCj4+IChuZXdlciB0
+cmFuc2lkKS4NCj4+DQo+PiBEZXZpY2UgMiBpcyB3aXRoIEZTSURfQ0hBTkdJTkdfVjIgYW5kIElN
+Q09NUEFUX01FVEFEQVRBX1VVSUQuKE9sZGVyDQo+PiB0cmFuc2lkKS4NCj4gDQo+IEhvdyB3ZXJl
+IHlvdSBhYmxlIHRvIHNldCBGU0lEX0NIQU5HSU5HX1YyDQo+IGFuZCBCVFJGU19GRUFUVVJFX0lO
+Q09NUEFUX01FVEFEQVRBX1VVSUQgb24gb25seSBkZXZpZCAyID8NCj4gDQo+IA0KVGhlIGRldmlj
+ZTIgaXMgc2ltdWxhdGVkIHRvIGJlIHRoZSBkZXZpY2UgZmFpbGVkIHRvIHN5bmMgZHVlDQp0byBz
+b21lIGV4cGVjdGVkIHJlYXNvbiAocG93ZXIgbG9zcykuDQoNCm1rZnMgb24gdHdvIGRldmljZXMs
+IHVzZSB2NS40IHByb2dzL2J0cmZzdHVuZSAtbSAkZGV2aWNlLg0KVGhlbiBib3RoIHR3byBkZXZp
+Y2VzIGJvdGggaGF2ZSB0aGUgQlRSRlNfRkVBVFVSRV9JTkNPTVBBVF9NRVRBREFUQV9VVUlELg0K
+UGxheSBzb21lIHRyaWNrcyBpbiBidHJmc3R1bmUuYyB0byBhdm9pZCBmaW5hbCBzdXBlciBibG9j
+aw0Kd3JpdGUgb24gb25lIGRlaXZjZS4gTGlrZSB0aGUgdWdseSBjb2RlIHRvIGRlbGV0ZSB0aGUg
+ZGV2aWNlOg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQpkaWZmIC0tZ2l0IGEvYnRyZnN0dW5lLmMgYi9idHJm
+c3R1bmUuYw0KaW5kZXggYWZhM2FhZTMuLmY2NzhiOTc4IDEwMDY0NA0KLS0tIGEvYnRyZnN0dW5l
+LmMNCisrKyBiL2J0cmZzdHVuZS5jDQpAQCAtMTAxLDEyICsxMDEsMTQgQEAgc3RhdGljIGludCBz
+ZXRfbWV0YWRhdGFfdXVpZChzdHJ1Y3QgYnRyZnNfcm9vdCANCipyb290LCBjb25zdCBjaGFyICp1
+dWlkX3N0cmluZykNCiAgICAgICAgIHN0cnVjdCBidHJmc19zdXBlcl9ibG9jayAqZGlza19zdXBl
+cjsNCiAgICAgICAgIHV1aWRfdCBuZXdfZnNpZCwgdW51c2VkMSwgdW51c2VkMjsNCiAgICAgICAg
+IHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zOw0KKyAgICAgICBzdHJ1Y3QgYnRyZnNf
+ZGV2aWNlICpkZXYsICpuZXh0Ow0KICAgICAgICAgYm9vbCBuZXdfdXVpZCA9IHRydWU7DQogICAg
+ICAgICB1NjQgaW5jb21wYXRfZmxhZ3M7DQogICAgICAgICBib29sIHV1aWRfY2hhbmdlZDsNCiAg
+ICAgICAgIHU2NCBzdXBlcl9mbGFnczsNCiAgICAgICAgIGludCByZXQ7DQoNCiAgICAgICAgIGRp
+c2tfc3VwZXIgPSByb290LT5mc19pbmZvLT5zdXBlcl9jb3B5Ow0KICAgICAgICAgc3VwZXJfZmxh
+Z3MgPSBidHJmc19zdXBlcl9mbGFncyhkaXNrX3N1cGVyKTsNCiAgICAgICAgIGluY29tcGF0X2Zs
+YWdzID0gYnRyZnNfc3VwZXJfaW5jb21wYXRfZmxhZ3MoZGlza19zdXBlcik7DQpAQCAtMTcwLDYg
+KzE3MiwxNCBAQCBzdGF0aWMgaW50IHNldF9tZXRhZGF0YV91dWlkKHN0cnVjdCBidHJmc19yb290
+IA0KKnJvb3QsIGNvbnN0IGNoYXIgKnV1aWRfc3RyaW5nKQ0KICAgICAgICAgICAgICAgICByZXR1
+cm4gMDsNCiAgICAgICAgIH0NCg0KKyAgICAgICBsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUoZGV2
+LCBuZXh0LCANCiZyb290LT5mc19pbmZvLT5mc19kZXZpY2VzLT5kZXZpY2VzLA0KKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZGV2X2xpc3QpIHsNCisgICAgICAgICAgICAgICBpZiAo
+ZGV2LT5kZXZpZCA9PSAyKSB7DQorICAgICAgICAgICAgICAgICAgICAgICBmc3luYyhkZXYtPmZk
+KTsNCisgICAgICAgICAgICAgICAgICAgICAgIGxpc3RfZGVsX2luaXQoJmRldi0+ZGV2X2xpc3Qp
+Ow0KKyAgICAgICAgICAgICAgIH0NCisgICAgICAgfQ0KKz09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQoNCkNvbXBpbGUg
+YWdhaW4uIGNhbGwgYnRyZnN0dW5lIC1tIGFnYWluLg0KVGhlbiB3ZSBnZXQgYSBkZXZpY2Ugd2l0
+aA0KQlRSRlNfRkVBVFVSRV9JTkNPTVBBVF9NRVRBREFUQV9VVUlEIGFuZCBGU0lEX0NIQU5HSU5H
+X1YyLg0KDQo+PiBUaGUgd29ya2Zsb3cgaW4gbWlzYy10ZXN0cy8wMzQgaXMNCj4+DQo+PiBsb29w
+MT0kKGxvc2V0dXAgLS1maW5kIC0tc2hvdyAiJGRldmljZTIiKQ0KPj4gbG9vcDI9JChsb3NldHVw
+IC0tZmluZCAtLXNob3cgIiRkZXZpY2UxIikNCj4+DQo+PiBtb3VudCAkbG9vcDEgL21udCAtLS0+
+IGZhaWxzIGhlcmUNCj4+DQo+PiBBc3N1bWUgdGhlIGZzX2RldmljZXMgd2FzIGFsbG9jYXRlZCBi
+eSBzeXN0ZW1kLXVkZXZkIHRocm91Z2gNCj4+IGJ0cmZzX2NvbnRyb2xfaW9jdGwoKSBwYXRoIGFm
+dGVyIGZpbmlzaCBvZiBzY2FubmluZyBvZiBkZXZpY2UyLg0KPj4NCj4+IFRoZW46DQo+Pg0KPiAN
+Cj4gSW4gdGhlIHR3byB0aHJlYWRzIHdoaWNoIGFyZSBpbiByYWNlIChiZWxvdyksIHRoZSBtb3Vu
+dCB0aHJlYWQgY2FuJ3QgYmUgDQo+IHN1Y2Nlc3NmdWwgdW5sZXNzIC1vIGRlZ3JhZGVkIGlzIHVz
+ZWQsIGlmIGl0IGRvZXMgaXQgbWVhbnMgdGhlIGRldmlkIDEgDQoNClJpZ2h0Li4gVGhlIGRtZXNn
+IHJlcG9ydHMgdGhlIGRldmljZSAxIGlzIG1pc3NpbmcuDQoNCj4gaXMgYWxyZWFkeSBzY2FubmVk
+IGFuZCBmb3IgdGhhdCBidHJmc19kZXZpY2UgdG8gYmUgaW4gdGhlDQo+IGJ0cmZzX2ZzX2Rldmlj
+ZXMgbGlzdCB0aGUgZnNpZCBoYXMgdG8gbWF0Y2ggKGRvZXMgbm90IG1hdHRlciANCj4gbWV0YWRh
+dGFfdXVpZCkuDQoNClNvcnJ5LCBJIGRvZXNuJ3QgbWFrZSBtdWNoIGNsZWFyIHdoYXQgeW91IG1l
+YW4uIEluIHNpbWlsYXIgYnV0IG5vIA0KbWV0YWRhdGFfdXVpZCBzaXR1YXRpb24sIG1vdW50IHdp
+bGwgZmFpbCB0b28gYnV0IHRoZSBhc3NlcnRpb24gd29uJ3QNCmZhaWwgb2YgY291cnNlLiBUaGUg
+ZGV2aWNlMSB3YXMgc2Nhbm5lZCBidXQgbm90IGFkZGVkIGludG8gdGhlDQpmc19kZXZpY2VzKGFs
+cmVhZHkgZm91bmQpIHNpbmNlIHRoZSBmc19kZXZpY2VzIHdhcyBvcGVuZWQgYnkgdGhlDQptb3Vu
+dGluZyB0aHJlYWQuDQoNCj4gDQo+PiBUaHJlYWQgKm1vdW50aW5nIGRldmljZTIqwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBUaHJlYWQgKnNjYW5uaW5nIGRldmljZTEqDQo+Pg0KPj4NCj4+IGJ0cmZz
+X21vdW50X3Jvb3TCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZz
+X2NvbnRyb2xfaW9jdGwNCj4+DQo+PiDCoMKgIG11dGV4X2xvY2soJnV1aWRfbXV0ZXgpOw0KPj4N
+Cj4+IMKgwqDCoMKgIGJ0cmZzX3JlYWRfZGlza19zdXBlcg0KPj4gwqDCoMKgwqAgYnRyZnNfc2Nh
+bl9vbmVfZGV2aWNlDQo+PiDCoMKgwqDCoCAtLT4gdGhlcmUgaXMgb25seSBkZXZpY2UyDQo+PiDC
+oMKgwqDCoCBpbiB0aGUgZnNfZGV2aWNlcw0KPj4NCj4+IMKgwqDCoMKgIGJ0cmZzX29wZW5fZGV2
+aWNlcw0KPj4gwqDCoMKgwqDCoMKgIGZzX2RldmljZXMtPm9wZW5lZCA9IDENCj4+IMKgwqDCoMKg
+wqDCoCBmc19kZXZpY2VzLT5sYXRlc3RfYmRldiA9IGRldmljZTINCj4+DQo+PiDCoMKgwqDCoCBt
+dXRleF91bmxvY2soJnV1aWRfbXV0ZXgpOw0KPj4NCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbXV0
+ZXhfbG9jaygmdXVpZF9tdXRleCk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3NjYW5f
+b25lX2RldmljZQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfcmVhZF9kaXNrX3N1
+cGVyDQo+Pg0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2aWNlX2xpc3RfYWRkDQo+PiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZm91bmQgZnNfZGV2aWNlcw0KPj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZpY2UgPSBidHJmc19maW5kX2RldmljZQ0KPj4NCj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV3cml0ZSBmc19kZWl2Y2VzLT5mc2lk
+IGlmDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNjYW5uZWQgZGV2aWNlMSBp
+cyBuZXdlcg0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC0tPiBDaGFuZ2Ug
+ZnNfZGV2aWNlcy0+ZnNpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGQgdG8gZGV2aWNlMS0+ZnNpZA0KPj4NCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBpZiAoIWRldmljZSkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
+Zihmc19kZXZpY2VzLT5vcGVuZWQpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVCVVNZDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgLS0+IHRoZSBkZXZpY2UxIGFkZGluZw0KPj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYWJvcnRzIHNpbmNlDQo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmc19kZXZpY2VzIHdhcyBvcGVuZWQNCj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgbXV0ZXhfdW5sb2NrKCZ1dWlkX211dGV4KTsNCj4+IMKgwqAgYnRy
+ZnNfZmlsbF9zdXBlcg0KPj4gwqDCoMKgwqAgb3Blbl9jdHJlZQ0KPj4gwqDCoMKgwqDCoMKgwqAg
+YnRyZnNfcmVhZF9kZXZfc3VwZXIoDQo+PiDCoMKgwqDCoMKgwqDCoCBmc19kZXZpY2VzLT5sYXRl
+c3RfYmRldikNCj4+IMKgwqDCoMKgwqDCoMKgIC0tPiB0aGUgbGF0ZXN0X2JkZXYgaXMgZGV2aWNl
+Mg0KPj4NCj4+IMKgwqDCoMKgwqDCoMKgIGFzc2VydCBmc19kZXZpY2VzLT5mc2lkIGVxdWFscw0K
+Pj4gwqDCoMKgwqDCoMKgwqAgZGV2aWNlMidzIGZzaWQuDQo+PiDCoMKgwqDCoMKgwqDCoCAtLT4g
+ZnNfZGV2aWNlLT5mc2lkIHdhcyByZXdyaXR0ZW4gYnkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgdGhlIHNjYW5uaW5nIHRocmVhZA0KPj4NCj4+IFRoZSByZXN1bHQgaXMgZnNfZGV2aWNlLT5m
+c2lkIGlzIGZyb20gZGV2aWNlMSBidXQgc3VwZXItPmZzaWQgaXMgZnJvbQ0KPj4gdGhlIGxhc3Rl
+c3QgZGV2aWNlMi4NCj4+DQo+IA0KPiAgwqBPb3BzIHRoYXQncyBub3QgZ29vZC4gSG93ZXZlciBz
+dGlsbCBub3QgYWJsZSB0byBpbWFnZSB2YXJpb3VzIGRldmljZXMNCj4gIMKgYW5kIGl0cyBmc2lk
+IHRvIGFjaGlldmUgdGhhdCBjb25kaXRpb24uIElzIGl0IHBvc3NpYmxlIHRvIHdyaXRlIGEgdGVz
+dA0KPiAgwqBjYXNlPyBJdCB3b3VsZCBoZWxwLg0KPiANCkl0IGRpZCBoYXBwZW5lZCBpbiBteSB0
+ZXN0IGVudmlyb25tZW50Li4gWW91IGNhbiB0cnkgbWlzYy10ZXN0cy8wMzQgDQphYm91dCAyMCB0
+aW1lcyBvbiB2NS40IHByb2dzIGFuZCB2NS41LXJjMSBrZXJuZWwuIEFzIGZvciB0aGUgdGVzdCBj
+YXNlLA0Kd2lsbCBnaXZlIGEgdHJ5Lg0KDQpUaGFua3MNCj4gVGhhbmtzLCBBbmFuZA0KPiANCj4+
+Pj4gdGhlIHRocmVhZCBpcyBkb2luZyBtb3VudCBkZXZpY2UgMSkuIEJ1dCBkZXZpY2UgMSdzIGZz
+aWQgd2FzIGNvcGllZA0KPj4+PiB0byBmc19kZXZpY2VzLT5mc2lkIHRoZW4gdGhlIGFzc2VydGlv
+biBmYWlsZWQuDQo+Pj4NCj4+Pg0KPj4+IGRldiAxIGZzaWQgc2hvdWxkIGJlIGNvcGllZCBpZmYg
+aXRzIHRyYW5zaWQgaXMgbmV3ZXIuDQo+Pj4NCj4+DQo+PiBFdmVuIGl0IHdhcyBmYWlsZWQgdG8g
+YmUgYWRkZWQgaW50byB0aGUgZnNfZGV2aWNlcz8NCj4+DQo+Pj4+DQo+Pj4+IFRoZSBzb2x1dGlv
+biBpcyB0aGF0IG9ubHkgaWYgYSBuZXcgZGV2aWNlIHdhcyBhZGRlZCBpbnRvIGEgZXhpc3RpbmcN
+Cj4+Pj4gZnNfZGV2aWNlLCB0aGVuIHRoZSBmc19kZXZpY2VzLT5mc2lkIGlzIGFsbG93ZWQgdG8g
+YmUgcmV3cml0dGVuLg0KPj4+DQo+Pj4gZnNfZGV2aWNlcy0+ZnNpZCBtdXN0IGJlIHJlLXdyaXR0
+ZW4gYnkgYW55IGRldmljZSB3aGljaCBpcyBfbmV3ZXJfIHcuci50DQo+Pj4gdG8gdGhlIHRyYW5z
+aWQuDQo+Pj4NCj4+DQo+PiBUaGVuIHRoZSBhc3NlcnRpb24gZmFpbGVkIGluIGFib3ZlIHNjZW5h
+cmlvLiBKdXN0IGRvIG5vdCB1cGRhdGUgdGhlDQo+PiBmc19kZXZpY2VzLT5mc2lkLCBsZXQgbGF0
+ZXIgYnRyZnNfcmVhZF9zeXNfYXJyYXkoKSByZXBvcnQgdGhlIGRldmljZQ0KPj4gbWlzc2luZyB0
+aGVuIHJlamVjdCB0byBtb3VudC4NCj4+DQo+PiBUaGFua3MNCj4+DQo+Pj4+DQo+Pj4+IEZpeGVz
+OiA3YTYyZDBmMDczNzcgKCJidHJmczogSGFuZGxlIG9uZSBtb3JlIHNwbGl0LWJyYWluIHNjZW5h
+cmlvIA0KPj4+PiBkdXJpbmcgZnNpZCBjaGFuZ2UiKQ0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBTdSBZ
+dWUgPERhbWVubHlfU3VAZ214LmNvbT4NCj4+Pj4gLS0tDQo+Pj4+IMKgIGZzL2J0cmZzL3ZvbHVt
+ZXMuYyB8IDM2ICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLQ0KPj4+PiDCoCAx
+IGZpbGUgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pDQo+Pj4+DQo+
+Pj4+IGRpZmYgLS1naXQgYS9mcy9idHJmcy92b2x1bWVzLmMgYi9mcy9idHJmcy92b2x1bWVzLmMN
+Cj4+Pj4gaW5kZXggZDhlNTU2MGRiMjg1Li45ZWZhNDEyM2MzMzUgMTAwNjQ0DQo+Pj4+IC0tLSBh
+L2ZzL2J0cmZzL3ZvbHVtZXMuYw0KPj4+PiArKysgYi9mcy9idHJmcy92b2x1bWVzLmMNCj4+Pj4g
+QEAgLTczMiw2ICs3MzIsOSBAQCBzdGF0aWMgbm9pbmxpbmUgc3RydWN0IGJ0cmZzX2RldmljZSAN
+Cj4+Pj4gKmRldmljZV9saXN0X2FkZChjb25zdCBjaGFyICpwYXRoLA0KPj4+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgQlRSRlNfRkVBVFVSRV9JTkNPTVBBVF9NRVRBREFUQV9VVUlEKTsNCj4+Pj4gwqDC
+oMKgwqDCoCBib29sIGZzaWRfY2hhbmdlX2luX3Byb2dyZXNzID0gKGJ0cmZzX3N1cGVyX2ZsYWdz
+KGRpc2tfc3VwZXIpICYNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIEJUUkZTX1NVUEVSX0ZMQUdfQ0hBTkdJTkdfRlNJRF9WMik7DQo+Pj4+ICvCoMKgwqAg
+Ym9vbCBmc19kZXZpY2VzX2ZvdW5kID0gZmFsc2U7DQo+Pj4+ICsNCj4+Pj4gK8KgwqDCoCAqbmV3
+X2RldmljZV9hZGRlZCA9IGZhbHNlOw0KPj4+Pg0KPj4+PiDCoMKgwqDCoMKgIGlmIChmc2lkX2No
+YW5nZV9pbl9wcm9ncmVzcykgew0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFoYXNfbWV0
+YWRhdGFfdXVpZCkgew0KPj4+PiBAQCAtNzcyLDI0ICs3NzUsMTEgQEAgc3RhdGljIG5vaW5saW5l
+IHN0cnVjdCBidHJmc19kZXZpY2UgDQo+Pj4+ICpkZXZpY2VfbGlzdF9hZGQoY29uc3QgY2hhciAq
+cGF0aCwNCj4+Pj4NCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGRldmljZSA9IE5VTEw7DQo+Pj4+
+IMKgwqDCoMKgwqAgfSBlbHNlIHsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGZzX2RldmljZXNfZm91
+bmQgPSB0cnVlOw0KPj4+PiArDQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBtdXRleF9sb2NrKCZm
+c19kZXZpY2VzLT5kZXZpY2VfbGlzdF9tdXRleCk7DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBk
+ZXZpY2UgPSBidHJmc19maW5kX2RldmljZShmc19kZXZpY2VzLCBkZXZpZCwNCj4+Pj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkaXNrX3N1cGVyLT5kZXZfaXRlbS51dWlkLCBO
+VUxMLCBmYWxzZSk7DQo+Pj4+IC0NCj4+Pj4gLcKgwqDCoMKgwqDCoMKgIC8qDQo+Pj4+IC3CoMKg
+wqDCoMKgwqDCoMKgICogSWYgdGhpcyBkaXNrIGhhcyBiZWVuIHB1bGxlZCBpbnRvIGFuIGZzIGRl
+dmljZXMgY3JlYXRlZCBieQ0KPj4+PiAtwqDCoMKgwqDCoMKgwqDCoCAqIGEgZGV2aWNlIHdoaWNo
+IGhhZCB0aGUgQ0hBTkdJTkdfRlNJRF9WMiBmbGFnIHRoZW4gDQo+Pj4+IHJlcGxhY2UgdGhlDQo+
+Pj4+IC3CoMKgwqDCoMKgwqDCoMKgICogbWV0YWRhdGFfdXVpZC9mc2lkIHZhbHVlcyBvZiB0aGUg
+ZnNfZGV2aWNlcy4NCj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqAgKi8NCj4+Pj4gLcKgwqDCoMKgwqDC
+oMKgIGlmIChoYXNfbWV0YWRhdGFfdXVpZCAmJiBmc19kZXZpY2VzLT5mc2lkX2NoYW5nZSAmJg0K
+Pj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmb3VuZF90cmFuc2lkID4gZnNfZGV2aWNlcy0+
+bGF0ZXN0X2dlbmVyYXRpb24pIHsNCj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbWVtY3B5
+KGZzX2RldmljZXMtPmZzaWQsIGRpc2tfc3VwZXItPmZzaWQsDQo+Pj4+IC3CoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GU0lEX1NJWkUpOw0KPj4+PiAtwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBtZW1jcHkoZnNfZGV2aWNlcy0+bWV0YWRhdGFfdXVpZCwNCj4+Pj4g
+LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRpc2tfc3VwZXItPm1ldGFk
+YXRhX3V1aWQsIEJUUkZTX0ZTSURfU0laRSk7DQo+Pj4+IC0NCj4+Pj4gLcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgZnNfZGV2aWNlcy0+ZnNpZF9jaGFuZ2UgPSBmYWxzZTsNCj4+Pj4gLcKgwqDCoMKg
+wqDCoMKgIH0NCj4+Pj4gwqDCoMKgwqDCoCB9DQo+Pj4+DQo+Pj4+IMKgwqDCoMKgwqAgaWYgKCFk
+ZXZpY2UpIHsNCj4+Pj4gQEAgLTkxMiw2ICs5MDIsMjIgQEAgc3RhdGljIG5vaW5saW5lIHN0cnVj
+dCBidHJmc19kZXZpY2UgDQo+Pj4+ICpkZXZpY2VfbGlzdF9hZGQoY29uc3QgY2hhciAqcGF0aCwN
+Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+Pj4gwqDCoMKgwqDCoCB9DQo+Pj4+DQo+Pj4+
+ICvCoMKgwqAgLyoNCj4+Pj4gK8KgwqDCoMKgICogSWYgdGhlIG5ldyBhZGRlZCBkaXNrIGhhcyBi
+ZWVuIHB1bGxlZCBpbnRvIGFuIGZzIGRldmljZXMgDQo+Pj4+IGNyZWF0ZWQgYnkNCj4+Pj4gK8Kg
+wqDCoMKgICogYSBkZXZpY2Ugd2hpY2ggaGFkIHRoZSBDSEFOR0lOR19GU0lEX1YyIGZsYWcgdGhl
+biByZXBsYWNlIHRoZQ0KPj4+PiArwqDCoMKgwqAgKiBtZXRhZGF0YV91dWlkL2ZzaWQgdmFsdWVz
+IG9mIHRoZSBmc19kZXZpY2VzLg0KPj4+PiArwqDCoMKgwqAgKi8NCj4+Pj4gK8KgwqDCoCBpZiAo
+Km5ld19kZXZpY2VfYWRkZWQgJiYgZnNfZGV2aWNlc19mb3VuZCAmJg0KPj4+PiArwqDCoMKgwqDC
+oMKgwqAgaGFzX21ldGFkYXRhX3V1aWQgJiYgZnNfZGV2aWNlcy0+ZnNpZF9jaGFuZ2UgJiYNCj4+
+Pj4gK8KgwqDCoMKgwqDCoMKgIGZvdW5kX3RyYW5zaWQgPiBmc19kZXZpY2VzLT5sYXRlc3RfZ2Vu
+ZXJhdGlvbikgew0KPj4+PiArwqDCoMKgwqDCoMKgwqAgbWVtY3B5KGZzX2RldmljZXMtPmZzaWQs
+IGRpc2tfc3VwZXItPmZzaWQsDQo+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJU
+UkZTX0ZTSURfU0laRSk7DQo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBtZW1jcHkoZnNfZGV2aWNlcy0+
+bWV0YWRhdGFfdXVpZCwNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGlza19z
+dXBlci0+bWV0YWRhdGFfdXVpZCwgQlRSRlNfRlNJRF9TSVpFKTsNCj4+Pj4gKw0KPj4+PiArwqDC
+oMKgwqDCoMKgwqAgZnNfZGV2aWNlcy0+ZnNpZF9jaGFuZ2UgPSBmYWxzZTsNCj4+Pj4gK8KgwqDC
+oCB9DQo+Pj4+ICsNCj4+Pj4gwqDCoMKgwqDCoCAvKg0KPj4+PiDCoMKgwqDCoMKgwqAgKiBVbm1v
+dW50IGRvZXMgbm90IGZyZWUgdGhlIGJ0cmZzX2RldmljZSBzdHJ1Y3QgYnV0IHdvdWxkIHplcm8N
+Cj4+Pj4gwqDCoMKgwqDCoMKgICogZ2VuZXJhdGlvbiBhbG9uZyB3aXRoIG1vc3Qgb2YgdGhlIG90
+aGVyIG1lbWJlcnMuIFNvIGp1c3QgDQo+Pj4+IHVwZGF0ZQ0KPj4+Pg0KPj4NCj4gDQoNCg==
