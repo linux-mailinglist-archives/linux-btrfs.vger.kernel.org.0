@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 579A411EF1B
+	by mail.lfdr.de (Postfix) with ESMTP id E112111EF1C
 	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbfLNAWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726801AbfLNAWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Fri, 13 Dec 2019 19:22:43 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:41457 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbfLNAWm (ORCPT
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:39429 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbfLNAWm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 13 Dec 2019 19:22:42 -0500
-Received: by mail-pf1-f194.google.com with SMTP id s18so2322530pfd.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2019 16:22:41 -0800 (PST)
+Received: by mail-pf1-f193.google.com with SMTP id 2so2322943pfx.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2019 16:22:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=zNYgLr7J7prnwLdqLWVK7cm4anvykXFm1bcfD80vXWk=;
-        b=AACM07v4fiWuJVDEgybIRatnGVJrGDVlT8j5WFUngAotxqor8/OeuxE6UTieC2Ado6
-         dj/voBQx/BAs6azo/sjxyoIdMAa5LfXyvAQnKqSRkv6oaC8v6RqwqziuKt0tR2E/ewxO
-         tQV5easM1SZtFn5nNJ3rVH6uR/3xJGBuJX56+wMyUkhxJ5KA9WoT0ZlQaKVFWimsYDCd
-         x/UJzIr1VOdDN1yfzTjk4sEHCp2df7nHd5j6rfZUsrTS5hga8gmI1wxG0rbOMdiZjsya
-         L3gM3iZbD0kUMrqbYSTBoWbenTaBa/4WpIVczR3lAqLLJPEhsGp7HDwSf0ilXplb8oqo
-         jVUg==
-X-Gm-Message-State: APjAAAX2qpwKaj5M7WuVWKq44ELdtj5xFkZP6NxfiVUucNIom12mw0wg
-        5mqAHxUU+7jOY8Bzv3Ws2FU=
-X-Google-Smtp-Source: APXvYqxDC5w5woFdk0n2LT8veHvAGf7lJZy2s4XdqWJGApZ7yQ9KRZ3PnOrBEevRMX2wbuc8UcXyoQ==
-X-Received: by 2002:a62:e210:: with SMTP id a16mr2599344pfi.123.1576282961098;
-        Fri, 13 Dec 2019 16:22:41 -0800 (PST)
+        bh=fUZVRg2nTO/Zhj7JABWNqWu/8imYrkGILIZvXJuUg3o=;
+        b=jk76zNBgc/r2+zffv2WesO5VOzg2Pa6PIb0EScZFy71mPTIBZTM7xbG40Ytq/uxjwl
+         uekvQs+lvuueXArNFMFu/cu+VSiBh5LhEVWDRLLoymO+vGl/YOzZMMIFSHkhuPkpzKhA
+         wx6Pp8xfU7IPbpfFl7JCnQSBSfxlRXtDj2HGHzoKwtScc3D9ySWWEwMRRnA/KJ4blIbX
+         2ATrYz8MPFbEppEqyDHmUy6beLkKSAJaP4JbGpNWHBIdC7F9+AfQg/usB8ZzWMNmWeJ4
+         B4eYrm8Ere7KHEogH0dC0FP1C7wSSiC06txXfsuhHqeBJa8p2l2IGWa2A8Sb9UfgKu8P
+         17yw==
+X-Gm-Message-State: APjAAAUUskDySB/FsjDZjQT1TCA+QsHC3HLo32DWInlqX48cXQO2Ebjx
+        jjIVDdxBlEmI1MB81UWxRAI=
+X-Google-Smtp-Source: APXvYqyKzbd1mEJ93FyIU8q3lw2iE7doxIskLsaKnYjTaz73ODEcGhIK5TeOhLXhhTSjAiQopAHXEA==
+X-Received: by 2002:a63:6704:: with SMTP id b4mr2655797pgc.424.1576282962124;
+        Fri, 13 Dec 2019 16:22:42 -0800 (PST)
 Received: from dennisz-mbp.thefacebook.com ([199.201.64.138])
-        by smtp.gmail.com with ESMTPSA id m12sm11911430pgr.87.2019.12.13.16.22.40
+        by smtp.gmail.com with ESMTPSA id m12sm11911430pgr.87.2019.12.13.16.22.41
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 13 Dec 2019 16:22:40 -0800 (PST)
+        Fri, 13 Dec 2019 16:22:41 -0800 (PST)
 From:   Dennis Zhou <dennis@kernel.org>
 To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>
 Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
         Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH 01/22] bitmap: genericize percpu bitmap region iterators
-Date:   Fri, 13 Dec 2019 16:22:10 -0800
-Message-Id: <145877ff36ce1d19c75e9409e326f628f68ef59c.1576195673.git.dennis@kernel.org>
+Subject: [PATCH 02/22] btrfs: rename DISCARD opt to DISCARD_SYNC
+Date:   Fri, 13 Dec 2019 16:22:11 -0800
+Message-Id: <bc972e07e33cdfa8e72c912154547ccc14d3cd40.1576195673.git.dennis@kernel.org>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <cover.1576195673.git.dennis@kernel.org>
 References: <cover.1576195673.git.dennis@kernel.org>
@@ -53,203 +53,101 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Bitmaps are fairly popular for their space efficiency, but we don't have
-generic iterators available. Make percpu's bitmap region iterators
-available to everyone.
+This series introduces async discard which will use the flag
+DISCARD_ASYNC, so rename the original flag to DISCARD_SYNC as it is
+synchronously done in transaction commit.
 
 Signed-off-by: Dennis Zhou <dennis@kernel.org>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 ---
- include/linux/bitmap.h | 35 ++++++++++++++++++++++++
- mm/percpu.c            | 61 +++++++++++-------------------------------
- 2 files changed, 51 insertions(+), 45 deletions(-)
+ fs/btrfs/block-group.c | 2 +-
+ fs/btrfs/ctree.h       | 2 +-
+ fs/btrfs/extent-tree.c | 2 +-
+ fs/btrfs/inode.c       | 2 +-
+ fs/btrfs/super.c       | 8 ++++----
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index ff335b22f23c..cb63feb3cfbe 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -456,6 +456,41 @@ static inline int bitmap_parse(const char *buf, unsigned int buflen,
- 	return __bitmap_parse(buf, buflen, 0, maskp, nmaskbits);
- }
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 66fa39632cde..be1938dc94fd 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1349,7 +1349,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 		spin_unlock(&space_info->lock);
  
-+static inline void bitmap_next_clear_region(unsigned long *bitmap,
-+					    unsigned int *rs, unsigned int *re,
-+					    unsigned int end)
-+{
-+	*rs = find_next_zero_bit(bitmap, end, *rs);
-+	*re = find_next_bit(bitmap, end, *rs + 1);
-+}
-+
-+static inline void bitmap_next_set_region(unsigned long *bitmap,
-+					  unsigned int *rs, unsigned int *re,
-+					  unsigned int end)
-+{
-+	*rs = find_next_bit(bitmap, end, *rs);
-+	*re = find_next_zero_bit(bitmap, end, *rs + 1);
-+}
-+
-+/*
-+ * Bitmap region iterators.  Iterates over the bitmap between [@start, @end).
-+ * @rs and @re should be integer variables and will be set to start and end
-+ * index of the current clear or set region.
-+ */
-+#define bitmap_for_each_clear_region(bitmap, rs, re, start, end)	     \
-+	for ((rs) = (start),						     \
-+	     bitmap_next_clear_region((bitmap), &(rs), &(re), (end));	     \
-+	     (rs) < (re);						     \
-+	     (rs) = (re) + 1,						     \
-+	     bitmap_next_clear_region((bitmap), &(rs), &(re), (end)))
-+
-+#define bitmap_for_each_set_region(bitmap, rs, re, start, end)		     \
-+	for ((rs) = (start),						     \
-+	     bitmap_next_set_region((bitmap), &(rs), &(re), (end));	     \
-+	     (rs) < (re);						     \
-+	     (rs) = (re) + 1,						     \
-+	     bitmap_next_set_region((bitmap), &(rs), &(re), (end)))
-+
- /**
-  * BITMAP_FROM_U64() - Represent u64 value in the format suitable for bitmap.
-  * @n: u64 value
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 7e06a1e58720..e9844086b236 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -270,33 +270,6 @@ static unsigned long pcpu_chunk_addr(struct pcpu_chunk *chunk,
- 	       pcpu_unit_page_offset(cpu, page_idx);
- }
+ 		/* DISCARD can flip during remount */
+-		trimming = btrfs_test_opt(fs_info, DISCARD);
++		trimming = btrfs_test_opt(fs_info, DISCARD_SYNC);
  
--static void pcpu_next_unpop(unsigned long *bitmap, int *rs, int *re, int end)
--{
--	*rs = find_next_zero_bit(bitmap, end, *rs);
--	*re = find_next_bit(bitmap, end, *rs + 1);
--}
--
--static void pcpu_next_pop(unsigned long *bitmap, int *rs, int *re, int end)
--{
--	*rs = find_next_bit(bitmap, end, *rs);
--	*re = find_next_zero_bit(bitmap, end, *rs + 1);
--}
--
--/*
-- * Bitmap region iterators.  Iterates over the bitmap between
-- * [@start, @end) in @chunk.  @rs and @re should be integer variables
-- * and will be set to start and end index of the current free region.
-- */
--#define pcpu_for_each_unpop_region(bitmap, rs, re, start, end)		     \
--	for ((rs) = (start), pcpu_next_unpop((bitmap), &(rs), &(re), (end)); \
--	     (rs) < (re);						     \
--	     (rs) = (re) + 1, pcpu_next_unpop((bitmap), &(rs), &(re), (end)))
--
--#define pcpu_for_each_pop_region(bitmap, rs, re, start, end)		     \
--	for ((rs) = (start), pcpu_next_pop((bitmap), &(rs), &(re), (end));   \
--	     (rs) < (re);						     \
--	     (rs) = (re) + 1, pcpu_next_pop((bitmap), &(rs), &(re), (end)))
--
- /*
-  * The following are helper functions to help access bitmaps and convert
-  * between bitmap offsets to address offsets.
-@@ -732,9 +705,8 @@ static void pcpu_chunk_refresh_hint(struct pcpu_chunk *chunk, bool full_scan)
- 	}
- 
- 	bits = 0;
--	pcpu_for_each_md_free_region(chunk, bit_off, bits) {
-+	pcpu_for_each_md_free_region(chunk, bit_off, bits)
- 		pcpu_block_update(chunk_md, bit_off, bit_off + bits);
--	}
- }
- 
- /**
-@@ -749,7 +721,7 @@ static void pcpu_block_refresh_hint(struct pcpu_chunk *chunk, int index)
- {
- 	struct pcpu_block_md *block = chunk->md_blocks + index;
- 	unsigned long *alloc_map = pcpu_index_alloc_map(chunk, index);
--	int rs, re, start;	/* region start, region end */
-+	unsigned int rs, re, start;	/* region start, region end */
- 
- 	/* promote scan_hint to contig_hint */
- 	if (block->scan_hint) {
-@@ -765,10 +737,9 @@ static void pcpu_block_refresh_hint(struct pcpu_chunk *chunk, int index)
- 	block->right_free = 0;
- 
- 	/* iterate over free areas and update the contig hints */
--	pcpu_for_each_unpop_region(alloc_map, rs, re, start,
--				   PCPU_BITMAP_BLOCK_BITS) {
-+	bitmap_for_each_clear_region(alloc_map, rs, re, start,
-+				     PCPU_BITMAP_BLOCK_BITS)
- 		pcpu_block_update(block, rs, re);
--	}
- }
- 
- /**
-@@ -1041,13 +1012,13 @@ static void pcpu_block_update_hint_free(struct pcpu_chunk *chunk, int bit_off,
- static bool pcpu_is_populated(struct pcpu_chunk *chunk, int bit_off, int bits,
- 			      int *next_off)
- {
--	int page_start, page_end, rs, re;
-+	unsigned int page_start, page_end, rs, re;
- 
- 	page_start = PFN_DOWN(bit_off * PCPU_MIN_ALLOC_SIZE);
- 	page_end = PFN_UP((bit_off + bits) * PCPU_MIN_ALLOC_SIZE);
- 
- 	rs = page_start;
--	pcpu_next_unpop(chunk->populated, &rs, &re, page_end);
-+	bitmap_next_clear_region(chunk->populated, &rs, &re, page_end);
- 	if (rs >= page_end)
- 		return true;
- 
-@@ -1702,13 +1673,13 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
- 
- 	/* populate if not all pages are already there */
- 	if (!is_atomic) {
--		int page_start, page_end, rs, re;
-+		unsigned int page_start, page_end, rs, re;
- 
- 		page_start = PFN_DOWN(off);
- 		page_end = PFN_UP(off + size);
- 
--		pcpu_for_each_unpop_region(chunk->populated, rs, re,
--					   page_start, page_end) {
-+		bitmap_for_each_clear_region(chunk->populated, rs, re,
-+					     page_start, page_end) {
- 			WARN_ON(chunk->immutable);
- 
- 			ret = pcpu_populate_chunk(chunk, rs, re, pcpu_gfp);
-@@ -1858,10 +1829,10 @@ static void pcpu_balance_workfn(struct work_struct *work)
- 	spin_unlock_irq(&pcpu_lock);
- 
- 	list_for_each_entry_safe(chunk, next, &to_free, list) {
--		int rs, re;
-+		unsigned int rs, re;
- 
--		pcpu_for_each_pop_region(chunk->populated, rs, re, 0,
--					 chunk->nr_pages) {
-+		bitmap_for_each_set_region(chunk->populated, rs, re, 0,
-+					   chunk->nr_pages) {
- 			pcpu_depopulate_chunk(chunk, rs, re);
- 			spin_lock_irq(&pcpu_lock);
- 			pcpu_chunk_depopulated(chunk, rs, re);
-@@ -1893,7 +1864,7 @@ static void pcpu_balance_workfn(struct work_struct *work)
- 	}
- 
- 	for (slot = pcpu_size_to_slot(PAGE_SIZE); slot < pcpu_nr_slots; slot++) {
--		int nr_unpop = 0, rs, re;
-+		unsigned int nr_unpop = 0, rs, re;
- 
- 		if (!nr_to_pop)
+ 		/* Implicit trim during transaction commit. */
+ 		if (trimming)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index e416ef6c9415..2f6c21ea84af 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1170,7 +1170,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+ #define BTRFS_MOUNT_FLUSHONCOMMIT       (1 << 7)
+ #define BTRFS_MOUNT_SSD_SPREAD		(1 << 8)
+ #define BTRFS_MOUNT_NOSSD		(1 << 9)
+-#define BTRFS_MOUNT_DISCARD		(1 << 10)
++#define BTRFS_MOUNT_DISCARD_SYNC	(1 << 10)
+ #define BTRFS_MOUNT_FORCE_COMPRESS      (1 << 11)
+ #define BTRFS_MOUNT_SPACE_CACHE		(1 << 12)
+ #define BTRFS_MOUNT_CLEAR_CACHE		(1 << 13)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 180b9b81d01a..1a8bf943c3e7 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2923,7 +2923,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
  			break;
-@@ -1910,9 +1881,9 @@ static void pcpu_balance_workfn(struct work_struct *work)
- 			continue;
+ 		}
  
- 		/* @chunk can't go away while pcpu_alloc_mutex is held */
--		pcpu_for_each_unpop_region(chunk->populated, rs, re, 0,
--					   chunk->nr_pages) {
--			int nr = min(re - rs, nr_to_pop);
-+		bitmap_for_each_clear_region(chunk->populated, rs, re, 0,
-+					     chunk->nr_pages) {
-+			int nr = min_t(int, re - rs, nr_to_pop);
+-		if (btrfs_test_opt(fs_info, DISCARD))
++		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
+ 			ret = btrfs_discard_extent(fs_info, start,
+ 						   end + 1 - start, NULL);
  
- 			ret = pcpu_populate_chunk(chunk, rs, rs + nr, gfp);
- 			if (!ret) {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ddb2a806c038..101de0189a3b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2580,7 +2580,7 @@ static int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent)
+ 		    clear_reserved_extent &&
+ 		    !test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags) &&
+ 		    !test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
+-			if (ret && btrfs_test_opt(fs_info, DISCARD))
++			if (ret && btrfs_test_opt(fs_info, DISCARD_SYNC))
+ 				btrfs_discard_extent(fs_info,
+ 						ordered_extent->disk_bytenr,
+ 						ordered_extent->disk_num_bytes,
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index f452a94abdc3..08ac6a7a67f0 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -695,11 +695,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 				   info->metadata_ratio);
+ 			break;
+ 		case Opt_discard:
+-			btrfs_set_and_info(info, DISCARD,
+-					   "turning on discard");
++			btrfs_set_and_info(info, DISCARD_SYNC,
++					   "turning on sync discard");
+ 			break;
+ 		case Opt_nodiscard:
+-			btrfs_clear_and_info(info, DISCARD,
++			btrfs_clear_and_info(info, DISCARD_SYNC,
+ 					     "turning off discard");
+ 			break;
+ 		case Opt_space_cache:
+@@ -1322,7 +1322,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ 		seq_puts(seq, ",nologreplay");
+ 	if (btrfs_test_opt(info, FLUSHONCOMMIT))
+ 		seq_puts(seq, ",flushoncommit");
+-	if (btrfs_test_opt(info, DISCARD))
++	if (btrfs_test_opt(info, DISCARD_SYNC))
+ 		seq_puts(seq, ",discard");
+ 	if (!(info->sb->s_flags & SB_POSIXACL))
+ 		seq_puts(seq, ",noacl");
 -- 
 2.17.1
 
