@@ -2,111 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC47411EF3D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FFA11F03D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 06:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbfLNAcu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 19:32:50 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:32822 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbfLNAcu (ORCPT
+        id S1725769AbfLNFTj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 14 Dec 2019 00:19:39 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36264 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbfLNFTj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 19:32:50 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE0T6sg037334;
-        Sat, 14 Dec 2019 00:32:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=BkHyBFNBU1ZIUocglfi4HVdr41N8r54kNNMXZYyL1nA=;
- b=LuxLQ13mmr/M++uyyj4a9bNlarWopcqQANOYebYVFn1dP0Uo0T7KNGqr9ffOz88CJmzN
- dlrOAn2iH0pzT2APYufgjDkHv3Fw93bzF/dFdnZ/bLoNg6mxEoKZOUChLOejJvS5T87c
- Z9sCDMSCh2wajpek28/gLsiOLsca4SpnmVWYlyafQUNWjIQwOwCA3cy1NifkwNNnfmcj
- I/hMUNqac4FtWiDdCbuuzbNaVzvceU4C3rYawd2hEhUBuV+6+ZOclQ1KSrMYJ6qZtLk9
- IQ17GceTfD4mKi5Hkk3zQZlH/eW2waPOhUAJKwq5IMY+XgHL3KDoYPfATOTrKsXXy6C7 7g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2wr4qs3tea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Dec 2019 00:32:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE0SlGZ102910;
-        Sat, 14 Dec 2019 00:32:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2wvmvj0m1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Dec 2019 00:32:35 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBE0WYBL006420;
-        Sat, 14 Dec 2019 00:32:34 GMT
-Received: from localhost (/10.145.178.64)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 13 Dec 2019 16:32:33 -0800
-Date:   Fri, 13 Dec 2019 16:32:32 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org,
-        fdmanana@kernel.org, nborisov@suse.com, dsterba@suse.cz,
-        jthumshirn@suse.de, linux-fsdevel@vger.kernel.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 3/8] iomap: Move lockdep_assert_held() to iomap_dio_rw()
- calls
-Message-ID: <20191214003232.GB99860@magnolia>
-References: <20191213195750.32184-1-rgoldwyn@suse.de>
- <20191213195750.32184-4-rgoldwyn@suse.de>
+        Sat, 14 Dec 2019 00:19:39 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id E451B525997; Sat, 14 Dec 2019 00:19:38 -0500 (EST)
+Date:   Sat, 14 Dec 2019 00:19:38 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     halfdog <me@halfdog.net>, linux-btrfs@vger.kernel.org
+Subject: Re: FIDEDUPERANGE woes
+Message-ID: <20191214051938.GA13306@hungrycats.org>
+References: <2019-1576167349.500456@svIo.N5dq.dFFD>
+ <691d3af5-da85-5381-7db3-c4ef011b1e4a@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
 Content-Disposition: inline
-In-Reply-To: <20191213195750.32184-4-rgoldwyn@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9470 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=936
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912140001
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9470 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=998 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912140001
+In-Reply-To: <691d3af5-da85-5381-7db3-c4ef011b1e4a@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 01:57:45PM -0600, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> Filesystems such as btrfs can perform direct I/O without holding the
-> inode->i_rwsem in some of the cases like writing within i_size.
-> So, remove the check for lockdep_assert_held() in iomap_dio_rw()
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Mildly scary, but OTOH filesystems are supposed to take care of their
-own locking before calling iomap...
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+On Fri, Dec 13, 2019 at 05:32:14PM +0800, Qu Wenruo wrote:
+>=20
+>=20
+> On 2019/12/13 =E4=B8=8A=E5=8D=8812:15, halfdog wrote:
+> > Hello list,
+> >=20
+> > Using btrfs on
+> >=20
+> > Linux version 5.3.0-2-amd64 (debian-kernel@lists.debian.org) (gcc versi=
+on 9.2.1 20191109 (Debian 9.2.1-19)) #1 SMP Debian 5.3.9-3 (2019-11-19)
+> >=20
+> > the FIDEDUPERANGE exposes weird behaviour on two identical but
+> > not too large files that seems to be depending on the file size.
+> > Before FIDEDUPERANGE both files have a single extent, afterwards
+> > first file is still single extent, second file has all bytes sharing
+> > with the extent of the first file except for the last 4096 bytes.
+> >=20
+> > Is there anything known about a bug fixed since the above mentioned
+> > kernel version?
+> >=20
+> >=20
+> >=20
+> > If no, does following reproducer still show the same behaviour
+> > on current Linux kernel (my Python test tools also attached)?
+> >=20
+> >> dd if=3D/dev/zero bs=3D1M count=3D32 of=3Ddisk
+> >> mkfs.btrfs --mixed --metadata single --data single --nodesize 4096 disk
+> >> mount disk /mnt/test
+> >> mkdir /mnt/test/x
+> >> dd bs=3D1 count=3D155489 if=3D/dev/urandom of=3D/mnt/test/x/file-0
+>=20
+> 155489 is not sector size aligned, thus the last extent will be padded
+> with zero.
+>=20
+> >> cat /mnt/test/x/file-0 > /mnt/test/x/file-1
+>=20
+> Same for the new file.
+>=20
+> For the tailing padding part, it's not aligned, and it's smaller than
+> the inode size.
+>=20
+> Thus we won't dedupe that tailing part.
 
---D
+We definitely *must* dedupe the tailing part on btrfs; otherwise, we can't
+eliminate the reference to the last (partial) block in the last extent of
+the file, and there is no way to dedupe the _entire_ file in this example.
+It does pretty bad things to dedupe hit rates on uncompressed contiguous
+files, where you can lose an average of 64MB of space per file.
 
-> ---
->  fs/iomap/direct-io.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 1a3bf3bd86fb..41c1e7c20a1f 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -415,8 +415,6 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	struct blk_plug plug;
->  	struct iomap_dio *dio;
->  
-> -	lockdep_assert_held(&inode->i_rwsem);
-> -
->  	if (!count)
->  		return 0;
->  
-> -- 
-> 2.16.4
-> 
+I had been wondering why dedupe scores seemed so low on recent kernels,
+and this bug would certainly contribute to that.
+
+It worked in 4.20, broken in 5.0.  My guess is commit
+34a28e3d77535efc7761aa8d67275c07d1fe2c58 ("Btrfs: use
+generic_remap_file_range_prep() for cloning and deduplication") but I
+haven't run a test to confirm.
+
+
+> Thanks,
+> Qu
+>=20
+> >=20
+> >> ./SimpleIndexer x > x.json
+> >> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
+> dedup.list
+> > Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
+/file-1': [(0, 5472256, 155648)]}
+> > ...
+> >> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
+t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
+src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D0}=
+]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
+> >> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
+> dedup.list
+> > Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
+/file-1': [(0, 5316608, 151552), (151552, 5623808, 4096)]}
+> > ...
+> >> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
+t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
+src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D0}=
+]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
+> >> strace -s256 -f btrfs-extent-same 4096 /mnt/test/x/file-0 151552 /mnt/=
+test/x/file-1 151552 2>&1 | grep -E -e FIDEDUPERANGE
+> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D151=
+552, src_length=3D4096, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=
+=3D151552}]}) =3D -1 EINVAL (Invalid argument)
+> >=20
+>=20
+
+
+
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXfRw6QAKCRCB+YsaVrMb
+nMTvAJ9NQ52wqk5i648I2KHmXi5toBoL0QCg4GCZXp31WVumrcG5oEQF0EfsVrA=
+=9wgK
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
