@@ -2,164 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EF411EEFD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F9611EF1A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbfLNAFA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 19:05:00 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:39664 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbfLNAFA (ORCPT
+        id S1726791AbfLNAWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 19:22:41 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:33120 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726676AbfLNAWk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 19:05:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=I9KZuiod3dLVGOGXuHHb6fN4WS47PXcD5IekYHkSnWA=; b=QbC4J560ZDHP0EcG7Gu6E+iFB
-        qBUUGa31HcpwkU7NV/IyEMu80CPkC90Zn9ynywtcU4U/MdghEKW637Iweq/wXKk0XgLx3yMAZ+Cia
-        LVsVh/lHn5B+fAVc/NgWtmyjGrLDRZ6lL+EvEUHKF2N1QYDpeU5XlJepqCWrrSGJaDheDdq/29LMx
-        Nk+PjcCTzVviBhXD3RNDTzwJOe5MDmqsWCqcYn0EbOcvJe7XXb+BUqrxLzmZCJFpA/0AQD3rZ1WxR
-        dFIFfBVvEz/qUFYTsnrnol94CtHqVeFLlHfm2QZDu51r+wfQOUqDg92GmbHOsJPm79WF+TQjTAXDu
-        je75WHkYw==;
-Received: from [2601:1c0:6280:3f0::fee9]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ifuvb-0007LU-Th; Sat, 14 Dec 2019 00:04:59 +0000
-Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20191206135406.563336e7@canb.auug.org.au>
- <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
- <20191211134929.GL3929@twin.jikos.cz>
- <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
- <20191212184725.db3ost7rcopotr5u@treble>
- <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
- <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
- <20191213235054.6k2lcnwa63r26zwi@treble>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
-Date:   Fri, 13 Dec 2019 16:04:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
-MIME-Version: 1.0
-In-Reply-To: <20191213235054.6k2lcnwa63r26zwi@treble>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 13 Dec 2019 19:22:40 -0500
+Received: by mail-pf1-f195.google.com with SMTP id y206so2339704pfb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Dec 2019 16:22:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DYHM182C5vJLLqA3DeSgwCko6fAKDMrCle8Na+qw9NU=;
+        b=rvXi5UhgQ+6JgjzVFqCDkcLeci0HwKsxKinzkV5PrZ5pj14Ca83j1HLyy+0hhWU7B9
+         Pp/VHTQN1xpsH05/UJkZbdjI+zPrNfjMExsGRysQ4h5MnArc2Yksq812OhHVBZ+1cKrS
+         ROSF8hmZ7IQv+1djU9o5tkca1t7qODcIv+0sDJ7XEvKWocSRJvh8c7z/VW6Hmn3X7kXz
+         EVFuzLmKVpD4CN7o10j5DiZ5m/AVEd0At0qgRWhvMMxbbspFje87ihFWc0V4e/1Y+OYg
+         F0DJptDGA0B7lm+CnjhE8N6u+qwQ9kHwffvIaaO387SdaE2f1N8W6UvtNfgoGA05YFNH
+         yfRQ==
+X-Gm-Message-State: APjAAAXNXTkKcLe04jJ7jEu5bhvFYzQ3bsx6NAJMF8hCMHH5nUHDafEP
+        y7y+beXs1Y/+ri2tlWrhS7X/+bUdjvr0zQ==
+X-Google-Smtp-Source: APXvYqxM5lKrtT+melC/FeIN5ipp+e2tC2uAflrVjldA8JKY0lGJLEi2uFqt01j5Tm98C76Ids8yPg==
+X-Received: by 2002:a63:a43:: with SMTP id z3mr2613262pgk.232.1576282960087;
+        Fri, 13 Dec 2019 16:22:40 -0800 (PST)
+Received: from dennisz-mbp.thefacebook.com ([199.201.64.138])
+        by smtp.gmail.com with ESMTPSA id m12sm11911430pgr.87.2019.12.13.16.22.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Fri, 13 Dec 2019 16:22:39 -0800 (PST)
+From:   Dennis Zhou <dennis@kernel.org>
+To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
+        Dennis Zhou <dennis@kernel.org>
+Subject: [PATCH v6 00/22] btrfs: async discard support
+Date:   Fri, 13 Dec 2019 16:22:09 -0800
+Message-Id: <cover.1576195673.git.dennis@kernel.org>
+X-Mailer: git-send-email 2.13.5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/13/19 3:50 PM, Josh Poimboeuf wrote:
-> On Fri, Dec 13, 2019 at 03:03:11PM -0800, Randy Dunlap wrote:
->> On 12/12/19 12:25 PM, Randy Dunlap wrote:
->>> On 12/12/19 10:47 AM, Josh Poimboeuf wrote:
->>>> On Wed, Dec 11, 2019 at 08:21:38AM -0800, Randy Dunlap wrote:
->>>>> [oops, forgot to add Josh and PeterZ]
->>>>>
->>>>> On 12/11/19 5:49 AM, David Sterba wrote:
->>>>>> On Fri, Dec 06, 2019 at 08:17:30AM -0800, Randy Dunlap wrote:
->>>>>>> On 12/5/19 6:54 PM, Stephen Rothwell wrote:
->>>>>>>> Hi all,
->>>>>>>>
->>>>>>>> Please do not add any material for v5.6 to your linux-next included
->>>>>>>> trees until after v5.5-rc1 has been released.
->>>>>>>>
->>>>>>>> Changes since 20191204:
->>>>>>>>
->>>>>>>
->>>>>>> on x86_64:
->>>>>>>
->>>>>>> fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
->>>>>>
->>>>>> Can somebody enlighten me what is one supposed to do to address the
->>>>>> warnings? Function names reported in the list contain our ASSERT macro
->>>>>> that conditionally calls BUG() that I believe is what could cause the
->>>>>> unreachable instructions but I don't see how.
->>>>>>
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/btrfs/ctree.h#n3113
->>>>>>
->>>>>> __cold
->>>>>> static inline void assfail(const char *expr, const char *file, int line)
->>>>>> {
->>>>>> 	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
->>>>>> 		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
->>>>>> 		BUG();
->>>>>> 	}
->>>>>> }
->>>>>>
->>>>>> #define ASSERT(expr)	\
->>>>>> 	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
->>>>>>
->>>>
->>>> Randy, can you share one of the btrfs .o files?  I'm not able to
->>>> recreate.
->>>>
->>>
->>> Hm. I'll have to try to recreate this. I no longer have files from 20191206
->>> (lack of space).
->>>
->>> I'll let you know if/when I can recreate it.
->>
->> OK, 40 builds later, I have reproduced it.
->>
->> I am attaching one of the btrfs .o files and the kernel config file (FTR).
->> (gzipped)
->> Let me know if you want more of the .o files.
-> 
-> Thanks.  This is arguably a compiler bug, but the below produces better
-> code generation by adding a noreturn annotation.  I think GCC gets
-> tripped up by the IS_ENABLED conditional and can't always tell that
-> assfail (sic) doesn't return.
-> 
-> BTW, I'm on my way out the door for a week of much-needed PTO but I can
-> handle this patch (and several others I have pending which were reported
-> by you) when I get back.
+Hello,
 
-Sure, no hurry.  Have a good one.
+Dave reported a lockdep issue [1]. I'm a bit surprised as I can't repro
+it, but it obviously is right. I believe I fixed the issue by moving the
+fully trimmed check outside of the block_group lock.  I mistakingly
+thought the btrfs_block_group lock subsumed btrfs_free_space_ctl
+tree_lock. This clearly isn't the case.
 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index b2e8fd8a8e59..bbd68520f5f1 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3110,14 +3110,16 @@ do {								\
->  	rcu_read_unlock();					\
->  } while (0)
->  
-> -__cold
-> +#ifdef CONFIG_BTRFS_ASSERT
-> +__cold __unlikely
+Changes in v6:
+ - Move the fully trimmed check outside of the block_group lock.
 
-what provides __unlikely?  It is causing build errors.
+v5 is available here: [2].
 
-and if I remove the "__unlikely", I still see the objtool warnings
-(unreachable instructions).
+This series is on top of btrfs-devel#misc-next 7ee98bb808e2 + [3] and
+[4].
 
->  static inline void assfail(const char *expr, const char *file, int line)
->  {
-> -	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
-> -		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
-> -		BUG();
-> -	}
-> +	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
-> +	BUG();
->  }
-> +#else
-> +static inline void assfail(const char *expr, const char *file, int line) {}
-> +#endif
->  
->  #define ASSERT(expr)	\
->  	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
-> 
+[1] https://lore.kernel.org/linux-btrfs/20191210140438.GU2734@twin.jikos.cz/
+[2] https://lore.kernel.org/linux-btrfs/cover.1575919745.git.dennis@kernel.org/
+[3] https://lore.kernel.org/linux-btrfs/d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org/
+[4] https://lore.kernel.org/linux-btrfs/20191209193846.18162-1-dennis@kernel.org/
 
+Dennis Zhou (22):
+  bitmap: genericize percpu bitmap region iterators
+  btrfs: rename DISCARD opt to DISCARD_SYNC
+  btrfs: keep track of which extents have been discarded
+  btrfs: keep track of cleanliness of the bitmap
+  btrfs: add the beginning of async discard, discard workqueue
+  btrfs: handle empty block_group removal
+  btrfs: discard one region at a time in async discard
+  btrfs: add removal calls for sysfs debug/
+  btrfs: make UUID/debug have its own kobject
+  btrfs: add discard sysfs directory
+  btrfs: track discardable extents for async discard
+  btrfs: keep track of discardable_bytes
+  btrfs: calculate discard delay based on number of extents
+  btrfs: add bps discard rate limit
+  btrfs: limit max discard size for async discard
+  btrfs: make max async discard size tunable
+  btrfs: have multiple discard lists
+  btrfs: only keep track of data extents for async discard
+  btrfs: keep track of discard reuse stats
+  btrfs: add async discard header
+  btrfs: increase the metadata allowance for the free_space_cache
+  btrfs: make smaller extents more likely to go into bitmaps
 
--- 
-~Randy
+ fs/btrfs/Makefile           |   2 +-
+ fs/btrfs/block-group.c      |  87 ++++-
+ fs/btrfs/block-group.h      |  30 ++
+ fs/btrfs/ctree.h            |  52 ++-
+ fs/btrfs/discard.c          | 684 ++++++++++++++++++++++++++++++++++++
+ fs/btrfs/discard.h          |  42 +++
+ fs/btrfs/disk-io.c          |  15 +-
+ fs/btrfs/extent-tree.c      |   8 +-
+ fs/btrfs/free-space-cache.c | 611 +++++++++++++++++++++++++++-----
+ fs/btrfs/free-space-cache.h |  41 ++-
+ fs/btrfs/inode-map.c        |  13 +-
+ fs/btrfs/inode.c            |   2 +-
+ fs/btrfs/scrub.c            |   7 +-
+ fs/btrfs/super.c            |  39 +-
+ fs/btrfs/sysfs.c            | 205 ++++++++++-
+ fs/btrfs/volumes.c          |   7 +
+ include/linux/bitmap.h      |  35 ++
+ mm/percpu.c                 |  61 +---
+ 18 files changed, 1789 insertions(+), 152 deletions(-)
+ create mode 100644 fs/btrfs/discard.c
+ create mode 100644 fs/btrfs/discard.h
 
+Thanks,
+Dennis
