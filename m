@@ -2,145 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FFA11F03D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 06:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF7011F06C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 06:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725769AbfLNFTj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 14 Dec 2019 00:19:39 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:36264 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbfLNFTj (ORCPT
+        id S1725868AbfLNFpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 14 Dec 2019 00:45:23 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:23816 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725851AbfLNFpX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 14 Dec 2019 00:19:39 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id E451B525997; Sat, 14 Dec 2019 00:19:38 -0500 (EST)
-Date:   Sat, 14 Dec 2019 00:19:38 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     halfdog <me@halfdog.net>, linux-btrfs@vger.kernel.org
-Subject: Re: FIDEDUPERANGE woes
-Message-ID: <20191214051938.GA13306@hungrycats.org>
-References: <2019-1576167349.500456@svIo.N5dq.dFFD>
- <691d3af5-da85-5381-7db3-c4ef011b1e4a@gmx.com>
+        Sat, 14 Dec 2019 00:45:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576302321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aMoyw7B5Pg5yQ9QR7aJ058W9/8V7Fq7avIzK4TkKuto=;
+        b=XsxT2zrYCd+our2E4bwUlI7kK8Ng1S9o3JrMQvkwlmPXmDh6nrJFfnvKDXf45VQHj8igyN
+        sGBro0PKBafRn0uqxxmbbykw15HjlYMHt2ag2oOG3WGTj8aMqzPigk0RqyoZIxDzcLr3rt
+        6usVvyNBSiMtltMfz//Db7utu94Ji1E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-Pc9bSVpXPkSN5mt7IhrOJA-1; Sat, 14 Dec 2019 00:45:20 -0500
+X-MC-Unique: Pc9bSVpXPkSN5mt7IhrOJA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB8DB107ACC7;
+        Sat, 14 Dec 2019 05:45:18 +0000 (UTC)
+Received: from treble (ovpn-123-178.rdu2.redhat.com [10.10.123.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 87F5063BCD;
+        Sat, 14 Dec 2019 05:45:17 +0000 (UTC)
+Date:   Fri, 13 Dec 2019 23:45:15 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
+Message-ID: <20191214054515.ougsr5ykhl3vvy57@treble>
+References: <20191206135406.563336e7@canb.auug.org.au>
+ <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
+ <20191211134929.GL3929@twin.jikos.cz>
+ <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
+ <20191212184725.db3ost7rcopotr5u@treble>
+ <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
+ <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
+ <20191213235054.6k2lcnwa63r26zwi@treble>
+ <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <691d3af5-da85-5381-7db3-c4ef011b1e4a@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Dec 13, 2019 at 04:04:58PM -0800, Randy Dunlap wrote:
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index b2e8fd8a8e59..bbd68520f5f1 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -3110,14 +3110,16 @@ do {								\
+> >  	rcu_read_unlock();					\
+> >  } while (0)
+> >  
+> > -__cold
+> > +#ifdef CONFIG_BTRFS_ASSERT
+> > +__cold __unlikely
+> 
+> what provides __unlikely?  It is causing build errors.
+> 
+> and if I remove the "__unlikely", I still see the objtool warnings
+> (unreachable instructions).
 
---82I3+IH0IqGh5yIs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ha, not sure how that happened... Should be __noreturn instead of
+__unlikely.  Cheers...
 
-On Fri, Dec 13, 2019 at 05:32:14PM +0800, Qu Wenruo wrote:
->=20
->=20
-> On 2019/12/13 =E4=B8=8A=E5=8D=8812:15, halfdog wrote:
-> > Hello list,
-> >=20
-> > Using btrfs on
-> >=20
-> > Linux version 5.3.0-2-amd64 (debian-kernel@lists.debian.org) (gcc versi=
-on 9.2.1 20191109 (Debian 9.2.1-19)) #1 SMP Debian 5.3.9-3 (2019-11-19)
-> >=20
-> > the FIDEDUPERANGE exposes weird behaviour on two identical but
-> > not too large files that seems to be depending on the file size.
-> > Before FIDEDUPERANGE both files have a single extent, afterwards
-> > first file is still single extent, second file has all bytes sharing
-> > with the extent of the first file except for the last 4096 bytes.
-> >=20
-> > Is there anything known about a bug fixed since the above mentioned
-> > kernel version?
-> >=20
-> >=20
-> >=20
-> > If no, does following reproducer still show the same behaviour
-> > on current Linux kernel (my Python test tools also attached)?
-> >=20
-> >> dd if=3D/dev/zero bs=3D1M count=3D32 of=3Ddisk
-> >> mkfs.btrfs --mixed --metadata single --data single --nodesize 4096 disk
-> >> mount disk /mnt/test
-> >> mkdir /mnt/test/x
-> >> dd bs=3D1 count=3D155489 if=3D/dev/urandom of=3D/mnt/test/x/file-0
->=20
-> 155489 is not sector size aligned, thus the last extent will be padded
-> with zero.
->=20
-> >> cat /mnt/test/x/file-0 > /mnt/test/x/file-1
->=20
-> Same for the new file.
->=20
-> For the tailing padding part, it's not aligned, and it's smaller than
-> the inode size.
->=20
-> Thus we won't dedupe that tailing part.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index b2e8fd8a8e59..398bd010dfc5 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3110,14 +3110,16 @@ do {								\
+ 	rcu_read_unlock();					\
+ } while (0)
+ 
+-__cold
++#ifdef CONFIG_BTRFS_ASSERT
++__cold __noreturn
+ static inline void assfail(const char *expr, const char *file, int line)
+ {
+-	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
+-		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+-		BUG();
+-	}
++	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
++	BUG();
+ }
++#else
++static inline void assfail(const char *expr, const char *file, int line) {}
++#endif
+ 
+ #define ASSERT(expr)	\
+ 	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
 
-We definitely *must* dedupe the tailing part on btrfs; otherwise, we can't
-eliminate the reference to the last (partial) block in the last extent of
-the file, and there is no way to dedupe the _entire_ file in this example.
-It does pretty bad things to dedupe hit rates on uncompressed contiguous
-files, where you can lose an average of 64MB of space per file.
-
-I had been wondering why dedupe scores seemed so low on recent kernels,
-and this bug would certainly contribute to that.
-
-It worked in 4.20, broken in 5.0.  My guess is commit
-34a28e3d77535efc7761aa8d67275c07d1fe2c58 ("Btrfs: use
-generic_remap_file_range_prep() for cloning and deduplication") but I
-haven't run a test to confirm.
-
-
-> Thanks,
-> Qu
->=20
-> >=20
-> >> ./SimpleIndexer x > x.json
-> >> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
-> dedup.list
-> > Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
-/file-1': [(0, 5472256, 155648)]}
-> > ...
-> >> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
-t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
-> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
-src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D0}=
-]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
-> >> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json /mnt/test/x =
-> dedup.list
-> > Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)], b'/mnt/test/x=
-/file-1': [(0, 5316608, 151552), (151552, 5623808, 4096)]}
-> > ...
-> >> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0 0 /mnt/tes=
-t/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
-> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D0, =
-src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=3D0}=
-]} =3D> {info=3D[{bytes_deduped=3D155489, status=3D0}]}) =3D 0
-> >> strace -s256 -f btrfs-extent-same 4096 /mnt/test/x/file-0 151552 /mnt/=
-test/x/file-1 151552 2>&1 | grep -E -e FIDEDUPERANGE
-> > ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE, {src_offset=3D151=
-552, src_length=3D4096, dest_count=3D1, info=3D[{dest_fd=3D4, dest_offset=
-=3D151552}]}) =3D -1 EINVAL (Invalid argument)
-> >=20
->=20
-
-
-
-
---82I3+IH0IqGh5yIs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXfRw6QAKCRCB+YsaVrMb
-nMTvAJ9NQ52wqk5i648I2KHmXi5toBoL0QCg4GCZXp31WVumrcG5oEQF0EfsVrA=
-=9wgK
------END PGP SIGNATURE-----
-
---82I3+IH0IqGh5yIs--
