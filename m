@@ -2,112 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F90D11EF34
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE57311EF39
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Dec 2019 01:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfLNA0e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Dec 2019 19:26:34 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59046 "EHLO
+        id S1726760AbfLNAbf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Dec 2019 19:31:35 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:34718 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbfLNA0e (ORCPT
+        with ESMTP id S1726590AbfLNAbf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Dec 2019 19:26:34 -0500
+        Fri, 13 Dec 2019 19:31:35 -0500
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE09NTC044734;
-        Sat, 14 Dec 2019 00:26:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=ozkC4rl3g15bsldcQTV9jRtOnqrrAvVMva0uCByfsNk=;
- b=Eh+rLdrWH42k9MzbMxLLsUXPcYGKqoPCWln3+iPLRIlrQPB+NqS9ppDXbIG/i3nKGys1
- hf0oFBxradmM+SYdced+6v3A7aiG50pS0OvIAUaGnrHo2mwZbW61/psc6qTBGIJxauVQ
- eEmMQzSbQcWD+ZGANlvusimHOsn29VCknI05mKqlNwbXGZ/pasizcXxhibQ/bE91/ucl
- Wlhk+qtB/gi49j7r9wc9hIFIyLBac1jeuK/PzspNNIaWSka0K0LXieVfmiIsnkb01Vh9
- xLC7yjapzR5IwPK6cI6wiffKjAJyPqz7AO6f9nFJMTPzxmjqkai4CS0bJDvuY+FyCfTG GA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2wrw4nrru9-1
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE0T3bH056076;
+        Sat, 14 Dec 2019 00:31:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=2+aushzn/gdzakkI2/WSXNHpsaRfP/OYJl7Mtl74URg=;
+ b=sFUxnbKkhrBjQJ345yQDqcZLe1LCEjxv6S9vj9YB5TF6GqTUxxLf8ddEG5OQ7eBEKt3c
+ 96+yFbabbDQck7I5vBHQ9YhJO4Z+CT/gyuB3ob3u/6hxUG0sha/3YRcRTlRH+JmoER0A
+ WTdWKO/Tgn6Y4lYK1ciWANZu9q+ytPr9YSy0uLbX+xwSQqdx/CQ5bnSy/tZv/bef0kHs
+ IuDu8NviKHcMixKG5it7D9nMkrjoG3Y6/kxJhqt2nWMLyIrd2Wzy8BX7vFH5TqxLEiup
+ HR3BDQRbMlr2+ZB/8AEunRrLmHDORBcAI2am6alN43Y/byg8OQiduy8en3NAaxex1TS/ /w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2wrw4nrs31-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Dec 2019 00:26:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE09c0a061876;
-        Sat, 14 Dec 2019 00:26:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2wvdwru2y0-1
+        Sat, 14 Dec 2019 00:31:11 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBE0Sqi9060329;
+        Sat, 14 Dec 2019 00:31:10 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2wvdtvjqxs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 14 Dec 2019 00:26:28 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBE0QSjW003608;
-        Sat, 14 Dec 2019 00:26:28 GMT
-Received: from [192.168.1.119] (/39.109.145.141)
+        Sat, 14 Dec 2019 00:31:10 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBE0V7Bs031068;
+        Sat, 14 Dec 2019 00:31:07 GMT
+Received: from localhost (/10.145.178.64)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 13 Dec 2019 16:26:27 -0800
-Subject: Re: [PATCH 4/4] btrfs: sysfs, add devid/dev_state kobject and
- attribute
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20191205112706.8125-1-anand.jain@oracle.com>
- <20191205112706.8125-5-anand.jain@oracle.com>
- <20191205142148.GQ2734@twin.jikos.cz>
- <78560abd-7d85-c95d-ed76-7810b1d03789@oracle.com>
- <20191205151428.GS2734@twin.jikos.cz>
- <673babd8-90ec-2f7e-532a-df8c98a844cf@oracle.com>
- <8bd3d9b9-11b1-4c9a-8b59-ccfe0c6d92c4@oracle.com>
- <20191213164332.GA3929@twin.jikos.cz> <20191213170215.GB3929@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <1faa5860-130a-9f3c-3e44-724ce9a26adb@oracle.com>
-Date:   Sat, 14 Dec 2019 08:26:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        with ESMTP ; Fri, 13 Dec 2019 16:31:06 -0800
+Date:   Fri, 13 Dec 2019 16:31:05 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org,
+        fdmanana@kernel.org, nborisov@suse.com, dsterba@suse.cz,
+        jthumshirn@suse.de, linux-fsdevel@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 2/8] iomap: add a filesystem hook for direct I/O bio
+ submission
+Message-ID: <20191214003105.GA99860@magnolia>
+References: <20191213195750.32184-1-rgoldwyn@suse.de>
+ <20191213195750.32184-3-rgoldwyn@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20191213170215.GB3929@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191213195750.32184-3-rgoldwyn@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9470 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912140000
+ engine=8.0.1-1911140001 definitions=main-1912140001
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9470 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912140000
+ definitions=main-1912140001
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 14/12/19 1:02 AM, David Sterba wrote:
-> On Fri, Dec 13, 2019 at 05:43:32PM +0100, David Sterba wrote:
->>>    Looked into this further, actually we don't need any lock here
->>>    the device delete thread which calls kobject_put() makes sure
->>>    sysfs read is closed. So an existing sysfs read thread will have
->>>    to complete before device free.
->>>
->>>
->>>         CPU1                                   CPU2
->>>
->>>    btrfs_rm_device
->>>                                             open file
->>>       btrfs_sysfs_rm_device_link
->>>                                             call read, access freed device
->>>         sysfs waits for the open file
->>>         to close.
->>
->> How exactly does sysfs wait for the device? Is it eg wait_event checking
->> number of references? If the file stays open by an evil process is it
->> going to block the device removal indefinitelly?
+On Fri, Dec 13, 2019 at 01:57:44PM -0600, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Yeah, sysfs waits until the file is closed. Eg. umount can be stalled
-> that way too.
+> This helps filesystems to perform tasks on the bio while submitting for
+> I/O. This could be post-write operations such as data CRC or data
+> replication for fs-handled RAID.
 > 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-  And similar to umount, I don't think we should return EBUSY
-  for btrfs_rm_device if the device sysfs attribute is opened,
-  as sysfs show attributes are non blocking and would be completed
-  in the timely manner.
+Looks ok,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-regards, Anand
+--D
+
+> ---
+>  fs/iomap/direct-io.c  | 14 +++++++++-----
+>  include/linux/iomap.h |  2 ++
+>  2 files changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 23837926c0c5..1a3bf3bd86fb 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -59,7 +59,7 @@ int iomap_dio_iopoll(struct kiocb *kiocb, bool spin)
+>  EXPORT_SYMBOL_GPL(iomap_dio_iopoll);
+>  
+>  static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
+> -		struct bio *bio)
+> +		struct bio *bio, loff_t pos)
+>  {
+>  	atomic_inc(&dio->ref);
+>  
+> @@ -67,7 +67,11 @@ static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
+>  		bio_set_polled(bio, dio->iocb);
+>  
+>  	dio->submit.last_queue = bdev_get_queue(iomap->bdev);
+> -	dio->submit.cookie = submit_bio(bio);
+> +	if (dio->dops && dio->dops->submit_io)
+> +		dio->submit.cookie = dio->dops->submit_io(bio,
+> +				dio->iocb->ki_filp, pos);
+> +	else
+> +		dio->submit.cookie = submit_bio(bio);
+>  }
+>  
+>  static ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> @@ -191,7 +195,7 @@ iomap_dio_zero(struct iomap_dio *dio, struct iomap *iomap, loff_t pos,
+>  	get_page(page);
+>  	__bio_add_page(bio, page, len, 0);
+>  	bio_set_op_attrs(bio, REQ_OP_WRITE, flags);
+> -	iomap_dio_submit_bio(dio, iomap, bio);
+> +	iomap_dio_submit_bio(dio, iomap, bio, pos);
+>  }
+>  
+>  static loff_t
+> @@ -299,11 +303,11 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		}
+>  
+>  		dio->size += n;
+> -		pos += n;
+>  		copied += n;
+>  
+>  		nr_pages = iov_iter_npages(dio->submit.iter, BIO_MAX_PAGES);
+> -		iomap_dio_submit_bio(dio, iomap, bio);
+> +		iomap_dio_submit_bio(dio, iomap, bio, pos);
+> +		pos += n;
+>  	} while (nr_pages);
+>  
+>  	/*
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index 8b09463dae0d..2b093a23ef1c 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -252,6 +252,8 @@ int iomap_writepages(struct address_space *mapping,
+>  struct iomap_dio_ops {
+>  	int (*end_io)(struct kiocb *iocb, ssize_t size, int error,
+>  		      unsigned flags);
+> +	blk_qc_t (*submit_io)(struct bio *bio, struct file *file,
+> +			  loff_t file_offset);
+>  };
+>  
+>  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+> -- 
+> 2.16.4
+> 
