@@ -2,119 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA8111F9B1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2019 18:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B9211F9CD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2019 18:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbfLORcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Dec 2019 12:32:31 -0500
-Received: from mta-p7.oit.umn.edu ([134.84.196.207]:56140 "EHLO
-        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbfLORca (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Dec 2019 12:32:30 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 47bWgf1hWqz9vYkd
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 17:32:30 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id npqqkTPSBHgu for <linux-btrfs@vger.kernel.org>;
-        Sun, 15 Dec 2019 11:32:30 -0600 (CST)
-Received: from mail-yw1-f69.google.com (mail-yw1-f69.google.com [209.85.161.69])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 47bWgf0QqFz9vYkc
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 11:32:30 -0600 (CST)
-Received: by mail-yw1-f69.google.com with SMTP id o200so3906854ywd.22
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 09:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umn.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4SnZZNIdiXwc2Ipx9xkew+gAn+bF2xDJhghO9ThBXqs=;
-        b=qtsS9VgdRokvBqYMULCyJ8o3Cysmefl5dXkdsssJziMf4/Vg+Oy3yjDzTsApcVaa70
-         lrOzt1EfM+rSnjdnAh1uXhRW54lloEVoo85aHaqedAjVoWSn2bZIkCo5Eh3XAqyj7YFY
-         cdgs7WuPKfHpdXWCVLz+5EiYabirjYUZL9wfLF6O1Q5YDwFOuo/wpmNVuEHBgb95ugPj
-         uorxFzJcjJjuSLelYI0nSs8P/hY1VfZtC/oWk1UX5wgJDGirTICTG+suqOxUZvkbuB3r
-         QrlxvGaS/zHaok1t/UVzS3IG3iyReQfd1oKCCaZWhqzePOsVON5wHVt5foQfcvUs3oSF
-         Uk9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4SnZZNIdiXwc2Ipx9xkew+gAn+bF2xDJhghO9ThBXqs=;
-        b=ZsYmhmEwP3ZoXArhEvDtvjkI3lIeYfTNtDOpR1Wm94Y986gZGaQtCo73EqzwliOV9X
-         sh7JbNGyMS4zUeHRHV3n+HQPjbmbT3nVMkr1ceoMxRcc56SQ2t9vcwjFpEjzj59a/+U0
-         F7R/A8K5+YNyD3Fq+psdEJOcsWhY3Rh1JHMVSzYGzSWnuFOf9CUq/hyZ8ADPv86+3LBq
-         if506f8gmiXjNvLGGHtCmlueEN0b63/FechlS1qSLSv8LKDCIHWBG37e3pLO8hSlvRRY
-         I0T/ah2oKlAI9jxWJynf57XJL2e792/fsD0iJof7PGe8L2kBdbDSJkafWLLgRI4J9h3J
-         Py9w==
-X-Gm-Message-State: APjAAAV0FADZcxfIscW4AI6OVriznvTnQt13IHUCbLvBivML2lMejceb
-        nx0rVQroLNRaPP80tmddshzeG2JfN7vAyJP1C/ZD3iCX4wpNI8/TKiAFkR76oEydqAz2tACQaMS
-        Rex2+t8T2vaUU4ZposI27PXowq0s=
-X-Received: by 2002:a25:3803:: with SMTP id f3mr17170064yba.144.1576431149555;
-        Sun, 15 Dec 2019 09:32:29 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzvAAD3U4dRSHJAPmdTZhN7NNz8PeQKLQqJ/2RxBeqq6+hRiwf2JrFi9rw4/k1PHibdvux0Iw==
-X-Received: by 2002:a25:3803:: with SMTP id f3mr17170050yba.144.1576431149326;
-        Sun, 15 Dec 2019 09:32:29 -0800 (PST)
-Received: from cs-u-syssec1.dtc.umn.edu (cs-u-syssec1.cs.umn.edu. [128.101.106.66])
-        by smtp.gmail.com with ESMTPSA id s130sm7345257ywg.11.2019.12.15.09.32.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2019 09:32:29 -0800 (PST)
-From:   Aditya Pakki <pakki001@umn.edu>
-To:     pakki001@umn.edu
+        id S1726514AbfLORmz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Dec 2019 12:42:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54948 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726260AbfLORmz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 15 Dec 2019 12:42:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D11A6AFC6;
+        Sun, 15 Dec 2019 17:42:52 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: remove BUG_ON used as assertions
+To:     Aditya Pakki <pakki001@umn.edu>
 Cc:     kjlu@umn.edu, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: Fix incorrect check causing NULL pointer derefernce
-Date:   Sun, 15 Dec 2019 11:32:26 -0600
-Message-Id: <20191215173226.29149-1-pakki001@umn.edu>
-X-Mailer: git-send-email 2.20.1
+References: <20191215171237.27482-1-pakki001@umn.edu>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <38c5aa97-675b-b4fa-14ab-04988a9c6a39@suse.com>
+Date:   Sun, 15 Dec 2019 19:42:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191215171237.27482-1-pakki001@umn.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfsic_process_superblock, argument state is dereferenced for
-the variable fs_info and then checked for NULL. The patch fixes
-this issue by returning an error if state is NULL and then assigns
-fs_info.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
----
- fs/btrfs/check-integrity.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 0b52ab4cb964..70d7a05cafad 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -629,15 +629,18 @@ static struct btrfsic_dev_state *btrfsic_dev_state_hashtable_lookup(dev_t dev,
- static int btrfsic_process_superblock(struct btrfsic_state *state,
- 				      struct btrfs_fs_devices *fs_devices)
- {
--	struct btrfs_fs_info *fs_info = state->fs_info;
--	struct btrfs_super_block *selected_super;
-+	struct btrfsic_dev_state *selected_dev_state = NULL;
- 	struct list_head *dev_head = &fs_devices->devices;
-+	struct btrfs_super_block *selected_super;
-+	struct btrfs_fs_info *fs_info;
- 	struct btrfs_device *device;
--	struct btrfsic_dev_state *selected_dev_state = NULL;
- 	int ret = 0;
- 	int pass;
- 
--	BUG_ON(NULL == state);
-+	if (!state)
-+		return -EINVAL;
-+
-+	fs_info = state->fs_info;
- 	selected_super = kzalloc(sizeof(*selected_super), GFP_NOFS);
- 	if (NULL == selected_super) {
- 		pr_info("btrfsic: error, kmalloc failed!\n");
--- 
-2.20.1
+On 15.12.19 г. 19:12 ч., Aditya Pakki wrote:
+> alloc_extent_state_atomic() allocates extents via GFP_ATOMIC flag
+> and cannot fail. There are multiple invocations of BUG_ON on the
+> return value to check for failure. The patch replaces certain
+> invocations of BUG_ON by returning the error upstream.
+> 
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 
+Have you actually audited all callers of __set_extent_bit whether they
+correctly handle failures?
