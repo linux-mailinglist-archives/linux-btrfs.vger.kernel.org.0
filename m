@@ -2,91 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 435C611F7AB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2019 13:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0466D11F99E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2019 18:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbfLOMU4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Dec 2019 07:20:56 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35542 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbfLOMUz (ORCPT
+        id S1726231AbfLORSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Dec 2019 12:18:38 -0500
+Received: from mta-p5.oit.umn.edu ([134.84.196.205]:41054 "EHLO
+        mta-p5.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726135AbfLORSi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Dec 2019 07:20:55 -0500
-Received: by mail-ot1-f44.google.com with SMTP id o9so5254519ote.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 04:20:55 -0800 (PST)
+        Sun, 15 Dec 2019 12:18:38 -0500
+X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Dec 2019 12:18:37 EST
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p5.oit.umn.edu (Postfix) with ESMTP id 47bWDq0KNLz9vf0n
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 17:12:43 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p5.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p5.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jGfdKxz_a0Bs for <linux-btrfs@vger.kernel.org>;
+        Sun, 15 Dec 2019 11:12:42 -0600 (CST)
+Received: from mail-yw1-f70.google.com (mail-yw1-f70.google.com [209.85.161.70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p5.oit.umn.edu (Postfix) with ESMTPS id 47bWDp63Tkz9vbXt
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 11:12:42 -0600 (CST)
+Received: by mail-yw1-f70.google.com with SMTP id o200so3883141ywd.22
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Dec 2019 09:12:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I2IreTQ93dL5ePJ58xne5SlIrHlddgsBPfpXJi8+oag=;
-        b=rGuorTMcyK1XCxKltons+4V3qgramX04z6SMcSEp03caMfgF2GzsFBqGYOZ8PkXvGo
-         Q4Z0a+ae++wSi4WD3q5yeXTNvR5l1vZkADUkRW1M597bsLBbMlyJBV3oS8gmpY51KvgT
-         eoXehYJNToOaOrxnH7mdFR2I8ekpehd5je6hDd7FYC3qQEQpPahe+MQJ8pez5cMLzBUl
-         eTjL508SO05/s7thNfaQSZZ2F+maejq2c2H4sjp0bpNDZBP0qKj45+ONbeZjZW+z7ujv
-         lpVADhJ6TTAJMY3RsMZ7TVR74rYm8ybbuj/LLsMg8eP3kn2ZYa3+nTgtDs3jyM4MBWlb
-         sk3g==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zhtlch/cxMxWFqhg5J9e0u6iluOrhN5n/YoxV6vgAHw=;
+        b=RRHGLZR6ustuYdKO8l7flwqB2ODykJg3s+gUufn2+cnqJUZnf90AidnC7J4gEbgpjX
+         P1FXQt/fPXkeCpSn89bNmVzDB1bJYNvDfzXXLkFOc67Cn2OYJPH42OebHzivAgyfU9NW
+         dQshdiJOZ7y84P8wVoSCakfcvpFzG9AdOJW4ntI5wbe42CEF+euU6b+51Tmlh18Bum5f
+         9brC8VxO0bXu2ACn2v8ONUsNSSXtm41LonLCI2RDtEWmvehExYrbOUXM0LbHIxG5nJkV
+         aBNFqL15GltjxrbiRt8YVIjX0cld6OWCFUXdzn1Jr9VFXpjbSj8aVdjEyzZR+pzqPvDC
+         nY6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I2IreTQ93dL5ePJ58xne5SlIrHlddgsBPfpXJi8+oag=;
-        b=AySz4FcIry+tqMvjuILxv5sGWacBRIknN3gLrdtE4vLShlfdXKkYegbpZPECZSl4/S
-         0LxmB/Nl52njjtZn2ALMxzBibksIFLpwe85M4g/QixGFEpC1aXbSj5vyYkScrcnLdYuP
-         1s3FyDQaBkx3+TgF6Lb1t90guL9rRdKYWv+bdAleiCY0fUgxOvuZeR26AN7WKUzuLlAd
-         ilgSeUb3/HOcne+JWjNoNHniJL43bXr75wRPVTkbWy9FGSEPLIT928iOumb6xJnOrQKZ
-         rfwanN48oYrsXqR2C41GktKN94gZQWnc8OJVM+whFOjjNw/MjmoSCx9N9s4RI7LBQROT
-         VylA==
-X-Gm-Message-State: APjAAAWx46gYIEZfTWOiW+RV550YSUOCCk6oBVt/CpqiEyfJjkc2j2vY
-        AjFRIN2om7dAYKhqXDi1yN1EitX4duW5WY/NA0Y8AuxNDoQ=
-X-Google-Smtp-Source: APXvYqylFb959LXkQrJOwiCpd2QnaE8Qyp9siBQ2P3HYiC0zLhUlIfgp7KI25Np+vatOWixAaOsQtF42LUgY5LR6cyg=
-X-Received: by 2002:a9d:588c:: with SMTP id x12mr25245625otg.2.1576412454862;
- Sun, 15 Dec 2019 04:20:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zhtlch/cxMxWFqhg5J9e0u6iluOrhN5n/YoxV6vgAHw=;
+        b=jDinvovVb8mHhe3RDMIu4K6cvbcOqEiQaAXsGL7mOjdHg3kgrvXQx9w4Ckb5kZw6ht
+         afo1Wn7VUWMl7IBs2vKnAI1X1mQdJV9kM0tPCIl3N8C3tINN6bx7eL48dU/E7s0zq6LT
+         djmiEPZZYdxcPrI9GtEVey5lRb/87kTbU+9s/H5595LSqvpvxEehfz5BzEc7GzfgqU5g
+         mxzTQirepAEV4RFkwr5keSa14iW7/8xoXttockWmW/SxMtTF06LsR1vewuz95FblJPpT
+         /Q4Qq13KV6Sx+iBYFRbAFeO3rkAOCOb7in2uzJ8H7AFjdUMTkhXbv+5tqfIcRwNbAfSh
+         r4oQ==
+X-Gm-Message-State: APjAAAXfFs3F+ZRJpvX86JxSHj0QtP+Fzug2B7tfLXr/08C5O7NtZUmF
+        Ulk2PjUVkEFivs2u0OBxLx5enlbbS84hoWss7Sjmabmyq+VSM0glQ7kK11j0dwj+bobH7StuGoL
+        3GdChvD8hLNn8lgk1bAgjBrw4wws=
+X-Received: by 2002:a0d:d5cf:: with SMTP id x198mr16663601ywd.80.1576429962334;
+        Sun, 15 Dec 2019 09:12:42 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxYCROf8cfDp7PKzWucgQEPd95CFFWqsUgOZcKkKLNUNNvfWa15pchhEHzFjQ4HKE5bYgnJVA==
+X-Received: by 2002:a0d:d5cf:: with SMTP id x198mr16663586ywd.80.1576429962091;
+        Sun, 15 Dec 2019 09:12:42 -0800 (PST)
+Received: from cs-u-syssec1.dtc.umn.edu (cs-u-syssec1.cs.umn.edu. [128.101.106.66])
+        by smtp.gmail.com with ESMTPSA id h68sm3256433ywe.21.2019.12.15.09.12.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Dec 2019 09:12:41 -0800 (PST)
+From:   Aditya Pakki <pakki001@umn.edu>
+To:     pakki001@umn.edu
+Cc:     kjlu@umn.edu, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: remove BUG_ON used as assertions
+Date:   Sun, 15 Dec 2019 11:12:36 -0600
+Message-Id: <20191215171237.27482-1-pakki001@umn.edu>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAHzMYBTXvY1VgcoFDUvc2NFmVKq2HJRHuS0VXzoneUMh79cySA@mail.gmail.com>
- <2b0e5191-740f-0530-4825-0b0b6b653efb@gmx.com>
-In-Reply-To: <2b0e5191-740f-0530-4825-0b0b6b653efb@gmx.com>
-From:   Jorge Bastos <jorge.mrbastos@gmail.com>
-Date:   Sun, 15 Dec 2019 12:20:44 +0000
-Message-ID: <CAHzMYBSPr0e_+AQgY1J97QxNo_P_cWwWuGpj3TTT=iNv2FTfyw@mail.gmail.com>
-Subject: Re: RAID5 scrub performance
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-One last data point on this from a larger pool, 11 disk raid5 pool
-(raid1 metadata), this is probably not a very recommended
-configuration but it's a 3rd backup and mostly for testing raid5 on a
-larger pool:
+alloc_extent_state_atomic() allocates extents via GFP_ATOMIC flag
+and cannot fail. There are multiple invocations of BUG_ON on the
+return value to check for failure. The patch replaces certain
+invocations of BUG_ON by returning the error upstream.
 
-UUID:             1236acc8-dbd5-41bd-bf3d-872a8fbbce49
-Scrub started:    Sun Dec 15 11:23:45 2019
-Status:           running
-Duration:         0:51:34
-Time left:        90:06:52
-ETA:              Thu Dec 19 06:22:13 2019
-Total to scrub:   18.10TiB
-Bytes scrubbed:   175.12GiB
-Rate:             57.96MiB/s
-Error summary:    no errors found
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+---
+ fs/btrfs/extent_io.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index eb8bd0258360..e72e5a333e71 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -989,7 +989,10 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 	node = tree_search_for_insert(tree, start, &p, &parent);
+ 	if (!node) {
+ 		prealloc = alloc_extent_state_atomic(prealloc);
+-		BUG_ON(!prealloc);
++		if (!prealloc) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 		err = insert_state(tree, prealloc, start, end,
+ 				   &p, &parent, &bits, changeset);
+ 		if (err)
+@@ -1054,7 +1057,10 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		}
+ 
+ 		prealloc = alloc_extent_state_atomic(prealloc);
+-		BUG_ON(!prealloc);
++		if (!prealloc) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 		err = split_state(tree, state, prealloc, start);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+@@ -1091,7 +1097,10 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 			this_end = last_start - 1;
+ 
+ 		prealloc = alloc_extent_state_atomic(prealloc);
+-		BUG_ON(!prealloc);
++		if (!prealloc) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 
+ 		/*
+ 		 * Avoid to free 'prealloc' if it can be merged with
+@@ -1121,7 +1130,10 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		}
+ 
+ 		prealloc = alloc_extent_state_atomic(prealloc);
+-		BUG_ON(!prealloc);
++		if (!prealloc) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 		err = split_state(tree, state, prealloc, end + 1);
+ 		if (err)
+ 			extent_io_tree_panic(tree, err);
+-- 
+2.20.1
 
-
-Same pool during a btrfs send to /dev/null:
-
-btrfs send /mnt/disks/Pics/T12_disk1_Pics_2019-12-15-0829/ | pv -bart
-> /dev/null
-At subvol /mnt/disks/Pics/T12_disk1_Pics_2019-12-15-0829/
- 447GiB 0:13:19 [ 635MiB/s] [ 573MiB/s]
-                                   ^                 ^
-                             cur. spd   /    avg. spd
-
-
-
-So looks to me like scrub performance is around 1/10 of what it should
-be, and not optimal to wait multiple days to scrub a larger pool.
-
-Jorge
