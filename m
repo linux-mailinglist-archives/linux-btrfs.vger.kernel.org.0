@@ -2,173 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 816A411FE62
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 07:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E8F1202B7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 11:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbfLPGMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Dec 2019 01:12:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56800 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726092AbfLPGMf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Dec 2019 01:12:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6D48EAC4B;
-        Mon, 16 Dec 2019 06:12:33 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Tomasz Chmielewski <mangoo@wpkg.org>,
-        Martin Raiber <martin@urbackup.org>
-Subject: [PATCH] btrfs: super: Make btrfs_statfs() work with metadata over-commiting
-Date:   Mon, 16 Dec 2019 14:12:26 +0800
-Message-Id: <20191216061226.40454-1-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
+        id S1727391AbfLPKgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Dec 2019 05:36:40 -0500
+Received: from mail-vk1-f196.google.com ([209.85.221.196]:35497 "EHLO
+        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbfLPKgk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Dec 2019 05:36:40 -0500
+Received: by mail-vk1-f196.google.com with SMTP id o187so1480063vka.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2019 02:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ceremcem-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=hVaBcxAAWgHYcDPMs9pfhjqr51zOwC10bJnnaYbSRIs=;
+        b=I9+ZP6e3YRmTm1k9H9PlpXZHbLep2dInpt9FeZhxaaAgWxigLnNykcPovy4u4wS1yj
+         1F3QV88xQsKTaoHcxE6THg3W0wqmHMT8Bbc0wpyrxbZZZ0gA0YwBrRmu0UXQSFcgH/ou
+         ZWKUGYMf9+9nHQoSB7M43JcXHn63PlsB0j7GGBAGxNAQBrtt50r3WrvRCyInKa9JjEAm
+         7Nbm8E1h1Kx64zhfj8tBvnF9+1cjIDuNVkPzt4yeWTq60mBf1/ki+dycqRsjlacS229B
+         O7ryjYMcmiURza+AGkqNH4r5aVkPalleqLNVMPyB2qzMi+Dh5Nxg1PT9vLCZCDIDLVU3
+         LNLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=hVaBcxAAWgHYcDPMs9pfhjqr51zOwC10bJnnaYbSRIs=;
+        b=l5880pw13cK8T8+mbm6dvkQR0AsE33MvTOT9GyhMdbqmw+ser3eIHv0PQj869DpL8+
+         CgsyceOezJ05JX/p3QocxvIv/hr1rV34NPmiBzWiqaOBWmoNq5//jBzR/UBzf37geOJo
+         dt2vv1lBd560400yrZ1fBwRoQ6vKLV9pwHsVfpF6MRFwewmRAMfA881vEPH2euelwWbj
+         70uy9SKXqXLWyzbQjB2vjonAHtGuWp5/U4QKElwTqBAxpBd05JNS41/Qy52I36ZxzRCo
+         UgJxf5/+qN2KGoxvA963BwrAU1LCTgbjMn3QySxXz5dOj3xsPmvzti4n36P9fbM71nN/
+         oHGw==
+X-Gm-Message-State: APjAAAXdGK9XdTrir34/ms37NAs6omFz80djgnR0cCyTUfjT1niuus13
+        wG49/rrlQTh24Pjwnc66+sRT6WRPNSqqGwIZ+2RL+f7vVkA=
+X-Google-Smtp-Source: APXvYqzh9RkpuKHP7gkcZAn4vzOClMM4i7qkS7ZXCemtZwigJ4Y46BQ2/Nsl1VpFIYA9s/lBk3TOVBxHOAcA33Ki0gE=
+X-Received: by 2002:ac5:ce8f:: with SMTP id 15mr23973007vke.81.1576492598278;
+ Mon, 16 Dec 2019 02:36:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAN4oSBdH-+BmSLO7DC3u-oBwabNRH2jY2UUO+J0zdxeJTu5FCg@mail.gmail.com>
+ <20191211160000.GB14837@angband.pl> <CAN4oSBeUY=dVq5MAZ6bdDs1d5p3BVacEdffzsvCS+80O1iO7jg@mail.gmail.com>
+ <CAJCQCtQMxVrmhuiv04wVBanhn2vPuxDwLWwU0QheSMnbPB_Sxw@mail.gmail.com>
+In-Reply-To: <CAJCQCtQMxVrmhuiv04wVBanhn2vPuxDwLWwU0QheSMnbPB_Sxw@mail.gmail.com>
+From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Date:   Mon, 16 Dec 2019 13:36:27 +0300
+Message-ID: <CAN4oSBfmjuUS-MwrrcMMmvf7gN7pntAafy8aLP9Su0G-dpTYjg@mail.gmail.com>
+Subject: Re: Is it logical to use a disk that scrub fails but smartctl succeeds?
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There are several reports about vanilla `df` reports no available space,
-while `btrfs filesystem df` is still reporting tons of unallocated
-space.
+Hi,
 
-https://lore.kernel.org/linux-btrfs/CAJCQCtQEu_+nL_HByAWK2zKfg2Zhpm3Ezto+sA12wwV0iq8Ghg@mail.gmail.com/T/#t
-https://lore.kernel.org/linux-btrfs/CAJCQCtSWW4ageK56PdHtSmgrFrDf_Qy0PbxZ5LSYYCbr3Z10ug@mail.gmail.com/T/#t
+> But if there's a scant amount of minimum necessary metadata intact,
+> you will get your data off, even if there are errors in the data
+> (that's one of the options in restore is to ignore errors). Whereas
+> normal operation Btrfs won't hand over anything with checksum errors,
+> you get EIO instead. So there's a decent chance of getting the data
+> off the drive this way.
+>
+> First order of priority is to get data off the drive, if you don't
+> have a current backup.
+> Second, once you have a backup or already do, demote this drive
+> entirely, and start your restore from backup using good drives.
 
-The example output from vanilla `df` would look like:
-Filesystem  Size  Used Avail Use% Mounted on
-/dev/loop0  7.4T  623G     0 100% /media/backup
-
-[CAUSE]
-There is a special check in btrfs_statfs(), which reset f_bavail:
-
-	if (!mixed && total_free_meta - SZ_4M < block_rsv->size)
-		buf->f_bavail = 0;
-
-This old code from 2016 mostly assumes btrfs won't reserve too much
-metadata space beyond free metadata space.
-
-However since v5.4, we had a rework on metadata space reservation, now
-we alloc metadata over-commit (reserve more space than we have, as long
-as we can allocate enough metadata chunks) without really allocating
-enough metadata chunks.
-
-This means block_rsv->size can easily go beyond total_free_meta, which
-is the unused metadata space, and results f_bavail becomes 0.
-
-[FIX]
-The perfect fix is to modify btrfs_calc_avail_data_space(), to calculate
-the needed space for metadata chunks, then calculate how many bytes we
-can allocate from the remaining unallocated space.
-
-But that's too complex just for vanilla `df` command.
-
-Here we take a shortcut, by excluding the over-committing metadata space
-from calculated data space.
-
-This is far from perfect, but should work good enough (TM).
-
-Reported-by: Tomasz Chmielewski <mangoo@wpkg.org>
-Reported-by: Martin Raiber <martin@urbackup.org>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c | 48 +++++++++++++++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 17 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..99ee370ba99d 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2029,12 +2029,13 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	u64 total_used = 0;
- 	u64 total_free_data = 0;
- 	u64 total_free_meta = 0;
-+	u64 global_rsv_size;
- 	int bits = dentry->d_sb->s_blocksize_bits;
- 	__be32 *fsid = (__be32 *)fs_info->fs_devices->fsid;
- 	unsigned factor = 1;
-+	unsigned meta_factor = 1;
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
- 	int ret;
--	u64 thresh = 0;
- 	int mixed = 0;
- 
- 	rcu_read_lock();
-@@ -2057,6 +2058,8 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		 * Metadata in mixed block goup profiles are accounted in data
- 		 */
- 		if (!mixed && found->flags & BTRFS_BLOCK_GROUP_METADATA) {
-+			meta_factor = btrfs_bg_type_to_factor(
-+					btrfs_metadata_alloc_profile(fs_info));
- 			if (found->flags & BTRFS_BLOCK_GROUP_DATA)
- 				mixed = 1;
- 			else
-@@ -2075,9 +2078,10 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 
- 	/* Account global block reserve as used, it's in logical size already */
- 	spin_lock(&block_rsv->lock);
-+	global_rsv_size = block_rsv->size;
- 	/* Mixed block groups accounting is not byte-accurate, avoid overflow */
--	if (buf->f_bfree >= block_rsv->size >> bits)
--		buf->f_bfree -= block_rsv->size >> bits;
-+	if (buf->f_bfree >= global_rsv_size >> bits)
-+		buf->f_bfree -= global_rsv_size >> bits;
- 	else
- 		buf->f_bfree = 0;
- 	spin_unlock(&block_rsv->lock);
-@@ -2087,25 +2091,35 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	if (ret)
- 		return ret;
- 	buf->f_bavail += div_u64(total_free_data, factor);
--	buf->f_bavail = buf->f_bavail >> bits;
- 
- 	/*
--	 * We calculate the remaining metadata space minus global reserve. If
--	 * this is (supposedly) smaller than zero, there's no space. But this
--	 * does not hold in practice, the exhausted state happens where's still
--	 * some positive delta. So we apply some guesswork and compare the
--	 * delta to a 4M threshold.  (Practically observed delta was ~2M.)
-+	 * Btrfs metadata can do over-commit, which means we can have way more
-+	 * reserved metadata space as long as we can allocate enough meta
-+	 * chunks.
-+	 *
-+	 * The most accurate way to calculate unallocated free data space would
-+	 * involve calculating over-commit meta chunks, then calculate
-+	 * how many data space we can allocate from the remaining space.
- 	 *
--	 * We probably cannot calculate the exact threshold value because this
--	 * depends on the internal reservations requested by various
--	 * operations, so some operations that consume a few metadata will
--	 * succeed even if the Avail is zero. But this is better than the other
--	 * way around.
-+	 * But that's too expensive, here we just go easy, excluding the over-
-+	 * commiting metadata part from f_bavail.
- 	 */
--	thresh = SZ_4M;
-+	if (global_rsv_size > total_free_meta) {
-+		u64 to_exclude =  global_rsv_size - total_free_meta;
 +
-+		/*
-+		 * A quick dirty calculation using factor to handle different
-+		 * meta/data factors. E.g. for -d SINGLE -m RAID1, we need to
-+		 * exclude twice the space.
-+		 */
-+		to_exclude = to_exclude * meta_factor / factor;
- 
--	if (!mixed && total_free_meta - thresh < block_rsv->size)
--		buf->f_bavail = 0;
-+		if (buf->f_bavail > to_exclude)
-+			buf->f_bavail -= to_exclude;
-+		else
-+			buf->f_bavail = 0;
-+	}
-+	buf->f_bavail = buf->f_bavail >> bits;
- 
- 	buf->f_type = BTRFS_SUPER_MAGIC;
- 	buf->f_bsize = dentry->d_sb->s_blocksize;
--- 
-2.24.1
 
+> That drive is toast.. the giveaway here is the over 1000 "Current
+> Pending Sectors.".. there's no point trying to convert this drive to
+> DUP,, it must simply be stopped, and what files you can successfully
+> copy consider lucky.
+
+Right after those comments I changed my priority to get the data off
+to a reliable location (and not converting the profile to DUP) before
+renewing the drives. Luckily, merging the good files from three
+mirrored machines made it possible to recover nearly all data (all
+important data except a few unimportant corrupted log files). Thanks
+again and again for this valuable redirection.
+
+> Oh and last but actually I should have mentioned it first, because
+> you'll want to do this right away. You might check if this drive has
+> configurable SCT ERC.
+>
+> smartctl -l scterc /dev/
+
+SCT Error Recovery Control:
+           Read: Disabled
+          Write: Disabled
+
+It seems like the drive has STC ERC support but disabled. However some
+weird error is thrown with your correct syntax:
+
+=======> INVALID ARGUMENT TO -l: scterc,1800,70
+
+It's an interesting approach to setup long read time windows. I'll
+keep this in mind even though this time I'm determined to make the
+correct setup that will make such a data scraping job unnecessary.
+
+
+> I wasn't clear on why your backup is supposed to be bad... BTRFS should have
+> caught any errors during the backup and stopped things with I/O errors.
+
+My strategy was setting up multiple machines that will sync with each
+other over the network. Database part was easy since CouchDB has the
+synchronization feature out of the box. For the rest of the system
+(I'm using LXC containers per service) I would use `btrf send | btrfs
+receive` every hour by rotating a single snapshot. I didn't setup a
+RAID-1 profile because I thought it's not necessary in this context.
+
+First problem was that I "hoped" the machine would just crash with
+"DRDY ERR"s when the disk has *any* problems. I was hoping to be
+notified on the very first error by a total system failure. Obviously
+it doesn't work like that. Neither OS nor the rest of the applications
+may not throw any error till it attempts to read or write to that
+corrupted file. So those corruptions took place without noticing. This
+was my mistake and I learnt that I should check the filesystem by
+`btrfs scrub`. The "bad idea" part was this: Expecting an immediate
+disk failure notification by total system crash.
+
+Second problem is I mistakenly thought that `btrfs sub snap` would
+throw the same "Input/output error"s just like `cp` does. However, it
+turns out, this was not the case, which is totally logical. If we had
+such a checksum control while snapshotting, a snapshot operation would
+take too long. I'm just realizing that.
+
+After monitoring those corruption events, I still think that I don't
+need a RAID-1 setup in order not to loose data. However, a RAID-1
+setup will greatly shorten the recovery time of the problematic node.
+
+Now I think the good idea is: Make RAID-1, "monitor-disk-health", be
+prepared to replace the disks on the fly.
