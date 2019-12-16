@@ -2,149 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F15AF120F63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 17:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCB7120F7A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 17:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbfLPQ0T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Dec 2019 11:26:19 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42135 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbfLPQ0T (ORCPT
+        id S1726445AbfLPQb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Dec 2019 11:31:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24194 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbfLPQb2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Dec 2019 11:26:19 -0500
-Received: by mail-wr1-f65.google.com with SMTP id q6so8004432wro.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Dec 2019 08:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuoW5wyGr6cmjeeul1Mvu9Fge6BaEsl+8uixypTRWx8=;
-        b=cAK/moM//dasgkiJrhMBL8r/jf0/+RUNfOrX8aRYIHl4NARQQV2lOy6EKn/6kPrsxZ
-         hRSyQSZudxDh5GSe2rLDBCthBC1q02BvJZ985j/htiCIB5LyRgVRMNgM9QtBRVDPCU3m
-         BD4CaLTOVGr6guEWP3neN1x4SBseaPoXte0cE497b/krx0WBvTEd2s0XwKyRaf0rVDLz
-         CeHdecBkLKDMG9OQuGw1136xSb1q5IYQ4WA/KTMNr9mB55y2zlKtaGt+q7jVSxHqZh6G
-         djVTlPIHgRDUr3gCByIYYRY1yg39l3Z0Alwf81tL5mU9EZ+YjPtOLvNcOJpzgyP9+pgC
-         PWNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuoW5wyGr6cmjeeul1Mvu9Fge6BaEsl+8uixypTRWx8=;
-        b=rGULTf0VHOWxE3yIFdkepM31IRugbul56ZvC0WMv8Z2Oqrtl84L99LALEPFww34iRM
-         ZonrFQlP9EibgZQuFfUB7hn1+GWUWhg/DnFmM5sf+SaA9kmdEyMnqpZeYtE2T91Bx4pC
-         Xtx63lBLeh9CInwF7YvsjfRaxTbEZi1wf55joxDQ4sJZf2rjsunuN80FKLKJVCTAeYEx
-         H/mRD2+6WL6ARdUSmAxirpbZ/cIeBR1YT4IAYkvAF2/2DOirstA2BanlQoQLEw65RmcR
-         7XeOOXDHABclIWTvI1wr5+IPK65QjqpTtdBdUQWgst7HTPS1bqo6BITCkylMnIKRs+7g
-         z5Ag==
-X-Gm-Message-State: APjAAAVp/6vKKXgh/LGMCfxH+mPrUOpwsThZNudC4Y+tcB/zjyYgyjtC
-        SshYdHghEZYNRNjIn2plZTgixwpkHYoKPkO7iu0aVSw5bbBJiA==
-X-Google-Smtp-Source: APXvYqyP/j0iG5dSAemcXBh7Mneg00VOOYfgVznECqtURNDkCAZTsYftUGhlY5NcuL2FkGMTriCMoVm1Lz290H/D8so=
-X-Received: by 2002:adf:e6d2:: with SMTP id y18mr32471069wrm.262.1576513577214;
- Mon, 16 Dec 2019 08:26:17 -0800 (PST)
+        Mon, 16 Dec 2019 11:31:28 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBGGSEOW041449;
+        Mon, 16 Dec 2019 11:31:18 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2wwdpykqc0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Dec 2019 11:31:18 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id xBGGV7DK031265;
+        Mon, 16 Dec 2019 16:31:17 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 2wvqc69ta1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Dec 2019 16:31:17 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBGGVFTL54657466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Dec 2019 16:31:15 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9E93B205F;
+        Mon, 16 Dec 2019 16:31:15 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 691C0B2066;
+        Mon, 16 Dec 2019 16:31:14 +0000 (GMT)
+Received: from [9.152.96.21] (unknown [9.152.96.21])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Mon, 16 Dec 2019 16:31:14 +0000 (GMT)
+Subject: Re: [PATCH v2 6/6] btrfs: Use larger zlib buffer for s390 hardware
+ compression
+To:     dsterba@suse.cz, Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eduard Shishkin <edward6@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191209152948.37080-1-zaslonko@linux.ibm.com>
+ <20191209152948.37080-7-zaslonko@linux.ibm.com>
+ <97b3a11d-2e52-c710-ee25-157e562eb3d0@linux.ibm.com>
+ <20191213173526.GC3929@twin.jikos.cz>
+Cc:     "gerald.schaefer@de.ibm.com" <gerald.schaefer@de.ibm.com>
+From:   Zaslonko Mikhail <zaslonko@linux.ibm.com>
+Message-ID: <9068869f-1ec2-f8c1-c2e2-4d38e62572cf@linux.ibm.com>
+Date:   Mon, 16 Dec 2019 17:31:19 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <CAN4oSBdH-+BmSLO7DC3u-oBwabNRH2jY2UUO+J0zdxeJTu5FCg@mail.gmail.com>
- <20191211160000.GB14837@angband.pl> <CAN4oSBeUY=dVq5MAZ6bdDs1d5p3BVacEdffzsvCS+80O1iO7jg@mail.gmail.com>
- <CAJCQCtQMxVrmhuiv04wVBanhn2vPuxDwLWwU0QheSMnbPB_Sxw@mail.gmail.com> <CAN4oSBfmjuUS-MwrrcMMmvf7gN7pntAafy8aLP9Su0G-dpTYjg@mail.gmail.com>
-In-Reply-To: <CAN4oSBfmjuUS-MwrrcMMmvf7gN7pntAafy8aLP9Su0G-dpTYjg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 16 Dec 2019 09:26:00 -0700
-Message-ID: <CAJCQCtQV5orYh7Q8uXTeyYEQHAbgoKRQGgKhSZfC34sbX5uCWg@mail.gmail.com>
-Subject: Re: Is it logical to use a disk that scrub fails but smartctl succeeds?
-To:     Cerem Cem ASLAN <ceremcem@ceremcem.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191213173526.GC3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-16_06:2019-12-16,2019-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912160145
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 3:36 AM Cerem Cem ASLAN <ceremcem@ceremcem.net> wrote:
->
-> > smartctl -l scterc /dev/
->
-> SCT Error Recovery Control:
->            Read: Disabled
->           Write: Disabled
+Hi David,
 
-For daily production use I recommend changing both to 7 seconds, it's
-possible to setup a udev rule for this so it's always in place for
-specific drives by /dev/by whatever you want, wwn or serial or label.
-Whereas /dev/sda /dev/sdb is not always reliably assigned during
-startup.
+On 13.12.2019 18:35, David Sterba wrote:
+> On Fri, Dec 13, 2019 at 05:10:10PM +0100, Zaslonko Mikhail wrote:
+>> Hello,
+>>
+>> Could you please review the patch for btrfs below.
+>>
+>> Apart from falling back to 1 page, I have set the condition to allocate 
+>> 4-pages zlib workspace buffer only if s390 Deflate-Conversion facility
+>> is installed and enabled. Thus, it will take effect on s390 architecture
+>> only.
+>>
+>> Currently in zlib_compress_pages() I always copy input pages to the workspace
+>> buffer prior to zlib_deflate call. Would that make sense, to pass the page
+>> itself, as before, based on the workspace buf_size (for 1-page buffer)?
+> 
+> Doesn't the copy back and forth kill the improvements brought by the
+> hw supported decompression?
 
-The logic is that it's better to have quick failures. These produce
-discrete errors, with the affected LBA for the sector, and Btrfs can
-act on this with self-healing, whether it's an ordinary read, or a
-scrub. Self-healing does require redundancy. But even with single copy
-data, you'll get a path to file reference for the affected file. It's
-often easier to just delete that file and copy it from backup.
+Well, I'm not sure how to avoid this copy step here. As far as I understand
+the input data in btrfs_compress_pages() doesn't always represent continuous 
+pages, so I copy input pages to a continuous buffer prior to a compression call.   
+But even with this memcpy in place, the hw supported compression shows
+significant improvements.
+What I can definitely do is to skip the copy if no s390 hardware compression
+support enabled.
 
-Whereas with ERC disabled, it's uncertain what the error timeout is.
-With consumer drives, so-called "deep recovery" is possible which can
-take an extraordinary amount of time, and manifests as storage stack
-slow down. But by default the kernel's SCSI block layer has a command
-timer of its own, by default 30 seconds. If a command hasn't completed
-in 30 seconds, this kernel command timer will try to reset the device.
-Upon reset, the entire command queue is lost on SATA drives; on SAS
-drives just that delayed command is excised, but in either case, it's
-never discovered what sector is causing the delay. Essentially the
-real problem gets masked by the reset.
+> 
+>> As for calling zlib_deflate with Z_FINISH flush parameter in a loop until
+>> Z_STREAM_END is returned, that comes in agreement with the zlib manual.
+> 
+> The concerns are about zlib stream that take 4 pages on input and on the
+> decompression side only 1 page is available for the output. Ie. as if
+> the filesystem was created on s390 with dflcc then opened on x86 host.
 
-The end result is that it's possible for bad sectors to just get worse
-and worse (slower and slower recovery) until the data on them is lost
-for good, and in the meantime the storage stack gets hung up on these
-slow read delays as the drive firmware keeps retrying to read from
-marginal sectors. There might be a reasonable use case for long
-recoveries, e.g. a boot drive, with single copy data and metadata,
-where it's better to have slow downs than to have EIO blow things up
-in a non-obvious way. I personally would still favor short recovery
-below 30 seconds, and that way I'll see a discrete drive read error
-along with the blow up, and make the connection. Whereas slow downs
-have no log entries until there's a link reset by the kernel.
-
-Also, 7 seconds comes from what I typically see from NAS and
-enterprise drives. So it's not a random pick, but other values are
-sane as well as long as SCT ERC is less than the SCSI command timer
-value (which is per block device, it is not a setting in the device,
-it is a kernel setting, found in /sys )
-
-Bit older reference but is still valid across Linux distros
-https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html/online_storage_reconfiguration_guide/task_controlling-scsi-command-timer-onlining-devices
+I'm not sure I fully understand the concern here. If we talk of backward 
+compatibility, I do not see side effects of using larger buffers. Data in 
+the compressed state might differ indeed, but it will sill conform to zlib
+standard and thus can be decompressed. The smaller out buffer would just 
+take more zlib calls to flush the output.
 
 
->
-> It seems like the drive has STC ERC support but disabled. However some
-> weird error is thrown with your correct syntax:
->
-> =======> INVALID ARGUMENT TO -l: scterc,1800,70
->
-> It's an interesting approach to setup long read time windows. I'll
-> keep this in mind even though this time I'm determined to make the
-> correct setup that will make such a data scraping job unnecessary.
-
-It could be a firmware bug *shrug* try something else like:
-
--l scterc,1200,1200
-
-Maybe it wants them to be identical.
-
-
-> First problem was that I "hoped" the machine would just crash with
-> "DRDY ERR"s when the disk has *any* problems.
-
-Right. So instead look through logs suggesting there have been link
-resets (typically from libata but it depends on what drives you have,
-what this error looks like exactly). Link resets prevent the drive
-specific error from happening. Hence you want the drive's internal
-firmware to give up on error recovery before the kernel gives up on
-command delays.
-
-More here which itself has a pile of links to this same issue
-affecting md arrays.
-
-https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
-
-
-
--- 
-Chris Murphy
+> The zlib_deflate(Z_FINISH) happens on the compresission side.
+> 
