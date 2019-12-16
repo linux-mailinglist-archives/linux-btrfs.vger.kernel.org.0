@@ -2,123 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCB7120F7A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 17:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F92121632
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 19:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbfLPQb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Dec 2019 11:31:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24194 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725805AbfLPQb2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Dec 2019 11:31:28 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBGGSEOW041449;
-        Mon, 16 Dec 2019 11:31:18 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wwdpykqc0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Dec 2019 11:31:18 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id xBGGV7DK031265;
-        Mon, 16 Dec 2019 16:31:17 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 2wvqc69ta1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Dec 2019 16:31:17 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBGGVFTL54657466
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Dec 2019 16:31:15 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9E93B205F;
-        Mon, 16 Dec 2019 16:31:15 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 691C0B2066;
-        Mon, 16 Dec 2019 16:31:14 +0000 (GMT)
-Received: from [9.152.96.21] (unknown [9.152.96.21])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Mon, 16 Dec 2019 16:31:14 +0000 (GMT)
-Subject: Re: [PATCH v2 6/6] btrfs: Use larger zlib buffer for s390 hardware
- compression
-To:     dsterba@suse.cz, Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eduard Shishkin <edward6@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20191209152948.37080-1-zaslonko@linux.ibm.com>
- <20191209152948.37080-7-zaslonko@linux.ibm.com>
- <97b3a11d-2e52-c710-ee25-157e562eb3d0@linux.ibm.com>
- <20191213173526.GC3929@twin.jikos.cz>
-Cc:     "gerald.schaefer@de.ibm.com" <gerald.schaefer@de.ibm.com>
-From:   Zaslonko Mikhail <zaslonko@linux.ibm.com>
-Message-ID: <9068869f-1ec2-f8c1-c2e2-4d38e62572cf@linux.ibm.com>
-Date:   Mon, 16 Dec 2019 17:31:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20191213173526.GC3929@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-16_06:2019-12-16,2019-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912160145
+        id S1731625AbfLPS1c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Dec 2019 13:27:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727628AbfLPS1b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Dec 2019 13:27:31 -0500
+Received: from debian5.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BB2020674;
+        Mon, 16 Dec 2019 18:27:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576520851;
+        bh=b7Zp+m/Ds/ef6McCgYGXwFpr6eOhigKmMCfpL2V5pcU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jo2ByGw83eCwSN9pPuEYe9csRAGVRIV0Dl4pLna2CCBBMcXaF0gkHChJKXSFAMJDk
+         Ds1OfC4E1Tkngf25ebedwFUZHvuBMuUzs92CpDodtVPXsmY09d2LA/0lRZYHbH4J8b
+         dsW42sN6kAfJErOvaEcrlJ5ydgLQbmsZiBlKKuko=
+From:   fdmanana@kernel.org
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        darrick.wong@oracle.com, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 0/2] Allow deduplication of the eof block when it is safe to do so
+Date:   Mon, 16 Dec 2019 18:26:54 +0000
+Message-Id: <20191216182656.15624-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
+From: Filipe Manana <fdmanana@suse.com>
 
-On 13.12.2019 18:35, David Sterba wrote:
-> On Fri, Dec 13, 2019 at 05:10:10PM +0100, Zaslonko Mikhail wrote:
->> Hello,
->>
->> Could you please review the patch for btrfs below.
->>
->> Apart from falling back to 1 page, I have set the condition to allocate 
->> 4-pages zlib workspace buffer only if s390 Deflate-Conversion facility
->> is installed and enabled. Thus, it will take effect on s390 architecture
->> only.
->>
->> Currently in zlib_compress_pages() I always copy input pages to the workspace
->> buffer prior to zlib_deflate call. Would that make sense, to pass the page
->> itself, as before, based on the workspace buf_size (for 1-page buffer)?
-> 
-> Doesn't the copy back and forth kill the improvements brought by the
-> hw supported decompression?
+Hi,
 
-Well, I'm not sure how to avoid this copy step here. As far as I understand
-the input data in btrfs_compress_pages() doesn't always represent continuous 
-pages, so I copy input pages to a continuous buffer prior to a compression call.   
-But even with this memcpy in place, the hw supported compression shows
-significant improvements.
-What I can definitely do is to skip the copy if no s390 hardware compression
-support enabled.
+This short series allows deduplication of the last block of a file when
+the eof is not aligned to the sector size, as long as the range's end
+offset matches the eof of the destination file.
 
-> 
->> As for calling zlib_deflate with Z_FINISH flush parameter in a loop until
->> Z_STREAM_END is returned, that comes in agreement with the zlib manual.
-> 
-> The concerns are about zlib stream that take 4 pages on input and on the
-> decompression side only 1 page is available for the output. Ie. as if
-> the filesystem was created on s390 with dflcc then opened on x86 host.
+This is a safe case unlike the case where we attempt to clone the block in
+the middle of a file (which results in a corruption I found last year and
+affected both btrfs and xfs).
 
-I'm not sure I fully understand the concern here. If we talk of backward 
-compatibility, I do not see side effects of using larger buffers. Data in 
-the compressed state might differ indeed, but it will sill conform to zlib
-standard and thus can be decompressed. The smaller out buffer would just 
-take more zlib calls to flush the output.
+This is motivated by btrfs users reporting lower deduplication scores
+starting with kernel 5.0, which was the kernel release where btrfs was
+changed to use the generic VFS helper generic_remap_file_range_prep().
+Users observed that the last block was no longer deduplicated when a
+file's size is not block size aligned.  For btrfs this is specially
+important because references are kept per extent and not per block, so
+not having the last block deduplicated means the entire extent is kept
+allocated, making the deduplication not effective and often pointless in
+many cases.
 
+Thanks.
 
-> The zlib_deflate(Z_FINISH) happens on the compresission side.
-> 
+Filipe Manana (2):
+  fs: allow deduplication of eof block into the end of the destination
+    file
+  Btrfs: make deduplication with range including the last block work
+
+ fs/btrfs/ioctl.c |  3 ++-
+ fs/read_write.c  | 10 ++++------
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+-- 
+2.11.0
+
