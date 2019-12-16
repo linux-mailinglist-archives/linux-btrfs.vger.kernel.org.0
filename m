@@ -2,125 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C78D511FAE2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Dec 2019 20:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A702B11FBF4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Dec 2019 01:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfLOT4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Dec 2019 14:56:24 -0500
-Received: from mout.web.de ([212.227.17.12]:51829 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbfLOT4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Dec 2019 14:56:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1576439769;
-        bh=32HM1dJWyoIgCVFimPslKrXh6th5qj5mlVrqvchIwlk=;
-        h=X-UI-Sender-Class:Cc:References:Subject:To:From:Date:In-Reply-To;
-        b=bOlPrfO11Bl7l7ZuxDKIh/JhhPAo+iB1Nem+r15ceLnSCzjlvzn8ADExhnBhPir5I
-         fZhHcPwaCEXPWKzuSDShrgybdOAucvJ5J8iQMgJt1kLlXRf812NF7twyFnyP42MHH1
-         8FuMNbenIB+xDb7vr2v+d6fKaQ6KGnFVrxypEogc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([2.243.76.50]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MT8o6-1iEczn0JL4-00S9Er; Sun, 15
- Dec 2019 20:56:09 +0100
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Kangjie Lu <kjlu@umn.edu>
-References: <20191215173226.29149-1-pakki001@umn.edu>
-Subject: Re: [PATCH] btrfs: Fix incorrect check
-To:     Aditya Pakki <pakki001@umn.edu>, linux-btrfs@vger.kernel.org
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <944244bb-92c5-2c71-84de-ec5e402ecd24@web.de>
-Date:   Sun, 15 Dec 2019 20:56:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726470AbfLPABc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Dec 2019 19:01:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33140 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726426AbfLPABb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 15 Dec 2019 19:01:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 2FB6EAC1A;
+        Mon, 16 Dec 2019 00:01:29 +0000 (UTC)
+Subject: Re: [PATCH 0/8 v6] btrfs direct-io using iomap
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     hch@infradead.org, darrick.wong@oracle.com, fdmanana@kernel.org,
+        dsterba@suse.cz, jthumshirn@suse.de, linux-fsdevel@vger.kernel.org
+References: <20191213195750.32184-1-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <0cfcbf67-8bca-8d55-6d7e-b79e5e5f66c0@suse.com>
+Date:   Mon, 16 Dec 2019 02:01:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191215173226.29149-1-pakki001@umn.edu>
+In-Reply-To: <20191213195750.32184-1-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:43R6qmdpUatWlOoh4wttmiOoB2gPXQBYLxTSZ4lpjq6e4v+8rhf
- DIh22KDUW+N5PDXSivm+rV7cR14QmSExZ1j7Ps8dgGojDP/lSajyefqZoIdgFgb7YHMG+Ov
- /YUzVm1IOmm82KkXerLKamZvpYyACsKMuw9Q4n31MrfHejTWmmbCGVuoJLDZVvt+2Eoe+du
- KvYhh9N8xhWAE0QaIOqjw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:scqL3Bn7x9U=:/Hz2LNb3h+GVjGLCgBdjD6
- fMQNybLLbeblxuTtXPLuMYq9GG4GI3gnleEB4wiHSNRgX7DsD5xPSBiAkC8UQPoOoAiHLl60q
- 4N4397Af075QpPaTCWuZ7/wtcfWRXWs3wjfB1DMNEk4t4bfa1VAvhKl15aMHDu8X6wpMBw8Nq
- N2tFvxPVTjAmtGkS+ORbZQAhYb6DGKp9m8NVhQ+mPkPV8jK438WsZ6dSkI3/nNVd+/woWlflA
- w83cv6jtq2/fl9LZYTT5dFB/dVXeE0bYAk2LUaMFdg2PH/dj04MdvNQmk/DqM+low7sUPVt+7
- kr8F72RczCv2xDpvx3YvKBunoEUi9Ttt4Ot3HF4ZYeEGJ13of2zJuMtUeb/2v5oLRuAi2yycC
- lI+u8GndIzMd2HWbpKb5BdV1PFgR21R5XKDp3OLR5jFhr5KxmHu/l6dCh65qxjw64/qY6QKGm
- DA9SAdpC6jFlw5HCmbuDv8yLenP3BG6iwxtQvDY7+iaR09i7CPIu8SQj0Y4TuUXuIe7sijEir
- Bvof8Zd5iNo+gPV29N0szlZOLpWLfnVhdPDkMJUZ6ONvYkSkwIDpN9XDAlB+IN8GRs9gPlhh3
- Z/CaWD4PYgPZKyCdHTbVeRMkk8Zxe9LydeVZuGIR9mq8XgrSAZChxMu2k4z8X2u0L87WFcSyG
- QXZv+tWIZWOyPrN4WjXs8tm67sRKu4X4vwk6U+fKKcWx+d5TtJXwuPeQbcnFZ9z1aqJeAvd6k
- 8VYJxmJwF7+sShRT8An3CatBAoYB8jH1Whuz8kz2OQGEQXCiScZPrbqEm78Db5cFGCqXviV8s
- 2SN+Nh1W+yUkSNUEdKO3KRaVwO2dXb2T4AZvTNHhUtN8J8MtvuF09kRAAfQBpz2TrsFUg9OWc
- PGDGv4ms1ZfSxW1d7Mb/Smx+HFXt6Ko6QZG1KI23et8WQfR5VRsRLyWJxDAjRECrSP8XIMNEW
- OsFJDXgUEHlJmLZp3fKQIK+BKUvTetdiC2K6xTIgyK6RneeKaILmGY2CJ0gjK1XmUVKOgcNFk
- AZKQa1Wegojtg5JptpaEKLf0qIQhWdMOAkir93pBecO53b4ETarPw5wBvLNymy+FuF4vT3s+j
- CuIcU+ok2nHBVhI1Hihm1gelTuXvypkNFgRIqa7GxJIvb+myYLZTUVfuDOYEee0RHCQejksru
- Zlk/TF6BiTcsTV7bNaVUazkTsASo5+p14Nif8lZPa1qVdntG7/kf6h/CbXjsxbvzDQD6Jt/Zc
- ZvKmHf9iWC2zPYXIA4kG4wMI0ndLkdbQP2rLgXFL8jhb0+eubHyRBvtS0IHGC3qhX+zQxQ0kq
- NBTrrzTrhbPllwRDHF8VCyEU/4JPjyggzuII0jkvFxyMeJGVgJeq+/ltmAh/crIqErocd4xlV
- nHpB58p3uBkc63XisVAg6dtVGH5C0u7WXu+eY48r5roHuX/7l358s3pjLHHPk+sUCsTBj4xks
- xerv0P8nfJR5Oe7RCjnvzs9msQ+nhwCEbNpylMQN6OQk7SAGrDDkChLvl/5XQ/frSxcXUNu4u
- V/8PFcbbt65u8ymi/sGeq5qVEDatzph9gQHVvm5bC2jyf
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> The patch fixes this issue by returning an error if state is NULL
-> and then assigns fs_info.
 
-Please improve the change message (besides avoiding a typo in the subject)=
-.
 
-Would you like to add the tag =E2=80=9CFixes=E2=80=9D?
+On 13.12.19 г. 21:57 ч., Goldwyn Rodrigues wrote:
+> This is an effort to use iomap for direct I/O in btrfs. This would
+> change the call from __blockdev_direct_io() to iomap_dio_rw().
+> 
+> The main objective is to lose the buffer head and use bio defined by
+> iomap code, and hopefully to use more of generic-FS codebase.
+> 
+> These patches are based and tested on v5.5-rc1. I have tested it against
+> xfstests/btrfs.
+> 
+> The tree is available at
+> https://github.com/goldwynr/linux/tree/btrfs-iomap-dio
+> 
+> Changes since v1
+> - Incorporated back the efficiency change for inode locking
+> - Review comments about coding style and git comments
+> - Merge related patches into one
+> - Direct read to go through btrfs_direct_IO()
+> - Removal of no longer used function dio_end_io()
+> 
+> Changes since v2
+> - aligning iomap offset/length to the position/length of I/O
+> - Removed btrfs_dio_data
+> - Removed BTRFS_INODE_READDIO_NEED_LOCK
+> - Re-incorporating write efficiency changes caused lockdep_assert() in
+>   iomap to be triggered, remove that code.
+> 
+> Changes since v3
+> - Fixed freeze on generic/095. Use iomap_end() to account for
+>   failed/incomplete dio instead of btrfs_dio_data
+> 
+> Changes since v4
+> - moved lockdep_assert_held() to functions calling iomap_dio_rw()
+>   This may be called immidiately after calling inode lock and
+>   may feel not required, but it seems important.
+> - Removed comments which are no longer required
+> - Changed commit comments to make them more appropriate
+> 
+> Changes since v5
+> - restore inode_dio_wait() in truncate
 
-Regards,
-Markus
+I'm confused about this - you no longer call inode_dio_begin after patch
+4/8 so inode_dio_wait which is left intact in truncate can never trigger
+a wait really. Exclusion is provided by the fact that btrfs_direct_IO is
+called with rwsem held shared and truncate holds it exclusive? So what
+necessitated restoring inode_dio_wait?
+
+
+Another point, I don't see whether you have explicitly addressed
+concerns raised in:
+
+https://lore.kernel.org/linux-btrfs/20191212003043.31093-1-rgoldwyn@suse.de/T/#me7f96506e5a1d921d05b76d01ecf6ea1ebcea594
+
+> - Removed lockdep_assert_held() near callers
+> 
+> --
+> Goldwyn
+> 
+> 
