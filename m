@@ -2,104 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BBC123033
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F1B123038
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbfLQPZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:25:09 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:39188 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727681AbfLQPZJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:25:09 -0500
-Received: by mail-qv1-f68.google.com with SMTP id y8so4312435qvk.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:25:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2b08/BPBT5+Se5+XLgJ1e3D5ANtbvG4Mq6WP54HCssA=;
-        b=T1WAQs5iR64TVlBoCYh3Lc7/s++gnLZ19/+22a5m6CFiNsGSxPXp9ERdaMUYvHkvMp
-         JUsGdURkssKvo8OGGgggqNqzqtEBdN6W3SWwJ3ZHTbkyJEBuQEMqlM4VohP6Zb5kC9mZ
-         PkGtKyaRNgSHzO9oFAkGTo8Ma+Bh64mpFIljT5o8xWUJid6UT5bhnJFXAbxqUxBFt0nn
-         nhREa8UvsxdqDtyGd/WPAb9qHIkA4YJflul1zsh4yNiaRwd8aOQQqdb4fgIJm3wu6+e/
-         F50OmKTejbq9Cda4lFiCeC9DoQ29n02teLgEBmNzJ0T1jo3x6zjNuIlj3G18IOI9O6+8
-         M39g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2b08/BPBT5+Se5+XLgJ1e3D5ANtbvG4Mq6WP54HCssA=;
-        b=CArs8jVkGbAHvnnZ3axVwkVykL4xU4sxsClXSkcwD4e7vplnxHqPP38eYRxwq68QlW
-         C4R362w9lq2YRYr+R6o+Wi5KCfIQT49jf3bOc3PY8oJ7yjSdxSYvTshYy1P6QSKEgRhK
-         1pY8yNIeuWJbrUewPbwDjy9MTSPnKpqIEFZBa760hSha0FFDUuoqAbaLIVC6E4chNSrL
-         n8clK7o/aiBz8yqZfVKMM6+7SI3qoDdB/9VnV9Tseah/9DT/dUpn2aBBjVGc2VN/Qw4n
-         //perdFFnJjmGSyD4qoVuZnGqO3pj4laVZ7cBw2sMnX/IjegnPMd1yWyS2ax0qXC2i3q
-         8q2A==
-X-Gm-Message-State: APjAAAXSZSy9D2XodhXvYvu9WpIGyOcJvtrPYDhbIOh2Zfhoc5t40LRP
-        lLkllNUB9oMcyh0sfJy5FJIhJQ==
-X-Google-Smtp-Source: APXvYqwXD738AIcmwlgKJbg8R00xEp3Ocl5Lsc4rPnmW/F4qDvbGXFe4p5TdeGBF0Wp5DXJoZ9oI5Q==
-X-Received: by 2002:a05:6214:8cb:: with SMTP id da11mr4952760qvb.228.1576596308042;
-        Tue, 17 Dec 2019 07:25:08 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k50sm8404355qtc.90.2019.12.17.07.25.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:25:07 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] src/fssum: skip subvolumes when building a sum
-Date:   Tue, 17 Dec 2019 10:25:05 -0500
-Message-Id: <20191217152505.44650-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.23.0
+        id S1728108AbfLQPZP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:25:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727723AbfLQPZP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 10:25:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 42562AC5F;
+        Tue, 17 Dec 2019 15:25:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6F254DA81D; Tue, 17 Dec 2019 16:25:11 +0100 (CET)
+Date:   Tue, 17 Dec 2019 16:25:11 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
+Message-ID: <20191217152511.GG3929@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
+ <20191211134929.GL3929@twin.jikos.cz>
+ <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
+ <20191212184725.db3ost7rcopotr5u@treble>
+ <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
+ <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
+ <20191213235054.6k2lcnwa63r26zwi@treble>
+ <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
+ <20191214054515.ougsr5ykhl3vvy57@treble>
+ <fe1e0318-9b74-7ae0-07bd-d7a6c908e79a@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe1e0318-9b74-7ae0-07bd-d7a6c908e79a@infradead.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the snapshot/subvolume support added to fsstress I've been seeing
-random failures with our send/receive related tests.  This is because
-fssum is summing the path with the subvolumes for our test fs'es that
-are generated by fsstress.  But with send/receive it skips subvolumes,
-which makes the sums mismatch.  Fix this by skipping directories that do
-not match our st_dev, which is how we differentiate subvolumes in btrfs.
+On Fri, Dec 13, 2019 at 11:05:18PM -0800, Randy Dunlap wrote:
+> OK, that fixes most of them, but still leaves these 2:
+> 
+> btrfs006.out:fs/btrfs/extent_io.o: warning: objtool: __set_extent_bit()+0x536: unreachable instruction
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- src/fssum.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hard to read from the assembly what C statement is it referring to. I
+think there are also several functions inlined, I don't see anything
+suspicious inside __set_extent_bit itself.
 
-diff --git a/src/fssum.c b/src/fssum.c
-index 6ba0a95c..a243839a 100644
---- a/src/fssum.c
-+++ b/src/fssum.c
-@@ -517,6 +517,12 @@ sum(int dirfd, int level, sum_t *dircs, char *path_prefix, char *path_in)
- 	int excl;
- 	sum_file_data_t sum_file_data = flags[FLAG_STRUCTURE] ?
- 			sum_file_data_strict : sum_file_data_permissive;
-+	struct stat64 dir_st;
-+
-+	if (fstat64(dirfd, &dir_st)) {
-+		perror("fstat");
-+		exit(-1);
-+	}
- 
- 	d = fdopendir(dirfd);
- 	if (!d) {
-@@ -570,6 +576,11 @@ sum(int dirfd, int level, sum_t *dircs, char *path_prefix, char *path_in)
- 				path_prefix, path, strerror(errno));
- 			exit(-1);
- 		}
-+
-+		/* We are crossing into a different subvol, skip this subtree. */
-+		if (st.st_dev != dir_st.st_dev)
-+			goto next;
-+
- 		sum_add_u64(&meta, level);
- 		sum_add(&meta, namelist[i], strlen(namelist[i]));
- 		if (!S_ISDIR(st.st_mode))
--- 
-2.23.0
+> btrfs006.out:fs/btrfs/relocation.o: warning: objtool: add_tree_block()+0x501: unreachable instruction
 
+Probably also heavily inlined, the function has like 50 lines, a few
+non-trivial function calls but the offset in the warning suggests a
+larger size.
+
+While browsing the callees I noticed that both have in common a function
+that is supposed to print and stop at fatal errors. They're
+extent_io_tree_panic (extent_io.c) and backref_tree_panic
+(relocation.c). Both call btrfs_panic which is a macro:
+
+3239 #define btrfs_panic(fs_info, errno, fmt, args...)                       \
+3240 do {                                                                    \
+3241         __btrfs_panic(fs_info, __func__, __LINE__, errno, fmt, ##args); \
+3242         BUG();                                                          \
+3243 } while (0)
+
+There are no conditionals and BUG has the __noreturn annotation
+(unreachable()) so all is in place and I don't have better ideas what's
+causing the reports.
