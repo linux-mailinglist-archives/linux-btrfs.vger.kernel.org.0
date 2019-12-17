@@ -2,90 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CD6123614
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 20:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FFE123752
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 21:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbfLQT4w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 14:56:52 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33627 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbfLQT4w (ORCPT
+        id S1727725AbfLQUaH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 15:30:07 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:37518 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727497AbfLQUaH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 14:56:52 -0500
-Received: by mail-qt1-f194.google.com with SMTP id d5so8180469qto.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 11:56:52 -0800 (PST)
+        Tue, 17 Dec 2019 15:30:07 -0500
+Received: by mail-wm1-f42.google.com with SMTP id f129so4640894wmf.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 12:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h+xgOYrkbJ4BY6ml9OrsMnXMWsXA6UKKNsIOK9D7wlQ=;
-        b=Nk/MK2ZzXrWLiphhyNlGRzpc7Wqke/gW5jc7A1UBFpwlj9+Q28P9De7lA3yKq12mwP
-         7POzemkCUWiWiYFwF4B5IHpP11bAA4mX9VV/UERxH6N43F21V51Cm943HuXisSFXb9Qp
-         Qnfklp241zuYBjEtllANUjPt/eq5y20AHb8PNYGyT4h4/dyYy7B1Ft7fm6VpeS/z3yCN
-         krK/zI6UXl/P290/pt2OcgY6aUIpgb8SFc1tZM2/oXWDE2ejwvuLS815+2M+CsyEy/CG
-         R62dKI9HIIbKLn5Ol4TGbc7fOjAAJdmRpwIJ1841IT0oyHe404bJg8QM7ynIGmUtYpcD
-         6Q4A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OS4Bnx3kWPzhl1EaFFqoekT/BzMzV0Tn4ovqTEWSjFA=;
+        b=l4iUDqPkb2rKDlCtZbOnrWFlm9y+r+CB/ZQ18cmJ6Bv5N6HRhu/OY9/pFnLrtqDmrD
+         I6P8OwEtvVBFpCElUiR3OrhbRDi8mqkF5JSEZdXz+hwKTdAdc5n1c7YOyqE5K57rvAGw
+         /jQK5FgXtzASAP1TGUpIaCdxb2cRw7WtzJx0+jrAqBCbFCGn0ju2nn3WGPs5zL1aw9eM
+         VXGTv5+5qLZTptvTVtpfIqPn7nD0MnQQ/Crd7xx/HpYWUkaZCUbomSZeHu0QSbkBUE8h
+         rLmJWHT/39RteCeioXbItrgCyluaqITK0UOA9e4NmhayiE2N0c0weFNkWrVoJccynTsy
+         6IPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=h+xgOYrkbJ4BY6ml9OrsMnXMWsXA6UKKNsIOK9D7wlQ=;
-        b=VPFdCIfDNxBSafP0YfKZv2RHH6ECAvBjhV1FQEEqZZJKMu1TXzdUnpP/K9KW/kr70n
-         a4lsF29SdOVdUmPX9DaEwVFuy2GIuOy/bRrqW6U+tmSN8J4vngegxlMpVHb+AQp5nN3l
-         oYK4z+Il11Tp36IVJJPd6TQJ1THY8Guy50egTlL7fdCdwCJyYNXA3TFRHcVPWVPuqqwt
-         UeZCzC8LGhK4f141jE5IXMsOe0S4EBNvAPXLSkYmz6yVKACKdvdpu+qkxTmdsZxzrZ81
-         laSDKNacTlT4O/EwJzcO1gpoeXnaUJotNGYWQw59KWxEJN0iVN28x3OeYNfyYiewrctD
-         MJXg==
-X-Gm-Message-State: APjAAAUSkaGxlc04ybS7pzrjEma2TahxmFbCqkRPLkIi+ZpUF1J6INtZ
-        8SgoabQnRqYuUvij5VI/bAJj2g==
-X-Google-Smtp-Source: APXvYqzgzSdABrPoAehRLV20jpUGCp+P0ac1GI8NgYO3LEWzQxu74NpSHzk6OnhXj/v/30fV9yXhGg==
-X-Received: by 2002:ac8:7b9b:: with SMTP id p27mr6300021qtu.2.1576612611677;
-        Tue, 17 Dec 2019 11:56:51 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::4217])
-        by smtp.gmail.com with ESMTPSA id f42sm8507483qta.0.2019.12.17.11.56.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Dec 2019 11:56:50 -0800 (PST)
-Subject: Re: [PATCH v6 22/28] btrfs: disallow inode_cache in HMZONED mode
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-23-naohiro.aota@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <44cf8b1a-d5b4-dfb1-7ce7-8f40818da574@toxicpanda.com>
-Date:   Tue, 17 Dec 2019 14:56:49 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        bh=OS4Bnx3kWPzhl1EaFFqoekT/BzMzV0Tn4ovqTEWSjFA=;
+        b=QYhFD4+vyaus6UFd6G9X32opqC7O1/WE1xn8wZ64v+1zsDMZnpWuKNAtgDzZ0MgFNN
+         9/Dz4eDnOU57HoPlBB1MY+2P8qQet2cIKouap3TzD+8MuNNOzYdN3usD3z/KjIT9OXVO
+         Mf10tMyfolydup2snd657trdmfzmfAS0phSOcCSFO8+GqP4Mh8FfjKKaQYCOHvruMMZu
+         oOzxt7Piwn0gEBEdysO/mKSKbtjPFQr+ibLpkEbWLrYBiDXNN4UDEyTs5NQKhDQU7bFc
+         W7X+z2uMIGT17D0x4V82OnQU7yNNoa1xF5jfzY+DEKpTX/l7jW77WFtBMSl9G8E6t6E9
+         21bw==
+X-Gm-Message-State: APjAAAW1olFmA1y9RqQqbP0bxlQgMtttueBkYwGzYsshSyYkpgv2fuLd
+        qTUWGXPvRx+YhtcdAVCmE+yLIKDO
+X-Google-Smtp-Source: APXvYqx/wMZfKskwtYyoS1aSIv1EWhpJIX8tmuSFvAL4thtQeYt1SacchR4J9IZ9hofVfLc4Y+imVQ==
+X-Received: by 2002:a1c:498a:: with SMTP id w132mr7118078wma.10.1576614605382;
+        Tue, 17 Dec 2019 12:30:05 -0800 (PST)
+Received: from hephaestus.suse.de ([179.185.209.78])
+        by smtp.gmail.com with ESMTPSA id h17sm27910619wrs.18.2019.12.17.12.30.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2019 12:30:04 -0800 (PST)
+From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
+Subject: [btrfs-progs PATCH 0/4] tests: do not fail if dm-thin is missing
+Date:   Tue, 17 Dec 2019 17:31:51 -0300
+Message-Id: <20191217203155.24206-1-marcos.souza.org@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191213040915.3502922-23-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/12/19 11:09 PM, Naohiro Aota wrote:
-> inode_cache use pre-allocation to write its cache data. However,
-> pre-allocation is completely disabled in HMZONED mode.
-> 
-> We can technically enable inode_cache in the same way as relocation.
-> However, inode_cache is rarely used and the man page discourage using it.
-> So, let's just disable it for now.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Same comment as the mixed_bg's comment
+Hi there,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+these patchset is trying to fix the issue 192[1] by checking if dm-thin exists,
+and if it's not available, skip the test. In the last patch, the same is done
+for dmsetup. Feel free to ignore the last patch if you think we should stop the
+tests if dmsetup isn't available.
 
-Thanks,
+Thanks!
 
-Josef
+[1]: https://github.com/kdave/btrfs-progs/issues/192
+
+Marcos Paulo de Souza (4):
+  tests: common: Add check_dm_target_support helper
+  tests: mkfs: 017: Use check_dm_target_support helper
+  tests: mkfs: 005: Use check_dm_target_support helper
+  tests: Do not fail is dmsetup is missing
+
+ tests/common                                   | 18 ++++++++++++++++++
+ .../005-long-device-name-for-ssd/test.sh       |  2 +-
+ .../test.sh                                    |  2 +-
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+-- 
+2.23.0
+
