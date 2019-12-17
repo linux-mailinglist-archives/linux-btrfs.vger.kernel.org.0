@@ -2,53 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B66312311C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7EE12312D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbfLQQGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 11:06:51 -0500
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:43307 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727737AbfLQQGv (ORCPT
+        id S1728236AbfLQQK5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 11:10:57 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:36443 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728113AbfLQQK5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 11:06:51 -0500
-Received: by mail-ua1-f65.google.com with SMTP id o42so3607338uad.10;
-        Tue, 17 Dec 2019 08:06:50 -0800 (PST)
+        Tue, 17 Dec 2019 11:10:57 -0500
+Received: by mail-vs1-f67.google.com with SMTP id u14so2829781vsu.3;
+        Tue, 17 Dec 2019 08:10:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=67jY2dfupyUgudSQIPQMKibfXNp2rZfUJ94zrvS6ZX4=;
-        b=hqMGWbib5zCtCofQR+kyIYdaWH7F08iXD29eS+59WYe6lOLyoFVw+Y6hkcHmblg7OP
-         Md2mhd0j/QgU4bo8rzje1meIawPlnbLQmHyC5xuSHdAyvwAsssCcFBbSYWVKptN0W46/
-         19zNvSFxwcJ2LvRh/36qFKSX+xEH1NqdMyfDRRGRHdtXOPWYv9NNGwtc2UIgqDYreaR5
-         zGpuUFal0QAQgm0IeITzXTGdFvcrvOxngQNqjMZbv7taNMA2/nLN0l6yW+CWErHXpClu
-         /C4qBtLHeNyqm7a/O3MHUU1gMwjpZ6QwMO/wf681gbdcmWGtmM1nXlMfU6Ipii1BeLWL
-         QfAA==
+        bh=klv7YatJjk2cKbu/5CUshoZ5n6UD9+mnIYxhMrt4Z28=;
+        b=bVAMj+elRj5gsIbktJ8Qr5w7Xc/4S94AXEP6JPzaosSKj/VnAVspZdH39EbivMHEMu
+         7CGevr03OUxFkYpZL1rXGnZ4r/+FJWMJhd4jPlqJEck8HkIAE/+GsLOY5gz17OBZcdIU
+         9s69eul2Mg9vJKqfhjQ8pmemfXo57NY/tkIemZm/CUPsw97s46+xS2B3UO4lBm9kSlPD
+         flT5SWVgF8pIteS5TKEn8SjySete8v4bNuZqVUZTy87tOUl3L72SdjNO8q3YmaeP7tLs
+         hDd+8Jt1PUF/W9a4bktfrOziUBLhK1JqBmFMPFZH/xXU/nb6R2WTn3lePj62SGfPm3M3
+         f/Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=67jY2dfupyUgudSQIPQMKibfXNp2rZfUJ94zrvS6ZX4=;
-        b=Ssxnw19zU5tayi2C8xMwBAp0xOkaUDuSub0SBZePVMadxbd3tPbZYZQ8BHXgcgt3E9
-         t/EZphCcD4m0eWSP7HGLmY7RdnEtFr3M81+gtBzFHFGigaCMGGxx5nIstkudHKsQkF4z
-         /+QnfHV8hxmeOcm9kc3Usl9Wb2PXDM6+I1XuROHOxyT4hVHSD1j8jd/Rshz4qUdQs/Yz
-         Y4RCE8m/uuNpMwm/WXcau6xoMkwZD38MswxQZuYqqz1+BytW4rCBQcPrCz01RqgTe3Yh
-         WQWFpOTx/7E4cxtZ2TrViT98jeKahQztd+SEZ9B23pkKIr3vCMcCyc6/i5zuEZAsK8p8
-         h2bQ==
-X-Gm-Message-State: APjAAAW8cix2kZl7nlxrky01vQvlD1wQFwmAT0VQFJovUFoRpZROfJOC
-        L3ikDttQRAsx7YAQWsUUwOvYupa/djIVZwCOioM=
-X-Google-Smtp-Source: APXvYqylGIYI9trRKDygWNLrrYljOCG9nlet7yHlfllPKZ7z4G8B16iO7tdM7SGRSkKPVbFX5ikc1i140mGlXsJ35ec=
-X-Received: by 2002:a9f:3e84:: with SMTP id x4mr3600376uai.83.1576598809729;
- Tue, 17 Dec 2019 08:06:49 -0800 (PST)
+        bh=klv7YatJjk2cKbu/5CUshoZ5n6UD9+mnIYxhMrt4Z28=;
+        b=MQso0tNWD03ZcStIGBi5OZD/ajEAVV0l1TAuF5XX3XeA+kRmMymAS47fVcdRcm0Z8/
+         5KDLsCYs8UmNEFmbDoZKxnxlFQHa+ZiUOqkksNeP4RSM1S+Fy9jXKf4fswKwNWRZMmTi
+         NPk68gTv0qYIkJq/AuSeSp9smrtaO146y7AL22V/6ave7hwFZp4YSLl9NH6WxkejT8lp
+         wHk2HD9rqj835AmXxEjNkQDY0qXweMuGsUGMMkzGb1EDbD9CCgYWCs2WhveeyeUbgFBa
+         aN0jZrAjkmEZDWsTBkQ6KIQ9UfmfwL8PUVk/Xq34nH1Wm510urpjl8f/V6geGWD93PU0
+         eFMg==
+X-Gm-Message-State: APjAAAU2n4ls1uDCW1sxtLihXz/jp5A5LQFLeWtl6JGOudxCatx8bo9m
+        tDhJviFNguljv71Ivity0Yc4HHsutp42sgb3PCo=
+X-Google-Smtp-Source: APXvYqxBLtFHvpCmVJj7oLorQp3/xWjBus5dQWXNf28JDfQmCUJ88JlGiZiui1qLgEGo5NtzVWWHFDycFyn7JsRVqhI=
+X-Received: by 2002:a67:8010:: with SMTP id b16mr3321199vsd.90.1576599055524;
+ Tue, 17 Dec 2019 08:10:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20191114155836.3528-1-josef@toxicpanda.com> <20191114155836.3528-3-josef@toxicpanda.com>
-In-Reply-To: <20191114155836.3528-3-josef@toxicpanda.com>
+References: <20191114155836.3528-1-josef@toxicpanda.com> <20191114155836.3528-4-josef@toxicpanda.com>
+In-Reply-To: <20191114155836.3528-4-josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 17 Dec 2019 16:06:38 +0000
-Message-ID: <CAL3q7H4t_L3JrmP1NNf8VTb+UApbLWC8f69UzsMen1hGzXzb=A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] fsstress: add the ability to create snapshots
+Date:   Tue, 17 Dec 2019 16:10:44 +0000
+Message-ID: <CAL3q7H46VjTJ0O9CFz5yGnWXH2SC-o=bvQ83ONuf3tgrtU7RnQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] fsstress: allow operations to use either a directory
+ or subvol
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     fstests <fstests@vger.kernel.org>, kernel-team@fb.com,
         linux-btrfs <linux-btrfs@vger.kernel.org>
@@ -61,114 +62,127 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Thu, Nov 14, 2019 at 3:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> Snapshots are just fancy subvolumes, add this ability so we can stress
-> snapshot creation.  We get the deletion with SUBVOL_DELETE.
+> Most operations are just looking for a base directory to generate a file
+> in, they don't actually need a directory specifically.  Add FT_ANYDIR to
+> cover both directories and subvolumes, and then use this in all the
+> places where it makes sense.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Looks good, and it works on my test boxes.
+Looks good and it works for me, thanks.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 > ---
->  ltp/fsstress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
+>  ltp/fsstress.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
 >
 > diff --git a/ltp/fsstress.c b/ltp/fsstress.c
-> index e0636a12..f7f5f1dc 100644
+> index f7f5f1dc..30b2bd94 100644
 > --- a/ltp/fsstress.c
 > +++ b/ltp/fsstress.c
-> @@ -129,6 +129,7 @@ typedef enum {
->         OP_SETATTR,
->         OP_SETFATTR,
->         OP_SETXATTR,
-> +       OP_SNAPSHOT,
->         OP_SPLICE,
->         OP_STAT,
->         OP_SUBVOL_CREATE,
-> @@ -255,6 +256,7 @@ void        rmdir_f(int, long);
->  void   setattr_f(int, long);
->  void   setfattr_f(int, long);
->  void   setxattr_f(int, long);
-> +void   snapshot_f(int, long);
->  void   splice_f(int, long);
->  void   stat_f(int, long);
->  void   subvol_create_f(int, long);
-> @@ -322,6 +324,7 @@ opdesc_t    ops[] =3D {
->         { OP_SETFATTR, "setfattr", setfattr_f, 2, 1 },
->         /* set project id (XFS_IOC_FSSETXATTR ioctl) */
->         { OP_SETXATTR, "setxattr", setxattr_f, 1, 1 },
-> +       { OP_SNAPSHOT, "snapshot", snapshot_f, 1, 1 },
->         { OP_SPLICE, "splice", splice_f, 1, 1 },
->         { OP_STAT, "stat", stat_f, 1, 0 },
->         { OP_SUBVOL_CREATE, "subvol_create", subvol_create_f, 1, 1},
-> @@ -1903,6 +1906,7 @@ zero_freq(void)
->  #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+> @@ -200,6 +200,7 @@ struct print_string {
+>  #define        FT_ANYm         ((1 << FT_nft) - 1)
+>  #define        FT_REGFILE      (FT_REGm | FT_RTFm)
+>  #define        FT_NOTDIR       (FT_ANYm & (~FT_DIRm & ~FT_SUBVOLm))
+> +#define FT_ANYDIR      (FT_DIRm | FT_SUBVOLm)
 >
->  opty_t btrfs_ops[] =3D {
-> +       OP_SNAPSHOT,
->         OP_SUBVOL_CREATE,
->         OP_SUBVOL_DELETE,
->  };
-> @@ -4703,6 +4707,55 @@ out:
->         free_pathname(&f);
->  }
+>  #define        FLIST_SLOT_INCR 16
+>  #define        NDCACHE 64
+> @@ -3165,7 +3166,7 @@ creat_f(int opno, long r)
+>         int             v;
+>         int             v1;
 >
-> +void
-> +snapshot_f(int opno, long r)
-> +{
-> +#ifdef HAVE_BTRFSUTIL_H
-> +       enum btrfs_util_error   e;
-> +       pathname_t              f;
-> +       pathname_t              newf;
-> +       fent_t                  *fep;
-> +       int                     id;
-> +       int                     parid;
-> +       int                     v;
-> +       int                     v1;
-> +       int                     err;
-> +
-> +       init_pathname(&f);
-> +       if (!get_fname(FT_SUBVOLm, r, &f, NULL, &fep, &v)) {
-> +               if (v)
-> +                       printf("%d/%d: snapshot - no subvolume\n", procid=
-,
-> +                              opno);
-> +               free_pathname(&f);
-> +               return;
-> +       }
-> +       init_pathname(&newf);
-> +       parid =3D fep->id;
-> +       err =3D generate_fname(fep, FT_SUBVOL, &newf, &id, &v1);
-> +       v |=3D v1;
-> +       if (!err) {
-> +               if (v) {
-> +                       (void)fent_to_name(&f, fep);
-> +                       printf("%d/%d: snapshot - no filename from %s\n",
-> +                              procid, opno, f.path);
-> +               }
-> +               free_pathname(&f);
-> +               return;
-> +       }
-> +       e =3D btrfs_util_create_snapshot(f.path, newf.path, 0, NULL, NULL=
-);
-> +       if (e =3D=3D BTRFS_UTIL_OK)
-> +               add_to_flist(FT_SUBVOL, id, parid, 0);
-> +       if (v) {
-> +               printf("%d/%d: snapshot %s->%s %d(%s)\n", procid, opno,
-> +                      f.path, newf.path, e, btrfs_util_strerror(e));
-> +               printf("%d/%d: snapshot add id=3D%d,parent=3D%d\n", proci=
-d, opno,
-> +                      id, parid);
-> +       }
-> +       free_pathname(&newf);
-> +       free_pathname(&f);
-> +#endif
-> +}
-> +
->  void
->  stat_f(int opno, long r)
->  {
+> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v1))
+> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v1))
+>                 parid =3D -1;
+>         else
+>                 parid =3D fep->id;
+> @@ -3729,7 +3730,7 @@ getdents_f(int opno, long r)
+>         int             v;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_DIRm, r, &f, NULL, NULL, &v))
+> +       if (!get_fname(FT_ANYDIR, r, &f, NULL, NULL, &v))
+>                 append_pathname(&f, ".");
+>         dir =3D opendir_path(&f);
+>         check_cwd();
+> @@ -3761,7 +3762,7 @@ getfattr_f(int opno, long r)
+>         int             xattr_num;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
+> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+>                 if (v)
+>                         printf("%d/%d: getfattr - no filename\n", procid,=
+ opno);
+>                 goto out;
+> @@ -3880,7 +3881,7 @@ listfattr_f(int opno, long r)
+>         int             buffer_len;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
+> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+>                 if (v)
+>                         printf("%d/%d: listfattr - no filename\n", procid=
+, opno);
+>                 goto out;
+> @@ -3930,7 +3931,7 @@ mkdir_f(int opno, long r)
+>         int             v;
+>         int             v1;
+>
+> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
+> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+>                 parid =3D -1;
+>         else
+>                 parid =3D fep->id;
+> @@ -3968,7 +3969,7 @@ mknod_f(int opno, long r)
+>         int             v;
+>         int             v1;
+>
+> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
+> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+>                 parid =3D -1;
+>         else
+>                 parid =3D fep->id;
+> @@ -4326,7 +4327,7 @@ removefattr_f(int opno, long r)
+>         int             xattr_num;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
+> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+>                 if (v)
+>                         printf("%d/%d: removefattr - no filename\n", proc=
+id, opno);
+>                 goto out;
+> @@ -4646,7 +4647,7 @@ setfattr_f(int opno, long r)
+>         int             xattr_num;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
+> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+>                 if (v)
+>                         printf("%d/%d: setfattr - no filename\n", procid,=
+ opno);
+>                 goto out;
+> @@ -4792,7 +4793,7 @@ subvol_create_f(int opno, long r)
+>         int                     err;
+>
+>         init_pathname(&f);
+> -       if (!get_fname(FT_DIRm | FT_SUBVOLm, r, NULL, NULL, &fep, &v))
+> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+>                 parid =3D -1;
+>         else
+>                 parid =3D fep->id;
+> @@ -4872,7 +4873,7 @@ symlink_f(int opno, long r)
+>         int             v1;
+>         char            *val;
+>
+> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
+> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+>                 parid =3D -1;
+>         else
+>                 parid =3D fep->id;
 > --
 > 2.21.0
 >
