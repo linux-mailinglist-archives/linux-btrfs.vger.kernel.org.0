@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7EE12312D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7171231FF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbfLQQK5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 11:10:57 -0500
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:36443 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbfLQQK5 (ORCPT
+        id S1728916AbfLQQTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 11:19:17 -0500
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:44447 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728707AbfLQQTQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 11:10:57 -0500
-Received: by mail-vs1-f67.google.com with SMTP id u14so2829781vsu.3;
-        Tue, 17 Dec 2019 08:10:56 -0800 (PST)
+        Tue, 17 Dec 2019 11:19:16 -0500
+Received: by mail-vs1-f68.google.com with SMTP id p6so6808797vsj.11;
+        Tue, 17 Dec 2019 08:19:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=klv7YatJjk2cKbu/5CUshoZ5n6UD9+mnIYxhMrt4Z28=;
-        b=bVAMj+elRj5gsIbktJ8Qr5w7Xc/4S94AXEP6JPzaosSKj/VnAVspZdH39EbivMHEMu
-         7CGevr03OUxFkYpZL1rXGnZ4r/+FJWMJhd4jPlqJEck8HkIAE/+GsLOY5gz17OBZcdIU
-         9s69eul2Mg9vJKqfhjQ8pmemfXo57NY/tkIemZm/CUPsw97s46+xS2B3UO4lBm9kSlPD
-         flT5SWVgF8pIteS5TKEn8SjySete8v4bNuZqVUZTy87tOUl3L72SdjNO8q3YmaeP7tLs
-         hDd+8Jt1PUF/W9a4bktfrOziUBLhK1JqBmFMPFZH/xXU/nb6R2WTn3lePj62SGfPm3M3
-         f/Nw==
+        bh=qGj6aWj6B80dTZYAaTQw1v6GOu57Aa9K90ugOVMTzHo=;
+        b=TwdYYL69dCi91jEgQHaTqONGNhe7qdCnHuwYXnWGCP7dIj9aJzUKE2k2ptB+3jd22H
+         NSEEpf3xea1yF1PrrcaWASsaE4gvZrDQlR1jQBK00lUfTIwNZ4bjINXA8ONvVroHVIEw
+         IlkQVt7s5sknR4k5m9Fy7ywv8xIxZfTymUcmoIDXTEGHNaRg6PE/YyjIE3d7DU+0CfCu
+         Dh0WHG/dG/CaNDvPMFuq7Dr+tKfI5TgRog1GIomOnDJovtd9sQaOoNc5va/0vnZKXUfw
+         pw6SD7Zs9TjKSJtXG/WHxVDEzacEqGcvAnQk+kBE0VfazAzdH3hb0nKr17K/e4PdrywP
+         b0eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=klv7YatJjk2cKbu/5CUshoZ5n6UD9+mnIYxhMrt4Z28=;
-        b=MQso0tNWD03ZcStIGBi5OZD/ajEAVV0l1TAuF5XX3XeA+kRmMymAS47fVcdRcm0Z8/
-         5KDLsCYs8UmNEFmbDoZKxnxlFQHa+ZiUOqkksNeP4RSM1S+Fy9jXKf4fswKwNWRZMmTi
-         NPk68gTv0qYIkJq/AuSeSp9smrtaO146y7AL22V/6ave7hwFZp4YSLl9NH6WxkejT8lp
-         wHk2HD9rqj835AmXxEjNkQDY0qXweMuGsUGMMkzGb1EDbD9CCgYWCs2WhveeyeUbgFBa
-         aN0jZrAjkmEZDWsTBkQ6KIQ9UfmfwL8PUVk/Xq34nH1Wm510urpjl8f/V6geGWD93PU0
-         eFMg==
-X-Gm-Message-State: APjAAAU2n4ls1uDCW1sxtLihXz/jp5A5LQFLeWtl6JGOudxCatx8bo9m
-        tDhJviFNguljv71Ivity0Yc4HHsutp42sgb3PCo=
-X-Google-Smtp-Source: APXvYqxBLtFHvpCmVJj7oLorQp3/xWjBus5dQWXNf28JDfQmCUJ88JlGiZiui1qLgEGo5NtzVWWHFDycFyn7JsRVqhI=
-X-Received: by 2002:a67:8010:: with SMTP id b16mr3321199vsd.90.1576599055524;
- Tue, 17 Dec 2019 08:10:55 -0800 (PST)
+        bh=qGj6aWj6B80dTZYAaTQw1v6GOu57Aa9K90ugOVMTzHo=;
+        b=ssQcz1YgXipJTEkfo5jtP5rV3uNDfo4GOAnqXhAEGXxwyqleeTHi86OuHOF8QcE5x+
+         T87zzpO/bsLwt9Nzg7eEibKFjRxDXKYiIYrFe3hyMoWIgIZBHCnOSgujVIEE+VjzRhsr
+         KZT63nrC4ZlVvuJwPmQJw/octZAMUg41LeVHf9ErbHfGxD0R/h3j3v6bFc+yJ7xIDAK1
+         oBSQyxNX6vSO/RlfNd4I8kWkZd4bmCGW2WATtyf7i/jCAUttvythZn0G30hRHrzY9z+o
+         7hZTZ6s9tWwNQ6OszcH6U47SnTudvafU8fjx/UDvxPoB08wts1kGDnTjp27sjauOzxy+
+         bkwQ==
+X-Gm-Message-State: APjAAAWJG0/ZOmWEZDkIx/ikWW18b4VpsacLVzh9SLS0FkGTozz/3xzB
+        tLF9J4dqxL+Qx01/gx/4m48uULb//3sTou3XD7w=
+X-Google-Smtp-Source: APXvYqw/MVv/AXXK6inrPgfHfwTDZI/nMSmpwmRKPzD3/LOiiNWarN57iIvrvzFewohhEfiGn0D0Jw/VK/FqbLrnm/M=
+X-Received: by 2002:a05:6102:18f:: with SMTP id r15mr3375981vsq.206.1576599555724;
+ Tue, 17 Dec 2019 08:19:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20191114155836.3528-1-josef@toxicpanda.com> <20191114155836.3528-4-josef@toxicpanda.com>
-In-Reply-To: <20191114155836.3528-4-josef@toxicpanda.com>
+References: <20191217152505.44650-1-josef@toxicpanda.com>
+In-Reply-To: <20191217152505.44650-1-josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 17 Dec 2019 16:10:44 +0000
-Message-ID: <CAL3q7H46VjTJ0O9CFz5yGnWXH2SC-o=bvQ83ONuf3tgrtU7RnQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] fsstress: allow operations to use either a directory
- or subvol
+Date:   Tue, 17 Dec 2019 16:19:04 +0000
+Message-ID: <CAL3q7H6pyj1gMz_xQZOG842B0KmxM80Su7kSABV7_qrAvokchw@mail.gmail.com>
+Subject: Re: [PATCH] src/fssum: skip subvolumes when building a sum
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests <fstests@vger.kernel.org>, kernel-team@fb.com,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -60,131 +59,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 3:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
+On Tue, Dec 17, 2019 at 3:25 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> Most operations are just looking for a base directory to generate a file
-> in, they don't actually need a directory specifically.  Add FT_ANYDIR to
-> cover both directories and subvolumes, and then use this in all the
-> places where it makes sense.
+> With the snapshot/subvolume support added to fsstress I've been seeing
+> random failures with our send/receive related tests.  This is because
+> fssum is summing the path with the subvolumes for our test fs'es that
+> are generated by fsstress.  But with send/receive it skips subvolumes,
+> which makes the sums mismatch.  Fix this by skipping directories that do
+> not match our st_dev, which is how we differentiate subvolumes in btrfs.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Looks good and it works for me, thanks.
+Looks good, thanks.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 > ---
->  ltp/fsstress.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
+>  src/fssum.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> diff --git a/ltp/fsstress.c b/ltp/fsstress.c
-> index f7f5f1dc..30b2bd94 100644
-> --- a/ltp/fsstress.c
-> +++ b/ltp/fsstress.c
-> @@ -200,6 +200,7 @@ struct print_string {
->  #define        FT_ANYm         ((1 << FT_nft) - 1)
->  #define        FT_REGFILE      (FT_REGm | FT_RTFm)
->  #define        FT_NOTDIR       (FT_ANYm & (~FT_DIRm & ~FT_SUBVOLm))
-> +#define FT_ANYDIR      (FT_DIRm | FT_SUBVOLm)
+> diff --git a/src/fssum.c b/src/fssum.c
+> index 6ba0a95c..a243839a 100644
+> --- a/src/fssum.c
+> +++ b/src/fssum.c
+> @@ -517,6 +517,12 @@ sum(int dirfd, int level, sum_t *dircs, char *path_p=
+refix, char *path_in)
+>         int excl;
+>         sum_file_data_t sum_file_data =3D flags[FLAG_STRUCTURE] ?
+>                         sum_file_data_strict : sum_file_data_permissive;
+> +       struct stat64 dir_st;
+> +
+> +       if (fstat64(dirfd, &dir_st)) {
+> +               perror("fstat");
+> +               exit(-1);
+> +       }
 >
->  #define        FLIST_SLOT_INCR 16
->  #define        NDCACHE 64
-> @@ -3165,7 +3166,7 @@ creat_f(int opno, long r)
->         int             v;
->         int             v1;
->
-> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v1))
-> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v1))
->                 parid =3D -1;
->         else
->                 parid =3D fep->id;
-> @@ -3729,7 +3730,7 @@ getdents_f(int opno, long r)
->         int             v;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_DIRm, r, &f, NULL, NULL, &v))
-> +       if (!get_fname(FT_ANYDIR, r, &f, NULL, NULL, &v))
->                 append_pathname(&f, ".");
->         dir =3D opendir_path(&f);
->         check_cwd();
-> @@ -3761,7 +3762,7 @@ getfattr_f(int opno, long r)
->         int             xattr_num;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
-> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
->                 if (v)
->                         printf("%d/%d: getfattr - no filename\n", procid,=
- opno);
->                 goto out;
-> @@ -3880,7 +3881,7 @@ listfattr_f(int opno, long r)
->         int             buffer_len;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
-> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
->                 if (v)
->                         printf("%d/%d: listfattr - no filename\n", procid=
-, opno);
->                 goto out;
-> @@ -3930,7 +3931,7 @@ mkdir_f(int opno, long r)
->         int             v;
->         int             v1;
->
-> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
-> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
->                 parid =3D -1;
->         else
->                 parid =3D fep->id;
-> @@ -3968,7 +3969,7 @@ mknod_f(int opno, long r)
->         int             v;
->         int             v1;
->
-> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
-> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
->                 parid =3D -1;
->         else
->                 parid =3D fep->id;
-> @@ -4326,7 +4327,7 @@ removefattr_f(int opno, long r)
->         int             xattr_num;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
-> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
->                 if (v)
->                         printf("%d/%d: removefattr - no filename\n", proc=
-id, opno);
->                 goto out;
-> @@ -4646,7 +4647,7 @@ setfattr_f(int opno, long r)
->         int             xattr_num;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
-> +       if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
->                 if (v)
->                         printf("%d/%d: setfattr - no filename\n", procid,=
- opno);
->                 goto out;
-> @@ -4792,7 +4793,7 @@ subvol_create_f(int opno, long r)
->         int                     err;
->
->         init_pathname(&f);
-> -       if (!get_fname(FT_DIRm | FT_SUBVOLm, r, NULL, NULL, &fep, &v))
-> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
->                 parid =3D -1;
->         else
->                 parid =3D fep->id;
-> @@ -4872,7 +4873,7 @@ symlink_f(int opno, long r)
->         int             v1;
->         char            *val;
->
-> -       if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
-> +       if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
->                 parid =3D -1;
->         else
->                 parid =3D fep->id;
+>         d =3D fdopendir(dirfd);
+>         if (!d) {
+> @@ -570,6 +576,11 @@ sum(int dirfd, int level, sum_t *dircs, char *path_p=
+refix, char *path_in)
+>                                 path_prefix, path, strerror(errno));
+>                         exit(-1);
+>                 }
+> +
+> +               /* We are crossing into a different subvol, skip this sub=
+tree. */
+> +               if (st.st_dev !=3D dir_st.st_dev)
+> +                       goto next;
+> +
+>                 sum_add_u64(&meta, level);
+>                 sum_add(&meta, namelist[i], strlen(namelist[i]));
+>                 if (!S_ISDIR(st.st_mode))
 > --
-> 2.21.0
+> 2.23.0
 >
 
 
