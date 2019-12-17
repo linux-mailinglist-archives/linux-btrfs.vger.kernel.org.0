@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CFB123391
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 18:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B14612339E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 18:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbfLQRa7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 12:30:59 -0500
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:39750 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726191AbfLQRa7 (ORCPT
+        id S1727667AbfLQRdg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 12:33:36 -0500
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:39846 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726191AbfLQRdf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 12:30:59 -0500
-Received: by mail-ua1-f66.google.com with SMTP id q22so3727770uam.6;
-        Tue, 17 Dec 2019 09:30:57 -0800 (PST)
+        Tue, 17 Dec 2019 12:33:35 -0500
+Received: by mail-ua1-f65.google.com with SMTP id q22so3731503uam.6;
+        Tue, 17 Dec 2019 09:33:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=L8iTG+jcGPw8hJXnkKlNo4739HD7wzF13X3OBsz+gQg=;
-        b=unuIYiGHhZplJaLhCrV9zxICc0hIcAdigDTgPJ0MPsiEZBfCNHjM+YvQ6mMnHzkpeb
-         fPJvaeuLt/BbWLkA2dQ9JYRBX/8dDfkqKfiynJyw2iibBxtIwXRj6QAXU3W7tdNc1CXD
-         1gXCuaFG93WmX6W9GC1PO9T4RF23Ejd7gJeIKtaf+LgIf1MKnaNQYpAZoc1otvBXWT/3
-         gii+bnudUjeusOiGJeqHIh90X35+evbosTzj7CD293PuYU12UCcWhp4OqxsUOYoMSGpd
-         dU5W05igD6y+S+3+ptzuyu8Iym46ubZx0Hc6aFvvZBM63kFxeRmfbIDmGt6pRku5HSlm
-         Qwqw==
+        bh=g2ICq4Unry/hyhl7Lp3WAQxmiZQGUFDN3jvo094N4po=;
+        b=h7+98SEjy+OLUBau9Qb0lVVOx4Ly+1/oPL1MXHX+L+tIFR4s5v6NBSut/KuBgn2LoJ
+         XemFgiQnde0HmvM1RzkEFe3BbVEcrZYKDQZoaVWpFDYYIWTjJPfFtzevtyIkXLG67FNL
+         7VtODvGnabyccwWU7Y0hA03b9Xveo1gG+9qIfet+hNcuWXljim1aoDO7r6rTg1C7pDzW
+         JkmBvrTZR9sWmDZ+AmDxA0vb/vd7H0ht8BUrPzJUVehlQ1N3nQlEyZvrTVrFaE/rnyaT
+         Oqv0gxZXi90SppnP/HYqqUDHtNvX88hB+O9vd0Zm+QaAs679zm5sw8TmDjH6Lm+BMrri
+         fHlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=L8iTG+jcGPw8hJXnkKlNo4739HD7wzF13X3OBsz+gQg=;
-        b=jKTJY0p1xgW72egX8tMgyubPI4VoQPephHEHxFDon7oNfipe3YwhhbJvCufyUrST3e
-         3k2mBxVABlLrk/VdLBBIh3TOAowDP95FGJZWB+2SOYsVdsUQUKQdNj9CCDTVBvMfIZTc
-         EV+cj1HKlGFuTssMr/U2v35eaVYVGoP0PrvGhmm1wA6JEv5DEqvYgVbj3r8/CEruH7PT
-         OXlFVKanTox8djt3eLrfT93h3Uv6nAW+8ngmgjAvt+zvbTJV04eraqwsvWBpTBOyt1X1
-         U2QPdWQ/OEm8E1p+jxEivZZ8F160T2F43BkRjHP58Q64WF7Z/mDjkCPIHf2mtW25fxmZ
-         Nc4w==
-X-Gm-Message-State: APjAAAXhZv614PbnxwwklATDI3c8Uovpdf2Mg94MCaSAIQHe7DS1chWZ
-        FVmL131N3fgwYU3oXV5VDkP4+My6fe/lYmdW7QSakbDf
-X-Google-Smtp-Source: APXvYqz5HZtCwL9x9na+222PFQRoIAD1hGF41hyjKpRf3Ynzcdx6Q/LKqbGEp1kMRGVmjsHLGDC/Xtq11PR9ByzreSs=
-X-Received: by 2002:ab0:4ac6:: with SMTP id t6mr4415842uae.0.1576603857209;
- Tue, 17 Dec 2019 09:30:57 -0800 (PST)
+        bh=g2ICq4Unry/hyhl7Lp3WAQxmiZQGUFDN3jvo094N4po=;
+        b=mkxcXyEtl5KfMx4pmOYJ+wI4KaLKIUO7hi+ExQ6STR0vNMQje4g2ynkYJcKiPDgH6s
+         j7iYQ5C5dTQtJ0WKiQIkGOi+5x3oGT7MYD+6AVNtjq+Xk0rw6Ige3nYdsPHx7QmbZqxR
+         bS1WWIehWgzVQirzih/48nfVMfnkLh91NWr93CCfIbLADWL87cDCjWlWg0gFFJTXWWJl
+         gtSEDFyW+9vf9PYH3ORZsA740gtJ41TLRnjy2sX8q5GCo+OnaiEFKGj/SiXfF+k3svUb
+         ABy8IYlpq1tkNd+awEvNoHMEuIBShQ0vMLVuWrgXBqJnERMKAZe0og9AuM/WL+Tq3Q/t
+         AQtA==
+X-Gm-Message-State: APjAAAVBrr5P3iRGZpTzGwLNqFiaf7Tum2GzcCjP6Z8mrRpwnEvyW9+s
+        KNMUxvMRUnXguOXtQmcW3NYqVpi12R/VXplxiAEptr2a
+X-Google-Smtp-Source: APXvYqz0e90x6EJTcuNCpJC40WoBdzti6tNejj7jK2SrrOllLLGknQDOByX9IeqzgzzOG6Abp8VRzJm4kHz7trn7tVc=
+X-Received: by 2002:ab0:4ac6:: with SMTP id t6mr4426635uae.0.1576604013139;
+ Tue, 17 Dec 2019 09:33:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211104029.25541-1-wqu@suse.com> <20191211104029.25541-3-wqu@suse.com>
-In-Reply-To: <20191211104029.25541-3-wqu@suse.com>
+References: <20191211104029.25541-1-wqu@suse.com> <20191211104029.25541-4-wqu@suse.com>
+In-Reply-To: <20191211104029.25541-4-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 17 Dec 2019 17:30:46 +0000
-Message-ID: <CAL3q7H4g7evsO450gmKK-rfVmLiLrB+VvxbEKKfj+F94ERafbg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] fstests: btrfs/14[23]: Use proper help to get both
- devid and physical offset for corruption.
+Date:   Tue, 17 Dec 2019 17:33:22 +0000
+Message-ID: <CAL3q7H5Oa9W0M3UYxhT6dgGXe6MkDE938Z7dcy8wOow_FxR5_Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] fstests: btrfs/15[78]: Use proper helper to get both
+ devid and physical offset for corruption
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     fstests <fstests@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
@@ -61,248 +61,111 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 10:41 AM Qu Wenruo <wqu@suse.com> wrote:
+On Wed, Dec 11, 2019 at 10:40 AM Qu Wenruo <wqu@suse.com> wrote:
 >
 > [BUG]
-> When using btrfs-progs v5.4, btrfs/142 and btrfs/143 will fail:
-> btrfs/142 1s ... - output mismatch (see xfstests/results//btrfs/142.out.b=
+> When using btrfs-progs v5.4, btrfs/157 and btrfs/158 will fail:
+>
+> btrfs/157 1s ... - output mismatch (see xfstests/results//btrfs/157.out.b=
 ad)
->     --- tests/btrfs/142.out 2018-09-16 21:30:48.505104287 +0100
->     +++ xfstests/results//btrfs/142.out.bad
-> 2019-12-10 15:35:40.280392626 +0000
->     @@ -3,37 +3,37 @@
+>     --- tests/btrfs/157.out 2018-09-16 21:30:48.505104287 +0100
+>     +++ xfstests/results//btrfs/157.out.bad
+> 2019-12-10 15:35:43.112390076 +0000
+>     @@ -1,9 +1,9 @@
+>      QA output created by 157
+>      wrote 131072/131072 bytes at offset 0
 >      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->      wrote 65536/65536 bytes
+>     -wrote 65536/65536 bytes at offset 9437184
+>     +wrote 65536/65536 bytes at offset 22020096
 >      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa .........=
-.......
->     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa .........=
-.......
->     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa .........=
-.......
->     -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa .........=
-.......
+>     -wrote 65536/65536 bytes at offset 9437184
 >     ...
->     (Run 'diff -u xfstests/tests/btrfs/142.out xfstests/results//btrfs/14=
-2.out.bad' to see the entire diff)
+>     (Run 'diff -u xfstests/tests/btrfs/157.out xfstests/results//btrfs/15=
+7.out.bad'  to see the entire diff)
+> btrfs/158 2s ... - output mismatch (see xfstests/results//btrfs/158.out.b=
+ad)
+>     --- tests/btrfs/158.out 2018-09-16 21:30:48.505104287 +0100
+>     +++ xfstests/results//btrfs/158.out.bad
+> 2019-12-10 15:35:44.844388521 +0000
+>     @@ -1,9 +1,9 @@
+>      QA output created by 158
+>      wrote 131072/131072 bytes at offset 0
+>      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     -wrote 65536/65536 bytes at offset 9437184
+>     +wrote 65536/65536 bytes at offset 22020096
+>      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     -wrote 65536/65536 bytes at offset 9437184
+>     ...
+>     (Run 'diff -u xfstests/tests/btrfs/158.out xfstests/results//btrfs/15=
+8.out.bad'  to see the entire diff)
 >
 > [CAUSE]
-> Btrfs/14[23] test whether a read on corrupted stripe will re-silver
-> itself.
-> Such test by its nature will need to modify on-disk data, thus need to
-> get the btrfs logical -> physical mapping, which is done by near
-> hard-coded lookup function, which rely on certain stripe:devid sequence.
+> This two tests use physical offset as golden output, while mkfs.btrfs
+> can do whatever it likes to arrange its chunk layout, thus physical
+> offset is never reliable.
 >
-> Recent btrfs-progs commit c501c9e3b816 ("btrfs-progs: mkfs: match devid
-> order to the stripe index") changes how we use devices in mkfs.btrfs,
-> this caused a change in chunk layout, and break the hard-coded
-> stripe:devid sequence.
+> And btrfs-progs commit c501c9e3b816 ("btrfs-progs: mkfs: match devid
+> order to the stripe index") just changed the layout.
+>
+> So the output mismatch and failed.
 >
 > [FIX]
-> This patch will do full devid and physical offset lookup, instead of old
-> physical offset only lookup.
+> In fact, that btrfs-progs commit not only changed offset, but also the
+> device sequence.
 >
-> The only assumption made is, mkfs.btrfs assigns devid sequentially for
-> its devices.
-> Which means, for "mkfs.btrfs $dev1 $dev2 $dev3", we get devid 1 for $dev1=
-,
-> devid 2 for $dev2, and so on.
+> So we can't just simply remove the physical offset, but also need to use
+> proper helper to get both devid (as its device path) and physical offset
+> for corruption.
 >
-> This change will allow btrfs/14[23] to handle even future chunk layout
-> change. (Although I hope this will never happen again).
->
-> This also addes extra debug output (although less than 10 lines) into
-> $seqres.full, just in case when layout changes and current lookup can't
-> handle it, developer can still pindown the problem easily.
+> As long as mkfs.btrfs still uses sequential devid, these tests should
+> handle future chunk layout change without problem.
 >
 > Reported-by: Filipe Manana <fdmanana@suse.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  tests/btrfs/142     | 50 +++++++++++++++++++++++++++++++--------------
->  tests/btrfs/142.out |  2 --
->  tests/btrfs/143     | 48 +++++++++++++++++++++++++++++++------------
->  tests/btrfs/143.out |  2 --
->  4 files changed, 70 insertions(+), 32 deletions(-)
+>  tests/btrfs/157     | 53 +++++++++++++++++++++++++++++----------------
+>  tests/btrfs/157.out |  4 ----
+>  tests/btrfs/158     | 48 +++++++++++++++++++++++++---------------
+>  tests/btrfs/158.out |  4 ----
+>  4 files changed, 65 insertions(+), 44 deletions(-)
 >
-> diff --git a/tests/btrfs/142 b/tests/btrfs/142
-> index a23fe1bf..9c037ff6 100755
-> --- a/tests/btrfs/142
-> +++ b/tests/btrfs/142
-> @@ -47,30 +47,45 @@ _require_command "$FILEFRAG_PROG" filefrag
+> diff --git a/tests/btrfs/157 b/tests/btrfs/157
+> index 7f75c407..80b01b8d 100755
+> --- a/tests/btrfs/157
+> +++ b/tests/btrfs/157
+> @@ -51,22 +51,30 @@ _require_scratch_dev_pool 4
+>  _require_btrfs_command inspect-internal dump-tree
+>  _require_btrfs_fs_feature raid56
 >
->  get_physical()
+> -get_physical_stripe0()
+> +get_physical()
 >  {
-> -        # $1 is logical address
-> -        # print chunk tree and find devid 2 which is $SCRATCH_DEV
-> +       local logical=3D$1
-> +       local stripe=3D$2
->          $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
+> -       $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
+> -       grep " DATA\|RAID6" -A 10 | \
+> -       $AWK_PROG '($1 ~ /stripe/ && $3 ~ /devid/ && $2 ~ /0/) { print $6=
+ }'
+> +       local stripe=3D$1
+> +        $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
 \
-> -       grep $1 -A 6 | awk '($1 ~ /stripe/ && $3 ~ /devid/ && $4 ~ /1/) {=
- print $6 }'
-> +               grep $logical -A 6 | \
+> +               grep " DATA\|RAID6" -A 10 | \
 > +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
  { print \$6 }"
 
-Should use $AWK_PROG instead of direct call to 'awk'.
+Same as in the other patch, use $AWK_PROG instead.
 
 >  }
 >
+> -get_physical_stripe1()
 > +get_devid()
-> +{
-> +       local logical=3D$1
-> +       local stripe=3D$2
+>  {
+> -       $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
+> -       grep " DATA\|RAID6" -A 10 | \
+> -       $AWK_PROG '($1 ~ /stripe/ && $3 ~ /devid/ && $2 ~ /1/) { print $6=
+ }'
+> +       local stripe=3D$1
 > +        $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
 \
-> +               grep $logical -A 6 | \
-> +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
- { print \$4 }"
-
-Same here.
-
-> +}
->
-> -SYSFS_BDEV=3D`_sysfs_dev $SCRATCH_DEV`
-> +get_device_path()
-> +{
-> +       local devid=3D$1
-> +       echo "$SCRATCH_DEV_POOL" | awk "{print \$$devid}"
-> +}
->
->  start_fail()
->  {
-> +       local sysfs_bdev=3D"$1"
->         echo 100 > $DEBUGFS_MNT/fail_make_request/probability
->         echo 2 > $DEBUGFS_MNT/fail_make_request/times
->         echo 1 > $DEBUGFS_MNT/fail_make_request/task-filter
->         echo 0 > $DEBUGFS_MNT/fail_make_request/verbose
-> -       echo 1 > $SYSFS_BDEV/make-it-fail
-> +       echo 1 > $sysfs_bdev/make-it-fail
->  }
->
->  stop_fail()
->  {
-> +       local sysfs_bdev=3D"$1"
->         echo 0 > $DEBUGFS_MNT/fail_make_request/probability
->         echo 0 > $DEBUGFS_MNT/fail_make_request/times
->         echo 0 > $DEBUGFS_MNT/fail_make_request/task-filter
-> -       echo 0 > $SYSFS_BDEV/make-it-fail
-> +       echo 0 > $sysfs_bdev/make-it-fail
->  }
->
->  _scratch_dev_pool_get 2
-> @@ -87,17 +102,23 @@ _scratch_mount -o nospace_cache,nodatasum
->  $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foob=
-ar" |\
->         _filter_xfs_io_offset
->
-> -# step 2, corrupt the first 64k of one copy (on SCRATCH_DEV which is the=
- first
-> -# one in $SCRATCH_DEV_POOL
-> +# step 2, corrupt the first 64k of stripe #1
->  echo "step 2......corrupt file extent" >>$seqres.full
->
->  ${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
->  logical_in_btrfs=3D`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_fi=
-lefrag | cut -d '#' -f 1`
-> -physical_on_scratch=3D`get_physical ${logical_in_btrfs}`
-> +physical=3D`get_physical ${logical_in_btrfs} 1`
-> +devid=3D$(get_devid ${logical_in_btrfs} 1)
-> +target_dev=3D$(get_device_path $devid)
-> +
-> +SYSFS_BDEV=3D`_sysfs_dev $target_dev`
->
->  _scratch_unmount
-> -$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical_on_scratch 64K" $SCR=
-ATCH_DEV |\
-> -       _filter_xfs_io_offset
-> +$BTRFS_UTIL_PROG ins dump-tree -t 3 $SCRATCH_DEV | \
-> +       grep $logical_in_btrfs -A 6 >> $seqres.full
-> +echo "Corrupt stripe 1 devid $devid devpath $target_dev physical $physic=
-al" \
-> +       >> $seqres.full
-> +$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $target_dev > /=
-dev/null
->
->  _scratch_mount -o nospace_cache
->
-> @@ -106,8 +127,7 @@ echo "step 3......repair the bad copy" >>$seqres.full
->
->  # since raid1 consists of two copies, and the bad copy was put on stripe=
- #1
->  # while the good copy lies on stripe #0, the bad copy only gets access w=
-hen the
-> -# reader's pid % 2 =3D=3D 1 is true
-> -start_fail
-> +start_fail $SYSFS_BDEV
->  while [[ -z ${result} ]]; do
->         # enable task-filter only fails the following dio read so the rep=
-air is
->         # supposed to work.
-> @@ -117,12 +137,12 @@ while [[ -z ${result} ]]; do
->                 exec $XFS_IO_PROG -d -c \"pread -b 128K 0 128K\" \"$SCRAT=
-CH_MNT/foobar\"
->         fi");
->  done
-> -stop_fail
-> +stop_fail $SYSFS_BDEV
->
->  _scratch_unmount
->
->  # check if the repair works
-> -$XFS_IO_PROG -c "pread -v -b 512 $physical_on_scratch 512" $SCRATCH_DEV =
-|\
-> +$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $target_dev | \
->         _filter_xfs_io_offset
->
->  _scratch_dev_pool_put
-> diff --git a/tests/btrfs/142.out b/tests/btrfs/142.out
-> index 0f32ffbe..2e22f292 100644
-> --- a/tests/btrfs/142.out
-> +++ b/tests/btrfs/142.out
-> @@ -1,8 +1,6 @@
->  QA output created by 142
->  wrote 131072/131072 bytes
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> -wrote 65536/65536 bytes
-> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
-> diff --git a/tests/btrfs/143 b/tests/btrfs/143
-> index 91af52f9..b2ffeb63 100755
-> --- a/tests/btrfs/143
-> +++ b/tests/btrfs/143
-> @@ -54,30 +54,48 @@ _require_command "$FILEFRAG_PROG" filefrag
->
->  get_physical()
->  {
-> -        # $1 is logical address
-> -        # print chunk tree and find devid 2 which is $SCRATCH_DEV
-> +       local logical=3D$1
-> +       local stripe=3D$2
->          $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
-\
-> -       grep $1 -A 6 | awk '($1 ~ /stripe/ && $3 ~ /devid/ && $4 ~ /1/) {=
- print $6 }'
-> +               grep $logical -A 6 | \
-> +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
- { print \$6 }"
-
-Same here.
-
-> +}
-> +
-> +get_devid()
-> +{
-> +       local logical=3D$1
-> +       local stripe=3D$2
-> +        $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
-\
-> +               grep $logical -A 6 | \
+> +               grep " DATA\|RAID6" -A 10 | \
 > +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
  { print \$4 }"
 
@@ -316,106 +179,177 @@ Same here.
 > +       echo "$SCRATCH_DEV_POOL" | awk "{print \$$devid}"
 >  }
 >
->  SYSFS_BDEV=3D`_sysfs_dev $SCRATCH_DEV`
+>  _scratch_dev_pool_get 4
+> -# step 1: create a raid6 btrfs and create a 4K file
+> +# step 1: create a raid6 btrfs and create a 128K file
+>  echo "step 1......mkfs.btrfs" >>$seqres.full
 >
->  start_fail()
->  {
-> +       local sysfs_bdev=3D"$1"
->         echo 100 > $DEBUGFS_MNT/fail_make_request/probability
->         # the 1st one fails the first bio which is reading 4k (or more du=
-e to
->         # readahead), and the 2nd one fails the retry of validation so th=
-at it
->         # triggers read-repair
->         echo 2 > $DEBUGFS_MNT/fail_make_request/times
->         echo 0 > $DEBUGFS_MNT/fail_make_request/verbose
-> -       echo 1 > $SYSFS_BDEV/make-it-fail
-> +       echo 1 > $sysfs_bdev/make-it-fail
->  }
+>  mkfs_opts=3D"-d raid6 -b 1G"
+> @@ -80,18 +88,25 @@ _scratch_mount -o nospace_cache
+>  $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
+>         "$SCRATCH_MNT/foobar" | _filter_xfs_io
 >
->  stop_fail()
->  {
-> +       local sysfs_bdev=3D"$1"
->         echo 0 > $DEBUGFS_MNT/fail_make_request/probability
->         echo 0 > $DEBUGFS_MNT/fail_make_request/times
-> -       echo 0 > $SYSFS_BDEV/make-it-fail
-> +       echo 0 > $sysfs_bdev/make-it-fail
->  }
->
->  _scratch_dev_pool_get 2
-> @@ -94,17 +112,21 @@ _scratch_mount -o nospace_cache,nodatasum
->  $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foob=
-ar" |\
->         _filter_xfs_io_offset
->
-> -# step 2, corrupt the first 64k of one copy (on SCRATCH_DEV which is the=
- first
-> -# one in $SCRATCH_DEV_POOL
-> +# step 2, corrupt the first 64k of stripe #1
->  echo "step 2......corrupt file extent" >>$seqres.full
->
->  ${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
->  logical_in_btrfs=3D`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_fi=
-lefrag | cut -d '#' -f 1`
-> -physical_on_scratch=3D`get_physical ${logical_in_btrfs}`
-> +physical=3D`get_physical ${logical_in_btrfs} 1`
-> +devid=3D$(get_devid ${logical_in_btrfs} 1)
-> +target_dev=3D$(get_device_path $devid)
->
-> +SYSFS_BDEV=3D`_sysfs_dev $target_dev`
+> +logical=3D`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | =
+cut -d '#' -f 1`
 >  _scratch_unmount
-> -$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical_on_scratch 64K" $SCR=
-ATCH_DEV |\
-> -       _filter_xfs_io_offset
+>
+> -stripe_0=3D`get_physical_stripe0`
+> -stripe_1=3D`get_physical_stripe1`
+> -dev4=3D`echo $SCRATCH_DEV_POOL | awk '{print $4}'`
+> -dev3=3D`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
+> -
+> -# step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
+> -echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4)=
+ and offset $stripe_1 of device_3($dev3)" >>$seqres.full
+> -
+> -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs=
+_io
+> -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs=
+_io
+> +phy0=3D$(get_physical 0)
+> +devid0=3D$(get_devid 0)
+> +devpath0=3D$(get_device_path $devid0)
+> +phy1=3D$(get_physical 1)
+> +devid1=3D$(get_devid 1)
+> +devpath1=3D$(get_device_path $devid1)
 > +
-> +echo "corrupt stripe 1 devid $devid devpath $target_dev physical $physic=
-al" \
-> +       >> $seqres.full
-> +$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $target_dev > /=
-dev/null
+> +# step 2: corrupt stripe #0 and #1
+> +echo "step 2......simulate bitrot at:" >>$seqres.full
+> +echo "      ......stripe #0: devid $devid0 devpath $devpath0 phy $phy0" =
+\
+> +       >>$seqres.full
+> +echo "      ......stripe #1: devid $devid1 devpath $devpath1 phy $phy1" =
+\
+> +       >>$seqres.full
+> +
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy0 64K" $devpath0 > /dev/null
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
 >
->  _scratch_mount -o nospace_cache
+>  # step 3: read foobar to repair the bitrot
+>  echo "step 3......repair the bitrot" >> $seqres.full
+> diff --git a/tests/btrfs/157.out b/tests/btrfs/157.out
+> index 08d592c4..d69c0f1d 100644
+> --- a/tests/btrfs/157.out
+> +++ b/tests/btrfs/157.out
+> @@ -1,10 +1,6 @@
+>  QA output created by 157
+>  wrote 131072/131072 bytes at offset 0
+>  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -wrote 65536/65536 bytes at offset 9437184
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -wrote 65536/65536 bytes at offset 9437184
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>  0200000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
+>  *
+>  0400000
+> diff --git a/tests/btrfs/158 b/tests/btrfs/158
+> index 603e8bea..c8d5af82 100755
+> --- a/tests/btrfs/158
+> +++ b/tests/btrfs/158
+> @@ -43,22 +43,30 @@ _require_scratch_dev_pool 4
+>  _require_btrfs_command inspect-internal dump-tree
+>  _require_btrfs_fs_feature raid56
 >
-> @@ -118,18 +140,18 @@ while [[ -z ${result} ]]; do
->      # invalidate the page cache.
->      _scratch_cycle_mount
+> -get_physical_stripe0()
+> +get_physical()
+>  {
+> -       $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
+> -       grep " DATA\|RAID6" -A 10 | \
+> -       $AWK_PROG '($1 ~ /stripe/ && $3 ~ /devid/ && $2 ~ /0/) { print $6=
+ }'
+> +       local stripe=3D$1
+> +        $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
+\
+> +               grep " DATA\|RAID6" -A 10 | \
+> +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
+ { print \$6 }"
+
+Same here.
+
+>  }
 >
-> -    start_fail
-> +    start_fail $SYSFS_BDEV
->      result=3D$(bash -c "
->          if [[ \$((\$\$ % 2)) -eq 1 ]]; then
->                  exec $XFS_IO_PROG -c \"pread 0 4K\" \"$SCRATCH_MNT/fooba=
-r\"
->          fi");
-> -    stop_fail
-> +    stop_fail $SYSFS_BDEV
->  done
+> -get_physical_stripe1()
+> +get_devid()
+>  {
+> -       $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
+> -       grep " DATA\|RAID6" -A 10 | \
+> -       $AWK_PROG '($1 ~ /stripe/ && $3 ~ /devid/ && $2 ~ /1/) { print $6=
+ }'
+> +       local stripe=3D$1
+> +        $BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | =
+\
+> +               grep " DATA\|RAID6" -A 10 | \
+> +               awk "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/)=
+ { print \$4 }"
+
+Same here.
+
+> +}
+> +
+> +get_device_path()
+> +{
+> +       local devid=3D$1
+> +       echo "$SCRATCH_DEV_POOL" | awk "{print \$$devid}"
+>  }
+>
+>  _scratch_dev_pool_get 4
+> -# step 1: create a raid6 btrfs and create a 4K file
+> +# step 1: create a raid6 btrfs and create a 128K file
+>  echo "step 1......mkfs.btrfs" >>$seqres.full
+>
+>  mkfs_opts=3D"-d raid6 -b 1G"
+> @@ -74,16 +82,22 @@ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsy=
+nc" \
 >
 >  _scratch_unmount
 >
->  # check if the repair works
-> -$XFS_IO_PROG -c "pread -v -b 512 $physical_on_scratch 512" $SCRATCH_DEV =
-|\
-> +$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $target_dev |\
->         _filter_xfs_io_offset
+> -stripe_0=3D`get_physical_stripe0`
+> -stripe_1=3D`get_physical_stripe1`
+> -dev4=3D`echo $SCRATCH_DEV_POOL | awk '{print $4}'`
+> -dev3=3D`echo $SCRATCH_DEV_POOL | awk '{print $3}'`
+> +phy0=3D$(get_physical 0)
+> +devid0=3D$(get_devid 0)
+> +devpath0=3D$(get_device_path $devid0)
+> +phy1=3D$(get_physical 1)
+> +devid1=3D$(get_devid 1)
+> +devpath1=3D$(get_device_path $devid1)
 >
->  _scratch_dev_pool_put
-> diff --git a/tests/btrfs/143.out b/tests/btrfs/143.out
-> index 66afea4b..a9e82ceb 100644
-> --- a/tests/btrfs/143.out
-> +++ b/tests/btrfs/143.out
-> @@ -1,8 +1,6 @@
->  QA output created by 143
->  wrote 131072/131072 bytes
+>  # step 2: corrupt the 1st and 2nd stripe (stripe 0 and 1)
+> -echo "step 2......simulate bitrot at offset $stripe_0 of device_4($dev4)=
+ and offset $stripe_1 of device_3($dev3)" >>$seqres.full
+> -
+> -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_0 64K" $dev4 | _filter_xfs=
+_io
+> -$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $stripe_1 64K" $dev3 | _filter_xfs=
+_io
+> +echo "step 2......simulate bitrot at:" >>$seqres.full
+> +echo "      ......stripe #0: devid $devid0 devpath $devpath0 phy $phy0" =
+\
+> +       >>$seqres.full
+> +echo "      ......stripe #1: devid $devid1 devpath $devpath1 phy $phy1" =
+\
+> +       >>$seqres.full
+> +
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy0 64K" $devpath0 > /dev/null
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
+>
+>  # step 3: scrub filesystem to repair the bitrot
+>  echo "step 3......repair the bitrot" >> $seqres.full
+> diff --git a/tests/btrfs/158.out b/tests/btrfs/158.out
+> index 1f5ad3f7..95562f49 100644
+> --- a/tests/btrfs/158.out
+> +++ b/tests/btrfs/158.out
+> @@ -1,10 +1,6 @@
+>  QA output created by 158
+>  wrote 131072/131072 bytes at offset 0
 >  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> -wrote 65536/65536 bytes
+> -wrote 65536/65536 bytes at offset 9437184
 > -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
->  XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ............=
-....
+> -wrote 65536/65536 bytes at offset 9437184
+> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>  0000000 aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa
+>  *
+>  0400000
 > --
 > 2.23.0
 >
