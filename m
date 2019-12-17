@@ -2,121 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7171231FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BB212332E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 18:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbfLQQTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 11:19:17 -0500
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:44447 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728707AbfLQQTQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 11:19:16 -0500
-Received: by mail-vs1-f68.google.com with SMTP id p6so6808797vsj.11;
-        Tue, 17 Dec 2019 08:19:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=qGj6aWj6B80dTZYAaTQw1v6GOu57Aa9K90ugOVMTzHo=;
-        b=TwdYYL69dCi91jEgQHaTqONGNhe7qdCnHuwYXnWGCP7dIj9aJzUKE2k2ptB+3jd22H
-         NSEEpf3xea1yF1PrrcaWASsaE4gvZrDQlR1jQBK00lUfTIwNZ4bjINXA8ONvVroHVIEw
-         IlkQVt7s5sknR4k5m9Fy7ywv8xIxZfTymUcmoIDXTEGHNaRg6PE/YyjIE3d7DU+0CfCu
-         Dh0WHG/dG/CaNDvPMFuq7Dr+tKfI5TgRog1GIomOnDJovtd9sQaOoNc5va/0vnZKXUfw
-         pw6SD7Zs9TjKSJtXG/WHxVDEzacEqGcvAnQk+kBE0VfazAzdH3hb0nKr17K/e4PdrywP
-         b0eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=qGj6aWj6B80dTZYAaTQw1v6GOu57Aa9K90ugOVMTzHo=;
-        b=ssQcz1YgXipJTEkfo5jtP5rV3uNDfo4GOAnqXhAEGXxwyqleeTHi86OuHOF8QcE5x+
-         T87zzpO/bsLwt9Nzg7eEibKFjRxDXKYiIYrFe3hyMoWIgIZBHCnOSgujVIEE+VjzRhsr
-         KZT63nrC4ZlVvuJwPmQJw/octZAMUg41LeVHf9ErbHfGxD0R/h3j3v6bFc+yJ7xIDAK1
-         oBSQyxNX6vSO/RlfNd4I8kWkZd4bmCGW2WATtyf7i/jCAUttvythZn0G30hRHrzY9z+o
-         7hZTZ6s9tWwNQ6OszcH6U47SnTudvafU8fjx/UDvxPoB08wts1kGDnTjp27sjauOzxy+
-         bkwQ==
-X-Gm-Message-State: APjAAAWJG0/ZOmWEZDkIx/ikWW18b4VpsacLVzh9SLS0FkGTozz/3xzB
-        tLF9J4dqxL+Qx01/gx/4m48uULb//3sTou3XD7w=
-X-Google-Smtp-Source: APXvYqw/MVv/AXXK6inrPgfHfwTDZI/nMSmpwmRKPzD3/LOiiNWarN57iIvrvzFewohhEfiGn0D0Jw/VK/FqbLrnm/M=
-X-Received: by 2002:a05:6102:18f:: with SMTP id r15mr3375981vsq.206.1576599555724;
- Tue, 17 Dec 2019 08:19:15 -0800 (PST)
+        id S1727698AbfLQRIW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 12:08:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47194 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727198AbfLQRIV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 12:08:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6D88BACCA;
+        Tue, 17 Dec 2019 17:08:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id AA7AEDA791; Tue, 17 Dec 2019 18:08:17 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.5-rc3
+Date:   Tue, 17 Dec 2019 18:08:16 +0100
+Message-Id: <cover.1576601647.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <20191217152505.44650-1-josef@toxicpanda.com>
-In-Reply-To: <20191217152505.44650-1-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 17 Dec 2019 16:19:04 +0000
-Message-ID: <CAL3q7H6pyj1gMz_xQZOG842B0KmxM80Su7kSABV7_qrAvokchw@mail.gmail.com>
-Subject: Re: [PATCH] src/fssum: skip subvolumes when building a sum
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 3:25 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> With the snapshot/subvolume support added to fsstress I've been seeing
-> random failures with our send/receive related tests.  This is because
-> fssum is summing the path with the subvolumes for our test fs'es that
-> are generated by fsstress.  But with send/receive it skips subvolumes,
-> which makes the sums mismatch.  Fix this by skipping directories that do
-> not match our st_dev, which is how we differentiate subvolumes in btrfs.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi,
 
-Looks good, thanks.
+a mix of regression fixes and regular fixes for stable trees. Please
+pull. Thanks.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Changes:
 
-> ---
->  src/fssum.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/src/fssum.c b/src/fssum.c
-> index 6ba0a95c..a243839a 100644
-> --- a/src/fssum.c
-> +++ b/src/fssum.c
-> @@ -517,6 +517,12 @@ sum(int dirfd, int level, sum_t *dircs, char *path_p=
-refix, char *path_in)
->         int excl;
->         sum_file_data_t sum_file_data =3D flags[FLAG_STRUCTURE] ?
->                         sum_file_data_strict : sum_file_data_permissive;
-> +       struct stat64 dir_st;
-> +
-> +       if (fstat64(dirfd, &dir_st)) {
-> +               perror("fstat");
-> +               exit(-1);
-> +       }
->
->         d =3D fdopendir(dirfd);
->         if (!d) {
-> @@ -570,6 +576,11 @@ sum(int dirfd, int level, sum_t *dircs, char *path_p=
-refix, char *path_in)
->                                 path_prefix, path, strerror(errno));
->                         exit(-1);
->                 }
-> +
-> +               /* We are crossing into a different subvol, skip this sub=
-tree. */
-> +               if (st.st_dev !=3D dir_st.st_dev)
-> +                       goto next;
-> +
->                 sum_add_u64(&meta, level);
->                 sum_add(&meta, namelist[i], strlen(namelist[i]));
->                 if (!S_ISDIR(st.st_mode))
-> --
-> 2.23.0
->
+- fix swapped error messages for qgroup enable/rescan
 
+- fixes for NO_HOLES feature with clone range
 
---=20
-Filipe David Manana,
+- fix deadlock between iget/srcu lock/synchronize srcu while freeing an
+  inode
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+- fix double lock on subvolume cross-rename
+
+- tree log fixes
+  - fix missing data checksums after replaying a log tree
+  - also teach tree-checker about this problem
+  - skip log replay on orphaned roots
+
+- fix maximum devices constraints for RAID1C -3 and -4
+
+- send: don't print warning on read-only mount regarding orphan cleanup
+
+- error handling fixes
+
+----------------------------------------------------------------
+The following changes since commit fa17ed069c61286b26382e23b57a62930657b9c1:
+
+  btrfs: drop bdev argument from submit_extent_page (2019-11-18 23:43:58 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc2-tag
+
+for you to fetch changes up to fbd542971aa1e9ec33212afe1d9b4f1106cd85a1:
+
+  btrfs: send: remove WARN_ON for readonly mount (2019-12-13 14:10:46 +0100)
+
+----------------------------------------------------------------
+Anand Jain (1):
+      btrfs: send: remove WARN_ON for readonly mount
+
+Andreas Färber (1):
+      btrfs: tree-checker: Fix error format string for size_t
+
+Dan Carpenter (1):
+      btrfs: return error pointer from alloc_test_extent_buffer
+
+David Sterba (1):
+      btrfs: fix devs_max constraints for raid1c3 and raid1c4
+
+Filipe Manana (5):
+      Btrfs: fix cloning range with a hole when using the NO_HOLES feature
+      Btrfs: fix missing data checksums after replaying a log tree
+      Btrfs: make tree checker detect checksum items with overlapping ranges
+      Btrfs: fix removal logic of the tree mod log that leads to use-after-free issues
+      Btrfs: fix hole extent items with a zero size after range cloning
+
+Josef Bacik (7):
+      btrfs: do not call synchronize_srcu() in inode_tree_del
+      btrfs: handle error in btrfs_cache_block_group
+      btrfs: don't double lock the subvol_sem for rename exchange
+      btrfs: abort transaction after failed inode updates in create_subvol
+      btrfs: handle ENOENT in btrfs_uuid_tree_iterate
+      btrfs: skip log replay on orphaned roots
+      btrfs: do not leak reloc root if we fail to read the fs root
+
+Nikolay Borisov (1):
+      btrfs: Fix error messages in qgroup_rescan_init
+
+ fs/btrfs/ctree.c                       |  2 +-
+ fs/btrfs/ctree.h                       |  2 +-
+ fs/btrfs/extent-tree.c                 | 27 ++++++++++++++----
+ fs/btrfs/extent_io.c                   |  6 ++--
+ fs/btrfs/file-item.c                   |  7 +++--
+ fs/btrfs/file.c                        |  4 +--
+ fs/btrfs/inode.c                       | 12 +++-----
+ fs/btrfs/ioctl.c                       | 26 ++++++++---------
+ fs/btrfs/qgroup.c                      |  4 +--
+ fs/btrfs/relocation.c                  |  1 +
+ fs/btrfs/send.c                        |  6 ----
+ fs/btrfs/tests/free-space-tree-tests.c |  4 +--
+ fs/btrfs/tests/qgroup-tests.c          |  4 +--
+ fs/btrfs/tree-checker.c                | 20 +++++++++++--
+ fs/btrfs/tree-log.c                    | 52 ++++++++++++++++++++++++++++++----
+ fs/btrfs/uuid-tree.c                   |  2 ++
+ fs/btrfs/volumes.c                     |  4 +--
+ 17 files changed, 127 insertions(+), 56 deletions(-)
