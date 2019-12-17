@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 618741230B5
+	by mail.lfdr.de (Postfix) with ESMTP id D11D11230B6
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbfLQPoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:44:16 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38728 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727161AbfLQPoP (ORCPT
+        id S1727803AbfLQPoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:44:18 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37631 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727161AbfLQPoR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:44:15 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so6266349qki.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:44:15 -0800 (PST)
+        Tue, 17 Dec 2019 10:44:17 -0500
+Received: by mail-qt1-f194.google.com with SMTP id w47so9074323qtk.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:44:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=CmGiMKcsE2w/6LpKu+Tbv0XmRx8trZlor0ED5UxdMZc=;
-        b=rES4lv/AwS6udkg13ENvnuHv9yNiN9skeLzpo5S8FHBYvcm43NNgmaOINISA6VFhWf
-         htlYqf2jMyJG00bJyGPIs+f3NN8SPYDR7ne1jPLr2MdqTS9htBV4XqNinthdnmxJjHcq
-         VXioq6pXYQ6Dwqpfc+Gs+UabNeCLBo7PQmiwBCnNoCE+lVFprnYG1QFXEKi/g5ZJn22r
-         FSQ3Ua4w6wh8lIix5u/w8HipgkhmtMVpR6kk/qvlqdETIuKgGwL69wy9qdePrkWVmPXm
-         fkhjZoH5hl0oE2yzFy8YqWXGAabSPSmWTLSwdbTwa7EnO8JiXdN3ffQ47dxT1vPtZ8QP
-         NP+g==
+        bh=zPyzRtXrlrV5hNjtM57qkNcFV1toapd2jYelIQaSUe8=;
+        b=TT48LN3xIbWdZ40DAiagelP9KOZGK7UePI5hTgJJg+ddH/GFAv0IkTmDQhfFwT7fcv
+         np35OSfNsqy0Mk4WwqLoEX4Qj0pYoAxJunEm00MnmL9qd7QCMFZPs6mWKl7/z7YtF42T
+         K+IqzqXX258Mp7HUdmQYx3vTQaY5HuOzGzuDlUib9gn6e7b8Rk70tqmgIZrnvBsz5iHy
+         UkjyXdZHhDWyiPWE82ghJhG1wfwsHHFrd2QmAdRm8s7pO+QNSUU2xpR+udtnz4Ih9AvG
+         BTGvwf6lEvId+AOHLFyQdFhe2Xq386xHRCsUvBOECYaXEm/SwNxuVsZ6wKR7BwWiM3em
+         QFoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CmGiMKcsE2w/6LpKu+Tbv0XmRx8trZlor0ED5UxdMZc=;
-        b=qVsy0hQ0rxuanoNcRg5QqC6tLemgwRAoUdldplvRmZrDw86IfZSapunWe9QtTOmkca
-         wjrHXD162Yp5GM27y/siqVIpzo0fWWLnNtI3mZNc7QiEVjwOhZJEUHOvL92GwTc0KfY7
-         WnKtxE9d86491L5L6Mxg8yfkUNVVnB8GrIAdCI4ErPjfw5if6iPqKzBAx5KMZhCsG+Sq
-         HnbJhnsm8DHyZKbu7prbXb+pd41QlNiYf8nDi9u75Utpg2GwQ7NVcwHIyvxF9U/5EwYh
-         nN5Yo8gQw1666B03A1ktoAqLG8W9v+muFq8ILAjqPP8EpEJrn5N13SJf/itdl/nWHRxO
-         DApw==
-X-Gm-Message-State: APjAAAUala+3S67NuF7qWQO7mlaY8hEybDGs+9DG4R3GN4FQixAl1jIE
-        f9xDvoBBNGEGOX10ERgkXwB8jt+YUz2wUQ==
-X-Google-Smtp-Source: APXvYqxTKpWd2B11JTe6T9fYWVWIllb39q9psU1VEKW2tlB3rxxE85zfjTj4HO5dWTIdZlsGkvZkoA==
-X-Received: by 2002:a37:a642:: with SMTP id p63mr5793950qke.85.1576597454314;
-        Tue, 17 Dec 2019 07:44:14 -0800 (PST)
+        bh=zPyzRtXrlrV5hNjtM57qkNcFV1toapd2jYelIQaSUe8=;
+        b=jHOKQugQMJoUHFC/U14vA8tqC5GSSHw46q5f2O1znsoDlpVFlfCWGC/7OCt1mdpTmX
+         E+jBxKAhPwBrag2d8ziyvbXsdcT21phEtrd/HxZklmZ113N+Ze8x0oeNI11I3sAms0dv
+         v6JflfT2c1JzpMXH1MsUsOfE21Cj5k3m9AZkOLiB02zOX5QX9dABJgwCRbH+iIlcGtVt
+         Zs0nMcr0VrHV00D4RK9RR5eYLC5I190wQbQQEr7EgCHN/GB670X+YHAzJtKopPM6H9rO
+         rAqYXy4DJ+QRLEjBc8ytKrMNNkfD+3IzW2LD5Gmgbe0judhO/TzEeQHWeDR687RsHHQi
+         OJ/A==
+X-Gm-Message-State: APjAAAVk92fMMChKcurOF4RutSQrwsLmRDkH4mDZxsZLgMlLUoSYq6tv
+        WkQHdNOWLec+9AX62mK8rYmbbubXPYsFFA==
+X-Google-Smtp-Source: APXvYqzgP129FJLOJXFH7kYVxHotuvlbCzhZGpRZFgRTmUGrnU8MrwbNjYGgqnCZ5Cf0Rzs7In8MrQ==
+X-Received: by 2002:ac8:46da:: with SMTP id h26mr5042064qto.167.1576597456114;
+        Tue, 17 Dec 2019 07:44:16 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id p185sm5349566qkd.126.2019.12.17.07.44.13
+        by smtp.gmail.com with ESMTPSA id y184sm7125747qkd.128.2019.12.17.07.44.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:44:13 -0800 (PST)
+        Tue, 17 Dec 2019 07:44:15 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 4/7] btrfs: hold a ref on the root on the dead roots list
-Date:   Tue, 17 Dec 2019 10:44:01 -0500
-Message-Id: <20191217154404.44831-5-josef@toxicpanda.com>
+Subject: [PATCH 5/7] btrfs: don't take an extra root ref at allocation time
+Date:   Tue, 17 Dec 2019 10:44:02 -0500
+Message-Id: <20191217154404.44831-6-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191217154404.44831-1-josef@toxicpanda.com>
 References: <20191217154404.44831-1-josef@toxicpanda.com>
@@ -60,55 +60,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-At the point we add a root to the dead roots list we have no open inodes
-for that root, so we need to hold a ref on that root to keep it from
-disappearing.
+Now that all the users of roots take references for them we can drop the
+extra root ref we've been taking.  Before we had roots at 2 refs for the
+life of the file system, one for the radix tree, and one simply for
+existing.  Now that we have proper ref accounting in all places that use
+roots we can drop this extra ref simply for existing as we no longer
+need it.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c     | 3 +--
- fs/btrfs/transaction.c | 6 ++++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c            | 20 ++++++--------------
+ fs/btrfs/tests/qgroup-tests.c |  2 ++
+ 2 files changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index cf242d3c1723..ac96214bb5d9 100644
+index ac96214bb5d9..b99eab5381bf 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2082,8 +2082,7 @@ void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
+@@ -1649,22 +1649,11 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+ 	if (ret == 0)
+ 		set_bit(BTRFS_ROOT_ORPHAN_ITEM_INSERTED, &root->state);
  
- 		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
- 			btrfs_drop_and_free_fs_root(fs_info, gang[0]);
--		else
--			btrfs_put_root(gang[0]);
-+		btrfs_put_root(gang[0]);
+-	/*
+-	 * All roots have two refs on them at all times, one for the mounted fs,
+-	 * and one for being in the radix tree.  This way we only free the root
+-	 * when we are unmounting or deleting the subvolume.  We get one ref
+-	 * from __setup_root, one for inserting it into the radix tree, and then
+-	 * we have the third for returning it, and the caller will put it when
+-	 * it's done with the root.
+-	 */
+-	btrfs_grab_root(root);
+ 	ret = btrfs_insert_fs_root(fs_info, root);
+ 	if (ret) {
+ 		btrfs_put_root(root);
+-		if (ret == -EEXIST) {
+-			btrfs_put_root(root);
++		if (ret == -EEXIST)
+ 			goto again;
+-		}
+ 		goto fail;
  	}
+ 	return root;
+@@ -3898,11 +3887,13 @@ int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors)
+ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 				  struct btrfs_root *root)
+ {
++	bool drop_ref = false;
++
+ 	spin_lock(&fs_info->fs_roots_radix_lock);
+ 	radix_tree_delete(&fs_info->fs_roots_radix,
+ 			  (unsigned long)root->root_key.objectid);
+ 	if (test_and_clear_bit(BTRFS_ROOT_IN_RADIX, &root->state))
+-		btrfs_put_root(root);
++		drop_ref = true;
+ 	spin_unlock(&fs_info->fs_roots_radix_lock);
  
- 	while (1) {
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e194d3e4e3a9..2252dd967ad8 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1260,8 +1260,10 @@ void btrfs_add_dead_root(struct btrfs_root *root)
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 
- 	spin_lock(&fs_info->trans_lock);
--	if (list_empty(&root->root_list))
-+	if (list_empty(&root->root_list)) {
-+		btrfs_grab_root(root);
- 		list_add_tail(&root->root_list, &fs_info->dead_roots);
-+	}
- 	spin_unlock(&fs_info->trans_lock);
+ 	if (btrfs_root_refs(&root->root_item) == 0)
+@@ -3920,7 +3911,8 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 		__btrfs_remove_free_space_cache(root->free_ino_pinned);
+ 	if (root->free_ino_ctl)
+ 		__btrfs_remove_free_space_cache(root->free_ino_ctl);
+-	btrfs_put_root(root);
++	if (drop_ref)
++		btrfs_put_root(root);
  }
  
-@@ -2430,7 +2432,7 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root)
- 		ret = btrfs_drop_snapshot(root, NULL, 0, 0);
- 	else
- 		ret = btrfs_drop_snapshot(root, NULL, 1, 0);
--
-+	btrfs_put_root(root);
- 	return (ret < 0) ? 0 : 1;
- }
+ int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
+diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+index 09aaca1efd62..0689f69545a4 100644
+--- a/fs/btrfs/tests/qgroup-tests.c
++++ b/fs/btrfs/tests/qgroup-tests.c
+@@ -507,6 +507,7 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize)
+ 		test_err("couldn't insert fs root %d", ret);
+ 		goto out;
+ 	}
++	btrfs_put_root(tmp_root);
  
+ 	tmp_root = btrfs_alloc_dummy_root(fs_info);
+ 	if (IS_ERR(tmp_root)) {
+@@ -521,6 +522,7 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize)
+ 		test_err("couldn't insert fs root %d", ret);
+ 		goto out;
+ 	}
++	btrfs_put_root(tmp_root);
+ 
+ 	test_msg("running qgroup tests");
+ 	ret = test_no_shared_qgroup(root, sectorsize, nodesize);
 -- 
 2.23.0
 
