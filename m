@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39744123093
+	by mail.lfdr.de (Postfix) with ESMTP id B3977123094
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbfLQPhj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:37:39 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:38017 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbfLQPhj (ORCPT
+        id S1728633AbfLQPhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:37:41 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40657 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728130AbfLQPhl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:37:39 -0500
-Received: by mail-qk1-f195.google.com with SMTP id k6so6247523qki.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:38 -0800 (PST)
+        Tue, 17 Dec 2019 10:37:41 -0500
+Received: by mail-qt1-f193.google.com with SMTP id e6so1929510qtq.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=TQn3GkU5Dr16eJ46X601P/AomUBWnqS4KD7cwF4RRH8=;
-        b=xkop6+NqQ4zqfw6To/ZB5SI5+Fv2A1RJP/FszZ/HCehxfB3GByLLFQPi3hCb15iS2z
-         RbkzRQddAm07p18gYLfXCQDdz5DFpWaDdICZJB2f41SYQ0q4DwyZ1LvqrT5KoIDXdaBm
-         KEzm9U8I1I9IxOa6XVhlhTic3ohrI0ALo10RzhcDET0tTye4AXM/RR+vQhKnyHAFz8BO
-         r1s7KARaa4puAw4UT674ZVShMKiF/lvAaYt2t1Gabrg90r9uNfCKns016VNQpxJ4cDBs
-         XGdmgTOD42qNweP7h2yR2biZ7SdOBpYI92zbfKx994CZ3yGjNIbGzUAi7xdLm62u+l1n
-         a8gg==
+        bh=etKLBG9v+n8eeFTRJEZ/+UjoGM5jhhzFStGHRUUo6WM=;
+        b=coOCnWd9ZXQFwciqEVUX9ha2VZZKiHqmSlTFNbE3aXsmJqtfoGEa8+z7lOTgusV/us
+         WWQRwOHpPbiQQ5qY22hzU5Jzq/gHvPogi0sCtUVJtZsUX4eq2gS9xUmsJQZ0/hIlx9Rc
+         V55yEiyXqdta4aB4r/f/AbXr/7wc5kGRBrMyT9cTQAPYj25tEgXZngYMT93WNqQZo/3n
+         Ia7G/tPVZz8XvEhTAUFZcnbEhkvYL8R3cEDu3hbNIwUw74pskHMMIgeEwPP29qKUEiWI
+         Qx7xSzad1KlYfTV060H9/p6pvou/dtx3AQDAqsnEJvZBAvnfF77NNl0jBI89WzjIC8XD
+         eZgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TQn3GkU5Dr16eJ46X601P/AomUBWnqS4KD7cwF4RRH8=;
-        b=gU+tbcdToh+gGCaJRRcxzDXGFteW65zgfwbyKBHXbm0yRa8khx/AxaRykwL7Yc+PjW
-         1JqEUI0c7vNNDFDbL3vaKVQsEcEi7pnwtlDGYJ7mHVO025AXRTc7uXFPHBzImoK5ramU
-         vUPKas7LzHQU92F950/gVby6VjEPmMqb2y/wUX30m+GyyeRqZLh1qVcvioRc3mrIvGX/
-         nzhFKjJ/D4hj1VR49Q5e42rA8EmWo2fWK+IPkftQ8Q39THWgtEr1qa/DD7akXuSZYMrb
-         O5HIBaqL0iai/c+rqld+NWCZJhnr4VoaajTw+fXbpI/QspIU+GvgxJ4dmagyvKTm4+h0
-         3OBA==
-X-Gm-Message-State: APjAAAX6DMbQXEYoonX5ozFuvJRkztcqv8lhnFKVIOf+UpGFG5qbLDAS
-        siibmGPN/2BS5Gu0L0hYmfU/hgUilIhDpg==
-X-Google-Smtp-Source: APXvYqyHkBFP+2gMWzoddxdOWl6+Vh7m/ZCw3FxUJQQ9J/MATT7thC+qPEQxzrrA6VT9BmXJLqfKhg==
-X-Received: by 2002:a37:9186:: with SMTP id t128mr5364309qkd.180.1576597057996;
-        Tue, 17 Dec 2019 07:37:37 -0800 (PST)
+        bh=etKLBG9v+n8eeFTRJEZ/+UjoGM5jhhzFStGHRUUo6WM=;
+        b=iyO5XkbBeC69WLBnjTHyGWGLmeFLGJzyvIFjVeK+1AWEmW3vL4xQTWxvGWMm9CcMz9
+         XmAUHGGcqQjJoBtT0KkVVcw3LIGS5JugYIcqvc+zpDAA0/kaljT14Ks5uhmocEbNP8v5
+         Qmxj3YTwJO3mGTCIEn7Kjde3eWp6SQwR7i53SaoQ/EVx8uvITm1/VSRnwlSc1RPnlYGE
+         hb/NO+pglR8iwApBm5HePfAsS8EnKha7q7On6s2uOLk4PfbmbVAmQpHZBY8CuLJilqYC
+         1PfKLdbn1LNrWxcFUviRidwn/XVDKc5OeCm9sOglFg44kxzgyS4jHo/n0drW3xSCRu1s
+         KBmQ==
+X-Gm-Message-State: APjAAAWTDw9dgNZ4kyCFFoIfyPsQHM+CygPA+9imxvF7x+pO74GdSqJ6
+        cht9ZPfssH2chWIWHfCL9vz4qQq8BNTyRQ==
+X-Google-Smtp-Source: APXvYqytYttI3Kj8muC756Jffr0xvnFoJIzaeZMyY06794JluNqD8xQRRDdSY2slk92G8ArJKH38bQ==
+X-Received: by 2002:ac8:4257:: with SMTP id r23mr5007243qtm.126.1576597059713;
+        Tue, 17 Dec 2019 07:37:39 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d25sm7099358qka.39.2019.12.17.07.37.37
+        by smtp.gmail.com with ESMTPSA id c20sm8498398qtc.13.2019.12.17.07.37.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:37:37 -0800 (PST)
+        Tue, 17 Dec 2019 07:37:39 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 33/45] btrfs: hold a ref on the root in btrfs_ioctl_send
-Date:   Tue, 17 Dec 2019 10:36:23 -0500
-Message-Id: <20191217153635.44733-34-josef@toxicpanda.com>
+Subject: [PATCH 34/45] btrfs: hold a ref on the root in get_subvol_name_from_objectid
+Date:   Tue, 17 Dec 2019 10:36:24 -0500
+Message-Id: <20191217153635.44733-35-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191217153635.44733-1-josef@toxicpanda.com>
 References: <20191217153635.44733-1-josef@toxicpanda.com>
@@ -60,95 +60,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We lookup all the clone roots and the parent root for send, so we need
-to hold refs on all of these roots while we're processing them.
+We lookup the name of a subvol which means we'll cross into different
+roots.  Hold a ref while we're doing the look ups in the fs_root we're
+searching.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/send.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ fs/btrfs/super.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 73e2e350f4a1..a82201e6979e 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -7206,11 +7206,17 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 				ret = PTR_ERR(clone_root);
- 				goto out;
- 			}
-+			if (!btrfs_grab_fs_root(clone_root)) {
-+				srcu_read_unlock(&fs_info->subvol_srcu, index);
-+				ret = -ENOENT;
-+				goto out;
-+			}
- 			spin_lock(&clone_root->root_item_lock);
- 			if (!btrfs_root_readonly(clone_root) ||
- 			    btrfs_root_dead(clone_root)) {
- 				spin_unlock(&clone_root->root_item_lock);
- 				srcu_read_unlock(&fs_info->subvol_srcu, index);
-+				btrfs_put_fs_root(clone_root);
- 				ret = -EPERM;
- 				goto out;
- 			}
-@@ -7218,6 +7224,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 				dedupe_in_progress_warn(clone_root);
- 				spin_unlock(&clone_root->root_item_lock);
- 				srcu_read_unlock(&fs_info->subvol_srcu, index);
-+				btrfs_put_fs_root(clone_root);
- 				ret = -EAGAIN;
- 				goto out;
- 			}
-@@ -7245,6 +7252,12 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 			ret = PTR_ERR(sctx->parent_root);
- 			goto out;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index e387ca1ac0e5..9c50bee71de9 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1082,6 +1082,10 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 			ret = PTR_ERR(fs_root);
+ 			goto err;
  		}
-+		if (!btrfs_grab_fs_root(sctx->parent_root)) {
-+			srcu_read_unlock(&fs_info->subvol_srcu, index);
++		if (!btrfs_grab_fs_root(fs_root)) {
 +			ret = -ENOENT;
-+			sctx->parent_root = ERR_PTR(ret);
-+			goto out;
++			goto err;
 +		}
  
- 		spin_lock(&sctx->parent_root->root_item_lock);
- 		sctx->parent_root->send_in_progress++;
-@@ -7272,7 +7285,8 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	 * is behind the current send position. This is checked while searching
- 	 * for possible clone sources.
- 	 */
--	sctx->clone_roots[sctx->clone_roots_cnt++].root = sctx->send_root;
-+	sctx->clone_roots[sctx->clone_roots_cnt++].root =
-+		btrfs_grab_fs_root(sctx->send_root);
+ 		/*
+ 		 * Walk up the filesystem tree by inode refs until we hit the
+@@ -1094,13 +1098,16 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
  
- 	/* We do a bsearch later */
- 	sort(sctx->clone_roots, sctx->clone_roots_cnt,
-@@ -7357,18 +7371,24 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 			ret = btrfs_search_slot(NULL, fs_root, &key, path, 0, 0);
+ 			if (ret < 0) {
++				btrfs_put_fs_root(fs_root);
+ 				goto err;
+ 			} else if (ret > 0) {
+ 				ret = btrfs_previous_item(fs_root, path, dirid,
+ 							  BTRFS_INODE_REF_KEY);
+ 				if (ret < 0) {
++					btrfs_put_fs_root(fs_root);
+ 					goto err;
+ 				} else if (ret > 0) {
++					btrfs_put_fs_root(fs_root);
+ 					ret = -ENOENT;
+ 					goto err;
+ 				}
+@@ -1117,6 +1124,7 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 			ptr -= len + 1;
+ 			if (ptr < name) {
+ 				ret = -ENAMETOOLONG;
++				btrfs_put_fs_root(fs_root);
+ 				goto err;
+ 			}
+ 			read_extent_buffer(path->nodes[0], ptr + 1,
+@@ -1124,6 +1132,7 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 			ptr[0] = '/';
+ 			btrfs_release_path(path);
+ 		}
++		btrfs_put_fs_root(fs_root);
  	}
  
- 	if (sort_clone_roots) {
--		for (i = 0; i < sctx->clone_roots_cnt; i++)
-+		for (i = 0; i < sctx->clone_roots_cnt; i++) {
- 			btrfs_root_dec_send_in_progress(
- 					sctx->clone_roots[i].root);
-+			btrfs_put_fs_root(sctx->clone_roots[i].root);
-+		}
- 	} else {
--		for (i = 0; sctx && i < clone_sources_to_rollback; i++)
-+		for (i = 0; sctx && i < clone_sources_to_rollback; i++) {
- 			btrfs_root_dec_send_in_progress(
- 					sctx->clone_roots[i].root);
-+			btrfs_put_fs_root(sctx->clone_roots[i].root);
-+		}
- 
- 		btrfs_root_dec_send_in_progress(send_root);
- 	}
--	if (sctx && !IS_ERR_OR_NULL(sctx->parent_root))
-+	if (sctx && !IS_ERR_OR_NULL(sctx->parent_root)) {
- 		btrfs_root_dec_send_in_progress(sctx->parent_root);
-+		btrfs_put_fs_root(sctx->parent_root);
-+	}
- 
- 	kvfree(clone_sources_tmp);
- 
+ 	btrfs_free_path(path);
 -- 
 2.23.0
 
