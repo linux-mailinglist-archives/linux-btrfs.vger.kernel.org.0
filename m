@@ -2,95 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A9B122FA2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BBC123033
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbfLQPFy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:05:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33896 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727736AbfLQPFw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:05:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 64E1EAD69;
-        Tue, 17 Dec 2019 15:05:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D0476DA81D; Tue, 17 Dec 2019 16:05:48 +0100 (CET)
-Date:   Tue, 17 Dec 2019 16:05:48 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: fix compressed write bio attribution
-Message-ID: <20191217150548.GF3929@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org>
- <b3b4b89e7200237d0407c5f0a1f48d2d3736b5ed.1576109087.git.dennis@kernel.org>
- <20191212181934.GA33645@dennisz-mbp.dhcp.thefacebook.com>
- <20191213122401.GV3929@suse.cz>
- <20191213222149.GA46346@dennisz-mbp.dhcp.thefacebook.com>
+        id S1727820AbfLQPZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:25:09 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:39188 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727681AbfLQPZJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 10:25:09 -0500
+Received: by mail-qv1-f68.google.com with SMTP id y8so4312435qvk.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:25:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2b08/BPBT5+Se5+XLgJ1e3D5ANtbvG4Mq6WP54HCssA=;
+        b=T1WAQs5iR64TVlBoCYh3Lc7/s++gnLZ19/+22a5m6CFiNsGSxPXp9ERdaMUYvHkvMp
+         JUsGdURkssKvo8OGGgggqNqzqtEBdN6W3SWwJ3ZHTbkyJEBuQEMqlM4VohP6Zb5kC9mZ
+         PkGtKyaRNgSHzO9oFAkGTo8Ma+Bh64mpFIljT5o8xWUJid6UT5bhnJFXAbxqUxBFt0nn
+         nhREa8UvsxdqDtyGd/WPAb9qHIkA4YJflul1zsh4yNiaRwd8aOQQqdb4fgIJm3wu6+e/
+         F50OmKTejbq9Cda4lFiCeC9DoQ29n02teLgEBmNzJ0T1jo3x6zjNuIlj3G18IOI9O6+8
+         M39g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2b08/BPBT5+Se5+XLgJ1e3D5ANtbvG4Mq6WP54HCssA=;
+        b=CArs8jVkGbAHvnnZ3axVwkVykL4xU4sxsClXSkcwD4e7vplnxHqPP38eYRxwq68QlW
+         C4R362w9lq2YRYr+R6o+Wi5KCfIQT49jf3bOc3PY8oJ7yjSdxSYvTshYy1P6QSKEgRhK
+         1pY8yNIeuWJbrUewPbwDjy9MTSPnKpqIEFZBa760hSha0FFDUuoqAbaLIVC6E4chNSrL
+         n8clK7o/aiBz8yqZfVKMM6+7SI3qoDdB/9VnV9Tseah/9DT/dUpn2aBBjVGc2VN/Qw4n
+         //perdFFnJjmGSyD4qoVuZnGqO3pj4laVZ7cBw2sMnX/IjegnPMd1yWyS2ax0qXC2i3q
+         8q2A==
+X-Gm-Message-State: APjAAAXSZSy9D2XodhXvYvu9WpIGyOcJvtrPYDhbIOh2Zfhoc5t40LRP
+        lLkllNUB9oMcyh0sfJy5FJIhJQ==
+X-Google-Smtp-Source: APXvYqwXD738AIcmwlgKJbg8R00xEp3Ocl5Lsc4rPnmW/F4qDvbGXFe4p5TdeGBF0Wp5DXJoZ9oI5Q==
+X-Received: by 2002:a05:6214:8cb:: with SMTP id da11mr4952760qvb.228.1576596308042;
+        Tue, 17 Dec 2019 07:25:08 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id k50sm8404355qtc.90.2019.12.17.07.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2019 07:25:07 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] src/fssum: skip subvolumes when building a sum
+Date:   Tue, 17 Dec 2019 10:25:05 -0500
+Message-Id: <20191217152505.44650-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191213222149.GA46346@dennisz-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 02:21:49PM -0800, Dennis Zhou wrote:
-> On Fri, Dec 13, 2019 at 01:24:01PM +0100, David Sterba wrote:
-> > On Thu, Dec 12, 2019 at 10:19:34AM -0800, Dennis Zhou wrote:
-> > > From a0569aebde08e31e994c92d0b70befb84f7f5563 Mon Sep 17 00:00:00 2001
-> > > From: Dennis Zhou <dennis@kernel.org>
-> > > Date: Wed, 11 Dec 2019 15:20:15 -0800
-> > > 
-> > > Bio attribution is handled at bio_set_dev() as once we have a device, we
-> > > have a corresponding request_queue and then can derive the current css.
-> > > In special cases, we want to attribute to bio to someone else. This can
-> > > be done by calling bio_associate_blkg_from_css() or
-> > > kthread_associate_blkcg() depending on the scenario. Btrfs does this for
-> > > compressed writeback as they are handled by kworkers, so the latter can
-> > > be done here.
-> > > 
-> > > Commit 1a41802701ec ("btrfs: drop bio_set_dev where not needed") removes
-> > > early bio_set_dev() calls prior to submit_stripe_bio(). This breaks the
-> > > above assumption that we'll have a request_queue when we are doing
-> > > association. To fix this, switch to using kthread_associate_blkcg().
-> > 
-> > Can be kthread_associate_blkcg used also for submit_extent_page that
-> > calls bio_associate_blkg_from_css indirectly when initializing wbc?
-> > 
-> > 2996                 bio_set_dev(bio, bdev);
-> > 2997                 wbc_init_bio(wbc, bio);
-> > 2998                 wbc_account_cgroup_owner(wbc, page, page_size);
-> > 
-> > wbc_init_bio:
-> > 
-> > 	if (wbc)
-> > 		bio_associate_blkg_from_css();
-> 
-> Correct me if I'm wrong, but I don't think submit_extent_page() is only
-> called from kthread contexts. So, we wouldn't be able to rely on
-> kthread_associate_blkcg().
+With the snapshot/subvolume support added to fsstress I've been seeing
+random failures with our send/receive related tests.  This is because
+fssum is summing the path with the subvolumes for our test fs'es that
+are generated by fsstress.  But with send/receive it skips subvolumes,
+which makes the sums mismatch.  Fix this by skipping directories that do
+not match our st_dev, which is how we differentiate subvolumes in btrfs.
 
-Yeah, the kthread is not guaranteed here.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ src/fssum.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> I can think about how to make wbc better for association in general, but
-> it's a percpu decrement and increment so it shouldn't really be much in
-> overhead.
+diff --git a/src/fssum.c b/src/fssum.c
+index 6ba0a95c..a243839a 100644
+--- a/src/fssum.c
++++ b/src/fssum.c
+@@ -517,6 +517,12 @@ sum(int dirfd, int level, sum_t *dircs, char *path_prefix, char *path_in)
+ 	int excl;
+ 	sum_file_data_t sum_file_data = flags[FLAG_STRUCTURE] ?
+ 			sum_file_data_strict : sum_file_data_permissive;
++	struct stat64 dir_st;
++
++	if (fstat64(dirfd, &dir_st)) {
++		perror("fstat");
++		exit(-1);
++	}
+ 
+ 	d = fdopendir(dirfd);
+ 	if (!d) {
+@@ -570,6 +576,11 @@ sum(int dirfd, int level, sum_t *dircs, char *path_prefix, char *path_in)
+ 				path_prefix, path, strerror(errno));
+ 			exit(-1);
+ 		}
++
++		/* We are crossing into a different subvol, skip this subtree. */
++		if (st.st_dev != dir_st.st_dev)
++			goto next;
++
+ 		sum_add_u64(&meta, level);
+ 		sum_add(&meta, namelist[i], strlen(namelist[i]));
+ 		if (!S_ISDIR(st.st_mode))
+-- 
+2.23.0
 
-Performance is not my concern here, the addition of bios and blkcg
-association is new and there were some integration bugs where I
-independently removed early bdev association while the blkg relied on
-that. I'm looking for ways to make it less error prone and the kthread
-association looks exactly like that so I was curious if it's possible to
-use it everywhere. If not, the bdev needs to be found from other
-available data.
