@@ -2,124 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BB212332E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 18:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC44123374
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 18:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbfLQRIW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 12:08:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47194 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727198AbfLQRIV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 12:08:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6D88BACCA;
-        Tue, 17 Dec 2019 17:08:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AA7AEDA791; Tue, 17 Dec 2019 18:08:17 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.5-rc3
-Date:   Tue, 17 Dec 2019 18:08:16 +0100
-Message-Id: <cover.1576601647.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.24.0
+        id S1727452AbfLQRZD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 12:25:03 -0500
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:36821 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbfLQRZC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 12:25:02 -0500
+Received: by mail-vs1-f65.google.com with SMTP id u14so2997355vsu.3;
+        Tue, 17 Dec 2019 09:25:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=YR0TrjMy/QDn2raZ9wU9QOuPVU0wjj7bHsjH10hwvFA=;
+        b=G+rxd+Ou9B5L7sBCpsHc3jNvMIpiQsarlYED2oa0lGmVt3A77yNzFYF/e7B36Iz17L
+         N0qK1xuZr5bReIA24FCsmfHEnK15/t29+cyJwjiTXgFGBgib7zyyWhlzJzc329c9wtgS
+         yGPvtA0CwpG2tGG7nsJ5RF/sEgj1sGVr78QSWJ6iPE4W4qkzFfgx+Wo6OTfyKjP73wjr
+         BSl4/gU02SYwzEownAQx++Y7ip+6sehQtR3kT9q+gsqhrqRJEAOyY6X20NbPSvOldcMd
+         rUU98S0dOS8bmi5RVPLtRdtw/FXnqGePQSw052yl9ZEt8nWQ1qH/EYUSp+ivxecT6iKa
+         8gLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=YR0TrjMy/QDn2raZ9wU9QOuPVU0wjj7bHsjH10hwvFA=;
+        b=hKz388F6wHqXw7NN4Oo5IBe5WOoVikmgblaj9eGW3O+jD7YTykE+HKnLefptZzIHit
+         LV6NaKxw007adWdtgHiPV2kw3BeeKn5R+G3DO7KvXPgHMG+qFRyhhqeL9g6PqR0R+u98
+         NEOIdq9PuWeYv1HzTPhErDO3lIcWqUCFoM2wlrxhMpQi4qgVs0LyDM8V+sgN39WyBCRb
+         xVVyLSCe9SfENPVVhRP27EoNctYmOFmYzIyjMxQubX5pEfaPPNKz53lsNe6AvMvXh6tk
+         zUqWyqzp8o/EMRLs1O0OPR8mviL3LlhfWyuwJsBBOC1pyuCaiA9Z8gd8gqLuLjAVKnqj
+         guVQ==
+X-Gm-Message-State: APjAAAUvGITRGCf1P64+ETIWg7bCM6FWPWOEHKc7/vplzB0pi4TFpWCb
+        4o7gt90zPQvSaN1RJROY04R9U75llL4OMI2KqK7FFA==
+X-Google-Smtp-Source: APXvYqxlqqprqefLgnhBkSdRxbyYQhfXvNOH2KdF0C6EZUbxXUPoBY6KnYawDflSGTiQdc76Z8mrBHLOKlaVmdWSg4o=
+X-Received: by 2002:a67:8010:: with SMTP id b16mr3590765vsd.90.1576603500997;
+ Tue, 17 Dec 2019 09:25:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191211104029.25541-1-wqu@suse.com> <20191211104029.25541-2-wqu@suse.com>
+In-Reply-To: <20191211104029.25541-2-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 17 Dec 2019 17:24:50 +0000
+Message-ID: <CAL3q7H50wBGvT1dVFh0MSZ7V=690Eek86pYq_ct2CN2aViGFHg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] fstests: common: Use more accurate kernel config for _require_fail_make_request
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Dec 11, 2019 at 10:40 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Just enabling CONFIG_FAIL_MAKE_REQUEST will not fulfill
+> _require_fail_make_request.
+>
+> It's CONFIG_FAULT_INJECTION_DEBUG_FS.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-a mix of regression fixes and regular fixes for stable trees. Please
-pull. Thanks.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Changes:
+Thanks.
 
-- fix swapped error messages for qgroup enable/rescan
+> ---
+>  common/rc | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/common/rc b/common/rc
+> index 5cdd829b..2d72f158 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -2357,7 +2357,7 @@ _require_fail_make_request()
+>  {
+>      [ -f "$DEBUGFS_MNT/fail_make_request/probability" ] \
+>         || _notrun "$DEBUGFS_MNT/fail_make_request \
+> - not found. Seems that CONFIG_FAIL_MAKE_REQUEST kernel config option not=
+ enabled"
+> + not found. Seems that CONFIG_FAULT_INJECTION_DEBUG_FS kernel config opt=
+ion not enabled"
+>  }
+>
+>  # Disable extent zeroing for ext4 on the given device
+> --
+> 2.23.0
+>
 
-- fixes for NO_HOLES feature with clone range
 
-- fix deadlock between iget/srcu lock/synchronize srcu while freeing an
-  inode
+--=20
+Filipe David Manana,
 
-- fix double lock on subvolume cross-rename
-
-- tree log fixes
-  - fix missing data checksums after replaying a log tree
-  - also teach tree-checker about this problem
-  - skip log replay on orphaned roots
-
-- fix maximum devices constraints for RAID1C -3 and -4
-
-- send: don't print warning on read-only mount regarding orphan cleanup
-
-- error handling fixes
-
-----------------------------------------------------------------
-The following changes since commit fa17ed069c61286b26382e23b57a62930657b9c1:
-
-  btrfs: drop bdev argument from submit_extent_page (2019-11-18 23:43:58 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc2-tag
-
-for you to fetch changes up to fbd542971aa1e9ec33212afe1d9b4f1106cd85a1:
-
-  btrfs: send: remove WARN_ON for readonly mount (2019-12-13 14:10:46 +0100)
-
-----------------------------------------------------------------
-Anand Jain (1):
-      btrfs: send: remove WARN_ON for readonly mount
-
-Andreas Färber (1):
-      btrfs: tree-checker: Fix error format string for size_t
-
-Dan Carpenter (1):
-      btrfs: return error pointer from alloc_test_extent_buffer
-
-David Sterba (1):
-      btrfs: fix devs_max constraints for raid1c3 and raid1c4
-
-Filipe Manana (5):
-      Btrfs: fix cloning range with a hole when using the NO_HOLES feature
-      Btrfs: fix missing data checksums after replaying a log tree
-      Btrfs: make tree checker detect checksum items with overlapping ranges
-      Btrfs: fix removal logic of the tree mod log that leads to use-after-free issues
-      Btrfs: fix hole extent items with a zero size after range cloning
-
-Josef Bacik (7):
-      btrfs: do not call synchronize_srcu() in inode_tree_del
-      btrfs: handle error in btrfs_cache_block_group
-      btrfs: don't double lock the subvol_sem for rename exchange
-      btrfs: abort transaction after failed inode updates in create_subvol
-      btrfs: handle ENOENT in btrfs_uuid_tree_iterate
-      btrfs: skip log replay on orphaned roots
-      btrfs: do not leak reloc root if we fail to read the fs root
-
-Nikolay Borisov (1):
-      btrfs: Fix error messages in qgroup_rescan_init
-
- fs/btrfs/ctree.c                       |  2 +-
- fs/btrfs/ctree.h                       |  2 +-
- fs/btrfs/extent-tree.c                 | 27 ++++++++++++++----
- fs/btrfs/extent_io.c                   |  6 ++--
- fs/btrfs/file-item.c                   |  7 +++--
- fs/btrfs/file.c                        |  4 +--
- fs/btrfs/inode.c                       | 12 +++-----
- fs/btrfs/ioctl.c                       | 26 ++++++++---------
- fs/btrfs/qgroup.c                      |  4 +--
- fs/btrfs/relocation.c                  |  1 +
- fs/btrfs/send.c                        |  6 ----
- fs/btrfs/tests/free-space-tree-tests.c |  4 +--
- fs/btrfs/tests/qgroup-tests.c          |  4 +--
- fs/btrfs/tree-checker.c                | 20 +++++++++++--
- fs/btrfs/tree-log.c                    | 52 ++++++++++++++++++++++++++++++----
- fs/btrfs/uuid-tree.c                   |  2 ++
- fs/btrfs/volumes.c                     |  4 +--
- 17 files changed, 127 insertions(+), 56 deletions(-)
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
