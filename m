@@ -2,224 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2196B1227BA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 10:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D6C122814
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 10:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbfLQJb3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 04:31:29 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52462 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbfLQJb3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 04:31:29 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBH9OXrW187603;
-        Tue, 17 Dec 2019 09:31:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=4QXMNWLgrmfAb/HFVYpcY+5mUbXbBD2zgjGgUWf0UiU=;
- b=by4jb7IEbjwh0cK+Kz7AxznhlS4PzTyJPkkdT3vFE19zUYintOLb4fp/1FlnwO6p1wh8
- /5Jj0ck8EUF6ZkOIkwq0sedcDs/rhB5mEK+p1OENAB+42q7Luke5xCmXkXZv2PhdG61c
- n9ED0nX3r+8NjKCtMu3cbKbI0SbDturcZyVzcwWnNN/217cJpKzwGh0pqkb2w77geuur
- +LxkTDtvQ6YqEsV7ppG0csiP26CnmjddFoUWtkOMXDaJZtB/I6ligEzqbURHv8y/lU07
- Vgy19HLH91DZD4frG3PaEr9cyhd7nqMUwNoEbnpve3WgRv7AktEjbk+dwkWaJ58nDoyE bQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2wvrcr57pn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Dec 2019 09:31:24 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBH9SjuA050258;
-        Tue, 17 Dec 2019 09:31:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2wxm4vcka5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Dec 2019 09:31:23 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBH9VNWb026277;
-        Tue, 17 Dec 2019 09:31:23 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Dec 2019 01:31:22 -0800
-Subject: Re: [PATCH] btrfs: use helper to zero end of last page
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191216185038.14913-1-dsterba@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <4ca3c941-c3c0-2128-e206-01a9eb96953e@oracle.com>
-Date:   Tue, 17 Dec 2019 17:31:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1727039AbfLQJ5d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 04:57:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58542 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726784AbfLQJ5d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 04:57:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3EA4DAE44;
+        Tue, 17 Dec 2019 09:57:31 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Fix bad comment on disk_bytenr of
+ btrfs_file_extent_item
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191217064839.5724-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5d84d8e6-df09-ee30-696d-6cf5b8de56e2@suse.com>
+Date:   Tue, 17 Dec 2019 11:57:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191216185038.14913-1-dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20191217064839.5724-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9473 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912170083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9473 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912170083
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17/12/19 2:50 AM, David Sterba wrote:
-> The zero_user_segment is open coded in several places, we should use the
-> helper. btrfs_page_mkwrite uses kmap/kunmap but replacing them by
-> _atomic variants is not a problem as they're more restrictive than
-> required.
+
+
+On 17.12.19 г. 8:48 ч., Qu Wenruo wrote:
+> All btrfs_file_extent_item members don't take checksum size into
+> consideration.
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
+> This bad comment looks like from early days where inlined data checksum
+> (checksum is stored along with data) is being considered.
+> But the reality is, we never support inlined data checksum since btrfs
+> is mainlined.
+> 
+> Remove this dead comment, add a new comment explaining how data checksum is
+> stored, and remove the unnecessary data csum reference.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   fs/btrfs/compression.c | 15 ++-------------
->   fs/btrfs/extent_io.c   | 39 +++++++--------------------------------
->   fs/btrfs/inode.c       | 10 +++-------
->   3 files changed, 12 insertions(+), 52 deletions(-)
+>  include/uapi/linux/btrfs_tree.h | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index ed05e5277399..299fcfdfb10f 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -602,19 +602,8 @@ static noinline int add_ra_bio_pages(struct inode *inode,
->   		}
->   		free_extent_map(em);
->   
-> -		if (page->index == end_index) {
-> -			char *userpage;
-> -			size_t zero_offset = offset_in_page(isize);
-> -
-> -			if (zero_offset) {
-> -				int zeros;
-> -				zeros = PAGE_SIZE - zero_offset;
-> -				userpage = kmap_atomic(page);
-> -				memset(userpage + zero_offset, 0, zeros);
-> -				flush_dcache_page(page);
-> -				kunmap_atomic(userpage);
-> -			}
-> -		}
-> +		if (page->index == end_index)
-> +			zero_user_segment(page, offset_in_page(isize), PAGE_SIZE);
->   
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index 8e322e2c7e78..bfe6f38031a3 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -776,15 +776,16 @@ struct btrfs_file_extent_item {
+>  	__u8 type;
+>  
+>  	/*
+> -	 * disk space consumed by the extent, checksum blocks are included
+> -	 * in these numbers
+> +	 * disk space consumed by the data extent.
+> +	 * Checksum is stored in csum tree, thus no bytenr/length takes
+> +	 * csum into consideration.
 
-  Before we zero-ed only when the page offset is not starting at 0.
-  Can you confirm and update the change log if that is ok.
+This wording is awkward. Simply say that checksum blocks are excluded
 
+>  	 *
+>  	 * At this offset in the structure, the inline extent data start.
+>  	 */
+>  	__le64 disk_bytenr;
+>  	__le64 disk_num_bytes;
+>  	/*
+> -	 * the logical offset in file blocks (no csums)
+> +	 * the logical offset in file blocks
+>  	 * this extent record is for.  This allows a file extent to point
+>  	 * into the middle of an existing extent on disk, sharing it
+>  	 * between two snapshots (useful if some bytes in the middle of the
+> @@ -792,8 +793,8 @@ struct btrfs_file_extent_item {
+>  	 */
+>  	__le64 offset;
+>  	/*
+> -	 * the logical number of file blocks (no csums included).  This
+> -	 * always reflects the size uncompressed and without encoding.
+> +	 * the logical number of file blocks.  This always reflects the size
+> +	 * uncompressed and without encoding.
 
->   		ret = bio_add_page(cb->orig_bio, page,
->   				   PAGE_SIZE, 0);
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 394beb474a69..d6b3af7f1675 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3093,31 +3093,18 @@ static int __do_readpage(struct extent_io_tree *tree,
->   		}
->   	}
->   
-> -	if (page->index == last_byte >> PAGE_SHIFT) {
-> -		char *userpage;
-> -		size_t zero_offset = offset_in_page(last_byte);
-> -
-> -		if (zero_offset) {
-> -			iosize = PAGE_SIZE - zero_offset;
-> -			userpage = kmap_atomic(page);
-> -			memset(userpage + zero_offset, 0, iosize);
-> -			flush_dcache_page(page);
-> -			kunmap_atomic(userpage);
-> -		}
-> -	}
-> +	if (page->index == last_byte >> PAGE_SHIFT)
-> +		zero_user_segment(page, offset_in_page(last_byte), PAGE_SIZE);
-> +
+I don't think this is better. Because one has to actually read the
+comment about disk_bytenr to understand whether the following members
+include exclude checksums. I prefer to explicitly state whether each
+member includes/excludes the checksums. As it stands, a sensible
+correction is to simply state (checksums excluded).
 
-  Here also.
-
-Thanks, Anand
-
->   	while (cur <= end) {
->   		bool force_bio_submit = false;
->   		u64 offset;
->   
->   		if (cur >= last_byte) {
-> -			char *userpage;
->   			struct extent_state *cached = NULL;
->   
-> +			zero_user_segment(page, pg_offset, PAGE_SIZE);
->   			iosize = PAGE_SIZE - pg_offset;
-> -			userpage = kmap_atomic(page);
-> -			memset(userpage + pg_offset, 0, iosize);
-> -			flush_dcache_page(page);
-> -			kunmap_atomic(userpage);
->   			set_extent_uptodate(tree, cur, cur + iosize - 1,
->   					    &cached, GFP_NOFS);
->   			unlock_extent_cached(tree, cur,
-> @@ -3202,14 +3189,9 @@ static int __do_readpage(struct extent_io_tree *tree,
->   
->   		/* we've found a hole, just zero and go on */
->   		if (block_start == EXTENT_MAP_HOLE) {
-> -			char *userpage;
->   			struct extent_state *cached = NULL;
->   
-> -			userpage = kmap_atomic(page);
-> -			memset(userpage + pg_offset, 0, iosize);
-> -			flush_dcache_page(page);
-> -			kunmap_atomic(userpage);
-> -
-> +			zero_user_segment(page, pg_offset, pg_offset + iosize);
->   			set_extent_uptodate(tree, cur, cur + iosize - 1,
->   					    &cached, GFP_NOFS);
->   			unlock_extent_cached(tree, cur,
-> @@ -3564,15 +3546,8 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
->   		return 0;
->   	}
->   
-> -	if (page->index == end_index) {
-> -		char *userpage;
-> -
-> -		userpage = kmap_atomic(page);
-> -		memset(userpage + pg_offset, 0,
-> -		       PAGE_SIZE - pg_offset);
-> -		kunmap_atomic(userpage);
-> -		flush_dcache_page(page);
-> -	}
-> +	if (page->index == end_index)
-> +		zero_user_segment(page, pg_offset, PAGE_SIZE);
->   
->   	set_page_extent_mapped(page);
->   
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index f27377d8ec55..24337de25a8b 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -8308,7 +8308,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	struct btrfs_ordered_extent *ordered;
->   	struct extent_state *cached_state = NULL;
->   	struct extent_changeset *data_reserved = NULL;
-> -	char *kaddr;
->   	unsigned long zero_start;
->   	loff_t size;
->   	vm_fault_t ret;
-> @@ -8414,12 +8413,9 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	else
->   		zero_start = PAGE_SIZE;
->   
-> -	if (zero_start != PAGE_SIZE) {
-> -		kaddr = kmap(page);
-> -		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
-> -		flush_dcache_page(page);
-> -		kunmap(page);
-> -	}
-> +	if (zero_start != PAGE_SIZE)
-> +		zero_user_segment(page, zero_start, PAGE_SIZE);
-> +
->   	ClearPageChecked(page);
->   	set_page_dirty(page);
->   	SetPageUptodate(page);
+>  	 */
+>  	__le64 num_bytes;
+>  
 > 
-
