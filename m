@@ -2,117 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8207C122527
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 08:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DE412265A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 09:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbfLQHFM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 02:05:12 -0500
-Received: from mout.gmx.net ([212.227.15.15]:44615 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbfLQHFM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 02:05:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576566306;
-        bh=Rns56Ueqg7vBwVl2Jdx05y1B7S6N10jYiabfHQwJSxg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QKmlTY3ZpWK7m9FFcNzxOv9Z6bkyvcj6XMU9BwdaZ+xy59pUtT1aGRAqicxQj456+
-         tXSbbZPjpJ3MCG3TbFmWHS4Te9KkXMZftmeMlfBpXO7wr7x4QB09lGySXBVUMvXh39
-         BrT6wTelFahT/Q1nhticF5Brpb1V4AmWtKa4yI64=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.178] ([34.92.249.81]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTmO-1iDpt1071S-00WT7n; Tue, 17
- Dec 2019 08:05:05 +0100
-Subject: Re: [PATCH] btrfs-progs: ctree.h: Sync the comment for
- btrfs_file_extent_item
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191217065240.5919-1-wqu@suse.com>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <29a6ed10-250c-4eac-94f3-d9db6a9fe3fb@gmx.com>
-Date:   Tue, 17 Dec 2019 15:05:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        id S1725805AbfLQIMn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 03:12:43 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39236 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726382AbfLQIMn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 03:12:43 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBH87dR5052467
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 03:12:42 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2wwdq0chjb-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 03:12:42 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-btrfs@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 17 Dec 2019 08:12:39 -0000
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 17 Dec 2019 08:12:36 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBH8CZG155705752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Dec 2019 08:12:35 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B3DD4C059;
+        Tue, 17 Dec 2019 08:12:35 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A81214C040;
+        Tue, 17 Dec 2019 08:12:33 +0000 (GMT)
+Received: from [9.199.158.112] (unknown [9.199.158.112])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Dec 2019 08:12:33 +0000 (GMT)
+Subject: Re: [PATCH 0/1] Use inode_lock/unlock class of provided APIs in
+ filesystems
+To:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
+        jlayton@kernel.org, viro@zeniv.linux.org.uk
+Cc:     ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org
+References: <20191205103902.23618-1-riteshh@linux.ibm.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 17 Dec 2019 13:42:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20191217065240.5919-1-wqu@suse.com>
+In-Reply-To: <20191205103902.23618-1-riteshh@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HlJ1hHZNZOciDjwbc31xq8hprr0875oi4svGD0ZZJu6xNgZ+b/Y
- 0yZDTLd9/H/E9eZfzKRto5Qogepl3F3sLJdTX9ynvu4kwolMFrtjrwx8PTTSDmJRR8yUiBX
- BKN1CU2lL7wzaJ769TzVDZS+k/bdZLF46u5sj8oauELoj/xisYMGqp8R9L/3mipx27gPL7v
- U12yzeZTQwP6GyLsqgERA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0w2EjGoLI4M=:7ot7SrHVJT7RR1lE+NErHJ
- N6Kj52VrsfYnIghcJwC5reN2k0BoHEIqt0uYqn5UuN9i3ouhbFcfCz/fWN7nrIHgoAKAkHnP+
- JX0GuQlfAuBcU/dJ658MxRpvXSnDYQ8XXOJ9pPDmTkgtmM1+kSxnxS5SsE99QCi9qZcfjlHuW
- OL/Udau0ovrt/+oUpXgN+9lZ8XqFGThkiGlfvhQEiwCm06f/Sf3irA6ga8cGcvbuqTk+cBUOK
- X4JX/gW5tKVoM3PpJoVg7kvKd8Z1qnjuk6TyexDRGRMSgc5HAkl/fiZOSolejQ5JY/aoMbBB3
- a8P3cRbQ7GyVSE+KEVBH9fzFteqDmceFZmUelwQ5fg6kx24e6du72KvUCPWlqJ0qSsTWZP1pq
- sH6s+pMo6w/SI13niHAwDF2wTayjFQdZpJ1w3ZtNi0ZHOgu6169g/vIFi9ZUeC6r6Gs/le3Fo
- 09yAyG8ef89+I+E8U13zOuaBC/aUBj9l+YnC/KiQCnp5y0Q39YvlzHptwnVh04w7Pnt7djxfh
- XpbuPVZ/lfitIoBcWu3GRrZgj9QpCPYQARXZgKCNHrELP/se3dvpsKwiu7tQWixHV6YVy1dkw
- ypUEwb6B+dCGp7ql9B1179fwvZ2AzFl9XHebaGDP6Duh9BnanJIw4J2G1oy6I/1T767zO3zsm
- RKSx3+gJKOeeg8mDMeJqcVivC215y0zh8bgLsoVvot8rjjrYg5/yhbLAbt0UYKrmeYieJ8aZj
- xOj0e+0k7ZRFXGq/MsowzITjQFc/fXdvyHHaNTxJkrztDwsob8RogoUhYXC4dDqzgQp71LH3q
- gNvdDjGA1WmXSTY809XODOVQh2YSV+yd9CcB1EKu31VY2ngl7mEC+bSxeEvKIcLCGY7Uy3P5/
- KlQQ4/8vjNe7V6hmswFAXa3lKpoJY92klv1+fs+AcwdsS6qAWhLpti6PwRle9vgB4wO4JhB/v
- si4cNYQWCKIPCwFuv9axM1Pu4BpmkdKIffJpDJ32GwqKO2Z99vaEEsVkIabII1FVB93VN8zeO
- B6oBO02z408mHZPPjd5LUXCcRQbc84MEEQVQjC/zx5jPcPX3ixI9BW4I7RoeGzrh+6XPu2/cR
- yRns3KegpSJ50RIF/DzwLuFPU/RWiVR1m15dKFQ8YE5GAFdH6qufBPowKPflnwmXGexWkbYvA
- UnGP0hpdV/VZPfBnlVQHK01pqjEf8tdZ+4zsyNgbdx8d/Ev74m1iE5KyqyNet3OgANpKE+lor
- A46AMm6+gq4zKLlQ2oaV3BcrJT2TdHin27klg52Z50Zz6oxss6pUbKzDmDpU=
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19121708-0020-0000-0000-000003990467
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19121708-0021-0000-0000-000021F01F27
+Message-Id: <20191217081233.A81214C040@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-17_01:2019-12-16,2019-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=757 malwarescore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912170071
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019/12/17 2:52 PM, Qu Wenruo wrote:
-> The comment about data checksum on disk_bytes is completely wrong.
->
-> Sync it with fixed kernel comment to avoid confusion.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Al, do you think this can be picked up via your tree?
+Please let me know if anything needed from my end on this.
 
-LGTM.
+-ritesh
 
-Reviewed-by: Su Yue <Damenly_Su@gmx.com>
-
-> ---
->   ctree.h | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/ctree.h b/ctree.h
-> index 3e50d086..9459adf1 100644
-> --- a/ctree.h
-> +++ b/ctree.h
-> @@ -916,13 +916,16 @@ struct btrfs_file_extent_item {
->   	u8 type;
->
->   	/*
-> -	 * disk space consumed by the extent, checksum blocks are included
-> -	 * in these numbers
-> +	 * disk space consumed by the data extent
-> +	 * Data checksum is stored in csum tree, thus no bytenr/length takes
-> +	 * csum into consideration.
-> +	 *
-> +	 * At this offset in the structure, the inline extent data starts.
->   	 */
->   	__le64 disk_bytenr;
->   	__le64 disk_num_bytes;
->   	/*
-> -	 * the logical offset in file blocks (no csums)
-> +	 * the logical offset in file blocks
->   	 * this extent record is for.  This allows a file extent to point
->   	 * into the middle of an existing extent on disk, sharing it
->   	 * between two snapshots (useful if some bytes in the middle of the
-> @@ -930,7 +933,8 @@ struct btrfs_file_extent_item {
->   	 */
->   	__le64 offset;
->   	/*
-> -	 * the logical number of file blocks (no csums included)
-> +	 * the logical number of file blocks. This always reflects the size
-> +	 * uncompressed and without encoding.
->   	 */
->   	__le64 num_bytes;
->
->
+On 12/5/19 4:09 PM, Ritesh Harjani wrote:
+> Matthew Wilcox in [1] suggested that it will be a good idea
+> to define some missing API instead of directly using i_rwsem in
+> filesystems drivers for lock/unlock/downgrade purposes.
+> 
+> This patch does that work. No functionality change in this patch.
+> 
+> After this there are only lockdep class of APIs at certain places
+> in filesystems which are directly using i_rwsem and second is XFS,
+> but it seems to be anyway defining it's own xfs_ilock/iunlock set
+> of APIs and 'iolock' naming convention for this lock.
+> 
+> [1]: https://www.spinics.net/lists/linux-ext4/msg68689.html
+> 
+> Ritesh Harjani (1):
+>    fs: Use inode_lock/unlock class of provided APIs in filesystems
+> 
+>   fs/btrfs/delayed-inode.c |  2 +-
+>   fs/btrfs/ioctl.c         |  4 ++--
+>   fs/ceph/io.c             | 24 ++++++++++++------------
+>   fs/nfs/io.c              | 24 ++++++++++++------------
+>   fs/orangefs/file.c       |  4 ++--
+>   fs/overlayfs/readdir.c   |  2 +-
+>   fs/readdir.c             |  4 ++--
+>   include/linux/fs.h       | 21 +++++++++++++++++++++
+>   8 files changed, 53 insertions(+), 32 deletions(-)
+> 
 
