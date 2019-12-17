@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3977123094
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2B6123095
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbfLQPhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:37:41 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:40657 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbfLQPhl (ORCPT
+        id S1728635AbfLQPhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:37:43 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41537 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728130AbfLQPhm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:37:41 -0500
-Received: by mail-qt1-f193.google.com with SMTP id e6so1929510qtq.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:40 -0800 (PST)
+        Tue, 17 Dec 2019 10:37:42 -0500
+Received: by mail-qk1-f194.google.com with SMTP id x129so1116407qke.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=etKLBG9v+n8eeFTRJEZ/+UjoGM5jhhzFStGHRUUo6WM=;
-        b=coOCnWd9ZXQFwciqEVUX9ha2VZZKiHqmSlTFNbE3aXsmJqtfoGEa8+z7lOTgusV/us
-         WWQRwOHpPbiQQ5qY22hzU5Jzq/gHvPogi0sCtUVJtZsUX4eq2gS9xUmsJQZ0/hIlx9Rc
-         V55yEiyXqdta4aB4r/f/AbXr/7wc5kGRBrMyT9cTQAPYj25tEgXZngYMT93WNqQZo/3n
-         Ia7G/tPVZz8XvEhTAUFZcnbEhkvYL8R3cEDu3hbNIwUw74pskHMMIgeEwPP29qKUEiWI
-         Qx7xSzad1KlYfTV060H9/p6pvou/dtx3AQDAqsnEJvZBAvnfF77NNl0jBI89WzjIC8XD
-         eZgg==
+        bh=jBx27Gqp2ekqvTSlDXB8wC6n+Fi1D6493NIr4uiaG7Y=;
+        b=xsTauW6zNn4N93RSsacPaXBStDhOwIniRYkpDsPpqyRiG/RwfzxbUqfCPwsZJ1DTiS
+         xX6vaRLmh3lITewOxndgsxai84vX8yX0CGFrk0CtzH0LAIcxSFihq5xw1GG0wj+ZdwbX
+         G4Y7PYwNVRV/jBnxVzI9h41aFkDx0ITztQmaKv3G3BMQ+25OzAd5AfsV20hL4JnIVYzN
+         ZaLrssvBqxdijgPwg1Fs/0FY49V6jzV6LBQUCPOi09OVcxfn9HthVsfHVf+X5LAZKQiy
+         UwIIhTW0yEDeWjb57eWBGK7ShAdjbYCH09EZJEG0rt4DQNxj/OeOgU6Lb/YB3WdTjLTY
+         29QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=etKLBG9v+n8eeFTRJEZ/+UjoGM5jhhzFStGHRUUo6WM=;
-        b=iyO5XkbBeC69WLBnjTHyGWGLmeFLGJzyvIFjVeK+1AWEmW3vL4xQTWxvGWMm9CcMz9
-         XmAUHGGcqQjJoBtT0KkVVcw3LIGS5JugYIcqvc+zpDAA0/kaljT14Ks5uhmocEbNP8v5
-         Qmxj3YTwJO3mGTCIEn7Kjde3eWp6SQwR7i53SaoQ/EVx8uvITm1/VSRnwlSc1RPnlYGE
-         hb/NO+pglR8iwApBm5HePfAsS8EnKha7q7On6s2uOLk4PfbmbVAmQpHZBY8CuLJilqYC
-         1PfKLdbn1LNrWxcFUviRidwn/XVDKc5OeCm9sOglFg44kxzgyS4jHo/n0drW3xSCRu1s
-         KBmQ==
-X-Gm-Message-State: APjAAAWTDw9dgNZ4kyCFFoIfyPsQHM+CygPA+9imxvF7x+pO74GdSqJ6
-        cht9ZPfssH2chWIWHfCL9vz4qQq8BNTyRQ==
-X-Google-Smtp-Source: APXvYqytYttI3Kj8muC756Jffr0xvnFoJIzaeZMyY06794JluNqD8xQRRDdSY2slk92G8ArJKH38bQ==
-X-Received: by 2002:ac8:4257:: with SMTP id r23mr5007243qtm.126.1576597059713;
-        Tue, 17 Dec 2019 07:37:39 -0800 (PST)
+        bh=jBx27Gqp2ekqvTSlDXB8wC6n+Fi1D6493NIr4uiaG7Y=;
+        b=T0h2J0lm8bRyxcn2RO2HwjNTqRBvrdasu8CTvHxpee7udxLr07+l7/qIANNSCYG0MF
+         hD4vjEdyggcFEBjeFRn49+W4/HybUPg2yqVG+otCMs0Gvx3JmdzcRBhd0EkneEqURZWc
+         QJY4Ut/1M2IPK4rQFz1rDTuh1nJl4+6SgjTvzTMzKzcfe4yHT5YSvMsiBKIIMdyRBr9F
+         yLz5D41WeHGY1oevMMGAZo+CQ+gCwwWl2Vd4uPoU+Ysq+ViaR5b4TAsso8xGSo7ovXcK
+         PZAbqmSteZL0WvlMkadWWDZKN7A8O9+77b6UNAOoIOiN1xkaY/SXD4XuwiHJH4edh1rH
+         2mSw==
+X-Gm-Message-State: APjAAAUTN6I6N3+7cyW+5jO12BYlbhaBCKWCcm0rP1fO1M+P4T4pzY+3
+        38lpPdqW1o7PF8R0g5RQhivji0iLiUJdaQ==
+X-Google-Smtp-Source: APXvYqxp+kSi17dneZf6jRHdAsLVnwOHMdzOeOfwCoJGVuyp/rDZN7mMco6azTuFU9KuDIt0cAw3Mw==
+X-Received: by 2002:a05:620a:10a7:: with SMTP id h7mr5462834qkk.423.1576597061362;
+        Tue, 17 Dec 2019 07:37:41 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id c20sm8498398qtc.13.2019.12.17.07.37.38
+        by smtp.gmail.com with ESMTPSA id j15sm7792214qtn.37.2019.12.17.07.37.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:37:39 -0800 (PST)
+        Tue, 17 Dec 2019 07:37:40 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 34/45] btrfs: hold a ref on the root in get_subvol_name_from_objectid
-Date:   Tue, 17 Dec 2019 10:36:24 -0500
-Message-Id: <20191217153635.44733-35-josef@toxicpanda.com>
+Subject: [PATCH 35/45] btrfs: hold a ref on the root in create_pending_snapshot
+Date:   Tue, 17 Dec 2019 10:36:25 -0500
+Message-Id: <20191217153635.44733-36-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191217153635.44733-1-josef@toxicpanda.com>
 References: <20191217153635.44733-1-josef@toxicpanda.com>
@@ -60,63 +60,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We lookup the name of a subvol which means we'll cross into different
-roots.  Hold a ref while we're doing the look ups in the fs_root we're
-searching.
+We create the snapshot and then use it for a bunch of things, we need to
+hold a ref on it while we're messing with it.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/super.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/btrfs/ioctl.c       | 1 +
+ fs/btrfs/transaction.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index e387ca1ac0e5..9c50bee71de9 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1082,6 +1082,10 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 			ret = PTR_ERR(fs_root);
- 			goto err;
- 		}
-+		if (!btrfs_grab_fs_root(fs_root)) {
-+			ret = -ENOENT;
-+			goto err;
-+		}
- 
- 		/*
- 		 * Walk up the filesystem tree by inode refs until we hit the
-@@ -1094,13 +1098,16 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 
- 			ret = btrfs_search_slot(NULL, fs_root, &key, path, 0, 0);
- 			if (ret < 0) {
-+				btrfs_put_fs_root(fs_root);
- 				goto err;
- 			} else if (ret > 0) {
- 				ret = btrfs_previous_item(fs_root, path, dirid,
- 							  BTRFS_INODE_REF_KEY);
- 				if (ret < 0) {
-+					btrfs_put_fs_root(fs_root);
- 					goto err;
- 				} else if (ret > 0) {
-+					btrfs_put_fs_root(fs_root);
- 					ret = -ENOENT;
- 					goto err;
- 				}
-@@ -1117,6 +1124,7 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 			ptr -= len + 1;
- 			if (ptr < name) {
- 				ret = -ENAMETOOLONG;
-+				btrfs_put_fs_root(fs_root);
- 				goto err;
- 			}
- 			read_extent_buffer(path->nodes[0], ptr + 1,
-@@ -1124,6 +1132,7 @@ static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 			ptr[0] = '/';
- 			btrfs_release_path(path);
- 		}
-+		btrfs_put_fs_root(fs_root);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index a3223bec3f5b..d5a994ab9602 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -875,6 +875,7 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
+ 	d_instantiate(dentry, inode);
+ 	ret = 0;
+ fail:
++	btrfs_put_fs_root(pending_snapshot->snap);
+ 	btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->block_rsv);
+ dec_and_free:
+ 	if (snapshot_force_cow)
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index e194d3e4e3a9..7008def3391b 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1637,6 +1637,12 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto fail;
  	}
++	if (!btrfs_grab_fs_root(pending->snap)) {
++		ret = -ENOENT;
++		pending->snap = NULL;
++		btrfs_abort_transaction(trans, ret);
++		goto fail;
++	}
  
- 	btrfs_free_path(path);
+ 	ret = btrfs_reloc_post_snapshot(trans, pending);
+ 	if (ret) {
 -- 
 2.23.0
 
