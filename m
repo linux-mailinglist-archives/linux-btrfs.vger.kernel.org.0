@@ -2,125 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5043123756
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 21:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B3B12385A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 22:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbfLQUaS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 15:30:18 -0500
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:46939 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727497AbfLQUaR (ORCPT
+        id S1728051AbfLQVF3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 16:05:29 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:44676 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726996AbfLQVF2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 15:30:17 -0500
-Received: by mail-wr1-f43.google.com with SMTP id z7so12707704wrl.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 12:30:16 -0800 (PST)
+        Tue, 17 Dec 2019 16:05:28 -0500
+Received: by mail-qv1-f67.google.com with SMTP id n8so4761640qvg.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 13:05:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9i34ap6atfXCMNUeYLPcXX0+LCQyl6EDDG5Dg3n1xcc=;
-        b=QaokeOuhWfmejelFrHNegzLLi9HJlfXsiu8J0BY9iSejS/xhuhMJEbOxwCk4ln60bn
-         LL4gbkMsrOdl/21QIdmFO2OXwsaShZ0aTX42nA5q+M36yHoPzzTurSTGBWUcR1/F6tDz
-         948Ew0OQlG4BeOFPoGSZ+Cia4JwglFBnYbyU9dHdHndfcxa+yblXHIYrtNWyWZOi5ze+
-         h3RzgrxDMDKnmaKZNakMgww0NS29ik87K1XMchvaewOidKJLFXreJX25SNakqID6ui3C
-         Cm6O/8bSNkKa3UYDvXMP05RyqAVIlCvbAMP6khFJxtHULaMNHHdkki0/JHP9hvXFW5qb
-         wU/A==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B/nIEgqm7OioL/7wEl1hDXcP2AhFeFFGi64i4A0ew7U=;
+        b=kqhButns8pFTbsXxUKCTNp0O+N6EM28deKyUq1j7ML/wFB01sL8uwbAmo/9ezWudd9
+         b1eGwLa0JEcAw3b8Dxn7ln8WJiUhSU5zUC/EWIP+JxWgCfFFmdgmnEWta84nd9bZHhcP
+         PhYN3XROnmkVc4Qz/nWMt/a45o7euRkH4CNNlgqwgBRxTgcxGmuHTubEj1z2uySLwWfj
+         mR8ThebdwiqJmgG6NLNZdlDMu6II++y5v35mFe61oGp0jRobX5aPVwNWwMBdVzu1hIMT
+         R5VuJvV4c7CDJm8ebDjGaOugtvXSn0c1FwOyunvDg56SHqRcuGN9AtMXluTQj345RMga
+         snOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9i34ap6atfXCMNUeYLPcXX0+LCQyl6EDDG5Dg3n1xcc=;
-        b=qaBp4fHdFgnVai309fRQszct5wkUB8h1cj64N3YbQj9lhfIq2ArWFNrULz8NProNwT
-         zkeXCktplkfNpzjM+UP2w0ToMfMYYpTogp33qpTw/YxOpexGJWqb7oB/PLxyt6C70knN
-         OGG69fj5R2PGaruQQ4z47kw1JJPMEaANspYVHTsHCJ4rS89UWiLes1STP8hCuKPrjpNv
-         AgEJ0G8ZPk2Q0qoNbi80O0EDHvZASbY6d9/s57cx/i4UmbPVKUsXTMx+j/zWL7e8tokc
-         7eN6g+R9L58oYdJksnuGD+3j7xDFrwMfBgBRFhidklr8AkzCAOZ4t2QI3Mi4WeXAw3dr
-         SO+Q==
-X-Gm-Message-State: APjAAAWDTXtJJQ+suVlN2AwD1VfUtpLy3M8bPyaX0aR+h4kE0BPQBkl2
-        Sa56q0/54BP9Bn1zpv33E/STZtCZ
-X-Google-Smtp-Source: APXvYqwiOUcFe5y3tPGCbPwgL6fVpGD5dWsqUp0xiZxpmvLWYuJcqKTx1tIxoyHoz5H/NJOwijC2DQ==
-X-Received: by 2002:a5d:4481:: with SMTP id j1mr40551399wrq.348.1576614615821;
-        Tue, 17 Dec 2019 12:30:15 -0800 (PST)
-Received: from hephaestus.suse.de ([179.185.209.78])
-        by smtp.gmail.com with ESMTPSA id h17sm27910619wrs.18.2019.12.17.12.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 12:30:15 -0800 (PST)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
-Subject: [btrfs-progs PATCH 4/4] tests: Do not fail is dmsetup is missing
-Date:   Tue, 17 Dec 2019 17:31:55 -0300
-Message-Id: <20191217203155.24206-5-marcos.souza.org@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191217203155.24206-1-marcos.souza.org@gmail.com>
-References: <20191217203155.24206-1-marcos.souza.org@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B/nIEgqm7OioL/7wEl1hDXcP2AhFeFFGi64i4A0ew7U=;
+        b=bljyZx8i72Wc5j7Ljezk5whHaaKWieo5RhC9yO0/r/1Q+ZYKI7JBJEHeNSxIr9yv1u
+         KWGwe4tch5F2ttTLJ722Y5iTUD/UxPpt4OmBYSqlbbJhoIftt6YlJG6qch0T08s9HfFQ
+         oaah2YRyayKdeBFi1StUNQBNTJJM9dhALu6UixyeQZnOCFgEYKe+hlgOe6Z7m+vf69A9
+         3bdVh79+knwFxcWqRGCDlADLSdftv0YkOfZAPJ0VTw8EsQ32rlwjuI99/Ea+G1GKgCy6
+         sHVFaFoRrIg5amFJF2ae03lwuoJORg9t0cMgJ3ZDWlSyQ2CWzFCFsPSdMqnTaqHAUyDU
+         9r0A==
+X-Gm-Message-State: APjAAAWIlrBiQMMdZsWJ18Ozd2YXmcRSvRRmbupQS+yA9+BCLXyMVDbZ
+        kBhfClanYCizf8v4LVKuFGZxtjmsdp1C+A==
+X-Google-Smtp-Source: APXvYqw7J4Jh50cAaJ5d2+biAeS3jjGlBUAWwJDfqPYiJOEHT37bBuk1dYEU4Dkn1ajY/ZS54Xtp3Q==
+X-Received: by 2002:a05:6214:11a8:: with SMTP id u8mr6722944qvv.16.1576616727537;
+        Tue, 17 Dec 2019 13:05:27 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::4217])
+        by smtp.gmail.com with ESMTPSA id k29sm11395qtu.54.2019.12.17.13.05.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Dec 2019 13:05:26 -0800 (PST)
+Subject: Re: [PATCH v6 23/28] btrfs: support dev-replace in HMZONED mode
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-24-naohiro.aota@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <2157b1bb-a64b-eed3-0451-09a8480d0db2@toxicpanda.com>
+Date:   Tue, 17 Dec 2019 16:05:25 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20191213040915.3502922-24-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On 12/12/19 11:09 PM, Naohiro Aota wrote:
+> We have two type of I/Os during the device-replace process. One is a I/O to
+> "copy" (by the scrub functions) all the device extents on the source device
+> to the destination device.  The other one is a I/O to "clone" (by
+> handle_ops_on_dev_replace()) new incoming write I/Os from users to the
+> source device into the target device.
+> 
+> Cloning incoming I/Os can break the sequential write rule in the target
+> device. When write is mapped in the middle of a block group, that I/O is
+> directed in the middle of a zone of target device, which breaks the
+> sequential write rule.
+> 
+> However, the cloning function cannot be simply disabled since incoming I/Os
+> targeting already copied device extents must be cloned so that the I/O is
+> executed on the target device.
+> 
+> We cannot use dev_replace->cursor_{left,right} to determine whether bio is
+> going to not yet copied region.  Since we have time gap between finishing
+> btrfs_scrub_dev() and rewriting the mapping tree in
+> btrfs_dev_replace_finishing(), we can have newly allocated device extent
+> which is never cloned nor copied.
+> 
+> So the point is to copy only already existing device extents. This patch
+> introduces mark_block_group_to_copy() to mark existing block group as a
+> target of copying. Then, handle_ops_on_dev_replace() and dev-replace can
+> check the flag to do their job.
+> 
+> Device-replace process in HMZONED mode must copy or clone all the extents
+> in the source device exctly once.  So, we need to use to ensure allocations
+> started just before the dev-replace process to have their corresponding
+> extent information in the B-trees. finish_extent_writes_for_hmzoned()
+> implements that functionality, which basically is the removed code in the
+> commit 042528f8d840 ("Btrfs: fix block group remaining RO forever after
+> error during device replace").
+> 
+> This patch also handles empty region between used extents. Since
+> dev-replace is smart to copy only used extents on source device, we have to
+> fill the gap to honor the sequential write rule in the target device.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Move the check of dmsetup to check_dm_target_support, and adapt the only
-two places checking if dmsetup is present in the system. Now we skip the
-test if dmsetup isn't available, instead of marking the test as failed.
+Can you split up the copying part and the cloning part into different patches, 
+this is a bear to review.  Also I don't quite understand the zeroout behavior. 
+It _looks_ like for cloning you are doing a zeroout for the gap between the last 
+wp position and the current cloned bio, which makes sense, but doesn't this gap 
+exist because copying is ongoing?  Can you copy into a zero'ed out position?  Or 
+am I missing something here?  Thanks,
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- tests/common                                             | 9 +++++++--
- tests/mkfs-tests/005-long-device-name-for-ssd/test.sh    | 1 -
- .../017-small-backing-size-thin-provision-device/test.sh | 1 -
- 3 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/tests/common b/tests/common
-index f138b17e..dc2d084e 100644
---- a/tests/common
-+++ b/tests/common
-@@ -322,10 +322,15 @@ check_global_prereq()
- 	fi
- }
- 
--# check if the targets passed as arguments are available, and if not just skip
--# the test
-+# check if dmsetup and targets passed as arguments are available, and skip the
-+# test if they aren't.
- check_dm_target_support()
- {
-+	which dmsetup &> /dev/null
-+	if [ $? -ne 0 ]; then
-+		_not_run "This test requires dmsetup tool.";
-+	fi
-+
- 	for target in "$@"; do
- 		$SUDO_HELPER modprobe dm-$target >/dev/null 2>&1
- 		$SUDO_HELPER dmsetup targets 2>&1 | grep -q ^$target
-diff --git a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-index 329deaf2..2df88db4 100755
---- a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-+++ b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-@@ -4,7 +4,6 @@
- source "$TEST_TOP/common"
- 
- check_prereq mkfs.btrfs
--check_global_prereq dmsetup
- check_dm_target_support linear
- 
- setup_root_helper
-diff --git a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
-index 91851945..83f34ecc 100755
---- a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
-+++ b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
-@@ -6,7 +6,6 @@ source "$TEST_TOP/common"
- 
- check_prereq mkfs.btrfs
- check_global_prereq udevadm
--check_global_prereq dmsetup
- check_dm_target_support linear thin
- 
- setup_root_helper
--- 
-2.23.0
-
+Josef
