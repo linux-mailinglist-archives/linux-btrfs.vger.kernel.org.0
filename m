@@ -2,94 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A05123114
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B66312311C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 17:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbfLQQFy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 11:05:54 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:34313 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727737AbfLQQFy (ORCPT
+        id S1728126AbfLQQGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 11:06:51 -0500
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:43307 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727737AbfLQQGv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 11:05:54 -0500
-Received: by mail-qk1-f196.google.com with SMTP id j9so7714178qkk.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 08:05:53 -0800 (PST)
+        Tue, 17 Dec 2019 11:06:51 -0500
+Received: by mail-ua1-f65.google.com with SMTP id o42so3607338uad.10;
+        Tue, 17 Dec 2019 08:06:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EFEFxSK3HGS7nPpt2QAaz9NcOWmtR/rAGiAfbCvCH1k=;
-        b=Nfi3HOY8xTjyadBjb8Wh+8agO5Jc+goojt2jwxQQR1vuWK2D58hEDRRIRrfJUxvMxJ
-         AlYGZjqnIhMKWClApJZehLK12tHD9490Fzntu8UKcAtZG5fQh3JF2mrBuKn9CNCXSaqU
-         iynPtT2lupdOABZ2QZZbb+4Yqw0NnoAuBUq15XPxtgSqFGOUyM8TBpId4N7Noqwgj7qf
-         azkHfkqHwzzfaBTFkterrWEhJle00Gt0GsnxGGq2m5z54ZpawaUZzgqgPnx6IODasZUQ
-         6yz8odsUDX0xxQxrHzwjgoz4cwFjda2Bd3ZIjw3KOkmlc70nwU0rndMn0kC2oSEAaD4C
-         ku5A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=67jY2dfupyUgudSQIPQMKibfXNp2rZfUJ94zrvS6ZX4=;
+        b=hqMGWbib5zCtCofQR+kyIYdaWH7F08iXD29eS+59WYe6lOLyoFVw+Y6hkcHmblg7OP
+         Md2mhd0j/QgU4bo8rzje1meIawPlnbLQmHyC5xuSHdAyvwAsssCcFBbSYWVKptN0W46/
+         19zNvSFxwcJ2LvRh/36qFKSX+xEH1NqdMyfDRRGRHdtXOPWYv9NNGwtc2UIgqDYreaR5
+         zGpuUFal0QAQgm0IeITzXTGdFvcrvOxngQNqjMZbv7taNMA2/nLN0l6yW+CWErHXpClu
+         /C4qBtLHeNyqm7a/O3MHUU1gMwjpZ6QwMO/wf681gbdcmWGtmM1nXlMfU6Ipii1BeLWL
+         QfAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EFEFxSK3HGS7nPpt2QAaz9NcOWmtR/rAGiAfbCvCH1k=;
-        b=PXtTHTsO2cHY1/s6c20MGU73WJW05jNrBGjGq88Lv3Jb59/Mu4nepN+u13ODdsnIm0
-         keQcBH09bDuhWW7A4dFE3X6ORvpO4Gqa5F82JzCRuHv3+8c6OuP2nb4/nPcIEloQN1t0
-         dTsH6ThOAV7wlTmOIUrMlYsv+i8fy48cruBK9RKAXA4RI73yGW/5f6+AF1/AV9oc1jlt
-         By3RmS0wUSGDD5fp/UvhcWN4hJJzosdtpZ2WvPkMEUg61HBajZg6Yr79CIftuJTM3inN
-         Fov5MYi9b3cD6LYrN/TorQJ6Y3oLqyxXDdu6Vuz6tF3oBdKQJxYOOOTOu80dy2Dc+d0a
-         NjAQ==
-X-Gm-Message-State: APjAAAUtAfSUFt5ehP2i/c9L0Jc83BQQI16HT0zRiMyjcZ2hmFXU/zsB
-        FmQNga0TsBNVLWCvP3XOflsW3A==
-X-Google-Smtp-Source: APXvYqwf6T6nl1LBbdtCyZHH73+XZek8zOscdeVMNsPiGpHkeqDsOP3JX/5ASrbZdyFP74rjvj6E6Q==
-X-Received: by 2002:a37:a8d4:: with SMTP id r203mr5843395qke.394.1576598753248;
-        Tue, 17 Dec 2019 08:05:53 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id t2sm7105143qkc.31.2019.12.17.08.05.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Dec 2019 08:05:52 -0800 (PST)
-Subject: Re: [PATCH] btrfs: super: Make btrfs_statfs() work with metadata
- over-commiting
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Tomasz Chmielewski <mangoo@wpkg.org>,
-        Martin Raiber <martin@urbackup.org>
-References: <20191216061226.40454-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <488111c4-03e3-2211-a8fe-5bab7c0f030b@toxicpanda.com>
-Date:   Tue, 17 Dec 2019 11:05:51 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=67jY2dfupyUgudSQIPQMKibfXNp2rZfUJ94zrvS6ZX4=;
+        b=Ssxnw19zU5tayi2C8xMwBAp0xOkaUDuSub0SBZePVMadxbd3tPbZYZQ8BHXgcgt3E9
+         t/EZphCcD4m0eWSP7HGLmY7RdnEtFr3M81+gtBzFHFGigaCMGGxx5nIstkudHKsQkF4z
+         /+QnfHV8hxmeOcm9kc3Usl9Wb2PXDM6+I1XuROHOxyT4hVHSD1j8jd/Rshz4qUdQs/Yz
+         Y4RCE8m/uuNpMwm/WXcau6xoMkwZD38MswxQZuYqqz1+BytW4rCBQcPrCz01RqgTe3Yh
+         WQWFpOTx/7E4cxtZ2TrViT98jeKahQztd+SEZ9B23pkKIr3vCMcCyc6/i5zuEZAsK8p8
+         h2bQ==
+X-Gm-Message-State: APjAAAW8cix2kZl7nlxrky01vQvlD1wQFwmAT0VQFJovUFoRpZROfJOC
+        L3ikDttQRAsx7YAQWsUUwOvYupa/djIVZwCOioM=
+X-Google-Smtp-Source: APXvYqylGIYI9trRKDygWNLrrYljOCG9nlet7yHlfllPKZ7z4G8B16iO7tdM7SGRSkKPVbFX5ikc1i140mGlXsJ35ec=
+X-Received: by 2002:a9f:3e84:: with SMTP id x4mr3600376uai.83.1576598809729;
+ Tue, 17 Dec 2019 08:06:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191216061226.40454-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191114155836.3528-1-josef@toxicpanda.com> <20191114155836.3528-3-josef@toxicpanda.com>
+In-Reply-To: <20191114155836.3528-3-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 17 Dec 2019 16:06:38 +0000
+Message-ID: <CAL3q7H4t_L3JrmP1NNf8VTb+UApbLWC8f69UzsMen1hGzXzb=A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] fsstress: add the ability to create snapshots
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     fstests <fstests@vger.kernel.org>, kernel-team@fb.com,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/16/19 1:12 AM, Qu Wenruo wrote:
-> [BUG]
-> There are several reports about vanilla `df` reports no available space,
-> while `btrfs filesystem df` is still reporting tons of unallocated
-> space.
-> 
-> https://lore.kernel.org/linux-btrfs/CAJCQCtQEu_+nL_HByAWK2zKfg2Zhpm3Ezto+sA12wwV0iq8Ghg@mail.gmail.com/T/#t
-> https://lore.kernel.org/linux-btrfs/CAJCQCtSWW4ageK56PdHtSmgrFrDf_Qy0PbxZ5LSYYCbr3Z10ug@mail.gmail.com/T/#t
-> 
-> The example output from vanilla `df` would look like:
-> Filesystem  Size  Used Avail Use% Mounted on
-> /dev/loop0  7.4T  623G     0 100% /media/backup
-> 
-> [CAUSE]
-> There is a special check in btrfs_statfs(), which reset f_bavail:
-> 
-> 	if (!mixed && total_free_meta - SZ_4M < block_rsv->size)
-> 		buf->f_bavail = 0;
+On Thu, Nov 14, 2019 at 3:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> Snapshots are just fancy subvolumes, add this ability so we can stress
+> snapshot creation.  We get the deletion with SUBVOL_DELETE.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Why not just read fs_info->free_chunk_space and take that into account?  The 
-point is we want to tell the user there's no room left if we can't allocate a 
-new chunk and we only have the global reserve space left.  So just subtract the 
-global reserve size from the total f_bavail as long as free_chunk_space is 
-sufficient, otherwise fall back to the original calculation.  Thanks,
+Looks good, and it works on my test boxes.
 
-Josef
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+>  ltp/fsstress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/ltp/fsstress.c b/ltp/fsstress.c
+> index e0636a12..f7f5f1dc 100644
+> --- a/ltp/fsstress.c
+> +++ b/ltp/fsstress.c
+> @@ -129,6 +129,7 @@ typedef enum {
+>         OP_SETATTR,
+>         OP_SETFATTR,
+>         OP_SETXATTR,
+> +       OP_SNAPSHOT,
+>         OP_SPLICE,
+>         OP_STAT,
+>         OP_SUBVOL_CREATE,
+> @@ -255,6 +256,7 @@ void        rmdir_f(int, long);
+>  void   setattr_f(int, long);
+>  void   setfattr_f(int, long);
+>  void   setxattr_f(int, long);
+> +void   snapshot_f(int, long);
+>  void   splice_f(int, long);
+>  void   stat_f(int, long);
+>  void   subvol_create_f(int, long);
+> @@ -322,6 +324,7 @@ opdesc_t    ops[] =3D {
+>         { OP_SETFATTR, "setfattr", setfattr_f, 2, 1 },
+>         /* set project id (XFS_IOC_FSSETXATTR ioctl) */
+>         { OP_SETXATTR, "setxattr", setxattr_f, 1, 1 },
+> +       { OP_SNAPSHOT, "snapshot", snapshot_f, 1, 1 },
+>         { OP_SPLICE, "splice", splice_f, 1, 1 },
+>         { OP_STAT, "stat", stat_f, 1, 0 },
+>         { OP_SUBVOL_CREATE, "subvol_create", subvol_create_f, 1, 1},
+> @@ -1903,6 +1906,7 @@ zero_freq(void)
+>  #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+>
+>  opty_t btrfs_ops[] =3D {
+> +       OP_SNAPSHOT,
+>         OP_SUBVOL_CREATE,
+>         OP_SUBVOL_DELETE,
+>  };
+> @@ -4703,6 +4707,55 @@ out:
+>         free_pathname(&f);
+>  }
+>
+> +void
+> +snapshot_f(int opno, long r)
+> +{
+> +#ifdef HAVE_BTRFSUTIL_H
+> +       enum btrfs_util_error   e;
+> +       pathname_t              f;
+> +       pathname_t              newf;
+> +       fent_t                  *fep;
+> +       int                     id;
+> +       int                     parid;
+> +       int                     v;
+> +       int                     v1;
+> +       int                     err;
+> +
+> +       init_pathname(&f);
+> +       if (!get_fname(FT_SUBVOLm, r, &f, NULL, &fep, &v)) {
+> +               if (v)
+> +                       printf("%d/%d: snapshot - no subvolume\n", procid=
+,
+> +                              opno);
+> +               free_pathname(&f);
+> +               return;
+> +       }
+> +       init_pathname(&newf);
+> +       parid =3D fep->id;
+> +       err =3D generate_fname(fep, FT_SUBVOL, &newf, &id, &v1);
+> +       v |=3D v1;
+> +       if (!err) {
+> +               if (v) {
+> +                       (void)fent_to_name(&f, fep);
+> +                       printf("%d/%d: snapshot - no filename from %s\n",
+> +                              procid, opno, f.path);
+> +               }
+> +               free_pathname(&f);
+> +               return;
+> +       }
+> +       e =3D btrfs_util_create_snapshot(f.path, newf.path, 0, NULL, NULL=
+);
+> +       if (e =3D=3D BTRFS_UTIL_OK)
+> +               add_to_flist(FT_SUBVOL, id, parid, 0);
+> +       if (v) {
+> +               printf("%d/%d: snapshot %s->%s %d(%s)\n", procid, opno,
+> +                      f.path, newf.path, e, btrfs_util_strerror(e));
+> +               printf("%d/%d: snapshot add id=3D%d,parent=3D%d\n", proci=
+d, opno,
+> +                      id, parid);
+> +       }
+> +       free_pathname(&newf);
+> +       free_pathname(&f);
+> +#endif
+> +}
+> +
+>  void
+>  stat_f(int opno, long r)
+>  {
+> --
+> 2.21.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
