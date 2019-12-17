@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 870B912309C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B2912309D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Dec 2019 16:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbfLQPhz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 10:37:55 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:33187 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728642AbfLQPhz (ORCPT
+        id S1728659AbfLQPh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 10:37:57 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39497 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbfLQPh5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:37:55 -0500
-Received: by mail-qv1-f65.google.com with SMTP id z3so4350921qvn.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:54 -0800 (PST)
+        Tue, 17 Dec 2019 10:37:57 -0500
+Received: by mail-qt1-f195.google.com with SMTP id e5so7747793qtm.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 07:37:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=H5OQzTfUbkpobcBIOf/ShOb+3WfGLKryIvpSFu2kwWo=;
-        b=RVm0bPTL8GZdeBh7jb5YQZCLnGuUpL4d2B9mH9Y+BBX68BMpoyn+2yJDwG+IwIzNgt
-         c5477zlEjhaxHxgH/Gedk15rrH0ppGcSgUkM4JVGVc1pkRsK2M8u3siKOxbizsjFJxnu
-         BIZwzKwQ2+kKKINIe9yrf+/Pro5LU7ibC8c1UInFKonAq8QZ/oPMvYEZqt9LbLc0RS3o
-         4xZMlZVCBomOFDcR+uKevVONNmj9mqhrcsLLKoHpGUbMK3xrRF3zbFvLFNyeCCvzNYJR
-         zq5pWsJmQBRtINilAUlWNxgE27SK1VHREWC68m0dFJWfxz54l3sHvWH7/B1FAfZQGmIT
-         X6rA==
+        bh=r8rI8BNDVt3/Wqx6P7J8doYqgmZTOGmAzkX8CCpuHjU=;
+        b=S9JymaUTpRFgEKanRcOdTYfkhMYknbGYqpsY3JPtYAK0dZ+v/uoGY2G/bxGGEkX5ag
+         v9iWiMbzfKxpfKU9X+gZgDPlWIbQvXckIBGHV8hnM2tyjp65da1DO954sFVrNNslMW1J
+         ia6bvQRPKYIwOsNXcPgI4IurJxPw9CRTnNf0+GUoTivLDKaXzSxAJydoVCTtQuInxewM
+         KmywP19w55tjTdhJHqV4Bp20xena8FmES3BkDc0eUAzp5XCfy0N7SmjWX+WeFi4P1MLV
+         zvD1MOqYU6xWUvn0y/Q4DuggSQj5Y4+XmctOhvda/Vk3jiivfUhxq6Uy31lps+7wrG6q
+         R/fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H5OQzTfUbkpobcBIOf/ShOb+3WfGLKryIvpSFu2kwWo=;
-        b=cn+2n981j5R5DXkb0cCWUAkwAPwxvzEWlvZf0Ztt1uYxeGqqzXTnkHJerJ/ubSG3YJ
-         HdtAw//5kIUkqobLez16iFNbiYn4QW84q5Yn19b66DPAy/6Jq4Nz9z2CHJ3BFSEiCur1
-         nZmUqfzHsQxB1UNvZc6TE9iEyPoHrSzU4FCVFOKkWpbinOFE5HuTfKs88qAYV1L58kI4
-         WrkeRIEN+Vb2md5qGw8LdoqgPtbdgW1WJgk5alhHp3QModiEoBYMLkwiaHrdWOsrEcjS
-         mq+TXAndqA8/xgajZNoUTEiLd9PmFDFSCOfJHcI+wZyEbKDqHTlErFIah31t7ZYbXRSr
-         XPTw==
-X-Gm-Message-State: APjAAAW0XQVR0Z1jHXV616Q9aIf31QhA0zucMk9cOPTx//RidO4rVCll
-        SyFlIBGVHKPoUo7u46Hq3HeffydxILLNag==
-X-Google-Smtp-Source: APXvYqzm+Bc9c1aeJVQxQLm7pRqtuUONGlx79Q0vclXqtP+MV9MMw4g+jvehE5w+MLeLZbG69wNaxw==
-X-Received: by 2002:ad4:450a:: with SMTP id k10mr4923805qvu.136.1576597073753;
-        Tue, 17 Dec 2019 07:37:53 -0800 (PST)
+        bh=r8rI8BNDVt3/Wqx6P7J8doYqgmZTOGmAzkX8CCpuHjU=;
+        b=MDuv5WkbJXVBYUTEoNgo3O3yl1yBu3b+dnwAFuU7PuXj5EyST2qSF9jw71GJqG8GsM
+         XHzT0bMBv6qaeEEtWpZqD1G8X6A5pmYipG6B03ZF+RQNkReEXIUBdCOkA/z/1zX2ZZhT
+         PdIkxGA0u3kKmPRmVvRvlUs8j6ZqH+G+aUS08k8IDRHFMOh+dH4PxY6JbcTauH62+kN/
+         UwQrFqcP8KxJaVjusUD9xR/Cqv34STS2qOvJggLwBCUOEFLd+NI6yTibH5y3cDWKSgB4
+         nNJMJHUUFQKukZTsXpfemYswHDp6lgkIziC4dOdzndvyQsPwBbiT5MCPkQEejOEvMmnN
+         TI9g==
+X-Gm-Message-State: APjAAAW/FJt3mDXX5YCFGEQtc+if47qUJPRvuv/56V5WfPVT0SAuUOex
+        NLQW1H21wNER41j+uuGrGIa2TEDSsUccaA==
+X-Google-Smtp-Source: APXvYqx0MGSCRKKfLC7LZemW0CqWz96lVW0iJEA7RSuxIKWEhVnXN0ddttWlo94ah6O7eOkNHmxBHw==
+X-Received: by 2002:aed:22c8:: with SMTP id q8mr5198362qtc.133.1576597075543;
+        Tue, 17 Dec 2019 07:37:55 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id z6sm7063942qkz.101.2019.12.17.07.37.52
+        by smtp.gmail.com with ESMTPSA id v5sm6637189qth.70.2019.12.17.07.37.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:37:53 -0800 (PST)
+        Tue, 17 Dec 2019 07:37:54 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 42/45] btrfs: move fs_info init work into it's own helper function
-Date:   Tue, 17 Dec 2019 10:36:32 -0500
-Message-Id: <20191217153635.44733-43-josef@toxicpanda.com>
+Subject: [PATCH 43/45] btrfs: make the init of static elements in fs_info separate
+Date:   Tue, 17 Dec 2019 10:36:33 -0500
+Message-Id: <20191217153635.44733-44-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191217153635.44733-1-josef@toxicpanda.com>
 References: <20191217153635.44733-1-josef@toxicpanda.com>
@@ -60,225 +60,157 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-open_ctree mixes initialization of fs stuff and fs_info stuff, which
-makes it confusing when doing things like adding the root leak
-detection.  Make a separate function that init's all the static
-structures inside of the fs_info needed for the fs to operate, and then
-call that before we start setting up the fs_info to be mounted.
+In adding things like eb leak checking and root leak checking there were
+a lot of weird corner cases that come from the fact that
+
+1) We do not init the fs_info until we get to open_ctree time in the
+normal case and
+
+2) The test infrastructure half-init's the fs_info for things that it
+needs.
+
+This makes it really annoying to make changes because you have to add
+init in two different places, have special cases for testing fs_info's
+that may not have certain things init'ed, and cases for fs_info's that
+didn't make it to open_ctree and thus are not fully init'ed.
+
+Fix this by extracting out the non-allocating init of the fs info into
+it's own public function and use that to make sure we're all getting
+consistent views of an allocated fs_info.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 164 +++++++++++++++++++++++----------------------
- 1 file changed, 83 insertions(+), 81 deletions(-)
+ fs/btrfs/disk-io.c           | 19 +++++++++++--------
+ fs/btrfs/disk-io.h           |  1 +
+ fs/btrfs/super.c             |  1 +
+ fs/btrfs/tests/btrfs-tests.c | 24 ++----------------------
+ 4 files changed, 15 insertions(+), 30 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b13f3f6e326d..90d4203818e5 100644
+index 90d4203818e5..991a6f518c0f 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2646,68 +2646,9 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+@@ -2646,10 +2646,8 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
  	return ret;
  }
  
--int __cold open_ctree(struct super_block *sb,
--	       struct btrfs_fs_devices *fs_devices,
--	       char *options)
-+static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
+-static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
++void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
  {
--	u32 sectorsize;
--	u32 nodesize;
--	u32 stripesize;
--	u64 generation;
--	u64 features;
--	u16 csum_type;
--	struct btrfs_key location;
--	struct buffer_head *bh;
--	struct btrfs_super_block *disk_super;
--	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
--	struct btrfs_root *tree_root;
--	struct btrfs_root *chunk_root;
- 	int ret;
--	int err = -EINVAL;
--	int clear_free_space_tree = 0;
--	int level;
+-	int ret;
 -
--	tree_root = fs_info->tree_root = btrfs_alloc_root(fs_info,
--					BTRFS_ROOT_TREE_OBJECTID, GFP_KERNEL);
--	chunk_root = fs_info->chunk_root = btrfs_alloc_root(fs_info,
--					BTRFS_CHUNK_TREE_OBJECTID, GFP_KERNEL);
--	if (!tree_root || !chunk_root) {
--		err = -ENOMEM;
--		goto fail;
--	}
--
--	ret = init_srcu_struct(&fs_info->subvol_srcu);
--	if (ret) {
--		err = ret;
--		goto fail;
--	}
--
--	ret = percpu_counter_init(&fs_info->dio_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--
--	ret = percpu_counter_init(&fs_info->dirty_metadata_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--	fs_info->dirty_metadata_batch = PAGE_SIZE *
--					(1 + ilog2(nr_cpu_ids));
--
--	ret = percpu_counter_init(&fs_info->delalloc_bytes, 0, GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
--
--	ret = percpu_counter_init(&fs_info->dev_replace.bio_counter, 0,
--			GFP_KERNEL);
--	if (ret) {
--		err = ret;
--		goto fail_srcu;
--	}
- 
  	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
  	INIT_RADIX_TREE(&fs_info->buffer_radix, GFP_ATOMIC);
-@@ -2771,21 +2712,6 @@ int __cold open_ctree(struct super_block *sb,
- 	INIT_LIST_HEAD(&fs_info->ordered_roots);
- 	spin_lock_init(&fs_info->ordered_root_lock);
+ 	INIT_LIST_HEAD(&fs_info->trans_list);
+@@ -2693,7 +2691,6 @@ static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
+ 	atomic_set(&fs_info->reada_works_cnt, 0);
+ 	atomic_set(&fs_info->nr_delayed_iputs, 0);
+ 	atomic64_set(&fs_info->tree_mod_seq, 0);
+-	fs_info->sb = sb;
+ 	fs_info->max_inline = BTRFS_DEFAULT_MAX_INLINE;
+ 	fs_info->metadata_ratio = 0;
+ 	fs_info->defrag_inodes = RB_ROOT;
+@@ -2719,9 +2716,6 @@ static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
+ 	btrfs_init_balance(fs_info);
+ 	btrfs_init_async_reclaim_work(&fs_info->async_reclaim_work);
  
--	fs_info->btree_inode = new_inode(sb);
--	if (!fs_info->btree_inode) {
--		err = -ENOMEM;
--		goto fail_srcu;
--	}
--	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
--
--	fs_info->delayed_root = kmalloc(sizeof(struct btrfs_delayed_root),
--					GFP_KERNEL);
--	if (!fs_info->delayed_root) {
--		err = -ENOMEM;
--		goto fail_iput;
--	}
--	btrfs_init_delayed_root(fs_info->delayed_root);
--
- 	btrfs_init_scrub(fs_info);
- #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
- 	fs_info->check_integrity_print_mask = 0;
-@@ -2796,8 +2722,6 @@ int __cold open_ctree(struct super_block *sb,
- 	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
- 	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
- 
--	btrfs_init_btree_inode(fs_info);
+-	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
+-	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
 -
  	spin_lock_init(&fs_info->block_group_cache_lock);
  	fs_info->block_group_cache_tree = RB_ROOT;
  	fs_info->first_logical_byte = (u64)-1;
-@@ -2842,12 +2766,91 @@ int __cold open_ctree(struct super_block *sb,
+@@ -2765,6 +2759,15 @@ static int init_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
+ 	fs_info->swapfile_pins = RB_ROOT;
  
  	fs_info->send_in_progress = 0;
- 
-+	ret = init_srcu_struct(&fs_info->subvol_srcu);
-+	if (ret)
-+		return ret;
-+
-+	ret = percpu_counter_init(&fs_info->dio_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	ret = percpu_counter_init(&fs_info->dirty_metadata_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	fs_info->dirty_metadata_batch = PAGE_SIZE *
-+					(1 + ilog2(nr_cpu_ids));
-+
-+	ret = percpu_counter_init(&fs_info->delalloc_bytes, 0, GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	ret = percpu_counter_init(&fs_info->dev_replace.bio_counter, 0,
-+			GFP_KERNEL);
-+	if (ret)
-+		goto fail;
-+
-+	fs_info->delayed_root = kmalloc(sizeof(struct btrfs_delayed_root),
-+					GFP_KERNEL);
-+	if (!fs_info->delayed_root) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+	btrfs_init_delayed_root(fs_info->delayed_root);
-+
- 	ret = btrfs_alloc_stripe_hash_table(fs_info);
--	if (ret) {
--		err = ret;
--		goto fail_alloc;
-+	if (ret)
-+		goto fail;
-+
-+	return 0;
-+fail:
-+	cleanup_srcu_struct(&fs_info->subvol_srcu);
-+	return ret;
 +}
 +
-+int __cold open_ctree(struct super_block *sb,
-+	       struct btrfs_fs_devices *fs_devices,
-+	       char *options)
++static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
 +{
-+	u32 sectorsize;
-+	u32 nodesize;
-+	u32 stripesize;
-+	u64 generation;
-+	u64 features;
-+	u16 csum_type;
-+	struct btrfs_key location;
-+	struct buffer_head *bh;
-+	struct btrfs_super_block *disk_super;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_root *tree_root;
-+	struct btrfs_root *chunk_root;
 +	int ret;
-+	int err = -EINVAL;
-+	int clear_free_space_tree = 0;
-+	int level;
 +
-+	err = init_fs_info(fs_info, sb);
-+	if (err)
-+		goto fail;
-+
-+	/* These need to be init'ed before we start creating inodes and such. */
-+	tree_root = fs_info->tree_root = btrfs_alloc_root(fs_info,
-+					BTRFS_ROOT_TREE_OBJECTID, GFP_KERNEL);
-+	chunk_root = fs_info->chunk_root = btrfs_alloc_root(fs_info,
-+					BTRFS_CHUNK_TREE_OBJECTID, GFP_KERNEL);
-+	if (!tree_root || !chunk_root) {
-+		err = -ENOMEM;
-+		goto fail_srcu;
++	fs_info->sb = sb;
++	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
++	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
+ 
+ 	ret = init_srcu_struct(&fs_info->subvol_srcu);
+ 	if (ret)
+@@ -2829,7 +2832,7 @@ int __cold open_ctree(struct super_block *sb,
+ 	int clear_free_space_tree = 0;
+ 	int level;
+ 
+-	err = init_fs_info(fs_info, sb);
++	err = init_mount_fs_info(fs_info, sb);
+ 	if (err)
+ 		goto fail;
+ 
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 80a65a0d9d33..5467227f007d 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -39,6 +39,7 @@ static inline u64 btrfs_sb_offset(int mirror)
+ struct btrfs_device;
+ struct btrfs_fs_devices;
+ 
++void btrfs_init_fs_info(struct btrfs_fs_info *fs_info);
+ int btrfs_verify_level_key(struct extent_buffer *eb, int level,
+ 			   struct btrfs_key *first_key, u64 parent_transid);
+ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 80fea16cf34c..6681f3d99b14 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1510,6 +1510,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+ 		error = -ENOMEM;
+ 		goto error_sec_opts;
+ 	}
++	btrfs_init_fs_info(fs_info);
+ 
+ 	fs_info->super_copy = kzalloc(BTRFS_SUPER_INFO_SIZE, GFP_KERNEL);
+ 	fs_info->super_for_commit = kzalloc(BTRFS_SUPER_INFO_SIZE, GFP_KERNEL);
+diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+index e96321a20646..2bcef946d92a 100644
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -107,6 +107,8 @@ struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize)
+ 		return NULL;
  	}
  
-+	fs_info->btree_inode = new_inode(sb);
-+	if (!fs_info->btree_inode) {
-+		err = -ENOMEM;
-+		goto fail_srcu;
-+	}
-+	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, GFP_NOFS);
-+	btrfs_init_btree_inode(fs_info);
++	btrfs_init_fs_info(fs_info);
 +
- 	invalidate_bdev(fs_devices->latest_bdev);
+ 	fs_info->nodesize = nodesize;
+ 	fs_info->sectorsize = sectorsize;
  
- 	/*
-@@ -3354,7 +3357,6 @@ int __cold open_ctree(struct super_block *sb,
- 	btrfs_stop_all_workers(fs_info);
- 	btrfs_free_block_groups(fs_info);
- fail_alloc:
--fail_iput:
- 	btrfs_mapping_tree_free(&fs_info->mapping_tree);
+@@ -117,28 +119,6 @@ struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize)
+ 		return NULL;
+ 	}
  
- 	iput(fs_info->btree_inode);
+-	spin_lock_init(&fs_info->buffer_lock);
+-	spin_lock_init(&fs_info->qgroup_lock);
+-	spin_lock_init(&fs_info->super_lock);
+-	spin_lock_init(&fs_info->fs_roots_radix_lock);
+-	spin_lock_init(&fs_info->tree_mod_seq_lock);
+-	mutex_init(&fs_info->qgroup_ioctl_lock);
+-	mutex_init(&fs_info->qgroup_rescan_lock);
+-	rwlock_init(&fs_info->tree_mod_log_lock);
+-	fs_info->running_transaction = NULL;
+-	fs_info->qgroup_tree = RB_ROOT;
+-	fs_info->qgroup_ulist = NULL;
+-	atomic64_set(&fs_info->tree_mod_seq, 0);
+-	INIT_LIST_HEAD(&fs_info->dirty_qgroups);
+-	INIT_LIST_HEAD(&fs_info->dead_roots);
+-	INIT_LIST_HEAD(&fs_info->tree_mod_seq_list);
+-	INIT_RADIX_TREE(&fs_info->buffer_radix, GFP_ATOMIC);
+-	INIT_RADIX_TREE(&fs_info->fs_roots_radix, GFP_ATOMIC);
+-	extent_io_tree_init(fs_info, &fs_info->freed_extents[0],
+-			    IO_TREE_FS_INFO_FREED_EXTENTS0, NULL);
+-	extent_io_tree_init(fs_info, &fs_info->freed_extents[1],
+-			    IO_TREE_FS_INFO_FREED_EXTENTS1, NULL);
+-	fs_info->pinned_extents = &fs_info->freed_extents[0];
+ 	set_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state);
+ 
+ 	test_mnt->mnt_sb->s_fs_info = fs_info;
 -- 
 2.23.0
 
