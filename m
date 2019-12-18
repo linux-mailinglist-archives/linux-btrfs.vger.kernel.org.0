@@ -2,71 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A6F124C5C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 17:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6B3124D05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 17:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727384AbfLRQDN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 11:03:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55520 "EHLO mx2.suse.de"
+        id S1727337AbfLRQTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 11:19:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39552 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727215AbfLRQDN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 11:03:13 -0500
+        id S1727121AbfLRQTX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Dec 2019 11:19:23 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6E5FDAFF7;
-        Wed, 18 Dec 2019 16:03:11 +0000 (UTC)
-Message-ID: <42fb02336941007b590e82abe86c336f9a9b4c80.camel@suse.de>
-Subject: Re: [btrfs-progs PATCH 1/4] tests: common: Add
- check_dm_target_support helper
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
-Date:   Wed, 18 Dec 2019 13:05:36 -0300
-In-Reply-To: <20191218155812.GK3929@suse.cz>
-References: <20191217203155.24206-1-marcos.souza.org@gmail.com>
-         <20191217203155.24206-2-marcos.souza.org@gmail.com>
-         <076b3709-c702-b7bf-cd03-276115aa5263@gmx.com>
-         <20191218155812.GK3929@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.1 
+        by mx2.suse.de (Postfix) with ESMTP id 31BFAAD3A;
+        Wed, 18 Dec 2019 16:19:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3A24CDA729; Wed, 18 Dec 2019 17:19:20 +0100 (CET)
+Date:   Wed, 18 Dec 2019 17:19:20 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Long An <lan@suse.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: tests: mkfs/011: Fix path for rootdir
+Message-ID: <20191218161919.GM3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Long An <lan@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <1576564610.3899.20.camel@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1576564610.3899.20.camel@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2019-12-18 at 16:58 +0100, David Sterba wrote:
-> On Wed, Dec 18, 2019 at 08:26:09AM +0800, Qu Wenruo wrote:
-> > > +# check if the targets passed as arguments are available, and if
-> not just skip
-> > > +# the test
-> > > +check_dm_target_support()
-> > > +{
-> > > +	for target in "$@"; do
-> > > +		$SUDO_HELPER modprobe dm-$target >/dev/null 2>&1
-> > 
-> > To utilize $SUDO_HELPER, we need to call setup_root_helper() in the
-> > first place, just like all the other $SUDO_HELPER users in
-> `tests/common`.
-> > 
-> > Although nowadays it feels a little unnecessary, since the
-> functionality
-> > is introduced because I'm a lazybone who doesn't bother to startup
-> a VM
-> > to do proper test, but uses current unprivileged user to utilize
-> self tests.
-> > 
-> > Maybe it's time to get rid of SUDO_HELPER ?
-> 
-> No, that should stay, my local testing relies on that heavily.
+On Tue, Dec 17, 2019 at 06:36:51AM +0000, Long An wrote:
+> Documentation folder path is wrong on exported testsutie. Fix this by
+> replace TOP with INTERNAL_BIN.
 
-An updated version keeping SUDO_HELPER and adding setup_root_helper is
-in [1].
-
-All other patches are the same ones, already reviewed by Qu.
-
-[1]: https://github.com/marcosps/btrfs-progs/tree/mpdesouza_mkfs_fixes
-
+It feels wrong that the tests use INTERNAL_BIN but it obviously exists
+and works so I'll apply the patch but maybe this could use some cleanup.
+Thanks.
