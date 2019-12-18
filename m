@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5782123EC8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 06:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C3123EC9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 06:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbfLRFS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 00:18:59 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:47009 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbfLRFS6 (ORCPT
+        id S1726463AbfLRFTB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 00:19:01 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46703 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbfLRFTB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 00:18:58 -0500
-Received: by mail-pf1-f196.google.com with SMTP id y14so528535pfm.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 21:18:58 -0800 (PST)
+        Wed, 18 Dec 2019 00:19:01 -0500
+Received: by mail-pl1-f193.google.com with SMTP id y8so420186pll.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 21:19:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K/5Zlarazvm7rWxihrjM2Qo8yD9mwGdvuxH+eDY5RQU=;
-        b=pehxWl8R/LZkQVPKgvK5hZiLg1h4pyP+jzc3HRyPCvQtXV5w0TL3kPhz/BfHdjBQ8R
-         c3whRmCodfXmIS/kqsHZT2x1nCF8kb39Hyb4P8Pu+8OYV183uDjFk/dhTGcDxhWbyeCq
-         9vo6pTj9cEdsENY+79V/sWD0ctDAQDKDiABmphklvyHQw/BUAnBO/ZhqPl90HD6q+Q2X
-         W26GlPjSGEoZpf7q219OYFLnfVgC6BB1tQ3nu4H03/4qM35x2fdM28kdRIJ5/GZlm2gY
-         gp8GlQWLjdpC7yi/5J2O5F89aOGPtfS5oLD/IGAt+/ABHb4nqxn8vdStfLNqxL5b+pe3
-         c9/A==
+        bh=1bA/z/NOjsJfR+5fv7Nl7qo6RMjl6/6d04yGOoGNSkE=;
+        b=UlH3famRpFxj+nbtrn7re7HHYoyeMp+rJITVeGyUtZ4ENokhy8Ff+iHdeTQ0ABy6rZ
+         cwctEZvujQKEwA2vjlRV0PVyzLw/QbAYxA1EnqKgmC2JZuAZ1BsMFX0Dsi+2dLQAjvVd
+         ZcgaJSunHE9iLp+22xxwRhJWfskHpJR8pheuJhsCH7sGQ40+DimWWtWxOIw4KHnMLiyb
+         owKx4rSVGq2APFvVxjgslv4ShjcS47cBcV3dZt91GeBWZc4GTLpLK7XmR5dGHt+qD1z/
+         eFspWHpVnyztOmNBJDKiPuHealcinFWHZWbAW3calsv5YEBTjFvt1a8fouXLM28bLbH4
+         HHdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K/5Zlarazvm7rWxihrjM2Qo8yD9mwGdvuxH+eDY5RQU=;
-        b=GJPVbPkC5yqzEQzMXcseZ6kHr2c7mobYziEgpKbaokKpf4Dt+nRhrkUMHrQZtshkq9
-         1S2bOj4S/0NfKCzslZeGWIBOkzQ5fJ+jDuRfF/3MYVCRc5mz+aUJBx+GQCxkJ6B0QBmc
-         TpdwgQ52ED2zvpbJo0LgEi71Xh1Ik6xk0Hg9MDu5EDcMXAslnDpRhgbSD26c9cbZcl7N
-         5H8L9rvxk7QzJNTqNuKV938yZOJJt43wwSPvbG0/qrD/idPiDzxd41+qMEWIjpOy0rQ6
-         9pbcGIXUBQKjqEvZj/WScKoOdkLX+lZUoSbf98+DuZMq4a3snc5P9Uig0o2/tXSfxoZL
-         66dw==
-X-Gm-Message-State: APjAAAUJhEGoW217JBX5O+LvYGqg/uQPtegIWBQN5Y1vDfIZtRzBFZJd
-        x++dZYb0Mw7kqnd1pdEZKfhDKXlcmu8=
-X-Google-Smtp-Source: APXvYqxD/R11ZL+4xNBYzNmL1Ym7TQrMPbG7K5DecjKzvANaZoUEkPYBqQiHWdcZOx/7XpAKDpRWBg==
-X-Received: by 2002:a65:4587:: with SMTP id o7mr800173pgq.303.1576646337935;
-        Tue, 17 Dec 2019 21:18:57 -0800 (PST)
+        bh=1bA/z/NOjsJfR+5fv7Nl7qo6RMjl6/6d04yGOoGNSkE=;
+        b=sXEsnQM4YLVrGFBAYjlFhkrHwsbe8Ku5Mt9v17G0BxRKl6DN2iElcLcTfryYp1Ci67
+         S8VUWBXhFj8bLL/Y+YIWp8IgVZKQux821oqis0FiWLeIEuOTU89fT5NqpgN9ulAf2eqF
+         iSW+5DpULC9L/adPd195bpRSMCwxBAbkJtspLyF6Mcln4EzWmTNviTo7pk3HldCKbefL
+         J3rJpf8lvZXkELwwC5sKaKrFikVJk3oKLqxh7KZUZrh6nKw5kXjJ5jwBOIW7tZgVlhX6
+         DAgVuzPGqAOe/kW2WpELx2mwagXjcSrYkOulB2n5X2wgdmRZbEjrUa4/ufK4a/KpKtb1
+         yZUw==
+X-Gm-Message-State: APjAAAWpKbc9I+UY8iyGQWBMkz9MrAo/EKBbq0B3FzqJiPruAYOwBmrY
+        2juA6iw4YGheQnqNm2Dw2aa/8vqM4RU=
+X-Google-Smtp-Source: APXvYqyaSU+up3W2XZNoPssbGDMcf8LaHfZwkN4uOOdvFR8jKcuq9H7GoBc4VgNWNMwRNMPudaPwbA==
+X-Received: by 2002:a17:902:aa96:: with SMTP id d22mr661104plr.218.1576646340029;
+        Tue, 17 Dec 2019 21:19:00 -0800 (PST)
 Received: from p.lan (81.249.92.34.bc.googleusercontent.com. [34.92.249.81])
-        by smtp.gmail.com with ESMTPSA id e2sm1014781pfh.84.2019.12.17.21.18.56
+        by smtp.gmail.com with ESMTPSA id e2sm1014781pfh.84.2019.12.17.21.18.58
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Dec 2019 21:18:57 -0800 (PST)
+        Tue, 17 Dec 2019 21:18:59 -0800 (PST)
 From:   damenly.su@gmail.com
 X-Google-Original-From: Damenly_Su@gmx.com
 To:     linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH V2 02/10] btrfs-progs: block_group: add rb tree related memebers
-Date:   Wed, 18 Dec 2019 13:18:41 +0800
-Message-Id: <20191218051849.2587-3-Damenly_Su@gmx.com>
+Subject: [PATCH V2 03/10] btrfs-progs: port block group cache tree insertion and lookup functions
+Date:   Wed, 18 Dec 2019 13:18:42 +0800
+Message-Id: <20191218051849.2587-4-Damenly_Su@gmx.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 In-Reply-To: <20191218051849.2587-1-Damenly_Su@gmx.com>
 References: <20191218051849.2587-1-Damenly_Su@gmx.com>
@@ -64,70 +64,113 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Su Yue <Damenly_Su@gmx.com>
 
-To convert from existed extent_cache to plain rb_tree, add
-btrfs_block_group_cache::cache_node and btrfs_fs_info::block_group_
-cache_tree.
+Simple copy and paste codes, remove useless lock operantions in progs.
+Th new coming lookup functions are named with suffix _kernel in
+temporary.
 
 Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- ctree.h   | 21 ++++++++++++---------
- disk-io.c |  2 ++
- 2 files changed, 14 insertions(+), 9 deletions(-)
+ extent-tree.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
-diff --git a/ctree.h b/ctree.h
-index 3e50d0863bde..f3f5f52f2559 100644
---- a/ctree.h
-+++ b/ctree.h
-@@ -1107,16 +1107,18 @@ struct btrfs_block_group_cache {
- 	int cached;
- 	int ro;
- 	/*
--         * If the free space extent count exceeds this number, convert the block
--         * group to bitmaps.
--         */
--        u32 bitmap_high_thresh;
--        /*
--         * If the free space extent count drops below this number, convert the
--         * block group back to extents.
--         */
--        u32 bitmap_low_thresh;
-+	 * If the free space extent count exceeds this number, convert the block
-+	 * group to bitmaps.
-+	 */
-+	u32 bitmap_high_thresh;
-+	/*
-+	 * If the free space extent count drops below this number, convert the
-+	 * block group back to extents.
-+	 */
-+	u32 bitmap_low_thresh;
+diff --git a/extent-tree.c b/extent-tree.c
+index 4a3db029e811..ab576f8732a2 100644
+--- a/extent-tree.c
++++ b/extent-tree.c
+@@ -164,6 +164,92 @@ err:
+ 	return 0;
+ }
  
-+	/* Block group cache stuff */
-+	struct rb_node cache_node;
- };
- 
- struct btrfs_device;
-@@ -1146,6 +1148,7 @@ struct btrfs_fs_info {
- 	struct extent_io_tree extent_ins;
- 	struct extent_io_tree *excluded_extents;
- 
-+	struct rb_root block_group_cache_tree;
- 	/* logical->physical extent mapping */
- 	struct btrfs_mapping_tree mapping_tree;
- 
-diff --git a/disk-io.c b/disk-io.c
-index 659f8b93a7ca..b7ae72a99f59 100644
---- a/disk-io.c
-+++ b/disk-io.c
-@@ -797,6 +797,8 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writable, u64 sb_bytenr)
- 	extent_io_tree_init(&fs_info->block_group_cache);
- 	extent_io_tree_init(&fs_info->pinned_extents);
- 	extent_io_tree_init(&fs_info->extent_ins);
++/*
++ * This adds the block group to the fs_info rb tree for the block group cache
++ */
++static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
++				struct btrfs_block_group_cache *block_group)
++{
++	struct rb_node **p;
++	struct rb_node *parent = NULL;
++	struct btrfs_block_group_cache *cache;
 +
-+	fs_info->block_group_cache_tree = RB_ROOT;
- 	fs_info->excluded_extents = NULL;
- 
- 	fs_info->fs_root_tree = RB_ROOT;
++	p = &info->block_group_cache_tree.rb_node;
++
++	while (*p) {
++		parent = *p;
++		cache = rb_entry(parent, struct btrfs_block_group_cache,
++				 cache_node);
++		if (block_group->key.objectid < cache->key.objectid)
++			p = &(*p)->rb_left;
++		else if (block_group->key.objectid > cache->key.objectid)
++			p = &(*p)->rb_right;
++		else
++			return -EEXIST;
++	}
++
++	rb_link_node(&block_group->cache_node, parent, p);
++	rb_insert_color(&block_group->cache_node,
++			&info->block_group_cache_tree);
++
++	return 0;
++}
++
++/*
++ * This will return the block group at or after bytenr if contains is 0, else
++ * it will return the block group that contains the bytenr
++ */
++static struct btrfs_block_group_cache *block_group_cache_tree_search(
++		struct btrfs_fs_info *info, u64 bytenr, int contains)
++{
++	struct btrfs_block_group_cache *cache, *ret = NULL;
++	struct rb_node *n;
++	u64 end, start;
++
++	n = info->block_group_cache_tree.rb_node;
++
++	while (n) {
++		cache = rb_entry(n, struct btrfs_block_group_cache,
++				 cache_node);
++		end = cache->key.objectid + cache->key.offset - 1;
++		start = cache->key.objectid;
++
++		if (bytenr < start) {
++			if (!contains && (!ret || start < ret->key.objectid))
++				ret = cache;
++			n = n->rb_left;
++		} else if (bytenr > start) {
++			if (contains && bytenr <= end) {
++				ret = cache;
++				break;
++			}
++			n = n->rb_right;
++		} else {
++			ret = cache;
++			break;
++		}
++	}
++	return ret;
++}
++
++/*
++ * Return the block group that starts at or after bytenr
++ */
++struct btrfs_block_group_cache *btrfs_lookup_first_block_group_kernel(
++		struct btrfs_fs_info *info, u64 bytenr)
++{
++	return block_group_cache_tree_search(info, bytenr, 0);
++}
++
++/*
++ * Return the block group that contains the given bytenr
++ */
++struct btrfs_block_group_cache *btrfs_lookup_block_group_kernel(
++		struct btrfs_fs_info *info, u64 bytenr)
++{
++	return block_group_cache_tree_search(info, bytenr, 1);
++}
++
+ /*
+  * Return the block group that contains @bytenr, otherwise return the next one
+  * that starts after @bytenr
 -- 
 2.21.0 (Apple Git-122.2)
 
