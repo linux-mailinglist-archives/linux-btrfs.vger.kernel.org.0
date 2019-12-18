@@ -2,150 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05217123ED0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 06:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1245D123F56
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 07:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbfLRFTP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 00:19:15 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39639 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbfLRFTP (ORCPT
+        id S1725897AbfLRGAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 01:00:37 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:32327 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbfLRGAh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 00:19:15 -0500
-Received: by mail-pg1-f195.google.com with SMTP id b137so600287pga.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 21:19:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yQp0+yCbYWFng8+Qfyn8OYobsCx76RYJGM6CXJnYTd8=;
-        b=C1/B3Mdc/O3y10MpExrl+w7unCvs5/0eaxb5Mzan5GA23p164KHCjS4GeZmOPkV+bc
-         sA9YoeQqyW19Y4vSYxQ5B/qMxgOwD7IOZrJSdmLdOAL3Id9uDh6JoXQqfeQymg3j/pem
-         /GNo+QgsVXcmCaplhzZQxPvbFSBAET8b9nzEQeD0y/Nquj3aqp0A4+myu3A8iNdAkuRe
-         RZ4z6+NepUrjpe9jXAo+PyC/qYToV465ap5JmGRhJlw5XMj6/x7pe3jN8ZQNn5D83sbh
-         kcBlRUTvcvBEzxOeMuwBd/zXHyeAbXMSYH24sKl0FjIi5bBZXxp4hV4M0MvKNpTvJC1R
-         P2DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yQp0+yCbYWFng8+Qfyn8OYobsCx76RYJGM6CXJnYTd8=;
-        b=j+17ncTMkrMbGVivDeJu8iooannlwejMQUCeucB2zjnH+dAWLJLokxmylWw0XVfmRl
-         t/dWIZA6oQswwAjTf6L8ceVB1qs2Xm8drSmKf7X6m9Gg+wuAF4NhImMF+bbUxYLx1qWb
-         c+yDa4e7rU/w+gVibVKX5itT85AdFiqAhuYaVezt5XE/couwJuBbNMDxe6pZ37eKFNWR
-         z2UQsZIHEYH4dc0naALx78y5uiwI2UlLWfvRgJVI0szSXrid7BhXLwVnoevY50kB5MLx
-         FURDDrmAX/Ch1wjO0qMhz7IZEoM18iDQ13UC0guD5MjS5Z+tX2DO+XsG/W4HjnHzWmgz
-         tcCA==
-X-Gm-Message-State: APjAAAV9DRQX6wDPMabJdfyJgbrsnMUKurIrUQ1SVkNs/QaRkIs9dCch
-        lLATCbl/vQSRFezk4WTaEosoM2yR2zQ=
-X-Google-Smtp-Source: APXvYqws8bTHUJv0a959DL7m3BDV9WlOX2t0WHSOIQE1riYSyWTtLwUtsuCLWrT+wNAM7v/Kp9NnvQ==
-X-Received: by 2002:a62:ed19:: with SMTP id u25mr975178pfh.173.1576646354232;
-        Tue, 17 Dec 2019 21:19:14 -0800 (PST)
-Received: from p.lan (81.249.92.34.bc.googleusercontent.com. [34.92.249.81])
-        by smtp.gmail.com with ESMTPSA id e2sm1014781pfh.84.2019.12.17.21.19.12
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Dec 2019 21:19:13 -0800 (PST)
-From:   damenly.su@gmail.com
-X-Google-Original-From: Damenly_Su@gmx.com
-To:     linux-btrfs@vger.kernel.org
-Cc:     Su Yue <Damenly_Su@gmx.com>, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH V2 10/10] btrfs-progs: cleanups after block group cache reform
-Date:   Wed, 18 Dec 2019 13:18:49 +0800
-Message-Id: <20191218051849.2587-11-Damenly_Su@gmx.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
-In-Reply-To: <20191218051849.2587-1-Damenly_Su@gmx.com>
-References: <20191218051849.2587-1-Damenly_Su@gmx.com>
+        Wed, 18 Dec 2019 01:00:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1576648836; x=1608184836;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fSOC8DItLFC2k9tNIUo01mC1E+iJ6rdd7oR/An7kxGo=;
+  b=Os/TrqohqktW1id67FUHS3VioMxrhACM0VSFirWvvTT1e3Pa9xBe20To
+   uUT6v9ReR9bjRS3/X5MB2TArRO4PwJc7GFQQXU879qYYNJGilDprQq7/H
+   eKiF+yIVWKNLBt7JbtQ+apgRQa0CbLdijrUalB5fBEejxeYIVgtMxXIEL
+   H0r1bJa+Xqvh7ReYXbwpzzYQIhSCF+Ae+McyEUjbX9gm0rZ4ajvMExk2v
+   ZoQnxsK5ZyugNW7uhMaeY4JtC0GnEYT+X4BY/Iyhumhw1QgJY2GuZ+4JO
+   qJSs2eP0/drJegSc69sZVcws2s+6Juw9ig/7TZQSLJuAx5BYjS5ksAUz7
+   g==;
+IronPort-SDR: xDYB64wK9rr2XgQ+Oi+CrjuAV8KS9+uL8+kSzvz5qtOUX7T/4VK0Op3QP6YC0TijlHd6Fmwn/8
+ aQDysYiru0JaqcMV8yr0KSo/RGB3SeWOe9cu/0VuEdpGbqj6Fwg29t8PpRt28qj3hM35wPwY25
+ QKE08XUkHGmDd0YO9qaaaN+BjLLqrw6epyqaZsQzMKOEj76SmOvsMGqmImRA5jkZb1Q5bGBH9F
+ ANfBwqsnDdXTOq7lbFdKZk2Q18rs0Ufos4oK9yCIe5jfBEedVh13MyH+tqLpkbsyY8Ttz2UI77
+ wyA=
+X-IronPort-AV: E=Sophos;i="5.69,328,1571673600"; 
+   d="scan'208";a="126383091"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 14:00:36 +0800
+IronPort-SDR: U/g4g3pcurrRCBMJ1cQ6iBnGwqxFPcMIqBmeMM1/MyytWOe5tj4hF6ifhar7hUyi0f6eEtEiTK
+ sNJDj7mX+51yFeFKgdFo/8j0hDb9KBVCtoE9PdIt3finipb7Qn2u58JHDoZcfP3QxtZCCey1SU
+ DtiGWIj1jHzxlHzo1I7/+t7Ovlrhxrk/mfw4y4I9ypRGlc30eCV6N/jYsDVW7VvfUDZcGuiBC7
+ X7MPjR1fCz/FW8XnJhLMGgM0MrGK3DKNKUvtzaxFwtGrfU9LFjpqiAcJn3rjERhjZNutbahgqJ
+ A4+FEKsDigS+RIqwbZSZvEAB
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 21:54:59 -0800
+IronPort-SDR: 7mrb9L1dQ23lJTAu2FJulnZL64qPqq2QEYxeVcawIXoIGSQrtjnJEuJWD3K0sn7aPV60trVh5i
+ Cre24t9gx14azt7RqRhBxNPuc3MEP5CZU1yCGzdZ0NeNPW8cICrKyA21gTESCto1qBHEWqSYrU
+ sqs8zlAMWwArVVLg1HP78nb9oeXnZ08ZgC5lEip5HMMd6zwZt/l9ICIlIMoKikG3q0KbcWvMaz
+ FMFUWp30YLhl3giBxgtblv+9yYcVzUG/A01cQ42quILjcXdTA8OutiMHZgvYsTvQ4Z1sTXJdyM
+ ZA8=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip01.wdc.com with SMTP; 17 Dec 2019 22:00:34 -0800
+Received: (nullmailer pid 877601 invoked by uid 1000);
+        Wed, 18 Dec 2019 06:00:33 -0000
+Date:   Wed, 18 Dec 2019 15:00:33 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 23/28] btrfs: support dev-replace in HMZONED mode
+Message-ID: <20191218060033.ubfidtuhvzdbkk3o@naota.dhcp.fujisawa.hgst.com>
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-24-naohiro.aota@wdc.com>
+ <2157b1bb-a64b-eed3-0451-09a8480d0db2@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2157b1bb-a64b-eed3-0451-09a8480d0db2@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Su Yue <Damenly_Su@gmx.com>
+On Tue, Dec 17, 2019 at 04:05:25PM -0500, Josef Bacik wrote:
+>On 12/12/19 11:09 PM, Naohiro Aota wrote:
+>>We have two type of I/Os during the device-replace process. One is a I/O to
+>>"copy" (by the scrub functions) all the device extents on the source device
+>>to the destination device.  The other one is a I/O to "clone" (by
+>>handle_ops_on_dev_replace()) new incoming write I/Os from users to the
+>>source device into the target device.
+>>
+>>Cloning incoming I/Os can break the sequential write rule in the target
+>>device. When write is mapped in the middle of a block group, that I/O is
+>>directed in the middle of a zone of target device, which breaks the
+>>sequential write rule.
+>>
+>>However, the cloning function cannot be simply disabled since incoming I/Os
+>>targeting already copied device extents must be cloned so that the I/O is
+>>executed on the target device.
+>>
+>>We cannot use dev_replace->cursor_{left,right} to determine whether bio is
+>>going to not yet copied region.  Since we have time gap between finishing
+>>btrfs_scrub_dev() and rewriting the mapping tree in
+>>btrfs_dev_replace_finishing(), we can have newly allocated device extent
+>>which is never cloned nor copied.
+>>
+>>So the point is to copy only already existing device extents. This patch
+>>introduces mark_block_group_to_copy() to mark existing block group as a
+>>target of copying. Then, handle_ops_on_dev_replace() and dev-replace can
+>>check the flag to do their job.
+>>
+>>Device-replace process in HMZONED mode must copy or clone all the extents
+>>in the source device exctly once.  So, we need to use to ensure allocations
+>>started just before the dev-replace process to have their corresponding
+>>extent information in the B-trees. finish_extent_writes_for_hmzoned()
+>>implements that functionality, which basically is the removed code in the
+>>commit 042528f8d840 ("Btrfs: fix block group remaining RO forever after
+>>error during device replace").
+>>
+>>This patch also handles empty region between used extents. Since
+>>dev-replace is smart to copy only used extents on source device, we have to
+>>fill the gap to honor the sequential write rule in the target device.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>
+>Can you split up the copying part and the cloning part into different 
+>patches, this is a bear to review.  Also I don't quite understand the 
+>zeroout behavior. It _looks_ like for cloning you are doing a zeroout 
+>for the gap between the last wp position and the current cloned bio, 
+>which makes sense, but doesn't this gap exist because copying is 
+>ongoing?  Can you copy into a zero'ed out position?  Or am I missing 
+>something here?  Thanks,
+>
+>Josef
 
-btrfs_fs_info::block_group_cache and the bit BLOCK_GROUP_DIRY are
-useless. So is the block_group_state_bits().
+OK, I will split this in the next version. (but, it's mostly "copying"
+part)
 
-Remove them.
+Let me clarify first that I am using "copying" for copying existing
+extents to the new device and "cloning" for cloning a new incoming BIO
+to the new device.
 
-Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
----
- ctree.h       |  1 -
- disk-io.c     |  2 --
- extent-tree.c | 12 ------------
- extent_io.h   |  2 --
- 4 files changed, 17 deletions(-)
+For zeroout, it is for "copying" which is done with the scrub code to
+copy existing extents on the source devie to the destination
+device. Since copying or scrub only scans for living extents, there
+can be a gap between two living extents. So, we need to fill a gap
+with zeroout to make the writing stream sequential.
 
-diff --git a/ctree.h b/ctree.h
-index 53882d04ac03..6d2fad6406d7 100644
---- a/ctree.h
-+++ b/ctree.h
-@@ -1146,7 +1146,6 @@ struct btrfs_fs_info {
- 
- 	struct extent_io_tree extent_cache;
- 	struct extent_io_tree free_space_cache;
--	struct extent_io_tree block_group_cache;
- 	struct extent_io_tree pinned_extents;
- 	struct extent_io_tree extent_ins;
- 	struct extent_io_tree *excluded_extents;
-diff --git a/disk-io.c b/disk-io.c
-index b7ae72a99f59..95958d9706da 100644
---- a/disk-io.c
-+++ b/disk-io.c
-@@ -794,7 +794,6 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writable, u64 sb_bytenr)
- 
- 	extent_io_tree_init(&fs_info->extent_cache);
- 	extent_io_tree_init(&fs_info->free_space_cache);
--	extent_io_tree_init(&fs_info->block_group_cache);
- 	extent_io_tree_init(&fs_info->pinned_extents);
- 	extent_io_tree_init(&fs_info->extent_ins);
- 
-@@ -1069,7 +1068,6 @@ void btrfs_cleanup_all_caches(struct btrfs_fs_info *fs_info)
- 	free_mapping_cache_tree(&fs_info->mapping_tree.cache_tree);
- 	extent_io_tree_cleanup(&fs_info->extent_cache);
- 	extent_io_tree_cleanup(&fs_info->free_space_cache);
--	extent_io_tree_cleanup(&fs_info->block_group_cache);
- 	extent_io_tree_cleanup(&fs_info->pinned_extents);
- 	extent_io_tree_cleanup(&fs_info->extent_ins);
- }
-diff --git a/extent-tree.c b/extent-tree.c
-index b7d5aa104a37..11879d89d1a7 100644
---- a/extent-tree.c
-+++ b/extent-tree.c
-@@ -329,18 +329,6 @@ wrapped:
- 	goto again;
- }
- 
--static int block_group_state_bits(u64 flags)
--{
--	int bits = 0;
--	if (flags & BTRFS_BLOCK_GROUP_DATA)
--		bits |= BLOCK_GROUP_DATA;
--	if (flags & BTRFS_BLOCK_GROUP_METADATA)
--		bits |= BLOCK_GROUP_METADATA;
--	if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
--		bits |= BLOCK_GROUP_SYSTEM;
--	return bits;
--}
--
- static struct btrfs_block_group_cache *
- btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group_cache
- 		       *hint, u64 search_start, int data, int owner)
-diff --git a/extent_io.h b/extent_io.h
-index 1715acc60708..7f88e3f8a305 100644
---- a/extent_io.h
-+++ b/extent_io.h
-@@ -47,8 +47,6 @@
- #define BLOCK_GROUP_METADATA	(1U << 2)
- #define BLOCK_GROUP_SYSTEM	(1U << 4)
- 
--#define BLOCK_GROUP_DIRTY 	(1U)
--
- /*
-  * The extent buffer bitmap operations are done with byte granularity instead of
-  * word granularity for two reasons:
--- 
-2.21.0 (Apple Git-122.2)
+And "cloning" is only done for new block groups or already fully
+copied block groups. So there is no gaps for them because the
+allocator and the IO locks ensures the sequential allocation and
+submit.
 
+Thanks,
