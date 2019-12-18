@@ -2,153 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3C0124507
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 11:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F73D124567
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 12:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbfLRKtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 05:49:24 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:41408 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbfLRKtY (ORCPT
+        id S1726817AbfLRLL2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 18 Dec 2019 06:11:28 -0500
+Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:48578 "EHLO
+        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726682AbfLRLL2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 05:49:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1576666163; x=1608202163;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/DMjkVyfyvI2kcubUQsHCGEvs74jyidMQ1Qv+JhyxmQ=;
-  b=Jfvl26RQ2b+Zzm3pmvvYKcG27RKmcUuxMESH9wM+k+7sjj+SV9geBDgG
-   Fx+XFRDXIzP631i3U4LWtU9JXC2GM/pPKpAIx2gnX9i3gH3gxGVLNBo8H
-   vLxth3OIfDw51qzHZo9TUWEhAhMdumP0VIHuXGDa69S2RBlBuez7ttbwB
-   L1luXD88uryTcjiQDOwM5I0S6uCjHe+PGDI19NzTHs17RcyOYcyu1RcSh
-   gcxceYN5O7ojStLDQh5qIbS2O3Kcn/iYglKcmXqL8CtrFE4G6L2+0ho37
-   1qlvyPsxSX4vUCqIxvk8e9hK7fsVIfjxiedQuOWdXls/jR/7S8GrbRG/7
-   g==;
-IronPort-SDR: 3Zj82qrszqCRBQFbotOdJh5vIkLTgah+sX5J7Wx9anwJ3KiYwC5vRUeUIa4JmcmjV+lvJkuO1G
- rRDr5MZuHD958IXwVKKB/HWwb31bYh71U7xBjwskKx3FzXA31EtW7TVaHT1ZvCMaW89MWRNpf3
- /I6uYr/ylp60RwE2dA+YX/IzsW7G6++Carc/eDuLy8wzvTML8gmLNFlOE7IMsXuMx5bNyK9mKJ
- at4BPl8qft7QLn911EkB0MOxWpJ+7cT3ef86djTPnz0hjvnVElW2/Iu6RK8yAwLXRx7dtFj9Qo
- k1s=
-X-IronPort-AV: E=Sophos;i="5.69,329,1571673600"; 
-   d="scan'208";a="127245447"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 18:49:23 +0800
-IronPort-SDR: KY4wa/9YEg+D5B8juMLSc9dh1MWWGgYs0ZQIQAhdjwyoatOevqOhcp+2y87MBG+snQ3V0xXLoM
- cKIHgjdwAoSejqcIn0JWwhaNI2FFtBrqPcBnhw/TIJcuP7Jp73Z1477JJLHo2NipZMBQartPmy
- 8W6Tz8su6dMbVzK+K3I99jUjbn2zhC0knnczCOll9B57tkHqzoGVNaxMY0YP78+hAJ+6GxAQOQ
- EApux5aD13/bSjhE8tULxx+yz1jzrQFKm25z1r95uj6ecA8rBz7WaVfVJ+PxtpkyaTQie+eWAL
- sLwdIhjJOWNVYDJdF8uTdh5z
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 02:43:25 -0800
-IronPort-SDR: qMJQrwt3meamHp8ztthaqI/oHOAqwWEgE9uTreqXeFi+ssrqlGTGNgBvr5VE5B4Qt2MVxH/j6l
- n2HaQSNHrHFEgIh+moNkIV0jrD1lj1d/CNgImbIACWUj6YhAOmSdUlEyqWJZic3htnOL2CJNE3
- YWYISe116o9fewjG7iXk/VAYMx03BC4k9QsSWWRksPxh+pLohML+NIzPet8UDHKgBAd4TMsWqt
- 7B4Ualz35zK8RPsxqDnKrczLlZq0yO5TNtZLJ37BK5sGeDxkC4euofLdQUJimhleH/lgiFa6jV
- TFQ=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip02.wdc.com with SMTP; 18 Dec 2019 02:49:21 -0800
-Received: (nullmailer pid 1323844 invoked by uid 1000);
-        Wed, 18 Dec 2019 10:49:20 -0000
-Date:   Wed, 18 Dec 2019 19:49:20 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 24/28] btrfs: enable relocation in HMZONED mode
-Message-ID: <20191218104920.ozsa3pawkvxs2gg5@naota.dhcp.fujisawa.hgst.com>
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-25-naohiro.aota@wdc.com>
- <83984f9c-4f37-4a04-daea-8169959dc09d@toxicpanda.com>
+        Wed, 18 Dec 2019 06:11:28 -0500
+X-Greylist: delayed 1630 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Dec 2019 06:11:27 EST
+Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.146) BY m4a0072g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Wed, 18 Dec 2019 11:10:31 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Wed, 18 Dec 2019 10:30:43 +0000
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (15.124.8.12) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Wed, 18 Dec 2019 10:30:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HM4AGmvvJraB4ixcNV2XmZyREXFq1o3CRpBGUdJn5shYNXDTMKKFQxDGdt4DnJ39mFDzC92DCC6YnB4tUFs0b10d193B11wp9R1ZnqfYzl7nutTzwK2/KuNbnWCVnbNVWyg4xN9ID3rmjMCoTxf/YdvxdF6/zeYZ/WlwnPhtvwUOS39qFsiNC86W3gcy7L1u2PnCx7KmUEWelkTVX+OSnujdHXleOOlVa37XS4RQ4XAuDSeq2K31IllKqDtUL2W9Ulc02Pm5K9Ue1SNT6AKYVw4BZSPIDTIHuNKKo7RIhTzGqNyOvzEV/rTwEMH4PnqgqZvLCuLkbZ/5cr222fl2cQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=Ce8RJmULBZGM6AaltZvPktw3Z54xtkneJwTodtFO1DBfppf8us4elTFshzUr7ysdYklJnvpVZzbe2yWeiSv1dQVUV6l7xaB6kQDLURg94+wPeftIS9Euku3lQQuvkJW+RbwMIWdwzniCPJNPZIPhz37cxSUgR2Y15PQ2vVLqGoMHRq7x5wpTpnel5oyHV0fdnn+stBmHCe7V+8+uriC6w6fI7OkB+cKlbu4y7RAaYUK2x7SE8KQE9o35Z6y0RPbNmbkYeSkFEbs0Pj1CtdcfvvKE/szQSJuXwZzrw55JE5wt/Y85kJKmnlz2Lnn0UW9I+c5oleX7+tQdLgVpEWtSWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from MN2PR18MB2685.namprd18.prod.outlook.com (20.179.82.223) by
+ MN2PR18MB2495.namprd18.prod.outlook.com (20.179.83.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2559.14; Wed, 18 Dec 2019 10:30:42 +0000
+Received: from MN2PR18MB2685.namprd18.prod.outlook.com
+ ([fe80::b47f:8d41:b41f:5308]) by MN2PR18MB2685.namprd18.prod.outlook.com
+ ([fe80::b47f:8d41:b41f:5308%6]) with mapi id 15.20.2538.019; Wed, 18 Dec 2019
+ 10:30:42 +0000
+From:   Long An <lan@suse.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
+Thread-Topic: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
+Thread-Index: AQHVtY4zdM4hdE+tGE6GxRti7p5S/A==
+Date:   Wed, 18 Dec 2019 10:30:42 +0000
+Message-ID: <1576665041.3774.6.camel@suse.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=lan@suse.com; 
+x-originating-ip: [45.122.156.254]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fa31a6d8-22a0-4952-de0a-08d783a555d3
+x-ms-traffictypediagnostic: MN2PR18MB2495:
+x-microsoft-antispam-prvs: <MN2PR18MB2495BDBB0884EF4A416A5E8EC6530@MN2PR18MB2495.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0255DF69B9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(136003)(396003)(346002)(366004)(376002)(39860400002)(199004)(189003)(8676002)(81156014)(81166006)(103116003)(478600001)(36756003)(316002)(26005)(86362001)(6506007)(73894004)(621065003)(6512007)(64756008)(66446008)(66556008)(4270600006)(66476007)(76116006)(91956017)(186003)(66946007)(8936002)(2906002)(2616005)(6486002)(6916009)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR18MB2495;H:MN2PR18MB2685.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h1HHqwYohg6rmZeWgc+fLd9DPGw5hdcdhz6Da9Hs2A4ucBxiPH+OCuF3PXJwJc2wIWiJr45j9xnTHscGLuSWWA52SFUPIjPz0MT4uZnOPaiT3XdiXzj5+AatSFAxq09OypE5cADZLx2lPOmueQbKYwiWOrxtZWrVY0VCFbgMyBb5mmgcpaR9S2kUDCYjar8xM/LCKP3AMkMOUpxzcA6KwX0k50aZS+kfC1Pvu587BXWX4u9HS3Ec9tMXQ0txl7y+o3xkA4BA0pMgQWCyGr3tkOFf1PGKfzvPpzI5KKwzqNjNi7rGVxfcJFv316YQ7vRz
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <83984f9c-4f37-4a04-daea-8169959dc09d@toxicpanda.com>
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa31a6d8-22a0-4952-de0a-08d783a555d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 10:30:42.7606
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F/Wyeig4VbRVx7kwlSiRx6tylV6BXM/97v4gCfykxcy+KzzmxY5kVpQsOrnSOdM0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2495
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 04:32:04PM -0500, Josef Bacik wrote:
->On 12/12/19 11:09 PM, Naohiro Aota wrote:
->>To serialize allocation and submit_bio, we introduced mutex around them. As
->>a result, preallocation must be completely disabled to avoid a deadlock.
->>
->>Since current relocation process relies on preallocation to move file data
->>extents, it must be handled in another way. In HMZONED mode, we just
->>truncate the inode to the size that we wanted to pre-allocate. Then, we
->>flush dirty pages on the file before finishing relocation process.
->>run_delalloc_hmzoned() will handle all the allocation and submit IOs to
->>the underlying layers.
->>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>---
->>  fs/btrfs/relocation.c | 39 +++++++++++++++++++++++++++++++++++++--
->>  1 file changed, 37 insertions(+), 2 deletions(-)
->>
->>diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->>index d897a8e5e430..2d17b7566df4 100644
->>--- a/fs/btrfs/relocation.c
->>+++ b/fs/btrfs/relocation.c
->>@@ -3159,6 +3159,34 @@ int prealloc_file_extent_cluster(struct inode *inode,
->>  	if (ret)
->>  		goto out;
->>+	/*
->>+	 * In HMZONED, we cannot preallocate the file region. Instead,
->>+	 * we dirty and fiemap_write the region.
->>+	 */
->>+
->>+	if (btrfs_fs_incompat(btrfs_sb(inode->i_sb), HMZONED)) {
->>+		struct btrfs_root *root = BTRFS_I(inode)->root;
->>+		struct btrfs_trans_handle *trans;
->>+
->>+		end = cluster->end - offset + 1;
->>+		trans = btrfs_start_transaction(root, 1);
->>+		if (IS_ERR(trans))
->>+			return PTR_ERR(trans);
->>+
->>+		inode->i_ctime = current_time(inode);
->>+		i_size_write(inode, end);
->>+		btrfs_ordered_update_i_size(inode, end, NULL);
->>+		ret = btrfs_update_inode(trans, root, inode);
->>+		if (ret) {
->>+			btrfs_abort_transaction(trans, ret);
->>+			btrfs_end_transaction(trans);
->>+			return ret;
->>+		}
->>+		ret = btrfs_end_transaction(trans);
->>+
->>+		goto out;
->>+	}
->>+
->
->Why are we arbitrarily extending the i_size here?  If we don't need 
->prealloc we don't need to jack up the i_size either.
 
-We need to extend i_size to read data from the relocating block
-group. If not, btrfs_readpage() in relocate_file_extent_cluster()
-always reads zero filled page because the read position is beyond the
-file size.
-
->>  	cur_offset = prealloc_start;
->>  	while (nr < cluster->nr) {
->>  		start = cluster->boundary[nr] - offset;
->>@@ -3346,6 +3374,10 @@ static int relocate_file_extent_cluster(struct inode *inode,
->>  		btrfs_throttle(fs_info);
->>  	}
->>  	WARN_ON(nr != cluster->nr);
->>+	if (btrfs_fs_incompat(fs_info, HMZONED) && !ret) {
->>+		ret = btrfs_wait_ordered_range(inode, 0, (u64)-1);
->>+		WARN_ON(ret);
->
->Do not WAR_ON() when this could happen due to IO errors.  Thanks,
->
->Josef
-
-Sure. We can just drop it.
