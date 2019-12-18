@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EE5123C4F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 02:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5C9123C50
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 02:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbfLRBRQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 20:17:16 -0500
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:36312 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbfLRBRQ (ORCPT
+        id S1726559AbfLRBRT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 20:17:19 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36510 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbfLRBRT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 20:17:16 -0500
-Received: by mail-wm1-f52.google.com with SMTP id p17so114795wma.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 17:17:15 -0800 (PST)
+        Tue, 17 Dec 2019 20:17:19 -0500
+Received: by mail-wm1-f66.google.com with SMTP id p17so114887wma.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 17:17:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K7vMeQtHp2pTdLZp29RRySuDsZeGdh3N0jZOEktKHu8=;
-        b=Vp5r/xirn6LGxltCmUgNkX4+ge4YhcTmAkSymeXVX1jwLPTcQqxC5qWJucmbVwGNoK
-         GhD8RMpFAOMXz9/fxU1fYXTgJX3kYH3wu8eh085yhUeg/jajrwQNbF8reVtQhz6WzAaa
-         lh40tvjneHWZmQ5Qio/e7u8AwcXFvGD2xsdcUvNueKZI8VWCkxM4Jp+0VYzgdomccb8p
-         KDBxro3pVq5i1LuKozYzby+KCFxB005WEtd+WYRo2svyF7QwXlD0YhR5eY13fTcHtrg/
-         9nqkt6Uw+WZvl+Hc2RINge5jSprk94tuiWiYVML5HLuzO/esTD4UpFfkCOtNXFrFvljz
-         4yCQ==
+        bh=kqrHfJYI1UshmbeFbH2UWVsXQrT05MkXHcO/S13u6u8=;
+        b=hOREvpoyLmmqB6iQlZ7RliUAYpRs4b0LD8MC8+yuUWi7DpG/VyaNQqkWGxX+pgYhMr
+         gNzFjv99GFs75mYsRKj+QI3ovyizcYGRLfIZO0yUg4cwiL79fiDXpeAje6eaEiem62tg
+         Put7yDSci/PNWjQN7haN1HG7wsq31WjO0C09HCj1lBzjgvMZDmjiqT961lE7rkloQIrQ
+         B90AbMNgSHxuB7sdtTrkO172M7loNzfoc+o2mIK7ZGwL9bb5MCgg4EYBHyHu3P+UPQhP
+         5jUKtHDcmnWhZ/46BCX4AAY5o9+G1ONo8KKXn+88IT38bWx7OAyRdq5G+GOVqTYR+38L
+         3rng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K7vMeQtHp2pTdLZp29RRySuDsZeGdh3N0jZOEktKHu8=;
-        b=isLCNvMpiQved5SC2ekaIG2p4iC6KTuZCUw/3LFecmD8mLwY5VczzCUr5IhUcIa91w
-         30O45KCpom7ICMV7cqoUNjf35PMr1UQW1gY+WAAZquGz4Yog/modxKhQpZjgfrp8lR+o
-         NmLdz6QedwGSVVfOh2XwN8oM4TueW5u3XXxw3Tz3tIoN4ks0QxhuZwA959hMS1AjKX//
-         XTwJq7QMEdXzH87t7LaUPAFApvMtGpLs2Cp676RKxjghrDZW/PWbzXw9/yH1VxXm2jJs
-         fy9zC4bMHUJmhT3W/+xuG8ccLcqvR2ctUfi+qR3ghkHW5qr08/4iOXbk4/ds+ZQ53UP0
-         dFzQ==
-X-Gm-Message-State: APjAAAXQt0FZ3fPGWYai5woMK3ggwNeSCKo3MRK0kI2j7AiBnzu/Khm3
-        i8mbhvBuj1IKaTZZRVi/eV16JXjQ
-X-Google-Smtp-Source: APXvYqyJgLJD4oMAVuRFxk5kG5yedZxsDHJu2IhJ8F8Eymwp1jm+Qim+qWupq7kst1lAVpnAbj4gKw==
-X-Received: by 2002:a1c:9c08:: with SMTP id f8mr12955wme.171.1576631834841;
-        Tue, 17 Dec 2019 17:17:14 -0800 (PST)
+        bh=kqrHfJYI1UshmbeFbH2UWVsXQrT05MkXHcO/S13u6u8=;
+        b=c8K+egvttV52ufZZSHzcxyTcCn9zUP+chZ5XM3a268lfgUQFhFZfldNfGUGg6kYLe4
+         L2EGuss8SrzgtMqakNaMLNEzHaDPSo9bDkxebIaTwbvMQiPTdyMuDORP2/R99lX+YY8B
+         S2OYFBbjgbRqysyYDe8XKSDbhNHwaaSzlE4KgeKu8tq9xUyyrzZdMEHr2XoxE2UDbOHY
+         HAIb+XYSGCv3tK16cWbACSwgVasylaP7de6tIDKlVkv15H3usy8AnRXjoXEi9pPhaJ23
+         a/64Yb7eFx/9pqFtI+/fStI4+lukOY1VwQOc+7w7Kr8qnfHkhrDFzbKER0fnacHa3F8v
+         K0DQ==
+X-Gm-Message-State: APjAAAXnAKtl64xPpj72MM2Uevyi6/4ZtiInksKNosHZ8cpwwVGAegIW
+        +6tl+IMMgyW0xfox9B/xfZM=
+X-Google-Smtp-Source: APXvYqy4hfKUAAft1NXtiOluMwEeeZW28wiZPv9VL8zR+WE+GHRrbCUbMw8SJMcxd0zADE6pzg79bg==
+X-Received: by 2002:a7b:c317:: with SMTP id k23mr35265wmj.75.1576631837633;
+        Tue, 17 Dec 2019 17:17:17 -0800 (PST)
 Received: from hephaestus.suse.de ([179.185.209.78])
-        by smtp.gmail.com with ESMTPSA id g25sm4782854wmh.3.2019.12.17.17.17.12
+        by smtp.gmail.com with ESMTPSA id g25sm4782854wmh.3.2019.12.17.17.17.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 17:17:14 -0800 (PST)
+        Tue, 17 Dec 2019 17:17:16 -0800 (PST)
 From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
         Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
-Subject: [btrfs-progs PATCHv2 3/4] tests: mkfs: 005: Use check_dm_target_support helper
-Date:   Tue, 17 Dec 2019 22:19:24 -0300
-Message-Id: <20191218011925.19428-4-marcos.souza.org@gmail.com>
+Subject: [btrfs-progs PATCHv2 4/4] tests: Do not fail is dmsetup is missing
+Date:   Tue, 17 Dec 2019 22:19:25 -0300
+Message-Id: <20191218011925.19428-5-marcos.souza.org@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191218011925.19428-1-marcos.souza.org@gmail.com>
 References: <20191218011925.19428-1-marcos.souza.org@gmail.com>
@@ -64,26 +64,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-This way we ensure the linear target is available and skip the test.
+Move the check of dmsetup to check_dm_target_support, and adapt the only
+two places checking if dmsetup is present in the system. Now we skip the
+test if dmsetup isn't available, instead of marking the test as failed.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- tests/mkfs-tests/005-long-device-name-for-ssd/test.sh | 1 +
- 1 file changed, 1 insertion(+)
+ tests/common                                             | 9 +++++++--
+ tests/mkfs-tests/005-long-device-name-for-ssd/test.sh    | 1 -
+ .../017-small-backing-size-thin-provision-device/test.sh | 1 -
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
+diff --git a/tests/common b/tests/common
+index 20ad7fd9..5814ae6f 100644
+--- a/tests/common
++++ b/tests/common
+@@ -322,10 +322,15 @@ check_global_prereq()
+ 	fi
+ }
+ 
+-# check if the targets passed as arguments are available, and if not just skip
+-# the test
++# check if dmsetup and targets passed as arguments are available, and skip the
++# test if they aren't.
+ check_dm_target_support()
+ {
++	which dmsetup &> /dev/null
++	if [ $? -ne 0 ]; then
++		_not_run "This test requires dmsetup tool.";
++	fi
++
+ 	for target in "$@"; do
+ 		modprobe dm-$target >/dev/null 2>&1
+ 		dmsetup targets 2>&1 | grep -q ^$target
 diff --git a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-index e7a1ac45..329deaf2 100755
+index 329deaf2..2df88db4 100755
 --- a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
 +++ b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-@@ -5,6 +5,7 @@ source "$TEST_TOP/common"
+@@ -4,7 +4,6 @@
+ source "$TEST_TOP/common"
  
  check_prereq mkfs.btrfs
- check_global_prereq dmsetup
-+check_dm_target_support linear
+-check_global_prereq dmsetup
+ check_dm_target_support linear
  
  setup_root_helper
- prepare_test_dev
+diff --git a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
+index 91851945..83f34ecc 100755
+--- a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
++++ b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/test.sh
+@@ -6,7 +6,6 @@ source "$TEST_TOP/common"
+ 
+ check_prereq mkfs.btrfs
+ check_global_prereq udevadm
+-check_global_prereq dmsetup
+ check_dm_target_support linear thin
+ 
+ setup_root_helper
 -- 
 2.23.0
 
