@@ -2,205 +2,270 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D18F123D02
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 03:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFC3123D1C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 03:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbfLRCUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 21:20:09 -0500
-Received: from mout.gmx.net ([212.227.15.18]:42939 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbfLRCUJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 21:20:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576635599;
-        bh=moNQGhYHj8lkXk9qIxTbKfSdHDlF+faSatAqJb9TmuE=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dQgNg9VUltyRehj9NtJd0xYUlM4P5vGpnasfrX6VZWXALA2uHsfJexEZwlSq9G6gT
-         r4VSreCCEPPWmUrRZ33dChT7rfXd81S+MhSv+7zOOcQyMAJd6EEV/J/9oq02Iq/udK
-         vklWx3khjdhL8+havyRZib4++wRHhrTkUxqgRp7k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.178] ([34.92.249.81]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5G9n-1hial90JAj-011860; Wed, 18
- Dec 2019 03:19:59 +0100
-Subject: Re: [PATCH 2/6] btrfs-progs: check/original: Do extra verification on
- file extent item
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191218011942.9830-1-wqu@suse.com>
- <20191218011942.9830-3-wqu@suse.com>
- <be25f8ed-996a-5fc5-6bad-348441868761@gmx.com>
- <b46a5e36-46f2-f330-695b-2e1e60c2c343@gmx.com>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <ba72be87-6c6f-c305-7d39-e8e91e814e71@gmx.com>
-Date:   Wed, 18 Dec 2019 10:19:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
+        id S1726512AbfLRC3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 21:29:48 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:63595 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbfLRC3s (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 21:29:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1576636187; x=1608172187;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=992rE7LptW46spdaUd/PnbqEXu3Ed2EvmEWa0bKV1xs=;
+  b=bdjlQDIrBSZhB4CJtrBnP9OnyiMNFAxJCn9TBCgwk/+wBSDYj3N79T9k
+   Fqcu/VmH7BGe6Wy9vjfDEoZtmB3mGQ8lgoEMoGmF7CFnXtRYc1z1walOa
+   4LiRm+lhh1L3tbwXw/09ZvmBFQmsBEpp9afVF2MVkYUVipVVizVaTtlJK
+   SAa4Sm5t3NljOYL8y/y/46KM1wh279hmK+fZpJrB1wVMnM6kLadY2JRtC
+   wG/2b0KnV+dbQ49L/IWRDs9AijN2tQvq6sd6ExVl2GPAgS8lC6C3pLUYr
+   4bW9oHmDPwO8Y9t8MExawPCoiqxgkB8zZQHdOabU1ThuEQnXyH76XznIZ
+   g==;
+IronPort-SDR: +xkkfOf0OBJLjtrYnzeodEJfJD3GinjQcfAVSRNAdoG2wMoRRk2A4WJFKAM+hKwDrvjfITLSQd
+ sJYDo9pvALoZgjRB4vu21ch34LyrsGwAP5CZ820gzE1uj+fmsaEaQ4rkP/yGoGn5kjuVHfbBAD
+ Fu4LcUVuVp9u3DwVGvk7JyjW0XBhZe+SzxlvtPpbik1JufTracw3YZFFaD7PlLmBrNe6lRaeUa
+ Y3S/OTLwE9UQuWxRKYrirGMQzFns0sMc9IBvaqWcwFIZr0W/xe9fHZShIfJxVKRxsBI//RWbCe
+ WzQ=
+X-IronPort-AV: E=Sophos;i="5.69,327,1571673600"; 
+   d="scan'208";a="125592072"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 10:29:46 +0800
+IronPort-SDR: QzcJ0mq5NhzNsskKlNYu540VLSrPj5dJCGJWU6NTiGtPODLT0HT2uL0VsDddzduH+iW8VCIE2t
+ oqntDfhy7QrHch7hcLk1Ge0NvjV8NjgBCx8/Q9YKuuar3+hjoBNN50DcFTLdya1l7SkoTrR2YT
+ Laozi6DpSA1iUJi5keAAjVAH8uXxS1xDkOgw1NAvq3u//Xhr8uNrqaprHME+8rvcJ8W2LtYC9G
+ zd1jO0YKZz4L29bbI75FnZ56JYJNyZJQITh5eGw928QC0wK7C7WFOJyhKploBnranZodBnKBrZ
+ GnaWuwa0IL72mwu3/LP/i63N
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 18:23:49 -0800
+IronPort-SDR: 1ZZe0CTz2ZWcxA8+BtjtqieoeWRtm3ynNCYLlJarQ752NI4p825kGqo4zBwfi9br8tMIGMYcQS
+ b6oMMKixng4DOs4QPVFWYhMX7OqKLvim5SBT8d8Vf7Gr0JCI+jiNe8VjXAg3PVklFwnww1wj38
+ vIHXulc7j2jySUidVNc2DoYNqnZK+Xv8/zhdRC9QfqmVB+vCZrNnEAP251oP2P+dlny7gM7/+U
+ dg9zRrLY+NcJIKGYPZYdDUtt9SjQ9ojn6amkplS+bAGuJg0yXNMMFCZ7KP8mnlT1Hh/V7amNY8
+ Znc=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with SMTP; 17 Dec 2019 18:29:45 -0800
+Received: (nullmailer pid 195964 invoked by uid 1000);
+        Wed, 18 Dec 2019 02:29:44 -0000
+Date:   Wed, 18 Dec 2019 11:29:44 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 02/28] btrfs: Get zone information of zoned block
+ devices
+Message-ID: <20191218022944.b6jddneylfwwr6no@naota.dhcp.fujisawa.hgst.com>
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-3-naohiro.aota@wdc.com>
+ <d4cccf98-a01a-8d2f-40fe-e2f356a037a0@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <b46a5e36-46f2-f330-695b-2e1e60c2c343@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:JN58rejosX6fsjzLzoW+ExQ3b7Xco/xhu2MWrvTEU3oY4w/n8Xv
- DFIICjXojaZKXJ39kUVw32kejVhYlVoP4o/eYiMZ7UyBxEtYElkGXbsBoAWNg+GIgcWU5+9
- ZIUaOeK8ZCVnza0vIv3f9WW0hyTh8uLJDfGbnPumd2Q778b9spBcutbGYZwY/JUeOZfBLq5
- /b84vvMsW9NzrqXviorsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5AxvvgH5vxo=:FfpMaW/1kiY9xraRJVy60A
- CBCUJKBiPiXMLO6hkLkff6/RVVd9BYdZ/hZKzBvSXioVq5SIA5LxX9KTvPgFeh4w0tCkwN64l
- V752OgRWhYjsj5V09eQ9fUzloz0P0LdMlxU/JmumcB8k6R91udxDJ+Ex5+NK9vOKZ8SiovP+Z
- nOpPsQEvGIKx9Zse1Ugnfwf8L+9/W4QtBy+tbIu8w3zCzjJ6GohgAwKJ0LjQnxy82Ho3XM4v5
- 8EtrZF/MSOoqzZK9SApVGokJ57Gz4u8aQhaitbAWK4CpXX8pp6kQS0TJh+qCRlhnO0+6UBA4J
- WsbPs/wzAMvfzQf3aQOcynGphsxbJSLbmRncRXP9QeYn3UmKj9W7AexEF36xDQ9kBVgrfY8G5
- Ckml9LgvAJrWuH5TRkEz5ZlIAU0sGu61SaCpydXdsMxEFN/TMJKMffqLgGiRysCjyZTynV9G4
- V9y7I2CPFFMVb9tI9gjffhowS5Pu3hCpCxIfT61jEdW61HuifrG2YIM0ZzfPUgrlf7FvPP0A5
- DentzQiOiQZdkhhDtydagJwMoXxBkb6i/1e18/GFZ2MvgYo9+EJR+syjZuOwQQ4tw97oRqKA6
- JeBYv91L271l+v/Q3xxThJzhCwxztDVj4ziz7vnarVFnmqNOhPjsn22L2Ycrqjek3RgQE+OnM
- WVuU1svS01nVJ94aJDyuZZBgCXXcNRPu7gyysP0Co6eO2EjwH9rof9KBY0JR7vEFYTjezepB8
- rvpBNqMX62LKbr55TumXEMJKxYwyLCctwTtcBFuzSXIcLSgEO74B9JxM3U0zwLrnnT8V2WjJW
- 2rDA0MTMU0UnrVzOGAHdK3QY8piV9zx4fMJgGrsfBUsaJvnk/rbuuK/ZjRweSlXG1w9pNjtMq
- cWp1BkU8FqeUkXJx/9PG8avlTyEDSrhOaR5FDfbH7nL321ZqFTckWJOx/ZXMAyrunwPwLmb0O
- tLXQWsYXvuXflDgJUBoI6NI4dxke0EvpnpRp5NRGUEloNj3N96rS8JFqqZS3UDJHOwCUZ8uW9
- tXzePGCoXxM2fHktp3a5bAqv/A/3NMwdSD5I4G2YUPSqxP+NxtOSIbmHIVfePEjooscQdRRVG
- Bp4vCq6x0EONMIF9uyo3kYpf3lY+uz8uOS/nXiUWi5AQir1fCiQURK7Np3DtreiM2I2p54DH2
- 3sVz1PuxKeI/DsrPjor/ZRL1eaBUTigOotOnQEpwtOmsOLl+URag76qJbZ9e+Bgd50ibA5IAP
- QuThl2sWB8DLkMOEKmSvjQdNxLByygtc9yQV7FZl6AdCQ+OluDSTP0Cw1fjE=
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <d4cccf98-a01a-8d2f-40fe-e2f356a037a0@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMjAxOS8xMi8xOCAxMDoxNyBBTSwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
-MTkvMTIvMTgg5LiK5Y2IMTA6MDksIFN1IFl1ZSB3cm90ZToNCj4+IE9uIDIwMTkvMTIvMTggOTox
-OSBBTSwgUXUgV2VucnVvIHdyb3RlOg0KPj4+IFtCVUddDQo+Pj4gRm9yIGNlcnRhaW4gZnV6emVk
-IGltYWdlLCBgYnRyZnMgY2hlY2tgIHdpbGwgZmFpbCB3aXRoIHRoZSBmb2xsb3dpbmcNCj4+PiBj
-YWxsIHRyYWNlOg0KPj4+ICDCoMKgIENoZWNraW5nIGZpbGVzeXN0ZW0gb24gaXNzdWVfMjEzLnJh
-dw0KPj4+ICDCoMKgIFVVSUQ6IDk5ZTUwODY4LTBiZGEtNGQ4OS1iMGU0LTdlODU2MDMxMmVmOQ0K
-Pj4+ICDCoMKgIFsxLzddIGNoZWNraW5nIHJvb3QgaXRlbXMNCj4+PiAgwqDCoCBbMi83XSBjaGVj
-a2luZyBleHRlbnRzDQo+Pj4gIMKgwqAgUHJvZ3JhbSByZWNlaXZlZCBzaWduYWwgU0lHQUJSVCwg
-QWJvcnRlZC4NCj4+PiAgwqDCoCAweDAwMDA3ZmZmZjdjODhmMjUgaW4gcmFpc2UgKCkgZnJvbSAv
-dXNyL2xpYi9saWJjLnNvLjYNCj4+PiAgwqDCoCAoZ2RiKSBidA0KPj4+ICDCoMKgICMwwqAgMHgw
-MDAwN2ZmZmY3Yzg4ZjI1IGluIHJhaXNlICgpIGZyb20gL3Vzci9saWIvbGliYy5zby42DQo+Pj4g
-IMKgwqAgIzHCoCAweDAwMDA3ZmZmZjdjNzI4OTcgaW4gYWJvcnQgKCkgZnJvbSAvdXNyL2xpYi9s
-aWJjLnNvLjYNCj4+PiAgwqDCoCAjMsKgIDB4MDAwMDU1NTU1NTVhYmMzZSBpbiBydW5fbmV4dF9i
-bG9jayAoLi4uKSBhdCBjaGVjay9tYWluLmM6NjM5OA0KPj4+ICDCoMKgICMzwqAgMHgwMDAwNTU1
-NTU1NWIwZjM2IGluIGRlYWxfcm9vdF9mcm9tX2xpc3QgKC4uLikgYXQNCj4+PiBjaGVjay9tYWlu
-LmM6ODQwOA0KPj4+ICDCoMKgICM0wqAgMHgwMDAwNTU1NTU1NWIxYTNkIGluIGNoZWNrX2NodW5r
-c19hbmRfZXh0ZW50cw0KPj4+IChmc19pbmZvPTB4NTU1NTU1NmExZTMwKSBhdCBjaGVjay9tYWlu
-LmM6ODY5MA0KPj4+ICDCoMKgICM1wqAgMHgwMDAwNTU1NTU1NWIxZTNlIGluIGRvX2NoZWNrX2No
-dW5rc19hbmRfZXh0ZW50cw0KPj4+IChmc19pbmZvPTB4NTU1NTU1NmExZTMwKSBhDQo+Pj4gIMKg
-wqAgIzbCoCAweDAwMDA1NTU1NTU1YjU3MTAgaW4gY21kX2NoZWNrIChjbWQ9MHg1NTU1NTU2OTY5
-MjANCj4+PiA8Y21kX3N0cnVjdF9jaGVjaz4sIGFyZ2MNCj4+PiAgwqDCoCAjN8KgIDB4MDAwMDU1
-NTU1NTU2OGRjNyBpbiBjbWRfZXhlY3V0ZSAoY21kPTB4NTU1NTU1Njk2OTIwDQo+Pj4gPGNtZF9z
-dHJ1Y3RfY2hlY2s+LCBhcg0KPj4+ICDCoMKgICM4wqAgMHgwMDAwNTU1NTU1NTY5NzEzIGluIG1h
-aW4gKGFyZ2M9MiwgYXJndj0weDdmZmZmZmZmZGU3MCkgYXQNCj4+PiBidHJmcy5jOjM4Ng0KPj4+
-DQo+Pj4gW0NBVVNFXQ0KPj4+IFRoaXMgZnV6emVkIGltYWdlcyBoYXMgYSBjb3JydXB0ZWQgRVhU
-RU5UX0RBVEEgaXRlbSBpbiBkYXRhIHJlbG9jIHRyZWU6DQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqAg
-aXRlbSAxIGtleSAoMjU2IEVYVEVOVF9EQVRBIDI1NikgaXRlbW9mZiAxNjExMSBpdGVtc2l6ZSAx
-Mg0KPj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZW5lcmF0aW9uIDAgdHlw
-ZSAyIChwcmVhbGxvYykNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcHJl
-YWxsb2MgZGF0YSBkaXNrIGJ5dGUgMTY3NzcyMTYgbnIgMA0KPj4+ICDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBwcmVhbGxvYyBkYXRhIG9mZnNldCAwIG5yIDANCj4+Pg0KPj4+IFRo
-ZXJlIGFyZSBzZXZlcmFsIHByb2JsZW1zIHdpdGggdGhlIGl0ZW06DQo+Pj4gLSBCYWQgaXRlbSBz
-aXplDQo+Pj4gIMKgwqAgMTIgaXMgdG9vIHNtYWxsLg0KPj4+IC0gQmFkIGtleSBvZmZzZXQNCj4+
-PiAgwqDCoCBvZmZzZXQgb2YgRVhURU5UX0RBVEEgdHlwZSBrZXkgcmVwcmVzZW50cyBmaWxlIG9m
-ZnNldCwgd2hpY2ggc2hvdWxkDQo+Pj4gIMKgwqAgYWx3YXlzIGJlIGFsaWduZWQgdG8gc2VjdG9y
-IHNpemUgKDRLIGluIHRoaXMgcGFydGljdWxhciBjYXNlKS4NCj4+Pg0KPj4+IFtGSVhdDQo+Pj4g
-RG8gZXh0cmEgaXRlbSBzaXplIGFuZCBrZXkgb2Zmc2V0IGNoZWNrIGZvciBvcmlnaW5hbCBtb2Rl
-LCBhbmQgcmVtb3ZlDQo+Pj4gdGhlIGFib3J0KCkgY2FsbCBpbiBydW5fbmV4dF9ibG9jaygpLg0K
-Pj4+DQo+Pj4gQW5kIHRvIHNob3cgb2ZmIGhvdyByb2J1c3QgbG93bWVtIG1vZGUgaXMsIGxvd21l
-bSBjYW4gaGFuZGxlIGl0IHdpdGhvdXQNCj4+PiBhbnkgaGljY3VwLg0KPj4+DQo+Pj4gV2l0aCB0
-aGlzIGZpeCwgb3JpZ2luYWwgbW9kZSBjYW4gZGV0ZWN0IHRoZSBwcm9ibGVtIHByb3Blcmx5Og0K
-Pj4+ICDCoMKgIENoZWNraW5nIGZpbGVzeXN0ZW0gb24gaXNzdWVfMjEzLnJhdw0KPj4+ICDCoMKg
-IFVVSUQ6IDk5ZTUwODY4LTBiZGEtNGQ4OS1iMGU0LTdlODU2MDMxMmVmOQ0KPj4+ICDCoMKgIFsx
-LzddIGNoZWNraW5nIHJvb3QgaXRlbXMNCj4+PiAgwqDCoCBbMi83XSBjaGVja2luZyBleHRlbnRz
-DQo+Pj4gIMKgwqAgRVJST1I6IGludmFsaWQgZmlsZSBleHRlbnQgaXRlbSBzaXplLCBoYXZlIDEy
-IGV4cGVjdCAoMjEsIDE2MjgzXQ0KPj4+ICDCoMKgIEVSUk9SOiBlcnJvcnMgZm91bmQgaW4gZXh0
-ZW50IGFsbG9jYXRpb24gdHJlZSBvciBjaHVuayBhbGxvY2F0aW9uDQo+Pj4gIMKgwqAgWzMvN10g
-Y2hlY2tpbmcgZnJlZSBzcGFjZSBjYWNoZQ0KPj4+ICDCoMKgIFs0LzddIGNoZWNraW5nIGZzIHJv
-b3RzDQo+Pj4gIMKgwqAgcm9vdCAxODQ0Njc0NDA3MzcwOTU1MTYwNyByb290IGRpciAyNTYgZXJy
-b3INCj4+PiAgwqDCoCByb290IDE4NDQ2NzQ0MDczNzA5NTUxNjA3IGlub2RlIDI1NiBlcnJvcnMg
-NjIsIG5vIG9ycGhhbiBpdGVtLCBvZGQNCj4+PiBmaWxlIGV4dGVudCwgYmFkIGZpbGUgZXh0ZW50
-DQo+Pj4gIMKgwqAgRVJST1I6IGVycm9ycyBmb3VuZCBpbiBmcyByb290cw0KPj4+ICDCoMKgIGZv
-dW5kIDEzMTA3MiBieXRlcyB1c2VkLCBlcnJvcihzKSBmb3VuZA0KPj4+ICDCoMKgIHRvdGFsIGNz
-dW0gYnl0ZXM6IDANCj4+PiAgwqDCoCB0b3RhbCB0cmVlIGJ5dGVzOiAxMzEwNzINCj4+PiAgwqDC
-oCB0b3RhbCBmcyB0cmVlIGJ5dGVzOiAzMjc2OA0KPj4+ICDCoMKgIHRvdGFsIGV4dGVudCB0cmVl
-IGJ5dGVzOiAxNjM4NA0KPj4+ICDCoMKgIGJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVzOiAxMjQ3NzQN
-Cj4+PiAgwqDCoCBmaWxlIGRhdGEgYmxvY2tzIGFsbG9jYXRlZDogMA0KPj4+ICDCoMKgwqAgcmVm
-ZXJlbmNlZCAwDQo+Pj4NCj4+PiBJc3N1ZTogIzIxMw0KPj4+IFNpZ25lZC1vZmYtYnk6IFF1IFdl
-bnJ1byA8d3F1QHN1c2UuY29tPg0KPj4NCj4+IEFsbW9zdCBmaW5lLiBUd28gbml0cGlja3MgYmVs
-b3cuDQo+PiBJIGd1ZXNzIHRoYXQgdGhleSBjb3VsZCBiZSBmaXhlZCB3aGVuIG1lcmdpbmcuDQo+
-Pg0KPj4+IC0tLQ0KPj4+ICDCoCBjaGVjay9tYWluLmMgfCAzNCArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0tDQo+Pj4gIMKgIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKQ0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2NoZWNrL21haW4uYyBiL2No
-ZWNrL21haW4uYw0KPj4+IGluZGV4IDA4ZGM5ZTY2Li45MTc1MmRjZSAxMDA2NDQNCj4+PiAtLS0g
-YS9jaGVjay9tYWluLmMNCj4+PiArKysgYi9jaGVjay9tYWluLmMNCj4+PiBAQCAtNjI2OCw3ICs2
-MjY4LDEwIEBAIHN0YXRpYyBpbnQgcnVuX25leHRfYmxvY2soc3RydWN0IGJ0cmZzX3Jvb3QgKnJv
-b3QsDQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoCBidHJlZV9zcGFjZV93YXN0ZSArPSBidHJmc19s
-ZWFmX2ZyZWVfc3BhY2UoYnVmKTsNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgIGZvciAoaSA9IDA7
-IGkgPCBucml0ZW1zOyBpKyspIHsNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Ry
-dWN0IGJ0cmZzX2ZpbGVfZXh0ZW50X2l0ZW0gKmZpOw0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHVuc2lnbmVkIGxvbmcgaW5saW5lX29mZnNldDsNCj4+Pg0KPj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGlubGluZV9vZmZzZXQgPSBvZmZzZXRvZihzdHJ1Y3QgYnRyZnNfZmlsZV9leHRl
-bnRfaXRlbSwNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGRpc2tfYnl0ZW5yKTsNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRy
-ZnNfaXRlbV9rZXlfdG9fY3B1KGJ1ZiwgJmtleSwgaSk7DQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIC8qDQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBDaGVjayBr
-ZXkgdHlwZSBhZ2FpbnN0IHRoZSBsZWFmIG93bmVyLg0KPj4+IEBAIC02Mzg0LDE4ICs2Mzg3LDQ1
-IEBAIHN0YXRpYyBpbnQgcnVuX25leHRfYmxvY2soc3RydWN0IGJ0cmZzX3Jvb3QNCj4+PiAqcm9v
-dCwNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4+ICDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBpZiAoa2V5LnR5cGUgIT0gQlRSRlNfRVhURU5UX0RBVEFfS0VZKQ0KPj4+
-ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnRpbnVlOw0KPj4+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIC8qIENoZWNrIGl0ZW1zaXplIGJlZm9yZSB3ZSBjb250aW51ZSov
-DQo+Pg0KPj4gT25lIG1vcmUgc3BhY2UgYXQgdGhlIHRhaWwuDQo+Pj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaWYgKGJ0cmZzX2l0ZW1fc2l6ZV9ucihidWYsIGkpIDwgaW5saW5lX29mZnNldCkg
-ew0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gLUVVQ0xFQU47DQo+
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnJvcigNCj4+PiArwqDCoMKgwqDC
-oMKgwqAgImludmFsaWQgZmlsZSBleHRlbnQgaXRlbSBzaXplLCBoYXZlICV1IGV4cGVjdCAoJWx1
-LCAlbHVdIiwNCj4+DQo+PiBzaG91bGQgaXQgYmUgIlslbGx1LCAlbHUpIj8NCj4gDQo+IElmIHRo
-ZSBmaWxlIGV4dGVudCBzaXplIG1hdGNoZXMgaW5saW5lX29mZnNldCwgdGhlbiBpdCdzIGFuIGVt
-cHR5IGlubGluZQ0KPiBmaWxlIGV4dGVudCwgd2hpY2ggaXMgbm90IHZhbGlkLg0KPiBTbyBsZWZ0
-IHNpZGUgbXVzdCBiZSAnKCcuDQo+IA0KPiBGb3IgdGhlIHJpZ2h0IHNpZGUsIGl0IGNhbiB0YWtl
-IHRoZSB3aG9sZSBsZWFmLCBlLmcuIGZvciA0SyBub2Rlc2l6ZS4NCj4gDQo+IFNvIGl0J3MgKCVs
-bHUsICVsdV0uDQo+IA0KDQpSZXZpZXdlZC1ieTogU3UgWXVlIDxEYW1lbmx5X1N1QGdteC5jb20+
-DQoNCj4gVGhhbmtzLA0KPiBRdQ0KPj4NCj4+IFRoYW5rcy4NCj4+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfaXRlbV9zaXplX25yKGJ1ZiwgaSksDQo+Pj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlubGluZV9vZmZzZXQsDQo+
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJUUkZTX0xFQUZfREFU
-QV9TSVpFKGZzX2luZm8pKTsNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNv
-bnRpbnVlOw0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+PiAgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgZmkgPSBidHJmc19pdGVtX3B0cihidWYsIGksDQo+Pj4gIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBidHJmc19m
-aWxlX2V4dGVudF9pdGVtKTsNCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGJ0
-cmZzX2ZpbGVfZXh0ZW50X3R5cGUoYnVmLCBmaSkgPT0NCj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBCVFJGU19GSUxFX0VYVEVOVF9JTkxJTkUpDQo+Pj4gIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29udGludWU7DQo+Pj4gKw0KPj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIC8qIFByZWFsbG9jL3JlZ3VsYXIgZXh0ZW50IG11c3QgaGF2ZSBmaXhl
-ZCBpdGVtIHNpemUgKi8NCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoYnRyZnNfaXRl
-bV9zaXplX25yKGJ1ZiwgaSkgIT0NCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHNpemVvZihzdHJ1Y3QgYnRyZnNfZmlsZV9leHRlbnRfaXRlbSkpIHsNCj4+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IC1FVUNMRUFOOw0KPj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgZXJyb3IoDQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgImlu
-dmFsaWQgZmlsZSBleHRlbnQgaXRlbSBzaXplLCBoYXZlICV1IGV4cGVjdCAlenUiLA0KPj4+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBidHJmc19pdGVtX3NpemVfbnIo
-YnVmLCBpKSwNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2l6
-ZW9mKHN0cnVjdCBidHJmc19maWxlX2V4dGVudF9pdGVtKSk7DQo+Pj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBjb250aW51ZTsNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9
-DQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyoga2V5Lm9mZnNldCAoZmlsZSBvZmZzZXQp
-IG11c3QgYmUgYWxpZ25lZCAqLw0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghSVNf
-QUxJR05FRChrZXkub2Zmc2V0LCBmc19pbmZvLT5zZWN0b3JzaXplKSkgew0KPj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gLUVVQ0xFQU47DQo+Pj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBlcnJvcigNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAi
-aW52YWxpZCBmaWxlIG9mZnNldCwgaGF2ZSAlbGx1IGV4cGVjdCBhbGlnbmVkIHRvICV1IiwNCj4+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga2V5Lm9mZnNldCwgZnNf
-aW5mby0+c2VjdG9yc2l6ZSk7DQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBj
-b250aW51ZTsNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9DQo+Pj4gIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGlmIChidHJmc19maWxlX2V4dGVudF9kaXNrX2J5dGVucihidWYsIGZp
-KSA9PSAwKQ0KPj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnRpbnVl
-Ow0KPj4+DQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRhdGFfYnl0ZXNfYWxsb2Nh
-dGVkICs9DQo+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfZmls
-ZV9leHRlbnRfZGlza19udW1fYnl0ZXMoYnVmLCBmaSk7DQo+Pj4gLcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgaWYgKGRhdGFfYnl0ZXNfYWxsb2NhdGVkIDwgcm9vdC0+ZnNfaW5mby0+c2VjdG9yc2l6
-ZSkNCj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFib3J0KCk7DQo+Pj4NCj4+
-PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGF0YV9ieXRlc19yZWZlcmVuY2VkICs9DQo+
-Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNfZmlsZV9leHRlbnRf
-bnVtX2J5dGVzKGJ1ZiwgZmkpOw0KPj4+DQo+Pg0KPiANCg0K
+On Fri, Dec 13, 2019 at 11:18:53AM -0500, Josef Bacik wrote:
+>On 12/12/19 11:08 PM, Naohiro Aota wrote:
+>>If a zoned block device is found, get its zone information (number of zones
+>>and zone size) using the new helper function btrfs_get_dev_zone_info().  To
+>>avoid costly run-time zone report commands to test the device zones type
+>>during block allocation, attach the seq_zones bitmap to the device
+>>structure to indicate if a zone is sequential or accept random writes. Also
+>>it attaches the empty_zones bitmap to indicate if a zone is empty or not.
+>>
+>>This patch also introduces the helper function btrfs_dev_is_sequential() to
+>>test if the zone storing a block is a sequential write required zone and
+>>btrfs_dev_is_empty_zone() to test if the zone is a empty zone.
+>>
+>>Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/Makefile  |   1 +
+>>  fs/btrfs/hmzoned.c | 168 +++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/hmzoned.h |  92 +++++++++++++++++++++++++
+>>  fs/btrfs/volumes.c |  18 ++++-
+>>  fs/btrfs/volumes.h |   4 ++
+>>  5 files changed, 281 insertions(+), 2 deletions(-)
+>>  create mode 100644 fs/btrfs/hmzoned.c
+>>  create mode 100644 fs/btrfs/hmzoned.h
+>>
+>>diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+>>index 82200dbca5ac..64aaeed397a4 100644
+>>--- a/fs/btrfs/Makefile
+>>+++ b/fs/btrfs/Makefile
+>>@@ -16,6 +16,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>>  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+>>  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+>>+btrfs-$(CONFIG_BLK_DEV_ZONED) += hmzoned.o
+>>  btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+>>  	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+>>diff --git a/fs/btrfs/hmzoned.c b/fs/btrfs/hmzoned.c
+>>new file mode 100644
+>>index 000000000000..6a13763d2916
+>>--- /dev/null
+>>+++ b/fs/btrfs/hmzoned.c
+>>@@ -0,0 +1,168 @@
+>>+// SPDX-License-Identifier: GPL-2.0
+>>+/*
+>>+ * Copyright (C) 2019 Western Digital Corporation or its affiliates.
+>>+ * Authors:
+>>+ *	Naohiro Aota	<naohiro.aota@wdc.com>
+>>+ *	Damien Le Moal	<damien.lemoal@wdc.com>
+>>+ */
+>>+
+>>+#include <linux/slab.h>
+>>+#include <linux/blkdev.h>
+>>+#include "ctree.h"
+>>+#include "volumes.h"
+>>+#include "hmzoned.h"
+>>+#include "rcu-string.h"
+>>+
+>>+/* Maximum number of zones to report per blkdev_report_zones() call */
+>>+#define BTRFS_REPORT_NR_ZONES   4096
+>>+
+>>+static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+>>+			       struct blk_zone *zones, unsigned int *nr_zones)
+>>+{
+>>+	int ret;
+>>+
+>>+	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT, zones,
+>>+				  nr_zones);
+>>+	if (ret != 0) {
+>>+		btrfs_err_in_rcu(device->fs_info,
+>>+				 "get zone at %llu on %s failed %d", pos,
+>>+				 rcu_str_deref(device->name), ret);
+>>+		return ret;
+>>+	}
+>>+	if (!*nr_zones)
+>>+		return -EIO;
+>>+
+>>+	return 0;
+>>+}
+>>+
+>>+int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>>+{
+>>+	struct btrfs_zoned_device_info *zone_info = NULL;
+>>+	struct block_device *bdev = device->bdev;
+>>+	sector_t nr_sectors = bdev->bd_part->nr_sects;
+>>+	sector_t sector = 0;
+>>+	struct blk_zone *zones = NULL;
+>>+	unsigned int i, nreported = 0, nr_zones;
+>>+	unsigned int zone_sectors;
+>>+	int ret;
+>>+	char devstr[sizeof(device->fs_info->sb->s_id) +
+>>+		    sizeof(" (device )") - 1];
+>>+
+>>+	if (!bdev_is_zoned(bdev))
+>>+		return 0;
+>>+
+>>+	zone_info = kzalloc(sizeof(*zone_info), GFP_KERNEL);
+>>+	if (!zone_info)
+>>+		return -ENOMEM;
+>>+
+>>+	zone_sectors = bdev_zone_sectors(bdev);
+>>+	ASSERT(is_power_of_2(zone_sectors));
+>>+	zone_info->zone_size = (u64)zone_sectors << SECTOR_SHIFT;
+>>+	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
+>>+	zone_info->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
+>>+	if (!IS_ALIGNED(nr_sectors, zone_sectors))
+>>+		zone_info->nr_zones++;
+>>+
+>>+	zone_info->seq_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
+>>+	if (!zone_info->seq_zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_zone_info;
+>>+	}
+>>+
+>>+	zone_info->empty_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
+>>+	if (!zone_info->empty_zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_seq_zones;
+>>+	}
+>>+
+>>+	zones = kcalloc(BTRFS_REPORT_NR_ZONES,
+>>+			sizeof(struct blk_zone), GFP_KERNEL);
+>>+	if (!zones) {
+>>+		ret = -ENOMEM;
+>>+		goto free_empty_zones;
+>>+	}
+>>+
+>>+	/* Get zones type */
+>>+	while (sector < nr_sectors) {
+>>+		nr_zones = BTRFS_REPORT_NR_ZONES;
+>>+		ret = btrfs_get_dev_zones(device, sector << SECTOR_SHIFT, zones,
+>>+					  &nr_zones);
+>>+		if (ret)
+>>+			goto free_zones;
+>>+
+>>+		for (i = 0; i < nr_zones; i++) {
+>>+			if (zones[i].type == BLK_ZONE_TYPE_SEQWRITE_REQ)
+>>+				set_bit(nreported, zone_info->seq_zones);
+>>+			if (zones[i].cond == BLK_ZONE_COND_EMPTY)
+>>+				set_bit(nreported, zone_info->empty_zones);
+>>+			nreported++;
+>>+		}
+>>+		sector = zones[nr_zones - 1].start + zones[nr_zones - 1].len;
+>>+	}
+>>+
+>>+	if (nreported != zone_info->nr_zones) {
+>>+		btrfs_err_in_rcu(device->fs_info,
+>>+				 "inconsistent number of zones on %s (%u / %u)",
+>>+				 rcu_str_deref(device->name), nreported,
+>>+				 zone_info->nr_zones);
+>>+		ret = -EIO;
+>>+		goto free_zones;
+>>+	}
+>>+
+>>+	kfree(zones);
+>>+
+>>+	device->zone_info = zone_info;
+>>+
+>>+	devstr[0] = 0;
+>>+	if (device->fs_info)
+>>+		snprintf(devstr, sizeof(devstr), " (device %s)",
+>>+			 device->fs_info->sb->s_id);
+>>+
+>>+	rcu_read_lock();
+>>+	pr_info(
+>>+"BTRFS info%s: host-%s zoned block device %s, %u zones of %llu sectors",
+>>+		devstr,
+>>+		bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : "aware",
+>>+		rcu_str_deref(device->name), zone_info->nr_zones,
+>>+		zone_info->zone_size >> SECTOR_SHIFT);
+>>+	rcu_read_unlock();
+>>+
+>>+	return 0;
+>>+
+>>+free_zones:
+>>+	kfree(zones);
+>>+free_empty_zones:
+>>+	bitmap_free(zone_info->empty_zones);
+>>+free_seq_zones:
+>>+	bitmap_free(zone_info->seq_zones);
+>>+free_zone_info:
+>
+>bitmap_free is just a kfree which handles NULL pointers properly, so 
+>you only need one goto here for cleaning up the zone_info.  Once 
+>that's fixed you can add
+>
+>Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+>Josef
+
+Ah, then, I think I can simplify the code to use one "out" label and
+kfree/bitmap_free both zones and zone_info.
+
+Thanks,
