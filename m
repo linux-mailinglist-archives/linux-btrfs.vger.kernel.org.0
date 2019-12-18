@@ -2,158 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D171243C1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 10:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3C0124507
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 11:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbfLRJxH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 04:53:07 -0500
-Received: from mout.gmx.net ([212.227.15.18]:44417 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbfLRJxG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 04:53:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576662784;
-        bh=psWA0SA94eTdxRlRYkic7Ez489tqPwhXrVv0ZBOKMkY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=l50O7OhfGcjjT64ScZ/1oDHIJLTYiL5hMT6AfcY4lb22Z+3tG+rW1SUs0E8bX27Gv
-         BwxXsiiBMG6o8gTrsChja9CcV/5gL6Pq7yRTsHlJxm6Lno/Tr/kpWhU+2V0pvhHgRo
-         L8LvbMsE/nkOMEEip1aNQxtAgEtiYXO6xxpQv374=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MS3mz-1iF61O25Yh-00TRGp; Wed, 18
- Dec 2019 10:53:04 +0100
-Subject: Re: [PATCH V2 05/10] btrfs-progs: adjust ported block group lookup
- functions in kernel version
-To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-Cc:     Su Yue <Damenly_Su@gmx.com>
-References: <20191218051849.2587-1-Damenly_Su@gmx.com>
- <20191218051849.2587-6-Damenly_Su@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <b87626bd-911c-8fcd-4713-58968458e078@gmx.com>
-Date:   Wed, 18 Dec 2019 17:52:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726779AbfLRKtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 05:49:24 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:41408 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbfLRKtY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Dec 2019 05:49:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1576666163; x=1608202163;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/DMjkVyfyvI2kcubUQsHCGEvs74jyidMQ1Qv+JhyxmQ=;
+  b=Jfvl26RQ2b+Zzm3pmvvYKcG27RKmcUuxMESH9wM+k+7sjj+SV9geBDgG
+   Fx+XFRDXIzP631i3U4LWtU9JXC2GM/pPKpAIx2gnX9i3gH3gxGVLNBo8H
+   vLxth3OIfDw51qzHZo9TUWEhAhMdumP0VIHuXGDa69S2RBlBuez7ttbwB
+   L1luXD88uryTcjiQDOwM5I0S6uCjHe+PGDI19NzTHs17RcyOYcyu1RcSh
+   gcxceYN5O7ojStLDQh5qIbS2O3Kcn/iYglKcmXqL8CtrFE4G6L2+0ho37
+   1qlvyPsxSX4vUCqIxvk8e9hK7fsVIfjxiedQuOWdXls/jR/7S8GrbRG/7
+   g==;
+IronPort-SDR: 3Zj82qrszqCRBQFbotOdJh5vIkLTgah+sX5J7Wx9anwJ3KiYwC5vRUeUIa4JmcmjV+lvJkuO1G
+ rRDr5MZuHD958IXwVKKB/HWwb31bYh71U7xBjwskKx3FzXA31EtW7TVaHT1ZvCMaW89MWRNpf3
+ /I6uYr/ylp60RwE2dA+YX/IzsW7G6++Carc/eDuLy8wzvTML8gmLNFlOE7IMsXuMx5bNyK9mKJ
+ at4BPl8qft7QLn911EkB0MOxWpJ+7cT3ef86djTPnz0hjvnVElW2/Iu6RK8yAwLXRx7dtFj9Qo
+ k1s=
+X-IronPort-AV: E=Sophos;i="5.69,329,1571673600"; 
+   d="scan'208";a="127245447"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 18:49:23 +0800
+IronPort-SDR: KY4wa/9YEg+D5B8juMLSc9dh1MWWGgYs0ZQIQAhdjwyoatOevqOhcp+2y87MBG+snQ3V0xXLoM
+ cKIHgjdwAoSejqcIn0JWwhaNI2FFtBrqPcBnhw/TIJcuP7Jp73Z1477JJLHo2NipZMBQartPmy
+ 8W6Tz8su6dMbVzK+K3I99jUjbn2zhC0knnczCOll9B57tkHqzoGVNaxMY0YP78+hAJ+6GxAQOQ
+ EApux5aD13/bSjhE8tULxx+yz1jzrQFKm25z1r95uj6ecA8rBz7WaVfVJ+PxtpkyaTQie+eWAL
+ sLwdIhjJOWNVYDJdF8uTdh5z
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 02:43:25 -0800
+IronPort-SDR: qMJQrwt3meamHp8ztthaqI/oHOAqwWEgE9uTreqXeFi+ssrqlGTGNgBvr5VE5B4Qt2MVxH/j6l
+ n2HaQSNHrHFEgIh+moNkIV0jrD1lj1d/CNgImbIACWUj6YhAOmSdUlEyqWJZic3htnOL2CJNE3
+ YWYISe116o9fewjG7iXk/VAYMx03BC4k9QsSWWRksPxh+pLohML+NIzPet8UDHKgBAd4TMsWqt
+ 7B4Ualz35zK8RPsxqDnKrczLlZq0yO5TNtZLJ37BK5sGeDxkC4euofLdQUJimhleH/lgiFa6jV
+ TFQ=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with SMTP; 18 Dec 2019 02:49:21 -0800
+Received: (nullmailer pid 1323844 invoked by uid 1000);
+        Wed, 18 Dec 2019 10:49:20 -0000
+Date:   Wed, 18 Dec 2019 19:49:20 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 24/28] btrfs: enable relocation in HMZONED mode
+Message-ID: <20191218104920.ozsa3pawkvxs2gg5@naota.dhcp.fujisawa.hgst.com>
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-25-naohiro.aota@wdc.com>
+ <83984f9c-4f37-4a04-daea-8169959dc09d@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20191218051849.2587-6-Damenly_Su@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="LpRCM8wAfrGvu25CfPZyJoYqzPK2M7Ndm"
-X-Provags-ID: V03:K1:TdQsEIrZJr6iXiA3V0xVPtnYL4mrugdLwUmzUtOePeCtR8Bn41n
- /ozlesYgH9YRdHFA2IfTeGFzZyxqqVDv/oyP1piso9+SFM/eWfr8RuMNrK1T3coQ0ML7SyP
- 1Yn32M4HNXT73O24hM0idVaF7KluLIydws5j2hhYbE03WnnJgS3sw/tmnn6+AzCIiuuPiLQ
- m11lOgKj8Q1WPvRXrdH1Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q91agXveWwU=:RJME7kobi+CnjFDzi+W98A
- sJ9ec7GdEnKVG6l1VrEKmL3gaJnLRwSvifrzPg6mnMUqeH/31UWfX+C+rFlI69smTA99PDlAX
- KgIctXdjCA8VmLge15mNAJQE1PTaf0nvZxwqbpGhlVmAVtgjME3BTU5rU3M5z2GtduDyT6BgG
- f1QGoRZL432OYd+UWkpKW/naG1OG3Yzwr4lZZiuf05JpclRkObr+F8yW/4i4nl2mU/HAIXPV2
- HR+iajR29vpeGPPCGe6zSe6w9Te/Nez2izIxF+UeJSVe+cJCCwsZjuYqRtbYlbP9EeyTF6N7F
- PcRstXteJ8iuqdpxGLCHOGk6djmRSXaSsajhNVcoZo3WBK1zLL8qMPI9VeQSJnKJF5OnxESxi
- U2+I8bXOOGpk0uoNtRpd2RZJrndP9QoF7WArZxdorrl+w3251R52xEHJ2J/CJZN0JBPRzwJEu
- odZgMy/u6KhZMT8SEfHN3+xtqspHPr9PYb7cbtJyV9om9ZrBOFUunUJ4/MR7jx4hgrR/S8ffo
- WOeTCg7T+eskTT60yVVQa2+yYC9t7GKeb3fx/fxLmTigaR4ed7pWVgCNtscOxWDxeBBDYsLvn
- CzrzJK6eATB8v/lln6SXqvpWhgFRfAymOoFzNV3mXcwZe/lNKGcSA7oyVfSNiQaFkf8PFNqCi
- DnZKzB+lkczOokbq9C9Awdn+172awc8D3nUtgjD27fpjX2wX7Bo+RiAHxDSBpS5E0EAE6pX7W
- Cae9V6xRYMtk2x4vt5Py7fFMof2QFAZTYKeSg4os32cLwal4DB7RoqR2LGT+iOMdUEfdBPReY
- LrW+7DZCYFoVajRWD6TQRcWJBJ0VFbEGpa+wn0cVkg8iLKPO3dRMNUM8IJAtq4gC7F7ruEFRE
- H7JUxNtpkgTx+x5gTAxBgdt3z2jEOCqIliStaNA+OZfYekqw0Mie8EnMaGgoZZol7XnZonTLh
- +CDwX6SuqlgAwR20b4enaJWN4L2zevClZhp7iCDNkfuRucz4d/bWBdvf4VA4IfX7QKHlj/Dw9
- s3OReVdvE8LfyYwL15ZF4H2m1dy8e+XdwkO3wnWpbuQ1mV+cnXnOOkGJcPAh7BfaRdZXwwlQ0
- x7k5qQlD4olvq9p0r5Xmje82sJ3oxfXfoO0CuVX+YoQbJK36YQmfa7yJi27cc4RJfq1aZRhwa
- V+VqEdd6rEv7dSZkYNFA/yFaXG/qeATuSiQDh1AewGj5qzmZwssu4o+xoMqLxwuiDrOcWvlep
- LOsYazl59hJTmfQsUr/DboUIbG1EEz4h8zoy1hSjvM9j/uZTjAbE9BAzHNVc=
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <83984f9c-4f37-4a04-daea-8169959dc09d@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LpRCM8wAfrGvu25CfPZyJoYqzPK2M7Ndm
-Content-Type: multipart/mixed; boundary="HjYF24wcp0TLjXGoUE3TL1kN5K697w9me"
+On Tue, Dec 17, 2019 at 04:32:04PM -0500, Josef Bacik wrote:
+>On 12/12/19 11:09 PM, Naohiro Aota wrote:
+>>To serialize allocation and submit_bio, we introduced mutex around them. As
+>>a result, preallocation must be completely disabled to avoid a deadlock.
+>>
+>>Since current relocation process relies on preallocation to move file data
+>>extents, it must be handled in another way. In HMZONED mode, we just
+>>truncate the inode to the size that we wanted to pre-allocate. Then, we
+>>flush dirty pages on the file before finishing relocation process.
+>>run_delalloc_hmzoned() will handle all the allocation and submit IOs to
+>>the underlying layers.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/relocation.c | 39 +++++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 37 insertions(+), 2 deletions(-)
+>>
+>>diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+>>index d897a8e5e430..2d17b7566df4 100644
+>>--- a/fs/btrfs/relocation.c
+>>+++ b/fs/btrfs/relocation.c
+>>@@ -3159,6 +3159,34 @@ int prealloc_file_extent_cluster(struct inode *inode,
+>>  	if (ret)
+>>  		goto out;
+>>+	/*
+>>+	 * In HMZONED, we cannot preallocate the file region. Instead,
+>>+	 * we dirty and fiemap_write the region.
+>>+	 */
+>>+
+>>+	if (btrfs_fs_incompat(btrfs_sb(inode->i_sb), HMZONED)) {
+>>+		struct btrfs_root *root = BTRFS_I(inode)->root;
+>>+		struct btrfs_trans_handle *trans;
+>>+
+>>+		end = cluster->end - offset + 1;
+>>+		trans = btrfs_start_transaction(root, 1);
+>>+		if (IS_ERR(trans))
+>>+			return PTR_ERR(trans);
+>>+
+>>+		inode->i_ctime = current_time(inode);
+>>+		i_size_write(inode, end);
+>>+		btrfs_ordered_update_i_size(inode, end, NULL);
+>>+		ret = btrfs_update_inode(trans, root, inode);
+>>+		if (ret) {
+>>+			btrfs_abort_transaction(trans, ret);
+>>+			btrfs_end_transaction(trans);
+>>+			return ret;
+>>+		}
+>>+		ret = btrfs_end_transaction(trans);
+>>+
+>>+		goto out;
+>>+	}
+>>+
+>
+>Why are we arbitrarily extending the i_size here?  If we don't need 
+>prealloc we don't need to jack up the i_size either.
 
---HjYF24wcp0TLjXGoUE3TL1kN5K697w9me
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+We need to extend i_size to read data from the relocating block
+group. If not, btrfs_readpage() in relocate_file_extent_cluster()
+always reads zero filled page because the read position is beyond the
+file size.
 
+>>  	cur_offset = prealloc_start;
+>>  	while (nr < cluster->nr) {
+>>  		start = cluster->boundary[nr] - offset;
+>>@@ -3346,6 +3374,10 @@ static int relocate_file_extent_cluster(struct inode *inode,
+>>  		btrfs_throttle(fs_info);
+>>  	}
+>>  	WARN_ON(nr != cluster->nr);
+>>+	if (btrfs_fs_incompat(fs_info, HMZONED) && !ret) {
+>>+		ret = btrfs_wait_ordered_range(inode, 0, (u64)-1);
+>>+		WARN_ON(ret);
+>
+>Do not WAR_ON() when this could happen due to IO errors.  Thanks,
+>
+>Josef
 
-
-On 2019/12/18 =E4=B8=8B=E5=8D=881:18, damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
->=20
-> The are different behavior of btrfs_lookup_first_block_group() and
-> btrfs_lookup_first_block_group_kernel().
-> There are many palaces calling the lookup function include extent
-> allocation part. It's too complicated to check and change those.
-> It will influence many functionalities in progs.
->=20
-> So here, just make kernel version lookup functions run likely in
-> progs behavior.
->=20
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-
-It should be folded into previous commit, or this will break bisect.
-
-Thanks,
-Qu
-
-> ---
->  extent-tree.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/extent-tree.c b/extent-tree.c
-> index fdfa29a2409f..3f7b82dc88a2 100644
-> --- a/extent-tree.c
-> +++ b/extent-tree.c
-> @@ -238,12 +238,13 @@ static struct btrfs_block_group_cache *block_grou=
-p_cache_tree_search(
->  }
-> =20
->  /*
-> - * Return the block group that starts at or after bytenr
-> + * Return the block group that contains @bytenr, otherwise return the =
-next one
-> + * that starts after @bytenr
->   */
->  struct btrfs_block_group_cache *btrfs_lookup_first_block_group_kernel(=
-
->  		struct btrfs_fs_info *info, u64 bytenr)
->  {
-> -	return block_group_cache_tree_search(info, bytenr, 0);
-> +	return block_group_cache_tree_search(info, bytenr, 1);
->  }
-> =20
->  /*
-> @@ -252,7 +253,7 @@ struct btrfs_block_group_cache *btrfs_lookup_first_=
-block_group_kernel(
->  struct btrfs_block_group_cache *btrfs_lookup_block_group_kernel(
->  		struct btrfs_fs_info *info, u64 bytenr)
->  {
-> -	return block_group_cache_tree_search(info, bytenr, 1);
-> +	return block_group_cache_tree_search(info, bytenr, 0);
->  }
-> =20
->  /*
->=20
-
-
---HjYF24wcp0TLjXGoUE3TL1kN5K697w9me--
-
---LpRCM8wAfrGvu25CfPZyJoYqzPK2M7Ndm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFKBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl359voXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg7dwf3axHcCD7AFr4OATZd/XiXX7zd
-iHQS1dGnwZO1zror8on6KOpFXClUw/EJc0G9wjxmwidvbn9nCblhijgrN1PrFLsz
-Ivsa6BHmWxjZ503ql11VaKrUaVcQpTv8Yy23bfo5RLW7n+dzAVzAVORMduPoIk+x
-40W3HntPzmVah8UV2TSbr/sc0XQrWQ01ii4uGK0OTqWWd3Aa40GvIScwcjyiH3D8
-9CD6JeZYKwRLGgeZiW/B3LrG86y2y0U2CaSBWm1EZ14uOi1CQM9QEi+cKz2D/TmT
-qax2vGpoKMKBBzhZUwg0L5cv7cTRSArG4zQ0IhDwQeug/tZ0eeq/5Q6Jgb/B
-=bQAq
------END PGP SIGNATURE-----
-
---LpRCM8wAfrGvu25CfPZyJoYqzPK2M7Ndm--
+Sure. We can just drop it.
