@@ -2,186 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 607BD123B97
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 01:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C9D123BB3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 01:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbfLRAa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 19:30:27 -0500
-Received: from mout.gmx.net ([212.227.17.21]:32981 "EHLO mout.gmx.net"
+        id S1726167AbfLRAi3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 19:38:29 -0500
+Received: from mout.gmx.net ([212.227.17.20]:38517 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbfLRAa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 19:30:27 -0500
+        id S1725946AbfLRAi2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 19:38:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576629018;
-        bh=X/qSE1lzUf+ZZvGCUsZFhArgKvys0PY4PyLhB8V7ZNE=;
+        s=badeba3b8450; t=1576629497;
+        bh=8wxV/ycpQWURe9pQGJEDA717gSBDlBhk18OqCwCYoyo=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=a/P3v0w/8t+vNZhbFKBlGSeSR6gtUIloKZx0zMIk7xSRvbmgZy/5yQWFYn7UXUIkT
-         h2gIu9zikIlMDFrvgsjuU9F5JhpXHKVekq9kS7q+acDDsv7xFksnYGsIVho39VtF83
-         Bm1OsgEjIxCRQCNQlK3T1q5+EfcTNxXqesXUV0Zk=
+        b=CIlY3VIJ5CSSpzTli+MLh42mN2/Ytn5EJRk81F8fwdvYJ8BpQFnDN5y80PP5sKpDK
+         obOfVlkzy6CoRQx6Wm5Zk61ZeLguciTGFHpXJmk4DraqPEedjcxV0wmDugBAc0Brzk
+         vg1pfTTC4R4lWDlG3XlU9ec6FVcUshb5qunA4K44=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1icxNS0LFQ-004XCI; Wed, 18
- Dec 2019 01:30:18 +0100
-Subject: Re: [btrfs-progs PATCH 4/4] tests: Do not fail is dmsetup is missing
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
-References: <20191217203155.24206-1-marcos.souza.org@gmail.com>
- <20191217203155.24206-5-marcos.souza.org@gmail.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGhyc-1iUg1q1yHi-00DowV; Wed, 18
+ Dec 2019 01:38:17 +0100
+Subject: Re: [PATCH] btrfs: super: Make btrfs_statfs() work with metadata
+ over-commiting
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Tomasz Chmielewski <mangoo@wpkg.org>,
+        Martin Raiber <martin@urbackup.org>
+References: <20191216061226.40454-1-wqu@suse.com>
+ <488111c4-03e3-2211-a8fe-5bab7c0f030b@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <ae5f2516-78e5-022f-f516-6351b75a362c@gmx.com>
-Date:   Wed, 18 Dec 2019 08:30:13 +0800
+Message-ID: <556d6c05-9b6f-632b-561e-114b277d64ad@gmx.com>
+Date:   Wed, 18 Dec 2019 08:38:11 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191217203155.24206-5-marcos.souza.org@gmail.com>
+In-Reply-To: <488111c4-03e3-2211-a8fe-5bab7c0f030b@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8"
-X-Provags-ID: V03:K1:atspB/WUdX39LC5vqfkfcD0oFrDjjA5jf+oxQMmvjZy5L0qRggv
- Ew3wiArBxdwEFXk6fBhOJKz2GCjz9of2j+No5qmd2r56Sl/pF3WaOu/ysQ2Out3qRfaJR1O
- 3VXPWnvxWsyYvmzAt2E4/mFAVH5YkrxZWk/dFnafvazNrtC3jVnqdIuKPdhqXkU6OhVYHKV
- jF1i3uFbgNZH6swZSgykw==
+ boundary="GMfSyuPaXikOivscWhu2WFIxDgsnDGeNP"
+X-Provags-ID: V03:K1:7z1Bs9QucJQH3LpOYIkGI/uThkChRCa87vExpaMbCMpsPb7hHOF
+ vkMb4DxWn6KyFyhULv46UJu2MrQVuM8qLzn/vSRK94+oK+xNyvAlAn0PdGuvacv5CYo4w5E
+ g3+CaHoV3/kYf0Ouom1oL31VAY9O6WkF1Yx9kgHCfri8o15z4eU67XseeHWhz47Eg9mZvKz
+ 4nB7DBLth7RnQUlOaSvwA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EcK4H5Ky6zg=:xuunrIhJ9rp6xaVJoxZ5ED
- gmL1V4CxScFK/aFBKFrNTqxBnbcPoQegBydyEsQj4UvAXraY2ujGRxMqjB4nRaBG8aoPkm3Kj
- 4WdD63e5Wo29hy8XQ51RB5CnQmfTyl/ueXOzteeHY1sH2HEI6VQLwffcCJgCDhBWe1b40TAU4
- 7GkmplO1gW1kfpWgVq3r6SnogX6xMM7XZ8Jq2AvfJ5xjobbv+dQ8I1by3kWGwj1hmGBCJpmyP
- l4gTEUM6vUFJinlKgq7FqUDIgZ/SPWd5oiTQ7RZuhVkBxOY3CMtXdLul+Iy7PNF44rfl/NUF1
- PoyAzTTaoSXGn8g32TQUfMlYeZy6OtmQ7f5+Hwme9rEN3RUKdonWwsuVA3XyvGjQ3d30y7car
- behzXV1DawB+LN64eSLyezemEwLlLAGKzuca/8304E36GZUdSrl2nXBqIZMc0I2LT2U6J5d25
- 0aMS71mEEqYmGIVrR+5k52v3NroSNNf55Nwz/qtE2ty4iqW5oFTkoVYjB7r+T9rHAhalJusjN
- yh56bt7T79Uvuc+4Pi36ffavhmbIlDJMtgBC9GXv6tLBGvrjk3jswV3NUbkjmvMNCca5HfmR+
- zvw/72POpMkGxMjPH9IGtPdnFlI19TUVZt2uVGDgUey3qFEuNMNGqycwbs6jerXrjWI7OLbRu
- nkljPmkf9gfjvgdVtuYMomMH/JErOtLc0JiEniEJYK2QKM/vfiUEpjGJrV/PQBkCu3RqEFBDW
- lm6GAfbqxcRCd/fKkJWET2FrPF8ciA9b9llWZhS71BtBG+BAN/LkQctEHYO3WWdpQIVVmYc5a
- 3Q9GC5b47ap9P6fmmSb+0/d24CqjYpjHMmXLWClAMMFTNaPDw9fuFMng/FQOiJ+luPddjfJRB
- qsc6odkMKPIiTLb6URGoFr3ZmaIoqIf9kg5tOsGAacKKMe8roN1nKDDtwYwvvmpTIgKvQFVBj
- a3Inyg2BjLXjtY+wvAuIa9HgLo0iXYVy5s/KP2ONiYQZ/YMG5YleO8BNI5HIp29a3M4W/lfNh
- 87kC9laq1L/z3lBu4fzWp2TZwO3lLvDiuISkviGtiJw9gTcitBMXiOPttJvwQjonOehxoChqQ
- NxNEcWJJKr4nxAIXeevLnDKDRPKvAvBNXgY9mFS3FPj6rOJ2kEE2JkCBCLPhEqzaZ9Gaba0xs
- STDgvEARcNqObRZUg0OTgpkM0C+JGNCjRRIxsAhVWOPRoso6kPmp4GpV9KowPEb+5ZZqnn+8S
- sVtWgabmt1I1lxu0XZV8wPvO+dOK1oLzvE1waZoNRPT/UDXHxUbwlYhNC8uI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UsurJNEtC74=:nI/XsppuPsHEqWAWjETUBx
+ 3CjIYO68lHbu/f5eJJeam58spfvSN54Vpy88iVB0FTm+XnOwLpDEuZmFvFhLuAghZbxhIcfrU
+ ngO3PNfN4MWgymSYb6i6WWzH4QgXWQRC9wHdJO+cWvqRlPDwSzvJHnUfBc49TfC5gODiKacI+
+ 8XpS0JJ7n7WQAf/R50nKPdoDKN3ced9zGyjZe2Kr2DhXzEgaIztWVkaqm0/XRkkIaPpgRYRdf
+ zcJ2xIg7EBOxomRQUYSWRvp1DyvSaQ5O07gja87h3WRGyhRjy6VzCcNQUS+ZnzjCA4pZxU5WI
+ HsdWXz7i1kThl4KCpNQQSSYhkhvWue4fXjl0X69laQu2aEHys5xzgv1FC2Sp5b9fVqtaO6dzr
+ ar8FuV4yi7oKLV/N39QYJYNKyUX0BPx0H4bwcYq6wTHM+usnu8LdiyXVeQXUjbig0eNV6Qofn
+ ewjR+59Pd3qJ9Td4OHf/9cxYgTdkPHn4ufq1qONHjgpPCfW2vVGAfhcVGeRX05Jiy9fTzxFb9
+ ofRhiQkxl5E0qpqV/sDEsRszttMJQbChOfaCQmGeG0evBGrs4uiAclSubjgIxOlIav7/d/NBE
+ 3MBpr+nQf8EV1z/UhR0rMmiZ7+agOIEZbrTO3GFUsfu+7fL1gPYX0X1rAQQ48AnwzEV8mSTev
+ IgJE944u6ZFVtl/Agl4AGeIyxLgFqg7+yYnThgwxzXXaDQSxTuyZPbHGpxDgSCtVWGgjI4WT1
+ 5Wgb7D/ZXmnqljsutDVG7lHiPB8zxLBwuSDutW+V+YRyInCERX687xUiKz3ThTX7s0UCYX5GQ
+ V/DGDHDwcbsZGuum/nz/EhAN6nMd1l2ehAI093C7U0MtkRKhCydlMthaflA/LUFMNBurn1yh+
+ TZKB5VSutg0w4vkp7oTxQh3DRk3pQ4sdw+cMyId9q0uKlRGs71C4uvvkK5IIgZlsusOXLV6UM
+ 2TXhhtjwIK+4ekRxbwDiSSQGEmFZgPVNUSAQM/YEISKY/YxsKDqTaLxUiCVTn69+oLrWIO5T6
+ 3Tws83KXFkskcEB4lF4YHRMP05xQpICZzRzN9CnvFmITTBQLuRUz8fDBLK1o7Yfgo0RfuEGYp
+ DiKMT+3ixMAjBi9ON1hOMnCCII1V6xUxpigdYD3KmlHubOjzLSd4OimFoDjgSRwInagqLorv6
+ RsmtRBKxnbAERehqexSUAf70sYHR4q8F3P217MvpFwG/Rrd+cL+8xAhjhJzxRLnyHAyLjy+To
+ fuBWj939nQ+slHDAfRDISTs+aOYYKZZqvRgxE0QSoFSCiQGRaiTDD8yERlcM=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8
-Content-Type: multipart/mixed; boundary="1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA"
+--GMfSyuPaXikOivscWhu2WFIxDgsnDGeNP
+Content-Type: multipart/mixed; boundary="NhJZ840DOoDKd8zsRr47uz3c54OPmsMQP"
 
---1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA
+--NhJZ840DOoDKd8zsRr47uz3c54OPmsMQP
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/18 =E4=B8=8A=E5=8D=884:31, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On 2019/12/18 =E4=B8=8A=E5=8D=8812:05, Josef Bacik wrote:
+> On 12/16/19 1:12 AM, Qu Wenruo wrote:
+>> [BUG]
+>> There are several reports about vanilla `df` reports no available spac=
+e,
+>> while `btrfs filesystem df` is still reporting tons of unallocated
+>> space.
+>>
+>> https://lore.kernel.org/linux-btrfs/CAJCQCtQEu_+nL_HByAWK2zKfg2Zhpm3Ez=
+to+sA12wwV0iq8Ghg@mail.gmail.com/T/#t
+>>
+>> https://lore.kernel.org/linux-btrfs/CAJCQCtSWW4ageK56PdHtSmgrFrDf_Qy0P=
+bxZ5LSYYCbr3Z10ug@mail.gmail.com/T/#t
+>>
+>>
+>> The example output from vanilla `df` would look like:
+>> Filesystem=C2=A0 Size=C2=A0 Used Avail Use% Mounted on
+>> /dev/loop0=C2=A0 7.4T=C2=A0 623G=C2=A0=C2=A0=C2=A0=C2=A0 0 100% /media=
+/backup
+>>
+>> [CAUSE]
+>> There is a special check in btrfs_statfs(), which reset f_bavail:
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0if (!mixed && total_free_meta - SZ_4M < block_=
+rsv->size)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 buf->f_bavail =3D 0;
 >=20
-> Move the check of dmsetup to check_dm_target_support, and adapt the onl=
-y
-> two places checking if dmsetup is present in the system. Now we skip th=
-e
-> test if dmsetup isn't available, instead of marking the test as failed.=
+> Why not just read fs_info->free_chunk_space and take that into account?=
+=C2=A0
+> The point is we want to tell the user there's no room left if we can't
+> allocate a new chunk and we only have the global reserve space left.=C2=
+=A0 So
+> just subtract the global reserve size from the total f_bavail as long a=
+s
+> free_chunk_space is sufficient, otherwise fall back to the original
+> calculation.=C2=A0 Thanks,
 
->=20
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Because not all unallocated space can be utilized by all profiles,
+that's why we have complex calculation in btrfs_calc_avail_data_space(),
+which tries to emulate chunk allocator to get how many space we can
+really use.
 
-Looks good overall, just a small nitpick inlined below.
-
-> ---
->  tests/common                                             | 9 +++++++--=
-
->  tests/mkfs-tests/005-long-device-name-for-ssd/test.sh    | 1 -
->  .../017-small-backing-size-thin-provision-device/test.sh | 1 -
->  3 files changed, 7 insertions(+), 4 deletions(-)
->=20
-> diff --git a/tests/common b/tests/common
-> index f138b17e..dc2d084e 100644
-> --- a/tests/common
-> +++ b/tests/common
-> @@ -322,10 +322,15 @@ check_global_prereq()
->  	fi
->  }
-> =20
-> -# check if the targets passed as arguments are available, and if not j=
-ust skip
-> -# the test
-> +# check if dmsetup and targets passed as arguments are available, and =
-skip the
-> +# test if they aren't.
->  check_dm_target_support()
->  {
-> +	which dmsetup &> /dev/null
-> +	if [ $? -ne 0 ]; then
-> +		_not_run "This test requires dmsetup tool.";
-> +	fi
-
-What about using existing check_global_prereq()?
-
-Despite that,
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+And we also need to take space usage factor into consideration.
 
 Thanks,
 Qu
-
-> +
->  	for target in "$@"; do
->  		$SUDO_HELPER modprobe dm-$target >/dev/null 2>&1
->  		$SUDO_HELPER dmsetup targets 2>&1 | grep -q ^$target
-> diff --git a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh b/te=
-sts/mkfs-tests/005-long-device-name-for-ssd/test.sh
-> index 329deaf2..2df88db4 100755
-> --- a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-> +++ b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-> @@ -4,7 +4,6 @@
->  source "$TEST_TOP/common"
-> =20
->  check_prereq mkfs.btrfs
-> -check_global_prereq dmsetup
->  check_dm_target_support linear
-> =20
->  setup_root_helper
-> diff --git a/tests/mkfs-tests/017-small-backing-size-thin-provision-dev=
-ice/test.sh b/tests/mkfs-tests/017-small-backing-size-thin-provision-devi=
-ce/test.sh
-> index 91851945..83f34ecc 100755
-> --- a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/tes=
-t.sh
-> +++ b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/tes=
-t.sh
-> @@ -6,7 +6,6 @@ source "$TEST_TOP/common"
-> =20
->  check_prereq mkfs.btrfs
->  check_global_prereq udevadm
-> -check_global_prereq dmsetup
->  check_dm_target_support linear thin
-> =20
->  setup_root_helper
 >=20
+> Josef
 
 
---1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA--
+--NhJZ840DOoDKd8zsRr47uz3c54OPmsMQP--
 
---hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8
+--GMfSyuPaXikOivscWhu2WFIxDgsnDGeNP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl35cxUXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qj8iAf+NLsi0R3lwLfcitsYbrUpYRGc
-RLkLGD/3kt9jJ+6Ig3P3Ts/n0/qH9K22NkeopQGV0yY7z5cMGbonKxJOuPP3+HND
-pIEuClA+l3XPJ4RGeoqzPgOpuFdwWS5AWFElu5Bj4X/TmkhRtGP14vZ1rzAYkoJ+
-uDUv080eQlBqDnCbjDvtgboPwuP/QvaPZrirgZfhV9lfTCm0ls1TgQc3Hc/qmG8H
-CQ9V8zg06s8Wxl9espvqPRikd5SOD70UnbNexvLqv1zBNMvtH+GcP5v1WDB2SCub
-6qVGLk+c8xn/vK87gGepDA+vd3gaxmQ5hnbCqQ0I37Oun8jmrwdCrRi6KDn+mQ==
-=NJqU
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl35dPMXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjRngf+LsXez4UBh+zKDzHRNnvJVLba
+ltJZwHLpvgFGKmpqIM9cPKhDe6awVoGQsVz8fhSSq0QDqjaoc5QKsfMKOlDISvGr
+xRvuvqP4cNMEUwkDtcunLjzwLqYaTGtgsSsHRtv1Qhyb/PM13d5nAzCOHqHYqU30
+VSQUHLcZk8NWJuN/anModSH2NQKTtpGx7PCnJvOtD8/CtqFUYRE2VX7dUsMakNSg
+Td4udUrTaoSLUf4VdRgHHH6qPej/xdGpDGPdtjDSU0NoIFHCAKp4iX2RVxXi4oIM
+9ZtTrlhSQ+esqO8kYKOSeJdPDwCaa4b/Wa3yYGk45BtP3HgHjowSg0EqOCIBpQ==
+=QUzE
 -----END PGP SIGNATURE-----
 
---hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8--
+--GMfSyuPaXikOivscWhu2WFIxDgsnDGeNP--
