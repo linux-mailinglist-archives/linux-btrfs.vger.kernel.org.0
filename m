@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2AD123C5A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 02:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2964F123C5B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 02:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbfLRBTz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 20:19:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49736 "EHLO mx2.suse.de"
+        id S1726569AbfLRBT5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 20:19:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49742 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbfLRBTz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 20:19:55 -0500
+        id S1726546AbfLRBT4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 20:19:56 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 10337ABCD
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2019 01:19:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3F012AF79
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2019 01:19:54 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/6] btrfs-progs: check/original: Do extra verification on file extent item
-Date:   Wed, 18 Dec 2019 09:19:38 +0800
-Message-Id: <20191218011942.9830-3-wqu@suse.com>
+Subject: [PATCH 3/6] btrfs-progs: disk-io: Verify the bytenr passed in is mapped for read_tree_block()
+Date:   Wed, 18 Dec 2019 09:19:39 +0800
+Message-Id: <20191218011942.9830-4-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218011942.9830-1-wqu@suse.com>
 References: <20191218011942.9830-1-wqu@suse.com>
@@ -31,136 +31,138 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-For certain fuzzed image, `btrfs check` will fail with the following
-call trace:
-  Checking filesystem on issue_213.raw
-  UUID: 99e50868-0bda-4d89-b0e4-7e8560312ef9
-  [1/7] checking root items
-  [2/7] checking extents
-  Program received signal SIGABRT, Aborted.
-  0x00007ffff7c88f25 in raise () from /usr/lib/libc.so.6
-  (gdb) bt
-  #0  0x00007ffff7c88f25 in raise () from /usr/lib/libc.so.6
-  #1  0x00007ffff7c72897 in abort () from /usr/lib/libc.so.6
-  #2  0x00005555555abc3e in run_next_block (...) at check/main.c:6398
-  #3  0x00005555555b0f36 in deal_root_from_list (...) at check/main.c:8408
-  #4  0x00005555555b1a3d in check_chunks_and_extents (fs_info=0x5555556a1e30) at check/main.c:8690
-  #5  0x00005555555b1e3e in do_check_chunks_and_extents (fs_info=0x5555556a1e30) a
-  #6  0x00005555555b5710 in cmd_check (cmd=0x555555696920 <cmd_struct_check>, argc
-  #7  0x0000555555568dc7 in cmd_execute (cmd=0x555555696920 <cmd_struct_check>, ar
-  #8  0x0000555555569713 in main (argc=2, argv=0x7fffffffde70) at btrfs.c:386
+For a fuzzed image, `btrfs check` will segfault at open_ctree() stage:
+  $ btrfs check --mode=lowmem issue_207.raw
+  Opening filesystem to check...
+  extent_io.c:665: free_extent_buffer_internal: BUG_ON `eb->refs < 0` triggered, value 1
+  btrfs(+0x6bf67)[0x56431d278f67]
+  btrfs(+0x6c16e)[0x56431d27916e]
+  btrfs(alloc_extent_buffer+0x45)[0x56431d279db5]
+  btrfs(read_tree_block+0x59)[0x56431d2848f9]
+  btrfs(btrfs_setup_all_roots+0x29c)[0x56431d28535c]
+  btrfs(+0x78903)[0x56431d285903]
+  btrfs(open_ctree_fs_info+0x90)[0x56431d285b60]
+  btrfs(+0x45a01)[0x56431d252a01]
+  btrfs(main+0x94)[0x56431d2220c4]
+  /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7f6e28519153]
+  btrfs(_start+0x2e)[0x56431d22235e]
 
 [CAUSE]
-This fuzzed images has a corrupted EXTENT_DATA item in data reloc tree:
-        item 1 key (256 EXTENT_DATA 256) itemoff 16111 itemsize 12
-                generation 0 type 2 (prealloc)
-                prealloc data disk byte 16777216 nr 0
-                prealloc data offset 0 nr 0
+The fuzzed image has a strange log root bytenr:
+  log_root                61440
+  log_root_transid        0
 
-There are several problems with the item:
-- Bad item size
-  12 is too small.
-- Bad key offset
-  offset of EXTENT_DATA type key represents file offset, which should
-  always be aligned to sector size (4K in this particular case).
+In fact, the log_root seems to be fuzzed, as its transid is 0, which is
+invalid.
+
+Note that range [61440, 77824) covers the physical offset of the primary
+super block.
+
+The bug is caused by the following sequence:
+1. cache for tree block [64K, 68K) is created by open_ctree()
+   __open_ctree_fd()
+   |- btrfs_setup_chunk_tree_and_device_map()
+      |- btrfs_read_sys_array()
+         |- sb = btrfs_find_create_tree_block()
+         |- free_extent_buffer(sb)
+
+   This created an extent buffer [64K, 68K) in fs_info->extent_cache, then
+   reduce the refcount of that eb back to 0, but not freed yet.
+
+2. Try to read that corrupted log root
+   __open_ctree_fd()
+   |- btrfs_setup_chunk_tree_and_device_map()
+   |- btrfs_setup_all_roots()
+      |- find_and_setup_log_root()
+         |- read_tree_block()
+            |- btrfs_find_create_tree_block()
+               |- alloc_extent_buffer()
+
+   The final alloc_extent_buffer() will try to free that cached eb
+   [64K, 68K), since it doesn't match with current search.
+   And since that cached eb is already released (refcount == 0), the
+   extra free_extent_buffer() will cause above BUG_ON().
 
 [FIX]
-Do extra item size and key offset check for original mode, and remove
-the abort() call in run_next_block().
+Here we fix it through a more comprehensive method, instead of simply
+verifying log_root_transid, here we just don't pollute eb cache when
+reading sys chunk array.
 
-And to show off how robust lowmem mode is, lowmem can handle it without
-any hiccup.
+So that we won't have an eb cache [64K, 68K), and will error out at
+logical mapping phase.
 
-With this fix, original mode can detect the problem properly:
-  Checking filesystem on issue_213.raw
-  UUID: 99e50868-0bda-4d89-b0e4-7e8560312ef9
-  [1/7] checking root items
-  [2/7] checking extents
-  ERROR: invalid file extent item size, have 12 expect (21, 16283]
-  ERROR: errors found in extent allocation tree or chunk allocation
-  [3/7] checking free space cache
-  [4/7] checking fs roots
-  root 18446744073709551607 root dir 256 error
-  root 18446744073709551607 inode 256 errors 62, no orphan item, odd file extent, bad file extent
-  ERROR: errors found in fs roots
-  found 131072 bytes used, error(s) found
-  total csum bytes: 0
-  total tree bytes: 131072
-  total fs tree bytes: 32768
-  total extent tree bytes: 16384
-  btree space waste bytes: 124774
-  file data blocks allocated: 0
-   referenced 0
-
-Issue: #213
+Issue: #207
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ extent_io.c | 26 ++++++++++++++++++++++++++
+ extent_io.h |  2 ++
+ volumes.c   |  3 ++-
+ 3 files changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/check/main.c b/check/main.c
-index 08dc9e66..91752dce 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -6268,7 +6268,10 @@ static int run_next_block(struct btrfs_root *root,
- 		btree_space_waste += btrfs_leaf_free_space(buf);
- 		for (i = 0; i < nritems; i++) {
- 			struct btrfs_file_extent_item *fi;
-+			unsigned long inline_offset;
+diff --git a/extent_io.c b/extent_io.c
+index d4a68279..7f05a729 100644
+--- a/extent_io.c
++++ b/extent_io.c
+@@ -765,6 +765,32 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	return eb;
+ }
  
-+			inline_offset = offsetof(struct btrfs_file_extent_item,
-+						 disk_bytenr);
- 			btrfs_item_key_to_cpu(buf, &key, i);
- 			/*
- 			 * Check key type against the leaf owner.
-@@ -6384,18 +6387,45 @@ static int run_next_block(struct btrfs_root *root,
- 			}
- 			if (key.type != BTRFS_EXTENT_DATA_KEY)
- 				continue;
-+			/* Check itemsize before we continue*/
-+			if (btrfs_item_size_nr(buf, i) < inline_offset) {
-+				ret = -EUCLEAN;
-+				error(
-+		"invalid file extent item size, have %u expect (%lu, %lu]",
-+					btrfs_item_size_nr(buf, i),
-+					inline_offset,
-+					BTRFS_LEAF_DATA_SIZE(fs_info));
-+				continue;
-+			}
- 			fi = btrfs_item_ptr(buf, i,
- 					    struct btrfs_file_extent_item);
- 			if (btrfs_file_extent_type(buf, fi) ==
- 			    BTRFS_FILE_EXTENT_INLINE)
- 				continue;
++/*
++ * Allocate a dummy extent buffer which won't be inserted into extent
++ * buffer cache.
++ *
++ * This mostly allows super block read write using existing eb infrastructure
++ * without pulluting the eb cache.
++ *
++ * This is especially important to avoid injecting eb->start == SZ_64K, as
++ * fuzzed image could have invalid tree bytenr covers super block range,
++ * and cause ref count underflow.
++ */
++struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
++						u64 bytenr, u32 blocksize)
++{
++	struct extent_buffer *ret;
 +
-+			/* Prealloc/regular extent must have fixed item size */
-+			if (btrfs_item_size_nr(buf, i) !=
-+			    sizeof(struct btrfs_file_extent_item)) {
-+				ret = -EUCLEAN;
-+				error(
-+			"invalid file extent item size, have %u expect %zu",
-+					btrfs_item_size_nr(buf, i),
-+					sizeof(struct btrfs_file_extent_item));
-+				continue;
-+			}
-+			/* key.offset (file offset) must be aligned */
-+			if (!IS_ALIGNED(key.offset, fs_info->sectorsize)) {
-+				ret = -EUCLEAN;
-+				error(
-+			"invalid file offset, have %llu expect aligned to %u",
-+					key.offset, fs_info->sectorsize);
-+				continue;
-+			}
- 			if (btrfs_file_extent_disk_bytenr(buf, fi) == 0)
- 				continue;
- 
- 			data_bytes_allocated +=
- 				btrfs_file_extent_disk_num_bytes(buf, fi);
--			if (data_bytes_allocated < root->fs_info->sectorsize)
--				abort();
- 
- 			data_bytes_referenced +=
- 				btrfs_file_extent_num_bytes(buf, fi);
++	ret = __alloc_extent_buffer(fs_info, bytenr, blocksize);
++	if (!ret)
++		return NULL;
++
++	ret->tree = NULL;
++	ret->flags |= EXTENT_BUFFER_DUMMY;
++
++	return ret;
++}
++
+ int read_extent_from_disk(struct extent_buffer *eb,
+ 			  unsigned long offset, unsigned long len)
+ {
+diff --git a/extent_io.h b/extent_io.h
+index 1715acc6..c6b8acf9 100644
+--- a/extent_io.h
++++ b/extent_io.h
+@@ -149,6 +149,8 @@ struct extent_buffer *find_first_extent_buffer(struct extent_io_tree *tree,
+ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 					  u64 bytenr, u32 blocksize);
+ struct extent_buffer *btrfs_clone_extent_buffer(struct extent_buffer *src);
++struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
++						u64 bytenr, u32 blocksize);
+ void free_extent_buffer(struct extent_buffer *eb);
+ void free_extent_buffer_nocache(struct extent_buffer *eb);
+ int read_extent_from_disk(struct extent_buffer *eb,
+diff --git a/volumes.c b/volumes.c
+index 143164f0..44789f20 100644
+--- a/volumes.c
++++ b/volumes.c
+@@ -2144,7 +2144,8 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info)
+ 				fs_info->nodesize);
+ 		return -EINVAL;
+ 	}
+-	sb = btrfs_find_create_tree_block(fs_info, BTRFS_SUPER_INFO_OFFSET);
++	sb = alloc_dummy_extent_buffer(fs_info, BTRFS_SUPER_INFO_OFFSET,
++				       BTRFS_SUPER_INFO_SIZE);
+ 	if (!sb)
+ 		return -ENOMEM;
+ 	btrfs_set_buffer_uptodate(sb);
 -- 
 2.24.1
 
