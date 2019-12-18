@@ -2,87 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F73D124567
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 12:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5421C124534
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 12:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbfLRLL2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 18 Dec 2019 06:11:28 -0500
-Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:48578 "EHLO
-        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726682AbfLRLL2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 06:11:28 -0500
-X-Greylist: delayed 1630 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Dec 2019 06:11:27 EST
-Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.146) BY m4a0072g.houston.softwaregrp.com WITH ESMTP
- FOR linux-btrfs@vger.kernel.org;
- Wed, 18 Dec 2019 11:10:31 +0000
-Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
- M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Wed, 18 Dec 2019 10:30:43 +0000
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (15.124.8.12) by
- M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Wed, 18 Dec 2019 10:30:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HM4AGmvvJraB4ixcNV2XmZyREXFq1o3CRpBGUdJn5shYNXDTMKKFQxDGdt4DnJ39mFDzC92DCC6YnB4tUFs0b10d193B11wp9R1ZnqfYzl7nutTzwK2/KuNbnWCVnbNVWyg4xN9ID3rmjMCoTxf/YdvxdF6/zeYZ/WlwnPhtvwUOS39qFsiNC86W3gcy7L1u2PnCx7KmUEWelkTVX+OSnujdHXleOOlVa37XS4RQ4XAuDSeq2K31IllKqDtUL2W9Ulc02Pm5K9Ue1SNT6AKYVw4BZSPIDTIHuNKKo7RIhTzGqNyOvzEV/rTwEMH4PnqgqZvLCuLkbZ/5cr222fl2cQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=Ce8RJmULBZGM6AaltZvPktw3Z54xtkneJwTodtFO1DBfppf8us4elTFshzUr7ysdYklJnvpVZzbe2yWeiSv1dQVUV6l7xaB6kQDLURg94+wPeftIS9Euku3lQQuvkJW+RbwMIWdwzniCPJNPZIPhz37cxSUgR2Y15PQ2vVLqGoMHRq7x5wpTpnel5oyHV0fdnn+stBmHCe7V+8+uriC6w6fI7OkB+cKlbu4y7RAaYUK2x7SE8KQE9o35Z6y0RPbNmbkYeSkFEbs0Pj1CtdcfvvKE/szQSJuXwZzrw55JE5wt/Y85kJKmnlz2Lnn0UW9I+c5oleX7+tQdLgVpEWtSWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from MN2PR18MB2685.namprd18.prod.outlook.com (20.179.82.223) by
- MN2PR18MB2495.namprd18.prod.outlook.com (20.179.83.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2559.14; Wed, 18 Dec 2019 10:30:42 +0000
-Received: from MN2PR18MB2685.namprd18.prod.outlook.com
- ([fe80::b47f:8d41:b41f:5308]) by MN2PR18MB2685.namprd18.prod.outlook.com
- ([fe80::b47f:8d41:b41f:5308%6]) with mapi id 15.20.2538.019; Wed, 18 Dec 2019
- 10:30:42 +0000
-From:   Long An <lan@suse.com>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
-Thread-Topic: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
-Thread-Index: AQHVtY4zdM4hdE+tGE6GxRti7p5S/A==
-Date:   Wed, 18 Dec 2019 10:30:42 +0000
-Message-ID: <1576665041.3774.6.camel@suse.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=lan@suse.com; 
-x-originating-ip: [45.122.156.254]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa31a6d8-22a0-4952-de0a-08d783a555d3
-x-ms-traffictypediagnostic: MN2PR18MB2495:
-x-microsoft-antispam-prvs: <MN2PR18MB2495BDBB0884EF4A416A5E8EC6530@MN2PR18MB2495.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0255DF69B9
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(136003)(396003)(346002)(366004)(376002)(39860400002)(199004)(189003)(8676002)(81156014)(81166006)(103116003)(478600001)(36756003)(316002)(26005)(86362001)(6506007)(73894004)(621065003)(6512007)(64756008)(66446008)(66556008)(4270600006)(66476007)(76116006)(91956017)(186003)(66946007)(8936002)(2906002)(2616005)(6486002)(6916009)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR18MB2495;H:MN2PR18MB2685.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: h1HHqwYohg6rmZeWgc+fLd9DPGw5hdcdhz6Da9Hs2A4ucBxiPH+OCuF3PXJwJc2wIWiJr45j9xnTHscGLuSWWA52SFUPIjPz0MT4uZnOPaiT3XdiXzj5+AatSFAxq09OypE5cADZLx2lPOmueQbKYwiWOrxtZWrVY0VCFbgMyBb5mmgcpaR9S2kUDCYjar8xM/LCKP3AMkMOUpxzcA6KwX0k50aZS+kfC1Pvu587BXWX4u9HS3Ec9tMXQ0txl7y+o3xkA4BA0pMgQWCyGr3tkOFf1PGKfzvPpzI5KKwzqNjNi7rGVxfcJFv316YQ7vRz
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1725955AbfLRLBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 06:01:55 -0500
+Received: from mout.gmx.net ([212.227.17.20]:45245 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbfLRLBz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Dec 2019 06:01:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1576666913;
+        bh=OtBMfeHKxsKENqq+ye21Ig2Ym9NjWLa9zsvfdx/+lnE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=E20gNVtbhF0E7MaXsf+9HEh0X8ZzkSCZ2odtxX6R7sciIK0pCEB8FWEWUNxshGFpV
+         5yQntSCWzn/AkMDzsvN8eoLqsC5TBNkCEc8SjUFggyjvq3Z8mFuhsKttd1ZxyHN24Q
+         tpjFxSm6haRTwKrteNBtaIZoHx6jlJBXRBaW1RkA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.178] ([34.92.249.81]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MysRu-1hm0ag1xKM-00vy07; Wed, 18
+ Dec 2019 12:01:53 +0100
+Subject: Re: [PATCH V2 05/10] btrfs-progs: adjust ported block group lookup
+ functions in kernel version
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, damenly.su@gmail.com,
+        linux-btrfs@vger.kernel.org
+References: <20191218051849.2587-1-Damenly_Su@gmx.com>
+ <20191218051849.2587-6-Damenly_Su@gmx.com>
+ <b87626bd-911c-8fcd-4713-58968458e078@gmx.com>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <b0a7e353-5745-5f1e-c9c7-e6bda3fe8ae2@gmx.com>
+Date:   Wed, 18 Dec 2019 19:01:48 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa31a6d8-22a0-4952-de0a-08d783a555d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 10:30:42.7606
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: F/Wyeig4VbRVx7kwlSiRx6tylV6BXM/97v4gCfykxcy+KzzmxY5kVpQsOrnSOdM0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2495
-X-OriginatorOrg: suse.com
+In-Reply-To: <b87626bd-911c-8fcd-4713-58968458e078@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DVckzpeU/au+6FouNQcphOwMSLgsHnbNEumQpySgsk46G1VFXbv
+ Wo7tukP8YjomQh0QnrRVSLHQEoUfvK6sU9ZI+VYdfYSQrAsG1dBqWvqjb229pqjCGUy94Aq
+ Io5pOeYSxiMuTGPySsQnLHfdmE7/MVwN60j8LXehqR2xs2mlTqWF+ADQW39teL2Y8u6VnWb
+ E0iMXMu01ZJUCeR6vs+4w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n6VYSPvc43w=:M9cxKWVOPk9xlwW7ERVjAa
+ JMbhpKYbn14mCbfRmylFBIeNJ9PlzKqKgmTe5g0noSuTCjafBaUdYpdyiCUVJqelRrxWHEt8N
+ 8mHgZ1jzf2XWLkrvXzKIAim9yjFBBPCvBnxXlFTV/SHUHLROvADZhMCgKs5wMjEaQMfpEeOvX
+ afEl3Ns3rLnmthMWa3LhjERFKaK2dWN+Pr8Jnn5Gr2SKmHpFje6lLIatkStbRyd6GJgxjMO9w
+ 4dUUQ3ZDzwojLeIiWbLUl0wDbzeuKBw6ZMBZYXjLx7mRZd4v4QKu9Y5vUp1hPs4TqP4DnZgkc
+ 6namkyABkyKbe3HkPZdQE36ejYpoASXRUx7R2GrP26H1rPtZ5VAZskshWxVy32gjjT7bfgCHL
+ lgDeVjutWPq6hvM3z67b39UaAwGeyUrmWr3IH0aTt/mx64k0kSMAT9xdyftZJSV1k1GfaqhWW
+ dLXLDewwDYboCdhmW4clZJaM8ZhuH6sWeTAfApzATFDpcwRlVkiwyRdeebwILNDbhGEU4h/y/
+ 2WB4YmCz7pYA00jyQnOL9Jo1oM5hl4mpszNNBxjHgBXDVHSn+mkoCuHfe6olDeS8ruVOlLSFU
+ YkMY/RKjIui+F99yv/t3mF+Bl+OQyV1D1B3M0bmSLHrqAFc3FIMdLVghdAJ9VPiwXw/9FqJqQ
+ m1l3tUqYisHGDaPxsU5f45CXPZOCSHvvYtDYqDo2zgQvMf2CN96Kg/DU4Az3twif2LG08ZBNN
+ 4nHi4y+00+5xDzrt+i3vSf81PE+TLdU5cORMQnL86RfMiqtsEjHQ72i7xgpGxzC8nSWMut93e
+ FZfkOuj/6JMZGzeZZh0pl3+QDtOmFUXLW3pcdhtZB5NKxxPXBQHKik8l3iIBS95ChCk+Ukhet
+ hgY7mTfhfojaNiMz0gFArXytGkEHpE9m7gRdNFQyDgTpWmPkbw23DIH2fC6ZAMbNRsZsfKH/x
+ ddMNBeuEptoIwtevstmtyWlccomhwjk+H82iObHIVFBuao2cOmvbdDjlL5pT6RWsyru3iHADY
+ y19OHHmCPvY58oHP39mmrbzjmhW3FA2GPuYshv/HC93mLOrwzE0fIWaj393Xd8mLa1L9ite0O
+ s8UFQ5oFjHoIe7vsQnYj1hMiQ8nfonVCc06x+uuwPZdZXXSwkewfrGNfc71p1uwBJ/4wWDPdI
+ faIBvo+v+BKagSGYjBM72XO9kiRy4pIzLcYgeFbHgRzz40XVdjSkshnqFXq5oE4PuITUPrtxh
+ U1cr9LmKgrEGIMyqPTtualC7DP00jlcLx/qjqF8crV/ExaWQWcauOiKQ5NbU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2019/12/18 5:52 PM, Qu Wenruo wrote:
+>
+>
+> On 2019/12/18 =E4=B8=8B=E5=8D=881:18, damenly.su@gmail.com wrote:
+>> From: Su Yue <Damenly_Su@gmx.com>
+>>
+>> The are different behavior of btrfs_lookup_first_block_group() and
+>> btrfs_lookup_first_block_group_kernel().
+>> There are many palaces calling the lookup function include extent
+>> allocation part. It's too complicated to check and change those.
+>> It will influence many functionalities in progs.
+>>
+>> So here, just make kernel version lookup functions run likely in
+>> progs behavior.
+>>
+>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+>
+> It should be folded into previous commit, or this will break bisect.
+>
+
+Oh, will do.
+
+Thanks for your review.
+
+
+> Thanks,
+> Qu
+>
+>> ---
+>>   extent-tree.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/extent-tree.c b/extent-tree.c
+>> index fdfa29a2409f..3f7b82dc88a2 100644
+>> --- a/extent-tree.c
+>> +++ b/extent-tree.c
+>> @@ -238,12 +238,13 @@ static struct btrfs_block_group_cache *block_grou=
+p_cache_tree_search(
+>>   }
+>>
+>>   /*
+>> - * Return the block group that starts at or after bytenr
+>> + * Return the block group that contains @bytenr, otherwise return the =
+next one
+>> + * that starts after @bytenr
+>>    */
+>>   struct btrfs_block_group_cache *btrfs_lookup_first_block_group_kernel=
+(
+>>   		struct btrfs_fs_info *info, u64 bytenr)
+>>   {
+>> -	return block_group_cache_tree_search(info, bytenr, 0);
+>> +	return block_group_cache_tree_search(info, bytenr, 1);
+>>   }
+>>
+>>   /*
+>> @@ -252,7 +253,7 @@ struct btrfs_block_group_cache *btrfs_lookup_first_=
+block_group_kernel(
+>>   struct btrfs_block_group_cache *btrfs_lookup_block_group_kernel(
+>>   		struct btrfs_fs_info *info, u64 bytenr)
+>>   {
+>> -	return block_group_cache_tree_search(info, bytenr, 1);
+>> +	return block_group_cache_tree_search(info, bytenr, 0);
+>>   }
+>>
+>>   /*
+>>
+>
 
