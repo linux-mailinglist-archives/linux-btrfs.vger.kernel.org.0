@@ -2,128 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB7A123E58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 05:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07659123E7D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 05:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbfLRERh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 23:17:37 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:15334 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfLRERh (ORCPT
+        id S1726556AbfLREYY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 23:24:24 -0500
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:42624 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbfLREYY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 23:17:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1576642656; x=1608178656;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vs4WqmcL5Uihup/VUIgBJGix0fbS4voLeckQDX/LB/c=;
-  b=IpclZv/BIyHXZCAAQcOrk7NOz3lf0ZLy0eCaF0J8jAq+kmSKVBSpB0Oa
-   dExWahNKwcfQMlzbrOMak9S16syP22L5wUlAeNk/YE6dpSI9bqBP/Rm1X
-   o1t4GkPqgtVdtNpVt9xlJ5sE4loRlskpvrOBxPoYahC/bfYEXElU7sPhQ
-   m0waWcI4GRhr+WpsiMAVCW/4ZKTsyOfslRUHmhBZbbYGHaQHiAQi8BMmC
-   +bBf6rHCfCN2YwRImgDFLQk8GOQJl/ialjAl1xvWF64OCOUvMKLlxOn6y
-   xUFzJU5l2ie32bi0gWLwjD7IW5mFQZlm+IkqEfaRQbtcLIrwyMgYcJq7u
-   w==;
-IronPort-SDR: rWILF8j/GjwjuCFx4RNMmSBBCB749blrszc9/ibvoyeki7UVVyh/iGkuN0Oh/NwZWN/ldgh8ZD
- glzISLJ/pcqzFUqoc/9lcqBLwJxK/mg2FDeTee4XTHCaXBxnxIJTY7BIwh10QNxBxyY0sUiMdE
- +WBnSEdIBCpt7SEAQojrqZ8ig4Ei6yJ8PLrIFSXjIe0Yiz8inHGFmStsRYKgkH6A73cQqp4hQ+
- Wh1JCg+GpoFO6nUIUnmVp1jKrHlVIZb+2q8oMDF1N+Hd5MOZcpLs+E+j3y/8BpieyFthnsqJHS
- 4Ek=
-X-IronPort-AV: E=Sophos;i="5.69,328,1571673600"; 
-   d="scan'208";a="125597858"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 12:17:36 +0800
-IronPort-SDR: qKV2f/r/FSbTIxejY8UAr1K3BJxwR+HZIuIlWDzgeGZsa3VyApyxWz/CY89kVZXy6ueAdT7R8z
- ctHnO9Zh7cbOQYKUhdAIPVSh8Y31ICZwRmrQm/avxI7re/sPIS1VQFXOVXe6rWXXBYPWrkCRBh
- Vcsr6q+SY9fC9B4aS5X6vNsDeFglTGDsaV5FZl8LaZmy42PzYXfEWzXmPYTOhWL0xYqg1P08uU
- j0mG6vWnDnHXYz/IsS6hm3fKj0kgtiQHbwwRh1lbN1l/cbN0B4sXvnoxF/B/AoW1BBiTkcD551
- vzAbmJjjTlid6D0FhV+nmmid
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 20:11:38 -0800
-IronPort-SDR: r/8IHBdUtilN0Eoe17yg4/m8Y7Fhdcak9Pv04B/mYaVD4NS8Jeowg+oD8DG7Zr4H3sc6BSZmRO
- T7bSzPuhtDsAcwnfJAOSWTNu7K+22mu6p+S1Ds5fhpKuPapoMAOExWKNNugfYniRAxdUzt0Yq/
- MKkIQtXPKuPHCnTTZp7GZOIZYLBKeMn7B4rGwESPWuMg/IhGT1AZK8Ug6ba9HGd5Y/53A2Rj1m
- cUvaIeOhVWcY3i6Lu/NCYMR/4yZxQdhucNLySobZXiFvnChnpDTdVJldeaMJ98Va1Wkwk6gSWf
- Xio=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 17 Dec 2019 20:17:35 -0800
-Received: (nullmailer pid 715618 invoked by uid 1000);
-        Wed, 18 Dec 2019 04:17:34 -0000
-Date:   Wed, 18 Dec 2019 13:17:34 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 03/28] btrfs: Check and enable HMZONED mode
-Message-ID: <20191218041734.beb6z3juswbs5sc6@naota.dhcp.fujisawa.hgst.com>
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-4-naohiro.aota@wdc.com>
- <a51f1292-3097-cd4b-bee5-dee5d4141ffb@toxicpanda.com>
+        Tue, 17 Dec 2019 23:24:24 -0500
+Received: by mail-yw1-f68.google.com with SMTP id x138so306798ywd.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Dec 2019 20:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:to:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=lRp1uZzAcgESnrszNq9wvM4YgfSecdgZCPNIt3qs+14=;
+        b=GhI77sMFrKsHaIbnzCFNpZC4nIEovQyWjdtQYA0WaZohEWkHP7SBPX0k+n/RoPgPgq
+         eFUJfc5UD/2K0MP9+f0VyEM0eDVTwoMRPQ31VzHUsCrsNgdFtm1/2ngpPQ4br/T8vjfV
+         bF29zitMrOwGoVAQuXsrn060/uCcEqAJvZgO3TEpO8l/Sly6hvphh7wyDBpFsTI1x2sM
+         xts2niypuCFevlks790hHyMFJHvo8M1mEQeE92QfGeVS3w7rF3eVhRNi2XHkJ/GColxx
+         4WDh635hoAueCTcWiJpLoOQtUnaFgW80m5Vo2V9C6O9ki/n3ZpWk4xFmQIr822yaoNr2
+         s7Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:to:subject:date:mime-version
+         :content-transfer-encoding;
+        bh=lRp1uZzAcgESnrszNq9wvM4YgfSecdgZCPNIt3qs+14=;
+        b=rcbDCqd4hvLMndlRmNgkUFb9gRZTXk004kngs2xP7KYe3betQmSJj2ojzRHVv7nApd
+         ON+wOhiXGuBhAtMdZ7curmwMz/1w1UuNrj8Cwg1fbD0P3HGjwPR8y8LO3c4w2KTo7lY0
+         ORT08pGO68OXmRTPW0UmEkPdZZ30ROzCAr6MkEo1my0XLcfrVvGaYGL0LMuseAmlwgex
+         jouTpKktDf8F6xaWchRwMsgCfzl1H4Cmj0pzXXBKh7PLIKv7ctTzjKTB4OPvCR/FeI19
+         /I4zCRoCfjVNWuJRCdhdY1TxaPWxhCGv1OwcfAkjDTUDFmP7zt9FvvV5NkwKETN2MIlg
+         6A7g==
+X-Gm-Message-State: APjAAAWwQfd36bVx9WA+zCBILJuq5Lv8ER6EV06fkig2aIUeXuFSTZC+
+        ihbJQv+jxaHxo83vnTyqkScSHRHM
+X-Google-Smtp-Source: APXvYqzYLh+TmZNfRBTEeNmkVsC/+A3mVNrqikOdGWwmYm3KzqRae0s8jx3e1fIE7X36GviC6numgg==
+X-Received: by 2002:a0d:d84b:: with SMTP id a72mr494269ywe.33.1576643062795;
+        Tue, 17 Dec 2019 20:24:22 -0800 (PST)
+Received: from [0.0.0.0] (184-169-119-27-dynamic.midco.net. [184.169.119.27])
+        by smtp.gmail.com with ESMTPSA id 205sm478680ywm.17.2019.12.17.20.24.21
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Dec 2019 20:24:22 -0800 (PST)
+Message-ID: <20191218.042312.688.36@[0.0.0.0]>
+From:   "Rob" <captinlogic@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Filesystem Degrades to read Only
+Date:   Tue, 17 Dec 2019 22:23:12 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <a51f1292-3097-cd4b-bee5-dee5d4141ffb@toxicpanda.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: POP Peeper Pro (4.5.3.0)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 11:21:07AM -0500, Josef Bacik wrote:
->On 12/12/19 11:08 PM, Naohiro Aota wrote:
->>HMZONED mode cannot be used together with the RAID5/6 profile for now.
->>Introduce the function btrfs_check_hmzoned_mode() to check this. This
->>function will also check if HMZONED flag is enabled on the file system and
->>if the file system consists of zoned devices with equal zone size.
->>
->>Additionally, as updates to the space cache are in-place, the space cache
->>cannot be located over sequential zones and there is no guarantees that the
->>device will have enough conventional zones to store this cache. Resolve
->>this problem by completely disabling the space cache.  This does not
->>introduce any problems in HMZONED mode: all the free space is located after
->>the allocation pointer and no free space is located before the pointer.
->>There is no need to have such cache.
->>
->>For the same reason, NODATACOW is also disabled.
->>
->>Also INODE_MAP_CACHE is also disabled to avoid preallocation in the
->>INODE_MAP_CACHE inode.
->>
->>In summary, HMZONED will disable:
->>
->>| Disabled features | Reason                                              |
->>|-------------------+-----------------------------------------------------|
->>| RAID5/6           | 1) Non-full stripe write cause overwriting of       |
->>|                   | parity block                                        |
->>|                   | 2) Rebuilding on high capacity volume (usually with |
->>|                   | SMR) can lead to higher failure rate                |
->>|-------------------+-----------------------------------------------------|
->>| space_cache (v1)  | In-place updating                                   |
->>| NODATACOW         | In-place updating                                   |
->>|-------------------+-----------------------------------------------------|
->>| fallocate         | Reserved extent will be a write hole                |
->>| INODE_MAP_CACHE   | Need pre-allocation. (and will be deprecated?)      |
->>|-------------------+-----------------------------------------------------|
->>| MIXED_BG          | Allocated metadata region will be write holes for   |
->>|                   | data writes                                         |
->>| async checksum    | Not to mix up bios by multiple workers              |
->>
->>Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->
->I assume the progs will be updated to account for these limitations as well?
->
->Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->
->Thanks,
->
->Josef
-
-Oops, while it's errored out from mkfs.btrfs, I forgot to add early
-check for RAID56 and MIXED_BG. I'll add the checks in the next series.
+Kernel: 4.19.0
+btrfs-progs: 4.20.1
+Attempts to write data to the filesystem end up with the system being =
+degraded to read only.
+dmesg shows this:
+[14544.006701] BTRFS: error (device sdi) in __btrfs_free_extent:6800: =
+errno=3D-2 No such entry
+[14544.006703] BTRFS info (device sdi): forced readonly
+[14544.006706] BTRFS: error (device sdi) in btrfs_run_delayed_refs:2935: =
+errno=3D-2 No such entry
+[14544.726934] BTRFS warning (device sdi): Skipping commit of aborted =
+transaction.
+Ran a btrfs check:
+[2/7] checking extents
+ref mismatch on [18366485364736 16384] extent item 1, found 0
+backref 18366485364736 root 2 not referenced back 0x56417a8551f0
+incorrect global backref count on 18366485364736 found 1 wanted 0
+backpointer mismatch on [18366485364736 16384]
+owner ref check failed [18366485364736 16384]
+ref mismatch on [18366487035904 16384] extent item 0, found 1
+tree backref 18366487035904 parent 2 root 2 not found in extent tree
+backpointer mismatch on [18366487035904 16384]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+cache and super generation don't match, space cache will be invalidated
+Should I run a btrfs check repair on the system?
