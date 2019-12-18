@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1245D123F56
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 07:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18BD124069
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 08:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbfLRGAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 01:00:37 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:32327 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbfLRGAh (ORCPT
+        id S1726454AbfLRHfW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 02:35:22 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:2362 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbfLRHfV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 01:00:37 -0500
+        Wed, 18 Dec 2019 02:35:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1576648836; x=1608184836;
+  t=1576654521; x=1608190521;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=fSOC8DItLFC2k9tNIUo01mC1E+iJ6rdd7oR/An7kxGo=;
-  b=Os/TrqohqktW1id67FUHS3VioMxrhACM0VSFirWvvTT1e3Pa9xBe20To
-   uUT6v9ReR9bjRS3/X5MB2TArRO4PwJc7GFQQXU879qYYNJGilDprQq7/H
-   eKiF+yIVWKNLBt7JbtQ+apgRQa0CbLdijrUalB5fBEejxeYIVgtMxXIEL
-   H0r1bJa+Xqvh7ReYXbwpzzYQIhSCF+Ae+McyEUjbX9gm0rZ4ajvMExk2v
-   ZoQnxsK5ZyugNW7uhMaeY4JtC0GnEYT+X4BY/Iyhumhw1QgJY2GuZ+4JO
-   qJSs2eP0/drJegSc69sZVcws2s+6Juw9ig/7TZQSLJuAx5BYjS5ksAUz7
-   g==;
-IronPort-SDR: xDYB64wK9rr2XgQ+Oi+CrjuAV8KS9+uL8+kSzvz5qtOUX7T/4VK0Op3QP6YC0TijlHd6Fmwn/8
- aQDysYiru0JaqcMV8yr0KSo/RGB3SeWOe9cu/0VuEdpGbqj6Fwg29t8PpRt28qj3hM35wPwY25
- QKE08XUkHGmDd0YO9qaaaN+BjLLqrw6epyqaZsQzMKOEj76SmOvsMGqmImRA5jkZb1Q5bGBH9F
- ANfBwqsnDdXTOq7lbFdKZk2Q18rs0Ufos4oK9yCIe5jfBEedVh13MyH+tqLpkbsyY8Ttz2UI77
- wyA=
+  bh=35lr1IuUSoighFYbyYf9wy3qAzw3B517Y8C6MTrv72A=;
+  b=PgwrYWhzlEa4Cg5aw4D1kthSlotooZ8HFw2IMdfmLMwOhPC2V2eCajfq
+   13Oiie2REMPgXZ2l2LuG3PSXw9+/Qjs3UWaFuTxvQ2ysl1Dg4KUAg8ery
+   upPmg6CYoMIG4R3L/LX7BjwZxkTubmjWYVf1os/sg7kJEsCPVAExCDxHu
+   5pfWtuFaJdctl3SwulLj2J8N4PkIL3yMErRM2vXIM9PcddJrTrISygWT4
+   1bO87wXqoxZT9wX7/UoeXNCFyo+47hoc+JjcfAAJy4g9X8zr4JzsvKLR4
+   OcRmAc8rQLqp43kKGOLn1CfBd2MFvuj8Iz1PnIOdDU5hpSjHBY73bN4MI
+   Q==;
+IronPort-SDR: tI97PSMbZuZpx/kx02N2dS6ayoV804EF0HnWbFULVe+z7iprWpPtmvPH/Xr2J1aN5aguaY3xxs
+ /tIzTK9RROeIIHHNwaT4VBXoiS32iyoaJHkJH70SZldjAqkTT97oCdNIByyd1cU2reOh4bOGv2
+ b1ZgrUuhSmoUzLq58MNIGC/FkszCkWFJ4QCmijgkaOINtljbFB1PL+j56FGFWc6c1dh1CAjFiQ
+ tvcaavCkCR5yGdEYTsfvZ8RxJ9jZ5krly10HeNWoP4+1Of3HvG08qO5U0F3ooaDVtOY9mY+K+a
+ GXI=
 X-IronPort-AV: E=Sophos;i="5.69,328,1571673600"; 
-   d="scan'208";a="126383091"
+   d="scan'208";a="125608552"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 14:00:36 +0800
-IronPort-SDR: U/g4g3pcurrRCBMJ1cQ6iBnGwqxFPcMIqBmeMM1/MyytWOe5tj4hF6ifhar7hUyi0f6eEtEiTK
- sNJDj7mX+51yFeFKgdFo/8j0hDb9KBVCtoE9PdIt3finipb7Qn2u58JHDoZcfP3QxtZCCey1SU
- DtiGWIj1jHzxlHzo1I7/+t7Ovlrhxrk/mfw4y4I9ypRGlc30eCV6N/jYsDVW7VvfUDZcGuiBC7
- X7MPjR1fCz/FW8XnJhLMGgM0MrGK3DKNKUvtzaxFwtGrfU9LFjpqiAcJn3rjERhjZNutbahgqJ
- A4+FEKsDigS+RIqwbZSZvEAB
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 21:54:59 -0800
-IronPort-SDR: 7mrb9L1dQ23lJTAu2FJulnZL64qPqq2QEYxeVcawIXoIGSQrtjnJEuJWD3K0sn7aPV60trVh5i
- Cre24t9gx14azt7RqRhBxNPuc3MEP5CZU1yCGzdZ0NeNPW8cICrKyA21gTESCto1qBHEWqSYrU
- sqs8zlAMWwArVVLg1HP78nb9oeXnZ08ZgC5lEip5HMMd6zwZt/l9ICIlIMoKikG3q0KbcWvMaz
- FMFUWp30YLhl3giBxgtblv+9yYcVzUG/A01cQ42quILjcXdTA8OutiMHZgvYsTvQ4Z1sTXJdyM
- ZA8=
+  by ob1.hgst.iphmx.com with ESMTP; 18 Dec 2019 15:35:20 +0800
+IronPort-SDR: pu+BCemSQPcBhFxDfgJd3IZLcmcRFunCsYETpeA39LhS3anHggGOW9cHG10NfcNyBYDpj+V9+Q
+ lvSiFrKW7JwTtU5g16fruepzhdRA4vBcFivAWyzQpn3EgplEQf7SkxPBLzYMhRoT0o6pQXuZQc
+ c0t1zHsyPcSMZpeoEGbsQq2dtz5YAUp9Lj3PpF7fsJdWOb6zMEezVXxtd2MZqDv2GJELz+LiCE
+ 5fH9OkxSedZ/5R4CL1zo1rjqBjrlfc53XOwWR7TjcNO0dNoSSnI9zifNmRT/qNMqrRU9fbmUvJ
+ 0RHhH4y12Gx0zXHcSd5yJ6Gy
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 23:29:44 -0800
+IronPort-SDR: u9LKptzO0Y8d+giAsBSMHWR69XPUIYgsoBozSab28xXQXzW+EB4LcM5YhId7TQOrAWCEUP88q4
+ XO1MlVi3bCNIUKr5w0Ybg2Cwrcaijffbb9/0ilBSV1jadXetsOuOMhewqyicx2ojs0ExHDJsvk
+ owpSHUjLJUbc8rohUj+nZyX1sUMTSOpVgnvL+oRDdKO41cZg02Ys3/5ZMfFQvnBO6eyjXWAual
+ 5pqj03ghYHF7K1Kqmq/Qr6rO+IohDJai7ZyWR1SMigMIRweywt/nVZTzdta/Ipek66kZSFlYKn
+ KXo=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 17 Dec 2019 22:00:34 -0800
-Received: (nullmailer pid 877601 invoked by uid 1000);
-        Wed, 18 Dec 2019 06:00:33 -0000
-Date:   Wed, 18 Dec 2019 15:00:33 +0900
+  by uls-op-cesaip02.wdc.com with SMTP; 17 Dec 2019 23:35:19 -0800
+Received: (nullmailer pid 964425 invoked by uid 1000);
+        Wed, 18 Dec 2019 07:35:18 -0000
+Date:   Wed, 18 Dec 2019 16:35:18 +0900
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
@@ -61,88 +61,70 @@ Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
         Hannes Reinecke <hare@suse.com>,
         Anand Jain <anand.jain@oracle.com>,
         linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 23/28] btrfs: support dev-replace in HMZONED mode
-Message-ID: <20191218060033.ubfidtuhvzdbkk3o@naota.dhcp.fujisawa.hgst.com>
+Subject: Re: [PATCH v6 11/28] btrfs: make unmirroed BGs readonly only if we
+ have at least one writable BG
+Message-ID: <20191218073518.zqtzfdgz7ctwlicn@naota.dhcp.fujisawa.hgst.com>
 References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-24-naohiro.aota@wdc.com>
- <2157b1bb-a64b-eed3-0451-09a8480d0db2@toxicpanda.com>
+ <20191213040915.3502922-12-naohiro.aota@wdc.com>
+ <78769962-9094-3afc-f791-1b35030c67dc@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <2157b1bb-a64b-eed3-0451-09a8480d0db2@toxicpanda.com>
+In-Reply-To: <78769962-9094-3afc-f791-1b35030c67dc@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 04:05:25PM -0500, Josef Bacik wrote:
->On 12/12/19 11:09 PM, Naohiro Aota wrote:
->>We have two type of I/Os during the device-replace process. One is a I/O to
->>"copy" (by the scrub functions) all the device extents on the source device
->>to the destination device.  The other one is a I/O to "clone" (by
->>handle_ops_on_dev_replace()) new incoming write I/Os from users to the
->>source device into the target device.
+On Tue, Dec 17, 2019 at 02:25:37PM -0500, Josef Bacik wrote:
+>On 12/12/19 11:08 PM, Naohiro Aota wrote:
+>>If the btrfs volume has mirrored block groups, it unconditionally makes
+>>un-mirrored block groups read only. When we have mirrored block groups, but
+>>don't have writable block groups, this will drop all writable block groups.
+>>So, check if we have at least one writable mirrored block group before
+>>setting un-mirrored block groups read only.
 >>
->>Cloning incoming I/Os can break the sequential write rule in the target
->>device. When write is mapped in the middle of a block group, that I/O is
->>directed in the middle of a zone of target device, which breaks the
->>sequential write rule.
+>>This change is necessary to handle e.g. xfstests btrfs/124 case.
 >>
->>However, the cloning function cannot be simply disabled since incoming I/Os
->>targeting already copied device extents must be cloned so that the I/O is
->>executed on the target device.
->>
->>We cannot use dev_replace->cursor_{left,right} to determine whether bio is
->>going to not yet copied region.  Since we have time gap between finishing
->>btrfs_scrub_dev() and rewriting the mapping tree in
->>btrfs_dev_replace_finishing(), we can have newly allocated device extent
->>which is never cloned nor copied.
->>
->>So the point is to copy only already existing device extents. This patch
->>introduces mark_block_group_to_copy() to mark existing block group as a
->>target of copying. Then, handle_ops_on_dev_replace() and dev-replace can
->>check the flag to do their job.
->>
->>Device-replace process in HMZONED mode must copy or clone all the extents
->>in the source device exctly once.  So, we need to use to ensure allocations
->>started just before the dev-replace process to have their corresponding
->>extent information in the B-trees. finish_extent_writes_for_hmzoned()
->>implements that functionality, which basically is the removed code in the
->>commit 042528f8d840 ("Btrfs: fix block group remaining RO forever after
->>error during device replace").
->>
->>This patch also handles empty region between used extents. Since
->>dev-replace is smart to copy only used extents on source device, we have to
->>fill the gap to honor the sequential write rule in the target device.
->>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>When we mount degraded RAID1 FS and write to it, and then re-mount with
+>>full device, the write pointers of corresponding zones of written block
+>>group differ. We mark such block group as "wp_broken" and make it read
+>>only. In this situation, we only have read only RAID1 block groups because
+>>of "wp_broken" and un-mirrored block groups are also marked read only,
+>>because we have RAID1 block groups. As a result, all the block groups are
+>>now read only, so that we cannot even start the rebalance to fix the
+>>situation.
 >
->Can you split up the copying part and the cloning part into different 
->patches, this is a bear to review.  Also I don't quite understand the 
->zeroout behavior. It _looks_ like for cloning you are doing a zeroout 
->for the gap between the last wp position and the current cloned bio, 
->which makes sense, but doesn't this gap exist because copying is 
->ongoing?  Can you copy into a zero'ed out position?  Or am I missing 
->something here?  Thanks,
+>I'm not sure I understand.  In degraded mode we're writing to just one 
+>mirror of a RAID1 block group, correct?  And this messes up the WP for 
+>the broken side, so it gets marked with wp_broken and thus RO.  How 
+>does this patch help?  The block groups are still marked RAID1 right?  
+>Or are new block groups allocated with SINGLE or RAID0?  I'm confused.  
+>Thanks,
 >
 >Josef
 
-OK, I will split this in the next version. (but, it's mostly "copying"
-part)
+First of all, I found that some recent change (maybe commit
+112974d4067b ("btrfs: volumes: Remove ENOSPC-prone
+btrfs_can_relocate()")?) solved the issue, so we no longer need patch
+11 and 12. So, I will drop these two in the next version.
 
-Let me clarify first that I am using "copying" for copying existing
-extents to the new device and "cloning" for cloning a new incoming BIO
-to the new device.
+So, I think you may already have no interest on the answer, but just
+for a note... The situation was like this:
 
-For zeroout, it is for "copying" which is done with the scrub code to
-copy existing extents on the source devie to the destination
-device. Since copying or scrub only scans for living extents, there
-can be a gap between two living extents. So, we need to fill a gap
-with zeroout to make the writing stream sequential.
+* before degrading
+   - All block groups are RAID1, working fine.
+  
+* degraded mount
+   - Block groups allocated before degrading are RAID1. Writes goes
+     into RAID1 block group and break the write pointer.
+   - Newly allocated block groups are SINGLE, since we only have one
+     available device.
 
-And "cloning" is only done for new block groups or already fully
-copied block groups. So there is no gaps for them because the
-allocator and the IO locks ensures the sequential allocation and
-submit.
+* mount with the both drive again
+   - RAID1 block groups are markd RO because of broken write pointer
+   - SINGLE block groups are also marked RO because we have RAID1 block
+     groups
 
-Thanks,
+and at this point, btrfs was somehow unable to allocate new block
+group or to start blancing.
