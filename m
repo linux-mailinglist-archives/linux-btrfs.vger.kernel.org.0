@@ -2,77 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D746B123B89
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 01:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607BD123B97
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 01:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbfLRA2H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Dec 2019 19:28:07 -0500
-Received: from mout.gmx.net ([212.227.17.21]:40281 "EHLO mout.gmx.net"
+        id S1726558AbfLRAa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Dec 2019 19:30:27 -0500
+Received: from mout.gmx.net ([212.227.17.21]:32981 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbfLRA2H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Dec 2019 19:28:07 -0500
+        id S1726454AbfLRAa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Dec 2019 19:30:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576628878;
-        bh=uH8u3pwPviZTCwPoRXTTllNUhB/IVjtBrVlnUZ0ppi0=;
+        s=badeba3b8450; t=1576629018;
+        bh=X/qSE1lzUf+ZZvGCUsZFhArgKvys0PY4PyLhB8V7ZNE=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NvUT/mYL0klHdmxPDFd44C58Os9zKrFJpHsfar4zHAKL8FN18qXGnFNmgKeUCQTEV
-         aOqNSWWgBIzIeRX3P1NM5GqS99p/egOVFZA+5fv8bF6OmU1DmCWptBsO/berREsBls
-         M/Y6qg+nkqdYm5wMdSnj2sFfEUN8iKBac8VpoFrQ=
+        b=a/P3v0w/8t+vNZhbFKBlGSeSR6gtUIloKZx0zMIk7xSRvbmgZy/5yQWFYn7UXUIkT
+         h2gIu9zikIlMDFrvgsjuU9F5JhpXHKVekq9kS7q+acDDsv7xFksnYGsIVho39VtF83
+         Bm1OsgEjIxCRQCNQlK3T1q5+EfcTNxXqesXUV0Zk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoRK-1iVm5T1v1S-00EvJm; Wed, 18
- Dec 2019 01:27:58 +0100
-Subject: Re: [btrfs-progs PATCH 3/4] tests: mkfs: 005: Use
- check_dm_target_support helper
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1icxNS0LFQ-004XCI; Wed, 18
+ Dec 2019 01:30:18 +0100
+Subject: Re: [btrfs-progs PATCH 4/4] tests: Do not fail is dmsetup is missing
 To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
         Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
 References: <20191217203155.24206-1-marcos.souza.org@gmail.com>
- <20191217203155.24206-4-marcos.souza.org@gmail.com>
+ <20191217203155.24206-5-marcos.souza.org@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <ff0101f8-b05d-5666-a81a-1f37fc025672@gmx.com>
-Date:   Wed, 18 Dec 2019 08:27:53 +0800
+Message-ID: <ae5f2516-78e5-022f-f516-6351b75a362c@gmx.com>
+Date:   Wed, 18 Dec 2019 08:30:13 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191217203155.24206-4-marcos.souza.org@gmail.com>
+In-Reply-To: <20191217203155.24206-5-marcos.souza.org@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="HtK94Lzh6lB4ZmEHDZovsQRWm0DYiQ3RU"
-X-Provags-ID: V03:K1:Xyawa0YV3Fd4Hln8gLd3URE4ctpPMxencFpFQFJbvFbkxLQwkpx
- khu35fI5vcA9Mj4Qn810Mo9JWZQhJDPar7dUMBRWgqOj5gcSQo33T2cda1938cdym1UM4EZ
- K2F8fts5sb+3X3b86PD4QnxRKSltMQOe2UXjWAkTPxPNv8eC1NzUQ2LcpYZsr1U92qnx8PD
- ACoGQWqy59AYgb2GMLxoA==
+ boundary="hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8"
+X-Provags-ID: V03:K1:atspB/WUdX39LC5vqfkfcD0oFrDjjA5jf+oxQMmvjZy5L0qRggv
+ Ew3wiArBxdwEFXk6fBhOJKz2GCjz9of2j+No5qmd2r56Sl/pF3WaOu/ysQ2Out3qRfaJR1O
+ 3VXPWnvxWsyYvmzAt2E4/mFAVH5YkrxZWk/dFnafvazNrtC3jVnqdIuKPdhqXkU6OhVYHKV
+ jF1i3uFbgNZH6swZSgykw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:59I/EsaVfUw=:Okncc9yvnz0PZ8xsXJahzI
- FpNvQAAebuo2cPC08QvRlPSgGLkrzlYIeMxwXHRtzaidJbHlMXaun496RZiTF6jbIUSnIYilo
- NTgT9PpWpxhRfcb7Ou6fCSiYTPw3EVVvc9sAkKzOyfau5Q7VeMbIj5u3ZR58SlsDtC2gaiWE8
- 2gEJDG9XPQr6A7c8rq4DMMcpTFjQ+C7FkykKXSJ+uZloqaHalW5wopveBGH1GcoKg7Rg3cmUt
- LTIzmmXMn7LQQQjQjEcApYmSz2gjRTOs74pDx/ojvc9P7fDmqTft0yJsTS4pzkaMO1//+mxoN
- f2GD1nlVZJuusncflyGekXhxFd1ExQfOEguu/E1Pa+aZybZlC0oRc+nIF7DvhvdYBKKlpnjo/
- uQbwZT2bM8gvLEmhPST+OJUXUFISNE69PRFoCDWaAVfMZScj9GgkbqqQbZHbKiayY/h8Kz4aH
- U8K/6Ty98kIim6KrmwnQd+7PnMhW94k8odulZJvK4L7kLxNt8z4LgfboynQVXFfps6m3aVz3s
- 36tCL6lQXGcWoaXQbtu/jejVXReEbTp/ZEUUiLcZg6ZXl/ywKoczPIGaohsNJC9sRNeXE4i0D
- PqPps13nvb9DcOXEURB3I/PmWsSyseACBXvdK2tnr5In+KG380EbujBIWAl/GvLh+1isA+91X
- HfxnCxoCYWkP1iCCIvdHalTr2BWjPXeU0ytP/PxjggnFlRtBKjfYUjmbMUKh2cDg4BqT73Fs1
- +yS8nL3NKZCDLypjVJg+ITjHaeSML4YEG5+i/N6CyUEAaGuyHFR3nVHCVCVJ/aeNOzx02u9FX
- hRh6zUcA/NgOl6Tg3EKEFfB8zABUkwEJ07FsDMmvwhnAwYW/2GRTJkVIoTpi9i6W3+qC5imDs
- vmmm+4CQyHRpXYlKohN7BnVxJJcxRl3eCaGAZwik9g6JNdKp8RnjwUE5qfBuW8mHInVOO+su6
- 5+pB4oS8OONtI5/oeXW3vrxIkxn1lJwrcBoVneG3zHkF3gWTwdn9MrBAM/PwhROZGzj47SW2F
- Z6q3AeSmi3hp5QTEzITewhDs3Uh1bdUbCIrOYfKdrnatq/KoLhyt08XxsyifOROJqM7dW5EBi
- qt8nJDDoCbv7uEw0JlGE/GqGiKeP+tunRCq1q7RqBT3VRkn2yOem+OhDUXFPdWVJjZ0q1bLH5
- UYEFZDG3NlkLLZJGBwBnBpPH0EsZafAwZUOnBzysXZz9vh7G0ZbPQxxahXsJKh2gVcmWyF4ef
- Wvrn2yiIAntse+dHXRsTCRUvChCkPn0mVmo/s5zYdiwhyNUsZjGXT5DQmlTc=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EcK4H5Ky6zg=:xuunrIhJ9rp6xaVJoxZ5ED
+ gmL1V4CxScFK/aFBKFrNTqxBnbcPoQegBydyEsQj4UvAXraY2ujGRxMqjB4nRaBG8aoPkm3Kj
+ 4WdD63e5Wo29hy8XQ51RB5CnQmfTyl/ueXOzteeHY1sH2HEI6VQLwffcCJgCDhBWe1b40TAU4
+ 7GkmplO1gW1kfpWgVq3r6SnogX6xMM7XZ8Jq2AvfJ5xjobbv+dQ8I1by3kWGwj1hmGBCJpmyP
+ l4gTEUM6vUFJinlKgq7FqUDIgZ/SPWd5oiTQ7RZuhVkBxOY3CMtXdLul+Iy7PNF44rfl/NUF1
+ PoyAzTTaoSXGn8g32TQUfMlYeZy6OtmQ7f5+Hwme9rEN3RUKdonWwsuVA3XyvGjQ3d30y7car
+ behzXV1DawB+LN64eSLyezemEwLlLAGKzuca/8304E36GZUdSrl2nXBqIZMc0I2LT2U6J5d25
+ 0aMS71mEEqYmGIVrR+5k52v3NroSNNf55Nwz/qtE2ty4iqW5oFTkoVYjB7r+T9rHAhalJusjN
+ yh56bt7T79Uvuc+4Pi36ffavhmbIlDJMtgBC9GXv6tLBGvrjk3jswV3NUbkjmvMNCca5HfmR+
+ zvw/72POpMkGxMjPH9IGtPdnFlI19TUVZt2uVGDgUey3qFEuNMNGqycwbs6jerXrjWI7OLbRu
+ nkljPmkf9gfjvgdVtuYMomMH/JErOtLc0JiEniEJYK2QKM/vfiUEpjGJrV/PQBkCu3RqEFBDW
+ lm6GAfbqxcRCd/fKkJWET2FrPF8ciA9b9llWZhS71BtBG+BAN/LkQctEHYO3WWdpQIVVmYc5a
+ 3Q9GC5b47ap9P6fmmSb+0/d24CqjYpjHMmXLWClAMMFTNaPDw9fuFMng/FQOiJ+luPddjfJRB
+ qsc6odkMKPIiTLb6URGoFr3ZmaIoqIf9kg5tOsGAacKKMe8roN1nKDDtwYwvvmpTIgKvQFVBj
+ a3Inyg2BjLXjtY+wvAuIa9HgLo0iXYVy5s/KP2ONiYQZ/YMG5YleO8BNI5HIp29a3M4W/lfNh
+ 87kC9laq1L/z3lBu4fzWp2TZwO3lLvDiuISkviGtiJw9gTcitBMXiOPttJvwQjonOehxoChqQ
+ NxNEcWJJKr4nxAIXeevLnDKDRPKvAvBNXgY9mFS3FPj6rOJ2kEE2JkCBCLPhEqzaZ9Gaba0xs
+ STDgvEARcNqObRZUg0OTgpkM0C+JGNCjRRIxsAhVWOPRoso6kPmp4GpV9KowPEb+5ZZqnn+8S
+ sVtWgabmt1I1lxu0XZV8wPvO+dOK1oLzvE1waZoNRPT/UDXHxUbwlYhNC8uI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HtK94Lzh6lB4ZmEHDZovsQRWm0DYiQ3RU
-Content-Type: multipart/mixed; boundary="ZanEmlQNU9A35wp7rxwHFeotvqo7lj7dy"
+--hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8
+Content-Type: multipart/mixed; boundary="1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA"
 
---ZanEmlQNU9A35wp7rxwHFeotvqo7lj7dy
+--1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -82,52 +81,107 @@ Content-Transfer-Encoding: quoted-printable
 On 2019/12/18 =E4=B8=8A=E5=8D=884:31, Marcos Paulo de Souza wrote:
 > From: Marcos Paulo de Souza <mpdesouza@suse.com>
 >=20
-> This way we ensure the linear target is available and skip the test.
+> Move the check of dmsetup to check_dm_target_support, and adapt the onl=
+y
+> two places checking if dmsetup is present in the system. Now we skip th=
+e
+> test if dmsetup isn't available, instead of marking the test as failed.=
+
 >=20
 > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+
+Looks good overall, just a small nitpick inlined below.
+
+> ---
+>  tests/common                                             | 9 +++++++--=
+
+>  tests/mkfs-tests/005-long-device-name-for-ssd/test.sh    | 1 -
+>  .../017-small-backing-size-thin-provision-device/test.sh | 1 -
+>  3 files changed, 7 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/tests/common b/tests/common
+> index f138b17e..dc2d084e 100644
+> --- a/tests/common
+> +++ b/tests/common
+> @@ -322,10 +322,15 @@ check_global_prereq()
+>  	fi
+>  }
+> =20
+> -# check if the targets passed as arguments are available, and if not j=
+ust skip
+> -# the test
+> +# check if dmsetup and targets passed as arguments are available, and =
+skip the
+> +# test if they aren't.
+>  check_dm_target_support()
+>  {
+> +	which dmsetup &> /dev/null
+> +	if [ $? -ne 0 ]; then
+> +		_not_run "This test requires dmsetup tool.";
+> +	fi
+
+What about using existing check_global_prereq()?
+
+Despite that,
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
-> ---
->  tests/mkfs-tests/005-long-device-name-for-ssd/test.sh | 1 +
->  1 file changed, 1 insertion(+)
->=20
+> +
+>  	for target in "$@"; do
+>  		$SUDO_HELPER modprobe dm-$target >/dev/null 2>&1
+>  		$SUDO_HELPER dmsetup targets 2>&1 | grep -q ^$target
 > diff --git a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh b/te=
 sts/mkfs-tests/005-long-device-name-for-ssd/test.sh
-> index e7a1ac45..329deaf2 100755
+> index 329deaf2..2df88db4 100755
 > --- a/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
 > +++ b/tests/mkfs-tests/005-long-device-name-for-ssd/test.sh
-> @@ -5,6 +5,7 @@ source "$TEST_TOP/common"
+> @@ -4,7 +4,6 @@
+>  source "$TEST_TOP/common"
 > =20
 >  check_prereq mkfs.btrfs
->  check_global_prereq dmsetup
-> +check_dm_target_support linear
+> -check_global_prereq dmsetup
+>  check_dm_target_support linear
 > =20
 >  setup_root_helper
->  prepare_test_dev
+> diff --git a/tests/mkfs-tests/017-small-backing-size-thin-provision-dev=
+ice/test.sh b/tests/mkfs-tests/017-small-backing-size-thin-provision-devi=
+ce/test.sh
+> index 91851945..83f34ecc 100755
+> --- a/tests/mkfs-tests/017-small-backing-size-thin-provision-device/tes=
+t.sh
+> +++ b/tests/mkfs-tests/017-small-backing-size-thin-provision-device/tes=
+t.sh
+> @@ -6,7 +6,6 @@ source "$TEST_TOP/common"
+> =20
+>  check_prereq mkfs.btrfs
+>  check_global_prereq udevadm
+> -check_global_prereq dmsetup
+>  check_dm_target_support linear thin
+> =20
+>  setup_root_helper
 >=20
 
 
---ZanEmlQNU9A35wp7rxwHFeotvqo7lj7dy--
+--1Xd765EZCVFZJG08joTYAEj9iFLJKzlUA--
 
---HtK94Lzh6lB4ZmEHDZovsQRWm0DYiQ3RU
+--hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl35cokXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgPHwgArc4FGynY+Qd8Kgq9xTSQbYQZ
-h3sevuIpcPBPPIEjw9Nhk96PsnAE/Syztqcff3Csk8id+Ngs7zBUHaPVFOXMXBih
-bI7kFt5JEQzgZJ8Ref1k9Litcy/xQGLaTvXGcd2QecmA5Z89pqMcW5TZKUfTgFwo
-6Xo2dkg+0n7OhX2ikcsZGFe6KZM+tIjUL06Ty3TQEJzMa9beugaZo99X6bKrtHTG
-c6Rj+qAUho+yWzQleqakM7yUvPa7NgjXhGyW/gGiPBflg2HOBPy4dUDI82o2j/Un
-xOrJeUdtejoDyMjtkt/pAqJRnAFCA8Ixf3IrQnJR15dJa5+xwjFoyBvLrNN3lA==
-=a3NT
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl35cxUXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qj8iAf+NLsi0R3lwLfcitsYbrUpYRGc
+RLkLGD/3kt9jJ+6Ig3P3Ts/n0/qH9K22NkeopQGV0yY7z5cMGbonKxJOuPP3+HND
+pIEuClA+l3XPJ4RGeoqzPgOpuFdwWS5AWFElu5Bj4X/TmkhRtGP14vZ1rzAYkoJ+
+uDUv080eQlBqDnCbjDvtgboPwuP/QvaPZrirgZfhV9lfTCm0ls1TgQc3Hc/qmG8H
+CQ9V8zg06s8Wxl9espvqPRikd5SOD70UnbNexvLqv1zBNMvtH+GcP5v1WDB2SCub
+6qVGLk+c8xn/vK87gGepDA+vd3gaxmQ5hnbCqQ0I37Oun8jmrwdCrRi6KDn+mQ==
+=NJqU
 -----END PGP SIGNATURE-----
 
---HtK94Lzh6lB4ZmEHDZovsQRWm0DYiQ3RU--
+--hO7adD5JIlr5uUGt4wtAqlD2X0gVSIPa8--
