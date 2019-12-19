@@ -2,173 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 647B1125BA8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 07:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CEA125C20
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 08:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbfLSGzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 01:55:01 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:45198 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbfLSGzB (ORCPT
+        id S1726609AbfLSHkp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 02:40:45 -0500
+Received: from sonic315-15.consmr.mail.bf2.yahoo.com ([74.6.134.125]:43168
+        "EHLO sonic315-15.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726439AbfLSHkp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 01:55:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1576738500; x=1608274500;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=L+ilHZYja3Uqxdg3nCQXwKyTdE3PSSxtheSKQrT27+8=;
-  b=doXKsLXUXdeOv2YontQZwTWsnedEfBYgV2NDxC/k3ZKFlNia3inVs5pV
-   RliLydKgBKad1muaQWCUrfbVdnsG+CcPMvP/WvpBJqckJlTzU+tv1lpsz
-   QsMJ8L0BrcFEgCsOPnOs9HQ2/VwqKpZ6C8C44IZEXFYk3dECiXnzMg4J3
-   cJOT04xaBoyr7xPBIdq9G/YGmL8khLUeU4l3S+jE5V8DhakaNHaBz2IJe
-   9fxvD062SGudB3R7W6GBsjTFy0ykjisRSii6PAd61d3IpjJ7ZxsV9gOOm
-   Q9G8fGp+/v6kOxiEeX3iv5y3JC1up4P2NYW/mKvfa+d09AML5BxRhrH4m
-   Q==;
-IronPort-SDR: cJcysuiOas5ZEWlPCr9ljWtWQNZ94wX0m8/1K2xOsy3wugh59lLGRosWj9Zd9Y9f/mWJ4iPtJR
- sN0x9sUvbdBQV560zlf+DaaZ1qmWXaF6HQl9+Y6DNYhHO6h32QzeWjXrWKgwtiCRFgpUR5B4PU
- 4uQjBUfbq1lN8o4b8gnsj3Z6Y8QpAWM3IYVaS2LU/CVgfAZRMoY108GogFRrN+Hl6qUZQkRd2B
- IDpgx98Tyi8GXmmDnPxqol/XrdgQkHBwdAleG1HMlSVuX6SupJazMvhLH4GuYZ+9wzs0Lxhc51
- NzM=
-X-IronPort-AV: E=Sophos;i="5.69,330,1571673600"; 
-   d="scan'208";a="127312665"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2019 14:55:00 +0800
-IronPort-SDR: diTOML4Mg8aYTqVZ4ef28LUo5gzGXuxgVdvO1K/8AAlTW3T3NB0cVMdK4R+rqiT+r9Uhp85Lb0
- T5IIowAv6QAebQyMx7UsaB5hBMrcUThVo15RveUpRJUuiKPSF7kzYK7aAKygDnKyQE+2rWc2hX
- Er4eGEISWJdCcpJGpekREXuZoG9o+bn9AoLR8IHvRv990PAn27TeOBa74yGfl2IZ4yp07iHimK
- rOKDY/4taBHDQCfVXK8qlpqcyKeUhEFhIbweN3+wew1imUHLlAADDeXeFqhv6xtpWPMgJGl1QM
- FH04t0w+Q8LafxzsDw/mxT/W
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 22:49:00 -0800
-IronPort-SDR: Tk/Rr6/fI21CpFaZNHMbGcP56TOuiEtHBiiV+d2jhY/u5GJcxFjsOfldC91zssPm0f0Ap9ZUPU
- JXAMYkvpJ+LqUk6AP9SwcvFu6ur90et/S72rbLSJ4CV+Kn8Q2C4hGiipZO6OzWipdLUrjTuH4x
- VhFDEkQOwMShzwdUBJR/aUXbiyl0xl+e2LA7YzRRx0Hx7wTyqmqQEo1GNUnrYgu+Hf6ePz+Xv9
- I7RtfNv13F/1usiPv7+ZVOnmj5eMhMqDpULc4dfWv7QLJi8J25LsAsGqzjiB7WhsGtQBn2QyjF
- nTQ=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 18 Dec 2019 22:54:58 -0800
-Received: (nullmailer pid 2722299 invoked by uid 1000);
-        Thu, 19 Dec 2019 06:54:57 -0000
-Date:   Thu, 19 Dec 2019 15:54:57 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 15/28] btrfs: serialize data allocation and submit IOs
-Message-ID: <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-16-naohiro.aota@wdc.com>
- <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
+        Thu, 19 Dec 2019 02:40:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1576741243; bh=Z4c76Hc2ccTsbgccR1n7PWlwfYqwO2aW9NOZLFmuJSk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=HGtDCXBWHNV7kB5+kNxCbzj4qzVyIWhqct8FK3zFoAe4fnt75ErsJex21xTyP+AmpAcW6zeonhnhla+hJAcbRxL2JtYvViUmFr9mYI4gY+Pu2KDMRtbm10yCO6rScTcygYVXVBiJfamUmFv1qvfFyx74HF3+pMUBB6eoalW1A9oN6UxvWh+W63zIz9G9ZA47uk+k1Iy7L4pewT+vCuHxNfiUXnrCO3+n56vS4Q/vR2f/M70XtaP3rnAE4mx1e91q+neBLQH5MjSHvxH2f7cW2A8+dIlIE+PaTTvI8pf3JewFptw8kfsGJPvEpDPB5h/j9G0lGIO1qcwD2e5faeo79w==
+X-YMail-OSG: ijKO1FYVM1lWYAVn.Ae93VQ_Gg0EOo0UE_YEG0BmwK2q7S2LEms.IkmUasnu1bn
+ uPLjZKT80eLV1_4BQ7yge5_Q0BYpN1iyU4WcD_lrMrTWdq72W3UtE5InbKfCkyy5YWqK789Ib7Ei
+ JWWwVAuoIifigUyf8nqGzlwFoCdABN.3BmQNjaXGMvK1V0HzWiRKaiXCOuc65eogqBbzuYGGddS3
+ sV_M_Oimxy4DXTqsSb3G4u7bcm7ebI67cNvwffZvd88Cr6A37YP9D9_c_veUgAHIAK194Q75bb.G
+ jDUQ2.5UzLHcKbG24W.BIWaNgUK1B9FqBWt6.5285Gax3NiUk0oIlroCId.657Ux9FtVqqOQf.nY
+ XtmCahO2yqe1081OOQcbnGdbzYpdFznNX9FimWXfMWkjVwK7ujDeJ68cxy.pjtEGlhynAOMdH0_H
+ GHXYs8OnTvlhn6WKuKDl2OTrnrNHNhnkgdtCL9UZslfuzEiPqsZvzmD9GBAgsnYbrSw8Jkg3iTF5
+ 6PShqGhtc9xVmOWHo9QOPNOaxdKouWtLbF2WYIPISHzUt00p1_Wtka9BXSSzd2.0JxN8GReD53Wi
+ u9.CbjcwVlkPf..yd3UBk_fIuw9xutk.qQYpMcS01Iav4x12Jg6C252xgqH9bP.HQFi6nig6Ymff
+ T_nUehFc8fRb3_6tYJr_qkuiv5eYpj1aF67rVHSUVFBesgdCJfF8oeXYzuSO9J2yT_ErtlpMakL8
+ NgX7Xeoe5CLs_Adm_OwdiJBYZPbcEP0Ydt5sBj.26_jCu4Fg0LbDadwEa9aBpk64mqSt1FXlRGKO
+ GzpNaIwTuGS71rJXTuGp48_qYiL5gTIQuWlX0JKKRG4mqrzJ6OgwhdCVd7y0Mp6oqCKhZ.iegqi.
+ XIRd7fNB_u3NTS7R9gvN4OYrtQnUYIX7D7zPixR8fl46xGugF_yLXHonfqFpxpcMfj954GHqx7Kh
+ Syz9YvrzPlKWsHzKmuRElMTMLLz_ILXzuGfg6Hd.x8TLkAs._vUC7EnPg4QaVxYSKGyYE_JJduwH
+ NWxWcx.T5mRV3TqtySnJSG5CTYASbL0bTSDbkt3GtAw9gdu86qX2MFpky1lA9eTMgbw3OSi1ghka
+ HB86ppBxnIAFrRdK0Y35rDL65bRG.IJpNovamRedKP2aXryCRkWr0KNxRg6wsX0x9BH6Dn7pwjZm
+ s2PkBbJDBFmzNZh5AypK.8K2gRk1VcR.9HPJnJmagMvoRNPLbmolqYZHWkiGYgd4yPduPGikpy.p
+ G_pP4g4FE7XRZ8yjQSlanu7guKU93hXSYJoqduJL69lQoTN2y7iJD7LskPBu64hzkkiMZHi2bRdH
+ QZ1G5R4r1jU7RhzAGISWAIWzGR7saL1yFCtE918A-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Thu, 19 Dec 2019 07:40:43 +0000
+Date:   Thu, 19 Dec 2019 07:40:41 +0000 (UTC)
+From:   AISHA GADDAFI <mrsaishaalqaddafi1976@gmail.com>
+Reply-To: mrsaishagadafi1976@gmail.com
+Message-ID: <875490494.781950.1576741241969@mail.yahoo.com>
+Subject: Season Greetings; Reply for business discussion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <875490494.781950.1576741241969.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.14873 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:71.0) Gecko/20100101 Firefox/71.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 02:49:44PM -0500, Josef Bacik wrote:
->On 12/12/19 11:09 PM, Naohiro Aota wrote:
->>To preserve sequential write pattern on the drives, we must serialize
->>allocation and submit_bio. This commit add per-block group mutex
->>"zone_io_lock" and find_free_extent_zoned() hold the lock. The lock is kept
->>even after returning from find_free_extent(). It is released when submiting
->>IOs corresponding to the allocation is completed.
->>
->>Implementing such behavior under __extent_writepage_io() is almost
->>impossible because once pages are unlocked we are not sure when submiting
->>IOs for an allocated region is finished or not. Instead, this commit add
->>run_delalloc_hmzoned() to write out non-compressed data IOs at once using
->>extent_write_locked_rage(). After the write, we can call
->>btrfs_hmzoned_data_io_unlock() to unlock the block group for new
->>allocation.
->>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->
->Have you actually tested these patches with lock debugging on?  The 
->submit_compressed_extents stuff is async, so the unlocker owner will 
->not be the lock owner, and that'll make all sorts of things blow up.  
->This is just straight up broken.
 
-Yes, I have ran xfstests on this patch series with lockdeps and
-KASAN. There was no problem with that.
 
-For non-compressed writes, both allocation and submit is done in
-run_delalloc_zoned(). Allocation is done in cow_file_range() and
-submit is done in extent_write_locked_range(), so both are in the same
-context, so both locking and unlocking are done by the same execution
-context.
+Dear Friend,
+Greetings and Nice Day.
+Assalamu Alaikum
+May i use this medium to open a mutual communication with you seeking your acceptance towards investing in your country under your management as my partner, My name is Aisha Gaddafi and presently living in Oman, i am a Widow and single Mother with three Children, the only biological Daughter of late Libyan President (Late Colonel Muammar Gaddafi) and presently i am under political asylum protection by the Omani Government.
 
-For compressed writes, again, allocation/lock is done under
-cow_file_range() and submit is done in extent_write_locked_range() and
-unlocked all in submit_compressed_extents() (this is called after
-compression), so they are all in the same context and the lock owner
-does the unlock.
+I have funds worth "Twenty Seven Million Five Hundred Thousand United State Dollars" -$27.500.000.00 US Dollars which i want to entrust on you for investment project in your country.If you are willing to handle this project on my behalf, kindly reply urgent to enable me provide you more details to start the transfer process.
+I shall appreciate your urgent response through my email address below:
 
->I would really rather see a hmzoned block scheduler that just doesn't 
->submit the bio's until they are aligned with the WP, that way this 
->intellligence doesn't have to be dealt with at the file system layer.  
->I get allocating in line with the WP, but this whole forcing us to 
->allocate and submit the bio in lock step is just nuts, and broken in 
->your subsequent patches.  This whole approach needs to be reworked.  
->Thanks,
->
->Josef
+mrzaishaalqadafi1976@gmail.com
 
-We tried this approach by modifying mq-deadline to wait if the first
-queued request is not aligned at the write pointer of a zone. However,
-running btrfs without the allocate+submit lock with this modified IO
-scheduler did not work well at all. With write intensive workloads, we
-observed that a very long wait time was very often necessary to get a
-fully sequential stream of requests starting at the write pointer of a
-zone. The wait time we observed was sometimes in larger than 60 seconds,
-at which point we gave up.
-
-While we did not extensively dig into the fundamental root cause,
-these potentially long wait times can come from a large number of
-reasons: page cache writeback behavior, kernel process scheduling,
-device IO congestion and writeback throttling, sync, transaction
-commit of btrfs, and cgroup use could make everything even worse. In
-the worst case scenario, a number of out-of-ordered requests could get
-stuck in the IO scheduler, preventing forward progress in the case of
-a memory reclaim writeback, causing the OOM killer to start happily
-killing application processes. Furthermore, IO error handling becomes
-a nightmare as the block layer scheduler would need to issue report
-zones commands to re-sync the zone wp in case of write error. And that
-is also in addition to having to track other zone commands that change
-a zone wp such as reset zone and finish zone.
-
-Considering all this, handling the sequential write constraint at the
-file system layer by ensuring that write BIOs are issued in the correct
-order starting from a zone WP is far simpler and removes dependencies on
-other features such as cgroup, congestion control and other throttling
-mechanisms. The IO scheduler can always dispatch to the device the
-requests it received without any waiting time, ensuring forward progress.
-
-The mq-deadline IO scheduler supports not only regular block devices but
-also zoned block devices and it is the default scheduler for them, and
-other schedulers that are not zone compliant cannot be selected (one
-cannot change to kyber nor bfq). This ensure that the default system
-behavior will be correct as long as the user (the FS) respects the
-sequential write rule.
-
-The previous approach I proposed using a btrfs request reordering stage
-was indeed very invasive, and similarly the block layer scheduler
-changes, could cause problems with cgroups etc. The new approach of this
-path using locking to have atomic allocate+bio issuing results in
-per-zone sequential write patterns, no matter what happens around it. It
-is less invasive and rely on the sequential allocation of blocks for the
-ordering of write IOs, so there is no explicit reordering, so no
-additional overhead. f2fs implementation uses a similar approach since
-kernel 4.10 and has proven to be very solid.
-
-In light of these arguments and explanation, do you still think the
-allocate zone locking approach is still not acceptable ?
+Best Regards
+Mrs Aisha Gaddafi
