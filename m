@@ -2,86 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CACF0126E5D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7326F126E9F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbfLSUGM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 15:06:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44752 "EHLO mx2.suse.de"
+        id S1726964AbfLSUTq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 15:19:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47518 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726906AbfLSUGM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 15:06:12 -0500
+        id S1726880AbfLSUTp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Dec 2019 15:19:45 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 91984AF57;
-        Thu, 19 Dec 2019 20:06:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D3F49B2C8;
+        Thu, 19 Dec 2019 20:19:43 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F0C50DA939; Thu, 19 Dec 2019 21:06:07 +0100 (CET)
-Date:   Thu, 19 Dec 2019 21:06:07 +0100
+        id 36532DA939; Thu, 19 Dec 2019 21:19:41 +0100 (CET)
+Date:   Thu, 19 Dec 2019 21:19:41 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.cz>, David Sterba <dsterba@suse.com>,
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v6 00/22] btrfs: async discard support
-Message-ID: <20191219200607.GQ3929@twin.jikos.cz>
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 00/28] btrfs: zoned block device support
+Message-ID: <20191219201941.GR3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <cover.1576195673.git.dennis@kernel.org>
- <20191217145541.GE3929@suse.cz>
- <20191218000600.GB2823@dennisz-mbp>
- <20191219020337.GA25072@dennisz-mbp.dhcp.thefacebook.com>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191219020337.GA25072@dennisz-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191213040915.3502922-1-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 08:03:37PM -0600, Dennis Zhou wrote:
-> > > This happened also when I deleted everything from the filesystem and ran
-> > > full balance.
+On Fri, Dec 13, 2019 at 01:08:47PM +0900, Naohiro Aota wrote:
+> This series adds zoned block device support to btrfs.
 > 
-> Also were these both on fresh file systems so it seems reproducible for
-> you?
+> Changes:
+>  - Changed -EINVAL to -EOPNOTSUPP to reject incompatible features
+>    within HMZONED mode (David)
+>  - Use bitmap helpers (Johannes)
+>  - Fix calculation of a string length
+>  - Code cleanup
+> 
+> Userland series is unchaged with the last version:
+> https://lore.kernel.org/linux-btrfs/20191204082513.857320-1-naohiro.aota@wdc.com/T/
+> 
+> * Patch series description
+> 
+> A zoned block device consists of a number of zones. Zones are either
+> conventional and accepting random writes or sequential and requiring
+> that writes be issued in LBA order from each zone write pointer
+> position. This patch series ensures that the sequential write
+> constraint of sequential zones is respected while fundamentally not
+> changing BtrFS block and I/O management for block stored in
+> conventional zones.
 
-Yes the filesystem was freshly created before the test.
+One more high-level comment: let's please call it 'zone' mode, without
+the 'host managed' part. That term is not relevant for a filesystem. The
+zone allocator, or zone append-only allocator or similar describe what
+happens on the filesystem layer.
 
-No luck reproducing it, I tried to repeat the steps as before but the
-timing must make a difference and the numbers always ended up as 0
-(bytes) 0 (extents).
+The constraint posed by device is to never overwrite in place, that's
+fine for COW design and that's what should be kept in mind while adding
+the limitations (no nocow/raid56/...) or exceptions into the code.
 
-> > I'll report back if I continue having trouble reproing it.
-> 
-> I spent the day trying to repro against ext/dzhou-async-discard-v6
-> without any luck... I've been running the following:
-> 
-> $ mkfs.btrfs -f /dev/nvme0n1
-> $ mount -t btrfs -o discard=async /dev/nvme0n1 mnt
-> $ cd mnt
-> $ bash ../age_btrfs.sh .
-> 
-> where age_btrfs.sh is from [1].
-> 
-> If I delete arbitrary subvolumes, sync, and then run balance:
-> $ btrfs balance start --full-balance .
-> It all seems to resolve to 0 after some time. I haven't seen a negative
-> case on either of my 2 boxes. I've also tried unmounting and then
-> remounting, deleting and removing more free space items.
-> 
-> I'm still considering how this can happen. Possibly bad load of free
-> space cache and then freeing of the block group? Because being off by
-> just 1 and it not accumulating seems to be a real corner case here.
-> 
-> Adding asserts in btrfs_discard_update_discardable() might give us
-> insight to which callsite is responsible for going below 0.
+In some cases it's not possible to fold the zoned support into existing
+helpers but we should do that wherever we can. While reading the code
+the number of if (HMZONED) felt too intrusive. This needs to be
+adjusted, but I think it's mostly cosmetic or basic refactoring, not
+changing the core of the implementation.
 
-Yeah more asserts would be good.
+So in particular: remove 'hm' everywhere, filename, identifiers. For
+short I'd call it 'zone' mode but full description would be something
+like 'zone aware append-only allocation mode'.
+
+I'll do another review pass to point out what I think can be refactored
+but I hope that with the above gives enough hint.
