@@ -2,149 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D360F126F8B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 22:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E5F126F95
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 22:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbfLSVQu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 16:16:50 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38437 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbfLSVQs (ORCPT
+        id S1726982AbfLSVSA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 16:18:00 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42625 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726967AbfLSVSA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 16:16:48 -0500
-Received: by mail-qt1-f196.google.com with SMTP id n15so6284493qtp.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 13:16:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=cyz2FofkvAs+tYZsZmZnIcVc3z+B4FGuGfZg6Bel1Ds=;
-        b=NjUHbewPFrlhBO7+xxcKjhKJTR57MkG0slnnY0EVFuKKez2T9vF+AbtWZrHfNfDlI2
-         fwBekA6md/0BAml86ma0as40QVkgoPm8dUFalCFqq8Avf1pZ9ZJkqYgvMd5Jag4rQQz2
-         d9avyaqAH4ryNHvQK+uIVCT+nKJLx8UloYhznr2456d3SR0OgWsQ5EnM30tqTvP8Gdzl
-         99HD3rJ2m7Ipd+BcmqidAVNM/9N8XI24HqelYWjmOci3Q6uqdxbRNyLCWeAevhsFwlpE
-         DQmwJ+E8N/x5j3pzpDY775C0tvKJQ03bkNPWycYjRsSpjWTSvfxIUQRt0fTro6q/5eFt
-         1cLw==
+        Thu, 19 Dec 2019 16:18:00 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z14so4612264qkg.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 13:17:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cyz2FofkvAs+tYZsZmZnIcVc3z+B4FGuGfZg6Bel1Ds=;
-        b=Lev1v5uLGf+8kAYiig+1GkZuSk390fBFdwVa9bxwPTORv0DTrr2UJEzvZAuQBSQuEy
-         T80XcT9DPH9N95mDU+eqwkGLMMdYBPqd4heF1npYrVffGLqi9dKR90Dh2wcwHM+6DVJn
-         GaGmzw7J6VaMCqxPQwh9mZO774U8cq01w2KY18ED3u6+uKzKdlOUwfg2AbHdB4KnwBt1
-         rHtAPUqOWEWDnBX5Udi/nUofRqz13I+DpYg94KmP69VAYjaM1OjU/blzkjq/EH/wfm3k
-         tLTsKeJlJVU1nhs328XPa3gsRSEkr2uGXnhoYQ7KYXMg92U7WCK4uFhlxb79oyBfDm66
-         sFAw==
-X-Gm-Message-State: APjAAAVjxpbjwGkInt7Eqn/1PmNOS7cCcrxF49gBxQvX9e5FOFwg0Mxo
-        MprPitgpf2LW4RU3COD4NReRKA==
-X-Google-Smtp-Source: APXvYqx3kFF5c1xH9dyWHhxf9uybwO0ZlAwS6BO77nWN7DnDVuH6/ballj88tWPLWcZvNUVB9HJEsA==
-X-Received: by 2002:ac8:614d:: with SMTP id d13mr8271090qtm.212.1576790207660;
-        Thu, 19 Dec 2019 13:16:47 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::d837])
-        by smtp.gmail.com with ESMTPSA id l35sm650498qtl.12.2019.12.19.13.16.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Dec 2019 13:16:46 -0800 (PST)
-Subject: Re: [PATCH] btrfs: regression test for subvol deletion after rename
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, kernel-team@fb.com
-References: <20191219142835.50371-1-josef@toxicpanda.com>
- <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5ea1f28a-16bc-f97c-9c4a-ce47f94b1b43@toxicpanda.com>
-Date:   Thu, 19 Dec 2019 16:16:45 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5onm6nDoPgmODEVYT9slq6NiAIJtieZmSJ2zCTU0LVQ=;
+        b=oRCBDy8tsjEeBPLftL2UZ3XZyCjp/egZFKIkQzU4Pfrur+89MsgvypjpaoHc4E6vc3
+         eB58Shsp7ze11FnHXGRrZNPA6h8ig0euNIXvP5j7eOnXZlt3hzU75AyVnNfzNoNMbJ79
+         Rr8GhWj6A7xV29qQwPzT7Ivtmt2ZusIyticBneprlFLn545whldunqYTdIMhIUM5hbL5
+         BfYeWxrlFnxH2fRMDSlW035rrfG6ETzLwhlEiR1mEemQkkmpld6peUSSP9n572LQ4MTY
+         s4GOQT/8g8idmg35m/+ckS3+05GBm1Os2Zkkmm8l0lhoXLkWRp+l1UfXhxF0R9G6FYfz
+         78oQ==
+X-Gm-Message-State: APjAAAVfDbd1cCGVF3/6HUsn8JT3y3tZ0TvP/UGKCeS06HVHVUvdqykv
+        TmL+oz8UxdUWdEhwHUuCZHY=
+X-Google-Smtp-Source: APXvYqwwXpz/r5jY6RJubGibnXegQv9XbbVA8b+33zvmiNATdgdVDb9nFUGGPh0QqReZ+IxsHpkb+A==
+X-Received: by 2002:ae9:c011:: with SMTP id u17mr10014796qkk.480.1576790279104;
+        Thu, 19 Dec 2019 13:17:59 -0800 (PST)
+Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:480::7ea5])
+        by smtp.gmail.com with ESMTPSA id t29sm1579996qkm.27.2019.12.19.13.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2019 13:17:58 -0800 (PST)
+Date:   Thu, 19 Dec 2019 15:17:55 -0600
+From:   Dennis Zhou <dennis@kernel.org>
+To:     dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v6 00/22] btrfs: async discard support
+Message-ID: <20191219211755.GA38803@dennisz-mbp.dhcp.thefacebook.com>
+References: <cover.1576195673.git.dennis@kernel.org>
+ <20191217145541.GE3929@suse.cz>
+ <20191218000600.GB2823@dennisz-mbp>
+ <20191219203438.GS3929@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191219203438.GS3929@twin.jikos.cz>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/19/19 11:12 AM, Nikolay Borisov wrote:
+On Thu, Dec 19, 2019 at 09:34:38PM +0100, David Sterba wrote:
+> On Tue, Dec 17, 2019 at 07:06:00PM -0500, Dennis Zhou wrote:
+> > > Regarding the slow io submission, I tried to increase the iops value,
+> > > default was 10, but 100 and 1000 made no change. Increasing the maximum
+> > > discard request size to 128M worked (when there was such long extent
+> > > ready). I was expecting a burst of like 4 consecutive IOs after a 600MB
+> > > file is deleted.  I did not try to tweak bps_limit because there was
+> > > nothing to limit.
+> > 
+> > Ah so there's actually a max time between discards set to 10 seconds as
+> > the maximum timeout is calculated over 6 hours. So if we only have 6
+> > extents, we'd discard 1 per hour(ish given it decays), but this is
+> > clamped to 10 seconds.
+> > 
+> > At least on our servers, we seem to discard at a reasonable rate to
+> > prevent performance penalties during a large number of reads and writes
+> > while maintaining reasonable write amplification performance. Also,
+> > metadata blocks aren't tracked, so on freeing of a whole metadata block
+> > group (minus relocation), we'll trickle discards slightly slower than
+> > expected.
 > 
-> 
-> On 19.12.19 г. 16:28 ч., Josef Bacik wrote:
->> Test removal of a subvolume via rmdir after it has been renamed into a
->> snapshot of the volume that originally contained the subvolume
->> reference.
->>
->> This currently fails on btrfs but is fixed by the patch with the title
->>
->>    "btrfs: fix invalid removal of root ref"
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
->>   tests/btrfs/202.out |  4 ++++
->>   tests/btrfs/group   |  1 +
->>   3 files changed, 59 insertions(+)
->>   create mode 100755 tests/btrfs/202
->>   create mode 100644 tests/btrfs/202.out
->>
->> diff --git a/tests/btrfs/202 b/tests/btrfs/202
->> new file mode 100755
->> index 00000000..b02ee446
->> --- /dev/null
->> +++ b/tests/btrfs/202
->> @@ -0,0 +1,54 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +#
->> +# FS QA Test 201
->> +#
->> +# Regression test for fix "btrfs: fix invalid removal of root ref"
->> +#
->> +seq=`basename $0`
->> +seqres=$RESULT_DIR/$seq
->> +echo "QA output created by $seq"
->> +
->> +here=`pwd`
->> +tmp=/tmp/$$
->> +status=1	# failure is the default!
->> +trap "_cleanup; exit \$status" 0 1 2 3 15
->> +
->> +_cleanup()
->> +{
->> +	cd /
->> +	rm -f $tmp.*
->> +}
->> +
->> +. ./common/rc
->> +. ./common/filter
->> +
->> +rm -f $seqres.full
->> +
->> +_supported_fs btrfs
->> +_supported_os Linux
->> +
->> +_scratch_mkfs >> $seqres.full 2>&1
->> +_scratch_mount
->> +
->> +# Create a subvol b under a and then snapshot a into c.  This create's a stub
->> +# entry in c for b because c doesn't have a reference for b.
->> +#
->> +# But when we rename b c/foo it creates a ref for b in c.  However if we go to
->> +# remove c/b btrfs used to depend on not finding the root ref to handle the
->> +# unlink properly, but we now have a ref for that root.  We also had a bug that
->> +# would allow us to remove mis-matched refs if the keys matched, so we'd end up
->> +# removing too many entries which would cause a transaction abort.
->> +
->> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
->> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
->> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
->> +	| _filter_scratch
->> +ls $SCRATCH_MNT/c/b
-> 
-> Isn't this ls redundant?
+> So after watching the sysfs numbers, my observation is that the overall
+> strategy of the async discard is to wait for larger ranges and discard
+> one range every 10 seconds. This is a slow process, but this makes sense
+> when there are reads or writes going on so the discard IO penalty is
+> marginal.
 > 
 
-No we need the dummy entry in cache before we add the root ref during the 
-rename.  Thanks,
+Yeah, (un)fortunately on our systems we're running chef fairly
+frequently which results in a lot of IO in addition to package
+deployment. This actually drives the system to have a fairly high steady
+state number of untrimmed extents and results in a bit faster paced
+discarding rate.
 
-Josef
+> Running full fstrim will flush all the discardable extents so there's a
+> way to reset the discardable queue. What I still don't see as optimal is
+> the single discard request sent per one period. Namely because there's
+> the iops_limit knob.
+> 
+
+Yeah, it's not really ideal at the moment for much slower paced systems
+such as our own laptops. Adding persistence would also make a big
+difference here.
+
+> My idea is that each timeout, 'iops_limit' times 'max_discard_size' is
+> called, so the discard batches are large in total. However, this has
+> impact on reads and writes and also on the device itself, I'm not sure
+> if the too frequent discards are not making things worse (as this is a
+> known problem).
+> 
+
+I spent a bit of time looking at the impact of discard on some drives
+and my conclusion was that the iops rate is more impactful than the size
+of the discards (within reason, which is why there's the
+max_discard_size). On a particular drive, I noticed if I went over 10
+iops of discards on a sustained simple read write workload, the
+latencies would double. That's kind of where the 10 iops limit comes
+from. Given the latency impact, that's why this more or less trickles it
+down in pieces rather than as a larger batch.
+
+> I'm interested in more strategies that you could have tested in your
+> setups, either bps based or rate limited etc. The current one seems ok
+> for first implementation but we might want to tune it once we get
+> feedback from more users.
+
+Definitely, one of the things I want to do is experiment with different
+limits and see how this all correlates with write amplification. I'm
+sure there's some happy medium that we can identify that's a lot less
+arbitrary than what's current set forth. I imagine it should result in
+some graph that we can correlate delay and rate of discarding to a
+particular write amp given a fixed workload.
+
+Thanks,
+Dennis
