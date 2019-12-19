@@ -2,114 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2A1126F44
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D360F126F8B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 22:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbfLSU7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 15:59:37 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:35413 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbfLSU7h (ORCPT
+        id S1727444AbfLSVQu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 16:16:50 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38437 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbfLSVQs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 15:59:37 -0500
-Received: by mail-wm1-f68.google.com with SMTP id p17so7115314wmb.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 12:59:35 -0800 (PST)
+        Thu, 19 Dec 2019 16:16:48 -0500
+Received: by mail-qt1-f196.google.com with SMTP id n15so6284493qtp.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 13:16:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BvLGthR+BvTpVq6+sCnUS/21zwUAoeCFntA9JvIdhMA=;
-        b=Tk6r4oK0NEPX7V04GYP3fa2VgHvXHTJgA6+xIJudVE3SyX0kH7pDWkKAxTXhAhh4fH
-         hhhF/+J16feVchJeLkHMDt6RN9IvSm4cZ6z3bBhSM6Uvj0UrU/V2p/SaCchscHRZZ2DV
-         mwTWICkojicr4FnOKr/gg0K9qc7ubbLxfxZt/0fGY8UJowYl2k+TrSEyVBDKKvMeCOqJ
-         FWOVh3/balLIJNb93dbWuDmWMq0M1IuWDJ3t+Se9A7mqo9ykafAT8gSxJ4nxQHq5qcqu
-         KVzwFym6xPhAKXI6PBPJBFI8XCWfLLSg/OZLqpkmxrhoYp/kyCeFKHqv02BG6euzekM8
-         sgpw==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=cyz2FofkvAs+tYZsZmZnIcVc3z+B4FGuGfZg6Bel1Ds=;
+        b=NjUHbewPFrlhBO7+xxcKjhKJTR57MkG0slnnY0EVFuKKez2T9vF+AbtWZrHfNfDlI2
+         fwBekA6md/0BAml86ma0as40QVkgoPm8dUFalCFqq8Avf1pZ9ZJkqYgvMd5Jag4rQQz2
+         d9avyaqAH4ryNHvQK+uIVCT+nKJLx8UloYhznr2456d3SR0OgWsQ5EnM30tqTvP8Gdzl
+         99HD3rJ2m7Ipd+BcmqidAVNM/9N8XI24HqelYWjmOci3Q6uqdxbRNyLCWeAevhsFwlpE
+         DQmwJ+E8N/x5j3pzpDY775C0tvKJQ03bkNPWycYjRsSpjWTSvfxIUQRt0fTro6q/5eFt
+         1cLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BvLGthR+BvTpVq6+sCnUS/21zwUAoeCFntA9JvIdhMA=;
-        b=ZERlnB9REgir7L6A+AHOoLy8iTmPvgwopzMltuEqwpM411JI7Z1HB7sR2Q77cNEANz
-         LjiECNjBkoTVG7FJZ1MKdivW0agXCUTkTx3lq5dOevV0otiU9Kexkjxq/ojHZMrFiYlW
-         cy3SbKpGqAVrnzuyf9QlXBPKKSAYSle71iNBGXyq8DFcXwtk8mM7ycMNUxKdPVUTvd2n
-         zqO3mNlnG/DNqzMp52E2h6xqkBG83vCO4dRJcBSNPH03r/Eqak394/jxBKMgS0ZYvWng
-         fmI52pO/CmI0rH9RjGNjiME6WfG7zjoIKOiv8HwVV6Bb2Mi7bLQtc6gPGSyUnfzoHkyo
-         nsEQ==
-X-Gm-Message-State: APjAAAXkJBZFkRQmPXVk8gVzEPgXDB6QVwnKs02/q/McsVvXo29YsML8
-        FqReqk2c7njohLfY5Lz6Kqbmvf8nrxPUSGtmYxVPnQ==
-X-Google-Smtp-Source: APXvYqz7ZZ6tVvjqQnQ/DTm3yVBw7qDQ8gsZYihWo7u02eL9am+15lVd8o2CoaBEmvKfA0BMazjnC8b4kS8pdU8qSaM=
-X-Received: by 2002:a1c:7c05:: with SMTP id x5mr12051831wmc.160.1576789175023;
- Thu, 19 Dec 2019 12:59:35 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cyz2FofkvAs+tYZsZmZnIcVc3z+B4FGuGfZg6Bel1Ds=;
+        b=Lev1v5uLGf+8kAYiig+1GkZuSk390fBFdwVa9bxwPTORv0DTrr2UJEzvZAuQBSQuEy
+         T80XcT9DPH9N95mDU+eqwkGLMMdYBPqd4heF1npYrVffGLqi9dKR90Dh2wcwHM+6DVJn
+         GaGmzw7J6VaMCqxPQwh9mZO774U8cq01w2KY18ED3u6+uKzKdlOUwfg2AbHdB4KnwBt1
+         rHtAPUqOWEWDnBX5Udi/nUofRqz13I+DpYg94KmP69VAYjaM1OjU/blzkjq/EH/wfm3k
+         tLTsKeJlJVU1nhs328XPa3gsRSEkr2uGXnhoYQ7KYXMg92U7WCK4uFhlxb79oyBfDm66
+         sFAw==
+X-Gm-Message-State: APjAAAVjxpbjwGkInt7Eqn/1PmNOS7cCcrxF49gBxQvX9e5FOFwg0Mxo
+        MprPitgpf2LW4RU3COD4NReRKA==
+X-Google-Smtp-Source: APXvYqx3kFF5c1xH9dyWHhxf9uybwO0ZlAwS6BO77nWN7DnDVuH6/ballj88tWPLWcZvNUVB9HJEsA==
+X-Received: by 2002:ac8:614d:: with SMTP id d13mr8271090qtm.212.1576790207660;
+        Thu, 19 Dec 2019 13:16:47 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::d837])
+        by smtp.gmail.com with ESMTPSA id l35sm650498qtl.12.2019.12.19.13.16.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Dec 2019 13:16:46 -0800 (PST)
+Subject: Re: [PATCH] btrfs: regression test for subvol deletion after rename
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, kernel-team@fb.com
+References: <20191219142835.50371-1-josef@toxicpanda.com>
+ <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <5ea1f28a-16bc-f97c-9c4a-ce47f94b1b43@toxicpanda.com>
+Date:   Thu, 19 Dec 2019 16:16:45 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-References: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
-In-Reply-To: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 19 Dec 2019 13:59:18 -0700
-Message-ID: <CAJCQCtRH1otb=-dCjKSPWUb_SEPS4dGP0AQ2_TEN8F6Jx3-+ZQ@mail.gmail.com>
-Subject: Re: How to heel this btrfs fi corruption?
-To:     Ralf Zerres <Ralf.Zerres@networkx.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 1:07 PM Ralf Zerres <Ralf.Zerres@networkx.de> wrote:
->
-> Dear list,
->
-> at customer site i can't mount a given btrfs device in rw mode.
-> this is production data and i do have a backup and managed to mount the filesystem in ro mode. I did copy out relevant stuff.
-> Having said this, if btrfs --repair can't heal the situation, i could reformat the filesystem and start all over.
-> But i would prefere to save the time and take the heeling as a proof of "production ready" status of btrfs-progs.
->
-> Here are the details:
->
-> kernel: 5.2.2 (Ubuntu 18.04.3)
+On 12/19/19 11:12 AM, Nikolay Borisov wrote:
+> 
+> 
+> On 19.12.19 г. 16:28 ч., Josef Bacik wrote:
+>> Test removal of a subvolume via rmdir after it has been renamed into a
+>> snapshot of the volume that originally contained the subvolume
+>> reference.
+>>
+>> This currently fails on btrfs but is fixed by the patch with the title
+>>
+>>    "btrfs: fix invalid removal of root ref"
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
+>>   tests/btrfs/202.out |  4 ++++
+>>   tests/btrfs/group   |  1 +
+>>   3 files changed, 59 insertions(+)
+>>   create mode 100755 tests/btrfs/202
+>>   create mode 100644 tests/btrfs/202.out
+>>
+>> diff --git a/tests/btrfs/202 b/tests/btrfs/202
+>> new file mode 100755
+>> index 00000000..b02ee446
+>> --- /dev/null
+>> +++ b/tests/btrfs/202
+>> @@ -0,0 +1,54 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +#
+>> +# FS QA Test 201
+>> +#
+>> +# Regression test for fix "btrfs: fix invalid removal of root ref"
+>> +#
+>> +seq=`basename $0`
+>> +seqres=$RESULT_DIR/$seq
+>> +echo "QA output created by $seq"
+>> +
+>> +here=`pwd`
+>> +tmp=/tmp/$$
+>> +status=1	# failure is the default!
+>> +trap "_cleanup; exit \$status" 0 1 2 3 15
+>> +
+>> +_cleanup()
+>> +{
+>> +	cd /
+>> +	rm -f $tmp.*
+>> +}
+>> +
+>> +. ./common/rc
+>> +. ./common/filter
+>> +
+>> +rm -f $seqres.full
+>> +
+>> +_supported_fs btrfs
+>> +_supported_os Linux
+>> +
+>> +_scratch_mkfs >> $seqres.full 2>&1
+>> +_scratch_mount
+>> +
+>> +# Create a subvol b under a and then snapshot a into c.  This create's a stub
+>> +# entry in c for b because c doesn't have a reference for b.
+>> +#
+>> +# But when we rename b c/foo it creates a ref for b in c.  However if we go to
+>> +# remove c/b btrfs used to depend on not finding the root ref to handle the
+>> +# unlink properly, but we now have a ref for that root.  We also had a bug that
+>> +# would allow us to remove mis-matched refs if the keys matched, so we'd end up
+>> +# removing too many entries which would cause a transaction abort.
+>> +
+>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
+>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
+>> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
+>> +	| _filter_scratch
+>> +ls $SCRATCH_MNT/c/b
+> 
+> Isn't this ls redundant?
+> 
 
-Unfortunate that these versions are still easily obtained. 5.2.0 -
-5.2.14 had an pernicious bug. I can't tell if it applies in your case
-though.
+No we need the dummy entry in cache before we add the root ref during the 
+rename.  Thanks,
 
-Btrfs: fix unwritten extent buffers and hangs on future writeback attempts
-https://lore.kernel.org/linux-btrfs/20190911145542.1125-1-fdmanana@kernel.org/T/#u
-
-The bug is fixed since 5.2.15.
-
-
-
-> btrfs-progs: 5.2.1
-> # btrfs check --mode lowmem --progress --repair /dev/<mydev>
-> # enabling repair mode
-> # WARNING: low-memory mode repair support is only partial
-> # Opening filesystem to check...
-> # Checking filesystem on /dev/<mydev>
-> # UUID: <my UUID>
-> # [1/7] checking root items                      (0:00:33 elapsed, 20853512 items checked)
-> # Fixed 0 roots.
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: # 28, have: 34
-> # ERROR: fail to allocate new chunk No space left on device
-> # Try to exclude all metadata blcoks and extents, it may be slow
-> # Delete backref in extent [1988733435904 134217728]07:16 elapsed, 40435 items checked)
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: 27, have: 34
-> # Delete backref in extent [1988733435904 134217728]
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: 26, have: 34
-> # ERROR: commit_root already set when starting transaction
-> # ERROR: fail to start transaction: Invalid argument
-> # ERROR: extent[2017321811968, 134217728] referencer count mismatch (root: 261, owner: 287, offset: 2281701376) wanted: 3215, have: 3319
-> # ERROR: commit_root already set when starting transaction
-> # ERROR: fail to start transaction Invalid argument
->
-> This ends with a core-dump.
-
-Well it's easy to say a crash is a bug, and I'm also not sure if it's
-fixed in btrfs-progs 5.4. But it might help isolate the problem if you
-attach dmesg. At least the good news is there's a backup; but creating
-a new volume and restoring this much data will be a little tedious.
-
-
---
-Chris Murphy
+Josef
