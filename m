@@ -2,87 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3952D126EFA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8494D126F05
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbfLSUen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 15:34:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51456 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726981AbfLSUem (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 15:34:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 217B5B3F2;
-        Thu, 19 Dec 2019 20:34:41 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A5EBEDA939; Thu, 19 Dec 2019 21:34:38 +0100 (CET)
-Date:   Thu, 19 Dec 2019 21:34:38 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.cz>, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v6 00/22] btrfs: async discard support
-Message-ID: <20191219203438.GS3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <cover.1576195673.git.dennis@kernel.org>
- <20191217145541.GE3929@suse.cz>
- <20191218000600.GB2823@dennisz-mbp>
+        id S1727180AbfLSUjz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 15:39:55 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37870 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727071AbfLSUjz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Dec 2019 15:39:55 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 21so5801007qky.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 12:39:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKtL6FOJqVDNDFTC5vTQ9i7tkVXzRFQK9imHwr2plFU=;
+        b=lnCg204Kc+H/a3tLpi6yaGF+CwjOEatQDtdoHpm2sliOa6jD6Il2seBURDx1QOSLpp
+         3574a7abgXdsxptvALnzqavn0uUF1vv89zBfkdSohF2rmq7eY1VBtbH6SE5RcN5TrNP8
+         ZCec9ajm/OK/5SoEScbvT8DN9ln3kESA6JCnG6e1Mv5j41qpMpGlp10z3wNzWmVtrIVb
+         n5DJRMbJUB4v0Cqn4l604D842IGAYG/FogWdjwVshIJlH3lhJperA47Wy6ti+qv2SbEN
+         bRr2Ghspa+JoaK6PcRkrLuXVS2eBtijxVK1BmiZ4OUyylDczcVK2yAdpy9rcrtdfW4IJ
+         4zgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKtL6FOJqVDNDFTC5vTQ9i7tkVXzRFQK9imHwr2plFU=;
+        b=GXIFu2bFnTdR7WKhXEbolvWsxYNNJX7o8bEvlbBN7+yWDzxspOXpidYCPY3q/wGETx
+         J+37+0xaxugbv3YuoVO5wnTN3IVqGj/cET3gNkRfueu3TEmj0j/uhQ8rcRox2Usr/CC4
+         vUCCbbtLKS3b6gLc1QblfHq+15gLAVxUjPKiahY0fbNq3NvIYNeks0sEsVy8EyVhJmdf
+         DFcmV8hAQyWoIKxGjHY74jSJb3yv6g2Z0oAziSwubOoj4VZfw1Q5uzcry4HJbZkitTXn
+         YC6G/nROnREU2/F9FUz7j0SM00J3CVAOCSqwzSHMn1Yfr4doUAngS/7mDUPGRKRUA9kh
+         FvaA==
+X-Gm-Message-State: APjAAAVkihtgONlLf6c+XpXdvn3lFe8ByTJKyS5bMUxyfq4J4Ds6Y2oW
+        H8BF9iSzXvcKuQo4eNOoLAePfmPJOtE5Xg==
+X-Google-Smtp-Source: APXvYqyEvuuaqqJDOBTTlY+5OCFSGCxnnk/b7/TaoVN2vMd4wpblUticoEzw6TGrMhwKQwlrG/Nimg==
+X-Received: by 2002:a37:b53:: with SMTP id 80mr8765338qkl.65.1576787993559;
+        Thu, 19 Dec 2019 12:39:53 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id d1sm2198906qto.97.2019.12.19.12.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2019 12:39:52 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: free block groups after free'ing fs trees
+Date:   Thu, 19 Dec 2019 15:39:51 -0500
+Message-Id: <20191219203951.50874-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218000600.GB2823@dennisz-mbp>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 07:06:00PM -0500, Dennis Zhou wrote:
-> > Regarding the slow io submission, I tried to increase the iops value,
-> > default was 10, but 100 and 1000 made no change. Increasing the maximum
-> > discard request size to 128M worked (when there was such long extent
-> > ready). I was expecting a burst of like 4 consecutive IOs after a 600MB
-> > file is deleted.  I did not try to tweak bps_limit because there was
-> > nothing to limit.
-> 
-> Ah so there's actually a max time between discards set to 10 seconds as
-> the maximum timeout is calculated over 6 hours. So if we only have 6
-> extents, we'd discard 1 per hour(ish given it decays), but this is
-> clamped to 10 seconds.
-> 
-> At least on our servers, we seem to discard at a reasonable rate to
-> prevent performance penalties during a large number of reads and writes
-> while maintaining reasonable write amplification performance. Also,
-> metadata blocks aren't tracked, so on freeing of a whole metadata block
-> group (minus relocation), we'll trickle discards slightly slower than
-> expected.
+Sometimes when running generic/475 we would trip the
+WARN_ON(cache->reserved) check when free'ing the block groups on umount.
+This is because sometimes we don't commit the transaction because of IO
+errors and thus do not cleanup the tree logs until at umount time.
+These blocks are still reserved until they are cleaned up, but they
+aren't cleaned up until _after_ we do the free block groups work.  Fix
+this by moving the free after free'ing the fs roots, that way all of the
+tree logs are cleaned up and we have a properly cleaned fs.  A bunch of
+loops of generic/475 confirmed this fixes the problem.
 
-So after watching the sysfs numbers, my observation is that the overall
-strategy of the async discard is to wait for larger ranges and discard
-one range every 10 seconds. This is a slow process, but this makes sense
-when there are reads or writes going on so the discard IO penalty is
-marginal.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/disk-io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Running full fstrim will flush all the discardable extents so there's a
-way to reset the discardable queue. What I still don't see as optimal is
-the single discard request sent per one period. Namely because there's
-the iops_limit knob.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index fb60d09d2ac7..ed9f10cd1797 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4050,12 +4050,12 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+ 	btrfs_stop_all_workers(fs_info);
+ 
+-	btrfs_free_block_groups(fs_info);
+-
+ 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+ 	free_root_pointers(fs_info, true);
+ 	btrfs_free_fs_roots(fs_info);
+ 
++	btrfs_free_block_groups(fs_info);
++
+ 	iput(fs_info->btree_inode);
+ 
+ #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+-- 
+2.23.0
 
-My idea is that each timeout, 'iops_limit' times 'max_discard_size' is
-called, so the discard batches are large in total. However, this has
-impact on reads and writes and also on the device itself, I'm not sure
-if the too frequent discards are not making things worse (as this is a
-known problem).
-
-I'm interested in more strategies that you could have tested in your
-setups, either bps based or rate limited etc. The current one seems ok
-for first implementation but we might want to tune it once we get
-feedback from more users.
