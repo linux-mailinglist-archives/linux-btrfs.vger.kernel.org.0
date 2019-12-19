@@ -2,108 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B057126FAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 22:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18D6126FC6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 22:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbfLSVWe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 16:22:34 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41894 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbfLSVWe (ORCPT
+        id S1726996AbfLSVfz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 19 Dec 2019 16:35:55 -0500
+Received: from luna.lichtvoll.de ([194.150.191.11]:46899 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726880AbfLSVfz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 16:22:34 -0500
-Received: by mail-qk1-f194.google.com with SMTP id x129so5870477qke.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 13:22:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nKnehGkHfFCFm2zeUUaUpvnHt/0WPHaKvO5CVb+OFBs=;
-        b=enkqG1cNepvJ4XOsqexk4Qj+FEU9HKspRPDUMzZNd3azx0UzxZIgSLaJEH3R0XjbLJ
-         IOdEgZzto7sWZm2APBwZJ7mRbveNDlEtSNjtjWoRkCXNCNDZhblWaQsSpfvDYbsSmuzA
-         BdyRM/jlQrrp68HCh7AFaeDr8BuuDjK2+lkALfbfyzpt4eYYNq6Njs3F6NUfNG5Tk2e/
-         gTUUdILEZ2PmSnUfrUEKw9m2UrwpzkMwsRQ3vSC+91LMEDxEA41nX4rAuMyv6E7k5toq
-         4RI+MGd14LDhC+vrF7kjV6QfgKq8gcyIE5lWgZ793s6Uel3TVyEtusTGkpMK7sI6R7DW
-         trdQ==
-X-Gm-Message-State: APjAAAV+tdn/5+la8xCf1aA6BpQip+cYhTtuoNH/q93JBFZ++pTgvZNA
-        /BZeefLJY6Tk5NJfIVz30cg=
-X-Google-Smtp-Source: APXvYqxAqvN2URs5OPXYsCQDFepttf9NijJTBeb4iKlg7ewR1kzbe+GvFAewkbuBqsaZvuZDkwarmw==
-X-Received: by 2002:ae9:ebd4:: with SMTP id b203mr10293027qkg.501.1576790552972;
-        Thu, 19 Dec 2019 13:22:32 -0800 (PST)
-Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:480::7ea5])
-        by smtp.gmail.com with ESMTPSA id b191sm2159553qkg.43.2019.12.19.13.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 13:22:32 -0800 (PST)
-Date:   Thu, 19 Dec 2019 15:22:28 -0600
-From:   Dennis Zhou <dennis@kernel.org>
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v6 00/22] btrfs: async discard support
-Message-ID: <20191219212228.GB38803@dennisz-mbp.dhcp.thefacebook.com>
-References: <cover.1576195673.git.dennis@kernel.org>
- <20191217145541.GE3929@suse.cz>
- <20191218000600.GB2823@dennisz-mbp>
- <20191219020337.GA25072@dennisz-mbp.dhcp.thefacebook.com>
- <20191219200607.GQ3929@twin.jikos.cz>
+        Thu, 19 Dec 2019 16:35:55 -0500
+X-Greylist: delayed 597 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Dec 2019 16:35:54 EST
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id EB9589C912;
+        Thu, 19 Dec 2019 22:25:56 +0100 (CET)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     Ralf Zerres <Ralf.Zerres@networkx.de>
+Cc:     "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>
+Subject: Re: How to heel this btrfs fi corruption?
+Date:   Thu, 19 Dec 2019 22:25:55 +0100
+Message-ID: <1774589.FgVfPneX5p@merkaba>
+In-Reply-To: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
+References: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191219200607.GQ3929@twin.jikos.cz>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 09:06:07PM +0100, David Sterba wrote:
-> On Wed, Dec 18, 2019 at 08:03:37PM -0600, Dennis Zhou wrote:
-> > > > This happened also when I deleted everything from the filesystem and ran
-> > > > full balance.
-> > 
-> > Also were these both on fresh file systems so it seems reproducible for
-> > you?
-> 
-> Yes the filesystem was freshly created before the test.
-> 
-> No luck reproducing it, I tried to repeat the steps as before but the
-> timing must make a difference and the numbers always ended up as 0
-> (bytes) 0 (extents).
-> 
-> > > I'll report back if I continue having trouble reproing it.
-> > 
-> > I spent the day trying to repro against ext/dzhou-async-discard-v6
-> > without any luck... I've been running the following:
-> > 
-> > $ mkfs.btrfs -f /dev/nvme0n1
-> > $ mount -t btrfs -o discard=async /dev/nvme0n1 mnt
-> > $ cd mnt
-> > $ bash ../age_btrfs.sh .
-> > 
-> > where age_btrfs.sh is from [1].
-> > 
-> > If I delete arbitrary subvolumes, sync, and then run balance:
-> > $ btrfs balance start --full-balance .
-> > It all seems to resolve to 0 after some time. I haven't seen a negative
-> > case on either of my 2 boxes. I've also tried unmounting and then
-> > remounting, deleting and removing more free space items.
-> > 
-> > I'm still considering how this can happen. Possibly bad load of free
-> > space cache and then freeing of the block group? Because being off by
-> > just 1 and it not accumulating seems to be a real corner case here.
-> > 
-> > Adding asserts in btrfs_discard_update_discardable() might give us
-> > insight to which callsite is responsible for going below 0.
-> 
-> Yeah more asserts would be good.
+Hi Ralf.
 
-I'll add a few assert patches and some code to ensure that life can
-still move on properly if we do hit the -1 case. I think it probably has
-something to do with free space cache removal as it can't be a simple
-corner case, otherwise we'd see the -1 accumulating much more easily.
-What does puzzle me is it's a single nodesize that I'm off by and not
-some other random number.
+Ralf Zerres - 19.12.19, 21:00:12 CET:
+> at customer site i can't mount a given btrfs device in rw mode.
+> this is production data and i do have a backup and managed to mount
+> the filesystem in ro mode. I did copy out relevant stuff. Having said
+> this, if btrfs --repair can't heal the situation, i could reformat
+> the filesystem and start all over. But i would prefere to save the
+> time and take the heeling as a proof of "production ready" status of
+> btrfs-progs.
+> 
+> Here are the details:
+> 
+> kernel: 5.2.2 (Ubuntu 18.04.3)
+> btrfs-progs: 5.2.1
+[…]
+> 4) As a forth step, i tried to repair it
+> 
+> # btrfs check --mode lowmem --progress --repair /dev/<mydev>
+> # enabling repair mode
+> # WARNING: low-memory mode repair support is only partial
+> # Opening filesystem to check...
+> # Checking filesystem on /dev/<mydev>
+> # UUID: <my UUID>
+> # [1/7] checking root items                      (0:00:33 elapsed,
+> 20853512 items checked) 
+> # Fixed 0 roots.
+> # ERROR: extent[1988733435904, 134217728] referencer count mismatch
+> (root: 261, owner: 286, offset: 5905580032) wanted: # 28, have: 34 
+> #  ERROR: fail to allocate new chunk No space left on device
 
-Thanks,
-Dennis
+Maybe the filesystem check failed due to that error?
+
+Just guess work tough!
+
+You could try adding a device to the filesystem and then check again. It 
+could even be a good (!) USB stick. This way BTRFS would have some 
+additional space and maybe 'btrfs check' would complete.
+
+May or may not work, no idea. But I noticed that the check itself 
+mentioned an out of space condition so I thought I'd mention it.
+
+Best of success,
+-- 
+Martin
+
+
