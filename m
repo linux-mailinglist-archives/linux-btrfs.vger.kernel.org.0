@@ -2,97 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FC0125695
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Dec 2019 23:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50599125973
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 03:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbfLRWUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 17:20:38 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:32974 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfLRWUh (ORCPT
+        id S1726721AbfLSCDm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Dec 2019 21:03:42 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:42956 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbfLSCDl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 17:20:37 -0500
-Received: by mail-qv1-f68.google.com with SMTP id z3so1432396qvn.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2019 14:20:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=npYbZs/0MvOLk8eHQpDIgHq2hArzrfYft5Zmgh+wzjk=;
-        b=cjf9iuybksC+27NqgZwlI7tvCXWRQle5w4LR6B/di+Q+CMZmvtccl/vVYzkOPG0iIF
-         wQIOs0T3rmom0kJ0H1mMFLzl1U8iekNV8GMYc8DUwi+7zleYZMeBQkCWyz5XiRw/xDQq
-         44nCcTwhWMVzW+SBpm0YVLgU06SBn9lRkZApuen9rHzxEHhTz0GiqxJIOfbqT+Qbd+y7
-         DU3vvIpiBIm3SKR62LxNaZDcZV3e85ngtXFCMHVt+J+YpfLrCeq37Hr5Na1wMvFhc96c
-         xO0uxXJTWUrSTs96E3JODm6zgUKapdFWpys63FtOcaKNKTviL7Y2trPdLRo9JkskuD0u
-         dQ5Q==
+        Wed, 18 Dec 2019 21:03:41 -0500
+Received: by mail-qv1-f65.google.com with SMTP id dc14so1596169qvb.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Dec 2019 18:03:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=npYbZs/0MvOLk8eHQpDIgHq2hArzrfYft5Zmgh+wzjk=;
-        b=QniHQ14588ap7jT4hlRtdhjV/0nfxH9DXSQHV/oEfkgKBNQ6+3bmD4RdyBFL0lW2eJ
-         l8M6GI1DlbGKo4a8UJgFrm+v/OAq0exJdkmweKog93UXTIPDpHoWk6Hn6znqtxlEY/KF
-         5reVRO0AZsZOUP2z3pcIyQUHyaxVR7dYAL1dwflzbgKHN2gOIdurllBo6I/eUupy1G9r
-         7ivIPsiP/+ybxTh4Y21gor7qLhnXuLMs0F5ACVGw/wiG3y8N3A6Q9LhK5I7P1bZI/QzM
-         Mlja9rE9Ob9WFHzXX6520syQAmq7yXCi1VLDnKmEkDqYEvI4PH9Tyd2Lkh5bVg0MJHcB
-         MOGg==
-X-Gm-Message-State: APjAAAUGYP1nz89rzqkZaRnZn5QOSYBLrDQYBE8aE0615Ixir1OT1dGi
-        8T2S9NKCN/egVIF3vzPitjtLFdfla9p1qA==
-X-Google-Smtp-Source: APXvYqw7ubTG7lZv5JVCiqFOLPSNEoLSB55iGdTr5bT2vbPbEmdeG1wrCmNIKNSNZcscafSB7jKtsg==
-X-Received: by 2002:a0c:c351:: with SMTP id j17mr4820178qvi.80.1576707636731;
-        Wed, 18 Dec 2019 14:20:36 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f42sm1229613qta.0.2019.12.18.14.20.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ffemreUv4Y1pYnI36p3CCnbe6AfKqhgTeFHVOCjLPck=;
+        b=CAxDM3erXHJLsYzxtR5V6fciznDwRhs1BloMMVlybs5DGYczYCX6EyHRjIDj3qz7F9
+         tO26hnegeSyySWgnAvcXX+2TyZr2+xROXnIOdsciPEV9tKOV9jZM6VTxo7g25jN6lBdR
+         tJBXZAoJ2TuUc/jyRAsOWf7yYzZPTXBSN0hFEPGswf8SEv5aOrtQFpc/C05te2DRto2j
+         XInPMq1WyjWOusBL+1UaZp3sLoJ+EUMsvaM/AYk0gjLp2QUJ9nDfvXvBZedppQ2X9w72
+         jjv8x6pTd2j6WaR3nLPh0EIVIEoSEX0EZF0IQ9pJfsrhYfLbCW4nIvCrUaGkBIaVR7Bi
+         UqYg==
+X-Gm-Message-State: APjAAAU0n3Cq898250+EKdiM9aZDowk3xTRNxHKithPG41W+YNg9U4HP
+        lrJB0NLhI3aiMPW+RgO43HB+304Quax8GA==
+X-Google-Smtp-Source: APXvYqwdFg4r/gVwDaiTbp5dcDgrKRLFVH3b8xGnHJRw+R2ExBZo8hqaxDGy//Mu6lyIg0m6O5aiqg==
+X-Received: by 2002:a05:6214:11ab:: with SMTP id u11mr5222013qvv.193.1576721020682;
+        Wed, 18 Dec 2019 18:03:40 -0800 (PST)
+Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:480::1c63])
+        by smtp.gmail.com with ESMTPSA id d5sm1284357qke.130.2019.12.18.18.03.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2019 14:20:36 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/3] btrfs: do not delete mismatched root ref's
-Date:   Wed, 18 Dec 2019 17:20:29 -0500
-Message-Id: <20191218222029.49178-4-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191218222029.49178-1-josef@toxicpanda.com>
-References: <20191218222029.49178-1-josef@toxicpanda.com>
+        Wed, 18 Dec 2019 18:03:40 -0800 (PST)
+Date:   Wed, 18 Dec 2019 20:03:37 -0600
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v6 00/22] btrfs: async discard support
+Message-ID: <20191219020337.GA25072@dennisz-mbp.dhcp.thefacebook.com>
+References: <cover.1576195673.git.dennis@kernel.org>
+ <20191217145541.GE3929@suse.cz>
+ <20191218000600.GB2823@dennisz-mbp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191218000600.GB2823@dennisz-mbp>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_del_root_ref() will simply WARN_ON() if the ref doesn't match in
-any way, and then continue to delete the reference.  This shouldn't
-happen, we have these values because there's more to the reference than
-the original root and the sub root.  If any of these checks fail, return
--ENOENT.
+On Tue, Dec 17, 2019 at 07:06:00PM -0500, Dennis Zhou wrote:
+> On Tue, Dec 17, 2019 at 03:55:41PM +0100, David Sterba wrote:
+> > On Fri, Dec 13, 2019 at 04:22:09PM -0800, Dennis Zhou wrote:
+> > > Hello,
+> > > 
+> > > Dave reported a lockdep issue [1]. I'm a bit surprised as I can't repro
+> > > it, but it obviously is right. I believe I fixed the issue by moving the
+> > > fully trimmed check outside of the block_group lock.  I mistakingly
+> > > thought the btrfs_block_group lock subsumed btrfs_free_space_ctl
+> > > tree_lock. This clearly isn't the case.
+> > > 
+> > > Changes in v6:
+> > >  - Move the fully trimmed check outside of the block_group lock.
+> > 
+> > v6 passed fstests, with some weird test failures that don't seem to be
+> > related to the patchset.
+> 
+> Yay!
+> 
+> > 
+> > Meanwhile I did manual test how the discard behaves. The workload was
+> > a series of linux git checkouts of various release tags (ie. this should
+> > provide some freed extents and coalesce them eventually to get larger
+> > chunks to discard), then a simple large file copy, sync, remove, sync.
+> > 
+> > The discards going down to the device were followin the maximum default
+> > size (64M) but I observed that only one range was discarded per 10
+> > seconds, while the other stats there are many more extents to discard.
+> > 
+> > For the large file it took like 5-10 cycles to send all the trimmed
+> > ranges, the discardable_extents decreased by one each time until it
+> > reached ... -1. At this point the discardable bytes were -16384, so
+> > thre's some accounting problem.
+> > 
+> > This happened also when I deleted everything from the filesystem and ran
+> > full balance.
+> > 
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/root-tree.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Also were these both on fresh file systems so it seems reproducible for
+you?
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index 0a455f116666..f2a59ec6c1ce 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -346,11 +346,13 @@ int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
- 		leaf = path->nodes[0];
- 		ref = btrfs_item_ptr(leaf, path->slots[0],
- 				     struct btrfs_root_ref);
--
--		WARN_ON(btrfs_root_ref_dirid(leaf, ref) != dirid);
--		WARN_ON(btrfs_root_ref_name_len(leaf, ref) != name_len);
- 		ptr = (unsigned long)(ref + 1);
--		WARN_ON(memcmp_extent_buffer(leaf, name, ptr, name_len));
-+		if ((btrfs_root_ref_dirid(leaf, ref) != dirid) ||
-+		    (btrfs_root_ref_name_len(leaf, ref) != name_len) ||
-+		    memcmp_extent_buffer(leaf, name, ptr, name_len)) {
-+			err = -ENOENT;
-+			goto out;
-+		}
- 		*sequence = btrfs_root_ref_sequence(leaf, ref);
- 
- 		ret = btrfs_del_item(trans, tree_root, path);
--- 
-2.23.0
+> 
+> Oh no :(. I've been trying to repro with some limited checking out and
+> syncing, then subsequently removing everything and calling balance. It
+> is coming out to be 0 for me. I'll try harder to repro this and fix it.
+> 
+> > Regarding the slow io submission, I tried to increase the iops value,
+> > default was 10, but 100 and 1000 made no change. Increasing the maximum
+> > discard request size to 128M worked (when there was such long extent
+> > ready). I was expecting a burst of like 4 consecutive IOs after a 600MB
+> > file is deleted.  I did not try to tweak bps_limit because there was
+> > nothing to limit.
+> > 
+> 
+> Ah so there's actually a max time between discards set to 10 seconds as
+> the maximum timeout is calculated over 6 hours. So if we only have 6
+> extents, we'd discard 1 per hour(ish given it decays), but this is
+> clamped to 10 seconds.
+> 
+> At least on our servers, we seem to discard at a reasonable rate to
+> prevent performance penalties during a large number of reads and writes
+> while maintaining reasonable write amplification performance. Also,
+> metadata blocks aren't tracked, so on freeing of a whole metadata block
+> group (minus relocation), we'll trickle discards slightly slower than
+> expected.
+> 
+> 
+> > So this is something to fix but otherwise the patchset seems to be ok
+> > for adding to misc-next. Due to the timing of the end of the year and
+> > that we're already at rc2, this will be the main feature in 5.6.
+> 
+> I'll report back if I continue having trouble reproing it.
+> 
 
+I spent the day trying to repro against ext/dzhou-async-discard-v6
+without any luck... I've been running the following:
+
+$ mkfs.btrfs -f /dev/nvme0n1
+$ mount -t btrfs -o discard=async /dev/nvme0n1 mnt
+$ cd mnt
+$ bash ../age_btrfs.sh .
+
+where age_btrfs.sh is from [1].
+
+If I delete arbitrary subvolumes, sync, and then run balance:
+$ btrfs balance start --full-balance .
+It all seems to resolve to 0 after some time. I haven't seen a negative
+case on either of my 2 boxes. I've also tried unmounting and then
+remounting, deleting and removing more free space items.
+
+I'm still considering how this can happen. Possibly bad load of free
+space cache and then freeing of the block group? Because being off by
+just 1 and it not accumulating seems to be a real corner case here.
+
+Adding asserts in btrfs_discard_update_discardable() might give us
+insight to which callsite is responsible for going below 0.
+
+[1] https://github.com/osandov/osandov-linux/blob/master/scripts/age_btrfs.sh
+
+Thanks,
+Dennis
