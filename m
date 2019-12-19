@@ -2,284 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F90125F5B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 11:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9601126422
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 15:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbfLSKlt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 05:41:49 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:55026 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726633AbfLSKlt (ORCPT
+        id S1726767AbfLSOBl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 09:01:41 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38271 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbfLSOBl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 05:41:49 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJAdOFr037880
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 10:41:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=VmuKsXVT2XSIy5SaC5S0WgEnn8+6sMY+A5Sh+7jaNn4=;
- b=lnoOOr3AdS3qmPYjdA9rvatZpd3cliA+Y2vpC2kfeIbY2H3bFNtgKu+t6/0qcKsV9FoR
- 60bPCI46ZBM4VUbn1Zxe80EKokaGbPUfU4TAZi51SAgdHjLGSL/cHQj55ataOYHILYQP
- VU9ltI5dBTz3c5opB5RummEZH9Y6lXaD2pv2uj34DgsCQbM7dcX7s5kEtLQ9YVuPZBly
- WUU90FXpChANC5I9OeXPobJJuKlOMVmtJfqFBmqr3A31t8XuOoa1g5PsDbOaZqOsZBi+
- ZkiWYPdo1NqZSb54I4wZBueubF2AhRd2MWDc+xjASAnA9061E9+9V5W3AfQ+3BGMZgeT Sg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2x01knj16b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 10:41:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJAdJ18166036
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 10:41:47 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2wyxqhg1ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 10:41:47 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBJAfkc9003675
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 10:41:46 GMT
-Received: from tp.wifi.oracle.com (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Dec 2019 02:41:46 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 4/4] btrfs: sysfs, add devid/dev_state kobject and attribute
-Date:   Thu, 19 Dec 2019 18:41:33 +0800
-Message-Id: <1576752093-30840-1-git-send-email-anand.jain@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1575900365-19509-1-git-send-email-anand.jain@oracle.com>
-References: <1575900365-19509-1-git-send-email-anand.jain@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9475 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912190092
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9475 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912190092
+        Thu, 19 Dec 2019 09:01:41 -0500
+Received: by mail-qk1-f193.google.com with SMTP id k6so4691543qki.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 06:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qR4c1dD0XrJAlH3z5XZDFwRfHl5HxkHPVhqaJb/3ohE=;
+        b=PTFKlfjhkWZV90/Y6FzfSKlJNuAycHUW7pplH+onH/7fCV18Pom2WJG/4VVZyTABVM
+         nMatX4VOQoqI/jCM+2JPX/6epZDrpaF3pAU2yEE7jdXz7b+GnhnU4LgfIXvJgzfBgBeL
+         2Q12uo+oPjwaARBqMbkOYwiKL2uLUdtjgvDDTOdxFsFcjTym3kCJlfkcUuUC2VA+hXsH
+         mH1jdYPtbpJ9PgF6sNdyd8JkOQ1Vz+D/URpc/eWRbQclVKBlCI48R3w5bK4OlsoonTEm
+         g1WbfrqXaBbqqr99dyjDIkYQwEvRiONTtlJboqEo4DDC4IvF53O1CHHq8JvgTqp5WYCs
+         +pVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qR4c1dD0XrJAlH3z5XZDFwRfHl5HxkHPVhqaJb/3ohE=;
+        b=Vxkiz01WooMFB/88ozaVTpYVceDWW3QvwiOl3T5poigUZamrzD1knT2I/7cOJMjfKj
+         aXzkLoqB2dvEP6d0xw6VCpvw9wS+HdeYFUnfm37rApMr1A1fQpwaqFcHceK73FWaGlf1
+         YuvM7O5JZ4HzL/k2j75oU+JRKeIDXzJa1pFWaopRZZ7vUo+ngLywy+aRHBVLvyPanlOE
+         dyn8m/PhYPOzDVHYKFJ/huMV8gyHNXaEYfiB0EusnwVC746RjItRdM6Gj3DDWJCtM+HK
+         gQoeoZIsR9viwd4PU8S2VQUonD5s1usg17NrkITSvme83F2RiEMJDRy3xtjsCj+D81te
+         8XdQ==
+X-Gm-Message-State: APjAAAX7CYFCyaymuhkkp15CEvM4uPDRbQ8WFNy3/V75h9mycjVQVXg8
+        MdudkrQDSLSpr4nMY2V5nrIVw2atgVwtZA==
+X-Google-Smtp-Source: APXvYqwoGMA04LgMhVuLQALxe7/1jFTVFw72o+sPwtFOBbkseIDnVzHH5hTS8Von63zR5xpCEN8XrA==
+X-Received: by 2002:a37:6287:: with SMTP id w129mr8089623qkb.381.1576764100110;
+        Thu, 19 Dec 2019 06:01:40 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id d8sm1828954qtr.53.2019.12.19.06.01.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Dec 2019 06:01:38 -0800 (PST)
+Subject: Re: [PATCH v6 15/28] btrfs: serialize data allocation and submit IOs
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-16-naohiro.aota@wdc.com>
+ <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
+ <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <ce94fc27-0167-087e-28f1-17e885ff5ddb@toxicpanda.com>
+Date:   Thu, 19 Dec 2019 09:01:35 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
+MIME-Version: 1.0
+In-Reply-To: <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-New sysfs attributes
-  in_fs_metadata  missing  replace_target  writeable
-are added under a new kobject
-  UUID/devinfo/<devid>
+On 12/19/19 1:54 AM, Naohiro Aota wrote:
+> On Tue, Dec 17, 2019 at 02:49:44PM -0500, Josef Bacik wrote:
+>> On 12/12/19 11:09 PM, Naohiro Aota wrote:
+>>> To preserve sequential write pattern on the drives, we must serialize
+>>> allocation and submit_bio. This commit add per-block group mutex
+>>> "zone_io_lock" and find_free_extent_zoned() hold the lock. The lock is kept
+>>> even after returning from find_free_extent(). It is released when submiting
+>>> IOs corresponding to the allocation is completed.
+>>>
+>>> Implementing such behavior under __extent_writepage_io() is almost
+>>> impossible because once pages are unlocked we are not sure when submiting
+>>> IOs for an allocated region is finished or not. Instead, this commit add
+>>> run_delalloc_hmzoned() to write out non-compressed data IOs at once using
+>>> extent_write_locked_rage(). After the write, we can call
+>>> btrfs_hmzoned_data_io_unlock() to unlock the block group for new
+>>> allocation.
+>>>
+>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>
+>> Have you actually tested these patches with lock debugging on?  The 
+>> submit_compressed_extents stuff is async, so the unlocker owner will not be 
+>> the lock owner, and that'll make all sorts of things blow up. This is just 
+>> straight up broken.
+> 
+> Yes, I have ran xfstests on this patch series with lockdeps and
+> KASAN. There was no problem with that.
+> 
+> For non-compressed writes, both allocation and submit is done in
+> run_delalloc_zoned(). Allocation is done in cow_file_range() and
+> submit is done in extent_write_locked_range(), so both are in the same
+> context, so both locking and unlocking are done by the same execution
+> context.
+> 
+> For compressed writes, again, allocation/lock is done under
+> cow_file_range() and submit is done in extent_write_locked_range() and
+> unlocked all in submit_compressed_extents() (this is called after
+> compression), so they are all in the same context and the lock owner
+> does the unlock.
+> 
+>> I would really rather see a hmzoned block scheduler that just doesn't submit 
+>> the bio's until they are aligned with the WP, that way this intellligence 
+>> doesn't have to be dealt with at the file system layer. I get allocating in 
+>> line with the WP, but this whole forcing us to allocate and submit the bio in 
+>> lock step is just nuts, and broken in your subsequent patches.  This whole 
+>> approach needs to be reworked. Thanks,
+>>
+>> Josef
+> 
+> We tried this approach by modifying mq-deadline to wait if the first
+> queued request is not aligned at the write pointer of a zone. However,
+> running btrfs without the allocate+submit lock with this modified IO
+> scheduler did not work well at all. With write intensive workloads, we
+> observed that a very long wait time was very often necessary to get a
+> fully sequential stream of requests starting at the write pointer of a
+> zone. The wait time we observed was sometimes in larger than 60 seconds,
+> at which point we gave up.
 
-These attributes reflects the state of the device from the kernel
-fed by %btrfs_device::dev_state.
-These attributes are born during mount and goes along with the dynamic
-nature of the device add and delete, otherwise these attribute and kobject
-gets deleted at unmount.
+This is because we will only write out the pages we've been handed but do 
+cow_file_range() for a possibly larger delalloc range, so as you say there can 
+be a large gap in time between writing one part of the range and writing the 
+next part.
 
-Sample output:
-pwd
- /sys/fs/btrfs/6e1961f1-5918-4ecc-a22f-948897b409f7/devinfo/1/
-ls
-  in_fs_metadata  missing  replace_target  writeable
-cat missing
-  0
+You actually solve this with your patch, by doing the cow_file_range and then 
+following it up with the extent_write_locked_range() for the range you just cow'ed.
 
-The output from these attributes are 0 or 1. 0 indicates unset and 1
-indicates set.
+There is no need for the locking in this case, you could simply do that and then 
+have a modified block scheduler that keeps the bio's in the correct order.  I 
+imagine if you just did this with your original block layer approach it would 
+work fine.  Thanks,
 
-As of now these attributes are readonly.
-
-It is observed that the device delete thread and sysfs read thread will
-not race because the delete thread calls sysfs kobject_put() which in turn
-waits for existing sysfs read to complete.
-
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v3:
-  Use optional groupid devid in BTRFS_ATTR(), it was blank in v2.
-
-V2:
-  Make the devinfo attribute to carry one parameter, so now
-  instead of dev_state attribute, we create in_fs_metadata,
-  writeable, missing and replace_target attributes.
-
- fs/btrfs/sysfs.c   | 127 +++++++++++++++++++++++++++++++++++++++++++----------
- fs/btrfs/volumes.h |   2 +
- 2 files changed, 106 insertions(+), 23 deletions(-)
-
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 834f712ed60c..d414b98fb27f 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -978,29 +978,102 @@ int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
- 	if (!fs_devices->devices_kobj)
- 		return -EINVAL;
- 
--	if (one_device && one_device->bdev) {
--		disk = one_device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+	if (one_device) {
-+		if (one_device->bdev) {
-+			disk = one_device->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
-+			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-+		}
- 
--		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
--	}
-+		kobject_del(&one_device->devid_kobj);
-+		kobject_put(&one_device->devid_kobj);
- 
--	if (one_device)
- 		return 0;
-+	}
- 
--	list_for_each_entry(one_device,
--			&fs_devices->devices, dev_list) {
--		if (!one_device->bdev)
--			continue;
--		disk = one_device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
- 
--		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-+		if (one_device->bdev) {
-+			disk = one_device->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
-+			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-+		}
-+		kobject_del(&one_device->devid_kobj);
-+		kobject_put(&one_device->devid_kobj);
- 	}
- 
- 	return 0;
- }
- 
-+static ssize_t btrfs_sysfs_writeable_show(struct kobject *kobj,
-+					  struct kobj_attribute *a, char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) ? 1 : 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, writeable, btrfs_sysfs_writeable_show);
-+
-+static ssize_t btrfs_sysfs_in_fs_metadata_show(struct kobject *kobj,
-+					       struct kobj_attribute *a,
-+					       char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
-+		       &device->dev_state) ? 1 : 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, in_fs_metadata, btrfs_sysfs_in_fs_metadata_show);
-+
-+static ssize_t btrfs_sysfs_missing_show(struct kobject *kobj,
-+					struct kobj_attribute *a, char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state) ? 1 : 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, missing, btrfs_sysfs_missing_show);
-+
-+static ssize_t btrfs_sysfs_replace_target_show(struct kobject *kobj,
-+					       struct kobj_attribute *a,
-+					       char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state) ? 1 : 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, replace_target, btrfs_sysfs_replace_target_show);
-+
-+static struct attribute *devid_attrs[] = {
-+	BTRFS_ATTR_PTR(devid, writeable),
-+	BTRFS_ATTR_PTR(devid, in_fs_metadata),
-+	BTRFS_ATTR_PTR(devid, missing),
-+	BTRFS_ATTR_PTR(devid, replace_target),
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(devid);
-+
-+static struct kobj_type devid_ktype = {
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.default_groups = devid_groups,
-+};
-+
- int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
- 				 struct btrfs_device *one_device)
- {
-@@ -1008,22 +1081,30 @@ int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
- 	struct btrfs_device *dev;
- 
- 	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
--		struct hd_struct *disk;
--		struct kobject *disk_kobj;
--
--		if (!dev->bdev)
--			continue;
- 
- 		if (one_device && one_device != dev)
- 			continue;
- 
--		disk = dev->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+		if (dev->bdev) {
-+			struct hd_struct *disk;
-+			struct kobject *disk_kobj;
-+
-+			disk = dev->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
- 
--		error = sysfs_create_link(fs_devices->devices_kobj,
--					  disk_kobj, disk_kobj->name);
--		if (error)
-+			error = sysfs_create_link(fs_devices->devices_kobj,
-+						  disk_kobj, disk_kobj->name);
-+			if (error)
-+				break;
-+		}
-+
-+		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
-+					     fs_devices->devinfo_kobj, "%llu",
-+					     dev->devid);
-+		if (error) {
-+			kobject_put(&dev->devid_kobj);
- 			break;
-+		}
- 	}
- 
- 	return error;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 38f2e8437b68..68021d1ee216 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -138,6 +138,8 @@ struct btrfs_device {
- 	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
- 
- 	struct extent_io_tree alloc_state;
-+
-+	struct kobject devid_kobj;
- };
- 
- /*
--- 
-1.8.3.1
-
+Josef
