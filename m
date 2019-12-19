@@ -2,95 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34873125996
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 03:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 647B1125BA8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 07:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbfLSC33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Dec 2019 21:29:29 -0500
-Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:46159 "EHLO
-        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726463AbfLSC33 (ORCPT
+        id S1726618AbfLSGzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 01:55:01 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:45198 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbfLSGzB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Dec 2019 21:29:29 -0500
-Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
- Thu, 19 Dec 2019 02:28:50 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Thu, 19 Dec 2019 02:28:09 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (15.124.72.10) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Thu, 19 Dec 2019 02:28:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eHGoKSQ9V13ME2XB/pbNko6jh6ukMgzhtrDRrcDgnRXisFfxkC+CoHos6zu+AK0hjQdOxfzzYWhIIwxHQgvxgdul7oSJKwm15nTuuNe8qY3wy9qJbFO1N2vxJx4clqlzwC43l4+xNwHe5+VFmfwhpHsXrp5xY6zG2ZJ1YSnexeQr6U0CK4R6YgmNJNymOPd/Fq+XPZv3DfTwVZRVmN2eLqQGkUwYjf3muGS96XdUsRhZNWag3l37MOx8kGK3rXgXAKceZ2AN/UHfrRYbJg7cXHupFd0EqpAK8/mj9zg9lveBKXVy1t/1bsLE+/e54dqxi+bBzCqlyCqRw2vYhqmeQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cmfhrDhBSRdARyhZeDR7zXvnDveW7AVn/q8QGF26nEs=;
- b=Q9s8oBax65kbyJt3CPjyrM6oivQbTbo12Yi5cRGPqJHWiJQnbfADod8ILXpjN9KQdz5tblc9DD9wMFGgjVW4oql3YDzdZlTdQsudRHkKJcKA3CfRWsmAx9Ve9lBHSVRgWXf/k2nQh0juVDhGDXIEWrpSGAqA1Fb9d6OX/Rc/GclCC3KPXVeh5ETPRiFbx1f/Vuys+QMWuhLAvdYZmvkUhYao+xrzUP3P6SYHexoWIhTN507ctjFXdIld52kTI5OTH3z++dN4VVz+rBPfH0oVUp0vVFiXENRYppZq+qaH1RKsUJI0qJcrN3AAMFJjvqSQpIG4PGivRb2TJywjMOFe4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from MN2PR18MB2685.namprd18.prod.outlook.com (20.179.82.223) by
- MN2PR18MB3166.namprd18.prod.outlook.com (10.255.238.79) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.18; Thu, 19 Dec 2019 02:28:08 +0000
-Received: from MN2PR18MB2685.namprd18.prod.outlook.com
- ([fe80::b47f:8d41:b41f:5308]) by MN2PR18MB2685.namprd18.prod.outlook.com
- ([fe80::b47f:8d41:b41f:5308%6]) with mapi id 15.20.2538.019; Thu, 19 Dec 2019
- 02:28:08 +0000
-From:   Long An <lan@suse.com>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "quwenruo.btrfs@gmx.com" <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
-Thread-Topic: [PATCH] btrfs-progs: fix path for btrfs-corrupt-block
-Thread-Index: AQHVtY4zdM4hdE+tGE6GxRti7p5S/Ke/wM8AgAD7+AA=
-Date:   Thu, 19 Dec 2019 02:28:08 +0000
-Message-ID: <1576722486.3774.9.camel@suse.com>
-References: <1576665041.3774.6.camel@suse.com>
-         <9ec76f89-bc1a-2bdc-7ada-12c3c0a7c258@gmx.com>
-In-Reply-To: <9ec76f89-bc1a-2bdc-7ada-12c3c0a7c258@gmx.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=lan@suse.com; 
-x-originating-ip: [45.122.156.254]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e8232fe9-7f7d-4d10-b663-08d7842b15e6
-x-ms-traffictypediagnostic: MN2PR18MB3166:
-x-microsoft-antispam-prvs: <MN2PR18MB3166AA174FC8C2BF82FA3CB1C6520@MN2PR18MB3166.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 0256C18696
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(346002)(136003)(366004)(396003)(199004)(189003)(26005)(8936002)(8676002)(81156014)(81166006)(66476007)(558084003)(478600001)(91956017)(6486002)(66446008)(64756008)(66946007)(66556008)(2616005)(6512007)(76116006)(71200400001)(36756003)(316002)(186003)(5660300002)(6506007)(4001150100001)(2906002)(86362001)(110136005)(103116003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR18MB3166;H:MN2PR18MB2685.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TeWjpo5Tt9kDaykTP2XNmtVcXVNLHZe9dc34G9Vt8VmSUwtzuWISmncXiZ2yTFjRfkLHhQAuAGpYFv9UIcf04tMvkWY4XOrogZ7qBfEpR1tP06fpri/ABOFoSPZr74fgglA3VumflmtcmmaNdR1l1kKzOZVv/vlewQ/Z/e/3nIxiJEXmaUC1S4x1xFsxlOeI0K6qVTdhPV7NSEtX1Ufg9ZuyW4F2Q9VAzWk73oILdpMKj2sTB0KE8Lk+lvPyv3M38HSUPgHL0x6/J9fi70+w2/ZtywBU6ln70WoJj+QrEgWTm2SkbzOF/K6HZjr5oFJfXZm1nRmH7d55WgBksOmlQC7ajX3TdLMFMP7f/YiVNpu33Qmz2ZTjw1o54mjcHsnEaZ+deOWXOI25XQC3sZdtlY97RFkHsKU0JOCkfQm2PqVVJiPkf3nyPjXK45FDQ73u
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DE46349A5F2FC14EB805F424A1C52531@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 19 Dec 2019 01:55:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1576738500; x=1608274500;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=L+ilHZYja3Uqxdg3nCQXwKyTdE3PSSxtheSKQrT27+8=;
+  b=doXKsLXUXdeOv2YontQZwTWsnedEfBYgV2NDxC/k3ZKFlNia3inVs5pV
+   RliLydKgBKad1muaQWCUrfbVdnsG+CcPMvP/WvpBJqckJlTzU+tv1lpsz
+   QsMJ8L0BrcFEgCsOPnOs9HQ2/VwqKpZ6C8C44IZEXFYk3dECiXnzMg4J3
+   cJOT04xaBoyr7xPBIdq9G/YGmL8khLUeU4l3S+jE5V8DhakaNHaBz2IJe
+   9fxvD062SGudB3R7W6GBsjTFy0ykjisRSii6PAd61d3IpjJ7ZxsV9gOOm
+   Q9G8fGp+/v6kOxiEeX3iv5y3JC1up4P2NYW/mKvfa+d09AML5BxRhrH4m
+   Q==;
+IronPort-SDR: cJcysuiOas5ZEWlPCr9ljWtWQNZ94wX0m8/1K2xOsy3wugh59lLGRosWj9Zd9Y9f/mWJ4iPtJR
+ sN0x9sUvbdBQV560zlf+DaaZ1qmWXaF6HQl9+Y6DNYhHO6h32QzeWjXrWKgwtiCRFgpUR5B4PU
+ 4uQjBUfbq1lN8o4b8gnsj3Z6Y8QpAWM3IYVaS2LU/CVgfAZRMoY108GogFRrN+Hl6qUZQkRd2B
+ IDpgx98Tyi8GXmmDnPxqol/XrdgQkHBwdAleG1HMlSVuX6SupJazMvhLH4GuYZ+9wzs0Lxhc51
+ NzM=
+X-IronPort-AV: E=Sophos;i="5.69,330,1571673600"; 
+   d="scan'208";a="127312665"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2019 14:55:00 +0800
+IronPort-SDR: diTOML4Mg8aYTqVZ4ef28LUo5gzGXuxgVdvO1K/8AAlTW3T3NB0cVMdK4R+rqiT+r9Uhp85Lb0
+ T5IIowAv6QAebQyMx7UsaB5hBMrcUThVo15RveUpRJUuiKPSF7kzYK7aAKygDnKyQE+2rWc2hX
+ Er4eGEISWJdCcpJGpekREXuZoG9o+bn9AoLR8IHvRv990PAn27TeOBa74yGfl2IZ4yp07iHimK
+ rOKDY/4taBHDQCfVXK8qlpqcyKeUhEFhIbweN3+wew1imUHLlAADDeXeFqhv6xtpWPMgJGl1QM
+ FH04t0w+Q8LafxzsDw/mxT/W
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 22:49:00 -0800
+IronPort-SDR: Tk/Rr6/fI21CpFaZNHMbGcP56TOuiEtHBiiV+d2jhY/u5GJcxFjsOfldC91zssPm0f0Ap9ZUPU
+ JXAMYkvpJ+LqUk6AP9SwcvFu6ur90et/S72rbLSJ4CV+Kn8Q2C4hGiipZO6OzWipdLUrjTuH4x
+ VhFDEkQOwMShzwdUBJR/aUXbiyl0xl+e2LA7YzRRx0Hx7wTyqmqQEo1GNUnrYgu+Hf6ePz+Xv9
+ I7RtfNv13F/1usiPv7+ZVOnmj5eMhMqDpULc4dfWv7QLJi8J25LsAsGqzjiB7WhsGtQBn2QyjF
+ nTQ=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip01.wdc.com with SMTP; 18 Dec 2019 22:54:58 -0800
+Received: (nullmailer pid 2722299 invoked by uid 1000);
+        Thu, 19 Dec 2019 06:54:57 -0000
+Date:   Thu, 19 Dec 2019 15:54:57 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 15/28] btrfs: serialize data allocation and submit IOs
+Message-ID: <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
+References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
+ <20191213040915.3502922-16-naohiro.aota@wdc.com>
+ <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8232fe9-7f7d-4d10-b663-08d7842b15e6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2019 02:28:08.1426
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7W7lX2HHXJmHjk/opUnQ9McENT2Elldz1o5BI/Yj8PRZa9z+OyBpkIJ+sPJU509j
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3166
-X-OriginatorOrg: suse.com
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-U29ycnkgZm9yIG1pc3Rha2UuIEknbGwgcmVzZW5kIEFTQVAuDQoNCk9uIFdlZCwgMjAxOS0xMi0x
-OCBhdCAxOToyNiArMDgwMCwgUXUgV2VucnVvIHdyb3RlOg0KPiBPbiAyMDE5LzEyLzE4IOS4i+WN
-iDY6MzAsIExvbmcgQW4gd3JvdGU6DQo+ID4gDQo+IA0KPiBJcyB0aGF0IG9ubHkgbWU/IEkgc2Vl
-IG5vdGhpbmcgYnV0IGJsYW5rLg0KPiANCj4gQW5kIHJhdyBtYWlsIHNob3dzIG5vdGhpbmcgYnV0
-IGRpZmZlcmVudCBoZWFkZXJzLg0KPiANCj4gVGhhbmtzLA0KPiBRdQ0KPiANCi0tIA0KQW4gTG9u
-ZyA8bGFuQHN1c2UuY29tPg0KU1VTRSBTTEUtUUEgLCBBUEFDLTIgQmVpamluZw==
+On Tue, Dec 17, 2019 at 02:49:44PM -0500, Josef Bacik wrote:
+>On 12/12/19 11:09 PM, Naohiro Aota wrote:
+>>To preserve sequential write pattern on the drives, we must serialize
+>>allocation and submit_bio. This commit add per-block group mutex
+>>"zone_io_lock" and find_free_extent_zoned() hold the lock. The lock is kept
+>>even after returning from find_free_extent(). It is released when submiting
+>>IOs corresponding to the allocation is completed.
+>>
+>>Implementing such behavior under __extent_writepage_io() is almost
+>>impossible because once pages are unlocked we are not sure when submiting
+>>IOs for an allocated region is finished or not. Instead, this commit add
+>>run_delalloc_hmzoned() to write out non-compressed data IOs at once using
+>>extent_write_locked_rage(). After the write, we can call
+>>btrfs_hmzoned_data_io_unlock() to unlock the block group for new
+>>allocation.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>
+>Have you actually tested these patches with lock debugging on?  The 
+>submit_compressed_extents stuff is async, so the unlocker owner will 
+>not be the lock owner, and that'll make all sorts of things blow up.  
+>This is just straight up broken.
+
+Yes, I have ran xfstests on this patch series with lockdeps and
+KASAN. There was no problem with that.
+
+For non-compressed writes, both allocation and submit is done in
+run_delalloc_zoned(). Allocation is done in cow_file_range() and
+submit is done in extent_write_locked_range(), so both are in the same
+context, so both locking and unlocking are done by the same execution
+context.
+
+For compressed writes, again, allocation/lock is done under
+cow_file_range() and submit is done in extent_write_locked_range() and
+unlocked all in submit_compressed_extents() (this is called after
+compression), so they are all in the same context and the lock owner
+does the unlock.
+
+>I would really rather see a hmzoned block scheduler that just doesn't 
+>submit the bio's until they are aligned with the WP, that way this 
+>intellligence doesn't have to be dealt with at the file system layer.  
+>I get allocating in line with the WP, but this whole forcing us to 
+>allocate and submit the bio in lock step is just nuts, and broken in 
+>your subsequent patches.  This whole approach needs to be reworked.  
+>Thanks,
+>
+>Josef
+
+We tried this approach by modifying mq-deadline to wait if the first
+queued request is not aligned at the write pointer of a zone. However,
+running btrfs without the allocate+submit lock with this modified IO
+scheduler did not work well at all. With write intensive workloads, we
+observed that a very long wait time was very often necessary to get a
+fully sequential stream of requests starting at the write pointer of a
+zone. The wait time we observed was sometimes in larger than 60 seconds,
+at which point we gave up.
+
+While we did not extensively dig into the fundamental root cause,
+these potentially long wait times can come from a large number of
+reasons: page cache writeback behavior, kernel process scheduling,
+device IO congestion and writeback throttling, sync, transaction
+commit of btrfs, and cgroup use could make everything even worse. In
+the worst case scenario, a number of out-of-ordered requests could get
+stuck in the IO scheduler, preventing forward progress in the case of
+a memory reclaim writeback, causing the OOM killer to start happily
+killing application processes. Furthermore, IO error handling becomes
+a nightmare as the block layer scheduler would need to issue report
+zones commands to re-sync the zone wp in case of write error. And that
+is also in addition to having to track other zone commands that change
+a zone wp such as reset zone and finish zone.
+
+Considering all this, handling the sequential write constraint at the
+file system layer by ensuring that write BIOs are issued in the correct
+order starting from a zone WP is far simpler and removes dependencies on
+other features such as cgroup, congestion control and other throttling
+mechanisms. The IO scheduler can always dispatch to the device the
+requests it received without any waiting time, ensuring forward progress.
+
+The mq-deadline IO scheduler supports not only regular block devices but
+also zoned block devices and it is the default scheduler for them, and
+other schedulers that are not zone compliant cannot be selected (one
+cannot change to kyber nor bfq). This ensure that the default system
+behavior will be correct as long as the user (the FS) respects the
+sequential write rule.
+
+The previous approach I proposed using a btrfs request reordering stage
+was indeed very invasive, and similarly the block layer scheduler
+changes, could cause problems with cgroups etc. The new approach of this
+path using locking to have atomic allocate+bio issuing results in
+per-zone sequential write patterns, no matter what happens around it. It
+is less invasive and rely on the sequential allocation of blocks for the
+ordering of write IOs, so there is no explicit reordering, so no
+additional overhead. f2fs implementation uses a similar approach since
+kernel 4.10 and has proven to be very solid.
+
+In light of these arguments and explanation, do you still think the
+allocate zone locking approach is still not acceptable ?
