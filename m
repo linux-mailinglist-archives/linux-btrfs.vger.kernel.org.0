@@ -2,159 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F9D1264A5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 15:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 705AF12666F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 17:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbfLSO2j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 09:28:39 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37048 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbfLSO2i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 09:28:38 -0500
-Received: by mail-qk1-f196.google.com with SMTP id 21so4785921qky.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 06:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EvqY5TvLs2EG4Ubsh3PQ2JzrxSkMhMPV6qsK0WJpGKw=;
-        b=sPzbSWgMnZcCv3QxfuwTEh8TQ0G0wtRC7QspVh3RgKDukoy+ILoAunU8r2lKSsESoX
-         JQWDUs/wIFL3hOLb0thCbGEJCWt67nq04wNi3LipsC7DcVXnj2tahqkcwMxtsrSHYTpv
-         tjyzvVQBuyBjT9c2WGAIzer5Nx3snHdA8LMWDeha6HP+4ymp69ByT86iGc9S0gySdhu9
-         t08urhD7JsMUwnXNZbFV0w7aOOB/BToODPnWKqfaMYgYa85JqOghpRtvbIeidnYN4Tu0
-         TDxE6TkVjF8BMoJq7puMh1+kpoBWeHDdDDu/CsSjI8REtfnbuIxIvzFQTSn0LxpwR+wH
-         B1QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EvqY5TvLs2EG4Ubsh3PQ2JzrxSkMhMPV6qsK0WJpGKw=;
-        b=DSkeHP7K04/Smb17kFH92LSxtl+Chth/Rf5L2X6uwWgS6MP3Nhb1jyWx2afEfrP9KE
-         hMV/XVWF8APdR0CsYTXTmppjTXKs6b6ERVowjZZboZacvzmNsY0haVlWJ6KTiyDp3Do3
-         W15vqIr7uC7tNOMfJAARW/gGcw+fXcUiDl4xZLampzVOTvBb4V2grziVyNx4q5TTRxZf
-         t8NR91G4hMxflsDDpf7gDiM/ME0C3QTyRulqG47rvV7ZpluPbFI5U8EPkjT+Om55HGdy
-         Nr1UPk3VdogxZwvI8BKS8oHae2YGD5Z6dSUIm/yldpADUpkm00/c+GdI8il5XvuFHJtf
-         F8qQ==
-X-Gm-Message-State: APjAAAUuzgjlEy6dIOZYoN+C23eDn6qLhVlaH+4bJ7jeB1t16/GCvX8L
-        PFN46BMCbkMU+JRdQ+Tz5j26oNrz0l45GQ==
-X-Google-Smtp-Source: APXvYqz1jDbORjr+hxhQaQ9oa2hWthuxh6OPG3MhHEHOlu6PCBIdzBqsfsFe9ZOvj/EUY54beGULUQ==
-X-Received: by 2002:ae9:e30b:: with SMTP id v11mr8551777qkf.434.1576765717461;
-        Thu, 19 Dec 2019 06:28:37 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id q73sm1750009qka.56.2019.12.19.06.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 06:28:36 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] btrfs: regression test for subvol deletion after rename
-Date:   Thu, 19 Dec 2019 09:28:35 -0500
-Message-Id: <20191219142835.50371-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.23.0
+        id S1726830AbfLSQMX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 11:12:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726778AbfLSQMX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Dec 2019 11:12:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 56FE5ACE1;
+        Thu, 19 Dec 2019 16:12:20 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: regression test for subvol deletion after rename
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, kernel-team@fb.com
+References: <20191219142835.50371-1-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
+Date:   Thu, 19 Dec 2019 18:12:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191219142835.50371-1-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test removal of a subvolume via rmdir after it has been renamed into a
-snapshot of the volume that originally contained the subvolume
-reference.
 
-This currently fails on btrfs but is fixed by the patch with the title
 
-  "btrfs: fix invalid removal of root ref"
+On 19.12.19 г. 16:28 ч., Josef Bacik wrote:
+> Test removal of a subvolume via rmdir after it has been renamed into a
+> snapshot of the volume that originally contained the subvolume
+> reference.
+> 
+> This currently fails on btrfs but is fixed by the patch with the title
+> 
+>   "btrfs: fix invalid removal of root ref"
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/202.out |  4 ++++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 59 insertions(+)
+>  create mode 100755 tests/btrfs/202
+>  create mode 100644 tests/btrfs/202.out
+> 
+> diff --git a/tests/btrfs/202 b/tests/btrfs/202
+> new file mode 100755
+> index 00000000..b02ee446
+> --- /dev/null
+> +++ b/tests/btrfs/202
+> @@ -0,0 +1,54 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# FS QA Test 201
+> +#
+> +# Regression test for fix "btrfs: fix invalid removal of root ref"
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +rm -f $seqres.full
+> +
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount
+> +
+> +# Create a subvol b under a and then snapshot a into c.  This create's a stub
+> +# entry in c for b because c doesn't have a reference for b.
+> +#
+> +# But when we rename b c/foo it creates a ref for b in c.  However if we go to
+> +# remove c/b btrfs used to depend on not finding the root ref to handle the
+> +# unlink properly, but we now have a ref for that root.  We also had a bug that
+> +# would allow us to remove mis-matched refs if the keys matched, so we'd end up
+> +# removing too many entries which would cause a transaction abort.
+> +
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
+> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
+> +	| _filter_scratch
+> +ls $SCRATCH_MNT/c/b
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/202.out |  4 ++++
- tests/btrfs/group   |  1 +
- 3 files changed, 59 insertions(+)
- create mode 100755 tests/btrfs/202
- create mode 100644 tests/btrfs/202.out
+Isn't this ls redundant?
 
-diff --git a/tests/btrfs/202 b/tests/btrfs/202
-new file mode 100755
-index 00000000..b02ee446
---- /dev/null
-+++ b/tests/btrfs/202
-@@ -0,0 +1,54 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# FS QA Test 201
-+#
-+# Regression test for fix "btrfs: fix invalid removal of root ref"
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+. ./common/rc
-+. ./common/filter
-+
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Create a subvol b under a and then snapshot a into c.  This create's a stub
-+# entry in c for b because c doesn't have a reference for b.
-+#
-+# But when we rename b c/foo it creates a ref for b in c.  However if we go to
-+# remove c/b btrfs used to depend on not finding the root ref to handle the
-+# unlink properly, but we now have a ref for that root.  We also had a bug that
-+# would allow us to remove mis-matched refs if the keys matched, so we'd end up
-+# removing too many entries which would cause a transaction abort.
-+
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
-+$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
-+	| _filter_scratch
-+ls $SCRATCH_MNT/c/b
-+mkdir $SCRATCH_MNT/c/foo
-+mv $SCRATCH_MNT/a/b $SCRATCH_MNT/c/foo
-+rm -rf $SCRATCH_MNT/*
-+touch $SCRATCH_MNT/blah
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
-new file mode 100644
-index 00000000..938870cf
---- /dev/null
-+++ b/tests/btrfs/202.out
-@@ -0,0 +1,4 @@
-+QA output created by 201
-+Create subvolume 'SCRATCH_MNT/a'
-+Create subvolume 'SCRATCH_MNT/a/b'
-+Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index d7eeb45d..7abc5f07 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -204,3 +204,4 @@
- 199 auto quick trim
- 200 auto quick send clone
- 201 auto quick punch log
-+202 auto quick volume
--- 
-2.23.0
-
+> +mkdir $SCRATCH_MNT/c/foo
+> +mv $SCRATCH_MNT/a/b $SCRATCH_MNT/c/foo
+> +rm -rf $SCRATCH_MNT/*
+> +touch $SCRATCH_MNT/blah
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
+> new file mode 100644
+> index 00000000..938870cf
+> --- /dev/null
+> +++ b/tests/btrfs/202.out
+> @@ -0,0 +1,4 @@
+> +QA output created by 201
+> +Create subvolume 'SCRATCH_MNT/a'
+> +Create subvolume 'SCRATCH_MNT/a/b'
+> +Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index d7eeb45d..7abc5f07 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -204,3 +204,4 @@
+>  199 auto quick trim
+>  200 auto quick send clone
+>  201 auto quick punch log
+> +202 auto quick volume
+> 
