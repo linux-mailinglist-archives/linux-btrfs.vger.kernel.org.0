@@ -2,146 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9601126422
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 15:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F9D1264A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 15:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbfLSOBl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 09:01:41 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38271 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726712AbfLSOBl (ORCPT
+        id S1726890AbfLSO2j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Dec 2019 09:28:39 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37048 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726853AbfLSO2i (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 09:01:41 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so4691543qki.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 06:01:40 -0800 (PST)
+        Thu, 19 Dec 2019 09:28:38 -0500
+Received: by mail-qk1-f196.google.com with SMTP id 21so4785921qky.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Dec 2019 06:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qR4c1dD0XrJAlH3z5XZDFwRfHl5HxkHPVhqaJb/3ohE=;
-        b=PTFKlfjhkWZV90/Y6FzfSKlJNuAycHUW7pplH+onH/7fCV18Pom2WJG/4VVZyTABVM
-         nMatX4VOQoqI/jCM+2JPX/6epZDrpaF3pAU2yEE7jdXz7b+GnhnU4LgfIXvJgzfBgBeL
-         2Q12uo+oPjwaARBqMbkOYwiKL2uLUdtjgvDDTOdxFsFcjTym3kCJlfkcUuUC2VA+hXsH
-         mH1jdYPtbpJ9PgF6sNdyd8JkOQ1Vz+D/URpc/eWRbQclVKBlCI48R3w5bK4OlsoonTEm
-         g1WbfrqXaBbqqr99dyjDIkYQwEvRiONTtlJboqEo4DDC4IvF53O1CHHq8JvgTqp5WYCs
-         +pVA==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EvqY5TvLs2EG4Ubsh3PQ2JzrxSkMhMPV6qsK0WJpGKw=;
+        b=sPzbSWgMnZcCv3QxfuwTEh8TQ0G0wtRC7QspVh3RgKDukoy+ILoAunU8r2lKSsESoX
+         JQWDUs/wIFL3hOLb0thCbGEJCWt67nq04wNi3LipsC7DcVXnj2tahqkcwMxtsrSHYTpv
+         tjyzvVQBuyBjT9c2WGAIzer5Nx3snHdA8LMWDeha6HP+4ymp69ByT86iGc9S0gySdhu9
+         t08urhD7JsMUwnXNZbFV0w7aOOB/BToODPnWKqfaMYgYa85JqOghpRtvbIeidnYN4Tu0
+         TDxE6TkVjF8BMoJq7puMh1+kpoBWeHDdDDu/CsSjI8REtfnbuIxIvzFQTSn0LxpwR+wH
+         B1QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qR4c1dD0XrJAlH3z5XZDFwRfHl5HxkHPVhqaJb/3ohE=;
-        b=Vxkiz01WooMFB/88ozaVTpYVceDWW3QvwiOl3T5poigUZamrzD1knT2I/7cOJMjfKj
-         aXzkLoqB2dvEP6d0xw6VCpvw9wS+HdeYFUnfm37rApMr1A1fQpwaqFcHceK73FWaGlf1
-         YuvM7O5JZ4HzL/k2j75oU+JRKeIDXzJa1pFWaopRZZ7vUo+ngLywy+aRHBVLvyPanlOE
-         dyn8m/PhYPOzDVHYKFJ/huMV8gyHNXaEYfiB0EusnwVC746RjItRdM6Gj3DDWJCtM+HK
-         gQoeoZIsR9viwd4PU8S2VQUonD5s1usg17NrkITSvme83F2RiEMJDRy3xtjsCj+D81te
-         8XdQ==
-X-Gm-Message-State: APjAAAX7CYFCyaymuhkkp15CEvM4uPDRbQ8WFNy3/V75h9mycjVQVXg8
-        MdudkrQDSLSpr4nMY2V5nrIVw2atgVwtZA==
-X-Google-Smtp-Source: APXvYqwoGMA04LgMhVuLQALxe7/1jFTVFw72o+sPwtFOBbkseIDnVzHH5hTS8Von63zR5xpCEN8XrA==
-X-Received: by 2002:a37:6287:: with SMTP id w129mr8089623qkb.381.1576764100110;
-        Thu, 19 Dec 2019 06:01:40 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d8sm1828954qtr.53.2019.12.19.06.01.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Dec 2019 06:01:38 -0800 (PST)
-Subject: Re: [PATCH v6 15/28] btrfs: serialize data allocation and submit IOs
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20191213040915.3502922-1-naohiro.aota@wdc.com>
- <20191213040915.3502922-16-naohiro.aota@wdc.com>
- <b11ca55e-adb6-6aa7-4494-cffafedb487f@toxicpanda.com>
- <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
+        bh=EvqY5TvLs2EG4Ubsh3PQ2JzrxSkMhMPV6qsK0WJpGKw=;
+        b=DSkeHP7K04/Smb17kFH92LSxtl+Chth/Rf5L2X6uwWgS6MP3Nhb1jyWx2afEfrP9KE
+         hMV/XVWF8APdR0CsYTXTmppjTXKs6b6ERVowjZZboZacvzmNsY0haVlWJ6KTiyDp3Do3
+         W15vqIr7uC7tNOMfJAARW/gGcw+fXcUiDl4xZLampzVOTvBb4V2grziVyNx4q5TTRxZf
+         t8NR91G4hMxflsDDpf7gDiM/ME0C3QTyRulqG47rvV7ZpluPbFI5U8EPkjT+Om55HGdy
+         Nr1UPk3VdogxZwvI8BKS8oHae2YGD5Z6dSUIm/yldpADUpkm00/c+GdI8il5XvuFHJtf
+         F8qQ==
+X-Gm-Message-State: APjAAAUuzgjlEy6dIOZYoN+C23eDn6qLhVlaH+4bJ7jeB1t16/GCvX8L
+        PFN46BMCbkMU+JRdQ+Tz5j26oNrz0l45GQ==
+X-Google-Smtp-Source: APXvYqz1jDbORjr+hxhQaQ9oa2hWthuxh6OPG3MhHEHOlu6PCBIdzBqsfsFe9ZOvj/EUY54beGULUQ==
+X-Received: by 2002:ae9:e30b:: with SMTP id v11mr8551777qkf.434.1576765717461;
+        Thu, 19 Dec 2019 06:28:37 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id q73sm1750009qka.56.2019.12.19.06.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2019 06:28:36 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ce94fc27-0167-087e-28f1-17e885ff5ddb@toxicpanda.com>
-Date:   Thu, 19 Dec 2019 09:01:35 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] btrfs: regression test for subvol deletion after rename
+Date:   Thu, 19 Dec 2019 09:28:35 -0500
+Message-Id: <20191219142835.50371-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191219065457.rhd4wcycylii33c3@naota.dhcp.fujisawa.hgst.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/19/19 1:54 AM, Naohiro Aota wrote:
-> On Tue, Dec 17, 2019 at 02:49:44PM -0500, Josef Bacik wrote:
->> On 12/12/19 11:09 PM, Naohiro Aota wrote:
->>> To preserve sequential write pattern on the drives, we must serialize
->>> allocation and submit_bio. This commit add per-block group mutex
->>> "zone_io_lock" and find_free_extent_zoned() hold the lock. The lock is kept
->>> even after returning from find_free_extent(). It is released when submiting
->>> IOs corresponding to the allocation is completed.
->>>
->>> Implementing such behavior under __extent_writepage_io() is almost
->>> impossible because once pages are unlocked we are not sure when submiting
->>> IOs for an allocated region is finished or not. Instead, this commit add
->>> run_delalloc_hmzoned() to write out non-compressed data IOs at once using
->>> extent_write_locked_rage(). After the write, we can call
->>> btrfs_hmzoned_data_io_unlock() to unlock the block group for new
->>> allocation.
->>>
->>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>
->> Have you actually tested these patches with lock debugging on?  The 
->> submit_compressed_extents stuff is async, so the unlocker owner will not be 
->> the lock owner, and that'll make all sorts of things blow up. This is just 
->> straight up broken.
-> 
-> Yes, I have ran xfstests on this patch series with lockdeps and
-> KASAN. There was no problem with that.
-> 
-> For non-compressed writes, both allocation and submit is done in
-> run_delalloc_zoned(). Allocation is done in cow_file_range() and
-> submit is done in extent_write_locked_range(), so both are in the same
-> context, so both locking and unlocking are done by the same execution
-> context.
-> 
-> For compressed writes, again, allocation/lock is done under
-> cow_file_range() and submit is done in extent_write_locked_range() and
-> unlocked all in submit_compressed_extents() (this is called after
-> compression), so they are all in the same context and the lock owner
-> does the unlock.
-> 
->> I would really rather see a hmzoned block scheduler that just doesn't submit 
->> the bio's until they are aligned with the WP, that way this intellligence 
->> doesn't have to be dealt with at the file system layer. I get allocating in 
->> line with the WP, but this whole forcing us to allocate and submit the bio in 
->> lock step is just nuts, and broken in your subsequent patches.  This whole 
->> approach needs to be reworked. Thanks,
->>
->> Josef
-> 
-> We tried this approach by modifying mq-deadline to wait if the first
-> queued request is not aligned at the write pointer of a zone. However,
-> running btrfs without the allocate+submit lock with this modified IO
-> scheduler did not work well at all. With write intensive workloads, we
-> observed that a very long wait time was very often necessary to get a
-> fully sequential stream of requests starting at the write pointer of a
-> zone. The wait time we observed was sometimes in larger than 60 seconds,
-> at which point we gave up.
+Test removal of a subvolume via rmdir after it has been renamed into a
+snapshot of the volume that originally contained the subvolume
+reference.
 
-This is because we will only write out the pages we've been handed but do 
-cow_file_range() for a possibly larger delalloc range, so as you say there can 
-be a large gap in time between writing one part of the range and writing the 
-next part.
+This currently fails on btrfs but is fixed by the patch with the title
 
-You actually solve this with your patch, by doing the cow_file_range and then 
-following it up with the extent_write_locked_range() for the range you just cow'ed.
+  "btrfs: fix invalid removal of root ref"
 
-There is no need for the locking in this case, you could simply do that and then 
-have a modified block scheduler that keeps the bio's in the correct order.  I 
-imagine if you just did this with your original block layer approach it would 
-work fine.  Thanks,
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/202.out |  4 ++++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 59 insertions(+)
+ create mode 100755 tests/btrfs/202
+ create mode 100644 tests/btrfs/202.out
 
-Josef
+diff --git a/tests/btrfs/202 b/tests/btrfs/202
+new file mode 100755
+index 00000000..b02ee446
+--- /dev/null
++++ b/tests/btrfs/202
+@@ -0,0 +1,54 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test 201
++#
++# Regression test for fix "btrfs: fix invalid removal of root ref"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++. ./common/rc
++. ./common/filter
++
++rm -f $seqres.full
++
++_supported_fs btrfs
++_supported_os Linux
++
++_scratch_mkfs >> $seqres.full 2>&1
++_scratch_mount
++
++# Create a subvol b under a and then snapshot a into c.  This create's a stub
++# entry in c for b because c doesn't have a reference for b.
++#
++# But when we rename b c/foo it creates a ref for b in c.  However if we go to
++# remove c/b btrfs used to depend on not finding the root ref to handle the
++# unlink properly, but we now have a ref for that root.  We also had a bug that
++# would allow us to remove mis-matched refs if the keys matched, so we'd end up
++# removing too many entries which would cause a transaction abort.
++
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
++$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
++	| _filter_scratch
++ls $SCRATCH_MNT/c/b
++mkdir $SCRATCH_MNT/c/foo
++mv $SCRATCH_MNT/a/b $SCRATCH_MNT/c/foo
++rm -rf $SCRATCH_MNT/*
++touch $SCRATCH_MNT/blah
++
++status=0
++exit
+diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
+new file mode 100644
+index 00000000..938870cf
+--- /dev/null
++++ b/tests/btrfs/202.out
+@@ -0,0 +1,4 @@
++QA output created by 201
++Create subvolume 'SCRATCH_MNT/a'
++Create subvolume 'SCRATCH_MNT/a/b'
++Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index d7eeb45d..7abc5f07 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -204,3 +204,4 @@
+ 199 auto quick trim
+ 200 auto quick send clone
+ 201 auto quick punch log
++202 auto quick volume
+-- 
+2.23.0
+
