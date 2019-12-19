@@ -2,181 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 705AF12666F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 17:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4AF126E6D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Dec 2019 21:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbfLSQMX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Dec 2019 11:12:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38878 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726778AbfLSQMX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Dec 2019 11:12:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 56FE5ACE1;
-        Thu, 19 Dec 2019 16:12:20 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: regression test for subvol deletion after rename
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, kernel-team@fb.com
-References: <20191219142835.50371-1-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
-Date:   Thu, 19 Dec 2019 18:12:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727285AbfLSUHx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 19 Dec 2019 15:07:53 -0500
+Received: from nwxsbs11.networkx.de ([217.91.82.83]:64760 "EHLO
+        nwxsbs11.networkx.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727190AbfLSUHw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Dec 2019 15:07:52 -0500
+X-Greylist: delayed 320 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Dec 2019 15:07:52 EST
+Received: from NWXSBS11.networkx.de ([fe80::4091:24d0:23e7:9e44]) by
+ NWXSBS11.networkx.de ([fe80::4091:24d0:23e7:9e44%14]) with mapi id
+ 14.03.0468.000; Thu, 19 Dec 2019 21:00:12 +0100
+From:   Ralf Zerres <Ralf.Zerres@networkx.de>
+To:     "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>
+Subject: How to heel this btrfs fi corruption?
+Thread-Topic: How to heel this btrfs fi corruption?
+Thread-Index: AdW2puxRpbYJ6wGOS3W1/yTrAS6zvA==
+Date:   Thu, 19 Dec 2019 20:00:12 +0000
+Message-ID: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.1.10.16]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20191219142835.50371-1-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Dear list,
+
+at customer site i can't mount a given btrfs device in rw mode.
+this is production data and i do have a backup and managed to mount the filesystem in ro mode. I did copy out relevant stuff.
+Having said this, if btrfs --repair can't heal the situation, i could reformat the filesystem and start all over.
+But i would prefere to save the time and take the heeling as a proof of "production ready" status of btrfs-progs.
+
+Here are the details:
+
+kernel: 5.2.2 (Ubuntu 18.04.3)
+btrfs-progs: 5.2.1
+HBA: DELL Perc
+# storcli /c0/v0
+# 0/0   RAID5 Optl  RW     Yes     RWBD  -   OFF 7.274 TB SSD-Data
+#btrfs fi show /dev/sdX
+#Label: 'Data-Ssd'  uuid: <my uuid>
+#        Total devices 1 FS bytes used 7.12TiB
+#        devid    1 size 7.27TiB used 7.27TiB path /dev/<mydev>
+
+What happend:
+Customer filled up the filesystem (lots of snapshots in a couple of subvolumes).
+System was working with kernel 4.15 and btrfs-progs 4.15. I updated kernel and btrfs-progs with the assumption
+more mainlined/actual tools could do a better job. Since they have seen lots of fixups.
+
+1) As a first step, i did run
+
+# btrfs check --mode lowmem --progress /dev/<mydev> 
+
+got extend mismatches and wrong extend CRC's
+
+2) As a second step i did try to mount in recovery mode
+
+# mount -t btrfs -o defaults, recovery, skip_balance /dev/<mydev> /mnt
+
+I included skip_balance, since there might be an unfinished balance run. But this didn't work out.
+
+3) As a third step, got it mounted with ro mode
+
+# mount -t  btrfs -o ro /dev/<mydev> /mnt
+
+And filed data received via usage:
+
+# btrfs fi usage /mnt
+# Overall:
+#    Device size:                   7.27TiB
+#    Device allocated:              7.27TiB
+#    Device unallocated:            1.00MiB
+#    Device missing:                  0.00B
+#    Used:                          7.13TiB
+#    Free (estimated):            134.13GiB      (min: 134.13GiB)
+#    Data ratio:                       1.00
+#    Metadata ratio:                   2.00
+#    Global reserve:              512.00MiB      (used: 0.00B)
+#
+# Data,single: Size:7.23TiB, Used:7.10TiB
+#   /dev/<mydev>        7.23TiB
+#
+# Metadata,DUP: Size:21.50GiB, Used:14.31GiB
+#   /dev/<mydev>       43.00GiB
+#
+# System,DUP: Size:8.00MiB, Used:864.00KiB
+#   /dev/<mydev>       16.00MiB
+
+# Unallocated:
+#   /dev/<mydev>        1.00MiB
+
+Obviously, totally filled up.
+At that time i copied out all relevant data - you never know ... Finished!
+
+Then tried to unmout, but that got to nowhere. Leads to a reboot .
 
 
-On 19.12.19 г. 16:28 ч., Josef Bacik wrote:
-> Test removal of a subvolume via rmdir after it has been renamed into a
-> snapshot of the volume that originally contained the subvolume
-> reference.
-> 
-> This currently fails on btrfs but is fixed by the patch with the title
-> 
->   "btrfs: fix invalid removal of root ref"
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/202.out |  4 ++++
->  tests/btrfs/group   |  1 +
->  3 files changed, 59 insertions(+)
->  create mode 100755 tests/btrfs/202
->  create mode 100644 tests/btrfs/202.out
-> 
-> diff --git a/tests/btrfs/202 b/tests/btrfs/202
-> new file mode 100755
-> index 00000000..b02ee446
-> --- /dev/null
-> +++ b/tests/btrfs/202
-> @@ -0,0 +1,54 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# FS QA Test 201
-> +#
-> +# Regression test for fix "btrfs: fix invalid removal of root ref"
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +rm -f $seqres.full
-> +
-> +_supported_fs btrfs
-> +_supported_os Linux
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1
-> +_scratch_mount
-> +
-> +# Create a subvol b under a and then snapshot a into c.  This create's a stub
-> +# entry in c for b because c doesn't have a reference for b.
-> +#
-> +# But when we rename b c/foo it creates a ref for b in c.  However if we go to
-> +# remove c/b btrfs used to depend on not finding the root ref to handle the
-> +# unlink properly, but we now have a ref for that root.  We also had a bug that
-> +# would allow us to remove mis-matched refs if the keys matched, so we'd end up
-> +# removing too many entries which would cause a transaction abort.
-> +
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
-> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
-> +	| _filter_scratch
-> +ls $SCRATCH_MNT/c/b
+4) As a forth step, i tried to repair it
 
-Isn't this ls redundant?
+# btrfs check --mode lowmem --progress --repair /dev/<mydev>
+# enabling repair mode
+# WARNING: low-memory mode repair support is only partial
+# Opening filesystem to check...
+# Checking filesystem on /dev/<mydev>
+# UUID: <my UUID>
+# [1/7] checking root items                      (0:00:33 elapsed, 20853512 items checked)
+# Fixed 0 roots.
+# ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: # 28, have: 34
+# ERROR: fail to allocate new chunk No space left on device
+# Try to exclude all metadata blcoks and extents, it may be slow
+# Delete backref in extent [1988733435904 134217728]07:16 elapsed, 40435 items checked)
+# ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: 27, have: 34
+# Delete backref in extent [1988733435904 134217728]
+# ERROR: extent[1988733435904, 134217728] referencer count mismatch (root: 261, owner: 286, offset: 5905580032) wanted: 26, have: 34
+# ERROR: commit_root already set when starting transaction
+# ERROR: fail to start transaction: Invalid argument
+# ERROR: extent[2017321811968, 134217728] referencer count mismatch (root: 261, owner: 287, offset: 2281701376) wanted: 3215, have: 3319
+# ERROR: commit_root already set when starting transaction
+# ERROR: fail to start transaction Invalid argument
 
-> +mkdir $SCRATCH_MNT/c/foo
-> +mv $SCRATCH_MNT/a/b $SCRATCH_MNT/c/foo
-> +rm -rf $SCRATCH_MNT/*
-> +touch $SCRATCH_MNT/blah
-> +
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
-> new file mode 100644
-> index 00000000..938870cf
-> --- /dev/null
-> +++ b/tests/btrfs/202.out
-> @@ -0,0 +1,4 @@
-> +QA output created by 201
-> +Create subvolume 'SCRATCH_MNT/a'
-> +Create subvolume 'SCRATCH_MNT/a/b'
-> +Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index d7eeb45d..7abc5f07 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -204,3 +204,4 @@
->  199 auto quick trim
->  200 auto quick send clone
->  201 auto quick punch log
-> +202 auto quick volume
-> 
+This ends with a core-dump.
+
+Last not least my question:
+
+I'm not experienced enough to solve this issue myself and need your help. 
+Is it worth the time and effort to solve this issue? Developers might be interested while having a real live testbed?
+Do you need any further info that will help to solve the issue?
+
+
+Best regards
+Ralf
+
+
+
+
+
