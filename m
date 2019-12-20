@@ -2,130 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D17A127886
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 10:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4A91279A8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 11:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbfLTJxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 04:53:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60584 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727261AbfLTJxr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 04:53:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 25315ACFE;
-        Fri, 20 Dec 2019 09:53:45 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: regression test for subvol deletion after rename
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, kernel-team@fb.com
-References: <20191219142835.50371-1-josef@toxicpanda.com>
- <db0849cb-66d9-4815-d111-b225cb27a3c5@suse.com>
- <5ea1f28a-16bc-f97c-9c4a-ce47f94b1b43@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <0f3fe438-acc5-31b4-a366-3210b31e5b17@suse.com>
-Date:   Fri, 20 Dec 2019 11:53:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727258AbfLTKxD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 05:53:03 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:40415 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbfLTKxD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 05:53:03 -0500
+Received: by mail-lf1-f68.google.com with SMTP id i23so6685639lfo.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 02:53:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=X2TpjsJP0oebYGNNTUXJXcJtDx5U/oGc4gAaJU8i4yg=;
+        b=TrB/O+03WIc3TJFAyA/85hBW0ukENQ2/6yTczyohK3z+c8JkvpkAT2i5GW9TqQ2Qs9
+         4a8fcHREvF+NlGbsDAHyIqCFxQR4tfS/Upt3ankLUoX6APGWgHLf7wgNaAusv7KERwGW
+         XiwOGwKWyL+y0+LkI5Uqi2eoZ/Kue343AdYRXnWO8fWKIkCSrnus4CeoyhHAE6r/qHoc
+         FRbqHOY4eKSOskNkTmgEQcwnWUMvcP0i5IOvseKYP+/RaI/0Q+96rPtcEt/95zO8QjQf
+         xwSOoaBl2MTMAt31HdsU680giTiLcqe9Hx2ghujor/PSv+vS8svJvjDfwIttrFinX6cL
+         mrdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=X2TpjsJP0oebYGNNTUXJXcJtDx5U/oGc4gAaJU8i4yg=;
+        b=o+fbpL47/VTEqogqVqvSEFqhmGrOZBdKMGnakj9uJKTKh2N79Owq/TuLQMZfnNEJXt
+         nt86qJrP751OthQWVTnKstjVONH5iWWPzGV4V7QM1Gl5dHt8+Fb3ABvbsBd/duq4tehd
+         onQKBSkfJPBWyOj89oXtx+QHgbVQkLLiu6u6oyop4FNEfIE584BOnPg3GchHxgHNwflx
+         ZhY/poAQf6pD8tIt6Lg0+UcdVKE1ciqLqNBz4nzjY7jQswjjSpDJXuBq0+twZtnX0uiv
+         JKpP5A1s8lB22Zq54xmSjPttqdjifrZCBlqDFIIu+V+fBGFt4sN2+zSi61dGhbU9H8Dv
+         Ay0A==
+X-Gm-Message-State: APjAAAXU8xwWK8wVMmonzqUS9MfST5tL69oxLrbnH5dQpSyPNhfh/eW4
+        DvlSIaeDUQPT6r7UDfQTZMtMOVVmYMTfbt/q+lQ=
+X-Google-Smtp-Source: APXvYqznwp2ql8oHVPHj9vHR4C38Rmxt1C9DXx39hkVyfVbGc9HeYrxKl+fmCWqUCjUxhAOzfLzQhIiShygFAj/awwM=
+X-Received: by 2002:a19:40d8:: with SMTP id n207mr8523261lfa.4.1576839180761;
+ Fri, 20 Dec 2019 02:53:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5ea1f28a-16bc-f97c-9c4a-ce47f94b1b43@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a2e:1413:0:0:0:0:0 with HTTP; Fri, 20 Dec 2019 02:53:00
+ -0800 (PST)
+Reply-To: rev.wright.watson@yandex.com
+From:   "Rev.Wright Watson" <aataat890@gmail.com>
+Date:   Fri, 20 Dec 2019 11:53:00 +0100
+Message-ID: <CAGfrCTynTGT4OW=p_bcCpHRt8YqAtjZ6rMurxKuYRkqCdvvknA@mail.gmail.com>
+Subject: Dear Beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Dear Beloved,
 
+I'm Reverend Wright Watson, I was born in USA, 1945, I was ordained
+into the Catholic Priesthood.
 
-On 19.12.19 г. 23:16 ч., Josef Bacik wrote:
-> On 12/19/19 11:12 AM, Nikolay Borisov wrote:
->>
->>
->> On 19.12.19 г. 16:28 ч., Josef Bacik wrote:
->>> Test removal of a subvolume via rmdir after it has been renamed into a
->>> snapshot of the volume that originally contained the subvolume
->>> reference.
->>>
->>> This currently fails on btrfs but is fixed by the patch with the title
->>>
->>>    "btrfs: fix invalid removal of root ref"
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>> ---
->>>   tests/btrfs/202     | 54 +++++++++++++++++++++++++++++++++++++++++++++
->>>   tests/btrfs/202.out |  4 ++++
->>>   tests/btrfs/group   |  1 +
->>>   3 files changed, 59 insertions(+)
->>>   create mode 100755 tests/btrfs/202
->>>   create mode 100644 tests/btrfs/202.out
->>>
->>> diff --git a/tests/btrfs/202 b/tests/btrfs/202
->>> new file mode 100755
->>> index 00000000..b02ee446
->>> --- /dev/null
->>> +++ b/tests/btrfs/202
->>> @@ -0,0 +1,54 @@
->>> +#! /bin/bash
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +#
->>> +# FS QA Test 201
->>> +#
->>> +# Regression test for fix "btrfs: fix invalid removal of root ref"
->>> +#
->>> +seq=`basename $0`
->>> +seqres=$RESULT_DIR/$seq
->>> +echo "QA output created by $seq"
->>> +
->>> +here=`pwd`
->>> +tmp=/tmp/$$
->>> +status=1    # failure is the default!
->>> +trap "_cleanup; exit \$status" 0 1 2 3 15
->>> +
->>> +_cleanup()
->>> +{
->>> +    cd /
->>> +    rm -f $tmp.*
->>> +}
->>> +
->>> +. ./common/rc
->>> +. ./common/filter
->>> +
->>> +rm -f $seqres.full
->>> +
->>> +_supported_fs btrfs
->>> +_supported_os Linux
->>> +
->>> +_scratch_mkfs >> $seqres.full 2>&1
->>> +_scratch_mount
->>> +
->>> +# Create a subvol b under a and then snapshot a into c.  This 
->>> create's a stub
->>> +# entry in c for b because c doesn't have a reference for b.
->>> +#
->>> +# But when we rename b c/foo it creates a ref for b in c.  However 
->>> if we go to
->>> +# remove c/b btrfs used to depend on not finding the root ref to 
->>> handle the
->>> +# unlink properly, but we now have a ref for that root.  We also had 
->>> a bug that
->>> +# would allow us to remove mis-matched refs if the keys matched, so 
->>> we'd end up
->>> +# removing too many entries which would cause a transaction abort.
->>> +
->>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
->>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
->>> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
->>> +    | _filter_scratch
->>> +ls $SCRATCH_MNT/c/b
->>
->> Isn't this ls redundant?
->>
-> 
-> No we need the dummy entry in cache before we add the root ref during 
-> the rename.  Thanks,
+Please take your time to read this message, although we have never met
+before, this is no spam, It's a real message sent to you. I know also
+that you will be amazed at the level of trust that I am willing to
+place in a person that I have never seen nor spoken with. If I can
+receive favor from someone I barely know, its not bad entrusting this
+project to unknown person as long as my spirit directed me to you.
 
-A comment stating this would be good.
+I have been a catholic priest for over 22 years. I spent about 10
+years serving at Africa, Burkina Faso to be precise, I spend most time
+in Ouagadougou Cathedral.
+Presently, I had a heart surgery on the 23-11-2018 and the Doctors
+have informed me that I cannot live longer; I had a serious bleeding
+after the operation.
+Before I left Ouagadougou to my country for the surgery, a priest
+friend of mine visited me from Netherlands with three companion, when
+they went back, one among his companion Transferred 10M$ in my
+personal account with Bank of Africa and advised that I use the money
+to help the poor, handicaps and less privileges because he saw the
+level hardship then.
 
-> 
-> Josef
+Because of my present health condition, I cannot live to proceed with
+the projects, therefore, I have decided to appoint you to reclaim the
+money which total sum of $10,970,000.00 (Ten million Nine Hundred and
+seventy Thousand US DOLLARS).
+
+I want you to use this sum to make the world a better place for the
+poor and less privileged, help the needy and also help your family
+members.
+
+I took this decision because I was raised in an Orphanage so I don't
+have relatives and presently, I'm still in the hospital, where I am
+undergoing treatment. That's why I have decided to contact you so that
+you can contact my account manager in Bank of Africa, reclaim the
+money and make good use of it.
+
+then you can contact me through private email
+addres(rev.wright.watson@yandex.com)
+
+Regards,
+Rev.Wright Watson
