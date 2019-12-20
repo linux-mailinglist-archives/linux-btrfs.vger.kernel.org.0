@@ -2,165 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F669127E4B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 15:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1C0127E57
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 15:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727710AbfLTOk2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 09:40:28 -0500
-Received: from mail-qk1-f174.google.com ([209.85.222.174]:44379 "EHLO
-        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbfLTOk1 (ORCPT
+        id S1727407AbfLTOo0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 09:44:26 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:34395 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727233AbfLTOo0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 09:40:27 -0500
-Received: by mail-qk1-f174.google.com with SMTP id w127so7757501qkb.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 06:40:27 -0800 (PST)
+        Fri, 20 Dec 2019 09:44:26 -0500
+Received: by mail-qk1-f196.google.com with SMTP id j9so8175108qkk.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 06:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sQAjOBAg4UwpUQLN0OhUhNXuuC0VTNTUVuT+oKCzaiY=;
-        b=LR3ODt6fGhfn9vm8FTOqXlXP2MBovYdOk7OSVHsMA1S7p9MFxl7NYQViLG55Ypa6Us
-         8Y9rAr7I4csh2StdVlsZZW4ZedcMZeOUBbm0sGL2jOWH5U2UaGYY83QG3UG7jFRokHL0
-         FUG9naYHy806uMKmumCLZLGrcEg9m+Pu5ikqiZK5aWvoaQIO6bqNWdvZq3Fhz5tkKNfP
-         W8RzlwI7Du3Lb4Xp9Dosg8v4/PIUCM+h5ipUHioX8dDS/87RRkOQ1vDAt7e1DSwpRFa4
-         ngcF5fhiIF+0vgwtRmI9Iu0EinLTvDu3dlvVn92rEbU6297EsjZHFTqY6hImitAg5Bp1
-         G31A==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=skXpUWNuPkoiGutNPNqpcNYixtNA24kiYpR6k3BM+cQ=;
+        b=pga/CJF3dOFSDTrPetj8GpS098I4TRSsidToAsNi4ULSURzaKDjhVLPDLAJ+Z0KOg5
+         9C1DPtoz9qGRfGypuUEIG4ehyBZE4rmll+NJPJgPc0jg34YKspH6gJHRuYZwJXLMaIWa
+         /5seXA05yvu21eqRSBkSQMpmdyq8wjMKoJAeX1wgATqhFKlcb92MLmAvLGHZ62B3uv66
+         E92Mi1rwkV8CdWkjXn0gfssdZ2zpQGeeBYJg9tXcP/tkyMkoaNn01z62sYAqVBz71lCW
+         gmgo6OB8ZegBI/U/s5Nj50PhiW5IPRSfhWaoKkv/IRnPO7yzALT7Heq8AMxRZj5+U3m8
+         i6kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=sQAjOBAg4UwpUQLN0OhUhNXuuC0VTNTUVuT+oKCzaiY=;
-        b=XY4wowm5ZFXVzvUUoNnuEuDQ5DJ3bjhzjq6w/1rXTwS5UwQQytLKcbtx3F4CyTngPx
-         5SDFJ4i2gJlmZhYBlR9OGkn/ZcziyeokE//aSB71P7TEhvnC+YSMthsq7gELdOi1PdWp
-         Ak4sDVX8mSkLh1xCosPn/+2JvS7denyV1k6gOiurUTay0xtEE2uLhBVc7CBl1KvRIFFg
-         sS6Y+Uq5CennDwzZ3t8JEFY3fy243luXh6VUlIAfmr/p16mYLdlbih6G6b9A88fQoR93
-         Zzbq1mPHlJpABhrvuRZw8UoAZHYE8LuIUmRs1KguQdnvWEYQeXwqFcdBGHCR0238JQeD
-         eeTA==
-X-Gm-Message-State: APjAAAWRYeK8p5qzNSZ0zZ9ZsVjsZv0GEpHtTZTsOQnfJR9qLkAFo/Ll
-        GNtxJkH02jMfDUV/poCUruKOlg==
-X-Google-Smtp-Source: APXvYqwRmS4Vrn4SKVlkHb72d2mmi4AIc43L7vCVPSxVEEMfll0z8PSM0BMMWprIEegLiJ0VQVwvHg==
-X-Received: by 2002:a37:68a:: with SMTP id 132mr4426935qkg.139.1576852826499;
-        Fri, 20 Dec 2019 06:40:26 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k4sm2859745qki.35.2019.12.20.06.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2019 06:40:25 -0800 (PST)
+        bh=skXpUWNuPkoiGutNPNqpcNYixtNA24kiYpR6k3BM+cQ=;
+        b=VqLd43qURQjb4gREOtIq16VFkf5o0mml7AGWY7gEkovcWpvvx/gf8Q4C+x+NkN9UfT
+         bB9ryOwnCCb3H8BEspx19AHFmMDKaEtawfPWDXzg3TKOnOeWZoRBz3RjRa/U/0ksPXZF
+         qrPy4sOj7YhhXHiJxMf8i/GE5zHwEBd6CVydNnFVofY4Jz4gCCLg76yA725g5PeBVIWd
+         hf+Oay8eGlTl0AKYbHLJ4OVkgxmc/4NMJ+MbELJIDIfpk+M2bPmmFfzZ0UV3p49l/dis
+         M16bvc9+VzmQsUH3dK+e03kJHtkdQmAG6Jn1906eVVr6WHmIuVSGzYkE4seyaA0tDyIk
+         6omg==
+X-Gm-Message-State: APjAAAVVE3C9CP6RHGUHoj+MFKD43Uywk4d0xxJ24NYAFqjV9Tv0tylG
+        vO6P2mHIuPHTLiQfTLdZj/Qf+74unKpaOg==
+X-Google-Smtp-Source: APXvYqzQuJI9JE0CUL7fU3z30lHLUt4CsIwAY3yvBovqe39bb6t9ba0hvnqkjrHlp4RL7QN8WaNIXw==
+X-Received: by 2002:ae9:ef50:: with SMTP id d77mr13348216qkg.71.1576853064951;
+        Fri, 20 Dec 2019 06:44:24 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id 11sm2844242qko.76.2019.12.20.06.44.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Dec 2019 06:44:24 -0800 (PST)
+Subject: Re: [PATCH 1/3] btrfs: add readmirror type framework
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <1576818365-20286-1-git-send-email-anand.jain@oracle.com>
+ <1576818365-20286-2-git-send-email-anand.jain@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: [PATCH][v2] btrfs: regression test for subvol deletion after rename
-Date:   Fri, 20 Dec 2019 09:40:24 -0500
-Message-Id: <20191220144024.52271-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.23.0
+Message-ID: <697fabec-d060-b7eb-8f56-25fb8db052a6@toxicpanda.com>
+Date:   Fri, 20 Dec 2019 09:44:22 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1576818365-20286-2-git-send-email-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test removal of a subvolume via rmdir after it has been renamed into a
-snapshot of the volume that originally contained the subvolume
-reference.
+On 12/20/19 12:06 AM, Anand Jain wrote:
+> As of now we use %pid method to read stripped mirrored data. So
+> application's process id determines the stripe id to be read. This type
+> of routing typically helps in a system with many small independent
+> applications tying to read random data. On the other hand the %pid
+> based read IO distribution policy is inefficient if there is a single
+> application trying to read large data and the overall disk bandwidth
+> remains under utilized.
+> 
+> So this patch introduces a framework where we could add more readmirror
+> policies, such as routing the IO based on device's waitqueue or manual
+> when we have a read-preferred device or a policy based on the target
+> storage caching.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>   fs/btrfs/volumes.c | 16 +++++++++++++++-
+>   fs/btrfs/volumes.h |  8 ++++++++
+>   2 files changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index c95e47aa84f8..0c6caae29248 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1162,6 +1162,8 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+>   	fs_devices->opened = 1;
+>   	fs_devices->latest_bdev = latest_dev->bdev;
+>   	fs_devices->total_rw_bytes = 0;
+> +	/* Set the default readmirror policy */
+> +	atomic_set(&fs_devices->readmirror, BTRFS_READMIRROR_DEFAULT);
+There's no reason for this to be atomic, it's just a behavior change, if you 
+really want to be super safe use READ_ONCE/WRITE_ONCE and have readmirror be 
+your enum.  Thanks,
 
-This currently fails on btrfs but is fixed by the patch with the title
-
-  "btrfs: fix invalid removal of root ref"
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- add a comment for ls'ing the dummy subvol
-
- tests/btrfs/202     | 57 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/202.out |  4 ++++
- tests/btrfs/group   |  1 +
- 3 files changed, 62 insertions(+)
- create mode 100755 tests/btrfs/202
- create mode 100644 tests/btrfs/202.out
-
-diff --git a/tests/btrfs/202 b/tests/btrfs/202
-new file mode 100755
-index 00000000..5d56a2a2
---- /dev/null
-+++ b/tests/btrfs/202
-@@ -0,0 +1,57 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# FS QA Test 201
-+#
-+# Regression test for fix "btrfs: fix invalid removal of root ref"
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+. ./common/rc
-+. ./common/filter
-+
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Create a subvol b under a and then snapshot a into c.  This create's a stub
-+# entry in c for b because c doesn't have a reference for b.
-+#
-+# But when we rename b c/foo it creates a ref for b in c.  However if we go to
-+# remove c/b btrfs used to depend on not finding the root ref to handle the
-+# unlink properly, but we now have a ref for that root.  We also had a bug that
-+# would allow us to remove mis-matched refs if the keys matched, so we'd end up
-+# removing too many entries which would cause a transaction abort.
-+
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
-+$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
-+	| _filter_scratch
-+
-+# Need the dummy entry created so that we get the invalid removal when we rmdir
-+ls $SCRATCH_MNT/c/b
-+
-+mkdir $SCRATCH_MNT/c/foo
-+mv $SCRATCH_MNT/a/b $SCRATCH_MNT/c/foo
-+rm -rf $SCRATCH_MNT/*
-+touch $SCRATCH_MNT/blah
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
-new file mode 100644
-index 00000000..938870cf
---- /dev/null
-+++ b/tests/btrfs/202.out
-@@ -0,0 +1,4 @@
-+QA output created by 201
-+Create subvolume 'SCRATCH_MNT/a'
-+Create subvolume 'SCRATCH_MNT/a/b'
-+Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index d7eeb45d..7abc5f07 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -204,3 +204,4 @@
- 199 auto quick trim
- 200 auto quick send clone
- 201 auto quick punch log
-+202 auto quick volume
--- 
-2.23.0
-
+Josef
