@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D308D1281A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 18:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5600D1281C3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 19:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727411AbfLTRuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 12:50:19 -0500
-Received: from mail.nethype.de ([5.9.56.24]:42067 "EHLO mail.nethype.de"
+        id S1727469AbfLTSAV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 13:00:21 -0500
+Received: from mail.nethype.de ([5.9.56.24]:44769 "EHLO mail.nethype.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727404AbfLTRuT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 12:50:19 -0500
+        id S1727391AbfLTSAU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 13:00:20 -0500
 Received: from [10.0.0.5] (helo=doom.schmorp.de)
         by mail.nethype.de with esmtp (Exim 4.92)
         (envelope-from <schmorp@schmorp.de>)
-        id 1iiMPp-003ema-QT; Fri, 20 Dec 2019 17:50:17 +0000
+        id 1iiMZX-003fCM-AA; Fri, 20 Dec 2019 18:00:19 +0000
 Received: from [10.0.0.1] (helo=cerebro.laendle)
         by doom.schmorp.de with esmtp (Exim 4.92)
         (envelope-from <schmorp@schmorp.de>)
-        id 1iiMPp-0004yn-Ky; Fri, 20 Dec 2019 17:50:17 +0000
+        id 1iiMZX-0001tq-4a; Fri, 20 Dec 2019 18:00:19 +0000
 Received: from root by cerebro.laendle with local (Exim 4.92)
         (envelope-from <root@schmorp.de>)
-        id 1iiMPp-0001jW-Kd; Fri, 20 Dec 2019 18:50:17 +0100
-Date:   Fri, 20 Dec 2019 18:50:17 +0100
+        id 1iiMZX-0001pu-3V; Fri, 20 Dec 2019 19:00:19 +0100
+Date:   Fri, 20 Dec 2019 19:00:19 +0100
 From:   Marc Lehmann <schmorp@schmorp.de>
 To:     Remi Gauvin <remi@georgianit.com>
 Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 Subject: Re: btrfs dev del not transaction protected?
-Message-ID: <20191220175017.GA6387@schmorp.de>
+Message-ID: <20191220180018.GA6802@schmorp.de>
 References: <20191220040536.GA1682@schmorp.de>
  <b9e7f094-0080-ef08-68df-61ffbeaa9d19@gmx.com>
  <20191220063702.GE5861@schmorp.de>
@@ -49,31 +49,50 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Fri, Dec 20, 2019 at 12:24:05PM -0500, Remi Gauvin <remi@georgianit.com> wrote:
 > You don't need hints, the problem is right here.
+> Your Metadata is Raid 1, (which requires minimum of 2 devices,) Your
 
-Yes, I already guessed that (see my other mail). I fortunately can add two
-more devices. However:
+Guess I found another bug - three disks with >>3tb free space, but df
+still shows 0 available bytes. Sure I can probably work around it somehow,
+but no, I refuse to accept that this is supposedly a user problem - surely
+btrfs could create more raid1 metadata with _three disks with lots of free
+space_.
 
-> device left with unallocated space, so no new metadata space can be
-> allocated until you fix that.
+doom ~# df /cold1
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/xmnt-cold15   43T   23T     0 100% /cold1
+doom ~# btrfs dev us /cold1
+/dev/mapper/xmnt-cold15, ID: 1
+   Device size:             9.09TiB
+   Device slack:              0.00B
+   Data,single:             9.07TiB
+   Metadata,RAID1:         25.46GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             1.00MiB
 
-I think it really shouldn't be up to me to second guess btrfs's not very
-helpful error messages "and fix things". And if I couldn't add another
-device, I would be pretty much fucked - btrfs balance does not allow me
-to move any chunks to the other device, I tried balancing 10 data chunks
-and 10 metadata chunks - the data chunks balanced successfully but nothing
-changed, and the metadata chunks instantly hit the ENOSPC problem.
+/dev/mapper/xmnt-cold12, ID: 2
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Data,single:             7.25TiB
+   Metadata,RAID1:         24.46GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             1.00MiB
 
-Pushing "fix things" at users without giving them the ability to do so is
-rather poor.
+/dev/mapper/xmnt-cold13, ID: 3
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Data,single:             4.03TiB
+   Metadata,RAID1:          5.92GiB
+   Unallocated:             3.24TiB
 
-So is there a legit fix for this? The tools don't allow me to rebalance
-the filesystem so there is more space on the drives and deleting data and
-writing it again doesn't seem to help - btrfs still wants to write to the
-nearly full disks. I could probably convert the metadata to single and
-back, but as long as btrfs has no way orf moving data form one disk to
-another, that's going to be tough. Maybe converting to single and resizing
-would do the trick - seriously, though, btrfs shouldn't force users to
-jump through such hoops.
+/dev/mapper/xmnt-cold14, ID: 4
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Unallocated:             7.28TiB
+
+/dev/mapper/xmnt-cold11, ID: 5
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Unallocated:             7.28TiB
 
 -- 
                 The choice of a       Deliantra, the free code+content MORPG
