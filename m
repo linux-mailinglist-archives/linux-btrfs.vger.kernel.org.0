@@ -2,68 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 920B112841D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 22:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC8012847D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 23:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbfLTVv5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 16:51:57 -0500
-Received: from mail-yw1-f41.google.com ([209.85.161.41]:41336 "EHLO
-        mail-yw1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727413AbfLTVv4 (ORCPT
+        id S1727509AbfLTWQV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 17:16:21 -0500
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:43311 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbfLTWQV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 16:51:56 -0500
-Received: by mail-yw1-f41.google.com with SMTP id l22so4285463ywc.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 13:51:56 -0800 (PST)
+        Fri, 20 Dec 2019 17:16:21 -0500
+Received: by mail-wr1-f53.google.com with SMTP id d16so10800523wre.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 14:16:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=OgSsbm+ws3KoqpvsLA4LtMz7uvNcre3wW2Zmeicx3MI=;
-        b=geWjGK2L2GL1sWZBtO91PlyGWo3AXDHydABU0iLBGEdh+k9h91l0JXHdKw+CCYfOrl
-         0vcRmYTito2VGFdwrar47Cdar6MO0M/RmzDPSfW6LGD5iWRl4sNgdROunMnjOvB70E0y
-         12cyU8X2F3B/xXnIHOMM9v87QoljpxEI41pyBtn8mf+97BAjgtAW7bd/haD8C8v3EkP1
-         H4P8b9u1JDSuV6oPASPsxTTSGGdn9D13A39XXjUw8akewFewvlOr5cZ64DUC6Hk9e8xJ
-         Xq1PSO+c9ZmeoxOsl081HfSfEnyUesKtnZj02sbtW4PQZlmwg/ZjyUNp9W+vf+Yh9BCE
-         AZcg==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iEbW/fpuyaiu7T8BBl6joo3u4/i+DzGHAGq8d3bRbJI=;
+        b=J89lnbMooagzIfz/sTcWUBw+trzw/Zk3Xh7rGinYkR37cqPqTa8ESfx6kk69MGvjz9
+         0NYZ4qzXk3uzlsQfxk/DXNYyg9SAnBj/wHUYlbF8xkf3W1Jp6wwUVZGuS5l5gKzvzXgu
+         g5Sv+WWewL9NzzCgH/GsAPPcpXs5pbWs8+bGby7nsWuF9mKOX0a+lGMImSJSdRl4w4KR
+         YUs43E5dIK3y9lgkx7Frc/ckYmC4YMfwunyRsE3Tyqc0AzbE5RlB9rWuns4d7XAzo2n+
+         9frDQUeYJmQgm5/EQ6KmQmFiPCel8ObFCHZoK4slc3QF2BiQ8XI4Wh6/K32NQuJrUSVA
+         fe2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=OgSsbm+ws3KoqpvsLA4LtMz7uvNcre3wW2Zmeicx3MI=;
-        b=iHNF+T4uL7zlSttv1aMvvslqYjEE8M+r3fUipgW3qcDv1xLf4vs7cZwSVtViqjMihJ
-         0+NXuK26mqDSXfTY9LN2ozCYDTYi7TnKNV21OPPxN4f8dfDxGT+z5TYVfRepPAEqVmm3
-         M636G/TIDkYA1XFf/PBva6y0ZRNK/6Jd7m7Z/NJ8uirWy3uiLiVK/1BsUvZyh5R8z8z+
-         QHDYZbiFBrcHPGQbEPspYZscKeevPm2Hmhc/z9zcCrwWfSDlR6Ppe+9qESXcc4kIiREi
-         M2Jki9RTq1wc89kc7ecC8iTGzLDbo4LQdX+BpqPWHX2sh7e15lbu7G3B4LW1L3s4N3pU
-         c5Lw==
-X-Gm-Message-State: APjAAAXT2RvN5tCwaJ6qUbLSOQgrqtM9JyUEPNyvjyacxHq9Cv9Ga2Vz
-        EZGzY6D6PrvZ/IdsQ2d1LIWV71bekEJ/MbXd8jvZow==
-X-Google-Smtp-Source: APXvYqxh4d+iVgDmCSTAt07NvBBUjmmVSpb6h0SggTn9yeYBegSayf74Nq36cDEBUxB6brjss1G1w2ey8SAx8ONvqno=
-X-Received: by 2002:a81:2847:: with SMTP id o68mr13013188ywo.245.1576878715569;
- Fri, 20 Dec 2019 13:51:55 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iEbW/fpuyaiu7T8BBl6joo3u4/i+DzGHAGq8d3bRbJI=;
+        b=JFG2rJVHCd4DhwGnMkKp9lpy6u6KwTa3FSYw0fLtLyteukGPiX0UlTmF3WdTENHfaR
+         XTk/fdKJgT4djhl97IiatuDdSjY9YB5iXHLaXSbGkT4fG71Va9oYriT+do0DVpO/VDRd
+         oLN0hsR/K7zBoWGPBioYippCbcsU+89cFxe0TlLJNt0mRs1D5U385P9ABpALho9FO8JF
+         cNrnQ2GJYgZZ8FuWaWd2olSFefFj0so8pcUHnBCXr6pRSRRaAYBA5eNL0xMxoH/D+yVj
+         1dgyCO4j6SE7/Z5MFMO7CKinb6ssEpvTlFV+0EM8Xl8g5hXSCb9u1Y2CThH6uDyn6cmi
+         bWDA==
+X-Gm-Message-State: APjAAAX12Tu0rARYRybCKr0ku5isj3R2O5lszxw+jEqECKNuQga+2PEB
+        qUm4ilucxD7iElMC+BCHUqW0vrnHHAdiyFF6o5NH9A==
+X-Google-Smtp-Source: APXvYqyJBNChKkZUopPP5iUDLxgyVI9iwAmjMbF6nwNZoKck4lzY0ZFomWJ/8GJ5IxJlgFIlnaknkAKi+OUJS31U5eo=
+X-Received: by 2002:adf:82f3:: with SMTP id 106mr17937510wrc.69.1576880179000;
+ Fri, 20 Dec 2019 14:16:19 -0800 (PST)
 MIME-Version: 1.0
-From:   James Courtier-Dutton <james.dutton@gmail.com>
-Date:   Fri, 20 Dec 2019 21:51:19 +0000
-Message-ID: <CAAMvbhEidM73zS-tRrtq0eYq_W-TY0BEnFumENkFaqVAwHmruA@mail.gmail.com>
-Subject: Finding out where a file is stored on the disk
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAAMvbhEidM73zS-tRrtq0eYq_W-TY0BEnFumENkFaqVAwHmruA@mail.gmail.com>
+In-Reply-To: <CAAMvbhEidM73zS-tRrtq0eYq_W-TY0BEnFumENkFaqVAwHmruA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 20 Dec 2019 15:16:03 -0700
+Message-ID: <CAJCQCtT=-VvzykoVg259-BxGOzwRQedfa25ytB9-u3xfBmrgcw@mail.gmail.com>
+Subject: Re: Finding out where a file is stored on the disk
+To:     James Courtier-Dutton <james.dutton@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Dec 20, 2019 at 2:51 PM James Courtier-Dutton
+<james.dutton@gmail.com> wrote:
 
-If I have a file on the disk that is using btrfs.
-Is there an API call, IOCTL call that I can make to get from filename
-to which sectors it is stored in?
-If there is a command line tool, that would be ok too, because I could
-find out the API calls from looking at the source code.
-I have 100k files that I need to scan regularly on a HDD.
-If I knew where they were on the disk, I could order the files in such
-a way as to reduce seeks on the disk to read the files.
-I.e. Read files from the lowest sector to the highest sector.
-This would speed up the task of reading the files.
+> If I have a file on the disk that is using btrfs.
+> Is there an API call, IOCTL call that I can make to get from filename
+> to which sectors it is stored in?
 
-Kind Regards
+I'm not sure of a single tool.
 
-James
+[chris@flap Documents]$ sudo filefrag -v UEFI_Spec_2_8_final.pdf
+Filesystem type is: 9123683e
+File size of UEFI_Spec_2_8_final.pdf is 18586279 (4538 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    4537:    9798022..   9802559:   4538:             last,eof
+UEFI_Spec_2_8_final.pdf: 1 extent found
+[chris@flap Documents]$ sudo btrfs-map-logical -l $[9798022*4096] /dev/nvme0n1p7
+mirror 1 logical 40132698112 physical 31475654656 device /dev/nvme0n1p7
+[chris@flap Documents]$ sudo dd if=/dev/nvme0n1p7 bs=1
+skip=31475654656 count=64 2>/dev/null | hexdump -C
+00000000  25 50 44 46 2d 31 2e 36  0d 25 e2 e3 cf d3 0d 0a  |%PDF-1.6.%......|
+00000010  33 30 35 35 31 39 20 30  20 6f 62 6a 0d 3c 3c 2f  |305519 0 obj.<</|
+00000020  46 69 6c 74 65 72 2f 46  6c 61 74 65 44 65 63 6f  |Filter/FlateDeco|
+00000030  64 65 2f 46 69 72 73 74  20 31 31 37 39 2f 4c 65  |de/First 1179/Le|
+00000040
+[chris@flap Documents]$
+
+
+
+-- 
+Chris Murphy
