@@ -2,172 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FCD127A1A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 12:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C91A127BA3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 14:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbfLTLiv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 06:38:51 -0500
-Received: from nwxsbs11.networkx.de ([217.91.82.83]:20627 "EHLO
-        nwxsbs11.networkx.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727184AbfLTLiv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 06:38:51 -0500
-Received: from NWXSBS11.networkx.de ([fe80::4091:24d0:23e7:9e44]) by
- NWXSBS11.networkx.de ([fe80::4091:24d0:23e7:9e44%14]) with mapi id
- 14.03.0468.000; Fri, 20 Dec 2019 12:36:31 +0100
-From:   Ralf Zerres <Ralf.Zerres@networkx.de>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "quwenruo.btrfs@gmx.com" <quwenruo.btrfs@gmx.com>
-Subject: Re: How to heel this btrfs fi corruption?
-Thread-Topic: How to heel this btrfs fi corruption?
-Thread-Index: AdW2puxRpbYJ6wGOS3W1/yTrAS6zvAATB0uAAAumBoA=
-Date:   Fri, 20 Dec 2019 11:36:30 +0000
-Message-ID: <b6f0af39b0851f652600115db72bb789069927f5.camel@networkx.de>
-References: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
-         <19940557-c91a-145d-4885-8e8c59e8b32f@gmx.com>
-In-Reply-To: <19940557-c91a-145d-4885-8e8c59e8b32f@gmx.com>
-Reply-To: Ralf Zerres <Ralf.Zerres@networkx.de>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.2 
-x-originating-ip: [89.1.209.38]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <26230DFE19893A46ABE17DFD341FD745@networkx.de>
-Content-Transfer-Encoding: base64
+        id S1727391AbfLTN1H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 08:27:07 -0500
+Received: from mail.nethype.de ([5.9.56.24]:42713 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727346AbfLTN1G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 08:27:06 -0500
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiIJ6-003UIU-6v; Fri, 20 Dec 2019 13:27:04 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiIJ5-0000te-Un; Fri, 20 Dec 2019 13:27:03 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1iiIJ5-0001lq-UL; Fri, 20 Dec 2019 14:27:03 +0100
+Date:   Fri, 20 Dec 2019 14:27:03 +0100
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs dev del not transaction protected?
+Message-ID: <20191220132703.GA3435@schmorp.de>
+References: <20191220040536.GA1682@schmorp.de>
+ <b9e7f094-0080-ef08-68df-61ffbeaa9d19@gmx.com>
+ <20191220063702.GE5861@schmorp.de>
+ <1912b2a1-2aa9-bf4c-198f-c5e1565dd11f@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1912b2a1-2aa9-bf4c-198f-c5e1565dd11f@gmx.com>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCg0KDQoNCkFtIEZyZWl0YWcsIGRlbiAyMC4xMi4yMDE5LCAxNDowNSArMDgwMCBzY2hyaWVi
-IFF1IFdlbnJ1bzoNCj4gDQo+IE9uIDIwMTkvMTIvMjAg5LiK5Y2INDowMCwgUmFsZiBaZXJyZXMg
-d3JvdGU6DQo+ID4gRGVhciBsaXN0LA0KPiA+IA0KPiA+IGF0IGN1c3RvbWVyIHNpdGUgaSBjYW4n
-dCBtb3VudCBhIGdpdmVuIGJ0cmZzIGRldmljZSBpbiBydyBtb2RlLg0KPiA+IHRoaXMgaXMgcHJv
-ZHVjdGlvbiBkYXRhIGFuZCBpIGRvIGhhdmUgYSBiYWNrdXAgYW5kIG1hbmFnZWQgdG8gbW91bnQg
-dGhlIGZpbGVzeXN0ZW0gaW4gcm8gbW9kZS4gSSBkaWQgY29weSBvdXQgcmVsZXZhbnQgc3R1ZmYu
-DQo+ID4gSGF2aW5nIHNhaWQgdGhpcywgaWYgYnRyZnMgLS1yZXBhaXIgY2FuJ3QgaGVhbCB0aGUg
-c2l0dWF0aW9uLCBpIGNvdWxkIHJlZm9ybWF0IHRoZSBmaWxlc3lzdGVtIGFuZCBzdGFydCBhbGwg
-b3Zlci4NCj4gPiBCdXQgaSB3b3VsZCBwcmVmZXJlIHRvIHNhdmUgdGhlIHRpbWUgYW5kIHRha2Ug
-dGhlIGhlZWxpbmcgYXMgYSBwcm9vZiBvZiAicHJvZHVjdGlvbiByZWFkeSIgc3RhdHVzIG9mIGJ0
-cmZzLXByb2dzLg0KPiA+IA0KPiA+IEhlcmUgYXJlIHRoZSBkZXRhaWxzOg0KPiA+IA0KPiA+IGtl
-cm5lbDogNS4yLjIgKFVidW50dSAxOC4wNC4zKQ0KPiA+IGJ0cmZzLXByb2dzOiA1LjIuMQ0KPiA+
-IEhCQTogREVMTCBQZXJjDQo+ID4gIyBzdG9yY2xpIC9jMC92MA0KPiA+ICMgMC8wICAgUkFJRDUg
-T3B0bCAgUlcgICAgIFllcyAgICAgUldCRCAgLSAgIE9GRiA3LjI3NCBUQiBTU0QtRGF0YQ0KPiA+
-ICNidHJmcyBmaSBzaG93IC9kZXYvc2RYDQo+ID4gI0xhYmVsOiAnRGF0YS1Tc2QnICB1dWlkOiA8
-bXkgdXVpZD4NCj4gPiAjICAgICAgICBUb3RhbCBkZXZpY2VzIDEgRlMgYnl0ZXMgdXNlZCA3LjEy
-VGlCDQo+ID4gIyAgICAgICAgZGV2aWQgICAgMSBzaXplIDcuMjdUaUIgdXNlZCA3LjI3VGlCIHBh
-dGggL2Rldi88bXlkZXY+DQo+ID4gDQo+ID4gV2hhdCBoYXBwZW5kOg0KPiA+IEN1c3RvbWVyIGZp
-bGxlZCB1cCB0aGUgZmlsZXN5c3RlbSAobG90cyBvZiBzbmFwc2hvdHMgaW4gYSBjb3VwbGUgb2Yg
-c3Vidm9sdW1lcykuDQo+ID4gU3lzdGVtIHdhcyB3b3JraW5nIHdpdGgga2VybmVsIDQuMTUgYW5k
-IGJ0cmZzLXByb2dzIDQuMTUuIEkgdXBkYXRlZCBrZXJuZWwgYW5kIGJ0cmZzLXByb2dzIHdpdGgg
-dGhlIGFzc3VtcHRpb24NCj4gPiBtb3JlIG1haW5saW5lZC9hY3R1YWwgdG9vbHMgY291bGQgZG8g
-YSBiZXR0ZXIgam9iLiBTaW5jZSB0aGV5IGhhdmUgc2VlbiBsb3RzIG9mIGZpeHVwcy4NCj4gPiAN
-Cj4gPiAxKSBBcyBhIGZpcnN0IHN0ZXAsIGkgZGlkIHJ1bg0KPiA+IA0KPiA+ICMgYnRyZnMgY2hl
-Y2sgLS1tb2RlIGxvd21lbSAtLXByb2dyZXNzIC9kZXYvPG15ZGV2Pg0KPiANCj4gVGhlIGluaXRp
-YWwgcmVwb3J0IHdvdWxkIGhlbHAgYSBsb3QgdG8gZGV0ZXJtaW5lIHRoZSByb290IGNhdXNlIG9m
-DQo+IGNvcnJ1cHRpb24gaW4gZmlyc3QgcGxhY2UuDQo+IA0KPiBCdXQgaWYgYnRyZnMgY2hlY2sg
-KGJvdGggbW9kZXMpIHJlcG9ydCBlcnJvciwgeW91J2QgYmV0dGVyIG5vdCB0byB0aGluaw0KPiAt
-LXJlcGFpciBjYW4gZG8gYSBiZXR0ZXIgam9iLg0KPiANCj4gQ3VycmVudGx5IGJ0cmZzIGNoZWNr
-IGlzIG9ubHkgZ29vZCBhdCBmaW5kaW5nIHByb2JsZW1zLCBub3QgcmVhbGx5DQo+IGZpeGluZyB0
-aGVtLg0KPiANCnRoYW5rcyBmb3IgdGhpcyBjbGFyaWZpY2F0aW9uLg0KDQo+IEFzIHRoZXJlIGFy
-ZSB0b28gbWFueSB0aGluZ3MgdG8gY29uc2lkZXIgd2hlbiBkb2luZyByZXBhaXIsIHNvIGF0IGxl
-YXN0DQo+IC0tcmVwYWlyIGlzIGZhciBmcm9tICJwcm9kdWN0aW9uIHJlYWR5Ii4NCj4gVGhhdCdz
-IHdoeSBpbiB2NS40IHByb2dzLCB3ZSBhZGQgZXh0cmEgd2FpdCB0aW1lIGZvciAtLXJlcGFpci4N
-Cj4gDQp3aGljaCBtZWFucyB3ZSBoYXZlIHRvIHdhaXQgdW50aWwgZGV2ZWxvcG1lbnQgY2FuIGZp
-bmlzaCB0aGlzIHRhc2suDQpVbnRpbCB0aGlzIHNpdHVhdGlvbiBpIHdpbGwgcmVnYXJkIC0tcmVw
-YWlyIGFzIGEgV0lQIGZ1bmN0aW9uIHRoYXQgbWF5DQpoZWxwLCBtYXkgbm90LiBPbmx5IHVzZSBp
-dCBmb3IgZGF0YSBzZXRzIGZvciB3aGljaCB2YWxpZCBiYWNrdXBzIGV4aXN0DQpvciBiZSBwcmVw
-YXJlZCB0byBsb29zZSBkYXRhLg0KDQo+ID4gDQo+ID4gZ290IGV4dGVuZCBtaXNtYXRjaGVzIGFu
-ZCB3cm9uZyBleHRlbmQgQ1JDJ3MNCj4gPiANCj4gPiAyKSBBcyBhIHNlY29uZCBzdGVwIGkgZGlk
-IHRyeSB0byBtb3VudCBpbiByZWNvdmVyeSBtb2RlDQo+ID4gDQo+ID4gIyBtb3VudCAtdCBidHJm
-cyAtbyBkZWZhdWx0cywgcmVjb3ZlcnksIHNraXBfYmFsYW5jZSAvZGV2LzxteWRldj4gL21udA0K
-PiA+IA0KPiA+IEkgaW5jbHVkZWQgc2tpcF9iYWxhbmNlLCBzaW5jZSB0aGVyZSBtaWdodCBiZSBh
-biB1bmZpbmlzaGVkIGJhbGFuY2UgcnVuLiBCdXQgdGhpcyBkaWRuJ3Qgd29yayBvdXQuDQo+IA0K
-PiBUaGUgZG1lc2cgd291bGQgaGVscCB0byBmaW5kIG91dCB3aGF0IHdlbnQgd3JvbmcuDQo+IA0K
-PiBKdXN0IGEgdGlwIGZvciBzdWNoIHJlcG9ydCwgdGhlIGluaXRpYWwgZXJyb3IgbWVzc2FnZSBp
-cyBhbHdheXMgdGhlIG1vc3QNCj4gaW1wb3J0YW50IHRoaW5nLg0KPiANCj4gPiANCj4gPiAzKSBB
-cyBhIHRoaXJkIHN0ZXAsIGdvdCBpdCBtb3VudGVkIHdpdGggcm8gbW9kZQ0KPiA+IA0KPiA+ICMg
-bW91bnQgLXQgIGJ0cmZzIC1vIHJvIC9kZXYvPG15ZGV2PiAvbW50DQo+ID4gDQo+ID4gQW5kIGZp
-bGVkIGRhdGEgcmVjZWl2ZWQgdmlhIHVzYWdlOg0KPiA+IA0KPiA+ICMgYnRyZnMgZmkgdXNhZ2Ug
-L21udA0KPiA+ICMgT3ZlcmFsbDoNCj4gPiAjICAgIERldmljZSBzaXplOiAgICAgICAgICAgICAg
-ICAgICA3LjI3VGlCDQo+ID4gIyAgICBEZXZpY2UgYWxsb2NhdGVkOiAgICAgICAgICAgICAgNy4y
-N1RpQg0KPiA+ICMgICAgRGV2aWNlIHVuYWxsb2NhdGVkOiAgICAgICAgICAgIDEuMDBNaUINCj4g
-PiAjICAgIERldmljZSBtaXNzaW5nOiAgICAgICAgICAgICAgICAgIDAuMDBCDQo+ID4gIyAgICBV
-c2VkOiAgICAgICAgICAgICAgICAgICAgICAgICAgNy4xM1RpQg0KPiA+ICMgICAgRnJlZSAoZXN0
-aW1hdGVkKTogICAgICAgICAgICAxMzQuMTNHaUIgICAgICAobWluOiAxMzQuMTNHaUIpDQo+ID4g
-IyAgICBEYXRhIHJhdGlvOiAgICAgICAgICAgICAgICAgICAgICAgMS4wMA0KPiA+ICMgICAgTWV0
-YWRhdGEgcmF0aW86ICAgICAgICAgICAgICAgICAgIDIuMDANCj4gPiAjICAgIEdsb2JhbCByZXNl
-cnZlOiAgICAgICAgICAgICAgNTEyLjAwTWlCICAgICAgKHVzZWQ6IDAuMDBCKQ0KPiA+ICMNCj4g
-PiAjIERhdGEsc2luZ2xlOiBTaXplOjcuMjNUaUIsIFVzZWQ6Ny4xMFRpQg0KPiA+ICMgICAvZGV2
-LzxteWRldj4gICAgICAgIDcuMjNUaUINCj4gPiAjDQo+ID4gIyBNZXRhZGF0YSxEVVA6IFNpemU6
-MjEuNTBHaUIsIFVzZWQ6MTQuMzFHaUINCj4gPiAjICAgL2Rldi88bXlkZXY+ICAgICAgIDQzLjAw
-R2lCDQo+ID4gIw0KPiA+ICMgU3lzdGVtLERVUDogU2l6ZTo4LjAwTWlCLCBVc2VkOjg2NC4wMEtp
-Qg0KPiA+ICMgICAvZGV2LzxteWRldj4gICAgICAgMTYuMDBNaUINCj4gPiANCj4gPiAjIFVuYWxs
-b2NhdGVkOg0KPiA+ICMgICAvZGV2LzxteWRldj4gICAgICAgIDEuMDBNaUINCj4gPiANCj4gPiBP
-YnZpb3VzbHksIHRvdGFsbHkgZmlsbGVkIHVwLg0KPiA+IEF0IHRoYXQgdGltZSBpIGNvcGllZCBv
-dXQgYWxsIHJlbGV2YW50IGRhdGEgLSB5b3UgbmV2ZXIga25vdyAuLi4gRmluaXNoZWQhDQo+ID4g
-DQo+ID4gVGhlbiB0cmllZCB0byB1bm1vdXQsIGJ1dCB0aGF0IGdvdCB0byBub3doZXJlLiBMZWFk
-cyB0byBhIHJlYm9vdCAuDQo+ID4gDQo+ID4gDQo+ID4gNCkgQXMgYSBmb3J0aCBzdGVwLCBpIHRy
-aWVkIHRvIHJlcGFpciBpdA0KPiA+IA0KPiA+ICMgYnRyZnMgY2hlY2sgLS1tb2RlIGxvd21lbSAt
-LXByb2dyZXNzIC0tcmVwYWlyIC9kZXYvPG15ZGV2Pg0KPiA+ICMgZW5hYmxpbmcgcmVwYWlyIG1v
-ZGUNCj4gPiAjIFdBUk5JTkc6IGxvdy1tZW1vcnkgbW9kZSByZXBhaXIgc3VwcG9ydCBpcyBvbmx5
-IHBhcnRpYWwNCj4gPiAjIE9wZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLg0KPiA+ICMgQ2hl
-Y2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2LzxteWRldj4NCj4gPiAjIFVVSUQ6IDxteSBVVUlEPg0K
-PiA+ICMgWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcyAgICAgICAgICAgICAgICAgICAgICAoMDow
-MDozMyBlbGFwc2VkLCAyMDg1MzUxMiBpdGVtcyBjaGVja2VkKQ0KPiA+ICMgRml4ZWQgMCByb290
-cy4NCj4gPiAjIEVSUk9SOiBleHRlbnRbMTk4ODczMzQzNTkwNCwgMTM0MjE3NzI4XSByZWZlcmVu
-Y2VyIGNvdW50IG1pc21hdGNoIChyb290OiAyNjEsIG93bmVyOiAyODYsIG9mZnNldDogNTkwNTU4
-MDAzMikgd2FudGVkOiAjIDI4LCBoYXZlOiAzNA0KPiA+ICMgRVJST1I6IGZhaWwgdG8gYWxsb2Nh
-dGUgbmV3IGNodW5rIE5vIHNwYWNlIGxlZnQgb24gZGV2aWNlDQo+ID4gIyBUcnkgdG8gZXhjbHVk
-ZSBhbGwgbWV0YWRhdGEgYmxjb2tzIGFuZCBleHRlbnRzLCBpdCBtYXkgYmUgc2xvdw0KPiA+ICMg
-RGVsZXRlIGJhY2tyZWYgaW4gZXh0ZW50IFsxOTg4NzMzNDM1OTA0IDEzNDIxNzcyOF0wNzoxNiBl
-bGFwc2VkLCA0MDQzNSBpdGVtcyBjaGVja2VkKQ0KPiA+ICMgRVJST1I6IGV4dGVudFsxOTg4NzMz
-NDM1OTA0LCAxMzQyMTc3MjhdIHJlZmVyZW5jZXIgY291bnQgbWlzbWF0Y2ggKHJvb3Q6IDI2MSwg
-b3duZXI6IDI4Niwgb2Zmc2V0OiA1OTA1NTgwMDMyKSB3YW50ZWQ6IDI3LCBoYXZlOiAzNA0KPiA+
-ICMgRGVsZXRlIGJhY2tyZWYgaW4gZXh0ZW50IFsxOTg4NzMzNDM1OTA0IDEzNDIxNzcyOF0NCj4g
-PiAjIEVSUk9SOiBleHRlbnRbMTk4ODczMzQzNTkwNCwgMTM0MjE3NzI4XSByZWZlcmVuY2VyIGNv
-dW50IG1pc21hdGNoIChyb290OiAyNjEsIG93bmVyOiAyODYsIG9mZnNldDogNTkwNTU4MDAzMikg
-d2FudGVkOiAyNiwgaGF2ZTogMzQNCj4gPiAjIEVSUk9SOiBjb21taXRfcm9vdCBhbHJlYWR5IHNl
-dCB3aGVuIHN0YXJ0aW5nIHRyYW5zYWN0aW9uDQo+ID4gIyBFUlJPUjogZmFpbCB0byBzdGFydCB0
-cmFuc2FjdGlvbjogSW52YWxpZCBhcmd1bWVudA0KPiA+ICMgRVJST1I6IGV4dGVudFsyMDE3MzIx
-ODExOTY4LCAxMzQyMTc3MjhdIHJlZmVyZW5jZXIgY291bnQgbWlzbWF0Y2ggKHJvb3Q6IDI2MSwg
-b3duZXI6IDI4Nywgb2Zmc2V0OiAyMjgxNzAxMzc2KSB3YW50ZWQ6IDMyMTUsIGhhdmU6IDMzMTkN
-Cj4gPiAjIEVSUk9SOiBjb21taXRfcm9vdCBhbHJlYWR5IHNldCB3aGVuIHN0YXJ0aW5nIHRyYW5z
-YWN0aW9uDQo+ID4gIyBFUlJPUjogZmFpbCB0byBzdGFydCB0cmFuc2FjdGlvbiBJbnZhbGlkIGFy
-Z3VtZW50DQo+ID4gDQo+ID4gVGhpcyBlbmRzIHdpdGggYSBjb3JlLWR1bXAuDQo+ID4gDQo+ID4g
-TGFzdCBub3QgbGVhc3QgbXkgcXVlc3Rpb246DQo+ID4gDQo+ID4gSSdtIG5vdCBleHBlcmllbmNl
-ZCBlbm91Z2ggdG8gc29sdmUgdGhpcyBpc3N1ZSBteXNlbGYgYW5kIG5lZWQgeW91ciBoZWxwLiAN
-Cj4gPiBJcyBpdCB3b3J0aCB0aGUgdGltZSBhbmQgZWZmb3J0IHRvIHNvbHZlIHRoaXMgaXNzdWU/
-DQo+IA0KPiBJIGRvbid0IHRoaW5rIGl0IHdvdWxkIGJlIHdvcnRoeSwgdW5sZXNzIHlvdSdyZSBh
-IHJlYWxseSBzdXBlciBraW5kIGd1eQ0KPiB3aG8gd2FudCB0byBtYWtlIGJ0cmZzLXByb2dzIGJl
-dHRlci4NCj4gVGhlIHRpbWUgdG8gcmVwYWlyIHRoZSBpbWFnZSBjb3VsZCBlYXNpbHkgYmUgbW9y
-ZSB0aGFuIGp1c3QgcmVzdG9yaW5nDQo+IHRoZSBiYWNrdXAsIG5vdCB0byBtZW50aW9uIGl0J3Mg
-bm90IGVuc3VyZWQgdG8gc2F2ZSBpdC4NCj4gDQpJIHdpbGwgZ2l2ZSBidHJmcy1wcm9nIDUuNCBh
-IHJ1biBvbiA1LjQga2VybmVsIGJvb3RlZCBzeXN0ZW0uDQpUaGUgc3NkLXBvb2wgaXMgc3RpbGwg
-YXZhaWxhYmVsIGluIHRoZSBjb3JydXB0ZWQgc3RhdGUuIEFuZCBpdCB3aWxsIG5vdA0KZ28gaW50
-byBwcm9kdWN0aW9uIGFueXdheSwgYmVmb3JlIHRoZSBjYXBhY2l0eSBjYW4gYmUgZXh0ZW5kZWQu
-DQpUaGUgZGlza3MgYXJlIG9yZGVyZWQgYW5kIGFyZSBvbiB0aGVyZSB3YXkuDQpJIHdpbGwganVz
-dCBkbyB0aGUgLS1yZXBhaXIgYXMgYW4gYWNhZGVtaWMgcHJvY2VzcyAobm90IGNhbGxpbmcgbWUg
-YQ0Kc3VwZXIgbmljZSBndXkpLiBCdXQgaXQgbWlnaHQgZ2l2ZSBzb21lIGluc2lnaHQuDQoNCj4g
-PiBEZXZlbG9wZXJzIG1pZ2h0IGJlIGludGVyZXN0ZWQgd2hpbGUgaGF2aW5nIGEgcmVhbCBsaXZl
-IHRlc3RiZWQ/DQo+ID4gRG8geW91IG5lZWQgYW55IGZ1cnRoZXIgaW5mbyB0aGF0IHdpbGwgaGVs
-cCB0byBzb2x2ZSB0aGUgaXNzdWU/DQo+IA0KPiBJbiB0aGlzIGNhc2UsIHRoZSBoaXN0b3J5IG9m
-IHRoZSBjb3JydXB0aW9uIHdvdWxkIGJlIG1vcmUgdXNlZnVsLg0KPiANCj4gQnV0IHNpbmNlIGl0
-J3MgNC4xNSBrZXJuZWwgd2hpY2ggbWF5IG5vdCBoYXZlIGVub3VnaCBmaXhlcyBiYWNrcG9ydGVk
-DQo+IChzaW5jZSBpdCdzIFVidW50dSwgbm90IFNVU0Uga2VybmVsKSwgYW5kIHRoZSA1LjIuMiBp
-cyBub3Qgc2FmZSBhdCBhbGwNCj4gKHlvdSBuZWVkIDUuMy4wIG9yIDUuMi4xNSkgd2UgY2FuJ3Qg
-ZXZlbiBkZXRlcm1pbmUgaWYgaXQncyA1LjIuMiBjYXVzaW5nDQo+IHRoZSBjb3JydXB0aW9uIGlu
-IHRoZSBmaXJzdCBwbGFjZS4NCg0KV2VsbCwgaSBkbyBleHBlY3QgNS40LjAgdG8gYmUgZXF1YWxs
-eSB2YWxpZC4gVG8gYmFkIHRoYXQgdGhlcmUgaXMgbm8NCm9mZmljaWFsIGJhY2twb3J0IGZvciBV
-YnVudHUgc3RhYmxlIChha2EgMTguMDQueCkNCg0KPiBTbyBJJ20gbm90IHN1cmUgaWYgd2UgY2Fu
-IGdldCBtb3JlIGp1aWNlIGZyb20gdGhlIHJlcG9ydC4NCj4gDQpXaGVuIGkgYWRkIHRoZSBuZXcg
-ZGlza3MgdG8gdGhlIFJhaWQ1LCBpIHdpbGwgZGVmaW5ldGVseSByZWZvcm1hdCBhIG5ldw0KYnRy
-ZnMgZmlsZXN5c3RlbSB0byBiZSBzdXJlIGl0IGlzIGNsZWFuIGFuZCBoYXMgbm8gZmF1bHRzLiBU
-aGVuIHRoZQ0Kc3Vidm9scyBhbmQgZGF0YSB3aWxsIGJlIHJlc3RvcmVkIHdpdGggYnRyZnMtc2Vu
-ZC9idHJmcy1yZWNlaXZlLiANCiANCj4gVGhhbmtzLA0KPiBRdQ0KPiANCg0KUXUsIHRoYW5rcyBh
-IGJ1bmNoIGZvciB5b3VyIHRpbWUgYW5kIHRoZSBmcnVpdGZ1bCBpbmZvcm1hdGlvbi4NClJhbGYN
-Cg0KPiANCj4gPiANCj4gPiANCj4gPiBCZXN0IHJlZ2FyZHMNCj4gPiBSYWxmDQo+ID4gDQo+ID4g
-DQo+ID4gDQo+ID4gDQo+ID4gDQo+IA0K
+> >  [  102.393185] BTRFS: device label COLD1 devid 5 transid 1876906 /dev/dm-30
+> 
+> dm-30 is one transaction older than other devices.
+> 
+> Is that expected? If not, it may explain why we got the dead device. As
+> we're using older superblock, which may points to older chunk tree which
+> has the device item.
+
+Well, not that my expectation here would mean anything, but no, from
+experience I have never seen the transids to disagree, or bad thingsa will
+happen...
+
+> >  [  109.626550] BTRFS: device label COLD1 devid 4 transid 1876907 /dev/dm-32
+> >  [  109.654401] BTRFS: device label COLD1 devid 3 transid 1876907 /dev/dm-31
+> 
+> And I'm also curious about the 7s delay between devid5 and devid 3/4
+> detection.
+
+That is about the time it takes the disk to wake up when its spinned down,
+so maybe that was the case - the disks are used for archiving ("cold"
+storage), have a short spin-down and btrfs filesystems can takes ages to
+mount. The real question is why the fortuh disk was already spun up then,
+but the disks do not apply time outs very exactly.
+
+> Can you find a way to make devid 3/4 show up before devid 5 and try again?
+
+Unfortunately, I had to start restoring from backup a while ago, as I need
+the machine up and restoring takes days.
+
+How would I go about making it show up in different orders though? If
+these messages come up independently, I could have spun down some of the
+disks, right?
+
+> And if you find a way to mount the volume RW, please write a single
+> empty file, and sync the fs, then umount the fs, ensure "btrfs ins
+> dump-super" gives the same transid of all 3 related disks.
+
+I tried -o degraded followed by remounting rw, but couldn't get it to
+mount rw. I tried to mount/remount, though:
+
+   04:48:45 doom kernel: BTRFS error (device dm-32): devid 1 uuid f5c3dc63-1fac-45b3-b9ba-ed1ec5f92403 is missing
+   04:48:45 doom kernel: BTRFS error (device dm-32): failed to read chunk tree: -2
+   04:48:45 doom kernel: BTRFS error (device dm-32): open_ctree failed
+   04:49:37 doom kernel: BTRFS warning (device dm-31): devid 1 uuid f5c3dc63-1fac-45b3-b9ba-ed1ec5f92403 is missing
+   04:52:30 doom kernel: BTRFS warning (device dm-31): chunk 12582912 missing 1 devices, max tolerance is 0 for writable mount
+   04:52:30 doom kernel: BTRFS warning (device dm-31): writable mount is not allowed due to too many missing devices
+   04:52:30 doom kernel: BTRFS error (device dm-31): open_ctree failed
+   04:54:01 doom kernel: BTRFS warning (device dm-32): devid 1 uuid f5c3dc63-1fac-45b3-b9ba-ed1ec5f92403 is missing
+   04:54:45 doom kernel: BTRFS warning (device dm-32): chunk 12582912 missing 1 devices, max tolerance is 0 for writable mount
+   04:54:45 doom kernel: BTRFS warning (device dm-32): too many missing devices, writable remount is not allowed
+
+Since (in theory :) the filesystemw a completely backed up, I didn't
+bother with further recovery after I made sure the physical disk is
+actually there and was unlocked (cryptsetup), so it wasn't a case of an
+actual missing disk.
+
+> > BTW, this (second issue) also happens with filesystems that are not
+> > multi-device.
+> 
+> Single device btrfs doesn't need device scan.
+> If that happened, something insane happened again...
+> Thanks,
+
+It happens since at least 4.14 on at least four machines, but I haven't
+seen it recently, after I switched to 5.2.21 one some machines (post-4.4
+kernels have this habit of freezing under memory pressure, and 5.2.21 has
+greatly improved in this regard). That also means I had far fewer hard
+resets with 5.2.21, but the problem did not happen on the last resets in
+5.2.21 and 5.4.5.
+
+I originally reported it below, with some evidence that it isn't a
+hardware issue (no reset needed, just wipe the dm table while the device
+is mounted which should cleanly "cut off" the write stream):
+
+https://bugzilla.kernel.org/show_bug.cgi?id=204083
+
+Since multiple scrubs and full reads of the volumes didn't show up any
+issues, I didn't think much of it.
+
+And if you want to hear more "insane" things, after I hard-reset
+my desktop machine (5.2.21) two days ago I had to "btrfs rescue
+fix-device-size" to be able to mount (can't find the kernel error atm.).
+
+Greetings,
+
+-- 
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
