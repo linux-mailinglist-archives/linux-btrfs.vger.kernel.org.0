@@ -2,30 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F77E127586
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 07:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C25B12758B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 07:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbfLTGFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 01:05:13 -0500
-Received: from mout.gmx.net ([212.227.17.22]:53183 "EHLO mout.gmx.net"
+        id S1725920AbfLTGJZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 01:09:25 -0500
+Received: from mout.gmx.net ([212.227.15.18]:45655 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbfLTGFM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 01:05:12 -0500
+        id S1725874AbfLTGJZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 01:09:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576821908;
-        bh=eAZcNUQZJ1YzbD9CrGl/RXMHniOsBPVvq6s3wDQ+j9U=;
+        s=badeba3b8450; t=1576822158;
+        bh=sJW0sL65awx9yXW4yIRud2RkK9FqZ3dF8529Xj/cIgs=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BcYhJzpIZutUfKkoAfWtMw4JWd5wbtCAyV+SqW0tbcBl+Lj/hikiYtxN7qk4NJshJ
-         RhvGklG/m7SkcEP/pPkF04vUH1Z839wCDeG6EFCn/9E6V59v6CfpGwWbZtRDhrU4bL
-         9PJaXipfmPQGtWFccLY8XOLY+DGaEyOD9+YfGa4w=
+        b=Sb7pdtEJZsJP8yt/7XCqDwtd23LUPGxEUuZDHhR3ettE3WdGtVQb+TjpWhKkZJc0y
+         LdrAWmyHCXTBIjTkL6dpZlK9R5trpt+Yeuo5V6Y5fNtjrpalfFahX/XUY7MhS3YtOW
+         WF19x/72Dwy9NMonrkI3JMka9N2JdKZlbXlZwFxo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4z6q-1hhW7C1boy-010y0Q; Fri, 20
- Dec 2019 07:05:07 +0100
-Subject: Re: How to heel this btrfs fi corruption?
-To:     Ralf Zerres <Ralf.Zerres@networkx.de>,
-        "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>
-References: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1i2Gsj0Y0N-00hyaD; Fri, 20
+ Dec 2019 07:09:18 +0100
+Subject: Re: [PATCH] btrfs-progs: tests: mkfs/011: Fix path for rootdir
+To:     dsterba@suse.cz, Long An <lan@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <1576564610.3899.20.camel@suse.com>
+ <20191218161919.GM3929@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,241 +52,90 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <19940557-c91a-145d-4885-8e8c59e8b32f@gmx.com>
-Date:   Fri, 20 Dec 2019 14:05:03 +0800
+Message-ID: <8f45b38d-753a-78e9-8d59-6ae6bf39ff7a@gmx.com>
+Date:   Fri, 20 Dec 2019 14:09:12 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <C439384E8BF26546BDDE396FFA246D1001921619EB@NWXSBS11.networkx.de>
+In-Reply-To: <20191218161919.GM3929@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="aogVygDbZIkyRjgYpLIock0ySajrsAy5i"
-X-Provags-ID: V03:K1:zxCu7/F9cYgR+m79tJmpw/Ho5GpC5GDfvBuJSbTxsow13ZvRgrQ
- iGTA/y+l3+Nus82tocMzZ5edr6rDcvNDMnK4FajbmdkeOpngYQpcKGaQuaWlBXfWdKPLGuL
- 6v6kSJnpxXjO+NPtOF7s1GhtwjCsUEnmUNmGdxRrs3dKHAEYGQpTRTlE3lkC6oPvsiunDuk
- +IZmjmuuwsFnJlLOmjgEw==
+ boundary="XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf"
+X-Provags-ID: V03:K1:kjmsMibwsKUmFl6njGNOtxZQeYowHJo2ZVmOIq6l67fAW+hK1Zu
+ g92UrZ8Y+CjncKEIfbHRJdHg5GiVcbsKR+io096m0rSU2A8oNdpW1IG/nF0fST7fy7e66cl
+ LQUYzq2Ykh2nMgoE8cMKSx5hFHImE6Mqbo/zlcZ1WManPqVJheR/MR8XWW6+X+ZsE3+nwiF
+ XmqStSPi3+qNg05ZyO79Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:M/e0IG5WUpM=:1cZkRofsz1rKk1kA2Tsxz1
- XxQu/a8gon825S5SmmMh2DrfbfzYLQJ5461y1Ceg+lR+PIVHXdndARl2biFG6HUhehPQFVb4J
- H9pMcxJ/hI+QCnaZ81I2Llfx7pyd6G3Gvz/8VgEkG424YKhwQ+1oeoJtsWsQSl0ZSsrUJ2QU4
- rEGkSLvv+mIpVXGEVk8wY+Cq5Sr0hTrBR/PE7KdpWghLsQqhFOH/Z4+eTH4GjOJUX7nssm6W6
- 8isc5FLMhnEADm+4KFOZ621zhcLJEPcwBuzpYZYzozUstiL9bOhnNyBXT3gZH7jehdlSKW5tL
- /L7/hpsMnnH58HsTsCtMF9bw11BoRWoq6G2NU23HUKmDKF6E233Ljgs7eoz3dZFTLqmmIL+3C
- BO9DPnHfisMqkmNUkMWxGsZicQ/X9nBxGiGriPJBP9kJUU327K7wAKZo11zBuwmSLvPuzJPZn
- Ttf4+Gpv57KpwlNqN2tBd/6h/WHAjYsZVVMoTBvdt8oRGrmrVp6mlI0GXYmC8kUlzL7OE8Zrv
- pv18mdXuICFchSiFiaePLeCln3/czac9cvy86yU+aIHat2dD+uPUiixPbTi5sds5v1q0wPTJr
- 3PIAa1Bq1zBM6Owm0uF9LrPIfPGdcMtij/aC9hiGmsFoYuUVwVz4pu7k5/lxV5U1gJ7I7BfSB
- t/gyp2VwynGNwjLC1dwLdSJd+pEvmmTcpoEGmRu3NDI296OW+NgrdEgowNP1zpvsbph9A14or
- +82aaqxCAj0G/6OFACenPbXPpejbep4MyxYbJB9VCMMNpPZseuuoYdEaQJD0XtqE5fNyJBMhr
- u+QvjiY1aWt5PA5zsKzZzNvJIZYXE8ekMyZbYz4NQylJGaVmUuR87HBS2Z+QsPWwQlp/LpngL
- TKh0RAMgAizsxvS07gZU2OWFzPeFKuL1gn4LL19eNuCN1+/mAFT5S30ApyD+fRZUDXySp4V4L
- /RTp+m6jtN2C+KgHKIsx6QbonDHB3/z5TQlMS2bcxfanicxjsZU6M5AYHQQnmrUXl9JL3BLgd
- GITvnMi7m6DJcGVJWour+8RXDsfEhlW22QnPQAEKXBc2CG+aDNeIpelPSpuocr6qyXRp8lkIG
- BLhVELt67SSXd6O2s+Etbbyglocym5VtOEzo56XaDrJ04F5jsLGcFGdEOpEAJzo/SdP9JmMid
- BPTUkkmNT3v8b+6bPImc+mOZMOxP18EdoYCs13Q3nu+KTwsK2/uMeHn5ksxbkaEwglRQNNLi4
- yAjp6l5ZoF0Pyg99zk+3gs6GClHsV+boxwOrYCfqy2THj6tyiTzKDPNllz+w=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Abmhcj8S71o=:vcv2wLPQaQOARYqPcyftVf
+ 04cjjlwabgX83RgHeOa6iJD30zaDBrc7LeExJsj66uBT+aR/eLYkYF+E4R75MTnW2BViUBR9z
+ f0MBjNOIOCUhlnNLQpul4aTx0bhiAsVJ4gIuSIRsHHd81QQu24ayUWNbkwAJcsRWGa3DybRm4
+ oNIAzMfL56wicTyp4AhSdHz4swJ5kJNtMwQ2Gm/aJp6dUwt3Yj03yeKrTy7WEGOfCoz5Mz52K
+ EZeHxqE1SJutu5d7kEKCjyDSNFik/9hjWhUX6X/wwJr9tlL50l5rhIw3ctk/eIRYrDOCleUZK
+ h57BhhaIMJrUrhTYXhSmd8WtfFaums82pet3NZFU+3HzX//BIM+pYwv4npsfhLxc2wO148VG+
+ e+6XfD6vbHYLbr3rJNvvhYvrtuWc8ln5rgP9BgyIKIMKmBIZeJoACsUe1Ku7+hybvRu6JlAf3
+ LOr0+qdnrrrq1KI0WpKmd8Xo2jn/E6isY6SpWloA8DJC+0c6IK1SnxWVJs8L/5gay3iMZ1cZC
+ 2UdqcspTtsyoP11e1Zt6qiO2/SytvRgDsTd9xdgDkmsKBVy9Mf4/hF33ZSsnci2RQpEmCUkIm
+ uLQmUgXKwbmcO+DU1nCLWD3sklJ7SIvnWjyGQ5Z/fiqYRxLNJA2V+txdK8Dl9NdHsvZlF3eoy
+ NJliRWLLToG/6hldY9JD/U3a/jxknK5x+20gEMSevodjsJqZbQPRLdm9NoEWriZKJS38aEwnP
+ HIkjt8P+5ea+8URjyo2wgUwUSIFnZ0djWRZEFTJTj3dbYVrcMj3ASKs6AWKfNdo8n9h/ENtq9
+ 9jN8oI+8FAB/fdZaWR5qrQ63krBC644BloBr46/uqOmgK2qBdcmzggzR7eo4Yi02aaPm4No8F
+ AkTS31QRTRExn8hKiWo0VtJp0jvEe+0aijcPHeMdbHGHwhRCGAnFqlnK/o17FwgVWAnk18bnr
+ gRHzqCwJPbWgqkYXkkJl7R4ksxCQnE3DTF8zLXJ61BCsICZekRoflefHrjuMY0NudMJrBdf75
+ YF7vd8fE/JwqW635XPQzhGLwUmzKRrxwgvUw8eJxojDpIc7OvXSvHxPCK/RfYWPEBgsQ55ooc
+ PFueZ7hCynNVch5PtnSihupN0uar1KjG0Lalq7OUdG89luI0LUj43VOq1uWYDZcp/mqML6fyS
+ Zv551xUIBZnWknBmf5rgrJsHwlACf6IGlZP+S/lbrSKoZI4mBx/7hTu0x6nyCtUGY0pv9EgPR
+ +hcWaNFZqXWWqRZWVaOVeRTiJ8hXkbjp7WlZOr7Dx5BKfmEvdxT3LJL+i6SA=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aogVygDbZIkyRjgYpLIock0ySajrsAy5i
-Content-Type: multipart/mixed; boundary="s45S4RKoyBX5aDraNwYye1kMNldsB0hU6"
+--XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf
+Content-Type: multipart/mixed; boundary="6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V"
 
---s45S4RKoyBX5aDraNwYye1kMNldsB0hU6
+--6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/20 =E4=B8=8A=E5=8D=884:00, Ralf Zerres wrote:
-> Dear list,
+On 2019/12/19 =E4=B8=8A=E5=8D=8812:19, David Sterba wrote:
+> On Tue, Dec 17, 2019 at 06:36:51AM +0000, Long An wrote:
+>> Documentation folder path is wrong on exported testsutie. Fix this by
+>> replace TOP with INTERNAL_BIN.
 >=20
-> at customer site i can't mount a given btrfs device in rw mode.
-> this is production data and i do have a backup and managed to mount the=
- filesystem in ro mode. I did copy out relevant stuff.
-> Having said this, if btrfs --repair can't heal the situation, i could r=
-eformat the filesystem and start all over.
-> But i would prefere to save the time and take the heeling as a proof of=
- "production ready" status of btrfs-progs.
+> It feels wrong that the tests use INTERNAL_BIN but it obviously exists
+> and works so I'll apply the patch but maybe this could use some cleanup=
+=2E
+> Thanks.
 >=20
-> Here are the details:
->=20
-> kernel: 5.2.2 (Ubuntu 18.04.3)
-> btrfs-progs: 5.2.1
-> HBA: DELL Perc
-> # storcli /c0/v0
-> # 0/0   RAID5 Optl  RW     Yes     RWBD  -   OFF 7.274 TB SSD-Data
-> #btrfs fi show /dev/sdX
-> #Label: 'Data-Ssd'  uuid: <my uuid>
-> #        Total devices 1 FS bytes used 7.12TiB
-> #        devid    1 size 7.27TiB used 7.27TiB path /dev/<mydev>
->=20
-> What happend:
-> Customer filled up the filesystem (lots of snapshots in a couple of sub=
-volumes).
-> System was working with kernel 4.15 and btrfs-progs 4.15. I updated ker=
-nel and btrfs-progs with the assumption
-> more mainlined/actual tools could do a better job. Since they have seen=
- lots of fixups.
->=20
-> 1) As a first step, i did run
->=20
-> # btrfs check --mode lowmem --progress /dev/<mydev>
 
-The initial report would help a lot to determine the root cause of
-corruption in first place.
-
-But if btrfs check (both modes) report error, you'd better not to think
---repair can do a better job.
-
-Currently btrfs check is only good at finding problems, not really
-fixing them.
-
-As there are too many things to consider when doing repair, so at least
---repair is far from "production ready".
-That's why in v5.4 progs, we add extra wait time for --repair.
-
->=20
-> got extend mismatches and wrong extend CRC's
->=20
-> 2) As a second step i did try to mount in recovery mode
->=20
-> # mount -t btrfs -o defaults, recovery, skip_balance /dev/<mydev> /mnt
->=20
-> I included skip_balance, since there might be an unfinished balance run=
-=2E But this didn't work out.
-
-The dmesg would help to find out what went wrong.
-
-Just a tip for such report, the initial error message is always the most
-important thing.
-
->=20
-> 3) As a third step, got it mounted with ro mode
->=20
-> # mount -t  btrfs -o ro /dev/<mydev> /mnt
->=20
-> And filed data received via usage:
->=20
-> # btrfs fi usage /mnt
-> # Overall:
-> #    Device size:                   7.27TiB
-> #    Device allocated:              7.27TiB
-> #    Device unallocated:            1.00MiB
-> #    Device missing:                  0.00B
-> #    Used:                          7.13TiB
-> #    Free (estimated):            134.13GiB      (min: 134.13GiB)
-> #    Data ratio:                       1.00
-> #    Metadata ratio:                   2.00
-> #    Global reserve:              512.00MiB      (used: 0.00B)
-> #
-> # Data,single: Size:7.23TiB, Used:7.10TiB
-> #   /dev/<mydev>        7.23TiB
-> #
-> # Metadata,DUP: Size:21.50GiB, Used:14.31GiB
-> #   /dev/<mydev>       43.00GiB
-> #
-> # System,DUP: Size:8.00MiB, Used:864.00KiB
-> #   /dev/<mydev>       16.00MiB
->=20
-> # Unallocated:
-> #   /dev/<mydev>        1.00MiB
->=20
-> Obviously, totally filled up.
-> At that time i copied out all relevant data - you never know ... Finish=
-ed!
->=20
-> Then tried to unmout, but that got to nowhere. Leads to a reboot .
->=20
->=20
-> 4) As a forth step, i tried to repair it
->=20
-> # btrfs check --mode lowmem --progress --repair /dev/<mydev>
-> # enabling repair mode
-> # WARNING: low-memory mode repair support is only partial
-> # Opening filesystem to check...
-> # Checking filesystem on /dev/<mydev>
-> # UUID: <my UUID>
-> # [1/7] checking root items                      (0:00:33 elapsed, 2085=
-3512 items checked)
-> # Fixed 0 roots.
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (ro=
-ot: 261, owner: 286, offset: 5905580032) wanted: # 28, have: 34
-> # ERROR: fail to allocate new chunk No space left on device
-> # Try to exclude all metadata blcoks and extents, it may be slow
-> # Delete backref in extent [1988733435904 134217728]07:16 elapsed, 4043=
-5 items checked)
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (ro=
-ot: 261, owner: 286, offset: 5905580032) wanted: 27, have: 34
-> # Delete backref in extent [1988733435904 134217728]
-> # ERROR: extent[1988733435904, 134217728] referencer count mismatch (ro=
-ot: 261, owner: 286, offset: 5905580032) wanted: 26, have: 34
-> # ERROR: commit_root already set when starting transaction
-> # ERROR: fail to start transaction: Invalid argument
-> # ERROR: extent[2017321811968, 134217728] referencer count mismatch (ro=
-ot: 261, owner: 287, offset: 2281701376) wanted: 3215, have: 3319
-> # ERROR: commit_root already set when starting transaction
-> # ERROR: fail to start transaction Invalid argument
->=20
-> This ends with a core-dump.
->=20
-> Last not least my question:
->=20
-> I'm not experienced enough to solve this issue myself and need your hel=
-p.=20
-> Is it worth the time and effort to solve this issue?
-
-I don't think it would be worthy, unless you're a really super kind guy
-who want to make btrfs-progs better.
-The time to repair the image could easily be more than just restoring
-the backup, not to mention it's not ensured to save it.
-
-> Developers might be interested while having a real live testbed?
-> Do you need any further info that will help to solve the issue?
-
-In this case, the history of the corruption would be more useful.
-
-But since it's 4.15 kernel which may not have enough fixes backported
-(since it's Ubuntu, not SUSE kernel), and the 5.2.2 is not safe at all
-(you need 5.3.0 or 5.2.15) we can't even determine if it's 5.2.2 causing
-the corruption in the first place.
-
-So I'm not sure if we can get more juice from the report.
+The patch itself is kinda OK, but I guess we'd better to have some file
+generation function to test mkfs.btrfs --rootdir.
 
 Thanks,
 Qu
 
->=20
->=20
-> Best regards
-> Ralf
->=20
->=20
->=20
->=20
->=20
 
+--6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V--
 
---s45S4RKoyBX5aDraNwYye1kMNldsB0hU6--
-
---aogVygDbZIkyRjgYpLIock0ySajrsAy5i
+--XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl38ZI8ACgkQwj2R86El
-/qg8wwf/TA8KodeS7sS9IVSu6Sz4470/bTVbqZdwZRigwPd0LvsNcixLuN46Gvum
-QElYZOvxAVjtlxdymQ66qd5QLOZhFaP4TNAE6Kh21iRPu8JhPvZk+8MhCQg+mohG
-nBNjGGWy/MK16ND1IdFmChU4eroF6vLRKZu2oow2YPXL2GpXlL620ExacXiKXZc/
-9Q/IHyas7Nyh84/KMBelG2JjXPrWs3S4BhLei43JN8Hjc1Lus659lmCt2GwnhiTE
-yhasVSGqqj6EmCVaDmRI6z6NOa2GLQTFc/E4rDR59Z/WpOa0qh2RnpmvFukX9sD3
-BwuJFKeXECN40rqzzQD5JK1YYspDkA==
-=TWuz
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl38ZYgACgkQwj2R86El
+/qiJ+QgAoSaV+FfSbiYPjLmb4xBo5OLbvhU4lQt6da2YPtb5JQh9vwLj16e0nvha
+dkEZAdU9/2EqLHPFRwvu4UeLiLTbjZ+95dzNw/74j8aBgaYhivwM5bySltuB1jvX
+Y5FgegM7aXSi5jefQxP7xCG3JBEo4+dSCGjcPtul9m5Il6BYWZnTzjT/EUFsCPEw
+p6mWaNeNdexkbeGTrBHmfhufAqfoEt7OEXnRPiVsMNQo4FvNpTUecuwe9fSZGVKn
+pjOqh0VrpFFkD2j6HwbA5XcOV6yCafe2fOKEknCswNAhCxlADjRY9d3az/XFEvIJ
+6PKuMdgwOH2yxUVfLRc6pXi5KyuyYw==
+=Weg2
 -----END PGP SIGNATURE-----
 
---aogVygDbZIkyRjgYpLIock0ySajrsAy5i--
+--XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf--
