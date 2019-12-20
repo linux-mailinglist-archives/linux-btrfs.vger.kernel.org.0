@@ -2,140 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C25B12758B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 07:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36F1275D5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 07:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbfLTGJZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 01:09:25 -0500
-Received: from mout.gmx.net ([212.227.15.18]:45655 "EHLO mout.gmx.net"
+        id S1725874AbfLTGhF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 01:37:05 -0500
+Received: from mail.nethype.de ([5.9.56.24]:47705 "EHLO mail.nethype.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbfLTGJZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 01:09:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1576822158;
-        bh=sJW0sL65awx9yXW4yIRud2RkK9FqZ3dF8529Xj/cIgs=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Sb7pdtEJZsJP8yt/7XCqDwtd23LUPGxEUuZDHhR3ettE3WdGtVQb+TjpWhKkZJc0y
-         LdrAWmyHCXTBIjTkL6dpZlK9R5trpt+Yeuo5V6Y5fNtjrpalfFahX/XUY7MhS3YtOW
-         WF19x/72Dwy9NMonrkI3JMka9N2JdKZlbXlZwFxo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1i2Gsj0Y0N-00hyaD; Fri, 20
- Dec 2019 07:09:18 +0100
-Subject: Re: [PATCH] btrfs-progs: tests: mkfs/011: Fix path for rootdir
-To:     dsterba@suse.cz, Long An <lan@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1576564610.3899.20.camel@suse.com>
- <20191218161919.GM3929@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8f45b38d-753a-78e9-8d59-6ae6bf39ff7a@gmx.com>
-Date:   Fri, 20 Dec 2019 14:09:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1725801AbfLTGhF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 01:37:05 -0500
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiBuI-003G3o-RJ; Fri, 20 Dec 2019 06:37:02 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiBuI-0005d2-Kn; Fri, 20 Dec 2019 06:37:02 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1iiBuI-0002JL-KS; Fri, 20 Dec 2019 07:37:02 +0100
+Date:   Fri, 20 Dec 2019 07:37:02 +0100
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs dev del not transaction protected?
+Message-ID: <20191220063702.GE5861@schmorp.de>
+References: <20191220040536.GA1682@schmorp.de>
+ <b9e7f094-0080-ef08-68df-61ffbeaa9d19@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <20191218161919.GM3929@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf"
-X-Provags-ID: V03:K1:kjmsMibwsKUmFl6njGNOtxZQeYowHJo2ZVmOIq6l67fAW+hK1Zu
- g92UrZ8Y+CjncKEIfbHRJdHg5GiVcbsKR+io096m0rSU2A8oNdpW1IG/nF0fST7fy7e66cl
- LQUYzq2Ykh2nMgoE8cMKSx5hFHImE6Mqbo/zlcZ1WManPqVJheR/MR8XWW6+X+ZsE3+nwiF
- XmqStSPi3+qNg05ZyO79Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Abmhcj8S71o=:vcv2wLPQaQOARYqPcyftVf
- 04cjjlwabgX83RgHeOa6iJD30zaDBrc7LeExJsj66uBT+aR/eLYkYF+E4R75MTnW2BViUBR9z
- f0MBjNOIOCUhlnNLQpul4aTx0bhiAsVJ4gIuSIRsHHd81QQu24ayUWNbkwAJcsRWGa3DybRm4
- oNIAzMfL56wicTyp4AhSdHz4swJ5kJNtMwQ2Gm/aJp6dUwt3Yj03yeKrTy7WEGOfCoz5Mz52K
- EZeHxqE1SJutu5d7kEKCjyDSNFik/9hjWhUX6X/wwJr9tlL50l5rhIw3ctk/eIRYrDOCleUZK
- h57BhhaIMJrUrhTYXhSmd8WtfFaums82pet3NZFU+3HzX//BIM+pYwv4npsfhLxc2wO148VG+
- e+6XfD6vbHYLbr3rJNvvhYvrtuWc8ln5rgP9BgyIKIMKmBIZeJoACsUe1Ku7+hybvRu6JlAf3
- LOr0+qdnrrrq1KI0WpKmd8Xo2jn/E6isY6SpWloA8DJC+0c6IK1SnxWVJs8L/5gay3iMZ1cZC
- 2UdqcspTtsyoP11e1Zt6qiO2/SytvRgDsTd9xdgDkmsKBVy9Mf4/hF33ZSsnci2RQpEmCUkIm
- uLQmUgXKwbmcO+DU1nCLWD3sklJ7SIvnWjyGQ5Z/fiqYRxLNJA2V+txdK8Dl9NdHsvZlF3eoy
- NJliRWLLToG/6hldY9JD/U3a/jxknK5x+20gEMSevodjsJqZbQPRLdm9NoEWriZKJS38aEwnP
- HIkjt8P+5ea+8URjyo2wgUwUSIFnZ0djWRZEFTJTj3dbYVrcMj3ASKs6AWKfNdo8n9h/ENtq9
- 9jN8oI+8FAB/fdZaWR5qrQ63krBC644BloBr46/uqOmgK2qBdcmzggzR7eo4Yi02aaPm4No8F
- AkTS31QRTRExn8hKiWo0VtJp0jvEe+0aijcPHeMdbHGHwhRCGAnFqlnK/o17FwgVWAnk18bnr
- gRHzqCwJPbWgqkYXkkJl7R4ksxCQnE3DTF8zLXJ61BCsICZekRoflefHrjuMY0NudMJrBdf75
- YF7vd8fE/JwqW635XPQzhGLwUmzKRrxwgvUw8eJxojDpIc7OvXSvHxPCK/RfYWPEBgsQ55ooc
- PFueZ7hCynNVch5PtnSihupN0uar1KjG0Lalq7OUdG89luI0LUj43VOq1uWYDZcp/mqML6fyS
- Zv551xUIBZnWknBmf5rgrJsHwlACf6IGlZP+S/lbrSKoZI4mBx/7hTu0x6nyCtUGY0pv9EgPR
- +hcWaNFZqXWWqRZWVaOVeRTiJ8hXkbjp7WlZOr7Dx5BKfmEvdxT3LJL+i6SA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b9e7f094-0080-ef08-68df-61ffbeaa9d19@gmx.com>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf
-Content-Type: multipart/mixed; boundary="6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V"
+On Fri, Dec 20, 2019 at 01:24:20PM +0800, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > I used btrfs del /somedevice /mountpoint to remove a device, and then typed
+> > sync. A short time later the system had a hard reset.
+> 
+> Then it doesn't look like the title.
 
---6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hmm, I am not sure I understand: do you mean the subject? The command here
+is obviously not copied and pasted, and when typing it into my mail client,
+I forgot the "dev" part. The exact command, I think, was this:
 
+   btrfs dev del /dev/mapper/xmnt-cold13 /oldcold
 
+> Normally for sync, btrfs will commit transaction, thus even something
+> like the title happened, you shouldn't be affected at all.
 
-On 2019/12/19 =E4=B8=8A=E5=8D=8812:19, David Sterba wrote:
-> On Tue, Dec 17, 2019 at 06:36:51AM +0000, Long An wrote:
->> Documentation folder path is wrong on exported testsutie. Fix this by
->> replace TOP with INTERNAL_BIN.
->=20
-> It feels wrong that the tests use INTERNAL_BIN but it obviously exists
-> and works so I'll apply the patch but maybe this could use some cleanup=
-=2E
-> Thanks.
->=20
+Exactly, that is my expectation.
 
-The patch itself is kinda OK, but I guess we'd better to have some file
-generation function to test mkfs.btrfs --rootdir.
+> > [  247.385346] BTRFS error (device dm-32): devid 1 uuid f5c3dc63-1fac-45b3-b9ba-ed1ec5f92403 is missing
+> > [  247.386942] BTRFS error (device dm-32): failed to read chunk tree: -2
+> > [  247.462693] BTRFS error (device dm-32): open_ctree failed
+> 
+> Is that devid 1 the device you tried to deleted?
+> Or some unrelated device?
 
-Thanks,
-Qu
+I think the device I removed had devid 1. I am not 100% sure, but I am
+reasonably sure because I had "watch -n10 btrfs dev us" running while
+waiting for the removal to finish and not being able to control the device
+ids triggers my ocd reflexes (mostly because btrfs fi res needs the device
+id even for some single-device filesystems :), so I kind of memorised
+them.
 
+> > The thing is, the device is still there and accessible, but btrfs no longer
+> > recognises it, as it already deleted it before the crash.
+> 
+> I think it's not what you thought, but btrfs device scan is not properly
+> triggered.
 
---6ivRLFgLgxiPkAjRSo7cI55MEglu50x3V--
+Quite possible - I based my statement that it is no longer recognized
+based on the fact that a) blkid also didn't recognize a filesystem on
+the removed device anymore and b) btrfs found the other two remaining
+devices, so if btrfs scan is not properly triggered, then this is a
+serious issue in current GNU/Linux distributions (I use debian buster on
+that server).
 
---XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I assume that the device is not recognised as btrfs by blkid anymore
+because the signature had been wiped by btrfs dev del, based on previous
+experience, but I of course can't exactly know it's not, say, a hardware
+error that wiped that disk, although I would find that hard to believe :)
 
------BEGIN PGP SIGNATURE-----
+> Would you please give some more dmesg? As each scanned btrfs device will
+> show up in dmesg.
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl38ZYgACgkQwj2R86El
-/qiJ+QgAoSaV+FfSbiYPjLmb4xBo5OLbvhU4lQt6da2YPtb5JQh9vwLj16e0nvha
-dkEZAdU9/2EqLHPFRwvu4UeLiLTbjZ+95dzNw/74j8aBgaYhivwM5bySltuB1jvX
-Y5FgegM7aXSi5jefQxP7xCG3JBEo4+dSCGjcPtul9m5Il6BYWZnTzjT/EUFsCPEw
-p6mWaNeNdexkbeGTrBHmfhufAqfoEt7OEXnRPiVsMNQo4FvNpTUecuwe9fSZGVKn
-pjOqh0VrpFFkD2j6HwbA5XcOV6yCafe2fOKEknCswNAhCxlADjRY9d3az/XFEvIJ
-6PKuMdgwOH2yxUVfLRc6pXi5KyuyYw==
-=Weg2
------END PGP SIGNATURE-----
+Here should be all btrfs-related messages for this (from grep -i btrfs):
 
---XT08vTScmvQUumq0z0Whh2lFR6pEFlMIf--
+ [   10.288533] BTRFS: device label ROOT devid 1 transid 2106939 /dev/mapper/vg_doom-root
+ [   10.314498] BTRFS info (device dm-0): disk space caching is enabled
+ [   10.316488] BTRFS info (device dm-0): has skinny extents
+ [   10.900930] BTRFS info (device dm-0): enabling ssd optimizations
+ [   10.902741] BTRFS info (device dm-0): disk space caching is enabled
+ [   11.524129] BTRFS info (device dm-0): device fsid bb3185c8-19f0-4018-b06f-38678c06c7c2 devid 1 moved old:/dev/mapper/vg_doom-root new:/dev/dm-0
+ [   11.528554] BTRFS info (device dm-0): device fsid bb3185c8-19f0-4018-b06f-38678c06c7c2 devid 1 moved old:/dev/dm-0 new:/dev/mapper/vg_doom-root
+ [   42.273530] BTRFS: device label LOCALVOL3 devid 1 transid 1240483 /dev/dm-28
+ [   42.312354] BTRFS info (device dm-28): enabling auto defrag
+ [   42.314152] BTRFS info (device dm-28): force zstd compression, level 12
+ [   42.315938] BTRFS info (device dm-28): using free space tree
+ [   42.317696] BTRFS info (device dm-28): has skinny extents
+ [   49.115007] BTRFS: device label LOCALVOL5 devid 1 transid 146201 /dev/dm-29
+ [   49.138816] BTRFS info (device dm-29): using free space tree
+ [   49.140590] BTRFS info (device dm-29): has skinny extents
+ [  102.348872] BTRFS info (device dm-29): checking UUID tree
+ [  102.393185] BTRFS: device label COLD1 devid 5 transid 1876906 /dev/dm-30
+ [  109.626550] BTRFS: device label COLD1 devid 4 transid 1876907 /dev/dm-32
+ [  109.654401] BTRFS: device label COLD1 devid 3 transid 1876907 /dev/dm-31
+ [  109.656171] BTRFS info (device dm-32): use zstd compression, level 12
+ [  109.657924] BTRFS info (device dm-32): using free space tree
+ [  109.660917] BTRFS info (device dm-32): has skinny extents
+ [  109.662687] BTRFS error (device dm-32): devid 1 uuid f5c3dc63-1fac-45b3-b9ba-ed1ec5f92403 is missing
+ [  109.664832] BTRFS error (device dm-32): failed to read chunk tree: -2
+ [  109.742501] BTRFS error (device dm-32): open_ctree failed
+
+At this point, /dev/mapper/xmnt-cold11 (dm-32),
+/dev/mapper/xmnt-oldcold12 (dm-31) and /dev/mapper/xmnt-cold14 (dm-30)
+were the remaining disks in the filesystem, while xmnt-cold13 was the
+device I had formerly removed (which doesn't show up).
+
+(There are two btrfs filesystems with the COLD1 label in this machine at
+the moment, as I was migrating the fs, but the above COLD1 messages should
+all relate to the same fs).
+
+"blkid -o value -s TYPE /dev/mapper/xmnt-cold13" didn't give any output
+(the mounting script checks for that and pauses to make provisioning
+of new disks easier), while normally it would give "btrfs" on volume
+members. This, I think, would be normal behaviour for devices that have
+been removed from a btrfs.
+
+BTW, the four devices in question are all dmcrypt-on-lvm and are single
+devices in a hardware raid controller (a perc h740).
+
+> > Probably nbot related, but maybe worth mentioning: I found that system
+> > crashes (resets, not power failures) cause btrfs to not mount the first
+> > time a mount is attempted, but it always succeeds the second time, e.g.:
+> > 
+> >    # mount /device /mnt
+> >    ... no errors or warnings in kernel log, except:
+> >    BTRFS error (device dm-34): open_ctree failed
+> >    # mount /device /mnt
+> >    magically succeeds
+> 
+> Yep, this makes it sound more like a scan related bug.
+
+BTW, this (second issue) also happens with filesystems that are not
+multi-device. Not sure if that menas that btrfs scan would be involved, as
+I would assume the only device btrfs would need in such cases is the one
+given to mount, but maybe that also needs a working btrfs scan?
+
+Thanks for your working on btrfs btw. :)
+
+-- 
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
