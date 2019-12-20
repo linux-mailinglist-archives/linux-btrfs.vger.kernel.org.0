@@ -2,86 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2632A128176
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 18:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D308D1281A9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Dec 2019 18:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbfLTRby (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Dec 2019 12:31:54 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41056 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727388AbfLTRby (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Dec 2019 12:31:54 -0500
-Received: by mail-wr1-f66.google.com with SMTP id c9so10183179wrw.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 09:31:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=itLWMvo0Ajx06SU891LryQxjnsE2yHHMXZnNbvnCjCU=;
-        b=jXGBqlLLcIpfouQYjaJ3/qbN4tzL5bI0Ae+Xxy3DJ7F9h7GLKQL0i/WiEMUgMv2sjn
-         SLwLB1nTW5mj8oLd9Y5sz+Oj/Y6CVgmkU/G26Gf5I2sW17pFTRiX44CH/ux9D0NUngR+
-         o0Ox8A3ACBzB48UUKiwFaQrnNzi/6OIF0mopuM98dhlNamgaSoLrPJEIMHlZl57uMPEo
-         fKVckkkwN4wnyvKLK7W5KZpHKW9rh724lLebdV3wybPXaNCnP4tXuqQXsExim+X8CZ1X
-         h5MYuX6clYTysHjWHkZcLutxJBBB12M97iIHAx/Qwb0Oyl0ffSvSj+ZNaTCGvY4Pv45s
-         6TAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=itLWMvo0Ajx06SU891LryQxjnsE2yHHMXZnNbvnCjCU=;
-        b=HhlMc6XP+S30/70oufAwwNxPWdjBCBPu0qQJN2aIcI5+uV12v5+LUJUUXu51mw/2Dc
-         AgSqUn2fqIZnh9lZ27cAkMANpf9E0XzuEoIWLQvTq1J2fMeJ1T+0V3vStDJzbMO0gm2w
-         IJWXVpmjMD8bJQcwMUId+ZGbAWHTQuA3DDr3YroqL+THcFmSEprASRXtJSiwQwEzxNaE
-         15encK3PPQr4eRneGX2cZBCdZo7Xpe7r8+QVcj82IcRjtmjsONurwXKxIXcfOvdKT+Q9
-         CXlgxTQq1UX0XxiEx38oA8X/5VHPjrBAzYblDqpXskvj70wvWg9SREgiB+8B5Jo1SCuw
-         8fSA==
-X-Gm-Message-State: APjAAAWlTFwhNDdEBnLP2CDpDsHs44Z03+qAPcsyotO/YMSQaNAauiBm
-        3bpT8qv68XYGNwox0liTWukmz/z9PVKxCHSH6u4=
-X-Google-Smtp-Source: APXvYqyQDQ7jt2lglUPuZU6LwDa8FJ78AzqRPZ2nOM+WB/JtqKb6jfM6CZOqIYu6Z7L/CvsDIONPjYlEZWZb+rvryCw=
-X-Received: by 2002:adf:f3d1:: with SMTP id g17mr16792203wrp.378.1576863112335;
- Fri, 20 Dec 2019 09:31:52 -0800 (PST)
+        id S1727411AbfLTRuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Dec 2019 12:50:19 -0500
+Received: from mail.nethype.de ([5.9.56.24]:42067 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727404AbfLTRuT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Dec 2019 12:50:19 -0500
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiMPp-003ema-QT; Fri, 20 Dec 2019 17:50:17 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1iiMPp-0004yn-Ky; Fri, 20 Dec 2019 17:50:17 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1iiMPp-0001jW-Kd; Fri, 20 Dec 2019 18:50:17 +0100
+Date:   Fri, 20 Dec 2019 18:50:17 +0100
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Remi Gauvin <remi@georgianit.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs dev del not transaction protected?
+Message-ID: <20191220175017.GA6387@schmorp.de>
+References: <20191220040536.GA1682@schmorp.de>
+ <b9e7f094-0080-ef08-68df-61ffbeaa9d19@gmx.com>
+ <20191220063702.GE5861@schmorp.de>
+ <1912b2a1-2aa9-bf4c-198f-c5e1565dd11f@gmx.com>
+ <20191220132703.GA3435@schmorp.de>
+ <204287e5-8aca-3a51-9bc9-be577299bfd6@gmx.com>
+ <20191220165008.GA1603@schmorp.de>
+ <45b11982-0847-8e2c-b40f-0c22ed21de2b@georgianit.com>
 MIME-Version: 1.0
-Received: by 2002:a1c:3bd7:0:0:0:0:0 with HTTP; Fri, 20 Dec 2019 09:31:51
- -0800 (PST)
-From:   Mrs Monica Gabriele <monicagabriele64@gmail.com>
-Date:   Fri, 20 Dec 2019 18:31:51 +0100
-X-Google-Sender-Auth: 34Y0t1_GfU-VWMqlJjxGRMhgph4
-Message-ID: <CA+o0M8QtKXL2MERoH+cqupB3gSKONw0DBU0k+4taAXO-c4=6TA@mail.gmail.com>
-Subject: Greetings in the name of the ALMIGHTY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45b11982-0847-8e2c-b40f-0c22ed21de2b@georgianit.com>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello My Dear
+On Fri, Dec 20, 2019 at 12:24:05PM -0500, Remi Gauvin <remi@georgianit.com> wrote:
+> You don't need hints, the problem is right here.
 
-Calvary Greetings in the name of the ALMIGHTY
+Yes, I already guessed that (see my other mail). I fortunately can add two
+more devices. However:
 
-I am Mrs Monica Gabriele from Switzerland I am married to Late
-Mr.Gabriele Joseph who is a wealthy business man here in Burkina Faso,
-we were married  for many years without a child before he died after a
-brief illness. Before his sudden death we where devoted Christian When
-my late husband was alive he deposited the sum of Six Million Two
-Hundred United State Dollars ($6.200.000.00) in one of the prime bank
-here in Burkina Faso Presently this money is still with the Bank,
+> device left with unallocated space, so no new metadata space can be
+> allocated until you fix that.
 
-I am very sick from Kidney cancer that i may not last till the next
-few months according to my doctor so now i decided to donate this
-money to a honest individual who will use it to work for Almighty,
-orphans, widow and maintenance of church to fulfill the vow i and my
-late husband made to Almighty, and i have chosen you after praying.
+I think it really shouldn't be up to me to second guess btrfs's not very
+helpful error messages "and fix things". And if I couldn't add another
+device, I would be pretty much fucked - btrfs balance does not allow me
+to move any chunks to the other device, I tried balancing 10 data chunks
+and 10 metadata chunks - the data chunks balanced successfully but nothing
+changed, and the metadata chunks instantly hit the ENOSPC problem.
 
-I want this money to be use as i have said since i do not have any
-child to inherit it and our relatives are all unbelievers and i don't
-want our hard earn money to be used in ungodly way so you will take
-40% of the fund for your effort and use the remaining as i stated, as
-soon as i read from you i will give you more details on how to achieve
-it, I need your urgent reply as i don't know what tomorrow will
-result, i wish you the best in life. Please Always remember me in your
-prayers.
+Pushing "fix things" at users without giving them the ability to do so is
+rather poor.
 
-Yours Sister,
-Mrs Monica Gabriele.
-Please Let My Situation Touch Your Heart.
+So is there a legit fix for this? The tools don't allow me to rebalance
+the filesystem so there is more space on the drives and deleting data and
+writing it again doesn't seem to help - btrfs still wants to write to the
+nearly full disks. I could probably convert the metadata to single and
+back, but as long as btrfs has no way orf moving data form one disk to
+another, that's going to be tough. Maybe converting to single and resizing
+would do the trick - seriously, though, btrfs shouldn't force users to
+jump through such hoops.
+
+-- 
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
