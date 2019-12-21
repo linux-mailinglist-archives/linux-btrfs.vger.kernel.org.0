@@ -2,119 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A1412885F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 10:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D15A1288C4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 11:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbfLUJ1F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Dec 2019 04:27:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55890 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbfLUJ1F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Dec 2019 04:27:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6FF0EAC23;
-        Sat, 21 Dec 2019 09:27:03 +0000 (UTC)
-Subject: Re: fstrim is takes a long time on Btrfs and NVMe
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <c0ec818a-91ca-cfcf-a1de-821b551b19aa@suse.com>
-Date:   Sat, 21 Dec 2019 11:27:01 +0200
+        id S1726254AbfLUK7y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Dec 2019 05:59:54 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:47137 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbfLUK7x (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 21 Dec 2019 05:59:53 -0500
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.155] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E8BE4C0005;
+        Sat, 21 Dec 2019 10:59:51 +0000 (UTC)
+To:     "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Subject: Kernel 5.4 - BTRFS FS shows full with about 600 GB Free ?
+Message-ID: <8bd55f28-2176-89f7-bd53-4992ccd53f42@petaramesh.org>
+Date:   Sat, 21 Dec 2019 11:59:22 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi list,
 
+After writing files and snapshots WITHOUT errors on an external BTRFS FS 
+with 500+ GB of free space, using kernel 5.4.5-arch1-1, I dismount the 
+FS then remount it normally, and then it says the FS has 0 space free left !
 
-On 21.12.19 г. 8:24 ч., Chris Murphy wrote:
-> Hi,
-> 
-> Recent kernels, I think since 5.1 or 5.2, but tested today on 5.3.18,
-> 5.4.5, 5.5.0rc2, takes quite a long time for `fstrim /` to complete,
-> just over 1 minute.
-> 
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/nvme0n1p7  178G   16G  161G   9% /
-> 
-> fstrim stops on this for pretty much the entire time:
-> ioctl(3, FITRIM, {start=0, len=0xffffffffffffffff, minlen=0}) = 0
-> 
-> top shows the fstrim process itself isn't consuming much CPU, about
-> 2-3%. Top five items in per top, not much more revealing.
-> 
-> Samples: 220K of event 'cycles', 4000 Hz, Event count (approx.):
-> 3463316966 lost: 0/0 drop: 0/0
-> Overhead  Shared Object                    Symbol
->    1.62%  [kernel]                         [k] find_next_zero_bit
->    1.59%  perf                             [.] 0x00000000002ae063
->    1.52%  [kernel]                         [k] psi_task_change
->    1.41%  [kernel]                         [k] update_blocked_averages
->    1.33%  [unknown]                        [.] 0000000000000000
-> 
-> On a different system, with older Samsung 840 SATA SSD, and a fresh
-> Btrfs, I can't reproduce. It takes less than 1s. Not sure how to get
-> more information.
+Checking the disk on another machine with
 
+[moksha ~]# uname -r
+5.4.2-1-MANJARO
 
-trim implementations are a blackbox and specific to particular hardware.
-Can you try with a different filesystem on the same drive? When
-implementing the fstrim ioctl there isn't much you can do since discard
-requests are just sent to the disk.
+And... How can this be ?
 
-Providing blkttraces might yield more insight as to where the requests
-spend most time.
+root@moksha:~# df -h /run/media/myself/MyVolume
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/luks-xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww   1,9T 1,2T     0 100% 
+/run/media/myself/MyVolume
 
-> 
-> 
+root@moksha:~# btrfs fi sh
+Label: 'MyVolume'  uuid: xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww
+         Total devices 1 FS bytes used 1.19TiB
+         devid    1 size 1.82TiB used 1.20TiB path 
+/dev/mapper/luks-xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww
+
+root@moksha:~# btrfs fi df /run/media/myself/MyVolume
+Data, single: total=1.18TiB, used=1.18TiB
+System, DUP: total=8.00MiB, used=160.00KiB
+Metadata, DUP: total=7.00GiB, used=6.88GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+root@moksha:~# umount /run/media/myself/MyVolume
+
+root@moksha:~# btrfs check /dev/mapper/luks-xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks-xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww
+UUID: xxxxxxxxx-yyyy-zzzz-tttt-wwwwwww
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+
+(Still running since a while, no errors...)
+
+TIA for any help.
+
+Kind regards.
+
