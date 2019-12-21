@@ -2,83 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8691A1287BC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 07:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B511287D5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 07:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbfLUGYn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Dec 2019 01:24:43 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:44248 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbfLUGYm (ORCPT
+        id S1726733AbfLUG1U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Dec 2019 01:27:20 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:50721 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbfLUG1U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Dec 2019 01:24:42 -0500
-Received: by mail-wr1-f46.google.com with SMTP id q10so11402080wrm.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 22:24:41 -0800 (PST)
+        Sat, 21 Dec 2019 01:27:20 -0500
+Received: by mail-wm1-f46.google.com with SMTP id a5so10984651wmb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Dec 2019 22:27:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=lIGp1WJqQZR2knsghDJS4+J/5egcahQtQalLhW8uKJQ=;
-        b=VEth1XOSGf3RT1Az0kIvVp59gKyMjI+1uvozvw7qO/s4Q0vKD+exQj2sJvU8tFgBf9
-         gMJ1Sgf51Vmn+JL5WpSgQf094oxxZ26ua/maWJV8G4kvs/nwniTtnCg1y3LrRyfQeXcq
-         5y+cqLmEmQrxTbtv/VDg4A89447KXifr1vI6FETED6lJk6FVQ/bQ9F5Ghy6iHoM5ysVN
-         FFXLock+R9xbQwC2G471zNSp7S93h0BE38i0sDOlI2ZD1TNu8E9xVRzZQFGFlgaGebEX
-         ygjnTDsAdEbw9mmS4XW8E4/hsrfVgzEe2VbiC0q+lvichN8Xy+IMzKslvxiGjnQXBMr4
-         7Cww==
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QopNmazyFSOXaNApJty4US1ohbDt91Fw2CxTiz8hEaY=;
+        b=krJvPWPpayAKXZSqgvHzwEg7iY23/95QyiPfKK5OTYllAbahRWoKSJqLketBD+HjnX
+         QwmmSeEodLiB075gjgOjh5LaX2X5kzF6vNzLqEvrv4FxiIdfqsoEau8u8Qc2pfH4NXMd
+         bgsKNnYPlkvvjNeSpJC0qY32xOxArzj0Mu+wODLuXY0zGxCefJQ4CHCYarnXwF5H+EdC
+         seueOiPwk0m5ftSxdLF0gyWCXyUveT3Xoy8PS8kd/NVK2FTijmWy4g2sMccSFO19MzSm
+         ks/bnoVmti/7H4kdiIDHY3LCOFiQzogeGovN5VC8UFzKipQ8dxXCmKqtGZXvdSdUdTgr
+         acAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=lIGp1WJqQZR2knsghDJS4+J/5egcahQtQalLhW8uKJQ=;
-        b=RfXp+YhrATsWkJk02ung3kiTgXlR+kK08GGiERrx7CCZJdhs43bDI2R/aCM7IBiZzr
-         L2rPn8t1aaXlu9fDVbWWukM8pl5FF+jdEaIoGW859wkKI2qPQr7tUE/WBWWOdAeR0W97
-         tQoxIeVpmmIlz9wGe7s7eIjwIZ4kH+JIcArnJlTTr34SG9lhJdYEnplREYZ8sBkOtfdS
-         dR57D4Wgtn63OXJqLp5ISaQDQI1qqdC2tPF5QMquiGq4k+axx/DIxhYxEXtH7pVMPnZ7
-         dha8tc6eYleaNcRUGFXo2bdFZ//CeU4SpWFkfEMmAH7yY7/82Sk97PQtxZVv7toaAkA2
-         sjug==
-X-Gm-Message-State: APjAAAX+pbyWZtmBt1T/AIlt6JRcOu1PRshFqu+jgmF/Gn2w/plKZN7Y
-        ZGm8x9Wz81pdx0DGz7UYeTzLfqXcxIeNjQtV+E2t2GFBg2+cLQ==
-X-Google-Smtp-Source: APXvYqwquuMMVZimuOIbBR7raJhQBO0Di0Qz5klqok7F0QksOTaajsg9A2Hnn3XzFqwuvQfMKVlTfCU5aUXgwhInn5A=
-X-Received: by 2002:adf:f6c8:: with SMTP id y8mr18923347wrp.167.1576909480184;
- Fri, 20 Dec 2019 22:24:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QopNmazyFSOXaNApJty4US1ohbDt91Fw2CxTiz8hEaY=;
+        b=UkFgeLuDHMUI0H04kDXp7FVzHNgUVWy7nC/nMmFhXRDbsfSybGHhIk9DA1x5wyQd0e
+         1NK7BsdOnyJJc40JRf/2u0yT/F1Kb5wS2WDGG6PQoERoGzmvu04ICpMWhFePuQRiupU7
+         L6Av+RJbjwPGNYh4jUKADZm8kjnPEBtqZKxL8DovLazpgXcCf4/go/j0Ndr6vIJ+fFwI
+         TVGK5X/9ajOTpX2uzaPGELo+sds/y1vM36bqz5r3vQD5/oszon9uiRXn80dPAPr377xx
+         rX/7MteY8G9LScYa5uIKkHRW5YnljqpkslQoFMfvP/Dt2ZVo02Xuuo//SNj/y5fbspP0
+         wptg==
+X-Gm-Message-State: APjAAAWJrPE47zQf7Zp0ESUZqWPrD0jG3i2HHonc1G5pPpz/mi+dylQb
+        QC9pGUwOD3ymQi48Y9QJZNQWyOjvggFEqWpXFFtzRoLTKw2DdQ==
+X-Google-Smtp-Source: APXvYqwLEfv/zk/Dm5wjZRIy0GE2/7Puo5vMgur2fjYMtJNQGN+kNn6/RSOl9laWfrfJlC9LUeM+g3H0e6iruPDLeg0=
+X-Received: by 2002:a1c:4d03:: with SMTP id o3mr20628863wmh.164.1576909638410;
+ Fri, 20 Dec 2019 22:27:18 -0800 (PST)
 MIME-Version: 1.0
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 20 Dec 2019 23:24:24 -0700
-Message-ID: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
-Subject: fstrim is takes a long time on Btrfs and NVMe
+From:   Chris Murphy <chris@colorremedies.com>
+Date:   Fri, 20 Dec 2019 23:27:02 -0700
+Message-ID: <CAJCQCtTcaSy+sm9JayVWXYu1fe7QXyWMmhCbJKwQs3Fuuzy15g@mail.gmail.com>
+Subject: dump tree always shows compression level 3, zstd
 To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+kernel 5.4.5
+btrfs-progs 5.4
 
-Recent kernels, I think since 5.1 or 5.2, but tested today on 5.3.18,
-5.4.5, 5.5.0rc2, takes quite a long time for `fstrim /` to complete,
-just over 1 minute.
+test file is linux.tar (not compressed), it's the only file on the
+file system in each case
 
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/nvme0n1p7  178G   16G  161G   9% /
-
-fstrim stops on this for pretty much the entire time:
-ioctl(3, FITRIM, {start=0, len=0xffffffffffffffff, minlen=0}) = 0
-
-top shows the fstrim process itself isn't consuming much CPU, about
-2-3%. Top five items in per top, not much more revealing.
-
-Samples: 220K of event 'cycles', 4000 Hz, Event count (approx.):
-3463316966 lost: 0/0 drop: 0/0
-Overhead  Shared Object                    Symbol
-   1.62%  [kernel]                         [k] find_next_zero_bit
-   1.59%  perf                             [.] 0x00000000002ae063
-   1.52%  [kernel]                         [k] psi_task_change
-   1.41%  [kernel]                         [k] update_blocked_averages
-   1.33%  [unknown]                        [.] 0000000000000000
-
-On a different system, with older Samsung 840 SATA SSD, and a fresh
-Btrfs, I can't reproduce. It takes less than 1s. Not sure how to get
-more information.
+/dev/sda5        53G  2.8G   50G   6% /mnt     none
+/dev/sda5        53G  2.2G   50G   5% /mnt     zstd 1
+/dev/sda5        53G  2.1G   50G   4% /mnt     zstd 15
 
 
--- 
+mount and dmesg both show the value for the level I've set; but btrfs
+insp dump-t shows extents always have compression 3.
+
+
+[47567.500812] BTRFS info (device sda5): use zstd compression, level 1
+
+    item 14 key (328583 EXTENT_DATA 2060582912) itemoff 15488 itemsize 53
+        generation 51 type 1 (regular)
+        extent data disk byte 6461308928 nr 20480
+        extent data offset 0 nr 131072 ram 131072
+        extent compression 3 (zstd)
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+[47793.161246] BTRFS info (device sda5): use zstd compression, level 15    =
+    =E2=94=82
+
+    item 170 key (328584 EXTENT_DATA 2735341568) itemoff 7220 itemsize 53
+        generation 54 type 1 (regular)
+        extent data disk byte 2168475648 nr 24576
+        extent data offset 0 nr 131072 ram 131072
+        extent compression 3 (zstd)
+
+
+I'd expect a bigger difference between level 1 and 15, so I'm a little
+suspicious that it really is always using level 3. But it's also
+possible that it's just a bug with inspect always reporting level 3.
+The rate of the level 15 copy is slower.
+
+--=20
 Chris Murphy
