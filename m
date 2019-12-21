@@ -2,83 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5013C12883B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 09:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A1412885F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Dec 2019 10:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbfLUIiF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Dec 2019 03:38:05 -0500
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:39909 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbfLUIiF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Dec 2019 03:38:05 -0500
-Received: by mail-wm1-f49.google.com with SMTP id 20so11328764wmj.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Dec 2019 00:38:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=e/Rb/STNucYXTa86EF3GmsP1X8eYpl+TK8Bm6/ysniU=;
-        b=KUOfLMTiE1+80AulyjgRtVuO0hDEcITKHLSCZk02kJooJvB+tgZwGXxMeoj3KMJ3t+
-         ptDkOMQAGwP8cQ56gcU6wpkpaKN3XAQqXhkDW+/FSyOmO/HH4kU6mFZSlYQVws8Wkw6B
-         4Qmp46ahzqNvlJ1b21rB7z2qc/9JHQfqofSt1FvR5rODzPyAz13XMNpOBW5djnD0htuJ
-         gR2owvhHtCJ2PBd7JmAjxLjvwmKBjtfhLfuEHULDo8yQbkkNLhCtM9ATlqntDBGvpCXA
-         MmdWp5RVM3t2oZfVEICXwFcMg2CPJ73yO8zO/IPWtJFPdBFHYKbXKP8rFBJparStx7/+
-         RrXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e/Rb/STNucYXTa86EF3GmsP1X8eYpl+TK8Bm6/ysniU=;
-        b=uZlEXJXylIApLKrnOInuS5JUm4qsc+10oX4BWhJvmuJJltDtJmLtlAh8PREn2tTAuS
-         3L61tCZ2HA4Paloe4L9ZkAH5y2wqFprnpySIkyvRNBCTb47pf12hwKPsqlQsAuE4ylVF
-         wGWL2LNQMAYLpbNb/K0g1hgEDAqTjzeV13Cb+Lxs3zdzX6rSVJlTtz3u7qoDobjeuycB
-         RczUgj2+V2n8tLk4eS1xIYLkSbOz+5gM4XUL29Zz3k/ob5cQAh10RiwiGc2LWAbhDi/B
-         ELQcc2S/cyCiRN7BFxJJK98mcjftjt0oaRpG31Eg1FJREtgp4vgJOOBaq4hDYzY39YPl
-         YPYQ==
-X-Gm-Message-State: APjAAAXX82iB+OQrdjpBQKzdrFWvH4G7ISLOb7t+VSYEZdwykjqCS5Vh
-        vnNUvgJVuE7klt8YapAUs5kpZzQ3
-X-Google-Smtp-Source: APXvYqw74luKbk+KdhOXGpANFlcV2qoY+X/HS95gh9BdwS7zvz2CIYZsagDSuHX3XU9tT+X3qcB4yg==
-X-Received: by 2002:a7b:c936:: with SMTP id h22mr20126958wml.115.1576917483433;
-        Sat, 21 Dec 2019 00:38:03 -0800 (PST)
-Received: from glet ([91.187.202.82])
-        by smtp.gmail.com with ESMTPSA id x11sm12429218wmg.46.2019.12.21.00.38.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2019 00:38:02 -0800 (PST)
-Date:   Sat, 21 Dec 2019 09:38:00 +0100
-From:   Andrea Gelmini <andrea.gelmini@gelma.net>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        id S1726131AbfLUJ1F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Dec 2019 04:27:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725845AbfLUJ1F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 21 Dec 2019 04:27:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6FF0EAC23;
+        Sat, 21 Dec 2019 09:27:03 +0000 (UTC)
 Subject: Re: fstrim is takes a long time on Btrfs and NVMe
-Message-ID: <20191221083800.GA85226@glet>
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c0ec818a-91ca-cfcf-a1de-821b551b19aa@suse.com>
+Date:   Sat, 21 Dec 2019 11:27:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 11:24:24PM -0700, Chris Murphy wrote:
+
+
+On 21.12.19 г. 8:24 ч., Chris Murphy wrote:
 > Hi,
 > 
 > Recent kernels, I think since 5.1 or 5.2, but tested today on 5.3.18,
 > 5.4.5, 5.5.0rc2, takes quite a long time for `fstrim /` to complete,
 > just over 1 minute.
+> 
+> Filesystem      Size  Used Avail Use% Mounted on
+> /dev/nvme0n1p7  178G   16G  161G   9% /
+> 
+> fstrim stops on this for pretty much the entire time:
+> ioctl(3, FITRIM, {start=0, len=0xffffffffffffffff, minlen=0}) = 0
+> 
+> top shows the fstrim process itself isn't consuming much CPU, about
+> 2-3%. Top five items in per top, not much more revealing.
+> 
+> Samples: 220K of event 'cycles', 4000 Hz, Event count (approx.):
+> 3463316966 lost: 0/0 drop: 0/0
+> Overhead  Shared Object                    Symbol
+>    1.62%  [kernel]                         [k] find_next_zero_bit
+>    1.59%  perf                             [.] 0x00000000002ae063
+>    1.52%  [kernel]                         [k] psi_task_change
+>    1.41%  [kernel]                         [k] update_blocked_averages
+>    1.33%  [unknown]                        [.] 0000000000000000
+> 
+> On a different system, with older Samsung 840 SATA SSD, and a fresh
+> Btrfs, I can't reproduce. It takes less than 1s. Not sure how to get
+> more information.
 
-Same effect here, since more than one year (and all update kernel
-version).
 
-It happens with my laptop devices:
-nvme: KBG30ZMT128G TOSHIBA                     1         128,04  GB / 128,04  GB    512   B +  0 B   (Firm. 0108ADLA)
-SSD sata: Samsung SSD 860 EVO 4TB (Firmw. RVT02B6Q)
+trim implementations are a blackbox and specific to particular hardware.
+Can you try with a different filesystem on the same drive? When
+implementing the fstrim ioctl there isn't much you can do since discard
+requests are just sent to the disk.
 
-I guess it doesn't matter, anyway:
-nvme: btrfs
-ssd: ext4 on cryptsetup + lvm
+Providing blkttraces might yield more insight as to where the requests
+spend most time.
 
-Ciao,
-Gelma
+> 
+> 
