@@ -2,116 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5C0128D56
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2019 11:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0476128D74
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Dec 2019 11:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbfLVKQC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Dec 2019 05:16:02 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:43307 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfLVKQC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Dec 2019 05:16:02 -0500
-Received: from [192.168.1.168] (unknown [88.191.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 12C2E200003;
-        Sun, 22 Dec 2019 10:15:59 +0000 (UTC)
-Subject: Re: Kernel 5.4 - BTRFS FS shows full with about 600 GB Free ?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>
-References: <8bd55f28-2176-89f7-bd53-4992ccd53f42@petaramesh.org>
- <81dec38b-ec8e-382e-7dfe-cb331f418ffa@gmx.com>
- <e743df15-4830-8d83-bc36-6ddd33c1e720@petaramesh.org>
- <dd37e99c-e087-2b6d-830a-96811b337ba2@gmx.com>
- <bd183df9-4742-301d-251c-443d99d170c7@petaramesh.org>
- <a39bd758-69d2-cf16-de39-36e22cefe233@gmx.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Message-ID: <0282e3ae-4d48-ac9d-79f9-459ea5420727@petaramesh.org>
-Date:   Sun, 22 Dec 2019 11:15:59 +0100
+        id S1726139AbfLVKkt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Dec 2019 05:40:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725977AbfLVKkt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 22 Dec 2019 05:40:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E89ECAF92;
+        Sun, 22 Dec 2019 10:40:46 +0000 (UTC)
+Subject: Re: fstrim is takes a long time on Btrfs and NVMe
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <906823af-cf37-4d54-bf24-26596acf15d6@suse.com>
+Date:   Sun, 22 Dec 2019 12:40:45 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <a39bd758-69d2-cf16-de39-36e22cefe233@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
+In-Reply-To: <CAJCQCtTQ-xkWtSzXd14hb1bmozg3U8H2pxQMO7PqEJjymCcCGA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 22/12/2019 à 10:37, Qu Wenruo a écrit :
->>
->> With « uncommitted metadata » do you mean that this situation is only
->> temporary and should end once all transactions are commited to disk ?
+
+
+On 21.12.19 г. 8:24 ч., Chris Murphy wrote:
+> Hi,
 > 
-> Yes. The temporary part also matches with one kind reporter's description.
-> So for that v5.4 temporary 0 available, it should be the case.
-
-Unfortunately in my case it was not « temporary », the filesystem was 
-idle, and the « zero free space » survived unmounts and remounts and 
-showed the same using kernels 5.3 and 4.15 on other machines...
-
-...But a « btrfs balance -m » (under kernel 5.4) fixed it in the end.
-
-> But there is one valid behavior which may cause such 0 available space
-> situation.
-> Are you using RAID1 or RAID10 with hugely unbalanced disk size?
-
-Absolutely not. Relatively fresh BTRFS FS on a single 2TB device on 
-which at least 33% of the space had never been allocated.
-
-> We need extra info to further determine the cause of the persistent 0
-> available space problem.
-> `btrfs fi usage` output would help a lot.
-
-Here's all what I get AFTER the "btrfs balance -m" fixed things:
-
-[moksha /]# uname -r
-5.4.2-1-MANJARO
-
-[moksha /]# btrfs fi sh
-Label: 'MyFS'  uuid: xxxxxxxxx-yyyy-zzzz-tttt-wwwwwwwwwwww
-	Total devices 1 FS bytes used 1.19TiB
-	devid    1 size 1.82TiB used 1.20TiB path 
-/dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-
-[moksha /]# btrfs fi df /run/media/myself/MyFS
-Data, single: total=1.18TiB, used=1.18TiB
-System, DUP: total=32.00MiB, used=160.00KiB
-Metadata, DUP: total=8.00GiB, used=6.93GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-[moksha /]# btrfs fi us /run/media/myself/MyFS
-Overall:
-     Device size:		   1.82TiB
-     Device allocated:		   1.20TiB
-     Device unallocated:		 633.90GiB
-     Device missing:		     0.00B
-     Used:			   1.20TiB
-     Free (estimated):		 634.26GiB	(min: 317.31GiB)
-     Data ratio:			      1.00
-     Metadata ratio:		      2.00
-     Global reserve:		 512.00MiB	(used: 0.00B)
-
-Data,single: Size:1.18TiB, Used:1.18TiB (99.97%)
-    /dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee	   1.18TiB
-
-Metadata,DUP: Size:8.00GiB, Used:6.93GiB (86.63%)
-    /dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee	  16.00GiB
-
-System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
-    /dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee	  64.00MiB
-
-Unallocated:
-    /dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee	 633.90GiB
-
-[moksha /]# df -h /run/media/myself/MyFS
-Filesystem                       Size  Used Avail Use% Mounted on
-/dev/mapper/luks-aaaaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee   1,9T    1,2T 
-635G  66% /run/media/myself/MyFS
+> Recent kernels, I think since 5.1 or 5.2, but tested today on 5.3.18,
+> 5.4.5, 5.5.0rc2, takes quite a long time for `fstrim /` to complete,
+> just over 1 minute.
+> 
+> Filesystem      Size  Used Avail Use% Mounted on
+> /dev/nvme0n1p7  178G   16G  161G   9% /
+> 
+> fstrim stops on this for pretty much the entire time:
+> ioctl(3, FITRIM, {start=0, len=0xffffffffffffffff, minlen=0}) = 0
+> 
+> top shows the fstrim process itself isn't consuming much CPU, about
+> 2-3%. Top five items in per top, not much more revealing.
+> 
+> Samples: 220K of event 'cycles', 4000 Hz, Event count (approx.):
+> 3463316966 lost: 0/0 drop: 0/0
+> Overhead  Shared Object                    Symbol
+>    1.62%  [kernel]                         [k] find_next_zero_bit
+>    1.59%  perf                             [.] 0x00000000002ae063
+>    1.52%  [kernel]                         [k] psi_task_change
+>    1.41%  [kernel]                         [k] update_blocked_averages
+>    1.33%  [unknown]                        [.] 0000000000000000
+> 
+> On a different system, with older Samsung 840 SATA SSD, and a fresh
+> Btrfs, I can't reproduce. It takes less than 1s. Not sure how to get
+> more information.
+> 
+> 
 
 
-ॐ
--- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+Ok, indeed your device seems to be taking a long time to do discards,
+perhahps it's not using NCQ. OTOH btrfs currently issues synchronous
+discards since it's using: blkdev_issue_discard. So naturally every
+discard request is blocking.
+
+The solution would be to rework how discard in btrfs works by utilising
+the asynchronous discard interface __blkdev_issue_discard et al.
+However, that would need a more careful analysis since freespace which
+could be waiting to be discarded might be allocated. So for correctness
+reasons some sort of synchronization would need to be devised.
