@@ -2,55 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 991B0129C8C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Dec 2019 03:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA51129CB4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Dec 2019 03:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbfLXCEc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Dec 2019 21:04:32 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:45291 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbfLXCEb (ORCPT
+        id S1727180AbfLXCY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Dec 2019 21:24:26 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38502 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727009AbfLXCYZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Dec 2019 21:04:31 -0500
-Received: by mail-wr1-f46.google.com with SMTP id j42so18562008wrj.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2019 18:04:30 -0800 (PST)
+        Mon, 23 Dec 2019 21:24:25 -0500
+Received: by mail-wm1-f65.google.com with SMTP id u2so1328410wmc.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2019 18:24:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F2Oo7xsv2zB3qAXSFbrJNzJiLI11W3c5/iLprQuizYY=;
-        b=dCAd04zAj2zOJXQpkwYVRi+Q2yuWB6qKhwkEBUCSLZ7JRczVuiw36TQWRTVq5PnEiV
-         UQGkkVIJtRUPGK0t5y2hTfA+SC/dLTdJD9RRL/oo6oehvVIc0QN6yNIQWtYdCpDFVHO5
-         m92/0/ALwoEkT8dBhQrRHmyPyd6NMToS4D7PezTXH++UzlolZWCV8B0Vsp5IiVJDjn4X
-         HZvuEJcs/xa5w7YI3CFUnq0x6BRya5Ob9cmJeojNKaLATWi4gqWBce+KUSHMO8rDJgm4
-         +r4dNF0r8vD9dYs1EGdiZmtjfXI7OrOxLY2hTWpkr80p5YITBCmAN2mrmIzh0S1t2erf
-         5gXQ==
+         :content-transfer-encoding;
+        bh=ni8hIT/6QtQaBN0u/poXlAqh+507aFvCN6pPrZnXhE0=;
+        b=cHcQDL3Xokf4xFkfIRBY0PYbIU41KsZTKHzQhtWH0HzSzhBTAULdr617ndGf1Vdsfd
+         3q+OMXWsbHtPLC0x7ZyPzr0akkteVD5jdbLvFjb/Q/Kr20ccpXOCYfTA28eDaBd3iaOr
+         EH9pTX4xXfWuw8EE9T42XFpjhDqzhvB5RtcyRpF2YG/HdSbIGZ00ku01frJsqCMnxE/J
+         PUbmCXrdgashkiziAMUzzXU2VJO5HUwSXXsT+6rTA+lrPgk4WZB9Lh7BTJgHoZZDPYjt
+         kprnpQ5dyY7cFPQfl2bvvbcdY3RNX9+6MbNF6DfyiNFEQkzbvS3GUW0mTW0FB5U/Dw9r
+         06og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F2Oo7xsv2zB3qAXSFbrJNzJiLI11W3c5/iLprQuizYY=;
-        b=Hj4BJUJ8H0Dw2yXqYj/dJ4nRYVqLZnyD8Fw4XVJbZQjdtdhAmJy4nwJNO1BoBE2UZV
-         BBVMG95iFc7mYibIRO6gPL8Cc7UOZu5KcSAXUYsKWkPtZaAjGFXAz5xz6AOjih5AAhGo
-         ml2Q6xPTwS1tdDrd9RbkbIjvgX46ybHyts2+PWNXEQTIVpGFrG9TrVWgxkqGWdkM5G+j
-         5Khq2aBncW8VTCkn3t9gFD8xPx2yBI7rOOpHrU9p9p6ZppBWspFJwDu2LdkX8f2jSlC/
-         BDp5mLg1SMWgjMXEbb5MI24mCkYWkKhPnrex4CBIoWRkWs6S6alvVMVzgift41xWW8nB
-         Hx4g==
-X-Gm-Message-State: APjAAAW5mgmR3sD5kxcX3o5krd1JfjwspwMn7U215P9GHUpWlfM9/iHL
-        f8LRjZdLE3cp/lZnkmMJmow2GcNN3zlaEG3Yh0tSb0SnSWin2A==
-X-Google-Smtp-Source: APXvYqyU6teR6fTrBsltKc2IIKczOJIv4UTuaJwLWamr+olLQK3c8ypDFnv960L/X5prSqFHNdlL2ZoFOZcjV3EYjKM=
-X-Received: by 2002:a5d:5487:: with SMTP id h7mr31524963wrv.18.1577153069427;
- Mon, 23 Dec 2019 18:04:29 -0800 (PST)
+         :message-id:subject:to:content-transfer-encoding;
+        bh=ni8hIT/6QtQaBN0u/poXlAqh+507aFvCN6pPrZnXhE0=;
+        b=c56OCjSg3bGH9TLJO8lr0TmhcXlO8h/Iy7vO89AOXY7ekEJHn5CZfEX7J+n5FQtnSn
+         HjwqLZFOIcSKykkdFMiOI+A/a2VjDg7Qv/5XZlJKOH42wXUkUrd9TnbReyf9Ozjo2weR
+         0mqb3/1byDlJDcco988zuMF/xlyNGw681fmIJblfAk14U6OgTUjYdY5TXdHxrmNSlxB/
+         GzQh0B+kL/Lk3Qk6olUc8GBRgTUkQpnHSHUYLpb+8VKIxop4mcqVpmezcKIefJjohXTP
+         afIUS1KYDB6JKd7Uj9zn0cSFij32HikFj/TUrRCUgHd8Q3BRN3VjTi+msWpVD3b2/BnB
+         7MBg==
+X-Gm-Message-State: APjAAAWCQ1sBc6muHUT/MjLvqc6H2H1tXmTMuaNH8o+6poyluncwacch
+        rPndCCgQ2Kdi/pGF2/kne5AS6uGcPnK/AhjECGtggw==
+X-Google-Smtp-Source: APXvYqylXcme6uYxSfXaks9qK9bEz0O/1X2Zyi7e+SFj/kvvjcnUYxbSwi0Fbh4zui4pPdpXgUHF/CHiO9eOqmo5kBo=
+X-Received: by 2002:a1c:4d03:: with SMTP id o3mr1620194wmh.164.1577154262694;
+ Mon, 23 Dec 2019 18:24:22 -0800 (PST)
 MIME-Version: 1.0
-References: <16f33002870.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr> <fbf7c50b-fc02-bf51-b55f-6449121e7eec@knorrie.org>
-In-Reply-To: <fbf7c50b-fc02-bf51-b55f-6449121e7eec@knorrie.org>
-From:   Wang Shilong <wangshilong1991@gmail.com>
-Date:   Tue, 24 Dec 2019 10:04:12 +0800
-Message-ID: <CAP9B-QkL60aELFZzOzZStbAz2UWj11V8YNPtSWWgwzeEnbLpvQ@mail.gmail.com>
-Subject: Re: Metadata chunks on ssd?
-To:     Hans van Kranenburg <hans@knorrie.org>
-Cc:     =?UTF-8?Q?St=C3=A9phane_Lesimple?= <stephane_btrfs@lesimple.fr>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtS_7vjBnqeDsedBQJYuE_ap+Xo6D=MXY=rOxf66oJZkrA@mail.gmail.com>
+ <4eca86cf-65c3-5aba-d0fd-466d779614e6@toxicpanda.com> <20191211155553.GP3929@twin.jikos.cz>
+ <20191211155931.GQ3929@twin.jikos.cz>
+In-Reply-To: <20191211155931.GQ3929@twin.jikos.cz>
+From:   Chris Murphy <chris@colorremedies.com>
+Date:   Mon, 23 Dec 2019 19:24:06 -0700
+Message-ID: <CAJCQCtTH65e=nOxsmy-QYPqmsz9d2YciPqxUGUpdqHnXvXLY4A@mail.gmail.com>
+Subject: Re: 5.5.0-0.rc1 hang, could be zstd compression related
+To:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <chris@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,65 +62,111 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 24, 2019 at 7:38 AM Hans van Kranenburg <hans@knorrie.org> wrot=
-e:
+Applied that single line on top of 5.5.0-rc3
+
+fs/btrfs/compression.c:449:17: error: implicit declaration of function
+=E2=80=98bio_set_bev=E2=80=99; did you mean =E2=80=98bio_set_dev=E2=80=99?
+[-Werror=3Dimplicit-function-declaration]
+
+If I use bio_set_dev
+
+...
+  CC [M]  fs/btrfs/compression.o
+fs/btrfs/compression.o: warning: objtool:
+end_compressed_bio_read.cold()+0x11: unreachable instruction
+  LD [M]  fs/btrfs/btrfs.o
+  GEN     .version
+...
+
+Despite that, it seems to work, and no crash with the reproducer.
+
+On Wed, Dec 11, 2019 at 8:59 AM David Sterba <dsterba@suse.cz> wrote:
 >
-> Hi St=C3=A9phane,
->
-> On 12/23/19 2:44 PM, St=C3=A9phane Lesimple wrote:
+> On Wed, Dec 11, 2019 at 04:55:53PM +0100, David Sterba wrote:
+> > On Wed, Dec 11, 2019 at 09:58:45AM -0500, Josef Bacik wrote:
+> > > On 12/10/19 11:00 PM, Chris Murphy wrote:
+> > > > Could continue to chat in one application, the desktop environment =
+was
+> > > > responsive, but no shells worked and I couldn't get to a tty and I
+> > > > couldn't ssh into remotely. Looks like the journal has everything u=
+p
+> > > > until I pressed and held down the power button.
+> > > >
+> > > >
+> > > > /dev/nvme0n1p7 on / type btrfs
+> > > > (rw,noatime,seclabel,compress=3Dzstd:1,ssd,space_cache=3Dv2,subvoli=
+d=3D274,subvol=3D/root)
+> > > >
+> > > > dmesg pretty
+> > > > https://pastebin.com/pvG3ERnd
+> > > >
+> > > > dmesg (likely MUA stomped)
+> > > > [10224.184137] flap.local kernel: perf: interrupt took too long (25=
+22
+> > > >> 2500), lowering kernel.perf_event_max_sample_rate to 79000
+> > > > [14712.698184] flap.local kernel: perf: interrupt took too long (31=
+53
+> > > >> 3152), lowering kernel.perf_event_max_sample_rate to 63000
+> > > > [17903.211976] flap.local kernel: Lockdown: systemd-logind:
+> > > > hibernation is restricted; see man kernel_lockdown.7
+> > > > [22877.667177] flap.local kernel: BUG: kernel NULL pointer
+> > > > dereference, address: 00000000000006c8
+> > > > [22877.667182] flap.local kernel: #PF: supervisor read access in ke=
+rnel mode
+> > > > [22877.667184] flap.local kernel: #PF: error_code(0x0000) - not-pre=
+sent page
+> > > > [22877.667187] flap.local kernel: PGD 0 P4D 0
+> > > > [22877.667191] flap.local kernel: Oops: 0000 [#1] SMP PTI
+> > > > [22877.667194] flap.local kernel: CPU: 2 PID: 14747 Comm: kworker/u=
+8:7
+> > > > Not tainted 5.5.0-0.rc1.git0.1.fc32.x86_64+debug #1
+> > > > [22877.667196] flap.local kernel: Hardware name: HP HP Spectre
+> > > > Notebook/81A0, BIOS F.43 04/16/2019
+> > > > [22877.667226] flap.local kernel: Workqueue: btrfs-delalloc
+> > > > btrfs_work_helper [btrfs]
+> > > > [22877.667233] flap.local kernel: RIP:
+> > > > 0010:bio_associate_blkg_from_css+0x1c/0x3b0
+> > >
+> > > This looks like the extent_map bdev cleanup thing that was supposed t=
+o be fixed,
+> > > did you send the patch without the fix for it Dave?  Thanks,
 > >
-> > Has this ever been considered to implement a feature so that metadata
-> > chunks would always be allocated on a given set of disks part of the bt=
-rfs
-> > filesystem?
->
-> Yes, many times.
->
-
-I implement it locally before for my local testing before.
-
-> > As metadata use can be intensive and some operations are known to be sl=
-ow
-> > (such as backref walking), I'm under the (maybe wrong) impression that
-> > having a set of small ssd's just for the metadata would give quite a bo=
-ost
-> > to a filesystem. Maybe even make qgroups more usable with volumes havin=
-g 10
-> > snapshots?
->
-> No, it's not wrong. For bigger filesystems this would certainly help.
->
-> > This could just be a preference set on the allocator,
->
-> Yes. Now, the big question is, how do we 'just' set this preference?
->
-> Be sure to take into account that the filesystem has no way to find out
-> itself which disks are those ssds. There's no easy way to discover this
-> in a running system.
->
-
-No, there is API for filesystem to detect whether lower device is SSD or no=
-t.
-Something like:
-       if (!blk_queue_nonrot(q))
-                fs_devices->rotating =3D 1;
-
-Currently, btrfs will treat filesystem as rotational disks if any of
-one disk is rotational,
-We might record how many non-rotational disks, and make chunk allocation tr=
-y SSD
-firstly if it possible.
-
-> > so that a 6 disks
-> > raid1 FS with 4 spinning disks and 2 ssds prefer to allocate metadata o=
-n
-> > the ssd than on the slow drives (and falling back to spinning disks if =
-ssds
-> > are full, with the possibility to rebalance later).
+> > The fix for NULL bdev was added in 429aebc0a9a063667dba21 (and tested
+> > with cgroups v2) and it's in a different function than the one that
+> > appears on the stacktrace.
 > >
-> > Would such a feature make sense?
+> > This seems to be another instance where the bdev is needed right after
+> > the bio is created but way earlier than it's actually known for real,
+> > yet still needed for the blkcg thing.
+> >
+> >  443         bio =3D btrfs_bio_alloc(first_byte);
+> >  444         bio->bi_opf =3D REQ_OP_WRITE | write_flags;
+> >  445         bio->bi_private =3D cb;
+> >  446         bio->bi_end_io =3D end_compressed_bio_write;
+> >  447
+> >  448         if (blkcg_css) {
+> >  449                 bio->bi_opf |=3D REQ_CGROUP_PUNT;
+> >  450                 bio_associate_blkg_from_css(bio, blkcg_css);
+> >  451         }
+> >
+> > Strange that it takes so long to reproduce, meaning the 'if' branch is
+> > not taken often.
 >
-> Absolutely.
+> Compile tested only:
 >
-> Hans
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -446,6 +446,7 @@ blk_status_t btrfs_submit_compressed_write(struct ino=
+de *inode, u64 start,
+>         bio->bi_end_io =3D end_compressed_bio_write;
 >
+>         if (blkcg_css) {
+> +               bio_set_bev(bio, fs_info->fs_devices->latest_bdev);
+>                 bio->bi_opf |=3D REQ_CGROUP_PUNT;
+>                 bio_associate_blkg_from_css(bio, blkcg_css);
+>         }
+>
+
+
+--=20
+Chris Murphy
