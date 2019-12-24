@@ -2,171 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA51129CB4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Dec 2019 03:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60DD129EEF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Dec 2019 09:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbfLXCY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Dec 2019 21:24:26 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:38502 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbfLXCYZ (ORCPT
+        id S1726091AbfLXIU5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Dec 2019 03:20:57 -0500
+Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:48852 "EHLO
+        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726065AbfLXIU5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Dec 2019 21:24:25 -0500
-Received: by mail-wm1-f65.google.com with SMTP id u2so1328410wmc.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Dec 2019 18:24:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ni8hIT/6QtQaBN0u/poXlAqh+507aFvCN6pPrZnXhE0=;
-        b=cHcQDL3Xokf4xFkfIRBY0PYbIU41KsZTKHzQhtWH0HzSzhBTAULdr617ndGf1Vdsfd
-         3q+OMXWsbHtPLC0x7ZyPzr0akkteVD5jdbLvFjb/Q/Kr20ccpXOCYfTA28eDaBd3iaOr
-         EH9pTX4xXfWuw8EE9T42XFpjhDqzhvB5RtcyRpF2YG/HdSbIGZ00ku01frJsqCMnxE/J
-         PUbmCXrdgashkiziAMUzzXU2VJO5HUwSXXsT+6rTA+lrPgk4WZB9Lh7BTJgHoZZDPYjt
-         kprnpQ5dyY7cFPQfl2bvvbcdY3RNX9+6MbNF6DfyiNFEQkzbvS3GUW0mTW0FB5U/Dw9r
-         06og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=ni8hIT/6QtQaBN0u/poXlAqh+507aFvCN6pPrZnXhE0=;
-        b=c56OCjSg3bGH9TLJO8lr0TmhcXlO8h/Iy7vO89AOXY7ekEJHn5CZfEX7J+n5FQtnSn
-         HjwqLZFOIcSKykkdFMiOI+A/a2VjDg7Qv/5XZlJKOH42wXUkUrd9TnbReyf9Ozjo2weR
-         0mqb3/1byDlJDcco988zuMF/xlyNGw681fmIJblfAk14U6OgTUjYdY5TXdHxrmNSlxB/
-         GzQh0B+kL/Lk3Qk6olUc8GBRgTUkQpnHSHUYLpb+8VKIxop4mcqVpmezcKIefJjohXTP
-         afIUS1KYDB6JKd7Uj9zn0cSFij32HikFj/TUrRCUgHd8Q3BRN3VjTi+msWpVD3b2/BnB
-         7MBg==
-X-Gm-Message-State: APjAAAWCQ1sBc6muHUT/MjLvqc6H2H1tXmTMuaNH8o+6poyluncwacch
-        rPndCCgQ2Kdi/pGF2/kne5AS6uGcPnK/AhjECGtggw==
-X-Google-Smtp-Source: APXvYqylXcme6uYxSfXaks9qK9bEz0O/1X2Zyi7e+SFj/kvvjcnUYxbSwi0Fbh4zui4pPdpXgUHF/CHiO9eOqmo5kBo=
-X-Received: by 2002:a1c:4d03:: with SMTP id o3mr1620194wmh.164.1577154262694;
- Mon, 23 Dec 2019 18:24:22 -0800 (PST)
+        Tue, 24 Dec 2019 03:20:57 -0500
+Received: from [192.168.1.38] (lfbn-poi-1-151-241.w86-233.abo.wanadoo.fr [86.233.118.241])
+        by box.speed47.net (Postfix) with ESMTPSA id AB89EF3C;
+        Tue, 24 Dec 2019 09:20:52 +0100 (CET)
+Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
+        s=mail01; t=1577175652;
+        bh=aAxTv746K6N9rAIYQlwjioJT/hkWtDjDKrsRPR5/UPA=;
+        h=From:To:CC:Date:In-Reply-To:References:Subject;
+        b=JpFomu3arUW0gFowoN5p5RtoLaOdon2YNxJULz/mBaVPFT9GYLjWt1FPUgFTnZRlx
+         ENJT5486rgGI1UAGba8CdFEiykkA0/ccEq2wafcb8qjalwJzq13weEsSMbhxCMm+7D
+         a3AuvDDO3f19FvKE0fdxGw0io7WSu2u0rj03tSC4=
+From:   =?UTF-8?B?U3TDqXBoYW5lIExlc2ltcGxl?= <stephane_btrfs@lesimple.fr>
+To:     Wang Shilong <wangshilong1991@gmail.com>,
+        Hans van Kranenburg <hans@knorrie.org>
+CC:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Tue, 24 Dec 2019 09:20:51 +0100
+Message-ID: <16f36fe8ed0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
+In-Reply-To: <CAP9B-QkL60aELFZzOzZStbAz2UWj11V8YNPtSWWgwzeEnbLpvQ@mail.gmail.com>
+References: <16f33002870.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
+ <fbf7c50b-fc02-bf51-b55f-6449121e7eec@knorrie.org>
+ <CAP9B-QkL60aELFZzOzZStbAz2UWj11V8YNPtSWWgwzeEnbLpvQ@mail.gmail.com>
+User-Agent: AquaMail/1.22.0-1511 (build: 102200004)
+Subject: Re: Metadata chunks on ssd?
 MIME-Version: 1.0
-References: <CAJCQCtS_7vjBnqeDsedBQJYuE_ap+Xo6D=MXY=rOxf66oJZkrA@mail.gmail.com>
- <4eca86cf-65c3-5aba-d0fd-466d779614e6@toxicpanda.com> <20191211155553.GP3929@twin.jikos.cz>
- <20191211155931.GQ3929@twin.jikos.cz>
-In-Reply-To: <20191211155931.GQ3929@twin.jikos.cz>
-From:   Chris Murphy <chris@colorremedies.com>
-Date:   Mon, 23 Dec 2019 19:24:06 -0700
-Message-ID: <CAJCQCtTH65e=nOxsmy-QYPqmsz9d2YciPqxUGUpdqHnXvXLY4A@mail.gmail.com>
-Subject: Re: 5.5.0-0.rc1 hang, could be zstd compression related
-To:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-        Chris Murphy <chris@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Applied that single line on top of 5.5.0-rc3
 
-fs/btrfs/compression.c:449:17: error: implicit declaration of function
-=E2=80=98bio_set_bev=E2=80=99; did you mean =E2=80=98bio_set_dev=E2=80=99?
-[-Werror=3Dimplicit-function-declaration]
 
-If I use bio_set_dev
+Le 24 décembre 2019 03:04:34 Wang Shilong <wangshilong1991@gmail.com> a écrit :
 
-...
-  CC [M]  fs/btrfs/compression.o
-fs/btrfs/compression.o: warning: objtool:
-end_compressed_bio_read.cold()+0x11: unreachable instruction
-  LD [M]  fs/btrfs/btrfs.o
-  GEN     .version
-...
-
-Despite that, it seems to work, and no crash with the reproducer.
-
-On Wed, Dec 11, 2019 at 8:59 AM David Sterba <dsterba@suse.cz> wrote:
+> On Tue, Dec 24, 2019 at 7:38 AM Hans van Kranenburg <hans@knorrie.org> wrote:
+>>
+>> Hi Stéphane,
+>>
+>> On 12/23/19 2:44 PM, Stéphane Lesimple wrote:
+>>>
+>>> Has this ever been considered to implement a feature so that metadata
+>>> chunks would always be allocated on a given set of disks part of the btrfs
+>>> filesystem?
+>>
+>> Yes, many times.
 >
-> On Wed, Dec 11, 2019 at 04:55:53PM +0100, David Sterba wrote:
-> > On Wed, Dec 11, 2019 at 09:58:45AM -0500, Josef Bacik wrote:
-> > > On 12/10/19 11:00 PM, Chris Murphy wrote:
-> > > > Could continue to chat in one application, the desktop environment =
-was
-> > > > responsive, but no shells worked and I couldn't get to a tty and I
-> > > > couldn't ssh into remotely. Looks like the journal has everything u=
-p
-> > > > until I pressed and held down the power button.
-> > > >
-> > > >
-> > > > /dev/nvme0n1p7 on / type btrfs
-> > > > (rw,noatime,seclabel,compress=3Dzstd:1,ssd,space_cache=3Dv2,subvoli=
-d=3D274,subvol=3D/root)
-> > > >
-> > > > dmesg pretty
-> > > > https://pastebin.com/pvG3ERnd
-> > > >
-> > > > dmesg (likely MUA stomped)
-> > > > [10224.184137] flap.local kernel: perf: interrupt took too long (25=
-22
-> > > >> 2500), lowering kernel.perf_event_max_sample_rate to 79000
-> > > > [14712.698184] flap.local kernel: perf: interrupt took too long (31=
-53
-> > > >> 3152), lowering kernel.perf_event_max_sample_rate to 63000
-> > > > [17903.211976] flap.local kernel: Lockdown: systemd-logind:
-> > > > hibernation is restricted; see man kernel_lockdown.7
-> > > > [22877.667177] flap.local kernel: BUG: kernel NULL pointer
-> > > > dereference, address: 00000000000006c8
-> > > > [22877.667182] flap.local kernel: #PF: supervisor read access in ke=
-rnel mode
-> > > > [22877.667184] flap.local kernel: #PF: error_code(0x0000) - not-pre=
-sent page
-> > > > [22877.667187] flap.local kernel: PGD 0 P4D 0
-> > > > [22877.667191] flap.local kernel: Oops: 0000 [#1] SMP PTI
-> > > > [22877.667194] flap.local kernel: CPU: 2 PID: 14747 Comm: kworker/u=
-8:7
-> > > > Not tainted 5.5.0-0.rc1.git0.1.fc32.x86_64+debug #1
-> > > > [22877.667196] flap.local kernel: Hardware name: HP HP Spectre
-> > > > Notebook/81A0, BIOS F.43 04/16/2019
-> > > > [22877.667226] flap.local kernel: Workqueue: btrfs-delalloc
-> > > > btrfs_work_helper [btrfs]
-> > > > [22877.667233] flap.local kernel: RIP:
-> > > > 0010:bio_associate_blkg_from_css+0x1c/0x3b0
-> > >
-> > > This looks like the extent_map bdev cleanup thing that was supposed t=
-o be fixed,
-> > > did you send the patch without the fix for it Dave?  Thanks,
-> >
-> > The fix for NULL bdev was added in 429aebc0a9a063667dba21 (and tested
-> > with cgroups v2) and it's in a different function than the one that
-> > appears on the stacktrace.
-> >
-> > This seems to be another instance where the bdev is needed right after
-> > the bio is created but way earlier than it's actually known for real,
-> > yet still needed for the blkcg thing.
-> >
-> >  443         bio =3D btrfs_bio_alloc(first_byte);
-> >  444         bio->bi_opf =3D REQ_OP_WRITE | write_flags;
-> >  445         bio->bi_private =3D cb;
-> >  446         bio->bi_end_io =3D end_compressed_bio_write;
-> >  447
-> >  448         if (blkcg_css) {
-> >  449                 bio->bi_opf |=3D REQ_CGROUP_PUNT;
-> >  450                 bio_associate_blkg_from_css(bio, blkcg_css);
-> >  451         }
-> >
-> > Strange that it takes so long to reproduce, meaning the 'if' branch is
-> > not taken often.
+> I implement it locally before for my local testing before.
+
+If you happen to still have a couple patches around (even if they dont 
+apply cleanly), I'm interested!
+
 >
-> Compile tested only:
+>>> As metadata use can be intensive and some operations are known to be slow
+>>> (such as backref walking), I'm under the (maybe wrong) impression that
+>>> having a set of small ssd's just for the metadata would give quite a boost
+>>> to a filesystem. Maybe even make qgroups more usable with volumes having 10
+>>> snapshots?
+>>
+>> No, it's not wrong. For bigger filesystems this would certainly help.
+>>
+>>> This could just be a preference set on the allocator,
+>>
+>> Yes. Now, the big question is, how do we 'just' set this preference?
+>>
+>> Be sure to take into account that the filesystem has no way to find out
+>> itself which disks are those ssds. There's no easy way to discover this
+>> in a running system.
 >
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -446,6 +446,7 @@ blk_status_t btrfs_submit_compressed_write(struct ino=
-de *inode, u64 start,
->         bio->bi_end_io =3D end_compressed_bio_write;
+> No, there is API for filesystem to detect whether lower device is SSD or not.
+> Something like:
+>       if (!blk_queue_nonrot(q))
+>                fs_devices->rotating = 1;
 >
->         if (blkcg_css) {
-> +               bio_set_bev(bio, fs_info->fs_devices->latest_bdev);
->                 bio->bi_opf |=3D REQ_CGROUP_PUNT;
->                 bio_associate_blkg_from_css(bio, blkcg_css);
->         }
->
+> Currently, btrfs will treat filesystem as rotational disks if any of
+> one disk is rotational,
+> We might record how many non-rotational disks, and make chunk allocation 
+> try SSD
+> firstly if it possible.
+
+My first idea was a preference to be set by the admin himself actually. A 
+tristate that would be set for data chunks and for metadata chunks, for 
+each device. Something like:
+
+- "never": never allocate this type of chunk on this device
+- "default": keep the current allocator behavior
+- "always": consider this device first when trying to allocate
+
+The allocator would then run in 2 passes max, like this:
+
+- try to allocate considering only the device tagged "always"
+- if this fails, try to allocate considering the devices tagged "always" 
+and "default"
+
+For my setup, I would use 2 small SSDs set to metadata=always data=never, 
+and the other rotational drives set to metadata=default data=default.
+
+If we want to autodetect things while not being too invasive, on fs 
+creation and on device add/replace, we could autodetect the rotational 
+status, and maybe set data=default metadata=always for non-rotational 
+drives, and data=default metadata=default for the others. This would 
+enhance the overall experience without getting the user potential "out of 
+space" issues he wouldn't expect.
+
+Migration from a previous preference-unaware code would see all the prefs 
+set to "default", without adding a incompat flag as being 
+preference-unaware doesn't break the filesystem.
+
+-- 
+Stéphane.
 
 
---=20
-Chris Murphy
