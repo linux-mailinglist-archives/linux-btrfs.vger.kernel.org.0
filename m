@@ -2,126 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2BF12A17C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Dec 2019 13:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9B112A840
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Dec 2019 14:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbfLXM66 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Dec 2019 07:58:58 -0500
-Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:45184 "EHLO
-        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726224AbfLXM66 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Dec 2019 07:58:58 -0500
-Received: from [10.10.173.205] (unknown [92.184.110.217])
-        by box.speed47.net (Postfix) with ESMTPSA id E4000F3C;
-        Tue, 24 Dec 2019 13:58:53 +0100 (CET)
-Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
-        s=mail01; t=1577192334;
-        bh=QwvUJAMvfmpQKgnpTGHAmW+Trpw62mYfz/06/Sh7Edw=;
-        h=From:To:CC:Date:In-Reply-To:References:Subject;
-        b=vtkFEUqZeB8Qpp2PrVf75Ag1WKJzTp1A/i8CjXgqTzU3vFZ/5+BYgJekrkSsxVcWV
-         qcR4XPxhkkM4A9YThTz0wHjFleESrEqrOLB9j4mJgmBmQHHU0Qcqq8n0H25Gt2/zpP
-         N0kEq0fU5uC5/B4Hf4xOLHCRUCWd2o4CKauyae+c=
-From:   =?UTF-8?B?U3TDqXBoYW5lIExlc2ltcGxl?= <stephane_btrfs@lesimple.fr>
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        Wang Shilong <wangshilong1991@gmail.com>,
-        Hans van Kranenburg <hans@knorrie.org>
-CC:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Date:   Tue, 24 Dec 2019 13:58:51 +0100
-Message-ID: <16f37fd16f8.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
-In-Reply-To: <8a45940d-6634-e49d-cfde-e7087060c060@gmail.com>
-References: <16f33002870.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
- <fbf7c50b-fc02-bf51-b55f-6449121e7eec@knorrie.org>
- <CAP9B-QkL60aELFZzOzZStbAz2UWj11V8YNPtSWWgwzeEnbLpvQ@mail.gmail.com>
- <8a45940d-6634-e49d-cfde-e7087060c060@gmail.com>
-User-Agent: AquaMail/1.22.0-1511 (build: 102200004)
-Subject: Re: Metadata chunks on ssd?
+        id S1726352AbfLYNjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Dec 2019 08:39:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56346 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726106AbfLYNjn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Dec 2019 08:39:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D72E6AAA6
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Dec 2019 13:39:41 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC 0/3] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Wed, 25 Dec 2019 21:39:35 +0800
+Message-Id: <20191225133938.115733-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+There are several bug reports of ENOSPC error in
+btrfs_run_delalloc_range().
+
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
+
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
+
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
 
 
-Le 24 décembre 2019 13:40:56 "Austin S. Hemmelgarn" <ahferroin7@gmail.com> 
-a écrit :
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
 
-> On 2019-12-23 21:04, Wang Shilong wrote:
->> On Tue, Dec 24, 2019 at 7:38 AM Hans van Kranenburg <hans@knorrie.org> wrote:
->>>
->>> Hi Stéphane,
->>>
->>> On 12/23/19 2:44 PM, Stéphane Lesimple wrote:
->>>>
->>>> Has this ever been considered to implement a feature so that metadata
->>>> chunks would always be allocated on a given set of disks part of the btrfs
->>>> filesystem?
->>>
->>> Yes, many times.
->>
->> I implement it locally before for my local testing before.
->>
->>>> As metadata use can be intensive and some operations are known to be slow
->>>> (such as backref walking), I'm under the (maybe wrong) impression that
->>>> having a set of small ssd's just for the metadata would give quite a boost
->>>> to a filesystem. Maybe even make qgroups more usable with volumes having 10
->>>> snapshots?
->>>
->>> No, it's not wrong. For bigger filesystems this would certainly help.
->>>
->>>> This could just be a preference set on the allocator,
->>>
->>> Yes. Now, the big question is, how do we 'just' set this preference?
->>>
->>> Be sure to take into account that the filesystem has no way to find out
->>> itself which disks are those ssds. There's no easy way to discover this
->>> in a running system.
->>
->> No, there is API for filesystem to detect whether lower device is SSD or not.
->> Something like:
->> if (!blk_queue_nonrot(q))
->>         fs_devices->rotating = 1;
->>
->> Currently, btrfs will treat filesystem as rotational disks if any of
->> one disk is rotational,
->> We might record how many non-rotational disks, and make chunk allocation 
->> try SSD
->> firstly if it possible.
-> This doesn't tell you that the device is an SSD though, just that it
-> reports to the kernel as non+rotational. For example, NBD devices
-> present as non-rotational by default, and in most cases you do _not_
-> want hot data on a network disc.
->
-> The important thing here is disk performance, not whether it's an SSD or
-> not. An SD card is non-rotational and solid-state, but on most systems
-> the performance is going to be sufficiently bad for BTRFS-type workloads
-> that it's almost useless for this type of thing.
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
 
-That's a good point, which is why I think this kind of preference should be 
-set manually by the user on fs creation, on device add/replace or anytime 
-later with "btrfs device set allocator.hint.metadata always /tank".
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
 
-Now, we might still want to add some autodetection routine candy to the 
-btrfs user space tool, or for mkfs.btrfs, albeit not enabled by default as 
-your counter-examples indicate. But that's entirely optional. A manual mode 
-would already be awesome.
+The RFC tag is here because I'm not yet confident enough about the
+implementation.
+I'm not sure this is the proper to go, or just a over-engineered mess.
 
->
->>
->>>> so that a 6 disks
->>>> raid1 FS with 4 spinning disks and 2 ssds prefer to allocate metadata on
->>>> the ssd than on the slow drives (and falling back to spinning disks if ssds
->>>> are full, with the possibility to rebalance later).
->>>>
->>>> Would such a feature make sense?
->>>
->>> Absolutely.
->>>
->>> Hans
+Qu Wenruo (3):
+  btrfs: Introduce per-profile available space facility
+  btrfs: Update per-profile available space when device size/used space
+    get updated
+  btrfs: space-info: Use per-profile available space in can_overcommit()
 
+ fs/btrfs/space-info.c |  15 ++--
+ fs/btrfs/volumes.c    | 205 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h    |  10 +++
+ 3 files changed, 203 insertions(+), 27 deletions(-)
 
+-- 
+2.24.1
 
