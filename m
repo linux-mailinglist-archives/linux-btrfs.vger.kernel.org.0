@@ -2,182 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC5312AE51
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Dec 2019 20:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF79712AF12
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Dec 2019 23:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbfLZTie (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Dec 2019 14:38:34 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:32986 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbfLZTie (ORCPT
+        id S1726839AbfLZWPe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Dec 2019 17:15:34 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:45825 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbfLZWPe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Dec 2019 14:38:34 -0500
-Received: by mail-ot1-f66.google.com with SMTP id b18so11714789otp.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Dec 2019 11:38:33 -0800 (PST)
+        Thu, 26 Dec 2019 17:15:34 -0500
+Received: by mail-wr1-f66.google.com with SMTP id j42so24607515wrj.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Dec 2019 14:15:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F2Ob/4H0ArBKHr7eZk4vjxKC50JohA2X/dkB3lP3I2Y=;
-        b=Ne+QXh5MJILzzTZ5J4LGykcAoGN85sQnCCenk56NMoQCHdmusGRJtgizvTWfa+YrvD
-         Brk2PMnyVZaV5f+dTPfjP6WWSn/Dc/1iNmRDv3HFAx2RlUqMTeEE+wbCGgrM1MuPYrnz
-         lI7m7GJfnL3Djcdu78grbtXZEB0QHk0u0MpC9f6aRvO71yrqYMUM1jIYUO/2xOB6D8pM
-         +LG1ml74gNtUSu+uoXhPmmB60ofH5RckLwnPTv5UWgl4NviRyV6xb0BRq7ttNLz4MEbb
-         7rfyxAYgmF8+oTIytZZIB4tFOM3BEUlIJ/hZCGGppc9VpPx5WpNjubB02mst7AuXSLMw
-         GN4w==
+         :cc;
+        bh=IE8Rj9/jOE3TpIrXrtE6X6kzXdgmHozlAWpEYPbLKXk=;
+        b=2P7F37FlJsjRKtivdbiwyyHjh1Gp+bVesvQ16/X0J2lzc5vRhgKUjDOdY7h82AiRzk
+         Ntt+dyGaz0Sn5FUjxc8rSgzSlZgkFNzXwfOXb8KYj0mSvV2MyEEzUdWDlyOuMbzgOoHg
+         AV6H6sFLz3+z9IKrx0YyePQZzhKu/vialDTJb9ox4oVg2lQAkAUYmdL/EnqXlsuqX+Mu
+         hPL2qAAgLUrUnK+k0qixd5MW8EHw1LcOyy33oz9B7V7GqTzBn2bwRf2NbrvSbhsYJMuw
+         DQeRPFIyVS2zSsGwLa0zkvKv8dJ9PEy0cbU5Of3NiImqSs9PtNpnD4MaTxDsWV0fxla8
+         vYfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F2Ob/4H0ArBKHr7eZk4vjxKC50JohA2X/dkB3lP3I2Y=;
-        b=G1eovKvaCgZHlBBJsm79uyS9LnYd6/fOx72TK1afbGWljOKVaeMlXtg5lY6eTW3ySt
-         M1JILXfFJgu54ZqaY2i9a0zIINTBCXFW2gb1q+vmKyEZoBJOwL4pEczrj0ycQDqQKPWX
-         1Rb+0VGJW7uKKQqyEVPoVmuBNTsOKqhdKT3wFJsWtpQFXBq7jFfF8AEhzAPIjzitw7Oh
-         bzCy8svZ7uWNdZZgAKMA6gbZa5DtfmEQYMObvvd/nuj4OMSTl9CsIdsc+z960rpp0Z7q
-         lJK8QO4dIIWl5J9C+v/7zDpvyU5ngsxzsbl/DlmEO9/6/Tu6/wSLHQdW2cQ6HjD1wn2x
-         t8LA==
-X-Gm-Message-State: APjAAAWpfRMMgpiA4TOhvcH+sdVxUxgkkQs+jjHqpKxoD4BWrgy9JrGM
-        QY4OZOyiSUeFEJHc5gdO5GfdJDzhcH5I7e3G3g1PUbjn
-X-Google-Smtp-Source: APXvYqzBvkxkmSQFBN7yoSaS5w63AdI1Mp5yyHvHB8nGm+3i483R7KziH8qPg6/dBTEj95g17W1VcJwcBnFhBjAIePQ=
-X-Received: by 2002:a9d:6f0a:: with SMTP id n10mr54051744otq.54.1577389112646;
- Thu, 26 Dec 2019 11:38:32 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=IE8Rj9/jOE3TpIrXrtE6X6kzXdgmHozlAWpEYPbLKXk=;
+        b=Pj9r0ZZss9dtFlFVk84L3gIS6FYqWfUQSLuAseAMJBpxiRS7JI/Z28YT4pfrWsnijR
+         y0A1LelwVQceht0BnfEyszfGagQlpIJKpjJrrUgaFYVEVWNNPJTx+cWaTsuTdaioFFMz
+         e0dQo6EKFCUDBtRwYFMW1oGp8j5e66uQCGFFpDBTToLxrVQAjZoM3Qszhd5iyr4hiOi1
+         OMnXGn9XdnWD48qVw8fgnxnIV4eD4lLmxZkhiN1KkhkowaSMW21UG5UKSIr57PsZ6HUc
+         wZVVmgDr1/SEqREgjRw7vetU5PzGpKyjrzpzu3X6GiNYDFPuUZK5j1sEXn3cL2tFQt/0
+         v4Ww==
+X-Gm-Message-State: APjAAAVonGRKXjvpNJ28o3CrJtKyQg8KnjBcccS2tcCfJ6HI9DUPJj1u
+        AaulddCvesa7fs7QkrGA6q+RyfwejgkY9wwmoB+3uZ6XP1u1zw==
+X-Google-Smtp-Source: APXvYqxcSVnrLe6O/5/T8zQaw7rMfdY9SnNOnyFYLwhuTNhQlg35VlFPP3JjyDG68lBE+sJPTA1XaIU2S9CvsJ7ngsU=
+X-Received: by 2002:adf:ea4e:: with SMTP id j14mr48585503wrn.101.1577398531918;
+ Thu, 26 Dec 2019 14:15:31 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHs_hg00v9zmMAXp7E=7Xe_ZD5kgB2tVBOFCt5UQuJRp+yESAg@mail.gmail.com>
- <3826413f-f81d-de13-8437-4e5b762d812f@gmx.com> <20191226054058.GC13306@hungrycats.org>
- <50661176-b04c-882b-d87c-ee5c0395c3f6@gmx.com>
-In-Reply-To: <50661176-b04c-882b-d87c-ee5c0395c3f6@gmx.com>
-From:   Martin <mbakiev@gmail.com>
-Date:   Thu, 26 Dec 2019 14:37:56 -0500
-Message-ID: <CAHs_hg3RNROnHc9--RDeBfJSwN6Lx4qRfoi0ZNf2Bi3+4LSksQ@mail.gmail.com>
-Subject: Re: Deleting a failing drive from RAID6 fails
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org
+References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
+In-Reply-To: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 26 Dec 2019 15:15:15 -0700
+Message-ID: <CAJCQCtQR+rFoS7kaLm0eh35x5iYw0UO9Ybi3gxANTxJLU-YEFg@mail.gmail.com>
+Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
+To:     Leszek Dubiel <leszek@dubiel.pl>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I appreciate the replies, and as a general update I ended up cleaning
-out large amount of unneeded files, hoping the corruption would be in
-one of those and retried the device deletion - it completed
-successfully.
-Not really sure why the files were ever unrecoverably corrupted - the
-system has never crashed or lost power since this filesystem was
-created.
-It's a Fedora server and somewhat regularly updated, and this btrfs FS
-was created about 2 years ago maybe - not really sure which kernel
-version, but most recently running kernel 5.3.16 when I noticed the
-hard drive failing. Not really sure when it first started having
-problems.
+On Wed, Dec 25, 2019 at 3:42 PM Leszek Dubiel <leszek@dubiel.pl> wrote:
+>
+>
+> Hello!
+>
+> I have a server: 3 disks, 6TB each, total 17TB space, occupied with data
+> 6TB.
+>
+>
+> One of the disks got smart errors:
+>
+>      197 Current_Pending_Sector  0x0022   100   100   000 Old_age
+> Always       -       16
+>      198 Offline_Uncorrectable   0x0008   100   100   000 Old_age
+> Offline      -       2
+>
+> And didn't pass tests:
+>
+>      Num  Test_Description    Status                  Remaining
+> LifeTime(hours)  LBA_of_first_error
+>      # 1  Extended offline    Completed: read failure 90%
+> 3575         -
+>      # 2  Short offline       Completed without error 00%
+> 3574         -
+>      # 3  Extended offline    Completed: read failure 90%
+> 3574         -
+>      # 4  Extended offline    Completed: read failure 90%
+> 3560         -
+>      # 5  Extended offline    Completed: read failure 50%
+> 3559         -
+>
+> I decided to remove that drive from BTRFS system:
 
-Thanks,
-Martin
 
-On Thu, Dec 26, 2019 at 1:50 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2019/12/26 =E4=B8=8B=E5=8D=881:40, Zygo Blaxell wrote:
-> > On Thu, Dec 26, 2019 at 01:03:47PM +0800, Qu Wenruo wrote:
-> >>
-> >>
-> >> On 2019/12/26 =E4=B8=8A=E5=8D=883:25, Martin wrote:
-> >>> Hi,
-> >>>
-> >>> I have a drive that started failing (uncorrectable errors & lots of
-> >>> relocated sectors) in a RAID6 (12 device/70TB total with 30TB of
-> >>> data), btrfs scrub started showing corrected errors as well (seemingl=
-y
-> >>> no big deal since its RAID6). I decided to remove the drive from the
-> >>> array with:
-> >>>     btrfs device delete /dev/sdg /mount_point
-> >>>
-> >>> After about 20 hours and having rebalanced 90% of the data off the
-> >>> drive, the operation failed with an I/O error. dmesg was showing csum
-> >>> errors:
-> >>>     BTRFS warning (device sdf): csum failed root -9 ino 2526 off
-> >>> 10673848320 csum 0x8941f998 expected csum 0x253c8e4b mirror 2
-> >>>     BTRFS warning (device sdf): csum failed root -9 ino 2526 off
-> >>> 10673852416 csum 0x8941f998 expected csum 0x8a9a53fe mirror 2
-> >>>     . . .
-> >>
-> >> This means some data reloc tree had csum mismatch.
-> >> The strange part is, we shouldn't hit csum error here, as if it's some
-> >> data corrupted, it should report csum error at read time, other than
-> >> reporting the error at this timing.
-> >>
-> >> This looks like something reported before.
-> >>
-> >>>
-> >>> I pulled the drive out of the system and attempted the device deletio=
-n
-> >>> again, but getting the same error.
-> >>>
-> >>> Looking back through the logs to the previous scrubs, it showed the
-> >>> file paths where errors were detected, so I deleted those files, and
-> >>> tried removing the failing drive again. It moved along some more. Now
-> >>> its down to only 13GiB of data remaining on the missing drive. Is
-> >>> there any way to track the above errors to specific files so I can
-> >>> delete them and finish the removal. Is there is a better way to finis=
-h
-> >>> the device deletion?
-> >>
-> >> As the message shows, it's the data reloc tree, which store the newly
-> >> relocated data.
-> >> So it doesn't contain the file path.
-> >>
-> >>>
-> >>> Scrubbing with the device missing just racks up uncorrectable errors
-> >>> right off the bat, so it seemingly doesn't like missing a device - I
-> >>> assume it's not actually doing anything useful, right?
-> >>
-> >> Which kernel are you using?
-> >>
-> >> IIRC older kernel doesn't retry all possible device combinations, thus
-> >> it can report uncorrectable errors even if it should be correctable.
-> >
-> >> Another possible cause is write-hole, which reduced the tolerance of
-> >> RAID6 stripes by stripes.
-> >
-> > Did you find a fix for
-> >
-> >       https://www.spinics.net/lists/linux-btrfs/msg94634.html
-> >
-> > If that bug is happening in this case, it can abort a device delete
-> > on raid5/6 due to corrupted data every few block groups.
->
-> My bad, always lost my track of to-do works.
->
-> It looks like one possible cause indeed.
->
-> Thanks for reminding me that bug,
-> Qu
->
-> >
-> >> You can also try replace the missing device.
-> >> In that case, it doesn't go through the regular relocation path, but d=
-ev
-> >> replace path (more like scrub), but you need physical access then.
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>>
-> >>> I'm currently traveling and away from the system physically. Is there
-> >>> any way to complete the device removal without reconnecting the
-> >>> failing drive? Otherwise, I'll have a replacement drive in a couple o=
-f
-> >>> weeks when I'm back, and can try anything involving reconnecting the
-> >>> drive.
-> >>>
-> >>> Thanks,
-> >>> Martin
-> >>>
-> >>
-> >
-> >
-> >
->
+What is the SCT ERC for each drive? This applies to mdadm, lvm, and
+btrfs RAID. While you are not using raid for data, you are using it
+for metadata. And also mismatching SCT ERC with kernel's command timer
+is not good for any configuration, the SCT ERC must be shorter than
+the kernel command timer or inevitably bad sector errors are masked by
+the kernel resetting the link to the device.
+
+https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+
+And when was the last time a scrub was done on the volume? Were there
+any errors reported by either user space tools or kernel? And what
+were they?
+
+I do agree, however, that this configuration should have higher
+performing reads from the device being deleted, unless part of the
+reason why it's so slow is that one or more drives is trying to do
+deep recoveries.
+
+My suggestion for single profile multiple device is to leave the per
+drive SCT ERC disabled (or a high value, e.g. 1200 deciseconds) and
+also change the per block device command timer (this is a kernel timer
+set per device) to be at least 120 seconds. This will allow the drive
+to do deep recovery, which will make it dog slow, but if necessary
+it'll improve the chances of getting data off the drives. If you don't
+care about getting data off the drives, i.e. you have a backup, then
+you can set the SCT ERC value to 70 deciseconds. Any bad sector errors
+will quickly result in a read error, Btrfs will report the affected
+file. IF it's metadata that's affected, it'll get a good copy from the
+mirror, and fix up the bad copy, automatically.
+
+
+
+-- 
+Chris Murphy
