@@ -2,123 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF79712AF12
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Dec 2019 23:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E03512AF5C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Dec 2019 23:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbfLZWPe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Dec 2019 17:15:34 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45825 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbfLZWPe (ORCPT
+        id S1726706AbfLZWkZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Dec 2019 17:40:25 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:33562 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbfLZWkY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Dec 2019 17:15:34 -0500
-Received: by mail-wr1-f66.google.com with SMTP id j42so24607515wrj.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Dec 2019 14:15:32 -0800 (PST)
+        Thu, 26 Dec 2019 17:40:24 -0500
+Received: by mail-wr1-f52.google.com with SMTP id b6so24727243wrq.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Dec 2019 14:40:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IE8Rj9/jOE3TpIrXrtE6X6kzXdgmHozlAWpEYPbLKXk=;
-        b=2P7F37FlJsjRKtivdbiwyyHjh1Gp+bVesvQ16/X0J2lzc5vRhgKUjDOdY7h82AiRzk
-         Ntt+dyGaz0Sn5FUjxc8rSgzSlZgkFNzXwfOXb8KYj0mSvV2MyEEzUdWDlyOuMbzgOoHg
-         AV6H6sFLz3+z9IKrx0YyePQZzhKu/vialDTJb9ox4oVg2lQAkAUYmdL/EnqXlsuqX+Mu
-         hPL2qAAgLUrUnK+k0qixd5MW8EHw1LcOyy33oz9B7V7GqTzBn2bwRf2NbrvSbhsYJMuw
-         DQeRPFIyVS2zSsGwLa0zkvKv8dJ9PEy0cbU5Of3NiImqSs9PtNpnD4MaTxDsWV0fxla8
-         vYfg==
+        bh=dLCfvFwVbyymWJUdLGXnWirLtSPQB8VNuHAzzfM4QWM=;
+        b=QqMc0F/h3BeY3XOcpza3aCXXJtGkWrBcRpGXgrB5hxB92kC85/2MSDP2EhALngM9w2
+         nkbSmWfnPraXBiLw+7736dskGotIMDdGp/aeBFWGMVqypE2os9vWDa3Ua9NL2cSjbwAX
+         RmDd2+bRhjac7JDO44IbJqK5i4QXhoi6fLzkvQQHWgRZKhRXMHiilfpgdaLfhe032fFC
+         ARbibLAXGl5VLUSfssA73O6fpW8jL39dIV9Sug6b+3VKDEgFy2WGWjxVrbEi7cC6dAOR
+         RGUTbXG6wMfs/V2MBL5PG4jMOyfKI8MIiE8yl75ewa3irrKj51OHjvLYjFfvfFJuBSdY
+         AO6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IE8Rj9/jOE3TpIrXrtE6X6kzXdgmHozlAWpEYPbLKXk=;
-        b=Pj9r0ZZss9dtFlFVk84L3gIS6FYqWfUQSLuAseAMJBpxiRS7JI/Z28YT4pfrWsnijR
-         y0A1LelwVQceht0BnfEyszfGagQlpIJKpjJrrUgaFYVEVWNNPJTx+cWaTsuTdaioFFMz
-         e0dQo6EKFCUDBtRwYFMW1oGp8j5e66uQCGFFpDBTToLxrVQAjZoM3Qszhd5iyr4hiOi1
-         OMnXGn9XdnWD48qVw8fgnxnIV4eD4lLmxZkhiN1KkhkowaSMW21UG5UKSIr57PsZ6HUc
-         wZVVmgDr1/SEqREgjRw7vetU5PzGpKyjrzpzu3X6GiNYDFPuUZK5j1sEXn3cL2tFQt/0
-         v4Ww==
-X-Gm-Message-State: APjAAAVonGRKXjvpNJ28o3CrJtKyQg8KnjBcccS2tcCfJ6HI9DUPJj1u
-        AaulddCvesa7fs7QkrGA6q+RyfwejgkY9wwmoB+3uZ6XP1u1zw==
-X-Google-Smtp-Source: APXvYqxcSVnrLe6O/5/T8zQaw7rMfdY9SnNOnyFYLwhuTNhQlg35VlFPP3JjyDG68lBE+sJPTA1XaIU2S9CvsJ7ngsU=
-X-Received: by 2002:adf:ea4e:: with SMTP id j14mr48585503wrn.101.1577398531918;
- Thu, 26 Dec 2019 14:15:31 -0800 (PST)
+        bh=dLCfvFwVbyymWJUdLGXnWirLtSPQB8VNuHAzzfM4QWM=;
+        b=S2RLcgFcc/5TIs0Iftx+6t6mddM6NC6gvFnHjnnX6w3kTXxWeu8ua6gkwRwVqCfPWe
+         o6ZTjjdj3mOGrWYy6s8tDiqoAoUphWTKr8eJ1XGdg0Ajmzt9FAu31UayYvVJkNQt9qBA
+         bcNi53hwHg/rfuwAxBimSQpYEaxVwJINPjlA/UUL7cZKva+IrPQPKxKjduulyjPfw9s1
+         oG0DKxsRS/zdDedeXU5Xbwn/NW0CcX/BLyflUaOQpVffgv/kIBqxRUAeTAMzeL6e21vN
+         tEWEaJJPlxdZqpMq/PULFQqtqMG++ZgNihej3z39GD+E3JZM2J2ppiBRbfm/jrRgfW+q
+         UxwA==
+X-Gm-Message-State: APjAAAVMnUxMZSAweJ6Nslxn3bui5Vz30pjVE6MY5/sim1N1R0jZMpwF
+        7sS/wIOa1qOmegqXrPeWbo4C7SNrK3Eu0eXyQOJM5g==
+X-Google-Smtp-Source: APXvYqyL0Z5gouYALjks6Scj+re6MaVuA8AHsYulMvUtu9Gz97hgUO4Xc/kbY9OHXW87lFcn3hxKCRE6bA5K5nPfzqw=
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr47003007wrp.167.1577400022726;
+ Thu, 26 Dec 2019 14:40:22 -0800 (PST)
 MIME-Version: 1.0
 References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
-In-Reply-To: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
+ <0354c266-5d50-51b1-a768-93a78e0ddd51@gmx.com> <09ec71c0-e3c2-8bb5-acaf-0317e7204ca9@dubiel.pl>
+ <6058c4c4-fcb3-c7cd-6517-10b5908b34da@georgianit.com> <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
+In-Reply-To: <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 26 Dec 2019 15:15:15 -0700
-Message-ID: <CAJCQCtQR+rFoS7kaLm0eh35x5iYw0UO9Ybi3gxANTxJLU-YEFg@mail.gmail.com>
+Date:   Thu, 26 Dec 2019 15:40:06 -0700
+Message-ID: <CAJCQCtQEpXvgbs+Y0+A4cLZUft3oqp+sLW8xVPfxt2aqYhMj_g@mail.gmail.com>
 Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
 To:     Leszek Dubiel <leszek@dubiel.pl>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Remi Gauvin <remi@georgianit.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 25, 2019 at 3:42 PM Leszek Dubiel <leszek@dubiel.pl> wrote:
+On Thu, Dec 26, 2019 at 7:05 AM Leszek Dubiel <leszek@dubiel.pl> wrote:
 >
->
-> Hello!
->
-> I have a server: 3 disks, 6TB each, total 17TB space, occupied with data
-> 6TB.
->
->
-> One of the disks got smart errors:
->
->      197 Current_Pending_Sector  0x0022   100   100   000 Old_age
-> Always       -       16
->      198 Offline_Uncorrectable   0x0008   100   100   000 Old_age
-> Offline      -       2
->
-> And didn't pass tests:
->
->      Num  Test_Description    Status                  Remaining
-> LifeTime(hours)  LBA_of_first_error
->      # 1  Extended offline    Completed: read failure 90%
-> 3575         -
->      # 2  Short offline       Completed without error 00%
-> 3574         -
->      # 3  Extended offline    Completed: read failure 90%
-> 3574         -
->      # 4  Extended offline    Completed: read failure 90%
-> 3560         -
->      # 5  Extended offline    Completed: read failure 50%
-> 3559         -
->
-> I decided to remove that drive from BTRFS system:
+> Dec 22 19:20:11 wawel kernel: [ 5912.116874] ata1.00: exception Emask
+> 0x0 SAct 0x1f80 SErr 0x0 action 0x0
+> Dec 22 19:20:11 wawel kernel: [ 5912.116878] ata1.00: irq_stat 0x40000008
+> Dec 22 19:20:11 wawel kernel: [ 5912.116880] ata1.00: failed command:
+> READ FPDMA QUEUED
+> Dec 22 19:20:11 wawel kernel: [ 5912.116882] ata1.00: cmd
+> 60/00:38:00:00:98/0a:00:45:01:00/40 tag 7 ncq dma 1310720 in
+> Dec 22 19:20:11 wawel kernel: [ 5912.116882]          res
+> 43/40:18:e8:05:98/00:04:45:01:00/40 Emask 0x409 (media error) <F>
+> Dec 22 19:20:11 wawel kernel: [ 5912.116885] ata1.00: status: { DRDY
+> SENSE ERR }
+> Dec 22 19:20:11 wawel kernel: [ 5912.116886] ata1.00: error: { UNC }
+> Dec 22 19:20:11 wawel kernel: [ 5912.153695] ata1.00: configured for
+> UDMA/133
+> Dec 22 19:20:11 wawel kernel: [ 5912.153707] sd 0:0:0:0: [sda] tag#7
+> FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE
+> Dec 22 19:20:11 wawel kernel: [ 5912.153709] sd 0:0:0:0: [sda] tag#7
+> Sense Key : Medium Error [current]
+> Dec 22 19:20:11 wawel kernel: [ 5912.153710] sd 0:0:0:0: [sda] tag#7
+> Add. Sense: Unrecovered read error - auto reallocate failed
+> Dec 22 19:20:11 wawel kernel: [ 5912.153711] sd 0:0:0:0: [sda] tag#7
+> CDB: Read(16) 88 00 00 00 00 01 45 98 00 00 00 00 0a 00 00 00
+> Dec 22 19:20:11 wawel kernel: [ 5912.153712] print_req_error: I/O error,
+> dev sda, sector 5462556672
+> Dec 22 19:20:11 wawel kernel: [ 5912.153724] ata1: EH complete
+> Dec 22 19:21:28 wawel kernel: [ 5989.527853] BTRFS info (device sda2):
+> found 8 extents
+
+Weird. This is not expected. I see a discrete read error with LBA
+reported for the device, and yet Btfs shows no attempt to correct it
+(using raid1 metadata) nor does it report the path to file that's
+affected by this lost sector. I'm expecting to see one of those two
+outcomes, given the profiles being used.
 
 
-What is the SCT ERC for each drive? This applies to mdadm, lvm, and
-btrfs RAID. While you are not using raid for data, you are using it
-for metadata. And also mismatching SCT ERC with kernel's command timer
-is not good for any configuration, the SCT ERC must be shorter than
-the kernel command timer or inevitably bad sector errors are masked by
-the kernel resetting the link to the device.
+>
+> Dec 23 00:08:20 wawel kernel: [23201.188424] INFO: task btrfs:2546
+> blocked for more than 120 seconds.
 
-https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+Multiples of these, but no coinciding read errors or SATA link resets.
+This suggests bad sectors in deep recover. And that would explain why
+the copies are so slow. It's not a Btrfs problem per se. It's that
+you've decided to have only one copy of data, self healing of data
+isn't possible. The file system itself is fine, but slow because the
+affected drive is slow to recover these bad sectors.
 
-And when was the last time a scrub was done on the volume? Were there
-any errors reported by either user space tools or kernel? And what
-were they?
+Again, dropping the SCT ERC for the drives would result in a faster
+error recovery when encountering bad sectors. It also increases the
+chance of data loss (not metadata loss since it's raid1).
 
-I do agree, however, that this configuration should have higher
-performing reads from the device being deleted, unless part of the
-reason why it's so slow is that one or more drives is trying to do
-deep recoveries.
-
-My suggestion for single profile multiple device is to leave the per
-drive SCT ERC disabled (or a high value, e.g. 1200 deciseconds) and
-also change the per block device command timer (this is a kernel timer
-set per device) to be at least 120 seconds. This will allow the drive
-to do deep recovery, which will make it dog slow, but if necessary
-it'll improve the chances of getting data off the drives. If you don't
-care about getting data off the drives, i.e. you have a backup, then
-you can set the SCT ERC value to 70 deciseconds. Any bad sector errors
-will quickly result in a read error, Btrfs will report the affected
-file. IF it's metadata that's affected, it'll get a good copy from the
-mirror, and fix up the bad copy, automatically.
 
 
 
