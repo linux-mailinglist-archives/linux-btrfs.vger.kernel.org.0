@@ -2,102 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E708512BD8D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Dec 2019 13:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127C112BE1A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Dec 2019 18:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbfL1M24 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Dec 2019 07:28:56 -0500
-Received: from mars1.mruiz.dev ([167.71.125.59]:53150 "EHLO mars1.mruiz.dev"
+        id S1726132AbfL1RML (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Dec 2019 12:12:11 -0500
+Received: from naboo.endor.pl ([91.194.229.149]:54164 "EHLO naboo.endor.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726100AbfL1M24 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Dec 2019 07:28:56 -0500
-Received: from archlinux.localnet (unknown [66.115.176.23])
-        by mars1.mruiz.dev (Postfix) with ESMTPSA id E13FC40728;
-        Sat, 28 Dec 2019 12:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mruiz.dev; s=201908;
-        t=1577536135; bh=z0xrScxyfQzNaC2hW+t/oFvHeB6YEgTbqh60lPy4Te8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLiYVmz/TLTov0NZLdtcSZtJQI9P1qP0oKMB5A1y1lUAtx1pa0tLMCHFotk9Yqovp
-         nKl3u18dW5rEn9aqIw+bIOY53J0NeFV4xXJcdvS5MVGXVs/BY0PCW38nPMoWgr4+Ov
-         mvv/pOWUAfUfQ8TMbAwrQUDeflJbLLQRPy3xEHfTQsKiPUvN3SGp2nvnUE27RjjaeH
-         rlMy897fZV8B5YFyKIi4eMJ7CpKd3cK3gfMyXFLneVwZEtstdP4ggIm0X6JO/5g7/i
-         hepcLXCPVSPDvpStSaaXcT37s027QV2Ryb4IlP11e9Gt6EEyRDueSSWPBK7GG5f6BW
-         9xcVK89wIS3Nw==
-From:   Michael Ruiz <michael@mruiz.dev>
-To:     linux-btrfs@vger.kernel.org
-Cc:     quwenruo.btrfs@gmx.com
-Subject: Re: Error during balancing '/': Input/output error
-Date:   Sat, 28 Dec 2019 04:28:50 -0800
-Message-ID: <7734220.NyiUUSuA9g@archlinux>
-Organization: mruiz.dev
-In-Reply-To: <f6659a3b-9720-40dd-df3b-064fa4c393c8@gmx.com>
-References: <4196932.LvFx2qVVIh@archlinux> <3499056.kQq0lBPeGt@archlinux> <f6659a3b-9720-40dd-df3b-064fa4c393c8@gmx.com>
+        id S1726088AbfL1RML (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 28 Dec 2019 12:12:11 -0500
+X-Greylist: delayed 458 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Dec 2019 12:12:09 EST
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by naboo.endor.pl (Postfix) with ESMTP id 304931A0E83;
+        Sat, 28 Dec 2019 18:04:27 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.149])
+        by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id I_DwZZdQKeiv; Sat, 28 Dec 2019 18:04:27 +0100 (CET)
+Received: from [192.168.1.16] (aahg142.neoplus.adsl.tpnet.pl [83.4.188.142])
+        (Authenticated sender: leszek@dubiel.pl)
+        by naboo.endor.pl (Postfix) with ESMTPSA id C29471A0E8F;
+        Sat, 28 Dec 2019 18:04:25 +0100 (CET)
+Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
+From:   Leszek Dubiel <leszek@dubiel.pl>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Remi Gauvin <remi@georgianit.com>
+References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
+ <0354c266-5d50-51b1-a768-93a78e0ddd51@gmx.com>
+ <09ec71c0-e3c2-8bb5-acaf-0317e7204ca9@dubiel.pl>
+ <6058c4c4-fcb3-c7cd-6517-10b5908b34da@georgianit.com>
+ <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
+ <CAJCQCtQEpXvgbs+Y0+A4cLZUft3oqp+sLW8xVPfxt2aqYhMj_g@mail.gmail.com>
+ <2c135c87-d01b-53f1-9f76-a5653918a4e7@dubiel.pl>
+Message-ID: <cc364577-1bb8-1512-4d2e-dc7e465ca2d6@dubiel.pl>
+Date:   Sat, 28 Dec 2019 18:04:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1824941.usQuhbGJ8B"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+In-Reply-To: <2c135c87-d01b-53f1-9f76-a5653918a4e7@dubiel.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: pl-PL
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---nextPart1824941.usQuhbGJ8B
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 
-On Saturday, December 28, 2019 4:05:54 AM PST you wrote:
-> Doesn't this filename look familiar with previous logical-resolve output? :)
-> 
-> [michael@archlinux /]$ sudo btrfs ins logical-resolve 253563502592 /
-> //home/michael/.mozilla/firefox/default/storage/default/https++
-> +www.pinterest.com/cache/morgue/16/{b696bf53-d26a-48eb-9688-
-> ab3c5fd49010}.final
-> 
-> The URL, the UUID, they all matches!
-> 
-> So yep, the file itself doesn't match its csum in the first place.
-> 
-> It looks like balance doesn't go regular file csum checking, but copy
-> all data and all csum without verifying them, then check the csum of
-> data reloc tree instead.
-> 
-> Thus this causes this hard-to-locate corrupted files.
-> We should make it more user-friendly I guess.
-> 
-> 
-> And obviously, just remove the offending files should allow you continue.
-> 
-> Thanks,
-> Qu
+PROBLEM SOLVED --- btrfs was busy cleaing after snaphot deletion few 
+days ago, so it dodn't have time to "dev delete", that's why it was slow
+
+=======================
 
 
-Wow, you are right. I was worried my file system was corrupted and I'm not 
-sure the exact cause leading up to this error. If there is any more debug info 
-I can give you so that you can get a better idea of why this is happening, 
-please let me know. 
+I restarted server, so job "btrfs delete" was not existent any more.
+But disks were still working (!!!). I wondered why? What is BTRFS doing 
+all the time?
 
-Currently I am running balance, but I predict it will finally be able to 
-complete sucessfully. However, if there are any issues I will send a reply 
-here. (If I don't figure it out myself using what you just taught me)
-Thanks a lot for your help. I am new to using mailing lists such as these, so 
-hopefully I did everything by the rules here.
-Thanks again Qu!
---nextPart1824941.usQuhbGJ8B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+I realized that afew days before starting "btrfs dev delete" I have 
+removed many snapshots -- there were about 400 snapshots and I left 20 
+only. I did that because I have read that many snapshot could slowdown 
+btrfs operations severely.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEj5lRECE0UfhBqjDUbhv/EZtxrWIFAl4HSnkACgkQbhv/EZtx
-rWLelggAkBUhv/9t94G95OyNT3B7+kX0jB00YtDQy12dNEBRKcafmgY1+rXWc7V3
-T6MOjzX0oFXVNTjA5ZbzHgtuo7tI40TIcD5dob+AzOJdMSUIlCAXWCnpHllTdOLC
-tciVNNwvt7RoGbxCz4B7seWEAFwHwoKckttLIL8YHgsCq5fSinbPsqxXVd8UkcbB
-CmhpnlNnJzjwoR9EbyFwpCryHtRMCbF5NDYMGCitjBKv64r0NdWWeT73HVTgv6EU
-0mY1efWfuztEWYdIC3IUKwCeOxmJYNcSuQkQDUXR3zx8ygkK3I7tzKPPBwzd9a/w
-Gn1EykedF4QLlnLHT2uR19RJ7+YL1w==
-=8KpQ
------END PGP SIGNATURE-----
 
---nextPart1824941.usQuhbGJ8B--
+I made an experiment on another testing serwer:
+
+1. started command "watch -n1 'btrfs fi df /"
+2. started "iostat -x -m"
+
+Disks were not working at all.
+
+
+3. Then I removed many shapshots on that testing server
+
+and I was watching:
+
+Data, single: total=6.56TiB, used=5.13TiB
+System, RAID1: total=32.00MiB, used=992.00KiB
+Metadata, RAID1: total=92.00GiB, used=70.56GiB
+GlobalReserve, single: total=512.00MiB, used=1.39MiB
+
+Disks started to work hard. So btrfs was probably cleaining after 
+snapshot deletion.
+
+At the beginning in "Metadata" line there was "used=70.00GiB".
+
+            Metadata, RAID1: total=92.00GiB, used=70.00GiB
+
+It was changing all the time... getting lower and lower. During that 
+process in line
+
+            GlobalReserve, single: total=512.00MiB, used=1.39MiB
+
+"used=" was going up until it reached about 100MiB, then it was flushed 
+to zero, and started again to fill, flush, fill, flush... some 
+loop/buffer/cache (?).
+It convinced me, that after snapshot deletion btrfs is really working 
+hard on cleanup.
+After some time "Metadata...used=" stopped changing, disks stopped 
+working, server got lazy again.
+
+
+
+I got back to main server. Started to watch "Metadata...used=". It was 
+going down and down...
+I waited. When "Metadata...used=" stopped changing, then "iostat -m" 
+stopped showing any disk activity.
+
+I started "btrfs dev delete" again and now speed is 50Mb/sek. Hurrray! 
+Problem solved.
+
+
+Sorry for not beeing clever enough to connect all this facts at the 
+beginning.
+Anyway -- maybe in the future someone has the same problem, then btrfs 
+experts could ask him if he let btrfs do some other hard work in the 
+same time (eg cleaning up after massive snapsot deletion).
+
+Maybe it would be usful to have a tool to ask btrfs "what are you doing? 
+are you busy?".
+It would respond "I am cleaing up after snapshot deletion... I am 
+balancing... I am scrubbing... I am resizing... I am deleting ...".
+
 
 
 
