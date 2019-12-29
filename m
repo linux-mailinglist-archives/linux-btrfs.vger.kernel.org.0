@@ -2,143 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5912C12C077
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2019 06:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E012C28E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2019 14:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbfL2FWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Dec 2019 00:22:43 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38526 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbfL2FWm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Dec 2019 00:22:42 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4E862546552; Sun, 29 Dec 2019 00:22:40 -0500 (EST)
-Date:   Sun, 29 Dec 2019 00:22:40 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     fdmanana@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org, darrick.wong@oracle.com,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 2/2] Btrfs: make deduplication with range including the
- last block work
-Message-ID: <20191229052240.GG13306@hungrycats.org>
-References: <20191216182656.15624-1-fdmanana@kernel.org>
- <20191216182656.15624-3-fdmanana@kernel.org>
+        id S1726502AbfL2NkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Dec 2019 08:40:20 -0500
+Received: from mout.web.de ([212.227.17.12]:45059 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbfL2NkU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 29 Dec 2019 08:40:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1577626818;
+        bh=HmsMo5gZgnIWC3sMopkilaKfg8anKUw2PWQwd/zAgLo=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=hJ4vgoPbUGSKO6z7J1irSuMmrlhwZqoycEMbxzxclfHfJqHbc1y+KD0yD/lWUGq/e
+         GY1TnJGZ4jfrafV2JStTJC1tII7xw98QFMf3Qo08ylnVfsqGCe5ju+LFVO3Iz9p2Ui
+         pfOY/K+JZhIkbXymjLdjxiNluzL+kMdwDpicWzss=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.0.16] ([80.142.201.69]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MOAnY-1ir4aM2Pa8-005aCJ for
+ <linux-btrfs@vger.kernel.org>; Sun, 29 Dec 2019 14:40:18 +0100
+To:     linux-btrfs@vger.kernel.org
+From:   Matthias Neuer <mneuer@web.de>
+Subject: invalid root item size
+Message-ID: <19acbd39-475f-bd72-e280-5f6c6496035c@web.de>
+Date:   Sun, 29 Dec 2019 14:40:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="bFsKbPszpzYNtEU6"
-Content-Disposition: inline
-In-Reply-To: <20191216182656.15624-3-fdmanana@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-LU
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1+9Ru6ql+Y9rSUvoyNXkHqWs+D2rzwGm3bI6+kJ4QmkashJwm6M
+ WksEX5vVbrkCvgXiJYgigTgyYekqo4CPtDdU1QZCIO1ZBPtBI0EifEBq/Gq6ivxoAoINkyy
+ v1PtS5DfkH6vk6YVo4gmTWjemvLjHZawPsihzBhikCCqvoPBXk+6UZmzie7eqjQu+rKsNdn
+ 1IjLyPWyPYf6wwRroAYXw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hp8oq40/IUw=:ma2BD/mOwJjGp/RD3AV3j7
+ 7KRWnhtXH10OZ6th3Xa9oGa9bSMHFrJxQ9yQsX2p0Z7RIo5J1TyuG9yqbhwvhD5i0+oxOOTCA
+ fbFVE6FtyRGQCNuige3q8A6G3tFZr/dTErDuwwrIMKj2/5igRudxX7QLB59Vz58mHD5qF9z+M
+ 9D4Jx3wVKIXXJFyTAPMuXTnCpzJKCgGCQrdmLT0sk3Zl44Nb9rLh3zwdVCZGELlZE2dcKFJKN
+ j1SNmEkWee7dydwV3yGuRUI+LcR+FoklG8tr8xEwtQgc+RsG2IaeP1iLV5ht82uvE5oSXsGwH
+ fkV2mVwx2A/ZS6CZyaGvqP2hmnQ9o/LmOpRJQRJ2A71lXIRzbNW0K8U0bDo5PXjyAvQ5c1YdD
+ EjFZR22Ol1s4m3bPx7zOB753tK6gq7WwhB1IWtWCrCHcqop2fzL6bi5nTKpdvgjeCSCnbNk4v
+ 3Csfs2yV2abqeI99/MgkHEg11mJi7THuwXBOtyp6THRvdao+DgfoscRsbPVbqOnx86keNImek
+ bL9akUqHAjjNtGH1h3AM2eOLVNbkSS8BAZSw7hq1VNlYCFCdIsPrTPHVilWgTdtKF2yQ5AeNz
+ 54uzDQnBnJ7B7FjL34WoivKj5sBg927wir/3Xa4hPn0e6TjTeD1VY1dyFO0vHRQxXnk/O9l1A
+ KEWS1uuP4PXUsHj4oH0gAW3arx5b1zTnZbJxcNUFRoLjhwTP2XPiF3fdpOHNZLqjd9KawPEnW
+ P8DKLCn/zXHnFJBleK7G27BDUyVOY9Zn2zIUzl23NrNVr6EoZ1GNW4VtfYAEeLnrBhEtWxAKe
+ EMuuB3r14DIbNuniQVVK7twmwKMDmhC9LSAg4ojWULzZSQ+DBVKgRPn1Z5VjzORTLuOZkDIlX
+ re/z58KHobWvRKPU8BX3h6MdNlDXXqkQOdlxeAuLgJekjRL44FzYYk7jb9IcxKVCLLZwuPkkA
+ DSYSbrCtgD2wHlU5IdHJlB+IqaaEFdllvrwzqh+GhDNsNphRtZ2nyaCSDxQaez3R5CV7QpYqi
+ J2zYWmQsvNIlT9KyaoiVQ9onNZDP12sQa7rYk5gtuqlIXwAPLonst0fgNUyB/cbF1TcUsKsNA
+ uF2/Du095mOplcO00C0AlQxMxKwSyk043xbB0WgIfRyzX/s4Psr6QRBh3uec7f1FePOWIIcWH
+ upYhimtIJU7lGYS4IRYtb0DDwhOWwHG9NSWvDLpaqTJiOFpDlMbmZ4jdao1uy9qlqalgrPz0C
+ 68Djg89h8Zg0LkcFyZcqdNJJIN3jxa847qdMPqw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
---bFsKbPszpzYNtEU6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+since I updated my system I noticed a lot of messages like the following
+in dmesg (sda8 is /home).
 
-On Mon, Dec 16, 2019 at 06:26:56PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> Since btrfs was migrated to use the generic VFS helpers for clone and
-> deduplication, it stopped allowing for the last block of a file to be
-> deduplicated when the source file size is not sector size aligned (when
-> eof is somewhere in the middle of the last block). There are two reasons
-> for that:
->=20
-> 1) The generic code always rounds down, to a multiple of the block size,
->    the range's length for deduplications. This means we end up never
->    deduplicating the last block when the eof is not block size aligned,
->    even for the safe case where the destination range's end offset matches
->    the destination file's size. That rounding down operation is done at
->    generic_remap_check_len();
->=20
-> 2) Because of that, the btrfs specific code does not expect anymore any
->    non-aligned range length's for deduplication and therefore does not
->    work if such nona-aligned length is given.
->=20
-> This patch addresses that second part, and it depends on a patch that
-> fixes generic_remap_check_len(), in the VFS, which was submitted ealier
-> and has the following subject:
->=20
->   "fs: allow deduplication of eof block into the end of the destination f=
-ile"
->=20
-> These two patches address reports from users that started seeing lower
-> deduplication rates due to the last block never being deduplicated when
-> the file size is not aligned to the filesystem's block size.
->=20
-> Link: https://lore.kernel.org/linux-btrfs/2019-1576167349.500456@svIo.N5d=
-q.dFFD/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+BTRFS critical (device sda8): corrupt leaf: root=3D1 block=3D78397440
+slot=3D32, invalid root item size, have 239 expect 439
 
-Should these patches be marked for stable (5.0+, but see below for
-caveats about 5.0)?  The bug affects 5.3 and 5.4 which are still active,
-and dedupe is an important feature for some users.
+I did a 'btrfs scrub' but it didn't find any errors. Then I started the
+system in single user mode and tried 'btrfs check' but again, no error
+could be found.
 
-> ---
->  fs/btrfs/ioctl.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 3418decb9e61..c41c276ff272 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3237,6 +3237,7 @@ static void btrfs_double_extent_lock(struct inode *=
-inode1, u64 loff1,
->  static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
->  				   struct inode *dst, u64 dst_loff)
->  {
-> +	const u64 bs =3D BTRFS_I(src)->root->fs_info->sb->s_blocksize;
->  	int ret;
-> =20
->  	/*
-> @@ -3244,7 +3245,7 @@ static int btrfs_extent_same_range(struct inode *sr=
-c, u64 loff, u64 len,
->  	 * source range to serialize with relocation.
->  	 */
->  	btrfs_double_extent_lock(src, loff, dst, dst_loff, len);
-> -	ret =3D btrfs_clone(src, dst, loff, len, len, dst_loff, 1);
-> +	ret =3D btrfs_clone(src, dst, loff, len, ALIGN(len, bs), dst_loff, 1);
+I read that the issue could come from bad RAM and so I ran memtest86+
+for 12h but it seems my RAM is ok.
 
-A heads-up for anyone backporting this to 5.0:  this patch depends on
+Is this a real problem and how can I fix it?
 
-	57a50e2506df Btrfs: remove no longer needed range length checks for dedupl=
-ication
+Thanks a lot,
+Matthias
 
-Simply resolving the git conflict without including 57a50e2506df produces
-a kernel where dedupe rounds the size of the dst file up to the next
-block boundary.  This is because 57a50e2506df changes the value of
-"len".  Before 57a50e2506df, "len" is equivalent to "ALIGN(len, bs)"
-at the btrfs_clone line; after 57a50e2506df, "len" is the unaligned
-dedupe request length passed to the btrfs_extent_same_range function.
-This changes the semantics of the btrfs_clone line significantly.
+$ uname -a
+Linux matze-debian 5.3.0-3-amd64 #1 SMP Debian 5.3.15-1 (2019-12-07)
+x86_64 GNU/Linux
 
-57a50e2506df is in 5.1, so 5.1+ kernels do not require any additional
-patches.
+$ btrfs --version
+btrfs-progs v5.4
 
-4.20 and earlier don't have the bug, so don't need a fix.
+# btrfs fi show
+Label: none  uuid: 0957d767-7f29-4235-b812-329fe851b63e
+         Total devices 1 FS bytes used 10.29GiB
+         devid    1 size 15.64GiB used 15.64GiB path /dev/sda5
 
->  	btrfs_double_extent_unlock(src, loff, dst, dst_loff, len);
-> =20
->  	return ret;
-> --=20
-> 2.11.0
->=20
+Label: none  uuid: 0d3f2898-446d-4967-bd54-a034108d06b9
+         Total devices 1 FS bytes used 12.68GiB
+         devid    1 size 18.62GiB used 18.61GiB path /dev/sda7
 
---bFsKbPszpzYNtEU6
-Content-Type: application/pgp-signature; name="signature.asc"
+Label: none  uuid: d6954ba3-3d50-4886-ae3f-a92a5ca83923
+         Total devices 1 FS bytes used 16.61GiB
+         devid    1 size 24.70GiB used 24.70GiB path /dev/sda8
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXgg4IAAKCRCB+YsaVrMb
-nFY0AJ0fIi9yEzH1FwUObJW7SQl3uNevCACeIca5z3SPIG29//ckhcA5JgBwf8Y=
-=cmLe
------END PGP SIGNATURE-----
-
---bFsKbPszpzYNtEU6--
+# btrfs fi df /home
+Data, single: total=3D22.67GiB, used=3D16.38GiB
+System, DUP: total=3D8.00MiB, used=3D4.00KiB
+System, single: total=3D4.00MiB, used=3D0.00B
+Metadata, DUP: total=3D1.00GiB, used=3D236.50MiB
+Metadata, single: total=3D8.00MiB, used=3D0.00B
+GlobalReserve, single: total=3D49.54MiB, used=3D0.00B
