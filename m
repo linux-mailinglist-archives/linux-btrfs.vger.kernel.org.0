@@ -2,97 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDDA12C320
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2019 16:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DAF12C994
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Dec 2019 19:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbfL2PiC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Dec 2019 10:38:02 -0500
-Received: from savella.carfax.org.uk ([85.119.84.138]:58542 "EHLO
-        savella.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbfL2PiB (ORCPT
+        id S1731531AbfL2SKz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Dec 2019 13:10:55 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39683 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730575AbfL2SKv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Dec 2019 10:38:01 -0500
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1iladk-0003d1-Df; Sun, 29 Dec 2019 15:38:00 +0000
-Date:   Sun, 29 Dec 2019 15:38:00 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Raviu <raviu@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Cannot mount or recover btrfs
-Message-ID: <20191229153800.GA26346@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        Raviu <raviu@protonmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <qxM9wPidCbIA9yMGE4e57cGzc5GkQnFF39Q2h1PLV0XTLpSVZ1nvi9wDfOD3YXIAl3GYyq2wRoG8ncoE692e0MVUah_rmDSRggyZz_trQH0=@protonmail.com>
+        Sun, 29 Dec 2019 13:10:51 -0500
+Received: by mail-wr1-f65.google.com with SMTP id y11so30880465wrt.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Dec 2019 10:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rpr1/9B/H39KrgHrCruKIT/pYdFoZ30zgYc/bll3umE=;
+        b=OAspP8uikRJ3neb4NZ/j3whDw0mCmRF+ovqVfnJSeLR/3HhHW2CtcpKyoX+B0WPPRr
+         rVOwWCbIGLQDzmEfBcIzOauGYuVoyOxFOd+ukLcmSrr4Kb5Bozd3oDz3hOheTFxurtJ2
+         2HZ+zqmhcDKNoraffKFmiLG6rcU/FXVeYYREZBqCVYf5jWIVlHLKB78pXSGqjYTzh7/D
+         wpOKLtJEZINYxwiBgbKeUk9U/jAMjBJDeMdgRLqAVHnejeo6b0nf2by27zBhq7zBVh4M
+         jf+eU0rC4RkUG2vprnkheEx2BHqr04vkqMfpvHBF/caYrGNwdsvPYgcvJDeWTdu1LSkQ
+         NSyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rpr1/9B/H39KrgHrCruKIT/pYdFoZ30zgYc/bll3umE=;
+        b=io6aelJsjGfYuF3oDwVaYeud+hx4kRhvW1YJuSBF+2SkwIWLR8mP8zDLVQ+yycfRbj
+         QXUOJ+rt1zFlJTegg9XByr+F2lZ7BmsPTF5cDkmxoWSsUNFaPhM8fST3QJywtZ67137y
+         s99LI/J2gw9G+aknaRpllWb8EQCEiVR/9UzS2Madbl9dXmk2Dlx/iUu+A6z48Bbnm0oE
+         zUWUpQ+dbyWjA84jvzHf48TF4BtnbCHxDIU4eq6jBvMQF2OaH9bZvqgPyFDBm4IwxA6h
+         4lMjhDiQPximdW1X44ge+U2OoLUPXcIMMqNHrjmCbLghVAd4OC7Awui5OFbAOXGDXxTM
+         e39Q==
+X-Gm-Message-State: APjAAAVB/9v6AmvLmnR7zxZPTGNl/3Z0TsV7b10GeGktjtZYH4vr1sdC
+        j1OXpTn9rb1uU+CKf402FARsaCCRgw1RjdKj7oF/Sw==
+X-Google-Smtp-Source: APXvYqzMHF8Y52AFKT88SlJ41og1dqiUg6G5HDxYp6OpcuykdLa1TyYLTMn4H0x4j3Z5tevow1Wozu3icUTVAeRmBnc=
+X-Received: by 2002:adf:9c8f:: with SMTP id d15mr62978296wre.390.1577643049815;
+ Sun, 29 Dec 2019 10:10:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <qxM9wPidCbIA9yMGE4e57cGzc5GkQnFF39Q2h1PLV0XTLpSVZ1nvi9wDfOD3YXIAl3GYyq2wRoG8ncoE692e0MVUah_rmDSRggyZz_trQH0=@protonmail.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <19acbd39-475f-bd72-e280-5f6c6496035c@web.de>
+In-Reply-To: <19acbd39-475f-bd72-e280-5f6c6496035c@web.de>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 29 Dec 2019 11:10:33 -0700
+Message-ID: <CAJCQCtQ-ApthkeKtSgsFN+JuTpPoX0OFubOGQdbz=OnNkphB_w@mail.gmail.com>
+Subject: Re: invalid root item size
+To:     Matthias Neuer <mneuer@web.de>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Dec 29, 2019 at 03:05:14PM +0000, Raviu wrote:
+On Sun, Dec 29, 2019 at 6:40 AM Matthias Neuer <mneuer@web.de> wrote:
+>
 > Hi,
-> My system suddenly crashed, after reboot I cannot mount /home any more.
-> 
-> `uname -a`
-> Linux moonIk80 4.12.14-lp151.28.36-default #1 SMP Fri Dec 6 13:50:27 UTC 2019 (8f4a495) x86_64 x86_64 x86_64 GNU/Linux
-> 
-> btrfs-progs v5.4
-> 
-> `btrfs fi show`
-> Label: none  uuid: 378faa6e-8af0-415e-93f7-68b31fb08a29
->         Total devices 1 FS bytes used 194.99GiB
->         devid    1 size 232.79GiB used 231.79GiB path /dev/mapper/cr_sda4
-> 
-> 
-> The device cannot be mounted.
-> [  188.649876] BTRFS info (device dm-1): disk space caching is enabled
-> [  188.649878] BTRFS info (device dm-1): has skinny extents
-> [  188.656364] BTRFS critical (device dm-1): corrupt leaf: root=2 block=294640566272 slot=104, unexpected item end, have 42739 expect 9971
+>
+> since I updated my system I noticed a lot of messages like the following
+> in dmesg (sda8 is /home).
+>
+> BTRFS critical (device sda8): corrupt leaf: root=1 block=78397440
+> slot=32, invalid root item size, have 239 expect 439
+>
+> I did a 'btrfs scrub' but it didn't find any errors. Then I started the
+> system in single user mode and tried 'btrfs check' but again, no error
+> could be found.
 
->>> hex(9971)
-'0x26f3'
->>> hex(42739)
-'0xa6f3'
+Scrub compares block contents with its checksum, if there's a match,
+no error is reported. But the contents of the leaf might not be valid,
+with the leaf's checksum based on that corruption. In recent kernels
+there's a tree checker that does a validation check.
 
-   That looks like a single bit error, and it's got a correct checksum
-for the incorrect data, which suggests that the error happened while
-the metadata was in RAM. The most likely cause here is that your RAM
-is bad. (There are other options, but they're also mostly hardware).
+The tree checker code is what you've hit, and it's saying there's a
+problem with the leaf contents. Depending on the update you did, it's
+possible that this is corrupt leaf has been there for a while, and is
+only just now showing up with the newish tree checker code, in 5.2 and
+5.3 kernels.
 
-   As for fixing it -- first, make really, really sure that your
-hardware is OK. After that, I don't think btrfs check will fix it
-(although it might). Maybe one of the devs can add something to it to
-help.
+> I read that the issue could come from bad RAM and so I ran memtest86+
+> for 12h but it seems my RAM is ok.
 
-   Hugo.
+Could be the result of a Btrfs bug in an older kernel, and it's only
+now being caught because of the tree checker.
 
-> [  188.656374] BTRFS error (device dm-1): failed to read block groups: -5
-> [  188.700088] BTRFS error (device dm-1): open_ctree failed
-> 
-> 
-> 
-> `btrfs check /dev/mapper/cr_sda4`
-> Opening filesystem to check...
-> incorrect offsets 9971 42739
-> incorrect offsets 9971 42739
-> incorrect offsets 9971 42739
-> ERROR: failed to read block groups: Operation not permitted
-> ERROR: cannot open file system
-> 
-> 
+>
+> Is this a real problem and how can I fix it?
+>
+
+Good question. The kernel message is very convincing, in that it
+suggests it knows exactly what the problem is and what the expected
+value should be. I'd like to believe 'btrfs check' could fix it.
+
+What do you get for:
+
+btrfs insp dump-t -b 78397440 /dev/
+
+If there are filenames in the output you can remove/sanitize them.
+
+btrfs check /dev/
+
+This should give a good idea whether --repair can fix it, but we'll
+need to hear from a developer about it first. In the meantime you can
+make sure the backup is current.
+
 
 -- 
-Hugo Mills             | I'm on a 30-day diet. So far I've lost 18 days.
-hugo@... carfax.org.uk |
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |
+Chris Murphy
