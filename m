@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296112D316
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 19:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69ED12D334
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 19:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbfL3SIM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Dec 2019 13:08:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42572 "EHLO mx2.suse.de"
+        id S1727426AbfL3SN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Dec 2019 13:13:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43308 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbfL3SIM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Dec 2019 13:08:12 -0500
+        id S1727389AbfL3SN1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Dec 2019 13:13:27 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2C0CDAB91;
-        Mon, 30 Dec 2019 18:08:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5245AAD45;
+        Mon, 30 Dec 2019 18:13:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5094DDA790; Mon, 30 Dec 2019 19:08:03 +0100 (CET)
-Date:   Mon, 30 Dec 2019 19:08:03 +0100
+        id AF2E0DA790; Mon, 30 Dec 2019 19:13:18 +0100 (CET)
+Date:   Mon, 30 Dec 2019 19:13:18 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Dennis Zhou <dennis@kernel.org>
 Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 15/22] btrfs: limit max discard size for async discard
-Message-ID: <20191230180803.GB3929@twin.jikos.cz>
+Subject: Re: [PATCH v6 00/22] btrfs: async discard support
+Message-ID: <20191230181318.GC3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
         David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
@@ -33,101 +33,63 @@ Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
         Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
 References: <cover.1576195673.git.dennis@kernel.org>
- <396e2d043068b620574892ebfc4b9f5c77b41618.1576195673.git.dennis@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <396e2d043068b620574892ebfc4b9f5c77b41618.1576195673.git.dennis@kernel.org>
+In-Reply-To: <cover.1576195673.git.dennis@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 04:22:24PM -0800, Dennis Zhou wrote:
-> Throttle the maximum size of a discard so that we can provide an upper
-> bound for the rate of async discard. While the block layer is able to
-> split discards into the appropriate sized discards, we want to be able
-> to account more accurately the rate at which we are consuming ncq slots
-> as well as limit the upper bound of work for a discard.
+On Fri, Dec 13, 2019 at 04:22:09PM -0800, Dennis Zhou wrote:
+> Hello,
 > 
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/discard.h          |  5 ++++
->  fs/btrfs/free-space-cache.c | 48 +++++++++++++++++++++++++++----------
->  2 files changed, 41 insertions(+), 12 deletions(-)
+> Dave reported a lockdep issue [1]. I'm a bit surprised as I can't repro
+> it, but it obviously is right. I believe I fixed the issue by moving the
+> fully trimmed check outside of the block_group lock.  I mistakingly
+> thought the btrfs_block_group lock subsumed btrfs_free_space_ctl
+> tree_lock. This clearly isn't the case.
 > 
-> diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
-> index 3ed6855e24da..cb6ef0ab879d 100644
-> --- a/fs/btrfs/discard.h
-> +++ b/fs/btrfs/discard.h
-> @@ -3,10 +3,15 @@
->  #ifndef BTRFS_DISCARD_H
->  #define BTRFS_DISCARD_H
->  
-> +#include <linux/sizes.h>
-> +
->  struct btrfs_fs_info;
->  struct btrfs_discard_ctl;
->  struct btrfs_block_group;
->  
-> +/* Discard size limits. */
-> +#define BTRFS_ASYNC_DISCARD_MAX_SIZE	(SZ_64M)
-> +
->  /* Work operations. */
->  void btrfs_discard_cancel_work(struct btrfs_discard_ctl *discard_ctl,
->  			       struct btrfs_block_group *block_group);
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index 57df34480b93..0dbcea6c59f9 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -3466,19 +3466,40 @@ static int trim_no_bitmap(struct btrfs_block_group *block_group,
->  		if (entry->offset >= end)
->  			goto out_unlock;
->  
-> -		extent_start = entry->offset;
-> -		extent_bytes = entry->bytes;
-> -		extent_trim_state = entry->trim_state;
-> -		start = max(start, extent_start);
-> -		bytes = min(extent_start + extent_bytes, end) - start;
-> -		if (bytes < minlen) {
-> -			spin_unlock(&ctl->tree_lock);
-> -			mutex_unlock(&ctl->cache_writeout_mutex);
-> -			goto next;
-> -		}
-> +		if (async) {
-> +			start = extent_start = entry->offset;
-> +			bytes = extent_bytes = entry->bytes;
-> +			extent_trim_state = entry->trim_state;
-> +			if (bytes < minlen) {
-> +				spin_unlock(&ctl->tree_lock);
-> +				mutex_unlock(&ctl->cache_writeout_mutex);
-> +				goto next;
-> +			}
-> +			unlink_free_space(ctl, entry);
-> +			if (bytes > BTRFS_ASYNC_DISCARD_MAX_SIZE) {
-> +				bytes = extent_bytes =
-> +					BTRFS_ASYNC_DISCARD_MAX_SIZE;
-> +				entry->offset += BTRFS_ASYNC_DISCARD_MAX_SIZE;
-> +				entry->bytes -= BTRFS_ASYNC_DISCARD_MAX_SIZE;
-> +				link_free_space(ctl, entry);
-> +			} else {
-> +				kmem_cache_free(btrfs_free_space_cachep, entry);
-> +			}
-> +		} else {
+> Changes in v6:
+>  - Move the fully trimmed check outside of the block_group lock.
+> 
+> v5 is available here: [2].
+> 
+> This series is on top of btrfs-devel#misc-next 7ee98bb808e2 + [3] and
+> [4].
+> 
+> [1] https://lore.kernel.org/linux-btrfs/20191210140438.GU2734@twin.jikos.cz/
+> [2] https://lore.kernel.org/linux-btrfs/cover.1575919745.git.dennis@kernel.org/
+> [3] https://lore.kernel.org/linux-btrfs/d934383ea528d920a95b6107daad6023b516f0f4.1576109087.git.dennis@kernel.org/
+> [4] https://lore.kernel.org/linux-btrfs/20191209193846.18162-1-dennis@kernel.org/
+> 
+> Dennis Zhou (22):
+>   bitmap: genericize percpu bitmap region iterators
+>   btrfs: rename DISCARD opt to DISCARD_SYNC
+>   btrfs: keep track of which extents have been discarded
+>   btrfs: keep track of cleanliness of the bitmap
+>   btrfs: add the beginning of async discard, discard workqueue
+>   btrfs: handle empty block_group removal
+>   btrfs: discard one region at a time in async discard
+>   btrfs: add removal calls for sysfs debug/
+>   btrfs: make UUID/debug have its own kobject
+>   btrfs: add discard sysfs directory
+>   btrfs: track discardable extents for async discard
+>   btrfs: keep track of discardable_bytes
+>   btrfs: calculate discard delay based on number of extents
+>   btrfs: add bps discard rate limit
+>   btrfs: limit max discard size for async discard
+>   btrfs: make max async discard size tunable
+>   btrfs: have multiple discard lists
+>   btrfs: only keep track of data extents for async discard
+>   btrfs: keep track of discard reuse stats
+>   btrfs: add async discard header
+>   btrfs: increase the metadata allowance for the free_space_cache
+>   btrfs: make smaller extents more likely to go into bitmaps
 
-> +			extent_start = entry->offset;
-> +			extent_bytes = entry->bytes;
-> +			extent_trim_state = entry->trim_state;
-
-This is common initialization for both async and sync cases so it could
-be merged to a common block.
-
-> +			start = max(start, extent_start);
-> +			bytes = min(extent_start + extent_bytes, end) - start;
-> +			if (bytes < minlen) {
-> +				spin_unlock(&ctl->tree_lock);
-> +				mutex_unlock(&ctl->cache_writeout_mutex);
-> +				goto next;
-> +			}
+Patches 1-12 merged to a temporary misc-next but I haven't pushed it as
+misc-next yet (it's misc-next-with-discard-v6 in my github repo). There
+are some comments to patch 13 and up so please send them either as
+replies or as a shorter series. Thanks.
