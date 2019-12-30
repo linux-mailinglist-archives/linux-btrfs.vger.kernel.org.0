@@ -2,156 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A18F12CB6E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 01:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1EA12CBA9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 02:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbfL3AqP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Dec 2019 19:46:15 -0500
-Received: from mout.gmx.net ([212.227.17.20]:40177 "EHLO mout.gmx.net"
+        id S1726543AbfL3BiQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Dec 2019 20:38:16 -0500
+Received: from mout.gmx.net ([212.227.17.21]:45085 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbfL3AqO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Dec 2019 19:46:14 -0500
+        id S1726119AbfL3BiP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 29 Dec 2019 20:38:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1577666773;
-        bh=RufrQPdYJgiiRTzgnsacq3EJYWB+6Z65XIihBvZDApY=;
+        s=badeba3b8450; t=1577669894;
+        bh=kQnfDazLWctTBWFgt+yDXm8zYSsKuibee3cqM23cLUc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=C4uT4suzG/zcdqbKjvWo4+rS0cFCThrWYy1nP9Z7QoUrtfkrGcqkBu0wuf2IsOpqx
-         WtYYibQqRBBeu6obfzmETJgnurrtXnqw8HNE09EDV0j//Sxlfg4bSN62dsaT2o4Xii
-         TlqTGv3JvIbA0zSwHIRcURbUh5x3ytiZzJVyK6JE=
+        b=F7PmAsucObIrTIwCS2Osa8B+gTLhHyc1yqYwa39haDmdFro04tWavi9oXkWMFnGqa
+         GGUqW0OCvCy61oP91oEiw6dZyXhU3+0YiPWHOe4pr+I5yuZz1s+HMLfdNhO2HJMb2Y
+         qBNP5x8dzrKlLfURc9dOmWLe26vJafFXDnDcRDWQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdNcG-1jL3wq19Ye-00ZSP9; Mon, 30
- Dec 2019 01:46:13 +0100
-Subject: Re: read time tree block corruption detected
-To:     Patrick Erley <pat-lkml@erley.org>, linux-btrfs@vger.kernel.org
-References: <CAOB=O_jxu5JOe=JiYVW_VZ1rgs9+mdHpAHkscXkc4MVRLrBKDw@mail.gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeU0q-1jMAkr2C1c-00aSgo; Mon, 30
+ Dec 2019 02:38:14 +0100
+Subject: Re: Intregrity of files restored with btrfs restore
+To:     Alexander Veit <list@nezwerg.de>, linux-btrfs@vger.kernel.org
+References: <7fe8e3e1-ebea-7c61-cf3b-a0e0c6493577@nezwerg.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <4bf17941-2ab0-15ca-b4c9-f6ba037624ee@gmx.com>
-Date:   Mon, 30 Dec 2019 08:46:09 +0800
+Message-ID: <8d55e263-3dda-5f9e-77aa-f6b3801d7ea6@gmx.com>
+Date:   Mon, 30 Dec 2019 09:38:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAOB=O_jxu5JOe=JiYVW_VZ1rgs9+mdHpAHkscXkc4MVRLrBKDw@mail.gmail.com>
+In-Reply-To: <7fe8e3e1-ebea-7c61-cf3b-a0e0c6493577@nezwerg.de>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="xFKDV7gdT4HYye51uI0B1MSCdo16J0NoA"
-X-Provags-ID: V03:K1:YmdTu7M5MDI7e2ORemoVc1ZKCykQKD1A+zECOCw2dkgDsM2Itip
- Hld36uaGKqJJiOydkQkdd9Tnpfi7OtbeasKUK+869pYU+/x+cW3XNvfPEeec8sXfanQUAz5
- A7Zty4rCyCcmECumln05Ow1Dc9VZ2m79QDOxjhamLoeJSg6a0tTgAZdNHP+VZI9tjhxzlXP
- emvq6PiSGKy8aRviUN5ew==
+ boundary="9Y3LT0yXrHbP8nTJd9dd372cWcTqsCXIy"
+X-Provags-ID: V03:K1:KNUnWSz7oCvx8uHe/kVhqGV+O3unz2ixmj6n6q01FZ9V7swlTG5
+ eBlHiQNwedzRiRCxOBLH121SiZ91YlXR5QEvNqW0CpNsoI25h7BFYXmoQxchdXTu7VH27DB
+ U03g1LtpwhOcHXg4h1pjUL88tc7zv6hgIADxV54BLuTiXtgeDXMEYOGWMr6LUgLm8+QLY3n
+ ysJvT2WkEsV6hhnEYbU6w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eDwoszmOmuk=:olDeot+1FN969BVvnYLxQE
- NYadgvKqoBH4+OOkflbDmA888PnRssI6sPkDjzwnHO0ERd1XwwC0Y/ay3Fheh8iYfW7oNyelR
- 03LM/3+omy/qWF8ybruj+4mnQ/yyflnpVYaULl4YgB+e1/hDVOSIkFrQoxy560HJik7QeJOVM
- 5hf5jwOWuWFxz4uOWEphCXQmKnVc52ARKgutk6AgwCJ10To9mW+CJ2wEjZLGLZP5xEhbDaa+w
- 2dtMa8RX9rTVkz1/4c5scRfvfwqYS5QySUy+FcOooGdXxkGqFpsB1jg2hcUbBijoNGbLJBTOM
- L4P+UQv+OXvfTZsPtAwEBkTpFQiathkGBEuPdy1mmzydlFFqvt/LZuNeOsfuQlklzXP24Huia
- milzQuDJdsrUCmWXZihB6rHPjXapBMAvXDX22kTorF9MSNzD3lTc5iZhf2mJnkb5bWiWpM67G
- CYY7i+mFlXoKGI9RBSKZ/uloS2P8M4sA77bsxtWfjWpg1ahd6KMZvQov2wVpHKNUc2GsCvHCf
- 7kRvPYfh2IptM7uPLRBmiMSu3mZQLK1aX+goszbFXk6tE/km/jmWYnJLh6jByUB0YURxI/vWz
- /bgrdSuLFfhNls0i/An1imcnKDuykN3MFZ6TWp+Fx0iQs2G3LasEARAdJTsoqF440kzzCeRri
- FXj+vVgJYmYoBY+10PqG+5C8XZvGsgcNhptXS1kNNl+I5K4lulVsW7wrLgyBgdrjZvVBb0iw+
- 0jz2E3s+jHRx7EZrdtYsba/F2C6pvhG07Fw8D2a7+vBU6W1Tcob6NsR5mugRvexuMFZ4bVI1S
- K3kQtOKrY/sSXe+V28gDauzvdg6oBh6W2jLx0gPdXYLANZ6vy24yjUnOleeRV33x9MZbOuA9w
- uAjt6fWNPg6+Ij28a1kcbCCtCb4kIEAXmt1kZSULNizp+xy5AuedXxFN5ZHaYyMS5UEhKWiRT
- yU6zdpIRuKTRZcKu2xCnYX/1vEBUM7nvbBZcbTgqxOq2lbC9DLSq0dVV/g+/buJaSYlu8oZHp
- u7zQO0ADfU0MsRKrlwo0Rhgl3f0/hRqKam5m60E43KN8eGgv6baGXD7lhbNbX2FYmQE02s8PJ
- CVCB3ZOozA5OVmwesza4EwRU+jQ5oPZMwiHUULvNg5ZfYeWbnT26EL/E5JWrgh4LCwx/hCIRN
- ZoDa99B9uubp+uhkZoBo3QZWoggoBHd4p54WGwK2RpHExeb48WsNl431jcnw7JoOtFQpPr5zR
- lCksbkt9DmAoiFLjqDJ+KHhsc7EaqQy9XLkVN3G9uNZaKo65oQJ8m8YDpRGA=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HTIXa2FkyjQ=:tUGwdAodhhUMmT4gdRiTwE
+ TqkKCJuOZaZVq/C1eN+8tQHS2iGxRuJ457KMcriRlZII+WGeIdwDyBtzhWs9A6LFrJ4jKCvi/
+ q4omezJCvuFmv7q2OcdaZEFGSEWeG0myR2bfxKGosP0jxUgW22NLpDMYkV+v1tZLzMB6bhIYd
+ iERu2FYYwz010l8on2+DY8/BwDFm3rgc5r+M0Vo9FQgfeKm5tYFaylOzBI8b4WejAKo9OVvqY
+ agujD6gb9bvTtmN4WMInuKb0bgDeOJJcZy7ru7Y0wV8yz+ntwohHSUJI4jXO5TaiY3d2T9GPO
+ OQZ48xwezl+pTnIdzwbqN8dvC23pWftRNwUsgiHE+VyU3YVpVDD92M/Gr3V3YTOmPikIeBxKR
+ 7IQskF4TNxMBbWeZBhM9tV4I3qSzLIZO7XAOVKbVXKuis2xZETTIOHP7Fwcw0uKMAwe0NJcFL
+ dwyONTv1iXvQoC0fKcOL9DJtFpovJHBsBDuePu2iVKYPPSoaxRCg4JuKeLxJCKZFy4NOsUZYt
+ SpwY+CUglmkH+0ciJu+CbWFF9vIlKrS4TIKF2llx8IFCyC/tzBRvOK5tj8sWY+FyqclzuZW+h
+ z8bpKsEIdTuTFMJ+/McvWAXq+66yPPbDsUjWofQsfOzVWmqijoxvrIxTIpOLnz2O4Oju344Sq
+ ESOYFrK9xuseT9g+O/VAox2egXombK3YFFUKcTOxThHLWcLgmeIQ5SIy9N6/rgHqalV+iLZKC
+ GkbNqdejWnqs4ndAekmCZSBGjjRoPC1WBkth92BIYU64hxmomixc9SavMc4mxszIq9o1A2Hs3
+ t3I1l7TCR75GjiXpjSKZOVdJr13bF0pM/n1fC0MBgRVYSiy2tUcXg2XasfbolVi4HsX3e7kzw
+ asrKhe6oBfDI/qiGUAadY+hlMKOCOOEH0jDguBB/U1ZoDS2uU+0k/ozAoHe+ERNi3BFdrq9OW
+ ZiDE5VO57AgSj6PJbBxsL8UB1n42/+KFZWKpMgTVQOVf2UEsDBuBBdFUuHkpejPxAFpfhS1Fk
+ oAMQOsxqrWgBFXujFQE2/5zvFbb1CGJJ9cu7JV2SvzI0ieEp9ZJBBF++89piDZG/K1BVPnkde
+ pqHl1ZrLqGPTht/hCerCMfq9GfcRqC//fX3OXoecKDdebTFYYbVD2qx+31tQBh0c5McGx7Now
+ LVYT3OUIvbtjkYi3jYv13yVd/dBw/2F58Vb0dFXNplxxNJ+2jvkVZvSiFC1jx8Z+aMobN9b+B
+ VfLBo0J+LYredPdDYZU2nOCYpsmsscA2vjPG6CWIusuHvkIMEjj/bUkGrl3I=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xFKDV7gdT4HYye51uI0B1MSCdo16J0NoA
-Content-Type: multipart/mixed; boundary="MMDeKXfjrA8cr7yH8D5uzqgPpBt75C6QU"
+--9Y3LT0yXrHbP8nTJd9dd372cWcTqsCXIy
+Content-Type: multipart/mixed; boundary="XZcOd6YHbvQKRJsL7zRCzxqZ8PHVy8uRT"
 
---MMDeKXfjrA8cr7yH8D5uzqgPpBt75C6QU
+--XZcOd6YHbvQKRJsL7zRCzxqZ8PHVy8uRT
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/30 =E4=B8=8A=E5=8D=884:43, Patrick Erley wrote:
-> On a system where I've been tinkering with linux-next for years, my /
-> has got some errors.  When migrating from 5.1 to 5.2, I saw these
-> errors, but just ignored them and went back to 5.1, and continued my
-> tinkering.  Over the holidays, I decided to try to upgrade the kernel,
-> saw the errors again, and decided to look into them, finding the
-> tree-checker page on the kernel docs, and am writing this e-mail.
+On 2019/12/30 =E4=B8=8A=E5=8D=886:58, Alexander Veit wrote:
+> Hi,
 >=20
-> My / does not contain anything sensitive or important, as /home and
-> /usr/src are both subvolumes on a separate larger drive.
+> btrfs restore has recovered files from a crashed partition.  The comman=
+d
+> used was
 >=20
-> btrfs fi show:
-> Label: none  uuid: 815266d6-a8b9-4f63-a593-02fde178263f
-> Total devices 2 FS bytes used 93.81GiB
-> devid    1 size 115.12GiB used 115.11GiB path /dev/nvme0n1p2
-> devid    3 size 115.12GiB used 115.11GiB path /dev/sda3
+> btrfs restore -m -v /dev/sdX /dst/path/
 >=20
-> Label: none  uuid: 4bd97711-b63c-40cb-bfa5-aa9c2868cf98
-> Total devices 1 FS bytes used 536.48GiB
-> devid    1 size 834.63GiB used 833.59GiB path /dev/sda5
+> without further options like -i etc.
 >=20
-> Booting a more recent kernel, I get spammed with:
-> [    8.243899] BTRFS critical (device nvme0n1p2): corrupt leaf: root=3D=
-5
-> block=3D303629811712 slot=3D30 ino=3D5380870, invalid inode generation:=
- has
-> 13221446351398931016 expect [0, 2997884]
+> Are the recovered files consistent in the sense that if the file was
+> committed to disk and was not open during the crash, then the content o=
+f
+> the file would be the same as before the crash,
 
-Inode generation repair is introduced in v5.4. So feel free to use
-`btrfs check --repair` to repair such problems.
+Normally crash shouldn't corrupt btrfs, it's either btrfs bug or
+something else causing corruption.
 
-But please run a `btrfs check` without --repair and paste the output,
-just in case there are extra problems which may screw up repair.
+> and that damage to files
+> during the crash (e.g. by random writes) would result in the file not
+> being recovered by btrfs restore?
+
+The restore doesn't check data csum. And by default it reads the first
+copy of data.
+
+If the read succeeded, btrfs-restore just call it a day, thus no data
+csum verification or anything else.
+
+So it's not as good as you would expect.
+
+Anyway, btrfs-restore is the last resort method, before that RO mount
+and various rescue mount options should be tried before it.
+Kernel will always verify data csum.
 
 Thanks,
 Qu
 
-> [    8.243902] BTRFS error (device nvme0n1p2): block=3D303629811712 rea=
-d
-> time tree block corruption detected
 >=20
-> There are 6 corrupted inodes:
-> cat dmesg.foo  | grep "BTRFS critical" | sed -re
-> 's:.*block=3D([0-9]*).*ino=3D([0-9]+).*:\1 \2:' | sort | uniq
-> 303629811712 5380870
-> 303712501760 3277548
-> 303861395456 5909140
-> 304079065088 2228479
-> 304573444096 3539224
-> 305039556608 1442149
+> I could not find a clear statement about this in the man page or the
+> btrfs wiki.
 >=20
-> and they all have the same value for the inode generation.  Before I
-> reboot into a livecd and btrfs check --repair, is there anything
-> interesting that a snapshot of the state would show?  I have 800gb
-> unpartitioned on the nvme, so backing up before is already in the
-> plans, and I could just as easily grab an image of the partitions
-> while I'm at it.
+> # uname -a
+> Linux healer 5.3.0-3-amd64 #1 SMP Debian 5.3.15-1 (2019-12-07) x86_64
+> GNU/Linux
+>=20
+> # btrfs --version
+> btrfs-progs v5.4
+>=20
+> The btrfs file system had been created in a system with a Linux 4.19.72=
+
+> kernel.
 >=20
 
 
---MMDeKXfjrA8cr7yH8D5uzqgPpBt75C6QU--
+--XZcOd6YHbvQKRJsL7zRCzxqZ8PHVy8uRT--
 
---xFKDV7gdT4HYye51uI0B1MSCdo16J0NoA
+--9Y3LT0yXrHbP8nTJd9dd372cWcTqsCXIy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4JSNEXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgQVQgAh2DCMoc7of8Y364D2nyRdzZq
-pz7NTxkRuE3i47XI66cGv48IiY8ZYoaq1ot7gOlRJKzK7uzyySd5qXWmvXI998Zy
-Hz+dNDWr6ibJ8YPDwKqCx3LnAOtKqaCDnqTbkW3a+3iEMVsCQXiluycbBfZJCsgh
-xM2gpWWAM1sy6L8gQ4dEmq7R/gY5J1W/pEOlAxsIBCpxInC4t8vAZtGiF0MixcwF
-699HbEPprnPSNRKuzi0nCP8tNREbm3H659/h3jsLCxfBT6jEgJwUuazIEQb8bMWh
-PXu0BxkhkN/0oi6Zutv9qVGDmvhxo3Yk/7P3oLv72Ndn8R2MaxGrpdFyj0fM5g==
-=XzuQ
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4JVQIXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjzrAgAnWCKNWhwhx7t1/nXx5xS6NL4
+g5ivW516dhpQoukq9ZASodQzxAo27oshS9fMJGGgWVElXJTCm4Gnoaa63VN5rsM9
+auVCK2tC8wkOQaw0AXa8j157b7euX+G5rO65C/NGFDiogN9HfyHQ1Ry0Ku5Z7/JV
+NwR0TKnnTRMJMYrR7ZypLGLnnLy7KL0xvlkKtAGcn4TxUPfen6ywhCSaQDaTtuhh
+U/3MCWt4kuInG8SpCeYyr8LxJBCnpVWoKvAZoQvSRBro8lUSsvIKF0yZzooJg7C3
+XeGXQZj7KGh17NfAVN8tPKoVU5Enn4XogKgyJeKQc1dzo/YmpCTWQXETlT6SPQ==
+=2v/W
 -----END PGP SIGNATURE-----
 
---xFKDV7gdT4HYye51uI0B1MSCdo16J0NoA--
+--9Y3LT0yXrHbP8nTJd9dd372cWcTqsCXIy--
