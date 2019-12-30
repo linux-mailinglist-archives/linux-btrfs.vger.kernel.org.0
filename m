@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA7812D1C0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 17:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C82F12D1D6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Dec 2019 17:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbfL3QOT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Dec 2019 11:14:19 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38602 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbfL3QOT (ORCPT
+        id S1726640AbfL3QRH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Dec 2019 11:17:07 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44459 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbfL3QRG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Dec 2019 11:14:19 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so26576290qki.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Dec 2019 08:14:17 -0800 (PST)
+        Mon, 30 Dec 2019 11:17:06 -0500
+Received: by mail-qk1-f195.google.com with SMTP id w127so26548456qkb.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Dec 2019 08:17:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=vj3HV/eLAKoFMPK+oUmHqSysAIljW0r3YQwv4mdkbcQ=;
-        b=amsbIxJwL3xJXknXu87kWA7oIgSE3m9VK/yB0faMrSOabUGLiFhb1fN9btIBKbHNNu
-         vda2Qdx7UHK/lQ+IypsRtk/3ZvcjSjHWVqoyosh1Gvyv21Cs6VTi0vNlDOjAqmfCG2Ot
-         VltrLBGMpDRUFs/EHhGILYD0FQRlyeZiMUIiOPsuOqxntxThTUMCr9TEplVDVHUy2q5O
-         kWxeFrc25zHEX7kynvhpm2Gzvk6hfoK35ii02dnqP+PnCP6a0dec0pq4ENWCYWqc31Kw
-         J+1ceAfD0lv6MITVmDwPi4BwCHGKbMUF0Ckcw2B51bTjoyQ2DfGiQgXQfNEVumrDX+Jj
-         KJCA==
+        bh=qnR8W4roxRgJ2oXSUjhPddje1GvlLsbG7OBDLEMVtWU=;
+        b=e8roHMtCTpJODWgNu5hzPtjc7ACet7TJ3MXwc6G0TE1xeLbRl6FpzGaqldhPgr3kPd
+         hl4rdR9T3iS9l0Wa/a3PA3N+TuLFjU6FOLtULZbM+hPOafPMkr7QPVY7oF2zAgC95mEM
+         QxeXZMnhQggVrgwkd6+NNHSIlbOwj7c65bAHz6x4RKrVaOTiDMwh5GdM/PwNTgobb1F+
+         r0fxlcz9lEItDxtq+1pMLWIg6qfp6YZqiE1+8TMkd8qRDkmKZX34m3S8kUS5Dpy8isgl
+         zjYnPVDESJowvEYM5PkxmeempW5iv8o/qXVK/JbiIPINxHyjG6/6REUsR4jVrDmm5bH7
+         99Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vj3HV/eLAKoFMPK+oUmHqSysAIljW0r3YQwv4mdkbcQ=;
-        b=lEEhVkNwiXvWbodMwGQXjvbLp/RPfVPrv9eGJHUhXTJby6m63ysBBjU2mWyL9lRNI9
-         A84egbEXzvDFifHXayS6wtY8W7bOwLGVh1oChfedJ1uMrCRrlBakZ2xF2+WME0O9qLJ/
-         XG4p0nkbAxIKlh5fjKIYnBx1tDiAwk9ANeI+TV84WWuuyD29ooZSkRJO66Tdi2sj6N50
-         AwozRFMcuC/h7JXLA2a4T3O2DNKiT9UiY+kTP3KdAC81pszNzfSmjUVQpcgXONRhhszt
-         SBv2ZyG2dhYgxsjCJaZRavCPDgQm6jdSqYTzI+rl5wfdwHl6BkINadBsg/Njqnxa7iWq
-         7FPA==
-X-Gm-Message-State: APjAAAX6Bl4Hw4wtKrseAnciaoAn/l5YzICis8TjJGcmJsYYPru2TnjW
-        WlJasrpe2KoGZ379RKBsBdDy1yccW1mJsg==
-X-Google-Smtp-Source: APXvYqz777ohF8EdAQQFr8tKER+S5EMbYs/LQ3mTDMZJqEff1AckQEelMGYcnPhCBiKWA3mVLDUdXw==
-X-Received: by 2002:a37:bc04:: with SMTP id m4mr56223051qkf.224.1577722456391;
-        Mon, 30 Dec 2019 08:14:16 -0800 (PST)
+        bh=qnR8W4roxRgJ2oXSUjhPddje1GvlLsbG7OBDLEMVtWU=;
+        b=itzT4qfzRQFHGrjuQ7d0UbW7QUts8RAx+M3kdtpoCKZ7fhtJAazpR8BWvDTf0edYcB
+         h/bsBNpWWaNRSPntVDIVDXc+u1iOZBulEW29e9ueb09tTHCHQiqQ+c21nsshuJeGqNO/
+         wSApjbqKVuh7vpU8xpPQ696FsTuMm4DTXf27favBOIvCcWxU9goPCyxo6JWo0NaWqowv
+         S03NhAPnsNOLqNh7k0/btnzvHZnfwjyrZkageBEbCStiDqL04zffqKz+d88tHdg73ynC
+         EmBrfGU0mJb78RTlmkfcIvgrIosy0T1SdeuCgCeZ7g/kEdxriWQ661Kb9y3f3a1eIo9y
+         dq1A==
+X-Gm-Message-State: APjAAAX42AcCGIrY2TVnlxnXLGMgSY8RWAHc4B341XL6NJGgEQlmXd8s
+        KpL8fDdrwOHc21MUYQ4Sx2ytQeF8LunmXw==
+X-Google-Smtp-Source: APXvYqxNCiYkAn2dzeFZSXPG5DMbIRBjoB9Lm0/Nf34i1wHePgGQ+VKpf7x4sUOuxIeJQj6D3DZVgQ==
+X-Received: by 2002:a05:620a:10a7:: with SMTP id h7mr54299099qkk.423.1577722625559;
+        Mon, 30 Dec 2019 08:17:05 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::2e4b])
-        by smtp.gmail.com with ESMTPSA id i14sm12506593qkl.133.2019.12.30.08.14.15
+        by smtp.gmail.com with ESMTPSA id v4sm13857315qtd.24.2019.12.30.08.17.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 08:14:15 -0800 (PST)
-Subject: Re: [PATCH RFC 1/3] btrfs: Introduce per-profile available space
- facility
+        Mon, 30 Dec 2019 08:17:04 -0800 (PST)
+Subject: Re: [PATCH RFC 2/3] btrfs: Update per-profile available space when
+ device size/used space get updated
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191225133938.115733-1-wqu@suse.com>
- <20191225133938.115733-2-wqu@suse.com>
+ <20191225133938.115733-3-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ab05c368-d1ff-1002-0d83-5a8d33973233@toxicpanda.com>
-Date:   Mon, 30 Dec 2019 11:14:14 -0500
+Message-ID: <21f4fadd-f081-6acc-1f79-ca52b68607ec@toxicpanda.com>
+Date:   Mon, 30 Dec 2019 11:17:03 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20191225133938.115733-2-wqu@suse.com>
+In-Reply-To: <20191225133938.115733-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,118 +67,16 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 12/25/19 8:39 AM, Qu Wenruo wrote:
-> [PROBLEM]
-> There are some locations in btrfs requiring accurate estimation on how
-> many new bytes can be allocated on unallocated space.
+> There are 4 locations where device size or used space get updated:
+> - Chunk allocation
+> - Chunk removal
+> - Device grow
+> - Device shrink
 > 
-> We have two types of estimation:
-> - Factor based calculation
->    Just use all unallocated space, divide by the profile factor
->    One obvious user is can_overcommit().
+> Now also update per-profile available space at those timings.
 > 
-> - Chunk allocator like calculation
->    This will emulate the chunk allocator behavior, to get a proper
->    estimation.
->    The only user is btrfs_calc_avail_data_space(), utilized by
->    btrfs_statfs().
->    The problem is, that function is not generic purposed enough, can't
->    handle things like RAID5/6.
-> 
-> Current factor based calculation can't handle the following case:
->    devid 1 unallocated:	1T
->    devid 2 unallocated:	10T
->    metadata type:	RAID1
-> 
-> If using factor, we can use (1T + 10T) / 2 = 5.5T free space for
-> metadata.
-> But in fact we can only get 1T free space, as we're limited by the
-> smallest device for RAID1.
-> 
-> [SOLUTION]
-> This patch will introduce the skeleton of per-profile available space
-> calculation, which can more-or-less get to the point of chunk allocator.
-> 
-> The difference between it and chunk allocator is mostly on rounding and
-> [0, 1M) reserved space handling, which shouldn't cause practical impact.
-> 
-> The newly introduced per-profile available space calculation will
-> calculate available space for each type, using chunk-allocator like
-> calculation.
-> 
-> With that facility, for above device layout we get the full available
-> space array:
->    RAID10:	0  (not enough devices)
->    RAID1:	1T
->    RAID1C3:	0  (not enough devices)
->    RAID1C4:	0  (not enough devices)
->    DUP:		5.5T
->    RAID0:	2T
->    SINGLE:	11T
->    RAID5:	1T
->    RAID6:	0  (not enough devices)
-> 
-> Or for a more complex example:
->    devid 1 unallocated:	1T
->    devid 2 unallocated:  1T
->    devid 3 unallocated:	10T
-> 
-> We will get an array of:
->    RAID10:	0  (not enough devices)
->    RAID1:	2T
->    RAID1C3:	1T
->    RAID1C4:	0  (not enough devices)
->    DUP:		6T
->    RAID0:	3T
->    SINGLE:	12T
->    RAID5:	2T
->    RAID6:	0  (not enough devices)
-> 
-> And for the each profile , we go chunk allocator level calculation:
-> The code code looks like:
-> 
->    clear_virtual_used_space_of_all_rw_devices();
->    do {
->    	/*
->    	 * The same as chunk allocator, despite used space,
->    	 * we also take virtual used space into consideration.
->    	 */
->    	sort_device_with_virtual_free_space();
-> 
->    	/*
->    	 * Unlike chunk allocator, we don't need to bother hole/stripe
->    	 * size, so we use the smallest device to make sure we can
->    	 * allocated as many stripes as regular chunk allocator
->    	 */
->    	stripe_size = device_with_smallest_free->avail_space;
-> 
->    	/*
->    	 * Allocate a virtual chunk, allocated virtual chunk will
->    	 * increase virtual used space, allow next iteration to
->    	 * properly emulate chunk allocator behavior.
->    	 */
->    	ret = alloc_virtual_chunk(stripe_size, &allocated_size);
->    	if (ret == 0)
->    		avail += allocated_size;
->    } while (ret == 0)
-> 
-> As we always select the device with least free space (just like chunk
-> allocator), for above 1T + 10T device, we will allocate a 1T virtual chunk
-> in the first iteration, then run out of device in next iteration.
-> 
-> Thus only get 1T free space for RAID1 type, just like what chunk
-> allocator would do.
-> 
-> This patch is just the skeleton, we only do the per-profile chunk
-> calculation at mount time.
-> 
-> Later commits will update per-profile available space at other proper
-> timings.
-> 
-> Suggested-by: Josef Bacik <josef@toxicpanda.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Looks like you are missing chunk allocation?  Thanks,
 
 Josef
