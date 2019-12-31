@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F4D12D6C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 08:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5611412D6C7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 08:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbfLaHMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 02:12:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46476 "EHLO mx2.suse.de"
+        id S1726170AbfLaHMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 02:12:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbfLaHMa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 02:12:30 -0500
+        id S1725793AbfLaHMb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Dec 2019 02:12:31 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 51BD5B168
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:12:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 72096AD12
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:12:30 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/5] btrfs-progs: check/lowmem: Detect invalid EXTENT_ITEM and EXTENT_DATA generation
-Date:   Tue, 31 Dec 2019 15:12:18 +0800
-Message-Id: <20191231071220.32935-4-wqu@suse.com>
+Subject: [PATCH 4/5] btrfs-progs: check/original: Detect invalid extent generation
+Date:   Tue, 31 Dec 2019 15:12:19 +0800
+Message-Id: <20191231071220.32935-5-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191231071220.32935-1-wqu@suse.com>
 References: <20191231071220.32935-1-wqu@suse.com>
@@ -30,80 +30,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since older `btrfs check --init-extent-tree` could cause invalid
-EXTENT_ITEM generation for data extents, add such check to lowmem mode
-check.
+Much like what we have done in lowmem mode, also detect and report
+invalid extent generation in original mode.
 
-Also add such generation check to file extents too.
+Unlike lowmem mode, we have extent_record::generation, which is the
+higher number of generations in EXTENT_ITEM, EXTENT_DATA or tree block
+header, so there is no need to check generations in different locations.
 
-For the repair part, I don't have any good idea yet. So affected user
-may depend on --init-extent-tree again.
+For repair, we still need to depend on --init-extent-tree, as directly
+modifying extent items can easily cause conflicts with delayed refs,
+thus it should be avoided.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/mode-lowmem.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ check/main.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index f53a0c39..aad30c28 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -2041,6 +2041,8 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
- 	u64 csum_found;		/* In byte size, sectorsize aligned */
- 	u64 search_start;	/* Logical range start we search for csum */
- 	u64 search_len;		/* Logical range len we search for csum */
-+	u64 gen;
-+	u64 super_gen = btrfs_super_generation(root->fs_info->super_copy);
- 	unsigned int extent_type;
- 	unsigned int is_hole;
- 	int slot = path->slots[0];
-@@ -2067,6 +2069,7 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
- 		return check_file_extent_inline(root, path, size, end);
- 
- 	/* Check REG_EXTENT/PREALLOC_EXTENT */
-+	gen = btrfs_file_extent_generation(node, fi);
- 	disk_bytenr = btrfs_file_extent_disk_bytenr(node, fi);
- 	disk_num_bytes = btrfs_file_extent_disk_num_bytes(node, fi);
- 	extent_num_bytes = btrfs_file_extent_num_bytes(node, fi);
-@@ -2074,6 +2077,13 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
- 	compressed = btrfs_file_extent_compression(node, fi);
- 	is_hole = (disk_bytenr == 0) && (disk_num_bytes == 0);
- 
-+	if (gen > super_gen + 1) {
-+		error(
-+		"vainlid file extent generation, have %llu expect (0, %llu]",
-+			gen, super_gen + 1);
-+		err |= INVALID_GENERATION;
-+	}
+diff --git a/check/main.c b/check/main.c
+index 88b174ab..a9a236a4 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -4021,10 +4021,13 @@ static void free_extent_record_cache(struct cache_tree *extent_cache)
+ static int maybe_free_extent_rec(struct cache_tree *extent_cache,
+ 				 struct extent_record *rec)
+ {
++	u64 super_gen = btrfs_super_generation(global_info->super_copy);
 +
- 	/*
- 	 * Check EXTENT_DATA csum
- 	 *
-@@ -4152,8 +4162,10 @@ static int check_extent_item(struct btrfs_fs_info *fs_info,
- 	u64 parent;
- 	u64 num_bytes;
- 	u64 root_objectid;
-+	u64 gen;
- 	u64 owner;
- 	u64 owner_offset;
-+	u64 super_gen = btrfs_super_generation(fs_info->super_copy);
- 	int metadata = 0;
- 	int level;
- 	struct btrfs_key key;
-@@ -4183,6 +4195,13 @@ static int check_extent_item(struct btrfs_fs_info *fs_info,
+ 	if (rec->content_checked && rec->owner_ref_checked &&
+ 	    rec->extent_item_refs == rec->refs && rec->refs > 0 &&
+ 	    rec->num_duplicates == 0 && !all_backpointers_checked(rec, 0) &&
+ 	    !rec->bad_full_backref && !rec->crossing_stripes &&
++	    rec->generation <= super_gen + 1 &&
+ 	    !rec->wrong_chunk_type) {
+ 		remove_cache_extent(extent_cache, &rec->cache);
+ 		free_all_extent_backrefs(rec);
+@@ -7857,6 +7860,7 @@ static int check_extent_refs(struct btrfs_root *root,
+ {
+ 	struct extent_record *rec;
+ 	struct cache_extent *cache;
++	u64 super_gen = btrfs_super_generation(root->fs_info->super_copy);
+ 	int ret = 0;
+ 	int had_dups = 0;
+ 	int err = 0;
+@@ -7939,6 +7943,13 @@ static int check_extent_refs(struct btrfs_root *root,
+ 			cur_err = 1;
+ 		}
  
- 	ei = btrfs_item_ptr(eb, slot, struct btrfs_extent_item);
- 	flags = btrfs_extent_flags(eb, ei);
-+	gen = btrfs_extent_generation(eb, ei);
-+	if (gen > super_gen + 1) {
-+		error(
-+		"invalid generation for extent %llu, have %llu expect (0, %llu]",
-+			key.objectid, gen, super_gen + 1);
-+		err |= INVALID_GENERATION;
-+	}
- 
- 	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
- 		metadata = 1;
++		if (rec->generation > super_gen + 1) {
++			error(
++	"invalid generation for extent %llu, have %llu expect (0, %llu]",
++				rec->start, rec->generation,
++				super_gen + 1);
++			cur_err = 1;
++		}
+ 		if (rec->refs != rec->extent_item_refs) {
+ 			fprintf(stderr, "ref mismatch on [%llu %llu] ",
+ 				(unsigned long long)rec->start,
 -- 
 2.24.1
 
