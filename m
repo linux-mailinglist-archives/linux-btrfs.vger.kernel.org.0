@@ -2,116 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2F812D6EB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 09:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF7412D742
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 10:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725554AbfLaIFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 03:05:15 -0500
-Received: from mout.gmx.net ([212.227.15.15]:55371 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbfLaIFP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 03:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1577779508;
-        bh=urbtCO0mOEIAxMwJXxlfLePJyEfJJ1HZ5uE2r//FHIA=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kU4rGHlejfWz/apQOpVX8kXmyuUlrrfAemuXTr03ubx0JNOeN38H+rko6QzZDht7B
-         lApGuPXf1GXcdWs9EXfSaTo2nSQh43GHFgmjbP7zm5h/FFkIofEfRMidnu0/hEk289
-         odALAwmOBou8j+xq/Fh9B/tXb0RyVHdgMz4nKxEE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.182] ([104.199.231.176]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XPn-1jqBAQ2xbV-014PJb; Tue, 31
- Dec 2019 09:05:08 +0100
-Subject: Re: [PATCH 0/5] btrfs-progs: Bad extent item generation related bug
- fixes
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191231071220.32935-1-wqu@suse.com>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <5a8af1ab-1bca-465b-7c39-6b1dc3a63cf1@gmx.com>
-Date:   Tue, 31 Dec 2019 16:05:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1725989AbfLaJEp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 04:04:45 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:44427 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbfLaJEp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Dec 2019 04:04:45 -0500
+Received: by mail-wr1-f45.google.com with SMTP id q10so34667833wrm.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 01:04:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:subject:from:to:mime-version
+         :content-transfer-encoding;
+        bh=7B/6iRSbJor5yQ4JqhGJbLaqGtqbeiCapzfhfRuMKmk=;
+        b=PtNQv4YnLtrOA9luGAmiFBYypa4btHrciFCNKnTKUHq95Gbsml+Pm9RQu6AicnY0os
+         Ij4PhLUQU2e7j+p4+OD0pzuinY1ztqF6ELXtEXKqcVtPbGj1dZ+ojcfDa8IDFORC4a1/
+         2HaIhWOkCEeMRWnV7Jx9rwxxIuF8snBrCfGav6hqJ21QsQqT6cGjlO8cDJkh4DtyRsJ1
+         J2UlmRJ5sgAca66C0SxApvX3dBDHe6taZz4zkI47mE12u0bFsn2cM6ghwAKi1Kvqy8A3
+         mgqfELMRkN2hQKh6XXWIRtI2WdL8W+68BnDexfQMzIpZkDhWG1Ys2FQlqWxAStFIQIWf
+         yhdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:subject:from:to:mime-version
+         :content-transfer-encoding;
+        bh=7B/6iRSbJor5yQ4JqhGJbLaqGtqbeiCapzfhfRuMKmk=;
+        b=oJ/peB5DtwGcPb/9yPZ1R/qQvm+PW5jzxmtnGLLpxELrzW99ozYtc/uwGgBmLAe4qt
+         WJL3hFBHLHxnZ36T6VwzUw/AFjeRn81oQ3SYVhaqzhTI8TDsvc2NzITDFrYdRI6zUy1j
+         JtStnQW5DYrum7lcyITayB/d1TzVRt+BjsW4Mk1Tsoobou0oCrL4q2i2XOSXizkvDgA1
+         lZf2+QuX9O7QynceM9otkrYzxzubusKxAxFZrAAMM8NEcYiJgXpZqgoBXfDholVaH3FL
+         9Yx73bFpZ0nhMLGur24ujbOtWg5+VzpR4oh3fizXHF6rDza7f01W4ovuC01CG1FnKgtY
+         I8kQ==
+X-Gm-Message-State: APjAAAWSCh32oX5PZGKfPzQ+zPfp7HEzMhXIiTAZFf9mOwvHU6yLWesD
+        GZhDterE7s+/vWUJVtMxR6nm/Vet
+X-Google-Smtp-Source: APXvYqx00sf7wPK4D1/7BIm/5f6CiLTHjzo5nBJxqZGsjunxaIrA1VIP48+rmVfJVcc8bPdK4ndGvg==
+X-Received: by 2002:adf:e70d:: with SMTP id c13mr71306500wrm.248.1577783082849;
+        Tue, 31 Dec 2019 01:04:42 -0800 (PST)
+Received: from [127.0.0.1] (178.165.130.248.wireless.dyn.drei.com. [178.165.130.248])
+        by smtp.gmail.com with ESMTPSA id b15sm1947566wmj.13.2019.12.31.01.04.41
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 31 Dec 2019 01:04:42 -0800 (PST)
+Message-ID: <146bbade48ad7ff8234ab7574e387536@swift.generated>
+Date:   Tue, 31 Dec 2019 10:03:52 +0100
+Subject: Domain net-doc.de
+From:   Hans Weis <whans5002@gmail.com>
+To:     "" <linux-btrfs@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191231071220.32935-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gGtQmCmNWXU6DnTaVqY50fTkxtdhpQ6ql0CC33XpPFsZQZBCILW
- poL+DtB1cqXqtM569JY6nb2UaeEETLaj3AD3QyQMHVf/Sj6v4Io7dqYl7Pu/Eoj92ay1clu
- J8QpXIly8VQBsN4+ZsRMM7d5d/lcyKdsV7nVuyM2/GJe0kEdBlsEAQOAkdtayja/+0LKz2s
- HTeFHBT8R3HYd7t+zcIwA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ucOhTVOCEOc=:QK3lRg/2y14lsFqQvQmXCa
- 5nrpnAsO+stHQg0NkhrqMcfiZ9yohCuEorVNxEBUE1BBolr/DI9Ddmf0s97eqXJLL8N39RtFa
- f23+YdaLGLyiFdaOV1wrOjWlZ2kj2gaJMqQpHj9PweIjXM74ujqBPJGTJE3gpw4ZGTPz5l90z
- +ObS00QHovaF1A+dq7ykRZia2+g5q4Z//yRuBbIpLEn2VUx0s50NqE7W1ox8RyRYtZprvSwxq
- Is2gq5hoFcDBIhIGmhpVQSrk0EhSwsKg97dOhugfrV8JOLrdPP6z71i6n6CKsOl55Zw2HJadJ
- J0AmofP6DfvtnWS4GwzpEkmQ9ZCpxj3dOZ28RRvKIGaIvrttgQ0FxCU2/rQtM0zsMdQqQKlrw
- UJRkazKiXHtCJkdIuZn218jr8haFhhzisOMBJLKq/aGN80z5fGCKtAecZF738kwEFv8qSFCiU
- XsfHAA7/YOm8ucSocmdajgdoQkDGcOWSfLQRDh0/r//E7f3CSkmf0E4loDnzqTwTAwLxrstfe
- xvfZaaNp4cJXHmMUYDTjgFxphNPQcrERmSMkzyw+46rej1u6RWM3CKJci3GmXz8XkL3qJ5tNs
- bawulqphlby6zt7wWSQat5j4LPBWuTK9D7JcEkN0bI57EUutyEz7+AAA397GkpaenRx/6LxvG
- PUz/KFnU4ssH4z2GK2Xidv2RhLu3BrH8UZ9d3At+1Kwgy6JVMxy31rngO3BoUKPuAi1t2HnsL
- yVloi93IxNC/DzDpz8E7U4+GtHNoTthdny/5GtRoQONz3kcG0JG2lWZjSbNnPPVctvDf9HUPV
- 9N9n+EV/i7rUcPmB+ASVmUB3++/iNRYFetO6J/ARswKkWf3ButU2jDkrEur19px25Yb7lXbVW
- Rsr+S2KUQwyRAgrUQHsXCqZSnY2G+zL4x05kqkehaM13j00nMdmto6bP5u2SvpDHHDs8iDkJi
- n8a2fWSVIv3+N2hNHgxNfJCT2gKrOqg5FLllXJniFgHmVySbyHHRCKtU5hMosfRu0s6tQtwIb
- okchTEwbKsEuak/1UWUgcPftH2U5kOievQbo7Mm+QLU0MTELk+ugItuI3VTItowlFoJAOcsey
- 1VMss+OYsXstqsrOw7snocDplbAuV9DYX2vPvafsFdCFQqfTE02fKZ7iFv8nxDiiLfOIskN9M
- xyIZh374xFVwXkOGH9JGhMF6PncDtr+x4iwGoxTwim3K7mKfWZ3SGs2Q/huaTDEmvIiTn61lu
- U97i+4K2nuoZyCcmFtJrIWpoo+TMW8WrjoJ51sj7h0Bbw8mAClST89c89q9o=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019/12/31 3:12 PM, Qu Wenruo wrote:
-> There is an issue reported in github, where an fs get corrupted
-> extent tree initialy, then I recommended --init-extent-tree.
->
-> Although --init-extent-tree indeed fixed the original problem, it caused
-> new problems, quite a lot of EXTENT_ITEMs now get bad generation number,
-> which failed to mount with v5.4.
->
-> The problem turns out to be a bug in backref repair code, which doesn't
-> initialize extent_record::generation, causing garbage in EXTENT_ITEMs.
->
-> This patch will:
-> - Fix the problem
->    Patch 1
->
-> - Enhance EXTENT_ITEM generation repair
->    Patch 2
->
-> - Make `btrfs check` able to detect such bad generation
->    Patch 3~4
->
-> - Add new test case for above ability
->    Patch 5
->
-> Qu Wenruo (5):
->    btrfs-progs: check: Initialize extent_record::generation member
->    btrfs-progs: check: Populate extent generation correctly for data
->      extents
->    btrfs-progs: check/lowmem: Detect invalid EXTENT_ITEM and EXTENT_DATA
->      generation
->    btrfs-progs: check/original: Detect invalid extent generation
->    btrfs-progs: fsck-tests: Make sure btrfs check can detect bad extent
->      item generation
->
+Sehr geehrte Damen und Herren,
 
-Nice fixes.
+Ich dachte mir, ob Sie vielleicht an me=
+iner net-doc.de interessiert sind.
+Ich freue mich auf Ihre R=C3=BCckmeldu=
+ng
 
-Reviewed-by: Su Yue <Damenly_Su@gmx.com>
+Es gr=C3=BC=C3=9Ft Sie herzlich
 
->   check/main.c                                  |  36 ++++++++++++++----
->   check/mode-lowmem.c                           |  19 +++++++++
->   .../bad_extent_item_gen.img.xz                | Bin 0 -> 1916 bytes
->   .../test.sh                                   |  19 +++++++++
->   4 files changed, 67 insertions(+), 7 deletions(-)
->   create mode 100644 tests/fsck-tests/044-invalid-extent-item-generation=
-/bad_extent_item_gen.img.xz
->   create mode 100755 tests/fsck-tests/044-invalid-extent-item-generation=
-/test.sh
->
+Hans Weis
 
+
+............=
+.......................
