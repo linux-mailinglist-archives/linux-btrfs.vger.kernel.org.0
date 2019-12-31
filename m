@@ -2,53 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D7312D99B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 16:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74AA12D9A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 16:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbfLaPER (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 10:04:17 -0500
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:44644 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726659AbfLaPEQ (ORCPT
+        id S1726677AbfLaPKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 10:10:43 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:41921 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbfLaPKn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 10:04:16 -0500
-Received: by mail-ed1-f42.google.com with SMTP id bx28so35410530edb.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:04:15 -0800 (PST)
+        Tue, 31 Dec 2019 10:10:43 -0500
+Received: by mail-ed1-f67.google.com with SMTP id c26so35440245eds.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:10:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version;
-        bh=P22ev2b9aajxz55TKEBObzpD1wZLUdn4BVErOhN0GcA=;
-        b=uKE+JQplxUUKRsDQwZExYP/GARF4DKyieFyxF508Hr/uvAwzSTO9zBUcl+fFEIOlkJ
-         L/QwwbtGtuAIFOhKyYgnpznkV3I9qYsa5nhlBawt0sYAbnK+H9dYHSFeN2E6+re+Gz0w
-         voBmpb0ZLQArYz2qBuBKwIxoJsTAg0safnHqWzrRdIoeI/4Gbg+k/+0EoObEhnx6hAf4
-         +3BKN37WWAbFzuINyEXnD3U2bthKBBnnK8h/K8DWa7F6hMfjGLdkXoxOUJzkjbRfJdFJ
-         tkKnCT5ljMQkC37rprlPPiQOvRUfTPjwNkHxX3ZiUOj6vN4fK4AMdZCWvOkhmScbCWiD
-         NIpg==
+        h=subject:from:to:references:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=B8V6mo+vvU+/EfcCunYp6TjzYOLvdPhoRlfbKqgtxuc=;
+        b=SZPyEo7oBk04uDDeSYRpOmzHCTo2oztQ3bS0BJ9fPepJv7KEErctZ1B841AcpNuFdM
+         3eAH49oUn9g24h9jDTd/HYlOtz6BqDK5bQOi/cf2GkORRgDWpwnzQhyPIqu3HG0nQMsI
+         VoLDg26URQVL2i2CDJexicQuw5mkirUSWPloFBO6VWNLwCzFOkxMRfFQIm6llEVH7Wyq
+         29KjUKJ1v4wvkxSdmyp6u66RRvVJo90qNu3jHzhdkCJNrUl+40MxfE+c59cUWAKoqcjU
+         h3X6gvP9BjrtO5CZeAItp99xC9FduwE+YvwqFJhFApC3FuNPLNYnJkHWFnCoLCz1Lz6X
+         rrVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
-         :user-agent:mime-version;
-        bh=P22ev2b9aajxz55TKEBObzpD1wZLUdn4BVErOhN0GcA=;
-        b=Ta1MeSmwcBccL+R35xj7DV7W0UFzSXUfu1WTBCQTtSc1hQIvs/q97dkOMktLDiZ459
-         P4uvJK7snIxaNQHVc4DOZxhUkcjxjENFH33XzSnUg5FQ7m7lIO5RlE/sDb5taivXxjhP
-         DPW37x2HunkbGPNERVYyy2uD6f8RzvTI/DtW5/6hi5Jox92WLfAyFe7sDi7YzF6JVGpZ
-         mvqrEkQhNP7D3c6MXF4qrM2+TBHQrNhQvGDiwCvgFeXsl3tS+8P7w70kT26Ztzk6DQ9g
-         RnAgyMSWPEINEmlpV/++htDOk19on706VDlOGx/16uTce76DI6Wu85iIIzYCd9FfzND0
-         1KBA==
-X-Gm-Message-State: APjAAAXtl9IYss0522eYkjvxx3pjzSgigN0jHHLxFZVfvA7R19XT2Sci
-        ksxsJN1QPMmItSgU9PPj7hGhboGh
-X-Google-Smtp-Source: APXvYqzKnhauLyt0eZj2p41rI5Ym5EIJrMN+I4JHrOkfjFXCWu12TX5/T4lZKjeXGGWagX3XzjsQ3w==
-X-Received: by 2002:a05:6402:28d:: with SMTP id l13mr74096339edv.236.1577804654318;
-        Tue, 31 Dec 2019 07:04:14 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:references:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to;
+        bh=B8V6mo+vvU+/EfcCunYp6TjzYOLvdPhoRlfbKqgtxuc=;
+        b=krDCo+43aMK8GzpERnlkmuo8ut81po9DI7vETy0lzchndaAz7p7rGzCiNzeJmDIaPH
+         K8eNP8uz+kI7BmjKE28Eeh68/5nyXUSLTtHvpgE5Buz3dQvOX+n9Q9JIlpEwPBKH2G+S
+         dE8CiwYEQnQfyef2S78An9+uWgnPq51trj7D6Gud2IpKO1TcUqhGH4R2UafftMw0n6Bn
+         Z1C04ZpSD1VGzFbehYZMpHDXkM7aPpUIilXvDJeM2cp1fWSx/e9VXxAitOQ0eAk8546q
+         GNJ38hS8BQWz3BFqGBmTA1Hqog4VvgcFcrt1qtjNLTjGLXHB6aCcZUx52Xg8wAymBjmK
+         nxDg==
+X-Gm-Message-State: APjAAAXMiBryM0i44otjYZ1ttX31h+/vhyIKMuq65pnKDzxIju9pKBC8
+        211rufPaBcfWEojechUIIs9S9cZ6
+X-Google-Smtp-Source: APXvYqzSbpXpdkMf7TlHYPlqdjPnvz8lrCn6cE2wPGjYPht7diwnX359uVOE4Do1RJ7HQhpy6YqeBQ==
+X-Received: by 2002:a05:6402:502:: with SMTP id m2mr77387682edv.121.1577805041688;
+        Tue, 31 Dec 2019 07:10:41 -0800 (PST)
 Received: from [192.168.14.56] (mue-88-130-92-235.dsl.tropolys.de. [88.130.92.235])
-        by smtp.googlemail.com with ESMTPSA id q11sm6215529ejt.64.2019.12.31.07.04.13
+        by smtp.googlemail.com with ESMTPSA id x3sm5924787edr.72.2019.12.31.07.10.40
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Dec 2019 07:04:13 -0800 (PST)
-To:     linux-btrfs@vger.kernel.org
+        Tue, 31 Dec 2019 07:10:40 -0800 (PST)
+Subject: Re: repeated enospc errors during balance on a filesystem with spare
+ room - pls advise
 From:   Ole Langbehn <neurolabs.de@gmail.com>
-Subject: repeated enospc errors during balance on a filesystem with spare room
- - pls advise
+To:     linux-btrfs@vger.kernel.org
+References: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
 Autocrypt: addr=neurolabs.de@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBELi5x8RBACTGJvigUyuTnZw57+evWAPnKkUPyc10mfIxxdb9LubuGdu/wY/GNv8JN5x
  LRgTW1a0e2832wwPqNxge5askrwRYqz9upMdZThHV3GwTdd8X+6SQONR9Sh6VPHskMd0lDuJ
@@ -72,103 +74,51 @@ Autocrypt: addr=neurolabs.de@gmail.com; prefer-encrypt=mutual; keydata=
  MJYFrVrMO7BNdxAkitUpJis4lNJskf8ZbtZAX1jSykEnw8FFJHG9nD3sbJPHDRPqbTUwlc3P
  twhIKd8BkbiGDmBDGMMLEiVKCmOvmcXztBCgI4hJBBgRAgAJBQJC4udyAhsMAAoJEKMYFNw/
  P7oRQcsAn2bNrSFKEo+BjRjsop2hLPdhWJJ/AKCmytKxEQy0s1iKiIbshDWFevjd2A==
-Message-ID: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
-Date:   Tue, 31 Dec 2019 16:04:07 +0100
+Message-ID: <7461874b-dc8d-4939-c4ae-fbab486750b3@gmail.com>
+Date:   Tue, 31 Dec 2019 16:10:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
+In-Reply-To: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d"
+ boundary="FB1r5mP2wbQFOQnYHx9eUeop0uXV2sY6C"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d
-Content-Type: multipart/mixed; boundary="Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4"
+--FB1r5mP2wbQFOQnYHx9eUeop0uXV2sY6C
+Content-Type: multipart/mixed; boundary="IKco3ZKV6t2yl5CMa9rA8TLcwunTueuk6"
 
---Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4
+--IKco3ZKV6t2yl5CMa9rA8TLcwunTueuk6
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Excuse me for adding more information in a second mail:
 
-I have done three full balances in a row, each of them ending with an
-error, telling me:
+# uname -a
+Linux leo 5.4.6-gentoo #1 SMP PREEMPT Sun Dec 22 10:27:05 CET 2019
+x86_64 Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz GenuineIntel GNU/Linux
 
-BTRFS info (device nvme1n1p1): 2 enospc errors during balance
-BTRFS info (device nvme1n1p1): balance: ended with status: -28
-
-(first balance run it was 4 enospc errors).
-
-The filesystem has enough space to spare, though:
-
-# btrfs fi show /
-Label: none  uuid: 34ea0387-af9a-43b3-b7cc-7bdf7b37b8f1
-        Total devices 1 FS bytes used 624.36GiB
-        devid    1 size 931.51GiB used 627.03GiB path /dev/nvme1n1p1
-
-# btrfs fi df /
-Data, single: total=3D614.00GiB, used=3D613.72GiB
-System, single: total=3D32.00MiB, used=3D112.00KiB
-Metadata, single: total=3D13.00GiB, used=3D10.64GiB
-GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-
-This is after the balances, but was about the same before the balances.
-Before them, data had about 50GB diff between total and used.
-
-The volume contains subvolumes (/ and /home) and snapshots (around 20
-per subvolume, 40 total, oldest 1 month old).
-
-My questions are:
-
-1. why do I get enospc errors on a device that has enough spare space?
-2. is this bad and if yes, how can I fix it?
+# btrfs --version
+btrfs-progs v5.4
 
 
+--IKco3ZKV6t2yl5CMa9rA8TLcwunTueuk6--
 
-A little more (noteworthy) context, if you're interested:
-
-The reason I started the first balance was that a df on the filesystem
-showed 0% free space:
-
-# df
-Filesystem     1K-blocks      Used Available Use% Mounted on
-/dev/nvme1n1p1 976760584 655217424 	   0 100% /
-=2E..
-
-and a big download (chromium sources) was aborted due to "not enough
-space on device".
-
-I monitored the first balance more closely, and right after the start,
-df looked normal again, showing available blocks, but during the
-balance, it flip-flopped a couple of times between again showing 0
-available bytes and showing the complement between actual size and used
-bytes. I did not observe this behavior any more during balance 2 and 3,
-but did not observe as closely.
-
-TiA for any insights and ideas on how to proceed and a healthy start
-into the new year for everyone.
-
-
-
-
-
---Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4--
-
---2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d
+--FB1r5mP2wbQFOQnYHx9eUeop0uXV2sY6C
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EARECAB0WIQSXTCBs9o76qfz+ccijGBTcPz+6EQUCXgtjZwAKCRCjGBTcPz+6
-ESs5AKCiAKkrDOCjdEET+YLmW7J7MsztOQCdG/tSxX8BKMlLp+Cozal01PcBz0k=
-=34g4
+iF0EARECAB0WIQSXTCBs9o76qfz+ccijGBTcPz+6EQUCXgtk8AAKCRCjGBTcPz+6
+EQWeAKCit/RYVGFc5RivDth7jHxIW0scjwCg2NG3mjEDjVcxcP1dzoJsAiW6kWU=
+=VMqe
 -----END PGP SIGNATURE-----
 
---2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d--
+--FB1r5mP2wbQFOQnYHx9eUeop0uXV2sY6C--
