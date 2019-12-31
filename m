@@ -2,166 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4719212D89C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 13:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D7312D99B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 16:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfLaM0B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 07:26:01 -0500
-Received: from mout.gmx.net ([212.227.15.19]:36211 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbfLaM0B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 07:26:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1577795157;
-        bh=oTR+WzSCGBa2CXz8yYKl8dOYaPvrfIAGzXmnEcFfigg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=SAt7yzsaYCbunRSMltEcgcwuuxzTkgZ0vGQcsJ3aO1liAkKQgqKwV3gXU0XF665os
-         jNGGWszfFglHWTwAXzsDHlzwH78PNT/kcs9TEz4AEgBov/+8elOWGfNpWvBMGLAhOv
-         AAXRiqGXmCI5zaxagZctxbPf+jFxwQ8ZEiq8cT7w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Yv-1jgpHz0yG3-00wDV3; Tue, 31
- Dec 2019 13:25:56 +0100
-Subject: Re: [RFC][PATCH 0/5] btrfs: fix hole corruption issue with !NO_HOLES
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20191230213118.7532-1-josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d47f690d-6c3a-c69b-bcf7-dd1062c2692d@gmx.com>
-Date:   Tue, 31 Dec 2019 20:25:52 +0800
+        id S1727077AbfLaPER (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 10:04:17 -0500
+Received: from mail-ed1-f42.google.com ([209.85.208.42]:44644 "EHLO
+        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726659AbfLaPEQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Dec 2019 10:04:16 -0500
+Received: by mail-ed1-f42.google.com with SMTP id bx28so35410530edb.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:04:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version;
+        bh=P22ev2b9aajxz55TKEBObzpD1wZLUdn4BVErOhN0GcA=;
+        b=uKE+JQplxUUKRsDQwZExYP/GARF4DKyieFyxF508Hr/uvAwzSTO9zBUcl+fFEIOlkJ
+         L/QwwbtGtuAIFOhKyYgnpznkV3I9qYsa5nhlBawt0sYAbnK+H9dYHSFeN2E6+re+Gz0w
+         voBmpb0ZLQArYz2qBuBKwIxoJsTAg0safnHqWzrRdIoeI/4Gbg+k/+0EoObEhnx6hAf4
+         +3BKN37WWAbFzuINyEXnD3U2bthKBBnnK8h/K8DWa7F6hMfjGLdkXoxOUJzkjbRfJdFJ
+         tkKnCT5ljMQkC37rprlPPiQOvRUfTPjwNkHxX3ZiUOj6vN4fK4AMdZCWvOkhmScbCWiD
+         NIpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version;
+        bh=P22ev2b9aajxz55TKEBObzpD1wZLUdn4BVErOhN0GcA=;
+        b=Ta1MeSmwcBccL+R35xj7DV7W0UFzSXUfu1WTBCQTtSc1hQIvs/q97dkOMktLDiZ459
+         P4uvJK7snIxaNQHVc4DOZxhUkcjxjENFH33XzSnUg5FQ7m7lIO5RlE/sDb5taivXxjhP
+         DPW37x2HunkbGPNERVYyy2uD6f8RzvTI/DtW5/6hi5Jox92WLfAyFe7sDi7YzF6JVGpZ
+         mvqrEkQhNP7D3c6MXF4qrM2+TBHQrNhQvGDiwCvgFeXsl3tS+8P7w70kT26Ztzk6DQ9g
+         RnAgyMSWPEINEmlpV/++htDOk19on706VDlOGx/16uTce76DI6Wu85iIIzYCd9FfzND0
+         1KBA==
+X-Gm-Message-State: APjAAAXtl9IYss0522eYkjvxx3pjzSgigN0jHHLxFZVfvA7R19XT2Sci
+        ksxsJN1QPMmItSgU9PPj7hGhboGh
+X-Google-Smtp-Source: APXvYqzKnhauLyt0eZj2p41rI5Ym5EIJrMN+I4JHrOkfjFXCWu12TX5/T4lZKjeXGGWagX3XzjsQ3w==
+X-Received: by 2002:a05:6402:28d:: with SMTP id l13mr74096339edv.236.1577804654318;
+        Tue, 31 Dec 2019 07:04:14 -0800 (PST)
+Received: from [192.168.14.56] (mue-88-130-92-235.dsl.tropolys.de. [88.130.92.235])
+        by smtp.googlemail.com with ESMTPSA id q11sm6215529ejt.64.2019.12.31.07.04.13
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Dec 2019 07:04:13 -0800 (PST)
+To:     linux-btrfs@vger.kernel.org
+From:   Ole Langbehn <neurolabs.de@gmail.com>
+Subject: repeated enospc errors during balance on a filesystem with spare room
+ - pls advise
+Autocrypt: addr=neurolabs.de@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBELi5x8RBACTGJvigUyuTnZw57+evWAPnKkUPyc10mfIxxdb9LubuGdu/wY/GNv8JN5x
+ LRgTW1a0e2832wwPqNxge5askrwRYqz9upMdZThHV3GwTdd8X+6SQONR9Sh6VPHskMd0lDuJ
+ H7lyyjzd0dsO5B3jU2Or8wyFJIT24qJAERNSegjfQwCg2X0wqrydxGacWSG1gSZolOruC5sD
+ /inO3AYHyrqnFcqp8XqVnG2TbMCt80/g+t4B8rfH8s1Tsqu/Ls/H6fj9uyz48+BbcjDcOVEg
+ +BJCvZZYaBvd13ALItjw/hKyjdB5E1hbdPO2Y64RQtXl9lKaQsKwWGvfkO8BY1Q04F3gboGc
+ RSX40rQQ3iXJKg3WtU2eG1TYAmYeA/49+eal3mVe1PWL+UDMKDaY1dgSSS7x2aPgSTU6QUQW
+ A53s79otUUW4Xrpt4/oVUmXiXBpB49kFlQupO3lUzZ/QXf40cQonc+lAwS1dWlvvlnzQrLd1
+ ieG1cg0dDNUp6/lzytUqDyBrnngzcVzqC3rQRrFF7QPCHoH5wZzZsWCuHrQ5T2xlIExhbmdi
+ ZWhuIChzZWNvbmRhcnkgcHJpdmF0ZSkgPG5ldXJvbGFicy5kZUBnbWFpbC5jb20+iGIEExEC
+ ACIFAkwwXnwCGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEKMYFNw/P7oRzk4AoKQY
+ GdPt6oPDixWzH0FC3b9nMl68AKCjxx843gMxpFj625sHcwRBZp8b1bkCDQRC4udyEAgAp++N
+ 0t2qtC3+rzQelEJ75CZXm3g++HsvYloq3/NwyBt3DtDQQ8hKzVBMu1EWv7SrL1JcJsCIKMhi
+ WUz1sn7jRYzjGdS89b+fy49ckvDYmY+/h5A8kIwxJrnk2or3xVKpJe8WJhZFCo+wd46izR1x
+ 4x3mkN70DqOIR2hFS/61mWz0Vl5QgiFbeax7o6Ns+hX3U4doBFbayL9zLajlIGnoIP3g9iwR
+ OZ64NG9iWuDpDfwspKzKMLTSEfBDPBW5liUFpuEAN9Q3/25kU+RtpguaDCFzo8RAfVxPsnWi
+ QnAS2P8+1J2Cvef8mVZkAObWwPD+qC9kpxxuMdthM2KpbBccTwADBQf/X7Y8OqL+DuwWjZ61
+ 4tBx5gTT0qclHaoAoIgZbDHjxhV05Bo8R/buCq4xKqLLor2kN8YyOv6zm3N95zTYOVAaXCLc
+ 9q2H8EvkkHSL7t/iLFHeMVQZIBaQKzwR8eBTo3Tn3Us+/KIlp5XZwHviaDSf5LuGxvP539yM
+ m5rYigml6YeRx7m8BeLzuew3icyRSzhJ+v/93W4ZOmYhOQxTbcHZ+sIA1ZG1zR0HDrQ9pNYP
+ MJYFrVrMO7BNdxAkitUpJis4lNJskf8ZbtZAX1jSykEnw8FFJHG9nD3sbJPHDRPqbTUwlc3P
+ twhIKd8BkbiGDmBDGMMLEiVKCmOvmcXztBCgI4hJBBgRAgAJBQJC4udyAhsMAAoJEKMYFNw/
+ P7oRQcsAn2bNrSFKEo+BjRjsop2hLPdhWJJ/AKCmytKxEQy0s1iKiIbshDWFevjd2A==
+Message-ID: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
+Date:   Tue, 31 Dec 2019 16:04:07 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20191230213118.7532-1-josef@toxicpanda.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
+Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="DzaYmQCeK8ud8ywKxWZfGjc3sQxjvWiYm"
-X-Provags-ID: V03:K1:djAaPvUx0mgBSzzZVDUolnIPs8h5i9TjbctLRNzPIJlEf/YGYZO
- 6GjJwBO0clCiJb8GaewCrpxUK5RsXoa0jpxM0X+d/HjUtq8LrWLMf4J6IZnHF/b87y+SkQ1
- CfYlTRHlB3NwTdS32NMNwB3YWRWJQnq5wJFlKxE65eMEL1zkC8VK+qoyN0CeFwaYbvGL3V6
- aNcYZkuE44fT/vRDdKdkA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VYOsk+gTE1o=:o4HyCFh+I/w7DJayGw1Iv/
- TukDrF34lMD3hFwf7bUdJWAPcyJLnAGhcPNCfqaxmbDUSiQOR99XxC6MLEdDRnsO96C0a7D5D
- q9lZWoEmj3wRYwjuspkuCsjj4uPYDY+aQBa4pJkcFaQSfwo769Y5B/KIA6VRyNmcCEbRAjnTR
- MfQr19C6y5LhzHKeX5xKLUayi1YiS28DOEJYeYQdooZBDfAshyXkz3Wj+91gHwjm7EWPicg+c
- ixqWiNYZyzxLHCPeyZSP3MAaU8Dnqee8vwI8Rf8zIsujG9hhV0CC5YqbajHwMlcBB+tLXmx7L
- LIbJ3A8B4gufE+v3ecIlH5LcPv5Ajq5+D3b4JB9HkrG6NAIj0TlP4b9qzfhhA/zphZtsP+b97
- G+Dk99ArghppMlUrPuIZ9uLwWEfoYi9Cg2YgwksJEDpyxw1LC0jO2e389VhFabq/s/WpmSw8v
- FffwHzXAtumfmECCY5WvLPmsdIzU+HENx/sWWebv81uz5jhLidD8rP4E5soUBwn2ibKqgXX7T
- bNflPwFb+W3IJNi3QJhH39SawwXZmLhlPUCYPFvRbc5coRfUn/vqpaUe538+QFqvOnUIDcyEM
- /iC1pYdAXbkbxv0ClfX73b2VfcfYIpg6yi6A/TIF22leBisIvTC9u7dI2+51ks84fNH9/dYrD
- Wy+r5Ao+gAkFJfmfekqa0e/L27Ippq9NfB6izNfPlZRtuySrIrXJ5hwOleocMBPYevhRO1dpU
- EOUesINwO0bLZuFy+4UL7lA7N4INEi24R5sc5+HK8HR76VZyYKXaQRg8R9VzdVhIUSo10CI0S
- Lx8MxZYEMlPbqOMVUfFb0+SSqiuSWT3nqjle7k6M7dFoLoei5+Bxo7QemQRNZJLXBrp4B+eFM
- o6UUPMFV2ku0Y4d/nVVu+ioE+pjV2OHOZv8335tz8oNWrk2RDSAKXM90qr4FMn5FDJRKry129
- 52E02smeRiJ3xApAPB54EeP51/QgQW3FEDMWiYjqN71eRadqE/KqruwaCL1rWN+6zoQy478Xi
- Ytng4QPSyJ/lnxpquBhajLLO2S5fvmd6yIaGZfX5ODfB9JJYMPgCfAGxkRsxaeTun+Cyut2qM
- gzWG/CVVf/bH4XwXy6ss5NCECzGjuK7JWfLLOt8j4bq6FMGzP8QYObpdj9F0gfiu5MlD++hvX
- 0jU0gVv1aR9OrkfaOPAVlJ1JeF0e7xl9llrbCEmJp4fQQLOBjZ/oUAP1ji/JIaRQaAwz9P96o
- dicG64UPKe9MYOFQV0wlbaSJdlJ8oZccjwSkaHKr8zX3mx0P55chWyh2kMNg=
+ boundary="2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DzaYmQCeK8ud8ywKxWZfGjc3sQxjvWiYm
-Content-Type: multipart/mixed; boundary="TDCbduBS8no5kQVIV1UjaCC3XHefsIjJY"
+--2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d
+Content-Type: multipart/mixed; boundary="Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4"
 
---TDCbduBS8no5kQVIV1UjaCC3XHefsIjJY
+--Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+I have done three full balances in a row, each of them ending with an
+error, telling me:
+
+BTRFS info (device nvme1n1p1): 2 enospc errors during balance
+BTRFS info (device nvme1n1p1): balance: ended with status: -28
+
+(first balance run it was 4 enospc errors).
+
+The filesystem has enough space to spare, though:
+
+# btrfs fi show /
+Label: none  uuid: 34ea0387-af9a-43b3-b7cc-7bdf7b37b8f1
+        Total devices 1 FS bytes used 624.36GiB
+        devid    1 size 931.51GiB used 627.03GiB path /dev/nvme1n1p1
+
+# btrfs fi df /
+Data, single: total=3D614.00GiB, used=3D613.72GiB
+System, single: total=3D32.00MiB, used=3D112.00KiB
+Metadata, single: total=3D13.00GiB, used=3D10.64GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+
+This is after the balances, but was about the same before the balances.
+Before them, data had about 50GB diff between total and used.
+
+The volume contains subvolumes (/ and /home) and snapshots (around 20
+per subvolume, 40 total, oldest 1 month old).
+
+My questions are:
+
+1. why do I get enospc errors on a device that has enough spare space?
+2. is this bad and if yes, how can I fix it?
 
 
-On 2019/12/31 =E4=B8=8A=E5=8D=885:31, Josef Bacik wrote:
-> We've historically had this problem where you could flush a targeted se=
-ction of
-> an inode and end up with a hole between extents without a hole extent i=
-tem.
-> This of course makes fsck complain because this is not ok for a file sy=
-stem that
-> doesn't have NO_HOLES set.  Because this is a well understood problem I=
- and
-> others have been ignoring fsck failures during certain xfstests (generi=
-c/475 for
-> example) because they would regularly trigger this edge case.
->=20
-> However this isn't a great behavior to have, we should really be taking=
- all fsck
-> failures seriously, and we could potentially ignore fsck legitimate fsc=
-k errors
-> because we expect it to be this particular failure.
->=20
-> In order to fix this we need to keep track of where we have valid exten=
-t items,
-> and only update i_size to encompass that area.  This unfortunately mean=
-s we need
-> a new per-inode extent_io_tree to keep track of the valid ranges.  This=
- is
-> relatively straightforward in practice, and helpers have been added to =
-manage
-> this so that in the case of a NO_HOLES file system we just simply skip =
-this work
-> altogether.
 
-Not an expert of this problem, but AFAIK this is caused by mixing
-buffered and direct IO, right?
+A little more (noteworthy) context, if you're interested:
 
-Since that deadly mix is not recommended anyway, can we make things
-simpler by just block any buffered IO if the same inode is under going
-any direct IO?
+The reason I started the first balance was that a df on the filesystem
+showed 0% free space:
 
-Thanks,
-Qu
+# df
+Filesystem     1K-blocks      Used Available Use% Mounted on
+/dev/nvme1n1p1 976760584 655217424 	   0 100% /
+=2E..
 
->=20
-> I've been hammering on this for a week now and I'm pretty sure its ok, =
-but I'd
-> really like Filipe to take a look and I still have some longer running =
-tests
-> going on the series.  All of our boxes internally are btrfs and the box=
- I was
-> testing on ended up with a weird RPM db corruption that was likely from=
- an
-> earlier, broken version of the patch.  However I cannot be 100% sure th=
-at was
-> the case, so I'm giving it a few more days of testing before I'm satisf=
-ied
-> there's not some weird thing that RPM does that xfstests doesn't cover.=
+and a big download (chromium sources) was aborted due to "not enough
+space on device".
 
->=20
-> This has gone through several iterations of xfstests already, including=
- many
-> loops of generic/475 for validation to make sure it was no longer faili=
-ng.  So
-> far so good, but for something like this wider testing will definitely =
-be
-> necessary.  Thanks,
->=20
-> Josef
->=20
+I monitored the first balance more closely, and right after the start,
+df looked normal again, showing available blocks, but during the
+balance, it flip-flopped a couple of times between again showing 0
+available bytes and showing the complement between actual size and used
+bytes. I did not observe this behavior any more during balance 2 and 3,
+but did not observe as closely.
+
+TiA for any insights and ideas on how to proceed and a healthy start
+into the new year for everyone.
 
 
---TDCbduBS8no5kQVIV1UjaCC3XHefsIjJY--
 
---DzaYmQCeK8ud8ywKxWZfGjc3sQxjvWiYm
+
+
+--Cmrt1tFJywc4v3tRneh6LJHLwAIxt6zV4--
+
+--2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4LPlAXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qh54QgAg0qgmqNgQk5h5MzsyjuF7n9k
-HJm+EZvq/7IxCHNGGpRvUvPIooYA2iur0EuhwZbAY6OuXn+6InLdTyQlmJHRJtKD
-7oP/7oqAf/1NV0OH5Uv8kO/8xYalGVwzDFMa5Y7oZuKXSu3wDcbCtTUFf9casimq
-5EKVco2fo7akTo8S205gUpMvCXcIN+8VNs0rKebJqa+WJMC1ekE4OwXxyjrV/ZVA
-R8k4xZ5Qd5smhBQB9mOdMevIZmtzet7NjWUSdQLoEAnrANwZ7MfxxxfCoWFsNGYv
-V97EVrntQtRwognpMm31ZcfYw5UkrFezz+Jmj7D5qcc7byYO5kYT5oAO7pc7EA==
-=1HZW
+iF0EARECAB0WIQSXTCBs9o76qfz+ccijGBTcPz+6EQUCXgtjZwAKCRCjGBTcPz+6
+ESs5AKCiAKkrDOCjdEET+YLmW7J7MsztOQCdG/tSxX8BKMlLp+Cozal01PcBz0k=
+=34g4
 -----END PGP SIGNATURE-----
 
---DzaYmQCeK8ud8ywKxWZfGjc3sQxjvWiYm--
+--2yDYDMMx6QB1yPxe06vpx5OPJL0aiBb1d--
