@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B8212D6C3
+	by mail.lfdr.de (Postfix) with ESMTP id DAAE612D6C4
 	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 08:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725747AbfLaHM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 02:12:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46434 "EHLO mx2.suse.de"
+        id S1725890AbfLaHM2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 02:12:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46452 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbfLaHM0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 02:12:26 -0500
+        id S1725536AbfLaHM2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Dec 2019 02:12:28 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F2331AD12
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:12:24 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8F0DEB168
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Dec 2019 07:12:26 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/5] btrfs-progs: Bad extent item generation related bug fixes
-Date:   Tue, 31 Dec 2019 15:12:15 +0800
-Message-Id: <20191231071220.32935-1-wqu@suse.com>
+Subject: [PATCH 1/5] btrfs-progs: check: Initialize extent_record::generation member
+Date:   Tue, 31 Dec 2019 15:12:16 +0800
+Message-Id: <20191231071220.32935-2-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20191231071220.32935-1-wqu@suse.com>
+References: <20191231071220.32935-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,47 +30,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is an issue reported in github, where an fs get corrupted
-extent tree initialy, then I recommended --init-extent-tree.
+[BUG]
+When using `btrfs check --init-extent-tree`, there is a pretty high
+chance that the result fs can't pass tree-checker:
 
-Although --init-extent-tree indeed fixed the original problem, it caused
-new problems, quite a lot of EXTENT_ITEMs now get bad generation number,
-which failed to mount with v5.4.
+  BTRFS critical (device dm-3): corrupt leaf: block=5390336 slot=149 extent bytenr=20115456 len=4096 invalid generation, have 16384 expect (0, 360]
+  BTRFS error (device dm-3): block=5390336 read time tree block corruption detected
+  BTRFS error (device dm-3): failed to read block groups: -5
+  BTRFS error (device dm-3): open_ctree failed
 
-The problem turns out to be a bug in backref repair code, which doesn't
-initialize extent_record::generation, causing garbage in EXTENT_ITEMs.
+[CAUSE]
+The result fs has a pretty screwed up EXTENT_ITEMs for data extents:
 
-This patch will:
-- Fix the problem
-  Patch 1
+        item 148 key (20111360 EXTENT_ITEM 4096) itemoff 8777 itemsize 53
+                refs 1 gen 0 flags DATA
+                extent data backref root FS_TREE objectid 841 offset 0 count 1
+        item 149 key (20115456 EXTENT_ITEM 4096) itemoff 8724 itemsize 53
+                refs 1 gen 16384 flags DATA
+                extent data backref root FS_TREE objectid 906 offset 0 count 1
 
-- Enhance EXTENT_ITEM generation repair
-  Patch 2
+Kernel tree-checker will accept 0 generation, but that 16384 generation
+is definitely going to trigger the alarm.
 
-- Make `btrfs check` able to detect such bad generation
-  Patch 3~4
+Looking into the code, it's add_extent_rec_nolookup() allocating a new
+extent_rec, but not copying all members from parameter @tmpl, resulting
+generation not properly initialized.
 
-- Add new test case for above ability
-  Patch 5
+[FIX]
+Just copy tmpl->generation in add_extent_rec_nolookup(). And since all
+call sites have set all members of @tmpl to 0 before
+add_extent_rec_nolookup(), we shouldn't get garbage values.
 
-Qu Wenruo (5):
-  btrfs-progs: check: Initialize extent_record::generation member
-  btrfs-progs: check: Populate extent generation correctly for data
-    extents
-  btrfs-progs: check/lowmem: Detect invalid EXTENT_ITEM and EXTENT_DATA
-    generation
-  btrfs-progs: check/original: Detect invalid extent generation
-  btrfs-progs: fsck-tests: Make sure btrfs check can detect bad extent
-    item generation
+For the 0 generation problem, it will be solved in another patch.
 
- check/main.c                                  |  36 ++++++++++++++----
- check/mode-lowmem.c                           |  19 +++++++++
- .../bad_extent_item_gen.img.xz                | Bin 0 -> 1916 bytes
- .../test.sh                                   |  19 +++++++++
- 4 files changed, 67 insertions(+), 7 deletions(-)
- create mode 100644 tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen.img.xz
- create mode 100755 tests/fsck-tests/044-invalid-extent-item-generation/test.sh
+Issue: 225 (Not the initial report, but extent tree rebuild result)
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/check/main.c b/check/main.c
+index 08dc9e66..2dbed091 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -4605,6 +4605,7 @@ static int add_extent_rec_nolookup(struct cache_tree *extent_cache,
+ 	rec->refs = tmpl->refs;
+ 	rec->extent_item_refs = tmpl->extent_item_refs;
+ 	rec->parent_generation = tmpl->parent_generation;
++	rec->generation = tmpl->generation;
+ 	INIT_LIST_HEAD(&rec->backrefs);
+ 	INIT_LIST_HEAD(&rec->dups);
+ 	INIT_LIST_HEAD(&rec->list);
 -- 
 2.24.1
 
