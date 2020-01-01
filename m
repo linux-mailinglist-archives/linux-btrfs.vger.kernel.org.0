@@ -2,119 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C073412DC37
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Dec 2019 23:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB23412DC61
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2020 01:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbfLaW6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Dec 2019 17:58:50 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:44228 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727031AbfLaW6u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Dec 2019 17:58:50 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id BACD855246B; Tue, 31 Dec 2019 17:58:48 -0500 (EST)
-Date:   Tue, 31 Dec 2019 17:58:48 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Ole Langbehn <neurolabs.de@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
+        id S1727093AbgAAANl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Dec 2019 19:13:41 -0500
+Received: from mout.gmx.net ([212.227.17.20]:49269 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727081AbgAAANl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Dec 2019 19:13:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1577837619;
+        bh=uMRR2a/oiGGx6E+8YApqph83AzCtl0FKIGskxled5Sw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hK81txlbpALOj2W/aqPWWhqD69RBgoBBmWRM3SZi2a8+JkHVZtYhd1VjPOKYWeFGJ
+         WViTEWQzuIreB7o04opeXok55vGYZJd6ldy/W7U6Zwl7lAo0Na0webaaX5L9fmy8Sp
+         ylSUT0D1j05PR+yUTNwCNjTe4dHgDo04Zp5hoNOc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s51-1imicn0rsV-001xOz; Wed, 01
+ Jan 2020 01:13:38 +0100
 Subject: Re: repeated enospc errors during balance on a filesystem with spare
  room - pls advise
-Message-ID: <20191231225848.GI13306@hungrycats.org>
+To:     Ole Langbehn <neurolabs.de@gmail.com>, linux-btrfs@vger.kernel.org
 References: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
- <7461874b-dc8d-4939-c4ae-fbab486750b3@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <9689db15-bf00-2a9d-d5d4-7e0a47f7cd1f@gmx.com>
+Date:   Wed, 1 Jan 2020 08:13:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="IbA9xpzOQlG26JSn"
-Content-Disposition: inline
-In-Reply-To: <7461874b-dc8d-4939-c4ae-fbab486750b3@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ecXxbINy8N66OhILJatLDOZPAYXrP87lx"
+X-Provags-ID: V03:K1:N5GE6mhwQhcsvKbVttJE3+rRCjuLDo7pNMelHyf3nU3msqkTzmM
+ x8oMQFNOuMjpx1eSZEyMc/ENYCDsgiTyakfWdCViLi/ZZcGTfUE62DMsCnry4fWiJiQEKxd
+ a5xtRJFeNyzLSxkIu+vwGISftPZU7VqFsHWO6Fd9JYVBHYPAoIb4+Dr+pEEWPvdSa8BjgsT
+ 97Uy8amSpQjZONuEIwaQg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:36Q9w76Qma0=:ygSNeRP4+riFCucB5g4qSB
+ 3hWbREtvEQcP/rUlc6rX7QR6rSox/a2THLF033aesTwtAU/i52Qz1R6qgJpj6M4PaPCb6z4dx
+ QASK7kWJfUSSAh1AGXrifAjUN5SoPxQaCh64MSdlgdrBotB+6khl5ftnnTsGEW1IRNiIa8LTi
+ Nmtl97g2n9x2pAaDYegMhPan4V1x5i8kffzO/nXfae6qEsl+/dN7Gtnjxoh9Zxd91r0q5nipK
+ XrCerGK5KkfbmYKxX1q6n+W1rIrIdnhe4OwFNmUOFLyjhGNZKUBqrKbCy4Ov3+FJ/BAvm/IZn
+ 8M0ppmoQlHU6w0e8MmYc8uR2W4xeIYrNDE582vzT0vYHspjiCg/zmSxvESj+DcUvMPk2rAg6S
+ JV1MrVddumL8EFKOCjgpUzPBdYeSX1gBbuOSYGPm+9xHYKanV1Ux2cTTU5tbCTyfJMkG+uZ7+
+ 8Got/TMDuarCvl3vS7DMyMFgB97CsvudXX7pcGdOflB5DmSeyClk2VATIpxVTJ4mwofsTTpRc
+ BhsYvhhbClMIqSgluat47R96z0+bFm7ZpYmkSmlv+/fwiSTJuNkWFy+rj6OHfun5t25B3myTp
+ D7oKAhfqVgp8psE4/SGndpJbI+0oY1lQqbsUz6Uxn+w9B0jwHu5KdbJSZCd0mLPF3uomxU3C3
+ qc+DurP3LrPdCuTlVfjr22FL/1EY4W68RNVOJhsWSEBXczoxuWc7z3uj6Fd74b5ePt2NPMb40
+ jar4CalLQFsYobHLp91VsIKsjE1y48mZnO/uMeXQuEcx+T5pngIjAt1m0Hl5mRvls+0JPBmDC
+ 8WNzSFpu5TcrxoMI6x9Gzy2Wd6ZJ9XIgq9b7YroonMQzGyCOWP4bxGFkrRnztKOas6Onz+guW
+ Cenw2j4OadwD0Gf8ydPnIGy2FmFpkmZsEZi4ZDoKSQiCU1ebq8on7G8WMd9QFC7Ri/PucwXnJ
+ fCOtlCezSJyEY1CwvgZ8bd7/c9wjgg4p5o3csAYM0q54NUlU5SHKevF6tY30i9Biv8PROQkhF
+ laxn22okX/2Y277IToVcR4fjTqlpCkzjE8LM4JEfM/ldqloIxZrKgUcQSWv+sZHop998GHX72
+ FLBPw91+ZGus3gJacL5npA+D+JCKGaBB14zEr0FVyEcom8DiZhdH9wHWiJC0REVGdbE0d1Wqg
+ Y6k+onj1l0pDJwEVecGo5qqO0BrY88Yb+vU/5trJiFozoTcAckqDPtJvo5BwVfKx7HPTQl7lY
+ uAqhsZLjw83DXxtCuXDFomnTvMAXk9D9ecBbpkxLCirTvZXuMPMw99V1hlsI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ecXxbINy8N66OhILJatLDOZPAYXrP87lx
+Content-Type: multipart/mixed; boundary="QBEXnUZhHCQt0S7YGuKBFpNE3FD3fDGxj"
 
---IbA9xpzOQlG26JSn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--QBEXnUZhHCQt0S7YGuKBFpNE3FD3fDGxj
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 31, 2019 at 04:10:40PM +0100, Ole Langbehn wrote:
-> Excuse me for adding more information in a second mail:
+
+
+On 2019/12/31 =E4=B8=8B=E5=8D=8811:04, Ole Langbehn wrote:
+> Hi,
 >=20
-> # uname -a
-> Linux leo 5.4.6-gentoo #1 SMP PREEMPT Sun Dec 22 10:27:05 CET 2019
-
-That is the most likely problem.  A fix for 5.4's zero-free-space issue
-is still being reviewed on the mailing list.
-
-On btrfs you can run out of space as often as you like, it won't hurt
-data on the filesystem.  A lot of applications are not so robust, though,
-so you may encounter problems with embedded databases and configuration
-data.  The current 5.4 bug just makes the kernel think there is 0 free
-space, it has nothing to do with the filesystem on disk.
-
-Two workarounds:
-
-	- use 5.3.18 instead of 5.4.6
-
-	- use the 'metadata_ratio=3D1' mount option after balancing a few
-	data block groups
-
-In your other mail you indicated you were running a full balance.  Full
-balances are never useful(*) and will make this specific situation worse.
-
-A full balance includes a metadata balance.  The primary effect
-of metadata balance is to temporarily reduce space for metadata.
-Reducing metadata space causes an assortment of problems for btrfs,
-only one of which is hitting the 5.4 free space bug.  For all but a few
-contrived test cases, btrfs manages metadata well without interference
-=66rom balance.  Too much metadata balancing (i.e. any at all) can make
-a filesystem truly run out of metadata space on disk--a condition that
-is sometimes difficult to reverse.
-
-You should run data balances to temporarily reduce space available
-for data.  This will allow btrfs to use more space for metadata,
-which will avoid the bad things that happen when metadata runs out.
-This will also compact free space areas into large contiguous areas for
-future data allocations, which will improve fragmentation and may make
-the filesystem run a little faster.
-
-In your specific case, you probably have to do the first few block groups
-of data balance on a 5.3 kernel until you have enough unallocated space
-to make new metadata block groups.
-
-Going forward, run something like 'btrfs balance start -dlimit=3D9' every
-day (adjust the limit upwards if you write more than 10GB of data per
-day, downwards if you write less).  Or use 'btrfs fi usage' and make
-sure that the 'unallocated' space stays above a few GB at all times,
-and run data balance with larger limits if it's not.
-
-(*) A full balance contains a metadata balance, and you should never
-balance metadata except to convert from one RAID profile to another.
-Older kernels have bugs that lead to overallocation of metadata, but it
-is better to upgrade than to continue using the old kernels with metadata
-balances.  There are some obscure corner test cases where a metadata
-balance is useful, but users will not encounter these by accident.
-
-> x86_64 Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz GenuineIntel GNU/Linux
+> I have done three full balances in a row, each of them ending with an
+> error, telling me:
 >=20
-> # btrfs --version
-> btrfs-progs v5.4
+> BTRFS info (device nvme1n1p1): 2 enospc errors during balance
+> BTRFS info (device nvme1n1p1): balance: ended with status: -28
+>=20
+> (first balance run it was 4 enospc errors).
+>=20
+> The filesystem has enough space to spare, though:
+>=20
+> # btrfs fi show /
+> Label: none  uuid: 34ea0387-af9a-43b3-b7cc-7bdf7b37b8f1
+>         Total devices 1 FS bytes used 624.36GiB
+>         devid    1 size 931.51GiB used 627.03GiB path /dev/nvme1n1p1
+>=20
+> # btrfs fi df /
+> Data, single: total=3D614.00GiB, used=3D613.72GiB
+> System, single: total=3D32.00MiB, used=3D112.00KiB
+> Metadata, single: total=3D13.00GiB, used=3D10.64GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>=20
+> This is after the balances, but was about the same before the balances.=
+
+> Before them, data had about 50GB diff between total and used.
+>=20
+> The volume contains subvolumes (/ and /home) and snapshots (around 20
+> per subvolume, 40 total, oldest 1 month old).
+>=20
+> My questions are:
+>=20
+> 1. why do I get enospc errors on a device that has enough spare space?
+
+A known bug in v5.4, where extra space check in relocation doesn't match
+the new metadata over-commit.
+
+> 2. is this bad and if yes, how can I fix it?
+
+There are patches for that:
+https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D208445
+
+>=20
+>=20
+>=20
+> A little more (noteworthy) context, if you're interested:
+>=20
+> The reason I started the first balance was that a df on the filesystem
+> showed 0% free space:
+>=20
+> # df
+> Filesystem     1K-blocks      Used Available Use% Mounted on
+> /dev/nvme1n1p1 976760584 655217424 	   0 100% /
+
+Another known bug, which we also had a patch for it:
+https://patchwork.kernel.org/patch/11293419/
+
+Thanks,
+Qu
+
+> ...
+>=20
+> and a big download (chromium sources) was aborted due to "not enough
+> space on device".
+>=20
+> I monitored the first balance more closely, and right after the start,
+> df looked normal again, showing available blocks, but during the
+> balance, it flip-flopped a couple of times between again showing 0
+> available bytes and showing the complement between actual size and used=
+
+> bytes. I did not observe this behavior any more during balance 2 and 3,=
+
+> but did not observe as closely.
+>=20
+> TiA for any insights and ideas on how to proceed and a healthy start
+> into the new year for everyone.
+>=20
+>=20
+>=20
 >=20
 
 
+--QBEXnUZhHCQt0S7YGuKBFpNE3FD3fDGxj--
 
-
---IbA9xpzOQlG26JSn
+--ecXxbINy8N66OhILJatLDOZPAYXrP87lx
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXgvSpAAKCRCB+YsaVrMb
-nM27AJsFvaJlRQ589jfHJGQ0AaNo37UYyQCeOsbsmyYb+lpkdTZ99B3zQ8gw5TI=
-=ytOh
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4L5C8XHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qhwZggAkJyJ2dAtrG8ZC1bO/xofxwqK
+K0f8iHKU+otbQU5dp7q3Bce+HhWq9QG9pheqSCV9GkIBzQB+064HjH+yJrtFVBui
+DxSg76FwHuZE7d8qQPOhHZxnrRHmoEWuqyb9GsRMUbtQ/gMMajnWVfEByBif/eSS
+Rzbc2/IL6YFhbTOl1hBKdpKu9D2CATrK1Vo6U5ERq90au/Lvnup1j5DE6j3mVyEP
+oJldFvBV+HkUYYkI5S/AzKD9gvaY0p3eGDm0rf8hGXiTsWssOlE47jKqVdf9C9kB
++fP6vKmfMlMA9h8Gss5UhIbY7VsQjblbVmpqC5jrb7FF2fCSz+mOovnz4m1Q2Q==
+=hV2x
 -----END PGP SIGNATURE-----
 
---IbA9xpzOQlG26JSn--
+--ecXxbINy8N66OhILJatLDOZPAYXrP87lx--
