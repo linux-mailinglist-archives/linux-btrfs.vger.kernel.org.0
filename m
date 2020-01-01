@@ -2,80 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AE112DE71
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2020 11:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C1712DE91
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jan 2020 11:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgAAKFE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 1 Jan 2020 05:05:04 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54805 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgAAKFE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jan 2020 05:05:04 -0500
-X-Originating-IP: 78.245.226.90
-Received: from [192.168.38.25] (vau38-1-78-245-226-90.fbx.proxad.net [78.245.226.90])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4D46E1C0007;
-        Wed,  1 Jan 2020 10:05:01 +0000 (UTC)
-Subject: Re: repeated enospc errors during balance on a filesystem with spare
- room - pls advise
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Ole Langbehn <neurolabs.de@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <495cfb98-7afd-a36d-151b-d7cc58f1d352@gmail.com>
- <7461874b-dc8d-4939-c4ae-fbab486750b3@gmail.com>
- <20191231225848.GI13306@hungrycats.org>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
- mQGiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
- eqCgSKqzLS+WBd6qknpGP3D2GOmASt+Juqnl+qmX8F/XrkxSNOVGGD0vkKGX4H5uDwufWkuV
- 7kD/0VFJg2areJXx5tIK4+IR0E0O4Yv6DmBPwPgNUwCg0OdUy9lbCxMmshwJDGUX2Y/hiDsD
- /3YTjHYH2OMTg/5xXlkQgR4aWn8SaVTG1vJPcm2j2BMq1LUNklgsKw7qJToRjFndHCYjSeqF
- /Yk2Cbeez9qIk3lX2M59CTwbHPZAk7fCEVg1Wf7RvR2i4zEDBWKd3nChALaXLE3mTWOE1pf8
- mUNPLALisxKDUkgyrwM4rZ28kKxyA/960xC5VVMkHWYYiisQQy2OQk+ElxSfPz5AWB5ijdJy
- SJXOT/xvgswhurPRcJc+l8Ld1GWKyey0o+EBlbkAcaZJ8RCGX77IJGG3NKDBoBN7fGXv3xQZ
- mFLbDyZWjQHl33wSUcskw2IP0D/vjRk/J7rHajIk+OxgbuTkeXF1qwX2ybQoU3fDom1pIFBl
- dGFyYW1lc2ggPHN3YW1pQHBldGFyYW1lc2gub3JnPoh+BBMRAgA+AhsDAh4BAheABQkYZsSM
- FiEEzB/joG05+rK5HJguL8JcHZB24y4FAlr/47cFCwkIBwIGFQoJCAsCBBYCAwEACgkQL8Jc
- HZB24y75ogCgqwIQzwpyRpOKyHnlzKoQEagNQDYAn04TrYVf1g3vQifjl+jMawDZtGG/
-Organization: Secte des Adorateurs de Cela
-Message-ID: <015942c2-1bf8-00a5-5091-f967c7db999d@petaramesh.org>
-Date:   Wed, 1 Jan 2020 11:05:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1725989AbgAAKxB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jan 2020 05:53:01 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725884AbgAAKxA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Jan 2020 05:53:00 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 001ApVxH143276
+        for <linux-btrfs@vger.kernel.org>; Wed, 1 Jan 2020 05:52:59 -0500
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2x64fbge8g-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jan 2020 05:52:59 -0500
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-btrfs@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 1 Jan 2020 10:52:57 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 1 Jan 2020 10:52:53 -0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 001AqqXU48103666
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Jan 2020 10:52:52 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 680755204F;
+        Wed,  1 Jan 2020 10:52:52 +0000 (GMT)
+Received: from dhcp-9-199-159-72.in.ibm.com (unknown [9.199.159.72])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3A8C952054;
+        Wed,  1 Jan 2020 10:52:49 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc:     willy@infradead.org, jlayton@kernel.org,
+        ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, dsterba@suse.cz,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RESEND PATCH 0/1] Use inode_lock/unlock class of provided APIs in filesystems
+Date:   Wed,  1 Jan 2020 16:22:47 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20191231225848.GI13306@hungrycats.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB-large
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20010110-0012-0000-0000-00000379A8D2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20010110-0013-0000-0000-000021B5B68A
+Message-Id: <20200101105248.25304-1-riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2020-01-01_03:2019-12-30,2020-01-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=384 lowpriorityscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 impostorscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001010101
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi list,
+Al, any comments?
+Resending this after adding Reviewed-by/Acked-by tags.
 
-Le 31/12/2019 à 23:58, Zygo Blaxell a écrit :
-> A full balance includes a metadata balance.  The primary effect
-> of metadata balance is to temporarily reduce space for metadata.
-> Reducing metadata space causes an assortment of problems for btrfs,
-> only one of which is hitting the 5.4 free space bug.  For all but a few
-> contrived test cases, btrfs manages metadata well without interference
-> from balance.  Too much metadata balancing (i.e. any at all) can make
-> a filesystem truly run out of metadata space on disk--a condition that
-> is sometimes difficult to reverse.
 
-I however was hit by the "dummy zero free space condition" using 5.4 on
-a machine, and the resulting filesystem (on an external HD) then still
-showed 0% free using a 5.3 or a 4.15 kernel on other machines.
+From previous version:-
+Matthew Wilcox in [1] suggested that it will be a good idea
+to define some missing API instead of directly using i_rwsem in
+filesystems drivers for lock/unlock/downgrade purposes.
 
-It however passsed "btrfs check" without any error.
+This patch does that work. No functionality change in this patch.
 
-The thing that fixed it and returned it to a « normal working state »
-has been running a "btrfs balance -m" (on the 5.4 machine) on it.
+After this there are only lockdep class of APIs at certain places
+in filesystems which are directly using i_rwsem and second is XFS,
+but it seems to be anyway defining it's own xfs_ilock/iunlock set
+of APIs and 'iolock' naming convention for this lock.
 
-So I'm a bit puzzled reading that metadata balance is useless when it
-precisely fixed this issue on a FS here.
+[1]: https://www.spinics.net/lists/linux-ext4/msg68689.html
 
-Kind regards (and best wishes for a happy new year).
+Ritesh Harjani (1):
+  fs: Use inode_lock/unlock class of provided APIs in filesystems
 
+ fs/btrfs/delayed-inode.c |  2 +-
+ fs/btrfs/ioctl.c         |  4 ++--
+ fs/ceph/io.c             | 24 ++++++++++++------------
+ fs/nfs/io.c              | 24 ++++++++++++------------
+ fs/orangefs/file.c       |  4 ++--
+ fs/overlayfs/readdir.c   |  2 +-
+ fs/readdir.c             |  4 ++--
+ include/linux/fs.h       | 21 +++++++++++++++++++++
+ 8 files changed, 53 insertions(+), 32 deletions(-)
+
+-- 
+2.21.0
 
