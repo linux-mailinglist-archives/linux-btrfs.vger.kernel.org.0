@@ -2,147 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 248B012E4D8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 11:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E7912E5A3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 12:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgABKNI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 05:13:08 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:41820 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgABKNH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 05:13:07 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 002AAx9f127352
-        for <linux-btrfs@vger.kernel.org>; Thu, 2 Jan 2020 10:13:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=uy7UicLbvKh62MBn0T9yD/rOqRomaCvvSJALHrtEAfg=;
- b=fVQhSJK39yFg6eVxMr3c0sdnou5Rfvc2sd2Wr8evKPEeOjJMW7JXPky+BgeXwfyiekct
- UYzjp0WptIPjZ+ed5J/4rK2+JsEGNgbQjyMxruEBW7JlIwcSzlDPbIY+iLyzqPc0jf2r
- 58qFNUFD0f8OB/TrP+XxXkv0JnmnpTk2pwUa6RndMKToX++KyFL8iVElzlWV++SyXMxO
- 86DYi/EfACk3p8dwne8t5mDZO4epRqVn3sPDLlKimG0y6ch+SWHfRkuDIwL6RsP6uZCs
- QFWpPEciJBnsV6Ix6I6Z1ZYzMpoduBM2lMvzRQWTlWVu1KpSU8qy35duCZIahXX872LF 6A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2x5y0ppmbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 10:13:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 002A96sI019859
-        for <linux-btrfs@vger.kernel.org>; Thu, 2 Jan 2020 10:13:05 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2x8guq6m1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 10:13:05 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 002AD4Q0008235
-        for <linux-btrfs@vger.kernel.org>; Thu, 2 Jan 2020 10:13:04 GMT
-Received: from tp.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Jan 2020 02:13:04 -0800
-From:   Anand Jain <anand.jain@oracle.com>
+        id S1728156AbgABL1x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 06:27:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42506 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728135AbgABL1x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 06:27:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 873B3AB7F
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2020 11:27:51 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: sysfs, create by_pid readmirror attribute
-Date:   Thu,  2 Jan 2020 18:12:48 +0800
-Message-Id: <1577959968-19427-4-git-send-email-anand.jain@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1577959968-19427-1-git-send-email-anand.jain@oracle.com>
-References: <1577959968-19427-1-git-send-email-anand.jain@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9487 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001020092
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9487 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001020092
+Subject: [PATCH v2 0/4] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Thu,  2 Jan 2020 19:27:42 +0800
+Message-Id: <20200102112746.145045-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add existing %pid based readmirror policy as an attribute
+There are several bug reports of ENOSPC error in
+btrfs_run_delalloc_range().
 
- /sys/fs/btrfs/UUID/readmirror/by_pid
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
 
-When read, this returns 0 or 1. 1 indicates currently active policy.
-When written with 1, it sets by_pid as the current active policy and
-when written 0 it resets to the default readmirror policy, which as
-of now is pid as well. For any other value returns EINVAL.
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v2: fs_devs::readmirror is no more atomic_t so update accordingly.
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
 
- fs/btrfs/sysfs.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index e604f292b42b..123d1ef72059 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -355,7 +355,59 @@ static ssize_t supported_checksums_show(struct kobject *kobj,
- 
- #endif
- 
-+#define readmirror_to_fs_devices(_kobj)	to_fs_devs((_kobj)->parent)
-+/*
-+ * Set the readmirror type to BTRFS_READMIRROR_BY_PID
-+ */
-+static ssize_t btrfs_sysfs_readmirror_by_pid_store(struct kobject *kobj,
-+						   struct kobj_attribute *a,
-+						   const char *buf, size_t count)
-+{
-+	int ret;
-+	unsigned long val;
-+	struct btrfs_fs_devices *fs_devices;
-+
-+	fs_devices = readmirror_to_fs_devices(kobj);
-+
-+	ret = kstrtoul(skip_spaces(buf), 0, &val);
-+	if (ret)
-+		return ret;
-+
-+	switch (val) {
-+	case 0:
-+		fs_devices->readmirror = BTRFS_READMIRROR_DEFAULT;
-+		break;
-+	case 1:
-+		fs_devices->readmirror = BTRFS_READMIRROR_BY_PID;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return count;
-+}
-+
-+static ssize_t btrfs_sysfs_readmirror_by_pid_show(struct kobject *kobj,
-+						  struct kobj_attribute *a,
-+						  char *buf)
-+{
-+	int val;
-+	struct btrfs_fs_devices *fs_devices;
-+
-+	fs_devices = readmirror_to_fs_devices(kobj);
-+
-+	if (fs_devices->readmirror == BTRFS_READMIRROR_BY_PID)
-+		val = 1;
-+	else
-+		val = 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR_RW(readmirror, by_pid, btrfs_sysfs_readmirror_by_pid_show,
-+	      btrfs_sysfs_readmirror_by_pid_store);
-+
- static const struct attribute *btrfs_readmirror_attrs[] = {
-+	BTRFS_ATTR_PTR(readmirror, by_pid),
- 	NULL,
- };
- 
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
+
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
+
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
+
+Although per-profile is not clever enough to handle estimation when both
+data and metadata chunks need to be considered, its virtual chunk
+infrastructure is flex enough to handle such case.
+
+So for statfs(), we also re-use virtual chunk allocator to handle
+available data space, with metadata over-commit space considered.
+This brings an unexpected advantage, now we can handle RAID5/6 pretty OK
+in statfs().
+
+Changelog:
+v1:
+- Fix a bug where we forgot to update per-profile array after allocating
+  a chunk.
+  To avoid ABBA deadlock, this introduce a small windows at the end
+  __btrfs_alloc_chunk(), it's not elegant but should be good enough
+  before we rework chunk and device list mutex.
+  
+- Make statfs() to use virtual chunk allocator to do better estimation
+  Now statfs() can report not only more accurate result, but can also
+  handle RAID5/6 better.
+
+v2:
+- Fix a deadlock caused by acquiring device_list_mutex under
+  __btrfs_alloc_chunk()
+  There is no need to acquire device_list_mutex when holding
+  chunk_mutex.
+  Fix it and remove the lockdep assert.
+
+Qu Wenruo (4):
+  btrfs: Introduce per-profile available space facility
+  btrfs: Update per-profile available space when device size/used space
+    get updated
+  btrfs: space-info: Use per-profile available space in can_overcommit()
+  btrfs: statfs: Use virtual chunk allocation to calculation available
+    data space
+
+ fs/btrfs/space-info.c |  15 ++-
+ fs/btrfs/super.c      | 190 +++++++++++++-----------------------
+ fs/btrfs/volumes.c    | 218 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h    |  14 +++
+ 4 files changed, 288 insertions(+), 149 deletions(-)
+
 -- 
-1.8.3.1
+2.24.1
 
