@@ -2,88 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C500212E8E0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B480712E8EA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgABQqm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 11:46:42 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38937 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728280AbgABQqm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:46:42 -0500
-Received: by mail-qt1-f193.google.com with SMTP id e5so35050606qtm.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:46:42 -0800 (PST)
+        id S1728873AbgABQsK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 11:48:10 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35504 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728842AbgABQsK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:48:10 -0500
+Received: by mail-qt1-f195.google.com with SMTP id e12so35090944qto.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:48:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VjzGPXQrffyiY9H7CG7a7Qf43d+SeYrXGXhY2ewL1kY=;
-        b=kXQZfE58xmtnJ90BESFjF59jZDY+YCLxgV5EzEsH8l0SPqF/0D+CsCXN78Yso2x3+k
-         2yRGADPgpMo0oLNAAEOBN5L9cd/zqwvh7gvk5FDhwU6xoupqS5Rn3nCSm39Kn+p1SGzf
-         /Bmuq8enbHL2CBTsWIt+fb2YdiTxzKV8Dtjoskd5gjgAVpVtO6nxaQQLuRPN2YmGuOr5
-         XpQvVvRCdqeAZFJljOgf+vJYtQyE/cHycKZHIssubpA8jlH5yJs/AxB35R1YHHV/lRl6
-         jWbZRc/jniO1RMS4/cWVbEk9V+cZWZfS7z2H34BaspNFUCBpFkpKnsTeyTrTlf9zYyTU
-         SKDA==
-X-Gm-Message-State: APjAAAWMriHfeDTqOxDgOjcccKS/a8rnavBm/is+Pb6klORB+zSgAuuD
-        h2wD2M+mnXecpmXi34aIa9A6KQ4p
-X-Google-Smtp-Source: APXvYqzm5ORXn/UINsMPng5GRvbqS0Z+CCJ5Suw1d6W/vuZbTmmNf6Cg7gd3hbrYPk8r8yUV69yEcQ==
-X-Received: by 2002:aed:2465:: with SMTP id s34mr60316980qtc.158.1577983601640;
-        Thu, 02 Jan 2020 08:46:41 -0800 (PST)
+        bh=7EPPwNi5A9XLHbMLmNHQ+8Cu4lie4l9v3txu2b77QVU=;
+        b=E3z16uQ+cEuszduVs/CxhBJRrWFC1tqvP4mRhkmZ/B7wj31oEmYPnyV6Ek4l7Zd9Ex
+         Tj47YJlJDuUA4tlA1uO/bZiumKIQan/W7loTQMznL7ikQLcZEnJUs2ONoG5CO5XwfiED
+         AMEk0Fet7ogV7bNAGHc/RJZY1093tnyeR1CAeAwA1h8XUCkctS/kM5Pvm145gYHbI4ag
+         fJ2qwQx5g2CpNEU2oSJwWPhuk2Y2NPbXPkoJQipCd0HI5M6iioh3hcDZAw9YVNdH0eRM
+         QxWcTxntqTRMf3GYXZBwiZxSbzxh/nI6iZdpyd+j1P5/ogt5iWhs9oaBPYuYCGURqRWr
+         CuSQ==
+X-Gm-Message-State: APjAAAWSBw/ysOMxGl99dhDmYl1432e9VYmACCBdxvcefkK2RRv8MpcL
+        DnLXJB8E901+fb11rssNqZg=
+X-Google-Smtp-Source: APXvYqz+3SDzr2QDq8wGtpnzmAoXPoPZAe8NXC/JXh5OFhnF2K1tuvBp5B23oC8l3ZXiJ5ISQsKywQ==
+X-Received: by 2002:ac8:704:: with SMTP id g4mr60598248qth.197.1577983689118;
+        Thu, 02 Jan 2020 08:48:09 -0800 (PST)
 Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::1:29bb])
-        by smtp.gmail.com with ESMTPSA id r80sm15278849qke.134.2020.01.02.08.46.40
+        by smtp.gmail.com with ESMTPSA id f97sm17150322qtb.18.2020.01.02.08.48.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2020 08:46:41 -0800 (PST)
-Date:   Thu, 2 Jan 2020 11:46:38 -0500
+        Thu, 02 Jan 2020 08:48:08 -0800 (PST)
+Date:   Thu, 2 Jan 2020 11:48:06 -0500
 From:   Dennis Zhou <dennis@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 14/22] btrfs: add bps discard rate limit
-Message-ID: <20200102164638.GB86832@dennisz-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH 15/22] btrfs: limit max discard size for async discard
+Message-ID: <20200102164806.GC86832@dennisz-mbp.dhcp.thefacebook.com>
 References: <cover.1576195673.git.dennis@kernel.org>
- <42ac06bc7e0689f5cbd1778770b7177d2562140b.1576195673.git.dennis@kernel.org>
- <20191230175846.GY3929@twin.jikos.cz>
+ <396e2d043068b620574892ebfc4b9f5c77b41618.1576195673.git.dennis@kernel.org>
+ <20191230180803.GB3929@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191230175846.GY3929@twin.jikos.cz>
+In-Reply-To: <20191230180803.GB3929@twin.jikos.cz>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 30, 2019 at 06:58:47PM +0100, David Sterba wrote:
-> On Fri, Dec 13, 2019 at 04:22:23PM -0800, Dennis Zhou wrote:
-> > Provide an ability to rate limit based on mbps in addition to the iops
-> > delay calculated from number of discardable extents.
+On Mon, Dec 30, 2019 at 07:08:03PM +0100, David Sterba wrote:
+> On Fri, Dec 13, 2019 at 04:22:24PM -0800, Dennis Zhou wrote:
+> > Throttle the maximum size of a discard so that we can provide an upper
+> > bound for the rate of async discard. While the block layer is able to
+> > split discards into the appropriate sized discards, we want to be able
+> > to account more accurately the rate at which we are consuming ncq slots
+> > as well as limit the upper bound of work for a discard.
 > > 
 > > Signed-off-by: Dennis Zhou <dennis@kernel.org>
+> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 > > ---
-> >  fs/btrfs/ctree.h   |  2 ++
-> >  fs/btrfs/discard.c | 18 ++++++++++++++++++
-> >  fs/btrfs/sysfs.c   | 31 +++++++++++++++++++++++++++++++
-> >  3 files changed, 51 insertions(+)
+> >  fs/btrfs/discard.h          |  5 ++++
+> >  fs/btrfs/free-space-cache.c | 48 +++++++++++++++++++++++++++----------
+> >  2 files changed, 41 insertions(+), 12 deletions(-)
 > > 
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index 98979566e281..1b2dae5962de 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -467,10 +467,12 @@ struct btrfs_discard_ctl {
-> >  	spinlock_t lock;
-> >  	struct btrfs_block_group *block_group;
-> >  	struct list_head discard_list[BTRFS_NR_DISCARD_LISTS];
-> > +	u64 prev_discard;
-> >  	atomic_t discardable_extents;
-> >  	atomic64_t discardable_bytes;
-> >  	u32 delay;
-> >  	u32 iops_limit;
-> > +	u64 bps_limit;
+> > diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
+> > index 3ed6855e24da..cb6ef0ab879d 100644
+> > --- a/fs/btrfs/discard.h
+> > +++ b/fs/btrfs/discard.h
+> > @@ -3,10 +3,15 @@
+> >  #ifndef BTRFS_DISCARD_H
+> >  #define BTRFS_DISCARD_H
+> >  
+> > +#include <linux/sizes.h>
+> > +
+> >  struct btrfs_fs_info;
+> >  struct btrfs_discard_ctl;
+> >  struct btrfs_block_group;
+> >  
+> > +/* Discard size limits. */
+> > +#define BTRFS_ASYNC_DISCARD_MAX_SIZE	(SZ_64M)
+> > +
+> >  /* Work operations. */
+> >  void btrfs_discard_cancel_work(struct btrfs_discard_ctl *discard_ctl,
+> >  			       struct btrfs_block_group *block_group);
+> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> > index 57df34480b93..0dbcea6c59f9 100644
+> > --- a/fs/btrfs/free-space-cache.c
+> > +++ b/fs/btrfs/free-space-cache.c
+> > @@ -3466,19 +3466,40 @@ static int trim_no_bitmap(struct btrfs_block_group *block_group,
+> >  		if (entry->offset >= end)
+> >  			goto out_unlock;
+> >  
+> > -		extent_start = entry->offset;
+> > -		extent_bytes = entry->bytes;
+> > -		extent_trim_state = entry->trim_state;
+> > -		start = max(start, extent_start);
+> > -		bytes = min(extent_start + extent_bytes, end) - start;
+> > -		if (bytes < minlen) {
+> > -			spin_unlock(&ctl->tree_lock);
+> > -			mutex_unlock(&ctl->cache_writeout_mutex);
+> > -			goto next;
+> > -		}
+> > +		if (async) {
+> > +			start = extent_start = entry->offset;
+> > +			bytes = extent_bytes = entry->bytes;
+> > +			extent_trim_state = entry->trim_state;
+> > +			if (bytes < minlen) {
+> > +				spin_unlock(&ctl->tree_lock);
+> > +				mutex_unlock(&ctl->cache_writeout_mutex);
+> > +				goto next;
+> > +			}
+> > +			unlink_free_space(ctl, entry);
+> > +			if (bytes > BTRFS_ASYNC_DISCARD_MAX_SIZE) {
+> > +				bytes = extent_bytes =
+> > +					BTRFS_ASYNC_DISCARD_MAX_SIZE;
+> > +				entry->offset += BTRFS_ASYNC_DISCARD_MAX_SIZE;
+> > +				entry->bytes -= BTRFS_ASYNC_DISCARD_MAX_SIZE;
+> > +				link_free_space(ctl, entry);
+> > +			} else {
+> > +				kmem_cache_free(btrfs_free_space_cachep, entry);
+> > +			}
+> > +		} else {
 > 
-> I think this could be u32, which makes it 4G per second. Byte
-> granularity is IMO not necessary so it could be KiB/sec instead and it
-> would be future safe with maximum limit of 4TiB/sec.
+> > +			extent_start = entry->offset;
+> > +			extent_bytes = entry->bytes;
+> > +			extent_trim_state = entry->trim_state;
+> 
+> This is common initialization for both async and sync cases so it could
+> be merged to a common block.
+> 
 
-Sounds good, done.
+I removed the chain initialization and moved the common out.
+
+> > +			start = max(start, extent_start);
+> > +			bytes = min(extent_start + extent_bytes, end) - start;
+> > +			if (bytes < minlen) {
+> > +				spin_unlock(&ctl->tree_lock);
+> > +				mutex_unlock(&ctl->cache_writeout_mutex);
+> > +				goto next;
+> > +			}
