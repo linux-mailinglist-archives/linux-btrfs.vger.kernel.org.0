@@ -2,150 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B04B12E603
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 13:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E8B12E62B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 13:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgABMHI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 07:07:08 -0500
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:49346 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728205AbgABMHH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 07:07:07 -0500
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 89511A4130; Thu,  2 Jan 2020 12:07:05 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1577966825;
-        bh=Sxgqu4Av868l106pLwWt7xgHPCQc9iF1V25a08yfJLc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=DZEiPqKXBFtkWdmpEAMJi2MrlXAcRMw5kl38CktQMZnqO/GV8vTsxfdpHL6OryMHK
-         rppUZYTdvlxPKkxWgElmrFvScOxW21dRJt9Ew7V4VMLdsgDPd9uCvKIpZU/c7LFPYM
-         inDKMNKqfR9GIWDLgQhDN89P/J0vFaem+xxbSbY+nnM0SCVMpF7gHJO6bABzhe3P34
-         8jZpy0h4c1LuMc+itHe1tO988fD0wgYh6FmxR0F0kuLg1xYAy3BkqmTNo0z1MMG2Ud
-         yyCQIrNM2yY8GmEMfwaV2zDpviTuv995MQC4g7FZSYBseIlDK+wzos/rFEG+dMXGz9
-         FQrqfkPv+B/ug==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 9E4C59C638;
-        Thu,  2 Jan 2020 12:07:02 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1577966823;
-        bh=Sxgqu4Av868l106pLwWt7xgHPCQc9iF1V25a08yfJLc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=STL4WsIVmAEtc4DwRgVeYa5E9wEtvpSUCcL6zXBg6PEbnBzUSnDjmoESMKynWz+y/
-         /e3PlIlKzjasXkOzHQuT34klcf6o5Uc+2T9Qm6RiYEmFvc0M7PM1lP6LbtzQ7wkQ26
-         9rihATt6kb1HkIwLIAc4aC4HO7T3+GERc+CfO2IsBEu/AokzcjIKqgI7LOtdDsE3yt
-         S8Pt6MWC8+h045m8bi78860Q1u2xfCAKJv2K4vSoKiAKzSw5e9ZY/E5ts0Sky9DSn8
-         VmE5picNb/pqdBXp5BvxTsf6WSHDNo/N8JgiD5XZGJnRcrFRJiTAud4t7zM1zCjyPv
-         IU6dZRqXsYHYw==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id C908C9558F;
-        Thu,  2 Jan 2020 12:07:00 +0000 (GMT)
+        id S1728294AbgABMed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 07:34:33 -0500
+Received: from mout.gmx.net ([212.227.17.22]:39225 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728274AbgABMed (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 07:34:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1577968468;
+        bh=2+QaiiLy1y89hbY81H5pF4KDtsluAaMEvIGp4wVgU9Y=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=IvTVawZNVCPfuurY8HideOtAOjNqgpVvkig43FXAjJk5KgFcQcFjxKdvXbAl3IyS4
+         q5dmE66igOw6JQ8EfuVXCHfvxvKrV5xUPy05yBov9/4OMAaU1ytS/tzQLv91i9TpDX
+         dZDVCmIfz7gzps2NAxFrYSzO5t5PtXvBn2wXBzFI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwwdf-1jg58a0x7z-00yQyo; Thu, 02
+ Jan 2020 13:34:27 +0100
 Subject: Re: Interrupted and resumed scrubs seem to have caused filesystem to
  go readonly (EFBIG error)
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+To:     Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
 References: <f15c0d2f-df61-17fc-667c-2b0eb5674be2@cobb.uk.net>
  <7798d1f5-d54d-e756-973c-f2ebfa456315@gmx.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <09556f2c-be43-1363-ccbe-065c88f8d5c5@cobb.uk.net>
-Date:   Thu, 2 Jan 2020 12:07:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <09556f2c-be43-1363-ccbe-065c88f8d5c5@cobb.uk.net>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <e481748b-d31a-e9a5-8532-e3e77188cbe3@gmx.com>
+Date:   Thu, 2 Jan 2020 20:34:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <7798d1f5-d54d-e756-973c-f2ebfa456315@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <09556f2c-be43-1363-ccbe-065c88f8d5c5@cobb.uk.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ccVHDrTJtaVT20An7qQL3rhpIdSqZNSqH"
+X-Provags-ID: V03:K1:dgdTnP6Vh42l98STM4jY/bh99CYzhsiunR1sfQAutAK+htSJHug
+ 3uM2ndP6+M+U3lYRl3RgLrhnKVRx4Z6BofoPjavFnTg0ugVP4O3KRGHD7e5I08+aoPCNyBQ
+ b32ggvDfsJSv2VTMMuolI9Yet5hIa1JnIHV3YTYdP4uj1bF0SXmjfSDbb+OVwXM7tQ86ooQ
+ PdmWdkrUyVHAIkJRKJgZA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sLfEPqaSk1M=:JDM69GV2CDOlA2Gq674xOn
+ Xj0RvlMJiV9jMhJWv7IgPhnk6HRqPxKGC9NwS6AobvZ28W/X/qQ5/+2N+WySVzg0/PjSeqLJl
+ 9uQjxuHKdLgQZCinIljukyl3HUySevlPardh0riqofQVG0REz+9PBsnNZZ6nTtFGCt0u3+qrK
+ 1x575Uda5ZZWKSTkcghEwK4gnjFdSRL9iAx/5OwiUWmiB5rV1uLDzUXZG5D6xRUJ6DJ7av8FD
+ 79JpowoIyAYXI4FGw8NQd59JYXJQvtUUQT+NWQed8xkNwIEijeAn1ml1dRNYXssKy9pGgzA+b
+ yKAmzDFKF/Kl+TrkQfG341m4uztVHLN+2PDHCnTR2v7CJ4VrIaVRGFVa9aCGPurMfiPLQWgLk
+ wo41nljof8BiblFRXbEvn5B01Lu96mjO0/15sDb1d852m+giiRAqFzGlprC+eqoqOPsgJ44ym
+ 8BeW9wAxMTS38wOu//7E37WacivVWtyNsDLBVLUTFF8Y4mJqAoGqrCY+NsJSgz4ERQlxcd7Nx
+ dWFM6QA6AHsIgDJAtIq62J9qAJU+GeNhJurWNBHeWPRA7hAHNcs7V4GaFl7Np0yeJOywX/Vvx
+ YZsVp8ut2qj/VFDWB818QivhRF49jPV2kZ1LJIKevyGwi8KLevcC7dWeGHe5Nu7ziwAdIORWD
+ v3Hql5SCccoS+XSZmHw3n4dnrOwC9J9hndM2ZTJbVglhFDf27N5WZ6zP2XckfonyAtzaVWxb9
+ YaEiTG3gyW9sUiIEbOBH5aGkDr036+rrPsUKzI9OXn+woeT2Kd708N224V/fF6GxliAb65aeC
+ a+cUm+H3IcQXdKlZF7kUBJQObKnjWCTXufCLBWNQMdteXlPsU1nnz7YxlGARlog1oU4IrktGa
+ UadUQqKZ6EZ4+MSN6qE6l51WZQ/0bZPtm5X7/ETiSiDKbn93ShE5v7qGUlJl8OUOohodaZyCm
+ GeDM8wONkLSX9YD0Bcp3Eyd11RJ5htyTorwBOYxINfVmiKUqXWfzig5xcYJPCfMM8D0GHaeCo
+ RDgPsdrTbcy+mHrq9BJCCzPK5tE6AYx3dGaHlUridEAkWxmbnhmzPzdiZy9nAQ8zKwUFowpml
+ BQWVNmYcrTn7SzOSekpjpFUMpdJwedPXQ0KZjGygExMfAcXXyGgH151uq3+fxPaP7d3VspkBh
+ nk8mruNioEmlmsPPEtm0iXo7bGwPmAEjxl7wVrQFlGiOEvsfGANfFrak1qrhl8bs9Sa51LuWU
+ n+02+/weD4ecW0s8c4TrHG6MAZB+HgC83z0t2coSIe0EuicudYPfOFbSe364=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/01/2020 01:26, Qu Wenruo wrote:
-> 
-> 
-> On 2020/1/2 上午7:35, Graham Cobb wrote:
->> I have a problem on one BTRFS filesystem. It is not a critical
->> filesystem (it is used for backups) and I have not yet tried even
->> unmounting and remounting, let alone a "btrfs check".
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ccVHDrTJtaVT20An7qQL3rhpIdSqZNSqH
+Content-Type: multipart/mixed; boundary="j1jxtR6nfyFXafTgd7nJPVyPCRlYLoiWn"
+
+--j1jxtR6nfyFXafTgd7nJPVyPCRlYLoiWn
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/1/2 =E4=B8=8B=E5=8D=888:07, Graham Cobb wrote:
+> On 02/01/2020 01:26, Qu Wenruo wrote:
 >>
->> The problem seems to be that after several iterations of running 'btrfs
->> scrub' for 30 minutes, then pausing for a while, then resuming the
->> scrub, I got a transaction aborted with an EFBIG error and a warning in
->> the kernel log. The fs went readonly, and transid verify errors are now
->> reported. The original log extract is available at
->> http://www.cobb.uk.net/kern.log.bug-010120 but I have pasted the key
->> part below.
-> 
-> EFBIG in btrfs is very rare, and can only be caused by too many system
-> chunks.
-> 
-> The most common reason is the chunk pre-alllocation for scrub, which
-> also matches your situation.
-> 
-> There is already a fix for it, and will land in v5.5 kernel.
-> It looks like we should backport it.
+>>
+>> On 2020/1/2 =E4=B8=8A=E5=8D=887:35, Graham Cobb wrote:
+>>> I have a problem on one BTRFS filesystem. It is not a critical
+>>> filesystem (it is used for backups) and I have not yet tried even
+>>> unmounting and remounting, let alone a "btrfs check".
+>>>
+>>> The problem seems to be that after several iterations of running 'btr=
+fs
+>>> scrub' for 30 minutes, then pausing for a while, then resuming the
+>>> scrub, I got a transaction aborted with an EFBIG error and a warning =
+in
+>>> the kernel log. The fs went readonly, and transid verify errors are n=
+ow
+>>> reported. The original log extract is available at
+>>> http://www.cobb.uk.net/kern.log.bug-010120 but I have pasted the key
+>>> part below.
+>>
+>> EFBIG in btrfs is very rare, and can only be caused by too many system=
 
-Thanks Qu. I will wait for that kernel, and maybe stop my monthly scrubs
-(although my several other btrfs filesystems did not have a problem this
-month fortunately).
+>> chunks.
+>>
+>> The most common reason is the chunk pre-alllocation for scrub, which
+>> also matches your situation.
+>>
+>> There is already a fix for it, and will land in v5.5 kernel.
+>> It looks like we should backport it.
+>=20
+> Thanks Qu. I will wait for that kernel, and maybe stop my monthly scrub=
+s
+> (although my several other btrfs filesystems did not have a problem thi=
+s
+> month fortunately).
 
-I am getting transid errors:
+And the problem will normally not impact the fs, as newly created empty
+system chunks will be soon cleaned up.
 
->> Jan  1 06:51:56 black kernel: [1931271.801468] BTRFS error (device
->> sdc3): parent transid verify failed on 16216583520256 wanted 301800
->> found 301756
+>=20
+> I am getting transid errors:
 
-I presume 301800 is the transaction which failed and caused the fs to go
-readonly. I don't suppose it is likely I could revert the whole fs to
-the state of the last successful transaction is there?
+This is not a good news. And in fact it's normally a deadly problem.
 
-It is not a big problem: the fs only contains backup snapshots (not my
-only backups!) although it would be nice to recover the historical
-snapshots if I could (I used them to research a bug I reported to debian
-just the other day!).
+>=20
+>>> Jan  1 06:51:56 black kernel: [1931271.801468] BTRFS error (device
+>>> sdc3): parent transid verify failed on 16216583520256 wanted 301800
+>>> found 301756
+>=20
+> I presume 301800 is the transaction which failed and caused the fs to g=
+o
+> readonly. I don't suppose it is likely I could revert the whole fs to
+> the state of the last successful transaction is there?
 
-Regards
-Graham
+This means some tree blocks doesn't reach disk.
+It can be deadly, or just a side effect caused by the transaction abort.
+
+>=20
+> It is not a big problem: the fs only contains backup snapshots (not my
+> only backups!) although it would be nice to recover the historical
+> snapshots if I could (I used them to research a bug I reported to debia=
+n
+> just the other day!).
+
+I'm afraid this depends on where the corruption is.
+
+If it's just caused by that EFBIG error, and btrfs check reports no
+error, then it's just temporary problem caused by transaction abort.
+
+
+If it's in extent tree, it only affects mount or certain write
+operations, but if you can mount the fs, it should be OK to read out the
+whole fs.
+
+If it's in csum tree, it will affect certain data read, other than
+mostly OK.
+
+If it's in subvolume trees, some directories/files can't be accessed.
+
+So, please run a btrfs check on the unmounted fs to verify what's the cas=
+e.
+
+Thanks,
+Qu
+
+>=20
+> Regards
+> Graham
+>=20
+
+
+--j1jxtR6nfyFXafTgd7nJPVyPCRlYLoiWn--
+
+--ccVHDrTJtaVT20An7qQL3rhpIdSqZNSqH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4N408XHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qhipAf+LKVn+3jSeMZVcB8qqfWgtLtz
+ZHsODriTEVSmaVIjUJtg5LtDDHLcKUIpSFpAkLU3NUHZnVioZexa0wSr8whOuAbV
+upcXdQOC5lJWX4+XLL5QNT+ldEPSMe1IT4neCRBudsc8kgExqa0hZb2ekd1ECMr4
+QeifQOsatFhfkC1w9PUlj+cHYrHe1dlVgSaV5oCWEoQvQrpcWWHMwEef7r1slfoX
+LdlM8Lcjx5a330rW+PhuyKkro7NjrfhD7D/hRRolwMLgyrCzSOhgIb6YJFKv+4QD
+shszn7NLsweEZz5aC4ORpANiQSuaNZkz5PdsdZA/jrHyIwecvtbQQEN3G/VuEQ==
+=SdwE
+-----END PGP SIGNATURE-----
+
+--ccVHDrTJtaVT20An7qQL3rhpIdSqZNSqH--
