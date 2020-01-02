@@ -2,61 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F4912E89D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFD812E89E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgABQUs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 11:20:48 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44165 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgABQUr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:20:47 -0500
-Received: by mail-qk1-f196.google.com with SMTP id w127so31697580qkb.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:20:45 -0800 (PST)
+        id S1728803AbgABQVM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 11:21:12 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:35747 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgABQVM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:21:12 -0500
+Received: by mail-qv1-f66.google.com with SMTP id u10so15108215qvi.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:21:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=No1HWxNXIZLuXkmhCqpAdNeB8m1n3AHhzYJ6CjDjGvs=;
-        b=t6qrDsOxQiSQYIOIFb8qawyg1OfbJMqp/Rk8Ni8on1MEze1HqTBO2rm5q/8BJztaGP
-         XDpPzyG2okWBxHGZ2XGZ+s/WcDCOE1gR5L9oAoOVCuh5tIm5RnYwRYHEe9m5HI/2hlJu
-         0eXXV3dwv5uC23JOB8HhxqYz/EfGrRILd5fyYfmtz3+J6k2atWoxmQRtc5UFrTjoVY3W
-         +nlt35o9VVyYOm9IcFG8yTnd8HO+qHgTSE95sj8+il3pofDWdYkHC4xb4dvbvFvYKUyp
-         Xeo03TeyMZZksw1C9GkOVQHELwZyNQrDBLUCLFwxzqaC4iJ/4ibbrysj/cYcXXajF/Ch
-         dLzg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7cb7VRoak0SUrJ5ehzck1G1wfwEqLR0OmtNuwD2MYCU=;
+        b=b0zR3HwXBG2+qyhg0ky8rIBB8etkvz5YotXu/aWVaSjhsg/rvMiQcfloRDWazfrHYY
+         CfmQfAFkfyA8b7BETtR6Qrvnf/53gsu+QzA2sREi6KMj4LdFr8mNpGlVmEKrGKs0H2fH
+         FMR1Fb33SgFABljUWxyCEAF03+rrVu0Vgmj4U4F7f97WTrEaEzQHPokSscKL+ENMoJpS
+         vBWcXflAhWAZ7YgnScaKK5dJ0bWG5WFvPnoiRUyhzIQS1bDetbh3VisD2FQhv50bxgf1
+         bSsaF1miUl135t1ZBWPpCbBfGTuqf2VetaiCo/tmbM3k31WVtycaP2dNXoQ663q5fjFR
+         YW0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=No1HWxNXIZLuXkmhCqpAdNeB8m1n3AHhzYJ6CjDjGvs=;
-        b=Tismgyxu9V/FkgyNccJZHrln960LTKR96l0JrL+h7JxcwBJBnBgvM7t98VRoOcesMc
-         pyIsNz99Gn5WWQtsVUjGKiNqXBVPyld2azOb8+FcqPWrw9WWZaW6cKhC5Ea9ib/cWo5e
-         nnSA8IjIp9rtDRHjKXf0KbiweaL35jSddt9Eg1XwkO5N6on4fw9UywaarXQ8Z2ANsrcb
-         LZDgikSZdqnbzyeDKAStBrW0+YT7bH0A/Cpbvid/6UYTy3EXaunSzgsk2mvRgfTtHdeF
-         RdPe/GthyboNGhkvxOlZpLgoYUOnOcy0lXnttT9dD3KWpGx2wZryaiP7s/aqpV4z7I98
-         vpcQ==
-X-Gm-Message-State: APjAAAXLeDS13BIOvEJNacFZVbMRZB5CZ9cRvmZs14m47ijZukSzXUVI
-        LZR6O/NCqQexiDlZwSU9wYnD75U0geGfkQ==
-X-Google-Smtp-Source: APXvYqyXGTC9K2+uS9SB2Zs1JZCwXhBGH/VjR0eevksAs0oZRcxhz+Fhe5smP8bFCvpbGITuC/5YZw==
-X-Received: by 2002:a37:693:: with SMTP id 141mr66462361qkg.134.1577982045077;
-        Thu, 02 Jan 2020 08:20:45 -0800 (PST)
+        bh=7cb7VRoak0SUrJ5ehzck1G1wfwEqLR0OmtNuwD2MYCU=;
+        b=Ke2DGunkkF+6JZMrD5d6i64g/sjMEWWpy7OgDDndAWJjO59UsYFbm6IJgJbDZhPZiz
+         +lX7ASpwSEPhBLVKQxgRdotJ5rkudqm1/JTyCZmX97+ocnQZ3UOonVTCQSZy1CU8/ibV
+         Q/fZH//jqIUi3j2cp9ClUEJFsWjSLX/eeqIcqSYDafpPed48FWAKxl1KidMGSctQ4v24
+         jLmLhtfxl344PHqBWwdxa18u2OoQ24c1K04ZLVFbHYXe5EOwyL88EvZQmfuNi2HFzExs
+         geTH/dxW9VCcz4a9ihIc3+bQlyRyniG+Zm1no4NOC7Q3Vj83k02APAvhyC6OZ76y8AJT
+         Uj9g==
+X-Gm-Message-State: APjAAAX2luD7KwQiqCaQcOR5lPNSNRrJECdaAwp1k/+0667K438KpYG2
+        uv8h1W5D4uFzr97tpDsr5JamsFt3cgA4rQ==
+X-Google-Smtp-Source: APXvYqzgSVP2S3lxFKEOOQtbCpaOFbrAvWjBVDYHwZnnx9OOBxTlvUI9DE3JfN2qTR+VgRt2jS0dkg==
+X-Received: by 2002:a05:6214:1923:: with SMTP id es3mr65336830qvb.49.1577982071331;
+        Thu, 02 Jan 2020 08:21:11 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::be95])
-        by smtp.gmail.com with ESMTPSA id g18sm15169234qki.13.2020.01.02.08.20.44
+        by smtp.gmail.com with ESMTPSA id d9sm16894705qth.34.2020.01.02.08.21.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jan 2020 08:20:44 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] btrfs: statfs: Use virtual chunk allocation to
- calculation available data space
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200102112746.145045-1-wqu@suse.com>
- <20200102112746.145045-5-wqu@suse.com>
+        Thu, 02 Jan 2020 08:21:10 -0800 (PST)
+Subject: Re: [PATCH] btrfs: remove unnecessary wrapper get_alloc_profile
+To:     Johannes Thumshirn <jth@kernel.org>, David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200102161457.20216-1-jth@kernel.org>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <6b836ff3-29ab-9a06-b76f-114cb0a5cb5b@toxicpanda.com>
-Date:   Thu, 2 Jan 2020 11:20:43 -0500
+Message-ID: <d4b78d84-a996-845a-1807-ecbf50cacaec@toxicpanda.com>
+Date:   Thu, 2 Jan 2020 11:21:10 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200102112746.145045-5-wqu@suse.com>
+In-Reply-To: <20200102161457.20216-1-jth@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,39 +64,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/2/20 6:27 AM, Qu Wenruo wrote:
-> Although btrfs_calc_avail_data_space() is trying to do an estimation
-> on how many data chunks it can allocate, the estimation is far from
-> perfect:
+On 1/2/20 11:14 AM, Johannes Thumshirn wrote:
+> btrfs_get_alloc_profile() is a simple wrapper over get_alloc_profile().
+> The only difference is btrfs_get_alloc_profile() is visible to other
+> functions in btrfs while get_alloc_profile() is static and thus only
+> visible to functions in block-group.c.
 > 
-> - Metadata over-commit is not considered at all
-> - Chunk allocation doesn't take RAID5/6 into consideration
+> Let's just fold get_alloc_profile() into btrfs_get_alloc_profile() to
+> get rid of the unnecessary second function.
 > 
-> Although current per-profile available space itself is not able to
-> handle metadata over-commit itself, the virtual chunk infrastructure can
-> be re-used to address above problems.
-> 
-> This patch will change btrfs_calc_avail_data_space() to do the following
-> things:
-> - Do metadata virtual chunk allocation first
->    This is to address the over-commit behavior.
->    If current metadata chunks have enough free space, we can completely
->    skip this step.
-> 
-> - Allocate data virtual chunks as many as possible
->    Just like what we did in per-profile available space estimation.
->    Here we only need to calculate one profile, since statfs() call is
->    a relative cold path.
-> 
-> Now statfs() should be able to report near perfect estimation on
-> available data space, and can handle RAID5/6 better.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Johannes Thumshirn <jth@kernel.org>
 
-Can you put a comparison of the statfs call time for the old way vs the new way 
-in your changelog?  Say make a raid5 fs for example, populate it a little bit, 
-and then run statfs 10 times and take the average with and without your patch so 
-we can make sure there's no performance penalty.  You'd be surprised how many 
-times statfs() things have caused problems for us in production.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
