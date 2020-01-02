@@ -2,61 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CF112E897
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C9C12E898
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgABQRe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 11:17:34 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39191 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgABQRd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:17:33 -0500
-Received: by mail-qk1-f196.google.com with SMTP id c16so31714240qko.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:17:33 -0800 (PST)
+        id S1728787AbgABQS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 11:18:28 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:42772 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgABQS1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:18:27 -0500
+Received: by mail-qv1-f65.google.com with SMTP id dc14so15165447qvb.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Ek0d9NSgVIcmxPAmOPKS9s9dXdzhAA4rIpIbi8+9b6g=;
-        b=cYkVRCwl6YnGapBdicbEklQ4QO5+/6KSqFSrJ+n30qXUoMWcK/61QR188leotyvzMu
-         0xR8axexcVqE2j2T/lW3b09iPDBXjKFmS8erOVFz4KqcG8qpQJzk6SegRxrPmcU6FdBD
-         PnviJt9YKZQ+/dPUJm8eKG5TITyIn8ja1EPpf2NGsSqfDRfn8/xVBs2alz5bNjfLSCwj
-         zqhDBoUfy5uZ49i0Wcz388ki69qqlKcBlfpYBYJ3ghpF2BOoYc7Q4td8zqKoqUM/7CBR
-         22QcxS08PDiBCu/WsT76VliKhXkQ++LluVYYFvlaId8VizXRlD3d7j9zN50S21YuTL+6
-         CpAg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8VfjohvsgAc2a4DI0sCVK0MgXjWFu+59Tt2fV//tIrc=;
+        b=lkMtKPpqsbfLOZilwpoyn0vHDdekee+kPCgpD4QytRRbdpvMJ47twwyjDt+xIZKG6f
+         p9SU0cpqmxq7gPrzA4LIX9eV/QClJZIOqrc56oNai10Ym+WifK6bVMXxQz58RrSfDj2X
+         v6AwdJCGPntGPCoSmhgtHHo6qVjMklAKuj9mLDYFOfFb5TEtLuKX3jGLDuDFMdhNFdZP
+         Mk2+fyNxNlIgB9gIY7vXr8ZC97o108r3Vk/P3GkDkOOlAtCAjJc6ql1oAPrMWHui/UOR
+         dFyqmwcUJuMiA8ujC/eSKBa8pBX3MdC0mPKA/WteYBc6BG/8fbMwrsxRJZobF1TUYLLz
+         ZaOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Ek0d9NSgVIcmxPAmOPKS9s9dXdzhAA4rIpIbi8+9b6g=;
-        b=sqBIsDKJiE5OTZD57BzO1WfDdYgWAHI3Bcs9i8cWcJU+WwsjQFontOqlEt+tPzGrsS
-         fXbpP1Yj1vX8il222IjyoV94TX4mTG3reSA+SmZtBFnLQLXxkjq4zHuCbKwg6ob38jIh
-         6eg13HTvc8GwdWV2xB+TuOQ3mhIAC3iKF0z1CUH9ttNjcoIGqaR5u/WcjRjoyaHDI1VI
-         z8+KsNQk6pxkp0hLXl0tMm7pdzlubh8h7+4AAcC92V1CHHcrcrDe3zc3gpm7z1yN4se4
-         XoEZFgDdGCVsl00kPgxfTqPZXSbnZJQNqHECs0DLTInrodBJAFWLyXdctIxKNRIL2wCH
-         e89A==
-X-Gm-Message-State: APjAAAU9pfMMz4u6ATDWYGAePSToEwoigr2yjOnAXFMmOaYCHfkOAOYi
-        xqUZjz9xBFIKUHTKzm0y4bnicdLTe6SUnA==
-X-Google-Smtp-Source: APXvYqyPvU5s9REfE321P7Fp7iZwdZNfYyVW3AXj76U+dL6CLLut+63XCeRgaZKIvAF9fjlhtK/mcw==
-X-Received: by 2002:a37:4f8e:: with SMTP id d136mr67020134qkb.495.1577981852622;
-        Thu, 02 Jan 2020 08:17:32 -0800 (PST)
+        bh=8VfjohvsgAc2a4DI0sCVK0MgXjWFu+59Tt2fV//tIrc=;
+        b=OiqvlCyCdkelYS3ZpJqp01i4nuwaRxcWlQc7XlvqmlLS7brGRuWUF7GfEopchGGJjd
+         pPAp2SKd/VbCywnBYbp92aJUYzT/DUwg+GcUG8jpXI1Txl0wH6rHZhSSyxscpE6pAu7I
+         vbDJf7G40UouWLCZXY2H95r3HYoIUoXqyVZ8sL+qsP0KgsJN0uDsC5Rd3adZcmdvurJV
+         +LYQbOugmF/TSZtPDY5D8+p2mS6s9gd+OeJ4mfu3V7inSfu4VGv9oq8yb2rd45X6GMmi
+         VESOg/f/RjgglRroJShLRvn8MF2LwFujSd8vBgoy6dHducRV+WQAemVEkEhWO7JWSWp9
+         eoIg==
+X-Gm-Message-State: APjAAAVIj0kIVFyViLv+WZGup7G5DqTRFQ7Q0swF7W+FjThAmrrWbDTi
+        mnU66A6/qQi8XL6xeWaspSTFCA==
+X-Google-Smtp-Source: APXvYqwBy6f5yD+LiIATKnZAiLUmwnx7qyQTnqY/mXbutSU1I1cAsC5M7rU4jiDO2qeQG29aWDTcIg==
+X-Received: by 2002:a05:6214:14b3:: with SMTP id bo19mr63154864qvb.93.1577981906802;
+        Thu, 02 Jan 2020 08:18:26 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::be95])
-        by smtp.gmail.com with ESMTPSA id 63sm15217838qki.57.2020.01.02.08.17.31
+        by smtp.gmail.com with ESMTPSA id 200sm15226725qkn.79.2020.01.02.08.18.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jan 2020 08:17:31 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] btrfs: Update per-profile available space when
- device size/used space get updated
+        Thu, 02 Jan 2020 08:18:26 -0800 (PST)
+Subject: Re: [PATCH v2 3/4] btrfs: space-info: Use per-profile available space
+ in can_overcommit()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Marc Lehmann <schmorp@schmorp.de>
 References: <20200102112746.145045-1-wqu@suse.com>
- <20200102112746.145045-3-wqu@suse.com>
+ <20200102112746.145045-4-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <c4f6ddfb-c52c-d376-4cef-26aebec4e288@toxicpanda.com>
-Date:   Thu, 2 Jan 2020 11:17:31 -0500
+Message-ID: <16e4a6d7-23d0-697d-8f2d-69766bd6384c@toxicpanda.com>
+Date:   Thu, 2 Jan 2020 11:18:25 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200102112746.145045-3-wqu@suse.com>
+In-Reply-To: <20200102112746.145045-4-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,23 +67,35 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 1/2/20 6:27 AM, Qu Wenruo wrote:
-> There are 4 locations where device size or used space get updated:
-> - Chunk allocation
-> - Chunk removal
-> - Device grow
-> - Device shrink
+> For the following disk layout, can_overcommit() can cause false
+> confidence in available space:
 > 
-> Now also update per-profile available space at those timings.
+>    devid 1 unallocated:	1T
+>    devid 2 unallocated:	10T
+>    metadata type:	RAID1
 > 
-> For __btrfs_alloc_chunk() we can't acquire device_list_mutex as in
-> btrfs_finish_chunk_alloc() we could hold device_list_mutex and cause
-> dead lock.
+> As can_overcommit() simply uses unallocated space with factor to
+> calculate the allocatable metadata chunk size.
 > 
+> can_overcommit() believes we still have 5.5T for metadata chunks, while
+> the truth is, we only have 1T available for metadata chunks.
+> This can lead to ENOSPC at run_delalloc_range() and cause transaction
+> abort.
+> 
+> Since factor based calculation can't distinguish RAID1/RAID10 and DUP at
+> all, we need proper chunk-allocator level awareness to do such estimation.
+> 
+> Thankfully, we have per-profile available space already calculated, just
+> use that facility to avoid such false confidence.
+> 
+> Reported-by: Marc Lehmann <schmorp@schmorp.de>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-These are protecting two different things though, holding the chunk_mutex 
-doesn't keep things from being removed from the device list.
+I don't expect this will change much as you mess with the other code, so you can 
+go ahead and add
 
-Looking at patch 1 can't we just do the device list traversal under RCU and then 
-not have to worry about the locking at all?  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+To this one, thanks,
 
 Josef
