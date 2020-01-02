@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2276512E5A5
+	by mail.lfdr.de (Postfix) with ESMTP id 942A212E5A6
 	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 12:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgABL2B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 06:28:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42940 "EHLO mx2.suse.de"
+        id S1728188AbgABL2E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 06:28:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43162 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728135AbgABL2B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 06:28:01 -0500
+        id S1728135AbgABL2E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 06:28:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 09A3CB2D9
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2020 11:27:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id EE44AB328;
+        Thu,  2 Jan 2020 11:28:01 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/4] btrfs: Update per-profile available space when device size/used space get updated
-Date:   Thu,  2 Jan 2020 19:27:44 +0800
-Message-Id: <20200102112746.145045-3-wqu@suse.com>
+Cc:     Marc Lehmann <schmorp@schmorp.de>
+Subject: [PATCH v2 3/4] btrfs: space-info: Use per-profile available space in can_overcommit()
+Date:   Thu,  2 Jan 2020 19:27:45 +0800
+Message-Id: <20200102112746.145045-4-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200102112746.145045-1-wqu@suse.com>
 References: <20200102112746.145045-1-wqu@suse.com>
@@ -30,87 +31,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are 4 locations where device size or used space get updated:
-- Chunk allocation
-- Chunk removal
-- Device grow
-- Device shrink
+For the following disk layout, can_overcommit() can cause false
+confidence in available space:
 
-Now also update per-profile available space at those timings.
+  devid 1 unallocated:	1T
+  devid 2 unallocated:	10T
+  metadata type:	RAID1
 
-For __btrfs_alloc_chunk() we can't acquire device_list_mutex as in
-btrfs_finish_chunk_alloc() we could hold device_list_mutex and cause
-dead lock.
+As can_overcommit() simply uses unallocated space with factor to
+calculate the allocatable metadata chunk size.
 
+can_overcommit() believes we still have 5.5T for metadata chunks, while
+the truth is, we only have 1T available for metadata chunks.
+This can lead to ENOSPC at run_delalloc_range() and cause transaction
+abort.
+
+Since factor based calculation can't distinguish RAID1/RAID10 and DUP at
+all, we need proper chunk-allocator level awareness to do such estimation.
+
+Thankfully, we have per-profile available space already calculated, just
+use that facility to avoid such false confidence.
+
+Reported-by: Marc Lehmann <schmorp@schmorp.de>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/volumes.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ fs/btrfs/space-info.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index fa948f7eebc2..be8250332c60 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2804,6 +2804,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- 	struct btrfs_super_block *super_copy = fs_info->super_copy;
- 	u64 old_total;
- 	u64 diff;
-+	int ret;
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index f09aa6ee9113..c26aba9e7124 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -164,10 +164,10 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+ 			  enum btrfs_reserve_flush_enum flush,
+ 			  bool system_chunk)
+ {
++	enum btrfs_raid_types index;
+ 	u64 profile;
+ 	u64 avail;
+ 	u64 used;
+-	int factor;
  
- 	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
- 		return -EACCES;
-@@ -2832,6 +2833,11 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- 			      &trans->transaction->dev_update_list);
- 	mutex_unlock(&fs_info->chunk_mutex);
+ 	/* Don't overcommit when in mixed mode. */
+ 	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA)
+@@ -179,16 +179,15 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+ 		profile = btrfs_metadata_alloc_profile(fs_info);
  
-+	mutex_lock(&fs_info->fs_devices->device_list_mutex);
-+	ret = calc_per_profile_avail(fs_info);
-+	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-+	if (ret < 0)
-+		return ret;
- 	return btrfs_update_device(trans, device);
- }
+ 	used = btrfs_space_info_used(space_info, true);
+-	avail = atomic64_read(&fs_info->free_chunk_space);
  
-@@ -3010,7 +3016,12 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
- 			goto out;
- 		}
- 	}
-+	ret = calc_per_profile_avail(fs_info);
- 	mutex_unlock(&fs_devices->device_list_mutex);
-+	if (ret < 0) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto out;
-+	}
+ 	/*
+-	 * If we have dup, raid1 or raid10 then only half of the free
+-	 * space is actually usable.  For raid56, the space info used
+-	 * doesn't include the parity drive, so we don't have to
+-	 * change the math
++	 * Grab avail space from per-profile array which should be as accurate
++	 * as chunk allocator.
+ 	 */
+-	factor = btrfs_bg_type_to_factor(profile);
+-	avail = div_u64(avail, factor);
++	index = btrfs_bg_flags_to_raid_index(profile);
++	spin_lock(&fs_info->fs_devices->per_profile_lock);
++	avail = fs_info->fs_devices->per_profile_avail[index];
++	spin_unlock(&fs_info->fs_devices->per_profile_lock);
  
- 	ret = btrfs_free_chunk(trans, chunk_offset);
- 	if (ret) {
-@@ -4826,6 +4837,10 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
- 			device->fs_devices->total_rw_bytes += diff;
- 		atomic64_add(diff, &fs_info->free_chunk_space);
- 		mutex_unlock(&fs_info->chunk_mutex);
-+	} else {
-+		mutex_lock(&fs_info->fs_devices->device_list_mutex);
-+		ret = calc_per_profile_avail(fs_info);
-+		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
- 	}
- 	return ret;
- }
-@@ -5143,8 +5158,14 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 	check_raid56_incompat_flag(info, type);
- 	check_raid1c34_incompat_flag(info, type);
- 
-+	/*
-+	 * In this context we don't need device_list_mutex as chunk_mutex are
-+	 * protecting us.
-+	 */
-+	ret = calc_per_profile_avail(info);
-+
- 	kfree(devices_info);
--	return 0;
-+	return ret;
- 
- error_del_extent:
- 	write_lock(&em_tree->lock);
+ 	/*
+ 	 * If we aren't flushing all things, let us overcommit up to
 -- 
 2.24.1
 
