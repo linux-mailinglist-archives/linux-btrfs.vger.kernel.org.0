@@ -2,345 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B07D12E367
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 08:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C726112E41F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 10:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgABHrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 02:47:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48362 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgABHrY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 02:47:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 75480AD20
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2020 07:47:21 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: statfs: Use virtual chunk allocation to calculation available data space
-Date:   Thu,  2 Jan 2020 15:47:05 +0800
-Message-Id: <20200102074705.136348-5-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200102074705.136348-1-wqu@suse.com>
+        id S1727865AbgABJAf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 04:00:35 -0500
+Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:59063 "EHLO
+        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727842AbgABJAe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 04:00:34 -0500
+Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Thu,  2 Jan 2020 08:59:33 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 2 Jan 2020 08:57:23 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 2 Jan 2020 08:57:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XBZ9/EYVj+L10gOohzL2XiR9r1eDGi/S52wBOisUeSrOqWvqVeczO0rIT7P4ZcpS5QjCofkfWN8ua3/SygRrCbpuSe8YR4yQ8B5dGkrpLNI3Q0k6nLFPbXDGsjr6Fh51mRqxKZRZAQlgJBLyB0n0pj9s1OlJhYlnoOJ2TCo0jCiPrapmXOW1p9b3kuH9E7oLC9onymtuHpig4PhGsstYha21NerLOV+hmj2PaOM9C3tRDVVWKhH8IsRG8gf4PkVxXN2xPcowN4cbI3MPPOM6h+YFSkF8FqPeuZq8zQHDSjBMK0j9ZUReKVUB15ET1YzkKmw9IVL6DdfVyTP/MHJzgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cgTzxmiZTn04ZL2RwrBVIuSKyz0dhw3E+EqQbcBs23U=;
+ b=fMsowUYKNaT7EHMfJW+rbKh/XojMXDMkqiY4cDj6JxO6TawKXjjsFHsN+9CN2MXxVaqx2URuw8/axPzUkmbrcdKoCXhw3HNStisfsA+XRs/2HTCGhhY52T3LnHQT7OVvQleZnQ02umt198EY5VFrxkIGJTjxmokbXVaEvsPp7w+VEHIyLaLDfxlZ2AQaNVyBTxWEUT5DLr0/Q1zhDD9ZYI02F5FFAMiH6ZVGi7YYzCACxC3byIe+aEHf/EH63FYsqJ7+yeCl7FZo5m2o+bWPhyav3gi7Hjc3AOaIGDwNhNyb2nqUjOEH7D8vBKf67DhUAAnnILMGaH5Rv/dHwugQEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3186.namprd18.prod.outlook.com (10.255.139.33) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.12; Thu, 2 Jan 2020 08:57:22 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::c9ec:d898:8be0:9f69]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::c9ec:d898:8be0:9f69%5]) with mapi id 15.20.2581.014; Thu, 2 Jan 2020
+ 08:57:21 +0000
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR01CA0021.prod.exchangelabs.com (2603:10b6:a02:80::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2581.12 via Frontend Transport; Thu, 2 Jan 2020 08:57:20 +0000
+From:   Qu WenRuo <wqu@suse.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/4] Introduce per-profile available space array to avoid
+ over-confident can_overcommit()
+Thread-Topic: [PATCH 0/4] Introduce per-profile available space array to avoid
+ over-confident can_overcommit()
+Thread-Index: AQHVwUqkAExdElYLiE6qDsEDle/yaA==
+Date:   Thu, 2 Jan 2020 08:57:21 +0000
+Message-ID: <2fb1c0be-11d8-885a-f711-d3f171c9060f@suse.com>
 References: <20200102074705.136348-1-wqu@suse.com>
+In-Reply-To: <20200102074705.136348-1-wqu@suse.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR01CA0021.prod.exchangelabs.com (2603:10b6:a02:80::34)
+ To BY5PR18MB3266.namprd18.prod.outlook.com (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [149.28.201.231]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c1c7a9e8-f34a-4373-2955-08d78f61c72e
+x-ms-traffictypediagnostic: BY5PR18MB3186:
+x-microsoft-antispam-prvs: <BY5PR18MB318615F398916C3FD801F6A3D6200@BY5PR18MB3186.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0270ED2845
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(376002)(396003)(136003)(346002)(39850400004)(54534003)(199004)(189003)(8676002)(31696002)(8936002)(86362001)(6706004)(6486002)(81166006)(81156014)(52116002)(186003)(66946007)(2616005)(956004)(31686004)(2906002)(36756003)(66446008)(316002)(478600001)(66476007)(66556008)(64756008)(16576012)(71200400001)(16526019)(6916009)(26005)(5660300002)(78286006)(131093003);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3186;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VNC72w31/zdzQIVKWA+DmS3uwXaZKVnxim5g7R1ok46orRU29dpOQwQkUHR2FbroCwnCaJ1V/MB8UPZgVw9aWSkGXwjTEOYQx4y/HSQWYvqf/xlXagl9WpWlDayge84xq4VmyVNkDtg1jQwj4vQZtRu+TvLzXP+74GY5bTUwnMe+bRDpahrMu8JPdxKUmvnGJX8JtQH/psQbYpmKYZ+sF9FmaXncxFJ3NwJceEHAmxvFxZ2GxLfaGFXCuOkDlZyTsqTaCoSoT9dBpOCpC9WX/MIlr336ujwm57TP564FvrRipMpBCTHHQseNWzewrCWy2ioOyl0jiXAEvUvbsHaRzbRw/WECSeMKjXi2ej39XvIRYd3/UauCv0GVZbMMdQPzxJyJ7oGPPsIRORVGyweRL3X53KFhKqREdHt0ch3jOl5M/8zpVkaYgNWydvXgN5MdWW3i2sVCi+/lehVHGCQvqd5KSzdia1fhyft8mmJgKU2J5GYW57TdH05iEBcH4MG131N//GMOBDRBsg7voUB3FbpR0KiEt1ecdKCs1CIMqUk=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6443794ABC48384CA44FE2E64C529668@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1c7a9e8-f34a-4373-2955-08d78f61c72e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jan 2020 08:57:21.5293
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EEuxj/l1qnGmBjxVrYza4MMfUDf2zjj5gJiBANCqwKOX2pW8YrAA/gp8ndma0Gox
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3186
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although btrfs_calc_avail_data_space() is trying to do an estimation
-on how many data chunks it can allocate, the estimation is far from
-perfect:
-
-- Metadata over-commit is not considered at all
-- Chunk allocation doesn't take RAID5/6 into consideration
-
-Although current per-profile available space itself is not able to
-handle metadata over-commit itself, the virtual chunk infrastructure can
-be re-used to address above problems.
-
-This patch will change btrfs_calc_avail_data_space() to do the following
-things:
-- Do metadata virtual chunk allocation first
-  This is to address the over-commit behavior.
-  If current metadata chunks have enough free space, we can completely
-  skip this step.
-
-- Allocate data virtual chunks as many as possible
-  Just like what we did in per-profile available space estimation.
-  Here we only need to calculate one profile, since statfs() call is
-  a relative cold path.
-
-Now statfs() should be able to report near perfect estimation on
-available data space, and can handle RAID5/6 better.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 190 ++++++++++++++++-----------------------------
- fs/btrfs/volumes.c |  12 +--
- fs/btrfs/volumes.h |   4 +
- 3 files changed, 79 insertions(+), 127 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..718ff54b62f0 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1893,119 +1893,88 @@ static inline void btrfs_descending_sort_devices(
- /*
-  * The helper to calc the free space on the devices that can be used to store
-  * file data.
-+ *
-+ * The calculation will:
-+ * - Allocate enough metadata virtual chunks to fulfill over-commit
-+ *   To ensure we still have enough space to contain metadata chunks
-+ * - Allocate any many data virtual chunks as possible
-+ *   To get a true estimation on available data free space.
-+ *
-+ * Only with such comprehensive check, we can get a good result considering
-+ * all the uneven disk layouts.
-  */
- static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
--					      u64 *free_bytes)
-+					      u64 free_meta, u64 *result)
- {
- 	struct btrfs_device_info *devices_info;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_device *device;
--	u64 type;
--	u64 avail_space;
--	u64 min_stripe_size;
--	int num_stripes = 1;
--	int i = 0, nr_devices;
--	const struct btrfs_raid_attr *rattr;
-+	u64 meta_index;
-+	u64 data_index;
-+	u64 meta_rsv;
-+	u64 meta_allocated = 0;
-+	u64 data_allocated = 0;
-+	u64 allocated;
-+	int nr_devices;
-+	int ret = 0;
- 
--	/*
--	 * We aren't under the device list lock, so this is racy-ish, but good
--	 * enough for our purposes.
--	 */
--	nr_devices = fs_info->fs_devices->open_devices;
--	if (!nr_devices) {
--		smp_mb();
--		nr_devices = fs_info->fs_devices->open_devices;
--		ASSERT(nr_devices);
--		if (!nr_devices) {
--			*free_bytes = 0;
--			return 0;
--		}
--	}
-+	spin_lock(&fs_info->global_block_rsv.lock);
-+	meta_rsv = fs_info->global_block_rsv.size;
-+	spin_unlock(&fs_info->global_block_rsv.lock);
- 
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	nr_devices = fs_devices->rw_devices;
- 	devices_info = kmalloc_array(nr_devices, sizeof(*devices_info),
- 			       GFP_KERNEL);
--	if (!devices_info)
--		return -ENOMEM;
--
--	/* calc min stripe number for data space allocation */
--	type = btrfs_data_alloc_profile(fs_info);
--	rattr = &btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)];
--
--	if (type & BTRFS_BLOCK_GROUP_RAID0)
--		num_stripes = nr_devices;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1)
--		num_stripes = 2;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C3)
--		num_stripes = 3;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C4)
--		num_stripes = 4;
--	else if (type & BTRFS_BLOCK_GROUP_RAID10)
--		num_stripes = 4;
--
--	/* Adjust for more than 1 stripe per device */
--	min_stripe_size = rattr->dev_stripes * BTRFS_STRIPE_LEN;
--
--	rcu_read_lock();
--	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
--						&device->dev_state) ||
--		    !device->bdev ||
--		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
--			continue;
--
--		if (i >= nr_devices)
--			break;
--
--		avail_space = device->total_bytes - device->bytes_used;
--
--		/* align with stripe_len */
--		avail_space = rounddown(avail_space, BTRFS_STRIPE_LEN);
--
--		/*
--		 * In order to avoid overwriting the superblock on the drive,
--		 * btrfs starts at an offset of at least 1MB when doing chunk
--		 * allocation.
--		 *
--		 * This ensures we have at least min_stripe_size free space
--		 * after excluding 1MB.
--		 */
--		if (avail_space <= SZ_1M + min_stripe_size)
--			continue;
--
--		avail_space -= SZ_1M;
--
--		devices_info[i].dev = device;
--		devices_info[i].max_avail = avail_space;
--
--		i++;
-+	if (!devices_info) {
-+		ret = -ENOMEM;
-+		goto out;
- 	}
--	rcu_read_unlock();
--
--	nr_devices = i;
- 
--	btrfs_descending_sort_devices(devices_info, nr_devices);
--
--	i = nr_devices - 1;
--	avail_space = 0;
--	while (nr_devices >= rattr->devs_min) {
--		num_stripes = min(num_stripes, nr_devices);
--
--		if (devices_info[i].max_avail >= min_stripe_size) {
--			int j;
--			u64 alloc_size;
--
--			avail_space += devices_info[i].max_avail * num_stripes;
--			alloc_size = devices_info[i].max_avail;
--			for (j = i + 1 - num_stripes; j <= i; j++)
--				devices_info[j].max_avail -= alloc_size;
--		}
--		i--;
--		nr_devices--;
-+	data_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_data_alloc_profile(fs_info));
-+	meta_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_metadata_alloc_profile(fs_info));
-+
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+
-+	/* Current metadata space is enough, no need to bother meta space */
-+	if (meta_rsv <= free_meta)
-+		goto data_only;
-+
-+	/* Allocate space for exceeding meta space */
-+	while (meta_allocated < meta_rsv - free_meta) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				meta_index,
-+				meta_rsv - free_meta - meta_allocated,
-+				&allocated);
-+		if (ret < 0)
-+			goto out;
-+		meta_allocated += allocated;
-+	}
-+data_only:
-+	/*
-+	 * meta virtual chunks have been allocated, now allocate data virtual
-+	 * chunks
-+	 */
-+	while (ret == 0) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				data_index, -1, &allocated);
-+		if (ret < 0)
-+			goto out;
-+		data_allocated += allocated;
- 	}
- 
-+out:
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+	mutex_unlock(&fs_devices->device_list_mutex);
- 	kfree(devices_info);
--	*free_bytes = avail_space;
--	return 0;
-+	*result = data_allocated;
-+	if (ret == -ENOSPC)
-+		ret = 0;
-+	return ret;
- }
- 
- /*
-@@ -2034,7 +2003,6 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	unsigned factor = 1;
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
- 	int ret;
--	u64 thresh = 0;
- 	int mixed = 0;
- 
- 	rcu_read_lock();
-@@ -2082,31 +2050,11 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		buf->f_bfree = 0;
- 	spin_unlock(&block_rsv->lock);
- 
--	buf->f_bavail = div_u64(total_free_data, factor);
--	ret = btrfs_calc_avail_data_space(fs_info, &total_free_data);
-+	ret = btrfs_calc_avail_data_space(fs_info, total_free_meta,
-+					  &buf->f_bavail);
- 	if (ret)
- 		return ret;
--	buf->f_bavail += div_u64(total_free_data, factor);
- 	buf->f_bavail = buf->f_bavail >> bits;
--
--	/*
--	 * We calculate the remaining metadata space minus global reserve. If
--	 * this is (supposedly) smaller than zero, there's no space. But this
--	 * does not hold in practice, the exhausted state happens where's still
--	 * some positive delta. So we apply some guesswork and compare the
--	 * delta to a 4M threshold.  (Practically observed delta was ~2M.)
--	 *
--	 * We probably cannot calculate the exact threshold value because this
--	 * depends on the internal reservations requested by various
--	 * operations, so some operations that consume a few metadata will
--	 * succeed even if the Avail is zero. But this is better than the other
--	 * way around.
--	 */
--	thresh = SZ_4M;
--
--	if (!mixed && total_free_meta - thresh < block_rsv->size)
--		buf->f_bavail = 0;
--
- 	buf->f_type = BTRFS_SUPER_MAGIC;
- 	buf->f_bsize = dentry->d_sb->s_blocksize;
- 	buf->f_namelen = BTRFS_NAME_LEN;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 368bceb2076a..c25705d8365c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2658,10 +2658,10 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
-  *    Such virtual chunks won't take on-disk space, thus called virtual, and
-  *    only affects per-profile available space calulation.
-  */
--static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
--			       struct btrfs_device_info *devices_info,
--			       enum btrfs_raid_types type,
--			       u64 to_alloc, u64 *allocated)
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated)
- {
- 	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-@@ -2763,8 +2763,8 @@ static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
- 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
- 		device->virtual_allocated = 0;
- 	while (ret == 0) {
--		ret = alloc_virtual_chunk(fs_info, devices_info, type,
--					  (u64)-1, &allocated);
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info, type,
-+						(u64)-1, &allocated);
- 		if (ret == 0)
- 			result += allocated;
- 	}
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 81cdab0d864a..3c327ad6924e 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -459,6 +459,10 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- 		      struct btrfs_device *device, u64 new_size);
- struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
- 				       u64 devid, u8 *uuid, u8 *fsid, bool seed);
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated);
- int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
- int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
- int btrfs_balance(struct btrfs_fs_info *fs_info,
--- 
-2.24.1
-
+DQoNCk9uIDIwMjAvMS8yIOS4i+WNiDM6NDcsIFF1IFdlbnJ1byB3cm90ZToNCj4gVGhlcmUgYXJl
+IHNldmVyYWwgYnVnIHJlcG9ydHMgb2YgRU5PU1BDIGVycm9yIGluDQo+IGJ0cmZzX3J1bl9kZWxh
+bGxvY19yYW5nZSgpLg0KPiANCj4gV2l0aCBzb21lIGV4dHJhIGluZm8gZnJvbSBvbmUgcmVwb3J0
+ZXIsIGl0IHR1cm5zIG91dCB0aGF0DQo+IGNhbl9vdmVyY29tbWl0KCkgaXMgdXNpbmcgYSB3cm9u
+ZyB3YXkgdG8gY2FsY3VsYXRlIGFsbG9jYXRhYmxlIG1ldGFkYXRhDQo+IHNwYWNlLg0KPiANCj4g
+VGhlIG1vc3QgdHlwaWNhbCBjYXNlIHdvdWxkIGxvb2sgbGlrZToNCj4gICBkZXZpZCAxIHVuYWxs
+b2NhdGVkOgkxRw0KPiAgIGRldmlkIDIgdW5hbGxvY2F0ZWQ6ICAxMEcNCj4gICBtZXRhZGF0YSBw
+cm9maWxlOglSQUlEMQ0KPiANCj4gSW4gYWJvdmUgY2FzZSwgd2UgY2FuIGF0IG1vc3QgYWxsb2Nh
+dGUgMUcgY2h1bmsgZm9yIG1ldGFkYXRhLCBkdWUgdG8NCj4gdW5iYWxhbmNlZCBkaXNrIGZyZWUg
+c3BhY2UuDQo+IEJ1dCBjdXJyZW50IGNhbl9vdmVyY29tbWl0KCkgdXNlcyBmYWN0b3IgYmFzZWQg
+Y2FsY3VsYXRpb24sIHdoaWNoIG5ldmVyDQo+IGNvbnNpZGVyIHRoZSBkaXNrIGZyZWUgc3BhY2Ug
+YmFsYW5jZS4NCj4gDQo+IA0KPiBUbyBhZGRyZXNzIHRoaXMgcHJvYmxlbSwgaGVyZSBjb21lcyB0
+aGUgcGVyLXByb2ZpbGUgYXZhaWxhYmxlIHNwYWNlDQo+IGFycmF5LCB3aGljaCBnZXRzIHVwZGF0
+ZWQgZXZlcnkgdGltZSBhIGNodW5rIGdldCBhbGxvY2F0ZWQvcmVtb3ZlZCBvciBhDQo+IGRldmlj
+ZSBnZXQgZ3Jvd24gb3Igc2hydW5rLg0KPiANCj4gVGhpcyBwcm92aWRlcyBhIHF1aWNrIHdheSBm
+b3IgaG90dGVyIHBsYWNlIGxpa2UgY2FuX292ZXJjb21taXQoKSB0byBncmFiDQo+IGFuIGVzdGlt
+YXRpb24gb24gaG93IG1hbnkgYnl0ZXMgaXQgY2FuIG92ZXItY29tbWl0Lg0KPiANCj4gVGhlIHBl
+ci1wcm9maWxlIGF2YWlsYWJsZSBzcGFjZSBjYWxjdWxhdGlvbiB0cmllcyB0byBrZWVwIHRoZSBi
+ZWhhdmlvcg0KPiBvZiBjaHVuayBhbGxvY2F0b3IsIHRodXMgaXQgY2FuIGhhbmRsZSB1bmV2ZW4g
+ZGlza3MgcHJldHR5IHdlbGwuDQo+IA0KPiBBbHRob3VnaCBwZXItcHJvZmlsZSBpcyBub3QgY2xl
+dmVyIGVub3VnaCB0byBoYW5kbGUgZXN0aW1hdGlvbiB3aGVuIGJvdGgNCj4gZGF0YSBhbmQgbWV0
+YWRhdGEgY2h1bmtzIG5lZWQgdG8gYmUgY29uc2lkZXJlZCwgaXRzIHZpcnR1YWwgY2h1bmsNCj4g
+aW5mcmFzdHJ1Y3R1cmUgaXMgZmxleCBlbm91Z2ggdG8gaGFuZGxlIHN1Y2ggY2FzZS4NCj4gDQo+
+IFNvIGZvciBzdGF0ZnMoKSwgd2UgYWxzbyByZS11c2UgdmlydHVhbCBjaHVuayBhbGxvY2F0b3Ig
+dG8gaGFuZGxlDQo+IGF2YWlsYWJsZSBkYXRhIHNwYWNlLCB3aXRoIG1ldGFkYXRhIG92ZXItY29t
+bWl0IHNwYWNlIGNvbnNpZGVyZWQuDQo+IFRoaXMgYnJpbmdzIGFuIHVuZXhwZWN0ZWQgYWR2YW50
+YWdlLCBub3cgd2UgY2FuIGhhbmRsZSBSQUlENS82IHByZXR0eSBPSw0KPiBpbiBzdGF0ZnMoKS4N
+Cj4gDQo+IENoYW5nZWxvZzoNCj4gdjE6DQo+IC0gRml4IGEgYnVnIHdoZXJlIHdlIGZvcmdvdCB0
+byB1cGRhdGUgcGVyLXByb2ZpbGUgYXJyYXkgYWZ0ZXIgYWxsb2NhdGluZw0KPiAgIGEgY2h1bmsu
+DQo+ICAgVG8gYXZvaWQgQUJCQSBkZWFkbG9jaywgdGhpcyBpbnRyb2R1Y2UgYSBzbWFsbCB3aW5k
+b3dzIGF0IHRoZSBlbmQNCj4gICBfX2J0cmZzX2FsbG9jX2NodW5rKCksIGl0J3Mgbm90IGVsZWdh
+bnQgYnV0IHNob3VsZCBiZSBnb29kIGVub3VnaA0KPiAgIGJlZm9yZSB3ZSByZXdvcmsgY2h1bmsg
+YW5kIGRldmljZSBsaXN0IG11dGV4Lg0KTXkgcGVyc2lzdGVuY2Ugb24gZGV2aWNlX2xpc3RfbXV0
+ZXggZG9lc24ndCB0dXJuIG91dCB0byBiZSBnb29kLg0KSXQgY2F1c2VzIGRlYWQgbG9jayBpbiBi
+dHJmcy8xMjQuDQoNCkknbGwgcmV3b3JrIHRoaXMgbG9jayBwYXJ0IHRvIHNvbHZlIHRoZW0uDQoN
+ClRoYW5rcywNClF1DQoNCj4gICANCj4gLSBNYWtlIHN0YXRmcygpIHRvIHVzZSB2aXJ0dWFsIGNo
+dW5rIGFsbG9jYXRvciB0byBkbyBiZXR0ZXIgZXN0aW1hdGlvbg0KPiAgIE5vdyBzdGF0ZnMoKSBj
+YW4gcmVwb3J0IG5vdCBvbmx5IG1vcmUgYWNjdXJhdGUgcmVzdWx0LCBidXQgY2FuIGFsc28NCj4g
+ICBoYW5kbGUgUkFJRDUvNiBiZXR0ZXIuDQo+IA0KPiBRdSBXZW5ydW8gKDQpOg0KPiAgIGJ0cmZz
+OiBJbnRyb2R1Y2UgcGVyLXByb2ZpbGUgYXZhaWxhYmxlIHNwYWNlIGZhY2lsaXR5DQo+ICAgYnRy
+ZnM6IFVwZGF0ZSBwZXItcHJvZmlsZSBhdmFpbGFibGUgc3BhY2Ugd2hlbiBkZXZpY2Ugc2l6ZS91
+c2VkIHNwYWNlDQo+ICAgICBnZXQgdXBkYXRlZA0KPiAgIGJ0cmZzOiBzcGFjZS1pbmZvOiBVc2Ug
+cGVyLXByb2ZpbGUgYXZhaWxhYmxlIHNwYWNlIGluIGNhbl9vdmVyY29tbWl0KCkNCj4gICBidHJm
+czogc3RhdGZzOiBVc2UgdmlydHVhbCBjaHVuayBhbGxvY2F0aW9uIHRvIGNhbGN1bGF0aW9uIGF2
+YWlsYWJsZQ0KPiAgICAgZGF0YSBzcGFjZQ0KPiANCj4gIGZzL2J0cmZzL3NwYWNlLWluZm8uYyB8
+ICAxNSArKy0NCj4gIGZzL2J0cmZzL3N1cGVyLmMgICAgICB8IDE5MCArKysrKysrKysrKysrLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgZnMvYnRyZnMvdm9sdW1lcy5jICAgIHwgMjIzICsrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiAgZnMvYnRyZnMvdm9sdW1l
+cy5oICAgIHwgIDE0ICsrKw0KPiAgNCBmaWxlcyBjaGFuZ2VkLCAyOTMgaW5zZXJ0aW9ucygrKSwg
+MTQ5IGRlbGV0aW9ucygtKQ0KPiANCg==
