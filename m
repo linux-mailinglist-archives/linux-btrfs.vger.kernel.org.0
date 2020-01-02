@@ -2,345 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD80212E5A7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 12:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B04B12E603
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 13:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgABL2I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 06:28:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43216 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728135AbgABL2I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 06:28:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 03807B217
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jan 2020 11:28:05 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs: statfs: Use virtual chunk allocation to calculation available data space
-Date:   Thu,  2 Jan 2020 19:27:46 +0800
-Message-Id: <20200102112746.145045-5-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200102112746.145045-1-wqu@suse.com>
-References: <20200102112746.145045-1-wqu@suse.com>
+        id S1728284AbgABMHI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 07:07:08 -0500
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:49346 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728205AbgABMHH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 07:07:07 -0500
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 89511A4130; Thu,  2 Jan 2020 12:07:05 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1577966825;
+        bh=Sxgqu4Av868l106pLwWt7xgHPCQc9iF1V25a08yfJLc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=DZEiPqKXBFtkWdmpEAMJi2MrlXAcRMw5kl38CktQMZnqO/GV8vTsxfdpHL6OryMHK
+         rppUZYTdvlxPKkxWgElmrFvScOxW21dRJt9Ew7V4VMLdsgDPd9uCvKIpZU/c7LFPYM
+         inDKMNKqfR9GIWDLgQhDN89P/J0vFaem+xxbSbY+nnM0SCVMpF7gHJO6bABzhe3P34
+         8jZpy0h4c1LuMc+itHe1tO988fD0wgYh6FmxR0F0kuLg1xYAy3BkqmTNo0z1MMG2Ud
+         yyCQIrNM2yY8GmEMfwaV2zDpviTuv995MQC4g7FZSYBseIlDK+wzos/rFEG+dMXGz9
+         FQrqfkPv+B/ug==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 9E4C59C638;
+        Thu,  2 Jan 2020 12:07:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1577966823;
+        bh=Sxgqu4Av868l106pLwWt7xgHPCQc9iF1V25a08yfJLc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=STL4WsIVmAEtc4DwRgVeYa5E9wEtvpSUCcL6zXBg6PEbnBzUSnDjmoESMKynWz+y/
+         /e3PlIlKzjasXkOzHQuT34klcf6o5Uc+2T9Qm6RiYEmFvc0M7PM1lP6LbtzQ7wkQ26
+         9rihATt6kb1HkIwLIAc4aC4HO7T3+GERc+CfO2IsBEu/AokzcjIKqgI7LOtdDsE3yt
+         S8Pt6MWC8+h045m8bi78860Q1u2xfCAKJv2K4vSoKiAKzSw5e9ZY/E5ts0Sky9DSn8
+         VmE5picNb/pqdBXp5BvxTsf6WSHDNo/N8JgiD5XZGJnRcrFRJiTAud4t7zM1zCjyPv
+         IU6dZRqXsYHYw==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id C908C9558F;
+        Thu,  2 Jan 2020 12:07:00 +0000 (GMT)
+Subject: Re: Interrupted and resumed scrubs seem to have caused filesystem to
+ go readonly (EFBIG error)
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <f15c0d2f-df61-17fc-667c-2b0eb5674be2@cobb.uk.net>
+ <7798d1f5-d54d-e756-973c-f2ebfa456315@gmx.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <09556f2c-be43-1363-ccbe-065c88f8d5c5@cobb.uk.net>
+Date:   Thu, 2 Jan 2020 12:07:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <7798d1f5-d54d-e756-973c-f2ebfa456315@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although btrfs_calc_avail_data_space() is trying to do an estimation
-on how many data chunks it can allocate, the estimation is far from
-perfect:
+On 02/01/2020 01:26, Qu Wenruo wrote:
+> 
+> 
+> On 2020/1/2 上午7:35, Graham Cobb wrote:
+>> I have a problem on one BTRFS filesystem. It is not a critical
+>> filesystem (it is used for backups) and I have not yet tried even
+>> unmounting and remounting, let alone a "btrfs check".
+>>
+>> The problem seems to be that after several iterations of running 'btrfs
+>> scrub' for 30 minutes, then pausing for a while, then resuming the
+>> scrub, I got a transaction aborted with an EFBIG error and a warning in
+>> the kernel log. The fs went readonly, and transid verify errors are now
+>> reported. The original log extract is available at
+>> http://www.cobb.uk.net/kern.log.bug-010120 but I have pasted the key
+>> part below.
+> 
+> EFBIG in btrfs is very rare, and can only be caused by too many system
+> chunks.
+> 
+> The most common reason is the chunk pre-alllocation for scrub, which
+> also matches your situation.
+> 
+> There is already a fix for it, and will land in v5.5 kernel.
+> It looks like we should backport it.
 
-- Metadata over-commit is not considered at all
-- Chunk allocation doesn't take RAID5/6 into consideration
+Thanks Qu. I will wait for that kernel, and maybe stop my monthly scrubs
+(although my several other btrfs filesystems did not have a problem this
+month fortunately).
 
-Although current per-profile available space itself is not able to
-handle metadata over-commit itself, the virtual chunk infrastructure can
-be re-used to address above problems.
+I am getting transid errors:
 
-This patch will change btrfs_calc_avail_data_space() to do the following
-things:
-- Do metadata virtual chunk allocation first
-  This is to address the over-commit behavior.
-  If current metadata chunks have enough free space, we can completely
-  skip this step.
+>> Jan  1 06:51:56 black kernel: [1931271.801468] BTRFS error (device
+>> sdc3): parent transid verify failed on 16216583520256 wanted 301800
+>> found 301756
 
-- Allocate data virtual chunks as many as possible
-  Just like what we did in per-profile available space estimation.
-  Here we only need to calculate one profile, since statfs() call is
-  a relative cold path.
+I presume 301800 is the transaction which failed and caused the fs to go
+readonly. I don't suppose it is likely I could revert the whole fs to
+the state of the last successful transaction is there?
 
-Now statfs() should be able to report near perfect estimation on
-available data space, and can handle RAID5/6 better.
+It is not a big problem: the fs only contains backup snapshots (not my
+only backups!) although it would be nice to recover the historical
+snapshots if I could (I used them to research a bug I reported to debian
+just the other day!).
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 190 ++++++++++++++++-----------------------------
- fs/btrfs/volumes.c |  12 +--
- fs/btrfs/volumes.h |   4 +
- 3 files changed, 79 insertions(+), 127 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..718ff54b62f0 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1893,119 +1893,88 @@ static inline void btrfs_descending_sort_devices(
- /*
-  * The helper to calc the free space on the devices that can be used to store
-  * file data.
-+ *
-+ * The calculation will:
-+ * - Allocate enough metadata virtual chunks to fulfill over-commit
-+ *   To ensure we still have enough space to contain metadata chunks
-+ * - Allocate any many data virtual chunks as possible
-+ *   To get a true estimation on available data free space.
-+ *
-+ * Only with such comprehensive check, we can get a good result considering
-+ * all the uneven disk layouts.
-  */
- static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
--					      u64 *free_bytes)
-+					      u64 free_meta, u64 *result)
- {
- 	struct btrfs_device_info *devices_info;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_device *device;
--	u64 type;
--	u64 avail_space;
--	u64 min_stripe_size;
--	int num_stripes = 1;
--	int i = 0, nr_devices;
--	const struct btrfs_raid_attr *rattr;
-+	u64 meta_index;
-+	u64 data_index;
-+	u64 meta_rsv;
-+	u64 meta_allocated = 0;
-+	u64 data_allocated = 0;
-+	u64 allocated;
-+	int nr_devices;
-+	int ret = 0;
- 
--	/*
--	 * We aren't under the device list lock, so this is racy-ish, but good
--	 * enough for our purposes.
--	 */
--	nr_devices = fs_info->fs_devices->open_devices;
--	if (!nr_devices) {
--		smp_mb();
--		nr_devices = fs_info->fs_devices->open_devices;
--		ASSERT(nr_devices);
--		if (!nr_devices) {
--			*free_bytes = 0;
--			return 0;
--		}
--	}
-+	spin_lock(&fs_info->global_block_rsv.lock);
-+	meta_rsv = fs_info->global_block_rsv.size;
-+	spin_unlock(&fs_info->global_block_rsv.lock);
- 
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	nr_devices = fs_devices->rw_devices;
- 	devices_info = kmalloc_array(nr_devices, sizeof(*devices_info),
- 			       GFP_KERNEL);
--	if (!devices_info)
--		return -ENOMEM;
--
--	/* calc min stripe number for data space allocation */
--	type = btrfs_data_alloc_profile(fs_info);
--	rattr = &btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)];
--
--	if (type & BTRFS_BLOCK_GROUP_RAID0)
--		num_stripes = nr_devices;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1)
--		num_stripes = 2;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C3)
--		num_stripes = 3;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C4)
--		num_stripes = 4;
--	else if (type & BTRFS_BLOCK_GROUP_RAID10)
--		num_stripes = 4;
--
--	/* Adjust for more than 1 stripe per device */
--	min_stripe_size = rattr->dev_stripes * BTRFS_STRIPE_LEN;
--
--	rcu_read_lock();
--	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
--						&device->dev_state) ||
--		    !device->bdev ||
--		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
--			continue;
--
--		if (i >= nr_devices)
--			break;
--
--		avail_space = device->total_bytes - device->bytes_used;
--
--		/* align with stripe_len */
--		avail_space = rounddown(avail_space, BTRFS_STRIPE_LEN);
--
--		/*
--		 * In order to avoid overwriting the superblock on the drive,
--		 * btrfs starts at an offset of at least 1MB when doing chunk
--		 * allocation.
--		 *
--		 * This ensures we have at least min_stripe_size free space
--		 * after excluding 1MB.
--		 */
--		if (avail_space <= SZ_1M + min_stripe_size)
--			continue;
--
--		avail_space -= SZ_1M;
--
--		devices_info[i].dev = device;
--		devices_info[i].max_avail = avail_space;
--
--		i++;
-+	if (!devices_info) {
-+		ret = -ENOMEM;
-+		goto out;
- 	}
--	rcu_read_unlock();
--
--	nr_devices = i;
- 
--	btrfs_descending_sort_devices(devices_info, nr_devices);
--
--	i = nr_devices - 1;
--	avail_space = 0;
--	while (nr_devices >= rattr->devs_min) {
--		num_stripes = min(num_stripes, nr_devices);
--
--		if (devices_info[i].max_avail >= min_stripe_size) {
--			int j;
--			u64 alloc_size;
--
--			avail_space += devices_info[i].max_avail * num_stripes;
--			alloc_size = devices_info[i].max_avail;
--			for (j = i + 1 - num_stripes; j <= i; j++)
--				devices_info[j].max_avail -= alloc_size;
--		}
--		i--;
--		nr_devices--;
-+	data_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_data_alloc_profile(fs_info));
-+	meta_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_metadata_alloc_profile(fs_info));
-+
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+
-+	/* Current metadata space is enough, no need to bother meta space */
-+	if (meta_rsv <= free_meta)
-+		goto data_only;
-+
-+	/* Allocate space for exceeding meta space */
-+	while (meta_allocated < meta_rsv - free_meta) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				meta_index,
-+				meta_rsv - free_meta - meta_allocated,
-+				&allocated);
-+		if (ret < 0)
-+			goto out;
-+		meta_allocated += allocated;
-+	}
-+data_only:
-+	/*
-+	 * meta virtual chunks have been allocated, now allocate data virtual
-+	 * chunks
-+	 */
-+	while (ret == 0) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				data_index, -1, &allocated);
-+		if (ret < 0)
-+			goto out;
-+		data_allocated += allocated;
- 	}
- 
-+out:
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+	mutex_unlock(&fs_devices->device_list_mutex);
- 	kfree(devices_info);
--	*free_bytes = avail_space;
--	return 0;
-+	*result = data_allocated;
-+	if (ret == -ENOSPC)
-+		ret = 0;
-+	return ret;
- }
- 
- /*
-@@ -2034,7 +2003,6 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	unsigned factor = 1;
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
- 	int ret;
--	u64 thresh = 0;
- 	int mixed = 0;
- 
- 	rcu_read_lock();
-@@ -2082,31 +2050,11 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		buf->f_bfree = 0;
- 	spin_unlock(&block_rsv->lock);
- 
--	buf->f_bavail = div_u64(total_free_data, factor);
--	ret = btrfs_calc_avail_data_space(fs_info, &total_free_data);
-+	ret = btrfs_calc_avail_data_space(fs_info, total_free_meta,
-+					  &buf->f_bavail);
- 	if (ret)
- 		return ret;
--	buf->f_bavail += div_u64(total_free_data, factor);
- 	buf->f_bavail = buf->f_bavail >> bits;
--
--	/*
--	 * We calculate the remaining metadata space minus global reserve. If
--	 * this is (supposedly) smaller than zero, there's no space. But this
--	 * does not hold in practice, the exhausted state happens where's still
--	 * some positive delta. So we apply some guesswork and compare the
--	 * delta to a 4M threshold.  (Practically observed delta was ~2M.)
--	 *
--	 * We probably cannot calculate the exact threshold value because this
--	 * depends on the internal reservations requested by various
--	 * operations, so some operations that consume a few metadata will
--	 * succeed even if the Avail is zero. But this is better than the other
--	 * way around.
--	 */
--	thresh = SZ_4M;
--
--	if (!mixed && total_free_meta - thresh < block_rsv->size)
--		buf->f_bavail = 0;
--
- 	buf->f_type = BTRFS_SUPER_MAGIC;
- 	buf->f_bsize = dentry->d_sb->s_blocksize;
- 	buf->f_namelen = BTRFS_NAME_LEN;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index be8250332c60..b2155a143740 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2658,10 +2658,10 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
-  *    Such virtual chunks won't take on-disk space, thus called virtual, and
-  *    only affects per-profile available space calulation.
-  */
--static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
--			       struct btrfs_device_info *devices_info,
--			       enum btrfs_raid_types type,
--			       u64 to_alloc, u64 *allocated)
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated)
- {
- 	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-@@ -2761,8 +2761,8 @@ static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
- 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
- 		device->virtual_allocated = 0;
- 	while (ret == 0) {
--		ret = alloc_virtual_chunk(fs_info, devices_info, type,
--					  (u64)-1, &allocated);
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info, type,
-+						(u64)-1, &allocated);
- 		if (ret == 0)
- 			result += allocated;
- 	}
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 81cdab0d864a..3c327ad6924e 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -459,6 +459,10 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- 		      struct btrfs_device *device, u64 new_size);
- struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
- 				       u64 devid, u8 *uuid, u8 *fsid, bool seed);
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated);
- int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
- int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
- int btrfs_balance(struct btrfs_fs_info *fs_info,
--- 
-2.24.1
-
+Regards
+Graham
