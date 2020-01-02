@@ -2,94 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCDC12E8F9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7BF12E8FE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jan 2020 17:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgABQ4D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 11:56:03 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41642 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728847AbgABQ4D (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 11:56:03 -0500
-Received: by mail-qk1-f193.google.com with SMTP id x129so31794526qke.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 08:56:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PrvoBtggfGOPi9SZuOm97CHt2qEDAHFKK7swGJ2xMiw=;
-        b=dRfLRR3v0zxIC06gqWIm3UyQO9PNVeyp4hhim8sSjlqNtlzqMLY6TSSH2PBhMVPyth
-         jN+oqpaes5UhIFdyARTHt7x3cMtFnKb/upT+KIK9e9pcjWaaEdWlLIR/mssEkXOQGL/J
-         0o2SeB7RB5GB5RjapYSXDWbzx3qs9jnvutBkQ8s2mt2tk0wNXgslo4mX3de3OQNk/sNJ
-         vkBUL76scn/CCZnNFx+BF4JMhej9QR97Nb5dzNGpuvgfVKDK552s6AGE+K+3EzF6gbqy
-         q8x7CZ3P4zAcGAWu4pMqmpEC0gertFAt+35+MFg6MAQ/zsZi1ADVJ7b3unnlAkRM6hBq
-         6M/Q==
-X-Gm-Message-State: APjAAAUZCFZa69zMDWX0fJ0Mhd7g4iU2wzRBX8Au96ilEZQcOxfjl5F6
-        dLfSFWyqgE0IvnYFp40yrLk=
-X-Google-Smtp-Source: APXvYqwdQvv+Wnofel0RyRGrDQjifS2z4du6vgNNst3joM5jHCgtEjzBBs+eRUav5zKEUclAWds3Yw==
-X-Received: by 2002:a05:620a:14bc:: with SMTP id x28mr66622775qkj.494.1577984161952;
-        Thu, 02 Jan 2020 08:56:01 -0800 (PST)
-Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::1:29bb])
-        by smtp.gmail.com with ESMTPSA id t42sm17410720qtt.84.2020.01.02.08.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2020 08:56:01 -0800 (PST)
-Date:   Thu, 2 Jan 2020 11:55:59 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        id S1728890AbgABQ4O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 11:56:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60882 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728847AbgABQ4O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 11:56:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A33CBAAA6;
+        Thu,  2 Jan 2020 16:56:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 685F7DA790; Thu,  2 Jan 2020 17:56:04 +0100 (CET)
+Date:   Thu, 2 Jan 2020 17:56:03 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 6/6] btrfs-progs: extent-tree: Fix a by-one error in
+ exclude_super_stripes()
+Message-ID: <20200102165603.GL3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 18/22] btrfs: only keep track of data extents for async
- discard
-Message-ID: <20200102165559.GE86832@dennisz-mbp.dhcp.thefacebook.com>
-References: <cover.1576195673.git.dennis@kernel.org>
- <7dbf1733c917f37122c630d392622d70021cdbdb.1576195673.git.dennis@kernel.org>
- <20191230173954.GX3929@twin.jikos.cz>
+References: <20191218011942.9830-1-wqu@suse.com>
+ <20191218011942.9830-7-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191230173954.GX3929@twin.jikos.cz>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20191218011942.9830-7-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 30, 2019 at 06:39:54PM +0100, David Sterba wrote:
-> On Fri, Dec 13, 2019 at 04:22:27PM -0800, Dennis Zhou wrote:
-> > As mentioned earlier, discarding data can be done either by issuing an
-> > explicit discard or implicitly by reusing the LBA. Metadata chunks see
-> > much more frequent reuse due to well it being metadata. So instead of
-> > explicitly discarding metadata blocks, just leave them be and let the
-> > latter implicit discarding be done for them.
-> > 
-> > Signed-off-by: Dennis Zhou <dennis@kernel.org>
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/btrfs/block-group.h |  6 ++++++
-> >  fs/btrfs/discard.c     | 11 +++++++++--
-> >  2 files changed, 15 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-> > index 601e1d217e22..ee8441439a56 100644
-> > --- a/fs/btrfs/block-group.h
-> > +++ b/fs/btrfs/block-group.h
-> > @@ -182,6 +182,12 @@ static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
-> >  	return (block_group->start + block_group->length);
-> >  }
-> >  
-> > +static inline bool btrfs_is_block_group_data(
-> > +					struct btrfs_block_group *block_group)
-> > +{
-> > +	return (block_group->flags & BTRFS_BLOCK_GROUP_DATA);
+On Wed, Dec 18, 2019 at 09:19:42AM +0800, Qu Wenruo wrote:
+> [BUG]
+> For certain btrfs images, a BUG_ON() can be triggered at open_ctree()
+> time:
+>   Opening filesystem to check...
+>   extent_io.c:158: insert_state: BUG_ON `end < start` triggered, value 1
+>   btrfs(+0x2de57)[0x560c4d7cfe57]
+>   btrfs(+0x2e210)[0x560c4d7d0210]
+>   btrfs(set_extent_bits+0x254)[0x560c4d7d0854]
+>   btrfs(exclude_super_stripes+0xbf)[0x560c4d7c65ff]
+>   btrfs(btrfs_read_block_groups+0x29d)[0x560c4d7c698d]
+>   btrfs(btrfs_setup_all_roots+0x3f3)[0x560c4d7c0b23]
+>   btrfs(+0x1ef53)[0x560c4d7c0f53]
+>   btrfs(open_ctree_fs_info+0x90)[0x560c4d7c11a0]
+>   btrfs(+0x6d3f9)[0x560c4d80f3f9]
+>   btrfs(main+0x94)[0x560c4d7b60c4]
+>   /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7fd189773ee3]
+>   btrfs(_start+0x2e)[0x560c4d7b635e]
 > 
-> What happens for mixed data and metadata block groups? As this is a
-> special mode that will likely lead to fragmented block groups I think
-> that async discard won't be able to help much.
+> [CAUSE]
+> This is caused by passing @len == 0 to add_excluded_extent(), which
+> means one revsere mapped range is just out of the block group range,
+> normally means a by-one error.
 > 
-> I'd suggest to make the test explicit only for the separate block group
-> types and comment that mixed bg's are not supported.
+> [FIX]
+> Fix the boundary check on the reserve mapped range against block group
+> range.
+> If a reverse mapped super block starts at the end of the block group, it
+> doesn't cover so we don't need to bother the case.
+> 
+> Issue: #210
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  extent-tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/extent-tree.c b/extent-tree.c
+> index 6288c8a3..7ba80375 100644
+> --- a/extent-tree.c
+> +++ b/extent-tree.c
+> @@ -3640,7 +3640,7 @@ int exclude_super_stripes(struct btrfs_fs_info *fs_info,
+>  		while (nr--) {
+>  			u64 start, len;
+>  
+> -			if (logical[nr] > cache->key.objectid +
+> +			if (logical[nr] >= cache->key.objectid +
+>  			    cache->key.offset)
 
-Yeah it probably wouldn't do the system much good. I've renamed the test
-to btrfs_is_block_group_data_only() and added a comment in the async
-discard header patch to state that mixed block_groups aren't supported.
+Do we have the same problem in kernel? The code does ">".
