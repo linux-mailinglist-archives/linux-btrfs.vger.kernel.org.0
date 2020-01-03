@@ -2,227 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE14412F5EC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 10:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC4D12F66C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 10:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgACJIu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 04:08:50 -0500
-Received: from naboo.endor.pl ([91.194.229.149]:41567 "EHLO naboo.endor.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgACJIu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jan 2020 04:08:50 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by naboo.endor.pl (Postfix) with ESMTP id 9937B1A14CC;
-        Fri,  3 Jan 2020 10:08:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at 
-Received: from naboo.endor.pl ([91.194.229.149])
-        by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iONzIbutvgPW; Fri,  3 Jan 2020 10:08:47 +0100 (CET)
-Received: from [192.168.18.35] (91-231-23-50.studiowik.net.pl [91.231.23.50])
-        (Authenticated sender: leszek@dubiel.pl)
-        by naboo.endor.pl (Postfix) with ESMTPSA id 617711A148B;
-        Fri,  3 Jan 2020 10:08:47 +0100 (CET)
-From:   Leszek Dubiel <leszek@dubiel.pl>
-Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
- <0354c266-5d50-51b1-a768-93a78e0ddd51@gmx.com>
- <09ec71c0-e3c2-8bb5-acaf-0317e7204ca9@dubiel.pl>
- <6058c4c4-fcb3-c7cd-6517-10b5908b34da@georgianit.com>
- <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
- <CAJCQCtQEpXvgbs+Y0+A4cLZUft3oqp+sLW8xVPfxt2aqYhMj_g@mail.gmail.com>
- <2c135c87-d01b-53f1-9f76-a5653918a4e7@dubiel.pl>
- <cc364577-1bb8-1512-4d2e-dc7e465ca2d6@dubiel.pl>
- <20191228202344.GE13306@hungrycats.org>
- <c278f501-f5a5-c905-5431-2d735e97fa13@dubiel.pl>
- <CAJCQCtRvAZS1CNgJLdUZTNeUma6A74oPT-SeQe7NYHhXKrMzoA@mail.gmail.com>
- <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl>
- <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
-Message-ID: <283b1c8a-9923-4612-0bbf-acb2a731e726@dubiel.pl>
-Date:   Fri, 3 Jan 2020 10:08:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: pl-PL
+        id S1726640AbgACJx3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 04:53:29 -0500
+Received: from mail.synology.com ([211.23.38.101]:50548 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725972AbgACJx3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jan 2020 04:53:29 -0500
+X-Greylist: delayed 466 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Jan 2020 04:53:27 EST
+From:   ethanwu <ethanwu@synology.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1578044739; bh=DbfJeGGDGsoT0KBsrih4KPc3KNaPV92btTy+pgwq5Fk=;
+        h=From:To:Cc:Subject:Date;
+        b=eYHlGcw6pH9G/cv7cR2DlGPnWbdLcRcnKJtQQT85JbnBUOannRklSeijPc6qfiu8Q
+         K2DJlqOWIv17w9Ryu8pAp//Wr7pw9hhgnIpNX2ddZEIV+ucj2JqaB6l0+6duZqeaPk
+         n66FhYeT3RAL5OPqrTVBHuj/B+OBOzHaeuNhoYQ8=
+To:     linux-btrfs@vger.kernel.org
+Cc:     ethanwu <ethanwu@synology.com>
+Subject: [PATCH] btrfs: add extra ending condition for indirect data backref resolution
+Date:   Fri,  3 Jan 2020 17:44:41 +0800
+Message-Id: <1578044681-25562-1-git-send-email-ethanwu@synology.com>
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Btrfs has two types of data backref.
+For BTRFS_EXTENT_DATA_REF_KEY type of backref, we don't have the
+exact block number. Therefore, we need to call resolve_indirect_refs
+which uses btrfs_search_slot to locate the leaf block. After that,
+we need to walk through the leafs to search for the EXTENT_DATA items
+that have disk bytenr matching the extent item(add_all_parents).
 
+The only conditions we'll stop searching are
+1. We find different object id or type is not EXTENT_DATA
+2. We've already got all the refs we want(total_refs)
 
-W dniu 03.01.2020 o 00:22, Chris Murphy pisze:
- > On Thu, Jan 2, 2020 at 3:39 PM Leszek Dubiel <leszek@dubiel.pl> wrote:
- >
- > > This system could have a few million (!) of small files.
- > > On reiserfs it takes about 40 minutes, to do "find /".
- > > Rsync runs for 6 hours to backup data.
- >
- >
- > There is a mount option:  max_inline=<bytes> which the man page says
- > (default: min(2048, page size) )
- >
- > I've never used it, so in theory the max_inline byte size is 2KiB.
- > However, I have seen substantially larger inline extents than 2KiB
- > when using a nodesize larger than 16KiB at mkfs time.
- >
- > I've wondered whether it makes any difference for the "many small
- > files" case to do more aggressive inlining of extents.
- >
- > I've seen with 16KiB leaf size, often small files that could be
- > inlined, are instead put into a data block group, taking up a minimum
- > 4KiB block size (on x64_64 anyway). I'm not sure why, but I suspect
- > there just isn't enough room in that leaf to always use inline
- > extents, and yet there is enough room to just reference it as a data
- > block group extent. When using a larger node size, a larger percentage
- > of small files ended up using inline extents. I'd expect this to be
- > quite a bit more efficient, because it eliminates a time expensive (on
- > HDD anyway) seek.
+Take the following EXTENT_ITEM as example:
+item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize 95
+    extent refs 24 gen 7302 flags DATA
+    extent data backref root 257 objectid 260 offset 65536 count 5 #backref entry 1
+    extent data backref root 258 objectid 265 offset 0 count 9 #backref entry 2
+    shared data backref parent 394985472 count 10 #backref entry 3
 
-I will try that option when making new disks with BTRFS.
-Then I'll report about efficiency.
+If we want to search for backref entry 1, total_refs here would be 24 rather
+than its count 5.
 
+The reason to use 24 is because some EXTENT_DATA in backref entry 3 block
+394985472 also points to EXTENT_ITEM 40831553536, if this block also belongs to
+root 257 and lies between these 5 items of backref entry 1,
+and we use total_refs = 5, we'll end up missing some refs from backref
+entry 1.
 
+But using total_refs=24 is not accurate. We'll never find extent data keys in
+backref entry 2, since we searched root 257 not 258. We'll never reach block
+394985472 either if this block is not a leaf in root 257.
+As a result, the loop keeps on going until we reach the end of that inode.
 
+Since we're searching for parent block of this backref entry 1,
+we're 100% sure we'll never find any EXTENT_DATA beyond (65536 + 4194304) that
+matching this entry. If there's any EXTENT_DATA with offset beyond this range
+using this extent item, its backref must be stored at different backref entry.
+That EXTENT_DATA will be handled when we process that backref entry.
 
+Fix this by breaking from loop if we reach offset + (size of EXTENT_ITEM).
 
- > Another optimization, using compress=zstd:1, which is the lowest
- > compression setting. That'll increase the chance a file can use inline
- > extents, in particular with a larger nodesize.
- >
- > And still another optimization, at the expense of much more
- > complexity, is LVM cache with an SSD. You'd have to pick a suitable
- > policy for the workload, but I expect that if the iostat utilizations
- > you see of often near max utilization in normal operation, you'll see
- > improved performance. SSD's can handle way higher iops than HDD. But a
- > lot of this optimization stuff is use case specific. I'm not even sure
- > what your mean small file size is.
+btrfs send use backref to search for clone candidate.
+Without this patch, performance drops when running following script.
+This script creates a 10G file with all of its extent size 64K.
+Then it generates shared backref for each data extent, and
+those backrefs could not be found when doing btrfs_resolve_indirect_refs.
 
+item 87 key (11843469312 EXTENT_ITEM 65536) itemoff 10475 itemsize 66
+    refs 3 gen 74 flags DATA
+    extent data backref root 256 objectid 260 offset 10289152 count 2
+    # This shared backref couldn't be found when resolving
+    # indirect ref from snapshot of sub 256
+    shared data backref parent 2303049728 count 1
 
+btrfs subvolume create /volume1/sub1
+for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=64K count=1 seek=$((i-1)) conv=notrunc oflag=direct 2>/dev/null; done
+btrfs subvolume snapshot /volume1/sub1 /volume1/sub2
+for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=4K count=1 seek=$(((i-1)*16+10)) conv=notrunc oflag=direct 2>/dev/null; done
+btrfs subvolume snapshot -r /volume1/sub1 /volume1/snap1
+time btrfs send /volume1/snap1 | btrfs receive /volume2
 
-There is 11 million files:
+without this patch
+real 69m48.124s
+user 0m50.199s
+sys  70m15.600s
 
-root@gamma:/mnt/sdb1# find orion2 > listor2
-root@gamma:/mnt/sdb1# ls -lt listor2
--rw-r--r-- 1 root root 988973729 sty  3 03:09 listor2
-root@gamma:/mnt/sdb1# wc -l listor2
-11329331 listor2
+with this patch
+real 1m31.498s
+user 0m35.858s
+sys  2m55.544s
 
+Signed-off-by: ethanwu <ethanwu@synology.com>
+---
+ fs/btrfs/backref.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-And df on reiserfs shows:
-
-root@orion:~# df  -h -BM
-System plików    1M-bl   used      avail %uż. zamont. na
-/dev/md0        71522M  10353M   61169M  15% /
-/dev/md1       905967M 731199M  174768M  81% /root
-
-10353 + 731199 = 741552 M,
-
-that is average file size is 741552 * 1000000 / 11000000 = 67413 bytes 
-per file.
-This estimation is not good, because df counts in blocks...
-
-I will count more precisely with df --apparent-size.
-
-
-
-
-
- >> # iotop -d30
- >>
- >> Total DISK READ:        34.12 M/s | Total DISK WRITE: 40.36 M/s
- >> Current DISK READ:      34.12 M/s | Current DISK WRITE:      79.22 M/s
- >>    TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN IO> COMMAND
- >>   4596 be/4 root       34.12 M/s   37.79 M/s  0.00 % 91.77 % btrfs
- >
- > Not so bad for many small file reads and writes with HDD. I've see
- > this myself with single spindle when doing small file reads and
- > writes.
-
-
-So small files slow down in my case.
-Ok! Thank you for the expertise.
-
-
-
-PS. This morning:
-
-root@wawel:~# btrfs bala stat /
-Balance on '/' is running
-1227 out of about 1231 chunks balanced (5390 considered),   0% left
-
-So during the night it balanced  600Gb + 600Gb = 1.2Tb of
-data in single profile to raid1 in about 12 hours. That is:
-
-(600 + 600) * 1000 Mb/Gb / (12 hours * 3600 sec/hour)
-       = (600 + 600) * 1000 / (12 × 3600)
-             = 27 Mb/sec
-
-
-
-
-root@wawel:~# btrfs dev usag /
-/dev/sda2, ID: 2
-    Device size:             5.45TiB
-    Device slack:              0.00B
-    Data,RAID1:              2.62TiB
-    Metadata,RAID1:         22.00GiB
-    Unallocated:             2.81TiB
-
-/dev/sdb2, ID: 3
-    Device size:             5.45TiB
-    Device slack:              0.00B
-    Data,RAID1:              2.62TiB
-    Metadata,RAID1:         21.00GiB
-    System,RAID1:           32.00MiB
-    Unallocated:             2.81TiB
-
-/dev/sdc3, ID: 4
-    Device size:            10.90TiB
-    Device slack:            3.50KiB
-    Data,RAID1:              5.24TiB
-    Metadata,RAID1:         33.00GiB
-    System,RAID1:           32.00MiB
-    Unallocated:             5.62TiB
-
-
-
-
-
-root@wawel:~# iostat 10  -x
-Linux 4.19.0-6-amd64 (wawel)     03.01.2020     _x86_64_    (8 CPU)
-
-avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-            0,00    0,00    0,00    0,00    0,00  100,00
-
-Device            r/s     w/s     rkB/s     wkB/s   rrqm/s wrqm/s  
-%rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz svctm  %util
-sda              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-sdb              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-sdc              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-
-avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-            0,04    0,00    0,08    0,00    0,00   99,89
-
-Device            r/s     w/s     rkB/s     wkB/s   rrqm/s wrqm/s  
-%rrqm  %wrqm r_await w_await aqu-sz rareq-sz wareq-sz svctm  %util
-sda              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-sdb              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-sdc              0,00    0,00      0,00      0,00     0,00 0,00   0,00   
-0,00    0,00    0,00   0,00     0,00     0,00 0,00   0,00
-
-
-
-
-
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index e5d8531..ae64995 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -412,7 +412,7 @@ static int add_indirect_ref(const struct btrfs_fs_info *fs_info,
+ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
+ 			   struct ulist *parents, struct prelim_ref *ref,
+ 			   int level, u64 time_seq, const u64 *extent_item_pos,
+-			   u64 total_refs, bool ignore_offset)
++			   u64 total_refs, bool ignore_offset, u64 num_bytes)
+ {
+ 	int ret = 0;
+ 	int slot;
+@@ -458,6 +458,9 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
+ 		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+ 		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+ 
++		if (key_for_search->type == BTRFS_EXTENT_DATA_KEY &&
++		    key.offset >= key_for_search->offset + num_bytes)
++		       break;
+ 		if (disk_byte == wanted_disk_byte) {
+ 			eie = NULL;
+ 			old = NULL;
+@@ -504,7 +507,7 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 				struct btrfs_path *path, u64 time_seq,
+ 				struct prelim_ref *ref, struct ulist *parents,
+ 				const u64 *extent_item_pos, u64 total_refs,
+-				bool ignore_offset)
++				bool ignore_offset, u64 num_bytes)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_key root_key;
+@@ -575,7 +578,8 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	ret = add_all_parents(root, path, parents, ref, level, time_seq,
+-			      extent_item_pos, total_refs, ignore_offset);
++			      extent_item_pos, total_refs, ignore_offset,
++			      num_bytes);
+ out:
+ 	path->lowest_level = 0;
+ 	btrfs_release_path(path);
+@@ -610,7 +614,8 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
+ 				 struct btrfs_path *path, u64 time_seq,
+ 				 struct preftrees *preftrees,
+ 				 const u64 *extent_item_pos, u64 total_refs,
+-				 struct share_check *sc, bool ignore_offset)
++				 struct share_check *sc, bool ignore_offset,
++				 u64 num_bytes)
+ {
+ 	int err;
+ 	int ret = 0;
+@@ -655,7 +660,7 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
+ 		}
+ 		err = resolve_indirect_ref(fs_info, path, time_seq, ref,
+ 					   parents, extent_item_pos,
+-					   total_refs, ignore_offset);
++					   total_refs, ignore_offset, num_bytes);
+ 		/*
+ 		 * we can only tolerate ENOENT,otherwise,we should catch error
+ 		 * and return directly.
+@@ -1127,6 +1132,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 	struct extent_inode_elem *eie = NULL;
+ 	/* total of both direct AND indirect refs! */
+ 	u64 total_refs = 0;
++	u64 num_bytes = SZ_256M;
+ 	struct preftrees preftrees = {
+ 		.direct = PREFTREE_INIT,
+ 		.indirect = PREFTREE_INIT,
+@@ -1194,6 +1200,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 				goto again;
+ 			}
+ 			spin_unlock(&delayed_refs->lock);
++			num_bytes = head->num_bytes;
+ 			ret = add_delayed_refs(fs_info, head, time_seq,
+ 					       &preftrees, &total_refs, sc);
+ 			mutex_unlock(&head->mutex);
+@@ -1215,6 +1222,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 		if (key.objectid == bytenr &&
+ 		    (key.type == BTRFS_EXTENT_ITEM_KEY ||
+ 		     key.type == BTRFS_METADATA_ITEM_KEY)) {
++			num_bytes = key.offset;
+ 			ret = add_inline_refs(fs_info, path, bytenr,
+ 					      &info_level, &preftrees,
+ 					      &total_refs, sc);
+@@ -1236,7 +1244,8 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
+ 	WARN_ON(!RB_EMPTY_ROOT(&preftrees.indirect_missing_keys.root.rb_root));
+ 
+ 	ret = resolve_indirect_refs(fs_info, path, time_seq, &preftrees,
+-				    extent_item_pos, total_refs, sc, ignore_offset);
++				    extent_item_pos, total_refs, sc, ignore_offset,
++				    num_bytes);
+ 	if (ret)
+ 		goto out;
+ 
+-- 
+1.9.1
 
