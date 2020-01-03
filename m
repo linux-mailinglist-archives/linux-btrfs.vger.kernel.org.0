@@ -2,130 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D79C712F1C8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 00:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F6D12F244
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 01:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbgABXWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 18:22:55 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52472 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgABXWz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 18:22:55 -0500
-Received: by mail-wm1-f65.google.com with SMTP id p9so6995123wmc.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 15:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c0oJAM/R5JE5xW4i1s/Ai8HVdJaC5TJfX4f48vrvMMg=;
-        b=HXbG1AjrHMNK+g2pHhL32BGkonREFc3DqhLBLCTxN4gokci7ORmwN1Lrl/C9bZFgGk
-         1ZMm95pCtKjt6GBUbs+lo4VGj5QGbY0npOEzmfV/36NsaIdivpU8JcUheSZxf60SvGza
-         O2ybxMqSKU9fgbyaFqTEw2lwpqAqrpV6J8/2gP4FkpiHRsml33hgBNogCDNJOK72YMuA
-         29pJ/zIC1kUR41b1xVw6J9eAS7VYLomRWk1P8V5/elblyBXog5b7KWfLIMEWj0oAtMwE
-         S8y24g7c6LO9NH8D7iQFu4EQeuSAFquPn9ywS7LWz3Jwb/e4X8zEyUfqUDwHtFaNwuzz
-         jfaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c0oJAM/R5JE5xW4i1s/Ai8HVdJaC5TJfX4f48vrvMMg=;
-        b=nGR3MkaQiCv39OifefqRRKBtHeFoLvOMY0jiof8i8GlSmJbjT6cTMOlIuJUJKgFxbG
-         YUt5w4QFLgnvWt1+n/bcymgUQRE/RRtrM/RGJusBXIcFya9pQc8wSAcvj4lJQpyPqiz9
-         6e1nx6UcaBkfyUjkWLTVGxff281BkWKtLe7IgHbSDFym7ZSwlI0CnevHAhuij0gMBlcP
-         6vGUEIyCnNWnv2DihVyJjIa7ZFkgN8whc4KwZIdIWdZv3J61e4unKonoX+wejGl691t3
-         cmykUt0p0EXjuSdClAARKe5uIiRSCuEUC/DSiQOFK5Oq4E4Nd6hf2zpVIMgBhE7X0Sw+
-         XpGA==
-X-Gm-Message-State: APjAAAXJKpF87mjc9giAhyfJ9Jvg5I3cedIP2hgcYHtQiP70PFJolsbW
-        JHCi6NMcxCBMfUCCfDMvTLdf0qB3m5vTdez5JFr8hm9P9VMJ8Q==
-X-Google-Smtp-Source: APXvYqybwsm5Nt7GJMH8IC0bOOt3hRVBEVsC+VZMK1n6oBWO1MUVDIClaMHCuBKdzdAiHrC7fCA96MQggReOVuWzQ7w=
-X-Received: by 2002:a1c:61c1:: with SMTP id v184mr15863022wmb.160.1578007373484;
- Thu, 02 Jan 2020 15:22:53 -0800 (PST)
+        id S1726146AbgACAjD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 19:39:03 -0500
+Received: from mout.gmx.net ([212.227.15.15]:58151 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725872AbgACAjC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 19:39:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578011936;
+        bh=5/k6jg5g7S1wWejGejzre+2bekdBA1rSru/zdPxR6E8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=KmI/MvqX3swhJMMWObK/zyMtiB4A1VIzLxcfx6p2780oLf9tPlbAe1PSm1KNSbtLT
+         S8QFir8HP3anP2nuaSdfq+oEy8OYA4dPPIDwDyFDByGEJLycIvd/qC64mgQYGWUd3k
+         fyvgD4INj0J80UzTAuhuJfbmh3jmY2ERHtCvS3Lo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6sn7-1jnZLM3XyB-018HtT; Fri, 03
+ Jan 2020 01:38:56 +0100
+Subject: Re: [PATCH v2 4/4] btrfs: statfs: Use virtual chunk allocation to
+ calculation available data space
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200102112746.145045-1-wqu@suse.com>
+ <20200102112746.145045-5-wqu@suse.com>
+ <6b836ff3-29ab-9a06-b76f-114cb0a5cb5b@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <4f7113c2-bdd8-7f74-a038-dda4db4015f1@gmx.com>
+Date:   Fri, 3 Jan 2020 08:38:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
- <0354c266-5d50-51b1-a768-93a78e0ddd51@gmx.com> <09ec71c0-e3c2-8bb5-acaf-0317e7204ca9@dubiel.pl>
- <6058c4c4-fcb3-c7cd-6517-10b5908b34da@georgianit.com> <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
- <CAJCQCtQEpXvgbs+Y0+A4cLZUft3oqp+sLW8xVPfxt2aqYhMj_g@mail.gmail.com>
- <2c135c87-d01b-53f1-9f76-a5653918a4e7@dubiel.pl> <cc364577-1bb8-1512-4d2e-dc7e465ca2d6@dubiel.pl>
- <20191228202344.GE13306@hungrycats.org> <c278f501-f5a5-c905-5431-2d735e97fa13@dubiel.pl>
- <CAJCQCtRvAZS1CNgJLdUZTNeUma6A74oPT-SeQe7NYHhXKrMzoA@mail.gmail.com> <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl>
-In-Reply-To: <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 2 Jan 2020 16:22:37 -0700
-Message-ID: <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
-Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
-To:     Leszek Dubiel <leszek@dubiel.pl>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6b836ff3-29ab-9a06-b76f-114cb0a5cb5b@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="rNzyCxDHVx5EgcJL2H4fizOxDHf492E8f"
+X-Provags-ID: V03:K1:1taDzpFf2YReMndgDfZLr+IjoQRlw4Zfmvrh2wVkAdfPNLHc0OY
+ h2OrqfgVV0M4Cbv5h0K6JhNT8rEc9Hj79Qtdjyu8qzxHJgKC3/4i5Wqr7z2YZDaH0jmpXkn
+ 9d6TjS7R2wAr08qAEHZIca99Xy9BSPfx/PqqvefjEbfIM6WQqg5Zfs7WBCtFm/BASKenRaS
+ /FGO+hyKQGXCewlpZkprw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+UK3PGNvfMM=:5whBBGsZPB3K82q0gF707Z
+ 3CNIYNcovUjMiK594JH57W1mQvtVUPF8oQU/KfNwn5mzIGl29swcFNo5gzvFqv5CjvnGlOvJi
+ gww7HWUsNzDMch2C21cXprIO6/RMYKvA3iPNj1XApn5AnouBxzi84yWm4JGmCGlsuF06L0HUx
+ +NWKa/neEb992jjXXmHVO74vgZPXHaLHe1TiXnanjjnuTyG982abryDv76R7eShFTM3W7Bq5e
+ ZEpxAUC0iyUuTGx66EA7OT2z+hXKAifTwJ675tkh3q+j6OOY9UubMivFQcXVXMQs0JFVCChRF
+ 3OZs4D3lKdognX0jmFxDXPMIKPHDMQq66DF/5PBXonN+GbEJH56YUsQJ6XbY2/h6+lkteKlIx
+ +QZ7XKJUgc2axe+anzU8OL/fzrEqegbEdwDKZMkes58XdRZh907Sq1pZ6PCROxtAFhSXp3O1p
+ Rq7YygZe/ZxWg/54dhaqcm4rEOIVZjbAeFXbWgng4p8qiHUe6Yc2fhFjQUpQJzaiPOzPvOJpT
+ tJOA9ZRjcRYCAqeEfmYmw15aCDrvESQdezLEJIePZqTtiAyxaTnSrGCqI7zhrjbnd5VBAzDIP
+ noQILlO72C5eb2b8ydpPleg1G4aW3zCMs1Ml23tqazQlniGxjgatt4Z+4OQxh/KtrPzp0MMXY
+ 07EPH2d88RNNeRIbySOlQHAfJ4grhySC/lavNjCJMwK5jAhh4+gMr/Bl5U6vO8Q8XBkvKARYs
+ z+0vai1SZz0Pjz3yRE8i2WeHWdF6iZAmq2kzMwZrfELMc1jlrDKO58puj0J0OMVHLClv4nsXq
+ xL1gNodnKV+7vmg2l6FKKvETQUiPaTu2+9j9VEKY7aRsEWCImlMSFwNIm4bBqqW5zjCaoQv24
+ 9w3o+shaQN5mLYL2OdfOfvQHdK5XRdLFoIOw6KCAU+LaVPP3/TSsZ5j/ZM7RFnCanyiC594Vi
+ L2WrWlMe3xuRvfLTbsBXbdQEwLd6za105uew81Fvhgqp38+9chfDyPo3I5Se2JHECiqchiizz
+ 5MinAAsX0ctaS8Qstrf39GSnehUCoadhdmuw/0I41X4IGoQ9f8MiueeSaIwMAShdCQG+2/3BO
+ zVBvbJLJoJhgm4pPOvnGnkHmYGRN6OyCnACjzezw6VQ/eWe5VZTImz37B4qtQZ2MBjZDJl6YD
+ E5lK3Rcjy+6MDA7u8Qf71atzRdc+74KksVwLyga0vmSkRdeVVsixDs/x0fqLwwKhIWlUizKLO
+ EvXkHGbJPf0/Ko67z5saqlSzFKFAZ3t3ZPhK8jV0XfG+bjFAhd53KTe74R2g=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 2, 2020 at 3:39 PM Leszek Dubiel <leszek@dubiel.pl> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--rNzyCxDHVx5EgcJL2H4fizOxDHf492E8f
+Content-Type: multipart/mixed; boundary="Qrn7tReikOVc01uqxLvSrJCdEeVdV5QQH"
 
->  > Almost no reads, all writes, but slow. And rather high write request
->  > per second, almost double for sdc. And sdc is near it's max
->  > utilization so it might be ear to its iops limit?
->  >
->  > ~210 rareq-sz = 210KiB is the average size of the read request for
-> sda and sdb
->  >
->  > Default mkfs and default mount options? Or other and if so what other?
->  >
->  > Many small files on this file system? Or possibly large files with a
->  > lot of fragmentation?
->
-> Default mkfs and default mount options.
->
-> This system could have a few million (!) of small files.
-> On reiserfs it takes about 40 minutes, to do "find /".
-> Rsync runs for 6 hours to backup data.
-
-There is a mount option:  max_inline=<bytes> which the man page says
-(default: min(2048, page size) )
-
-I've never used it, so in theory the max_inline byte size is 2KiB.
-However, I have seen substantially larger inline extents than 2KiB
-when using a nodesize larger than 16KiB at mkfs time.
-
-I've wondered whether it makes any difference for the "many small
-files" case to do more aggressive inlining of extents.
-
-I've seen with 16KiB leaf size, often small files that could be
-inlined, are instead put into a data block group, taking up a minimum
-4KiB block size (on x64_64 anyway). I'm not sure why, but I suspect
-there just isn't enough room in that leaf to always use inline
-extents, and yet there is enough room to just reference it as a data
-block group extent. When using a larger node size, a larger percentage
-of small files ended up using inline extents. I'd expect this to be
-quite a bit more efficient, because it eliminates a time expensive (on
-HDD anyway) seek.
-
-Another optimization, using compress=zstd:1, which is the lowest
-compression setting. That'll increase the chance a file can use inline
-extents, in particular with a larger nodesize.
-
-And still another optimization, at the expense of much more
-complexity, is LVM cache with an SSD. You'd have to pick a suitable
-policy for the workload, but I expect that if the iostat utilizations
-you see of often near max utilization in normal operation, you'll see
-improved performance. SSD's can handle way higher iops than HDD. But a
-lot of this optimization stuff is use case specific. I'm not even sure
-what your mean small file size is.
-
-> # iotop -d30
->
-> Total DISK READ:        34.12 M/s | Total DISK WRITE: 40.36 M/s
-> Current DISK READ:      34.12 M/s | Current DISK WRITE:      79.22 M/s
->    TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO> COMMAND
->   4596 be/4 root       34.12 M/s   37.79 M/s  0.00 % 91.77 % btrfs
-
-Not so bad for many small file reads and writes with HDD. I've see
-this myself with single spindle when doing small file reads and
-writes.
+--Qrn7tReikOVc01uqxLvSrJCdEeVdV5QQH
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
--- 
-Chris Murphy
+
+On 2020/1/3 =E4=B8=8A=E5=8D=8812:20, Josef Bacik wrote:
+> On 1/2/20 6:27 AM, Qu Wenruo wrote:
+>> Although btrfs_calc_avail_data_space() is trying to do an estimation
+>> on how many data chunks it can allocate, the estimation is far from
+>> perfect:
+>>
+>> - Metadata over-commit is not considered at all
+>> - Chunk allocation doesn't take RAID5/6 into consideration
+>>
+>> Although current per-profile available space itself is not able to
+>> handle metadata over-commit itself, the virtual chunk infrastructure c=
+an
+>> be re-used to address above problems.
+>>
+>> This patch will change btrfs_calc_avail_data_space() to do the followi=
+ng
+>> things:
+>> - Do metadata virtual chunk allocation first
+>> =C2=A0=C2=A0 This is to address the over-commit behavior.
+>> =C2=A0=C2=A0 If current metadata chunks have enough free space, we can=
+ completely
+>> =C2=A0=C2=A0 skip this step.
+>>
+>> - Allocate data virtual chunks as many as possible
+>> =C2=A0=C2=A0 Just like what we did in per-profile available space esti=
+mation.
+>> =C2=A0=C2=A0 Here we only need to calculate one profile, since statfs(=
+) call is
+>> =C2=A0=C2=A0 a relative cold path.
+>>
+>> Now statfs() should be able to report near perfect estimation on
+>> available data space, and can handle RAID5/6 better.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>=20
+> Can you put a comparison of the statfs call time for the old way vs the=
+
+> new way in your changelog?=C2=A0 Say make a raid5 fs for example, popul=
+ate it
+> a little bit, and then run statfs 10 times and take the average with an=
+d
+> without your patch so we can make sure there's no performance penalty.=C2=
+=A0
+> You'd be surprised how many times statfs() things have caused problems
+> for us in production.=C2=A0 Thanks,
+
+Sure no problem.
+
+Never considered statfs() can be a problem.
+Will keep an eye on that.
+
+Thanks,
+Qu
+
+>=20
+> Josef
+
+
+--Qrn7tReikOVc01uqxLvSrJCdEeVdV5QQH--
+
+--rNzyCxDHVx5EgcJL2H4fizOxDHf492E8f
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4OjRwXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qiEeAf+PfH4Eev+w9GHBLZPAnLjCH6y
+V8or3qwlCKMJu+xl+7sfp5Syl9ACZdn7fCGir55G/TUJluaQNC379TW9BPr4Lkmv
+Z2K1s9OfvjVmrm/HZzV/FN8eoJBCfGgiLuub5cw+5cIvT2FcbIxFs0gBnBgUcCKU
+7buI0JfKjfJYqW/6WEfYHJfbViMYnLWfkgYHhx+p8BSdB5ceTNt4MS2m4v3A0gtM
+UCvz/5eGn6F5zOlPjxTtLI8bkfZLj0CPfiXxJuEDzBh8Oa7Gtc4muxVPWT50dlBX
+D7xfLTg/5Bvsf+XkCh7Ji5Xll8huQ+zh/qbBs19UmfYfutR/EUbyXbGAGTfMug==
+=sDkw
+-----END PGP SIGNATURE-----
+
+--rNzyCxDHVx5EgcJL2H4fizOxDHf492E8f--
