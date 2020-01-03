@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CB212FCCC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 20:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7070712FCE3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 20:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgACTDA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 14:03:00 -0500
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:39483 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728279AbgACTC7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 14:02:59 -0500
-Received: by mail-wm1-f49.google.com with SMTP id 20so9446687wmj.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2020 11:02:58 -0800 (PST)
+        id S1728427AbgACTPg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 14:15:36 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53949 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728380AbgACTPg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 14:15:36 -0500
+Received: by mail-wm1-f65.google.com with SMTP id m24so9245956wmc.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2020 11:15:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UgFJwExE5/xv5t+UUVlVeupX2KsG8st/CX5A7Y/2IVM=;
-        b=sgSJFmmgVm6dE7wGPIUSRQ78OjeSu342ZpnutWPjlBONnKKTVXw9SLoUrUHwhw2kqs
-         e55utLAuKzkPBPe7zWr93NEilWgfRqTv9dhMFKYUXu8JUIIRcRWssIXGx2+x0Lzy2bRn
-         pdAQSH2ATzE0inAKaz9+6pPCud4Nr9uXMNPFgSxNu8kC+cTskBubS/JFDe03tlHVDWsl
-         9sXeGDsvz3eeVO1wGky9p0zviIVrEQvCf5Q5p0HCD4fezYh5NLhPt/HI28DtWfyiUJKw
-         u8Cmv9gO49dLRqixPHNoImJd7Cq/jWgdjv7n/1k30y/xSiKMxsta2AmS0JiLbWt/np2R
-         oMnw==
+        bh=hHDXJARR3JQjfrqUeoRSQj4NwXOGis2r6SnE2wKGFCw=;
+        b=Qm9IrdXv8cdiNQ3OwqNyTR9MMb32kxYQtkBCaJo/NA1HiLPh67C7QQm4JxghQevIi+
+         /gBuJMyEd55vvjMxoUft8Jook3im7fhdPfcf3flOMzQXNP5j12ekqRmswh4R1mCs1BJe
+         EpVlF6BwFBQJDZ3dxJajHP+F8Yg3f7N0dDKdESxFu0sQA4D/PA3SGbLhPJtKQa4wf6Pt
+         kIRWLwEL71a9F/i+BMUxaBC0TkY2FtAHmKinGJ0lqRTwGbpL5JPUE1imyFY6IeXXTZh8
+         ckMILuTIax02j6J/w6bP+y06wzYjcqA8i9T96y1XugE+0yX9MQSaEL+31xWphD1z+kie
+         xNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UgFJwExE5/xv5t+UUVlVeupX2KsG8st/CX5A7Y/2IVM=;
-        b=Y5+mJFAuE9aF7Tb0TXnAlNxXfT0XMeEkkelL+hJ16GGUhVOEBIgfd0fYhWx38/+KGJ
-         ieTrF4iQWXpC80XJF29XKdPARmjbbU+t8Zw1Y5XB5QPRSzBXssUycfFBmUGklax+M2mg
-         4KjJ0TnJJjlL/XM3kklacc/XGamizlmIr14ZhEvYVfUofngksUBd0spQ5ScqGsHsShDy
-         CaF2O+81io4w5NL4d3LWauVOgIG3ij82SwfKbHT93ManspNDuO/UO9AZNXK10FJhEkjP
-         I0afCgxDcDNecM1a19+m9RqLS8/nWUPyZnsvO3fQJfy8rGC0wlZf0M6+VBVFNKcbsi7I
-         bD+w==
-X-Gm-Message-State: APjAAAXd1dykDq1Hpk4cupLIy1tkLut70qIiUvCZ2aMLou+51L0kA/Mx
-        FLHCw1x8XePr0OThhOPYGl6DzeUyRfJ7gRLHH2oH57lfUx8=
-X-Google-Smtp-Source: APXvYqz8JbbKukeH/cuaYsqTEe5pSdRTY5hTH+BteGkG79quNS/2JyVJrhoKPCoAYvyBFhx7WVI9rFHiglwWp73giJc=
-X-Received: by 2002:a05:600c:294:: with SMTP id 20mr20763819wmk.97.1578078177807;
- Fri, 03 Jan 2020 11:02:57 -0800 (PST)
+        bh=hHDXJARR3JQjfrqUeoRSQj4NwXOGis2r6SnE2wKGFCw=;
+        b=KCxOeAaiPeSEyAaEg4UQRP2eV72DWhCxaXSrLH6F5zpiL/su3xeDZwIT2c+2WZFlRZ
+         zTX2pVwoWG9OdCwjXReJADS9G9gtFEhDFrU8q8QNiKLov6QZ2fjio8fnc6uyhSPEls5w
+         SFNl6JSihXL32DJ+p66k94MILmStV40ctUE2IrkDcGd4QCazg0DQrNyE9FKICkIjkLqA
+         mfM5AdpFxKfs51D/oB65WATB2xnuohTd6q5l6VKbGSytXqc5KPMs+r36K2SmFzLf0AOl
+         ovzp3g1ioqXJpyntb69ya+lSTOcu4/3MlhCtiFIIYvklLq68jr2yGFgKKsJqjVIMuImm
+         Kq9w==
+X-Gm-Message-State: APjAAAXsFUijsjFrHg+/eKHGaeN+xjyHFbWgP3BbEHx2qfjwZuXNMnAw
+        P+dbdOjTZgReRC1ySDrO+V9GHDWyiK0T8OwbQQngNg==
+X-Google-Smtp-Source: APXvYqztDPvG5DeBrJQwSuqJa0bA457INGOwPXA0trp7DWa3go9LLSmJ1BTAU6Lg1c2dF4kC0D0YuDQXzmMHljDXalY=
+X-Received: by 2002:a1c:61c1:: with SMTP id v184mr20757912wmb.160.1578078933576;
+ Fri, 03 Jan 2020 11:15:33 -0800 (PST)
 MIME-Version: 1.0
 References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
  <0354c266-5d50-51b1-a768-93a78e0ddd51@gmx.com> <09ec71c0-e3c2-8bb5-acaf-0317e7204ca9@dubiel.pl>
@@ -49,57 +49,87 @@ References: <879f2f45-f738-da74-9e9c-b5a7061674b6@dubiel.pl>
  <20191228202344.GE13306@hungrycats.org> <c278f501-f5a5-c905-5431-2d735e97fa13@dubiel.pl>
  <CAJCQCtRvAZS1CNgJLdUZTNeUma6A74oPT-SeQe7NYHhXKrMzoA@mail.gmail.com>
  <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl> <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
- <7c82851a-21cf-2a66-8d1c-42d57ca0538f@dubiel.pl>
-In-Reply-To: <7c82851a-21cf-2a66-8d1c-42d57ca0538f@dubiel.pl>
+ <283b1c8a-9923-4612-0bbf-acb2a731e726@dubiel.pl>
+In-Reply-To: <283b1c8a-9923-4612-0bbf-acb2a731e726@dubiel.pl>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 3 Jan 2020 12:02:41 -0700
-Message-ID: <CAJCQCtSpFyfHAWVth5PuvjJtiHPfN52WzspOdsvLrJxMdbcirw@mail.gmail.com>
+Date:   Fri, 3 Jan 2020 12:15:17 -0700
+Message-ID: <CAJCQCtSG0nEEahu+KLxKCu3LYWFaA4Tp77Ai1NDmSSdtGc0w7g@mail.gmail.com>
 Subject: Re: very slow "btrfs dev delete" 3x6Tb, 7Tb of data
 To:     Leszek Dubiel <leszek@dubiel.pl>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 3, 2020 at 7:39 AM Leszek Dubiel <leszek@dubiel.pl> wrote:
+On Fri, Jan 3, 2020 at 2:08 AM Leszek Dubiel <leszek@dubiel.pl> wrote:
 >
-> ** number of files by given size
+>  >> # iotop -d30
+>  >>
+>  >> Total DISK READ:        34.12 M/s | Total DISK WRITE: 40.36 M/s
+>  >> Current DISK READ:      34.12 M/s | Current DISK WRITE:      79.22 M/s
+>  >>    TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN IO> COMMAND
+>  >>   4596 be/4 root       34.12 M/s   37.79 M/s  0.00 % 91.77 % btrfs
+>  >
+>  > Not so bad for many small file reads and writes with HDD. I've see
+>  > this myself with single spindle when doing small file reads and
+>  > writes.
+
+It's not small files directly. It's the number of write requests per
+second, resulting in high latency seeks. And the reason for the
+seeking needs a second opinion, to be certain it's related to small
+files.
+
+I'm not really sure why there are hundreds of write requests per
+second. Seems to me with thousands of small files, Btrfs can aggregate
+them into a single sequential write (mostly sequential anyway) and do
+the same for metadata writes; yes there is some back and forth seeking
+since metadata and data block groups are in different physical
+locations. But hundreds of times per second? Hmmm. I'm suspicious why.
+It must be trying to read and write hundreds of small files *in
+different locations* causing the seeks, and the ensuing latency.
+
+The typical work around for this these days is add more disks or add
+SSD. If you add a fourth disk, you reduce your one bottle neck:
+
+
+> root@wawel:~# btrfs dev usag /
+> /dev/sda2, ID: 2
+>     Device size:             5.45TiB
+>     Device slack:              0.00B
+>     Data,RAID1:              2.62TiB
+>     Metadata,RAID1:         22.00GiB
+>     Unallocated:             2.81TiB
 >
-> root@wawel:/mnt/root/orion# cat disk_usage | perl -MData::Dumper -e
-> '$Data::Dumper::Sortkeys = 1; while (<>) { chomp; my ($byt, $nam) =
-> split /\t/, $_, -1; if (index("$las/", $nam) == 0) { $dir++; } else {
-> $filtot++; for $p (1 .. 99) { if ($byt < 10 ** $p) { $fil{"num of files
-> size <10^$p"}++; last; } } }; $las = $nam; }; print "\ndirectories:
-> $dir\ntotal num of files: $filtot\n", "\nnumber of files grouped by
-> size: \n", Dumper(\%fil) '
+> /dev/sdb2, ID: 3
+>     Device size:             5.45TiB
+>     Device slack:              0.00B
+>     Data,RAID1:              2.62TiB
+>     Metadata,RAID1:         21.00GiB
+>     System,RAID1:           32.00MiB
+>     Unallocated:             2.81TiB
 >
-> directories: 1314246
-> total num of files: 10123960
->
-> number of files grouped by size:
-> $VAR1 = {
->            'num of files size <10^1' => 3325886,
->            'num of files size <10^2' => 3709276,
->            'num of files size <10^3' => 789852,
->            'num of files size <10^4' => 1085927,
->            'num of files size <10^5' => 650571,
->            'num of files size <10^6' => 438717,
->            'num of files size <10^7' => 116757,
->            'num of files size <10^8' => 6638,
->            'num of files size <10^9' => 323
->            'num of files size <10^10' => 13,
+> /dev/sdc3, ID: 4
+>     Device size:            10.90TiB
+>     Device slack:            3.50KiB
+>     Data,RAID1:              5.24TiB
+>     Metadata,RAID1:         33.00GiB
+>     System,RAID1:           32.00MiB
+>     Unallocated:             5.62TiB
 
-Is that really ~7.8 million files at or less than 1KiB?? (totalling
-the first three)
+OK this is important. Two equal size drives, and the third is much
+larger. This means writes are going to be IO bound to that single
+large device because it's always going to be written to. The reads get
+spread out somewhat.
 
-Compression may not do much with such small files, and also I'm not
-sure which algorithm would do the best job. They all probably want a
-lot more than 1KiB to become efficient.
-
-But nodesize 64KiB might be a big deal...worth testing.
-
+Again, maybe the every day workload is the one to focus on  because
+it's not such a big deal for a device replace to take overnight. Even
+though it would be good for everyone's use case if it turns out
+there's some optimization possible to avoid hundreds of write requests
+per second, just because of small files.
 
 
 
