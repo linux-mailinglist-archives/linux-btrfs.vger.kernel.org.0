@@ -2,101 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A30612FBB2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 18:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A8312FCBA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 19:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbgACRnr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 12:43:47 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:39184 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgACRnr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 12:43:47 -0500
-Received: by mail-qt1-f194.google.com with SMTP id e5so37380126qtm.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2020 09:43:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l25yy0ARofBl8zc0HFe3XGYRgSUIOXsm16tl1LH+rKI=;
-        b=IqmidU9BbBLAIlV08Vqn385DrigDTzpscCF8sgqL+x0gizFUeCOos/9JLtTxaDCUFj
-         d1e6b2Z0m88ZrxuLmCqs/nyuLQwqJrwL8tF3XmM8eMq4N7Ew2ecYi+fcNGlqrB/Gm9HJ
-         nKfY7cgDsChLExDrnD1moT1Zv5UrOwdF7qdMrjN3OWZIF/USYJ4QsmaoWrQFtwyYExCF
-         RGFhYYKNetrgvvAGvIIbub+TMPykjktZhQItsI3csVZeeEWDsJkKAic11m1oE5bL6UeN
-         f+jOqIcRKiJWHe4MkUnCoMPyyq3/BzRO8ydwhPZdTshzNtmhruZBwGLs67g8NgGaXzus
-         Qv0Q==
-X-Gm-Message-State: APjAAAX/Z7CxGohZjSkOMQD2otAC0KTonQUDJ2a70e20yDeyGpSx84uZ
-        R02OzseNYx0/4XyB6ZpgJaE=
-X-Google-Smtp-Source: APXvYqye86MSznDxpmTIuW9Kv7mUUDP0IKI7L1c6uikCVmkFWzewhpZfJe5co1MH37fNSDi20F1pIw==
-X-Received: by 2002:ac8:42de:: with SMTP id g30mr64506162qtm.195.1578073426431;
-        Fri, 03 Jan 2020 09:43:46 -0800 (PST)
-Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::3:3853])
-        by smtp.gmail.com with ESMTPSA id c13sm16751208qko.87.2020.01.03.09.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jan 2020 09:43:45 -0800 (PST)
-Date:   Fri, 3 Jan 2020 12:43:43 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/12] btrfs: async discard follow up
-Message-ID: <20200103174343.GA97540@dennisz-mbp.dhcp.thefacebook.com>
-References: <cover.1577999991.git.dennis@kernel.org>
- <20200103145125.GX3929@twin.jikos.cz>
+        id S1728335AbgACSsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 13:48:42 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:40255 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728279AbgACSsm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 13:48:42 -0500
+X-Originating-IP: 176.88.138.87
+Received: from localhost.localdomain (unknown [176.88.138.87])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DDBC8E0005;
+        Fri,  3 Jan 2020 18:48:38 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Cengiz Can <cengiz@kernel.wtf>
+Subject: [PATCH] fs: btrfs: prevent unintentional int overflow
+Date:   Fri,  3 Jan 2020 13:47:40 -0500
+Message-Id: <20200103184739.26903-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200103145125.GX3929@twin.jikos.cz>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 03:51:25PM +0100, David Sterba wrote:
-> On Thu, Jan 02, 2020 at 04:26:34PM -0500, Dennis Zhou wrote:
-> > Hello,
-> > 
-> > Dave applied 1-12 from v6 [1]. This is a follow up cleaning up the
-> > remaining 10 patches adding 2 more to deal with a rare -1 [2] that I
-> > haven't quite figured out how to repro. This is also available at [3].
-> > 
-> > This series is on top of btrfs-devel#misc-next-with-discard-v6 0c7be920bd7d.
-> > 
-> > [1] https://lore.kernel.org/linux-btrfs/cover.1576195673.git.dennis@kernel.org/
-> > [2] https://lore.kernel.org/linux-btrfs/20191217145541.GE3929@suse.cz/
-> > [3] https://git.kernel.org/pub/scm/linux/kernel/git/dennis/misc.git/log/?h=async-discard
-> > 
-> > Dennis Zhou (12):
-> >   btrfs: calculate discard delay based on number of extents
-> >   btrfs: add bps discard rate limit for async discard
-> >   btrfs: limit max discard size for async discard
-> >   btrfs: make max async discard size tunable
-> >   btrfs: have multiple discard lists
-> >   btrfs: only keep track of data extents for async discard
-> >   btrfs: keep track of discard reuse stats
-> >   btrfs: add async discard header
-> >   btrfs: increase the metadata allowance for the free_space_cache
-> >   btrfs: make smaller extents more likely to go into bitmaps
-> >   btrfs: ensure removal of discardable_* in free_bitmap()
-> >   btrfs: add correction to handle -1 edge case in async discard
-> 
-> Besides the changes posted to the patches, I did more style cleanups and
-> formatting adjustments as I went through the patches. I'll do some
-> testing again to be sure there are no bugs introduced by that, but
-> otherwise the patchset can be considered merged to misc-next. I'll push
-> the branch today.
-> 
-> It's a lot of new code but I was able to comprehend what's going on,
-> great that there's the patch adding implementation overview.
-> As the feature is not on by default and requires "special" hardware, it
-> should be safe, basisc tests passed so now we're left with the hard bugs
-> and corner cases. Thanks.
+Coverity scan for 5.5.0-rc4 found a possible integer overflow in
+tree-checker.c line 364.
 
-Ah I apologize for the few misses. Thanks for fixing them and taking
-this series! It definitely wasn't an easy series, so I appreciate the
-help and patience!
+`prev_csum_end = (prev_item_size / csumsize) * sectorsize;`
 
-Thanks,
-Dennis
+Quoting from scan results:
+
+```
+CID 1456959 Unintentional integer overflow
+
+Unintentional integer overflow (OVERFLOW_BEFORE_WIDEN) overflow_before_widen:
+Potentially overflowing expression `prev_item_size / csumsize * sectorsize`
+with type unsigned int (32 bits, unsigned) is evaluated using 32-bit
+arithmetic, and then used in a context that expects an expression of type u64.
+(64 bits, unsigned).
+```
+
+Added a cast to `u64` on the left hand side of the expression.
+
+Compiles fine on x86_64_defconfig with all btrfs config flags enabled.
+
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+---
+ fs/btrfs/tree-checker.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 97f3520b8d98..9f58f07be779 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -361,7 +361,7 @@ static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
+ 		u32 prev_item_size;
+ 
+ 		prev_item_size = btrfs_item_size_nr(leaf, slot - 1);
+-		prev_csum_end = (prev_item_size / csumsize) * sectorsize;
++		prev_csum_end = (u64) (prev_item_size / csumsize) * sectorsize;
+ 		prev_csum_end += prev_key->offset;
+ 		if (prev_csum_end > key->offset) {
+ 			generic_err(leaf, slot - 1,
+-- 
+2.20.1
+
