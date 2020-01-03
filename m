@@ -2,78 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0B212F9B8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 16:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C276D12F9E3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 16:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727731AbgACP1a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 10:27:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46418 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727686AbgACP13 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jan 2020 10:27:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 457E7AF4E;
-        Fri,  3 Jan 2020 15:27:28 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 140C0DA795; Fri,  3 Jan 2020 16:27:20 +0100 (CET)
-Date:   Fri, 3 Jan 2020 16:27:19 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] btrfs-progs: Fixes for github issues
-Message-ID: <20200103152719.GZ3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191218011942.9830-1-wqu@suse.com>
- <20200102171056.GM3929@twin.jikos.cz>
- <e8398282-264a-3ef7-43d5-63f1ac0c7c19@gmx.com>
+        id S1727700AbgACPir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 10:38:47 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42476 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727539AbgACPir (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 10:38:47 -0500
+Received: by mail-qk1-f195.google.com with SMTP id z14so32776428qkg.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2020 07:38:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5bJ8lxRA33P34jfgtIHPjrz5e14AI97LIGVS2RdFDOw=;
+        b=d4HR5bK/OJ2yYxP10bSbtS1gkY16vUkpEqdR5cEz/Xr5uK8PqoLg+APRPOMWdZ8par
+         XWlc87Qh33CgjDSxYc+wjKNVxQZXPOFc+x6qEi2WBSfweKGTjtOHjtnb0MztAzF91lja
+         QU+EZyTiPaSEMiJYU40paFDgl649BoiPyDo+8vOSLN5/x5mC3vxOJqLWMosQIWWtHkEr
+         fObo6co0gD9otUeXWIiNHaUrpYySLmPjMnLG1irrJztx8OLnClMbY4hWz+RPn9N8KtTz
+         /nbnlPY3oNVXYSbCJDLDiwa8HIoNHN2F9VHu5hD7EDEkv2BuYi6xENGHr3EEH/MkpDBb
+         cjag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5bJ8lxRA33P34jfgtIHPjrz5e14AI97LIGVS2RdFDOw=;
+        b=aIjZ4oR5x7igXfoCb+vnZofXF+3G+nXl/lWpv/ABZExdVSmft4AozoW0Rv8P6PzAtm
+         xisvkm6XWWmyvCX1RNcs9ny/Jw3tps9Z0b0KzWOOlXjcarGaAKU1Wcgg/v8SGrNWp9fe
+         fGW8CxsH6WNQ1A0o9XswtNPTw4avklTXp3P7Ewr7yswnPuPJvnItCaFYdRxKGO5m1cdi
+         eAvSYH7G9+pblSuhU0wHQz5PwuiRwVgzxSejKC3g7cqREkSHL3UP7icqVs7BjtNjbEqL
+         fL1ioi3usZ2lhmTLWpTmFwlsi9cHdDaAeneg+XCIqiAFjxn4ZwbHYWSOaCOhZcPnsoDK
+         JmzQ==
+X-Gm-Message-State: APjAAAVYmLWu/bhh5ya6q+VcE0a47StQLcgvlKCvT2wzbtdD7F192JXu
+        BJuw1UQlSk26Kub9wGHAhKM515VZHvZoyw==
+X-Google-Smtp-Source: APXvYqznXrYLt4lFRNj6iU0nBcsYYKE/19xtBsUptewV4H+2r88Axhl/VRvjqbhVvxctD2dtASfbJQ==
+X-Received: by 2002:a05:620a:1324:: with SMTP id p4mr73268543qkj.497.1578065925876;
+        Fri, 03 Jan 2020 07:38:45 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id t42sm18972110qtt.84.2020.01.03.07.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jan 2020 07:38:45 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: fix improper setting of scanned
+Date:   Fri,  3 Jan 2020 10:38:44 -0500
+Message-Id: <20200103153844.13852-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e8398282-264a-3ef7-43d5-63f1ac0c7c19@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 08:43:01AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/1/3 上午1:10, David Sterba wrote:
-> > On Wed, Dec 18, 2019 at 09:19:36AM +0800, Qu Wenruo wrote:
-> >> There are a new batch of fuzzed images for btrfs-progs. They are all
-> >> reported by Ruud van Asseldonk from github.
-> >>
-> >> Patch 1 will make QA life easier by remove the extra 300s wait time.
-> >> Patch 2~5 are all the meat for the fuzzed images.
-> >>
-> >> Just a kind reminder, mkfs/020 test will fail due to tons of problems:
-> >> - Undefined $csum variable
-> >> - Undefined $dev1 variable
-> > 
-> > These are fixed in devel now.
-> > 
-> >> - Bad kernel probe for support csum
-> >>   E.g. if Blake2 not compiled, it still shows up in supported csum algo,
-> >>   but will fail to mount.
-> > 
-> > The list of supported is from the point of view of the filesystem.
-> > Providing the module is up to the user.
-> 
-> IIRC, doing such probe at btrfs module load time would be more user
-> friendly though.
+We noticed that we were having regular CG OOM kills in cases where there
+was still enough dirty pages to avoid OOM'ing.  It turned out there's
+this corner case in btrfs's handling of range_cyclic where files that
+were being redirtied were not getting fully written out because of how
+we do range_cyclic writeback.
 
-I don't understand how you think this could be improved. The list of
-algorithms is provided by the filesystem, the implementations are
-provided by the crypto subsystem (either compiled in or as modules). Two
-different things.
+We unconditionally were setting scanned = 1; the first time we found any
+pages in the inode.  This isn't actually what we want, we want it to be
+set if we've scanned the entire file.  For range_cyclic we could be
+starting in the middle or towards the end of the file, so we could write
+one page and then not write any of the other dirty pages in the file
+because we set scanned = 1.
 
-So you mean that at btrfs module load time, all hash algorithms are
-probed? What if some of them gets unloaded, or loaded later (so modprobe
-won't see it at btrfs load time). This would require keeping the state
-up to date and this is out of scope what filesystem should do.
+Fix this by not setting scanned = 1 if we find pages.  The rules for
+setting scanned should be
+
+1) !range_cyclic.  In this case we have a specified range to write out.
+2) range_cyclic && index == 0.  In this case we've started at the
+   beginning and there is no need to loop around a second time.
+3) range_cyclic && we started at index > 0 and we've reached the end of
+   the file without satisfying our nr_to_write.
+
+This patch fixes both of our writepages implementations to make sure
+these rules hold true.  This fixed our over zealous CG OOMs in
+production.
+
+Fixes: d1310b2e0cd9 ("Btrfs: Split the extent_map code into two parts")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 410f5a64d3a6..d634cb0c39e3 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3965,6 +3965,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 	if (wbc->range_cyclic) {
+ 		index = mapping->writeback_index; /* Start from prev offset */
+ 		end = -1;
++		scanned = (index == 0);
+ 	} else {
+ 		index = wbc->range_start >> PAGE_SHIFT;
+ 		end = wbc->range_end >> PAGE_SHIFT;
+@@ -3982,7 +3983,6 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 			tag))) {
+ 		unsigned i;
+ 
+-		scanned = 1;
+ 		for (i = 0; i < nr_pages; i++) {
+ 			struct page *page = pvec.pages[i];
+ 
+@@ -4111,6 +4111,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
+ 	if (wbc->range_cyclic) {
+ 		index = mapping->writeback_index; /* Start from prev offset */
+ 		end = -1;
++		scanned = (index == 0);
+ 	} else {
+ 		index = wbc->range_start >> PAGE_SHIFT;
+ 		end = wbc->range_end >> PAGE_SHIFT;
+@@ -4144,7 +4145,6 @@ static int extent_write_cache_pages(struct address_space *mapping,
+ 						&index, end, tag))) {
+ 		unsigned i;
+ 
+-		scanned = 1;
+ 		for (i = 0; i < nr_pages; i++) {
+ 			struct page *page = pvec.pages[i];
+ 
+-- 
+2.23.0
+
