@@ -2,207 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC4D12F66C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 10:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B4412F66B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 10:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgACJx3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 04:53:29 -0500
-Received: from mail.synology.com ([211.23.38.101]:50548 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725972AbgACJx3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jan 2020 04:53:29 -0500
-X-Greylist: delayed 466 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Jan 2020 04:53:27 EST
-From:   ethanwu <ethanwu@synology.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1578044739; bh=DbfJeGGDGsoT0KBsrih4KPc3KNaPV92btTy+pgwq5Fk=;
-        h=From:To:Cc:Subject:Date;
-        b=eYHlGcw6pH9G/cv7cR2DlGPnWbdLcRcnKJtQQT85JbnBUOannRklSeijPc6qfiu8Q
-         K2DJlqOWIv17w9Ryu8pAp//Wr7pw9hhgnIpNX2ddZEIV+ucj2JqaB6l0+6duZqeaPk
-         n66FhYeT3RAL5OPqrTVBHuj/B+OBOzHaeuNhoYQ8=
-To:     linux-btrfs@vger.kernel.org
-Cc:     ethanwu <ethanwu@synology.com>
-Subject: [PATCH] btrfs: add extra ending condition for indirect data backref resolution
-Date:   Fri,  3 Jan 2020 17:44:41 +0800
-Message-Id: <1578044681-25562-1-git-send-email-ethanwu@synology.com>
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1726390AbgACJwl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 04:52:41 -0500
+Received: from mout.gmx.net ([212.227.15.18]:53051 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgACJwl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jan 2020 04:52:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578045154;
+        bh=93QUiQ4CHOhOpsRvdvVCFBAebZhcbhSp+QbjiQkVZhw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=M8J0KIGai9qLwke7heIB8mc9UcEcNHxGsPRYvh+QNAANJj1gcOMbyhT25QM++kp6M
+         Zx7GBR9nSc4a7tvLt8+hhjyzYLbbfAGzEqlgRCsIqGn/pFcL4ULpcY+uubYMkR2Byw
+         v/qXR6N4PgYOq7bCvUJQuvUNDS5eQCdoFgXhvvrg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0oBr-1jhMAO2ojt-00wlgc; Fri, 03
+ Jan 2020 10:52:34 +0100
+Subject: Re: [PATCH v2 2/4] btrfs: Update per-profile available space when
+ device size/used space get updated
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200102112746.145045-1-wqu@suse.com>
+ <20200102112746.145045-3-wqu@suse.com>
+ <c4f6ddfb-c52c-d376-4cef-26aebec4e288@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <5ec1095b-b62b-a267-392a-63e6a3f1eeb3@gmx.com>
+Date:   Fri, 3 Jan 2020 17:52:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
+MIME-Version: 1.0
+In-Reply-To: <c4f6ddfb-c52c-d376-4cef-26aebec4e288@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="DfdPi67QTqp8uCdqXsVIaCTHxruZW5DNa"
+X-Provags-ID: V03:K1:jGJBhC9jGQoKHBpoapE6gja9mv3ML5lrmSDM3Y585Rz5EVZAmH/
+ WeAX5UV5/0OZCdp/yaz1THvf235YbRe1dpctm7IMAL1tvpE9IX+M0pSnwVruO1Hh4KnFEBs
+ 7LJGyiy8n0CXI1Rrbtbs8qYHGgSvkzVvtGcsIbbm8f6gkKklwRkRgBbYnYIxDOlERtt4oDb
+ 23Y1p75Ge7YR5aiNHM/lg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YDdxkItYvKI=:V0Q1oz6MvdfEQF26ZTCV+K
+ 4DVxik5/zs8ABszQQtvJ34s45hcR68Rmm39eNd0zkTv1TxSwAiQYHbWVs2g11olxK/eN64U2D
+ emT20oVXfHBkNqPp3r//aQK7sNGzlpLRH2f2uoLf7Fj5KzVjwTSfAkKwMLTYLAsftYVk4dL1P
+ x4sbCBpzsuFJuhx2U6hI8aVHKw4WaSGgsle3Ma4dnYf9ju85XLOD9sL/cb81mFFPuyiwHjnli
+ mA41h85A0gdn5p0O5COyscB/MUJaP0+b/ta7d+rBSMnbF7LTH5VKrwTZUKVzW+k5CK/468uNL
+ r6t8Pu9tssrqVoZShDuYBJAcRnJ6zduIi9EGeo9FOEfTkGW/peScTOd3nFqOH9AFGPIe8S7pc
+ vL975jo5GN846zR6z6xk2CCBJG5TbjHZuNOhFO3gqK/dfvlmaaGDr+YSg715Q6LMU7EBS01Jk
+ Izy6XMF7hDbaJBNZ+BCRI0fEmkrwJbOzj78jgoI0zqJPj1ipefEVrvfGV3dXamdheT8AWg955
+ Ts4yNQbT8ckuT9nYJdV5UR8NFiZEoojpwxs4AT7ASdGr1OALRUuAHTUTCERYVulqEaPnnkOa4
+ +CX46VN5gnloEHqi0Si9k1hzwvKb3/4jIykbyrnLVnVlAS3KLPNMryZ9IjIj7nVEEWeHFulO4
+ 7ydOiOCdvK+IMxc3ON7yKqrQnA/GU9mQ7fPR4t++2qWRdjhO43R8bEMt021neEDP9u6nSsSvV
+ 22ZSWN1K8p77QbEpCXT27snxwRPr86hLE4mNAqolwg+Tlg+NJECiEukYmwpWCBOUwpGRFGeme
+ 4SqHT5Z2LiMpdWpNmF0C5DKYJ4nP2Qu687+ZMeZ5ot8jxngo9DXHnlyZ0hoipWJSwM16y0vKB
+ 6oDS+4NO1YA13KIYVXxwIMdUQcK648Mp4itsPJx6RPTfCy74mqBVb/kWACvOIyC8EU8H4nQqR
+ In0ZzsIjUMUDybCo6JYF8cq33e0lHsPG7PDxY/0waEZHCRKzQHvMkxvk7dH+VE/G/s6Av+Km7
+ hInoH0ocpFCA6okzxHYR0xcXh939NGayOSbaw+oE8J5v/n1o9fzL39XBdTNl/m+r6IZzoxz1m
+ 16i+8pgE2qsNnNS7qVhptrbWkp6vxymeXf7L3fOQfrROQbtuBNYaCsLi1KkgGaJA5/rkop2bb
+ OzHRo8RyKSS+nTdk2L7LH+zWcVei9Wy+kbrnteE4I8YdAWX5H/DY6G4plA5KUCDk4cY2zuN84
+ NaPr96wbKnc2Ycs5gq74qRO9MCvqBgGTtG32cHdHXMcmbyTUU98E/Wt8C1f0=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs has two types of data backref.
-For BTRFS_EXTENT_DATA_REF_KEY type of backref, we don't have the
-exact block number. Therefore, we need to call resolve_indirect_refs
-which uses btrfs_search_slot to locate the leaf block. After that,
-we need to walk through the leafs to search for the EXTENT_DATA items
-that have disk bytenr matching the extent item(add_all_parents).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DfdPi67QTqp8uCdqXsVIaCTHxruZW5DNa
+Content-Type: multipart/mixed; boundary="04D4Kavdn6CEyb9vSGvQWJKgdTm9vFCXX"
 
-The only conditions we'll stop searching are
-1. We find different object id or type is not EXTENT_DATA
-2. We've already got all the refs we want(total_refs)
+--04D4Kavdn6CEyb9vSGvQWJKgdTm9vFCXX
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Take the following EXTENT_ITEM as example:
-item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize 95
-    extent refs 24 gen 7302 flags DATA
-    extent data backref root 257 objectid 260 offset 65536 count 5 #backref entry 1
-    extent data backref root 258 objectid 265 offset 0 count 9 #backref entry 2
-    shared data backref parent 394985472 count 10 #backref entry 3
 
-If we want to search for backref entry 1, total_refs here would be 24 rather
-than its count 5.
 
-The reason to use 24 is because some EXTENT_DATA in backref entry 3 block
-394985472 also points to EXTENT_ITEM 40831553536, if this block also belongs to
-root 257 and lies between these 5 items of backref entry 1,
-and we use total_refs = 5, we'll end up missing some refs from backref
-entry 1.
+On 2020/1/3 =E4=B8=8A=E5=8D=8812:17, Josef Bacik wrote:
+> On 1/2/20 6:27 AM, Qu Wenruo wrote:
+>> There are 4 locations where device size or used space get updated:
+>> - Chunk allocation
+>> - Chunk removal
+>> - Device grow
+>> - Device shrink
+>>
+>> Now also update per-profile available space at those timings.
+>>
+>> For __btrfs_alloc_chunk() we can't acquire device_list_mutex as in
+>> btrfs_finish_chunk_alloc() we could hold device_list_mutex and cause
+>> dead lock.
+>>
+>=20
+> These are protecting two different things though, holding the
+> chunk_mutex doesn't keep things from being removed from the device list=
+=2E
 
-But using total_refs=24 is not accurate. We'll never find extent data keys in
-backref entry 2, since we searched root 257 not 258. We'll never reach block
-394985472 either if this block is not a leaf in root 257.
-As a result, the loop keeps on going until we reach the end of that inode.
+Further looking into the lock schema, Nikolay's comment is right,
+chunk_mutex protects alloc_list (rw devices).
 
-Since we're searching for parent block of this backref entry 1,
-we're 100% sure we'll never find any EXTENT_DATA beyond (65536 + 4194304) that
-matching this entry. If there's any EXTENT_DATA with offset beyond this range
-using this extent item, its backref must be stored at different backref entry.
-That EXTENT_DATA will be handled when we process that backref entry.
+Device won't disappear from alloc_list, as in btrfs_rm_device() we took
+chunk_mutex before removing writeable device.
 
-Fix this by breaking from loop if we reach offset + (size of EXTENT_ITEM).
+In fact, device_list_mutex is unrelated to alloc_list.
 
-btrfs send use backref to search for clone candidate.
-Without this patch, performance drops when running following script.
-This script creates a 10G file with all of its extent size 64K.
-Then it generates shared backref for each data extent, and
-those backrefs could not be found when doing btrfs_resolve_indirect_refs.
+So other calc_per_profile_avaiable() call sites are in fact not safe, I
+shouldn't take device_list_mutex, but chunk_mutex which are much easier
+to get.
 
-item 87 key (11843469312 EXTENT_ITEM 65536) itemoff 10475 itemsize 66
-    refs 3 gen 74 flags DATA
-    extent data backref root 256 objectid 260 offset 10289152 count 2
-    # This shared backref couldn't be found when resolving
-    # indirect ref from snapshot of sub 256
-    shared data backref parent 2303049728 count 1
+>=20
+> Looking at patch 1 can't we just do the device list traversal under RCU=
 
-btrfs subvolume create /volume1/sub1
-for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=64K count=1 seek=$((i-1)) conv=notrunc oflag=direct 2>/dev/null; done
-btrfs subvolume snapshot /volume1/sub1 /volume1/sub2
-for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=4K count=1 seek=$(((i-1)*16+10)) conv=notrunc oflag=direct 2>/dev/null; done
-btrfs subvolume snapshot -r /volume1/sub1 /volume1/snap1
-time btrfs send /volume1/snap1 | btrfs receive /volume2
+> and then not have to worry about the locking at all?=C2=A0 Thanks,
 
-without this patch
-real 69m48.124s
-user 0m50.199s
-sys  70m15.600s
+I guess we need SRCU, since in __btrfs_alloc_chunk() context we need to
+sleep for search dev extent tree.
 
-with this patch
-real 1m31.498s
-user 0m35.858s
-sys  2m55.544s
+And I'm not confident enough for some corner case, maybe some RCU sync
+case would cause unexpected performance degrade as the RCU sync can be
+more expensive than simple mutex lock.
 
-Signed-off-by: ethanwu <ethanwu@synology.com>
----
- fs/btrfs/backref.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+Thanks,
+Qu
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e5d8531..ae64995 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -412,7 +412,7 @@ static int add_indirect_ref(const struct btrfs_fs_info *fs_info,
- static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 			   struct ulist *parents, struct prelim_ref *ref,
- 			   int level, u64 time_seq, const u64 *extent_item_pos,
--			   u64 total_refs, bool ignore_offset)
-+			   u64 total_refs, bool ignore_offset, u64 num_bytes)
- {
- 	int ret = 0;
- 	int slot;
-@@ -458,6 +458,9 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
- 		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
- 
-+		if (key_for_search->type == BTRFS_EXTENT_DATA_KEY &&
-+		    key.offset >= key_for_search->offset + num_bytes)
-+		       break;
- 		if (disk_byte == wanted_disk_byte) {
- 			eie = NULL;
- 			old = NULL;
-@@ -504,7 +507,7 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 				struct btrfs_path *path, u64 time_seq,
- 				struct prelim_ref *ref, struct ulist *parents,
- 				const u64 *extent_item_pos, u64 total_refs,
--				bool ignore_offset)
-+				bool ignore_offset, u64 num_bytes)
- {
- 	struct btrfs_root *root;
- 	struct btrfs_key root_key;
-@@ -575,7 +578,8 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	ret = add_all_parents(root, path, parents, ref, level, time_seq,
--			      extent_item_pos, total_refs, ignore_offset);
-+			      extent_item_pos, total_refs, ignore_offset,
-+			      num_bytes);
- out:
- 	path->lowest_level = 0;
- 	btrfs_release_path(path);
-@@ -610,7 +614,8 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_path *path, u64 time_seq,
- 				 struct preftrees *preftrees,
- 				 const u64 *extent_item_pos, u64 total_refs,
--				 struct share_check *sc, bool ignore_offset)
-+				 struct share_check *sc, bool ignore_offset,
-+				 u64 num_bytes)
- {
- 	int err;
- 	int ret = 0;
-@@ -655,7 +660,7 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
- 		}
- 		err = resolve_indirect_ref(fs_info, path, time_seq, ref,
- 					   parents, extent_item_pos,
--					   total_refs, ignore_offset);
-+					   total_refs, ignore_offset, num_bytes);
- 		/*
- 		 * we can only tolerate ENOENT,otherwise,we should catch error
- 		 * and return directly.
-@@ -1127,6 +1132,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 	struct extent_inode_elem *eie = NULL;
- 	/* total of both direct AND indirect refs! */
- 	u64 total_refs = 0;
-+	u64 num_bytes = SZ_256M;
- 	struct preftrees preftrees = {
- 		.direct = PREFTREE_INIT,
- 		.indirect = PREFTREE_INIT,
-@@ -1194,6 +1200,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 				goto again;
- 			}
- 			spin_unlock(&delayed_refs->lock);
-+			num_bytes = head->num_bytes;
- 			ret = add_delayed_refs(fs_info, head, time_seq,
- 					       &preftrees, &total_refs, sc);
- 			mutex_unlock(&head->mutex);
-@@ -1215,6 +1222,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 		if (key.objectid == bytenr &&
- 		    (key.type == BTRFS_EXTENT_ITEM_KEY ||
- 		     key.type == BTRFS_METADATA_ITEM_KEY)) {
-+			num_bytes = key.offset;
- 			ret = add_inline_refs(fs_info, path, bytenr,
- 					      &info_level, &preftrees,
- 					      &total_refs, sc);
-@@ -1236,7 +1244,8 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 	WARN_ON(!RB_EMPTY_ROOT(&preftrees.indirect_missing_keys.root.rb_root));
- 
- 	ret = resolve_indirect_refs(fs_info, path, time_seq, &preftrees,
--				    extent_item_pos, total_refs, sc, ignore_offset);
-+				    extent_item_pos, total_refs, sc, ignore_offset,
-+				    num_bytes);
- 	if (ret)
- 		goto out;
- 
--- 
-1.9.1
+>=20
+> Josef
 
+
+--04D4Kavdn6CEyb9vSGvQWJKgdTm9vFCXX--
+
+--DfdPi67QTqp8uCdqXsVIaCTHxruZW5DNa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4PDt0ACgkQwj2R86El
+/qjXGwf/QEJfwLHBoQxlQr/Kj3N6G2B+rrHXDyE+Ul6MAwGlauN8lJ3RhWE3Zl5l
+dw5Q7uq5Dh7jUjTXFmQbRLySCtvKGoHDezPgs2nvv9O7jqDUH4JQDQ/vzmIKJiHT
+Kxq4DsG4ohweBRB5vhl3yA4blpf+MceTOce+2bxqTLNkeWN1IZlh97n+GHH4aaO7
+Xc3R8A/KkKcdZSxGUoRCGrqw7c27ASKpK8/+95nswd1d3yAMXK06hxaCPNKkgzbK
+eEZVUpH3MTLtqVtP8/7MyDhP3R14dIpeN0l33qF930XJ3uQOp/rdJwc+S8301hnt
+bhb0ExSOvL/bpitZJEyX66XhrbVD8w==
+=pDyt
+-----END PGP SIGNATURE-----
+
+--DfdPi67QTqp8uCdqXsVIaCTHxruZW5DNa--
