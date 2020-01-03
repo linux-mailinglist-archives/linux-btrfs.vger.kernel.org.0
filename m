@@ -2,150 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7763A12F332
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 04:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B2912F407
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 06:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbgACDFT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 22:05:19 -0500
-Received: from mout.gmx.net ([212.227.17.20]:44863 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbgACDFT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 22:05:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578020683;
-        bh=RrzqF5T7J4qBmU0ujsPOZcK52c8cQhA5NLO6JB+v4tk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=DV3JoOrvp+cW0aYGDB6+gDSSatTzkQzmaz3DVZRX+jJ+5EH9has2Pl78wN7kDhIzs
-         Fku1IKFjCLWEHJ/Pmq5kN6avavgN4sPscgOqhCwLW9C0F8weLw7avFGEjzrib0EMop
-         Vj5MFbfcZTxFQmndtzZROh45ulB+Kegl9BDu07Ag=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.187] ([104.199.231.176]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1po0-1il0L43glM-002Dgv; Fri, 03
- Jan 2020 04:04:43 +0100
-Subject: Re: [PATCH 6/6] btrfs-progs: extent-tree: Fix a by-one error in
- exclude_super_stripes()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191218011942.9830-1-wqu@suse.com>
- <20191218011942.9830-7-wqu@suse.com> <20200102165603.GL3929@twin.jikos.cz>
- <eb9033f0-c390-0d83-07a6-63e89cb2020b@gmx.com>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <24abf4b3-8525-5d77-721b-f97cca22a5f9@gmx.com>
-Date:   Fri, 3 Jan 2020 11:04:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <eb9033f0-c390-0d83-07a6-63e89cb2020b@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1725937AbgACFL6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 00:11:58 -0500
+Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:54631 "EHLO
+        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725890AbgACFL6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jan 2020 00:11:58 -0500
+Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
+ Fri,  3 Jan 2020 05:10:55 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Fri, 3 Jan 2020 05:11:39 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (15.124.8.10) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Fri, 3 Jan 2020 05:11:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GmGiW9+EH2CoMnTCdaF0AW2q7OjsFdUNIEqESGRmYlVMZ1BRsx6yfleoW9ZMud5hGe7qul+F+wDwrmwx7nb+rEPyzc5yJ+zAib4mYrt691zURzrgJcHc/inDXvVvpMuq0obhulWoje30p1RRT/5zQITamab8IZP+NGdNsIsydO7kE3SrGfhblpoG8xCtEb4kcZfHaXJEujmFZnqvh4PzpweyDu5Y4WwHp7HOwG39o4S/YXfpmq90+gimVhGuoAyOyM7FpR6FI7oJ+Thw5DTsVloPjIxgdVSOsr5vbxyhvCcaAdFSshXRRUdHdtReCDpzoRU9OwYJvDqg2GaxARLSiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+QjzjxBJSC6Anr25fFFnh4skNqvbeFh9emoJX5lP74c=;
+ b=W3WZxnOkFJt2OPAUDDDQ9Ayes0n7lNymRZqKNf0wF99f4Q+b7hgRMdoZNP8oUiPqNCD1ePvaNrUdXQz8A0u77KASI5sTmzEK4pyiwh3p9C84QYoQJlhT+dWcVWkrfKHBDWd/a5UC6iNk4o2CZbJ0O/Bu+Nt6QHCJA3w76cD7lKRNjYMA2oktwiF8lw8Oqq+Zr6v4chdbAiPDYLterp9cYkWdEQIOiOguuG/1P5BJkBkCjj/GsiYmeLwKhNAkEJgBsXlGOEneUUUDASZ42TBOYFAN0hxTOlJpCn9YBkPc67h/byqe7XQqogJ8rmPAJ81Kjt91U8/Dgac+KkEI7rJZNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3362.namprd18.prod.outlook.com (10.255.154.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.12; Fri, 3 Jan 2020 05:11:36 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::d948:61b9:971a:facd]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::d948:61b9:971a:facd%7]) with mapi id 15.20.2602.012; Fri, 3 Jan 2020
+ 05:11:36 +0000
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR07CA0064.namprd07.prod.outlook.com (2603:10b6:a03:60::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2581.11 via Frontend Transport; Fri, 3 Jan 2020 05:11:34 +0000
+From:   Qu WenRuo <wqu@suse.com>
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+CC:     David Sterba <DSterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [btrfs-progs PATCHv3 1/3] tests: common: Add
+ check_dm_target_support helper
+Thread-Topic: [btrfs-progs PATCHv3 1/3] tests: common: Add
+ check_dm_target_support helper
+Thread-Index: AQHVwdrhRUBNrBaswk+pPLETQKvJ3afYZNAA
+Date:   Fri, 3 Jan 2020 05:11:35 +0000
+Message-ID: <dffcf953-a4bd-c6ba-59a0-c94c53063636@suse.com>
+References: <20200103021215.30147-1-marcos.souza.org@gmail.com>
+ <20200103021215.30147-2-marcos.souza.org@gmail.com>
+In-Reply-To: <20200103021215.30147-2-marcos.souza.org@gmail.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iLxUsjBR/glRi1k4mqc7pVQHVFMbG0C7nuHeNTKifjAl1jZm0Db
- 4xvISufvlNPsYV6dXLMcYTu+silNPg4+Lokxnmdvi01uxrORx2cweoOM2aM/T6vHpDmt30D
- JX1rhaiOQkVWqLhmFabs5mcXs/4GTDTG2D38OjEibpfwRjrdIqfiVx3abIovY8LhJta/Zvx
- CmwZr++XOyEaFRz4kifqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:laeHzR/qa/g=:/HEh4d65wTtpdq0yqp4MN9
- 4E/+AnbpwXoXBmJQjrJUAdhYnoxYFGImLNYamGYC9QEuFFEG54fDMuDdPt2+YgFYSRfLT1T5Z
- 5PofdKteDztoZ6By7IQeYpocqsMY1w9xImVxpZMFdwhRGPjPIjXFs40y/s2pU1VK47p7Tx4oK
- VzAo2caRQ5hxCj2oUzU6sK/94IQIyDdB9loK7OmWPJEyE+qIqegNF1e53OZbL0nug5nivDVSr
- 3XYHGsg/O0iyjkR+8d+mq6be+V9LQ3Ttv1mURTmKLNnDTELeLmVMmRrHok08/urOpp4iyedXq
- xrAAvaKTXA+ewcJLAR01VLOZeBND1oAZivMG7+TxCwC32CeeLytjTCIONZG4R4U61Rq+tEXUP
- zBY1/uXkOkkgdnSvTUOH759SuFRCoPGytFzL/TI6VjY3pxhhLQ9RdrQproFUHbgvFBUtoQ9YA
- HEZlxmTmjAh3e8sxmUW/eqQliKuI6WJqWTpsSpnLBY2WUbFsr9n9I8CMQyk+Ne/uZ+goSVQB8
- arRc/IwVHFltzHZmAeKObAWf1oQ/JT9vvYFuDSSVmyz3Il6syy6yoek7S6nTf0dmCWmx4CRrJ
- RxOkH4vi2qoYjYci2x+Uhhdg4SwLaqW69TprVaYzkg5TaDXJOsS0KD6NCZKCsM0Gb3CazmOel
- sK1e5iR84iHwnWbCCon6amhIpIVcgDhmKN2BZkPOllJ/sjZR3UEVchR+1BWQqkBcmEiZ7Ni2N
- C9I4DJWr5ewG/FrRuh7LabSJ3vEskUwZ1VosV9kzeVFkHKIUMxhbEvuLGGzA1pNEMdsvCIOB/
- MFp/TixYCj4NZM7XsnFquqnR6lmTX+WWe0Mvq0o+sYO54rd/DPqM5JcMRVZNfMHuNHuVddTjL
- GgqPiZ47NP0JEX7BF+0tevA8GFIvb4CbCXC/DvnwNZuPxTu43H+8rj2EUpsFT0bOfd69iqviv
- gP6KbOGO0t3NqIYqmVD8HYmMvY6wsoJ7PlvvnbV37TiKzEz8MqAyh4FpvDsD8PM7DCDY4CUGC
- KarnrVxTqrBsDxFlsjvGe8SDhE5ySdQUoHGg5HQSk65e2N7tQDuvqyg+rr2g0FznFj8EVnjcu
- YjXBhRDnHYigoFnlIj1+VHPj8ovdP+BeUHS59n7C8eJ6/zXsVIA4QB1YNZYuHBKrc4wiKbUBj
- LujY+wonjqRFDTsxJPclhuB1bHF+gZroZEGUMhbz62Cj0UtjwJfMV1LZlauIKULCRQTxBvrY+
- W08cqiOy8vwfqKCMP/WQW4kLICZK1nw4ey/LmZkN5bMPWdLM/5q8nIAZIrhA=
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR07CA0064.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::41) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [149.28.201.231]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9fde8905-e9cb-49f9-8e21-08d7900b67ca
+x-ms-traffictypediagnostic: BY5PR18MB3362:
+x-ld-processed: 856b813c-16e5-49a5-85ec-6f081e13b527,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR18MB33623A8CEF517AD5AEA6D278D6230@BY5PR18MB3362.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0271483E06
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(189003)(199004)(16526019)(26005)(2616005)(2906002)(956004)(6706004)(478600001)(6916009)(4326008)(31696002)(186003)(52116002)(8676002)(81156014)(81166006)(8936002)(107886003)(5660300002)(71200400001)(66446008)(64756008)(66556008)(66476007)(66946007)(6486002)(16576012)(4744005)(31686004)(36756003)(86362001)(316002)(54906003)(78286006);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3362;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /cL5vPamzP2lk8Pu13O3msfzZiqEyN9PRk697FRm2rMGLNq4LMqJwFtkuYs1DJSMDB8Yl60cI8CwKw9zS8WhKr+RcrWrD3Rr87FbgkYrPb7gULa/5mYYjQsOpCCHAtzdf7rCajJNzC0w0FqBChiqEAc6yN8uuUlWbxLSYHco/w1lqYbfEkEyBAFzOKFMwRTdgtEEkKTkA86H+3X0grLDo5tRYOrbBiyr07YAlgrBZKpmDM5+J9kwlYA8UXRWwjWeB0IfiKE9A+uXTBzGPMZGGlqDsIAyqFc+wfnMztfv6OZMZQ1w7FxvFjnJGxRTJ2l+t/gnAzkLkGbvBqxNiS8qtkrjhNmsxCnZO3xzJCYQlUkuJSTGyNxgLu1bae3KYmJdYO2vSIIGUOuEcL9y7iWi2BvcGEi+E99l6JGERVmgIfT67RKrRD3x0ods5KWz7nsg/pm0ae1q0xMtkZUUwENq/tPaAgRMmjF3MVLMAN14PEaMexk4475DNIv5kkgsXiPk
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6A16129134EF724B9E8A69F4D24346E1@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fde8905-e9cb-49f9-8e21-08d7900b67ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2020 05:11:35.9310
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: efJ3qfXga7b8MFlfikhdrdXrFmHj472OVq5PgdLlWYWbyaWQlYRjgdi/nIC11gjH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3362
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020/1/3 8:42 AM, Qu Wenruo wrote:
->
->
-> On 2020/1/3 =E4=B8=8A=E5=8D=8812:56, David Sterba wrote:
->> On Wed, Dec 18, 2019 at 09:19:42AM +0800, Qu Wenruo wrote:
->>> [BUG]
->>> For certain btrfs images, a BUG_ON() can be triggered at open_ctree()
->>> time:
->>>    Opening filesystem to check...
->>>    extent_io.c:158: insert_state: BUG_ON `end < start` triggered, valu=
-e 1
->>>    btrfs(+0x2de57)[0x560c4d7cfe57]
->>>    btrfs(+0x2e210)[0x560c4d7d0210]
->>>    btrfs(set_extent_bits+0x254)[0x560c4d7d0854]
->>>    btrfs(exclude_super_stripes+0xbf)[0x560c4d7c65ff]
->>>    btrfs(btrfs_read_block_groups+0x29d)[0x560c4d7c698d]
->>>    btrfs(btrfs_setup_all_roots+0x3f3)[0x560c4d7c0b23]
->>>    btrfs(+0x1ef53)[0x560c4d7c0f53]
->>>    btrfs(open_ctree_fs_info+0x90)[0x560c4d7c11a0]
->>>    btrfs(+0x6d3f9)[0x560c4d80f3f9]
->>>    btrfs(main+0x94)[0x560c4d7b60c4]
->>>    /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7fd189773ee3]
->>>    btrfs(_start+0x2e)[0x560c4d7b635e]
->>>
->>> [CAUSE]
->>> This is caused by passing @len =3D=3D 0 to add_excluded_extent(), whic=
-h
->>> means one revsere mapped range is just out of the block group range,
->>> normally means a by-one error.
->>>
->>> [FIX]
->>> Fix the boundary check on the reserve mapped range against block group
->>> range.
->>> If a reverse mapped super block starts at the end of the block group, =
-it
->>> doesn't cover so we don't need to bother the case.
->>>
->>> Issue: #210
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>>   extent-tree.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/extent-tree.c b/extent-tree.c
->>> index 6288c8a3..7ba80375 100644
->>> --- a/extent-tree.c
->>> +++ b/extent-tree.c
->>> @@ -3640,7 +3640,7 @@ int exclude_super_stripes(struct btrfs_fs_info *=
-fs_info,
->>>   		while (nr--) {
->>>   			u64 start, len;
->>>
->>> -			if (logical[nr] > cache->key.objectid +
->>> +			if (logical[nr] >=3D cache->key.objectid +
->>>   			    cache->key.offset)
->>
->> Do we have the same problem in kernel? The code does ">".
->>
-> Oh, kernel looks to have the same problem.
->
-
-Gentle reminder to save your time.
-
-I saw the '>' as in the kernel code and send a patch for it.
-Then Nikolay pointed out that the patch is unnecessary[1].
-The fuzz image is rejected to be mounted by tree-checker earlier.
-
-Besides, a cleanup series[2] was sent by him.
-
-[1]:
-https://lore.kernel.org/linux-btrfs/24721dc8-8bda-a086-ff1a-31a0b21a02b4@s=
-use.com/T/#m4cc5153d1645177e0f81f00c86e10dfb36015def
-[2]: https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D20510=
-3
-
-> Time to fix it.
->
-> Thanks,
-> Qu
->
-
+DQoNCk9uIDIwMjAvMS8zIOS4iuWNiDEwOjEyLCBNYXJjb3MgUGF1bG8gZGUgU291emEgd3JvdGU6
+DQo+IEZyb206IE1hcmNvcyBQYXVsbyBkZSBTb3V6YSA8bXBkZXNvdXphQHN1c2UuY29tPg0KPiAN
+Cj4gVGhpcyBmdW5jdGlvbiB3aWxsIGJlIHVzZWQgbGF0ZXIgdG8gdGVzdCBpZiBkbS10aGluIGlz
+IHN1cHBvcnRlZC4NCj4gSW5zcGlyZWQgYnkgZnN0ZXN0cy4NCj4gDQo+IFN1Z2dlc3RlZC1ieTog
+UXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1hcmNvcyBQYXVsbyBk
+ZSBTb3V6YSA8bXBkZXNvdXphQHN1c2UuY29tPg0KDQpSZXZpZXdlZC1ieTogUXUgV2VucnVvIDx3
+cXVAc3VzZS5jb20+DQoNClRoYW5rcywNClF1DQoNCj4gLS0tDQo+ICB0ZXN0cy9jb21tb24gfCAx
+NSArKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvdGVzdHMvY29tbW9uIGIvdGVzdHMvY29tbW9uDQo+IGluZGV4IGNh
+MDk4NDQ0Li4zZWE4YzI2MCAxMDA2NDQNCj4gLS0tIGEvdGVzdHMvY29tbW9uDQo+ICsrKyBiL3Rl
+c3RzL2NvbW1vbg0KPiBAQCAtMzIyLDYgKzMyMiwyMSBAQCBjaGVja19nbG9iYWxfcHJlcmVxKCkN
+Cj4gIAlmaQ0KPiAgfQ0KPiAgDQo+ICsjIGNoZWNrIGlmIHRoZSB0YXJnZXRzIHBhc3NlZCBhcyBh
+cmd1bWVudHMgYXJlIGF2YWlsYWJsZSwgYW5kIGlmIG5vdCBqdXN0IHNraXANCj4gKyMgdGhlIHRl
+c3QNCj4gK2NoZWNrX2RtX3RhcmdldF9zdXBwb3J0KCkNCj4gK3sNCj4gKwlzZXR1cF9yb290X2hl
+bHBlcg0KPiArDQo+ICsJZm9yIHRhcmdldCBpbiAiJEAiOyBkbw0KPiArCQkkU1VET19IRUxQRVIg
+bW9kcHJvYmUgZG0tJHRhcmdldCA+L2Rldi9udWxsIDI+JjENCj4gKwkJJFNVRE9fSEVMUEVSIGRt
+c2V0dXAgdGFyZ2V0cyAyPiYxIHwgZ3JlcCAtcSBeJHRhcmdldA0KPiArCQlpZiBbICQ/IC1uZSAw
+IF07IHRoZW4NCj4gKwkJCV9ub3RfcnVuICJUaGlzIHRlc3QgcmVxdWlyZXMgZG0gJHRhcmdldCBz
+dXBwb3J0LiINCj4gKwkJZmkNCj4gKwlkb25lDQo+ICt9DQo+ICsNCj4gIGNoZWNrX2ltYWdlKCkN
+Cj4gIHsNCj4gIAlsb2NhbCBpbWFnZQ0KPiANCg==
