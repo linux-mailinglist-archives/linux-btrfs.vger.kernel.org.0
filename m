@@ -2,163 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2140212F24D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 01:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541A712F252
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 01:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbgACAmX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 19:42:23 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35715 "EHLO mout.gmx.net"
+        id S1726026AbgACAnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 19:43:11 -0500
+Received: from mout.gmx.net ([212.227.15.18]:49265 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgACAmW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 19:42:22 -0500
+        id S1725872AbgACAnL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jan 2020 19:43:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578012136;
-        bh=uOGF/efggYtqMhlc326Gz+LThZbY7xB1CmemSiPwtOE=;
+        s=badeba3b8450; t=1578012185;
+        bh=sKKZ9SAJAdg3RlZcAQ5PfUCXN8tGWnbvibkIJFU1XNg=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=E8kSHAGcvZ8PfyRHCNLOlfEEPf/zQTnSFS0M4owCijqqux1ZdsW8Jew0pzltSamUA
-         xxCuKSS4/GTimfLqUcQvpIn8lHHSDHXHET9wfGtdsIIB6qAb79LTiXj32P4XYNzLhf
-         0J2kGK9KNoUMgH8v1F4CDaXt5fTlvmLzDYsNAw9c=
+        b=aoCVU9HH9k403pbs8pZqNKqkeS/TcfAOs8mIbwaBbyzVtXQCU6crDavVG/EGyhP6s
+         u3VOKbnrLlQIgoPAv3qFSXMeXy2tJ/mDnIVs6bzX42baJ7Xu/P5laMdDWfzn5NdsmY
+         pUZtYr07xFmRecTHXUNJ49dOeZA6FPorZaUG+7A4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1fis-1jkWsx1r0S-011wkX; Fri, 03
- Jan 2020 01:42:16 +0100
-Subject: Re: [PATCH 6/6] btrfs-progs: extent-tree: Fix a by-one error in
- exclude_super_stripes()
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MfYPi-1jORk02mvQ-00g3l1; Fri, 03
+ Jan 2020 01:43:05 +0100
+Subject: Re: [PATCH 0/6] btrfs-progs: Fixes for github issues
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20191218011942.9830-1-wqu@suse.com>
- <20191218011942.9830-7-wqu@suse.com> <20200102165603.GL3929@twin.jikos.cz>
+ <20200102171056.GM3929@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <eb9033f0-c390-0d83-07a6-63e89cb2020b@gmx.com>
-Date:   Fri, 3 Jan 2020 08:42:12 +0800
+Message-ID: <e8398282-264a-3ef7-43d5-63f1ac0c7c19@gmx.com>
+Date:   Fri, 3 Jan 2020 08:43:01 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200102165603.GL3929@twin.jikos.cz>
+In-Reply-To: <20200102171056.GM3929@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="EBPk8AQYfVHqEqoMdW97lJMuBKAST4qMD"
-X-Provags-ID: V03:K1:bkVs8h3v3e2veJrZ0/gxVUMIH/JpmE4KAZEfr+Wrp1NcOqiC9Gc
- cCUDhot5w6wGnGBP2eVENmWOXp77KFMwLbdsi/h3theLdlAl5lzOCKwn2Ka+Itr9N1cjzk3
- 8l+YVCNcFW6UEYp74Z/u2s4z+ia65XH6f9jh/CvtDT9FTofxj1X/gwVAVQQg1x281QhIUEO
- /kQx4jmZFao3PN3jS/qGA==
+ boundary="CEF31QZdrJrgCdzsulk7YTHmn5jIu7zzk"
+X-Provags-ID: V03:K1:6YzdWTDt90PhlKpLmGfoBcg9Thickq5n+rV4Q18iOP7tCwwRmhU
+ MUxhl8Nxfn5GB/KTWXOe61FbcvYLi29+VbRIz05wcOGN/MJxyuKvcsXkKuTchdOyh83EENd
+ x+s+0BcX3SaCXtnWcd0d5C7ck3HjJtLM08at6xxRlER7miqDQ+u67+vv4/UKzCAhQI/McW5
+ h3ao64jGuKwPkRHLrO6/A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:f5My50pM6BI=:WC0KHm2Gqct7XZ0am40d7x
- hOM6ZMuA6m91O0g9LpmySlSjPyhCO2tODwFRH8U3jNAiAVNgroskxOa5jQ+4MsmY4UhJ30jOT
- PHB3Iedyzhbmk7JGbbksR8Dde+DveTTUWeI3Ab+GRZ9Zoq6jVcpqcLjKVQZs2DNs4O3W6wE5i
- CVe0dzTywfVTYV5jwBpvKEztTIVVfaDroVXmz6AmCKVQ7KQl5LMNl4vRFcfjnWiN2M54P1ob+
- J3J/dPEKHADOSxPcRfoifoSNDi2Dl1kJ+aZZ9ZT64ogytE4RnjFiWJNVRhrnaIH3TIN7TDyl5
- /mS996swLdN7UZsV/6A47fCQUSDuGGwEwp/ImNQAJMgz4Eqeb3KIjB2VY/Pj+64ooczM5tt1h
- MlX3+R42x5A0xVyalgudbAMu0FYwsTqUgSfw6Qy1bJiksSv6WijaVAyEkZyXNaek19ibvAMmr
- 9M+z9Hzn0NP7VcsWLj85knX7yOX1j5sojNMDywlXObtoag7z+hYH76RR/mLpgNUhkCPCteSYC
- XLDjHGAoSKHy/4WX5+lUvmyZEeW1R6cz3LiWZQ6oWns+dOfSOr91eZw6s4Cx2imERX84PYreq
- ovrlfT1nhO2tJgC+zbBogq3sH/LSQUZCL/H5Ls8Es/x01GT8moJ6ELrPt4erajb4bfMDFui+t
- Wp7e1JmkzmOKCi7XASA7bH1CpkgKhxG00n/QOC4k1PrVYqDXq5lqtC4R7Lg05E/+ILkihLfNV
- UCwBTVGH5sO0+80Y3OeerPygIrs8eStR0oMNZ7Ze8jwekkeROD5xu0hHEMW+Ie244dfhAcjE7
- nhGy4u/GrHdKQVuZ5CQnTzwSRyFsEqIZp391FtBrkFysNx9J6BU7/mzcGgGnJdf6ray9fqnM/
- oSDKxssJNkvsdytFAOgb8G3mdgWyitxwT+bUwudR5K/nhQifo/CTApHtp19GPj/9uOJ8HBdyf
- mBnWAfRWm+OtBO2Niw1TCqhuAisILE6FkPeANqXFDwz6V95v+82BM7au9ssi5Avb7owlTWgKS
- jBbERyMmsF5Dmv1B2YJ18KfAWMveRM9xXITxlf8ERnQ+dWzaIgzID71hiMNtdYmvZl+iE5zZo
- aivO/ZtRJEni6b9wpr2gCzt87aFbiT/Gfz2PYo36ZiQ+LatytathCOeNAc6E6PsTS7TQGnCIh
- FBsBVeWIczyH5UhI7JfLP5y4GN8443ZZFpQEd4y+JAMYS1dPVmKaVth7XLD9EN0+EqCd5uXXg
- siD0QdXBFG4s3l/pBtsyf6DmPDwWfLIqR6dVd09vPoN/UzQuJgE0wu9U4TAw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3w7GaTpd1Qw=:f7so59yncUeBcHB8k1kIXd
+ bgSl6aWkCd0u/9ZPrEiCiDhw6rovgxyp7SNCSc6xuY3Adqfl5equ+xpwSJTTx6fWdLKxVoBSr
+ 79p+OQwv0gCsVqo3fkXhfPOM6R+hJZp4DH0Mx6OQHZpZSe1UGFiBlCF/a3ZnBkPrMxsxF80rC
+ RZz2mNhQjcqbvVUIzL8ZPRDXGvE/SePYuhLEZcAThbi7GHZZQObcenOyKAbwDxsPyLYGMXSNP
+ PZUxy/a0tEnAEIeaSSF3hYZrVoVwWm/oQcEuwTjetU/MWM9N1GflcS8WshpXX8Cl6BOa3g245
+ ovfJBD2UNVy+XPckRgW7KSU9La4PVmuDRRT6nGuZU7m+LCwd/+h+Yd6wyUlJvSfwm7jRJNq+9
+ TzEp1G46TfjHILHLYvqXh4+pjLJShF6AAHfG15tLRui9YgIhwK8Bcn9bNYWu5IrkpRihceydX
+ cGFeMT7ru4mp6ELJ+R3c0dd1cY8IhIGNgzPlthnXjlQeE74ijxyv0QLsjFdEYpLB3ONcbAvlr
+ NK6HubeCnEJvO7lFrZVJPF9ADH2lHM1vIvaKGLvFZcR+GcY4gox8JXJncUyP2X06mwAwR5RyV
+ zkfXST8nr0yBfDXsGAKzUXW9DMmlv/eCnocS/W+XQyVrrIN9swv95MKGnoHT37pgYQbtZM4nH
+ u8LjzriEarEQYQDHTj7Gd9inTN9lPf9UU9OYIZfL1A8qtxMXhzRv31L3VnGY5PrBmBrE4i+O5
+ ntpCGbtuVe5ucQ3eGhqoOUuOQHjZXLbzeDS+JaHZhUi8cGGSa+rCKGmvMkDLNH0mV4qiunIuQ
+ yV1gfUp+VKlxc7bu4RQks8YQgggKPLVE/EteCyrKxFEK+g20JbNrgpQV8rSfK6RQX7bN6G2I7
+ ZJEBl1uepysiQ0Nx9IvDZbfMF2WyR84tt9OSUL6j7voREhW1NT1pDbWxM88tWS9yaPcuc19r0
+ M3sDBaJ0MA2Y5CKPXg+zoSdme5rHZhdb6MJqMshvhiOdP8Ceji/MHSnQx/4Fp5iWjVJ63Vjfv
+ RZH04KqWHK2jpXwbF7TRC3GmE3VzIeWO77JGcJIj0AxYd2dMlw7v8qoRw1QfBE+JF1wc5vEe1
+ rfsQV6MEAqsrpy2TZX331z4D2FRzS8fqAkGAeQyXZDEtiri4CDzi/FhhSylyOV1t3EzK3Ndps
+ DMrzLfn/avQmusEPw6WbAaUVU7tgtDDBbXoyQ94BOIS2ajOu0oN29YMsLoBy3ZNpEqUJ9PiY2
+ 8Ktftm4hlpxyGu1jAPssfvXTNi89V+Pb2yJm4BC5D3tbCtFElZB3LBwAxMmQ=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EBPk8AQYfVHqEqoMdW97lJMuBKAST4qMD
-Content-Type: multipart/mixed; boundary="lgRsT7DoQkZcJ7eCSMY7HOaQZocqaOHmA"
+--CEF31QZdrJrgCdzsulk7YTHmn5jIu7zzk
+Content-Type: multipart/mixed; boundary="aRxEUFRHsmwXUe4Pham3AL9mmGCi7Vfnn"
 
---lgRsT7DoQkZcJ7eCSMY7HOaQZocqaOHmA
+--aRxEUFRHsmwXUe4Pham3AL9mmGCi7Vfnn
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/1/3 =E4=B8=8A=E5=8D=8812:56, David Sterba wrote:
-> On Wed, Dec 18, 2019 at 09:19:42AM +0800, Qu Wenruo wrote:
->> [BUG]
->> For certain btrfs images, a BUG_ON() can be triggered at open_ctree()
->> time:
->>   Opening filesystem to check...
->>   extent_io.c:158: insert_state: BUG_ON `end < start` triggered, value=
- 1
->>   btrfs(+0x2de57)[0x560c4d7cfe57]
->>   btrfs(+0x2e210)[0x560c4d7d0210]
->>   btrfs(set_extent_bits+0x254)[0x560c4d7d0854]
->>   btrfs(exclude_super_stripes+0xbf)[0x560c4d7c65ff]
->>   btrfs(btrfs_read_block_groups+0x29d)[0x560c4d7c698d]
->>   btrfs(btrfs_setup_all_roots+0x3f3)[0x560c4d7c0b23]
->>   btrfs(+0x1ef53)[0x560c4d7c0f53]
->>   btrfs(open_ctree_fs_info+0x90)[0x560c4d7c11a0]
->>   btrfs(+0x6d3f9)[0x560c4d80f3f9]
->>   btrfs(main+0x94)[0x560c4d7b60c4]
->>   /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7fd189773ee3]
->>   btrfs(_start+0x2e)[0x560c4d7b635e]
+On 2020/1/3 =E4=B8=8A=E5=8D=881:10, David Sterba wrote:
+> On Wed, Dec 18, 2019 at 09:19:36AM +0800, Qu Wenruo wrote:
+>> There are a new batch of fuzzed images for btrfs-progs. They are all
+>> reported by Ruud van Asseldonk from github.
 >>
->> [CAUSE]
->> This is caused by passing @len =3D=3D 0 to add_excluded_extent(), whic=
-h
->> means one revsere mapped range is just out of the block group range,
->> normally means a by-one error.
+>> Patch 1 will make QA life easier by remove the extra 300s wait time.
+>> Patch 2~5 are all the meat for the fuzzed images.
 >>
->> [FIX]
->> Fix the boundary check on the reserve mapped range against block group=
+>> Just a kind reminder, mkfs/020 test will fail due to tons of problems:=
 
->> range.
->> If a reverse mapped super block starts at the end of the block group, =
-it
->> doesn't cover so we don't need to bother the case.
->>
->> Issue: #210
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  extent-tree.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/extent-tree.c b/extent-tree.c
->> index 6288c8a3..7ba80375 100644
->> --- a/extent-tree.c
->> +++ b/extent-tree.c
->> @@ -3640,7 +3640,7 @@ int exclude_super_stripes(struct btrfs_fs_info *=
-fs_info,
->>  		while (nr--) {
->>  			u64 start, len;
->> =20
->> -			if (logical[nr] > cache->key.objectid +
->> +			if (logical[nr] >=3D cache->key.objectid +
->>  			    cache->key.offset)
+>> - Undefined $csum variable
+>> - Undefined $dev1 variable
 >=20
-> Do we have the same problem in kernel? The code does ">".
+> These are fixed in devel now.
 >=20
-Oh, kernel looks to have the same problem.
+>> - Bad kernel probe for support csum
+>>   E.g. if Blake2 not compiled, it still shows up in supported csum alg=
+o,
+>>   but will fail to mount.
+>=20
+> The list of supported is from the point of view of the filesystem.
+> Providing the module is up to the user.
 
-Time to fix it.
+IIRC, doing such probe at btrfs module load time would be more user
+friendly though.
 
 Thanks,
 Qu
 
+>=20
+>> All other tests pass.
+>>
+>> Qu Wenruo (6):
+>>   btrfs-progs: tests: Add --force for repair command
+>>   btrfs-progs: check/original: Do extra verification on file extent it=
+em
+>>   btrfs-progs: disk-io: Verify the bytenr passed in is mapped for
+>>     read_tree_block()
+>>   btrfs-progs: Add extra chunk item size check
+>>   btrfs-progs: extent-tree: Kill the BUG_ON() in btrfs_chunk_readonly(=
+)
+>>   btrfs-progs: extent-tree: Fix a by-one error in
+>>     exclude_super_stripes()
+>=20
+> All added to devel, thanks.
+>=20
 
---lgRsT7DoQkZcJ7eCSMY7HOaQZocqaOHmA--
 
---EBPk8AQYfVHqEqoMdW97lJMuBKAST4qMD
+--aRxEUFRHsmwXUe4Pham3AL9mmGCi7Vfnn--
+
+--CEF31QZdrJrgCdzsulk7YTHmn5jIu7zzk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4OjeQXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgokQf+Odvz4h6wubBazArZVdTSPqZ6
-SmqDK0BfUormAPSNuEN7kbneiqTxdWjVXY4QIY85Nt7JhxdCiKCs/9EoEJpT8IWs
-ncHMNVdhoi7Htrmh/Dhq8fixdFhD4vmfZRi4NqnAQzqT4zTY/YTpu2UKiksD/TFT
-C8HAM8p/WOIcn0xCrAO52VCWBhzO3r7QcXTco3DMlT+7tpBmMvPjEp/YQitDKNCx
-hrMJmaAjAisvGTV06mnw9lt7YUMxRtJVcbofgg8bNd4zmuJppreLHLZuCVkpYb27
-ddRo9w2JAixKnGS1N2rcGT0rm+yii/sOmHBC9CK10vZXbftFTaWXK1h104LKxw==
-=s1PC
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4OjhUXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qhaewf9GXULSeQ6yEZo19Xy3ViS9X+a
+sjNlKilSryE8Bcvb2w5YBQSg9vUsEnaFuhxpVLmGAqikHrkXDcVExEwg9ZjTlk9/
+5yPjd9y5V9pDL9UxZ3ikG5AaNDaV/1kO2RqmDuDNxYgnVcpbSVPdH7uXMTK0S3aY
+GGcKAuFDHYXQXvAMyWkMovUjKOdDhUsMPUWzBmk/o93THUdh4UBqhIaozodkF0SG
+P7NNh7aZCIomILptWA5jGXO2Mo+FB41jMO7lKAktlB4Zu7iP0l0RRgB2uj3nze7z
+HJ8sskgcKoAKGz2Ca1XpHYGLgXDEsNie8ebZGAWfZ0F2QCPa02qlc8Y2RIJZqQ==
+=pNs2
 -----END PGP SIGNATURE-----
 
---EBPk8AQYfVHqEqoMdW97lJMuBKAST4qMD--
+--CEF31QZdrJrgCdzsulk7YTHmn5jIu7zzk--
