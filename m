@@ -2,143 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6A012F25F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 01:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DC612F2D5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 03:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgACAv3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jan 2020 19:51:29 -0500
-Received: from mout.gmx.net ([212.227.15.18]:53139 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgACAv2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jan 2020 19:51:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578012683;
-        bh=A/BrP6nydkpSXQ0nNaCQIKWCE2UiYgK+RV8mIXtd4CE=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=jTQNgZ2nBHWL3Q0ZeO+TQ95gxe8XL7SpApvO+wCIoe/CIJt+f3NDlGRrgLJ3Czobb
-         JwOoImM9BPFJS2aeOOMnqDUHGui5SnUI5UVKBkykm+J0MfxklI8R2JsEYx9pVLbeMW
-         Ihfl214w2arzOTxHajlcOLxrtMrDnNwQoAf/26xg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQIv-1jY5bJ282h-00oXue; Fri, 03
- Jan 2020 01:51:23 +0100
-Subject: Re: [PATCH v2 2/4] btrfs: Update per-profile available space when
- device size/used space get updated
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200102112746.145045-1-wqu@suse.com>
- <20200102112746.145045-3-wqu@suse.com>
- <c4f6ddfb-c52c-d376-4cef-26aebec4e288@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <e3204d1b-dda9-4f9d-759b-0e1312b5a6d6@gmx.com>
-Date:   Fri, 3 Jan 2020 08:51:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1726121AbgACCJh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jan 2020 21:09:37 -0500
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:44037 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgACCJh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jan 2020 21:09:37 -0500
+Received: by mail-pf1-f181.google.com with SMTP id 195so22012919pfw.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jan 2020 18:09:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=thGWRtVFIS3EMmzgNyiLWzntk1xqsrAkpmv3t5hgL3E=;
+        b=c7xks0gkUvyL+kynnFiE1TgnzKu9I/EKiw+0D1hf+RFBZVRL5jrdkPvpv1n4htRoht
+         I4XNqqz68cc8vAb0f7uR4bCZpmskPMJtX9BGxN48HnrNHjCbwfyWTPBlGfpzPAq1zsoA
+         G67cQW/7GOdGlP666JWNJH1TYDtcyJuR+0r1N6hUOerbdOYP2It2gGAxOpxEENMNNmmp
+         M+m5wHT5YJgbVdL/QYxD4Xp+aBPIHOrY1/y1FReufGalWa0O8UCZmcOaDsMDfETR9uYf
+         3M2wLJo+56kaKmLNcOM7pG3Hy1jcMymWc1q+3tMLRAjcCM+9IzCJscIfs+dGIyhY6WBA
+         +x3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=thGWRtVFIS3EMmzgNyiLWzntk1xqsrAkpmv3t5hgL3E=;
+        b=Xe0sxNM3JbAftNHnimrTt0cvaIa0YTxt8iUK/mavdYSmMGICO2ejRmA5L8Hp+3sO8u
+         tUoSFwPnFT3KNv7FODfBYC4Vb2dKRtDblqiXuixquGfkNFAMDVrIxb4Eru8M3WdKU2ie
+         KZaI0kkFLcMVHZwW8YdkA1Y8/D4DJ+mTw9o8Gk3DxYhZP+7UKos6/je8Ofq9etnraplV
+         70k9lixRPKADyFDAvJtWpYsVNPPTadWgtFoFCUdQJs7ZgN6oP1NOkPzxzwgzn9Jb0eul
+         XSGHtPjDuESbhObg+dgyUdsOjWbFOnYrq1BYsixWhGT5c4mqvVhy/+IqCm0Sm2Ysxb3Q
+         TlDA==
+X-Gm-Message-State: APjAAAVnuV79/QNNPe+QH8zX+rNQunr2suPuixOKzmDP7gNpstnzbCzj
+        feOPPkVRzGRZG1SZrYDSH9qmbMoBBqE=
+X-Google-Smtp-Source: APXvYqyA9/rfy4p91YIUuULAk1WU9JOma4BQzhLE9uRwWuWPvlVeOcM3x9VPxM//ZhJX97MLcsSVRA==
+X-Received: by 2002:a63:f814:: with SMTP id n20mr92174245pgh.318.1578017376828;
+        Thu, 02 Jan 2020 18:09:36 -0800 (PST)
+Received: from localhost.localdomain ([191.248.111.235])
+        by smtp.gmail.com with ESMTPSA id o6sm59764152pgg.37.2020.01.02.18.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jan 2020 18:09:35 -0800 (PST)
+From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com
+Subject: [btrfs-progs PATCHv3 0/3] tests: do not fail if dm-thin is missing
+Date:   Thu,  2 Jan 2020 23:12:12 -0300
+Message-Id: <20200103021215.30147-1-marcos.souza.org@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <c4f6ddfb-c52c-d376-4cef-26aebec4e288@toxicpanda.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Qsvi6BicIT0J6iTrVDftDvrlr3MRYSmjI"
-X-Provags-ID: V03:K1:LLlsc+OLwe9lbfz5bdTJjRYEF70hbKER6J7nYClKaqQRe92POeW
- PRUhtVeuCMqcXkgVv++BeQsGiOpE9OnkJhVke0srSLho0WcS8w6kN0uO/XVlEtlmtYBG91l
- vuCoyhiFgKzGinlpKTxbxcRiwhsGnrKCbMSjWqJzYUrr1RVddbNnguGWkgBMO+KRyTsVNRL
- 7vLdMf5ZfelfoyV9d2+yw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x+LzCILd8yI=:7zhh5LIdeMyCr8QNczLmE3
- hgdFpWcen7+JDQv+xf7jD/n/T0zmD5zL/II/8Fb1/W7ihnMSbUIO0a7J6sp3XeuNagLbsTC1F
- 6yj2UPfMpuoGXMJ03Z89Y9K2BaUAcwu7mG7owsUKjQdITv6TXKcCWJwj+9mSkZZ00aV8yw88G
- Rw1qFMizmYAVuXiuad8b5bSmNhjG9bhubdM2e5rPVQz8r4eY2MfvBjc0DsGwPd59A4BB/0XqP
- 1xmpFPnxXFKiO5PVNq6dgKArDlW/umCV6HqRMi7PdXsdjLS58RT3ETApdn7vM1TBiHp86pmeV
- /+B4ToPZY8C+BzcKYLtktRGWWGjTd+kc+W6oJDsNyI9vTxvMqKZQ2cKyAK4ekQsBQaLbtf0vd
- o9OFFvLoQ+K0ki9gxAmEADuvc/MzZTiD/pDAD/xl8WVVyIACl4UUaJ/6ZCCzjkhFK6b2Xmfq6
- XmxvrsDbSleGsqajPYahD30ZtCdIij4xz7jkBGoGxF52agLDjFpiq1YXuHMLiwYgsm77NktR/
- Hy6tSpXvyrBpYns+w68vfegwRXB32xHl8qZ8r+sBkJ7hMeAe2air4SYO+OXh/vjJOm5ZpanMN
- S0FUfEAbgm4CDK7qJ8ETlEqycrqBE9n+sYvFgOjuaFpIj7+CMCuNCdof5/U74MnFbJbPzrYGl
- njjRsL9ri+MrLWx2wxG2RGsNVRo92tqCMDzgGFwGG4uldaUx395xW5855bIfURCZV12K0m3+v
- vECif2W7BgcZkvzF1h0GbzID0vJH3AOfZ3wsPOAdXHbnkISACBG9EPhqLD+xsMsofjs81Y4jM
- S9glUZdDXWk6Jj8rUrfF8A7trA5kb3xG+jLJh7shxrNU60DlN5U1wBldWJ+RsdnYuvZupy5GE
- lPXIUMFPbnuKey71PtJFC63qDGJFDrwhKb2EYXT4FDbeXFlOqqsSB6+VOMToz0F6OfzHWO/S5
- ZX/IcFKfNZTKbzkjQPvJt40AT70Ml0DBdvEUfm9nUChfTy3rb1bMnGGUhSr9Ha1S2K+igsaGG
- +2wHmBC3lZ5cZmEvKBbczfUv72PG7ywzSr52o4WsVtepjz5T13bY91WX1IIV76X4p331dkaQs
- V8E3U6C33oVR8F75OJG8E0eFlNGnLOOGVgBIQlMgWTE7shNPPO/0NzD2k3U1JkI8gD04VR5A1
- iV7zXUNlgnNrGpoktETogo9jBCFBe7NaomMQJc8K1Sx7oQTpc/6CrQZXmxUqhuVTqqTQuWA5x
- FuH/x50v7eZkEz6SdtEnGM1vh5J8Vb2EIP8wuhKChUTFZp3txsH18oiK7JZ8=
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Qsvi6BicIT0J6iTrVDftDvrlr3MRYSmjI
-Content-Type: multipart/mixed; boundary="MXCef3KCMZTng0D3NbOpLAGyq9gxj6BsU"
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
---MXCef3KCMZTng0D3NbOpLAGyq9gxj6BsU
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+This is the third version, which basically removes the last patch, as suggested
+by David, and reworks the first one, by keeping the $SUDO_HELPER call and adding
+the setup_root_helper function call before calling $SUDO_HELPER. The tests 005
+and 017 are now skipped when triggered in a kernel without dm-thin.
 
+Please review.
 
+Original message:
 
-On 2020/1/3 =E4=B8=8A=E5=8D=8812:17, Josef Bacik wrote:
-> On 1/2/20 6:27 AM, Qu Wenruo wrote:
->> There are 4 locations where device size or used space get updated:
->> - Chunk allocation
->> - Chunk removal
->> - Device grow
->> - Device shrink
->>
->> Now also update per-profile available space at those timings.
->>
->> For __btrfs_alloc_chunk() we can't acquire device_list_mutex as in
->> btrfs_finish_chunk_alloc() we could hold device_list_mutex and cause
->> dead lock.
->>
->=20
-> These are protecting two different things though, holding the
-> chunk_mutex doesn't keep things from being removed from the device list=
-=2E
->=20
-> Looking at patch 1 can't we just do the device list traversal under RCU=
+these patchset is trying to fix the issue 192[1] by checking if dm-thin exists,
+and if it's not available, skip the test. In the last patch, the same is done
+for dmsetup. Feel free to ignore the last patch if you think we should stop the
+tests if dmsetup isn't available.
 
-> and then not have to worry about the locking at all?=C2=A0 Thanks,
+Thanks!
 
-That's very interesting solution.
+[1]: https://github.com/kdave/btrfs-progs/issues/192
 
-But from the comment of btrfs_fs_devices::alloc_list, it says:
-```
-        /*
-         * Devices which can satisfy space allocation. Protected by
-         * chunk_mutex
-         */
-        struct list_head alloc_list;
-```
+Marcos Paulo de Souza (3):
+  tests: common: Add check_dm_target_support helper
+  tests: mkfs: 017: Use check_dm_target_support helper
+  tests: mkfs: 005: Use check_dm_target_support helper
 
-And __btrfs_chunk_alloc() is iterating alloc_list without extra
-protection, so it should be OK I guess.
+ tests/common                                      | 15 +++++++++++++++
+ .../005-long-device-name-for-ssd/test.sh          |  1 +
+ .../test.sh                                       |  1 +
+ 3 files changed, 17 insertions(+)
 
-Thanks,
-Qu
->=20
-> Josef
+-- 
+2.24.0
 
-
---MXCef3KCMZTng0D3NbOpLAGyq9gxj6BsU--
-
---Qsvi6BicIT0J6iTrVDftDvrlr3MRYSmjI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4OkAcXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qh9zgf/Ve84hULg2AyUsQRuTaAFqijE
-gPkUpWWDTVUjLpHrYE45Ne4xB3azHullsOSSqKxMOMnexufcthofJ/wZJIoFa2vD
-IdD7UiOhFphzB/SZkL9iGjJoa4YpBXnrLrmiZpEg3sFGl8GAF8lMg25PmfMOg6Z7
-sUJDOwuDjKRBpT/S9y4HB0I4V1o6xgrtPNlfeClXJeb/jj/h71F5fCrIyYATVelE
-eNYABbrlDXc/pMevTgvcWjV7sf4KTeqn3jFkTATeNPLfoADQjw/48UB52QQhw4Me
-5EJGC+9PAziYH+SLg3ki+c1MwKrFLJ47cYn/e9iiQ5pF3QX0C5KgM8XJ5BaRPw==
-=lyN8
------END PGP SIGNATURE-----
-
---Qsvi6BicIT0J6iTrVDftDvrlr3MRYSmjI--
