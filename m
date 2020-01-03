@@ -2,70 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF49412FBB0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 18:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A30612FBB2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 18:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgACRni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 12:43:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60850 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgACRni (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:43:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C44E2B1AD;
-        Fri,  3 Jan 2020 17:43:36 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0071BDA795; Fri,  3 Jan 2020 18:43:27 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.5-rc5
-Date:   Fri,  3 Jan 2020 18:43:16 +0100
-Message-Id: <cover.1578072747.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.24.0
+        id S1728180AbgACRnr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 12:43:47 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39184 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgACRnr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jan 2020 12:43:47 -0500
+Received: by mail-qt1-f194.google.com with SMTP id e5so37380126qtm.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Jan 2020 09:43:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l25yy0ARofBl8zc0HFe3XGYRgSUIOXsm16tl1LH+rKI=;
+        b=IqmidU9BbBLAIlV08Vqn385DrigDTzpscCF8sgqL+x0gizFUeCOos/9JLtTxaDCUFj
+         d1e6b2Z0m88ZrxuLmCqs/nyuLQwqJrwL8tF3XmM8eMq4N7Ew2ecYi+fcNGlqrB/Gm9HJ
+         nKfY7cgDsChLExDrnD1moT1Zv5UrOwdF7qdMrjN3OWZIF/USYJ4QsmaoWrQFtwyYExCF
+         RGFhYYKNetrgvvAGvIIbub+TMPykjktZhQItsI3csVZeeEWDsJkKAic11m1oE5bL6UeN
+         f+jOqIcRKiJWHe4MkUnCoMPyyq3/BzRO8ydwhPZdTshzNtmhruZBwGLs67g8NgGaXzus
+         Qv0Q==
+X-Gm-Message-State: APjAAAX/Z7CxGohZjSkOMQD2otAC0KTonQUDJ2a70e20yDeyGpSx84uZ
+        R02OzseNYx0/4XyB6ZpgJaE=
+X-Google-Smtp-Source: APXvYqye86MSznDxpmTIuW9Kv7mUUDP0IKI7L1c6uikCVmkFWzewhpZfJe5co1MH37fNSDi20F1pIw==
+X-Received: by 2002:ac8:42de:: with SMTP id g30mr64506162qtm.195.1578073426431;
+        Fri, 03 Jan 2020 09:43:46 -0800 (PST)
+Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::3:3853])
+        by smtp.gmail.com with ESMTPSA id c13sm16751208qko.87.2020.01.03.09.43.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jan 2020 09:43:45 -0800 (PST)
+Date:   Fri, 3 Jan 2020 12:43:43 -0500
+From:   Dennis Zhou <dennis@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/12] btrfs: async discard follow up
+Message-ID: <20200103174343.GA97540@dennisz-mbp.dhcp.thefacebook.com>
+References: <cover.1577999991.git.dennis@kernel.org>
+ <20200103145125.GX3929@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200103145125.GX3929@twin.jikos.cz>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Jan 03, 2020 at 03:51:25PM +0100, David Sterba wrote:
+> On Thu, Jan 02, 2020 at 04:26:34PM -0500, Dennis Zhou wrote:
+> > Hello,
+> > 
+> > Dave applied 1-12 from v6 [1]. This is a follow up cleaning up the
+> > remaining 10 patches adding 2 more to deal with a rare -1 [2] that I
+> > haven't quite figured out how to repro. This is also available at [3].
+> > 
+> > This series is on top of btrfs-devel#misc-next-with-discard-v6 0c7be920bd7d.
+> > 
+> > [1] https://lore.kernel.org/linux-btrfs/cover.1576195673.git.dennis@kernel.org/
+> > [2] https://lore.kernel.org/linux-btrfs/20191217145541.GE3929@suse.cz/
+> > [3] https://git.kernel.org/pub/scm/linux/kernel/git/dennis/misc.git/log/?h=async-discard
+> > 
+> > Dennis Zhou (12):
+> >   btrfs: calculate discard delay based on number of extents
+> >   btrfs: add bps discard rate limit for async discard
+> >   btrfs: limit max discard size for async discard
+> >   btrfs: make max async discard size tunable
+> >   btrfs: have multiple discard lists
+> >   btrfs: only keep track of data extents for async discard
+> >   btrfs: keep track of discard reuse stats
+> >   btrfs: add async discard header
+> >   btrfs: increase the metadata allowance for the free_space_cache
+> >   btrfs: make smaller extents more likely to go into bitmaps
+> >   btrfs: ensure removal of discardable_* in free_bitmap()
+> >   btrfs: add correction to handle -1 edge case in async discard
+> 
+> Besides the changes posted to the patches, I did more style cleanups and
+> formatting adjustments as I went through the patches. I'll do some
+> testing again to be sure there are no bugs introduced by that, but
+> otherwise the patchset can be considered merged to misc-next. I'll push
+> the branch today.
+> 
+> It's a lot of new code but I was able to comprehend what's going on,
+> great that there's the patch adding implementation overview.
+> As the feature is not on by default and requires "special" hardware, it
+> should be safe, basisc tests passed so now we're left with the hard bugs
+> and corner cases. Thanks.
 
-a few fixes for btrfs:
+Ah I apologize for the few misses. Thanks for fixing them and taking
+this series! It definitely wasn't an easy series, so I appreciate the
+help and patience!
 
-* blkcg accounting problem with compression that could stall writes
-
-* setting up blkcg bio for compression crashes due to NULL bdev pointer
-
-* fix possible infinite loop in writeback for nocow files (here possible
-  means almost impossible, 13 things that need to happen to trigger it)
-
-Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit fbd542971aa1e9ec33212afe1d9b4f1106cd85a1:
-
-  btrfs: send: remove WARN_ON for readonly mount (2019-12-13 14:10:46 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc4-tag
-
-for you to fetch changes up to de7999afedff02c6631feab3ea726a0e8f8c3d40:
-
-  Btrfs: fix infinite loop during nocow writeback due to race (2019-12-30 16:13:20 +0100)
-
-----------------------------------------------------------------
-Dennis Zhou (2):
-      btrfs: punt all bios created in btrfs_submit_compressed_write()
-      btrfs: fix compressed write bio blkcg attribution
-
-Filipe Manana (1):
-      Btrfs: fix infinite loop during nocow writeback due to race
-
- fs/btrfs/compression.c | 7 ++++++-
- fs/btrfs/inode.c       | 6 +++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
+Thanks,
+Dennis
