@@ -2,85 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3EA12F957
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 15:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CB612F958
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jan 2020 15:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgACOvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jan 2020 09:51:02 -0500
-Received: from bang.steev.me.uk ([81.2.120.65]:46085 "EHLO smtp.steev.me.uk"
+        id S1727883AbgACOvg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jan 2020 09:51:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37480 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgACOvB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jan 2020 09:51:01 -0500
-Received: from [2001:8b0:162c:2:944e:a625:9b97:d687]
-        by smtp.steev.me.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92.2)
-        id 1inOHz-009ugJ-3Z; Fri, 03 Jan 2020 14:50:59 +0000
-Subject: Re: [PATCH v2 1/3] btrfs: add readmirror type framework
-To:     Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <1577959968-19427-1-git-send-email-anand.jain@oracle.com>
- <1577959968-19427-2-git-send-email-anand.jain@oracle.com>
- <4f4a1dab-fd9b-a5b6-2109-d82fc222d208@steev.me.uk>
- <e652f476-eef8-62d1-4a3d-b01dbce2677a@oracle.com>
-From:   Steven Davies <btrfs-list@steev.me.uk>
-Message-ID: <d9e23ee8-a1bc-b79f-60c4-9fa19d9e5592@steev.me.uk>
-Date:   Fri, 3 Jan 2020 14:51:07 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1725890AbgACOvg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jan 2020 09:51:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 620C7ACB1;
+        Fri,  3 Jan 2020 14:51:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 302F1DA795; Fri,  3 Jan 2020 15:51:26 +0100 (CET)
+Date:   Fri, 3 Jan 2020 15:51:25 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/12] btrfs: async discard follow up
+Message-ID: <20200103145125.GX3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+References: <cover.1577999991.git.dennis@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e652f476-eef8-62d1-4a3d-b01dbce2677a@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1577999991.git.dennis@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/01/2020 10:28, Anand Jain wrote:
-> On 3/1/20 3:32 AM, Steven Davies wrote:
->> On 02/01/2020 10:12, Anand Jain wrote:
-
->>> So this patch introduces a framework where we could add more readmirror
->>> policies, such as routing the IO based on device's wait-queue or manual
->>> when we have a read-preferred device or a policy based on the target
->>> storage caching.
->>
->> I think the idea is good but that it would be cleaner if the tunable 
->> was named read_policy rather than readmirror as it's more obvious that 
->> it contains a policy tunable.
+On Thu, Jan 02, 2020 at 04:26:34PM -0500, Dennis Zhou wrote:
+> Hello,
 > 
->   Um. 'read_policy' sounds good, but I hope it is clear enough to
->   indicate that we are talking about read for only mirrored-chunks.
->   Will rename to read_policy.
-
-I think it would be obvious that the policy will only apply to mirrored 
-chunks; after all, you can only read a chunk from a device that contains it.
-
->> Do you envisage allowing more than one policy to be active for a 
->> filesystem? If not, what about using the same structure as the CPU 
->> frequency and block IO schedulers with the format
->>
->> #cat /sys/block/sda/queue/scheduler
->> noop [deadline] cfq
->>
->> Such that btrfs would (eventually) have something like
->>
->> #cat /sys/fs/btrfs/UUID/read_policy
->> by_pid [user_defined_device] by_shortest_queue
->>
+> Dave applied 1-12 from v6 [1]. This is a follow up cleaning up the
+> remaining 10 patches adding 2 more to deal with a rare -1 [2] that I
+> haven't quite figured out how to repro. This is also available at [3].
 > 
->   And in case of user_defined_device, the device for the read shall be
->   specified in
+> This series is on top of btrfs-devel#misc-next-with-discard-v6 0c7be920bd7d.
 > 
->    cat /sys/fs/btrfs/UUID/devinfo/<devid>/read_preferred
+> [1] https://lore.kernel.org/linux-btrfs/cover.1576195673.git.dennis@kernel.org/
+> [2] https://lore.kernel.org/linux-btrfs/20191217145541.GE3929@suse.cz/
+> [3] https://git.kernel.org/pub/scm/linux/kernel/git/dennis/misc.git/log/?h=async-discard
 > 
->    0 = unset, 1 = set.
-> 
->    (devinfo patches are in the ML [1] open for comment)
->    [1]
->    [PATCH v3 4/4] btrfs: sysfs, add devid/dev_state kobject and attribute
+> Dennis Zhou (12):
+>   btrfs: calculate discard delay based on number of extents
+>   btrfs: add bps discard rate limit for async discard
+>   btrfs: limit max discard size for async discard
+>   btrfs: make max async discard size tunable
+>   btrfs: have multiple discard lists
+>   btrfs: only keep track of data extents for async discard
+>   btrfs: keep track of discard reuse stats
+>   btrfs: add async discard header
+>   btrfs: increase the metadata allowance for the free_space_cache
+>   btrfs: make smaller extents more likely to go into bitmaps
+>   btrfs: ensure removal of discardable_* in free_bitmap()
+>   btrfs: add correction to handle -1 edge case in async discard
 
-I remember seeing that patch and I think the approach is logical.
+Besides the changes posted to the patches, I did more style cleanups and
+formatting adjustments as I went through the patches. I'll do some
+testing again to be sure there are no bugs introduced by that, but
+otherwise the patchset can be considered merged to misc-next. I'll push
+the branch today.
 
-Steve
+It's a lot of new code but I was able to comprehend what's going on,
+great that there's the patch adding implementation overview.
+As the feature is not on by default and requires "special" hardware, it
+should be safe, basisc tests passed so now we're left with the hard bugs
+and corner cases. Thanks.
