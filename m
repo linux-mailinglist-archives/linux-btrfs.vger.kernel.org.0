@@ -2,251 +2,233 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4051A13019F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2020 10:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB2C1301C9
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2020 11:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgADJiQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 4 Jan 2020 04:38:16 -0500
-Received: from mout.gmx.net ([212.227.15.18]:50229 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgADJiP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 4 Jan 2020 04:38:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578130688;
-        bh=7Y3L9FBEIAmz1xfg3j4icBajHHzfgZscvOjQVqB9OHw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=XUKMCuo0vBZQ6+w/RuDjxMk03PbqgsKYLtEdNNnhn65JaPVE3O4o8KiUR5BZ+RztB
-         6YK4mRZRPAQlEVWkPPEqo0YV8r6LTJ8QdThY8CImw7CadJDBTJJfk+zMQymW857lZn
-         8CviEuCZcw9Zuk6N+7ZEVQfJTBugeebl2w6yKGuA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXGvM-1jDSaI3t78-00YfHA; Sat, 04
- Jan 2020 10:38:08 +0100
-Subject: Re: [PATCH 0/3] btrfs: fixes for relocation to avoid KASAN reports
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191211050004.18414-1-wqu@suse.com>
- <20191211153429.GO3929@twin.jikos.cz>
- <74a07fa4-ca35-57ee-2cd9-586a8db04712@gmx.com>
- <20200103155259.GA3929@twin.jikos.cz> <20200103161556.GB3929@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9cc840ed-d23c-4760-9a2a-da5e3e0deced@gmx.com>
-Date:   Sat, 4 Jan 2020 17:37:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1725805AbgADKqK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 4 Jan 2020 05:46:10 -0500
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:57254 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725796AbgADKqJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 4 Jan 2020 05:46:09 -0500
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id E828E9BB2C; Sat,  4 Jan 2020 10:46:06 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1578134766;
+        bh=IC4KB/VYcd0VDlrhuLfwIZr1Tq9tmOw5jvJt8zMj3Hg=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=NTo5Z0FA33idx1i9+FaP5X3VHuz0ppBWQskAB5gWj1g6OY6TrJ7D44drJlgzO1tRj
+         jCv6rit768YBrepEX4GNrILb2Bm5quy++EhECB4NDEm+wvY0iDVML9TowveA0wUNf4
+         pnh13aUtSId0N1EO1fD3Q3Bz17aDLoHXGvFptvym4Rz4VdpxD015dXkPZsJkOLFqdO
+         da/NFpw5pUpcAHtKSSnRV+KP16M2CpXPA+1S1GmZDcwWL1guc461m/4NpJdN4yt/3n
+         67Lb1rU3DHJn/P2UB3BKwE+X8zSjXZMIro6XmIC/Hxig+bQ0w0IF6sHdiBjKooWRHr
+         KMAGlXKgCE3rQ==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 11A859B9D5;
+        Sat,  4 Jan 2020 10:46:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1578134762;
+        bh=IC4KB/VYcd0VDlrhuLfwIZr1Tq9tmOw5jvJt8zMj3Hg=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=BX3NwGM/b+gIRuLEBpenxIM2I9UHjtoK1S+lfUm8Vo+4iXF+NAWjYHGXlFxfsJ7T/
+         hpkMJpNMcPQqYNvB9u9SPHwPiUwZqrieBhC0QftZ3vP5ZauUK7t8PbcoFiy7rJue3z
+         cwv9keNOIg5uY6sOC0OETz5DYQg3I0Nb4jCy6+v84XubRdFqF5jMD+iI95Xj187d9J
+         37snK4YcGI9AUmVngFcA1IT2OA2vv4eUDg141BL+wTUq1k/IkQZKnbsUutt9p+vUyt
+         nFw2saskxCtJk3aETgsbfPisL+8k46U8KQxSSKvcKgh5GpB9HrbI9QRVa/JHEJ8jGY
+         Bw1w/L6dKd9SA==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id A5A4696D5B;
+        Sat,  4 Jan 2020 10:46:01 +0000 (GMT)
+Subject: Re: Interrupted and resumed scrubs seem to have caused filesystem to
+ go readonly (EFBIG error)
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <f15c0d2f-df61-17fc-667c-2b0eb5674be2@cobb.uk.net>
+ <7798d1f5-d54d-e756-973c-f2ebfa456315@gmx.com>
+ <09556f2c-be43-1363-ccbe-065c88f8d5c5@cobb.uk.net>
+ <e481748b-d31a-e9a5-8532-e3e77188cbe3@gmx.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <20b897b7-8420-0360-63a9-ae9d754dd87a@cobb.uk.net>
+Date:   Sat, 4 Jan 2020 10:46:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200103161556.GB3929@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="nzKIyDj0c1qiPgkeCz7pGrtSxYNo51sX3"
-X-Provags-ID: V03:K1:ugWytppdG41o6ycYp3sGWP+vTDSU2RbOt9tvaxqW6yjCCWO/Yoc
- hayYqKQoJRvEtVoDIzDIB/DX6JTu9NEnXR4zwmQkhbsi05xE1Hr8UEb4SqnLgZ6Dbm+3M6+
- SAxmWCHoisJoK0w26nqzBR69r4fPD5spyrPIkpe5dyerwtyFWI8PfCQGjogUFAmnnbcZiCh
- PFHYOgGvwayZpyBYavN5A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iJD/IxZ4cAE=:BV9yusjyJO7/LDNGKDdjMa
- GLlNpAzE25gah4Xxv+B0S9Nt46I/psZzPNG3LB9JfluJ6E3MVgqIczOxXQmdmRrozjiPKIPO4
- 6uhfvdCQyioYDdXmi4YzHXS6qFGg2D4lWt8PVbC5nldMqUZoRtGtRB41OIchfqnM6lVRqpuKn
- X9KNvK4pGfPAUWiGpubscRHLegjp/Nsfn5Vyh6q+1dVb0/y+I69gfF0+XMZ1Vm+Dfqeg289D/
- BqqCz54BcismN9Z0ZDzvPCkWNjEWmySQjuD/m88eKXrxmAQ3DtHEGlyhWUlv5ypu9mBAVy4+X
- Nbs5VnJrJ5ol1TcoMB8sCm//J+tG1PiFmwsxh3C+7VK7HN3ImRe5hNk59MSnxkdI1ysHGtyof
- pXshLwgD2otlzgj2YxbFARxtfnoHUa7PlSgSAky4/9+BiBpRb0mdFUP3At45t6SO1Ux0GN7qy
- 84Wrz0Z/1Dp1xreAQZ6lJeQENbDgGqiApRLfkcZeXjE/UAbYr/J8T7BHALO3x76UR+VlG/7YE
- p0RVQMSPR4BaFqlGoLO0C0MjGw8U14D75PoDSjdIamDaV+HDZq2JEx4EI032TrkCHYd2RkAVa
- 0O7uBILKg7vb+OW9px9Ur+Rc+wUM5I2Pab4/EW+YDfRMB7iskSwQZWzk280dsR1QY/cMhczSb
- VEfuO68tgGP9/p0bEvsxK8gHerF6kwyeP7cN98LIg16cNDIdeG6b5ioPau1kfOKjUhh0/Qx5u
- OzB3ehdPi94f30eRgTgPRqN38t9pM1f7FMOffevusNXPyXNKPZqtavpHbYwOSdQfGHx8XNLTn
- vhDYToCAEWisx+YqNs1naeUYCyjJefAmG6ghdiQacHiXgZkV1bCVgsjwww672wZLk0XzrNGYN
- osPXhTSlgbOeKI3BMearRiClfvOkpGKVLzFQkXxjYlQkD5y5AmbC5U/yNc/s06j5YppRwcb/A
- NTfxhd3qlIxsqgkfQ62zNhNir1uiJEKRbAokTOBfh8RoGWTAFb+U8FNuBqGe164EoJGhDCMPZ
- +sH7BJpXeO0uceovVuXTeh7uEWESDnfQ6KykzIb3F1CLMjxFrHyfObA7en6Jx3hRxB/LQf0T/
- Yh+30GAT9ElIqW+zQGeRaJ0CjnaZwvTSE/L0J3pTf7eF3oo6BGKtSBoNQk6UULtv/OMteJHUD
- ewixqvpGOsZxBMHzLZU0IDN0aYd3iXSErxNDQBRxuiDcc2sWouL6DPe7WQ48caQb8HMnBdcpG
- 8iIus1qeUOBOrCXjgikxJEioahfVA5WDzw5H7X7v0epSVR2NoXtgyjfXKeto=
+In-Reply-To: <e481748b-d31a-e9a5-8532-e3e77188cbe3@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---nzKIyDj0c1qiPgkeCz7pGrtSxYNo51sX3
-Content-Type: multipart/mixed; boundary="GfZGL4TlwEtfHgxmGTc6PwKkIf7FimXca"
+On 02/01/2020 12:34, Qu Wenruo wrote:
+> 
+> 
+> On 2020/1/2 下午8:07, Graham Cobb wrote:
+>> On 02/01/2020 01:26, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2020/1/2 上午7:35, Graham Cobb wrote:
+>>>> I have a problem on one BTRFS filesystem. It is not a critical
+>>>> filesystem (it is used for backups) and I have not yet tried even
+>>>> unmounting and remounting, let alone a "btrfs check".
+>>>>
+>>>> The problem seems to be that after several iterations of running 'btrfs
+>>>> scrub' for 30 minutes, then pausing for a while, then resuming the
+>>>> scrub, I got a transaction aborted with an EFBIG error and a warning in
+>>>> the kernel log. The fs went readonly, and transid verify errors are now
+>>>> reported. The original log extract is available at
+>>>> http://www.cobb.uk.net/kern.log.bug-010120 but I have pasted the key
+>>>> part below.
+>>>
+>>> EFBIG in btrfs is very rare, and can only be caused by too many system
+>>> chunks.
+>>>
+>>> The most common reason is the chunk pre-alllocation for scrub, which
+>>> also matches your situation.
+>>>
+>>> There is already a fix for it, and will land in v5.5 kernel.
+>>> It looks like we should backport it.
+>>
+>> Thanks Qu. I will wait for that kernel, and maybe stop my monthly scrubs
+>> (although my several other btrfs filesystems did not have a problem this
+>> month fortunately).
+> 
+> And the problem will normally not impact the fs, as newly created empty
+> system chunks will be soon cleaned up.
+> 
+>>
+>> I am getting transid errors:
+> 
+> This is not a good news. And in fact it's normally a deadly problem.
 
---GfZGL4TlwEtfHgxmGTc6PwKkIf7FimXca
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+In fact, this was not a real problem: the errors were because the
+filesystem was still mounted from the original error and had gone ro so
+I guess the in-memory state was different from the on-disk state.  Doh!
 
+A simple umount and mount worked fine, although I then did a btrfs check
+which also worked fine:
 
+black:~# btrfs check --readonly -p /dev/sdc3
+Opening filesystem to check...
+Checking filesystem on /dev/sdc3
+UUID: 4d1ba5af-8b89-4cb5-96c6-55d1f028a202
+[1/7] checking root items                      (0:06:27 elapsed,
+25179174 items checked)
+[2/7] checking extents                         (6:34:26 elapsed, 2419791
+items checked)
+cache and super generation don't match, space cache will be invalidated
+[3/7] checking free space tree                 (0:00:00 elapsed)
+[4/7] checking fs roots                        (25:44:17 elapsed,
+1497725 items checked)
+[5/7] checking csums (without verifying data)  (0:54:36 elapsed, 4812627
+items checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 1067
+items checked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 11946687545430 bytes used, no error found
+total csum bytes: 11626743024
+total tree bytes: 39628275712
+total fs tree bytes: 24636817408
+total extent tree bytes: 2363850752
+btree space waste bytes: 5422658757
+file data blocks allocated: 29159815589888
+ referenced 16100593688576
 
-On 2020/1/4 =E4=B8=8A=E5=8D=8812:15, David Sterba wrote:
-> On Fri, Jan 03, 2020 at 04:52:59PM +0100, David Sterba wrote:
->> So it's one bit vs refcount and a lock. For the backports I'd go with
->> the bit, but this needs the barriers as mentioned in my previous reply=
-=2E
->> Can you please update the patches?
->=20
-> The idea is in the diff below (compile tested only). I found one more
-> case that was not addressed by your patches, it's in
-> btrfs_update_reloc_root.
+Thanks again for the help, and for the design which prevented fs
+corruption in this case.
 
-But fix in btrfs_update_reloc_root() is already included in commit
-d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after
-merge_reloc_roots").
+I would encourage you to consider backporting the fix for the original
+EFBIG problem, as you suggested above.
 
-Or would you mind to share more details about the missing check?
->=20
-> Given that the type of the fix is the same, I'd rather do that in one
-> patch. The reported stack traces are more or less the same.
+Graham
 
-To merge them into patch set is no problem, and should make backports a
-little easier.
+> 
+>>
+>>>> Jan  1 06:51:56 black kernel: [1931271.801468] BTRFS error (device
+>>>> sdc3): parent transid verify failed on 16216583520256 wanted 301800
+>>>> found 301756
+>>
+>> I presume 301800 is the transaction which failed and caused the fs to go
+>> readonly. I don't suppose it is likely I could revert the whole fs to
+>> the state of the last successful transaction is there?
+> 
+> This means some tree blocks doesn't reach disk.
+> It can be deadly, or just a side effect caused by the transaction abort.
+> 
+>>
+>> It is not a big problem: the fs only contains backup snapshots (not my
+>> only backups!) although it would be nice to recover the historical
+>> snapshots if I could (I used them to research a bug I reported to debian
+>> just the other day!).
+> 
+> I'm afraid this depends on where the corruption is.
+> 
+> If it's just caused by that EFBIG error, and btrfs check reports no
+> error, then it's just temporary problem caused by transaction abort.
+> 
+> 
+> If it's in extent tree, it only affects mount or certain write
+> operations, but if you can mount the fs, it should be OK to read out the
+> whole fs.
+> 
+> If it's in csum tree, it will affect certain data read, other than
+> mostly OK.
+> 
+> If it's in subvolume trees, some directories/files can't be accessed.
+> 
+> So, please run a btrfs check on the unmounted fs to verify what's the case.
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> Regards
+>> Graham
+>>
+> 
 
-But I still didn't understand the barrier part.
-If we're relying on that bit operation before accessing reloc_root, it
-should be safe enough, even without memory barrier.
-
-Would you please explain a little more?
-
-Thanks,
-Qu
->=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index af4dd49a71c7..aeba3a7506e1 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -517,6 +517,15 @@ static int update_backref_cache(struct btrfs_trans=
-_handle *trans,
->  	return 1;
->  }
-> =20
-> +static bool have_reloc_root(struct btrfs_root *root)
-> +{
-> +	smp_mb__before_atomic();
-> +	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-> +		return false;
-> +	if (!root->reloc_root)
-> +		return false;
-> +	return true;
-> +}
-> =20
->  static int should_ignore_root(struct btrfs_root *root)
->  {
-> @@ -525,9 +534,9 @@ static int should_ignore_root(struct btrfs_root *ro=
-ot)
->  	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
->  		return 0;
-> =20
-> -	reloc_root =3D root->reloc_root;
-> -	if (!reloc_root)
-> +	if (!have_reloc_root(root))
->  		return 0;
-> +	reloc_root =3D root->reloc_root;
-> =20
->  	if (btrfs_root_last_snapshot(&reloc_root->root_item) =3D=3D
->  	    root->fs_info->running_transaction->transid - 1)
-> @@ -1439,6 +1448,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_hand=
-le *trans,
->  	 * The subvolume has reloc tree but the swap is finished, no need to
->  	 * create/update the dead reloc tree
->  	 */
-> +	smp_mb__before_atomic();
->  	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
->  		return 0;
-> =20
-> @@ -1478,8 +1488,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_ha=
-ndle *trans,
->  	struct btrfs_root_item *root_item;
->  	int ret;
-> =20
-> -	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state) ||
-> -	    !root->reloc_root)
-> +	if (!have_reloc_root(root))
->  		goto out;
-> =20
->  	reloc_root =3D root->reloc_root;
-> @@ -1489,6 +1498,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_ha=
-ndle *trans,
->  	if (fs_info->reloc_ctl->merge_reloc_tree &&
->  	    btrfs_root_refs(root_item) =3D=3D 0) {
->  		set_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
-> +		smp_mb__after_atomic();
->  		__del_reloc_root(reloc_root);
->  	}
-> =20
-> @@ -2201,6 +2211,7 @@ static int clean_dirty_subvols(struct reloc_contr=
-ol *rc)
->  				if (ret2 < 0 && !ret)
->  					ret =3D ret2;
->  			}
-> +			smp_mb__before_atomic();
->  			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
->  			btrfs_put_fs_root(root);
->  		} else {
-> @@ -4730,7 +4741,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pendin=
-g_snapshot *pending,
->  	struct btrfs_root *root =3D pending->root;
->  	struct reloc_control *rc =3D root->fs_info->reloc_ctl;
-> =20
-> -	if (!root->reloc_root || !rc)
-> +	if (!rc || !have_reloc_root(root))
->  		return;
-> =20
->  	if (!rc->merge_reloc_tree)
-> @@ -4764,7 +4775,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_=
-handle *trans,
->  	struct reloc_control *rc =3D root->fs_info->reloc_ctl;
->  	int ret;
-> =20
-> -	if (!root->reloc_root || !rc)
-> +	if (!rc || !have_reloc_root(root))
->  		return 0;
-> =20
->  	rc =3D root->fs_info->reloc_ctl;
->=20
-
-
---GfZGL4TlwEtfHgxmGTc6PwKkIf7FimXca--
-
---nzKIyDj0c1qiPgkeCz7pGrtSxYNo51sX3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4QXPUACgkQwj2R86El
-/qiOGggApC9+FtqyhPo6dcA4hn22CKUkqOSv3zTSaUevk1fJe0Azl1cNnOgA4L5L
-Bu91fhsoZ9ZDlMBQYOUGdFPUMvGrfbs6l1p1zt8lEt0KXtx0hxrQnyArKYufmcs4
-rQyYw1q1PjkCV6Y2FZggNAE+CMBvFGd1ZhlmgnF3jkvO6M+LcIqVabUYawn5eoBJ
-gRFwE4fsIll4Ty5JlGwXdHurvfk3JR6ZWvJSzu0wtQwzVGdLEh7ic98AzgJ2uXSb
-fJjkRVf64Tf2OzB7INxsqNj6l9NlnVvnn5aMhAWGIlZdwAER+4yuAEJdtFGAyuph
-HM7xkaHIqqShNv1Gr6mq4qy1iQf6BA==
-=E/S8
------END PGP SIGNATURE-----
-
---nzKIyDj0c1qiPgkeCz7pGrtSxYNo51sX3--
