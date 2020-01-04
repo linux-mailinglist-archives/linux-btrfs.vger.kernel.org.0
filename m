@@ -2,210 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 186C313028C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2020 14:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E481303B7
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jan 2020 18:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbgADN4O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 4 Jan 2020 08:56:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34812 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgADN4O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 4 Jan 2020 08:56:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9E8CDAC2F;
-        Sat,  4 Jan 2020 13:56:11 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: relocation: Fix KASAN reports caused by extended reloc tree lifespan
-Date:   Sat,  4 Jan 2020 21:56:02 +0800
-Message-Id: <20200104135602.34601-1-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726083AbgADRHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 4 Jan 2020 12:07:15 -0500
+Received: from ms11p00im-qufo17282101.me.com ([17.58.38.58]:52455 "EHLO
+        ms11p00im-qufo17282101.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726004AbgADRHP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 4 Jan 2020 12:07:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1578157631;
+        bh=Ng+/xW9G1nqUkW+f+wTkMtQU0y9/gNZ9lZXpG7KoUl4=;
+        h=Content-Type:Subject:From:Date:Message-Id:To;
+        b=pkE61EO202IVC0Lpa20oyO8Qcp4DnTd6T7Kg8h73WMHxVoGGWINFXWgV9CLZ53dzQ
+         w/QHTtfZtF6N1qZ9+LPgF87x3KCa8fkI8ZcFtDSKf2hcRG+n3njU0rplQ/eAM8Kkdy
+         Okl/LJf9AVCJ39MDwZVeyFwsYLld6k5YYxh2fxr8VUiysUnMLSGlR4by3yXoFnDIzq
+         7IS0Sq9cSzyLqokzXZ9s4YB4OhKgSMaU659ez0FiNH5TFa2GStBNRbCY+2vWMOYcQx
+         96APLVf5dg3fhjqTAv4A/GQ4ezleVHSwV+8J9xjbiEKRbkckKdZNVZmpmW6ik0ua8n
+         m6TXAAoDMXoeQ==
+Received: from [192.168.15.23] (unknown [177.76.36.47])
+        by ms11p00im-qufo17282101.me.com (Postfix) with ESMTPSA id C8A8E780411;
+        Sat,  4 Jan 2020 17:07:10 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Subject: 12 TB btrfs file system on virtual machine broke again
+From:   Christian Wimmer <telefonchris@icloud.com>
+In-Reply-To: <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
+Date:   Sat, 4 Jan 2020 14:07:08 -0300
+Cc:     Qu WenRuo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
+References: <20191206034406.40167-1-wqu@suse.com>
+ <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
+ <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
+ <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
+ <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
+ <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
+ <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+X-Mailer: Apple Mail (2.3608.40.2.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2020-01-04_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-2001040161
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There are several different KASAN reports for balance + snapshot
-workloads.
-Involved call paths include:
+Hi guys,=20
 
-   should_ignore_root+0x54/0xb0 [btrfs]
-   build_backref_tree+0x11af/0x2280 [btrfs]
-   relocate_tree_blocks+0x391/0xb80 [btrfs]
-   relocate_block_group+0x3e5/0xa00 [btrfs]
-   btrfs_relocate_block_group+0x240/0x4d0 [btrfs]
-   btrfs_relocate_chunk+0x53/0xf0 [btrfs]
-   btrfs_balance+0xc91/0x1840 [btrfs]
-   btrfs_ioctl_balance+0x416/0x4e0 [btrfs]
-   btrfs_ioctl+0x8af/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+I run again in a problem with my btrfs files system.
+I start wondering if this filesystem type is right for my needs.
+Could you please help me in recovering my 12TB partition?
 
-   create_reloc_root+0x9f/0x460 [btrfs]
-   btrfs_reloc_post_snapshot+0xff/0x6c0 [btrfs]
-   create_pending_snapshot+0xa9b/0x15f0 [btrfs]
-   create_pending_snapshots+0x111/0x140 [btrfs]
-   btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
-   btrfs_mksubvol+0x915/0x960 [btrfs]
-   btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
-   btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
-   btrfs_ioctl+0x241b/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+What happened?=20
+-> This time I was just rebooting normally my virtual machine. I =
+discovered during the past days that the system hangs for some seconds =
+so I thought it would be a good idea to reboot my SUSE Linux after 14 =
+days of working. The machine powered off normally but when starting it =
+run into messages like the pasted ones.
 
-   btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
-   create_pending_snapshot+0x209/0x15f0 [btrfs]
-   create_pending_snapshots+0x111/0x140 [btrfs]
-   btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
-   btrfs_mksubvol+0x915/0x960 [btrfs]
-   btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
-   btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
-   btrfs_ioctl+0x241b/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+I immediately powered off again and started my Arch Linux where I have =
+btrfs-progs version 5.4 installed.
+I tried one of the commands that you gave me in the past (restore) and I =
+got following messages:
 
-[CAUSE]
-All these call sites are only relying on root->reloc_root, which can
-undergo btrfs_drop_snapshot(), and since we don't have real refcount
-based protection to reloc roots, we can reach already dropped reloc
-root, triggering KASAN.
 
-[FIX]
-To avoid such access to unstable root->reloc_root, we should check
-BTRFS_ROOT_DEAD_RELOC_TREE bit first.
+btrfs-progs-5.4]# ./btrfs restore -l /dev/sdb1
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+checksum verify failed on 3181912915968 found 00000071 wanted 00000066
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+bad tree block 3181912915968, bytenr mismatch, want=3D3181912915968, =
+have=3D4908658797358025935
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+checksum verify failed on 2688520683520 found 000000EE wanted FFFFFFEB
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+bad tree block 2688520683520, bytenr mismatch, want=3D2688520683520, =
+have=3D10123237912294
+Could not open root, trying backup super
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+checksum verify failed on 3181912915968 found 00000071 wanted 00000066
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+bad tree block 3181912915968, bytenr mismatch, want=3D3181912915968, =
+have=3D4908658797358025935
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+checksum verify failed on 2688520683520 found 000000EE wanted FFFFFFEB
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+bad tree block 2688520683520, bytenr mismatch, want=3D2688520683520, =
+have=3D10123237912294
+Could not open root, trying backup super
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+checksum verify failed on 3181912915968 found 00000071 wanted 00000066
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+bad tree block 3181912915968, bytenr mismatch, want=3D3181912915968, =
+have=3D4908658797358025935
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+checksum verify failed on 2688520683520 found 000000EE wanted FFFFFFEB
+checksum verify failed on 2688520683520 found 000000D5 wanted FFFFFFA9
+bad tree block 2688520683520, bytenr mismatch, want=3D2688520683520, =
+have=3D10123237912294
+Could not open root, trying backup super
+btrfs-progs-5.4]#=20
 
-This patch introduces a new wrapper, have_reloc_root(), to do the proper
-check for most callers who don't distinguish merged reloc tree and no
-reloc tree.
 
-The only exception is should_ignore_root(), as merged reloc tree can be
-ignored, while no reloc tree shouldn't.
 
-Also, set_bit()/clear_bit()/test_bit() doesn't imply a memory barrier,
-and BTRFS_ROOT_DEAD_RELOC_TREE is the only indicator, also add extra
-memory barrier for that bit.
+What can I do now to recover files?
 
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-Singed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Difference between this and David's diff:
-- Use proper smp_mb__after_atomic() for clear_bit()
-- Use test_bit() only check for should_ignore_root()
-  That call site is an except, can't go regular have_reloc_root() check
-- Add extra comment for have_reloc_root()
----
- fs/btrfs/relocation.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
+Please help me.
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index d897a8e5e430..586f045bb6dc 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -517,6 +517,23 @@ static int update_backref_cache(struct btrfs_trans_handle *trans,
- 	return 1;
- }
- 
-+/*
-+ * Check if this subvolume tree has valid reloc(*) tree.
-+ *
-+ * *: Reloc tree after swap is considered dead, thus not considered as valid.
-+ *    This is enough for most callers, as they don't distinguish dead reloc
-+ *    root from no reloc root.
-+ *    But should_ignore_root() below is a special case.
-+ */
-+static bool have_reloc_root(struct btrfs_root *root)
-+{
-+	smp_mb__before_atomic();
-+	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-+		return false;
-+	if (!root->reloc_root)
-+		return false;
-+	return true;
-+}
- 
- static int should_ignore_root(struct btrfs_root *root)
- {
-@@ -525,6 +542,11 @@ static int should_ignore_root(struct btrfs_root *root)
- 	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
- 		return 0;
- 
-+	/* This root has been merged with its reloc tree, we can ignore it */
-+	smp_mb__before_atomic();
-+	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-+		return 1;
-+
- 	reloc_root = root->reloc_root;
- 	if (!reloc_root)
- 		return 0;
-@@ -1439,6 +1461,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	 * The subvolume has reloc tree but the swap is finished, no need to
- 	 * create/update the dead reloc tree
- 	 */
-+	smp_mb__before_atomic();
- 	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
- 		return 0;
- 
-@@ -1478,8 +1501,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 	struct btrfs_root_item *root_item;
- 	int ret;
- 
--	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state) ||
--	    !root->reloc_root)
-+	if (!have_reloc_root(root))
- 		goto out;
- 
- 	reloc_root = root->reloc_root;
-@@ -1489,6 +1511,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 	if (fs_info->reloc_ctl->merge_reloc_tree &&
- 	    btrfs_root_refs(root_item) == 0) {
- 		set_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
-+		smp_mb__after_atomic();
- 		__del_reloc_root(reloc_root);
- 	}
- 
-@@ -2202,6 +2225,7 @@ static int clean_dirty_subvols(struct reloc_control *rc)
- 					ret = ret2;
- 			}
- 			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
-+			smp_mb__after_atomic();
- 			btrfs_put_fs_root(root);
- 		} else {
- 			/* Orphan reloc tree, just clean it up */
-@@ -4717,7 +4741,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
- 	struct btrfs_root *root = pending->root;
- 	struct reloc_control *rc = root->fs_info->reloc_ctl;
- 
--	if (!root->reloc_root || !rc)
-+	if (!rc || !have_reloc_root(root))
- 		return;
- 
- 	if (!rc->merge_reloc_tree)
-@@ -4751,7 +4775,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
- 	struct reloc_control *rc = root->fs_info->reloc_ctl;
- 	int ret;
- 
--	if (!root->reloc_root || !rc)
-+	if (!rc || !have_reloc_root(root))
- 		return 0;
- 
- 	rc = root->fs_info->reloc_ctl;
--- 
-2.24.1
+Thanks,
+
+Chris
+
 
