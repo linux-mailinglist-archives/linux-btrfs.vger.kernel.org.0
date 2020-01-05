@@ -2,146 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F472130851
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2020 14:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48417130852
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2020 14:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgAENjg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 5 Jan 2020 08:39:36 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:39245 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgAENjg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Jan 2020 08:39:36 -0500
-Received: from [192.168.177.20] ([91.63.166.112]) by mrelayeu.kundenserver.de
- (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id 1MMGAg-1j7Gu84BXy-00JNAD
- for <linux-btrfs@vger.kernel.org>; Sun, 05 Jan 2020 14:39:35 +0100
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs blocking disk access
-Date:   Sun, 05 Jan 2020 13:39:33 +0000
-Message-Id: <em802c94d1-16d7-490d-96e4-d46418d29222@ryzen>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
-User-Agent: eM_Client/7.2.34062.0
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:yqsz3DvrMf07oaMqgwafknx8iHp07azI5z/glWb+6LBil13sAup
- +XGiH+8GQJ5lzFkFD6uvjDGdz4FTmVY/6kyt0XsV2z+xFrCdgII2OvTSZ/pGni4itCb4CgH
- rUHouoTr5UMk2WxqHzIGIyTCOox8VvO/2wTcEUjXBjeGWpfex07uPjfZMUq2qwAZFL1CwUz
- XR+W/hEmIOaGKr8433xKw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PjegwR44M98=:EnNaFH/V+lKEWEIji2r8a8
- T53pMyPNQdDcqEqAU3J0dVEYEv7jSqSzS2rzpOR4YR8NLB9wqFaT/9YmZyWCA/4PdlYGljhAM
- ZeLSD3zcZALtjs5cE6wjsG5PSDjpqAovRnqT4lMQCZJktRYiseSQKBmgAmT2GHvPnYzphyaoR
- Z9RjIxDQejH86UiiG+0KLK0wlqXobpq5mIYd4ZUtgcBbHfNNDEnwb1oFUcEbIxmFr4qEQzYy5
- M2Qiaum4QWbQ50H0J9Ug//jlKNB6MG2TWlUPJC/sKpW9C51ew1egfLtp9nYzp7CS7KGBogANB
- eLEMcbw3J9Q1XnGm/M22IMRGMrhNGiQHnvYuLrhj9+4oP7joGJGVj/d/WKBi50/Iurnh9Nf1B
- Zk/cy+k26CLWEapUlG1ILW2GAz+c2VkntQ0yEzprzcvfYDXG6HqmHqT4w8Ldn9CEPxxHySTfB
- 71Vv3TV57HjY5MCrWnKUgLgBrD5SysV6lLQxuLsN/0pcUQQWuUkYujKsFnM8hs+Vb331fDpl9
- bkpzaNYp/q/TI60ngsi8c9M1zE8hoHxrjgCahDpRzWfa8YXBPZJnAnZI3STejUGiTcjBkHtTP
- E7bG88Kd8qZ4vXTabcRrTSKB8Q+M5/wqFQHxpskt5K97+XtaODD0RdpTeqnV+9eIEKCn1LnYK
- GDqKuk1ZkTTjcs9u/uS4bRpnBLg4KNXHqo54zUio07cOGdqDDRXGu5BpapztXjVFBxMsD7N8s
- OYBBirZ21RxlVd3ElrsP6PwVKQ9UVDTKSMrpTy61eW6zg7sz7litT0Qi1O6PajU97V6kGWYS3
- lgUHRDzxmTq1oGexU3IiOKLmV2/rYz1j+8zZzmyEcfBnK7aLnnCku7E5LUL0CiwxgZOh+9vIi
- dQLxZiUI5nJ9p+CiBmtq7SnvwuUiUeeZ/JqfsQ6NE=
+        id S1726307AbgAENki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jan 2020 08:40:38 -0500
+Received: from ms11p00im-qufo17281801.me.com ([17.58.38.55]:52864 "EHLO
+        ms11p00im-qufo17281801.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726192AbgAENki (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 Jan 2020 08:40:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1578231634;
+        bh=QwxZZnh29wAwwjH7MsU+JD/xDDdh528Hdm9ASbG0FfY=;
+        h=Content-Type:Subject:From:Date:Message-Id:To;
+        b=RoD59C6sZofG/GPM0p3XFGoN01j7lewhVEPX8bVEhHvjbr8RqJzfbEcZxI0XoqNUi
+         +qPGmrAxHP+Ft21gSRp8Bf5Ff36s2dX0ZeMKYlf/MF1fem2dOVdp7U+y55fe+dNQKC
+         kWkBvcz5u1B3GbThIJMEkMOwIOmT6AfXUS4iU4mKfHp7WVAlVf6cgUIiZe41lFGPei
+         U4CxQ+d7cbNCRVzMhVDUF61XQu+yywuPh+yIxGhPgUxuhVTnMVyX0HYIyBV6VvbnnG
+         cZ6JzWhwP0SHG2xQRlF6hEON9Kt/iFblvfUGmljQ0TTDUHtkiGIsilhlhV/t0s3xrX
+         rab9MTVl4vqPw==
+Received: from [192.168.15.23] (unknown [177.76.36.47])
+        by ms11p00im-qufo17281801.me.com (Postfix) with ESMTPSA id 9EB271009A5;
+        Sun,  5 Jan 2020 13:40:33 +0000 (UTC)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Subject: Re: 12 TB btrfs file system on virtual machine broke again
+From:   Christian Wimmer <telefonchris@icloud.com>
+In-Reply-To: <CAJCQCtQmvHS8+Z7=B_8panSzo=Bfo0ymVU+cr_tR5z1uw+Ejug@mail.gmail.com>
+Date:   Sun, 5 Jan 2020 10:40:29 -0300
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CE5FDD33-F072-40EE-9ED7-66D5F7F2A5FA@icloud.com>
+References: <20191206034406.40167-1-wqu@suse.com>
+ <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
+ <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
+ <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
+ <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
+ <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
+ <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
+ <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
+ <CAJCQCtQmvHS8+Z7=B_8panSzo=Bfo0ymVU+cr_tR5z1uw+Ejug@mail.gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
+X-Mailer: Apple Mail (2.3608.40.2.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2020-01-05_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-2001050128
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-I have seen this problem multiple times now in my log (every few days).
-A btrfs scrub /drive ran without error.
-
-[So Jan  5 13:49:21 2020] INFO: task dockerd:4076 blocked for more than 
-120 seconds.
-[So Jan  5 13:49:21 2020]       Tainted: G           OE     5.2.8 #1
-[So Jan  5 13:49:21 2020] "echo 0 > 
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[So Jan  5 13:49:21 2020] dockerd         D    0  4076      1 0x00004000
-[So Jan  5 13:49:21 2020] Call Trace:
-[So Jan  5 13:49:21 2020]  ? __schedule+0x3e9/0x690
-[So Jan  5 13:49:21 2020]  schedule+0x33/0x90
-[So Jan  5 13:49:21 2020]  wait_for_commit+0x41/0x80 [btrfs]
-[So Jan  5 13:49:21 2020]  ? remove_wait_queue+0x60/0x60
-[So Jan  5 13:49:21 2020]  btrfs_commit_transaction+0x1ab/0x9d0 [btrfs]
-[So Jan  5 13:49:21 2020]  ? block_rsv_release_bytes+0x9a/0x150 [btrfs]
-[So Jan  5 13:49:21 2020]  create_subvol+0x3bf/0x820 [btrfs]
-[So Jan  5 13:49:21 2020]  ? btrfs_mksubvol+0x30e/0x610 [btrfs]
-[So Jan  5 13:49:21 2020]  btrfs_mksubvol+0x30e/0x610 [btrfs]
-[So Jan  5 13:49:21 2020]  ? kmem_cache_alloc_trace+0x148/0x1c0
-[So Jan  5 13:49:21 2020]  ? 
-insert_reserved_file_extent.constprop.69+0x2f0/0x2f0 [btrfs]
-[So Jan  5 13:49:21 2020]  ? _cond_resched+0x16/0x40
-[So Jan  5 13:49:21 2020]  btrfs_ioctl_snap_create_transid+0x117/0x1a0 
-[btrfs]
-[So Jan  5 13:49:21 2020]  ? _copy_from_user+0x31/0x60
-[So Jan  5 13:49:21 2020]  btrfs_ioctl_snap_create+0x66/0x80 [btrfs]
-[So Jan  5 13:49:21 2020]  btrfs_ioctl+0x6b5/0x2ac0 [btrfs]
-[So Jan  5 13:49:21 2020]  ? do_vfs_ioctl+0xa2/0x640
-[So Jan  5 13:49:21 2020]  ? 
-btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-[So Jan  5 13:49:21 2020]  do_vfs_ioctl+0xa2/0x640
-[So Jan  5 13:49:21 2020]  ? __do_sys_newfstat+0x3c/0x60
-[So Jan  5 13:49:21 2020]  ksys_ioctl+0x70/0x80
-[So Jan  5 13:49:21 2020]  __x64_sys_ioctl+0x16/0x20
-[So Jan  5 13:49:21 2020]  do_syscall_64+0x55/0x110
-[So Jan  5 13:49:21 2020]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[So Jan  5 13:49:21 2020] RIP: 0033:0x55a9b81cd5a0
-[So Jan  5 13:49:21 2020] Code: 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 
-20 49 c7 c2 00 00 00 00 49 c7 c0 00 00 00 00 49 c7 c1 00 00 00 00 48 8b 
-44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 
-c7 44 24 30
-[So Jan  5 13:49:21 2020] RSP: 002b:000000c4214c6720 EFLAGS: 00000206 
-ORIG_RAX: 0000000000000010
-[So Jan  5 13:49:21 2020] RAX: ffffffffffffffda RBX: 0000000000000000 
-RCX: 000055a9b81cd5a0
-[So Jan  5 13:49:21 2020] RDX: 000000c4214c6760 RSI: 000000005000940e 
-RDI: 0000000000000076
-[So Jan  5 13:49:21 2020] RBP: 000000c4214c7790 R08: 0000000000000000 
-R09: 0000000000000000
-[So Jan  5 13:49:21 2020] R10: 0000000000000000 R11: 0000000000000206 
-R12: ffffffffffffffff
-[So Jan  5 13:49:21 2020] R13: 0000000000000038 R14: 0000000000000037 
-R15: 00000000000000aa
-[So Jan  5 13:51:22 2020] INFO: task dockerd:2900 blocked for more than 
-120 seconds.
-[So Jan  5 13:51:22 2020]       Tainted: G           OE     5.2.8 #1
-[So Jan  5 13:51:22 2020] "echo 0 > 
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-
-What could be the reason for this and how can I prevent/fix it?
+Hi Chris,
 
 
-About my system:
 
-root@homeserver:~# uname -a
-Linux homeserver 5.2.8 #1 SMP Thu Aug 15 21:22:00 CEST 2019 x86_64 
-GNU/Linux
-root@homeserver:~#   btrfs --version
-btrfs-progs v4.20.2
-root@homeserver:~#   btrfs fi show
-Label: 'DockerImages'  uuid: 303256f2-6901-4564-892e-cdca9dda50e3
-         Total devices 1 FS bytes used 12.47GiB
-         devid    1 size 52.16GiB used 29.05GiB path /dev/sdf3
+> On 5. Jan 2020, at 01:03, Chris Murphy <lists@colorremedies.com> =
+wrote:
+>=20
+> On Sat, Jan 4, 2020 at 10:07 AM Christian Wimmer
+> <telefonchris@icloud.com> wrote:
+>>=20
+>> Hi guys,
+>>=20
+>> I run again in a problem with my btrfs files system.
+>> I start wondering if this filesystem type is right for my needs.
+>> Could you please help me in recovering my 12TB partition?
+>=20
+> If you're having recurring problems, there's a decent chance it's
+> hardware related and not Btrfs, because Btrfs is pretty stable on
+> stable hardware. Btrfs is actually fussier than other file systems
+> because everything is checksummed.
+>=20
 
-Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
-         Total devices 2 FS bytes used 7.22TiB
-         devid    1 size 7.28TiB used 7.27TiB path /dev/sdg1
-         devid    2 size 7.28TiB used 7.27TiB path /dev/sdc1
+I think I can exclude hardware problems. Everything is brand new and =
+well tested.
+The biggest chance for being the source of errors is the Parallels =
+Virtual machine where Linux (Suse 15.1) is running in.
+In this Virtual Machine I specify a =E2=80=9Cgrowing hard disc" that is =
+actually a file on my 32 TB Promise Pegasus Storage.
+I just can not understand why it runs fine for almost 1 month (and =
+actually more for other growing hard discs of smaller size) and then =
+shows this behaviour.
+As soon as you =E2=80=9Care sure" that btrfs is not the problem I will =
+switch to different kind of hard discs.
 
 
-btrfs fi df /srv/dev-disk-by-label-DockerImages/
-Data, single: total=25.01GiB, used=11.80GiB
-System, single: total=32.00MiB, used=16.00KiB
-Metadata, single: total=4.01GiB, used=842.02MiB
-GlobalReserve, single: total=85.78MiB, used=0.00B
+>=20
+>> What happened?
+>> -> This time I was just rebooting normally my virtual machine. I =
+discovered during the past days that the system hangs for some seconds =
+so I thought it would be a good idea to reboot my SUSE Linux after 14 =
+days of working. The machine powered off normally but when starting it =
+run into messages like the pasted ones.
+>=20
+> A complete dmesg leading up to the problem would be useful. Kernel
+> messages at the last moments it was working, and also messages for the
+> first mount attempt that failed. And kernel versions for both (sounds
+> like 5.4 series).
 
-Yes, there are two btrfs filesystems. I am rather sure it is the 
-DockerImages one, as I see no reason why the other would make docker 
-hang.
+I have one System with Suse 15.1 where the error happened. The =
+btrfs-progs is of version 4.19.1.
+The other system is 5.3.12-1-MANJARO with btrfs-progs version 5.4. Here =
+I try to repair the broken file system.
+
+>=20
+> And also `btrfs check` output, no repair.
+
+Here the output:
+
+btrfs-progs-5.4]# ./btrfs check /dev/sdb1
+Opening filesystem to check...
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+checksum verify failed on 3181912915968 found 00000071 wanted 00000066
+checksum verify failed on 3181912915968 found 000000A9 wanted 00000064
+bad tree block 3181912915968, bytenr mismatch, want=3D3181912915968, =
+have=3D4908658797358025935
+checksum verify failed on 2688623902720 found 00000029 wanted 00000026
+checksum verify failed on 2688623902720 found 000000E4 wanted 0000006F
+checksum verify failed on 2688623902720 found 00000029 wanted 00000026
+bad tree block 2688623902720, bytenr mismatch, want=3D2688623902720, =
+have=3D256465382155451
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
+btrfs-progs-5.4]#=20
 
 
-Regards,
-Hendrik
+Chris
 
