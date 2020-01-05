@@ -2,113 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDB413086B
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2020 15:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA8B13087A
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jan 2020 15:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgAEOXf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Jan 2020 09:23:35 -0500
-Received: from ms11p00im-hyfv17291101.me.com ([17.58.38.40]:48346 "EHLO
-        ms11p00im-hyfv17291101.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726188AbgAEOXf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Jan 2020 09:23:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1578234212;
-        bh=oiZ2v/D0fG7PSXd+ijuu9/BNXhjpXXOWlJQDVhOtRBQ=;
-        h=Content-Type:Subject:From:Date:Message-Id:To;
-        b=mQG99ETiKApSfuMebgwLAOf/r9SJEQ3EZtFek1efmdtGltP/ge1qLXh8BRYUAG9/H
-         fHgjn0Sflt5gco0JsCygxN+FZ/JQPj4QHEUIx0zQC4whxWD4AoX8C00H8Fmxj7pMrc
-         CdVqmkeURKaQ6fZYjB7LUsjbNSiEwcqV/QeXNpvqchNz7ZjVa1D9AuisLY5y6A0VM0
-         UKWDhRQcNUK3oASAmDrI0ueehfvw/9GP3IxMX54q/HoL9hXht5bb6hO7/aVq3Tx3Ig
-         ZKz1OgI0n9yfJTM3/MnAWcNVocZsQJRvdk09EFzpVEbxB74iBXGxtjz3zKm6pCP+MC
-         cdjvGtVZQ8QGQ==
-Received: from [192.168.15.23] (unknown [177.76.36.47])
-        by ms11p00im-hyfv17291101.me.com (Postfix) with ESMTPSA id 75C6D6C072C;
-        Sun,  5 Jan 2020 14:23:31 +0000 (UTC)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
-Subject: Re: 12 TB btrfs file system on virtual machine broke again
-From:   Christian Wimmer <telefonchris@icloud.com>
-In-Reply-To: <4BB63A89-98D3-4990-9970-8D8258F66E11@icloud.com>
-Date:   Sun, 5 Jan 2020 11:23:19 -0300
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A5E64CEB-1F48-46D0-80A9-943BC3A9E4DF@icloud.com>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
- <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <CAJCQCtQmvHS8+Z7=B_8panSzo=Bfo0ymVU+cr_tR5z1uw+Ejug@mail.gmail.com>
- <CE5FDD33-F072-40EE-9ED7-66D5F7F2A5FA@icloud.com>
- <0102016f76081d01-72e2a7ca-3d8e-4238-b578-898fbe7d7bc3-000000@eu-west-1.amazonses.com>
- <4BB63A89-98D3-4990-9970-8D8258F66E11@icloud.com>
-To:     Martin Raiber <martin@urbackup.org>
-X-Mailer: Apple Mail (2.3608.40.2.2.4)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2020-01-05_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=629 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-2001050135
+        id S1726240AbgAEOtg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jan 2020 09:49:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45350 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgAEOtg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 Jan 2020 09:49:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D1663AC3C;
+        Sun,  5 Jan 2020 14:49:32 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: relocation: Fix KASAN reports caused by extended
+ reloc tree lifespan
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.com>
+References: <20200104135602.34601-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <933b818f-e83f-5080-7a6e-ba587f013986@suse.com>
+Date:   Sun, 5 Jan 2020 16:49:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200104135602.34601-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the warn file (var/log/messages/warn) If found following lines:
-
-2019-12-29T13:10:33.097033-03:00 linux-ze6w kernel: [1297807.325928] =
-btrfs_dev_stat_print_on_error: 25 callbacks suppressed
-2019-12-29T13:10:33.097048-03:00 linux-ze6w kernel: [1297807.325935] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 1, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097051-03:00 linux-ze6w kernel: [1297807.326276] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 2, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097052-03:00 linux-ze6w kernel: [1297807.326584] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 3, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097052-03:00 linux-ze6w kernel: [1297807.326937] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 4, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097057-03:00 linux-ze6w kernel: [1297807.327051] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 5, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097058-03:00 linux-ze6w kernel: [1297807.327263] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 6, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097058-03:00 linux-ze6w kernel: [1297807.327264] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 7, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097058-03:00 linux-ze6w kernel: [1297807.327272] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 8, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097059-03:00 linux-ze6w kernel: [1297807.327273] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 9, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097059-03:00 linux-ze6w kernel: [1297807.327280] =
-BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 10, rd 0, flush 0, =
-corrupt 0, gen 0
-2019-12-29T13:10:33.097068-03:00 linux-ze6w kernel: [1297807.327416] =
-BTRFS warning (device sdb1): Skipping commit of aborted transaction.
-2019-12-29T13:10:33.097069-03:00 linux-ze6w kernel: [1297807.327433] =
-BTRFS error (device sdb1): commit super ret -5
-2019-12-29T13:10:33.097069-03:00 linux-ze6w kernel: [1297807.327531] =
-BTRFS error (device sdb1): cleaner transaction attach returned -30
-2019-12-29T13:10:33.097059-03:00 linux-ze6w kernel: [1297807.327414] =
-BTRFS: error (device sdb1) in btrfs_commit_transaction:2261: errno=3D-5 =
-IO failure (Error while writing out transaction)
-2019-12-29T13:10:33.097069-03:00 linux-ze6w kernel: [1297807.327418] =
-BTRFS: error (device sdb1) in cleanup_transaction:1881: errno=3D-5 IO =
-failure
 
 
+On 4.01.20 г. 15:56 ч., Qu Wenruo wrote:
+> [BUG]
+> There are several different KASAN reports for balance + snapshot
+> workloads.
+> Involved call paths include:
+> 
+>    should_ignore_root+0x54/0xb0 [btrfs]
+>    build_backref_tree+0x11af/0x2280 [btrfs]
+>    relocate_tree_blocks+0x391/0xb80 [btrfs]
+>    relocate_block_group+0x3e5/0xa00 [btrfs]
+>    btrfs_relocate_block_group+0x240/0x4d0 [btrfs]
+>    btrfs_relocate_chunk+0x53/0xf0 [btrfs]
+>    btrfs_balance+0xc91/0x1840 [btrfs]
+>    btrfs_ioctl_balance+0x416/0x4e0 [btrfs]
+>    btrfs_ioctl+0x8af/0x3e60 [btrfs]
+>    do_vfs_ioctl+0x831/0xb10
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x43/0x50
+>    do_syscall_64+0x79/0xe0
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>    create_reloc_root+0x9f/0x460 [btrfs]
+>    btrfs_reloc_post_snapshot+0xff/0x6c0 [btrfs]
+>    create_pending_snapshot+0xa9b/0x15f0 [btrfs]
+>    create_pending_snapshots+0x111/0x140 [btrfs]
+>    btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
+>    btrfs_mksubvol+0x915/0x960 [btrfs]
+>    btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
+>    btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
+>    btrfs_ioctl+0x241b/0x3e60 [btrfs]
+>    do_vfs_ioctl+0x831/0xb10
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x43/0x50
+>    do_syscall_64+0x79/0xe0
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>    btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
+>    create_pending_snapshot+0x209/0x15f0 [btrfs]
+>    create_pending_snapshots+0x111/0x140 [btrfs]
+>    btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
+>    btrfs_mksubvol+0x915/0x960 [btrfs]
+>    btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
+>    btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
+>    btrfs_ioctl+0x241b/0x3e60 [btrfs]
+>    do_vfs_ioctl+0x831/0xb10
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x43/0x50
+>    do_syscall_64+0x79/0xe0
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> [CAUSE]
+> All these call sites are only relying on root->reloc_root, which can
+> undergo btrfs_drop_snapshot(), and since we don't have real refcount
+> based protection to reloc roots, we can reach already dropped reloc
+> root, triggering KASAN.
+> 
+> [FIX]
+> To avoid such access to unstable root->reloc_root, we should check
+> BTRFS_ROOT_DEAD_RELOC_TREE bit first.
+> 
+> This patch introduces a new wrapper, have_reloc_root(), to do the proper
+> check for most callers who don't distinguish merged reloc tree and no
+> reloc tree.
+> 
+> The only exception is should_ignore_root(), as merged reloc tree can be
+> ignored, while no reloc tree shouldn't.
+> 
+> Also, set_bit()/clear_bit()/test_bit() doesn't imply a memory barrier,
+> and BTRFS_ROOT_DEAD_RELOC_TREE is the only indicator, also add extra
+> memory barrier for that bit.
+> 
+> Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
+> Singed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Difference between this and David's diff:
+> - Use proper smp_mb__after_atomic() for clear_bit()
+> - Use test_bit() only check for should_ignore_root()
+>   That call site is an except, can't go regular have_reloc_root() check
+> - Add extra comment for have_reloc_root()
+> ---
+>  fs/btrfs/relocation.c | 32 ++++++++++++++++++++++++++++----
+>  1 file changed, 28 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index d897a8e5e430..586f045bb6dc 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -517,6 +517,23 @@ static int update_backref_cache(struct btrfs_trans_handle *trans,
+>  	return 1;
+>  }
+>  
+> +/*
+> + * Check if this subvolume tree has valid reloc(*) tree.
+> + *
+> + * *: Reloc tree after swap is considered dead, thus not considered as valid.
+> + *    This is enough for most callers, as they don't distinguish dead reloc
+> + *    root from no reloc root.
+> + *    But should_ignore_root() below is a special case.
+> + */
+> +static bool have_reloc_root(struct btrfs_root *root)
+> +{
+> +	smp_mb__before_atomic();
+> +	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+> +		return false;
+> +	if (!root->reloc_root)
+> +		return false;
+> +	return true;
+> +}
+>  
+>  static int should_ignore_root(struct btrfs_root *root)
+>  {
+> @@ -525,6 +542,11 @@ static int should_ignore_root(struct btrfs_root *root)
+>  	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
+>  		return 0;
+>  
+> +	/* This root has been merged with its reloc tree, we can ignore it */
+> +	smp_mb__before_atomic();
 
+Haven't analyzed the patch deeply but if you add memory barriers you
+*must* add comments explaining the ordering guarantees those barriers
+provide.
+
+<snip>
