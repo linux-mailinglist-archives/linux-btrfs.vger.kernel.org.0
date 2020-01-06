@@ -2,380 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9915C130D72
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 07:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523D9130DC3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 08:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgAFGN7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 01:13:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37938 "EHLO mx2.suse.de"
+        id S1726448AbgAFHEp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 02:04:45 -0500
+Received: from mout.gmx.net ([212.227.17.21]:43935 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726692AbgAFGN6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 01:13:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BD7A4AEB1
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jan 2020 06:13:55 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 3/3] btrfs: statfs: Use virtual chunk allocation to calculation available data space
-Date:   Mon,  6 Jan 2020 14:13:43 +0800
-Message-Id: <20200106061343.18772-4-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200106061343.18772-1-wqu@suse.com>
-References: <20200106061343.18772-1-wqu@suse.com>
+        id S1726294AbgAFHEo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jan 2020 02:04:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578294277;
+        bh=GFOFkt3cjmsiUGzoarsLjWYJ/pOZcnjV6tKpsy4r5dg=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=NDmvT6plqVFZlz4QbND7RVdrQtExAGX1wfrwB4dKfSJZabUr5DA2SpdHLHE9hT6mn
+         PRb7AZr+QNAaW7A3HzLc8MZLEm6bfL3aDvv/B0vLO2Hn46l20q05uNiPtRdcpNksvx
+         IYJeti3o1iehsmT6mE9Q0j5EnMuEvv6S0NBFXhPU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbg4-1j9B723ZzI-00Kz9g; Mon, 06
+ Jan 2020 08:04:37 +0100
+Subject: Re: [PATCH 0/3] btrfs: fixes for relocation to avoid KASAN reports
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191211050004.18414-1-wqu@suse.com>
+ <20191211153429.GO3929@twin.jikos.cz>
+ <74a07fa4-ca35-57ee-2cd9-586a8db04712@gmx.com>
+ <20200103155259.GA3929@twin.jikos.cz> <20200103161556.GB3929@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <159ae5f2-92fd-dd71-8c6b-eac018e2faf0@gmx.com>
+Date:   Mon, 6 Jan 2020 15:04:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200103161556.GB3929@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="cEzN9shfoVeOfLybbDsZXBaH7yCZb6znO"
+X-Provags-ID: V03:K1:syPN8O2Lt4NVG382SUNttuPvvr6jj2KgApy1y2l3sm8zL/CnVaJ
+ /07WQF74nJgsfYTWQup0Rtnv3ZiV0iKYXC1CDmQ5mgiWKqv4a+Xn1Q9FrBUuAhYpmjMzofV
+ NeFZtyy2TTr3AVIZfBShpden0R0Rbw0rTb9hmngvY9K9yQwlqoELn5fHC2QirpCkAr6XcZf
+ Y3lgq1esXvmTHAsuCx/kg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:62Hzi03E+7w=:8VYjxrBrO8gzAE5frpZ9P+
+ kmNlUBQEn2hP2nCuzHWXbNh7ZkxdkO0Hn69VK5jKwGttDyvHl5buTrw9gQvLKRe6REJM201JT
+ ilb2M8CACeVoZu9GHrVDpapOCdYuHdRAIYNg8LtvT5MDgjYNM8xf7p+s0lPLyKJjNYVd6S1bc
+ odfcZ1260qlDkloq33aLoCIKI5kX5raWnCWrr0PCnhh1xwRAlNSlsSzPzSZBljxm1ll0UcpmO
+ lVU47qqWsLXW8iiZjim2WYAjCWe+c9W8QcGYECo845dcg7kIJ3SVF+Urvo1FD71Rjxur4QLcB
+ pgNJJIsXDMxfDJjQvQq2hEn74JiFpH28G7AnQKgmj+vzHt96VNrh6F8924YeuYmc2nWC6YfQu
+ IsLqvRk+wFu8sYiux6bOPg9PMHHEnBejrLPO4zSy8NhsHIbZ5tPcefA9CDs8FMZzOcb56DewI
+ F9FZHcFxZ01a7QeuCD0898AMM0vHR+VqkqU3V32IPyy7vVidq1PbSoCtf2gFW4nziI6BaNUtK
+ 06MeJFI/47opctzsoNmxKHadvMosjm/1l0pQ0SoJLnjZ8J9PH3W9xanFaKDwduN4pZ/FScxON
+ 3il2/t3e5xaiNXqB/ZNrKEmEkO0H6byAhrW90zZFlJDVKiHTX+pW8FV2gU57H66YmJcc4AqmS
+ VmoqG8/49Pw4IpP4RNb2nMkzZ5x5+7WVNmXQX93e98iZM65ut4rifUCkLOLUjhzTi3JBFbWaV
+ Gjzw+J4HGmt9atrfBGjPFY6/IeA9ym6NQfantFDI0qba/71UvGDvOW1XoVNpCxh6XIAL7v+wJ
+ ljbQ4m5WRtF8ZIohCGFcwks3rJSpgMKTgpnj/4QxUDO8sZsC2k3rMvWpsDIXdGniYLhdn0Z3j
+ C5byWTUZYhRPgpMv+MTKiGAa+B8huqo3dSmH6qZBDscYDsqv6q7htlTADWjR9WL+N85xVFVT1
+ 07Zx+v4i0x4k6vscMSv8Hsec/Ilbh8qzvNoWCXuRkBeQNzgipmVcZkFyTscIgpkOdsjF2CDBF
+ nBfhL8thXqPUmwrhqDPbJZqyoNcfkzFssE1JoinLoDk5dfyEguUqe2krWUTO/7v0OplMmdRHt
+ K9HI+oILMkXgwIEoErAsnXA2h/S2lilmvTDspEZXxuRXW2jv6iasn7YFSTt36z0Zo50Omzem2
+ z5APSyj/DCOLhp9vgj2RJkhp0BXZo4rpRvlRU6oQ9gQnPouA6sAg2xv6eeffpB9n/I5zktgbb
+ rmipwKD9Gh5mCvFbC4Gd3Hh3jJfmSBp92b2WMJ+zrq8eAiG30ISmld9Rod1U=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although btrfs_calc_avail_data_space() is trying to do an estimation
-on how many data chunks it can allocate, the estimation is far from
-perfect:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cEzN9shfoVeOfLybbDsZXBaH7yCZb6znO
+Content-Type: multipart/mixed; boundary="0etbFxKTc5wCAReB7qie0JaO4RNdQup4S"
 
-- Metadata over-commit is not considered at all
-- Chunk allocation doesn't take RAID5/6 into consideration
+--0etbFxKTc5wCAReB7qie0JaO4RNdQup4S
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Although current per-profile available space itself is not able to
-handle metadata over-commit itself, the virtual chunk infrastructure can
-be re-used to address above problems.
+On 2020/1/4 =E4=B8=8A=E5=8D=8812:15, David Sterba wrote:
+> On Fri, Jan 03, 2020 at 04:52:59PM +0100, David Sterba wrote:
+>> So it's one bit vs refcount and a lock. For the backports I'd go with
+>> the bit, but this needs the barriers as mentioned in my previous reply=
+=2E
+>> Can you please update the patches?
+>=20
+> The idea is in the diff below (compile tested only). I found one more
+> case that was not addressed by your patches, it's in
+> btrfs_update_reloc_root.
+>=20
+> Given that the type of the fix is the same, I'd rather do that in one
+> patch. The reported stack traces are more or less the same.
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index af4dd49a71c7..aeba3a7506e1 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -517,6 +517,15 @@ static int update_backref_cache(struct btrfs_trans=
+_handle *trans,
+>  	return 1;
+>  }
+> =20
+> +static bool have_reloc_root(struct btrfs_root *root)
+> +{
+> +	smp_mb__before_atomic();
 
-This patch will change btrfs_calc_avail_data_space() to do the following
-things:
-- Do metadata virtual chunk allocation first
-  This is to address the over-commit behavior.
-  If current metadata chunks have enough free space, we can completely
-  skip this step.
+Mind to explain why the before_atomic() is needed?
 
-- Allocate data virtual chunks as many as possible
-  Just like what we did in per-profile available space estimation.
-  Here we only need to calculate one profile, since statfs() call is
-  a relative cold path.
+Is it just paired with smp_mb__after_atomic() for the
+set_bit()/clear_bit() part?
 
-Now statfs() should be able to report near perfect estimation on
-available data space, and can handle RAID5/6 better.
+>  	reloc_root =3D root->reloc_root;
+> @@ -1489,6 +1498,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_ha=
+ndle *trans,
+>  	if (fs_info->reloc_ctl->merge_reloc_tree &&
+>  	    btrfs_root_refs(root_item) =3D=3D 0) {
+>  		set_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
+> +		smp_mb__after_atomic();
 
-[BENCHMARK]
-For the performance difference, here is the benchmark:
- Disk layout:
- - devid 1:	1G
- - devid 2:	2G
- - devid 3:	3G
- - devid 4:	4G
- - devid 5:	5G
- metadata:	RAID1
- data:		RAID5
+I get the point here, to make sure all other users see this bit change.
 
- This layout should be the worst case for RAID5, as it can
- from 5 disks raid5 to 2 disks raid 5 with unusable space.
+>  		__del_reloc_root(reloc_root);
 
- Then use ftrace to trace the execution time of btrfs_statfs() after
- allocating 1G data chunk. Both have 12 samples.
-				avg		std
- Patched:			17.59 us	7.04
- WIthout patch (v5.5-rc2):	14.98 us	6.16
+Interestingly in that function we immediately triggers spin_lock() which
+implies memory barrier.
+(Not an excuse to skip memory barrier anyway)
 
-When the fs is cold, there is a small performance for this particular
-case, as we need to do several more iterations to calculate correct
-RAID5 data space.
-But it's still pretty good, and won't block chunk allocator for any
-observable time.
+>  	}
+> =20
+> @@ -2201,6 +2211,7 @@ static int clean_dirty_subvols(struct reloc_contr=
+ol *rc)
+>  				if (ret2 < 0 && !ret)
+>  					ret =3D ret2;
+>  			}
+> +			smp_mb__before_atomic();
+>  			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
 
-When the fs is hot, the performance bottleneck is the chunk_mutex, where
-the most common and longest holder would be __btrfs_chunk_alloc().
-In that case, we may sleep much longer as __btrfs_chunk_alloc() can
-trigger IO.
+I guess this should be a smp_mb__after_atomic();
 
-Since the new implementation is not observable slower than the old one,
-and won't cause meaningful delay for chunk allocator, it should be more
-or less OK.
+>  			btrfs_put_fs_root(root);
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c   | 190 ++++++++++++++++-----------------------------
- fs/btrfs/volumes.c |  12 +--
- fs/btrfs/volumes.h |   4 +
- 3 files changed, 79 insertions(+), 127 deletions(-)
+And btrfs_put_fs_root() triggers a release memory ordering.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..4c0ba0f633ef 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1893,119 +1893,88 @@ static inline void btrfs_descending_sort_devices(
- /*
-  * The helper to calc the free space on the devices that can be used to store
-  * file data.
-+ *
-+ * The calculation will:
-+ * - Allocate enough metadata virtual chunks to fulfill over-commit
-+ *   To ensure we still have enough space to contain metadata chunks
-+ * - Allocate any many data virtual chunks as possible
-+ *   To get a true estimation on available data free space.
-+ *
-+ * Only with such comprehensive check, we can get a good result considering
-+ * all the uneven disk layouts.
-  */
- static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
--					      u64 *free_bytes)
-+					      u64 free_meta, u64 *result)
- {
- 	struct btrfs_device_info *devices_info;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_device *device;
--	u64 type;
--	u64 avail_space;
--	u64 min_stripe_size;
--	int num_stripes = 1;
--	int i = 0, nr_devices;
--	const struct btrfs_raid_attr *rattr;
-+	u64 meta_index;
-+	u64 data_index;
-+	u64 meta_rsv;
-+	u64 meta_allocated = 0;
-+	u64 data_allocated = 0;
-+	u64 allocated;
-+	int nr_devices;
-+	int ret = 0;
- 
--	/*
--	 * We aren't under the device list lock, so this is racy-ish, but good
--	 * enough for our purposes.
--	 */
--	nr_devices = fs_info->fs_devices->open_devices;
--	if (!nr_devices) {
--		smp_mb();
--		nr_devices = fs_info->fs_devices->open_devices;
--		ASSERT(nr_devices);
--		if (!nr_devices) {
--			*free_bytes = 0;
--			return 0;
--		}
--	}
-+	spin_lock(&fs_info->global_block_rsv.lock);
-+	meta_rsv = fs_info->global_block_rsv.size;
-+	spin_unlock(&fs_info->global_block_rsv.lock);
- 
-+	mutex_lock(&fs_info->chunk_mutex);
-+	nr_devices = fs_devices->rw_devices;
- 	devices_info = kmalloc_array(nr_devices, sizeof(*devices_info),
- 			       GFP_KERNEL);
--	if (!devices_info)
--		return -ENOMEM;
--
--	/* calc min stripe number for data space allocation */
--	type = btrfs_data_alloc_profile(fs_info);
--	rattr = &btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)];
--
--	if (type & BTRFS_BLOCK_GROUP_RAID0)
--		num_stripes = nr_devices;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1)
--		num_stripes = 2;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C3)
--		num_stripes = 3;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C4)
--		num_stripes = 4;
--	else if (type & BTRFS_BLOCK_GROUP_RAID10)
--		num_stripes = 4;
--
--	/* Adjust for more than 1 stripe per device */
--	min_stripe_size = rattr->dev_stripes * BTRFS_STRIPE_LEN;
--
--	rcu_read_lock();
--	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
--						&device->dev_state) ||
--		    !device->bdev ||
--		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
--			continue;
--
--		if (i >= nr_devices)
--			break;
--
--		avail_space = device->total_bytes - device->bytes_used;
--
--		/* align with stripe_len */
--		avail_space = rounddown(avail_space, BTRFS_STRIPE_LEN);
--
--		/*
--		 * In order to avoid overwriting the superblock on the drive,
--		 * btrfs starts at an offset of at least 1MB when doing chunk
--		 * allocation.
--		 *
--		 * This ensures we have at least min_stripe_size free space
--		 * after excluding 1MB.
--		 */
--		if (avail_space <= SZ_1M + min_stripe_size)
--			continue;
--
--		avail_space -= SZ_1M;
--
--		devices_info[i].dev = device;
--		devices_info[i].max_avail = avail_space;
--
--		i++;
-+	if (!devices_info) {
-+		ret = -ENOMEM;
-+		goto out;
- 	}
--	rcu_read_unlock();
--
--	nr_devices = i;
- 
--	btrfs_descending_sort_devices(devices_info, nr_devices);
--
--	i = nr_devices - 1;
--	avail_space = 0;
--	while (nr_devices >= rattr->devs_min) {
--		num_stripes = min(num_stripes, nr_devices);
--
--		if (devices_info[i].max_avail >= min_stripe_size) {
--			int j;
--			u64 alloc_size;
--
--			avail_space += devices_info[i].max_avail * num_stripes;
--			alloc_size = devices_info[i].max_avail;
--			for (j = i + 1 - num_stripes; j <= i; j++)
--				devices_info[j].max_avail -= alloc_size;
--		}
--		i--;
--		nr_devices--;
-+	data_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_data_alloc_profile(fs_info));
-+	meta_index = btrfs_bg_flags_to_raid_index(
-+			btrfs_metadata_alloc_profile(fs_info));
-+
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+
-+	/* Current metadata space is enough, no need to bother meta space */
-+	if (meta_rsv <= free_meta)
-+		goto data_only;
-+
-+	/* Allocate space for exceeding meta space */
-+	while (meta_allocated < meta_rsv - free_meta) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				meta_index,
-+				meta_rsv - free_meta - meta_allocated,
-+				&allocated);
-+		if (ret < 0)
-+			goto out;
-+		meta_allocated += allocated;
-+	}
-+data_only:
-+	/*
-+	 * meta virtual chunks have been allocated, now allocate data virtual
-+	 * chunks
-+	 */
-+	while (ret == 0) {
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info,
-+				data_index, -1, &allocated);
-+		if (ret < 0)
-+			goto out;
-+		data_allocated += allocated;
- 	}
- 
-+out:
-+	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-+		device->virtual_allocated = 0;
-+	mutex_unlock(&fs_info->chunk_mutex);
- 	kfree(devices_info);
--	*free_bytes = avail_space;
--	return 0;
-+	*result = data_allocated;
-+	if (ret == -ENOSPC)
-+		ret = 0;
-+	return ret;
- }
- 
- /*
-@@ -2034,7 +2003,6 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	unsigned factor = 1;
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
- 	int ret;
--	u64 thresh = 0;
- 	int mixed = 0;
- 
- 	rcu_read_lock();
-@@ -2082,31 +2050,11 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		buf->f_bfree = 0;
- 	spin_unlock(&block_rsv->lock);
- 
--	buf->f_bavail = div_u64(total_free_data, factor);
--	ret = btrfs_calc_avail_data_space(fs_info, &total_free_data);
-+	ret = btrfs_calc_avail_data_space(fs_info, total_free_meta,
-+					  &buf->f_bavail);
- 	if (ret)
- 		return ret;
--	buf->f_bavail += div_u64(total_free_data, factor);
- 	buf->f_bavail = buf->f_bavail >> bits;
--
--	/*
--	 * We calculate the remaining metadata space minus global reserve. If
--	 * this is (supposedly) smaller than zero, there's no space. But this
--	 * does not hold in practice, the exhausted state happens where's still
--	 * some positive delta. So we apply some guesswork and compare the
--	 * delta to a 4M threshold.  (Practically observed delta was ~2M.)
--	 *
--	 * We probably cannot calculate the exact threshold value because this
--	 * depends on the internal reservations requested by various
--	 * operations, so some operations that consume a few metadata will
--	 * succeed even if the Avail is zero. But this is better than the other
--	 * way around.
--	 */
--	thresh = SZ_4M;
--
--	if (!mixed && total_free_meta - thresh < block_rsv->size)
--		buf->f_bavail = 0;
--
- 	buf->f_type = BTRFS_SUPER_MAGIC;
- 	buf->f_bsize = dentry->d_sb->s_blocksize;
- 	buf->f_namelen = BTRFS_NAME_LEN;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e38930390e89..135948343932 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2658,10 +2658,10 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
-  *    Such virtual chunks won't take on-disk space, thus called virtual, and
-  *    only affects per-profile available space calulation.
-  */
--static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
--			       struct btrfs_device_info *devices_info,
--			       enum btrfs_raid_types type,
--			       u64 to_alloc, u64 *allocated)
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated)
- {
- 	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-@@ -2763,8 +2763,8 @@ static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
- 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
- 		device->virtual_allocated = 0;
- 	while (ret == 0) {
--		ret = alloc_virtual_chunk(fs_info, devices_info, type,
--					  (u64)-1, &allocated);
-+		ret = btrfs_alloc_virtual_chunk(fs_info, devices_info, type,
-+						(u64)-1, &allocated);
- 		if (ret == 0)
- 			result += allocated;
- 	}
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 5cddfe7cfee8..0b4fe2603b0e 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -460,6 +460,10 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
- 		      struct btrfs_device *device, u64 new_size);
- struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
- 				       u64 devid, u8 *uuid, u8 *fsid, bool seed);
-+int btrfs_alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-+			      struct btrfs_device_info *devices_info,
-+			      enum btrfs_raid_types type,
-+			      u64 to_alloc, u64 *allocated);
- int btrfs_shrink_device(struct btrfs_device *device, u64 new_size);
- int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *path);
- int btrfs_balance(struct btrfs_fs_info *fs_info,
--- 
-2.24.1
+So it looks memory order is not completely screwed up before, completely
+by pure luck...
 
+Thanks,
+Qu
+
+>  		} else {
+> @@ -4730,7 +4741,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pendin=
+g_snapshot *pending,
+>  	struct btrfs_root *root =3D pending->root;
+>  	struct reloc_control *rc =3D root->fs_info->reloc_ctl;
+> =20
+> -	if (!root->reloc_root || !rc)
+> +	if (!rc || !have_reloc_root(root))
+>  		return;
+> =20
+>  	if (!rc->merge_reloc_tree)
+> @@ -4764,7 +4775,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_=
+handle *trans,
+>  	struct reloc_control *rc =3D root->fs_info->reloc_ctl;
+>  	int ret;
+> =20
+> -	if (!root->reloc_root || !rc)
+> +	if (!rc || !have_reloc_root(root))
+>  		return 0;
+> =20
+>  	rc =3D root->fs_info->reloc_ctl;
+>=20
+
+
+--0etbFxKTc5wCAReB7qie0JaO4RNdQup4S--
+
+--cEzN9shfoVeOfLybbDsZXBaH7yCZb6znO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4S3AEXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjnMAf7B8BAnWcGKug4nvbpRZFLNOWf
+jHHA4cPB5ak6wvfHxnHKOdPClQFrUDbt6L+kECZEVCJcXHDCVVBvCsDO5pYccsfD
+SRWrQWRXsTwz5bJFb9wsXg0Z3R9HSyqm4mtFQdtMdfLG6wnMGCidDfMOt9BGNKjE
+cEwSkUSLtb4ebnJxi32HxOCez/8oxs5OEFCS/hBYE5B6wQS/8qfD+XNMbENMtoQ/
+fjVfn0bAcBYXT02tTHOhSSeqScy0RQjJWtWY9kuTvuEZtBlOrIj42jG6bexp46cj
+sGp0FaCZc4zPJIYy61koZlDE0Np1QW1y6e7nqaPrXLdbcqOQ4cjBO+/CsCbvrw==
+=1LwW
+-----END PGP SIGNATURE-----
+
+--cEzN9shfoVeOfLybbDsZXBaH7yCZb6znO--
