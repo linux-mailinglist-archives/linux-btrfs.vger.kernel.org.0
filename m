@@ -2,144 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A14130F8C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 10:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A55131097
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 11:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgAFJee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 04:34:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33084 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgAFJee (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 04:34:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 750BEAD48;
-        Mon,  6 Jan 2020 09:34:32 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH] fstests: btrfs/172: Remove the dead test which we have no plan to fix
-Date:   Mon,  6 Jan 2020 17:34:27 +0800
-Message-Id: <20200106093427.21029-1-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726155AbgAFKcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 05:32:09 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:42888 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgAFKcJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jan 2020 05:32:09 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 006AOh9E024239;
+        Mon, 6 Jan 2020 10:31:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=Rrtvf1MjA5rX9OXeJY0Hi1MzsG9DyIM/izS5nIKx5FE=;
+ b=ef0j5PKiVe5XdnP2ouQi7SZT1RsS+VcOLVpXUIUTIi6CBu6u2PQBOxJIcDDvbXCIev7G
+ 4xy2+PxpAIxWFX+oQ8MVILfoo1ySsK1kBpt/vWTC0ZH5Fnqyq2WzHyuwXYmCiNJjf7lq
+ sQ+n/NDuu/8mw5gS+w1y5vJPIQ4kaexT6Vc0DncI54yPXmMzA0eDTAPEg2VhKnUVyxY5
+ ldQyiEPA3N2hjHEmMogIBXWhhvk6Ax2+rJhJPWB+OTSYC8L2EuYB//ojQlgcfEPJweTB
+ BAROg7VrGieeBqUK8pp2+Jb0Bwrm7G/bdl+WcaPj1vBMnzXqPFoA/WLxn2nV4Cug4eIx YA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2xajnppcty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Jan 2020 10:31:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 006AOV6w191840;
+        Mon, 6 Jan 2020 10:31:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2xb466cbbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Jan 2020 10:31:03 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 006AV28I001963;
+        Mon, 6 Jan 2020 10:31:02 GMT
+Received: from [10.190.155.136] (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 06 Jan 2020 02:31:02 -0800
+Subject: Re: [PATCH] btrfs: remove unnecessary wrapper get_alloc_profile
+To:     Johannes Thumshirn <jth@kernel.org>, David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200102161457.20216-1-jth@kernel.org>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <57a514e6-c8fa-3332-8bd8-2bd3a97fe966@oracle.com>
+Date:   Mon, 6 Jan 2020 18:30:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200102161457.20216-1-jth@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9491 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001060096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9491 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001060096
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is no plan to fix it yet, so remove it.
 
-Cc: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/172     | 73 ---------------------------------------------
- tests/btrfs/172.out |  2 --
- tests/btrfs/group   |  1 -
- 3 files changed, 76 deletions(-)
- delete mode 100755 tests/btrfs/172
- delete mode 100644 tests/btrfs/172.out
 
-diff --git a/tests/btrfs/172 b/tests/btrfs/172
-deleted file mode 100755
-index 0dffb2dff40b..000000000000
---- a/tests/btrfs/172
-+++ /dev/null
-@@ -1,73 +0,0 @@
--#! /bin/bash
--# SPDX-License-Identifier: GPL-2.0
--# Copyright (c) 2018 Oracle. All Rights Reserved.
--#
--# FS QA Test 172
--#
--# Test if the unaligned (by size and offset) punch hole is successful when FS
--# is at ENOSPC.
--#
--seq=`basename $0`
--seqres=$RESULT_DIR/$seq
--echo "QA output created by $seq"
--
--here=`pwd`
--tmp=/tmp/$$
--status=1	# failure is the default!
--trap "_cleanup; exit \$status" 0 1 2 3 15
--
--_cleanup()
--{
--	cd /
--	rm -f $tmp.*
--}
--
--# get standard environment, filters and checks
--. ./common/rc
--. ./common/filter
--
--# remove previous $seqres.full before test
--rm -f $seqres.full
--
--# real QA test starts here
--
--# Modify as appropriate.
--_supported_fs btrfs
--_supported_os Linux
--_require_scratch
--_require_xfs_io_command "fpunch"
--
--_scratch_mkfs_sized $((256 * 1024 *1024)) >> $seqres.full
--
--# max_inline ensures data is not inlined within metadata extents
--_scratch_mount "-o max_inline=0,nodatacow"
--
--cat /proc/self/mounts | grep $SCRATCH_DEV >> $seqres.full
--$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
--
--extent_size=$(_scratch_btrfs_sectorsize)
--unalign_by=512
--echo extent_size=$extent_size unalign_by=$unalign_by >> $seqres.full
--
--$XFS_IO_PROG -f -c "pwrite -S 0xab 0 $((extent_size * 10))" \
--					$SCRATCH_MNT/testfile >> $seqres.full
--
--echo "Fill all space available for data and all unallocated space." >> $seqres.full
--dd status=none if=/dev/zero of=$SCRATCH_MNT/filler bs=512 >> $seqres.full 2>&1
--
--hole_offset=0
--hole_len=$unalign_by
--$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
--
--hole_offset=$(($extent_size + $unalign_by))
--hole_len=$(($extent_size - $unalign_by))
--$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
--
--hole_offset=$(($extent_size * 2 + $unalign_by))
--hole_len=$(($extent_size * 5))
--$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
--
--# success, all done
--echo "Silence is golden"
--status=0
--exit
-diff --git a/tests/btrfs/172.out b/tests/btrfs/172.out
-deleted file mode 100644
-index ce2de3f0d107..000000000000
---- a/tests/btrfs/172.out
-+++ /dev/null
-@@ -1,2 +0,0 @@
--QA output created by 172
--Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index d7eeb45d3bc4..ed971bae493c 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -174,7 +174,6 @@
- 169 auto quick send
- 170 auto quick snapshot
- 171 auto quick qgroup
--172 auto quick punch
- 173 auto quick swap
- 174 auto quick swap
- 175 auto quick swap volume
--- 
-2.24.1
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
