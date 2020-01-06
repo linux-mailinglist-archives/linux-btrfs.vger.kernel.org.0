@@ -2,87 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9076A131574
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 16:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556D813158D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 17:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgAFPxl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 10:53:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39202 "EHLO mx2.suse.de"
+        id S1726446AbgAFQAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 11:00:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40794 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726463AbgAFPxl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 10:53:41 -0500
+        id S1726296AbgAFQAR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jan 2020 11:00:17 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 42DB1AD0F;
-        Mon,  6 Jan 2020 15:53:39 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4BF3CAE8A;
+        Mon,  6 Jan 2020 16:00:15 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 593D3DA78B; Mon,  6 Jan 2020 16:53:29 +0100 (CET)
-Date:   Mon, 6 Jan 2020 16:53:28 +0100
+        id 5180EDA78B; Mon,  6 Jan 2020 17:00:05 +0100 (CET)
+Date:   Mon, 6 Jan 2020 17:00:04 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] fs: btrfs: prevent unintentional int overflow
-Message-ID: <20200106155328.GK3929@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/4] btrfs: sysfs, add devid/dev_state kobject and
+ attribute
+Message-ID: <20200106160004.GL3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Cengiz Can <cengiz@kernel.wtf>,
-        linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-References: <20200103184739.26903-1-cengiz@kernel.wtf>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191205112706.8125-1-anand.jain@oracle.com>
+ <20191205112706.8125-5-anand.jain@oracle.com>
+ <20191205142148.GQ2734@twin.jikos.cz>
+ <78560abd-7d85-c95d-ed76-7810b1d03789@oracle.com>
+ <20191205151428.GS2734@twin.jikos.cz>
+ <673babd8-90ec-2f7e-532a-df8c98a844cf@oracle.com>
+ <8bd3d9b9-11b1-4c9a-8b59-ccfe0c6d92c4@oracle.com>
+ <20191213164332.GA3929@twin.jikos.cz>
+ <20191213170215.GB3929@twin.jikos.cz>
+ <1faa5860-130a-9f3c-3e44-724ce9a26adb@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200103184739.26903-1-cengiz@kernel.wtf>
+In-Reply-To: <1faa5860-130a-9f3c-3e44-724ce9a26adb@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 01:47:40PM -0500, Cengiz Can wrote:
-> Coverity scan for 5.5.0-rc4 found a possible integer overflow in
-> tree-checker.c line 364.
+On Sat, Dec 14, 2019 at 08:26:24AM +0800, Anand Jain wrote:
 > 
-> `prev_csum_end = (prev_item_size / csumsize) * sectorsize;`
 > 
-> Quoting from scan results:
+> On 14/12/19 1:02 AM, David Sterba wrote:
+> > On Fri, Dec 13, 2019 at 05:43:32PM +0100, David Sterba wrote:
+> >>>    Looked into this further, actually we don't need any lock here
+> >>>    the device delete thread which calls kobject_put() makes sure
+> >>>    sysfs read is closed. So an existing sysfs read thread will have
+> >>>    to complete before device free.
+> >>>
+> >>>
+> >>>         CPU1                                   CPU2
+> >>>
+> >>>    btrfs_rm_device
+> >>>                                             open file
+> >>>       btrfs_sysfs_rm_device_link
+> >>>                                             call read, access freed device
+> >>>         sysfs waits for the open file
+> >>>         to close.
+> >>
+> >> How exactly does sysfs wait for the device? Is it eg wait_event checking
+> >> number of references? If the file stays open by an evil process is it
+> >> going to block the device removal indefinitelly?
+> > 
+> > Yeah, sysfs waits until the file is closed. Eg. umount can be stalled
+> > that way too.
 > 
-> ```
-> CID 1456959 Unintentional integer overflow
-> 
-> Unintentional integer overflow (OVERFLOW_BEFORE_WIDEN) overflow_before_widen:
-> Potentially overflowing expression `prev_item_size / csumsize * sectorsize`
-> with type unsigned int (32 bits, unsigned) is evaluated using 32-bit
-> arithmetic, and then used in a context that expects an expression of type u64.
-> (64 bits, unsigned).
-> ```
-> 
-> Added a cast to `u64` on the left hand side of the expression.
-> 
-> Compiles fine on x86_64_defconfig with all btrfs config flags enabled.
-> 
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-> ---
->  fs/btrfs/tree-checker.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 97f3520b8d98..9f58f07be779 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -361,7 +361,7 @@ static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
->  		u32 prev_item_size;
->  
->  		prev_item_size = btrfs_item_size_nr(leaf, slot - 1);
-> -		prev_csum_end = (prev_item_size / csumsize) * sectorsize;
-> +		prev_csum_end = (u64) (prev_item_size / csumsize) * sectorsize;
+>   And similar to umount, I don't think we should return EBUSY
+>   for btrfs_rm_device if the device sysfs attribute is opened,
+>   as sysfs show attributes are non blocking and would be completed
+>   in the timely manner.
 
-The overflow can't happen in practice. Taking generous maximum value for
-an item and sectorsize (64K) and doing the math will reach nowhere the
-overflow limit for 32bit type:
-
-64K / 4 * 64K = 1G
-
-I'm not sure if this is worth adding the cast, or mark the coverity
-issue as not important.
+While I don't think the blocking behaviour is totally OK, returning
+EBUSY could be confusing without any other explanation. Also leaving
+sysfs files open but not read is kind of strange on itself.
