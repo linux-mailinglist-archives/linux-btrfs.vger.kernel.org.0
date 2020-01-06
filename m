@@ -2,272 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DF01313A2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 15:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAA81313F0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jan 2020 15:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgAFOcz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 09:32:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42370 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgAFOcz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 09:32:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7F303AB3D;
-        Mon,  6 Jan 2020 14:32:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 296AADA78B; Mon,  6 Jan 2020 15:32:43 +0100 (CET)
-Date:   Mon, 6 Jan 2020 15:32:43 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v3 1/3] btrfs: Introduce per-profile available space
- facility
-Message-ID: <20200106143242.GG3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+        id S1726427AbgAFOof (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 09:44:35 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42084 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgAFOof (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jan 2020 09:44:35 -0500
+Received: by mail-qt1-f193.google.com with SMTP id j5so42589763qtq.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jan 2020 06:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AQBju9FTjJK8/p2OLR4cztilktlJGD7Rj9dIbPu7f/o=;
+        b=v7uoHCmt788F7g7VPPAJTWciCHnZ22BrYu9q1X4c8GTIXuDcx05vrd9ZSIcwds37tv
+         orkrFDz/bWlUG/S/VNhYBPlY16A0rj8ztRR/N7rm2t0MPCkaCXW0x+YooEHXzTs6ALOA
+         NMvGV1SnVsdTll4DuJnVVI31wxFgvF3vM/+8rodkJL/sRirQ2uldPgzWNlJ2RwzQFlgQ
+         B5mErR7deagu12n6ZwZlFPJjlKHHQ+YmN9IRhvpm7BGxCAfEHbpyIXC1tIm/i2/r5IYa
+         lV2PRo+7U15wbhU0gfl5GhdZwx8NrARo1WkJ/o3zIZTgSCW1bdWjgwQQEKLmc1MCYO8U
+         gvVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AQBju9FTjJK8/p2OLR4cztilktlJGD7Rj9dIbPu7f/o=;
+        b=RKzzikpx8Tvyc9SC0Iys1Zdwe3LlLlvBGhOFhVjU95X/TQqMqLoCXopj0x/tRRRlQV
+         yng3wd8UBBzl/8QDTCFhOrwzyyXTZ1co8uDZ4xYT1KIiC0Y/xv7tpFKflDkcLaQe1Qly
+         tFvmYCVOjgCSVrcgaGHHwV0qQsGxzoJ/PVRaFkfJGfi/g4hV5yGxxKa6+Pn0NmT40QdF
+         +NDnuv8nu3M+GvoRPXWXSSPT4DB3L8WeAkcqxeBrf57mbkzYAkXYc4EiAp4Ek0LIKoOW
+         Yv6lnb5nxM6JIH1PrEF76isoj8meZKPFbW8lcqVaZIkyomMYwJo5oOqlImuYB56V5Pu4
+         q2Pw==
+X-Gm-Message-State: APjAAAUDK3EWKFLFdFHNCoF3TUxu3cCHpZ34dsAx3F0gbMpdxeizy5Wz
+        /3yxaFlVMN9dEj0qCZr2PZA3NvFIrIwIFw==
+X-Google-Smtp-Source: APXvYqzOIOWw0kzVrbeRG43VXpKIHEvcI1vWoC804IQHEo87cpnvAw0fXztuQcHm21/o3caW9/HFqg==
+X-Received: by 2002:ac8:1e05:: with SMTP id n5mr75661736qtl.227.1578321873711;
+        Mon, 06 Jan 2020 06:44:33 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::6941])
+        by smtp.gmail.com with ESMTPSA id y26sm23786787qtc.94.2020.01.06.06.44.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jan 2020 06:44:32 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] btrfs: statfs: Use virtual chunk allocation to
+ calculation available data space
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200106061343.18772-1-wqu@suse.com>
- <20200106061343.18772-2-wqu@suse.com>
+ <20200106061343.18772-4-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <1c9b3644-4b77-a7c8-c47d-19743cad7f06@toxicpanda.com>
+Date:   Mon, 6 Jan 2020 09:44:31 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106061343.18772-2-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200106061343.18772-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 02:13:41PM +0800, Qu Wenruo wrote:
-> +/*
-> + * Return 0 if we allocated any virtual(*) chunk, and restore the size to
-> + * @allocated_size
-> + * Return -ENOSPC if we have no more space to allocate virtual chunk
-> + *
-> + * *: virtual chunk is a space holder for per-profile available space
-> + *    calculator.
-> + *    Such virtual chunks won't take on-disk space, thus called virtual, and
-> + *    only affects per-profile available space calulation.
-> + */
-> +static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-> +			       struct btrfs_device_info *devices_info,
-> +			       enum btrfs_raid_types type,
-> +			       u64 to_alloc, u64 *allocated)
-> +{
-> +	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
-> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-> +	struct btrfs_device *device;
-> +	u64 stripe_size;
-> +	int i;
-> +	int ndevs = 0;
-> +
-> +	lockdep_assert_held(&fs_info->chunk_mutex);
-> +
-> +	/* Go through devices to collect their unallocated space */
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
-> +		u64 avail;
-> +		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
-> +					&device->dev_state) ||
-> +		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
-> +			continue;
-> +
-> +		if (device->total_bytes > device->bytes_used +
-> +				device->virtual_allocated)
-> +			avail = device->total_bytes - device->bytes_used -
-> +				device->virtual_allocated;
-> +		else
-> +			avail = 0;
-> +
-> +		/* And exclude the [0, 1M) reserved space */
-> +		if (avail > SZ_1M)
-> +			avail -= SZ_1M;
-> +		else
-> +			avail = 0;
-> +
-> +		if (avail == 0)
-> +			continue;
-> +		/*
-> +		 * Unlike chunk allocator, we don't care about stripe or hole
-> +		 * size, so here we use @avail directly
-> +		 */
-> +		devices_info[ndevs].dev_offset = 0;
-> +		devices_info[ndevs].total_avail = avail;
-> +		devices_info[ndevs].max_avail = avail;
-> +		devices_info[ndevs].dev = device;
-> +		++ndevs;
-> +	}
-> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-> +	     btrfs_cmp_device_info, NULL);
-> +	ndevs -= ndevs % raid_attr->devs_increment;
-> +	if (ndevs < raid_attr->devs_min)
-> +		return -ENOSPC;
-> +	if (raid_attr->devs_max)
-> +		ndevs = min(ndevs, (int)raid_attr->devs_max);
-> +	else
-> +		ndevs = min(ndevs, (int)BTRFS_MAX_DEVS(fs_info));
-> +
-> +	/*
-> +	 * Now allocate a virtual chunk using the unallocate space of the
-> +	 * device with the least unallocated space.
-> +	 */
-> +	stripe_size = round_down(devices_info[ndevs - 1].total_avail,
-> +				 fs_info->sectorsize);
-> +
-> +	/* We can't directly do round_up for (u64)-1 as that would result 0 */
-> +	if (to_alloc != (u64)-1)
-> +		stripe_size = min_t(u64, stripe_size,
-> +				    round_up(div_u64(to_alloc, ndevs),
-> +					     fs_info->sectorsize));
-> +	if (stripe_size == 0)
-> +		return -ENOSPC;
-> +
-> +	for (i = 0; i < ndevs; i++)
-> +		devices_info[i].dev->virtual_allocated += stripe_size;
-> +	*allocated = stripe_size * (ndevs - raid_attr->nparity) /
-> +		     raid_attr->ncopies;
-> +	return 0;
-> +}
-> +
-> +static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
-> +				  enum btrfs_raid_types type)
-> +{
-> +	struct btrfs_device_info *devices_info = NULL;
-> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-> +	struct btrfs_device *device;
-> +	u64 allocated;
-> +	u64 result = 0;
-> +	int ret = 0;
-> +
-> +	ASSERT(type >= 0 && type < BTRFS_NR_RAID_TYPES);
-> +
-> +	/* Not enough devices, quick exit, just update the result */
-> +	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
-> +		goto out;
-> +
-> +	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
-> +			       GFP_NOFS);
+On 1/6/20 1:13 AM, Qu Wenruo wrote:
+> Although btrfs_calc_avail_data_space() is trying to do an estimation
+> on how many data chunks it can allocate, the estimation is far from
+> perfect:
+> 
+> - Metadata over-commit is not considered at all
+> - Chunk allocation doesn't take RAID5/6 into consideration
+> 
+> Although current per-profile available space itself is not able to
+> handle metadata over-commit itself, the virtual chunk infrastructure can
+> be re-used to address above problems.
+> 
+> This patch will change btrfs_calc_avail_data_space() to do the following
+> things:
+> - Do metadata virtual chunk allocation first
+>    This is to address the over-commit behavior.
+>    If current metadata chunks have enough free space, we can completely
+>    skip this step.
+> 
+> - Allocate data virtual chunks as many as possible
+>    Just like what we did in per-profile available space estimation.
+>    Here we only need to calculate one profile, since statfs() call is
+>    a relative cold path.
+> 
+> Now statfs() should be able to report near perfect estimation on
+> available data space, and can handle RAID5/6 better.
+> 
+> [BENCHMARK]
+> For the performance difference, here is the benchmark:
+>   Disk layout:
+>   - devid 1:	1G
+>   - devid 2:	2G
+>   - devid 3:	3G
+>   - devid 4:	4G
+>   - devid 5:	5G
+>   metadata:	RAID1
+>   data:		RAID5
+> 
+>   This layout should be the worst case for RAID5, as it can
+>   from 5 disks raid5 to 2 disks raid 5 with unusable space.
+> 
+>   Then use ftrace to trace the execution time of btrfs_statfs() after
+>   allocating 1G data chunk. Both have 12 samples.
+> 				avg		std
+>   Patched:			17.59 us	7.04
+>   WIthout patch (v5.5-rc2):	14.98 us	6.16
+> 
+> When the fs is cold, there is a small performance for this particular
+> case, as we need to do several more iterations to calculate correct
+> RAID5 data space.
+> But it's still pretty good, and won't block chunk allocator for any
+> observable time.
+> 
+> When the fs is hot, the performance bottleneck is the chunk_mutex, where
+> the most common and longest holder would be __btrfs_chunk_alloc().
+> In that case, we may sleep much longer as __btrfs_chunk_alloc() can
+> trigger IO.
+> 
+> Since the new implementation is not observable slower than the old one,
+> and won't cause meaningful delay for chunk allocator, it should be more
+> or less OK.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Calling kcalloc is another potential slowdown, for the statfs
-considerations.
+Sorry I should have been more specific.  Taking the chunk_mutex here means all 
+the people running statfs at the same time are going to be serialized.  Can we 
+just do what overcommit does and take the already calculated free space instead 
+of doing the calculation again?  Thanks,
 
-> +	if (!devices_info) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +	/* Clear virtual chunk used space for each device */
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-> +		device->virtual_allocated = 0;
-> +	while (ret == 0) {
-> +		ret = alloc_virtual_chunk(fs_info, devices_info, type,
-> +					  (u64)-1, &allocated);
-> +		if (ret == 0)
-> +			result += allocated;
-> +	}
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-> +		device->virtual_allocated = 0;
-> +out:
-> +	kfree(devices_info);
-> +	if (ret < 0 && ret != -ENOSPC)
-> +		return ret;
-> +	spin_lock(&fs_devices->per_profile_lock);
-> +	fs_devices->per_profile_avail[type] = result;
-> +	spin_unlock(&fs_devices->per_profile_lock);
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Calculate the per-profile available space array.
-> + *
-> + * Return 0 if we succeeded updating the array.
-> + * Return <0 if something went wrong. (ENOMEM)
-> + */
-> +static int calc_per_profile_avail(struct btrfs_fs_info *fs_info)
-> +{
-> +	int i;
-> +	int ret;
-> +
-> +	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
-> +		ret = calc_one_profile_avail(fs_info, i);
-> +		if (ret < 0)
-> +			break;
-> +	}
-> +	return ret;
-> +}
-> +
->  int btrfs_grow_device(struct btrfs_trans_handle *trans,
->  		      struct btrfs_device *device, u64 new_size)
->  {
-> @@ -2635,6 +2806,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
->  	struct btrfs_super_block *super_copy = fs_info->super_copy;
->  	u64 old_total;
->  	u64 diff;
-> +	int ret;
->  
->  	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
->  		return -EACCES;
-> @@ -2661,7 +2833,12 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
->  	if (list_empty(&device->post_commit_list))
->  		list_add_tail(&device->post_commit_list,
->  			      &trans->transaction->dev_update_list);
-> +	ret = calc_per_profile_avail(fs_info);
->  	mutex_unlock(&fs_info->chunk_mutex);
-> +	if (ret < 0) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
-> +	}
->  
->  	return btrfs_update_device(trans, device);
->  }
-> @@ -2831,7 +3008,13 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
->  					device->bytes_used - dev_extent_len);
->  			atomic64_add(dev_extent_len, &fs_info->free_chunk_space);
->  			btrfs_clear_space_info_full(fs_info);
-> +			ret = calc_per_profile_avail(fs_info);
-
-Adding new failure modes
-
->  			mutex_unlock(&fs_info->chunk_mutex);
-> +			if (ret < 0) {
-> +				mutex_unlock(&fs_devices->device_list_mutex);
-> +				btrfs_abort_transaction(trans, ret);
-> +				goto out;
-> +			}
->  		}
->  
->  		ret = btrfs_update_device(trans, device);
-> @@ -4526,6 +4709,12 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
->  		atomic64_sub(diff, &fs_info->free_chunk_space);
->  	}
->  
-> +	ret = calc_per_profile_avail(fs_info);
-> +	if (ret < 0) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		btrfs_end_transaction(trans);
-> +		goto done;
-> +	}
->  	/*
->  	 * Once the device's size has been set to the new size, ensure all
->  	 * in-memory chunks are synced to disk so that the loop below sees them
-> @@ -4690,25 +4879,6 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
->  	return 0;
->  }
->  
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -138,6 +138,13 @@ struct btrfs_device {
->  	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
->  
->  	struct extent_io_tree alloc_state;
-> +
-> +	/*
-> +	 * the "virtual" allocated space by virtual chunk allocator, which
-> +	 * is used to do accurate estimation on available space.
-> +	 * Doesn't affect real chunk allocator.
-> +	 */
-> +	u64 virtual_allocated;
-
-I find it a bit confusing to use 'virtual', though I get what you mean.
-As this is per-device it accounts overall space, so the name should
-reflect somthing like that. I maybe have a more concrete suggestion once
-I read through the whole series.
+Josef
