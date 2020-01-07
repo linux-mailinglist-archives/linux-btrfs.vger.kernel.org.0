@@ -2,63 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A651329EE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 16:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BD9132A14
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 16:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgAGPXw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 10:23:52 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:51965 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728103AbgAGPXw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 10:23:52 -0500
-Received: from [10.5.225.158] (unknown [176.54.23.134])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5A9FD20000A;
-        Tue,  7 Jan 2020 15:23:47 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     <dsterba@suse.cz>
-CC:     <linux-btrfs@vger.kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Date:   Tue, 07 Jan 2020 18:23:45 +0300
-Message-ID: <16f809ac7e8.2bfa.85c738e3968116fc5c0dc2de74002084@kernel.wtf>
-In-Reply-To: <20200106155328.GK3929@twin.jikos.cz>
-References: <20200103184739.26903-1-cengiz@kernel.wtf>
- <20200106155328.GK3929@twin.jikos.cz>
-User-Agent: AquaMail/1.22.0-1511 (build: 102200004)
-Subject: Re: [PATCH] fs: btrfs: prevent unintentional int overflow
+        id S1728115AbgAGPdX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 10:33:23 -0500
+Received: from mail.itouring.de ([188.40.134.68]:38392 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727974AbgAGPdX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jan 2020 10:33:23 -0500
+X-Greylist: delayed 470 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Jan 2020 10:33:22 EST
+Received: from tux.applied-asynchrony.com (p5B07E981.dip0.t-ipconnect.de [91.7.233.129])
+        by mail.itouring.de (Postfix) with ESMTPSA id 073BB41603A0;
+        Tue,  7 Jan 2020 16:25:32 +0100 (CET)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id B4C0FF01600;
+        Tue,  7 Jan 2020 16:25:31 +0100 (CET)
+Subject: Re: [PATCH v2 2/2] btrfs: sysfs, add read_policy attribute
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <a3e99d85-80c5-5ad3-cda3-75834e1f7441@toxicpanda.com>
+ <1578372741-21586-1-git-send-email-anand.jain@oracle.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <b39e2e18-4116-f77b-df59-d39aa006ea93@applied-asynchrony.com>
+Date:   Tue, 7 Jan 2020 16:25:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1578372741-21586-1-git-send-email-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On January 6, 2020 18:53:40 David Sterba <dsterba@suse.cz> wrote:
+On 1/7/20 5:52 AM, Anand Jain wrote:
+> Add
+> 
+>   /sys/fs/btrfs/UUID/read_policy
+> 
+> attribute so that the read policy for the raid1 and raid10 chunks can be
+> tuned.
+> 
+> When this attribute is read, it shall show all available policies, and
+> the active policy is with in [ ], read_policy attribute can be written
+> using one of the items showed in the read.
+> 
+> For example:
+> cat /sys/fs/btrfs/UUID/read_policy
+> [by_pid]
+> echo by_pid > /sys/fs/btrfs/UUID/read_policy
+> echo -n by_pid > /sys/fs/btrfs/UUID/read_policy
 
-> The overflow can't happen in practice. Taking generous maximum value for
-> an item and sectorsize (64K) and doing the math will reach nowhere the
-> overflow limit for 32bit type:
->
-> 64K / 4 * 64K = 1G
+This may seem like pointless bikeshedding, but can we please name the policy
+without the leading "by_", i.e. only "pid"? By definition what happens is always
+"by" the chosen policy, so it's redundant.
 
-I didn't know that. Thanks for sharing.
+Otherwise a great step forward, thank you!
 
-> I'm not sure if this is worth adding the cast, or mark the coverity
-> issue as not important.
-
-If the cast is adding any overhead (which I don't think it does) I would 
-kindly request adding it for the sake of completeness.
-
-For example: if some newbie like me tries adding something, they would be 
-warned that we should consider possible overflows and/or at least be 
-careful with expressions that contain different sized integers.
-
-If this sounds unnecessary, I will help with marking the Coverity issue as 
-unimportant.
-
-Thank you!
-
-
-
+cheers
+Holger
