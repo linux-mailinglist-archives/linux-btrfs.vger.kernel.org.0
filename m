@@ -2,119 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC42132B0A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 17:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB88132B3E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 17:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgAGQX2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 11:23:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
+        id S1728215AbgAGQlV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 11:41:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36564 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727994AbgAGQX2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jan 2020 11:23:28 -0500
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A6372146E;
-        Tue,  7 Jan 2020 16:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578414207;
-        bh=y7nyHtre1LVdk95yztadAkAzthxIXXf14CuMTJ61HGs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AdqHTgr9/+5YfzEvhvZhdfa21HP+uYxYsTFXS4bonTvyw/IkO9e/C+fwOups+6UG8
-         wYIMhDOve5TkopEUuNJkHCuCMro+Z404UQ7UsqGTzQfqyIyCfiO9R14CnYti8hjAD2
-         VuuuM5MZloEqTdWrVrHYLyTFvX2J35EP1Q1F0/yk=
-Received: by mail-vs1-f49.google.com with SMTP id g23so34257502vsr.7;
-        Tue, 07 Jan 2020 08:23:27 -0800 (PST)
-X-Gm-Message-State: APjAAAWK+57bPm3mePm6fOqc1KUaNfSi9F8r7L0phoIIqQQyIZOHSoNT
-        8P+QY9KO9CIau3ZYKqUjrrH12xy3rwiLrztCMVQ=
-X-Google-Smtp-Source: APXvYqyiwyikq1PqEkeZKmAg7xDHHQPQzHxwAbHs7MSq4VO4o/FxN0C0BcFRx0UnAmSOenPMK90qFwJtl+8LLe/QgVk=
-X-Received: by 2002:a05:6102:535:: with SMTP id m21mr55052092vsa.95.1578414206426;
- Tue, 07 Jan 2020 08:23:26 -0800 (PST)
+        id S1728020AbgAGQlU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jan 2020 11:41:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 42D98B172;
+        Tue,  7 Jan 2020 16:41:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 46FDBDA78B; Tue,  7 Jan 2020 17:41:09 +0100 (CET)
+Date:   Tue, 7 Jan 2020 17:41:09 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [bug report] btrfs: get rid of trivial __btrfs_lookup_bio_sums()
+ wrappers
+Message-ID: <20200107164108.GB3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200107081058.35la6yytkwly2h52@kili.mountain>
+ <20200107161046.GZ3929@twin.jikos.cz>
 MIME-Version: 1.0
-References: <20191216182656.15624-1-fdmanana@kernel.org> <20191216182656.15624-2-fdmanana@kernel.org>
-In-Reply-To: <20191216182656.15624-2-fdmanana@kernel.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 7 Jan 2020 16:23:15 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5+CMRkJ9yAa2AeB0aKtA=b_yW2g9JSQwCOhOtLNrH1iQ@mail.gmail.com>
-Message-ID: <CAL3q7H5+CMRkJ9yAa2AeB0aKtA=b_yW2g9JSQwCOhOtLNrH1iQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fs: allow deduplication of eof block into the end of
- the destination file
-To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107161046.GZ3929@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 6:28 PM <fdmanana@kernel.org> wrote:
->
-> From: Filipe Manana <fdmanana@suse.com>
->
-> We always round down, to a multiple of the filesystem's block size, the
-> length to deduplicate at generic_remap_check_len().  However this is only
-> needed if an attempt to deduplicate the last block into the middle of the
-> destination file is requested, since that leads into a corruption if the
-> length of the source file is not block size aligned.  When an attempt to
-> deduplicate the last block into the end of the destination file is
-> requested, we should allow it because it is safe to do it - there's no
-> stale data exposure and we are prepared to compare the data ranges for
-> a length not aligned to the block (or page) size - in fact we even do
-> the data compare before adjusting the deduplication length.
->
-> After btrfs was updated to use the generic helpers from VFS (by commit
-> 34a28e3d77535e ("Btrfs: use generic_remap_file_range_prep() for cloning
-> and deduplication")) we started to have user reports of deduplication
-> not reflinking the last block anymore, and whence users getting lower
-> deduplication scores.  The main use case is deduplication of entire
-> files that have a size not aligned to the block size of the filesystem.
->
-> We already allow cloning the last block to the end (and beyond) of the
-> destination file, so allow for deduplication as well.
->
-> Link: https://lore.kernel.org/linux-btrfs/2019-1576167349.500456@svIo.N5dq.dFFD/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Tue, Jan 07, 2020 at 05:10:46PM +0100, David Sterba wrote:
+> On Tue, Jan 07, 2020 at 11:10:58AM +0300, Dan Carpenter wrote:
+> >    276                  diff = diff * csum_size;
+> >    277                  count = min_t(int, nblocks, (item_last_offset - disk_bytenr) >>
+> >    278                                              inode->i_sb->s_blocksize_bits);
+> >    279                  read_extent_buffer(path->nodes[0], csum,
+> >    280                                     ((unsigned long)item) + diff,
+> >    281                                     csum_size * count);
+> >    282  found:
+> >    283                  csum += count * csum_size;
+> >    284                  nblocks -= count;
+> >    285  next:
+> >    286                  while (count--) {
+> >                                ^^^^^^^
+> > This loop exits with count set to -1.
+> > 
+> >    287                          disk_bytenr += fs_info->sectorsize;
+> >    288                          offset += fs_info->sectorsize;
+> >    289                          page_bytes_left -= fs_info->sectorsize;
+> >    290                          if (!page_bytes_left)
+> >    291                                  break; /* move to next bio */
+> >    292                  }
+> >    293          }
+> >    294  
+> >    295          WARN_ON_ONCE(count);
+> >                              ^^^^^
+> > Originally this warning was next to the line 291 so it should probably
+> > be "WARN_ON_ONCE(count >= 0);"  This WARN is two years old now and no
+> > one has complained about it at run time.  That's very surprising to me
+> > because I would have expected count to -1 in the common case.
+> 
+> Possible explanation I see is that the "if (!page_bytes_left)" does not
+> let the count go from 0 -> -1 and exits just in time. I'm runing a test
+> to see if it's true.
 
-Darrick, Al, any feedback?
+It is. It's not very clear from the context, count is set up so that it
+matches page_bytes_left decrements. So using "count--" is not completely
+wrong, but it is confusing and relying on other subtle behaviour. It
+should be either --count or the decrement moved to out of the condition.
 
-Thanks.
-
-> ---
->  fs/read_write.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 5bbf587f5bc1..7458fccc59e1 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1777,10 +1777,9 @@ static int remap_verify_area(struct file *file, loff_t pos, loff_t len,
->   * else.  Assume that the offsets have already been checked for block
->   * alignment.
->   *
-> - * For deduplication we always scale down to the previous block because we
-> - * can't meaningfully compare post-EOF contents.
-> - *
-> - * For clone we only link a partial EOF block above the destination file's EOF.
-> + * For clone we only link a partial EOF block above or at the destination file's
-> + * EOF.  For deduplication we accept a partial EOF block only if it ends at the
-> + * destination file's EOF (can not link it into the middle of a file).
->   *
->   * Shorten the request if possible.
->   */
-> @@ -1796,8 +1795,7 @@ static int generic_remap_check_len(struct inode *inode_in,
->         if ((*len & blkmask) == 0)
->                 return 0;
->
-> -       if ((remap_flags & REMAP_FILE_DEDUP) ||
-> -           pos_out + *len < i_size_read(inode_out))
-> +       if (pos_out + *len < i_size_read(inode_out))
->                 new_len &= ~blkmask;
->
->         if (new_len == *len)
-> --
-> 2.11.0
->
+I can write the patch and add you as reporter or you can send the patch
+as you did the analysis in the first place.
