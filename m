@@ -2,163 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 926AB132084
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 08:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D01320A2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 08:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgAGHec (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 02:34:32 -0500
-Received: from mout.gmx.net ([212.227.15.19]:34827 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgAGHeb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jan 2020 02:34:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578382465;
-        bh=Js9+VKvBCn8II1S/XhAtEurYXoz8+IHT2D05XBo/DZo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fYELurWRl9KWWnP0iModpXVtGTN6LV1gDjqllkINQrs1XxMMALrxHY1h/1De2kxAh
-         ZdpqfaaIwRT+XDe3FCEsdfPG1pE2CCXl0O7gIaOPY34/VV1fjWSDuakGFPSworXwt2
-         2yhWEBCPKIIWN03ZzChiymVxzK2wIg+YYKutV13c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.186] ([104.199.231.176]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mnps0-1jVAt80xaM-00pMSu; Tue, 07
- Jan 2020 08:34:25 +0100
-Subject: Re: [PATCH 5/6] btrfs: copy fsid and metadata_uuid for pulled disk
- without INCOMPAT_METADATA_UUID
-To:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-References: <20191212110132.11063-1-Damenly_Su@gmx.com>
- <20191212110132.11063-6-Damenly_Su@gmx.com>
- <4a825596-5e3b-8de4-2583-774a41e59db4@suse.com>
- <4ed7ac86-e9d5-f389-247f-d14f8a8b5af7@gmx.com>
- <f3877656-d20d-e857-a6cd-eb5fe09d4180@suse.com>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <b7ae0b8b-cf4e-7f2a-866d-82fbad96a5ce@gmx.com>
-Date:   Tue, 7 Jan 2020 15:34:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1726428AbgAGHnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 02:43:08 -0500
+Received: from mail-40135.protonmail.ch ([185.70.40.135]:58014 "EHLO
+        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgAGHnH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 02:43:07 -0500
+Date:   Tue, 07 Jan 2020 07:35:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=default; t=1578382560;
+        bh=7tjeUGivMwGAO6JLsqyiT0p8pyrUuTjWGceJ8npFrCE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
+         Feedback-ID:From;
+        b=BU68AnU7y6syRb8VjvDv+Sl5NhL8IoqoGfoLBCjxQuSNgBo1d7ccDc2jJVh26HJSp
+         r7Cs2ktl0ywCwoj/Mk1Mjk+KIh+8hyCXm8aSwciu0gGWL4zGUo8gJsk61FD7WfJdeM
+         gbVQamuuiELTYtlqmVPfgRkFmMROXV5P0nwk1DqM=
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+From:   Raviu <raviu@protonmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Reply-To: Raviu <raviu@protonmail.com>
+Subject: Re: Cannot mount or recover btrfs
+Message-ID: <GcVUmbGhdxe1MDb3v9U3AMetZhThLuSy7raXfZeZcmaELxVwlw1ekBr7UU5-4_Mz4dg7H6D09PwzU9WY0ou2Mhfp_FR9cDefy6c-e2Y-Ghw=@protonmail.com>
+In-Reply-To: <3f51a5fa-90db-7247-ec78-b57b9798b99b@gmx.com>
+References: <qxM9wPidCbIA9yMGE4e57cGzc5GkQnFF39Q2h1PLV0XTLpSVZ1nvi9wDfOD3YXIAl3GYyq2wRoG8ncoE692e0MVUah_rmDSRggyZz_trQH0=@protonmail.com>
+ <3f51a5fa-90db-7247-ec78-b57b9798b99b@gmx.com>
+Feedback-ID: s2UDJFOuCQB5skd1w8rqWlDOlD5NAbNnTyErhCdMqDC7lQ_PsWqTjpdH2pOmUWgBaEipj53UTbJWo1jzNMb12A==:Ext:ProtonMail
 MIME-Version: 1.0
-In-Reply-To: <f3877656-d20d-e857-a6cd-eb5fe09d4180@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:N6qPvsLeclDCin9TRSxj/jMuetoD5FAl0ks4SwIF6DlGvUWFvqR
- 7FQZ4wHaBH+dClIu2ZO4JqiJfUiuCa11SKK6G5NjMnHEMqH2QmlO/5aESjSkOFCzOq71HS7
- llZUkVEX5ax5QI1TrzI7OCtBnAoQDKRHrozuBsONksM33eSdSR4RPYXK7BZsDpTJdFoF3SI
- xbMfmgxtixzIXhjVPDUEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u24fGzGuk0g=:06B8Z2sIEycZHpoa/TET49
- EOP7lMCg6ptzFy2PEI3IBVjxrXJHjmt666saL9iygtem29uMhZhtJP44QKQKfrRU5f7weQHjj
- RTEm5uai9pxyuLoSGMutndgz26SvTYGgdJIhYaDp6AdmK4q0HfpfBYIrK0c++p8c4DysYwKwN
- 1LTFI/S0LZ+E2GdBlftyl1K/TLA43Ng0duqI7onpDqWvq/d/jy8C/qEe9QWU/r4+rt3LnDvsY
- 6nWC/DuJHroDKYlzo0j8i8FmCkyEAOTZhyQdO9KfgaXqGQwQLiyFiKvDBS16rQz9QZmqzU2QE
- 2mfkm9wAjmpYoIU0QAEKJHXpbkc9NawdJ1TFhIX3bxLIm9YXx7SpJsa2TE60NvTwW9YqRilPi
- /71Tl2e/UGbsSdI6lCPqo7dJt7+v+4F5v2OEHF5jfztn9ou+TfmBncvIzaPISn4ZItzD4Av6F
- ecD6L1Gv1Ee62WjLlA1iR/ePWI7GHiXZSHMajPqd5dw5T/JLmERC1J6RIJkuNOivSvmyeyhY5
- ilDxAeDdJGJUlG06TcYR1gThbCBoxwoxAGD0XNs7lUva1NhaowQ9VaNNyslxJq3OBK/vaEvGQ
- a2b7p7HHRfvGP35ANh4lS8QyjT8Toui6lND+1nfHgIHQ49CNkX0+U3YX5ay5T0vZ6yNN3UkWU
- RmjgweIiXkfNCiCG0m3xMym4A11l0BQJEGHjXpN7283VIX5BsJrtaCi9Eg1kjzzIqru5D+/Nw
- QgKGFKHRBF885sb+ZpSxcSFqgrPIz4OFQeH2nXjEV8hKv98H+vcrgm8qsdsw1r/KL71MjEcSr
- SEHptct5J3KP1YDP368F6QUNi5lbhacAkpS+pHDblrI3/ixp5c3TDncsqL0pwZrsGRvNJAKHl
- dAKJogW/oxhFDWd8WO8L1MhjRRhRIEJZAYlf4drz3FnUKPoU/ASy6LxTzeskIDHvBIwa+3qoG
- hmTBP4YNAqcou8Xxwf7SacV2rwXlUdqkWbJplHRILqU4UJLJ07e9EpTLPlC0H4ng8Q5zXeoUb
- 2pL1PN2wRq915Kl6waxq32vhf1dcccp3M60I3LG6yovQ1YcL3pFPIwupmTxxk2CP0R9ypGfdj
- mKWNOjJI+JthLJ8oqtkDMw3tiIAW+layUIs54nb6jxUiIMrk6i3VVwgt8TrWX5Yd5SxB54Kay
- 85lvPc//NqbHHc4CnHytXikYGWw0wCk7a/SerA1fM7zz01xBh2fZKZpd91Ya98b3UpoDUIhLx
- 1EBVY8pcgOtnvAT11Bf0iq5396EYJkfShfMXH5v0tAXmflbTBwEUShuykFxk=
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020/1/7 3:18 PM, Nikolay Borisov wrote:
->
->
-> On 7.01.20 =D0=B3. 3:31 =D1=87., Su Yue wrote:
->> On 2020/1/6 11:12 PM, Nikolay Borisov wrote:
->>>
->>>
->>> On 12.12.19 =D0=B3. 13:01 =D1=87., damenly.su@gmail.com wrote:
->>>> From: Su Yue <Damenly_Su@gmx.com>
->>>>
->>>> Since a scanned device may be the device pulled into disk without
->>>> metadata_uuid feature, there may already be changing devices there.
->>>> Here copy fsid and metadata_uuid for above case.
->>>>
->>>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
->>>
->>>
->>> What does this patch fix, why is it needed? It seems to be independent
->>> of the split brain fixes?
->>>
->>
->> Sorry for the messy and short commit log.
->> It's one of the split brain fixes.
->>
->> As mails I replied you earlier, the case
->> is for device which succeed to sync in
->> the second transaction and is without
->> metadata_uuid feature. If there is fs_devices
->> already scanned, the device's fsid instead of
->> metadata_uuid(NULL here) should be copied into
->> the fs_devices->metada_uuid field.
->
-> I figures as much as I started tackling the problem. So this must be
-> part of the patch which fixes aforementioned split brain scenario. I
-> have already developed some patches + tests. So will be sending those,
-> since they are very similar to what you posted originally I will retain
-> your SOB line.
->
+I've restored over 90% of the data using restore command, and reformatted d=
+isk before I got the email.
+But I can confirm that I'd RAM corruption, I've done memtest per your recom=
+mendation and found that the 1st module of the two modules is bad.
+Corruption was severe and repetitive, I just exclaim how did this server co=
+rruption went without notice from the linux kernel other than random rare l=
+ockups. I'm really amazed how apps and kernel was functioning! Data is real=
+ly changed on ram.
+I've upgraded to vanilla kernel 5.4.6 before doing the memtest, so the late=
+st kernel was not panic about this bad RAM.
 
-I'm okay about this way. Thanks.
->>
->> Thanks.
->>
->>>> ---
->>>>  =C2=A0 fs/btrfs/volumes.c | 11 +++++++----
->>>>  =C2=A0 1 file changed, 7 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index faf9cdd14f33..b21ab45e76a0 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -964,13 +964,16 @@ static noinline struct btrfs_device
->>>> *device_list_add(const char *path,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * metadata_uuid/fsid values of =
-the fs_devices.
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (*new_device_added && fs_devices_f=
-ound &&
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 has_metadata_uuid && fs_d=
-evices->fsid_change &&
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->fsid_change &=
-&
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found_transid=
- > fs_devices->latest_generation) {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(fs_dev=
-ices->fsid, disk_super->fsid,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_FSID_SIZE);
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(fs_devices->metada=
-ta_uuid,
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->>>> -
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (has_metadata_uuid)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 m=
-emcpy(fs_devices->metadata_uuid,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk_super->metadata_uuid, BTRF=
-S_FSID_SIZE);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 m=
-emcpy(fs_devices->metadata_uuid,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk_super->fsid, BTRFS_FSID_SI=
-ZE);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->f=
-sid_change =3D false;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>
->>>>
->>
+Isn't this something that should be fixed?
+
+
+Sent with ProtonMail Secure Email.
+
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+On Monday, December 30, 2019 7:38 AM, Qu Wenruo <quwenruo.btrfs@gmx.com> wr=
+ote:
+
+> On 2019/12/29 =E4=B8=8B=E5=8D=8811:05, Raviu wrote:
+>
+> > Hi,
+> > My system suddenly crashed, after reboot I cannot mount /home any more.
+> > `uname -a`
+> > Linux moonIk80 4.12.14-lp151.28.36-default #1 SMP Fri Dec 6 13:50:27 UT=
+C 2019 (8f4a495) x86_64 x86_64 x86_64 GNU/Linux
+> > btrfs-progs v5.4
+> > `btrfs fi show`
+> > Label: none uuid: 378faa6e-8af0-415e-93f7-68b31fb08a29
+> > Total devices 1 FS bytes used 194.99GiB
+> > devid 1 size 232.79GiB used 231.79GiB path /dev/mapper/cr_sda4
+> > The device cannot be mounted.
+> > [ 188.649876] BTRFS info (device dm-1): disk space caching is enabled
+> > [ 188.649878] BTRFS info (device dm-1): has skinny extents
+> > [ 188.656364] BTRFS critical (device dm-1): corrupt leaf: root=3D2 bloc=
+k=3D294640566272 slot=3D104, unexpected item end, have 42739 expect 9971
+>
+> As Hugo has already pointed out, this looks very like a bit flip.
+> Thus a memtest is highly recommended.
+>
+> Also, your kernel is a little old. I'm not sure if the distro (I guess
+> it's openSUSE or SLE?) had all the backports, but starts from v5.2, we
+> had newer write-time tree-checker to even prevent such bitflip written
+> back to disk, thus we could catch them earlier.
+>
+> This is extent tree, in theory you can always salvage the data using
+> `btrfs-restore`.
+>
+> But that's the last resort method.
+>
+> > [ 188.656374] BTRFS error (device dm-1): failed to read block groups: -=
+5
+> > [ 188.700088] BTRFS error (device dm-1): open_ctree failed
+> > `btrfs check /dev/mapper/cr_sda4`
+> > Opening filesystem to check...
+> > incorrect offsets 9971 42739
+> > incorrect offsets 9971 42739
+> > incorrect offsets 9971 42739
+> > ERROR: failed to read block groups: Operation not permitted
+> > ERROR: cannot open file system
+>
+> If you can re-compile btrfs-progs, you can try this branch:
+> https://github.com/adam900710/btrfs-progs/tree/dirty_fix_for_raviu
+>
+> Then use the compiled btrfs-corrupt-block (I know it's a terrible name)
+> to fix the fs:
+>
+> ./btrfs-corrupt-block -X /dev/dm-1
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> It should output what it fixed if it found anything.
+>
+> Thanks,
+> Qu
+
 
