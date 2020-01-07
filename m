@@ -2,137 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91450131D69
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 03:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C9E131D86
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 03:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727405AbgAGCFL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 21:05:11 -0500
-Received: from mout.gmx.net ([212.227.17.20]:39897 "EHLO mout.gmx.net"
+        id S1727447AbgAGCOA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 21:14:00 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54365 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727250AbgAGCFK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 21:05:10 -0500
+        id S1727332AbgAGCOA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jan 2020 21:14:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578362704;
-        bh=Bi5WFVO40ObgVviKYpxAahSW2hZeWNRxt762Ix+IPTg=;
+        s=badeba3b8450; t=1578363229;
+        bh=6gS2mpKSqrgHpmxZZ79JVUuKYqx8sesdv0m6pQ4airw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fyitYVIqVGqEdW4g2iuZPSdS2Tfkk0nlI6Bplk8/ePGOLMYzLWhV1HyznDcbthaE8
-         +j1UejEOPtGoBIR1ZlEbvHzmeH3oHDBMY6nxtn5SUjDjoJClxDOp1zGvFldcPiJ/ce
-         z4R9AXi44mRzMxewsB01ixLFl1h178fIUQ1xetP0=
+        b=i1pxG/d+dg/IFaDNbEEQkN9gkNBq+ruW6lwJOcPFH+eKblxROydVor42K+8OIbDrw
+         qpySu+4sU+isuAndPXwiENCy0cDZm+Vv9li6HEOTKJrimcu5JnhVgAr4GY07wQGeC4
+         j9R4+HEuzqVlzuq+DXxV1IGuKc06j2Q3yGkszGL4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnJhU-1jXZNb3l48-00jIlT; Tue, 07
- Jan 2020 03:05:04 +0100
-Subject: Re: [PATCH v3 0/3] Introduce per-profile available space array to
- avoid over-confident can_overcommit()
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7b6l-1inHrF21PR-0086rA; Tue, 07
+ Jan 2020 03:13:49 +0100
+Subject: Re: [PATCH v3 1/3] btrfs: Introduce per-profile available space
+ facility
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
 References: <20200106061343.18772-1-wqu@suse.com>
- <20200106140615.GE3929@twin.jikos.cz>
+ <20200106061343.18772-2-wqu@suse.com> <20200106143242.GG3929@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <fd099bc6-512d-ace3-3f57-b532f4fc7479@gmx.com>
-Date:   Tue, 7 Jan 2020 10:04:57 +0800
+Message-ID: <9c2308bb-c3ae-d502-4b27-f8dbedc25d1a@gmx.com>
+Date:   Tue, 7 Jan 2020 10:13:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200106140615.GE3929@twin.jikos.cz>
+In-Reply-To: <20200106143242.GG3929@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="ggpLIjCIuqnBAq9Ttq2m8SOmhQO6kPUz4"
-X-Provags-ID: V03:K1:N92fwlmUJ3cUiXIpMVyKTsxtgZMsry3QnxWPV0fbtEiUeC341K3
- Y5Msv1YJZEtQs4yn75Jj+SsX/Bw1shBT9npzx+CkA8tQJajuQw/u7bLm4rp2jEKED26LSWV
- 29EyyHFL9HDVIHRTq+d9e9KLWUTWePSFLIN+X3mXd13a/gLgANA0cLLLRl8UjnHe7poetl5
- PnjF5HIq6/D5h28dK+TfA==
+ boundary="ZZ7jdGyxENux3rZChYum9RlgL724Sja2M"
+X-Provags-ID: V03:K1:zDWtt8mCTgQW0T6B76QJ+T7uVYLiXt6gGgX0cXuDA3xiKWEBczU
+ NaBxvfw0gIjdgg4YZCEEa6P3wXpj91xMkq7ay4B+oPw969q6PQNm52EMzNGptI++KRYEamX
+ glhNqS7J7Ng+V3ROguBxdUJu817v6Pn5F9hcyd6bJs185ECnV81f0m+yK5fwZ7voaGUy6fJ
+ RKERJm7HA1h2B+uKjHKOg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YSHS6TMN0LQ=:eGcQBJlYhq8al6R9sucvwD
- I33zVbMeNH6bwK4qUJta03Gf14ijluFFETn08QZi+GkKS/dpzmYC1dkj+KY8wjZLl+UW3nvfv
- m8hirS0tEQDOihRRrtx6EpbV4Pkc2eO6GLa6GA6eSruG2ZnbMin8s3DnfOHgciJVdBC+laHsM
- Vvqhcfi/HPzl/feU6tDgMNnTs232OEezEylb8S8FGDpjjxL6a64a3j8Hjp0CKZLEPE6UVG5ff
- 0V8ypTwV2qWFVM1aaLBvLliT8T690vvt1kjnZkzWOrssW3qA+oBVWmkhJC1AtzePztpJ2a3cY
- KfAVWmOv2UBaaUlw1knaBZi1E/xl4HvqT9RTbzlT979up0pOw9TSZmURXN+Q6sjCmGxZk83Zd
- Qvg3qg60q0v+9JCSNpit7mYxJ/jum/+Dsdt1EU6KDz/ZwfifL0kD2vO+PJlYaWoTe2+DR5iI5
- uPC/Eaf3uLZQORV0fyS3AuLDOZ9NcXwE2g4wS355DgV0bSjVXlxbu0OQYnaxzra5yOV073MK2
- f4v3fNc2lyidvxfrKNWiW/yqE23y229uUHb12MjcuiVYtOFY1OtxyfLdQm+ni/GRyz7gwxRff
- 3Tsr/GekQhOcw4wSng1M5hnhe4JBxgwmIQo3HdCTuuyRdeqtblbz70a//tqK9DUb1LLWeqBqf
- +ph7dDGLdyjJ/WhfNQuS9hi2r/B3V2Hq8ckaz5Lg2hEsIhjIClq0X4xKs7gDfUGK3oQl6t2fs
- XnymNMtJQRU/C9TolepGoQylZmZL68cRavkqfJDN3NRL0PTL2uHNPS4t26myFMjTCywruA95S
- 7oqEuffsgtHYY9pSEFs3EyZk/pDcq7fSMpdgVIDTsxRiGBreANGYduKmBkrOho/2ojMAkj4OZ
- DEXAutxCF6qyX0F4uB41gwHR27psZmzrO9TUc5R3neoItmOzhtcjGcOZBc3Ziw60jNapob41B
- G2aILGaqGuuRPhdup5lqUDhM3onBaNc2PaI9TvYkvfiEbxOIG9Pm3v8cbCwaVwF7nmjZguDYn
- BszQb0nOkVpJJmCszF8JrVqLeHvhRViKrGfO9bNhag7GLwCiRr7OsyhqEcvxyqC9WBS1ybU9i
- duDETa4PouhwlX7vbVdsaItylemzcBdX4XwozI7t/Su1OTcuBMxST2HU/De59xDa+DikVrHTL
- 46U6/yMF7wbdeBm+S+WlgyrAFkf5cy3qdbI+52JAtX+s15G+zdNar7xOHu2vx3lfH92do9nGK
- gYqw5rogPAmVmQ/EJrqmet3/2GEon/9THvz6nHQDX7FdZld9J6tqt8S8i3FM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:e2JHPSvZHYk=:8Fm85NsdXB/EO5G8afgRUs
+ 2CyJn90IQwuJyuB6M5OfjlcKXivo853E6URrs7jJPr1PM9mSHvqClcwea5tvE7b0IBof02oHz
+ m43z8DNCsAYhFIsItTclepBwFUYserNKOs2eMvlO+1oCUEEsB2Txo33L9IAtvbcl/PU2e0M42
+ mVI0Dg3XKkEaLev2BstP8MrCNX7GP6c1DTeOtTevhHH0HkNRvbdEIQaLQLqxTVGmZhv3c/K1o
+ 9nu+Xfaoaw+3cHOXoIMo0usgM1S5Q7DGj67fHAg876iYkgaR1zhjcn0Cq3asiIrJ8MSZgXlLL
+ M55Fd75u0psAHASixRefSXX1umwWHZPMYOaTdW3Ia9Q8vuLXCCWcaJRFGmEh7Chfd8QfpNyJ1
+ Lw1ZaC4nwR4WWzdGkzD1q86pKK+1QlDZ7PIY0UJcke3mXeM3/0HVY474XYoSFV4VDXBgH63kt
+ seH24gAfDRfIYe1b1aYpxLsxIuUo0BKyG+4ZdqpOs3LkVC0e51bwjjzNPZQ/ctl8+L4Q0TbPZ
+ 0TlB43XqGKvVbXEeRpwmy3rYyFMUKC3WmZJjk906wRrfMY01tmBBMGaLnow143fU6RSAwjLH1
+ cKqvDVP99zuGUsDFlqQ/gox2aDq364/N0PIpGMweJZd3JPHdMBvrkv/0MpXkcKXx2r5tDFl5v
+ UufwS9C41PkXWceMFKCtrfZZoydsjKjM7WK8QSP1bRCnK/RdMC1AyqjKcdjlkx/qM1QXQqoLS
+ BiaPBSUukdfwn/Tq+/NL5aju5qq4191Eih0ekBBKQbOAqC0ctib8C8Ln/6JOfvN0HkX+2EXib
+ oli8+DH2npeZw//X095PML3EqHHotFchABbUo+XdEG5ar7ZOHv6NlZu2Jq+HQD07AvJFi286g
+ bKRtVzw/QnAKV8Ugsn8cV1wQYZ6kEBwdFjLB1NVFeuwYKHvz3eo5+bjK8ODf6ILGqnQO0Kr9r
+ 7Ow+N8mwly7B97aCf9UGKwBCgFxkyBwctke/mnnz6MCOAOQOYcDpHqPbdOiCDx9G8Hug+Urk4
+ ILDQOJ9YTzoeekNs7KkEbgaoeXF34pn9yPr3UgQfWXcTh5NLQe/8D7Wa0DkGG2mAiVBZgCbvb
+ 5ybSvPmrqM1z4d2Wj/hzwj2jmsGEGPyO6EyfmGJFdXbCbNTaVIMoMj6pD+NWuGPXbGY3NaCJ8
+ rPEDX5IJl+khAEucgf8xO0mdMiGhPvA74P7DN6GL46Zv5Hve1Nrq/QrkjUdSq1OPOOfefHEFT
+ xY5tDqcZS13n7HgftFZCWLqyCRH75pBcJ4N/t5MsUzwih3ulRmq+ynraoW44=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ggpLIjCIuqnBAq9Ttq2m8SOmhQO6kPUz4
-Content-Type: multipart/mixed; boundary="6ZGkKmaAvj0g7AzdQfbQa2O65JyxFT247"
+--ZZ7jdGyxENux3rZChYum9RlgL724Sja2M
+Content-Type: multipart/mixed; boundary="y3b4kW2t1NcDf8OecT1Nxw0oomwSzY2jN"
 
---6ZGkKmaAvj0g7AzdQfbQa2O65JyxFT247
+--y3b4kW2t1NcDf8OecT1Nxw0oomwSzY2jN
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/1/6 =E4=B8=8B=E5=8D=8810:06, David Sterba wrote:
-> On Mon, Jan 06, 2020 at 02:13:40PM +0800, Qu Wenruo wrote:
->> The execution time of this per-profile calculation is a little below
->> 20 us per 5 iterations in my test VM.
->> Although all such calculation will need to acquire chunk mutex, the
->> impact should be small enough.
+On 2020/1/6 =E4=B8=8B=E5=8D=8810:32, David Sterba wrote:
+> On Mon, Jan 06, 2020 at 02:13:41PM +0800, Qu Wenruo wrote:
+[...]
+>> +static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
+>> +				  enum btrfs_raid_types type)
+>> +{
+>> +	struct btrfs_device_info *devices_info =3D NULL;
+>> +	struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
+>> +	struct btrfs_device *device;
+>> +	u64 allocated;
+>> +	u64 result =3D 0;
+>> +	int ret =3D 0;
+>> +
+>> +	ASSERT(type >=3D 0 && type < BTRFS_NR_RAID_TYPES);
+>> +
+>> +	/* Not enough devices, quick exit, just update the result */
+>> +	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
+>> +		goto out;
+>> +
+>> +	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_inf=
+o),
+>> +			       GFP_NOFS);
 >=20
-> The problem is not only the execution time of statfs, but what happens
-> when them mutex is contended. This was the problem with the block group=
+> Calling kcalloc is another potential slowdown, for the statfs
+> considerations.
 
-> mutex in the past that had to be converted to RCU.
+That's also what we did in statfs() before, so it shouldn't cause extra
+problem.
+Furthermore, we didn't use calc_one_profile_avail() directly in statfs()
+directly.
+
+Although I get your point, and personally speaking the memory allocation
+and extra in-memory device iteration should be pretty fast compared to
+__btrfs_alloc_chunk().
+
+Thus I don't think this memory allocation would cause extra trouble,
+except the error handling mentioned below.
+
+[...]
+>> +			ret =3D calc_per_profile_avail(fs_info);
 >=20
-> If the chunk mutex gets locked because a new chunk is allocated, until
-> it finishes then statfs will block. The time can vary a lot depending o=
-n
-> the workload and delay in seconds can trigger system monitors alert.
+> Adding new failure modes
+
+Another solution I have tried is make calc_per_profile_avail() return
+void, ignoring the ENOMEM error, and just set the affected profile to 0
+available space.
+
+But that method is just delaying ENOMEM, and would cause strange
+pre-profile values until next successful update or mount cycle.
+
+Any idea on which method is less worse?
+
+[...]
+>> =20
+>> --- a/fs/btrfs/volumes.h
+>> +++ b/fs/btrfs/volumes.h
+>> @@ -138,6 +138,13 @@ struct btrfs_device {
+>>  	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
+>> =20
+>>  	struct extent_io_tree alloc_state;
+>> +
+>> +	/*
+>> +	 * the "virtual" allocated space by virtual chunk allocator, which
+>> +	 * is used to do accurate estimation on available space.
+>> +	 * Doesn't affect real chunk allocator.
+>> +	 */
+>> +	u64 virtual_allocated;
 >=20
-Yes, that's exactly the same concern I have.
+> I find it a bit confusing to use 'virtual', though I get what you mean.=
 
-But I'm not sure how safe the old RCU implementation is when
-device->virtual_allocated is modified during the RCU critical section.
-
-That's to say, if a virtual chunk is being allocated during the
-statfs(), then we got incorrect result.
-So I tend to keep it safe by protecting it using chunk_mutex even it
-means chunk_mutex can block statfs().
-
-Another solution is to completely forget the whole metadata part, just
-grab the spinlock and the pre-calculated result, but that may result
-more available space than what we really have.
-
-If the delay is really a blockage, i can go the pre-allocated way,
-making the result a little less accurate.
+> As this is per-device it accounts overall space, so the name should
+> reflect somthing like that. I maybe have a more concrete suggestion onc=
+e
+> I read through the whole series.
+>=20
+Looking forward that naming.
 
 Thanks,
 Qu
 
 
---6ZGkKmaAvj0g7AzdQfbQa2O65JyxFT247--
+--y3b4kW2t1NcDf8OecT1Nxw0oomwSzY2jN--
 
---ggpLIjCIuqnBAq9Ttq2m8SOmhQO6kPUz4
+--ZZ7jdGyxENux3rZChYum9RlgL724Sja2M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4T50kXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg6RQgApDCR9BHncIU1vJz8vC5IDXyI
-bweJYI98l5iARkWCJVncTNd0PCYwPL2aaR+PHzckPhOIsEoVAmHbfcvZxiGuXnNp
-pxILw1zpDlOyHFHhJlTBwzni1r7920tnWZ7/X29BmNGGOGS2BMv9N9w88JBxEirQ
-uOOs+oDZKxf8FVZowFPW3n4wIQWNcnblYQoEqhjTfTe1t9sqN+NkCh3zr7XCbGYD
-YOZcFjEX3NdfVzgp5yvzeSQCFNrKeX2in7z5uwVGxhhRrXIzKo8DVsJyY560DetT
-iCUHbLngE54FEc1gT5AykaPKbRdigrk0TJAr8j5CoPh5UAFY1+Y6c/wBer+GSQ==
-=qm0D
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4T6VcXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg8kAgAjjDLCL34TOSZI8LNXQOLvEgz
+NBnwUklZE0r7vDgFe+zp2mj4dJUdl/FtOcm01hZ1OkPYOMIX/tD/KCiOkQ7JeFSq
+aiIaHqrhfVhl1BqP967DZhMKKkMYjaPDs5ViBqbFpO68H2TkaiIrJT6aXutkRzCM
+9LgtonZJzGSA24vz1lMQYId+5ym9wOjf0JmErujzyQCNUeApCjcFm9xcDxHqUMUk
+LG2VV3qFTp/wB5XOPy/x7IeY0ZqpCXPsdCauWFlzNJdQ9WS7Wge+1YAfv/v7ZbGX
+44eqoOR75bVpMmFgi6Y+7qmELl4YYkR+UueWt6ns1YxGWgSY1orexorQJNVKtw==
+=6ut4
 -----END PGP SIGNATURE-----
 
---ggpLIjCIuqnBAq9Ttq2m8SOmhQO6kPUz4--
+--ZZ7jdGyxENux3rZChYum9RlgL724Sja2M--
