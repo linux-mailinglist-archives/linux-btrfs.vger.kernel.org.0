@@ -2,75 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E43132047
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 08:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E2C13204E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 08:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbgAGHPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 02:15:04 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34235 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgAGHPE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 02:15:04 -0500
-Received: by mail-wr1-f67.google.com with SMTP id t2so52667141wrr.1;
-        Mon, 06 Jan 2020 23:15:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=3yMHNLG7pwHewdP1frFHQJesrvJGRkiPBj7d5kM3HDs=;
-        b=RQfN/Wk4R145DE5gm6KSnpVwgc1Y7+OuI9LkfNpDDbdjtZGBEsrv6pMlo9fi0Mav1Z
-         uMmkMaH7V8DNCK7LW+I7sXZvv+k6TFZdZl524Gl5WWi60OUPkSsj1+b835H6sdwJ0XKl
-         bgwg6xNE6UvPqeJByqbbbi9Vlq3LVKSwJG4BfLpaHz5YQtLbLzl74d01o1XTzSoZs8BC
-         Tp8seHdBFi/seCRJ2L53ICz5M4P2UUy7f/uZeF8XOLu3hpgBeklQwKFgQ9nN++C3ta4e
-         xBm8eP6fErveF4UvkeAvM8rmtwxpoAS+fVpUceYdMIkP/69wdh9ZQd522tZkTpnG6P3+
-         9Wqw==
-X-Gm-Message-State: APjAAAUSR6EwfzRFvsvrr3shEgF6zuyrH7w2D+NsBvUDrnO3f/IqMjkk
-        4bOzdMuxcd6v8Y9EsTyYInQ=
-X-Google-Smtp-Source: APXvYqyv+aUalrOIady4hQm7l/sNXHhceysXG7eO1uF7DYQTmiGwP17FZkpdmXk4cxtHzJoGLZUCaQ==
-X-Received: by 2002:a5d:410e:: with SMTP id l14mr104014901wrp.238.1578381302122;
-        Mon, 06 Jan 2020 23:15:02 -0800 (PST)
-Received: from Johanness-MBP.fritz.box (ppp-46-244-208-11.dynamic.mnet-online.de. [46.244.208.11])
-        by smtp.gmail.com with ESMTPSA id n67sm26211505wmf.46.2020.01.06.23.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jan 2020 23:15:01 -0800 (PST)
-Subject: Re: [PATCH] btrfs/140: use proper helpers to get devid and physical
- offset for corruption
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Eryu Guan <guaneryu@gmail.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, Damien Le Moal <Damien.LeMoal@wdc.com>
-References: <20200103111810.658-1-jth@kernel.org>
- <20200106081647.GE893866@desktop>
- <1c1dd1ae-e484-ee02-a7d8-077f95f7d4cf@gmx.com>
-From:   Johannes Thumshirn <jth@kernel.org>
-Message-ID: <49f4d5ed-93b8-7660-ba67-d82f282eabec@kernel.org>
-Date:   Tue, 7 Jan 2020 08:14:57 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1725965AbgAGHS3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 02:18:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41574 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgAGHS3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jan 2020 02:18:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C1726AC53;
+        Tue,  7 Jan 2020 07:18:26 +0000 (UTC)
+Subject: Re: [PATCH 5/6] btrfs: copy fsid and metadata_uuid for pulled disk
+ without INCOMPAT_METADATA_UUID
+To:     Su Yue <Damenly_Su@gmx.com>, damenly.su@gmail.com,
+        linux-btrfs@vger.kernel.org
+References: <20191212110132.11063-1-Damenly_Su@gmx.com>
+ <20191212110132.11063-6-Damenly_Su@gmx.com>
+ <4a825596-5e3b-8de4-2583-774a41e59db4@suse.com>
+ <4ed7ac86-e9d5-f389-247f-d14f8a8b5af7@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f3877656-d20d-e857-a6cd-eb5fe09d4180@suse.com>
+Date:   Tue, 7 Jan 2020 09:18:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <1c1dd1ae-e484-ee02-a7d8-077f95f7d4cf@gmx.com>
+In-Reply-To: <4ed7ac86-e9d5-f389-247f-d14f8a8b5af7@gmx.com>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am 06.01.20 um 09:56 schrieb Qu Wenruo:
->
-> On 2020/1/6 下午4:16, Eryu Guan wrote:
->> On Fri, Jan 03, 2020 at 12:18:10PM +0100, Johannes Thumshirn wrote:
->>> Similar to fstests commit 1a27bf14ef8b "btrfs/14[23]: Use proper help to
->>> get both devid and physical offset for corruption." btrfs/140 needs the
->>> same treatment to pass with updated btrfs-progs.
->>>
->>> Signed-off-by: Johannes Thumshirn <jth@kernel.org>
->>> ---
->> Qu Wenruo has posted "fstests: btrfs/14[01]: Use proper helper to get
->> both devid and physical for corruption" earlier, and I'll apply his
->> patch instead.
-> Thanks.
->
-> The timing is great since I was just going to ping that patch.
 
-Thanks as well,
-    Johannes
+
+On 7.01.20 г. 3:31 ч., Su Yue wrote:
+> On 2020/1/6 11:12 PM, Nikolay Borisov wrote:
+>>
+>>
+>> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
+>>> From: Su Yue <Damenly_Su@gmx.com>
+>>>
+>>> Since a scanned device may be the device pulled into disk without
+>>> metadata_uuid feature, there may already be changing devices there.
+>>> Here copy fsid and metadata_uuid for above case.
+>>>
+>>> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+>>
+>>
+>> What does this patch fix, why is it needed? It seems to be independent
+>> of the split brain fixes?
+>>
+> 
+> Sorry for the messy and short commit log.
+> It's one of the split brain fixes.
+> 
+> As mails I replied you earlier, the case
+> is for device which succeed to sync in
+> the second transaction and is without
+> metadata_uuid feature. If there is fs_devices
+> already scanned, the device's fsid instead of
+> metadata_uuid(NULL here) should be copied into
+> the fs_devices->metada_uuid field.
+
+I figures as much as I started tackling the problem. So this must be
+part of the patch which fixes aforementioned split brain scenario. I
+have already developed some patches + tests. So will be sending those,
+since they are very similar to what you posted originally I will retain
+your SOB line.
+
+> 
+> Thanks.
+> 
+>>> ---
+>>>   fs/btrfs/volumes.c | 11 +++++++----
+>>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>> index faf9cdd14f33..b21ab45e76a0 100644
+>>> --- a/fs/btrfs/volumes.c
+>>> +++ b/fs/btrfs/volumes.c
+>>> @@ -964,13 +964,16 @@ static noinline struct btrfs_device
+>>> *device_list_add(const char *path,
+>>>        * metadata_uuid/fsid values of the fs_devices.
+>>>        */
+>>>       if (*new_device_added && fs_devices_found &&
+>>> -        has_metadata_uuid && fs_devices->fsid_change &&
+>>> +        fs_devices->fsid_change &&
+>>>           found_transid > fs_devices->latest_generation) {
+>>>           memcpy(fs_devices->fsid, disk_super->fsid,
+>>>                  BTRFS_FSID_SIZE);
+>>> -        memcpy(fs_devices->metadata_uuid,
+>>> -               disk_super->metadata_uuid, BTRFS_FSID_SIZE);
+>>> -
+>>> +        if (has_metadata_uuid)
+>>> +            memcpy(fs_devices->metadata_uuid,
+>>> +                   disk_super->metadata_uuid, BTRFS_FSID_SIZE);
+>>> +        else
+>>> +            memcpy(fs_devices->metadata_uuid,
+>>> +                   disk_super->fsid, BTRFS_FSID_SIZE);
+>>>           fs_devices->fsid_change = false;
+>>>       }
+>>>
+>>>
+> 
