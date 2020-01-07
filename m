@@ -2,75 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 748CD132FC3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 20:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D2F133022
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 20:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgAGToq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 14:44:46 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34667 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgAGTop (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 14:44:45 -0500
-Received: from webmail.gandi.net (webmail19.sd4.0x35.net [10.200.201.19])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPA id 68C77C0008;
-        Tue,  7 Jan 2020 19:44:43 +0000 (UTC)
+        id S1728728AbgAGT4q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 14:56:46 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:44880 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728561AbgAGT4h (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 14:56:37 -0500
+Received: by mail-ed1-f65.google.com with SMTP id bx28so591670edb.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jan 2020 11:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=lUsTd9lJYwK928kai9reachpHe0HC9Hv8/gDLGwtaBI=;
+        b=m/Udengj3famfT4AeeQ1IRW+yMW7VasUnASahB37i/PoeHrkRBk2CGyFKYNukmjW7S
+         L8SRka5Jakx3oOkJPsG2IofN9vOqI+MJeZI3Q0YE0hhIfxJgla/Mvi4GlBIJ0+PXKJyR
+         fGhtIsUmeS9lphgKJPwASTV0Wis5x+akjvA6FztTMBR/K8fgi7sOjdtLa1OeTeeGw/oC
+         WuhGv+1qsxod0shrSr56iRhzuujf6ypC8mQV8JosjFfNeYtuq3xDGNFupimiXFOQL0SO
+         8SxYRsEAywqZcf7WmcQRmN/Qkf20W+/a6rRSJl252WjsQoa/SZxLvQ4mGRJVkfZ3ex9s
+         ABpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=lUsTd9lJYwK928kai9reachpHe0HC9Hv8/gDLGwtaBI=;
+        b=Byl2Mj8CBfHLjbpeIDwugxgn2wIue68UWsc/UqoT8c+fsuolliL8JmPiqsgeIkRAjK
+         3QhSlryBR2APqS7lFgLUxU0JL03nzzquNi6cWvFP8Atwb/nYzzJZcdqxYVbEBVlAHWc2
+         K0LJddvA/CJiDsOm4fbeosoe+kDecjTeOjLXULUJCgBoXN3kdBChxM+Mk61h4CgiTOXf
+         rG3oqKluXoFA+mpUiOpimrO7Zbe47F88X84h4t3agFrNGKgbk4K3RgICvH/YxQrn++ME
+         Dl6q1wX0Hn95RHYxmJMam6aYX0N0Y7AgHbQwjHWRKkAoiNQtB9mL79x0PgSvHmwo9Dg3
+         nC+A==
+X-Gm-Message-State: APjAAAUJDZWme5JQ+0zy8gMtBLCR8NKTYIzEkrt7oBowGLC/JV90VY8F
+        BEvf0dVsqeGCJbDCDVcWijN0pI2QMIdp+xezsxE=
+X-Google-Smtp-Source: APXvYqzNbcT08PcgNHBR6CjdjGMonF1aREtl3FixKkalZzLFfyP3YZsjOtPyVn2SjFoUiZ8TzNVIEuitC7fnDU0d3Kk=
+X-Received: by 2002:a17:907:20ef:: with SMTP id rh15mr1111482ejb.325.1578426995176;
+ Tue, 07 Jan 2020 11:56:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 07 Jan 2020 22:44:43 +0300
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] fs: btrfs: prevent unintentional int overflow
-In-Reply-To: <20200107160124.GY3929@twin.jikos.cz>
-References: <20200103184739.26903-1-cengiz@kernel.wtf>
- <20200106155328.GK3929@twin.jikos.cz>
- <16f809ac7e8.2bfa.85c738e3968116fc5c0dc2de74002084@kernel.wtf>
- <20200107160124.GY3929@twin.jikos.cz>
-Message-ID: <41f24d3d838e66cd4d1746916905bcb6@kernel.wtf>
-X-Sender: cengiz@kernel.wtf
-User-Agent: Roundcube Webmail/1.3.8
+Received: by 2002:a17:906:72c6:0:0:0:0 with HTTP; Tue, 7 Jan 2020 11:56:34
+ -0800 (PST)
+Reply-To: dhlexpresscouriercompany.nyusa@gmail.com
+From:   "Dr. William Johnson" <currency1000000@gmail.com>
+Date:   Tue, 7 Jan 2020 20:56:34 +0100
+Message-ID: <CAPqfnSEyU1pBR_7HT2g1KK7i8caLMBQ8yPA8KRDVm+MN-K_Z4w@mail.gmail.com>
+Subject: contact Dhl office New York to receive your Prepaid ATM Master Card
+ worth $15.8Million US DOLLARS now.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello David!
-
-On 2020-01-07 19:01, David Sterba wrote:
-> It's not a runtime overhead but typecasts should not be needed in
-> general and when there's one it should be there for a reason. Sometimes
-> it's apparent and does not need a comment to explain why but otherwise 
-> I
-> see it as "overhead" when reading the code. Lots of calculations done 
-> in
-> btrfs fit perfectly to 32bit, eg. the b-tree node or page-related ones.
-> Where it matters is eg. conversion from/to bio::bi_sector to/from btrfs
-> logical addresses that are u64, where the interface type is unsigned
-> long and not a fixed width.
-
-Thanks for sharing that. As I said, I'm relatively new to btrfs 
-internals.
-
-> The size constraints of the variables used in the reported expression
-> are known to developers so I tend to think the typecast is not
-> necessary.
-
-Agreed.
-
-> Maybe the static checker tool could be improved to know the
-> invariants, that are eg. verified in fs/btrfs/disk-io.c:validate_super.
-
-That's something that I will do some research on.
-
-We can ignore this patch.
-
-Thank you!
-
--- 
-Cengiz Can
-@cengiz_io
+ATTN Dear Beneficiary.
+Goodnews
+I have Registered your Prepaid ATM Master Card
+worth $15.800,000.00 US DOLLARS with Courier company
+asigned to deliver it to you today.
+So contact Dhl office New York to receive your Prepaid ATM Master Card
+worth $15.8Million US DOLLARS now.
+Contact Person: Mrs. Mary Michael, Director, DHL Courier Company-NY USA. 10218
+Email. dhlexpresscouriercompany.nyusa@gmail.com
+Call the office +(202) 890-8752
+Rec-Confirmed your mailing address to the office as I listed below.
+Your Full Name--------------
+House Address-----------
+Your working Phone Number----------------
+ID copy-------------------------
+Sex-----------------------------
+Note,delivery fee to your address is only $25.00. send it to this
+company urgent on itunes card today so that DHL will deliver this
+Prepaid ATM Master Card to you today according to our finally
+agreement.
+Thanks for coperations,
+Dr. William Johnson
