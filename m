@@ -2,66 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5EF132F63
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 20:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAB5132FA8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 20:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgAGT0w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 14:26:52 -0500
-Received: from mail.itouring.de ([188.40.134.68]:39062 "EHLO mail.itouring.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728307AbgAGT0w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jan 2020 14:26:52 -0500
-Received: from tux.applied-asynchrony.com (p5B07E981.dip0.t-ipconnect.de [91.7.233.129])
-        by mail.itouring.de (Postfix) with ESMTPSA id 034F84163429;
-        Tue,  7 Jan 2020 20:26:50 +0100 (CET)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 5ED1FF01600;
-        Tue,  7 Jan 2020 20:26:49 +0100 (CET)
-Subject: Re: write amplification, was: very slow "btrfs dev delete" 3x6Tb, 7Tb
- of data
-To:     Chris Murphy <lists@colorremedies.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <6058c4c4-fcb3-c7cd-6517-10b5908b34da@georgianit.com>
- <602a4895-f2f7-f024-c312-d880f12e1360@dubiel.pl>
- <CAJCQCtQEpXvgbs+Y0+A4cLZUft3oqp+sLW8xVPfxt2aqYhMj_g@mail.gmail.com>
- <2c135c87-d01b-53f1-9f76-a5653918a4e7@dubiel.pl>
- <cc364577-1bb8-1512-4d2e-dc7e465ca2d6@dubiel.pl>
- <20191228202344.GE13306@hungrycats.org>
- <c278f501-f5a5-c905-5431-2d735e97fa13@dubiel.pl>
- <CAJCQCtRvAZS1CNgJLdUZTNeUma6A74oPT-SeQe7NYHhXKrMzoA@mail.gmail.com>
- <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl>
- <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
- <20200104053843.GK13306@hungrycats.org>
- <CAJCQCtTvTbr9Civ5DLhTPRsMZ2qK2=YWFLB3JMSRRzZS9v-iNA@mail.gmail.com>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <bc544d4a-b375-ce26-0fcc-c0dacae4a0bd@applied-asynchrony.com>
-Date:   Tue, 7 Jan 2020 20:26:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1728379AbgAGTml (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 14:42:41 -0500
+Received: from mail-qt1-f176.google.com ([209.85.160.176]:34047 "EHLO
+        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728358AbgAGTml (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 14:42:41 -0500
+Received: by mail-qt1-f176.google.com with SMTP id 5so779851qtz.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jan 2020 11:42:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uOUe50AQMPmlCxxQmhUbhAt4AGkQ8LJSdR5U9Vgm8ok=;
+        b=fNLf5uXwAX9he7v/zBkI1z5tbKOwKkjCB6s0eNA0r/OBNrxhgf+0rhPU1e5hRfrgtS
+         wsMUxwDbmnPmZkDEnPv2fsnmUvLf0xI6sLLLovWt5KW/VRrybQ0PYS3OK/kHlrzU+RWd
+         7pGb5uLNw5CT06KLgq5eVM7G4ya3KG0UGLfNjuk3sGq2ZszxSPI+d0XcGFqguF6l5CvQ
+         MqimoBxjCguGmI89G4KS+zh2a3RiwR/333z/FTZZll+eBCjKo3pwmPDAcpkRBJzNxRQr
+         6iLpmREn+I3tLdRTFnf8dAsD0jTTR5QYhbbwae7V80KXoDohOiY80WX91aMgDkx9FStK
+         Xlpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uOUe50AQMPmlCxxQmhUbhAt4AGkQ8LJSdR5U9Vgm8ok=;
+        b=Wm7an09cFqCB1qVxIFBjzECatlo1+cdQwFvbjhdMoDThlOfB5qJhMQ7lua1QpJ61tH
+         Tnns5hN9f4eowrCB83IqHCoCTMyK1aebG0wLtUcRaSjC13+a94M4DIdgTS1USu4l4wVF
+         xgAskHHd7/21BTEHwlXWJFxepwHwcyB8a1mVF+azdAI1ieYYKFTkkUivUzqSx92eVsbX
+         L2CDRFHplEPzf2Vu31SVm/rDDKE2YQGl3yTRd4fy61r975n99U2O0gaA5esEBiMAclcQ
+         8n5RthE60C/JNDokgqRP3G/lMyOFi3I9aQye35RiWEbnrSXRCjKB0ym1DCeuL3V02/oi
+         kwzA==
+X-Gm-Message-State: APjAAAWzSfKw4TkgvYWnDO1NLOdA5hpZHErHYAbSlfnTj8nf8kBabOgr
+        KHXYCgIyxYNN9ifGX3nm1uUnBCjL55646A==
+X-Google-Smtp-Source: APXvYqzg2h3yFs/7msx/tUHRbSqY98KPd8CPTCiVkF75noiGB4yTKlHL8qothigOCKf1n7oVRK5zWg==
+X-Received: by 2002:ac8:fae:: with SMTP id b43mr561067qtk.122.1578426160231;
+        Tue, 07 Jan 2020 11:42:40 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id e64sm360291qtd.45.2020.01.07.11.42.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2020 11:42:39 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/5][v2] btrfs: fix hole corruption issue with !NO_HOLES
+Date:   Tue,  7 Jan 2020 14:42:32 -0500
+Message-Id: <20200107194237.145694-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTvTbr9Civ5DLhTPRsMZ2qK2=YWFLB3JMSRRzZS9v-iNA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/7/20 7:44 PM, Chris Murphy wrote:
-> Egads! Soo... total tangent. I'll change the subject.
+v1->v2:
+- fixed a bug in 'btrfs: use the file extent tree infrastructure' that would
+  result in 0 length files because btrfs_truncate_inode_items() was clearing the
+  file extent map when we fsync'ed multiple times.  Validated this with a
+  modified fsx and generic/521 that reproduced the problem, those modifications
+  were sent up as well.
+- dropped the RFC
 
-Time for science!
+----------------- Original Message -----------------------
+We've historically had this problem where you could flush a targeted section of
+an inode and end up with a hole between extents without a hole extent item.
+This of course makes fsck complain because this is not ok for a file system that
+doesn't have NO_HOLES set.  Because this is a well understood problem I and
+others have been ignoring fsck failures during certain xfstests (generic/475 for
+example) because they would regularly trigger this edge case.
 
-"Analyzing IO Amplification in Linux File Systems"
-https://arxiv.org/abs/1707.08514
+However this isn't a great behavior to have, we should really be taking all fsck
+failures seriously, and we could potentially ignore fsck legitimate fsck errors
+because we expect it to be this particular failure.
 
-Ironically Btrfs does better in a related paper:
+In order to fix this we need to keep track of where we have valid extent items,
+and only update i_size to encompass that area.  This unfortunately means we need
+a new per-inode extent_io_tree to keep track of the valid ranges.  This is
+relatively straightforward in practice, and helpers have been added to manage
+this so that in the case of a NO_HOLES file system we just simply skip this work
+altogether.
 
-"Filesystem Aging: It’s more Usage than Fullness"
-https://www.usenix.org/conference/hotstorage19/presentation/conway
+I've been hammering on this for a week now and I'm pretty sure its ok, but I'd
+really like Filipe to take a look and I still have some longer running tests
+going on the series.  All of our boxes internally are btrfs and the box I was
+testing on ended up with a weird RPM db corruption that was likely from an
+earlier, broken version of the patch.  However I cannot be 100% sure that was
+the case, so I'm giving it a few more days of testing before I'm satisfied
+there's not some weird thing that RPM does that xfstests doesn't cover.
 
-enjoy,
-Holger
+This has gone through several iterations of xfstests already, including many
+loops of generic/475 for validation to make sure it was no longer failing.  So
+far so good, but for something like this wider testing will definitely be
+necessary.  Thanks,
+
+Josef
+
