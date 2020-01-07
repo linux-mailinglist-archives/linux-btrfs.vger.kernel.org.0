@@ -2,185 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D91131D53
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 02:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FEA131D58
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jan 2020 02:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgAGBqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jan 2020 20:46:18 -0500
-Received: from mout.gmx.net ([212.227.15.19]:38175 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727326AbgAGBqS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jan 2020 20:46:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578361569;
-        bh=GQibQqihDBUYZJRbfNBnVupXCS8MVLFM9YmlQUadopM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JqNvai7nG8zhdhrbjUPFXucojKw/KjLjnrPb1F0cvfqjG4r39Ri6y0C0XglaLgH4+
-         Fyq+jXGQ4tUinzNVZsbATNS8VMigAbmWvFPdubBa6B4sLnVgQteMWaPupvegCGiE2B
-         X6JIjdLeXfeHR6JBUKGioeV3QpOieKZH5uEkuXWI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3UZ6-1io5iM208Y-000fdA; Tue, 07
- Jan 2020 02:46:09 +0100
-Subject: Re: [PATCH 0/6] btrfs-progs: Fixes for github issues
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191218011942.9830-1-wqu@suse.com>
- <20200102171056.GM3929@twin.jikos.cz>
- <e8398282-264a-3ef7-43d5-63f1ac0c7c19@gmx.com>
- <20200103152719.GZ3929@twin.jikos.cz>
- <d9c1ba8c-cf39-883a-5c84-4d1da81c243a@gmx.com>
- <20200106154534.GJ3929@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <7982685a-4fd8-91ea-8519-fc931f735ba7@gmx.com>
-Date:   Tue, 7 Jan 2020 09:46:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1727398AbgAGBtT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jan 2020 20:49:19 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42055 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727326AbgAGBtT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jan 2020 20:49:19 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3452422116;
+        Mon,  6 Jan 2020 20:49:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 06 Jan 2020 20:49:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm1; bh=wO5IFg+mAJkO3eICRKGfWIfLSFW
+        IaF3ZO8vTOhBPlKY=; b=qBTZ9JYW+eGTQi5/gzEd6sTMCm8sH088/047SRSmlLN
+        LMC/xOwlox450x1OMVTeE9oormrLMVFHm481fpi3cRLRrpWENUfz1IlZAm07FOri
+        ScHWhXZ7E2UCEOO5XPumU3HerqhnaNhPPjNwdHoCZ+6eU4qumgDpLcVeoqd3/97k
+        StvNYTirBtG8B0MMBQcsimq2C75CB0g/1DUAkJncfN83NfqxB6FhlHPhdkClOxLm
+        YDX0nFvkE6pBsX+zJiqu7klAZBw+AA8HNtdbFha3GJLohc2xlCazOHgNNLwkXn+s
+        SoNpmj9vvjeZtBvMRyasFqyxKudSnkGSWsM7UdiMoeQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wO5IFg
+        +mAJkO3eICRKGfWIfLSFWIaF3ZO8vTOhBPlKY=; b=Xc4X0SvsArq823nuHHJbJf
+        dZZorWZi0NmWLWNdAF7rZ/hpG0hsCfDPWd8Xcig2BJfJFgIkmaHMZpwj+c2XItyA
+        /R2IThIX3epgnVKXR1D/LhKHbXGuzCTwcNo6TGuTA1ittJ4UJpLrYZxlgbo4HEH0
+        T/j8f4uSXdhZ0icfO96WHF4iIX1V1GazUrD9j7inVIkH6DS12trdAczn52KyBnAW
+        fvoJ7QQb0jllrl8+TsWQCW555c0v2mp9oEBJHpIT0GU/SxPz2T8oaSg7QF3nsFBD
+        11JoXG4prkIKgZkQCY4jGJleskiYWhRkeVbCQOWREAcSTrEE5yTzWuHihY4msWcg
+        ==
+X-ME-Sender: <xms:nuMTXm7W07nStBfkiQY_p5gySOwgraXxtX5ySe5V4IohpmQEmiaMUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvdehuddgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtsehgtderofdtfeehnecuhfhrohhmpeftvghmihcu
+    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecukfhppedvfe
+    drvdeffedruddtvddrfeeknecurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgv
+    ohhrghhirghnihhtrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:nuMTXscHDfv5uqXWoZP85TEnbn7BzQ4h3jlAiPeGIBWNB48SHEUCkg>
+    <xmx:nuMTXp5So8pEydTdjxVQbO_FAM5ky4KuRBehblcxp-b9gb6xTp2oQw>
+    <xmx:nuMTXp8i4WEwcOqp29ijtltLLoAoa5Ip8DYjfd2zkJJSzDNksFTvpA>
+    <xmx:nuMTXgk2j7EAkNtAAtpZsm_pzBm0IVZT5lLhSorj9OxoJ2A-fQ6jTQ>
+Received: from [10.0.0.6] (23-233-102-38.cpe.pppoe.ca [23.233.102.38])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B583E80061;
+        Mon,  6 Jan 2020 20:49:17 -0500 (EST)
+Subject: Re: Errors after SATA hard resets: parent transid verify failed, csum
+ mismatch on free space cache
+To:     Stephen Conrad <conradsd@gmail.com>, linux-btrfs@vger.kernel.org
+References: <1794842.PFUSC7HjHz@paca>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <45ce42d0-f49a-5f0b-b0ff-a1ce46808003@georgianit.com>
+Date:   Mon, 6 Jan 2020 20:49:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-In-Reply-To: <20200106154534.GJ3929@twin.jikos.cz>
+In-Reply-To: <1794842.PFUSC7HjHz@paca>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="fQpOGIwUvFRoGON0whs1BD5elc9wy8yBm"
-X-Provags-ID: V03:K1:+qSBz7NbdD7u6q9HXOIM9DyGRqa6PI9wSLDr6dqdJjGlT6AbOdB
- IwLLC+2m/yNy1BuGDgmpQH55r6z4HK6tQh9zcO4ayimommTTglppW0/TLZyaE66RskBIuWQ
- 3VfaD8/9AcjCufxl9BDffa5g/5QgHLRWdcbdMe4UPElnlh8ie7Wh3pfYKmosFDuV7vWFt4A
- elSKMuVQM4cRKOaUjrX5g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9AlruAQ/G+k=:DH4plUSImPqpr/E6qd4YFa
- OzuZuZd2NrGecyjsgxfpTjcfkIYNhBaGFOIUY6SqpfMRmIt9bPWdI5wEkv0OJAiwOJ5wes1ER
- wzvTEBwrl3Od0b58wxvJZ5tqO6YaT44Vx7XEp8J8Z15VhKfeTwLMMO7mzSqKhH67nvUdOLmrt
- J/T9aAklkJ0mUUFJMT3IpCSJQ/X6u/Tzgd9HOVFlGZ6p4/RDzAtWWMPOoei+9aGHRwXknIJ4W
- QC281mwVMokcRF3X9fmcrmful5ikwLcZNqPiWx6UZPPP+uSvQb7TbH2kspKqLEtyyhUF9LpCb
- Jh44XGMSG2oLPoUQfN0nPKVCuq56DVdx72nqDoufvV9ud1BqRIQfWWllW8gDnAylgkeFxPw0z
- hoeLQ3f6/fzXgQOczqWJEzx/uDiP9aLifdwF+qulV4iXuzcplRE9YVVS+DgCdSwBOjIlDcXvb
- IXTdg4mPaVYmwiqycmwyaopZZA0a0/H5kW4vcbyRGlcvQ6NTIfm4baawvGwL7FAcJdn/NRg/f
- JEblQ74LUB45XyRQH/gyNEhaxPqPlfnmfhyt01YaHGtD94TJuHlzPJAzFzba5F0FgKn0JSp9j
- FM6bP6ld1IVz0fa4omfiSAq8TWeetDTuzQ/z71R4XyAeo1QJJvJCYeD0MrpfCe/mKop2THUXW
- Tr58YtjK+p9Q8fZkAV4kDaMMEM8wITwcqC5TF5XDyZtSgLM19ldQ7h8W69MjZ5StEPrWlcOxW
- xLgopmwqSiNsstTobxyp+Q5QigSyXsbkRWMja5ggB4OJLNWg3M9TWJDOFEC05jhyWT2UR2me8
- xoLybERpS1Pe398HoUS/9uZ/qo+eZOct6Zg8Drffif/bLC8OBK8ZKfKaHfVkoG6+BuLu0CFvh
- DfgvRNBxkfNg/w7dXr0h8QjR6oScThwuYjnjj5oyFwQWcaBfVE9RhdgRFhW500pIwlt6d4AmE
- oczjcYwFXKDonki7hCoR7dnO5CYhW5j/saUtDyE50yPVmnIXCIEh3VoNE0EL6K2YlxKoRDPgE
- oL5VuTKun7xUEQ1500zPtwbeM2cSZvt85WmjOyatehI85PYtT5qcv4u7RL1M8aMNXYKYxvLMy
- WgmFW4Bdunfsy2aWFi2Lc+AtInUdHeub/pitIpgBWk0n8gCCjFaD7nPJTaRL8R78PQsOEQDgm
- 8ZMG6b+1uh3TKCbonHc7L9TddZR4zFg4hldJqy4CWzyP/IWlE3dnBzeQWp3Y0ZjNDAETWVCVJ
- RcqW+SQ+Mu9gwxkOSxlObLvvLtSUZ7Ow5Gc0y0y0kGetkWsEtJEwq1V/VXSI=
+ boundary="m4nu9rjvPsKoDfo84zAtbXnssg9QutULI"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fQpOGIwUvFRoGON0whs1BD5elc9wy8yBm
-Content-Type: multipart/mixed; boundary="BHuamJWOJHeGTELgseVpTRrmfJ9hzyg4k"
+--m4nu9rjvPsKoDfo84zAtbXnssg9QutULI
+Content-Type: multipart/mixed; boundary="zDgcp0SiSaxtw12sWx8t1iY66ounimij2";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Stephen Conrad <conradsd@gmail.com>, linux-btrfs@vger.kernel.org
+Message-ID: <45ce42d0-f49a-5f0b-b0ff-a1ce46808003@georgianit.com>
+Subject: Re: Errors after SATA hard resets: parent transid verify failed, csum
+ mismatch on free space cache
+References: <1794842.PFUSC7HjHz@paca>
+In-Reply-To: <1794842.PFUSC7HjHz@paca>
 
---BHuamJWOJHeGTELgseVpTRrmfJ9hzyg4k
-Content-Type: text/plain; charset=utf-8
+--zDgcp0SiSaxtw12sWx8t1iY66ounimij2
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2020/1/6 =E4=B8=8B=E5=8D=8811:45, David Sterba wrote:
-> On Sat, Jan 04, 2020 at 09:26:25AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2020/1/3 =E4=B8=8B=E5=8D=8811:27, David Sterba wrote:
->>> On Fri, Jan 03, 2020 at 08:43:01AM +0800, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2020/1/3 =E4=B8=8A=E5=8D=881:10, David Sterba wrote:
->>>>> On Wed, Dec 18, 2019 at 09:19:36AM +0800, Qu Wenruo wrote:
->>>>>> There are a new batch of fuzzed images for btrfs-progs. They are a=
-ll
->>>>>> reported by Ruud van Asseldonk from github.
->>>>>>
->>>>>> Patch 1 will make QA life easier by remove the extra 300s wait tim=
-e.
->>>>>> Patch 2~5 are all the meat for the fuzzed images.
->>>>>>
->>>>>> Just a kind reminder, mkfs/020 test will fail due to tons of probl=
-ems:
->>>>>> - Undefined $csum variable
->>>>>> - Undefined $dev1 variable
->>>>>
->>>>> These are fixed in devel now.
->>>>>
->>>>>> - Bad kernel probe for support csum
->>>>>>   E.g. if Blake2 not compiled, it still shows up in supported csum=
- algo,
->>>>>>   but will fail to mount.
->>>>>
->>>>> The list of supported is from the point of view of the filesystem.
->>>>> Providing the module is up to the user.
->>>>
->>>> IIRC, doing such probe at btrfs module load time would be more user
->>>> friendly though.
->>>
->>> I don't understand how you think this could be improved. The list of
->>> algorithms is provided by the filesystem, the implementations are
->>> provided by the crypto subsystem (either compiled in or as modules). =
-Two
->>> different things.
->>>
->>> So you mean that at btrfs module load time, all hash algorithms are
->>> probed?
->>
->> Yes, that's why I mean.
->>
->>> What if some of them gets unloaded, or loaded later (so modprobe
->>> won't see it at btrfs load time). This would require keeping the stat=
-e
->>> up to date and this is out of scope what filesystem should do.
->>>
->> Isn't there any mechanism to load the module when necessary?
->=20
-> Yes, that's what we rely on, once a filesystem is mounted it will
-> instantiate the crypto shash, that in turn will trigger module load if
-> necessary.
->=20
-> Probing all algorithms would load more modules than needed, for the onl=
-y
-> reason to store/print list of what succeeded at that time. Whatever
-> happens to the system later will not be reflected here. And that's why =
-I
-> don't want to do that, so we list checksums understood by btrfs module.=
+On 2020-01-06 12:32 p.m., Stephen Conrad wrote:
 
 >=20
-But we don't have requirement for all supported csum algo.
-
-So it's completely possible to have a case where we don't have csum
-support for BLAKE2.
-Furthermore, there is no way to determine whether we support it at runtim=
-e.
-
-Now we depend on distro to include all needed algorithms, although most
-distro would include all these algos, but this still look a little
-strange to me.
-
-Any better solution for this?
-
-Thanks,
-Qu
+> 4) What steps should I take to clean up the file system errors/messages=
+?  Start=20
+> fresh after full backup, (though I hate the idea of migrating off a red=
+undant=20
+> array onto a single disk in the process)?  Scrub etc?  Evaluate each di=
+sk=20
+> independently and rebuild one from the other?
 
 
---BHuamJWOJHeGTELgseVpTRrmfJ9hzyg4k--
+I'm not really an expert, so this is just my understanding of btrfs so fa=
+r:
 
---fQpOGIwUvFRoGON0whs1BD5elc9wy8yBm
+Assuming these two devices are in a btrfs raid 1, only one of the two
+devices has errors, (which is what I would expect for a device that
+disconnected while the filesystem was running.)
+
+With Millions of failed writes, i don't think it's appropriate to count
+on scrub to have fixed up all the potential data errors.  Scrub on BTRFS
+will check the CRC independently on both drives, and copy over data
+where CRC fails, but CRC isn't perfect.  To the best of my knowledge,
+BTRFS does not actually compare the data between mirror copies.
+
+So my suggestion, to fix this safely, is to do a btrfs replace, and
+replace /dev/mapper/K1JG82AD with a new device.
+
+
+btrfs replace -r /dev/mapper/K1JG82AD /dev/new_device_partition /btrfs
+
+The -r switch will ensure data is only copied from the drive that is not
+full of potentially bad data with CRC collisions.
+
+If you determine that /dev/mapper/K1JG82AD is actually physically fine,
+you can re-add to the array.. maybe even use it to replace the spare
+drive we just put in.
+
+One note about using btrfs replace,, I don't know if this might be fixed
+with newer kernels,, but I find that the error count from the old device
+will re-appear on the new device, but only after a reboot, (or maybe
+unmount/mount.) you should check for that, and if the new device
+inherits your old errors, you should zero it with btrfs dev stats -z
+
+
+
+
+
+
+
+--zDgcp0SiSaxtw12sWx8t1iY66ounimij2--
+
+--m4nu9rjvPsKoDfo84zAtbXnssg9QutULI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4T4twXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgB9QgAkXS8Cas0tqpKuP4keZu6ffBk
-x8gwf/yOrSimJ4nBhsc2h2PSrSFWrE388LARxFGzza0Aei5EoAbPVKh5DbqaJrku
-1y+Vf7fqRgFDfkZiLRTnzZpw1vb/zYV5ylxAhrgTtcbQlIDRoK2fNL7Upocwm7eg
-QHTIk0ZHMamAxHBOc0Hdd/1iX4IL7oaZtTt0b5T7dTi5omzJqlLuJplUU0en9hHB
-Csec+RR8PwSlctgbxL/ZVLoGrWUZ8ODfDGoE3LtgjC5AecpruMackzjCGXq7v1uH
-KaYP3TTETrdl1OQnAO3jumTb/j/GLTfYeM1uqncWpy5jV1XKsSZ8P63tKj9kTQ==
-=mjV5
+iQEcBAEBCAAGBQJeE+OdAAoJEO9Tn/JHRWptmMIIANnn0u5mXo8VEx4n50jBuZko
+KqCLwnq+T7zwut9bsH4jyle/O0hX7q576lLTxldC3QzTHfq3qXu4SOgOG4OVS6i+
+rxlBTi+TT88ce8Ivco7hQZLutR86RHSTdwLW225rp44JQ2rHktfvARpuiRHzX6GP
+NXBA8Zx1i9wsdCyktGKrdvR/s0iS+zGfE0e0fsvc81pJR2GbJJGBSmOC9AHo1qBL
+WZRsmoagXmAvr4cwDtjk/5H6UVzrTcEhEtoXcT4zgKzVetP8XrZBdgv5O+Es8s2/
+HhAkQlUviSq/Np4lXY/CjJlWVtRjskPz3vjtyvQ9RU3SXW620iEOSRgf44xRnHY=
+=qS6D
 -----END PGP SIGNATURE-----
 
---fQpOGIwUvFRoGON0whs1BD5elc9wy8yBm--
+--m4nu9rjvPsKoDfo84zAtbXnssg9QutULI--
