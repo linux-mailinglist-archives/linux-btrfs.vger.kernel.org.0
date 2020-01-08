@@ -2,133 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4BD1348C5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 18:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF721348E6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 18:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgAHRDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 12:03:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51668 "EHLO mx2.suse.de"
+        id S1729670AbgAHRNT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 12:13:19 -0500
+Received: from mail.mailmag.net ([5.135.159.181]:36564 "EHLO mail.mailmag.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729516AbgAHRDy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 12:03:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0E598AFA9;
-        Wed,  8 Jan 2020 17:03:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7D312DA791; Wed,  8 Jan 2020 18:03:41 +0100 (CET)
-Date:   Wed, 8 Jan 2020 18:03:41 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: kill update_block_group_flags
-Message-ID: <20200108170340.GK3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200106165015.18985-1-josef@toxicpanda.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106165015.18985-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1726401AbgAHRNT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jan 2020 12:13:19 -0500
+X-Greylist: delayed 322 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jan 2020 12:13:19 EST
+Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mailmag.net (Postfix) with ESMTPSA id 5B72EEC02AF;
+        Wed,  8 Jan 2020 09:07:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
+        t=1578503276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9GtZQoxZkox3X1DhbIYuFLvz2QhnAxSeufIwpyl9cVI=;
+        b=AXvlOEnKysXwmT9DaYREsqtZRC23DWKxH8XZkt8FntvKaiuvX9Mz9NZz2MCQwZskUG/CMg
+        7AIql+IRRhYqmS0hE+zHnEKip6ZqH8uxHu6sJqbLoFqYfOWR4Ej+/mLtC3UFjf3SA29Kxl
+        ZeXm0ZhN/WFEQzBALxoTMnMTpMB34Z8=
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0
+Subject: Re: How long should a btrfs scrub with RAID5/6 take?
+From:   Joshua <joshua@mailmag.net>
+In-Reply-To: <b2ccde6952d0fa67c9948a21cd3ac8eddcdb3970.camel@render-wahnsinn.de>
+Date:   Wed, 8 Jan 2020 09:07:47 -0800
+Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F28464EB-75E4-4ECB-BEFB-078186706776@mailmag.net>
+References: <b2ccde6952d0fa67c9948a21cd3ac8eddcdb3970.camel@render-wahnsinn.de>
+To:     Robert Krig <robert.krig@render-wahnsinn.de>
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
+        s=mail; t=1578503276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9GtZQoxZkox3X1DhbIYuFLvz2QhnAxSeufIwpyl9cVI=;
+        b=pxaMPnafkAhqzeyz1UJtYUj9657SiC14dcwxee3usQPMZ/PhWyl8sJSoju57Kg7CGbNYpS
+        nT5W35RwbclbZYDgF9lT6pxvtckuRp/aXeUcbD2Rx+/7hpV7rzXUREfRmU4d/nKGlw5cfk
+        /h+QNttgswxR/zNGpMhF3Uui8ghSz1Y=
+ARC-Seal: i=1; s=mail; d=mailmag.net; t=1578503276; a=rsa-sha256; cv=none;
+        b=SZL0gbzWWCfykMwzGHRrITIhOtVSziK1ylmK68gT073Poa0amrczNqfhthzkpGZUgC9G41
+        SPaOe1BzvXuIoyy1FsMU9PAr5wx7o08xzQLE/X/zRMzbc90tkMYeyo5eXaJV6DK6IiZQsi
+        xNiyAkzkzHMy83A5cjicjm7IOR0z4r8=
+ARC-Authentication-Results: i=1;
+        mail.mailmag.net;
+        auth=pass smtp.mailfrom=joshua@mailmag.net
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 11:50:15AM -0500, Josef Bacik wrote:
-> btrfs/061 has been failing consistently for me recently with a
-> transaction abort.  We run out of space in the system chunk array, which
-> means we've allocated way too many system chunks than we need.
-> 
-> Chris added this a long time ago for balance as a poor mans restriping.
-> If you had a single disk and then added another disk and then did a
-> balance, update_block_group_flags would then figure out which RAID level
-> you needed.
-> 
-> Fast forward to today and we have restriping behavior, so we can
-> explicitly tell the fs that we're trying to change the raid level.  This
-> is accomplished through the normal get_alloc_profile path.
-> 
-> Furthermore this code actually causes btrfs/061 to fail, because we do
-> things like mkfs -m dup -d single with multiple devices.  This trips
-> this check
-> 
-> alloc_flags = update_block_group_flags(fs_info, cache->flags);
-> if (alloc_flags != cache->flags) {
-> 	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
-> 
-> in btrfs_inc_block_group_ro.  Because we're balancing and scrubbing, but
-> not actually restriping, we keep forcing chunk allocation of RAID1
-> chunks.  This eventually causes us to run out of system space and the
-> file system aborts and flips read only.
-> 
-> We don't need this poor mans restriping any more, simply use the normal
-> get_alloc_profile helper, which will get the correct alloc_flags and
-> thus make the right decision for chunk allocation.  This keeps us from
-> allocating a billion system chunks and falling over.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/block-group.c | 52 ++----------------------------------------
->  1 file changed, 2 insertions(+), 50 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index c79eccf188c5..0257e6f1efb1 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1975,54 +1975,6 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
->  	return 0;
->  }
->  
-> -static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
-> -{
-> -	u64 num_devices;
-> -	u64 stripped;
-> -
-> -	/*
-> -	 * if restripe for this chunk_type is on pick target profile and
-> -	 * return, otherwise do the usual balance
-> -	 */
-> -	stripped = get_restripe_target(fs_info, flags);
-> -	if (stripped)
-> -		return extended_to_chunk(stripped);
-> -
-> -	num_devices = fs_info->fs_devices->rw_devices;
-> -
-> -	stripped = BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID56_MASK |
-> -		BTRFS_BLOCK_GROUP_RAID1_MASK | BTRFS_BLOCK_GROUP_RAID10;
-> -
-> -	if (num_devices == 1) {
-> -		stripped |= BTRFS_BLOCK_GROUP_DUP;
-> -		stripped = flags & ~stripped;
-> -
-> -		/* turn raid0 into single device chunks */
-> -		if (flags & BTRFS_BLOCK_GROUP_RAID0)
-> -			return stripped;
-> -
-> -		/* turn mirroring into duplication */
-> -		if (flags & (BTRFS_BLOCK_GROUP_RAID1_MASK |
-> -			     BTRFS_BLOCK_GROUP_RAID10))
-> -			return stripped | BTRFS_BLOCK_GROUP_DUP;
-> -	} else {
-> -		/* they already had raid on here, just return */
-> -		if (flags & stripped)
-> -			return flags;
-> -
-> -		stripped |= BTRFS_BLOCK_GROUP_DUP;
-> -		stripped = flags & ~stripped;
-> -
-> -		/* switch duplicated blocks with raid1 */
-> -		if (flags & BTRFS_BLOCK_GROUP_DUP)
-> -			return stripped | BTRFS_BLOCK_GROUP_RAID1;
-> -
-> -		/* this is drive concat, leave it alone */
-> -	}
+I do not have a direct answer to your question, but I can chime in on your s=
+crub times:
 
-I remember that I ended up in that function while testing the raid1c34
-feature, converting from one profile to another, but can't recall the
-details now. I think the fallback to the profiles did occur here in some
-cases so we need to make sure that the same usecases are still
-supported.
+I have 4x8TB, 4x10TB, and 8x3TB drives, all in one huge BTRFS =E2=80=98RAID1=
+=E2=80=99.
+
+I can tell you that even in my setup, scrubs usually take less than a day.  S=
+o unless it=E2=80=99s the raid5 making yours take so long, that does not sou=
+nd typical.
+
+> On Jan 8, 2020, at 2:13 AM, Robert Krig <robert.krig@render-wahnsinn.de> w=
+rote:
+>=20
+> Hi, I've got a server where I have 4x8TB Disks in a BTRFS RAID5
+> (metadata and systemdata as RAID1) configuration.
+>=20
+> It's just a backup server with data I can always recreate.=20
+> This server is in the bedroom, so I send it to sleep/suspend when I go
+> to bed and then wake it up in the morning.=20
+>=20
+> Since a scrub takes days on such a setup, I issue a btrfs scrub resume
+> whenever the server wakes up again.
+>=20
+> btrfs scrub status shows me that the total data to scrub is 18.67TB,
+> but it's already scrubbed 36.60TB. Is there any way I can calculate how
+> much more data is going to be scrubbed? 4x8TB is 32TB, so we're passed
+> that, but I'm guessing this also has to do with parity data as well.
+>=20
