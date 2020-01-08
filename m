@@ -2,253 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E506133AB6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 06:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CDB133B40
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 06:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgAHFMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 00:12:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60706 "EHLO mx2.suse.de"
+        id S1726593AbgAHFgv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 00:36:51 -0500
+Received: from mout.gmx.net ([212.227.17.20]:40799 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgAHFMM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 00:12:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 070C3B1E5;
-        Wed,  8 Jan 2020 05:12:10 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by extended reloc tree lifespan
-Date:   Wed,  8 Jan 2020 13:12:00 +0800
-Message-Id: <20200108051200.8909-1-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
+        id S1725907AbgAHFgv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jan 2020 00:36:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578461806;
+        bh=xtPtPPeBfWKZ+2blNtuevmwVoK5dcPLTdkh1zGPMQxw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=XKBCjpYmWVPUeDpdzjyyByyWhPeYL0Y+US8RqJHarN9YQCKR7f4YroY9WWhak6kQR
+         3sn1Djh0v6UnRUnqnQAj+yeYJgLltmZjvR0nfzW2TDJOkA+i+OZeT4zt0o2cuoANQK
+         2PTavEuSwgWYXbn5tlSQ0NRzwt/9OqPbMnHQ8uxo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwfac-1jeHnb2iLa-00y84R; Wed, 08
+ Jan 2020 06:36:46 +0100
+Subject: Re: [PATCH] btrfs: kill update_block_group_flags
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200106165015.18985-1-josef@toxicpanda.com>
+ <4bc7e4f5-c370-4e0e-405c-5d3aa67f95b0@gmx.com>
+ <5d39b16c-627a-1472-2d4e-d6861ec03c8f@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <e834edd9-c9c6-54c7-e84e-bb26e510d7e0@gmx.com>
+Date:   Wed, 8 Jan 2020 13:36:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d39b16c-627a-1472-2d4e-d6861ec03c8f@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="BeCLzxNzoCrJRBx4X3gycP6OFZspj15Cz"
+X-Provags-ID: V03:K1:VMGDJcxC+9lSyc/6p143YxMF8THL93cRcnbrLJoKPp4VT0CMcPd
+ oZsFE3NPO0M34GW6GqXG48tw2jQBv1ID2cAs/YspyEeNZNFMFGWEZhh7il19xH79qMOLP8J
+ vplD2Cem5wV8knhlgUCgvuBj2H/EYhD/EdeavqfSMGxBeTY/R0Lv+aFCp+X49Mhc3B3PMg4
+ N/Bl6su0NwYLDlCX/kVww==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:obdCrco+OXE=:JuYNpJFY4Mih6UT3psNSIh
+ IdpS8jEWmGWi/k7ipJrk0XFrXZokfM5AY7qNrnJU/NVWmNxROFdJDdFAN5KDNDh86ieKNtcXk
+ 0a02i++vDP4G+uOJPdZ6t0hkP8o9maVrbsc3toP4NU2bPDVVjMZlII/bOCXORlXefxn9zEgz6
+ XJ+7VWQn5L8fYyBdd7fk09wqwm+1hQePPIS0S4XpwZ5MzSvRyItwFuH4+lgan5uZlH0DKnCU5
+ x3L99tFE6+ZsDDlZ4IBcnqT1eaA+efvMPJBEXV+2NcCsBc7RspLsHhkMxoX7CUh5+0sPxU7wW
+ 9jEYBgLZn/8v11pX/rXd1TUmtO91sBX1HUoMjOaNpzlrKqkC/7BEqNjgACCb3ir3iJmN4F/tZ
+ JdUgcJQSH3vC+saOfwsf2wUoyxrzumGLtq//yA0l0NAHO9kD/rJIWbd/Zd7nTaaZghCOqVDUz
+ 99Qjw0h9sRtr0dYJIOBw7lwevRWUiCOAxmTeFOoCo6sIWnkMmyMR2Mz5voaQOBP0h81MDd75q
+ yj5kFwtK3ehtiTv9swl9hGxo7KtJB7CPw2Jb0gFmFnv7dNvvDFKvJl/3D7qxxylsyw8fERuHC
+ CPOC5H9JQ0kI0uuyTJGrCmMvsNPEZZCRd4xW1M2SUPr8x9YovfNKmrSRrHl/YiIeESU+HLfVl
+ xZLtP66E5Q66zTF/+YjR+vubx0mQHTqGer4ViT0ojE/c74fMCVv/CiLIrwNKZ+r6Wt/MK/c0b
+ rH7dZpvh4cpqo3cKOPTNmQJCUv9zC9qS9UZEMmnJRg31aDel4pvaLSK9UTQ51Z0c8BfsBZX8B
+ YAITXAaVca+ktY1ubKI5YpA60Nk7F1Hc4t9arvEaycgpAPqU16SrlQ2jACQio0nHUj/YscpW2
+ ZaUoD/LVpdHAAHCfev35/CsCx8zcg+riqjl969yt2Pa/9AeEcAX9OikhRd9ijY0CC1Oj6kK61
+ 7eE/9rkiluom+tmEwlgfdJcixLFkL7NIwv5qB1rezoYzAfcVFjJr6YTLI5llWjo+iDVUq3PJz
+ OZ28W4qZWrk5BoExfqhdpE0j7onqJ+TT7qoJ6sEQRSKxaCLGxoQZfVvKpERz89C0MHL9PtIIa
+ GrzagHNNMI2l6hY2rDkL7bmSql1ysYAsC9UnBbNQzghPl/cUnX+JjjckO+P8t9VU7J9jYF8ef
+ 8jHNAMTD3rn/7QpZ632DiZv7am8QKOtrjW4Rf1VbTnbhJq+GRg0G+A7mU70kL8l4hXIyEz+5a
+ +d6ytjAM3on7NG3jV+2Ty/3nbkgQGKnBXcOTABqPq63/pgGHRah/usNlOol4=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There are several different KASAN reports for balance + snapshot
-workloads.
-Involved call paths include:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BeCLzxNzoCrJRBx4X3gycP6OFZspj15Cz
+Content-Type: multipart/mixed; boundary="HwqEzqnSasKYTgfdPssGrMMEvTkokpvzX"
 
-   should_ignore_root+0x54/0xb0 [btrfs]
-   build_backref_tree+0x11af/0x2280 [btrfs]
-   relocate_tree_blocks+0x391/0xb80 [btrfs]
-   relocate_block_group+0x3e5/0xa00 [btrfs]
-   btrfs_relocate_block_group+0x240/0x4d0 [btrfs]
-   btrfs_relocate_chunk+0x53/0xf0 [btrfs]
-   btrfs_balance+0xc91/0x1840 [btrfs]
-   btrfs_ioctl_balance+0x416/0x4e0 [btrfs]
-   btrfs_ioctl+0x8af/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+--HwqEzqnSasKYTgfdPssGrMMEvTkokpvzX
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-   create_reloc_root+0x9f/0x460 [btrfs]
-   btrfs_reloc_post_snapshot+0xff/0x6c0 [btrfs]
-   create_pending_snapshot+0xa9b/0x15f0 [btrfs]
-   create_pending_snapshots+0x111/0x140 [btrfs]
-   btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
-   btrfs_mksubvol+0x915/0x960 [btrfs]
-   btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
-   btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
-   btrfs_ioctl+0x241b/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-   btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
-   create_pending_snapshot+0x209/0x15f0 [btrfs]
-   create_pending_snapshots+0x111/0x140 [btrfs]
-   btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
-   btrfs_mksubvol+0x915/0x960 [btrfs]
-   btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
-   btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
-   btrfs_ioctl+0x241b/0x3e60 [btrfs]
-   do_vfs_ioctl+0x831/0xb10
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-[CAUSE]
-All these call sites are only relying on root->reloc_root, which can
-undergo btrfs_drop_snapshot(), and since we don't have real refcount
-based protection to reloc roots, we can reach already dropped reloc
-root, triggering KASAN.
+On 2020/1/7 =E4=B8=8B=E5=8D=8811:09, Josef Bacik wrote:
+> On 1/7/20 6:08 AM, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/1/7 =E4=B8=8A=E5=8D=8812:50, Josef Bacik wrote:
+>>> btrfs/061 has been failing consistently for me recently with a
+>>> transaction abort.=C2=A0 We run out of space in the system chunk arra=
+y, which
+>>> means we've allocated way too many system chunks than we need.
+>>
+>> Isn't that caused by scrubbing creating unnecessary system chunks?
+>>
+>> IIRC I had a patch to address that problem by just simply not allocati=
+ng
+>> system chunks for scrub.
+>> ("btrfs: scrub: Don't check free space before marking a block=C2=A0 gr=
+oup RO")
+>>
+>=20
+> This addresses the symptoms, not the root cause of the problem.=C2=A0 Y=
+our
+> fix is valid, because we probably shouldn't be doing that, but we also
+> shouldn't be forcing restriping of block groups arbitrarily.
+>=20
+>> Although that doesn't address the whole problem, but it should at leas=
+t
+>> reduce the possibility.
+>>
+>>
+>> Furthermore, with the newer over-commit behavior for inc_block_group_r=
+o
+>> ("btrfs: use btrfs_can_overcommit in inc_block_group_ro"), we won't
+>> really allocate new system chunks anymore if we can over-commit.
+>>
+>> With those two patches, I guess we should have solved the problem.
+>> Or did I miss something?
+>>
+> You are missing that we're getting forced to allocate a system chunk
+> from this
+>=20
+> alloc_flags =3D update_block_group_flags(fs_info, cache->flags);
+> if (alloc_flags !=3D cache->flags) {
+> =C2=A0=C2=A0=C2=A0=C2=A0ret =3D btrfs_chunk_alloc(trans, alloc_flags, C=
+HUNK_ALLOC_FORCE);
+>=20
+> which you move down in your patch, but will still get tripped by
+> rebalance.=C2=A0 So you sort of paper over the real problem, we just do=
+n't
+> get bitten by it as hard with 061 because balance takes longer than
+> scrub does.=C2=A0 If we let it run longer per fs type we'd still hit th=
+e same
+> problem.
+>=20
+> In short, your patches do make it better, and are definitely correct
+> because we probably shouldn't be allocating new chunks for scrub, but
+> they don't address the real cause of the problem.=C2=A0 All the patches=
+ are
+> needed.=C2=A0 Thanks,
 
-[FIX]
-To avoid such access to unstable root->reloc_root, we should check
-BTRFS_ROOT_DEAD_RELOC_TREE bit first.
+Indeed.
 
-This patch introduces a new wrapper, have_reloc_root(), to do the proper
-check for most callers who don't distinguish merged reloc tree and no
-reloc tree.
+Then the patch looks good to me.
 
-The only exception is should_ignore_root(), as merged reloc tree can be
-ignored, while no reloc tree shouldn't.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-[CRITICAL SECTION ANALYSE]
-Although test_bit()/set_bit()/clear_bit() doesn't imply a barrier, the
-DEAD_RELOC_TREE bit has extra help from transaction as a higher level
-barrier, the lifespan of root::reloc_root and DEAD_RELOC_TREE bit are:
+And thanks again for fixing the missing piece of the unnecessary chunk
+allocation.
 
-	NULL: reloc_root is NULL	PTR: reloc_root is not NULL
-	0: DEAD_RELOC_ROOT bit not set	DEAD: DEAD_RELOC_ROOT bit set
+Thanks,
+Qu
 
-	(NULL, 0)    Initial state		 __
-	  |					 /\ Section A
-        btrfs_init_reloc_root()			 \/
-	  |				 	 __
-	(PTR, 0)     reloc_root initialized      /\
-          |					 |
-	btrfs_update_reloc_root()		 |  Section B
-          |					 |
-	(PTR, DEAD)  reloc_root has been merged  \/
-          |					 __
-	=== btrfs_commit_transaction() ====================
-	  |					 /\
-	clean_dirty_subvols()			 |
-	  |					 |  Section C
-	(NULL, DEAD) reloc_root cleanup starts   \/
-          |					 __
-	btrfs_drop_snapshot()			 /\
-	  |					 |  Section D
-	(NULL, 0)    Back to initial state	 \/
+>=20
+> Josef
 
-Very have_reloc_root() or test_bit(DEAD_RELOC_ROOT) caller has hold a
-transaction handler, so none of such caller can cross transaction
-boundary.
 
-In Section A, every caller just found no DEAD bit, and grab reloc_root.
+--HwqEzqnSasKYTgfdPssGrMMEvTkokpvzX--
 
-In the cross section A-B, caller may get no DEAD bit, but since
-reloc_root is still completely valid thus accessing reloc_root is
-completely safe.
+--BeCLzxNzoCrJRBx4X3gycP6OFZspj15Cz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-No test_bit() caller can cross the boundary of Section B and Section C.
+-----BEGIN PGP SIGNATURE-----
 
-In Section C, every caller found the DEAD bit, so no one will access
-reloc_root.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4VamoACgkQwj2R86El
+/qhItwf/aBL9dmpIOS3Z3H4B+/fUWAyiFw6oKdSakWAlHb1lhBICxqPqBNeRUFP2
+S+7XezwUucHnVHPY+r6YXHj8punXQiuGj62ZepqXbRtjIpKfcE4a2WawfQpeS5xl
+oUZnpusElXCgQysJn967Ib9NZqz2owJKvtbmPjiT5U6ZQG3mnaGU2BrJ2CAirOpN
+Lm7rRZ196+CzD8BApQYdsrcjBB3eRzVukGnQaIbAkwAGX9SOuWp78OcgIjRTCs58
+jZgmD6Tr1lurKX6YDOceAupFUcf/ddku0653tgPFnuq4KLn1/gz9Wj7mxzu50M3I
++MWNp0Q8aBt3TMxjTmDlu9D8qU9ouA==
+=bA9v
+-----END PGP SIGNATURE-----
 
-In the cross section C-D, either caller gets the DEAD bit set, avoiding
-access reloc_root no matter if it's safe or not.
-Or caller get the DEAD bit cleared, then access reloc_root, which is
-already NULL, nothing will be wrong.
-
-Here we need extra memory barrier in cross section C-D, to ensure
-proper memory order between reloc_root and clear_bit().
-
-In Section D, since no DEAD bit and no reloc_root, it's back to initial
-state.
-
-With this lifespan, it should be clear only one memory barrier is
-needed, between setting reloc_root to NULL and clearing DEAD_RELOC_ROOT
-bit.
-
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-Suggested-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Add the [CRITICAL SECTION ANALYSE] part
-  This gets me into the rabbit hole of memory ordering, but thanks for
-  the help from David (initially mentioning the mb hell) and Nikolay
-  (for the proper doc), finally I could explain clearly why only
-  one mb is needed.
-- Add comment for the only needed memory barrier.
----
- fs/btrfs/relocation.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index d897a8e5e430..17a2484f76a5 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -517,6 +517,22 @@ static int update_backref_cache(struct btrfs_trans_handle *trans,
- 	return 1;
- }
- 
-+/*
-+ * Check if this subvolume tree has valid reloc(*) tree.
-+ *
-+ * *: Reloc tree after swap is considered dead, thus not considered as valid.
-+ *    This is enough for most callers, as they don't distinguish dead reloc
-+ *    root from no reloc root.
-+ *    But should_ignore_root() below is a special case.
-+ */
-+static bool have_reloc_root(struct btrfs_root *root)
-+{
-+	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-+		return false;
-+	if (!root->reloc_root)
-+		return false;
-+	return true;
-+}
- 
- static int should_ignore_root(struct btrfs_root *root)
- {
-@@ -525,6 +541,10 @@ static int should_ignore_root(struct btrfs_root *root)
- 	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
- 		return 0;
- 
-+	/* This root has been merged with its reloc tree, we can ignore it */
-+	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-+		return 1;
-+
- 	reloc_root = root->reloc_root;
- 	if (!reloc_root)
- 		return 0;
-@@ -1478,8 +1498,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 	struct btrfs_root_item *root_item;
- 	int ret;
- 
--	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state) ||
--	    !root->reloc_root)
-+	if (!have_reloc_root(root))
- 		goto out;
- 
- 	reloc_root = root->reloc_root;
-@@ -2201,6 +2220,11 @@ static int clean_dirty_subvols(struct reloc_control *rc)
- 				if (ret2 < 0 && !ret)
- 					ret = ret2;
- 			}
-+			/*
-+			 * Need barrier to ensure clear_bit() only happens after
-+			 * root->reloc_root = NULL.
-+			 */
-+			smp_mb__before_atomic();
- 			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
- 			btrfs_put_fs_root(root);
- 		} else {
-@@ -4717,7 +4741,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
- 	struct btrfs_root *root = pending->root;
- 	struct reloc_control *rc = root->fs_info->reloc_ctl;
- 
--	if (!root->reloc_root || !rc)
-+	if (!rc || !have_reloc_root(root))
- 		return;
- 
- 	if (!rc->merge_reloc_tree)
-@@ -4751,7 +4775,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
- 	struct reloc_control *rc = root->fs_info->reloc_ctl;
- 	int ret;
- 
--	if (!root->reloc_root || !rc)
-+	if (!rc || !have_reloc_root(root))
- 		return 0;
- 
- 	rc = root->fs_info->reloc_ctl;
--- 
-2.24.1
-
+--BeCLzxNzoCrJRBx4X3gycP6OFZspj15Cz--
