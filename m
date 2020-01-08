@@ -2,108 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F145813394A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 03:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10D8133A0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 05:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgAHCyl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jan 2020 21:54:41 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:37187 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgAHCyl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 21:54:41 -0500
-Received: by mail-wr1-f51.google.com with SMTP id w15so1777756wru.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jan 2020 18:54:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XeTV7cWBoamZfu7CeehVbcjbu+8N1lDGQTbcvxEo4t4=;
-        b=n7KrcIIIWixG2KdVuxSotLg1AxSGzGuq0QqLsvdaKRvKtyT+t6BaPYfa0d0+ahVN2S
-         u/jyN6t6Bspd5q3J+RXlr1VQo2tGVwr4zgC1l9tIC4p4c9uCD2n2Ao/64cfn4LScttJM
-         uh8OYHfteaktvtz+EwBsos2B628t5W5LeR2tqLcmAPqPKzSUKDUsTYB5QZIFQJx28tgH
-         BS5lm9iZKYeHHMVZhQQe+EKU0iekUSTw6XtmSjeC4bTKwLBaEspc2txcBX/CptoqgBdK
-         O3tP8hQxLH8uyZrueDppSKlfaOpoxPhCJhLaW8tV/B/I+ICfMO3N7TWD2yxor6mxYspP
-         vJBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XeTV7cWBoamZfu7CeehVbcjbu+8N1lDGQTbcvxEo4t4=;
-        b=ZHmCEGpesIaEBRZyPMIqIAl0HPL3ji80pypArQjVAL2NzMgpDMCssDDIN54Z9aHw/l
-         YY1PmuP0YzpC2qI/GUfQxp4fDqi6crvnvMTCrLYR12ev+CQa7rwVCq0k9I4kvrpTlekB
-         pLpIYsFx/gwWGOJRGA/8iT3+jdgwKe2EcJJMZvlIZp2nYJSZfdprPWCrO+jabeyyxaCI
-         2pmnNMgT889EDrrl8M00zTbMF3YJR6imPCVN6buv3vh7Ha8Lp2dQBLWkDx3R1p/KwOCE
-         G8XtGbo7zDFoiIeKxJgjCQr8J6ou4slP408gD+aGSVq2QT2jC0phsul2dSmqRTvJtYjm
-         cHUg==
-X-Gm-Message-State: APjAAAVXYWdGDQWSapSxMs2pTmAI92YnA8i1K/YFZndqrnSy1uz0RBLs
-        1aeCXSgooqhBNodp4ik57BqLb3UTEPpcmkv82ekPFu0rqKk=
-X-Google-Smtp-Source: APXvYqwHGf83duD4XcwZ2NfLBmsw6eH6gcA9Xtl2WR5o86Lbp5DU8FBKW9a3UVuOc0J0ahfMuUWRn+3E+d908mCeUDc=
-X-Received: by 2002:adf:e6d2:: with SMTP id y18mr2021317wrm.262.1578452079036;
- Tue, 07 Jan 2020 18:54:39 -0800 (PST)
+        id S1726145AbgAHEQz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jan 2020 23:16:55 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48686 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgAHEQz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jan 2020 23:16:55 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0084ERBJ032595
+        for <linux-btrfs@vger.kernel.org>; Wed, 8 Jan 2020 04:16:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=5agn8WfnVBlnEfR1QHiwB4b8SrSvWaFAJoWRlE+jLcQ=;
+ b=GrgmuzMDLKWRnwRMm0Gl9gusFsR96vi50ixAhje7p7ALoLcRIckEHoSLPbZMg6Tt5SI+
+ vkyCpsO4MJVfG6jbBbE8BzabY5JK1fGgQmjVm9MAC2D/aL+FQy4IpuGSyFoTGmkmnnWl
+ oOj8RgsI9AZz1U6txHpi96Uz5GrqV6OBQwz+Vy8Jb5bnieCojES3q5fb9fK4PP54Vfex
+ Pq1hlApxZlUL4HhgpPZAePj2b1HJ1Jku7hklDDSbJyj21i0idJsJWgTTkSunZ223DaHf
+ IbOfP0rsn6M3LNu+1kKvVrsl6eCibaGcuQFeze757LSHrYjMcv2CP2TnbSzDBVosLzsR Mw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2xakbqscam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jan 2020 04:16:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0084EEQu127808
+        for <linux-btrfs@vger.kernel.org>; Wed, 8 Jan 2020 04:16:52 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2xcpanytbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jan 2020 04:16:52 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0084Gpqn017832
+        for <linux-btrfs@vger.kernel.org>; Wed, 8 Jan 2020 04:16:51 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Jan 2020 20:16:51 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 2/2] btrfs: sysfs, add read_policy attribute
+Date:   Wed,  8 Jan 2020 12:16:47 +0800
+Message-Id: <20200108041647.2330-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <b39e2e18-4116-f77b-df59-d39aa006ea93@applied-asynchrony.com>
+References: <b39e2e18-4116-f77b-df59-d39aa006ea93@applied-asynchrony.com>
 MIME-Version: 1.0
-References: <cc364577-1bb8-1512-4d2e-dc7e465ca2d6@dubiel.pl>
- <20191228202344.GE13306@hungrycats.org> <c278f501-f5a5-c905-5431-2d735e97fa13@dubiel.pl>
- <CAJCQCtRvAZS1CNgJLdUZTNeUma6A74oPT-SeQe7NYHhXKrMzoA@mail.gmail.com>
- <5e6e2ff8-89be-45db-49d3-802de42663ed@dubiel.pl> <CAJCQCtSr9j8AzLRfguHb8+9n_snxmpXkw0V+LiuDnqqvLVAxKQ@mail.gmail.com>
- <20200104053843.GK13306@hungrycats.org> <CAJCQCtTvTbr9Civ5DLhTPRsMZ2qK2=YWFLB3JMSRRzZS9v-iNA@mail.gmail.com>
- <20200107233237.GC24056@hungrycats.org> <CAJCQCtRUtdBe7gBeRwMyWg40if8wJKgCvCF--yWTXORXDiDJJQ@mail.gmail.com>
- <20200108014102.GD24056@hungrycats.org>
-In-Reply-To: <20200108014102.GD24056@hungrycats.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 7 Jan 2020 19:54:22 -0700
-Message-ID: <CAJCQCtSg9Fkdh=T+LBqUhvVGj-Ci7ob7WNOD=AsZQOx4Ju+e0w@mail.gmail.com>
-Subject: Re: write amplification, was: very slow "btrfs dev delete" 3x6Tb, 7Tb
- of data
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001080036
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001080036
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 7, 2020 at 6:41 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> Consumer SD cards have been ruthlessly optimized for decades, mostly
-> for cost.  It will take a while for the consumer-facing part of the
-> industry to dig itself out of that hole.  In the meantime, we can expect
-> silent data corruption, bad wear leveling, and power failure corruption
-> to be part of the default feature set.
+Add
 
-I cackled out loud at this.
+ /sys/fs/btrfs/UUID/read_policy
 
+attribute so that the read policy for the raid1 and raid10 chunks can be
+tuned.
 
-> I run btrfs with dup data and dup metadata on the Pis, with minimized
-> write workloads (i.e. I turn off all the local log files, sending the
-> data to other machines or putting it on tmpfs with periodic uploads,
-> and I use compression to reduce write volume).  I don't use snapshots on
-> these devices--they do get backups, but they are fine with plain rsync,
-> given the minimized write workloads.  I haven't tried changing filesystem
-> parameters like node size.  Dup data doesn't help the SD card last any
-> longer, but it does keep the device operating long enough to build and
-> deploy a new SD card.
+When this attribute is read, it shall show all available policies, and
+the active policy is with in [ ], read_policy attribute can be written
+using one of the items showed in the read.
 
-I use zstd:1, space_cache v2, and dsingle mdup. Curiously I've not
-seen any read errors on these. They just stop writing. I can mount and
-read from them fine, just writes file (silently on the USB sticks,
-kinda hilarious: yep, yep, i'm writing, no problem, yep, oh you want
-back what you just wrote, yeah no you get yesterday's data).
+For example:
+cat /sys/fs/btrfs/UUID/read_policy
+[by_pid]
+echo by_pid > /sys/fs/btrfs/UUID/read_policy
+echo -n by_pid > /sys/fs/btrfs/UUID/read_policy
 
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+---
+v3: rename [by_pid] to [pid]
+v2: v2: check input len before strip and kstrdup
 
-> Samsung is making SD cards with 10-year warranties and a 300 TBW rating
-> (equivalent, it is specified in units of "hours of HD video").  They are
-> USD$25 for 128GB, 100MB/s read 90MB/s write.  No idea what they're like
-> in the field, I start test deployments next week...
+ fs/btrfs/sysfs.c   | 66 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h |  1 +
+ 2 files changed, 67 insertions(+)
 
-Yeah the Samsung SD cards I have also are 10 year, but I have no idea
-what the TBW is and they don't report writes. EVO Plus, U3, is
-supposed to do 30M/s writes but no matter the file system I get 20MB/s
-out of it. I get a statistically significant extra ~350K/s with Btrfs.
-Reads are around 80-90M/s. Of course effective reads/writes is higher
-with compression. USB sticks I think are a few years warranty.
-
-
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 104a97586744..cc4a642878a1 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -809,6 +809,71 @@ static ssize_t btrfs_checksum_show(struct kobject *kobj,
+ 
+ BTRFS_ATTR(, checksum, btrfs_checksum_show);
+ 
++static const inline char *btrfs_read_policy_name(enum btrfs_read_policy_type type)
++{
++	switch (type) {
++	case BTRFS_READ_BY_PID:
++		return "pid";
++	default:
++		return "null";
++	}
++}
++
++static ssize_t btrfs_read_policy_show(struct kobject *kobj,
++				      struct kobj_attribute *a, char *buf)
++{
++	int i;
++	ssize_t len = 0;
++	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++
++	for (i = 0; i < BTRFS_NR_READ_POLICY_TYPE; i++) {
++		if (len)
++			len += snprintf(buf + len, PAGE_SIZE, " ");
++		if (fs_devices->read_policy == i)
++			len += snprintf(buf + len, PAGE_SIZE, "[%s]",
++					btrfs_read_policy_name(i));
++		else
++			len += snprintf(buf + len, PAGE_SIZE, "%s",
++					btrfs_read_policy_name(i));
++	}
++
++	len += snprintf(buf + len, PAGE_SIZE, "\n");
++
++	return len;
++}
++
++static ssize_t btrfs_read_policy_store(struct kobject *kobj,
++				       struct kobj_attribute *a,
++				       const char *buf, size_t len)
++{
++	int i;
++	char *stripped;
++	char *policy_name;
++	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++
++	if (len > BTRFS_READ_POLICY_NAME_MAX)
++		return -EINVAL;
++
++	policy_name = kstrdup(buf, GFP_KERNEL);
++	if (!policy_name)
++		return -ENOMEM;
++
++	stripped = strstrip(policy_name);
++
++	for (i = 0; i < BTRFS_NR_READ_POLICY_TYPE; i++) {
++		if (strncmp(stripped, btrfs_read_policy_name(i),
++			    strlen(stripped)) == 0) {
++			fs_devices->read_policy = i;
++			kfree(policy_name);
++			return len;
++		}
++	}
++
++	kfree(policy_name);
++	return -EINVAL;
++}
++BTRFS_ATTR_RW(, read_policy, btrfs_read_policy_show, btrfs_read_policy_store);
++
+ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, label),
+ 	BTRFS_ATTR_PTR(, nodesize),
+@@ -817,6 +882,7 @@ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, quota_override),
+ 	BTRFS_ATTR_PTR(, metadata_uuid),
+ 	BTRFS_ATTR_PTR(, checksum),
++	BTRFS_ATTR_PTR(, read_policy),
+ 	NULL,
+ };
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 46f4e2258203..fe1494d95893 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -209,6 +209,7 @@ BTRFS_DEVICE_GETSET_FUNCS(disk_total_bytes);
+ BTRFS_DEVICE_GETSET_FUNCS(bytes_used);
+ 
+ /* read_policy types */
++#define BTRFS_READ_POLICY_NAME_MAX	12
+ #define BTRFS_READ_POLICY_DEFAULT	BTRFS_READ_BY_PID
+ enum btrfs_read_policy_type {
+ 	BTRFS_READ_BY_PID,
 -- 
-Chris Murphy
+2.23.0
+
