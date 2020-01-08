@@ -2,88 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF8F134897
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 17:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3F41348A0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 17:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgAHQzy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 11:55:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45760 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729062AbgAHQzy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 11:55:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 48FFAAB87;
-        Wed,  8 Jan 2020 16:55:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 034CDDA791; Wed,  8 Jan 2020 17:55:40 +0100 (CET)
-Date:   Wed, 8 Jan 2020 17:55:39 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix memory leak in qgroup accounting
-Message-ID: <20200108165539.GJ3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200108120732.30451-1-johannes.thumshirn@wdc.com>
+        id S1729570AbgAHQ5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 11:57:25 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:59896 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727308AbgAHQ5Z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jan 2020 11:57:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2/grOTBgUAvethVaNAqsX059fFfNkvhqoW88UGGxm7k=; b=EY7ctXSukj3r60Zq9V0xRGPZt
+        pcoHDTBrU9/U/T9W/u7/lPBqYmJdHvn5joBgWqzJu1kAAB2agXa5CJ7F/4uJphAZaXGoYTLf6G5/P
+        gcJvpUoZeccH3ZtoOX32cTJpBHYG4bWhyo6nyjiT6dZmk740K9aOUnm8QH7rSdOi2RFCL8bD+uHyw
+        QMufaqnCW10JBHm5uCzrI3oylj/Q+JMQz+H5+Is4pS2PxVaj+FSGfRn1VBAKYsNfDu02oZlBsEDqJ
+        sDCbs19FvbQfZpWPe5oSLlGfx2J6RXwCniDvD/bOgDRH5OzetrI29+4h1GU4MPNhYPQahNaivzf1l
+        /o3ltpAug==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ipEdq-000890-Pg; Wed, 08 Jan 2020 16:57:10 +0000
+Date:   Wed, 8 Jan 2020 08:57:10 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, YueHaibing <yuehaibing@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chao Yu <yuchao0@huawei.com>
+Subject: Re: [PATCH v4] fs: Fix page_mkwrite off-by-one errors
+Message-ID: <20200108165710.GA18523@infradead.org>
+References: <20200108131528.4279-1-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200108120732.30451-1-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200108131528.4279-1-agruenba@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 08, 2020 at 09:07:32PM +0900, Johannes Thumshirn wrote:
-> When running xfstests on the current btrfs I get the following splat from
-> kmemleak:
-> unreferenced object 0xffff88821b2404e0 (size 32):
->   comm "kworker/u4:7", pid 26663, jiffies 4295283698 (age 8.776s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 10 ff fd 26 82 88 ff ff  ...........&....
->     10 ff fd 26 82 88 ff ff 20 ff fd 26 82 88 ff ff  ...&.... ..&....
->   backtrace:
->     [<00000000f94fd43f>] ulist_alloc+0x25/0x60 [btrfs]
->     [<00000000fd023d99>] btrfs_find_all_roots_safe+0x41/0x100 [btrfs]
->     [<000000008f17bd32>] btrfs_find_all_roots+0x52/0x70 [btrfs]
->     [<00000000b7660afb>] btrfs_qgroup_rescan_worker+0x343/0x680 [btrfs]
->     [<0000000058e66778>] btrfs_work_helper+0xac/0x1e0 [btrfs]
->     [<00000000f0188930>] process_one_work+0x1cf/0x350
->     [<00000000af5f2f8e>] worker_thread+0x28/0x3c0
->     [<00000000b55a1add>] kthread+0x109/0x120
->     [<00000000f88cbd17>] ret_from_fork+0x35/0x40
-> 
-> This corresponds to:
-> (gdb) l *(btrfs_find_all_roots_safe+0x41)
-> 0x8d7e1 is in btrfs_find_all_roots_safe (fs/btrfs/backref.c:1413).
-> 1408
-> 1409            tmp = ulist_alloc(GFP_NOFS);
-> 1410            if (!tmp)
-> 1411                    return -ENOMEM;
-> 1412            *roots = ulist_alloc(GFP_NOFS);
-> 1413            if (!*roots) {
-> 1414                    ulist_free(tmp);
-> 1415                    return -ENOMEM;
-> 1416            }
-> 1417
-> 
-> Following the lifetime of the allocated 'roots' ulist, it get's freed
-> again in btrfs_qgroup_account_extent().
-> 
-> But this does not happen if the function is called with the
-> 'BTRFS_FS_QUOTA_ENABLED' flag cleared, then btrfs_qgroup_account_extent()
-> does a short leave and directly returns.
-> 
-> Instead of directly returning we should jump to the 'out_free' in order to
-> free all resources as expected.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+I don't want to be the party pooper, but shouldn't this be a series
+with one patch to add the helper, and then once for each fs / piece
+of common code switched over?
 
-Added to misc-next, with a short comment that we can't do a quick
-return. Thanks.
+On Wed, Jan 08, 2020 at 02:15:28PM +0100, Andreas Gruenbacher wrote:
+> Hi Darrick,
+> 
+> here's an updated version with the latest feedback incorporated.  Hope
+> you find that useful.
+> 
+> As far as the f2fs merge conflict goes, I've been told by Linus not to
+> resolve those kinds of conflicts but to point them out when sending the
+> merge request.  So this shouldn't be a big deal.
+
+Also this isn't really the proper way to write a commit message.  This
+text would go into the cover letter if it was a series..
