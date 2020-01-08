@@ -2,313 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D01A1341A3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 13:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A131341C6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 13:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgAHM2N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 07:28:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60180 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727347AbgAHM2N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 07:28:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 93A5CAD78;
-        Wed,  8 Jan 2020 12:28:09 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by
- extended reloc tree lifespan
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.com>
-References: <20200108051200.8909-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <5cfff64e-0843-12ae-1ffc-37016552073d@suse.com>
-Date:   Wed, 8 Jan 2020 14:28:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20200108051200.8909-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
+        id S1727985AbgAHMbZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 07:31:25 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53703 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726967AbgAHMbY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jan 2020 07:31:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1578486686; x=1610022686;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=0KNvLDaPvKxX3cfN6DOIFeBmbZhtaGnfjSTksYxj93I=;
+  b=GslZ4O62XTW6Ym/Js1ZzoJ2rArTCmLiriBgL81UQiZasxpZFwNXt9GjJ
+   IbmfU+GxctvEi+a+Z4f+ZaI8IDkULse90mQMieZrsjVLI6k5FY6XqcDnv
+   vH+6DUbGRA/iXtpnrcZP3lRLa6sl902n2WO1zk0Z4v1770xZnqMsKUopT
+   hQ9PMCy2akS2RW/rgna5mG3xNb3u3qvQU/XXw40WEjTtZehEvQmvvFJPA
+   2ZIaq4UNB3Ao1Fi3K4KaOZyzLjAOUoLUVTt6fXue2xF/YSYm5XPqESwAr
+   5oht6BvGH3AWCigL0et2z04oUXdqddJ3WSV0pqTZlI4zSuyszkMmY0+GE
+   A==;
+IronPort-SDR: S521PfP9Xy4vxZhOHqHTf+pwMcO9hUndwYaLDGUyIAYvkfzi17ncX+bkEYTf3pUuYCIYEWHHxL
+ Yc9fduSX1NW7M099UtBFU56lKANMZu6aNxxJyBkwLRACj1cbkFHi1vvxpLzo1oJFDINqfbbwBM
+ 9OcF9QHU6jE/4/LR0WNZN8IeUs7lYW7qLi4AUmRw6F+2iNqAGgazhTd9bZ04EsvXQ0VO5bYBaa
+ /J7sP/m8DUSGBwXHQADC+8QVmOyAotiX3Ld9hjZD/TQRJaw6hM6usdi6gBdfIULWhYXEIhKMHK
+ CnM=
+X-IronPort-AV: E=Sophos;i="5.69,409,1571673600"; 
+   d="scan'208";a="228650476"
+Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Jan 2020 20:31:24 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B1Da6ZwIeEyXTRk7QyiJWLl0uEzQCuOIcD79cmHSJB2WnUecqHLqXTWEzookd395bHLkZSeENWUahLrNdma0jmGPuaofjdnyIxI5iXAHcl5YskL1XUu9C/6cp1Q+nhyKTj2uUv25p6z6hmUI5LPE9jJ+7lon6dyp3HE4g2ojTDKLrDrum4Ks2vogJdh5OjAzUxnDmYCSOCgSfpYzZ+efemLwp0D4ae1Ix2i/dNwC6ySTN/x8Yy0aptiZ+aF9dNz939Q5MxVAzFPL0vCSYgNdruWWHwzobmsxrVPx7hkOxcJ9/jZyMTIawqYl+dAWk1P8u1GCT2xZQyB+SmgyYg99AQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0KNvLDaPvKxX3cfN6DOIFeBmbZhtaGnfjSTksYxj93I=;
+ b=S8aHj9cVsuhb5K9OBWHDDJeSowf8mEQlgomsTXn/TU6873TIXtuKrt39THpG7J8qLXnHQxb7So9DcFEe0SiDwL8fuylYnuxrFTfE+yoOZikX2CVTc/ZreS6J1V5uMDX+n45MJV+CUCvEvp0fH3VAD++gKZtn+LxEeeg1IpfyFiJ0FGjTPJhBM5+/zsb3pZAb7WeWN2usj2wAhE6bWXbSvzSOdEqmTTvPqln6jl0UAk7PGAw0T0i/EsCVQmGI63HS9wI4fFgCrxtCzDN0bxaoygSiGoeyhlMe58QMLAQwm1Zs3gT+Kfq+7nY3eRBGM586dGPUREnQl0y0P5tsCSV5Cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0KNvLDaPvKxX3cfN6DOIFeBmbZhtaGnfjSTksYxj93I=;
+ b=hA0OBTmHTrA/wdN3x+Ceo0O8LLTKluKWIA97htFtC8r6LhfVFsBXGs1B+l8r6fTynD7zy/oO9sLVlIlQYoZsymCeR/J4NYKVQH20jCKW2cfMXl+WpKwtiglp7MGNzcaTxkbHUWW2C/0gM8L0yklZfaPjSLH2FKkCMfhGo7fHk34=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3710.namprd04.prod.outlook.com (10.167.128.147) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.13; Wed, 8 Jan 2020 12:31:22 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::7d4c:6c4:d83d:fcf9]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::7d4c:6c4:d83d:fcf9%7]) with mapi id 15.20.2602.015; Wed, 8 Jan 2020
+ 12:31:22 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>
+CC:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: fix memory leak in qgroup accounting
+Thread-Topic: [PATCH] btrfs: fix memory leak in qgroup accounting
+Thread-Index: AQHVxhw9RHKQnSkdzkiJLri1StUEpafgrquAgAAU8IA=
+Date:   Wed, 8 Jan 2020 12:31:22 +0000
+Message-ID: <CDF75408-0B51-4DBD-ACC8-4EF35A5460DE@wdc.com>
+References: <20200108120732.30451-1-johannes.thumshirn@wdc.com>
+ <af99596c-c11d-932a-5a79-be71d2857c8e@gmx.com>
+In-Reply-To: <af99596c-c11d-932a-5a79-be71d2857c8e@gmx.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a391d7cb-cac3-4912-4b77-08d79436abc1
+x-ms-traffictypediagnostic: SN4PR0401MB3710:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0401MB371087FE3ACD7147B72E312D9B3E0@SN4PR0401MB3710.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 02760F0D1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(366004)(396003)(136003)(39860400002)(346002)(189003)(199004)(6486002)(2616005)(4326008)(5660300002)(33656002)(4744005)(6512007)(54906003)(110136005)(86362001)(186003)(36756003)(478600001)(66476007)(316002)(53546011)(6506007)(66556008)(2906002)(81156014)(66946007)(8936002)(66446008)(91956017)(64756008)(8676002)(81166006)(26005)(76116006)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3710;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wWT6F7e/xanUt0BFmypSn4OF4V9HJWWjVUpmni+ix57OasWrzEvnEoHGJmbi5KH/25+KHmpfVf6nzJQ7kqPvtoq4eYqfvVvoymBn/zzCG7UbhiMS0YIZWQp3C0wzxg8SOTuZURSUrXSTfXnv4sDSBXaeDIi3jvA3Qxxu/KosU9LEGlquEYCT1xSuyuUf/XN0qdvf3kKY7cJ6klZqWn/2UBsntoJleAxmM+Fot5EFCjfnhn8zBY4AHsonCCck7rFNY1iEnBFkKx6WRMWXk9CvBb2/HjHRv/W0SikF+OoM9+De+TChljis/XstGXijBgl6n2jn7cSJQqsNYvRGO5B8qgP8c+tDVAGDjhtTwjwOZDgpjhtzMvrkdEEQvUexT4DeemZpbfBLidkugVOHUVpYmf2BZ3yHaYQL+L8ajmuC3EKKVVUWrLL1BeoF0Umva/Kw
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C9532693C71EBD44A069EB08926B3C88@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a391d7cb-cac3-4912-4b77-08d79436abc1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 12:31:22.5252
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ttamwPROH4gwmvUCmvzXkVNh0uU7cWIfdWS0UKVUD11GsPF6Vz6tWs/0hhwWGVPWYfUd+L/MtKNuAJkiZH1X7aGBDjv9vVtFePYIV3d1Pac=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3710
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 8.01.20 г. 7:12 ч., Qu Wenruo wrote:
-> [BUG]
-> There are several different KASAN reports for balance + snapshot
-> workloads.
-> Involved call paths include:
-> 
->    should_ignore_root+0x54/0xb0 [btrfs]
->    build_backref_tree+0x11af/0x2280 [btrfs]
->    relocate_tree_blocks+0x391/0xb80 [btrfs]
->    relocate_block_group+0x3e5/0xa00 [btrfs]
->    btrfs_relocate_block_group+0x240/0x4d0 [btrfs]
->    btrfs_relocate_chunk+0x53/0xf0 [btrfs]
->    btrfs_balance+0xc91/0x1840 [btrfs]
->    btrfs_ioctl_balance+0x416/0x4e0 [btrfs]
->    btrfs_ioctl+0x8af/0x3e60 [btrfs]
->    do_vfs_ioctl+0x831/0xb10
->    ksys_ioctl+0x67/0x90
->    __x64_sys_ioctl+0x43/0x50
->    do_syscall_64+0x79/0xe0
->    entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
->    create_reloc_root+0x9f/0x460 [btrfs]
->    btrfs_reloc_post_snapshot+0xff/0x6c0 [btrfs]
->    create_pending_snapshot+0xa9b/0x15f0 [btrfs]
->    create_pending_snapshots+0x111/0x140 [btrfs]
->    btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
->    btrfs_mksubvol+0x915/0x960 [btrfs]
->    btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
->    btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
->    btrfs_ioctl+0x241b/0x3e60 [btrfs]
->    do_vfs_ioctl+0x831/0xb10
->    ksys_ioctl+0x67/0x90
->    __x64_sys_ioctl+0x43/0x50
->    do_syscall_64+0x79/0xe0
->    entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
->    btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
->    create_pending_snapshot+0x209/0x15f0 [btrfs]
->    create_pending_snapshots+0x111/0x140 [btrfs]
->    btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
->    btrfs_mksubvol+0x915/0x960 [btrfs]
->    btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
->    btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
->    btrfs_ioctl+0x241b/0x3e60 [btrfs]
->    do_vfs_ioctl+0x831/0xb10
->    ksys_ioctl+0x67/0x90
->    __x64_sys_ioctl+0x43/0x50
->    do_syscall_64+0x79/0xe0
->    entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
-> [CAUSE]
-> All these call sites are only relying on root->reloc_root, which can
-> undergo btrfs_drop_snapshot(), and since we don't have real refcount
-
-what do you mean by "root->reloc_root can undergo btrfs_drop_snapshot" ?
-
-> based protection to reloc roots, we can reach already dropped reloc
-> root, triggering KASAN.
-what's the relationship between not having a refcount protection and
-reaching reloc roots, perhaps you could expand the explanation?
-
-> 
-> [FIX]
-> To avoid such access to unstable root->reloc_root, we should check
-> BTRFS_ROOT_DEAD_RELOC_TREE bit first.
-> 
-> This patch introduces a new wrapper, have_reloc_root(), to do the proper
-> check for most callers who don't distinguish merged reloc tree and no
-> reloc tree.
-> 
-> The only exception is should_ignore_root(), as merged reloc tree can be
-> ignored, while no reloc tree shouldn't.
-> 
-> [CRITICAL SECTION ANALYSE]
-> Although test_bit()/set_bit()/clear_bit() doesn't imply a barrier, the
-> DEAD_RELOC_TREE bit has extra help from transaction as a higher level
-> barrier, the lifespan of root::reloc_root and DEAD_RELOC_TREE bit are:
-> 
-> 	NULL: reloc_root is NULL	PTR: reloc_root is not NULL
-> 	0: DEAD_RELOC_ROOT bit not set	DEAD: DEAD_RELOC_ROOT bit set
-> 
-> 	(NULL, 0)    Initial state		 __
-> 	  |					 /\ Section A
->         btrfs_init_reloc_root()			 \/
-> 	  |				 	 __
-> 	(PTR, 0)     reloc_root initialized      /\
->           |					 |
-> 	btrfs_update_reloc_root()		 |  Section B
->           |					 |
-> 	(PTR, DEAD)  reloc_root has been merged  \/
->           |					 __
-> 	=== btrfs_commit_transaction() ====================
-> 	  |					 /\
-> 	clean_dirty_subvols()			 |
-> 	  |					 |  Section C
-> 	(NULL, DEAD) reloc_root cleanup starts   \/
->           |					 __
-> 	btrfs_drop_snapshot()			 /\
-> 	  |					 |  Section D
-> 	(NULL, 0)    Back to initial state	 \/
-> 
-> Very have_reloc_root() or test_bit(DEAD_RELOC_ROOT) caller has hold a
-
- ^^ Perhaps you meant: Every caller of have_reloc_root or
-test_bit(DED_RELOC_ROOT) holds a transaction handle which ensures
-modifications in those function are limited to a single transaction?
-
-> transaction handler, so none of such caller can cross transaction
-> boundary.
-> 
-> In Section A, every caller just found no DEAD bit, and grab reloc_root.
-> 
-> In the cross section A-B, caller may get no DEAD bit, but since
-> reloc_root is still completely valid thus accessing reloc_root is
-> completely safe.
-> 
-> No test_bit() caller can cross the boundary of Section B and Section C.
-> 
-> In Section C, every caller found the DEAD bit, so no one will access
-> reloc_root.
-> 
-> In the cross section C-D, either caller gets the DEAD bit set, avoiding
-> access reloc_root no matter if it's safe or not.
-> Or caller get the DEAD bit cleared, then access reloc_root, which is
-> already NULL, nothing will be wrong.
-> 
-> Here we need extra memory barrier in cross section C-D, to ensure
-> proper memory order between reloc_root and clear_bit().
-> 
-> In Section D, since no DEAD bit and no reloc_root, it's back to initial
-> state.
-> 
-> With this lifespan, it should be clear only one memory barrier is
-> needed, between setting reloc_root to NULL and clearing DEAD_RELOC_ROOT
-> bit.
-> 
-> Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-> Suggested-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Add the [CRITICAL SECTION ANALYSE] part
->   This gets me into the rabbit hole of memory ordering, but thanks for
->   the help from David (initially mentioning the mb hell) and Nikolay
->   (for the proper doc), finally I could explain clearly why only
->   one mb is needed.
-> - Add comment for the only needed memory barrier.
-> ---
->  fs/btrfs/relocation.c | 32 ++++++++++++++++++++++++++++----
->  1 file changed, 28 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index d897a8e5e430..17a2484f76a5 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -517,6 +517,22 @@ static int update_backref_cache(struct btrfs_trans_handle *trans,
->  	return 1;
->  }
->  
-> +/*
-> + * Check if this subvolume tree has valid reloc(*) tree.
-> + *
-> + * *: Reloc tree after swap is considered dead, thus not considered as valid.
-> + *    This is enough for most callers, as they don't distinguish dead reloc
-> + *    root from no reloc root.
-> + *    But should_ignore_root() below is a special case.
-> + */
-> +static bool have_reloc_root(struct btrfs_root *root)
-> +{
-> +	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-> +		return false;
-> +	if (!root->reloc_root)
-> +		return false;
-> +	return true;
-> +}
->  
->  static int should_ignore_root(struct btrfs_root *root)
->  {
-> @@ -525,6 +541,10 @@ static int should_ignore_root(struct btrfs_root *root)
->  	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
->  		return 0;
->  
-> +	/* This root has been merged with its reloc tree, we can ignore it */
-> +	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
-> +		return 1;
-> +
->  	reloc_root = root->reloc_root;
->  	if (!reloc_root)
->  		return 0;
-> @@ -1478,8 +1498,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
->  	struct btrfs_root_item *root_item;
->  	int ret;
->  
-> -	if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state) ||
-> -	    !root->reloc_root)
-> +	if (!have_reloc_root(root))
->  		goto out;
->  
->  	reloc_root = root->reloc_root;
-> @@ -2201,6 +2220,11 @@ static int clean_dirty_subvols(struct reloc_control *rc)
->  				if (ret2 < 0 && !ret)
->  					ret = ret2;
->  			}
-> +			/*
-> +			 * Need barrier to ensure clear_bit() only happens after
-> +			 * root->reloc_root = NULL.
-> +			 */
-> +			smp_mb__before_atomic();
->  			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
->  			btrfs_put_fs_root(root);
->  		} else {
-> @@ -4717,7 +4741,7 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
->  	struct btrfs_root *root = pending->root;
->  	struct reloc_control *rc = root->fs_info->reloc_ctl;
->  
-> -	if (!root->reloc_root || !rc)
-> +	if (!rc || !have_reloc_root(root))
->  		return;
->  
->  	if (!rc->merge_reloc_tree)
-> @@ -4751,7 +4775,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
->  	struct reloc_control *rc = root->fs_info->reloc_ctl;
->  	int ret;
->  
-> -	if (!root->reloc_root || !rc)
-> +	if (!rc || !have_reloc_root(root))
->  		return 0;
->  
->  	rc = root->fs_info->reloc_ctl;
-> 
+T24gMDgvMDEvMjAyMCwgMTM6MTYsICJRdSBXZW5ydW8iIDxxdXdlbnJ1by5idHJmc0BnbXguY29t
+PiB3cm90ZToNClsuLi5dICAgICAgIA0KDQogICAgVGhlIHBhdGNoIGl0c2VsZiBpcyBPSy4NCiAg
+ICANCiAgICBSZXZpZXdlZC1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQogICAgDQogICAg
+DQogICAgVGhpcyBtZWFucyB0aGUgcWdyb3VwIGdldCBkaXNhYmxlZCB3aGVuIHJlc2NhbiBpcyBz
+dGlsbCBydW5uaW5nLg0KICAgIFNvIEknbSBhIGxpdHRsZSBjdXJpb3VzLCBjb3VsZCB3ZSBqdXN0
+IGNhbmNlbCB0aGUgcnVubmluZyByZXNjYW4gYW5kDQogICAgd2FpdCBmb3IgaXQgYmVmb3JlIGRp
+c2FibGluZyBxZ3JvdXA/DQogICAgDQogICAgDQpNYXliZS4gSSdtIHN0aWxsIG5vdCAxMDAlIGNl
+cnRhaW4gd2hhdCdzIHRoZSBhY3R1YWwgdHJpZ2dlci4gSSBzZWUgaXQgbW9zdCBvZiB0aGUgdGlt
+ZQ0Kd2l0aCBidHJmcy8xMTcsIGJ1dCBydW5uaW5nIGJ0cmZzLzExNyBhbG9uZSBkb2Vzbid0IHRy
+aWdnZXIgdGhlIG1lbWxlYWsgcmVwb3J0Lg0KSSBhbHNvIHNhdyB0aGUgbWVtbGVhayByZXBvcnQg
+b25jZSB3aXRoIGJ0cmZzLzExNiwgYnV0IG9ubHkgb25jZSBvdXQgb2YgfjIwIHJ1bnMuDQpUaGUg
+Z29vZCB0aGluZyB0aG91Z2ggaXMsIGl0J3MgMTAwJSByZXByb2R1Y2libGUgdGhhdCB3ZSBnZXQg
+dGhlIG1lbWxlYWsgcmVwb3J0IHdoZW4NCnJ1bm5pbmcgdGhlIGZpcnN0IDEyMCBidHJmcyBmc3Rl
+c3RzIC4NCg0KUC5TLjogU29ycnkgZm9yIHRoZSBicm9rZW4gcXVvdGluZyBpbiB0aGUgcmVwbHks
+IEkgc3RpbGwgaGF2ZW4ndCBjb25maWd1cmVkIG15IG1haWwgY2xpZW50IGNvcnJlY3RseS4NCg0K
+Qnl0ZSwNCglKb2hhbm5lcw0KDQo=
