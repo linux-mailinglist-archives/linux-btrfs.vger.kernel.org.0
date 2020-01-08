@@ -2,391 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23820134F80
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 23:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C21713501E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 00:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgAHWmz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 17:42:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgAHWmz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 17:42:55 -0500
-Received: from localhost (unknown [104.132.0.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A6DA2053B;
-        Wed,  8 Jan 2020 22:42:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578523374;
-        bh=o+EBZqF4Q3rb3rJsaguToktWL8ixzhk3Cs0X6JHnuWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k5NdnaWaKTe+ShsNn7Avicpv6kmAudgSdjCCCkHc8JkJ93E1FGAoiqJTJv9Gt2b7h
-         K86oj/gBeyC8BzLIZWCfEwzTczvjm+Q6NtHwDbaI/4l6BETeoUDyqXGraok+juAheo
-         k9q1huD97Dyfqg5/bZhKEna9PZ9KqS6dlvuuDgUI=
-Date:   Wed, 8 Jan 2020 14:42:53 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, YueHaibing <yuehaibing@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chao Yu <yuchao0@huawei.com>
-Subject: Re: [PATCH v4] fs: Fix page_mkwrite off-by-one errors
-Message-ID: <20200108224253.GA42219@jaegeuk-macbookpro.roam.corp.google.com>
-References: <20200108131528.4279-1-agruenba@redhat.com>
+        id S1726781AbgAHXxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 18:53:47 -0500
+Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:57902 "EHLO
+        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726721AbgAHXxq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jan 2020 18:53:46 -0500
+Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.190) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
+ Wed,  8 Jan 2020 23:52:35 +0000
+Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
+ M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Wed, 8 Jan 2020 23:53:13 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (15.124.72.13) by
+ M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Wed, 8 Jan 2020 23:53:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IHBDnEtRE/HxNuyRKtL3kBygUb2vI4mLhZwEWHrlnncHYtxIX1XeoA55IgB2X9jEwZl+QfJn0CUKvQsU3+2QY6ndUWtIsydCPBsGxhNjdl6LKmT3yrY3jmEGEYcXut+9gr1RINGkGtq6xWdIYv8P3YzhdIRel0oHQMwtHoet4v1qMCqI4gVKc2jv+eMQhOBUD8xaasX1GrggxX3w+cdyg0RL4FubzZiVwga+fnLZf/CmdW8kWstx+YtxuT4UAU3sLwiiDRuTOGEi7BZDqn2yrzE8sRpz9WHyjNLTQ3zDqo22sQfA0ieqd08faWtfA6JKdhlp6tULH4yLuG+uP6+DjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8AWPmGjG8/7sbkTDOKnBsA+v3yYwe13p5mkxxg0n6mA=;
+ b=LceyA5FDRjRMZCpCpjz6AbcdWB7c1qc113Oj3YWRBqyAzm46Qv00bQWTklCuitd3dIEbGwqq5Kw4oSN9eYMKVO75aGtpBoK6jAXqMun1m849UmtP3WymyiekpJAwNlV4MrFURcQ6+DLQqfTiwggfEZBai6Q33S8mTv77fPxtM+93ZqPjE5xgY5ZVdCgoMZJVe2YX70nfMPk7J08VwqArARSgcZ68hQe1sNFae9124jm1W9wlNQlIBwxRglribLgYJVr/NLiGCTeZ8IQEE+arthD+QudD+Cj6jtxGe/XZcHWkYjnVntou9Q3RTuBRtZRZ6rTS8/pkCPKSpcL2JhwLIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3185.namprd18.prod.outlook.com (10.255.137.78) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.10; Wed, 8 Jan 2020 23:53:11 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::d948:61b9:971a:facd]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::d948:61b9:971a:facd%7]) with mapi id 15.20.2623.010; Wed, 8 Jan 2020
+ 23:53:11 +0000
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0084.namprd05.prod.outlook.com (2603:10b6:a03:e0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.4 via Frontend Transport; Wed, 8 Jan 2020 23:53:10 +0000
+From:   Qu WenRuo <wqu@suse.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v3 1/3] btrfs: Introduce per-profile available space
+ facility
+Thread-Topic: [PATCH v3 1/3] btrfs: Introduce per-profile available space
+ facility
+Thread-Index: AQHVxJ5IZkfMiqbFt0+LulmbjZmcXafedu6AgAJpvYCAAJOlAA==
+Date:   Wed, 8 Jan 2020 23:53:11 +0000
+Message-ID: <e1fa655e-e42a-4bd4-6f83-6175c38a1219@suse.com>
+References: <20200106061343.18772-1-wqu@suse.com>
+ <20200106061343.18772-2-wqu@suse.com> <20200106143242.GG3929@twin.jikos.cz>
+ <9c2308bb-c3ae-d502-4b27-f8dbedc25d1a@gmx.com>
+ <20200108150441.GG3929@twin.jikos.cz>
+In-Reply-To: <20200108150441.GG3929@twin.jikos.cz>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR05CA0084.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::25) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [149.28.201.231]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 04cc5aa8-33b5-40d3-b368-08d79495eb12
+x-ms-traffictypediagnostic: BY5PR18MB3185:
+x-microsoft-antispam-prvs: <BY5PR18MB31856F69ECA5477F05B70D87D63E0@BY5PR18MB3185.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 02760F0D1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(396003)(376002)(136003)(366004)(39860400002)(189003)(199004)(316002)(6706004)(2616005)(956004)(71200400001)(52116002)(8936002)(64756008)(66446008)(66556008)(31686004)(66476007)(16576012)(16526019)(186003)(110136005)(8676002)(26005)(81166006)(81156014)(31696002)(66946007)(86362001)(478600001)(6486002)(36756003)(5660300002)(2906002)(78286006);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3185;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6xDppNzkPNOkhPoRnDRqIob59XlqHwpJ+7YDatb3G8B8PbuYAXFG9mRo/U4jg4sJaeSm/MB3QHlcZiYMom8L89LpGQHoRkuv9/kDZT8KvQ0txhsWzW9/GPyFjO4vqrje18TEOHyP3FIH2KlHlQmTCNefMCAQlnll2shU2+oUv4PDFl6MNsbN+JfbXFlSGAddH8xqbGPpvUEawcpqk3yQ5SdJI8d/MdyHFn0TZUFGxTWEKfDI6viEUCNRe0wIj224QoxAEbLxX3vRdCuuSat1C6QlyQuewLr8TQa4g+xN53ofbUWAF1DQgnchCTWMIs6Z4a7p6FEtbRVpfeMkJmFZvif4ASFFPVgJckDBDBKfTcadSCNlad9e0ESdp9k8ik0omTUQKRI2OqwEjzynlb6ZdKN82+g9rpIv1XdTfzc92RTFTc5+yW+LjG00K7D3hPxSqagCo9S+fayhO3rEqpY7VGfxxuB8vH6Kih3nDhrLoaB6NrQWvb+iQ/1XhsGyShMr
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <34359F259E711644874483BD37AED7B9@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200108131528.4279-1-agruenba@redhat.com>
-User-Agent: Mutt/1.8.2 (2017-04-18)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04cc5aa8-33b5-40d3-b368-08d79495eb12
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 23:53:11.3382
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TxxvHIXP0BeIOSZTEMwMWerqFq3TnSh7+yBmNx2xyUK8hvAVfdZD7OnAsc0RLWP8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3185
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 01/08, Andreas Gruenbacher wrote:
-> Hi Darrick,
-> 
-> here's an updated version with the latest feedback incorporated.  Hope
-> you find that useful.
-> 
-> As far as the f2fs merge conflict goes, I've been told by Linus not to
-> resolve those kinds of conflicts but to point them out when sending the
-> merge request.  So this shouldn't be a big deal.
-> 
-> Changes:
-> 
-> * Turn page_mkwrite_check_truncate into a non-inline function.
-> * Get rid of now-unused mapping variable in ext4_page_mkwrite.
-> * In btrfs_page_mkwrite, don't ignore the return value of
->   block_page_mkwrite_return (no change in behavior).
-> * Clean up the f2fs_vm_page_mkwrite changes as suggested by
->   Jaegeuk Kim.
-> 
-> Thanks,
-> Andreas
-> 
-> --
-> 
-> The check in block_page_mkwrite that is meant to determine whether an
-> offset is within the inode size is off by one.  This bug has been copied
-> into iomap_page_mkwrite and several filesystems (ubifs, ext4, f2fs,
-> ceph).
-> 
-> Fix that by introducing a new page_mkwrite_check_truncate helper that
-> checks for truncate and computes the bytes in the page up to EOF.  Use
-> the helper in the above mentioned filesystems.
-> 
-> In addition, use the new helper in btrfs as well.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> Acked-by: David Sterba <dsterba@suse.com> (btrfs)
-> Acked-by: Richard Weinberger <richard@nod.at> (ubifs)
-> Acked-by: Theodore Ts'o <tytso@mit.edu> (ext4)
-> Acked-by: Chao Yu <yuchao0@huawei.com> (f2fs)
-
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
-
-> ---
->  fs/btrfs/inode.c        | 16 +++++-----------
->  fs/buffer.c             | 16 +++-------------
->  fs/ceph/addr.c          |  2 +-
->  fs/ext4/inode.c         | 15 ++++-----------
->  fs/f2fs/file.c          | 19 +++++++------------
->  fs/iomap/buffered-io.c  | 18 +++++-------------
->  fs/ubifs/file.c         |  3 +--
->  include/linux/pagemap.h |  2 ++
->  mm/filemap.c            | 28 ++++++++++++++++++++++++++++
->  9 files changed, 56 insertions(+), 63 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index e3c76645cad7..23e6f614e000 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -9011,16 +9011,15 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  		goto out_noreserve;
->  	}
->  
-> -	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
->  again:
->  	lock_page(page);
-> -	size = i_size_read(inode);
->  
-> -	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_start >= size)) {
-> -		/* page got truncated out from underneath us */
-> +	ret2 = page_mkwrite_check_truncate(page, inode);
-> +	if (ret2 < 0) {
-> +		ret = block_page_mkwrite_return(ret2);
->  		goto out_unlock;
->  	}
-> +	zero_start = ret2;
->  	wait_on_page_writeback(page);
->  
->  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
-> @@ -9041,6 +9040,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  		goto again;
->  	}
->  
-> +	size = i_size_read(inode);
->  	if (page->index == ((size - 1) >> PAGE_SHIFT)) {
->  		reserved_space = round_up(size - page_start,
->  					  fs_info->sectorsize);
-> @@ -9073,12 +9073,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->  	}
->  	ret2 = 0;
->  
-> -	/* page is wholly or partially inside EOF */
-> -	if (page_start + PAGE_SIZE > size)
-> -		zero_start = offset_in_page(size);
-> -	else
-> -		zero_start = PAGE_SIZE;
-> -
->  	if (zero_start != PAGE_SIZE) {
->  		kaddr = kmap(page);
->  		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index d8c7242426bb..53aabde57ca7 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2499,23 +2499,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
->  	struct page *page = vmf->page;
->  	struct inode *inode = file_inode(vma->vm_file);
->  	unsigned long end;
-> -	loff_t size;
->  	int ret;
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	if ((page->mapping != inode->i_mapping) ||
-> -	    (page_offset(page) > size)) {
-> -		/* We overload EFAULT to mean page got truncated */
-> -		ret = -EFAULT;
-> +	ret = page_mkwrite_check_truncate(page, inode);
-> +	if (ret < 0)
->  		goto out_unlock;
-> -	}
-> -
-> -	/* page is wholly or partially inside EOF */
-> -	if (((page->index + 1) << PAGE_SHIFT) > size)
-> -		end = size & ~PAGE_MASK;
-> -	else
-> -		end = PAGE_SIZE;
-> +	end = ret;
->  
->  	ret = __block_write_begin(page, 0, end, get_block);
->  	if (!ret)
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 7ab616601141..ef958aa4adb4 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
->  	do {
->  		lock_page(page);
->  
-> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
-> +		if (page_mkwrite_check_truncate(page, inode) < 0) {
->  			unlock_page(page);
->  			ret = VM_FAULT_NOPAGE;
->  			break;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 629a25d999f0..3244803df30a 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5871,13 +5871,11 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct page *page = vmf->page;
-> -	loff_t size;
->  	unsigned long len;
->  	int err;
->  	vm_fault_t ret;
->  	struct file *file = vma->vm_file;
->  	struct inode *inode = file_inode(file);
-> -	struct address_space *mapping = inode->i_mapping;
->  	handle_t *handle;
->  	get_block_t *get_block;
->  	int retries = 0;
-> @@ -5907,18 +5905,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->  	}
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	/* Page got truncated from under us? */
-> -	if (page->mapping != mapping || page_offset(page) > size) {
-> +	err = page_mkwrite_check_truncate(page, inode);
-> +	if (err < 0) {
->  		unlock_page(page);
-> -		ret = VM_FAULT_NOPAGE;
-> -		goto out;
-> +		goto out_ret;
->  	}
-> +	len = err;
->  
-> -	if (page->index == size >> PAGE_SHIFT)
-> -		len = size & ~PAGE_MASK;
-> -	else
-> -		len = PAGE_SIZE;
->  	/*
->  	 * Return if we have all the buffers mapped. This avoids the need to do
->  	 * journal_start/journal_stop which can block and take a long time
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 85af112e868d..c2d919210a26 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -51,7 +51,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->  	struct dnode_of_data dn = { .node_changed = false };
-> -	int err;
-> +	int offset, err;
->  
->  	if (unlikely(f2fs_cp_error(sbi))) {
->  		err = -EIO;
-> @@ -70,11 +70,12 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	file_update_time(vmf->vma->vm_file);
->  	down_read(&F2FS_I(inode)->i_mmap_sem);
->  	lock_page(page);
-> -	if (unlikely(page->mapping != inode->i_mapping ||
-> -			page_offset(page) > i_size_read(inode) ||
-> -			!PageUptodate(page))) {
-> +	offset = -EFAULT;
-> +	if (likely(PageUptodate(page)))
-> +		offset = page_mkwrite_check_truncate(page, inode);
-> +	if (unlikely(offset < 0)) {
->  		unlock_page(page);
-> -		err = -EFAULT;
-> +		err = offset;
->  		goto out_sem;
->  	}
->  
-> @@ -101,14 +102,8 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->  	if (PageMappedToDisk(page))
->  		goto out_sem;
->  
-> -	/* page is wholly or partially inside EOF */
-> -	if (((loff_t)(page->index + 1) << PAGE_SHIFT) >
-> -						i_size_read(inode)) {
-> -		loff_t offset;
-> -
-> -		offset = i_size_read(inode) & ~PAGE_MASK;
-> +	if (offset != PAGE_SIZE)
->  		zero_user_segment(page, offset, PAGE_SIZE);
-> -	}
->  	set_page_dirty(page);
->  	if (!PageUptodate(page))
->  		SetPageUptodate(page);
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 828444e14d09..7c84c4c027c4 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1077,24 +1077,16 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
->  	struct page *page = vmf->page;
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	unsigned long length;
-> -	loff_t offset, size;
-> +	loff_t offset;
->  	ssize_t ret;
->  
->  	lock_page(page);
-> -	size = i_size_read(inode);
-> -	offset = page_offset(page);
-> -	if (page->mapping != inode->i_mapping || offset > size) {
-> -		/* We overload EFAULT to mean page got truncated */
-> -		ret = -EFAULT;
-> +	ret = page_mkwrite_check_truncate(page, inode);
-> +	if (ret < 0)
->  		goto out_unlock;
-> -	}
-> -
-> -	/* page is wholly or partially inside EOF */
-> -	if (offset > size - PAGE_SIZE)
-> -		length = offset_in_page(size);
-> -	else
-> -		length = PAGE_SIZE;
-> +	length = ret;
->  
-> +	offset = page_offset(page);
->  	while (length > 0) {
->  		ret = iomap_apply(inode, offset, length,
->  				IOMAP_WRITE | IOMAP_FAULT, ops, page,
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index cd52585c8f4f..91f7a1f2db0d 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1563,8 +1563,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
->  	}
->  
->  	lock_page(page);
-> -	if (unlikely(page->mapping != inode->i_mapping ||
-> -		     page_offset(page) > i_size_read(inode))) {
-> +	if (unlikely(page_mkwrite_check_truncate(page, inode) < 0)) {
->  		/* Page got truncated out from underneath us */
->  		goto sigbus;
->  	}
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 37a4d9e32cd3..6c9c5b88924d 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -636,4 +636,6 @@ static inline unsigned long dir_pages(struct inode *inode)
->  			       PAGE_SHIFT;
->  }
->  
-> +int page_mkwrite_check_truncate(struct page *page, struct inode *inode);
-> +
->  #endif /* _LINUX_PAGEMAP_H */
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index bf6aa30be58d..d3e2766216e3 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2700,6 +2700,34 @@ const struct vm_operations_struct generic_file_vm_ops = {
->  	.page_mkwrite	= filemap_page_mkwrite,
->  };
->  
-> +/**
-> + * page_mkwrite_check_truncate - check if page was truncated
-> + * @page: the page to check
-> + * @inode: the inode to check the page against
-> + *
-> + * Returns the number of bytes in the page up to EOF,
-> + * or -EFAULT if the page was truncated.
-> + */
-> +int page_mkwrite_check_truncate(struct page *page, struct inode *inode)
-> +{
-> +	loff_t size = i_size_read(inode);
-> +	pgoff_t index = size >> PAGE_SHIFT;
-> +	int offset = offset_in_page(size);
-> +
-> +	if (page->mapping != inode->i_mapping)
-> +		return -EFAULT;
-> +
-> +	/* page is wholly inside EOF */
-> +	if (page->index < index)
-> +		return PAGE_SIZE;
-> +	/* page is wholly past EOF */
-> +	if (page->index > index || !offset)
-> +		return -EFAULT;
-> +	/* page is partially inside EOF */
-> +	return offset;
-> +}
-> +EXPORT_SYMBOL(page_mkwrite_check_truncate);
-> +
->  /* This is used for a general mmap of a disk file */
->  
->  int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
-> -- 
-> 2.20.1
+DQoNCk9uIDIwMjAvMS84IOS4i+WNiDExOjA0LCBEYXZpZCBTdGVyYmEgd3JvdGU6DQo+IE9uIFR1
+ZSwgSmFuIDA3LCAyMDIwIGF0IDEwOjEzOjQzQU0gKzA4MDAsIFF1IFdlbnJ1byB3cm90ZToNCj4+
+Pj4gKwlkZXZpY2VzX2luZm8gPSBrY2FsbG9jKGZzX2RldmljZXMtPnJ3X2RldmljZXMsIHNpemVv
+ZigqZGV2aWNlc19pbmZvKSwNCj4+Pj4gKwkJCSAgICAgICBHRlBfTk9GUyk7DQo+Pj4NCj4+PiBD
+YWxsaW5nIGtjYWxsb2MgaXMgYW5vdGhlciBwb3RlbnRpYWwgc2xvd2Rvd24sIGZvciB0aGUgc3Rh
+dGZzDQo+Pj4gY29uc2lkZXJhdGlvbnMuDQo+Pg0KPj4gVGhhdCdzIGFsc28gd2hhdCB3ZSBkaWQg
+aW4gc3RhdGZzKCkgYmVmb3JlLCBzbyBpdCBzaG91bGRuJ3QgY2F1c2UgZXh0cmENCj4+IHByb2Js
+ZW0uDQo+PiBGdXJ0aGVybW9yZSwgd2UgZGlkbid0IHVzZSBjYWxjX29uZV9wcm9maWxlX2F2YWls
+KCkgZGlyZWN0bHkgaW4gc3RhdGZzKCkNCj4+IGRpcmVjdGx5Lg0KPj4NCj4+IEFsdGhvdWdoIEkg
+Z2V0IHlvdXIgcG9pbnQsIGFuZCBwZXJzb25hbGx5IHNwZWFraW5nIHRoZSBtZW1vcnkgYWxsb2Nh
+dGlvbg0KPj4gYW5kIGV4dHJhIGluLW1lbW9yeSBkZXZpY2UgaXRlcmF0aW9uIHNob3VsZCBiZSBw
+cmV0dHkgZmFzdCBjb21wYXJlZCB0bw0KPj4gX19idHJmc19hbGxvY19jaHVuaygpLg0KPj4NCj4+
+IFRodXMgSSBkb24ndCB0aGluayB0aGlzIG1lbW9yeSBhbGxvY2F0aW9uIHdvdWxkIGNhdXNlIGV4
+dHJhIHRyb3VibGUsDQo+PiBleGNlcHQgdGhlIGVycm9yIGhhbmRsaW5nIG1lbnRpb25lZCBiZWxv
+dy4NCj4gDQo+IFJpZ2h0LCBjdXJyZW50IHN0YXRmcyBhbHNvIGRvZXMgYWxsb2NhdGlvbiB2aWEN
+Cj4gYnRyZnNfY2FsY19hdmFpbF9kYXRhX3NwYWNlLCBzbyBpdCdzIHRoZSBzYW1lIGFzIGJlZm9y
+ZS4NCj4gDQo+PiBbLi4uXQ0KPj4+PiArCQkJcmV0ID0gY2FsY19wZXJfcHJvZmlsZV9hdmFpbChm
+c19pbmZvKTsNCj4+Pg0KPj4+IEFkZGluZyBuZXcgZmFpbHVyZSBtb2Rlcw0KPj4NCj4+IEFub3Ro
+ZXIgc29sdXRpb24gSSBoYXZlIHRyaWVkIGlzIG1ha2UgY2FsY19wZXJfcHJvZmlsZV9hdmFpbCgp
+IHJldHVybg0KPj4gdm9pZCwgaWdub3JpbmcgdGhlIEVOT01FTSBlcnJvciwgYW5kIGp1c3Qgc2V0
+IHRoZSBhZmZlY3RlZCBwcm9maWxlIHRvIDANCj4+IGF2YWlsYWJsZSBzcGFjZS4NCj4+DQo+PiBC
+dXQgdGhhdCBtZXRob2QgaXMganVzdCBkZWxheWluZyBFTk9NRU0sIGFuZCB3b3VsZCBjYXVzZSBz
+dHJhbmdlDQo+PiBwcmUtcHJvZmlsZSB2YWx1ZXMgdW50aWwgbmV4dCBzdWNjZXNzZnVsIHVwZGF0
+ZSBvciBtb3VudCBjeWNsZS4NCj4+DQo+PiBBbnkgaWRlYSBvbiB3aGljaCBtZXRob2QgaXMgbGVz
+cyB3b3JzZT8NCj4gDQo+IEJldHRlciB0byByZXR1cm4gdGhlIGVycm9yIHRoYW4gd3JvbmcgdmFs
+dWVzIGluIHRoaXMgY2FzZS4gQXMgdGhlDQo+IG51bWJlcnMgYXJlIHNvcnQgb2YgYSBjYWNoZSBh
+bmQgdGhlIG1vdW50IGN5Y2xlIHRvIGdldCB0aGVtIGZpeGVkIGlzIG5vdA0KPiB2ZXJ5IHVzZXIg
+ZnJpZW5kbHksIHdlIG5lZWQgc29tZSBvdGhlciB3YXkuIEFzIHRoaXMgaXMgYSBnbG9iYWwgc3Rh
+dGUsIGENCj4gYml0IGluIGZzX2luZm86OmZsYWdzIGNhbiBiZSBzZXQgYW5kIGZ1bGwgcmVjYWxj
+dWxhdGlvbiBhdHRlbXB0ZWQgYXQNCj4gc29tZSBwb2ludCB1bnRpbCBpdCBzdWNjZWVkcy4gVGhp
+cyB3b3VsZCBsZWF2ZSB0aGUgY291bnRlcnMgc3RhbGUgZm9yDQo+IHNvbWUgdGltZSBidXQgSSB0
+aGluayBzdGlsbCBiZXR0ZXIgdGhhbiBpZiB0aGV5J3JlIHN1ZGRlbmx5IDAuDQo+IA0KSWYgY2Fu
+X292ZXJfY29tbWl0KCkgaXMgdGhlIG9ubHkgdXNlciBvZiB0aGlzIGZhY2lsaXR5LCB0aGVuIGVp
+dGhlciBhbg0KZXh0cmEgaW5kaWNhdG9yIG9yIHN1ZGRlbiAwIGlzIG5vIHByb2JsZW0uDQpBcyBp
+biB0aGF0IGNhc2UsIHdlIGp1c3QgZG9uJ3Qgb3Zlci1jb21taXQgYW5kIGRvIGV4dHJhIGZsdXNo
+IHRvIGZyZWUNCm1ldGEgc3BhY2UuDQoNCkJ1dCB3aGVuIHN0YXRmcygpIGlzIGdvaW5nIHRvIHVz
+ZSB0aGlzIGZhY2lsaXR5LCBlaXRoZXIgc3VkZGVuIDAgbm9yDQppbmRpY2F0b3IgaXMgZ29vZC4N
+Ckp1c3QgaW1hZ2Ugc2Vjb25kcyBiZWZvcmUsIHdlIHN0aWxsIGhhdmUgc2V2ZXJhbCBUaUIgZnJl
+ZSBzcGFjZSwgYW5kIGFsbA0Kb2YgYSBzdWRkZW4sIGp1c3Qgc2V2ZXJhbCBHaUIgZnJlZSAoZnJv
+bSBhbGxvY2F0ZWQgZGF0YSBjaHVua3MpLg0KDQpVc2VyIHdpbGwgZGVmaW5pdGVseSBjb21wbGFp
+bi4NCg0KVGh1cyBJIHN0aWxsIHByZWZlciBwcm9wZXIgZXJyb3IgaGFuZGxpbmcsIGFzIHdoZW4g
+d2UncmUgbG93IG9uIG1lbW9yeSwNCmEgbG90IG9mIHRoaW5ncyBjYW4gZ28gd3JvbmcgYW55d2F5
+Lg0KDQpUaGFua3MsDQpRdQ0K
