@@ -2,78 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3F41348A0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 17:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4BD1348C5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jan 2020 18:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgAHQ5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 11:57:25 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59896 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727308AbgAHQ5Z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jan 2020 11:57:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2/grOTBgUAvethVaNAqsX059fFfNkvhqoW88UGGxm7k=; b=EY7ctXSukj3r60Zq9V0xRGPZt
-        pcoHDTBrU9/U/T9W/u7/lPBqYmJdHvn5joBgWqzJu1kAAB2agXa5CJ7F/4uJphAZaXGoYTLf6G5/P
-        gcJvpUoZeccH3ZtoOX32cTJpBHYG4bWhyo6nyjiT6dZmk740K9aOUnm8QH7rSdOi2RFCL8bD+uHyw
-        QMufaqnCW10JBHm5uCzrI3oylj/Q+JMQz+H5+Is4pS2PxVaj+FSGfRn1VBAKYsNfDu02oZlBsEDqJ
-        sDCbs19FvbQfZpWPe5oSLlGfx2J6RXwCniDvD/bOgDRH5OzetrI29+4h1GU4MPNhYPQahNaivzf1l
-        /o3ltpAug==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ipEdq-000890-Pg; Wed, 08 Jan 2020 16:57:10 +0000
-Date:   Wed, 8 Jan 2020 08:57:10 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, YueHaibing <yuehaibing@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chao Yu <yuchao0@huawei.com>
-Subject: Re: [PATCH v4] fs: Fix page_mkwrite off-by-one errors
-Message-ID: <20200108165710.GA18523@infradead.org>
-References: <20200108131528.4279-1-agruenba@redhat.com>
+        id S1729558AbgAHRDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 12:03:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51668 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729516AbgAHRDy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jan 2020 12:03:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0E598AFA9;
+        Wed,  8 Jan 2020 17:03:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7D312DA791; Wed,  8 Jan 2020 18:03:41 +0100 (CET)
+Date:   Wed, 8 Jan 2020 18:03:41 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: kill update_block_group_flags
+Message-ID: <20200108170340.GK3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200106165015.18985-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200108131528.4279-1-agruenba@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200106165015.18985-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I don't want to be the party pooper, but shouldn't this be a series
-with one patch to add the helper, and then once for each fs / piece
-of common code switched over?
-
-On Wed, Jan 08, 2020 at 02:15:28PM +0100, Andreas Gruenbacher wrote:
-> Hi Darrick,
+On Mon, Jan 06, 2020 at 11:50:15AM -0500, Josef Bacik wrote:
+> btrfs/061 has been failing consistently for me recently with a
+> transaction abort.  We run out of space in the system chunk array, which
+> means we've allocated way too many system chunks than we need.
 > 
-> here's an updated version with the latest feedback incorporated.  Hope
-> you find that useful.
+> Chris added this a long time ago for balance as a poor mans restriping.
+> If you had a single disk and then added another disk and then did a
+> balance, update_block_group_flags would then figure out which RAID level
+> you needed.
 > 
-> As far as the f2fs merge conflict goes, I've been told by Linus not to
-> resolve those kinds of conflicts but to point them out when sending the
-> merge request.  So this shouldn't be a big deal.
+> Fast forward to today and we have restriping behavior, so we can
+> explicitly tell the fs that we're trying to change the raid level.  This
+> is accomplished through the normal get_alloc_profile path.
+> 
+> Furthermore this code actually causes btrfs/061 to fail, because we do
+> things like mkfs -m dup -d single with multiple devices.  This trips
+> this check
+> 
+> alloc_flags = update_block_group_flags(fs_info, cache->flags);
+> if (alloc_flags != cache->flags) {
+> 	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
+> 
+> in btrfs_inc_block_group_ro.  Because we're balancing and scrubbing, but
+> not actually restriping, we keep forcing chunk allocation of RAID1
+> chunks.  This eventually causes us to run out of system space and the
+> file system aborts and flips read only.
+> 
+> We don't need this poor mans restriping any more, simply use the normal
+> get_alloc_profile helper, which will get the correct alloc_flags and
+> thus make the right decision for chunk allocation.  This keeps us from
+> allocating a billion system chunks and falling over.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/block-group.c | 52 ++----------------------------------------
+>  1 file changed, 2 insertions(+), 50 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index c79eccf188c5..0257e6f1efb1 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1975,54 +1975,6 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
+>  	return 0;
+>  }
+>  
+> -static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
+> -{
+> -	u64 num_devices;
+> -	u64 stripped;
+> -
+> -	/*
+> -	 * if restripe for this chunk_type is on pick target profile and
+> -	 * return, otherwise do the usual balance
+> -	 */
+> -	stripped = get_restripe_target(fs_info, flags);
+> -	if (stripped)
+> -		return extended_to_chunk(stripped);
+> -
+> -	num_devices = fs_info->fs_devices->rw_devices;
+> -
+> -	stripped = BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID56_MASK |
+> -		BTRFS_BLOCK_GROUP_RAID1_MASK | BTRFS_BLOCK_GROUP_RAID10;
+> -
+> -	if (num_devices == 1) {
+> -		stripped |= BTRFS_BLOCK_GROUP_DUP;
+> -		stripped = flags & ~stripped;
+> -
+> -		/* turn raid0 into single device chunks */
+> -		if (flags & BTRFS_BLOCK_GROUP_RAID0)
+> -			return stripped;
+> -
+> -		/* turn mirroring into duplication */
+> -		if (flags & (BTRFS_BLOCK_GROUP_RAID1_MASK |
+> -			     BTRFS_BLOCK_GROUP_RAID10))
+> -			return stripped | BTRFS_BLOCK_GROUP_DUP;
+> -	} else {
+> -		/* they already had raid on here, just return */
+> -		if (flags & stripped)
+> -			return flags;
+> -
+> -		stripped |= BTRFS_BLOCK_GROUP_DUP;
+> -		stripped = flags & ~stripped;
+> -
+> -		/* switch duplicated blocks with raid1 */
+> -		if (flags & BTRFS_BLOCK_GROUP_DUP)
+> -			return stripped | BTRFS_BLOCK_GROUP_RAID1;
+> -
+> -		/* this is drive concat, leave it alone */
+> -	}
 
-Also this isn't really the proper way to write a commit message.  This
-text would go into the cover letter if it was a series..
+I remember that I ended up in that function while testing the raid1c34
+feature, converting from one profile to another, but can't recall the
+details now. I think the fallback to the profiles did occur here in some
+cases so we need to make sure that the same usecases are still
+supported.
