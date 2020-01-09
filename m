@@ -2,161 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C298C135C87
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 16:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED65135D26
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 16:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730945AbgAIPUy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 10:20:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33850 "EHLO mx2.suse.de"
+        id S1732617AbgAIPqI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 10:46:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47090 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727945AbgAIPUx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 10:20:53 -0500
+        id S1728293AbgAIPqH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:46:07 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 85CB0AB9D;
-        Thu,  9 Jan 2020 15:20:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D1C34DA7FF; Thu,  9 Jan 2020 16:20:40 +0100 (CET)
-Date:   Thu, 9 Jan 2020 16:20:40 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] btrfs: sysfs, add devid/dev_state kobject and
- attribute
-Message-ID: <20200109152040.GP3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191205112706.8125-5-anand.jain@oracle.com>
- <1578310711-20887-1-git-send-email-anand.jain@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id A3A19AC35;
+        Thu,  9 Jan 2020 15:46:05 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Fix UAF during concurrent mount and device scan
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, jth@kernel.org,
+        dsterba@suse.de
+References: <20200109110210.30671-1-nborisov@suse.com>
+ <20200109144443.GO3929@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3c9aa3ae-e7e5-5396-e493-017375edd534@suse.com>
+Date:   Thu, 9 Jan 2020 17:46:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1578310711-20887-1-git-send-email-anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200109144443.GO3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 07:38:31PM +0800, Anand Jain wrote:
-> New sysfs attributes
->   in_fs_metadata  missing  replace_target  writeable
-> are added under a new kobject
->   UUID/devinfo/<devid>
-> 
-> These attributes reflects the state of the device from the kernel
-> fed by %btrfs_device::dev_state.
-> These attributes are born during mount and goes along with the dynamic
-> nature of the device add and delete, otherwise these attribute and kobject
-> gets deleted at unmount.
-> 
-> Sample output:
-> pwd
->  /sys/fs/btrfs/6e1961f1-5918-4ecc-a22f-948897b409f7/devinfo/1/
-> ls
->   in_fs_metadata  missing  replace_target  writeable
-> cat missing
->   0
-> 
-> The output from these attributes are 0 or 1. 0 indicates unset and 1
-> indicates set.
-> 
-> As of now these attributes are readonly.
-> 
-> It is observed that the device delete thread and sysfs read thread will
-> not race because the delete thread calls sysfs kobject_put() which in turn
-> waits for existing sysfs read to complete.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v4:
->    after patch
->    [PATCH v5 2/2] btrfs: reset device back to allocation state when removing
->    in misc-next, the device::devid_kobj remains stale, fix it by using
->    release.
-> 
-> v3:
->   Use optional groupid devid in BTRFS_ATTR(), it was blank in v2.
-> 
-> V2:
->   Make the devinfo attribute to carry one parameter, so now
->   instead of dev_state attribute, we create in_fs_metadata,
->   writeable, missing and replace_target attributes.
-> 
->  fs/btrfs/sysfs.c   | 142 ++++++++++++++++++++++++++++++++++++++++++++---------
->  fs/btrfs/volumes.h |   3 ++
->  2 files changed, 122 insertions(+), 23 deletions(-)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 834f712ed60c..18dac99188ce 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -978,29 +978,116 @@ int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
->  	if (!fs_devices->devices_kobj)
->  		return -EINVAL;
->  
-> -	if (one_device && one_device->bdev) {
-> -		disk = one_device->bdev->bd_part;
-> -		disk_kobj = &part_to_dev(disk)->kobj;
-> +	if (one_device) {
-> +		if (one_device->bdev) {
-> +			disk = one_device->bdev->bd_part;
-> +			disk_kobj = &part_to_dev(disk)->kobj;
-> +			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-> +		}
->  
-> -		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-> -	}
-> +		kobject_del(&one_device->devid_kobj);
-> +		kobject_put(&one_device->devid_kobj);
-> +
-> +		wait_for_completion(&one_device->kobj_unregister);
->  
-> -	if (one_device)
->  		return 0;
-> +	}
->  
-> -	list_for_each_entry(one_device,
-> -			&fs_devices->devices, dev_list) {
-> -		if (!one_device->bdev)
-> -			continue;
-> -		disk = one_device->bdev->bd_part;
-> -		disk_kobj = &part_to_dev(disk)->kobj;
-> +	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
-> +
-> +		if (one_device->bdev) {
-> +			disk = one_device->bdev->bd_part;
-> +			disk_kobj = &part_to_dev(disk)->kobj;
-> +			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-> +		}
-> +		kobject_del(&one_device->devid_kobj);
-> +		kobject_put(&one_device->devid_kobj);
->  
-> -		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-> +		wait_for_completion(&one_device->kobj_unregister);
->  	}
->  
->  	return 0;
->  }
->  
-> +static ssize_t btrfs_sysfs_writeable_show(struct kobject *kobj,
 
-This could be btrfs_devinfo_writeable_show as the _sysfs_ part means
-it's something generic and possibly exported for other parts to use.
-Same for the other callbacks.
 
-> +static struct attribute *devid_attrs[] = {
-> +	BTRFS_ATTR_PTR(devid, writeable),
-> +	BTRFS_ATTR_PTR(devid, in_fs_metadata),
-> +	BTRFS_ATTR_PTR(devid, missing),
-> +	BTRFS_ATTR_PTR(devid, replace_target),
+On 9.01.20 г. 16:44 ч., David Sterba wrote:
+> On Thu, Jan 09, 2020 at 01:02:10PM +0200, Nikolay Borisov wrote:
+>> This log shows how an fs  is being unmounted which causes device close
+>> routine to be invoked. It sets bdev to NULL but doesn't reset fs_info.
+>> Afterwards the fs_info itself is freed from btrfs_kill_super at the same
+>> time the device is still anchored at fs_devices list. Subsequently a
+>> mount is triggered which sets btrfs_fs_device::bdev to a valid value, yet
+>> btrfs_fs_device::fs_info is still stale/freed. Before btrfs_fill_super
+>> is called and re-initializes btrfs_fs_device::fs_info a concurrent device
+>> scan is triggered, it finds the device with its ->bdev pointer set to
+>> valid value and eventually calls btrfs_info_in_rcu in device_list_add
+>> which causes the crash.
+>>
+>> Simply setting btrfs_fs_device::fs_info to NULL prevents the crash but
+>> doesn't fix the race. In fact the race cannot be solved because device
+>> scan is asynchronous in its nature so it makes no sense to try and
+>> synchronize it with pending mounts.
+> 
+> We've had bugs when mount and scan raced, I don't see why you think this
+> cannot be fixed and synchronized in this case. At minimum I'd think that
+> the device_list_mutex should be enough as it's the one thing that
+> excludes mount and scan for the new and removed members of the device
+> lists etc.
 
-Sorted alphabetically.
+Yes, but this means mount will also need to take device_list_mutex for
+the duration of the whole mount operation.
 
-All will be fixed at commit time. The device state bits could be
-interestig to user in some cases and they're probably going to stay so
-we have some future guarantee of the sort-of-ABI for sysfs.
-
-The first 3 patches are deep in misc-next so I'll reorder them so the
-whole series is grouped together.
+> 
+>> Fixes: cc1824fcd334 ("btrfs: reset device back to allocation state when removing")
+> 
+> That's still it misc-next so I'd rather fold it into the patch than to
+> have this split fix.
+> 
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>
+>> With this fix I can no longer get generic/085 to crash/generate the KASAN warning,
+>> even with  an mdelay added in btrfs_mount_root which triggered the issue reliably.
+>>
+>>  fs/btrfs/volumes.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 65e78e59d5c4..ad8944cc4dd1 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -1086,6 +1086,7 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+>>
+>>  	atomic_set(&device->dev_stats_ccnt, 0);
+>>  	extent_io_tree_release(&device->alloc_state);
+>> +	device->fs_info = NULL;
+>>
+>>  	/* Verify the device is back in a pristine state  */
+>>  	ASSERT(!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state));
+>> --
+>> 2.17.1
