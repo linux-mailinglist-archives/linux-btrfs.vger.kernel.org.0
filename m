@@ -2,84 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A5C1356FB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 11:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4621356FC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 11:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgAIKd6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 05:33:58 -0500
-Received: from pme1.philip-seeger.de ([194.59.205.51]:42968 "EHLO
-        pme1.philip-seeger.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729165AbgAIKd6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 05:33:58 -0500
-Received: from webmail.philip-seeger.de (pme1.philip-seeger.de [IPv6:2a03:4000:34:141::100])
-        by pme1.philip-seeger.de (Postfix) with ESMTPSA id 9B2C01FC8FC;
-        Thu,  9 Jan 2020 11:33:56 +0100 (CET)
+        id S1729278AbgAIKe2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 05:34:28 -0500
+Received: from mail.itouring.de ([188.40.134.68]:44938 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729165AbgAIKe2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 05:34:28 -0500
+Received: from tux.applied-asynchrony.com (p5B07E981.dip0.t-ipconnect.de [91.7.233.129])
+        by mail.itouring.de (Postfix) with ESMTPSA id 2B0FE41669C5;
+        Thu,  9 Jan 2020 11:34:26 +0100 (CET)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id C755CF015C3;
+        Thu,  9 Jan 2020 11:34:25 +0100 (CET)
+Subject: Re: btrfs scrub: cancel + resume not resuming?
+To:     =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <b031f351-2a9c-83b3-7e4b-ac15791d96e6@applied-asynchrony.com>
+Date:   Thu, 9 Jan 2020 11:34:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 09 Jan 2020 11:33:54 +0100
-From:   Philip Seeger <philip@philip-seeger.de>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Monitoring not working as "dev stats" returns 0 after read error
- occurred
-In-Reply-To: <d89fe4da-c498-bb24-8eb5-a19b01680a23@cobb.uk.net>
-References: <3283de40c2750cd62d020ed71430cd35@philip-seeger.de>
- <d89fe4da-c498-bb24-8eb5-a19b01680a23@cobb.uk.net>
-Message-ID: <ac61f79a3c373f319232640db5db9a5e@philip-seeger.de>
-X-Sender: philip@philip-seeger.de
-User-Agent: Roundcube Webmail/1.3.8
+In-Reply-To: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-01-08 20:35, Graham Cobb wrote:
->> BTRFS info (device sda3): read error corrected: ino 194473 off 2170880
+On 1/9/20 11:03 AM, Sebastian Döring wrote:
+> Maybe I'm doing it entirely wrong, but I can't seem to get 'btrfs
+> scrub resume' to work properly. During a running scrub the resume
+> information (like data_bytes_scrubbed:1081454592) gets written to a
+> file in /var/lib/btrfs, but as soon as the scrub is cancelled all
+> relevant fields are zeroed. 'btrfs scrub resume' then seems to
+> re-start from the very beginning.
 > 
-> I am not convinced that that message is telling you that the error
-> happened on device sda3. Certainly in some other cases Btrfs error
-> messages  identify the **filesystem** using the name of the device the
-> kernel thinks is mounted, which might be sda3.
-
-You're right, it looks like I copied the wrong piece, my bad. This btrfs 
-filesystem is a mirror with two drives:
-
-# btrfs fi show / | grep devid
-	devid    1 size 100.00GiB used 81.03GiB path /dev/sda3
-	devid    2 size 100.00GiB used 81.03GiB path /dev/nvme0n1p3
-
-And this is from dmesg:
-
-print_req_error: critical medium error, dev nvme0n1, sector 40910720 
-flags 84700
-BTRFS info (device sda3): read error corrected: ino 194473 off 2134016 
-(dev /dev/nvme0n1p3 sector 36711808)
-
-So it's nvme0n1 that's about to die. But it doesn't matter, dev stats 
-prints 0 for all error counts as if nothing had ever happened.
-
-# btrfs dev stats /
-[/dev/sda3].write_io_errs    0
-[/dev/sda3].read_io_errs     0
-[/dev/sda3].flush_io_errs    0
-[/dev/sda3].corruption_errs  0
-[/dev/sda3].generation_errs  0
-[/dev/nvme0n1p3].write_io_errs    0
-[/dev/nvme0n1p3].read_io_errs     0
-[/dev/nvme0n1p3].flush_io_errs    0
-[/dev/nvme0n1p3].corruption_errs  0
-[/dev/nvme0n1p3].generation_errs  0
-
->> # btrfs dev stats / | grep sda3 | grep read
->> [/dev/sda3].read_io_errs 0
+> This is on linux-5.5-rc5 and btrfs-progs 5.4, but I've been seeing
+> this for a while now.
 > 
-> Have you checked the stats for the other devices as well?
+> Is this intended/expected behavior? Am I using the btrfs-progs wrong?
+> How can I interrupt and resume a scrub?
 
-Yes, of course. Nevermind that grep. The monitoring cron job checks all 
-error counts returned by the stats command and sends out an alert if an 
-error is reported (just like with zfs status on zfs filesystems which 
-also returns error counts for read/write/cksum errors). But as you can 
-see, it didn't send out anything as dev stats says that all error counts 
-are at zero.
+Using 5.4.9+ (all of btrfs-5.5) and btrfs-progs 5.4 I just tried and
+it still works for me (and always has):
+
+$btrfs scrub start /mnt/backup
+scrub started on /mnt/backup, fsid d163af2f-6e03-4972-bfd6-30c68b6ed312 (pid=25633)
+
+$btrfs scrub cancel /mnt/backup
+scrub cancelled
+
+$btrfs scrub resume /mnt/backup
+scrub resumed on /mnt/backup, fsid d163af2f-6e03-4972-bfd6-30c68b6ed312 (pid=25704)
+
+..and it keeps munching away as expected.
+
+TBH it's a bit odd that there is no "pause" - I'd expect cancel to be final,
+but apart from that it seems to work.
+
+-h
