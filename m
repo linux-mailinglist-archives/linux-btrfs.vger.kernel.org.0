@@ -2,136 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AED65135D26
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 16:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E90135E86
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 17:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732617AbgAIPqI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 10:46:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47090 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728293AbgAIPqH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 10:46:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A3A19AC35;
-        Thu,  9 Jan 2020 15:46:05 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Fix UAF during concurrent mount and device scan
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, jth@kernel.org,
-        dsterba@suse.de
-References: <20200109110210.30671-1-nborisov@suse.com>
- <20200109144443.GO3929@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <3c9aa3ae-e7e5-5396-e493-017375edd534@suse.com>
-Date:   Thu, 9 Jan 2020 17:46:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1731315AbgAIQoG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 11:44:06 -0500
+Received: from magic.merlins.org ([209.81.13.136]:52442 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgAIQoF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 11:44:05 -0500
+X-Greylist: delayed 922 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jan 2020 11:44:05 EST
+Received: from svh-gw.merlins.org ([173.11.111.145]:60472 helo=saruman.merlins.org)
+        by mail1.merlins.org with esmtps 
+        (Cipher TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.92 #3)
+        id 1ipafo-0006HJ-0p; Thu, 09 Jan 2020 08:28:41 -0800
+Received: from merlin by saruman.merlins.org with local (Exim 4.80)
+        (envelope-from <marc@merlins.org>)
+        id 1ipafn-0008NE-KJ; Thu, 09 Jan 2020 08:28:39 -0800
+Date:   Thu, 9 Jan 2020 08:28:39 -0800
+From:   Marc MERLIN <marc@merlins.org>
+To:     linux-btrfs@vger.kernel.org
+Message-ID: <20200109162839.GA29989@merlins.org>
 MIME-Version: 1.0
-In-Reply-To: <20200109144443.GO3929@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 173.11.111.145
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Checker-Version: SpamAssassin 3.4.2-mmrules_20121111 (2018-09-13) on
+        magic.merlins.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.5 required=7.0 tests=GREYLIST_ISWHITE,SPF_SOFTFAIL,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2-mmrules_20121111
+X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: merlins.org]
+        *  1.0 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this receipient and sender
+Subject: 5.4.8: WARNING: errors detected during scrubbing, corrected
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Howdy,
+
+I have 6 btrfs pools on my laptop on 3 different SSDs.
+After a few years, one of them is now very slow to scrub
+and hands my laptop while it runs.
+This started under 5.3.8, but upgrading to 5.4.8 didn't fix it.
+
+Also, it output 'errors during scrubbing', but I see nothing in the kernel log:
+btrfs scrub start -Bd /mnt/btrfs_pool2
+scrub device /dev/mapper/pool2 (id 1) done
+        scrub started at Thu Jan  9 01:46:45 2020 and finished after 01:29:49
+        total bytes scrubbed: 1.27TiB with 0 errors
+WARNING: errors detected during scrubbing, corrected
+
+real    89m49.190s
+user    0m0.000s
+sys     13m26.548s
 
 
-On 9.01.20 г. 16:44 ч., David Sterba wrote:
-> On Thu, Jan 09, 2020 at 01:02:10PM +0200, Nikolay Borisov wrote:
->> This log shows how an fs  is being unmounted which causes device close
->> routine to be invoked. It sets bdev to NULL but doesn't reset fs_info.
->> Afterwards the fs_info itself is freed from btrfs_kill_super at the same
->> time the device is still anchored at fs_devices list. Subsequently a
->> mount is triggered which sets btrfs_fs_device::bdev to a valid value, yet
->> btrfs_fs_device::fs_info is still stale/freed. Before btrfs_fill_super
->> is called and re-initializes btrfs_fs_device::fs_info a concurrent device
->> scan is triggered, it finds the device with its ->bdev pointer set to
->> valid value and eventually calls btrfs_info_in_rcu in device_list_add
->> which causes the crash.
->>
->> Simply setting btrfs_fs_device::fs_info to NULL prevents the crash but
->> doesn't fix the race. In fact the race cannot be solved because device
->> scan is asynchronous in its nature so it makes no sense to try and
->> synchronize it with pending mounts.
-> 
-> We've had bugs when mount and scan raced, I don't see why you think this
-> cannot be fixed and synchronized in this case. At minimum I'd think that
-> the device_list_mutex should be enough as it's the one thing that
-> excludes mount and scan for the new and removed members of the device
-> lists etc.
+89mn is also longer than normal
 
-Yes, but this means mount will also need to take device_list_mutex for
-the duration of the whole mount operation.
+balance works ok:
+logger: Quick Metadata and Data Balance of /mnt/btrfs_pool2 (/dev/mapper/pool2)
+Done, had to relocate 0 out of 837 chunks
+Done, had to relocate 0 out of 837 chunks
+Done, had to relocate 0 out of 837 chunks
 
-> 
->> Fixes: cc1824fcd334 ("btrfs: reset device back to allocation state when removing")
-> 
-> That's still it misc-next so I'd rather fold it into the patch than to
-> have this split fix.
-> 
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>
->> With this fix I can no longer get generic/085 to crash/generate the KASAN warning,
->> even with  an mdelay added in btrfs_mount_root which triggered the issue reliably.
->>
->>  fs/btrfs/volumes.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 65e78e59d5c4..ad8944cc4dd1 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -1086,6 +1086,7 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->>
->>  	atomic_set(&device->dev_stats_ccnt, 0);
->>  	extent_io_tree_release(&device->alloc_state);
->> +	device->fs_info = NULL;
->>
->>  	/* Verify the device is back in a pristine state  */
->>  	ASSERT(!test_bit(BTRFS_DEV_STATE_FLUSH_SENT, &device->dev_state));
->> --
->> 2.17.1
+I re-ran a bigger balance, and it ran fine too:
+trfs balance start -musage=60 /mnt/btrfs_pool2; btrfs balance start -dusage=60 /mnt/btrfs_pool2
+
+
+Jan  9 01:46:45 saruman kernel: [14530.056667] BTRFS info (device dm-3): balance: start -musage=0 -susage=0
+Jan  9 01:46:45 saruman kernel: [14530.059623] BTRFS info (device dm-3): balance: ended with status: 0
+Jan  9 01:46:45 saruman kernel: [14530.134043] BTRFS info (device dm-3): balance: start -dusage=0
+Jan  9 01:46:45 saruman kernel: [14530.135525] BTRFS info (device dm-3): balance: ended with status: 0
+Jan  9 01:46:45 saruman kernel: [14530.193798] BTRFS info (device dm-3): balance: start -dusage=20
+Jan  9 01:46:45 saruman kernel: [14530.195642] BTRFS info (device dm-3): balance: ended with status: 0
+Jan  9 01:46:45 saruman kernel: [14530.240290] BTRFS info (device dm-3): scrub: started on devid 1
+Jan  9 01:58:21 saruman kernel: [15226.254196]       Tainted: G        W  OE     5.4.8-amd64-preempt-sysrq-20190816 #1
+Jan  9 01:58:21 saruman kernel: [15226.254198] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan  9 01:58:21 saruman kernel: [15226.254201] btrfs-transacti D    0 12403      2 0x80004000
+Jan  9 01:58:21 saruman kernel: [15226.254204] Call Trace:
+Jan  9 01:58:21 saruman kernel: [15226.254211]  ? __schedule+0x575/0x5d0
+Jan  9 01:58:21 saruman kernel: [15226.254215]  ? __list_add+0x12/0x2b
+Jan  9 01:58:21 saruman kernel: [15226.254218]  schedule+0x7b/0xac
+Jan  9 01:58:21 saruman kernel: [15226.254222]  btrfs_scrub_pause+0x99/0xd3
+Jan  9 01:58:21 saruman kernel: [15226.254226]  ? finish_wait+0x62/0x62
+Jan  9 01:58:21 saruman kernel: [15226.254231]  btrfs_commit_transaction+0x307/0x82b
+Jan  9 01:58:21 saruman kernel: [15226.254235]  ? start_transaction+0x37b/0x3ec
+Jan  9 01:58:21 saruman kernel: [15226.254239]  ? schedule_timeout+0xf/0xea
+Jan  9 01:58:21 saruman kernel: [15226.254243]  transaction_kthread+0xdd/0x151
+Jan  9 01:58:21 saruman kernel: [15226.254247]  ? btrfs_cleanup_transaction+0x417/0x417
+Jan  9 01:58:21 saruman kernel: [15226.254250]  kthread+0xf5/0xfa
+Jan  9 01:58:21 saruman kernel: [15226.254253]  ? kthread_create_worker_on_cpu+0x65/0x65
+Jan  9 01:58:21 saruman kernel: [15226.254256]  ret_from_fork+0x35/0x40
+Jan  9 01:58:21 saruman kernel: [15226.254554] INFO: task cron:3869 blocked for more than 120 seconds.
+
+from here, lots of hangs until eventually:
+Jan  9 03:16:34 saruman kernel: [19919.454109] BTRFS info (device dm-3): scrub: finished on devid 1 with status: 0
+
+I see no error about the scrub though.
+
+saruman:/mnt/btrfs_pool2# btrfs fi show .
+Label: 'btrfs_pool2'  uuid: c3ac7621-79da-4d4f-bd59-d12fe7ba3578
+	Total devices 1 FS bytes used 785.58GiB
+	devid    1 size 1.12TiB used 831.21GiB path /dev/mapper/pool2
+
+saruman:/mnt/btrfs_pool2# btrfs fi df .
+Data, single: total=817.08GiB, used=779.88GiB
+System, DUP: total=64.00MiB, used=128.00KiB
+Metadata, DUP: total=7.00GiB, used=5.70GiB
+GlobalReserve, single: total=512.00MiB, used=64.00KiB
+
+saruman:/mnt/btrfs_pool2# btrfs fi usage .
+Overall:
+    Device size:		   1.12TiB
+    Device allocated:		 831.21GiB
+    Device unallocated:		 315.79GiB
+    Device missing:		     0.00B
+    Used:			 791.28GiB
+    Free (estimated):		 352.99GiB	(min: 195.10GiB)
+    Data ratio:			      1.00
+    Metadata ratio:		      2.00
+    Global reserve:		 512.00MiB	(used: 0.00B)
+
+Data,single: Size:817.08GiB, Used:779.88GiB
+   /dev/mapper/pool2	 817.08GiB
+
+Metadata,DUP: Size:7.00GiB, Used:5.70GiB
+   /dev/mapper/pool2	  14.00GiB
+
+System,DUP: Size:64.00MiB, Used:128.00KiB
+   /dev/mapper/pool2	 128.00MiB
+
+Unallocated:
+   /dev/mapper/pool2	 315.79GiB
+
+
+I'm going to stop the scrub for now, but clearly that's not so good.
+
+What should I try next?
+
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
