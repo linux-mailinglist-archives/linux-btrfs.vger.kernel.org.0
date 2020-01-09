@@ -2,149 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F9F135EDF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 18:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3621360A5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 20:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387821AbgAIRHG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 12:07:06 -0500
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:41884 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731444AbgAIRHG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 12:07:06 -0500
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 27ECE9C363; Thu,  9 Jan 2020 17:07:04 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578589624;
-        bh=7wLvu3GPZePDzO8forIveiUPApnHZzunQr8L0rJFc+Q=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=SQEEGOSoHQ6xc5LJARnqxgaCtTnNt5wFiOJRR24PUNZZa9oow83gU+jw/LYgTDjPh
-         FkIhROEmJ9NC1GZiJ96+HLrvKXY8ehDiq+EyyQvUByX5T3BLqQat1sDuxDHS0l2lPS
-         QozSg37TCd1ilMYIO2sot0Otoji9Q1ef3IvFHD5LWM9oaN/4Y8yLgVmOslc3KNmmkM
-         b0KK1D4lbiRUAZ7UY4WdpkHVcmI0KlI7H9of08fJn66BN/otGaLRjyZ9R70ckElrpS
-         YwMMJGLLY8SDBfCak+38rTsxo9P9crZkiUsqtrOFswpz6K5uhkBtb0y+qV3LZ79Ewh
-         60EHjmBxRovag==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 5C92F9C357;
-        Thu,  9 Jan 2020 17:06:59 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578589619;
-        bh=7wLvu3GPZePDzO8forIveiUPApnHZzunQr8L0rJFc+Q=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=RzUAef60mUvk70fRBx0W4kSY0aWli5j4G/dd4oIwbgETaA0vc0mHKbRWYskJXLXzg
-         tHJ7ynGU3iNKhjPqMUt/+x6fZoZVv5r2XgnXoFqhBILM64Sv8+NNaPV3yANhR1NzBv
-         p5mE0R6VUq78XjW6BeXCnS06X5FaE+fYztX0+Zv06hwWdYFYKTx0CjSs3988jngscC
-         DSInrUwllqpsbQ9p4Y3TOLf267FwuPV2FSrKuTeiOX5XFHxQ3/kKVS+d+t07kzLV6+
-         bK2Vv/pYQjNldRqeOB2FSGIzPrwlRo/33x/Z7vWkpM4JTrqMotemB+eQr0kqX1Bsl/
-         fvosT2g1HtDTA==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 04FA9A0508;
-        Thu,  9 Jan 2020 17:06:59 +0000 (GMT)
-Subject: Re: btrfs scrub: cancel + resume not resuming?
-To:     =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
- <654bf850-65bf-65f5-2ed2-90a0d4058e74@cobb.uk.net>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- mQINBFaetnIBEAC5cHHbXztbmZhxDof6rYh/Dd5otxJXZ1p7cjE2GN9hCH7gQDOq5EJNqF9c
- VtD9rIywYT1i3qpHWyWo0BIwkWvr1TyFd3CioBe7qfo/8QoeA9nnXVZL2gcorI85a2GVRepb
- kbE22X059P1Z1Cy7c29dc8uDEzAucCILyfrNdZ/9jOTDN9wyyHo4GgPnf9lW3bKqF+t//TSh
- SOOis2+xt60y2In/ls29tD3G2ANcyoKF98JYsTypKJJiX07rK3yKTQbfqvKlc1CPWOuXE2x8
- DdI3wiWlKKeOswdA2JFHJnkRjfrX9AKQm9Nk5JcX47rLxnWMEwlBJbu5NKIW5CUs/5UYqs5s
- 0c6UZ3lVwinFVDPC/RO8ixVwDBa+HspoSDz1nJyaRvTv6FBQeiMISeF/iRKnjSJGlx3AzyET
- ZP8bbLnSOiUbXP8q69i2epnhuap7jCcO38HA6qr+GSc7rpl042mZw2k0bojfv6o0DBsS/AWC
- DPFExfDI63On6lUKgf6E9vD3hvr+y7FfWdYWxauonYI8/i86KdWB8yaYMTNWM/+FAKfbKRCP
- dMOMnw7bTbUJMxN51GknnutQlB3aDTz4ze/OUAsAOvXEdlDYAj6JqFNdZW3k9v/QuQifTslR
- JkqVal4+I1SUxj8OJwQWOv/cAjCKJLr5g6UfUIH6rKVAWjEx+wARAQABtDNHcmFoYW0gQ29i
- YiAoUGVyc29uYWwgYWRkcmVzcykgPGdyYWhhbUBjb2JiLnVrLm5ldD6JAlEEEwECADsCGwEG
- CwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAhkBBQJWnr9UFRhoa3A6Ly9rZXlzLmdudXBnLm5l
- dAAKCRBv35GGXfm3Tte8D/45+/dnVdvzPsKgnrdoXpmvhImGaSctn9bhAKvng7EkrQjgV3cf
- C9GMgK0vEJu+4f/sqWA7hPKUq/jW5vRETcvqEp7v7z+56kqq5LUQE5+slsEb/A4lMP4ppwd+
- TPwwDrtVlKNqbKJOM0kPkpj7GRy3xeOYh9D7DtFj2vlmaAy6XvKav/UUU4PoUdeCRyZCRfl0
- Wi8pQBh0ngQWfW/VqI7VsG3Qov5Xt7cTzLuP/PhvzM2c5ltZzEzvz7S/jbB1+pnV9P7WLMYd
- EjhCYzJweCgXyQHCaAWGiHvBOpmxjbHXwX/6xTOJA5CGecDeIDjiK3le7ubFwQAfCgnmnzEj
- pDG+3wq7co7SbtGLVM3hBsYs27M04Oi2aIDUN1RSb0vsB6c07ECT52cggIZSOCvntl6n+uMl
- p0WDrl1i0mJUbztQtDzGxM7nw+4pJPV4iX1jJYbWutBwvC+7F1n2F6Niu/Y3ew9a3ixV2+T6
- aHWkw7/VQvXGnLHfcFbIbzNoAvI6RNnuEqoCnZHxplEr7LuxLR41Z/XAuCkvK41N/SOI9zzT
- GLgUyQVOksdbPaxTgBfah9QlC9eXOKYdw826rGXQsvG7h67nqi67bp1I5dMgbM/+2quY9xk0
- hkWSBKFP7bXYu4kjXZUaYsoRFEfL0gB53eF21777/rR87dEhptCnaoXeqbkBDQRWnrnDAQgA
- 0fRG36Ul3Y+iFs82JPBHDpFJjS/wDK+1j7WIoy0nYAiciAtfpXB6hV+fWurdjmXM4Jr8x73S
- xHzmf9yhZSTn3nc5GaK/jjwy3eUdoXu9jQnBIIY68VbgGaPdtD600QtfWt2zf2JC+3CMIwQ2
- fK6joG43sM1nXiaBBHrr0IadSlas1zbinfMGVYAd3efUxlIUPpUK+B1JA12ZCD2PCTdTmVDe
- DPEsYZKuwC8KJt60MjK9zITqKsf21StwFe9Ak1lqX2DmJI4F12FQvS/E3UGdrAFAj+3HGibR
- yfzoT+w9UN2tHm/txFlPuhGU/LosXYCxisgNnF/R4zqkTC1/ao7/PQARAQABiQIlBBgBAgAP
- BQJWnrnDAhsMBQkJZgGAAAoJEG/fkYZd+bdO9b4P/0y3ADmZkbtme4+Bdp68uisDzfI4c/qo
- XSLTxY122QRVNXxn51yRRTzykHtv7/Zd/dUD5zvwj2xXBt9wk4V060wtqh3lD6DE5mQkCVar
- eAfHoygGMG+/mJDUIZD56m5aXN5Xiq77SwTeqJnzc/lYAyZXnTAWfAecVSdLQcKH21p/0AxW
- GU9+IpIjt8XUEGThPNsCOcdemC5u0I1ZeVRXAysBj2ymH0L3EW9B6a0airCmJ3Yctm0maqy+
- 2MQ0Q6Jw8DWXbwynmnmzLlLEaN8wwAPo5cb3vcNM3BTcWMaEUHRlg82VR2O+RYpbXAuPOkNo
- 6K8mxta3BoZt3zYGwtqc/cpVIHpky+e38/5yEXxzBNn8Rn1xD6pHszYylRP4PfolcgMgi0Ny
- 72g40029WqQ6B7bogswoiJ0h3XTX7ipMtuVIVlf+K7r6ca/pX2R9B/fWNSFqaP4v0qBpyJdJ
- LO/FP87yHpEDbbKQKW6Guf6/TKJ7iaG3DDpE7CNCNLfFG/skhrh5Ut4zrG9SjA+0oDkfZ4dI
- B8+QpH3mP9PxkydnxGiGQxvLxI5Q+vQa+1qA5TcCM9SlVLVGelR2+Wj2In+t2GgigTV3PJS4
- tMlN++mrgpjfq4DMYv1AzIBi6/bSR6QGKPYYOOjbk+8Sfao0fmjQeOhj1tAHZuI4hoQbowR+ myxb
-Message-ID: <b1ef69cc-0861-ec6c-aa98-54bb66b2471f@cobb.uk.net>
-Date:   Thu, 9 Jan 2020 17:06:58 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1732235AbgAITAX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 14:00:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729054AbgAITAX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 14:00:23 -0500
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C8F92072E;
+        Thu,  9 Jan 2020 19:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578596422;
+        bh=ABEInQXnrGi3551d9EXZq7PXfllrEYuVLiNZgSA51qk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RRkpt3dpDuZ6vtPTS5HaX0dzZCGNYGS830S2UG1PCjLiOdMYE8vnYJYy03jhUezoV
+         HF/HeL8cE8pbWU301Sj/r0Nmv3jU0k+XhTUV6ludur+QJ6E/MfIOSxE3Un672mLtV7
+         r3GiKbubvrwW0rlll8GW83HC/GqH9lcm6L3DsXzo=
+Received: by mail-ua1-f50.google.com with SMTP id u17so2915514uap.9;
+        Thu, 09 Jan 2020 11:00:22 -0800 (PST)
+X-Gm-Message-State: APjAAAVDowFuVKCFnG9pDHG3FyXXxU86SytgP8fcuRmhmtVD/4cytf05
+        TECpiX98278IdGvMxokcT07C2YOOyr8B5Hfo18g=
+X-Google-Smtp-Source: APXvYqzA63UKx++yHXJJjx5UNUtZH87N1vbY0bj8PijlIJBaqM0WrmatzmAWdf9gXnP8r3CtIaiWV4/qSGcn2Uvl4YA=
+X-Received: by 2002:a9f:3e84:: with SMTP id x4mr7957435uai.83.1578596421105;
+ Thu, 09 Jan 2020 11:00:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <654bf850-65bf-65f5-2ed2-90a0d4058e74@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20191216182656.15624-1-fdmanana@kernel.org> <20191216182656.15624-2-fdmanana@kernel.org>
+ <CAL3q7H5+CMRkJ9yAa2AeB0aKtA=b_yW2g9JSQwCOhOtLNrH1iQ@mail.gmail.com>
+ <20200107175739.GC472651@magnolia> <CAL3q7H5TuaLDW3aXSa68pxvLu4s1Gg38RRSRyA430LxK302k3A@mail.gmail.com>
+ <20200108161536.GC5552@magnolia>
+In-Reply-To: <20200108161536.GC5552@magnolia>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 9 Jan 2020 19:00:09 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7jOD6eEurdEb-VHn3_xcZVnYEJxnaomgUHtFcH5XowHw@mail.gmail.com>
+Message-ID: <CAL3q7H7jOD6eEurdEb-VHn3_xcZVnYEJxnaomgUHtFcH5XowHw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs: allow deduplication of eof block into the end of
+ the destination file
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09/01/2020 10:19, Graham Cobb wrote:
-> On 09/01/2020 10:03, Sebastian Döring wrote:
->> Maybe I'm doing it entirely wrong, but I can't seem to get 'btrfs
->> scrub resume' to work properly. During a running scrub the resume
->> information (like data_bytes_scrubbed:1081454592) gets written to a
->> file in /var/lib/btrfs, but as soon as the scrub is cancelled all
->> relevant fields are zeroed. 'btrfs scrub resume' then seems to
->> re-start from the very beginning.
->>
->> This is on linux-5.5-rc5 and btrfs-progs 5.4, but I've been seeing
->> this for a while now.
->>
->> Is this intended/expected behavior? Am I using the btrfs-progs wrong?
->> How can I interrupt and resume a scrub?
-> 
-> Coincidentally, I noticed exactly the same thing yesterday!
-> 
-> I have just run a quick test. It works with kernel 4.19 but doesn't with
-> kernel 5.3. This is using exactly the same version of btrfs-progs:
-> v5.3.1 (I just rebooted the same system with an old kernel to check).
-> 
-> As Sebastian says, the symptom is that the file in /var/lib/btrfs shows
-> all fields as zero after the cancel (although "cancelled" and "finished"
-> are both 1). In particular, last_physical is zero so the scrub always
-> resumes from the beginning.
-> 
-> With the old kernel, the file in /var/lib/btrfs correctly has all the
-> values filled in after the cancel so the scrub can be resumed.
+On Wed, Jan 8, 2020 at 4:15 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Wed, Jan 08, 2020 at 11:36:04AM +0000, Filipe Manana wrote:
+> > On Tue, Jan 7, 2020 at 5:57 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+> > >
+> > > On Tue, Jan 07, 2020 at 04:23:15PM +0000, Filipe Manana wrote:
+> > > > On Mon, Dec 16, 2019 at 6:28 PM <fdmanana@kernel.org> wrote:
+> > > > >
+> > > > > From: Filipe Manana <fdmanana@suse.com>
+> > > > >
+> > > > > We always round down, to a multiple of the filesystem's block size, the
+> > > > > length to deduplicate at generic_remap_check_len().  However this is only
+> > > > > needed if an attempt to deduplicate the last block into the middle of the
+> > > > > destination file is requested, since that leads into a corruption if the
+> > > > > length of the source file is not block size aligned.  When an attempt to
+> > > > > deduplicate the last block into the end of the destination file is
+> > > > > requested, we should allow it because it is safe to do it - there's no
+> > > > > stale data exposure and we are prepared to compare the data ranges for
+> > > > > a length not aligned to the block (or page) size - in fact we even do
+> > > > > the data compare before adjusting the deduplication length.
+> > > > >
+> > > > > After btrfs was updated to use the generic helpers from VFS (by commit
+> > > > > 34a28e3d77535e ("Btrfs: use generic_remap_file_range_prep() for cloning
+> > > > > and deduplication")) we started to have user reports of deduplication
+> > > > > not reflinking the last block anymore, and whence users getting lower
+> > > > > deduplication scores.  The main use case is deduplication of entire
+> > > > > files that have a size not aligned to the block size of the filesystem.
+> > > > >
+> > > > > We already allow cloning the last block to the end (and beyond) of the
+> > > > > destination file, so allow for deduplication as well.
+> > > > >
+> > > > > Link: https://lore.kernel.org/linux-btrfs/2019-1576167349.500456@svIo.N5dq.dFFD/
+> > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > >
+> > > > Darrick, Al, any feedback?
+> > >
+> > > Is there a fstest to check for correct operation of dedupe at or beyond
+> > > source and destfile EOF?  Particularly if one range is /not/ at EOF?
+> >
+> > Such as what generic/158 does already?
+>
+> Urk, heh. :)
+>
+> > > And that an mmap read of the EOF block will see zeroes past EOF before
+> > > and after the dedupe operation?
+> >
+> > Can you elaborate a bit more? Why an mmap read and not a buffered or a
+> > direct IO read before and after deduplication?
+> > Is there anything special for the mmap reads on xfs, is that your
+> > concern? Or is the idea to deduplicate while the file is mmap'ed?
+>
+> I cite mmap reads past EOF specifically because unlike buffered/direct
+> reads where the VFS will stop reading exactly at EOF, a memory mapping
+> maps in an entire memory page, and the fs is supposed to ensure that the
+> bytes past EOF are zeroed.
 
-I have spent the last couple of hours instrumenting the code of scrub.c
-to try to work out what is going on. The relationship between the main
-thread, the thread where the scrub is running and the thread where the
-status updates are being received from the kernel is quite horrible. Not
-to mention that two of these three threads write out what could be the
-final version of the progress file (and use different data structures as
-the source for that write!).
+Ok, on btrfs we zero out the rest of the page both in for all reads.
 
-The basic problem is that the scrub program seems to assume it will have
-seen the cancellation in the update stream *before* the ioctl completes
-with the cancelled status. And that seems to happen the other way round
-in the 5.x kernel. Although I haven't done an actual comparison with a
-4.19 run to check this.
+So, it's not problem:
 
-What I haven't checked, yet, is if the 5.x kernel does actually send the
-final data update if we stick around long enough to receive it.
+$ file_size=$((64 * 1024 + 500))
+$ xfs_io -f -c "pwrite -S 0xba 0 $file_size" foo
+$ xfs_io -f -c "pwrite -S 0xba 0 $file_size" bar
+$ sync
+
+$ xfs_io -c "mmap 0 68K" -c "mread -v 0 68K" -c "dedupe bar 0 0
+$file_size" -c "mread -v 0 68K" foo
+
+Both mreads returns exactly the same, eof is still the same and all
+bytes after it have a value of 0.
+
+This is the same as it is for cloning.
+
+>
+> Hm now that I look at g/158 it doesn't actually verify mmap reads.  I
+> looked around and can't really see anything that checks mmap reads
+> before and after a dedupe operation at EOF.
+>
+> > > If I fallocate a 16k file, write 'X' into the first 5000 bytes,
+> > > write 'X' into the first 66,440 bytes (60k + 5000) of a second file, and
+> > > then try to dedupe (first file, 0-8k) with (second file, 60k-68k),
+> > > should that work?
+> >
+> > You haven't mentioned the size of the second file, nor if the first
+> > file has a size of 16K which I assume (instead of fallocate with the
+> > keep size flag).
+>
+> Er, sorry, yes.  The first file is 16,384 bytes long; the second file is
+> 66,440 bytes.
+>
+> > Anyway, I assume you actually meant to dedupe the range 0 - 5000 from
+> > the first file into the range 60k - 60k + 5000 of the second file, and
+> > that the second file has a size of 60k + 5000.
+>
+> Nope, I meant to say to dedupe the range (offset: 0, length: 8192) from
+> the first file into the second file (offset: 61440, length: 8192).  The
+> source range is entirely below EOF, and the dest range ends right at
+> EOF in the second file.
+
+The dedupe operations fails with -EINVAL, both before and after this patch,
+since the whenever one of ranges crosses eof, we must fail dedupe with -EINVAL.
+This happens at generic_remap_checks(), which called before
+generic_remap_check_len().
+
+This is no different from the other existing tests in fstests, which
+cover this case already.
+
+>
+> > If so, that fails with -EINVAL because the source range is not block
+> > size aligned, and we already have generic fstests that test attempt to
+> > duplication and clone non-aligned ranges that don't end at eof.
+> > This patch doesn't change that behaviour, it only aims to allow
+> > deduplication of the eof block of the source file into the eof of the
+> > destination file.
+> >
+> >
+> > >
+> > > I'm convinced that we could support dedupe to EOF when the ranges of the
+> > > two files both end at the respective file's EOF, but it's the weirder
+> > > corner cases that I worry about...
+> >
+> > Well, we used to do that in btrfs before migrating to the generic code.
+> > Since I discovered the corruption due to deduplication of the eof
+> > block into the middle of a file in 2018's summer, the btrfs fix
+> > allowed deduplication of the eof block only if the destination end
+> > offset matched the eof of the destination file:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=de02b9f6bb65a6a1848f346f7a3617b7a9b930c0
+> >
+> > Since then no issues were found nor users reported any problems so far.
+>
+> <nod> I'm ok with that one scenario, it's the "one range ends at eof,
+> the other doesn't" case that I'm picking on. :)
+>
+> (Another way to shut me up would be to run generic/52[12] with
+> TIME_FACTOR=1000 (i.e. 1 billion fsx ops) and see what comes exploding
+> out. :))
+
+Well, it will take nearly 2 weeks to get those tests to complete with
+1 billion ops, taking into
+account each takes around 500 seconds to run here (on xfs) with 1
+million operations...
+
+>
+> > Any other specific test you would like to see?
+>
+> No, just that.  And mmap reads. :)
+
+Given that we allow cloning of eof into eof already (and that doesn't
+cause any known problems),
+I don't see why you are so concerned with allowing dedupe to behave the same.
+
+The only thing I can see it could be a problem would be comparing the
+contents of the last page beyond the eof position,
+but as stated on the changelog, it's not a problem since we call
+vfs_dedupe_file_range_compare() before we
+round down the length at generic_remap_check_len() - the data compare
+function already has the correct behaviour.
+
+Thanks.
+
+>
+> --D
+>
+> > Thanks.
+> >
+> > >
+> > > --D
+> > >
+> > > > Thanks.
+> > > >
+> > > > > ---
+> > > > >  fs/read_write.c | 10 ++++------
+> > > > >  1 file changed, 4 insertions(+), 6 deletions(-)
+> > > > >
+> > > > > diff --git a/fs/read_write.c b/fs/read_write.c
+> > > > > index 5bbf587f5bc1..7458fccc59e1 100644
+> > > > > --- a/fs/read_write.c
+> > > > > +++ b/fs/read_write.c
+> > > > > @@ -1777,10 +1777,9 @@ static int remap_verify_area(struct file *file, loff_t pos, loff_t len,
+> > > > >   * else.  Assume that the offsets have already been checked for block
+> > > > >   * alignment.
+> > > > >   *
+> > > > > - * For deduplication we always scale down to the previous block because we
+> > > > > - * can't meaningfully compare post-EOF contents.
+> > > > > - *
+> > > > > - * For clone we only link a partial EOF block above the destination file's EOF.
+> > > > > + * For clone we only link a partial EOF block above or at the destination file's
+> > > > > + * EOF.  For deduplication we accept a partial EOF block only if it ends at the
+> > > > > + * destination file's EOF (can not link it into the middle of a file).
+> > > > >   *
+> > > > >   * Shorten the request if possible.
+> > > > >   */
+> > > > > @@ -1796,8 +1795,7 @@ static int generic_remap_check_len(struct inode *inode_in,
+> > > > >         if ((*len & blkmask) == 0)
+> > > > >                 return 0;
+> > > > >
+> > > > > -       if ((remap_flags & REMAP_FILE_DEDUP) ||
+> > > > > -           pos_out + *len < i_size_read(inode_out))
+> > > > > +       if (pos_out + *len < i_size_read(inode_out))
+> > > > >                 new_len &= ~blkmask;
+> > > > >
+> > > > >         if (new_len == *len)
+> > > > > --
+> > > > > 2.11.0
+> > > > >
