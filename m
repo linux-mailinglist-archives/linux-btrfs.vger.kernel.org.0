@@ -2,143 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C21713501E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 00:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0500B135052
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 01:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgAHXxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 18:53:47 -0500
-Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:57902 "EHLO
-        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726721AbgAHXxq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 18:53:46 -0500
-Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.190) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
- Wed,  8 Jan 2020 23:52:35 +0000
-Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
- M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Wed, 8 Jan 2020 23:53:13 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (15.124.72.13) by
- M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Wed, 8 Jan 2020 23:53:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IHBDnEtRE/HxNuyRKtL3kBygUb2vI4mLhZwEWHrlnncHYtxIX1XeoA55IgB2X9jEwZl+QfJn0CUKvQsU3+2QY6ndUWtIsydCPBsGxhNjdl6LKmT3yrY3jmEGEYcXut+9gr1RINGkGtq6xWdIYv8P3YzhdIRel0oHQMwtHoet4v1qMCqI4gVKc2jv+eMQhOBUD8xaasX1GrggxX3w+cdyg0RL4FubzZiVwga+fnLZf/CmdW8kWstx+YtxuT4UAU3sLwiiDRuTOGEi7BZDqn2yrzE8sRpz9WHyjNLTQ3zDqo22sQfA0ieqd08faWtfA6JKdhlp6tULH4yLuG+uP6+DjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8AWPmGjG8/7sbkTDOKnBsA+v3yYwe13p5mkxxg0n6mA=;
- b=LceyA5FDRjRMZCpCpjz6AbcdWB7c1qc113Oj3YWRBqyAzm46Qv00bQWTklCuitd3dIEbGwqq5Kw4oSN9eYMKVO75aGtpBoK6jAXqMun1m849UmtP3WymyiekpJAwNlV4MrFURcQ6+DLQqfTiwggfEZBai6Q33S8mTv77fPxtM+93ZqPjE5xgY5ZVdCgoMZJVe2YX70nfMPk7J08VwqArARSgcZ68hQe1sNFae9124jm1W9wlNQlIBwxRglribLgYJVr/NLiGCTeZ8IQEE+arthD+QudD+Cj6jtxGe/XZcHWkYjnVntou9Q3RTuBRtZRZ6rTS8/pkCPKSpcL2JhwLIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3185.namprd18.prod.outlook.com (10.255.137.78) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.10; Wed, 8 Jan 2020 23:53:11 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd%7]) with mapi id 15.20.2623.010; Wed, 8 Jan 2020
- 23:53:11 +0000
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0084.namprd05.prod.outlook.com (2603:10b6:a03:e0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.4 via Frontend Transport; Wed, 8 Jan 2020 23:53:10 +0000
-From:   Qu WenRuo <wqu@suse.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v3 1/3] btrfs: Introduce per-profile available space
- facility
-Thread-Topic: [PATCH v3 1/3] btrfs: Introduce per-profile available space
- facility
-Thread-Index: AQHVxJ5IZkfMiqbFt0+LulmbjZmcXafedu6AgAJpvYCAAJOlAA==
-Date:   Wed, 8 Jan 2020 23:53:11 +0000
-Message-ID: <e1fa655e-e42a-4bd4-6f83-6175c38a1219@suse.com>
-References: <20200106061343.18772-1-wqu@suse.com>
- <20200106061343.18772-2-wqu@suse.com> <20200106143242.GG3929@twin.jikos.cz>
- <9c2308bb-c3ae-d502-4b27-f8dbedc25d1a@gmx.com>
- <20200108150441.GG3929@twin.jikos.cz>
-In-Reply-To: <20200108150441.GG3929@twin.jikos.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR05CA0084.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::25) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [149.28.201.231]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 04cc5aa8-33b5-40d3-b368-08d79495eb12
-x-ms-traffictypediagnostic: BY5PR18MB3185:
-x-microsoft-antispam-prvs: <BY5PR18MB31856F69ECA5477F05B70D87D63E0@BY5PR18MB3185.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 02760F0D1C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(396003)(376002)(136003)(366004)(39860400002)(189003)(199004)(316002)(6706004)(2616005)(956004)(71200400001)(52116002)(8936002)(64756008)(66446008)(66556008)(31686004)(66476007)(16576012)(16526019)(186003)(110136005)(8676002)(26005)(81166006)(81156014)(31696002)(66946007)(86362001)(478600001)(6486002)(36756003)(5660300002)(2906002)(78286006);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3185;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6xDppNzkPNOkhPoRnDRqIob59XlqHwpJ+7YDatb3G8B8PbuYAXFG9mRo/U4jg4sJaeSm/MB3QHlcZiYMom8L89LpGQHoRkuv9/kDZT8KvQ0txhsWzW9/GPyFjO4vqrje18TEOHyP3FIH2KlHlQmTCNefMCAQlnll2shU2+oUv4PDFl6MNsbN+JfbXFlSGAddH8xqbGPpvUEawcpqk3yQ5SdJI8d/MdyHFn0TZUFGxTWEKfDI6viEUCNRe0wIj224QoxAEbLxX3vRdCuuSat1C6QlyQuewLr8TQa4g+xN53ofbUWAF1DQgnchCTWMIs6Z4a7p6FEtbRVpfeMkJmFZvif4ASFFPVgJckDBDBKfTcadSCNlad9e0ESdp9k8ik0omTUQKRI2OqwEjzynlb6ZdKN82+g9rpIv1XdTfzc92RTFTc5+yW+LjG00K7D3hPxSqagCo9S+fayhO3rEqpY7VGfxxuB8vH6Kih3nDhrLoaB6NrQWvb+iQ/1XhsGyShMr
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <34359F259E711644874483BD37AED7B9@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726758AbgAIALh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jan 2020 19:11:37 -0500
+Received: from mout.gmx.net ([212.227.17.21]:43785 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgAIALh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jan 2020 19:11:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578528685;
+        bh=DWnO07bFdl6GJfwQMeoQBtvBDgKzns114yACLKYbymw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=BrGq955FAokfqhqqHdnSIUu7CnE/CRjZvJXCPa8Z6/sx7p0KNu97SITPOKyKloz6Y
+         i2+NJC53OCGQnYAsdUPjKQnjZmVjI0C2rXY+oo+IxtQ+x8gLM0BEeVdNnFy/R7kiNn
+         mTGA+ZQgrmCw0THrqnMHXDhm2Nf6DSMr9ikbZ74k=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7i8Y-1jk2XO3aUs-014j4W; Thu, 09
+ Jan 2020 01:11:25 +0100
+Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by
+ extended reloc tree lifespan
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.com>
+References: <20200108051200.8909-1-wqu@suse.com>
+ <7482d2f3-f3a1-7dd9-6003-9042c1781207@toxicpanda.com>
+ <2bfd87cf-2733-af0d-f33f-59e07c25d500@suse.com>
+ <3b6e5dc3-c1fc-c619-9939-16ffc0f1eacb@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f5d2693b-9b30-e067-1ed5-a40255e8991b@gmx.com>
+Date:   Thu, 9 Jan 2020 08:11:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04cc5aa8-33b5-40d3-b368-08d79495eb12
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 23:53:11.3382
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TxxvHIXP0BeIOSZTEMwMWerqFq3TnSh7+yBmNx2xyUK8hvAVfdZD7OnAsc0RLWP8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3185
-X-OriginatorOrg: suse.com
+In-Reply-To: <3b6e5dc3-c1fc-c619-9939-16ffc0f1eacb@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:toUgyd4P3yxn5VnlcO6wUpMRTOmS6tTy2CXkzXz91XIq0Xgo2r+
+ lFQkfzQmn5fX/A1f5HRaHtH5t8Dq2fjAza2EdsHfuZE5xpSajWUAAfNS48SbjK3tQqnpNB4
+ 5rvk7/Mvy7Ix2MbWZubtVgv8uFHonRmiUZcHekZHiThWMIjVfd6ioQEhpBTb2/d3cDIA+Ai
+ 2p9PKxm9oJ+XM70EUptCQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h1dSLdR6oB4=:9IYZ5U293JS7MtJ/E6ZuMe
+ FaA+TkoIHNDALGv8Ov1rp6t492Di6xhj275UTvSG+fZ/fHea0+cT3O4AjRXZG5Jil8q6vUL1X
+ Xq9vt7ECxZDA2+4Dzrvgn4YGmymhjgcpYrw78m8aB68u4AMuVLD5O+oP/8HvoX/jaVUxOirYW
+ SiTS8msbWZHQd9JMoUGjKA5zIHCdJy+eQWKh1PuA4+lVXAaG0CfFRLkcCP12jdE6jgjxaRCjp
+ Ojh5CJ7kp7te7pKljwIdWz6QW7nIWazCc/w1VgDbFKuCDJPupTOBZIoaDCRv8OM53wXiG3OWb
+ IGM84/pWe2Hn/Xap2FUb5F25tETR36+mjoZElEzbpi19Xam3c2tRv00AcdOP0KPmx4ESS8Qxr
+ FR8bWEKqcYsQTjP05ZVV9lF4/IDv6hLyll8C3DXIjdra0P/HH1X1BkWCPZ0q/efWVKh9vc4Dg
+ BNp7foA0CtdifkhXJt9q+NlXzysP2IA0mYgj7TV40wpC8zRwGlYcz7GVNCN5r3SOQ74h/hA3N
+ H7QrB1HXhvjd/6hs4IpXyS2lgz7JiS0C8pZa0K48QCdQi1/g01PLSjhrB1EpMl6MW3IpWT+rU
+ KD3QeRP6++Mo1rDWwNpqarvbtoMWq2axJBNXOzgqWLfDOe1JYc6tFk7h5igyoPa4F/hzKdqJC
+ 9w1Xh0FnTteBIgCX39a3pSChWHogUVAA45gvAO52BJHHKkLqKFnnYucUSemViHoVZvU3ezp4B
+ R9oakG6s6j1fNZbcLW2ALnMSGGVORh3t7WnUn3GLFsLTxqUSJ7cOb+jX9g5fNkB4Rrmi2O/xT
+ JbdJH0MYnskaqafH6SC2QNwZYKQ/ZFvrlGYCxGw8XVVZZ4KF9bWXkkMpBxIBrGyRi1+LrjWdS
+ uuyCL6Iz6xghG73z/dTmll+TmsFidDidIGxUr/XvORlRqwVgeluP5xekizs++0xt/QnadgLb5
+ SL9P6mE+xtiWhGWFEq2EuyiEa6OFk4Pc0OMkmpT34HODN95Gg1jEd/ROB9wIFI6MRS7OVokIz
+ 7zn5qFFrKLhz9ob7OTgPFplCByDC/sHo7lLJ9HVHNKvnYJ+Rq6D7QpNomWwD03/pT6cFXBmXO
+ prxAQ2YXdKtUGpLp7sN2XPygNlZiKspacsyXWiCfQuK4Zx1pVVF9hnraHrnPdtSV+e45vWTvM
+ Ff9Z7NFtlZX6JvoCI2rcs1nL+HVA8M5kpjriO/FgoEcuSiIWLz2xWUq7CGoFvSmfa7C0UEbbh
+ xlxTJ2W3FCmkoVxtQrZaPGMLJlppM6uZrWrHJlyUs104P6K8Qp/Vi+ZPcxQw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjAvMS84IOS4i+WNiDExOjA0LCBEYXZpZCBTdGVyYmEgd3JvdGU6DQo+IE9uIFR1
-ZSwgSmFuIDA3LCAyMDIwIGF0IDEwOjEzOjQzQU0gKzA4MDAsIFF1IFdlbnJ1byB3cm90ZToNCj4+
-Pj4gKwlkZXZpY2VzX2luZm8gPSBrY2FsbG9jKGZzX2RldmljZXMtPnJ3X2RldmljZXMsIHNpemVv
-ZigqZGV2aWNlc19pbmZvKSwNCj4+Pj4gKwkJCSAgICAgICBHRlBfTk9GUyk7DQo+Pj4NCj4+PiBD
-YWxsaW5nIGtjYWxsb2MgaXMgYW5vdGhlciBwb3RlbnRpYWwgc2xvd2Rvd24sIGZvciB0aGUgc3Rh
-dGZzDQo+Pj4gY29uc2lkZXJhdGlvbnMuDQo+Pg0KPj4gVGhhdCdzIGFsc28gd2hhdCB3ZSBkaWQg
-aW4gc3RhdGZzKCkgYmVmb3JlLCBzbyBpdCBzaG91bGRuJ3QgY2F1c2UgZXh0cmENCj4+IHByb2Js
-ZW0uDQo+PiBGdXJ0aGVybW9yZSwgd2UgZGlkbid0IHVzZSBjYWxjX29uZV9wcm9maWxlX2F2YWls
-KCkgZGlyZWN0bHkgaW4gc3RhdGZzKCkNCj4+IGRpcmVjdGx5Lg0KPj4NCj4+IEFsdGhvdWdoIEkg
-Z2V0IHlvdXIgcG9pbnQsIGFuZCBwZXJzb25hbGx5IHNwZWFraW5nIHRoZSBtZW1vcnkgYWxsb2Nh
-dGlvbg0KPj4gYW5kIGV4dHJhIGluLW1lbW9yeSBkZXZpY2UgaXRlcmF0aW9uIHNob3VsZCBiZSBw
-cmV0dHkgZmFzdCBjb21wYXJlZCB0bw0KPj4gX19idHJmc19hbGxvY19jaHVuaygpLg0KPj4NCj4+
-IFRodXMgSSBkb24ndCB0aGluayB0aGlzIG1lbW9yeSBhbGxvY2F0aW9uIHdvdWxkIGNhdXNlIGV4
-dHJhIHRyb3VibGUsDQo+PiBleGNlcHQgdGhlIGVycm9yIGhhbmRsaW5nIG1lbnRpb25lZCBiZWxv
-dy4NCj4gDQo+IFJpZ2h0LCBjdXJyZW50IHN0YXRmcyBhbHNvIGRvZXMgYWxsb2NhdGlvbiB2aWEN
-Cj4gYnRyZnNfY2FsY19hdmFpbF9kYXRhX3NwYWNlLCBzbyBpdCdzIHRoZSBzYW1lIGFzIGJlZm9y
-ZS4NCj4gDQo+PiBbLi4uXQ0KPj4+PiArCQkJcmV0ID0gY2FsY19wZXJfcHJvZmlsZV9hdmFpbChm
-c19pbmZvKTsNCj4+Pg0KPj4+IEFkZGluZyBuZXcgZmFpbHVyZSBtb2Rlcw0KPj4NCj4+IEFub3Ro
-ZXIgc29sdXRpb24gSSBoYXZlIHRyaWVkIGlzIG1ha2UgY2FsY19wZXJfcHJvZmlsZV9hdmFpbCgp
-IHJldHVybg0KPj4gdm9pZCwgaWdub3JpbmcgdGhlIEVOT01FTSBlcnJvciwgYW5kIGp1c3Qgc2V0
-IHRoZSBhZmZlY3RlZCBwcm9maWxlIHRvIDANCj4+IGF2YWlsYWJsZSBzcGFjZS4NCj4+DQo+PiBC
-dXQgdGhhdCBtZXRob2QgaXMganVzdCBkZWxheWluZyBFTk9NRU0sIGFuZCB3b3VsZCBjYXVzZSBz
-dHJhbmdlDQo+PiBwcmUtcHJvZmlsZSB2YWx1ZXMgdW50aWwgbmV4dCBzdWNjZXNzZnVsIHVwZGF0
-ZSBvciBtb3VudCBjeWNsZS4NCj4+DQo+PiBBbnkgaWRlYSBvbiB3aGljaCBtZXRob2QgaXMgbGVz
-cyB3b3JzZT8NCj4gDQo+IEJldHRlciB0byByZXR1cm4gdGhlIGVycm9yIHRoYW4gd3JvbmcgdmFs
-dWVzIGluIHRoaXMgY2FzZS4gQXMgdGhlDQo+IG51bWJlcnMgYXJlIHNvcnQgb2YgYSBjYWNoZSBh
-bmQgdGhlIG1vdW50IGN5Y2xlIHRvIGdldCB0aGVtIGZpeGVkIGlzIG5vdA0KPiB2ZXJ5IHVzZXIg
-ZnJpZW5kbHksIHdlIG5lZWQgc29tZSBvdGhlciB3YXkuIEFzIHRoaXMgaXMgYSBnbG9iYWwgc3Rh
-dGUsIGENCj4gYml0IGluIGZzX2luZm86OmZsYWdzIGNhbiBiZSBzZXQgYW5kIGZ1bGwgcmVjYWxj
-dWxhdGlvbiBhdHRlbXB0ZWQgYXQNCj4gc29tZSBwb2ludCB1bnRpbCBpdCBzdWNjZWVkcy4gVGhp
-cyB3b3VsZCBsZWF2ZSB0aGUgY291bnRlcnMgc3RhbGUgZm9yDQo+IHNvbWUgdGltZSBidXQgSSB0
-aGluayBzdGlsbCBiZXR0ZXIgdGhhbiBpZiB0aGV5J3JlIHN1ZGRlbmx5IDAuDQo+IA0KSWYgY2Fu
-X292ZXJfY29tbWl0KCkgaXMgdGhlIG9ubHkgdXNlciBvZiB0aGlzIGZhY2lsaXR5LCB0aGVuIGVp
-dGhlciBhbg0KZXh0cmEgaW5kaWNhdG9yIG9yIHN1ZGRlbiAwIGlzIG5vIHByb2JsZW0uDQpBcyBp
-biB0aGF0IGNhc2UsIHdlIGp1c3QgZG9uJ3Qgb3Zlci1jb21taXQgYW5kIGRvIGV4dHJhIGZsdXNo
-IHRvIGZyZWUNCm1ldGEgc3BhY2UuDQoNCkJ1dCB3aGVuIHN0YXRmcygpIGlzIGdvaW5nIHRvIHVz
-ZSB0aGlzIGZhY2lsaXR5LCBlaXRoZXIgc3VkZGVuIDAgbm9yDQppbmRpY2F0b3IgaXMgZ29vZC4N
-Ckp1c3QgaW1hZ2Ugc2Vjb25kcyBiZWZvcmUsIHdlIHN0aWxsIGhhdmUgc2V2ZXJhbCBUaUIgZnJl
-ZSBzcGFjZSwgYW5kIGFsbA0Kb2YgYSBzdWRkZW4sIGp1c3Qgc2V2ZXJhbCBHaUIgZnJlZSAoZnJv
-bSBhbGxvY2F0ZWQgZGF0YSBjaHVua3MpLg0KDQpVc2VyIHdpbGwgZGVmaW5pdGVseSBjb21wbGFp
-bi4NCg0KVGh1cyBJIHN0aWxsIHByZWZlciBwcm9wZXIgZXJyb3IgaGFuZGxpbmcsIGFzIHdoZW4g
-d2UncmUgbG93IG9uIG1lbW9yeSwNCmEgbG90IG9mIHRoaW5ncyBjYW4gZ28gd3JvbmcgYW55d2F5
-Lg0KDQpUaGFua3MsDQpRdQ0K
+
+
+On 2020/1/8 =E4=B8=8B=E5=8D=8811:19, Josef Bacik wrote:
+> On 1/8/20 10:03 AM, Nikolay Borisov wrote:
+[...]
+>>>> + */
+>>>> +static bool have_reloc_root(struct btrfs_root *root)
+>>>> +{
+>>>> +=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->s=
+tate))
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+>>>
+>>> You still need a smp_mb__after_atomic() here, test_bit is unordered.
+>>
+>> Nope, that won't do anything, since smp_mb__(After|before)_atomic only
+>> orders RMW operations and test_bit is not an RMW operation. From
+>> atomic_bitops.txt:
+>>
+>>
+>> Non-RMW ops:
+>>
+>>
+>>
+>> =C2=A0=C2=A0 test_bit()
+>>
+>> Furthermore from atomic_t.txt:
+>>
+>> The barriers:
+>>
+>>
+>>
+>> =C2=A0=C2=A0 smp_mb__{before,after}_atomic()
+>>
+>>
+>>
+>> only apply to the RMW atomic ops and can be used to augment/upgrade the
+>>
+>> ordering inherent to the op.
+>
+> Right but the document says it's unordered.=C2=A0 The problem we're tryi=
+ng to
+> address here is making sure _either_ we see BTRFS_ROOT_DEAD_RELOC_TREE
+> or we see !root->reloc_root.=C2=A0 Which means we don't want the test_bi=
+t
+> being re-ordered WRT the clear_bit on the other side.=C2=A0 So the other=
+ side
+> does
+>
+> reloc_root =3D NULL;
+> smp_mb__before_atomic();
+> clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE);
+
+Yes, that's correct.
+
+>
+> now say on the other side we get re-ordered and we see reloc_root !=3D
+> NULL and we also see !test_bit(BTRFS_ROOT_DEAD_RELOC_TREE), and now
+> we're screwed.
+
+That's not possible. With above mb, there are only several possible
+results on the reader side:
+A: Reloc_root =3D=3D PTR, and DEAD_RELOC_TREE : Before NULL assignment
+B: Reloc_root =3D=3D NULL, and DEAD_RELOC_TREE: after NULL assignment
+C: Reloc_root =3D=3D NULL, no DEAD_RELOC_TREE: after clear_bit().
+
+That's what mb() is doing, killing the unwanted case:
+D: Reloc_root =3D=3D PTR, no DEAD_RELOC_TREE.
+
+On the reader side, even with the mb, the test_bit() can happen whatever
+they want, mb makes no sense for *single* memory access.
+
+>
+> The smp_mb__after_atomic() guarantees that the re-ordering doesn't
+> happen, correct?
+
+That smp_mb() has no effect, as it's not defining any extra order, since
+there is no extra memory access to start with.
+
+And definitely has nothing to do with reader side, as reader can really
+happen whenever they like.
+
+
+=46rom what I learnt recently, mb is only needed between at least *two*
+memory access where the order is really important (to say, kill certain
+re-order possibility).
+
+If there are no two critical accesses at both side, then a mb makes no
+sense.
+
+Hopes this would help.
+
+Thanks,
+Qu
+
+>
+> I realize that this is mostly a moot point on real architectures, but
+> I'm looking at things like ARM where test_bit() uses the generic asm
+> helper, which could definitely be re-ordered as it's nothing special.=C2=
+=A0
+> Thanks,
+>
+> Josef
+>
