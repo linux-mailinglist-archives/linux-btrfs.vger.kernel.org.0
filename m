@@ -2,160 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E90135E86
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 17:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F9F135EDF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 18:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbgAIQoG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 11:44:06 -0500
-Received: from magic.merlins.org ([209.81.13.136]:52442 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgAIQoF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 11:44:05 -0500
-X-Greylist: delayed 922 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jan 2020 11:44:05 EST
-Received: from svh-gw.merlins.org ([173.11.111.145]:60472 helo=saruman.merlins.org)
-        by mail1.merlins.org with esmtps 
-        (Cipher TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.92 #3)
-        id 1ipafo-0006HJ-0p; Thu, 09 Jan 2020 08:28:41 -0800
-Received: from merlin by saruman.merlins.org with local (Exim 4.80)
-        (envelope-from <marc@merlins.org>)
-        id 1ipafn-0008NE-KJ; Thu, 09 Jan 2020 08:28:39 -0800
-Date:   Thu, 9 Jan 2020 08:28:39 -0800
-From:   Marc MERLIN <marc@merlins.org>
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <20200109162839.GA29989@merlins.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 173.11.111.145
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Checker-Version: SpamAssassin 3.4.2-mmrules_20121111 (2018-09-13) on
-        magic.merlins.org
+        id S2387821AbgAIRHG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 12:07:06 -0500
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:41884 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731444AbgAIRHG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 12:07:06 -0500
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 27ECE9C363; Thu,  9 Jan 2020 17:07:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1578589624;
+        bh=7wLvu3GPZePDzO8forIveiUPApnHZzunQr8L0rJFc+Q=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=SQEEGOSoHQ6xc5LJARnqxgaCtTnNt5wFiOJRR24PUNZZa9oow83gU+jw/LYgTDjPh
+         FkIhROEmJ9NC1GZiJ96+HLrvKXY8ehDiq+EyyQvUByX5T3BLqQat1sDuxDHS0l2lPS
+         QozSg37TCd1ilMYIO2sot0Otoji9Q1ef3IvFHD5LWM9oaN/4Y8yLgVmOslc3KNmmkM
+         b0KK1D4lbiRUAZ7UY4WdpkHVcmI0KlI7H9of08fJn66BN/otGaLRjyZ9R70ckElrpS
+         YwMMJGLLY8SDBfCak+38rTsxo9P9crZkiUsqtrOFswpz6K5uhkBtb0y+qV3LZ79Ewh
+         60EHjmBxRovag==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=7.0 tests=GREYLIST_ISWHITE,SPF_SOFTFAIL,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2-mmrules_20121111
-X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: merlins.org]
-        *  1.0 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
-        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
-        *      this receipient and sender
-Subject: 5.4.8: WARNING: errors detected during scrubbing, corrected
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 5C92F9C357;
+        Thu,  9 Jan 2020 17:06:59 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1578589619;
+        bh=7wLvu3GPZePDzO8forIveiUPApnHZzunQr8L0rJFc+Q=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=RzUAef60mUvk70fRBx0W4kSY0aWli5j4G/dd4oIwbgETaA0vc0mHKbRWYskJXLXzg
+         tHJ7ynGU3iNKhjPqMUt/+x6fZoZVv5r2XgnXoFqhBILM64Sv8+NNaPV3yANhR1NzBv
+         p5mE0R6VUq78XjW6BeXCnS06X5FaE+fYztX0+Zv06hwWdYFYKTx0CjSs3988jngscC
+         DSInrUwllqpsbQ9p4Y3TOLf267FwuPV2FSrKuTeiOX5XFHxQ3/kKVS+d+t07kzLV6+
+         bK2Vv/pYQjNldRqeOB2FSGIzPrwlRo/33x/Z7vWkpM4JTrqMotemB+eQr0kqX1Bsl/
+         fvosT2g1HtDTA==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 04FA9A0508;
+        Thu,  9 Jan 2020 17:06:59 +0000 (GMT)
+Subject: Re: btrfs scrub: cancel + resume not resuming?
+To:     =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
+ <654bf850-65bf-65f5-2ed2-90a0d4058e74@cobb.uk.net>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <b1ef69cc-0861-ec6c-aa98-54bb66b2471f@cobb.uk.net>
+Date:   Thu, 9 Jan 2020 17:06:58 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <654bf850-65bf-65f5-2ed2-90a0d4058e74@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Howdy,
+On 09/01/2020 10:19, Graham Cobb wrote:
+> On 09/01/2020 10:03, Sebastian Döring wrote:
+>> Maybe I'm doing it entirely wrong, but I can't seem to get 'btrfs
+>> scrub resume' to work properly. During a running scrub the resume
+>> information (like data_bytes_scrubbed:1081454592) gets written to a
+>> file in /var/lib/btrfs, but as soon as the scrub is cancelled all
+>> relevant fields are zeroed. 'btrfs scrub resume' then seems to
+>> re-start from the very beginning.
+>>
+>> This is on linux-5.5-rc5 and btrfs-progs 5.4, but I've been seeing
+>> this for a while now.
+>>
+>> Is this intended/expected behavior? Am I using the btrfs-progs wrong?
+>> How can I interrupt and resume a scrub?
+> 
+> Coincidentally, I noticed exactly the same thing yesterday!
+> 
+> I have just run a quick test. It works with kernel 4.19 but doesn't with
+> kernel 5.3. This is using exactly the same version of btrfs-progs:
+> v5.3.1 (I just rebooted the same system with an old kernel to check).
+> 
+> As Sebastian says, the symptom is that the file in /var/lib/btrfs shows
+> all fields as zero after the cancel (although "cancelled" and "finished"
+> are both 1). In particular, last_physical is zero so the scrub always
+> resumes from the beginning.
+> 
+> With the old kernel, the file in /var/lib/btrfs correctly has all the
+> values filled in after the cancel so the scrub can be resumed.
 
-I have 6 btrfs pools on my laptop on 3 different SSDs.
-After a few years, one of them is now very slow to scrub
-and hands my laptop while it runs.
-This started under 5.3.8, but upgrading to 5.4.8 didn't fix it.
+I have spent the last couple of hours instrumenting the code of scrub.c
+to try to work out what is going on. The relationship between the main
+thread, the thread where the scrub is running and the thread where the
+status updates are being received from the kernel is quite horrible. Not
+to mention that two of these three threads write out what could be the
+final version of the progress file (and use different data structures as
+the source for that write!).
 
-Also, it output 'errors during scrubbing', but I see nothing in the kernel log:
-btrfs scrub start -Bd /mnt/btrfs_pool2
-scrub device /dev/mapper/pool2 (id 1) done
-        scrub started at Thu Jan  9 01:46:45 2020 and finished after 01:29:49
-        total bytes scrubbed: 1.27TiB with 0 errors
-WARNING: errors detected during scrubbing, corrected
+The basic problem is that the scrub program seems to assume it will have
+seen the cancellation in the update stream *before* the ioctl completes
+with the cancelled status. And that seems to happen the other way round
+in the 5.x kernel. Although I haven't done an actual comparison with a
+4.19 run to check this.
 
-real    89m49.190s
-user    0m0.000s
-sys     13m26.548s
-
-
-89mn is also longer than normal
-
-balance works ok:
-logger: Quick Metadata and Data Balance of /mnt/btrfs_pool2 (/dev/mapper/pool2)
-Done, had to relocate 0 out of 837 chunks
-Done, had to relocate 0 out of 837 chunks
-Done, had to relocate 0 out of 837 chunks
-
-I re-ran a bigger balance, and it ran fine too:
-trfs balance start -musage=60 /mnt/btrfs_pool2; btrfs balance start -dusage=60 /mnt/btrfs_pool2
-
-
-Jan  9 01:46:45 saruman kernel: [14530.056667] BTRFS info (device dm-3): balance: start -musage=0 -susage=0
-Jan  9 01:46:45 saruman kernel: [14530.059623] BTRFS info (device dm-3): balance: ended with status: 0
-Jan  9 01:46:45 saruman kernel: [14530.134043] BTRFS info (device dm-3): balance: start -dusage=0
-Jan  9 01:46:45 saruman kernel: [14530.135525] BTRFS info (device dm-3): balance: ended with status: 0
-Jan  9 01:46:45 saruman kernel: [14530.193798] BTRFS info (device dm-3): balance: start -dusage=20
-Jan  9 01:46:45 saruman kernel: [14530.195642] BTRFS info (device dm-3): balance: ended with status: 0
-Jan  9 01:46:45 saruman kernel: [14530.240290] BTRFS info (device dm-3): scrub: started on devid 1
-Jan  9 01:58:21 saruman kernel: [15226.254196]       Tainted: G        W  OE     5.4.8-amd64-preempt-sysrq-20190816 #1
-Jan  9 01:58:21 saruman kernel: [15226.254198] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Jan  9 01:58:21 saruman kernel: [15226.254201] btrfs-transacti D    0 12403      2 0x80004000
-Jan  9 01:58:21 saruman kernel: [15226.254204] Call Trace:
-Jan  9 01:58:21 saruman kernel: [15226.254211]  ? __schedule+0x575/0x5d0
-Jan  9 01:58:21 saruman kernel: [15226.254215]  ? __list_add+0x12/0x2b
-Jan  9 01:58:21 saruman kernel: [15226.254218]  schedule+0x7b/0xac
-Jan  9 01:58:21 saruman kernel: [15226.254222]  btrfs_scrub_pause+0x99/0xd3
-Jan  9 01:58:21 saruman kernel: [15226.254226]  ? finish_wait+0x62/0x62
-Jan  9 01:58:21 saruman kernel: [15226.254231]  btrfs_commit_transaction+0x307/0x82b
-Jan  9 01:58:21 saruman kernel: [15226.254235]  ? start_transaction+0x37b/0x3ec
-Jan  9 01:58:21 saruman kernel: [15226.254239]  ? schedule_timeout+0xf/0xea
-Jan  9 01:58:21 saruman kernel: [15226.254243]  transaction_kthread+0xdd/0x151
-Jan  9 01:58:21 saruman kernel: [15226.254247]  ? btrfs_cleanup_transaction+0x417/0x417
-Jan  9 01:58:21 saruman kernel: [15226.254250]  kthread+0xf5/0xfa
-Jan  9 01:58:21 saruman kernel: [15226.254253]  ? kthread_create_worker_on_cpu+0x65/0x65
-Jan  9 01:58:21 saruman kernel: [15226.254256]  ret_from_fork+0x35/0x40
-Jan  9 01:58:21 saruman kernel: [15226.254554] INFO: task cron:3869 blocked for more than 120 seconds.
-
-from here, lots of hangs until eventually:
-Jan  9 03:16:34 saruman kernel: [19919.454109] BTRFS info (device dm-3): scrub: finished on devid 1 with status: 0
-
-I see no error about the scrub though.
-
-saruman:/mnt/btrfs_pool2# btrfs fi show .
-Label: 'btrfs_pool2'  uuid: c3ac7621-79da-4d4f-bd59-d12fe7ba3578
-	Total devices 1 FS bytes used 785.58GiB
-	devid    1 size 1.12TiB used 831.21GiB path /dev/mapper/pool2
-
-saruman:/mnt/btrfs_pool2# btrfs fi df .
-Data, single: total=817.08GiB, used=779.88GiB
-System, DUP: total=64.00MiB, used=128.00KiB
-Metadata, DUP: total=7.00GiB, used=5.70GiB
-GlobalReserve, single: total=512.00MiB, used=64.00KiB
-
-saruman:/mnt/btrfs_pool2# btrfs fi usage .
-Overall:
-    Device size:		   1.12TiB
-    Device allocated:		 831.21GiB
-    Device unallocated:		 315.79GiB
-    Device missing:		     0.00B
-    Used:			 791.28GiB
-    Free (estimated):		 352.99GiB	(min: 195.10GiB)
-    Data ratio:			      1.00
-    Metadata ratio:		      2.00
-    Global reserve:		 512.00MiB	(used: 0.00B)
-
-Data,single: Size:817.08GiB, Used:779.88GiB
-   /dev/mapper/pool2	 817.08GiB
-
-Metadata,DUP: Size:7.00GiB, Used:5.70GiB
-   /dev/mapper/pool2	  14.00GiB
-
-System,DUP: Size:64.00MiB, Used:128.00KiB
-   /dev/mapper/pool2	 128.00MiB
-
-Unallocated:
-   /dev/mapper/pool2	 315.79GiB
-
-
-I'm going to stop the scrub for now, but clearly that's not so good.
-
-What should I try next?
-
-Thanks,
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+What I haven't checked, yet, is if the 5.x kernel does actually send the
+final data update if we stick around long enough to receive it.
