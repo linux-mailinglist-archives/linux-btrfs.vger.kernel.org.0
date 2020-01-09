@@ -2,123 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7E41358CD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 13:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A83B135A31
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 14:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730756AbgAIMEy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 07:04:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57222 "EHLO mx2.suse.de"
+        id S1730494AbgAINfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 08:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730101AbgAIMEy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 07:04:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4C97DB1F1C;
-        Thu,  9 Jan 2020 12:04:21 +0000 (UTC)
-Subject: Re: Monitoring not working as "dev stats" returns 0 after read error
- occurred
-To:     Philip Seeger <philip@philip-seeger.de>,
-        Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     linux-btrfs@vger.kernel.org
-References: <3283de40c2750cd62d020ed71430cd35@philip-seeger.de>
- <d89fe4da-c498-bb24-8eb5-a19b01680a23@cobb.uk.net>
- <ac61f79a3c373f319232640db5db9a5e@philip-seeger.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <2a9bf923-e7b9-9d82-5f1d-bbdfc192978e@suse.com>
-Date:   Thu, 9 Jan 2020 14:04:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1728974AbgAINfA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 08:35:00 -0500
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E05F20661;
+        Thu,  9 Jan 2020 13:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578576899;
+        bh=B5yzemeRMvzL4pKKGwpH7BIBwVJZXFC+F4JbFhOpfek=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FP854yG1iF6PZ3f6ByuN1p2Ck1GBxOzQ7bJVht0FIaYDlv1ZpMklxdzoRLjXc24xu
+         yLKaBtnOxLxgrrHRlvX1FPMkTu5c2imI1AWkgiKt56QokkSQZHzV5fJTLYZBVp6zDp
+         o7s2RWwZqfybKsBicS2CNXr6XgOrIP1D8y9ov0kg=
+Message-ID: <03e0e79fefcd9e7985a5defce5d5833d3175847a.camel@kernel.org>
+Subject: Re: [PATCH v4] fs: Fix page_mkwrite off-by-one errors
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, YueHaibing <yuehaibing@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chao Yu <yuchao0@huawei.com>
+Date:   Thu, 09 Jan 2020 08:34:56 -0500
+In-Reply-To: <20200108131528.4279-1-agruenba@redhat.com>
+References: <20200108131528.4279-1-agruenba@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <ac61f79a3c373f319232640db5db9a5e@philip-seeger.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9.01.20 г. 12:33 ч., Philip Seeger wrote:
-> On 2020-01-08 20:35, Graham Cobb wrote:
->>> BTRFS info (device sda3): read error corrected: ino 194473 off 2170880
->>
->> I am not convinced that that message is telling you that the error
->> happened on device sda3. Certainly in some other cases Btrfs error
->> messages  identify the **filesystem** using the name of the device the
->> kernel thinks is mounted, which might be sda3.
+On Wed, 2020-01-08 at 14:15 +0100, Andreas Gruenbacher wrote:
+> Hi Darrick,
 > 
-> You're right, it looks like I copied the wrong piece, my bad. This btrfs
-> filesystem is a mirror with two drives:
+> here's an updated version with the latest feedback incorporated.  Hope
+> you find that useful.
 > 
-> # btrfs fi show / | grep devid
->     devid    1 size 100.00GiB used 81.03GiB path /dev/sda3
->     devid    2 size 100.00GiB used 81.03GiB path /dev/nvme0n1p3
+> As far as the f2fs merge conflict goes, I've been told by Linus not to
+> resolve those kinds of conflicts but to point them out when sending the
+> merge request.  So this shouldn't be a big deal.
 > 
-> And this is from dmesg:
+> Changes:
 > 
-> print_req_error: critical medium error, dev nvme0n1, sector 40910720
-> flags 84700
-> BTRFS info (device sda3): read error corrected: ino 194473 off 2134016
-> (dev /dev/nvme0n1p3 sector 36711808)
+> * Turn page_mkwrite_check_truncate into a non-inline function.
+> * Get rid of now-unused mapping variable in ext4_page_mkwrite.
+> * In btrfs_page_mkwrite, don't ignore the return value of
+>   block_page_mkwrite_return (no change in behavior).
+> * Clean up the f2fs_vm_page_mkwrite changes as suggested by
+>   Jaegeuk Kim.
 > 
-> So it's nvme0n1 that's about to die. But it doesn't matter, dev stats
-> prints 0 for all error counts as if nothing had ever happened.
+> Thanks,
+> Andreas
 > 
+> --
+> 
+> The check in block_page_mkwrite that is meant to determine whether an
+> offset is within the inode size is off by one.  This bug has been copied
+> into iomap_page_mkwrite and several filesystems (ubifs, ext4, f2fs,
+> ceph).
+> 
+> Fix that by introducing a new page_mkwrite_check_truncate helper that
+> checks for truncate and computes the bytes in the page up to EOF.  Use
+> the helper in the above mentioned filesystems.
+> 
+> In addition, use the new helper in btrfs as well.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> Acked-by: David Sterba <dsterba@suse.com> (btrfs)
+> Acked-by: Richard Weinberger <richard@nod.at> (ubifs)
+> Acked-by: Theodore Ts'o <tytso@mit.edu> (ext4)
+> Acked-by: Chao Yu <yuchao0@huawei.com> (f2fs)
+> ---
+>  fs/btrfs/inode.c        | 16 +++++-----------
+>  fs/buffer.c             | 16 +++-------------
+>  fs/ceph/addr.c          |  2 +-
+>  fs/ext4/inode.c         | 15 ++++-----------
+>  fs/f2fs/file.c          | 19 +++++++------------
+>  fs/iomap/buffered-io.c  | 18 +++++-------------
+>  fs/ubifs/file.c         |  3 +--
+>  include/linux/pagemap.h |  2 ++
+>  mm/filemap.c            | 28 ++++++++++++++++++++++++++++
+>  9 files changed, 56 insertions(+), 63 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index e3c76645cad7..23e6f614e000 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9011,16 +9011,15 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  		goto out_noreserve;
+>  	}
+>  
+> -	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
+>  again:
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+>  
+> -	if ((page->mapping != inode->i_mapping) ||
+> -	    (page_start >= size)) {
+> -		/* page got truncated out from underneath us */
+> +	ret2 = page_mkwrite_check_truncate(page, inode);
+> +	if (ret2 < 0) {
+> +		ret = block_page_mkwrite_return(ret2);
+>  		goto out_unlock;
+>  	}
+> +	zero_start = ret2;
+>  	wait_on_page_writeback(page);
+>  
+>  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
+> @@ -9041,6 +9040,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  		goto again;
+>  	}
+>  
+> +	size = i_size_read(inode);
+>  	if (page->index == ((size - 1) >> PAGE_SHIFT)) {
+>  		reserved_space = round_up(size - page_start,
+>  					  fs_info->sectorsize);
+> @@ -9073,12 +9073,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  	}
+>  	ret2 = 0;
+>  
+> -	/* page is wholly or partially inside EOF */
+> -	if (page_start + PAGE_SIZE > size)
+> -		zero_start = offset_in_page(size);
+> -	else
+> -		zero_start = PAGE_SIZE;
+> -
+>  	if (zero_start != PAGE_SIZE) {
+>  		kaddr = kmap(page);
+>  		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index d8c7242426bb..53aabde57ca7 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2499,23 +2499,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
+>  	struct page *page = vmf->page;
+>  	struct inode *inode = file_inode(vma->vm_file);
+>  	unsigned long end;
+> -	loff_t size;
+>  	int ret;
+>  
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+> -	if ((page->mapping != inode->i_mapping) ||
+> -	    (page_offset(page) > size)) {
+> -		/* We overload EFAULT to mean page got truncated */
+> -		ret = -EFAULT;
+> +	ret = page_mkwrite_check_truncate(page, inode);
+> +	if (ret < 0)
+>  		goto out_unlock;
+> -	}
+> -
+> -	/* page is wholly or partially inside EOF */
+> -	if (((page->index + 1) << PAGE_SHIFT) > size)
+> -		end = size & ~PAGE_MASK;
+> -	else
+> -		end = PAGE_SIZE;
+> +	end = ret;
+>  
+>  	ret = __block_write_begin(page, 0, end, get_block);
+>  	if (!ret)
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index 7ab616601141..ef958aa4adb4 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
+>  	do {
+>  		lock_page(page);
+>  
+> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
+> +		if (page_mkwrite_check_truncate(page, inode) < 0) {
+>  			unlock_page(page);
+>  			ret = VM_FAULT_NOPAGE;
+>  			break;
 
-According to the log provided the error returned from the NVME device is
-BLK_STS_MEDIUM/-ENODATA hence the "critical medium" string there. Btrfs'
-code OTOH only logs error in case we it gets STS_IOERR or STS_TARGET
-from the block layer. It seems there are other error codes which are
-also ignored but can signify errors e.g. STS_NEXUS/STS_TRANSPORT.
 
-So as it stands this is expected but I'm not sure it's correct behavior,
-perhaps we need to extend the range of conditions we record as errors.
+You can add my Acked-by on the ceph part.
 
-Thanks for the report.
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-
-<snip>
