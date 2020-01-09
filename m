@@ -2,154 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6CD1361DB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 21:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597E213637D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 23:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgAIUfm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 15:35:42 -0500
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:46896 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbgAIUfm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 15:35:42 -0500
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 80B279C363; Thu,  9 Jan 2020 20:35:39 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578602139;
-        bh=yr7ri2YZkS3NKDWQXQf4+utzJ8gU6Uhtwbo7gp9dvtQ=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=rj+dw8VQLpXFra3nhzUNQEfYSQpIuPO2iXOq4PaKiTj6Jjd8m2W/Houw9qz3v+5KQ
-         sw8gcVfcXr3K6MkJcImmboU4eBKrAVGqI7ZXBRGxvRQeB+bCtCTYsTAROVlpVZOlWl
-         bgfGU/sTGEAwwf2ZeZirEAXTn2mKq/a1re6saaivj+1N5gZG6lPkL1S4an8nWUixmm
-         bKNAKy0sGXeddoJ9qfNoIKNvMV083lFOk55ZJXvdKLLNXBxYORC2G5txiX6sPxXfe1
-         a9OdXiXywvHESc3iv5Fn8A72IvcAo80m9zaXrEQ9Z93zweCH4HHeHkwmwFm1pcthAR
-         UtrC8IBqtO27A==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 5640D9C357;
-        Thu,  9 Jan 2020 20:35:34 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578602134;
-        bh=yr7ri2YZkS3NKDWQXQf4+utzJ8gU6Uhtwbo7gp9dvtQ=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=XjiRbOTeCXe7p9OxSzENSdT2VpdBzaksG4yPF/XC123VkS0A1yNu3vnKEqFKdn3S7
-         rGGJZHVnkFVbgQIfwtmcvtAF7i+Uki23Qz5oCP9HLIOCoLcXDLBGEUeT7HpuuE4ly0
-         LL2v/Kww6fQ0ZKuvzssfAQF9lvbfDozZTU3V5nM3IBzxvPaecr+ahR1KkFzzIQBsul
-         5sNspkzijvawVjxgc1eqsyiDwWg9NmUGfKVxCU0uvp/psCuwt28wz9x5ciF6Q7OPni
-         PQo8eBKvQFKvRP3rlibcw4vB5J8lxmU5Td2s+bENIxyqYWpDsNHaZV8puufwcbsFSs
-         q8WghHuK+Uckg==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 04A7CA0691;
-        Thu,  9 Jan 2020 20:35:34 +0000 (GMT)
-Subject: Re: btrfs scrub: cancel + resume not resuming?
-To:     =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
- <654bf850-65bf-65f5-2ed2-90a0d4058e74@cobb.uk.net>
- <b1ef69cc-0861-ec6c-aa98-54bb66b2471f@cobb.uk.net>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <81000b63-3fa8-a892-b4a8-79218f05d08d@cobb.uk.net>
-Date:   Thu, 9 Jan 2020 20:35:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729501AbgAIWtB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 17:49:01 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46465 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728912AbgAIWtA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 17:49:00 -0500
+Received: by mail-wr1-f67.google.com with SMTP id z7so9113161wrl.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Jan 2020 14:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pdHSSxoF0OqVbTTHcXbEiQ0EWCIaWYi/DNSskbh8/Vo=;
+        b=T7CkZ/aDC4aQ9m3V9qKxwrZva1BksO5FeoO20YI3Wpd6115e9ta0TCXn79bE9LynaW
+         8SHuPYVN+a7Ni4ea4FpNcaxIhCVpbrM14goMPLU74z1E4dhkqvW0vO/W8WhhAyd2JYfc
+         Fp/wS2XfGIv1haJR0PaS/tdgoKbs3SD0VrjfdaXaTCfnrEjF9MyO2dAGwh9PxBa1+Fe5
+         VeEsAtT5uuLROptXbvFt/rVJmm24BIielqOYn2aYM0rdYnGYtmw5BR9PKuQC6IwGZXDI
+         ezGV/C3vvsShmhTyyqdLx8DywufeqRHNIIc1OjLiVByXXoBGZYq/W86Zekq66E4xmztN
+         n2eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pdHSSxoF0OqVbTTHcXbEiQ0EWCIaWYi/DNSskbh8/Vo=;
+        b=fq1OU8lhn8dapDaSmmABdcgdlZQTQHyLuU27P4fLYQqb7Om+esFzhuaJ4fx6Y/Xp0w
+         yLh1ASRVZ+XWhSrMOEoPaVqnAzEI+AdlaRpf8QYSs0chlWMcYVc3MmnSSzfBqlLCWiKi
+         3lsJ4cZVARTHAZBzy15O0QHedGcd7ROKoHjnGCHX3HnWs6d1o+fmfL0QLu1Kmjm/YCBD
+         kOzcBx83ME/VyOwN0mQ3eqADI4zT8Q6PQqcJoVgG0gL2AdXKeovAhnaf59Swn3Z6LGhm
+         lK4zRYb6/9AYk3Gyh85sM2u0Wj8g04k+6tdJOT1/twOUyF/X6OGkK0TCYwRgueOLUI0E
+         HYyg==
+X-Gm-Message-State: APjAAAVttMQ2FlxrumK0f5fx+UNPxy319eXBgDK8PPSKqGDHlYpCsuuQ
+        yMfETj5SrBlL4Law+SfZ8LfLI+eRok2Er0Vu2p9oUQPsM8fafA==
+X-Google-Smtp-Source: APXvYqwt1TMyX/+r30GttmmFMo6PZ3drhIyx28UXu+n4I00xcnvI+Qdjw961ES7tAzkT18eJZOd19lmivB5os9UZfUk=
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr93090wrp.167.1578610139771;
+ Thu, 09 Jan 2020 14:48:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b1ef69cc-0861-ec6c-aa98-54bb66b2471f@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <b2ccde6952d0fa67c9948a21cd3ac8eddcdb3970.camel@render-wahnsinn.de>
+ <CAJCQCtQQWGRQBAeCKt07MG33t9vwi-gahn7Mn9xJpA=HSAuTbw@mail.gmail.com> <0530e18f43a5f31ff8d446be362951f68068b5db.camel@render-wahnsinn.de>
+In-Reply-To: <0530e18f43a5f31ff8d446be362951f68068b5db.camel@render-wahnsinn.de>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 9 Jan 2020 15:48:43 -0700
+Message-ID: <CAJCQCtTwRx3OX4YmNQ5cDkhuiATa7LRp-iA3LQQW2af1t4AQrQ@mail.gmail.com>
+Subject: Re: How long should a btrfs scrub with RAID5/6 take?
+To:     Robert Krig <robert.krig@render-wahnsinn.de>
+Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09/01/2020 17:06, Graham Cobb wrote:
-> On 09/01/2020 10:19, Graham Cobb wrote:
->> On 09/01/2020 10:03, Sebastian Döring wrote:
->>> Maybe I'm doing it entirely wrong, but I can't seem to get 'btrfs
->>> scrub resume' to work properly. During a running scrub the resume
->>> information (like data_bytes_scrubbed:1081454592) gets written to a
->>> file in /var/lib/btrfs, but as soon as the scrub is cancelled all
->>> relevant fields are zeroed. 'btrfs scrub resume' then seems to
->>> re-start from the very beginning.
->>>
->>> This is on linux-5.5-rc5 and btrfs-progs 5.4, but I've been seeing
->>> this for a while now.
->>>
->>> Is this intended/expected behavior? Am I using the btrfs-progs wrong?
->>> How can I interrupt and resume a scrub?
->>
->> Coincidentally, I noticed exactly the same thing yesterday!
->>
->> I have just run a quick test. It works with kernel 4.19 but doesn't with
->> kernel 5.3. This is using exactly the same version of btrfs-progs:
->> v5.3.1 (I just rebooted the same system with an old kernel to check).
->>
->> As Sebastian says, the symptom is that the file in /var/lib/btrfs shows
->> all fields as zero after the cancel (although "cancelled" and "finished"
->> are both 1). In particular, last_physical is zero so the scrub always
->> resumes from the beginning.
->>
->> With the old kernel, the file in /var/lib/btrfs correctly has all the
->> values filled in after the cancel so the scrub can be resumed.
-> 
-> I have spent the last couple of hours instrumenting the code of scrub.c
-> to try to work out what is going on. 
+On Wed, Jan 8, 2020 at 11:38 PM Robert Krig
+<robert.krig@render-wahnsinn.de> wrote:
+>
+> I'm on Debian using Kernel 5.3.0-0.bpo.2-amd64 and btrfs-progs version
+> v5.2.1.
+>
+> Here's an output of scrub status:
+> ######################################
+> UUID:             c4adb372-178b-4398-977d-bc91bef6130f
+>         no stats available
+> Time left:        87884330:53:42
+> ETA:              Thu Oct 26 11:30:49 12045
+> Total to scrub:   18.67TiB
+> Bytes scrubbed:   35.70TiB
+> Rate:             55.60MiB/s
+> Error summary:    no errors found
+> #######################################
 
-I was over-complicating it. The problem is simple:
+10,000 years from now. That's a bug! :D Quick look through btrfs-progs
+git log, I'm pretty sure 5.2 has the current scrub related fixes. But
+it's best if you can test btrfs-progs 5.4 (or even 5.4.1 if you have
+to build it anyway). If it does reproduce still, it might be useful
+for a developer to see the following output:
 
-In kernel 4.19, BTRFS_IOC_SCRUB fills in the (final) progress values in
-the scrub args EVEN WHEN THE SCRUB IS CANCELLED! If the errno is 125
-(and presumably most other values) the output arguments are valid.
+$ cd /sys/fs/btrfs/<fsuuid>/allocation/
+$ grep -r .
 
-In kernel 5.3, THAT IS NO LONGER THE CASE! If the errno is 125, the
-progress values are all 0.
 
-This ABI change breaks btrfs-scrub -- in particular the scrub
-cancel-resume handling. This relies on the scrub ioctl reporting the
-progress values when the scrub is cancelled: those values are written
-out to the file in /var/lib/btrfs and read back in for the resume.
 
-I haven't attempted to look at the kernel code to see why the behaviour
-changed.
+-- 
+Chris Murphy
