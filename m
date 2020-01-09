@@ -2,290 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9D41353A0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 08:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700831354EB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 09:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgAIHRM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 02:17:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60880 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728229AbgAIHRM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 02:17:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A8793AD89
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2020 07:17:09 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v5 4/4] btrfs: statfs: Use pre-calculated per-profile available space
-Date:   Thu,  9 Jan 2020 15:16:34 +0800
-Message-Id: <20200109071634.32384-5-wqu@suse.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200109071634.32384-1-wqu@suse.com>
-References: <20200109071634.32384-1-wqu@suse.com>
+        id S1728988AbgAII52 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 03:57:28 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35397 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728782AbgAII52 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 03:57:28 -0500
+Received: by mail-oi1-f196.google.com with SMTP id k4so5256822oik.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Jan 2020 00:57:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FravID/oNtBUitzJ+ffGiduxKORbdMS87nJZUHq8fzI=;
+        b=eqDvNg5U7emR+gkCeZRBwnJJl8oKOAp3JC6FDdTomwX1DnrntqsaVhRVPdrtHiqoWw
+         RAAvoGl5q7UTkxo+HhYBwMaJQa1D4T4PKnBnebKJihF97B104uYOEfx19t54equXG00Y
+         R9vCyePjqWJZKiS16A0p6Kx6HwonI4amDcboH3Hy+uvxHGzStM4bCtKEEZrnqHUmCump
+         UzYAMGRBU2J+YpeGtayqamrEvGNoaM1yoaR9DkhlZKmSHsCc/ZlmvZN1MpjT1EBwiZhA
+         9Enws5T5R3CANiN46x9u9oR5aXMprwS7LcmDDRoxiZSXNzZaCboRTDxM3YbpoU4wIXS4
+         uSLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FravID/oNtBUitzJ+ffGiduxKORbdMS87nJZUHq8fzI=;
+        b=TGPi81T8TKMOVFqwlaJ+MjKANmMeubDBPCfhuDkpgtQu71GnvWGqMSwxfl8r1pyqWR
+         BEWAkJW8MqMz+oHlirJMbrFZeOAm+k7TMtHYrQ/5r6zVxdi08gTkfFNxqNvrTKq7711b
+         tAVN3ZeDlR8Jt5ajpMBHN4/2bbvY2/Udt7DXJFXiunhGqmUFmbysU/U25EkAZb3qVuhH
+         +zKjN4nkoeWdadBUEEdd4zv3g/xlaAs+PT0kF3UzLh3KKgrNoo9ZFrDgM5DwHhpa9iaY
+         onBlT4AaTWn5IicPPcJNANxqCQ+HIkajz/fe/wBXELGATz5rbPfdaYBozh3wHeH6ZQuV
+         SjQQ==
+X-Gm-Message-State: APjAAAXrzg4djyusyNnUshIq3yORmqXmIjYD8O1snCkZgE6gNKk8Mans
+        iDJW0KQFmDDvSrqpyGscqbIhLUx3QzRPCmMXwpA2+rB43Po=
+X-Google-Smtp-Source: APXvYqyvERVogaajqNmuPg0+FH8Ajkz1wwgOlp9QS2kuPfvtha8Cn5NZCbDA+rjzMRA/TCaYkvXdS3J4OWRYzWlG3p4=
+X-Received: by 2002:a05:6808:683:: with SMTP id k3mr2194161oig.50.1578560247640;
+ Thu, 09 Jan 2020 00:57:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <b2ccde6952d0fa67c9948a21cd3ac8eddcdb3970.camel@render-wahnsinn.de>
+ <CAJCQCtQQWGRQBAeCKt07MG33t9vwi-gahn7Mn9xJpA=HSAuTbw@mail.gmail.com> <0530e18f43a5f31ff8d446be362951f68068b5db.camel@render-wahnsinn.de>
+In-Reply-To: <0530e18f43a5f31ff8d446be362951f68068b5db.camel@render-wahnsinn.de>
+From:   Jorge Bastos <jorge.mrbastos@gmail.com>
+Date:   Thu, 9 Jan 2020 08:57:16 +0000
+Message-ID: <CAHzMYBSrZdjwJcMj86u8Dr_imxyiRN5yE=cFgNC9Tofb42umXw@mail.gmail.com>
+Subject: Re: How long should a btrfs scrub with RAID5/6 take?
+To:     Robert Krig <robert.krig@render-wahnsinn.de>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although btrfs_calc_avail_data_space() is trying to do an estimation
-on how many data chunks it can allocate, the estimation is far from
-perfect:
+I reported recently to the list there there's a performance problem
+with scrubs on raid5/6 pools, initial report and followups here:
 
-- Metadata over-commit is not considered at all
-- Chunk allocation doesn't take RAID5/6 into consideration
+https://lore.kernel.org/linux-btrfs/CAHzMYBTXvY1VgcoFDUvc2NFmVKq2HJRHuS0VXzoneUMh79cySA@mail.gmail.com/
 
-This patch will change btrfs_calc_avail_data_space() to use
-pre-calculated per-profile available space.
+Quick recap:
 
-This provides the following benefits:
-- Accurate unallocated data space estimation, including RAID5/6
-  It's as accurate as chunk allocator, and can handle RAID5/6.
+4 disk raid5 (raid1 metadata)
 
-Although it still can't handle metadata over-commit that accurately, we
-still have fallback method for over-commit, by using factor based
-estimation.
+UUID:             b75ee8b5-ae1c-4395-aa39-bebf10993057
+Scrub started:    Wed Nov 27 07:32:46 2019
+Status:           running
+Duration:         7:34:50
+Time left:        1:52:37
+ETA:              Wed Nov 27 17:00:18 2019
+Total to scrub:   1.20TiB
+Bytes scrubbed:   982.05GiB
+Rate:             36.85MiB/s
+Error summary:    no errors found
 
-The good news is, over-commit can only happen when we have enough
-unallocated space, so even we may not report byte accurate result when
-the fs is empty, the result will get more and more accurate when
-unallocated space is reducing.
+11 disk raid5 (raid1 metadata)
 
-So the metadata over-commit shouldn't cause too many problem.
+UUID:             1236acc8-dbd5-41bd-bf3d-872a8fbbce49
+Scrub started:    Sun Dec 15 11:23:45 2019
+Status:           running
+Duration:         0:51:34
+Time left:        90:06:52
+ETA:              Thu Dec 19 06:22:13 2019
+Total to scrub:   18.10TiB
+Bytes scrubbed:   175.12GiB
+Rate:             57.96MiB/s
+Error summary:    no errors found
 
-Since we're keeping the old lock-free design, statfs should not experience
-any extra delay.
+Same 11 disk pool during a btrfs send to /dev/null confirming it's
+capable of much better read speeds:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/super.c | 182 +++++++++++++----------------------------------
- 1 file changed, 48 insertions(+), 134 deletions(-)
+btrfs send /mnt/disks/Pics/T12_disk1_Pics_2019-12-15-0829/ | pv -bart
+> /dev/null
+At subvol /mnt/disks/Pics/T12_disk1_Pics_2019-12-15-0829/
+ 447GiB 0:13:19 [ 635MiB/s] [ 573MiB/s]
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f452a94abdc3..b5a32339e544 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1894,118 +1894,53 @@ static inline void btrfs_descending_sort_devices(
-  * The helper to calc the free space on the devices that can be used to store
-  * file data.
-  */
--static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
--					      u64 *free_bytes)
-+static u64 btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
-+				       u64 free_meta)
- {
--	struct btrfs_device_info *devices_info;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
--	struct btrfs_device *device;
--	u64 type;
--	u64 avail_space;
--	u64 min_stripe_size;
--	int num_stripes = 1;
--	int i = 0, nr_devices;
--	const struct btrfs_raid_attr *rattr;
-+	enum btrfs_raid_types data_type;
-+	u64 data_profile = btrfs_data_alloc_profile(fs_info);
-+	u64 data_avail;
-+	u64 meta_rsv;
- 
--	/*
--	 * We aren't under the device list lock, so this is racy-ish, but good
--	 * enough for our purposes.
--	 */
--	nr_devices = fs_info->fs_devices->open_devices;
--	if (!nr_devices) {
--		smp_mb();
--		nr_devices = fs_info->fs_devices->open_devices;
--		ASSERT(nr_devices);
--		if (!nr_devices) {
--			*free_bytes = 0;
--			return 0;
--		}
--	}
--
--	devices_info = kmalloc_array(nr_devices, sizeof(*devices_info),
--			       GFP_KERNEL);
--	if (!devices_info)
--		return -ENOMEM;
--
--	/* calc min stripe number for data space allocation */
--	type = btrfs_data_alloc_profile(fs_info);
--	rattr = &btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)];
--
--	if (type & BTRFS_BLOCK_GROUP_RAID0)
--		num_stripes = nr_devices;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1)
--		num_stripes = 2;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C3)
--		num_stripes = 3;
--	else if (type & BTRFS_BLOCK_GROUP_RAID1C4)
--		num_stripes = 4;
--	else if (type & BTRFS_BLOCK_GROUP_RAID10)
--		num_stripes = 4;
-+	spin_lock(&fs_info->global_block_rsv.lock);
-+	meta_rsv = fs_info->global_block_rsv.size;
-+	spin_unlock(&fs_info->global_block_rsv.lock);
- 
--	/* Adjust for more than 1 stripe per device */
--	min_stripe_size = rattr->dev_stripes * BTRFS_STRIPE_LEN;
-+	data_type = btrfs_bg_flags_to_raid_index(data_profile);
- 
--	rcu_read_lock();
--	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
--		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
--						&device->dev_state) ||
--		    !device->bdev ||
--		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
--			continue;
-+	spin_lock(&fs_devices->per_profile_lock);
-+	data_avail = fs_devices->per_profile_avail[data_type];
-+	spin_unlock(&fs_devices->per_profile_lock);
- 
--		if (i >= nr_devices)
--			break;
--
--		avail_space = device->total_bytes - device->bytes_used;
--
--		/* align with stripe_len */
--		avail_space = rounddown(avail_space, BTRFS_STRIPE_LEN);
--
--		/*
--		 * In order to avoid overwriting the superblock on the drive,
--		 * btrfs starts at an offset of at least 1MB when doing chunk
--		 * allocation.
--		 *
--		 * This ensures we have at least min_stripe_size free space
--		 * after excluding 1MB.
--		 */
--		if (avail_space <= SZ_1M + min_stripe_size)
--			continue;
--
--		avail_space -= SZ_1M;
--
--		devices_info[i].dev = device;
--		devices_info[i].max_avail = avail_space;
--
--		i++;
--	}
--	rcu_read_unlock();
--
--	nr_devices = i;
--
--	btrfs_descending_sort_devices(devices_info, nr_devices);
--
--	i = nr_devices - 1;
--	avail_space = 0;
--	while (nr_devices >= rattr->devs_min) {
--		num_stripes = min(num_stripes, nr_devices);
--
--		if (devices_info[i].max_avail >= min_stripe_size) {
--			int j;
--			u64 alloc_size;
--
--			avail_space += devices_info[i].max_avail * num_stripes;
--			alloc_size = devices_info[i].max_avail;
--			for (j = i + 1 - num_stripes; j <= i; j++)
--				devices_info[j].max_avail -= alloc_size;
--		}
--		i--;
--		nr_devices--;
-+	/*
-+	 * We have meta over-committed, do some wild guess using factor.
-+	 *
-+	 * To get an accurate result, we should allocate a metadata virtual
-+	 * chunk first, then allocate data virtual chunks to get real
-+	 * estimation.
-+	 * But that needs chunk_mutex, which could be very slow to accquire.
-+	 *
-+	 * So here we trade for non-blocking statfs. And meta over-committing is
-+	 * less a problem because:
-+	 * - Meta over-commit only happens when we have unallocated space
-+	 *   So no over-commit if we're low on available space.
-+	 *
-+	 * This may not be as accurate as virtual chunk based one, but it
-+	 * should be good enough for statfs usage.
-+	 */
-+	if (free_meta < meta_rsv) {
-+		u64 meta_needed = meta_rsv - free_meta;
-+		int data_factor = btrfs_bg_type_to_factor(data_profile);
-+		int meta_factor = btrfs_bg_type_to_factor(
-+				btrfs_metadata_alloc_profile(fs_info));
-+
-+		if (data_avail < meta_needed * meta_factor / data_factor)
-+			data_avail = 0;
-+		else
-+			data_avail -= meta_needed * meta_factor / data_factor;
- 	}
--
--	kfree(devices_info);
--	*free_bytes = avail_space;
--	return 0;
-+	return data_avail;
- }
- 
- /*
-@@ -2016,10 +1951,13 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
-  *
-  * Unused device space usage is based on simulating the chunk allocator
-  * algorithm that respects the device sizes and order of allocations.  This is
-- * a close approximation of the actual use but there are other factors that may
-- * change the result (like a new metadata chunk).
-+ * a very close approximation of the actual use.
-+ * There are some inaccurate accounting for metadata over-commit, but it
-+ * shouldn't cause big difference.
-  *
-- * If metadata is exhausted, f_bavail will be 0.
-+ * There should be no way to exhaust metadata so that we can't even delete
-+ * files. Thus the old "exhaused metadata means 0 f_bavail" behavior will be
-+ * discard.
-  */
- static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- {
-@@ -2033,8 +1971,6 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	__be32 *fsid = (__be32 *)fs_info->fs_devices->fsid;
- 	unsigned factor = 1;
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
--	int ret;
--	u64 thresh = 0;
- 	int mixed = 0;
- 
- 	rcu_read_lock();
-@@ -2082,31 +2018,9 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		buf->f_bfree = 0;
- 	spin_unlock(&block_rsv->lock);
- 
--	buf->f_bavail = div_u64(total_free_data, factor);
--	ret = btrfs_calc_avail_data_space(fs_info, &total_free_data);
--	if (ret)
--		return ret;
--	buf->f_bavail += div_u64(total_free_data, factor);
-+	buf->f_bavail = btrfs_calc_avail_data_space(fs_info, total_free_meta);
-+	buf->f_bavail += total_free_data;
- 	buf->f_bavail = buf->f_bavail >> bits;
--
--	/*
--	 * We calculate the remaining metadata space minus global reserve. If
--	 * this is (supposedly) smaller than zero, there's no space. But this
--	 * does not hold in practice, the exhausted state happens where's still
--	 * some positive delta. So we apply some guesswork and compare the
--	 * delta to a 4M threshold.  (Practically observed delta was ~2M.)
--	 *
--	 * We probably cannot calculate the exact threshold value because this
--	 * depends on the internal reservations requested by various
--	 * operations, so some operations that consume a few metadata will
--	 * succeed even if the Avail is zero. But this is better than the other
--	 * way around.
--	 */
--	thresh = SZ_4M;
--
--	if (!mixed && total_free_meta - thresh < block_rsv->size)
--		buf->f_bavail = 0;
--
- 	buf->f_type = BTRFS_SUPER_MAGIC;
- 	buf->f_bsize = dentry->d_sb->s_blocksize;
- 	buf->f_namelen = BTRFS_NAME_LEN;
--- 
-2.24.1
-
+Current speed 635MiB/s, average speed so far 573MiB/s
