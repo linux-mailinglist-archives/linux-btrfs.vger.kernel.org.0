@@ -2,91 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C992013534D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 07:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FF513539A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 08:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgAIGif (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 01:38:35 -0500
-Received: from mail.render-wahnsinn.de ([176.9.37.177]:35780 "EHLO
-        mail.render-wahnsinn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbgAIGif (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 01:38:35 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8D03D5F86B;
-        Thu,  9 Jan 2020 07:38:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
-        s=dkim; t=1578551908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aX0eMvpCz96NpTPlZlz9VYVyFsBJdzjt4oYFJzBg+qc=;
-        b=SDHjUNa/M3AF7dzmaxka1k1tkUqR5Ln2G5G1ruFVrZD9t8ZvD1t0r0p62SPjIoFiAxkmF6
-        atk03ShPfO9prUieWGxnHnJbze91Lc5TmARtDc5nNEdOZKzSxtgWjEqi8CxkMsQJ9EQs6Y
-        1/jANCd8RqiwmHXkN/f0vqQuW/d3eRT9D2Ix4qIvAxTisfzY+9UP6SjiUt+doN2CZ8qV/E
-        8obE9NVbEf8Fo8tlF2rzqu0lCVnQca52Ku//sV66kqXh9KMjWYkjBb8s1qhbNm7gf9VFeQ
-        ZL8G9Clu691qqqw+xPcAR87lGKYxwbHBbGicML13lZZFxS2BP8F5RQBWsBEBbw==
-Message-ID: <0530e18f43a5f31ff8d446be362951f68068b5db.camel@render-wahnsinn.de>
-Subject: Re: How long should a btrfs scrub with RAID5/6 take?
-From:   Robert Krig <robert.krig@render-wahnsinn.de>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
-Date:   Thu, 09 Jan 2020 07:38:20 +0100
-In-Reply-To: <CAJCQCtQQWGRQBAeCKt07MG33t9vwi-gahn7Mn9xJpA=HSAuTbw@mail.gmail.com>
-References: <b2ccde6952d0fa67c9948a21cd3ac8eddcdb3970.camel@render-wahnsinn.de>
-         <CAJCQCtQQWGRQBAeCKt07MG33t9vwi-gahn7Mn9xJpA=HSAuTbw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        id S1728164AbgAIHQt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 02:16:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60424 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbgAIHQs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 02:16:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 65161AC65
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2020 07:16:46 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v5 0/4] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Thu,  9 Jan 2020 15:16:30 +0800
+Message-Id: <20200109071634.32384-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm on Debian using Kernel 5.3.0-0.bpo.2-amd64 and btrfs-progs version
-v5.2.1.
+There are several bug reports of ENOSPC error in
+btrfs_run_delalloc_range().
 
-Here's an output of scrub status:
-######################################
-UUID:             c4adb372-178b-4398-977d-bc91bef6130f
-        no stats available
-Time left:        87884330:53:42
-ETA:              Thu Oct 26 11:30:49 12045
-Total to scrub:   18.67TiB
-Bytes scrubbed:   35.70TiB
-Rate:             55.60MiB/s
-Error summary:    no errors found
-#######################################
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
+
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
+
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
 
 
-On Mi, 2020-01-08 at 14:49 -0700, Chris Murphy wrote:
-> On Wed, Jan 8, 2020 at 3:19 AM Robert Krig
-> <robert.krig@render-wahnsinn.de> wrote:
-> > Hi, I've got a server where I have 4x8TB Disks in a BTRFS RAID5
-> > (metadata and systemdata as RAID1) configuration.
-> > 
-> > It's just a backup server with data I can always recreate.
-> > This server is in the bedroom, so I send it to sleep/suspend when I
-> > go
-> > to bed and then wake it up in the morning.
-> > 
-> > Since a scrub takes days on such a setup, I issue a btrfs scrub
-> > resume
-> > whenever the server wakes up again.
-> > 
-> > btrfs scrub status shows me that the total data to scrub is
-> > 18.67TB,
-> > but it's already scrubbed 36.60TB. Is there any way I can calculate
-> > how
-> > much more data is going to be scrubbed? 4x8TB is 32TB, so we're
-> > passed
-> > that, but I'm guessing this also has to do with parity data as
-> > well.
-> > 
-> 
-> What kernel version and btrfs-progs version? Recent btrfs progs has a
-> new output that shows more info including a time to completion
-> estimate. Can you post the output from 'btrfs scrub status
-> /mountpoint/' ?
-> 
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
+
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
+
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
+
+And statfs() can also grab that pre-calculated value for instance usage.
+For metadata over-commit, statfs() falls back to factor based educated
+guess method.
+Since over-commit can only happen when we have unallocated space, the
+problem caused by over-commit should only be a first world problem.
+
+Changelog:
+v1:
+- Fix a bug where we forgot to update per-profile array after allocating
+  a chunk.
+  To avoid ABBA deadlock, this introduce a small windows at the end
+  __btrfs_alloc_chunk(), it's not elegant but should be good enough
+  before we rework chunk and device list mutex.
+  
+- Make statfs() to use virtual chunk allocator to do better estimation
+  Now statfs() can report not only more accurate result, but can also
+  handle RAID5/6 better.
+
+v2:
+- Fix a deadlock caused by acquiring device_list_mutex under
+  __btrfs_alloc_chunk()
+  There is no need to acquire device_list_mutex when holding
+  chunk_mutex.
+  Fix it and remove the lockdep assert.
+
+v3:
+- Use proper chunk_mutex instead of device_list_mutex
+  Since they are protecting two different things, and we only care about
+  alloc_list, we should only use chunk_mutex.
+  With improved lock situation, it's easier to fold
+  calc_per_profile_available() calls into the first patch.
+
+- Add performance benchmark for statfs() modification
+  As Facebook seems to run into some problems with statfs() calls, add
+  some basic ftrace results.
+
+v4:
+- Keep the lock-free design for statfs()
+  As extra sleeping in statfs() may not be a good idea, keep the old
+  lock-free design, and use factor based calculation as fall back.
+
+v5:
+- Enhance btrfs_update_device() error handling in btrfs_grow_device()
+  Revert device size to prevent possible mismatch.
+
+- Ensure all failure caused by calc_per_profile_available() is the same
+  with existing error handling
+  So no new failure pattern.
+
+- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
+
+
+Qu Wenruo (4):
+  btrfs: Reset device size when btrfs_update_device() failed in
+    btrfs_grow_device()
+  btrfs: Introduce per-profile available space facility
+  btrfs: space-info: Use per-profile available space in can_overcommit()
+  btrfs: statfs: Use pre-calculated per-profile available space
+
+ fs/btrfs/space-info.c |  15 ++-
+ fs/btrfs/super.c      | 182 +++++++++------------------------
+ fs/btrfs/volumes.c    | 229 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h    |  11 ++
+ 4 files changed, 274 insertions(+), 163 deletions(-)
+
+-- 
+2.24.1
 
