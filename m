@@ -2,152 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDF013576B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 11:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1127A135792
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 12:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgAIKw5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 05:52:57 -0500
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:32926 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729287AbgAIKw5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 05:52:57 -0500
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id EED129C366; Thu,  9 Jan 2020 10:52:54 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578567174;
-        bh=50/IjVZQRy72li/NoQBokHLC15Tw3Hvb0NOWPVjtwEo=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=C8jsttaTJgRK1YPIBVQJyE5ZrXD0yezPSOh5u/C1a4wqC62hihKcdSTxaqxq5mi4u
-         pd1K6s897+7IieFOEAPS3fXtPsJDkwPZpRfCL8Im3Sq2sryodIeS9IDtQeJh/FD9iG
-         PQge6WlQYV8vXEFjSlhDwupTuQUKziZSbd93P/3cIrDusTXDONSvEq95BZ+ZZaBi52
-         ddBxyaT4IF4ZXe4KQGgRXmUR0L1CHuSJGtwyDYMSGEL7bA6qt/Z5uOahEKkOL03T0v
-         PQrsS9ILCPR+4JSVUvlalC3Z17gwtmTG30rRM2JR0JAhqRjyX/86aBKFkmrcXwZyfT
-         xaV76G7ITkMKQ==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id C9F019C357;
-        Thu,  9 Jan 2020 10:52:49 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1578567169;
-        bh=50/IjVZQRy72li/NoQBokHLC15Tw3Hvb0NOWPVjtwEo=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=uuFKKH6kPOTjOCntouMiL/JnUz3qj4vVYKz04YF99L4oGdT6KGms4rBg4PSCXv8ZG
-         vrVsvTmX8nMDoZAsLzUhmhdDQiRnF/5ac6UUdbL45Y6VVLsjer1VV/Hzy34PCxgyY0
-         wYOK84gKLnzeZ+XFhkN6BhpTeseG5JZSNSK2NHaV5vxA3ZQPGLBzLNYrwvz24Ygavf
-         Bonrp/x0jlq0fAYn2k8fD1vF1K+6IVT0n7EXLIpNavcEEyxJ6k2RBIzGcW5u9d1Nwd
-         esi9N/yHU5f0fSgLGL69HGu8z4gg0rA33HXJ1SLK2T/NYr+5rMzqotEVDg79tWrSas
-         QBOVbUbN1oJDA==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 867ECA0193;
-        Thu,  9 Jan 2020 10:52:49 +0000 (GMT)
-Subject: Re: btrfs scrub: cancel + resume not resuming?
-To:     =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>,
-        =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CADkZQakAhrRHFeHPJfne5oLT81qFGbzNAiUoqb3r0cxVSuHTNg@mail.gmail.com>
- <b031f351-2a9c-83b3-7e4b-ac15791d96e6@applied-asynchrony.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <71add409-04ad-c6be-4f4f-5eec4ffb167c@cobb.uk.net>
-Date:   Thu, 9 Jan 2020 10:52:49 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1730473AbgAILBv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 06:01:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37236 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728635AbgAILBu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 06:01:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B9FDF6A2DA;
+        Thu,  9 Jan 2020 11:01:32 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: check rw_devices, not num_devices for restriping
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200108223929.2761-1-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9c11a3ae-e9c1-c4e5-7a0e-13b8d2ace8d0@suse.com>
+Date:   Thu, 9 Jan 2020 13:01:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <b031f351-2a9c-83b3-7e4b-ac15791d96e6@applied-asynchrony.com>
+In-Reply-To: <20200108223929.2761-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09/01/2020 10:34, Holger Hoffstätte wrote:
-> On 1/9/20 11:03 AM, Sebastian Döring wrote:
->> Maybe I'm doing it entirely wrong, but I can't seem to get 'btrfs
->> scrub resume' to work properly. During a running scrub the resume
->> information (like data_bytes_scrubbed:1081454592) gets written to a
->> file in /var/lib/btrfs, but as soon as the scrub is cancelled all
->> relevant fields are zeroed. 'btrfs scrub resume' then seems to
->> re-start from the very beginning.
->>
->> This is on linux-5.5-rc5 and btrfs-progs 5.4, but I've been seeing
->> this for a while now.
->>
->> Is this intended/expected behavior? Am I using the btrfs-progs wrong?
->> How can I interrupt and resume a scrub?
-> 
-> Using 5.4.9+ (all of btrfs-5.5) and btrfs-progs 5.4 I just tried and
-> it still works for me (and always has):
-> 
-> $btrfs scrub start /mnt/backup
-> scrub started on /mnt/backup, fsid d163af2f-6e03-4972-bfd6-30c68b6ed312
-> (pid=25633)
-> 
-> $btrfs scrub cancel /mnt/backup
-> scrub cancelled
-> 
-> $btrfs scrub resume /mnt/backup
-> scrub resumed on /mnt/backup, fsid d163af2f-6e03-4972-bfd6-30c68b6ed312
-> (pid=25704)
-> 
-> ..and it keeps munching away as expected.
 
-Can you check that the resume has really started from where the scrub
-was cancelled? What I (and, I think, Sebastian) are seeing is that the
-resume "works" but actually restarts from the beginning.
 
-For example, something like:
+On 9.01.20 г. 0:39 ч., Josef Bacik wrote:
+> While running xfstests with compression on I noticed I was panicing on
+> btrfs/154.  I bisected this down to my inc_block_group_ro patches, which
+> was strange.
+> 
+> What was happening is with my patches we now use btrfs_can_overcommit()
+> to see if we can flip a block group read only.  Before this would fail
+> because we weren't taking into account the usable un-allocated space for
+> allocating chunks.  With my patches we were allowed to do the balance,
+> which is technically correct.
+> 
+> However this test is testing restriping with a degraded mount, something
+> that isn't working right because Anand's fix for the test was never
+> actually merged.
+> 
+> So now we're trying to allocate a chunk and cannot because we want to
+> allocate a RAID1 chunk, but there's only 1 device that's available for
+> usage.  This results in an ENOSPC in one of the BUG_ON(ret) paths in
+> relocation (and a tricky path that is going to take many more patches to
+> fix.)
+> 
+> But we shouldn't even be making it this far, we don't have enough
+> devices to restripe.  The problem is we're using btrfs_num_devices(),
+> which for some reason includes missing devices.  That's not actually
+> what we want, we want the rw_devices.
+> 
+> Fix this by getting the rw_devices.  With this patch we're no longer
+> panicing with my other patches applied, and we're in fact erroring out
+> at the correct spot instead of at inc_block_group_ro.  The fact that
+> this was working before was just sheer dumb luck.
+> 
+> Fixes: e4d8ec0f65b9 ("Btrfs: implement online profile changing")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/volumes.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 7483521a928b..ee4d440e544e 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -3881,7 +3881,13 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+>  		}
+>  	}
+>  
+> -	num_devices = btrfs_num_devices(fs_info);
+> +	/*
+> +	 * device replace only adjusts rw_devices when it is finishing, so take
+> +	 * the lock here to make sure we get the right value for rw_devices.
+> +	 */
+> +	down_read(&fs_info->dev_replace.rwsem);
+> +	num_devices = fs_info->fs_devices->rw_devices;
+> +	up_read(&fs_info->dev_replace.rwsem);
 
-btrfs scrub start /mnt/backup
-sleep 300
-btrfs scrub status -R /mnt/backup
-btrfs scrub cancel /mnt/backup
-btrfs scrub resume /mnt/backup
-sleep 100
-btrfs scrub status -R /mnt/backup
+rw_devices is modified under a myriad of locks, to name a few:
 
-and check the last_physical in the second status is higher than the one
-in the first status.
+under chunk/device_list mutex in init_new_device
+
+under device_lsit_mutex  in
+btrfs_open_devices->open_fs_devices->btrfs_open_one_device
+
+uuid mutex in btrfs_rm_device and also under chunk_mutex in an error
+path in the same function.
+
+device_list_mutex in btrfs_rm_dev_replace_remove_srcdev
+
+
+SO you are only protecting from the replace context in this case. Is
+this sufficient?
+
+
+>  
+>  	/*
+>  	 * SINGLE profile on-disk has no profile bit, but in-memory we have a
+> 
