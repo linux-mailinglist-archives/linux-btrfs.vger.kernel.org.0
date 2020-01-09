@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FF513539A
+	by mail.lfdr.de (Postfix) with ESMTP id C4A0B13539C
 	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 08:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgAIHQt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 02:16:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60424 "EHLO mx2.suse.de"
+        id S1728204AbgAIHQx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 02:16:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60476 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgAIHQs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 02:16:48 -0500
+        id S1728152AbgAIHQw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 02:16:52 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 65161AC65
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2020 07:16:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1EB77AC65
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jan 2020 07:16:51 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v5 0/4] Introduce per-profile available space array to avoid over-confident can_overcommit()
-Date:   Thu,  9 Jan 2020 15:16:30 +0800
-Message-Id: <20200109071634.32384-1-wqu@suse.com>
+Subject: [PATCH v5 1/4] btrfs: Reset device size when btrfs_update_device() failed in btrfs_grow_device()
+Date:   Thu,  9 Jan 2020 15:16:31 +0800
+Message-Id: <20200109071634.32384-2-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200109071634.32384-1-wqu@suse.com>
+References: <20200109071634.32384-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,99 +30,69 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are several bug reports of ENOSPC error in
-btrfs_run_delalloc_range().
+When btrfs_update_device() failed due to ENOMEM, we didn't reset device
+size back to its original size, causing the in-memory device size larger
+than original.
 
-With some extra info from one reporter, it turns out that
-can_overcommit() is using a wrong way to calculate allocatable metadata
-space.
+If somehow the memory pressure get solved, and the fs committed, since
+the device item is not updated, but super block total size get updated,
+it would cause mount failure due to size mismatch.
 
-The most typical case would look like:
-  devid 1 unallocated:	1G
-  devid 2 unallocated:  10G
-  metadata profile:	RAID1
+So here revert device size and super size to its original size when
+btrfs_update_device() failed, just like what we did in shrink_device().
 
-In above case, we can at most allocate 1G chunk for metadata, due to
-unbalanced disk free space.
-But current can_overcommit() uses factor based calculation, which never
-consider the disk free space balance.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-
-To address this problem, here comes the per-profile available space
-array, which gets updated every time a chunk get allocated/removed or a
-device get grown or shrunk.
-
-This provides a quick way for hotter place like can_overcommit() to grab
-an estimation on how many bytes it can over-commit.
-
-The per-profile available space calculation tries to keep the behavior
-of chunk allocator, thus it can handle uneven disks pretty well.
-
-And statfs() can also grab that pre-calculated value for instance usage.
-For metadata over-commit, statfs() falls back to factor based educated
-guess method.
-Since over-commit can only happen when we have unallocated space, the
-problem caused by over-commit should only be a first world problem.
-
-Changelog:
-v1:
-- Fix a bug where we forgot to update per-profile array after allocating
-  a chunk.
-  To avoid ABBA deadlock, this introduce a small windows at the end
-  __btrfs_alloc_chunk(), it's not elegant but should be good enough
-  before we rework chunk and device list mutex.
-  
-- Make statfs() to use virtual chunk allocator to do better estimation
-  Now statfs() can report not only more accurate result, but can also
-  handle RAID5/6 better.
-
-v2:
-- Fix a deadlock caused by acquiring device_list_mutex under
-  __btrfs_alloc_chunk()
-  There is no need to acquire device_list_mutex when holding
-  chunk_mutex.
-  Fix it and remove the lockdep assert.
-
-v3:
-- Use proper chunk_mutex instead of device_list_mutex
-  Since they are protecting two different things, and we only care about
-  alloc_list, we should only use chunk_mutex.
-  With improved lock situation, it's easier to fold
-  calc_per_profile_available() calls into the first patch.
-
-- Add performance benchmark for statfs() modification
-  As Facebook seems to run into some problems with statfs() calls, add
-  some basic ftrace results.
-
-v4:
-- Keep the lock-free design for statfs()
-  As extra sleeping in statfs() may not be a good idea, keep the old
-  lock-free design, and use factor based calculation as fall back.
-
-v5:
-- Enhance btrfs_update_device() error handling in btrfs_grow_device()
-  Revert device size to prevent possible mismatch.
-
-- Ensure all failure caused by calc_per_profile_available() is the same
-  with existing error handling
-  So no new failure pattern.
-
-- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
-
-
-Qu Wenruo (4):
-  btrfs: Reset device size when btrfs_update_device() failed in
-    btrfs_grow_device()
-  btrfs: Introduce per-profile available space facility
-  btrfs: space-info: Use per-profile available space in can_overcommit()
-  btrfs: statfs: Use pre-calculated per-profile available space
-
- fs/btrfs/space-info.c |  15 ++-
- fs/btrfs/super.c      | 182 +++++++++------------------------
- fs/btrfs/volumes.c    | 229 ++++++++++++++++++++++++++++++++++++++----
- fs/btrfs/volumes.h    |  11 ++
- 4 files changed, 274 insertions(+), 163 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d8e5560db285..be638465f210 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2633,8 +2633,10 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *fs_info = device->fs_info;
+ 	struct btrfs_super_block *super_copy = fs_info->super_copy;
++	u64 old_device_size;
+ 	u64 old_total;
+ 	u64 diff;
++	int ret;
+ 
+ 	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
+ 		return -EACCES;
+@@ -2642,6 +2644,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 	new_size = round_down(new_size, fs_info->sectorsize);
+ 
+ 	mutex_lock(&fs_info->chunk_mutex);
++	old_device_size = device->total_bytes;
+ 	old_total = btrfs_super_total_bytes(super_copy);
+ 	diff = round_down(new_size - device->total_bytes, fs_info->sectorsize);
+ 
+@@ -2663,7 +2666,22 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 			      &trans->transaction->dev_update_list);
+ 	mutex_unlock(&fs_info->chunk_mutex);
+ 
+-	return btrfs_update_device(trans, device);
++	ret = btrfs_update_device(trans, device);
++	if (ret < 0) {
++		/*
++		 * Although we dropped chunk_mutex halfway for
++		 * btrfs_update_device(), we have FS_EXCL_OP bit to prevent
++		 * shrinking/growing race.
++		 * So we're safe to use the old size directly.
++		 */
++		mutex_lock(&fs_info->chunk_mutex);
++		btrfs_set_super_total_bytes(super_copy, old_total);
++		device->fs_devices->total_rw_bytes -= diff;
++		btrfs_device_set_total_bytes(device, old_device_size);
++		btrfs_device_set_disk_total_bytes(device, old_device_size);
++		mutex_unlock(&fs_info->chunk_mutex);
++	}
++	return ret;
+ }
+ 
+ static int btrfs_free_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
 -- 
 2.24.1
 
