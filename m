@@ -2,31 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB9135055
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 01:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7291352D9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jan 2020 06:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgAIAPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jan 2020 19:15:04 -0500
-Received: from mout.gmx.net ([212.227.15.19]:52551 "EHLO mout.gmx.net"
+        id S1725932AbgAIFyy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 00:54:54 -0500
+Received: from mout.gmx.net ([212.227.15.18]:33209 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgAIAPE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jan 2020 19:15:04 -0500
+        id S1725893AbgAIFyy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jan 2020 00:54:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578528895;
-        bh=SsWwf+brg7EVMwI+MvKuL0AYzgnBph2eIwgBSoATMyQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=kSVF+Nof4LzpD2c2181RkAsyIiyCKZSZxZzpWzF78+QVyhDE0PWWsj4RL+lUFzpsm
-         QIRrvlwyzTz1zgdbD1A71vaB9NkE7ieWd2JVSgFwJInujyQljmjlvUUiZ4y3hSY+rQ
-         D7aBmWB4gjQOhwrNIutDYzvj12DrKiuxXKNNxVlg=
+        s=badeba3b8450; t=1578549281;
+        bh=Ft+ksvRZcEQopdHZ40lth/MHv4ooo1Dp9hv+IJiGyaM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=fAdRs1QsPBqsN1sUW3G/gRS6Pa8x+BGYkSdmwsJM34HAAh21B3NOY8wqy8kZDCRS4
+         wk552qAnZu8zO09d/NCWkNO77PKYKLVLBYLAEafr3l9v1ebR+ym9OF1yh920vnB/7F
+         ipfNnywW4KWCLQKlUz13BWdC3N7DGHVhdWf+Tca0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MS3ir-1jHZp60Xal-00TQeT; Thu, 09
- Jan 2020 01:14:55 +0100
-Subject: Re: [PATCH] btrfs/202: fix golden output
-To:     Johannes Thumshirn <jth@kernel.org>, Eryu Guan <guaneryu@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20200108174510.6261-1-jth@kernel.org>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQe9s-1j0w3a1QCE-00Ngox; Thu, 09
+ Jan 2020 06:54:41 +0100
+Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by
+ extended reloc tree lifespan
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.com>
+References: <20200108051200.8909-1-wqu@suse.com>
+ <7482d2f3-f3a1-7dd9-6003-9042c1781207@toxicpanda.com>
+ <2bfd87cf-2733-af0d-f33f-59e07c25d500@suse.com>
+ <20200108150841.GH3929@twin.jikos.cz> <20200108151159.GI3929@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,115 +58,120 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <7a4bea28-8897-80af-7398-3b5c0fbdd746@gmx.com>
-Date:   Thu, 9 Jan 2020 08:14:51 +0800
+Message-ID: <85422cb2-e140-563b-fadd-f820354ed156@gmx.com>
+Date:   Thu, 9 Jan 2020 13:54:34 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200108174510.6261-1-jth@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="tFn3fDiCesj4iqJlQgqEt2SQrZbFlQX8J"
-X-Provags-ID: V03:K1:2R7IY4cYx8nuUWDuvcddQlOrVfBp/FxStnZQWv/SDWoM6LKnFCt
- N6iAnr6fvHFyb/J3VhQLQTC17K24W3aIpJlZzjlFtXaWSkxjiq7L8yAXO2x/MQN4Tl9gSe0
- r200ME2jhWcLFzW9WYFfjifo1OEc3DQy96JgoYzQ04u0p/U1f9ffR4O5Hb/5A5TCNOs64kh
- i5qE1k/XxW0EIrwtV0lcw==
+In-Reply-To: <20200108151159.GI3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6y305C7R3maMTqvRMsi/SRu8bF9j6ipBSj/UolLna982Uk50A5E
+ hyC17g1NV2v0P5/q0dawjgGFD1UcZMqB7G9pxTxkrG2ZCbFpqwgCaPfSeLhrH4j9JySVXTc
+ qbRs0tzvt5Zv9QNm8mPVALxrgjyf9wVQtjF2DxxwF0WD/nZmVVliP0Rng89g+X96ZBQGhHz
+ FJmGUX2VvkunDG2GjK4Jw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GIfc3SOMXYo=:jhx+9jzo76mKZ/gIci8cx8
- xfaAN1yRxi89+m6yU/9sQUQvKkzoowmOxGQI75GtLv5bZ010M8ckq7yZjFDBEy0Tqajs1p7sH
- eiicn0ixvWEgQ/EetxpdMSwDeYM+j0c/+1HjEBbHF0LItS+8ncypGYNaxJVaruTZ5Dbl3Zbjl
- LuOxYb+Tag9szsNl1DLDE+Kce2V7FTLVHLrpS6o59eSlh221dF7h1BS3z0C7UnL1bLg9I6nJh
- 9oVVKa3tuoAh12iAo6I+J2sHTL66zhm4Lh+3tsBFwgfBQbnd5PHaRiEyQrOqW5tkGdPJOpDCw
- zvf6u33f0NKbgqyM7W3eHHQwXRb+/eGPEjqKaI4cyUb2QpJQWeHiqn9Q5U/ngK3XUtjo/mq+E
- SEKBglHfbd8RSq0XlyK60C+YjQ6mMHRuHewTYac62Wm535yuM68aCrwBAsrg4DRmmDjmkD4dR
- k5zNOsKfbW8A0481dhvz6Cy6zsPy2B/G+0H/OwHZLdO+qx0ShhZg7sYOb1SfC/elTQxaOBm4I
- hAZAhnsWCaGY+BKhNy6+5mVyA0lUqgHiwoKtBwDOsScgFfN+gvpONxd3gtvQgYSmoERE2sDXw
- w7VUJvU86VwCjEnfD9dd5bMfOuqXXK7Z8zesrUtJTDbOW3g56o0NvJwM0Ctv19kqCIpzJMq7B
- 9LRA0HKjvXFOWCBPFiDxM+tHEHDtJUlnab5kdJHlCMMhN/7mL07CMVEHRbsioZ/Rjy4R75Kau
- 76A8+Q8lkrY131CpzX2MeHuMENwQtHCDTe+QawbM9DK5Tdeir0jV60kGQGUN2rwLRpJrjHOcu
- AQFm12LeYdDkvolZuUZ2RwPjKkSeklPysP6YVix0UE7hGVJRWoU+voVP/pSC1YFcOg5NFuGvw
- U/XWHfQSRGdbWq9t6vyrFnpeqc4mfQ9+2D72hhaewqR9sJ6QqsHxu+Qjk2NRpBuTAq8Mr5yX/
- yQuKtiu0YHmgG/GRhAw12hzgY62iFn1rSPQAoIQ9RGNOsdlKDPuD6iv+hC+JSmTA8xD/ekZYQ
- GhgE3FGf9nwLpVwKUtmjjNNdqsYBER7Hel40IDRmNDeK9pIfifxXjJ43bI62kmhleR6ofyfig
- 613RQ9+BV/7NK2/nMgLlwBCboxgifoleez1olTDukxUet//4Aj+ZadyD2R/B1o5/FZ3W5Q+6X
- V+2ToC+31QMgl03xlWpl4MpHPT/VV8EuFPuPlEKYEODN9Qc9+mrP6V3cYWB9+Xdu4r/8VHIrE
- m2I9JyK0Xwe/on3vbtYdzQfMTDy3nbdOGvq4gmc5FyspCZhZXttmV166FJzA=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PBWcMQGq9hQ=:UvA04vO3Epv6iBcyc/O1zj
+ eOIiPzZ8NhxV8NU3AL4pxnITTIwg4t0/e4GZkQusagqgd3t3LVDtZqYIg8zKr5qK7y67jGWIX
+ 2ZOFhBqFYLT+SP2KtflgmY+UR9EQMwz1SJcNBzRNs1aGk+cDTlolsAxKUVo3Lu5zVB/ZgCn1z
+ kv8Sg8XCTv47+QciEjExnq5Uh6KeJJ4/Pp7b6s9Bs6PTkohaVXrg5g4ekvPu9zS1M9PF+u2sZ
+ 6cHZe+oCIUGbTS7FMOYZQOqE0NCEdqVthji9y9uitJskkeb54x2C8OmGVHMbn+kSZFHydbTF3
+ UtVKNzo4OMS9vTD/w54RZTCFNfp+PB8QthdMn2oAEKT2MciiZv/Y4kZYSxeeVjvCK0qnJ4HT8
+ +YwEQIAj3fv8vk1v88l6voDR1XmT4A14O0PTozZsgbz3gdGqpDqrvzOgHbxcw0svKjFPtqTIy
+ Ijtp1Osp0AcEiBjYnVChnzWzysiZA6HBhSHJIEWUhwBVDn1OQ+Nh8zwz9dHsprmlGtBEi7iFY
+ EzZgjqVHsSGBbAyQRM56d2oxyJpd7wSXroT6935kbEPs2D+Q44K50RyFULTtrVoQs6b58VC83
+ 4yNLKxY8sOgvw2bdaWZQii03X8bWiw9tIMqTYK40x29m85poaotffIXVU8GOjyJlt1A03RFon
+ 0OAn89DSVd73aa+WEvZ4R6emUFjYh1byoBuNHYESrfGQChDYM3vTwW1As+y2AxXMU1qIBXd2s
+ E1n6oinWodAHXE2OlKQjDH5XX4A6MPlA4SYIMGCrVoNpnuOPs8vRt2kC4ioeV59HEaSX+0a3W
+ WHJYKG6gihByrgONjPJEB5mGAgIqCb5ncIjynH4assJap9dSPNvXzoSxRxb6Lxuf2Hm2F7FjZ
+ YL5T33KGSH5w1lzgXAf2vcVcsl7qz8hfEDuajAYsEfHajv0zE+S7veIchErNSjroA5UYMK0CY
+ WaKthdUl3h1MRWWUnYN8EBbpVhoKJddr8p9Q8glLPxuAt4TBR8g4j4PSRtce0U85bKdE/8XY5
+ whv5Z1zSsdTMU6UO/AtUs1EfKvpDRHbl3rBg8do2lzTvM5max21cfLEagn4gRx1xqAt92ceB/
+ hX5OzSg75N5of+vORr3YsqDPUb/pbI/1s0LmlYwp0BBsMVAe0KzXmHf7Avq2ov7yfVPCA27mK
+ UC4zZQKQUI+B27I5FyYAQ+834S4zubrf7INJqrSMrL64eMe3vS8F2zRWXpqN1DbpaihVljfxI
+ Qd3h2J0nm0Mt/PG2meSpICC4Q8LdRmHQyP8xEeUv4TzHxUa2QBLjkBbxA14M=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tFn3fDiCesj4iqJlQgqEt2SQrZbFlQX8J
-Content-Type: multipart/mixed; boundary="hhwiSJ0435yckf9vSvIDC8J9UmILRxP5w"
-
---hhwiSJ0435yckf9vSvIDC8J9UmILRxP5w
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2020/1/8 =E4=B8=8B=E5=8D=8811:11, David Sterba wrote:
+> On Wed, Jan 08, 2020 at 04:08:41PM +0100, David Sterba wrote:
+>>>>> +static bool have_reloc_root(struct btrfs_root *root)
+>>>>> +{
+>>>>> +=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->=
+state))
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+>>>>
+>>>> You still need a smp_mb__after_atomic() here, test_bit is unordered.
+>>>
+>>> Nope, that won't do anything, since smp_mb__(After|before)_atomic only
+>>> orders RMW operations and test_bit is not an RMW operation. From
+>>> atomic_bitops.txt:
+>>>
+>>>
+>>> Non-RMW ops:
+>>>
+>>>
+>>>
+>>>   test_bit()
+>>>
+>>> Furthermore from atomic_t.txt:
+>>>
+>>> The barriers:
+>>>
+>>>
+>>>
+>>>   smp_mb__{before,after}_atomic()
+>>>
+>>>
+>>>
+>>> only apply to the RMW atomic ops and can be used to augment/upgrade th=
+e
+>>>
+>>> ordering inherent to the op.
+>>
+>> The way I read it is more like smp_rmb/smp_wmb, but for bits in this
+>> case, so the smp_mb__before/after_atomic was only a syntactic sugar to
+>> match that it's atomic bitops. I realize this could have caused some
+>> confusion, however I still think that some sort of barrier is needed.
+>
+> There's an existing pattern used for serializing set/clear of
+> BTRFS_ROOT_IN_TRANS_SETUP (record_root_in_trans,
+> btrfs_record_root_in_trans).
+>
+> Once upon a time there were barriers like smp_mb__before_clear_bit but
+> they got unified to just smp_mb__before_atomic for all set/clear
+> operations, so I believe I was not all wrong with using them.
+>
+I used to believe the same fairy tail, that mb() works like a flush(),
+but we're not living in a fairy tail.
 
-On 2020/1/9 =E4=B8=8A=E5=8D=881:45, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->=20
-> The golden output of btrfs/202 contains the sequence number 201 instead=
- of
-> 202, fix this.
->=20
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  tests/btrfs/202.out | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
-> index 938870cf..7f33d49f 100644
-> --- a/tests/btrfs/202.out
-> +++ b/tests/btrfs/202.out
-> @@ -1,4 +1,4 @@
-> -QA output created by 201
-> +QA output created by 202
+What mb really does is keep certain ordering from happening.
+And ordering means, we have at least *2* different memory accesses.
 
-This really makes people laughing.
 
-But this also makes me wonder, do we really need the test number in
-golden output?
+It's not to ensure every reader get the same result, as there is no way
+to do that. Read can happen whenever they want.
 
-If the diff is from `check`, we have context showing which test case we'r=
-e.
-If the diff is from manually diffing golden and result, then we have the
-test number in the path.
 
-The test number in golden output looks duplicated to me.
+So before we talk about mb, we first need to know which 2 memory
+accesses we're talking about.
+If there is even no 2 memory access, then there is no need for mb().
 
-Eryu, can we just remove it?
+E.g. for the mb implied by spinlock(), it's not to ensure the spinlock
+counter reader, but to ensure the memory ordering between the spinlock
+counter itself and the memory it's protecting.
+
+So for memory barrier around test_bit(), as long as the compiler is not
+doing reordering, we don't need extra mb.
+
+And if the compiler is really doing re-ordering for the
+have_reloc_root(), then the compiler is doing something wrong, as that
+would makes the test_bit() meaningless.
 
 Thanks,
 Qu
-
->  Create subvolume 'SCRATCH_MNT/a'
->  Create subvolume 'SCRATCH_MNT/a/b'
->  Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
->=20
-
-
---hhwiSJ0435yckf9vSvIDC8J9UmILRxP5w--
-
---tFn3fDiCesj4iqJlQgqEt2SQrZbFlQX8J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4WcHsACgkQwj2R86El
-/qj4fwf9FKHSX92jH5JvaUdNywOWAGK9W+92Nim2J9gDWj9p9XrvEkqEhXZLdGpk
-s+FY9OAuGrnu7mEp7UDltng87+BeU98ZC4/m4vLMA72f196MqedWuHm71fj1BkFL
-f1a1K6oW50VLmnSRAHa6PdpRbiN3P62vVWEri2tpqoXrsenLnG+QMZTedu6RJuGm
-JlUCZ9qhyUobpfHzk+LJD48tDSP68UL+UZYdl3zMyLJ8QEUUbKdEuoGXe1QUy0RY
-ive/KQSL2AxQ4ci18aKJFBEsKc/oAWENU3uZZO32QCKsu85LpbkED0Ef30WObskX
-P24QjxdG7zR79qWgUD3RcPTQXMkufQ==
-=DZZS
------END PGP SIGNATURE-----
-
---tFn3fDiCesj4iqJlQgqEt2SQrZbFlQX8J--
