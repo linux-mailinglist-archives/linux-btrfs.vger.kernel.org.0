@@ -2,122 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12457137778
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2020 20:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC65137A50
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 00:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgAJTrr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jan 2020 14:47:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49500 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgAJTrr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jan 2020 14:47:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 37E62AAC2;
-        Fri, 10 Jan 2020 19:47:45 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: device stat, log when zeroed assist audit
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20200110042634.4843-1-anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <4e319e15-1b3c-1d72-6ef2-8f69ac4603f0@suse.com>
-Date:   Fri, 10 Jan 2020 21:47:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727554AbgAJXmH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jan 2020 18:42:07 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:38466 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727548AbgAJXmH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Jan 2020 18:42:07 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00ANZxHC116523;
+        Fri, 10 Jan 2020 23:42:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=SVNlU50412EUBWlM2QeNRfZxZPsQWynRTwXWEX0Q0Jg=;
+ b=SC2DMYN8Pyn0hfip2ogo8eVi+BgtYvM7BZUyCujaRD5hQj5Cyr8Jcozj6yyDCDIEqKHu
+ mE1QeSaLcSc7b1U3AJqtKNBeQ7x7629+Pm4aL+/VbKzcpD7MwP997yOKZJLGok5qJUGu
+ SEAh5YrIky0wF2D175QTzVV6PYofWaYc9mF3jJwUsW66UdGCOMGwwb/7cpkaHCojZzJN
+ iLOLpvUSNXPKiksNVgViUZ+amrbIIS7Cl77qAKDtFxPB/J7zzs0Zc3Q1ytcpzARKvpwB
+ 7gUS6YNcT4mcdj7PrOuAFQM9g1wiDkfLUNGArL08kiIR5fU+98NkFKPrbPMUmw4bZ8v4 aw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2xakbrd3tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jan 2020 23:42:01 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00ANXcPN108003;
+        Fri, 10 Jan 2020 23:42:01 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2xevfe07nx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jan 2020 23:42:01 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00ANg06W010386;
+        Fri, 10 Jan 2020 23:42:00 GMT
+Received: from [192.168.1.119] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 10 Jan 2020 15:42:00 -0800
+Subject: Re: [PATCH 1/2] btrfs: open code log helpers in device_list_add()
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200110090555.7049-1-anand.jain@oracle.com>
+ <20200110164212.GQ3929@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <ec1a6bed-ecea-c7f6-2567-9626590bc9c7@oracle.com>
+Date:   Sat, 11 Jan 2020 07:41:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200110042634.4843-1-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200110164212.GQ3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9496 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001100193
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9496 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001100193
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 11/1/20 12:42 AM, David Sterba wrote:
+> On Fri, Jan 10, 2020 at 05:05:54PM +0800, Anand Jain wrote:
+>> fs_info is born during mount, and operations before the mount such as
+>> scanning and assembling of the device volume should happen without any
+>> reference to fs_info.
+>>
+>> However the patch commit a9261d4125c9 (btrfs: harden agaist duplicate
+>> fsid on scanned devices) used fs_info to call btrfs_warn_in_rcu() and
+>> btrfs_info_in_rcu(), so if fs_info is NULL, the stacked functions leads
+>> to btrfs_printk() which shall print "unknown" instead of sb->s_id. Or
+>> even might UAF as reported in [1].
+>>
+>> So do the right thing, don't use btrfs_warn_in_rcu() and
+>> btrfs_info_in_rcu() in device_list_add() instead just open code it.
+>>
+>> Link:
+>> [1] https://www.spinics.net/lists/linux-btrfs/msg96524.html
+>> Fixes: a9261d4125c9 (btrfs: harden agaist duplicate fsid on scanned devices)
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/volumes.c | 12 ++++++++----
+>>   1 file changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 6fd90270e2c7..1a419841fc99 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -889,17 +889,21 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>>   			if (device->bdev != path_bdev) {
+>>   				bdput(path_bdev);
+>>   				mutex_unlock(&fs_devices->device_list_mutex);
+>> -				btrfs_warn_in_rcu(device->fs_info,
+>> -			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
+>> +				rcu_read_lock();
+>> +				printk_ratelimited(
+> 
+> Avoiding fs_info here is correct but we don't want to use raw printk or
+> printk_ratelimited anywhere.
+> 
 
+  I think I discussed this a long time back, that we should rather pass
+  fs_devices in btrfs_warn_in_rcu().
 
-On 10.01.20 г. 6:26 ч., Anand Jain wrote:
-> We had a report indicating that some read errors aren't reported by
-> the device stats in the userland. It is important to have the errors
-> reported in the device stat as user land scripts might depend on it to
-> take the reasonable corrective actions. But to debug these issue we need
-> to be really sure that request to reset the device stat did not come
-> from the userland itself. So log an info message when device error reset
-> happens.
-> 
-> For example:
->  BTRFS info (device sdc): device stats zeroed by btrfs (9223)
-> 
-> Reported-by: philip@philip-seeger.de
-> Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  BTRFS info (device sdc): device stats zeroed by btrfs (9223)
-> The last words are name and pid of the process, unfortunately it came out
-> as 'by btrfs'. At some point if there is a python and lib to reset it
-> would change, otherwise its going to be 'by btrfs', I am ok with it,
-> if otherwise please suggest the alternative.
+  I am ok to make such a change, are you ok? Or I wonder if there is
+  any other way?
 
-This patch itself is OK but is not related to what Philip has reported.
-The issue there is the fact we only record errors for 2 specific retvals
-from block layer.
-
-> 
->  fs/btrfs/volumes.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index eb55df0d4038..6fd90270e2c7 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7324,6 +7324,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
->  			else
->  				btrfs_dev_stat_set(dev, i, 0);
->  		}
-> +		btrfs_info(fs_info, "device stats zeroed by %s (%d)",
-> +			   current->comm, task_pid_nr(current));
->  	} else {
->  		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
->  			if (stats->nr_items > i)
-> 
+Thanks, Anand
