@@ -2,98 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5057D13647E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2020 01:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFBE136485
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2020 02:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730361AbgAJA6l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jan 2020 19:58:41 -0500
-Received: from mout.gmx.net ([212.227.15.18]:54333 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730301AbgAJA6k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jan 2020 19:58:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1578617909;
-        bh=erPYz58RxjXj/yjW0CfotcsJ/bDf9aY5QTOS+6HuV48=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Qu5ulYwZUovvesApWBnccphfxnd38tq8hVuxgYuPVlXTsZ7EnwHVF3gRFzUX9ff5h
-         rXNMGqIMtp++5Kcm7qUO+PvXoJsfqqwIrv8VtEV/WOHbFhT+JlDwLK5h+qYNNjy4wG
-         Ux5koZtuEoKlFTowQl7DNrKIA7b3xFW/J9nK/ebI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLQxN-1j6QZK08Cx-00ITaF; Fri, 10
- Jan 2020 01:58:29 +0100
-Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by
- extended reloc tree lifespan
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        David Sterba <dsterba@suse.com>
-References: <20200108051200.8909-1-wqu@suse.com>
- <7482d2f3-f3a1-7dd9-6003-9042c1781207@toxicpanda.com>
- <2bfd87cf-2733-af0d-f33f-59e07c25d500@suse.com>
- <20200108150841.GH3929@twin.jikos.cz> <20200108151159.GI3929@twin.jikos.cz>
- <85422cb2-e140-563b-fadd-f820354ed156@gmx.com>
- <20200109143742.GN3929@twin.jikos.cz>
- <f8458b9c-0b6c-024e-399d-ea530abd1204@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d4322bd6-c2dd-e3e6-e8eb-2cda1963f9d7@gmx.com>
-Date:   Fri, 10 Jan 2020 08:58:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1730362AbgAJBEJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jan 2020 20:04:09 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:54310 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730352AbgAJBEJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jan 2020 20:04:09 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00A138Pb049462;
+        Fri, 10 Jan 2020 01:04:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=PSjffazeU2f2us8APFfJ3+efFvBA5f0t9KyRWY9HZcE=;
+ b=P0fjusZmB+fEOhGr3+58Bd/dbGRkCLrsS3+40tTqNfyEQhV4dWBHPe4HYCZDL6cBm8YD
+ 6vH0KJPMO6uVQ5nQWK1sdtkOKtKPPYwg3lXsaQXEwee35gEbgxNf4OugjHXUUCxQf3f3
+ rlLU/9OjeNu4/SSSo2Gr3ir6wZTgLnEV9UW6DFNUHmMEkh/h45JsIn7Bv+x96b4WmPlk
+ bOH+gCk99ZTxkFKTm5ewWrmHhFdOkNsusklfBEeuNzNCabe0Ex25CsTZqfXNFUlKi/ku
+ WAjuGxQEE4DEGpBTE0cGrAkVd6KWTmT15hRRE/GqnisdT1toA6avVZyOunmIa5bdjAwG Og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2xakbr6ed6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jan 2020 01:04:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00A13x4M116071;
+        Fri, 10 Jan 2020 01:04:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2xdms0fsdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jan 2020 01:04:00 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00A13V37007374;
+        Fri, 10 Jan 2020 01:03:31 GMT
+Received: from [192.168.44.21] (/183.90.37.125)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 09 Jan 2020 17:03:29 -0800
+Subject: Re: [PATCH v4 4/4] btrfs: sysfs, add devid/dev_state kobject and
+ attribute
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20191205112706.8125-5-anand.jain@oracle.com>
+ <1578310711-20887-1-git-send-email-anand.jain@oracle.com>
+ <20200109152040.GP3929@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <d30de4d8-d492-b517-364d-c85d9bbf485d@oracle.com>
+Date:   Fri, 10 Jan 2020 09:03:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <f8458b9c-0b6c-024e-399d-ea530abd1204@gmx.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200109152040.GP3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0DBz1E57fxM0zjjNMCuCkOlutp68m6TbPNB9XZqGUaF3csTZwR/
- V8PlL9vxj+JwnO0uJWley5I2tB7/mQ96uJzLhEKbBqMBY4RnXdaWa4+7rpxt3obpfGeGBxI
- 6rcL/kplJfuPN/VDI+U9I4q7+IgPC6lrApsO17aXrY12qpTFvk/+1QE5LdhbexTI3O+ZLZQ
- EwmYGwgoJZwZmB0gA/pqA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xugdqmQBOzg=:6yadZy7gYsgogfisLQg7+p
- DPvtA/dZr5kSjwRSFm420Y3mmohtdx5mlWZlnDMNggcmSzJyK50FqhnLa1fzsz3zRSs1/vTXr
- PDFb11ltkWdKTAmjjEfEm+7sXnW11erCeFCbXDrmaVUIDlrnUco9xK2zTm0IPCW+G8Tr0KHQm
- bDYYzpgXZdB6G8BnPZvXy4UFOFpJA+HR1bT3LIrU9WlurCF2n+4VjqXZWg/CKurGU9hwmnTEh
- ZF/U5iXG8BN1BnNWmSUMYdGklzUfHLyRX4zVY8LWTBZuuaTKlz/sZFkHMczU54BIQEjxXlqRm
- psMGqUfQdM+EUncNiiXoVCEoSDML8OYM8ylNY3/P8QM/FWl6T1FFNdexdTxXbAfT5jpkBUhqI
- 1Irus34bQ6XVzNc8yfgcVipm3rs/EOZqEIo63+z3uRtUblspptIwzlYBhMp2iO3tCtpXXKgyq
- SCxWjn9hHXpZiQcLbxm8Yn6St2Qm1hvwINPD+j4lJlJPJQkXMzqHp9DT1KvAjNuKqYei/QTHk
- tBAruYivIPRikNXCdFMEwasK/9hy6wrpHsX1oyj5G+Ptk4uy6Fhi9SUd3ZohzS0902eTpMEs9
- CnhafH4ryz3chEHXZ2VvGwAcJ+FXNZ07UE+ukKoitPaqGpOIOfYI1JpqXJHZToWYKP/2KFUZp
- pcG+DQf0U/u1W2cp5aXF4SbfGSPtbGpzXHr9Z5YmkYQzwjxBTlLbIvKzH4gRL1eVs430NCsXI
- aMgvCCZtCDgTFroZeHI73EdpnlZwl6WYd9iQDqXV2yeJd+jFHeK37/t605JaxtlabHP4BU1ds
- TKXjwVDDe1uGZ+81uKkKY2GWfLynWEsTjzEXt8IfCRLJB72WILXwCMZYrT1wnHA6PXsulMIaG
- 7FI+gWKNNwJ9+8f7WG+nig+u1E73ckTvIVGU8N9sn24mT34n6I4tX1mIaU2xy+0XHMqPAptW7
- FEokSyjiYa6RoH+Ao/O0irvHm/ujvHXsI1eSAlsFxqdLv9gS0SIBsK9OoOJs0X2LwKetcBgAa
- jL/+/GX3Q9tkiQfeeHaYh+WdJw8+cHRHu7M4e9zBL5UVKBXJ+k5spOG92lOn8OVmyhQ2E8Z0D
- K0M5AipG6LzctJRs3VrGrDa6pg2/T1P5hF6CxHrHkHXr3lQL7WeXlcLFnkswygDvQl1EL1ydl
- 7oow8ROVwciTmnnn7/XdtesdzpgnCNOrceAtNELQFcpCqCJLV2Z/MnFt9UdgFH7MLI9Fqp0ih
- +oGbyO1W+ZBWki2himJhW4plTy5bVHVZ7UsqrgKECUHps/viBZgX7WaUJ2E0=
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9495 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001100008
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9495 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001100008
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -101,152 +74,129 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/1/10 =E4=B8=8A=E5=8D=888:21, Qu Wenruo wrote:
->
->
-> On 2020/1/9 =E4=B8=8B=E5=8D=8810:37, David Sterba wrote:
->> On Thu, Jan 09, 2020 at 01:54:34PM +0800, Qu Wenruo wrote:
->>>>> The way I read it is more like smp_rmb/smp_wmb, but for bits in this
->>>>> case, so the smp_mb__before/after_atomic was only a syntactic sugar =
-to
->>>>> match that it's atomic bitops. I realize this could have caused some
->>>>> confusion, however I still think that some sort of barrier is needed=
-.
->>>>
->>>> There's an existing pattern used for serializing set/clear of
->>>> BTRFS_ROOT_IN_TRANS_SETUP (record_root_in_trans,
->>>> btrfs_record_root_in_trans).
->>>>
->>>> Once upon a time there were barriers like smp_mb__before_clear_bit bu=
-t
->>>> they got unified to just smp_mb__before_atomic for all set/clear
->>>> operations, so I believe I was not all wrong with using them.
->>>>
->>> I used to believe the same fairy tail, that mb() works like a flush(),
->>> but we're not living in a fairy tail.
+On 9/1/20 11:20 PM, David Sterba wrote:
+> On Mon, Jan 06, 2020 at 07:38:31PM +0800, Anand Jain wrote:
+>> New sysfs attributes
+>>    in_fs_metadata  missing  replace_target  writeable
+>> are added under a new kobject
+>>    UUID/devinfo/<devid>
 >>
->> This sounds strange, by flush I was refering to internal CPU mechanism
->> that makes all temporary changes visible to other cpus, so you're sayin=
-g
->> that this does not work as everybody expects?
->
-> Because no matter whether mb ensures that or not, the result is the same=
-.
->
-> What would happen if the reader get schedule just before the mb()
-> command? Reader can still get older value.
-> That makes no difference if we had mb() or not.
->
+>> These attributes reflects the state of the device from the kernel
+>> fed by %btrfs_device::dev_state.
+>> These attributes are born during mount and goes along with the dynamic
+>> nature of the device add and delete, otherwise these attribute and kobject
+>> gets deleted at unmount.
 >>
->>> What mb really does is keep certain ordering from happening.
->>> And ordering means, we have at least *2* different memory accesses.
+>> Sample output:
+>> pwd
+>>   /sys/fs/btrfs/6e1961f1-5918-4ecc-a22f-948897b409f7/devinfo/1/
+>> ls
+>>    in_fs_metadata  missing  replace_target  writeable
+>> cat missing
+>>    0
 >>
->> Sorry but I think you're missing some pieces here. There are 2 memory
->> accesses: set_bit/clear_bit (writer) and test_bit (reader).
+>> The output from these attributes are 0 or 1. 0 indicates unset and 1
+>> indicates set.
 >>
->> The same could be achieved by a plain variable, that it's a bit brings
->> more confusion about what barrier should be really used.
+>> As of now these attributes are readonly.
 >>
->> The pattern we want to use here is pretty standard. Read barrier before
->> read and write barrier that separates the data change from the indicato=
-r
->> of the change. If you line up the barriers, there's a clear line betwee=
-n
->> the data changes and the indicator value.
->
-> Again, test_bit() can happen whenever they like, and smp_rmb() before
-> test_bit() makes no sense.
->
-> test_bit() can happen before reloc_root =3D NULL assign. after reloc_roo=
-t
-> =3D NULL assign but before set_bit(), or after set_bit().
->
-> That smp_wmb() makes sure set_bit() won't happen before reloc_root, than
-> that's enough.
-> BTW, smp_mb__before_atomic() should be full mb, not just wmb or rmb.
->
+>> It is observed that the device delete thread and sysfs read thread will
+>> not race because the delete thread calls sysfs kobject_put() which in turn
+>> waits for existing sysfs read to complete.
 >>
->> reloc_root =3D NULL
->> smp_wmb                           smp_rmb()
->>                                   test_bit()
->>                                   ... here
->> set_bit(DEAD)
->>                                   ... or here, it'll be always
->> 				  reloc_root =3D=3D NULL, but it still could
->> 				  be before or after set_bit
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>> v4:
+>>     after patch
+>>     [PATCH v5 2/2] btrfs: reset device back to allocation state when removing
+>>     in misc-next, the device::devid_kobj remains stale, fix it by using
+>>     release.
 >>
->> You should also distinguish between mb() and smp_mb() (and the rmb/wmb)=
-.
->> mb is a unconditional barrier, used to synchronize access to hardware i=
-o
->> ports, suitable in drivers.
+>> v3:
+>>    Use optional groupid devid in BTRFS_ATTR(), it was blank in v2.
 >>
->> We use smp_mb() because this serializes memory among multipe CPUs, when
->> one changes memory but stores it to some temporary structures, while
->> other CPUs don't see the effects. I'm sure you've read about that in th=
-e
->> memory barrier docs.
+>> V2:
+>>    Make the devinfo attribute to carry one parameter, so now
+>>    instead of dev_state attribute, we create in_fs_metadata,
+>>    writeable, missing and replace_target attributes.
+>>
+>>   fs/btrfs/sysfs.c   | 142 ++++++++++++++++++++++++++++++++++++++++++++---------
+>>   fs/btrfs/volumes.h |   3 ++
+>>   2 files changed, 122 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index 834f712ed60c..18dac99188ce 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -978,29 +978,116 @@ int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
+>>   	if (!fs_devices->devices_kobj)
+>>   		return -EINVAL;
+>>   
+>> -	if (one_device && one_device->bdev) {
+>> -		disk = one_device->bdev->bd_part;
+>> -		disk_kobj = &part_to_dev(disk)->kobj;
+>> +	if (one_device) {
+>> +		if (one_device->bdev) {
+>> +			disk = one_device->bdev->bd_part;
+>> +			disk_kobj = &part_to_dev(disk)->kobj;
+>> +			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
+>> +		}
+>>   
+>> -		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
+>> -	}
+>> +		kobject_del(&one_device->devid_kobj);
+>> +		kobject_put(&one_device->devid_kobj);
+>> +
+>> +		wait_for_completion(&one_device->kobj_unregister);
+>>   
+>> -	if (one_device)
+>>   		return 0;
+>> +	}
+>>   
+>> -	list_for_each_entry(one_device,
+>> -			&fs_devices->devices, dev_list) {
+>> -		if (!one_device->bdev)
+>> -			continue;
+>> -		disk = one_device->bdev->bd_part;
+>> -		disk_kobj = &part_to_dev(disk)->kobj;
+>> +	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
+>> +
+>> +		if (one_device->bdev) {
+>> +			disk = one_device->bdev->bd_part;
+>> +			disk_kobj = &part_to_dev(disk)->kobj;
+>> +			sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
+>> +		}
+>> +		kobject_del(&one_device->devid_kobj);
+>> +		kobject_put(&one_device->devid_kobj);
+>>   
+>> -		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
+>> +		wait_for_completion(&one_device->kobj_unregister);
+>>   	}
+>>   
+>>   	return 0;
+>>   }
+>>   
+>> +static ssize_t btrfs_sysfs_writeable_show(struct kobject *kobj,
+> 
+> This could be btrfs_devinfo_writeable_show as the _sysfs_ part means
+> it's something generic and possibly exported for other parts to use.
+> Same for the other callbacks.
+> 
+>> +static struct attribute *devid_attrs[] = {
+>> +	BTRFS_ATTR_PTR(devid, writeable),
+>> +	BTRFS_ATTR_PTR(devid, in_fs_metadata),
+>> +	BTRFS_ATTR_PTR(devid, missing),
+>> +	BTRFS_ATTR_PTR(devid, replace_target),
+> 
+> Sorted alphabetically.
+> 
+> All will be fixed at commit time. The device state bits could be
+> interestig to user in some cases and they're probably going to stay so
+> we have some future guarantee of the sort-of-ABI for sysfs.
+> 
+> The first 3 patches are deep in misc-next so I'll reorder them so the
+> whole series is grouped together.
+> 
 
-I guess the main difference between us is the effect of "per-cpu
-viewable temporary value".
-
-It looks like your point is, without rmb() we can't see consistent
-values the writer sees.
-
-But my point is, even we can only see a temporary value, the
-__before_atomic() mb at the writer side, ensures only 3 possible
-temporary values combination can be seen.
-(PTR, DEAD), (NULL, DEAD), (NULL, 0).
-
-The killed (PTR, 0) combination is killed by that writer side mb.
-Thus no need for the reader side mb before test_bit().
-
-That's why I insist on the "test_bit() can happen whenever they like"
-point, as that has the same effect as schedule.
-
-Thanks,
-Qu
-
->
-> Yes, but schedule can put that smp_rmb(); test_bit() line where ever
-> they want. So smp_rmb(); test_bit() can still get all the 3 difference
-> timing. It's that smp_mb__before_atomic() killing the 4th case, not the
-> smp_rmb().
->
->>
->>> It's not to ensure every reader get the same result, as there is no wa=
-y
->>> to do that. Read can happen whenever they want.
->>
->> That is true about the 'whenever', but what we need to guarantee here i=
-s
->> that when the read happens the following condition will have view of th=
-e
->> changes implied by the pairing barrier.
->
-> Still, if reader still gets the temporary value, it's the same as random
-> schedule timing.
-> What we need to ensure is the order, which is solely ensured by that
-> smb_mb__before_atomic().
->
-> Thanks,
-> Qu
->
->>
->>> So before we talk about mb, we first need to know which 2 memory
->>> accesses we're talking about.
->>> If there is even no 2 memory access, then there is no need for mb().
->>>
->>> E.g. for the mb implied by spinlock(), it's not to ensure the spinlock
->>> counter reader, but to ensure the memory ordering between the spinlock
->>> counter itself and the memory it's protecting.
->>>
->>> So for memory barrier around test_bit(), as long as the compiler is no=
-t
->>> doing reordering, we don't need extra mb.
->>
->> This is not about compiler.
->>
->>> And if the compiler is really doing re-ordering for the
->>> have_reloc_root(), then the compiler is doing something wrong, as that
->>> would makes the test_bit() meaningless.
+  I agree with your suggestions, thanks for correcting them before commit.
+Anand
