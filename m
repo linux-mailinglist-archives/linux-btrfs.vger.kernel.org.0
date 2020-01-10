@@ -2,116 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8668113776D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2020 20:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12457137778
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jan 2020 20:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgAJTqi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jan 2020 14:46:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49252 "EHLO mx2.suse.de"
+        id S1728202AbgAJTrr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jan 2020 14:47:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49500 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgAJTqi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jan 2020 14:46:38 -0500
+        id S1727812AbgAJTrr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Jan 2020 14:47:47 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E6526AAC2;
-        Fri, 10 Jan 2020 19:46:35 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 10A02DA78B; Fri, 10 Jan 2020 20:46:22 +0100 (CET)
-Date:   Fri, 10 Jan 2020 20:46:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
-Message-ID: <20200110194622.GS3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <cd4091e4-1c04-a880-f239-00bc053f46a2@infradead.org>
- <20191211134929.GL3929@twin.jikos.cz>
- <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
- <20191212184725.db3ost7rcopotr5u@treble>
- <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
- <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
- <20191213235054.6k2lcnwa63r26zwi@treble>
- <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
- <20191214054515.ougsr5ykhl3vvy57@treble>
- <20191217152954.GH3929@suse.cz>
+        by mx2.suse.de (Postfix) with ESMTP id 37E62AAC2;
+        Fri, 10 Jan 2020 19:47:45 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: device stat, log when zeroed assist audit
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20200110042634.4843-1-anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4e319e15-1b3c-1d72-6ef2-8f69ac4603f0@suse.com>
+Date:   Fri, 10 Jan 2020 21:47:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191217152954.GH3929@suse.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200110042634.4843-1-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 04:29:54PM +0100, David Sterba wrote:
-> Separating the definitions by #ifdef looks ok, I'd rather do separate
-> definitions of ASSERT too, to avoid the ternary operator. I'll send the
-> patch.
 
-Subject: [PATCH] btrfs: separate definition of assertion failure handlers
 
-There's a report where objtool detects unreachable instructions, eg.:
+On 10.01.20 г. 6:26 ч., Anand Jain wrote:
+> We had a report indicating that some read errors aren't reported by
+> the device stats in the userland. It is important to have the errors
+> reported in the device stat as user land scripts might depend on it to
+> take the reasonable corrective actions. But to debug these issue we need
+> to be really sure that request to reset the device stat did not come
+> from the userland itself. So log an info message when device error reset
+> happens.
+> 
+> For example:
+>  BTRFS info (device sdc): device stats zeroed by btrfs (9223)
+> 
+> Reported-by: philip@philip-seeger.de
+> Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  BTRFS info (device sdc): device stats zeroed by btrfs (9223)
+> The last words are name and pid of the process, unfortunately it came out
+> as 'by btrfs'. At some point if there is a python and lib to reset it
+> would change, otherwise its going to be 'by btrfs', I am ok with it,
+> if otherwise please suggest the alternative.
 
-  fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
+This patch itself is OK but is not related to what Philip has reported.
+The issue there is the fact we only record errors for 2 specific retvals
+from block layer.
 
-This seems to be a false positive due to compiler version. The cause is
-in the ASSERT macro implementation that does the conditional check as
-IS_DEFINED(CONFIG_BTRFS_ASSERT) and not an #ifdef.
-
-To avoid that, use the ifdefs directly.
-
-CC: Josh Poimboeuf <jpoimboe@redhat.com>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 569931dd0ce5..f90b82050d2d 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3157,17 +3157,21 @@ do {								\
- 	rcu_read_unlock();					\
- } while (0)
- 
--__cold
--static inline void assfail(const char *expr, const char *file, int line)
-+#ifdef CONFIG_BTRFS_ASSERT
-+__cold __noreturn
-+static inline void assertfail(const char *expr, const char *file, int line)
- {
--	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
--		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
--		BUG();
--	}
-+	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
-+	BUG();
- }
- 
--#define ASSERT(expr)	\
--	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
-+#define ASSERT(expr)						\
-+	(likely(expr) ? (void)0 : assertfail(#expr, __FILE__, __LINE__))
-+
-+#else
-+static inline void assertfail(const char *expr, const char* file, int line) { }
-+#define ASSERT(expr)	(void)(expr)
-+#endif
- 
- /*
-  * Use that for functions that are conditionally exported for sanity tests but
--- 
+> 
+>  fs/btrfs/volumes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index eb55df0d4038..6fd90270e2c7 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7324,6 +7324,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+>  			else
+>  				btrfs_dev_stat_set(dev, i, 0);
+>  		}
+> +		btrfs_info(fs_info, "device stats zeroed by %s (%d)",
+> +			   current->comm, task_pid_nr(current));
+>  	} else {
+>  		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
+>  			if (stats->nr_items > i)
+> 
