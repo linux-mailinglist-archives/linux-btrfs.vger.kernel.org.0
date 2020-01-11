@@ -2,65 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4747F137C15
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 08:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D4F137C34
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 08:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgAKHZz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jan 2020 02:25:55 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:36933 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728500AbgAKHZy (ORCPT
+        id S1728517AbgAKHm6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jan 2020 02:42:58 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:36839 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728507AbgAKHm5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jan 2020 02:25:54 -0500
-Received: by mail-lj1-f195.google.com with SMTP id o13so4482124ljg.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2020 23:25:52 -0800 (PST)
+        Sat, 11 Jan 2020 02:42:57 -0500
+Received: by mail-lf1-f51.google.com with SMTP id n12so3214260lfe.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2020 23:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=FSf9P1ctCh+cvnODJR88EoPG9yXq3qgrzQlRAWa82CY=;
-        b=U7/vPJR5qL4KnE3i/BRc/4tXIwLRAI2wPrTTttMVx/Bz1MX7z7WsfZzAcLNIYLXhNK
-         JiAzsy8FA5aHn29v/uBGyc4oEwqFpOfRqpqR6/2BnnDTWwNEkNtwD9jwikYjDAiNk4Hq
-         kpHTWuGkn6hzLt+ntINaeCpANOK+/T+IvQmMNZgcIAVUgFcfrn6RL15lWAOXVXI5rlJ7
-         RHvwn3IRj6h1fBwhx1ZbDydrWSRggt2SI+vPMCE5gIpJ4d11qLbZUUn39QxpYdCxm23u
-         SKJ+JrMG1XXuvx/h1gNvx0z/JyIGkQ3Tg2L415NINwRN/8vi8VY6YbpVNBprqAJFqYDj
-         y7Nw==
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eOUJcQpN9hHFQ4SRYTGrdC++BB/djopfW6ChrJELniA=;
+        b=acmcq09pyR4XTF2VpqHwTBy2sseR4+1ncl7dDprtxdgIkrRKQwtwFDwJvlaMDvnbHb
+         hGO94SJQxSmsu45wL8mUr1bfkjGemRAnZjAguLV21XkeddNpDM48ba+oGImgm6zTvh9l
+         r2ksYjnICmaqX46RoyX+GL+h/t5jjpwdxgnMwN/Lil3aEdg+9x/O4ZqPOkO5Wu9KJuUx
+         zrRpLW//VvLQ/BWH0uDVYvAOWElT5yjo0CIviHyQPg+5vuLt1LEo0cn2gH4c5ozdeVlM
+         IrI7/ag7LrFIb2RVn+gizhbcsyfrb7anUweo9yXtkVLoBv8aMHwchXyMBt88Btbzb0xw
+         TCJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=FSf9P1ctCh+cvnODJR88EoPG9yXq3qgrzQlRAWa82CY=;
-        b=NoqK8zK+gVViwA+BIt7HLfTeRHjAASzbu4AMA3ZuuczPjnyQwhUgHRFANZ4zR9sprv
-         BOmNR6vUjX1e7ksnSi2/96bxyPGETBxeaeWnq7rfaEgdDP49p/+mW49pUhHwvTZ/PE/C
-         HkZNS91a/9FgMTn+x0+AzZlWG8eErSxNrx8BjIEsX5sDmdZSk0hh3fe1hHxnTX0AEFNU
-         wLyQHC0weESdDgKXSATIIpIbxqTnr8t3oR0+q57qyZjwFTYDMR16a8dBzFUMU1yRP0ni
-         Q5FvwBm3LS797M5H/9ELJaM0REDY7i8T2w78YUDnnninht3CMbtCBqUywyEL0bSRFzSC
-         RTIA==
-X-Gm-Message-State: APjAAAXy9c7hYRQzeGV9+egp2r8Ob0e9F8fP+vesmT1/AtEOh0iH+xnf
-        DMOY4jyK1tmZuMx5sYvCB+klAwTuyG8=
-X-Google-Smtp-Source: APXvYqxZ/76TcMGBVLlDWK9bPrSokp2iKerH0hmkOlXXL0EYhGJL7nAaQcArkRluZKu5bH2NuN19RA==
-X-Received: by 2002:a05:651c:1110:: with SMTP id d16mr5230110ljo.86.1578727551303;
-        Fri, 10 Jan 2020 23:25:51 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eOUJcQpN9hHFQ4SRYTGrdC++BB/djopfW6ChrJELniA=;
+        b=J9+iU5H6mIzGu34Yg6/KUAJJHxIQaIlWoRxJ2dDxsmXmyFTMHYLjoYuLLAiHjwvlAx
+         nPN5jtxSG6mGzH09uSWKwp8ae5eHKxwc+4yt5PEPx5RhfDtP25Ild0vq3evNCfQXtwxf
+         sv7S5QQwXf+K3Ua3jEWNCwCJrlu9lkKKDDWDYPDMZ54bdylX7Ph26BaBvmV2e10KhcOJ
+         lG/fDmYsiBdzVHJHWqHJ83Y04Q1nOQLANwY6lGt0my1BUSCWGYmBLLcaUzjv1g1RDOZJ
+         yppJWQZ3yb162x7+53JkmF5jN8SsECKSGuHhn7v1r4ocV9V37RuKr6rEFEgIccSQo9Yc
+         Jn4w==
+X-Gm-Message-State: APjAAAVyfriZLrkA3JKuwvKwc5p9el/+9ha0AN461SIUgQmOW1x4o/xq
+        /bInA71dLRpR55h0GDslTtj2HGambzg=
+X-Google-Smtp-Source: APXvYqzEZ5yD+9zw7V4pokRzE71w290Rm5E6ZlSQ+UYw9d041iBhmypS7YIRzx8tVX/km1M3CHKzog==
+X-Received: by 2002:a19:dc1e:: with SMTP id t30mr4778734lfg.34.1578728575427;
+        Fri, 10 Jan 2020 23:42:55 -0800 (PST)
 Received: from ?IPv6:2a00:1370:812d:af15:a51e:b905:dd2b:45cf? ([2a00:1370:812d:af15:a51e:b905:dd2b:45cf])
-        by smtp.gmail.com with ESMTPSA id c27sm2185529lfh.62.2020.01.10.23.25.49
+        by smtp.gmail.com with ESMTPSA id k5sm2236692lfd.86.2020.01.10.23.42.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jan 2020 23:25:50 -0800 (PST)
-Subject: Re: 12 TB btrfs file system on virtual machine broke again
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Christian Wimmer <telefonchris@icloud.com>
-Cc:     Qu WenRuo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
- <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <e04d1937-d70c-c891-4eea-c6fb70a45ab5@gmx.com>
- <8B00108E-4450-4448-8663-E5A5C0343E26@icloud.com>
- <bd42525b-5eb7-a01d-b908-938cfd61de8c@gmx.com>
+        Fri, 10 Jan 2020 23:42:54 -0800 (PST)
+Subject: Re: Monitoring not working as "dev stats" returns 0 after read error
+ occurred
+To:     Philip Seeger <philip@philip-seeger.de>,
+        linux-btrfs@vger.kernel.org
+References: <3283de40c2750cd62d020ed71430cd35@philip-seeger.de>
+ <d89fe4da-c498-bb24-8eb5-a19b01680a23@cobb.uk.net>
+ <ac61f79a3c373f319232640db5db9a5e@philip-seeger.de>
+ <2a9bf923-e7b9-9d82-5f1d-bbdfc192978e@suse.com>
+ <d3a234a07192fd9713b0ac33123c99db@philip-seeger.de>
+ <68ebf136-6aff-bd98-cf95-0c3c7d5bed89@philip-seeger.de>
 From:   Andrei Borzenkov <arvidjaar@gmail.com>
 Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
@@ -80,146 +75,58 @@ Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
  vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
  AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <dc9eeda6-5ddf-c874-c377-703c83b95215@gmail.com>
-Date:   Sat, 11 Jan 2020 10:25:40 +0300
+Message-ID: <9b6d7519-cffb-2cfa-5e77-b514817b5f0a@gmail.com>
+Date:   Sat, 11 Jan 2020 10:42:54 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <bd42525b-5eb7-a01d-b908-938cfd61de8c@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="OfwPzgzm4Jkh6bDQKfogWSNglfseF4EOJ"
+In-Reply-To: <68ebf136-6aff-bd98-cf95-0c3c7d5bed89@philip-seeger.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OfwPzgzm4Jkh6bDQKfogWSNglfseF4EOJ
-Content-Type: multipart/mixed; boundary="mFS3gL6Ay9rsdbIYn7YfkYqkrHKS2HzKf"
+10.01.2020 02:50, Philip Seeger пишет:
+>> On 2020-01-09 13:04, Nikolay Borisov wrote:
+>>> It seems there are other error codes which are
+>>> also ignored but can signify errors e.g. STS_NEXUS/STS_TRANSPORT.
+> 
+> Speaking of other errors also being ignored.
+> 
+> I just saw this on a different system:
+> 
+> BTRFS warning (device sdd1): csum failed root 5 ino 263 off 5869793280
+> csum 0xeee8ab75 expected csum 0x1fc62249 mirror 1
+> 
+> Is BTRFS trying to tell me that the file with inode number 263 is
+> corrupt (checksum mismatch)?
+> I did indeed read (copy) that file earlier so it sounds like BTRFS
+> calculated its checksum to verify it and it didn't match the stored
+> checksum.
+> 
 
---mFS3gL6Ay9rsdbIYn7YfkYqkrHKS2HzKf
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On one mirror piece. It likely got correct data from another piece.
 
-06.01.2020 02:50, Qu Wenruo =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->=20
->=20
-> On 2020/1/5 =E4=B8=8B=E5=8D=8810:17, Christian Wimmer wrote:
->> Hi Qu,
->>
->>
->>> On 5. Jan 2020, at 01:25, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>>
->>>
->>>
->>> On 2020/1/5 =E4=B8=8A=E5=8D=881:07, Christian Wimmer wrote:
->>>> Hi guys,=20
->>>>
->>>> I run again in a problem with my btrfs files system.
->>>> I start wondering if this filesystem type is right for my needs.
->>>> Could you please help me in recovering my 12TB partition?
->>>>
->>>> What happened?=20
->>>> -> This time I was just rebooting normally my virtual machine. I dis=
-covered during the past days that the system hangs for some seconds so I =
-thought it would be a good idea to reboot my SUSE Linux after 14 days of =
-working. The machine powered off normally but when starting it run into m=
-essages like the pasted ones.
->>>>
->>>> I immediately powered off again and started my Arch Linux where I ha=
-ve btrfs-progs version 5.4 installed.
->>>> I tried one of the commands that you gave me in the past (restore) a=
-nd I got following messages:
->>>>
->>>>
->>>> btrfs-progs-5.4]# ./btrfs restore -l /dev/sdb1
->>>> checksum verify failed on 3181912915968 found 000000A9 wanted 000000=
-64
->>>> checksum verify failed on 3181912915968 found 00000071 wanted 000000=
-66
->>>> checksum verify failed on 3181912915968 found 000000A9 wanted 000000=
-64
->>>> bad tree block 3181912915968, bytenr mismatch, want=3D3181912915968,=
- have=3D4908658797358025935
->>>
->>> All these tree blocks are garbage. This doesn't look good at all.
->>>
->>> The weird found csum pattern make no sense at all.
->>>
->>> Are you using fstrim or discard mount option? If so, there could be s=
-ome
->>> old bug causing the problem.
->>
->>
->> Seems that I am using fstrim (I did not know this, what is it?):
->>
->> BTW, sda2 is here my root partition which is practically the same conf=
-iguration (just smaller) than the 12TB hard disc
->>
->> 2020-01-03T11:30:47.479028-03:00 linux-ze6w kernel: [1297857.324177] s=
-da2: rw=3D2051, want=3D532656128, limit=3D419430400
->> 2020-01-03T11:30:47.479538-03:00 linux-ze6w kernel: [1297857.324658] B=
-TRFS warning (device sda2): failed to trim 1 device(s), last error -5
->> 2020-01-03T11:30:48.376543-03:00 linux-ze6w fstrim[27910]: fstrim: /op=
-t: FITRIM ioctl failed: Input/output error
->=20
-> That's the cause. The older kernel had a bug where btrfs can trim
-> unrelated data, causing data loss.
->=20
-> And I'm afraid that bug trimmed some of your tree blocks, screwing up
-> the whole fs.
->=20
->=20
->> 2020-01-03T11:30:48.378998-03:00 linux-ze6w kernel: [1297858.223675] a=
-ttempt to access beyond end of device
->> 2020-01-03T11:30:48.379012-03:00 linux-ze6w kernel: [1297858.223677] s=
-da2: rw=3D3, want=3D421570540, limit=3D419430400
->> 2020-01-03T11:30:48.379013-03:00 linux-ze6w kernel: [1297858.223678] a=
-ttempt to access beyond end of device
->> 2020-01-03T11:30:48.379013-03:00 linux-ze6w kernel: [1297858.223678] s=
-da2: rw=3D3, want=3D429959147, limit=3D419430400
->> 2020-01-03T11:30:48.379014-03:00 linux-ze6w kernel: [1297858.223679] a=
-ttempt to access beyond end of device
->> 2020-01-03T11:30:48.379014-03:00 linux-ze6w kernel: [1297858.223679] s=
-da2: rw=3D3, want=3D438347754, limit=3D419430400
->> 2020-01-03T11:30:48.379014-03:00 linux-ze6w kernel: [1297858.223680] a=
-ttempt to access beyond end of device
->>
->> Could this be the problem?
->>
->>
->> Suse Kernel version is 4.12.14-lp151.28.13-default #1 SMP
-> I can't find any source tag matching your version.=20
+> The error counters returned by "dev stats" all stayed at 0 (even after
+> scrubbing). This is (was) a single filesystem, no RAID.
+> 
 
-This is commit 3e458e04fab3ee8b0d234acf09db1d9279f356d9 of kernel-source.=
+This is not device-level error. btrfs got data from block device without
+error. That content of data was wrong does not necessarily mean block
+device problem.
 
+> Suppose this was an important file, should I be worried now?
+> 
 
-> So I can't be 100%
-> sure about the bug, but that error message still shows the same symptom=
-=2E
->=20
-> I recommend to check updates about your distro.
->=20
-> Thanks,
-> Qu
->=20
+You have mirror and btrfs got correct data from another device
+(otherwise you were not able to read file at all). Of course you should
+be worried why one copy of data was not correct.
 
+> If this was a checksum error, why does the stats command keep saying
+> that zero errors have been detected?
 
-
---mFS3gL6Ay9rsdbIYn7YfkYqkrHKS2HzKf--
-
---OfwPzgzm4Jkh6bDQKfogWSNglfseF4EOJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXhl4dQAKCRBHosy62l33
-jN/EAJ9hCr4vHDUMWrmXoVo/jBl/a1kZPACeKca6EwXQwifGpP2Gn4BfI2zd/xQ=
-=aTbq
------END PGP SIGNATURE-----
-
---OfwPzgzm4Jkh6bDQKfogWSNglfseF4EOJ--
+Again - there was no error *reading* data from block device. Is
+corruption_errs also zero?
