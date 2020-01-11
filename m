@@ -2,266 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47943137B65
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 05:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3C2137BD4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 07:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgAKEm3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jan 2020 23:42:29 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33382 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728324AbgAKEm2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jan 2020 23:42:28 -0500
-Received: by mail-qt1-f195.google.com with SMTP id d5so4030946qto.0;
-        Fri, 10 Jan 2020 20:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0VIVO5I9jB0tobLGREUfwsqsbqPrK58MyM1+n6J4HcU=;
-        b=NfNA6jVGvl5Im8tu8yBiWrG7qnoyuBIikHbbx4mO82q72tsspww7fpOQ5PgqTaFTH3
-         PrHp616lWV/2BZyym7Bv+dokxxTAu5mL7T/qkeJqeLfPIh6U29N7y0xnBRHvpbFmnvUw
-         jntsruaxouhWXW0vYzzPM7sgEYj2pSsT+1Eck9NRnMxv0HWXQvMm6Q3heZDWsP5TZObB
-         MljNoNVPMIYb+2mQmhWgSVypBPxWvE30p5wfPE9KRw0rk3pN9KuDpEvwAmFaRBi4fxUU
-         tGJGwS+e9zqmTv6A2rr6OPDbZbZOnG0r2Yheg1RAskbEvnUr9fBgJ7qpErEoA5YTyRxH
-         67mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0VIVO5I9jB0tobLGREUfwsqsbqPrK58MyM1+n6J4HcU=;
-        b=IrgSKZPyoRg1R1KwRaKTrC8SUkv0jOnlOZWbmYvUcWjqVE4nSH5pgRFAFUgL7XJieJ
-         8vjqDf3ww1J5fVqzSe+GrEqgeqljo3JhVNL6chTwqOf/Iq82WH+PEjf/0NhLLvso8CXR
-         Jv4CQeKbWTsey1v/IMY2C3ZKLj28m0I61VkSJKTI42B8Q+l4YrCyF+SIfYQdzPcXlzCM
-         hONU3iAxSwB2PmBoxwT0+elTw0kXLyXXKNw36yDhHGaJ3WA1Y/ij+Lu1w8B/8NtiIWRs
-         EWzvs4NoR74n8MpM0C5dAbdJUmwbwBllhcPIlNTqdmR9pciGyjQU+nGq/QjepkwKPm6D
-         xyDQ==
-X-Gm-Message-State: APjAAAXfGU4H8eHU7GDKMxAbZEdNdVMYe6vwqvE7v9Bu8BkoeTPgBtIF
-        ZG2Q7E6jcewP1N1249GPdNmL7w7L
-X-Google-Smtp-Source: APXvYqwsA4Zh9qyFtavcl+YlYGo56/xPgq6dAb2UfN2GhDqIgz/E8gm3c496TBQgpNsM6DdmGd1X6Q==
-X-Received: by 2002:aed:2022:: with SMTP id 31mr1554709qta.321.1578717747359;
-        Fri, 10 Jan 2020 20:42:27 -0800 (PST)
-Received: from localhost.localdomain (200.146.48.138.dynamic.dialup.gvt.net.br. [200.146.48.138])
-        by smtp.gmail.com with ESMTPSA id s20sm1861162qkg.131.2020.01.10.20.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 20:42:26 -0800 (PST)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH 2/2] btrfs: Introduce new BTRFS_IOC_SNAP_DESTROY_V2 ioctl
-Date:   Sat, 11 Jan 2020 01:39:42 -0300
-Message-Id: <20200111043942.15366-3-marcos.souza.org@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200111043942.15366-1-marcos.souza.org@gmail.com>
-References: <20200111043942.15366-1-marcos.souza.org@gmail.com>
+        id S1726262AbgAKGPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jan 2020 01:15:37 -0500
+Received: from mout.gmx.net ([212.227.15.19]:60243 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgAKGPg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 11 Jan 2020 01:15:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1578723327;
+        bh=eNF1q9P+Wi4MuWTfyeaewgJTfko2PcPzRR7m64WgdQs=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ejZHuxXuL9LUxnBkXRnmfXmNabQjfPNO3TQtd14oWAV5FR0woDD0OolBF9s5oAcvx
+         h/C+te1Iek5JNdkJzNUmQAh5BnElc6PrFTN+hsphRcTsZFXKVi2simhp8ymSZSHuoE
+         1GHKUpaw6QSQCFsAGtqZt5DFESVkoPTYU9Oo79ow=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MjS9I-1jWcKq34mI-00kxPE; Sat, 11
+ Jan 2020 07:15:27 +0100
+Subject: Re: [PATCH 4/5] btrfs: fix force usage in inc_block_group_ro
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     Nikolay Borisov <nborisov@suse.com>
+References: <20200110161128.21710-1-josef@toxicpanda.com>
+ <20200110161128.21710-5-josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <d171bcd6-fbbd-256c-5544-fe3e873bcf0b@gmx.com>
+Date:   Sat, 11 Jan 2020 14:15:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200110161128.21710-5-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nMFDj52SSPcSzCpyjQr5qokV9tMTgIm5F+UHnciXQ3TO1zQv7c3
+ z3DuuNwEtvLCP1H3+MXJ8+L+1PEPMX374EFv6/0ByMJQQBOMMb+niSWRl25kaJFX/9eg209
+ C8E5wWQuLMSkPGAbOc4u+GhAxGvqCRXUdTrdjNlM812xDWlR+cvYKJePeZACDRtv23ZflqJ
+ oRidaTXemmPQ4wqmD/Qtg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RBb4O+UE2A8=:LPu1wU9gSu9cuw2VGA2sQY
+ qDAFTVqXP/A8Nivd/Ni0Pjcvfp2NgDfaj3R6XaqyL/SlbStRg6C8p0MjrZnjG8n4tLKhuI+XE
+ bHoynzZSahe3Oz4tFjQTIxLRchSoGXgBpS1GMOai7fEtymGUaduGrlryImS07OXG9MSlZaqsK
+ kKo2XcU+dhg8lPDqrMe+IgKXlo3kAiFfWixfHsn5G5nrvDa5TLBWiWVOaBuCmrcWj7dGSQdS1
+ 8DbjiKYE9BVt0jrF2I2QzC+1wI5enh/srQMZTmLG3xHKfLBmMnCesLWrJmSDfrxDa4ybsogEJ
+ rMCXXDT9vS12V0xG/o5PXKq3/y+GzWTWAiFpx19dXi9a2+7e8lKOmJNFFs5PxOjbZ6rPApWze
+ TRf6ZbbioOppsJhaVJlDindl9xYekcA/pLzUMwStFg5s1BOQc33JIkKnD4ZtFlQZoZ8q8xu4C
+ kQp54lXTy2YY7fKYg4n9KJ48VZQ2TR8aCbSUMhWNGlFRzu9xV/H/4+lMRYovwQ2vU3/Uas0NF
+ 3NJwPdhavSDXqLawtKRy2EgZaEcA5Yz9pB+VRFGPKGx/ZWQxSfzB92JSc9l/Ef7rbeJOm2RIn
+ RQGNhWg/sNf6OaFRxiTLkwgNtjVyW14Y5oYLDHaqC4hf9+Wy9SepAZwB+rN44Smt+z6SmzkP0
+ de6Rhe3W1aLex+Q3we03dnbQrin6fWlYwXyL+LWseVsYU9yjCEQWue/7UxMBhZJgvjFtZ1PBd
+ Bgl60nLqfzdfJVoS9iktBt/CwL3RH/Nn7DdnAPwKTNyreLfaCxeD4tT1KeRrv1chne0Mcak0Z
+ gXoKooKcXexEYzTy/tIGo/95st1ktVxsjKjND6eLc5XWhZCKMoIZwgKCIm3FJQbyAlhEk9HXi
+ tyzJQBnVU7vXERKQJ3Uw82JEjLvmAdowPsUsGzDi+nAfLATfKZX0jRGIUVlVmbBHEdYGYfc1j
+ ULtvJ2jhQitM+3tZezMfHGG1qCsK+JhDMbasVlfzemz9JGv+1iAdkB1Ro66SWMVPD4zMjhoja
+ mqo+tZTT1MgfES/qywnS4Y50k5YL6+CVzEyxEwPa/1BlOkW1KQanNLCWMwi5SdP0mq4K+NuJN
+ oKfcSDxUBvvglzxlbxBREWgVfqLOz+4vvHYcTGl7SnWpmL/ZMQy7IMiNfOzlvGoq1JFjDUYq4
+ 6byGc4r4INbha52oiawwbMEwQ+GyW1QG2ho2Kk4vIyyY/lX9H5F9bxoKxcfD+DiP45B4kiEv+
+ WoyyL8oJqnwOmsG9tTfWOKAvw7xm4m0SYhk+/h3QB4XejoEiNk064tAmHunE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-This ioctl will be responsible for deleting a subvolume using it's id.
-This can be used when a system has a file system mounted from a
-subvolume, rather than the root file system, like below:
 
-/
-|- @subvol1
-|- @subvol2
-\- @subvol_default
-If only @subvol_default is mounted, we have no path to reach
-@subvol1 and @subvol2, thus no way to delete them.
-This patch introduces a new flag to allow BTRFS_IOC_SNAP_DESTORY_V2
-to delete subvolume using subvolid.
+On 2020/1/11 =E4=B8=8A=E5=8D=8812:11, Josef Bacik wrote:
+> For some reason we've translated the do_chunk_alloc that goes into
+> btrfs_inc_block_group_ro to force in inc_block_group_ro, but these are
+> two different things.
+>
+> force for inc_block_group_ro is used when we are forcing the block group
+> read only no matter what, for example when the underlying chunk is
+> marked read only.  We need to not do the space check here as this block
+> group needs to be read only.
+>
+> btrfs_inc_block_group_ro() has a do_chunk_alloc flag that indicates that
+> we need to pre-allocate a chunk before marking the block group read
+> only.  This has nothing to do with forcing, and in fact we _always_ want
+> to do the space check in this case, so unconditionally pass false for
+> force in this case.
+>
+> Then fixup inc_block_group_ro to honor force as it's expected and
+> documented to do.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-Also in this patch, add BTRFS_SUBVOL_DELETE_BY_ID flag and add subvolid
-as a union member of fd in struct btrfs_ioctl_vol_args_v2.
+It looks like my previous comment was on a development branch which we
+skip chunk allocation for scrub.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- fs/btrfs/ctree.h           |  8 ++++++
- fs/btrfs/export.c          |  4 +--
- fs/btrfs/ioctl.c           | 53 ++++++++++++++++++++++++++++++++++++++
- fs/btrfs/super.c           |  2 +-
- include/uapi/linux/btrfs.h | 12 +++++++--
- 5 files changed, 74 insertions(+), 5 deletions(-)
+But since it's not upstreamed yet, no need to bother.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 569931dd0ce5..421a2f57f9ec 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3010,6 +3010,8 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
- int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			unsigned long new_flags);
- int btrfs_sync_fs(struct super_block *sb, int wait);
-+char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-+					   u64 subvol_objectid);
- 
- static inline __printf(2, 3) __cold
- void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
-@@ -3442,6 +3444,12 @@ int btrfs_reada_wait(void *handle);
- void btrfs_reada_detach(void *handle);
- int btree_readahead_hook(struct extent_buffer *eb, int err);
- 
-+/* export.c */
-+struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-+				       u64 root_objectid, u32 generation,
-+				       int check_generation);
-+struct dentry *btrfs_get_parent(struct dentry *child);
-+
- static inline int is_fstree(u64 rootid)
- {
- 	if (rootid == BTRFS_FS_TREE_OBJECTID ||
-diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-index 72e312cae69d..027411cdbae7 100644
---- a/fs/btrfs/export.c
-+++ b/fs/btrfs/export.c
-@@ -57,7 +57,7 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- 	return type;
- }
- 
--static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-+struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
- 				       u64 root_objectid, u32 generation,
- 				       int check_generation)
- {
-@@ -152,7 +152,7 @@ static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
- 	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
- }
- 
--static struct dentry *btrfs_get_parent(struct dentry *child)
-+struct dentry *btrfs_get_parent(struct dentry *child)
- {
- 	struct inode *dir = d_inode(child);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(dir->i_sb);
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index dcceae4c5d28..68da45ad4904 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2960,6 +2960,57 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- 	return err;
- }
- 
-+static noinline int btrfs_ioctl_snap_destroy_v2(struct file *file,
-+					     void __user *arg)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(file->f_path.dentry->d_sb);
-+	struct dentry *dentry, *pdentry;
-+	struct btrfs_ioctl_vol_args_v2 *vol_args;
-+	char *name, *p;
-+	size_t namelen;
-+	int err = 0;
-+
-+	vol_args = memdup_user(arg, sizeof(*vol_args));
-+	if (IS_ERR(vol_args))
-+		return PTR_ERR(vol_args);
-+
-+	if (vol_args->subvolid == 0)
-+		return -EINVAL;
-+
-+	if (!(vol_args->flags & BTRFS_SUBVOL_DELETE_BY_ID))
-+		return -EINVAL;
-+
-+	dentry = btrfs_get_dentry(fs_info->sb, BTRFS_FIRST_FREE_OBJECTID,
-+				vol_args->subvolid, 0, 0);
-+	if (IS_ERR(dentry)) {
-+		err = PTR_ERR(dentry);
-+		return err;
-+	}
-+
-+	pdentry = btrfs_get_parent(dentry);
-+	if (IS_ERR(pdentry)) {
-+		err = PTR_ERR(pdentry);
-+		goto out_dentry;
-+	}
-+
-+	name = get_subvol_name_from_objectid(fs_info, vol_args->subvolid);
-+	if (IS_ERR(name)) {
-+		err = PTR_ERR(name);
-+		goto out_pdentry;
-+	}
-+	p = (char *)kbasename(name);
-+	namelen = strlen(p);
-+
-+	err = btrfs_subvolume_deleter(file, pdentry, p, namelen);
-+
-+	kfree(name);
-+out_pdentry:
-+	dput(pdentry);
-+out_dentry:
-+	dput(dentry);
-+	return err;
-+}
-+
- static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- {
- 	struct inode *inode = file_inode(file);
-@@ -5465,6 +5516,8 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return btrfs_ioctl_snap_create_v2(file, argp, 1);
- 	case BTRFS_IOC_SNAP_DESTROY:
- 		return btrfs_ioctl_snap_destroy(file, argp);
-+	case BTRFS_IOC_SNAP_DESTROY_V2:
-+		return btrfs_ioctl_snap_destroy_v2(file, argp);
- 	case BTRFS_IOC_SUBVOL_GETFLAGS:
- 		return btrfs_ioctl_subvol_getflags(file, argp);
- 	case BTRFS_IOC_SUBVOL_SETFLAGS:
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index a906315efd19..a448d2bb93e6 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1024,7 +1024,7 @@ static int btrfs_parse_subvol_options(const char *options, char **subvol_name,
- 	return error;
- }
- 
--static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-+char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 					   u64 subvol_objectid)
- {
- 	struct btrfs_root *root = fs_info->tree_root;
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 7a8bc8b920f5..1be03082e49a 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -42,11 +42,14 @@ struct btrfs_ioctl_vol_args {
- 
- #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
- 
-+#define BTRFS_SUBVOL_DELETE_BY_ID	(1ULL << 4)
-+
- #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
- 			(BTRFS_SUBVOL_CREATE_ASYNC |	\
- 			BTRFS_SUBVOL_RDONLY |		\
- 			BTRFS_SUBVOL_QGROUP_INHERIT |	\
--			BTRFS_DEVICE_SPEC_BY_ID)
-+			BTRFS_DEVICE_SPEC_BY_ID |	\
-+			BTRFS_SUBVOL_DELETE_BY_ID)
- 
- #define BTRFS_FSID_SIZE 16
- #define BTRFS_UUID_SIZE 16
-@@ -108,7 +111,10 @@ struct btrfs_ioctl_qgroup_limit_args {
-  */
- 
- struct btrfs_ioctl_vol_args_v2 {
--	__s64 fd;
-+	union {
-+		__s64 fd;
-+		__u64 subvolid;
-+	};
- 	__u64 transid;
- 	__u64 flags;
- 	union {
-@@ -949,5 +955,7 @@ enum btrfs_err_code {
- 				struct btrfs_ioctl_get_subvol_rootref_args)
- #define BTRFS_IOC_INO_LOOKUP_USER _IOWR(BTRFS_IOCTL_MAGIC, 62, \
- 				struct btrfs_ioctl_ino_lookup_user_args)
-+#define BTRFS_IOC_SNAP_DESTROY_V2 _IOW(BTRFS_IOCTL_MAGIC, 63, \
-+				struct btrfs_ioctl_vol_args_v2)
- 
- #endif /* _UAPI_LINUX_BTRFS_H */
--- 
-2.24.0
+Reviewed-by: Qu wenruo <wqu@suse.com>
 
+Thanks,
+Qu
+
+> ---
+>  fs/btrfs/block-group.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 6f564e390153..2e94e14e30ee 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1190,8 +1190,15 @@ static int inc_block_group_ro(struct btrfs_block_=
+group *cache, int force)
+>  	spin_lock(&sinfo->lock);
+>  	spin_lock(&cache->lock);
+>
+> -	if (cache->ro) {
+> +	if (cache->ro || force) {
+>  		cache->ro++;
+> +
+> +		/*
+> +		 * We should only be empty if we did force here and haven't
+> +		 * already marked ourselves read only.
+> +		 */
+> +		if (force && list_empty(&cache->ro_list))
+> +			list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
+>  		ret =3D 0;
+>  		goto out;
+>  	}
+>
