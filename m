@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9F8138290
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 18:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B0F13829A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 18:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbgAKREf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jan 2020 12:04:35 -0500
-Received: from ms11p00im-qufo17291901.me.com ([17.58.38.48]:34219 "EHLO
-        ms11p00im-qufo17291901.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730420AbgAKREf (ORCPT
+        id S1730535AbgAKRXx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jan 2020 12:23:53 -0500
+Received: from ms11p00im-hyfv17281201.me.com ([17.58.38.39]:32800 "EHLO
+        ms11p00im-hyfv17281201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730519AbgAKRXw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jan 2020 12:04:35 -0500
+        Sat, 11 Jan 2020 12:23:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1578762272;
-        bh=FLHKzK7BGJsiLuAI0/I/K5wyP4i4VXKGV69VXGuqKwA=;
+        s=1a1hai; t=1578763429;
+        bh=ETyDC74oxokl0d18NNTxhDas0XEDOmBBT3WbWqLiL0g=;
         h=Content-Type:Subject:From:Date:Message-Id:To;
-        b=i+roQ24cJ8YnUmsEEpNTz5g72EfNpk7fhhwPK2Dqd+2gC49Z1PwoN1TBWTYx47471
-         o3zA8v3l+1ezLrmxbpxY+wbrU0IGcqJaXL8d67HCjyZ5tSyAMm4jz43U3G3zp2i5ms
-         vS8QiZuTUjFUifaqAsTNlNjbsyy00yQDMXo883hlHC2Fy+sDdADQImSZ28ubGRc9ct
-         IrlcZFfyaw2qOTNc6ija2ualTQ/XlcLwEV2DwIg/WTllSjbCq1W7MC5MGcXETCVZko
-         juuNnri57bhh+x1KyIcQalOZ0B8d8bKkxIE8DhvYjue1RoFk21VRWi1mXWAX1jbmIp
-         MSCjBMZCpEnjw==
+        b=Luao1gpXJEYrdiQlbSPfSv6P6yutG+scF0a37fcT/xziHoEf9rDyALDzBrBSYik6S
+         ipXH0s5EVP4HZjLMQaKi72K0UGia18pwWuKwchQiGntHo5KgFAX7fwhn8Tp4w49edb
+         6McCr6bRqdwKDqI9UzcAHeBs2Y5aTBKcFreNlKC9WbzJelRyoIqV2jGtMe0Wa0Rf4W
+         VAm7QRKpg7FkhPo4D3Jyhzm79QylIoYCknkalNIaZk/fXdkKqK+RebV5vh/nJSaVG9
+         hR0yggQ2qUmvzeXBZ21PqswXXXeezczjTY2nzDFB00+vQjLa4/FNGaUv1AWlfB3FmU
+         KYTJw9iWW7Apg==
 Received: from [192.168.15.23] (unknown [177.76.36.47])
-        by ms11p00im-qufo17291901.me.com (Postfix) with ESMTPSA id B572E580B64;
-        Sat, 11 Jan 2020 17:04:30 +0000 (UTC)
+        by ms11p00im-hyfv17281201.me.com (Postfix) with ESMTPSA id 5A6CDC00CC8;
+        Sat, 11 Jan 2020 17:23:48 +0000 (UTC)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
 Subject: 12 TB btrfs file system on virtual machine broke again (third time)
 From:   Christian Wimmer <telefonchris@icloud.com>
 In-Reply-To: <CAJCQCtQxN17UL7swO7vU6-ORVmHfQHteUQZ7iS1w7Y5XLHTpVA@mail.gmail.com>
-Date:   Sat, 11 Jan 2020 14:04:27 -0300
+Date:   Sat, 11 Jan 2020 14:23:45 -0300
 Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>,
         Anand Jain <anand.jain@oracle.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <B871DCD7-7EA7-4AA2-ADB1-0F899F764972@icloud.com>
+Message-Id: <86147601-37F0-49C0-B6F8-0F5245750450@icloud.com>
 References: <20191206034406.40167-1-wqu@suse.com>
  <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
  <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
@@ -62,8 +62,8 @@ X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2020
  signatures=0
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-2001110149
+ mlxlogscore=696 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-2001110151
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -71,237 +71,133 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi guys,
 
-and again my 12TB virtual machine btrfs file system broke into pieces.
-I checked today in the morning and there was not any error message =
-regarding btrfs.
-10 minutes ago I needed to suspend the virtual machine and after I =
-resumed, all folders on my (still mounted) file system have gone.
-So in my opinion, the Parallels Virtual machine is not cleanly handling =
-this.
-
-Is there anything I can do now to save my data?
-This are the error log messages:
+here the last lines before the suspend and after it:
 
 
+66939.439945] Buffer I/O error on dev loop1, logical block 0, async page =
+read
+[66939.621686] print_req_error: I/O error, dev loop1, sector 83885952
+[66939.621738] print_req_error: I/O error, dev loop1, sector 83885952
+[66939.621740] Buffer I/O error on dev loop1, logical block 10485744, =
+async page read
+[509652.385601] sd 6:0:0:0: [sdb] tag#0 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE
+[509652.385623] sd 6:0:0:0: [sdb] tag#0 Sense Key : Illegal Request =
+[current]=20
+[509652.385628] sd 6:0:0:0: [sdb] tag#0 Add. Sense: Invalid command =
+operation code
+[509652.385631] sd 6:0:0:0: [sdb] tag#0 CDB: Read(16) 88 00 00 00 00 00 =
+00 16 b2 c0 00 00 00 20 00 00
+[509652.385634] print_req_error: critical target error, dev sdb, sector =
+1487552
+[509652.385642] BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 0, rd =
+1, flush 0, corrupt 0, gen 0
+[509652.386117] xhci_hcd 0000:00:1d.6: Mismatch between completed Set TR =
+Deq Ptr command & xHCI internal state.
+[509652.386120] xhci_hcd 0000:00:1d.6: ep deq seg =3D ffff880bd3fbab40, =
+deq ptr =3D ffff880bd3b65150
+[509652.386132] sd 6:0:0:0: [sdb] tag#1 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE
+[509652.386135] sd 6:0:0:0: [sdb] tag#1 Sense Key : Illegal Request =
+[current]=20
+[509652.386137] sd 6:0:0:0: [sdb] tag#1 Add. Sense: Invalid command =
+operation code
+[509652.386139] sd 6:0:0:0: [sdb] tag#1 CDB: Write(16) 8a 00 00 00 00 00 =
+01 1d 9a 18 00 00 02 00 00 00
+[509652.386141] print_req_error: critical target error, dev sdb, sector =
+18717208
+[509652.386158] BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 1, rd =
+1, flush 0, corrupt 0, gen 0
+[509682.560535] xhci_hcd 0000:00:1d.6: Mismatch between completed Set TR =
+Deq Ptr command & xHCI internal state.
+[509682.560537] xhci_hcd 0000:00:1d.6: ep deq seg =3D ffff880bd3fbab40, =
+deq ptr =3D ffff880bd3b65190
+[509682.560566] sd 6:0:0:0: [sdb] tag#0 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE
+[509682.560567] sd 6:0:0:0: [sdb] tag#0 Sense Key : Illegal Request =
+[current]=20
+[509682.560569] sd 6:0:0:0: [sdb] tag#0 Add. Sense: Invalid command =
+operation code
+[509682.560571] sd 6:0:0:0: [sdb] tag#0 CDB: Read(16) 88 00 00 00 00 00 =
+00 36 b2 c0 00 00 00 20 00 00
+[509682.560572] print_req_error: critical target error, dev sdb, sector =
+3584704
+[509682.560579] BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 1, rd =
+2, flush 0, corrupt 0, gen 0
+[509682.560667] BTRFS: error (device sdb1) in =
+btrfs_start_dirty_block_groups:3716: errno=3D-5 IO failure
+[509682.560669] BTRFS info (device sdb1): forced readonly
+[509712.672325] xhci_hcd 0000:00:1d.6: Mismatch between completed Set TR =
+Deq Ptr command & xHCI internal state.
+[509712.672330] xhci_hcd 0000:00:1d.6: ep deq seg =3D ffff880bd3fbab40, =
+deq ptr =3D ffff880bd3b651d0
+[509712.672373] sd 6:0:0:0: [sdb] tag#0 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE
+[509712.672377] sd 6:0:0:0: [sdb] tag#0 Sense Key : Illegal Request =
+[current]=20
+[509712.672379] sd 6:0:0:0: [sdb] tag#0 Add. Sense: Invalid command =
+operation code
+[509712.672382] sd 6:0:0:0: [sdb] tag#0 CDB: Read(16) 88 00 00 00 00 00 =
+00 16 b2 c0 00 00 00 20 00 00
+[509712.672384] print_req_error: critical target error, dev sdb, sector =
+1487552
+[509712.672388] BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 1, rd =
+3, flush 0, corrupt 0, gen 0
+[509742.783978] xhci_hcd 0000:00:1d.6: Mismatch between completed Set TR =
+Deq Ptr command & xHCI internal state.
+[509742.783982] xhci_hcd 0000:00:1d.6: ep deq seg =3D ffff880bd3fbab40, =
+deq ptr =3D ffff880bd3b65210
+[509742.784016] sd 6:0:0:0: [sdb] tag#0 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE
+[509742.784019] sd 6:0:0:0: [sdb] tag#0 Sense Key : Illegal Request =
+[current]=20
+[509742.784021] sd 6:0:0:0: [sdb] tag#0 Add. Sense: Invalid command =
+operation code
+[509742.784024] sd 6:0:0:0: [sdb] tag#0 CDB: Read(16) 88 00 00 00 00 00 =
+00 36 b2 c0 00 00 00 20 00 00
+[509742.784026] print_req_error: critical target error, dev sdb, sector =
+3584704
+[509742.784031] BTRFS error (device sdb1): bdev /dev/sdb1 errs: wr 1, rd =
+4, flush 0, corrupt 0, gen 0
+[509742.784079] BTRFS: error (device sdb1) in =
+btrfs_start_dirty_block_groups:3716: errno=3D-5 IO failure
+[509742.784082] BTRFS warning (device sdb1): Skipping commit of aborted =
+transaction.
+[509742.784084] BTRFS: error (device sdb1) in cleanup_transaction:1881: =
+errno=3D-5 IO failure
+[509742.784084] BTRFS info (device sdb1): delayed_refs has NO entry
+[512066.481724] usb 4-1: USB disconnect, device number 2
+[512066.484604] sd 6:0:0:0: [sdb] Synchronizing SCSI cache
+[512066.661516] usb 2-1: USB disconnect, device number 2
+[512066.661725] usblp0: removed
+[512066.716156] usb 1-1: USB disconnect, device number 2
+[512066.751428] sd 6:0:0:0: [sdb] Synchronize Cache(10) failed: Result: =
+hostbyte=3DDID_ERROR driverbyte=3DDRIVER_OK
+[512066.811207] usb 2-2: USB disconnect, device number 3
+[512066.811350] usblp1: removed
+[512066.963131] usb 2-3: USB disconnect, device number 4
+[512066.963296] usblp2: removed
+[512067.091114] usb 4-1: new SuperSpeed USB device number 3 using =
+xhci_hcd
+[512067.107446] usb 1-1: new full-speed USB device number 3 using =
+uhci_hcd
+[512067.113881] usb 2-4: USB disconnect, device number 5
+[512067.114143] usblp3: removed
+[512067.126193] usb 4-1: New USB device found, idVendor=3D2109, =
+idProduct=3D0711
+[512067.126195] usb 4-1: New USB device strings: Mfr=3D1, Product=3D2, =
+SerialNumber=3D3
+[512067.126196] usb 4-1: Product: 20231
+[512067.126196] usb 4-1: Manufacturer: Ugreen
+[512067.126197] usb 4-1: SerialNumber: 000000128DA4
+[512067.140176] scsi host9: uas
+[512067.141472] scsi 9:0:0:0: Direct-Access     ST6000DM 004-2EH11C      =
+ DN02 PQ: 0 ANSI: 6
+[512067.142615] sd 9:0:0:0:=20
 
-# tail -f /var/log/messages
-2020-01-11T13:57:55.739361-03:00 linux-ze6w kernel: [512260.892881] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:57:57.986773-03:00 linux-ze6w chronyd[1943]: Selected =
-source 185.184.223.224
-2020-01-11T13:58:00.766543-03:00 linux-ze6w kernel: [512265.894004] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:00.766559-03:00 linux-ze6w kernel: [512265.894089] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:02.891790-03:00 linux-ze6w sudo:    chris : TTY=3Dpts/100=
- ; PWD=3D/home/chris ; USER=3Droot ; COMMAND=3D/usr/bin/su
-2020-01-11T13:58:02.893238-03:00 linux-ze6w sudo: =
-pam_unix(sudo:session): session opened for user root by chris(uid=3D0)
-2020-01-11T13:58:02.897765-03:00 linux-ze6w su: (to root) chris on =
-pts/100
-2020-01-11T13:58:02.898820-03:00 linux-ze6w su: pam_unix(su:session): =
-session opened for user root by chris(uid=3D0)
-2020-01-11T13:58:05.798179-03:00 linux-ze6w kernel: [512270.925046] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:05.798193-03:00 linux-ze6w kernel: [512270.925102] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:10.822192-03:00 linux-ze6w kernel: [512275.951137] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:10.822204-03:00 linux-ze6w kernel: [512275.951174] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:15.850385-03:00 linux-ze6w kernel: [512280.977909] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:15.850400-03:00 linux-ze6w kernel: [512280.977975] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:20.882236-03:00 linux-ze6w kernel: [512286.010503] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:20.882247-03:00 linux-ze6w kernel: [512286.010577] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:22.234199-03:00 linux-ze6w kernel: [512287.361025] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110521344
-2020-01-11T13:58:22.234213-03:00 linux-ze6w kernel: [512287.364054] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110472192
-2020-01-11T13:58:22.234214-03:00 linux-ze6w kernel: [512287.364060] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110455808
-2020-01-11T13:58:22.250399-03:00 linux-ze6w kernel: [512287.377085] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110488576
-2020-01-11T13:58:22.270208-03:00 linux-ze6w kernel: [512287.397958] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110455808
-2020-01-11T13:58:22.270221-03:00 linux-ze6w kernel: [512287.398038] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110455808
-2020-01-11T13:58:22.270221-03:00 linux-ze6w kernel: [512287.398067] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562110455808
-2020-01-11T13:58:23.098451-03:00 linux-ze6w kernel: [512288.225913] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562059993088
-2020-01-11T13:58:25.910246-03:00 linux-ze6w kernel: [512291.036604] =
-btree_readpage_end_io_hook: 17 callbacks suppressed
-2020-01-11T13:58:25.910266-03:00 linux-ze6w kernel: [512291.036607] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:25.910267-03:00 linux-ze6w kernel: [512291.036708] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:26.338226-03:00 linux-ze6w kernel: [512291.467459] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:26.338237-03:00 linux-ze6w kernel: [512291.467517] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:26.338238-03:00 linux-ze6w kernel: [512291.467585] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:26.338238-03:00 linux-ze6w kernel: [512291.467624] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:28.882182-03:00 linux-ze6w kernel: [512294.011515] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:28.914197-03:00 linux-ze6w kernel: [512294.041798] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:28.914214-03:00 linux-ze6w kernel: [512294.041883] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:28.914214-03:00 linux-ze6w kernel: [512294.041936] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:30.938342-03:00 linux-ze6w kernel: [512296.064421] =
-btree_readpage_end_io_hook: 4 callbacks suppressed
-2020-01-11T13:58:30.938354-03:00 linux-ze6w kernel: [512296.064425] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:30.938355-03:00 linux-ze6w kernel: [512296.064503] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:32.078216-03:00 linux-ze6w kernel: [512297.204873] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562285453312
-2020-01-11T13:58:32.078230-03:00 linux-ze6w kernel: [512297.205110] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562285453312
-2020-01-11T13:58:32.078230-03:00 linux-ze6w kernel: [512297.205174] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562285453312
-2020-01-11T13:58:32.078232-03:00 linux-ze6w kernel: [512297.205212] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562285453312
-2020-01-11T13:58:35.962296-03:00 linux-ze6w kernel: [512301.090582] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:35.962308-03:00 linux-ze6w kernel: [512301.090653] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:40.482196-03:00 linux-ze6w kernel: [512305.611514] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:40.482211-03:00 linux-ze6w kernel: [512305.611572] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:40.482212-03:00 linux-ze6w kernel: [512305.611624] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:40.482213-03:00 linux-ze6w kernel: [512305.611664] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562258780160
-2020-01-11T13:58:40.990210-03:00 linux-ze6w kernel: [512306.116117] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:40.990226-03:00 linux-ze6w kernel: [512306.116218] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:42.530181-03:00 linux-ze6w kernel: [512307.659684] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:42.530194-03:00 linux-ze6w kernel: [512307.659724] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:42.530194-03:00 linux-ze6w kernel: [512307.659762] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:42.530195-03:00 linux-ze6w kernel: [512307.659800] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345484288
-2020-01-11T13:58:43.462391-03:00 linux-ze6w kernel: [512308.589145] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:43.462410-03:00 linux-ze6w kernel: [512308.590058] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:43.462410-03:00 linux-ze6w kernel: [512308.590113] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:43.462412-03:00 linux-ze6w kernel: [512308.590152] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:46.014183-03:00 linux-ze6w kernel: [512311.142992] =
-btree_readpage_end_io_hook: 20 callbacks suppressed
-2020-01-11T13:58:46.014200-03:00 linux-ze6w kernel: [512311.142994] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:46.014200-03:00 linux-ze6w kernel: [512311.143077] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:46.290228-03:00 linux-ze6w kernel: [512311.418594] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:46.290246-03:00 linux-ze6w kernel: [512311.418638] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:51.042208-03:00 linux-ze6w kernel: [512316.170407] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:51.042229-03:00 linux-ze6w kernel: [512316.170495] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:53.786220-03:00 linux-ze6w kernel: [512318.911878] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562059993088
-2020-01-11T13:58:53.786240-03:00 linux-ze6w kernel: [512318.911963] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562059993088
-2020-01-11T13:58:53.786241-03:00 linux-ze6w kernel: [512318.913482] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:53.786241-03:00 linux-ze6w kernel: [512318.913583] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562345451520
-2020-01-11T13:58:53.786242-03:00 linux-ze6w kernel: [512318.913588] =
-BTRFS: error (device sdc1) in __btrfs_run_delayed_items:1148: errno=3D-5 =
-IO failure
-2020-01-11T13:58:53.786242-03:00 linux-ze6w kernel: [512318.913590] =
-BTRFS info (device sdc1): forced readonly
-2020-01-11T13:58:53.786242-03:00 linux-ze6w kernel: [512318.913591] =
-BTRFS warning (device sdc1): Skipping commit of aborted transaction.
-2020-01-11T13:58:53.786243-03:00 linux-ze6w kernel: [512318.913592] =
-BTRFS: error (device sdc1) in cleanup_transaction:1881: errno=3D-5 IO =
-failure
-2020-01-11T13:58:56.078317-03:00 linux-ze6w kernel: [512321.203683] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
-2020-01-11T13:58:56.078334-03:00 linux-ze6w kernel: [512321.203751] =
-BTRFS error (device sdc1): bad tree block start 14275350892879035392 =
-2562508521472
 
 Thanks,
+
 
 Chris
 
