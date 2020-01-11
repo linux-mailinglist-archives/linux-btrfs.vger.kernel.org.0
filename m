@@ -2,131 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D4F137C34
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 08:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4578137C75
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jan 2020 09:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgAKHm6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jan 2020 02:42:58 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:36839 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728507AbgAKHm5 (ORCPT
+        id S1728664AbgAKIu3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jan 2020 03:50:29 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:39962 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbgAKIu3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jan 2020 02:42:57 -0500
-Received: by mail-lf1-f51.google.com with SMTP id n12so3214260lfe.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jan 2020 23:42:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eOUJcQpN9hHFQ4SRYTGrdC++BB/djopfW6ChrJELniA=;
-        b=acmcq09pyR4XTF2VpqHwTBy2sseR4+1ncl7dDprtxdgIkrRKQwtwFDwJvlaMDvnbHb
-         hGO94SJQxSmsu45wL8mUr1bfkjGemRAnZjAguLV21XkeddNpDM48ba+oGImgm6zTvh9l
-         r2ksYjnICmaqX46RoyX+GL+h/t5jjpwdxgnMwN/Lil3aEdg+9x/O4ZqPOkO5Wu9KJuUx
-         zrRpLW//VvLQ/BWH0uDVYvAOWElT5yjo0CIviHyQPg+5vuLt1LEo0cn2gH4c5ozdeVlM
-         IrI7/ag7LrFIb2RVn+gizhbcsyfrb7anUweo9yXtkVLoBv8aMHwchXyMBt88Btbzb0xw
-         TCJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eOUJcQpN9hHFQ4SRYTGrdC++BB/djopfW6ChrJELniA=;
-        b=J9+iU5H6mIzGu34Yg6/KUAJJHxIQaIlWoRxJ2dDxsmXmyFTMHYLjoYuLLAiHjwvlAx
-         nPN5jtxSG6mGzH09uSWKwp8ae5eHKxwc+4yt5PEPx5RhfDtP25Ild0vq3evNCfQXtwxf
-         sv7S5QQwXf+K3Ua3jEWNCwCJrlu9lkKKDDWDYPDMZ54bdylX7Ph26BaBvmV2e10KhcOJ
-         lG/fDmYsiBdzVHJHWqHJ83Y04Q1nOQLANwY6lGt0my1BUSCWGYmBLLcaUzjv1g1RDOZJ
-         yppJWQZ3yb162x7+53JkmF5jN8SsECKSGuHhn7v1r4ocV9V37RuKr6rEFEgIccSQo9Yc
-         Jn4w==
-X-Gm-Message-State: APjAAAVyfriZLrkA3JKuwvKwc5p9el/+9ha0AN461SIUgQmOW1x4o/xq
-        /bInA71dLRpR55h0GDslTtj2HGambzg=
-X-Google-Smtp-Source: APXvYqzEZ5yD+9zw7V4pokRzE71w290Rm5E6ZlSQ+UYw9d041iBhmypS7YIRzx8tVX/km1M3CHKzog==
-X-Received: by 2002:a19:dc1e:: with SMTP id t30mr4778734lfg.34.1578728575427;
-        Fri, 10 Jan 2020 23:42:55 -0800 (PST)
-Received: from ?IPv6:2a00:1370:812d:af15:a51e:b905:dd2b:45cf? ([2a00:1370:812d:af15:a51e:b905:dd2b:45cf])
-        by smtp.gmail.com with ESMTPSA id k5sm2236692lfd.86.2020.01.10.23.42.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jan 2020 23:42:54 -0800 (PST)
-Subject: Re: Monitoring not working as "dev stats" returns 0 after read error
- occurred
-To:     Philip Seeger <philip@philip-seeger.de>,
-        linux-btrfs@vger.kernel.org
-References: <3283de40c2750cd62d020ed71430cd35@philip-seeger.de>
- <d89fe4da-c498-bb24-8eb5-a19b01680a23@cobb.uk.net>
- <ac61f79a3c373f319232640db5db9a5e@philip-seeger.de>
- <2a9bf923-e7b9-9d82-5f1d-bbdfc192978e@suse.com>
- <d3a234a07192fd9713b0ac33123c99db@philip-seeger.de>
- <68ebf136-6aff-bd98-cf95-0c3c7d5bed89@philip-seeger.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <9b6d7519-cffb-2cfa-5e77-b514817b5f0a@gmail.com>
-Date:   Sat, 11 Jan 2020 10:42:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sat, 11 Jan 2020 03:50:29 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00B8mZZ9074250;
+        Sat, 11 Jan 2020 08:50:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=vAQ4Wh8f7jde2jDY0X7mlxQo7E6fiRQOgcz8er/CZ+o=;
+ b=XGciat/dNLV2OEhjUMj+SfOy6oVYjMudbt0xJlSYm5smAy2b0bvjZNOjdXYNlnlbuCeM
+ 3hl39phHNEk3yELR7BP5lUCbth9tjiaQThPELrqTPJZdfDSLvYWkVC8HiiFgZmYY8kBd
+ tEjULQwuVhnuIYD8QHWcFrS+esDbyLACJx5aRv5XLoIe7S6DB8rslbgmZ80L1aYymPfF
+ oR8agdIh9rLiyBlJdj9IxmiejYdCYY/gaz88EXm34cni55lngAJo5ZS3PWibSDLU1oJx
+ PW2D7Ym/ISxnMllWnnG352o4e6EpYDAL75i36s9F6YpYXI8yPeXO3ovcOCK4jxvFZS2I qA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2xf73t8gfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 11 Jan 2020 08:50:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00B8mc4I172596;
+        Sat, 11 Jan 2020 08:50:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2xf758burt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 11 Jan 2020 08:50:26 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00B8oQ8b020425;
+        Sat, 11 Jan 2020 08:50:26 GMT
+Received: from [192.168.1.145] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 11 Jan 2020 00:50:25 -0800
+Subject: Re: [PATCH] btrfs: device stat, log when zeroed assist audit
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20200110042634.4843-1-anand.jain@oracle.com>
+ <7b449175-4e73-7fe9-07b2-d1c04feeba8e@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <054ca606-1886-d7f3-64e2-b1a032034648@oracle.com>
+Date:   Sat, 11 Jan 2020 16:50:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <68ebf136-6aff-bd98-cf95-0c3c7d5bed89@philip-seeger.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <7b449175-4e73-7fe9-07b2-d1c04feeba8e@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9496 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001110075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9496 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001110075
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-10.01.2020 02:50, Philip Seeger пишет:
->> On 2020-01-09 13:04, Nikolay Borisov wrote:
->>> It seems there are other error codes which are
->>> also ignored but can signify errors e.g. STS_NEXUS/STS_TRANSPORT.
+On 1/10/20 11:07 PM, Josef Bacik wrote:
+> On 1/9/20 11:26 PM, Anand Jain wrote:
+>> We had a report indicating that some read errors aren't reported by
+>> the device stats in the userland. It is important to have the errors
+>> reported in the device stat as user land scripts might depend on it to
+>> take the reasonable corrective actions. But to debug these issue we need
+>> to be really sure that request to reset the device stat did not come
+>> from the userland itself. So log an info message when device error reset
+>> happens.
+>>
+>> For example:
+>>   BTRFS info (device sdc): device stats zeroed by btrfs (9223)
+>>
+>> Reported-by: philip@philip-seeger.de
+>> Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   BTRFS info (device sdc): device stats zeroed by btrfs (9223)
+>> The last words are name and pid of the process, unfortunately it came out
+>> as 'by btrfs'. At some point if there is a python and lib to reset it
+>> would change, otherwise its going to be 'by btrfs', I am ok with it,
+>> if otherwise please suggest the alternative.
 > 
-> Speaking of other errors also being ignored.
+> I think name(pid) makes sense, similar to what drop_caches does
 > 
-> I just saw this on a different system:
+> pr_info("%s (%d): drop_caches: %d\n",
+>      current->comm, task_pid_nr(current),
+
+There is a small deviation to what we already have in
+device_list_add(), name (pid) is at the end the log message..
+
+------
+                         pr_info(
+         "BTRFS: device label %s devid %llu transid %llu %s scanned by 
+%s (%d)\n",
+                                 disk_super->label, devid, 
+found_transid, path,
+                                 current->comm, task_pid_nr(current));
+--------
+
+I am not sure. Can David can tweak during merge ?
+
+Thanks, Anand
+
+> Thanks,
 > 
-> BTRFS warning (device sdd1): csum failed root 5 ino 263 off 5869793280
-> csum 0xeee8ab75 expected csum 0x1fc62249 mirror 1
-> 
-> Is BTRFS trying to tell me that the file with inode number 263 is
-> corrupt (checksum mismatch)?
-> I did indeed read (copy) that file earlier so it sounds like BTRFS
-> calculated its checksum to verify it and it didn't match the stored
-> checksum.
-> 
+> Josef
 
-On one mirror piece. It likely got correct data from another piece.
-
-> The error counters returned by "dev stats" all stayed at 0 (even after
-> scrubbing). This is (was) a single filesystem, no RAID.
-> 
-
-This is not device-level error. btrfs got data from block device without
-error. That content of data was wrong does not necessarily mean block
-device problem.
-
-> Suppose this was an important file, should I be worried now?
-> 
-
-You have mirror and btrfs got correct data from another device
-(otherwise you were not able to read file at all). Of course you should
-be worried why one copy of data was not correct.
-
-> If this was a checksum error, why does the stats command keep saying
-> that zero errors have been detected?
-
-Again - there was no error *reading* data from block device. Is
-corruption_errs also zero?
