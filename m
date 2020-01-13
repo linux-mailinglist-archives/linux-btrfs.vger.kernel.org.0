@@ -2,215 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B031397DF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 18:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8158139A03
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 20:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgAMRhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 12:37:25 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:35173 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgAMRhY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 12:37:24 -0500
-Received: by mail-pf1-f195.google.com with SMTP id i23so5198026pfo.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 09:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7NUUBv1d9hVMN/MOLil3JlrznYYqtPVEh75UpiK5KN4=;
-        b=PTzjYjBNuD3DIZt5nHP5ka8qT6p8zlVQNEUA3Y4BGE80QKgTZ33SQqA2pn/ivKEeIa
-         WF4UuW253kYimF36X3XSgmQ/m30olwU+T7cUfNYAfyetCgxbk7+pus9tef/ov11PuOqO
-         SVMkV6l0qIqS1O30g7tUTRmRt897db4vvvF6EL04t8vl8YUFNdxcDRx3gJAWOdiA1wMV
-         KqCzm0qhWnmW1H/5PxxmoiC5WKDTekshKvIrVe3+26Om5R7ALpZw5S3u8kkHfMfxksuY
-         pwYAp7+MjSWZMgZpcoFKqcuSdLi016FaavfSyPoPB0p+TNGsjH+QHUTbvZ6NtFy5o92r
-         Hb9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7NUUBv1d9hVMN/MOLil3JlrznYYqtPVEh75UpiK5KN4=;
-        b=QEl2t4UwELkT973iMcK8petoEToX5+s201JY6fVJT2oE5V5K9LkRI+gkkTn450BgmG
-         fEH7v9KJD0zvQnx5AaO5r+3UKhRNJBB6A6ARTRe1xP+/LZY37VxpaT0sYFAh+2HOq7oh
-         mioGhC0DUq8WZ7tzg9EG8KbxJfHUjWr2Lp3O0sOFbfjHpuVqvEi4gjOh86B1sJkfEl8z
-         rXfmi4q3dQZXu7QN0l/OCnPa3YVF0Qm7XlLDtYaEFAtphdc+PS+VPcqghcOiuPIRdazG
-         lZz1zlMM9uhlsKsJRB+UIU4ZqzfwpOR/SygYh+3EUgtkakIIlW26r0TIVE7062g5mcPA
-         vWSw==
-X-Gm-Message-State: APjAAAX9w7aDtECmDvF61Kv0iXEWfesdd/IMG2v2l7wbpo+X2WnZK437
-        gZpt9kVM/xTJMKcCSEnslPekQg==
-X-Google-Smtp-Source: APXvYqwTowABvkEbj/in0CAQMR+iWNEXa7EcZClcYS/ATY+t1lX6t5MboGeVSaQ8sinsRcOWAXp9GQ==
-X-Received: by 2002:a63:1a1c:: with SMTP id a28mr22827499pga.374.1578937043886;
-        Mon, 13 Jan 2020 09:37:23 -0800 (PST)
-Received: from ?IPv6:2620:10d:c082:1055:14f9:7e4a:9f6f:4d05? ([2620:10d:c090:200::3:ee39])
-        by smtp.gmail.com with ESMTPSA id l14sm13111375pgt.42.2020.01.13.09.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jan 2020 09:37:22 -0800 (PST)
-Subject: Re: [PATCH 2/2] btrfs: Introduce new BTRFS_IOC_SNAP_DESTROY_V2 ioctl
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com,
-        Chris Mason <clm@fb.com>
-References: <20200111043942.15366-1-marcos.souza.org@gmail.com>
- <20200111043942.15366-3-marcos.souza.org@gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <18611492-2f20-4c09-1208-c39251a54200@toxicpanda.com>
-Date:   Mon, 13 Jan 2020 09:37:21 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1727331AbgAMTPX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 14:15:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37536 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgAMTPX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jan 2020 14:15:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C238AACD9;
+        Mon, 13 Jan 2020 19:15:20 +0000 (UTC)
+Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN reports caused by
+ extended reloc tree lifespan
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.com>
+References: <20200108051200.8909-1-wqu@suse.com>
+ <7482d2f3-f3a1-7dd9-6003-9042c1781207@toxicpanda.com>
+ <2bfd87cf-2733-af0d-f33f-59e07c25d500@suse.com>
+ <20200108150841.GH3929@twin.jikos.cz> <20200108151159.GI3929@twin.jikos.cz>
+ <85422cb2-e140-563b-fadd-f820354ed156@gmx.com>
+ <20200109143742.GN3929@twin.jikos.cz>
+ <f8458b9c-0b6c-024e-399d-ea530abd1204@gmx.com>
+ <d4322bd6-c2dd-e3e6-e8eb-2cda1963f9d7@gmx.com>
+ <8b1245b4-ecac-57c1-d1bf-28360f089f6d@gmx.com>
+ <20200113171903.GZ3929@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <df355d89-d126-0d82-0beb-f76cc8d0f9c3@suse.com>
+Date:   Mon, 13 Jan 2020 21:15:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200111043942.15366-3-marcos.souza.org@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200113171903.GZ3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/10/20 8:39 PM, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+
+
+On 13.01.20 г. 19:19 ч., David Sterba wrote:
+> On Mon, Jan 13, 2020 at 12:41:45PM +0800, Qu Wenruo wrote:
+>> On 2020/1/10 上午8:58, Qu Wenruo wrote:
+>>> On 2020/1/10 上午8:21, Qu Wenruo wrote:
+>>>> On 2020/1/9 下午10:37, David Sterba wrote:
+>>>>> On Thu, Jan 09, 2020 at 01:54:34PM +0800, Qu Wenruo wrote:
+>>>>> We use smp_mb() because this serializes memory among multipe CPUs, when
+>>>>> one changes memory but stores it to some temporary structures, while
+>>>>> other CPUs don't see the effects. I'm sure you've read about that in the
+>>>>> memory barrier docs.
+>>>
+>>> I guess the main difference between us is the effect of "per-cpu
+>>> viewable temporary value".
+>>>
+>>> It looks like your point is, without rmb() we can't see consistent
+>>> values the writer sees.
+>>>
+>>> But my point is, even we can only see a temporary value, the
+>>> __before_atomic() mb at the writer side, ensures only 3 possible
+>>> temporary values combination can be seen.
+>>> (PTR, DEAD), (NULL, DEAD), (NULL, 0).
+>>>
+>>> The killed (PTR, 0) combination is killed by that writer side mb.
+>>> Thus no need for the reader side mb before test_bit().
+>>>
+>>> That's why I insist on the "test_bit() can happen whenever they like"
+>>> point, as that has the same effect as schedule.
+>>
+>> Can we push the fix to upstream? I hope it to be fixed in late rc of v5.5.
 > 
-> This ioctl will be responsible for deleting a subvolume using it's id.
-> This can be used when a system has a file system mounted from a
-> subvolume, rather than the root file system, like below:
+> Yes the plan is to push it to 5.5-rc so we can get the stable backports.
 > 
-> /
-> |- @subvol1
-> |- @subvol2
-> \- @subvol_default
-> If only @subvol_default is mounted, we have no path to reach
-> @subvol1 and @subvol2, thus no way to delete them.
-> This patch introduces a new flag to allow BTRFS_IOC_SNAP_DESTORY_V2
-> to delete subvolume using subvolid.
+> About the barriers, we seem to have a conclusion to use smp_rmb/smp_wmb
+> and not the smp_mb__before/after_atomic. Zygo also tested the patch and
+> reported it's ok so I don't want to hold it back.
 > 
-> Also in this patch, add BTRFS_SUBVOL_DELETE_BY_ID flag and add subvolid
-> as a union member of fd in struct btrfs_ioctl_vol_args_v2.
+> Understanding the memory barriers takes time to digest (which basically
+> means to develop a cpu simulator in ones head with speculative writes
+> and execution and then keep sanity when reasoning about them).
+
+Or simply using the memory model tool and just write a "simple" litmus
+test to see what's possible and what not in the given situation. (And
+no, I don't think it's that trivial to do that either :) )
+
 > 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->   fs/btrfs/ctree.h           |  8 ++++++
->   fs/btrfs/export.c          |  4 +--
->   fs/btrfs/ioctl.c           | 53 ++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/super.c           |  2 +-
->   include/uapi/linux/btrfs.h | 12 +++++++--
->   5 files changed, 74 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 569931dd0ce5..421a2f57f9ec 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3010,6 +3010,8 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
->   int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->   			unsigned long new_flags);
->   int btrfs_sync_fs(struct super_block *sb, int wait);
-> +char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-> +					   u64 subvol_objectid);
->   
->   static inline __printf(2, 3) __cold
->   void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
-> @@ -3442,6 +3444,12 @@ int btrfs_reada_wait(void *handle);
->   void btrfs_reada_detach(void *handle);
->   int btree_readahead_hook(struct extent_buffer *eb, int err);
->   
-> +/* export.c */
-> +struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-> +				       u64 root_objectid, u32 generation,
-> +				       int check_generation);
-> +struct dentry *btrfs_get_parent(struct dentry *child);
-> +
->   static inline int is_fstree(u64 rootid)
->   {
->   	if (rootid == BTRFS_FS_TREE_OBJECTID ||
-> diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-> index 72e312cae69d..027411cdbae7 100644
-> --- a/fs/btrfs/export.c
-> +++ b/fs/btrfs/export.c
-> @@ -57,7 +57,7 @@ static int btrfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
->   	return type;
->   }
->   
-> -static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
-> +struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
->   				       u64 root_objectid, u32 generation,
->   				       int check_generation)
->   {
-> @@ -152,7 +152,7 @@ static struct dentry *btrfs_fh_to_dentry(struct super_block *sb, struct fid *fh,
->   	return btrfs_get_dentry(sb, objectid, root_objectid, generation, 1);
->   }
->   
-> -static struct dentry *btrfs_get_parent(struct dentry *child)
-> +struct dentry *btrfs_get_parent(struct dentry *child)
->   {
->   	struct inode *dir = d_inode(child);
->   	struct btrfs_fs_info *fs_info = btrfs_sb(dir->i_sb);
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index dcceae4c5d28..68da45ad4904 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2960,6 +2960,57 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
->   	return err;
->   }
->   
-> +static noinline int btrfs_ioctl_snap_destroy_v2(struct file *file,
-> +					     void __user *arg)
-> +{
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(file->f_path.dentry->d_sb);
-> +	struct dentry *dentry, *pdentry;
-> +	struct btrfs_ioctl_vol_args_v2 *vol_args;
-> +	char *name, *p;
-> +	size_t namelen;
-> +	int err = 0;
-> +
-> +	vol_args = memdup_user(arg, sizeof(*vol_args));
-> +	if (IS_ERR(vol_args))
-> +		return PTR_ERR(vol_args);
-> +
-> +	if (vol_args->subvolid == 0)
-> +		return -EINVAL;
-> +
-> +	if (!(vol_args->flags & BTRFS_SUBVOL_DELETE_BY_ID))
-> +		return -EINVAL;
-> +
-> +	dentry = btrfs_get_dentry(fs_info->sb, BTRFS_FIRST_FREE_OBJECTID,
-> +				vol_args->subvolid, 0, 0);
-> +	if (IS_ERR(dentry)) {
-> +		err = PTR_ERR(dentry);
-> +		return err;
-> +	}
-> +
-> +	pdentry = btrfs_get_parent(dentry);
-> +	if (IS_ERR(pdentry)) {
-> +		err = PTR_ERR(pdentry);
-> +		goto out_dentry;
-> +	}
-
-What happens if we have something like
-
-/subvol
-/subvol2
-/subvol3/subvol4
-/subvol5
-
-and we mount /subvol5, and then we try to delete subvol4?  We aren't going to be 
-able to find the parent dentry for subvol3 right?  Cause that thing isn't linked 
-into our currently mounted tree, and things will go wonky right?  I'm only 
-working on like 4 hours of sleep so I could be missing something obvious here.
-
-> +
-> +	name = get_subvol_name_from_objectid(fs_info, vol_args->subvolid);
-> +	if (IS_ERR(name)) {
-> +		err = PTR_ERR(name);
-> +		goto out_pdentry;
-> +	}
-> +	p = (char *)kbasename(name);
-> +	namelen = strlen(p);
-> +
-> +	err = btrfs_subvolume_deleter(file, pdentry, p, namelen);
-
-We looked up the dentry to send the name into btrfs_subvolume_deleter(), which 
-just takes the name and looks up the dentry again?  Have the common function 
-just take both dentries and have v1 and v2 do their lookup shenanigans.  Thanks,
-
-Josef
