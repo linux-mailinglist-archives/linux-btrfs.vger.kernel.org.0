@@ -2,99 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF88F139C6E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 23:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729BF139C63
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 23:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgAMW2q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 17:28:46 -0500
-Received: from trent.utfs.org ([94.185.90.103]:33652 "EHLO trent.utfs.org"
+        id S1728915AbgAMWYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 17:24:04 -0500
+Received: from mars1.mruiz.dev ([167.71.125.59]:58140 "EHLO mars1.mruiz.dev"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgAMW2m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 17:28:42 -0500
-X-Greylist: delayed 582 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Jan 2020 17:28:41 EST
-Received: from localhost (localhost [IPv6:::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by trent.utfs.org (Postfix) with ESMTPS id C3A0C5F94F
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 23:18:54 +0100 (CET)
-Date:   Mon, 13 Jan 2020 14:18:54 -0800 (PST)
-From:   Christian Kujau <lists@nerdbynature.de>
+        id S1726530AbgAMWYE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jan 2020 17:24:04 -0500
+Received: from archlinux.localnet (unknown [153.18.172.64])
+        by mars1.mruiz.dev (Postfix) with ESMTPSA id A356940707
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 22:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mruiz.dev; s=201908;
+        t=1578954243; bh=mMkWPUH2b8U2jvHeFrRjGSGhKsO8/25ON6Qpe7AbXuI=;
+        h=From:To:Subject:Date:From;
+        b=c7TDp10rtFysaf52WiglPiVPKFitbAVHmZpRVFJVNsjdz3+ZxhqgPmPBLHtASEtKV
+         aQ5fCDSVng4xkApvE7JqCEGNpB4Yqcl24DxNiVFQKwJpLSnFmCaSDsd04RK5wB48G4
+         eQwGxOqTgKvCS3qUHQI3KanmnxbAufNocMS/ozu5CJxRiqrYO0JTLJFm7Nx2VPKK8x
+         Qx4RsnLlvfQs91aEDa3G4ma9mS2urkd5kefiNWR1N3QWp2dHcD05XdqP94A/DdyubO
+         DwlWkntl2TlsGzQ4WVYbO3N5GiAdI+WGGC8B+InAuxd7pi/L6g9NAQ83BypvmZf8EF
+         QcSgYJ8p+aXqw==
+From:   Michael Ruiz <michael@mruiz.dev>
 To:     linux-btrfs@vger.kernel.org
-Subject: file system full on a single disk?
-Message-ID: <alpine.DEB.2.21.99999.375.2001131400390.21037@trent.utfs.org>
-User-Agent: Alpine 2.21.99999 (DEB 375 2019-10-29)
+Subject: Should I be concerned about the listed mountpoints in lsblk?
+Date:   Mon, 13 Jan 2020 14:24:02 -0800
+Message-ID: <11445940.O9o76ZdvQC@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; boundary="nextPart5320587.DvuYhMxLoT"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+--nextPart5320587.DvuYhMxLoT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-I realize that this comes up every now and then but always for slightly 
-more complicated setups, or so I thought:
+=46or sda3 and sdb1, it shows that the mountpoint is the log subvolume and =
+the=20
+kodi subvolume, respectively. Is this just an error on lsblk part or did I=
+=20
+mount my system wrong? My fstab appears to have all the correct locations=20
+listed and everything seems to be working fine. It's just this mountpoint=20
+column shows strange locations where I would expect / and /mnt/storage (the=
+=20
+designated root subvolume for these devices)
 
+$ lsblk=20
+NAME        MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda           8:0    0 238.5G  0 disk =20
+=E2=94=9C=E2=94=80sda1        8:1    0   100M  0 part  /boot/EFI
+=E2=94=9C=E2=94=80sda2        8:2    0   300M  0 part  /boot
+=E2=94=94=E2=94=80sda3        8:3    0 238.1G  0 part =20
+  =E2=94=94=E2=94=80root    254:0    0 238.1G  0 crypt /var/log
+sdb           8:16   0 931.5G  0 disk =20
+=E2=94=94=E2=94=80sdb1        8:17   0 931.5G  0 part =20
+  =E2=94=94=E2=94=80storage 254:1    0 931.5G  0 crypt /mnt/storage/kodi
 
-============================================================
-# df -h /
-Filesystem             Size  Used Avail Use% Mounted on
-/dev/mapper/luks-root  825G  389G     0 100% /
+--nextPart5320587.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-# btrfs filesystem show /
-Label: 'root'  uuid: 75a6d93a-5a5c-48e0-a237-007b2e812477
-        Total devices 1 FS bytes used 388.00GiB
-        devid    1 size 824.40GiB used 395.02GiB path /dev/mapper/luks-root
+-----BEGIN PGP SIGNATURE-----
 
-# blockdev --getsize64 /dev/mapper/luks-root | awk '{print $1/1024^3, "GB"}'
-824.398 GB
+iQEzBAABCAAdFiEEr70V3EMiSIOlxR/PXLDtxglpeu0FAl4c7fkACgkQXLDtxglp
+eu1X2Qf+Lf8e8Wo2ew0uPliLbzwsNtEYgyPhNFiuLmCgO7fSVq2cH2DkPbKG3yDT
+x8JBBOeoQnIXLFw3uOTK9ybHHeFO4UTt6NeZjzks85XcfHe5f4wnZfN8wfpl/HJl
+hJ1ajiWWjQzHxPDX8C8YUJHzO4zxUo2RWkGgW20NxmSbBTPIEaIWfUi48yuPSPjY
+G1prdB7z7Lxdvftr/Zuj2gqwNjIod7se+Nr5a8imkAryb3y18PhzlClSKzXa/aqS
+Bdk2Ok2y8nL7WycqV540Io36UoytZ/TdvW297hiFVKEzW6qxUvbalT+qFHL3DuiL
+c2/1ZWtt2Cgrh1HCWAqzIUuphTlJcg==
+=8k+C
+-----END PGP SIGNATURE-----
 
-# btrfs filesystem df /
-Data, single: total=388.01GiB, used=387.44GiB
-System, single: total=4.00MiB, used=64.00KiB
-Metadata, single: total=2.01GiB, used=1.57GiB
-GlobalReserve, single: total=512.00MiB, used=80.00KiB
-============================================================
-
-
-This is on a Fedora 31 (5.4.8-200.fc31.x86_64) workstation. Where did the 
-other 436 GB go? Or, why are only 395 GB allocated from the 824 GB device?
-
-I'm running a --full-balance now and it's progressing, slowly. I've seen 
-tricks on the interwebs to temporarily add a ramdisk, run another balance, 
-remove the ramdisk again - but that seems hackish.
-
-Isn't there a way to prevent this from happening? (Apart from better 
-monitoring, so I can run the balance at an earlier stage next time).
-
-
-Thanks,
-Christian.
-
-
-# btrfs filesystem usage -T /
-Overall:
-    Device size:                 824.40GiB
-    Device allocated:            395.02GiB
-    Device unallocated:          429.38GiB
-    Device missing:                  0.00B
-    Used:                        388.00GiB
-    Free (estimated):            435.94GiB      (min: 435.94GiB)
-    Data ratio:                       1.00
-    Metadata ratio:                   1.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-
-                         Data      Metadata System              
-Id Path                  single    single   single   Unallocated
--- --------------------- --------- -------- -------- -----------
- 1 /dev/mapper/luks-root 393.01GiB  2.01GiB  4.00MiB   429.38GiB
--- --------------------- --------- -------- -------- -----------
-   Total                 393.01GiB  2.01GiB  4.00MiB   429.38GiB
-   Used                  386.45GiB  1.55GiB 64.00KiB            
+--nextPart5320587.DvuYhMxLoT--
 
 
--- 
-BOFH excuse #326:
 
-We need a licensed electrician to replace the light bulbs in the computer room.
