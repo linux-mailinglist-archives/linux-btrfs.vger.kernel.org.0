@@ -2,85 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AD41396E3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 17:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518FE1396F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 18:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgAMQ7j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 11:59:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53748 "EHLO mx2.suse.de"
+        id S1728709AbgAMRGR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 12:06:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57538 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbgAMQ7j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 11:59:39 -0500
+        id S1727331AbgAMRGQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jan 2020 12:06:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 880C2AC3F;
-        Mon, 13 Jan 2020 16:59:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 174A8AD1A;
+        Mon, 13 Jan 2020 17:06:15 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5939FDA78B; Mon, 13 Jan 2020 17:59:21 +0100 (CET)
-Date:   Mon, 13 Jan 2020 17:59:19 +0100
+        id 70B81DA78B; Mon, 13 Jan 2020 18:06:02 +0100 (CET)
+Date:   Mon, 13 Jan 2020 18:06:02 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: device stat, log when zeroed assist audit
-Message-ID: <20200113165919.GX3929@twin.jikos.cz>
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, jth@kernel.org, dsterba@suse.de
+Subject: Re: [PATCH] btrfs: Fix UAF during concurrent mount and device scan
+Message-ID: <20200113170601.GY3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20200110042634.4843-1-anand.jain@oracle.com>
- <7b449175-4e73-7fe9-07b2-d1c04feeba8e@toxicpanda.com>
- <054ca606-1886-d7f3-64e2-b1a032034648@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, jth@kernel.org, dsterba@suse.de
+References: <20200109110210.30671-1-nborisov@suse.com>
+ <20200109144443.GO3929@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <054ca606-1886-d7f3-64e2-b1a032034648@oracle.com>
+In-Reply-To: <20200109144443.GO3929@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 11, 2020 at 04:50:18PM +0800, Anand Jain wrote:
-> On 1/10/20 11:07 PM, Josef Bacik wrote:
-> > On 1/9/20 11:26 PM, Anand Jain wrote:
-> >> We had a report indicating that some read errors aren't reported by
-> >> the device stats in the userland. It is important to have the errors
-> >> reported in the device stat as user land scripts might depend on it to
-> >> take the reasonable corrective actions. But to debug these issue we need
-> >> to be really sure that request to reset the device stat did not come
-> >> from the userland itself. So log an info message when device error reset
-> >> happens.
-> >>
-> >> For example:
-> >>   BTRFS info (device sdc): device stats zeroed by btrfs (9223)
-> >>
-> >> Reported-by: philip@philip-seeger.de
-> >> Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
-> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> >>   BTRFS info (device sdc): device stats zeroed by btrfs (9223)
-> >> The last words are name and pid of the process, unfortunately it came out
-> >> as 'by btrfs'. At some point if there is a python and lib to reset it
-> >> would change, otherwise its going to be 'by btrfs', I am ok with it,
-> >> if otherwise please suggest the alternative.
+On Thu, Jan 09, 2020 at 03:44:44PM +0100, David Sterba wrote:
+> On Thu, Jan 09, 2020 at 01:02:10PM +0200, Nikolay Borisov wrote:
+> > This log shows how an fs  is being unmounted which causes device close
+> > routine to be invoked. It sets bdev to NULL but doesn't reset fs_info.
+> > Afterwards the fs_info itself is freed from btrfs_kill_super at the same
+> > time the device is still anchored at fs_devices list. Subsequently a
+> > mount is triggered which sets btrfs_fs_device::bdev to a valid value, yet
+> > btrfs_fs_device::fs_info is still stale/freed. Before btrfs_fill_super
+> > is called and re-initializes btrfs_fs_device::fs_info a concurrent device
+> > scan is triggered, it finds the device with its ->bdev pointer set to
+> > valid value and eventually calls btrfs_info_in_rcu in device_list_add
+> > which causes the crash.
 > > 
-> > I think name(pid) makes sense, similar to what drop_caches does
-> > 
-> > pr_info("%s (%d): drop_caches: %d\n",
-> >      current->comm, task_pid_nr(current),
+> > Simply setting btrfs_fs_device::fs_info to NULL prevents the crash but
+> > doesn't fix the race. In fact the race cannot be solved because device
+> > scan is asynchronous in its nature so it makes no sense to try and
+> > synchronize it with pending mounts.
 > 
-> There is a small deviation to what we already have in
-> device_list_add(), name (pid) is at the end the log message..
+> We've had bugs when mount and scan raced, I don't see why you think this
+> cannot be fixed and synchronized in this case. At minimum I'd think that
+> the device_list_mutex should be enough as it's the one thing that
+> excludes mount and scan for the new and removed members of the device
+> lists etc.
 > 
-> ------
->                          pr_info(
->          "BTRFS: device label %s devid %llu transid %llu %s scanned by 
-> %s (%d)\n",
->                                  disk_super->label, devid, 
-> found_transid, path,
->                                  current->comm, task_pid_nr(current));
-> --------
+> > Fixes: cc1824fcd334 ("btrfs: reset device back to allocation state when removing")
 > 
-> I am not sure. Can David can tweak during merge ?
+> That's still it misc-next so I'd rather fold it into the patch than to
+> have this split fix.
 
-Yes, no problem.
+Now folded to "btrfs: reset device back to allocation state when
+removing" and pushed.
