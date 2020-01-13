@@ -2,118 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 127AD1393F2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 15:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EDD13961E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 17:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbgAMOtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 09:49:24 -0500
-Received: from smtpauth.rollernet.us ([208.79.240.5]:46986 "EHLO
-        smtpauth.rollernet.us" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgAMOtX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 09:49:23 -0500
-Received: from smtpauth.rollernet.us (localhost [127.0.0.1])
-        by smtpauth.rollernet.us (Postfix) with ESMTP id A7123280085E
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 06:48:38 -0800 (PST)
-Received: from irrational.integralblue.com (pool-96-237-186-35.bstnma.fios.verizon.net [96.237.186.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by smtpauth.rollernet.us (Postfix) with ESMTPSA
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 06:48:38 -0800 (PST)
-Received: from www.integralblue.com (irrational [IPv6:::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by irrational.integralblue.com (Postfix) with ESMTPSA id 82AB854CA2BB;
-        Mon, 13 Jan 2020 09:48:37 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=integralblue.com;
-        s=irrational; t=1578926917;
-        bh=XdivAJgNS7oCTn7L+PJtVDIpv9V2fjDCZi7OJP5JHaw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=bo9aANKdMkLmlY1BIwhfigyfEkPR14YlqiJqBIaqrGs898LiiccNAnHdQUujvfcHh
-         EUDe1IfSAovgNWiCH3w5CoxOJyas+MEspYqaWSXO/UoVVi0al06cPaKjT3s6VJXUI0
-         SeMrbnSweVLJLYsAQ1lz+RxyZKQXaAuVTq4eFp2M=
+        id S1729050AbgAMQZh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 11:25:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728884AbgAMQZg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jan 2020 11:25:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D2F1BAFB5;
+        Mon, 13 Jan 2020 16:25:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3015BDA78B; Mon, 13 Jan 2020 17:25:22 +0100 (CET)
+Date:   Mon, 13 Jan 2020 17:25:21 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: open code log helpers in device_list_add()
+Message-ID: <20200113162521.GW3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200110090555.7049-1-anand.jain@oracle.com>
+ <20200110164212.GQ3929@twin.jikos.cz>
+ <ec1a6bed-ecea-c7f6-2567-9626590bc9c7@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed;
- protocol="application/pgp-signature";
- boundary="=_cf8bcc0db84dbb4175ed0530e24deb03";
- micalg=pgp-sha1
-Date:   Mon, 13 Jan 2020 09:48:37 -0500
-From:   Craig Andrews <candrews@integralblue.com>
-To:     Craig Andrews <candrews@integralblue.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Regression in Linux 5.5.0-rc[1-5]: btrfs send/receive out of
- memory
-In-Reply-To: <20200113133741.GU3929@twin.jikos.cz>
-References: <5ba0716449eb4f838699fc0b1fb5b024@integralblue.com>
- <20200113133741.GU3929@twin.jikos.cz>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <2c240d7b2fbf62a661a237a2862dc2ab@integralblue.com>
-X-Sender: candrews@integralblue.com
-X-Rollernet-Abuse: Processed by Roller Network Mail Services. Contact abuse@rollernet.us to report violations. Abuse policy: http://www.rollernet.us/policy
-X-Rollernet-Submit: Submit ID 47fe.5e1c8346.91b1e.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec1a6bed-ecea-c7f6-2567-9626590bc9c7@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-
---=_cf8bcc0db84dbb4175ed0530e24deb03
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-
-On 2020-01-13 08:37, David Sterba wrote:
-> On Mon, Jan 13, 2020 at 07:41:13AM -0500, Craig Andrews wrote:
->> If I perform a btrfs send receive like so:
->> 
->> sh -c btrfs send -p /mnt/everything/.snapshots/root.20191230
->> /mnt/everything/.snapshots/root.20191231 | btrfs receive
->> /mnt/backup/.snapshots/
->> 
->> On Linux 5.4.0, the process completes successfully.
->> 
->> Starting with Linux 5.5.0-rc1 up to the current 5.5 rc, 5.5.0-rc5, the
->> result is the OOM killer being invoked which (among other process
->> carnage) kills the btrfs processes stopping the backup.
+On Sat, Jan 11, 2020 at 07:41:51AM +0800, Anand Jain wrote:
+> >>   			if (device->bdev != path_bdev) {
+> >>   				bdput(path_bdev);
+> >>   				mutex_unlock(&fs_devices->device_list_mutex);
+> >> -				btrfs_warn_in_rcu(device->fs_info,
+> >> -			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
+> >> +				rcu_read_lock();
+> >> +				printk_ratelimited(
+> > 
+> > Avoiding fs_info here is correct but we don't want to use raw printk or
+> > printk_ratelimited anywhere.
+> > 
 > 
-> As this is on the -rc1, it's possible that changes done in the MM
-> subsystem could change the logic of OOM and that send now is able to
-> trigger the OOM.
+>   I think I discussed this a long time back, that we should rather pass
+>   fs_devices in btrfs_warn_in_rcu().
 > 
-> There are 2 btrfs patches in send.c but they reduce amount of work,
-> namely for heavily reflinked extents so the effects should be opposite.
-> 
-> To find out where's the cause, is it possible that you build a kernel
-> from the 5.4-based branch and run the send again? It's the same set of
-> btrfs patches that gets merged to 5.5.
-> 
-> From repository: 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
-> branch: for-5.5-rc4
-> 
-> If this can't be done we'll find another way to debug it.
+>   I am ok to make such a change, are you ok?
 
-I've grabbed, compiled, and installed the kernel. I'll be able to tell 
-you the results of running the test tomorrow at about this time.
+No, this does not sound right at all. Why should be btrfs_warn_in_rcu
+special from the other message callbacks? We need to fix one context, so
+let's find something less hacky.
 
-Thank you for help,
-~Craig
+>   Or I wonder if there is
+>   any other way?
 
---=_cf8bcc0db84dbb4175ed0530e24deb03
-Content-Type: application/pgp-signature;
- name=signature.asc
-Content-Disposition: attachment;
- filename=signature.asc;
- size=195
-Content-Description: OpenPGP digital signature
+We could add a fs_info stub that will get recognized in btrfs_printk.
+Eg.
 
------BEGIN PGP SIGNATURE-----
+#define	NO_FS_INFO		((void*)0x1)
 
-iF0EARECAB0WIQRXYh1D8NS5wgKWveFHeNF+DbGKQgUCXhyDRQAKCRBHeNF+DbGK
-QisyAKClLBA8Rj+TZ4gB4sHvyknxq6Qt1wCgt+2L0AV1/Rjja2xIG+iW69vAdMk=
-=VbDt
------END PGP SIGNATURE-----
+btrfs_printk() {
 
---=_cf8bcc0db84dbb4175ed0530e24deb03--
+	if (fs_info == NULL)
+		devname = "<unknown>";
+	else if (fs_info == NO_FS_INFO)
+		devname = "...";
+	else
+		devname = fs_info->sb->sb_id;
+
