@@ -2,82 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 729BF139C63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 23:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B3F139CFB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 23:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728915AbgAMWYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 17:24:04 -0500
-Received: from mars1.mruiz.dev ([167.71.125.59]:58140 "EHLO mars1.mruiz.dev"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgAMWYE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 17:24:04 -0500
-Received: from archlinux.localnet (unknown [153.18.172.64])
-        by mars1.mruiz.dev (Postfix) with ESMTPSA id A356940707
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 22:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mruiz.dev; s=201908;
-        t=1578954243; bh=mMkWPUH2b8U2jvHeFrRjGSGhKsO8/25ON6Qpe7AbXuI=;
-        h=From:To:Subject:Date:From;
-        b=c7TDp10rtFysaf52WiglPiVPKFitbAVHmZpRVFJVNsjdz3+ZxhqgPmPBLHtASEtKV
-         aQ5fCDSVng4xkApvE7JqCEGNpB4Yqcl24DxNiVFQKwJpLSnFmCaSDsd04RK5wB48G4
-         eQwGxOqTgKvCS3qUHQI3KanmnxbAufNocMS/ozu5CJxRiqrYO0JTLJFm7Nx2VPKK8x
-         Qx4RsnLlvfQs91aEDa3G4ma9mS2urkd5kefiNWR1N3QWp2dHcD05XdqP94A/DdyubO
-         DwlWkntl2TlsGzQ4WVYbO3N5GiAdI+WGGC8B+InAuxd7pi/L6g9NAQ83BypvmZf8EF
-         QcSgYJ8p+aXqw==
-From:   Michael Ruiz <michael@mruiz.dev>
-To:     linux-btrfs@vger.kernel.org
-Subject: Should I be concerned about the listed mountpoints in lsblk?
-Date:   Mon, 13 Jan 2020 14:24:02 -0800
-Message-ID: <11445940.O9o76ZdvQC@archlinux>
+        id S1728924AbgAMW4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 17:56:12 -0500
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:50753 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728904AbgAMW4M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jan 2020 17:56:12 -0500
+Received: by mail-wm1-f44.google.com with SMTP id a5so11687376wmb.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 14:56:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=189gQZ+qlVs/CZqjCnoNNHExEKLvB9sEEHklu47pkyQ=;
+        b=LWJxLiqj+cMIGuJ+uaO26CNfAcGKrMXjgV1sBkls+dG4jTu09mONK0CvFqUmDGLjI/
+         ePLpQMEAcH+p3Hvjtiq1ozz0TGAfc5KC41tYLu033z0jp+5AazcBGpXxBtsxXIA8vsaC
+         RoJIciPZ55aV3bVEOrd5hvabhcckVXWrJUp1BtDY79Avn2akByachGXAAI7ijZByGKQs
+         byXAVZG0HiGp/Og1IPBgY8zz9xc1yO0M8XpXWxCFJKXVI9/GXhtfgVfMj6dOS1mjA44X
+         Xe1wnuE5797P9e/mEKAYwW46w1bp8kttcKkMrb//QJTOqdjXWpPbf8DbUd1t+VS9djkT
+         /G5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=189gQZ+qlVs/CZqjCnoNNHExEKLvB9sEEHklu47pkyQ=;
+        b=frAfOP5lBdsFF5UdvUvVuRTY1g8cIJV0+y78cKD223E9Z4LuXuqrmT76b99aSWAOXg
+         xH835bNe/udQpMfjKsGgGxP1lgzGvoT3IXxTmGaXFe88uWdoHnA3atngr6ngwO6MVDLN
+         zQ5ixwv8wtvndT9wQIMZigZ/7EB2djqzDSWG5tY4dKQ7QGo5+setio6Pq+0bcjglyKSk
+         Pk3Zed/gKwE8t/HvUuEus+ogMzKROw49tBTE5TRXrzLEgRPOxyjjWpWNQov6S0MgLFKz
+         N1KoZGCx3Vbo13J6FfdgPA6uk1ZDQCtJj6ZttOjCe5qxphq8laDnln48sQnG4ZLNV8WV
+         LO2w==
+X-Gm-Message-State: APjAAAWaJ0AoNtm4saG6LVVJ/Q1lCjGFqM1bAl6XK9he3m33FCtlCGed
+        XTVgfim0dkNPkCDIQELE8NWVNwM7+AKnSfLq4e50AeJ4VizftA==
+X-Google-Smtp-Source: APXvYqyKvLExhW5ZWCjQky6wPv71ROvlqUFZE3PYfYosF5LwZ1yTUwGf/xC1tYa7mQ6Lyk7X34vTv+Su4LUpKQ8XSPM=
+X-Received: by 2002:a1c:4d03:: with SMTP id o3mr23110664wmh.164.1578956170310;
+ Mon, 13 Jan 2020 14:56:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5320587.DvuYhMxLoT"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+References: <alpine.DEB.2.21.99999.375.2001131400390.21037@trent.utfs.org>
+In-Reply-To: <alpine.DEB.2.21.99999.375.2001131400390.21037@trent.utfs.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 13 Jan 2020 15:55:54 -0700
+Message-ID: <CAJCQCtS9rx0M30zLxkND5MYTwLEPxYG=8BuRB3b1Bi8Vr3KTqg@mail.gmail.com>
+Subject: Re: file system full on a single disk?
+To:     Christian Kujau <lists@nerdbynature.de>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---nextPart5320587.DvuYhMxLoT
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Jan 13, 2020 at 3:28 PM Christian Kujau <lists@nerdbynature.de> wrote:
+>
+> Hi,
+>
+> I realize that this comes up every now and then but always for slightly
+> more complicated setups, or so I thought:
+>
+>
+> ============================================================
+> # df -h /
+> Filesystem             Size  Used Avail Use% Mounted on
+> /dev/mapper/luks-root  825G  389G     0 100% /
+>
+> # btrfs filesystem show /
+> Label: 'root'  uuid: 75a6d93a-5a5c-48e0-a237-007b2e812477
+>         Total devices 1 FS bytes used 388.00GiB
+>         devid    1 size 824.40GiB used 395.02GiB path /dev/mapper/luks-root
+>
+> # blockdev --getsize64 /dev/mapper/luks-root | awk '{print $1/1024^3, "GB"}'
+> 824.398 GB
+>
+> # btrfs filesystem df /
+> Data, single: total=388.01GiB, used=387.44GiB
+> System, single: total=4.00MiB, used=64.00KiB
+> Metadata, single: total=2.01GiB, used=1.57GiB
+> GlobalReserve, single: total=512.00MiB, used=80.00KiB
+> ============================================================
+>
+>
+> This is on a Fedora 31 (5.4.8-200.fc31.x86_64) workstation. Where did the
+> other 436 GB go? Or, why are only 395 GB allocated from the 824 GB device?
 
-=46or sda3 and sdb1, it shows that the mountpoint is the log subvolume and =
-the=20
-kodi subvolume, respectively. Is this just an error on lsblk part or did I=
-=20
-mount my system wrong? My fstab appears to have all the correct locations=20
-listed and everything seems to be working fine. It's just this mountpoint=20
-column shows strange locations where I would expect / and /mnt/storage (the=
-=20
-designated root subvolume for these devices)
-
-$ lsblk=20
-NAME        MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
-sda           8:0    0 238.5G  0 disk =20
-=E2=94=9C=E2=94=80sda1        8:1    0   100M  0 part  /boot/EFI
-=E2=94=9C=E2=94=80sda2        8:2    0   300M  0 part  /boot
-=E2=94=94=E2=94=80sda3        8:3    0 238.1G  0 part =20
-  =E2=94=94=E2=94=80root    254:0    0 238.1G  0 crypt /var/log
-sdb           8:16   0 931.5G  0 disk =20
-=E2=94=94=E2=94=80sdb1        8:17   0 931.5G  0 part =20
-  =E2=94=94=E2=94=80storage 254:1    0 931.5G  0 crypt /mnt/storage/kodi
-
---nextPart5320587.DvuYhMxLoT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEr70V3EMiSIOlxR/PXLDtxglpeu0FAl4c7fkACgkQXLDtxglp
-eu1X2Qf+Lf8e8Wo2ew0uPliLbzwsNtEYgyPhNFiuLmCgO7fSVq2cH2DkPbKG3yDT
-x8JBBOeoQnIXLFw3uOTK9ybHHeFO4UTt6NeZjzks85XcfHe5f4wnZfN8wfpl/HJl
-hJ1ajiWWjQzHxPDX8C8YUJHzO4zxUo2RWkGgW20NxmSbBTPIEaIWfUi48yuPSPjY
-G1prdB7z7Lxdvftr/Zuj2gqwNjIod7se+Nr5a8imkAryb3y18PhzlClSKzXa/aqS
-Bdk2Ok2y8nL7WycqV540Io36UoytZ/TdvW297hiFVKEzW6qxUvbalT+qFHL3DuiL
-c2/1ZWtt2Cgrh1HCWAqzIUuphTlJcg==
-=8k+C
------END PGP SIGNATURE-----
-
---nextPart5320587.DvuYhMxLoT--
+It's a reporting bug. File system is fine.
 
 
+> I'm running a --full-balance now and it's progressing, slowly. I've seen
+> tricks on the interwebs to temporarily add a ramdisk, run another balance,
+> remove the ramdisk again - but that seems hackish.
 
+I'd stop the balance. Balancing metadata in particular appears to make
+the problem more common. And you're right, it's hackish, it's not a
+great work around for anything these days, and if it is, good chance
+it's a bug.
+
+
+> Isn't there a way to prevent this from happening? (Apart from better
+> monitoring, so I can run the balance at an earlier stage next time).
+
+In theory it should be enough to unmount then remount the file system;
+of course for sysroot that'd be a reboot. There may be certain
+workloads that encourage it, that could be worked around temporarily
+using mount option metadata_ratio=1.
+
+-- 
+Chris Murphy
