@@ -2,135 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 096BE139A7D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 21:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0E0139AE9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jan 2020 21:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgAMUD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 15:03:29 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40195 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728680AbgAMUD3 (ORCPT
+        id S1727053AbgAMUoh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jan 2020 15:44:37 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:36813 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726086AbgAMUoh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 15:03:29 -0500
-Received: by mail-wm1-f66.google.com with SMTP id t14so11122516wmi.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 12:03:27 -0800 (PST)
+        Mon, 13 Jan 2020 15:44:37 -0500
+Received: by mail-pl1-f196.google.com with SMTP id a6so4292178plm.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 12:44:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wQS03/dPKrhyDsPCI5gPDO5jt9zZtZ29V9Pnu7+YGoI=;
-        b=j8i+VW40gPrOrbDFSBrei5ME+cKaD+LbRJjsVopeRFUbHsQT0fnqPqpuoc+6q7kk/Y
-         Gcm22QGqdqyWydhuhLHIzUkptpzfpmASkh1lc22KYQaL0FDeHlK4A9RG+jNUwAB4+skq
-         o52Fw9NpMPM2QshhcguPtcAU8lEZrYCs9Id5qPkNCqe/OU1Gh8EQ6bYswIH4SCK1i2w2
-         STMYDfQXVOtdaGFmlGdU4a3ThIA9iD3ADMeOkGI5VGfXbSr5trmlT1SR2CDLYmzeUcK1
-         b6IwOwJAzkqAqtHRiX0ftYTiw9AffBgGpeiUANEf0+xCsbs7jy/f24sb64vL6wsSIxYM
-         mtDA==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LiFsMtdAAL8u3Mj0AGyqGHgFmKeTnlkzoFp9HCe1YXQ=;
+        b=AsP9QdUZWbSz3XbZMOIu2GyZ32IclKNg5YZkJfK4IhM7dZ5nj9oUFt0ocelbNFbEgs
+         Rb3LMq8142gvvYHw10tFiftycAD0/U0Aik2EKSXROHOqWl1Y16dDljyyoFlkwi+g/+kb
+         crfuqLwmmeJZ6XxitBAmg7h0d5w7xuOgQ3glBpX41isDyKIJWOMScpQtYx752vGztC/G
+         phwgIj4tv9oWtNAB/Y9E9q958Morc0O+KuC8ZRawsHwP+xRIKe5Gnb/MUYgDMbDaZFHt
+         IoBrT1LRhIliK6yT7rM/tItcOKByJlxeoDqCLbS3OJc1YpYxaecvSREwPRtanRZ8Q7fv
+         qOfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wQS03/dPKrhyDsPCI5gPDO5jt9zZtZ29V9Pnu7+YGoI=;
-        b=J+y4TkJUT36jlgdWF+1ZNQ+Mc3xolY4OyBMFcCh7m921AKfATa3Hr3V9Bht2Gt+bcp
-         mmFKD3MtRShmoxhQa8iCq2rhb5/Db0Un3yyitl81lKXsF0em98AKwaoddqd9zHLeAjFV
-         Uamjz4NnP+DVrN8ZimDGefeO6BBv3vOKKum7Xh1ixn/B10M7r4ozPZSJTZjmYclLjxka
-         6M5mfgrTpAXlJ/IM2HRJ0L6eu/eEjPl59QddDn/R6kkYxtEVZHfG63yfEVwNDBft8Y6/
-         PAqECnt7NSJehWFdgcnY/Bsp8frE2R6ctkWHwjqTdKjc+5T24PKwkJ61wSrlhwXvphGW
-         oOqA==
-X-Gm-Message-State: APjAAAWNTpJmoAbQBswJq2cM+eGI4/jomvvrOPU18Hb2fl6GIhY3zpvp
-        2WROydtdOcbfAIJ+iPAilpYjAjtYs5boP5BmTV4qcA==
-X-Google-Smtp-Source: APXvYqzK3UB2i8nmqqkV9OmlgDzJExCluqKYvPrUtqH72fE3xrrltKR77cusCRDmQWDVFPsib0pzaEdR/9MAwVe2qBY=
-X-Received: by 2002:a1c:4d03:: with SMTP id o3mr22448829wmh.164.1578945806712;
- Mon, 13 Jan 2020 12:03:26 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LiFsMtdAAL8u3Mj0AGyqGHgFmKeTnlkzoFp9HCe1YXQ=;
+        b=fI7WJMs/Aud2QoT19EfFu1Cj0dz8LnlMhzVCwR/iWKtmAituaKU4tP37uOfO/ImY3q
+         j58E1ICGOGMnhRubUiwUBswsVm9rmQ86f8/DnVweTEWab7qFHzSmBI5c9vDZ3xJdaO+F
+         i1XWlbXJ2DHl8HsFeSnb+1QW0CakbzGlMoxrxdpxYwpuP4h3kNA2FAwYD/aVlBle8Z4e
+         gHlGx+jwl1CMJ+flWLA7TqIKvewmmenOYz8zz7NxhcFgKvjVKx2rNbw+phM66kZ80Awq
+         j8FR+njDgrOieyar4OYVszEztK9ZSbTRBbUm46P1398/0kJJz0/Ylz7pIpe68mZ0p1yD
+         c4Pw==
+X-Gm-Message-State: APjAAAVWe6bFdonFBx8JNaZOpSQydaiwx8/3mw34C29toS2nA57VfNa4
+        pwG+DgeNg7WJUBURV/VJtt4TWg==
+X-Google-Smtp-Source: APXvYqxB9FPndISQYGvk4yGPRO+2+5uGOYS+K/yYRUaE8HA1sUXn4OuH/5WveFLl5zAGFMii65AIYg==
+X-Received: by 2002:a17:902:74cb:: with SMTP id f11mr15497395plt.139.1578948276493;
+        Mon, 13 Jan 2020 12:44:36 -0800 (PST)
+Received: from ?IPv6:2620:10d:c082:1055:14f9:7e4a:9f6f:4d05? ([2620:10d:c090:200::3:ee39])
+        by smtp.gmail.com with ESMTPSA id b4sm15557205pfd.18.2020.01.13.12.44.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jan 2020 12:44:35 -0800 (PST)
+Subject: Re: [PATCH] btrfs: relocation: fix reloc_root lifespan and access
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, nborisov@suse.com,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        stable@vger.kernel.org
+References: <20200113191617.3542-1-dsterba@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <c40269a4-d914-a564-9293-3f92cfa0d290@toxicpanda.com>
+Date:   Mon, 13 Jan 2020 12:44:34 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20191206034406.40167-1-wqu@suse.com> <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com> <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com> <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com> <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <e04d1937-d70c-c891-4eea-c6fb70a45ab5@gmx.com> <8B00108E-4450-4448-8663-E5A5C0343E26@icloud.com>
- <CAJCQCtQAFRdutyVOt7JALtVsn-EeXhzNYYjdKpmS1Ts_6-6nMA@mail.gmail.com>
- <CC877460-A434-408F-B47D-5FAD0B03518C@icloud.com> <CAJCQCtS+a2WU01QCHXycLT8ktca-XV5JkO-KwtjRRzeEa4xikQ@mail.gmail.com>
- <3F43DDB8-0372-4CDE-B143-D2727D3447BC@icloud.com> <CAJCQCtRUQ3bz--5B7Gs9aGYdo6ybkJWQFy61ohWEc2y1BJ6XHA@mail.gmail.com>
- <938B37BF-E134-4F24-AC4F-93FECA6047FC@icloud.com> <CAJCQCtROKcVBNuWkyF5kRgJMuQ4g4YSxh5GL6QmuAJL=A-JROw@mail.gmail.com>
- <25D1F99C-F34A-48D6-BF62-42225765FBC1@icloud.com> <CAJCQCtQxN17UL7swO7vU6-ORVmHfQHteUQZ7iS1w7Y5XLHTpVA@mail.gmail.com>
- <86147601-37F0-49C0-B6F8-0F5245750450@icloud.com> <CAJCQCtRkZPq-k6pX3bCJmj25HY4eDdAEUcgLwGSh_Mi6VEqdiQ@mail.gmail.com>
- <5EFA3F48-29DA-4D02-BF14-803DBEEB6BB2@icloud.com>
-In-Reply-To: <5EFA3F48-29DA-4D02-BF14-803DBEEB6BB2@icloud.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 13 Jan 2020 13:03:10 -0700
-Message-ID: <CAJCQCtRyr17kdSdozU4_ZxJL_VdCWZe7DCCuUuz0cy2AiJs3=A@mail.gmail.com>
-Subject: Re: 12 TB btrfs file system on virtual machine broke again (fourth time)
-To:     Christian Wimmer <telefonchris@icloud.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200113191617.3542-1-dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 12:41 PM Christian Wimmer
-<telefonchris@icloud.com> wrote:
->
-> Hi guys,
->
-> just to update you.
->
-> I tried a 4th time with a brand new 12 TB archive and right after setting=
- up everything and putting some data on it I performed a controlled suspend=
- and restore and so on and yes, it broke again with that terrible messages =
-that it can not mount any more the file system.
->
-> Then I decided to create only 2TB archives (hard disks) as the slider in =
-the Parallels VM suggests to do.
-> I created 4 x 2TB files, one with persistent size and three expandable.
-> I filled up all hard discs with data and rebooted 5 times (even when writ=
-ing data to it) and everything runs very stable.
->
-> So to resume, the Parallels Virtual machine has a problem when the virtua=
-l disk is being selected bigger than 2TB. There is (and was) never a proble=
-m with the btrfs files system I think.
->
-> Sorry for bothering you all the time with my bad setup.
->
-> Thanks a lot for all your help!
+On 1/13/20 11:16 AM, David Sterba wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> This is what I'm going to commit, but as this has a long discussion
+> behind I'm sending it to the mailinglist.
+> 
+> * there are 2 helpers to avoid using raw barriers in the tests where there
+>    are at least 2 places
+> * each barrier is commented
+> * subject and changelog have been updated to reflect the changes
+> 
+> https://lore.kernel.org/linux-btrfs/20200108051200.8909-1-wqu@suse.com/
+> 
+> ---
+> 
+> [BUG]
+> There are several different KASAN reports for balance + snapshot
+> workloads.  Involved call paths include:
+> 
+>     should_ignore_root+0x54/0xb0 [btrfs]
+>     build_backref_tree+0x11af/0x2280 [btrfs]
+>     relocate_tree_blocks+0x391/0xb80 [btrfs]
+>     relocate_block_group+0x3e5/0xa00 [btrfs]
+>     btrfs_relocate_block_group+0x240/0x4d0 [btrfs]
+>     btrfs_relocate_chunk+0x53/0xf0 [btrfs]
+>     btrfs_balance+0xc91/0x1840 [btrfs]
+>     btrfs_ioctl_balance+0x416/0x4e0 [btrfs]
+>     btrfs_ioctl+0x8af/0x3e60 [btrfs]
+>     do_vfs_ioctl+0x831/0xb10
+> 
+>     create_reloc_root+0x9f/0x460 [btrfs]
+>     btrfs_reloc_post_snapshot+0xff/0x6c0 [btrfs]
+>     create_pending_snapshot+0xa9b/0x15f0 [btrfs]
+>     create_pending_snapshots+0x111/0x140 [btrfs]
+>     btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
+>     btrfs_mksubvol+0x915/0x960 [btrfs]
+>     btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
+>     btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
+>     btrfs_ioctl+0x241b/0x3e60 [btrfs]
+>     do_vfs_ioctl+0x831/0xb10
+> 
+>     btrfs_reloc_pre_snapshot+0x85/0xc0 [btrfs]
+>     create_pending_snapshot+0x209/0x15f0 [btrfs]
+>     create_pending_snapshots+0x111/0x140 [btrfs]
+>     btrfs_commit_transaction+0x7a6/0x1360 [btrfs]
+>     btrfs_mksubvol+0x915/0x960 [btrfs]
+>     btrfs_ioctl_snap_create_transid+0x1d5/0x1e0 [btrfs]
+>     btrfs_ioctl_snap_create_v2+0x1d3/0x270 [btrfs]
+>     btrfs_ioctl+0x241b/0x3e60 [btrfs]
+>     do_vfs_ioctl+0x831/0xb10
+> 
+> [CAUSE]
+> All these call sites are only relying on root->reloc_root, which can
+> undergo btrfs_drop_snapshot(), and since we don't have real refcount
+> based protection to reloc roots, we can reach already dropped reloc
+> root, triggering KASAN.
+> 
+> [FIX]
+> To avoid such access to unstable root->reloc_root, we should check
+> BTRFS_ROOT_DEAD_RELOC_TREE bit first.
+> 
+> This patch introduces wrappers that provide the correct way to check the
+> bit with memory barriers protection.
+> 
+> Most callers don't distinguish merged reloc tree and no reloc tree.  The
+> only exception is should_ignore_root(), as merged reloc tree can be
+> ignored, while no reloc tree shouldn't.
+> 
+> [CRITICAL SECTION ANALYSIS]
+> Although test_bit()/set_bit()/clear_bit() doesn't imply a barrier, the
+> DEAD_RELOC_TREE bit has extra help from transaction as a higher level
+> barrier, the lifespan of root::reloc_root and DEAD_RELOC_TREE bit are:
+> 
+> 	NULL: reloc_root is NULL	PTR: reloc_root is not NULL
+> 	0: DEAD_RELOC_ROOT bit not set	DEAD: DEAD_RELOC_ROOT bit set
+> 
+> 	(NULL, 0)    Initial state		 __
+> 	  |					 /\ Section A
+>          btrfs_init_reloc_root()			 \/
+> 	  |				 	 __
+> 	(PTR, 0)     reloc_root initialized      /\
+>            |					 |
+> 	btrfs_update_reloc_root()		 |  Section B
+>            |					 |
+> 	(PTR, DEAD)  reloc_root has been merged  \/
+>            |					 __
+> 	=== btrfs_commit_transaction() ====================
+> 	  |					 /\
+> 	clean_dirty_subvols()			 |
+> 	  |					 |  Section C
+> 	(NULL, DEAD) reloc_root cleanup starts   \/
+>            |					 __
+> 	btrfs_drop_snapshot()			 /\
+> 	  |					 |  Section D
+> 	(NULL, 0)    Back to initial state	 \/
+> 
+> Every have_reloc_root() or test_bit(DEAD_RELOC_ROOT) caller holds
+> transaction handle, so none of such caller can cross transaction boundary.
+> 
+> In Section A, every caller just found no DEAD bit, and grab reloc_root.
+> 
+> In the cross section A-B, caller may get no DEAD bit, but since reloc_root
+> is still completely valid thus accessing reloc_root is completely safe.
+> 
+> No test_bit() caller can cross the boundary of Section B and Section C.
+> 
+> In Section C, every caller found the DEAD bit, so no one will access
+> reloc_root.
+> 
+> In the cross section C-D, either caller gets the DEAD bit set, avoiding
+> access reloc_root no matter if it's safe or not.  Or caller get the DEAD
+> bit cleared, then access reloc_root, which is already NULL, nothing will
+> be wrong.
+> 
+> The memory write barriers are between the reloc_root updates and bit
+> set/clear, the pairing read side is before test_bit.
+> 
+> Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
+> CC: stable@vger.kernel.org # 5.4+
+> Suggested-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> [ barriers ]
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Yeah it's no problem. I mean, there's no way to know in advance that
-the setup is bad, it has to be proven. And with any complicated setup,
-it's really tedious to find out where the problem is happening. And
-even still it's not certain if this is some bug flushing to Parallels,
-or if it's getting the flush and not doing it completely for very
-large backing files, or if the host OS file system or block device
-drive is dropping something.
+Let's just get this fixed, the root refcounting stuff will solve this so we just 
+need something for now.
 
-There are definitely bugs in Btrfs too so you can't absolutely exclude
-the possibility, but those look different. They tend to be pernicious.
-Whereas in your case these problems appeared quickly, back to back.
-But also it's super complicated, multiple layers have to all work
-exactly right or there will be problems. I would be very skeptical of
-VM guest suspend with any file system. It should be true there is fs
-sync that happens when the guest kernel is told to suspend, but then
-what happens to that flush once it's in the VM or hypervisor? *shrug*
-How long does it take to actually get from VM all the way to stable
-media?
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Because necessarily you have to consider worst case scenario, like
-doing file writes and a complete loss of power. Since Btrfs and kernel
-block layers aren't directly responsible for writing to the disks,
-it's ambiguous exactly when and in what order, the writes do get to
-stable media.
+Thanks,
 
-Ok so now what? It's entirely possible you've totally eliminated the
-problem. Or it might be possible you've only reduced the chance it'll
-happen - meaning something like it will happen at some point.
-
-Is it superfluous extra work for no benefit, to unmount this Btrfs
-file system, or use fsfreeze, prior to suspending the VM? Or never
-suspend the VM? Or maybe the non-default mount option flushoncommit is
-useful in this case? It's a huge hassle to have to rebuild a 12TB
-volume, it's a high penalty.
-
---=20
-Chris Murphy
+Josef
