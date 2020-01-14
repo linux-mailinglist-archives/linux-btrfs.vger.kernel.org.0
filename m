@@ -2,177 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5958C13AAF8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 14:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CD313AB44
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 14:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgANN1O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 08:27:14 -0500
-Received: from smtp.mujha-vel.cz ([81.30.225.246]:57637 "EHLO
-        smtp.mujha-vel.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgANN1O (ORCPT
+        id S1728871AbgANNog (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 08:44:36 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:38872 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728809AbgANNog (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 08:27:14 -0500
-X-Greylist: delayed 624 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Jan 2020 08:27:12 EST
-Received: from [81.30.250.3] (helo=[172.16.1.2])
-        by smtp.mujha-vel.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <jn@forever.cz>)
-        id 1irM3p-00046p-9y
-        for linux-btrfs@vger.kernel.org; Tue, 14 Jan 2020 14:16:46 +0100
-To:     linux-btrfs@vger.kernel.org
-From:   jn <jn@forever.cz>
-Subject: slow single -> raid1 conversion (heavy write to original LVM volume)
-Message-ID: <107f8e94-78bc-f891-0e1b-2db7903e8bde@forever.cz>
-Date:   Tue, 14 Jan 2020 14:16:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 14 Jan 2020 08:44:36 -0500
+Received: by mail-pl1-f194.google.com with SMTP id f20so5261077plj.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2020 05:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MnqGcAehX1wU5gwwiMLN+N6Z2YOiwMYW6UCijsntxno=;
+        b=Htw3saGw+wHiHPek12YM321HKtvgj7SH79Ljty2vOzIg9vtFofbjUcgB4bpgPsz3m4
+         siyh1yD8rWHSH/IzB5SBqxYR3QYPNnA9nqZffI+Ul+ZmPTeUtXcL27OBe+8xjkd+gPHO
+         7A8Gh9sA7lzNjhVOULGU2KBAfFmmfhFUL5uWs96eNoz47B9jvZcimTNKwSx0TwHU82CD
+         glLb2evg9XDBbjhvX5iXBsYZAt+H+9KEYCU0xVNQtD7M+v33jrQuxFPQ5PEesiMeijvX
+         8p4lKgVuya5io7JZIaGXVa2w8XqyY23aNC03M9pxyxwkXbX6LBR4NIgGmJ2lMyVg+MRY
+         S1uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MnqGcAehX1wU5gwwiMLN+N6Z2YOiwMYW6UCijsntxno=;
+        b=GAwFlO/2whyF2LfP2qThOrlvWFlgzEvZRyZqNdKPTKjGnZ1Y8sCjfjEhjNKY0L0uvu
+         DyervQUmKD+NqeVUf8v6sSiGeEdYxCSk9BMo5f8dJpAAdRwxWWdSyiZeCMO5ebSz9jVn
+         IiHSB6HOWCfR5cAc9pXyV5Zurl/hFg0DurTt8LJqcYs8h2zadOCfunyZOzFOpzI8YSiI
+         Xvb0AN+47vrAuX2cl/Yx7oL5+MBzpqcDPifb5Bnp1yW2/a6jmP31rZid/NynNQu0I/7V
+         YeIOrZ1GMkC7HsdFLCwixHmwvgcEq/qNZi7A6KGAUzhN1jlhGeyfM4Q88A4D2PTVko/i
+         xG9g==
+X-Gm-Message-State: APjAAAU9KyjugTqVkh8aNY2bxJV8uqVLNNbM/OWtwwEQSaI49R272oiU
+        2VhU3NiS9j/banAXtND2MV7PhQ==
+X-Google-Smtp-Source: APXvYqyKX/YY52+Dk4ut5XBvn/NDgz0FdIlhRtW3UaxpoVB0L4M+YCS2y0+YsWHIWYWWlJlRFsTBww==
+X-Received: by 2002:a17:90a:db0b:: with SMTP id g11mr28185778pjv.140.1579009475725;
+        Tue, 14 Jan 2020 05:44:35 -0800 (PST)
+Received: from [10.11.6.52] ([96.68.148.21])
+        by smtp.gmail.com with ESMTPSA id q10sm18994445pfn.5.2020.01.14.05.44.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jan 2020 05:44:34 -0800 (PST)
+Subject: Re: [PATCH] btrfs: Implement lazytime
+To:     Kusanagi Kouichi <slash@ac.auone-net.jp>,
+        linux-btrfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <7d0eadb4-5712-6fa1-f50f-f8ea6d8aea43@toxicpanda.com>
+Date:   Tue, 14 Jan 2020 05:44:33 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 1/14/20 12:53 AM, Kusanagi Kouichi wrote:
+> I tested with xfstests and lazytime didn't cause any new failures.
+> 
+> Signed-off-by: Kusanagi Kouichi <slash@ac.auone-net.jp>
+> ---
 
-I am experiencing very slow conversion from single disk BTRFS to raid1
-balanced (new disk was added):
+We don't use the I_DIRTY flags for tracking our inodes, and .write_inode was 
+removed because we didn't need it and it deadlocks.  Thanks,
 
-what I have done:
-
-I have added new disk to nearly full (cca 85%) BTRFS filesystem on LVM
-volume with intention to convert it into raid1:
-
-btrfs balance start -dconvert raid1 -mconvert raid1 /data/
-
-> Jan 10 08:14:04 sopa kernel: [155893.485617] BTRFS info (device dm-0):
-> disk added /dev/sdb3
-> Jan 10 08:15:06 sopa kernel: [155955.958561] BTRFS info (device dm-0):
-> relocating block group 2078923554816 flags data
-> Jan 10 08:15:07 sopa kernel: [155956.991293] BTRFS info (device dm-0):
-> relocating block group 2077849812992 flags data
-> Jan 10 08:15:10 sopa kernel: [155960.357846] BTRFS info (device dm-0):
-> relocating block group 2076776071168 flags data
-> Jan 10 08:15:13 sopa kernel: [155962.772534] BTRFS info (device dm-0):
-> relocating block group 2075702329344 flags data
-> Jan 10 08:15:14 sopa kernel: [155964.195237] BTRFS info (device dm-0):
-> relocating block group 2074628587520 flags data
-> Jan 10 08:15:45 sopa kernel: [155994.546695] BTRFS info (device dm-0):
-> relocating block group 2062817427456 flags data
-> Jan 10 08:15:52 sopa kernel: [156001.952247] BTRFS info (device dm-0):
-> relocating block group 2059596201984 flags data
-> Jan 10 08:15:58 sopa kernel: [156007.787071] BTRFS info (device dm-0):
-> relocating block group 2057448718336 flags data
-> Jan 10 08:16:00 sopa kernel: [156010.094565] BTRFS info (device dm-0):
-> relocating block group 2056374976512 flags data
-> Jan 10 08:16:06 sopa kernel: [156015.585343] BTRFS info (device dm-0):
-> relocating block group 2054227492864 flags data
-> Jan 10 08:16:12 sopa kernel: [156022.305629] BTRFS info (device dm-0):
-> relocating block group 2051006267392 flags data
-> Jan 10 08:16:23 sopa kernel: [156033.373144] BTRFS info (device dm-0):
-> found 75 extents
-> Jan 10 08:16:29 sopa kernel: [156038.666672] BTRFS info (device dm-0):
-> found 75 extents
-> Jan 10 08:16:36 sopa kernel: [156045.909270] BTRFS info (device dm-0):
-> found 75 extents
-> Jan 10 08:16:42 sopa kernel: [156052.292789] BTRFS info (device dm-0):
-> found 75 extents
-> Jan 10 08:16:46 sopa kernel: [156055.643452] BTRFS info (device dm-0):
-> found 75 extents
-> Jan 10 08:16:54 sopa kernel: [156063.608344] BTRFS info (device dm-0):
-> found 75 extents
-after 6hours of processing with 0% progress reported by balance status,
-I decided to cancel it to empty more space and rerun balance with some
-filters:
-
-btrfs balance cancel /data
-
-> Jan 10 14:38:11 sopa kernel: [178941.189217] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:14 sopa kernel: [178943.619787] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:20 sopa kernel: [178950.275334] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:24 sopa kernel: [178954.018770] INFO: task btrfs:30196
-> blocked for more than 845 seconds.
-> Jan 10 14:38:24 sopa kernel: [178954.018844] 
-> btrfs_cancel_balance+0xf8/0x170 [btrfs]
-> Jan 10 14:38:24 sopa kernel: [178954.018878] 
-> btrfs_ioctl+0x13af/0x20d0 [btrfs]
-> Jan 10 14:38:28 sopa kernel: [178957.999108] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:29 sopa kernel: [178958.837674] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:30 sopa kernel: [178959.835118] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:38:31 sopa kernel: [178960.915305] BTRFS info (device dm-0):
-> found 68 extents
-> Jan 10 14:40:25 sopa kernel: [179074.851376] 
-> btrfs_cancel_balance+0xf8/0x170 [btrfs]
-> Jan 10 14:40:25 sopa kernel: [179074.851408] 
-> btrfs_ioctl+0x13af/0x20d0 [btrfs]
-
-now nearly 4 days later (and after some data deleted) both balance start
-and balance cancel processes are still running and system reports:
-
-> root@sopa:/var/log# btrfs balance status /data/
-> Balance on '/data/' is running, cancel requested
-> 0 out of about 1900 chunks balanced (29 considered), 100% left
-
-> root@sopa:~# uname -a
-> Linux sopa 5.4.8-050408-generic #202001041436 SMP Sat Jan 4 19:40:55
-> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
->
-> root@sopa:~#   btrfs --version
-> btrfs-progs v4.15.1
->
-> root@sopa:~#   btrfs fi show
-> Label: 'SOPADATA'  uuid: 37b8a62c-68e8-44e4-a3b2-eb572385c3e8
->     Total devices 2 FS bytes used 1.04TiB
->     devid    1 size 1.86TiB used 1.86TiB path /dev/mapper/sopa-data
->     devid    2 size 1.86TiB used 0.00B path /dev/sdb3
->
-> root@sopa:~# btrfs subvolume list /data
-> ID 1021 gen 7564583 top level 5 path nfs
-> ID 1022 gen 7564590 top level 5 path motion
-
-> root@sopa:~#   btrfs fi df /data
-> Data, single: total=1.84TiB, used=1.04TiB
-> System, DUP: total=8.00MiB, used=224.00KiB
-> System, single: total=4.00MiB, used=0.00B
-> Metadata, DUP: total=6.50GiB, used=2.99GiB
-> Metadata, single: total=8.00MiB, used=0.00B
-> GlobalReserve, single: total=512.00MiB, used=0.00B
->
-is it normal that  it have written nearly 5TB of data to the original
-disk ??:
-
-> root@sopa:/var/log# ps ax | grep balance
-> 16014 ?        D    21114928:30 btrfs balance start -dconvert raid1
-> -mconvert raid1 /data/
-> 30196 ?        D      0:00 btrfs balance cancel /data
-
-> root@sopa:/var/log# cat /proc/16014/io | grep bytes
-> read_bytes: 1150357504
-> write_bytes: 5812039966720
-> root@sopa:/sys/block# cat  /sys/block/sdb/sdb3/stat
->      404        0    39352      956  4999199     1016 40001720
-> 71701953        0 14622628 67496136        0        0        0        0
-
-> [520398.089952] btrfs(16014): WRITE block 131072 on sdb3 (8 sectors)
-> [520398.089975] btrfs(16014): WRITE block 536870912 on sdb3 (8 sectors)
-> [520398.089995] btrfs(16014): WRITE block 128 on dm-0 (8 sectors)
-> [520398.090021] btrfs(16014): WRITE block 131072 on dm-0 (8 sectors)
-> [520398.090040] btrfs(16014): WRITE block 536870912 on dm-0 (8 sectors)
-> [520398.154382] btrfs(16014): WRITE block 14629168 on dm-0 (512 sectors)
-> [520398.155017] btrfs(16014): WRITE block 17748832 on dm-0 (512 sectors)
-> [520398.155545] btrfs(16014): WRITE block 17909352 on dm-0 (512 sectors)
-> [520398.156091] btrfs(16014): WRITE block 20534680 on dm-0 (512 sectors)
->
-regards
-
-jn
-
-
+Josef
