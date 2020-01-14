@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C353C13A226
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 08:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D495F13A227
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 08:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgANHaJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 02:30:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34094 "EHLO mx2.suse.de"
+        id S1728868AbgANHbY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 02:31:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34324 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728992AbgANHaJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 02:30:09 -0500
+        id S1725956AbgANHbX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jan 2020 02:31:23 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C952AAC81;
-        Tue, 14 Jan 2020 07:30:06 +0000 (UTC)
-Subject: Re: [PATCH 2/4] btrfs: stop using uninitiazlised fs_info in
- device_list_add()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+        by mx2.suse.de (Postfix) with ESMTP id 075E6AC7D;
+        Tue, 14 Jan 2020 07:31:21 +0000 (UTC)
+Subject: Re: [PATCH 1/4] btrfs: add NO_FS_INFO to btrfs_printk
+To:     Anand Jain <anand.jain@oracle.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.cz
 References: <20200114060920.4527-1-anand.jain@oracle.com>
- <20200114060920.4527-2-anand.jain@oracle.com>
- <9c548a6f-dc44-72f5-0d92-855af2e22b68@gmx.com>
+ <cfd79de2-fa25-c112-0540-3c3058379275@gmx.com>
+ <6f0db474-905e-02f3-41e4-6cb842d776e3@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -66,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c5987d03-ef3a-e36c-4e45-94605d02888a@suse.com>
-Date:   Tue, 14 Jan 2020 09:30:05 +0200
+Message-ID: <69a2bb9d-76ed-d273-4ee6-105a0bc2d85b@suse.com>
+Date:   Tue, 14 Jan 2020 09:31:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <9c548a6f-dc44-72f5-0d92-855af2e22b68@gmx.com>
+In-Reply-To: <6f0db474-905e-02f3-41e4-6cb842d776e3@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,31 +81,100 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 14.01.20 г. 8:58 ч., Qu Wenruo wrote:
+On 14.01.20 г. 9:21 ч., Anand Jain wrote:
 > 
 > 
-> On 2020/1/14 下午2:09, Anand Jain wrote:
->> fs_info is born during mount, and operations before the mount such as
->> scanning and assembling of the device volume should happen without any
->> reference to fs_info.
+> On 14/1/20 2:54 PM, Qu Wenruo wrote:
 >>
->> However the patch commit a9261d4125c9 (btrfs: harden agaist duplicate
->> fsid on scanned devices) used fs_info to call btrfs_warn_in_rcu() and
->> btrfs_info_in_rcu(), so if fs_info is NULL, the stacked functions which
->> leads to btrfs_printk() which shall print "unknown" instead of sb->s_id.
->> Or even might UAF as reported in [1].
+>>
+>> On 2020/1/14 下午2:09, Anand Jain wrote:
+>>> The first argument to btrfs_printk() wrappers such as
+>>> btrfs_warn_in_rcu(), btrfs_info_in_rcu(), etc.. is fs_info, but in some
+>>> context like scan and assembling of the volumes there isn't fs_info yet,
+>>> so those code generally don't use the btrfs_printk() wrappers and it
+>>> could could still use NULL but then it would become hard to distinguish
+>>> whether fs_info is NULL for genuine reason or a bug.
+>>>
+>>> So introduce a define NO_FS_INFO to be used instead of NULL so that we
+>>> know the code where fs_info isn't initialized and also we have a
+>>> consistent logging functions. Thanks.
+>>
+>> I'm not sure why this is needed.
+>>
+>> Could you give me an example in which NULL is not clear enough?
+>>
 > 
-> With your previous patch, which already checked NULL pointer, I didn't
-> see the need for NO_FS_INFO.
+> The first argument in btrfs_info_in_rcu() can be NULL like for example..
+> btrfs_info_in_rcu(NULL, ..) which then it shall print the prefix..
 > 
-> Or do you believe this calling site is a special?
-> If so, I still didn't get the point of NO_FS_INFO, just extra lines
-> using __func__ or "during scan: xxxxx" looks enough to me.
+>    BTRFS info (device <unknown>):
+> 
+>  Lets say due to some bug local copy of the variable fs_info wasn't
+> initialized then we end up printing the same unknown <unknown>.
 
-I agree with this assessment. What value does NO_FS_INFO bring in
-comparison to plain NULL that it warrants a special case?
+This is wrong if the local copy variable is not initialized then it will
+get random value from stack which will likely crash during deref because
+it will most certainly not be NULL.
 
 > 
-> Thanks,
-> Qu
+>   So in the context of device_list_add() as there is no fs_info
+> genuinely and be different from unknown we use
+> btrfs_info_in_rcu(NO_FS_INFO, ..) to get prefix something like..
 > 
+>  BTRFS info (device ...):
+> 
+> Thanks, Anand
+> 
+> 
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Suggested-by: David Sterba <dsterba@suse.com>
+>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>> ---
+>>>   fs/btrfs/ctree.h |  5 +++++
+>>>   fs/btrfs/super.c | 14 +++++++++++---
+>>>   2 files changed, 16 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>> index 569931dd0ce5..625c7eee3d0f 100644
+>>> --- a/fs/btrfs/ctree.h
+>>> +++ b/fs/btrfs/ctree.h
+>>> @@ -110,6 +110,11 @@ struct btrfs_ref;
+>>>   #define BTRFS_STAT_CURR        0
+>>>   #define BTRFS_STAT_PREV        1
+>>>   +/*
+>>> + * Used when we know that fs_info is not yet initialized.
+>>> + */
+>>> +#define    NO_FS_INFO    ((void *)0x1)
+>>> +
+>>>   /*
+>>>    * Count how many BTRFS_MAX_EXTENT_SIZE cover the @size
+>>>    */
+>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>>> index a906315efd19..5bd8a889fed0 100644
+>>> --- a/fs/btrfs/super.c
+>>> +++ b/fs/btrfs/super.c
+>>> @@ -216,9 +216,17 @@ void __cold btrfs_printk(const struct
+>>> btrfs_fs_info *fs_info, const char *fmt, .
+>>>       vaf.fmt = fmt;
+>>>       vaf.va = &args;
+>>>   -    if (__ratelimit(ratelimit))
+>>> -        printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
+>>> -            fs_info ? fs_info->sb->s_id : "<unknown>", &vaf);
+>>> +    if (__ratelimit(ratelimit)) {
+>>> +        if (fs_info == NULL)
+>>> +            printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
+>>> +                "<unknown>", &vaf);
+>>> +        else if (fs_info == NO_FS_INFO)
+>>> +            printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
+>>> +                "...", &vaf);
+>>> +        else
+>>> +            printk("%sBTRFS %s (device %s): %pV\n", lvl, type,
+>>> +                fs_info->sb->s_id, &vaf);
+>>> +    }
+>>>         va_end(args);
+>>>   }
+>>>
+>>
