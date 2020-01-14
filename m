@@ -2,97 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1124013A004
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 04:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09E713A075
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 06:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgANDkQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jan 2020 22:40:16 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35049 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729129AbgANDkQ (ORCPT
+        id S1725994AbgANFPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 00:15:40 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36468 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgANFPk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jan 2020 22:40:16 -0500
-Received: by mail-wr1-f68.google.com with SMTP id g17so10710803wro.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jan 2020 19:40:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HyJAkg8aa3mv6RAd82V8wWwbNWKelnz8l2wTMYxyoXI=;
-        b=sJWsSRCt6Mw7/bNfc+bA4sfbk99O5Q6cF+sW1FI10xB+glshmWDR5znHeYtvdTQQV+
-         AoToZXFxoG/+V0S+ozenOz2xVhdCciQuIDQGVaD1bwoahzJtqYDRkyokaJ6tkZiwwoFv
-         GfSr+6SE8bzFAf2clJoXNqsiYBNGv9kvDtllq6QPV7U8c79bbycUPwNuSxDNEDvhamXG
-         AN3peEJm6xLMocEMmoCTd8a6+2eArLFz8Imx70Fllx4ngw79aiHPmzz8H6u9bFzfjoQb
-         uAJ0irvqBzA39mwCSDmUiJLfXemUqVxKN+nEWXCV1WeWr3qbxywGXHmv4q/2PHUgscgt
-         pNpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HyJAkg8aa3mv6RAd82V8wWwbNWKelnz8l2wTMYxyoXI=;
-        b=AoqUC3mShCRRF+u2AtNtwlPCKHe1cdrrA5LX6pqOgiWt/v0K5eBBbBRs2i511USSsG
-         v+5qBcXYHNJuEcDD3fitSAziLu30cDe4QDv2jjO/yC4cVKPDyahQcdNckTPPT2vTXb6v
-         Ext3WW6m1F5kgpTfMuoAkwpqicPQnpzKzkmPTZNDNnSWgsPxec3u5KlAdGRD0xSZUOQr
-         3+juoseEfznsee2rVWXBqsLBkH6BGYb0W0F1J6HAv2wDvwxpCfLoRjcKwT9zZ8evV4s5
-         71xpqyW71m6FKmPTAS4Y2nb3eEGV6wty7gPzcpYUAU7oVuIWvKZraul0fRF+dzsMNO0i
-         mMKQ==
-X-Gm-Message-State: APjAAAWFLdfwR329HVfA7zFO29q34m6glgtc3EuQpMmGj96sFacqJP6P
-        4fFj0vb+FVf8srwzev9n0RkrPlAXIabQhAziMO/Iqv5l9Ws=
-X-Google-Smtp-Source: APXvYqzv4qIsGHgmd5MToRAEFk3Hrix5LZ0F6NcIpEoCE7+9HFMXsIQTpydJ1Od9QlBQbNn4fHasqQkCMxCsCmTXPV8=
-X-Received: by 2002:adf:e6d2:: with SMTP id y18mr23129002wrm.262.1578973213746;
- Mon, 13 Jan 2020 19:40:13 -0800 (PST)
+        Tue, 14 Jan 2020 00:15:40 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E5D7Tf072151;
+        Tue, 14 Jan 2020 05:15:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=bD+la0i8wL3kh+/S4dutfv6fHmYFqVYUS1UEIlvLlG0=;
+ b=oDWqjuYhJeLqMC/CXdz7xod1GGhv2LW7jdom+qNXCGEVz6W6gybt8MkHnS/sn0WXlCOs
+ DSGhuve94I++82UsA2CNGHBzlPBUpxD8yF5z/iwMFxJaubt68dDNknjOLIqneJGl+p95
+ ZqdN+m1dXXjRJ9nCDuIZZ6x3oUuTZJH65swHmSeVNR/43c25gB3+x8gVq2qxD3l+YFPW
+ F3kWyo9EMVogrwaGBPkbmdD9HBBQlMwDysVg2ExcKD6Qv6Q5OuM3rBnBUz1TDASI3YkC
+ M23OCrnhxUtHkUW/ltoHqfM7A/uFa3lvLu4eypsrVhp672SvQMfP/4jX8kudH8wj8UB1 0A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2xf73tkg5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jan 2020 05:15:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E5EIT7187627;
+        Tue, 14 Jan 2020 05:15:36 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2xh2tn2p74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jan 2020 05:15:36 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00E5FZ5Z017119;
+        Tue, 14 Jan 2020 05:15:35 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Jan 2020 21:15:35 -0800
+Subject: Re: [PATCH 1/2] btrfs: open code log helpers in device_list_add()
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200110090555.7049-1-anand.jain@oracle.com>
+ <20200110164212.GQ3929@twin.jikos.cz>
+ <ec1a6bed-ecea-c7f6-2567-9626590bc9c7@oracle.com>
+ <20200113162521.GW3929@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <01be0d25-e7e6-663e-3e49-82a248e7cc1e@oracle.com>
+Date:   Tue, 14 Jan 2020 13:15:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <alpine.DEB.2.21.99999.375.2001131400390.21037@trent.utfs.org>
- <CAJCQCtS9rx0M30zLxkND5MYTwLEPxYG=8BuRB3b1Bi8Vr3KTqg@mail.gmail.com>
- <alpine.DEB.2.21.99999.375.2001131514010.21037@trent.utfs.org>
- <CAJCQCtShpdS81pvc1m26yPmriaE7_3=MZTFkbXknp9+Wehwr5w@mail.gmail.com>
- <CAJCQCtSmDx10PQvA8j58NcGyEV9La5FRLYj=q-EHTTXwJF+8ZQ@mail.gmail.com> <alpine.DEB.2.21.99999.375.2001131807440.21037@trent.utfs.org>
-In-Reply-To: <alpine.DEB.2.21.99999.375.2001131807440.21037@trent.utfs.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 13 Jan 2020 20:39:57 -0700
-Message-ID: <CAJCQCtQic6e+uYUDD_Bt0yQUteCw7yRbB06K5SPHMwrRRZzk9Q@mail.gmail.com>
-Subject: Re: file system full on a single disk?
-To:     Christian Kujau <lists@nerdbynature.de>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200113162521.GW3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001140045
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001140045
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 7:16 PM Christian Kujau <lists@nerdbynature.de> wrote:
->
-> On Mon, 13 Jan 2020, Chris Murphy wrote:
-> > This is the latest patchset as of about a week ago, and actually I'm
-> > not seeing it in 5.5rc6. A tested fix may not be ready yet.
-> > https://patchwork.kernel.org/project/linux-btrfs/list/?series=223921
-> >
-> > Your best bet is likely to stick with 5.4.10 and just use mount option
-> > metadata_ratio=1. This won't cause some other weird thing to happen.
->
-> I have remounted the file system with that option set when it was still
-> running, but it didn't do anything (as expected I'd assume), its usage was
-> still at 100 percent.
->
-> Now I had a chance to reboot the system (with that option set), but usage
-> was still at 100%, so I ran "btrfs balance" once more (although you
-> recommended against it :)) and a reboot later everything seems "normal"
-> again.
->
-> Thanks for the explanations and hints. I must admit it's kinda surprising
-> to me that these ENOSPC errors are still happening with btrfs, I somehow
-> assumed that these kinks had been ironed out by now. But as you said, this
-> may have re-appeared with 5.4 and it's not a big deal for me right now, so
-> I can live with the mount option set and wait for 5.5 to be released :-)
+On 14/1/20 12:25 AM, David Sterba wrote:
+> On Sat, Jan 11, 2020 at 07:41:51AM +0800, Anand Jain wrote:
+>>>>    			if (device->bdev != path_bdev) {
+>>>>    				bdput(path_bdev);
+>>>>    				mutex_unlock(&fs_devices->device_list_mutex);
+>>>> -				btrfs_warn_in_rcu(device->fs_info,
+>>>> -			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
+>>>> +				rcu_read_lock();
+>>>> +				printk_ratelimited(
+>>>
+>>> Avoiding fs_info here is correct but we don't want to use raw printk or
+>>> printk_ratelimited anywhere.
+>>>
+>>
+>>    I think I discussed this a long time back, that we should rather pass
+>>    fs_devices in btrfs_warn_in_rcu().
+>>
+>>    I am ok to make such a change, are you ok?
+> 
+> No, this does not sound right at all. Why should be btrfs_warn_in_rcu
+> special from the other message callbacks? We need to fix one context, so
+> let's find something less hacky.
+> 
+>>    Or I wonder if there is
+>>    any other way?
+> 
+> We could add a fs_info stub that will get recognized in btrfs_printk.
+> Eg.
+> 
+> #define	NO_FS_INFO		((void*)0x1)
+> 
+> btrfs_printk() {
+> 
+> 	if (fs_info == NULL)
+> 		devname = "<unknown>";
+> 	else if (fs_info == NO_FS_INFO)
+> 		devname = "...";
+> 	else
+> 		devname = fs_info->sb->sb_id;
+> 
 
-If you have a bugzilla account file a bug. You can put me on the cc,
-use bugzilla@ instead of lists@, and then you'll get a notification
-when this is fixed in a future Fedora kernel. You can just wipe out
-the whole template and copy/paste your first email in it. That's
-enough info I think.
+Yeah it makes sense to me. Patches sent.
 
-
-
-
--- 
-Chris Murphy
+Thanks, Anand
