@@ -2,61 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDF613B035
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 18:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D174313B0A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 18:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728748AbgANRCz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 12:02:55 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:42680 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgANRCy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 12:02:54 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1irPac-0087wB-8a; Tue, 14 Jan 2020 17:02:50 +0000
-Date:   Tue, 14 Jan 2020 17:02:50 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, hch@lst.de, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Making linkat() able to overwrite the target
-Message-ID: <20200114170250.GA8904@ZenIV.linux.org.uk>
-References: <3326.1579019665@warthog.procyon.org.uk>
+        id S1727102AbgANROS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 12:14:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42390 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726971AbgANROS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jan 2020 12:14:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E0116AAC3;
+        Tue, 14 Jan 2020 17:14:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 30232DA795; Tue, 14 Jan 2020 18:14:04 +0100 (CET)
+Date:   Tue, 14 Jan 2020 18:14:03 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] More split-brain fixes for metadata uuid feature
+Message-ID: <20200114171403.GH3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200110121135.7386-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3326.1579019665@warthog.procyon.org.uk>
+In-Reply-To: <20200110121135.7386-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 04:34:25PM +0000, David Howells wrote:
-> With my rewrite of fscache and cachefiles:
+On Fri, Jan 10, 2020 at 02:11:31PM +0200, Nikolay Borisov wrote:
+> Here are 4 patches which fix a newly found split-brain scenario in the
+> METADATA_UUID_INCOMPAT code. They are mostly the identical with Su's
+> original submission but I have reworked the changelogs and some function
+> names. Hence, I retained his authorship of the patches.
 > 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
+> First 2 patches factor out some code with the hopes of making find_fisd a bit
+> more readable and simplifying the myriad of nested 'if' in device_list_add.
 > 
-> when a file gets invalidated by the server - and, under some circumstances,
-> modified locally - I have the cache create a temporary file with vfs_tmpfile()
-> that I'd like to just link into place over the old one - but I can't because
-> vfs_link() doesn't allow you to do that.  Instead I have to either unlink the
-> old one and then link the new one in or create it elsewhere and rename across.
+> Patch 3 extends find_fsid_changed to handle the case where a disk with
+> METADATA_UUID_INCOMPAT and FSID_CHANGING_IN_PROGRESS is scanned after a disk
+> which has successfully been switched to FSID == METADATA_UUID state and has
+> created btrfs_fs_devices.
 > 
-> Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, that
-> causes the target to be replaced and not give EEXIST?  Or make it so that
-> rename() can take a tmpfile as the source and replace the target with that.  I
-> presume that, either way, this would require journal changes on ext4, xfs and
-> btrfs.
+> Patch 4 handles the counterpart situation - a fully switched disk is scanned
+> after one which has had METADATA_UUID_INCOMPAT and FSID_CHANGING_IN_PROGRESS
+> set.
+> 
+> This series should be applied to stable branches following 5.0 when the
+> metadata_uuid feature got introduced.
+> 
+> This patchset was tested with btrfs-progs' misc 034-metadata-uuid test and a full
+> xfstest run with no regressions. I will also be sending an improvement to the
+> test case which exercises the newly added code.
+> 
+>   btrfs: Call find_fsid from find_fsid_inprogress
+>   btrfs: Factor out metadata_uuid code from find_fsid.
+>   btrfs: Handle another split brain scenario with metadata uuid feature
+>   btrfs: Fix split-brain handling when changing FSID to metadata uuid
 
-Umm...  I don't like the idea of linkat() doing that - you suddenly get new
-fun cases to think about (what should happen when the target is a mountpoint,
-for starters?) _and_ you would have to add a magical flag to vfs_link() so
-that it would know which tests to do.  As for rename...  How would that
-work?  AT_EMPTY_PATH for source?  What happens if two threads do that
-at the same time?  Should that case be always "create a new link, even
-if you've got it by plain lookup somewhere"?  Worse, suppose you do that
-to given tmpfile; what should happen to /proc/self/fd/* link to it?  Should
-it point to new location, or...?
+I'm adding it to for-next, thanks.
