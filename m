@@ -2,75 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B3213B014
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 17:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDF613B035
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 18:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgANQyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 11:54:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54556 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgANQyZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 11:54:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EF6E1AEBA;
-        Tue, 14 Jan 2020 16:54:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4AD29DA795; Tue, 14 Jan 2020 17:54:11 +0100 (CET)
-Date:   Tue, 14 Jan 2020 17:54:11 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/6] btrfs: Read stripe len directly in btrfs_rmap_block
-Message-ID: <20200114165411.GG3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191119120555.6465-1-nborisov@suse.com>
- <20191119120555.6465-6-nborisov@suse.com>
+        id S1728748AbgANRCz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 12:02:55 -0500
+Received: from zeniv.linux.org.uk ([195.92.253.2]:42680 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgANRCy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jan 2020 12:02:54 -0500
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1irPac-0087wB-8a; Tue, 14 Jan 2020 17:02:50 +0000
+Date:   Tue, 14 Jan 2020 17:02:50 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, hch@lst.de, tytso@mit.edu,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Making linkat() able to overwrite the target
+Message-ID: <20200114170250.GA8904@ZenIV.linux.org.uk>
+References: <3326.1579019665@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191119120555.6465-6-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <3326.1579019665@warthog.procyon.org.uk>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 02:05:54PM +0200, Nikolay Borisov wrote:
-> extent_map::orig_block_len contains the size of a physical stripe when
-> it's used to describe block groups. So get the size directly in
-> btrfs_rmap_block rather than open-coding the calculations. No
-> functional changes.
+On Tue, Jan 14, 2020 at 04:34:25PM +0000, David Howells wrote:
+> With my rewrite of fscache and cachefiles:
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/block-group.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index c3b1f304bc70..2ab4d9cb598a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1546,17 +1546,12 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
->  		return -EIO;
->  
->  	map = em->map_lookup;
-> -	data_stripe_length = em->len;
-> +	data_stripe_length = em->orig_block_len;
->  	io_stripe_size = map->stripe_len;
->  
-> -	if (map->type & BTRFS_BLOCK_GROUP_RAID10)
-> -		data_stripe_length = div_u64(data_stripe_length, map->num_stripes / map->sub_stripes);
-> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
-> -		data_stripe_length = div_u64(data_stripe_length, map->num_stripes);
-> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-> -		data_stripe_length = div_u64(data_stripe_length, nr_data_stripes(map));
-> +	/* For raid5/6 adjust to a full IO stripe length */
-> +	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->  		io_stripe_size = map->stripe_len * nr_data_stripes(map);
+> when a file gets invalidated by the server - and, under some circumstances,
+> modified locally - I have the cache create a temporary file with vfs_tmpfile()
+> that I'd like to just link into place over the old one - but I can't because
+> vfs_link() doesn't allow you to do that.  Instead I have to either unlink the
+> old one and then link the new one in or create it elsewhere and rename across.
+> 
+> Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, that
+> causes the target to be replaced and not give EEXIST?  Or make it so that
+> rename() can take a tmpfile as the source and replace the target with that.  I
+> presume that, either way, this would require journal changes on ext4, xfs and
+> btrfs.
 
-I'm not convinced this is 'no functional change' so will merge only
-patches 1-4 for now as I have reviewed them and want to add them to
-misc-next before the 5.6 freeze.
+Umm...  I don't like the idea of linkat() doing that - you suddenly get new
+fun cases to think about (what should happen when the target is a mountpoint,
+for starters?) _and_ you would have to add a magical flag to vfs_link() so
+that it would know which tests to do.  As for rename...  How would that
+work?  AT_EMPTY_PATH for source?  What happens if two threads do that
+at the same time?  Should that case be always "create a new link, even
+if you've got it by plain lookup somewhere"?  Worse, suppose you do that
+to given tmpfile; what should happen to /proc/self/fd/* link to it?  Should
+it point to new location, or...?
