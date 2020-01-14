@@ -2,45 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FB213B42F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 22:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC02E13B57B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 23:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgANVVY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 16:21:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50632 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728748AbgANVVY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 16:21:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B3AA5AE5E;
-        Tue, 14 Jan 2020 21:21:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 39208DA795; Tue, 14 Jan 2020 22:21:08 +0100 (CET)
-Date:   Tue, 14 Jan 2020 22:21:07 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Kusanagi Kouichi <slash@ac.auone-net.jp>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Implement lazytime
-Message-ID: <20200114212107.GM3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Kusanagi Kouichi <slash@ac.auone-net.jp>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+        id S1728791AbgANWvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 17:51:02 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33606 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728746AbgANWvB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jan 2020 17:51:01 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-108.corp.google.com [104.133.0.108] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00EMnH2t015142
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jan 2020 17:49:18 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 441C34207DF; Tue, 14 Jan 2020 17:49:17 -0500 (EST)
+Date:   Tue, 14 Jan 2020 17:49:17 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Problems with determining data presence by examining extents?
+Message-ID: <20200114224917.GA165687@mit.edu>
+References: <4467.1579020509@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <4467.1579020509@warthog.procyon.org.uk>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 05:53:24PM +0900, Kusanagi Kouichi wrote:
-> I tested with xfstests and lazytime didn't cause any new failures.
+On Tue, Jan 14, 2020 at 04:48:29PM +0000, David Howells wrote:
+> Again with regard to my rewrite of fscache and cachefiles:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
+> 
+> I've got rid of my use of bmap()!  Hooray!
+> 
+> However, I'm informed that I can't trust the extent map of a backing file to
+> tell me accurately whether content exists in a file because:
+> 
+>  (a) Not-quite-contiguous extents may be joined by insertion of blocks of
+>      zeros by the filesystem optimising itself.  This would give me a false
+>      positive when trying to detect the presence of data.
+> 
+>  (b) Blocks of zeros that I write into the file may get punched out by
+>      filesystem optimisation since a read back would be expected to read zeros
+>      there anyway, provided it's below the EOF.  This would give me a false
+>      negative.
+> 
+> Is there some setting I can use to prevent these scenarios on a file - or can
+> one be added?
 
-The changelog should describe what the patch does (the 'why' part too,
-but this is obvious from the subject in this case). That fstests pass
-without new failures is nice but there should be a specific test for
-that or instructions in the changelog how to test.
+I don't think there's any way to do this in a portable way, at least
+today.  There is a hack we could be use that would work for ext4
+today, at least with respect to (a), but I'm not sure we would want to
+make any guarantees with respect to (b).
+
+I suspect I understand why you want this; I've fielded some requests
+for people wanting to do something very like this at $WORK, for what I
+assume to be for the same reason you're seeking to do this; to create
+do incremental caching of files and letting the file system track what
+has and hasn't been cached yet.
+
+If we were going to add such a facility, what we could perhaps do is
+to define a new flag indicating that a particular file should have no
+extent mapping optimization applied, such that FIEMAP would return a
+mapping if and only if userspace had written to a particular block, or
+had requested that a block be preallocated using fallocate().  The
+flag could only be set on a zero-length file, and this might disable
+certain advanced file system features, such as reflink, at the file
+system's discretion; and there might be unspecified performance
+impacts if this flag is set on a file.
+
+File systems which do not support this feature would not allow this
+flag to be set.
+
+				- Ted
