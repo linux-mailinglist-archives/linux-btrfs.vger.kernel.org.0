@@ -2,64 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C448813AC8A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 15:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA35F13AF7A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 17:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgANOnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 09:43:10 -0500
-Received: from mail-il1-f179.google.com ([209.85.166.179]:44776 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgANOnK (ORCPT
+        id S1728803AbgANQef (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 11:34:35 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41547 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726450AbgANQef (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 09:43:10 -0500
-Received: by mail-il1-f179.google.com with SMTP id z12so11669944iln.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2020 06:43:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=VWoCqKsvG+50ID6i0tu5JOrPYIOm/F+p9EzpQVObZio=;
-        b=rikZrFnOsbzjnXw1wkADCEyLKIQxpwlRPs2QSjNqgRPQw84ZAhU3aEQWaQkl7K1O74
-         EWfLcBZRA0yBIaIQaIY7TdH6Xof8YFdnZ2kZMnoer7O0hPMLMg2g7gYd/uGnBFhhLm6t
-         Avg6VSeNYzblW+M1PBVYUs3Dt5X5/1gXXj+EvI7ZEe9cuayl7dlWgpZ0hMf6PxUYaZmD
-         NVr2l+s4AszSzbifNpwrbUDQY6tnvnOvFEhG1iFocYVSCqxifvcLIa+uzpNxuQNl8TgT
-         bE6yMH0f5stVQw/vBCBZ55zFFDzGOC521e6OS2/mIkKvo7JGPiETNs/jDL6IVL9svRrf
-         4lBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=VWoCqKsvG+50ID6i0tu5JOrPYIOm/F+p9EzpQVObZio=;
-        b=ay+bLiFbmtJossLP16AOPoyT6v/0jslJuGsbocdeISt/EqMPn4MUrWFuWVKii80VO6
-         yI44TPWKjYRdzrDVkAdm3e8RBUdsvGBxTRMPpQoxxdDuGV03jGlsl6gSSh2P4q6Ap+eq
-         EHUVAHP5obY3hHyz2sQNFswYcol/aP2fDMJi8tg0Sza/16Elh0zEQrh0map5m2nx8SjL
-         HEhRz3Ukp9DyN0aJSOe0cvWU+NnmW49BEquOIZz9t09oHxHhb45ip4Mux6jzQUp+UlIs
-         Sq7sI4mIP1eFyXC6mz4S/D8sdVnNwb4XhJWdIRmMKzFepgfg1p0ERiOKMieh9IYgGzzx
-         Xbpw==
-X-Gm-Message-State: APjAAAUCTTI7+aBot2JY+vfjLtMwGkP4iD++nwDs/CjztyLxyiV7UYR+
-        /KLBZW8JY2cvOqt/JNeCCuCwGxFQCZtH68zgpJ4rtyxx
-X-Google-Smtp-Source: APXvYqyBLDxyLFk6ZOKwfA49VJfdufXTn8AI9QWxIUAZR1qTBKCHEl/kfjAZ72giYVycWUKust0hCZy/uzfWON183q4=
-X-Received: by 2002:a92:da41:: with SMTP id p1mr3923226ilq.113.1579012989514;
- Tue, 14 Jan 2020 06:43:09 -0800 (PST)
+        Tue, 14 Jan 2020 11:34:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579019674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A61MDN9On2l+D0CHOHwV8RQgKf/LW4H2brHB54z57mg=;
+        b=VtvOr6YF8lpN48BLT7s49eylbLLaKlhlyW3033dI4WxlWPBu95K82WcwvNQcWaJmsxkSRA
+        vL/pPAlLMWSVNUxfbyrjvWxE6mCtRW8zFRdRkG7KuoXMpe/dLzyjWnkStSY4HuAyCvwz5j
+        4O3HiPZbjkaUbvkiDF0BP4tf/gAjKM0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-272-0Z8kJG3eO2Csx02l0D7gRA-1; Tue, 14 Jan 2020 11:34:30 -0500
+X-MC-Unique: 0Z8kJG3eO2Csx02l0D7gRA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA5A0150153;
+        Tue, 14 Jan 2020 16:34:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 53BA780A48;
+        Tue, 14 Jan 2020 16:34:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
+        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Making linkat() able to overwrite the target
 MIME-Version: 1.0
-From:   Gandalf Corvotempesta <gandalf.corvotempesta@gmail.com>
-Date:   Tue, 14 Jan 2020 15:42:58 +0100
-Message-ID: <CAJH6TXh+0QM_hzJhn7bQOxkuN964dbr=XK5HmY2DGR9ROr+_8g@mail.gmail.com>
-Subject: Updates on RAID5/6 ?
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3325.1579019665.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 14 Jan 2020 16:34:25 +0000
+Message-ID: <3326.1579019665@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It's been a "long" time since i've checked the BTRFS development.
-I've checked right now and apparently, RAID56 is still marked as red
-(unstable) on the wiki.
+With my rewrite of fscache and cachefiles:
 
-Any plans or ETA to fix this feature ?
-Disks are becoming more and more bigger, RAID6 it's mandatory in some
-environments.
-In example, ALL of my servers are RAID6
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Dfscache-iter
 
-Other than this, without using RAID5/6, can BTRFS considered stable
-and properly use on critical system ? With or without RAID1/RAID10, in
-example
+when a file gets invalidated by the server - and, under some circumstances=
+,
+modified locally - I have the cache create a temporary file with vfs_tmpfi=
+le()
+that I'd like to just link into place over the old one - but I can't becau=
+se
+vfs_link() doesn't allow you to do that.  Instead I have to either unlink =
+the
+old one and then link the new one in or create it elsewhere and rename acr=
+oss.
+
+Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, th=
+at
+causes the target to be replaced and not give EEXIST?  Or make it so that
+rename() can take a tmpfile as the source and replace the target with that=
+.  I
+presume that, either way, this would require journal changes on ext4, xfs =
+and
+btrfs.
+
+Thanks,
+David
+
