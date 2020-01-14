@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ECA13A0DC
+	by mail.lfdr.de (Postfix) with ESMTP id E577A13A0DD
 	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 07:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgANGJf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 01:09:35 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:50694 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgANGJe (ORCPT
+        id S1726452AbgANGJg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 01:09:36 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:34338 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgANGJg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 01:09:34 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E68kTa111898;
-        Tue, 14 Jan 2020 06:09:31 GMT
+        Tue, 14 Jan 2020 01:09:36 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E6835L128377;
+        Tue, 14 Jan 2020 06:09:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=qbRDopoPiVC+/A1w3lHLf1Jces+GdVdKkEAc/ne6cMU=;
- b=QSfxLFo0WTuO0gOuRUX4TDP7jN9YOIoLh9CHyne0dTw/TVD+7+3vI127umuuM0iDPHgv
- fKKe6SU5g2etIk8FXLC26uD8v9cjsopBC5Ebr1OO16nULU/eP0eXNVg/753aGxf3QlhO
- qYO6AG13ro1GbQ4Tsg3JRWg0o7451e+VG2GzjTUuLWqts1AJi345eoi1s7dYR000+ejk
- OeClpBDAG7XlZDRVN2cUS6bXx/2KZmDSr+TOn765BIGirnJvL+9vzjpRqvQCUxJnYqo6
- vzCD3BZcPw14PYyTNM9XnkaQCm6ZJZGtnQMkB5WWnJESAH1fOtYx8IMjYvyWh25M2fUC kQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2xf73tknwp-1
+ bh=CtiCPqxxSvOBDKi0gLrFRaiaJsq6T8diXr/NVdRKWF0=;
+ b=ZXj4GlKjqkEFS6OQlCs2ivvO3Hvj61A4IVgNkYBVbq/+Tuc3QPFfQoDYehWflbyNAWZK
+ 74yLB20XwVsLKiZTEsr9M235v/AT+UhuS2w5nMyw/1EjbdW+yKABg3NnQLMeSmXuat8U
+ a6Vb7v7/2nzfxENIyeDBKLGx6Ed+ipcIIbJ1xg6JfdxEyvYmGHeiZ62ZAa0QdazmJwxr
+ 9OHAB5281A1dghOBZN/Tq9rXndFtaTzrrZDyAIwV3VB1VeGl3G7KD/aE1qQRxBuSVyEy
+ bOdB2wrahewsOdYGjzFvozpA7m2HF/HKIuTYbKp4FEgNo+lLa92qqsgTdkL+0GYbJAQz 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2xf73ybs36-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jan 2020 06:09:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E68j3E109507;
-        Tue, 14 Jan 2020 06:09:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2xh2tn4ryp-1
+        Tue, 14 Jan 2020 06:09:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E690tO193964;
+        Tue, 14 Jan 2020 06:09:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2xh30ytvv8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jan 2020 06:09:30 +0000
+        Tue, 14 Jan 2020 06:09:32 +0000
 Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00E69TE7031395;
-        Tue, 14 Jan 2020 06:09:30 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00E69VVc021625;
+        Tue, 14 Jan 2020 06:09:31 GMT
 Received: from mb.wifi.oracle.com (/192.188.170.109)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jan 2020 22:09:29 -0800
+        with ESMTP ; Mon, 13 Jan 2020 22:09:31 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.cz
-Subject: [PATCH 3/4] btrfs: make the scan logs consistent
-Date:   Tue, 14 Jan 2020 14:09:19 +0800
-Message-Id: <20200114060920.4527-3-anand.jain@oracle.com>
+Subject: [PATCH 4/4] btrfs: use btrfs consistent logging wrappers
+Date:   Tue, 14 Jan 2020 14:09:20 +0800
+Message-Id: <20200114060920.4527-4-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20200114060920.4527-1-anand.jain@oracle.com>
 References: <20200114060920.4527-1-anand.jain@oracle.com>
@@ -68,39 +68,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Typically we follow, a logging format <parameter> <value> and no ":"
-so just follow that here.
+Now as we could use the btrfs_info(), btrfs_warn() etc.. in the context
+where fs_info is not yet initialized, so replace pr_info with btrfs_info
+in device_list_add() for a consistent log format from btrfs.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-David,
-If required you may roll this into the patch 2/4 in this series. I didn't
-dare, as there may be some concerns that it isn't relevent there.
-
- fs/btrfs/volumes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/volumes.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 0301c3d693d8..bafc57bc02c8 100644
+index bafc57bc02c8..e30747949074 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -890,14 +890,14 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 				bdput(path_bdev);
- 				mutex_unlock(&fs_devices->device_list_mutex);
- 				btrfs_warn_in_rcu(NO_FS_INFO,
--			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
-+			"duplicate device fsid %pU devid %llu exisitng %s new %s",
- 					disk_super->fsid, devid,
- 					rcu_str_deref(device->name), path);
- 				return ERR_PTR(-EEXIST);
- 			}
- 			bdput(path_bdev);
- 			btrfs_info_in_rcu(NO_FS_INFO,
--				"device fsid %pU devid %llu moved old:%s new:%s",
-+				"device fsid %pU devid %llu moved old %s new %s",
- 				disk_super->fsid, devid,
- 				rcu_str_deref(device->name), path);
- 		}
+@@ -824,13 +824,13 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 		*new_device_added = true;
+ 
+ 		if (disk_super->label[0])
+-			pr_info(
+-	"BTRFS: device label %s devid %llu transid %llu %s scanned by %s (%d)\n",
++			btrfs_info(NO_FS_INFO,
++	"device label %s devid %llu transid %llu %s scanned by %s (%d)",
+ 				disk_super->label, devid, found_transid, path,
+ 				current->comm, task_pid_nr(current));
+ 		else
+-			pr_info(
+-	"BTRFS: device fsid %pU devid %llu transid %llu %s scanned by %s (%d)\n",
++			btrfs_info(NO_FS_INFO,
++	"device fsid %pU devid %llu transid %llu %s scanned by %s (%d)",
+ 				disk_super->fsid, devid, found_transid, path,
+ 				current->comm, task_pid_nr(current));
+ 
 -- 
 2.23.0
 
