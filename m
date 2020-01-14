@@ -2,102 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9087313AFEF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 17:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1256713B005
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 17:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728813AbgANQsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 11:48:42 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57616 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728587AbgANQsj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 11:48:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579020518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wa4DvoCfeEWwo/urASd6YVcN7NZPPV/NkQMLP8JZMPc=;
-        b=a3/2qNtWS5NkfAPYCrG5beYpHo7nJ4Rt04O2/q8kHNOiZdBHTXTFPkuXyjnCfl2DytpqFQ
-        iCLMOb5vjRn3HtaPkxGon0FLKq9/jpGVd6B3JuT/5/hc5UEzXvhmlSDSRB/2eXmOiOBtVC
-        w5k25P/1KTBHhZVD2SaFQafi6fWIiuo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-qff8BlnUO7GRh5at_9TLdg-1; Tue, 14 Jan 2020 11:48:34 -0500
-X-MC-Unique: qff8BlnUO7GRh5at_9TLdg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B70891FE18;
-        Tue, 14 Jan 2020 16:48:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8C9C60BF1;
-        Tue, 14 Jan 2020 16:48:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
-        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Problems with determining data presence by examining extents?
+        id S1727331AbgANQwF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 11:52:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53104 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726971AbgANQwF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jan 2020 11:52:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 09479AEC4;
+        Tue, 14 Jan 2020 16:52:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4CB24DA795; Tue, 14 Jan 2020 17:51:51 +0100 (CET)
+Date:   Tue, 14 Jan 2020 17:51:51 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: Add self-tests for btrfs_rmap_block
+Message-ID: <20200114165151.GF3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191126160439.GI2734@twin.jikos.cz>
+ <20191210180045.2047-1-nborisov@suse.com>
+ <20200102154032.GJ3929@twin.jikos.cz>
+ <d24de3e2-719f-e656-7d75-e5b258eb449b@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4466.1579020509.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 14 Jan 2020 16:48:29 +0000
-Message-ID: <4467.1579020509@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d24de3e2-719f-e656-7d75-e5b258eb449b@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Again with regard to my rewrite of fscache and cachefiles:
+On Fri, Jan 10, 2020 at 04:46:20PM +0200, Nikolay Borisov wrote:
+> >> +	int expected_mapped_addr;
+> > 
+> > This should be bool
+> 
+> Actually the idea here is for expected_mapped_addr to contains the
+> number of addresses we are expected to map. Currently tests only expect
+> 0 or 1 but if tests are expanded in the future  this might be 2 or 3.
+> 
+> THe body of the test does:
+> 
+>  if (out_ndaddrs != test->expected_mapped_addr) {
+>                   for (i = 0; i < out_ndaddrs; i++)
+> 
+>                           test_msg("Mapped %llu", logical[i]);
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Dfscache-iter
+Ok, int is fine then.
 
-I've got rid of my use of bmap()!  Hooray!
+> >> +	struct rmap_test_vector rmap_tests[] = {
+> >> +		{
+> >> +			/*
+> >> +			 * Tests a chunk with 2 data stripes one of which
+> >> +			 * interesects the physical address of the super block
+> >> +			 * is correctly recognised.
+> >> +			 */
+> >> +			.raid_type = BTRFS_BLOCK_GROUP_RAID1,
+> >> +			.physical_start = SZ_64M - SZ_4M,
+> >> +			.data_stripe_size = SZ_256M,
+> >> +			.num_data_stripes = 2,
+> >> +			.num_stripes = 2,
+> >> +			.data_stripe_phys_start = {SZ_64M - SZ_4M, SZ_64M - SZ_4M + SZ_256M},
+> > 
+> > Formatting
+> 
+> What do you mean?
 
-However, I'm informed that I can't trust the extent map of a backing file =
-to
-tell me accurately whether content exists in a file because:
-
- (a) Not-quite-contiguous extents may be joined by insertion of blocks of
-     zeros by the filesystem optimising itself.  This would give me a fals=
-e
-     positive when trying to detect the presence of data.
-
- (b) Blocks of zeros that I write into the file may get punched out by
-     filesystem optimisation since a read back would be expected to read z=
-eros
-     there anyway, provided it's below the EOF.  This would give me a fals=
-e
-     negative.
-
-Is there some setting I can use to prevent these scenarios on a file - or =
-can
-one be added?
-
-Without being able to trust the filesystem to tell me accurately what I've
-written into it, I have to use some other mechanism.  Currently, I've swit=
-ched
-to storing a map in an xattr with 1 bit per 256k block, but that gets hard=
- to
-use if the file grows particularly large and also has integrity consequenc=
-es -
-though those are hopefully limited as I'm now using DIO to store data into=
- the
-cache.
-
-If it helps, I'm downloading data in aligned 256k blocks and storing data =
-in
-those same aligned 256k blocks, so if that makes it easier...
-
-David
-
+Line over 80 cols
