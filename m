@@ -2,56 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C96E13BC78
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 10:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D147D13BD7C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 11:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgAOJdZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 04:33:25 -0500
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:41055 "EHLO
+        id S1729674AbgAOKfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 05:35:06 -0500
+Received: from mail-vk1-f194.google.com ([209.85.221.194]:40785 "EHLO
         mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729274AbgAOJdY (ORCPT
+        with ESMTP id S1729650AbgAOKfG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 04:33:24 -0500
-Received: by mail-vk1-f194.google.com with SMTP id p191so4497475vkf.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 01:33:24 -0800 (PST)
+        Wed, 15 Jan 2020 05:35:06 -0500
+Received: by mail-vk1-f194.google.com with SMTP id c129so4536148vkh.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 02:35:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=CLofogBMXsD6QZJ1mYQiOr7xgNYRGVRetyX2FX7kCeE=;
-        b=cgyrdtdz9Qmf+FLCEcs4XcxgGg/t6xij4wg0diVbhYX8nXr4WhbA/QhTQ2FqIr/36m
-         vNGL4X28JxqhcBL3aS/PsBAqeD3mGeYyqDJeTCjdMz4uGdpBJnJ/cxqz7JQAWnHImsc7
-         EyqfzDT9e2LyPJaL5esT11pYW4ia58QOvdxbwyJck5/nJbIpwOzX2OxweEaBdEpybnNK
-         ozKWTxn+LDfMdJ10Xf16U8g0ERxM42ol9kkflAfhbBpixYLXnLS8D7kLz2AzT0eOxuky
-         odko0qtlzQ+mXGMozpoZ4Qzr+3NLV42zcfk0mQLJCZUiNjMYDGtb9LKyhLB9Wz78+s7f
-         5ncQ==
+        bh=4RBVVwruJzGIMo6LzbuydUa1Ki2y8lKKJRoEy2h62Ac=;
+        b=clygnSfSgOhuv3e2eArKSMh/dErBjS6KZY2Cz94End4Ky15GXf3oXHrwW1YJMEHXDo
+         SvRHJNXgr7umKhwOSn1B6YuUteoWuN8QDhCSY+CrHzqpzX08DltlnrADDKUYKDgIX4ws
+         02vKTaGoh8YDYAuXJr8d4lTIJf3P/Q74zziWjYCsFkYNAA78E9sW980K8WB4n705YS/H
+         e8VmjepUzpFTpq0l16gspm1hchZvvP6L/Ld7Xhh99M/2anhABX5ppF0YpXBPkebM/t/V
+         GiuK/jkzACKuejTCYAkoI/tmbTqRErWafRVsgRXDq9cSn5ypyt53TvIx3TmHJiLc0sK4
+         1wxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=CLofogBMXsD6QZJ1mYQiOr7xgNYRGVRetyX2FX7kCeE=;
-        b=ErQbSxTYJ3TVxgGxniPseVpBWEfxzHrKCOvfoIwm8ATHV07Mjj+RmBYNTe8Q7OeJ4A
-         LBVuHauL9MK0hd4ZuCQCB+uVW2U9agb3Qxh5l/IgYWtWYbOq/lH9+3SIzLKK5u3CPauN
-         4cGJ2MVadu8Z/eEf0HC+eKmiV6p40Vwm9vSxhVoGeo6TfETcuoLgCvafQvbcKMYfXaRE
-         wzhm1x3qg0TPM0JJMxPSXUQL3M9Qaovj2PgdR6awBrh6nbXLIoSGjsZ8u1NEttUh04i1
-         DGoYUXONJVsRncDkRHLgZOSjZ7kuTjSlbazKrNsrOGir2QtTdNAtNWIZNhQuiAxtsw6u
-         5QtA==
-X-Gm-Message-State: APjAAAUg5sweJOmQGX9gE0u65qFRx/jKKN1PiBB3Msd7PVUFLSqa/0dd
-        MNM3NGr2dUJqLzB2/n3VfKWFcvhbm7bx3yd7r1U=
-X-Google-Smtp-Source: APXvYqyiy2K5c06cXiNUuCmRykYuQNYRi3Vs9+BIMpDAUiPiCOgNRS8TGkmkybhuGJVkVbI9ze0HZVqqzVOaFo9kj+A=
-X-Received: by 2002:a1f:f283:: with SMTP id q125mr13412156vkh.69.1579080803731;
- Wed, 15 Jan 2020 01:33:23 -0800 (PST)
+        bh=4RBVVwruJzGIMo6LzbuydUa1Ki2y8lKKJRoEy2h62Ac=;
+        b=iRHXh+JIm+P6S9B2AWf5UNG+4nivSV0hcqcrhQGuVMLybV8+2oLhVSk61MxqtqtmNs
+         U7lVnBCev/t9033AIHm7CvAlcc11VWckKzKQySpgUPT4s5Y38MDqqRPTZ1HT0A/lMPB9
+         4ahD60HhH3iiIBQJhGFwjTHE4PF0TtM60a/iD6X+r//6ne8/19/7SlN5kg1X1KDYC0Cq
+         ZoyGkoRO3YEBHYB0mtMoLtwZR+C/dNhpFxxc0mCrjTI/sYhWCLUGJE4fEHhRoDFaQBTD
+         TOIjAgVmEnutA9rUg+1VACOXL44Zq5CGBIH3PrDVSbwSvd5iL3xeEbZRMuYUzckkG/y1
+         cSSA==
+X-Gm-Message-State: APjAAAX9+vyvvdZAPzV19VlPtAl+pRUrcsIfZqWfwsQGZeXg6Ov2wxBX
+        9NunOevVgUAbSphIyyyBxfXBAs1Tj9o9ld0xccI=
+X-Google-Smtp-Source: APXvYqx6qx01sBqVVQOdnyhvR0aQt30FWZ7DUJYgFZ+CsMDNbDsDFavFTKS0p/nwQFbTlhheqYSnH+cbPcapfSrthOo=
+X-Received: by 2002:a05:6122:1065:: with SMTP id k5mr16676850vko.14.1579084505226;
+ Wed, 15 Jan 2020 02:35:05 -0800 (PST)
 MIME-Version: 1.0
-References: <d0a97688-78be-08de-ca7d-bcb4c7fb397e@cobb.uk.net>
-In-Reply-To: <d0a97688-78be-08de-ca7d-bcb4c7fb397e@cobb.uk.net>
+References: <20200115062818.41268-1-wqu@suse.com>
+In-Reply-To: <20200115062818.41268-1-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 15 Jan 2020 09:33:12 +0000
-Message-ID: <CAL3q7H7ERYHeKPsQcyT05A=rgY7QJcgDhhnSFjmFfbKMfam_hg@mail.gmail.com>
-Subject: Re: Scrub resume regression
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
+Date:   Wed, 15 Jan 2020 10:34:53 +0000
+Message-ID: <CAL3q7H5yLcUsmJVnV4A0UQed+oyQipkQ_cpUPZJLxcXruLcpNw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: relocation: Add an introduction for how relocation works.
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -59,76 +58,112 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 9:04 AM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
+On Wed, Jan 15, 2020 at 6:29 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> OK, I have bisected the problem with scrub resume being broken by the
-> scrub ioctl ABI being changed.
+> Relocation is one of the most complex part of btrfs, while it's also the
+> foundation stone for online resizing, profile converting.
 >
-> The bad commit is:
+> For such a complex facility, we should at least have some introduction
+> to it.
 >
-> Fail
-> 06fe39ab15a6a47d4979460fcc17d33b1d72ccf9 is the first bad commit
-> commit 06fe39ab15a6a47d4979460fcc17d33b1d72ccf9
-> Author: Filipe Manana <fdmanana@suse.com>
-> Date:   Fri Dec 14 19:50:17 2018 +0000
+> This patch will add an basic introduction at pretty a high level,
+> explaining:
+> - What relocation does
+> - How relocation is done
+>   Only mentioning how data reloc tree and reloc tree are involved in the
+>   operation.
+>   No details like the backref cache, or the data reloc tree contents.
+> - Which function to refer.
 >
->     Btrfs: do not overwrite scrub error with fault error in scrub ioctl
+> More detailed comments will be added for reloc tree creation, data reloc
+> tree creation and backref cache.
 >
->     If scrub returned an error and then the copy_to_user() call did not
->     succeed, we would overwrite the error returned by scrub with -EFAULT.
->     Fix that by calling copy_to_user() only if btrfs_scrub_dev() returned
->     success.
+> For now the introduction should save reader some time before digging
+> into the rabbit hole.
 >
->     Signed-off-by: Filipe Manana <fdmanana@suse.com>
->     Reviewed-by: David Sterba <dsterba@suse.com>
->     Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/relocation.c | 44 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
 >
->  fs/btrfs/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> bisect run success
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index d897a8e5e430..cd3a15f1716d 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -23,6 +23,50 @@
+>  #include "delalloc-space.h"
+>  #include "block-group.h"
 >
-> It is important that scrub always returns the stats, even when it
-> returns an error. This is critical for cancel, as that is how
-> cancel/resume works, but it should also apply in case of other errors so
-> that the user can see how much of the scrub was done before the fatal err=
-or.
->
-> I am not sure in which kernel release this commit appeared but as this
-> breaks the "scrub resume" command completely, I think the fix for this
-> needs to be backported and may want to be considered by distro kernel
-> maintainers.
->
-> I will reply later with the simple reproducer program I created for the
-> bisection in case it is useful for testing.
+> +/*
+> + * Introduction for btrfs relocation.
+> + *
+> + * [What does relocation do]
 
-No need to, it is simple to understand why it happens and the not
-copying that stats in error case was not intentional.
+For readability, a blank line here would help.
 
-Try this:
+> + * The objective of relocation is to relocate all or some extents of one=
+ block
+> + * group to other block groups.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 3a4bd5cd67fa..611dfe8cdbb1 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4253,8 +4253,10 @@ static long btrfs_ioctl_scrub(struct file
-*file, void __user *arg)
-                              &sa->progress, sa->flags & BTRFS_SCRUB_READON=
-LY,
-                              0);
+Some? We always relocate all extents of a block group (except if
+errors happen of course).
 
--       if (ret =3D=3D 0 && copy_to_user(arg, sa, sizeof(*sa)))
--               ret =3D -EFAULT;
-+       if (copy_to_user(arg, sa, sizeof(*sa))) {
-+               if (!ret)
-+                       ret =3D -EFAULT;
-+       }
+> + * This is utilized by resize (shrink only), profile converting, or just
+> + * balance routine to free some block groups.
+> + *
+> + * In short, relocation wants to do:
+> + *             Before          |               After
+> + * ------------------------------------------------------------------
+> + *  BG A: 10 data extents      | BG A: deleted
+> + *  BG B:  2 data extents      | BG B: 10 data extents (2 old + 8 reloca=
+ted)
+> + *  BG C:  1 extents           | BG C:  3 data extents (1 old + 2 reloca=
+ted)
+> + *
+> + * [How does relocation work]
+> + * 1.   Mark the target bg RO
+> + *      So that new extents won't be allocated from the target bg.
+> + *
+> + * 2.1  Record each extent in the target bg
+> + *      To build a proper map of extents to be relocated.
+> + *
+> + * 2.2  Build data reloc tree and reloc trees
+> + *      Data reloc tree will contain an inode, recording all newly reloc=
+ated
+> + *      data extents.
+> + *      There will be only one data reloc tree for one data block group.
+> + *
+> + *      Reloc tree will be a special snapshot of its source tree, contai=
+ning
+> + *      relocated tree blocks.
+> + *      Each tree referring to a tree block in target bg will get its re=
+loc
+> + *      tree built.
+> + *
+> + * 2.3  Swap source tree with its corresponding reloc tree
+> + *      So that each involved tree only refers to new extents after swap=
+.
+> + *
+> + * 3.   Cleanup reloc trees and data reloc tree.
+> + *      As old extents in the target bg is still referred by reloc trees=
+,
+> + *      we need to clean them up before really freeing the target bg.
+> + *
+> + * The main complexity is in step 2.2 and 2.3.
 
-        if (!(sa->flags & BTRFS_SCRUB_READONLY))
-                mnt_drop_write_file(file);
+step -> steps
 
-I'll later send a patch with a changelog to the list.
 Thanks.
 
+> + *
+> + * The core entrance for relocation is relocate_block_group() function.
+> + */
+>  /*
+>   * backref_node, mapping_node and tree_block start with this
+>   */
+> --
+> 2.24.1
+>
 
 
 --=20
