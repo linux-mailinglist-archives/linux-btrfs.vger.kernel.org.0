@@ -2,88 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC02E13B57B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jan 2020 23:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1B913B7A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 03:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgANWvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jan 2020 17:51:02 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33606 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728746AbgANWvB (ORCPT
+        id S1728880AbgAOCYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jan 2020 21:24:11 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44911 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728862AbgAOCYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jan 2020 17:51:01 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-108.corp.google.com [104.133.0.108] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00EMnH2t015142
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jan 2020 17:49:18 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 441C34207DF; Tue, 14 Jan 2020 17:49:17 -0500 (EST)
-Date:   Tue, 14 Jan 2020 17:49:17 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200114224917.GA165687@mit.edu>
-References: <4467.1579020509@warthog.procyon.org.uk>
+        Tue, 14 Jan 2020 21:24:11 -0500
+Received: by mail-wr1-f66.google.com with SMTP id q10so14219775wrm.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Jan 2020 18:24:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=po7M++cKHf1+0u7DadnWcNf/a+M8CfPlR4MrLdOyKU8=;
+        b=KQII8EQv7msc52QT72Na0/3lIJy6hvm4boQjP7SYkOdHX/3Bb9U4T31rAywnTeliJ0
+         i325vCGWvqU4Jv+JUOXMi4dbgpbxb7H1lOA/QrGJa5il71ceRMrBQ0Q2VzAedKo5l5Ah
+         IuquQPYrAR2MEl6bunYWcjctF6F+r4FS6HQZFxTKzSmslQ/A5VaiOdWM5pVEBJz6PxSK
+         wk4HKIjMfXhvWyHNqq2tv9IOn6y6vU9PtpANNM4dGEb4bjAJUMPDgCV4eH8ZgiQ7yeRg
+         5AZt3P7p4Lz3yofUy3NmKFns+7uk7yXvoOxn5M6KUJai5TeBFqVV+p9U7Rc0Sff9ST0g
+         LAbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=po7M++cKHf1+0u7DadnWcNf/a+M8CfPlR4MrLdOyKU8=;
+        b=tG62NmunN2UzLmhf7EN6KJ9qnl8yLPoZjqGMVOrZb5GzTkhFsVcQ7fnCDk9HwSapt6
+         ATFs5a35/Qi7j/2baUSvmj4naqsipnwWyrbxNirmVLv3F1CjqWFEVvmFXDM0romexgr2
+         9qeazflaKCQw6G8I+yOrMtZMIAP6pSfOKGwExBdtcKgEgD0k0h9CetZwgpVCxMvZA+t7
+         pwTDACZLMKrcCJJ3kQ8Cymy71BEYCi/MB85LI/WfaBvz8D92t+M/zaExs267+gLht5NI
+         K2AiGL//KZDepVGWKBcHpzW8icg/kjlq2nb4YXjKUQQS1zeFun26shBG8hQrsQmaKLTn
+         frCw==
+X-Gm-Message-State: APjAAAUsBQ4TNmw4NFAG4PKTk96X5nJqlTTpc8OZingXxDLYtyiKCaqc
+        blyv2hzk9uU7zjkL6SqTu4M+00/pwl6ursECm1z7x8/SQXhCVw==
+X-Google-Smtp-Source: APXvYqyyBZ5WQ//JfhMM8Kq4fqx2m1tU+zsC4bSY9RIls0ZknkOiXuMJ2OmUgR6Z6FsviS6MSNNEXHhe/t+VGAo6iHo=
+X-Received: by 2002:adf:9c8f:: with SMTP id d15mr28662333wre.390.1579055048945;
+ Tue, 14 Jan 2020 18:24:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4467.1579020509@warthog.procyon.org.uk>
+References: <107f8e94-78bc-f891-0e1b-2db7903e8bde@forever.cz>
+ <CAJCQCtSeq=nY7HTRjh0Y_0PRJt579HwromzS0NkdF4U6kn_wiA@mail.gmail.com>
+ <2e55d20c-323f-e1a2-cdde-8ba0d50270e7@forever.cz> <CAJCQCtQhVQrnq7QnTd6ryDSg4SAGv55ceJ+H8LTM6MEYzQX4jQ@mail.gmail.com>
+ <ce3fb06f-5a24-df55-f1b5-a0c2b176ec13@forever.cz>
+In-Reply-To: <ce3fb06f-5a24-df55-f1b5-a0c2b176ec13@forever.cz>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 14 Jan 2020 19:23:52 -0700
+Message-ID: <CAJCQCtTijDTQiaO-SUPZ-R40dQbLmrfKhGLCifv6=fB2O6zxJA@mail.gmail.com>
+Subject: Re: slow single -> raid1 conversion (heavy write to original LVM volume)
+To:     jn <jn@forever.cz>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 04:48:29PM +0000, David Howells wrote:
-> Again with regard to my rewrite of fscache and cachefiles:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
-> 
-> I've got rid of my use of bmap()!  Hooray!
-> 
-> However, I'm informed that I can't trust the extent map of a backing file to
-> tell me accurately whether content exists in a file because:
-> 
->  (a) Not-quite-contiguous extents may be joined by insertion of blocks of
->      zeros by the filesystem optimising itself.  This would give me a false
->      positive when trying to detect the presence of data.
-> 
->  (b) Blocks of zeros that I write into the file may get punched out by
->      filesystem optimisation since a read back would be expected to read zeros
->      there anyway, provided it's below the EOF.  This would give me a false
->      negative.
-> 
-> Is there some setting I can use to prevent these scenarios on a file - or can
-> one be added?
+Jan  8 12:28:54 sopa kernel: [   13.552491] BTRFS info (device dm-0):
+disk space caching is enabled
+Jan  8 12:28:54 sopa kernel: [   13.803006] BTRFS info (device dm-0):
+bdev /dev/mapper/sopa-data errs: wr 420, rd 44, flush 0, corrupt 0,
+gen 0
 
-I don't think there's any way to do this in a portable way, at least
-today.  There is a hack we could be use that would work for ext4
-today, at least with respect to (a), but I'm not sure we would want to
-make any guarantees with respect to (b).
+Any idea what these are and if they're recent or old? This is the
+original device with all the data and there are read and write errors.
+Write errors mean writes have been dropped. It's usually an indicator
+of a device problem.
 
-I suspect I understand why you want this; I've fielded some requests
-for people wanting to do something very like this at $WORK, for what I
-assume to be for the same reason you're seeking to do this; to create
-do incremental caching of files and letting the file system track what
-has and hasn't been cached yet.
+Jan  8 12:59:40 sopa kernel: [  229.560937] Alternate GPT is invalid,
+using primary GPT.
+Jan  8 12:59:40 sopa kernel: [  229.560954]  sdb: sdb1 sdb2 sdb3
 
-If we were going to add such a facility, what we could perhaps do is
-to define a new flag indicating that a particular file should have no
-extent mapping optimization applied, such that FIEMAP would return a
-mapping if and only if userspace had written to a particular block, or
-had requested that a block be preallocated using fallocate().  The
-flag could only be set on a zero-length file, and this might disable
-certain advanced file system features, such as reflink, at the file
-system's discretion; and there might be unspecified performance
-impacts if this flag is set on a file.
+This suggests something overwrote the backup GPT on /dev/sdb. This
+probably isn't related to the problem you're having, because it comes
+before you add /dev/sdb3 to the Btrfs volume, and doesn't look like
+Btrfs has written anything to /dev/sdb3 at this point. But whatever
+did this should be tracked down, and in the meantime the backup GPT
+should be fixed. Most anything will fix it these days, I send to use
+gdisk.
 
-File systems which do not support this feature would not allow this
-flag to be set.
 
-				- Ted
+Jan 10 08:16:12 sopa kernel: [156022.305629] BTRFS info (device dm-0):
+relocating block group 2051006267392 flags data
+Jan 10 08:16:23 sopa kernel: [156033.373144] BTRFS info (device dm-0):
+found 75 extents
+
+
+Last line repeats hundreds of times, over the course of hours. Even if
+it's highly fragmented, I wouldn't expect it takes this long to read
+75 extents. The differential is reasonable in some cases if these are
+small 4K file, but others, it's suspicious:
+
+Jan 10 12:10:14 sopa kernel: [170063.613418] BTRFS info (device dm-0):
+found 75 extents
+Jan 10 12:10:44 sopa kernel: [170093.813300] BTRFS info (device dm-0):
+found 75 extents
+
+But no errors, for many hours.
+
+I can't really make much out of the task list, whether Btrfs is the
+cause or a victim.
+
+
+---
+Chris Murphy
