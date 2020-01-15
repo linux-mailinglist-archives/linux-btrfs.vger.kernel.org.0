@@ -2,66 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C475413C905
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 17:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6076913C95E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 17:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgAOQSL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 11:18:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60900 "EHLO mx2.suse.de"
+        id S1726562AbgAOQbo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 11:31:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39478 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgAOQSL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 11:18:11 -0500
+        id S1726165AbgAOQbn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 11:31:43 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EDE8DABF5;
-        Wed, 15 Jan 2020 16:18:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0FC5BAB7F;
+        Wed, 15 Jan 2020 16:31:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A3DBEDA791; Wed, 15 Jan 2020 17:17:56 +0100 (CET)
-Date:   Wed, 15 Jan 2020 17:17:56 +0100
+        id 43D81DA791; Wed, 15 Jan 2020 17:31:28 +0100 (CET)
+Date:   Wed, 15 Jan 2020 17:31:28 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: update devid after replace
-Message-ID: <20200115161756.GS3929@twin.jikos.cz>
+To:     Kusanagi Kouichi <slash@ac.auone-net.jp>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Implement lazytime
+Message-ID: <20200115163128.GT3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200114183958.GJ3929@twin.jikos.cz>
- <20200115082250.3064-1-anand.jain@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Kusanagi Kouichi <slash@ac.auone-net.jp>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+ <20200114212107.GM3929@twin.jikos.cz>
+ <20200115134536820.LBFZ.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200115082250.3064-1-anand.jain@oracle.com>
+In-Reply-To: <20200115134536820.LBFZ.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 04:22:50PM +0800, Anand Jain wrote:
-> During the replace the target device temporarily assumes devid 0 before
-> assigning the devid of the soruce device.
+On Wed, Jan 15, 2020 at 10:45:36PM +0900, Kusanagi Kouichi wrote:
+> On 2020-01-14 22:21:07 +0100, David Sterba wrote:
+> > On Tue, Jan 14, 2020 at 05:53:24PM +0900, Kusanagi Kouichi wrote:
+> > > I tested with xfstests and lazytime didn't cause any new failures.
+> > 
+> > The changelog should describe what the patch does (the 'why' part too,
+> > but this is obvious from the subject in this case). That fstests pass
+> > without new failures is nice but there should be a specific test for
+> > that or instructions in the changelog how to test.
 > 
-> In btrfs_dev_replace_finishing() we remove source sysfs devid using
-> the function btrfs_sysfs_remove_devices_attr(), so after that call
-> kobject_rename() to update the devid in the sysfs.
-> This adds and calls btrfs_sysfs_update_devid() helper function to update
-> the device id.
-> 
-> This patch must be squashed with the patch
->  [PATCH v4] btrfs: sysfs, add devid/dev_state kobject and attribute
-> or its variant.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> David,
->  I couldn't find the patch-series..
->    [PATCH 0/4] btrfs, sysfs cleanup and add dev_state
->  in your misc-next. And I believe there were changes like
->  function rename and attribute list reorder in your workspace. So I am
->  sending a fix-patch which must be squashed to the patch v4 4/4.
+> To test lazytime, I set the following variables:
+> TEST_FS_MOUNT_OPTS="-o lazytime,space_cache=v2"
+> MOUNT_OPTIONS="-o lazytime,space_cache=v2"
 
-I had to remove the patch from misc-next as it prevented further
-testing. The whole patchset can be found in branch
-ext/anand/sysfs-devinfo on github repo. Once I test this patch I'll add
-it back.
+How did you verify that the lazy time updates were applied properly?
