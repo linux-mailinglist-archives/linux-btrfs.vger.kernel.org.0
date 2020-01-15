@@ -2,65 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5D313C2D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7755713C362
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgAONbH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 08:31:07 -0500
-Received: from verein.lst.de ([213.95.11.211]:50875 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729057AbgAONbG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 08:31:06 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4D61968BE1; Wed, 15 Jan 2020 14:31:02 +0100 (CET)
-Date:   Wed, 15 Jan 2020 14:31:01 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200115133101.GA28583@lst.de>
-References: <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
+        id S1726553AbgAONlI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 08:41:08 -0500
+Received: from snd00007.auone-net.jp ([111.86.247.7]:29568 "EHLO
+        dmta0009.auone-net.jp" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726088AbgAONlI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 08:41:08 -0500
+Received: from ppp.dion.ne.jp by dmta0009.auone-net.jp with ESMTP
+          id <20200115134106476.LBDG.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>;
+          Wed, 15 Jan 2020 22:41:06 +0900
+Date:   Wed, 15 Jan 2020 22:41:06 +0900
+From:   Kusanagi Kouichi <slash@ac.auone-net.jp>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Implement lazytime
+References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+ <7d0eadb4-5712-6fa1-f50f-f8ea6d8aea43@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <7d0eadb4-5712-6fa1-f50f-f8ea6d8aea43@toxicpanda.com>
+Message-Id: <20200115134106476.LBDG.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 09:10:44PM +0800, Qu Wenruo wrote:
-> > That allows userspace to distinguish fe_physical addresses that may be
-> > on different devices.  This isn't in the kernel yet, since it is mostly
-> > useful only for Btrfs and nobody has implemented it there.  I can give
-> > you details if working on this for Btrfs is of interest to you.
+On 2020-01-14 05:44:33 -0800, Josef Bacik wrote:
+> On 1/14/20 12:53 AM, Kusanagi Kouichi wrote:
+> > I tested with xfstests and lazytime didn't cause any new failures.
+> > 
+> > Signed-off-by: Kusanagi Kouichi <slash@ac.auone-net.jp>
+> > ---
 > 
-> IMHO it's not good enough.
+> We don't use the I_DIRTY flags for tracking our inodes, and .write_inode was
+> removed because we didn't need it and it deadlocks.  Thanks,
 > 
-> The concern is, one extent can exist on multiple devices (mirrors for
-> RAID1/RAID10/RAID1C2/RAID1C3, or stripes for RAID5/6).
-> I didn't see how it can be easily implemented even with extra fields.
-> 
-> And even we implement it, it can be too complex or bug prune to fill
-> per-device info.
+> Josef
 
-It's also completely bogus for the use cases to start with.  fiemap
-is a debug tool reporting the file system layout.  Using it for anything
-related to actual data storage and data integrity is a receipe for
-disaster.  As said the right thing for the use case would be something
-like the NFS READ_PLUS operation.  If we can't get that easily it can
-be emulated using lseek SEEK_DATA / SEEK_HOLE assuming no other thread
-could be writing to the file, or the raciness doesn't matter.
+Did you apply the patch and deadlock occur? According to commit 3c4276936f6f
+("Btrfs: fix btrfs_write_inode vs delayed iput deadlock"), which removed
+.write_inode, .write_inode calls btrfs_run_delayed_iputs and deadlock occurs.
+But .write_inode in this patch doesn't seem to call btrfs_run_delayed_iputs.
