@@ -2,81 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA39D13C681
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 15:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E7E13C696
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 15:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728978AbgAOOso (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 09:48:44 -0500
-Received: from verein.lst.de ([213.95.11.211]:51328 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgAOOso (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 09:48:44 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1C5BC68B20; Wed, 15 Jan 2020 15:48:40 +0100 (CET)
-Date:   Wed, 15 Jan 2020 15:48:39 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1729203AbgAOOud (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 09:50:33 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21108 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729179AbgAOOud (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 09:50:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579099832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Rf0cEa0njBpHKWLGMJpGbHzTU22PMR2115XgkwcWqQ=;
+        b=jOc6OuBvmqst6B9qgzTwUPn2S+h+3RyPVaSGzXtHbgOvkg0k2yVPIQ453EY1suu/j9/6+0
+        vlZ/y81HdNINz6DCGN+s50P+NbEQoHPQ1n/T/Rl7qYdBxAPvlE/gX2D4Wo4aFgSzS/s9T7
+        FNEGgVSg6hGoZedfwb9wlYDd5lkKNZk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-vzBayW3DM1KeNyA2oRU0Gg-1; Wed, 15 Jan 2020 09:50:29 -0500
+X-MC-Unique: vzBayW3DM1KeNyA2oRU0Gg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB0948A243E;
+        Wed, 15 Jan 2020 14:50:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0FD2984332;
+        Wed, 15 Jan 2020 14:50:22 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <6330a53c-781b-83d7-8293-405787979736@gmx.com>
+References: <6330a53c-781b-83d7-8293-405787979736@gmx.com> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <4467.1579020509@warthog.procyon.org.uk> <23358.1579097103@warthog.procyon.org.uk>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, hch@lst.de, tytso@mit.edu,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200115144839.GA30301@lst.de>
-References: <20200115133101.GA28583@lst.de> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com> <26093.1579098922@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26093.1579098922@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <27262.1579099822.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 15 Jan 2020 14:50:22 +0000
+Message-ID: <27263.1579099822@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 02:35:22PM +0000, David Howells wrote:
-> > If we can't get that easily it can be emulated using lseek SEEK_DATA /
-> > SEEK_HOLE assuming no other thread could be writing to the file, or the
-> > raciness doesn't matter.
-> 
-> Another thread could be writing to the file, and the raciness matters if I
-> want to cache the result of calling SEEK_HOLE - though it might be possible
-> just to mask it off.
+Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 
-Well, if you have other threads changing the file (writing, punching holes,
-truncating, etc) you have lost with any interface that isn't an atomic
-give me that data or tell me its a hole.  And even if that if you allow
-threads that aren't part of your fscache implementation to do the
-modifications you have lost.  If on the other hand they are part of
-fscache you should be able to synchronize your threads somehow.
+> "Unaligned" means "unaligned to fs sector size". In btrfs it's page
+> size, thus it shouldn't be a problem for your 256K block size.
 
-> One problem I have with SEEK_HOLE is that there's no upper bound on it.  Say
-> I have a 1GiB cachefile that's completely populated and I want to find out if
-> the first byte is present or not.  I call:
-> 
-> 	end = vfs_llseek(file, SEEK_HOLE, 0);
-> 
-> It will have to scan the metadata of the entire 1GiB file and will then
-> presumably return the EOF position.  Now this might only be a mild irritation
-> as I can cache this information for later use, but it does put potentially put
-> a performance hiccough in the case of someone only reading the first page or
-> so of the file (say the file program).  On the other hand, probably most of
-> the files in the cache are likely to be complete - in which case, it's
-> probably quite cheap.
+Cool.
 
-At least for XFS all the metadata is read from disk at once anyway,
-so you only spend a few more cycles walking through a pretty efficient
-in-memory data structure.
+> > Same answer as above.  Btw, since I'm using DIO reads and writes, woul=
+d these
+> > get compressed?
+> =
 
-> However, SEEK_HOLE doesn't help with the issue of the filesystem 'altering'
-> the content of the file by adding or removing blocks of zeros.
+> Yes. DIO will also be compressed unless you set the inode to nocompressi=
+on.
+> =
 
-As does any other method.  If you need that fine grained control you
-need to track the information yourself.
+> And you may not like this btrfs internal design:
+> Compressed extent can only be as large as 128K (uncompressed size).
+> =
+
+> So 256K block write will be split into 2 extents anyway.
+> And since compressed extent will cause non-continuous physical offset,
+> it will always be two extents to fiemap, even you're always writing in
+> 256K block size.
+> =
+
+> Not sure if this matters though.
+
+Not a problem, provided I can read them with a single DIO read.  I just ne=
+ed
+to know whether the data is present.  I don't need to know where it is or =
+what
+hoops the filesystem goes through to get it.
+
+> > I'm not sure this isn't the same answer as above either, except if thi=
+s
+> > results in parts of the file being "filled in" with blocks of zeros th=
+at I
+> > haven't supplied.
+> =
+
+> The example would be, you have written 256K data, all filled with 0xaa.
+> And it committed to disk.
+> Then the next time you write another 256K data, all filled with 0xaa.
+> Then instead of writing this data onto disk, the fs chooses to reuse
+> your previous written data, doing a reflink to it.
+
+That's fine as long as the filesystem says it's there when I ask for it.
+Having it shared isn't a problem.
+
+But that brings me back to the original issue and that's the potential pro=
+blem
+of the filesystem optimising storage by adding or removing blocks of zero
+bytes.  If either of those can happen, I cannot rely on the filesystem
+metadata.
+
+> So fiemap would report your latter 256K has the same bytenr of your
+> previous 256K write (since it's reflinked), and with SHARED flag.
+
+It might be better for me to use SEEK_HOLE than fiemap - barring the sligh=
+t
+issues that SEEK_HOLE has no upper bound and that writes may be taking pla=
+ce
+at the same time.
+
+David
+
