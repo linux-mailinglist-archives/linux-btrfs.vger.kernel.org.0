@@ -2,45 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5541D13C375
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11ECC13C393
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgAONpi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 08:45:38 -0500
-Received: from snd00010.auone-net.jp ([111.86.247.10]:51296 "EHLO
-        dmta0009.auone-net.jp" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726071AbgAONpi (ORCPT
+        id S1728963AbgAONuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 08:50:19 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:54218 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgAONuT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 08:45:38 -0500
-Received: from ppp.dion.ne.jp by dmta0009.auone-net.jp with ESMTP
-          id <20200115134536820.LBFZ.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>;
-          Wed, 15 Jan 2020 22:45:36 +0900
-Date:   Wed, 15 Jan 2020 22:45:36 +0900
-From:   Kusanagi Kouichi <slash@ac.auone-net.jp>
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Implement lazytime
-References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
- <20200114212107.GM3929@twin.jikos.cz>
+        Wed, 15 Jan 2020 08:50:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579096218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+swK9osAIFZi3cI9plfEPgc0HcD0yrb1cBEuZ3PWuI=;
+        b=ZOscaSmow36PLiWfMTHeNknKn9C0CIgjbCf+6awim7fhgnMmKDZ1DfVautgS0vcZPKMQi3
+        wDvJ0krAFBOLANMNyLHnfp1xWozXxtQHNEf9pIiYEctIakoE4ZlkQIPieCtDBfCqMotUcp
+        7MUfmpt+c7IS72CgOFnUfjyUde7GHRg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-GOHqpJ9cNSinEYjPiomTzw-1; Wed, 15 Jan 2020 08:50:16 -0500
+X-MC-Unique: GOHqpJ9cNSinEYjPiomTzw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 837421005502;
+        Wed, 15 Jan 2020 13:50:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 142CC19C5B;
+        Wed, 15 Jan 2020 13:50:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200114224917.GA165687@mit.edu>
+References: <20200114224917.GA165687@mit.edu> <4467.1579020509@warthog.procyon.org.uk>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, hch@lst.de, adilger.kernel@dilger.ca,
+        darrick.wong@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Problems with determining data presence by examining extents?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200114212107.GM3929@twin.jikos.cz>
-Message-Id: <20200115134536820.LBFZ.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <22055.1579096211.1@warthog.procyon.org.uk>
+Date:   Wed, 15 Jan 2020 13:50:11 +0000
+Message-ID: <22056.1579096211@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-01-14 22:21:07 +0100, David Sterba wrote:
-> On Tue, Jan 14, 2020 at 05:53:24PM +0900, Kusanagi Kouichi wrote:
-> > I tested with xfstests and lazytime didn't cause any new failures.
-> 
-> The changelog should describe what the patch does (the 'why' part too,
-> but this is obvious from the subject in this case). That fstests pass
-> without new failures is nice but there should be a specific test for
-> that or instructions in the changelog how to test.
+Theodore Y. Ts'o <tytso@mit.edu> wrote:
 
-To test lazytime, I set the following variables:
-TEST_FS_MOUNT_OPTS="-o lazytime,space_cache=v2"
-MOUNT_OPTIONS="-o lazytime,space_cache=v2"
+> but I'm not sure we would want to make any guarantees with respect to (b).
+
+Um.  That would potentially make disconnected operation problematic.  Now,
+it's unlikely that I'll want to store a 256KiB block of zeros, but not
+impossible.
+
+> I suspect I understand why you want this; I've fielded some requests
+> for people wanting to do something very like this at $WORK, for what I
+> assume to be for the same reason you're seeking to do this; to create
+> do incremental caching of files and letting the file system track what
+> has and hasn't been cached yet.
+
+Exactly so.  If I can't tap in to the filesystem's own map of what data is
+present in a file, then I have to do it myself in parallel.  Keeping my own
+list or map has a number of issues:
+
+ (1) It's redundant.  I have to maintain a second copy of what the filesystem
+     already maintains.  This uses extra space.
+
+ (2) My map may get out of step with the filesystem after a crash.  The
+     filesystem has tools to deal with this in its own structures.
+
+ (3) If the file is very large and sparse, then keeping a bit-per-block map in
+     a single xattr may not suffice or may become unmanageable.  There's a
+     limit of 64k, which for bit-per-256k limits the maximum mappable size to
+     1TiB (I could use multiple xattrs, but some filesystems may have total
+     xattr limits) and whatever the size, I need a single buffer big enough to
+     hold it.
+
+     I could use a second file as a metadata cache - but that has worse
+     coherency properties.  (As I understand it, setxattr is synchronous and
+     journalled.)
+
+> If we were going to add such a facility, what we could perhaps do is
+> to define a new flag indicating that a particular file should have no
+> extent mapping optimization applied, such that FIEMAP would return a
+> mapping if and only if userspace had written to a particular block, or
+> had requested that a block be preallocated using fallocate().  The
+> flag could only be set on a zero-length file, and this might disable
+> certain advanced file system features, such as reflink, at the file
+> system's discretion; and there might be unspecified performance
+> impacts if this flag is set on a file.
+
+That would be fine for cachefiles.
+
+Also, I don't need to know *where* the data is, only that the first byte of my
+block exists - if a DIO read returns short when it reaches a hole.
+
+David
+
