@@ -2,172 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D147D13BD7C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 11:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B318E13BDC7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 11:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgAOKfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 05:35:06 -0500
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:40785 "EHLO
-        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729650AbgAOKfG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 05:35:06 -0500
-Received: by mail-vk1-f194.google.com with SMTP id c129so4536148vkh.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 02:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=4RBVVwruJzGIMo6LzbuydUa1Ki2y8lKKJRoEy2h62Ac=;
-        b=clygnSfSgOhuv3e2eArKSMh/dErBjS6KZY2Cz94End4Ky15GXf3oXHrwW1YJMEHXDo
-         SvRHJNXgr7umKhwOSn1B6YuUteoWuN8QDhCSY+CrHzqpzX08DltlnrADDKUYKDgIX4ws
-         02vKTaGoh8YDYAuXJr8d4lTIJf3P/Q74zziWjYCsFkYNAA78E9sW980K8WB4n705YS/H
-         e8VmjepUzpFTpq0l16gspm1hchZvvP6L/Ld7Xhh99M/2anhABX5ppF0YpXBPkebM/t/V
-         GiuK/jkzACKuejTCYAkoI/tmbTqRErWafRVsgRXDq9cSn5ypyt53TvIx3TmHJiLc0sK4
-         1wxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=4RBVVwruJzGIMo6LzbuydUa1Ki2y8lKKJRoEy2h62Ac=;
-        b=iRHXh+JIm+P6S9B2AWf5UNG+4nivSV0hcqcrhQGuVMLybV8+2oLhVSk61MxqtqtmNs
-         U7lVnBCev/t9033AIHm7CvAlcc11VWckKzKQySpgUPT4s5Y38MDqqRPTZ1HT0A/lMPB9
-         4ahD60HhH3iiIBQJhGFwjTHE4PF0TtM60a/iD6X+r//6ne8/19/7SlN5kg1X1KDYC0Cq
-         ZoyGkoRO3YEBHYB0mtMoLtwZR+C/dNhpFxxc0mCrjTI/sYhWCLUGJE4fEHhRoDFaQBTD
-         TOIjAgVmEnutA9rUg+1VACOXL44Zq5CGBIH3PrDVSbwSvd5iL3xeEbZRMuYUzckkG/y1
-         cSSA==
-X-Gm-Message-State: APjAAAX9+vyvvdZAPzV19VlPtAl+pRUrcsIfZqWfwsQGZeXg6Ov2wxBX
-        9NunOevVgUAbSphIyyyBxfXBAs1Tj9o9ld0xccI=
-X-Google-Smtp-Source: APXvYqx6qx01sBqVVQOdnyhvR0aQt30FWZ7DUJYgFZ+CsMDNbDsDFavFTKS0p/nwQFbTlhheqYSnH+cbPcapfSrthOo=
-X-Received: by 2002:a05:6122:1065:: with SMTP id k5mr16676850vko.14.1579084505226;
- Wed, 15 Jan 2020 02:35:05 -0800 (PST)
+        id S1726440AbgAOKwQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 05:52:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43768 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726071AbgAOKwQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 05:52:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E896AAF23
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 10:52:13 +0000 (UTC)
+Subject: Re: [PATCH 5/6] btrfs: Read stripe len directly in btrfs_rmap_block
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20191119120555.6465-1-nborisov@suse.com>
+ <20191119120555.6465-6-nborisov@suse.com>
+ <20200114165411.GG3929@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <00859c46-cbdd-19f8-b57c-18e7670afa3c@suse.com>
+Date:   Wed, 15 Jan 2020 12:52:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200115062818.41268-1-wqu@suse.com>
-In-Reply-To: <20200115062818.41268-1-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 15 Jan 2020 10:34:53 +0000
-Message-ID: <CAL3q7H5yLcUsmJVnV4A0UQed+oyQipkQ_cpUPZJLxcXruLcpNw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: relocation: Add an introduction for how relocation works.
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200114165411.GG3929@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 6:29 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> Relocation is one of the most complex part of btrfs, while it's also the
-> foundation stone for online resizing, profile converting.
->
-> For such a complex facility, we should at least have some introduction
-> to it.
->
-> This patch will add an basic introduction at pretty a high level,
-> explaining:
-> - What relocation does
-> - How relocation is done
->   Only mentioning how data reloc tree and reloc tree are involved in the
->   operation.
->   No details like the backref cache, or the data reloc tree contents.
-> - Which function to refer.
->
-> More detailed comments will be added for reloc tree creation, data reloc
-> tree creation and backref cache.
->
-> For now the introduction should save reader some time before digging
-> into the rabbit hole.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/relocation.c | 44 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
->
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index d897a8e5e430..cd3a15f1716d 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -23,6 +23,50 @@
->  #include "delalloc-space.h"
->  #include "block-group.h"
->
-> +/*
-> + * Introduction for btrfs relocation.
-> + *
-> + * [What does relocation do]
-
-For readability, a blank line here would help.
-
-> + * The objective of relocation is to relocate all or some extents of one=
- block
-> + * group to other block groups.
-
-Some? We always relocate all extents of a block group (except if
-errors happen of course).
-
-> + * This is utilized by resize (shrink only), profile converting, or just
-> + * balance routine to free some block groups.
-> + *
-> + * In short, relocation wants to do:
-> + *             Before          |               After
-> + * ------------------------------------------------------------------
-> + *  BG A: 10 data extents      | BG A: deleted
-> + *  BG B:  2 data extents      | BG B: 10 data extents (2 old + 8 reloca=
-ted)
-> + *  BG C:  1 extents           | BG C:  3 data extents (1 old + 2 reloca=
-ted)
-> + *
-> + * [How does relocation work]
-> + * 1.   Mark the target bg RO
-> + *      So that new extents won't be allocated from the target bg.
-> + *
-> + * 2.1  Record each extent in the target bg
-> + *      To build a proper map of extents to be relocated.
-> + *
-> + * 2.2  Build data reloc tree and reloc trees
-> + *      Data reloc tree will contain an inode, recording all newly reloc=
-ated
-> + *      data extents.
-> + *      There will be only one data reloc tree for one data block group.
-> + *
-> + *      Reloc tree will be a special snapshot of its source tree, contai=
-ning
-> + *      relocated tree blocks.
-> + *      Each tree referring to a tree block in target bg will get its re=
-loc
-> + *      tree built.
-> + *
-> + * 2.3  Swap source tree with its corresponding reloc tree
-> + *      So that each involved tree only refers to new extents after swap=
-.
-> + *
-> + * 3.   Cleanup reloc trees and data reloc tree.
-> + *      As old extents in the target bg is still referred by reloc trees=
-,
-> + *      we need to clean them up before really freeing the target bg.
-> + *
-> + * The main complexity is in step 2.2 and 2.3.
-
-step -> steps
-
-Thanks.
-
-> + *
-> + * The core entrance for relocation is relocate_block_group() function.
-> + */
->  /*
->   * backref_node, mapping_node and tree_block start with this
->   */
-> --
-> 2.24.1
->
 
 
---=20
-Filipe David Manana,
+On 14.01.20 г. 18:54 ч., David Sterba wrote:
+> On Tue, Nov 19, 2019 at 02:05:54PM +0200, Nikolay Borisov wrote:
+>> extent_map::orig_block_len contains the size of a physical stripe when
+>> it's used to describe block groups. So get the size directly in
+>> btrfs_rmap_block rather than open-coding the calculations. No
+>> functional changes.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>  fs/btrfs/block-group.c | 11 +++--------
+>>  1 file changed, 3 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index c3b1f304bc70..2ab4d9cb598a 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -1546,17 +1546,12 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
+>>  		return -EIO;
+>>  
+>>  	map = em->map_lookup;
+>> -	data_stripe_length = em->len;
+>> +	data_stripe_length = em->orig_block_len;
+>>  	io_stripe_size = map->stripe_len;
+>>  
+>> -	if (map->type & BTRFS_BLOCK_GROUP_RAID10)
+>> -		data_stripe_length = div_u64(data_stripe_length, map->num_stripes / map->sub_stripes);
+>> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
+>> -		data_stripe_length = div_u64(data_stripe_length, map->num_stripes);
+>> -	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+>> -		data_stripe_length = div_u64(data_stripe_length, nr_data_stripes(map));
+>> +	/* For raid5/6 adjust to a full IO stripe length */
+>> +	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+>>  		io_stripe_size = map->stripe_len * nr_data_stripes(map);
+> 
+> I'm not convinced this is 'no functional change' so will merge only
+> patches 1-4 for now as I have reviewed them and want to add them to
+> misc-next before the 5.6 freeze.
+> 
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+THe easiest way to convince yourself is to work out the maths happening
+in __btrfs_alloc_chunk, since orig_block_len for chunks is set there.
+
+
