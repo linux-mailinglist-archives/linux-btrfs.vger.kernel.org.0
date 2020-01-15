@@ -2,100 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7442413C5C8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 15:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D6013C5CA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 15:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgAOOUc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 09:20:32 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59409 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728925AbgAOOU3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 09:20:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579098028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HtSguD4DonoXKrAZPQ1DK5ewTREMerhNuGoZ0KSdPnQ=;
-        b=VFbqD0PrToG09vUgR/3iqeQcBTMeI8eu6/AhiSGvVSZcLRN/93a1EddrNhFFJmVzgsRn+w
-        P+ItHXWknOBej6kH1sQzL6gkjUUeqtLzeP3wbazGY3pz9TRhsDt+JSk8Dq/1TRPNbKA//P
-        JZBU5Wbr+H/MKl4aq91iLTprlyO9h1M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-Bu9W6yxqPZODu82iaD6qdw-1; Wed, 15 Jan 2020 09:20:24 -0500
-X-MC-Unique: Bu9W6yxqPZODu82iaD6qdw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2BB5107ACFA;
-        Wed, 15 Jan 2020 14:20:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B4B060E1C;
-        Wed, 15 Jan 2020 14:20:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca>
-References: <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     dhowells@redhat.com, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Problems with determining data presence by examining extents?
+        id S1729039AbgAOOUp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 09:20:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8727 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728925AbgAOOUp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 09:20:45 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5B02BC3A919C29B164B6;
+        Wed, 15 Jan 2020 22:20:41 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Wed, 15 Jan 2020
+ 22:20:35 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <nborisov@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] btrfs: Fix return value while kcalloc fails in btrfs_rmap_block
+Date:   Wed, 15 Jan 2020 22:20:27 +0800
+Message-ID: <20200115142027.56960-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <24869.1579098019.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 15 Jan 2020 14:20:19 +0000
-Message-ID: <24870.1579098019@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Andreas Dilger <adilger@dilger.ca> wrote:
+In btrfs_rmap_block(), if kcalloc fails, it should return
+-ENOMEM instead of 0.
 
-> > Would you like to explain why you want to know such fs internal info?
-> =
+Fixes: 767f58cdaf20 ("btrfs: Refactor btrfs_rmap_block to improve readability")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ fs/btrfs/block-group.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I believe David wants it to store sparse files as an cache and use FIEMA=
-P to
-> determine if the blocks are cached locally, or if they need to be fetche=
-d from
-> the server.  If the filesystem doesn't store the written blocks accurate=
-ly,
-> there is no way for the local cache to know whether it is holding valid =
-data
-> or not.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 8877af5..1485158 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1655,7 +1655,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
+ 	*stripe_len = io_stripe_size;
+ out:
+ 	free_extent_map(em);
+-	return 0;
++	return ret;
+ }
+ 
+ static int exclude_super_stripes(struct btrfs_block_group *cache)
+-- 
+2.7.4
 
-More or less.  I have no particular attachment to bmap or FIEMAP as the
-interface to use.  I'm just interested in finding out quickly if the data =
-I
-want is present.
-
-If call_read_iter() will return a short read on hitting a hole, I can mana=
-ge
-if I can find out if just the first byte is present.
-
-Finding out if the block is present allows me to avoid shaping read reques=
-ts
-from VM readahead into 256k blocks - which may require the allocation of e=
-xtra
-pages for bufferage.
-
-David
 
