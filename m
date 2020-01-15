@@ -2,134 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BCB13CC6C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 19:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883E913CD6B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 20:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgAOSob (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 13:44:31 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35118 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729057AbgAOSoa (ORCPT
+        id S1729340AbgAOTst (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 14:48:49 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:37136 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729268AbgAOTst (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 13:44:30 -0500
-Received: by mail-qt1-f194.google.com with SMTP id e12so16696354qto.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 10:44:29 -0800 (PST)
+        Wed, 15 Jan 2020 14:48:49 -0500
+Received: by mail-pj1-f50.google.com with SMTP id m13so402473pjb.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 11:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2RHoALpSOBynXpORViIhOl08dHLfSffD2C1i3tQxb+8=;
-        b=n9d8Nn2I0V+QTxBbsk1TxkermlqfaB2HRhY2jsu9ER96lWBJw1PY+6SmTMhGWWr4+V
-         6opytIeUZEA7kPLu9I+ik6ZFcSUEXKi1Fr3OcVOOVRVA05swoL8e3qmFDHf8yC522jKN
-         vuxwM9Tv3/qYt30UTTtGEoNnNNo6IblE6I8ueHDcVetYY7x3SMSr49S1axbus8JmASrY
-         W9U9SXNxsEMw+MR+AXiUDdVVDdk/uo4uWA2pTZnPhIU1a30k6dd9tCty/IL0jKfHOeFs
-         yR1yJqkZkXp2C0BBRdErjGBtqD9KSbDk6Vs7h+OIn5inK4Vnuiq7m9b7yNOBUWGqu+Rj
-         BDlw==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=mfOcggh9Ij5VrzzcP3dcYGzGv0U+3av4+wN4xCGn2hk=;
+        b=M2G/cnOwd/oFmzBASlg+3RqBtFzOPZybUgUGoE9A1sLNkSCuwWLyFz2lW64IfdFsna
+         9AQlZom4Ba5CyPqMjBQA9C8+RfYOs4T01nBk8B65/Bw+x9sEBjnQ6K0vJV9mxZ9obt45
+         Ne9RJHAP1nLs32+Jb691Ph6cfKzWcmSk+Aa6QPjwHLTNctgothN38yQaunuF4KymMEEf
+         DtYQauwDrpMgfCwd8NNFuICuDQ+/l5cBD996TlyR071ifvOazmG94Wv9lYxbWzb2YNI+
+         VUka4MMOF1pRwsSud1zk7CK7oRnQ801uD42ZPcimYEJn/+pvVwX2TMKJ0gSq72E7NiKn
+         8rMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2RHoALpSOBynXpORViIhOl08dHLfSffD2C1i3tQxb+8=;
-        b=Uxg69V92Ewx4wCCdOHy1CvRkaZB2BJTunGX/OykNVn4j6YzOpXB6rmACGyuObNdyZE
-         TtDvumRLoCo2NwFaF0B9qZ+vcBDqCRUW0+f7ck16IjL68JYw2iIekoIZchZKHth9eLTJ
-         /z3pu3qo2kePDNhY+RY4RXd3i1cdbQ+Q7OCQEk2tzHdlEhVgRHHWSXsIRVgpjMxzzSdh
-         5MtHG5wgU9y3hd1hKRWup7ePupkhoE7jTsT4181kJFceIad/KWa6jH6t0P4Xj3wypYJv
-         1k/5CdGZeRC9xmdjzzvGkRUyYWo8pPdhWMrCRMTEs+qu40LTT1tqMTp2rXznJJ3JbzPp
-         4iuQ==
-X-Gm-Message-State: APjAAAV4jTAhbcY2OIc80OkfFWkW94eO/cGMfkICliwaO8+RxuEbZ04H
-        UHS1neSyLG8u4drq2vOON4XhBg==
-X-Google-Smtp-Source: APXvYqwd43VSSNau3QNirei5kubeSidRBMupqsDZCXgFj+YAyIy1woiaU6KsBSMYrd/h247vrlSLtw==
-X-Received: by 2002:ac8:4504:: with SMTP id q4mr4983570qtn.319.1579113869191;
-        Wed, 15 Jan 2020 10:44:29 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::56ca])
-        by smtp.gmail.com with ESMTPSA id s20sm8822067qkg.131.2020.01.15.10.44.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jan 2020 10:44:28 -0800 (PST)
-Subject: Re: [PATCH 0/5][v2] btrfs: fix hole corruption issue with !NO_HOLES
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-References: <20200107194237.145694-1-josef@toxicpanda.com>
- <CAL3q7H78JUt0WJCXvzdgatU8fFkdWY0r1Yw0qKn0KYLg+KnqRQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ba1e7d7e-0593-8cbc-05de-aca98fead705@toxicpanda.com>
-Date:   Wed, 15 Jan 2020 13:44:27 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <CAL3q7H78JUt0WJCXvzdgatU8fFkdWY0r1Yw0qKn0KYLg+KnqRQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=mfOcggh9Ij5VrzzcP3dcYGzGv0U+3av4+wN4xCGn2hk=;
+        b=mr1TEDi80K8Haiq4fQeGBbpmcAtEDU/17P1VE7aZUHN5qurcxaaWoV76din0zAr7EY
+         iL4w2w/2WkjIgOkbo1PDnBN02N6yNH4GD4in/6MHSxNTsJqYoNrsjFGx2e6ELsGyeK9L
+         xYkEmTqsvJWS8WY6sisLcNQ196WXL411jeknkvvsQTJa+5AurHrQruVzAD1lv0GekIEQ
+         onTCnp6zSOBjpeg+r2H8XK5CpFVUabzpKRvgo4a5B6bYGA7jWuWpJVziFyYs8gZ6f82k
+         s0UykFlwnvM05WeXHA1N125RELwil3SqD+kFMiqBmmgPsFGexjWkYibeEMcyIMFpLOV/
+         mtEQ==
+X-Gm-Message-State: APjAAAWQ4ZXvQYpkSe9AKEhgmVPGDJwc57Rl4tVy/dvmkhU8Wzsrggfp
+        /7F5FNb1cC4EGfy2uXJlDwUcsA==
+X-Google-Smtp-Source: APXvYqxP6WhNjxkfuE0g6khT7UyihhalBizsQoBp9O693hV+s+j7MHh19YyDAax8jCcjC9KTJ2bxsQ==
+X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr1882398pjr.100.1579117728439;
+        Wed, 15 Jan 2020 11:48:48 -0800 (PST)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id g67sm23485209pfb.66.2020.01.15.11.48.46
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jan 2020 11:48:47 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C0F67EC5-7B5D-4179-9F28-95B84D9CC326@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Problems with determining data presence by examining extents?
+Date:   Wed, 15 Jan 2020 12:48:44 -0700
+In-Reply-To: <20200115133101.GA28583@lst.de>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     David Howells <dhowells@redhat.com>, Christoph Hellwig <hch@lst.de>
+References: <4467.1579020509@warthog.procyon.org.uk>
+ <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com>
+ <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca>
+ <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
+ <20200115133101.GA28583@lst.de>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/15/20 12:32 PM, Filipe Manana wrote:
-> On Tue, Jan 7, 2020 at 7:43 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> v1->v2:
->> - fixed a bug in 'btrfs: use the file extent tree infrastructure' that would
->>    result in 0 length files because btrfs_truncate_inode_items() was clearing the
->>    file extent map when we fsync'ed multiple times.  Validated this with a
->>    modified fsx and generic/521 that reproduced the problem, those modifications
->>    were sent up as well.
->> - dropped the RFC
->>
->> ----------------- Original Message -----------------------
->> We've historically had this problem where you could flush a targeted section of
->> an inode and end up with a hole between extents without a hole extent item.
->> This of course makes fsck complain because this is not ok for a file system that
->> doesn't have NO_HOLES set.  Because this is a well understood problem I and
->> others have been ignoring fsck failures during certain xfstests (generic/475 for
->> example) because they would regularly trigger this edge case.
->>
->> However this isn't a great behavior to have, we should really be taking all fsck
->> failures seriously, and we could potentially ignore fsck legitimate fsck errors
->> because we expect it to be this particular failure.
->>
->> In order to fix this we need to keep track of where we have valid extent items,
->> and only update i_size to encompass that area.  This unfortunately means we need
->> a new per-inode extent_io_tree to keep track of the valid ranges.  This is
->> relatively straightforward in practice, and helpers have been added to manage
->> this so that in the case of a NO_HOLES file system we just simply skip this work
->> altogether.
->>
->> I've been hammering on this for a week now and I'm pretty sure its ok, but I'd
->> really like Filipe to take a look and I still have some longer running tests
->> going on the series.  All of our boxes internally are btrfs and the box I was
->> testing on ended up with a weird RPM db corruption that was likely from an
->> earlier, broken version of the patch.  However I cannot be 100% sure that was
->> the case, so I'm giving it a few more days of testing before I'm satisfied
->> there's not some weird thing that RPM does that xfstests doesn't cover.
->>
->> This has gone through several iterations of xfstests already, including many
->> loops of generic/475 for validation to make sure it was no longer failing.  So
->> far so good, but for something like this wider testing will definitely be
->> necessary.  Thanks,
-> 
-> So a comment that applies to the whole patchset.
-> 
-> On power failures we can now end up with non-prealloc extents beyond
-> the disk_i_size after mounting the filesystem.
-> 
-> Not entirely sure if it will give any potential problems other then
-> non-reclaimed space for a long time (unless the file is truncated or
-> written to or beyond the extent's offset), have you tested this
-> scenario?
-> 
-> I suppose the test cases from fstests that use dm's log writes target
-> exercise this easily.
-> 
 
-Yeah I've run it through xfstests a bunch and none of the log writes things blew up.
+--Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Keep in mind that this scenario can already happen, just not as easily.  The 
-original btrfs_ordered_update_i_size() would only update i_size if the previous 
-ordered extent had completed.  If it hadn't you would end up with a normal 
-extent past i_size, and if you crashed at the right time you would be in this 
-spot.  This patch only makes that case more likely to happen if you happen to do 
-something like sync_file_range() in the middle of the dirty range.  Thanks,
+On Jan 15, 2020, at 6:31 AM, Christoph Hellwig <hch@lst.de> wrote:
+> 
+> On Wed, Jan 15, 2020 at 09:10:44PM +0800, Qu Wenruo wrote:
+>>> That allows userspace to distinguish fe_physical addresses that may be
+>>> on different devices.  This isn't in the kernel yet, since it is mostly
+>>> useful only for Btrfs and nobody has implemented it there.  I can give
+>>> you details if working on this for Btrfs is of interest to you.
+>> 
+>> IMHO it's not good enough.
+>> 
+>> The concern is, one extent can exist on multiple devices (mirrors for
+>> RAID1/RAID10/RAID1C2/RAID1C3, or stripes for RAID5/6).
+>> I didn't see how it can be easily implemented even with extra fields.
+>> 
+>> And even we implement it, it can be too complex or bug prune to fill
+>> per-device info.
+> 
+> It's also completely bogus for the use cases to start with.  fiemap
+> is a debug tool reporting the file system layout.  Using it for anything
+> related to actual data storage and data integrity is a receipe for
+> disaster.  As said the right thing for the use case would be something
+> like the NFS READ_PLUS operation.  If we can't get that easily it can
+> be emulated using lseek SEEK_DATA / SEEK_HOLE assuming no other thread
+> could be writing to the file, or the raciness doesn't matter.
 
-Josef
+I don't think either of those will be any better than FIEMAP, if the reason
+is that the underlying filesystem is filling in holes with actual data
+blocks to optimize the IO pattern.  SEEK_HOLE would not find a hole in
+the block allocation, and would happily return the block of zeroes to
+the caller.  Also, it isn't clear if SEEK_HOLE considers an allocated but
+unwritten extent to be a hole or a block?
+
+I think what is needed here is an fadvise/ioctl that tells the filesystem
+"don't allocate blocks unless actually written" for that file.  Storing
+anything in a separate data structure is a recipe for disaster, since it
+will become inconsistent after a crash, or filesystem corruption+e2fsck,
+and will unnecessarily bloat the on-disk metadata for every file to hold
+redundant information.
+
+I don't see COW/reflink/compression as being a problem in this case, since
+what cachefiles cares about is whether there is _any_ data for a given
+logical offset, not where/how the data is stored.  IF FIEMAP was used for
+a btrfs backing filesystem, it would need the "EXTENT_DATA_COMPRESSED"
+feature to be implemented as well, so that it can distinguish the logical
+vs. physical allocations.  I don't think that would be needed for SEEK_HOLE
+and SEEK_DATA, so long as they handle unwritten extents properly (and are
+correctly implemented in the first place, some filesystems fall back to
+always returning the next block for SEEK_DATA).
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl4fbJ0ACgkQcqXauRfM
+H+CGqw//clrcdoV9kWx8edXSbVsdv8WiQjBERU0J4tkQgIcsIPB4/w1kWk/qsk56
+Cew1K8m6uWzKmrOb9pOdDUQeSVMiqoCEFJKabnEu17miBjRBeQofftQazJ66VCDt
+jTpqDmTIJlX6GPHmJQf52V+YMzRqdZhWPBwU2DOiLzXktvPt8zLJdUQLhvHv5xom
+rKXBFqi3ZKW8MAtVN4xdwMCpgqzqgwE/ZEciZkIQmkt71eo2+mqg5DxYGDjBbV8r
+u/KQm0mkh1otrCgskTUcb7mhnf52uWkpZQZTtBD246ShTvnuU0MaCSqv3HhLHVo+
+p5/q5S3oFE67Odc/Tj3vFW0N2R5uX0o20tGr4TFoRl5enngiCM2OTg3Pqh2fq8vc
+hrOw8SARGuhCq5QNOyydtpQ1YO1QTT6TTxVJTxXEkkxWyexPBtufupKUCRVhTkC2
+nfh704xUn137Gcr5Rk8p2io54s8kKnLUE5sVGU44TrD0voG6f8OD/eI1vr7XWLIw
+5pNtxLfFLe0LNFX5+5M0FfmJxuXyVqzUT5co79d3AHVwjN0/LYmuN+ICgWomBy34
+fm2S4mdW1SyLCK8T3LVXX5/JFpK+e0jzQ8DFUhumUzES+q0uMRSdDQjxRX5asdX2
+z3CT+qbgnMElZuf+JaARqPC/tV8z+FlawJv/xgVq7eXpmILQjA0=
+=1vdd
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D--
