@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AC713C289
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6ED13C28C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jan 2020 14:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgAONVk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 08:21:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
+        id S1726473AbgAONWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 08:22:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726088AbgAONVk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 08:21:40 -0500
+        id S1728931AbgAONWW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jan 2020 08:22:22 -0500
 Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB84220728
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 13:21:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89EA420728;
+        Wed, 15 Jan 2020 13:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579094499;
-        bh=GaU5J+P31LqOATgSA4E2Icoa97uyXnAbQqV5QiUbaJQ=;
-        h=From:To:Subject:Date:From;
-        b=AqaCBYJz477TvJY9GusGWAYs8p1q2N4e5To8ZtvghDVUSbnq99pZ9Pd9Thle0sW++
-         4im5F6pj0ABWJnWHrZMXbW/0s9zzc5DQknaxzFM28H3taszhAMfPwed4lSNGT/kR80
-         +fSupxjMzyhv7yzi9I1TADVzzSWCCHSSW7Wt0Pv4=
+        s=default; t=1579094541;
+        bh=l1DHMLSLR79p0FbO65l1So1ibL0ZKTNzPYvmBE9iOV0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iS5dNanf8AB+n2CrFDS2p8/VPxX5fyiOj1LQEgU1hnxiYwNUNh07t0FPl3Fq1XqbT
+         FUKS79aMuMI3lbt9Dm1ufKN+TIJAWdKtG3FbsKFsBhTZggZX4caJpE1bGKPDUsSYKs
+         YFSa2s8fx+t9ssM26Hji9rzzu09RoSI6MkIMuiSY=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix infinite loop during fsync after rename operations
-Date:   Wed, 15 Jan 2020 13:21:35 +0000
-Message-Id: <20200115132135.23994-1-fdmanana@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic/527: add additional test including a file with a hardlink
+Date:   Wed, 15 Jan 2020 13:22:16 +0000
+Message-Id: <20200115132216.24041-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,135 +37,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Recently fsstress (from fstests) sporadically started to trigger an
-infinite loop during fsync operations. This turned out to be because
-support for the rename exchange and whiteout operations was added to
-fsstress in fstests. These operations, unlike any others in fsstress,
-cause file names to be reused, whence triggering this issue. However
-it's not necessary to use rename exchange and rename whiteout operations
-trigger this issue, simple rename operations and file creations are
-enough to trigger the issue.
+Add a similar test to the existing one but with a file that has a
+hardlink as well. This is motivated by a bug found in btrfs where
+a fsync on a file that has the old name of another file results
+in the logging code to hit an infinite loop. The patch that fixes
+the bug in btrfs has the following subject:
 
-The issue boils down to when we are logging inodes that conflict (that
-had the name of any inode we need to log during the fsync operation),
-we keep logging them even if they were already logged before, and after
-that we check if there's any other inode that conflicts with them and
-then add it again to the list of inodes to log. Skipping already logged
-inodes fixes the issue.
+  "Btrfs: fix infinite loop during fsync after rename operations"
 
-Consider the following example:
-
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
-
-  $ mkdir /mnt/testdir                           # inode 257
-
-  $ touch /mnt/testdir/zz                        # inode 258
-  $ ln /mnt/testdir/zz /mnt/testdir/zz_link
-
-  $ touch /mnt/testdir/a                         # inode 259
-
-  $ sync
-
-  # The following 3 renames achieve the same result as a rename exchange
-  # operation (<rename_exchange> /mnt/testdir/zz_link to /mnt/testdir/a).
-
-  $ mv /mnt/testdir/a /mnt/testdir/a/tmp
-  $ mv /mnt/testdir/zz_link /mnt/testdir/a
-  $ mv /mnt/testdir/a/tmp /mnt/testdir/zz_link
-
-  # The following rename and file creation give the same result as a
-  # rename whiteout operation (<rename_whiteout> zz to a2).
-
-  $ mv /mnt/testdir/zz /mnt/testdir/a2
-  $ touch /mnt/testdir/zz                        # inode 260
-
-  $ xfs_io -c fsync /mnt/testdir/zz
-    --> results in the infinite loop
-
-The following steps happen:
-
-1) When logging inode 260, we find that its reference named "zz" was
-   used by inode 258 in the previous transaction (through the commit
-   root), so inode 258 is added to the list of conflicting indoes that
-   need to be logged;
-
-2) After logging inode 258, we find that its reference named "a" was
-   used by inode 259 in the previous transaction, and therefore we add
-   inode 259 to the list of conflicting inodes to be logged;
-
-3) After logging inode 259, we find that its reference named "zz_link"
-   was used by inode 258 in the previous transaction - we add inode 258
-   to the list of conflicting inodes to log, again - we had already
-   logged it before at step 3. After logging it again, we find again
-   that inode 259 conflicts with him, and we add again 259 to the list,
-   etc - we end up repeating all the previous steps.
-
-So fix this by skipping logging of conflicting inodes that were already
-logged.
-
-Fixes: 6b5fc433a7ad67 ("Btrfs: fix fsync after succession of renames of different files")
-CC: stable@vger.kernel.org
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ tests/generic/527     | 26 ++++++++++++++++++++++++++
+ tests/generic/527.out |  4 ++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index f674013f4771..2b23e557c457 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4836,6 +4836,50 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
- 			continue;
- 		}
- 		/*
-+		 * If the inode was already logged skip it - otherwise we can
-+		 * hit an infinite loop. Example:
-+		 *
-+		 * From the commit root (previous transaction) we have the
-+		 * following inodes:
-+		 *
-+		 * inode 257 a directory
-+		 * inode 258 with references "zz" and "zz_link" on inode 257
-+		 * inode 259 with reference "a" on inode 257
-+		 *
-+		 * And in the current (uncommitted) transaction we have:
-+		 *
-+		 * inode 257 a directory, unchanged
-+		 * inode 258 with references "a" and "a2" on inode 257
-+		 * inode 259 with reference "zz_link" on inode 257
-+		 * inode 261 with reference "zz" on inode 257
-+		 *
-+		 * When logging inode 261 the following infinite loop could
-+		 * happen if we don't skip already logged inodes:
-+		 *
-+		 * - we detect inode 258 as a conflicting inode, with inode 261
-+		 *   on reference "zz", and log it;
-+		 *
-+		 * - we detect inode 259 as a conflicting inode, with inode 258
-+		 *   on reference "a", and log it;
-+		 *
-+		 * - we detect inode 258 as a conflicting inode, with inode 259
-+		 *   on reference "zz_link", and log it - again! After this we
-+		 *   repeat the above steps forever.
-+		 */
-+		spin_lock(&BTRFS_I(inode)->lock);
-+		/*
-+		 * Check the inode's logged_trans only instead of
-+		 * btrfs_inode_in_log(). This is because the last_log_commit of
-+		 * the inode is not updated when we only log that it exists and
-+		 * and it has the full sync bit set (see btrfs_log_inode()).
-+		 */
-+		if (BTRFS_I(inode)->logged_trans == trans->transid) {
-+			spin_unlock(&BTRFS_I(inode)->lock);
-+			btrfs_add_delayed_iput(inode);
-+			continue;
-+		}
-+		spin_unlock(&BTRFS_I(inode)->lock);
-+		/*
- 		 * We are safe logging the other inode without acquiring its
- 		 * lock as long as we log with the LOG_INODE_EXISTS mode. We
- 		 * are safe against concurrent renames of the other inode as
+diff --git a/tests/generic/527 b/tests/generic/527
+index aacccd91..61dd4f0b 100755
+--- a/tests/generic/527
++++ b/tests/generic/527
+@@ -45,6 +45,12 @@ mkdir $SCRATCH_MNT/testdir
+ echo -n "foo" > $SCRATCH_MNT/testdir/fname1
+ echo -n "hello" > $SCRATCH_MNT/testdir/fname2
+ 
++# For a different variant of the same test but when files have hardlinks too.
++mkdir $SCRATCH_MNT/testdir2
++echo -n "foo" > $SCRATCH_MNT/testdir2/zz
++ln $SCRATCH_MNT/testdir2/zz $SCRATCH_MNT/testdir2/zz_link
++echo -n "hello" > $SCRATCH_MNT/testdir2/a
++
+ # Make sure everything done so far is durably persisted.
+ sync
+ 
+@@ -57,6 +63,21 @@ ln $SCRATCH_MNT/testdir/fname3 $SCRATCH_MNT/testdir/fname2
+ echo -n "bar" > $SCRATCH_MNT/testdir/fname1
+ $XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir/fname1
+ 
++# A second variant, more complex, that involves files with hardlinks too.
++
++# The following 3 renames are equivalent to a rename exchange (zz_link to a), but
++# without the atomicity which isn't required here.
++mv $SCRATCH_MNT/testdir2/a $SCRATCH_MNT/testdir2/tmp
++mv $SCRATCH_MNT/testdir2/zz_link $SCRATCH_MNT/testdir2/a
++mv $SCRATCH_MNT/testdir2/tmp $SCRATCH_MNT/testdir2/zz_link
++
++# The following rename and file creation are equivalent to a rename whiteout.
++mv $SCRATCH_MNT/testdir2/zz $SCRATCH_MNT/testdir2/a2
++echo -n "bar" > $SCRATCH_MNT/testdir2/zz
++
++# Fsync of zz should work and produce correct results after a power failure.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/testdir2/zz
++
+ # Simulate a power failure and mount the filesystem to check that all file names
+ # exist and correspond to the correct inodes.
+ _flakey_drop_and_remount
+@@ -65,6 +86,11 @@ echo "File fname1 data after power failure: $(cat $SCRATCH_MNT/testdir/fname1)"
+ echo "File fname2 data after power failure: $(cat $SCRATCH_MNT/testdir/fname2)"
+ echo "File fname3 data after power failure: $(cat $SCRATCH_MNT/testdir/fname3)"
+ 
++echo "File a data after power failure: $(cat $SCRATCH_MNT/testdir2/a)"
++echo "File a2 data after power failure: $(cat $SCRATCH_MNT/testdir2/a2)"
++echo "File zz data after power failure: $(cat $SCRATCH_MNT/testdir2/zz)"
++echo "File zz_link data after power failure: $(cat $SCRATCH_MNT/testdir2/zz_link)"
++
+ _unmount_flakey
+ 
+ status=0
+diff --git a/tests/generic/527.out b/tests/generic/527.out
+index 3c34e1ff..7397fe88 100644
+--- a/tests/generic/527.out
++++ b/tests/generic/527.out
+@@ -2,3 +2,7 @@ QA output created by 527
+ File fname1 data after power failure: bar
+ File fname2 data after power failure: foo
+ File fname3 data after power failure: foo
++File a data after power failure: foo
++File a2 data after power failure: foo
++File zz data after power failure: bar
++File zz_link data after power failure: hello
 -- 
 2.11.0
 
