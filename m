@@ -2,131 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB9613D2D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 04:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D586F13D2D8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 04:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgAPDhv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jan 2020 22:37:51 -0500
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:35597 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729275AbgAPDhu (ORCPT
+        id S1730315AbgAPDkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jan 2020 22:40:01 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43207 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728905AbgAPDkA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jan 2020 22:37:50 -0500
-Received: by mail-wr1-f50.google.com with SMTP id g17so17671818wro.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 19:37:49 -0800 (PST)
+        Wed, 15 Jan 2020 22:40:00 -0500
+Received: by mail-qt1-f194.google.com with SMTP id d18so17769740qtj.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jan 2020 19:39:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LjfyyFK6MFUMR7wFcPc8C4p2HdKSAF00tVaMekc4of8=;
-        b=pIeadvQa9DU01+QCKWw/dMm4lT9/btJQV/e5dlg8M4CD4x9E4zVn+8SX2zQBZTZoWt
-         TOrTdCfHF8BU6xd40X7seoT8ItelCUP3CFXqDzZ0ksYH7kyRaO9/eysFSV6dKhmceWR6
-         q2bIHyD1pn5Pe7hKwLH/VeYisKx5qk+2F1waZttH/MDjogIMvCPKTHJioDyoiPF8vfSF
-         1s4bjLmqhZr+MWG7h4PvNaMH0csHjgfDqcbGj3b3RDAacC59DaZ2QSZXi55BEyG4UKbr
-         gHvXS++mBPYygBCwiP/DP4NQsTyvaWRPi38AqFlSHaZpm8ifA04M3u5ksZQOR+uAre8N
-         RjSg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ocJ3NpQA8oVUvwhNiZCi+vwf9nTg3b19a2/zfh4tg8s=;
+        b=VNzh6nOB89vuFf9u1ZsFLYmMBzM1cQfbTrKHyqGDkIqHtlh0gmKiopUDM7uwPdNgKR
+         cXaXDWBMDZ7CBpLNfWlcRr4qzFBbAVfaL49h4MqzINTINDVRWOzsqWjvfix+arYGczmn
+         jbntWwnmvj2o6lUHqgp+dywVWUwiqoh3iyOhfCxkw780/7ZyMVKHVCKg1T5HN6SBsJbk
+         p3RrkkYA2QS0SdVWEoTIXNnurLqkER0KbXsF/LQT+zMDKHIb5ZjZQ9uW8YDTDwq6Raj/
+         0V0mes/iHfSa4ibvS4Lfz6YeayFbrTEOZ2cQynaNLyhwo3la4+DtyjixnW0FkHdJax1Q
+         QSCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LjfyyFK6MFUMR7wFcPc8C4p2HdKSAF00tVaMekc4of8=;
-        b=PrO7t6z3g9ZCkGPndk5XmTGbGVTpryZTKV9xkdi8nob9+o4w3NEF9+mVYkJRfOhIYZ
-         Iarc9bvUfVv/xY16GBpIX7vfHVfe3ZA0IieA127vUlPWXqzAiIfkcVkG4D3sFrBxom+K
-         UcMqker2q/8vN2vCWX2OC6ep+5xK3gSk+FRM+dqLbqY2/+tlWs278y0SYIG01ogrHGBT
-         Z+MrJ3Am5CEDmetztxMh2jzzDPLv4GS5NUHIm9ifUuYP+Wjw5w8YBsAm6KjRpj0DS0XM
-         Fxl9VJV6+pIbuAoXu4yxmgXsxD8zoeq5SduazDmRcONI4KHkV2tC+kfaUQfw0JCRCdXS
-         ZF1g==
-X-Gm-Message-State: APjAAAVaXtLHkHYZq3GfmgshWKBeE6p7rJnJCvixr65i4fSbZbNZ53YG
-        /KR3KKA86xKLooE/MfRw/bEMaBAU
-X-Google-Smtp-Source: APXvYqxKQ00tS3ANV7LsbPuYNPLNvdvqNPb14hIkaCmVF4i0UuGRR2Hxfitq4KFSRmaFxhyjq50LWg==
-X-Received: by 2002:a05:6000:1142:: with SMTP id d2mr619245wrx.253.1579145868439;
-        Wed, 15 Jan 2020 19:37:48 -0800 (PST)
-Received: from ?IPv6:2a02:6d40:2bd5:9400:a4c6:4441:b628:8711? ([2a02:6d40:2bd5:9400:a4c6:4441:b628:8711])
-        by smtp.googlemail.com with ESMTPSA id g9sm27467271wro.67.2020.01.15.19.37.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jan 2020 19:37:47 -0800 (PST)
-Subject: Re: read time tree block corruption with kernel 5.4.11
-To:     Christoph Anton Mitterer <calestyo@scientia.net>,
-        linux-btrfs@vger.kernel.org
-References: <f2f96d17-7473-8a24-2702-37e5217ad665@googlemail.com>
- <ba2dcbb0085b186c6df859a4f5db415597fe2f8e.camel@scientia.net>
-From:   Oliver Freyermuth <o.freyermuth@googlemail.com>
-Autocrypt: addr=o.freyermuth@googlemail.com; prefer-encrypt=mutual; keydata=
- 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
- KB7t2CoZv5xo0STm
-Message-ID: <3778c13f-a0b3-70d3-a09f-ce704e5c01fc@googlemail.com>
-Date:   Thu, 16 Jan 2020 04:37:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ocJ3NpQA8oVUvwhNiZCi+vwf9nTg3b19a2/zfh4tg8s=;
+        b=RvuIuEUsL/Lqhh1HMy/Tcx6xWzb9O2WfGS2+I9i8CRT40T4pIP47ank703IOjFK+dS
+         szWFAS31EHMUwYvJlRQHGmJhyZCIR55ZSgkfbVhOsN9Yigaml7Y48HfhlHKQzfwmcRtG
+         PKVBbH+PDtddUk6nt3qgEA1cgKWL4vlMR7Ho/p6aFh5sRUVlXCU1APbwdt04ASdcYnp6
+         Erp851VaOkQvYZl6IzLyyC/GHVukWAOMuZGXclPf3DeC6SqsVkCvyQsOWj1FLSDxw/kS
+         Q4PLfDqq+xNRUAwUkbC6vfgFvcktAbawppeMjrHrzRQHhnhkfhByIXxJR09e0oOObEe6
+         JNJQ==
+X-Gm-Message-State: APjAAAVORZ7ovpbBDqt3OmAq/on8BLIFXQJm3nXSJAggZlHvz1x6JCAb
+        diF2d6dnBQQFCToUWhNz+uAysxppJ3eQkwQ/kpw2iMU46lE=
+X-Google-Smtp-Source: APXvYqw+/+C4h4KEf6GYv+oFeofqbdkpnk/a7MQXXDIb1Mnu64RJ7wsyI2eWlQx2GyNj4eCeFXJi8k9A9Q685QBLtMs=
+X-Received: by 2002:ac8:2a06:: with SMTP id k6mr499407qtk.145.1579145999112;
+ Wed, 15 Jan 2020 19:39:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ba2dcbb0085b186c6df859a4f5db415597fe2f8e.camel@scientia.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+From:   Sabrina Cathey <sabcatlibra@gmail.com>
+Date:   Wed, 15 Jan 2020 22:39:48 -0500
+Message-ID: <CAM3w-7gSeg+4O-0dWRd3yr5FDcDCq9gEDXDid2SxwMYFkHn+8Q@mail.gmail.com>
+Subject: Issues with FS going read-only and bad drive
+To:     linux-btrfs@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000541122059c399409"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Chris,
+--000000000000541122059c399409
+Content-Type: text/plain; charset="UTF-8"
 
-Am 16.01.20 um 02:57 schrieb Christoph Anton Mitterer:
-> On Wed, 2020-01-15 at 23:04 +0100, Oliver Freyermuth wrote:
->> I have recently upgraded to 5.4.11 from a 5.3 kernel and now also hit
->> the dreaded read time tree block corruption
-> 
-> Is there some known corruption bug in 5.4?
+Sent earlier but it hasn't shown up on the mailing list.  I know
+greylisting has a delay but usually not 30 minutes as far as I know.
 
-I don't think so / don't know, but the tree checker became more sensitive as compared to 5.3, so I dreaded this message after I saw the density of such reports
-from other users growing on the list in the past months. 
+----
 
-My only overlap with an earlier report seems to be that I had a situation of high memory pressure in the past weeks on the machine. 
-Two other machines I run with very similar setups and significantly longer runtimes have not shown any issues. 
+Up front required information
 
-The affected node has the lowest runtime of the three, "but it ran fine with Kernel 5.4 for a while" and now suddenly detected the corruption in old data extens quickly after bootup.
-I don't find any issues with memtext86+. 
-So I'll keep an eye on the machine. At this point, anything else would be guesswork. 
+uname -a;btrfs --version;btrfs fi show;btrfs fi df /shizzle/
+Linux babel.thegnomedev.com 5.3.8-arch1-1 #1 SMP PREEMPT @1572357769
+x86_64 GNU/Linux
+btrfs-progs v5.3.1
+Label: 'shizzle'  uuid: 92b267f2-c8af-40eb-b433-e53e140ebd01
+Total devices 10 FS bytes used 34.18TiB
+devid    2 size 5.46TiB used 4.28TiB path /dev/sdb1
+devid    3 size 5.46TiB used 4.28TiB path /dev/sdg1
+devid    4 size 5.46TiB used 4.28TiB path /dev/sdh1
+devid    5 size 5.46TiB used 4.28TiB path /dev/sdi1
+devid    6 size 5.46TiB used 4.28TiB path /dev/sdj1
+devid    7 size 5.46TiB used 4.28TiB path /dev/sdf1
+devid    8 size 5.46TiB used 4.28TiB path /dev/sda1
+devid    9 size 5.46TiB used 4.28TiB path /dev/sdd1
+devid   10 size 5.46TiB used 4.28TiB path /dev/sde1
+devid   11 size 5.46TiB used 4.28TiB path /dev/sdc1
 
-Cheers,
-	Oliver
+Data, RAID6: total=34.18TiB, used=34.13TiB
+System, RAID6: total=256.00MiB, used=1.73MiB
+Metadata, RAID6: total=60.00GiB, used=54.65GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+----
+
+dmesg output is over 100k and my understanding is that you have a size
+limit so here is a pastebin: https://pastebin.com/d4BPRS6m
+
+----
+
+Story is that I found the server unresponsive and when I rebooted I
+ended seeing a disk was missing https://i.imgur.com/iLgnNBM.jpg
+
+I mucked about trying to figure out what to do.  I ended up rebooting
+to see if I could see an issue in the drive controller BIOS and when I
+got back into the OS things seemed okay at first.  It was mounted and
+looked okay but then I noticed issues in dmesg related "parent transid
+verify failed" errors.
+
+It's late and I was grasping a straws and random googling.  I tried a
+scrub and it failed and the filesystem went RO.  I retried a few
+times, because insanity.
+
+I tried btrfsck (default non-destructive) and it also bailed out
+https://i.imgur.com/ZEq0RjU.jpg
+
+Looking at btrfs device stats it looks like one of the devices
+(/dev/sde) is bad - probably the one that was found missing initially.
+I'm attaching the output of that command.  I'm way out of my depth
+here - my thought is to use btrfs device delete /dev/sde1
+
+Please can you help me to not lose my data?  With this large an amount
+of data, I have yet to invest in another set of disks for backup (I
+know that RAID isn't backups and I should have them).
+
+Any help would be most appreciated
+
+Thanks
+
+Sabrina
+
+--000000000000541122059c399409
+Content-Type: text/plain; charset="US-ASCII"; name="btrfs.device.stats.shizzle.txt"
+Content-Disposition: attachment; filename="btrfs.device.stats.shizzle.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5g6qtms0>
+X-Attachment-Id: f_k5g6qtms0
+
+Wy9kZXYvc2RiMV0ud3JpdGVfaW9fZXJycyAgICAwClsvZGV2L3NkYjFdLnJlYWRfaW9fZXJycyAg
+ICAgMApbL2Rldi9zZGIxXS5mbHVzaF9pb19lcnJzICAgIDAKWy9kZXYvc2RiMV0uY29ycnVwdGlv
+bl9lcnJzICAyClsvZGV2L3NkYjFdLmdlbmVyYXRpb25fZXJycyAgMApbL2Rldi9zZGcxXS53cml0
+ZV9pb19lcnJzICAgIDAKWy9kZXYvc2RnMV0ucmVhZF9pb19lcnJzICAgICAwClsvZGV2L3NkZzFd
+LmZsdXNoX2lvX2VycnMgICAgMApbL2Rldi9zZGcxXS5jb3JydXB0aW9uX2VycnMgIDAKWy9kZXYv
+c2RnMV0uZ2VuZXJhdGlvbl9lcnJzICAwClsvZGV2L3NkaDFdLndyaXRlX2lvX2VycnMgICAgMApb
+L2Rldi9zZGgxXS5yZWFkX2lvX2VycnMgICAgIDAKWy9kZXYvc2RoMV0uZmx1c2hfaW9fZXJycyAg
+ICAwClsvZGV2L3NkaDFdLmNvcnJ1cHRpb25fZXJycyAgMApbL2Rldi9zZGgxXS5nZW5lcmF0aW9u
+X2VycnMgIDAKWy9kZXYvc2RpMV0ud3JpdGVfaW9fZXJycyAgICAwClsvZGV2L3NkaTFdLnJlYWRf
+aW9fZXJycyAgICAgMApbL2Rldi9zZGkxXS5mbHVzaF9pb19lcnJzICAgIDAKWy9kZXYvc2RpMV0u
+Y29ycnVwdGlvbl9lcnJzICA0ClsvZGV2L3NkaTFdLmdlbmVyYXRpb25fZXJycyAgMApbL2Rldi9z
+ZGoxXS53cml0ZV9pb19lcnJzICAgIDAKWy9kZXYvc2RqMV0ucmVhZF9pb19lcnJzICAgICAwClsv
+ZGV2L3NkajFdLmZsdXNoX2lvX2VycnMgICAgMApbL2Rldi9zZGoxXS5jb3JydXB0aW9uX2VycnMg
+IDMKWy9kZXYvc2RqMV0uZ2VuZXJhdGlvbl9lcnJzICAwClsvZGV2L3NkZjFdLndyaXRlX2lvX2Vy
+cnMgICAgMApbL2Rldi9zZGYxXS5yZWFkX2lvX2VycnMgICAgIDAKWy9kZXYvc2RmMV0uZmx1c2hf
+aW9fZXJycyAgICAwClsvZGV2L3NkZjFdLmNvcnJ1cHRpb25fZXJycyAgMApbL2Rldi9zZGYxXS5n
+ZW5lcmF0aW9uX2VycnMgIDAKWy9kZXYvc2RhMV0ud3JpdGVfaW9fZXJycyAgICAwClsvZGV2L3Nk
+YTFdLnJlYWRfaW9fZXJycyAgICAgMApbL2Rldi9zZGExXS5mbHVzaF9pb19lcnJzICAgIDAKWy9k
+ZXYvc2RhMV0uY29ycnVwdGlvbl9lcnJzICAwClsvZGV2L3NkYTFdLmdlbmVyYXRpb25fZXJycyAg
+MApbL2Rldi9zZGQxXS53cml0ZV9pb19lcnJzICAgIDAKWy9kZXYvc2RkMV0ucmVhZF9pb19lcnJz
+ICAgICAwClsvZGV2L3NkZDFdLmZsdXNoX2lvX2VycnMgICAgMApbL2Rldi9zZGQxXS5jb3JydXB0
+aW9uX2VycnMgIDAKWy9kZXYvc2RkMV0uZ2VuZXJhdGlvbl9lcnJzICAwClsvZGV2L3NkZTFdLndy
+aXRlX2lvX2VycnMgICAgNjA3NQpbL2Rldi9zZGUxXS5yZWFkX2lvX2VycnMgICAgIDU5NjUKWy9k
+ZXYvc2RlMV0uZmx1c2hfaW9fZXJycyAgICAxODQKWy9kZXYvc2RlMV0uY29ycnVwdGlvbl9lcnJz
+ICAwClsvZGV2L3NkZTFdLmdlbmVyYXRpb25fZXJycyAgMApbL2Rldi9zZGMxXS53cml0ZV9pb19l
+cnJzICAgIDAKWy9kZXYvc2RjMV0ucmVhZF9pb19lcnJzICAgICAwClsvZGV2L3NkYzFdLmZsdXNo
+X2lvX2VycnMgICAgMApbL2Rldi9zZGMxXS5jb3JydXB0aW9uX2VycnMgIDAKWy9kZXYvc2RjMV0u
+Z2VuZXJhdGlvbl9lcnJzICAwCg==
+--000000000000541122059c399409--
