@@ -2,25 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEA013D411
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 07:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A5413D412
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 07:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729692AbgAPGEO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 01:04:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45134 "EHLO mx2.suse.de"
+        id S1729730AbgAPGES (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 01:04:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45152 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727026AbgAPGEN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 01:04:13 -0500
+        id S1729718AbgAPGES (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 01:04:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B20C1B1A3
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 06:04:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 79117B1A3;
+        Thu, 16 Jan 2020 06:04:14 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 0/4] Introduce per-profile available space array to avoid over-confident can_overcommit()
-Date:   Thu, 16 Jan 2020 14:03:59 +0800
-Message-Id: <20200116060404.95200-1-wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v6 1/5] btrfs: Introduce per-profile available space facility
+Date:   Thu, 16 Jan 2020 14:04:00 +0800
+Message-Id: <20200116060404.95200-2-wqu@suse.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200116060404.95200-1-wqu@suse.com>
+References: <20200116060404.95200-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,140 +31,459 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are several bug reports of ENOSPC error in
-btrfs_run_delalloc_range().
+[PROBLEM]
+There are some locations in btrfs requiring accurate estimation on how
+many new bytes can be allocated on unallocated space.
 
-With some extra info from one reporter, it turns out that
-can_overcommit() is using a wrong way to calculate allocatable metadata
-space.
+We have two types of estimation:
+- Factor based calculation
+  Just use all unallocated space, divide by the profile factor
+  One obvious user is can_overcommit().
 
-The most typical case would look like:
-  devid 1 unallocated:	1G
-  devid 2 unallocated:  10G
-  metadata profile:	RAID1
+- Chunk allocator like calculation
+  This will emulate the chunk allocator behavior, to get a proper
+  estimation.
+  The only user is btrfs_calc_avail_data_space(), utilized by
+  btrfs_statfs().
+  The problem is, that function is not generic purposed enough, can't
+  handle things like RAID5/6.
 
-In above case, we can at most allocate 1G chunk for metadata, due to
-unbalanced disk free space.
-But current can_overcommit() uses factor based calculation, which never
-consider the disk free space balance.
+Current factor based calculation can't handle the following case:
+  devid 1 unallocated:	1T
+  devid 2 unallocated:	10T
+  metadata type:	RAID1
 
+If using factor, we can use (1T + 10T) / 2 = 5.5T free space for
+metadata.
+But in fact we can only get 1T free space, as we're limited by the
+smallest device for RAID1.
 
-To address this problem, here comes the per-profile available space
-array, which gets updated every time a chunk get allocated/removed or a
-device get grown or shrunk.
+[SOLUTION]
+This patch will introduce per-profile available space calculation,
+which can give an estimation based on chunk-allocator-like behavior.
 
-This provides a quick way for hotter place like can_overcommit() to grab
-an estimation on how many bytes it can over-commit.
+The difference between it and chunk allocator is mostly on rounding and
+[0, 1M) reserved space handling, which shouldn't cause practical impact.
 
-The per-profile available space calculation tries to keep the behavior
-of chunk allocator, thus it can handle uneven disks pretty well.
+The newly introduced per-profile available space calculation will
+calculate available space for each type, using chunk-allocator like
+calculation.
 
-And statfs() can also grab that pre-calculated value for instance usage.
-For metadata over-commit, statfs() falls back to factor based educated
-guess method.
-Since over-commit can only happen when we have unallocated space, the
-problem caused by over-commit should only be a first world problem.
+With that facility, for above device layout we get the full available
+space array:
+  RAID10:	0  (not enough devices)
+  RAID1:	1T
+  RAID1C3:	0  (not enough devices)
+  RAID1C4:	0  (not enough devices)
+  DUP:		5.5T
+  RAID0:	2T
+  SINGLE:	11T
+  RAID5:	1T
+  RAID6:	0  (not enough devices)
 
-Since this patch introduced a new failure pattern, some new error
-handling are introduced:
-- __btrfs_alloc_chunk()
-  At the end of that function where calc_per_profile_avail() get called,
-  if it failed due to -ENOMEM, we will revert device used space, and
-  remove the allocated chunk.
-  This is the only new error handling added by patch 5.
+Or for a more complex example:
+  devid 1 unallocated:	1T
+  devid 2 unallocated:  1T
+  devid 3 unallocated:	10T
 
-- btrfs_remove_chunk()
-  There is no good way to revert the change. So here we abort
-  transaction, just like what the old error handling does.
+We will get an array of:
+  RAID10:	0  (not enough devices)
+  RAID1:	2T
+  RAID1C3:	1T
+  RAID1C4:	0  (not enough devices)
+  DUP:		6T
+  RAID0:	3T
+  SINGLE:	12T
+  RAID5:	2T
+  RAID6:	0  (not enough devices)
 
-- btrfs_grow_device()
-  This function has its problem by not reverting device used space from
-  the very beginning.
-  This patchset will enhance it in patch 4.
+And for the each profile , we go chunk allocator level calculation:
+The pseudo code looks like:
 
-- btrfs_shrink_device()
-  This function already has good error handling, reuse it.
+  clear_virtual_used_space_of_all_rw_devices();
+  do {
+  	/*
+  	 * The same as chunk allocator, despite used space,
+  	 * we also take virtual used space into consideration.
+  	 */
+  	sort_device_with_virtual_free_space();
 
-- btrfs_verify_dev_extents()
-  Mount time error will lead to mount failure, nothing to worry about.
+  	/*
+  	 * Unlike chunk allocator, we don't need to bother hole/stripe
+  	 * size, so we use the smallest device to make sure we can
+  	 * allocated as many stripes as regular chunk allocator
+  	 */
+  	stripe_size = device_with_smallest_free->avail_space;
+	stripe_size = min(stripe_size, to_alloc / ndevs);
 
-Contents of the patchset:
-Patch 1:	Core facility, with basic (not perfect) error handling
-Patch 2:	Fix for over-confident can_overcommit()
-Patch 3:	Make statfs() more accurate
-Patch 4:	Better error handling for btrfs_grow_device()
-Patch 5:	Better error handling for __btrfs_alloc_chunk()
+  	/*
+  	 * Allocate a virtual chunk, allocated virtual chunk will
+  	 * increase virtual used space, allow next iteration to
+  	 * properly emulate chunk allocator behavior.
+  	 */
+  	ret = alloc_virtual_chunk(stripe_size, &allocated_size);
+  	if (ret == 0)
+  		avail += allocated_size;
+  } while (ret == 0)
 
-If needed, patch 4 and patch 5 can be merged into patch 1.
+As we always select the device with least free space, the device with
+the most space will be the first to be utilized, just like chunk
+allocator.
+For above 1T + 10T device, we will allocate a 1T virtual chunk
+in the first iteration, then run out of device in next iteration.
 
-Changelog:
-v1:
-- Fix a bug where we forgot to update per-profile array after allocating
-  a chunk.
-  To avoid ABBA deadlock, this introduce a small windows at the end
-  __btrfs_alloc_chunk(), it's not elegant but should be good enough
-  before we rework chunk and device list mutex.
-  
-- Make statfs() to use virtual chunk allocator to do better estimation
-  Now statfs() can report not only more accurate result, but can also
-  handle RAID5/6 better.
+Thus only get 1T free space for RAID1 type, just like what chunk
+allocator would do.
 
-v2:
-- Fix a deadlock caused by acquiring device_list_mutex under
-  __btrfs_alloc_chunk()
-  There is no need to acquire device_list_mutex when holding
-  chunk_mutex.
-  Fix it and remove the lockdep assert.
+The patch will update such per-profile available space at the following
+timing:
+- Mount time
+- Chunk allocation
+- Chunk removal
+- Device grow
+- Device shrink
 
-v3:
-- Use proper chunk_mutex instead of device_list_mutex
-  Since they are protecting two different things, and we only care about
-  alloc_list, we should only use chunk_mutex.
-  With improved lock situation, it's easier to fold
-  calc_per_profile_available() calls into the first patch.
+Those timing are all protected by chunk_mutex, and what we do are only
+iterating in-memory only structures, no extra IO triggered, so the
+performance impact should be pretty small.
 
-- Add performance benchmark for statfs() modification
-  As Facebook seems to run into some problems with statfs() calls, add
-  some basic ftrace results.
+For the extra error handling, the principle is to keep the old behavior.
+That's to say, if old error handler would just return an error, then we
+follow it, no matter if the caller reverts the device size.
 
-v4:
-- Keep the lock-free design for statfs()
-  As extra sleeping in statfs() may not be a good idea, keep the old
-  lock-free design, and use factor based calculation as fall back.
+For the proper error handling, they will be added in later patches.
+As I don't want to make the core facility bloated by the error handling
+code, especially some situation needs quite some new code to handle
+errors.
 
-v5:
-- Enhance btrfs_update_device() error handling in btrfs_grow_device()
-- Ensure all failure caused by calc_per_profile_available() is the same
-  with existing error handling
-- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
+Suggested-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 216 ++++++++++++++++++++++++++++++++++++++++-----
+ fs/btrfs/volumes.h |  11 +++
+ 2 files changed, 207 insertions(+), 20 deletions(-)
 
-v6:
-- Don't update the array if we hit any error.
-  To avoid calling calc_per_profile_avail() in error handling path.
-
-- Re-order the patchset
-  Make the core facility the first patch.
-  Error handling improvement in later patches.
-
-- Add better error handling
-  Improve one existing bad error handling, and provide a better solution
-  for __btrfs_alloc_chunk()
-
-Qu Wenruo (5):
-  btrfs: Introduce per-profile available space facility
-  btrfs: space-info: Use per-profile available space in can_overcommit()
-  btrfs: statfs: Use pre-calculated per-profile available space
-  btrfs: Reset device size when btrfs_update_device() failed in
-    btrfs_grow_device()
-  btrfs: volumes: Revert device used bytes when calc_per_profile_avail()
-    failed
-
- fs/btrfs/space-info.c |  15 ++-
- fs/btrfs/super.c      | 182 +++++++++----------------------
- fs/btrfs/volumes.c    | 245 ++++++++++++++++++++++++++++++++++++++----
- fs/btrfs/volumes.h    |  11 ++
- 4 files changed, 290 insertions(+), 163 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a6d3f08bfff3..b899c8b0d0ee 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -349,6 +349,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
+ 	INIT_LIST_HEAD(&fs_devs->devices);
+ 	INIT_LIST_HEAD(&fs_devs->alloc_list);
+ 	INIT_LIST_HEAD(&fs_devs->fs_list);
++	spin_lock_init(&fs_devs->per_profile_lock);
+ 	if (fsid)
+ 		memcpy(fs_devs->fsid, fsid, BTRFS_FSID_SIZE);
+ 
+@@ -2628,6 +2629,177 @@ static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
++/*
++ * sort the devices in descending order by max_avail, total_avail
++ */
++static int btrfs_cmp_device_info(const void *a, const void *b)
++{
++	const struct btrfs_device_info *di_a = a;
++	const struct btrfs_device_info *di_b = b;
++
++	if (di_a->max_avail > di_b->max_avail)
++		return -1;
++	if (di_a->max_avail < di_b->max_avail)
++		return 1;
++	if (di_a->total_avail > di_b->total_avail)
++		return -1;
++	if (di_a->total_avail < di_b->total_avail)
++		return 1;
++	return 0;
++}
++
++/*
++ * Return 0 if we allocated any virtual(*) chunk, and restore the size to
++ * @allocated_size
++ * Return -ENOSPC if we have no more space to allocate virtual chunk
++ *
++ * *: virtual chunk is a space holder for per-profile available space
++ *    calculator.
++ *    Such virtual chunks won't take on-disk space, thus called virtual, and
++ *    only affects per-profile available space calulation.
++ */
++static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
++			       struct btrfs_device_info *devices_info,
++			       enum btrfs_raid_types type,
++			       u64 *allocated)
++{
++	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	struct btrfs_device *device;
++	u64 stripe_size;
++	int i;
++	int ndevs = 0;
++
++	lockdep_assert_held(&fs_info->chunk_mutex);
++
++	/* Go through devices to collect their unallocated space */
++	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
++		u64 avail;
++		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
++					&device->dev_state) ||
++		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
++			continue;
++
++		if (device->total_bytes > device->bytes_used +
++				device->virtual_allocated)
++			avail = device->total_bytes - device->bytes_used -
++				device->virtual_allocated;
++		else
++			avail = 0;
++
++		/* And exclude the [0, 1M) reserved space */
++		if (avail > SZ_1M)
++			avail -= SZ_1M;
++		else
++			avail = 0;
++
++		if (avail < fs_info->sectorsize)
++			continue;
++		/*
++		 * Unlike chunk allocator, we don't care about stripe or hole
++		 * size, so here we use @avail directly
++		 */
++		devices_info[ndevs].dev_offset = 0;
++		devices_info[ndevs].total_avail = avail;
++		devices_info[ndevs].max_avail = avail;
++		devices_info[ndevs].dev = device;
++		++ndevs;
++	}
++	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
++	     btrfs_cmp_device_info, NULL);
++	ndevs -= ndevs % raid_attr->devs_increment;
++	if (ndevs < raid_attr->devs_min)
++		return -ENOSPC;
++	if (raid_attr->devs_max)
++		ndevs = min(ndevs, (int)raid_attr->devs_max);
++	else
++		ndevs = min(ndevs, (int)BTRFS_MAX_DEVS(fs_info));
++
++	/*
++	 * Now allocate a virtual chunk using the unallocate space of the
++	 * device with the least unallocated space.
++	 */
++	stripe_size = round_down(devices_info[ndevs - 1].total_avail,
++				 fs_info->sectorsize);
++	if (stripe_size == 0)
++		return -ENOSPC;
++
++	for (i = 0; i < ndevs; i++)
++		devices_info[i].dev->virtual_allocated += stripe_size;
++	*allocated = stripe_size * (ndevs - raid_attr->nparity) /
++		     raid_attr->ncopies;
++	return 0;
++}
++
++static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
++				  enum btrfs_raid_types type,
++				  u64 *result_ret)
++{
++	struct btrfs_device_info *devices_info = NULL;
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	struct btrfs_device *device;
++	u64 allocated;
++	u64 result = 0;
++	int ret = 0;
++
++	ASSERT(type >= 0 && type < BTRFS_NR_RAID_TYPES);
++
++	/* Not enough devices, quick exit, just update the result */
++	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
++		goto out;
++
++	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
++			       GFP_NOFS);
++	if (!devices_info) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	/* Clear virtual chunk used space for each device */
++	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
++		device->virtual_allocated = 0;
++	while (ret == 0) {
++		ret = alloc_virtual_chunk(fs_info, devices_info, type,
++					  &allocated);
++		if (ret == 0)
++			result += allocated;
++	}
++	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
++		device->virtual_allocated = 0;
++out:
++	kfree(devices_info);
++	if (ret < 0 && ret != -ENOSPC)
++		return ret;
++	*result_ret = result;
++	return 0;
++}
++
++/*
++ * Calculate the per-profile available space array.
++ *
++ * Return 0 if we succeeded updating the array.
++ * Return <0 if something went wrong (ENOMEM), and the array is not
++ * updated.
++ */
++static int calc_per_profile_avail(struct btrfs_fs_info *fs_info)
++{
++	u64 results[BTRFS_NR_RAID_TYPES];
++	int i;
++	int ret;
++
++	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
++		ret = calc_one_profile_avail(fs_info, i, &results[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	spin_lock(&fs_info->fs_devices->per_profile_lock);
++	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
++		fs_info->fs_devices->per_profile_avail[i] =
++			results[i];
++	spin_unlock(&fs_info->fs_devices->per_profile_lock);
++	return ret;
++}
++
+ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 		      struct btrfs_device *device, u64 new_size)
+ {
+@@ -2635,6 +2807,7 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 	struct btrfs_super_block *super_copy = fs_info->super_copy;
+ 	u64 old_total;
+ 	u64 diff;
++	int ret;
+ 
+ 	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
+ 		return -EACCES;
+@@ -2661,7 +2834,10 @@ int btrfs_grow_device(struct btrfs_trans_handle *trans,
+ 	if (list_empty(&device->post_commit_list))
+ 		list_add_tail(&device->post_commit_list,
+ 			      &trans->transaction->dev_update_list);
++	ret = calc_per_profile_avail(fs_info);
+ 	mutex_unlock(&fs_info->chunk_mutex);
++	if (ret < 0)
++		return ret;
+ 
+ 	return btrfs_update_device(trans, device);
+ }
+@@ -2831,7 +3007,13 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+ 					device->bytes_used - dev_extent_len);
+ 			atomic64_add(dev_extent_len, &fs_info->free_chunk_space);
+ 			btrfs_clear_space_info_full(fs_info);
++			ret = calc_per_profile_avail(fs_info);
+ 			mutex_unlock(&fs_info->chunk_mutex);
++			if (ret < 0) {
++				mutex_unlock(&fs_devices->device_list_mutex);
++				btrfs_abort_transaction(trans, ret);
++				goto out;
++			}
+ 		}
+ 
+ 		ret = btrfs_update_device(trans, device);
+@@ -4526,6 +4708,11 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+ 		atomic64_sub(diff, &fs_info->free_chunk_space);
+ 	}
+ 
++	ret = calc_per_profile_avail(fs_info);
++	if (ret < 0) {
++		mutex_unlock(&fs_info->chunk_mutex);
++		goto done;
++	}
+ 	/*
+ 	 * Once the device's size has been set to the new size, ensure all
+ 	 * in-memory chunks are synced to disk so that the loop below sees them
+@@ -4690,25 +4877,6 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
+ 	return 0;
+ }
+ 
+-/*
+- * sort the devices in descending order by max_avail, total_avail
+- */
+-static int btrfs_cmp_device_info(const void *a, const void *b)
+-{
+-	const struct btrfs_device_info *di_a = a;
+-	const struct btrfs_device_info *di_b = b;
+-
+-	if (di_a->max_avail > di_b->max_avail)
+-		return -1;
+-	if (di_a->max_avail < di_b->max_avail)
+-		return 1;
+-	if (di_a->total_avail > di_b->total_avail)
+-		return -1;
+-	if (di_a->total_avail < di_b->total_avail)
+-		return 1;
+-	return 0;
+-}
+-
+ static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
+ {
+ 	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+@@ -4986,6 +5154,7 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 			list_add_tail(&dev->post_commit_list,
+ 				      &trans->transaction->dev_update_list);
+ 	}
++	ret = calc_per_profile_avail(info);
+ 
+ 	atomic64_sub(stripe_size * map->num_stripes, &info->free_chunk_space);
+ 
+@@ -4994,7 +5163,7 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 	check_raid1c34_incompat_flag(info, type);
+ 
+ 	kfree(devices_info);
+-	return 0;
++	return ret;
+ 
+ error_del_extent:
+ 	write_lock(&em_tree->lock);
+@@ -7629,6 +7798,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
+ 
+ 	/* Ensure all chunks have corresponding dev extents */
+ 	ret = verify_chunk_dev_extent_mapping(fs_info);
++	if (ret < 0)
++		goto out;
++
++	/* All dev extents are verified, update per-profile available space */
++	mutex_lock(&fs_info->chunk_mutex);
++	ret = calc_per_profile_avail(fs_info);
++	mutex_unlock(&fs_info->chunk_mutex);
+ out:
+ 	btrfs_free_path(path);
+ 	return ret;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index fc1b564b9cfe..5cddfe7cfee8 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -138,6 +138,13 @@ struct btrfs_device {
+ 	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
+ 
+ 	struct extent_io_tree alloc_state;
++
++	/*
++	 * the "virtual" allocated space by virtual chunk allocator, which
++	 * is used to do accurate estimation on available space.
++	 * Doesn't affect real chunk allocator.
++	 */
++	u64 virtual_allocated;
+ };
+ 
+ /*
+@@ -257,6 +264,10 @@ struct btrfs_fs_devices {
+ 	struct kobject fsid_kobj;
+ 	struct kobject *device_dir_kobj;
+ 	struct completion kobj_unregister;
++
++	/* Records per-type available space */
++	spinlock_t per_profile_lock;
++	u64 per_profile_avail[BTRFS_NR_RAID_TYPES];
+ };
+ 
+ #define BTRFS_BIO_INLINE_CSUM_SIZE	64
 -- 
 2.24.1
 
