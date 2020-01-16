@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A380713EB5F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 18:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A2A13EFA1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 19:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394186AbgAPRqD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 12:46:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38450 "EHLO mail.kernel.org"
+        id S2392702AbgAPR3Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 12:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394153AbgAPRqC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:46:02 -0500
+        id S2392694AbgAPR3X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:29:23 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 806B3246CA;
-        Thu, 16 Jan 2020 17:46:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D8F124709;
+        Thu, 16 Jan 2020 17:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196761;
-        bh=5Jgl+M7ZoabBz9Iu6TrW5f8g7D771jjye+OXmxt+DFo=;
+        s=default; t=1579195762;
+        bh=lgZgMlXtwFFHVqMaSvAnHftx83JTossrBK2S+3ZHrFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZWBnSBTaE/RYktrd2sM3gFCOheKikw0rndtVgyLHFDjkLktYUxkWWfIt7j7Kd+jmX
-         eaK35wWXpOO1sAYByWRh4s2oaZZKpGuOAiGVxat/mg8I2Y8m2oHmWSigmRJoyRjbgv
-         TPP1xvtVzsTxUHth9CrzilsJ65zlJDllzj6VnciQ=
+        b=Eh5F56RBb3nkUwH8Lpsjp3de2Trw++wtLSj8gEbikHPrl/lT93nhrGim2xwddhG+s
+         QMzFxtsxZUQd/SYgcEYU4aR1C30lG3wr/9oARaQldyE9eZaVXihZZ2sI8RltR3nNG5
+         K8QVHSs47K3usNF+kabbh/RA4/vTLE3tH0ciYdPg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>,
         Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 135/174] Btrfs: fix hang when loading existing inode cache off disk
-Date:   Thu, 16 Jan 2020 12:42:12 -0500
-Message-Id: <20200116174251.24326-135-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 291/371] Btrfs: fix hang when loading existing inode cache off disk
+Date:   Thu, 16 Jan 2020 12:22:43 -0500
+Message-Id: <20200116172403.18149-234-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
-References: <20200116174251.24326-1-sashal@kernel.org>
+In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
+References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -111,10 +111,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-index 07573dc1614a..3469c7ce7cb6 100644
+index d02019747d00..7dc2923655d9 100644
 --- a/fs/btrfs/inode-map.c
 +++ b/fs/btrfs/inode-map.c
-@@ -158,6 +158,7 @@ static void start_caching(struct btrfs_root *root)
+@@ -159,6 +159,7 @@ static void start_caching(struct btrfs_root *root)
  		spin_lock(&root->ino_cache_lock);
  		root->ino_cache_state = BTRFS_CACHE_FINISHED;
  		spin_unlock(&root->ino_cache_lock);
