@@ -2,120 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D106213DFB1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 17:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B620613DFBB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 17:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgAPQM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 11:12:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50846 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726653AbgAPQM0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:12:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BDC76B288D;
-        Thu, 16 Jan 2020 16:12:24 +0000 (UTC)
-Subject: Re: read time tree block corruption detected
-To:     Peter Luladjiev <luladjiev@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <6ba43f60-22d1-52da-0e9a-8561b9560481@suse.com>
-Date:   Thu, 16 Jan 2020 18:12:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726653AbgAPQOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 11:14:42 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36179 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgAPQOm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:14:42 -0500
+Received: by mail-qk1-f193.google.com with SMTP id a203so19627403qkc.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 08:14:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ib7KlwO5w2vjHaS8oeyUDHUbSwJunHfY/gYb/VCCmAI=;
+        b=eP0ts1+a0uTSZHw/9RPHTpV0ocJ74LnnrJyZmoevwzFZ4DQn52sPJEmo/krTBXoI4R
+         Q3xXKmZ4g4M5WL8b/2enybZscYBVD+qTT4l2crFfxbcOaSyk62a8Rx/JFV/FoWsMtXoO
+         DXwq58uZwreC803p9Rxbg9nOUTKzDFOhUF/oM+PwrAgA4Y87ZpziqSZ8MvmtsIeW8r+q
+         5Je2EF5svU4OVNvB0zNF3Zv4aqVTua07uJ6PhEK+oQjLeQJfxl7koWq6MNfsRpxGXrxH
+         I8N0cBmmH/1+XVVQ3GpSIJwbYiyj4P4QcuABO9D1EihyHXdNZ7ZPmsvWMMiZUT8OQ0gs
+         2YkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ib7KlwO5w2vjHaS8oeyUDHUbSwJunHfY/gYb/VCCmAI=;
+        b=JxsqU7/MSuy8sDIvoh59TDvz2iCoYu8ZzawNfdCrNxMk3ftJEpVIDlW3OKxkes3lF1
+         2mJtfyZRkcYRqUH4MPk4RYJNTLsWiBGhR/JWRQcOtrNBXqFf/VLCdRQeI8ULqFwAzrsA
+         uZtyVsqYzgGNsl8SHZHCW8m0T0CB9ggBWUs2f+RVaXvYT/NITSnoB00H9sPoZe7nM5oJ
+         okAzE+GzV6mpOIIIxoMiyXcydbGk5OcH6Leo5iqBUS7CgksHA7r52R1VV75/eYQ88t5Q
+         OpYWupiLGcJmYvpgtQa2uBKP/ZjjXXtuKvG8lArpuLpYYhpIPTgxs3Cc2kpYTDQ92uhf
+         B/eQ==
+X-Gm-Message-State: APjAAAUzPH2yyJ+7aa9w/SyFFDRX/ulvjcyc+yvjhoHNQTnMHI/STdKv
+        ljiweEP6G2keegPXh5alMo7dVtjU8tZz2A==
+X-Google-Smtp-Source: APXvYqy5ZOZUqvEHdDMrWQzEnyy9RNObo84kvMbgSLlKkryv2GAsRGNYdduvqLST4Gxpmo+WrJ1j/w==
+X-Received: by 2002:a05:620a:142c:: with SMTP id k12mr34060142qkj.207.1579191280482;
+        Thu, 16 Jan 2020 08:14:40 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::6813])
+        by smtp.gmail.com with ESMTPSA id a14sm3507110qta.97.2020.01.16.08.14.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2020 08:14:39 -0800 (PST)
+Subject: Re: [PATCH v6 1/5] btrfs: Introduce per-profile available space
+ facility
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200116060404.95200-1-wqu@suse.com>
+ <20200116060404.95200-2-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <49727617-91d3-9cff-c772-19d7cd371b55@toxicpanda.com>
+Date:   Thu, 16 Jan 2020 11:14:38 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200116060404.95200-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 16.01.20 г. 15:40 ч., Peter Luladjiev wrote:
-> Hello,
+On 1/16/20 1:04 AM, Qu Wenruo wrote:
+> [PROBLEM]
+> There are some locations in btrfs requiring accurate estimation on how
+> many new bytes can be allocated on unallocated space.
 > 
-> I'm having a "read time tree block corruption detected" error after
-> upgrading to kernel 5.4, reverting to kernel 5.3 fixes the problem.
-> I'm using openSuse Tumbleweed, btrfs-progs v5.4
+> We have two types of estimation:
+> - Factor based calculation
+>    Just use all unallocated space, divide by the profile factor
+>    One obvious user is can_overcommit().
+> 
+> - Chunk allocator like calculation
+>    This will emulate the chunk allocator behavior, to get a proper
+>    estimation.
+>    The only user is btrfs_calc_avail_data_space(), utilized by
+>    btrfs_statfs().
+>    The problem is, that function is not generic purposed enough, can't
+>    handle things like RAID5/6.
+> 
+> Current factor based calculation can't handle the following case:
+>    devid 1 unallocated:	1T
+>    devid 2 unallocated:	10T
+>    metadata type:	RAID1
+> 
+> If using factor, we can use (1T + 10T) / 2 = 5.5T free space for
+> metadata.
+> But in fact we can only get 1T free space, as we're limited by the
+> smallest device for RAID1.
+> 
+> [SOLUTION]
+> This patch will introduce per-profile available space calculation,
+> which can give an estimation based on chunk-allocator-like behavior.
+> 
+> The difference between it and chunk allocator is mostly on rounding and
+> [0, 1M) reserved space handling, which shouldn't cause practical impact.
+> 
+> The newly introduced per-profile available space calculation will
+> calculate available space for each type, using chunk-allocator like
+> calculation.
+> 
+> With that facility, for above device layout we get the full available
+> space array:
+>    RAID10:	0  (not enough devices)
+>    RAID1:	1T
+>    RAID1C3:	0  (not enough devices)
+>    RAID1C4:	0  (not enough devices)
+>    DUP:		5.5T
+>    RAID0:	2T
+>    SINGLE:	11T
+>    RAID5:	1T
+>    RAID6:	0  (not enough devices)
+> 
+> Or for a more complex example:
+>    devid 1 unallocated:	1T
+>    devid 2 unallocated:  1T
+>    devid 3 unallocated:	10T
+> 
+> We will get an array of:
+>    RAID10:	0  (not enough devices)
+>    RAID1:	2T
+>    RAID1C3:	1T
+>    RAID1C4:	0  (not enough devices)
+>    DUP:		6T
+>    RAID0:	3T
+>    SINGLE:	12T
+>    RAID5:	2T
+>    RAID6:	0  (not enough devices)
+> 
+> And for the each profile , we go chunk allocator level calculation:
+> The pseudo code looks like:
+> 
+>    clear_virtual_used_space_of_all_rw_devices();
+>    do {
+>    	/*
+>    	 * The same as chunk allocator, despite used space,
+>    	 * we also take virtual used space into consideration.
+>    	 */
+>    	sort_device_with_virtual_free_space();
+> 
+>    	/*
+>    	 * Unlike chunk allocator, we don't need to bother hole/stripe
+>    	 * size, so we use the smallest device to make sure we can
+>    	 * allocated as many stripes as regular chunk allocator
+>    	 */
+>    	stripe_size = device_with_smallest_free->avail_space;
+> 	stripe_size = min(stripe_size, to_alloc / ndevs);
+> 
+>    	/*
+>    	 * Allocate a virtual chunk, allocated virtual chunk will
+>    	 * increase virtual used space, allow next iteration to
+>    	 * properly emulate chunk allocator behavior.
+>    	 */
+>    	ret = alloc_virtual_chunk(stripe_size, &allocated_size);
+>    	if (ret == 0)
+>    		avail += allocated_size;
+>    } while (ret == 0)
+> 
+> As we always select the device with least free space, the device with
+> the most space will be the first to be utilized, just like chunk
+> allocator.
+> For above 1T + 10T device, we will allocate a 1T virtual chunk
+> in the first iteration, then run out of device in next iteration.
+> 
+> Thus only get 1T free space for RAID1 type, just like what chunk
+> allocator would do.
+> 
+> The patch will update such per-profile available space at the following
+> timing:
+> - Mount time
+> - Chunk allocation
+> - Chunk removal
+> - Device grow
+> - Device shrink
+> 
+> Those timing are all protected by chunk_mutex, and what we do are only
+> iterating in-memory only structures, no extra IO triggered, so the
+> performance impact should be pretty small.
+> 
+> For the extra error handling, the principle is to keep the old behavior.
+> That's to say, if old error handler would just return an error, then we
+> follow it, no matter if the caller reverts the device size.
+> 
+> For the proper error handling, they will be added in later patches.
+> As I don't want to make the core facility bloated by the error handling
+> code, especially some situation needs quite some new code to handle
+> errors.
 
-The reason is that the read-time validator got added in v5.4. 
-Looking at the provided dump: 
+Instead of creating a weird error handling case why not just set the 
+per_profile_avail to 0 on error?  This will simply disable overcommit and we'll 
+flush more.  This way we avoid making a weird situation weirder, and we don't 
+have to worry about returning an error from calc_one_profile_avail().  Simply 
+say "hey we got enomem, metadata overcommit is going off" with a 
+btrfs_err_ratelimited() and carry on.  Maybe the next one will succeed and we'll 
+get overcommit turned back on.  Thanks,
 
-
-item 70 key (1497006080 EXTENT_ITEM 4096) itemoff 11757 itemsize 37
-		refs 1 gen 17889 flags DATA
-		shared data backref parent 51611369472 count 1
-	item 71 key (1497010176 EXTENT_ITEM 4096) itemoff 11720 itemsize 37
-		refs 1 gen 17890 flags DATA
-		shared data backref parent 51611369472 count 1
-	item 72 key (1497014272 EXTENT_ITEM 4096) itemoff 11683 itemsize 37
-		refs 1 gen 17892 flags DATA
-		shared data backref parent 51611369472 count 1
-	item 73 key (1497018368 EXTENT_ITEM 4096) itemoff 11646 itemsize 37
-		refs 72057183177116417 gen 17894 flags DATA
-		shared data backref parent 51611369472 count 1
-	item 74 key (1497022464 EXTENT_ITEM 4096) itemoff 11609 itemsize 37
-		refs 1 gen 17896 flags DATA
-		shared data backref parent 51611369472 count 3087007745
-
-
-Clearly the problematic extent has an abnormal count: 
-
-3087007745, in binary this makes: 
-10111000000000000000000000000001
-
-so the topmost 5 bits (apart from 1) has been set to 1 whereas 
-I'd assume  only the LSB (1) should be set, judging based on the the rest
-of the extents that have 51611369472 as their parent. 
-
-Can you run btrfs check on /dev/mapper/system-root and post the log here. 
-Note this will be a read-only operation to you don't risk breaking
- anything. You might also have to set the --force option since this looks 
-like to be your root fs which is always mounted (barring working from a rescue
-disk). 
+Josef
