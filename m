@@ -2,197 +2,377 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B142613D978
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 13:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA5C13DA57
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 13:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgAPMA6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 07:00:58 -0500
-Received: from mout.gmx.net ([212.227.15.15]:47235 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbgAPMA5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 07:00:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1579176053;
-        bh=Q+PcaI9rSucZ/tvpFDo2nT6ce1F3hApHl5A6Hs1/qVo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=DoocIO8Ntx8+uDWM4Mf7599XRs4bHH1FQogKn6/gPGxwJNC8owM3xTT4HqfysIASR
-         xafgpnHNmS2Ac2QHaY+V3BgwoVa31GNyAIHeQfHxZi4mGwPqy+Z7v9ioeuPpkcJy+c
-         mjWbYgC/gRc/CD+/ChdVUdgwUmRgHeCTXA0CXkMo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQIv-1jOwj536iF-00oWSS; Thu, 16
- Jan 2020 13:00:53 +0100
-Subject: Re: [PATCH] Btrfs: always copy scrub arguments back to user space
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200116112920.30400-1-fdmanana@kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <cdc9bb1b-994e-ddbc-4274-be0886df67da@gmx.com>
-Date:   Thu, 16 Jan 2020 20:00:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1726778AbgAPMq1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 07:46:27 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:37429 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgAPMq1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 07:46:27 -0500
+Received: by mail-vs1-f67.google.com with SMTP id x18so12584064vsq.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 04:46:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=XL1z4Ph++fQWzUQaM+gJMsDkaCjiq/XaYSWjpncRalU=;
+        b=PF+ABHoqJIjv6pBmVJUvHVCphfQiwE4zd56oPwM2Ty2o9eoOjPuHbCdSI7cuVx0iI4
+         YapphV/aSy4GNVa/JZlbRvozciqaZZQ4+9Rki6VrYtRcBtnLBDWeSzjbtwLD6ecSEWXN
+         pfoEE9ayPu7Z0J00EwqOC9wWTRsVl4eykiFm56DbUt5GylUl+Gj7USJ2OmYfW+gm2zpy
+         O+ZXmP/PRft/kQnmf2vrPg4GMhW2K7PyO3lPmzbUYh4U/U4wSv453ZCjP0FQDT+ivR6B
+         PtNz6bIxWGGW1gWXcJyjhXyfXGFi2m2H4l7ixTw6m41hXoH4Hng/oc6js25DhnknQLvm
+         T3aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=XL1z4Ph++fQWzUQaM+gJMsDkaCjiq/XaYSWjpncRalU=;
+        b=SSaVQfJFy+fRUxHqZzLYGC5rOvDAxslSdy7tQLH+1F0SBmAy3XBFXAgRVvFm7dH13k
+         VzoTnqCnUGSHSV7kYbzJlt0FzVVs9uOGSjCb2ejvUo4UJ209o3Ft5c4tr5Hok6k7M4mR
+         k/JTO3X4tRoiB2VjdgA9fz01MLlahfsFngFb+OhZZN8H/Ilnu29BIdNvLwDCszJs0MIF
+         FqiJNt9GwGUjU0pzZuxAcWrKLF5npyv0LqYbH0EuZKKILVZxiUQIHReXE+YRExmsQkSh
+         AQU3wyxqUv4ogSDWo71VwarfLR5445PE9aBPmi/r4KaE0Bok4Rcz5w68qoq9uJH6AjUl
+         PiDQ==
+X-Gm-Message-State: APjAAAVKQBw73cew23LAOB4Qv1SkYzYeRKP+9AjG8e6Ja043XkQrvVkX
+        pwhGEzlEEJow5et+XOycOubdAMayR1BW6kEEIYI=
+X-Google-Smtp-Source: APXvYqzptPMNSM4Oe5DjVujl+jZZ6Te2CxXVGb3Ls5+Iy16DpWCsLRHM0Dq9Nd1O3KEK6+MrKQW+RoEkVilCEb4CDGg=
+X-Received: by 2002:a05:6102:18f:: with SMTP id r15mr1239734vsq.206.1579178785313;
+ Thu, 16 Jan 2020 04:46:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200116112920.30400-1-fdmanana@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="grj4DKtEd83EYAPgXAFTD23hTzSMjofzh"
-X-Provags-ID: V03:K1:g9oY8tvlzWfh2jQkYUMDYKkv/8FyToWpmDRbkihqvSBN0qvMYGX
- rxVILud0INhYyRbcTh2S/DCZUwYtpEvwOTBX6rvhe7rbyQFaK7xXxkwQ+reNrMNBI4jy7bg
- XxDKn4/bVOEi8O0lvpx1ybFp9HmumF3TIM7PJiy/U4GLsh+8ze9ITTts8UOuiZvigYKeLfp
- NBeKDhFNeEfICidU5hGTQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zIjQyXCTmDI=:lT6IDuXAVDnTXqSTBJE1xR
- pZvwWi28v2MOc2TSNhLMC8dWIlxachzPLEzcz3xRqsw78NJsnm9Y4ZLmKfNJxziZEgGqR0fv9
- BgF6Z8/9mWu6MT0TqG11RQgKn6QQbuKhHTLQZrHqAw5zcQzNVj/dbqEFg3zTPO+wkmAg2L62Q
- mgFw/OGleB37l4dmgdaVc0gss9gx5ySl7YD9yDrTUw+VkS4QD8lVsquFZB9MyrvmNDawOAtDv
- 1ktXu/lKXY+m6hhYRGiPcTzsrYtr2yZho0u8S0jgMfpWDUSDKYSdAfX3kGfBNZZf3yQsvP+4l
- IchPHk13i5uBtRMBgUK3Cp+ksTWpJVDUrFLglG7AFhRGU4/CqWNXD7DTPSJEngtuv+2GSVXC0
- EXVEL0472K7beIsYMfjEUcdW84AUesTs/7wJug4p05exuDRDK10ET1FnVNFxrADsMRsQSSHLv
- bJUmULCg+TmdE6ti9DqLOrJpCcA9ECCFXGNM/i51SKhmiY4JPLZju+YazYp0nMVgXFEcs2tvE
- SOiGyo01PT6Sev/xaBJK7BCPCEDTX4afDSDY7UqSrEMCQGUc+6m9oDdB38ERg82R1q+fqrUxv
- S6OELb8nQ5JQP/S62A+fkfbvGEPKqHzAlbHyxlTr7vuCg/v2y4RCwDIy+gKCo/XiN1tX2KBYl
- LbjTdGeauBqsz22W3bxI9riJyZsUzlIOu504KUTXxuvsHP7zeFb3cowmimnH9G8x9XuVyE+cc
- YXgVSvEdZA30LEjJP5FdsThIKDFrp+DaDO20+b2Yy0yBA/aqTtomdxOFFV0jzKjt7ie+unnFh
- VeEDccMZPQHYk+3n0nNDTvHaXIgF+UzycJLXJCya9G8G+GdKW7PS/in7dCSAWYUJD4IzOxPVp
- T2WG9jzRl9KB4IL/MsHVnHi860eMq4gB1gog77kC7tZi16RnZRtNVYM9QlsL0kDbUytaeaXHE
- 0/YtH8kd872uilfuMBByaEakOyU33frQPLf1w5BYG7ftUW3omVk7KpY1OexY8QS99IIhlfYR8
- yaLVRuK2Zj+tQl95FsNpxXtiNXf3Vz2zY5ZLZVC4BYpUnIwPS13Cq6dDgydjmPJmpD/D6ZgBr
- SQWKv/tD1GFSJpl5iHqtwSeDo3lnOlXkRGeZ4iZsX0UnOW4J2+X4+AkH+4tZGwe7Lionp1XfF
- P+/tl02B0xkOro0NlUVBrAZmstTqubEnYTym9kUsZ2MYPTCyWwbnsgYe1/bZYxSKzakI/T5M4
- 1ELi68XQsR+9xt0/mnBo5wQ0fhCr41S6cu/sxhHSeVpHtYRdVoVsCIyD5Llw=
+References: <20200107194237.145694-1-josef@toxicpanda.com> <20200107194237.145694-4-josef@toxicpanda.com>
+In-Reply-To: <20200107194237.145694-4-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 16 Jan 2020 12:46:14 +0000
+Message-ID: <CAL3q7H46D2A5nkyVaDApsPW0FV1nw0QZzyGBio7K853U64DskQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] btrfs: use the file extent tree infrastructure
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---grj4DKtEd83EYAPgXAFTD23hTzSMjofzh
-Content-Type: multipart/mixed; boundary="P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC"
-
---P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/1/16 =E4=B8=8B=E5=8D=887:29, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> If scrub returns an error we are not copying back the scrub arguments
-> structure to user space. This prevents user space to know how much prog=
-ress
-> scrub has done if an error happened - this includes -ECANCELED which is=
-
-> returned when users ask for scrub to stop. A particular use case, which=
- is
-> used in btrfs-progs, is to resume scrub after it is canceled, in that c=
-ase
-> it relies on checking the progress from the scrub arguments structure a=
-nd
-> then use that progress in a call to resume scrub.
->=20
-> So fix this by always copying the scrub arguments structure to user spa=
-ce,
-> overwriting the value returned to user space with -EFAULT only if copyi=
-ng
-> the structure failed to let user space know that either that copying di=
-d
-> not happen, and therefore the structure is stale, or it happened partia=
-lly
-> and the structure is probably not valid and corrupt due to the partial
-> copy.
->=20
-> Reported-by: Graham Cobb <g.btrfs@cobb.uk.net>
-> Link: https://lore.kernel.org/linux-btrfs/d0a97688-78be-08de-ca7d-bcb4c=
-7fb397e@cobb.uk.net/
-> Fixes: 06fe39ab15a6a4 ("Btrfs: do not overwrite scrub error with fault =
-error in scrub ioctl")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
+On Tue, Jan 7, 2020 at 7:43 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> We want to use this everywhere we modify the file extent items
+> permanently.  These include
+>
+> 1) Inserting new file extents for writes and prealloc extents.
+> 2) Truncating inode items.
+> 3) btrfs_cont_expand().
+> 4) Insert inline extents.
+> 5) Insert new extents from log replay.
+> 6) Insert a new extent for clone, as it could be past isize.
+>
+> We do not however call the clear helper for hole punching because it
+> simply swaps out an existing file extent for a hole, so there's
+> effectively no change as far as the i_size is concerned.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/ioctl.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 3a4bd5cd67fa..173758d86feb 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -4253,7 +4253,19 @@ static long btrfs_ioctl_scrub(struct file *file,=
- void __user *arg)
->  			      &sa->progress, sa->flags & BTRFS_SCRUB_READONLY,
->  			      0);
-> =20
-> -	if (ret =3D=3D 0 && copy_to_user(arg, sa, sizeof(*sa)))
-> +	/*
-> +	 * Copy scrub args to user space even if btrfs_scrub_dev() returned a=
-n
-> +	 * error. This is important as it allows user space to know how much
-> +	 * progress scrub has done. For example, if scrub is canceled we get
-> +	 * -ECANCELED from btrfs_scrub_dev() and return that error back to us=
-er
-> +	 * space. Later user space can inspect the progress from the structur=
+>  fs/btrfs/delayed-inode.c |  4 +++
+>  fs/btrfs/file.c          |  6 ++++
+>  fs/btrfs/inode.c         | 59 +++++++++++++++++++++++++++++++++++++++-
+>  fs/btrfs/tree-log.c      |  5 ++++
+>  4 files changed, 73 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index d3e15e1d4a91..8b4dcf4f6b3e 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -1762,6 +1762,7 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev=
+)
+>  {
+>         struct btrfs_delayed_node *delayed_node;
+>         struct btrfs_inode_item *inode_item;
+> +       struct btrfs_fs_info *fs_info =3D BTRFS_I(inode)->root->fs_info;
+>
+>         delayed_node =3D btrfs_get_delayed_node(BTRFS_I(inode));
+>         if (!delayed_node)
+> @@ -1779,6 +1780,9 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev=
+)
+>         i_uid_write(inode, btrfs_stack_inode_uid(inode_item));
+>         i_gid_write(inode, btrfs_stack_inode_gid(inode_item));
+>         btrfs_i_size_write(BTRFS_I(inode), btrfs_stack_inode_size(inode_i=
+tem));
+> +       btrfs_inode_set_file_extent_range(BTRFS_I(inode), 0,
+> +                                         round_up(i_size_read(inode),
+> +                                                  fs_info->sectorsize));
+>         inode->i_mode =3D btrfs_stack_inode_mode(inode_item);
+>         set_nlink(inode, btrfs_stack_inode_nlink(inode_item));
+>         inode_set_bytes(inode, btrfs_stack_inode_nbytes(inode_item));
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 4fadb892af24..f1c880c06ca2 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2486,6 +2486,12 @@ static int btrfs_insert_clone_extent(struct btrfs_=
+trans_handle *trans,
+>         btrfs_mark_buffer_dirty(leaf);
+>         btrfs_release_path(path);
+>
+> +       ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode),
+> +                                               clone_info->file_offset,
+> +                                               clone_len);
+> +       if (ret)
+> +               return ret;
+> +
+>         /* If it's a hole, nothing more needs to be done. */
+>         if (clone_info->disk_offset =3D=3D 0)
+>                 return 0;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index ab8b972863b1..5d34007aa7ec 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -243,6 +243,15 @@ static int insert_inline_extent(struct btrfs_trans_h=
+andle *trans,
+>         btrfs_mark_buffer_dirty(leaf);
+>         btrfs_release_path(path);
+>
+> +       /*
+> +        * We align size to sectorsize for inline extents just for simpli=
+city
+> +        * sake.
+> +        */
+> +       size =3D ALIGN(size, root->fs_info->sectorsize);
+> +       ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode), start, =
+size);
+> +       if (ret)
+> +               goto fail;
+> +
+>         /*
+>          * we're an inline extent, so nobody can
+>          * extend the file past i_size without locking
+> @@ -2377,6 +2386,11 @@ static int insert_reserved_file_extent(struct btrf=
+s_trans_handle *trans,
+>         ins.offset =3D disk_num_bytes;
+>         ins.type =3D BTRFS_EXTENT_ITEM_KEY;
+>
+> +       ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode), file_po=
+s,
+> +                                               ram_bytes);
+> +       if (ret)
+> +               goto out;
+> +
+>         /*
+>          * Release the reserved range from inode dirty range map, as it i=
+s
+>          * already moved into delayed_ref_head
+> @@ -4753,6 +4767,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>         }
+>
+>         while (1) {
+> +               u64 clear_start =3D 0, clear_len =3D 0;
+> +
+>                 fi =3D NULL;
+>                 leaf =3D path->nodes[0];
+>                 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> @@ -4803,6 +4819,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>
+>                 if (extent_type !=3D BTRFS_FILE_EXTENT_INLINE) {
+>                         u64 num_dec;
+> +
+> +                       clear_start =3D found_key.offset;
+>                         extent_start =3D btrfs_file_extent_disk_bytenr(le=
+af, fi);
+>                         if (!del_item) {
+>                                 u64 orig_num_bytes =3D
+> @@ -4810,6 +4828,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>                                 extent_num_bytes =3D ALIGN(new_size -
+>                                                 found_key.offset,
+>                                                 fs_info->sectorsize);
+> +                               clear_start =3D ALIGN(new_size,
+> +                                                   fs_info->sectorsize);
+>                                 btrfs_set_file_extent_num_bytes(leaf, fi,
+>                                                          extent_num_bytes=
+);
+>                                 num_dec =3D (orig_num_bytes -
+> @@ -4835,6 +4855,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>                                                 inode_sub_bytes(inode, nu=
+m_dec);
+>                                 }
+>                         }
+> +                       clear_len =3D num_dec;
+>                 } else if (extent_type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
+>                         /*
+>                          * we can't truncate inline items that have had
+> @@ -4856,12 +4877,34 @@ int btrfs_truncate_inode_items(struct btrfs_trans=
+_handle *trans,
+>                                  */
+>                                 ret =3D NEED_TRUNCATE_BLOCK;
+>                                 break;
+> +                       } else {
+> +                               /*
+> +                                * Inline extents are special, we just tr=
+eat
+> +                                * them as a full sector worth in the fil=
 e
-> +	 * btrfs_ioctl_scrub_args and resume scrub from where it left off
-> +	 * previously (btrfs-progs does this).
-> +	 * If we fail to copy the btrfs_ioctl_scrub_args structure to user sp=
-ace
-> +	 * then return -EFAULT to signal the structure was not copied or it m=
-ay
-> +	 * be corrupt and unreliable due to a partial copy.
-> +	 */
-> +	if (copy_to_user(arg, sa, sizeof(*sa)))
->  		ret =3D -EFAULT;
-> =20
->  	if (!(sa->flags & BTRFS_SCRUB_READONLY))
->=20
+> +                                * extent tree just for simplicity sake.
+> +                                */
+> +                               clear_len =3D fs_info->sectorsize;
+>                         }
+>
+>                         if (test_bit(BTRFS_ROOT_REF_COWS, &root->state))
+>                                 inode_sub_bytes(inode, item_end + 1 - new=
+_size);
+>                 }
+>  delete:
+> +               /*
+> +                * We use btrfs_truncate_inode_items() to clean up log tr=
+ees for
+> +                * multiple fsyncs, and in this case we don't want to cle=
+ar the
+> +                * file extent range because it's just the log.
+> +                */
+> +               if (root =3D=3D BTRFS_I(inode)->root) {
+> +                       ret =3D btrfs_inode_clear_file_extent_range(BTRFS=
+_I(inode),
+> +                                                                 clear_s=
+tart,
+> +                                                                 clear_l=
+en);
+
+Trying this out today:
+
+[ 3567.156540] BUG: sleeping function called from invalid context at
+mm/slab.h:565
+[ 3567.156595] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+2344, name: fsstress
+[ 3567.156636] 4 locks held by fsstress/2344:
+[ 3567.156638]  #0: ffff9b5f82a7c410 (sb_writers#12){.+.+}, at:
+mnt_want_write+0x20/0x50
+[ 3567.156646]  #1: ffff9b5f6a4df698
+(&sb->s_type->i_mutex_key#14){+.+.}, at: do_truncate+0x66/0xc0
+[ 3567.156651]  #2: ffff9b5f82a7c610 (sb_internal#2){.+.+}, at:
+start_transaction+0x3c7/0x5c0 [btrfs]
+[ 3567.156673]  #3: ffff9b5f7a746ae8 (btrfs-fs-00){++++}, at:
+btrfs_try_tree_write_lock+0x2f/0x1c0 [btrfs]
+[ 3567.156692] Preemption disabled at:
+[ 3567.156693] [<0000000000000000>] 0x0
+[ 3567.156709] CPU: 1 PID: 2344 Comm: fsstress Tainted: G        W
+    5.5.0-rc6-btrfs-next-52 #1
+[ 3567.156710] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.12.0-0-ga698c8995f-prebuilt.qemu.org 04/01/2014
+[ 3567.156711] Call Trace:
+[ 3567.156715]  dump_stack+0x87/0xcb
+[ 3567.156718]  ___might_sleep+0x287/0x2f0
+[ 3567.156735]  ? alloc_extent_state+0x23/0x1f0 [btrfs]
+[ 3567.156737]  slab_pre_alloc_hook+0x64/0x80
+[ 3567.156739]  kmem_cache_alloc+0x33/0x300
+[ 3567.156755]  alloc_extent_state+0x23/0x1f0 [btrfs]
+[ 3567.156770]  __clear_extent_bit+0x2d6/0x6b0 [btrfs]
+[ 3567.156788]  clear_extent_bit+0x15/0x20 [btrfs]
+[ 3567.156799]  btrfs_inode_clear_file_extent_range+0x61/0x80 [btrfs]
+[ 3567.156812]  btrfs_truncate_inode_items+0x944/0x10a0 [btrfs]
+[ 3567.156822]  ? do_raw_spin_unlock+0x49/0xc0
+[ 3567.156836]  btrfs_setattr+0x30b/0x5b0 [btrfs]
+[ 3567.156840]  notify_change+0x306/0x460
+[ 3567.156843]  do_truncate+0x75/0xc0
+[ 3567.156846]  ? generic_permission+0x1d/0x1e0
+[ 3567.156850]  vfs_truncate+0x1b0/0x250
+[ 3567.156853]  do_sys_truncate+0x79/0xc0
+[ 3567.156855]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+[ 3567.156857]  do_syscall_64+0x5c/0x280
+[ 3567.156860]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[ 3567.156861] RIP: 0033:0x7fe6436a1c57
+
+We are holding the path with spin locks... We must set it to blocking
+locks before clearing the io tree.
+
+Thanks.
 
 
---P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC--
+> +                       if (ret) {
+> +                               btrfs_abort_transaction(trans, ret);
+> +                               break;
+> +                       }
+> +               }
+> +
+>                 if (del_item)
+>                         last_size =3D found_key.offset;
+>                 else
+> @@ -5183,14 +5226,22 @@ int btrfs_cont_expand(struct inode *inode, loff_t=
+ oldsize, loff_t size)
+>                 }
+>                 last_byte =3D min(extent_map_end(em), block_end);
+>                 last_byte =3D ALIGN(last_byte, fs_info->sectorsize);
+> +               hole_size =3D last_byte - cur_offset;
+> +
+>                 if (!test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) {
+>                         struct extent_map *hole_em;
+> -                       hole_size =3D last_byte - cur_offset;
+>
+>                         err =3D maybe_insert_hole(root, inode, cur_offset=
+,
+>                                                 hole_size);
+>                         if (err)
+>                                 break;
+> +
+> +                       err =3D btrfs_inode_set_file_extent_range(BTRFS_I=
+(inode),
+> +                                                               cur_offse=
+t,
+> +                                                               hole_size=
+);
+> +                       if (err)
+> +                               break;
+> +
+>                         btrfs_drop_extent_cache(BTRFS_I(inode), cur_offse=
+t,
+>                                                 cur_offset + hole_size - =
+1, 0);
+>                         hole_em =3D alloc_extent_map();
+> @@ -5223,6 +5274,12 @@ int btrfs_cont_expand(struct inode *inode, loff_t =
+oldsize, loff_t size)
+>                                                         hole_size - 1, 0)=
+;
+>                         }
+>                         free_extent_map(hole_em);
+> +               } else {
+> +                       err =3D btrfs_inode_set_file_extent_range(BTRFS_I=
+(inode),
+> +                                                               cur_offse=
+t,
+> +                                                               hole_size=
+);
+> +                       if (err)
+> +                               break;
+>                 }
+>  next:
+>                 free_extent_map(em);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 19364940f9a1..ad25974ff936 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -829,6 +829,11 @@ static noinline int replay_one_extent(struct btrfs_t=
+rans_handle *trans,
+>                         goto out;
+>         }
+>
+> +       ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode), start,
+> +                                               extent_end - start);
+> +       if (ret)
+> +               goto out;
+> +
+>         inode_add_bytes(inode, nbytes);
+>  update_inode:
+>         ret =3D btrfs_update_inode(trans, root, inode);
+> --
+> 2.23.0
+>
 
---grj4DKtEd83EYAPgXAFTD23hTzSMjofzh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+--=20
+Filipe David Manana,
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4gUHEACgkQwj2R86El
-/qhKjAf/QH2rQD2SYdQAKNdZgGcMsqMcj47QRn1RjTdqXWpFHNmPVAePxb1IJLyt
-D9LRTkBRSH3B2MrlgnDyNDjJCeXYIydy3UC5xsKWZGZ0xHLevMjzOCgCxicPYAtu
-vPnDSyg74tz7WaOgX70d9V/sa8cvWR9x4zBhLKgPYtmC805VlT+hHqxzkQfgORr2
-/miQt5rmW2dzzUEt1ziajRapN4modY9xX4L6tpmp2mjGxOEcxepuzghOP+2D0ZqR
-cgtxw8ds0xCNhSnTsarKIM31EALErQ/HKSaEanwxNwxj9fN1FTP5NB6XJReCbWfi
-VD7doxVQhcn8ymJj77J6uubqM7UHZw==
-=iOJC
------END PGP SIGNATURE-----
-
---grj4DKtEd83EYAPgXAFTD23hTzSMjofzh--
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
