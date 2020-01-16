@@ -2,87 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4935C13DD63
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 15:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA35913DF45
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 16:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgAPO3o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 09:29:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39414 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726088AbgAPO3o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 09:29:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4DF8DB370;
-        Thu, 16 Jan 2020 14:29:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C2099DA791; Thu, 16 Jan 2020 15:29:28 +0100 (CET)
-Date:   Thu, 16 Jan 2020 15:29:28 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
- committing metadata space
-Message-ID: <20200116142928.GX3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200115034128.32889-1-wqu@suse.com>
+        id S1726555AbgAPPwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 10:52:39 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40622 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgAPPwi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 10:52:38 -0500
+Received: by mail-qk1-f193.google.com with SMTP id c17so19513378qkg.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 07:52:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=jjTL9ioGSxQmprP/I/EYRHOjGvj4xIQQRZyt9cSqYMI=;
+        b=kD7443kxZLzcJe0NdttZXw8OW+9t6nuTsjhVsFxQGFs5DJz+kb+gotBNlOFN28LE17
+         Sxplr0L3lNIclkTTRfgppU546nmGp094OZwxv50+wk4PbY45HBrrwpaPwMaK78M5Sk62
+         n9lc5H/8Z9/cicYmrjsoUr6Ocm3T6l0RQq5Ou45XnmB6KI/CNIJODtz/JdroeRVU8ObG
+         JOgiq5p3Cpkim8IPPYBwgeLGhwCP4EqpYVQynuFJXgRWJ7UaGTYy2KMfjS6WDiDHdPAQ
+         qv/KMGmUh7bp53MzsF5CgcGMvZMNTspR/7ZaKZ1xL5/5C0IHSxvetpxAOxTOpw47I5IZ
+         bplQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jjTL9ioGSxQmprP/I/EYRHOjGvj4xIQQRZyt9cSqYMI=;
+        b=rGfAgUV7k9yUVdMCZf5EP0wwgvsFhhPOdFvLWdk8jWyuKf2CwJpRZC8Z59cCUt+hrB
+         +1qIrBN4ckO16wrPDsz2YZJl9olU1fvOZAsKRDyrQVtTYEa9Zaj9d/df+C6krksNiwLU
+         +Aqqc6yO+1ah1vc44qzu9K4zNu6OMWJARjeBWZwUC3V0goQfDhxBNRw9ZA1K8d4u18Iq
+         IqANEMJGEydMU+gUHCXhNLfSK8T1txDdtJ/eemwwK0/0A9WuoMDmn7P+Bdgn8c+Rwc8b
+         n5vjaw8h2hDs0UD9O9JQHTH7xWIh5v1FLyGEzwH+XH091do2msqD0zA176dgFnFgmM7o
+         KZpg==
+X-Gm-Message-State: APjAAAUFFjzc3qSRBzHhEtujmsSQ/XegNJnLh8GWV9t1FX55pqB7roYT
+        8DaIbulmnguDek9E+1C9dXyyeLxfGW+45w==
+X-Google-Smtp-Source: APXvYqxAST+U+3CgHFR0qmZxyXdkUHwRkSxyJiQd/B8TJzbBk9scvp2hhFzjUSMIsFfHgY0F2V2xsw==
+X-Received: by 2002:a37:2d41:: with SMTP id t62mr28462172qkh.255.1579189957260;
+        Thu, 16 Jan 2020 07:52:37 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::6813])
+        by smtp.gmail.com with ESMTPSA id z15sm759265qtv.56.2020.01.16.07.52.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2020 07:52:36 -0800 (PST)
+Subject: Re: [PATCH 2/5] btrfs: include non-missing as a qualifier for the
+ latest_bdev
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20191007094515.925-1-anand.jain@oracle.com>
+ <20191007094515.925-3-anand.jain@oracle.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <36b867df-4795-d467-dd08-dc5ac4ad7cd0@toxicpanda.com>
+Date:   Thu, 16 Jan 2020 10:52:35 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200115034128.32889-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191007094515.925-3-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
-> [BUG]
-> When there are a lot of metadata space reserved, e.g. after balancing a
-> data block with many extents, vanilla df would report 0 available space.
+On 10/7/19 5:45 AM, Anand Jain wrote:
+> btrfs_free_extra_devids() reorgs fs_devices::latest_bdev
+> to point to the bdev with greatest device::generation number.
+> For a typical-missing device the generation number is zero so
+> fs_devices::latest_bdev will never point to it.
 > 
-> [CAUSE]
-> btrfs_statfs() would report 0 available space if its metadata space is
-> exhausted.
-> And the calculation is based on currently reserved space vs on-disk
-> available space, with a small headroom as buffer.
-> When there is not enough headroom, btrfs_statfs() will report 0
-> available space.
+> But if the missing device is due to alienating [1], then
+> device::generation is not-zero and if it is >= to rest of
+> device::generation in the list, then fs_devices::latest_bdev
+> ends up pointing to the missing device and reports the error
+> like this [2]
 > 
-> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
-> reservations if we have pending tickets"), we allow btrfs to over commit
-> metadata space, as long as we have enough space to allocate new metadata
-> chunks.
+> [1]
+> mkfs.btrfs -fq /dev/sdd && mount /dev/sdd /btrfs
+> mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc
+> sleep 3 # avoid racing with udev's useless scans if needed
+> btrfs dev add -f /dev/sdb /btrfs
 > 
-> This makes old calculation unreliable and report false 0 available space.
+> mount -o degraded /dev/sdc /btrfs1
 > 
-> [FIX]
-> Don't do such naive check anymore for btrfs_statfs().
-> Also remove the comment about "0 available space when metadata is
-> exhausted".
+> [2]
+> mount: wrong fs type, bad option, bad superblock on /dev/sdc,
+>         missing codepage or helper program, or other error
+> 
+>         In some cases useful info is found in syslog - try
+>         dmesg | tail or so.
+> 
+> kernel: BTRFS warning (device sdc): devid 1 uuid 072a0192-675b-4d5a-8640-a5cf2b2c704d is missing
+> kernel: BTRFS error (device sdc): failed to read devices
+> kernel: BTRFS error (device sdc): open_ctree failed
+> 
+> Fix the root of the issue, by checking if the the device is not
+> missing before it can be a contender for the fs_devices::latest_bdev
+> title.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-This is intentional and was added to prevent a situation where 'df'
-reports available space but exhausted metadata don't allow to create new
-inode.
+This should be turned into an xfstests.  You can add
 
-If it gets removed you are trading one bug for another. With the changed
-logic in the referenced commit, the metadata exhaustion is more likely
-but it's also temporary.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-The overcommit and overestimated reservations make it hard if not
-impossible to do any accurate calculation in statfs/df. From the
-usability side, there are 2 options:
+Thanks,
 
-a) return 0 free, while it's still possible to eg. create files
-b) return >0 free, but no new file can be created
-
-The user report I got was for b) so that's what the guesswork fixes and
-does a). The idea behind that is that there's really low space, but with
-the overreservation caused by balance it's not.
-
-I don't see a good way out of that which could be solved inside statfs,
-it only interprets the numbers in the best way under circumstances. We
-don't have exact reservation, don't have a delta of the
-reserved-requested (to check how much the reservation is off).
+Josef
