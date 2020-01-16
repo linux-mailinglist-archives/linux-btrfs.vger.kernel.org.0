@@ -2,126 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEC713EDAB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 19:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451C713ED38
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 19:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391501AbgAPSEb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 13:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732417AbgAPRkc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:40:32 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1553024706;
-        Thu, 16 Jan 2020 17:40:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196432;
-        bh=/hDmGflEhq6AeFLHnnAF4uDxCRj0GD0kkhCevuf4HuE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HaxJGcbIKrgc1GSu82/B0dIORT5Rqgn/joSAWqUlOeJRqgQ5HnxjMKDxsDxrcLaHE
-         eBWnqYdBRbNxQyWN0HoZ54gJvNBq9EaPbm55eKHGdZFaXK64Ry6xmyx8I7cv+ceTGM
-         L7VxF8AtOWhpWqI33Lsl1ZBWRy9Bqn9LYOXQTwc8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 198/251] Btrfs: fix hang when loading existing inode cache off disk
-Date:   Thu, 16 Jan 2020 12:35:47 -0500
-Message-Id: <20200116173641.22137-158-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116173641.22137-1-sashal@kernel.org>
-References: <20200116173641.22137-1-sashal@kernel.org>
+        id S2394901AbgAPSBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 13:01:12 -0500
+Received: from snd00005.auone-net.jp ([111.86.247.5]:62689 "EHLO
+        dmta0002.auone-net.jp" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2394878AbgAPSBK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 13:01:10 -0500
+Received: from ppp.dion.ne.jp by dmta0002.auone-net.jp with ESMTP
+          id <20200116180107663.NIUO.69338.ppp.dion.ne.jp@dmta0002.auone-net.jp>;
+          Fri, 17 Jan 2020 03:01:07 +0900
+Date:   Fri, 17 Jan 2020 03:01:07 +0900
+From:   Kusanagi Kouichi <slash@ac.auone-net.jp>
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Implement lazytime
+References: <20200114085325045.JFBE.12086.ppp.dion.ne.jp@dmta0008.auone-net.jp>
+ <20200114212107.GM3929@twin.jikos.cz>
+ <20200115134536820.LBFZ.46476.ppp.dion.ne.jp@dmta0009.auone-net.jp>
+ <20200115163128.GT3929@twin.jikos.cz>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+In-Reply-To: <20200115163128.GT3929@twin.jikos.cz>
+Message-Id: <20200116180107663.NIUO.69338.ppp.dion.ne.jp@dmta0002.auone-net.jp>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 7764d56baa844d7f6206394f21a0e8c1f303c476 ]
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If we are able to load an existing inode cache off disk, we set the state
-of the cache to BTRFS_CACHE_FINISHED, but we don't wake up any one waiting
-for the cache to be available. This means that anyone waiting for the
-cache to be available, waiting on the condition that either its state is
-BTRFS_CACHE_FINISHED or its available free space is greather than zero,
-can hang forever.
+On 2020-01-15 17:31:28 +0100, David Sterba wrote:
+> On Wed, Jan 15, 2020 at 10:45:36PM +0900, Kusanagi Kouichi wrote:
+> > On 2020-01-14 22:21:07 +0100, David Sterba wrote:
+> > > On Tue, Jan 14, 2020 at 05:53:24PM +0900, Kusanagi Kouichi wrote:
+> > > > I tested with xfstests and lazytime didn't cause any new failures.
+> > > 
+> > > The changelog should describe what the patch does (the 'why' part too,
+> > > but this is obvious from the subject in this case). That fstests pass
+> > > without new failures is nice but there should be a specific test for
+> > > that or instructions in the changelog how to test.
+> > 
+> > To test lazytime, I set the following variables:
+> > TEST_FS_MOUNT_OPTS="-o lazytime,space_cache=v2"
+> > MOUNT_OPTIONS="-o lazytime,space_cache=v2"
+> 
+> How did you verify that the lazy time updates were applied properly?
 
-This could be observed running fstests with MOUNT_OPTIONS="-o inode_cache",
-in particular test case generic/161 triggered it very frequently for me,
-producing a trace like the following:
+I ran the attached test.
 
-  [63795.739712] BTRFS info (device sdc): enabling inode map caching
-  [63795.739714] BTRFS info (device sdc): disk space caching is enabled
-  [63795.739716] BTRFS info (device sdc): has skinny extents
-  [64036.653886] INFO: task btrfs-transacti:3917 blocked for more than 120 seconds.
-  [64036.654079]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
-  [64036.654143] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [64036.654232] btrfs-transacti D    0  3917      2 0x80004000
-  [64036.654239] Call Trace:
-  [64036.654258]  ? __schedule+0x3ae/0x7b0
-  [64036.654271]  schedule+0x3a/0xb0
-  [64036.654325]  btrfs_commit_transaction+0x978/0xae0 [btrfs]
-  [64036.654339]  ? remove_wait_queue+0x60/0x60
-  [64036.654395]  transaction_kthread+0x146/0x180 [btrfs]
-  [64036.654450]  ? btrfs_cleanup_transaction+0x620/0x620 [btrfs]
-  [64036.654456]  kthread+0x103/0x140
-  [64036.654464]  ? kthread_create_worker_on_cpu+0x70/0x70
-  [64036.654476]  ret_from_fork+0x3a/0x50
-  [64036.654504] INFO: task xfs_io:3919 blocked for more than 120 seconds.
-  [64036.654568]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
-  [64036.654617] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [64036.654685] xfs_io          D    0  3919   3633 0x00000000
-  [64036.654691] Call Trace:
-  [64036.654703]  ? __schedule+0x3ae/0x7b0
-  [64036.654716]  schedule+0x3a/0xb0
-  [64036.654756]  btrfs_find_free_ino+0xa9/0x120 [btrfs]
-  [64036.654764]  ? remove_wait_queue+0x60/0x60
-  [64036.654809]  btrfs_create+0x72/0x1f0 [btrfs]
-  [64036.654822]  lookup_open+0x6bc/0x790
-  [64036.654849]  path_openat+0x3bc/0xc00
-  [64036.654854]  ? __lock_acquire+0x331/0x1cb0
-  [64036.654869]  do_filp_open+0x99/0x110
-  [64036.654884]  ? __alloc_fd+0xee/0x200
-  [64036.654895]  ? do_raw_spin_unlock+0x49/0xc0
-  [64036.654909]  ? do_sys_open+0x132/0x220
-  [64036.654913]  do_sys_open+0x132/0x220
-  [64036.654926]  do_syscall_64+0x60/0x1d0
-  [64036.654933]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="lazytime-test.diff"
 
-Fix this by adding a wake_up() call right after setting the cache state to
-BTRFS_CACHE_FINISHED, at start_caching(), when we are able to load the
-cache from disk.
+diff --git a/tests/generic/999 b/tests/generic/999
+new file mode 100755
+index 00000000..781b37c5
+--- /dev/null
++++ b/tests/generic/999
+@@ -0,0 +1,76 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2019 Kusanagi Kouichi.  All Rights Reserved.
++#
++# FS QA Test 999
++#
++# Test timestamp is persistent across umount.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_supported_os Linux
++_require_scratch
++
++_scratch_mkfs > /dev/null 2>&1
++_scratch_mount
++
++check_persist()
++{
++    ls "$SCRATCH_MNT" > /dev/null
++    before="$(stat -c '%x %y %z' "$SCRATCH_MNT")"
++    $XFS_IO_PROG -c "$1" "$SCRATCH_MNT"
++    _scratch_cycle_mount strictatime
++    after="$(stat -c '%x %y %z' "$SCRATCH_MNT")"
++    if test "$before" != "$after"
++    then
++	echo "timestamp didn't persist across umount."
++	echo "ls $1"
++	echo "before $before"
++	echo "after  $after"
++	exit
++    fi
++}
++
++check_persist ''
++check_persist fsync
++check_persist syncfs
++check_persist sync
++
++"$FSSTRESS_PROG" -d "$SCRATCH_MNT" -v $(_scale_fsstress_args -n 1000 -p 2) > "$tmp".fsstress
++find "$SCRATCH_MNT" ! -type d -exec stat -c '%x %y %z %i %F %n' '{}' + > "$tmp".before
++_scratch_cycle_mount
++find "$SCRATCH_MNT" ! -type d -exec stat -c '%x %y %z %i %F %n' '{}' + > "$tmp".after
++if ! diff -u "$tmp".before "$tmp".after
++then
++    echo "timestamp didn't persist across umount after fsstress."
++    cat "$tmp".fsstress
++    exit
++fi
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/999.out b/tests/generic/999.out
+new file mode 100644
+index 00000000..7fbc6768
+--- /dev/null
++++ b/tests/generic/999.out
+@@ -0,0 +1 @@
++QA output created by 999
+diff --git a/tests/generic/group b/tests/generic/group
+index 6fe62505..7879eb70 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -595,3 +595,4 @@
+ 590 auto prealloc preallocrw
+ 591 auto quick rw pipe splice
+ 592 auto quick encrypt
++999 auto quick
 
-Fixes: 82d5902d9c681b ("Btrfs: Support reading/writing on disk free ino cache")
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/inode-map.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-index d27014b8bf72..075b59516c8c 100644
---- a/fs/btrfs/inode-map.c
-+++ b/fs/btrfs/inode-map.c
-@@ -159,6 +159,7 @@ static void start_caching(struct btrfs_root *root)
- 		spin_lock(&root->ino_cache_lock);
- 		root->ino_cache_state = BTRFS_CACHE_FINISHED;
- 		spin_unlock(&root->ino_cache_lock);
-+		wake_up(&root->ino_cache_wait);
- 		return;
- 	}
- 
--- 
-2.20.1
-
+--pf9I7BMVVzbSWLtt--
