@@ -2,108 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DAC13D96E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 12:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B142613D978
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 13:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgAPL7a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 06:59:30 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:22046 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgAPL7a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 06:59:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1579175970; x=1610711970;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=841fLDIkOTMrPcFfPUtUSi3k6Byo+S0s13POUrFsu48=;
-  b=optrFP7xxl7HZWi/+LFT/nJv6aApsHnHPzLjuvzRwiiV9pQyqjQKjI+j
-   WOi/WTzGz0KlXPMrA3BrxsHSB4lQZEepVyFH/BwO2SUuJoNJfm26w8+8+
-   fSCRIl6KdDVTmDak/h7dS7t/lmnfaZGz7UOG/7q1vH1Te6MC5BoP5M+Zt
-   cijugNLzLR5F+AAXVeGGJqleAi6kc/Fyzv+wOPFrhe663COi/5yk02BAR
-   AbW6a4QT4D3WQBxLLfj7OVITmtJjA3+r2cOR/va0rJqc+mnFkbdKUzb6J
-   g+u0M1mY12ugHDGppejHaGmHky2m9hqlMKrAyJCKgtXhGxKGDbi+k6GQv
-   Q==;
-IronPort-SDR: LbQXIapELxY6Sj1bUz7oYlLomrYm6s79jxMpg5VgX5AlsoA51D62VTdvWtN4F/bMSOMbjHi2mS
- mGzeRcAM3FzAgsMxzXMow2gTo8dvrGeZg3OVJBQi1seV6xHLU7JWxswLZ4oAdFM5DWSTiBGxlr
- neBPsqpW5q24Qm1Rt8smuoRbGN2Sk3CsbA7+rz8bcKU/WXGRetsopFTiFaY7RM6W9cxkpZv3ge
- ypEE+a2Lx1+RH3zNYulfU9Sy/STwoAuOgDSe4cS45sQ/ZI6eGCc74PNyQ2zzcAzquGg38Vy8CN
- Cds=
-X-IronPort-AV: E=Sophos;i="5.70,326,1574092800"; 
-   d="scan'208";a="132080480"
-Received: from mail-bn8nam11lp2172.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.172])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2020 19:59:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EeYdV4lPKow+W3KJmYxMwndp5Wm1YIA3phYZ+sIIh7RmxF7a4Vfbgq0IJlx7JKlBg+muYnpR62boFid7YqPCysa532mtz7U5lzgV9BcZ8sbHvYVHPpaTtV5RFcspAmzp2VaeZoWjkvfEHA1kVdl1OBWTNs1+lMttsSWwXpJ3ho6QuGNbHjOw52HeQyqBCYsktCopLwnWr2coBRgljSLApxCLxejraI1toCtaYvxLh1kMckkDNhaQJzRuq76BBzBsvbXnqe8sy5ozF33gXRXm41dSJk8Vko0M99HRvQeVhIwlNzRNCAy+tuJpIuOkqExI2tnCNxrrOJQDu+qLh2bZbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=841fLDIkOTMrPcFfPUtUSi3k6Byo+S0s13POUrFsu48=;
- b=KhxV4acndaKVGryH1IBy6hY6ymZdh4VQUOClkSSF+IfjGK/+Z/rORrOHaB1tYJY9ymY//j4iD1C/KqaN87ZSPGgsONq0sn6Z4PgojFBTTrqE/lY4ghU68Av5xaEF/m/aG4Y50rR0SScTa0g2CWvHS0mqsN9JXC2F4c+JyavSyf7bbUXirbu+wiGGQeK7XyaTgljLP1Ognf1FkoxCKHTEt/RHBPI0kP6YkpHlTEDwvEoJGiPZLkBVhZkpb9GtgVagf7GfZ8QcFOdAivaSu6NV6VBJRCV6xtkM8Ge5OdBAqQqlaaWgKtk3k+U72JA7dKhnC+7jf1aFGIaaWv52mIMcWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=841fLDIkOTMrPcFfPUtUSi3k6Byo+S0s13POUrFsu48=;
- b=f5e90hr2dZ78BNV+t2WJNijf/37voKBEJZULS2O3E7V3SOYOzxA+EoG0So6tWWE75AdNp4aTXn9ZxlsRLHL1y9JotM11KEmtlC/7L1dCb+PaFVMB+rYRRmXSqYKkJlYGY8d+jz3Tg6UAc4ezslMHuhhvXPqeiYV+s3pYsara7xY=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3711.namprd04.prod.outlook.com (10.167.150.151) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.13; Thu, 16 Jan 2020 11:59:27 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2644.015; Thu, 16 Jan 2020
- 11:59:27 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "fdmanana@kernel.org" <fdmanana@kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        id S1726555AbgAPMA6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 07:00:58 -0500
+Received: from mout.gmx.net ([212.227.15.15]:47235 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726151AbgAPMA5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 07:00:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1579176053;
+        bh=Q+PcaI9rSucZ/tvpFDo2nT6ce1F3hApHl5A6Hs1/qVo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=DoocIO8Ntx8+uDWM4Mf7599XRs4bHH1FQogKn6/gPGxwJNC8owM3xTT4HqfysIASR
+         xafgpnHNmS2Ac2QHaY+V3BgwoVa31GNyAIHeQfHxZi4mGwPqy+Z7v9ioeuPpkcJy+c
+         mjWbYgC/gRc/CD+/ChdVUdgwUmRgHeCTXA0CXkMo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQIv-1jOwj536iF-00oWSS; Thu, 16
+ Jan 2020 13:00:53 +0100
 Subject: Re: [PATCH] Btrfs: always copy scrub arguments back to user space
-Thread-Topic: [PATCH] Btrfs: always copy scrub arguments back to user space
-Thread-Index: AQHVzGA3jgU0GTgyd0qq9NJ7KrXMAqftQM8A
-Date:   Thu, 16 Jan 2020 11:59:26 +0000
-Message-ID: <43D93D40-9A62-465F-A880-0D7758FF63CB@wdc.com>
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <20200116112920.30400-1-fdmanana@kernel.org>
-In-Reply-To: <20200116112920.30400-1-fdmanana@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d1d1dff5-1274-4379-031f-08d79a7b894c
-x-ms-traffictypediagnostic: SN4PR0401MB3711:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN4PR0401MB3711622FAC83B66B6DA6F9719B360@SN4PR0401MB3711.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 02843AA9E0
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(366004)(39860400002)(396003)(136003)(346002)(199004)(189003)(316002)(36756003)(86362001)(2616005)(6506007)(110136005)(66556008)(558084003)(71200400001)(19618925003)(186003)(5660300002)(33656002)(478600001)(81166006)(8676002)(81156014)(6512007)(6486002)(8936002)(4270600006)(26005)(91956017)(76116006)(64756008)(66476007)(2906002)(66946007)(66446008);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3711;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MmX3Gvh/L3CHPfPsT2P3tOmScQ+SwK25z//cWl232JoFFRpEl1dXCtqjp8U3dNQTbVeq2DAoIiX+6tLMMhyB7475q4N159RUpYD2D13dbbqIAIMKlWOs+PkZ4+zQ3fZqtR2SgBBHSU5nIBC5K/RAZ1Q2BnMkGN5X7plL1FkIwrF2AbIpR0s6l08luhbxbon0b0bz6O3PMafxnl6VZejJfqJfsa6rd8+XoQTR2aXnrH1J8swXb0PQozLEg7ioABTppr+tTXMiuZceCk3BOwWxu6R6i2JKwKwcSG3rvJSeNTElw7KV1dDfrmoHBSfpbiGTrl0ps70tStEKtwehuOXRs4sk/xiKkdEaUDEy8BjNPm1F3y5ch8NNo5neg4DHrU5fIoV2Qi8/P4O7D2dW5uXI+CPGW198MKysSrL7K9ot2lVrFhciZ3RlfaK4hamoEj60
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7A003C819231D94BB62E8FF9BCA7B763@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <cdc9bb1b-994e-ddbc-4274-be0886df67da@gmx.com>
+Date:   Thu, 16 Jan 2020 20:00:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1d1dff5-1274-4379-031f-08d79a7b894c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2020 11:59:26.9910
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p2GdR1IFp+T0cfTU33Zv18d3rhwBCaZ2zx/uLKfoveG2e47UQbUzl5HR3S60dgrSMHrE7xKwZVw4yQeAmmvGn6NAHXL4lbVfCg5V/oP9z7I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3711
+In-Reply-To: <20200116112920.30400-1-fdmanana@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="grj4DKtEd83EYAPgXAFTD23hTzSMjofzh"
+X-Provags-ID: V03:K1:g9oY8tvlzWfh2jQkYUMDYKkv/8FyToWpmDRbkihqvSBN0qvMYGX
+ rxVILud0INhYyRbcTh2S/DCZUwYtpEvwOTBX6rvhe7rbyQFaK7xXxkwQ+reNrMNBI4jy7bg
+ XxDKn4/bVOEi8O0lvpx1ybFp9HmumF3TIM7PJiy/U4GLsh+8ze9ITTts8UOuiZvigYKeLfp
+ NBeKDhFNeEfICidU5hGTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zIjQyXCTmDI=:lT6IDuXAVDnTXqSTBJE1xR
+ pZvwWi28v2MOc2TSNhLMC8dWIlxachzPLEzcz3xRqsw78NJsnm9Y4ZLmKfNJxziZEgGqR0fv9
+ BgF6Z8/9mWu6MT0TqG11RQgKn6QQbuKhHTLQZrHqAw5zcQzNVj/dbqEFg3zTPO+wkmAg2L62Q
+ mgFw/OGleB37l4dmgdaVc0gss9gx5ySl7YD9yDrTUw+VkS4QD8lVsquFZB9MyrvmNDawOAtDv
+ 1ktXu/lKXY+m6hhYRGiPcTzsrYtr2yZho0u8S0jgMfpWDUSDKYSdAfX3kGfBNZZf3yQsvP+4l
+ IchPHk13i5uBtRMBgUK3Cp+ksTWpJVDUrFLglG7AFhRGU4/CqWNXD7DTPSJEngtuv+2GSVXC0
+ EXVEL0472K7beIsYMfjEUcdW84AUesTs/7wJug4p05exuDRDK10ET1FnVNFxrADsMRsQSSHLv
+ bJUmULCg+TmdE6ti9DqLOrJpCcA9ECCFXGNM/i51SKhmiY4JPLZju+YazYp0nMVgXFEcs2tvE
+ SOiGyo01PT6Sev/xaBJK7BCPCEDTX4afDSDY7UqSrEMCQGUc+6m9oDdB38ERg82R1q+fqrUxv
+ S6OELb8nQ5JQP/S62A+fkfbvGEPKqHzAlbHyxlTr7vuCg/v2y4RCwDIy+gKCo/XiN1tX2KBYl
+ LbjTdGeauBqsz22W3bxI9riJyZsUzlIOu504KUTXxuvsHP7zeFb3cowmimnH9G8x9XuVyE+cc
+ YXgVSvEdZA30LEjJP5FdsThIKDFrp+DaDO20+b2Yy0yBA/aqTtomdxOFFV0jzKjt7ie+unnFh
+ VeEDccMZPQHYk+3n0nNDTvHaXIgF+UzycJLXJCya9G8G+GdKW7PS/in7dCSAWYUJD4IzOxPVp
+ T2WG9jzRl9KB4IL/MsHVnHi860eMq4gB1gog77kC7tZi16RnZRtNVYM9QlsL0kDbUytaeaXHE
+ 0/YtH8kd872uilfuMBByaEakOyU33frQPLf1w5BYG7ftUW3omVk7KpY1OexY8QS99IIhlfYR8
+ yaLVRuK2Zj+tQl95FsNpxXtiNXf3Vz2zY5ZLZVC4BYpUnIwPS13Cq6dDgydjmPJmpD/D6ZgBr
+ SQWKv/tD1GFSJpl5iHqtwSeDo3lnOlXkRGeZ4iZsX0UnOW4J2+X4+AkH+4tZGwe7Lionp1XfF
+ P+/tl02B0xkOro0NlUVBrAZmstTqubEnYTym9kUsZ2MYPTCyWwbnsgYe1/bZYxSKzakI/T5M4
+ 1ELi68XQsR+9xt0/mnBo5wQ0fhCr41S6cu/sxhHSeVpHtYRdVoVsCIyD5Llw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0KICAgIA0KICAgIA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--grj4DKtEd83EYAPgXAFTD23hTzSMjofzh
+Content-Type: multipart/mixed; boundary="P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC"
+
+--P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/1/16 =E4=B8=8B=E5=8D=887:29, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> If scrub returns an error we are not copying back the scrub arguments
+> structure to user space. This prevents user space to know how much prog=
+ress
+> scrub has done if an error happened - this includes -ECANCELED which is=
+
+> returned when users ask for scrub to stop. A particular use case, which=
+ is
+> used in btrfs-progs, is to resume scrub after it is canceled, in that c=
+ase
+> it relies on checking the progress from the scrub arguments structure a=
+nd
+> then use that progress in a call to resume scrub.
+>=20
+> So fix this by always copying the scrub arguments structure to user spa=
+ce,
+> overwriting the value returned to user space with -EFAULT only if copyi=
+ng
+> the structure failed to let user space know that either that copying di=
+d
+> not happen, and therefore the structure is stale, or it happened partia=
+lly
+> and the structure is probably not valid and corrupt due to the partial
+> copy.
+>=20
+> Reported-by: Graham Cobb <g.btrfs@cobb.uk.net>
+> Link: https://lore.kernel.org/linux-btrfs/d0a97688-78be-08de-ca7d-bcb4c=
+7fb397e@cobb.uk.net/
+> Fixes: 06fe39ab15a6a4 ("Btrfs: do not overwrite scrub error with fault =
+error in scrub ioctl")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+> ---
+>  fs/btrfs/ioctl.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 3a4bd5cd67fa..173758d86feb 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -4253,7 +4253,19 @@ static long btrfs_ioctl_scrub(struct file *file,=
+ void __user *arg)
+>  			      &sa->progress, sa->flags & BTRFS_SCRUB_READONLY,
+>  			      0);
+> =20
+> -	if (ret =3D=3D 0 && copy_to_user(arg, sa, sizeof(*sa)))
+> +	/*
+> +	 * Copy scrub args to user space even if btrfs_scrub_dev() returned a=
+n
+> +	 * error. This is important as it allows user space to know how much
+> +	 * progress scrub has done. For example, if scrub is canceled we get
+> +	 * -ECANCELED from btrfs_scrub_dev() and return that error back to us=
+er
+> +	 * space. Later user space can inspect the progress from the structur=
+e
+> +	 * btrfs_ioctl_scrub_args and resume scrub from where it left off
+> +	 * previously (btrfs-progs does this).
+> +	 * If we fail to copy the btrfs_ioctl_scrub_args structure to user sp=
+ace
+> +	 * then return -EFAULT to signal the structure was not copied or it m=
+ay
+> +	 * be corrupt and unreliable due to a partial copy.
+> +	 */
+> +	if (copy_to_user(arg, sa, sizeof(*sa)))
+>  		ret =3D -EFAULT;
+> =20
+>  	if (!(sa->flags & BTRFS_SCRUB_READONLY))
+>=20
+
+
+--P7cUfWo0THEZfMh6Cb5uYzhjMGM1fu7oC--
+
+--grj4DKtEd83EYAPgXAFTD23hTzSMjofzh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4gUHEACgkQwj2R86El
+/qhKjAf/QH2rQD2SYdQAKNdZgGcMsqMcj47QRn1RjTdqXWpFHNmPVAePxb1IJLyt
+D9LRTkBRSH3B2MrlgnDyNDjJCeXYIydy3UC5xsKWZGZ0xHLevMjzOCgCxicPYAtu
+vPnDSyg74tz7WaOgX70d9V/sa8cvWR9x4zBhLKgPYtmC805VlT+hHqxzkQfgORr2
+/miQt5rmW2dzzUEt1ziajRapN4modY9xX4L6tpmp2mjGxOEcxepuzghOP+2D0ZqR
+cgtxw8ds0xCNhSnTsarKIM31EALErQ/HKSaEanwxNwxj9fN1FTP5NB6XJReCbWfi
+VD7doxVQhcn8ymJj77J6uubqM7UHZw==
+=iOJC
+-----END PGP SIGNATURE-----
+
+--grj4DKtEd83EYAPgXAFTD23hTzSMjofzh--
