@@ -2,98 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C94140C6F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CF9140C86
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgAQO2K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:28:10 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40653 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbgAQO2K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:28:10 -0500
-Received: by mail-qk1-f194.google.com with SMTP id c17so22801262qkg.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=auqSf6Z7GdtOJcVAPVLclIvNjAWYCx2OboBszHGf08c=;
-        b=Dvmx8lg8HaMed04MNHOR8s16ZyiRwaOVI4Pk7vJ0/Myque6Hn4XGh/Q/R7Yws6+CDP
-         ec9Q4A0ZXU5RJ91uZk5cpemgbwo22S/CI+u01NohOZoLbtL5wdmn73OtCdt1sJtMejsa
-         lumb5+sjA3pq9IuWTOy8geXJszm67H2B5SATTwyFxNRyrOwXxWrUFIImGUEQSBSlrY8W
-         mx0fdSPQqiJGhQZ9MY2ChHhIs8gMKJaLeHin39/reDI/XZ5fHc5xhOVLQ3xgrdtt3W+O
-         kjExNlU4Js1Q6NeZY9Hbi2P0s2EChj9Y9ZFeQAr89nyzEIZlch4uJcQV5SnXeaFoN1to
-         XOKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=auqSf6Z7GdtOJcVAPVLclIvNjAWYCx2OboBszHGf08c=;
-        b=ewBb8La7VcIgS/yvw+2KbTiMrnQaafC8+UVqU3DlTcAlD1AgJlDjryYG7zQH2xe7A2
-         ePHXJEaKs54JE2S2HaBQPz5EnXtVhGyZf561bHpCjGbUeWqHcwGBmOZ2G5VR2txA7wzz
-         JKOteJM7InwV2uKB3HR59x0vA9M9tRPR/ftDbu8WFrPivnayyC6TnhkH97gpnRezVUJw
-         nIo8FV2OXj6P6fcUiTCd2FaCSJf14XWDWTzIu6BhH05WIfZSgFASKk1J5n/EEsi2ZUgT
-         w+mhij2vzqaXOZBFB5XED+R4bOtfuQNLfW5B0FJ8/v8bztZTHqCXsCVabxMvTqZBL/B+
-         c8Cg==
-X-Gm-Message-State: APjAAAXPodzObbvgGYyqzoKuOPN9JQIndGSzAnbp7YVSr9ncQgYUKLMQ
-        DaADewCmG5ZfDlGjCkVU4pMVnKl94B0s4Q==
-X-Google-Smtp-Source: APXvYqxj+c2SfKxNXCr/PnxR/tdSBrSFfmPq83/aE4whwBK9qSE6TAF+FM0o8YFmr+VEpWX1O/wC7A==
-X-Received: by 2002:a37:e408:: with SMTP id y8mr38344529qkf.39.1579271288266;
-        Fri, 17 Jan 2020 06:28:08 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id s1sm11636433qkm.84.2020.01.17.06.28.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jan 2020 06:28:07 -0800 (PST)
-Subject: Re: [PATCH 0/3] btrfs-progs: Do proper extent item generation repair
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200117072959.27929-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <4205b62a-e72f-6b6e-b112-83588462675a@toxicpanda.com>
-Date:   Fri, 17 Jan 2020 09:28:06 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1727040AbgAQOaX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:30:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50816 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726903AbgAQOaX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:30:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 38CF1B2BF;
+        Fri, 17 Jan 2020 14:30:21 +0000 (UTC)
+Subject: Re: [PATCH 1/5] btrfs: remove buffer heads from super block reading
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200117125105.20989-1-johannes.thumshirn@wdc.com>
+ <20200117125105.20989-2-johannes.thumshirn@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <10e5454f-9aa6-b1db-9ae4-4ee2fec784ac@suse.com>
+Date:   Fri, 17 Jan 2020 16:30:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200117072959.27929-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200117125105.20989-2-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/17/20 2:29 AM, Qu Wenruo wrote:
-> Before this patchset, the only way to repair invalid extent item
-> generation is to use --init-extent-tree, which is really a bad idea.
+
+
+On 17.01.20 г. 14:51 ч., Johannes Thumshirn wrote:
+> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads have
+> some drawbacks, like not being able to propagate errors from the lower
+> layers.
 > 
-> To rebuild the whole extent tree just for one corrupted extent item?
-> I must be insane at that time.
-> 
-> This patch introduces the proper extent item generation repair
-> functionality for both mode, and alter existing test case to also test
-> repair.
-> 
-> Qu Wenruo (3):
->    btrfs-progs: check/lowmem: Repair invalid extent item generation
->    btrfs-progs: check/original: Repair extent item generation
->    btrfs-progs: tests/fsck-044: Enable repair test for invalid extent
->      item generation
-> 
->   check/main.c                                  | 66 +++++++++++++++++
->   check/mode-lowmem.c                           | 74 +++++++++++++++++++
->   .../.lowmem_repairable                        |  0
->   .../test.sh                                   | 19 -----
->   4 files changed, 140 insertions(+), 19 deletions(-)
->   create mode 100644 tests/fsck-tests/044-invalid-extent-item-generation/.lowmem_repairable
->   delete mode 100755 tests/fsck-tests/044-invalid-extent-item-generation/test.sh
+> Change the buffer_heads to BIOs.
 > 
 
-If we have a generation > super generation that means that block is from the 
-future and we shouldn't trust anything in it right?  I haven't touched this code 
-in a while, but that just meant we threw it away and any extent references that 
-were in that block were just re-created.  Is that not what's happening now? 
-This seems like a bad way to go about fixing this particular problem.  Thanks,
+Generally this looks good. I guess as a follow up I can send the rest of
+my code which cleans up a bit parameters of the involved function and
+let people decide if it makes the code more readable. One minor nit
+below. In any case:
 
-Josef
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+<snip>
+
+
+> @@ -7270,25 +7268,41 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+>  
+>  void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path)
+>  {
+> -	struct buffer_head *bh;
+> +	struct page *super_page;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+>  	struct btrfs_super_block *disk_super;
+>  	int copy_num;
+> +	int ret;
+>  
+>  	if (!bdev)
+>  		return;
+>  
+> +	bio_init(&bio, &bio_vec, 1);
+>  	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
+>  		copy_num++) {
+> +		u64 bytenr;
+
+nit: super_page is only used in this loop so IMO it will be better if
+it's declared inside of it.
+>  
+> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
+> +		if (btrfs_read_dev_one_super(bdev, copy_num, &super_page))
+>  			continue;
+>  
+> -		disk_super = (struct btrfs_super_block *)bh->b_data;
+> +		disk_super = page_address(super_page);
+>  
+>  		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+> -		set_buffer_dirty(bh);
+> -		sync_dirty_buffer(bh);
+> -		brelse(bh);
+> +
+> +		bytenr = btrfs_sb_offset(copy_num);
+> +
+> +		bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +		bio_set_dev(&bio, bdev);
+> +		bio_set_op_attrs(&bio, REQ_OP_WRITE, 0);
+> +		bio_add_page(&bio, super_page, PAGE_SIZE, 0);
+> +
+> +		ret = submit_bio_wait(&bio);
+> +		WARN_ON(ret);
+> +
+> +		__free_page(super_page);
+> +		bio_reset(&bio);
+> +
+>  	}
+>  
+>  	/* Notify udev that device has changed */
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 9c7d4fe5c39a..46a65b15eb93 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -17,8 +17,6 @@ extern struct mutex uuid_mutex;
+>  
+>  #define BTRFS_STRIPE_LEN	SZ_64K
+>  
+> -struct buffer_head;
+> -
+>  struct btrfs_io_geometry {
+>  	/* remaining bytes before crossing a stripe */
+>  	u64 len;
+> 
