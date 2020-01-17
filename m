@@ -2,123 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E239F140C24
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F57F140C2A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgAQOKx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:10:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726908AbgAQOKx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:10:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0E626B9C0;
-        Fri, 17 Jan 2020 14:10:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3478CDA871; Fri, 17 Jan 2020 15:10:37 +0100 (CET)
-Date:   Fri, 17 Jan 2020 15:10:37 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
- committing metadata space
-Message-ID: <20200117141037.GG3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200115034128.32889-1-wqu@suse.com>
- <20200116142928.GX3929@twin.jikos.cz>
- <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
- <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
+        id S1727561AbgAQOMt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:12:49 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44692 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQOMt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:12:49 -0500
+Received: by mail-qt1-f194.google.com with SMTP id w8so7430964qts.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:12:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FGTOWrHfi08mzT0zWN/d7Kf6UkRD+wGFiWu4nC7j/9o=;
+        b=pfb6ce4oDyGS0vCG7afUKwb1HT8lE8MfdXNHeiFTbXjXh+QfGwV1/o4yEcDXB5wGaK
+         6bGAzrzhYw2iVDQbb7yT+zzOTQurCZ++fqIddIeU2Fn+dudt/NMIATlPTES4kO9x7fNS
+         Un5y+PCRubX8yQl//dtPZm0bHVDiTbKx1F+nh3j6Rnx3K/WEFHTgcUunYTZsiXk5Rb0A
+         6A8QK9rFklChnzDh6rp2hUc7s+QhHn0+jC1NiExuhvErJt0p2Q5GfiRGRupl2vUXhaVZ
+         uYFkkMFxJuRVMS6JJdJ9GBLK28IUwXkpX6gNBnL9CxhSsja7Z5LOWNs0CqBZHHRIzeT3
+         xVXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FGTOWrHfi08mzT0zWN/d7Kf6UkRD+wGFiWu4nC7j/9o=;
+        b=gkJkO1TTcSfr+/Xc+UElQPnkOYff3d9ZP00KfMRnK9eOJFK62N6gnAeqmz1t885gyX
+         ihryRByEnd0n2wju7WB+9sgl7KF1x+WSpuq0IyiDIspzyP2h9bUMv681jesIkTAhga/0
+         SSSA3idDxX/70F8U5Izhhet2Oc3GosT+1dY7z3D1VyF6Lf7PH6+QmqJbcjp9WygZqp2g
+         nsLUHQhH56Zg3mRuuDLeTnOhH7G57s2EWFyFUAcRzU0RIVCyyRMQ4w6I52EOrMGqVSqe
+         LIegTggtLfO5lslq27Ay/yB4+XQzYFqvwiiNRnyGML8+1qaF5ZY7e/XBV6JLTThYchYH
+         8Y7A==
+X-Gm-Message-State: APjAAAWkFYhjPI/FV0y2SJ1YbUrToylaCGhu1dxSdURG+Pa/BiICGbdm
+        e14dfeen3U37/uQI5l2WBDmUZ6l7U9c/iw==
+X-Google-Smtp-Source: APXvYqypYEXoCzn2kwwJLmfMOoCuxnL7StvdqrY6wFtV78z8wNBnsgYp2OMzV438VaY2mKUrWIJjew==
+X-Received: by 2002:aed:3b14:: with SMTP id p20mr7791463qte.176.1579270367699;
+        Fri, 17 Jan 2020 06:12:47 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id u16sm11791582qku.19.2020.01.17.06.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 06:12:47 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][v2] btrfs: drop log root for dropped roots
+Date:   Fri, 17 Jan 2020 09:12:45 -0500
+Message-Id: <20200117141245.42971-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 09:32:49AM +0800, Qu Wenruo wrote:
-> On 2020/1/17 上午8:54, Qu Wenruo wrote:
-> > On 2020/1/16 下午10:29, David Sterba wrote:
-> >> On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
-> >>> [BUG]
-> >>> When there are a lot of metadata space reserved, e.g. after balancing a
-> >>> data block with many extents, vanilla df would report 0 available space.
-> >>>
-> >>> [CAUSE]
-> >>> btrfs_statfs() would report 0 available space if its metadata space is
-> >>> exhausted.
-> >>> And the calculation is based on currently reserved space vs on-disk
-> >>> available space, with a small headroom as buffer.
-> >>> When there is not enough headroom, btrfs_statfs() will report 0
-> >>> available space.
-> >>>
-> >>> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
-> >>> reservations if we have pending tickets"), we allow btrfs to over commit
-> >>> metadata space, as long as we have enough space to allocate new metadata
-> >>> chunks.
-> >>>
-> >>> This makes old calculation unreliable and report false 0 available space.
-> >>>
-> >>> [FIX]
-> >>> Don't do such naive check anymore for btrfs_statfs().
-> >>> Also remove the comment about "0 available space when metadata is
-> >>> exhausted".
-> >>
-> >> This is intentional and was added to prevent a situation where 'df'
-> >> reports available space but exhausted metadata don't allow to create new
-> >> inode.
-> > 
-> > But this behavior itself is not accurate.
-> > 
-> > We have global reservation, which is normally always larger than the
-> > immediate number 4M.
-> > 
-> > So that check will never really be triggered.
-> > 
-> > Thus invalidating most of your argument.
-> >>
-> >> If it gets removed you are trading one bug for another. With the changed
-> >> logic in the referenced commit, the metadata exhaustion is more likely
-> >> but it's also temporary.
-> 
-> Furthermore, the point of the patch is, current check doesn't play well
-> with metadata over-commit.
+If we fsync on a subvolume and create a log root for that volume, and
+then later delete that subvolume we'll never clean up its log root.  Fix
+this by making switch_commit_roots free the log for any dropped roots we
+encounter.  The extra churn is because we need a btrfs_trans_handle, not
+the btrfs_transaction.
 
-The recent overcommit updates broke statfs in a new way and left us
-almost nothing to make it better.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- Update commit message to indicate we need the trans_handle instead of the
+  transaciton.
 
-> If it's before v5.4, I won't touch the check considering it will never
-> hit anyway.
-> 
-> But now for v5.4, either:
-> - We over-commit metadata
->   Meaning we have unallocated space, nothing to worry
+ fs/btrfs/transaction.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-Can we estimate how much unallocated data are there? I don't know how,
-and "nothing to worry" always worries me.
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index cfc08ef9b876..55d8fd68775a 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -147,13 +147,14 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
+ 	}
+ }
+ 
+-static noinline void switch_commit_roots(struct btrfs_transaction *trans)
++static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
+ {
++	struct btrfs_transaction *cur_trans = trans->transaction;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_root *root, *tmp;
+ 
+ 	down_write(&fs_info->commit_root_sem);
+-	list_for_each_entry_safe(root, tmp, &trans->switch_commits,
++	list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
+ 				 dirty_list) {
+ 		list_del_init(&root->dirty_list);
+ 		free_extent_buffer(root->commit_root);
+@@ -165,16 +166,17 @@ static noinline void switch_commit_roots(struct btrfs_transaction *trans)
+ 	}
+ 
+ 	/* We can free old roots now. */
+-	spin_lock(&trans->dropped_roots_lock);
+-	while (!list_empty(&trans->dropped_roots)) {
+-		root = list_first_entry(&trans->dropped_roots,
++	spin_lock(&cur_trans->dropped_roots_lock);
++	while (!list_empty(&cur_trans->dropped_roots)) {
++		root = list_first_entry(&cur_trans->dropped_roots,
+ 					struct btrfs_root, root_list);
+ 		list_del_init(&root->root_list);
+-		spin_unlock(&trans->dropped_roots_lock);
++		spin_unlock(&cur_trans->dropped_roots_lock);
++		btrfs_free_log(trans, root);
+ 		btrfs_drop_and_free_fs_root(fs_info, root);
+-		spin_lock(&trans->dropped_roots_lock);
++		spin_lock(&cur_trans->dropped_roots_lock);
+ 	}
+-	spin_unlock(&trans->dropped_roots_lock);
++	spin_unlock(&cur_trans->dropped_roots_lock);
+ 	up_write(&fs_info->commit_root_sem);
+ }
+ 
+@@ -1421,7 +1423,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
+ 	ret = commit_cowonly_roots(trans);
+ 	if (ret)
+ 		goto out;
+-	switch_commit_roots(trans->transaction);
++	switch_commit_roots(trans);
+ 	ret = btrfs_write_and_wait_transaction(trans);
+ 	if (ret)
+ 		btrfs_handle_fs_error(fs_info, ret,
+@@ -2301,7 +2303,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	list_add_tail(&fs_info->chunk_root->dirty_list,
+ 		      &cur_trans->switch_commits);
+ 
+-	switch_commit_roots(cur_trans);
++	switch_commit_roots(trans);
+ 
+ 	ASSERT(list_empty(&cur_trans->dirty_bgs));
+ 	ASSERT(list_empty(&cur_trans->io_bgs));
+-- 
+2.24.1
 
-> - No more space for over-commit
->   But in that case, we still have global rsv to update essential trees.
->   Please note that, btrfs should never fall into a status where no files
->   can be deleted.
-
-Of course, the global reserve is there for last resort actions and will
-be used for deletion and updating essential trees. What statfs says is
-how much data is there left for the user. New files, writing more data
-etc.
-
-> Consider all these, we're no longer able to really hit that case.
-> 
-> So that's why I'm purposing deleting that. I see no reason why that
-> magic number 4M would still work nowadays.
-
-So, the corner case that resulted in the guesswork needs to be
-reevaluated then, the space reservations and related updates clearly
-affect that. That's out of 5.5-rc timeframe though.
