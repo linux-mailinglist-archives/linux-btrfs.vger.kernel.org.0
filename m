@@ -2,53 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 309A3140ED9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 17:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD91C140F23
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 17:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729148AbgAQQWE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 11:22:04 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:46969 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729153AbgAQQWE (ORCPT
+        id S1726915AbgAQQjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 11:39:24 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23954 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726726AbgAQQjX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 11:22:04 -0500
-Received: by mail-pf1-f195.google.com with SMTP id n9so12153265pff.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 08:22:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B/QRDv8e8iQEqDNCGkiiDK4fWPlSZEWb6aUg/XWFLNs=;
-        b=DZers6f/bW85HgG9w6xwZ2W7ctE6cirUkp9BOXc4wzAQLJ8hbclatauI3Jbj0CHoK3
-         raCk5YguGXY7ntXQRwWygDUTHFX/ZCxFHtLg4MqKOtAOzrmkgYDKukHBZdsdmmARTe9Z
-         fnLvAzVpSyJ56zmYkFOTG/DAmSwYrs/z+jBQ1/D2HMxFlX1/xxY0ZLvqOLtGkZa+yjv2
-         JKxSQ/w95eNIT6dgTUPizuLLgOKUIoJJnsLDEbahCyq0yKkwKH2o00mJJYXQ+FJr72DS
-         G9izbKZMiUcKxaJ7+RA2zelE0AAv5k9TLUCWR8l0KG815UdhT9gTDuB7xezO08fHmJwl
-         YLLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B/QRDv8e8iQEqDNCGkiiDK4fWPlSZEWb6aUg/XWFLNs=;
-        b=FQjuH+6CKFT63p0H8wJvnegdHB1R0tbRb1BuNu2a+2B/ch81tgeXlD5rqg0r6jqjVt
-         fxLeYamXMxzUIv+V/ktUIKVHefBPw03fvAJLhSVSlLuddIZ9zxYdT0nCsmnYP7k+RxQJ
-         mXYjDrQhLMDoXPOLjmnYTaKNZGt+7aCtYD6p38fBWBIJcsm17n9crP3TCuyfZ4VgijVO
-         ptaySin/IQEuJBW/7mA7T9wZFCw9wSe7m2/LaMgRO1fSPx3JuhD1CuQGfHQvRvwLG7Gn
-         moIk8znv0f6k1WUNF3aLkeANgl4l0Kji3ZxGdxPVeyh/a2jNoXU253iGF4G1rZABs4DQ
-         fnyg==
-X-Gm-Message-State: APjAAAUH1cVTDdwlKt9+VfCaN0daI6DB5dpI0EdueTvEk/EedAz7IYUF
-        hYDlUrMdrB0psT8jfXHzZYTOXg==
-X-Google-Smtp-Source: APXvYqwcs87BORO66K1Fb2Q4UZMx1Tbzz2nRXGK4re5uWiRJWWTgWw8OWfntW6QesxVSMp+PIgbbIQ==
-X-Received: by 2002:a63:d00f:: with SMTP id z15mr45867227pgf.143.1579278123365;
-        Fri, 17 Jan 2020 08:22:03 -0800 (PST)
-Received: from vader ([2601:602:8b80:8e0:e6a7:a0ff:fe0b:c9a8])
-        by smtp.gmail.com with ESMTPSA id b128sm28618425pga.43.2020.01.17.08.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 08:22:02 -0800 (PST)
-Date:   Fri, 17 Jan 2020 08:22:01 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Colin Walters <walters@verbum.org>,
+        Fri, 17 Jan 2020 11:39:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579279162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5m8tHXb1DlBkr0D20ikl66SMlJetA3DFtBUIb+crum8=;
+        b=TU1UVM4zqKNJMzDfhABdD93ZE5hpD9QkA/cfq/PqpP18BFh70KG4TfcxpPAatMx5Fcra0N
+        xziazrFu1zuCXzwZNGuPWv31sWq0CzA5c0cE+WCiqyOU0c7tper2icVGF1L0xRm6pGoiX8
+        U4wQgOclCtJEXhoqxN86R6i6KTxZi5s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-mdVlBjycMx6djPNIoMft3g-1; Fri, 17 Jan 2020 11:39:14 -0500
+X-MC-Unique: mdVlBjycMx6djPNIoMft3g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84C7B800D41;
+        Fri, 17 Jan 2020 16:39:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-49.rdu2.redhat.com [10.10.120.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB6E91001902;
+        Fri, 17 Jan 2020 16:39:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200117162201.GA282012@vader>
+References: <20200117162201.GA282012@vader> <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com> <20200114170250.GA8904@ZenIV.linux.org.uk> <3326.1579019665@warthog.procyon.org.uk> <9351.1579025170@warthog.procyon.org.uk> <359591.1579261375@warthog.procyon.org.uk>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     dhowells@redhat.com, Colin Walters <walters@verbum.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
         linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
         Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
@@ -58,37 +52,41 @@ Cc:     Colin Walters <walters@verbum.org>,
         xfs <linux-xfs@vger.kernel.org>, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: Making linkat() able to overwrite the target
-Message-ID: <20200117162201.GA282012@vader>
-References: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
- <20200114170250.GA8904@ZenIV.linux.org.uk>
- <3326.1579019665@warthog.procyon.org.uk>
- <9351.1579025170@warthog.procyon.org.uk>
- <359591.1579261375@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <359591.1579261375@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <469670.1579279148.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 17 Jan 2020 16:39:08 +0000
+Message-ID: <469671.1579279148@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 11:42:55AM +0000, David Howells wrote:
-> Hi Omar,
-> 
-> Do you still have your AT_REPLACE patches?  You said that you'd post a v4
-> series, though I don't see it.  I could make use of such a feature in
-> cachefiles inside the kernel.  For my original question, see:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
-> 
-> And do you have ext4 support for it?
+Omar Sandoval <osandov@osandov.com> wrote:
 
-Hi,
+> Yes I still have those patches lying around and I'd be happy to dust
+> them off and resend them.
 
-Yes I still have those patches lying around and I'd be happy to dust
-them off and resend them. I don't have ext4 support. I'd be willing to
-take a stab at ext4 once Al is happy with the VFS part unless someone
-more familiar with ext4 wants to contribute that support.
+That would be great if you could.  I could use them here:
 
-Thanks for reviving interesting in this!
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Dfscache-iter
+
+I'm performing invalidation by creating a vfs_tmpfile() and then replacing=
+ the
+on-disk file whilst letting ops resume on the temporary file.  Replacing t=
+he
+on-disk file currently, however, involves unlinking the old one before I c=
+an
+link in a new one - which leaves a window in which nothing is there.  I co=
+uld
+use one or more side dirs in which to create new files and rename them ove=
+r,
+but that has potential lock bottleneck issues - and is particularly fun if=
+ an
+entire volume is invalidated (e.g. AFS vos release).
+
+David
+
