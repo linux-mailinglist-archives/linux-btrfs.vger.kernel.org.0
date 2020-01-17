@@ -2,116 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC8E13FAC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jan 2020 21:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1E614010D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 01:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbgAPUnc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 15:43:32 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:50655 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729240AbgAPUnc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 15:43:32 -0500
-Received: by mail-pj1-f68.google.com with SMTP id r67so2102981pjb.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 12:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QbMms0lDbtJGgGdsU5nhGcLfTOKpG3bDDjLVibM7xYM=;
-        b=LztzVjjJaon5K4Lw2/Jqd4cPWHJXzK0uddUyLFflkhVF8i2eZUtklqgMJDUWFd4l3X
-         l2tfu8DDVYwVhR2rccukpaB7jZ33UwqmF7vfC+u9yIyYZPMRLNITBzsJmefKj2/FgYNk
-         zNhucZ4USIieR1fMN83DLUpMa2lyUjUWPFwX/dXHVBL56De0LD6XdwZ0zWWSNB724kxt
-         gZDKYUcK18oAKqzKHmVra6Yrtt4SuNtQR9WxY+NR1KkZVmkmfILQpHjs0JH8QI+WXMLI
-         yx49pyS+vukGm056TFG/phi/r3tptAjrSI3eSnby6w0DQir/udSXRIoJ8Ilh5Ubp2nYU
-         Gpqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QbMms0lDbtJGgGdsU5nhGcLfTOKpG3bDDjLVibM7xYM=;
-        b=sZnIUtE8/TV0gSIpBM5juiccXegEJucN+PU+P4HkE8WTYfd1dHayRgFBXxLsIc/RPC
-         aN29Y+2IeD9sXmkwjS6Ed/xoN5sENJUeBS43/1MacxdHIe+nRmSHH+4uTVwBUApu6e+s
-         vKyKCV691/DytTKfZbTIKu1qZ6Mjt+oAFCsF6IiEWoL0oyO3heOgHcNhBggePSNjKRDd
-         el8XfSjoULGPvfpeknk2cPiEt7GL/Nm06MwF+UrPMh3lSXJ0a0M+vg7ADoK+f5Yl9291
-         I5/KUuCUVBb3vNrjkiGWOLzD5hIfYVa0ep8EsQTl4Ur6d5rJvJ0L8w+BSJvVHUx8/aXc
-         bt/Q==
-X-Gm-Message-State: APjAAAWTc9zRwHCiw+NBSve34fAS659q0y8CULWmVKajpn/gc73gZM7k
-        QeNegOr4TLaJm3v0vE4IMU7kTw==
-X-Google-Smtp-Source: APXvYqwEDNwZc5TgtUasLNqErlmDODyDwlF/oXDjo2Vc4y3eeHbX1PEDZNTqRd7zxxlDk6d9JtZmWA==
-X-Received: by 2002:a17:90a:e2ce:: with SMTP id fr14mr1201485pjb.99.1579207411137;
-        Thu, 16 Jan 2020 12:43:31 -0800 (PST)
-Received: from vader ([2620:10d:c090:180::582a])
-        by smtp.gmail.com with ESMTPSA id a10sm25950930pgm.81.2020.01.16.12.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 12:43:30 -0800 (PST)
-Date:   Thu, 16 Jan 2020 12:43:29 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Michael Ruiz <michael@mruiz.dev>, linux-btrfs@vger.kernel.org,
-        osandov@fb.com
+        id S1729268AbgAQAoU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 19:44:20 -0500
+Received: from mars1.mruiz.dev ([167.71.125.59]:59778 "EHLO mars1.mruiz.dev"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726378AbgAQAoU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 19:44:20 -0500
+Received: from archlinux.localnet (unknown [153.18.172.64])
+        by mars1.mruiz.dev (Postfix) with ESMTPSA id 0FEC240728;
+        Fri, 17 Jan 2020 00:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mruiz.dev; s=201908;
+        t=1579221860; bh=Xka5DgdGjlFTFzqrXnyBqJtSm4r1flYhdp553NCNiNQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hxVnDOxLfsq0kb2m4lhwlemygvaxt5wyw7ZyTM96OK0FmBSITwhdtki3Bc5HXM8D6
+         oVm+spvXo2kEarVrvjBZz3vbA9xvShxXXCl7/D08GkgqOaXhtsbc18e8ZW4bMtoEHh
+         U9m4XPT9eo05wzyWOb+UIT6m4X7+1PeXZjnbgtrb2XQRwQX1d4uJqhpy95cAYj8OZc
+         64ijRzJIhrMDvq4rDpEqX4IwdLsBbAit5AIqlfWHaNzBn4T9geWHJyuq7jO0/YlLLB
+         v1rmYiDjX+znVIqjmzFkl3FJzb9HbDp2Xt2DxpDXRnu2MDLf8oMeO0ksrByPn/zWG0
+         9sd8vFTxytAlQ==
+From:   Michael Ruiz <michael@mruiz.dev>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Linux swap file not activating after reboot
-Message-ID: <20200116204329.GA269122@vader>
-References: <5318295.DvuYhMxLoT@archlinux>
- <20200116185539.GZ3929@twin.jikos.cz>
+Date:   Thu, 16 Jan 2020 16:44:18 -0800
+Message-ID: <5561753.lOV4Wx5bFT@archlinux>
+In-Reply-To: <20200116204329.GA269122@vader>
+References: <5318295.DvuYhMxLoT@archlinux> <20200116185539.GZ3929@twin.jikos.cz> <20200116204329.GA269122@vader>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200116185539.GZ3929@twin.jikos.cz>
+Content-Type: multipart/signed; boundary="nextPart4526103.31r3eYUQgx"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 07:55:39PM +0100, David Sterba wrote:
-> On Wed, Jan 15, 2020 at 04:34:02PM -0800, Michael Ruiz wrote:
-> > Hi,
-> >  I have a //@swap subvolume and i have a swapfile within it. I mount the 
-> > subvolume like such in fstab:
+--nextPart4526103.31r3eYUQgx
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Thursday, January 16, 2020 12:43:29 PM PST you wrote:
+> On Thu, Jan 16, 2020 at 07:55:39PM +0100, David Sterba wrote:
+> > On Wed, Jan 15, 2020 at 04:34:02PM -0800, Michael Ruiz wrote:
+> > > Hi,
+> > > 
+> > >  I have a //@swap subvolume and i have a swapfile within it. I mount the
+> > > 
+> > > subvolume like such in fstab:
+> > > 
+> > > `rw,ssd,nofail,noautodefrag,nodatacow,nodatasum,subvolid=1234,subvol=/@s
+> > > wap`
+> > > 
+> > > It mounts correctly, but 1/15/20 4:20 PM kernel I get:
+> > > 
+> > > `BTRFS warning (device dm-0): swapfile must not be copy-on-write`
 > > 
-> > `rw,ssd,nofail,noautodefrag,nodatacow,nodatasum,subvolid=1234,subvol=/@swap`
+> > There are two reasons why the message is printed, one is when the file
+> > does not have the C attribute and another one when the the existing file
+> > extents need to be COWed (same case as if the file is NOCOW and has been
+> > snapshotted).
 > > 
-> > It mounts correctly, but 1/15/20 4:20 PM kernel I get: 
+> > Plain reboot will not change the C attribute, so either there's a
+> > snapshot of /@snap or the check of a used swapfile is wrong.
 > > 
-> > `BTRFS warning (device dm-0): swapfile must not be copy-on-write`
+> > I tested it here, a swapfile that got almost full after a stress test,
+> > followed by reboot and swapon (without any change to the file) was ok.
+> > 
+> > Doing a snapshot and swapon resulted in the message you saw.
+> > 
+> > After deleting the snapshot and waiting until it gets cleaned, swapon
+> > did not activate the file anymore. Filefrag or fiemap don't report any
+> > shared extents so here I' expect that the file should be in a valid
+> > state for swapon.
+> > 
+> > Omar, any ideas?
 > 
-> There are two reasons why the message is printed, one is when the file
-> does not have the C attribute and another one when the the existing file
-> extents need to be COWed (same case as if the file is NOCOW and has been
-> snapshotted).
+> Hm, we're hitting this check in can_nocow_extent():
 > 
-> Plain reboot will not change the C attribute, so either there's a
-> snapshot of /@snap or the check of a used swapfile is wrong.
+>         if (btrfs_file_extent_generation(leaf, fi) <=
+>             btrfs_root_last_snapshot(&root->root_item))
 > 
-> I tested it here, a swapfile that got almost full after a stress test,
-> followed by reboot and swapon (without any change to the file) was ok.
+> That check was added in 78d4295b1eee ("btrfs: lift some
+> btrfs_cross_ref_exist checks in nocow path") as an optimization. Even if
+> we comment that out, we'll hit the similar check in
+> btrfs_cross_ref_exist():
 > 
-> Doing a snapshot and swapon resulted in the message you saw.
+>         /* If extent created before last snapshot => it's definitely shared
+> */ if (btrfs_extent_generation(leaf, ei) <=
+>             btrfs_root_last_snapshot(&root->root_item))
 > 
-> After deleting the snapshot and waiting until it gets cleaned, swapon
-> did not activate the file anymore. Filefrag or fiemap don't report any
-> shared extents so here I' expect that the file should be in a valid
-> state for swapon.
+> That's not quite right in exactly this case that the snapshot has been
+> deleted. Apparently we've been doing unnecessary COW for this case. I'll
+> need to think about how to safely avoid these checks without too much of
+> a performance hit.
 > 
-> Omar, any ideas?
+> Thanks for the report!
 
-Hm, we're hitting this check in can_nocow_extent():
+My solution was to boot into an arch live usb, unlock my dmcrypt partition and 
+mount the btrfs partition to /mnt. After that I created a subvolume on the @ 
+directory (top level 5) instead of a subvolume of my root (/) partition. 
+So now my subvolume layout is like this:
 
-        if (btrfs_file_extent_generation(leaf, fi) <=
-            btrfs_root_last_snapshot(&root->root_item))
+ID 256 gen 45343 top level 5 path @
+ID 257 gen 45346 top level 5 path @home
+ID 258 gen 45346 top level 5 path @log
+ID 259 gen 44303 top level 5 path @srv
+ID 260 gen 44650 top level 5 path @pkg
+ID 261 gen 45346 top level 5 path @tmp
+ID 1607 gen 43963 top level 5 path @swap
 
-That check was added in 78d4295b1eee ("btrfs: lift some
-btrfs_cross_ref_exist checks in nocow path") as an optimization. Even if
-we comment that out, we'll hit the similar check in
-btrfs_cross_ref_exist():
+The strange thing to me is that I didn't ask for snapshots of this subvolume, 
+although I do keep snapshots of my / directory, I was under the impression 
+that snapshots would not be recursive and go into the /swap subvolume. I can 
+also confirm I had the +C attribute while getting this error. So now I am able 
+to mount this subvolume with it's own options, whereas before I guess it 
+inherited options from the root dir which has CoW enabled. The problem is now 
+resolved by doing this. Thanks for the responses.
 
-        /* If extent created before last snapshot => it's definitely shared */
-        if (btrfs_extent_generation(leaf, ei) <=
-            btrfs_root_last_snapshot(&root->root_item))
 
-That's not quite right in exactly this case that the snapshot has been
-deleted. Apparently we've been doing unnecessary COW for this case. I'll
-need to think about how to safely avoid these checks without too much of
-a performance hit.
 
-Thanks for the report!
+
+--nextPart4526103.31r3eYUQgx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEr70V3EMiSIOlxR/PXLDtxglpeu0FAl4hA1kACgkQXLDtxglp
+eu39qwgAgfaYjav2jUiNpnh0fPAMymZ6aUu7nRY/7/PsaminVFMzimaoxAHJomJT
+pQrTf/Xp61DJFw9Y2//R1+PC2dxYdqhxB15FySQDyerzWygJc7mcrp/72bpyPkNg
+BNe1iW34Fc48c/xrmj/VnGTFnZf2t5AQ9wuLQQQJcUuBSLhhoC8t/cvSgB3mDyPd
+/wvSgDzHQygP2OL8WsNjEok+LN3DnW0WLcDvpkRTrlhRsR5/siHBzRTwbS1c9l8w
+/FgunoHICmh4ntLdScff4JF9aFDkTqVYFu0Ahe5N4itSj6iyFbdBqIWcc2Ae6FPo
+u80SVoUGmliJRI/MDHyKfmHFyUsepA==
+=otH2
+-----END PGP SIGNATURE-----
+
+--nextPart4526103.31r3eYUQgx--
+
+
+
