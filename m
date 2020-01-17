@@ -2,54 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E9F140BEB
+	by mail.lfdr.de (Postfix) with ESMTP id 96E49140BEC
 	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgAQOCb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:02:31 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:40573 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQOCb (ORCPT
+        id S1728799AbgAQOCf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:02:35 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46527 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQOCf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:02:31 -0500
-Received: by mail-qv1-f66.google.com with SMTP id dp13so10723273qvb.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:02:31 -0800 (PST)
+        Fri, 17 Jan 2020 09:02:35 -0500
+Received: by mail-qk1-f193.google.com with SMTP id r14so22692269qke.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:02:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=NjeKhz45N0WY9hyr3DplHzY04Sd1b9JJpZwkMLAD/BI=;
-        b=fv0VrOnHVXD1qHklGuC/vdNIPloKysANOUrbPXrZkDNOssXb/1a138Q5awNFT2furo
-         NC+n4K3JDnJVlt8w9IIKWhbg8zaZDZsgRNn7vqYkITJM8t9QCi8UpBgcE+d50Ts/E5GR
-         j6RAl6mtFTeOmoxcfrp5zSgAPxIrvENbXeulIw5RbepzwrPi1ONOXiTCqaUUfBV5FC24
-         hkrJUVTlTLKoc962zELfg3ntwfz+9ozh5gVGK8Sw/DJ3VTLSkjMzEivcmupiWfaDNzmw
-         2kI6On4nV+C8aBe1oevW6LTsByqToPmH1eaaD7x7WGwzLBgheR0hGTOOri3c8bPRdcNT
-         5lVQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yWWsyudpxM+ST/fVFRWCjX7oQk/z6fsPzFbvgMcgj94=;
+        b=hpNOB0S/4AUBmQ41e5dbGNoS/1hnCosBoFxtDn5iqqugioEZSoq1oNnWLO5zODQdTs
+         /752gjqJdqrmoFhFejSDTa9YmV4jgZck8I8sx0YtdYJT8Q/9BJ7OiVMfwV27TTVuuENe
+         Ed9Vl/6bPJljF+G9uGNuof7FKF4Gubp5Sgz9/O27E4YOxCQhHBJNIVuZ62WoHMkn5v/x
+         GqcUpjnvijXbUuzFEEFC3wR9XqctnMLFRG+wMzHCnv5qjf3A1+RpRiC46RnFxLh+3CRS
+         M81F0iQabLBlzo5vd5Fx2XUAS4nbYWDYGUwLeuRZEIwTS2l4KAeCdcJOskh/OZPBXhv9
+         zg0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NjeKhz45N0WY9hyr3DplHzY04Sd1b9JJpZwkMLAD/BI=;
-        b=VHCR1MGV72bH82kT+ArRusBcr3HMoGf8OcQw5TKQy4tpa/2l21bcXPTHCacg2aZt0E
-         0lbe9nYsdLDaAfiej0mq+KCPU0I4k7m2tgL5Ghketj/gwqQY8aAgrTGvF8QCtvtIyttT
-         0z5ZHSEOMtspw29BUzuk7GdGenS8tdD9tEjUcDTQkyTsp9spNuEW/cSSe6nmsXYpUPZd
-         AItGgEvUwnh49qRFVrvZVAxEo6EhdfzKgMSs0Y2q9yH1aYuBix2eWP8D6kw4qrZXAHzd
-         FBcxr1+6lY3N2xK4yiAuZDMp5F7Z7l8AGzneKJNPAgbmfocYsTupRwOlvLgaBRxDzCkQ
-         zZLA==
-X-Gm-Message-State: APjAAAXiBvoaXt/pbatYjolIzHXG0bkJbiR9Vv/MUBAHyC44XqgaUm/n
-        Im1HPDD7GBuGIaq7NSLzDeA9WsIsnyhUmw==
-X-Google-Smtp-Source: APXvYqxD+CcKtb4y2YzCkekuJA4pVmC1ylXZ0kdJ/iBBe9Y6anTSBlFREa/RJ/vAVOOSi0B8ITDgRg==
-X-Received: by 2002:ad4:4f45:: with SMTP id eu5mr7958108qvb.235.1579269750472;
-        Fri, 17 Jan 2020 06:02:30 -0800 (PST)
+        bh=yWWsyudpxM+ST/fVFRWCjX7oQk/z6fsPzFbvgMcgj94=;
+        b=PW4axes2bocplrkEyDoQjESwWMqfh825zwE7WWPklr1oTxV1uF8l6BJsI2nN/kOS1E
+         XhjbjYq1YR/UPd3mCoqE8o9SXzrIiLVAlEXiwtkal22dt6WS6dFyXMF52irhbTP/kHY5
+         gk9AfifNF+to6bXHB6fNhAVGzqZfSup19b3qeeJfEMLAt+IO8XSQwY24wjIZF3SINk3t
+         IqT0rspznywdxxMCap6FMa/U20EUlieQeNrEtEpYT9nqGrARVHupCdbQM8nnbpkPyOGF
+         5ME8bhh6ugj62aBBi0ZktsefxS7aqDJQEDW8AydAEBjWyvUAedLx3xV54wqAauPBC3To
+         7B4A==
+X-Gm-Message-State: APjAAAXrkmr8KpG+w0Aqc0+uU4CKRHSdc58jnGq5Ub0wtZnG1QodsGwr
+        DLsz7wQ9P4r1wLAa+G+L8qgE39oEZfN1VQ==
+X-Google-Smtp-Source: APXvYqyiOBB0eSoLZkefvHy+dYWGX7GWwZVEOkc51up04lfA+D+wwqsaM73lqQDxQ+NRz/f6PgJ2HQ==
+X-Received: by 2002:ae9:f016:: with SMTP id l22mr38556795qkg.101.1579269752234;
+        Fri, 17 Jan 2020 06:02:32 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k14sm11712738qki.66.2020.01.17.06.02.29
+        by smtp.gmail.com with ESMTPSA id m23sm4272975qtp.6.2020.01.17.06.02.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 06:02:29 -0800 (PST)
+        Fri, 17 Jan 2020 06:02:31 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/6] btrfs: don't use path->leave_spinning for truncate
-Date:   Fri, 17 Jan 2020 09:02:20 -0500
-Message-Id: <20200117140224.42495-3-josef@toxicpanda.com>
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 3/6] btrfs: introduce the inode->file_extent_tree
+Date:   Fri, 17 Jan 2020 09:02:21 -0500
+Message-Id: <20200117140224.42495-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117140224.42495-1-josef@toxicpanda.com>
 References: <20200117140224.42495-1-josef@toxicpanda.com>
@@ -60,39 +61,231 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The only time we actually leave the path spinning is if we're truncating
-a small amount and don't actually free an extent, which is not a common
-occurrence.  We have to set the path blocking in order to add the
-delayed ref anyway, so the first extent we find we set the path to
-blocking and stay blocking for the duration of the operation.  With the
-upcoming file extent map stuff there will be another case that we have
-to have the path blocking, so just swap to blocking always.
+In order to keep track of where we have file extents on disk, and thus
+where it is safe to adjust the i_size to, we need to have a tree in
+place to keep track of the contiguous areas we have file extents for.
+Add helpers to use this tree, as it's not required for NO_HOLES file
+systems.  We will use this by setting DIRTY for areas we know we have
+file extent item's set, and clearing it when we remove file extent items
+for truncation.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/btrfs_inode.h    |  5 +++
+ fs/btrfs/ctree.h          |  5 +++
+ fs/btrfs/extent-io-tree.h |  1 +
+ fs/btrfs/extent_io.c      | 11 +++++
+ fs/btrfs/file-item.c      | 91 +++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/inode.c          |  6 +++
+ 6 files changed, 119 insertions(+)
 
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 4e12a477d32e..d9dcbac513ed 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -60,6 +60,11 @@ struct btrfs_inode {
+ 	 */
+ 	struct extent_io_tree io_failure_tree;
+ 
++	/* keeps track of where we have extent items mapped in order to make
++	 * sure our i_size adjustments are accurate.
++	 */
++	struct extent_io_tree file_extent_tree;
++
+ 	/* held while logging the inode in tree-log.c */
+ 	struct mutex log_mutex;
+ 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 00cf1641f1b9..8a2c1665baad 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2851,6 +2851,11 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ 				     struct btrfs_file_extent_item *fi,
+ 				     const bool new_inline,
+ 				     struct extent_map *em);
++int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
++					u64 len);
++int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 start,
++				      u64 len);
++void btrfs_inode_safe_disk_i_size_write(struct inode *inode, u64 new_isize);
+ 
+ /* inode.c */
+ struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index a3febe746c79..c8bcd2e3184c 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -44,6 +44,7 @@ enum {
+ 	IO_TREE_TRANS_DIRTY_PAGES,
+ 	IO_TREE_ROOT_DIRTY_LOG_PAGES,
+ 	IO_TREE_SELFTEST,
++	IO_TREE_INODE_FILE_EXTENT,
+ };
+ 
+ struct extent_io_tree {
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 0d40cd7427ba..f9b223d827b3 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -265,6 +265,15 @@ void __cold extent_io_exit(void)
+ 	bioset_exit(&btrfs_bioset);
+ }
+ 
++/*
++ * For the file_extent_tree, we want to hold the inode lock when we lookup and
++ * update the disk_i_size, but lockdep will complain because our io_tree we hold
++ * the tree lock and get the inode lock when setting delalloc.  These two things
++ * are unrelated, so make a class for the file_extent_tree so we don't get the
++ * two locking patterns mixed up.
++ */
++static struct lock_class_key file_extent_tree_class;
++
+ void extent_io_tree_init(struct btrfs_fs_info *fs_info,
+ 			 struct extent_io_tree *tree, unsigned int owner,
+ 			 void *private_data)
+@@ -276,6 +285,8 @@ void extent_io_tree_init(struct btrfs_fs_info *fs_info,
+ 	spin_lock_init(&tree->lock);
+ 	tree->private_data = private_data;
+ 	tree->owner = owner;
++	if (owner == IO_TREE_INODE_FILE_EXTENT)
++		lockdep_set_class(&tree->lock, &file_extent_tree_class);
+ }
+ 
+ void extent_io_tree_release(struct extent_io_tree *tree)
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index c2f365662d55..e5dc6c4b2f05 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -23,6 +23,97 @@
+ #define MAX_CSUM_ITEMS(r, size) (min_t(u32, __MAX_CSUM_ITEMS(r, size), \
+ 				       PAGE_SIZE))
+ 
++/**
++ * @inode - the inode we want to update the disk_i_size for
++ * @new_isize - the isize we want to set to, 0 if we use i_size
++ *
++ * With NO_HOLES set this simply sets the disk_is_size to whatever i_size_read()
++ * returns as it is perfectly fine with a file that has holes without hole file
++ * extent items.
++ *
++ * However for !NO_HOLES we need to only return the area that is contiguous from
++ * the 0 offset of the file.  Otherwise we could end up adjust i_size up to an
++ * extent that has a gap in between.
++ *
++ * Finally new_isize should only be set in the case of truncate where we're not
++ * ready to use i_size_read() as the limiter yet.
++ */
++void btrfs_inode_safe_disk_i_size_write(struct inode *inode, u64 new_isize)
++{
++	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
++	u64 start, end, isize;
++	int ret;
++
++	isize = new_isize ? new_isize : i_size_read(inode);
++	if (btrfs_fs_incompat(fs_info, NO_HOLES)) {
++		BTRFS_I(inode)->disk_i_size = isize;
++		return;
++	}
++
++	spin_lock(&BTRFS_I(inode)->lock);
++	ret = find_first_extent_bit(&BTRFS_I(inode)->file_extent_tree, 0,
++				    &start, &end, EXTENT_DIRTY, NULL);
++	if (!ret && start == 0)
++		isize = min(isize, end + 1);
++	else
++		isize = 0;
++	BTRFS_I(inode)->disk_i_size = isize;
++	spin_unlock(&BTRFS_I(inode)->lock);
++}
++
++/**
++ * @inode - the inode we're modifying
++ * @start - the start file offset of the file extent we've inserted
++ * @len - the logical length of the file extent item
++ *
++ * Call when we are insering a new file extent where there was none before.
++ * Does not need to call this in the case where we're replacing an existing file
++ * extent, however if you're unsure it's fine to call this multiple times.
++ *
++ * The start and len must match the file extent item, so thus must be sectorsize
++ * aligned.
++ */
++int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 start,
++				      u64 len)
++{
++	if (len == 0)
++		return 0;
++
++	ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize));
++
++	if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
++		return 0;
++	return set_extent_bits(&inode->file_extent_tree, start, start + len - 1,
++			       EXTENT_DIRTY);
++}
++
++/**
++ * @inode - the inode we're modifying
++ * @start - the start file offset of the file extent we've inserted
++ * @len - the logical length of the file extent item
++ *
++ * Called when we drop a file extent, for example when we truncate.  Doesn't
++ * need to be called for cases where we're replacing a file extent, like when
++ * we've cow'ed a file extent.
++ *
++ * The start and len must match the file extent item, so thus must be sectorsize
++ * aligned.
++ */
++int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
++					u64 len)
++{
++	if (len == 0)
++		return 0;
++
++	ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize) ||
++	       len == (u64)-1);
++
++	if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
++		return 0;
++	return clear_extent_bit(&inode->file_extent_tree, start,
++				start + len - 1, EXTENT_DIRTY, 0, 0, NULL);
++}
++
+ static inline u32 max_ordered_sum_bytes(struct btrfs_fs_info *fs_info,
+ 					u16 csum_size)
+ {
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 10087e1a5946..4bdd412182ae 100644
+index 4bdd412182ae..fd8f821a3919 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -4066,7 +4066,6 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 		goto out;
- 	}
+@@ -3116,6 +3116,9 @@ static int btrfs_read_locked_inode(struct inode *inode,
+ 	i_uid_write(inode, btrfs_inode_uid(leaf, inode_item));
+ 	i_gid_write(inode, btrfs_inode_gid(leaf, inode_item));
+ 	btrfs_i_size_write(BTRFS_I(inode), btrfs_inode_size(leaf, inode_item));
++	btrfs_inode_set_file_extent_range(BTRFS_I(inode), 0,
++					  round_up(i_size_read(inode),
++						   fs_info->sectorsize));
  
--	path->leave_spinning = 1;
- 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
- 	if (ret < 0)
- 		goto out;
-@@ -4218,7 +4217,6 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 		     root == fs_info->tree_root)) {
- 			struct btrfs_ref ref = { 0 };
+ 	inode->i_atime.tv_sec = btrfs_timespec_sec(leaf, &inode_item->atime);
+ 	inode->i_atime.tv_nsec = btrfs_timespec_nsec(leaf, &inode_item->atime);
+@@ -8695,6 +8698,8 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
+ 	extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO, inode);
+ 	extent_io_tree_init(fs_info, &ei->io_failure_tree,
+ 			    IO_TREE_INODE_IO_FAILURE, inode);
++	extent_io_tree_init(fs_info, &ei->file_extent_tree,
++			    IO_TREE_INODE_FILE_EXTENT, inode);
+ 	ei->io_tree.track_uptodate = true;
+ 	ei->io_failure_tree.track_uptodate = true;
+ 	atomic_set(&ei->sync_writers, 0);
+@@ -8761,6 +8766,7 @@ void btrfs_destroy_inode(struct inode *inode)
+ 	btrfs_qgroup_check_reserved_leak(inode);
+ 	inode_tree_del(inode);
+ 	btrfs_drop_extent_cache(BTRFS_I(inode), 0, (u64)-1, 0);
++	btrfs_inode_clear_file_extent_range(BTRFS_I(inode), 0, (u64)-1);
+ 	btrfs_put_root(BTRFS_I(inode)->root);
+ }
  
--			btrfs_set_path_blocking(path);
- 			bytes_deleted += extent_num_bytes;
- 
- 			btrfs_init_generic_ref(&ref, BTRFS_DROP_DELAYED_REF,
 -- 
 2.24.1
 
