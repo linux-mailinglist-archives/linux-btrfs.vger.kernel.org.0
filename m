@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFCC140B69
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEF1140B6A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgAQNsT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 08:48:19 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38041 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728863AbgAQNsT (ORCPT
+        id S1728949AbgAQNsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 08:48:21 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42443 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728863AbgAQNsU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:48:19 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so22682386qki.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:18 -0800 (PST)
+        Fri, 17 Jan 2020 08:48:20 -0500
+Received: by mail-qt1-f195.google.com with SMTP id j5so21765952qtq.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=L+f5IzV9nT4YAxPklsAU5borgvxb1+yqLE5tB0c9SqY=;
-        b=EYAr0KC0r5kEuBrfuCqr9baXy0vaYOtgcBtcP35fZ+KmkcSQLORmflTA+Z9WlmAZYf
-         TqIwlvHdv/wZDCAumFhE1Nc/6CWX9YFyAhW/3tlgzm+lkMIaAMCx2uu36ChdUOjM4T6G
-         utp5fv+cjXLW6Luh763/srQa+ajGjk9MFBYpr6yDdwQNCF7OiTDvD/KZ6CdgGbxOLEO2
-         Se0exMOoG6cygK/4aKPkxGE/MHZjaKk7ObuySSYTJ9FDS1eOlHlbULss3BsgOH7M/exn
-         UwbOSOyBzR9O0a+jJDx1KGNjrj+ZPWqtu7rbc6amtSJN2ZhznJxUHh5hRzJJXwLroKMW
-         KKjg==
+        bh=IID+TNjtvNq2y6b27Gs67SLa1Kba2OW0SQsgqv4ynLA=;
+        b=R/ppUSpyjsg3UB6LqFbUkfc+IUvKE3LxxSlh6vRswadKcVdqaEjsvOEjNN9daRTqev
+         db3+OAhBj7PNI9bRQsLpxVX+69b9lEPwnE25Vc/VQgdun33FagwkAMV38ttqicNSRGhM
+         x+EWaHn4iv9lQ70ynScbbW9F467OHha83Nq8FfxYvVnOPhBGnDHf0XeE/yABSkOtLcjU
+         j1FP5aHwLW04lroQO4cjS+7CTiyzxxzgDX5L6OLylQmsb4pkgKHh1IUt4p4rGmbQaRQx
+         dwIBVOLlRRQ7ESLXb7hvWuSGZtBDaLnCCUB3jvnuAfBWHhfKx35zIs+7jowItvy/AnfZ
+         SMDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L+f5IzV9nT4YAxPklsAU5borgvxb1+yqLE5tB0c9SqY=;
-        b=CT6/HtH7LVP6jfnP0SrtsLH6WvfuiTaxV3Z24jNQ8iSZ6kYsyzoXCJC+YqQfc5v/+5
-         VaIOq6u8WTIAf4KqP40k/mOsOitYJ++iehIdYuEsi+d91RjkcaL6cGyTrp/duhLt/5uU
-         C+2ZRM3Vdym7r8aFlXyZEbE7lWGAS/FUQpejGnZFC29amP85b0HP3ntb/6UdJ2ZwTLZr
-         2PZ0Ywtuofm13mI/BWDb3otppyRDOLLNgLXusNHwHZ+fK0Xd77zqion8fd79ix/RrNgM
-         k8LaDM+ZN306lDKgKpIjgHhPieRoyMAd9jTE90kd+xQqc0muDrClp/y1cz43EUvxiH7E
-         h5kw==
-X-Gm-Message-State: APjAAAUAHXTAjP27bnYPV9IZaT9ss0tdlt33xgFdqwGSe96ri5Vap+iR
-        F5yYEbsIV+EYyYbzmhtyrhx1+aUvuIDitg==
-X-Google-Smtp-Source: APXvYqxKhK1NoeKxWIDYW+5JbQL3pjs9p4YtqJ0IHdMs7mcw0hItzoXnWRRjSOUcYzEI7t2aFwZd1Q==
-X-Received: by 2002:a37:5841:: with SMTP id m62mr37345926qkb.256.1579268897987;
-        Fri, 17 Jan 2020 05:48:17 -0800 (PST)
+        bh=IID+TNjtvNq2y6b27Gs67SLa1Kba2OW0SQsgqv4ynLA=;
+        b=SJvVBejYHLEHVmgR7UQmKsepURHX2E95Ts0a8xN6LZYcjlxxeHpzlOYRANe8ePY12X
+         dTFOlUX8WJq1xZuZ9Zky9MWVNJ5cu2NbY7CvrhCEYCmJz2/goN73pW6An0ELNgQUUQ+i
+         hVeRfcIQg/mjibRuHS81uqobI6qjt4TCD0mMdY6yH8YaHiNTyNedU78N0/NMoOTkzZdo
+         fuT2Cz2Gmd4MZS4RYfmTum86TFDjBQCX6Fzba44sbk49Wgkpq1GZlqiBSr+5m+/eD5xP
+         hMZQQiEBE/2b4eFM+gXeimmhaf26oIigUnYDnmvJStDOsu7m+jbVP6WyDxzU50xjgou/
+         Jh9g==
+X-Gm-Message-State: APjAAAXjHWC9Tz4dZ0H3TINBD44wR8NpT0F4jNltirCC/D6nEHa8bILs
+        AjN2r76Spje6z+KraY3uAkoKravkKrWnNg==
+X-Google-Smtp-Source: APXvYqz1sm+2Hi1di5OYh1y+vH6nYXIKmlUHaK1H6TI55i0bE4iVN4UYcW66kceyaoMWXkhapdfZwg==
+X-Received: by 2002:ac8:544f:: with SMTP id d15mr7672560qtq.53.1579268899642;
+        Fri, 17 Jan 2020 05:48:19 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id r66sm11855184qkd.125.2020.01.17.05.48.17
+        by smtp.gmail.com with ESMTPSA id m8sm13318001qtk.60.2020.01.17.05.48.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:48:17 -0800 (PST)
+        Fri, 17 Jan 2020 05:48:18 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 10/43] btrfs: hold a ref on fs roots while they're in the radix tree
-Date:   Fri, 17 Jan 2020 08:47:25 -0500
-Message-Id: <20200117134758.41494-11-josef@toxicpanda.com>
+Subject: [PATCH 11/43] btrfs: hold a ref on the root in resolve_indirect_ref
+Date:   Fri, 17 Jan 2020 08:47:26 -0500
+Message-Id: <20200117134758.41494-12-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117134758.41494-1-josef@toxicpanda.com>
 References: <20200117134758.41494-1-josef@toxicpanda.com>
@@ -60,40 +60,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we're sitting in the radix tree, we should probably have a ref for
-the radix tree.  Grab a ref on the root when we insert it, and drop it
-when it gets deleted.
+We're looking up a random root, we need to hold a ref on it while we're
+using it.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/backref.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f030ff87ed18..5f672f016ed8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1513,8 +1513,10 @@ int btrfs_insert_fs_root(struct btrfs_fs_info *fs_info,
- 	ret = radix_tree_insert(&fs_info->fs_roots_radix,
- 				(unsigned long)root->root_key.objectid,
- 				root);
--	if (ret == 0)
-+	if (ret == 0) {
-+		btrfs_grab_fs_root(root);
- 		set_bit(BTRFS_ROOT_IN_RADIX, &root->state);
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index e5d85311d5d5..193747b6e1f9 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -524,7 +524,13 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 	if (IS_ERR(root)) {
+ 		srcu_read_unlock(&fs_info->subvol_srcu, index);
+ 		ret = PTR_ERR(root);
+-		goto out;
++		goto out_free;
 +	}
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
- 	radix_tree_preload_end();
++
++	if (!btrfs_grab_fs_root(root)) {
++		srcu_read_unlock(&fs_info->subvol_srcu, index);
++		ret = -ENOENT;
++		goto out_free;
+ 	}
  
-@@ -3814,6 +3816,8 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 	spin_lock(&fs_info->fs_roots_radix_lock);
- 	radix_tree_delete(&fs_info->fs_roots_radix,
- 			  (unsigned long)root->root_key.objectid);
-+	if (test_and_clear_bit(BTRFS_ROOT_IN_RADIX, &root->state))
-+		btrfs_put_fs_root(root);
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
- 
- 	if (btrfs_root_refs(&root->root_item) == 0)
+ 	if (btrfs_is_testing(fs_info)) {
+@@ -577,6 +583,8 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 	ret = add_all_parents(root, path, parents, ref, level, time_seq,
+ 			      extent_item_pos, total_refs, ignore_offset);
+ out:
++	btrfs_put_fs_root(root);
++out_free:
+ 	path->lowest_level = 0;
+ 	btrfs_release_path(path);
+ 	return ret;
 -- 
 2.24.1
 
