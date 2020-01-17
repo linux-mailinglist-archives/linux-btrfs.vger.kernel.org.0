@@ -2,177 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0FF140C17
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E239F140C24
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgAQOIa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:08:30 -0500
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:41511 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQOIa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:08:30 -0500
-Received: by mail-qv1-f41.google.com with SMTP id x1so10749072qvr.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:08:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DeqixwVBUugAP5dgaxnwgS8L02pkJbMi5DEVoP8N1bg=;
-        b=quenGNFqUZY19i/w9yyjpbP3cAtfBMsGZFM8fTaRqpQJuyKqNncCCrm4nkGfpEzK0V
-         85ZZ+KnrWJd0gB5C5co7/1L/KewCw+Ll1TzqSn7k/gfXtrdTE/W/3rVMXxkYREUKFcag
-         FGpWWWFfGLhqX209XtUfv1PatwSurFgAYzs+6rd/NFTV3aq5/cDq4S5kqQxGjfwGOuYA
-         aHgJZ4IXwFgXLOpBhtqQ6oAm7WgElH1PNzusiIw4s72YCXP1L9en3QRPnBYvkpzoBHsB
-         EGT1tD2ygZlxpdeepR5leBc83A2Ef9Mjhmh1aACw81AgZz5kTNFMMkU6LDHM+QhtnSUr
-         W62Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DeqixwVBUugAP5dgaxnwgS8L02pkJbMi5DEVoP8N1bg=;
-        b=e0AZZt7U42zFwhX3Fi3hKVfPcVizqWkSgOXomulsqD55/McnsCfaZhWEIn5WirL+NG
-         ILMrFzFXBECC5t0veBUXL2G/8VSy3hwMAFCWf8Rn+gce3TBJ2xQ+O2KW7xzySC1kvmUE
-         8mgaS6Mq6cvEmSc/W833Dpqp/Etuqvn9+cOQ7tCA5zltZ0A72beAeD8b4Ss2YSJZP9KE
-         nGC0aGEzyl4Qmvxk4549xqLxEWBLMA832H01+BtKCq5hN1tb2Mf5S/aR9qULXVArv2bQ
-         tzsfbaTP0BYbQm1EP8ynYqQngdnrYxRk63y6QD0oH+NM9FPj0nIa+HQU0JgigkByXhSY
-         hjkw==
-X-Gm-Message-State: APjAAAWfkNk3i+H7NAIunTWNrWWmrplWff8/ECGD05mli3AYD/uG4Syn
-        iG+KG2d9g/BSVBqyST59u9bc9a+8XDrFNw==
-X-Google-Smtp-Source: APXvYqztNHSnGgYc4om4ZZGnYcKxzABTE/U/h0XLGaCg5pG8Fc/zEpVnuS6xtazCxw2k5dfBnWjDTA==
-X-Received: by 2002:a05:6214:1348:: with SMTP id b8mr7879117qvw.137.1579270108391;
-        Fri, 17 Jan 2020 06:08:28 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id l85sm11855032qke.103.2020.01.17.06.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 06:08:27 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH][RESEND] btrfs: kill update_block_group_flags
-Date:   Fri, 17 Jan 2020 09:08:26 -0500
-Message-Id: <20200117140826.42616-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728755AbgAQOKx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:10:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37466 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726908AbgAQOKx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:10:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0E626B9C0;
+        Fri, 17 Jan 2020 14:10:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3478CDA871; Fri, 17 Jan 2020 15:10:37 +0100 (CET)
+Date:   Fri, 17 Jan 2020 15:10:37 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
+ committing metadata space
+Message-ID: <20200117141037.GG3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200115034128.32889-1-wqu@suse.com>
+ <20200116142928.GX3929@twin.jikos.cz>
+ <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
+ <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs/061 has been failing consistently for me recently with a
-transaction abort.  We run out of space in the system chunk array, which
-means we've allocated way too many system chunks than we need.
+On Fri, Jan 17, 2020 at 09:32:49AM +0800, Qu Wenruo wrote:
+> On 2020/1/17 上午8:54, Qu Wenruo wrote:
+> > On 2020/1/16 下午10:29, David Sterba wrote:
+> >> On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
+> >>> [BUG]
+> >>> When there are a lot of metadata space reserved, e.g. after balancing a
+> >>> data block with many extents, vanilla df would report 0 available space.
+> >>>
+> >>> [CAUSE]
+> >>> btrfs_statfs() would report 0 available space if its metadata space is
+> >>> exhausted.
+> >>> And the calculation is based on currently reserved space vs on-disk
+> >>> available space, with a small headroom as buffer.
+> >>> When there is not enough headroom, btrfs_statfs() will report 0
+> >>> available space.
+> >>>
+> >>> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
+> >>> reservations if we have pending tickets"), we allow btrfs to over commit
+> >>> metadata space, as long as we have enough space to allocate new metadata
+> >>> chunks.
+> >>>
+> >>> This makes old calculation unreliable and report false 0 available space.
+> >>>
+> >>> [FIX]
+> >>> Don't do such naive check anymore for btrfs_statfs().
+> >>> Also remove the comment about "0 available space when metadata is
+> >>> exhausted".
+> >>
+> >> This is intentional and was added to prevent a situation where 'df'
+> >> reports available space but exhausted metadata don't allow to create new
+> >> inode.
+> > 
+> > But this behavior itself is not accurate.
+> > 
+> > We have global reservation, which is normally always larger than the
+> > immediate number 4M.
+> > 
+> > So that check will never really be triggered.
+> > 
+> > Thus invalidating most of your argument.
+> >>
+> >> If it gets removed you are trading one bug for another. With the changed
+> >> logic in the referenced commit, the metadata exhaustion is more likely
+> >> but it's also temporary.
+> 
+> Furthermore, the point of the patch is, current check doesn't play well
+> with metadata over-commit.
 
-Chris added this a long time ago for balance as a poor mans restriping.
-If you had a single disk and then added another disk and then did a
-balance, update_block_group_flags would then figure out which RAID level
-you needed.
+The recent overcommit updates broke statfs in a new way and left us
+almost nothing to make it better.
 
-Fast forward to today and we have restriping behavior, so we can
-explicitly tell the fs that we're trying to change the raid level.  This
-is accomplished through the normal get_alloc_profile path.
+> If it's before v5.4, I won't touch the check considering it will never
+> hit anyway.
+> 
+> But now for v5.4, either:
+> - We over-commit metadata
+>   Meaning we have unallocated space, nothing to worry
 
-Furthermore this code actually causes btrfs/061 to fail, because we do
-things like mkfs -m dup -d single with multiple devices.  This trips
-this check
+Can we estimate how much unallocated data are there? I don't know how,
+and "nothing to worry" always worries me.
 
-alloc_flags = update_block_group_flags(fs_info, cache->flags);
-if (alloc_flags != cache->flags) {
-	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
+> - No more space for over-commit
+>   But in that case, we still have global rsv to update essential trees.
+>   Please note that, btrfs should never fall into a status where no files
+>   can be deleted.
 
-in btrfs_inc_block_group_ro.  Because we're balancing and scrubbing, but
-not actually restriping, we keep forcing chunk allocation of RAID1
-chunks.  This eventually causes us to run out of system space and the
-file system aborts and flips read only.
+Of course, the global reserve is there for last resort actions and will
+be used for deletion and updating essential trees. What statfs says is
+how much data is there left for the user. New files, writing more data
+etc.
 
-We don't need this poor mans restriping any more, simply use the normal
-get_alloc_profile helper, which will get the correct alloc_flags and
-thus make the right decision for chunk allocation.  This keeps us from
-allocating a billion system chunks and falling over.
+> Consider all these, we're no longer able to really hit that case.
+> 
+> So that's why I'm purposing deleting that. I see no reason why that
+> magic number 4M would still work nowadays.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-- Just rebased onto misc-next.
-
- fs/btrfs/block-group.c | 52 ++----------------------------------------
- 1 file changed, 2 insertions(+), 50 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 7e71ec9682d0..77ec0597bd17 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2132,54 +2132,6 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 	return 0;
- }
- 
--static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
--{
--	u64 num_devices;
--	u64 stripped;
--
--	/*
--	 * if restripe for this chunk_type is on pick target profile and
--	 * return, otherwise do the usual balance
--	 */
--	stripped = get_restripe_target(fs_info, flags);
--	if (stripped)
--		return extended_to_chunk(stripped);
--
--	num_devices = fs_info->fs_devices->rw_devices;
--
--	stripped = BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID56_MASK |
--		BTRFS_BLOCK_GROUP_RAID1_MASK | BTRFS_BLOCK_GROUP_RAID10;
--
--	if (num_devices == 1) {
--		stripped |= BTRFS_BLOCK_GROUP_DUP;
--		stripped = flags & ~stripped;
--
--		/* turn raid0 into single device chunks */
--		if (flags & BTRFS_BLOCK_GROUP_RAID0)
--			return stripped;
--
--		/* turn mirroring into duplication */
--		if (flags & (BTRFS_BLOCK_GROUP_RAID1_MASK |
--			     BTRFS_BLOCK_GROUP_RAID10))
--			return stripped | BTRFS_BLOCK_GROUP_DUP;
--	} else {
--		/* they already had raid on here, just return */
--		if (flags & stripped)
--			return flags;
--
--		stripped |= BTRFS_BLOCK_GROUP_DUP;
--		stripped = flags & ~stripped;
--
--		/* switch duplicated blocks with raid1 */
--		if (flags & BTRFS_BLOCK_GROUP_DUP)
--			return stripped | BTRFS_BLOCK_GROUP_RAID1;
--
--		/* this is drive concat, leave it alone */
--	}
--
--	return flags;
--}
--
- /*
-  * Mark one block group RO, can be called several times for the same block
-  * group.
-@@ -2225,7 +2177,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
- 		 * If we are changing raid levels, try to allocate a
- 		 * corresponding block group with the new raid level.
- 		 */
--		alloc_flags = update_block_group_flags(fs_info, cache->flags);
-+		alloc_flags = btrfs_get_alloc_profile(fs_info, cache->flags);
- 		if (alloc_flags != cache->flags) {
- 			ret = btrfs_chunk_alloc(trans, alloc_flags,
- 						CHUNK_ALLOC_FORCE);
-@@ -2252,7 +2204,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
- 	ret = inc_block_group_ro(cache, 0);
- out:
- 	if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
--		alloc_flags = update_block_group_flags(fs_info, cache->flags);
-+		alloc_flags = btrfs_get_alloc_profile(fs_info, cache->flags);
- 		mutex_lock(&fs_info->chunk_mutex);
- 		check_system_chunk(trans, alloc_flags);
- 		mutex_unlock(&fs_info->chunk_mutex);
--- 
-2.24.1
-
+So, the corner case that resulted in the guesswork needs to be
+reevaluated then, the space reservations and related updates clearly
+affect that. That's out of 5.5-rc timeframe though.
