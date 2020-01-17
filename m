@@ -2,117 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E64CE14047B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 08:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD814049B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 08:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgAQHeS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 02:34:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46106 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726675AbgAQHeS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 02:34:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 32B64AB95;
-        Fri, 17 Jan 2020 07:34:16 +0000 (UTC)
-Subject: Re: read time tree block corruption detected
-To:     Peter Luladjiev <luladjiev@gmail.com>
-References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
- <6ba43f60-22d1-52da-0e9a-8561b9560481@suse.com>
- <CA+ZCqs5=N5Hdf3NxZAmPCnA8wbcJPrcH8zM-fRbt-w8tL+TjUQ@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <53da4b02-6532-5bb9-391c-720947bac7f1@suse.com>
-Date:   Fri, 17 Jan 2020 09:34:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1729159AbgAQHvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 02:51:14 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:33477 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729005AbgAQHvO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 02:51:14 -0500
+Received: by mail-lj1-f170.google.com with SMTP id y6so25511205lji.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 23:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MuiNCd61mCvS4U0FWf6tnyVqMMQ4eesmXDZ6DmVSqBU=;
+        b=tZGKha7qdjxDh/qWvYaKrwp2TR4xagkRKstG/udeUI5iyXYK/MFzTU1XgosHsHDF+c
+         QBeGMNMsiGtbHN9EgX3fhYvYPlQyLHmagH07CVMs9ERTlEy6OOqnT6GZWceBS7DOicZZ
+         cLr50MqvN3bhsS73y35lPIccPotFVKQYXmgU9O30pquagoxTogPsFi8ta7ghz5qh+SGO
+         O0CPLfsFiy7o9vnv9LLbwvFwqJhZEdYsEv5+a/DFSspjocAxc99jIIrZxxwZd2Jzymxz
+         GbIO4XBEh7FjoIUItUxSLlYLqNJNAct2e02glGtet+3hiPDEvXkyaH4clqlxpZEr9Y6t
+         8qYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MuiNCd61mCvS4U0FWf6tnyVqMMQ4eesmXDZ6DmVSqBU=;
+        b=CQdZtV12pziq6pagq1ydSpQV7kFjS6JJGB2IYy0l6zi7fqsq2jI9MHB9eVN7qLTeH+
+         r9xiug67uav6t6eed9m2Enk2cl9OP13NP3DrX/eByxGyi/gqM9juHg3xpsGusOunIamO
+         qXyGajgBoFHNEeGMlhELQZPasMHeteQl36B0uaPNMtZE9imdtsBogaRaU1XYwfwwqKuR
+         fmSrj5qUR2+baILrE4iRgCUlnZCFWXKlWGvXH8KTB/+FBgN9dgIbVAxjK1YJ252DdSd8
+         5VE75wwEQ8qXQbPQvQ9AxkqY45t4ixN43gLMAwTURP0/sukez4kHu3qzrmgnCEprW92T
+         hb9g==
+X-Gm-Message-State: APjAAAWZwrB1l+Izw1qewI16UeyI/BrE90aM7UKTslE0Cdubz4C7NNgJ
+        iVnjTVbSY+2hLMYg0HDepShta1QCql9kCTnIAlc=
+X-Google-Smtp-Source: APXvYqxQ7mDOl6uNmVaXSnwWHjOnpvFGcKXW0hy0TZaMe+coes6/QQ1JlXInGw02V5uq2ilbKHUd7bP+9fC4607bb2s=
+X-Received: by 2002:a2e:7c08:: with SMTP id x8mr4987299ljc.185.1579247472548;
+ Thu, 16 Jan 2020 23:51:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+ZCqs5=N5Hdf3NxZAmPCnA8wbcJPrcH8zM-fRbt-w8tL+TjUQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
+ <6ba43f60-22d1-52da-0e9a-8561b9560481@suse.com> <CA+ZCqs5=N5Hdf3NxZAmPCnA8wbcJPrcH8zM-fRbt-w8tL+TjUQ@mail.gmail.com>
+ <53da4b02-6532-5bb9-391c-720947bac7f1@suse.com>
+In-Reply-To: <53da4b02-6532-5bb9-391c-720947bac7f1@suse.com>
+From:   Peter Luladjiev <luladjiev@gmail.com>
+Date:   Fri, 17 Jan 2020 09:51:01 +0200
+Message-ID: <CA+ZCqs4pTKePM4NaStAs=CWYBZbA_btqip1WiU8DC6DL13Eh_Q@mail.gmail.com>
+Subject: Re: read time tree block corruption detected
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Here is the output:
 
+btrfs check --force --mode lowmem /dev/mapper/system-root
 
-On 16.01.20 г. 18:53 ч., Peter Luladjiev wrote:
-> Hello, thanks for helping, here is the output:
-> 
-> btrfs check --force /dev/mapper/system-root
-> 
-> Opening filesystem to check...
-> WARNING: filesystem mounted, continuing because of --force
-> Checking filesystem on /dev/mapper/system-root
-> UUID: 9639a3e6-cd08-4270-b4d1-d2946d2b8d2e
-> [1/7] checking root items
-> [2/7] checking extents
-> ref mismatch on [1497018368 4096] extent item 72057183177116417, found 1
-> incorrect local backref count on 1497022464 parent 51611369472 owner 0
-> offset 0 found 1 wanted 3087007745 back 0x564582174c70
-> backpointer mismatch on [1497022464 4096]
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 53532647424 bytes used, error(s) found
-> total csum bytes: 43476204
-> total tree bytes: 1551368192
-> total fs tree bytes: 1421295616
-> total extent tree bytes: 70238208
-> btree space waste bytes: 276638054
-> file data blocks allocated: 331679563776
->  referenced 105423634432
-> 
+Opening filesystem to check...
+WARNING: filesystem mounted, continuing because of --force
+Checking filesystem on /dev/mapper/system-root
+UUID: 9639a3e6-cd08-4270-b4d1-d2946d2b8d2e
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+btrfs: space cache generation (539645) does not match inode (539641)
+failed to load free space cache for block group 22020096
+btrfs: space cache generation (539645) does not match inode (539641)
+failed to load free space cache for block group 1095761920
+btrfs: space cache generation (539643) does not match inode (539640)
+failed to load free space cache for block group 102161711104
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 53501751296 bytes used, no error found
+total csum bytes: 43476196
+total tree bytes: 1552203776
+total fs tree bytes: 1422196736
+total extent tree bytes: 70172672
+btree space waste bytes: 276902557
+file data blocks allocated: 331882188800
+ referenced 105424904192
 
-
-Right so it seems this the only error. Just to be sure run btrfs check
---mode lowmem  since it provides more readable output. If this is the
-only error in the filesystem then btrfs check --repair --mode lowmem
-should be able to fix it.
+On Fri, 17 Jan 2020 at 09:34, Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 16.01.20 =D0=B3. 18:53 =D1=87., Peter Luladjiev wrote:
+> > Hello, thanks for helping, here is the output:
+> >
+> > btrfs check --force /dev/mapper/system-root
+> >
+> > Opening filesystem to check...
+> > WARNING: filesystem mounted, continuing because of --force
+> > Checking filesystem on /dev/mapper/system-root
+> > UUID: 9639a3e6-cd08-4270-b4d1-d2946d2b8d2e
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > ref mismatch on [1497018368 4096] extent item 72057183177116417, found =
+1
+> > incorrect local backref count on 1497022464 parent 51611369472 owner 0
+> > offset 0 found 1 wanted 3087007745 back 0x564582174c70
+> > backpointer mismatch on [1497022464 4096]
+> > ERROR: errors found in extent allocation tree or chunk allocation
+> > [3/7] checking free space cache
+> > [4/7] checking fs roots
+> > [5/7] checking only csums items (without verifying data)
+> > [6/7] checking root refs
+> > [7/7] checking quota groups skipped (not enabled on this FS)
+> > found 53532647424 bytes used, error(s) found
+> > total csum bytes: 43476204
+> > total tree bytes: 1551368192
+> > total fs tree bytes: 1421295616
+> > total extent tree bytes: 70238208
+> > btree space waste bytes: 276638054
+> > file data blocks allocated: 331679563776
+> >  referenced 105423634432
+> >
+>
+>
+> Right so it seems this the only error. Just to be sure run btrfs check
+> --mode lowmem  since it provides more readable output. If this is the
+> only error in the filesystem then btrfs check --repair --mode lowmem
+> should be able to fix it.
