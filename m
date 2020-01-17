@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FCE140B72
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE56140B73
 	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgAQNse (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 08:48:34 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42815 "EHLO
+        id S1729047AbgAQNsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 08:48:36 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38071 "EHLO
         mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729039AbgAQNse (ORCPT
+        with ESMTP id S1729039AbgAQNsg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:48:34 -0500
-Received: by mail-qk1-f193.google.com with SMTP id z14so22685281qkg.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:33 -0800 (PST)
+        Fri, 17 Jan 2020 08:48:36 -0500
+Received: by mail-qk1-f193.google.com with SMTP id k6so22683310qki.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=RqkGJtTlwbicUPBLGp2IaZBBFNmS7nDH0ciMWvbfcF4=;
-        b=Czy/zaGCqWB3sLs/ACPLE+iREssRFJRb/Hrrv/SOo8EsZT6mhzKC0qKttLXbKj6SvZ
-         vXMdSVgYNrglVOZS5e/ozjcg16tYQXp4kDH+h+U5LuUCiMuB4MwgEU4zhTMln3iJU2+q
-         kcmG5WKRceSHsP1Av4bEqHVeEWeigCtpUvmwAtWRMyEsyrQbpez9Kj58zjFFpYCmpcnK
-         3B+yaqzJ/nrXhMisaNty0O7cl9dHEqbfra69Msh3ehl2CegPq/f7k7lEuDRXFof/EySx
-         kDA6sk3RUsMdMF0SsA+c1rZve+hZBFYcbVcWDNfiema0gBOUHxcR305Dd0QrMw2fNstt
-         SdKQ==
+        bh=PP4dVMcgyT8OTB+vOohtLtUZzvbmwfUKl46nd4xdSyk=;
+        b=u2jK+eDz3VyfsBFMYcDxNH+LpuHoMUCSU+3vQQmFrkuYYo+MVCFhTPV1WsxQcDTcS0
+         ybZ7UuDTB+TSd2EvL0mDfHJMH/KCB6/AicoDAovbjL8QbMFdMhYcIt4JB7fzYwOESofX
+         iu//K+FUHg8eIFvm8aCns4aT6PxNJDZOYRl0xGOnnp20sdoFq3z9wCb6MVcxXrxV4YtK
+         AZ9gQ++Rlu8RjpYqTo4oKcZoLeyMV/9DlTZUnfqzwyexzPW8ovh5ZrRmLDGqRuozDlbW
+         sfYJAIQWIn5ojAkNAlwXCSVNHW+4PTTUZav6vZjnRznzvKnK9hhFBGZ/69uuR8qABJiD
+         Bp3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RqkGJtTlwbicUPBLGp2IaZBBFNmS7nDH0ciMWvbfcF4=;
-        b=kThUSq3kTGSWktyJlymgbmlA+TJllq+Xe7irsXLHKmY3JXZMhun4u5LJ9mX03lhZFR
-         q9EKA/z+JIV3YgIjR55iCQ+aj447fQQqBgnR+uF0nq4YvkgEqTlshxC/p0Kclhlgnbvj
-         kVu2TWOnswQsf8sEJzDe2oX51Blmy/rxPeJjkvaC67GHSm+MQOV9FzRIuu6BluEneQIj
-         6E6Xs1wXSYyVHeogKb9VlJJPB+NoYCE0e5flqnlDvCoyQ6umXwS7jj5v81R2CByBy5ME
-         23ZfJfFtzqNqVOPOKvpSh4rsj6QjEUJGg7qfasaMxJ+UB+OwIij04Z4V01u90tffx8sv
-         ZO/g==
-X-Gm-Message-State: APjAAAWNWtzvDCZRmwkI29u+D1oOHtnSfUSntHExj67skwHq1rRIc/X0
-        BYhv18NqGEb3DL9IGrVuri0JrGsCjACxaQ==
-X-Google-Smtp-Source: APXvYqxxlNSaI06tLee7AFmKeRw3X0E+9w+NZapx4sU6FO94YymWeFM6gSkgXvvxILZKW0pGrYlSFQ==
-X-Received: by 2002:a37:2e82:: with SMTP id u124mr32526126qkh.294.1579268913088;
-        Fri, 17 Jan 2020 05:48:33 -0800 (PST)
+        bh=PP4dVMcgyT8OTB+vOohtLtUZzvbmwfUKl46nd4xdSyk=;
+        b=JDuYwpW+O8etAj94XhmkIrtTXEC4reOuuIHOYKzgG8+wmrHbnVJxK4mSwTOJe8Sgul
+         bZNW/lzHz+v2HPso8wYkjlsCOgSTnm8Q8uWwOjDYEKx3ab+HpFkgE/vleb2hASfHLVW/
+         ZvUg2Wp7ErpH3kYjVNDMIgirfZKN7n5H4e5p0CQ3UV+NsHdp4e+v629qa+aJA/WXrEgt
+         h26hge5XwEAIU4R4PA3PeRHnqY4/Y80BdpXf8U46k4PM0S9MTd1YUcpD//Vdmz2f3jI2
+         2Y3Yqm+sl7UcIuE56xU5TqI8h/7q3n4x5DPxwtJIx/uSnDdlj63YGVvmAHVqx+oJQx+0
+         qnVg==
+X-Gm-Message-State: APjAAAU/x5ul6VvnuNOYkBOSAM1yOCv2wwo8mSFSQkzKilmea0HkbeDA
+        RpklV7EwqWl2oPC13qPPtzf1tjS/MbV2YQ==
+X-Google-Smtp-Source: APXvYqzDVFkjghhn3yyGAOATE7nD941GpqTq+msILLPpoOgMRVgii+vjFpRocPOIvZwVYCfVFSZdQA==
+X-Received: by 2002:a05:620a:13e7:: with SMTP id h7mr39093643qkl.235.1579268914688;
+        Fri, 17 Jan 2020 05:48:34 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id b7sm12885672qtj.15.2020.01.17.05.48.32
+        by smtp.gmail.com with ESMTPSA id s26sm12055091qkj.24.2020.01.17.05.48.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:48:32 -0800 (PST)
+        Fri, 17 Jan 2020 05:48:34 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 19/43] btrfs: hold a ref on the root in btrfs_ioctl_get_subvol_info
-Date:   Fri, 17 Jan 2020 08:47:34 -0500
-Message-Id: <20200117134758.41494-20-josef@toxicpanda.com>
+Subject: [PATCH 20/43] btrfs: hold ref on root in btrfs_ioctl_default_subvol
+Date:   Fri, 17 Jan 2020 08:47:35 -0500
+Message-Id: <20200117134758.41494-21-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117134758.41494-1-josef@toxicpanda.com>
 References: <20200117134758.41494-1-josef@toxicpanda.com>
@@ -60,37 +60,84 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We look up whatever root userspace has given us, we need to hold a ref
-throughout this operation.
+We look up an arbitrary fs root here, we need to hold a ref on the root
+for the duration.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/btrfs/ioctl.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 5fffa1b6f685..7d30c7821490 100644
+index 7d30c7821490..69c39b3d15a5 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -2683,6 +2683,10 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
- 	root = btrfs_get_fs_root(fs_info, &key, true);
- 	if (IS_ERR(root)) {
- 		ret = PTR_ERR(root);
-+		goto out_free;
-+	}
-+	if (!btrfs_grab_fs_root(root)) {
-+		ret = -ENOENT;
+@@ -3987,7 +3987,7 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
+ 	struct btrfs_root *new_root;
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_trans_handle *trans;
+-	struct btrfs_path *path;
++	struct btrfs_path *path = NULL;
+ 	struct btrfs_key location;
+ 	struct btrfs_disk_key disk_key;
+ 	u64 objectid = 0;
+@@ -4018,44 +4018,50 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
+ 		ret = PTR_ERR(new_root);
  		goto out;
  	}
- 	root_item = &root->root_item;
-@@ -2760,6 +2764,8 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
- 		ret = -EFAULT;
+-	if (!is_fstree(new_root->root_key.objectid)) {
++	if (!btrfs_grab_fs_root(root)) {
+ 		ret = -ENOENT;
+ 		goto out;
+ 	}
++	if (!is_fstree(new_root->root_key.objectid)) {
++		ret = -ENOENT;
++		goto out_free;
++	}
  
- out:
-+	btrfs_put_fs_root(root);
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto out_free;
+ 	}
+ 	path->leave_spinning = 1;
+ 
+ 	trans = btrfs_start_transaction(root, 1);
+ 	if (IS_ERR(trans)) {
+-		btrfs_free_path(path);
+ 		ret = PTR_ERR(trans);
+-		goto out;
++		goto out_free;
+ 	}
+ 
+ 	dir_id = btrfs_super_root_dir(fs_info->super_copy);
+ 	di = btrfs_lookup_dir_item(trans, fs_info->tree_root, path,
+ 				   dir_id, "default", 7, 1);
+ 	if (IS_ERR_OR_NULL(di)) {
+-		btrfs_free_path(path);
++		btrfs_release_path(path);
+ 		btrfs_end_transaction(trans);
+ 		btrfs_err(fs_info,
+ 			  "Umm, you don't have the default diritem, this isn't going to work");
+ 		ret = -ENOENT;
+-		goto out;
++		goto out_free;
+ 	}
+ 
+ 	btrfs_cpu_key_to_disk(&disk_key, &new_root->root_key);
+ 	btrfs_set_dir_item_key(path->nodes[0], di, &disk_key);
+ 	btrfs_mark_buffer_dirty(path->nodes[0]);
+-	btrfs_free_path(path);
++	btrfs_release_path(path);
+ 
+ 	btrfs_set_fs_incompat(fs_info, DEFAULT_SUBVOL);
+ 	btrfs_end_transaction(trans);
 +out_free:
- 	btrfs_free_path(path);
- 	kzfree(subvol_info);
++	btrfs_put_fs_root(new_root);
++	btrfs_free_path(path);
+ out:
+ 	mnt_drop_write_file(file);
  	return ret;
 -- 
 2.24.1
