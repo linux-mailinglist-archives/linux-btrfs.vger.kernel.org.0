@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCAF140C11
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AA6140C12
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgAQOHo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:07:44 -0500
-Received: from mail-qv1-f43.google.com ([209.85.219.43]:39493 "EHLO
-        mail-qv1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQOHo (ORCPT
+        id S1727033AbgAQOHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:07:46 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46169 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQOHp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:07:44 -0500
-Received: by mail-qv1-f43.google.com with SMTP id y8so10737402qvk.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:07:43 -0800 (PST)
+        Fri, 17 Jan 2020 09:07:45 -0500
+Received: by mail-qk1-f193.google.com with SMTP id r14so22709409qke.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=n9PrLcSCYVHoZuTCOiqxvr1ql+CNSqhlYHuKl0HJsTo=;
-        b=bbmlzqDhfIlwPBD2hdiPkW+u9OMpvpI9H3nPsNEIBg6Cpz056c9AOp+gYwWDkM6rM3
-         6FIBuZcVt3zzMuckGtBUs7K3z1FC7bevS+AhxAlOJoyFCnlfAmm4xqrVIehcpj1uBp+p
-         U9stFMhF6A/SZhtQNK67tDTHWFfuKAMIyOoJWYQuaFrJMYlIhA32YyZhaKw/hYrTP1V0
-         PCYFEHAUasY9tRz5e9Jfh3bAmVR7C9WObv2XevThTdix2ejCn5q4d1JU7ycR9TpgGN1F
-         GfSeQ0rpdXMUKgIsrN9IF46owRWT2Y4WIYlMTfKm0i1GliCFKfNMJFYeJCaPNg109EjC
-         bnXw==
+        bh=WuSMBsM9O0XiVWPXK94CajZn1pfthHPOODT4ZMm/fHU=;
+        b=PcGA+inveALPEnmXKBaTcBqS58upTLfvdjuLEPFqPFxPwlRW3qz2GfZ0yqutiodURO
+         2rHN6oVp56sTuFNx+GbB8gTQ3/fPVqnRFzQmMdcnmHRY9c/LmC6DSbBYbhMz3HQ7z9YP
+         3h3cU8ERHYi8zIuZrK1rEGzQ6iZPhYkjWTehipW4IUCzmMZVbkxVi14K9+QY9bxnzqNy
+         xl3jQmGX9R/8OdS2FVxAuzFcrhmV1DcERl002vKsgJpDftbuytOvyFtovy7Y0NFs1NLu
+         HT0YjOqd45UhcrMaL+BOqR0ivsAVf2KZgi19XTK00dNCP6BtpFIfpqsrDMl9qH4Ms8Jg
+         BiYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n9PrLcSCYVHoZuTCOiqxvr1ql+CNSqhlYHuKl0HJsTo=;
-        b=B6tF01P8FTwXg/e5OtwvGWLC7YTuwJ7zHFUxenCeW29gCInrKILOeqwdQ08iXfjJaI
-         zX4X3G0g+iXOl4iI4+LcAssXDy1Qx1DbZTt/kdxUjnCeyLFDISH7oc9xh1aNmeDaSwsV
-         wroudOivY1cAEY7fPhVvXQ3c9hX+Y17bq+VsN+omIX1ujEGy4YAYppR36gj0Dl8sSue5
-         h+Vev8Pa9r/+IReg+ZGxhTQmz6wp5O+uAXUnRm+n12F9c0FT75LJtqMqyENggxJ79Ksp
-         x+y8gcyQ08FJBpqzaY4hwhymOEYvNTLAEp30UErYJWP3qgnhnyl7JXMbbFqcug7DPYZv
-         Wxsw==
-X-Gm-Message-State: APjAAAWUjQ4YH+yc6j1It4BEJFB33vFu/AXtEoeHPxbdQ0Fc8MXwxVy4
-        ZInvVnVqus8sLWCN1QgjixvMs1SbZhR4uw==
-X-Google-Smtp-Source: APXvYqyoSsJtf5NyuCoWroi1azlqbKMU/23Z5ysatuY2cPTVv2qOO/B/QiLMp8QtymfSJa+f8Vb8hQ==
-X-Received: by 2002:a05:6214:1149:: with SMTP id b9mr7721078qvt.227.1579270062691;
-        Fri, 17 Jan 2020 06:07:42 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WuSMBsM9O0XiVWPXK94CajZn1pfthHPOODT4ZMm/fHU=;
+        b=jmzxKeNW1qIz8oW6ZX2FbTzmns5AwnUaHoPSk//0tdhmDO6XoUwMYgIMSmxMdb9C1m
+         4XKfGh6JS8m/+MLL9puXMNX0de4Rqgtu6Mi0pcp4p+QgNCCfnfTa5ZQa41MzOsOeGYi8
+         gatBk5NSpE+AWurr8JJsGW79ARvIf00rv38YrrU04s7Hl4SEbkqF7K2OWuyl1bPFVhN3
+         dbRFblCjxAMwXF9RMwUNFiMb3B4WALOttlwPodYoq8jKC1sQVtODXV4F7CYpehhj0u+G
+         vVsNSjqH/bNlXLfUZ4eSnioN/bht5sh+Z4SvVMr4h24lYEB+JvE3YJAkNmYXhUgl1RPe
+         7L3Q==
+X-Gm-Message-State: APjAAAUXi6zoOX234Sg1RtGmZzWC6mg5b38L7GY1doSc1gx8N28K4efc
+        rSJy5SWcjlmkc2ShZ+QmqoVQ3ulO8W+qpw==
+X-Google-Smtp-Source: APXvYqw+tduohUClsA+8FzNhqf4/n8WWsdUVm5DRDi9ZOU/3M3/TkRJXbuCYI/V0fsQ8jzJLPrGbkw==
+X-Received: by 2002:ae9:e704:: with SMTP id m4mr36851940qka.153.1579270064313;
+        Fri, 17 Jan 2020 06:07:44 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 21sm11797757qky.41.2020.01.17.06.07.41
+        by smtp.gmail.com with ESMTPSA id s20sm11744569qkj.100.2020.01.17.06.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 06:07:41 -0800 (PST)
+        Fri, 17 Jan 2020 06:07:43 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/3][v2] clean up how we mark block groups read only
-Date:   Fri, 17 Jan 2020 09:07:36 -0500
-Message-Id: <20200117140739.42560-1-josef@toxicpanda.com>
+Subject: [PATCH 1/3] btrfs: check rw_devices, not num_devices for restriping
+Date:   Fri, 17 Jan 2020 09:07:37 -0500
+Message-Id: <20200117140739.42560-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200117140739.42560-1-josef@toxicpanda.com>
+References: <20200117140739.42560-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,26 +60,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v1->v2:
-- Rebased onto misc-next.
-- Fixed a bug where we weren't adjusting space_info->bytes_readonly in the force
-  case.
-- Dropped the RFC, these are pretty important fixes.
+While running xfstests with compression on I noticed I was panicing on
+btrfs/154.  I bisected this down to my inc_block_group_ro patches, which
+was strange.
 
--------------- Original email ----------------------
-Qu has been looking into ENOSPC during relocation and noticed some weirdness
-with inc_block_group_ro.  The problem is this code hasn't changed to keep up
-with the rest of the reservation system.  It still assumes that the amount of
-space used will always be less than the total space for the space info, which
-hasn't been true for years since I introduced overcommitting.  This logic is
-correct for DATA, but not for METADATA or SYSTEM.
+What was happening is with my patches we now use btrfs_can_overcommit()
+to see if we can flip a block group read only.  Before this would fail
+because we weren't taking into account the usable un-allocated space for
+allocating chunks.  With my patches we were allowed to do the balance,
+which is technically correct.
 
-The first few patches are just cleanups, and can probably be taken as is.  The
-final patch is the real meat of the problem to address Qu's issues.  This is an
-RFC because I'm elbow deep in another problem and haven't tested this beyond
-compile testing, but I think it'll work.  Once I've gotten a chance to test it
-and Qu has tested it I'll update the list if it's good to go as is, or send a V2
-with any changes.  Thanks,
+However this test is testing restriping with a degraded mount, something
+that isn't working right because Anand's fix for the test was never
+actually merged.
 
-Josef
+So now we're trying to allocate a chunk and cannot because we want to
+allocate a RAID1 chunk, but there's only 1 device that's available for
+usage.  This results in an ENOSPC in one of the BUG_ON(ret) paths in
+relocation (and a tricky path that is going to take many more patches to
+fix.)
+
+But we shouldn't even be making it this far, we don't have enough
+devices to restripe.  The problem is we're using btrfs_num_devices(),
+which for some reason includes missing devices.  That's not actually
+what we want, we want the rw_devices.
+
+Fix this by getting the rw_devices.  With this patch we're no longer
+panicing with my other patches applied, and we're in fact erroring out
+at the correct spot instead of at inc_block_group_ro.  The fact that
+this was working before was just sheer dumb luck.
+
+Fixes: e4d8ec0f65b9 ("Btrfs: implement online profile changing")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/volumes.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c72fd33a9ce1..035578e061fb 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3884,7 +3884,14 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 		}
+ 	}
+ 
+-	num_devices = btrfs_num_devices(fs_info);
++	/*
++	 * Balance is an exculsive operation, so no operation that's going to
++	 * affect rw_devices can run concurrent with it, thus it is safe to
++	 * simply grab the value.  We want rw_devices because we do not want to
++	 * allow restriping if we don't have enough devices we can actually
++	 * allocate from.
++	 */
++	num_devices = fs_info->fs_devices->rw_devices;
+ 
+ 	/*
+ 	 * SINGLE profile on-disk has no profile bit, but in-memory we have a
+-- 
+2.24.1
 
