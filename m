@@ -2,122 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E63E1401A7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 03:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8E514022E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 04:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387780AbgAQCAE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 21:00:04 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43126 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgAQCAE (ORCPT
+        id S2389188AbgAQDBi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 22:01:38 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:43244 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388298AbgAQDBi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 21:00:04 -0500
-Received: by mail-qk1-f195.google.com with SMTP id t129so21255398qke.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jan 2020 18:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=y9e+dvFkc9nrlvzoLhiDzvZuk1/Hhbdhtj74rVNXCF8=;
-        b=Sks5inxsFD+goddKiQlmtXSEV2lYwhgIlwETgkusFLJof7pMlUkzKNKLc5bB5pUxTs
-         Dzdwd46yCZWiFvwPHIELmrQarFB+kXw1FDGoP9lOXaRIml4ML7U2mMe7/zPEGizYNs1W
-         K6cq/xp8rmXB3Sd5SDZVe4IUxDdDkdUK559eijfqiQBz2J7Af6qh6o53vd5Wn91f/UnA
-         vlF/FOt5K2Sv1RFabOtVPj7+qekw544A41sVGo4R2DPe1L7EAgH9jpAwreIdYg6YrEg/
-         n9oL19y0hbqXDLzJOvsPnMt5PueeznaRPNd9/BkdHT05ObfuRZpNAWsQQmXK4gkbeEy4
-         ReEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y9e+dvFkc9nrlvzoLhiDzvZuk1/Hhbdhtj74rVNXCF8=;
-        b=ugIwYTk+/9tL3FHSdMhFcP/JCBS7AjXNkaf5FeHPC1ePKhw6Wwr1Odx89pFJa+FYtj
-         XmhX7pI1qhUzyDwnCewNd0rJlX0vvRBlvZzgM6FYf8NKRXPJLhRVBTBDKiQBeMFX6E5W
-         3opRCsNXzSH3BA7yQ/gTMqzdPkIQvFfv2HYR1AUModxPWpJ1cOjkgTXGmUZyl0w8TYNN
-         F15ZWltwnyTL2ZiC3dBhE0zWJQArrRJvPB4rmU/mUDYbF3JlMTa3K1heWqEnUQ5okIxQ
-         nd+SQ6rgFyDPpl49wouXyx6AynnINz8/SFT5L0tt9vB6/EK/IuaqK+z8T2xX6MgTudbw
-         4sMQ==
-X-Gm-Message-State: APjAAAVKzYnN58rBM4/wEsVyiSwO265THeaA++dU8zhVR2etF2KCdBpf
-        3/QiNNZM/UeGn5Ko3t4TpgUAOj3yfLAX6A==
-X-Google-Smtp-Source: APXvYqySA4OaquotAQNCbsD3ohFZF4M8vToFExOQzd9OU3RGu5fYz75GE7bRydgPvErn3DAwhSHerQ==
-X-Received: by 2002:a05:620a:849:: with SMTP id u9mr36297972qku.414.1579226402960;
-        Thu, 16 Jan 2020 18:00:02 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::2e8c])
-        by smtp.gmail.com with ESMTPSA id 3sm12254471qte.59.2020.01.16.18.00.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jan 2020 18:00:02 -0800 (PST)
-Subject: Re: [PATCH v6 1/5] btrfs: Introduce per-profile available space
- facility
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200116060404.95200-1-wqu@suse.com>
- <20200116060404.95200-2-wqu@suse.com>
- <49727617-91d3-9cff-c772-19d7cd371b55@toxicpanda.com>
- <3818d217-b64a-5f44-c80e-c49521bb3698@gmx.com>
- <4380a833-eb7c-cabe-3a97-9346d803873f@toxicpanda.com>
- <525d34e8-1c14-b13f-bb03-91754e5882f1@gmx.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <a2a08770-3d51-871f-b00f-95a274907710@toxicpanda.com>
-Date:   Thu, 16 Jan 2020 21:00:01 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        Thu, 16 Jan 2020 22:01:38 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00H2sSn0054886;
+        Fri, 17 Jan 2020 03:01:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=Alf7JGVMdSBj/3XLyh41lux46Zi5EpqX6tVr5qI2PvA=;
+ b=MKZaNYBMOu5F2Yi+kbcF43YUdO/Ai2Cg39VXW0ZUeU7fabWWV7zW7P7v/loakt4v2u23
+ C9T8UmtiWdWBYC6L7AhtY+K69A3ph5yxBqA7GfvSyMmotKfa6aYzqYU1H8BXpci0wbww
+ nxaihPi/s5DmVQWVm5Gja6mjGq264tb0HmKmYa6qZ0gxcM6iSLyQ5UdskQMGa9qX5gH1
+ X1Aa/Tucgv6f9jyoVyC19VeyXfUOOeZ2YUPmBOs2EDBIoreXXVq/pn33VUVqAVUNu+qH
+ BYi1rPb/gosRULwMvj47B9xrFFrnX9+CYIS8X7EAgM4XVB5G13BD22x5IoiC8aZRjeUD FQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2xf74sp6m5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jan 2020 03:01:36 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00H2sJv4162005;
+        Fri, 17 Jan 2020 03:01:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2xk24e6nk1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Jan 2020 03:01:35 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00H31XoW010950;
+        Fri, 17 Jan 2020 03:01:33 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Jan 2020 19:01:33 -0800
+Subject: Re: [PATCH 2/5] btrfs: include non-missing as a qualifier for the
+ latest_bdev
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20191007094515.925-1-anand.jain@oracle.com>
+ <20191007094515.925-3-anand.jain@oracle.com>
+ <36b867df-4795-d467-dd08-dc5ac4ad7cd0@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <fa7fc9e1-1022-847c-166f-aaa6f0399200@oracle.com>
+Date:   Fri, 17 Jan 2020 11:01:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <525d34e8-1c14-b13f-bb03-91754e5882f1@gmx.com>
+In-Reply-To: <36b867df-4795-d467-dd08-dc5ac4ad7cd0@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001170019
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001170019
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/16/20 8:54 PM, Qu Wenruo wrote:
-> 
-> 
-> On 2020/1/17 上午9:50, Josef Bacik wrote:
->> On 1/16/20 7:55 PM, Qu Wenruo wrote:
->>>
->>>
->>> On 2020/1/17 上午12:14, Josef Bacik wrote:
->>>> On 1/16/20 1:04 AM, Qu Wenruo wrote:
->>> [...]
->>>>
->>>> Instead of creating a weird error handling case why not just set the
->>>> per_profile_avail to 0 on error?  This will simply disable overcommit
->>>> and we'll flush more.  This way we avoid making a weird situation
->>>> weirder, and we don't have to worry about returning an error from
->>>> calc_one_profile_avail().  Simply say "hey we got enomem, metadata
->>>> overcommit is going off" with a btrfs_err_ratelimited() and carry on.
->>>> Maybe the next one will succeed and we'll get overcommit turned back
->>>> on.  Thanks,
->>>
->>> Then the next user statfs() get screwed up until next successful update.
->>>
->>
->> Then do a
->>
->> #define BTRFS_VIRTUAL_IS_FUCKED (u64)-1
->>
->> and set it to that so statfs can call in itself and re-calculate.  Thanks,
-> 
-> Then either we keep the old behavior (inaccurate for
-> RAID5/6/RAID1C2/C3), or hold chunk_mutex to do the calculation (slow).
-> Neither looks good enough to me.
-> 
-> The proper error handling still looks better to me.
-> 
-> Either way, we need to revert the device size when we failed in those 4
-> timings. With or without the patchset.
-> 
-> Doing proper revert not only enhance the existing error handling, but
-> also makes the per-profile available array sane.
-> 
+[...]
 
-Alright you've convinced me.  I'm still not a big fan of it, but it's not the 
-worst thing in the world.  You can add
+> This should be turned into an xfstests.
 
-Reviewed-by:  Josef Bacik <josef@toxicpanda.com>
+xfstests btrfs/197 was added.
 
-Thanks,
+43602315cad9 btrfs: test for alien btrfs-devices
 
-Josef
+Thanks, Anand
+
+
+>  You can add
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Thanks,
+> 
+> Josef
+
