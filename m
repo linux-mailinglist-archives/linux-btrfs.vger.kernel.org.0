@@ -2,240 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA2614110B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 19:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FA51411EA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 20:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgAQSpA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 13:45:00 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:44445 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgAQSpA (ORCPT
+        id S1729375AbgAQTjJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 14:39:09 -0500
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:42278 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727573AbgAQTjJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 13:45:00 -0500
-Received: by mail-qt1-f196.google.com with SMTP id w8so8112958qts.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 10:44:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IFsqefi7HnS6rwBfMuBNQ/eYaSi2dW4bRFXq/10IfFE=;
-        b=otGgjFg0S809OxKe81tdkvchEtMsz8Q+xZgMxf02kOL3Cih2R19iCRUFiLzyqV5UNr
-         i6WpHw+FdvgCP4l6S6LNkLNIj1Yyq1haR9L1G6WsGfqM9nqyib52T2KpGMVXcIomcK16
-         CnPt1guLyGXXd+HLm+0+p/s3T3+fkmPQKssM9zGI353ve6veRZ7y0uBkz+yENKwv34eh
-         kpm9bcTNeycMajntpbojBo3HAHjEr1DiRtqCNEYzCTIZlqHmKDzmFOdjkJRE/UWF+oML
-         SgWbuthj9O2M/eZwsJN4ouHK1VuIR4Z/0HOg8g2L6LjcInEysWwfMFD22FPOIBz4R/uW
-         SnIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IFsqefi7HnS6rwBfMuBNQ/eYaSi2dW4bRFXq/10IfFE=;
-        b=CmglOPMb+rYncxH1D1OzDz68HODs9vRm7Mr8E/2GFu8UAbtXqZOZbaOjNOKoGittc2
-         l6k01ei7+u8yYlvzGZL2baIt9bfdxZKesy70HqH1h6o/1XnG6e3GB40MxsuMluRBNh7z
-         fVJlbJoOfYoaZtj/0C2xPl22IgB1FhgF0FG5wCAyF/eNyiAxFV7UySfio5E0GV1UdNo/
-         AgnY8pFU1QzcviZne9eScTq6QgJ168/Bcz83oFXTh3QuCRr94VKC3I54NKO6lEqtrJnX
-         HJWw5l1oEjs7LdlIfVozD6V2vlXWkGYcxMNPL7DREeCCgYxpIrG23MgBpg3R+EmENvNx
-         8jjg==
-X-Gm-Message-State: APjAAAWX4BXYe+ptV6fCtqGo8Zco1dQaul3mytRt1c4/p4LHXLqyKxIw
-        hqsPorhmddjy/ZZ68JK+nyJPNSMZTOTLUQ==
-X-Google-Smtp-Source: APXvYqwt5Eom0/XlQNYnGxOklVeRbLIGp2yRgiYRauQH/ML/aVTFMSFlJF1+ZSnqtb7dKamac9Asuw==
-X-Received: by 2002:ac8:408e:: with SMTP id p14mr9139741qtl.66.1579286698932;
-        Fri, 17 Jan 2020 10:44:58 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id x19sm13346079qtm.47.2020.01.17.10.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 10:44:58 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: do not do delalloc reservation under page lock
-Date:   Fri, 17 Jan 2020 13:44:57 -0500
-Message-Id: <20200117184457.1343-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Fri, 17 Jan 2020 14:39:09 -0500
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 0D09E9C3E7; Fri, 17 Jan 2020 19:39:08 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1579289948;
+        bh=suZ16vlGbGobLGMV4qlDQJ+Ewa62mhWcRucZUuRWz4s=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=vZ0GMCSMhd6Jk7+lqDJBHj88qm5IWbQgEUEonoM+o245F8S2LQyvvv4SIDLyE0yXb
+         a3JqNFouKbG89ZQ2CeyS4DJXlhFenIOff8jPVTUJY0lQ7C75jwVEI6G/PPEUF2Apzk
+         hl3uunn4rVM1nWyq275O7XihFj8ch82OL5NqvYEbpX29iiLtQ464TeCo/TSrAnIvN+
+         mhfNKNQy2zHQdlOBxTTfQTOvMbEqjf9goldtup/S7oZZMU58y4Mpl1UYpwONSrOA5h
+         Ngax8cDRTSAWrwUAxXipqlHolmyrf0yDfw14AsAT/di4bRp/mtO946Dq8TN9k804VO
+         Auuo9k6PdRRIA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 3D9E89B967;
+        Fri, 17 Jan 2020 19:39:03 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1579289943;
+        bh=suZ16vlGbGobLGMV4qlDQJ+Ewa62mhWcRucZUuRWz4s=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=AF7U7z8g+fgYNGtF5OVl9kY5ePpz2xfcIl/QrmeVIRrN14KuRBel+EUXOYDbTnBSb
+         gBkksLf4WYjKtY9RoxMLgOesK5VYxN/RKZJUs4aJ5rydmpJ0OomXq9V4rvRnHDJ5NI
+         zfgfjAzH/R45XoTmE6+wo/qXNsvNVvAtftGteNHl9Y48TkSakDqR2OAg2FJi4G4ap8
+         U58yeyg9aLRaRju5PE2vSU/zQ5bAL/pUJhAMU+ZbEaKxdoYTQ4CoQYKuK1ScEhiRHb
+         OoEhaw/EEllgdpdj0BAvIBQkwghlCeJMAS24200MrxvRzBDw4FNdnhQp9cFbZqc+yH
+         2I8ZzjODseNCA==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 0305DADA70;
+        Fri, 17 Jan 2020 19:39:02 +0000 (GMT)
+Subject: Re: Scrub resume regression
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <d0a97688-78be-08de-ca7d-bcb4c7fb397e@cobb.uk.net>
+ <20200115125134.GN3929@twin.jikos.cz>
+ <5aa23833-d1e2-fe6f-7c6e-f366d3eccbe3@applied-asynchrony.com>
+ <20200116140227.GV3929@twin.jikos.cz> <20200117155948.GM13306@hungrycats.org>
+ <CAJCQCtTZMSzNosnognWCyBU+iJ4La=0EG0xBKHEPSDdaAAqt4A@mail.gmail.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <5a0ee78c-31a1-d12f-5816-9155adf19ebe@cobb.uk.net>
+Date:   Fri, 17 Jan 2020 19:39:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJCQCtTZMSzNosnognWCyBU+iJ4La=0EG0xBKHEPSDdaAAqt4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We ran into a deadlock in production with the fixup worker.  The stack
-traces were as follows
+On 17/01/2020 18:39, Chris Murphy wrote:
+> It's no one's fault, it's just confusing. :P
+> 
+> Cancel word origin means more than stop, implies resetting state, to
+> obliterate or invalidate.
+> 
+> Pause and stop word origin suggests they're interchangeable, but in
+> practice with digital audio and video consumer gear, stop has come to
+> mean a kind of cancel. (I'm gonna ignore tape.) Where a start from a
+> stop will start at the very beginning. Whereas pause saves state and
+> unpause means resume.
+> 
+> Lightweight change, add new command stop, which saves state, and
+> cancel is an alias for backward compatibility. No other change.
 
-Thread responsible for the writeout, waiting on the page lock
+That seems fairly pointless.
 
-[<0>] io_schedule+0x12/0x40
-[<0>] __lock_page+0x109/0x1e0
-[<0>] extent_write_cache_pages+0x206/0x360
-[<0>] extent_writepages+0x40/0x60
-[<0>] do_writepages+0x31/0xb0
-[<0>] __writeback_single_inode+0x3d/0x350
-[<0>] writeback_sb_inodes+0x19d/0x3c0
-[<0>] __writeback_inodes_wb+0x5d/0xb0
-[<0>] wb_writeback+0x231/0x2c0
-[<0>] wb_workfn+0x308/0x3c0
-[<0>] process_one_work+0x1e0/0x390
-[<0>] worker_thread+0x2b/0x3c0
-[<0>] kthread+0x113/0x130
-[<0>] ret_from_fork+0x35/0x40
-[<0>] 0xffffffffffffffff
+> Moderate change:
+> start = alias resume
 
-Thread of the fixup worker who is holding the page lock
+start and resume do different things today. The distinction is important
+as the "saved state" after a cancel stays around until the next scrub
+starts (it could be months old).
 
-[<0>] start_delalloc_inodes+0x241/0x2d0
-[<0>] btrfs_start_delalloc_roots+0x179/0x230
-[<0>] btrfs_alloc_data_chunk_ondemand+0x11b/0x2e0
-[<0>] btrfs_check_data_free_space+0x53/0xa0
-[<0>] btrfs_delalloc_reserve_space+0x20/0x70
-[<0>] btrfs_writepage_fixup_worker+0x1fc/0x2a0
-[<0>] normal_work_helper+0x11c/0x360
-[<0>] process_one_work+0x1e0/0x390
-[<0>] worker_thread+0x2b/0x3c0
-[<0>] kthread+0x113/0x130
-[<0>] ret_from_fork+0x35/0x40
-[<0>] 0xffffffffffffffff
+> stop = alias cancel
+> i.e. a stop then start does the same thing as a cancel then resume,
+> unless new command 'reset' is used
+> reset = stops, and resets state to the beginning
 
-Thankfully the stars have to align just right to hit this.  First you
-have to end up in the fixup worker, which is tricky by itself (my
-reproducer does DIO reads into a MMAP'ed region, so not a common
-operation).  Then you have to have less than a page size of free data
-space and 0 unallocated space so you go down the "commit the transaction
-to free up pinned space" path.  This was accomplished by a random
-balance that was running on the host.  Then you get this deadlock.
+That really isn't useful. It is much more useful to be able to decide
+whether to use the saved state at start time than it is to decide
+whether to save state at stop time. To build on Zygo's example, I might
+have a script which pauses the scrub when the system load goes up and
+then decides whether to resume it or restart from scratch depending on
+how long it has been paused for. Also, the saved state can be inspected
+while the scrub is paused to allow the operator to estimate how long it
+might take to complete.
 
-I'm still in the process of trying to force the deadlock to happen on
-demand, but I've hit other issues.  I can still trigger the fixup worker
-path itself so this patch has been tested in that regard, so the normal
-case is fine.
+> Heavier change that's linguistically sane, but breaks expectations of
+> today's cancel:
+> pause and unpause (alias resume), and start and stop (alias cancel).
+> The former is stateful, and the latter is stateless.
 
-Fixes: 87826df0ec36 ("btrfs: delalloc for page dirtied out-of-band in fixup worker")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 55 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 34 insertions(+), 21 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index da31571b150b..9886c15e00d8 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2198,6 +2198,7 @@ int btrfs_set_extent_delalloc(struct inode *inode, u64 start, u64 end,
- /* see btrfs_writepage_start_hook for details on why this is required */
- struct btrfs_writepage_fixup {
- 	struct page *page;
-+	struct inode *inode;
- 	struct btrfs_work work;
- };
- 
-@@ -2212,26 +2213,37 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 	u64 page_start;
- 	u64 page_end;
- 	int ret;
-+	bool free_delalloc_space = true;
- 
- 	fixup = container_of(work, struct btrfs_writepage_fixup, work);
- 	page = fixup->page;
-+	inode = fixup->inode;
-+	page_start = page_offset(page);
-+	page_end = page_offset(page) + PAGE_SIZE - 1;
-+
-+	/*
-+	 * This is similar to page_mkwrite, we need to reserve the space before
-+	 * we take the page lock.
-+	 */
-+	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
-+					   PAGE_SIZE);
-+	if (ret) {
-+		mapping_set_error(inode->i_mapping, ret);
-+		goto out_page;
-+	}
- again:
- 	lock_page(page);
- 	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
- 		ClearPageChecked(page);
--		goto out_page;
-+		goto out_reserved;
- 	}
- 
--	inode = page->mapping->host;
--	page_start = page_offset(page);
--	page_end = page_offset(page) + PAGE_SIZE - 1;
--
- 	lock_extent_bits(&BTRFS_I(inode)->io_tree, page_start, page_end,
- 			 &cached_state);
- 
- 	/* already ordered? We're done */
- 	if (PagePrivate2(page))
--		goto out;
-+		goto out_reserved;
- 
- 	ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), page_start,
- 					PAGE_SIZE);
-@@ -2244,39 +2256,32 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 		goto again;
- 	}
- 
--	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
--					   PAGE_SIZE);
--	if (ret) {
--		mapping_set_error(page->mapping, ret);
--		end_extent_writepage(page, ret, page_start, page_end);
--		ClearPageChecked(page);
--		goto out;
--	 }
--
- 	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
- 					&cached_state);
- 	if (ret) {
- 		mapping_set_error(page->mapping, ret);
- 		end_extent_writepage(page, ret, page_start, page_end);
- 		ClearPageChecked(page);
--		goto out_reserved;
-+		goto out;
- 	}
- 
- 	ClearPageChecked(page);
- 	set_page_dirty(page);
-+	free_delalloc_space = false;
-+out:
-+	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
-+			     &cached_state);
- out_reserved:
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
--	if (ret)
-+	if (free_delalloc_space)
- 		btrfs_delalloc_release_space(inode, data_reserved, page_start,
- 					     PAGE_SIZE, true);
--out:
--	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
--			     &cached_state);
--out_page:
- 	unlock_page(page);
-+out_page:
- 	put_page(page);
- 	kfree(fixup);
- 	extent_changeset_free(data_reserved);
-+	iput(inode);
- }
- 
- /*
-@@ -2307,10 +2312,18 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
- 	if (!fixup)
- 		return -EAGAIN;
- 
-+	/*
-+	 * We are already holding a reference to this inode from
-+	 * write_cache_pages.  We need to hold it because the space reservation
-+	 * takes place outside of the page lock, and we can't trust
-+	 * page->mapping outside of the page lock.
-+	 */
-+	ihold(inode);
- 	SetPageChecked(page);
- 	get_page(page);
- 	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
- 	fixup->page = page;
-+	fixup->inode = inode;
- 	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
- 	return -EBUSY;
- }
--- 
-2.24.1
+Changing the meaning of the current start, resume, or cancel commands
+isn't an option - these are built into user scripts.
 
