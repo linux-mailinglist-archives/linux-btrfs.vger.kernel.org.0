@@ -2,80 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ACC140F32
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 17:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074C0140F4F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 17:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgAQQn4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 11:43:56 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:23038 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726867AbgAQQn4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 11:43:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579279435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ywZah/acU88OdI0elxdfP2wlFAEGYbYZ2X9Wl0Y+ps=;
-        b=aPONDv90XNmbxI3XjQCdAGwZTtIDrtRA9Q0T72fYp+mdaEnn8imbL7tTgheeHPMfkJt2OT
-        s77r75OsSZkYkLphG+JFZ9Az5m3JWc/KcMMVMyxyJjYy8hriYMTh8802fxzF64aZ/u/dpS
-        aCfw7gMeKiYcC7nNmoJZoneHrxc/d3c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-LeC-d3cZMfmN1hLN6_W0bg-1; Fri, 17 Jan 2020 11:43:49 -0500
-X-MC-Unique: LeC-d3cZMfmN1hLN6_W0bg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DDF66125B;
-        Fri, 17 Jan 2020 16:43:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-49.rdu2.redhat.com [10.10.120.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BDA115C54A;
-        Fri, 17 Jan 2020 16:43:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200116101344.GA16435@lst.de>
-References: <20200116101344.GA16435@lst.de> <20200115144839.GA30301@lst.de> <20200115133101.GA28583@lst.de> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com> <26093.1579098922@warthog.procyon.org.uk> <28755.1579100378@warthog.procyon.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dhowells@redhat.com, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Problems with determining data presence by examining extents?
+        id S1728835AbgAQQuj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 11:50:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54064 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726554AbgAQQuj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 11:50:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 33D23AFDC;
+        Fri, 17 Jan 2020 16:50:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 21DA6DA871; Fri, 17 Jan 2020 17:50:20 +0100 (CET)
+Date:   Fri, 17 Jan 2020 17:50:19 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
+Message-ID: <20200117165019.GM3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <c751bc1a-505c-5050-3c4c-c83be81b4e48@infradead.org>
+ <20191212184725.db3ost7rcopotr5u@treble>
+ <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
+ <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
+ <20191213235054.6k2lcnwa63r26zwi@treble>
+ <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
+ <20191214054515.ougsr5ykhl3vvy57@treble>
+ <20191217152954.GH3929@suse.cz>
+ <20200110194622.GS3929@twin.jikos.cz>
+ <20200117152805.ncy3z34imzpchg7m@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <469987.1579279418.1@warthog.procyon.org.uk>
-Date:   Fri, 17 Jan 2020 16:43:38 +0000
-Message-ID: <469988.1579279418@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200117152805.ncy3z34imzpchg7m@treble>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> wrote:
+On Fri, Jan 17, 2020 at 09:28:05AM -0600, Josh Poimboeuf wrote:
+> On Fri, Jan 10, 2020 at 08:46:22PM +0100, David Sterba wrote:
+> > On Tue, Dec 17, 2019 at 04:29:54PM +0100, David Sterba wrote:
+> > > Separating the definitions by #ifdef looks ok, I'd rather do separate
+> > > definitions of ASSERT too, to avoid the ternary operator. I'll send the
+> > > patch.
+> > 
+> > Subject: [PATCH] btrfs: separate definition of assertion failure handlers
+> > 
+> > There's a report where objtool detects unreachable instructions, eg.:
+> > 
+> >   fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
+> > 
+> > This seems to be a false positive due to compiler version. The cause is
+> > in the ASSERT macro implementation that does the conditional check as
+> > IS_DEFINED(CONFIG_BTRFS_ASSERT) and not an #ifdef.
+> > 
+> > To avoid that, use the ifdefs directly.
+> > 
+> > CC: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: David Sterba <dsterba@suse.com>
+> > ---
+> >  fs/btrfs/ctree.h | 20 ++++++++++++--------
+> >  1 file changed, 12 insertions(+), 8 deletions(-)
+> 
+> This looks quite similar to my patch, would you mind giving me
+> attribution?
 
-> File systems usually pad zeroes where they have to, typically for
-> sub-blocksize writes.   Disabling this would break data integrity.
+So Co-developed-by: or "based on patch from Josh", or something else?
 
-I understand that.  I can, however, round up the netfs I/O granule size and
-alignment to a multiple of the cachefile I/O block size.  Also, I'm doing DIO,
-so I have to use block size multiples.
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index 569931dd0ce5..f90b82050d2d 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -3157,17 +3157,21 @@ do {								\
+> >  	rcu_read_unlock();					\
+> >  } while (0)
+> >  
+> > -__cold
+> > -static inline void assfail(const char *expr, const char *file, int line)
+> > +#ifdef CONFIG_BTRFS_ASSERT
+> > +__cold __noreturn
+> > +static inline void assertfail(const char *expr, const char *file, int line)
+> >  {
+> > -	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
+> > -		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+> > -		BUG();
+> > -	}
+> > +	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+> > +	BUG();
+> 
+> assertfail() is definitely better than "assfail", but shouldn't you
+> update the callers so it doesn't break the build?
 
-But if the filesystem can avoid bridging large, appropriately sized and
-aligned blocks, then I can use it.
-
-David
-
+I don't understand what you mean, the helper is not called directly (and
+build does not fail with or without CONFIG_BTRFS_ASSERT), but always as
+ASSERT, so I don't see what needs to be updated.
