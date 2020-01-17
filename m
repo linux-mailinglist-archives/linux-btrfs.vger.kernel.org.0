@@ -2,140 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F57F140C2A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4466B140C3F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgAQOMt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:12:49 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44692 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQOMt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:12:49 -0500
-Received: by mail-qt1-f194.google.com with SMTP id w8so7430964qts.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:12:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FGTOWrHfi08mzT0zWN/d7Kf6UkRD+wGFiWu4nC7j/9o=;
-        b=pfb6ce4oDyGS0vCG7afUKwb1HT8lE8MfdXNHeiFTbXjXh+QfGwV1/o4yEcDXB5wGaK
-         6bGAzrzhYw2iVDQbb7yT+zzOTQurCZ++fqIddIeU2Fn+dudt/NMIATlPTES4kO9x7fNS
-         Un5y+PCRubX8yQl//dtPZm0bHVDiTbKx1F+nh3j6Rnx3K/WEFHTgcUunYTZsiXk5Rb0A
-         6A8QK9rFklChnzDh6rp2hUc7s+QhHn0+jC1NiExuhvErJt0p2Q5GfiRGRupl2vUXhaVZ
-         uYFkkMFxJuRVMS6JJdJ9GBLK28IUwXkpX6gNBnL9CxhSsja7Z5LOWNs0CqBZHHRIzeT3
-         xVXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FGTOWrHfi08mzT0zWN/d7Kf6UkRD+wGFiWu4nC7j/9o=;
-        b=gkJkO1TTcSfr+/Xc+UElQPnkOYff3d9ZP00KfMRnK9eOJFK62N6gnAeqmz1t885gyX
-         ihryRByEnd0n2wju7WB+9sgl7KF1x+WSpuq0IyiDIspzyP2h9bUMv681jesIkTAhga/0
-         SSSA3idDxX/70F8U5Izhhet2Oc3GosT+1dY7z3D1VyF6Lf7PH6+QmqJbcjp9WygZqp2g
-         nsLUHQhH56Zg3mRuuDLeTnOhH7G57s2EWFyFUAcRzU0RIVCyyRMQ4w6I52EOrMGqVSqe
-         LIegTggtLfO5lslq27Ay/yB4+XQzYFqvwiiNRnyGML8+1qaF5ZY7e/XBV6JLTThYchYH
-         8Y7A==
-X-Gm-Message-State: APjAAAWkFYhjPI/FV0y2SJ1YbUrToylaCGhu1dxSdURG+Pa/BiICGbdm
-        e14dfeen3U37/uQI5l2WBDmUZ6l7U9c/iw==
-X-Google-Smtp-Source: APXvYqypYEXoCzn2kwwJLmfMOoCuxnL7StvdqrY6wFtV78z8wNBnsgYp2OMzV438VaY2mKUrWIJjew==
-X-Received: by 2002:aed:3b14:: with SMTP id p20mr7791463qte.176.1579270367699;
-        Fri, 17 Jan 2020 06:12:47 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u16sm11791582qku.19.2020.01.17.06.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 06:12:47 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH][v2] btrfs: drop log root for dropped roots
-Date:   Fri, 17 Jan 2020 09:12:45 -0500
-Message-Id: <20200117141245.42971-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726908AbgAQOQ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:16:58 -0500
+Received: from mout.gmx.net ([212.227.15.18]:35347 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgAQOQ6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:16:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1579270612;
+        bh=RfEFk393DWtTYSvhMSiUhRJcH23rsQpXQpTR1MZ+THI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=UUyljtspAhuXOPKo+ac/Ahy7YQpGHsQj/6VtKRO78ijXhNqYP4+qibGduDMlpE2iZ
+         5M8Rk+r5Gxxhknc1Y1Jjmyb1Zq22z1hhLeSMUNksU4uJDbOQN9+/KZ3hBbuvTIoHQ9
+         zTUnqhI48eTvgHtp7/DPTbQd3+Je6mFtOWXWR33c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5G9n-1jb6u60s4L-011BBL; Fri, 17
+ Jan 2020 15:16:52 +0100
+Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
+ committing metadata space
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200115034128.32889-1-wqu@suse.com>
+ <20200116142928.GX3929@twin.jikos.cz>
+ <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
+ <20200117140231.GF3929@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f1f1a2ab-ed09-d841-6a93-a44a8fb2312f@gmx.com>
+Date:   Fri, 17 Jan 2020 22:16:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200117140231.GF3929@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="caRxM8DIUeUg6XbpE5sc8CgJOWJc8kAyC"
+X-Provags-ID: V03:K1:zG+X98WTCw+JM9Fu1Csur7tEoSZFdp+05Nx9jkCh9UrHB7eNGOP
+ UysSi6Jz+RPapdHWL9MVilVmsb6sTmlisf4PX9tvUrwCfM+bQLN4PvnMrWhxTDFEd0bdiLv
+ BQm+F9YTw0p/CAFHuPIdlU8/yBcWfg4A0PGkKDWDt+XEusdXOE4cgpMe4FPghUmXHGn29HN
+ OuqZX+ObXu26F5/NBl3ZA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eT6k4Pyu3BQ=:CKUIS6xepHnicQyjYomWcg
+ Zlx67fpcDfHF/zEan/KlAgS+i0udDY+LQfNMqwnXOwM59CWp+zQzRzEV9ha3LNKR4uBV393TC
+ jq8nCWfGtyTxTld2ER1gk2VUDmjBNlTjpcc4Np1x+WXMpbByQBoL/zP/mqG5XWprWWzrM4biy
+ OEiccxIMQJd3NV+NbEZ5WrvasaoNhffi4aEs8KgAAWtERU9mq5lEOk/zK4MPECcUqm1nGrOwC
+ E2VhSEQC8GPXlZseALEfsuozIcXyjnS6JR04MiM8XDJ9mesgZJquEEw+SKj6Mwfi5IlQBIFV0
+ 0LPVk37m8ADh6rezGM/lekJ/oh1anQpqhH2WxIM8YAHoLYviaHXEIdRGrFtpCoCyW82AL9isX
+ hNc4rJ8eppb4+0XbhgsBT5azGlmoPk9IOk/vBp3aGjFMkcnDVUXFl2CfooXxEq89n98TrOb7r
+ xSTeKI8whmNBt+evc4TI0WpC/MDG0rvtTq6nOkHb4piSw0FwUKezyNvcVndrF8fiaJbHRyzzZ
+ FEJSePrzIj3eg1LzHmEXNOUqIVLMr0h6onJlI/clqrpBpVCPWx8OgNblLVGCuj9cA9VDg4AvW
+ SCn4PeweY15CQcT2m1hFzN2ihnz8pBeOqLbi8wxfIm1JAZZFf+0n6ej2HWtpFu/TDICHVKzoo
+ 3U+i4DjYtVBOa6wEdBs/UvkryWo6VnGBMzsFZboHQnnkcTM91+QcE+1tYXGsyN/8n75Tygbpa
+ DMb7DA7gidmyGJ+HsWL75mwgD0IhAatS05Khj9o8PvaNpV5GTBTlQSKhzf/VwWJpXMsMgNKz2
+ dsmUQRILRxJKS0h6kkCcK2/NNRu+hU5lbNJml6Z6bZ/PdVDxRSdC1BuZKGa5q4Inn6R9MB3ni
+ vvK6WbGRvF1X1zJ6vgrIlfBuBjzRahZ49Q8AFK1Ea72oACD+vg22uD1uqgUz+3wthf8H4KfSy
+ 88I2SEmygHAq5uM5JpX1o0ZAUDX7iW4Sy4qKDdANXgJXhInx+OPQvD+V4vAWSyO+p1a8YmChx
+ N/VhfvwGRFDebOeg2ngliItaKOIOhzsA2AlXJ/0zFvsdM0NVedOq7uU7E+326JTCvMVbJte0X
+ 7BJqoDVCDqS1zz+++A46kNENcjpxKVDWDw5g6u/VPtscLOtQKKNxqVkstRM7HflTP41Hi3LPn
+ 1LOnWhqabuT3GmmLgwuqV32SzOqIq5u6MPeL3MiYMRO7CNw+MDmG0TcMRraoxo/W+V52oXA8V
+ TOL86cPQn/Qbs+raTXhuFGdz9DqTKvJ8gMc9OUFpAYoTz5dJPbkp+J1iNetU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we fsync on a subvolume and create a log root for that volume, and
-then later delete that subvolume we'll never clean up its log root.  Fix
-this by making switch_commit_roots free the log for any dropped roots we
-encounter.  The extra churn is because we need a btrfs_trans_handle, not
-the btrfs_transaction.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--caRxM8DIUeUg6XbpE5sc8CgJOWJc8kAyC
+Content-Type: multipart/mixed; boundary="DbteeyMVNnyJpbjj8SvsToeTO1mJMvgT6"
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- Update commit message to indicate we need the trans_handle instead of the
-  transaciton.
+--DbteeyMVNnyJpbjj8SvsToeTO1mJMvgT6
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
- fs/btrfs/transaction.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index cfc08ef9b876..55d8fd68775a 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -147,13 +147,14 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
- 	}
- }
- 
--static noinline void switch_commit_roots(struct btrfs_transaction *trans)
-+static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
- {
-+	struct btrfs_transaction *cur_trans = trans->transaction;
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_root *root, *tmp;
- 
- 	down_write(&fs_info->commit_root_sem);
--	list_for_each_entry_safe(root, tmp, &trans->switch_commits,
-+	list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
- 				 dirty_list) {
- 		list_del_init(&root->dirty_list);
- 		free_extent_buffer(root->commit_root);
-@@ -165,16 +166,17 @@ static noinline void switch_commit_roots(struct btrfs_transaction *trans)
- 	}
- 
- 	/* We can free old roots now. */
--	spin_lock(&trans->dropped_roots_lock);
--	while (!list_empty(&trans->dropped_roots)) {
--		root = list_first_entry(&trans->dropped_roots,
-+	spin_lock(&cur_trans->dropped_roots_lock);
-+	while (!list_empty(&cur_trans->dropped_roots)) {
-+		root = list_first_entry(&cur_trans->dropped_roots,
- 					struct btrfs_root, root_list);
- 		list_del_init(&root->root_list);
--		spin_unlock(&trans->dropped_roots_lock);
-+		spin_unlock(&cur_trans->dropped_roots_lock);
-+		btrfs_free_log(trans, root);
- 		btrfs_drop_and_free_fs_root(fs_info, root);
--		spin_lock(&trans->dropped_roots_lock);
-+		spin_lock(&cur_trans->dropped_roots_lock);
- 	}
--	spin_unlock(&trans->dropped_roots_lock);
-+	spin_unlock(&cur_trans->dropped_roots_lock);
- 	up_write(&fs_info->commit_root_sem);
- }
- 
-@@ -1421,7 +1423,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
- 	ret = commit_cowonly_roots(trans);
- 	if (ret)
- 		goto out;
--	switch_commit_roots(trans->transaction);
-+	switch_commit_roots(trans);
- 	ret = btrfs_write_and_wait_transaction(trans);
- 	if (ret)
- 		btrfs_handle_fs_error(fs_info, ret,
-@@ -2301,7 +2303,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	list_add_tail(&fs_info->chunk_root->dirty_list,
- 		      &cur_trans->switch_commits);
- 
--	switch_commit_roots(cur_trans);
-+	switch_commit_roots(trans);
- 
- 	ASSERT(list_empty(&cur_trans->dirty_bgs));
- 	ASSERT(list_empty(&cur_trans->io_bgs));
--- 
-2.24.1
 
+On 2020/1/17 =E4=B8=8B=E5=8D=8810:02, David Sterba wrote:
+> On Fri, Jan 17, 2020 at 08:54:35AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/1/16 =E4=B8=8B=E5=8D=8810:29, David Sterba wrote:
+>>> On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> When there are a lot of metadata space reserved, e.g. after balancin=
+g a
+>>>> data block with many extents, vanilla df would report 0 available sp=
+ace.
+>>>>
+>>>> [CAUSE]
+>>>> btrfs_statfs() would report 0 available space if its metadata space =
+is
+>>>> exhausted.
+>>>> And the calculation is based on currently reserved space vs on-disk
+>>>> available space, with a small headroom as buffer.
+>>>> When there is not enough headroom, btrfs_statfs() will report 0
+>>>> available space.
+>>>>
+>>>> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
+>>>> reservations if we have pending tickets"), we allow btrfs to over co=
+mmit
+>>>> metadata space, as long as we have enough space to allocate new meta=
+data
+>>>> chunks.
+>>>>
+>>>> This makes old calculation unreliable and report false 0 available s=
+pace.
+>>>>
+>>>> [FIX]
+>>>> Don't do such naive check anymore for btrfs_statfs().
+>>>> Also remove the comment about "0 available space when metadata is
+>>>> exhausted".
+>>>
+>>> This is intentional and was added to prevent a situation where 'df'
+>>> reports available space but exhausted metadata don't allow to create =
+new
+>>> inode.
+>>
+>> But this behavior itself is not accurate.
+>>
+>> We have global reservation, which is normally always larger than the
+>> immediate number 4M.
+>=20
+> The global block reserve is subtracted from the metadata accounted from=
+
+> the block groups. And after that, if there's only little space left, th=
+e
+> check triggers. Because at this point any new metadata reservation
+> cannot be satisfied from the remaining space, yet there's >0 reported.
+
+OK, then we need to do over-commit calculation here, and do the 4M
+calculation.
+
+The quick solution I can think of would go back to Josef's solution by
+exporting can_overcommit() to do the calculation.
+
+
+But my biggest problem is, do we really need to do all these hassle?
+My argument is, other fs like ext4/xfs still has their inode number
+limits, and they don't report 0 avail when  that get exhausted.
+(Although statfs() has such report mechanism for them though).
+
+If it's a different source making us unable to write data, I believe it
+should be reported in different way.
+
+Thanks,
+Qu
+
+>=20
+>> So that check will never really be triggered.
+>>
+>> Thus invalidating most of your argument.
+>=20
+> Please read the current comment and code in statfs again.
+>=20
+
+
+--DbteeyMVNnyJpbjj8SvsToeTO1mJMvgT6--
+
+--caRxM8DIUeUg6XbpE5sc8CgJOWJc8kAyC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4hwc0ACgkQwj2R86El
+/qh1WQf/W1qbpOv4ljDfaocoQBC1TsLvHQP//X51hFDHq3FriVxPSx2prIKOJ+QS
+uvN/E80APPSxi66ImBOowLahSOrvNKZDiI151DOrtryHBZ93Jt6fNCZDm9C0M/fb
+asCGu1sr/iNkFKl3BUbufcuEeROaPHD8X/eTq2t5z5lHWO0aVsN5d9vH+mShhi69
+dhiYkrf9hKi0H0n1/6tmRXCXn0ga7kwEDvz4ix4KSnRgFgyQhTwshR+aFt1YpNLX
+UFNwYCccb98ms1KcStzzl/dSO0P8AVh205KeEn94mIIte0TtSaGgVrDUe9Ffa2DC
+IjF+jq5JuK6noJLG/JJl/osTqwiCdw==
+=ascQ
+-----END PGP SIGNATURE-----
+
+--caRxM8DIUeUg6XbpE5sc8CgJOWJc8kAyC--
