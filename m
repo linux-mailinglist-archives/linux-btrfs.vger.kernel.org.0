@@ -2,261 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F19140832
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 11:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6DC140934
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 12:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgAQKoa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 05:44:30 -0500
-Received: from mail.synology.com ([211.23.38.101]:43450 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726196AbgAQKoa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 05:44:30 -0500
-Received: from _ (localhost [127.0.0.1])
-        by synology.com (Postfix) with ESMTPA id AADF5DB18A5C;
-        Fri, 17 Jan 2020 18:44:26 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1579257866; bh=9XzJhs7LHw2mzH0hGK9E3MScOB0xpQiEE8DssEs3Fj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=JGYY6jx///ydCL55FNEymlsKJ8u3cKbEaym1UGo0LZDyk7jnVaBFK3d2sJMk9VYTo
-         R0MU7xxwzo1fXcqhj7I0b6599hhP272Pm2qwpwHDj4SL5p0CjJETqpTlcR5KrieX8u
-         7z1u5yHyIeOz7Ed71nBsWCobizgs/ScrrKy4cITw=
+        id S1728682AbgAQLnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 06:43:10 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48076 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726885AbgAQLnG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 06:43:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579261385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gd8m04MBeBFjlqqhoY1pGB2lRynPKyQkVinKGfYGuLE=;
+        b=Ro6qziJXNxPLuSws0aZLi8pWmdSQq1iuWy+uronljlXTvn3fo7wTUDUR+PYZPLfFypfLKf
+        jLYxbuEUdcdceW1ZtOhmVk/gBADym01GMgtreDsji9kCibUiWzuMml812mvP1t4do1PZYJ
+        dRWKE1C60cm6xGWQAlFSaEVOOrsVx0I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-3ZtNOC-EPnyeBRrPstvaeQ-1; Fri, 17 Jan 2020 06:43:02 -0500
+X-MC-Unique: 3ZtNOC-EPnyeBRrPstvaeQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90542108597A;
+        Fri, 17 Jan 2020 11:42:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-49.rdu2.redhat.com [10.10.120.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F88910013A1;
+        Fri, 17 Jan 2020 11:42:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
+References: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com> <20200114170250.GA8904@ZenIV.linux.org.uk> <3326.1579019665@warthog.procyon.org.uk> <9351.1579025170@warthog.procyon.org.uk>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     dhowells@redhat.com, "Colin Walters" <walters@verbum.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+        "Christoph Hellwig" <hch@lst.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        adilger.kernel@dilger.ca,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Chris Mason" <clm@fb.com>, josef@toxicpanda.com, dsterba@suse.com,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Making linkat() able to overwrite the target
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 17 Jan 2020 18:44:26 +0800
-From:   ethanwu <ethanwu@synology.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add extra ending condition for indirect data
- backref resolution
-In-Reply-To: <aa9ce338-de50-a89a-9e94-c87fdcebe3ef@toxicpanda.com>
-References: <1578044681-25562-1-git-send-email-ethanwu@synology.com>
- <017fb679-ca13-f38e-e67b-6f1d42c1fbbd@toxicpanda.com>
- <8937126609d3cca7239a9dcf3b2e78fc@synology.com>
- <aa9ce338-de50-a89a-9e94-c87fdcebe3ef@toxicpanda.com>
-Message-ID: <2aaca742a193154ac6cbe09859ff034e@synology.com>
-X-Sender: ethanwu@synology.com
-User-Agent: Roundcube Webmail/1.1.2
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <359590.1579261375.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 17 Jan 2020 11:42:55 +0000
+Message-ID: <359591.1579261375@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Josef Bacik 於 2020-01-07 00:05 寫到:
-> On 1/5/20 10:45 PM, ethanwu wrote:
->> Josef Bacik 於 2020-01-04 00:31 寫到:
->>> On 1/3/20 4:44 AM, ethanwu wrote:
->>>> Btrfs has two types of data backref.
->>>> For BTRFS_EXTENT_DATA_REF_KEY type of backref, we don't have the
->>>> exact block number. Therefore, we need to call resolve_indirect_refs
->>>> which uses btrfs_search_slot to locate the leaf block. After that,
->>>> we need to walk through the leafs to search for the EXTENT_DATA 
->>>> items
->>>> that have disk bytenr matching the extent item(add_all_parents).
->>>> 
->>>> The only conditions we'll stop searching are
->>>> 1. We find different object id or type is not EXTENT_DATA
->>>> 2. We've already got all the refs we want(total_refs)
->>>> 
->>>> Take the following EXTENT_ITEM as example:
->>>> item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize 
->>>> 95
->>>>      extent refs 24 gen 7302 flags DATA
->>>>      extent data backref root 257 objectid 260 offset 65536 count 5 
->>>> #backref entry 1
->>>>      extent data backref root 258 objectid 265 offset 0 count 9 
->>>> #backref entry 2
->>>>      shared data backref parent 394985472 count 10 #backref entry 3
->>>> 
->>>> If we want to search for backref entry 1, total_refs here would be 
->>>> 24 rather
->>>> than its count 5.
->>>> 
->>>> The reason to use 24 is because some EXTENT_DATA in backref entry 3 
->>>> block
->>>> 394985472 also points to EXTENT_ITEM 40831553536, if this block also 
->>>> belongs to
->>>> root 257 and lies between these 5 items of backref entry 1,
->>>> and we use total_refs = 5, we'll end up missing some refs from 
->>>> backref
->>>> entry 1.
->>>> 
->>> 
->>> This seems like the crux of the problem here.  The backref stuff is
->>> just blindly looking for counts, without keeping track of which 
->>> counts
->>> matter.  So for full refs we should only be looking down paths where
->>> generation > the snapshot generation.  And then for the shared refs 
->>> it
->>> should be anything that comes from that shared block.  That would be
->>> the proper way to fix the problem, not put some arbitrary limit on 
->>> how
->>> far into the inode we can search.
->>> 
->> 
->> I am not sure if generation could be used to skip blocks for 
->> full(indirect) backref.
->> 
->> For exmple:
->> create a data extent in subvol id 257 at generation 10
->> At generation 11, take snapshot(suppose the snapshot id is 258) from 
->> subvol 257.
->> 
->> When we send snapshot 258, all the tree blocks it searches comes from 
->> subvol 257,
->> since snapshot only copy root node from its source,
->> none of tree blocks in subvol 257 has generation(all <= 10) > snapshot 
->> generation(11)
->> 
->> Or do I miss something?
-> 
-> Nope I was saying it wrong, sorry about that.  What I should say is
-> for "backref entry 1" we should _only_ walk down paths that belong to
-> root 257, and then for root 258 we _only_ walk down paths that belong
-> to 258, and then we do our normal dance for indirect refs.
-> 
->> 
->>> That's not to say what you are doing here is wrong, we really won't
->>> have anything past the given extent size so we can definitely break
->>> out earlier.  But what I worry about is say 394985472 _was_ in 
->>> between
->>> the leaves while searching down for backref entry #1, we'd end up 
->>> with
->>> duplicate entries and not catch some of the other entries.  This 
->>> feels
->> 
->> This patch doesn't adjust the total_refs. Is there any example that
->> this patch will ruin the backref walking?
-> 
-> No I'm talking about a general failure of the current code, your patch
-> doesn't make it better or worse.
-> 
->> 
->>> like we need to fix the backref logic to know if it's looking for
->>> direct refs, and thus only go down paths with generation > snapshot
->>> generation, or shared refs and thus only count things that directly
->>> point to the parent block.  Thanks,
->>> 
->> 
->> Ok, I agree, my patch doesn't solve the original problem:
->> When resolving indirect refs, we could take entries that don't
->> belong to the backref entry we are searching for right now.
->> 
->> If this need to be fixed, I think it could be done by the following 
->> way
->> 
->> item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize
->>          extent refs 24 gen 7302 flags DATA
->>          shared data backref parent 394985472 count 10 #backref entry 
->> 1
->>          extent data backref root 257 objectid 260 offset 1048576 
->> count 3 #backref entry 2
->>          extent data backref root 256 objectid 260 offset 65536 count 
->> 6 #backref entry 3
->>          extent data backref root 257 objectid 260 offset 65536 count 
->> 5 #backref entry 4
->> 
->> When searching for entry 4, the EXTENT_DATA entries that match the 
->> EXTENT_ITEM bytenr
->> will be in one of the following situations:
->> 
->> 1. shared block that just happens to be part of root 257. For every 
->> leaf we run into,
->>     check its bytenr to see if it is a shared data backref entry, if 
->> so skip it.
->>     We may need an extra list or rb tree to store this information.
-> 
-> We don't need to worry about this case, because if we have a normal
-> ref then the whole path down to that bytenr belongs wholey to that
-> root.  The full backref will only be in paths that were not touched by
-> the referencing root.
-> 
+Hi Omar,
 
-Thank you for the review,
-I don't fully understand the way shared data backref is used in btrfs.
-It took me a while to check the backref code and do some experiment.
-One way shared backref will be used is balance, all the items used
-by relocation tree use shared backref.
+Do you still have your AT_REPLACE patches?  You said that you'd post a v4
+series, though I don't see it.  I could make use of such a feature in
+cachefiles inside the kernel.  For my original question, see:
 
-After running balance, if any EXTENT_ITEM is moved during balance,
-all the back reference of that newly-located EXTENT_ITEM will become
-shared, and the block owner is exactly the original root.
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
+/?h=3Dfscache-iter
 
-We could then produce normal reference by just COWIng the tree block,
-and leaving some of the shared backrefs unchanged,(dd an 128MB extent
-and cow every other 4K blocks, so these items span across many
-leafs and COWing one block leaves the other shared backrefs untouched)
+And do you have ext4 support for it?
 
-In the end, we have two types of back reference from the same root,
-and yet the owner of all these blocks are the same root.
+Colin Walters <walters@verbum.org> wrote:
 
-Therefore, I think this condition is still needed.
+> On Tue, Jan 14, 2020, at 1:06 PM, David Howells wrote:
+> =
 
->> 2. same subvol, inode but different offset. Right now in 
->> add_all_parents, we only
->>     check if bytenr matches. Adding extra check to see if backref 
->> offset is the same
->>     (here backref entry 1: 65536 != entry 3: 1048576)
-> 
-> Yeah we definitely need to do this because clone can change the offset
-> and point at the same bytenr, so we for sure want to only match on
-> matching offsets.
-> 
->> 3. This might happen if subvol 257 is a snapshot from subvol 256, 
->> check leaf owner, if
->>     not 257 skip it.
-> 
-> Yup, this is the "only walk down paths owned by the root" thing.
-> 
->> 4. None of the above, it's type 4 backref entry, this is what we want, 
->> add it!
->> 
->> In this way, we only count entries that matter, and total_refs could 
->> be
->> changed from total refs of that extent item to number of each entry.
->> Then, we could break from loop as soon as possible.
->> 
->> Will this look better?
->> 
-> 
-> Yup this is what I want, because then we are for sure always getting
-> exactly the right refs.  I would do
-> 
-> 1) Make a path->only_this_root (or something better named) that _only_
-> walks down paths that are owned by the original root.  We use this for
-> non-full backref walking (backref entry 2, 3, and 4 in the example
-> above).  If we have a normal extent backref that references a real
-> root then we know for sure if we walk down to that bytenr from that
-> root the whole path will be owned by that root.
-> 
-> 2) Match on the offset in the extent data ref.  We don't want to find
-> unrelated clones, we want exactly the right match.
-> 
-> 3) Keep track of how many refs for that backref.  For the backref
-> entry #4 example we'd use the above strategies and break as soon as we
-> found 5 entries.
-> 
-> 4) Take a good hard look at the indirect backref resolution code.  I
-> feel like it's probably mostly ok, we just fix the above things for
-> normal backref lookups and it'll just work, so we'll definitely only
-> find references that come from that indirect backref.  But I haven't
-> looked too closely so I could be wrong.
-> 
-> I think we're on the same page now, hopefully it's not too much extra
-> work.  But it will be by far more robust and reliable.  Thanks,
-> 
+> > Yes, I suggested AT_LINK_REPLACE as said magical flag.
+> =
 
-Thanks for the steps provided, I've been looking the backref code, and
-so far haven't found any thing that might break the idea. I'll start
-working and do some test.
+> This came up before right?
+> =
 
-Thanks,
-ethanwu
+> https://lore.kernel.org/linux-fsdevel/cover.1524549513.git.osandov@fb.co=
+m/
 
-> Josef
+David
 
