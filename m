@@ -2,29 +2,21 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E8F1404DA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 09:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86D814051E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 09:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729121AbgAQIGi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 03:06:38 -0500
-Received: from mout.gmx.net ([212.227.15.15]:52737 "EHLO mout.gmx.net"
+        id S1729306AbgAQIOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 03:14:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57906 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727002AbgAQIGh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 03:06:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1579248000;
-        bh=41nz2FT0kF2RA1Mk6cUEAOucM9qdkVZlSvZ8Unu69qc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=lz9N/MUTx31WHf62pCyhCTBF1AdPy6gUPGHgx4FU/agjCP9vvuD1pwJEKfO9vGusD
-         AMVhR0bXQP9MC/MKqqIHH9E1O9bpvpUshO/GwgiQlBHa+NNHkT45EAhL4O1+UVDRgC
-         LrXjnDCNz7CMbjxSAbgzJb78rRB4ce/3H1vq1ToM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MIdeR-1iom1y3GXF-00Eaqn; Fri, 17
- Jan 2020 09:00:00 +0100
+        id S1729011AbgAQIOt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 03:14:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 30BFEADF1;
+        Fri, 17 Jan 2020 08:14:47 +0000 (UTC)
 Subject: Re: read time tree block corruption detected
-To:     Peter Luladjiev <luladjiev@gmail.com>,
-        Nikolay Borisov <nborisov@suse.com>
+To:     Peter Luladjiev <luladjiev@gmail.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
  <6ba43f60-22d1-52da-0e9a-8561b9560481@suse.com>
@@ -32,64 +24,58 @@ References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
  <53da4b02-6532-5bb9-391c-720947bac7f1@suse.com>
  <CA+ZCqs4pTKePM4NaStAs=CWYBZbA_btqip1WiU8DC6DL13Eh_Q@mail.gmail.com>
  <CA+ZCqs5hLS3ekUpU8TTJq6UP9rjPYZjBwVYcC4xJcaMXuvSudQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <70cf34c3-a035-bf60-6920-59cc0c6cc329@gmx.com>
-Date:   Fri, 17 Jan 2020 15:59:56 +0800
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <237d7698-63e1-cb2b-dfbf-ddf5119bd18b@suse.com>
+Date:   Fri, 17 Jan 2020 10:14:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+ Thunderbird/68.2.2
 MIME-Version: 1.0
 In-Reply-To: <CA+ZCqs5hLS3ekUpU8TTJq6UP9rjPYZjBwVYcC4xJcaMXuvSudQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LmkXEgOqsrL/tRBDabZldX3CbgbtlSpw01+IQJD+dTPPJcEFOKg
- +/awMIazDTZLaYvpkrpan+jIMNrTNYO4tofj/gqzPs6OJLiNKaGzAdA+SG78Sh1N3eHNGgB
- nN3BuZbCa0pbno80v4IcSWHQYda9X2Gq0mdqi/J1Hn9rBT8pg1tSXa6cIIQM78I+PM/mqlP
- xZEberblVcK0v61gxnH0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2etCY83QMFo=:O3Y/aHtwf5Dh6cRC5+Fzti
- hrk1PL8AMqWGgheJzAvgZXoqHH24ok6Qj6vFDb5y/QnwG8MuVXVH4MA7dVG0HohbNd0nAZDqu
- fxZRUCiQojKvF/sjMwQbRbyj51cBWrWtU6X2hnhmT65EelDu5IGO6GtjlMAv+16+GVw6gntoh
- g8WSi/O4thtpq7uP7pqo5hWbP2rrKq+Ushippd1EcsXoleSlGptK8n/L2DlAP4kjlOvavi29u
- k5Gm3RgJq9drKYXobjKBiQve2Y5J7KStisuCYfWyyokCYjwsuKJOEGH1RSF50E8+5wFEzXyB6
- sIwl//dVh5GupaZ3nEJPuXavWmkLOg4WN/fAoct9ktyiCepf++PlC0UwqNQMRr326qc9osyvw
- RE09XNoMehgSHz7IJh+Ui+MQ2dNXLUcRsnk4URKkt3ELVNtjuiN8RdmeQxs+eGc+AdyROS+8t
- jkw3nyLZ/AXMpj74Qqvd+2QHxrNeCYXQi9SrBQ3NojJ7RayQ1Y/dVfo+Ffr6hj+7uX0OPl3Le
- cj9ifLR3hypq3u9U7vHrqSVthLFRId1TJFJy8HebA95uTzTirTU8dlqmSd/Lrlw51sl4aCwss
- umlYCTQdhe5z/DzTJ20NyKx7IUAogW7JGTF8aPudLhGpvOoPiU5DDUjvXTAnM4BFT5qqYy0QX
- xBltzqWJ2UTn4RMO0dTnZmeoUd0JAMdBpUt0MSpk7WOfraS+uUBcksSJFUTYFRlE7KRD3oIm0
- cXP8XTJ9mgKWc23JauWAOeNUpDHlgZW8nCJ7Scl0eq0GDMEebS+W52myc290w0DiJCae9gh4i
- Q5nAtdruQbBssuLeSyvnr0c4h0qHahVjKRRodG4knriZujXW5uF6TX8olqRphfhR4zppgXfcS
- CgY2FDqw/spSZp/iQKV3GRhLThokokZrTpB95GHQxJ5vKxJhK1V9ubdRVkLMnUYeNJjBQVwCz
- 1+JUuriFD3H4GbwyqpgUxedCU0EsqGnQM+dteXzaZMOfKcu9C/kNOzJMwfBSn7q6GqE21pM4U
- P+EMNvWac6jGq8lqADfZz2lHki9GKUId2xVEjK5wx+MX2CoJBsFcYU21//DlOq/n7ALq0fQEZ
- +siZnHzvh4dd5Ut0WzsCcvD/rPDeDu6Phj9YlusiB1z4iJ4v85WAfuTefzzgPqFDv7BgMc1tE
- OveZi3guPsPa+EpvJfqYaiWQdtBwrBwUhcei471qQieCzd6Tqgp929r1gcrSCvsNHjyaiYrgh
- j5UWY5V2Gb5LmaPYSknkeTusubZwCmD7/m4To0Euhi2tEQmMbftVVDULjwdg=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -97,88 +83,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/1/17 =E4=B8=8B=E5=8D=883:54, Peter Luladjiev wrote:
+On 17.01.20 г. 9:54 ч., Peter Luladjiev wrote:
 > Should I run with repair flag?
+> 
 
-Please only run --repair with the fs unmounted.
 
-Thanks,
-Qu
+Which version of progs do you have ? Because it seems original mode
+(Default) finds the corrupted backref but lowmem doesn't ?
 
->
-> On Fri, 17 Jan 2020 at 09:51, Peter Luladjiev <luladjiev@gmail.com> wrot=
-e:
->>
->> Here is the output:
->>
->> btrfs check --force --mode lowmem /dev/mapper/system-root
->>
->> Opening filesystem to check...
->> WARNING: filesystem mounted, continuing because of --force
->> Checking filesystem on /dev/mapper/system-root
->> UUID: 9639a3e6-cd08-4270-b4d1-d2946d2b8d2e
->> [1/7] checking root items
->> [2/7] checking extents
->> [3/7] checking free space cache
->> btrfs: space cache generation (539645) does not match inode (539641)
->> failed to load free space cache for block group 22020096
->> btrfs: space cache generation (539645) does not match inode (539641)
->> failed to load free space cache for block group 1095761920
->> btrfs: space cache generation (539643) does not match inode (539640)
->> failed to load free space cache for block group 102161711104
->> [4/7] checking fs roots
->> [5/7] checking only csums items (without verifying data)
->> [6/7] checking root refs done with fs roots in lowmem mode, skipping
->> [7/7] checking quota groups skipped (not enabled on this FS)
->> found 53501751296 bytes used, no error found
->> total csum bytes: 43476196
->> total tree bytes: 1552203776
->> total fs tree bytes: 1422196736
->> total extent tree bytes: 70172672
->> btree space waste bytes: 276902557
->> file data blocks allocated: 331882188800
->>  referenced 105424904192
->>
->> On Fri, 17 Jan 2020 at 09:34, Nikolay Borisov <nborisov@suse.com> wrote=
-:
->>>
->>>
->>>
->>> On 16.01.20 =D0=B3. 18:53 =D1=87., Peter Luladjiev wrote:
->>>> Hello, thanks for helping, here is the output:
->>>>
->>>> btrfs check --force /dev/mapper/system-root
->>>>
->>>> Opening filesystem to check...
->>>> WARNING: filesystem mounted, continuing because of --force
->>>> Checking filesystem on /dev/mapper/system-root
->>>> UUID: 9639a3e6-cd08-4270-b4d1-d2946d2b8d2e
->>>> [1/7] checking root items
->>>> [2/7] checking extents
->>>> ref mismatch on [1497018368 4096] extent item 72057183177116417, foun=
-d 1
->>>> incorrect local backref count on 1497022464 parent 51611369472 owner =
-0
->>>> offset 0 found 1 wanted 3087007745 back 0x564582174c70
->>>> backpointer mismatch on [1497022464 4096]
->>>> ERROR: errors found in extent allocation tree or chunk allocation
->>>> [3/7] checking free space cache
->>>> [4/7] checking fs roots
->>>> [5/7] checking only csums items (without verifying data)
->>>> [6/7] checking root refs
->>>> [7/7] checking quota groups skipped (not enabled on this FS)
->>>> found 53532647424 bytes used, error(s) found
->>>> total csum bytes: 43476204
->>>> total tree bytes: 1551368192
->>>> total fs tree bytes: 1421295616
->>>> total extent tree bytes: 70238208
->>>> btree space waste bytes: 276638054
->>>> file data blocks allocated: 331679563776
->>>>  referenced 105423634432
->>>>
->>>
->>>
->>> Right so it seems this the only error. Just to be sure run btrfs check
->>> --mode lowmem  since it provides more readable output. If this is the
->>> only error in the filesystem then btrfs check --repair --mode lowmem
->>> should be able to fix it.
+
+
