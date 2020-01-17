@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 953241412DF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 22:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 133271412E0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 22:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgAQV0s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 16:26:48 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36104 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQV0s (ORCPT
+        id S1728913AbgAQV0u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 16:26:50 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41339 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQV0t (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 16:26:48 -0500
-Received: by mail-qk1-f196.google.com with SMTP id a203so24179877qkc.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 13:26:47 -0800 (PST)
+        Fri, 17 Jan 2020 16:26:49 -0500
+Received: by mail-qt1-f195.google.com with SMTP id k40so22887521qtk.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 13:26:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=3pyxPNY94oOXrEeZK2hUi64+WTr11ylLgHcJGK8aNDE=;
-        b=0wg7FUW8jT1XxFa8HcYBCqozt+bpbM4MDhhhjBcUgSS81SjOQATtXYBsJUUfvziUpb
-         UetH7KcXhewrk+xi49htg6i6YEkCxMZP3SSlYgQf5Bi3xZUO137Hm8wolaVvhJXbuVxw
-         d1hOvNTobFOHHYExMsKMGk76jP9XzD258Ma+2l7IJH4T42Qs5AhEgVk9fK+Es0f09Aj9
-         qn0G4z/Qlfe4foFOdm41YTFVV7CTvcJ8l55UFwW5JTvVlyw3thnJwfaYVCYFXYVgthPy
-         4QT3ByegWFs1XHy4ulbqTSyQiVMCSb4u75ElT9eU3pXzVDzSA/2JgkUft59sG6AmXAH9
-         vIHQ==
+        bh=b2Rhd/xiW6guBCO0svVDPB2riGJU48lMSVrOtNfEDqU=;
+        b=jvUbo7iYBOclFWkn0MC2XGKIQUaHmerAVYkqTOsI0QVaL8Sqfw0iK+69vUDqVubjL3
+         xetHlxiSL+JDFazW963XGeB3qWTmBTp1Q3hK6xC+GQoArvm23stwdoJfafJ3aPGADQEC
+         bvvM+Azf8frL6hmnEqABWI0f+KX6P+zC4qcM+FjCOcI6YdAohKtDqPqkp5HtZs/6yXrn
+         m5G/b8yX+Fw8/caED0MrPZqfVTk7Zux9XyAGejZhk188fKpdz+W/+er6tGZkCQ79MaW8
+         yTEbQMTx5ayku3i0HN/89vd9A/gUrmmk/OTGD55XRbslDhrLmM2ywZhw+VYwAcSRqhA8
+         SFFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3pyxPNY94oOXrEeZK2hUi64+WTr11ylLgHcJGK8aNDE=;
-        b=ilZ/nKxyqLQz2/VHg5Bn2F5AZ3QmjgBzK4L2DkbNAVS6mLR5fiz1MbPWf6NfLRxDqv
-         tjV3hyVql9rO3bbB40YRj+qbrxhpXsOPK/Gwwvov/LdHeH/j9vQgJc8gV678WAZBSZh/
-         F1x/qGs2B5ZlWZc7NC3PjiREiekn145EM3V5bNrZSNto1gI05BC+BjS2MqDWH5HOuwjv
-         15z08tlJOgPbA0u/MxPtgk6qalHhTfUIFyD4fIk1skwXdIfOMj6vVan1DNN2uZzbfAyO
-         a5+FkXIzu8InWk2Bj1K0buSX3dr/NmIbiPBBzcveMM4r9lJGgwTAkLl1jpBfMDS7s+Lo
-         X5yQ==
-X-Gm-Message-State: APjAAAVqBKmXTQZoScYwWdKqIw3TfZg8pMkcs841+O5drT7/FbkaHi3z
-        +arsdqEjXgCsCnbFcyVr/YT/wEyG9h+oEQ==
-X-Google-Smtp-Source: APXvYqzLwCpRV8Cqx6cXcBtKnWK+cwMGLhZBuykxu+0YepJhcQowOucwt1qyEOxNYj+VfDBmqpfD9Q==
-X-Received: by 2002:a37:454d:: with SMTP id s74mr36100717qka.104.1579296406701;
-        Fri, 17 Jan 2020 13:26:46 -0800 (PST)
+        bh=b2Rhd/xiW6guBCO0svVDPB2riGJU48lMSVrOtNfEDqU=;
+        b=WNOhEol0Pt0rx/J1tEHt768X/ga4XdOVB6UXUEAIV96YgyOVAPmweUONrnrpfEvL3P
+         Oo9U8ajhhe6ZHa+M/KBQADgAX3rrmWaobQ9IBmZ+pk/BUDf5Oh7ZFf11L8HpXPGJg/Lu
+         pqYp1oJC8WzDUoDJcaZ/52xWny+MNXUwdMGGLD1kp/S1980utaECYPnD1o9WfiZk0jZI
+         zkCGOLtasVt7wM0YjX8a4zdtfZc7Rni6ZhUZciK3nkzueepAOipHr39QBQ9y62q8qaBy
+         vUXsRGo08iCW43bJoswpkj8ZIXY3KmYmPVsQYMBrARVoic7kUrKuUv+vDGA7rh/h+ljm
+         Anyw==
+X-Gm-Message-State: APjAAAXf5tdiKu8FybxoIhROSRs0JxM8Zr3qgP1I+P/E2vC83OgKAkpi
+        xKT93EVYFseB3UsClf6L4eXk1M6w92FsTw==
+X-Google-Smtp-Source: APXvYqzx3+5cb841eEsqavjZT0vfBJklEy4mGH8akEfqCM91gobzBd5OMIZWeKu6XvEAZYwdsMVo/A==
+X-Received: by 2002:ac8:3847:: with SMTP id r7mr9747737qtb.381.1579296408293;
+        Fri, 17 Jan 2020 13:26:48 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u16sm12355436qku.19.2020.01.17.13.26.45
+        by smtp.gmail.com with ESMTPSA id r10sm12151874qkm.23.2020.01.17.13.26.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 13:26:46 -0800 (PST)
+        Fri, 17 Jan 2020 13:26:47 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 23/43] btrfs: hold a ref on the root in merge_reloc_roots
-Date:   Fri, 17 Jan 2020 16:25:42 -0500
-Message-Id: <20200117212602.6737-24-josef@toxicpanda.com>
+Subject: [PATCH 24/43] btrfs: hold a ref on the root in record_reloc_root_in_trans
+Date:   Fri, 17 Jan 2020 16:25:43 -0500
+Message-Id: <20200117212602.6737-25-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117212602.6737-1-josef@toxicpanda.com>
 References: <20200117212602.6737-1-josef@toxicpanda.com>
@@ -60,32 +60,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We look up the corresponding root for the reloc root, we need to hold a
-ref while we're messing with it.
+We are recording this root in the transaction, so we need to hold a ref
+on it until we do that.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/relocation.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 53df57b59bc3..79430a4245b5 100644
+index 79430a4245b5..9b61fdc89af7 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -2546,10 +2546,13 @@ void merge_reloc_roots(struct reloc_control *rc)
- 		if (btrfs_root_refs(&reloc_root->root_item) > 0) {
- 			root = read_fs_root(fs_info,
- 					    reloc_root->root_key.offset);
-+			if (!btrfs_grab_fs_root(root))
-+				BUG();
- 			BUG_ON(IS_ERR(root));
- 			BUG_ON(root->reloc_root != reloc_root);
+@@ -2604,15 +2604,20 @@ static int record_reloc_root_in_trans(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *fs_info = reloc_root->fs_info;
+ 	struct btrfs_root *root;
++	int ret;
  
- 			ret = merge_reloc_root(rc, root);
-+			btrfs_put_fs_root(root);
- 			if (ret) {
- 				if (list_empty(&reloc_root->root_list))
- 					list_add_tail(&reloc_root->root_list,
+ 	if (reloc_root->last_trans == trans->transid)
+ 		return 0;
+ 
+ 	root = read_fs_root(fs_info, reloc_root->root_key.offset);
++	if (!btrfs_grab_fs_root(root))
++		BUG();
+ 	BUG_ON(IS_ERR(root));
+ 	BUG_ON(root->reloc_root != reloc_root);
++	ret = btrfs_record_root_in_trans(trans, root);
++	btrfs_put_fs_root(root);
+ 
+-	return btrfs_record_root_in_trans(trans, root);
++	return ret;
+ }
+ 
+ static noinline_for_stack
 -- 
 2.24.1
 
