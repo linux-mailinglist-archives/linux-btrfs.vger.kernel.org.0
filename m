@@ -2,92 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6DC140934
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 12:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B5E140973
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 13:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgAQLnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 06:43:10 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48076 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726885AbgAQLnG (ORCPT
+        id S1726876AbgAQMEd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 07:04:33 -0500
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:33331 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726785AbgAQMEd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 06:43:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579261385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gd8m04MBeBFjlqqhoY1pGB2lRynPKyQkVinKGfYGuLE=;
-        b=Ro6qziJXNxPLuSws0aZLi8pWmdSQq1iuWy+uronljlXTvn3fo7wTUDUR+PYZPLfFypfLKf
-        jLYxbuEUdcdceW1ZtOhmVk/gBADym01GMgtreDsji9kCibUiWzuMml812mvP1t4do1PZYJ
-        dRWKE1C60cm6xGWQAlFSaEVOOrsVx0I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-3ZtNOC-EPnyeBRrPstvaeQ-1; Fri, 17 Jan 2020 06:43:02 -0500
-X-MC-Unique: 3ZtNOC-EPnyeBRrPstvaeQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90542108597A;
-        Fri, 17 Jan 2020 11:42:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-49.rdu2.redhat.com [10.10.120.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F88910013A1;
-        Fri, 17 Jan 2020 11:42:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
-References: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com> <20200114170250.GA8904@ZenIV.linux.org.uk> <3326.1579019665@warthog.procyon.org.uk> <9351.1579025170@warthog.procyon.org.uk>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     dhowells@redhat.com, "Colin Walters" <walters@verbum.org>,
-        "Al Viro" <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        "Christoph Hellwig" <hch@lst.de>, "Theodore Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Chris Mason" <clm@fb.com>, josef@toxicpanda.com, dsterba@suse.com,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Making linkat() able to overwrite the target
+        Fri, 17 Jan 2020 07:04:33 -0500
+Received: by mail-lj1-f177.google.com with SMTP id y6so26272266lji.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 04:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0FMNs+khiVmMzAetIDMzIhyKlJE8HQh1Ss3k5Xj4ycY=;
+        b=H6VmEMFJNL28cr/IXDTKagqQh8/zUrGgunz6GOTIbOzTan/IOorLxX17CV+9nEyM1R
+         jImihEY14cBp4afbL7EPfKyrmcdIkWAnYOSIdK0wp0hYAMsckVk0XJXMwIsNmyjmOp7Z
+         l5TiIq/QW0I9JDZv8IjqbbD01OJPLt3HFdv+6dzhRlPetI3HXJ3d5up7ANPNHz8d4I2E
+         L+9ia4e1kPGI/pxlYr8pUdugH2LRUivSvK93w2bRMHVb9D73/gW/Tdie10m+tyHdAMJf
+         M450by3O76FtEpbN7BvpVx25VMtVnPBINb0TKkyxHFMnkH2Xv+hdS+d1lDX4kjgJCGo2
+         KjGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0FMNs+khiVmMzAetIDMzIhyKlJE8HQh1Ss3k5Xj4ycY=;
+        b=ejbnvO4GQY7hK7z3bzr1fwkqDjTdbRg6W29OemuWHy0+KPrx5l1c/g2+c9TvQ5X1d/
+         vQ8ipjnDCqN6XYbIN2lcatmFNAQcWyzpCT9S6fDn+y7USU6n0Wi8ZFdnw1vuQRSYptIJ
+         VnntklT8rvkaXzZFz4Nr9S3BT4kh5F06aIarG6Fbs2ufJ+44YbTUmWx+LF5MLkfjHpCB
+         GMe7SRkbNQ/aBVjKKn87+okA2AISs7rkKG/QORqnnPZRK5QtQh90PfxXo6TgzfaX0Nqt
+         gFu7ysEF4pXp1BGnZCQx4Ny8Y3Mxgj7ApWJ/zS9gTwg/hwctbQXFnQJZPS8yLD/3DJut
+         38ug==
+X-Gm-Message-State: APjAAAVMCeXzUFMvj8XGCIqHL8jyKfDk35WDWxfGcwdhdJe1e/uSVyZ7
+        zPtj6XMtOiJzP+WdJpXHkCQ9wzxnNPxGU73wZ+Q=
+X-Google-Smtp-Source: APXvYqxr09Lbz2EhOxWHzlBrge/9pMZ9BhaWnBE2wDsbp8EHvE/nlYLxlUsNfA7/t7mVVqvWHD/mh8MvEhqH45UVYXI=
+X-Received: by 2002:a2e:9052:: with SMTP id n18mr3005438ljg.251.1579262671469;
+ Fri, 17 Jan 2020 04:04:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <359590.1579261375.1@warthog.procyon.org.uk>
+References: <CA+ZCqs6w2Nucbght9cax9+SQ1bHitdgDtLKPA973ES8PXh1EqQ@mail.gmail.com>
+ <6ba43f60-22d1-52da-0e9a-8561b9560481@suse.com> <CA+ZCqs5=N5Hdf3NxZAmPCnA8wbcJPrcH8zM-fRbt-w8tL+TjUQ@mail.gmail.com>
+ <53da4b02-6532-5bb9-391c-720947bac7f1@suse.com> <CA+ZCqs4pTKePM4NaStAs=CWYBZbA_btqip1WiU8DC6DL13Eh_Q@mail.gmail.com>
+ <CA+ZCqs5hLS3ekUpU8TTJq6UP9rjPYZjBwVYcC4xJcaMXuvSudQ@mail.gmail.com>
+ <237d7698-63e1-cb2b-dfbf-ddf5119bd18b@suse.com> <CA+ZCqs7u5XxyaKS=5jPTTDW9+LKdhSBip1+xRNG2VhkEtxDnfw@mail.gmail.com>
+ <31c3be6d-2005-1daa-5d45-ae3812a36ecd@suse.com>
+In-Reply-To: <31c3be6d-2005-1daa-5d45-ae3812a36ecd@suse.com>
+From:   Peter Luladjiev <luladjiev@gmail.com>
+Date:   Fri, 17 Jan 2020 14:04:20 +0200
+Message-ID: <CA+ZCqs6=4=j=jUix77npV_MfB4ucTbxNUBVYmziHsWATO_EA7Q@mail.gmail.com>
+Subject: Re: read time tree block corruption detected
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 17 Jan 2020 11:42:55 +0000
-Message-ID: <359591.1579261375@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Omar,
+Thank you very much.
+Everything seems fine now.
 
-Do you still have your AT_REPLACE patches?  You said that you'd post a v4
-series, though I don't see it.  I could make use of such a feature in
-cachefiles inside the kernel.  For my original question, see:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Dfscache-iter
-
-And do you have ext4 support for it?
-
-Colin Walters <walters@verbum.org> wrote:
-
-> On Tue, Jan 14, 2020, at 1:06 PM, David Howells wrote:
-> =
-
-> > Yes, I suggested AT_LINK_REPLACE as said magical flag.
-> =
-
-> This came up before right?
-> =
-
-> https://lore.kernel.org/linux-fsdevel/cover.1524549513.git.osandov@fb.co=
-m/
-
-David
-
+On Fri, 17 Jan 2020 at 11:10, Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 17.01.20 =D0=B3. 10:22 =D1=87., Peter Luladjiev wrote:
+> > btrfs-progs v5.4
+>
+> As Qu mentioned - with the rootfs unmounted you can run btrfs check
+> --repair and it should repair that one broken backref.
+>
+> >
+> > On Fri, 17 Jan 2020 at 10:14, Nikolay Borisov <nborisov@suse.com> wrote=
+:
+> >>
+> >>
+> >>
+> >> On 17.01.20 =D0=B3. 9:54 =D1=87., Peter Luladjiev wrote:
+> >>> Should I run with repair flag?
+> >>>
+> >>
+> >>
+> >> Which version of progs do you have ? Because it seems original mode
+> >> (Default) finds the corrupted backref but lowmem doesn't ?
+> >>
+> >>
+> >>
