@@ -2,269 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B88CF140B15
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834FB140B4A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgAQNi0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 08:38:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbgAQNi0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:38:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EBA9AACD7;
-        Fri, 17 Jan 2020 13:38:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D714DDA871; Fri, 17 Jan 2020 14:38:09 +0100 (CET)
-Date:   Fri, 17 Jan 2020 14:38:09 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/5] btrfs: remove use of buffer_heads from superblock
- writeout
-Message-ID: <20200117133809.GB3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200117125105.20989-1-johannes.thumshirn@wdc.com>
- <20200117125105.20989-3-johannes.thumshirn@wdc.com>
+        id S1726908AbgAQNoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 08:44:04 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:40388 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgAQNoE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 08:44:04 -0500
+Received: by mail-qv1-f65.google.com with SMTP id dp13so10695044qvb.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:44:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WjYrOXWeuWMAJggjg/wyW53ZlvmOlMQMVRZVoUpmcho=;
+        b=mPilTJWoxUi61GDU/RsI0V9cfFNbPiOcv+OCXRowzVhk/wJokb5qLoPshkpimgDQei
+         fzEwKDou150l/yOxWZfZVb+8Nb/Qz7wiXGMusllRfguhN+z0VJ9iJgOUEprjUy4muBTG
+         fm4KP5G+lA4MFOWBTzI1uHHOIhq8TOFQA+gZL90csc0dRfbrpnt8p6O3vsFfEJihvmoN
+         /a0AMvSy3f75h7b4AziKI70dkb02YvL9UDkPCsoI2JvR1fQmlvlHDXeSDTcBiNXW+Kgf
+         sWcWJJ9TXZaxFBsAStabJp1GrzBn5IK7B92rReXrV8ztQUVpR5/LISShf0KOiwZywIeC
+         6CGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WjYrOXWeuWMAJggjg/wyW53ZlvmOlMQMVRZVoUpmcho=;
+        b=HbpSL0OswMv8LCfzLVjkHxOOKtjDIN1Bcq8ZSnLLlg2deZst7zghz3HkW2sfpvNrl+
+         TE71p83I1F8prbZQTsHhP2FIyloVciq1/IylU73R0h+Ok1p9KD4qmxWp3TMfsXkH3wKc
+         eR1NCYAWV2TY++0nb+QViIiNJs1eloB5ovyH0D6BrQhwcr8/+PL06b8ghoiduEISgGP4
+         g74iaH0dq7uKJr2LMdyz2rek78SfjlOdLcAzI4/Y8jpl3ZUKCSB8XYgeiVKs9TT1lccF
+         9mhqJNzS8sdgvxV5nuYJ4Yek48yydo1r2KdgjZ39PSRPte4yUtanhWHSh6VdvUCLoFpH
+         1dew==
+X-Gm-Message-State: APjAAAUpLI9jnoaeIK1nlDFsNaFvLytfrwi+kOEgoWb8LTx8V3CC5wrQ
+        aYhyQZSZ7+aCbNlCZ2e+58JFpE7i08OPzg==
+X-Google-Smtp-Source: APXvYqyu4ZuGSi31FDIWEelP05WxBw1b4nKS+MLtkbzk+csKGMj8SFuI4ZvccpZWgAwj73PW3CTsnA==
+X-Received: by 2002:a05:6214:707:: with SMTP id b7mr7532669qvz.97.1579268643229;
+        Fri, 17 Jan 2020 05:44:03 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id r37sm12955430qtj.44.2020.01.17.05.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 05:44:02 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][RESEND] btrfs: drop log root for dropped roots
+Date:   Fri, 17 Jan 2020 08:44:01 -0500
+Message-Id: <20200117134401.41440-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200117125105.20989-3-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 09:51:02PM +0900, Johannes Thumshirn wrote:
-> Similar to the superblock read path, change the write path to using BIOs
-> and pages instead of buffer_heads.
-> 
-> This is based on a patch originally authored by Nikolay Borisov.
-> 
-> Co-developed-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/disk-io.c | 107 ++++++++++++++++++++++++++-------------------
->  1 file changed, 61 insertions(+), 46 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 50c93ffe8d03..51e7b832c8fd 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3353,25 +3353,33 @@ int __cold open_ctree(struct super_block *sb,
->  }
->  ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
->  
-> -static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
-> +static void btrfs_end_super_write(struct bio *bio)
->  {
-> -	if (uptodate) {
-> -		set_buffer_uptodate(bh);
-> -	} else {
-> -		struct btrfs_device *device = (struct btrfs_device *)
-> -			bh->b_private;
-> -
-> -		btrfs_warn_rl_in_rcu(device->fs_info,
-> -				"lost page write due to IO error on %s",
-> -					  rcu_str_deref(device->name));
-> -		/* note, we don't set_buffer_write_io_error because we have
-> -		 * our own ways of dealing with the IO errors
-> -		 */
-> -		clear_buffer_uptodate(bh);
-> -		btrfs_dev_stat_inc_and_print(device, BTRFS_DEV_STAT_WRITE_ERRS);
-> +	struct btrfs_device *device = bio->bi_private;
-> +	struct bio_vec *bvec;
-> +	struct bvec_iter_all iter_all;
-> +	struct page *page;
-> +
-> +	bio_for_each_segment_all(bvec, bio, iter_all) {
-> +		page = bvec->bv_page;
-> +
-> +		if (blk_status_to_errno(bio->bi_status)) {
-> +			btrfs_warn_rl_in_rcu(device->fs_info,
-> +					     "lost page write due to IO error on %s",
-> +					     rcu_str_deref(device->name));
-> +			ClearPageUptodate(page);
-> +			SetPageError(page);
-> +			btrfs_dev_stat_inc_and_print(device,
-> +						     BTRFS_DEV_STAT_WRITE_ERRS);
-> +		} else {
-> +			SetPageUptodate(page);
-> +		}
-> +
-> +		put_page(page);
-> +		unlock_page(page);
->  	}
-> -	unlock_buffer(bh);
-> -	put_bh(bh);
-> +
-> +	bio_put(bio);
->  }
->  
->  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
-> @@ -3462,16 +3470,15 @@ int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
->   * the expected device size at commit time. Note that max_mirrors must be
->   * same for write and wait phases.
->   *
-> - * Return number of errors when buffer head is not found or submission fails.
-> + * Return number of errors when page is not found or submission fails.
->   */
->  static int write_dev_supers(struct btrfs_device *device,
->  			    struct btrfs_super_block *sb, int max_mirrors)
->  {
->  	struct btrfs_fs_info *fs_info = device->fs_info;
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
-> -	struct buffer_head *bh;
-> +	gfp_t gfp_mask;
->  	int i;
-> -	int ret;
->  	int errors = 0;
->  	u64 bytenr;
->  	int op_flags;
-> @@ -3481,7 +3488,13 @@ static int write_dev_supers(struct btrfs_device *device,
->  
->  	shash->tfm = fs_info->csum_shash;
->  
-> +	gfp_mask = mapping_gfp_constraint(device->bdev->bd_inode->i_mapping,
-> +					  ~__GFP_FS) | __GFP_NOFAIL;
-> +
->  	for (i = 0; i < max_mirrors; i++) {
-> +		struct page *page;
-> +		struct bio *bio;
-> +
->  		bytenr = btrfs_sb_offset(i);
->  		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
->  		    device->commit_total_bytes)
-> @@ -3494,26 +3507,20 @@ static int write_dev_supers(struct btrfs_device *device,
->  				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
->  		crypto_shash_final(shash, sb->csum);
->  
-> -		/* One reference for us, and we leave it for the caller */
-> -		bh = __getblk(device->bdev, bytenr / BTRFS_BDEV_BLOCKSIZE,
-> -			      BTRFS_SUPER_INFO_SIZE);
-> -		if (!bh) {
-> +		page = find_or_create_page(device->bdev->bd_inode->i_mapping,
-> +					   bytenr >> PAGE_SHIFT, gfp_mask);
+If we fsync on a subvolume and create a log root for that volume, and
+then later delete that subvolume we'll never clean up its log root.  Fix
+this by making switch_commit_roots free the log for any dropped roots we
+encounter.
 
-This has NOFAIL again, but now we're in write_dev_supers, so this has
-some implications regarding the potential unbounded waiting
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+- Nothing has changed for this one, it's just been rebased.
 
-> +		if (!page) {
->  			btrfs_err(device->fs_info,
-> -			    "couldn't get super buffer head for bytenr %llu",
-> +			    "couldn't get superblock page for bytenr %llu",
->  			    bytenr);
->  			errors++;
->  			continue;
->  		}
->  
-> -		memcpy(bh->b_data, sb, BTRFS_SUPER_INFO_SIZE);
-> +		/* Bump the refcount for wait_dev_supers() */
-> +		get_page(page);
->  
-> -		/* one reference for submit_bh */
-> -		get_bh(bh);
-> -
-> -		set_buffer_uptodate(bh);
-> -		lock_buffer(bh);
-> -		bh->b_end_io = btrfs_end_buffer_write_sync;
-> -		bh->b_private = device;
-> +		memcpy(page_address(page), sb, BTRFS_SUPER_INFO_SIZE);
->  
->  		/*
->  		 * we fua the first super.  The others we allow
-> @@ -3522,9 +3529,17 @@ static int write_dev_supers(struct btrfs_device *device,
->  		op_flags = REQ_SYNC | REQ_META | REQ_PRIO;
->  		if (i == 0 && !btrfs_test_opt(device->fs_info, NOBARRIER))
->  			op_flags |= REQ_FUA;
-> -		ret = btrfsic_submit_bh(REQ_OP_WRITE, op_flags, bh);
-> -		if (ret)
-> -			errors++;
-> +
-> +		bio = bio_alloc(gfp_mask, 1);
+ fs/btrfs/transaction.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-And allocating a new bio when we have to write the superblock is also
-not very nice. This should do something like the device::flush_bio that
-could be reused.
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index cfc08ef9b876..55d8fd68775a 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -147,13 +147,14 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
+ 	}
+ }
+ 
+-static noinline void switch_commit_roots(struct btrfs_transaction *trans)
++static noinline void switch_commit_roots(struct btrfs_trans_handle *trans)
+ {
++	struct btrfs_transaction *cur_trans = trans->transaction;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_root *root, *tmp;
+ 
+ 	down_write(&fs_info->commit_root_sem);
+-	list_for_each_entry_safe(root, tmp, &trans->switch_commits,
++	list_for_each_entry_safe(root, tmp, &cur_trans->switch_commits,
+ 				 dirty_list) {
+ 		list_del_init(&root->dirty_list);
+ 		free_extent_buffer(root->commit_root);
+@@ -165,16 +166,17 @@ static noinline void switch_commit_roots(struct btrfs_transaction *trans)
+ 	}
+ 
+ 	/* We can free old roots now. */
+-	spin_lock(&trans->dropped_roots_lock);
+-	while (!list_empty(&trans->dropped_roots)) {
+-		root = list_first_entry(&trans->dropped_roots,
++	spin_lock(&cur_trans->dropped_roots_lock);
++	while (!list_empty(&cur_trans->dropped_roots)) {
++		root = list_first_entry(&cur_trans->dropped_roots,
+ 					struct btrfs_root, root_list);
+ 		list_del_init(&root->root_list);
+-		spin_unlock(&trans->dropped_roots_lock);
++		spin_unlock(&cur_trans->dropped_roots_lock);
++		btrfs_free_log(trans, root);
+ 		btrfs_drop_and_free_fs_root(fs_info, root);
+-		spin_lock(&trans->dropped_roots_lock);
++		spin_lock(&cur_trans->dropped_roots_lock);
+ 	}
+-	spin_unlock(&trans->dropped_roots_lock);
++	spin_unlock(&cur_trans->dropped_roots_lock);
+ 	up_write(&fs_info->commit_root_sem);
+ }
+ 
+@@ -1421,7 +1423,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
+ 	ret = commit_cowonly_roots(trans);
+ 	if (ret)
+ 		goto out;
+-	switch_commit_roots(trans->transaction);
++	switch_commit_roots(trans);
+ 	ret = btrfs_write_and_wait_transaction(trans);
+ 	if (ret)
+ 		btrfs_handle_fs_error(fs_info, ret,
+@@ -2301,7 +2303,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	list_add_tail(&fs_info->chunk_root->dirty_list,
+ 		      &cur_trans->switch_commits);
+ 
+-	switch_commit_roots(cur_trans);
++	switch_commit_roots(trans);
+ 
+ 	ASSERT(list_empty(&cur_trans->dirty_bgs));
+ 	ASSERT(list_empty(&cur_trans->io_bgs));
+-- 
+2.24.1
 
-> +		bio_set_dev(bio, device->bdev);
-> +		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
-> +		bio->bi_private = device;
-> +		bio->bi_end_io = btrfs_end_super_write;
-> +		bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
-> +			     offset_in_page(bytenr));
-> +
-> +		bio_set_op_attrs(bio, REQ_OP_WRITE, op_flags);
-> +		btrfsic_submit_bio(bio);
->  	}
->  	return errors < i ? 0 : -1;
->  }
-> @@ -3533,12 +3548,11 @@ static int write_dev_supers(struct btrfs_device *device,
->   * Wait for write completion of superblocks done by write_dev_supers,
->   * @max_mirrors same for write and wait phases.
->   *
-> - * Return number of errors when buffer head is not found or not marked up to
-> + * Return number of errors when page is not found or not marked up to
->   * date.
->   */
->  static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
->  {
-> -	struct buffer_head *bh;
->  	int i;
->  	int errors = 0;
->  	bool primary_failed = false;
-> @@ -3548,32 +3562,33 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
->  		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
->  
->  	for (i = 0; i < max_mirrors; i++) {
-> +		struct page *page;
-> +
->  		bytenr = btrfs_sb_offset(i);
->  		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
->  		    device->commit_total_bytes)
->  			break;
->  
-> -		bh = __find_get_block(device->bdev,
-> -				      bytenr / BTRFS_BDEV_BLOCKSIZE,
-> -				      BTRFS_SUPER_INFO_SIZE);
-> -		if (!bh) {
-> +		page = find_get_page(device->bdev->bd_inode->i_mapping,
-> +				     bytenr >> PAGE_SHIFT);
-> +		if (!page) {
->  			errors++;
->  			if (i == 0)
->  				primary_failed = true;
->  			continue;
->  		}
-> -		wait_on_buffer(bh);
-> -		if (!buffer_uptodate(bh)) {
-> +		wait_on_page_locked(page);
-
-What locks the page?
-
-> +		if (PageError(page)) {
->  			errors++;
->  			if (i == 0)
->  				primary_failed = true;
->  		}
->  
->  		/* drop our reference */
-> -		brelse(bh);
-> +		put_page(page);
->  
->  		/* drop the reference from the writing run */
-> -		brelse(bh);
-> +		put_page(page);
->  	}
->  
->  	/* log error, force error return */
-> -- 
-> 2.24.1
