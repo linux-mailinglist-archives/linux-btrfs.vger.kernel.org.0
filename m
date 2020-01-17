@@ -2,213 +2,248 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57712140C54
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451E3140C58
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgAQOVb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:21:31 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36879 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgAQOVb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:21:31 -0500
-Received: by mail-qk1-f195.google.com with SMTP id 21so22834499qky.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:21:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bBnF1LyXJKaG6+P/v1rGtOYpj6S7+8HqHk5kIJF7Kjw=;
-        b=K6a2ejtv5IR/X12/BgRms6qo/Hx4J9A6KxogPnVK9Gbf6/dCX7AXK/La/eiqd9uOLM
-         ZXJ5pwBtcjqD2n63Jf9fdqHQx9rOf1IXZKlQoGniC86O1rL9LywDx2noowlFZk8enm/K
-         7yxyyUwNVTDCstO1EZ9tSxG+hOWTgZiEFabTeT6JNteAkMWiqRq1EqsLiWSuEq51pnQA
-         BAQZireJpCqbSJB04dprf53g1/PYJ5eRixydmqUqqyrwo84FALQpIbzdBj8a8C2TX/wm
-         2nFa24JPygQUb5t0ujKfPAdVtRHHFqKx/o6sWUR8BUl0HqrbMj7GoF/txG/mHttJeQM2
-         AzIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bBnF1LyXJKaG6+P/v1rGtOYpj6S7+8HqHk5kIJF7Kjw=;
-        b=YdncbM9y1VevkhUY13u9UaFTPZ1Xett69uN+S/TfbyGI7wk/189W8APJ2GZY9OwNO1
-         8IiT8lYPrLx8fZrIcfinLIT46LvbqaMLwzWBGEK+P6L+mY6TFcwISaUi2KsS/QBrAZIO
-         Dsou7B7AcKKPzIM2ztJJkP0MaPUPNlaRmdhReGNoQfMfcZidriEzXD+WJ5xzCbAXcuxG
-         Cnxe37yv8heYg3S5IzAGUpDzi1z0Z1yu5qCfMKyA6xkPO5eW9lnE2b+pfMkkv9VSmCqP
-         TKlzDmhlczbTYMisUIggfD+nluJwff+sL/Sp2215y3u1/xtOoYJhmoD7F5AXYzGJ2vvB
-         q/8g==
-X-Gm-Message-State: APjAAAXY+MHaHIdnUwJSdFDKIYMjH/krFldK0iOs9fH+VULzcwklFNO0
-        LULTzgIOjiKVzhXyAwzEUEldgRuD4Nva1w==
-X-Google-Smtp-Source: APXvYqyG/92D9JyaNBH8uq59I5pC61j5cgoH8osCROUR4732f4RYC8BpoNI51fdct0ykL8cjT2j4xA==
-X-Received: by 2002:a05:620a:899:: with SMTP id b25mr38644447qka.197.1579270889792;
-        Fri, 17 Jan 2020 06:21:29 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u16sm11803294qku.19.2020.01.17.06.21.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jan 2020 06:21:29 -0800 (PST)
-Subject: Re: [PATCH] btrfs: add extra ending condition for indirect data
- backref resolution
-To:     ethanwu <ethanwu@synology.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <1578044681-25562-1-git-send-email-ethanwu@synology.com>
- <017fb679-ca13-f38e-e67b-6f1d42c1fbbd@toxicpanda.com>
- <8937126609d3cca7239a9dcf3b2e78fc@synology.com>
- <aa9ce338-de50-a89a-9e94-c87fdcebe3ef@toxicpanda.com>
- <2aaca742a193154ac6cbe09859ff034e@synology.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5e8a3602-34ee-184a-2685-737144c74795@toxicpanda.com>
-Date:   Fri, 17 Jan 2020 09:21:28 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1726827AbgAQOW6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:22:58 -0500
+Received: from mout.gmx.net ([212.227.15.19]:58265 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726574AbgAQOW6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:22:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1579270973;
+        bh=yq7Y5tuqScTVzeLOUPgocmk2nopl32ioG45PWlLbAbA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=GcCfUMYgCetVx/8WH3wxNrY4SLPfBnZpHIonN7vkaS6hHjP/i9rmCzmGcHVzOJqlH
+         A+CjMFCgcGV6yfCjrrjmFn0MEpDV05ZaY826zk++Kxp7DZWUarNvaAmThQ9N6WPk9L
+         NKYquuPIfmPFJopo9dsvE2XRgdjZBvgtoM7nflkk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N63Vi-1jguV107aa-016QxB; Fri, 17
+ Jan 2020 15:22:53 +0100
+Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
+ committing metadata space
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200115034128.32889-1-wqu@suse.com>
+ <20200116142928.GX3929@twin.jikos.cz>
+ <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
+ <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
+ <20200117141037.GG3929@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <85585720-77de-b999-8d17-a17e86e1c181@gmx.com>
+Date:   Fri, 17 Jan 2020 22:22:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <2aaca742a193154ac6cbe09859ff034e@synology.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200117141037.GG3929@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="poYttRGl01PBgXxV8VA1MCLtOg9tkLTb7"
+X-Provags-ID: V03:K1:6orPc7a2JV9ktp//rfjp9qoScFenca0mdB6LVtZ7FTi/GgXtnHK
+ 9/tLXRUKAItVeHgtKTRtb7vL6BNryKUW+OOLqnOs3Btw+8SxwGAtrA44hkFZ3tw7ei9x0zk
+ owuUWuL539dXs0rDtwrWIHFHRmkIHhkdSN4EeKlhIqhgqR2VDexgDXmYVBcT/9Wqp7ZWgHq
+ Uqh4iHXHadIlcoJzRexEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rEC7UjPMleg=:dfzKDie+neMj1qDUMaqtOU
+ 9erVoa4c7hyvXzVk7Kro5PYWtwlVqpFOnxdpeEp9i997iU2riuyDDt9u9gGrDCAffulgpcZjN
+ WkdT1QheW91wVDFQNNWpZ8M1tCJzdtrjnkcKKG4Dg0+Z6aGH2h4SDQG2zeHHNkE/Hkv69liYn
+ d/PCk5KQ1pA4DKGNg/KbDk5pppxmhTC+T7Whx7GTBLSNN/NB4dvc8u8Xuh3x/35qmXICGhySH
+ 2UzJY2FjPup33cuSksNR8aIg1auCVt0CVFKiWmXo8h8cv9ANBm8PWpMhU4yDEJ/FFGshuxBXV
+ TFdw1YVrTiYtAXE26vSPelC4+N1S5xc/Z6kAdV4coW3lgGXfiqglXh2i7UUnq6R+8IjDKMiXn
+ /4SPddg2bUXq2ZbEBVSQTYvhBLjrjt6SRQrqYSAFtEsR1UlZVADqKcE5KxCqsH4Au/LTghcvl
+ cH7Ef/H+KEejjrHsvrEnlcdu5pBHKaXKHy/0ykE/TFNP/q5usonoRFvCbuqBttNFSwYqElQaD
+ twhfgy8AEmmWrOtmQP91hKum0SbSXLs6a9IFy0PTM3A8eZiL43wYqQ7nRjhXOMWZUKlwUBRAN
+ 6om9yA+8d3JwuWK5J6IVhjNSVM2/nRvRZEqM/vLm+UfDEM8VEYIlmS73W7H/YRK0Qut+mQbqS
+ Lui2Q+b6+r6xlmM14yFS8wOaW4SXeh5SRacUgIFqeW57/uuwLWQjcyfhMCF70CYYAUix/CIqw
+ FUfoEbV7zTfk++smrwWPKlCeSw//01mHxz0of65pAjpaouLgaavauBGJOUQ6KO9qPNF6oBdhu
+ nF9+hErw3dJFAl44H+G5dZaOAxeHr3QwAYjJ51IwrlpGZIkW/p3wOgAb7oW4QfN154mpZiMuv
+ i++yXTeTduH3QA+bF9V0buvDgmOAYZZTdWhR0d5vYHsWSkoc58IIdhdXH1Ww5qoB0eMrLCLEk
+ Dee6wHjwJuwSsafToMU7gP6V+8dutUyT8khKSE08Pc5m0osy5KMzEvzIK4ud9yxmR2l+r/5T9
+ V7KEbgVj12ynagfaj21H7bijfumWkJWHKoMu62e//blFm86qUFvvonN8r4akobpXhnZvsK6EC
+ DJAxsTWzvWm+EgnsLJ0AnxveDwxvuGKPjx/OZzv/99CeiQ71uemPtYj5lE0y9Tp1ofsBSVYlj
+ JyQcL9y7me8HBVJg8WY8RiHWospLH5GwXKq+QewKDooQ/DrOL7d5HBKS3A/+C/DtiIeOGB2TH
+ ucTM+BWJrxbeCUejJ4fe4c0rps72G/Z4KmtSLSefQIqBgh/ZisBqLf2W4Z4o=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/17/20 5:44 AM, ethanwu wrote:
-> Josef Bacik 於 2020-01-07 00:05 寫到:
->> On 1/5/20 10:45 PM, ethanwu wrote:
->>> Josef Bacik 於 2020-01-04 00:31 寫到:
->>>> On 1/3/20 4:44 AM, ethanwu wrote:
->>>>> Btrfs has two types of data backref.
->>>>> For BTRFS_EXTENT_DATA_REF_KEY type of backref, we don't have the
->>>>> exact block number. Therefore, we need to call resolve_indirect_refs
->>>>> which uses btrfs_search_slot to locate the leaf block. After that,
->>>>> we need to walk through the leafs to search for the EXTENT_DATA items
->>>>> that have disk bytenr matching the extent item(add_all_parents).
->>>>>
->>>>> The only conditions we'll stop searching are
->>>>> 1. We find different object id or type is not EXTENT_DATA
->>>>> 2. We've already got all the refs we want(total_refs)
->>>>>
->>>>> Take the following EXTENT_ITEM as example:
->>>>> item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize 95
->>>>>      extent refs 24 gen 7302 flags DATA
->>>>>      extent data backref root 257 objectid 260 offset 65536 count 5 
->>>>> #backref entry 1
->>>>>      extent data backref root 258 objectid 265 offset 0 count 9 #backref 
->>>>> entry 2
->>>>>      shared data backref parent 394985472 count 10 #backref entry 3
->>>>>
->>>>> If we want to search for backref entry 1, total_refs here would be 24 rather
->>>>> than its count 5.
->>>>>
->>>>> The reason to use 24 is because some EXTENT_DATA in backref entry 3 block
->>>>> 394985472 also points to EXTENT_ITEM 40831553536, if this block also 
->>>>> belongs to
->>>>> root 257 and lies between these 5 items of backref entry 1,
->>>>> and we use total_refs = 5, we'll end up missing some refs from backref
->>>>> entry 1.
->>>>>
->>>>
->>>> This seems like the crux of the problem here.  The backref stuff is
->>>> just blindly looking for counts, without keeping track of which counts
->>>> matter.  So for full refs we should only be looking down paths where
->>>> generation > the snapshot generation.  And then for the shared refs it
->>>> should be anything that comes from that shared block.  That would be
->>>> the proper way to fix the problem, not put some arbitrary limit on how
->>>> far into the inode we can search.
->>>>
->>>
->>> I am not sure if generation could be used to skip blocks for full(indirect) 
->>> backref.
->>>
->>> For exmple:
->>> create a data extent in subvol id 257 at generation 10
->>> At generation 11, take snapshot(suppose the snapshot id is 258) from subvol 257.
->>>
->>> When we send snapshot 258, all the tree blocks it searches comes from subvol 
->>> 257,
->>> since snapshot only copy root node from its source,
->>> none of tree blocks in subvol 257 has generation(all <= 10) > snapshot 
->>> generation(11)
->>>
->>> Or do I miss something?
->>
->> Nope I was saying it wrong, sorry about that.  What I should say is
->> for "backref entry 1" we should _only_ walk down paths that belong to
->> root 257, and then for root 258 we _only_ walk down paths that belong
->> to 258, and then we do our normal dance for indirect refs.
->>
->>>
->>>> That's not to say what you are doing here is wrong, we really won't
->>>> have anything past the given extent size so we can definitely break
->>>> out earlier.  But what I worry about is say 394985472 _was_ in between
->>>> the leaves while searching down for backref entry #1, we'd end up with
->>>> duplicate entries and not catch some of the other entries.  This feels
->>>
->>> This patch doesn't adjust the total_refs. Is there any example that
->>> this patch will ruin the backref walking?
->>
->> No I'm talking about a general failure of the current code, your patch
->> doesn't make it better or worse.
->>
->>>
->>>> like we need to fix the backref logic to know if it's looking for
->>>> direct refs, and thus only go down paths with generation > snapshot
->>>> generation, or shared refs and thus only count things that directly
->>>> point to the parent block.  Thanks,
->>>>
->>>
->>> Ok, I agree, my patch doesn't solve the original problem:
->>> When resolving indirect refs, we could take entries that don't
->>> belong to the backref entry we are searching for right now.
->>>
->>> If this need to be fixed, I think it could be done by the following way
->>>
->>> item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize
->>>          extent refs 24 gen 7302 flags DATA
->>>          shared data backref parent 394985472 count 10 #backref entry 1
->>>          extent data backref root 257 objectid 260 offset 1048576 count 3 
->>> #backref entry 2
->>>          extent data backref root 256 objectid 260 offset 65536 count 6 
->>> #backref entry 3
->>>          extent data backref root 257 objectid 260 offset 65536 count 5 
->>> #backref entry 4
->>>
->>> When searching for entry 4, the EXTENT_DATA entries that match the 
->>> EXTENT_ITEM bytenr
->>> will be in one of the following situations:
->>>
->>> 1. shared block that just happens to be part of root 257. For every leaf we 
->>> run into,
->>>     check its bytenr to see if it is a shared data backref entry, if so skip it.
->>>     We may need an extra list or rb tree to store this information.
->>
->> We don't need to worry about this case, because if we have a normal
->> ref then the whole path down to that bytenr belongs wholey to that
->> root.  The full backref will only be in paths that were not touched by
->> the referencing root.
->>
-> 
-> Thank you for the review,
-> I don't fully understand the way shared data backref is used in btrfs.
-> It took me a while to check the backref code and do some experiment.
-> One way shared backref will be used is balance, all the items used
-> by relocation tree use shared backref.
-> 
-> After running balance, if any EXTENT_ITEM is moved during balance,
-> all the back reference of that newly-located EXTENT_ITEM will become
-> shared, and the block owner is exactly the original root.
-> 
-> We could then produce normal reference by just COWIng the tree block,
-> and leaving some of the shared backrefs unchanged,(dd an 128MB extent
-> and cow every other 4K blocks, so these items span across many
-> leafs and COWing one block leaves the other shared backrefs untouched)
-> 
-> In the end, we have two types of back reference from the same root,
-> and yet the owner of all these blocks are the same root.
-> 
-> Therefore, I think this condition is still needed.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--poYttRGl01PBgXxV8VA1MCLtOg9tkLTb7
+Content-Type: multipart/mixed; boundary="vEtdfjUpaxkNWgKM57cINAhOg24lB2PJO"
 
-Yes you can definitely have a shared ref pointing back to a root that you have a 
-real ref for, but my point is you treat this separately.  If you have a shared 
-block you _won't_ have a real ref for the items in that leaf from the same root. 
-  They should be exclusive of any real reference you have.  Thanks,
+--vEtdfjUpaxkNWgKM57cINAhOg24lB2PJO
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Josef
+
+
+On 2020/1/17 =E4=B8=8B=E5=8D=8810:10, David Sterba wrote:
+> On Fri, Jan 17, 2020 at 09:32:49AM +0800, Qu Wenruo wrote:
+>> On 2020/1/17 =E4=B8=8A=E5=8D=888:54, Qu Wenruo wrote:
+>>> On 2020/1/16 =E4=B8=8B=E5=8D=8810:29, David Sterba wrote:
+>>>> On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
+>>>>> [BUG]
+>>>>> When there are a lot of metadata space reserved, e.g. after balanci=
+ng a
+>>>>> data block with many extents, vanilla df would report 0 available s=
+pace.
+>>>>>
+>>>>> [CAUSE]
+>>>>> btrfs_statfs() would report 0 available space if its metadata space=
+ is
+>>>>> exhausted.
+>>>>> And the calculation is based on currently reserved space vs on-disk=
+
+>>>>> available space, with a small headroom as buffer.
+>>>>> When there is not enough headroom, btrfs_statfs() will report 0
+>>>>> available space.
+>>>>>
+>>>>> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
+>>>>> reservations if we have pending tickets"), we allow btrfs to over c=
+ommit
+>>>>> metadata space, as long as we have enough space to allocate new met=
+adata
+>>>>> chunks.
+>>>>>
+>>>>> This makes old calculation unreliable and report false 0 available =
+space.
+>>>>>
+>>>>> [FIX]
+>>>>> Don't do such naive check anymore for btrfs_statfs().
+>>>>> Also remove the comment about "0 available space when metadata is
+>>>>> exhausted".
+>>>>
+>>>> This is intentional and was added to prevent a situation where 'df'
+>>>> reports available space but exhausted metadata don't allow to create=
+ new
+>>>> inode.
+>>>
+>>> But this behavior itself is not accurate.
+>>>
+>>> We have global reservation, which is normally always larger than the
+>>> immediate number 4M.
+>>>
+>>> So that check will never really be triggered.
+>>>
+>>> Thus invalidating most of your argument.
+>>>>
+>>>> If it gets removed you are trading one bug for another. With the cha=
+nged
+>>>> logic in the referenced commit, the metadata exhaustion is more like=
+ly
+>>>> but it's also temporary.
+>>
+>> Furthermore, the point of the patch is, current check doesn't play wel=
+l
+>> with metadata over-commit.
+>=20
+> The recent overcommit updates broke statfs in a new way and left us
+> almost nothing to make it better.
+
+It's not impossible to solve in fact.
+
+Exporting can_overcommit() can do pretty well in this particular case.
+
+>=20
+>> If it's before v5.4, I won't touch the check considering it will never=
+
+>> hit anyway.
+>>
+>> But now for v5.4, either:
+>> - We over-commit metadata
+>>   Meaning we have unallocated space, nothing to worry
+>=20
+> Can we estimate how much unallocated data are there? I don't know how,
+> and "nothing to worry" always worries me.
+
+Data never over-commit. We always ensure there are enough data chunk
+allocated before we allocate data extents.
+
+>=20
+>> - No more space for over-commit
+>>   But in that case, we still have global rsv to update essential trees=
+=2E
+>>   Please note that, btrfs should never fall into a status where no fil=
+es
+>>   can be deleted.
+>=20
+> Of course, the global reserve is there for last resort actions and will=
+
+> be used for deletion and updating essential trees. What statfs says is
+> how much data is there left for the user. New files, writing more data
+> etc.
+>=20
+>> Consider all these, we're no longer able to really hit that case.
+>>
+>> So that's why I'm purposing deleting that. I see no reason why that
+>> magic number 4M would still work nowadays.
+>=20
+> So, the corner case that resulted in the guesswork needs to be
+> reevaluated then, the space reservations and related updates clearly
+> affect that. That's out of 5.5-rc timeframe though.
+
+Although we can still solve the problem only using facility in v5.5, I'm
+still not happy enough with the idea of "one exhausted resource would
+result a different resource exhausted"
+
+I still believe in that we should report different things independently.
+(Which obviously makes our lives easier in statfs case).
+
+That's also why we require reporters to include 'btrfs fi df' result
+other than vanilla 'df', because we have different internals.
+
+Or, can we reuse the f_files/f_free facility to report metadata space,
+and forgot all these mess?
+
+Thanks,
+Qu
+
+
+--vEtdfjUpaxkNWgKM57cINAhOg24lB2PJO--
+
+--poYttRGl01PBgXxV8VA1MCLtOg9tkLTb7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4hwzYACgkQwj2R86El
+/qj5MAgAjZMkH5qsGWN5vM7ywNqPUmIx500W5XCcd2foEYgBUzomd6a9+3J6bCQa
+BjW2nzUwTGY451bD01bMqt4MeETA+avrkaxohNnVBb4CWlysGwvzb/BS/rB6Aeto
+doGXHE22AgBeTLUQzi6DVDEx8d7AZLvppFleUsxUhvZMcMyv32tlkz6MaFlKD4SA
+J6bOQ4oPxtbAlALy/PJyFvhUYlJ+j1gnINhbi5mtrwT+z7mGqdqZ34yhZPNLxk7X
+b2w0mXt+2X33ZyiVLCyItKtJ+M7HSDnwouR7MNh1ZLtt5I/yT7qQsV7cge3LJEu6
+v1JNXdJYgtK7VLcCheKNlg0gbh3lbg==
+=S245
+-----END PGP SIGNATURE-----
+
+--poYttRGl01PBgXxV8VA1MCLtOg9tkLTb7--
