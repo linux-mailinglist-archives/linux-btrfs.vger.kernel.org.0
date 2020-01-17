@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E90414012C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 01:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68676140176
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 02:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgAQA4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jan 2020 19:56:17 -0500
-Received: from mout.gmx.net ([212.227.17.22]:60671 "EHLO mout.gmx.net"
+        id S2388335AbgAQBdA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jan 2020 20:33:00 -0500
+Received: from mout.gmx.net ([212.227.17.20]:57113 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726892AbgAQA4R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jan 2020 19:56:17 -0500
+        id S1730070AbgAQBdA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jan 2020 20:33:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1579222548;
-        bh=zh3hmkRqbFZ+K3rxbZ20whLaQS46R3mMdELYQ8RLGuI=;
+        s=badeba3b8450; t=1579224774;
+        bh=lc9uNPr0P9dcMOPitk8IhcRVpMa3WCVph7A0FWeJi5w=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Dw64TmeAezi6y2SwN8xAEv1kFSfYIPKFTL55zZl40GmijdKeYWe+QpiGULXpH8cFb
-         W10eyAlVxC5OEmpDZkiriwmJQBIYZlJOfg9lhA2rddHyQeCJXzGsdhsYu8Rsf6h9Wp
-         KC4OXINOEGN6Y/Yg4gQzkpBSehZWi6uH+IvNy9OE=
+        b=lVX46ZaCBjVfrFdzzPWi8vxnzAkMzLwuif9XoiV3jsJr6qm/zFJyF4Z7w1lQ9ZS0m
+         IfHjp4UBehyRCUXxKgxk/29Una9N7E1Q3H/XcIW2uSf/g2lpa53mhxjHGjjgyp0Qvr
+         vjr4JkU83aH96W3ezZV5HYkvO8q/TboZQLEfhZoo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MA7GM-1imFOI018s-00BgNK; Fri, 17
- Jan 2020 01:55:48 +0100
-Subject: Re: [PATCH v6 1/5] btrfs: Introduce per-profile available space
- facility
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mr9G2-1jOtZj1nra-00oGw9; Fri, 17
+ Jan 2020 02:32:54 +0100
+Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
+ committing metadata space
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20200116060404.95200-1-wqu@suse.com>
- <20200116060404.95200-2-wqu@suse.com>
- <49727617-91d3-9cff-c772-19d7cd371b55@toxicpanda.com>
+References: <20200115034128.32889-1-wqu@suse.com>
+ <20200116142928.GX3929@twin.jikos.cz>
+ <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,97 +54,178 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3818d217-b64a-5f44-c80e-c49521bb3698@gmx.com>
-Date:   Fri, 17 Jan 2020 08:55:44 +0800
+Message-ID: <a8e81e58-8d9d-789c-de33-c213f6a894e6@gmx.com>
+Date:   Fri, 17 Jan 2020 09:32:49 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <49727617-91d3-9cff-c772-19d7cd371b55@toxicpanda.com>
+In-Reply-To: <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="wtO20IL6u9u3HvLXRTGuuqhQjfHZoJIjI"
-X-Provags-ID: V03:K1:JTqKRBo9tHB8YR/Ftx6m5mnbNFfKE39HUk1HuKB4kZy5VPFZVaa
- f9mRNzVfyUdxfccdgktnV7iTMP8goDdZYyoApSRxjSffW6rCbYluDDbl9LIPZ5SzWbEx9bq
- 7AVWin1MzBQW2+uNDk8T/WmqCR3J55jQ4qH5aorrUgYTVKOyRvSLqNW8qhy/U1pqPJmGGbo
- 08upnLz0giC2LTxdo9Vsg==
+ boundary="FHD4lPOR4XcNZVpLgTQROsIRpjnDqy8CT"
+X-Provags-ID: V03:K1:U/M5R0x/muNpxPVPilRCK3Y7wmuyNIBMvFLKqHyeuKwUBjAkw65
+ m2rBlITvJwcx+GtAL95ptYhb+iRDKpge1RAeSnFjmg9BKUXAYOI2zKYYoJMHwXG8m05WmH6
+ /GP8xN/vtGy49WUcalQPR9YSOAPSsMacbV3bey1IhA7VSEOYCn+Mn/l0UH73YFBMO6otI6c
+ 4k3wOKHpUIHt5Hy7tMuYw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UfyXf01Wpjs=:y4XaLv2+Td3jW9gEUJYh9V
- gsunl4P5mGuELU+SPFUg1oUL+lD8CtAdivfhBZ0UjUnobj4hY//IrxpBmLRpI7z5Fpehk2+O3
- 8aCvFMAIhG6cjfYh5BXXMSNlH3na7vam1z6UywVJzXDhuSIOWsHG22mZzaWOL5p4hbsVwKeVe
- xU1qWC61JCg3YLK/WKVXXJLatUwFmA7+FX75PvaI9dQ99jwz53/DYvMGV89HkKpSmjH07jx6I
- DfXwP7EY0auAGxR9fZbb2eZmuysGimPoxabDoZMQiPysFghcdpK8YZApxY4oux8p6QPgaATtf
- pjNGArm/h2WLJY+u/+Wj1HAZ60yXcq9pAOTevD5tlByrPHIxxkJGBc6i3LZukbGihWMuYrd47
- 5NBdQAjqti1HklgbVJN1A21OPxXOb/llpBV3wQEcaQdEMBIMQQIoJtv+rcQIimsmWzWzWxN3U
- wDDR14KCPdrIN2Ml5ZGlLUbk1hYMTHC36gOZvYfR/3h5rdo1LvhKTbXtHO0jvqplRDHkJb+S6
- IVa5F38i8c4/wd89Us0ac7+DWpGbHeWueQCAv8VMM2gvMLaQ3fw5qUeeBjlVRZZZgC+AT+1ud
- jYJfu7zH6vE+4EGYMcb0jV5ye9tmUq/ZjX2AB0FEwek4af6XCBB9wH8Raea3eyKMtHNzTz+7W
- TGh1OaFML6A0W382qRoMEI6JSny+w1vHwxZ5hl8IVx2j8XN7VU0gfsmz/lFNrDnnheErU8DUD
- CAeTkeKW/ikVzBemuZ/vOjiHJA9Hw9AsSog88Qf70WNEiNuOEF4fnzLj+QshFiqgxc1myt+L4
- vbS3Q7tsu45Wi985GEShwuwVxxXJvoWccLxNp8WBhV0ngAWMBkiJM3NW6QaBXskbyBtUr08Oz
- y3y/Ppa5zcbKf7QBkzwjTXZitBuPNaFfixVdm4Ag0N+LVOgmqKMw4+xQdq2XT3cmVHdRIVakN
- rRNw5jseuaqQMsXfluKb6NfPEUYOUxUsrkSOm14QZzZOjtwNA2Fctuy3uo0hhH5AmYaqZft3D
- qDr5ZvNgUZD+Ft4MuFM8EThQQwtVuOPtgDQ8cq4qq5mXK/BBTRZ714oM3Z/PYQwIg934+g3iN
- pBR9JxMOcGXMEPNBAyvvCUcd+p54AQYWipk8QHRAomvE8EyNRCuAJkcgarTc8UcJeTVax9XvX
- AleQrCQUYcn5Cl9VC1DVgcC+lUltIryjQzejWhW7MXLZsPjrf1eAcahYY4YDOE56eorsIKnwn
- WiNqg0KSeg3KnUHtyyr1YyAjsVP700l4ieg3O0DZr/mWvT9njc9BfO8LEeZ0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rgT5Fg5XBEI=:RMv0cNSdcXuRwZqH5SEvYA
+ eGPOEahPZuXhvOTlu89CskJIl7RQcInrho1pYloQpzORWuScsGcKgqQq01U15Kb5/gF8Ztn8w
+ QVI7k1IeGH0ifQnIKDjeLIrjAokB7zBiu1hpKqmZvro/rPN491k9WJZJA69Xxc2cJ9RMxGZjV
+ HjYnIm/QYQl+VzawNgVi1ibnyZy6xY5Z/AY6Vlkn4P0E/wfgBsqZblxFyRDIxNnilEVg4l4s7
+ 4m7HfIjVn1DlAkhTTsOWwA9tE7SjCu6A5uJ9rcTO79Ty12Ka+5yV4UdwRsFRB96s/IXARmeWC
+ P34pWmBdtFicQ9GJ0GW0SJFm7Qxqb4hS6CZt2VBQNQ+l8HJ4a49en5WoHrCfANRVb7ORtjeWd
+ TdJzxLvsouPRKyLV2Ap6rvUKulI4i9uvSWBjylw09CGPQ9IIiXp4M31U8h8Hqeoff+q6c/Q5W
+ pMl1CAe5gWEhF4aAQIKdGlwGtDkLyPFib63zWF+wMQqHmNHgUm9iZ0sEvhVv03zlRkbGRtw6B
+ WQObD7iZu/AfCXkg+HU2DPByRrpB3ZRa8exJWnD4HoXTKaDcy9DtkfmL0RvJMK1tlwW1Jbzgq
+ p1oYlRP6zx4UCQYjFp26rcnVRRzOxOR0vVD19BDHhqSMhCdNQUuNbhSvctLoureudMhB1RY3K
+ hrwUpSuXPYc68h+lXe7nhw99tJqo4e4mCg2kCODfXDTGqpEPzl2GENWsmY47xBs6aASfweusK
+ fcp1qL07grpDgVvg8EbTxm7TGsgHKc192KH9IcI6SFpUFHys8mo6kU1KhX5w/oC7XBPDOA6Ok
+ EO9Axsl9Iui0/1vYTz1r+sd6lQCrQ/0XxCS5UEymx3EvJSQoHkT/YiG+2G8NwO4UzEJZ7Vwmh
+ MsF7KSB0dwHfu6j17gs+6015Kf/aL0Yy7ntJdMlmnPG4F7wDne0wYVXSumjrAj302fbTHJDts
+ uJ10LB9Oox1vOVy0qetbVbhgenYL3eGn2oC45YC6TJdXHRgwPqRRq9MeZ4VQPReNXEQnz0mGu
+ x7u7zVEtKhpYhm99dJpsECnM7a7U1ti28QCT6BTfTCxfLLedH72mX82bpRNW15+0sGxZcpCHB
+ XFm6gfDqWOevl9lEPmDtuwQ5hMcX/FM1ctJwQmjKbslk9SoR49Au7eIl8Bxb88qZPCgtcagsz
+ AjZuf7uyzafSYEHC0q1d2ubt06c4WBl/ZsYJobZbushtFrx0ou6DoPnxpMPn2559mNTSqQ1FM
+ X/8X6WXza3CtKY1Uxbjo0RY3SOf+7dbQkHPBp2TOo46zYlyBYJcECZL8j7JM=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wtO20IL6u9u3HvLXRTGuuqhQjfHZoJIjI
-Content-Type: multipart/mixed; boundary="41owY9XmY8lOTjEGJq4Iow8zikXnrT8jz"
+--FHD4lPOR4XcNZVpLgTQROsIRpjnDqy8CT
+Content-Type: multipart/mixed; boundary="8IBsot8HoGrdwe1ha2GJ7JprM0zUhU1Us"
 
---41owY9XmY8lOTjEGJq4Iow8zikXnrT8jz
+--8IBsot8HoGrdwe1ha2GJ7JprM0zUhU1Us
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/1/17 =E4=B8=8A=E5=8D=8812:14, Josef Bacik wrote:
-> On 1/16/20 1:04 AM, Qu Wenruo wrote:
-[...]
+On 2020/1/17 =E4=B8=8A=E5=8D=888:54, Qu Wenruo wrote:
 >=20
-> Instead of creating a weird error handling case why not just set the
-> per_profile_avail to 0 on error?=C2=A0 This will simply disable overcom=
+>=20
+> On 2020/1/16 =E4=B8=8B=E5=8D=8810:29, David Sterba wrote:
+>> On Wed, Jan 15, 2020 at 11:41:28AM +0800, Qu Wenruo wrote:
+>>> [BUG]
+>>> When there are a lot of metadata space reserved, e.g. after balancing=
+ a
+>>> data block with many extents, vanilla df would report 0 available spa=
+ce.
+>>>
+>>> [CAUSE]
+>>> btrfs_statfs() would report 0 available space if its metadata space i=
+s
+>>> exhausted.
+>>> And the calculation is based on currently reserved space vs on-disk
+>>> available space, with a small headroom as buffer.
+>>> When there is not enough headroom, btrfs_statfs() will report 0
+>>> available space.
+>>>
+>>> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
+>>> reservations if we have pending tickets"), we allow btrfs to over com=
 mit
-> and we'll flush more.=C2=A0 This way we avoid making a weird situation
-> weirder, and we don't have to worry about returning an error from
-> calc_one_profile_avail().=C2=A0 Simply say "hey we got enomem, metadata=
+>>> metadata space, as long as we have enough space to allocate new metad=
+ata
+>>> chunks.
+>>>
+>>> This makes old calculation unreliable and report false 0 available sp=
+ace.
+>>>
+>>> [FIX]
+>>> Don't do such naive check anymore for btrfs_statfs().
+>>> Also remove the comment about "0 available space when metadata is
+>>> exhausted".
+>>
+>> This is intentional and was added to prevent a situation where 'df'
+>> reports available space but exhausted metadata don't allow to create n=
+ew
+>> inode.
+>=20
+> But this behavior itself is not accurate.
+>=20
+> We have global reservation, which is normally always larger than the
+> immediate number 4M.
+>=20
+> So that check will never really be triggered.
+>=20
+> Thus invalidating most of your argument.
+>=20
+> Thanks,
+> Qu
+>=20
+>>
+>> If it gets removed you are trading one bug for another. With the chang=
+ed
+>> logic in the referenced commit, the metadata exhaustion is more likely=
 
-> overcommit is going off" with a btrfs_err_ratelimited() and carry on.=C2=
-=A0
-> Maybe the next one will succeed and we'll get overcommit turned back
-> on.=C2=A0 Thanks,
+>> but it's also temporary.
 
-Then the next user statfs() get screwed up until next successful update.
+Furthermore, the point of the patch is, current check doesn't play well
+with metadata over-commit.
+
+If it's before v5.4, I won't touch the check considering it will never
+hit anyway.
+
+But now for v5.4, either:
+- We over-commit metadata
+  Meaning we have unallocated space, nothing to worry
+
+- No more space for over-commit
+  But in that case, we still have global rsv to update essential trees.
+  Please note that, btrfs should never fall into a status where no files
+  can be deleted.
+
+Consider all these, we're no longer able to really hit that case.
+
+So that's why I'm purposing deleting that. I see no reason why that
+magic number 4M would still work nowadays.
 
 Thanks,
 Qu
 
+>>
+>> The overcommit and overestimated reservations make it hard if not
+>> impossible to do any accurate calculation in statfs/df. From the
+>> usability side, there are 2 options:
+>>
+>> a) return 0 free, while it's still possible to eg. create files
+>> b) return >0 free, but no new file can be created
+>>
+>> The user report I got was for b) so that's what the guesswork fixes an=
+d
+>> does a). The idea behind that is that there's really low space, but wi=
+th
+>> the overreservation caused by balance it's not.
+>>
+>> I don't see a good way out of that which could be solved inside statfs=
+,
+>> it only interprets the numbers in the best way under circumstances. We=
+
+>> don't have exact reservation, don't have a delta of the
+>> reserved-requested (to check how much the reservation is off).
+>>
 >=20
-> Josef
 
 
---41owY9XmY8lOTjEGJq4Iow8zikXnrT8jz--
+--8IBsot8HoGrdwe1ha2GJ7JprM0zUhU1Us--
 
---wtO20IL6u9u3HvLXRTGuuqhQjfHZoJIjI
+--FHD4lPOR4XcNZVpLgTQROsIRpjnDqy8CT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4hBhAACgkQwj2R86El
-/qivMAf8CHJpKkHb9ARxm8AUlOMYlw7iFxMl/l8/RREctXV1u/DZs/FM15F4NcIS
-OLJW4B+lPgNGgGB6pBMMFvSNKqe3CnnJs/fr6+VdtlSnX1fC3EMY2qLRaFs1ai2/
-nDaKEw3nX0OnQ1biCHdAlf5uOVWoKKjaZ33qjgSw+OtFfSuVUK0P45vcnQJH2ZQc
-o3jBPkXbxBOCNCUvCOnUej/BEj5fuUl+o+GHuI2oFHL0fqvDt1Mz6DvLziM78T3p
-gO7aGHRAsw3c22p7jY1chilOJDUL2UiCYkkb/4lH6FT0QwpcT2QoriyNnJnMFp3/
-gLGTILAVVVicNKINfHAOO+NwRGpSKw==
-=nmVe
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4hDsEACgkQwj2R86El
+/qjfsgf/VxCBtXMm0OMJFimV5wZL60TWunrOaD2hN0qnBPwCkGTjcKvF6V246Qhi
+wEuERpcly49N9Pb/eIDpBcjx4OBZaiOuL9WE3qIN0Ngh85ajdVeK+CudKZR7+QYs
+f+Oy0e3sG9x1ctxbadKwylzRbRj0Inm/t9TYmH0rYggS2bim8QfS8piDCwbrdHiR
+b+R6rxwbDVKCO/JkJBG0UmnrV0HQxEwCcZOBaLNogAVLQRh65xnJsfNULyB7AXWC
+yDrFalEsACTCRaQ7DZkmNxy6rjJp7O6xfUV+cXoxiKkXU/wkwP/KKWMvpYNoh198
+JubnxpIB3Or+EovVlB7VLqV47H1+Tw==
+=j5wS
 -----END PGP SIGNATURE-----
 
---wtO20IL6u9u3HvLXRTGuuqhQjfHZoJIjI--
+--FHD4lPOR4XcNZVpLgTQROsIRpjnDqy8CT--
