@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE56140B73
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BCF140B74
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgAQNsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 08:48:36 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38071 "EHLO
+        id S1729058AbgAQNsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 08:48:38 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:41398 "EHLO
         mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729039AbgAQNsg (ORCPT
+        with ESMTP id S1729052AbgAQNsh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:48:36 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so22683310qki.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:35 -0800 (PST)
+        Fri, 17 Jan 2020 08:48:37 -0500
+Received: by mail-qk1-f193.google.com with SMTP id x129so22667624qke.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=PP4dVMcgyT8OTB+vOohtLtUZzvbmwfUKl46nd4xdSyk=;
-        b=u2jK+eDz3VyfsBFMYcDxNH+LpuHoMUCSU+3vQQmFrkuYYo+MVCFhTPV1WsxQcDTcS0
-         ybZ7UuDTB+TSd2EvL0mDfHJMH/KCB6/AicoDAovbjL8QbMFdMhYcIt4JB7fzYwOESofX
-         iu//K+FUHg8eIFvm8aCns4aT6PxNJDZOYRl0xGOnnp20sdoFq3z9wCb6MVcxXrxV4YtK
-         AZ9gQ++Rlu8RjpYqTo4oKcZoLeyMV/9DlTZUnfqzwyexzPW8ovh5ZrRmLDGqRuozDlbW
-         sfYJAIQWIn5ojAkNAlwXCSVNHW+4PTTUZav6vZjnRznzvKnK9hhFBGZ/69uuR8qABJiD
-         Bp3w==
+        bh=7kCud9wI21SwngVu1c4B7RnYUDpjvLC2M9X0p3fTqzA=;
+        b=0SsbBDQ6K7LfL08dv1Y1A7t42mfVlg1dMH0m+lqfaA8So4HEsIaQxoJXx/p/0FrDyT
+         8GHjd/tBg24FzmX2sUXH0uZY4Yi8RwDDtugsl6fUUyMztqi6S0+n8XeY9F4S6WgmY1C8
+         Zbqj8nr1hBSRMyaYsr05rcqG8OsPPG0FUR+5jPWwWIw27Zba/nlnOpd0pFV6mL6hwJ/y
+         N76NCxxN9S6qorz6ni5fpOEarLPgjAl0kENXBDA895csNbvFYKDhbNNic5FXl07Y2MI1
+         8HMKOJoiBOAAHFZQng8s9vibQaJq62/E5ztE/JH+kLbXYcbDuA0IdCpSOkTQAxXonJMc
+         T+qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PP4dVMcgyT8OTB+vOohtLtUZzvbmwfUKl46nd4xdSyk=;
-        b=JDuYwpW+O8etAj94XhmkIrtTXEC4reOuuIHOYKzgG8+wmrHbnVJxK4mSwTOJe8Sgul
-         bZNW/lzHz+v2HPso8wYkjlsCOgSTnm8Q8uWwOjDYEKx3ab+HpFkgE/vleb2hASfHLVW/
-         ZvUg2Wp7ErpH3kYjVNDMIgirfZKN7n5H4e5p0CQ3UV+NsHdp4e+v629qa+aJA/WXrEgt
-         h26hge5XwEAIU4R4PA3PeRHnqY4/Y80BdpXf8U46k4PM0S9MTd1YUcpD//Vdmz2f3jI2
-         2Y3Yqm+sl7UcIuE56xU5TqI8h/7q3n4x5DPxwtJIx/uSnDdlj63YGVvmAHVqx+oJQx+0
-         qnVg==
-X-Gm-Message-State: APjAAAU/x5ul6VvnuNOYkBOSAM1yOCv2wwo8mSFSQkzKilmea0HkbeDA
-        RpklV7EwqWl2oPC13qPPtzf1tjS/MbV2YQ==
-X-Google-Smtp-Source: APXvYqzDVFkjghhn3yyGAOATE7nD941GpqTq+msILLPpoOgMRVgii+vjFpRocPOIvZwVYCfVFSZdQA==
-X-Received: by 2002:a05:620a:13e7:: with SMTP id h7mr39093643qkl.235.1579268914688;
-        Fri, 17 Jan 2020 05:48:34 -0800 (PST)
+        bh=7kCud9wI21SwngVu1c4B7RnYUDpjvLC2M9X0p3fTqzA=;
+        b=mvTMIutdwun3ljTsuYbdFZVmBVF0LXH/ekoY7+b0sra5lH04/VPkvoUviyJqgHIeFR
+         jOCcZw9xLyhHIkEm/9UpRm4zPI4AJHqJJ1eNsDkpRXnaG9bOyjR1PRqrzYdwyaCa5Src
+         JXYQSxCy2mCCQGL6U1/zudsYYInCyVv+HjLWL4W0cuK1dN7hwYf1jgbp7zCwiBluVG5n
+         XNo/YtjDOeQSHhK1/fsesxqRrpDTsFscN/TDEKT2g9V+pQmmYfNXWKvWfPPRPMzMBPY6
+         cCrjURPpA6nwaKFUADLya5UU3pQ8eltGgMBWZq6lkCvAqRjtqUFqsRLOcSoIA84o6HM+
+         /xCA==
+X-Gm-Message-State: APjAAAVvU9FTqQ3ksNMcuQ2qt1ALFocs+e5P7GR7ZtzVR+e63g3lFVTG
+        HPAyPwu2xGQ/bCBprXOuA5UBMs+ty5qX6Q==
+X-Google-Smtp-Source: APXvYqzJ3Oqk4cTQFxPk9oGoBeLf0tPtmF9/5yGRWoXDsYZZ/FI0s4Sd7ojeV/rnbuuqeiKCKk8J1w==
+X-Received: by 2002:a05:620a:13da:: with SMTP id g26mr39179559qkl.410.1579268916263;
+        Fri, 17 Jan 2020 05:48:36 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id s26sm12055091qkj.24.2020.01.17.05.48.33
+        by smtp.gmail.com with ESMTPSA id n20sm11472897qkk.54.2020.01.17.05.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:48:34 -0800 (PST)
+        Fri, 17 Jan 2020 05:48:35 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 20/43] btrfs: hold ref on root in btrfs_ioctl_default_subvol
-Date:   Fri, 17 Jan 2020 08:47:35 -0500
-Message-Id: <20200117134758.41494-21-josef@toxicpanda.com>
+Subject: [PATCH 21/43] btrfs: hold a ref on the root in build_backref_tree
+Date:   Fri, 17 Jan 2020 08:47:36 -0500
+Message-Id: <20200117134758.41494-22-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117134758.41494-1-josef@toxicpanda.com>
 References: <20200117134758.41494-1-josef@toxicpanda.com>
@@ -60,85 +60,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We look up an arbitrary fs root here, we need to hold a ref on the root
-for the duration.
+This is trickier than the previous conversions.  We have backref_node's
+that need to hold onto their root for their lifetime.  Do the read of
+the root and grab the ref.  If at any point we don't use the root we
+discard it, however if we use it in our backref node we don't free it
+until we free the backref node.  Any time we switch the root's for the
+backref node we need to drop our ref on the old root and grab the ref on
+the new root, and if we dupe a node we need to get a ref on the root
+there as well.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ fs/btrfs/relocation.c | 37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 7d30c7821490..69c39b3d15a5 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3987,7 +3987,7 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
- 	struct btrfs_root *new_root;
- 	struct btrfs_dir_item *di;
- 	struct btrfs_trans_handle *trans;
--	struct btrfs_path *path;
-+	struct btrfs_path *path = NULL;
- 	struct btrfs_key location;
- 	struct btrfs_disk_key disk_key;
- 	u64 objectid = 0;
-@@ -4018,44 +4018,50 @@ static long btrfs_ioctl_default_subvol(struct file *file, void __user *argp)
- 		ret = PTR_ERR(new_root);
- 		goto out;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index aa3aa8e0c0ea..05a301204fd9 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -256,6 +256,8 @@ static void free_backref_node(struct backref_cache *cache,
+ {
+ 	if (node) {
+ 		cache->nr_nodes--;
++		if (node->root)
++			btrfs_put_fs_root(node->root);
+ 		kfree(node);
  	}
--	if (!is_fstree(new_root->root_key.objectid)) {
-+	if (!btrfs_grab_fs_root(root)) {
- 		ret = -ENOENT;
- 		goto out;
- 	}
-+	if (!is_fstree(new_root->root_key.objectid)) {
-+		ret = -ENOENT;
-+		goto out_free;
-+	}
+ }
+@@ -891,6 +893,10 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			err = PTR_ERR(root);
+ 			goto out;
+ 		}
++		if (!btrfs_grab_fs_root(root)) {
++			err = -ENOENT;
++			goto out;
++		}
  
- 	path = btrfs_alloc_path();
- 	if (!path) {
- 		ret = -ENOMEM;
--		goto out;
-+		goto out_free;
- 	}
- 	path->leave_spinning = 1;
+ 		if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
+ 			cur->cowonly = 1;
+@@ -899,10 +905,12 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			/* tree root */
+ 			ASSERT(btrfs_root_bytenr(&root->root_item) ==
+ 			       cur->bytenr);
+-			if (should_ignore_root(root))
++			if (should_ignore_root(root)) {
++				btrfs_put_fs_root(root);
+ 				list_add(&cur->list, &useless);
+-			else
++			} else {
+ 				cur->root = root;
++			}
+ 			break;
+ 		}
  
- 	trans = btrfs_start_transaction(root, 1);
- 	if (IS_ERR(trans)) {
--		btrfs_free_path(path);
- 		ret = PTR_ERR(trans);
--		goto out;
-+		goto out_free;
- 	}
+@@ -915,6 +923,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		ret = btrfs_search_slot(NULL, root, node_key, path2, 0, 0);
+ 		path2->lowest_level = 0;
+ 		if (ret < 0) {
++			btrfs_put_fs_root(root);
+ 			err = ret;
+ 			goto out;
+ 		}
+@@ -930,6 +939,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 				  root->root_key.objectid,
+ 				  node_key->objectid, node_key->type,
+ 				  node_key->offset);
++			btrfs_put_fs_root(root);
+ 			err = -ENOENT;
+ 			goto out;
+ 		}
+@@ -941,15 +951,18 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			if (!path2->nodes[level]) {
+ 				ASSERT(btrfs_root_bytenr(&root->root_item) ==
+ 				       lower->bytenr);
+-				if (should_ignore_root(root))
++				if (should_ignore_root(root)) {
++					btrfs_put_fs_root(root);
+ 					list_add(&lower->list, &useless);
+-				else
++				} else {
+ 					lower->root = root;
++				}
+ 				break;
+ 			}
  
- 	dir_id = btrfs_super_root_dir(fs_info->super_copy);
- 	di = btrfs_lookup_dir_item(trans, fs_info->tree_root, path,
- 				   dir_id, "default", 7, 1);
- 	if (IS_ERR_OR_NULL(di)) {
--		btrfs_free_path(path);
-+		btrfs_release_path(path);
- 		btrfs_end_transaction(trans);
- 		btrfs_err(fs_info,
- 			  "Umm, you don't have the default diritem, this isn't going to work");
- 		ret = -ENOENT;
--		goto out;
-+		goto out_free;
- 	}
+ 			edge = alloc_backref_edge(cache);
+ 			if (!edge) {
++				btrfs_put_fs_root(root);
+ 				err = -ENOMEM;
+ 				goto out;
+ 			}
+@@ -959,6 +972,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			if (!rb_node) {
+ 				upper = alloc_backref_node(cache);
+ 				if (!upper) {
++					btrfs_put_fs_root(root);
+ 					free_backref_edge(cache, edge);
+ 					err = -ENOMEM;
+ 					goto out;
+@@ -1006,8 +1020,10 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			edge->node[LOWER] = lower;
+ 			edge->node[UPPER] = upper;
  
- 	btrfs_cpu_key_to_disk(&disk_key, &new_root->root_key);
- 	btrfs_set_dir_item_key(path->nodes[0], di, &disk_key);
- 	btrfs_mark_buffer_dirty(path->nodes[0]);
--	btrfs_free_path(path);
-+	btrfs_release_path(path);
+-			if (rb_node)
++			if (rb_node) {
++				btrfs_put_fs_root(root);
+ 				break;
++			}
+ 			lower = upper;
+ 			upper = NULL;
+ 		}
+@@ -1244,7 +1260,8 @@ static int clone_backref_node(struct btrfs_trans_handle *trans,
+ 	new_node->level = node->level;
+ 	new_node->lowest = node->lowest;
+ 	new_node->checked = 1;
+-	new_node->root = dest;
++	new_node->root = btrfs_grab_fs_root(dest);
++	ASSERT(new_node->root);
  
- 	btrfs_set_fs_incompat(fs_info, DEFAULT_SUBVOL);
- 	btrfs_end_transaction(trans);
-+out_free:
-+	btrfs_put_fs_root(new_root);
-+	btrfs_free_path(path);
- out:
- 	mnt_drop_write_file(file);
- 	return ret;
+ 	if (!node->lowest) {
+ 		list_for_each_entry(edge, &node->lower, list[UPPER]) {
+@@ -2622,7 +2639,9 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
+ 			BUG_ON(next->new_bytenr);
+ 			BUG_ON(!list_empty(&next->list));
+ 			next->new_bytenr = root->node->start;
+-			next->root = root;
++			btrfs_put_fs_root(next->root);
++			next->root = btrfs_grab_fs_root(root);
++			ASSERT(next->root);
+ 			list_add_tail(&next->list,
+ 				      &rc->backref_cache.changed);
+ 			__mark_block_processed(rc, next);
+@@ -3094,7 +3113,9 @@ static int relocate_tree_block(struct btrfs_trans_handle *trans,
+ 			btrfs_record_root_in_trans(trans, root);
+ 			root = root->reloc_root;
+ 			node->new_bytenr = root->node->start;
+-			node->root = root;
++			btrfs_put_fs_root(node->root);
++			node->root = btrfs_grab_fs_root(root);
++			ASSERT(node->root);
+ 			list_add_tail(&node->list, &rc->backref_cache.changed);
+ 		} else {
+ 			path->lowest_level = node->level;
 -- 
 2.24.1
 
