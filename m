@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEF1140B6A
+	by mail.lfdr.de (Postfix) with ESMTP id D1FEC140B6B
 	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 14:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgAQNsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 08:48:21 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42443 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728863AbgAQNsU (ORCPT
+        id S1728982AbgAQNsX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 08:48:23 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:41372 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728863AbgAQNsW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:48:20 -0500
-Received: by mail-qt1-f195.google.com with SMTP id j5so21765952qtq.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:20 -0800 (PST)
+        Fri, 17 Jan 2020 08:48:22 -0500
+Received: by mail-qk1-f195.google.com with SMTP id x129so22666849qke.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 05:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=IID+TNjtvNq2y6b27Gs67SLa1Kba2OW0SQsgqv4ynLA=;
-        b=R/ppUSpyjsg3UB6LqFbUkfc+IUvKE3LxxSlh6vRswadKcVdqaEjsvOEjNN9daRTqev
-         db3+OAhBj7PNI9bRQsLpxVX+69b9lEPwnE25Vc/VQgdun33FagwkAMV38ttqicNSRGhM
-         x+EWaHn4iv9lQ70ynScbbW9F467OHha83Nq8FfxYvVnOPhBGnDHf0XeE/yABSkOtLcjU
-         j1FP5aHwLW04lroQO4cjS+7CTiyzxxzgDX5L6OLylQmsb4pkgKHh1IUt4p4rGmbQaRQx
-         dwIBVOLlRRQ7ESLXb7hvWuSGZtBDaLnCCUB3jvnuAfBWHhfKx35zIs+7jowItvy/AnfZ
-         SMDQ==
+        bh=MLBOgsB9gJ9L9KSeDm3NlcZBDe8/qJV/rRnXG9wy7vM=;
+        b=s+nueVvuN88c5G5KmM/8/p/jbUaGH7gDhfSQbzmH79nol+lTGlNFzUEobE/ELJcNYO
+         HI4CckXmQ+CMkGNy74jQIGvv6euIaXZmgrmSFIdKK8TZwbJjyogQQfXYxo6xE3AGfW2W
+         RBpdlhtmWww+gUKUPO2IbOIag7suxJEGVNG2Q4C8bsLBSsnZpgv66wJmOk3kulUfyPYi
+         DEPylzLnc/Mkhf63RatQUTWrmLdZLvKd11hLNZboNPI/yXCYdXzjowuDYz5bq/g0PsXt
+         cEEeINzIBWBJoQnRuL0Rw6HvU6cg95P93JpsCO/FNFtmIbvy3f5yCoWbNkcGPOdpUOll
+         zo5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IID+TNjtvNq2y6b27Gs67SLa1Kba2OW0SQsgqv4ynLA=;
-        b=SJvVBejYHLEHVmgR7UQmKsepURHX2E95Ts0a8xN6LZYcjlxxeHpzlOYRANe8ePY12X
-         dTFOlUX8WJq1xZuZ9Zky9MWVNJ5cu2NbY7CvrhCEYCmJz2/goN73pW6An0ELNgQUUQ+i
-         hVeRfcIQg/mjibRuHS81uqobI6qjt4TCD0mMdY6yH8YaHiNTyNedU78N0/NMoOTkzZdo
-         fuT2Cz2Gmd4MZS4RYfmTum86TFDjBQCX6Fzba44sbk49Wgkpq1GZlqiBSr+5m+/eD5xP
-         hMZQQiEBE/2b4eFM+gXeimmhaf26oIigUnYDnmvJStDOsu7m+jbVP6WyDxzU50xjgou/
-         Jh9g==
-X-Gm-Message-State: APjAAAXjHWC9Tz4dZ0H3TINBD44wR8NpT0F4jNltirCC/D6nEHa8bILs
-        AjN2r76Spje6z+KraY3uAkoKravkKrWnNg==
-X-Google-Smtp-Source: APXvYqz1sm+2Hi1di5OYh1y+vH6nYXIKmlUHaK1H6TI55i0bE4iVN4UYcW66kceyaoMWXkhapdfZwg==
-X-Received: by 2002:ac8:544f:: with SMTP id d15mr7672560qtq.53.1579268899642;
-        Fri, 17 Jan 2020 05:48:19 -0800 (PST)
+        bh=MLBOgsB9gJ9L9KSeDm3NlcZBDe8/qJV/rRnXG9wy7vM=;
+        b=RTvL+DIvLNjQzp8vh5fX+CRlsp0mgUqYlB7Xj/+iZwVX6hM6vgEfK9SlmR3Kdlrlb3
+         QdETBRSrUH2CvPoo9Xt+oDH6Hxcl1DCPaADlhR0bVLxbYzMkfwpnMeFa+KL3TldAeeCe
+         GHlF2VK1YvWoOfsCCfh3gGblbOKtqOXZDG9B1RZQCYsE9WkNskqFeMYht+ZYCstG3D5d
+         hpUug4LqmWv1yZuacbTYIprKk1sYpmsZrkyZTWiLCD7eH1xBpRjN5UKhE+K3BLVf/x9/
+         pw+heRVhlSA2oMvYB3w9hHrW+XHh06EDoGA5JJ34eOypAUx1rLd2QgWwjg0AE72LfMnH
+         mQZQ==
+X-Gm-Message-State: APjAAAUVeD1ouC38NZCQXY+i3S736wQND97N7wE7OCJSVCUL798l/A6X
+        pwMi9xeRj6xZf2y/ahqGzrWacHlp7WCTbA==
+X-Google-Smtp-Source: APXvYqxmo+JYImt6ZhnNaOToraDUNLA+wu7nReLZQ9o2SrI4jAfdNJpXGC6UAGR9OmoNtirV5fq/6A==
+X-Received: by 2002:a37:8182:: with SMTP id c124mr34001518qkd.165.1579268901376;
+        Fri, 17 Jan 2020 05:48:21 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id m8sm13318001qtk.60.2020.01.17.05.48.18
+        by smtp.gmail.com with ESMTPSA id s26sm13265305qtc.43.2020.01.17.05.48.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:48:18 -0800 (PST)
+        Fri, 17 Jan 2020 05:48:20 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 11/43] btrfs: hold a ref on the root in resolve_indirect_ref
-Date:   Fri, 17 Jan 2020 08:47:26 -0500
-Message-Id: <20200117134758.41494-12-josef@toxicpanda.com>
+Subject: [PATCH 12/43] btrfs: hold a root ref in btrfs_get_dentry
+Date:   Fri, 17 Jan 2020 08:47:27 -0500
+Message-Id: <20200117134758.41494-13-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200117134758.41494-1-josef@toxicpanda.com>
 References: <20200117134758.41494-1-josef@toxicpanda.com>
@@ -60,42 +60,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We're looking up a random root, we need to hold a ref on it while we're
-using it.
+Looking up the inode we need to search the root, make sure we hold a
+reference on that root while we're doing the lookup.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/btrfs/export.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e5d85311d5d5..193747b6e1f9 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -524,7 +524,13 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 	if (IS_ERR(root)) {
- 		srcu_read_unlock(&fs_info->subvol_srcu, index);
- 		ret = PTR_ERR(root);
--		goto out;
-+		goto out_free;
-+	}
-+
-+	if (!btrfs_grab_fs_root(root)) {
-+		srcu_read_unlock(&fs_info->subvol_srcu, index);
-+		ret = -ENOENT;
-+		goto out_free;
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index 08cd8c4a02a5..eba6c6d27bad 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -82,12 +82,17 @@ static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
+ 		err = PTR_ERR(root);
+ 		goto fail;
  	}
++	if (!btrfs_grab_fs_root(root)) {
++		err = -ENOENT;
++		goto fail;
++	}
  
- 	if (btrfs_is_testing(fs_info)) {
-@@ -577,6 +583,8 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 	ret = add_all_parents(root, path, parents, ref, level, time_seq,
- 			      extent_item_pos, total_refs, ignore_offset);
- out:
+ 	key.objectid = objectid;
+ 	key.type = BTRFS_INODE_ITEM_KEY;
+ 	key.offset = 0;
+ 
+ 	inode = btrfs_iget(sb, &key, root);
 +	btrfs_put_fs_root(root);
-+out_free:
- 	path->lowest_level = 0;
- 	btrfs_release_path(path);
- 	return ret;
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		goto fail;
 -- 
 2.24.1
 
