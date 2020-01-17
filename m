@@ -2,55 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7D6140BE9
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9C5140BEA
 	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 15:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727740AbgAQOC2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 09:02:28 -0500
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:36542 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgAQOC2 (ORCPT
+        id S1728709AbgAQOCa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 09:02:30 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34350 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQOC3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:02:28 -0500
-Received: by mail-qk1-f176.google.com with SMTP id a203so22758016qkc.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:02:28 -0800 (PST)
+        Fri, 17 Jan 2020 09:02:29 -0500
+Received: by mail-qk1-f194.google.com with SMTP id j9so22765702qkk.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jan 2020 06:02:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BWqDIISilEOyIIhUAEMSJUpOl3VqUEtk0rxE/2iAdiU=;
-        b=gnpOGaE0PjXWzzVWY5+vvADYoiRU3sBhXG8aPqCRmd5tl78HwHjcDkI2+KA4qz0cJe
-         1gxNrpEiIND6BevUK3C4OxWDgMWPCmUjmWpNWnFv4MWe6cpvEsmzP+q0Qfk4PQzWh/X6
-         sHh8XN6q4cCF2vwBIOMUaAffG5s4xQ7ivYe/HBKXrmyjCUpcmq6kSJxuthqjYgPhsMjh
-         akRLkfnZ1FrbU9/AI5IL6xbysfomZxFGX0fp4/wUMM8N03NOjkpYuXwZ5hB7s7M/G/gE
-         CwhqjHWDbR1mpuSRB8uyNTRcd2mBIhRO+lvlyeV4gu1Jh1h2xKRGGwlCdLBclp8lFNWM
-         OISA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pYAX2OFOHP1myQkDlAK08uSEtgvGOznJlLOPr///aUE=;
+        b=h3oQXTUTzg+Ahlc46aRMW5nbZXReqUJsAk0+3tc8gKZFCTdaNU4iWDpdrKLZS8i0xm
+         ltXRchZcxri+RXIH2VwZtP4FBSzUcz8FTmXnR88X+LomxklEo672a3ezK9d/ROyEKNr4
+         o1ow1XcsgMJKK/LAzKBl8Q4XhUs/itsJW5tHWpfzgyNAk+L69ccav1GjFkI/gdkuuaNh
+         h1+XfCNRHZ2L2PwlG/mXzIEkeoMFSr3HL07+OwVuEgrtsqf+0gR/4oYgLkvK+uFfPzDX
+         vTzhDjN/FHDAR9Q8Vnh2ux0GHs2TcK3OvJLIvJviGYTjEJIwnIg91GKh4u9B9hBz8bHY
+         V5QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BWqDIISilEOyIIhUAEMSJUpOl3VqUEtk0rxE/2iAdiU=;
-        b=EOIatWkrVKIUgWIY9DHo4ms/AVqn/+JXe39E0EkkLDTcY+wCX5uKMEE4Hg+YP+1FAZ
-         Mj0rwJAsEjL8ERMnjw8s+LpRV8BTjyC+pIXFZFoPUgGRqieIXg8Ze6hcgx1TbcGHRNM6
-         PJ+QTkyKEiX3aJq0od9u86uq/TPcEaKUUQpxL4hN36VykVtneCdj/5W1Om9rQ5EqCAIV
-         rxpDYnGveqhWt3jH7d6GmqzM5iAxo3XvQ+BNIq2AkKW+Yp2UgUbj0e6kitPKvOtGNR2L
-         gwxOC+5N8AmurD4IPUh1VurPTxVwOwBGjvh3yQhcedcMkDYErlN1ROhcXJA9/b6SvNTO
-         r/uQ==
-X-Gm-Message-State: APjAAAWZdwA0E/2FasG8QSlG0M008Tru+r6+el8RjUo9boSvU6OH/mAX
-        J2Gp6/dU15eJaaKpkuUKAfOF/qvt8GFU3g==
-X-Google-Smtp-Source: APXvYqxAaV2PjuOgH+ttzcY+/C1bUmBYZ/tO2wQXIU4JAfOFQUpnyOAvTaKrqtgr/zXEW8Z6hbFQXQ==
-X-Received: by 2002:a05:620a:224:: with SMTP id u4mr557093qkm.239.1579269747239;
-        Fri, 17 Jan 2020 06:02:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pYAX2OFOHP1myQkDlAK08uSEtgvGOznJlLOPr///aUE=;
+        b=H+9IaILUUhvWJdn3yqNREMSCmdr9dCwRtUxXay5E+nkZqI5SbY0MJddfACQtmMCpP5
+         Rv0QHpG8lmJWRkkmNj+AytErB8t2Mn+Tr1RUg2/QPBdaTPThQQ7awkz0bLaisaTfxKnc
+         74GWxv74RRh/nfxnhapW2+WlL/ZMGcBGCCMP6qIV2D1Bs6uFoB/KWFF9p/WWBnOIp/dY
+         hvsHnHQnhIFYlPqjBhDeyefrMguGbdotacRzBYgkBeMwIMMhJvH3AtOMpR3a5AZvEJ32
+         o4XoLOlihgYhFrd6RUFYKv4QuGbSH/JETn3EFncenkUP/BSzRReI0oxf+qgw8eQ3uUTE
+         LLng==
+X-Gm-Message-State: APjAAAWfiIX+mfvFNnnGHxoLLfI6EZlKV5OGzH71dLd9wSR32RiwLrIS
+        UxQX9ktGZSdwI51YzYAC9UU0jsPxGaW67w==
+X-Google-Smtp-Source: APXvYqyEAMMlj7N3Z9/2OxTa6fnf3XAm6hJDF25xSbEkcUunVMSqdo6Dj6CbuzMxMjYXvNTsyjRj0g==
+X-Received: by 2002:a37:4b93:: with SMTP id y141mr39993510qka.205.1579269748877;
+        Fri, 17 Jan 2020 06:02:28 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id l49sm13230183qtk.7.2020.01.17.06.02.26
+        by smtp.gmail.com with ESMTPSA id o81sm11802282qke.33.2020.01.17.06.02.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 06:02:26 -0800 (PST)
+        Fri, 17 Jan 2020 06:02:28 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/6][v3] btrfs: fix hole corruption issue with !NO_HOLES
-Date:   Fri, 17 Jan 2020 09:02:18 -0500
-Message-Id: <20200117140224.42495-1-josef@toxicpanda.com>
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 1/6] btrfs: use btrfs_ordered_update_i_size in clone_finish_inode_update
+Date:   Fri, 17 Jan 2020 09:02:19 -0500
+Message-Id: <20200117140224.42495-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200117140224.42495-1-josef@toxicpanda.com>
+References: <20200117140224.42495-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,49 +61,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v2->v3:
-- Rebased onto misc-next.
-- Added a patch to stop using ->leave_spinning in truncate_inode_items.
+We were using btrfs_i_size_write(), which unconditionally jacks up
+inode->disk_i_size.  However since clone can operate on ranges we could
+have pending ordered extents for a range prior to the start of our clone
+operation and thus increase disk_i_size too far and have a hole with no
+file extent.
 
-v1->v2:
-- fixed a bug in 'btrfs: use the file extent tree infrastructure' that would
-  result in 0 length files because btrfs_truncate_inode_items() was clearing the
-  file extent map when we fsync'ed multiple times.  Validated this with a
-  modified fsx and generic/521 that reproduced the problem, those modifications
-  were sent up as well.
-- dropped the RFC
+Fix this by using the btrfs_ordered_update_i_size helper which will do
+the right thing in the face of pending ordered extents outside of our
+clone range.
 
------------------ Original Message -----------------------
-We've historically had this problem where you could flush a targeted section of
-an inode and end up with a hole between extents without a hole extent item.
-This of course makes fsck complain because this is not ok for a file system that
-doesn't have NO_HOLES set.  Because this is a well understood problem I and
-others have been ignoring fsck failures during certain xfstests (generic/475 for
-example) because they would regularly trigger this edge case.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ioctl.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-However this isn't a great behavior to have, we should really be taking all fsck
-failures seriously, and we could potentially ignore fsck legitimate fsck errors
-because we expect it to be this particular failure.
-
-In order to fix this we need to keep track of where we have valid extent items,
-and only update i_size to encompass that area.  This unfortunately means we need
-a new per-inode extent_io_tree to keep track of the valid ranges.  This is
-relatively straightforward in practice, and helpers have been added to manage
-this so that in the case of a NO_HOLES file system we just simply skip this work
-altogether.
-
-I've been hammering on this for a week now and I'm pretty sure its ok, but I'd
-really like Filipe to take a look and I still have some longer running tests
-going on the series.  All of our boxes internally are btrfs and the box I was
-testing on ended up with a weird RPM db corruption that was likely from an
-earlier, broken version of the patch.  However I cannot be 100% sure that was
-the case, so I'm giving it a few more days of testing before I'm satisfied
-there's not some weird thing that RPM does that xfstests doesn't cover.
-
-This has gone through several iterations of xfstests already, including many
-loops of generic/475 for validation to make sure it was no longer failing.  So
-far so good, but for something like this wider testing will definitely be
-necessary.  Thanks,
-
-Josef
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index ef6c5d672860..db95144e4f22 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3332,8 +3332,10 @@ static int clone_finish_inode_update(struct btrfs_trans_handle *trans,
+ 	 */
+ 	if (endoff > destoff + olen)
+ 		endoff = destoff + olen;
+-	if (endoff > inode->i_size)
+-		btrfs_i_size_write(BTRFS_I(inode), endoff);
++	if (endoff > inode->i_size) {
++		i_size_write(inode, endoff);
++		btrfs_ordered_update_i_size(inode, endoff, NULL);
++	}
+ 
+ 	ret = btrfs_update_inode(trans, root, inode);
+ 	if (ret) {
+-- 
+2.24.1
 
