@@ -2,158 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0A8141405
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jan 2020 23:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B90141559
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jan 2020 02:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgAQWWV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jan 2020 17:22:21 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41764 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726587AbgAQWWV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jan 2020 17:22:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579299739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LvUJp7hWH4b8KBv58qMnYIc4CO2d+CINLvU+6GlKxQo=;
-        b=PQGuifegfxxVohoX0LP7ElRfljmHDt+p0aAXnUhzKBrSy5FHijrNlEpT3e7zbTyLLfaOxr
-        Sw4ADIIksccGB8Ni9Oe106rv2FKDgnipio4+LOsIAKf4kR0dz6PLX1CJLx+nWxZ5y3U4iM
-        hwMsq6Jk/iV2S2ysN12pDc88xhfy5BQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-ZkFIqCMBPBmmHLtoZwDtSw-1; Fri, 17 Jan 2020 17:22:16 -0500
-X-MC-Unique: ZkFIqCMBPBmmHLtoZwDtSw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 478CB10054E3;
-        Fri, 17 Jan 2020 22:22:14 +0000 (UTC)
-Received: from treble (ovpn-123-54.rdu2.redhat.com [10.10.123.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F62B60BE1;
-        Fri, 17 Jan 2020 22:22:12 +0000 (UTC)
-Date:   Fri, 17 Jan 2020 16:22:10 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Marco Elver <elver@google.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: linux-next: Tree for Dec 6 (objtool, lots in btrfs)
-Message-ID: <20200117222210.yygssfl2koxnafb4@treble>
-References: <b9b0c81b-0ca8-dfb7-958f-cd58a449b6fb@infradead.org>
- <ba2a7a9b-933b-d4e4-8970-85b6c1291fca@infradead.org>
- <20191213235054.6k2lcnwa63r26zwi@treble>
- <c6a33c21-3e71-ac98-cc95-db008764917c@infradead.org>
- <20191214054515.ougsr5ykhl3vvy57@treble>
- <fe1e0318-9b74-7ae0-07bd-d7a6c908e79a@infradead.org>
- <20191217152511.GG3929@suse.cz>
- <20200117172629.yqowxl642hdx4vcm@treble>
- <CANpmjNP6Q5-uOVi5TvbnHKbHkubqrbzW1+QZqvoEVty6X7ZDXw@mail.gmail.com>
- <20200117212649.opf4lt4w4jgwmrt7@treble>
+        id S1730545AbgARBIn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jan 2020 20:08:43 -0500
+Received: from mout.gmx.net ([212.227.17.20]:56543 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727033AbgARBIm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jan 2020 20:08:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1579309717;
+        bh=uTEUDQF2IEP6ZXPx5RUyL5ueVn3jU55agzBp2WtTSUk=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Fi4m8f6JSFtVtyDlso1FF8dVvvd9bKAgQZsNeZMX1d6ey7aoX3Jn9BhsjWl5HrcEI
+         OlAtiR6shmsMJnhB7TJEXIb8rk9pAyv5GxNKjPe+B2b8WgXtsqUrrCGT8777p4pBlO
+         3SmUTJ89i3jg85FeXuaQmxOPwX9tIeuqUtSgBOLQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mqs0X-1jNqkv1oav-00mtuM; Sat, 18
+ Jan 2020 02:08:37 +0100
+Subject: Re: [PATCH 0/3] btrfs-progs: Do proper extent item generation repair
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200117072959.27929-1-wqu@suse.com>
+ <4205b62a-e72f-6b6e-b112-83588462675a@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <6414387b-b2ee-a2a8-6620-cc97fd19b722@gmx.com>
+Date:   Sat, 18 Jan 2020 09:08:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200117212649.opf4lt4w4jgwmrt7@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <4205b62a-e72f-6b6e-b112-83588462675a@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2cPkjgYpOnta8MwyVoE13EKAhhnNZQfmQ"
+X-Provags-ID: V03:K1:Z0zFl2U5NHA2QLOP0s0dPwgwi3uwLdvGktcr82ud3hPAap9ODEG
+ NVK1BvtkscYe7OOxwTAEHU3IP+zedsCyQT/CitCFa3ZRwREd1lmO4756iNlkcEr272gl6g1
+ KTh9Y+Xu0sOXitPXHDp95lAiYTPITcZKivP7CghaTuvD/9XBpnKM8ZL/HyzS8WBZMc88B9O
+ uJvftwk27zLoP7JP2CZ1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d1BoorPYySM=:wQO9Y0HsNX8OYacmja4eV4
+ ql/hpTbpix9uZE90POwCK0CYLu+yNeaQ8iYCwg9ps1nRqSsUGRpSs3AYcuJ3QyQsEa/rKWdDa
+ I2vQT33RayJoPlM0fsUzW+WSNjnSktAOZIpT6Kj6pCAweFqY4xlKXmFcD0mWfWPQ9bDztTQOK
+ fyUnbjcHAlRrcro5RmLj9hDHAfhcvKO+MNcO0+XtP7383oU1J/D4ncOam7ZOqzUtC35Mym8by
+ 0uZh9m+CzuC0VpQzdIQk44Ghl+XFjUDSk415D9aZJ7YCJPXRvj+GVCwqgZ7Xtxh0jlk2Xx7Ds
+ byY7Z8ZKzwMvQ1bHF/AMJT7ck2YMlSUhe3n3C0/ZfveMe+vK5vA98zdjNgGJL2Ut4rwko2gmn
+ KbU4QRh5x2hVlObxnFFMzo9LLvLKQftctQjTVs9Ozy/HAqrtQ33v3wJsm6RGvNnW34UM0i2AX
+ Pd20dJkQ+0MT3lyPN+Sk6gfrh8Pjwu2aNVcc63TPCkMiUc9IZn3vUEDk39W7UFKS5o3VZ435D
+ lPO65wyy4XrEMRrOC9nihiTHjCOz8FJu/rZcPfHYkVcJUIddHxoWzB3HAwTTWLoRvYbZsNMiq
+ bygRjeOc9ff5R2B+o6fdunFiGTMfQtiTgAWvK8w27Gl3qzGkRuWeFWf+YF36GDl9PaaT4/u6C
+ C+nw/SX9l8nByr+h4Zgi6l/xlMDizacyAiulot3slqTYWsYV4rezkswq5XSgrU3z2XaEzXzHx
+ j//IFp1GCVtkGCVtxg+OJKpvuG9TgAoGfLCliJ+2+hKK88fA/A5KgWSlGTyWdVdLjqO12ezyY
+ irHxoCexzuGpEiloBQiSFRN1kUNZiosB8c99dRWjkNkFIfIYA8fWz5a1mAyfFoEnGdvsr/3dK
+ hrXUoZGI9hIkyeiNcoJ1opEDOKoE3fePwhcYDsfSWVZXkYvRTY5Yv7YDmTpNK6xab6i6HqJVZ
+ IjEGNiAoPcaDaZ3q6wOtSS7BxwRjZ/VMwWTQz/rqaMW9Wg/axT9BFYjwCKUPY94lbPPeChprS
+ i23LDxBoiWxzAfxAFw3Q+Nri6ISTNQr4JEpgozW7fWK/no6nAaqRY/hfKFCcms+hAOQC9banO
+ ey49/eQuOOrq1e0EcqKQtZWuEQ0J2pUAzyowbMb6rqEtvzTXoEfIeo2cVK/4879ZSyXn4vK3S
+ ZSpH8QOPgSO1mICDXs8Tqah091iFm6HImq17PWQWpkkIerBAu68Yt5fwIaB5FeoKrwu6s9zA9
+ 7imt8Cq8rchvJw2EkkSsQhs84JOVrOFUFfoFY84ilfi4qW624a/SLRtP+uFw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 03:26:49PM -0600, Josh Poimboeuf wrote:
-> On Fri, Jan 17, 2020 at 09:28:27PM +0100, Marco Elver wrote:
-> > On Fri, 17 Jan 2020 at 18:26, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > On Tue, Dec 17, 2019 at 04:25:11PM +0100, David Sterba wrote:
-> > > > On Fri, Dec 13, 2019 at 11:05:18PM -0800, Randy Dunlap wrote:
-> > > > > OK, that fixes most of them, but still leaves these 2:
-> > > > >
-> > > > > btrfs006.out:fs/btrfs/extent_io.o: warning: objtool: __set_extent_bit()+0x536: unreachable instruction
-> > > >
-> > > > Hard to read from the assembly what C statement is it referring to. I
-> > > > think there are also several functions inlined, I don't see anything
-> > > > suspicious inside __set_extent_bit itself.
-> > > >
-> > > > > btrfs006.out:fs/btrfs/relocation.o: warning: objtool: add_tree_block()+0x501: unreachable instruction
-> > > >
-> > > > Probably also heavily inlined, the function has like 50 lines, a few
-> > > > non-trivial function calls but the offset in the warning suggests a
-> > > > larger size.
-> > > >
-> > > > While browsing the callees I noticed that both have in common a function
-> > > > that is supposed to print and stop at fatal errors. They're
-> > > > extent_io_tree_panic (extent_io.c) and backref_tree_panic
-> > > > (relocation.c). Both call btrfs_panic which is a macro:
-> > > >
-> > > > 3239 #define btrfs_panic(fs_info, errno, fmt, args...)                       \
-> > > > 3240 do {                                                                    \
-> > > > 3241         __btrfs_panic(fs_info, __func__, __LINE__, errno, fmt, ##args); \
-> > > > 3242         BUG();                                                          \
-> > > > 3243 } while (0)
-> > > >
-> > > > There are no conditionals and BUG has the __noreturn annotation
-> > > > (unreachable()) so all is in place and I don't have better ideas what's
-> > > > causing the reports.
-> > >
-> > > I think KCSAN is somehow disabling GCC's detection of implicit noreturn
-> > > functions -- or at least some calls to them.  So GCC is inserting dead
-> > > code after the calls.  BUG() uses __builtin_unreachable(), so GCC should
-> > > know better.
-> > >
-> > > If this is specific to KCSAN then I might just disable these warnings
-> > > for KCSAN configs.
-> > 
-> > I noticed that this is also a CC_OPTIMIZE_FOR_SIZE config. I recently
-> > sent some patches to turn some inlines into __always_inlines because
-> > CC_OPTIMIZE_FOR_SIZE decides to not inline functions that should
-> > always be inlined.
-> > 
-> > I noticed that 'assfail' is a 'static inline' function and you
-> > mentioned earlier that GCC seems to not be able to determine if it
-> > returns or not. If CC_OPTIMIZE_FOR_SIZE decides to not inline, then
-> > maybe this could be a problem?  It could also be the compiler having
-> > some trouble here with the CC_OPTIMIZE_FOR_SIZE + KCSAN combination.
-> 
-> Even for a non-inlined static function, GCC typically detects when it's
-> implicitly "noreturn", and optimizes the call sites accordingly.  And
-> that has also been true even for CC_OPTIMIZE_FOR_SIZE in the past.  So
-> something changed apparently.  (KCSAN was just a guess.)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2cPkjgYpOnta8MwyVoE13EKAhhnNZQfmQ
+Content-Type: multipart/mixed; boundary="Id5oqmtGEcFuX3jgNmY6h3EeHnJEhRuYO"
 
-I'm actually seeing this issue pop up recently in other places, without
-KCSAN enabled.  So it may just be a new GCC bug (albeit a very minor
-one).  Sorry for blaming KCSAN :-) I'll need to dig some more.
+--Id5oqmtGEcFuX3jgNmY6h3EeHnJEhRuYO
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-The easy fix would be something like:
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index eb8bd0258360..4db39fef3b56 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -655,7 +655,7 @@ alloc_extent_state_atomic(struct extent_state *prealloc)
- 	return prealloc;
- }
- 
--static void extent_io_tree_panic(struct extent_io_tree *tree, int err)
-+static void __noreturn extent_io_tree_panic(struct extent_io_tree *tree, int err)
- {
- 	struct inode *inode = tree->private_data;
- 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index d897a8e5e430..b7a94b1739ae 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -321,7 +321,7 @@ static struct rb_node *tree_search(struct rb_root *root, u64 bytenr)
- 	return NULL;
- }
- 
--static void backref_tree_panic(struct rb_node *rb_node, int errno, u64 bytenr)
-+static void __noreturn backref_tree_panic(struct rb_node *rb_node, int errno, u64 bytenr)
- {
- 
- 	struct btrfs_fs_info *fs_info = NULL;
 
+On 2020/1/17 =E4=B8=8B=E5=8D=8810:28, Josef Bacik wrote:
+> On 1/17/20 2:29 AM, Qu Wenruo wrote:
+>> Before this patchset, the only way to repair invalid extent item
+>> generation is to use --init-extent-tree, which is really a bad idea.
+>>
+>> To rebuild the whole extent tree just for one corrupted extent item?
+>> I must be insane at that time.
+>>
+>> This patch introduces the proper extent item generation repair
+>> functionality for both mode, and alter existing test case to also test=
+
+>> repair.
+>>
+>> Qu Wenruo (3):
+>> =C2=A0=C2=A0 btrfs-progs: check/lowmem: Repair invalid extent item gen=
+eration
+>> =C2=A0=C2=A0 btrfs-progs: check/original: Repair extent item generatio=
+n
+>> =C2=A0=C2=A0 btrfs-progs: tests/fsck-044: Enable repair test for inval=
+id extent
+>> =C2=A0=C2=A0=C2=A0=C2=A0 item generation
+>>
+>> =C2=A0 check/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+| 66 +++++++++++++++++
+>> =C2=A0 check/mode-lowmem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 74 +++++++++++++++++++
+>> =C2=A0 .../.lowmem_repairable=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 0
+>> =C2=A0 .../test.sh=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ | 19 -----
+>> =C2=A0 4 files changed, 140 insertions(+), 19 deletions(-)
+>> =C2=A0 create mode 100644
+>> tests/fsck-tests/044-invalid-extent-item-generation/.lowmem_repairable=
+
+>> =C2=A0 delete mode 100755
+>> tests/fsck-tests/044-invalid-extent-item-generation/test.sh
+>>
+>=20
+> If we have a generation > super generation that means that block is fro=
+m
+> the future and we shouldn't trust anything in it right?
+
+=46rom current report, it's mostly caused by:
+- A bug around 2014
+- Memory corruption
+
+For the later case, as long as it's the only bug, it's easy to fix.
+For the former case, although we don't have a concrete cause, it doesn't
+seem to cause tons of similar problems.
+
+Either way, from current reports they can be fixed, so I think it's
+kinda OK to do such simple fix instead of always go slow --init-extent-tr=
+ee.
+
+Thanks,
+Qu
+
+>=C2=A0 I haven't
+> touched this code in a while, but that just meant we threw it away and
+> any extent references that were in that block were just re-created.=C2=A0=
+ Is
+> that not what's happening now? This seems like a bad way to go about
+> fixing this particular problem.=C2=A0 Thanks,
+>=20
+> Josef
+
+
+--Id5oqmtGEcFuX3jgNmY6h3EeHnJEhRuYO--
+
+--2cPkjgYpOnta8MwyVoE13EKAhhnNZQfmQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4iWpEACgkQwj2R86El
+/qiPcgf9H+ITsKDsI0BK48S3rBzizg3MCkxqg/Hr4onSkg90L4AZpZ3O2I/dx0Q5
+A8qgehfBT+ovXxHsMeZayMczM1i7GXvFLc2TbYVX/YnbunTDYJZ8SE0YFDT0N+EA
+xuugUNYzix8/JIwJ+16DBziZdrX6BQw1inAGLqXrpVrBWTLE4PwUrjmR6OwFf3d5
+Zuv+gu3PqX1j86eazXvBx84O++Ig/kim1tOORKQTQu6fniyHr3GI/skcRKEkAoi9
+pF6Ao8MNfCqZBlOSr11Apo26wUvuPA35v5Okn1YBlL3Q6+LGuRU2BbfYI1Rknkwi
+5RvLfGQcYoukqE62azi+RQ9a3rz+ng==
+=jf5p
+-----END PGP SIGNATURE-----
+
+--2cPkjgYpOnta8MwyVoE13EKAhhnNZQfmQ--
