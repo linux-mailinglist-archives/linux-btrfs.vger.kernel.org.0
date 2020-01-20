@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4F7142D58
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 15:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBD6142D8B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 15:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729112AbgATOYA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jan 2020 09:24:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56396 "EHLO mx2.suse.de"
+        id S1726988AbgATO3q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jan 2020 09:29:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58850 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbgATOX6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jan 2020 09:23:58 -0500
+        id S1726626AbgATO3q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jan 2020 09:29:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 09384AF2F;
-        Mon, 20 Jan 2020 14:23:56 +0000 (UTC)
-Subject: Re: [PATCH 01/43] btrfs: push __setup_root into btrfs_alloc_root
+        by mx2.suse.de (Postfix) with ESMTP id CADD6B149;
+        Mon, 20 Jan 2020 14:29:43 +0000 (UTC)
+Subject: Re: [PATCH 02/43] btrfs: move fs root init stuff into
+ btrfs_init_fs_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-2-josef@toxicpanda.com>
+ <20200117212602.6737-3-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <582f0562-e6a0-bbb1-91bc-a23876f6886b@suse.com>
-Date:   Mon, 20 Jan 2020 16:23:55 +0200
+Message-ID: <05ab99e3-3ae5-3c38-07bb-1739017e14ca@suse.com>
+Date:   Mon, 20 Jan 2020 16:29:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-2-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-3-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,13 +81,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> There's no reason to not init the root at alloc time, and with later
-> patches it actually causes problems if we error out mounting the fs
-> before the tree_root is init'ed because we expect it to have a valid ref
-> count.  Fix this by pushing __setup_root into btrfs_alloc_root.
+> We have a helper for reading fs roots that just reads the fs root off
+> the disk and then sets REF_COWS and init's the inheritable flags.  Move
+> this into btrfs_init_fs_root so we can later get rid of this helper and
+> consolidate all of the fs root reading into one helper.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-It's good we centralize as much as we can so :
+Both of these are called  by btrfs_get_fs_root so this constitutes no
+functional changes so:
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/disk-io.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 1dc33e95052b..2d378aafb70b 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1445,12 +1445,6 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
+>  	root = btrfs_read_tree_root(tree_root, location);
+>  	if (IS_ERR(root))
+>  		return root;
+> -
+> -	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
+> -		set_bit(BTRFS_ROOT_REF_COWS, &root->state);
+> -		btrfs_check_and_init_root_item(&root->root_item);
+> -	}
+> -
+>  	return root;
+>  }
+>  
+> @@ -1474,6 +1468,11 @@ int btrfs_init_fs_root(struct btrfs_root *root)
+>  	}
+>  	root->subv_writers = writers;
+>  
+> +	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
+> +		set_bit(BTRFS_ROOT_REF_COWS, &root->state);
+> +		btrfs_check_and_init_root_item(&root->root_item);
+> +	}
+> +
+>  	btrfs_init_free_ino_ctl(root);
+>  	spin_lock_init(&root->ino_cache_lock);
+>  	init_waitqueue_head(&root->ino_cache_wait);
+> 
