@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3979C141F9C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jan 2020 19:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4214C142412
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 08:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgASSo4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Jan 2020 13:44:56 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:39296 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728852AbgASSo4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Jan 2020 13:44:56 -0500
-Received: by mail-il1-f195.google.com with SMTP id x5so25496110ila.6
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Jan 2020 10:44:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
-        b=frxwjTRIp+XgDBvVlMfTiQhQaXARjuhmZKvuCg0fbiQvc0jcqoJ5N06KXRMimf2ipV
-         hUPtfIPtPm2My5Mmi2xtE8PNIh4ec2Z/E+IxWiy0J9NFDyiy/wDmf7sfUKrmJl1I7q7T
-         i9+7yFlnGTsA5uK0vk2neF+Wum2OBPPzxKbXPSqtB3fiY+96zKZZMDA8Ye1x6zGAEV7+
-         5xDpsnWlxGtfjsKCF/uXtBOzmkzTPrjM57oTMkiy8m4RJynJEVle6lhb+3rLG0Kj3Odd
-         nRonxdfi9T9bISdf45oqNhq6SMpv/y8BIdEKECqh6AlFIP7XZ6silqJta2OddruS1Fx1
-         Darg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
-        b=Nie6CVTbR4mMovUNEYuVMLY0YLcv98QroiwTMuJrJkSxhJf8eF82ZXto1Zb67XtOpu
-         PGZ9/F8dua1vnjBKJ6+PCVx40NsNYbALzzvKkFrel/cT7Ymhj3Jbhr1qOHvyTecpWMmZ
-         RmrTD8LIFVVD+xAxs+foWz6+O3zngYvQn8NbiVUxVaO/pTyvd5bxkM+JSPtKG4XIxwVt
-         WrFQ2luVvgyTCuCNODZoh/Jx3JYDzCWvye2PvHx/8n7h0xfTKs9HiMAblvKdJXWRM2R7
-         VgHEQHZVRVOBKelWO+emkyRSSpnjtKYmKtFmFngNoxaeGqU6FeISxqJ1LTopqYyT/Yo8
-         jBlQ==
-X-Gm-Message-State: APjAAAWR7bBGHOennJzsl23DQ+rtWVrvU2K5PMR5dyjyKOjWJQM9qalv
-        qnZJbOxKocb//0iKCz7LMgYIBVePyxM1HKFjXds=
-X-Google-Smtp-Source: APXvYqwunf6TLONVcydOsD/K4p2fb+EOwhav1QOrqeu8+8G07aq34R9Hg5B1Ukz1B2r3cNBCizzmziQLI/4gi0D4r3s=
-X-Received: by 2002:a92:5e0c:: with SMTP id s12mr8141829ilb.19.1579459495550;
- Sun, 19 Jan 2020 10:44:55 -0800 (PST)
+        id S1726089AbgATHJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jan 2020 02:09:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34642 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725851AbgATHJo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jan 2020 02:09:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B51C6AF84;
+        Mon, 20 Jan 2020 07:09:42 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/2] fstests: Always dump dmesg for failed test cases
+Date:   Mon, 20 Jan 2020 15:09:37 +0800
+Message-Id: <20200120070938.30247-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Received: by 2002:a02:95c8:0:0:0:0:0 with HTTP; Sun, 19 Jan 2020 10:44:55
- -0800 (PST)
-Reply-To: favordens@email.com
-From:   Favor Desmond <contecindy5@gmail.com>
-Date:   Sun, 19 Jan 2020 18:44:55 +0000
-Message-ID: <CAOfCPNxSu9KUi1AXT1eCU3k_nDieFtnVEn9jEmoRmAm70LZ0JQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Dear
-Greetings to you,I am Favor Desmond from Ivory coast currently living
-in  Togo Republic,I would like to know you more, so that i can tell
-you little amount myself and my photo, email address is
-favordens@email.com
-Thanks
-Favor
+When hard-to-hit bugs happened, we really want every piece of info to
+help us debugging.
+
+Although we already have KEEP_DMESG config, not everyone is utilizing
+it, thus when hard-to-hit bugs happened, one could only set it and retry
+until next hit.
+
+This patch will change the behavior by always dumping the dmesg for
+failed tests, so that developers can always get extra info from any
+failure.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/check b/check
+index 2e148e5776e5..e580b2249f06 100755
+--- a/check
++++ b/check
+@@ -840,6 +840,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
+ 
+ 	# make sure we record the status of the last test we ran.
+ 	if $err ; then
++		if [ ! -f $seqres.dmesg ]; then
++			_dmesg_since_test_start >$seqres.dmesg
++		fi
+ 		bad="$bad $seqnum"
+ 		n_bad=`expr $n_bad + 1`
+ 		tc_status="fail"
+-- 
+2.24.1
+
