@@ -2,77 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D811433BE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 23:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906A814347C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 00:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgATWNH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jan 2020 17:13:07 -0500
-Received: from savella.carfax.org.uk ([85.119.84.138]:35538 "EHLO
-        savella.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgATWNH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jan 2020 17:13:07 -0500
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1itfIA-0003Jd-9r; Mon, 20 Jan 2020 22:13:06 +0000
-Date:   Mon, 20 Jan 2020 22:13:06 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     kjansen387 <kjansen387@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs raid1 balance slow
-Message-ID: <20200120221306.GH26453@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        kjansen387 <kjansen387@gmail.com>, linux-btrfs@vger.kernel.org
-References: <6bc329d9-6dc5-a4bc-e7c4-eccd377823eb@gmail.com>
+        id S1727289AbgATXfe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jan 2020 18:35:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46226 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727130AbgATXfe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jan 2020 18:35:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7CA78AFD4
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2020 23:35:32 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BAB32DA733; Tue, 21 Jan 2020 00:35:16 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.cz>
+Subject: Next btrfs development cycle - 5.7
+Date:   Tue, 21 Jan 2020 00:35:15 +0100
+Message-Id: <20200120233515.4209-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bc329d9-6dc5-a4bc-e7c4-eccd377823eb@gmail.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 11:08:40PM +0100, kjansen387 wrote:
-> I had a btrfs raid1 with 2 4TB SATA 5400RPM disks . Regular disk I/O is
-> about 2MB/sec per drive, ~40IOPS, mostly write. I had ~150GB free and added
-> one 2 TB disk and started the balance:
-> 
-> btrfs device add -f /dev/sdb /export
-> btrfs filesystem balance /export
-> 
-> It's now running for 24 hours, 70% remaining:
-> 
-> # btrfs balance status -v /export
-> Balance on '/export' is running
-> 1057 out of about 3561 chunks balanced (1058 considered),  70% left
-> Dumping filters: flags 0x7, state 0x1, force is off
->   DATA (flags 0x0): balancing
->   METADATA (flags 0x0): balancing
->   SYSTEM (flags 0x0): balancing
-> 
-> I have searched for similar cases, but, I do not have quotas enabled, I do
-> not have compression enabled, and my CPU supports sse4_2 . CPU (i7-8700K) is
-> doing fine, 80% idle (average over all threads).
+From: David Sterba <dsterba@suse.cz>
 
-   Do you have lots of snapshots? It can take a lot of time on some of
-the metadata chunks if there's lots of shared extents.
+Hi,
 
-> Is this normal ? I have to repeat this process 2 times (adding more 2TB
-> disks), any way I can make it faster ?
+a friendly reminder of the timetable and what's expected at this phase.
 
-   Cancel the current balance, add the remaining disks, and then
-balance only once you've added them all.
+5.4 - current
+5.5 - upcoming, urgent regression fixes only
+5.6 - development closed, pull request in prep, fixes or regressions only
+5.7 - development open, until 5.5-rc6 (at least)
 
-   Hugo.
+(https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Development_schedule)
 
--- 
-Hugo Mills             | If it's December 1941 in Casablanca, what time is it
-hugo@... carfax.org.uk | in New York?
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                               Rick Blaine, Casablanca
+
+Current status
+--------------
+
+The amount of patches merged for 5.5 is heavily affected by the end of year
+break, that is about 2 weeks long and the following week it takes to everybody
+sync up again. So this is 3 less weeks of testing and I got the feeling that
+everybody just dumped patches before going for the vacation.  So the patch
+backlog has grown again.
+
+Current misc-next is reasonably stable, only selected fixes will be merged but
+now it's effectively frozen. The merge window will probably open next week so
+the timing is adequate.
+
+
+Hilights of 5.6 changes
+-----------------------
+
+Async discard:
+
+* an improved implementation of the -o discard, that leaves more time to freed
+  extents to coalesce to longer chunks that are more suitable for trimminng and
+  also limits the discard IO not to interfere with regular IO
+
+* the current default IO submission rate should be good enough for most
+  usecases, but this might get tuned further, possibly adding some tunables if
+  required
+
+Tree-checker got more b-tree leaf checks, and for location key for various
+directory items.
+
+
+Merge outlook
+-------------
+
+1. fixes, minor cleanups
+2. fixes that need refactoring or cleanups
+3. small-sized features, with acked interface
+4. the rest (big features, intrusive core changes, ...)
+
+I do want to shake down the backlog, but please understand that it will be one
+thing at a time, so it can be tested and reviewed. You don't have to ping or
+resend. Wild ride ahead.
+
+
+Git development repos
+---------------------
+
+  k.org: https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
+  devel1: https://gitlab.com/kdave/btrfs-devel
+  devel2: https://github.com/kdave/btrfs-devel
