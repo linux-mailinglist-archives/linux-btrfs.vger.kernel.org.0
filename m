@@ -2,93 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8662E142DF3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 15:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966851430D2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jan 2020 18:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgATOpv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jan 2020 09:45:51 -0500
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:43289 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgATOpv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jan 2020 09:45:51 -0500
-Received: by mail-vk1-f171.google.com with SMTP id h13so8610459vkn.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jan 2020 06:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6v7pXguHzfkmZyMAkQcUYz49zk1QHgEri+hsKiwLVdU=;
-        b=Xg+fnweATkdEiyyxTCxwxYi1ta0d3uCiCur1o2bzROlBnFehVuYh60h1Tk6LN0OKAO
-         BOtElI5rtZy7TccGMkJ7Lbpy8XaF2Mkzq6Cnq7tXEJvP7DOVD4lgFk/FOg5T7SztE/GG
-         3wVg8JCCo0XJBN+kpuOvuGYIYAABxUWroYykQzNxcAdf6J7HbRxKUO9SXWIMi96G2tvj
-         HA2t/HEh01chxd7t88lpAT8pFxTsrX0GoTmoEy1t8P8M66zURxQgsNYgqyGLbWxpmYLb
-         6sIB2HHkKGpIZ7l6CIAMKRYN0uVxjEJtjFUs+hwHFM/lWEtNUj6mBO2p6EpOFfWm0zJZ
-         ZpjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6v7pXguHzfkmZyMAkQcUYz49zk1QHgEri+hsKiwLVdU=;
-        b=Hv5j30SCfhk44tUobubHRyIoUV5o43ogZwnz1J7F2LCtHy4xKL4IFEnPDI8kvYicIM
-         /fU4WtFOdHRllejl9ZXXEAzuDdbYTPBJDlvrDtXQ8zgXR+Owv40kmuRnVGDYd2K3Srvc
-         Zz6u84Bjvm8WrKSzzjo6qYEcZG0RSh5yN6RJfMYFqQ1/+4n5zmyrBOnCf++2Y0HHoLzb
-         oY0f5HDsPZqRXiZNs8X/wj5ao9hdnZuHtQp1BC1ct0t8aYbZdMJFaZBSkORkD5/5S7lF
-         WDZHy4Tcvwl1WoXtlzLfqqz9hodRxTzbvyzUyPo2xcbSXAMZDUwpapj1KK+XhztcXbPJ
-         gdFw==
-X-Gm-Message-State: APjAAAXXe8l0lm1DMc7Dqzyt8XxyDh9bOXOoeN9epesr6EPrWqp1Gcyr
-        tY+LuC+UrqfP0qb8GvLTop0utzBRijwnxOWCAMisi5dK6Ds=
-X-Google-Smtp-Source: APXvYqyXp2qehtbD3EwXc4ezOUQPLZqV7LuquXe9PBgU9d4O2cR7guogSQPTUkOkfqEGX3HFvAGC6pkyCKth+kmBGSM=
-X-Received: by 2002:a1f:bf86:: with SMTP id p128mr1126301vkf.3.1579531549644;
- Mon, 20 Jan 2020 06:45:49 -0800 (PST)
+        id S1728794AbgATR3I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jan 2020 12:29:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40000 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726642AbgATR3I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jan 2020 12:29:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A9BEDAE62;
+        Mon, 20 Jan 2020 17:29:05 +0000 (UTC)
+Subject: Re: BTRFS failure after resume from hibernate
+To:     Robbie Smith <zoqaeski@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <46627619-87ea-d26a-1c5d-8f1cba794826@suse.com>
+Date:   Mon, 20 Jan 2020 19:29:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-From:   Robbie Smith <zoqaeski@gmail.com>
-Date:   Tue, 21 Jan 2020 01:45:38 +1100
-Message-ID: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
-Subject: BTRFS failure after resume from hibernate
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I put my laptop into hibernation mode for a few days so I could boot
-up into Windows 10 to do some things, and upon waking up BTRFS has
-borked itself, spitting out errors and locking itself into read-only
-mode. Is there any up-to-date information on how to fix it, short of
-wiping the partition and reinstalling (which is what I ended up
-resorting to last time after none of the attempts to fix it worked)?
-The error messages in my journal are:
 
-BTRFS error (device dm-0): parent transid verify failed on
-223458705408 wanted 144360 found 144376
-BTRFS critical (device dm-0): corrupt leaf: block=3D223455346688 slot=3D23
-extent bytenr=3D223451267072 len=3D16384 invalid generation, have 144376
-expect (0, 144375]
-BTRFS error (device dm-0): block=3D223455346688 read time tree block
-corruption detected
-BTRFS error (device dm-0): error loading props for ino 1032412 (root 258): =
--5
 
-The parent transid messages are repeated a few times. There's nothing
-fancy about my BTRFS setup: subvolumes are used to emulate my root and
-home partition. No RAID, no compression, though the partition does sit
-beneath a dm-crypt layer using LUKS. Hibernation is done onto a
-separate swap partion on the same drive.
+On 20.01.20 г. 16:45 ч., Robbie Smith wrote:
+> I put my laptop into hibernation mode for a few days so I could boot
+> up into Windows 10 to do some things, and upon waking up BTRFS has
+> borked itself, spitting out errors and locking itself into read-only
+> mode. Is there any up-to-date information on how to fix it, short of
+> wiping the partition and reinstalling (which is what I ended up
+> resorting to last time after none of the attempts to fix it worked)?
+> The error messages in my journal are:
 
-This is the second time in six months this has happened on this
-laptop. The only other thing I can think of is that the laptop BIOS
-reported that the charger wasn't supplying the correct wattage, and I
-have no idea why it would do that=E2=80=94both laptop and charger are nearl=
-y
-brand-new, less than a year old. The laptop model is a Lenovo Thinkpad
-T470.
 
-I've got backups, but reinstalling is a nuisance and I really don't
-want to spend a couple of days getting the laptop working again. I
-don't have a conveniently large drive lying around to mirror this one
-onto.
-
-Robbie
+Are your btrfs and windows installations on the same disk but different
+partitions? While you were booted into windows did you perform any updates?
