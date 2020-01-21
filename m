@@ -2,86 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B60E1437B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 08:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF1E1437B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 08:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgAUHe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jan 2020 02:34:29 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:46475 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728767AbgAUHe2 (ORCPT
+        id S1728456AbgAUHfe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jan 2020 02:35:34 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33876 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgAUHfe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jan 2020 02:34:28 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0ToHCIF1_1579592063;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0ToHCIF1_1579592063)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 21 Jan 2020 15:34:23 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: remove unused macro BTRFS_FEAT_ATTR_COMPAT
-Date:   Tue, 21 Jan 2020 15:34:22 +0800
-Message-Id: <1579592062-86448-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 21 Jan 2020 02:35:34 -0500
+Received: by mail-io1-f67.google.com with SMTP id z193so1837443iof.1;
+        Mon, 20 Jan 2020 23:35:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+F7l/MWFQgRxyHbpRyxJbIOirQMGsQvf8nzkFjt7rtU=;
+        b=OR25Qdq8m/jH+8shuXB7H0qmJwDh0jA3QVqleA6KUHmUJlCojHBr1gSEdR/Ggnndkn
+         I66NHwDEL9K3x8CmAcWUFqAtiqFyZS+7I7+fNUUZude6f5ORPd3iF9inPDySGno/i9aX
+         QphklD173cya/A5w/hT8AvCqpHJuqM76Jj+3Djop8mUiCLs5sW8nwwWLQ29+XxiR2ZUK
+         5NqY/NpdbFNaEEQju9S35xMo30Y83+j3attZojXPLP0Sthc2AGVFZ36n5RTDe6Ht0LF1
+         mc30vgBlku54nelUozGOl9f70N9wujXjnwYNVFrpiZ2HSbT9018O2NGjoJ1E0xEEVZAG
+         oQpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+F7l/MWFQgRxyHbpRyxJbIOirQMGsQvf8nzkFjt7rtU=;
+        b=D1SeQ9TC0Pz8fH6en000GECSXEnth3siUWoXnefmlImheNRTHDXBpGH5oP975PMboF
+         EU2F62drgT3qL2KvjvMJNJ5aisTCHJdyfA3Yi3cKkYJYd44jw/T8FX8sSaUHDMLR1r7E
+         P1MTTGzfq27HFqxMLwY58subfzSrBx8/I3IM/oqALXHvfaUY6WseAfowyyHgJyg+dlzg
+         yvgUigRWHkt4RLdUYjc1T+/T4A2InPEX6CxMTZy/01pISW1EafoyBCFVxEEn9xc3YrTC
+         M/UgiKLBcOgaL9MtiIswA7AfNxfBp1TPKVUvn7NGUKxn3QWpxAkiQoD5hLGrYmZmoZmj
+         5Hag==
+X-Gm-Message-State: APjAAAVvyApA/PGULSbTgLXbxJ2Dv2gCkfZVl+DbQ87gtYO418F3MlT/
+        95+agxmgW/LeyZfBstoJf6+kfHMSS9Zj0KecPLU=
+X-Google-Smtp-Source: APXvYqzUyI1DkiewOUq76ctqoWRhaFKDY2EeiUmPqH+S1LBGO00cWRKX+8Zt21jIMmFPghy6M8JEz1p4PBsy0ZRBi8g=
+X-Received: by 2002:a02:a481:: with SMTP id d1mr2247658jam.81.1579592133440;
+ Mon, 20 Jan 2020 23:35:33 -0800 (PST)
+MIME-Version: 1.0
+References: <20160210191715.GB6339@birch.djwong.org> <20160210191848.GC6346@birch.djwong.org>
+ <CAH2r5mtM2nCicTKGFAjYtOG92TKKQdTbZxaD-_-RsWYL=Tn2Nw@mail.gmail.com> <0089aff3-c4d3-214e-30d7-012abf70623a@gmx.com>
+In-Reply-To: <0089aff3-c4d3-214e-30d7-012abf70623a@gmx.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 21 Jan 2020 09:35:22 +0200
+Message-ID: <CAOQ4uxjd-YWe5uHqfSW9iSdw-hQyFCwo84cK8ebJVJSY_vda3Q@mail.gmail.com>
+Subject: Re: [Lsf-pc] [LFS/MM TOPIC] fs reflink issues, fs online scrub/check, etc
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Steve French <smfrench@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        lsf-pc@lists.linux-foundation.org, xfs <xfs@oss.sgi.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Which is never used after it was introduced. Better to remove it?
+On Tue, Jan 21, 2020 at 3:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+> Didn't see the original mail, so reply here.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Chris Mason <clm@fb.com> 
-Cc: Josef Bacik <josef@toxicpanda.com> 
-Cc: David Sterba <dsterba@suse.com> 
-Cc: Peter Zijlstra <peterz@infradead.org> 
-Cc: Ingo Molnar <mingo@redhat.com> 
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org> 
-Cc: Mark Rutland <mark.rutland@arm.com> 
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com> 
-Cc: Jiri Olsa <jolsa@redhat.com> 
-Cc: Namhyung Kim <namhyung@kernel.org> 
-Cc: linux-btrfs@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- fs/btrfs/sysfs.c        | 2 --
- kernel/events/uprobes.c | 1 -
- 2 files changed, 3 deletions(-)
+Heh! Original email was from 2016, but most of Darrick's wish list is
+still relevant in 2020 :)
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 5ebbe8a5ee76..22f78dbfc783 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -60,8 +60,6 @@ struct raid_kobject {
- #define BTRFS_FEAT_ATTR_PTR(_name)					     \
- 	(&btrfs_attr_features_##_name.kobj_attr.attr)
- 
--#define BTRFS_FEAT_ATTR_COMPAT(name, feature) \
--	BTRFS_FEAT_ATTR(name, FEAT_COMPAT, BTRFS_FEATURE_COMPAT, feature)
- #define BTRFS_FEAT_ATTR_COMPAT_RO(name, feature) \
- 	BTRFS_FEAT_ATTR(name, FEAT_COMPAT_RO, BTRFS_FEATURE_COMPAT_RO, feature)
- #define BTRFS_FEAT_ATTR_INCOMPAT(name, feature) \
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index ece7e13f6e4a..977cac2574cb 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -31,7 +31,6 @@
- #include <linux/uprobes.h>
- 
- #define UINSNS_PER_PAGE			(PAGE_SIZE/UPROBE_XOL_SLOT_BYTES)
--#define MAX_UPROBE_XOL_SLOTS		UINSNS_PER_PAGE
- 
- static struct rb_root uprobes_tree = RB_ROOT;
- /*
--- 
-1.8.3.1
+I for one would be very interested in getting an update on the
+progress of pagecache
+page sharing if there is anyone working on it.
 
+Thanks,
+Amir.
