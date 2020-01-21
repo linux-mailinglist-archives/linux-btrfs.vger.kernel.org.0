@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD78D14427D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 17:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DBE144537
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 20:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgAUQvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jan 2020 11:51:55 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:45915 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729030AbgAUQvy (ORCPT
+        id S1728855AbgAUTe4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jan 2020 14:34:56 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:38028 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbgAUTez (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jan 2020 11:51:54 -0500
-Received: by mail-qv1-f68.google.com with SMTP id l14so1748409qvu.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2020 08:51:53 -0800 (PST)
+        Tue, 21 Jan 2020 14:34:55 -0500
+Received: by mail-qk1-f196.google.com with SMTP id k6so3957313qki.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2020 11:34:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=NYx9Mjq/PTulk82L2MOrUMPU60Ve3sQ1hpTVaY8jaKI=;
-        b=1iCzZHMTpo9Vqho1DjEBoPYD3Pa7sti1Q5Ryj1s91ixfATPWmAszzKQcZennAtp2YH
-         t/z1jJnYrWdD8p2ofXgEYU+Vqxif92Lc0tS76sBwEE+KAjQpVGEj5BuL5Dig9fspc+g6
-         OdOoyDkPPKKlM8spPDydQPpZfAjXM01qNBTOTThFHWhJu7aYgdY+6xavtCS4XZvPw1n2
-         942uLfovWAQ7svs1YxT4/O+T4R7jU6UGFfi2VZFsv0oBuxi20yA/AJktjULMmWuhU3uD
-         KZ/I7MAQJ/bnnD7RUy5/2x1UJyv+Eg0xucTqoqAnabumipMckMvsaAqY+n+VlSbekI/m
-         fITQ==
+        bh=APUmSdEBavMGuEdXrLeoEsw5TY2AFWjwc9iE1vOC/jo=;
+        b=tK8v6ce9GD6p40Vx9AL8OpJ9MM1ptwj75CX02GhMHyGFCrYXhuANOwlJv/SO5MbTzA
+         NB+jlSt7JwWFbqEOhL77Qzpa+NgVsApSkEsTFVezd9FB2cmqfUgycsw16OMvJXBsuX43
+         GqewYqLsi/ORu9LTzTt9s/Hv8ztRrk6eewriavto9DjlQJIIrpEJQ69r1kurAObYty6A
+         KhXv563iujF9yVwsjch2EyCu8dXZmv4L32Pl39XQyCCr6Op5+aXouNwdyvb16pXmcZKy
+         /Q3sSODEqiY8+TU6g93+ghRzD/vj4u/8kXrE6IYdSOfHa7zhdoD0Da13fTX6yrs9RUXG
+         lz0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NYx9Mjq/PTulk82L2MOrUMPU60Ve3sQ1hpTVaY8jaKI=;
-        b=geKU/zKZBU+d+7YlGmr0F88vRFOtKwcWW4SQAJJEZ98CW426Y+fN1DSXWqE+kqEmd5
-         l3yOxBDffT7UA7qnzgKR2W6G1zzXWdIzSc0mEiaASbEYZ05AGZGHNQlEjlyv/jZPs3Ks
-         +nSngUcAP/M+R48dn4bvUAlLhjLi/dbCcaXnqMPVfKw16zU30knX95tIZFFJLpMWAtmB
-         T71SE12KidwAbUXXI2+JzG8F4txBNBI/0YaRI3p2puad8B54WqVxueK3KrLVF6asvxtV
-         ZvKLZ89YM2r0LzCg+XnXxli6K8Q0+iZ1R0gbzWG2H4+32kbeum7MAxn9dmpTI4FnN2BZ
-         flCA==
-X-Gm-Message-State: APjAAAVa0BGJlJfIhqZqVV5I0wVZscnCxzfUbRl6VW890Tfn1/clPvZh
-        h6rwg5JMTsQDu3zEYIpQgdExBptjynsACA==
-X-Google-Smtp-Source: APXvYqwClUnsbYdxb1VRpcWDhvOyMLiMuIqlUIF8ciiE+rLQ1fda+4SzODTlzrzNp+r37XrFu5AmCA==
-X-Received: by 2002:a0c:fac7:: with SMTP id p7mr5824251qvo.46.1579625512901;
-        Tue, 21 Jan 2020 08:51:52 -0800 (PST)
+        bh=APUmSdEBavMGuEdXrLeoEsw5TY2AFWjwc9iE1vOC/jo=;
+        b=mOzIyGRbYfHB8OiCWa7L7H1PdT9VInYMJkjOwq77tEe0MfhyyOSlHKK3p0F+te4bb3
+         MS4DORTjD/y5KnkmuuP6yt6riEj4ftjcCG9BnYTPNd6yW/LPk7DEaFKR8tWVXdCVh/Xb
+         9xFk6aGmAWMl8+oezcBY+wAp+ROiJ6sDLi4x41i1z0LmZOYUkGdvg6eiCiloFG2zLG2M
+         FZ5W8LxmKD247pdXM/SPkJjU6c9kcT2+xkD7n5MAunJMvekR0x3z1wE8+tOuOU4NJjNb
+         z3EhzfjvkdMiZXIo/rejFXhCLoWw8Ki1bKyG62n6yViTPflKTbC+OcjUD+ySZT+2zcdV
+         5HgQ==
+X-Gm-Message-State: APjAAAWcd9URDvLVBTFeA2ACqOX/mC5j1mUvu3HTiqpMA7lMrPxGA0CJ
+        1ElxCjED7KcIFJ3iRV5Fhv8nIah/GRBHGQ==
+X-Google-Smtp-Source: APXvYqweQeQut7lMWBXaULE8pgsJRHmh1pW+e99t7RFWTax/5Ko5Ej5HAI/oE2n2/LQJWSXAwvXAbQ==
+X-Received: by 2002:a37:6794:: with SMTP id b142mr6244120qkc.216.1579635294132;
+        Tue, 21 Jan 2020 11:34:54 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id n3sm17528450qkn.105.2020.01.21.08.51.52
+        by smtp.gmail.com with ESMTPSA id k9sm19703389qtq.75.2020.01.21.11.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2020 08:51:52 -0800 (PST)
+        Tue, 21 Jan 2020 11:34:53 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/3][v2] btrfs: do not do delalloc reservation under page lock
-Date:   Tue, 21 Jan 2020 11:51:44 -0500
-Message-Id: <20200121165144.2174309-4-josef@toxicpanda.com>
+Subject: [PATCH][v3] btrfs: do not do delalloc reservation under page lock
+Date:   Tue, 21 Jan 2020 14:34:52 -0500
+Message-Id: <20200121193452.2175678-1-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200121165144.2174309-1-josef@toxicpanda.com>
-References: <20200121165144.2174309-1-josef@toxicpanda.com>
+In-Reply-To: <20200121165144.2174309-4-josef@toxicpanda.com>
+References: <20200121165144.2174309-4-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -112,11 +112,17 @@ case is fine.
 Fixes: 87826df0ec36 ("btrfs: delalloc for page dirtied out-of-band in fixup worker")
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
+v2->v3:
+- Use a delayed iput in the fixup worker.  I *think* we can deadlock if we do
+  the final iput and need to flush space, which may trigger the fixup worker
+  which is busy doing our iput.  Err on the side of caution and use a delayed
+  iput.
+
  fs/btrfs/inode.c | 71 +++++++++++++++++++++++++++++++++++++-----------
  1 file changed, 55 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 69f8e65b378b..10f4952895d8 100644
+index 69f8e65b378b..9320f13778ce 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
 @@ -2198,6 +2198,7 @@ int btrfs_set_extent_delalloc(struct inode *inode, u64 start, u64 end,
@@ -237,7 +243,7 @@ index 69f8e65b378b..10f4952895d8 100644
  	put_page(page);
  	kfree(fixup);
  	extent_changeset_free(data_reserved);
-+	iput(inode);
++	btrfs_add_delayed_iput(inode);
  }
  
  /*
