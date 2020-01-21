@@ -2,114 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBF8143DDA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 14:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B016143DFD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 14:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgAUNU4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jan 2020 08:20:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37868 "EHLO mx2.suse.de"
+        id S1728829AbgAUN0q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jan 2020 08:26:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41076 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgAUNU4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jan 2020 08:20:56 -0500
+        id S1727059AbgAUN0q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jan 2020 08:26:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EC747AEAC;
-        Tue, 21 Jan 2020 13:20:52 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id ED55FB23B;
+        Tue, 21 Jan 2020 13:26:38 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 62821DA738; Tue, 21 Jan 2020 14:20:37 +0100 (CET)
-Date:   Tue, 21 Jan 2020 14:20:37 +0100
+        id 7272CDA738; Tue, 21 Jan 2020 14:26:23 +0100 (CET)
+Date:   Tue, 21 Jan 2020 14:26:23 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix infinite loop during fsync after rename
- operations
-Message-ID: <20200121132037.GQ3929@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH][RESEND] btrfs: set trans->drity in
+ btrfs_commit_transaction
+Message-ID: <20200121132623.GR3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200115132135.23994-1-fdmanana@kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <20200117135751.42036-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200115132135.23994-1-fdmanana@kernel.org>
+In-Reply-To: <20200117135751.42036-1-josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 01:21:35PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, Jan 17, 2020 at 08:57:51AM -0500, Josef Bacik wrote:
+> If we abort a transaction we have the following sequence
 > 
-> Recently fsstress (from fstests) sporadically started to trigger an
-> infinite loop during fsync operations. This turned out to be because
-> support for the rename exchange and whiteout operations was added to
-> fsstress in fstests. These operations, unlike any others in fsstress,
-> cause file names to be reused, whence triggering this issue. However
-> it's not necessary to use rename exchange and rename whiteout operations
-> trigger this issue, simple rename operations and file creations are
-> enough to trigger the issue.
+> if (!trans->dirty && list_empty(&trans->new_bgs))
+> 	return;
+> WRITE_ONCE(trans->transaction->aborted, err);
 > 
-> The issue boils down to when we are logging inodes that conflict (that
-> had the name of any inode we need to log during the fsync operation),
-> we keep logging them even if they were already logged before, and after
-> that we check if there's any other inode that conflicts with them and
-> then add it again to the list of inodes to log. Skipping already logged
-> inodes fixes the issue.
+> The idea being if we didn't modify anything with our trans handle then
+> we don't really need to abort the whole transaction, maybe the other
+> trans handles are fine and we can carry on.
 > 
-> Consider the following example:
+> However in the case of create_snapshot we add a pending_snapshot object
+> to our transaction and then commit the transaction.  We don't actually
+> modify anything.  sync() behaves the same way, attach to an existing
+> transaction and commit it.  This means that if we have an IO error in
+> the right places we could abort the committing transaction with our
+> trans->dirty being not set and thus not set transaction->aborted.
 > 
->   $ mkfs.btrfs -f /dev/sdb
->   $ mount /dev/sdb /mnt
+> This is a problem because in the create_snapshot() case we depend on
+> pending->error being set to something, or btrfs_commit_transaction
+> returning an error.
 > 
->   $ mkdir /mnt/testdir                           # inode 257
+> If we are not the trans handle that gets to commit the transaction, and
+> we're waiting on the commit to happen we get our return value from
+> cur_trans->aborted.  If this was not set to anything because sync() hit
+> an error in the transaction commit before it could modify anything then
+> cur_trans->aborted would be 0.  Thus we'd return 0 from
+> btrfs_commit_transaction() in create_snapshot.
 > 
->   $ touch /mnt/testdir/zz                        # inode 258
->   $ ln /mnt/testdir/zz /mnt/testdir/zz_link
+> This is a problem because we then try to do things with
+> pending_snapshot->snap, which will be NULL because we didn't create the
+> snapshot, and then we'll get a NULL pointer dereference like the
+> following
 > 
->   $ touch /mnt/testdir/a                         # inode 259
+> "BUG: kernel NULL pointer dereference, address: 00000000000001f0"
+> RIP: 0010:btrfs_orphan_cleanup+0x2d/0x330
+> Call Trace:
+>  ? btrfs_mksubvol.isra.31+0x3f2/0x510
+>  btrfs_mksubvol.isra.31+0x4bc/0x510
+>  ? __sb_start_write+0xfa/0x200
+>  ? mnt_want_write_file+0x24/0x50
+>  btrfs_ioctl_snap_create_transid+0x16c/0x1a0
+>  btrfs_ioctl_snap_create_v2+0x11e/0x1a0
+>  btrfs_ioctl+0x1534/0x2c10
+>  ? free_debug_processing+0x262/0x2a3
+>  do_vfs_ioctl+0xa6/0x6b0
+>  ? do_sys_open+0x188/0x220
+>  ? syscall_trace_enter+0x1f8/0x330
+>  ksys_ioctl+0x60/0x90
+>  __x64_sys_ioctl+0x16/0x20
+>  do_syscall_64+0x4a/0x1b0
 > 
->   $ sync
+> In order to fix this we need to make sure anybody who calls
+> commit_transaction has trans->dirty set so that they properly set the
+> trans->transaction->aborted value properly so any waiters know bad
+> things happened.
 > 
->   # The following 3 renames achieve the same result as a rename exchange
->   # operation (<rename_exchange> /mnt/testdir/zz_link to /mnt/testdir/a).
+> This was found while I was running generic/475 with my modified
+> fsstress, it reproduced within a few runs.  I ran with this patch all
+> night and didn't see the problem again.
 > 
->   $ mv /mnt/testdir/a /mnt/testdir/a/tmp
->   $ mv /mnt/testdir/zz_link /mnt/testdir/a
->   $ mv /mnt/testdir/a/tmp /mnt/testdir/zz_link
-> 
->   # The following rename and file creation give the same result as a
->   # rename whiteout operation (<rename_whiteout> zz to a2).
-> 
->   $ mv /mnt/testdir/zz /mnt/testdir/a2
->   $ touch /mnt/testdir/zz                        # inode 260
-> 
->   $ xfs_io -c fsync /mnt/testdir/zz
->     --> results in the infinite loop
-> 
-> The following steps happen:
-> 
-> 1) When logging inode 260, we find that its reference named "zz" was
->    used by inode 258 in the previous transaction (through the commit
->    root), so inode 258 is added to the list of conflicting indoes that
->    need to be logged;
-> 
-> 2) After logging inode 258, we find that its reference named "a" was
->    used by inode 259 in the previous transaction, and therefore we add
->    inode 259 to the list of conflicting inodes to be logged;
-> 
-> 3) After logging inode 259, we find that its reference named "zz_link"
->    was used by inode 258 in the previous transaction - we add inode 258
->    to the list of conflicting inodes to log, again - we had already
->    logged it before at step 3. After logging it again, we find again
->    that inode 259 conflicts with him, and we add again 259 to the list,
->    etc - we end up repeating all the previous steps.
-> 
-> So fix this by skipping logging of conflicting inodes that were already
-> logged.
-> 
-> Fixes: 6b5fc433a7ad67 ("Btrfs: fix fsync after succession of renames of different files")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Added to misc-next, thanks.
