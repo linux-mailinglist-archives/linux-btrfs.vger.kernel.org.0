@@ -2,68 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F19143C61
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 12:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93F4143D9D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 14:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgAUL56 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jan 2020 06:57:58 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:43283 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgAUL56 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jan 2020 06:57:58 -0500
-Received: by mail-oi1-f194.google.com with SMTP id p125so2252031oif.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2020 03:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0qBYK/GkAalVZnvADWvbdz1ZcjZBYvTuJhfYRtzcc0U=;
-        b=q6ptStygj20oPj9kDcIg9F/FriQrIuIWrkvsw9HKKdip94Y2eNsDg9CiSgklxvJwP0
-         V/9Fnt3g8/aR+U/6RsTaczcQXV+5ot1K96QsDIpe5NT9A+LnKChK7J/rizP6OAHvCbvJ
-         A9sJntY7ga2BelkbExVMUCewSwlHIV3CRbC3H4G20rrlTKOrGRQ6uQzPqjmxI2wSP0Lj
-         YJp5Zn/lVn7vIEw5FMDWLHWwiKWxyMpxSILn7HLMUQwxZtn+wSx1hdKgwqfs21QEd+16
-         pn6r2/BX7jiw6ZALVav2pPkAK/t+DqVlQQYOcr3A467mejokw3w2abkyQjSZ07S/rg8Q
-         ZEzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0qBYK/GkAalVZnvADWvbdz1ZcjZBYvTuJhfYRtzcc0U=;
-        b=Tp/oxf8UBnqUwtrzrqohE6UsrmQAxH9Z1QMsj7ZhofLpX6OWkblU+Mhnkf+L+l1eaq
-         RJF0LRlSLUvAHfrDD4Zj+5hLgx8oPitt4GfG1FYWJXFIN4X1mhjRtc87SQuwhWsbEiCM
-         SWVtJJ43kykjZ8m8zNdXkrqbbyAt9MYjGDyRc6lsWserN7bmmsD+ZwrBEovaaiddgnu0
-         LgoWu5qBo8LbdNlpm85/QtJbLpyOIfaULIKiZObYC2sXck8GS7/eXn5f5PXsNzz57HFT
-         tsj33A97UmEc929IvKUcMaWWuf6JdiNLzcSXqTxHM9/Bsj2YFHi7nk15y5ntsSKvWw6b
-         hs4Q==
-X-Gm-Message-State: APjAAAX38Q4rMV2QxSlhWP5TiqBKezO4rmPqQCsjtv2xLPldv7PGPhEf
-        GnWjGDZF9pK9Pe2DCuh1dfDHNw8dSBNsy1tz3MM=
-X-Google-Smtp-Source: APXvYqy/srhajOQgHNKQgZClLBZWQ7MGM39b9m0Zqy4ZBq/5J7IcoVKiGyA6enWc6yq9XCxDbrUDh1nUgY1ykfYp4CM=
-X-Received: by 2002:a05:6808:10d:: with SMTP id b13mr2686080oie.69.1579607876647;
- Tue, 21 Jan 2020 03:57:56 -0800 (PST)
-MIME-Version: 1.0
-References: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
- <91be9396-4142-94ba-ea79-0baf8dc4800a@gmx.com> <CACurcBtC3ynvVcgS0yo2aNkxELxevc9Y=LO9eQ+hZSoB+3cMDQ@mail.gmail.com>
- <3af6a8b4-4102-4f4e-67f7-deda839e0cf5@gmx.com> <CACurcBsoOye4bZ9JxSV2zaEiMRGnhgUs5EZdhcxf5=EXQ0_6yA@mail.gmail.com>
- <0949e592-6564-8617-4e8f-fda1e9bdcfb1@gmx.com> <CACurcBsdPYCba8SjvTRxToPkwKvy3Y_85+GhqV91uS51Tv4b4w@mail.gmail.com>
- <226182ca-e389-2506-1751-79b7d0b4ec24@gmx.com> <CACurcBs_q=Zvt4_f4iJ5fupUR0b5OnsFzx6mZ7GeAw8kSgtp8w@mail.gmail.com>
- <CACurcBueqFjkX43timLY_OCQ97KOdwwj742XEFJJY+d290SnYw@mail.gmail.com>
-In-Reply-To: <CACurcBueqFjkX43timLY_OCQ97KOdwwj742XEFJJY+d290SnYw@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Date:   Tue, 21 Jan 2020 14:57:44 +0300
-Message-ID: <CAA91j0U0ZZO+4Jzh566q61rTqwdPfYwpjgpk8=jr=AFN67P9hg@mail.gmail.com>
+        id S1726968AbgAUNEi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jan 2020 08:04:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57080 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbgAUNEi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jan 2020 08:04:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A2194BA69;
+        Tue, 21 Jan 2020 13:04:35 +0000 (UTC)
 Subject: Re: BTRFS failure after resume from hibernate
-To:     Robbie Smith <zoqaeski@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Robbie Smith <zoqaeski@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
+ <91be9396-4142-94ba-ea79-0baf8dc4800a@gmx.com>
+ <CACurcBtC3ynvVcgS0yo2aNkxELxevc9Y=LO9eQ+hZSoB+3cMDQ@mail.gmail.com>
+ <3af6a8b4-4102-4f4e-67f7-deda839e0cf5@gmx.com>
+ <CACurcBsoOye4bZ9JxSV2zaEiMRGnhgUs5EZdhcxf5=EXQ0_6yA@mail.gmail.com>
+ <0949e592-6564-8617-4e8f-fda1e9bdcfb1@gmx.com>
+ <CACurcBsdPYCba8SjvTRxToPkwKvy3Y_85+GhqV91uS51Tv4b4w@mail.gmail.com>
+ <226182ca-e389-2506-1751-79b7d0b4ec24@gmx.com>
+ <CACurcBs_q=Zvt4_f4iJ5fupUR0b5OnsFzx6mZ7GeAw8kSgtp8w@mail.gmail.com>
+ <CACurcBueqFjkX43timLY_OCQ97KOdwwj742XEFJJY+d290SnYw@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5d0effb9-3823-5a43-dc71-0b61bdcfa054@suse.com>
+Date:   Tue, 21 Jan 2020 15:04:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <CACurcBueqFjkX43timLY_OCQ97KOdwwj742XEFJJY+d290SnYw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 2:01 PM Robbie Smith <zoqaeski@gmail.com> wrote:
->
+
+
+On 21.01.20 г. 12:59 ч., Robbie Smith wrote:
 > I think I have a hunch as to why this issue has occurred. I've had two
 > btrfs partition failures, and both times it was upon resuming from
 > hibernation. The key file for the encrypted swap was stored in
@@ -71,172 +94,32 @@ On Tue, Jan 21, 2020 at 2:01 PM Robbie Smith <zoqaeski@gmail.com> wrote:
 > mounts it, reads the keyfile for the swap partition, and then unmounts
 > it again. Could this action be causing the transid to be incremented
 > somehow?
->
-
-Of course. This means on-disk state is different from in-memory state
-after resuming. You must not access filesystem stored in hibernation
-image before resuming.
-
-File bug report against whatever component does it.
-
-> > /etc/initcpio/hooks/openswap
-> > run_hook ()
-> > {
-> >     ## Optional: To avoid race conditions
-> >     x=3D0;
-> >     while [ ! -b /dev/mapper/cryptroot ] && [ $x -le 10 ]; do
-> >        x=3D$((x+1))
-> >        sleep .2
-> >     done
-> >     ## End of optional
-> >
-> >     mkdir crypto_key_device
-> >     mount /dev/mapper/cryptroot crypto_key_device
-
-What /may/ work is to mount read-only, although even in this case
-btrfs may replay previous transaction. "mount -o ro,nologreplay" may
-work.
-
-> >     cryptsetup open --key-file crypto_key_device/root/key-file /dev/dis=
-k/by-uuid/<UUID> swapDevice
-> >     umount crypto_key_device
-> > }
->
+> 
+>> /etc/initcpio/hooks/openswap
+>> run_hook ()
+>> {
+>>     ## Optional: To avoid race conditions
+>>     x=0;
+>>     while [ ! -b /dev/mapper/cryptroot ] && [ $x -le 10 ]; do
+>>        x=$((x+1))
+>>        sleep .2
+>>     done
+>>     ## End of optional
+>>
+>>     mkdir crypto_key_device
+>>     mount /dev/mapper/cryptroot crypto_key_device
+>>     cryptsetup open --key-file crypto_key_device/root/key-file /dev/disk/by-uuid/<UUID> swapDevice
+>>     umount crypto_key_device
+>> }
+> 
 > The very first line of swsusp[1] has a big fat warning about touching
 > data on the disk between suspend and resume, and in hindsight I
 > imagine this action may count. The openswap hook doesn't write
 > anything, but it's still accessing the disk (however, atime is
 > disabled in my mount options).
->
+> 
 > [1]https://www.kernel.org/doc/Documentation/power/swsusp.txt
->
-> On Tue, 21 Jan 2020 at 14:51, Robbie Smith <zoqaeski@gmail.com> wrote:
-> >
-> > On Tue, 21 Jan 2020 at 14:05, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > >
-> > >
-> > >
-> > > On 2020/1/21 =E4=B8=8A=E5=8D=8810:58, Robbie Smith wrote:
-> > > [...]
-> > > >>
-> > > >> Really hard to say, there are at least 3 things related to this pr=
-oblem.
-> > > >>
-> > > >> - Btrfs itself
-> > > >> - Hibernation
-> > > >> - Dm-crypt (less possible)
-> > > >>
-> > > >> For btrfs, if you have used kernel between version v5.2.0 and v5.2=
-.15,
-> > > >> then it's possible the fs is already corrupted but not detected.
-> > > >>
-> > > >> For the hibernation part, Linux is not the best place to utilize i=
-t for
-> > > >> the first place.
-> > > >> (My ThinkPad X1 Carbon 6th suffers from hibernation, so I rarely u=
-se
-> > > >> suspension/hiberation)
-> > > >>
-> > > >> Since linux development is mostly server oriented, such daily cons=
-umer
-> > > >> operation may not be that well tested.
-> > > >>
-> > > >> Things like Windows updating certain firmware could break the cont=
-roller
-> > > >> behavior and cause unexpected behavior.
-> > > >>
-> > > >> So my personal recommendation is, to avoid hibernation/suspension,=
- use
-> > > >> Windows as little as possible.
-> > > >>
-> > > >> Thanks,
-> > > >> Qu
-> > > >
-> > > > Suspension works flawlessly for me, and hibernation usually does as
-> > > > well. The one thing that has happened both times I've had a failure
-> > > > has been something weird with the power: first time was a static sh=
-ock
-> > > > from walking on carpet and then touching the laptop, second time wa=
-s
-> > > > the BIOS reporting a wattage error with the charger.
-> > >
-> > > This doesn't look correct for ThinkPad T series machine...
-> > >
-> > > >
-> > > > I tried mounting the FS from a live USB and the mount said: "can't
-> > > > read superblock on /dev/mapper/cryptroot" in addition to the transi=
-d
-> > > > failures. Should I try running a `btrfs check --repair`? At this po=
-int
-> > > > I'm pretty much resigned to reinstalling today, so I can't make thi=
-ngs
-> > > > any worse, can I?
-> > >
-> > > Full output please.
-> >
-> > I can't get the output from that mount run as it's lost in the shell
-> > history. Attempting to mount now does nothing and just spits out:
-> > > # mount -t btrfs -o ro,usebackuproot /dev/mapper/cryptroot /mnt/crypt=
-root
-> > > [dmesg timestamp] BTRFS error (device dm-0): parent transid verify fa=
-iled on 223452889088 wanted 144360 found 144376
-> > > [dmesg timestamp] BTRFS error (device dm-0): parent transid verify fa=
-iled on 223452889088 wanted 144360 found 144376
-> >
-> > btrfs check prints the UUID, and that's it.
-> > > # btrfs check /dev/mapper/cryptroot
-> > > Opening filesystem to check...
-> > > Checking filesystem on /dev/mapper/cryptroot
-> > > UUID: 25ac1f63-5986-4eb8-920f-ed7a5354c076
-> >
-> > Attempting a dry-run of btrfs restore gave me these messages. The fact
-> > that it can read some files and find my /home subvolume gives me some
-> > hope.
-> > > # btrfs restore -D /dev/mapper/cryptroot /mnt/restore
-> > > This is a dry-run, no files are going to be restored
-> > > We have looped trying to restore files in /@home/robbie/.cache/chromi=
-um/Default/Code Cache/js too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/chromi=
-um/Default/Cache too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/chromi=
-um/Profile 1/Cache too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/chromi=
-um/Profile 2/Code Cache/js too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/chromi=
-um/Profile 2/Cache too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/thumbn=
-ails/large too many times to be making progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.cache/mozill=
-a/firefox/eedh8ma4.default-release/cache2/entries too many times to be maki=
-ng progress, stopping
-> > > We have looped trying to restore files in /@home/robbie/.config/disco=
-rd/Cache too many times to be making progress, stopping
-> >
-> > I'm going to go get myself a new external drive, reformat it as ext4
-> > or something (what would be the best filesystem to use?=E2=80=94they al=
-ways
-> > come out of the box as NTFS for Windows), and then try restoring my
-> > filesystem to that. Maybe I can recover things before attempting a
-> > `btrfs check --repair`. Worst case scenario then is that I have a few
-> > corrupted files on a spare disk.
-> >
-> > >
-> > > >
-> > > > I've also used kernel between version 5.2.0 and 5.2.15 on both my
-> > > > machines, so does that mean there's a risk of undetected disk error=
-s
-> > > > on my desktop as well?
-> > >
-> > > It's possible.
-> > >
-> > > > I don't have backups of my backups, and all my
-> > > > drives use BTRFS because I like the subvolume/snapshot features. I
-> > > > also don't have a backup of my music/video library because I don't
-> > > > have another 5 TB HDD.
-> > >
-> > > You can just run "btrfs check" from a liveUSB to check if the fs is O=
-K.
-> > >
-> > > Thanks,
-> > > Qu
-> > >
+
+I just tested with a freshly created filesystem. And indeed just
+mounting and unmounting the filesystem writes to the root tree since it
+has to synchronize the freespace cache
