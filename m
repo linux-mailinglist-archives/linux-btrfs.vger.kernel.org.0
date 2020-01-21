@@ -2,29 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1BF1434A0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 00:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F243A1434A7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 01:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgATX7r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jan 2020 18:59:47 -0500
-Received: from mout.gmx.net ([212.227.17.22]:56397 "EHLO mout.gmx.net"
+        id S1727829AbgAUAKO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jan 2020 19:10:14 -0500
+Received: from mout.gmx.net ([212.227.15.18]:55381 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727009AbgATX7q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jan 2020 18:59:46 -0500
+        id S1727045AbgAUAKO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jan 2020 19:10:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1579564784;
-        bh=12tnKBaOdOQGGes5adLVMdMfHVjjkS8cycCZf9scSc4=;
+        s=badeba3b8450; t=1579565411;
+        bh=zRX202gdSHWKiNvRWPfrDyM1vnKcGpdnrahj6YYE0Po=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=LRAatUupUvBVplJyhxKtFk9gclqHHnI9r5t9N8s30nS7HLRbP4ynDfsEukShTVpHj
-         f6nwQEt9g7CtrzP6Ujktob1MgAlByDnCQFk8bY4C+JBC3FKit1nC4KrnBWGJId2Dbu
-         RbqjljTNV2zoEvZz0yqKGah1BXdVuv/KtrqrblPU=
+        b=KyyjXUW5dDIMASZQJciAuw6w0Y4zer3yz9pFaocyojvwZ71anbqrT8WTqcXYzIGh8
+         5V3IX7V5SOaZ7xFaBMajhAUhFy2b37ViYjX1DuEtsuNaV9AAs89uO4cKLBgmbdQHo1
+         j6hvRFeqVLSaGv63pokpCi6ZeFmttieyHc0EpFSQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdebB-1jTIp42bb7-00Zie2; Tue, 21
- Jan 2020 00:59:44 +0100
-Subject: Re: btrfs raid1 balance slow
-To:     kjansen387 <kjansen387@gmail.com>, linux-btrfs@vger.kernel.org
-References: <6bc329d9-6dc5-a4bc-e7c4-eccd377823eb@gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDQeK-1ijHnZ1XF8-00AUsY; Tue, 21
+ Jan 2020 01:10:04 +0100
+Subject: Re: BTRFS failure after resume from hibernate
+To:     Robbie Smith <zoqaeski@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,121 +50,133 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <da1b8f09-648c-3f30-263b-bac314973cb9@gmx.com>
-Date:   Tue, 21 Jan 2020 07:59:40 +0800
+Message-ID: <91be9396-4142-94ba-ea79-0baf8dc4800a@gmx.com>
+Date:   Tue, 21 Jan 2020 08:10:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <6bc329d9-6dc5-a4bc-e7c4-eccd377823eb@gmail.com>
+In-Reply-To: <CACurcBus8d2RYTtVOheAvJcohY5jmP=akKUw1hen5seccfGihA@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="ZYAcigEb0ZXvUh1EkJJ1WIWoU6lO5sMCK"
-X-Provags-ID: V03:K1:0ZN84g6sARhOhVulcTNW7i/Ob4SPeuyoElD65kL1vmTEc6jLV3i
- NYUdIyevm5nzr0ZXe5HOJynGzF7WplQtTHm3WMbzV9dK052outfmQHlQ6qKqmy7a1iD9tQK
- +TJjbJHhrAEAhGKmzQYLENEfKKJQG/EGOGILqhJJzIMh7y4XcxTXd3qyY9n4emho+QGgXQq
- oRsQn8fTtYTkFRkXbDUBQ==
+ boundary="XVHqJHzEN9KEtR35WNLhnRvJJbXvs0AEp"
+X-Provags-ID: V03:K1:a3OjmHFVcAhcM1hI+V7+9S+tbM9+RWxRE4j0rU/jz0bXYmtflm/
+ ze4OvkEQ7dCy+2q1dcNR300wr6zU/ReXbL6ZgcuCwRvCu1ThsoddRchEYZjkdEzv14CGQWf
+ Wsj8lFpirGGybG7p+Gw0hwDdxUtTrBhsZGm3/NSz6QvlnfI2s5RFVOtUY40pYzWVInjT6m1
+ 57Q6TYjGLy2c6odfg0U4g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LDg3j5EnKdQ=:E8HGwMmXRJnwCT1qo3aBzV
- u/3tUnKS+nP0wJxE57qDeMXeKrm/NOk1MsLyUE/oytHu+OTyPxWyo4nrP8Vzr11ALVul3Nf5T
- vwNua4FKQxBLXCfniFb1BCO4+kGhO/z7hBNMlmzO0ptrgMWAKt8shjCjRibkOJm9atiuTjMY8
- vQsJhc2puTvdw9zKuWKaBIMFDjiJRiONwC3btc4Febjg/qdSMpexHOApzMufF8p7Z09YifbYh
- AJWuDCYV9Xy6rwzyHC5ojUXZQXMVNrSZhKnYjPaKbueiHtlNFr+SfIvBEb4CgqjWo4GXPJLR5
- tNnLb4ZTQo6w5FRN0Bv/r4YpeJezbmhZVnESAxPi6Ptw2EpBQ5Jp0m+bJmS75miiE0ngAnn9J
- 16/MtqVqVtf9+KpdAe5RQLjm3StM0Mrm6ATYpzn+Q/Qn+itRA6XiML2jmaxB8vyLJ3NEq/rwg
- b7ambpiiy/pUKBEbG+o12UKeSNKlNKns+5I+oAp6nAmQiufvmeUT8at83QYCSgfF8eZ/aVXCn
- lRrbNiIasZh5iEN0T+mDDpGMSQlYtVWCMm712buPWwzEwD8b1ZzbojfBOQwJAJmDxulDQveAM
- eCmx7ZliXrZ9C1Qm4MCg9QNRy5lCYZlt+dzjAl9Cy1dUD6iV+W5Z+SSxKDulFSOsRZ/g/EgY6
- 0kKYGd9htZKcI2TE3Bqr+KttDhBFcq/bTI9j0QehFKkxziPf8rHbbj1+wv9ftOMHkPKSLK2Ox
- lGt3hCri+NT36kR9XCEgZOb2/wZN/5QqGVEz4i39WMFK7vq4XiGVLtnjAtgktPY57MLuKPNKj
- HXxRu1TQvSL6hsT3zhHHVE5v/Y7ZPZS5e10Qbjid+MYeBqw7dimRTu+tWNn+IzOhdalM/HXR+
- CRUPsoFvsP/ZQSJT4DUv0JA9wwaMM/ZmRWpaLmk2REf06/SLHoopv6OeX5iXkB67pfy+ULars
- 2iBDYKiWr+Xi5qR438Tqs+kvgdetOpx/+B4S/OCRykt4hDEtr/7chgKZSPJdVLZUPX5GMr2eO
- gqqoqW9ZPt5RbKcB/3uPd0v5wLLTJ55YUcRHe9a4KuzaFVxp3BbN30Hb66z+BRgtb8Sczmm9/
- En0uNUS9Dznt/CyoUc9rqpjxExCMVXNkVNXLjJT0K6ecy7+tlvjZqGGMnhPFnV10t4xjeh4dJ
- ZwSr1KOm7PnHOtPaWFbPknvOEWY32jGBEIRU6M3tLlqmDCADUnXXMEkFCWOk0ThXg3M8A/hea
- pGPbn3LoaFFliFc6PAPz0Li16DWewoSm8gI2zJOGdh0fpP3ENKvK3vJpezBI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3XWtYbU9R6s=:iedih5aZL6AtMlxTzW99Yv
+ EJadF9vYPzWiPYXxc0Xj769wCFq3Hn/DHD/yNGPUF9i/pq47D6F/8nDYN+uc/P4otxVVikXzz
+ BwwLfXz0i9VkdHyWI/9GxKQO3V+2o1wmMs7H8tq2V2OH/BQ6VOoOusgA/YU/3K+4rdW8ykoTC
+ cf5SgrxknBAjR7WlvbB+PCH+T5cnd3wUOQhMf9bmSxVDQeVxhHYOQLa3YM1kqcnUZuB55229N
+ p66EhflkQvA9VXNdtqXkhF7qClCR4roX3eppiDktvk/JV+2A14GXTAoTA97fhAXF4RuSZrOA5
+ oc85HWvv8U25qTNTLad6lLFA4khysx3tw5r+Y1LHbqqsZNkrSalLDLuavB2Xc6Z3Eb7mrpCkL
+ 9GGAkmVFFKzKeprjBaKmPB5rTgp6Fm/d7eu07X6mH8eLQ6P7/ImBzSXCxx/gnGXPDLdSvAiX+
+ 8JYI1KKMfvK375dsrUyPjwZ6E2fMSQ4cK9bApEaRpIfkjZdKQ6vCNLi0ucVRJp6jA8iTvLbec
+ 4enER91t0u8rK0MiE5ZK9temqlEuoalz9qALNiBPmTCvr8iM93P/v8q0RuZBu4E2RYyUCkA5b
+ 4Cf5DjiMi/0NWLOVn6cNnVrHYRSQLvlW0rGNU759S1It3lzJq6pG1z+7F0qXrGssaOH1QTjyW
+ fli/c+GIk+DfMG8mMsEZjO1kNWO1Ojl/0oxh7X0oAxoWu1FUV6KGaPwog5JfGwLYTdCE9zDNo
+ Q8PZa1WCKZKOOr+XB2/BWtxSRU9yajcZcGh5AENm70iuM+2JkCWVxFP+/X7Pb8R+1zjXvSdxa
+ 4O7o8II6g8KLgal4GXGQz3Mlxvpp4b+Zttj3QB04LpA3p5gfmMagBkBI9w2cadv10ea6fvMpD
+ f071JxqU7pzaM3wGoiv5tclcZU4IOo7Ay4hV/FmvsnKOpAqKS8G6Yji09QXJ54CXOkBfeixY7
+ ju6bViu839izgiTx8hsuaHsWqjIqxWZltxDmBwqbamB4D1XmiOUeS8v9eHFgzw+rEog6rg6N9
+ 45NepF6hIzRQhF+92ducuj3evMet0h4PrzfpV/SOJX2a6YmDMv6FfxGqHYNl8RE2Wfb0pRyaD
+ P1bM7hhd7X+ZDT7UdNxWLmzqDC6HNJZ3OHqKNZal4oB2R2aJAbS1ERMVSKx/HE0Oeo4LVhYQc
+ sbxh4gALSQ03hT23SBMPQ0mP1G7iVgTZGOAMDB91MTFRgQ9LAYhDoOD3smhtH3HBxRX0oJ7kY
+ NztbMlqdLEeNFu6MBz7JevsIHkG1CK+gUICJykp/oJERNt/+UzmCE3xGvLXw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ZYAcigEb0ZXvUh1EkJJ1WIWoU6lO5sMCK
-Content-Type: multipart/mixed; boundary="p4XNpjCL7o2wIu4UsYOIZfqzrdrMdkphi"
+--XVHqJHzEN9KEtR35WNLhnRvJJbXvs0AEp
+Content-Type: multipart/mixed; boundary="HppIeSNhw3G3kOZQdXXn68398HRIFxDBn"
 
---p4XNpjCL7o2wIu4UsYOIZfqzrdrMdkphi
+--HppIeSNhw3G3kOZQdXXn68398HRIFxDBn
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/1/21 =E4=B8=8A=E5=8D=886:08, kjansen387 wrote:
-> Hello,
+On 2020/1/20 =E4=B8=8B=E5=8D=8810:45, Robbie Smith wrote:
+> I put my laptop into hibernation mode for a few days so I could boot
+> up into Windows 10 to do some things, and upon waking up BTRFS has
+> borked itself, spitting out errors and locking itself into read-only
+> mode. Is there any up-to-date information on how to fix it, short of
+> wiping the partition and reinstalling (which is what I ended up
+> resorting to last time after none of the attempts to fix it worked)?
+> The error messages in my journal are:
 >=20
-> I had a btrfs raid1 with 2 4TB SATA 5400RPM disks . Regular disk I/O is=
+> BTRFS error (device dm-0): parent transid verify failed on
+> 223458705408 wanted 144360 found 144376
 
-> about 2MB/sec per drive, ~40IOPS, mostly write. I had ~150GB free and
-> added one 2 TB disk and started the balance:
+The fs is already corrupted at this point.
+
+> BTRFS critical (device dm-0): corrupt leaf: block=3D223455346688 slot=3D=
+23
+> extent bytenr=3D223451267072 len=3D16384 invalid generation, have 14437=
+6
+> expect (0, 144375]
+
+This is one newer tree-checker added in latest kernel.
+
+It can be fixed with btrfs check in this branch:
+https://github.com/adam900710/btrfs-progs/tree/extent_gen_repair
+
+But that transid error can't be repair, so it doesn't make much sense.
+
+> BTRFS error (device dm-0): block=3D223455346688 read time tree block
+> corruption detected
+> BTRFS error (device dm-0): error loading props for ino 1032412 (root 25=
+8): -5
 >=20
-> btrfs device add -f /dev/sdb /export
-> btrfs filesystem balance /export
->=20
-> It's now running for 24 hours, 70% remaining:
->=20
-> # btrfs balance status -v /export
-> Balance on '/export' is running
-> 1057 out of about 3561 chunks balanced (1058 considered),=C2=A0 70% lef=
-t
-> Dumping filters: flags 0x7, state 0x1, force is off
-> =C2=A0 DATA (flags 0x0): balancing
-> =C2=A0 METADATA (flags 0x0): balancing
-> =C2=A0 SYSTEM (flags 0x0): balancing
->=20
-> I have searched for similar cases, but, I do not have quotas enabled, I=
+> The parent transid messages are repeated a few times. There's nothing
+> fancy about my BTRFS setup: subvolumes are used to emulate my root and
+> home partition. No RAID, no compression, though the partition does sit
+> beneath a dm-crypt layer using LUKS. Hibernation is done onto a
+> separate swap partion on the same drive.
 
-> do not have compression enabled, and my CPU supports sse4_2 . CPU
-> (i7-8700K) is doing fine, 80% idle (average over all threads).
-
-Are you using qgroup?
-
-If so, that would be the cause.
-Please use kernel newer than v5.2, which contains the optimization.
-
->=20
-> Is this normal ? I have to repeat this process 2 times (adding more 2TB=
-
-> disks), any way I can make it faster ?
-
-Just as Hugo said, cancel the current one, add all device, then rebalance=
-=2E
+Please provide the output of "btrfs check" and kernel version.
 
 Thanks,
 Qu
 
 >=20
-> Thanks!
-> Klaas
+> This is the second time in six months this has happened on this
+> laptop. The only other thing I can think of is that the laptop BIOS
+> reported that the charger wasn't supplying the correct wattage, and I
+> have no idea why it would do that=E2=80=94both laptop and charger are n=
+early
+> brand-new, less than a year old. The laptop model is a Lenovo Thinkpad
+> T470.
+>=20
+> I've got backups, but reinstalling is a nuisance and I really don't
+> want to spend a couple of days getting the laptop working again. I
+> don't have a conveniently large drive lying around to mirror this one
+> onto.
+>=20
+> Robbie
 >=20
 
 
---p4XNpjCL7o2wIu4UsYOIZfqzrdrMdkphi--
+--HppIeSNhw3G3kOZQdXXn68398HRIFxDBn--
 
---ZYAcigEb0ZXvUh1EkJJ1WIWoU6lO5sMCK
+--XVHqJHzEN9KEtR35WNLhnRvJJbXvs0AEp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4mPuwACgkQwj2R86El
-/qj3cgf+Lrn31TzP9Lb4jnnNrtlWkxgT2IPS/MHocAsBwSzSiphcTXgpTPY3Hfpb
-mTN7GfIAIxwWoM1mRmcMKU0G7HYS7GF4fXeqLs0P7WgVVVCdpoSwCyvFp3nCbzc7
-1hGV5b75yHncMj2ylja8pjIL5rv/MCkS7KkNcVlz+5ItPlHybvpMMl2cNqJzu8QK
-bPN7uIvoIBH7Y4AELeiOzEl11LI7uaRXwmZMbqZSdeiE3xf8DQ8XxC7neDjvW+Ad
-7klQwz8B+bRbji3+b0NQ2ktOl3mhJfLEqvh19gKYF+8G+lZT52GBayGUAcMcziXx
-Szbe/nqnJGq7zvbliuz4o3xcWG+ZpQ==
-=5KJM
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4mQVgACgkQwj2R86El
+/qjDigf+McV7in0LlOmMGF0xsUOddfX876rSEjjZKxHQ837nXN2vgv7L7WsulcxG
+ZgG8XVbma4oJrZPm57RP/lK/2QPyB7H3KJ29/R0AjO1C6+yCcgJRlKYALwVlphpv
+o96K6ilpth1a7mnRS138NLv8v/6TVhe4IWD5TComV8oUCAMfxUk9/G4R0NT2LKLY
+GUaW4wUjAEKu0eiNmPaXjYY6Rulf90wa+23mg5ersJSsFyAybz8n6+mKPZlXlzjT
+nqLJ1faK+INC2zY8WwMsClR4AqNrVX1cYlj6GsSwGz/OvAr1vWSmtXQdmNyYWaR6
+KxUAmYNIGoOwhW1zNc5GfliWQCFdtA==
+=ZDnw
 -----END PGP SIGNATURE-----
 
---ZYAcigEb0ZXvUh1EkJJ1WIWoU6lO5sMCK--
+--XVHqJHzEN9KEtR35WNLhnRvJJbXvs0AEp--
