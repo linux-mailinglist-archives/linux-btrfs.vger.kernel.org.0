@@ -2,92 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 820C7143E21
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 14:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88488143F35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jan 2020 15:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgAUNjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jan 2020 08:39:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45270 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728709AbgAUNjI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jan 2020 08:39:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8C9D9B3AA;
-        Tue, 21 Jan 2020 13:39:04 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EC64CDA738; Tue, 21 Jan 2020 14:38:48 +0100 (CET)
-Date:   Tue, 21 Jan 2020 14:38:48 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: do not do delalloc reservation under page lock
-Message-ID: <20200121133848.GS3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200117184457.1343-1-josef@toxicpanda.com>
+        id S1728904AbgAUORJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jan 2020 09:17:09 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34288 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727508AbgAUORJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jan 2020 09:17:09 -0500
+Received: by mail-qt1-f196.google.com with SMTP id 5so2714074qtz.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jan 2020 06:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ag4oI6KBx3FJ4Ncfn5yX6ZuIHFGW+Au3X/wQSsh1740=;
+        b=Alh5iavJuBIxmLqBcns7HIs/g0oxLBv5SPvvYRnzMllJHv9WE3zBlkYyBa4kaVT1DD
+         kxBwvosfAekQa78q6JIhIpV5t+jQIypY/55buFr8JUw+LXK38aB8ZQslA17/9IFAXh0w
+         IjAjpmcZzMVf4BV1RoC44NpXEetVuVjhhv2wC6U9Aew5lwybGIxEla4lw5pOtvEdSeuG
+         yQ8V1jKlpDEUrLdIOBTL1tmoXLaiknduEc5+DlPBqTpk+Bf8HtxQbH9gr9bNKRpKbiJA
+         OJvOJDhfI850t3978yR/PGFxZRqCjEK1nZiyQnJawMqi2AUGfIVMGuK+UZyRD6CyHLDI
+         1c5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ag4oI6KBx3FJ4Ncfn5yX6ZuIHFGW+Au3X/wQSsh1740=;
+        b=ra9bMgW1sjjkPRIcOqDoSovozLpjppzrShcSh2HDrH/+G6C26vxqtMJhjTcbheDQmw
+         lj/ky7sQmdqSwqOIXgFTPymTifj0n0hditi0/3Go4T4azIZzBGCZr4mHKMoidNiLGafg
+         51qBX2NWy21ese/fthVgLQfU9prV6E8YslCLuFKLU7rpolqzzb4EZ5lWGWgRbMHOv08U
+         2F7XQa0aLJfKbkF4W2nxkhwjxsCqqtIby11eJQbcPVbFV7AFGKlBQJwUlKoJiE1Nccdd
+         MC5/uoapWL+YA15xy9N64HVYiMgxTWhkdZbOFxTe66mcyz5svmH8tCEC4rwj4YswPGbb
+         uHRw==
+X-Gm-Message-State: APjAAAVhcsZUSvQE2WJn+4DZ6E+Q+RTM8Ito32fWg6l3TV15Dy88KOXV
+        dp7l22c1I/nB5y6aoeprkJxhXyOEXbmAuw==
+X-Google-Smtp-Source: APXvYqxeu7s59zq0LQfGbDpR79L102KVLxz3/5ruKEZAeoZG1UYcZLzMv600HWuILXC60W7Uqq4VDQ==
+X-Received: by 2002:ac8:5159:: with SMTP id h25mr4691303qtn.249.1579616227981;
+        Tue, 21 Jan 2020 06:17:07 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id f97sm19607820qtb.18.2020.01.21.06.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jan 2020 06:17:07 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][v2] btrfs: free block groups after free'ing fs trees
+Date:   Tue, 21 Jan 2020 09:17:06 -0500
+Message-Id: <20200121141706.2173895-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200117184457.1343-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 01:44:57PM -0500, Josef Bacik wrote:
-> We ran into a deadlock in production with the fixup worker.  The stack
-> traces were as follows
-> 
-> Thread responsible for the writeout, waiting on the page lock
-> 
-> [<0>] io_schedule+0x12/0x40
-> [<0>] __lock_page+0x109/0x1e0
-> [<0>] extent_write_cache_pages+0x206/0x360
-> [<0>] extent_writepages+0x40/0x60
-> [<0>] do_writepages+0x31/0xb0
-> [<0>] __writeback_single_inode+0x3d/0x350
-> [<0>] writeback_sb_inodes+0x19d/0x3c0
-> [<0>] __writeback_inodes_wb+0x5d/0xb0
-> [<0>] wb_writeback+0x231/0x2c0
-> [<0>] wb_workfn+0x308/0x3c0
-> [<0>] process_one_work+0x1e0/0x390
-> [<0>] worker_thread+0x2b/0x3c0
-> [<0>] kthread+0x113/0x130
-> [<0>] ret_from_fork+0x35/0x40
-> [<0>] 0xffffffffffffffff
-> 
-> Thread of the fixup worker who is holding the page lock
-> 
-> [<0>] start_delalloc_inodes+0x241/0x2d0
-> [<0>] btrfs_start_delalloc_roots+0x179/0x230
-> [<0>] btrfs_alloc_data_chunk_ondemand+0x11b/0x2e0
-> [<0>] btrfs_check_data_free_space+0x53/0xa0
-> [<0>] btrfs_delalloc_reserve_space+0x20/0x70
-> [<0>] btrfs_writepage_fixup_worker+0x1fc/0x2a0
-> [<0>] normal_work_helper+0x11c/0x360
-> [<0>] process_one_work+0x1e0/0x390
-> [<0>] worker_thread+0x2b/0x3c0
-> [<0>] kthread+0x113/0x130
-> [<0>] ret_from_fork+0x35/0x40
-> [<0>] 0xffffffffffffffff
-> 
-> Thankfully the stars have to align just right to hit this.  First you
-> have to end up in the fixup worker, which is tricky by itself (my
-> reproducer does DIO reads into a MMAP'ed region, so not a common
-> operation).  Then you have to have less than a page size of free data
-> space and 0 unallocated space so you go down the "commit the transaction
-> to free up pinned space" path.  This was accomplished by a random
-> balance that was running on the host.  Then you get this deadlock.
-> 
-> I'm still in the process of trying to force the deadlock to happen on
-> demand, but I've hit other issues.  I can still trigger the fixup worker
-> path itself so this patch has been tested in that regard, so the normal
-> case is fine.
-> 
-> Fixes: 87826df0ec36 ("btrfs: delalloc for page dirtied out-of-band in fixup worker")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Sometimes when running generic/475 we would trip the
+WARN_ON(cache->reserved) check when free'ing the block groups on umount.
+This is because sometimes we don't commit the transaction because of IO
+errors and thus do not cleanup the tree logs until at umount time.
+These blocks are still reserved until they are cleaned up, but they
+aren't cleaned up until _after_ we do the free block groups work.  Fix
+this by moving the free after free'ing the fs roots, that way all of the
+tree logs are cleaned up and we have a properly cleaned fs.  A bunch of
+loops of generic/475 confirmed this fixes the problem.
 
-Added to misc-next, thanks.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- Add a comment to make sure we don't re-order the block group freeing.
+
+ fs/btrfs/disk-io.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index d453bdc74e91..56d0a24aec74 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4056,12 +4056,19 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+ 	btrfs_stop_all_workers(fs_info);
+ 
+-	btrfs_free_block_groups(fs_info);
+-
+ 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+ 	free_root_pointers(fs_info, true);
+ 	btrfs_free_fs_roots(fs_info);
+ 
++	/*
++	 * We must free the block groups after dropping the fs_roots as we could
++	 * have had an IO error and have left over tree log blocks that aren't
++	 * cleaned up until the fs roots are freed.  This makes the block group
++	 * accounting appear to be wrong because there's pending reserved bytes,
++	 * so make sure we do the block group cleanup afterwards.
++	 */
++	btrfs_free_block_groups(fs_info);
++
+ 	iput(fs_info->btree_inode);
+ 
+ #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+-- 
+2.24.1
+
