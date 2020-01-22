@@ -2,25 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B52ED14531C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 11:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B214531F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 11:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgAVKsc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 05:48:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50776 "EHLO mx2.suse.de"
+        id S1729108AbgAVKtI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 05:49:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51052 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729037AbgAVKsc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 05:48:32 -0500
+        id S1726232AbgAVKtI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 05:49:08 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3F49EB3E7;
-        Wed, 22 Jan 2020 10:48:30 +0000 (UTC)
-Subject: Re: [PATCH 36/43] btrfs: hold a ref on the root in open_ctree
+        by mx2.suse.de (Postfix) with ESMTP id 89AE5B3F0;
+        Wed, 22 Jan 2020 10:49:05 +0000 (UTC)
+Subject: Re: [PATCH 39/43] btrfs: free more things in btrfs_free_fs_info
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-37-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <20200117212602.6737-40-josef@toxicpanda.com>
+ <84ac98f6-b287-9d7c-56a3-d024bd2acab8@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <a70785a6-a30f-ab95-b6c4-dbd24528df9c@suse.com>
-Date:   Wed, 22 Jan 2020 12:48:02 +0200
+Message-ID: <b0a584be-111b-5d43-7d63-3950df74b3e2@suse.com>
+Date:   Wed, 22 Jan 2020 12:49:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-37-josef@toxicpanda.com>
+In-Reply-To: <84ac98f6-b287-9d7c-56a3-d024bd2acab8@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,13 +80,22 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> We lookup the fs_root and put it in our fs_info directly, we should hold
-> a ref on this root for the lifetime of the fs_info.  Rework the free'ing
-> function so that it calls btrfs_put_fs_root() on the root at free time
-> with all of the other global trees.
+On 22.01.20 г. 12:23 ч., Nikolay Borisov wrote:
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
+>> Things like the percpu_counters, the mapping_tree, and the csum hash can
+>> all be free'd at btrfs_free_fs_info time, since the helpers all check if
+> 
+> There is no btrfs_free_fs_info but just free_fs_info. What tree is this
+> patch based on?
 
-So you not only hold a ref here but also refactor some cleanup code.
-This definitely needs to be split into separate patches.
+
+Ok I saw you have sneaked this function in 36/40. I have provided
+feedback there, you can ignore this comment.
+
+> 
+>> the structure has been init'ed already.  This significantly cleans up
+>> the error cases in open_ctree.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
