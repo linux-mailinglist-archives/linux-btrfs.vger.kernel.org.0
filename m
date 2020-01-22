@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BCC144E94
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C8F144E9B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbgAVJWu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 04:22:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52498 "EHLO mx2.suse.de"
+        id S1726083AbgAVJZT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 04:25:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53546 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbgAVJWu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:22:50 -0500
+        id S1725911AbgAVJZS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:25:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4B55CB29A;
-        Wed, 22 Jan 2020 09:22:48 +0000 (UTC)
-Subject: Re: [PATCH 05/43] btrfs: make relocation use btrfs_read_tree_root()
+        by mx2.suse.de (Postfix) with ESMTP id 797EAAAFD;
+        Wed, 22 Jan 2020 09:25:16 +0000 (UTC)
+Subject: Re: [PATCH 06/43] btrfs: kill btrfs_read_fs_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-6-josef@toxicpanda.com>
+ <20200117212602.6737-7-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <3d60cb54-b0c5-4156-32ad-5dbf5a32e0da@suse.com>
-Date:   Wed, 22 Jan 2020 11:22:46 +0200
+Message-ID: <bfa182d1-ae84-94a7-cde5-9be77367d644@suse.com>
+Date:   Wed, 22 Jan 2020 11:25:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-6-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-7-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,56 +80,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> Relocation has it's special roots, we don't want to save these in the
-> root cache either, so swap it to use btrfs_read_tree_roo().  However the
-
-btrfs_read_fs_root has really turned into a simple wrapper across
-btrfs_read_tree_root so that's the main reason why you convert it.
-
-> reloc root does need REF_COWS set, so make sure we set it everywhere we
-> use this helper, as it no longer does the REF_COWS setting.
+> All helpers should either be using btrfs_get_fs_root() or
+> btrfs_read_tree_root().
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-
-The only thing that this sequence misses is calling
-btrfs_check_and_init_root_item, but since it's used to work around a bug
-in older btrfs versions We can simply ignore it. LGTM:
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/relocation.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 995d4b8b1cfd..aa3aa8e0c0ea 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1447,8 +1447,9 @@ static struct btrfs_root *create_reloc_root(struct btrfs_trans_handle *trans,
->  	BUG_ON(ret);
->  	kfree(root_item);
->  
-> -	reloc_root = btrfs_read_fs_root(fs_info->tree_root, &root_key);
-> +	reloc_root = btrfs_read_tree_root(fs_info->tree_root, &root_key);
->  	BUG_ON(IS_ERR(reloc_root));
-> +	set_bit(BTRFS_ROOT_REF_COWS, &reloc_root->state);
->  	reloc_root->last_trans = trans->transid;
->  	return reloc_root;
->  }
-> @@ -4537,12 +4538,13 @@ int btrfs_recover_relocation(struct btrfs_root *root)
->  		    key.type != BTRFS_ROOT_ITEM_KEY)
->  			break;
->  
-> -		reloc_root = btrfs_read_fs_root(root, &key);
-> +		reloc_root = btrfs_read_tree_root(root, &key);
->  		if (IS_ERR(reloc_root)) {
->  			err = PTR_ERR(reloc_root);
->  			goto out;
->  		}
->  
-> +		set_bit(BTRFS_ROOT_REF_COWS, &reloc_root->state);
->  		list_add(&reloc_root->root_list, &reloc_roots);
->  
->  		if (btrfs_root_refs(&reloc_root->root_item) > 0) {
-> 
