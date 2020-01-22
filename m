@@ -2,90 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E205145167
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5480145152
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgAVJed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 04:34:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58506 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730867AbgAVJea (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:34:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F1486B3B9;
-        Wed, 22 Jan 2020 09:34:28 +0000 (UTC)
-Subject: Re: [PATCH 09/43] btrfs: handle NULL roots in
- btrfs_put/btrfs_grab_fs_root
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-10-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <bbaba05d-01a1-4f36-614b-fc77eb71913b@suse.com>
-Date:   Wed, 22 Jan 2020 11:34:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1731669AbgAVJxb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 04:53:31 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39238 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730138AbgAVJxa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:53:30 -0500
+Received: by mail-qk1-f194.google.com with SMTP id c16so5783895qko.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2020 01:53:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=1OTCzRuZLXKgKtG0YjZ5OtZ6bjyEuVtHenJ+Tqkqok8=;
+        b=Vvcyg9ajPsGRqCg5vdCGGcjfjAwjtzP/XrC9OXM+74J+BGbkz5db2jdC1DSBy4VrkK
+         d6bI/BfgJcluwR/H6IW/7ALxNhTimaWCWEsHeD6ZtJ+Wko5tT9l3CLI8hA2pYvSFocBw
+         uVswg+yB2qWezZxvzu5aBt3/RNuIvwlumYnSad1U5NtUeIo6qKFcLNUHoc6af4lz0iIa
+         PiANNRayTWL+/K5Jd9cPBoT4T6cTbf4Zx1Z6UyHi7/s5/trmcXSv/aC8xtyVpwh1bEjN
+         s4Zsb8X5P98sldXGefPzLnOZKbdIPgtdYsUc8wRcuMe07Ot5kQ6q1D1I5Cbu0pxraH+m
+         elCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=1OTCzRuZLXKgKtG0YjZ5OtZ6bjyEuVtHenJ+Tqkqok8=;
+        b=bGiISBJAOSS8HRnIg4ahstUwHEk+EfVesVYB1yN4a/vxJx4LHcSxha721t++SWUTAl
+         6utggex/uXv8Gq3QWRZkyLE+o/eb9jzAiaDU++y4LW2qb1ppkgy+8JLPUtqKjVduWuHY
+         7RM3cVMzLMRCPcC6yoP6wZZwhP5cK4afWhCgEqw3hYkRpV2UKs7vh2wJsfrm0uWz9lM9
+         vzxBGd7AB6snHtzNx08sZXzkcOfC7yqdntjDXFHcodcpwx/Ih9PEghxISablsLmmExrU
+         qoWuWFf6GxHEehW9QFOk3aR6LWrBlkEtZLI3wLLc1KFi5QtRMGRuaPd24Il9i7Fyko2v
+         5tmQ==
+X-Gm-Message-State: APjAAAWef1YSHZOOHqyfMMxlXc+BdvVOtx7LFhgvtt/wCMJU5hqwfeqc
+        XjFyiiaY1Q3f/TBW/mniuB+4jgXOMOSVN5CyEAg=
+X-Google-Smtp-Source: APXvYqwNDvhQB6R3RyAHJkaIl8lcJVqzOVU+RM3Yh9hSZxSTO491gCBMCBZCctxDAuu0EUQ4Y9p+wvrzFrikeGOOxCE=
+X-Received: by 2002:ae9:e206:: with SMTP id c6mr9276479qkc.105.1579686809756;
+ Wed, 22 Jan 2020 01:53:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-10-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a0c:c382:0:0:0:0:0 with HTTP; Wed, 22 Jan 2020 01:53:29
+ -0800 (PST)
+Reply-To: aishagaddafi969@aol.com
+From:   AISHA GADDAFI <aishagddafi680@gmail.com>
+Date:   Wed, 22 Jan 2020 01:53:29 -0800
+Message-ID: <CAO3JireTMvH=8kSkqY9LojM84G76PBn1iQi6X9jrra4-i740vw@mail.gmail.com>
+Subject: Dear Friend (Assalamu Alaikum),
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+-- 
+Dear Friend (Assalamu Alaikum),
 
+I came across your e-mail contact prior a private search while in need of
+your assistance. My name is Aisha  Al-Qaddafi a single Mother and a Widow
+with three Children. I am the only biological Daughter of late Libyan
+President (Late Colonel Muammar Gaddafi).
 
-On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> We want to use this for dropping all roots, and in some error cases we
-> may not have a root, so handle this to make the cleanup code easier.
-> Make btrfs_grab_fs_root the same so we can use it in cases where the
-> root may not exist (like the quota root).
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+I have investment funds worth Twenty Seven Million Five Hundred Thousand
+United State Dollar ($27.500.000.00 ) and i need a trusted investment
+Manager/Partner because of my current refugee status, however, I am
+interested in you for investment project assistance in your country, may be
+from there, we can build business relationship in the nearest future.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com
+I am willing to negotiate investment/business profit sharing ratio with you
+base on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply urgent
+to enable me provide you more information about the investment funds.
+
+Your Urgent Reply Will Be Appreciated. write me at this email address(
+aishagaddafi969@aol.com ) for further discussion.
+
+Best Regards
+Mrs Aisha Al-Qaddafi
+Reply to: aishagaddafi969@aol.com
