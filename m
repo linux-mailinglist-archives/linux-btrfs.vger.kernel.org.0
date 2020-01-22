@@ -2,83 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6A4145B28
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 18:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075E8145CD3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 21:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgAVRw4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 12:52:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58376 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729009AbgAVRwx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 12:52:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CC0E6ACD9;
-        Wed, 22 Jan 2020 17:52:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DA558DA730; Wed, 22 Jan 2020 18:52:35 +0100 (CET)
-Date:   Wed, 22 Jan 2020 18:52:35 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     damenly.su@gmail.com
-Cc:     linux-btrfs@vger.kernel.org, Su Yue <Damenly_Su@gmx.com>
-Subject: Re: [PATCH V2 00/10] unify origanization structure of block group
- cache
-Message-ID: <20200122175235.GC3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org, Su Yue <Damenly_Su@gmx.com>
-References: <20191218051849.2587-1-Damenly_Su@gmx.com>
+        id S1725928AbgAVUEX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 15:04:23 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43257 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgAVUEX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 15:04:23 -0500
+Received: by mail-qk1-f195.google.com with SMTP id j20so982799qka.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jan 2020 12:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=FVMhGCt+Sg/Kqxsw3LxH1h2SZg6PdiYMyHge9+43rr8=;
+        b=dr6SNkH74gkSoTs4zlbx/2efaEINLQyuxUbTtsxiiDrJ7pm08psAAhCNCib4mf8rrn
+         iSyqtDaELCB6qSs4X8RmYWo9MvnwFWsDcBKwU7W2pvack25N6F9JzbP6ZvZZ5fbZFVsi
+         nJd3cjzU7Kaa2w8bLusc2w494s0PPT/c5GPPdM3DCWZ2mHCRkceP26LTACkaRbqpxRcV
+         1fWJ+Gzm6iEpzUcQst91IeZU9FlUfWRsk65fiolKkU+LHDkGz5c4opL3jNbsqbpHaBAs
+         aWSovLhvsQQ2jKAnizjl2TSJ7zmWdr2xjUiRlZtRwEPYkzZsEWaLszEp3N1aNFUj1CDn
+         jQeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FVMhGCt+Sg/Kqxsw3LxH1h2SZg6PdiYMyHge9+43rr8=;
+        b=FLptmFyiG6ubqj88S7IB6zlVjvuQ5htQQJu20yw//cXSIO0eaRa7ZDHmZ5m4BFnp9f
+         msiKSP8B43+1sutgFUAt/L6HGEuux2gwMzBVdex7bUuKz9rq1CWmE79DjGLO+Z076RA/
+         F5aXCL2fC//9AnImbPLH2TB5VeQj6/IVUgDIba06aI2lDuFPV2uN4Nm5TY/ID+QMfih8
+         l0Z2wSnkCdh8DUDPaA1M+UjJqxUkxPX5xc1zGPgmshqdJV3kM29216ty1sjMSmetkJUd
+         0vTK8XNiHXMdGKaU/MVeViHOuGZiNiaBuaTplLKgqNq7elg8rB2dAD/unoRoF39aN8DP
+         Gpng==
+X-Gm-Message-State: APjAAAV266wZp/3tOy64Qe5SCwxTasilBGSHf9q8XfQEdtbCFHqHpGag
+        WU/3wCwoTVZF2XZarmqTBYmtGegRjmsYrQ==
+X-Google-Smtp-Source: APXvYqw1Hx9CfOSnlhMM7I4sp6pmIVQpWn0MflIB9ftFc0J7En9SL2VwyHmaSt55ueXTBYWElCJ6VQ==
+X-Received: by 2002:a37:4a0d:: with SMTP id x13mr12308914qka.332.1579723461917;
+        Wed, 22 Jan 2020 12:04:21 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::7e55])
+        by smtp.gmail.com with ESMTPSA id r6sm21025455qtm.63.2020.01.22.12.04.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jan 2020 12:04:21 -0800 (PST)
+Subject: Re: [PATCH 03/11] btrfs: Introduce unaccount_log_buffer
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200120140918.15647-1-nborisov@suse.com>
+ <20200120140918.15647-4-nborisov@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <dd255624-ebd9-b683-6e5c-016831b0d37b@toxicpanda.com>
+Date:   Wed, 22 Jan 2020 15:04:14 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218051849.2587-1-Damenly_Su@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200120140918.15647-4-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 01:18:39PM +0800, damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
+On 1/20/20 9:09 AM, Nikolay Borisov wrote:
+> This function correctly adjusts the reserved bytes occupied by a
+> log tree extent buffer. It will be used instead of calling
+> btrfs_pin_reserved_extent.
 > 
-> In progs, block group caches are stored in btrfs_fs_info::block_group_cache
-> whose type is cache_extent. All block group caches adding/finding/freeing
-> are done in the misleading set/clear_extent_bits ways. However, kernel
-> side uses red-black tree structure in btrfs_fs_info directly. The
-> latter's structure is more reasonable and intuitive.
-> 
-> This patchset transforms structure of block group caches from cache_extent
-> to red-black tree and list.
-> 
-> patch[1] handles error to avoid warning after reform.
-> patch[2-6] are about rb tree reform things in preparation.
-> patch[7-8] are about dirty block groups linked in transaction in preparation.
-> patch[9] does replace works in action.
-> patch[10] does cleanup.
-> 
-> This patchset passed progs tests and did not cause any regression.
-> 
-> ---
-> Changelog:
-> v2:
->    Adjust block group cache tree seach and lookup functions to
->    progs behaviors.
->    Use rbtree_postorder_for_each_entry_safe() in patch[9] (Qu WenRuo).
->    Add reviewed-by tags.
-> 
-> Su Yue (10):
->   btrfs-progs: handle error if btrfs_write_one_block_group() failed
->   btrfs-progs: block_group: add rb tree related memebers
->   btrfs-progs: port block group cache tree insertion and lookup
->     functions
->   btrfs-progs: reform the function block_group_cache_tree_search()
->   btrfs-progs: adjust ported block group lookup functions in kernel
->     version
->   btrfs-progs: abstract function btrfs_add_block_group_cache()
->   block-progs: block_group: add dirty_bgs list related memebers
->   btrfs-progs: pass @trans to functions touch dirty block groups
->   btrfs-progs: reform block groups caches structure
->   btrfs-progs: cleanups after block group cache reform
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-As the patches were reviewed by Qu, I've added them to devel. I've
-folded patch 5 to 4 as suggested. Thanks.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
