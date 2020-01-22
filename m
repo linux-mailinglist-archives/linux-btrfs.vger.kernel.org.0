@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 438CC14521B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 11:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFE914527A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 11:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgAVKGd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 05:06:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52912 "EHLO mx2.suse.de"
+        id S1729113AbgAVKXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 05:23:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37018 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729016AbgAVKGc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 05:06:32 -0500
+        id S1727847AbgAVKXt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 05:23:49 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7779EAF2D;
-        Wed, 22 Jan 2020 10:06:30 +0000 (UTC)
-Subject: Re: [PATCH 10/43] btrfs: hold a ref on fs roots while they're in the
- radix tree
+        by mx2.suse.de (Postfix) with ESMTP id B7CBFB365;
+        Wed, 22 Jan 2020 10:23:45 +0000 (UTC)
+Subject: Re: [PATCH 39/43] btrfs: free more things in btrfs_free_fs_info
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-11-josef@toxicpanda.com>
+ <20200117212602.6737-40-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <d5f0c8ec-1147-fb20-88b3-5dbc8cc164ca@suse.com>
-Date:   Wed, 22 Jan 2020 12:06:29 +0200
+Message-ID: <84ac98f6-b287-9d7c-56a3-d024bd2acab8@suse.com>
+Date:   Wed, 22 Jan 2020 12:23:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-11-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-40-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,10 +80,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> If we're sitting in the radix tree, we should probably have a ref for
-> the radix tree.  Grab a ref on the root when we insert it, and drop it
-> when it gets deleted.
+> Things like the percpu_counters, the mapping_tree, and the csum hash can
+> all be free'd at btrfs_free_fs_info time, since the helpers all check if
+
+There is no btrfs_free_fs_info but just free_fs_info. What tree is this
+patch based on?
+
+> the structure has been init'ed already.  This significantly cleans up
+> the error cases in open_ctree.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
