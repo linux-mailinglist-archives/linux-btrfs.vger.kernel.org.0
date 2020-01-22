@@ -2,100 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C80EE144D58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 09:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB044144DCD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 09:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgAVIWA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 03:22:00 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:51989 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725868AbgAVIWA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 03:22:00 -0500
-Received: from dread.disaster.area (pa49-181-218-253.pa.nsw.optusnet.com.au [49.181.218.253])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4087E82054C;
-        Wed, 22 Jan 2020 19:21:56 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iuBGt-0002mm-AC; Wed, 22 Jan 2020 19:21:55 +1100
-Date:   Wed, 22 Jan 2020 19:21:55 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        xfs <xfs@e29208.dscx.akamaiedge.net>,
-        Steve French <smfrench@gmail.com>, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lsf-pc@lists.linux-foundation.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [Lsf-pc] [LFS/MM TOPIC] fs reflink issues, fs online
- scrub/check, etc
-Message-ID: <20200122082155.GA9317@dread.disaster.area>
-References: <20160210191715.GB6339@birch.djwong.org>
- <20160210191848.GC6346@birch.djwong.org>
- <CAH2r5mtM2nCicTKGFAjYtOG92TKKQdTbZxaD-_-RsWYL=Tn2Nw@mail.gmail.com>
- <0089aff3-c4d3-214e-30d7-012abf70623a@gmx.com>
- <CAOQ4uxjd-YWe5uHqfSW9iSdw-hQyFCwo84cK8ebJVJSY_vda3Q@mail.gmail.com>
- <20200121161840.GA8236@magnolia>
- <20200121220112.GB14467@bombadil.infradead.org>
- <CAPcyv4iPX4fDZGFwCkJxMDc-+1DjOMVZYVqnE=XTZpis6ZLFww@mail.gmail.com>
+        id S1725970AbgAVIhC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 03:37:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725868AbgAVIhC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 03:37:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 987DAAE0D;
+        Wed, 22 Jan 2020 08:36:59 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH RFC] btrfs: scrub: Mandatory RO block group for device replace
+Date:   Wed, 22 Jan 2020 16:36:28 +0800
+Message-Id: <20200122083628.16331-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4iPX4fDZGFwCkJxMDc-+1DjOMVZYVqnE=XTZpis6ZLFww@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=TU0PeEMO9XNyODJ+pEfdLw==:117 a=TU0PeEMO9XNyODJ+pEfdLw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=Jdjhy38mL1oA:10
-        a=JfrnYn6hAAAA:8 a=7YfXLusrAAAA:8 a=7-415B0cAAAA:8 a=S4ei3vxw9mJ_NyWoTJ0A:9
-        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=SLz71HocmBbuEhFRYD3r:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 04:47:27PM -0800, Dan Williams wrote:
-> On Tue, Jan 21, 2020 at 2:02 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Jan 21, 2020 at 08:18:40AM -0800, Darrick J. Wong wrote:
-> > > On Tue, Jan 21, 2020 at 09:35:22AM +0200, Amir Goldstein wrote:
-> > > > On Tue, Jan 21, 2020 at 3:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > > > >
-> > > > > Didn't see the original mail, so reply here.
-> > > >
-> > > > Heh! Original email was from 2016, but most of Darrick's wish list is
-> > > > still relevant in 2020 :)
-> > >
-> > > Grumble grumble stable behavior of clonerange/deduperange ioctls across
-> > > filesystems grumble grumble.
-> > >
-> > > > I for one would be very interested in getting an update on the
-> > > > progress of pagecache
-> > > > page sharing if there is anyone working on it.
-> > >
-> > > Me too.  I guess it's the 21st, I should really send in a proposal for
-> > > *this year's* LSFMMBPFLOLBBQ.
-> >
-> > I still have Strong Opinions on how pagecache page sharing should be done
-> > ... and half a dozen more important projects ahead of it in my queue.
-> > So I have no update on this.
-> 
-> We should plan to huddle on this especially if I don't get an RFC for
-> dax-reflink support out before the summit.
+[BUG]
+btrfs/06[45] btrfs/071 could fail by finding csum error.
+The reproducibility is not high, around 1/20~1/100, needs to run them in
+loops.
 
-It would be a good idea to share your ideas about how you plan to
-solve this problem earlier rather than later so you don't waste time
-going down a path that is incompatible with what the filesystems
-need to/want to/can do.
+And the profile doesn't make much difference, SINGLE/SINGLE can also
+reproduce the problem.
 
-Cheers,
+The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
+check free space before marking a block group RO")
 
-Dave.
+[CAUSE]
+Device replace reuses scrub code to iterate existing extents.
+
+It adds scrub_write_block_to_dev_replace() to scrub_block_complete(), so
+that scrub read can write the verified data to target device.
+
+Device replace also utilizes "write duplication" to write new data to
+both source and target device.
+
+However those two write can conflict and may lead to data corruption:
+- Scrub writes old data from commit root
+  Both extent location and csum are fetched from commit root, which
+  is not always the up-to-date data.
+
+- Write duplication is always duplicating latest data
+
+This means there could be a race, that "write duplication" writes the
+latest data to disk, then scrub write back the old data, causing data
+corruption.
+
+In theory, this should only affects data, not metadata.
+Metadata write back only happens when committing transaction, thus it's
+always after scrub writes.
+
+[FIX]
+Make dev-replace to require mandatory RO for target block group.
+
+And to be extra safe, for dev-replace, wait for all exiting writes to
+finish before scrubbing the chunk.
+
+This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue replace
+when set_block_ro failed").
+ENOSPC for dev-replace is still much better than data corruption.
+
+Reported-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed")
+Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before marking a block group RO")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Not concretely confirmed, mostly through guess, thus it has RFC tag.
+
+My first guess is race at the dev-replace starting point, but related
+code is in fact very safe.
+---
+ fs/btrfs/scrub.c | 35 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 32 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 21de630b0730..69e76a4d1258 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3472,6 +3472,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 	struct btrfs_path *path;
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
+ 	struct btrfs_root *root = fs_info->dev_root;
++	bool is_dev_replace = sctx->is_dev_replace;
+ 	u64 length;
+ 	u64 chunk_offset;
+ 	int ret = 0;
+@@ -3577,17 +3578,35 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 		 * This can easily boost the amount of SYSTEM chunks if cleaner
+ 		 * thread can't be triggered fast enough, and use up all space
+ 		 * of btrfs_super_block::sys_chunk_array
++		 *
++		 *
++		 * On the other hand, try our best to mark block group RO for
++		 * dev-replace case.
++		 *
++		 * Dev-replace has two types of write:
++		 * - Write duplication
++		 *   New write will be written to both target and source device
++		 *   The content is always the *newest* data.
++		 * - Scrub write for dev-replace
++		 *   Scrub will write the verified data for dev-replace.
++		 *   The data and its csum are all from *commit* root, which
++		 *   is not the newest version.
++		 *
++		 * If scrub write happens after write duplication, we would
++		 * cause data corruption.
++		 * So we need to try our best to mark block group RO, and exit
++		 * out if we don't have enough space.
+ 		 */
+-		ret = btrfs_inc_block_group_ro(cache, false);
++		ret = btrfs_inc_block_group_ro(cache, is_dev_replace);
+ 		scrub_pause_off(fs_info);
+ 
+ 		if (ret == 0) {
+ 			ro_set = 1;
+-		} else if (ret == -ENOSPC) {
++		} else if (ret == -ENOSPC && !is_dev_replace) {
+ 			/*
+ 			 * btrfs_inc_block_group_ro return -ENOSPC when it
+ 			 * failed in creating new chunk for metadata.
+-			 * It is not a problem for scrub/replace, because
++			 * It is not a problem for scrub, because
+ 			 * metadata are always cowed, and our scrub paused
+ 			 * commit_transactions.
+ 			 */
+@@ -3605,6 +3624,16 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 		dev_replace->item_needs_writeback = 1;
+ 		up_write(&dev_replace->rwsem);
+ 
++		/*
++		 * Also wait for any exitings writes to prevent race between
++		 * write duplication and scrub writes.
++		 */
++		if (is_dev_replace) {
++			btrfs_wait_block_group_reservations(cache);
++			btrfs_wait_nocow_writers(cache);
++			btrfs_wait_ordered_roots(fs_info, U64_MAX,
++					cache->start, cache->length);
++		}
+ 		ret = scrub_chunk(sctx, scrub_dev, chunk_offset, length,
+ 				  found_key.offset, cache);
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.25.0
+
