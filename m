@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C8F144E9B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F03144EA0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726083AbgAVJZT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 04:25:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53546 "EHLO mx2.suse.de"
+        id S1726078AbgAVJ0U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 04:26:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53854 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbgAVJZS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:25:18 -0500
+        id S1725911AbgAVJ0U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:26:20 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 797EAAAFD;
-        Wed, 22 Jan 2020 09:25:16 +0000 (UTC)
-Subject: Re: [PATCH 06/43] btrfs: kill btrfs_read_fs_root
+        by mx2.suse.de (Postfix) with ESMTP id A71A8ACEF;
+        Wed, 22 Jan 2020 09:26:18 +0000 (UTC)
+Subject: Re: [PATCH 07/43] btrfs: kill the btrfs_read_fs_root_no_name helper
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-7-josef@toxicpanda.com>
+ <20200117212602.6737-8-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <bfa182d1-ae84-94a7-cde5-9be77367d644@suse.com>
-Date:   Wed, 22 Jan 2020 11:25:15 +0200
+Message-ID: <9f2b0d37-c473-12e2-41e6-46f65fa84943@suse.com>
+Date:   Wed, 22 Jan 2020 11:26:17 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-7-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-8-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,8 +80,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> All helpers should either be using btrfs_get_fs_root() or
-> btrfs_read_tree_root().
+> All this does is call btrfs_get_fs_root() with check_ref == true.  Just
+> use btrfs_get_fs_root() so we don't have a bunch of different helpers
+> that do the same thing.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
