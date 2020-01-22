@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9FA14518C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E205145167
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730550AbgAVJda (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 04:33:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57488 "EHLO mx2.suse.de"
+        id S1730252AbgAVJed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 04:34:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58506 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729949AbgAVJd3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 04:33:29 -0500
+        id S1730867AbgAVJea (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:34:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7367BB38F;
-        Wed, 22 Jan 2020 09:33:27 +0000 (UTC)
-Subject: Re: [PATCH 08/43] btrfs: make the fs root init functions static
+        by mx2.suse.de (Postfix) with ESMTP id F1486B3B9;
+        Wed, 22 Jan 2020 09:34:28 +0000 (UTC)
+Subject: Re: [PATCH 09/43] btrfs: handle NULL roots in
+ btrfs_put/btrfs_grab_fs_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-9-josef@toxicpanda.com>
+ <20200117212602.6737-10-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <7ee22e65-1086-f783-8575-5ebf2e63a26a@suse.com>
-Date:   Wed, 22 Jan 2020 11:33:26 +0200
+Message-ID: <bbaba05d-01a1-4f36-614b-fc77eb71913b@suse.com>
+Date:   Wed, 22 Jan 2020 11:34:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-9-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-10-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,13 +81,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> Now that the orphan cleanup stuff doesn't use this directly we can just
-> make them static.
+> We want to use this for dropping all roots, and in some error cases we
+> may not have a root, so handle this to make the cleanup code easier.
+> Make btrfs_grab_fs_root the same so we can use it in cases where the
+> root may not exist (like the quota root).
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-nit: This patch should ideally come right after 02 or even be squashed
-in it but I guess David can handle this if he deems it important enough.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com
