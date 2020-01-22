@@ -2,159 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB044144DCD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 09:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F847144E71
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jan 2020 10:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgAVIhC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jan 2020 03:37:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34892 "EHLO mx2.suse.de"
+        id S1729106AbgAVJPi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jan 2020 04:15:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50312 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgAVIhC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jan 2020 03:37:02 -0500
+        id S1725911AbgAVJPi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jan 2020 04:15:38 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 987DAAE0D;
-        Wed, 22 Jan 2020 08:36:59 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH RFC] btrfs: scrub: Mandatory RO block group for device replace
-Date:   Wed, 22 Jan 2020 16:36:28 +0800
-Message-Id: <20200122083628.16331-1-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
+        by mx2.suse.de (Postfix) with ESMTP id 19BB1AAF1;
+        Wed, 22 Jan 2020 09:15:36 +0000 (UTC)
+Subject: Re: [PATCH 04/43] btrfs: export and use btrfs_read_tree_root
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200117212602.6737-1-josef@toxicpanda.com>
+ <20200117212602.6737-5-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9ef3d17e-9b73-36ac-6801-aa549781df43@suse.com>
+Date:   Wed, 22 Jan 2020 11:15:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <20200117212602.6737-5-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-btrfs/06[45] btrfs/071 could fail by finding csum error.
-The reproducibility is not high, around 1/20~1/100, needs to run them in
-loops.
 
-And the profile doesn't make much difference, SINGLE/SINGLE can also
-reproduce the problem.
 
-The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
-check free space before marking a block group RO")
+On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
+> log-tree uses btrfs_read_fs_root to load its log, but this just calls
+> btrfs_read_tree_root.  We don't save the log roots in our root cache, so
+> just export this helper and use it in the logging code.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-[CAUSE]
-Device replace reuses scrub code to iterate existing extents.
+I think the 2nd sentence of the changelog doesn't give much here. The
+important bit is that btrfs_read_fs_root is a simple wrapper over
+btrfs_read_tree_root. In any case:
 
-It adds scrub_write_block_to_dev_replace() to scrub_block_complete(), so
-that scrub read can write the verified data to target device.
-
-Device replace also utilizes "write duplication" to write new data to
-both source and target device.
-
-However those two write can conflict and may lead to data corruption:
-- Scrub writes old data from commit root
-  Both extent location and csum are fetched from commit root, which
-  is not always the up-to-date data.
-
-- Write duplication is always duplicating latest data
-
-This means there could be a race, that "write duplication" writes the
-latest data to disk, then scrub write back the old data, causing data
-corruption.
-
-In theory, this should only affects data, not metadata.
-Metadata write back only happens when committing transaction, thus it's
-always after scrub writes.
-
-[FIX]
-Make dev-replace to require mandatory RO for target block group.
-
-And to be extra safe, for dev-replace, wait for all exiting writes to
-finish before scrubbing the chunk.
-
-This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue replace
-when set_block_ro failed").
-ENOSPC for dev-replace is still much better than data corruption.
-
-Reported-by: Filipe Manana <fdmanana@suse.com>
-Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed")
-Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before marking a block group RO")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Not concretely confirmed, mostly through guess, thus it has RFC tag.
-
-My first guess is race at the dev-replace starting point, but related
-code is in fact very safe.
----
- fs/btrfs/scrub.c | 35 ++++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 21de630b0730..69e76a4d1258 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3472,6 +3472,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 	struct btrfs_path *path;
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_root *root = fs_info->dev_root;
-+	bool is_dev_replace = sctx->is_dev_replace;
- 	u64 length;
- 	u64 chunk_offset;
- 	int ret = 0;
-@@ -3577,17 +3578,35 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		 * This can easily boost the amount of SYSTEM chunks if cleaner
- 		 * thread can't be triggered fast enough, and use up all space
- 		 * of btrfs_super_block::sys_chunk_array
-+		 *
-+		 *
-+		 * On the other hand, try our best to mark block group RO for
-+		 * dev-replace case.
-+		 *
-+		 * Dev-replace has two types of write:
-+		 * - Write duplication
-+		 *   New write will be written to both target and source device
-+		 *   The content is always the *newest* data.
-+		 * - Scrub write for dev-replace
-+		 *   Scrub will write the verified data for dev-replace.
-+		 *   The data and its csum are all from *commit* root, which
-+		 *   is not the newest version.
-+		 *
-+		 * If scrub write happens after write duplication, we would
-+		 * cause data corruption.
-+		 * So we need to try our best to mark block group RO, and exit
-+		 * out if we don't have enough space.
- 		 */
--		ret = btrfs_inc_block_group_ro(cache, false);
-+		ret = btrfs_inc_block_group_ro(cache, is_dev_replace);
- 		scrub_pause_off(fs_info);
- 
- 		if (ret == 0) {
- 			ro_set = 1;
--		} else if (ret == -ENOSPC) {
-+		} else if (ret == -ENOSPC && !is_dev_replace) {
- 			/*
- 			 * btrfs_inc_block_group_ro return -ENOSPC when it
- 			 * failed in creating new chunk for metadata.
--			 * It is not a problem for scrub/replace, because
-+			 * It is not a problem for scrub, because
- 			 * metadata are always cowed, and our scrub paused
- 			 * commit_transactions.
- 			 */
-@@ -3605,6 +3624,16 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		dev_replace->item_needs_writeback = 1;
- 		up_write(&dev_replace->rwsem);
- 
-+		/*
-+		 * Also wait for any exitings writes to prevent race between
-+		 * write duplication and scrub writes.
-+		 */
-+		if (is_dev_replace) {
-+			btrfs_wait_block_group_reservations(cache);
-+			btrfs_wait_nocow_writers(cache);
-+			btrfs_wait_ordered_roots(fs_info, U64_MAX,
-+					cache->start, cache->length);
-+		}
- 		ret = scrub_chunk(sctx, scrub_dev, chunk_offset, length,
- 				  found_key.offset, cache);
- 
--- 
-2.25.0
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
