@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB90146B0A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 15:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D513146B2B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 15:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgAWOTi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 09:19:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57542 "EHLO mx2.suse.de"
+        id S1728816AbgAWOX1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 09:23:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59536 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbgAWOTi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 09:19:38 -0500
+        id S1728760AbgAWOX0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 09:23:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EE684ACA4;
-        Thu, 23 Jan 2020 14:19:35 +0000 (UTC)
-Subject: Re: [PATCH v2 3/6] btrfs: remove use of buffer_heads from superblock
- writeout
+        by mx2.suse.de (Postfix) with ESMTP id 6DBAFB190;
+        Thu, 23 Jan 2020 14:23:24 +0000 (UTC)
+Subject: Re: [PATCH v2 6/6] btrfs: remove buffer_heads form superblock mirror
+ integrity checking
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.com>
 Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
 References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
- <20200123081849.23397-4-johannes.thumshirn@wdc.com>
+ <20200123081849.23397-7-johannes.thumshirn@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <608f1295-2049-1355-5997-04f844ed2ce9@suse.com>
-Date:   Thu, 23 Jan 2020 16:19:34 +0200
+Message-ID: <11e78494-f8ee-bc04-69ba-d0f9b35b4792@suse.com>
+Date:   Thu, 23 Jan 2020 16:23:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200123081849.23397-4-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200123081849.23397-7-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,26 +82,75 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 23.01.20 г. 10:18 ч., Johannes Thumshirn wrote:
-> Similar to the superblock read path, change the write path to using BIOs
-> and pages instead of buffer_heads. This allows us to skip over the
-> buffer_head code, for writing the superblock to disk.
+> The integrity checking code for the superblock mirrors is the last remaining
+> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
 > 
-> This is based on a patch originally authored by Nikolay Borisov.
-> 
-> Co-developed-by: Nikolay Borisov <nborisov@suse.com>
-
-As per Documentation/process/5.Posting.rst:
-
-Every Co-developed-by: must be immediately followed by a Signed-off-by:
-of the associated co-author.
-
-FWIW I'm giving mine (I guess david can fix this during merge):
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
+> ---
+> Changes to v1:
+> - Convert from alloc_page() to find_or_create_page()
+> ---
+>  fs/btrfs/check-integrity.c | 44 +++++++++++++++++++++++++++-----------
+>  1 file changed, 31 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+> index 4f6db2fe482a..45b88bcd6cbb 100644
+> --- a/fs/btrfs/check-integrity.c
+> +++ b/fs/btrfs/check-integrity.c
+> @@ -77,7 +77,6 @@
+>  
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+> -#include <linux/buffer_head.h>
+>  #include <linux/mutex.h>
+>  #include <linux/genhd.h>
+>  #include <linux/blkdev.h>
+> @@ -762,28 +761,47 @@ static int btrfsic_process_superblock_dev_mirror(
+>  	struct btrfs_fs_info *fs_info = state->fs_info;
+>  	struct btrfs_super_block *super_tmp;
+>  	u64 dev_bytenr;
+> -	struct buffer_head *bh;
+>  	struct btrfsic_block *superblock_tmp;
+>  	int pass;
+>  	struct block_device *const superblock_bdev = device->bdev;
+> +	struct page *page;
+> +	struct bio bio;
+> +	struct bio_vec bio_vec;
+> +	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
+> +	gfp_t gfp_mask;
+> +	int ret;
+>  
+>  	/* super block bytenr is always the unmapped device bytenr */
+>  	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
+>  	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
+>  		return -1;
+> -	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
+> -		     BTRFS_SUPER_INFO_SIZE);
+> -	if (NULL == bh)
+> +
+> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
+> +
+> +	page = find_or_create_page(mapping, dev_bytenr >> PAGE_SHIFT, gfp_mask);
+> +	if (!page)
+> +		return -1;
+> +
+> +	bio_init(&bio, &bio_vec, 1);
+> +	bio.bi_iter.bi_sector = dev_bytenr >> SECTOR_SHIFT;
+> +	bio_set_dev(&bio, superblock_bdev);
+> +	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
+> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
+> +
+> +	ret = submit_bio_wait(&bio);
+> +	if (ret)
+>  		return -1;
+> -	super_tmp = (struct btrfs_super_block *)
+> -	    (bh->b_data + (dev_bytenr & (BTRFS_BDEV_BLOCKSIZE - 1)));
+> +
+> +	unlock_page(page);
 
-Additionally,
+This is safe since it's part of the integrity code which gets called
+during mount so presumably we can't have a transaction commit while this
+is running. I'd prefer an explicit mention of that in the changelog.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+<snip>
