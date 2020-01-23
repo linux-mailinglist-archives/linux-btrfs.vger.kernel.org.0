@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AF1146AF0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 15:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB90146B0A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 15:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgAWONv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 09:13:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54616 "EHLO mx2.suse.de"
+        id S1728916AbgAWOTi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 09:19:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57542 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgAWONv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 09:13:51 -0500
+        id S1726780AbgAWOTi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 09:19:38 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2F37EACA4;
-        Thu, 23 Jan 2020 14:13:48 +0000 (UTC)
-Subject: Re: [PATCH v2 2/6] btrfs: remove buffer heads from super block
- reading
+        by mx2.suse.de (Postfix) with ESMTP id EE684ACA4;
+        Thu, 23 Jan 2020 14:19:35 +0000 (UTC)
+Subject: Re: [PATCH v2 3/6] btrfs: remove use of buffer_heads from superblock
+ writeout
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.com>
 Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
 References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
- <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+ <20200123081849.23397-4-johannes.thumshirn@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <fa80a24c-e174-ec21-9228-8ff5fc415c72@suse.com>
-Date:   Thu, 23 Jan 2020 16:13:47 +0200
+Message-ID: <608f1295-2049-1355-5997-04f844ed2ce9@suse.com>
+Date:   Thu, 23 Jan 2020 16:19:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200123081849.23397-4-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,155 +82,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 23.01.20 г. 10:18 ч., Johannes Thumshirn wrote:
-
-<snip>
-
-> @@ -3374,40 +3378,60 @@ static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
->  }
->  
->  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
-> -			struct buffer_head **bh_ret)
-> +			struct page **super_page)
->  {
-> -	struct buffer_head *bh;
->  	struct btrfs_super_block *super;
-> +	struct bio_vec bio_vec;
-> +	struct bio bio;
-> +	struct page *page;
->  	u64 bytenr;
-> +	struct address_space *mapping = bdev->bd_inode->i_mapping;
-> +	gfp_t gfp_mask;
-> +	int ret;
->  
->  	bytenr = btrfs_sb_offset(copy_num);
->  	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
->  		return -EINVAL;
->  
-> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
-> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
-> +	page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT, gfp_mask);
-> +	if (!page)
-> +		return -ENOMEM;
-> +
-> +	bio_init(&bio, &bio_vec, 1);
-> +	bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
-> +	bio_set_dev(&bio, bdev);
-> +	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
-> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
-> +		     offset_in_page(bytenr));
-> +
-> +	ret = submit_bio_wait(&bio);
-> +	unlock_page(page);
-
-So this is based on my code where the page is unlocked as soon as it's
-read. However, as per out off-list discussion, I think this page needs
-to be unlocked once the caller of
-btrfs_read_dev_one_super/btrfs_read_dev_super is finished with it.
-
->  	/*
->  	 * If we fail to read from the underlying devices, as of now
->  	 * the best option we have is to mark it EIO.
->  	 */
-> -	if (!bh)
-> +	if (ret) {
-> +		put_page(page);
->  		return -EIO;
-> +	}
->  
-> -	super = (struct btrfs_super_block *)bh->b_data;
-> +	super = kmap(page);
->  	if (btrfs_super_bytenr(super) != bytenr ||
->  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
-> -		brelse(bh);
-> +		btrfs_release_disk_super(page);
->  		return -EINVAL;
->  	}
-> +	kunmap(page);
->  
-> -	*bh_ret = bh;
-> +	*super_page = page;
->  	return 0;
->  }
->  
->  
-> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
-> +int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
->  {
-> -	struct buffer_head *bh;
-> -	struct buffer_head *latest = NULL;
-> +	struct page *latest = NULL;
->  	struct btrfs_super_block *super;
->  	int i;
->  	u64 transid = 0;
-
-<snip>
-
->  
->  void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path)
->  {
-> -	struct buffer_head *bh;
-> +	struct bio_vec bio_vec;
-> +	struct bio bio;
->  	struct btrfs_super_block *disk_super;
->  	int copy_num;
->  
->  	if (!bdev)
->  		return;
->  
-> +	bio_init(&bio, &bio_vec, 1);
->  	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
->  		copy_num++) {
-> +		u64 bytenr = btrfs_sb_offset(copy_num);
-> +		struct page *page;
->  
-> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
-> +		if (btrfs_read_dev_one_super(bdev, copy_num, &page))
->  			continue;
->  
-> -		disk_super = (struct btrfs_super_block *)bh->b_data;
-> +		disk_super = kmap(page) + offset_in_page(bytenr);
->  
->  		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
-> -		set_buffer_dirty(bh);
-> -		sync_dirty_buffer(bh);
-> -		brelse(bh);
-> +
-> +		bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
-> +		bio_set_dev(&bio, bdev);
-> +		bio_set_op_attrs(&bio, REQ_OP_WRITE, 0);
-> +		bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
-> +			     offset_in_page(bytenr));
-> +
-> +		lock_page(page);
-> +		submit_bio_wait(&bio);
-> +		unlock_page(page);
-> +		btrfs_release_disk_super(page);
-> +		bio_reset(&bio);
-
-For example in this code if btrfs_read_dev_one_super held the page
-locked you would have unlocked after submit_bio_wait is has returned.
-But in this case what you do is take the page unlocked and now you have
-a race window between btrfs_read_dev_one_super and lock_page(page) in
-this function? btrfs_scratch_superblocks is used in replace context so
-what if it races with transaction commit? If my worries are moot and I
-have missed anything then at the very least safety should be documented
-in the changelog of the patch.
-
-> +
->  	}
->  
->  	/* Notify udev that device has changed */
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index b7f2edbc6581..1e4ebe6d6368 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -17,8 +17,6 @@ extern struct mutex uuid_mutex;
->  
->  #define BTRFS_STRIPE_LEN	SZ_64K
->  
-> -struct buffer_head;
-> -
->  struct btrfs_io_geometry {
->  	/* remaining bytes before crossing a stripe */
->  	u64 len;
+> Similar to the superblock read path, change the write path to using BIOs
+> and pages instead of buffer_heads. This allows us to skip over the
+> buffer_head code, for writing the superblock to disk.
 > 
+> This is based on a patch originally authored by Nikolay Borisov.
+> 
+> Co-developed-by: Nikolay Borisov <nborisov@suse.com>
+
+As per Documentation/process/5.Posting.rst:
+
+Every Co-developed-by: must be immediately followed by a Signed-off-by:
+of the associated co-author.
+
+FWIW I'm giving mine (I guess david can fix this during merge):
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+
+Additionally,
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
