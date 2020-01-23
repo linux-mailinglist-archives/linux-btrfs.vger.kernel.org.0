@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F85A1467EF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 13:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2A81467FC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 13:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgAWM2f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 07:28:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45004 "EHLO mx2.suse.de"
+        id S1728811AbgAWMa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 07:30:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46172 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgAWM2f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 07:28:35 -0500
+        id S1727215AbgAWMa0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 07:30:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5E1A9AC52;
-        Thu, 23 Jan 2020 12:28:33 +0000 (UTC)
-Subject: Re: [PATCH 40/43] btrfs: move fs_info init work into it's own helper
- function
+        by mx2.suse.de (Postfix) with ESMTP id B5810ADB3;
+        Thu, 23 Jan 2020 12:30:24 +0000 (UTC)
+Subject: Re: [PATCH 41/43] btrfs: make the init of static elements in fs_info
+ separate
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-41-josef@toxicpanda.com>
+ <20200117212602.6737-42-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c8872c95-d226-ec38-b77e-9bca7a3d4959@suse.com>
-Date:   Thu, 23 Jan 2020 14:28:32 +0200
+Message-ID: <987b7059-0bc8-b4ad-0898-5c50c6ac762b@suse.com>
+Date:   Thu, 23 Jan 2020 14:30:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-41-josef@toxicpanda.com>
+In-Reply-To: <20200117212602.6737-42-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,13 +80,28 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.01.20 г. 23:25 ч., Josef Bacik wrote:
-> open_ctree mixes initialization of fs stuff and fs_info stuff, which
-> makes it confusing when doing things like adding the root leak
-> detection.  Make a separate function that init's all the static
-> structures inside of the fs_info needed for the fs to operate, and then
-> call that before we start setting up the fs_info to be mounted.
+On 17.01.20 г. 23:26 ч., Josef Bacik wrote:
+> In adding things like eb leak checking and root leak checking there were
+> a lot of weird corner cases that come from the fact that
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 1) We do not init the fs_info until we get to open_ctree time in the
+> normal case and
+> 
+> 2) The test infrastructure half-init's the fs_info for things that it
+> needs.
+> 
+> This makes it really annoying to make changes because you have to add
+> init in two different places, have special cases for testing fs_info's
+> that may not have certain things init'ed, and cases for fs_info's that
+> didn't make it to open_ctree and thus are not fully init'ed.
+> 
+> Fix this by extracting out the non-allocating init of the fs info into
+> it's own public function and use that to make sure we're all getting
+> consistent views of an allocated fs_info.
+> 
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com
+
+Imo it will be better if btrfs_init_fs_info is called from
+init_mount_fs_info. And then called explicitly from the test code. That
+way we keep the initialization close. Otherwise having it in
+btrfs_mount_root is just confusing and not very obvious what's going on.
