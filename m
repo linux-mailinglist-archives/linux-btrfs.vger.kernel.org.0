@@ -2,327 +2,463 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEFC1469AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 14:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5DB1469B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 14:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgAWNtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 08:49:16 -0500
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:38960 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729092AbgAWNtP (ORCPT
+        id S1728984AbgAWNvb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 08:51:31 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:45977 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728890AbgAWNvb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 08:49:15 -0500
-Received: by mail-vs1-f65.google.com with SMTP id y125so1751197vsb.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 05:49:14 -0800 (PST)
+        Thu, 23 Jan 2020 08:51:31 -0500
+Received: by mail-qv1-f67.google.com with SMTP id l14so1460107qvu.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 05:51:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=6OmO0YLtC03LXE4VeEDJChMcR3yeSwXfAY5rErkCpK8=;
-        b=Z70jGFojfxUgbo4wP5SaKZAoOtd8YkLh+dWq/ICjY7f8F6LKfxqqFB3MQFrX/f7V2X
-         70D5y+8Q7W+LMDrP1jIrt29Rqqv7J+fGVP56pWVDrboKcueSOIwa40Y8hCwaFYioBCYl
-         KrC3VGgr45UtlB7v+pD2jPZIG2aaYXgBesUflXQC8FYeLPQ7cE/b9l/RrORyeZ7AKg5r
-         lKq4bYV2xEGlwtZHeTnlk6XKtnEVpgA6fuWGpSz4ANcuvzcau6grtN+FWIMDgxIB5DMJ
-         RD4kPziLtRh7gCpt3hjbjYI3QSUstJCAShSfb5kMfLHjRM7ayI8wNVfcHiPl8IFsbd8R
-         B6pg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9sTzejp33UP1gXxydawJHRyqYFsSOCev7OfEFrnumPo=;
+        b=d+oiaciI/vx1WbIhn276aiiAKwxb1KfSEWYXG15S+cdHEiQ0/wPPF+O5JOArykP12+
+         mRyMxupAXceC55rO2fC2jcKS544Nviyk6siLcx7ykN2W5wQXm4VH2WhRxTjPa/wW1Tyx
+         xp3SQeql1JMYTHHgsHAMQdRPkncMOgl7wrX8hJC5BQzJ97PUYTxr+KT3FpIf/9YlwMMp
+         YYsJ969mf04BT3CZJ+puRVES8234SKE1aXmkv6ZBUTrYn6HViZmhLfAB1vFHLozLG/O+
+         Ln4xKkKyYh1cZ1TWQwfxvBnFLSLNaPyh3lc6MsVmm7old9J8mTAlXs+I9eM6ILb/Wmfc
+         MpkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=6OmO0YLtC03LXE4VeEDJChMcR3yeSwXfAY5rErkCpK8=;
-        b=YqOIkKB9LnQRferJJihuRrMBoXu+ZpPoCt0UEGn/99uafPjUCCIJLa0Crj3uyqwm5g
-         bdYc2aPQka4zLNXYehOSDuvDakh36Dfj2GPvQ2yXdsF9GC305XhHA9gGtoegP9mfCLCr
-         Gc3tznDc6C2pte9dmxfFYPQ3hb1Ncff2qfqTdFjjk/fWdMiRV0WFQODK5k83JQeb+y/E
-         1wAQaHkJbPqkfLhqLXsDk9Mda0FEUVXLOtuTf1JljjvkKGXJTCqSoLsc5BlQQofALRcO
-         QmH5v2Guby5IZ+w8QncltQoFgvV+E7OpOmO1ZCHTxhOs9UGSo44q3vFI+7i9AoqHFoeQ
-         0nQA==
-X-Gm-Message-State: APjAAAUVcnXlIoO2/DrON+PZbbOB7A1rYxWn/v17t59pz5cTmN+4hcbS
-        JjrFOkSK9oi/SX/LjiD9E0BQUdwzs2URnrWQJfY=
-X-Google-Smtp-Source: APXvYqwNXkMEnXlE/59i972HNs8jTYMSlkE0HWIwCT5ZA7whYH2qkVr2pixIPTZMicQ/kjPB+1cRLTM0TPItmh5QnNc=
-X-Received: by 2002:a05:6102:18f:: with SMTP id r15mr5792971vsq.206.1579787354051;
- Thu, 23 Jan 2020 05:49:14 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9sTzejp33UP1gXxydawJHRyqYFsSOCev7OfEFrnumPo=;
+        b=hEU6HIxZ5JqkdhdCa7FA7cp/3u/sSbNpItpVSNR1M4W8qnkZk1RmHN+ww78iMBsVFl
+         r0/oZyzkwMMIfVNJ8U96uwLZqqveVN+NR/msq2IyOLEO87FK9sCcwQZ2ZDbDyt6+wA1F
+         0fQSjPF5xIb94gnzLNvmv4nExuCgqrxPzdctXuAUXIax8ltUOgIAaEmpSr9u8uyaEn32
+         Ev5GtBHzDc3TogS4EFnyLycCZxYiZRsppzEH3yLBvWVUpE+n1Lw7+ehJ3IUfZFWoL1I8
+         mTxphE2JogFmKNV2+vwLcC7fzuBg944lqllu8LLaX5CsV7Gti/0JsoS+IhE88wiKgy1C
+         mcWw==
+X-Gm-Message-State: APjAAAVoIwZWgpVzQzrAkZukJ3UX/3qeOOR5wAc28X00pf9uHM0oTRH3
+        stj8GLiUyFCC2+m7l6AFzfD9q7GFlGO5Jg==
+X-Google-Smtp-Source: APXvYqy2ur8XVSQ2USIXeGNWgPnK9t/6/t6kLcvrFip12F0dIhgNZ1zB25VLjwVUCHLoWaGC8zxzuA==
+X-Received: by 2002:a0c:f685:: with SMTP id p5mr16346214qvn.44.1579787489602;
+        Thu, 23 Jan 2020 05:51:29 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::7e55])
+        by smtp.gmail.com with ESMTPSA id d25sm898915qkk.77.2020.01.23.05.51.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2020 05:51:28 -0800 (PST)
+Subject: Re: [PATCH v2 2/6] btrfs: remove buffer heads from super block
+ reading
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
+ <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <9c65b644-6769-12f8-ba93-5f13f89f9bff@toxicpanda.com>
+Date:   Thu, 23 Jan 2020 08:51:27 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200123073759.23535-1-wqu@suse.com> <CAL3q7H4ed9PtALC_xjPeaiKDDhAN1oNzgM0yd=buF_C5r+x7wA@mail.gmail.com>
- <f32340f7-7e0c-e6fe-3122-4d8e8cab9257@gmx.com>
-In-Reply-To: <f32340f7-7e0c-e6fe-3122-4d8e8cab9257@gmx.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 23 Jan 2020 13:49:02 +0000
-Message-ID: <CAL3q7H5NudsNQZo+W1mJ26VxFTrowpqAH7soE0j3F2GTygae8w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: Require mandatory block group RO for dev-replace
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 1:39 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/1/23 =E4=B8=8B=E5=8D=888:06, Filipe Manana wrote:
-> > On Thu, Jan 23, 2020 at 7:38 AM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >> [BUG]
-> >> For dev-replace test cases with fsstress, like btrfs/06[45] btrfs/071,
-> >> looped runs can lead to random failure, where scrub finds csum error.
-> >>
-> >> The possibility is not high, around 1/20 to 1/100, but it's causing da=
-ta
-> >> corruption.
-> >>
-> >> The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
-> >> check free space before marking a block group RO")
-> >>
-> >> [CAUSE]
-> >> Dev-replace has two source of writes:
-> >> - Write duplication
-> >>   All writes to source device will also be duplicated to target device=
-.
-> >>
-> >>   Content:      Latest data/meta
-> >
-> > I find the term "latest" a bit confusing, perhaps "not yet persisted
-> > data and metadata" is more clear.
-> >
-> >>
-> >> - Scrub copy
-> >>   Dev-replace reused scrub code to iterate through existing extents, a=
-nd
-> >>   copy the verified data to target device.
-> >>
-> >>   Content:      Data/meta in commit root
-> >
-> > And so here "previously persisted data and metadata".
-> >
-> >>
-> >> The difference in contents makes the following race possible:
-> >>         Regular Writer          |       Dev-replace
-> >> -----------------------------------------------------------------
-> >>   ^                             |
-> >>   | Preallocate one data extent |
-> >>   | at bytenr X, len 1M         |
-> >>   v                             |
-> >>   ^ Commit transaction          |
-> >>   | Now extent [X, X+1M) is in  |
-> >>   v commit root                 |
-> >>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Dev replace st=
-arts =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> >>                                 | ^
-> >>                                 | | Scrub extent [X, X+1M)
-> >>                                 | | Read [X, X+1M)
-> >>                                 | | (The content are mostly garbage
-> >>                                 | |  since it's preallocated)
-> >>   ^                             | v
-> >>   | Write back happens for      |
-> >>   | extent [X, X+512K)          |
-> >>   | New data writes to both     |
-> >>   | source and target dev.      |
-> >>   v                             |
-> >>                                 | ^
-> >>                                 | | Scrub writes back extent [X, X+1M)
-> >>                                 | | to target device.
-> >>                                 | | This will over write the new data =
-in
-> >>                                 | | [X, X+512K)
-> >>                                 | v
-> >>
-> >> This race can only happen for nocow writes. Thus metadata and data cow
-> >> writes are safe, as COW will never overwrite extents of previous trans
-> >> (in commit root).
-> >>
-> >> This behavior can be confirmed by disabling all fallocate related call=
-s
-> >> in fsstress (*), then all related tests can pass a 2000 run loop.
-> >>
-> >> *: FSSTRESS_AVOID=3D"-f fallocate=3D0 -f allocsp=3D0 -f zero=3D0 -f in=
-sert=3D0 \
-> >>                    -f collapse=3D0 -f punch=3D0 -f resvsp=3D0"
-> >>    I didn't expect resvsp ioctl will fallback to fallocate in VFS...
-> >>
-> >> [FIX]
-> >> Make dev-replace to require mandatory block group RO, and wait for cur=
-rent
-> >> nocow writes before calling scrub_chunk().
-> >>
-> >> This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue re=
-place
-> >> when set_block_ro failed") for dev-replace path.
-> >>
-> >> ENOSPC for dev-replace is still much better than data corruption.
-> >
-> > Technically if we flag the block group RO without being able to
-> > persist that due to ENOSPC, it's still ok.
-> > We just want to prevent nocow writes racing with scrub copying
-> > procedure. But that's something for some other time, and this is fine
-> > to me.
-> >
-> >>
-> >> Reported-by: Filipe Manana <fdmanana@suse.com>
-> >> Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed=
-")
-> >> Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before mark=
-ing a block group RO")
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >> Changelog:
-> >> RFC->v1:
-> >> - Remove the RFC tag
-> >>   Since the cause is pinned and verified, no need for RFC.
-> >>
-> >> - Only wait for nocow writes for dev-replace
-> >>   CoW writes are safe as they will never overwrite extents in commit
-> >>   root.
-> >>
-> >> - Put the wait call into proper lock context
-> >>   Previous wait happens after scrub_pause_off(), which can cause
-> >>   deadlock where we may need to commit transaction in one of the
-> >>   wait calls. But since we are in scrub_pause_off() environment,
-> >>   transaction commit will wait us to continue, causing a wait-on-self
-> >>   deadlock.
-> >> ---
-> >>  fs/btrfs/scrub.c | 30 +++++++++++++++++++++++++-----
-> >>  1 file changed, 25 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> >> index 21de630b0730..5aa486cad298 100644
-> >> --- a/fs/btrfs/scrub.c
-> >> +++ b/fs/btrfs/scrub.c
-> >> @@ -3577,17 +3577,27 @@ int scrub_enumerate_chunks(struct scrub_ctx *s=
-ctx,
-> >>                  * This can easily boost the amount of SYSTEM chunks i=
-f cleaner
-> >>                  * thread can't be triggered fast enough, and use up a=
-ll space
-> >>                  * of btrfs_super_block::sys_chunk_array
-> >> +                *
-> >> +                * While for dev replace, we need to try our best to m=
-ark block
-> >> +                * group RO, to prevent race between:
-> >> +                * - Write duplication
-> >> +                *   Contains latest data
-> >> +                * - Scrub copy
-> >> +                *   Contains data from commit tree
-> >> +                *
-> >> +                * If target block group is not marked RO, nocow write=
-s can
-> >> +                * be overwritten by scrub copy, causing data corrupti=
-on.
-> >> +                * So for dev-replace, it's not allowed to continue if=
- a block
-> >> +                * group is not RO.
-> >>                  */
-> >> -               ret =3D btrfs_inc_block_group_ro(cache, false);
-> >> -               scrub_pause_off(fs_info);
-> >> -
-> >> +               ret =3D btrfs_inc_block_group_ro(cache, sctx->is_dev_r=
-eplace);
-> >>                 if (ret =3D=3D 0) {
-> >>                         ro_set =3D 1;
-> >> -               } else if (ret =3D=3D -ENOSPC) {
-> >> +               } else if (ret =3D=3D -ENOSPC && !sctx->is_dev_replace=
-) {
-> >>                         /*
-> >>                          * btrfs_inc_block_group_ro return -ENOSPC whe=
-n it
-> >>                          * failed in creating new chunk for metadata.
-> >> -                        * It is not a problem for scrub/replace, beca=
-use
-> >> +                        * It is not a problem for scrub, because
-> >>                          * metadata are always cowed, and our scrub pa=
-used
-> >>                          * commit_transactions.
-> >>                          */
-> >> @@ -3596,9 +3606,19 @@ int scrub_enumerate_chunks(struct scrub_ctx *sc=
-tx,
-> >>                         btrfs_warn(fs_info,
-> >>                                    "failed setting block group ro: %d"=
-, ret);
-> >>                         btrfs_put_block_group(cache);
-> >> +                       scrub_pause_off(fs_info);
-> >>                         break;
-> >>                 }
-> >>
-> >> +               /*
-> >> +                * Now the target block is marked RO, wait for nocow w=
-rites to
-> >> +                * finish before dev-replace.
-> >> +                * COW is fine, as COW never overwrites extents in com=
-mit tree.
-> >> +                */
-> >> +               if (sctx->is_dev_replace)
-> >> +                       btrfs_wait_nocow_writers(cache);
-> >
-> > So this only waits for nocow ordered extents to be created - it
-> > doesn't wait for them to complete.
->
-> Wait for minute.
->
-> This btrfs_wait_nocow_writers() is not just triggering ordered extents
-> for nocow.
-> It waits for the nocow_writers count decreased to 0 for that block group.
->
-> Since we have already marked the block group RO, no new nocow writers
-> can happen, thus that counter can only decrease, no way to increase.
->
-> There are several cases involved:
-> - NoCOW Write back happens before bg RO
->   It will increase cache->nocow_writers counter, and decrease the
->   counter after finish_oredered_io().
+On 1/23/20 3:18 AM, Johannes Thumshirn wrote:
+> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads have
+> some drawbacks, like not being able to propagate errors from the lower
+> layers.
+> 
+> Change the buffer_heads to BIOs and utilize the page cache for the page
+> allocation. Compared to buffer_heads using BIOs are more lightweight and
+> we skip several layers of buffer_head code until we either reach the page
+> cache or build a BIO and submit it to read the blocks from disk.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> ---
+> Changes to v1:
+> - move 'super_page' into for-loop in btrfs_scratch_superblocks() (Nikolay)
+> - switch to using pagecahce instead of alloc_pages() (Nikolay, David)
+> ---
+>   fs/btrfs/disk-io.c | 83 ++++++++++++++++++++++++++++++----------------
+>   fs/btrfs/disk-io.h |  4 +--
+>   fs/btrfs/volumes.c | 62 ++++++++++++++++++++--------------
+>   fs/btrfs/volumes.h |  2 --
+>   4 files changed, 94 insertions(+), 57 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index aea48d6ddc0c..b111f32108cc 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2635,11 +2635,12 @@ int __cold open_ctree(struct super_block *sb,
+>   	u64 features;
+>   	u16 csum_type;
+>   	struct btrfs_key location;
+> -	struct buffer_head *bh;
+>   	struct btrfs_super_block *disk_super;
+>   	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>   	struct btrfs_root *tree_root;
+>   	struct btrfs_root *chunk_root;
+> +	struct page *super_page;
+> +	u8 *superblock;
+>   	int ret;
+>   	int err = -EINVAL;
+>   	int clear_free_space_tree = 0;
+> @@ -2832,28 +2833,31 @@ int __cold open_ctree(struct super_block *sb,
+>   	/*
+>   	 * Read super block and check the signature bytes only
+>   	 */
+> -	bh = btrfs_read_dev_super(fs_devices->latest_bdev);
+> -	if (IS_ERR(bh)) {
+> -		err = PTR_ERR(bh);
+> +	ret = btrfs_read_dev_super(fs_devices->latest_bdev, &super_page);
+> +	if (ret) {
+> +		err = ret;
+>   		goto fail_alloc;
+>   	}
+>   
+> +	superblock = kmap(super_page);
+>   	/*
+>   	 * Verify the type first, if that or the the checksum value are
+>   	 * corrupted, we'll find out
+>   	 */
+> -	csum_type = btrfs_super_csum_type((struct btrfs_super_block *)bh->b_data);
+> +	csum_type = btrfs_super_csum_type((struct btrfs_super_block *)
+> +					  superblock);
+>   	if (!btrfs_supported_super_csum(csum_type)) {
+>   		btrfs_err(fs_info, "unsupported checksum algorithm: %u",
+>   			  csum_type);
+>   		err = -EINVAL;
+> -		brelse(bh);
+> +		btrfs_release_disk_super(super_page);
+>   		goto fail_alloc;
+>   	}
+>   
+>   	ret = btrfs_init_csum_hash(fs_info, csum_type);
+>   	if (ret) {
+>   		err = ret;
+> +		btrfs_release_disk_super(super_page);
+>   		goto fail_alloc;
+>   	}
+>   
+> @@ -2861,10 +2865,10 @@ int __cold open_ctree(struct super_block *sb,
+>   	 * We want to check superblock checksum, the type is stored inside.
+>   	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+>   	 */
+> -	if (btrfs_check_super_csum(fs_info, bh->b_data)) {
+> +	if (btrfs_check_super_csum(fs_info, superblock)) {
+>   		btrfs_err(fs_info, "superblock checksum mismatch");
+>   		err = -EINVAL;
+> -		brelse(bh);
+> +		btrfs_release_disk_super(super_page);
+>   		goto fail_csum;
+>   	}
+>   
+> @@ -2873,8 +2877,8 @@ int __cold open_ctree(struct super_block *sb,
+>   	 * following bytes up to INFO_SIZE, the checksum is calculated from
+>   	 * the whole block of INFO_SIZE
+>   	 */
+> -	memcpy(fs_info->super_copy, bh->b_data, sizeof(*fs_info->super_copy));
+> -	brelse(bh);
+> +	memcpy(fs_info->super_copy, superblock, sizeof(*fs_info->super_copy));
+> +	btrfs_release_disk_super(super_page);
+>   
+>   	disk_super = fs_info->super_copy;
+>   
+> @@ -3374,40 +3378,60 @@ static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
+>   }
+>   
+>   int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret)
+> +			struct page **super_page)
+>   {
+> -	struct buffer_head *bh;
+>   	struct btrfs_super_block *super;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+> +	struct page *page;
+>   	u64 bytenr;
+> +	struct address_space *mapping = bdev->bd_inode->i_mapping;
+> +	gfp_t gfp_mask;
+> +	int ret;
+>   
+>   	bytenr = btrfs_sb_offset(copy_num);
+>   	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
+>   		return -EINVAL;
+>   
+> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
+> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
+> +	page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT, gfp_mask);
+> +	if (!page)
+> +		return -ENOMEM;
+> +
+> +	bio_init(&bio, &bio_vec, 1);
+> +	bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +	bio_set_dev(&bio, bdev);
+> +	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
+> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
+> +		     offset_in_page(bytenr));
+> +
+> +	ret = submit_bio_wait(&bio);
+> +	unlock_page(page);
+>   	/*
+>   	 * If we fail to read from the underlying devices, as of now
+>   	 * the best option we have is to mark it EIO.
+>   	 */
+> -	if (!bh)
+> +	if (ret) {
+> +		put_page(page);
+>   		return -EIO;
+> +	}
+>   
+> -	super = (struct btrfs_super_block *)bh->b_data;
+> +	super = kmap(page);
+>   	if (btrfs_super_bytenr(super) != bytenr ||
+>   		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> -		brelse(bh);
+> +		btrfs_release_disk_super(page);
+>   		return -EINVAL;
+>   	}
+> +	kunmap(page);
+>   
+> -	*bh_ret = bh;
+> +	*super_page = page;
+>   	return 0;
+>   }
+>   
+>   
+> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
+> +int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
+>   {
+> -	struct buffer_head *bh;
+> -	struct buffer_head *latest = NULL;
+> +	struct page *latest = NULL;
+>   	struct btrfs_super_block *super;
+>   	int i;
+>   	u64 transid = 0;
+> @@ -3419,25 +3443,28 @@ struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
+>   	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
+>   	 */
+>   	for (i = 0; i < 1; i++) {
+> -		ret = btrfs_read_dev_one_super(bdev, i, &bh);
+> +		ret = btrfs_read_dev_one_super(bdev, i, page);
+>   		if (ret)
+>   			continue;
+>   
+> -		super = (struct btrfs_super_block *)bh->b_data;
+> +		super = kmap(*page);
+>   
+>   		if (!latest || btrfs_super_generation(super) > transid) {
+> -			brelse(latest);
+> -			latest = bh;
+> +			if (latest)
+> +				btrfs_release_disk_super(latest);
+> +			latest = *page;
+>   			transid = btrfs_super_generation(super);
+>   		} else {
+> -			brelse(bh);
+> +			btrfs_release_disk_super(*page);
+>   		}
+> +
+> +		kunmap(*page);
+>   	}
+>   
+> -	if (!latest)
+> -		return ERR_PTR(ret);
+> +	if (ret)
+> +		return ret;
+>   
+> -	return latest;
+> +	return 0;
+>   }
+>   
+>   /*
+> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+> index 8c2d6cf1ce59..e04b233c436a 100644
+> --- a/fs/btrfs/disk-io.h
+> +++ b/fs/btrfs/disk-io.h
+> @@ -54,9 +54,9 @@ int __cold open_ctree(struct super_block *sb,
+>   	       char *options);
+>   void __cold close_ctree(struct btrfs_fs_info *fs_info);
+>   int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
+> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev);
+> +int btrfs_read_dev_super(struct block_device *bdev, struct page **super_page);
+>   int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret);
+> +			     struct page **super_page);
+>   int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+>   struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
+>   				      struct btrfs_key *location);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 7a480a2bdf51..f4a6ee518f0c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6,7 +6,6 @@
+>   #include <linux/sched.h>
+>   #include <linux/bio.h>
+>   #include <linux/slab.h>
+> -#include <linux/buffer_head.h>
+>   #include <linux/blkdev.h>
+>   #include <linux/ratelimit.h>
+>   #include <linux/kthread.h>
+> @@ -500,7 +499,7 @@ static struct btrfs_fs_devices *find_fsid_with_metadata_uuid(
+>   static int
+>   btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>   		      int flush, struct block_device **bdev,
+> -		      struct buffer_head **bh)
+> +		      struct page **super_page)
+>   {
+>   	int ret;
+>   
+> @@ -519,9 +518,8 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>   		goto error;
+>   	}
+>   	invalidate_bdev(*bdev);
+> -	*bh = btrfs_read_dev_super(*bdev);
+> -	if (IS_ERR(*bh)) {
+> -		ret = PTR_ERR(*bh);
+> +	ret = btrfs_read_dev_super(*bdev, super_page);
+> +	if (ret) {
+>   		blkdev_put(*bdev, flags);
+>   		goto error;
+>   	}
+> @@ -530,7 +528,6 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>   
+>   error:
+>   	*bdev = NULL;
+> -	*bh = NULL;
+>   	return ret;
+>   }
+>   
+> @@ -611,7 +608,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>   {
+>   	struct request_queue *q;
+>   	struct block_device *bdev;
+> -	struct buffer_head *bh;
+> +	struct page *super_page;
+>   	struct btrfs_super_block *disk_super;
+>   	u64 devid;
+>   	int ret;
+> @@ -622,17 +619,17 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>   		return -EINVAL;
+>   
+>   	ret = btrfs_get_bdev_and_sb(device->name->str, flags, holder, 1,
+> -				    &bdev, &bh);
+> +				    &bdev, &super_page);
+>   	if (ret)
+>   		return ret;
+>   
+> -	disk_super = (struct btrfs_super_block *)bh->b_data;
+> +	disk_super = kmap(super_page);
+>   	devid = btrfs_stack_device_id(&disk_super->dev_item);
+>   	if (devid != device->devid)
+> -		goto error_brelse;
+> +		goto error_free_page;
+>   
+>   	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE))
+> -		goto error_brelse;
+> +		goto error_free_page;
+>   
+>   	device->generation = btrfs_super_generation(disk_super);
+>   
+> @@ -641,7 +638,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>   		    BTRFS_FEATURE_INCOMPAT_METADATA_UUID) {
+>   			pr_err(
+>   		"BTRFS: Invalid seeding and uuid-changed device detected\n");
+> -			goto error_brelse;
+> +			goto error_free_page;
+>   		}
+>   
+>   		clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> @@ -667,12 +664,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>   		fs_devices->rw_devices++;
+>   		list_add_tail(&device->dev_alloc_list, &fs_devices->alloc_list);
+>   	}
+> -	brelse(bh);
+> +	btrfs_release_disk_super(super_page);
+>   
+>   	return 0;
+>   
+> -error_brelse:
+> -	brelse(bh);
+> +error_free_page:
+> +	btrfs_release_disk_super(super_page);
+>   	blkdev_put(bdev, flags);
+>   
+>   	return -EINVAL;
+> @@ -2209,14 +2206,15 @@ static struct btrfs_device *btrfs_find_device_by_path(
+>   	u64 devid;
+>   	u8 *dev_uuid;
+>   	struct block_device *bdev;
+> -	struct buffer_head *bh;
+> +	struct page *super_page;
+>   	struct btrfs_device *device;
+>   
+>   	ret = btrfs_get_bdev_and_sb(device_path, FMODE_READ,
+> -				    fs_info->bdev_holder, 0, &bdev, &bh);
+> +				    fs_info->bdev_holder, 0, &bdev,
+> +				    &super_page);
+>   	if (ret)
+>   		return ERR_PTR(ret);
+> -	disk_super = (struct btrfs_super_block *)bh->b_data;
+> +	disk_super = kmap(super_page);
+>   	devid = btrfs_stack_device_id(&disk_super->dev_item);
+>   	dev_uuid = disk_super->dev_item.uuid;
+>   	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
+> @@ -2226,7 +2224,7 @@ static struct btrfs_device *btrfs_find_device_by_path(
+>   		device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
+>   					   disk_super->fsid, true);
+>   
+> -	brelse(bh);
+> +	btrfs_release_disk_super(super_page);
+>   	if (!device)
+>   		device = ERR_PTR(-ENOENT);
+>   	blkdev_put(bdev, FMODE_READ);
+> @@ -7319,25 +7317,39 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+>   
+>   void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path)
+>   {
+> -	struct buffer_head *bh;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+>   	struct btrfs_super_block *disk_super;
+>   	int copy_num;
+>   
+>   	if (!bdev)
+>   		return;
+>   
+> +	bio_init(&bio, &bio_vec, 1);
+>   	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
+>   		copy_num++) {
+> +		u64 bytenr = btrfs_sb_offset(copy_num);
+> +		struct page *page;
+>   
+> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
+> +		if (btrfs_read_dev_one_super(bdev, copy_num, &page))
+>   			continue;
+>   
+> -		disk_super = (struct btrfs_super_block *)bh->b_data;
+> +		disk_super = kmap(page) + offset_in_page(bytenr);
+>   
+>   		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+> -		set_buffer_dirty(bh);
+> -		sync_dirty_buffer(bh);
+> -		brelse(bh);
+> +
+> +		bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +		bio_set_dev(&bio, bdev);
+> +		bio_set_op_attrs(&bio, REQ_OP_WRITE, 0);
+nit: We're losing REQ_SYNC here, not that it matters but if you have to re-roll 
+it may be nice to have.  Otherwise
 
-Nop. nocow_writers is decremented after creating the ordered extent
-when starting writeback (at run_delalloc_nocow) - not when completing
-the ordered extent (at btrfs_finish_ordered_io()).
-Same applies direct IO.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thanks
+Thanks,
 
-
->   btrfs_wait_nocow_writers() will wait for such writes
->
-> - Writeback happens after bg RO
->   Then the write will fallback to COW.
->
-> - Writeback happens after bg RO cleared (reverted back to RW)
->   No need to bother at all.
->
-> Thus this should be enough, no need for btrfs_wait_ordered_roots().
->
-> Thanks,
-> Qu
->
->
-> > After that you still need to call:
-> >
-> > btrfs_wait_ordered_roots(fs_info, U64_MAX, cache->start, cache->length)=
-;
-> >
-> > Other than that, looks good to me.
-> >
-> > Thanks.
-> >
-> >> +
-> >> +               scrub_pause_off(fs_info);
-> >>                 down_write(&dev_replace->rwsem);
-> >>                 dev_replace->cursor_right =3D found_key.offset + lengt=
-h;
-> >>                 dev_replace->cursor_left =3D found_key.offset;
-> >> --
-> >> 2.25.0
-> >>
-> >
-> >
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Josef
