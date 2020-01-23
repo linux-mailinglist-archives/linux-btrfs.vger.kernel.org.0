@@ -2,78 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D513146B2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 15:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B50146E16
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 17:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgAWOX1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 09:23:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59536 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728760AbgAWOX0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 09:23:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6DBAFB190;
-        Thu, 23 Jan 2020 14:23:24 +0000 (UTC)
-Subject: Re: [PATCH v2 6/6] btrfs: remove buffer_heads form superblock mirror
- integrity checking
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
- <20200123081849.23397-7-johannes.thumshirn@wdc.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <11e78494-f8ee-bc04-69ba-d0f9b35b4792@suse.com>
-Date:   Thu, 23 Jan 2020 16:23:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1729021AbgAWQOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 11:14:53 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:59056 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727278AbgAWQOx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 11:14:53 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00NFwbd4165425;
+        Thu, 23 Jan 2020 16:14:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=Ia08TZqCyE5xBeGh+PtNz5g13L3hyjGujrDuhaKynpk=;
+ b=bnvYXDYtJMeu8oG9EeJVIPTWPn/2y6Da6hkMkf3WVp3YypWzo9uOKvdUUcKloNF2tNrm
+ vPcUHoVR0Nzqpz2+yOnvzx1Q2nXVeLCE3WwYAgj9YmFcqVTNlud3jxI/Ie8w2nzTL0yR
+ eAPFXd5koFjqmBF8hLoc6abYdS6FkOUKg2gZmr+q7VLJdi5jMvocPEa5dWaFO3XT3fXu
+ v0Z8zi591drv/Xn+HLA0uyvWdqcRxnixO7Gw/gN0n0A4Zvkg7wNXI59yA0HTdf6rOYk9
+ COe7i8tqn1yonu+mPSqfhtZXw7PuGBbEScFuXXtkzuXFAotP6bWAHpBUpzQlit2iVhgk vw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2xksyqkauw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jan 2020 16:14:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00NFxGj4072138;
+        Thu, 23 Jan 2020 16:14:46 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2xpq7n36t7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jan 2020 16:14:45 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00NGEidL017087;
+        Thu, 23 Jan 2020 16:14:44 GMT
+Received: from [10.191.53.142] (/10.191.53.142)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 23 Jan 2020 08:14:44 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH 4/5] btrfs: do not account global reserve in
+ can_overcommit
+To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+References: <20190822191904.13939-1-josef@toxicpanda.com>
+ <20190822191904.13939-5-josef@toxicpanda.com>
+Message-ID: <8b7d11d3-3f54-d090-a1c6-cb1e67b2b4f1@oracle.com>
+Date:   Fri, 24 Jan 2020 00:14:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200123081849.23397-7-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190822191904.13939-5-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9508 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001230130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9508 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001230130
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -81,76 +76,104 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 23.01.20 г. 10:18 ч., Johannes Thumshirn wrote:
-> The integrity checking code for the superblock mirrors is the last remaining
-> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> 
-> ---
-> Changes to v1:
-> - Convert from alloc_page() to find_or_create_page()
-> ---
->  fs/btrfs/check-integrity.c | 44 +++++++++++++++++++++++++++-----------
->  1 file changed, 31 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-> index 4f6db2fe482a..45b88bcd6cbb 100644
-> --- a/fs/btrfs/check-integrity.c
-> +++ b/fs/btrfs/check-integrity.c
-> @@ -77,7 +77,6 @@
->  
->  #include <linux/sched.h>
->  #include <linux/slab.h>
-> -#include <linux/buffer_head.h>
->  #include <linux/mutex.h>
->  #include <linux/genhd.h>
->  #include <linux/blkdev.h>
-> @@ -762,28 +761,47 @@ static int btrfsic_process_superblock_dev_mirror(
->  	struct btrfs_fs_info *fs_info = state->fs_info;
->  	struct btrfs_super_block *super_tmp;
->  	u64 dev_bytenr;
-> -	struct buffer_head *bh;
->  	struct btrfsic_block *superblock_tmp;
->  	int pass;
->  	struct block_device *const superblock_bdev = device->bdev;
-> +	struct page *page;
-> +	struct bio bio;
-> +	struct bio_vec bio_vec;
-> +	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
-> +	gfp_t gfp_mask;
-> +	int ret;
->  
->  	/* super block bytenr is always the unmapped device bytenr */
->  	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
->  	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
->  		return -1;
-> -	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
-> -		     BTRFS_SUPER_INFO_SIZE);
-> -	if (NULL == bh)
-> +
-> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
-> +
-> +	page = find_or_create_page(mapping, dev_bytenr >> PAGE_SHIFT, gfp_mask);
-> +	if (!page)
-> +		return -1;
-> +
-> +	bio_init(&bio, &bio_vec, 1);
-> +	bio.bi_iter.bi_sector = dev_bytenr >> SECTOR_SHIFT;
-> +	bio_set_dev(&bio, superblock_bdev);
-> +	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
-> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
-> +
-> +	ret = submit_bio_wait(&bio);
-> +	if (ret)
->  		return -1;
-> -	super_tmp = (struct btrfs_super_block *)
-> -	    (bh->b_data + (dev_bytenr & (BTRFS_BDEV_BLOCKSIZE - 1)));
-> +
-> +	unlock_page(page);
+This patch is causing regression in the test case generic/027
+and generic/275 with MKFS_OPTIONS="-n64K" on x86_64.
 
-This is safe since it's part of the integrity code which gets called
-during mount so presumably we can't have a transaction commit while this
-is running. I'd prefer an explicit mention of that in the changelog.
+Both of these tests, test FS behavior at ENOSPC.
 
-<snip>
+In generic/027, it fails to delete a file with ENOSPC
+
+      +rm: cannot remove '/mnt/scratch/testdir/6/file_1598': No space 
+left on device
+
+In generic/275, it failed to create at least 128k size file after
+deleting 256k sized file. Failure may be fair taking into the cow part,
+but any idea why it could be successful before this patch?
+
+     +du: cannot access '/mnt/scratch/tmp1': No such file or directory
+     +stat: cannot stat '/mnt/scratch/tmp1': No such file or directory
+
+These fail on misc-next as well.
+
+Thanks, Anand
+
+
+On 8/23/19 3:19 AM, Josef Bacik wrote:
+> We ran into a problem in production where a box with plenty of space was
+> getting wedged doing ENOSPC flushing.  These boxes only had 20% of the
+> disk allocated, but their metadata space + global reserve was right at
+> the size of their metadata chunk.
+> 
+> In this case can_overcommit should be allowing allocations without
+> problem, but there's logic in can_overcommit that doesn't allow us to
+> overcommit if there's not enough real space to satisfy the global
+> reserve.
+> 
+> This is for historical reasons.  Before there were only certain places
+> we could allocate chunks.  We could go to commit the transaction and not
+> have enough space for our pending delayed refs and such and be unable to
+> allocate a new chunk.  This would result in a abort because of ENOSPC.
+> This code was added to solve this problem.
+> 
+> However since then we've gained the ability to always be able to
+> allocate a chunk.  So we can easily overcommit in these cases without
+> risking a transaction abort because of ENOSPC.
+> 
+> Also prior to now the global reserve really would be used because that's
+> the space we relied on for delayed refs.  With delayed refs being
+> tracked separately we no longer have to worry about running out of
+> delayed refs space while committing.  We are much less likely to
+> exhaust our global reserve space during transaction commit.
+> 
+> Fix the can_overcommit code to simply see if our current usage + what we
+> want is less than our current free space plus whatever slack space we
+> have in the disk is.  This solves the problem we were seeing in
+> production and keeps us from flushing as aggressively as we approach our
+> actual metadata size usage.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   fs/btrfs/space-info.c | 19 +------------------
+>   1 file changed, 1 insertion(+), 18 deletions(-)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index a43f6287074b..3053b3e91b34 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -165,9 +165,7 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+>   			  enum btrfs_reserve_flush_enum flush,
+>   			  bool system_chunk)
+>   {
+> -	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+>   	u64 profile;
+> -	u64 space_size;
+>   	u64 avail;
+>   	u64 used;
+>   	int factor;
+> @@ -181,22 +179,7 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+>   	else
+>   		profile = btrfs_metadata_alloc_profile(fs_info);
+>   
+> -	used = btrfs_space_info_used(space_info, false);
+> -
+> -	/*
+> -	 * We only want to allow over committing if we have lots of actual space
+> -	 * free, but if we don't have enough space to handle the global reserve
+> -	 * space then we could end up having a real enospc problem when trying
+> -	 * to allocate a chunk or some other such important allocation.
+> -	 */
+> -	spin_lock(&global_rsv->lock);
+> -	space_size = calc_global_rsv_need_space(global_rsv);
+> -	spin_unlock(&global_rsv->lock);
+> -	if (used + space_size >= space_info->total_bytes)
+> -		return 0;
+> -
+> -	used += space_info->bytes_may_use;
+> -
+> +	used = btrfs_space_info_used(space_info, true);
+>   	avail = atomic64_read(&fs_info->free_chunk_space);
+>   
+>   	/*
+> 
+
