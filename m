@@ -2,61 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2408714633F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 09:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C394146342
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 09:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728668AbgAWITC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 03:19:02 -0500
+        id S1728767AbgAWITG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 03:19:06 -0500
 Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43991 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgAWITB (ORCPT
+        with ESMTP id S1725785AbgAWITC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 03:19:01 -0500
+        Thu, 23 Jan 2020 03:19:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1579767542; x=1611303542;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EneM6WceyRrMsFpB6DnTbMPZ+dkv9q8AsWLcEvey984=;
-  b=axBoT7pCryrRbS2lENnGhHdNwZVo6zWoOuc4+TPGGIj4PiBhnEUg9uqB
-   D9n0Mt0nGw8ckdm6AASZe1RvdNIEW2ffHQMd5YaHp1vRMX+15FfPWQOPo
-   Z9QbDP0SaT16jsL6AJSogDMqVwE+Q9bHDx/Pr9wYlorHuy1U2j1zrk0Ez
-   0zxnRknUi6q9KTaTv6GR3U9PVLND/JihOPMHm0Vvf01zhDxVnjH5L4dN+
-   hZ3lVGEIxAq3y3Lc6sGom9Hg5ZEVNFANHTCr+9yxd35p8uuWIM4HJLhzv
-   VsyCzCsPcaRLEDOE7TwIxGAFnbF8MH2SpBp20PaFC3JmslRqsdS4ZJbw9
-   w==;
-IronPort-SDR: eJekihPl8BzaCgq6Pka7ukUJqXl7fTjkICRUaKNaFrcyepVcqhIv/sX9DmDqF64c+HrQwF8zWj
- ZWQj8ZDWaJz1aw2yC09xq0ZZEqlw1QwDhsBmtuTxKvlFfybUNYoX40704p6PzLzArXEihYxgan
- a92phWWAaT0f1sMQ5Hg4tOAsZuGqkPHTLbbkYkq1BtAxin2gzWEEWfj5TOHwtQFcNLvr1AWhaQ
- 3/o9CDzS/aA5BJBzs+C5LkBm40vAMcq0022a8wgmjLlOZzKVlnqjTElFrGkqkMBnuaT6fyNnbI
- 0EI=
+  bh=1LGuqVEY+XciGpC1222BHuFVk9lKRuLry7MKafyxTrU=;
+  b=DCaBLNY+2JvLV0ViGI90o9ecLoG3pglwEWVNRgo1gayWPM9Tuco0gDvb
+   M5TYHgvzPS2+V2nmK0WDdkH+QG99XyFr+UxvOWvijUel5Dz0BuMOkprTt
+   51gXc967u7tW9BnPJWhhGnppSuvADKTiPTzlhKzG9TKN6JXy/TxwrB+uE
+   4GjhB9CPQgJqMdposNMZXHUI+x1Ptiw8yzU8QDtPVLOr7uBOWsG59Tccy
+   M7/C83KJzok/KU67k0BudFEOs/Z0i20cg/yNzw9Cbyg94bqS0s7Q9FQJ1
+   e0FNNKzRxrNrl3aRMnP+vBFJ7EUsTtqMQfXCv0T0ZFTUnJrv/hldGicBJ
+   A==;
+IronPort-SDR: PMgBv3eOsRuHwTfwUphVFsZHRDHimgw+gZHbkktybkKpa6n1arNIENHZfwsYol9W2MiylU/W62
+ eMcC67XrJplWnNWquFvHX79M+FmDY5MPHbM0EAQ9bfZ5uOyqyLrhQ3tk1XRm6HDRPRPspTFK8i
+ w/m3ymx+2nHP1rJOYHBaO+FfSo5spxchjdNM3+U4PcV9hHvj6cxxUU6TPw8mBEONmZ4mpajRT/
+ gmOqZhuqJE4Ot+1tj0TiZZwU2agHA0bUwUKqK+TzAEWvno8G5v7FoXwrmgHlUv447aKUtD7LsU
+ nmQ=
 X-IronPort-AV: E=Sophos;i="5.70,353,1574092800"; 
-   d="scan'208";a="129708696"
+   d="scan'208";a="129708697"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2020 16:19:01 +0800
-IronPort-SDR: zlw6bc1C66TNrWULO/SYwDEOQn/KhozMWctYs4Ho9XZqT6VFlZmzbz/iZdhHcNQpMWsYHso8eY
- I2cfYEz4derKA4GHP8Waejnd5XpC+J7YK4blwL0XRZ6bM3Snkm7ZW0XKARoNowAvMwRIwdh96F
- MgtxAxLB4sYlm6UdQ65jsqdS5sC3UfdtPHAAeAH5RO977cLp7z6lLLRLVOq9cni3X7k8UKrTtL
- EJjn6oGPQWzN8rPK/0NQ3WR75uZ+j1IWNZgkv2HGfredgs7/BGFkrv/njvAADNn5y3D+stLC7t
- idZ2DGPOrXyOA9Vr+x3PJ/A5
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2020 16:19:02 +0800
+IronPort-SDR: 3ws3HIXidxcR/MkH7xSbPKKpmtwP1/0ADui5b5AOoDxtz2KnIYMHZ+EZjtJGBZFDMdMmIicoo0
+ EyrOfNG/YMmF8vHIBskkpwIsgylcbwy+XvsWE+8EwoeRS2irmWH79ExWDvMuVenqXjMUnv1iDN
+ LvTAu3K8sqTA0rx26pnIC2PV3xuSoPWps64YEkV3ZnxU8aUj48HyytIrfSv6vU5QIvUKiSoAQ5
+ gty/JmB/7RAz34YMMuNvmWeot6lQJF9QuXMnhsvjt9lLHzrUrlnu2ty1wfoOOuQsK7RSDz8OZq
+ 1QhdTPcxkn+f/DVz4unCXMP2
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2020 00:12:24 -0800
-IronPort-SDR: w6IvAbyflXthblcs58967GLbYc9/0SXR8Al0wz+4AnvPpQs7MkPGb71mV2w9WsxziZUKKgy1i8
- lCxgYjkRHAgVr0bLrJxA8uy32m/867DvoDztjcM0K4loC+vHt0WOFnp23wjTF0PrmvykzFFZHR
- dbPx+ZeH7iFc9zMjsN2yJKe50lkqN3XVn0uWueaSK6bzpkwLfqgMyS9H9RJeGaNMlgugfbfWp/
- EZLNuU0eHoRq95nbAaefchNpJdd0AKgvRhIvSkIeSI8fdqvof/hKhXUafXH0y6LO69BL6mEwVM
- ID8=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2020 00:12:25 -0800
+IronPort-SDR: cgdv3wx9kIKQmJS5PbHib4ChYBbQ+plQyRxU9/iRBrkDXK9OcM/JCwZd56v31LqLOPO8Q4qY1q
+ kK/McOsd59ku/VoOfEpLNzyrH0giphOfGkLBq/52jk7jI74cHlO1onQ4sJgRaxSxTb/u4EDDlA
+ A9NVgo6XEVLSp5v4DFOwTXcAmtNtBFxLZUuoIBmY/pCTvJiByzooyP1EZNkVRvhl6szwRtBR1c
+ bCD99RKk8/bBjgQse4q1z7P5WIaCqKZBGg+fF9pG3+SWvBBXi4vz2H5h9kevKQibLAzO+U2uGH
+ cbs=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jan 2020 00:19:00 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jan 2020 00:19:01 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Nikolay Borisov <nborisov@suse.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 5/6] btrfs: remove buffer_heads from btrfsic_process_written_block()
-Date:   Thu, 23 Jan 2020 17:18:48 +0900
-Message-Id: <20200123081849.23397-6-johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 6/6] btrfs: remove buffer_heads form superblock mirror integrity checking
+Date:   Thu, 23 Jan 2020 17:18:49 +0900
+Message-Id: <20200123081849.23397-7-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
 References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
@@ -67,223 +67,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that the last caller of btrfsic_process_written_block() with
-buffer_heads is gone, remove the buffer_head processing path from it as
-well.
+The integrity checking code for the superblock mirrors is the last remaining
+user of buffer_heads in BTRFS, change it to using plain BIOs as well.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
 ---
- fs/btrfs/check-integrity.c | 103 +++++++++----------------------------
- 1 file changed, 25 insertions(+), 78 deletions(-)
+Changes to v1:
+- Convert from alloc_page() to find_or_create_page()
+---
+ fs/btrfs/check-integrity.c | 44 +++++++++++++++++++++++++++-----------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index e7507985435e..4f6db2fe482a 100644
+index 4f6db2fe482a..45b88bcd6cbb 100644
 --- a/fs/btrfs/check-integrity.c
 +++ b/fs/btrfs/check-integrity.c
-@@ -152,11 +152,8 @@ struct btrfsic_block {
- 	struct list_head ref_to_list;	/* list */
- 	struct list_head ref_from_list;	/* list */
- 	struct btrfsic_block *next_in_same_bio;
--	void *orig_bio_bh_private;
--	union {
--		bio_end_io_t *bio;
--		bh_end_io_t *bh;
--	} orig_bio_bh_end_io;
-+	void *orig_bio_private;
-+	bio_end_io_t *orig_bio_end_io;
- 	int submit_bio_bh_rw;
- 	u64 flush_gen; /* only valid if !never_written */
- };
-@@ -325,14 +322,12 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 					  u64 dev_bytenr, char **mapped_datav,
- 					  unsigned int num_pages,
- 					  struct bio *bio, int *bio_is_patched,
--					  struct buffer_head *bh,
- 					  int submit_bio_bh_rw);
- static int btrfsic_process_written_superblock(
- 		struct btrfsic_state *state,
- 		struct btrfsic_block *const block,
- 		struct btrfs_super_block *const super_hdr);
- static void btrfsic_bio_end_io(struct bio *bp);
--static void btrfsic_bh_end_io(struct buffer_head *bh, int uptodate);
- static int btrfsic_is_block_ref_by_superblock(const struct btrfsic_state *state,
- 					      const struct btrfsic_block *block,
- 					      int recursion_level);
-@@ -399,8 +394,8 @@ static void btrfsic_block_init(struct btrfsic_block *b)
- 	b->never_written = 0;
- 	b->mirror_num = 0;
- 	b->next_in_same_bio = NULL;
--	b->orig_bio_bh_private = NULL;
--	b->orig_bio_bh_end_io.bio = NULL;
-+	b->orig_bio_private = NULL;
-+	b->orig_bio_end_io = NULL;
- 	INIT_LIST_HEAD(&b->collision_resolving_node);
- 	INIT_LIST_HEAD(&b->all_blocks_node);
- 	INIT_LIST_HEAD(&b->ref_to_list);
-@@ -1743,7 +1738,6 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 					  u64 dev_bytenr, char **mapped_datav,
- 					  unsigned int num_pages,
- 					  struct bio *bio, int *bio_is_patched,
--					  struct buffer_head *bh,
- 					  int submit_bio_bh_rw)
- {
- 	int is_metadata;
-@@ -1902,9 +1896,9 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 				block->is_iodone = 0;
- 				BUG_ON(NULL == bio_is_patched);
- 				if (!*bio_is_patched) {
--					block->orig_bio_bh_private =
-+					block->orig_bio_private =
- 					    bio->bi_private;
--					block->orig_bio_bh_end_io.bio =
-+					block->orig_bio_end_io =
- 					    bio->bi_end_io;
- 					block->next_in_same_bio = NULL;
- 					bio->bi_private = block;
-@@ -1916,25 +1910,17 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 					    bio->bi_private;
+@@ -77,7 +77,6 @@
  
- 					BUG_ON(NULL == chained_block);
--					block->orig_bio_bh_private =
--					    chained_block->orig_bio_bh_private;
--					block->orig_bio_bh_end_io.bio =
--					    chained_block->orig_bio_bh_end_io.
--					    bio;
-+					block->orig_bio_private =
-+					    chained_block->orig_bio_private;
-+					block->orig_bio_end_io =
-+					    chained_block->orig_bio_end_io;
- 					block->next_in_same_bio = chained_block;
- 					bio->bi_private = block;
- 				}
--			} else if (NULL != bh) {
--				block->is_iodone = 0;
--				block->orig_bio_bh_private = bh->b_private;
--				block->orig_bio_bh_end_io.bh = bh->b_end_io;
--				block->next_in_same_bio = NULL;
--				bh->b_private = block;
--				bh->b_end_io = btrfsic_bh_end_io;
- 			} else {
- 				block->is_iodone = 1;
--				block->orig_bio_bh_private = NULL;
--				block->orig_bio_bh_end_io.bio = NULL;
-+				block->orig_bio_private = NULL;
-+				block->orig_bio_end_io = NULL;
- 				block->next_in_same_bio = NULL;
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+-#include <linux/buffer_head.h>
+ #include <linux/mutex.h>
+ #include <linux/genhd.h>
+ #include <linux/blkdev.h>
+@@ -762,28 +761,47 @@ static int btrfsic_process_superblock_dev_mirror(
+ 	struct btrfs_fs_info *fs_info = state->fs_info;
+ 	struct btrfs_super_block *super_tmp;
+ 	u64 dev_bytenr;
+-	struct buffer_head *bh;
+ 	struct btrfsic_block *superblock_tmp;
+ 	int pass;
+ 	struct block_device *const superblock_bdev = device->bdev;
++	struct page *page;
++	struct bio bio;
++	struct bio_vec bio_vec;
++	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
++	gfp_t gfp_mask;
++	int ret;
+ 
+ 	/* super block bytenr is always the unmapped device bytenr */
+ 	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
+ 	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
+ 		return -1;
+-	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
+-		     BTRFS_SUPER_INFO_SIZE);
+-	if (NULL == bh)
++
++	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
++
++	page = find_or_create_page(mapping, dev_bytenr >> PAGE_SHIFT, gfp_mask);
++	if (!page)
++		return -1;
++
++	bio_init(&bio, &bio_vec, 1);
++	bio.bi_iter.bi_sector = dev_bytenr >> SECTOR_SHIFT;
++	bio_set_dev(&bio, superblock_bdev);
++	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
++	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
++
++	ret = submit_bio_wait(&bio);
++	if (ret)
+ 		return -1;
+-	super_tmp = (struct btrfs_super_block *)
+-	    (bh->b_data + (dev_bytenr & (BTRFS_BDEV_BLOCKSIZE - 1)));
++
++	unlock_page(page);
++
++	super_tmp = kmap(page);
+ 
+ 	if (btrfs_super_bytenr(super_tmp) != dev_bytenr ||
+ 	    btrfs_super_magic(super_tmp) != BTRFS_MAGIC ||
+ 	    memcmp(device->uuid, super_tmp->dev_item.uuid, BTRFS_UUID_SIZE) ||
+ 	    btrfs_super_nodesize(super_tmp) != state->metablock_size ||
+ 	    btrfs_super_sectorsize(super_tmp) != state->datablock_size) {
+-		brelse(bh);
++		btrfs_release_disk_super(page);
+ 		return 0;
+ 	}
+ 
+@@ -795,7 +813,7 @@ static int btrfsic_process_superblock_dev_mirror(
+ 		superblock_tmp = btrfsic_block_alloc();
+ 		if (NULL == superblock_tmp) {
+ 			pr_info("btrfsic: error, kmalloc failed!\n");
+-			brelse(bh);
++			btrfs_release_disk_super(page);
+ 			return -1;
+ 		}
+ 		/* for superblock, only the dev_bytenr makes sense */
+@@ -880,7 +898,7 @@ static int btrfsic_process_superblock_dev_mirror(
+ 					      mirror_num)) {
+ 				pr_info("btrfsic: btrfsic_map_block(bytenr @%llu, mirror %d) failed!\n",
+ 				       next_bytenr, mirror_num);
+-				brelse(bh);
++				btrfs_release_disk_super(page);
+ 				return -1;
+ 			}
+ 
+@@ -890,7 +908,7 @@ static int btrfsic_process_superblock_dev_mirror(
+ 					mirror_num, NULL);
+ 			if (NULL == next_block) {
+ 				btrfsic_release_block_ctx(&tmp_next_block_ctx);
+-				brelse(bh);
++				btrfs_release_disk_super(page);
+ 				return -1;
+ 			}
+ 
+@@ -902,7 +920,7 @@ static int btrfsic_process_superblock_dev_mirror(
+ 					BTRFSIC_GENERATION_UNKNOWN);
+ 			btrfsic_release_block_ctx(&tmp_next_block_ctx);
+ 			if (NULL == l) {
+-				brelse(bh);
++				btrfs_release_disk_super(page);
+ 				return -1;
  			}
  		}
-@@ -2042,8 +2028,8 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 			block->is_iodone = 0;
- 			BUG_ON(NULL == bio_is_patched);
- 			if (!*bio_is_patched) {
--				block->orig_bio_bh_private = bio->bi_private;
--				block->orig_bio_bh_end_io.bio = bio->bi_end_io;
-+				block->orig_bio_private = bio->bi_private;
-+				block->orig_bio_end_io = bio->bi_end_io;
- 				block->next_in_same_bio = NULL;
- 				bio->bi_private = block;
- 				bio->bi_end_io = btrfsic_bio_end_io;
-@@ -2054,24 +2040,17 @@ static void btrfsic_process_written_block(struct btrfsic_dev_state *dev_state,
- 				    bio->bi_private;
+@@ -910,7 +928,7 @@ static int btrfsic_process_superblock_dev_mirror(
+ 	if (state->print_mask & BTRFSIC_PRINT_MASK_INITIAL_ALL_TREES)
+ 		btrfsic_dump_tree_sub(state, superblock_tmp, 0);
  
- 				BUG_ON(NULL == chained_block);
--				block->orig_bio_bh_private =
--				    chained_block->orig_bio_bh_private;
--				block->orig_bio_bh_end_io.bio =
--				    chained_block->orig_bio_bh_end_io.bio;
-+				block->orig_bio_private =
-+				    chained_block->orig_bio_private;
-+				block->orig_bio_end_io =
-+				    chained_block->orig_bio_end_io;
- 				block->next_in_same_bio = chained_block;
- 				bio->bi_private = block;
- 			}
--		} else if (NULL != bh) {
--			block->is_iodone = 0;
--			block->orig_bio_bh_private = bh->b_private;
--			block->orig_bio_bh_end_io.bh = bh->b_end_io;
--			block->next_in_same_bio = NULL;
--			bh->b_private = block;
--			bh->b_end_io = btrfsic_bh_end_io;
- 		} else {
- 			block->is_iodone = 1;
--			block->orig_bio_bh_private = NULL;
--			block->orig_bio_bh_end_io.bio = NULL;
-+			block->orig_bio_private = NULL;
-+			block->orig_bio_end_io = NULL;
- 			block->next_in_same_bio = NULL;
- 		}
- 		if (state->print_mask & BTRFSIC_PRINT_MASK_VERBOSE)
-@@ -2112,8 +2091,8 @@ static void btrfsic_bio_end_io(struct bio *bp)
- 		iodone_w_error = 1;
- 
- 	BUG_ON(NULL == block);
--	bp->bi_private = block->orig_bio_bh_private;
--	bp->bi_end_io = block->orig_bio_bh_end_io.bio;
-+	bp->bi_private = block->orig_bio_private;
-+	bp->bi_end_io = block->orig_bio_end_io;
- 
- 	do {
- 		struct btrfsic_block *next_block;
-@@ -2146,38 +2125,6 @@ static void btrfsic_bio_end_io(struct bio *bp)
- 	bp->bi_end_io(bp);
+-	brelse(bh);
++	btrfs_release_disk_super(page);
+ 	return 0;
  }
  
--static void btrfsic_bh_end_io(struct buffer_head *bh, int uptodate)
--{
--	struct btrfsic_block *block = (struct btrfsic_block *)bh->b_private;
--	int iodone_w_error = !uptodate;
--	struct btrfsic_dev_state *dev_state;
--
--	BUG_ON(NULL == block);
--	dev_state = block->dev_state;
--	if ((dev_state->state->print_mask & BTRFSIC_PRINT_MASK_END_IO_BIO_BH))
--		pr_info("bh_end_io(error=%d) for %c @%llu (%s/%llu/%d)\n",
--		       iodone_w_error,
--		       btrfsic_get_block_type(dev_state->state, block),
--		       block->logical_bytenr, block->dev_state->name,
--		       block->dev_bytenr, block->mirror_num);
--
--	block->iodone_w_error = iodone_w_error;
--	if (block->submit_bio_bh_rw & REQ_PREFLUSH) {
--		dev_state->last_flush_gen++;
--		if ((dev_state->state->print_mask &
--		     BTRFSIC_PRINT_MASK_END_IO_BIO_BH))
--			pr_info("bh_end_io() new %s flush_gen=%llu\n",
--			       dev_state->name, dev_state->last_flush_gen);
--	}
--	if (block->submit_bio_bh_rw & REQ_FUA)
--		block->flush_gen = 0; /* FUA completed means block is on disk */
--
--	bh->b_private = block->orig_bio_bh_private;
--	bh->b_end_io = block->orig_bio_bh_end_io.bh;
--	block->is_iodone = 1; /* for FLUSH, this releases the block */
--	bh->b_end_io(bh, uptodate);
--}
--
- static int btrfsic_process_written_superblock(
- 		struct btrfsic_state *state,
- 		struct btrfsic_block *const superblock,
-@@ -2781,7 +2728,7 @@ static void __btrfsic_submit_bio(struct bio *bio)
- 		btrfsic_process_written_block(dev_state, dev_bytenr,
- 					      mapped_datav, segs,
- 					      bio, &bio_is_patched,
--					      NULL, bio->bi_opf);
-+					      bio->bi_opf);
- 		bio_for_each_segment(bvec, bio, iter)
- 			kunmap(bvec.bv_page);
- 		kfree(mapped_datav);
-@@ -2805,8 +2752,8 @@ static void __btrfsic_submit_bio(struct bio *bio)
- 			block->iodone_w_error = 0;
- 			block->flush_gen = dev_state->last_flush_gen + 1;
- 			block->submit_bio_bh_rw = bio->bi_opf;
--			block->orig_bio_bh_private = bio->bi_private;
--			block->orig_bio_bh_end_io.bio = bio->bi_end_io;
-+			block->orig_bio_private = bio->bi_private;
-+			block->orig_bio_end_io = bio->bi_end_io;
- 			block->next_in_same_bio = NULL;
- 			bio->bi_private = block;
- 			bio->bi_end_io = btrfsic_bio_end_io;
 -- 
 2.24.1
 
