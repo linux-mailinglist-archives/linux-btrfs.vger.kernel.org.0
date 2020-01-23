@@ -2,61 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFA114633D
+	by mail.lfdr.de (Postfix) with ESMTP id A996C14633E
 	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 09:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727215AbgAWITA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 03:19:00 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43990 "EHLO
+        id S1728655AbgAWITB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 03:19:01 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43991 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgAWIS7 (ORCPT
+        with ESMTP id S1725785AbgAWITA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 03:18:59 -0500
+        Thu, 23 Jan 2020 03:19:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1579767539; x=1611303539;
+  t=1579767540; x=1611303540;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=19XjfNb2DsyFkWApWGJ7z72fug2kMoPozXI2kQJWYVU=;
-  b=NrnWlSp9Ktued/Lf3C0bwSzk2xokZXHtIKrj/Uhv0rgyBeoU9loWGKB0
-   2SP0mgkcJIIu3CdmdYEyGlcno2IMj6GyOSdD6p5GB/iDxsm3ofu3Y2Tc7
-   9Up37HrVfQDwnReLFPx6YmZEpkXtzgKXRZaPsmU2xgj9Decg0mjw5TkKe
-   zoVlzVq9nCWZgD2cCFFgqg9ixLK5vfWJ7KjiVFYVQ66mV0fRa2im4TC86
-   WB5oANBh/4niu/P8d7eqw6ECojfSh+mj5WBLEecZjsFlAtYwcn5W7KY+p
-   Vnd6dOHyKi28m6cP8YiykmID0T8zBgwxMfzpkX9eV6VW9DEmAJOheukUt
+  bh=gIeOkhqO8OgsauT36wGVsj0GSaydPzDuX9+wi0vVzPA=;
+  b=qA6jubNmM50wwlLuG69NB3A4Tp0tJ72FeLQthzFIrxfPxnNlMUmYOPDa
+   WtEJxbXvydsMsG5I8qfc8WHmKUQwBPPgGTMnkNUDDBXn0mLA+UUKG48z3
+   VcKxE+CbwOTcluJwsyqoH87HzJVzxndB13T9J3oyf+WSvzDY9OUezHkJt
+   RvqYZKO4KJXiDoMCKLG4ltRvu0fUF5gyckrEPhsLrycitzo3LckhysBs+
+   aUVxaMgsMYko0qv1522vvyQl4krKRnYJNEG3EVyvKErYuXqJZYsI6czSN
+   6Ufyy1dYnRtWGuelUklGjqhvNwKr5buGStRRh6aS2fCSn7fe8Rgwsl/a2
    A==;
-IronPort-SDR: y7/fzD7DHYpSSifDoOWeuD/BOk89OmEv+Gmv/uI+C3nW14BLBdsAQ55b+G5vEyAzRPOox/Vfz4
- QJ7vLfDSM7Qi5is8luHLwYU+PTqUAsM3ZjRGvPbVVZwBqoyres8pTPwAboLrgZkPMoIaE3q/5w
- XmFxK7qDlbkkYTBOfXqMhWryGZ97LgLiB1lpwQKPD5EtMc22P6rJosBKQGNvDmGokX8byt7f8Z
- qkPSLfG7CEjOqFtcd004vQNF2P9zRtfTz/niS4yM/8CWScziHG6aKvMleKbrPohTY9NzVmh0AN
- KLs=
+IronPort-SDR: DmPoeqI6oldQNsHLb6TocppcVW2rKaCMNXX4DErQbccqEXVOYQclg0w7Gtmt+Fpsl8eU8aiKNV
+ R/9um3ATJx4yRqlSTKnEDhJahl3Y0ZF1r5twInO6f0vArjW/l5H2WfJYYQDY2gcQ2F8epOmoZf
+ /te3MUPI/yMAOCTp1EIz/RMIzmabBjCwHgY+S9JpUEN4RXH5e9aYX9R9RTskSEpqd9fHZ6bqDM
+ 4aMkst2wiSPxVhH99XKVYetVlf3lhJJY6BFuIhbVYdrag4DHKyFUMngX14AVG6w7jjP3n51iLM
+ xNs=
 X-IronPort-AV: E=Sophos;i="5.70,353,1574092800"; 
-   d="scan'208";a="129708690"
+   d="scan'208";a="129708694"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2020 16:18:59 +0800
-IronPort-SDR: EJlXZITaj0KfUTnctTE93YVL10oZ6qnAkJVQwd2KbA6pK94J6mNWL6L7gQNQ2id1TOSNMCz/nz
- n/O5Noc6jrB+sydLKdX4a9uiYtRr3V3Ink8UoFlkBLqzvVshI3xXELAUtbxzFei5Q41pKvBZV8
- Vi1Ln1j54ZJZy7TutIFZD6U5Trh4V99sAB4jHH1HQlE4jNOJ8HG1aFHJxtmG6GW4jcXijrliCP
- TG4fg3jTZR1o48xvdhRxancN/3q7SqpWKjSzOHq1YrLW0La5QYCEoDbVjdnPufaztwMZT7BYnL
- g49JvlFJVC4D/FoaIYV61Z2T
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2020 16:19:00 +0800
+IronPort-SDR: 4h9tKIqEVxQps+zshon9GF59c3DJNh+ho90IsiRKLUhqq8OlFkon5pFrNUIjPaE2lsKPBsHCOE
+ nS+549N4MUqQKrexXyQWl2BKPeuh6FhUQ5EYC1KLfV/FoADF+ck6lhUdvfWKqOvSISMwNVLcp/
+ o6t9yAMcCLy1fpb2qHknsXznzJwKcXXMq11p4JlHEJWN3X8FBrX30/TWDrTv3xn9C9kZJXzl21
+ kk9lZJlc7AKKPH1gBosit0TiahBepYbdpAfcg/xL+Ri+4lOW9SBOH46DEhTMQbxbPSCidCgScH
+ hxm5k6a1ngf7wFZLSBdzxZEr
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2020 00:12:21 -0800
-IronPort-SDR: pNqSPTVbHJUTIGJW/nJLDOEfSSNe0LLoHWPK9y5GEGNtfLOdDmDnr8M/sbqSYVaN345qHFi+tM
- Vb8oUT1prW+0UQBCVWZ0JExBwY49Wi59z9ROyDs4GRapnRjh+Qdja1/P/xi5T++/y9BMDQHcy3
- /18YetMq63X+tpqCLvOV0GgclV+y1ainGGYnx3sPHc9ymg1wY3/kmwNpLZ+CqCKtwS5QC5x948
- 1NC/tFT+iwbntFnFCdwDLfU1g2AgZBAGy9cf0ppUF1v3nBNfNDqHOBbgsyG7upGgOy1DAhcZRy
- enA=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2020 00:12:22 -0800
+IronPort-SDR: hYHwnjbp0Vse9SWP3DCVbv8KQm68FmjZzjH4F3KkVMUPCqjqyK+IUn7kyprOetP4b1+30W7bG4
+ sZ/9OhtSCLhe646Y4BAR6nUXfqWL5CEerIHFdl/crhGUbgGXw85dg5RqMoaAwRz+5DJXUPi+tp
+ oXBDIeQvW/hNgX2Lz9f6X9VDNFv9kMpmH/6JeLYCrNCy1SZAe6B175DRbgkqFj+MPHdkctUTjY
+ PXxRDW+zudyPKwVuV1UdLXyvUUQYthvOfPd2ClIuJmfZTOBkk03oeY6DSN0pE+1yNaLEKWgyRJ
+ hQY=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jan 2020 00:18:58 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jan 2020 00:18:59 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Nikolay Borisov <nborisov@suse.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 3/6] btrfs: remove use of buffer_heads from superblock writeout
-Date:   Thu, 23 Jan 2020 17:18:46 +0900
-Message-Id: <20200123081849.23397-4-johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 4/6] btrfs: remove btrfsic_submit_bh()
+Date:   Thu, 23 Jan 2020 17:18:47 +0900
+Message-Id: <20200123081849.23397-5-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
 References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
@@ -67,232 +67,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Similar to the superblock read path, change the write path to using BIOs
-and pages instead of buffer_heads. This allows us to skip over the
-buffer_head code, for writing the superblock to disk.
+Now that the last use of btrfsic_submit_bh() is gone, remove the function
+as well.
 
-This is based on a patch originally authored by Nikolay Borisov.
-
-Co-developed-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
-Changes to v1:
-- Remove left-over buffer_head.h include (David)
----
- fs/btrfs/disk-io.c | 111 ++++++++++++++++++++++++++-------------------
- 1 file changed, 64 insertions(+), 47 deletions(-)
+ fs/btrfs/check-integrity.c | 57 --------------------------------------
+ fs/btrfs/check-integrity.h |  2 --
+ 2 files changed, 59 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b111f32108cc..ac1755793596 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -7,7 +7,6 @@
- #include <linux/blkdev.h>
- #include <linux/radix-tree.h>
- #include <linux/writeback.h>
--#include <linux/buffer_head.h>
- #include <linux/workqueue.h>
- #include <linux/kthread.h>
- #include <linux/slab.h>
-@@ -3356,25 +3355,33 @@ int __cold open_ctree(struct super_block *sb,
+diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+index a0ce69f2d27c..e7507985435e 100644
+--- a/fs/btrfs/check-integrity.c
++++ b/fs/btrfs/check-integrity.c
+@@ -2730,63 +2730,6 @@ static struct btrfsic_dev_state *btrfsic_dev_state_lookup(dev_t dev)
+ 						  &btrfsic_dev_state_hashtable);
  }
- ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
  
--static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
-+static void btrfs_end_super_write(struct bio *bio)
- {
--	if (uptodate) {
--		set_buffer_uptodate(bh);
--	} else {
--		struct btrfs_device *device = (struct btrfs_device *)
--			bh->b_private;
+-int btrfsic_submit_bh(int op, int op_flags, struct buffer_head *bh)
+-{
+-	struct btrfsic_dev_state *dev_state;
 -
--		btrfs_warn_rl_in_rcu(device->fs_info,
--				"lost page write due to IO error on %s",
--					  rcu_str_deref(device->name));
--		/* note, we don't set_buffer_write_io_error because we have
--		 * our own ways of dealing with the IO errors
--		 */
--		clear_buffer_uptodate(bh);
--		btrfs_dev_stat_inc_and_print(device, BTRFS_DEV_STAT_WRITE_ERRS);
-+	struct btrfs_device *device = bio->bi_private;
-+	struct bio_vec *bvec;
-+	struct bvec_iter_all iter_all;
-+	struct page *page;
-+
-+	bio_for_each_segment_all(bvec, bio, iter_all) {
-+		page = bvec->bv_page;
-+
-+		if (blk_status_to_errno(bio->bi_status)) {
-+			btrfs_warn_rl_in_rcu(device->fs_info,
-+					     "lost page write due to IO error on %s",
-+					     rcu_str_deref(device->name));
-+			ClearPageUptodate(page);
-+			SetPageError(page);
-+			btrfs_dev_stat_inc_and_print(device,
-+						     BTRFS_DEV_STAT_WRITE_ERRS);
-+		} else {
-+			SetPageUptodate(page);
-+		}
-+
-+		put_page(page);
-+		unlock_page(page);
- 	}
--	unlock_buffer(bh);
--	put_bh(bh);
-+
-+	bio_put(bio);
- }
- 
- int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
-@@ -3475,16 +3482,16 @@ int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
-  * the expected device size at commit time. Note that max_mirrors must be
-  * same for write and wait phases.
-  *
-- * Return number of errors when buffer head is not found or submission fails.
-+ * Return number of errors when page is not found or submission fails.
-  */
- static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
-+	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
--	struct buffer_head *bh;
-+	gfp_t gfp_mask;
- 	int i;
--	int ret;
- 	int errors = 0;
- 	u64 bytenr;
- 	int op_flags;
-@@ -3494,7 +3501,13 @@ static int write_dev_supers(struct btrfs_device *device,
- 
- 	shash->tfm = fs_info->csum_shash;
- 
-+	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
-+
- 	for (i = 0; i < max_mirrors; i++) {
-+		struct page *page;
-+		struct bio *bio;
-+		u8 *ptr;
-+
- 		bytenr = btrfs_sb_offset(i);
- 		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
- 		    device->commit_total_bytes)
-@@ -3507,26 +3520,22 @@ static int write_dev_supers(struct btrfs_device *device,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
- 		crypto_shash_final(shash, sb->csum);
- 
--		/* One reference for us, and we leave it for the caller */
--		bh = __getblk(device->bdev, bytenr / BTRFS_BDEV_BLOCKSIZE,
--			      BTRFS_SUPER_INFO_SIZE);
--		if (!bh) {
-+		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
-+					   gfp_mask);
-+		if (!page) {
- 			btrfs_err(device->fs_info,
--			    "couldn't get super buffer head for bytenr %llu",
-+			    "couldn't get superblock page for bytenr %llu",
- 			    bytenr);
- 			errors++;
- 			continue;
- 		}
- 
--		memcpy(bh->b_data, sb, BTRFS_SUPER_INFO_SIZE);
+-	if (!btrfsic_is_initialized)
+-		return submit_bh(op, op_flags, bh);
 -
--		/* one reference for submit_bh */
--		get_bh(bh);
-+		/* Bump the refcount for wait_dev_supers() */
-+		get_page(page);
- 
--		set_buffer_uptodate(bh);
--		lock_buffer(bh);
--		bh->b_end_io = btrfs_end_buffer_write_sync;
--		bh->b_private = device;
-+		ptr = kmap(page);
-+		memcpy(ptr, sb, BTRFS_SUPER_INFO_SIZE);
-+		kunmap(page);
- 
- 		/*
- 		 * we fua the first super.  The others we allow
-@@ -3535,9 +3544,17 @@ static int write_dev_supers(struct btrfs_device *device,
- 		op_flags = REQ_SYNC | REQ_META | REQ_PRIO;
- 		if (i == 0 && !btrfs_test_opt(device->fs_info, NOBARRIER))
- 			op_flags |= REQ_FUA;
--		ret = btrfsic_submit_bh(REQ_OP_WRITE, op_flags, bh);
--		if (ret)
--			errors++;
-+
-+		bio = bio_alloc(gfp_mask, 1);
-+		bio_set_dev(bio, device->bdev);
-+		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
-+		bio->bi_private = device;
-+		bio->bi_end_io = btrfs_end_super_write;
-+		bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
-+			     offset_in_page(bytenr));
-+
-+		bio_set_op_attrs(bio, REQ_OP_WRITE, op_flags);
-+		btrfsic_submit_bio(bio);
- 	}
- 	return errors < i ? 0 : -1;
- }
-@@ -3546,12 +3563,11 @@ static int write_dev_supers(struct btrfs_device *device,
-  * Wait for write completion of superblocks done by write_dev_supers,
-  * @max_mirrors same for write and wait phases.
-  *
-- * Return number of errors when buffer head is not found or not marked up to
-+ * Return number of errors when page is not found or not marked up to
-  * date.
-  */
- static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
+-	mutex_lock(&btrfsic_mutex);
+-	/* since btrfsic_submit_bh() might also be called before
+-	 * btrfsic_mount(), this might return NULL */
+-	dev_state = btrfsic_dev_state_lookup(bh->b_bdev->bd_dev);
+-
+-	/* Only called to write the superblock (incl. FLUSH/FUA) */
+-	if (NULL != dev_state &&
+-	    (op == REQ_OP_WRITE) && bh->b_size > 0) {
+-		u64 dev_bytenr;
+-
+-		dev_bytenr = BTRFS_BDEV_BLOCKSIZE * bh->b_blocknr;
+-		if (dev_state->state->print_mask &
+-		    BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH)
+-			pr_info("submit_bh(op=0x%x,0x%x, blocknr=%llu (bytenr %llu), size=%zu, data=%p, bdev=%p)\n",
+-			       op, op_flags, (unsigned long long)bh->b_blocknr,
+-			       dev_bytenr, bh->b_size, bh->b_data, bh->b_bdev);
+-		btrfsic_process_written_block(dev_state, dev_bytenr,
+-					      &bh->b_data, 1, NULL,
+-					      NULL, bh, op_flags);
+-	} else if (NULL != dev_state && (op_flags & REQ_PREFLUSH)) {
+-		if (dev_state->state->print_mask &
+-		    BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH)
+-			pr_info("submit_bh(op=0x%x,0x%x FLUSH, bdev=%p)\n",
+-			       op, op_flags, bh->b_bdev);
+-		if (!dev_state->dummy_block_for_bio_bh_flush.is_iodone) {
+-			if ((dev_state->state->print_mask &
+-			     (BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH |
+-			      BTRFSIC_PRINT_MASK_VERBOSE)))
+-				pr_info("btrfsic_submit_bh(%s) with FLUSH but dummy block already in use (ignored)!\n",
+-				       dev_state->name);
+-		} else {
+-			struct btrfsic_block *const block =
+-				&dev_state->dummy_block_for_bio_bh_flush;
+-
+-			block->is_iodone = 0;
+-			block->never_written = 0;
+-			block->iodone_w_error = 0;
+-			block->flush_gen = dev_state->last_flush_gen + 1;
+-			block->submit_bio_bh_rw = op_flags;
+-			block->orig_bio_bh_private = bh->b_private;
+-			block->orig_bio_bh_end_io.bh = bh->b_end_io;
+-			block->next_in_same_bio = NULL;
+-			bh->b_private = block;
+-			bh->b_end_io = btrfsic_bh_end_io;
+-		}
+-	}
+-	mutex_unlock(&btrfsic_mutex);
+-	return submit_bh(op, op_flags, bh);
+-}
+-
+ static void __btrfsic_submit_bio(struct bio *bio)
  {
--	struct buffer_head *bh;
- 	int i;
- 	int errors = 0;
- 	bool primary_failed = false;
-@@ -3561,32 +3577,33 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
+ 	struct btrfsic_dev_state *dev_state;
+diff --git a/fs/btrfs/check-integrity.h b/fs/btrfs/check-integrity.h
+index 9bf4359cc44c..bcc730a06cb5 100644
+--- a/fs/btrfs/check-integrity.h
++++ b/fs/btrfs/check-integrity.h
+@@ -7,11 +7,9 @@
+ #define BTRFS_CHECK_INTEGRITY_H
  
- 	for (i = 0; i < max_mirrors; i++) {
-+		struct page *page;
-+
- 		bytenr = btrfs_sb_offset(i);
- 		if (bytenr + BTRFS_SUPER_INFO_SIZE >=
- 		    device->commit_total_bytes)
- 			break;
- 
--		bh = __find_get_block(device->bdev,
--				      bytenr / BTRFS_BDEV_BLOCKSIZE,
--				      BTRFS_SUPER_INFO_SIZE);
--		if (!bh) {
-+		page = find_get_page(device->bdev->bd_inode->i_mapping,
-+				     bytenr >> PAGE_SHIFT);
-+		if (!page) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 			continue;
- 		}
--		wait_on_buffer(bh);
--		if (!buffer_uptodate(bh)) {
-+		wait_on_page_locked(page);
-+		if (PageError(page)) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 		}
- 
- 		/* drop our reference */
--		brelse(bh);
-+		put_page(page);
- 
- 		/* drop the reference from the writing run */
--		brelse(bh);
-+		put_page(page);
- 	}
- 
- 	/* log error, force error return */
+ #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+-int btrfsic_submit_bh(int op, int op_flags, struct buffer_head *bh);
+ void btrfsic_submit_bio(struct bio *bio);
+ int btrfsic_submit_bio_wait(struct bio *bio);
+ #else
+-#define btrfsic_submit_bh submit_bh
+ #define btrfsic_submit_bio submit_bio
+ #define btrfsic_submit_bio_wait submit_bio_wait
+ #endif
 -- 
 2.24.1
 
