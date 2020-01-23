@@ -2,375 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A97D14694E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 14:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB78146953
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 14:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgAWNji (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 08:39:38 -0500
-Received: from mout.gmx.net ([212.227.15.15]:42811 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgAWNji (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 08:39:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1579786769;
-        bh=4q+/im4TwIso08J5WX43G2zSuMQaIL3fCOo6H8ef29U=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ByIoMOLjcaDbbRLzu9wm0Gl5jeG5HJoxZ88Ys+l4EAzYR6WDO+SIlCoQ4KnusKzXK
-         d0RRJZoQN4zocPBvhv7hnfAKBGJmdBBvzTeNSkwE7xnadC/DXnV4W0qrVpbZdIFb7S
-         Uirs4bwnzQqgu2NrPkj/Lfl3asqd9MyNvOJbz+nk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWics-1j5gPg1y2K-00X7iN; Thu, 23
- Jan 2020 14:39:29 +0100
-Subject: Re: [PATCH] btrfs: scrub: Require mandatory block group RO for
- dev-replace
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-References: <20200123073759.23535-1-wqu@suse.com>
- <CAL3q7H4ed9PtALC_xjPeaiKDDhAN1oNzgM0yd=buF_C5r+x7wA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f32340f7-7e0c-e6fe-3122-4d8e8cab9257@gmx.com>
-Date:   Thu, 23 Jan 2020 21:39:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726968AbgAWNks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 08:40:48 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39457 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgAWNks (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 08:40:48 -0500
+Received: by mail-qk1-f196.google.com with SMTP id c16so3405022qko.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 05:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=pyqM6+FXhk0/dMP3uj46VSR97YwPcdKXEZ+4JMVkNhc=;
+        b=OE05zdUA8MQA/XpsnO9k7LJuoFMBZDHvzOSDd1B5ApuOQ3xhAq5IJt/Vm9zWjFgaq/
+         gnMJYRNT3Epul6BQAuljBq5TGo1xFKXeIDywd6He1gWOiLIyzOdS5Fayq4DQyi5KQKGW
+         E1GARa3PnQHEyi/NUXkL1y05x3WLiAYztdSVObUvlZbTUSLeumdIyo2mGBByB//NZMk6
+         CybRa1yHOM00FwthcdEucyJd7WoPfo3qJ2TbPq7qbzuvGItWeirNQlXzhibBrYkj8ogP
+         Pobo0J/BlTBB5inNcqrWIVPLd7QZLyR3W1ODI5YW+zGeyfyZUeF1T9wtd5TNcjxsRn8d
+         ADcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pyqM6+FXhk0/dMP3uj46VSR97YwPcdKXEZ+4JMVkNhc=;
+        b=h66CwVpDb3JtfFmIIcL8HJD8MCwjxCDpp/3QFESvkv3bMXSzmoz7uJB/03j/MYMikv
+         ohrIFaiTKZ7yPHsdmqwU8EejJj9vU57Ne0jSk79S2zDbKOJycfpYl34/nwqVt4SER8E+
+         mX4VqJYoVZHpfUh+j0O49Xz5OHdavZchVBNtYyOWDUOsdn65K0UrWtP2IKGQTFZh4DlX
+         2jr2vABxWa5/uBps46M2jAk8OKT+CfF7H3WTIyV39ZEOm7hzo8R0DQqol7mPuzKXilzy
+         MDT6P3mjZp9GJ/tAwB1ZIn6ueXT6cqWHjeu1jMsGQt5TuGTVl5dhf5xF/7hHTdgZ4GBy
+         BMgg==
+X-Gm-Message-State: APjAAAX7zO+NlzAIpzlsw9VrSYOqzRaM92igevYbBkDSzDNL0rVOP+dX
+        wFMmOMLUqAgWPy2iKZpfjNXkghNYGUN8Mw==
+X-Google-Smtp-Source: APXvYqzWTZAuEKFSIH2JonJxsJCLudRUjx0HdyePBmvc+ip2i3iOwDFJgmrGcNMje/q1pfQUqzrn0w==
+X-Received: by 2002:a37:e505:: with SMTP id e5mr14364991qkg.324.1579786846430;
+        Thu, 23 Jan 2020 05:40:46 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::7e55])
+        by smtp.gmail.com with ESMTPSA id a19sm873981qka.75.2020.01.23.05.40.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2020 05:40:45 -0800 (PST)
+Subject: Re: [PATCH 11/11] btrfs: Use btrfs_transaction::pinned_extents
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200120140918.15647-1-nborisov@suse.com>
+ <20200120140918.15647-12-nborisov@suse.com>
+ <b98bb8f2-2f3f-748b-793a-b9772f9f3569@toxicpanda.com>
+ <3396ff95-dbc0-dd91-8c91-4509933e3a30@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6f66366c-08f9-b8a1-ec94-0f9108a00542@toxicpanda.com>
+Date:   Thu, 23 Jan 2020 08:40:44 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H4ed9PtALC_xjPeaiKDDhAN1oNzgM0yd=buF_C5r+x7wA@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="PD2UYiDnvNhm6SONxRsYPX7e8FKZxQiNa"
-X-Provags-ID: V03:K1:huxIpfGrbrryJNDsggPuPpVZQ0+jvC8hynJjsJHzvL9ciRWKsvK
- Uc70RTFJy/rRmBM6zjVy+CZZ3uiXM0p5qlSPiKyjTR63dvZAAASxyA1+wqItvllwBPFZhu+
- hrnovO0uV9nczodbxNsizWel2xeNoZ+4XtX2XB3acvPjBTKwGlR4nGG54d6BBKS2fkOPUpw
- dE/H0QIznjzDDbDELbu0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UXFYSZ+gqkE=:YCIqJ02t78pdE5Tqa5CRVE
- Rxj1bUDgrJF3BcCaAB5ru9f89BDef1bTi4mvvYkYLYxBg5LirvzbkfvB0Np42mk2U1L4kBVrK
- xr8bKsGYP23PcDcAhVyoAelFNl2Mk1vE/JSUqFzpJjUqlX2yXj6Mgb/KjbGjcBW+/oYgRHNux
- EuZlexA2iP/Y9n2vEw7BB29YB8uWjWn1s7bRjmJ9i9+WqB2nxe9aQt+sJfewQ+71SLzGkQqhl
- /ZM2KMAbPQsU8Hz+LmxAy1tE9Xtp6T8KNPR+xbnkVQf4KtSqk8YcHRzcxDifFff5r2ZKXiXs3
- 92E6aDV1zy9J4PkHVwxqgWYQ97Kz690U77os45kkA4KSKZmDGCvjxYLpK9wENyqpqCrBgMzt3
- YcDF17J7nM0FB4rv2SVNTAwq0et/5uPg9Xlij+lJmUXDS5wHc4hUdyfyIDegA5k1vo3Th9o9u
- 1Ud965wxiObam7o44bc5eflE10E85rL6az97Qm1FUQoNVWZ1hkCxz7At9uv1dLqsiyj7NHxtP
- VjNx/C3DdZlQ/grLBGOhhDw8DMX0h7CN9QmM68vHJ8n1M2+J7b/Gx/ati2S5aZfKpQzPSbnk+
- /kBAVaLxeV+YiOTX35zK0QxBqeXaYGq7r0bwK18am3rCRbZhWfYh9VAEb71DrNZrKsQfHqQyW
- N17K7/lss7pOGCGJ8/1cxw8v44e5x60TontIWUMNQQchlPDVz0g7PlQfQp447PcFqbd1we+DF
- Kp8/ZnmTIX+iGciBvQjZn7N9sc4rd5DNBBMqhOmMgXqSba+IpL3jgPy2mXG25d4jyia1vroLc
- 8vywbF3Ih8SqlGqOIiJIFvOPpy7mVN4y3O0TlmKNEu/+9grDpzsm+czl55T9UINkvctCbiTVw
- HjDhgMdGtQmUQ0kHN4r56kSVK72Zz2uMOFS7Jo3Nn5VPExOBK4gbHBfSXXwEkYYYtFAPUnElO
- mfmKcISPPWFtIzE+tEb1M2OH2VeTDLi536YYXbnix9O1c6KxGa2XqqrdEVI5jinwAte5YbViH
- eM3Zm051caiMpTNentNrl48iiNQ1LbCYGyFJ7JbnAFKuyA5it1LZ/IwcMNHEk5l3UfZ8giWn+
- 15wulTbBrmjTgtr7rrUmqAbVI2ZwJ3yuqv2Ru6UjhZd0xR2DTkySccCEg4sB1cyKGJHhRcmyT
- NLm5VVQMS3jvXymkOl2KkUArCOqb5FT1p7ctHlLfAYFO3Dv4o1ebNaG4pyHYbxN3kkdEIQraM
- 4IRCeMSpMImEwIY8V
+In-Reply-To: <3396ff95-dbc0-dd91-8c91-4509933e3a30@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PD2UYiDnvNhm6SONxRsYPX7e8FKZxQiNa
-Content-Type: multipart/mixed; boundary="NTC6oFAAMBcqNTECbGAo16taHergNepLm"
-
---NTC6oFAAMBcqNTECbGAo16taHergNepLm
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/1/23 =E4=B8=8B=E5=8D=888:06, Filipe Manana wrote:
-> On Thu, Jan 23, 2020 at 7:38 AM Qu Wenruo <wqu@suse.com> wrote:
+On 1/23/20 3:54 AM, Nikolay Borisov wrote:
+> 
+> 
+> On 22.01.20 г. 22:21 ч., Josef Bacik wrote:
+>> On 1/20/20 9:09 AM, Nikolay Borisov wrote:
+>>> This commit flips the switch to start tracking/processing pinned
+>>> extents on a per-transaction basis. It mostly replaces all references
+>>> from btrfs_fs_info::(pinned_extents|freed_extents[]) to
+>>> btrfs_transaction::pinned_extents. Two notable modifications that
+>>> warrant explicit mention are changing clean_pinned_extents to get a
+>>> reference to the previously running transaction. The other one is
+>>> removal of call to btrfs_destroy_pinned_extent since transactions are
+>>> going to be cleaned in btrfs_cleanup_one_transaction.
+>>>
+>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 >>
->> [BUG]
->> For dev-replace test cases with fsstress, like btrfs/06[45] btrfs/071,=
-
->> looped runs can lead to random failure, where scrub finds csum error.
+>> I'd prefer if the excluded extent changes were separate from the pinned
+>> extent changes.
 >>
->> The possibility is not high, around 1/20 to 1/100, but it's causing da=
-ta
->> corruption.
+>>> ---
+>>>    fs/btrfs/block-group.c       | 38 ++++++++++++++++++++++++------------
+>>>    fs/btrfs/ctree.h             |  4 ++--
+>>>    fs/btrfs/disk-io.c           | 30 +++++-----------------------
+>>>    fs/btrfs/extent-io-tree.h    |  3 +--
+>>>    fs/btrfs/extent-tree.c       | 31 ++++++++---------------------
+>>>    fs/btrfs/free-space-cache.c  |  2 +-
+>>>    fs/btrfs/tests/btrfs-tests.c |  7 ++-----
+>>>    fs/btrfs/transaction.c       |  1 +
+>>>    fs/btrfs/transaction.h       |  1 +
+>>>    include/trace/events/btrfs.h |  3 +--
+>>>    10 files changed, 47 insertions(+), 73 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>>> index 48bb9e08f2e8..562dfb7dc77f 100644
+>>> --- a/fs/btrfs/block-group.c
+>>> +++ b/fs/btrfs/block-group.c
+>>> @@ -460,7 +460,7 @@ u64 add_new_free_space(struct btrfs_block_group
+>>> *block_group, u64 start, u64 end
+>>>        int ret;
+>>>          while (start < end) {
+>>> -        ret = find_first_extent_bit(info->pinned_extents, start,
+>>> +        ret = find_first_extent_bit(&info->excluded_extents, start,
+>>>                            &extent_start, &extent_end,
+>>>                            EXTENT_DIRTY | EXTENT_UPTODATE,
+>>>                            NULL);
 >>
->> The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
->> check free space before marking a block group RO")
+>> We're no longer doing EXTENT_DIRTY in excluded_extents, so we don't need
+>> this part.
 >>
->> [CAUSE]
->> Dev-replace has two source of writes:
->> - Write duplication
->>   All writes to source device will also be duplicated to target device=
-=2E
+>>> @@ -1233,32 +1233,44 @@ static int inc_block_group_ro(struct
+>>> btrfs_block_group *cache, int force)
+>>>        return ret;
+>>>    }
+>>>    -static bool clean_pinned_extents(struct btrfs_block_group *bg)
+>>> +static bool clean_pinned_extents(struct btrfs_trans_handle *trans,
+>>> +                 struct btrfs_block_group *bg)
+>>>    {
+>>>        struct btrfs_fs_info *fs_info = bg->fs_info;
+>>> +    struct btrfs_transaction *prev_trans = NULL;
+>>>        u64 start = bg->start;
+>>>        u64 end = start + bg->length - 1;
+>>>        int ret;
+>>>    +    spin_lock(&fs_info->trans_lock);
+>>> +    if (trans->transaction->list.prev != &fs_info->trans_list) {
+>>> +        prev_trans = list_entry(trans->transaction->list.prev,
+>>> +                    struct btrfs_transaction, list);
+>>> +        refcount_inc(&prev_trans->use_count);
+>>> +    }
+>>> +    spin_unlock(&fs_info->trans_lock);
+>>> +
+>>>        /*
+>>>         * Hold the unused_bg_unpin_mutex lock to avoid racing with
+>>>         * btrfs_finish_extent_commit(). If we are at transaction N,
+>>>         * another task might be running finish_extent_commit() for the
+>>>         * previous transaction N - 1, and have seen a range belonging
+>>> -     * to the block group in freed_extents[] before we were able to
+>>> -     * clear the whole block group range from freed_extents[]. This
+>>> +     * to the block group in pinned_extents before we were able to
+>>> +     * clear the whole block group range from pinned_extents. This
+>>>         * means that task can lookup for the block group after we
+>>> -     * unpinned it from freed_extents[] and removed it, leading to
+>>> +     * unpinned it from pinned_extents[] and removed it, leading to
+>>>         * a BUG_ON() at unpin_extent_range().
+>>>         */
+>>>        mutex_lock(&fs_info->unused_bg_unpin_mutex);
+>>> -    ret = clear_extent_bits(&fs_info->freed_extents[0], start, end,
+>>> -              EXTENT_DIRTY);
+>>> -    if (ret)
+>>> -        goto failure;
+>>> +    if (prev_trans) {
+>>> +        ret = clear_extent_bits(&prev_trans->pinned_extents, start, end,
+>>> +                    EXTENT_DIRTY);
+>>> +        if (ret)
+>>> +            goto failure;
+>>> +    }
 >>
->>   Content:      Latest data/meta
->=20
-> I find the term "latest" a bit confusing, perhaps "not yet persisted
-> data and metadata" is more clear.
->=20
+>> You are leaking a ref to prev_trans here.
 >>
->> - Scrub copy
->>   Dev-replace reused scrub code to iterate through existing extents, a=
-nd
->>   copy the verified data to target device.
+>> <snip>
+>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>> index 9209c7b0997c..3cb786463eb2 100644
+>>> --- a/fs/btrfs/disk-io.c
+>>> +++ b/fs/btrfs/disk-io.c
+>>> @@ -2021,10 +2021,8 @@ void btrfs_free_fs_roots(struct btrfs_fs_info
+>>> *fs_info)
+>>>                btrfs_drop_and_free_fs_root(fs_info, gang[i]);
+>>>        }
+>>>    -    if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+>>> +    if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+>>>            btrfs_free_log_root_tree(NULL, fs_info);
+>>> -        btrfs_destroy_pinned_extent(fs_info, fs_info->pinned_extents);
+>>> -    }
 >>
->>   Content:      Data/meta in commit root
->=20
-> And so here "previously persisted data and metadata".
->=20
->>
->> The difference in contents makes the following race possible:
->>         Regular Writer          |       Dev-replace
->> -----------------------------------------------------------------
->>   ^                             |
->>   | Preallocate one data extent |
->>   | at bytenr X, len 1M         |
->>   v                             |
->>   ^ Commit transaction          |
->>   | Now extent [X, X+1M) is in  |
->>   v commit root                 |
->>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Dev replace st=
-arts =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->>                                 | ^
->>                                 | | Scrub extent [X, X+1M)
->>                                 | | Read [X, X+1M)
->>                                 | | (The content are mostly garbage
->>                                 | |  since it's preallocated)
->>   ^                             | v
->>   | Write back happens for      |
->>   | extent [X, X+512K)          |
->>   | New data writes to both     |
->>   | source and target dev.      |
->>   v                             |
->>                                 | ^
->>                                 | | Scrub writes back extent [X, X+1M)=
+>> What about the excluded extents?  We may never cache the block group
+>> with one of the super mirrors in it, and thus we would leak the excluded
+>> extent for it.  Thanks,
+> 
+> btrfs_destroy_pinned_extent didn't touch EXTENT_UPDATE (excluded
+> extents) before so my removing this call doesn't change that. E.g. if
+> there is a bug here where excluded extents are not cleaned up then it's
+> not due to my code.
+> 
+> On the other hand I don't quite understand your concern w.r.t pinned
+> extents. Can you elaborate?
+> 
 
->>                                 | | to target device.
->>                                 | | This will over write the new data =
-in
->>                                 | | [X, X+512K)
->>                                 | v
->>
->> This race can only happen for nocow writes. Thus metadata and data cow=
+Sorry thunderbird ate my followup, we drop the excluded extents in 
+btrfs_free_block_groups() if they are never cached, so you are fine here.  Thanks,
 
->> writes are safe, as COW will never overwrite extents of previous trans=
+Josef
 
->> (in commit root).
->>
->> This behavior can be confirmed by disabling all fallocate related call=
-s
->> in fsstress (*), then all related tests can pass a 2000 run loop.
->>
->> *: FSSTRESS_AVOID=3D"-f fallocate=3D0 -f allocsp=3D0 -f zero=3D0 -f in=
-sert=3D0 \
->>                    -f collapse=3D0 -f punch=3D0 -f resvsp=3D0"
->>    I didn't expect resvsp ioctl will fallback to fallocate in VFS...
->>
->> [FIX]
->> Make dev-replace to require mandatory block group RO, and wait for cur=
-rent
->> nocow writes before calling scrub_chunk().
->>
->> This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue re=
-place
->> when set_block_ro failed") for dev-replace path.
->>
->> ENOSPC for dev-replace is still much better than data corruption.
->=20
-> Technically if we flag the block group RO without being able to
-> persist that due to ENOSPC, it's still ok.
-> We just want to prevent nocow writes racing with scrub copying
-> procedure. But that's something for some other time, and this is fine
-> to me.
->=20
->>
->> Reported-by: Filipe Manana <fdmanana@suse.com>
->> Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed=
-")
->> Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before mark=
-ing a block group RO")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> RFC->v1:
->> - Remove the RFC tag
->>   Since the cause is pinned and verified, no need for RFC.
->>
->> - Only wait for nocow writes for dev-replace
->>   CoW writes are safe as they will never overwrite extents in commit
->>   root.
->>
->> - Put the wait call into proper lock context
->>   Previous wait happens after scrub_pause_off(), which can cause
->>   deadlock where we may need to commit transaction in one of the
->>   wait calls. But since we are in scrub_pause_off() environment,
->>   transaction commit will wait us to continue, causing a wait-on-self
->>   deadlock.
->> ---
->>  fs/btrfs/scrub.c | 30 +++++++++++++++++++++++++-----
->>  1 file changed, 25 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index 21de630b0730..5aa486cad298 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -3577,17 +3577,27 @@ int scrub_enumerate_chunks(struct scrub_ctx *s=
-ctx,
->>                  * This can easily boost the amount of SYSTEM chunks i=
-f cleaner
->>                  * thread can't be triggered fast enough, and use up a=
-ll space
->>                  * of btrfs_super_block::sys_chunk_array
->> +                *
->> +                * While for dev replace, we need to try our best to m=
-ark block
->> +                * group RO, to prevent race between:
->> +                * - Write duplication
->> +                *   Contains latest data
->> +                * - Scrub copy
->> +                *   Contains data from commit tree
->> +                *
->> +                * If target block group is not marked RO, nocow write=
-s can
->> +                * be overwritten by scrub copy, causing data corrupti=
-on.
->> +                * So for dev-replace, it's not allowed to continue if=
- a block
->> +                * group is not RO.
->>                  */
->> -               ret =3D btrfs_inc_block_group_ro(cache, false);
->> -               scrub_pause_off(fs_info);
->> -
->> +               ret =3D btrfs_inc_block_group_ro(cache, sctx->is_dev_r=
-eplace);
->>                 if (ret =3D=3D 0) {
->>                         ro_set =3D 1;
->> -               } else if (ret =3D=3D -ENOSPC) {
->> +               } else if (ret =3D=3D -ENOSPC && !sctx->is_dev_replace=
-) {
->>                         /*
->>                          * btrfs_inc_block_group_ro return -ENOSPC whe=
-n it
->>                          * failed in creating new chunk for metadata.
->> -                        * It is not a problem for scrub/replace, beca=
-use
->> +                        * It is not a problem for scrub, because
->>                          * metadata are always cowed, and our scrub pa=
-used
->>                          * commit_transactions.
->>                          */
->> @@ -3596,9 +3606,19 @@ int scrub_enumerate_chunks(struct scrub_ctx *sc=
-tx,
->>                         btrfs_warn(fs_info,
->>                                    "failed setting block group ro: %d"=
-, ret);
->>                         btrfs_put_block_group(cache);
->> +                       scrub_pause_off(fs_info);
->>                         break;
->>                 }
->>
->> +               /*
->> +                * Now the target block is marked RO, wait for nocow w=
-rites to
->> +                * finish before dev-replace.
->> +                * COW is fine, as COW never overwrites extents in com=
-mit tree.
->> +                */
->> +               if (sctx->is_dev_replace)
->> +                       btrfs_wait_nocow_writers(cache);
->=20
-> So this only waits for nocow ordered extents to be created - it
-> doesn't wait for them to complete.
-
-Wait for minute.
-
-This btrfs_wait_nocow_writers() is not just triggering ordered extents
-for nocow.
-It waits for the nocow_writers count decreased to 0 for that block group.=
-
-
-Since we have already marked the block group RO, no new nocow writers
-can happen, thus that counter can only decrease, no way to increase.
-
-There are several cases involved:
-- NoCOW Write back happens before bg RO
-  It will increase cache->nocow_writers counter, and decrease the
-  counter after finish_oredered_io().
-  btrfs_wait_nocow_writers() will wait for such writes
-
-- Writeback happens after bg RO
-  Then the write will fallback to COW.
-
-- Writeback happens after bg RO cleared (reverted back to RW)
-  No need to bother at all.
-
-Thus this should be enough, no need for btrfs_wait_ordered_roots().
-
-Thanks,
-Qu
-
-
-> After that you still need to call:
->=20
-> btrfs_wait_ordered_roots(fs_info, U64_MAX, cache->start, cache->length)=
-;
->=20
-> Other than that, looks good to me.
->=20
-> Thanks.
->=20
->> +
->> +               scrub_pause_off(fs_info);
->>                 down_write(&dev_replace->rwsem);
->>                 dev_replace->cursor_right =3D found_key.offset + lengt=
-h;
->>                 dev_replace->cursor_left =3D found_key.offset;
->> --
->> 2.25.0
->>
->=20
->=20
-
-
---NTC6oFAAMBcqNTECbGAo16taHergNepLm--
-
---PD2UYiDnvNhm6SONxRsYPX7e8FKZxQiNa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4pogsACgkQwj2R86El
-/qhM/QgApVpO4phf3fExYkP117qgWRAU66v8bWjO2r2ygT1zM+zJzwkggyxIB4OG
-9J5oDxfzf1eArXs7M1I0bWi5OhSgZHmYs9X8PIMe2OjFPggMFBsTuKmAzHZLQsYv
-3OY5Li/zfGMCbs2XbTrMuk36BvDI0Si55pqPnGXZQV1bW/uZIPTSWXPJh5JZ8SMR
-Ql8bawkWiSzkuiYGwz++uxcWMeiu00A1XcqQmFBnDzMJwK21pKS4vT6xReAlBwMy
-jmHw1hEhZQoDSdUK24qrC57Wx4J3mzsuEZU0vzuGo4m1PqG0WP2r6YsZbs+EYZgo
-kvAvf1SLQHDiJ9+dFgu6dMjSU17czQ==
-=zVfk
------END PGP SIGNATURE-----
-
---PD2UYiDnvNhm6SONxRsYPX7e8FKZxQiNa--
