@@ -2,146 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8FE14627F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 08:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ED21462B5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 08:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbgAWHW6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 02:22:58 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:54986 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgAWHW6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 02:22:58 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00N7HuuE130421;
-        Thu, 23 Jan 2020 07:22:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=yRGPG/a1hBYUSlXKTi8b15y4LctRjBh209WYTd1izqw=;
- b=QbILDK994rOPJ6suyCgoF+/FdtMbjKEjLtJ6o1brCXW1ns9V65L0bg75BwYDNpVlUMdM
- ctTHfVnIdX9l2xL+WTyxszMSiqyFl8w00JMSbhhHYPmS/sz4/+7Sq9jCjN9LxtWlL10B
- h4m6jOSK6lc3Kg4NF933a5jyUTrwaiZQbWzmpZzy3m0aBx1/0X9NWBKlnf4sxtTrbPvA
- CYnqFGTzthoQDfFVZiEUMfsHw5HkfdTgfbepqSnz9EBdlOIv+1vtH3k7fmhua4WkBgYZ
- BmuRnA8F9Yk72ouodeErsDW+3hRkhdLYegKMdpCWiVcQdW8BxBkZF61uCNPhFJEKKQPq hw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2xktnrg7t8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Jan 2020 07:22:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00N7JORQ121780;
-        Thu, 23 Jan 2020 07:22:50 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2xpq7m3u28-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Jan 2020 07:22:49 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00N7MmKj007861;
-        Thu, 23 Jan 2020 07:22:49 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Jan 2020 23:22:48 -0800
-Subject: Re: [PATCH 1/4] btrfs: add NO_FS_INFO to btrfs_printk
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200114060920.4527-1-anand.jain@oracle.com>
- <cfd79de2-fa25-c112-0540-3c3058379275@gmx.com>
- <6f0db474-905e-02f3-41e4-6cb842d776e3@oracle.com>
- <20200122155012.GA3929@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <60c5d589-e6bb-4fbe-58d1-68f11617dc5b@oracle.com>
-Date:   Thu, 23 Jan 2020 15:22:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1725818AbgAWHiG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 02:38:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55876 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725777AbgAWHiG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 02:38:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E66E5B1EC;
+        Thu, 23 Jan 2020 07:38:03 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: scrub: Require mandatory block group RO for dev-replace
+Date:   Thu, 23 Jan 2020 15:37:59 +0800
+Message-Id: <20200123073759.23535-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200122155012.GA3929@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9508 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001230062
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9508 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001230062
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+For dev-replace test cases with fsstress, like btrfs/06[45] btrfs/071,
+looped runs can lead to random failure, where scrub finds csum error.
 
+The possibility is not high, around 1/20 to 1/100, but it's causing data
+corruption.
 
-On 1/22/20 11:50 PM, David Sterba wrote:
-> On Tue, Jan 14, 2020 at 03:21:14PM +0800, Anand Jain wrote:
->> On 14/1/20 2:54 PM, Qu Wenruo wrote:
->>> On 2020/1/14 下午2:09, Anand Jain wrote:
->>>> The first argument to btrfs_printk() wrappers such as
->>>> btrfs_warn_in_rcu(), btrfs_info_in_rcu(), etc.. is fs_info, but in some
->>>> context like scan and assembling of the volumes there isn't fs_info yet,
->>>> so those code generally don't use the btrfs_printk() wrappers and it
->>>> could could still use NULL but then it would become hard to distinguish
->>>> whether fs_info is NULL for genuine reason or a bug.
->>>>
->>>> So introduce a define NO_FS_INFO to be used instead of NULL so that we
->>>> know the code where fs_info isn't initialized and also we have a
->>>> consistent logging functions. Thanks.
->>>
->>> I'm not sure why this is needed.
->>>
->>> Could you give me an example in which NULL is not clear enough?
->>
->> The first argument in btrfs_info_in_rcu() can be NULL like for example..
->> btrfs_info_in_rcu(NULL, ..) which then it shall print the prefix..
->>
->>      BTRFS info (device <unknown>):
->>
->>    Lets say due to some bug local copy of the variable fs_info wasn't
->> initialized then we end up printing the same unknown <unknown>.
->>
->>     So in the context of device_list_add() as there is no fs_info
->> genuinely and be different from unknown we use
->> btrfs_info_in_rcu(NO_FS_INFO, ..) to get prefix something like..
->>
->>    BTRFS info (device ...):
-> 
-> With the fixup to set fs_info to NULL on a device that's unmounted, do
-> we still need the NO_FS_INFO stub?
+The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
+check free space before marking a block group RO")
 
-  Its trivial we don't need NO_FS_INFO IMO.
+[CAUSE]
+Dev-replace has two source of writes:
+- Write duplication
+  All writes to source device will also be duplicated to target device.
 
->  The only difference I can see is a
-> to print "..." instead of "<unknown>" that I don't find too useful or
-> improving the output.
+  Content:	Latest data/meta
 
-  Agree. Two ways we can make it better one use open code.
-  Patch [1] disk that.
-  [1]
-  [PATCH 1/2] btrfs: open code log helpers in device_list_add()
+- Scrub copy
+  Dev-replace reused scrub code to iterate through existing extents, and
+  copy the verified data to target device.
 
-  two, change btrfs_printk() and all its wrapper to use fs_devices
-  instead of fs_info. It solves two purposes, device name
-  does not make sense for logging of volume so will use fsid,
-  and avoid confusion when the device errors are being reported.
-  Secondly we could use btrfs_printk() wrappers in the unmounted context.
-  And added bonus is logging becomes truly consistent.
-  Let me know if you think this is the right way, will look into it.
+  Content:	Data/meta in commit root
 
-> My idea about the stub fs info was to avoid any access to fs_info inside
-> device_list_add in case we can't reliably close the race where scan can
-> read device::fs_info during mount that sets it up, but as I'm told it's
-> not a problem anymore.
-  Using NULL instead of fs_info or open code or using fs_devices
-  (as discussed above) will solve it.
+The difference in contents makes the following race possible:
+	Regular Writer		|	Dev-replace
+-----------------------------------------------------------------
+  ^                             |
+  | Preallocate one data extent |
+  | at bytenr X, len 1M		|
+  v				|
+  ^ Commit transaction		|
+  | Now extent [X, X+1M) is in  |
+  v commit root			|
+ ================== Dev replace starts =========================
+  				| ^
+				| | Scrub extent [X, X+1M)
+				| | Read [X, X+1M)
+				| | (The content are mostly garbage
+				| |  since it's preallocated)
+  ^				| v
+  | Write back happens for	|
+  | extent [X, X+512K)		|
+  | New data writes to both	|
+  | source and target dev.	|
+  v				|
+				| ^
+				| | Scrub writes back extent [X, X+1M)
+				| | to target device.
+				| | This will over write the new data in
+				| | [X, X+512K)
+				| v
 
-  The analysis about the race needed few more information, so I am
-  not sure.
+This race can only happen for nocow writes. Thus metadata and data cow
+writes are safe, as COW will never overwrite extents of previous trans
+(in commit root).
 
-  My idea is to make it theoretically correct. Using
-  uninitialized fs_info in device_list_add is wrong.
+This behavior can be confirmed by disabling all fallocate related calls
+in fsstress (*), then all related tests can pass a 2000 run loop.
 
-Thanks, Anand
+*: FSSTRESS_AVOID="-f fallocate=0 -f allocsp=0 -f zero=0 -f insert=0 \
+		   -f collapse=0 -f punch=0 -f resvsp=0"
+   I didn't expect resvsp ioctl will fallback to fallocate in VFS...
+
+[FIX]
+Make dev-replace to require mandatory block group RO, and wait for current
+nocow writes before calling scrub_chunk().
+
+This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue replace
+when set_block_ro failed") for dev-replace path.
+
+ENOSPC for dev-replace is still much better than data corruption.
+
+Reported-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed")
+Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before marking a block group RO")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+RFC->v1:
+- Remove the RFC tag
+  Since the cause is pinned and verified, no need for RFC.
+
+- Only wait for nocow writes for dev-replace
+  CoW writes are safe as they will never overwrite extents in commit
+  root.
+
+- Put the wait call into proper lock context
+  Previous wait happens after scrub_pause_off(), which can cause
+  deadlock where we may need to commit transaction in one of the
+  wait calls. But since we are in scrub_pause_off() environment,
+  transaction commit will wait us to continue, causing a wait-on-self
+  deadlock.
+---
+ fs/btrfs/scrub.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 21de630b0730..5aa486cad298 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3577,17 +3577,27 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 		 * This can easily boost the amount of SYSTEM chunks if cleaner
+ 		 * thread can't be triggered fast enough, and use up all space
+ 		 * of btrfs_super_block::sys_chunk_array
++		 *
++		 * While for dev replace, we need to try our best to mark block
++		 * group RO, to prevent race between:
++		 * - Write duplication
++		 *   Contains latest data
++		 * - Scrub copy
++		 *   Contains data from commit tree
++		 *
++		 * If target block group is not marked RO, nocow writes can
++		 * be overwritten by scrub copy, causing data corruption.
++		 * So for dev-replace, it's not allowed to continue if a block
++		 * group is not RO.
+ 		 */
+-		ret = btrfs_inc_block_group_ro(cache, false);
+-		scrub_pause_off(fs_info);
+-
++		ret = btrfs_inc_block_group_ro(cache, sctx->is_dev_replace);
+ 		if (ret == 0) {
+ 			ro_set = 1;
+-		} else if (ret == -ENOSPC) {
++		} else if (ret == -ENOSPC && !sctx->is_dev_replace) {
+ 			/*
+ 			 * btrfs_inc_block_group_ro return -ENOSPC when it
+ 			 * failed in creating new chunk for metadata.
+-			 * It is not a problem for scrub/replace, because
++			 * It is not a problem for scrub, because
+ 			 * metadata are always cowed, and our scrub paused
+ 			 * commit_transactions.
+ 			 */
+@@ -3596,9 +3606,19 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 			btrfs_warn(fs_info,
+ 				   "failed setting block group ro: %d", ret);
+ 			btrfs_put_block_group(cache);
++			scrub_pause_off(fs_info);
+ 			break;
+ 		}
+ 
++		/*
++		 * Now the target block is marked RO, wait for nocow writes to
++		 * finish before dev-replace.
++		 * COW is fine, as COW never overwrites extents in commit tree.
++		 */
++		if (sctx->is_dev_replace)
++			btrfs_wait_nocow_writers(cache);
++
++		scrub_pause_off(fs_info);
+ 		down_write(&dev_replace->rwsem);
+ 		dev_replace->cursor_right = found_key.offset + length;
+ 		dev_replace->cursor_left = found_key.offset;
+-- 
+2.25.0
+
