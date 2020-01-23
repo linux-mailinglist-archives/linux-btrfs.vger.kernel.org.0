@@ -2,194 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AA114751F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 00:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D473147520
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 00:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgAWX61 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 18:58:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40860 "EHLO mx2.suse.de"
+        id S1729133AbgAWX6y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 18:58:54 -0500
+Received: from mout.gmx.net ([212.227.17.21]:41005 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbgAWX61 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 18:58:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2F96CAD03;
-        Thu, 23 Jan 2020 23:58:25 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.cz, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: scrub: Require mandatory block group RO for dev-replace
-Date:   Fri, 24 Jan 2020 07:58:20 +0800
-Message-Id: <20200123235820.20764-1-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1726584AbgAWX6x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 18:58:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1579823926;
+        bh=sbWiKjNY3ZtYcRdPctNdqLl9QjAF1UtjVA0gQl8vtLY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=JgGvj0YRLSDDjmbRg3M9QNNDSjGB0LZYSrBM7DPFmeeXThofBc7gsomly98Fo/4Ez
+         Hq699AYE1T6fUpmiv2qq0klsZ52NwwqCkneon21AAd/QVUdFKtZfKQQStwowz/o1Ly
+         ELmZBnIDcP1o0RxziWsf7e57IzFUZTLtL/V1ThIw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlf0U-1jKjFk08AM-00ioaU; Fri, 24
+ Jan 2020 00:58:46 +0100
+Subject: Re: [PATCH] btrfs: scrub: Require mandatory block group RO for
+ dev-replace
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <20200123073759.23535-1-wqu@suse.com>
+ <20200123164043.GE3929@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f838517d-c4fb-32ce-3bd7-ae4d0d547ad7@gmx.com>
+Date:   Fri, 24 Jan 2020 07:58:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200123164043.GE3929@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="SUxNEVF1ufqXh9rMxljRoQImeQJ8YqHsd"
+X-Provags-ID: V03:K1:5v/Z/rWxEIk9/LE1MMrqC6mJYsOwqN7+31YCcEstFrkbKOR6N4Y
+ gplB9wg+CVf5AoRxPNJa6+q1wevSbl6i9+wAF/CF1fKeyZLkFGjIDKWqzWphA2IzbLADTXn
+ HwrwiyxKwjQ8pGvWLhIuMvvzbQJ94xBN1pllNmAwv3Q5i03poL2xZKLwj4BZ0Vc1NyOZ42S
+ ndL/3LWtHqyZY590Awx4g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2SXETbBUBzQ=:jlE5F/rCTilrAmYb+zvszs
+ mpI2klSh/1brnZv2gcuvzjnx4aOrEUA+OJsxVH74ESasXRXfsk1aHiDQ4acaS6K6wUwxMjvVR
+ P7YukNqeeoH8KPnI31uGL06DVhYaZjKewHRJRsvw1vjCL3+1x4VGh42i/3APznY84IrrbP7eY
+ C6si7wO9p/Hj/I7O7AhTlyXoMnE/M0HtFr4TpCx3EFxXoF8OoZf+tF5wsxeGMpoy0t09bEdMS
+ MjWSzV4PGhDL/th6EFUGoiF2FKlu8MPeQrpHAkRyaGQonKZxaHYJ/CLB2HAvc8/I6nV2DnDBE
+ cmzie+UTC2Xjwaend7iCwUOEG8hWSZOFD5+JkIo2ZGjOxZaB2XbQviSyYoOLmoUL5ahUy3eHZ
+ 3vRRJLa4+fzVwATxaYfw74m0Qaxry8a5qgoK8/zQ5ciCtVYCRONimAup9YdipwlV0HPqRNk2+
+ Cwy0fT/w5kufi5nFza935A7W9w1XXmoo+IPtP10UOA43J0iIXOTLF7paOuKWDoMQgsSBeEWPi
+ ahckWUPhnIVQGgO6qJdy3iaC/z1zeUT5Zw6aDAwBaPzkslhBc5fxa9jKl0pwNKrknaWw090FC
+ 4BnQ74CUwpF1Hn6uILC67sw13kL0/n2gnY4lw/zimlv9gZhy4reI2K590I/EvoERpyYiJyksY
+ pyRUIe79dy6xBoSZTQuRkKpsJ1dUFWZ/xx380VHk+j1V3gXCT0v8xpmw1pGXInhcqGqlwChSr
+ gZ1oIso/uYxhWDt9mOsBTizEnBheC+mgF77XwGQWx+zW88czzDz725nrsVZDq9WXwfc8lxWAu
+ nVvYCyS143FT8RyyuMjPBehVaB7w8MH0SrMwNIvvH0Tfs4je5+redT2Y+z3yllAJvmapw+wxY
+ PEG2S/6K7z4TXS+YSMuQwUo+p+FMV2p+OPPth8bSYRYhGShE9AefY4Tb3mjJq5kA2n89XRxqs
+ 0/hErZUrbGbTNkDMJREmWnmjpnVe7oFkkY4A9sHttYOq9G+ZdimSX0xkc7IgZ0+ZcB+K2vcCJ
+ 3nShhWODflzd3szwKixZQbt1BLoLChvFnRxzuCJm/0GUb1Gp9g+/YG3jPrwoxgbexmRS+9XoW
+ NJWRA/k3u6PNq7AkV1y6LB7FSXk7Cc3Z2Q3xH0ahFtAuRxxWSkK2Y+sDg6W+7uekHUD5YBdRk
+ LNSILLF89vVK/De9aRUbLgGq8P27Q90GFypA626+AXlCZG/FBdOIeojn+9Bh0yVL14iztFLRu
+ cpc7TYv7YgzymFmg7
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-For dev-replace test cases with fsstress, like btrfs/06[45] btrfs/071,
-looped runs can lead to random failure, where scrub finds csum error.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--SUxNEVF1ufqXh9rMxljRoQImeQJ8YqHsd
+Content-Type: multipart/mixed; boundary="e2pL7KeWTA6Hn8HtlaZTSrABW6KPjH8VL"
 
-The possibility is not high, around 1/20 to 1/100, but it's causing data
-corruption.
+--e2pL7KeWTA6Hn8HtlaZTSrABW6KPjH8VL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
-check free space before marking a block group RO")
 
-[CAUSE]
-Dev-replace has two source of writes:
-- Write duplication
-  All writes to source device will also be duplicated to target device.
 
-  Content:	Not yet persisted data/meta
+On 2020/1/24 =E4=B8=8A=E5=8D=8812:40, David Sterba wrote:
+> On Thu, Jan 23, 2020 at 03:37:59PM +0800, Qu Wenruo wrote:
+>>
+>> Reported-by: Filipe Manana <fdmanana@suse.com>
+>> Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed=
+")
+>> Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before mark=
+ing a block group RO")
+>=20
+> This one is in the 5.5-rc, so I'd like to get it to the final release. =
+I
+> haven't read the discussion properly so please let me know if the patch=
 
-- Scrub copy
-  Dev-replace reused scrub code to iterate through existing extents, and
-  copy the verified data to target device.
+> needs another round or fixups I can do. Time for the pull request is in=
 
-  Content:	Previously persisted data and metadata
+> a day (2 at most as it's too close to the release) but given the type o=
+f
+> fix it's justified. Thanks.
+>=20
+The v2 version has Cced to you (and the mail list).
 
-The difference in contents makes the following race possible:
-	Regular Writer		|	Dev-replace
------------------------------------------------------------------
-  ^                             |
-  | Preallocate one data extent |
-  | at bytenr X, len 1M		|
-  v				|
-  ^ Commit transaction		|
-  | Now extent [X, X+1M) is in  |
-  v commit root			|
- ================== Dev replace starts =========================
-  				| ^
-				| | Scrub extent [X, X+1M)
-				| | Read [X, X+1M)
-				| | (The content are mostly garbage
-				| |  since it's preallocated)
-  ^				| v
-  | Write back happens for	|
-  | extent [X, X+512K)		|
-  | New data writes to both	|
-  | source and target dev.	|
-  v				|
-				| ^
-				| | Scrub writes back extent [X, X+1M)
-				| | to target device.
-				| | This will over write the new data in
-				| | [X, X+512K)
-				| v
+Thanks,
+Qu
 
-This race can only happen for nocow writes. Thus metadata and data cow
-writes are safe, as COW will never overwrite extents of previous trans
-(in commit root).
 
-This behavior can be confirmed by disabling all fallocate related calls
-in fsstress (*), then all related tests can pass a 2000 run loop.
+--e2pL7KeWTA6Hn8HtlaZTSrABW6KPjH8VL--
 
-*: FSSTRESS_AVOID="-f fallocate=0 -f allocsp=0 -f zero=0 -f insert=0 \
-		   -f collapse=0 -f punch=0 -f resvsp=0"
-   I didn't expect resvsp ioctl will fallback to fallocate in VFS...
+--SUxNEVF1ufqXh9rMxljRoQImeQJ8YqHsd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-[FIX]
-Make dev-replace to require mandatory block group RO, and wait for current
-nocow writes before calling scrub_chunk().
+-----BEGIN PGP SIGNATURE-----
 
-This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue replace
-when set_block_ro failed") for dev-replace path.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4qMzIACgkQwj2R86El
+/qjVZwf+MMFK+FCHs0CnvCQJiZqv+oTbAGdfNRViOzxtV07ceRg2RrKd6G6y0J7V
+ND7i0K4G44d59c3jwADjZmdCbjgCPqPwoKwVJvAXMjcBFNh5k0BMvuy7ElXG2R1g
+316uA90xCofOWwnZ87ip3WQknDSbSnhGsTmXrPhr3O/yIiSK9X4qUdx66AiWoS/i
+gBq3zvUffNxir3ppbq/8avu8SdFv18wK1K40uKS+bo7VBdZ6kp2Oeno88mTqqipD
+ABZXccFHRMTYD2sp+Ft+H1PZE3pP/K17WIrkz7A2TjRCM2HQhHy35mMjfgqLLFSG
+6tgpo2ehpD3Uh4ctEYbTdQiephkcpg==
+=JqaO
+-----END PGP SIGNATURE-----
 
-The side effect is, dev-replace can be more strict on avaialble space, but
-definitely worthy to avoid data corruption.
-
-Reported-by: Filipe Manana <fdmanana@suse.com>
-Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed")
-Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before marking a block group RO")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-RFC->v1:
-- Remove the RFC tag
-  Since the cause is pinned and verified, no need for RFC.
-
-- Only wait for nocow writes for dev-replace
-  CoW writes are safe as they will never overwrite extents in commit
-  root.
-
-- Put the wait call into proper lock context
-  Previous wait happens after scrub_pause_off(), which can cause
-  deadlock where we may need to commit transaction in one of the
-  wait calls. But since we are in scrub_pause_off() environment,
-  transaction commit will wait us to continue, causing a wait-on-self
-  deadlock.
-
-v2:
-- Add btrfs_wait_ordered_roots() call before scrub_chunk().
-- Commit message change to avoid confusion.
----
- fs/btrfs/scrub.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 21de630b0730..fd266a2d15ec 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3577,17 +3577,27 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		 * This can easily boost the amount of SYSTEM chunks if cleaner
- 		 * thread can't be triggered fast enough, and use up all space
- 		 * of btrfs_super_block::sys_chunk_array
-+		 *
-+		 * While for dev replace, we need to try our best to mark block
-+		 * group RO, to prevent race between:
-+		 * - Write duplication
-+		 *   Contains latest data
-+		 * - Scrub copy
-+		 *   Contains data from commit tree
-+		 *
-+		 * If target block group is not marked RO, nocow writes can
-+		 * be overwritten by scrub copy, causing data corruption.
-+		 * So for dev-replace, it's not allowed to continue if a block
-+		 * group is not RO.
- 		 */
--		ret = btrfs_inc_block_group_ro(cache, false);
--		scrub_pause_off(fs_info);
--
-+		ret = btrfs_inc_block_group_ro(cache, sctx->is_dev_replace);
- 		if (ret == 0) {
- 			ro_set = 1;
--		} else if (ret == -ENOSPC) {
-+		} else if (ret == -ENOSPC && !sctx->is_dev_replace) {
- 			/*
- 			 * btrfs_inc_block_group_ro return -ENOSPC when it
- 			 * failed in creating new chunk for metadata.
--			 * It is not a problem for scrub/replace, because
-+			 * It is not a problem for scrub, because
- 			 * metadata are always cowed, and our scrub paused
- 			 * commit_transactions.
- 			 */
-@@ -3596,9 +3606,22 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 			btrfs_warn(fs_info,
- 				   "failed setting block group ro: %d", ret);
- 			btrfs_put_block_group(cache);
-+			scrub_pause_off(fs_info);
- 			break;
- 		}
- 
-+		/*
-+		 * Now the target block is marked RO, wait for nocow writes to
-+		 * finish before dev-replace.
-+		 * COW is fine, as COW never overwrites extents in commit tree.
-+		 */
-+		if (sctx->is_dev_replace) {
-+			btrfs_wait_nocow_writers(cache);
-+			btrfs_wait_ordered_roots(fs_info, U64_MAX, cache->start,
-+					cache->length);
-+		}
-+
-+		scrub_pause_off(fs_info);
- 		down_write(&dev_replace->rwsem);
- 		dev_replace->cursor_right = found_key.offset + length;
- 		dev_replace->cursor_left = found_key.offset;
--- 
-2.25.0
-
+--SUxNEVF1ufqXh9rMxljRoQImeQJ8YqHsd--
