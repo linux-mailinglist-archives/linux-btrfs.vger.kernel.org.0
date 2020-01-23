@@ -2,195 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C394146342
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 09:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D471463F2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 09:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgAWITG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 03:19:06 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43991 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgAWITC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 03:19:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1579767542; x=1611303542;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1LGuqVEY+XciGpC1222BHuFVk9lKRuLry7MKafyxTrU=;
-  b=DCaBLNY+2JvLV0ViGI90o9ecLoG3pglwEWVNRgo1gayWPM9Tuco0gDvb
-   M5TYHgvzPS2+V2nmK0WDdkH+QG99XyFr+UxvOWvijUel5Dz0BuMOkprTt
-   51gXc967u7tW9BnPJWhhGnppSuvADKTiPTzlhKzG9TKN6JXy/TxwrB+uE
-   4GjhB9CPQgJqMdposNMZXHUI+x1Ptiw8yzU8QDtPVLOr7uBOWsG59Tccy
-   M7/C83KJzok/KU67k0BudFEOs/Z0i20cg/yNzw9Cbyg94bqS0s7Q9FQJ1
-   e0FNNKzRxrNrl3aRMnP+vBFJ7EUsTtqMQfXCv0T0ZFTUnJrv/hldGicBJ
-   A==;
-IronPort-SDR: PMgBv3eOsRuHwTfwUphVFsZHRDHimgw+gZHbkktybkKpa6n1arNIENHZfwsYol9W2MiylU/W62
- eMcC67XrJplWnNWquFvHX79M+FmDY5MPHbM0EAQ9bfZ5uOyqyLrhQ3tk1XRm6HDRPRPspTFK8i
- w/m3ymx+2nHP1rJOYHBaO+FfSo5spxchjdNM3+U4PcV9hHvj6cxxUU6TPw8mBEONmZ4mpajRT/
- gmOqZhuqJE4Ot+1tj0TiZZwU2agHA0bUwUKqK+TzAEWvno8G5v7FoXwrmgHlUv447aKUtD7LsU
- nmQ=
-X-IronPort-AV: E=Sophos;i="5.70,353,1574092800"; 
-   d="scan'208";a="129708697"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2020 16:19:02 +0800
-IronPort-SDR: 3ws3HIXidxcR/MkH7xSbPKKpmtwP1/0ADui5b5AOoDxtz2KnIYMHZ+EZjtJGBZFDMdMmIicoo0
- EyrOfNG/YMmF8vHIBskkpwIsgylcbwy+XvsWE+8EwoeRS2irmWH79ExWDvMuVenqXjMUnv1iDN
- LvTAu3K8sqTA0rx26pnIC2PV3xuSoPWps64YEkV3ZnxU8aUj48HyytIrfSv6vU5QIvUKiSoAQ5
- gty/JmB/7RAz34YMMuNvmWeot6lQJF9QuXMnhsvjt9lLHzrUrlnu2ty1wfoOOuQsK7RSDz8OZq
- 1QhdTPcxkn+f/DVz4unCXMP2
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2020 00:12:25 -0800
-IronPort-SDR: cgdv3wx9kIKQmJS5PbHib4ChYBbQ+plQyRxU9/iRBrkDXK9OcM/JCwZd56v31LqLOPO8Q4qY1q
- kK/McOsd59ku/VoOfEpLNzyrH0giphOfGkLBq/52jk7jI74cHlO1onQ4sJgRaxSxTb/u4EDDlA
- A9NVgo6XEVLSp5v4DFOwTXcAmtNtBFxLZUuoIBmY/pCTvJiByzooyP1EZNkVRvhl6szwRtBR1c
- bCD99RKk8/bBjgQse4q1z7P5WIaCqKZBGg+fF9pG3+SWvBBXi4vz2H5h9kevKQibLAzO+U2uGH
- cbs=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jan 2020 00:19:01 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 6/6] btrfs: remove buffer_heads form superblock mirror integrity checking
-Date:   Thu, 23 Jan 2020 17:18:49 +0900
-Message-Id: <20200123081849.23397-7-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
-References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
+        id S1726376AbgAWIyY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 03:54:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45188 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726099AbgAWIyY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 03:54:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 26E78AD7B;
+        Thu, 23 Jan 2020 08:54:21 +0000 (UTC)
+Subject: Re: [PATCH 11/11] btrfs: Use btrfs_transaction::pinned_extents
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20200120140918.15647-1-nborisov@suse.com>
+ <20200120140918.15647-12-nborisov@suse.com>
+ <b98bb8f2-2f3f-748b-793a-b9772f9f3569@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3396ff95-dbc0-dd91-8c91-4509933e3a30@suse.com>
+Date:   Thu, 23 Jan 2020 10:54:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <b98bb8f2-2f3f-748b-793a-b9772f9f3569@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The integrity checking code for the superblock mirrors is the last remaining
-user of buffer_heads in BTRFS, change it to using plain BIOs as well.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
----
-Changes to v1:
-- Convert from alloc_page() to find_or_create_page()
----
- fs/btrfs/check-integrity.c | 44 +++++++++++++++++++++++++++-----------
- 1 file changed, 31 insertions(+), 13 deletions(-)
+On 22.01.20 г. 22:21 ч., Josef Bacik wrote:
+> On 1/20/20 9:09 AM, Nikolay Borisov wrote:
+>> This commit flips the switch to start tracking/processing pinned
+>> extents on a per-transaction basis. It mostly replaces all references
+>> from btrfs_fs_info::(pinned_extents|freed_extents[]) to
+>> btrfs_transaction::pinned_extents. Two notable modifications that
+>> warrant explicit mention are changing clean_pinned_extents to get a
+>> reference to the previously running transaction. The other one is
+>> removal of call to btrfs_destroy_pinned_extent since transactions are
+>> going to be cleaned in btrfs_cleanup_one_transaction.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> I'd prefer if the excluded extent changes were separate from the pinned
+> extent changes.
+> 
+>> ---
+>>   fs/btrfs/block-group.c       | 38 ++++++++++++++++++++++++------------
+>>   fs/btrfs/ctree.h             |  4 ++--
+>>   fs/btrfs/disk-io.c           | 30 +++++-----------------------
+>>   fs/btrfs/extent-io-tree.h    |  3 +--
+>>   fs/btrfs/extent-tree.c       | 31 ++++++++---------------------
+>>   fs/btrfs/free-space-cache.c  |  2 +-
+>>   fs/btrfs/tests/btrfs-tests.c |  7 ++-----
+>>   fs/btrfs/transaction.c       |  1 +
+>>   fs/btrfs/transaction.h       |  1 +
+>>   include/trace/events/btrfs.h |  3 +--
+>>   10 files changed, 47 insertions(+), 73 deletions(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index 48bb9e08f2e8..562dfb7dc77f 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -460,7 +460,7 @@ u64 add_new_free_space(struct btrfs_block_group
+>> *block_group, u64 start, u64 end
+>>       int ret;
+>>         while (start < end) {
+>> -        ret = find_first_extent_bit(info->pinned_extents, start,
+>> +        ret = find_first_extent_bit(&info->excluded_extents, start,
+>>                           &extent_start, &extent_end,
+>>                           EXTENT_DIRTY | EXTENT_UPTODATE,
+>>                           NULL);
+> 
+> We're no longer doing EXTENT_DIRTY in excluded_extents, so we don't need
+> this part.
+> 
+>> @@ -1233,32 +1233,44 @@ static int inc_block_group_ro(struct
+>> btrfs_block_group *cache, int force)
+>>       return ret;
+>>   }
+>>   -static bool clean_pinned_extents(struct btrfs_block_group *bg)
+>> +static bool clean_pinned_extents(struct btrfs_trans_handle *trans,
+>> +                 struct btrfs_block_group *bg)
+>>   {
+>>       struct btrfs_fs_info *fs_info = bg->fs_info;
+>> +    struct btrfs_transaction *prev_trans = NULL;
+>>       u64 start = bg->start;
+>>       u64 end = start + bg->length - 1;
+>>       int ret;
+>>   +    spin_lock(&fs_info->trans_lock);
+>> +    if (trans->transaction->list.prev != &fs_info->trans_list) {
+>> +        prev_trans = list_entry(trans->transaction->list.prev,
+>> +                    struct btrfs_transaction, list);
+>> +        refcount_inc(&prev_trans->use_count);
+>> +    }
+>> +    spin_unlock(&fs_info->trans_lock);
+>> +
+>>       /*
+>>        * Hold the unused_bg_unpin_mutex lock to avoid racing with
+>>        * btrfs_finish_extent_commit(). If we are at transaction N,
+>>        * another task might be running finish_extent_commit() for the
+>>        * previous transaction N - 1, and have seen a range belonging
+>> -     * to the block group in freed_extents[] before we were able to
+>> -     * clear the whole block group range from freed_extents[]. This
+>> +     * to the block group in pinned_extents before we were able to
+>> +     * clear the whole block group range from pinned_extents. This
+>>        * means that task can lookup for the block group after we
+>> -     * unpinned it from freed_extents[] and removed it, leading to
+>> +     * unpinned it from pinned_extents[] and removed it, leading to
+>>        * a BUG_ON() at unpin_extent_range().
+>>        */
+>>       mutex_lock(&fs_info->unused_bg_unpin_mutex);
+>> -    ret = clear_extent_bits(&fs_info->freed_extents[0], start, end,
+>> -              EXTENT_DIRTY);
+>> -    if (ret)
+>> -        goto failure;
+>> +    if (prev_trans) {
+>> +        ret = clear_extent_bits(&prev_trans->pinned_extents, start, end,
+>> +                    EXTENT_DIRTY);
+>> +        if (ret)
+>> +            goto failure;
+>> +    }
+> 
+> You are leaking a ref to prev_trans here.
+> 
+> <snip>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 9209c7b0997c..3cb786463eb2 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -2021,10 +2021,8 @@ void btrfs_free_fs_roots(struct btrfs_fs_info
+>> *fs_info)
+>>               btrfs_drop_and_free_fs_root(fs_info, gang[i]);
+>>       }
+>>   -    if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+>> +    if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+>>           btrfs_free_log_root_tree(NULL, fs_info);
+>> -        btrfs_destroy_pinned_extent(fs_info, fs_info->pinned_extents);
+>> -    }
+> 
+> What about the excluded extents?  We may never cache the block group
+> with one of the super mirrors in it, and thus we would leak the excluded
+> extent for it.  Thanks,
 
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 4f6db2fe482a..45b88bcd6cbb 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -77,7 +77,6 @@
- 
- #include <linux/sched.h>
- #include <linux/slab.h>
--#include <linux/buffer_head.h>
- #include <linux/mutex.h>
- #include <linux/genhd.h>
- #include <linux/blkdev.h>
-@@ -762,28 +761,47 @@ static int btrfsic_process_superblock_dev_mirror(
- 	struct btrfs_fs_info *fs_info = state->fs_info;
- 	struct btrfs_super_block *super_tmp;
- 	u64 dev_bytenr;
--	struct buffer_head *bh;
- 	struct btrfsic_block *superblock_tmp;
- 	int pass;
- 	struct block_device *const superblock_bdev = device->bdev;
-+	struct page *page;
-+	struct bio bio;
-+	struct bio_vec bio_vec;
-+	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
-+	gfp_t gfp_mask;
-+	int ret;
- 
- 	/* super block bytenr is always the unmapped device bytenr */
- 	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
- 	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
- 		return -1;
--	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
--		     BTRFS_SUPER_INFO_SIZE);
--	if (NULL == bh)
-+
-+	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
-+
-+	page = find_or_create_page(mapping, dev_bytenr >> PAGE_SHIFT, gfp_mask);
-+	if (!page)
-+		return -1;
-+
-+	bio_init(&bio, &bio_vec, 1);
-+	bio.bi_iter.bi_sector = dev_bytenr >> SECTOR_SHIFT;
-+	bio_set_dev(&bio, superblock_bdev);
-+	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
-+	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
-+
-+	ret = submit_bio_wait(&bio);
-+	if (ret)
- 		return -1;
--	super_tmp = (struct btrfs_super_block *)
--	    (bh->b_data + (dev_bytenr & (BTRFS_BDEV_BLOCKSIZE - 1)));
-+
-+	unlock_page(page);
-+
-+	super_tmp = kmap(page);
- 
- 	if (btrfs_super_bytenr(super_tmp) != dev_bytenr ||
- 	    btrfs_super_magic(super_tmp) != BTRFS_MAGIC ||
- 	    memcmp(device->uuid, super_tmp->dev_item.uuid, BTRFS_UUID_SIZE) ||
- 	    btrfs_super_nodesize(super_tmp) != state->metablock_size ||
- 	    btrfs_super_sectorsize(super_tmp) != state->datablock_size) {
--		brelse(bh);
-+		btrfs_release_disk_super(page);
- 		return 0;
- 	}
- 
-@@ -795,7 +813,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 		superblock_tmp = btrfsic_block_alloc();
- 		if (NULL == superblock_tmp) {
- 			pr_info("btrfsic: error, kmalloc failed!\n");
--			brelse(bh);
-+			btrfs_release_disk_super(page);
- 			return -1;
- 		}
- 		/* for superblock, only the dev_bytenr makes sense */
-@@ -880,7 +898,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 					      mirror_num)) {
- 				pr_info("btrfsic: btrfsic_map_block(bytenr @%llu, mirror %d) failed!\n",
- 				       next_bytenr, mirror_num);
--				brelse(bh);
-+				btrfs_release_disk_super(page);
- 				return -1;
- 			}
- 
-@@ -890,7 +908,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 					mirror_num, NULL);
- 			if (NULL == next_block) {
- 				btrfsic_release_block_ctx(&tmp_next_block_ctx);
--				brelse(bh);
-+				btrfs_release_disk_super(page);
- 				return -1;
- 			}
- 
-@@ -902,7 +920,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 					BTRFSIC_GENERATION_UNKNOWN);
- 			btrfsic_release_block_ctx(&tmp_next_block_ctx);
- 			if (NULL == l) {
--				brelse(bh);
-+				btrfs_release_disk_super(page);
- 				return -1;
- 			}
- 		}
-@@ -910,7 +928,7 @@ static int btrfsic_process_superblock_dev_mirror(
- 	if (state->print_mask & BTRFSIC_PRINT_MASK_INITIAL_ALL_TREES)
- 		btrfsic_dump_tree_sub(state, superblock_tmp, 0);
- 
--	brelse(bh);
-+	btrfs_release_disk_super(page);
- 	return 0;
- }
- 
--- 
-2.24.1
+btrfs_destroy_pinned_extent didn't touch EXTENT_UPDATE (excluded
+extents) before so my removing this call doesn't change that. E.g. if
+there is a bug here where excluded extents are not cleaned up then it's
+not due to my code.
 
+On the other hand I don't quite understand your concern w.r.t pinned
+extents. Can you elaborate?
+
+> 
+> Josef
