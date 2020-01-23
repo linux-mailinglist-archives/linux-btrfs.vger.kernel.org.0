@@ -2,152 +2,484 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51961147296
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 21:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB431473CC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 23:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgAWUdG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 15:33:06 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43788 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgAWUdG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 15:33:06 -0500
-Received: by mail-qk1-f193.google.com with SMTP id j20so4816871qka.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 12:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yHX6Q7IN6ui75bLtBLYe5ypqw0VWg2oc3PkB/EigGfs=;
-        b=S2T1w2GDmbtGmODGQGT0dgGJR3mpDZK8A3o27n73Fgb6uUVxj68SheMqKqAxhUhf7d
-         JdloIYPOEbMa5M2YDEGOqQG67lOzRXS8TprIdjhNFKXrr/VpRKPSIvrua1IfadcEmwW1
-         128lmayvuAaDsSmjxgGxFNudHVZ+OVPZeuS97tBE/UNk5GGtW1KYuTJD0ehjuGabob+7
-         eLSNV9s2W3FEmFPNEACo3povv2hToasZbnvDSju/auxMYFzN6ecqujB0YqsBKJAcVdQl
-         HVJ3sNf5BYgs6fPcbv3ULdyUMNIOJUnWZKsuI91KLShOBuzf93BVNNrPYWM4fzEN30MV
-         RLmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yHX6Q7IN6ui75bLtBLYe5ypqw0VWg2oc3PkB/EigGfs=;
-        b=SnKXjyYksYuPrHxKaF44civv0ZTYIgDP98J5/yfL7xmI3lvYWTyePfexRzbR/clDlA
-         IfjHi3uGNd8dcfNVsIrrBdb0GDyPrBHmZ7OvNhZtrwWd7B6rySYWE+/HgrKZaxlhDQ2X
-         gMmF2XY0KUyoDExVBxmYszw07Jc8i1fu/YXNGzNAmhk4A2GHveHTgf8AQe3TtiRrwLMX
-         IkiWt9YPj02AJlcQPHKY3LSlehGpi3WdIyjum0EADYjGdcdKORaG902PUCuqhOU/O+wr
-         2SzJ7QzliD+FkNlE+THAi5g9VGB42OuR5yccRlsx65glGS5lR8xDsVHwEXNT5QV3tCZW
-         fT5A==
-X-Gm-Message-State: APjAAAXVS0d+8Gtd7rcxnpqNwC7ZxrRDivXMKSRTreIQeIrUmciNkh/z
-        WTo31mZnMjMNA7vowswj33vGRNarhuShng==
-X-Google-Smtp-Source: APXvYqzuNCGYPuudWG4nyjRs2/bLu3yZCT8kRUc0gLa4EXE8KAE7/WEh1TPBZDFYc1DfStb0RbNrRQ==
-X-Received: by 2002:ae9:f819:: with SMTP id x25mr18082021qkh.192.1579811584440;
-        Thu, 23 Jan 2020 12:33:04 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id h32sm1663152qth.2.2020.01.23.12.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2020 12:33:03 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: flush write bio if we loop in extent_write_cache_pages
-Date:   Thu, 23 Jan 2020 15:33:02 -0500
-Message-Id: <20200123203302.2180124-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728928AbgAWWZx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 17:25:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39244 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728709AbgAWWZx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 17:25:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8AF0DACA3;
+        Thu, 23 Jan 2020 22:25:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9B7EDDA730; Thu, 23 Jan 2020 23:25:32 +0100 (CET)
+Date:   Thu, 23 Jan 2020 23:25:32 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 2/6] btrfs: remove buffer heads from super block
+ reading
+Message-ID: <20200123222531.GG3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
+ <20200123081849.23397-3-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There exists a deadlock with range_cyclic that has existed forever.  If
-we loop around with a bio already built we could deadlock with a writer
-who has the page locked that we're attempting to write but is waiting on
-a page in our bio to be written out.  The task traces are as follows
+On Thu, Jan 23, 2020 at 05:18:45PM +0900, Johannes Thumshirn wrote:
+> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads have
+> some drawbacks, like not being able to propagate errors from the lower
+> layers.
+> 
+> Change the buffer_heads to BIOs and utilize the page cache for the page
+> allocation. Compared to buffer_heads using BIOs are more lightweight and
+> we skip several layers of buffer_head code until we either reach the page
+> cache or build a BIO and submit it to read the blocks from disk.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> ---
+> Changes to v1:
+> - move 'super_page' into for-loop in btrfs_scratch_superblocks() (Nikolay)
+> - switch to using pagecahce instead of alloc_pages() (Nikolay, David)
+> ---
+>  fs/btrfs/disk-io.c | 83 ++++++++++++++++++++++++++++++----------------
+>  fs/btrfs/disk-io.h |  4 +--
+>  fs/btrfs/volumes.c | 62 ++++++++++++++++++++--------------
+>  fs/btrfs/volumes.h |  2 --
+>  4 files changed, 94 insertions(+), 57 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index aea48d6ddc0c..b111f32108cc 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2635,11 +2635,12 @@ int __cold open_ctree(struct super_block *sb,
+>  	u64 features;
+>  	u16 csum_type;
+>  	struct btrfs_key location;
+> -	struct buffer_head *bh;
+>  	struct btrfs_super_block *disk_super;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>  	struct btrfs_root *tree_root;
+>  	struct btrfs_root *chunk_root;
+> +	struct page *super_page;
+> +	u8 *superblock;
+>  	int ret;
+>  	int err = -EINVAL;
+>  	int clear_free_space_tree = 0;
+> @@ -2832,28 +2833,31 @@ int __cold open_ctree(struct super_block *sb,
+>  	/*
+>  	 * Read super block and check the signature bytes only
+>  	 */
+> -	bh = btrfs_read_dev_super(fs_devices->latest_bdev);
+> -	if (IS_ERR(bh)) {
+> -		err = PTR_ERR(bh);
+> +	ret = btrfs_read_dev_super(fs_devices->latest_bdev, &super_page);
+> +	if (ret) {
+> +		err = ret;
+>  		goto fail_alloc;
+>  	}
+>  
+> +	superblock = kmap(super_page);
 
-PID: 1329874  TASK: ffff889ebcdf3800  CPU: 33  COMMAND: "kworker/u113:5"
- #0 [ffffc900297bb658] __schedule at ffffffff81a4c33f
- #1 [ffffc900297bb6e0] schedule at ffffffff81a4c6e3
- #2 [ffffc900297bb6f8] io_schedule at ffffffff81a4ca42
- #3 [ffffc900297bb708] __lock_page at ffffffff811f145b
- #4 [ffffc900297bb798] __process_pages_contig at ffffffff814bc502
- #5 [ffffc900297bb8c8] lock_delalloc_pages at ffffffff814bc684
- #6 [ffffc900297bb900] find_lock_delalloc_range at ffffffff814be9ff
- #7 [ffffc900297bb9a0] writepage_delalloc at ffffffff814bebd0
- #8 [ffffc900297bba18] __extent_writepage at ffffffff814bfbf2
- #9 [ffffc900297bba98] extent_write_cache_pages at ffffffff814bffbd
+Page mapped here
 
-PID: 2167901  TASK: ffff889dc6a59c00  CPU: 14  COMMAND:
-"aio-dio-invalid"
- #0 [ffffc9003b50bb18] __schedule at ffffffff81a4c33f
- #1 [ffffc9003b50bba0] schedule at ffffffff81a4c6e3
- #2 [ffffc9003b50bbb8] io_schedule at ffffffff81a4ca42
- #3 [ffffc9003b50bbc8] wait_on_page_bit at ffffffff811f24d6
- #4 [ffffc9003b50bc60] prepare_pages at ffffffff814b05a7
- #5 [ffffc9003b50bcd8] btrfs_buffered_write at ffffffff814b1359
- #6 [ffffc9003b50bdb0] btrfs_file_write_iter at ffffffff814b5933
- #7 [ffffc9003b50be38] new_sync_write at ffffffff8128f6a8
- #8 [ffffc9003b50bec8] vfs_write at ffffffff81292b9d
- #9 [ffffc9003b50bf00] ksys_pwrite64 at ffffffff81293032
+>  	/*
+>  	 * Verify the type first, if that or the the checksum value are
+>  	 * corrupted, we'll find out
+>  	 */
+> -	csum_type = btrfs_super_csum_type((struct btrfs_super_block *)bh->b_data);
+> +	csum_type = btrfs_super_csum_type((struct btrfs_super_block *)
+> +					  superblock);
+>  	if (!btrfs_supported_super_csum(csum_type)) {
+>  		btrfs_err(fs_info, "unsupported checksum algorithm: %u",
+>  			  csum_type);
+>  		err = -EINVAL;
+> -		brelse(bh);
+> +		btrfs_release_disk_super(super_page);
 
-I used drgn to find the respective pages we were stuck on
+and the pairing kunmap is hidden in this helper with mismatching name.
+It's correct but the common cleanup code at the fail_alloc label can be
+used to avoid calling btrfs_release_disk_super at each error branch.
 
-page_entry.page 0xffffea00fbfc7500 index 8148 bit 15 pid 2167901
-page_entry.page 0xffffea00f9bb7400 index 7680 bit 0 pid 1329874
+The helper is trival, kunmap(), put_page(). I'd rather keep it opencoded
+in case the kmap happens in the function so it can be easily seen what's
+the span of the mapping.
 
-As you can see the kworker is waiting for bit 0 (PG_locked) on index
-7680, and aio-dio-invalid is waiting for bit 15 (PG_writeback) on index
-8148.  aio-dio-invalid has 7680, and the kworker epd looks like the
-following
+>  		goto fail_alloc;
+>  	}
+>  
+>  	ret = btrfs_init_csum_hash(fs_info, csum_type);
+>  	if (ret) {
+>  		err = ret;
+> +		btrfs_release_disk_super(super_page);
+>  		goto fail_alloc;
+>  	}
+>  
+> @@ -2861,10 +2865,10 @@ int __cold open_ctree(struct super_block *sb,
+>  	 * We want to check superblock checksum, the type is stored inside.
+>  	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+>  	 */
+> -	if (btrfs_check_super_csum(fs_info, bh->b_data)) {
+> +	if (btrfs_check_super_csum(fs_info, superblock)) {
+>  		btrfs_err(fs_info, "superblock checksum mismatch");
+>  		err = -EINVAL;
+> -		brelse(bh);
+> +		btrfs_release_disk_super(super_page);
+>  		goto fail_csum;
+>  	}
+>  
+> @@ -2873,8 +2877,8 @@ int __cold open_ctree(struct super_block *sb,
+>  	 * following bytes up to INFO_SIZE, the checksum is calculated from
+>  	 * the whole block of INFO_SIZE
+>  	 */
+> -	memcpy(fs_info->super_copy, bh->b_data, sizeof(*fs_info->super_copy));
+> -	brelse(bh);
+> +	memcpy(fs_info->super_copy, superblock, sizeof(*fs_info->super_copy));
+> +	btrfs_release_disk_super(super_page);
+>  
+>  	disk_super = fs_info->super_copy;
+>  
+> @@ -3374,40 +3378,60 @@ static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
+>  }
+>  
+>  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret)
+> +			struct page **super_page)
+>  {
+> -	struct buffer_head *bh;
+>  	struct btrfs_super_block *super;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+> +	struct page *page;
+>  	u64 bytenr;
+> +	struct address_space *mapping = bdev->bd_inode->i_mapping;
+> +	gfp_t gfp_mask;
+> +	int ret;
+>  
+>  	bytenr = btrfs_sb_offset(copy_num);
+>  	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
+>  		return -EINVAL;
+>  
+> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
+> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
+> +	page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT, gfp_mask);
+> +	if (!page)
+> +		return -ENOMEM;
+> +
+> +	bio_init(&bio, &bio_vec, 1);
+> +	bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +	bio_set_dev(&bio, bdev);
+> +	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
+> +	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
+> +		     offset_in_page(bytenr));
+> +
+> +	ret = submit_bio_wait(&bio);
+> +	unlock_page(page);
+>  	/*
+>  	 * If we fail to read from the underlying devices, as of now
+>  	 * the best option we have is to mark it EIO.
+>  	 */
+> -	if (!bh)
+> +	if (ret) {
+> +		put_page(page);
+>  		return -EIO;
+> +	}
+>  
+> -	super = (struct btrfs_super_block *)bh->b_data;
+> +	super = kmap(page);
+>  	if (btrfs_super_bytenr(super) != bytenr ||
+>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> -		brelse(bh);
+> +		btrfs_release_disk_super(page);
+>  		return -EINVAL;
+>  	}
+> +	kunmap(page);
 
-crash> struct extent_page_data ffffc900297bbbb0
-struct extent_page_data {
-  bio = 0xffff889f747ed830,
-  tree = 0xffff889eed6ba448,
-  extent_locked = 0,
-  sync_io = 0
-}
+Like here
 
-and using drgn I walked the bio pages looking for page
-0xffffea00fbfc7500 which is the one we're waiting for writeback on
+>  
+> -	*bh_ret = bh;
+> +	*super_page = page;
+>  	return 0;
+>  }
+>  
+>  
+> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
+> +int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
+>  {
+> -	struct buffer_head *bh;
+> -	struct buffer_head *latest = NULL;
+> +	struct page *latest = NULL;
+>  	struct btrfs_super_block *super;
+>  	int i;
+>  	u64 transid = 0;
+> @@ -3419,25 +3443,28 @@ struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
+>  	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
+>  	 */
+>  	for (i = 0; i < 1; i++) {
+> -		ret = btrfs_read_dev_one_super(bdev, i, &bh);
+> +		ret = btrfs_read_dev_one_super(bdev, i, page);
+>  		if (ret)
+>  			continue;
+>  
+> -		super = (struct btrfs_super_block *)bh->b_data;
+> +		super = kmap(*page);
+>  
+>  		if (!latest || btrfs_super_generation(super) > transid) {
+> -			brelse(latest);
+> -			latest = bh;
+> +			if (latest)
+> +				btrfs_release_disk_super(latest);
+> +			latest = *page;
+>  			transid = btrfs_super_generation(super);
+>  		} else {
+> -			brelse(bh);
+> +			btrfs_release_disk_super(*page);
+>  		}
+> +
+> +		kunmap(*page);
 
-bio = Object(prog, 'struct bio', address=0xffff889f747ed830)
-for i in range(0, bio.bi_vcnt.value_()):
-    bv = bio.bi_io_vec[i]
-    if bv.bv_page.value_() == 0xffffea00fbfc7500:
-        print("FOUND IT")
+And here.
 
-which validated what I suspected.
+>  	}
+>  
+> -	if (!latest)
+> -		return ERR_PTR(ret);
+> +	if (ret)
+> +		return ret;
+>  
+> -	return latest;
+> +	return 0;
+>  }
+>  
+>  /*
+> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+> index 8c2d6cf1ce59..e04b233c436a 100644
+> --- a/fs/btrfs/disk-io.h
+> +++ b/fs/btrfs/disk-io.h
+> @@ -54,9 +54,9 @@ int __cold open_ctree(struct super_block *sb,
+>  	       char *options);
+>  void __cold close_ctree(struct btrfs_fs_info *fs_info);
+>  int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
+> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev);
+> +int btrfs_read_dev_super(struct block_device *bdev, struct page **super_page);
+>  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret);
+> +			     struct page **super_page);
+>  int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+>  struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
+>  				      struct btrfs_key *location);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 7a480a2bdf51..f4a6ee518f0c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6,7 +6,6 @@
+>  #include <linux/sched.h>
+>  #include <linux/bio.h>
+>  #include <linux/slab.h>
+> -#include <linux/buffer_head.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/kthread.h>
+> @@ -500,7 +499,7 @@ static struct btrfs_fs_devices *find_fsid_with_metadata_uuid(
+>  static int
+>  btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>  		      int flush, struct block_device **bdev,
+> -		      struct buffer_head **bh)
+> +		      struct page **super_page)
+>  {
+>  	int ret;
+>  
+> @@ -519,9 +518,8 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>  		goto error;
+>  	}
+>  	invalidate_bdev(*bdev);
+> -	*bh = btrfs_read_dev_super(*bdev);
+> -	if (IS_ERR(*bh)) {
+> -		ret = PTR_ERR(*bh);
+> +	ret = btrfs_read_dev_super(*bdev, super_page);
+> +	if (ret) {
+>  		blkdev_put(*bdev, flags);
+>  		goto error;
+>  	}
+> @@ -530,7 +528,6 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+>  
+>  error:
+>  	*bdev = NULL;
+> -	*bh = NULL;
+>  	return ret;
+>  }
+>  
+> @@ -611,7 +608,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  {
+>  	struct request_queue *q;
+>  	struct block_device *bdev;
+> -	struct buffer_head *bh;
+> +	struct page *super_page;
+>  	struct btrfs_super_block *disk_super;
+>  	u64 devid;
+>  	int ret;
+> @@ -622,17 +619,17 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  		return -EINVAL;
+>  
+>  	ret = btrfs_get_bdev_and_sb(device->name->str, flags, holder, 1,
+> -				    &bdev, &bh);
+> +				    &bdev, &super_page);
+>  	if (ret)
+>  		return ret;
+>  
+> -	disk_super = (struct btrfs_super_block *)bh->b_data;
+> +	disk_super = kmap(super_page);
+>  	devid = btrfs_stack_device_id(&disk_super->dev_item);
+>  	if (devid != device->devid)
+> -		goto error_brelse;
+> +		goto error_free_page;
+>  
+>  	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE))
+> -		goto error_brelse;
+> +		goto error_free_page;
+>  
+>  	device->generation = btrfs_super_generation(disk_super);
+>  
+> @@ -641,7 +638,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  		    BTRFS_FEATURE_INCOMPAT_METADATA_UUID) {
+>  			pr_err(
+>  		"BTRFS: Invalid seeding and uuid-changed device detected\n");
+> -			goto error_brelse;
+> +			goto error_free_page;
+>  		}
+>  
+>  		clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> @@ -667,12 +664,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  		fs_devices->rw_devices++;
+>  		list_add_tail(&device->dev_alloc_list, &fs_devices->alloc_list);
+>  	}
+> -	brelse(bh);
+> +	btrfs_release_disk_super(super_page);
 
-The fix for this is simple, flush the epd before we loop back around to
-the beginning of the file during writeout.
+kummap here
 
-Fixes: b293f02e1423 ("Btrfs: Add writepages support")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+>  
+>  	return 0;
+>  
+> -error_brelse:
+> -	brelse(bh);
+> +error_free_page:
+> +	btrfs_release_disk_super(super_page);
+>  	blkdev_put(bdev, flags);
+>  
+>  	return -EINVAL;
+> @@ -2209,14 +2206,15 @@ static struct btrfs_device *btrfs_find_device_by_path(
+>  	u64 devid;
+>  	u8 *dev_uuid;
+>  	struct block_device *bdev;
+> -	struct buffer_head *bh;
+> +	struct page *super_page;
+>  	struct btrfs_device *device;
+>  
+>  	ret = btrfs_get_bdev_and_sb(device_path, FMODE_READ,
+> -				    fs_info->bdev_holder, 0, &bdev, &bh);
+> +				    fs_info->bdev_holder, 0, &bdev,
+> +				    &super_page);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+> -	disk_super = (struct btrfs_super_block *)bh->b_data;
+> +	disk_super = kmap(super_page);
+>  	devid = btrfs_stack_device_id(&disk_super->dev_item);
+>  	dev_uuid = disk_super->dev_item.uuid;
+>  	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
+> @@ -2226,7 +2224,7 @@ static struct btrfs_device *btrfs_find_device_by_path(
+>  		device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
+>  					   disk_super->fsid, true);
+>  
+> -	brelse(bh);
+> +	btrfs_release_disk_super(super_page);
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 0b5513f98a67..e3295f2d2975 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4181,7 +4181,16 @@ static int extent_write_cache_pages(struct address_space *mapping,
- 		 */
- 		scanned = 1;
- 		index = 0;
--		goto retry;
-+
-+		/*
-+		 * If we're looping we could run into a page that is locked by a
-+		 * writer and that writer could be waiting on writeback for a
-+		 * page in our current bio, and thus deadlock, so flush the
-+		 * write bio here.
-+		 */
-+		ret = flush_write_bio(epd);
-+		if (!ret)
-+			goto retry;
- 	}
- 
- 	if (wbc->range_cyclic || (wbc->nr_to_write > 0 && range_whole))
--- 
-2.24.1
+and here
 
+>  	if (!device)
+>  		device = ERR_PTR(-ENOENT);
+>  	blkdev_put(bdev, FMODE_READ);
+> @@ -7319,25 +7317,39 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+>  
+>  void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path)
+>  {
+> -	struct buffer_head *bh;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+>  	struct btrfs_super_block *disk_super;
+>  	int copy_num;
+>  
+>  	if (!bdev)
+>  		return;
+>  
+> +	bio_init(&bio, &bio_vec, 1);
+>  	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
+>  		copy_num++) {
+> +		u64 bytenr = btrfs_sb_offset(copy_num);
+> +		struct page *page;
+>  
+> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
+> +		if (btrfs_read_dev_one_super(bdev, copy_num, &page))
+>  			continue;
+>  
+> -		disk_super = (struct btrfs_super_block *)bh->b_data;
+> +		disk_super = kmap(page) + offset_in_page(bytenr);
+>  
+>  		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+> -		set_buffer_dirty(bh);
+> -		sync_dirty_buffer(bh);
+> -		brelse(bh);
+> +
+> +		bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +		bio_set_dev(&bio, bdev);
+> +		bio_set_op_attrs(&bio, REQ_OP_WRITE, 0);
+> +		bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
+> +			     offset_in_page(bytenr));
+> +
+> +		lock_page(page);
+> +		submit_bio_wait(&bio);
+> +		unlock_page(page);
+> +		btrfs_release_disk_super(page);
+
+And the last one
+
+> +		bio_reset(&bio);
+> +
+>  	}
+>  
+>  	/* Notify udev that device has changed */
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index b7f2edbc6581..1e4ebe6d6368 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -17,8 +17,6 @@ extern struct mutex uuid_mutex;
+>  
+>  #define BTRFS_STRIPE_LEN	SZ_64K
+>  
+> -struct buffer_head;
+> -
+>  struct btrfs_io_geometry {
+>  	/* remaining bytes before crossing a stripe */
+>  	u64 len;
+> -- 
+> 2.24.1
