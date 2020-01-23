@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E080C146814
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 13:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B90A146819
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jan 2020 13:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgAWMde (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 07:33:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47586 "EHLO mx2.suse.de"
+        id S1727453AbgAWMev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 07:34:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48256 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgAWMde (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 07:33:34 -0500
+        id S1726204AbgAWMeu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jan 2020 07:34:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BA570AC52;
-        Thu, 23 Jan 2020 12:33:32 +0000 (UTC)
-Subject: Re: [PATCH 42/43] btrfs: add a leak check for roots
+        by mx2.suse.de (Postfix) with ESMTP id 82782AC52;
+        Thu, 23 Jan 2020 12:34:48 +0000 (UTC)
+Subject: Re: [PATCH 41/43] btrfs: make the init of static elements in fs_info
+ separate
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200117212602.6737-1-josef@toxicpanda.com>
- <20200117212602.6737-43-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <20200117212602.6737-42-josef@toxicpanda.com>
+ <987b7059-0bc8-b4ad-0898-5c50c6ac762b@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -63,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <7858928a-ff2c-8d76-23b7-28d293dbf12a@suse.com>
-Date:   Thu, 23 Jan 2020 14:33:32 +0200
+Message-ID: <645b6187-56b5-9397-cfa7-33d24a99163e@suse.com>
+Date:   Thu, 23 Jan 2020 14:34:47 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200117212602.6737-43-josef@toxicpanda.com>
+In-Reply-To: <987b7059-0bc8-b4ad-0898-5c50c6ac762b@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,13 +81,36 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.01.20 г. 23:26 ч., Josef Bacik wrote:
-> Now that we're going to start relying on getting ref counting right for
-> roots, add a list to track allocated roots and print out any roots that
-> aren't free'd up at free_fs_info time.  Hide this behind
-> CONFIG_BTRFS_DEBUG because this will just be used for developers to
-> verify they aren't breaking things.
+On 23.01.20 г. 14:30 ч., Nikolay Borisov wrote:
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> On 17.01.20 г. 23:26 ч., Josef Bacik wrote:
+>> In adding things like eb leak checking and root leak checking there were
+>> a lot of weird corner cases that come from the fact that
+>>
+>> 1) We do not init the fs_info until we get to open_ctree time in the
+>> normal case and
+>>
+>> 2) The test infrastructure half-init's the fs_info for things that it
+>> needs.
+>>
+>> This makes it really annoying to make changes because you have to add
+>> init in two different places, have special cases for testing fs_info's
+>> that may not have certain things init'ed, and cases for fs_info's that
+>> didn't make it to open_ctree and thus are not fully init'ed.
+>>
+>> Fix this by extracting out the non-allocating init of the fs info into
+>> it's own public function and use that to make sure we're all getting
+>> consistent views of an allocated fs_info.
+>>
+> 
+> 
+> Imo it will be better if btrfs_init_fs_info is called from
+> init_mount_fs_info. And then called explicitly from the test code. That
+> way we keep the initialization close. Otherwise having it in
+> btrfs_mount_root is just confusing and not very obvious what's going on.
+> 
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+Actually now that I think more about it IMO btrfs_init_fs_info should be
+exported iff btrfs tests are enabled i.e using EXPORT_FOR_TESTS defines
