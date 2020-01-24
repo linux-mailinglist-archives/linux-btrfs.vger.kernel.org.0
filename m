@@ -2,56 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3AB147A5B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 10:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005E6147A5F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 10:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbgAXJZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jan 2020 04:25:04 -0500
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:44146 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729375AbgAXJZE (ORCPT
+        id S1726695AbgAXJ2l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jan 2020 04:28:41 -0500
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:42198 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgAXJ2l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jan 2020 04:25:04 -0500
-Received: by mail-vs1-f65.google.com with SMTP id p6so778399vsj.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 01:25:03 -0800 (PST)
+        Fri, 24 Jan 2020 04:28:41 -0500
+Received: by mail-ua1-f66.google.com with SMTP id u17so546224uap.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 01:28:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=/V9m5hrKz9sQUUys3Z7olUTiDN/uINR5RapQUMArL6M=;
-        b=IZjSa5tU6RfHmSgeaHDAcZLjkUBhoFT39Jm2HbmjpLt2IYYdim7OsRiksm0e4lRxOj
-         RDKkRqbKD/zZmh9MoMW7QKYKyk+v8aFoDpQNUaB1B9+u0dmjhSFUdRBGLCHkBvgqvJHK
-         SfhgQSrALrNTmQw+4039kgi2ypyoTYUG7RsjfGYSexXgaVtck2R+QP/k02bpKYPxmimJ
-         hXwYY3L3/A6wmg8cYhchBaYvsXeXmit++LvdpQ5kbsXXrjUyu6iWdCtlbNwsrhid5E5I
-         qyPhVrBPRj5r/si58RkrzogpRYgs2LZQe1lx5VCZJN47oFTrUQUQT2ebUrXYjvUXHTj6
-         M5hA==
+        bh=4ZXb8Thzm8cPz4DOP+EZ3V7BUXQde77HrV4ctpuJSRg=;
+        b=rdRX5Ru58/VLozXCp27R7kpyYaFGNnAp0BkRzFy408/6NeYnNksXOXB5w+BYyKm8Qi
+         8JueTjhiStXgtJeBMt0gSK3vRsEWjw09aBsAuqqPQTKV9XpEThnY9H7SF1ks41CrIina
+         t5U+kbPOkGe14+/anE1zqMJvzwPrUf4m+u7LeqrpdgFYGiULAaLZ7xU2jujrqFDvUaaF
+         tC3CT8nAX8gyzDBBaaxfCRoqutDcsMOdI7bHqnQCG2xpo9KvIsJWijdbSKyCodUtNyd8
+         cWe1zITFLuAID+6U6rJlHNKwMvYYYvYLRZcCuytjLGPPYQSvVxH/F+dWl2y0Kl348bwJ
+         5J5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=/V9m5hrKz9sQUUys3Z7olUTiDN/uINR5RapQUMArL6M=;
-        b=GedyBblmkGxNUsgaQuEKG5qLAt7kWMt9rdB7GbjoREcKK4z7tSv2IAm2WY4xcFXi3r
-         10Qczc3j5xRQ9foO1r1fUwaDQ1lDKjx8DovXJEQ1MH7Kq0Wf8JI7kQjTiRfBDRjwFY6D
-         FHblTmquaA0r1g5tXf2Nk+5wynxj0dn3JRXnd+/phkBxt0NL3A6WiErkYtgXfoDPS1iv
-         WrppUc27T3lfpc27yA4sB5hXkWF2EaN1Wp1mUCRo2aM9vg1gDpqqh5DZRtgJWuXJxqBr
-         XAc5FcRRaTxpMhx30nZ/WPYYywNirnqSPOtBWvFoMo4dRLrffYHXKLvsmGH7Jh3bgYHa
-         vjdw==
-X-Gm-Message-State: APjAAAUk+R8bw515bpM2iHeDS6W+lgTY9gCewlVJ6780Lpltli71pKbq
-        8k2tZDd4SeDVhdo0FTCJapQXhQ+WokYrKJm3Itw=
-X-Google-Smtp-Source: APXvYqzpvBMnF5TUMWLcHEeEW1yG0mED29CgMW0FjuwlvL2i16sldfjQZX3u7sQxRn8c01QMBZ0tWPs6dd8kwikMEWc=
-X-Received: by 2002:a67:f60e:: with SMTP id k14mr1459297vso.14.1579857902498;
- Fri, 24 Jan 2020 01:25:02 -0800 (PST)
+        bh=4ZXb8Thzm8cPz4DOP+EZ3V7BUXQde77HrV4ctpuJSRg=;
+        b=mKKJTItoRsjO+zdWDTCcS3ltXkVLvuvEB1f2O9bdrzY02OMCYXKpKgmUDcK1/1dDum
+         hCrH5eWR1vKbYHgS5xfR5x82leDYxzepjPh1JeEgvxhnJIMKe5sJ3J4EavslDwVtqUD0
+         GIEje0x0rK8BtKNd1aUME5UQpgWX78PMDf4NFfO1axk+58dHxjZVaawkoHm2Cn1E4G+v
+         EnDPthaFY1mzyI4I18FkxiTe7W2iBI1ovYuj25hzJIVUzN3bSO3WTQglrEukNyWA/Bxh
+         XZF0w75uJTUcE8/hVv9vKs6gf4gKPa7rODyaUNbBVd9N/FmKd5DN9opxC+rq9RmNdPyr
+         WjVg==
+X-Gm-Message-State: APjAAAWAIA4goJtSzTfnAVdJM1g0P4cxBsDThX1Nfn4BTLvCSelK4ClJ
+        ni3Ra1uGHDrycdIKaqwDyN82p4mRRHLVb4oFp8yDVTg8jdU=
+X-Google-Smtp-Source: APXvYqwWaFu8iPllDGGPqxTIHdoa31D9ApgLqZ5aKj6cUNL/BBj8FrlctyzhFl0DLMoHbgPrBV0Cv6maTD5Rr9D+Bjo=
+X-Received: by 2002:ab0:738c:: with SMTP id l12mr1186384uap.135.1579858119577;
+ Fri, 24 Jan 2020 01:28:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20200123235820.20764-1-wqu@suse.com>
-In-Reply-To: <20200123235820.20764-1-wqu@suse.com>
+References: <20200123203302.2180124-1-josef@toxicpanda.com>
+In-Reply-To: <20200123203302.2180124-1-josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 24 Jan 2020 09:24:50 +0000
-Message-ID: <CAL3q7H5FRdvnxG4KQhLTaaHFcP_bMUQsOxoJxfQwi8L8npGxDA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: Require mandatory block group RO for dev-replace
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, dsterba@suse.cz,
-        Filipe Manana <fdmanana@suse.com>
+Date:   Fri, 24 Jan 2020 09:28:28 +0000
+Message-ID: <CAL3q7H53O3Q_0DivEgwZBSRCjdfhNTxGemi4grWzJPzWHueYLg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: flush write bio if we loop in extent_write_cache_pages
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -59,196 +58,117 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 12:07 AM Qu Wenruo <wqu@suse.com> wrote:
+On Thu, Jan 23, 2020 at 8:51 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> [BUG]
-> For dev-replace test cases with fsstress, like btrfs/06[45] btrfs/071,
-> looped runs can lead to random failure, where scrub finds csum error.
+> There exists a deadlock with range_cyclic that has existed forever.  If
+> we loop around with a bio already built we could deadlock with a writer
+> who has the page locked that we're attempting to write but is waiting on
+> a page in our bio to be written out.  The task traces are as follows
 >
-> The possibility is not high, around 1/20 to 1/100, but it's causing data
-> corruption.
+> PID: 1329874  TASK: ffff889ebcdf3800  CPU: 33  COMMAND: "kworker/u113:5"
+>  #0 [ffffc900297bb658] __schedule at ffffffff81a4c33f
+>  #1 [ffffc900297bb6e0] schedule at ffffffff81a4c6e3
+>  #2 [ffffc900297bb6f8] io_schedule at ffffffff81a4ca42
+>  #3 [ffffc900297bb708] __lock_page at ffffffff811f145b
+>  #4 [ffffc900297bb798] __process_pages_contig at ffffffff814bc502
+>  #5 [ffffc900297bb8c8] lock_delalloc_pages at ffffffff814bc684
+>  #6 [ffffc900297bb900] find_lock_delalloc_range at ffffffff814be9ff
+>  #7 [ffffc900297bb9a0] writepage_delalloc at ffffffff814bebd0
+>  #8 [ffffc900297bba18] __extent_writepage at ffffffff814bfbf2
+>  #9 [ffffc900297bba98] extent_write_cache_pages at ffffffff814bffbd
 >
-> The bug is observable after commit b12de52896c0 ("btrfs: scrub: Don't
-> check free space before marking a block group RO")
+> PID: 2167901  TASK: ffff889dc6a59c00  CPU: 14  COMMAND:
+> "aio-dio-invalid"
+>  #0 [ffffc9003b50bb18] __schedule at ffffffff81a4c33f
+>  #1 [ffffc9003b50bba0] schedule at ffffffff81a4c6e3
+>  #2 [ffffc9003b50bbb8] io_schedule at ffffffff81a4ca42
+>  #3 [ffffc9003b50bbc8] wait_on_page_bit at ffffffff811f24d6
+>  #4 [ffffc9003b50bc60] prepare_pages at ffffffff814b05a7
+>  #5 [ffffc9003b50bcd8] btrfs_buffered_write at ffffffff814b1359
+>  #6 [ffffc9003b50bdb0] btrfs_file_write_iter at ffffffff814b5933
+>  #7 [ffffc9003b50be38] new_sync_write at ffffffff8128f6a8
+>  #8 [ffffc9003b50bec8] vfs_write at ffffffff81292b9d
+>  #9 [ffffc9003b50bf00] ksys_pwrite64 at ffffffff81293032
 >
-> [CAUSE]
-> Dev-replace has two source of writes:
-> - Write duplication
->   All writes to source device will also be duplicated to target device.
+> I used drgn to find the respective pages we were stuck on
 >
->   Content:      Not yet persisted data/meta
+> page_entry.page 0xffffea00fbfc7500 index 8148 bit 15 pid 2167901
+> page_entry.page 0xffffea00f9bb7400 index 7680 bit 0 pid 1329874
 >
-> - Scrub copy
->   Dev-replace reused scrub code to iterate through existing extents, and
->   copy the verified data to target device.
+> As you can see the kworker is waiting for bit 0 (PG_locked) on index
+> 7680, and aio-dio-invalid is waiting for bit 15 (PG_writeback) on index
+> 8148.  aio-dio-invalid has 7680, and the kworker epd looks like the
+> following
+
+Probably worth mentioning as well that it waits for writeback of the
+page to complete while holding a lock on it (at prepare_pages()).
+Anyway, it's a very minor thing and easy to figure that out.
+
 >
->   Content:      Previously persisted data and metadata
+> crash> struct extent_page_data ffffc900297bbbb0
+> struct extent_page_data {
+>   bio =3D 0xffff889f747ed830,
+>   tree =3D 0xffff889eed6ba448,
+>   extent_locked =3D 0,
+>   sync_io =3D 0
+> }
 >
-> The difference in contents makes the following race possible:
->         Regular Writer          |       Dev-replace
-> -----------------------------------------------------------------
->   ^                             |
->   | Preallocate one data extent |
->   | at bytenr X, len 1M         |
->   v                             |
->   ^ Commit transaction          |
->   | Now extent [X, X+1M) is in  |
->   v commit root                 |
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Dev replace start=
-s =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->                                 | ^
->                                 | | Scrub extent [X, X+1M)
->                                 | | Read [X, X+1M)
->                                 | | (The content are mostly garbage
->                                 | |  since it's preallocated)
->   ^                             | v
->   | Write back happens for      |
->   | extent [X, X+512K)          |
->   | New data writes to both     |
->   | source and target dev.      |
->   v                             |
->                                 | ^
->                                 | | Scrub writes back extent [X, X+1M)
->                                 | | to target device.
->                                 | | This will over write the new data in
->                                 | | [X, X+512K)
->                                 | v
+> and using drgn I walked the bio pages looking for page
+> 0xffffea00fbfc7500 which is the one we're waiting for writeback on
 >
-> This race can only happen for nocow writes. Thus metadata and data cow
-> writes are safe, as COW will never overwrite extents of previous trans
-> (in commit root).
+> bio =3D Object(prog, 'struct bio', address=3D0xffff889f747ed830)
+> for i in range(0, bio.bi_vcnt.value_()):
+>     bv =3D bio.bi_io_vec[i]
+>     if bv.bv_page.value_() =3D=3D 0xffffea00fbfc7500:
+>         print("FOUND IT")
 >
-> This behavior can be confirmed by disabling all fallocate related calls
-> in fsstress (*), then all related tests can pass a 2000 run loop.
+> which validated what I suspected.
 >
-> *: FSSTRESS_AVOID=3D"-f fallocate=3D0 -f allocsp=3D0 -f zero=3D0 -f inser=
-t=3D0 \
->                    -f collapse=3D0 -f punch=3D0 -f resvsp=3D0"
->    I didn't expect resvsp ioctl will fallback to fallocate in VFS...
+> The fix for this is simple, flush the epd before we loop back around to
+> the beginning of the file during writeout.
 >
-> [FIX]
-> Make dev-replace to require mandatory block group RO, and wait for curren=
-t
-> nocow writes before calling scrub_chunk().
->
-> This patch will mostly revert commit 76a8efa171bf ("btrfs: Continue repla=
-ce
-> when set_block_ro failed") for dev-replace path.
->
-> The side effect is, dev-replace can be more strict on avaialble space, bu=
-t
-> definitely worthy to avoid data corruption.
->
-> Reported-by: Filipe Manana <fdmanana@suse.com>
-> Fixes: 76a8efa171bf ("btrfs: Continue replace when set_block_ro failed")
-> Fixes: b12de52896c0 ("btrfs: scrub: Don't check free space before marking=
- a block group RO")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Fixes: b293f02e1423 ("Btrfs: Add writepages support")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Now it looks good, thanks!
+That dgrn, where is it? A quick google search pointed me only to
+blockchain stuff on the first page of results.
+
+Thanks.
 
 > ---
-> Changelog:
-> RFC->v1:
-> - Remove the RFC tag
->   Since the cause is pinned and verified, no need for RFC.
+>  fs/btrfs/extent_io.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 >
-> - Only wait for nocow writes for dev-replace
->   CoW writes are safe as they will never overwrite extents in commit
->   root.
->
-> - Put the wait call into proper lock context
->   Previous wait happens after scrub_pause_off(), which can cause
->   deadlock where we may need to commit transaction in one of the
->   wait calls. But since we are in scrub_pause_off() environment,
->   transaction commit will wait us to continue, causing a wait-on-self
->   deadlock.
->
-> v2:
-> - Add btrfs_wait_ordered_roots() call before scrub_chunk().
-> - Commit message change to avoid confusion.
-> ---
->  fs/btrfs/scrub.c | 33 ++++++++++++++++++++++++++++-----
->  1 file changed, 28 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 21de630b0730..fd266a2d15ec 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -3577,17 +3577,27 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx=
-,
->                  * This can easily boost the amount of SYSTEM chunks if c=
-leaner
->                  * thread can't be triggered fast enough, and use up all =
-space
->                  * of btrfs_super_block::sys_chunk_array
-> +                *
-> +                * While for dev replace, we need to try our best to mark=
- block
-> +                * group RO, to prevent race between:
-> +                * - Write duplication
-> +                *   Contains latest data
-> +                * - Scrub copy
-> +                *   Contains data from commit tree
-> +                *
-> +                * If target block group is not marked RO, nocow writes c=
-an
-> +                * be overwritten by scrub copy, causing data corruption.
-> +                * So for dev-replace, it's not allowed to continue if a =
-block
-> +                * group is not RO.
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 0b5513f98a67..e3295f2d2975 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4181,7 +4181,16 @@ static int extent_write_cache_pages(struct address=
+_space *mapping,
 >                  */
-> -               ret =3D btrfs_inc_block_group_ro(cache, false);
-> -               scrub_pause_off(fs_info);
-> -
-> +               ret =3D btrfs_inc_block_group_ro(cache, sctx->is_dev_repl=
-ace);
->                 if (ret =3D=3D 0) {
->                         ro_set =3D 1;
-> -               } else if (ret =3D=3D -ENOSPC) {
-> +               } else if (ret =3D=3D -ENOSPC && !sctx->is_dev_replace) {
->                         /*
->                          * btrfs_inc_block_group_ro return -ENOSPC when i=
-t
->                          * failed in creating new chunk for metadata.
-> -                        * It is not a problem for scrub/replace, because
-> +                        * It is not a problem for scrub, because
->                          * metadata are always cowed, and our scrub pause=
-d
->                          * commit_transactions.
->                          */
-> @@ -3596,9 +3606,22 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
->                         btrfs_warn(fs_info,
->                                    "failed setting block group ro: %d", r=
-et);
->                         btrfs_put_block_group(cache);
-> +                       scrub_pause_off(fs_info);
->                         break;
->                 }
->
-> +               /*
-> +                * Now the target block is marked RO, wait for nocow writ=
-es to
-> +                * finish before dev-replace.
-> +                * COW is fine, as COW never overwrites extents in commit=
- tree.
-> +                */
-> +               if (sctx->is_dev_replace) {
-> +                       btrfs_wait_nocow_writers(cache);
-> +                       btrfs_wait_ordered_roots(fs_info, U64_MAX, cache-=
->start,
-> +                                       cache->length);
-> +               }
+>                 scanned =3D 1;
+>                 index =3D 0;
+> -               goto retry;
 > +
-> +               scrub_pause_off(fs_info);
->                 down_write(&dev_replace->rwsem);
->                 dev_replace->cursor_right =3D found_key.offset + length;
->                 dev_replace->cursor_left =3D found_key.offset;
+> +               /*
+> +                * If we're looping we could run into a page that is lock=
+ed by a
+> +                * writer and that writer could be waiting on writeback f=
+or a
+> +                * page in our current bio, and thus deadlock, so flush t=
+he
+> +                * write bio here.
+> +                */
+> +               ret =3D flush_write_bio(epd);
+> +               if (!ret)
+> +                       goto retry;
+>         }
+>
+>         if (wbc->range_cyclic || (wbc->nr_to_write > 0 && range_whole))
 > --
-> 2.25.0
+> 2.24.1
 >
 
 
