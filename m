@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AEA148948
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548BB14894B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404645AbgAXOeF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jan 2020 09:34:05 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41320 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404591AbgAXOeE (ORCPT
+        id S2390886AbgAXOeH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jan 2020 09:34:07 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45237 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390638AbgAXOeG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:34:04 -0500
-Received: by mail-qt1-f193.google.com with SMTP id k40so1626277qtk.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:34:03 -0800 (PST)
+        Fri, 24 Jan 2020 09:34:06 -0500
+Received: by mail-qt1-f196.google.com with SMTP id d9so1608358qte.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=P8XNEd0C6kBDH9BTgE6tDYjoHWT0SVgdH+Usr5cP7to=;
-        b=0g/gx1dgwNHzqi4wwSS26fAO0jw77NAiVOHl+LOEnWlG5P1SsLsrPlY63EMY7kndEb
-         BHdpeVX1hQmmyRreur3N8STsTSGmlwDg827Sc/fVn8N9oGTmT4uU+xHbQ6Q9QaaSLIl/
-         McjQFa6nJdLZDe8g62Ua4AFt853NDno/2RbMqgNsdCcwjg2LC73oDc/+VmsL4R5Uq7qH
-         Cu/gTW5xk+Rft0TjGE70qMpGaDv+NAbrPN5VbFmGOZPcHKsoS3ZZzOfWaPHcfKaS0OF9
-         rjZhMZ46dMSrPl6fydTbC/Nx7auZrWg1kaURfT6stcNOJsawzeSENfnmcDDLjdYHILMg
-         DVIA==
+        bh=pM6Baxg4dx7swLymggU9GXTkL1FxfAoUeQLO3SfFwWk=;
+        b=DHfDZgaS8S61ib5N78m7kcAXlLUdR7Y2wUETQFaxB0nWBslwR/xcZpFReDvh9/Gyzr
+         OgocaT42DWiB8MYGv1TfcRsqyMPS/65UUt2wHEyTf9U6DLGZ65SLMi99vDrtk3VITPQd
+         BgDzv+M9eN2/I3IW+DY7BSa4CdR5kqVw6Gb0/rYWMNy6i6Lwc7JDOFyCw7ZK0nB6rfdw
+         QdtlWDxZSkvYREIUrzLb5co45TYrp+5zqMPbw0xh7p7e4SAhrNvXB8cmjXI7Jc3o/atH
+         FrR2NMZrfYbgxHvPEjimJYNKHi/WIRA0EgcWqvLuyKYXV0KV1+Ge147voT7CTWh+fLO+
+         oURA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P8XNEd0C6kBDH9BTgE6tDYjoHWT0SVgdH+Usr5cP7to=;
-        b=Pe8jgw8eHetCA1J69tU1todrRimwH7YoNrbmVXrJGj5baPXN7Ri0gV4vD/3A10zoMg
-         s2gust/WkNrSqFCra5nNCVM+/2BW82s0Ss1TNRNaNGKjfkriaTNpMNjnFiYBy4kLBHOC
-         3RyiwkzL1DjjUyaK/FhwAmb+z2CAubei41IZVpxB/C8h13Rr5kqdGxjV3K1vPXQAxP01
-         Ytvk4sMp0dVBezHssH6Ymh1nPN8Kko6OUIxcQkg0f3uP6AKQTO14B75GMVzoANygKX0X
-         eftbNZalfqA3Nn69EMijL/0CyzWWh7IpipYsKfJdL5fEut6Y6SaKtgf+iTijDS1G8un3
-         qSfw==
-X-Gm-Message-State: APjAAAUj4doNA2m43OITRgj9O8NppiVwnyWrir2VDU0MIiD2Ir1ZcnpP
-        SnMi5o4tbG4q0i2mUX+3dm+usNxh7/qEOg==
-X-Google-Smtp-Source: APXvYqwMd+KVSXEQUvJRXBccI5KiegcjSKmTcOn0UDlNeeQkzw3bYvfNA7nqkCykatKlFeWoGWDatw==
-X-Received: by 2002:ac8:689a:: with SMTP id m26mr2435703qtq.68.1579876442929;
-        Fri, 24 Jan 2020 06:34:02 -0800 (PST)
+        bh=pM6Baxg4dx7swLymggU9GXTkL1FxfAoUeQLO3SfFwWk=;
+        b=YKMgtTOJYVy6+r0GcoqPzfUDmd/2eBplR/CqbM8dp8py178EiyZIlJC7YVC8KQI4St
+         V3F3wYZDTEJQky160tHmEc6RO/2JYpkH90kHUeLUeXB1qz9/8Pbjc12v3vCBCU6VNDrR
+         2v8P78QZcYKhlH99qWsrf+fN5isnh6DqCc28TqEleo8mXVk8i22tcgkqVobmTJfkTH4Y
+         1dAe783An794TwC7gAuDK/hwxZpLnEYKYEg3Bv22AqSrO7UA0pV9cCPf+19TK8QqC07c
+         obPt3BI5i3mHzu3scnHBBBOLFIOYWOustuV+K0v1fBPrDjiKzhNnduupWKSquXUYKNuV
+         YPuA==
+X-Gm-Message-State: APjAAAV+qcIGfIrD7/dgM8KJ/dxFnyUZFuPPAO8v2q9euuISbr05EI8L
+        91SYxhbUYAl538iaO61o634jGw==
+X-Google-Smtp-Source: APXvYqxWBFzqLxVUQu7YxmtFNmIZaSLtese8uLIrJ0A/9QCkEY15vsOEK/3MtIQKz9C+0PCH4HrH0Q==
+X-Received: by 2002:ac8:148b:: with SMTP id l11mr2427109qtj.390.1579876445484;
+        Fri, 24 Jan 2020 06:34:05 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k17sm3080360qkj.71.2020.01.24.06.34.01
+        by smtp.gmail.com with ESMTPSA id k133sm3198078qke.134.2020.01.24.06.34.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 06:34:01 -0800 (PST)
+        Fri, 24 Jan 2020 06:34:04 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 33/44] btrfs: hold a ref on the root in create_pending_snapshot
-Date:   Fri, 24 Jan 2020 09:32:50 -0500
-Message-Id: <20200124143301.2186319-34-josef@toxicpanda.com>
+Subject: [PATCH 34/44] btrfs: hold a ref on the root in btrfs_recover_log_trees
+Date:   Fri, 24 Jan 2020 09:32:51 -0500
+Message-Id: <20200124143301.2186319-35-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200124143301.2186319-1-josef@toxicpanda.com>
 References: <20200124143301.2186319-1-josef@toxicpanda.com>
@@ -60,44 +60,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We create the snapshot and then use it for a bunch of things, we need to
-hold a ref on it while we're messing with it.
+We replay the log into arbitrary fs roots, hold a ref on the root while
+we're doing this.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c       | 1 +
- fs/btrfs/transaction.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+ fs/btrfs/tree-log.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 69c39b3d15a5..47953d022328 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -875,6 +875,7 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	d_instantiate(dentry, inode);
- 	ret = 0;
- fail:
-+	btrfs_put_fs_root(pending_snapshot->snap);
- 	btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->block_rsv);
- dec_and_free:
- 	if (snapshot_force_cow)
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e194d3e4e3a9..7008def3391b 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1637,6 +1637,12 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 		btrfs_abort_transaction(trans, ret);
- 		goto fail;
- 	}
-+	if (!btrfs_grab_fs_root(pending->snap)) {
-+		ret = -ENOENT;
-+		pending->snap = NULL;
-+		btrfs_abort_transaction(trans, ret);
-+		goto fail;
-+	}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index db803765b500..5b05419a0f4c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6114,6 +6114,10 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		tmp_key.offset = (u64)-1;
  
- 	ret = btrfs_reloc_post_snapshot(trans, pending);
- 	if (ret) {
+ 		wc.replay_dest = btrfs_get_fs_root(fs_info, &tmp_key, true);
++		if (!IS_ERR(wc.replay_dest)) {
++			if (!btrfs_grab_fs_root(wc.replay_dest))
++				wc.replay_dest = ERR_PTR(-ENOENT);
++		}
+ 		if (IS_ERR(wc.replay_dest)) {
+ 			ret = PTR_ERR(wc.replay_dest);
+ 
+@@ -6170,6 +6174,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		}
+ 
+ 		wc.replay_dest->log_root = NULL;
++		btrfs_put_fs_root(wc.replay_dest);
+ 		free_extent_buffer(log->node);
+ 		free_extent_buffer(log->commit_root);
+ 		kfree(log);
 -- 
 2.24.1
 
