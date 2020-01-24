@@ -2,86 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0798214773B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 04:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F20147773
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 05:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729652AbgAXDqf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jan 2020 22:46:35 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36780 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgAXDqf (ORCPT
+        id S1729690AbgAXEDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jan 2020 23:03:39 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38327 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729641AbgAXEDi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jan 2020 22:46:35 -0500
-Received: by mail-qt1-f193.google.com with SMTP id t13so129744qto.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 19:46:34 -0800 (PST)
+        Thu, 23 Jan 2020 23:03:38 -0500
+Received: by mail-lf1-f68.google.com with SMTP id r14so275001lfm.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jan 2020 20:03:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=vj4MHgQufk0k/ABhme3Q21xZj7ZH77xuPdYCwgIfcaI=;
-        b=ll02fiVtBReU9J1bXGBtB7xY+5pYToFQaR0xkv9693lBgbPK3AmWfF33jub9asBwYE
-         UWIokqGLyycdXbqNXsQnRO+4mZXkHFITTQXWr2gs18KgJ9ywyq7HHCEqdjQOwHp4HvoG
-         Cvf9pKIpIPJYtsEjqb6y4EE3ONTHmpFfuwY67KC6rXHTAEkd+MMj+kV0Oh9odfo4TujZ
-         1gpUV4a0h4f0Xy5ann6FqeTmMZBu7UE3NTL2AF89xzF+PIsng974VQPRG9NQoNy4Qq0G
-         +hCo+ZBnHsxJFjDJtLKBMmuLVszEx+nJZLM8f+UPkZMUS66ZBqFA/ChtjULQmRmFzVik
-         f0Nw==
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pJ79YEzqOeJqBHZrWiE140mizvbe/bZRpHvpfHBK80U=;
+        b=VCHxDBvEQn8WjrC9CdoL4k3bwTrG5ncqnnVztmUBJzeJLCKAqcF8m+84CFxTH3zv+f
+         GH2EhmsjLr9vRXh4TRlg3fEiFEb+mhhq4mh+tAbml7WpLgvQDL84vCtuEILRLwmib6LR
+         Q1RXHfgbX/29Kx9D9i0I2/oCQakbw9I4iCTlTd3To5F4cp2HVPwvCHaTpqoh7nMCi+2x
+         JP4QLkVM6qbleK4B9PXRHcJkByV9GrdidSyKTAELjBWpNMictnJWz+DGkRINiEZwYOFb
+         UMi7rSeYPxXlEYI2gqXf4t3M2A/EFpPNqF6TJSUOH2x8FqCBO0naleCMYBUQDKrWdJkY
+         ZUwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=vj4MHgQufk0k/ABhme3Q21xZj7ZH77xuPdYCwgIfcaI=;
-        b=J4FYDfsvFMneL32lJMGtmhdYKq14t6Pwm8ewxQ+Tgv7C41kIgc8hQZiWHjMxxFwCnO
-         0IP/xKXLszvJJlc9a4xIwZG2NrZWZynx6Bj3tz0JcrQ49hI2SX8A5jDv0SenkJgqb8Dk
-         bvVimVwi0ViUXjKEq/Phey6fcUmuH00e9k0MVVGPyWNZHyHycKau0/VkMaNHOsIDQlHZ
-         jcdECT+GLlKLkledgCmiFLQAzTKOBEwlzlnNxhMlGRLOq7PRqgzgT3VVAh+MmRyc3FlV
-         XFqmCIt+caHOZ328/A2bBYQgANGwQgf8ZU2Be1pNEiAb1cizuHd1KuctOtM4Qr7vpAx9
-         p9LQ==
-X-Gm-Message-State: APjAAAX+A/5I8yj5/bWEmV13ykFhOF55DiMGphXXQzvoKcvdCjX+Q7/f
-        zPq9EiBpc1bX/b2CNeDBkIaDrTjyV1WuUXS6CSc=
-X-Google-Smtp-Source: APXvYqzL2xl+IV004Oo44bCwtd8YkSTk2C8cj8Kj47qcVcMfjzCoo+fPR3EVeIrNeoOg7zPE0vEaZWwXB2f5lGVqiyM=
-X-Received: by 2002:ac8:2afb:: with SMTP id c56mr353853qta.112.1579837594473;
- Thu, 23 Jan 2020 19:46:34 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=pJ79YEzqOeJqBHZrWiE140mizvbe/bZRpHvpfHBK80U=;
+        b=fbDdEUFyG+vX+xmn9m5xivYMe/8toMpjnBRvsW3V7RbZuyoi8z1VgQ3/cv1zYFfgN1
+         ClTL5C22V91/aP2eJXsYm6UW1dNNLODkThO2wsNzEVvns/1KOjugzcymaXZ/AkDVliO8
+         ab2redPwfccJLAhQjW591pwW2nhiI/FqrGsHx6r3AuPohjJljVUJemLxXZcWFdwT6ekX
+         h9IF1qW5zBVnDQbfz+0N9hrjqpHM68BNL24i9CFczLbmbXhj90Wuxomm+ZAfxIROuf7o
+         ugXDyA76+SLeaxpCDHofzHtt2/4KUeTz6q3lc4E8nMYkEOJY/rqeVqaRg4zNSWgyUkqn
+         witg==
+X-Gm-Message-State: APjAAAUePabwemPnHgj+mwoI2jaw89YS/Eaj/c5rVErbzRrc0qJS/S+b
+        I59WYOAi/F3vFgKdNaRp7cg=
+X-Google-Smtp-Source: APXvYqwS1XCK6+4U1IXXwXyL/SqBpKrKHn4r+uYj39r4OfgxI6p9VVq0sLQNz7l8rMsbP3v4l0OAQg==
+X-Received: by 2002:a19:23d7:: with SMTP id j206mr479310lfj.108.1579838616979;
+        Thu, 23 Jan 2020 20:03:36 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812d:af15:a51e:b905:dd2b:45cf? ([2a00:1370:812d:af15:a51e:b905:dd2b:45cf])
+        by smtp.gmail.com with ESMTPSA id z7sm2279852lji.30.2020.01.23.20.03.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2020 20:03:36 -0800 (PST)
+Subject: Re: Hibernation into swap file
+To:     Chris Murphy <lists@colorremedies.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>, Omar Sandoval <osandov@fb.com>
+References: <aeo6MlQ5-4Bg33XbJZWCvdhKuo0Cgca_eNE4xv7rqzCzgvyxG-cobpf8R3bGdh6VT2LLPcXlZu69EyL_rV8K7gRLQ4HtYIyXnWCWb3zR6UM=@fomin.one>
+ <20190506113226.GL20156@twin.jikos.cz>
+ <CAJCQCtSLYY-AY8b1WZ1D4neTrwMsm_A61-G-8e6-H3Dmfue_vQ@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <859d7c9a-89af-f25b-4e83-027febf8715e@gmail.com>
+Date:   Fri, 24 Jan 2020 07:03:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Reply-To: mrkarimzongoz@gmail.com
-Received: by 2002:a05:6214:89:0:0:0:0 with HTTP; Thu, 23 Jan 2020 19:46:33
- -0800 (PST)
-From:   "Mr. Karim Zongo" <karimzongo78@gmail.com>
-Date:   Fri, 24 Jan 2020 04:46:33 +0100
-X-Google-Sender-Auth: dd5hTli1leZx_0zUm1DJ_TWZJec
-Message-ID: <CA+fy0jONCa2+vWC9wfbwtRx4_YCCbNjc8xC-qO57zhGihunQTA@mail.gmail.com>
-Subject: WITH DUE RESPECT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJCQCtSLYY-AY8b1WZ1D4neTrwMsm_A61-G-8e6-H3Dmfue_vQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Compliment of the day,
+23.01.2020 20:20, Chris Murphy пишет:
+> On Mon, May 6, 2019 at 5:31 AM David Sterba <dsterba@suse.cz> wrote:
+>> for the reference https://bugzilla.kernel.org/show_bug.cgi?id=202803
+>> and https://github.com/systemd/systemd/issues/11939
+> 
+> I've read these, but can't tell if it's still necessary to manually
+> use 'btrfs-map-physical' to find the correct offset, and use it on the
+> kernel command line manually?
 
-I am Mr. Karim Zongo  Have a Business Proposal of $10.3 million For
-You. I am aware of the unsafe nature of the internet, and was
-compelled to use this medium due to the nature of this project.
+Yes, it is. systemd does not compute it automatically.
 
-I have access to very vital information that can be used to transfer
-this huge amount of money, which may culminate into the investment of
-the said funds into your company or any lucrative venture in your
-country.
+> It does sound like contiguous extents is
+> not a requirement for hibernation to a swapfile on btrfs. Correct?
+> 
+> The idea I'm evaluating is a way to dynamically enable a swapfile only
+> at hibernation time. That way there's no swap thrashing during normal
+> use, yet it's still possible to support hibernation. It'd be necessary
+> to insert the swapon quickly after a request (or pre-trigger, maybe by
+> upowerd) for hibernation, so that the various systemd tests already
+> find a suitable swap device for the hibernation image.
+> 
+> 
+> --
+> Chris Murphy
+> 
 
-If you will like to assist me as a partner then indicate your
-interest, after which we shall both discuss the modalities and the
-sharing percentage.
-
-Upon receipt of your reply on your expression of Interest I will give
-you full details,
-on how the business will be executed I am open for negotiation. You
-should forward your reply to this private email id
-(mrkarimzongoz@gmail.com) Thanks for your anticipated cooperation.
-
-Note you might receive this message in your inbox or spam or junk
-folder, depends on your web host or server network.
-
-Thanks=E2=80=99
-Best Regards
-Mr. Karim Zongo
