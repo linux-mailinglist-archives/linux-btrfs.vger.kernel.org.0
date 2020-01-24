@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF63148945
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE73A14894C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390001AbgAXOd7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jan 2020 09:33:59 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:45023 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388120AbgAXOd5 (ORCPT
+        id S2404592AbgAXOeB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jan 2020 09:34:01 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:39341 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390591AbgAXOd7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:33:57 -0500
-Received: by mail-qv1-f67.google.com with SMTP id n8so970005qvg.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:33:57 -0800 (PST)
+        Fri, 24 Jan 2020 09:33:59 -0500
+Received: by mail-qv1-f66.google.com with SMTP id y8so980197qvk.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:33:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=4adHR5F024ZCFETalNl7qYodPCR2rclkM9ufEryDrI4=;
-        b=EcYeQXXP+rfA0o6IxiKn8mmKQ4jK3Wqw/O2qSk6+yoKxLlDYJmSTxMFJZrPnJ4tC16
-         WenrTS51etCyB/hw+7S3F+pxiov1KHt4SklWCsgRzG5Rym6yIMuwTWUzADbndukID0WC
-         P6YtxHm+KZEA2WZAVabYvRIC+GHYYqwhyZNmeuLGlq5lMXASxUShzgLRDJgBxPvM+O6g
-         pQQhUpLGaxiPz8E6/ZR9EbmuP2hILXGrtf9NZwbMNZXtbvNUIFce1zmMz4rb3tN9w1Jt
-         4GuEZk/YtPrBZt6bLc9e+ygHQGXMSTtGVfr+IDRW9N3YYjv1bw1CfkrGs/YTX0dfEwVC
-         R+OQ==
+        bh=FwNTEst1m2U3SR0GtEueCY9s2aSODxSlAQjE0Suamz0=;
+        b=OIvCKI0XAUnZYIAEZSHe70k6bA83h9mkUyNAg3cnN6Ym5OTQRXfTXG5sRoYUe5XeI0
+         u2t1U4VsDWZyTdG5P05hABfnV8w/5SjS6VQzHtH6SDonxgr1tl8WvM9v6xd1D5dpxPU/
+         b2zjuaFuE5tV/QrQo36BbxJOKthMsjAbyost/qeH05f3g/ARuDyifsXtqs+NqXL1KmXY
+         NySzV4iYK3RFRnLH4BuTNuDk+D06dC+cetHG5fSq6eYjQ0HPi5xy5HVWswXWxnaXOAFL
+         rPrmwV5QrgY/11zfgg3be4fBwAR6FR4YaMG9MWN0Cjbgn1H6iDbkMk1ihXeNR3MGZk1e
+         Ov1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4adHR5F024ZCFETalNl7qYodPCR2rclkM9ufEryDrI4=;
-        b=I4HohjKPe1awFEUWjhekuNcKoVhSvYvxgbvnA9adS4HqGzLlfOqfxwgjR7l/ul2+i1
-         flRvQaAtRmFJyTQqKHjY4dHjwi4E8aHFBs2EWgL2O7AbR0/9FyZ4xYVXK05abd5oy677
-         23b8QvMlh1Btu5rMwy+kadK+zCH1qkZ3nsHnub01C2oG7pxf2LgdQi4jRl2K2tb39k/1
-         oqX7RElSMvcmYmXTkVr9PSNFEYGvc4dcQsjNj/n/qB7VsMTo9un142HgCc7gYrE7zpIi
-         yLQdprGzLrYxPJM3ePHdNmPqig25SBdqwFIEmxTZg3ily/Y3SYHLo4MpThoEhRBmu1EI
-         PVuQ==
-X-Gm-Message-State: APjAAAX2y9LC0ok0d2s+M9yd+4Iw3MjEr/zBWJV/mT0YzAAxS2CqzEbn
-        +nk+C2awYfH2V2Pc91+Ct26LTm9uAPYo7A==
-X-Google-Smtp-Source: APXvYqxr9CiTf6K0C9HJMYfbYUKUMoc2bS0G1chMiz1Lb5OjoaUW7cqRZg4uChnoD5AY8bYVN9zu7Q==
-X-Received: by 2002:ad4:496f:: with SMTP id p15mr2905547qvy.191.1579876436570;
-        Fri, 24 Jan 2020 06:33:56 -0800 (PST)
+        bh=FwNTEst1m2U3SR0GtEueCY9s2aSODxSlAQjE0Suamz0=;
+        b=WaUsCEZGWEva8Y/OFjAYbitT6Z81Ti51TLQPPmWm+e6hU5hio+h1KY92xiTGLm+dwr
+         O8u93Xgsgk7bUVfZ70eT41oJfECPOBUKZmac3UeeQ1f3UzfHbcGp2ALp+/u2I9wlppDg
+         MJepyh1f2IZBeeN70+vheryAIYuSLXx9z9Muu6pdF2dx02nmG3p/cziROG3u3p6Shmaa
+         beBBKETKA1l9F08QH9zngLn2FZdslM7/z/844EDXerxOgFfPP4ElysOGflHaY1nEifmg
+         WSRcEc5Ad0WCSVCOKBh/R1JWapMTWHmZEmLHJ55KjiQrbzvmTjECKcWrXgxSfpvKqUcH
+         MkjA==
+X-Gm-Message-State: APjAAAU1GZog80TLoRwxs/ghuPLN0sXAEAw/xxoCqOOsI8zW8jc/eUuZ
+        lV8Rxa+kZY9rpTe56UP872tNqw==
+X-Google-Smtp-Source: APXvYqzqqJ5e45355axcDm5ZgavQdMWfjVvAEHXQGY22H8/iU8crNWpRzuzk1B3sR1S0b/RftehLkA==
+X-Received: by 2002:a0c:c28e:: with SMTP id b14mr3101561qvi.72.1579876438131;
+        Fri, 24 Jan 2020 06:33:58 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id z5sm3309852qts.64.2020.01.24.06.33.55
+        by smtp.gmail.com with ESMTPSA id d25sm3209705qtq.11.2020.01.24.06.33.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 06:33:55 -0800 (PST)
+        Fri, 24 Jan 2020 06:33:57 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 30/44] btrfs: hold a ref on the root in scrub_print_warning_inode
-Date:   Fri, 24 Jan 2020 09:32:47 -0500
-Message-Id: <20200124143301.2186319-31-josef@toxicpanda.com>
+Subject: [PATCH 31/44] btrfs: hold a ref on the root in btrfs_ioctl_send
+Date:   Fri, 24 Jan 2020 09:32:48 -0500
+Message-Id: <20200124143301.2186319-32-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200124143301.2186319-1-josef@toxicpanda.com>
 References: <20200124143301.2186319-1-josef@toxicpanda.com>
@@ -60,52 +60,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We look up the root for the bytenr that is failing, so we need to hold a
-ref on the root for that operation.
+We lookup all the clone roots and the parent root for send, so we need
+to hold refs on all of these roots while we're processing them.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/scrub.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/btrfs/send.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index b5f420456439..f9ee327d7978 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -658,6 +658,10 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
- 		ret = PTR_ERR(local_root);
- 		goto err;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 57eae56dd743..ee2fc9ea9d7e 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -7200,11 +7200,17 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 				ret = PTR_ERR(clone_root);
+ 				goto out;
+ 			}
++			if (!btrfs_grab_fs_root(clone_root)) {
++				srcu_read_unlock(&fs_info->subvol_srcu, index);
++				ret = -ENOENT;
++				goto out;
++			}
+ 			spin_lock(&clone_root->root_item_lock);
+ 			if (!btrfs_root_readonly(clone_root) ||
+ 			    btrfs_root_dead(clone_root)) {
+ 				spin_unlock(&clone_root->root_item_lock);
+ 				srcu_read_unlock(&fs_info->subvol_srcu, index);
++				btrfs_put_fs_root(clone_root);
+ 				ret = -EPERM;
+ 				goto out;
+ 			}
+@@ -7212,6 +7218,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 				dedupe_in_progress_warn(clone_root);
+ 				spin_unlock(&clone_root->root_item_lock);
+ 				srcu_read_unlock(&fs_info->subvol_srcu, index);
++				btrfs_put_fs_root(clone_root);
+ 				ret = -EAGAIN;
+ 				goto out;
+ 			}
+@@ -7239,6 +7246,12 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 			ret = PTR_ERR(sctx->parent_root);
+ 			goto out;
+ 		}
++		if (!btrfs_grab_fs_root(sctx->parent_root)) {
++			srcu_read_unlock(&fs_info->subvol_srcu, index);
++			ret = -ENOENT;
++			sctx->parent_root = ERR_PTR(ret);
++			goto out;
++		}
+ 
+ 		spin_lock(&sctx->parent_root->root_item_lock);
+ 		sctx->parent_root->send_in_progress++;
+@@ -7266,7 +7279,8 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+ 	 * is behind the current send position. This is checked while searching
+ 	 * for possible clone sources.
+ 	 */
+-	sctx->clone_roots[sctx->clone_roots_cnt++].root = sctx->send_root;
++	sctx->clone_roots[sctx->clone_roots_cnt++].root =
++		btrfs_grab_fs_root(sctx->send_root);
+ 
+ 	/* We do a bsearch later */
+ 	sort(sctx->clone_roots, sctx->clone_roots_cnt,
+@@ -7351,18 +7365,24 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
  	}
-+	if (!btrfs_grab_fs_root(local_root)) {
-+		ret = -ENOENT;
-+		goto err;
+ 
+ 	if (sort_clone_roots) {
+-		for (i = 0; i < sctx->clone_roots_cnt; i++)
++		for (i = 0; i < sctx->clone_roots_cnt; i++) {
+ 			btrfs_root_dec_send_in_progress(
+ 					sctx->clone_roots[i].root);
++			btrfs_put_fs_root(sctx->clone_roots[i].root);
++		}
+ 	} else {
+-		for (i = 0; sctx && i < clone_sources_to_rollback; i++)
++		for (i = 0; sctx && i < clone_sources_to_rollback; i++) {
+ 			btrfs_root_dec_send_in_progress(
+ 					sctx->clone_roots[i].root);
++			btrfs_put_fs_root(sctx->clone_roots[i].root);
++		}
+ 
+ 		btrfs_root_dec_send_in_progress(send_root);
+ 	}
+-	if (sctx && !IS_ERR_OR_NULL(sctx->parent_root))
++	if (sctx && !IS_ERR_OR_NULL(sctx->parent_root)) {
+ 		btrfs_root_dec_send_in_progress(sctx->parent_root);
++		btrfs_put_fs_root(sctx->parent_root);
 +	}
  
- 	/*
- 	 * this makes the path point to (inum INODE_ITEM ioff)
-@@ -668,6 +672,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
- 
- 	ret = btrfs_search_slot(NULL, local_root, &key, swarn->path, 0, 0);
- 	if (ret) {
-+		btrfs_put_fs_root(local_root);
- 		btrfs_release_path(swarn->path);
- 		goto err;
- 	}
-@@ -688,6 +693,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
- 	ipath = init_ipath(4096, local_root, swarn->path);
- 	memalloc_nofs_restore(nofs_flag);
- 	if (IS_ERR(ipath)) {
-+		btrfs_put_fs_root(local_root);
- 		ret = PTR_ERR(ipath);
- 		ipath = NULL;
- 		goto err;
-@@ -711,6 +717,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
- 				  min(isize - offset, (u64)PAGE_SIZE), nlink,
- 				  (char *)(unsigned long)ipath->fspath->val[i]);
- 
-+	btrfs_put_fs_root(local_root);
- 	free_ipath(ipath);
- 	return 0;
+ 	kvfree(clone_sources_tmp);
  
 -- 
 2.24.1
