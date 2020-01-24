@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B1F148920
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A644148921
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 15:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392762AbgAXOdM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jan 2020 09:33:12 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37203 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392756AbgAXOdK (ORCPT
+        id S2392765AbgAXOdN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jan 2020 09:33:13 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:33675 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392760AbgAXOdL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:33:10 -0500
-Received: by mail-qt1-f194.google.com with SMTP id w47so1638841qtk.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:33:09 -0800 (PST)
+        Fri, 24 Jan 2020 09:33:11 -0500
+Received: by mail-qk1-f193.google.com with SMTP id h23so2224253qkh.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 06:33:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TP1xlF1/ZZi1NsdI6J3j47bBMEePMqOBzLho3vuckcM=;
-        b=Lc7oJJiI0jubqYwlmm0XoiNAe3VtlL2CGHxE9YSrLSM8KXtc/9X09v4NLPpnDV3z5V
-         IcGvYPQw9NJn4RgxcOmzqjZx0EXcQVlYykLtwZG3qlKXogBNiAxnvsa98fgIJkTJbKhe
-         cAMjkuNSJwDC25dPSyjAJZm++cgCAp+w2f4B5Q9qNS/lzbwZv5ggPW2jnKdtizikZo9s
-         tjb89fTeCCY6nC1g7E1u9uoGj+E0G1hRbboifm2ucZKqiomGD5Si/vOXU+XpdrPidqQC
-         z1a4COxNbKdzQUSdFPj11Up/Cv8qBYwmP3pWFYSTyhYlicUpO+GL7BQGKKDblNQt56td
-         5Gdg==
+        bh=F2WdbHxf3x/K7ZFWhJ+LPB3iVWaQkE0vPXMUKDv+efA=;
+        b=bZJ2SoOWL+mEs7GataH2c289rUdNAt3G+bLB9+dcHr0XsLkfw3iV5RBkQwtY76bc6w
+         EUYK4uJq6QLEik/hvIKLMJiK1H7mz+jTKV+qiTSgHTVO8eH7+AB6qB/2mtXAtynE/6XY
+         3voId5hr59JJKUJr4MvB+TWtR4mxeYyKr2atxCkmA/cFV4qKVkayMm3q/tWs6Qj/Hytk
+         6JBVKaLCQGd8tytKIiDrBqi1IoHB5a7a/jb2mbZUH4NY6NQkr5a7Jey78a0R5C/gP5YS
+         qrgLtW3pGbOMrJjZGcbYObrJf753p4n9RbZDV1eLb9vmpTGtgAwvIzh0YJzaXCORyURz
+         vLOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TP1xlF1/ZZi1NsdI6J3j47bBMEePMqOBzLho3vuckcM=;
-        b=psN7E7dORc/rR/0A31kai5bdpGN3kn+JgoT0pU0sbnROqdbPx/C1dTe0ZqDQYmdCp6
-         4ANLc9lQdZtUZKUilgukr2ne5P2SvFKNXzk7wVyZc++ZSUILSMOJyeZq+sKdaXzW4aC1
-         3U9T15yAbDUL13tm/47uOIhGSX+ncMftnfdT8qBq8MkxQCXehY6hTYgmA9YWaIyiE/7h
-         NjUnMaEqEPeDSFAEQgDO9Wo7YpNMEXtU1eGipMApLumDXP4ATGpQ5DU+cZrMBLdj581E
-         1qfAo5Bc8mlImR2mWo9OuWo67NNa3TTkdrfKYAyKqWOjV4vmhENUDILS8Xb/q20vA8gL
-         XLbg==
-X-Gm-Message-State: APjAAAXaG7JN08asBI5mF8fX9+NX/TOpk8w7GHvikUnB/jLsURMG9gNC
-        8BuHH+k8pLR/VDeFu3hPX5aX2w4s/x38tg==
-X-Google-Smtp-Source: APXvYqzIAZro883OleiOTXhuNL4FJkep0983LptIgRflPIxHeyUfOsr8iQl2hqqkAY0Tl5LimfVccg==
-X-Received: by 2002:ac8:6bc9:: with SMTP id b9mr2399234qtt.108.1579876389057;
-        Fri, 24 Jan 2020 06:33:09 -0800 (PST)
+        bh=F2WdbHxf3x/K7ZFWhJ+LPB3iVWaQkE0vPXMUKDv+efA=;
+        b=nPz2bR5h4TZF8/VCDecpLPjuh8EKxY1j6odv/O27ArCgBg+/WQP4p2wkXXGNqnd1/f
+         oFrCH5XI0zW5njse1GunFaCLC9ZH4QTaKfOsI13W3rB7g1yat4EK0QoHAzZJVSbYiiUG
+         8ExCfRQbDm/LR+ISUIEj+dCML86qvV+i/0qwWCnKLN8afwcu9i4M4ggXVWFQeLNJMUdO
+         +1fwSKjyi4P2k9j3srT91kCrGqjkuN3MQ9X2JlbtyTM4QxL1lCpbE7Vz7bQ0Txg3IhFr
+         gqFRni8jhTiFSWyjNkzAdxsC6YiUrQ6G6Q1wOS9hK97S65UsIHApD3WJhMWWTpzMG9P6
+         kPtw==
+X-Gm-Message-State: APjAAAXlm7GeVdy1ih98Ep3Qgl+/5khc1curft0MoBmNtL8qAjCoZJUD
+        ekRKJyR536dk0IFdlqD73HrRxQ==
+X-Google-Smtp-Source: APXvYqz9perD/BiNB4HpbbtOMUZpZf+UxyHeXSIqV/dh2x1PuMIjFeDfKcMnQwJT482ykBfOLsywVA==
+X-Received: by 2002:ae9:f003:: with SMTP id l3mr2808187qkg.457.1579876390705;
+        Fri, 24 Jan 2020 06:33:10 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id i4sm3127472qki.45.2020.01.24.06.33.08
+        by smtp.gmail.com with ESMTPSA id d20sm1427685qto.2.2020.01.24.06.33.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 06:33:08 -0800 (PST)
+        Fri, 24 Jan 2020 06:33:10 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 03/44] btrfs: make btrfs_find_orphan_roots use btrfs_get_fs_root
-Date:   Fri, 24 Jan 2020 09:32:20 -0500
-Message-Id: <20200124143301.2186319-4-josef@toxicpanda.com>
+Subject: [PATCH 04/44] btrfs: export and use btrfs_read_tree_root
+Date:   Fri, 24 Jan 2020 09:32:21 -0500
+Message-Id: <20200124143301.2186319-5-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200124143301.2186319-1-josef@toxicpanda.com>
 References: <20200124143301.2186319-1-josef@toxicpanda.com>
@@ -61,79 +61,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_find_orphan_roots has this weird thing where it looks up the root
-in cache to see if it is there before just reading the root.  But the
-read it uses just reads the root, it doesn't do any of the init work, we
-do that by hand here.  But this is unnecessary, all we really want is to
-see if the root still exists and add it to the dead roots list to be
-cleaned up, otherwise we delete the orphan item.
-
-Fix this by just using btrfs_get_fs_root directly with check_ref set to
-false so we get the orphan root items.  Then we just handle in cache and
-out of cache roots the same, add them to the dead roots list and carry
-on.
+log-tree uses btrfs_read_fs_root to load its log, but this just calls
+btrfs_read_tree_root.  We don't save the log roots in our root cache, so
+just export this helper and use it in the logging code.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/root-tree.c | 37 +++----------------------------------
- 1 file changed, 3 insertions(+), 34 deletions(-)
+ fs/btrfs/disk-io.c  | 4 ++--
+ fs/btrfs/disk-io.h  | 2 ++
+ fs/btrfs/tree-log.c | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index 612411c74550..094a71c54fa1 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -255,25 +255,7 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
- 		root_key.objectid = key.offset;
- 		key.offset++;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 2d378aafb70b..136a4d9d5fed 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1384,8 +1384,8 @@ int btrfs_add_log_tree(struct btrfs_trans_handle *trans,
+ 	return 0;
+ }
  
--		/*
--		 * The root might have been inserted already, as before we look
--		 * for orphan roots, log replay might have happened, which
--		 * triggers a transaction commit and qgroup accounting, which
--		 * in turn reads and inserts fs roots while doing backref
--		 * walking.
--		 */
--		root = btrfs_lookup_fs_root(fs_info, root_key.objectid);
--		if (root) {
--			WARN_ON(!test_bit(BTRFS_ROOT_ORPHAN_ITEM_INSERTED,
--					  &root->state));
--			if (btrfs_root_refs(&root->root_item) == 0) {
--				set_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
--				btrfs_add_dead_root(root);
--			}
--			continue;
--		}
--
--		root = btrfs_read_fs_root(tree_root, &root_key);
-+		root = btrfs_get_fs_root(fs_info, &root_key, false);
- 		err = PTR_ERR_OR_ZERO(root);
- 		if (err && err != -ENOENT) {
+-static struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+-					       struct btrfs_key *key)
++struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
++					struct btrfs_key *key)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_fs_info *fs_info = tree_root->fs_info;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 8c2d6cf1ce59..158fec0eeef2 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -58,6 +58,8 @@ struct buffer_head *btrfs_read_dev_super(struct block_device *bdev);
+ int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+ 			struct buffer_head **bh_ret);
+ int btrfs_commit_super(struct btrfs_fs_info *fs_info);
++struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
++					struct btrfs_key *key);
+ struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
+ 				      struct btrfs_key *location);
+ int btrfs_init_fs_root(struct btrfs_root *root);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index a2bae5c230e1..e6e4b00cb46c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6101,7 +6101,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		if (found_key.objectid != BTRFS_TREE_LOG_OBJECTID)
  			break;
-@@ -300,21 +282,8 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
- 			continue;
- 		}
  
--		err = btrfs_init_fs_root(root);
--		if (err) {
--			btrfs_free_fs_root(root);
--			break;
--		}
--
--		set_bit(BTRFS_ROOT_ORPHAN_ITEM_INSERTED, &root->state);
--
--		err = btrfs_insert_fs_root(fs_info, root);
--		if (err) {
--			BUG_ON(err == -EEXIST);
--			btrfs_free_fs_root(root);
--			break;
--		}
--
-+		WARN_ON(!test_bit(BTRFS_ROOT_ORPHAN_ITEM_INSERTED,
-+				  &root->state));
- 		if (btrfs_root_refs(&root->root_item) == 0) {
- 			set_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
- 			btrfs_add_dead_root(root);
+-		log = btrfs_read_fs_root(log_root_tree, &found_key);
++		log = btrfs_read_tree_root(log_root_tree, &found_key);
+ 		if (IS_ERR(log)) {
+ 			ret = PTR_ERR(log);
+ 			btrfs_handle_fs_error(fs_info, ret,
 -- 
 2.24.1
 
