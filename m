@@ -2,55 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1C114866B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 14:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A513914866D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jan 2020 14:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388017AbgAXNzN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jan 2020 08:55:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387970AbgAXNzN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jan 2020 08:55:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 03305ADDA;
-        Fri, 24 Jan 2020 13:55:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 24E88DA730; Fri, 24 Jan 2020 14:54:55 +0100 (CET)
-Date:   Fri, 24 Jan 2020 14:54:55 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 2/6] btrfs: remove buffer heads from super block
- reading
-Message-ID: <20200124135454.GI3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-References: <20200123081849.23397-1-johannes.thumshirn@wdc.com>
- <20200123081849.23397-3-johannes.thumshirn@wdc.com>
+        id S2388315AbgAXNzj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jan 2020 08:55:39 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37336 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387970AbgAXNzj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Jan 2020 08:55:39 -0500
+Received: by mail-qt1-f195.google.com with SMTP id w47so1539458qtk.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jan 2020 05:55:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nbuQC0x+Ebr4oDWOtwaDYEWK9YrkOelQsBbA+umI/zo=;
+        b=jVwGumTHcAVmlIY131KKM3Gw1VFNbgync3f5Fs4p34RmxeuIMn0dDPXxMbCA75r8kJ
+         B57Omvy7qe5oC5iDbk8fZXLOzdoCmo5LNf5nHoqw3xE73oNrChmMzr3rrm0s2DnHOdxb
+         N+vfIrctFzfpQf0t2oTehhmysRV14C+iUNyCA8WWFHMFOZTGzvIdDekaQuu8VZVNmHc1
+         tneE2/syk6kkjETJU7W6/JO+WL8UtWPOxqDn+aQFtGzyYYlRDxpYVW13Gsfthj4oc7qe
+         ASncGfjA6Sw1HIN/bWWjU9i0j5fTBSVm7x0d5KauFQ7JQknkc2Ni5h15n8GAR4p+vzyE
+         lv8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nbuQC0x+Ebr4oDWOtwaDYEWK9YrkOelQsBbA+umI/zo=;
+        b=ZRr1OoClAIEQCoBOVRR+4AbgPt07FFSpH4G/pRmOHAgrsOneFo8wxITZhc4U4ksNGJ
+         0ArOxpSi0ncMgEVMcHH0cqaTmkCggLQ1BtSg/e16Eev9EUJK8pv617fM8S3pirvsTYNU
+         Ah+HGlkPmiBXhCLEr7D7bcx2WWt+w9zUYEmm66auXru9O40Gn3lXB0Ntn08jm2hyAa2a
+         Ku24YUDunGW32G+IrXUYdzeh99+RyfaTGuFO69OAsF84WNsR/4/FtWS7pPXgHkrYwvL8
+         mSKnv53MAqtcj8AiiP6rRTbfd2P3GqWKL+Noq2S/51ONtdGKTU8VVkW2MGL+S6iM6XL2
+         0Lyg==
+X-Gm-Message-State: APjAAAU+7zY1DVfz2udNexN3Lv3SMfXEiqksFALpE+uJzjIxXPG4RqMv
+        ZD+xMdIbVsJsVLa4xLO/E2P1BQ==
+X-Google-Smtp-Source: APXvYqzyNCtjydKLwx69vNvU6PSamyU8mCxWzrh8dhp3WKVA5eRZyPX9qbdDTLiKOwMRFnnvmw1Svg==
+X-Received: by 2002:ac8:3886:: with SMTP id f6mr2183114qtc.160.1579874138363;
+        Fri, 24 Jan 2020 05:55:38 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::68b4])
+        by smtp.gmail.com with ESMTPSA id k22sm3091117qkg.80.2020.01.24.05.55.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jan 2020 05:55:37 -0800 (PST)
+Subject: Re: [PATCH] btrfs: add test for incremental send for file with shared
+ extents
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <20200124115213.4133-1-fdmanana@kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <3863949a-5d64-9919-877d-0ee02be1b02c@toxicpanda.com>
+Date:   Fri, 24 Jan 2020 08:55:36 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200123081849.23397-3-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200124115213.4133-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 05:18:45PM +0900, Johannes Thumshirn wrote:
-> -	if (!latest)
-> -		return ERR_PTR(ret);
-> +	if (ret)
-> +		return ret;
->  
-> -	return latest;
-> +	return 0;
+On 1/24/20 6:52 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test that an incremental send operation works correctly when a file has
+> shared extents with itself in the send snapshot, with a hole between them,
+> and the file size has increased in the send snapshot.
+> 
+> This currently fails in 5.5-rc kernels (regression) but is fixed by a
+> patch that has the following subject:
+> 
+>    Btrfs: send, fix emission of invalid clone operations within the same file
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This could be simpliried to 'return ret', no?
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
