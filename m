@@ -2,73 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0DF149787
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 20:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB4214978D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 20:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgAYTou (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jan 2020 14:44:50 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgAYTou (ORCPT
+        id S1726775AbgAYTqd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jan 2020 14:46:33 -0500
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:45053 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgAYTqd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jan 2020 14:44:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0ZMGv3oBke4qgEgEWLJ/O03PCwZbetUWl8MszuyJc3E=; b=iukevvX9wHFfu3JIg1tr6gVc/
-        JwJE61o+VY7KxTDz9InYcyVcbamX1y02guAD3rWE2GMFBd6m2M560rZ9H3IdzZ7mREF8HfqjNOxF7
-        HlJjW/HzTAr+MQDnqg4+ap4KCIzzg0CvE0iBtGvOYLNOiEVgKse1AFNaAcpAnsLdvzyQ+tS0PerbZ
-        t5ty0p/lHmff1/2YUFwEYdYp9wzoQkDc38nEKsZ+jm2E8oJgAiMXjCButFfqjsPdn0CHgtX1TFbzu
-        4tuijwgd1IjFP1Dl0+zEUez39wsvlMoBZL+xtptLXo4jcPUPXyt9UU4IzOBc+Dq2WViHshRY6wYB0
-        R5QNBIB6A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ivRMP-0004OA-SC; Sat, 25 Jan 2020 19:44:49 +0000
-Date:   Sat, 25 Jan 2020 11:44:49 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 03/12] readahead: Put pages in cache earlier
-Message-ID: <20200125194449.GO4675@bombadil.infradead.org>
-References: <20200125013553.24899-1-willy@infradead.org>
- <20200125013553.24899-4-willy@infradead.org>
+        Sat, 25 Jan 2020 14:46:33 -0500
+Received: by mail-wr1-f50.google.com with SMTP id q10so6094542wrm.11
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jan 2020 11:46:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i+NBtAzpxrQEqjAjghmYKcmC6lEu25Hydh1KeVejEwI=;
+        b=kjk5LzN4ZmScRqPcXxV1l7xjGKV8Rn0BZG2mWXjdrFVvkeItFyHVgCzK2v2NIQ4ADn
+         verWYAWxv6j/uX+gIh82ESUTM1bvxfEMbIOEe9TpMX22IgW0W5F+QJxmryhDP+d+rKTv
+         qGXmBulXlk4+aOVETRgw3YpNAhobwnrh9PCSfdPQsFk084L1yfR562WuwfnH6VdiyMK3
+         3SgVw7uqEFP4nTBRnVtj7KOwXvay8cqh4biHUHvkjEY160w9ehZC/y5DzdZ3iuKoXy4E
+         sFXwZL9o9+glJyAILhD35eDLFFkI8rxhp7jAH1uDBptebYbfYXUKmkj/pQtz0FlS5xA+
+         nyQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i+NBtAzpxrQEqjAjghmYKcmC6lEu25Hydh1KeVejEwI=;
+        b=VyHWjebDSK0I46+oe7WDphT1dofgxFw1YLWMK9CxSFp0DacZo0x1oZFY8D/6reHyQb
+         0OcJY7IQNlhtdBEYSyQxE5FdepwB36K2UenthiiH8B/EYplQj+PcqeaWAWENtIhykOgB
+         1cY2y/11ep6pDqFM30TLRXZ7cupRQ+ViMB7xrWLMAGcPeNXE0hwuxGsLSSjRDggaBRxU
+         H84ezZ2nY6V1nbH8g61a32SQ+Ah0rofCM6Q609czA84wvfZ0NYY4RYy0z9hnANxC8OT9
+         jizpwBg6oR1DMm/K+ELkpQbkQgGxHMpBpEPSmu6pIxs8OINmHAE7z0o9Y/uq7WTTiBsT
+         UpBA==
+X-Gm-Message-State: APjAAAUPhk42U5al9EnSPIOSHwc1/UcXEZgUdEjAvDeshavyN+YHumsX
+        jkGE9Yyi+LziNVS2V77zP54Utra8FdWW/8mCWhZ2HD48mfs1kA==
+X-Google-Smtp-Source: APXvYqx5JK9Wi8So7IKe3/G4odvH6CiwbYADL0ZC9/782xUvxlaiWERZfDPIPUfsU/OUhQ5iYfK86vkyRcbZOPQ64y0=
+X-Received: by 2002:adf:fa43:: with SMTP id y3mr11585674wrr.65.1579981591376;
+ Sat, 25 Jan 2020 11:46:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200125013553.24899-4-willy@infradead.org>
+References: <em16e3d03d-97be-4ddb-b4a4-6a056b469f20@ryzen>
+In-Reply-To: <em16e3d03d-97be-4ddb-b4a4-6a056b469f20@ryzen>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 25 Jan 2020 12:46:15 -0700
+Message-ID: <CAJCQCtRuM782pQtd=GYXaWK+71M8D-qg4q-ieMJU3nwYTHVasQ@mail.gmail.com>
+Subject: Re: Broken Filesystem
+To:     Hendrik Friedel <hendrik@friedels.name>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 05:35:44PM -0800, Matthew Wilcox wrote:
-> @@ -192,8 +194,18 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
->  		page = __page_cache_alloc(gfp_mask);
->  		if (!page)
->  			break;
-> -		page->index = page_offset;
-> -		list_add(&page->lru, &page_pool);
-> +		if (use_list) {
-> +			page->index = page_offset;
-> +			list_add(&page->lru, &page_pool);
-> +		} else if (!add_to_page_cache_lru(page, mapping, page_offset,
-> +					gfp_mask)) {
-> +			if (nr_pages)
-> +				read_pages(mapping, filp, &page_pool,
-> +						page_offset - nr_pages,
-> +						nr_pages);
-> +			nr_pages = 0;
+On Sat, Jan 25, 2020 at 4:34 AM Hendrik Friedel <hendrik@friedels.name> wrote:
+>
+> total tree bytes: 131072
 
-This is missing a call to put_page().
+and
 
-> +			continue;
-> +		}
->  		if (page_idx == nr_to_read - lookahead_size)
->  			SetPageReadahead(page);
->  		nr_pages++;
+>
+> btrfs-find-root /dev/sda
+> Superblock thinks the generation is 8
+> Superblock thinks the level is 0
+> It did not finish even in 54 hours
+
+I agree with the recommendations thus far. But this generation sticks
+out for me, along with the total tree bytes. It suggests this device
+has recently been formatted?
+
+Anyway, I advise poking around and making no changes to anything: no
+--repair, no rw mount. Only do things that are read-only or are
+completely reversible. Many data loss stories are the result of making
+changes, "repairs" that end up making the problem much worse, more
+complicate, impossible to reverse - and then what might have been
+possible to recover, no longer (practically) possible. I suggest
+asking the owner to reconstruct a detail version of every single step
+they took since the volume was in working order.
+
+-- 
+Chris Murphy
