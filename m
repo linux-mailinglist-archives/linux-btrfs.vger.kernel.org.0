@@ -2,52 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED27149758
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 20:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0DF149787
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 20:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbgAYTFG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jan 2020 14:05:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgAYTFF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jan 2020 14:05:05 -0500
-Subject: Re: [GIT PULL] Btrfs fix for 5.5-rc8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579979105;
-        bh=H+0XpGFfGPUV2y2iRW2Owf5aTH1ZSxhxku/PWb2qBfY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=iEsc696AGm6SJ2x+Ui5BVlpUFLYwr9JmYZ1sP/qpeRZ4zIEGtHyuz4X8rt9bPwYRn
-         Ut3S6XvM3RmXqj9+RaKcn9f2jwWU/qXkUpx7Cv6D1zHeoTeORcqFv7XK9esOBuwvTl
-         cJ+iLEhLXEE7kJ/KRjFJhOeujTONf3sY1Ivdt9bw=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1579953624.git.dsterba@suse.com>
-References: <cover.1579953624.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1579953624.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc8-tag
-X-PR-Tracked-Commit-Id: 4cea9037f82a6deed0f2f61e4054b7ae2519ef87
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a075f23dd4b036ebaf918b3af477aa1f249ddfa0
-Message-Id: <157997910521.7716.16664199927978016601.pr-tracker-bot@kernel.org>
-Date:   Sat, 25 Jan 2020 19:05:05 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1727141AbgAYTou (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jan 2020 14:44:50 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:59538 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgAYTou (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 25 Jan 2020 14:44:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0ZMGv3oBke4qgEgEWLJ/O03PCwZbetUWl8MszuyJc3E=; b=iukevvX9wHFfu3JIg1tr6gVc/
+        JwJE61o+VY7KxTDz9InYcyVcbamX1y02guAD3rWE2GMFBd6m2M560rZ9H3IdzZ7mREF8HfqjNOxF7
+        HlJjW/HzTAr+MQDnqg4+ap4KCIzzg0CvE0iBtGvOYLNOiEVgKse1AFNaAcpAnsLdvzyQ+tS0PerbZ
+        t5ty0p/lHmff1/2YUFwEYdYp9wzoQkDc38nEKsZ+jm2E8oJgAiMXjCButFfqjsPdn0CHgtX1TFbzu
+        4tuijwgd1IjFP1Dl0+zEUez39wsvlMoBZL+xtptLXo4jcPUPXyt9UU4IzOBc+Dq2WViHshRY6wYB0
+        R5QNBIB6A==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ivRMP-0004OA-SC; Sat, 25 Jan 2020 19:44:49 +0000
+Date:   Sat, 25 Jan 2020 11:44:49 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 03/12] readahead: Put pages in cache earlier
+Message-ID: <20200125194449.GO4675@bombadil.infradead.org>
+References: <20200125013553.24899-1-willy@infradead.org>
+ <20200125013553.24899-4-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200125013553.24899-4-willy@infradead.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sat, 25 Jan 2020 13:14:00 +0100:
+On Fri, Jan 24, 2020 at 05:35:44PM -0800, Matthew Wilcox wrote:
+> @@ -192,8 +194,18 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+>  		page = __page_cache_alloc(gfp_mask);
+>  		if (!page)
+>  			break;
+> -		page->index = page_offset;
+> -		list_add(&page->lru, &page_pool);
+> +		if (use_list) {
+> +			page->index = page_offset;
+> +			list_add(&page->lru, &page_pool);
+> +		} else if (!add_to_page_cache_lru(page, mapping, page_offset,
+> +					gfp_mask)) {
+> +			if (nr_pages)
+> +				read_pages(mapping, filp, &page_pool,
+> +						page_offset - nr_pages,
+> +						nr_pages);
+> +			nr_pages = 0;
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-rc8-tag
+This is missing a call to put_page().
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a075f23dd4b036ebaf918b3af477aa1f249ddfa0
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+> +			continue;
+> +		}
+>  		if (page_idx == nr_to_read - lookahead_size)
+>  			SetPageReadahead(page);
+>  		nr_pages++;
