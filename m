@@ -2,134 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8943B14954F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 12:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882A1149551
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jan 2020 12:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgAYLeS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 25 Jan 2020 06:34:18 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:40315 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgAYLeS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jan 2020 06:34:18 -0500
-Received: from [192.168.177.20] ([91.63.166.203]) by mrelayeu.kundenserver.de
- (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id 1MsrV2-1jk80G3FAu-00tBQu
- for <linux-btrfs@vger.kernel.org>; Sat, 25 Jan 2020 12:34:16 +0100
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Broken Filesystem
-Date:   Sat, 25 Jan 2020 11:34:10 +0000
-Message-Id: <em16e3d03d-97be-4ddb-b4a4-6a056b469f20@ryzen>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
-User-Agent: eM_Client/7.2.36908.0
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:DY859uVZQaNAXCMyGbaS2RZXnoorRSNU23l67RHJD0b+m7M1jRL
- gTrUxoYk6g0kLeVY0U/ClpkCN+2/Za4jKJZNcDi0Gc0iedQZ9nhlJ2LICZnXDBwXrgKTwod
- IYW26jTtmXGkR3ynqmCVjekEo1tDGzos7xmEHmPrwo2l70Rvh9br0mOfLlT75TZLS8jnQMK
- eJ8na5OWJl4O0ZdG0uknQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6W8ZjKA9+kw=:83QJ9h5adddC1Ksb5C76RM
- HRgrwesbfC5MnhBK7OTeTJ0jpeMTrwPxvpf3jxDSvYK+Xq0MjacC1bzrHG05NR8h7bZkGnE4X
- u+Q/eHHAKNVGTgLNeJ99wf/VLx3CNcwlThf1w/KSZQjv6wy1X1fwebjlzdgPXS3773fwz3KiP
- 4SE4xYPAz2aVDQ4SB+pp08SPSJ+RXSl6ZpRPJqWoVvyHeCf059cEt8VrFSZKHS6zZArqT1m14
- pRzRttXNHBZ1XcG7oO1rW91gSbVsedLKdUK+GQbebnp3kUdV9dqCUiypaB1QGrZXwEVX4prT+
- q/W1k4xerFm6b3Gk7Zo1SwnuccKkyVQTNKbC6ceiYY4wM+iJB6gV3BpZZxdsRnU84U4I5J3HA
- Rz+KRFzzFfkJSNeH1osBV7bj0CNwVSOmQlgGIy9uyEogWF40bz5yq6Ro07muAWHVVm/84phhT
- sk2xw1Vdr4SLSkK9esKNcqTBAE+s3micM8LJjGQHXeDExP3xow75cnn5/Vsmpkc7SWPwnNowg
- ZfK7qWdPBCvPNG+fWKZCE4BukaN0ySg7HIkokA816h6pftiL5H8Mf7+G5HzzEbOHuNH+6mFA5
- NUYfxF2o5V6dMY7mKUNQ3c/v7lcHdzYY3KYjLcRj9QQLeEq/EnplyhwdrT+wluKuNvybyMECG
- TWHAKqM1LMNNaWml4GfeVBmURKzRWis3NeBReHj3Wp3nGWiXYGVlK054X1exV1Tbfq2heB0GK
- OeOpFgKnAyWkoTjHwzWICG96zdmqGvJnZ0P0C1yKFz8b2NBIrnM3cGtUqCTKZ28QAJPtgro76
- RlOQxjOUCwoyywTMogqNIaijAVVVT1Yt0jVn3Y5G8xigHoWpIsSzk5OqqHpoGbSBAtRM6us
+        id S1726240AbgAYLfu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jan 2020 06:35:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgAYLfu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 25 Jan 2020 06:35:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6C8E0ACF0;
+        Sat, 25 Jan 2020 11:35:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 50BC1DA730; Sat, 25 Jan 2020 12:35:31 +0100 (CET)
+Date:   Sat, 25 Jan 2020 12:35:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     fdmanana@gmail.com, dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: scrub: Require mandatory block group RO for
+ dev-replace
+Message-ID: <20200125113531.GR3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+References: <20200123235820.20764-1-wqu@suse.com>
+ <20200124144409.GM3929@twin.jikos.cz>
+ <CAL3q7H5+pTzLM7=5gxORWi6CcPB1YGR8=8bVUWeogq8a2rno-Q@mail.gmail.com>
+ <a76b187d-678e-1b02-b388-2ab12b9c221c@gmx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a76b187d-678e-1b02-b388-2ab12b9c221c@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Sat, Jan 25, 2020 at 08:36:14AM +0800, Qu Wenruo wrote:
+> >> The purpose seems to be to catch generic error codes other than
+> >> EINPROGRESS and ECNACELED, I don't see much point printing a warning in
+> >> that case. But it' a new ENOSPC problem, likely caused by the
+> >> read-only status switching.
+> >>
+> >> My test devices are 12G, there's full log of the test to see at which
+> >> phase it happened.
+> > 
+> > It passes for me on 20G devices, haven't tested with 12G however
+> > (can't afford to reboot any of my vms now).
+> 
+> 5G for all scratch devices, and failed to reproduce it.
+> (The full run before submitting the patch also failed to reproduce it)
 
-I am helping someone here 
-https://forum.openmediavault.org/index.php/Thread/29290-Harddrive-Failure-and-Data-Recovery/?postID=226502#post226502 
-  to recover his data.
-He is new to linux.
+5G is not actually enough to run some of the tests that require at least
+10G of free space (so the block device needs to be a bit larger).
 
-Two of his drives have a hardware problem.
-btrfs filesystem show /dev/sda
-Label: 'sdadisk1' uuid: fdce5ae5-fd6d-46b9-8056-3ff15ce9fa16
-Total devices 1 FS bytes used 128.00KiB
-devid 1 size 931.51GiB used 4.10GiB path /dev/sda
+> > I think that happens because before this patch we ignored ENOSPC
+> > errors, when trying to set a block group to RO, for device replace and
+> > scrub.
+> > But with this patch we don't ignore ENOSPC for device replace anymore
+> > - this is actually correct because if we ignore we can corrupt nocow
+> > writes (including writes into prealloc extents).
+> > 
+> > Now if it's a real ENOSPC situation or just a bug in the space
+> > management code, it's a different thing to look at.
+> 
+> I tend to take a middle land of the problem.
+> 
+> For current stage, the WARN_ON() is indeed overkilled, at least for ENOSPC.
+> 
+> But on the other handle, the full RO of a block group for scrub/replace
+> is also a little overkilled.
+> Just as Filipe mentioned, we only want to kill nocow writes into a block
+> group, but still allow COW writes.
+> 
+> It looks like something like mark_block_group_nocow_ro() in the future
+> could reduce the possibility if not fully kill it.
 
-The 4.1GiB are way less than what was used.
+Yeah this sounds doable.
 
+> It looks like changing the WARN_ON(ret) to WARN_ON(ret != -ENOSPC) would
+> be needed for this patch as a quick fix.
 
-We tried to mount with mount -t btrfs -o 
-recovery,nospace_cache,clear_cache
-
-[Sat Jan 18 11:40:29 2020] BTRFS warning (device sda): 'recovery' is 
-deprecated, use 'usebackuproot' instead
-[Sat Jan 18 11:40:29 2020] BTRFS info (device sda): trying to use backup 
-root at mount time
-[Sat Jan 18 11:40:29 2020] BTRFS info (device sda): disabling disk space 
-caching
-[Sat Jan 18 11:40:29 2020] BTRFS info (device sda): force clearing of 
-disk cache
-[Sun Jan 19 11:58:24 2020] BTRFS warning (device sda): 'recovery' is 
-deprecated, use 'usebackuproot' instead
-[Sun Jan 19 11:58:24 2020] BTRFS info (device sda): trying to use backup 
-root at mount time
-[Sun Jan 19 11:58:24 2020] BTRFS info (device sda): disabling disk space 
-caching
-[Sun Jan 19 11:58:24 2020] BTRFS info (device sda): force clearing of 
-disk cache
-
-
-The mountpoint does not show any data when mounted
-
-Scrub did not help:
-btrfs scrub start /dev/sda
-scrub started on /dev/sda, fsid fdce5ae5-fd6d-46b9-8056-3ff15ce9fa16 
-(pid=19881)
-
-btrfs scrub status /dev/sda
-scrub status for fdce5ae5-fd6d-46b9-8056-3ff15ce9fa16
-scrub started at Sun Jan 19 12:03:35 2020 and finished after 00:00:00
-total bytes scrubbed: 256.00KiB with 0 errors
-
-
-btrfs check /dev/sda
-Checking filesystem on /dev/sda
-UUID: fdce5ae5-fd6d-46b9-8056-3ff15ce9fa16
-checking extents
-checking free space cache
-cache and super generation don't match, space cache will be invalidated
-checking fs roots
-checking csums
-checking root refs
-found 131072 bytes used err is 0
-total csum bytes: 0
-total tree bytes: 131072
-total fs tree bytes: 32768
-total extent tree bytes: 16384
-btree space waste bytes: 123986
-file data blocks allocated: 0
-referenced 0
-
-
-Also btrfs restore -i -v /dev/sda /srv/dev-disk-by-label-NewDrive2 | tee 
-/restorelog.txt did not help:
-It came immediately back with 'Reached the end of the tree searching the 
-directory'
-
-
-btrfs-find-root /dev/sda
-Superblock thinks the generation is 8
-Superblock thinks the level is 0
-It did not finish even in 54 hours
-
-I am out of ideas. Can you give further advice?
-
-Regards,
-Hendrik
-
+I'll remove the warning completely, as a separate patch.
