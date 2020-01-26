@@ -2,197 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF46E149BD3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2020 17:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62881149BF0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jan 2020 17:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgAZQJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Jan 2020 11:09:44 -0500
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:24944 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgAZQJo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Jan 2020 11:09:44 -0500
-Date:   Sun, 26 Jan 2020 16:09:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=default; t=1580054981;
-        bh=AuIN17E1G24kfDPNpkIhi98RThlY6qYqiavIO4rREjY=;
-        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:Feedback-ID:
-         From;
-        b=f98qWD1XGWajJsbfzBqKPtni7Z+S81Ue1mDNGjL8Y/F9GEVa1VZXRQrQiF6xjQjbx
-         Ak54srHKzL72PuKeypdp6/5NozWbNTF2xj046WRtaYoY0OhomqSVQVKuIpJZAxm/He
-         PhB+Yrp1Llvp96Hx+pb8Jmp+5S28Wnv6zc1XNY1g=
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Raviu <raviu@protonmail.com>
-Reply-To: Raviu <raviu@protonmail.com>
+        id S1726079AbgAZQyL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Jan 2020 11:54:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51874 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgAZQyK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 26 Jan 2020 11:54:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id AB1B5AC7C;
+        Sun, 26 Jan 2020 16:54:08 +0000 (UTC)
 Subject: Re: fstrim segmentation fault and btrfs crash on vanilla 5.4.14
-Message-ID: <7tcxgXvMR83f-yW7IN3dKq8NWJETNoAMGo_0GShBJMjR_p_N4vE3nDMPkECoqBiOFDCEFsBM4IZ08Lkk0yT5-H81FkHAV-xEThPkbey0Z40=@protonmail.com>
-In-Reply-To: <izW2WNyvy1dEDweBICizKnd2KDwDiDyY2EYQr4YCwk7pkuIpthx-JRn65MPBde00ND6V0_Lh8mW0kZwzDiLDv25pUYWxkskWNJnVP0kgdMA=@protonmail.com>
+To:     Raviu <raviu@protonmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <izW2WNyvy1dEDweBICizKnd2KDwDiDyY2EYQr4YCwk7pkuIpthx-JRn65MPBde00ND6V0_Lh8mW0kZwzDiLDv25pUYWxkskWNJnVP0kgdMA=@protonmail.com>
-Feedback-ID: s2UDJFOuCQB5skd1w8rqWlDOlD5NAbNnTyErhCdMqDC7lQ_PsWqTjpdH2pOmUWgBaEipj53UTbJWo1jzNMb12A==:Ext:ProtonMail
+ <7tcxgXvMR83f-yW7IN3dKq8NWJETNoAMGo_0GShBJMjR_p_N4vE3nDMPkECoqBiOFDCEFsBM4IZ08Lkk0yT5-H81FkHAV-xEThPkbey0Z40=@protonmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <1a8462a7-c77b-ecc9-681f-3cecb6a51576@suse.com>
+Date:   Sun, 26 Jan 2020 18:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM
-        shortcircuit=no autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
+In-Reply-To: <7tcxgXvMR83f-yW7IN3dKq8NWJETNoAMGo_0GShBJMjR_p_N4vE3nDMPkECoqBiOFDCEFsBM4IZ08Lkk0yT5-H81FkHAV-xEThPkbey0Z40=@protonmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Here is dmesg output:
-
-[  237.525947] assertion failed: prev, in ../fs/btrfs/extent_io.c:1595
-[  237.525984] ------------[ cut here ]------------
-[  237.525985] kernel BUG at ../fs/btrfs/ctree.h:3117!
-[  237.525992] invalid opcode: 0000 [#1] SMP PTI
-[  237.525998] CPU: 4 PID: 4423 Comm: fstrim Tainted: G     U     OE     5.=
-4.14-8-vanilla #1
-[  237.526001] Hardware name: ASUSTeK COMPUTER INC.
-[  237.526044] RIP: 0010:assfail.constprop.58+0x18/0x1a [btrfs]
-[  237.526048] Code: 0b 0f 1f 44 00 00 48 8b 3d 15 9e 07 00 e9 70 20 ce e2 =
-89 f1 48 c7 c2 ae 27 77 c0 48 89 fe 48 c7 c7 20 87 77 c0 e8 56 c5 ba e2 <0f=
-> 0b 0f 1f 44 00 00 e8 9c 1b bc e2 48 8b 3d 7d 9f 07 00 e8 40 20
-[  237.526053] RSP: 0018:ffffae2cc2befc20 EFLAGS: 00010282
-[  237.526056] RAX: 0000000000000037 RBX: 0000000000000021 RCX: 00000000000=
-00000
-[  237.526059] RDX: 0000000000000000 RSI: ffff94221eb19a18 RDI: ffff94221eb=
-19a18
-[  237.526062] RBP: ffff942216ce6e00 R08: 0000000000000403 R09: 00000000000=
-00001
-[  237.526064] R10: ffffae2cc2befc38 R11: 0000000000000001 R12: ffffae2cc2b=
-efca0
-[  237.526067] R13: ffff942216ce6e24 R14: ffffae2cc2befc98 R15: 00000000001=
-00000
-[  237.526071] FS:  00007fa1b8087fc0(0000) GS:ffff94221eb00000(0000) knlGS:=
-0000000000000000
-[  237.526074] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  237.526076] CR2: 000032eed3b5a000 CR3: 00000007c33bc002 CR4: 00000000003=
-606e0
-[  237.526079] Call Trace:
-[  237.526120]  find_first_clear_extent_bit+0x13d/0x150 [btrfs]
-[  237.526148]  btrfs_trim_fs+0x211/0x3f0 [btrfs]
-[  237.526184]  btrfs_ioctl_fitrim+0x103/0x170 [btrfs]
-[  237.526219]  btrfs_ioctl+0x129a/0x2ed0 [btrfs]
-[  237.526227]  ? filemap_map_pages+0x190/0x3d0
-[  237.526232]  ? do_filp_open+0xaf/0x110
-[  237.526238]  ? _copy_to_user+0x22/0x30
-[  237.526242]  ? cp_new_stat+0x150/0x180
-[  237.526247]  ? do_vfs_ioctl+0xa4/0x640
-[  237.526278]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-[  237.526283]  do_vfs_ioctl+0xa4/0x640
-[  237.526288]  ? __do_sys_newfstat+0x3c/0x60
-[  237.526292]  ksys_ioctl+0x70/0x80
-[  237.526297]  __x64_sys_ioctl+0x16/0x20
-[  237.526303]  do_syscall_64+0x5a/0x1c0
-[  237.526310]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[  237.526315] RIP: 0033:0x7fa1b797d587
-[  237.526319] Code: b3 66 90 48 8b 05 11 49 2c 00 64 c7 00 26 00 00 00 48 =
-c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 48 2c 00 f7 d8 64 89 01 48
-[  237.526325] RSP: 002b:00007ffc4b977f98 EFLAGS: 00000246 ORIG_RAX: 000000=
-0000000010
-[  237.526330] RAX: ffffffffffffffda RBX: 00007ffc4b978100 RCX: 00007fa1b79=
-7d587
-[  237.526333] RDX: 00007ffc4b977fa0 RSI: 00000000c0185879 RDI: 00000000000=
-00003
-[  237.526337] RBP: 0000000000000003 R08: 0000000000000000 R09: 00000000000=
-00000
-[  237.526340] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc4b9=
-78ede
-[  237.526344] R13: 00007ffc4b978ede R14: 0000000000000000 R15: 00007fa1b80=
-87f38
-[  237.526348] Modules linked in: loop tun ccm fuse af_packet vboxnetadp(OE=
-) vboxnetflt(OE) scsi_transport_iscsi vboxdrv(OE) dmi_sysfs snd_hda_codec_h=
-dmi snd_hda_codec_realtek intel_rapl_msr snd_hda_codec_generic intel_rapl_c=
-ommon ledtrig_audio snd_hda_intel snd_intel_nhlt ip6t_REJECT nf_reject_ipv6=
- iwlmvm snd_hda_codec ip6t_rt snd_hda_core snd_hwdep msr mac80211 ipt_REJEC=
-T nf_reject_ipv4 iTCO_wdt x86_pkg_temp_thermal intel_powerclamp libarc4 snd=
-_pcm xt_multiport mei_hdcp hid_multitouch iTCO_vendor_support coretemp nls_=
-iso8859_1 kvm_intel nls_cp437 snd_timer vfat kvm iwlwifi pcspkr irqbypass s=
-nd asus_nb_wmi wmi_bmof fat xt_limit r8169 soundcore i2c_i801 mei_me realte=
-k rtsx_pci_ms joydev xt_hl cfg80211 libphy memstick intel_lpss_pci intel_pc=
-h_thermal intel_lpss mei idma64 xt_tcpudp thermal xt_addrtype xt_conntrack =
-ac asus_wireless acpi_pad ip6table_filter ip6_tables nf_conntrack_netbios_n=
-s nf_conntrack_broadcast nf_nat_ftp nf_nat nf_conntrack_ftp nf_conntrack nf=
-_defrag_ipv6 nf_defrag_ipv4
-[  237.526378]  iptable_filter ip_tables x_tables bpfilter btrfs libcrc32c =
-xor raid6_pq dm_crypt algif_skcipher af_alg hid_asus asus_wmi sparse_keymap=
- rfkill hid_generic usbhid crct10dif_pclmul crc32_pclmul i915 crc32c_intel =
-ghash_clmulni_intel rtsx_pci_sdmmc mmc_core mxm_wmi xhci_pci xhci_hcd i2c_a=
-lgo_bit aesni_intel drm_kms_helper glue_helper syscopyarea sysfillrect sysi=
-mgblt crypto_simd fb_sys_fops cryptd drm serio_raw rtsx_pci usbcore i2c_hid=
- wmi battery video button sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc s=
-csi_dh_alua efivarfs
-[  237.526431] ---[ end trace c78dad92fa11be80 ]---
-[  237.526467] RIP: 0010:assfail.constprop.58+0x18/0x1a [btrfs]
-[  237.526472] Code: 0b 0f 1f 44 00 00 48 8b 3d 15 9e 07 00 e9 70 20 ce e2 =
-89 f1 48 c7 c2 ae 27 77 c0 48 89 fe 48 c7 c7 20 87 77 c0 e8 56 c5 ba e2 <0f=
-> 0b 0f 1f 44 00 00 e8 9c 1b bc e2 48 8b 3d 7d 9f 07 00 e8 40 20
-[  237.526477] RSP: 0018:ffffae2cc2befc20 EFLAGS: 00010282
-[  237.526481] RAX: 0000000000000037 RBX: 0000000000000021 RCX: 00000000000=
-00000
-[  237.526485] RDX: 0000000000000000 RSI: ffff94221eb19a18 RDI: ffff94221eb=
-19a18
-[  237.526489] RBP: ffff942216ce6e00 R08: 0000000000000403 R09: 00000000000=
-00001
-[  237.526492] R10: ffffae2cc2befc38 R11: 0000000000000001 R12: ffffae2cc2b=
-efca0
-[  237.526496] R13: ffff942216ce6e24 R14: ffffae2cc2befc98 R15: 00000000001=
-00000
-[  237.526500] FS:  00007fa1b8087fc0(0000) GS:ffff94221eb00000(0000) knlGS:=
-0000000000000000
-[  237.526504] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  237.526507] CR2: 000032eed3b5a000 CR3: 00000007c33bc002 CR4: 00000000003=
-606e0
 
 
-Here is the btrfs check --readonly output:
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 434638807040 bytes used, no error found
-total csum bytes: 327446132
-total tree bytes: 1604894720
-total fs tree bytes: 1104494592
-total extent tree bytes: 144556032
-btree space waste bytes: 237406069
-file data blocks allocated: 5616596910080
- referenced 823187898368
+On 26.01.20 г. 18:09 ч., Raviu wrote:
+> Here is dmesg output:
+> 
+> [  237.525947] assertion failed: prev, in ../fs/btrfs/extent_io.c:1595
+> [  237.525984] ------------[ cut here ]------------
+> [  237.525985] kernel BUG at ../fs/btrfs/ctree.h:3117!
+> [  237.525992] invalid opcode: 0000 [#1] SMP PTI
+> [  237.525998] CPU: 4 PID: 4423 Comm: fstrim Tainted: G     U     OE     5.4.14-8-vanilla #1
+> [  237.526001] Hardware name: ASUSTeK COMPUTER INC.
+> [  237.526044] RIP: 0010:assfail.constprop.58+0x18/0x1a [btrfs]
+> [  237.526048] Code: 0b 0f 1f 44 00 00 48 8b 3d 15 9e 07 00 e9 70 20 ce e2 89 f1 48 c7 c2 ae 27 77 c0 48 89 fe 48 c7 c7 20 87 77 c0 e8 56 c5 ba e2 <0f> 0b 0f 1f 44 00 00 e8 9c 1b bc e2 48 8b 3d 7d 9f 07 00 e8 40 20
+> [  237.526053] RSP: 0018:ffffae2cc2befc20 EFLAGS: 00010282
+> [  237.526056] RAX: 0000000000000037 RBX: 0000000000000021 RCX: 0000000000000000
+> [  237.526059] RDX: 0000000000000000 RSI: ffff94221eb19a18 RDI: ffff94221eb19a18
+> [  237.526062] RBP: ffff942216ce6e00 R08: 0000000000000403 R09: 0000000000000001
+> [  237.526064] R10: ffffae2cc2befc38 R11: 0000000000000001 R12: ffffae2cc2befca0
+> [  237.526067] R13: ffff942216ce6e24 R14: ffffae2cc2befc98 R15: 0000000000100000
+> [  237.526071] FS:  00007fa1b8087fc0(0000) GS:ffff94221eb00000(0000) knlGS:0000000000000000
+> [  237.526074] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  237.526076] CR2: 000032eed3b5a000 CR3: 00000007c33bc002 CR4: 00000000003606e0
+> [  237.526079] Call Trace:
+> [  237.526120]  find_first_clear_extent_bit+0x13d/0x150 [btrfs]
+
+So you are hitting the ASSERT(prev) in find_first_clear_extent_bit. The
+good news is this is just an in-memory state and it's used to optimize
+fstrim so that only non-trimmed regions are being trimmed. This state is
+cleared on unmount so if you mount/remount then you shouldn't be hitting
+it.
+
+But then again, the ASSERT is there to catch an impossible case. To help
+me debug this could you provide the output of:
+
+btrfs fi show /home
+
+And then the output of btrfs inspect-internal dump-tree -t3 /dev/XXX
 
 
-Posted for archiving as recommended.
+where XXX should be the block device that contains the fs mounted on /home .
 
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Sunday, January 26, 2020 5:54 PM, Raviu <raviu@protonmail.com> wrote:
 
-> Hi,
-> I've two btrfs filesystems on the same nvme disk / and /home.
-> I'm running fstrim -va as cronjob daily.
-> Today, once fstrim run, apps writing to /home got frozen. Reviewing dmesg=
- show a bug message related to fstrim and btrfs.
-> Rebooting the system- actually forcibly as it couldn't umount /home - and=
- running fstrim manualy on each filesystem; on / it worked fine, on /home I=
- got the same error.
-> Here are the dmesg errors:
->
-> http://cwillu.com:8080/38.132.118.66/1
->
-> Here is the output of btrfs check --readonly with home unmounted:
->
-> http://cwillu.com:8080/38.132.118.66/2
->
-> I've run scrub whith home mounted it said, `Error summary: no errors foun=
-d`
->
-> The fstrim kernel error is reproducible on my machine, it occurs every ti=
-me I run it on my home. So I can test a fix, just hope it doesn't cause dat=
-a loss.
 
 
