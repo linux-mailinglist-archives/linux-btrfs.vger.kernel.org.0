@@ -2,81 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9C614AA6E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 20:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC8B14AAFB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 21:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgA0TZv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jan 2020 14:25:51 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:35235 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgA0TZv (ORCPT
+        id S1725975AbgA0UId (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jan 2020 15:08:33 -0500
+Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:55622 "EHLO
+        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725893AbgA0UId (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jan 2020 14:25:51 -0500
-Received: by mail-pg1-f193.google.com with SMTP id l24so5650815pgk.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2020 11:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4P3DdTN+wrR6fQcK40tntA+dq7h5m1yL1kMliv8mYHg=;
-        b=0Nhj2GfaHtYne8j8eOfjSMV0G/OH06n093yS3u3+qD9AviXD+DyBK8zvjJPEmAAvhj
-         IWgdHDNwXvKQBmLXKSDURmNpyoOR24kaMEimLbfYY6biYvl6uFP0bxic2UCSKZKlOpr7
-         jEZrgEuv0h4VhQEq5Si1kFhNXyBJmE9RqKlYGrpIuqKr6yoo4BcD/Mp4gC6nRwqZRDch
-         2sstvc40zOUpdGo8brnjs6kxyfPqx9sTrCwk66lav67be2CZbBOhAGcoj8S/UrIT2hJ9
-         bWdduGVGx59lgmjFw8rpgUOcYPPQfpGqaElI3FXz0df2YyATNlXlcuJURWLYBdYDmb7g
-         vRnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4P3DdTN+wrR6fQcK40tntA+dq7h5m1yL1kMliv8mYHg=;
-        b=eX5Rj9iy2Cmp9HKmhvuz1gYOyM0TLG0ABkg9/keBYjsOHznNNvAvUyd1nvS6ejcy6a
-         BKSD3Hh07L147Gr1pMMDJjO6NmX44j9lZ73Q27Xz8BxmVTXFNetJ3CuFswJHrPnK5erd
-         F2ehPLsrWO7/5tt9o1HlmtTeD96SSXDasZEBH1s/bmXEfV3cIhfVPo1BdQxtAOjvfJqT
-         abGlPJgTayUZRZLNAxAIjfxodQ9w7KhpZpYGD3MGoGSrkKXwRlatxFXS6BALocOhk9Rc
-         1iIX2e2up6jch5d2TJ9SvVQsldifV4hCmKFpuOGkQ85V0VK7tQ/M9a4ip1NqNV7nN4lU
-         ucFw==
-X-Gm-Message-State: APjAAAXNcNHgrTXJvjfavPwpqh6+yW4wduzWLptkK/nY0bXvnYeRkgiP
-        MItdP9K07mTdUucFUfTmMZmbMQ==
-X-Google-Smtp-Source: APXvYqyBkgKei2aoLrW2Hza9+6fwFIJfPQGvR8OXSn9fKf4ieeOSkh91Vy5lEOu3qo1rzSM6EuNcfQ==
-X-Received: by 2002:aa7:9aeb:: with SMTP id y11mr156193pfp.63.1580153150304;
-        Mon, 27 Jan 2020 11:25:50 -0800 (PST)
-Received: from vader ([2620:10d:c090:200::2:b017])
-        by smtp.gmail.com with ESMTPSA id o17sm16387062pjq.1.2020.01.27.11.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2020 11:25:49 -0800 (PST)
-Date:   Mon, 27 Jan 2020 11:25:48 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.cz>, Omar Sandoval <osandov@fb.com>
-Subject: Re: Hibernation into swap file
-Message-ID: <20200127192548.GA683123@vader>
-References: <aeo6MlQ5-4Bg33XbJZWCvdhKuo0Cgca_eNE4xv7rqzCzgvyxG-cobpf8R3bGdh6VT2LLPcXlZu69EyL_rV8K7gRLQ4HtYIyXnWCWb3zR6UM=@fomin.one>
- <20190506113226.GL20156@twin.jikos.cz>
- <CAJCQCtSLYY-AY8b1WZ1D4neTrwMsm_A61-G-8e6-H3Dmfue_vQ@mail.gmail.com>
+        Mon, 27 Jan 2020 15:08:33 -0500
+Received: from rain.speed47.net (nginx [192.168.80.2])
+        by box.speed47.net (Postfix) with ESMTPSA id 1F1A31121;
+        Mon, 27 Jan 2020 21:08:30 +0100 (CET)
+Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
+        s=mail01; t=1580155710;
+        bh=Sh6QXhJHS593ekIREezojKyYv1v963rYWi+qJbY6M00=;
+        h=Date:From:Subject:To:Cc:In-Reply-To:References;
+        b=lkCfQmxp14PTWdQeJ4/ho9+dnDTpLOlNb4Avz6ep/mbRxaWa72ReYRmNCxZzFvgMX
+         vYyvuipk664zsfjkvL7cxXI7MUB+sWFGn7EdjOu13U2UUp5fHsimdPNUYFxjiCdSko
+         +n2cIbcn6OD9XytjQS4cxq1PIBBt97rK9j2GdKwI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtSLYY-AY8b1WZ1D4neTrwMsm_A61-G-8e6-H3Dmfue_vQ@mail.gmail.com>
+Date:   Mon, 27 Jan 2020 20:08:29 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: RainLoop/1.12.1
+From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs2@lesimple.fr>
+Message-ID: <0a47ec399b812248c20be4933eaa6195@lesimple.fr>
+Subject: Re: Regression in Linux 5.5.0-rc[1-5]: btrfs send/receive out of
+ memory
+To:     fdmanana@gmail.com
+Cc:     "Craig Andrews" <candrews@integralblue.com>,
+        "linux-btrfs" <linux-btrfs@vger.kernel.org>
+In-Reply-To: <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
+References: <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
+ <5ba0716449eb4f838699fc0b1fb5b024@integralblue.com>
+ <20200113133741.GU3929@twin.jikos.cz>
+ <7e7e4f63a89b6bb8a270d4c4ec676835@integralblue.com>
+ <8254df450ca61dd4cbc455f19ee28c01@lesimple.fr>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 10:20:40AM -0700, Chris Murphy wrote:
-> On Mon, May 6, 2019 at 5:31 AM David Sterba <dsterba@suse.cz> wrote:
-> > for the reference https://bugzilla.kernel.org/show_bug.cgi?id=202803
-> > and https://github.com/systemd/systemd/issues/11939
-> 
-> I've read these, but can't tell if it's still necessary to manually
-> use 'btrfs-map-physical' to find the correct offset, and use it on the
-> kernel command line manually?
-
-Yes, it's still necessary, and it's unlikely that systemd will ever go
-through the trouble of doing the btrfs-map-physical itself. What we
-really want is the interface I described in [1], but I won't be able to
-work on that any time soon. It'd be great if someone interested in the
-feature would take a stab at it.
-
-1: https://github.com/systemd/systemd/issues/11939#issuecomment-471684411
+>> # btrfs send -v /tank/backups/.snaps/incoming/sendme/ | pv 2>/dev/pts/=
+23 | btrfs rec -E 0 /newfs/=0A>> At subvol /tank/backups/.snaps/incoming/=
+sendme/=0A>> At subvol sendme=0A>> ERROR: failed to clone extents to retr=
+oarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid=0A>> argument=0A=
+>> ERROR: failed to clone extents to retroarch/x86_64/cores/mednafen_satu=
+rn_libretro.dll: Invalid=0A>> argument=0A> =0A> This is probably the same=
+ case for which I sent a fix last week:=0A> =0A> https://patchwork.kernel=
+.org/patch/11350129=0A=0AThis seems very likely, as there is indeed a hol=
+e in the middle of the file:=0A=0A         0: ram    80000 disk(0) 25871f=
+b42000:00000000-00080000 disk_sz    80000=0A     80000: ram    80000 disk=
+(0) 258720475000:00000000-00080000 disk_sz    80000=0A    100000: ram    =
+80000 disk(0) 2587215d4000:00000000-00080000 disk_sz    80000=0A    18000=
+0: ram    80000 disk(0) 258721654000:00000000-00080000 disk_sz    80000=
+=0A    200000: ram    80000 disk(0) 25872177c000:00000000-00080000 disk_s=
+z    80000=0A    280000: ram    80000 disk(0) 258722383000:00000000-00080=
+000 disk_sz    80000=0A    300000: ram    80000 disk(0) 258722544000:0000=
+0000-00080000 disk_sz    80000=0A    380000: ram    80000 disk(0) 25871c3=
+a8000:00000000-00080000 disk_sz    80000=0A    400000: ram    80000 disk(=
+0) 25871c428000:00000000-00080000 disk_sz    80000=0A    480000: ram    8=
+0000 disk(0) 25871c548000:00000000-00080000 disk_sz    80000=0A    500000=
+: ram    80000 disk(0) 25871cf02000:00000000-00080000 disk_sz    80000=0A=
+    580000: ram    80000 disk(0) 25871cf82000:00000000-00080000 disk_sz  =
+  80000=0A    600000: ram    80000 disk(0) 25871d41f000:00000000-00080000=
+ disk_sz    80000=0A    680000: ram    80000 disk(0) 25871d833000:0000000=
+0-00080000 disk_sz    80000=0A    700000: ram     b000 disk(0)  b9e86aeb0=
+00:00000000-0000b000 disk_sz     b000=0A    70b000: ram    11000 disk(0) =
+           0:00000000-00011000 disk_sz        0 -- hole=0A    71c000: ram=
+    80000 disk(0) 25871eb75000:00000000-00080000 disk_sz    80000=0A    7=
+9c000: ram     1000 disk(0)  a00b6523000:00000000-00001000 disk_sz     10=
+00=0A    79d000: ram     1000 disk(0)  a00b6cf5000:00000000-00001000 disk=
+_sz     1000=0A    79e000: ram     1000 disk(0)  a00b6cf5000:00000000-000=
+01000 disk_sz     1000=0A    79f000: ram     1000 disk(0)  a00b6cf5000:00=
+000000-00001000 disk_sz     1000=0A    7a0000: ram     1000 disk(0)  a00b=
+6d42000:00000000-00001000 disk_sz     1000=0A    7a1000: ram     1000 dis=
+k(0)  a9573bfa000:00000000-00001000 disk_sz     6000=0A    7a2000: ram   =
+  1000 disk(0)  a9573bfa000:00000000-00001000 disk_sz     6000=0A    7a30=
+00: ram     6000 disk(0)  a9573bfa000:00000000-00006000 disk_sz     6000=
+=0A    7a9000: ram     1000 disk(0)  af4f6240000:00000000-00001000 disk_s=
+z    2d000=0A    7aa000: ram     1000 disk(0)  af4f6240000:00000000-00001=
+000 disk_sz    2d000=0A    7ab000: ram    2d000 disk(0)  af4f6240000:0000=
+0000-0002d000 disk_sz    2d000=0A    7d8000: ram     1000 disk(0) 1c8d313=
+ba000:0001d000-0001e000 disk_sz    80000=0A    7d9000: ram    43000 disk(=
+0)  a983253d000:00000000-00043000 disk_sz    43000=0A    81c000: ram    8=
+0000 disk(0) 258721f18000:00000000-00080000 disk_sz    80000=0A    89c000=
+: ram    80000 disk(0) 258721f98000:00000000-00080000 disk_sz    80000=0A=
+    91c000: ram    80000 disk(0) 258722018000:00000000-00080000 disk_sz  =
+  80000=0A    99c000: ram    80000 disk(0) 2587229a2000:00000000-00080000=
+ disk_sz    80000=0A    a1c000: ram     d000 disk(0)  bfa6df44000:0000000=
+0-0000d000 disk_sz     e000=0A    a29000: ram     1000 disk(0) 130963b990=
+00:00a29000-00a2a000 disk_sz   a2a000=0Afile: mednafen_saturn_libretro.dl=
+l extents 29 disk size 21741568 logical size 10653836 ratio 0.49=0A=0ATha=
+nks!=0A=0A-- =0ASt=C3=A9phane.
