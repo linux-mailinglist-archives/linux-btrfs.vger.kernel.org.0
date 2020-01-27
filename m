@@ -2,80 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF21149F66
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 09:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2363D149F8C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 09:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgA0IDS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jan 2020 03:03:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44086 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgA0IDS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jan 2020 03:03:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1BEE3ACE3;
-        Mon, 27 Jan 2020 08:03:16 +0000 (UTC)
-Subject: Re: fstrim segmentation fault and btrfs crash on vanilla 5.4.14
-To:     Raviu <raviu@protonmail.com>
+        id S1726701AbgA0IL5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jan 2020 03:11:57 -0500
+Received: from mail-40130.protonmail.ch ([185.70.40.130]:37817 "EHLO
+        mail-40130.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgA0IL4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Jan 2020 03:11:56 -0500
+Date:   Mon, 27 Jan 2020 08:11:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=default; t=1580112714;
+        bh=X99L9KBqdDjeciEKrA624fUZdTj2ztPkr4uwKCOLYFU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
+         Feedback-ID:From;
+        b=KmvdIm3RO3o9BXGIad7a8OjWd1U0oVEs4PklSzVpBpJ/BmgRFgPezp0qRz8sxGxSc
+         tM/FxzYyFTT09oVYUFZd2UulmS0pwyDdWEFgL7dot8bulsBUak9PlTV7HFcIr95iyr
+         rJjHJZfHGUqn3VcndMlP6tkL/kirSmjQ/cmPS8NE=
+To:     Nikolay Borisov <nborisov@suse.com>
+From:   Raviu <raviu@protonmail.com>
 Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Reply-To: Raviu <raviu@protonmail.com>
+Subject: Re: fstrim segmentation fault and btrfs crash on vanilla 5.4.14
+Message-ID: <wX-p4FiBlZKoayimhFOWfIDuatdV63zui8eZ_gWp0tXCu1Fe6FMD5Cna6aZtD66pGwWCRt3wLxWRsPpaLuQ-lqvmhBNOTOFo8mFa8k3KJaA=@protonmail.com>
+In-Reply-To: <670bb0e5-aa42-2fd6-e15b-b1e11130c94b@suse.com>
 References: <izW2WNyvy1dEDweBICizKnd2KDwDiDyY2EYQr4YCwk7pkuIpthx-JRn65MPBde00ND6V0_Lh8mW0kZwzDiLDv25pUYWxkskWNJnVP0kgdMA=@protonmail.com>
  <7tcxgXvMR83f-yW7IN3dKq8NWJETNoAMGo_0GShBJMjR_p_N4vE3nDMPkECoqBiOFDCEFsBM4IZ08Lkk0yT5-H81FkHAV-xEThPkbey0Z40=@protonmail.com>
  <1a8462a7-c77b-ecc9-681f-3cecb6a51576@suse.com>
  <hNqW0cNKaqya5Nvb99uUaI7KRF7zyl2urKDMfG6CkwEvLdLq6HlWnBLFrgtNCpleC2dfm8HLOHUdlQYPa1zi9zxfBaY1wwXli1mTAM-4qTQ=@protonmail.com>
  <1DC5LVxi3doXrpiHkvBd4EwjgymRJuf8Znu4UCC-Ut0mOy9f-QYOyvQT3hf-QJX3Hk8hm_UhBGk_3rLcGYs_b6NdpNHDuJU-qog6PFxjEDE=@protonmail.com>
  <B5lXpRtqEz0NPuXGaaqp8p0AKY3ndP946GmHLVHkhHDPIntSm5HopHG8RCNWlyx8bw39N0NdjMh0PSMuCqZ6-yts7YUKhASbJ2oLx3z06aM=@protonmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <670bb0e5-aa42-2fd6-e15b-b1e11130c94b@suse.com>
-Date:   Mon, 27 Jan 2020 10:03:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ <670bb0e5-aa42-2fd6-e15b-b1e11130c94b@suse.com>
+Feedback-ID: s2UDJFOuCQB5skd1w8rqWlDOlD5NAbNnTyErhCdMqDC7lQ_PsWqTjpdH2pOmUWgBaEipj53UTbJWo1jzNMb12A==:Ext:ProtonMail
 MIME-Version: 1.0
-In-Reply-To: <B5lXpRtqEz0NPuXGaaqp8p0AKY3ndP946GmHLVHkhHDPIntSm5HopHG8RCNWlyx8bw39N0NdjMh0PSMuCqZ6-yts7YUKhASbJ2oLx3z06aM=@protonmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,BAYES_50,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM
+        shortcircuit=no autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -83,20 +50,29 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 27.01.20 г. 9:53 ч., Raviu wrote:
-> Follow-up:
-> It seems that I could solve my problem. Maybe this can also help you know the root cause and reproduce it some how.
-> My buggy btrfs was initially on a single partition, I've freed another partition later and added as `btrfs device add` as the free partition was to the left of the original one so a resize was not possible.
-> Originally I'd metadata as dup and data as single.
-> Even after adding the new device it remained like that for few days, yesterday, I noticed it reported both dup and RAID1 of metadata which was weird. It did some sort of metadata balance on its own when it got a new partition, actually I didn't run such balance command before as both partition are on the same disk, so thought that raid-1 is useless.
-> So I've taken a backup, then run `btrfs balance start -mconvert=raid1 /home/` .. So only raid1 is reported now on `btrfs filesystem df` and `btrfs filesystem usage`. I then run fstrim and it worked fine.
-> 
-> 
+> On 27.01.20 =D0=B3. 9:53 =D1=87., Raviu wrote:
+>
+> > Follow-up:
+> > It seems that I could solve my problem. Maybe this can also help you kn=
+ow the root cause and reproduce it some how.
+> > My buggy btrfs was initially on a single partition, I've freed another =
+partition later and added as `btrfs device add` as the free partition was t=
+o the left of the original one so a resize was not possible.
+> > Originally I'd metadata as dup and data as single.
+> > Even after adding the new device it remained like that for few days, ye=
+sterday, I noticed it reported both dup and RAID1 of metadata which was wei=
+rd. It did some sort of metadata balance on its own when it got a new parti=
+tion, actually I didn't run such balance command before as both partition a=
+re on the same disk, so thought that raid-1 is useless.
+> > So I've taken a backup, then run `btrfs balance start -mconvert=3Draid1=
+ /home/` .. So only raid1 is reported now on `btrfs filesystem df` and `btr=
+fs filesystem usage`. I then run fstrim and it worked fine.
+>
+> Yes, this is very hlepful. So if I got you correct you initially had
+> everything in a single disk. Then you added a second disk but you hadn't
+> run balance. And that's when it was crashing then you run balance and
+> now it's not crashing? If that's the case then I know what the problem
+> is and will send a fix.
 
-
-Yes, this is very hlepful. So if I got you correct you initially had
-everything in a single disk. Then you added a second disk but you hadn't
-run balance. And that's when it was crashing then you run balance and
-now it's not crashing? If that's the case then I know what the problem
-is and will send a fix.
+Yes, exactly.
 
