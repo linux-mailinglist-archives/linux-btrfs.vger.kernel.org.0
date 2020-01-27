@@ -2,99 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC8B14AAFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 21:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA3A14AB87
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 22:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgA0UId (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jan 2020 15:08:33 -0500
-Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:55622 "EHLO
-        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725893AbgA0UId (ORCPT
+        id S1726275AbgA0VUc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jan 2020 16:20:32 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:40234 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbgA0VUc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jan 2020 15:08:33 -0500
-Received: from rain.speed47.net (nginx [192.168.80.2])
-        by box.speed47.net (Postfix) with ESMTPSA id 1F1A31121;
-        Mon, 27 Jan 2020 21:08:30 +0100 (CET)
-Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
-        s=mail01; t=1580155710;
-        bh=Sh6QXhJHS593ekIREezojKyYv1v963rYWi+qJbY6M00=;
-        h=Date:From:Subject:To:Cc:In-Reply-To:References;
-        b=lkCfQmxp14PTWdQeJ4/ho9+dnDTpLOlNb4Avz6ep/mbRxaWa72ReYRmNCxZzFvgMX
-         vYyvuipk664zsfjkvL7cxXI7MUB+sWFGn7EdjOu13U2UUp5fHsimdPNUYFxjiCdSko
-         +n2cIbcn6OD9XytjQS4cxq1PIBBt97rK9j2GdKwI=
+        Mon, 27 Jan 2020 16:20:32 -0500
+Received: by mail-wm1-f47.google.com with SMTP id t14so88301wmi.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2020 13:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=NpouDXwGMmLkr99oXl0lwciIW7fDimjt9yd2sErNkLE=;
+        b=ntYKuYmfEPBNXeCZdanYjagCOg2NSk++HoLey47817R2ueVRJRnY75qEsh06CGPNXI
+         TfmKUBbVSMtrOrzi8CdpXGHNIbXqaZbyxwDNJvilHRYvI/NDRDw9y2IFl2hKPh5o7mny
+         GmWcOaU5cNtMG/gkdWAeK8HUMIXOKma3HJAwdyruOoFeTXbKC5l4G/heIOfcL+vPhIgK
+         FBYpHzE8jlp8Kq9TvN09S/aGhfkJo5p3LEuKdyX98+UI/83+nvy79ftasE/3lCZ67DhT
+         AIJtx0s0QzpAyxvo1/4x8iVvv1rKZOjl75vbNP6B3Gn6nvvAxYJ3GgsLfaaheoQwCWxB
+         qaPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=NpouDXwGMmLkr99oXl0lwciIW7fDimjt9yd2sErNkLE=;
+        b=BdIExdHkW0CW18R423zrjDNBU3ZVsiLSApzAOKZT0uhFiSnNkuWx7J3pD3URzoJCa7
+         qAHEKBPQHDacud/Fe1bd77RC/ykG0PtPeGBXz0juYDW9dGAVY+7N1SAcypoDlCzQaFhI
+         VocYkV0JZnoAjUmNq2y3+7PCFAKz3SdPCZj7l5S01f8z3spOgrhG+P8GW2XQTkAdvtJF
+         1PvA/Zhl3gJqNnR7284hmSqjoSQ4C6g8R6U4m3sXQWP3mMo9rMD/xPaMONdwa67RuNAZ
+         Q1A0heqEg9DF10t9wepBZAA4e4RkQle1wLJgXAX3G4/YGHFjWZTNYqrSmrsjCIlm6gyZ
+         b8HA==
+X-Gm-Message-State: APjAAAXAkcnqxaHwe69cnSuGWcyUVVugeotJ+0Ly3glix13Y3l8QYJku
+        IyL3rkf5S4PSJw6FsZdCnFhjbB5XWH8=
+X-Google-Smtp-Source: APXvYqw3AP3ulyYFd9x1tyuhVZIP2UFvVPz/3Hbm62E1y3Y2EmCkjjK+sqWY9IOBc7Iwh5gf7YM3Mg==
+X-Received: by 2002:a1c:e108:: with SMTP id y8mr562076wmg.147.1580160028769;
+        Mon, 27 Jan 2020 13:20:28 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:1f1:c2f1:ddd9:9aa9:1459:42de? ([2a01:e0a:1f1:c2f1:ddd9:9aa9:1459:42de])
+        by smtp.gmail.com with ESMTPSA id y20sm92209wmi.25.2020.01.27.13.20.27
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jan 2020 13:20:28 -0800 (PST)
+To:     linux-btrfs@vger.kernel.org
+From:   Pepie 34 <pepie34@gmail.com>
+Subject: Endless mount and backpointer mismatch
+Autocrypt: addr=pepie34@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c541f131-c60b-4957-0f86-3039da69f788@gmail.com>
+Date:   Mon, 27 Jan 2020 22:20:27 +0100
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.24)
+ Gecko/20100317 Thunderbird/2.0.0.24 Mnenhy/0.7.5.0
 MIME-Version: 1.0
-Date:   Mon, 27 Jan 2020 20:08:29 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: RainLoop/1.12.1
-From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs2@lesimple.fr>
-Message-ID: <0a47ec399b812248c20be4933eaa6195@lesimple.fr>
-Subject: Re: Regression in Linux 5.5.0-rc[1-5]: btrfs send/receive out of
- memory
-To:     fdmanana@gmail.com
-Cc:     "Craig Andrews" <candrews@integralblue.com>,
-        "linux-btrfs" <linux-btrfs@vger.kernel.org>
-In-Reply-To: <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
-References: <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
- <5ba0716449eb4f838699fc0b1fb5b024@integralblue.com>
- <20200113133741.GU3929@twin.jikos.cz>
- <7e7e4f63a89b6bb8a270d4c4ec676835@integralblue.com>
- <8254df450ca61dd4cbc455f19ee28c01@lesimple.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->> # btrfs send -v /tank/backups/.snaps/incoming/sendme/ | pv 2>/dev/pts/=
-23 | btrfs rec -E 0 /newfs/=0A>> At subvol /tank/backups/.snaps/incoming/=
-sendme/=0A>> At subvol sendme=0A>> ERROR: failed to clone extents to retr=
-oarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid=0A>> argument=0A=
->> ERROR: failed to clone extents to retroarch/x86_64/cores/mednafen_satu=
-rn_libretro.dll: Invalid=0A>> argument=0A> =0A> This is probably the same=
- case for which I sent a fix last week:=0A> =0A> https://patchwork.kernel=
-.org/patch/11350129=0A=0AThis seems very likely, as there is indeed a hol=
-e in the middle of the file:=0A=0A         0: ram    80000 disk(0) 25871f=
-b42000:00000000-00080000 disk_sz    80000=0A     80000: ram    80000 disk=
-(0) 258720475000:00000000-00080000 disk_sz    80000=0A    100000: ram    =
-80000 disk(0) 2587215d4000:00000000-00080000 disk_sz    80000=0A    18000=
-0: ram    80000 disk(0) 258721654000:00000000-00080000 disk_sz    80000=
-=0A    200000: ram    80000 disk(0) 25872177c000:00000000-00080000 disk_s=
-z    80000=0A    280000: ram    80000 disk(0) 258722383000:00000000-00080=
-000 disk_sz    80000=0A    300000: ram    80000 disk(0) 258722544000:0000=
-0000-00080000 disk_sz    80000=0A    380000: ram    80000 disk(0) 25871c3=
-a8000:00000000-00080000 disk_sz    80000=0A    400000: ram    80000 disk(=
-0) 25871c428000:00000000-00080000 disk_sz    80000=0A    480000: ram    8=
-0000 disk(0) 25871c548000:00000000-00080000 disk_sz    80000=0A    500000=
-: ram    80000 disk(0) 25871cf02000:00000000-00080000 disk_sz    80000=0A=
-    580000: ram    80000 disk(0) 25871cf82000:00000000-00080000 disk_sz  =
-  80000=0A    600000: ram    80000 disk(0) 25871d41f000:00000000-00080000=
- disk_sz    80000=0A    680000: ram    80000 disk(0) 25871d833000:0000000=
-0-00080000 disk_sz    80000=0A    700000: ram     b000 disk(0)  b9e86aeb0=
-00:00000000-0000b000 disk_sz     b000=0A    70b000: ram    11000 disk(0) =
-           0:00000000-00011000 disk_sz        0 -- hole=0A    71c000: ram=
-    80000 disk(0) 25871eb75000:00000000-00080000 disk_sz    80000=0A    7=
-9c000: ram     1000 disk(0)  a00b6523000:00000000-00001000 disk_sz     10=
-00=0A    79d000: ram     1000 disk(0)  a00b6cf5000:00000000-00001000 disk=
-_sz     1000=0A    79e000: ram     1000 disk(0)  a00b6cf5000:00000000-000=
-01000 disk_sz     1000=0A    79f000: ram     1000 disk(0)  a00b6cf5000:00=
-000000-00001000 disk_sz     1000=0A    7a0000: ram     1000 disk(0)  a00b=
-6d42000:00000000-00001000 disk_sz     1000=0A    7a1000: ram     1000 dis=
-k(0)  a9573bfa000:00000000-00001000 disk_sz     6000=0A    7a2000: ram   =
-  1000 disk(0)  a9573bfa000:00000000-00001000 disk_sz     6000=0A    7a30=
-00: ram     6000 disk(0)  a9573bfa000:00000000-00006000 disk_sz     6000=
-=0A    7a9000: ram     1000 disk(0)  af4f6240000:00000000-00001000 disk_s=
-z    2d000=0A    7aa000: ram     1000 disk(0)  af4f6240000:00000000-00001=
-000 disk_sz    2d000=0A    7ab000: ram    2d000 disk(0)  af4f6240000:0000=
-0000-0002d000 disk_sz    2d000=0A    7d8000: ram     1000 disk(0) 1c8d313=
-ba000:0001d000-0001e000 disk_sz    80000=0A    7d9000: ram    43000 disk(=
-0)  a983253d000:00000000-00043000 disk_sz    43000=0A    81c000: ram    8=
-0000 disk(0) 258721f18000:00000000-00080000 disk_sz    80000=0A    89c000=
-: ram    80000 disk(0) 258721f98000:00000000-00080000 disk_sz    80000=0A=
-    91c000: ram    80000 disk(0) 258722018000:00000000-00080000 disk_sz  =
-  80000=0A    99c000: ram    80000 disk(0) 2587229a2000:00000000-00080000=
- disk_sz    80000=0A    a1c000: ram     d000 disk(0)  bfa6df44000:0000000=
-0-0000d000 disk_sz     e000=0A    a29000: ram     1000 disk(0) 130963b990=
-00:00a29000-00a2a000 disk_sz   a2a000=0Afile: mednafen_saturn_libretro.dl=
-l extents 29 disk size 21741568 logical size 10653836 ratio 0.49=0A=0ATha=
-nks!=0A=0A-- =0ASt=C3=A9phane.
+Dear BTRFS community,
+
+I've a raid 1 setup on two luks encrypted drives for 4 years that serves
+me as btrbk backup target from an other computer.
+There is a lot of ro snaptshots on it.
+
+I've mistakenly launched a balance on it which was extremely slow and
+tried to cancelled it.
+After two days of cancelling without results, I decided to power off the
+computer.
+
+After the reboot, even with the skip_balance mount option, the mounting
+is endless, no error in the kernel message and it never mounts.
+
+What I have done so far:
+- mount the volume with the ro option (fast to mount, data OK).
+- scrub in ro mode, no error found
+- btrfs check
+In the extent check  there is plenty of errors like this :
+=>
+ref mismatch on [9404816285696 32768] extent item 6, found 5
+
+incorrect local backref count on 9404816285696 parent 5712684302336
+owner 0 offset 0 found 0 wanted 1 back 0x55f371ee1ad0
+backref disk bytenr does not match extent record, bytenr=9404816285696,
+ref bytenr=0
+backpointer mismatch on [9404816285696 32768]
+<=
+No errors in other checks, though checking "quota groups" is very slow.
+
+What should I do ? btrfs check --repair ?
+btrfs check --init-extent-tree ?
+btrfs --clear-space-cache ?
+
+Will the "init extent tree" option break btrfs receive with old snapshot
+parents ?
+
+Best regards,
+
+Pepie34
