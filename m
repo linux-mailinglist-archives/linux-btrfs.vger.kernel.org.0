@@ -2,107 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F3814B3C5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 12:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A1614B465
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 13:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgA1Lwl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 06:52:41 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:42202 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgA1Lwl (ORCPT
+        id S1725948AbgA1Moa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 07:44:30 -0500
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:43870 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgA1Moa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 06:52:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=AUnLnP8oxFX+CXSCJN94E2iaEDh3JvVJcq2FACyQriw=; b=JbhZbWWUciWZQAmv/Z3p043uO
-        lv/SF9DBgsMw37Ry0zyCTZfl41h0TLp/BWmbwL4hLNZLFWFJvgNTZx6BWqspGOvijnyx+5IXiwJrw
-        DWt+z2yoBwmftxmR2/KWewPgLHM2n54iUKDM4+zeuQn6tTB0a2u9TMwgJJ3FWQVzgPIYNoCxm3Hsv
-        gjTyg2mJYiWboNi2qUDJXnBLXom3SZltp/4PXFkkY8JFtopW0idLNpsNe3+IYhY3KlRx9hxvRRHWq
-        XaKspYsHxLAc40xFpZWwjlPpn1uo/iTDQ1G46V6vSSJ3Bfwacd2xo9hQQzOAbFrctjimw/RcOagz8
-        GI5JQMseQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iwPQ7-0001qa-O1; Tue, 28 Jan 2020 11:52:39 +0000
-Date:   Tue, 28 Jan 2020 03:52:39 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v3 2/5] btrfs: remove use of buffer_heads from superblock
- writeout
-Message-ID: <20200128115239.GB17444@infradead.org>
-References: <20200127155931.10818-1-johannes.thumshirn@wdc.com>
- <20200127155931.10818-3-johannes.thumshirn@wdc.com>
+        Tue, 28 Jan 2020 07:44:30 -0500
+Received: by mail-ua1-f44.google.com with SMTP id o42so4739442uad.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jan 2020 04:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=D5VIOGxnqCEtG4yPFN5jY3PSdnzYWVL84Jtx0L/jmmk=;
+        b=V582gJWubIjQ+0FvsqfxG+f/+CsINCt62YmPIcYKUY7WlmWi3O/xcQvrdrL2UPzsxU
+         KuR1SRiQAEVQXrkUY1b7TegxWUQ0l6e7NkCqFPR1LaIX61p58VK9R3/QDB2xa/5fABGB
+         hHSWKzVTbWPwQrIDqJFgoHJ6/mWRuLXKXxAk6vJZ43oE4PXxl3yBtySpQm07kn599t+o
+         nMpL/Sjy3ZYttFX3t3RkMV4dg2vU+kyModUkcWgg3LYdhXSPu6uRtoEKxQIOBLGwYdhi
+         LGwRORUAqSxjKrEOfsHK6vkLqmEx2fDq2Id0sB8yhf2T+HCq9HIqpjOdFCZsSGGsUTdU
+         ITxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=D5VIOGxnqCEtG4yPFN5jY3PSdnzYWVL84Jtx0L/jmmk=;
+        b=FQAtIOSis0flNAWp6UZhsokLWCy/S29I6g8765m0993yK7ZwYQXVKy+9mWnRATLymr
+         1OyIG8x0DwHfph4IsLIDwZK2U894F9bkQwRVpJ9+XIDg9HjHH6aZet7FevHIesvLVxaG
+         VbpfRSITW9cXY+acrsew5dAgdQIgEvmcf7I5T7VEwouXU4SE6TBfOsgOM7CZTiM2Hc0P
+         x2DN1ROi53upHb09iRoLzOy01U93tM5YSuo8Sf7/BBMWWeAEOY9zgDwNjHI1lwWshWvS
+         vli35RPXxzaV5DZEm6DEfyXOQzHrjAs8ALdnOs4QpnlywkbNxnqMF6NVV8CGqAeTTNn5
+         T5TA==
+X-Gm-Message-State: APjAAAVdNRO/8HYky1XSt1tpW0y+4OyUntoXFpWICHzGVwx8ZvcLRkH7
+        Yt8fEI4YvZkCAa3FHx9ziUmLOb8TUiPfGhBeoQky2JFZXDc=
+X-Google-Smtp-Source: APXvYqyopcdTYSUB9bSpLVPF67bxqpttHiUkgGXyNzbpryXKUc0U9Nm4FSAifohBFg9t0p+aO9qAiVWVKG6Nz9Nlj+o=
+X-Received: by 2002:ab0:5bc6:: with SMTP id z6mr13079692uae.46.1580215468402;
+ Tue, 28 Jan 2020 04:44:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200127155931.10818-3-johannes.thumshirn@wdc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <CACurcBt_M-x=5CYhVUCiJq-yiUQF6-2a9PhWtmjfpJUYtAxt0Q@mail.gmail.com>
+ <6c605879-0a52-337d-f467-82c7f0b04d76@suse.com>
+In-Reply-To: <6c605879-0a52-337d-f467-82c7f0b04d76@suse.com>
+From:   Robbie Smith <zoqaeski@gmail.com>
+Date:   Tue, 28 Jan 2020 23:44:17 +1100
+Message-ID: <CACurcBsv-D6MtunKrfY7ZKwxebfwGRejjfev7aUTgxwUzOG=Sw@mail.gmail.com>
+Subject: Re: Unexpected deletion behaviour between subvolume and normal directory
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 12:59:28AM +0900, Johannes Thumshirn wrote:
-> Similar to the superblock read path, change the write path to using BIOs
-> and pages instead of buffer_heads. This allows us to skip over the
-> buffer_head code, for writing the superblock to disk.
+It turns out that I made a mistake when deleting the files: I typed
+`rm -r /library/Music/*` instead of `rm -r /library/music/*` like I
+intended. Substitute "Music" for "newmusic" in the examples above. So
+I deleted files from the subvolume by mistake.
 
-Hmm, the previous patch already changed one place that wrote the sb..
+Now onto my next problem: `btrfs restore` is only able to recover
+files that weren't yet deleted by my monumental stuff-up. It appears
+`rm` went in alphabetical order, so I've lost only those artists that
+started with A. B, or (some) C. However, systemd in its infinite
+wisdom decided to automount my library drive while the restore was in
+progress, and I suspect the space_cache mount option kicked in and
+wiped the files forever. `btrfs-find-root` wasn't having much success,
+but the undelete script here[1] is finding the files I wanted, so now
+I'm just gradually working through everything.
 
-> -		/* One reference for us, and we leave it for the caller */
-> -		bh = __getblk(device->bdev, bytenr / BTRFS_BDEV_BLOCKSIZE,
-> -			      BTRFS_SUPER_INFO_SIZE);
-> -		if (!bh) {
-> +		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
-> +					   gfp_mask);
-> +		if (!page) {
->  			btrfs_err(device->fs_info,
-> -			    "couldn't get super buffer head for bytenr %llu",
-> +			    "couldn't get superblock page for bytenr %llu",
->  			    bytenr);
->  			errors++;
->  			continue;
->  		}
->  
-> -		memcpy(bh->b_data, sb, BTRFS_SUPER_INFO_SIZE);
+I think I'll be able to recover most things.
 
-> +		/* Bump the refcount for wait_dev_supers() */
-> +		get_page(page);
->  
-> -		/* one reference for submit_bh */
-> -		get_bh(bh);
-> -
-> -		set_buffer_uptodate(bh);
-> -		lock_buffer(bh);
-> -		bh->b_end_io = btrfs_end_buffer_write_sync;
-> -		bh->b_private = device;
-> +		ptr = kmap(page);
-> +		memcpy(ptr, sb, BTRFS_SUPER_INFO_SIZE);
-> +		kunmap(page);
+[1]https://raw.githubusercontent.com/danthem/undelete-btrfs/master/undelete=
+.sh
 
-What is the point of using the page cache here given that you are
-always using a local copy of the data anyway?
-
-> +		wait_on_page_locked(page);
-> +		if (PageError(page)) {
->  			errors++;
->  			if (i == 0)
->  				primary_failed = true;
->  		}
->  
->  		/* drop our reference */
-> -		brelse(bh);
-> +		put_page(page);
->  
->  		/* drop the reference from the writing run */
-> -		brelse(bh);
-> +		put_page(page);
-
-Why not use an inflight count + completion instead of messing
-with the page lock like that?
+On Tue, 28 Jan 2020 at 22:38, Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 28.01.20 =D0=B3. 12:25 =D1=87., Robbie Smith wrote:
+> > I wanted to try to convert my music library from a directory into a
+> > subvolume so I could use btrfs send/receive to transfer (changed)
+> > files between it and a USB backup. A bit of Googling suggested that
+> > the approach would be:
+> >
+> >> btrfs subvolume create /library/newmusic
+> >> cp -ar --reflink=3Dauto /library/music/* /library/newmusic/.
+> >> rm -r /library/music
+> >
+> > After about 30 seconds I realised that it was deleting files from both
+> > /library/music and /library/newmusic. It appears I've only lost
+> > everything starting with A, B or C, so I unmounted the device, and am
+> > currently trying to use `btrfs restore` to get the files back and it
+> > doesn't seem to be finding them.
+> >
+> > I'm pretty sure deleting files from directory A isn't supposed to also
+> > delete them from directory B, but that's what it did. Is this a bug?
+> >
+>
+> Can you reproduce the same thing with a simple test directory? I was not
+> able to reproduce it here?
+>
+> > Robbie
+> >
