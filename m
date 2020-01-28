@@ -2,104 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85814B394
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 12:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2269414B3B8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 12:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgA1Lir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 06:38:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgA1Lir (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 06:38:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 27216ADE8;
-        Tue, 28 Jan 2020 11:38:45 +0000 (UTC)
-Subject: Re: Unexpected deletion behaviour between subvolume and normal
- directory
-To:     Robbie Smith <zoqaeski@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CACurcBt_M-x=5CYhVUCiJq-yiUQF6-2a9PhWtmjfpJUYtAxt0Q@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <6c605879-0a52-337d-f467-82c7f0b04d76@suse.com>
-Date:   Tue, 28 Jan 2020 13:38:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1725997AbgA1Lrw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 06:47:52 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:39680 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgA1Lrw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jan 2020 06:47:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=4kjz0pLLzYhN1+1Eg9M2M/oaemTXUA3+4TagTFDWeBI=; b=EKv27h63+WAkUqD4muwIguzrk
+        3vEtafscPOpgCTHZtrxUTwPg/gmKRZWNqlFsOE2OCT1iiNwHHMdQAje8/8hK5X8+JSmx4Cc49Mmzo
+        Y8z0U5cCpLuOq/d9Dr4jwUPRNhPihZbEjGh3tWDUmHmgurlOzpW5BhdEUwBLTVwl4y4p3Qd2153jm
+        i2wAqdzeWfJsUqz1tNn3Vf7gilc66aijsPO0whlZiMPcM3np/uo7CoPv//xfehAiLnxYEiq5S58vR
+        AUja4Ph0FayQSeUWB8DZ2LQjqIe4tCreQZOfRX2H3wHrW6lUEzYCFVtl6ScAyThDzs38OvWMpxE/c
+        IF6fqZwJg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iwPLP-0008Od-Ta; Tue, 28 Jan 2020 11:47:47 +0000
+Date:   Tue, 28 Jan 2020 03:47:47 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v3 1/5] btrfs: remove buffer heads from super block
+ reading
+Message-ID: <20200128114747.GA17444@infradead.org>
+References: <20200127155931.10818-1-johannes.thumshirn@wdc.com>
+ <20200127155931.10818-2-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <CACurcBt_M-x=5CYhVUCiJq-yiUQF6-2a9PhWtmjfpJUYtAxt0Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200127155931.10818-2-johannes.thumshirn@wdc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jan 28, 2020 at 12:59:27AM +0900, Johannes Thumshirn wrote:
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>  	struct btrfs_root *tree_root;
+>  	struct btrfs_root *chunk_root;
+> +	struct page *super_page;
+> +	u8 *superblock;
 
+Any good reason this isn't a struct btrfs_super_block * instead?
 
-On 28.01.20 г. 12:25 ч., Robbie Smith wrote:
-> I wanted to try to convert my music library from a directory into a
-> subvolume so I could use btrfs send/receive to transfer (changed)
-> files between it and a USB backup. A bit of Googling suggested that
-> the approach would be:
-> 
->> btrfs subvolume create /library/newmusic
->> cp -ar --reflink=auto /library/music/* /library/newmusic/.
->> rm -r /library/music
-> 
-> After about 30 seconds I realised that it was deleting files from both
-> /library/music and /library/newmusic. It appears I've only lost
-> everything starting with A, B or C, so I unmounted the device, and am
-> currently trying to use `btrfs restore` to get the files back and it
-> doesn't seem to be finding them.
-> 
-> I'm pretty sure deleting files from directory A isn't supposed to also
-> delete them from directory B, but that's what it did. Is this a bug?
-> 
+> +	csum_type = btrfs_super_csum_type((struct btrfs_super_block *)
+> +					  superblock);
+>  	if (!btrfs_supported_super_csum(csum_type)) {
+>  		btrfs_err(fs_info, "unsupported checksum algorithm: %u",
+>  			  csum_type);
+>  		err = -EINVAL;
+> -		brelse(bh);
+> +		kunmap(super_page);
+> +		put_page(super_page);
+>  		goto fail_alloc;
+>  	}
+>  
+>  	ret = btrfs_init_csum_hash(fs_info, csum_type);
+>  	if (ret) {
+>  		err = ret;
+> +		kunmap(super_page);
+> +		put_page(super_page);
+>  		goto fail_alloc;
+>  	}
+>  
+> @@ -2861,10 +2867,11 @@ int __cold open_ctree(struct super_block *sb,
+>  	 * We want to check superblock checksum, the type is stored inside.
+>  	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+>  	 */
+> -	if (btrfs_check_super_csum(fs_info, bh->b_data)) {
+> +	if (btrfs_check_super_csum(fs_info, superblock)) {
+>  		btrfs_err(fs_info, "superblock checksum mismatch");
+>  		err = -EINVAL;
+> -		brelse(bh);
+> +		kunmap(super_page);
+> +		put_page(super_page);
+>  		goto fail_csum;
+>  	}
+>  
+> @@ -2873,8 +2880,9 @@ int __cold open_ctree(struct super_block *sb,
+>  	 * following bytes up to INFO_SIZE, the checksum is calculated from
+>  	 * the whole block of INFO_SIZE
+>  	 */
+> -	memcpy(fs_info->super_copy, bh->b_data, sizeof(*fs_info->super_copy));
+> -	brelse(bh);
+> +	memcpy(fs_info->super_copy, superblock, sizeof(*fs_info->super_copy));
+> +	kunmap(super_page);
+> +	put_page(super_page);
 
-Can you reproduce the same thing with a simple test directory? I was not
-able to reproduce it here?
+Would it make sense to move the code up to here in a helper to
+simplify the error handling?
 
-> Robbie
-> 
+>  
+>  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret)
+> +			struct page **super_page)
+>  {
+> -	struct buffer_head *bh;
+>  	struct btrfs_super_block *super;
+> +	struct bio_vec bio_vec;
+> +	struct bio bio;
+> +	struct page *page;
+>  	u64 bytenr;
+> +	struct address_space *mapping = bdev->bd_inode->i_mapping;
+> +	gfp_t gfp_mask;
+> +	int ret;
+>  
+>  	bytenr = btrfs_sb_offset(copy_num);
+>  	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
+>  		return -EINVAL;
+>  
+> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
+> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
+> +	page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT, gfp_mask);
+
+Why not simply use read_cache_page_gfp to find or read the page?
+
+> -	super = (struct btrfs_super_block *)bh->b_data;
+> +	super = kmap(page);
+>  	if (btrfs_super_bytenr(super) != bytenr ||
+>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> -		brelse(bh);
+> +		kunmap(page);
+> +		put_page(page);
+>  		return -EINVAL;
+>  	}
+> +	kunmap(page);
+>  
+> -	*bh_ret = bh;
+> +	*super_page = page;
+
+Given that both callers need the kernel virtual address, why not leave it
+kmapped?  OTOH if you use read_cache_page_gfp, we could just kill
+btrfs_read_dev_one_super and open code the call to read_cache_page_gfp
+and btrfs_super_bytenr / btrfs_super_magic in the callers.
+
+> +	bio_init(&bio, &bio_vec, 1);
+>  	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
+>  		copy_num++) {
+> +		u64 bytenr = btrfs_sb_offset(copy_num);
+> +		struct page *page;
+>  
+> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
+> +		if (btrfs_read_dev_one_super(bdev, copy_num, &page))
+>  			continue;
+>  
+> -		disk_super = (struct btrfs_super_block *)bh->b_data;
+> +		disk_super = kmap(page) + offset_in_page(bytenr);
+>  
+>  		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+> -		set_buffer_dirty(bh);
+> -		sync_dirty_buffer(bh);
+> -		brelse(bh);
+> +
+> +		bio.bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
+> +		bio_set_dev(&bio, bdev);
+> +		bio.bi_opf = REQ_OP_WRITE;
+> +		bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,
+> +			     offset_in_page(bytenr));
+> +
+> +		lock_page(page);
+> +		submit_bio_wait(&bio);
+> +		unlock_page(page);
+> +		kunmap(page);
+> +		put_page(page);
+> +		bio_reset(&bio);
+
+Facoting out the code to write a single sb would clean this up a bit.
+Also no real need to keep the page kmapped when under I/O.
