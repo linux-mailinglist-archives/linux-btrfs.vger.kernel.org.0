@@ -2,190 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 879CE14BEA3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 18:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EEB14BEA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 18:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgA1Rde (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 12:33:34 -0500
-Received: from mail-vk1-f195.google.com ([209.85.221.195]:34070 "EHLO
-        mail-vk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgA1Rde (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 12:33:34 -0500
-Received: by mail-vk1-f195.google.com with SMTP id w67so3963572vkf.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jan 2020 09:33:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=oqcG6VXdy0JgfOhnh+gZkMvpTlPIEktRq35pp0jIPg8=;
-        b=XAeYAMSosRlnYKW7b+nDnOoZ2mEDGgfHyVcufFoJIFoH/OMBuRftqiQyoh7YbqYnk5
-         KiQBqiVA5bcHEHj14VSriX11Q9Z968+ZU8RftusqjeqkcueQpq2cGOi2msMDywX+HvbZ
-         YJyj7e1bKoQx0zXhkcL2cCtPPS0Q1MaCHSG4JyFMzURH53CKuU+5H3TlXspgz1Rv9Gus
-         5xp/LCvCM3ulYt3FSrQU5CCBr2xb4CNQIQ1rFO+ofBFE+/7bcdaxNWRpqcPthDj8uncf
-         mcjr00xLDVRIjsh5lt5HOt3VHGt2TYPqYhNKzIlPF0+cPeFl+0wsRcUclQ7WsbKXiF0H
-         Pbtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=oqcG6VXdy0JgfOhnh+gZkMvpTlPIEktRq35pp0jIPg8=;
-        b=Z89Wu329cuzWH3DkGF3m6tHRfJ+HHQM4iWUZW+rjPMxsswb2Kmt5XVI8/bptJelld3
-         IdQttcwWNOrSeW0ykmwEYcUt3dQK6XDnQAGM+9PDM/kYJ8ILcdxLXmVjsQN1OTXDJwFe
-         UdNHIDGRnYWBI3LM0nAGBUYNZF4TIYxcxI93iwSpWn1+A6Z53NBlmVzFm4tLtRU1Jqbd
-         keb9We4RNfQttaq1hfNDErEPq+qnaRVfaU+qWFemYsUT31aQ9AR3iaM6jQdwmOvBUWIO
-         NFAdTDdSomyA1yhd/TSchvee21XeuHmPzaQUiN4feuDL5cBLviklq35zMe8YPW37Skt+
-         GNmw==
-X-Gm-Message-State: APjAAAXg+eoO6sq9YRHCNnBL/WAUDnrjrfgPyigLNHXQyoCu1eeTI4vq
-        IidckPBY6Ikb+kkxdjY3kGah3FbhSCDFBa9Gwnw=
-X-Google-Smtp-Source: APXvYqxSWyOuaynOGHLIN1FTl7gSB8AQ8JCgpmPbCM9Lgm1mU7kNQx4k1z48v5BwRqw3x4pfEo1HbOEYhuWCQEDC6C4=
-X-Received: by 2002:a1f:f283:: with SMTP id q125mr13811343vkh.69.1580232812828;
- Tue, 28 Jan 2020 09:33:32 -0800 (PST)
+        id S1726428AbgA1RfP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 12:35:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726066AbgA1RfP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jan 2020 12:35:15 -0500
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F159214AF
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jan 2020 17:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580232914;
+        bh=UToUMIpjqtVJ4rpiYPb8bFNarNU08/O4Gq9PzoIGcUg=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=Q9brGYYRIVIrR+u2s+CheUDDVkBZon41crUK65vHob6cy1CWT/8m9uW+LKAQntfON
+         /PFUKZLODbVT118M+7gssyESQxXiLvwX0e/uQylzIOcqwRCm2AmV/txdgYYIaLIuLg
+         5QaTgUtw75dbEXRO3D1SwFOsTDLM2xqSRA5GMNTo=
+Received: by mail-vk1-f175.google.com with SMTP id c8so2678195vkn.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jan 2020 09:35:14 -0800 (PST)
+X-Gm-Message-State: APjAAAUIIAd4Sq8A1AEr+cpkpz9Kf6PfObjoL61xKwa6QN/jj/U+uepJ
+        JDzXWg9JUkAniAhAF+DTHROEXpZ1qQadW29CnPQ=
+X-Google-Smtp-Source: APXvYqzh7OOWQA9hihtU423DDQlCj7Zk9tTxMCLqi4yCwxJzpqf2c+runaDoKkuEC6YwQ1Q3iUCbSQja+emf1np2CnM=
+X-Received: by 2002:a1f:90d4:: with SMTP id s203mr12083075vkd.65.1580232913229;
+ Tue, 28 Jan 2020 09:35:13 -0800 (PST)
 MIME-Version: 1.0
-References: <5ba0716449eb4f838699fc0b1fb5b024@integralblue.com>
- <20200113133741.GU3929@twin.jikos.cz> <7e7e4f63a89b6bb8a270d4c4ec676835@integralblue.com>
- <8254df450ca61dd4cbc455f19ee28c01@lesimple.fr> <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
- <06639bb0a512aff6ed8a41bffb033f35@integralblue.com> <CAL3q7H5FHc9ooNOP3CnXas=_H_BEZN5mzegVMuvtoXgT9nxL6A@mail.gmail.com>
- <f2ca887d98c1b5aacc4dde88cba74d98@integralblue.com> <CAL3q7H62m7CR53zHJVY1S_YuPS7V1CJK=5C7AHqir_WWBXbvNQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H62m7CR53zHJVY1S_YuPS7V1CJK=5C7AHqir_WWBXbvNQ@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 28 Jan 2020 17:33:21 +0000
-Message-ID: <CAL3q7H6PyFFP1sM10U51oJs3vAPCED5AT+TfKrTJgsMUSB2qig@mail.gmail.com>
-Subject: Re: Regression in Linux 5.5.0-rc[1-5]: btrfs send/receive out of memory
-To:     Craig Andrews <candrews@integralblue.com>
-Cc:     =?UTF-8?Q?St=C3=A9phane_Lesimple?= <stephane_btrfs2@lesimple.fr>,
+References: <20200124115204.4086-1-fdmanana@kernel.org> <20200128162143.GW3929@twin.jikos.cz>
+In-Reply-To: <20200128162143.GW3929@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 28 Jan 2020 17:35:01 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4Jn-QDH7Oc7byqqHpPgGVe7xhGpwwQ_XKZhpGHodj0CQ@mail.gmail.com>
+Message-ID: <CAL3q7H4Jn-QDH7Oc7byqqHpPgGVe7xhGpwwQ_XKZhpGHodj0CQ@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: send, fix emission of invalid clone operations
+ within the same file
+To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 3:08 PM Filipe Manana <fdmanana@gmail.com> wrote:
+On Tue, Jan 28, 2020 at 4:22 PM David Sterba <dsterba@suse.cz> wrote:
 >
-> On Tue, Jan 28, 2020 at 3:05 PM Craig Andrews <candrews@integralblue.com>=
- wrote:
+> On Fri, Jan 24, 2020 at 11:52:04AM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > On 2020-01-28 10:02, Filipe Manana wrote:
-> > > On Tue, Jan 28, 2020 at 2:46 PM Craig Andrews
-> > > <candrews@integralblue.com> wrote:
-> > >>
-> > >> On 2020-01-27 08:44, Filipe Manana wrote:
-> > >> > On Sat, Jan 25, 2020 at 11:18 AM St=C3=A9phane Lesimple
-> > >> > <stephane_btrfs2@lesimple.fr> wrote:
-> > >> >>
-> > >> >> > ERROR: failed to clone extents to var/amavis/db/__db.001: Inval=
-id argument
-> > >> >>
-> > >> >> If I may add another data point here, I'm also encountering this =
-issue
-> > >> >> on a 5.5.0-rc6, with the btrfs-rc7 patches applied to it (so as f=
-ar as
-> > >> >> btrfs is concerned, this is an rc7).
-> > >> >>
-> > >> >> On the first time, it happened after sending ~90 Gb worth of data=
-, and
-> > >> >> aborted (as I didn't specify the -E option to btrfs send). Then, =
-I
-> > >> >> retried with btrfs send -E 0, and it encountered the exact same e=
-rror
-> > >> >> on the same file.
-> > >> >>
-> > >> >> # btrfs send -v /tank/backups/.snaps/incoming/sendme/ | pv
-> > >> >> 2>/dev/pts/23 | btrfs rec -E 0 /newfs/
-> > >> >> At subvol /tank/backups/.snaps/incoming/sendme/
-> > >> >> At subvol sendme
-> > >> >> ERROR: failed to clone extents to
-> > >> >> retroarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid argu=
-ment
-> > >> >> ERROR: failed to clone extents to
-> > >> >> retroarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid argu=
-ment
-> > >> >
-> > >> > This is probably the same case for which I sent a fix last week:
-> > >> >
-> > >> > https://patchwork.kernel.org/patch/11350129/
-> > >> >
-> > >> > Thanks.
-> > >>
-> > >> I applied that patch to 5.5.0-rc7 and that solved the problem. I can
-> > >> now
-> > >> do backups (which is a send/receive) successfully.
-> > >>
-> > >> >
-> > >> >>
-> > >> >> The send/receive is still going on for now, currently around the =
-~200
-> > >> >> Gb mark.
-> > >> >>
-> > >> >> Bees is running on this FS (but I stopped it before doing the
-> > >> >> send/receive).
-> > >> >>
-> > >> >> I can test patches if needed.
-> > >> >>
-> > >> >> --
-> > >> >> St=C3=A9phane.
-> > >>
-> > >> The patch appears to have fixed my problems - thank you!
-> > >
-> > > Great!
-> > >
-> > > Can you reply to the patch's thread with a:
-> > >
-> > > Tested-by: Your Name <email@foo.bar>
-> > >
-> > > ?
-> > >
-> > > Or I can reply to it myself with that if you agree.
-> > >
-> > > Thanks!
-> > >
-> > >> ~Craig
+> > When doing an incremental send and a file has extents shared with itself
+> > at different file offsets, it's possible for send to emit clone operations
+> > that will fail at the destination because the source range goes beyond the
+> > file's current size. This happens when the file size has increased in the
+> > send snapshot, there is a hole between the shared extents and both shared
+> > extents are at file offsets which are greater the file's size in the
+> > parent snapshot.
 > >
+> > Example:
 > >
-> > Can you please send the reply?
-> > Tested-by: Craig Andrews <candrews@integralblue.com>
->
-> No problem, done. Thanks.
-
-Actually I just realized one chunk of the patch can cause problems
-with fallocated extents beyond a file's size and a hole that ends
-right at the file's size (unlikely to be a common scenario anyway).
-I also don't think it's needed. For my tests at least, removing it
-doesn't cause any new problems and solves the problem with the invalid
-clone operations.
-
-Can you try it for your use case too?
-
-To be clear, this is the new version of the patch:
-
-https://pastebin.com/raw/vewZiG9J
-
-(A shorter version of the original)
-
-Thanks!
-
-
-
->
+> >   $ mkfs.btrfs -f /dev/sdb
+> >   $ mount /dev/sdb /mnt/sdb
 > >
-> > And again, thank you!
-> > ~Craig
+> >   $ xfs_io -f -c "pwrite -S 0xf1 0 64K" /mnt/sdb/foobar
+> >   $ btrfs subvolume snapshot -r /mnt/sdb /mnt/sdb/base
+> >   $ btrfs send -f /tmp/1.snap /mnt/sdb/base
+> >
+> >   # Create a 320K extent at file offset 512K.
+> >   $ xfs_io -c "pwrite -S 0xab 512K 64K" /mnt/sdb/foobar
+> >   $ xfs_io -c "pwrite -S 0xcd 576K 64K" /mnt/sdb/foobar
+> >   $ xfs_io -c "pwrite -S 0xef 640K 64K" /mnt/sdb/foobar
+> >   $ xfs_io -c "pwrite -S 0x64 704K 64K" /mnt/sdb/foobar
+> >   $ xfs_io -c "pwrite -S 0x73 768K 64K" /mnt/sdb/foobar
+> >
+> >   # Clone part of that 320K extent into a lower file offset (192K).
+> >   # This file offset is greater than the file's size in the parent
+> >   # snapshot (64K). Also the clone range is a bit behind the offset of
+> >   # the 320K extent so that we leave a hole between the shared extents.
+> >   $ xfs_io -c "reflink /mnt/sdb/foobar 448K 192K 192K" /mnt/sdb/foobar
+> >
+> >   $ btrfs subvolume snapshot -r /mnt/sdb /mnt/sdb/incr
+> >   $ btrfs send -p /mnt/sdb/base -f /tmp/2.snap /mnt/sdb/incr
+> >
+> >   $ mkfs.btrfs -f /dev/sdc
+> >   $ mount /dev/sdc /mnt/sdc
+> >
+> >   $ btrfs receive -f /tmp/1.snap /mnt/sdc
+> >   $ btrfs receive -f /tmp/2.snap /mnt/sdc
+> >   ERROR: failed to clone extents to foobar: Invalid argument
+> >
+> > The problem is that after processing the extent at file offset 192K, send
+> > does not issue a write operation full of zeroes for the hole between that
+> > extent and the extent starting at file offset 520K (hole range from 384K
+> > to 512K), this is because the hole is at an offset larger the size of the
+> > file in the parent snapshot (384K > 64K). As a consequence the field
+> > 'cur_inode_next_write_offset' of the send context remains with a value of
+> > 384K when we start to process the extent at file offset 512K, which is the
+> > value set after processing the extent at offset 192K.
+> >
+> > This screws up the lookup of possible extents to clone because due to an
+> > incorrect value of 'cur_inode_next_write_offset' we can now consider
+> > extents for cloning, in the same inode, that lie beyond the current size
+> > of the file in the receiver of the send stream. Also, when checking if
+> > an extent in the same file can be used for cloning, we must also check
+> > that not only its start offset doesn't start at or beyond the current eof
+> > of the file in the receiver but that the source range doesn't go beyond
+> > current eof, that is we must check offset + length does not cross the
+> > current eof, as that makes clone operations fail with -EINVAL.
+> >
+> > So fix this by updating 'cur_inode_next_write_offset' whenever we start
+> > processing an extent and checking an extent's offset and length when
+> > considering it for cloning operations.
+> >
+> > A test case for fstests follows soon.
+> >
+> > Fixes: 11f2069c113e02 ("Btrfs: send, allow clone operations within the same file")
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 >
->
->
-> --
-> Filipe David Manana,
->
-> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
-re right.=E2=80=9D
+> Added to misc-next, with the tested-by tag, thanks.
 
+Hold on a bit, one hunk of the patch besides not being necessary, it
+causes problems with fallocated extents beyond i_size and trailing
+holes.
+I'll run some more tests to confirm the hunk is not needed and see if
+Craig can test it too in the meanwhile.
 
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Thanks.
