@@ -2,29 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE0114BE3D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 18:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5271E14BE7E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 18:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgA1RDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 12:03:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37460 "EHLO mx2.suse.de"
+        id S1726428AbgA1R1A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 12:27:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45760 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgA1RDJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 12:03:09 -0500
+        id S1726066AbgA1R1A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jan 2020 12:27:00 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4FAC9AE9A;
-        Tue, 28 Jan 2020 17:03:06 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B72B5AE2B;
+        Tue, 28 Jan 2020 17:26:56 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 02BD5DA730; Tue, 28 Jan 2020 18:02:47 +0100 (CET)
-Date:   Tue, 28 Jan 2020 18:02:47 +0100
+        id 419D2DA730; Tue, 28 Jan 2020 18:26:38 +0100 (CET)
+Date:   Tue, 28 Jan 2020 18:26:38 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, dsterba@suse.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
         Marcos Paulo de Souza <mpdesouza@suse.com>
 Subject: Re: [PATCHv2] btrfs: Introduce new BTRFS_IOC_SNAP_DESTROY_V2 ioctl
-Message-ID: <20200128170247.GZ3929@twin.jikos.cz>
+Message-ID: <20200128172638.GA3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz,
         Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
@@ -55,15 +55,9 @@ On Sun, Jan 26, 2020 at 11:48:17PM -0300, Marcos Paulo de Souza wrote:
 > \- @subvol_default
 > If only @subvol_default is mounted, we have no path to reach
 > @subvol1 and @subvol2, thus no way to delete them.
-
-Here I'd expect a brief overview how is the "we have no path to reach"
-problem solved. This is the "invisible" part,
-
 > This patch introduces a new flag to allow BTRFS_IOC_SNAP_DESTORY_V2
 > to delete subvolume using subvolid.
-
-and this is the visible interface part, so some details are lacking.
-
+> 
 > Also in this patch, export some functions, add BTRFS_SUBVOL_BY_ID flag
 > and add subvolid as a union member of name in struct btrfs_ioctl_vol_args_v2.
 > 
@@ -162,6 +156,10 @@ and this is the visible interface part, so some details are lacking.
 > +	struct btrfs_ioctl_vol_args *vol_args = NULL;
 > +	struct btrfs_ioctl_vol_args_v2 *vol_args2 = NULL;
 > +	char *name, *name_ptr = NULL;
+
+The naming is confusing, name_ptr refers to the resolved subvolume name,
+so I suggest to rename it to subvol_name.
+
 >  	int namelen;
 >  	int err = 0;
 >  
@@ -176,6 +174,11 @@ and this is the visible interface part, so some details are lacking.
 > -	if (IS_ERR(vol_args))
 > -		return PTR_ERR(vol_args);
 > +		if (vol_args2->subvolid == 0) {
+
+This should be compared >= BTRFS_FIRST_FREE_OBJECTID
+as there are no valid subvolumes with lower id. The exception is the
+toplevel subvolume with id 5 that must not be deletable.
+
 > +			err = -EINVAL;
 > +			goto out;
 > +		}
@@ -189,6 +192,12 @@ and this is the visible interface part, so some details are lacking.
 > +		if (!(vol_args2->flags & BTRFS_SUBVOL_BY_ID)) {
 > +			err = -EINVAL;
 > +			goto out;
+
+The flag validation needs to be factored out of the if. First validate,
+then do the rest. For backward compatibility, the v1 ioctl must take no
+flags, so if theres BTRFS_SUBVOL_BY_ID for v1, it needs to fail. For v2
+the flag is optional.
+
 > +		}
 > +
 > +		dentry = btrfs_get_dentry(fs_info->sb, BTRFS_FIRST_FREE_OBJECTID,
@@ -199,7 +208,17 @@ and this is the visible interface part, so some details are lacking.
 > +		}
 > +
 > +		/* 
+
+There's a trailing space on the line, 'git am' does not allow me to
+apply the patch without removing it manually. Same for the comment
+below.
+
 > +		 * change the default parent since the subvolume being deleted
+
+Also please uppercase first letter in comments unless it's an
+identifier. I fix such things but for patches that are going to have
+another iteration it's better to point it out.
+
 > +		 * can be outside of the current mount point
 > +		 */
 > +		parent = btrfs_get_parent(dentry);
@@ -208,6 +227,9 @@ and this is the visible interface part, so some details are lacking.
 > +		 * the only use of dentry was to get the parent, so we can
 > +		 * release it now. Later on the dentry will be queried again to
 > +		 * make sure the dentry will reside in the dentry cache
+
+Can you please rephrase that? I'm not sure I understand.
+
 > +		 */
 > +		dput(dentry);
 > +		if (IS_ERR(parent)) {
@@ -230,11 +252,16 @@ and this is the visible interface part, so some details are lacking.
 > +
 > +		vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
 > +		namelen = strlen(vol_args->name);
+
 > +		if (strchr(vol_args->name, '/') ||
 > +		    strncmp(vol_args->name, "..", namelen) == 0) {
 > +			err = -EINVAL;
 > +			goto out;
 > +		}
+
+This sanity check can be unconditional, ie. also done for the v2 even in
+the spec-by-id case.
+
 > +		name = vol_args->name;
 > +	}
 > +
@@ -244,6 +271,14 @@ and this is the visible interface part, so some details are lacking.
 >  	}
 >  
 >  	err = mnt_want_write_file(file);
+
+So this is related to separating the validation. Calling
+mnt_want_write_file must be between flag validation and using the
+dentries and resolving path etc.
+
+The initial part is ordered like: argument checks, subsystem checks, the
+implementation.
+
 >  	if (err)
 > -		goto out;
 > -
@@ -271,82 +306,3 @@ and this is the visible interface part, so some details are lacking.
 >  	kfree(vol_args);
 >  	return err;
 >  }
-> @@ -5464,7 +5525,9 @@ long btrfs_ioctl(struct file *file, unsigned int
->  	case BTRFS_IOC_SUBVOL_CREATE_V2:
->  		return btrfs_ioctl_snap_create_v2(file, argp, 1);
->  	case BTRFS_IOC_SNAP_DESTROY:
-> -		return btrfs_ioctl_snap_destroy(file, argp);
-> +		return btrfs_ioctl_snap_destroy(file, argp, false);
-> +	case BTRFS_IOC_SNAP_DESTROY_V2:
-> +		return btrfs_ioctl_snap_destroy(file, argp, true);
->  	case BTRFS_IOC_SUBVOL_GETFLAGS:
->  		return btrfs_ioctl_subvol_getflags(file, argp);
->  	case BTRFS_IOC_SUBVOL_SETFLAGS:
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index a906315efd19..4a8ce475d906 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1024,7 +1024,7 @@ static int btrfs_parse_subvol_options(const char *options, char **subvol_name,
->  	return error;
->  }
->  
-> -static char *get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
-> +char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
->  					   u64 subvol_objectid)
->  {
->  	struct btrfs_root *root = fs_info->tree_root;
-> @@ -1438,7 +1438,7 @@ static struct dentry *mount_subvol(const char *subvol_name, u64 subvol_objectid,
->  				goto out;
->  			}
->  		}
-> -		subvol_name = get_subvol_name_from_objectid(btrfs_sb(mnt->mnt_sb),
-> +		subvol_name = btrfs_get_subvol_name_from_objectid(btrfs_sb(mnt->mnt_sb),
->  							    subvol_objectid);
->  		if (IS_ERR(subvol_name)) {
->  			root = ERR_CAST(subvol_name);
-> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> index 7a8bc8b920f5..d8619245f0dc 100644
-> --- a/include/uapi/linux/btrfs.h
-> +++ b/include/uapi/linux/btrfs.h
-> @@ -42,11 +42,14 @@ struct btrfs_ioctl_vol_args {
->  
->  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
->  
-> +#define BTRFS_SUBVOL_BY_ID	(1ULL << 4)
-> +
->  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
->  			(BTRFS_SUBVOL_CREATE_ASYNC |	\
->  			BTRFS_SUBVOL_RDONLY |		\
->  			BTRFS_SUBVOL_QGROUP_INHERIT |	\
-> -			BTRFS_DEVICE_SPEC_BY_ID)
-> +			BTRFS_DEVICE_SPEC_BY_ID |	\
-> +			BTRFS_SUBVOL_BY_ID)
-
-			BTRFS_SUBVOL_SPEC_BY_ID
-
-> @@ -119,7 +122,10 @@ struct btrfs_ioctl_vol_args_v2 {
->  		__u64 unused[4];
->  	};
->  	union {
-> -		char name[BTRFS_SUBVOL_NAME_MAX + 1];
-> +		union {
-> +			char name[BTRFS_SUBVOL_NAME_MAX + 1];
-> +			__u64 subvolid;
-> +		};
-
-The subvolid can be added t othe first union just fine and duplicating
-the name does not make sense to me.
-
-  	union {
-		char name[BTRFS_SUBVOL_NAME_MAX + 1];
-		__u64 subvolid;
-  		__u64 devid;
-	};
-
-The argument structure is common for device and subvolume ioctls but I'm
-not aware of any context were we would need both at the same time.
-Which makes the SPEC_BY_ID bits mutually exclusive.
-
-
->  		__u64 devid;
->  	};
