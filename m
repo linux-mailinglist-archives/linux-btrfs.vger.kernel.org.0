@@ -2,106 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3703814BDCD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 17:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3677E14BE02
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 17:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgA1Qcv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 11:32:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55160 "EHLO mx2.suse.de"
+        id S1726264AbgA1QsR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 11:48:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgA1Qcv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 11:32:51 -0500
+        id S1726007AbgA1QsR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jan 2020 11:48:17 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 62ADAB15F;
-        Tue, 28 Jan 2020 16:32:49 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0A23DAFB2;
+        Tue, 28 Jan 2020 16:48:16 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 112E2DA730; Tue, 28 Jan 2020 17:32:31 +0100 (CET)
-Date:   Tue, 28 Jan 2020 17:32:30 +0100
+        id BC392DA730; Tue, 28 Jan 2020 17:47:57 +0100 (CET)
+Date:   Tue, 28 Jan 2020 17:47:57 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: flush write bio if we loop in
- extent_write_cache_pages
-Message-ID: <20200128163230.GX3929@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: Re: [PATCH] btrfs: Correctly handle empty trees in
+ find_first_clear_extent_bit
+Message-ID: <20200128164757.GY3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200123203302.2180124-1-josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200127095926.26069-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200123203302.2180124-1-josef@toxicpanda.com>
+In-Reply-To: <20200127095926.26069-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 03:33:02PM -0500, Josef Bacik wrote:
-> There exists a deadlock with range_cyclic that has existed forever.  If
-> we loop around with a bio already built we could deadlock with a writer
-> who has the page locked that we're attempting to write but is waiting on
-> a page in our bio to be written out.  The task traces are as follows
+On Mon, Jan 27, 2020 at 11:59:26AM +0200, Nikolay Borisov wrote:
+> Raviu reported that running his regular fs_trim segfaulted with the
+> following backtrace:
 > 
-> PID: 1329874  TASK: ffff889ebcdf3800  CPU: 33  COMMAND: "kworker/u113:5"
->  #0 [ffffc900297bb658] __schedule at ffffffff81a4c33f
->  #1 [ffffc900297bb6e0] schedule at ffffffff81a4c6e3
->  #2 [ffffc900297bb6f8] io_schedule at ffffffff81a4ca42
->  #3 [ffffc900297bb708] __lock_page at ffffffff811f145b
->  #4 [ffffc900297bb798] __process_pages_contig at ffffffff814bc502
->  #5 [ffffc900297bb8c8] lock_delalloc_pages at ffffffff814bc684
->  #6 [ffffc900297bb900] find_lock_delalloc_range at ffffffff814be9ff
->  #7 [ffffc900297bb9a0] writepage_delalloc at ffffffff814bebd0
->  #8 [ffffc900297bba18] __extent_writepage at ffffffff814bfbf2
->  #9 [ffffc900297bba98] extent_write_cache_pages at ffffffff814bffbd
+> [  237.525947] assertion failed: prev, in ../fs/btrfs/extent_io.c:1595
+> [  237.525984] ------------[ cut here ]------------
+> [  237.525985] kernel BUG at ../fs/btrfs/ctree.h:3117!
+> [  237.525992] invalid opcode: 0000 [#1] SMP PTI
+> [  237.525998] CPU: 4 PID: 4423 Comm: fstrim Tainted: G     U     OE     5.4.14-8-vanilla #1
+> [  237.526001] Hardware name: ASUSTeK COMPUTER INC.
+> [  237.526044] RIP: 0010:assfail.constprop.58+0x18/0x1a [btrfs]
+> [  237.526079] Call Trace:
+> [  237.526120]  find_first_clear_extent_bit+0x13d/0x150 [btrfs]
+> [  237.526148]  btrfs_trim_fs+0x211/0x3f0 [btrfs]
+> [  237.526184]  btrfs_ioctl_fitrim+0x103/0x170 [btrfs]
+> [  237.526219]  btrfs_ioctl+0x129a/0x2ed0 [btrfs]
+> [  237.526227]  ? filemap_map_pages+0x190/0x3d0
+> [  237.526232]  ? do_filp_open+0xaf/0x110
+> [  237.526238]  ? _copy_to_user+0x22/0x30
+> [  237.526242]  ? cp_new_stat+0x150/0x180
+> [  237.526247]  ? do_vfs_ioctl+0xa4/0x640
+> [  237.526278]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+> [  237.526283]  do_vfs_ioctl+0xa4/0x640
+> [  237.526288]  ? __do_sys_newfstat+0x3c/0x60
+> [  237.526292]  ksys_ioctl+0x70/0x80
+> [  237.526297]  __x64_sys_ioctl+0x16/0x20
+> [  237.526303]  do_syscall_64+0x5a/0x1c0
+> [  237.526310]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
 > 
-> PID: 2167901  TASK: ffff889dc6a59c00  CPU: 14  COMMAND:
-> "aio-dio-invalid"
->  #0 [ffffc9003b50bb18] __schedule at ffffffff81a4c33f
->  #1 [ffffc9003b50bba0] schedule at ffffffff81a4c6e3
->  #2 [ffffc9003b50bbb8] io_schedule at ffffffff81a4ca42
->  #3 [ffffc9003b50bbc8] wait_on_page_bit at ffffffff811f24d6
->  #4 [ffffc9003b50bc60] prepare_pages at ffffffff814b05a7
->  #5 [ffffc9003b50bcd8] btrfs_buffered_write at ffffffff814b1359
->  #6 [ffffc9003b50bdb0] btrfs_file_write_iter at ffffffff814b5933
->  #7 [ffffc9003b50be38] new_sync_write at ffffffff8128f6a8
->  #8 [ffffc9003b50bec8] vfs_write at ffffffff81292b9d
->  #9 [ffffc9003b50bf00] ksys_pwrite64 at ffffffff81293032
+> That was due to btrfs_fs_device::aloc_tree being empty. Initially I
+> thought this wasn't possible and as a percaution have put the assert in
+> find_first_clear_extent_bit. Turns out this is indeed possible and could
+> happen when a file system with SINGLE data/metadata profile has a 2nd
+> device added. Until balance is run or a new chunk is allocated on this
+> device it will be completely empty.
 > 
-> I used drgn to find the respective pages we were stuck on
+> In this case find_first_clear_extent_bit should return the full range
+> [0, -1ULL] and let the caller handle this i.e for trim the end will be
+> capped at the size of actual device.
 > 
-> page_entry.page 0xffffea00fbfc7500 index 8148 bit 15 pid 2167901
-> page_entry.page 0xffffea00f9bb7400 index 7680 bit 0 pid 1329874
-> 
-> As you can see the kworker is waiting for bit 0 (PG_locked) on index
-> 7680, and aio-dio-invalid is waiting for bit 15 (PG_writeback) on index
-> 8148.  aio-dio-invalid has 7680, and the kworker epd looks like the
-> following
-> 
-> crash> struct extent_page_data ffffc900297bbbb0
-> struct extent_page_data {
->   bio = 0xffff889f747ed830,
->   tree = 0xffff889eed6ba448,
->   extent_locked = 0,
->   sync_io = 0
-> }
-> 
-> and using drgn I walked the bio pages looking for page
-> 0xffffea00fbfc7500 which is the one we're waiting for writeback on
-> 
-> bio = Object(prog, 'struct bio', address=0xffff889f747ed830)
-> for i in range(0, bio.bi_vcnt.value_()):
->     bv = bio.bi_io_vec[i]
->     if bv.bv_page.value_() == 0xffffea00fbfc7500:
->         print("FOUND IT")
-> 
-> which validated what I suspected.
-> 
-> The fix for this is simple, flush the epd before we loop back around to
-> the beginning of the file during writeout.
-> 
-> Fixes: b293f02e1423 ("Btrfs: Add writepages support")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Link: https://lore.kernel.org/linux-btrfs/izW2WNyvy1dEDweBICizKnd2KDwDiDyY2EYQr4YCwk7pkuIpthx-JRn65MPBde00ND6V0_Lh8mW0kZwzDiLDv25pUYWxkskWNJnVP0kgdMA=@protonmail.com/
+> Fixes: 45bfcfc168f8 ("btrfs: Implement find_first_clear_extent_bit")
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Added to misc-next, thanks.
+Added to misc-next with the goto fixed, thanks.
+
+> David can you try and squeeze this into 5.5? It only leads to an assertion
+> failure trigger (if assertion
+
+Yes, 2nd pull or some post rc1 pull.
