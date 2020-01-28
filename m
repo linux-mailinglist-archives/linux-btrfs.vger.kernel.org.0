@@ -2,107 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A1614B465
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 13:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA8814BB86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 15:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgA1Moa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jan 2020 07:44:30 -0500
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:43870 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgA1Moa (ORCPT
+        id S1726383AbgA1Oqs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jan 2020 09:46:48 -0500
+Received: from smtpauth.rollernet.us ([208.79.240.5]:48997 "EHLO
+        smtpauth.rollernet.us" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgA1Oqn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jan 2020 07:44:30 -0500
-Received: by mail-ua1-f44.google.com with SMTP id o42so4739442uad.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jan 2020 04:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=D5VIOGxnqCEtG4yPFN5jY3PSdnzYWVL84Jtx0L/jmmk=;
-        b=V582gJWubIjQ+0FvsqfxG+f/+CsINCt62YmPIcYKUY7WlmWi3O/xcQvrdrL2UPzsxU
-         KuR1SRiQAEVQXrkUY1b7TegxWUQ0l6e7NkCqFPR1LaIX61p58VK9R3/QDB2xa/5fABGB
-         hHSWKzVTbWPwQrIDqJFgoHJ6/mWRuLXKXxAk6vJZ43oE4PXxl3yBtySpQm07kn599t+o
-         nMpL/Sjy3ZYttFX3t3RkMV4dg2vU+kyModUkcWgg3LYdhXSPu6uRtoEKxQIOBLGwYdhi
-         LGwRORUAqSxjKrEOfsHK6vkLqmEx2fDq2Id0sB8yhf2T+HCq9HIqpjOdFCZsSGGsUTdU
-         ITxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=D5VIOGxnqCEtG4yPFN5jY3PSdnzYWVL84Jtx0L/jmmk=;
-        b=FQAtIOSis0flNAWp6UZhsokLWCy/S29I6g8765m0993yK7ZwYQXVKy+9mWnRATLymr
-         1OyIG8x0DwHfph4IsLIDwZK2U894F9bkQwRVpJ9+XIDg9HjHH6aZet7FevHIesvLVxaG
-         VbpfRSITW9cXY+acrsew5dAgdQIgEvmcf7I5T7VEwouXU4SE6TBfOsgOM7CZTiM2Hc0P
-         x2DN1ROi53upHb09iRoLzOy01U93tM5YSuo8Sf7/BBMWWeAEOY9zgDwNjHI1lwWshWvS
-         vli35RPXxzaV5DZEm6DEfyXOQzHrjAs8ALdnOs4QpnlywkbNxnqMF6NVV8CGqAeTTNn5
-         T5TA==
-X-Gm-Message-State: APjAAAVdNRO/8HYky1XSt1tpW0y+4OyUntoXFpWICHzGVwx8ZvcLRkH7
-        Yt8fEI4YvZkCAa3FHx9ziUmLOb8TUiPfGhBeoQky2JFZXDc=
-X-Google-Smtp-Source: APXvYqyopcdTYSUB9bSpLVPF67bxqpttHiUkgGXyNzbpryXKUc0U9Nm4FSAifohBFg9t0p+aO9qAiVWVKG6Nz9Nlj+o=
-X-Received: by 2002:ab0:5bc6:: with SMTP id z6mr13079692uae.46.1580215468402;
- Tue, 28 Jan 2020 04:44:28 -0800 (PST)
+        Tue, 28 Jan 2020 09:46:43 -0500
+Received: from smtpauth.rollernet.us (localhost [127.0.0.1])
+        by smtpauth.rollernet.us (Postfix) with ESMTP id CB06B2800075;
+        Tue, 28 Jan 2020 06:46:39 -0800 (PST)
+Received: from irrational.integralblue.com (pool-96-237-186-35.bstnma.fios.verizon.net [96.237.186.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by smtpauth.rollernet.us (Postfix) with ESMTPSA;
+        Tue, 28 Jan 2020 06:46:39 -0800 (PST)
+Received: from www.integralblue.com (irrational [IPv6:::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by irrational.integralblue.com (Postfix) with ESMTPSA id 25169559DBE8;
+        Tue, 28 Jan 2020 09:46:34 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=integralblue.com;
+        s=irrational; t=1580222795;
+        bh=VS0TYh3jeQNl/6Xr+W3fyDhn45Mlkl+fYnNpivtRoPA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=oJFX8izRcDFOMHDvX2JWTXSjvKB2Jmmb53H/rn6YaZnhpApFab0QRwHUqJoO4pT5q
+         TDbNzNHDGabZY7q1cMNOtXYimtEorbkx+WqzKFP16LWW3H/9V4x21Z0TSxGV8oBAhT
+         IaSVfEvrBdahqT3swS3OQpNI0dEE9RtHeHKQuR14=
 MIME-Version: 1.0
-References: <CACurcBt_M-x=5CYhVUCiJq-yiUQF6-2a9PhWtmjfpJUYtAxt0Q@mail.gmail.com>
- <6c605879-0a52-337d-f467-82c7f0b04d76@suse.com>
-In-Reply-To: <6c605879-0a52-337d-f467-82c7f0b04d76@suse.com>
-From:   Robbie Smith <zoqaeski@gmail.com>
-Date:   Tue, 28 Jan 2020 23:44:17 +1100
-Message-ID: <CACurcBsv-D6MtunKrfY7ZKwxebfwGRejjfev7aUTgxwUzOG=Sw@mail.gmail.com>
-Subject: Re: Unexpected deletion behaviour between subvolume and normal directory
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed;
+ protocol="application/pgp-signature";
+ boundary="=_6247bb960cba2591fa84bc6a98584d4d";
+ micalg=pgp-sha1
+Date:   Tue, 28 Jan 2020 09:46:34 -0500
+From:   Craig Andrews <candrews@integralblue.com>
+To:     fdmanana@gmail.com
+Cc:     =?UTF-8?Q?St=C3=A9phane_Lesimple?= <stephane_btrfs2@lesimple.fr>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Regression in Linux 5.5.0-rc[1-5]: btrfs send/receive out of
+ memory
+In-Reply-To: <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
+References: <5ba0716449eb4f838699fc0b1fb5b024@integralblue.com>
+ <20200113133741.GU3929@twin.jikos.cz>
+ <7e7e4f63a89b6bb8a270d4c4ec676835@integralblue.com>
+ <8254df450ca61dd4cbc455f19ee28c01@lesimple.fr>
+ <CAL3q7H4-3Mg2GUf2JMMFem77sSQR5opN9dxdvHz2kk1Qd=RD=A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <06639bb0a512aff6ed8a41bffb033f35@integralblue.com>
+X-Sender: candrews@integralblue.com
+X-Rollernet-Abuse: Processed by Roller Network Mail Services. Contact abuse@rollernet.us to report violations. Abuse policy: http://www.rollernet.us/policy
+X-Rollernet-Submit: Submit ID 70bf.5e30494f.c61ed.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It turns out that I made a mistake when deleting the files: I typed
-`rm -r /library/Music/*` instead of `rm -r /library/music/*` like I
-intended. Substitute "Music" for "newmusic" in the examples above. So
-I deleted files from the subvolume by mistake.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
 
-Now onto my next problem: `btrfs restore` is only able to recover
-files that weren't yet deleted by my monumental stuff-up. It appears
-`rm` went in alphabetical order, so I've lost only those artists that
-started with A. B, or (some) C. However, systemd in its infinite
-wisdom decided to automount my library drive while the restore was in
-progress, and I suspect the space_cache mount option kicked in and
-wiped the files forever. `btrfs-find-root` wasn't having much success,
-but the undelete script here[1] is finding the files I wanted, so now
-I'm just gradually working through everything.
+--=_6247bb960cba2591fa84bc6a98584d4d
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 
-I think I'll be able to recover most things.
+On 2020-01-27 08:44, Filipe Manana wrote:
+> On Sat, Jan 25, 2020 at 11:18 AM Stéphane Lesimple
+> <stephane_btrfs2@lesimple.fr> wrote:
+>> 
+>> > ERROR: failed to clone extents to var/amavis/db/__db.001: Invalid argument
+>> 
+>> If I may add another data point here, I'm also encountering this issue 
+>> on a 5.5.0-rc6, with the btrfs-rc7 patches applied to it (so as far as 
+>> btrfs is concerned, this is an rc7).
+>> 
+>> On the first time, it happened after sending ~90 Gb worth of data, and 
+>> aborted (as I didn't specify the -E option to btrfs send). Then, I 
+>> retried with btrfs send -E 0, and it encountered the exact same error 
+>> on the same file.
+>> 
+>> # btrfs send -v /tank/backups/.snaps/incoming/sendme/ | pv 
+>> 2>/dev/pts/23 | btrfs rec -E 0 /newfs/
+>> At subvol /tank/backups/.snaps/incoming/sendme/
+>> At subvol sendme
+>> ERROR: failed to clone extents to 
+>> retroarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid argument
+>> ERROR: failed to clone extents to 
+>> retroarch/x86_64/cores/mednafen_saturn_libretro.dll: Invalid argument
+> 
+> This is probably the same case for which I sent a fix last week:
+> 
+> https://patchwork.kernel.org/patch/11350129/
+> 
+> Thanks.
 
-[1]https://raw.githubusercontent.com/danthem/undelete-btrfs/master/undelete=
-.sh
+I applied that patch to 5.5.0-rc7 and that solved the problem. I can now 
+do backups (which is a send/receive) successfully.
 
-On Tue, 28 Jan 2020 at 22:38, Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 28.01.20 =D0=B3. 12:25 =D1=87., Robbie Smith wrote:
-> > I wanted to try to convert my music library from a directory into a
-> > subvolume so I could use btrfs send/receive to transfer (changed)
-> > files between it and a USB backup. A bit of Googling suggested that
-> > the approach would be:
-> >
-> >> btrfs subvolume create /library/newmusic
-> >> cp -ar --reflink=3Dauto /library/music/* /library/newmusic/.
-> >> rm -r /library/music
-> >
-> > After about 30 seconds I realised that it was deleting files from both
-> > /library/music and /library/newmusic. It appears I've only lost
-> > everything starting with A, B or C, so I unmounted the device, and am
-> > currently trying to use `btrfs restore` to get the files back and it
-> > doesn't seem to be finding them.
-> >
-> > I'm pretty sure deleting files from directory A isn't supposed to also
-> > delete them from directory B, but that's what it did. Is this a bug?
-> >
->
-> Can you reproduce the same thing with a simple test directory? I was not
-> able to reproduce it here?
->
-> > Robbie
-> >
+> 
+>> 
+>> The send/receive is still going on for now, currently around the ~200 
+>> Gb mark.
+>> 
+>> Bees is running on this FS (but I stopped it before doing the 
+>> send/receive).
+>> 
+>> I can test patches if needed.
+>> 
+>> --
+>> Stéphane.
+
+The patch appears to have fixed my problems - thank you!
+~Craig
+
+--=_6247bb960cba2591fa84bc6a98584d4d
+Content-Type: application/pgp-signature;
+ name=signature.asc
+Content-Disposition: attachment;
+ filename=signature.asc;
+ size=195
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQRXYh1D8NS5wgKWveFHeNF+DbGKQgUCXjBJSgAKCRBHeNF+DbGK
+QjhcAKCZqZEzVhoNmjGWAeWKPivfi5WVLACgol8jksaTp2Tb22EKIOR9zkm4YWw=
+=WQrn
+-----END PGP SIGNATURE-----
+
+--=_6247bb960cba2591fa84bc6a98584d4d--
