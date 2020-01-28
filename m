@@ -2,178 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D02414ABDE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jan 2020 22:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD06814AD79
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jan 2020 02:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgA0V7i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jan 2020 16:59:38 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38071 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgA0V7i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jan 2020 16:59:38 -0500
-Received: by mail-wr1-f65.google.com with SMTP id y17so13547018wrh.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jan 2020 13:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:references:to:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=WVm3EgU8kjPX61IvxFfA/82RO+tDvUX8Dfe8nWTuPzg=;
-        b=Vue2O+cCwYe7TIWIm3DDZj9oBWHuluEykZXPd3lNr5WgWzJnjPHAswkFyWgWXXgPzx
-         HPsHrUxyKEfQliBddwl1wJTGZMSjtCWNBZFbgt4hglcUqzKOk4Vihz8dh6+MqF/TPxCf
-         v2zfiEBqNZwF4BucrKfF2DcntbNpCIR5JWTlPOUaT5Mk5fAf5Ca6rQLA2LGR067SsBtk
-         o0L7/cTq9Vtbj4hwyW5Dh+vcqlTuuoRXJVPB1uhmmHZG/II2P0K3rUxx/zYTjeRtuJEM
-         NVsCM0MD8KxXSB3J4j/4t/j6lADr/bavSOE35vQFlk96B4r9P9REI9v1x4zy6SpU14Xm
-         9bwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:references:to:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=WVm3EgU8kjPX61IvxFfA/82RO+tDvUX8Dfe8nWTuPzg=;
-        b=L6XziTVVjB2vQHwIYDvK8LP3OlPOiN1xLezt4pYFTl7wm8V7VZBFur+ILVD3BDqK2S
-         /JxniGjlJoS072B/Bgnh3a5uMfwDce34E+S6PLzENz4E89xCQc9ejooy/VSlf017IcED
-         5Xtd/Lq3tJOAOOkb8ohl47QxSmaZIfBKQGP6X3EXDeZ2bd64Wn7k3BQpIKv3SYh/xrPK
-         yjP8i/Kst1/mvqgHuhAM+iMuVt1UfZ2zqSf3DDYoC23fZUgx/7sR2CORTroAH0kYsRRZ
-         VIb0m1PyOM9nWhe9rHCDgpe9KzRnn2w8RZ8a9Aj8o52+zuijWbAVqKjx6rqqebg3GRcx
-         fb7g==
-X-Gm-Message-State: APjAAAV0KWnbbTE1qF74vfztD+VsbY7F3Ls/zei8y/xVejCuwf92qTgl
-        /lwL9s5zL8RjS6JUD2lF2083FBbgXfw=
-X-Google-Smtp-Source: APXvYqyJadTDvQU5zkwdmmBx8n5lUvo1ytyMwAw5EdfsStM55wOTdQ5iAp9yEEKocgRyHYKpqtdmjg==
-X-Received: by 2002:adf:a48e:: with SMTP id g14mr24433769wrb.409.1580162374404;
-        Mon, 27 Jan 2020 13:59:34 -0800 (PST)
-Received: from ?IPv6:2a01:e0a:1f1:c2f1:c5ba:1dac:b80:6348? ([2a01:e0a:1f1:c2f1:c5ba:1dac:b80:6348])
-        by smtp.gmail.com with ESMTPSA id q10sm228047wme.16.2020.01.27.13.59.33
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jan 2020 13:59:33 -0800 (PST)
+        id S1726205AbgA1BXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jan 2020 20:23:49 -0500
+Received: from mout.gmx.net ([212.227.17.21]:36767 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbgA1BXs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Jan 2020 20:23:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580174626;
+        bh=Yh3bZ0G1BbOXzg7FlsC9zgcbv1yhXymZvoDurOM3fT8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=aq7EXvczNLmC0FZU4zOWilovYgiGGYnwnE5XTgSx3cRk1kcnwqmqaZUMKbxoqzkgZ
+         PgMSwRMzU+LJ+4SY7VAk7vwJ8iK0DyHrAyOUhELqdBLqgh11qeilKTiC39UmKFNy7t
+         cCwUWxTsL4Lx7qNWnfZiiBxO9kO1djXb/fHCjD3E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5GE1-1jcplM1m0j-011AAm; Tue, 28
+ Jan 2020 02:23:46 +0100
 Subject: Re: Endless mount and backpointer mismatch
+To:     Pepie 34 <pepie34@gmail.com>, linux-btrfs@vger.kernel.org
 References: <c541f131-c60b-4957-0f86-3039da69f788@gmail.com>
- <CAJCQCtShdXA2SRkHvfRAS8EVLRRzCmJ3HA-Ynk=uOEc+9XD7iQ@mail.gmail.com>
-To:     linux-btrfs@vger.kernel.org
-From:   Pepie 34 <pepie34@gmail.com>
-Autocrypt: addr=pepie34@gmail.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <46459688-6aed-7ec5-0bdd-97ff76fc13cb@gmail.com>
-Date:   Mon, 27 Jan 2020 22:59:33 +0100
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.24)
- Gecko/20100317 Thunderbird/2.0.0.24 Mnenhy/0.7.5.0
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f7966f07-38e1-f72e-984d-31f46dd2f5ec@gmx.com>
+Date:   Tue, 28 Jan 2020 09:23:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtShdXA2SRkHvfRAS8EVLRRzCmJ3HA-Ynk=uOEc+9XD7iQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: fr-FR
+In-Reply-To: <c541f131-c60b-4957-0f86-3039da69f788@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Du019uz41PmJu4y3jbXLURGZVilUMNdzA"
+X-Provags-ID: V03:K1:8muAuguFJz5zssCrh2Vr7v05jdy4hH437pbkGuORYjj0ixieFIH
+ Ec0597yVfO7FZ+q02WnLpXnWPiELTwBQDEjTm6DV1UKrAUHu2LjXEpi9oSS00Ot+wW5aWS1
+ +kgYo8m2g0KVnS4KUEAbVYAeyba75n4r/4XvP/7MaMMEYoWJ9kTrMcsfdb6px0ovoI5XTUX
+ VB89HsFt6uXaU6IWVRr0w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6AMYCvo6quE=:taFrAuWeNDGl728h0xmMI7
+ hSzafqYqtXCBKpXOiGEsiVhijgpXVFIrKvFVJvmTpYvoDzJOuEX+zRC2b6ErUP/Rbk24zi6A3
+ mSelAKVaYEaTzE1HIHcPSDFIX+tDkPpNr/nXKEnChdjJ4GqpAbdAPK4nYQz0XUzbX4/D2TFCL
+ B0wC4DihRiwKWMZ7oqfxnJsRrDPcvPlyx0XKhwhf44ZAikCZxmWwdfUWgmt+sCsgjMhkYPJwh
+ 6N9McOB+mW1Uj3Y7Nn3ZsPcUJ2/1HyXq3KOtXCw4zFc5iuJNwcSMNssiqIgbmDVXmIBZbH6cl
+ jh9skpOZbbJXvR4QevmTQG1BS94MlfZ4RG6mvQzHZiSyYBXmcM3l5IoBKRa2dUQShxFAFop3V
+ NpDXJ/ErFyptCJGjPdePk9klX+0n/9gprxwDifKxKEM5B4HileOUSWefVTpfaV15lrFUgAoZ4
+ 5w2los1lj26eHqGqakRM6vhMfrAY2s8oPQEh0qL6OPPczHpmLdcmgK4aLa+97M+X0Iutq+xOu
+ +nx2uRmT1m1azHxgyGeX1KQkMFEWlLW4t6kTzkEgPkRVVbt1MtI+on2XrOz5voeMeGcs4qOcH
+ /KyCR1Eu6rzhDBbKN/mNguCIB1EX8dS8N9Q5bp+FFmqWJ8U0Ta8cRGlhe3kiC99JnfY5Kd13m
+ NQyoyhC8431+NaV6qxnSxRolAOndbS2M+xOSkQiLtVMkadE2Bw4F6nL6z8cIal7ProfB3XPts
+ VoLLIXL8Haonkl3TTjt0s4LYDEV0fK1Vebz6Q1jxTzIcWJkFZu1hDcktAY3uyqshg3CQddQua
+ lakPQAO5Rrs0Dq5F5hhR5VWx8o9tv2dgXC0JwZ3/D/ylDl/jVt5eWLpRAiRkz76dfGk+mp0EW
+ 9CZsf6EFwFjX7WjOU2UeH3oGdzttbzD217e+YYoW2Yu4Ukicam69TdondSwjvI2nk1/HKm+tS
+ LHYspYfq6SJ2dvJL4PeLPTHkD97QsVyeLIbsDv1tDCsYFJdJuS0z1RKUOSB6rorh2SS0kiOKh
+ hpkwkFsf/h3b3y7C29cGJIA8cDRH0Lt2qlckh69NlSkiNcZdAWU+eiSAaTAIid7QgKr1Ebuna
+ H6E0b7D09oyL477Ar+ukrTaUm0jCx1UywC5xpE8eyyzeLyPSfwCEt55VKtS6pH5A9v3tMHG5M
+ 6v37Rkm2PKJaj2DhHt+PY7SNIAqzGvl2/C7eOaNdnySKLbqMuYJp+BALpTmW/A5Kou65SOHvF
+ r36Ak6utBTc/PXgJu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 27/01/2020 =C3=A0 22:48, Chris Murphy a =C3=A9crit=C2=A0:
-> On Mon, Jan 27, 2020 at 2:20 PM Pepie 34 <pepie34@gmail.com> wrote:
->> Dear BTRFS community,
->>
->> I've a raid 1 setup on two luks encrypted drives for 4 years that serv=
-es
->> me as btrbk backup target from an other computer.
->> There is a lot of ro snaptshots on it.
->>
->> I've mistakenly launched a balance on it which was extremely slow and
->> tried to cancelled it.
->> After two days of cancelling without results, I decided to power off t=
-he
->> computer.
->>
->> After the reboot, even with the skip_balance mount option, the mountin=
-g
->> is endless, no error in the kernel message and it never mounts.
->>
->> What I have done so far:
->> - mount the volume with the ro option (fast to mount, data OK).
->> - scrub in ro mode, no error found
->> - btrfs check
->> In the extent check  there is plenty of errors like this :
->> =3D>
->> ref mismatch on [9404816285696 32768] extent item 6, found 5
->>
->> incorrect local backref count on 9404816285696 parent 5712684302336
->> owner 0 offset 0 found 0 wanted 1 back 0x55f371ee1ad0
->> backref disk bytenr does not match extent record, bytenr=3D94048162856=
-96,
->> ref bytenr=3D0
->> backpointer mismatch on [9404816285696 32768]
->> <=3D
->> No errors in other checks, though checking "quota groups" is very slow=
-=2E
->>
->> What should I do ? btrfs check --repair ?
->> btrfs check --init-extent-tree ?
->> btrfs --clear-space-cache ?
-> None of the above.
->
-> What kernel version and btrfs-progs? Newer kernels should have better
-> performance with quota enabled and many snapshots, even though I think
-> that combination is still not advised for performance reasons. Older
-> kernel might have a known bug related to the behavior you're
-> experiencing, but we need to know the versions.
->
->
->
-Kernel : 4.19.0-6-amd64 #1 SMP Debian 4.19.67-2+deb10u2 (2019-11-11)
-x86_64 GNU/Linux
-btrfs-progs: 4.20.1-2
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Du019uz41PmJu4y3jbXLURGZVilUMNdzA
+Content-Type: multipart/mixed; boundary="KZWnnGjsifmS9sGmWwPMeV1Ig1DX3O41s"
 
-I'm on debian buster.
+--KZWnnGjsifmS9sGmWwPMeV1Ig1DX3O41s
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Note that I don't really care about perf now, I mainly want to mount r/w
-my volume.
-With the same setup raid1 / luks=C2=A0 / quota, it was fast to mount and =
-use
-before the failed balancing.
-(mount took about 2s... )
-Now it is not mounting at all (except with ro)
 
-Best regards,
 
-Pepie 34
+On 2020/1/28 =E4=B8=8A=E5=8D=885:20, Pepie 34 wrote:
+> Dear BTRFS community,
+>=20
+> I've a raid 1 setup on two luks encrypted drives for 4 years that serve=
+s
+> me as btrbk backup target from an other computer.
+> There is a lot of ro snaptshots on it.
+>=20
+> I've mistakenly launched a balance on it which was extremely slow and
+> tried to cancelled it.
+> After two days of cancelling without results, I decided to power off th=
+e
+> computer.
+>=20
+> After the reboot, even with the skip_balance mount option, the mounting=
 
+> is endless, no error in the kernel message and it never mounts.
+
+Is there anything like "relocating block group XXXX flags XXXX" ?
+
+>=20
+> What I have done so far:
+> - mount the volume with the ro option (fast to mount, data OK).
+> - scrub in ro mode, no error found
+
+So data are all OK.
+Just need a way to cancel the balance.
+
+> - btrfs check
+> In the extent check  there is plenty of errors like this :
+> =3D>
+> ref mismatch on [9404816285696 32768] extent item 6, found 5
+>=20
+> incorrect local backref count on 9404816285696 parent 5712684302336
+> owner 0 offset 0 found 0 wanted 1 back 0x55f371ee1ad0
+> backref disk bytenr does not match extent record, bytenr=3D940481628569=
+6,
+> ref bytenr=3D0
+> backpointer mismatch on [9404816285696 32768]
+> <=3D
+
+It could be caused by half-balanced fs.
+Need to re-check after we cancel the balance.
+
+> No errors in other checks, though checking "quota groups" is very slow.=
+
+
+That's caused by the nature of qgroup.
+
+>=20
+> What should I do ? btrfs check --repair ?
+> btrfs check --init-extent-tree ?
+> btrfs --clear-space-cache ?
+
+None of the options should affect data, but none of them are recommened.
+
+Since the problem is about the balance.
+
+Have you tried to mount the fs with RO,skip_balance, then remount it rw?
+
+Thanks,
+Qu
+
+>=20
+> Will the "init extent tree" option break btrfs receive with old snapsho=
+t
+> parents ?
+>=20
+> Best regards,
+>=20
+> Pepie34
+>=20
+
+
+--KZWnnGjsifmS9sGmWwPMeV1Ig1DX3O41s--
+
+--Du019uz41PmJu4y3jbXLURGZVilUMNdzA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4vjR4ACgkQwj2R86El
+/qjpAwf/S8GbahAxRFtm7eT64VUuDwaAESdBQZRUm+Pxiz8Z7MRouEcrzO5DNC7Y
+DO9G43vWjKWp3WQZRD8usE0qh9jBqD5XfEl8GSycYvYU5BfIOT9xzlXi0uJ140VD
+UdIDgnJkF0twd3okGWHJ9ywyiBEDwVEdtbA5/MUz1NUEcbYuLl6eCw/bJ7Gbbma6
+S4JcLWek9M5JpTo8L+CJOEM65BmSkrBDIfuzbakq1TEo0MrJLdCwBeHIhVJubrF8
++S7Zhifi5F9fpIVVfES4UH5jcj59Qr+hOrUhr3oo6989w9Pi2vVqM2qG75KWp2JJ
+T4PYWZSvDmBKWb25qtXMR5Mcgoqilw==
+=yHS8
+-----END PGP SIGNATURE-----
+
+--Du019uz41PmJu4y3jbXLURGZVilUMNdzA--
