@@ -2,79 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E3714D34A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2020 23:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ED614D3FC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 00:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgA2WzY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jan 2020 17:55:24 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45622 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgA2WzY (ORCPT
+        id S1727160AbgA2Xua (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jan 2020 18:50:30 -0500
+Received: from mail-qv1-f53.google.com ([209.85.219.53]:39417 "EHLO
+        mail-qv1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgA2Xu3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jan 2020 17:55:24 -0500
-Received: by mail-wr1-f66.google.com with SMTP id a6so1496044wrx.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2020 14:55:23 -0800 (PST)
+        Wed, 29 Jan 2020 18:50:29 -0500
+Received: by mail-qv1-f53.google.com with SMTP id y8so619925qvk.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2020 15:50:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EznpRLs7RFg4ZMDAxC2xBQThWwUyRVbVXYJ0ap9ubEc=;
-        b=MVBuGUShCfiV9nuccbzH6CZjiLFz5sVpTzrhkm8grk5I+EbIltgE62QX5owENsN93C
-         npRtXEau+LboM3OSv/Nzw907PKWJQlA7EpMLeywDhnQN00c1hnDWeKl94K3xyy9QJUGc
-         7A3twbvbKYD2P3965v+tljPhEYkkCmDz+8SKn4U2xehqFhKgK/J4ej6CYaxne9rqW3hy
-         RzDo61qQ6Plt951Fw8oqiXc8xGG2mSkli58Rczw6pMNhmnuY6lZQy5S8RWr4rtb5Sx/1
-         FovRFXlFLC4EEI4sPbKIdEq9dESOwbCPxsekfFAHwzKmZyPZUWgA8mVXLdDdhWrtVf6C
-         dtwQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nuRTTVTSBlUMzPI72bhlUocL3aw4rTmD+L+dYcx0dcc=;
+        b=XpZWscLt6tI2yA3mmLuoY8bOMXFjT8GoXfsVNZR1zPimA8ew5zTg16FG3Q8ymFCEsw
+         d51Now6lc3VWPFGj4hA7W+2x1dfDomeRWnkUyTp3MYZUsNre9+SYcCEzsRXs5+gHe29M
+         iTvrfuMKFBafS0Y7c1OZjLbPTNv/k0w+NCBKOVWY8E9YR1caB/0CYXHDkKNYet6cq9Cg
+         +aUafemAN6b04x42HEfIk146HYXnqHwaOy/ZBy7c4LyJW/KDbLGjtYVHCMsYd+Ed6wHi
+         cyVAUKUN7ZoKT6XjfPujKGgR2K8dVB2VTpeTjcVVIUrMGOAoqji8Cz9sxopWtB1gO+fB
+         TwMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EznpRLs7RFg4ZMDAxC2xBQThWwUyRVbVXYJ0ap9ubEc=;
-        b=p59mZR0DCx4NVXlp8iKRkrAJLS49aAZ4ouwCI8iM0hSQkozFhJzD3atBf8TX84x6Te
-         o3pVSYOZaCy2QbkW+47lPBhMco3BZa7s5vmeWo5cZP5l4cP37QPjy4shFpwXJs8Ki8Ms
-         0WJAAcnDhsrTJJBbFeeRwbm/tTnPaekMAvAMqFWuqblJ6YPPPu4ZLWbLq/RWJMUMyRJx
-         rwV5ZNanfAGNf+P5jjYtNoNc/DHzX3ECE2HBMI7HWb6GCuD4qvL4VHHTN8Tz0Fg+Srh7
-         aTvRJyM4VG8CAfYOqWcBIjjybxWZ0qO5DLP4HemLz16ofCB2zw4QMwdu2+kPKD4k46K5
-         /UMw==
-X-Gm-Message-State: APjAAAXPwGlGQhxGz7mMZtLyjcWMktsrjN7NhlwQ9EDUQVseRabRKMUO
-        8hnvl51MXW/B4kq/KMXVSeacaOCU9HEF8aP4ZmZmbhWjcKiMUg==
-X-Google-Smtp-Source: APXvYqyHghGCbufCgC6IYwN9ufhFTJFdZEW00CcJDl3U4w8h8PyzURbmfZhzVGdqfxrZNR2qZI7Bb051OxwK8MFNlpg=
-X-Received: by 2002:adf:f308:: with SMTP id i8mr1261837wro.42.1580338522428;
- Wed, 29 Jan 2020 14:55:22 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nuRTTVTSBlUMzPI72bhlUocL3aw4rTmD+L+dYcx0dcc=;
+        b=Po3bYdo3dwYYT+I/q6UukaiK7vdBouZNUXeopNDh301k/peNzMDwGT2KBO6DcN24fM
+         G2+/Jlfnyf8hETcrlC7nD9yKS5leyXYBrNvRQckAXgynG//hrAlqs5d1U47iXOKeFaLE
+         1DWSFXU2V9wEEjgkK5mMZLhhmsi8/wfUICbIv4Aw4PvYTF9nTmceiT+LbDkRo0lE3Vxw
+         yMIFhAsqBzF8k/wWJr/5IivA0QsfZbl9cFQ6yHLndtSWyELf50OiGyh3RTyBsZ60gAFr
+         dkInxDtH4pbTELNpEbYGF2o4i03tmke7KuTeXUl19NGfxWJBVxSiR6aGdQoZymgrWKU7
+         t1fQ==
+X-Gm-Message-State: APjAAAXxchzOCH74WHuYvx87Xcz3h1BuhwWMtYC4IrqYs8UivCLkHZMU
+        HrYC40b2gJh0OJ7Equ+W7Kbh9jDVrFdwIA==
+X-Google-Smtp-Source: APXvYqyLuA2t6IEGuYHh6hPLabFW5j4Gp6cWoC1yzfCc0f7/wux/rZxe9Kb1xhmtGzRuwgGaaIv/dA==
+X-Received: by 2002:a0c:ed32:: with SMTP id u18mr1867428qvq.2.1580341827993;
+        Wed, 29 Jan 2020 15:50:27 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id v18sm1825992qkg.67.2020.01.29.15.50.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2020 15:50:26 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/20][RFC] Convert data reservations to the ticketing infrastructure
+Date:   Wed, 29 Jan 2020 18:50:04 -0500
+Message-Id: <20200129235024.24774-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <112911984.cFFYNXyRg4@merkaba> <0102016ff2e7e3ad-6b776470-32f1-4b3d-9063-d3c96921df89-000000@eu-west-1.amazonses.com>
- <2049829.BAvHWrS4Fr@merkaba>
-In-Reply-To: <2049829.BAvHWrS4Fr@merkaba>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 29 Jan 2020 15:55:06 -0700
-Message-ID: <CAJCQCtSVqMBONCuwea_9i6xBkzOHSkCSoEAaDi2aH+-CLnNwBg@mail.gmail.com>
-Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
-To:     Martin Steigerwald <martin@lichtvoll.de>
-Cc:     Martin Raiber <martin@urbackup.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 2:20 PM Martin Steigerwald <martin@lichtvoll.de> wrote:
->
-> So if its just a cosmetic issue then I can wait for the patch to land in
-> linux-stable. Or does it still need testing?
+Nikolay reported a problem where we'd occasionally fail generic/371.  This test
+has two tasks running in a loop, one that fallocate and rm's, and one that
+pwrite's and rm's.  There is enough space for both of these files to exist at
+one time, but sometimes the pwrite would fail.
 
-I'm not seeing it in linux-next. A reasonable short term work around
-is mount option 'metadata_ratio=1' and that's what needs more testing,
-because it seems decently likely mortal users will need an easy work
-around until a fix gets backported to stable. And that's gonna be a
-while, me thinks.
+It would fail because we do not serialize data reseravtions.  If one task is
+stuck doing the reclaim work, and another task comes in and steals it's
+reservation enough times, we'll give up and return ENOSPC.  We validated this by
+adding a printk to the data reservation path to tell us that it was succeeding
+at making a reservation while another task was flushing.
 
-Is that mount option sufficient? Or does it take a filtered balance?
-What's the most minimal balance needed? I'm hoping -dlimit=1
+To solve this problem I've converted data reservations over to the ticketing
+system that metadata uses.  There are some cleanups and some fixes that have to
+come before we could do that.  The following are simply cleanups
 
-I can't figure out a way to trigger this though, otherwise I'd be
-doing more testing.
+  [PATCH 01/20] btrfs: change nr to u64 in btrfs_start_delalloc_roots
+  [PATCH 02/20] btrfs: remove orig from shrink_delalloc
+  [PATCH 03/20] btrfs: handle U64_MAX for shrink_delalloc
 
+The following are fixes that are needed to handle data space infos properly.
 
--- 
-Chris Murphy
+  [PATCH 04/20] btrfs: make shrink_delalloc take space_info as an arg
+  [PATCH 05/20] btrfs: make ALLOC_CHUNK use the space info flags
+  [PATCH 06/20] btrfs: call btrfs_try_granting_tickets when freeing
+  [PATCH 07/20] btrfs: call btrfs_try_granting_tickets when unpinning
+  [PATCH 08/20] btrfs: call btrfs_try_granting_tickets when reserving
+  [PATCH 09/20] btrfs: use the btrfs_space_info_free_bytes_may_use
+
+I then converted the data reservation path over to the ticketing infrastructure,
+but I did it in a way that mirrored exactly what we currently have.  The idea is
+that I want to be able to bisect regressions that happen from behavior change,
+and doing that would be hard if I just had a single patch doing the whole
+conversion at once.  So the following patches are only moving code around
+logically, but preserve the same behavior as before
+
+  [PATCH 10/20] btrfs: add flushing states for handling data
+  [PATCH 11/20] btrfs: add btrfs_reserve_data_bytes and use it
+  [PATCH 12/20] btrfs: use ticketing for data space reservations
+
+And then the following patches were changing the behavior of how we flush space
+for data reservations.
+
+  [PATCH 13/20] btrfs: run delayed iputs before committing the
+  [PATCH 14/20] btrfs: flush delayed refs when trying to reserve data
+  [PATCH 15/20] btrfs: serialize data reservations if we are flushing
+  [PATCH 16/20] btrfs: rework chunk allocate for data reservations
+  [PATCH 17/20] btrfs: drop the commit_cycles stuff for data
+
+And then a cleanup now that the data reservation code is the same as the
+metadata reservation code.
+
+  [PATCH 18/20] btrfs: use the same helper for data and metadata
+
+Finally a patch to change the flushing from direct to asynchronous, mirroring
+what we do for metadata for better latency.
+
+  [PATCH 19/20] btrfs: do async reclaim for data reservations
+
+And then a final cleanup now that we're where we want to be with the data
+reservation path.
+
+  [PATCH 20/20] btrfs: kill the priority_reclaim_space helper
+
+I've marked this as an RFC because I've only tested this with generic/371.  I'm
+starting my overnight runs of xfstests now and will likely find regressions, but
+I'd like to get review started so this can get merged ASAP.  Thanks,
+
+Josef
+
