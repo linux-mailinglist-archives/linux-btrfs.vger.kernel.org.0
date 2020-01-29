@@ -2,68 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5BA14D02C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2020 19:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DFD14D01E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2020 19:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgA2SNu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jan 2020 13:13:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42116 "EHLO mx2.suse.de"
+        id S1726852AbgA2SIP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jan 2020 13:08:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40648 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgA2SNu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jan 2020 13:13:50 -0500
+        id S1726245AbgA2SIO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 29 Jan 2020 13:08:14 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0DE40AC77;
-        Wed, 29 Jan 2020 18:13:48 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     dsterba@suse.com
-Cc:     nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] btrfs: optimize barrier usage for Rmw atomics
-Date:   Wed, 29 Jan 2020 10:03:24 -0800
-Message-Id: <20200129180324.24099-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.16.4
+        by mx2.suse.de (Postfix) with ESMTP id DCB4BAD86;
+        Wed, 29 Jan 2020 18:08:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 72695DA730; Wed, 29 Jan 2020 19:07:53 +0100 (CET)
+Date:   Wed, 29 Jan 2020 19:07:53 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+        btrfs-list@steev.me.uk
+Subject: Re: [PATCH v4 0/2] readmirror feature (sysfs and in-memory only
+ approach)
+Message-ID: <20200129180752.GK3929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+        btrfs-list@steev.me.uk
+References: <20200105151402.1440-1-anand.jain@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200105151402.1440-1-anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use smp_mb__after_atomic() instead of smp_mb() and avoid the
-unnecessary barrier for non LL/SC architectures, such as x86.
+On Sun, Jan 05, 2020 at 11:14:00PM +0800, Anand Jain wrote:
+> There were few RFCs [1] before, mainly to figure out storage
+> (or in memory only) for the readmirror policy and the interface needed.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- fs/btrfs/btrfs_inode.h | 2 +-
- fs/btrfs/file.c        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The persistent storage of the policy is not settled but adding the sysfs
+value that's both read and write is safe enough so this patchset is in
+the list of features for 5.7.
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 4e12a477d32e..54e0d2ae22cc 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -325,7 +325,7 @@ struct btrfs_dio_private {
- static inline void btrfs_inode_block_unlocked_dio(struct btrfs_inode *inode)
- {
- 	set_bit(BTRFS_INODE_READDIO_NEED_LOCK, &inode->runtime_flags);
--	smp_mb();
-+	smp_mb__after_atomic();
- }
- 
- static inline void btrfs_inode_resume_unlocked_dio(struct btrfs_inode *inode)
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index a16da274c9aa..ea79ab068079 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2143,7 +2143,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	}
- 	atomic_inc(&root->log_batch);
- 
--	smp_mb();
-+	smp_mb__after_atomic();
- 	if (btrfs_inode_in_log(BTRFS_I(inode), fs_info->generation) ||
- 	    BTRFS_I(inode)->last_trans <= fs_info->last_trans_committed) {
- 		/*
--- 
-2.16.4
-
+With the new raid1c34 profiles we'll need a better mirror selection to
+utilize all the copies more effectively. Besides the default PID policy
+we should have at least one more so it's not just the bare interface
+without any real use.
