@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1DD14D401
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 00:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC3814D402
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 00:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgA2Xuj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jan 2020 18:50:39 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45288 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgA2Xui (ORCPT
+        id S1727086AbgA2Xuk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jan 2020 18:50:40 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:40271 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727170AbgA2Xuj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jan 2020 18:50:38 -0500
-Received: by mail-qk1-f193.google.com with SMTP id x1so1149232qkl.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2020 15:50:37 -0800 (PST)
+        Wed, 29 Jan 2020 18:50:39 -0500
+Received: by mail-qk1-f195.google.com with SMTP id t204so1190131qke.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jan 2020 15:50:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=XZ1Jx3Zqu1mD3sig1ehd/qr4KMIp5U8ozP74u4J0V9w=;
-        b=d8eMIOnYMCJhYwaSe6g0/GtOXP/y9WlI9P8tHsRZwqjmufmTVJXTm3JPBsu+vSjA03
-         QTvtHv4cgdudI/QiSExNKpBo2wk7a7cnFeytYfi1cJewfySh+wNn2+8ptyVt1ordakLS
-         NrWQ3le383W26X3QMyvVUMNRRa1ySrKZmU01QBdUmuKYVTyaO2hOQ2RlhF5fUOlg73z/
-         qUXCaCL/DvyoCYxTXj6vnRhr+/z/tNuj+xVThTz3QQsSgqCKBOj0KK5VgmrhHAM0mdp1
-         sc1KAVHM+CuBxWm4E4vr5OBoNneXNUhGZlXaq2Pt56jnnoYBAm8VDASBIku4TKnbylNd
-         pFTg==
+        bh=lHuaXplm52whMq5dhm44y6ojaOd486dtd/BXWJ5zxQg=;
+        b=zp0EeuLA0OjJdkJ6LrX2xnMkKnP1LZGcLWzCX8daSXtDOMcLRIGAwm86l96nMAuaCU
+         3BW1JMymexdbDBYXgVyyWJScOIi4pYiUesWqyZWASx0ZMOUS3jYik7ShOkIUIZ8KvMws
+         eU3b21F21NB4+NEgF5YNybKJAKcqK8mo9R8T7O5gmHimILRbC0jcpxrL0kHZT9XTUwJA
+         u6mypKMm7QTPlhlYCcnIzGP9sKPTsSI0lj9RfJGXA11i26W1k3msHMfkDD2h22WMHQgC
+         q0xat/dTM1jOtqoyaUFwqa0XR5PexQvQpMUrxaa5126kA8fvxr7Gh7NPqsYga3wKY/Dl
+         gwjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XZ1Jx3Zqu1mD3sig1ehd/qr4KMIp5U8ozP74u4J0V9w=;
-        b=MAJrWhAy9h+SHsazacriJn78Jo5e8osPNtgZBxPWonYd0dQF6/KrB5QxNblubOsEwW
-         fv/UsJN1k3N86LN7ox1NxclgvFSuqN4GgpHbuYOW/1aMPHoa3oSImyxGvA7gZb9fI2rk
-         DiT6H6iO3TrCk2b8BPm1Wjeyj7muwrlLNkt5/5Fnhw73FrJHBfTmXO+byfB3H8ecLFZM
-         HpucPrbjPvCyLgTDPhY5nXKvTFIJtInqOEZkdYd1taByDN7iBy7vEl1zSOVE96MZdTNO
-         lW2CFRkyWFVh6YLWvfIowVd+CnSwYVwmERkpn7UN1IlyoJjf7uVhI6D39tTNvD2mkihT
-         JLfg==
-X-Gm-Message-State: APjAAAXnrc7H6ZJYR0TmgSTEZ9+jsTgN5GtVq66z8wk58ym8T6QUI1Tb
-        ZMIi0depPIX+UAVdyswmCYlRzxnqxVjFOw==
-X-Google-Smtp-Source: APXvYqx6ixS4pBzZIE0D4EfhFG93i6MIvOpoq/5d6UDNVnt0u/f1H3eStymuTlN3b90Fc0jtOOFX7A==
-X-Received: by 2002:ae9:e50c:: with SMTP id w12mr2295678qkf.407.1580341836220;
-        Wed, 29 Jan 2020 15:50:36 -0800 (PST)
+        bh=lHuaXplm52whMq5dhm44y6ojaOd486dtd/BXWJ5zxQg=;
+        b=mXtlQUxv8c5R9LCe/DO5bpeB+XWXljn8TvvV7ucACj1FJKM1fI7g5V1Rv/Ibhp9+8F
+         v+ObX2ewPW7VF1KHeRwImnCNWzyagR9JAjG8+VtRyw9yrWW2Qs/8mN6o5GaIG5L52p0k
+         7uO4TUJmBRj65y8HRgBmbIHOhnu9K1avk0oNoyxIHReDn7TIu3e08M4PQe/nxucgDFL7
+         yx1k/clH7/dYFhZY87WvBm9XZLT7b4HiGzE6FBPF3IPUkRcGire+TWz5xH12WmRs908j
+         bSjcUYO/JJ4PSVv8WjZOnwHbW71Bcx+rUVtU91mZBqRsKaHkG7/uhFVbEsk5kbtXORWn
+         M6GA==
+X-Gm-Message-State: APjAAAVPqAoIBHIg7h96dIXtWZmb9OFKgwWynnDRoVRSIK6brOXwToky
+        DZl84LaEyYF3VeggfUYY9yvV4MtI+EjuRw==
+X-Google-Smtp-Source: APXvYqwO65cO43ZekYgF6QuPGNvPlaVfU116Lbiv/HtMVIariqMEE4RAHsMWqKSo9UokZGjTivc0Lw==
+X-Received: by 2002:a05:620a:218d:: with SMTP id g13mr2604412qka.286.1580341837944;
+        Wed, 29 Jan 2020 15:50:37 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id e2sm1850735qkb.112.2020.01.29.15.50.35
+        by smtp.gmail.com with ESMTPSA id h7sm1864705qke.30.2020.01.29.15.50.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2020 15:50:35 -0800 (PST)
+        Wed, 29 Jan 2020 15:50:37 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/20] btrfs: make ALLOC_CHUNK use the space info flags
-Date:   Wed, 29 Jan 2020 18:50:09 -0500
-Message-Id: <20200129235024.24774-6-josef@toxicpanda.com>
+Subject: [PATCH 06/20] btrfs: call btrfs_try_granting_tickets when freeing reserved bytes
+Date:   Wed, 29 Jan 2020 18:50:10 -0500
+Message-Id: <20200129235024.24774-7-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200129235024.24774-1-josef@toxicpanda.com>
 References: <20200129235024.24774-1-josef@toxicpanda.com>
@@ -60,31 +60,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have traditionally used flush_space() to flush metadata space, so
-we've been unconditionally using btrfs_metadata_alloc_profile() for our
-profile to allocate a chunk.  However if we're going to use this for
-data we need to use btrfs_get_alloc_profile() on the space_info we pass
-in.
+We were missing a call to btrfs_try_granting_tickets in
+btrfs_free_reserved_bytes, so add it to handle the case where we're able
+to satisfy an allocation because we've freed a pending reservation.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/block-group.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 17e2b5a53cb5..5a92851af2b3 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -604,7 +604,8 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 			break;
- 		}
- 		ret = btrfs_chunk_alloc(trans,
--				btrfs_metadata_alloc_profile(fs_info),
-+				btrfs_get_alloc_profile(fs_info,
-+							space_info->flags),
- 				(state == ALLOC_CHUNK) ? CHUNK_ALLOC_NO_FORCE :
- 					CHUNK_ALLOC_FORCE);
- 		btrfs_end_transaction(trans);
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 77ec0597bd17..616d0dd69394 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2932,6 +2932,8 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
+ 	if (delalloc)
+ 		cache->delalloc_bytes -= num_bytes;
+ 	spin_unlock(&cache->lock);
++
++	btrfs_try_granting_tickets(cache->fs_info, space_info);
+ 	spin_unlock(&space_info->lock);
+ }
+ 
 -- 
 2.24.1
 
