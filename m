@@ -2,86 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A9114CDE0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2020 17:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40B914CE08
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jan 2020 17:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgA2QCJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jan 2020 11:02:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42404 "EHLO mx2.suse.de"
+        id S1726863AbgA2QMh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jan 2020 11:12:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50088 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726564AbgA2QCJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jan 2020 11:02:09 -0500
+        id S1726564AbgA2QMg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 29 Jan 2020 11:12:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6CBBDAD06;
-        Wed, 29 Jan 2020 16:02:07 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C8699ADB3;
+        Wed, 29 Jan 2020 16:12:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F1393DA730; Wed, 29 Jan 2020 17:01:47 +0100 (CET)
-Date:   Wed, 29 Jan 2020 17:01:47 +0100
+        id 21DFDDA730; Wed, 29 Jan 2020 17:12:14 +0100 (CET)
+Date:   Wed, 29 Jan 2020 17:12:14 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
- committing metadata space
-Message-ID: <20200129160147.GI3929@twin.jikos.cz>
+To:     Marcos Paulo de Souza <mpdesouza@suse.de>
+Cc:     dsterba@suse.cz, linux-kernel@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [PATCHv2] btrfs: Introduce new BTRFS_IOC_SNAP_DESTROY_V2 ioctl
+Message-ID: <20200129161214.GJ3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200115034128.32889-1-wqu@suse.com>
- <20200116142928.GX3929@twin.jikos.cz>
- <40ff2d8d-eb3b-1c90-ea19-618e5c058bcc@gmx.com>
- <20200117140231.GF3929@twin.jikos.cz>
- <f1f1a2ab-ed09-d841-6a93-a44a8fb2312f@gmx.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <mpdesouza@suse.de>,
+        linux-kernel@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+References: <20200127024817.15587-1-marcos.souza.org@gmail.com>
+ <20200128172638.GA3929@twin.jikos.cz>
+ <fd8a3cb87b1084e5ab68fdcb60f7af3c6b6265d1.camel@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f1f1a2ab-ed09-d841-6a93-a44a8fb2312f@gmx.com>
+In-Reply-To: <fd8a3cb87b1084e5ab68fdcb60f7af3c6b6265d1.camel@suse.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 10:16:45PM +0800, Qu Wenruo wrote:
-> >> But this behavior itself is not accurate.
-> >>
-> >> We have global reservation, which is normally always larger than the
-> >> immediate number 4M.
+On Wed, Jan 29, 2020 at 12:07:40PM -0300, Marcos Paulo de Souza wrote:
+> > > -	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
+> > > -	namelen = strlen(vol_args->name);
+> > > -	if (strchr(vol_args->name, '/') ||
+> > > -	    strncmp(vol_args->name, "..", namelen) == 0) {
+> > > -		err = -EINVAL;
+> > > -		goto out;
+> > > +		if (!(vol_args2->flags & BTRFS_SUBVOL_BY_ID)) {
+> > > +			err = -EINVAL;
+> > > +			goto out;
 > > 
-> > The global block reserve is subtracted from the metadata accounted from
-> > the block groups. And after that, if there's only little space left, the
-> > check triggers. Because at this point any new metadata reservation
-> > cannot be satisfied from the remaining space, yet there's >0 reported.
+> > The flag validation needs to be factored out of the if. First
+> > validate,
+> > then do the rest. For backward compatibility, the v1 ioctl must take
+> > no
+> > flags, so if theres BTRFS_SUBVOL_BY_ID for v1, it needs to fail. For
+> > v2
+> > the flag is optional.
 > 
-> OK, then we need to do over-commit calculation here, and do the 4M
-> calculation.
-> 
-> The quick solution I can think of would go back to Josef's solution by
-> exporting can_overcommit() to do the calculation.
-> 
-> 
-> But my biggest problem is, do we really need to do all these hassle?
+> Only vol_args_v2 has the flags field, so for current
+> BTRFS_IOC_SNAP_DESTORY there won't be any flags. If we drop the check
+> for BTRFS_SUBVOL_BY_ID in BTRFS_IOC_SNAP_DESTORY_V2, so won't check for
+> this flag at all, making it meaningless.
 
-As far as I know we did not ask for it, it's caused by limitations of
-the public interfaces (statfs).
+Oh right, so the validation applies only to v2 and in that case it's
+fine to keep it in the place you have it.
 
-> My argument is, other fs like ext4/xfs still has their inode number
-> limits, and they don't report 0 avail when  that get exhausted.
-> (Although statfs() has such report mechanism for them though).
+> What do you think? Should we drop this flag at all and just rely in the
+> ioctl number + subvolid being informed?
 
-Maybe that's also the perception of what "space" is for users. The data
-and metadata distinction is an implementation detail. So if 'df' tells
-me there's space I should be able to create new files, right? Or write
-more data, but still looking at the same number of free space.
-
-For ext2 or ext3 it should be easier to see if it's possible to create
-new inodes, the values of 'df -i' are likely accurate because of the
-mkfs-time preallocation.
-
-Newer features on ext4 and xfs allow dynamic creation of inodes, you can
-find guesswork regarding the f_files estimates.
-
-I vaguely remember that it's possible to get ENOSPC on ext4 by
-exhausting metadata yet statfs will still tell you there's free space.
-This is confusing too.
+No, v2 should work for both deletion by name and by id. It's going to
+supersede v1 that has to stay for backward compatibility, but must
+provide complete functionality of v1 to keep the usability sane.
