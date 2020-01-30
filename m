@@ -2,79 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC20B14E46C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D45E14E46D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgA3VJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 16:09:45 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32975 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgA3VJo (ORCPT
+        id S1727511AbgA3VKE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 16:10:04 -0500
+Received: from luna.lichtvoll.de ([194.150.191.11]:33113 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726514AbgA3VKE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 16:09:44 -0500
-Received: by mail-wr1-f65.google.com with SMTP id b6so5979465wrq.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2020 13:09:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5n1hZ1Jvsku/UJ8K4eOv1YKLqiKbKWiNW2XMlpzggl8=;
-        b=MUYCjzBYXMDHaFZi4132i61ItCoJzPxu5ZkuwQkBsccZjOC3LnjPl4Uca2epCAizAL
-         6OruDsu2uucrLowTIl6x09zqtfcbztxTH8XDn9hf8njxHlU6nEmYpSnUqEjIdsZpB6tX
-         6LckBtJfWt6Yvv3P0JaPIOfFsAK1ae+Ht8T4/VDD7bxQ/V9tG8YBNzR/Q9XeDPB9quNE
-         Xz1lSszyNKt8tL49ORBbo2nkOEO/x/b4CPdpAMT1n9vxbczZM0d8D27dpOC+xznS4GW2
-         qGe6Cusefclmga+eYbmHUzn6Fe3BC/3zOFsKafhc+W94BHFixR2aUxizhWTcQ1f5jKEj
-         yXuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5n1hZ1Jvsku/UJ8K4eOv1YKLqiKbKWiNW2XMlpzggl8=;
-        b=lFAS+/uH5NUb/ms54vg+SAa7sB1t7uGOV8yuItqXz2MoYb6OLvln3rW3dVXCIBaluH
-         uoYR9kmWp0nnEalBlgJeR1A1eWTjv9q5CDIj4kKDnK7SWrE0KiR/98vtgel1u8OhcpdS
-         dy9U2wZ6cgKSqL1Ki4rPYzAxeL9IPP7C4DC71GY7qM3fs4eX500wcbN530RxKEwwbXSH
-         1p+CQmqL2QOcrhlfFgxjlpX9xAgZxlHxxW3r/EVbGLEU9Kq3ssIvlGC4aZdXxpZowE7S
-         T2Md9EgB1Fip4i3Jioi4g2lb/gK9GS7xIK7ikRumGTolZl7+YiMWqheyWV/dge54NYCb
-         tyEQ==
-X-Gm-Message-State: APjAAAXSSDn2y+wT2CIS8U6hEJ8YUytA1lKJNRXsZ9tPPy5mnOn7MupM
-        ZezXIrY5GO8rwh2ewz4Y+eEp6+gCDopKfe/bP5j21Q==
-X-Google-Smtp-Source: APXvYqzroQ3EFq+KLBJ/mWJUAGoj7+P0I3T+eM/V1q04hVBk46MNJ95n+zphsHcmq/cU7GXiF+pISgrf/Gi34oLV3mo=
-X-Received: by 2002:adf:f308:: with SMTP id i8mr7622837wro.42.1580418581166;
- Thu, 30 Jan 2020 13:09:41 -0800 (PST)
-MIME-Version: 1.0
-References: <112911984.cFFYNXyRg4@merkaba> <10361507.xcyXs1b6NT@merkaba>
- <CAJCQCtQgqg2u78q2vZi=bEy+bkzX48M+vHXR00dsuNYWaxqRKg@mail.gmail.com>
- <21104414.nfYVoVUMY0@merkaba> <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
- <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
-In-Reply-To: <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 30 Jan 2020 14:09:25 -0700
-Message-ID: <CAJCQCtRq5Q25sqW8wrfiYecnMg3Q+XjTuChdCU=cg9AwboVtCQ@mail.gmail.com>
-Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Martin Steigerwald <martin@lichtvoll.de>,
-        Martin Raiber <martin@urbackup.org>,
+        Thu, 30 Jan 2020 16:10:04 -0500
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 491ADA9812;
+        Thu, 30 Jan 2020 22:10:02 +0100 (CET)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Martin Raiber <martin@urbackup.org>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
+Date:   Thu, 30 Jan 2020 22:10:01 +0100
+Message-ID: <1887603.ctEADUaVB5@merkaba>
+In-Reply-To: <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
+References: <112911984.cFFYNXyRg4@merkaba> <21104414.nfYVoVUMY0@merkaba> <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 1:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> The file system is fine, you don't need to balance or anything, this is purely a
-> cosmetic bug.
+Chris Murphy - 30.01.20, 21:18:41 CET:
+> On Thu, Jan 30, 2020 at 1:02 PM Martin Steigerwald 
+<martin@lichtvoll.de> wrote:
+> > Chris Murphy - 30.01.20, 17:37:42 CET:
+> > > On Thu, Jan 30, 2020 at 3:41 AM Martin Steigerwald
+> > 
+> > <martin@lichtvoll.de> wrote:
+> > > > Chris Murphy - 29.01.20, 23:55:06 CET:
+> > > > > On Wed, Jan 29, 2020 at 2:20 PM Martin Steigerwald
+> > > > 
+> > > > <martin@lichtvoll.de> wrote:
+> > > > > > So if its just a cosmetic issue then I can wait for the
+> > > > > > patch to
+> > > > > > land in linux-stable. Or does it still need testing?
+> > > > > 
+> > > > > I'm not seeing it in linux-next. A reasonable short term work
+> > > > > around
+> > > > > is mount option 'metadata_ratio=1' and that's what needs more
+> > > > > testing, because it seems decently likely mortal users will
+> > > > > need
+> > > > > an easy work around until a fix gets backported to stable. And
+> > > > > that's gonna be a while, me thinks.
+> > > > > 
+> > > > > Is that mount option sufficient? Or does it take a filtered
+> > > > > balance?
+> > > > > What's the most minimal balance needed? I'm hoping -dlimit=1
+> > > > 
+> > > > Does not make a difference. I did:
+> > > > 
+> > > > - mount -o remount,metadata_ratio=1 /daten
+> > > > - touch /daten/somefile
+> > > > - dd if=/dev/zero of=/daten/someotherfile bs=1M count=500
+> > > > - sync
+> > > > - df still reporting zero space free
+> > > > 
+> > > > > I can't figure out a way to trigger this though, otherwise I'd
+> > > > > be
+> > > > > doing more testing.
+> > > > 
+> > > > Sure.
+> > > > 
+> > > > I am doing the balance -dlimit=1 thing next. With
+> > > > metadata_ratio=0
+> > > > again.
+> > > > 
+> > > > % btrfs balance start -dlimit=1 /daten
+> > > > Done, had to relocate 1 out of 312 chunks
+> > > > 
+> > > > % LANG=en df -hT /daten
+> > > > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > > > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > > > 
+> > > > Okay, doing with metadata_ratio=1:
+> > > > 
+> > > > % mount -o remount,metadata_ratio=1 /daten
+> > > > 
+> > > > % btrfs balance start -dlimit=1 /daten
+> > > > Done, had to relocate 1 out of 312 chunks
+> > > > 
+> > > > % LANG=en df -hT /daten
+> > > > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > > > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > > > 
+> > > > 
+> > > > Okay, other suggestions? I'd like to avoid shuffling 311 GiB
+> > > > data
+> > > > around using a full balance.
+> > > 
+> > > There's earlier anecdotal evidence that -dlimit=10 will work. But
+> > > you
+> > > can just keep using -dlimit=1 and it'll balance a different block
+> > > group each time (you can confirm/deny this with the block group
+> > > address and extent count in dmesg for each balance). Count how
+> > > many it takes to get df to stop misreporting. It may be a file
+> > > system specific value.
+> > 
+> > Lost the patience after 25 attempts:
+> > 
+> > date; let I=I+1; echo "Balance $I"; btrfs balance start -dlimit=1
+> > /daten ; LANG=en df -hT /daten
+> > Do 30. Jan 20:59:17 CET 2020
+> > Balance 25
+> > Done, had to relocate 1 out of 312 chunks
+> > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > 
+> > 
+> > Doing the -dlimit=10 balance now:
+> > 
+> > % btrfs balance start -dlimit=10 /daten ; LANG=en df -hT /daten
+> > Done, had to relocate 10 out of 312 chunks
+> > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > 
+> > Okay, enough of balancing for today.
+> > 
+> > I bet I just wait for a proper fix, instead of needlessly shuffling
+> > data around.
+> 
+> What about unmounting and remounting?
 
-It's not entirely cosmetic if a program uses statfs to check free
-space and then errors when it finds none. Some people are running into
-that.
+Does not help.
+ 
+> There is a proposed patch that David referenced in this thread, but
+> it's looking like it papers over the real problem. But even if so,
+> that'd get your file system working sooner than a proper fix, which I
+> think (?) needs to be demonstrated to at least cause no new
+> regressions in 5.6, before it'll be backported to stable.
 
-https://lore.kernel.org/linux-btrfs/alpine.DEB.2.21.99999.375.2001131514010.21037@trent.utfs.org/
-
-I guess right now the most reliable work around is to revert to 5.3.18.
-
+I am done with re-balancing experiments.
 
 -- 
-Chris Murphy
+Martin
+
+
