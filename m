@@ -2,173 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A9614E4A4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE22214E4BF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbgA3VMv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 16:12:51 -0500
-Received: from luna.lichtvoll.de ([194.150.191.11]:44979 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727635AbgA3VMv (ORCPT
+        id S1727267AbgA3VUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 16:20:50 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:40507 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727161AbgA3VUu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 16:12:51 -0500
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 160DFA9818;
-        Thu, 30 Jan 2020 22:12:49 +0100 (CET)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Martin Raiber <martin@urbackup.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        Thu, 30 Jan 2020 16:20:50 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 4C788639;
+        Thu, 30 Jan 2020 16:20:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 30 Jan 2020 16:20:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:cc:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm2; bh=XXQXVRMrZWdq3FlYmSFDaDP2zME
+        MB2gYCkHYqPP17TQ=; b=iqrBD2A5OJzgPMH7Jd9e+mUmmlTHvCp14QZvYR2sYVj
+        /l+dBndhvv7BAVgL4AcPegImUYqqtvMO6v2a8CEG31ZG0K1SVPG3qw2BJr89SOOY
+        S0Fw1wniXNyr1ygO42NjRNLeShtaPofYxB5SbugyZpj0hCkTdxHJRp0sfqRnG18y
+        7gnVVd4+EM7YB6VxDuQuUJP4iS0Kq0jXLqAT2aeCDBGiiAscoDCPAFpTzkawmsAQ
+        bBm8TeT77p/tG/JBLr1CYBiT0JqeeSA+X8CCgNimMdhyxDfJh4ZJclNIJezkAZhC
+        PCi7Hx6vbOMQgVtkRzdQECBJ9YdowvUr1HkOJVLkQ5g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XXQXVR
+        MrZWdq3FlYmSFDaDP2zMEMB2gYCkHYqPP17TQ=; b=I6jATvCtcNpfisIry0g6sX
+        WSXHv0eupVwQNA+YA0sTZWh/XoS7fYEC+QJ0Kgqn+xyrzur7YbZA9Ryo0xUG5HUl
+        q7fXemmWwG4Ca7+3omctG0Lg1XVQIbZ9fB9Tquwhme7OYK3nKfok4IuH71Rn5xJU
+        zR/Wfw/H1Fd8sHsZu64aXgHsKLe54xcjSIE6PFYIR8VMK1qCQXJnQU/dUEpArczc
+        y+VnIdA4EGMxwoxXpF6AckFkcjXFUD93GY6lGUuVegy66s8wdaEztc8jHuBEW+B3
+        Q8zMn7ogBLhoW67E90NNQL89Exc/+87uVp+gbwLVmwmh2UzOj4zAewke7LdXDZ7A
+        ==
+X-ME-Sender: <xms:sEgzXpc-Ubv5qadqwnOfZ2FTULqnxymKZdOQvzn3-19PUCsUzoV63A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrfeekgddugeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtsehgtderofdtfeejnecuhfhrohhmpeftvghmihcu
+    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecukfhppedvfe
+    drvdeffedruddtvddrfeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:sEgzXoxMDi774y-DLgPElLHi_mDwknsri4GX2us3cPHLmNAnFVK6hg>
+    <xmx:sEgzXo1GuOVXRpufg1cneJeBBqYwmaQUp0SskDty8LfIg1kQ7Tr-eA>
+    <xmx:sEgzXuzweiKrBhpzUS2CqINX9a-phWhjSRnFq71rEr7j2BwFRD9x8w>
+    <xmx:sEgzXlQEB2XqSH3OXgURTMCW2NRkmjQv62swQrQ-fs9en7K7BJgJ8w>
+Received: from [10.0.0.6] (23-233-102-38.cpe.pppoe.ca [23.233.102.38])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5E358328005A;
+        Thu, 30 Jan 2020 16:20:48 -0500 (EST)
 Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
-Date:   Thu, 30 Jan 2020 22:12:48 +0100
-Message-ID: <2024905.VEpPOkqU0c@merkaba>
-In-Reply-To: <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
-References: <112911984.cFFYNXyRg4@merkaba> <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com> <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
+To:     Martin Steigerwald <martin@lichtvoll.de>
+References: <112911984.cFFYNXyRg4@merkaba> <21104414.nfYVoVUMY0@merkaba>
+ <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
+ <1887603.ctEADUaVB5@merkaba>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <4b18e328-72fc-8167-d140-97c898c47e6a@georgianit.com>
+Date:   Thu, 30 Jan 2020 16:20:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+In-Reply-To: <1887603.ctEADUaVB5@merkaba>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="DIwQsDUyuVUnGtzeufPaDonOPhV9LnN7W"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Josef Bacik - 30.01.20, 21:59:31 CET:
-> On 1/30/20 3:18 PM, Chris Murphy wrote:
-> > On Thu, Jan 30, 2020 at 1:02 PM Martin Steigerwald 
-<martin@lichtvoll.de> wrote:
-> >> Chris Murphy - 30.01.20, 17:37:42 CET:
-> >>> On Thu, Jan 30, 2020 at 3:41 AM Martin Steigerwald
-> >> 
-> >> <martin@lichtvoll.de> wrote:
-> >>>> Chris Murphy - 29.01.20, 23:55:06 CET:
-> >>>>> On Wed, Jan 29, 2020 at 2:20 PM Martin Steigerwald
-> >>>> 
-> >>>> <martin@lichtvoll.de> wrote:
-> >>>>>> So if its just a cosmetic issue then I can wait for the patch
-> >>>>>> to
-> >>>>>> land in linux-stable. Or does it still need testing?
-> >>>>> 
-> >>>>> I'm not seeing it in linux-next. A reasonable short term work
-> >>>>> around
-> >>>>> is mount option 'metadata_ratio=1' and that's what needs more
-> >>>>> testing, because it seems decently likely mortal users will need
-> >>>>> an easy work around until a fix gets backported to stable. And
-> >>>>> that's gonna be a while, me thinks.
-> >>>>> 
-> >>>>> Is that mount option sufficient? Or does it take a filtered
-> >>>>> balance?
-> >>>>> What's the most minimal balance needed? I'm hoping -dlimit=1
-> >>>> 
-> >>>> Does not make a difference. I did:
-> >>>> 
-> >>>> - mount -o remount,metadata_ratio=1 /daten
-> >>>> - touch /daten/somefile
-> >>>> - dd if=/dev/zero of=/daten/someotherfile bs=1M count=500
-> >>>> - sync
-> >>>> - df still reporting zero space free
-> >>>> 
-> >>>>> I can't figure out a way to trigger this though, otherwise I'd
-> >>>>> be
-> >>>>> doing more testing.
-> >>>> 
-> >>>> Sure.
-> >>>> 
-> >>>> I am doing the balance -dlimit=1 thing next. With
-> >>>> metadata_ratio=0
-> >>>> again.
-> >>>> 
-> >>>> % btrfs balance start -dlimit=1 /daten
-> >>>> Done, had to relocate 1 out of 312 chunks
-> >>>> 
-> >>>> % LANG=en df -hT /daten
-> >>>> Filesystem             Type   Size  Used Avail Use% Mounted on
-> >>>> /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
-> >>>> 
-> >>>> Okay, doing with metadata_ratio=1:
-> >>>> 
-> >>>> % mount -o remount,metadata_ratio=1 /daten
-> >>>> 
-> >>>> % btrfs balance start -dlimit=1 /daten
-> >>>> Done, had to relocate 1 out of 312 chunks
-> >>>> 
-> >>>> % LANG=en df -hT /daten
-> >>>> Filesystem             Type   Size  Used Avail Use% Mounted on
-> >>>> /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
-> >>>> 
-> >>>> 
-> >>>> Okay, other suggestions? I'd like to avoid shuffling 311 GiB data
-> >>>> around using a full balance.
-> >>> 
-> >>> There's earlier anecdotal evidence that -dlimit=10 will work. But
-> >>> you
-> >>> can just keep using -dlimit=1 and it'll balance a different block
-> >>> group each time (you can confirm/deny this with the block group
-> >>> address and extent count in dmesg for each balance). Count how
-> >>> many it takes to get df to stop misreporting. It may be a file
-> >>> system specific value.
-> >> 
-> >> Lost the patience after 25 attempts:
-> >> 
-> >> date; let I=I+1; echo "Balance $I"; btrfs balance start -dlimit=1
-> >> /daten ; LANG=en df -hT /daten
-> >> Do 30. Jan 20:59:17 CET 2020
-> >> Balance 25
-> >> Done, had to relocate 1 out of 312 chunks
-> >> Filesystem             Type   Size  Used Avail Use% Mounted on
-> >> /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
-> >> 
-> >> 
-> >> Doing the -dlimit=10 balance now:
-> >> 
-> >> % btrfs balance start -dlimit=10 /daten ; LANG=en df -hT /daten
-> >> Done, had to relocate 10 out of 312 chunks
-> >> Filesystem             Type   Size  Used Avail Use% Mounted on
-> >> /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
-> >> 
-> >> Okay, enough of balancing for today.
-> >> 
-> >> I bet I just wait for a proper fix, instead of needlessly shuffling
-> >> data around.
-> > 
-> > What about unmounting and remounting?
-> > 
-> > There is a proposed patch that David referenced in this thread, but
-> > it's looking like it papers over the real problem. But even if so,
-> > that'd get your file system working sooner than a proper fix, which
-> > I
-> > think (?) needs to be demonstrated to at least cause no new
-> > regressions in 5.6, before it'll be backported to stable.
-> 
-> The file system is fine, you don't need to balance or anything, this
-> is purely a cosmetic bug.  _Always_ trust what btrfs filesystem usage
-> tells you, and it's telling you that there's 88gib of unallocated
-> space.  df is just wrong because 5 years ago we arbitrarily decided
-> to set b_avail to 0 if we didn't have enough metadata space for the
-> whole global reserve, despite how much unallocated space we had left.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DIwQsDUyuVUnGtzeufPaDonOPhV9LnN7W
+Content-Type: multipart/mixed; boundary="OshYGbl0FUYN2FEftT9WorLjB7a5rrrLQ";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Martin Steigerwald <martin@lichtvoll.de>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <4b18e328-72fc-8167-d140-97c898c47e6a@georgianit.com>
+Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
+References: <112911984.cFFYNXyRg4@merkaba> <21104414.nfYVoVUMY0@merkaba>
+ <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
+ <1887603.ctEADUaVB5@merkaba>
+In-Reply-To: <1887603.ctEADUaVB5@merkaba>
 
-Okay, that it what I got initially.
+--OshYGbl0FUYN2FEftT9WorLjB7a5rrrLQ
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-However then Chris suggested doing some balances thinking I was helping 
-to test something that could help other users. I did not question 
-whether the balances would make sense or not.
+On 2020-01-30 4:10 p.m., Martin Steigerwald wrote:
 
->  A recent changed means that we are more likely to not have enough
-> free metadata space for the whole global reserve if there's
-> unallocated space, specifically because we can use that unallocated
-> space if we absolutely have to. The fix will be to adjust the
-> statfs() madness and then df will tell you the right thing (well as
-> right as it can ever tell you anyway.)  Thanks,
-
-Works for me.
-
-Thank you,
--- 
-Martin
+>=20
+> I am done with re-balancing experiments.
+>=20
 
 
+It should be pretty easy to fix.. use the metadata_ratio=3D1 mount option=
+,
+then write enough to force the allocation of more data space,,
+
+In your earlier attempt, you wrote 500MB, but from your btrfs filesystem
+usage, you had over 1GB of allocated but unused space.
+
+If you wrote and deleted, say, 20GB of zeroes, that should force the
+allocation of metatada space to get you past the global reserve size
+that is causing this bug,, (Assuming this bug is even impacting you.  I
+was unclear from your messages if you are seeing any ill effects besides
+the misreporting in df.)
+
+Note: Make sure you don't have anything taking automatic snapshots
+during the 20GB write/delete. I would create a new subvolume for it to
+avoid that.
+
+
+
+
+
+--OshYGbl0FUYN2FEftT9WorLjB7a5rrrLQ--
+
+--DIwQsDUyuVUnGtzeufPaDonOPhV9LnN7W
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJeM0ivAAoJEO9Tn/JHRWptbCQIAOj7UKqpY+xuFRZk5Z2snP/E
+D1/hoL+uZx+LEF8/RpFqrWg6XBScocmnKGT7udNnhdiV5tDofMPQcOHKk0sPk/Lb
+HIjfwlvqWqMUAk/u5mfN8h2C2ZhhIP2Ow4KoMnhfWzMUsjcXGTlox0tdgA7DJvOQ
+Uy+Zr/sTki/SnvHO/3yMWM7VTRlOQVUWtM0mzcYujSB7tD+4u/TDRPCc+tqHpATK
+SDYIHhPWtHnzPEUrFqllAYxhE7kkdvbGLiJRDWKZMoGZq7ehUo0M/GW4nkldXXKN
+cymkk/gX2hEqgK6UJRQu7ocGIANEckVa/U5yyh7vk4+EBZZjzTnrgvhp+JL8QBk=
+=pdDG
+-----END PGP SIGNATURE-----
+
+--DIwQsDUyuVUnGtzeufPaDonOPhV9LnN7W--
