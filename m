@@ -2,32 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B20B14E37D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 20:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F93114E381
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 21:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgA3T6l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 14:58:41 -0500
-Received: from luna.lichtvoll.de ([194.150.191.11]:54215 "EHLO
+        id S1727521AbgA3UCP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 15:02:15 -0500
+Received: from luna.lichtvoll.de ([194.150.191.11]:58849 "EHLO
         mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726514AbgA3T6l (ORCPT
+        with ESMTP id S1726267AbgA3UCO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 14:58:41 -0500
+        Thu, 30 Jan 2020 15:02:14 -0500
 Received: from 127.0.0.1 (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 3E207A9785;
-        Thu, 30 Jan 2020 20:58:39 +0100 (CET)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id EB0D2A978D;
+        Thu, 30 Jan 2020 21:02:12 +0100 (CET)
 From:   Martin Steigerwald <martin@lichtvoll.de>
 To:     Chris Murphy <lists@colorremedies.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Martin Raiber <martin@urbackup.org>,
-        linux-btrfs@vger.kernel.org
+Cc:     Martin Raiber <martin@urbackup.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
-Date:   Thu, 30 Jan 2020 20:58:38 +0100
-Message-ID: <16325152.4fYaUy9WYm@merkaba>
-In-Reply-To: <CAJCQCtSwJHR2+jEXY=eK41xR7Z0=+Jf5xhsD03Qvoh92bAHO6g@mail.gmail.com>
-References: <112911984.cFFYNXyRg4@merkaba> <20200130171950.GZ3929@twin.jikos.cz> <CAJCQCtSwJHR2+jEXY=eK41xR7Z0=+Jf5xhsD03Qvoh92bAHO6g@mail.gmail.com>
+Date:   Thu, 30 Jan 2020 21:02:12 +0100
+Message-ID: <21104414.nfYVoVUMY0@merkaba>
+In-Reply-To: <CAJCQCtQgqg2u78q2vZi=bEy+bkzX48M+vHXR00dsuNYWaxqRKg@mail.gmail.com>
+References: <112911984.cFFYNXyRg4@merkaba> <10361507.xcyXs1b6NT@merkaba> <CAJCQCtQgqg2u78q2vZi=bEy+bkzX48M+vHXR00dsuNYWaxqRKg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -38,39 +37,97 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Chris Murphy - 30.01.20, 20:31:40 CET:
+Chris Murphy - 30.01.20, 17:37:42 CET:
+> On Thu, Jan 30, 2020 at 3:41 AM Martin Steigerwald 
+<martin@lichtvoll.de> wrote:
+> > Chris Murphy - 29.01.20, 23:55:06 CET:
+> > > On Wed, Jan 29, 2020 at 2:20 PM Martin Steigerwald
+> > 
+> > <martin@lichtvoll.de> wrote:
+> > > > So if its just a cosmetic issue then I can wait for the patch to
+> > > > land in linux-stable. Or does it still need testing?
+> > > 
+> > > I'm not seeing it in linux-next. A reasonable short term work
+> > > around
+> > > is mount option 'metadata_ratio=1' and that's what needs more
+> > > testing, because it seems decently likely mortal users will need
+> > > an easy work around until a fix gets backported to stable. And
+> > > that's gonna be a while, me thinks.
+> > > 
 > > > Is that mount option sufficient? Or does it take a filtered
 > > > balance?
 > > > What's the most minimal balance needed? I'm hoping -dlimit=1
-> > > 
+> > 
+> > Does not make a difference. I did:
+> > 
+> > - mount -o remount,metadata_ratio=1 /daten
+> > - touch /daten/somefile
+> > - dd if=/dev/zero of=/daten/someotherfile bs=1M count=500
+> > - sync
+> > - df still reporting zero space free
+> > 
 > > > I can't figure out a way to trigger this though, otherwise I'd be
 > > > doing more testing.
 > > 
-> > I haven't checked but I think the suggested workarounds affect
-> > statfs as a side effect. Also as the reservations are temporary,
-> > the numbers change again after a sync.
+> > Sure.
+> > 
+> > I am doing the balance -dlimit=1 thing next. With metadata_ratio=0
+> > again.
+> > 
+> > % btrfs balance start -dlimit=1 /daten
+> > Done, had to relocate 1 out of 312 chunks
+> > 
+> > % LANG=en df -hT /daten
+> > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > 
+> > Okay, doing with metadata_ratio=1:
+> > 
+> > % mount -o remount,metadata_ratio=1 /daten
+> > 
+> > % btrfs balance start -dlimit=1 /daten
+> > Done, had to relocate 1 out of 312 chunks
+> > 
+> > % LANG=en df -hT /daten
+> > Filesystem             Type   Size  Used Avail Use% Mounted on
+> > /dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+> > 
+> > 
+> > Okay, other suggestions? I'd like to avoid shuffling 311 GiB data
+> > around using a full balance.
 > 
-> Yeah I'm being careful to qualify to mortal users that any workarounds
-> are temporary and uncertain. I'm not even certain what the pattern
-> is, people with new file systems have hit it. A full balance seems to
-> fix it, and then soon after the problem happens again. I don't do any
-> balancing these days, for over a year now, so I wonder if that's why
-> I'm not seeing it.
-> 
-> But yeah a small number of people are hitting it, but it also stops
-> any program that does a free space check (presumably using statfs).
-> 
-> A more reliable/universal work around in the meantime is still useful;
-> in particular if it doesn't require changing mount options, or only
-> requires it temporarily (e.g. not added  to /etc/fstab, where it can
-> be forgotten for the life of that system).
+> There's earlier anecdotal evidence that -dlimit=10 will work. But you
+> can just keep using -dlimit=1 and it'll balance a different block
+> group each time (you can confirm/deny this with the block group
+> address and extent count in dmesg for each balance). Count how many it
+> takes to get df to stop misreporting. It may be a file system
+> specific value.
 
-I did not balance either. Except maybe for a very short time during 
-holding trainings in order to show to people how it works.
+Lost the patience after 25 attempts:
 
-I never bought into balancing regularily.
+date; let I=I+1; echo "Balance $I"; btrfs balance start -dlimit=1 /daten 
+; LANG=en df -hT /daten
+Do 30. Jan 20:59:17 CET 2020
+Balance 25
+Done, had to relocate 1 out of 312 chunks
+Filesystem             Type   Size  Used Avail Use% Mounted on
+/dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
 
-Thanks,
+
+Doing the -dlimit=10 balance now:
+
+% btrfs balance start -dlimit=10 /daten ; LANG=en df -hT /daten
+Done, had to relocate 10 out of 312 chunks
+Filesystem             Type   Size  Used Avail Use% Mounted on
+/dev/mapper/sata-daten btrfs  400G  311G     0 100% /daten
+
+Okay, enough of balancing for today.
+
+I bet I just wait for a proper fix, instead of needlessly shuffling data 
+around.
+
+Thanks for the suggestions tough.
+
 -- 
 Martin
 
