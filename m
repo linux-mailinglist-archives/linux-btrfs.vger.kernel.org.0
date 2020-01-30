@@ -2,110 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6737914E467
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC20B14E46C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 22:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727142AbgA3VFO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 16:05:14 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42858 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgA3VFO (ORCPT
+        id S1727319AbgA3VJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 16:09:45 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:32975 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgA3VJo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 16:05:14 -0500
-Received: by mail-qk1-f194.google.com with SMTP id q15so4397020qke.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2020 13:05:12 -0800 (PST)
+        Thu, 30 Jan 2020 16:09:44 -0500
+Received: by mail-wr1-f65.google.com with SMTP id b6so5979465wrq.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2020 13:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=K+spCnRwd+kyMKLekVAbDSwSITij7+iyRCfib6EBwHU=;
-        b=MAsAAu9WnKROCE4w+M0GkBtwzMfoW//al5eJfVfmSXPl11W2b0XrPUqMpohdbwSCnz
-         Wtu1rJ4EmvRfbHjko4nY01IkWwbs20D4+nO9m9jmVF2+D5NqA7+62TYGOAQ38xHlc2CF
-         pp26Cn2s2q1qmgjs+DevSwqtgl2InH/A2kQ975ftsgw96cCVvikLj6flgBveIwYlx7xl
-         llmqDfE4sJ2wB/r/T8oeqs7YEEDk+huCOdMzX+LVbU3ZXSm2/3WcdAwYyrgcCxMPSD8H
-         VohrIVh+zjF6QqR+uqE6XDG5wruTghP/j+vU5ElibNsVXcLktSOteiFCRn1z+M1pcEdQ
-         k0yA==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5n1hZ1Jvsku/UJ8K4eOv1YKLqiKbKWiNW2XMlpzggl8=;
+        b=MUYCjzBYXMDHaFZi4132i61ItCoJzPxu5ZkuwQkBsccZjOC3LnjPl4Uca2epCAizAL
+         6OruDsu2uucrLowTIl6x09zqtfcbztxTH8XDn9hf8njxHlU6nEmYpSnUqEjIdsZpB6tX
+         6LckBtJfWt6Yvv3P0JaPIOfFsAK1ae+Ht8T4/VDD7bxQ/V9tG8YBNzR/Q9XeDPB9quNE
+         Xz1lSszyNKt8tL49ORBbo2nkOEO/x/b4CPdpAMT1n9vxbczZM0d8D27dpOC+xznS4GW2
+         qGe6Cusefclmga+eYbmHUzn6Fe3BC/3zOFsKafhc+W94BHFixR2aUxizhWTcQ1f5jKEj
+         yXuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K+spCnRwd+kyMKLekVAbDSwSITij7+iyRCfib6EBwHU=;
-        b=GaoWUFAyOmvE074JCQLIZIE4Ioa3sE7CShiKetJB9JajHCD3AsyPW2mld/e03dOQZZ
-         mq/FDL7+XjYmKS8rLr21ZJyy4YLrgGLGeZ9Y37Jl13Q0qkJLeoXykvUmU/OKXXWUmRgQ
-         CKnRYGOvgZq8o+pdgABflBC1PFmizBpjXnC370JZoi+YjDpl5NEzXYVHuKoCTZdydYBc
-         +Y/dOcpwtUIGjk7q8blrf+2wiufVZyNmjmq6jyYOib10scLMSUXkL2dnK+WByWbfHrBU
-         QKg1zYHR9S9Tcx3nKCYw2Dom9k6J95Z5Yey+yiL526gVMYMSIQKtEq3XaWmn43JAjtW6
-         dIUw==
-X-Gm-Message-State: APjAAAV/WF/Tzin7Bwh58havpMfcY6mEOG5OM5D4GqF90LHTgsUjx1i3
-        G+IpXuwI9msYzFyX78WZXC0OBXFl8UgzcQ==
-X-Google-Smtp-Source: APXvYqwWztdt1KbaNGjfI+4yssVIQTJK/FLRAlBvVio6i4K6b1QWXAylUpowO5cw61au+nSjyHOiiw==
-X-Received: by 2002:a37:91c2:: with SMTP id t185mr6835830qkd.284.1580418311567;
-        Thu, 30 Jan 2020 13:05:11 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id b22sm3330337qka.121.2020.01.30.13.05.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jan 2020 13:05:10 -0800 (PST)
-Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
- committing metadata space
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200115034128.32889-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <38a5dc98-7233-0252-4ba3-76c59d7b21e7@toxicpanda.com>
-Date:   Thu, 30 Jan 2020 16:05:10 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5n1hZ1Jvsku/UJ8K4eOv1YKLqiKbKWiNW2XMlpzggl8=;
+        b=lFAS+/uH5NUb/ms54vg+SAa7sB1t7uGOV8yuItqXz2MoYb6OLvln3rW3dVXCIBaluH
+         uoYR9kmWp0nnEalBlgJeR1A1eWTjv9q5CDIj4kKDnK7SWrE0KiR/98vtgel1u8OhcpdS
+         dy9U2wZ6cgKSqL1Ki4rPYzAxeL9IPP7C4DC71GY7qM3fs4eX500wcbN530RxKEwwbXSH
+         1p+CQmqL2QOcrhlfFgxjlpX9xAgZxlHxxW3r/EVbGLEU9Kq3ssIvlGC4aZdXxpZowE7S
+         T2Md9EgB1Fip4i3Jioi4g2lb/gK9GS7xIK7ikRumGTolZl7+YiMWqheyWV/dge54NYCb
+         tyEQ==
+X-Gm-Message-State: APjAAAXSSDn2y+wT2CIS8U6hEJ8YUytA1lKJNRXsZ9tPPy5mnOn7MupM
+        ZezXIrY5GO8rwh2ewz4Y+eEp6+gCDopKfe/bP5j21Q==
+X-Google-Smtp-Source: APXvYqzroQ3EFq+KLBJ/mWJUAGoj7+P0I3T+eM/V1q04hVBk46MNJ95n+zphsHcmq/cU7GXiF+pISgrf/Gi34oLV3mo=
+X-Received: by 2002:adf:f308:: with SMTP id i8mr7622837wro.42.1580418581166;
+ Thu, 30 Jan 2020 13:09:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200115034128.32889-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <112911984.cFFYNXyRg4@merkaba> <10361507.xcyXs1b6NT@merkaba>
+ <CAJCQCtQgqg2u78q2vZi=bEy+bkzX48M+vHXR00dsuNYWaxqRKg@mail.gmail.com>
+ <21104414.nfYVoVUMY0@merkaba> <CAJCQCtSgK1f3eG5XzaHmV+_xAgPFhAGvnyxuUOmGRMCZfKaErw@mail.gmail.com>
+ <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
+In-Reply-To: <ab7f3087-7774-7660-1390-ba0d8e6d7010@toxicpanda.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 30 Jan 2020 14:09:25 -0700
+Message-ID: <CAJCQCtRq5Q25sqW8wrfiYecnMg3Q+XjTuChdCU=cg9AwboVtCQ@mail.gmail.com>
+Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Martin Steigerwald <martin@lichtvoll.de>,
+        Martin Raiber <martin@urbackup.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/14/20 10:41 PM, Qu Wenruo wrote:
-> [BUG]
-> When there are a lot of metadata space reserved, e.g. after balancing a
-> data block with many extents, vanilla df would report 0 available space.
-> 
-> [CAUSE]
-> btrfs_statfs() would report 0 available space if its metadata space is
-> exhausted.
-> And the calculation is based on currently reserved space vs on-disk
-> available space, with a small headroom as buffer.
-> When there is not enough headroom, btrfs_statfs() will report 0
-> available space.
-> 
-> The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
-> reservations if we have pending tickets"), we allow btrfs to over commit
-> metadata space, as long as we have enough space to allocate new metadata
-> chunks.
-> 
-> This makes old calculation unreliable and report false 0 available space.
-> 
-> [FIX]
-> Don't do such naive check anymore for btrfs_statfs().
-> Also remove the comment about "0 available space when metadata is
-> exhausted".
-> 
-> Please note that, this is a just a quick fix. There are still a lot of
-> things to be improved.
-> 
-> Fixes: ef1317a1b9a3 ("btrfs: do not allow reservations if we have pending tickets")
+On Thu, Jan 30, 2020 at 1:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> The file system is fine, you don't need to balance or anything, this is purely a
+> cosmetic bug.
 
-This isn't the patch that broke it.  The patch that broke it is the patch that 
-introduced this code in the first place.
+It's not entirely cosmetic if a program uses statfs to check free
+space and then errors when it finds none. Some people are running into
+that.
 
-And this isn't the proper fix either, because technically we have 0 available if 
-we don't have enough space for our global reserve _and_ we don't have any 
-unallocated space.  So for now the best "quick" fix would be to make the 
-condition something like
+https://lore.kernel.org/linux-btrfs/alpine.DEB.2.21.99999.375.2001131514010.21037@trent.utfs.org/
 
-if (!mixed && block-rsv->space_info->full &&
-     total_free_meta - thresh < block_rsv->size)
+I guess right now the most reliable work around is to revert to 5.3.18.
 
-Thanks,
 
-Josef
+-- 
+Chris Murphy
