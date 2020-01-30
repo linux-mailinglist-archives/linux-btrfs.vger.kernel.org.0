@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06B14DA07
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 12:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D3C14DA17
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 12:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgA3LoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 06:44:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45942 "EHLO mx2.suse.de"
+        id S1727206AbgA3Lqv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 06:46:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47066 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726873AbgA3LoP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 06:44:15 -0500
+        id S1726873AbgA3Lqv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 06:46:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 89D3CAFA5;
-        Thu, 30 Jan 2020 11:44:13 +0000 (UTC)
-Subject: Re: [PATCH 02/20] btrfs: remove orig from shrink_delalloc
+        by mx2.suse.de (Postfix) with ESMTP id E2370AC63;
+        Thu, 30 Jan 2020 11:46:48 +0000 (UTC)
+Subject: Re: [PATCH 03/20] btrfs: handle U64_MAX for shrink_delalloc
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200129235024.24774-1-josef@toxicpanda.com>
- <20200129235024.24774-3-josef@toxicpanda.com>
+ <20200129235024.24774-4-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <a289293d-5a15-bc5d-c889-a477bae1d17b@suse.com>
-Date:   Thu, 30 Jan 2020 13:44:11 +0200
+Message-ID: <24f0c805-166a-5526-0589-e13c5ae0bf52@suse.com>
+Date:   Thu, 30 Jan 2020 13:46:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200129235024.24774-3-josef@toxicpanda.com>
+In-Reply-To: <20200129235024.24774-4-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,10 +80,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.01.20 г. 1:50 ч., Josef Bacik wrote:
-> We don't use this anywhere inside of shrink_delalloc, remove it.
+> Data allocations are going to want to pass in U64_MAX for flushing
+> space, adjust shrink_delalloc to handle this properly.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com but I'm sure David will
-want a bit of history how this became unused. Turns out Omar removed the
-usage in 17024ad0a0fd ("Btrfs: fix early ENOSPC due to delalloc").
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
