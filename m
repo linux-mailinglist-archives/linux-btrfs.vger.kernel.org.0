@@ -2,97 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2287B14DC2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 14:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5AA14DC33
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 14:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgA3Nma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 08:42:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59700 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726980AbgA3Nma (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 08:42:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1E38FAD2C;
-        Thu, 30 Jan 2020 13:42:27 +0000 (UTC)
+        id S1727417AbgA3NnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 08:43:11 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:35380 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727184AbgA3NnL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 08:43:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=chKeSS29fWQvQj8LeMAcDzI+vQkwvo8p6dhHjzDVSbA=; b=tMqT4ZUBTm4g9DB9tJpGSedDRl
+        5N5/1UQPdXKVMwXPo4mwQw6GUD6aR32D5uw+RklNT4rEdGGK88Sv4nLqxL21HQCcnZvjIL5M2KRXH
+        yUHhyIeCdqvJgd0OR/LzqUEc1jFZZ6HZxls77dh1nAYET+F7yqY9ljxay+pyvziXJcyU1PTd4l6m3
+        NSxcAhCBe7FOOPLpwkgG83NwvT/w7WwKZPqeu94Q90LXESvuYASrhJRnIzw/meJ/Qfen7qQyMp0Jj
+        Gs7du6gfhmuC0hhrCrDU92dacgqaApYOIwjKPNHTffFqA3u6JAcyytpfFj2j99usgukFV6QnwJkEs
+        reBFtHCg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ixA6A-0007qH-LL; Thu, 30 Jan 2020 13:43:10 +0000
+Date:   Thu, 30 Jan 2020 05:43:10 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 1/2] btrfs: Implement DRW lock
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-btrfs@vger.kernel.org
+Message-ID: <20200130134310.GA29879@infradead.org>
 References: <20200130125945.7383-1-nborisov@suse.com>
  <20200130125945.7383-2-nborisov@suse.com>
  <20200130134115.GB21841@infradead.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <58590063-9d21-a261-03a1-84319727ed94@suse.com>
-Date:   Thu, 30 Jan 2020 15:42:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ <58590063-9d21-a261-03a1-84319727ed94@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200130134115.GB21841@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <58590063-9d21-a261-03a1-84319727ed94@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 30.01.20 г. 15:41 ч., Christoph Hellwig wrote:
-> On Thu, Jan 30, 2020 at 02:59:41PM +0200, Nikolay Borisov wrote:
->> A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
->> to have multiple readers or multiple writers but not multiple readers
->> and writers holding it concurrently. The code is factored out from
->> the existing open-coded locking scheme used to exclude pending
->> snapshots from nocow writers and vice-versa. Current implementation
->> actually favors Readers (that is snapshot creaters) to writers (nocow
->> writers of the filesystem).
+On Thu, Jan 30, 2020 at 03:42:27PM +0200, Nikolay Borisov wrote:
 > 
-> Any reason not to move it to lib/ under a new option so that other
-> users could reuse it as needed?
 > 
+> On 30.01.20 г. 15:41 ч., Christoph Hellwig wrote:
+> > On Thu, Jan 30, 2020 at 02:59:41PM +0200, Nikolay Borisov wrote:
+> >> A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
+> >> to have multiple readers or multiple writers but not multiple readers
+> >> and writers holding it concurrently. The code is factored out from
+> >> the existing open-coded locking scheme used to exclude pending
+> >> snapshots from nocow writers and vice-versa. Current implementation
+> >> actually favors Readers (that is snapshot creaters) to writers (nocow
+> >> writers of the filesystem).
+> > 
+> > Any reason not to move it to lib/ under a new option so that other
+> > users could reuse it as needed?
+> > 
+> 
+> Yes, I think it's rather specific to btrfs. I don't care honestly if
+> there is demand I wouldn't mind.
 
-Yes, I think it's rather specific to btrfs. I don't care honestly if
-there is demand I wouldn't mind.
+Ok, just keep it in btrfs for now, we can always move it later.
+It just looks like very generic code.
