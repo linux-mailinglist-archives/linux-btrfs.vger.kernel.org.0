@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A91514DB6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 14:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47E214DC13
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 14:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbgA3NTT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 08:19:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50510 "EHLO mx2.suse.de"
+        id S1727142AbgA3Nha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 08:37:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58292 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727142AbgA3NTT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 08:19:19 -0500
+        id S1726902AbgA3Nha (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 08:37:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1350CB028;
-        Thu, 30 Jan 2020 13:19:17 +0000 (UTC)
-Subject: Re: [PATCH 05/20] btrfs: make ALLOC_CHUNK use the space info flags
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200129235024.24774-1-josef@toxicpanda.com>
- <20200129235024.24774-6-josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id B78BCAC2C
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2020 13:37:27 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] btrfs: Implement DRW lock
+To:     linux-btrfs@vger.kernel.org
+References: <20200130125945.7383-1-nborisov@suse.com>
+ <20200130125945.7383-5-nborisov@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <2499a314-ccab-6bba-2631-b501b00eb9f6@suse.com>
-Date:   Thu, 30 Jan 2020 15:19:15 +0200
+Message-ID: <7c1530e7-85a0-e4c7-3ae5-770c5f9c18b2@suse.com>
+Date:   Thu, 30 Jan 2020 15:37:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200129235024.24774-6-josef@toxicpanda.com>
+In-Reply-To: <20200130125945.7383-5-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,13 +78,60 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 30.01.20 г. 1:50 ч., Josef Bacik wrote:
-> We have traditionally used flush_space() to flush metadata space, so
-> we've been unconditionally using btrfs_metadata_alloc_profile() for our
-> profile to allocate a chunk.  However if we're going to use this for
-> data we need to use btrfs_get_alloc_profile() on the space_info we pass
-> in.
+On 30.01.20 г. 14:59 ч., Nikolay Borisov wrote:
+> A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
+> to have multiple readers or multiple writers but not multiple readers
+> and writers holding it concurrently. The code is factored out from
+> the existing open-coded locking scheme used to exclude pending
+> snapshots from nocow writers and vice-versa. Current implementation
+> actually favors Readers (that is snapshot creaters) to writers (nocow
+> writers of the filesystem).
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/ctree.h   |  1 +
+>  fs/btrfs/locking.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/locking.h | 21 +++++++++++
+>  3 files changed, 109 insertions(+)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index f90b82050d2d..908430f563fa 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -33,6 +33,7 @@
+>  #include "extent_map.h"
+>  #include "async-thread.h"
+>  #include "block-rsv.h"
+> +#include "locking.h"
+>  
+>  struct btrfs_trans_handle;
+>  struct btrfs_transaction;
+> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+> index 571c4826c428..66d7d1279535 100644
+> --- a/fs/btrfs/locking.c
+> +++ b/fs/btrfs/locking.c
+> @@ -523,3 +523,90 @@ void btrfs_unlock_up_safe(struct btrfs_path *path, int level)
+>  		path->locks[i] = 0;
+>  	}
+>  }
+> +
+> +int btrfs_drw_lock_init(struct btrfs_drw_lock *lock)
+> +{
+> +	int ret;
+> +
+> +	ret = percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	atomic_set(&lock->readers, 0);
+> +	init_waitqueue_head(&lock->pending_readers);
+> +	init_waitqueue_head(&lock->pending_writers);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(btrfs_drw_lock_init);
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+I have the functions EXPORT_SYMBOL since I have an internal patch which
+is hooking this code to locktorture. SO they can be removed.
+
