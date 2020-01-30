@@ -2,73 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB12E14DF7C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 17:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6854614DF88
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 17:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbgA3Qyj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 11:54:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49088 "EHLO mx2.suse.de"
+        id S1727308AbgA3Q75 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 11:59:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50672 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727158AbgA3Qyj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 11:54:39 -0500
+        id S1727158AbgA3Q75 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 11:59:57 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 39A8CAD22;
-        Thu, 30 Jan 2020 16:54:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A7E22AFF4;
+        Thu, 30 Jan 2020 16:59:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DC348DA84C; Thu, 30 Jan 2020 17:54:18 +0100 (CET)
-Date:   Thu, 30 Jan 2020 17:54:18 +0100
+        id 67E05DA84C; Thu, 30 Jan 2020 17:59:36 +0100 (CET)
+Date:   Thu, 30 Jan 2020 17:59:36 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     halfdog <me@halfdog.net>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: relocation: Add an introduction for how
- relocation works.
-Message-ID: <20200130165418.GX3929@twin.jikos.cz>
+Subject: Re: FIDEDUPERANGE woes
+Message-ID: <20200130165936.GY3929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, halfdog <me@halfdog.net>,
         linux-btrfs@vger.kernel.org
-References: <20200116050407.81267-1-wqu@suse.com>
+References: <2019-1576167349.500456@svIo.N5dq.dFFD>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200116050407.81267-1-wqu@suse.com>
+In-Reply-To: <2019-1576167349.500456@svIo.N5dq.dFFD>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 01:04:07PM +0800, Qu Wenruo wrote:
-> Relocation is one of the most complex part of btrfs, while it's also the
-> foundation stone for online resizing, profile converting.
+On Thu, Dec 12, 2019 at 04:15:49PM +0000, halfdog wrote:
+> Hello list,
 > 
-> For such a complex facility, we should at least have some introduction
-> to it.
+> Using btrfs on
 > 
-> This patch will add an basic introduction at pretty a high level,
-> explaining:
-> - What relocation does
-> - How relocation is done
->   Only mentioning how data reloc tree and reloc tree are involved in the
->   operation.
->   No details like the backref cache, or the data reloc tree contents.
-> - Which function to refer.
+> Linux version 5.3.0-2-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20191109 (Debian 9.2.1-19)) #1 SMP Debian 5.3.9-3 (2019-11-19)
 > 
-> More detailed comments will be added for reloc tree creation, data reloc
-> tree creation and backref cache.
+> the FIDEDUPERANGE exposes weird behaviour on two identical but
+> not too large files that seems to be depending on the file size.
+> Before FIDEDUPERANGE both files have a single extent, afterwards
+> first file is still single extent, second file has all bytes sharing
+> with the extent of the first file except for the last 4096 bytes.
 > 
-> For now the introduction should save reader some time before digging
-> into the rabbit hole.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - New line after section title to improve readability
-> - Don't mention "to relocate some extents" part for the objective.
->   As that only happens for error case.
-> - Grammar fix.
+> Is there anything known about a bug fixed since the above mentioned
+> kernel version?
 
-Added to misc-next, thanks. For documenation, please try to spell out
-all abbreviations or short forms. For example 'bg' is 'block group' and
-RO is 'read-only', etc.
+For the record, the fix(es) for deduplicating tail extents have been
+merged to 5.6 and will appear in stable trees soon.
