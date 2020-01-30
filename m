@@ -2,238 +2,390 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E0714D8B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 11:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC7A14D91F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 11:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726895AbgA3KMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 05:12:18 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:16564 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgA3KMR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 05:12:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1580379137; x=1611915137;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=K8nXV0XKOKV7jIQNpRnHeJZbvx3mtbBphp1yvqgP79M=;
-  b=NTaOBqCErvt19SUksmtN0g9q7D1tZZ7gS1MV3EfBg3A34NDuzQ2Oygn6
-   BXb+/uSRjcQC1D56DlhOReUl4rpJNjqo6s4jldgTW86VmUajpkqBDgSWz
-   2hBne51WNbisOWkHWJYC2ojMXyd5aYCjMP5v1/M9jO0J2td58Ar94oUiU
-   tMhd8let3nhWG4dPJu9SmdlLC2XcTpIUJJ8kyVKgPI2evf1Czm0UbfNHu
-   k2ca5fSS0QHtK9GapK3mNhpOtHFmsak5kdOVuHlIuaIK7fTwP4wZ0c1lF
-   JV1cojSfGp9QpnS4xpk2rAfnGuBc119xp8pkuvcU4PzqT+0r+0CGojlBz
-   Q==;
-IronPort-SDR: HFasKXQWWUmVkfNz2B0otfT+5ydpka4MeDxOYW1BqPib/1sxws6/XfLUw/qAMwYnRjIsqodJVL
- bfSi6n//PH7affY1y9OkcvngOGX2y/w2TfvQ1xy28WguiBL2D+zOsssRFcYJyYtxluRU1jPxQ2
- SvrXewhGC7mLsOs6OjphHvFuL9EIDp1D0viZcc7I5Ocndcl7RFT9I/3Z4N/zhuQ1gvBoUXEUv8
- zdS9RI3KYAEIXq1zC6sXcoAxClr4+OTXavTZW2X/dcz8dKvb7iWGuVcr6CRQk3NHuDAS/uH3u7
- K3I=
-X-IronPort-AV: E=Sophos;i="5.70,381,1574092800"; 
-   d="scan'208";a="130200417"
-Received: from mail-bn8nam11lp2173.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.173])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Jan 2020 18:12:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ULro4ZDDRifKUp9TMa6EQwSAd0T0C+HSmIBGvBN/U8ZSFNLCDurwlooqofoUuAEah69+I0mCZqIPH1sjFbjONkjH3zjXWKy1q7tWKeD/mbakGWo1vgof2F0MfzCOYcKapX5BmuUim9MJhDjJFvSxKDCGEGU1iOlVKyGIcRA4XjO3EpP/M1j45ZsPezJTPkijrjoRmb0q7Q0QFZEKD3xE/tFWst7ptOHoX9HaWjmGDJ6JhOBv4+YcA6nMpn7RWMKnLAxji4/zyIB5RWnnWqtVcWzTjRPbTGpZD9k+GRWZ8a3CZgaSJNKYApURol0peusRdM49uFU06OJmnZpNSUoqTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFam17TYRggAI3bdKsiIs0ziAfEFk/mPMNcpohffl9c=;
- b=eLVWjVufflwkFbxlJsGy/msRnoPNcnQr0TjnsntOX83aaMutjqN5/yhkzJk0xTbvmI4Y7MtwGe7s3m5WiH6a6Y/5jvtmX0wE3q6x9tQKcozGQPXEsET7I2H4zIHuUX13yF+zyXaUELbBYtbrpd0htD6RQ7nT54pw1spLVqf7Jv1Al2qKS3jhhKbvjC7ZEXxsdgx/JqQULmGCnpyqLLXshx2Sjiawzr6vYILJ2cDFlfnL5bnhVfY/pwRI7qmFZaAtmd1xhGW1zzE5B3LRvO7EQLtzzxm8S0WFQwJdbAL/lopUBzCtSpTVagC8cnYelF8gixKTJt5FF0zBOLnxjqrVBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFam17TYRggAI3bdKsiIs0ziAfEFk/mPMNcpohffl9c=;
- b=DRJBbGZNVEFBOAQzfxsNzt1HOAXW8/yRv2RjqJzM4f/rDmzRq/rsDavhOZif/UnJN2Xg5PAtOuzyNJUFLY/r5e/d8T0SCXjGGevZLa7diifVP6NnlNn7zam17MyrcV0GGx+ofFqx99ZGG1XM6DWLxxTXm69co10CBxs/vWAZ8kc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3632.namprd04.prod.outlook.com (10.167.133.20) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2665.20; Thu, 30 Jan 2020 10:12:14 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2665.027; Thu, 30 Jan 2020
- 10:12:14 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v3 1/5] btrfs: remove buffer heads from super block
- reading
-Thread-Topic: [PATCH v3 1/5] btrfs: remove buffer heads from super block
- reading
-Thread-Index: AQHV1SrLs4QVSfI/Q0WYz1ueOYQ+nQ==
-Date:   Thu, 30 Jan 2020 10:12:14 +0000
-Message-ID: <SN4PR0401MB359834468ED8C85C8E2395839B040@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200127155931.10818-1-johannes.thumshirn@wdc.com>
- <20200127155931.10818-2-johannes.thumshirn@wdc.com>
- <20200128114747.GA17444@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 647e48da-5b4f-4fc5-8189-08d7a56ce0ff
-x-ms-traffictypediagnostic: SN4PR0401MB3632:
-x-microsoft-antispam-prvs: <SN4PR0401MB36328DA43B42D807D8BC21EE9B040@SN4PR0401MB3632.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 02981BE340
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(366004)(39860400002)(136003)(376002)(346002)(199004)(189003)(86362001)(81166006)(7696005)(81156014)(2906002)(6916009)(64756008)(76116006)(316002)(66556008)(66446008)(66476007)(9686003)(71200400001)(8676002)(91956017)(5660300002)(52536014)(55016002)(66946007)(478600001)(186003)(26005)(8936002)(33656002)(4326008)(54906003)(53546011)(6506007);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3632;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lM71IvScyAIHz4tO5OuanUcSSluqGOGLzmJc8f+sncRzrdrQjE/5fbPqTMDvtIUrwwommULcC4a59eqOjYXHW3xFqq3kb6zFDiJq8b82HvVmA4JiPbQpRi3LVv9hyjx7GGH8/gymgwsrJbSf736bW9jKabNg8XbSNuu3iWkZA4TcyphpmYyMK8wSwoCZp1Xby+L9qd/+XBMofpMo39Yvi/CwvcJrXAL+ucrqXO7aM4Rzf3NE8nPPizQs+DD2tt195VsdTAmmZiQ1abyTkek5xO8YkjQEiECXQIn1UW3Fh+yJsHMpMO9Faotz1D1FiTPLL4B4z3jfjURvPRDshHP1SHzNRRPGdipH5iR8CCWVKyYVUkwufgdxkfx9YQb4ITRncsZTyMMrwgn/6QGOmvGT3D0Rv6BKzn5fbCtQapO4iAnBhGP3meoLEHtixqV0Lg+o
-x-ms-exchange-antispam-messagedata: fFX2GB9nXy4XucUAc14B/rpDVZ2zJUZX583ItsQfujG2gkJW6wh74DPjwh9P8tuxclo54Y1B+5qc5mVPqUMHEoinYLRI1gkIeDk/NFtPbqVHSjvDpb9ZzaXhbUz+JBHrpY2tRatFZPlRnrStdS9bWg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726967AbgA3Kgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 05:36:48 -0500
+Received: from mout.gmx.net ([212.227.15.15]:54983 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726959AbgA3Kgs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 05:36:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580380595;
+        bh=p+0ruuqsNSkzQMCJhBasyKVjSaJEEgu82FThEy4AfNA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=VPoJ33S0Vfhqgf3K7tx2RpBQ+z4Ntx2X60yG2u7Tlv7myRT113fFHZDzPTgtRCp0C
+         KHOnpfOZgjZg+YsDvbA8ZcHaOJl+cXzNS1ZhlEKejmyiKG9fQx9xsvsEtvSNkxyCYo
+         SQ+v/TmcHfAMV0X5OSUXXvMIcQ06Inq34qLJvyHY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McpNo-1jVcvL1l7S-00ZvUz; Thu, 30
+ Jan 2020 11:36:34 +0100
+Subject: Re: [PATCH] btrfs: Allow btrfs_truncate_block() to fallback to nocow
+ for data space reservation
+To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Martin Doucha <martin.doucha@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+References: <20200130052822.11765-1-wqu@suse.com>
+ <CAL3q7H4ODcwn7LVm=P3BBL7zd3wGRB_Vtr_KNk_2MysNNwgqcQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <8341b76f-bcbe-f2b9-d8b0-cfcd0006a47c@gmx.com>
+Date:   Thu, 30 Jan 2020 18:36:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 647e48da-5b4f-4fc5-8189-08d7a56ce0ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2020 10:12:14.4627
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: R6h5TZEerq+mKhxfrsa6yn7FKkHiUaDwFJZhwWyh+1BqZV7DQWcztDEqlaE0hudd4Oq2XjTSRE+GMqXsC+RryrX8kzYVZhDTzXe9XZFjlHM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3632
+In-Reply-To: <CAL3q7H4ODcwn7LVm=P3BBL7zd3wGRB_Vtr_KNk_2MysNNwgqcQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YFBI5Zb8nnF1ULXDE8727RIgmB2lYqcUM"
+X-Provags-ID: V03:K1:RTD/o9kuWJ+Dpif8jtu5x/RF972prXVjoATyZxrcouqsPbjO//n
+ c689qfi5lCN0ye6CWoDeH5/YNl/FdFHRdml5a33loTkZU8esVZ19Ndt43Tn4FQGi0hdFMGH
+ SPxEeNYbtErcVrNHEN6bSK/S5qSyLZXu6ORhOXwNsTGF9QypA1fvRVB8AYtdUEd72FeZuBe
+ mxaq2nZW2q4Rb5NT5z4iQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h2ePyScS0qU=:hILgv87X9I8OGc/ArvyF8s
+ yQHxRlSBk9zKcKNm+plYjE59UxQiJV3KyP4MpsYtQ1Y/kjnqzPbyi9Z/rJ2Yhjato1GntJdys
+ 5i03iD4q4KMnhewokgZnjJXWY62913Qv3CHC28yzlTPq3UeHFXkQQEkXd0Ywtb4eWQ0/g7rzy
+ uzP3vSJxDjV5OerxA6Ox8IpKq/9gZt5Xjnts8qFWBerBKMddL2GdWKqmA3tm4v1iIn84JGkbz
+ 99bBCxRKhFy6EzHNieIU9WJgBfUkASYe782Y96ADolyM4KsUKleaGjjbI1De928WP+IgbL91W
+ PFmQkPRxoaoWjtc0cED+NyNx09zk0Odeyjtlj26HFscj7xXcDgJnESNpdV1t91J/BMIM/wBQ4
+ EXBBhZgNVDYGa7V15n/vqWJD2P42c/FKcUHAMNYir3OBGa8ok4ljH/8GL3FyTJRWYeDIqNgha
+ T2Z2ZaicEz2b8kJ/+j/6s3Y21PBW0Xd1Y5h2yZPsMP2oasYAdcrgRM/VQu9+5CtN4YmGitBBx
+ kx3xZo2SRLogqyVgs4VXQKMflGBCX9w45A09ILBu/YHhCWDQrAGZHRkavPxG6krB8RTnpNyN6
+ s6uwkYNInqLay1bFLyadrooEgYlmqus5GnvTe+O/VaMzbuXcAIXyoiMRQUz3d7Ea3bYn8bIA4
+ AvhAAqeGpAu+fzlkthOtMPKdMCcg0xsQw9ILcs+K9TbdXPckxH2HJk2pGwZlS19wEK2ShaWux
+ KKQNIXixz95BTFpQoij8qc8QH7E1+6z1x1vTeSP1OtW+yuG+t7rKJsUFiepcfbAWcguwYWkvK
+ OxMbI5Rb9IbjlzR66KZNSOfirrORK8yFCzt+UTiVVEcmb0Ow/2uSfW6O5JRWab9FdndcwUq5U
+ tiJOle2BeSk/Tj3yxLV95o8IWN67+0PYUpjdXeDLB/Gt6+uiatXHVYJ6rDJw3i3kOZPm9tBNA
+ KUdcnd+GimB9bB3ubxpbCc+So03bnFwgNekcGlYNLR4yF7XHp4/ebw2uZ79NbXmdG2ghpxgof
+ tZ5tFQYzs5aiEDLsOE+icWNXiPTPhnP/JNqMM5o8z2Vg3mh8cQenb0jxfokFC0XnxKSW+uq4b
+ YjcODx+7/BdU9D4IsADQxAd093o0/Il4wgmjuM9wimyn3S00JMFErLM/AMCRH5GgtEIPUdKSw
+ P5QAhUcZeJBrNVWoqDsQ2OTXbJNNvI1yO0WisCqiBVZDyNgFv/s+UBZPA3qfiFHXdc+J/33GV
+ ZJ/JXWfmHAQQiG6cA
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 28/01/2020 12:47, Christoph Hellwig wrote:=0A=
-> On Tue, Jan 28, 2020 at 12:59:27AM +0900, Johannes Thumshirn wrote:=0A=
->>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);=0A=
->>   	struct btrfs_root *tree_root;=0A=
->>   	struct btrfs_root *chunk_root;=0A=
->> +	struct page *super_page;=0A=
->> +	u8 *superblock;=0A=
-> =0A=
-> Any good reason this isn't a struct btrfs_super_block * instead?=0A=
-=0A=
-No not really.=0A=
-=0A=
-[...]=0A=
-=0A=
->> @@ -2873,8 +2880,9 @@ int __cold open_ctree(struct super_block *sb,=0A=
->>   	 * following bytes up to INFO_SIZE, the checksum is calculated from=
-=0A=
->>   	 * the whole block of INFO_SIZE=0A=
->>   	 */=0A=
->> -	memcpy(fs_info->super_copy, bh->b_data, sizeof(*fs_info->super_copy));=
-=0A=
->> -	brelse(bh);=0A=
->> +	memcpy(fs_info->super_copy, superblock, sizeof(*fs_info->super_copy));=
-=0A=
->> +	kunmap(super_page);=0A=
->> +	put_page(super_page);=0A=
-> =0A=
-> Would it make sense to move the code up to here in a helper to=0A=
-> simplify the error handling?=0A=
-=0A=
-There is btrfs_release_disk_super() already but David didn't like it's =0A=
-use here.=0A=
-=0A=
-> =0A=
->>   =0A=
->>   int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,=
-=0A=
->> -			struct buffer_head **bh_ret)=0A=
->> +			struct page **super_page)=0A=
->>   {=0A=
->> -	struct buffer_head *bh;=0A=
->>   	struct btrfs_super_block *super;=0A=
->> +	struct bio_vec bio_vec;=0A=
->> +	struct bio bio;=0A=
->> +	struct page *page;=0A=
->>   	u64 bytenr;=0A=
->> +	struct address_space *mapping =3D bdev->bd_inode->i_mapping;=0A=
->> +	gfp_t gfp_mask;=0A=
->> +	int ret;=0A=
->>   =0A=
->>   	bytenr =3D btrfs_sb_offset(copy_num);=0A=
->>   	if (bytenr + BTRFS_SUPER_INFO_SIZE >=3D i_size_read(bdev->bd_inode))=
-=0A=
->>   		return -EINVAL;=0A=
->>   =0A=
->> -	bh =3D __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_S=
-IZE);=0A=
->> +	gfp_mask =3D mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL=
-;=0A=
->> +	page =3D find_or_create_page(mapping, bytenr >> PAGE_SHIFT, gfp_mask);=
-=0A=
-> =0A=
-> Why not simply use read_cache_page_gfp to find or read the page?=0A=
-=0A=
-right=0A=
-=0A=
-> =0A=
->> -	super =3D (struct btrfs_super_block *)bh->b_data;=0A=
->> +	super =3D kmap(page);=0A=
->>   	if (btrfs_super_bytenr(super) !=3D bytenr ||=0A=
->>   		    btrfs_super_magic(super) !=3D BTRFS_MAGIC) {=0A=
->> -		brelse(bh);=0A=
->> +		kunmap(page);=0A=
->> +		put_page(page);=0A=
->>   		return -EINVAL;=0A=
->>   	}=0A=
->> +	kunmap(page);=0A=
->>   =0A=
->> -	*bh_ret =3D bh;=0A=
->> +	*super_page =3D page;=0A=
-> =0A=
-> Given that both callers need the kernel virtual address, why not leave it=
-=0A=
-> kmapped?  OTOH if you use read_cache_page_gfp, we could just kill=0A=
-> btrfs_read_dev_one_super and open code the call to read_cache_page_gfp=0A=
-> and btrfs_super_bytenr / btrfs_super_magic in the callers.=0A=
-=0A=
-Sounds like a good idea, I'll have a look into it.=0A=
-=0A=
-> =0A=
->> +	bio_init(&bio, &bio_vec, 1);=0A=
->>   	for (copy_num =3D 0; copy_num < BTRFS_SUPER_MIRROR_MAX;=0A=
->>   		copy_num++) {=0A=
->> +		u64 bytenr =3D btrfs_sb_offset(copy_num);=0A=
->> +		struct page *page;=0A=
->>   =0A=
->> -		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))=0A=
->> +		if (btrfs_read_dev_one_super(bdev, copy_num, &page))=0A=
->>   			continue;=0A=
->>   =0A=
->> -		disk_super =3D (struct btrfs_super_block *)bh->b_data;=0A=
->> +		disk_super =3D kmap(page) + offset_in_page(bytenr);=0A=
->>   =0A=
->>   		memset(&disk_super->magic, 0, sizeof(disk_super->magic));=0A=
->> -		set_buffer_dirty(bh);=0A=
->> -		sync_dirty_buffer(bh);=0A=
->> -		brelse(bh);=0A=
->> +=0A=
->> +		bio.bi_iter.bi_sector =3D bytenr >> SECTOR_SHIFT;=0A=
->> +		bio_set_dev(&bio, bdev);=0A=
->> +		bio.bi_opf =3D REQ_OP_WRITE;=0A=
->> +		bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE,=0A=
->> +			     offset_in_page(bytenr));=0A=
->> +=0A=
->> +		lock_page(page);=0A=
->> +		submit_bio_wait(&bio);=0A=
->> +		unlock_page(page);=0A=
->> +		kunmap(page);=0A=
->> +		put_page(page);=0A=
->> +		bio_reset(&bio);=0A=
-> =0A=
-> Facoting out the code to write a single sb would clean this up a bit.=0A=
-> Also no real need to keep the page kmapped when under I/O.=0A=
-> =0A=
-=0A=
-Yup, will be doing=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YFBI5Zb8nnF1ULXDE8727RIgmB2lYqcUM
+Content-Type: multipart/mixed; boundary="pZ5zqempqwBU8tfid6Hku2PMedmFRgxCW"
+
+--pZ5zqempqwBU8tfid6Hku2PMedmFRgxCW
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/1/30 =E4=B8=8B=E5=8D=886:02, Filipe Manana wrote:
+> On Thu, Jan 30, 2020 at 5:30 AM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> [BUG]
+>> When the data space is exhausted, even the inode has NOCOW attribute,
+>> btrfs will still refuse to truncate unaligned range due to ENOSPC.
+>>
+>> The following script can reproduce it pretty easily:
+>>   #!/bin/bash
+>>
+>>   dev=3D/dev/test/test
+>>   mnt=3D/mnt/btrfs
+>>
+>>   umount $dev &> /dev/null
+>>   umount $mnt&> /dev/null
+>>
+>>   mkfs.btrfs -f $dev -b 1G
+>>   mount -o nospace_cache $dev $mnt
+>>   touch $mnt/foobar
+>>   chattr +C $mnt/foobar
+>>
+>>   xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
+>>   xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
+>>   sync
+>>
+>>   xfs_io -c "fpunch 0 2k" $mnt/foobar
+>>   umount $mnt
+>>
+>> Current btrfs will fail at the fpunch part.
+>>
+>> [CAUSE]
+>> Because btrfs_truncate_block() always reserve space without checking t=
+he
+>> NOCOW attribute.
+>>
+>> Since the writeback path follows NOCOW bit, we only need to bother the=
+
+>> space reservation code in btrfs_truncate_block().
+>>
+>> [FIX]
+>> Make btrfs_truncate_block() to follow btrfs_buffered_write() to try to=
+
+>> reserve data space first, and falls back to NOCOW check only when we
+>> don't have enough space.
+>>
+>> Such always-try-reserve is an optimization introduced in
+>> btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() cal=
+l.
+>>
+>> Since now check_can_nocow() is needed outside of inode.c, also export =
+it
+>> and rename it to btrfs_check_can_nocow().
+>>
+>> Reported-by: Martin Doucha <martin.doucha@suse.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Test case will be submitted to fstests by the reporter.
+>=20
+> Well, this is a sudden change of mind, isn't it? :)
+>=20
+> We had btrfs/172, which you removed very recently, that precisely teste=
+d this:
+>=20
+> https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=3D538=
+d8a4bcc782258f8f95fae815d5e859dee9126
+
+I didn't notice the nodatacow mount option. Super duper big facepalm.
+
+All my bad, especially feel sorry for Anand.
+
+With nodatacow mount option there, that test case in fact makes a lot of
+sense.
+Sorry again for that.
+
+Anand, mind to resubmit it to generic group?
+
+Thanks,
+Qu
+
+>=20
+> Even though there are several reasons why this can still fail (at
+> writeback time), like regular buffered writes through the family of
+> write() syscalls can, I think it's perfectly fine to have this
+> behaviour.
+>=20
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>=20
+> So I think we can just resurrect btrfs/172 now...
+>=20
+>> ---
+>>  fs/btrfs/ctree.h |  2 ++
+>>  fs/btrfs/file.c  | 10 +++++-----
+>>  fs/btrfs/inode.c | 41 ++++++++++++++++++++++++++++++++++-------
+>>  3 files changed, 41 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index 54efb21c2727..b5639f3461e4 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -2954,6 +2954,8 @@ int btrfs_fdatawrite_range(struct inode *inode, =
+loff_t start, loff_t end);
+>>  loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
+>>                               struct file *file_out, loff_t pos_out,
+>>                               loff_t len, unsigned int remap_flags);
+>> +int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+>> +                         size_t *write_bytes);
+>>
+>>  /* tree-defrag.c */
+>>  int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+>> index 8d47c76b7bd1..8dc084600f4e 100644
+>> --- a/fs/btrfs/file.c
+>> +++ b/fs/btrfs/file.c
+>> @@ -1544,8 +1544,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_ino=
+de *inode, struct page **pages,
+>>         return ret;
+>>  }
+>>
+>> -static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t=
+ pos,
+>> -                                   size_t *write_bytes)
+>> +int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+>> +                         size_t *write_bytes)
+>>  {
+>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>>         struct btrfs_root *root =3D inode->root;
+>> @@ -1645,8 +1645,8 @@ static noinline ssize_t btrfs_buffered_write(str=
+uct kiocb *iocb,
+>>                 if (ret < 0) {
+>>                         if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODA=
+TACOW |
+>>                                                       BTRFS_INODE_PREA=
+LLOC)) &&
+>> -                           check_can_nocow(BTRFS_I(inode), pos,
+>> -                                       &write_bytes) > 0) {
+>> +                           btrfs_check_can_nocow(BTRFS_I(inode), pos,=
+
+>> +                                                 &write_bytes) > 0) {=
+
+>>                                 /*
+>>                                  * For nodata cow case, no need to res=
+erve
+>>                                  * data space.
+>> @@ -1923,7 +1923,7 @@ static ssize_t btrfs_file_write_iter(struct kioc=
+b *iocb,
+>>                  */
+>>                 if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |=
+
+>>                                               BTRFS_INODE_PREALLOC)) |=
+|
+>> -                   check_can_nocow(BTRFS_I(inode), pos, &count) <=3D =
+0) {
+>> +                   btrfs_check_can_nocow(BTRFS_I(inode), pos, &count)=
+ <=3D 0) {
+>>                         inode_unlock(inode);
+>>                         return -EAGAIN;
+>>                 }
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 5509c41a4f43..b5ae4bbf1ad4 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -4974,11 +4974,13 @@ int btrfs_truncate_block(struct inode *inode, =
+loff_t from, loff_t len,
+>>         struct extent_state *cached_state =3D NULL;
+>>         struct extent_changeset *data_reserved =3D NULL;
+>>         char *kaddr;
+>> +       bool only_release_metadata =3D false;
+>>         u32 blocksize =3D fs_info->sectorsize;
+>>         pgoff_t index =3D from >> PAGE_SHIFT;
+>>         unsigned offset =3D from & (blocksize - 1);
+>>         struct page *page;
+>>         gfp_t mask =3D btrfs_alloc_write_mask(mapping);
+>> +       size_t write_bytes =3D blocksize;
+>>         int ret =3D 0;
+>>         u64 block_start;
+>>         u64 block_end;
+>> @@ -4990,11 +4992,26 @@ int btrfs_truncate_block(struct inode *inode, =
+loff_t from, loff_t len,
+>>         block_start =3D round_down(from, blocksize);
+>>         block_end =3D block_start + blocksize - 1;
+>>
+>> -       ret =3D btrfs_delalloc_reserve_space(inode, &data_reserved,
+>> -                                          block_start, blocksize);
+>> -       if (ret)
+>> +       ret =3D btrfs_check_data_free_space(inode, &data_reserved, blo=
+ck_start,
+>> +                                         blocksize);
+>> +       if (ret < 0) {
+>> +               if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+>> +                                             BTRFS_INODE_PREALLOC)) &=
+&
+>> +                   btrfs_check_can_nocow(BTRFS_I(inode), block_start,=
+
+>> +                                         &write_bytes) > 0) {
+>> +                       /* For nocow case, no need to reserve data spa=
+ce. */
+>> +                       only_release_metadata =3D true;
+>> +               } else {
+>> +                       goto out;
+>> +               }
+>> +       }
+>> +       ret =3D btrfs_delalloc_reserve_metadata(BTRFS_I(inode), blocks=
+ize);
+>> +       if (ret < 0) {
+>> +               if (!only_release_metadata)
+>> +                       btrfs_free_reserved_data_space(inode, data_res=
+erved,
+>> +                                       block_start, blocksize);
+>>                 goto out;
+>> -
+>> +       }
+>>  again:
+>>         page =3D find_or_create_page(mapping, index, mask);
+>>         if (!page) {
+>> @@ -5063,10 +5080,20 @@ int btrfs_truncate_block(struct inode *inode, =
+loff_t from, loff_t len,
+>>         set_page_dirty(page);
+>>         unlock_extent_cached(io_tree, block_start, block_end, &cached_=
+state);
+>>
+>> +       if (only_release_metadata)
+>> +               set_extent_bit(&BTRFS_I(inode)->io_tree, block_start,
+>> +                               block_end, EXTENT_NORESERVE, NULL, NUL=
+L,
+>> +                               GFP_NOFS);
+>> +
+>>  out_unlock:
+>> -       if (ret)
+>> -               btrfs_delalloc_release_space(inode, data_reserved, blo=
+ck_start,
+>> -                                            blocksize, true);
+>> +       if (ret) {
+>> +               if (!only_release_metadata)
+>> +                       btrfs_delalloc_release_space(inode, data_reser=
+ved,
+>> +                                       block_start, blocksize, true);=
+
+>> +               else
+>> +                       btrfs_delalloc_release_metadata(BTRFS_I(inode)=
+,
+>> +                                       blocksize, true);
+>=20
+> I usually find it more intuitive to have it the other way around:
+>=20
+> if (only_release_metadata)
+>   ...
+> else
+>   ...
+>=20
+> E.g., positive case first, negative in the else branch. But that's
+> likely too much of a personal preference.
+>=20
+> Thanks.
+>=20
+>> +       }
+>>         btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
+>>         unlock_page(page);
+>>         put_page(page);
+>> --
+>> 2.25.0
+>>
+>=20
+>=20
+
+
+--pZ5zqempqwBU8tfid6Hku2PMedmFRgxCW--
+
+--YFBI5Zb8nnF1ULXDE8727RIgmB2lYqcUM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl4ysawACgkQwj2R86El
+/qhq/Qf/dneY5q7+DmR3Jw2V0QcGqP5l/fgNvFtDI0Yj75XCAuM1Wyfvk6DUnBIH
+yEfByTcKsyKYDHXrBZLM2ZnmjiMqpqaMhrSsdyKlpeQfclJs7pLVYhWt+GjVyRRx
+/1ciZqDDIw8dHu8glhTVS31H5F2q/vIJ4Bz9RXRlAP/1gqzY6gH/R5ibnYsO10Bk
+YJ4uYj/KffLafLChaC9b3KmDB/8ncP9LRhIKOkeIw0dXaC4fE/xvuBZCzzoKs+lZ
+N2znHovWGpLb74BiXu3OjmngPSQhvoTraZQ10iSYuIiygco6d/HPwhUSsJvqUDs8
+m6dXa1c9pxpPx4rUrjvizdLmpK6ijQ==
+=pKcL
+-----END PGP SIGNATURE-----
+
+--YFBI5Zb8nnF1ULXDE8727RIgmB2lYqcUM--
