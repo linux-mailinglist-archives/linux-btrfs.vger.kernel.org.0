@@ -2,145 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A42AE14D422
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 00:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7496714D629
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jan 2020 06:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgA2Xzw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jan 2020 18:55:52 -0500
-Received: from mout.gmx.net ([212.227.15.19]:58939 "EHLO mout.gmx.net"
+        id S1726397AbgA3F23 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 00:28:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46662 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726648AbgA2Xzw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jan 2020 18:55:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580342141;
-        bh=XITtJExlSdMJlvvk3SPPpbztWnmlDrNbkZn5CRoQBMk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZO7aULeul8WVQQRCr/e/jyU/9rHzFbYMMaS5ktSTrJT9BEryz1EVg+TGy4RQkzcNX
-         CD7LRuD/gxi+E1w6AQ/kRcjrvBPgoKfXDhsTj5wPxeSyTWfqTWWcADl9AV3UZH8PUG
-         kGiL7Ye46BPFdfOb+aCcHiVUmKdIll7Y8ObwN9Hg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeU4s-1jXOSe2Nsa-00aTMb; Thu, 30
- Jan 2020 00:55:41 +0100
-Subject: Re: [PATCH] btrfs: optimize barrier usage for Rmw atomics
-To:     Davidlohr Bueso <dave@stgolabs.net>, dsterba@suse.cz,
-        dsterba@suse.com, nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-References: <20200129180324.24099-1-dave@stgolabs.net>
- <20200129191439.GN3929@twin.jikos.cz>
- <20200129192550.nnfkkgde445nrbko@linux-p48b>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f49aaafa-9144-5644-adae-d5bc13b6ca41@gmx.com>
-Date:   Thu, 30 Jan 2020 07:55:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1725976AbgA3F23 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jan 2020 00:28:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 4C13FAD89;
+        Thu, 30 Jan 2020 05:28:27 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Martin Doucha <martin.doucha@suse.com>
+Subject: [PATCH] btrfs: Allow btrfs_truncate_block() to fallback to nocow for data space reservation
+Date:   Thu, 30 Jan 2020 13:28:22 +0800
+Message-Id: <20200130052822.11765-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200129192550.nnfkkgde445nrbko@linux-p48b>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vKbIn1BgJMkSZlYsDHNNloPVS6CzOJ6Jbe8+Vbhx6l5avVBfbu6
- djLKitQzzavm8h09+MQdjnCFrSPKUm+4svxVi62aQ9rLGVfUrTTFYIYNlwqKI8Mw+AgLcyb
- 1l/8QM8bwXS4KasZwmif45KD2XDVKs3kn1LRAJ4zDSF3l+df/lARUgmS4ofQ2MyeCqkGj9J
- Fb5BF7Wk/QhzBNCMGOIqw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rkod/PACeIY=:NafSwqzKI40NSpj7xmTXkY
- AMyUO6OSmE4Ec+YjheoIN9BYc979Gu587jlGdYjUoiNiY0GbHbuLxGqK4yc2/YyL4ovl2U490
- LRQOOaEysPTsaTS1WooOxO7iqrANkK6u9mDW5XTH8aa0/GUSUJTdqN6BlA6nyZVRtdBIg/pPk
- FR8Q5TVHmkJ0vNWm22nIR0g8i80Xv8/6fj/H+Qm4XAxFHgAZJVweEd1Gobv4KhNmBeyghP5GU
- dgZ9en+G4SJJ9Z6BQdiiiy5V7ep7ayH+JHkGS6bnjtPxiaRC0erwf9sEUVKZX85hnmlZ7oElG
- gTKVdTHsZE8nwosDmQxvAvMhDoULzIUThjrnLURKUoSM7iX2UgFS/B6x5411Gil8RfA6u+8dW
- rCLwHDBwioBNwGO7Onw7hqYpikapnCwaqqLsEKntOGwgdZeGm33qoicCZJDDw5HsoMGR6oI9J
- tiRtFswwQw9VCneiyKWjqaCTzxG/2o7Kf0DOdTZSGl6HsvR8gkNlxvUvu4Fr13TAQ2TVlkqhz
- XUkMQAT3zXSG/oeVwj2Afcvmwj9DwRP5CCuOfNexUfzSTN+DguR2QzpLG8LdZ/zdw9e3CABpF
- uGA+U4bMtCj9jgPXwnk6HKVh9LgUahEcxmnHVRhmsS+k+VxTBDUb3pBgL01EdClu5JuObykLn
- 8Y3zS6EshOdZKHzI2mOAeGALpHlTP9P9kNVZ+akiBynZxP5GkmOGHBrQ+s+NC07ScGVlwZods
- 7WpX/UnpUEE5uc7UNJWXInojLyC0YKIo7Yg6usPLbuUFuj31NxTBtPEgDbhXUoGywQ+DZG2VN
- GZSnYNHXVCaQiqfGoV/DIHeJrnuIZkdg7iMKKqtDF29kTBrpIeZQ64Cc7NYn5CDV5Y4wGmT5N
- mb8aE5Ms1mDMrh544wdPMjZGw5ZBTRnPiQifNmNDZ9z2qogOzwBk42l+adS/+IVRTT7huy72R
- PghUz+P1FvvvqTVUgBCY+P9n2oa/loA/fa+RDGmXZ5Uw6U+jgODfg/J7sfNFSW2RoLClOh8QQ
- cVajxkSe6U5WtzO1smbBLl9fGpwCcMMEjR7/cnk3xf5eUqukOI+/58SyouD+iqeBsjU13S47O
- RgniZ7YKv5gEGZzk1/UtODQYCpF9wuXm0BvIOe6AL2aZu9yAxuCS5/I2NqPpXIJig0Qh6kHpy
- LIekZQEnWZY9ZNuZuC6K6CJOgC8dFGLyyTkVQmVUoc0tkBlBRDp4rO/o6VWXMSCKoqUTiWefR
- N0Ui8xHuX+b46pRUJ
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+When the data space is exhausted, even the inode has NOCOW attribute,
+btrfs will still refuse to truncate unaligned range due to ENOSPC.
 
+The following script can reproduce it pretty easily:
+  #!/bin/bash
 
-On 2020/1/30 =E4=B8=8A=E5=8D=883:25, Davidlohr Bueso wrote:
-> On Wed, 29 Jan 2020, David Sterba wrote:
->
->> On Wed, Jan 29, 2020 at 10:03:24AM -0800, Davidlohr Bueso wrote:
->>> Use smp_mb__after_atomic() instead of smp_mb() and avoid the
->>> unnecessary barrier for non LL/SC architectures, such as x86.
->>
->> So that's a conflicting advice from what we got when discussing wich
->> barriers to use in 6282675e6708ec78518cc0e9ad1f1f73d7c5c53d and the
->> memory is still fresh. My first idea was to take the
->> smp_mb__after_atomic and __before_atomic variants and after discussion
->> with various people the plain smp_wmb/smp_rmb were suggested and used i=
-n
->> the end.
->
-> So the patch you mention deals with test_bit(), which is out of the scop=
-e
-> of smp_mb__{before,after}_atomic() as it's not a RMW operation.
-> atomic_inc()
-> and set_bit() are, however, meant to use these barriers.
+  dev=/dev/test/test
+  mnt=/mnt/btrfs
 
-Exactly!
-I'm still not convinced to use full barrier for test_bit() and I see no
-reason to use any barrier for test_bit().
-All mb should only be needed between two or more memory access, thus mb
-should sit between set/clear_bit() and other operations, not around
-test_bit().
+  umount $dev &> /dev/null
+  umount $mnt&> /dev/null
 
->
->>
->> I can dig the email threads and excerpts from irc conversations, maybe
->> Nik has them at hand too. We do want to get rid of all unnecessary and
->> uncommented barriers in btrfs code, so I appreciate your patch.
->
-> Yeah, I struggled with the amount of undocumented barriers, and decided
-> not to go down that rabbit hole. This patch is only an equivalent of
-> what is currently there. When possible, getting rid of barriers is of
-> course better.
+  mkfs.btrfs -f $dev -b 1G
+  mount -o nospace_cache $dev $mnt
+  touch $mnt/foobar
+  chattr +C $mnt/foobar
 
-BTW, is there any convincing method to do proper mb examination?
+  xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
+  xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
+  sync
 
-I really found it hard to convince others or even myself when mb is
-involved.
+  xfs_io -c "fpunch 0 2k" $mnt/foobar
+  umount $mnt
 
-Thanks,
-Qu
+Current btrfs will fail at the fpunch part.
 
->
-> Thanks,
-> Davidlohr
+[CAUSE]
+Because btrfs_truncate_block() always reserve space without checking the
+NOCOW attribute.
+
+Since the writeback path follows NOCOW bit, we only need to bother the
+space reservation code in btrfs_truncate_block().
+
+[FIX]
+Make btrfs_truncate_block() to follow btrfs_buffered_write() to try to
+reserve data space first, and falls back to NOCOW check only when we
+don't have enough space.
+
+Such always-try-reserve is an optimization introduced in
+btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() call.
+
+Since now check_can_nocow() is needed outside of inode.c, also export it
+and rename it to btrfs_check_can_nocow().
+
+Reported-by: Martin Doucha <martin.doucha@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Test case will be submitted to fstests by the reporter.
+---
+ fs/btrfs/ctree.h |  2 ++
+ fs/btrfs/file.c  | 10 +++++-----
+ fs/btrfs/inode.c | 41 ++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 41 insertions(+), 12 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 54efb21c2727..b5639f3461e4 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2954,6 +2954,8 @@ int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
+ loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
+ 			      struct file *file_out, loff_t pos_out,
+ 			      loff_t len, unsigned int remap_flags);
++int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
++			  size_t *write_bytes);
+ 
+ /* tree-defrag.c */
+ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 8d47c76b7bd1..8dc084600f4e 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1544,8 +1544,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ 	return ret;
+ }
+ 
+-static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+-				    size_t *write_bytes)
++int btrfs_check_can_nocow(struct btrfs_inode *inode, loff_t pos,
++			  size_t *write_bytes)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_root *root = inode->root;
+@@ -1645,8 +1645,8 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		if (ret < 0) {
+ 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 						      BTRFS_INODE_PREALLOC)) &&
+-			    check_can_nocow(BTRFS_I(inode), pos,
+-					&write_bytes) > 0) {
++			    btrfs_check_can_nocow(BTRFS_I(inode), pos,
++						  &write_bytes) > 0) {
+ 				/*
+ 				 * For nodata cow case, no need to reserve
+ 				 * data space.
+@@ -1923,7 +1923,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 		 */
+ 		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 					      BTRFS_INODE_PREALLOC)) ||
+-		    check_can_nocow(BTRFS_I(inode), pos, &count) <= 0) {
++		    btrfs_check_can_nocow(BTRFS_I(inode), pos, &count) <= 0) {
+ 			inode_unlock(inode);
+ 			return -EAGAIN;
+ 		}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 5509c41a4f43..b5ae4bbf1ad4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4974,11 +4974,13 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_changeset *data_reserved = NULL;
+ 	char *kaddr;
++	bool only_release_metadata = false;
+ 	u32 blocksize = fs_info->sectorsize;
+ 	pgoff_t index = from >> PAGE_SHIFT;
+ 	unsigned offset = from & (blocksize - 1);
+ 	struct page *page;
+ 	gfp_t mask = btrfs_alloc_write_mask(mapping);
++	size_t write_bytes = blocksize;
+ 	int ret = 0;
+ 	u64 block_start;
+ 	u64 block_end;
+@@ -4990,11 +4992,26 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
+ 	block_start = round_down(from, blocksize);
+ 	block_end = block_start + blocksize - 1;
+ 
+-	ret = btrfs_delalloc_reserve_space(inode, &data_reserved,
+-					   block_start, blocksize);
+-	if (ret)
++	ret = btrfs_check_data_free_space(inode, &data_reserved, block_start,
++					  blocksize);
++	if (ret < 0) {
++		if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
++					      BTRFS_INODE_PREALLOC)) &&
++		    btrfs_check_can_nocow(BTRFS_I(inode), block_start,
++					  &write_bytes) > 0) {
++			/* For nocow case, no need to reserve data space. */
++			only_release_metadata = true;
++		} else {
++			goto out;
++		}
++	}
++	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), blocksize);
++	if (ret < 0) {
++		if (!only_release_metadata)
++			btrfs_free_reserved_data_space(inode, data_reserved,
++					block_start, blocksize);
+ 		goto out;
+-
++	}
+ again:
+ 	page = find_or_create_page(mapping, index, mask);
+ 	if (!page) {
+@@ -5063,10 +5080,20 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
+ 	set_page_dirty(page);
+ 	unlock_extent_cached(io_tree, block_start, block_end, &cached_state);
+ 
++	if (only_release_metadata)
++		set_extent_bit(&BTRFS_I(inode)->io_tree, block_start,
++				block_end, EXTENT_NORESERVE, NULL, NULL,
++				GFP_NOFS);
++
+ out_unlock:
+-	if (ret)
+-		btrfs_delalloc_release_space(inode, data_reserved, block_start,
+-					     blocksize, true);
++	if (ret) {
++		if (!only_release_metadata)
++			btrfs_delalloc_release_space(inode, data_reserved,
++					block_start, blocksize, true);
++		else
++			btrfs_delalloc_release_metadata(BTRFS_I(inode),
++					blocksize, true);
++	}
+ 	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
+ 	unlock_page(page);
+ 	put_page(page);
+-- 
+2.25.0
+
