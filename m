@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5B514EB96
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 12:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72F314EBAF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 12:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgAaLQe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 06:16:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45464 "EHLO mx2.suse.de"
+        id S1728438AbgAaLZ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 06:25:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47810 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728268AbgAaLQe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 06:16:34 -0500
+        id S1728268AbgAaLZ0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 06:25:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0BBD4AB3D;
-        Fri, 31 Jan 2020 11:16:32 +0000 (UTC)
-Subject: Re: [PATCH 06/20] btrfs: call btrfs_try_granting_tickets when freeing
- reserved bytes
+        by mx2.suse.de (Postfix) with ESMTP id DEF29AEC5;
+        Fri, 31 Jan 2020 11:25:23 +0000 (UTC)
+Subject: Re: [PATCH 07/20] btrfs: call btrfs_try_granting_tickets when
+ unpinning anything
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200129235024.24774-1-josef@toxicpanda.com>
- <20200129235024.24774-7-josef@toxicpanda.com>
+ <20200129235024.24774-8-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c0de31a9-3fe7-b11a-1eca-5492f869e8b7@suse.com>
-Date:   Fri, 31 Jan 2020 13:16:29 +0200
+Message-ID: <69d50266-213e-4680-e0e5-1dec65dde2b7@suse.com>
+Date:   Fri, 31 Jan 2020 13:25:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200129235024.24774-7-josef@toxicpanda.com>
+In-Reply-To: <20200129235024.24774-8-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,29 +81,67 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.01.20 г. 1:50 ч., Josef Bacik wrote:
-> We were missing a call to btrfs_try_granting_tickets in
-> btrfs_free_reserved_bytes, so add it to handle the case where we're able
-> to satisfy an allocation because we've freed a pending reservation.
+> When unpinning we were only calling btrfs_try_granting_tickets() if
+> global_rsv->space_info == space_info, which is problematic because we
+> use ticketing for SYSTEM chunks, and want to use it for DATA as well.
+> Fix this by moving this call outside of that if statement.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
- Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-> ---
->  fs/btrfs/block-group.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 77ec0597bd17..616d0dd69394 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2932,6 +2932,8 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
->  	if (delalloc)
->  		cache->delalloc_bytes -= num_bytes;
->  	spin_unlock(&cache->lock);
-> +
-> +	btrfs_try_granting_tickets(cache->fs_info, space_info);
->  	spin_unlock(&space_info->lock);
->  }
->  
-> 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com> . 
+
+
+nit: I only wonderef if making if (!readonly && return_free_space) 
+the top level 'if' and then have 2 ifs inside of it : 
+1 being 'if (global_rsv->space_info == space_info)' and the other 
+being 'if (len)' would make the code look better but it's not - 
+it's adding another level of nesting:
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index ab354ea09177..4ff9a3140864 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2872,26 +2872,25 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+                        readonly = true;
+                }
+                spin_unlock(&cache->lock);
+-               if (!readonly && return_free_space &&
+-                   global_rsv->space_info == space_info) {
+-                       u64 to_add = len;
+-
+-                       spin_lock(&global_rsv->lock);
+-                       if (!global_rsv->full) {
+-                               to_add = min(len, global_rsv->size -
+-                                            global_rsv->reserved);
+-                               global_rsv->reserved += to_add;
+-                               btrfs_space_info_update_bytes_may_use(fs_info,
+-                                               space_info, to_add);
+-                               if (global_rsv->reserved >= global_rsv->size)
+-                                       global_rsv->full = 1;
+-                               len -= to_add;
++               if (!readonly && return_free_space) {
++                       if (global_rsv->space_info = space_info ){
++                               spin_lock(&global_rsv->lock);
++                               if (!global_rsv->full) {
++                                       u64 to_add = len;
++                                       to_add = min(len, global_rsv->size -
++                                                    global_rsv->reserved);
++                                       global_rsv->reserved += to_add;
++                                       btrfs_space_info_update_bytes_may_use(fs_info,
++                                                       space_info, to_add);
++                                       if (global_rsv->reserved >= global_rsv->size)
++                                               global_rsv->full = 1;
++                                       len -= to_add;
++                               }
++                               spin_unlock(&global_rsv->lock);
+                        }
+-                       spin_unlock(&global_rsv->lock);
++                       if (len)
++                               btrfs_try_granting_tickets(fs_info, space_info);
+                }
+-               /* Add to any tickets we may have */
+-               if (!readonly && return_free_space && len)
+-                       btrfs_try_granting_tickets(fs_info, space_info);
+                spin_unlock(&space_info->lock);
+        }
