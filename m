@@ -2,131 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2102614ECA8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 13:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8301414EDAB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 14:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgAaMrT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 07:47:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56958 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgAaMrS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 07:47:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9E3BDB174;
-        Fri, 31 Jan 2020 12:47:16 +0000 (UTC)
-Subject: Re: [PATCH 02/11] btrfs-progs: misc-tests/034: mount the second
- device if first device mount failed
-To:     Su Yue <Damenly_Su@gmx.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <20191212110204.11128-3-Damenly_Su@gmx.com>
- <2eba385b-1d75-ce1b-669f-f8722dc016fa@suse.com>
- <000a9744-a72d-88ff-51f1-2705be98bd75@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
- IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
- Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
- w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
- LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
- BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
- LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
- tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
- 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
- fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
- d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
- wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
- jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
- YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
- Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
- hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
- Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
- qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
- FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
- KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
- WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
- JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
- OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
- mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
- 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
- lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
- zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
- KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
- zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
- Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <0145aaff-0e5f-af9d-4bc3-057c983ab52a@suse.com>
-Date:   Fri, 31 Jan 2020 14:47:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <000a9744-a72d-88ff-51f1-2705be98bd75@gmx.com>
-Content-Type: text/plain; charset=utf-8
+        id S1728704AbgAaNnW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 08:43:22 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:14801 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728500AbgAaNnW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 08:43:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1580478202; x=1612014202;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=7MuhgMuPBuxOv1pqW1S5azSUyTYlhAgh1crRlwp4WRo=;
+  b=gKcS+oxE0UNcjGWT+tYSZloVLQA4L7IU3sSkiFuPB2Rve7QYLHWp6EcW
+   kIN9pI5BrTDp4hHiFvuNDP2PDlQllwj2WONoOA6ZSzpgYJRxvgLPqP6LC
+   YWr08nfBVPKtIw5JmrYXaSC1i3upL5Cf0AQvkpOwoh+uHrxFmzaTSPuNi
+   5jJKDp4Z35l3kI5ImfNnGFYhNdRaqevQeqdj1jpDEuXu5ojKU5MpjNuKO
+   8gO6P7jo/+nMW5W397dJVWLqj3ForMr9mNZpzG3cRvOOBn8PLdvAlj0BN
+   buMVGCbz+vj0kwkK/vnLDHvRyqPygMC33zUz51oJaDjLK45waihv9+0AI
+   w==;
+IronPort-SDR: OY+zB2sMV5MWkOvlVxA1aQGGg6sNqKEJmNsdd9SNkOJPt7tIwsbUUWGTlx7JYe/jLQEvu2Tn9T
+ h0v0QpKwZPmxqXAUR9IKRFrMO3DM2LDdEf1t6f+UVcgWD27aXRL0o+Y7v/NefC2m0WZYcsl129
+ 5xdal/NDrJ3sKIK6PTB7p0hR3FdNoBMq+wfSo2TvviCZeEYGUTOiiexcoG0q1PoBhcOjk4j2mu
+ g6WDvXB6wNAMzxldvWlI9BMoLqJLiY7QtVDO+CSjDfJPg3Jz56qUQ+Sd1sYumR3HWnwcyiWV+0
+ gm4=
+X-IronPort-AV: E=Sophos;i="5.70,386,1574092800"; 
+   d="scan'208";a="133186509"
+Received: from mail-dm6nam11lp2175.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.175])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Jan 2020 21:43:21 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SiFJDn4UhXgKKKgjGCwwdMD41DS/mozsuSS1aPu28gzSE3rfaDyS7LN33QKBrdv4xSbnu0VmO2wSon8EDK87tXuLq8xEh9oUxbBXd1vub0ClVRA4Vvj5hZSrgvERFXyoougPzWFkJ6qFkYTTrfSZ8EVIAMbkG1sadBxrl5Xbduqt5XL9QCS3I3WLPVe4GJPds2NVEFWUpGAkQNqnXR/I9xO1b0tJsy34Z9GV+BSHsfZ9OPzGggeQ4Ii6qeuip7JCPr3cLqbBFIQKkfoGgLUBC5B8ZUBNt+1dSzOX0ec8OB23iEKtJLdkSmm8jaZVs84qG6hodt9LAzZ6iBzafSlxvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7MuhgMuPBuxOv1pqW1S5azSUyTYlhAgh1crRlwp4WRo=;
+ b=jbw/VUnrQj5DVsrqOG7QlB0aYbQN3yZbkoYTGTVhyNgYmZ1V1do4yQPis51ghqZMLwdCsWrL4t6d/EcXRod4y1VXlZE2XxjMDFGiK82dU/SS+UQy47MQiNxei50yzmX36qC3YYyBEXSyTYkLFP5jEpm4fV5UA3HIbg++H3e4RikQDQe4/iZI1MDCVgEmuMxpiVVW+RKxSUJOF3CG57FE7ar9lgilhqiz8fC393A4JTAVKcT8P3/OQo//HQeH0qKoKce9+/3fj/N3thjUCNTXevBC096nfidAlYWh8LN7yRQl+FIG0gf/+xaOVA2YB8WzD0tU489jhBV0VQ9rGnQkJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7MuhgMuPBuxOv1pqW1S5azSUyTYlhAgh1crRlwp4WRo=;
+ b=uUSaLCzgQDulVwlMtoTJUJayfzZwNhXn1pfJdkw+cFL56++b9Zux3P5UdN+EQ7pbWA11LSNl3wQ22snQ4VYSDFfVbVcVT7y4xuEcNlLQ29FasABHW+gDtWpEbjdwRlSR796aJptzDm61s8NLIhe48UoksgYoU8+QUrxFyXx4460=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3646.namprd04.prod.outlook.com (10.167.141.157) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.29; Fri, 31 Jan 2020 13:43:19 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.028; Fri, 31 Jan 2020
+ 13:43:19 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 0/5] btrfs: remove buffer heads form superblock
+ handling
+Thread-Topic: [PATCH v3 0/5] btrfs: remove buffer heads form superblock
+ handling
+Thread-Index: AQHV1SrKCplaciq1OEKao1x65qqI1g==
+Date:   Fri, 31 Jan 2020 13:43:19 +0000
+Message-ID: <SN4PR0401MB3598374A2D00E21C275E5ED59B070@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200127155931.10818-1-johannes.thumshirn@wdc.com>
+ <20200129142526.GE3929@twin.jikos.cz>
+ <SN4PR0401MB359858CB7DFD0082B44D57379B040@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200130121530.GO3929@twin.jikos.cz> <20200130133921.GA21841@infradead.org>
+ <20200130161606.GV3929@twin.jikos.cz>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c1f83f90-297a-41ca-f6c2-08d7a6538881
+x-ms-traffictypediagnostic: SN4PR0401MB3646:
+x-microsoft-antispam-prvs: <SN4PR0401MB3646A063C1F90495C8A814CE9B070@SN4PR0401MB3646.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 029976C540
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(189003)(199004)(186003)(6916009)(26005)(5660300002)(316002)(8936002)(7696005)(54906003)(66476007)(52536014)(76116006)(66556008)(66446008)(64756008)(91956017)(33656002)(66946007)(6506007)(53546011)(2906002)(71200400001)(9686003)(478600001)(55016002)(4326008)(86362001)(8676002)(81156014)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3646;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2NicnrXHnU1/6L75y/vket/6vhs5B+6goLlxPwPTGuDOlq/4vS0LlTNRV8xbIeO1Gjivz+1GZPAnZSAaCCxfpkVsgQUNF0ZbRL6FyoJX2Rl2di24J3UVZ5Mz8xZBvTJ6IKOaIwH/tdjM5gS/sRmUGIrmjB44Cofq5UF9iJ9N0oy3uBGt+yRb7uaSXB5TqSLfulACwTg2Ot0MAi02uZB429PfjHQ/T97eJS3SRuoWIGgfYzxY2q9NFFLKj3ljWxRhAL05vLNP/BTHrhewDmiQLCR8gI8VdfJp9F5AEj5EMrP3TRJCcsF5ITFA08PD6TAvL3oME9UgB89ZJVSXPYJ4CsVzPfzX/1FeyPIZZG7QVa2RzWLiWqdchQ9OW8MIOFeOWAxD1fsCkA4Bj+I8w6GnKBz3prAeLlZ/QHBwJ+RKja7pLWR6OQBSJ5Iiuyr8Uk6D
+x-ms-exchange-antispam-messagedata: 89SGetvS8Douxj9nBYrZRoDiW8JTcOwNTcvfJeDqPkIw/86Vt3BW1HdhqgVMR/8q0L0U2B3Kbx9FneONGK5S/Op/+7QgmUI0AdVQ88F3uBeuPlktL+odKuTtXeLOvztmAEGoe9vAav9wnBGuLuU19w==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1f83f90-297a-41ca-f6c2-08d7a6538881
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2020 13:43:19.7240
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Qr77nzuSp1+LnpCzVuMrNFzFSNsdtTRsz8fkCvORQOFks8eK8E6GsZhhBIs4oHAUQkCX9qBuPoV5BmMRfQNX11JqpWBn7IBIu4GKWzIYLNs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3646
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 31.01.20 г. 12:01 ч., Su Yue wrote:
-> On 2020/1/31 4:03 PM, Nikolay Borisov wrote:
->>
->>
->> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
->>> From: Su Yue <Damenly_Su@gmx.com>
->>>
->>> The 034 test may fail to mount, and dmesg says open_ctree() failed due
->>> to device missing.
->>>
->>> The partly work flow is
->>> step1 loop1 = losetup image1
->>> step2 loop2 = losetup image2
->>> setp3 mount loop1
->>>
->>> The dmesg says the loop2 device is missing.
->>> It's possible and known that while step3 is in open_ctree() and
->>> fs_devices->opened is nonzero, loop2 device has not been added into the
->>
->>
->> Care to give more details how this can happen? I haven't observed such a
->> failure, meaning it's likely due to some race condition. More details
->> are needed though. In your change log you say "it's known" but
->> apparently only to you in this case.
->>
-> 
-> Sure. There's a device missing situation[1] if two
-> devices(raid 1/0) were caught by udev. Yes, it's
-> not related to the metadata fsid feature. It just
-> makes the mount operation due to the missing device then
-> the test fails.
-
-Ok but in those mail posts it says the problem occurs if we have a
-multi-device btrfs volume, in this case raid1, and one of the devices is
-missing. The pertinent question is why would any of the testing devices
-be missing? Did you actually experience such failure ? loop1 is acquired
-after running losetup --find --show, implying that after the command is
-finished the given loopback device is fully present to the system?
-
-
-
-> 
-> In this script, $loop1 *may* be failed to be mounted because
-> $loop2 is "missing". Mounting $loop2 device can verify the
-> metadata fsid functionality but without the degraded option.
-> 
-> 
-> [1]: https://www.spinics.net/lists/linux-btrfs/msg96312.html
+On 30/01/2020 17:16, David Sterba wrote:=0A=
+> I'd like to remove the buffer_head interface in two steps. First remove=
+=0A=
+> the wrappers and open code the calls, so the functionality is unchanged.=
+=0A=
+> Then have another look if we can optimize that further, eg. removing the=
+=0A=
+> page cache.=0A=
+> =0A=
+> We've had subtle bugs when mount/scanning ioctl/mkfs interacted and did=
+=0A=
+> not see a consistent state. See 6f60cbd3ae442cb35861bb522f388db123d42ec1=
+=0A=
+> ("btrfs: access superblock via pagecache in scan_one_device"). It's been=
+=0A=
+> a few years so I don't recall all details, but it was quite hard to=0A=
+> catch. Mkfs followed by mount sometimes did not work.=0A=
+> =0A=
+> So page cache is the common access point for all the parts and for now=0A=
+> we rely on that. If removing is possible, I'd like to see a good=0A=
+> explanation why and not such change lost in a well meant cleanup.=0A=
+> =0A=
+=0A=
+I have a local version now, where btrfs_read_dev_one_super() uses =0A=
+read_cache_page_gfp() and btrfs_scratch_superblocks() uses =0A=
+write_one_page() offloading all the I/O to the pagecache. So far this =0A=
+works as expected.=0A=
+=0A=
+Now when I started converting write_dev_supers() and friends I wasn't =0A=
+sure if I can/should mix up read_cache_page_gfp() and submit_bio_wait(). =
+=0A=
+I could also convert it to write_one_page() but this way we would loose =0A=
+integrity checking for the super block.=0A=
+=0A=
+Any advice?=0A=
