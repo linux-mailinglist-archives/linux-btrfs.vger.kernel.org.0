@@ -2,85 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8480D14EC8A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 13:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2102614ECA8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 13:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgAaMfK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 07:35:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50898 "EHLO mx2.suse.de"
+        id S1728527AbgAaMrT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 07:47:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56958 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728500AbgAaMfJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 07:35:09 -0500
+        id S1728479AbgAaMrS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 07:47:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2C1ABAC7C;
-        Fri, 31 Jan 2020 12:35:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 70644DA7E5; Fri, 31 Jan 2020 13:34:48 +0100 (CET)
-Date:   Fri, 31 Jan 2020 13:34:48 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: statfs: Don't reset f_bavail if we're over
- committing metadata space
-Message-ID: <20200131123448.GA3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200115034128.32889-1-wqu@suse.com>
- <38a5dc98-7233-0252-4ba3-76c59d7b21e7@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 9E3BDB174;
+        Fri, 31 Jan 2020 12:47:16 +0000 (UTC)
+Subject: Re: [PATCH 02/11] btrfs-progs: misc-tests/034: mount the second
+ device if first device mount failed
+To:     Su Yue <Damenly_Su@gmx.com>, damenly.su@gmail.com,
+        linux-btrfs@vger.kernel.org
+References: <20191212110204.11128-1-Damenly_Su@gmx.com>
+ <20191212110204.11128-3-Damenly_Su@gmx.com>
+ <2eba385b-1d75-ce1b-669f-f8722dc016fa@suse.com>
+ <000a9744-a72d-88ff-51f1-2705be98bd75@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <0145aaff-0e5f-af9d-4bc3-057c983ab52a@suse.com>
+Date:   Fri, 31 Jan 2020 14:47:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38a5dc98-7233-0252-4ba3-76c59d7b21e7@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <000a9744-a72d-88ff-51f1-2705be98bd75@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 04:05:10PM -0500, Josef Bacik wrote:
-> On 1/14/20 10:41 PM, Qu Wenruo wrote:
-> > [BUG]
-> > When there are a lot of metadata space reserved, e.g. after balancing a
-> > data block with many extents, vanilla df would report 0 available space.
-> > 
-> > [CAUSE]
-> > btrfs_statfs() would report 0 available space if its metadata space is
-> > exhausted.
-> > And the calculation is based on currently reserved space vs on-disk
-> > available space, with a small headroom as buffer.
-> > When there is not enough headroom, btrfs_statfs() will report 0
-> > available space.
-> > 
-> > The problem is, since commit ef1317a1b9a3 ("btrfs: do not allow
-> > reservations if we have pending tickets"), we allow btrfs to over commit
-> > metadata space, as long as we have enough space to allocate new metadata
-> > chunks.
-> > 
-> > This makes old calculation unreliable and report false 0 available space.
-> > 
-> > [FIX]
-> > Don't do such naive check anymore for btrfs_statfs().
-> > Also remove the comment about "0 available space when metadata is
-> > exhausted".
-> > 
-> > Please note that, this is a just a quick fix. There are still a lot of
-> > things to be improved.
-> > 
-> > Fixes: ef1317a1b9a3 ("btrfs: do not allow reservations if we have pending tickets")
-> 
-> This isn't the patch that broke it.  The patch that broke it is the patch that 
-> introduced this code in the first place.
-> 
-> And this isn't the proper fix either, because technically we have 0 available if 
-> we don't have enough space for our global reserve _and_ we don't have any 
-> unallocated space.  So for now the best "quick" fix would be to make the 
-> condition something like
-> 
-> if (!mixed && block-rsv->space_info->full &&
->      total_free_meta - thresh < block_rsv->size)
 
-Yes, that seems to be the missing part of my patch that added the above
-check. In the testcase there was no remaining metadata space so the
-->full == 1 was implied.
+
+On 31.01.20 г. 12:01 ч., Su Yue wrote:
+> On 2020/1/31 4:03 PM, Nikolay Borisov wrote:
+>>
+>>
+>> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
+>>> From: Su Yue <Damenly_Su@gmx.com>
+>>>
+>>> The 034 test may fail to mount, and dmesg says open_ctree() failed due
+>>> to device missing.
+>>>
+>>> The partly work flow is
+>>> step1 loop1 = losetup image1
+>>> step2 loop2 = losetup image2
+>>> setp3 mount loop1
+>>>
+>>> The dmesg says the loop2 device is missing.
+>>> It's possible and known that while step3 is in open_ctree() and
+>>> fs_devices->opened is nonzero, loop2 device has not been added into the
+>>
+>>
+>> Care to give more details how this can happen? I haven't observed such a
+>> failure, meaning it's likely due to some race condition. More details
+>> are needed though. In your change log you say "it's known" but
+>> apparently only to you in this case.
+>>
+> 
+> Sure. There's a device missing situation[1] if two
+> devices(raid 1/0) were caught by udev. Yes, it's
+> not related to the metadata fsid feature. It just
+> makes the mount operation due to the missing device then
+> the test fails.
+
+Ok but in those mail posts it says the problem occurs if we have a
+multi-device btrfs volume, in this case raid1, and one of the devices is
+missing. The pertinent question is why would any of the testing devices
+be missing? Did you actually experience such failure ? loop1 is acquired
+after running losetup --find --show, implying that after the command is
+finished the given loopback device is fully present to the system?
+
+
+
+> 
+> In this script, $loop1 *may* be failed to be mounted because
+> $loop2 is "missing". Mounting $loop2 device can verify the
+> metadata fsid functionality but without the degraded option.
+> 
+> 
+> [1]: https://www.spinics.net/lists/linux-btrfs/msg96312.html
