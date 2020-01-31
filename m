@@ -2,155 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCE114E751
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 04:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5019C14E7CD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 05:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgAaDAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jan 2020 22:00:54 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:34034 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727739AbgAaDAy (ORCPT
+        id S1728000AbgAaEMz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jan 2020 23:12:55 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:35594 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727448AbgAaEMy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jan 2020 22:00:54 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 43F5D59C4BD; Thu, 30 Jan 2020 22:00:53 -0500 (EST)
-Date:   Thu, 30 Jan 2020 22:00:53 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Martin Steigerwald <martin@lichtvoll.de>,
-        Martin Raiber <martin@urbackup.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
-Message-ID: <20200131030053.GR13306@hungrycats.org>
-References: <112911984.cFFYNXyRg4@merkaba>
- <0102016ff2e7e3ad-6b776470-32f1-4b3d-9063-d3c96921df89-000000@eu-west-1.amazonses.com>
- <2049829.BAvHWrS4Fr@merkaba>
- <CAJCQCtSVqMBONCuwea_9i6xBkzOHSkCSoEAaDi2aH+-CLnNwBg@mail.gmail.com>
- <20200130171950.GZ3929@twin.jikos.cz>
- <CAJCQCtSwJHR2+jEXY=eK41xR7Z0=+Jf5xhsD03Qvoh92bAHO6g@mail.gmail.com>
+        Thu, 30 Jan 2020 23:12:54 -0500
+Received: by mail-il1-f195.google.com with SMTP id g12so5074475ild.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jan 2020 20:12:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KtNSexvxePgzGp4wGnM9OWv/klalzAU60BWvLbpu184=;
+        b=b0Cwi2TRyXdzTUVwV2xu+rsIuO5y+bWZVjzNw336iIIAsLdgr8xZg+4rM+kjU7BK4q
+         arEB0rTDplwD4upryMwmAa+Z8ZFOufhcdG8zMOZgED/aCdhyKSD+6n+ji/VY88GI67wk
+         Z5c81dOW4FHGycdtSQWc6NwggrJQ2683V7/27k2auvmmUSi+VwPEnq13Kv7wnt0O/Cuq
+         WDFUIGtlcVPZ352cJWyhG30IJkl0mM/215cusrgSmr9Me7RZsdi5GJ+sJ7znuKOXh8R/
+         juqBgzXpYbZF8vmwChsUnxj9CShB9iFPQCjiZpAla+hOqpqnsXFiHdQF3263bZ7VtFf5
+         U1fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KtNSexvxePgzGp4wGnM9OWv/klalzAU60BWvLbpu184=;
+        b=BEGcg333HmvoH7jHMtc9m6fl0n7dNhGpQfcEJ1VHehy9UQUe8ss0t8XMR72Vx1XUcY
+         1XGn2kogWZlJw/gT+p7YmL8uKLT84v+X9s0RoKZQJDPLl3zywis2kBMT0y29CaYgTQa2
+         oojhgPhjU1aV+ZgdI2hdOeulvDyp13Qp79s3Ovaw3RwWFofdCZndgr1jQLCdub+gJKMY
+         duPNaoOpkLkfFVSUBlEYK/i4zozwwHTFe5ej1fRAsA/rFHt9uT1x2VTmy/ExCXeXVcQb
+         WsTGLJP6Vs3bIXJ4hCBGJUNcVjPnesXXSYznpN2PIwIOoLhlv4EcCNudOXWaFPjHzv12
+         Xwww==
+X-Gm-Message-State: APjAAAUf1ADsuUvetMTA/pBAvUEb4knSzv8eTL/I10EvBjBbIlfhH0jH
+        VtmlIGjqRp0N83R5PpbEToKzngEw5Vx53gCihEWfJ1dMdBw=
+X-Google-Smtp-Source: APXvYqzJuyU8BvbV8ejUBVa7KKdfW+5jhUkFrVIhHJhvyM5sqW1Mnffl0dccAkZDQkbkfY1w6jq7cCs4ShOqgc6/Pgw=
+X-Received: by 2002:a05:6e02:f47:: with SMTP id y7mr7821677ilj.162.1580443973455;
+ Thu, 30 Jan 2020 20:12:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="lt3WynA+XK9Fj6D4"
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtSwJHR2+jEXY=eK41xR7Z0=+Jf5xhsD03Qvoh92bAHO6g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1746386.HyI1YD2b7T@merkaba> <BA3238FF-0884-40AA-9E32-89DA35D8CD0A@bluematt.me>
+In-Reply-To: <BA3238FF-0884-40AA-9E32-89DA35D8CD0A@bluematt.me>
+From:   Etienne Champetier <champetier.etienne@gmail.com>
+Date:   Thu, 30 Jan 2020 23:12:41 -0500
+Message-ID: <CAOdf3gpi8MkveLHXgukSC8UU6fpW-u=8L8BbG-Yhm=aAy_dgwg@mail.gmail.com>
+Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        Matt Corallo <kernel@bluematt.me>,
+        Remi Gauvin <remi@georgianit.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Le jeu. 30 janv. 2020 =C3=A0 20:53, Matt Corallo <kernel@bluematt.me> a =C3=
+=A9crit :
+>
+> This is a pretty critical regression for me. I have a few applications th=
+at regularly check space available and exit if they find low available spac=
+e, as well as a number of applications that, eg, rsync small files, causing=
+ this bug to appear (even with many TB free). It looks like the suggested p=
+atch isn=E2=80=99t moving towards stable, is there some other patch we shou=
+ld be testing?
 
---lt3WynA+XK9Fj6D4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I was migrating some data over to a new Fedora 31 server with btrfs
+when dnf complained that my disk were full, despite having 2.61TiB
+unallocated
+Once a new kernel with a fix is available Fedora systems will need
+some manual work to recover.
 
-On Thu, Jan 30, 2020 at 12:31:40PM -0700, Chris Murphy wrote:
-> On Thu, Jan 30, 2020 at 10:20 AM David Sterba <dsterba@suse.cz> wrote:
+Running transaction test
+The downloaded packages were saved in cache until the next successful
+transaction.
+You can remove cached packages by executing 'dnf clean packages'.
+Error: Transaction test error:
+installing package libev-4.27-1.fc31.x86_64 needs 160KB on the / filesystem
+...
+
+# uname -r
+5.4.7-200.fc31.x86_64
+# LANG=3DC df -hT /
+Filesystem                                            Type   Size
+Used Avail Use% Mounted on
+/dev/mapper/luks-17a54b4f-58b1-447f-a1e2-f927503936f2 btrfs  3.7T
+1.1T     0 100% /
+
+# btrfs fi usage -T /
+Overall:
+    Device size:           3.63TiB
+    Device allocated:           1.03TiB
+    Device unallocated:           2.61TiB
+    Device missing:             0.00B
+    Used:               1.02TiB
+    Free (estimated):           2.61TiB    (min: 1.31TiB)
+    Data ratio:                  1.00
+    Metadata ratio:              2.00
+    Global reserve:         512.00MiB    (used: 0.00B)
+
+                                                         Data
+Metadata System
+Id Path                                                  RAID0
+RAID1    RAID1    Unallocated
+-- ----------------------------------------------------- ---------
+-------- -------- -----------
+ 1 /dev/mapper/luks-17a54b4f-58b1-447f-a1e2-f927503936f2 522.00GiB
+3.00GiB  8.00MiB     1.30TiB
+ 2 /dev/mapper/luks-ee555ebd-59ca-4ed8-9d68-7c3faf6e6a25 522.00GiB
+3.00GiB  8.00MiB     1.30TiB
+-- ----------------------------------------------------- ---------
+-------- -------- -----------
+   Total                                                   1.02TiB
+3.00GiB  8.00MiB     2.61TiB
+   Used                                                    1.02TiB
+2.75GiB 96.00KiB
+
+The good news is that I saw that I messed up my kickstart installed
+and ended up with RAID0 for data
+
+>
+> > On Jan 30, 2020, at 18:12, Martin Steigerwald <martin@lichtvoll.de> wro=
+te:
 > >
-> > On Wed, Jan 29, 2020 at 03:55:06PM -0700, Chris Murphy wrote:
-> > > On Wed, Jan 29, 2020 at 2:20 PM Martin Steigerwald <martin@lichtvoll.=
-de> wrote:
-> > > >
-> > > > So if its just a cosmetic issue then I can wait for the patch to la=
-nd in
-> > > > linux-stable. Or does it still need testing?
-> > >
-> > > I'm not seeing it in linux-next. A reasonable short term work around
-> > > is mount option 'metadata_ratio=3D1' and that's what needs more testi=
-ng,
-> > > because it seems decently likely mortal users will need an easy work
-> > > around until a fix gets backported to stable. And that's gonna be a
-> > > while, me thinks.
+> > =EF=BB=BFRemi Gauvin - 30.01.20, 22:20:47 CET:
+> >>> On 2020-01-30 4:10 p.m., Martin Steigerwald wrote:
+> >>> I am done with re-balancing experiments.
+> >>
+> >> It should be pretty easy to fix.. use the metadata_ratio=3D1 mount
+> >> option, then write enough to force the allocation of more data
+> >> space,,
+> >>
+> >> In your earlier attempt, you wrote 500MB, but from your btrfs
+> >> filesystem usage, you had over 1GB of allocated but unused space.
+> >>
+> >> If you wrote and deleted, say, 20GB of zeroes, that should force the
+> >> allocation of metatada space to get you past the global reserve size
+> >> that is causing this bug,, (Assuming this bug is even impacting you.
+> >> I was unclear from your messages if you are seeing any ill effects
+> >> besides the misreporting in df.)
 > >
-> > We're looking into some fix that could be backported, as it affects a
-> > long-term kernel (5.4).
+> > I thought more about writing a lot of little files as I expect that to
+> > use more metadata, but=E2=80=A6 I can just work around it by using comm=
+and line
+> > tools instead of Dolphin to move data around. This is mostly my music,
+> > photos and so on filesystem, I do not change data on it very often, so
+> > that will most likely work just fine for me until there is a proper fix=
+.
 > >
-> > The fix
-> > https://lore.kernel.org/linux-btrfs/20200115034128.32889-1-wqu@suse.com/
-> > IMHO works by accident and is not good even as a workaround, only papers
-> > over the problem in some cases. The size of metadata over-reservation
-> > (caused by a change in the logic that estimates the 'over-' part) adds
-> > up to the global block reserve (that's permanent and as last resort
-> > reserve for deletion).
+> > So do need to do any more things that could potentially age the
+> > filesystem. :)
 > >
-> > In other words "we're making this larger by number A, so let's subtract
-> > some number B". The fix is to use A.
+> > --
+> > Martin
 > >
-> > > Is that mount option sufficient? Or does it take a filtered balance?
-> > > What's the most minimal balance needed? I'm hoping -dlimit=3D1
-> > >
-> > > I can't figure out a way to trigger this though, otherwise I'd be
-> > > doing more testing.
 > >
-> > I haven't checked but I think the suggested workarounds affect statfs as
-> > a side effect. Also as the reservations are temporary, the numbers
-> > change again after a sync.
->=20
-> Yeah I'm being careful to qualify to mortal users that any workarounds
-> are temporary and uncertain. I'm not even certain what the pattern is,
-> people with new file systems have hit it. A full balance seems to fix
-> it, and then soon after the problem happens again. I don't do any
-> balancing these days, for over a year now, so I wonder if that's why
-> I'm not seeing it.
-
-I had to intentionally balance metadata to trigger the bug on pre-existing
-test filesystems.  With new filesystems it's easy, I hit it every time
-the last metadata block group is half full (assuming default BG size of
-1GB and max global reserved size of 512MB).  It goes away when a new
-metadata BG is allocated, then comes back again later.  Sometimes it
-appears and disappears rapidly while doing a large file tree copy.
-
-An older filesystem will have some GB of allocated but partially empty
-metadata BGs, and won't hit this condition unless you run metadata balance
-(which shrinks metadata), or do something that causes explosive metadata
-growth.  If you normally keep a healthy amount of allocated but unused
-metadata space, you probably will never hit the bug.
-
-> But yeah a small number of people are hitting it, but it also stops
-> any program that does a free space check (presumably using statfs).
->=20
-> A more reliable/universal work around in the meantime is still useful;
-> in particular if it doesn't require changing mount options, or only
-> requires it temporarily (e.g. not added  to /etc/fstab, where it can
-> be forgotten for the life of that system).
-
-You can create a GB of allocated but unused metadata space with something
-like:
-
-	btrfs sub create sub_tmp
-	mkdir sub_tmp/single
-	head -c 2047 /dev/urandom > sub_tmp/single/inline_file
-	for x in $(seq 1 18); do=20
-		cp -a sub_tmp/single sub_tmp/double
-		mv sub_tmp/double sub_tmp/single/$x
-	done
-	sync
-	btrfs sub del sub_tmp
-
-This requires the max_inline mount option to be set to the default (2048).
-Random data means it works well when compression is enabled too.
-
-Do not balance metadata until the bug is fixed.  Balancing metadata will
-release the allocated but unused metadata space, possibly retriggering
-the bug.
-
-(Hmmm...the above script is also a surprisingly effective commit latency
-test case...)
-
->=20
-> --=20
-> Chris Murphy
-
---lt3WynA+XK9Fj6D4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjOYYgAKCRCB+YsaVrMb
-nNbSAJ9mulGWu/9/ytzfY9x/VJ49Gd2JOQCfQ5kgYXTUZBEhAP+PSNXwrNf2fQY=
-=JI4i
------END PGP SIGNATURE-----
-
---lt3WynA+XK9Fj6D4--
+>
