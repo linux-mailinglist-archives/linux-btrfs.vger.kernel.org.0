@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C07114F4D5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 23:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF3F14F4D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 23:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgAaWge (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 17:36:34 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33940 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgAaWgd (ORCPT
+        id S1726805AbgAaWgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 17:36:36 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43461 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgAaWgf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 17:36:33 -0500
-Received: by mail-qt1-f194.google.com with SMTP id h12so6745957qtu.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 14:36:33 -0800 (PST)
+        Fri, 31 Jan 2020 17:36:35 -0500
+Received: by mail-qt1-f195.google.com with SMTP id d18so6682217qtj.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 14:36:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m89TUixA1F2eueluk4MjDZtHVKs272tFOVWQ6OnEAc8=;
-        b=BxdXSBQZxwrwyT/ML5kGDaklv/AN9RZ68dN4QOm0CJ22+BzyhtJ9xqeE0TnfYOXgf3
-         aF3OKB6NEsITyewpeP9muqLR+b4nMmnEQmbMVoEB/SileHzpBfniEVyAWB5dDXh20knN
-         CNReuGEsxovytfmgqyY4Cb7lM2sfi8UhctVCq/aKqlsIwdsSNYlBDrowu2tViXhm1iVI
-         Y2OItosnhhSPW3liX+vYsn9+bMnBG1FHzybxAyTNOIiYWDdCzjESUPHiQ2JtE/aRzy5Y
-         QQ5i/aPc6BKaP6y4py0Kwq0rwaHSxsK9b6dJRjAtn/+CSn8wMjG+KeJLL7403YmSCk/k
-         MMaA==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=2b5P75+IzoL0lqF+p1WcmspeZm2Y3yh4egu0l6pb7eo=;
+        b=z2mA7ZW2iGURSgtx7Td4mGqFrE8uQ8+M8YgLs4N0sPX2YlUkPhi8wojkFySQW3eV77
+         FrG9LEIi2wXaCCKHCOMr5EZ3LlleNcf7rvnJcMmRfkCzdZ0pxzHg4sJvNsbn/Djv8nss
+         Fh++5U3/3MmSzfbguKMsQvCxLYeAiCUUde0Ak0PVELC7O9zUhOk5APuEyaFWrYnRmEzS
+         xOs6ucAwcUj5KlEX5cEGrPy75ddJRfDF9xkN29qpMUn9KDHQnUD8UBs+WiXaGq3WTQc8
+         3nfiIEcVwas2Zbrf3VnZal3wZHN/5p4J8Q7n+QdoB6OXPRQ23ASndpEnfWhxXYZ7KIsf
+         iPRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=m89TUixA1F2eueluk4MjDZtHVKs272tFOVWQ6OnEAc8=;
-        b=Kngpyxt8GIL+wpr7L9GLuW89DQ2g4LTWpM0Gg6VpK02AJgSY3/ZJzJ+SbCr6VxzMqh
-         K5PtXpFxc4g6f1pzIxfBpqPBXq/B+eRAwQYuZwrLwAVlPJBy4wiDzipfCEdKnyZ4a1KH
-         ahumq57BEiiIPUnuuNLvRaaMtXUh7lUsEVe5/GvCR1jmqUDJHN3uuXATn/p2q4S3udKF
-         sS30IX0V/XSxAc1nEseuBV0BIQpVVRGUxkw/7mVYXq45lBQgtCegmEYZrK6/LyVNofdF
-         pqL/9pAYt9+copZe3nYZvlBm48HDbDtL96jHu57jqRLiQbHu7Zjc5BUU1oHencofrVvQ
-         ltMg==
-X-Gm-Message-State: APjAAAXWBDujB7Lg+9xMZL6X5kRhqDW4rV6+eDWTBEmVcH3eUWCnyOPB
-        PSBUutaNDbJTvwrAahA0KCBGDXrKO8HUIA==
-X-Google-Smtp-Source: APXvYqwWlu+0CnKGw5v5kycFBIxfmVeZo4wJ2Bl/jW40wZSBvLjUyIoqlIZYFbI2ju7IMs+6HA7CJQ==
-X-Received: by 2002:ac8:1206:: with SMTP id x6mr13312630qti.55.1580510192362;
-        Fri, 31 Jan 2020 14:36:32 -0800 (PST)
+        bh=2b5P75+IzoL0lqF+p1WcmspeZm2Y3yh4egu0l6pb7eo=;
+        b=WDLwLEm4iViVpQ3Zcf1CPnFg//z9h0KA18S9EHJ6xz4D1+Y1MfbHlcJVE3LzRHP7Bn
+         hP0mTi4XQFwCtmbELPhYESn7n2To4bhwcGC0XK8mr8086zF/22/+59hjGcmsDCX4ekx4
+         rdUzWf/cLpAV2VawjjccTWY3+hXjLEntlZO/iYI86CeO3mUMb5AM3jXDM4tARlqriilT
+         h64W3UVcy28ErwfosoQmb+Fnpipp0pt0kwIYDg4izF7Cn2zzZc5/yy1jj0WvQi46ZCYL
+         cNZgVAYWhPYW/JmSfty12Nm10QTVMXh3seNgMAAY77TFgftSt0N/IO3irqE1RpiX/wnz
+         nR2w==
+X-Gm-Message-State: APjAAAXvkteu7NmOO8gvv+AlOX97e27G6l00jHfazVAVn+kQd1ntozH7
+        mlfkDfMALeQtAtwcogBXnTLZdw+JgMelHQ==
+X-Google-Smtp-Source: APXvYqxrvgNo8mdeARaoFXud2Hnpk57D0NBYmB79H45AqJZGLmwn7853EW1eyWk6OxLJpkbF+cKRVw==
+X-Received: by 2002:ac8:3418:: with SMTP id u24mr12938167qtb.87.1580510194003;
+        Fri, 31 Jan 2020 14:36:34 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id j1sm5176808qkl.86.2020.01.31.14.36.31
+        by smtp.gmail.com with ESMTPSA id 16sm5307547qkm.93.2020.01.31.14.36.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2020 14:36:31 -0800 (PST)
+        Fri, 31 Jan 2020 14:36:33 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 09/23] btrfs: use the btrfs_space_info_free_bytes_may_use helper for delalloc
-Date:   Fri, 31 Jan 2020 17:35:59 -0500
-Message-Id: <20200131223613.490779-10-josef@toxicpanda.com>
+Subject: [PATCH 10/23] btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
+Date:   Fri, 31 Jan 2020 17:36:00 -0500
+Message-Id: <20200131223613.490779-11-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200131223613.490779-1-josef@toxicpanda.com>
 References: <20200131223613.490779-1-josef@toxicpanda.com>
@@ -61,32 +60,108 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We are going to use the ticket infrastructure for data, so use the
-btrfs_space_info_free_bytes_may_use() helper in
-btrfs_free_reserved_data_space_noquota() so we get the
-try_granting_tickets call when we free our reservation.
+The original iteration of flushing had us flushing delalloc and then
+checking to see if we could make our reservation, thus we were very
+careful about how many pages we would flush at once.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+But now that everything is async and we satisfy tickets as the space
+becomes available we don't have to keep track of any of this, simply try
+and flush the number of dirty inodes we may have in order to reclaim
+space to make our reservation.  This cleans up our delalloc flushing
+significantly.
+
+The async_pages stuff is dropped because btrfs_start_delalloc_roots()
+handles the case that we generate async extents for us, so we no longer
+require this extra logic.
+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/delalloc-space.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/btrfs/space-info.c | 55 +------------------------------------------
+ 1 file changed, 1 insertion(+), 54 deletions(-)
 
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index 4cdac4d834f5..08cfef49f88b 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -179,9 +179,7 @@ void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
- 	start = round_down(start, fs_info->sectorsize);
- 
- 	data_sinfo = fs_info->data_sinfo;
--	spin_lock(&data_sinfo->lock);
--	btrfs_space_info_update_bytes_may_use(fs_info, data_sinfo, -len);
--	spin_unlock(&data_sinfo->lock);
-+	btrfs_space_info_free_bytes_may_use(fs_info, data_sinfo, len);
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 5a92851af2b3..a69e3d9057ff 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -309,28 +309,6 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 	up_read(&info->groups_sem);
  }
  
- /*
+-static void btrfs_writeback_inodes_sb_nr(struct btrfs_fs_info *fs_info,
+-					 unsigned long nr_pages, u64 nr_items)
+-{
+-	struct super_block *sb = fs_info->sb;
+-
+-	if (down_read_trylock(&sb->s_umount)) {
+-		writeback_inodes_sb_nr(sb, nr_pages, WB_REASON_FS_FREE_SPACE);
+-		up_read(&sb->s_umount);
+-	} else {
+-		/*
+-		 * We needn't worry the filesystem going from r/w to r/o though
+-		 * we don't acquire ->s_umount mutex, because the filesystem
+-		 * should guarantee the delalloc inodes list be empty after
+-		 * the filesystem is readonly(all dirty pages are written to
+-		 * the disk).
+-		 */
+-		btrfs_start_delalloc_roots(fs_info, nr_items);
+-		if (!current->journal_info)
+-			btrfs_wait_ordered_roots(fs_info, nr_items, 0, (u64)-1);
+-	}
+-}
+-
+ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
+ 					u64 to_reclaim)
+ {
+@@ -356,10 +334,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+ 	struct btrfs_trans_handle *trans;
+ 	u64 delalloc_bytes;
+ 	u64 dio_bytes;
+-	u64 async_pages;
+ 	u64 items;
+ 	long time_left;
+-	unsigned long nr_pages;
+ 	int loops;
+ 
+ 	/* Calc the number of the pages we need flush for space reservation */
+@@ -400,37 +376,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+ 
+ 	loops = 0;
+ 	while ((delalloc_bytes || dio_bytes) && loops < 3) {
+-		nr_pages = min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
+-
+-		/*
+-		 * Triggers inode writeback for up to nr_pages. This will invoke
+-		 * ->writepages callback and trigger delalloc filling
+-		 *  (btrfs_run_delalloc_range()).
+-		 */
+-		btrfs_writeback_inodes_sb_nr(fs_info, nr_pages, items);
+-
+-		/*
+-		 * We need to wait for the compressed pages to start before
+-		 * we continue.
+-		 */
+-		async_pages = atomic_read(&fs_info->async_delalloc_pages);
+-		if (!async_pages)
+-			goto skip_async;
+-
+-		/*
+-		 * Calculate how many compressed pages we want to be written
+-		 * before we continue. I.e if there are more async pages than we
+-		 * require wait_event will wait until nr_pages are written.
+-		 */
+-		if (async_pages <= nr_pages)
+-			async_pages = 0;
+-		else
+-			async_pages -= nr_pages;
++		btrfs_start_delalloc_roots(fs_info, items);
+ 
+-		wait_event(fs_info->async_submit_wait,
+-			   atomic_read(&fs_info->async_delalloc_pages) <=
+-			   (int)async_pages);
+-skip_async:
+ 		spin_lock(&space_info->lock);
+ 		if (list_empty(&space_info->tickets) &&
+ 		    list_empty(&space_info->priority_tickets)) {
 -- 
 2.24.1
 
