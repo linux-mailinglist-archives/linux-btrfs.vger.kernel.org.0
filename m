@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D45D314E9FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 10:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5579714EA0E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 10:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgAaJXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 04:23:36 -0500
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:37020 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728206AbgAaJXf (ORCPT
+        id S1728259AbgAaJ0S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 04:26:18 -0500
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:46834 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728228AbgAaJ0S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 04:23:35 -0500
-Received: by mail-ua1-f67.google.com with SMTP id h32so2299070uah.4;
-        Fri, 31 Jan 2020 01:23:34 -0800 (PST)
+        Fri, 31 Jan 2020 04:26:18 -0500
+Received: by mail-vs1-f66.google.com with SMTP id t12so3905174vso.13;
+        Fri, 31 Jan 2020 01:26:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=+u428zd+HvPiHtBT2tTXkN0WqlH7NBRC06ax8pVFchE=;
-        b=GG95q3Niy+QYXR69TQ368ItwkOycfgv7f6F/2fZ7wkV3eUB+wF3L6pkGB4PEDaWxpq
-         HsjY8hEEvgXxQKGa0MgEH8/OrwPD4ig1h2scAuGWP/wNmvTGX+rDcYDqlVuGtSw2hDow
-         g10CKY/uDYql/TXOv9ycJ4aY9b0q5z6D8dl2OxJs/uv4ANGOcdcDp29el7sCqCPWNpTh
-         KFWQyEU3Z0a0F7Z7TX6d2YrWW1euaAKjqOmi3v1irpSOi4wt+HuTML/FvhTv9M8b4DZN
-         lZoe/cy9D+IYtyvqyyP/9DqoHbpMjGyFt8O/MTGRCEHj9dfvYDQWqTo8jKB/j1lyEfN5
-         y6Hw==
+        bh=jTL72TXg3bN5vHOLpcvhPU7eU7vsRWaRTdWrDFrFA6E=;
+        b=qNmV0c2IBWb7uTcYkqL5xTjczgYJkkZRAf2ZTQt7/rgANp9yrmUiTYRXdgO7yiQ/ho
+         BMcQpuuyq2NQ2jR4JOg6Zc50HdVarY++dyK3J85pv2Gk87GzMFjF+zXYP1C1rtoMQ9Qy
+         JD6BGz5VmKAXp62Hae/ciyp00BLSZ+INdjQwNntierNaoIFuMBP5V3Jn6MzflyN3KQ6t
+         B5trd3wabLHb0DwX6sbSfw1d1qDi93VX1B9RIQpdndxYWYN+u+EwhpU8pOvMWK5Tk5Qm
+         ZLqe04qqVVVWEENj8BRs6Bh78E4jV9i9DMIwJKCrQXOJm4Ru5bDfRMOB7JN7rgGKBltA
+         YamQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=+u428zd+HvPiHtBT2tTXkN0WqlH7NBRC06ax8pVFchE=;
-        b=lfZx3L5/B5CfTQFZHZYc/SZTrtMgLxcG9XVbNToBu4tfXvMpdLrFhSI1uILBvFC57y
-         LxfL0YTlcZUSzDsjsu5Bwy9l8bXlxKdw5Ju7s+d4Bd1UMWjS8x5Qw7wSCK5LtPilGrOh
-         kimWRBjM0raFPR1355ZTBeUPSZqahNeoHJsiXhm8ye8JwRD2LtfjX5vST7unJiN8Bal3
-         XbO5cKPmzW5dQeJT6UUvATVqvBRnnivhhoEdzgFJFDrN6SurmB/tl6ikxXb0Lt7jP+pd
-         gXD+Jh2FkkuKtDPGVPJS3ZLi9dAqMUIr+R7fXFof7dcL3hh04UeD5Gvv/zeRnnppfxmG
-         3u5w==
-X-Gm-Message-State: APjAAAXNJGb0di9spww9OisZd80HFn1T+E1sAaeil95uJjogSNAr5JhH
-        1XMaLo1+CyTQy9d5Y5BcDnhp8VkNF/lhhzj7REauNg==
-X-Google-Smtp-Source: APXvYqw+Mbk/ctH/vJ8WegZsb8UjJIOg5Dgg/mxrPRAUUgRzU8G8vw+yni91Y2pOqt0mfKPmbgp4P962prwGW25MaxM=
-X-Received: by 2002:ab0:738c:: with SMTP id l12mr5331420uap.135.1580462614239;
- Fri, 31 Jan 2020 01:23:34 -0800 (PST)
+        bh=jTL72TXg3bN5vHOLpcvhPU7eU7vsRWaRTdWrDFrFA6E=;
+        b=efUeOHJKrUQi9+SIJ8lSHJECd5PmxkX7bhdWNoaJFucGuUAA0hTsJaEOODim4cCgYU
+         hluPk8ab+Eny50m8BRWEg5vZgaeomJYl1+9a1a7TCUAOc0RM6BSBNtKzaZfKL2NfALsn
+         72snvJkLiFnbIK8Z1q/kyGABW8JwscpCtLjqAdBJY/SHuYAKW7A5iM0Syop2Tl5T/gSn
+         DO/TPrITQo0yifaCYeb+7aIoGTn2hFdviH9Tg/yTCR5rqCs4tf+1z35pNkcgubJeGO82
+         A0j49hBfWq89nHBWHIKEQHfZ+4oWjNGw0YtnoT/YsSYgaiEDogc9O6Zmp2Bo9VsCqjDL
+         sfXw==
+X-Gm-Message-State: APjAAAUWTMZakCW/CKQG5ZeP5/J4BzFn4BvdKyHu9IWkmgwDShBP7f9o
+        2NtpVGf+20zLvAkjgdDe72ci5IU4E+xyNimG34vB+tT+
+X-Google-Smtp-Source: APXvYqwnuMUqurW6w+LKrCHY/1dnj+/yuimSsLJgHntfcLpHFpzYRfpoT7fpD8/fCEZgBTbidKFP2c4lKw57ZDCqL/w=
+X-Received: by 2002:a67:8010:: with SMTP id b16mr6075191vsd.90.1580462776667;
+ Fri, 31 Jan 2020 01:26:16 -0800 (PST)
 MIME-Version: 1.0
 References: <20200131060545.27904-1-wqu@suse.com>
 In-Reply-To: <20200131060545.27904-1-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 31 Jan 2020 09:23:23 +0000
-Message-ID: <CAL3q7H7pSYgvRNgW0-116imFDabTS8xQkP4Lku8K4HjaRqzL8w@mail.gmail.com>
+Date:   Fri, 31 Jan 2020 09:26:05 +0000
+Message-ID: <CAL3q7H5PmesMLk8B1oxZ9LUcDtjXNZLvZaHxOqHiNeQxKVj8Mg@mail.gmail.com>
 Subject: Re: [PATCH] fstests: generic: Introduce new test case to verify the
  NOCOW unaligned hole punch behavior
 To:     Qu Wenruo <wqu@suse.com>
@@ -146,9 +146,15 @@ s
 > +_require_scratch
 > +_require_command "$CHATTR_PROG" chattr
 > +_require_command "$LSATTR_PROG" lsattr
+
+_require_xfs_io_command "fpunch"
+
 > +
 > +# Create a small fs so filling it should be pretty fast
 > +fssize=3D$(( 1024 * 1024 * 1024 )) # In bytes
+
+(Repeating the fs size thing from the other mail since I forgot a few
+more things)
 
 Someone not so familiar with btrfs, looking at a generic test, might
 ask, why 1Gb?
@@ -161,10 +167,6 @@ Because if it does, the hole punching might fail due to lack of
 metadata space, that is, by not using mixed block groups we can be
 sure we will have enough metadata free space while having exhausted
 all data space.
-
-Other than that, it looks good to me.
-
-Thanks.
 
 > +
 > +_scratch_mkfs_sized $fssize > $seqres.full
@@ -218,6 +220,10 @@ W
 >  591 auto quick rw pipe splice
 >  592 auto quick encrypt
 > +593 auto quick enospc
+
+Also missing the group 'punch'.
+
+Thanks.
 > --
 > 2.23.0
 >
