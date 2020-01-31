@@ -2,96 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B319C14E968
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 09:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45D314E9FF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 10:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgAaIFh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 03:05:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57882 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728077AbgAaIFh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 03:05:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0A034AD4F;
-        Fri, 31 Jan 2020 08:05:35 +0000 (UTC)
-Subject: Re: [PATCH 00/11] btrfs-progs: metadata_uuid feature fixes and
- portation
-To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-Cc:     Su Yue <Damenly_Su@gmx.com>
-References: <20191212110204.11128-1-Damenly_Su@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
- IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
- Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
- w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
- LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
- BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
- LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
- tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
- 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
- fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
- d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
- wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
- jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
- YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
- Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
- hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
- Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
- qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
- FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
- KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
- WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
- JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
- OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
- mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
- 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
- lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
- zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
- KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
- zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
- Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <2974237d-ea96-bde8-bc48-2cf8bd6a375b@suse.com>
-Date:   Fri, 31 Jan 2020 10:05:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1728218AbgAaJXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 04:23:36 -0500
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:37020 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728206AbgAaJXf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 04:23:35 -0500
+Received: by mail-ua1-f67.google.com with SMTP id h32so2299070uah.4;
+        Fri, 31 Jan 2020 01:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=+u428zd+HvPiHtBT2tTXkN0WqlH7NBRC06ax8pVFchE=;
+        b=GG95q3Niy+QYXR69TQ368ItwkOycfgv7f6F/2fZ7wkV3eUB+wF3L6pkGB4PEDaWxpq
+         HsjY8hEEvgXxQKGa0MgEH8/OrwPD4ig1h2scAuGWP/wNmvTGX+rDcYDqlVuGtSw2hDow
+         g10CKY/uDYql/TXOv9ycJ4aY9b0q5z6D8dl2OxJs/uv4ANGOcdcDp29el7sCqCPWNpTh
+         KFWQyEU3Z0a0F7Z7TX6d2YrWW1euaAKjqOmi3v1irpSOi4wt+HuTML/FvhTv9M8b4DZN
+         lZoe/cy9D+IYtyvqyyP/9DqoHbpMjGyFt8O/MTGRCEHj9dfvYDQWqTo8jKB/j1lyEfN5
+         y6Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=+u428zd+HvPiHtBT2tTXkN0WqlH7NBRC06ax8pVFchE=;
+        b=lfZx3L5/B5CfTQFZHZYc/SZTrtMgLxcG9XVbNToBu4tfXvMpdLrFhSI1uILBvFC57y
+         LxfL0YTlcZUSzDsjsu5Bwy9l8bXlxKdw5Ju7s+d4Bd1UMWjS8x5Qw7wSCK5LtPilGrOh
+         kimWRBjM0raFPR1355ZTBeUPSZqahNeoHJsiXhm8ye8JwRD2LtfjX5vST7unJiN8Bal3
+         XbO5cKPmzW5dQeJT6UUvATVqvBRnnivhhoEdzgFJFDrN6SurmB/tl6ikxXb0Lt7jP+pd
+         gXD+Jh2FkkuKtDPGVPJS3ZLi9dAqMUIr+R7fXFof7dcL3hh04UeD5Gvv/zeRnnppfxmG
+         3u5w==
+X-Gm-Message-State: APjAAAXNJGb0di9spww9OisZd80HFn1T+E1sAaeil95uJjogSNAr5JhH
+        1XMaLo1+CyTQy9d5Y5BcDnhp8VkNF/lhhzj7REauNg==
+X-Google-Smtp-Source: APXvYqw+Mbk/ctH/vJ8WegZsb8UjJIOg5Dgg/mxrPRAUUgRzU8G8vw+yni91Y2pOqt0mfKPmbgp4P962prwGW25MaxM=
+X-Received: by 2002:ab0:738c:: with SMTP id l12mr5331420uap.135.1580462614239;
+ Fri, 31 Jan 2020 01:23:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191212110204.11128-1-Damenly_Su@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200131060545.27904-1-wqu@suse.com>
+In-Reply-To: <20200131060545.27904-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 31 Jan 2020 09:23:23 +0000
+Message-ID: <CAL3q7H7pSYgvRNgW0-116imFDabTS8xQkP4Lku8K4HjaRqzL8w@mail.gmail.com>
+Subject: Re: [PATCH] fstests: generic: Introduce new test case to verify the
+ NOCOW unaligned hole punch behavior
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Martin Doucha <mdoucha@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Jan 31, 2020 at 6:06 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> There is a new LTP test case (*) doing hole punching with the following
+> conditions:
+> - Hole is unaligned on exiting data
+>   Which involves data writes to zero exiting data.
+>
+> - The fs is full
+>
+> - The involved file has NOCOW bit set
+>   Even for fs like btrfs, such write should no allocate new space.
+>   For other fses which don't support NOCOW bit, they either default to
+>   NOCOW or don't support COW at all.
+>   Thus the behavior should still be the same.
+>
+> Btrfs currently fails such test, the fix is titled
+> "btrfs: Allow btrfs_truncate_block() to fallback to nocow for data space
+>  reservation".
+>
+> XFS and EXT4 all pass.
+>
+> *: https://patchwork.ozlabs.org/patch/1224176/
+>
+> Reported-by: Martin Doucha <mdoucha@suse.cz>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Please note that, for EXT4 there seems to be a bug in mkfs.ext4, as it
+> always output the version string ("mke2fs 1.45.5 (07-Jan-2020)") to
+> stderr, polluting the golden output.
+>
+> But the unaligned hole punching behavior is still correct for EXT4.
+> ---
+>  tests/generic/593     | 75 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/593.out |  2 ++
+>  tests/generic/group   |  1 +
+>  3 files changed, 78 insertions(+)
+>  create mode 100755 tests/generic/593
+>  create mode 100644 tests/generic/593.out
+>
+> diff --git a/tests/generic/593 b/tests/generic/593
+> new file mode 100755
+> index 00000000..884a142a
+> --- /dev/null
+> +++ b/tests/generic/593
+> @@ -0,0 +1,75 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 593
+> +#
+> +# Test if a fs can still punch unaligned hole for NOCOW files when the f=
+s
+> +# is full.
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_scratch
+> +_require_command "$CHATTR_PROG" chattr
+> +_require_command "$LSATTR_PROG" lsattr
+> +
+> +# Create a small fs so filling it should be pretty fast
+> +fssize=3D$(( 1024 * 1024 * 1024 )) # In bytes
+
+Someone not so familiar with btrfs, looking at a generic test, might
+ask, why 1Gb?
+Why not 128Mb for example, that would make it even faster to fill the
+fs... right?
+
+You might add a comment mentioning that 1Gb is a safe value to
+guarantee btrfs' mkfs will not use mixed block groups.
+Because if it does, the hole punching might fail due to lack of
+metadata space, that is, by not using mixed block groups we can be
+sure we will have enough metadata free space while having exhausted
+all data space.
+
+Other than that, it looks good to me.
+
+Thanks.
+
+> +
+> +_scratch_mkfs_sized $fssize > $seqres.full
+> +_scratch_mount
+> +
+> +blocksize=3D$(_get_block_size $SCRATCH_MNT)
+> +echo "blocksize =3D $blocksize" >> $seqres.full
+> +nr_blocks=3D5
+> +
+> +touch $SCRATCH_MNT/target
+> +# - Completely ignore the error
+> +#   Either the fs supports COW, this will success and mark the file NOCO=
+W
+> +#   Or the fs doesn't support COW, we can still go ahead.
+> +$CHATTR_PROG +C $SCRATCH_MNT/target >> $seqres.full 2>&1
+> +
+> +$LSATTR_PROG $SCRATCH_MNT/target >> $seqres.full
+> +
+> +$XFS_IO_PROG -c "pwrite -b $blocksize 0 $(( $nr_blocks * $blocksize))" \
+> +       $SCRATCH_MNT/target >> $seqres.full
+> +
+> +# ENOSPC expected
+> +$XFS_IO_PROG -f -c "pwrite -b $blocksize 0 $fssize" \
+> +       $SCRATCH_MNT/padding >> $seqres.full 2>&1
+> +
+> +# All these fpunch calls should success
+> +for ((i =3D 0; i < $nr_blocks; i++)); do
+> +       $XFS_IO_PROG -c "fpunch $(( $i * $blocksize)) $(( $blocksize / 2)=
+)" \
+> +               $SCRATCH_MNT/target >> $seqres.full
+> +done
+> +
+> +echo "Silence is golden"
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/generic/593.out b/tests/generic/593.out
+> new file mode 100644
+> index 00000000..bac4d7d9
+> --- /dev/null
+> +++ b/tests/generic/593.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 593
+> +Silence is golden
+> diff --git a/tests/generic/group b/tests/generic/group
+> index 6fe62505..ca4df435 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -595,3 +595,4 @@
+>  590 auto prealloc preallocrw
+>  591 auto quick rw pipe splice
+>  592 auto quick encrypt
+> +593 auto quick enospc
+> --
+> 2.23.0
+>
 
 
-On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
-> 
-> The series are inspired by easy failing misc-tests/034.
-> Those patches fix misc-tests/034 and add new test images.
-> 
-> After portation of kernel find fs_devices code, progs is able to
-> work on devices with FSID_CHANGING_V2 flag, not sure whether the
-> functionality is necessary. If not, I will remove it in next version.
+--=20
+Filipe David Manana,
 
-For now I think it's best if this is not added. Kernel is supposed to
-handle split-brain scenarios upon device scan which is triggered
-automatically by udev. If the need arises in the future then we can
-think about integrating this code in btrfs-progs.
-
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
