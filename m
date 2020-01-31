@@ -2,169 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F69214EEB3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 15:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518D214EF26
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 16:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgAaOqh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 09:46:37 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39228 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728985AbgAaOqg (ORCPT
+        id S1729187AbgAaPHi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 10:07:38 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43370 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729036AbgAaPHi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 09:46:36 -0500
-Received: by mail-qk1-f195.google.com with SMTP id w15so6751340qkf.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 06:46:36 -0800 (PST)
+        Fri, 31 Jan 2020 10:07:38 -0500
+Received: by mail-qt1-f193.google.com with SMTP id d18so5595993qtj.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 07:07:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=ehNzPRHAaCEu1TFL16kplpY/B6W2qSGPcTAQ+xBxmzI=;
-        b=s10BDD0gelNU5SVA8nbBIioWYAVVzKJfDm2rVN2co2cx5fqyeS9AATxVT2UE0p7xEa
-         KO9qxj2eduotPoEUjuUaVgra7lrCJI9wavPAFXYLSsOMlZskVapDxwNJxWJEDLN4RxnL
-         ASwTwLe8IW5auMrm6CmfT8fHfLy7zELuymyeYnZMeAR8g779VCLnjEry/uPBKrj23bQ6
-         yhMBKrQwpmHUU3Li5DoRkSvyTqkz/HZAww3hyyqt1k0lB3hLOdwLUpIUDhi23EXQLYUw
-         Z0S0OnrNkYh8dz8mZF9KXXlNyN5N0j+deZxyBhrJ3KA4PJKFjUkGBiO0j4S2+M5ey9zs
-         7kRw==
+        bh=Sem1oQT3CK6ViOUN0xaEcDDbG44DVTkOCXL84q6x95E=;
+        b=0sKgh/TEAYDZ1VtIHzFcwul6SP4g+l8d4vBY71/f0htZBqq2khZYZoDgEzMR32u7jy
+         dA7Cr60uxMPx1RD+BuJcOUKrFkc1O34XForn7Ew3bpUm1R1rRlMS7NiLz9E5eIPMoJrc
+         qPtPci9HsBswSOo2ssNs2nCsl8L259f0eH0uyR+M+RxkW2Kug5xxRd3jAE+Xo6y18er3
+         4Dz7p2YXbT4In36YaIo0CcgnY8gZMqy/w2PXQp0G0HTtzZLdQQq/tqQeAMcxIkZBXLuk
+         WMvwDvNLa1AtAg/FjZPs50oMdYRwKWTjFlWwbr++kciZQQ9NT58989T83pycQXfk018H
+         9XYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ehNzPRHAaCEu1TFL16kplpY/B6W2qSGPcTAQ+xBxmzI=;
-        b=bNywk5VKHwUa5rq5E3RvWI4bAX6tynZJIMgthEjwjAdO4Lae9FO6zY9emY7Fw7Ym72
-         Fe3MzRWsL21E1TMxV5zy5sfcO4ivB5AjZCvA03E3RjgBWbCWfdsvfN7hKdnyvWO6NX3A
-         73/Wja0dYVB7eW/c4rg3ojrhc30NyVwTFfsJMVQc8EAFGqzEM4hIfQPK0LK2C+xV8aPI
-         UMnJumR5J79KmmnB9KAtWiTw7QPKTIWZ8bKojaS+BEUtnAD/c3Yz06k+sMK6o8wBH+hn
-         13Hg0IInLsqgNHUh850IPAj3c9D2witAMNAsUCoN/zQXxjYeSyxeuRK2529mAY1opof5
-         2qWw==
-X-Gm-Message-State: APjAAAWxWQgQfe2j9BbG50UxOsxxUrkdCQefXBu6jVBhWyRveX9cQuUu
-        U02gj+ESsvz+WHRtWCl6OKLLmnr/E+Or7A==
-X-Google-Smtp-Source: APXvYqyxFmjQJdV41SdBi01xGEDQSugEFvKlbuYvRu2dCnu5f/f4b+eTuKAbr1Vusj6UvFY11yYX3g==
-X-Received: by 2002:a05:620a:147c:: with SMTP id j28mr10080913qkl.13.1580481995220;
-        Fri, 31 Jan 2020 06:46:35 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::981a])
-        by smtp.gmail.com with ESMTPSA id t38sm5244540qta.78.2020.01.31.06.46.34
+        bh=Sem1oQT3CK6ViOUN0xaEcDDbG44DVTkOCXL84q6x95E=;
+        b=r503vpb3ICf5+hL7p+9EuYIAMn2hAN97hRXojNhDlgO1xZxtji4sjjxg3eHi0W6GsR
+         hAwpFpGhDNyaW70tV8atFE4WVmKHxZ4q+bnmrGiUomJ1HNET01blWotKsHEJNbFtSB4A
+         O9CmZbGtVYBP6PkaLhHihIM6S9XUBmVcHbaneIG0pPYjEOqKIqF+hQYOnuuQKszZFaY+
+         MkmeiHnSw4ZuQdNFBO1Sp9pUvNN7WbIJ11hVwX1pYBCQNOxs8XGekbibWEBns7Z3qmKL
+         DUnfK0Q8kBn9QboH22Dyq+w93RoQQqFPoLQbPvA9SR+1G9adnLKTJnjIiPNRJWu/AxQD
+         X+JA==
+X-Gm-Message-State: APjAAAUvB91PzogDwtlvotR8LRQBpNlBXMLh+FpK3ypdcg5hObc05f/P
+        gY876pvNgBtCZsQAl6PVA6cvHg==
+X-Google-Smtp-Source: APXvYqysi1QrR65FvkJ9+ysPrJyG1BB6l6LsBEyLdRcYByge2zHDfR1m/ew+TipWK0Hf/dmHZo0vwg==
+X-Received: by 2002:ac8:3418:: with SMTP id u24mr10937803qtb.87.1580483255837;
+        Fri, 31 Jan 2020 07:07:35 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id x16sm4517556qki.110.2020.01.31.07.07.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jan 2020 06:46:34 -0800 (PST)
-Subject: Re: [PATCH] Btrfs: fix race between using extent maps and merging
- them
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200131140607.26923-1-fdmanana@kernel.org>
+        Fri, 31 Jan 2020 07:07:34 -0800 (PST)
+Subject: Re: [PATCH 01/20] btrfs: change nr to u64 in
+ btrfs_start_delalloc_roots
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200129235024.24774-1-josef@toxicpanda.com>
+ <20200129235024.24774-2-josef@toxicpanda.com>
+ <21932aac-2499-6112-2f47-e85b7963c037@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <0c3ec3a8-632c-6a01-86e0-a60ce072e8ad@toxicpanda.com>
-Date:   Fri, 31 Jan 2020 09:46:33 -0500
+Message-ID: <8c464576-7d90-1a22-6666-45b10e9796c4@toxicpanda.com>
+Date:   Fri, 31 Jan 2020 10:07:33 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200131140607.26923-1-fdmanana@kernel.org>
+In-Reply-To: <21932aac-2499-6112-2f47-e85b7963c037@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/31/20 9:06 AM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 1/30/20 7:06 AM, Nikolay Borisov wrote:
 > 
-> We have a few cases where we allow an extent map that is in an extent map
-> tree to be merged with other extents in the tree. Such cases include the
-> unpinning of an extent after the respective ordered extent completed or
-> after logging an extent during a fast fsync. This can lead to subtle and
-> dangerous problems because when doing the merge some other task might be
-> using the same extent map and as consequence see an inconsistent state of
-> the extent map - for example sees the new length but has seen the old start
-> offset.
 > 
-> With luck this triggers a BUG_ON(), and not some silent bug, such as the
-> following one in __do_readpage():
+> On 30.01.20 г. 1:50 ч., Josef Bacik wrote:
+>> We have btrfs_wait_ordered_roots() which takes a u64 for nr, but
+>> btrfs_start_delalloc_roots() that takes an int for nr, which makes using
+>> them in conjunction, especially for something like (u64)-1, annoying and
+>> inconsistent.  Fix btrfs_start_delalloc_roots() to take a u64 for nr and
+>> adjust start_delalloc_inodes() and it's callers appropriately.
 > 
->    $ cat -n fs/btrfs/extent_io.c
->    3061  static int __do_readpage(struct extent_io_tree *tree,
->    3062                           struct page *page,
->    (...)
->    3127                  em = __get_extent_map(inode, page, pg_offset, cur,
->    3128                                        end - cur + 1, get_extent, em_cached);
->    3129                  if (IS_ERR_OR_NULL(em)) {
->    3130                          SetPageError(page);
->    3131                          unlock_extent(tree, cur, end);
->    3132                          break;
->    3133                  }
->    3134                  extent_offset = cur - em->start;
->    3135                  BUG_ON(extent_map_end(em) <= cur);
->    (...)
+> nit: You could include one more sentence to be explicit about the fact
+> that now 'nr' management is delegated to start_delalloc_inodes i.e you
+> pass it as a pointer to that function which in turn will control when
+> btrfs_Start_delalloc_roots breaks out of its own loop.
 > 
-> Consider the following example scenario, where we end up hitting the
-> BUG_ON() in __do_readpage().
+>>
+>> Part of adjusting the callers to this means changing
+>> btrfs_writeback_inodes_sb_nr() to take a u64 for items.  This may be
+>> confusing because it seems unrelated, but the caller of
+>> btrfs_writeback_inodes_sb_nr() already passes in a u64, it's just the
+>> function variable that needs to be changed.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/ctree.h       |  2 +-
+>>   fs/btrfs/dev-replace.c |  2 +-
+>>   fs/btrfs/inode.c       | 27 +++++++++++----------------
+>>   fs/btrfs/ioctl.c       |  2 +-
+>>   fs/btrfs/space-info.c  |  2 +-
+>>   5 files changed, 15 insertions(+), 20 deletions(-)
+>>
 > 
-> We have an inode with a size of 8Kb and 2 extent maps:
+> <snip>
 > 
->    extent A: file offset 0, length 4Kb, disk_bytenr = X, persisted on disk by
->              a previous transaction
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -9619,7 +9619,8 @@ static struct btrfs_delalloc_work *btrfs_alloc_delalloc_work(struct inode *inode
+>>    * some fairly slow code that needs optimization. This walks the list
+>>    * of all the inodes with pending delalloc and forces them to disk.
+>>    */
+>> -static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
+>> +static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr,
+>> +				 bool snapshot)
+>>   {
+>>   	struct btrfs_inode *binode;
+>>   	struct inode *inode;
+>> @@ -9659,9 +9660,11 @@ static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
+>>   		list_add_tail(&work->list, &works);
+>>   		btrfs_queue_work(root->fs_info->flush_workers,
+>>   				 &work->work);
+>> -		ret++;
+>> -		if (nr != -1 && ret >= nr)
+>> -			goto out;
+>> +		if (*nr != U64_MAX) {
+>> +			(*nr)--;
+>> +			if (*nr == 0)
+>> +				goto out;
+>> +		}
+>>   		cond_resched();
+>>   		spin_lock(&root->delalloc_lock);
+>>   	}
+>> @@ -9686,18 +9689,15 @@ static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
+>>   int btrfs_start_delalloc_snapshot(struct btrfs_root *root)
+>>   {
+>>   	struct btrfs_fs_info *fs_info = root->fs_info;
+>> -	int ret;
+>> +	u64 nr = U64_MAX;
 > 
->    extent B: file offset 4Kb, length 4Kb, disk_bytenr = X + 4Kb, not yet
->              persisted but writeback started for it already. The extent map
-> 	    is pinned since there's writeback and an ordered extent in
-> 	    progress, so it can not be merged with extent map A yet
-> 
-> The following sequence of steps leads to the BUG_ON():
-> 
-> 1) The ordered extent for extent B completes, the respective page gets its
->     writeback bit cleared and the extent map is unpinned, at that point it
->     is not yet merged with extent map A because it's in the list of modified
->     extents;
-> 
-> 2) Due to memory pressure, or some other reason, the mm subsystem releases
->     the page corresponding to extent B - btrfs_releasepage() is called and
->     returns 1, meaning the page can be released as it's not dirty, not under
->     writeback anymore and the extent range is not locked in the inode's
->     iotree. However the extent map is not released, either because we are
->     not in a context that allows memory allocations to block or because the
->     inode's size is smaller than 16Mb - in this case our inode has a size
->     of 8Kb;
-> 
-> 3) Task B needs to read extent B and ends up __do_readpage() through the
->     btrfs_readpage() callback. At __do_readpage() it gets a reference to
->     extent map B;
-> 
-> 4) Task A, doing a fast fsync, calls clear_em_loggin() against extent map B
->     while holding the write lock on the inode's extent map tree - this
->     results in try_merge_map() being called and since it's possible to merge
->     extent map B with extent map A now (the extent map B was removed from
->     the list of modified extents), the merging begins - it sets extent map
->     B's start offset to 0 (was 4Kb), but before it increments the map's
->     length to 8Kb (4kb + 4Kb), task A is at:
-> 
->     BUG_ON(extent_map_end(em) <= cur);
-> 
->     The call to extent_map_end() sees the extent map has a start of 0
->     and a length still at 4Kb, so it returns 4Kb and 'cur' is 4Kb, so
->     the BUG_ON() is triggered.
-> 
-> So it's dangerous to modify an extent map that is in the tree, because some
-> other task might have got a reference to it before and still using it, and
-> needs to see a consistent map while using it. Generally this is very rare
-> since most paths that lookup and use extent maps also have the file range
-> locked in the inode's iotree. The fsync path is pretty much the only
-> exception where we don't do it to avoid serialization with concurrent
-> reads.
-> 
-> Fix this by not allowing an extent map do be merged if if it's being used
-> by tasks other then the one attempting to merge the extent map (when the
-> reference count of the extent map is greater than 2).
-> 
-> Reported-by: ryusuke1925 <st13s20@gm.ibaraki-ct.ac.jp>
-> Reported-by: Koki Mitani <koki.mitani.xg@hco.ntt.co.jp>
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206211
-> CC: stable@vger.kernel.org # 4.4+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> This var is never used past start_delalloc_snapshot so you can remove it
+> and simply pass U64_MAX to start_delalloc_inodes.
 
-Eesh that's bad, and I went to look at our statistics and we're hitting this 
-like ~20ish times a day.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
+Except start_delalloc_inodes() is now taking a pointer, not the value itself. 
 Thanks,
 
 Josef
