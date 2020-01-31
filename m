@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BA914F4DC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 23:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6460114F4DD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 23:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgAaWgq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 17:36:46 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43751 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgAaWgq (ORCPT
+        id S1726921AbgAaWgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 17:36:48 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33955 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbgAaWgr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 17:36:46 -0500
-Received: by mail-qk1-f194.google.com with SMTP id j20so8202663qka.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 14:36:45 -0800 (PST)
+        Fri, 31 Jan 2020 17:36:47 -0500
+Received: by mail-qt1-f196.google.com with SMTP id h12so6746300qtu.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 14:36:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=8eSIp50bber6rSeu3XOdTcZqeJcik5LQlOAfamDNLKw=;
-        b=1XwkJKmIHI6aR+F3DLLdsJW114jhs2Wex2dGwN4ZqDGtdbiDpZdUaFH45Eyv2Zp9aA
-         3nDg/qgKg3ibwO5xBi3uLieG+0l9t6+BfXLtGjBiUof8nyXpe46mFWT4EeKZf8CTDb2Y
-         2DIOmar9KU5d0EQ+kERcgkJlJhZjPARGu1l2n9RNpmI6BcU8A0WlGNG+uYGnN8u4+Jrf
-         6OhNlUOfsUh3h+u8TufK//nl3YyPNqmX9fg1bODfEdAqzoEss1/Mfvbi0r8TJX/CfgSC
-         bGYPoY4GsLLBprIXPWRbj+MvkWrYMDrpEhG2fnthJp4xp5MqkifUKWtEUYPFygK0/GF7
-         iL6A==
+        bh=uIXnSRIo56eU+s2OzaeIRmu/GBcbXO8fptF5VEIM4I0=;
+        b=FuFPgpFGLQX4ynFuyJ+fK7/Aohq3iHmZH0+5ASFRw4CqlIba3jXyYb/K+tKW19Aa60
+         kZPiaVXkP/W1oZMhI4UAyaslcaCCdmnT5DkAjRclryDqNEMLqdHFkoxWhGRmKWBoA/aq
+         49xvycL/A8RBsEJ9ouoTsITWDx+jIgOUrZe7T0n75YtPGuN7XCwMm9QcKNLxjd6Fk+07
+         N9RCXYtB+U8+WHg8BHA6vTi+jwVxOdguSOkRPlNafIioNvfzPlRwillHB04EVEuFW4Or
+         ZMFIQ4dNir8xAu58y+RKYcApmPgi1h8b9GmawH1IBQ7w/t/4qMCtQ4asnucsLxQrMabv
+         Wrrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8eSIp50bber6rSeu3XOdTcZqeJcik5LQlOAfamDNLKw=;
-        b=cubs8vwQD0ouqeFgGgKo+4abp/9nMaEOrLFkRxnW3nhk1hZ9gJsDOVecsPC40Cwyww
-         gan7uCE8kaN+5P743KXHNcDw2utov1YW0DUmc7ze1HP2/tG5y/AlxP+MiYFMU7AVX5R9
-         SyT0G1Gcqw7CsbwqsTxpM3nD5bhzHa8MbNqzPhNhAaC9TJPCQoE2xhSkgBZOHyQiOq6p
-         3WK4O1PkxcPaJt/7oP48hSUsY0k91FTQQ49CD8vt3k1PLh6DH7++lcsTAg32tdB3bf85
-         C3SSYSvq5NCHSWtufY1h4bs6kQKJuA1I+SH6KGmShEX3lHvn8JLZxvg3n1mQNmw5Rlse
-         OGxg==
-X-Gm-Message-State: APjAAAVod9xRnXRLmRaUpeEBZStxiVMRMcFGljHtlL26MN/TAX/kPKh9
-        ZcwDSpjA0ZW4q+O8JZpFpIlfXrXjp3Vqyg==
-X-Google-Smtp-Source: APXvYqz2c7xKCknZI/N6vHB34y1377q8QXxSb/5TJww3NLA7h4XjvPi5dzyHNEs9zICDEgAPLfSYRg==
-X-Received: by 2002:a37:9ace:: with SMTP id c197mr13300009qke.482.1580510204277;
-        Fri, 31 Jan 2020 14:36:44 -0800 (PST)
+        bh=uIXnSRIo56eU+s2OzaeIRmu/GBcbXO8fptF5VEIM4I0=;
+        b=RkSvLvVxMuTrn3jpp5do7n69Cc/392su4rEEDuG1qzyTBVuA253xuuZyX8oiginHyL
+         rh1k7BqRuZXmlSp24tZfXkp+ru1wVF8njvMRa+E7ZAsaDllk4dW3VPYwjnT5rPbCURFj
+         II5rQ43S/aXX13VF3+Mh+rjlDbnm97VPiqKAUNx+cK7JfmUDATf0ijgkuSVAouPqfhd1
+         jOMTIR2CHGNOq4iisS2iCl7UJr487euoGPpDKX/8IaLNX8cdldDjcWlnUL7iO7nh36Ka
+         rXy05B/W5JtMjRrBnaTemkDb7eLib0/mq+6zyzcWKuwvh2X6HqKFCqt52WasrWhEzvcS
+         eDRA==
+X-Gm-Message-State: APjAAAV+7eHBnw6N4kaDUho8uU9Xri3RjzNDE+j2zQ4WCmzO5qfCcI8k
+        qfhRuyp/EAQGSREJpOOGbhJ3Omj2MHTbug==
+X-Google-Smtp-Source: APXvYqy66JWY79v6syRY0RwHl2iun1rSQsGTYz1v6sbnCxs4wA09QNwDQaZ0tLkrjGBEbDzHXk3Qog==
+X-Received: by 2002:ac8:6f73:: with SMTP id u19mr12986458qtv.102.1580510205952;
+        Fri, 31 Jan 2020 14:36:45 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k50sm5808948qtc.90.2020.01.31.14.36.43
+        by smtp.gmail.com with ESMTPSA id 69sm5198054qkk.106.2020.01.31.14.36.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2020 14:36:43 -0800 (PST)
+        Fri, 31 Jan 2020 14:36:45 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 16/23] btrfs: serialize data reservations if we are flushing
-Date:   Fri, 31 Jan 2020 17:36:06 -0500
-Message-Id: <20200131223613.490779-17-josef@toxicpanda.com>
+Subject: [PATCH 17/23] btrfs: use the same helper for data and metadata reservations
+Date:   Fri, 31 Jan 2020 17:36:07 -0500
+Message-Id: <20200131223613.490779-18-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200131223613.490779-1-josef@toxicpanda.com>
 References: <20200131223613.490779-1-josef@toxicpanda.com>
@@ -60,53 +60,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Nikolay reported a problem where generic/371 would fail sometimes with a
-slow drive.  The gist of the test is that we fallocate a file in
-parallel with a pwrite of a different file.  These two files combined
-are smaller than the file system, but sometimes the pwrite would ENOSPC.
-
-A fair bit of investigation uncovered the fact that the fallocate
-workload was racing in and grabbing the free space that the pwrite
-workload was trying to free up so it could make its own reservation.
-After a few loops of this eventually the pwrite workload would error out
-with an ENOSPC.
-
-We've had the same problem with metadata as well, and we serialized all
-metadata allocations to satisfy this problem.  This wasn't usually a
-problem with data because data reservations are more straightforward,
-but obviously could still happen.
-
-Fix this by not allowing reservations to occur if there are any pending
-tickets waiting to be satisfied on the space info.
+Now that data reservations follow the same pattern as metadata
+reservations we can simply rename __reserve_metadata_bytes to
+__reserve_bytes and use that helper for data reservations.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/space-info.c | 48 +++++++++++++------------------------------
+ 1 file changed, 14 insertions(+), 34 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 43c5775bcbc6..97379524bac8 100644
+index 97379524bac8..13a3692a0122 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -1154,13 +1154,17 @@ int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
- 	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
+@@ -1016,10 +1016,9 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+  * regain reservations will be made and this will fail if there is not enough
+  * space already.
+  */
+-static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+-				    struct btrfs_space_info *space_info,
+-				    u64 orig_bytes,
+-				    enum btrfs_reserve_flush_enum flush)
++static int __reserve_bytes(struct btrfs_fs_info *fs_info,
++			   struct btrfs_space_info *space_info, u64 orig_bytes,
++			   enum btrfs_reserve_flush_enum flush)
+ {
+ 	struct reserve_ticket ticket;
  	u64 used;
- 	int ret = -ENOSPC;
-+	bool pending_tickets;
+@@ -1119,8 +1118,8 @@ int btrfs_reserve_metadata_bytes(struct btrfs_root *root,
+ 	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+ 	int ret;
  
+-	ret = __reserve_metadata_bytes(fs_info, block_rsv->space_info,
+-				       orig_bytes, flush);
++	ret = __reserve_bytes(fs_info, block_rsv->space_info, orig_bytes,
++			      flush);
+ 	if (ret == -ENOSPC &&
+ 	    unlikely(root->orphan_cleanup_state == ORPHAN_CLEANUP_STARTED)) {
+ 		if (block_rsv != global_rsv &&
+@@ -1152,37 +1151,18 @@ int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+ 			     enum btrfs_reserve_flush_enum flush)
+ {
+ 	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
+-	u64 used;
+-	int ret = -ENOSPC;
+-	bool pending_tickets;
++	int ret;
+ 
++	ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
++	       flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
  	ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
  
- 	spin_lock(&data_sinfo->lock);
- 	used = btrfs_space_info_used(data_sinfo, true);
-+	pending_tickets = !list_empty(&data_sinfo->tickets) ||
-+		!list_empty(&data_sinfo->priority_tickets);
- 
--	if (used + bytes > data_sinfo->total_bytes) {
-+	if (pending_tickets ||
-+	    used + bytes > data_sinfo->total_bytes) {
- 		struct reserve_ticket ticket;
- 
- 		init_waitqueue_head(&ticket.wait);
+-	spin_lock(&data_sinfo->lock);
+-	used = btrfs_space_info_used(data_sinfo, true);
+-	pending_tickets = !list_empty(&data_sinfo->tickets) ||
+-		!list_empty(&data_sinfo->priority_tickets);
+-
+-	if (pending_tickets ||
+-	    used + bytes > data_sinfo->total_bytes) {
+-		struct reserve_ticket ticket;
+-
+-		init_waitqueue_head(&ticket.wait);
+-		ticket.bytes = bytes;
+-		ticket.error = 0;
+-		list_add_tail(&ticket.list, &data_sinfo->priority_tickets);
+-		spin_unlock(&data_sinfo->lock);
+-
+-		ret = handle_reserve_ticket(fs_info, data_sinfo, &ticket,
+-					    flush);
+-	} else {
+-		btrfs_space_info_update_bytes_may_use(fs_info, data_sinfo, bytes);
+-		ret = 0;
+-		spin_unlock(&data_sinfo->lock);
+-	}
+-	if (ret)
+-		trace_btrfs_space_reservation(fs_info,
+-					      "space_info:enospc",
++	ret = __reserve_bytes(fs_info, data_sinfo, bytes, flush);
++	if (ret == -ENOSPC) {
++		trace_btrfs_space_reservation(fs_info, "space_info:enospc",
+ 					      data_sinfo->flags, bytes, 1);
++		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
++			btrfs_dump_space_info(fs_info, data_sinfo, bytes, 0);
++	}
+ 	return ret;
+ }
 -- 
 2.24.1
 
