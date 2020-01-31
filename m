@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D45C514E94D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 09:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CF914E94F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 09:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgAaIBT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 03:01:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56232 "EHLO mx2.suse.de"
+        id S1728107AbgAaIDf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 03:03:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57132 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728099AbgAaIBT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 03:01:19 -0500
+        id S1728077AbgAaIDe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 03:03:34 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EAEFAABB3;
-        Fri, 31 Jan 2020 08:01:16 +0000 (UTC)
-Subject: Re: [PATCH 01/11] btrfs-progs: misc-tests/034: reload btrfs module
- before running failure_recovery
+        by mx2.suse.de (Postfix) with ESMTP id 73E9DABB3;
+        Fri, 31 Jan 2020 08:03:32 +0000 (UTC)
+Subject: Re: [PATCH 02/11] btrfs-progs: misc-tests/034: mount the second
+ device if first device mount failed
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <20191212110204.11128-2-Damenly_Su@gmx.com>
+ <20191212110204.11128-3-Damenly_Su@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <1adb342f-14cf-69d9-720d-dbf520f9add3@suse.com>
-Date:   Fri, 31 Jan 2020 10:01:16 +0200
+Message-ID: <2eba385b-1d75-ce1b-669f-f8722dc016fa@suse.com>
+Date:   Fri, 31 Jan 2020 10:03:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20191212110204.11128-2-Damenly_Su@gmx.com>
+In-Reply-To: <20191212110204.11128-3-Damenly_Su@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,9 +83,20 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 > 
-> One reload_btrfs is lost, add it.
+> The 034 test may fail to mount, and dmesg says open_ctree() failed due
+> to device missing.
 > 
-> Fixes: 0de2e22ad226 ("btrfs-progs: tests: Add tests for changing fsid feature")
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+> The partly work flow is
+> step1 loop1 = losetup image1
+> step2 loop2 = losetup image2
+> setp3 mount loop1
+> 
+> The dmesg says the loop2 device is missing.
+> It's possible and known that while step3 is in open_ctree() and
+> fs_devices->opened is nonzero, loop2 device has not been added into the
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+Care to give more details how this can happen? I haven't observed such a
+failure, meaning it's likely due to some race condition. More details
+are needed though. In your change log you say "it's known" but
+apparently only to you in this case.
