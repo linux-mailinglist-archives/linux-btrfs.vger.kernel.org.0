@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C18A14E94C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 09:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45C514E94D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jan 2020 09:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgAaIAM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 03:00:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55986 "EHLO mx2.suse.de"
+        id S1728139AbgAaIBT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 03:01:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56232 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728099AbgAaIAM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 03:00:12 -0500
+        id S1728099AbgAaIBT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 03:01:19 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C33E0AD2D;
-        Fri, 31 Jan 2020 08:00:09 +0000 (UTC)
-Subject: Re: [PATCH 11/11] btrfs-progs: misc-tests/034: add new test images
- and modify the script
+        by mx2.suse.de (Postfix) with ESMTP id EAEFAABB3;
+        Fri, 31 Jan 2020 08:01:16 +0000 (UTC)
+Subject: Re: [PATCH 01/11] btrfs-progs: misc-tests/034: reload btrfs module
+ before running failure_recovery
 To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
 Cc:     Su Yue <Damenly_Su@gmx.com>
 References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <20191212110204.11128-12-Damenly_Su@gmx.com>
+ <20191212110204.11128-2-Damenly_Su@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <7a659894-d8ff-cf71-d78f-24d4c5aa9d5a@suse.com>
-Date:   Fri, 31 Jan 2020 10:00:08 +0200
+Message-ID: <1adb342f-14cf-69d9-720d-dbf520f9add3@suse.com>
+Date:   Fri, 31 Jan 2020 10:01:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20191212110204.11128-12-Damenly_Su@gmx.com>
+In-Reply-To: <20191212110204.11128-2-Damenly_Su@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,21 +80,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.12.19 г. 13:02 ч., damenly.su@gmail.com wrote:
+On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
 > From: Su Yue <Damenly_Su@gmx.com>
 > 
-> Disk7 contains an image which has undergone a successful fsid change
-> more than once with FSID_CHANGING_v2 flag. disk8 on the other hand is
-> member of the same filesystem but has completed its last change without
-> METADATA_UUID flag set.
+> One reload_btrfs is lost, add it.
 > 
-> The expected recovery result is both image don't have FSID_CHANGING_v2
-> and INCOMPAT_METADATA_UUID. Change the test script to test it.
-> 
-> NOTE: It needs kernel fixes for metadata_uuid feature, otherwise
-> will fail.
-> 
+> Fixes: 0de2e22ad226 ("btrfs-progs: tests: Add tests for changing fsid feature")
 > Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 
-
-This test has been superseded by my btrfs-progs test so can be dropped.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
