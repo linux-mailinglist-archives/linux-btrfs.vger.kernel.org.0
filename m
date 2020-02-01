@@ -2,168 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD48914F85A
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 16:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852C14F8ED
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 17:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgBAPMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Feb 2020 10:12:48 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51870 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgBAPMs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Feb 2020 10:12:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
-        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AsVOh91gi/2Ld/EfqBNlMyY/ZrCMfPz2+/lz/gfCdpw=; b=MBrxoQXtUvy8vWHQ3XAweprjhV
-        tiYtG3J6A6nnhKyc9Z+LC9yr/9LTS1M7W6UuRWcP250YINSxrdnppzWLvnS64GmblAIYmr3GHoyKa
-        cS18kXvn2dq8Dn6ZmNxSay0CVSfYAo/NuwsUzkOjNpGhYPQT6+6C2OXa01PFnp8WeEce/ndx837Sq
-        w2JmNkZLCnnhvzVhe3bU9W0seTvgZ+OenrncJ1GqCYhvFSYxnmo4HviXXgV86zMKgL83odgIKwARF
-        mCSyXZrK7AHtA57CwUWvEpo7xmwlfy43RwcqC0Z9HOWSQBDprLMpEWDd6qYm2ceJmXSgpHGeSELp+
-        lFE1U3Zg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ixuRu-0006Hb-8R; Sat, 01 Feb 2020 15:12:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 06/12] btrfs: Convert from readpages to readahead
-Date:   Sat,  1 Feb 2020 07:12:34 -0800
-Message-Id: <20200201151240.24082-7-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200201151240.24082-1-willy@infradead.org>
-References: <20200201151240.24082-1-willy@infradead.org>
+        id S1726722AbgBAQhE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Feb 2020 11:37:04 -0500
+Received: from sonic316-53.consmr.mail.ne1.yahoo.com ([66.163.187.179]:42694
+        "EHLO sonic316-53.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726622AbgBAQhD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 1 Feb 2020 11:37:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1580575023; bh=VxFSqOLnoyhxZXWK73TPGK3hr8yutZ4yWmLQa/jSY/I=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Jhu+rinusv8yrO7P+uj9ivOFAjdRsMBmPFc+4IysZP3e42txtiMOS1Ozpd88qtzPDsY7Ry4DTkeFVzuwutwTvuB2SK6jtwnz+e+CV9LD3b7tXVlbuxj0SQCculj/VDgqZbX27+Ef28W/VMCAjI3bUGhbR7zkObIRB9i/4QSUD75FrSIbePMHMqeYH0iRDH93qV5+vpa8I0KTXt8X1xUbiVcSEgY0ezcs/HZwhRIlytkr3tXmf0Eq0BNrIM51cyXxir8X6vAxWcftEFCuWMjb6fuYtRt8Nr1tFEoqkK23t4nGnEiVBfIUCHOg8aYH/SgqjmQ7qSnALaelCJ5naFT5xg==
+X-YMail-OSG: Oiyj.kAVM1n9p7QAwa6TtksRrzjtHbreTj7n.RjcuU6rKCqwcfIKYmMj67_qYGo
+ 50yTBpoZktKs6JI1busMmYqgFQC4mGzsqhpK5haoVlNENBtDgC8f6a8gtgtF3PZJnmsu5_75HMRJ
+ 7YA46Jghe4INcyn1h5KO_7aYAscKpbF1P9.m2EZgGU72tjGLT8fimkIpwFKpUnj2earMHE_v2TsQ
+ MKxYclls27P5vvmnIMV6FrcEeuIn5_DJLmp_uIQ7oDGxO_P0OVuCbdqTtnp.oskGBxMAaLXYfARC
+ 4snjv_yE5eAJrwfxkzoB7hrAAYXJozbpASvQf2QZ_UbbbcNJ0JhEzOCUykboiCT64k5af0oehUin
+ Twv918CXUpToQeByosgu98y4qNOttRZ1NKp5.mGTFZzXnxYsx9Nt5QpGF.2fhQ9saiFU2.uj6fX1
+ fb6swLpUJal48d1jGhfb.XL7IJZ5JQWJoW..NomOUa3Sn8H0lR1E4REfVP33hooYS9inYmNxN9VO
+ zODMWKYbM05xw7AM8NYUBQcko5zdCCw.ZIN4GGyZTJ5MjZXTQwee8HfSIZsn5dXJK90FgBUkQDZF
+ hfiDy9UgkHyeFXTW.wgINim87rwfdlpPKC9cCePMq6AhzTCR9U5_IhxUVj_oM5OLTAy2BB.wU0kU
+ FdtXyxTW9tOMf9ZBC3PGRoiINOUJydKyeov_ZKT5mShpKYiWqyP2NIB1h5wGrYPQm8.NIf4g.3jZ
+ hwJe6OvdF8DQSZJneWdcvzRhXbKwWpI_6Fbl_OVTiwy8QAWeGcl9fTpuTtthLNT2GHx30h6fFCT2
+ i6NadkPFwW6KGcliefTOTNO03jp_.cOeM4_OFYvsOpY_Ql_xFX_jiMtMjdk5qJdJLnOpXkT971pZ
+ rpdK9T6Xbje1MU4FU7PbXhrNDLxv06GO8jQ2VHfHFNXKuzl3wJHjzcsoC8dBSaoIb5FzNPdmJYpU
+ bXHnFy1MMsn_UU6lw9IrcYtlFnRUwqAIyVv70EYZVYE4Ti_WVF8IOU9gj2iA4jqdFRNxUlrbeMDK
+ XCc.yxjw3lylmFEf85twkP0NJLYKliou8KpJ6bFeLN0wtqeMyPoHvt0kLACIwBKlifIbIpwRXDSY
+ Op1MyZfP_EEjDmN5RsrfQ7LI4MsB17EonxqqawHioomWeYVCrSYB1Pa1fmwSLa7ohCQwJ6YNSoMZ
+ DYSugR9RYMCoGhmhT0YlZHTQvzfMXhqV6xnn_zOWOiTfbnmKgLZuLzydgbr6LYBWVQke_PaeZA3t
+ 4vi5C89maj4hpe._H0Zcy8QpEWZ8KWCVHnxqxG2jI_UF1mlmdATy.ATd_8JXmaYVEmGJeCQEvXRF
+ FxmjvPVhnxhZEcXpIBqfsP_vNXbXRMV3RWjs-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Sat, 1 Feb 2020 16:37:03 +0000
+Date:   Sat, 1 Feb 2020 16:35:02 +0000 (UTC)
+From:   "Mrs. Maureen Hinckley" <zz13@gczao.com>
+Reply-To: maurhinck6@gmail.com
+Message-ID: <1187667350.235001.1580574902701@mail.yahoo.com>
+Subject: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1187667350.235001.1580574902701.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15149 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 OPR/66.0.3515.44
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Use the new readahead operation in btrfs
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: linux-btrfs@vger.kernel.org
----
- fs/btrfs/extent_io.c | 19 +++++++------------
- fs/btrfs/extent_io.h |  2 +-
- fs/btrfs/inode.c     | 18 +++++++++---------
- 3 files changed, 17 insertions(+), 22 deletions(-)
+I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
+ thousand USD) to you. Contact us via my email at (maurhinck6@gmail.com) fo=
+r further details.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e2d30287e2d5..18b1fbfdcab2 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4269,7 +4269,7 @@ int extent_writepages(struct address_space *mapping,
- 	return ret;
- }
- 
--int extent_readpages(struct address_space *mapping, struct list_head *pages,
-+unsigned extent_readahead(struct address_space *mapping, pgoff_t start,
- 		     unsigned nr_pages)
- {
- 	struct bio *bio = NULL;
-@@ -4280,22 +4280,17 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
- 	int nr = 0;
- 	u64 prev_em_start = (u64)-1;
- 
--	while (!list_empty(pages)) {
-+	while (nr_pages) {
- 		u64 contig_end = 0;
- 
--		for (nr = 0; nr < ARRAY_SIZE(pagepool) && !list_empty(pages);) {
--			struct page *page = lru_to_page(pages);
-+		for (nr = 0; nr < ARRAY_SIZE(pagepool); nr++) {
-+			struct page *page = readahead_page(mapping, start++);
- 
- 			prefetchw(&page->flags);
--			list_del(&page->lru);
--			if (add_to_page_cache_lru(page, mapping, page->index,
--						readahead_gfp_mask(mapping))) {
--				put_page(page);
--				break;
--			}
--
--			pagepool[nr++] = page;
-+			pagepool[nr] = page;
- 			contig_end = page_offset(page) + PAGE_SIZE - 1;
-+			if (--nr_pages == 0)
-+				break;
- 		}
- 
- 		if (nr) {
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 5d205bbaafdc..4fd9dc05592b 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -198,7 +198,7 @@ int extent_writepages(struct address_space *mapping,
- 		      struct writeback_control *wbc);
- int btree_write_cache_pages(struct address_space *mapping,
- 			    struct writeback_control *wbc);
--int extent_readpages(struct address_space *mapping, struct list_head *pages,
-+unsigned extent_readahead(struct address_space *mapping, pgoff_t start,
- 		     unsigned nr_pages);
- int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 		__u64 start, __u64 len);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6d2bb58d277a..7622918d7624 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4723,8 +4723,8 @@ static void evict_inode_truncate_pages(struct inode *inode)
- 
- 	/*
- 	 * Keep looping until we have no more ranges in the io tree.
--	 * We can have ongoing bios started by readpages (called from readahead)
--	 * that have their endio callback (extent_io.c:end_bio_extent_readpage)
-+	 * We can have ongoing bios started by readahead that have
-+	 * their endio callback (extent_io.c:end_bio_extent_readpage)
- 	 * still in progress (unlocked the pages in the bio but did not yet
- 	 * unlocked the ranges in the io tree). Therefore this means some
- 	 * ranges can still be locked and eviction started because before
-@@ -6925,11 +6925,11 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 			 * for it to complete) and then invalidate the pages for
- 			 * this range (through invalidate_inode_pages2_range()),
- 			 * but that can lead us to a deadlock with a concurrent
--			 * call to readpages() (a buffered read or a defrag call
-+			 * call to readahead (a buffered read or a defrag call
- 			 * triggered a readahead) on a page lock due to an
- 			 * ordered dio extent we created before but did not have
- 			 * yet a corresponding bio submitted (whence it can not
--			 * complete), which makes readpages() wait for that
-+			 * complete), which makes readahead wait for that
- 			 * ordered extent to complete while holding a lock on
- 			 * that page.
- 			 */
-@@ -8168,11 +8168,11 @@ static int btrfs_writepages(struct address_space *mapping,
- 	return extent_writepages(mapping, wbc);
- }
- 
--static int
--btrfs_readpages(struct file *file, struct address_space *mapping,
--		struct list_head *pages, unsigned nr_pages)
-+static unsigned
-+btrfs_readahead(struct file *file, struct address_space *mapping,
-+		pgoff_t start, unsigned nr_pages)
- {
--	return extent_readpages(mapping, pages, nr_pages);
-+	return extent_readahead(mapping, start, nr_pages);
- }
- 
- static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
-@@ -10377,7 +10377,7 @@ static const struct address_space_operations btrfs_aops = {
- 	.readpage	= btrfs_readpage,
- 	.writepage	= btrfs_writepage,
- 	.writepages	= btrfs_writepages,
--	.readpages	= btrfs_readpages,
-+	.readahead	= btrfs_readahead,
- 	.direct_IO	= btrfs_direct_IO,
- 	.invalidatepage = btrfs_invalidatepage,
- 	.releasepage	= btrfs_releasepage,
--- 
-2.24.1
-
+Best Regards,
+Mrs. Maureen Hinckley,
+Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
