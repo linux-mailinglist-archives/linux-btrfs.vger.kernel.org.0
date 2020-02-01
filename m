@@ -2,148 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A99114F7E8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 14:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B73214F84D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 16:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgBANH2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Feb 2020 08:07:28 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:44485 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgBANH2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Feb 2020 08:07:28 -0500
-Received: by mail-il1-f195.google.com with SMTP id s85so5251039ill.11;
-        Sat, 01 Feb 2020 05:07:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oNKC7fDBF5bypMMsY3mRJy+utUKLGrjciGC3lDrgQ1s=;
-        b=SXEBA+tPeh6jGa9IdMJaUREtXKGtqqX9CLtkw/+Xfre+LMAJrwxyLt33mpm1ZiqgJQ
-         QM5UdOvS3oNu9u8VujN0ZOazlwi0a4+qw2FwnlnHWFc3t7WSz+m92hBjqzF68ourdDWY
-         tnPb0gYe5m1FNoGAGcVN2zzl3P2egB8CtZkkQNJeVgXYO3aoFjRnyPbOwG6CjE8GNyqL
-         0ZwRECThXoQA+HMzVEpSk8VMGZVMGbZgAc9ZleddcJLq1lUFivHPloyDoLqBx/hWcREE
-         +g2sR8K8y2U/Hi7TZhkp+9kARkpjMilghf7Fqq7vS6yNEGPF8YV73koJ+7L/5iQRnRVR
-         Jqug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oNKC7fDBF5bypMMsY3mRJy+utUKLGrjciGC3lDrgQ1s=;
-        b=uG/M9N6BNY+p6vg7A01t3M26Drqoxl+b+QOvI51K789mhK86yjZ3CqVgT0/8YiPVR1
-         hUs0Foe38PqP5xhghyllYIjqggCk1Be+QywVKGbXJMV2m91vgeVBDOsu6vsbOkImJgJG
-         7Q66LXJE1bYdfYpibQG6cxL3cUnbn9C0E1E8lwO4JKaSnDmq5nT4G2enLat4zvygseDL
-         jAZO5sG0JPJiqjw4rXYbbjRHMjrD0DmLJcmc/QviPQOXjPv/+xWN3eYPojPdKzh7rY55
-         mOdX3PHyWVjrOLo1/xlqB0o2uVbDzj6no9xSKtAu8+fEugk0j0UM+jspXhvMdgJ77nqg
-         tnSw==
-X-Gm-Message-State: APjAAAXw4jZsSkzBo1+Q+erL1FHRi3Z7fIjmUHfndscIhpRYmPu1If3L
-        KOTzVVpUpZXwZfNRjbrv1FELbD3Btiqzz/spf3s=
-X-Google-Smtp-Source: APXvYqx3+Gx+gIejbyuzt6sWJ6pulqhDnZM9iFTZSZMn3Nl3GqjRKOQC3qXXSpmALrzdMnhA1342lzXegvRL7mBJe2o=
-X-Received: by 2002:a92:d5c3:: with SMTP id d3mr7139367ilq.250.1580562447510;
- Sat, 01 Feb 2020 05:07:27 -0800 (PST)
+        id S1726814AbgBAPMn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Feb 2020 10:12:43 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:51822 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgBAPMm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Feb 2020 10:12:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=dB7ywmsatelLVL7Psw2UVkpn4TS1ismlyPRVqvsNN4I=; b=RnoVi6fUM/M58i6TYhoTLY0TL
+        V7I9zpJWwCzNP2scBs5DKrt7H9v8YkzB+zy/W4DudHEy5O3nZ2nS+CmMmx7gYjNpb//bY/tIKKSyZ
+        BoIYl7MaogIfsM0Y9tjCirctp4DMLxm6KpweOFcDQtxE+etr4078ycEjYIbRbs9F7wyfbU5GGbVy3
+        fnFz1u13IqALNOQOFhi0zXFNp8K2To+TxPFBQ7dryOGOMrqog5fJewQfdZiz2SpgzlRxhq5dAlgjj
+        JO1o3SZNAvTMRVCpWVcSJwTwalk4DOgKQ0oSw60THP3NVyDBfjsNRTxzLp1iNTUgC+HvKJkv6LBzz
+        TzfPOsY9g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ixuRu-0006HE-1K; Sat, 01 Feb 2020 15:12:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com
+Subject: [PATCH v4 00/12] Change readahead API
+Date:   Sat,  1 Feb 2020 07:12:28 -0800
+Message-Id: <20200201151240.24082-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <20200114125044.21594-1-wqu@suse.com> <20200201073649.GA2697@desktop>
- <CAOQ4uxj_MFHrWthckSVUaHp3us2eNFeZRc_wuD90CxcUveYUTA@mail.gmail.com> <c3310387-da7b-3184-147f-67f00eed1aae@suse.com>
-In-Reply-To: <c3310387-da7b-3184-147f-67f00eed1aae@suse.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 1 Feb 2020 15:07:16 +0200
-Message-ID: <CAOQ4uxiu6T-cHr5TZ93K1U5fGnu8bG4RSpkZqMvvDEw_wDCuPg@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs/153: Remove it from auto group
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Eryu Guan <guaneryu@gmail.com>, fstests <fstests@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 1, 2020 at 2:39 PM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2020/2/1 =E4=B8=8B=E5=8D=887:10, Amir Goldstein wrote:
-> > On Sat, Feb 1, 2020 at 9:41 AM Eryu Guan <guaneryu@gmail.com> wrote:
-> >>
-> >> On Tue, Jan 14, 2020 at 08:50:44PM +0800, Qu Wenruo wrote:
-> >>> This test case always fail after commit c6887cd11149 ("Btrfs: don't d=
-o
-> >>> nocow check unless we have to").
-> >>> As btrfs no longer checks nodatacow at buffered write time.
-> >>>
-> >>> That commits brings in a big performance enhancement, as that check i=
-s
-> >>> not cheap, but breaks qgroup, as write into preallocated space now ne=
-eds
-> >>> extra space.
-> >>>
-> >>> There isn't yet a good solution (reverting that patch is not possible=
-,
-> >>> and only check nodatacow for quota enabled case is very bug prune due=
- to
-> >>> quite a lot code change).
-> >>>
-> >>> We may solve it using the new ticketed space reservation facility, bu=
-t
-> >>> that won't come into fruit anytime soon.
-> >>>
-> >>> So let's just remove that test case from 'auto' group, but still keep
-> >>> the test case to inform we still have a lot of work to do.
-> >>>
-> >>> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >>
-> >> I'd like to see an ACK from btrfs folks. Thanks!
-> >>
-> >> Eryu
-> >>
-> >>> ---
-> >>>  tests/btrfs/group | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> >>> index 697b6a38ea00..3c554a194742 100644
-> >>> --- a/tests/btrfs/group
-> >>> +++ b/tests/btrfs/group
-> >>> @@ -155,7 +155,7 @@
-> >>>  150 auto quick dangerous
-> >>>  151 auto quick volume
-> >>>  152 auto quick metadata qgroup send
-> >>> -153 auto quick qgroup limit
-> >>> +153 quick qgroup limit
-> >
-> > Hmm, if removing from auto it might make sense to also remove it
-> > from quick, because people often use quick as a sanity regression group=
-.
->
-> That's also one of my concern.
->
-> However recently I tend to run more same VMs on different ranges of
-> fstests to speed up the testing progress other than using 'quick' group.
->
-> Anyway this depends on the end users (QA and developers).
->
-> >
-> > The issue at hand is a recurring pattern.
-> > It is also been discussed recently about generic/484:
-> > https://lore.kernel.org/fstests/20200131164619.GA13005@infradead.org/
-> >
-> > I also handled something like this with:
-> > fdb69864 overlay/061: remove from auto and quick groups
-> >
-> > I suggest adding a group 'broken' to mark known/wontfix issues
-> > then a default regression test could run -g auto -x broken
-> > or -g quick -x broken for a quick regression sanity.
->
-> That's much better.
->
-> Just one question, if a test is in both quick and broken group, will -g
-> quick -x broken still exclude it?
->
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Yes.
-That is the main use case for -x. Often used with -x dangerous.
+I would particularly value feedback on this from the gfs2 and ocfs2
+maintainers.  They have non-trivial changes, and a review on patch 5
+would be greatly appreciated.
 
-What we don't have, AFAIK, is the ability to request 'auto && quick'.
+This series adds a readahead address_space operation to eventually
+replace the readpages operation.  The key difference is that
+pages are added to the page cache as they are allocated (and
+then looked up by the filesystem) instead of passing them on a
+list to the readpages operation and having the filesystem add
+them to the page cache.  It's a net reduction in code for each
+implementation, more efficient than walking a list, and solves
+the direct-write vs buffered-read problem reported by yu kuai at
+https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 
-Thanks,
-Amir.
+v4:
+ - Rebase on current Linus (a62aa6f7f50a ("Merge tag 'gfs2-for-5.6'"))
+ - Add comment to __do_page_cache_readahead() acknowledging we don't
+   care _that_ much about setting PageReadahead.
+ - Fix the return value check of add_to_page_cache_lru().
+ - Add a missing call to put_page() in __do_page_cache_readahead() if
+   we fail to insert the page.
+ - Improve the documentation of ->readahead (including indentation
+   problem identified by Randy).
+ - Fix off by one error in read_pages() (Dave Chinner).
+ - Fix nr_pages manipulation in btrfs (Dave Chinner).
+ - Remove bogus refcount fix in erofs (Gao Xiang, Dave Chinner).
+ - Update ext4 patch for Merkle tree readahead.
+ - Update f2fs patch for Merkle tree readahead.
+ - Reinstate next_page label in f2fs_readpages() now it's used by the
+   compression code.
+ - Reinstate call to fuse_wait_on_page_writeback (Miklos Szeredi).
+ - Remove a double-unlock in the error path in fuse.
+ - Remove an odd fly-speck in fuse_readpages().
+ - Make nr_pages loop in fuse_readpages less convoluted (Dave Chinner).
+
+Matthew Wilcox (Oracle) (12):
+  mm: Fix the return type of __do_page_cache_readahead
+  readahead: Ignore return value of ->readpages
+  readahead: Put pages in cache earlier
+  mm: Add readahead address space operation
+  fs: Convert mpage_readpages to mpage_readahead
+  btrfs: Convert from readpages to readahead
+  erofs: Convert uncompressed files from readpages to readahead
+  erofs: Convert compressed files from readpages to readahead
+  ext4: Convert from readpages to readahead
+  f2fs: Convert from readpages to readahead
+  fuse: Convert from readpages to readahead
+  iomap: Convert from readpages to readahead
+
+ Documentation/filesystems/locking.rst |  7 ++-
+ Documentation/filesystems/vfs.rst     | 14 +++++
+ drivers/staging/exfat/exfat_super.c   |  9 +--
+ fs/block_dev.c                        |  9 +--
+ fs/btrfs/extent_io.c                  | 19 +++---
+ fs/btrfs/extent_io.h                  |  2 +-
+ fs/btrfs/inode.c                      | 18 +++---
+ fs/erofs/data.c                       | 33 ++++------
+ fs/erofs/zdata.c                      | 21 +++----
+ fs/ext2/inode.c                       | 12 ++--
+ fs/ext4/ext4.h                        |  5 +-
+ fs/ext4/inode.c                       | 24 ++++----
+ fs/ext4/readpage.c                    | 20 +++---
+ fs/ext4/verity.c                      | 16 +++--
+ fs/f2fs/data.c                        | 35 +++++------
+ fs/f2fs/f2fs.h                        |  5 +-
+ fs/f2fs/verity.c                      | 16 +++--
+ fs/fat/inode.c                        |  8 +--
+ fs/fuse/file.c                        | 37 +++++------
+ fs/gfs2/aops.c                        | 20 +++---
+ fs/hpfs/file.c                        |  8 +--
+ fs/iomap/buffered-io.c                | 74 +++++-----------------
+ fs/iomap/trace.h                      |  2 +-
+ fs/isofs/inode.c                      |  9 +--
+ fs/jfs/inode.c                        |  8 +--
+ fs/mpage.c                            | 38 ++++--------
+ fs/nilfs2/inode.c                     | 13 ++--
+ fs/ocfs2/aops.c                       | 32 +++++-----
+ fs/omfs/file.c                        |  8 +--
+ fs/qnx6/inode.c                       |  8 +--
+ fs/reiserfs/inode.c                   | 10 +--
+ fs/udf/inode.c                        |  8 +--
+ fs/xfs/xfs_aops.c                     | 10 +--
+ include/linux/fs.h                    |  2 +
+ include/linux/iomap.h                 |  2 +-
+ include/linux/mpage.h                 |  2 +-
+ include/linux/pagemap.h               | 12 ++++
+ include/trace/events/erofs.h          |  6 +-
+ include/trace/events/f2fs.h           |  6 +-
+ mm/internal.h                         |  2 +-
+ mm/migrate.c                          |  2 +-
+ mm/readahead.c                        | 89 ++++++++++++++++++---------
+ 42 files changed, 332 insertions(+), 349 deletions(-)
+
+-- 
+2.24.1
+
