@@ -2,193 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DE614F58D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 02:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD6014F654
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 04:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgBABAY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jan 2020 20:00:24 -0500
-Received: from mout.gmx.net ([212.227.15.18]:46421 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgBABAY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jan 2020 20:00:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580518813;
-        bh=X5yqz1eLiL2/C2guD8krJly0VZMEVx4u7OZcA6Erdk4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=cn35FR315hMBNdlw1Z7uARCJo53rZiGLiIRooH9xKF/4Ri6Op/F63OS9kn02hLOgZ
-         hNB20da7wSsg2yrmM4zhbYTNRtgOQsD9zzfrscM037W9kWAHaHOnB/+rfBlursdVdJ
-         tpkMrMTrMz9tfi7aFUd0L07VgCt7bmmxBXxBz71o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXGrE-1j3iVO48dC-00YlvU; Sat, 01
- Feb 2020 02:00:13 +0100
-Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Cc:     Martin Steigerwald <martin@lichtvoll.de>
-References: <20200131143105.52092-1-josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e1ad601a-cd27-7464-57f5-1be39deeac53@gmx.com>
-Date:   Sat, 1 Feb 2020 09:00:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
-MIME-Version: 1.0
-In-Reply-To: <20200131143105.52092-1-josef@toxicpanda.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MvnEwlhih987ruTs1o41Gl7K5XGeDl0QX"
-X-Provags-ID: V03:K1:DRCCDAhOI0jtHG8D6GcCjUOoEuzlxes+r+tCod/Z8pr8V9eY3wQ
- S0MYD/X/yp7dpzTTVFP0NkH8f88gtDT6Bc9qD2G1FoKiwvLh8l97/gpH+wQl/NC5HVGN9mp
- evtgCDkvxnFpX6b1SaOf6ACZqkLGbsKcW9cqP9repjzG6Lpj4/425acjkvh+Y55HhXvFn/v
- s6vm9sPZnNpRDjKbzLEfg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eAPwBpkzC+8=:whZhPttkJ1hh4e5my+scv9
- ZL5U5rp1YZvC45wor34wZDL/VV4+EeGealkrPGjldQVagVMRqWiDwYv1hgnKme33wZZc5AzL7
- vsPVDTPa4rnMqcw8JUtWTo9u0bCOsY/QoEkmhiL6gBmaTzHWZGJ9dOTrql+yjm1xo/GcVrUY7
- 9minXkui1wIW4XU4RbB3tgxOrB64r6rgG4rzHYiesMzY1NbmYSp/GvRFjfFw2COR7k2pgniSP
- f0wytoBBRE354OvKeywnaxn+3NyOp8gn3tOB0GFQxyzfS8TatrCOg1yts6GMdkezsSIt1Ntxo
- 1E7IcIspybC/61C9yhAeHq6zu/7Y+1H1kJwZ2vFsTyqm9T6KQV0xTH0X1scUcO1NGaiTBXKIi
- CAol/glR38ZHtke0oj0YzAkBL1Deg75h8DvTxntftvdsWnR4WevkBvIr6P17rTou/u/126Ex3
- 6GM4teo6vDIMIp1DTbcdN+ChwHPSlHp/Orm1eWZ1nFWa1hf938mYE00cCCuEisXnDIvxpvCcD
- AUl0UR0ouduHM9wYNfSMsT87KyoNtc5Ps7bK7oth7oMnhEwnOIWQoGTra0JIKjazg5W591pX+
- iJMXQB49z7VBSitXWeMBqeI2WDWQ8+TuucA5ThleOb4K6qHXv8eILBwnyxxtEws+RoyxKpWZj
- L7tSdCl/ZmYY7PcDshK045KEVFouf9Y2J15Ekjclew8CjAaN7pL6pxD/T34nINB4fS0HdDWQj
- diwi5DsgrcRfPwH1XwkibdgtBNEbKlimAre6nbeUvOzac0v/EMn0AOU5ZxtQjNuJ9861+uMgb
- AkVmKrCEcMrSHNviiPIZ6sZefCKZcIjNJkYpNttBA1qx+1MVDf9dmvtFPcZVCVqdd0gKPTVeb
- UnT6mYiHwECH13aaG54YtqdeZ0e/+RyrPR2J2lNp/5FO4AQLi5xmHQP17kL06y8YrDdKWZjnC
- k8A7ekij9FRqsS7gnfp9kqUIdCGOMzRzjKkxMej07u9p6Biw61b3hIdhlm/ndd1O/I1lGaqkI
- SRBEgtYx2jv1VxY2BrmfrV8Djvg+L4i3Ze4LNGwXRxyuXRM61BcUvFgbJ7z7bUVPoJ3A43K27
- TupYbaCtO9NFDYpnQFJz9G70k7h5KXzi41RAoHiM8D6mIWnex7KG7hdQ5N5a6lWodWzaCLhld
- bjOS8fNoQoE881dBPLih57PivKlmcoZy3Zrt32nxQ2+dFd8JGKDsnahCJMEcjrQ12zEogzj+h
- RXH6+mUtRF9xQMDxV
+        id S1726718AbgBADvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jan 2020 22:51:40 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:50654 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgBADvk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jan 2020 22:51:40 -0500
+Received: by mail-pj1-f67.google.com with SMTP id r67so3831555pjb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 Jan 2020 19:51:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KeIXCrwHcHdvpxpnsBGJesWcBaTKXzcV+n6XTWh7I2g=;
+        b=aNWXTKATusjuICcwVeR2xGCxZQbE0p4JzJHK9R67Y6lZoRTF9HEWHGMMX9LbRdCDWj
+         WKhjVAQlXQMZAPDLCpMjVhFVxmqKCzCnqzA51yZmsbT/71HRzu5M0Rq6QlR+feNEKGd+
+         AVsFlOcG3Mad56Dq7VuRr3XT4tRU5n/uL9qfKvSUTjTUvfyYe3DDWJTv5ssyEhREBCxq
+         lKDB9jVHek0eszVBLTrr0fNkSF/kknHWLHqnQJlR7lgWzgdsumREecECulw4VJpv12oa
+         AM4ipN99Dy+DIiuY04N3GSDJRFiko1xjvQ1fh96cxB5QO5smC7ZizMxQ8af3aJQwDerp
+         MuOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KeIXCrwHcHdvpxpnsBGJesWcBaTKXzcV+n6XTWh7I2g=;
+        b=dP02NyOSWzOKA2DoZ7cHATlOFKHcFIiBVK/1wG2ym8RPcLbpTK0qAeLW+NTP6NugCK
+         EJ4feNV5CwX8sbH8PSNvCf+tpXE+QQokifxMx0HxYXjp1gH6lZjc7h2JWhoPP499PHVk
+         QEFmRi6CXzTvk6POWzYdJAVQSH9DQbIDScWEigIY9ip5kXO290tKygizXm7dFJDAAaYe
+         zHw7k+mdXqkPkvwQdDfzrzM4gRTpXAw/eXZ3oqaXVIahqfORa7CAAV+S9QuKDWJFty4C
+         DKUNZSuf71oDdxOQUpFBd2KYJYSimqGgYWgM3VtFZnFBqi+BvGtL1m59lXe67JSp3z6O
+         F/Uw==
+X-Gm-Message-State: APjAAAXVjq1JtKw3GfgWMKVbN4qRiM8f/uHPLJIqaKe9viRVl4Z29mBx
+        C7jQKfaeYTwdxuEykRhAqtY=
+X-Google-Smtp-Source: APXvYqwhsr2xwBmskxddn7qbFP2sRr8NHaRvHJfFOGAEJvpByLyY8OEqo8wpkKQ7FsNEX1E8coBnsQ==
+X-Received: by 2002:a17:90a:9285:: with SMTP id n5mr16953328pjo.58.1580529098367;
+        Fri, 31 Jan 2020 19:51:38 -0800 (PST)
+Received: from localhost ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id v15sm11604277pju.15.2020.01.31.19.51.37
+        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
+        Fri, 31 Jan 2020 19:51:37 -0800 (PST)
+From:   qiwuchen55@gmail.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        trivial@kernel.org
+Cc:     linux-btrfs@vger.kernel.org, chenqiwu <chenqiwu@xiaomi.com>
+Subject: [PATCH] btrfs: remove trivial nowait check
+Date:   Sat,  1 Feb 2020 11:51:33 +0800
+Message-Id: <1580529093-26170-1-git-send-email-qiwuchen55@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MvnEwlhih987ruTs1o41Gl7K5XGeDl0QX
-Content-Type: multipart/mixed; boundary="I0xz7wpoYuIF72rt4fTwx67hdkt8Efl1C"
+From: chenqiwu <chenqiwu@xiaomi.com>
 
---I0xz7wpoYuIF72rt4fTwx67hdkt8Efl1C
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Remove trivial nowait check for btrfs_file_write_iter(),
+since buffered writes will return -EINVAL if IOCB_NOWAIT
+passed in the follow-up function generic_write_checks().
 
+Signed-off-by: chenqiwu <chenqiwu@xiaomi.com>
+---
+ fs/btrfs/file.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index a16da27..320af95 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1896,10 +1896,6 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 	loff_t oldsize;
+ 	int clean_page = 0;
+ 
+-	if (!(iocb->ki_flags & IOCB_DIRECT) &&
+-	    (iocb->ki_flags & IOCB_NOWAIT))
+-		return -EOPNOTSUPP;
+-
+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
+ 		if (!inode_trylock(inode))
+ 			return -EAGAIN;
+-- 
+1.9.1
 
-On 2020/1/31 =E4=B8=8B=E5=8D=8810:31, Josef Bacik wrote:
-> There was some logic added a while ago to clear out f_bavail in statfs(=
-)
-> if we did not have enough free metadata space to satisfy our global
-> reserve.  This was incorrect at the time, however didn't really pose a
-> problem for normal file systems because we would often allocate chunks
-> if we got this low on free metadata space, and thus wouldn't really hit=
-
-> this case unless we were actually full.
->=20
-> Fast forward to today and now we are much better about not allocating
-> metadata chunks all of the time.  Couple this with d792b0f19711 which
-> now means we'll easily have a larger global reserve than our free space=
-,
-> we are now more likely to trip over this while still having plenty of
-> space.
->=20
-> Fix this by skipping this logic if the global rsv's space_info is not
-> full.  space_info->full is 0 unless we've attempted to allocate a chunk=
-
-> for that space_info and that has failed.  If this happens then the spac=
-e
-> for the global reserve is definitely sacred and we need to report
-> b_avail =3D=3D 0, but before then we can just use our calculated b_avai=
-l.
->=20
-> There are other cases where df isn't quite right, and Qu is addressing
-> them in a more holistic way.  This simply fixes the users that are
-> currently experiencing pain because of this problem.
->=20
-> Fixes: ca8a51b3a979 ("btrfs: statfs: report zero available if metadata =
-are exhausted")
-> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> ---
->  fs/btrfs/super.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index d421884f0c23..42433ca822aa 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2143,7 +2143,15 @@ static int btrfs_statfs(struct dentry *dentry, s=
-truct kstatfs *buf)
->  	 */
->  	thresh =3D SZ_4M;
-> =20
-> -	if (!mixed && total_free_meta - thresh < block_rsv->size)
-> +	/*
-> +	 * We only want to claim there's no available space if we can no long=
-er
-> +	 * allocate chunks for our metadata profile and our global reserve wi=
-ll
-> +	 * not fit in the free metadata space.  If we aren't ->full then we
-> +	 * still can allocate chunks and thus are fine using the currently
-> +	 * calculated f_bavail.
-> +	 */
-> +	if (!mixed && block_rsv->space_info->full &&
-> +	    total_free_meta - thresh < block_rsv->size)
->  		buf->f_bavail =3D 0;
-> =20
->  	buf->f_type =3D BTRFS_SUPER_MAGIC;
->=20
-
-
---I0xz7wpoYuIF72rt4fTwx67hdkt8Efl1C--
-
---MvnEwlhih987ruTs1o41Gl7K5XGeDl0QX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl40zZkACgkQwj2R86El
-/qhLngf+KwUT3TlWUYDooidyH7KV3h7xxFw47GDZQcNYnqtnj92APL7E2Ln70APo
-fLTxTEnPjKPRolWcbtJDhz5udEbklAlZSom+ZQ45KZ0AP2JoMlo61EQXzykfMJVZ
-gZdPgQWoMubQ1PppX72m96RV+mKxhCImcMuOrFL9TIWWypJxX5NFAuhdmC0rFbZh
-otEj5D7ftB6ur4ZcyyM9duXNzL4WLBA0eeT8DK348NeTUeUpfQ+TW8q7cxT0qdbl
-59/0K1cTSnXkpqGxpw3Nfbjk75CHrC13ziqRXnY7UmN3MFwTzUbdDKCJjMBizAll
-RlcONPPfVFbMZjzTlHWivvwWlakQLw==
-=11k0
------END PGP SIGNATURE-----
-
---MvnEwlhih987ruTs1o41Gl7K5XGeDl0QX--
