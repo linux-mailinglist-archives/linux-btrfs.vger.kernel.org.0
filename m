@@ -2,59 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8852C14F8ED
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 17:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CE214FA88
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Feb 2020 21:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgBAQhE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Feb 2020 11:37:04 -0500
-Received: from sonic316-53.consmr.mail.ne1.yahoo.com ([66.163.187.179]:42694
-        "EHLO sonic316-53.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726622AbgBAQhD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 1 Feb 2020 11:37:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1580575023; bh=VxFSqOLnoyhxZXWK73TPGK3hr8yutZ4yWmLQa/jSY/I=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Jhu+rinusv8yrO7P+uj9ivOFAjdRsMBmPFc+4IysZP3e42txtiMOS1Ozpd88qtzPDsY7Ry4DTkeFVzuwutwTvuB2SK6jtwnz+e+CV9LD3b7tXVlbuxj0SQCculj/VDgqZbX27+Ef28W/VMCAjI3bUGhbR7zkObIRB9i/4QSUD75FrSIbePMHMqeYH0iRDH93qV5+vpa8I0KTXt8X1xUbiVcSEgY0ezcs/HZwhRIlytkr3tXmf0Eq0BNrIM51cyXxir8X6vAxWcftEFCuWMjb6fuYtRt8Nr1tFEoqkK23t4nGnEiVBfIUCHOg8aYH/SgqjmQ7qSnALaelCJ5naFT5xg==
-X-YMail-OSG: Oiyj.kAVM1n9p7QAwa6TtksRrzjtHbreTj7n.RjcuU6rKCqwcfIKYmMj67_qYGo
- 50yTBpoZktKs6JI1busMmYqgFQC4mGzsqhpK5haoVlNENBtDgC8f6a8gtgtF3PZJnmsu5_75HMRJ
- 7YA46Jghe4INcyn1h5KO_7aYAscKpbF1P9.m2EZgGU72tjGLT8fimkIpwFKpUnj2earMHE_v2TsQ
- MKxYclls27P5vvmnIMV6FrcEeuIn5_DJLmp_uIQ7oDGxO_P0OVuCbdqTtnp.oskGBxMAaLXYfARC
- 4snjv_yE5eAJrwfxkzoB7hrAAYXJozbpASvQf2QZ_UbbbcNJ0JhEzOCUykboiCT64k5af0oehUin
- Twv918CXUpToQeByosgu98y4qNOttRZ1NKp5.mGTFZzXnxYsx9Nt5QpGF.2fhQ9saiFU2.uj6fX1
- fb6swLpUJal48d1jGhfb.XL7IJZ5JQWJoW..NomOUa3Sn8H0lR1E4REfVP33hooYS9inYmNxN9VO
- zODMWKYbM05xw7AM8NYUBQcko5zdCCw.ZIN4GGyZTJ5MjZXTQwee8HfSIZsn5dXJK90FgBUkQDZF
- hfiDy9UgkHyeFXTW.wgINim87rwfdlpPKC9cCePMq6AhzTCR9U5_IhxUVj_oM5OLTAy2BB.wU0kU
- FdtXyxTW9tOMf9ZBC3PGRoiINOUJydKyeov_ZKT5mShpKYiWqyP2NIB1h5wGrYPQm8.NIf4g.3jZ
- hwJe6OvdF8DQSZJneWdcvzRhXbKwWpI_6Fbl_OVTiwy8QAWeGcl9fTpuTtthLNT2GHx30h6fFCT2
- i6NadkPFwW6KGcliefTOTNO03jp_.cOeM4_OFYvsOpY_Ql_xFX_jiMtMjdk5qJdJLnOpXkT971pZ
- rpdK9T6Xbje1MU4FU7PbXhrNDLxv06GO8jQ2VHfHFNXKuzl3wJHjzcsoC8dBSaoIb5FzNPdmJYpU
- bXHnFy1MMsn_UU6lw9IrcYtlFnRUwqAIyVv70EYZVYE4Ti_WVF8IOU9gj2iA4jqdFRNxUlrbeMDK
- XCc.yxjw3lylmFEf85twkP0NJLYKliou8KpJ6bFeLN0wtqeMyPoHvt0kLACIwBKlifIbIpwRXDSY
- Op1MyZfP_EEjDmN5RsrfQ7LI4MsB17EonxqqawHioomWeYVCrSYB1Pa1fmwSLa7ohCQwJ6YNSoMZ
- DYSugR9RYMCoGhmhT0YlZHTQvzfMXhqV6xnn_zOWOiTfbnmKgLZuLzydgbr6LYBWVQke_PaeZA3t
- 4vi5C89maj4hpe._H0Zcy8QpEWZ8KWCVHnxqxG2jI_UF1mlmdATy.ATd_8JXmaYVEmGJeCQEvXRF
- FxmjvPVhnxhZEcXpIBqfsP_vNXbXRMV3RWjs-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Sat, 1 Feb 2020 16:37:03 +0000
-Date:   Sat, 1 Feb 2020 16:35:02 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <zz13@gczao.com>
-Reply-To: maurhinck6@gmail.com
-Message-ID: <1187667350.235001.1580574902701@mail.yahoo.com>
-Subject: 
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1187667350.235001.1580574902701.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15149 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 OPR/66.0.3515.44
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726466AbgBAUiy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 Feb 2020 15:38:54 -0500
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:35080 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgBAUiy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 Feb 2020 15:38:54 -0500
+Received: by mail-yw1-f67.google.com with SMTP id i190so8986755ywc.2;
+        Sat, 01 Feb 2020 12:38:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mwTtxM/El7wYG4De6gji0Twu6r1cttjqKEr0PQZ0xW8=;
+        b=r04WWOp4Q59kqnAYxZqwH3pgWYwbkAhQR3J5rGDsprSPcgWjrBUnBccZIL2GCaEEuT
+         KLA/lF2L0DruvDzXuEg+w2G0aau4sP2/7RjmvbNAUD6YZkxRMqWSZ2zZZ2NIYbobP0eh
+         Wk7K3t9NBYhriKTKYLi3AucTNjbWCitIPpR+qXIPbm2Vy2i69gbx1QAfrEundyKwfIaU
+         O5SH3ulNtpRObo6r2t+WU6y1cnAEEGLHcvB/bf96O9Sau8mXawbQwTy0GtG+xxA+eTsk
+         A6ZKoAfLRriydv+ZVLwaoJmeppII7Hp4hqJwlzbcT6tPJUYQ9tjCGBQ66F5xsYVm+XF1
+         5z+Q==
+X-Gm-Message-State: APjAAAUOdwnFIgGxCK9Llivf6WfolHDd1djl5T1KRIDQr3hT0bL63Bo4
+        bJuhhVCrCbRnRJ0bvhKW1YA=
+X-Google-Smtp-Source: APXvYqxmBbdXfk3hSJtvOtOvW9+UNuPKdHGt7J+vBGV1KpT+gP3YFfYjKbPKwbhacfIkRBhmcT6E1Q==
+X-Received: by 2002:a81:8405:: with SMTP id u5mr12746575ywf.93.1580589533499;
+        Sat, 01 Feb 2020 12:38:53 -0800 (PST)
+Received: from localhost.localdomain (h198-137-20-41.xnet.uga.edu. [198.137.20.41])
+        by smtp.gmail.com with ESMTPSA id j72sm6252708ywj.60.2020.02.01.12.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 01 Feb 2020 12:38:52 -0800 (PST)
+From:   Wenwen Wang <wenwen@cs.uga.edu>
+To:     Wenwen Wang <wenwen@cs.uga.edu>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] btrfs: ref-verify: fix memory leaks
+Date:   Sat,  1 Feb 2020 20:38:38 +0000
+Message-Id: <20200201203838.19198-1-wenwen@cs.uga.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+In btrfs_ref_tree_mod(), 'ref' and 'ra' are allocated through kzalloc() and
+kmalloc(), respectively. In the following code, if an error occurs, the
+execution will be redirected to 'out' or 'out_unlock' and the function will
+be exited. However, on some of the paths, 'ref' and 'ra' are not
+deallocated, leading to memory leaks. For example, if 'action' is
+BTRFS_ADD_DELAYED_EXTENT, add_block_entry() will be invoked. If the return
+value indicates an error, the execution will be redirected to 'out'. But,
+'ref' is not deallocated on this path, causing a memory leak.
 
+To fix the above issues, deallocate both 'ref' and 'ra' before exiting from
+the function when an error is encountered.
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck6@gmail.com) fo=
-r further details.
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+---
+ fs/btrfs/ref-verify.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index b57f3618e58e..454a1015d026 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -744,6 +744,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 		 */
+ 		be = add_block_entry(fs_info, bytenr, num_bytes, ref_root);
+ 		if (IS_ERR(be)) {
++			kfree(ref);
+ 			kfree(ra);
+ 			ret = PTR_ERR(be);
+ 			goto out;
+@@ -757,6 +758,8 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 			"re-allocated a block that still has references to it!");
+ 			dump_block_entry(fs_info, be);
+ 			dump_ref_action(fs_info, ra);
++			kfree(ref);
++			kfree(ra);
+ 			goto out_unlock;
+ 		}
+ 
+@@ -819,6 +822,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ "dropping a ref for a existing root that doesn't have a ref on the block");
+ 				dump_block_entry(fs_info, be);
+ 				dump_ref_action(fs_info, ra);
++				kfree(ref);
+ 				kfree(ra);
+ 				goto out_unlock;
+ 			}
+@@ -834,6 +838,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ "attempting to add another ref for an existing ref on a tree block");
+ 			dump_block_entry(fs_info, be);
+ 			dump_ref_action(fs_info, ra);
++			kfree(ref);
+ 			kfree(ra);
+ 			goto out_unlock;
+ 		}
+-- 
+2.17.1
+
