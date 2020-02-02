@@ -2,169 +2,233 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE5614FB38
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Feb 2020 03:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74DA14FD15
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Feb 2020 13:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgBBCTg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 Feb 2020 21:19:36 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38779 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726722AbgBBCTf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 1 Feb 2020 21:19:35 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 76AC8216DB;
-        Sat,  1 Feb 2020 21:19:34 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 01 Feb 2020 21:19:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type; s=fm2; bh=B4KFhWHkW8/xtFkG2HsgwiV0VWA
-        3vu7rwPzAc69np+I=; b=Gs+weshrLT4MvkKSTA41pb/BzbGwlnu3/3y8SOy1P/o
-        /fpL0C50byCT+UnbR27CnbHN1nXPcOnhvV+1nSCSmNww/Vrp55N4sjmbUqJ9mGKl
-        YtBMZUScdUED94UlJdN9oIPZG6ol9GnvWiO8PKvFI3c8+1tEVoigSS2n8c7kWPjh
-        pFKPQQBSrm3yRs+/OuNkNuAGjeMbV3zpk9t4xSATEXun7vMRf1OvLaPYp9utcbpn
-        hvYdZMfwu9mGNKL9syvcmXucOlPAOb+PxbTPuOyCYCZHKZhQfnMslZCGo4F6vZs2
-        FiO/8wk4099QMsJ6U2inD0+caUyD5WXFd8dBOBMeMZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=B4KFhW
-        HkW8/xtFkG2HsgwiV0VWA3vu7rwPzAc69np+I=; b=PPpB4bACc/aRN0Lc1BPbDk
-        GIQDMjzkc50vXdkNLlBoD1036qC8yO4xaRB2i8oFgRuT48OZU5Pk92u2lX59SBnz
-        yAoqdGo5mSwJRoBEAbh6rJgU2JzHybcGbFpHov1hIzKjGgC/fDIN3Vs+tN3Oi3mB
-        FugIVBMzPhKleSuem4LBt2S7/CvYISsegK3Mm+83gi82iHhigyGrO5cTu7YTTk83
-        4Cnug+JIVaTEWHmwGw5X2J0i5OIkX+7hSbXwkjGD47pk9KD+yy6y/roQqi+jr4cm
-        ZkL5X6Mzh71+8OuYyTxADqmuzU7YCD6fB20dViv6g5ZRoNmaB0Bx3XghoM1gL9uw
-        ==
-X-ME-Sender: <xms:tjE2XtBLPofknOrUTP6OX5eIAt1lJlqVZlbjtKvVWM_OoLVHwez76A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrgeefgdeggecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgesghdtrefotdefjeenucfhrhhomheptfgvmhhiucfi
-    rghuvhhinhcuoehrvghmihesghgvohhrghhirghnihhtrdgtohhmqeenucfkphepvdefrd
-    dvfeefrddutddvrdefkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtohhm
-X-ME-Proxy: <xmx:tjE2XhRwrwRlsPheUeO66IG3oBtGMU3exLcCYM7TWyvJ54FyGEcAng>
-    <xmx:tjE2Xmr_1yOebbcfXPMdKZNibDC4vI2jWfTvTvqw8pHlgzroqOH-8A>
-    <xmx:tjE2XiXjPL2c0R65AEhYN6_fLzUfOzIiZ8FfIj68fUiBSRkLB-2mrg>
-    <xmx:tjE2XrDumT4am7AomxxoV34emau7muarje6OzTMVXwlHerXyd5Y3rQ>
-Received: from [10.0.0.6] (23-233-102-38.cpe.pppoe.ca [23.233.102.38])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F0548328005A;
-        Sat,  1 Feb 2020 21:19:33 -0500 (EST)
-Subject: Re: support for RAID10 installation
-To:     Matt Zagrabelny <mzagrabe@d.umn.edu>, linux-btrfs@vger.kernel.org
-References: <CAOLfK3Vs-5CJxPuC2zFyQ4tw0BZkHx-ggE=tLcmriELx-Qe8og@mail.gmail.com>
-From:   Remi Gauvin <remi@georgianit.com>
-Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
-Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
- keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
- CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
- sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
- t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
- 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
- AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
- IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
- OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
- 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
- WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
- k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
- Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
- R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
- WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
- QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
- jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
- oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
- BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
- XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
- r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
- phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
- nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
- SY9JJa155sI=
-Message-ID: <3bb0df85-99e1-1e4a-ca0c-3d2bf6d5aded@georgianit.com>
-Date:   Sat, 1 Feb 2020 21:19:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        id S1726379AbgBBMpc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Feb 2020 07:45:32 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:43712 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgBBMpc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Feb 2020 07:45:32 -0500
+Received: by mail-il1-f194.google.com with SMTP id o13so10268490ilg.10
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Feb 2020 04:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=mjAxSWYAUKpv46qte5uY0Q4v8AqEQNfJB5vXNwEiQL4=;
+        b=byZnqGZAU/auz/P6DPehSu+lMiCSJ+Gq93+zMhJKTIiZxpBIwObhYiVzaXmGAV93O4
+         ccWFAsN8JLQHdfpN3fEMcttJJPTlXJ8axwG7W58J52xc9vWyE2rXywYIcaNs48HLL8wT
+         KfUoBLMeOBqQ6X3fmNUe2aCQIZRg8FzpeKu/r/JOowNXU8ywPV52KZacIj8BEZ5kcL9o
+         Mvp6xz1R9z9H4GPQnbJKW82r/vubVvORyYUwbb5lQCEVEXSlV2WsZTOP3KMEl4u+YNHT
+         oEu6JqpDJKRdcJ12lOEluQThDUXjjmg4IH+tMJNynmuHCQrfsRpmepQeZA9VmSjGvvmx
+         xJGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=mjAxSWYAUKpv46qte5uY0Q4v8AqEQNfJB5vXNwEiQL4=;
+        b=TAMUbN0d72HnCIxjKO2Uy00jEAlTNIeXdSW9KlRSzbRxWq86fAbZNTQvSiOzhu3fs0
+         W7SPyIqCG+4D9NOs1+4Anjzg03IyiYJNcxJtgyb9QHGpO9WgYKo4UbT+sp1+Xeztvw91
+         u0/SU7u59v2zeDMeSg8hvxxSJoN8K5O7V9gFfKlLOMxKD0K4uZy0JOWwdOGGR4FC8aaw
+         tREnVaOpgtiQbA2b4Wocud5QtEBU2gQhMOXNPwh8Wtz9O0hjsc26XtCSYGlJHpSx6Q1Z
+         05ng1Xysn3BhXiU6f7MJWc455G1sMxKst3/vObxFZ/Cgu6pnx7u2ELGGC5XBl2tjjb2g
+         /KyA==
+X-Gm-Message-State: APjAAAVaWmAdE+exUi5K5cQ3Jncw6WM04dDvMcgiruYl2DACZbnbtbeH
+        H03ePNwrGpnxyRtj/wgDcgPYDXYCnj/46tNEN/c1+Cnz
+X-Google-Smtp-Source: APXvYqzcwS+79bLg624PcCtyIVtiZKTLMBN8H7iG4c7zzTRRiU1WD9XCQv3B/h7iVD/5ZxcfPdJNFHitgV/GIfaclQc=
+X-Received: by 2002:a92:d84c:: with SMTP id h12mr10357669ilq.127.1580647531393;
+ Sun, 02 Feb 2020 04:45:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAOLfK3Vs-5CJxPuC2zFyQ4tw0BZkHx-ggE=tLcmriELx-Qe8og@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="8uyybARxGnQOBiSUj1ZgzMAbHVatdOSqz"
+From:   Skibbi <skibbi@gmail.com>
+Date:   Sun, 2 Feb 2020 13:45:58 +0100
+Message-ID: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com>
+Subject: My first attempt to use btrfs failed miserably
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8uyybARxGnQOBiSUj1ZgzMAbHVatdOSqz
-Content-Type: multipart/mixed; boundary="MjuhSKEWUP4b6jp7sVfXIZeUKMVA6mkbz";
- protected-headers="v1"
-From: Remi Gauvin <remi@georgianit.com>
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>, linux-btrfs@vger.kernel.org
-Message-ID: <3bb0df85-99e1-1e4a-ca0c-3d2bf6d5aded@georgianit.com>
-Subject: Re: support for RAID10 installation
-References: <CAOLfK3Vs-5CJxPuC2zFyQ4tw0BZkHx-ggE=tLcmriELx-Qe8og@mail.gmail.com>
-In-Reply-To: <CAOLfK3Vs-5CJxPuC2zFyQ4tw0BZkHx-ggE=tLcmriELx-Qe8og@mail.gmail.com>
+Hello,
+So I decided to try btrfs on my new portable WD Password Drive
+attached to Raspberry Pi 4. I created GPT partition, created luks2
+volume and formatted it with btrfs. Then I created 3 subvolumes and
+started copying data from other disks to one of the subvolumes. After
+writing around 40GB of data my filesystem crashed. That was super fast
+and totally discouraged me from next attempts to use btrfs :(
+But I would like to help with development so before I reformat my
+drive I can help you identifying potential issues with this filesystem
+by providing some debugging info.
 
---MjuhSKEWUP4b6jp7sVfXIZeUKMVA6mkbz
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Here are some details:
 
-On 2020-02-01 4:17 p.m., Matt Zagrabelny wrote:
+root@rpi4b:~# uname -a
+Linux rpi4b 4.19.93-v7l+ #1290 SMP Fri Jan 10 16:45:11 GMT 2020 armv7l GNU/Linux
 
->=20
-> I've also tried resizing the disks smaller and then larger - I found a
-> (perhaps misleading) post on an online forum suggesting such things to
-> retrieve space.
->=20
-> I have no idea how to proceed to fix things.
->=20
+root@rpi4b:~# btrfs --version
+btrfs-progs v4.20.1
 
-As Qu said, a known bug.  However, this mostly just affects the display
-of df.. if you use the btrfs filesystem usage command, you'll see the
-the true free space.
+root@rpi4b:~# btrfs fi show
+Label: 'NAS'  uuid: b16b5b3f-ce5e-42e6-bccd-b48cc641bf96
+        Total devices 1 FS bytes used 42.48GiB
+        devid    1 size 4.55TiB used 45.02GiB path /dev/mapper/NAS
 
-Sometimes, there are processes which check free space before trying to
-write data, and those will fail if you trigger this condition.  Zygo
-posted  great script to this list a few days ago that will get you past
-this by force allocating metadata space on the filesystem.
+root@rpi4b:~# dmesg |grep btrfs
+[223167.290255] BTRFS: error (device dm-0) in
+btrfs_run_delayed_refs:2935: errno=-5 IO failure
+[223167.389690] BTRFS: error (device dm-0) in
+btrfs_run_delayed_refs:2935: errno=-5 IO failure
+root@rpi4b:~# dmesg |grep BTRFS
+[201688.941552] BTRFS: device label NAS devid 1 transid 5 /dev/sda1
+[201729.894774] BTRFS info (device sda1): disk space caching is enabled
+[201729.894789] BTRFS info (device sda1): has skinny extents
+[201729.894801] BTRFS info (device sda1): flagging fs with big metadata feature
+[201729.902120] BTRFS info (device sda1): checking UUID tree
+[202297.695253] BTRFS info (device sda1): disk space caching is enabled
+[202297.695271] BTRFS info (device sda1): has skinny extents
+[202439.515956] BTRFS info (device sda1): disk space caching is enabled
+[202439.515976] BTRFS info (device sda1): has skinny extents
+[202928.275644] BTRFS error (device sda1): open_ctree failed
+[202934.389346] BTRFS info (device sda1): disk space caching is enabled
+[202934.389361] BTRFS info (device sda1): has skinny extents
+[203040.718845] BTRFS info (device sda1): disk space caching is enabled
+[203040.718863] BTRFS info (device sda1): has skinny extents
+[203285.351377] BTRFS error (device sda1): bad tree block start, want
+31457280 have 0
+[203285.368602] BTRFS error (device sda1): bad tree block start, want
+31457280 have 0
+[203285.369340] BTRFS error (device sda1): bad tree block start, want
+31440896 have 0
+[203285.380616] BTRFS error (device sda1): bad tree block start, want
+31440896 have 0
+[203285.381100] BTRFS error (device sda1): bad tree block start, want
+31440896 have 0
+[203285.381540] BTRFS error (device sda1): bad tree block start, want
+31440896 have 0
+[203285.382061] BTRFS error (device sda1): bad tree block start, want
+31506432 have 0
+[203285.382409] BTRFS error (device sda1): bad tree block start, want
+31506432 have 0
+[203285.382836] BTRFS error (device sda1): bad tree block start, want
+31506432 have 0
+[203285.383180] BTRFS error (device sda1): bad tree block start, want
+31506432 have 0
+[203285.466743] BTRFS info (device sda1): read error corrected: ino 0
+off 32735232 (dev /dev/sda1 sector 80320)
+[203285.466982] BTRFS info (device sda1): read error corrected: ino 0
+off 32739328 (dev /dev/sda1 sector 80328)
+[203285.467215] BTRFS info (device sda1): read error corrected: ino 0
+off 32743424 (dev /dev/sda1 sector 80336)
+[203285.467713] BTRFS info (device sda1): read error corrected: ino 0
+off 32747520 (dev /dev/sda1 sector 80344)
+[203285.468820] BTRFS info (device sda1): read error corrected: ino 0
+off 32751616 (dev /dev/sda1 sector 80352)
+[203285.469053] BTRFS info (device sda1): read error corrected: ino 0
+off 32755712 (dev /dev/sda1 sector 80360)
+[203285.469285] BTRFS info (device sda1): read error corrected: ino 0
+off 32759808 (dev /dev/sda1 sector 80368)
+[203285.469515] BTRFS info (device sda1): read error corrected: ino 0
+off 32763904 (dev /dev/sda1 sector 80376)
+[204448.566295] BTRFS: device label NAS devid 1 transid 5 /dev/dm-0
+[204464.083776] BTRFS info (device dm-0): disk space caching is enabled
+[204464.083792] BTRFS info (device dm-0): has skinny extents
+[204464.083804] BTRFS info (device dm-0): flagging fs with big metadata feature
+[204464.099978] BTRFS info (device dm-0): checking UUID tree
+[218811.383208] BTRFS error (device dm-0): bad tree block start, want
+50659328 have 7653333615399691647
+[218811.458203] BTRFS error (device dm-0): bad tree block start, want
+50659328 have 11439613481626299565
+[222717.551578] BTRFS error (device dm-0): bad tree block start, want
+69222400 have 13548117933796719565
+[222717.563137] BTRFS error (device dm-0): bad tree block start, want
+69222400 have 7380016245193299115
+[223167.098981] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 13360254792515176285
+[223167.162808] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 11805635508241231341
+[223167.269483] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 13360254792515176285
+[223167.290178] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 11805635508241231341
+[223167.290255] BTRFS: error (device dm-0) in
+btrfs_run_delayed_refs:2935: errno=-5 IO failure
+[223167.299414] BTRFS info (device dm-0): forced readonly
+[223167.322053] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 13360254792515176285
+[223167.389598] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 11805635508241231341
+[223167.389690] BTRFS: error (device dm-0) in
+btrfs_run_delayed_refs:2935: errno=-5 IO failure
+[223167.399958] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[223167.413347] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[223167.487687] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[223167.499337] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260285.601565] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260285.602742] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260285.604070] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260285.605224] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260288.795773] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260288.797000] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260288.798206] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260288.799380] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260301.047239] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260301.048437] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260301.049638] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260301.050800] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260309.107260] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260309.108396] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260309.109563] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260309.110674] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260309.371483] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260309.372615] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260309.373923] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 3620493785417914802
+[260309.391169] BTRFS error (device dm-0): bad tree block start, want
+73433088 have 13303833022607090580
+[260389.358616] BTRFS info (device dm-0): disk space caching is enabled
+[260389.358631] BTRFS info (device dm-0): has skinny extents
+[260389.430962] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 13360254792515176285
+[260389.432087] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 11805635508241231341
+[260389.432146] BTRFS error (device dm-0): failed to read block groups: -5
+[260389.474656] BTRFS error (device dm-0): open_ctree failed
+[276102.707458] BTRFS warning (device dm-0): 'recovery' is deprecated,
+use 'usebackuproot' instead
+[276102.707475] BTRFS info (device dm-0): trying to use backup root at
+mount time
+[276102.707493] BTRFS info (device dm-0): disabling disk space caching
+[276102.707506] BTRFS info (device dm-0): force clearing of disk cache
+[276102.707518] BTRFS info (device dm-0): has skinny extents
+[276102.731022] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 13360254792515176285
+[276102.732407] BTRFS error (device dm-0): bad tree block start, want
+73252864 have 11805635508241231341
+[276102.732472] BTRFS error (device dm-0): failed to read block groups: -5
+[276102.781625] BTRFS error (device dm-0): open_ctree failed
 
-His script looks like this:
-
-btrfs sub create sub_tmp
-mkdir sub_tmp/single
-head -c 2047 /dev/urandom > sub_tmp/single/inline_file
-for x in $(seq 1 18); do
-    cp -a sub_tmp/single sub_tmp/double
-    mv sub_tmp/double sub_tmp/single/$x
-done
-sync
-btrfs sub del sub_tmp
-
-
-Note, Until this is properly patched, do not balance metadata.  doing so
-will actually bring you to this problem, rather than fixing it.
-
-
-
---MjuhSKEWUP4b6jp7sVfXIZeUKMVA6mkbz--
-
---8uyybARxGnQOBiSUj1ZgzMAbHVatdOSqz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJeNjG1AAoJEO9Tn/JHRWpt6FwIAO3Iu6cXPFJRv1V7RHn1k6Md
-VmhpDti6pYlXaK4nwoFWIw0xlMb9ZIO7d1utCbLvCziQFM852DmYuFMDnRGAKEr2
-DU1xm3nSqcCeQRjFNiTtUI+PqDYeNcf779g0gQb97VYRpIolgNa7IWm5Gpwrmexh
-8xm64yIyvN5+limuc/uE47h1XLwUoKQuQkq8tqL2nIaG9LfBeursEcrzDnjWVIua
-XjP2CC/48p9PkscG7xopmX7fdoRLgtUzZc5f39VGfAJh44nAqo35HBNieDxG71jZ
-QINm2wMtroH25qcxuDGe7fbUbMOQj7x/4q/2dD0502Jdl7l1oRgaWVMOyOS6M3o=
-=Wey3
------END PGP SIGNATURE-----
-
---8uyybARxGnQOBiSUj1ZgzMAbHVatdOSqz--
+--
+Best regards
