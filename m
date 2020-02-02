@@ -2,69 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D113514FEAE
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Feb 2020 18:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1651114FEEC
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Feb 2020 20:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgBBRxK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 Feb 2020 12:53:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726893AbgBBRxK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 Feb 2020 12:53:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ACD00AD14;
-        Sun,  2 Feb 2020 17:53:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 54A59DA7A1; Sun,  2 Feb 2020 18:52:47 +0100 (CET)
-Date:   Sun, 2 Feb 2020 18:52:47 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Martin Steigerwald <martin@lichtvoll.de>
-Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
-Message-ID: <20200202175247.GB3929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Martin Steigerwald <martin@lichtvoll.de>
-References: <20200131143105.52092-1-josef@toxicpanda.com>
+        id S1726930AbgBBTfB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 Feb 2020 14:35:01 -0500
+Received: from mailgate.kemenperin.go.id ([202.47.80.81]:52280 "EHLO
+        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgBBTfB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 Feb 2020 14:35:01 -0500
+X-Greylist: delayed 665 seconds by postgrey-1.27 at vger.kernel.org; Sun, 02 Feb 2020 14:34:59 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 70B8CD234FF;
+        Mon,  3 Feb 2020 02:23:11 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id eTZw27PC2JqS; Mon,  3 Feb 2020 02:23:10 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTPS id B1B74D234D3;
+        Mon,  3 Feb 2020 02:23:10 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id B1B74D234D3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
+        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1580671390;
+        bh=Fw60tXhluqe2PVr4BH03lQ0Ge+VO3Zf7R81bcaw1OI8=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=U7pTHlO5Qy3ivTYvPaN0lQ8+ONQOKvesaWGpIvsiESfHZrlMDDtc+dhN0kuhZ3+f2
+         2herD79NoF+m7q3nkFyDz4UywGPgAI1Dv+pui2IbxYOx9IfKyNjz1leYxkoAE1efB8
+         vD25NPZPhy7FZjeYSQYKVm0CXLkhTDtnc3ZK+NeI=
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 9C3B7D22E64;
+        Mon,  3 Feb 2020 02:23:06 +0700 (WIB)
+Date:   Mon, 3 Feb 2020 02:23:06 +0700 (WIB)
+From:   Trust Online Credit Bvba <isetyoadi@kemenperin.go.id>
+Reply-To: "info@trustonlinecreditbvba.com" <info@trustonlinecreditbvba.com>
+Message-ID: <1128925571.829973.1580671386608.JavaMail.zimbra@kemenperin.go.id>
+Subject: lening
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200131143105.52092-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.1.0.89]
+Thread-Index: H1xqTePng7Gxgjeg/qhz9EGG/bqhhg==
+Thread-Topic: lening
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 09:31:05AM -0500, Josef Bacik wrote:
-> There was some logic added a while ago to clear out f_bavail in statfs()
-> if we did not have enough free metadata space to satisfy our global
-> reserve.  This was incorrect at the time, however didn't really pose a
-> problem for normal file systems because we would often allocate chunks
-> if we got this low on free metadata space, and thus wouldn't really hit
-> this case unless we were actually full.
-> 
-> Fast forward to today and now we are much better about not allocating
-> metadata chunks all of the time.  Couple this with d792b0f19711 which
-> now means we'll easily have a larger global reserve than our free space,
-> we are now more likely to trip over this while still having plenty of
-> space.
-> 
-> Fix this by skipping this logic if the global rsv's space_info is not
-> full.  space_info->full is 0 unless we've attempted to allocate a chunk
-> for that space_info and that has failed.  If this happens then the space
-> for the global reserve is definitely sacred and we need to report
-> b_avail == 0, but before then we can just use our calculated b_avail.
-> 
-> There are other cases where df isn't quite right, and Qu is addressing
-> them in a more holistic way.  This simply fixes the users that are
-> currently experiencing pain because of this problem.
-> 
-> Fixes: ca8a51b3a979 ("btrfs: statfs: report zero available if metadata are exhausted")
-> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Goedendag,
 
-Added to 5.6 queue, thanks.
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Het is ons een genoegen om u te schrijven me=
+t betrekking tot het verstrekken van leningen per postadvertentie. Trust On=
+line Credit Bvba, Wij werken onder een korte, duidelijke en begrijpelijke v=
+oorwaarden Wij verstrekken leningen tegen een lage rente Gewoonlijk van 1% =
+tot 3,5%. Uw specifieke tarief wordt u voorafgaand aan goedkeuring duidelij=
+k gemaakt.
+
+Merk op dat dit aanbod is voor serieus ingestelde personen, bedrijven en be=
+drijven. Ontvang uw lening om uw financi=C3=ABle problemen op te lossen, zo=
+als rekeningen afbetalen, nieuwe bedrijven oprichten, oude bedrijven opnieu=
+w vestigen.
+
+ge=C3=AFnteresseerde personen, bedrijven en bedrijven moeten contact met on=
+s opnemen via dit e-mailadres: info@trustonlinecreditbvba.com
+
+Laat deze kans niet voorbijgaan. Krijg uw lening om uw financi=C3=ABle prob=
+lemen op te lossen. Als u ge=C3=AFnteresseerd bent in onze lening, vult u d=
+it leningsaanvraagformulier onmiddellijk in.
+
+Jullie namen:
+Benodigde leningbedrag:
+Looptijd:
+Bezetting:
+Doel:
+Lening rente%:
+
+Wij wachten op uw snelle reactie.
+Ronny
