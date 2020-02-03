@@ -2,75 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34336150A25
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 16:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A42E150A61
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 16:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgBCPrO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 10:47:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34742 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727296AbgBCPrN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 10:47:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7E500AD5C;
-        Mon,  3 Feb 2020 15:47:11 +0000 (UTC)
-Subject: Re: [PATCH 17/23] btrfs: use the same helper for data and metadata
- reservations
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        id S1727319AbgBCP5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 10:57:44 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:43133 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgBCP5o (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 10:57:44 -0500
+Received: by mail-qv1-f67.google.com with SMTP id p2so6990079qvo.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 07:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=1MQ7FPVnhRTw+81gjVP6g6iR55P6f2OW5I5hdKxVoZQ=;
+        b=TX8rj5PSTPQfMz4AgvxcqnPOLllo1MDMu6YFs8qZ9al4Vjnc0/0letHR52zL5jfPgl
+         RRsaX+EU5aEF1lmyQGLQ6Xol3hRZm0B9lDrUSAAAImfEaPeNAllccHyqkbVa7UqGBTRo
+         0vUNTM8nWV/g9iQ2/+O408srkV4XwwRy5C8XdjyNpbyXPzkjXy48NCjmh1yMjSmBaNVV
+         Zahk7UECPvtYVH/jShgA2pgniEs/XRlgH4zKNE025qEjooCW719LYt8cA4YWgCyyTbhZ
+         UNJrk4xnEocptPIrgQD0Tjt7Nw01mfGK8HPwR+kzeY5dXXaUEN3FNefvbBel0PFZPau6
+         5jlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1MQ7FPVnhRTw+81gjVP6g6iR55P6f2OW5I5hdKxVoZQ=;
+        b=QjuzP1OWSuxLeYg92vJ2NIJn0yZC6AU/u5wzH5oRLncFl3rpuu/GkBmM0VtiNZhoaG
+         974PnAhDoyqZFCrfz/Mo78zA6pPUZ+xAEqzhlYfaUvZVUg+HdshrH6TXg+J9GR5mywrL
+         tSalJY5/s1qPQAcm4N8oxZy6AGwXa/OPB95MoxPkKXDpc/7LadwmZNjSlTen+nbvrwMA
+         u/3Y2CcGnIomUdmfjkz7Tde2yPoI9oBfilqdebrSESWgkE7F88gRYjl8oWHc3Pa/2m5n
+         yfOdjJPIyWvBG04JmlnFzVasvJXt5CNdfC5Ws/z1gdkH6C6GdkOuCLG0VOvO1EVA38JY
+         kSGg==
+X-Gm-Message-State: APjAAAWIcrIvQp4009WevLFB+4UxeSmt5A1K/ULLMfgBVHNriPFL2GOh
+        pIJ75Ss3Ov8Rf+tzyleePUlE0lTIV5kDkQ==
+X-Google-Smtp-Source: APXvYqz+/AZuWGJ4jFXTc5oOaaIMVsd/Kwd8Gnwm0zk0b25tI197IEbFijzHX8X+YwkttTEMle58jw==
+X-Received: by 2002:a05:6214:707:: with SMTP id b7mr22900842qvz.97.1580745463087;
+        Mon, 03 Feb 2020 07:57:43 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id h12sm10028468qtn.56.2020.02.03.07.57.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Feb 2020 07:57:42 -0800 (PST)
+Subject: Re: [PATCH 11/23] btrfs: check tickets after waiting on ordered
+ extents
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-18-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <cfd547f5-beed-7d9a-8709-7089e56cc708@suse.com>
-Date:   Mon, 3 Feb 2020 17:47:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ <20200131223613.490779-12-josef@toxicpanda.com>
+ <bff2845a-6947-dfdf-ae1f-d04ebd10eca4@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <9e2fe1a4-cc0a-57be-8374-1a40f98a65aa@toxicpanda.com>
+Date:   Mon, 3 Feb 2020 10:57:41 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200131223613.490779-18-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <bff2845a-6947-dfdf-ae1f-d04ebd10eca4@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -78,22 +67,64 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
-> Now that data reservations follow the same pattern as metadata
-> reservations we can simply rename __reserve_metadata_bytes to
-> __reserve_bytes and use that helper for data reservations.
+On 2/3/20 8:10 AM, Nikolay Borisov wrote:
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
+>> Right now if the space is free'd up after the ordered extents complete
+>> (which is likely since the reservations are held until they complete),
+>> we would do extra delalloc flushing before we'd notice that we didn't
+>> have any more tickets.  Fix this by moving the tickets check after our
+>> wait_ordered_extents check.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> This patch makes sense only for metadata. Is this your intention -
+> tweaking the metadata change behavior? Correct me if I'm wrong but
+> 
+> btrfs_start_delalloc_roots from previous patch will essentially call
+> btrfs_run_delalloc_range for the roots which will create ordered extents in:
+> btrfs_run_delalloc_range
+>    cow_file_range
+>     add_ordered_extents
+> 
+> Following page writeout, from the endio routines we'll eventually do:
+> 
+> finish_ordered_fn
+>   btrfs_finish_ordered_io
+>    insert_reserved_file_extent
+>     btrfs_alloc_reserved_file_extent
+>      create delayed ref  <---- after the delayed extent is run this will
+> free some data space. But this happens in transaction commit context and
+> not when runnig ordered extents
+>    btrfs_remove_ordered_extent
+>     btrfs_delalloc_release_metadata <- this is only for metadata
+>      btrfs_inode_rsv_release
+>       __btrfs_block_rsv_release <-- frees metadata but not data?
+> 
+> 
+> I'm looking those patches thinking every change should be pertinent to
+> data space but apparently it's not. If so I think it will be best if you
+> update the cover letter for V2 to mention which patches can go in
+> independently or give more context why this particular patch is
+> pertinent to data flush.
+> 
 
-It's indeed identical but it's somewhat cryptic e.g.
-btrfs_can_overcommit will return 0 for data space so if we don't have
-space we proceed further down to setup our ticket. Since for data we can
-never be called with BTRFS_RESERVE_FLUSH_ALL we just add a priority
-ticket and eventually execute handle_reserve_ticket in __reserve_bytes.
 
-Please add the above explanation to the changelog or David can do it if
-he deems it necessary. Nevertheless,
+Specifically what I'm addressing here for data is this behavior
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+btrfs_start_delalloc_roots()
+   ->check space_info->tickets, it's not empty
+btrfs_finish_ordered_io()
+   -> we drop a previously uncompressed extent (ie larger one) for a newly
+      compressed extent, now space_info->tickets _is_ empty
+loop again despite having no tickets to flush for.
+
+Does this scenario happen all the time?  Nope, but I noticed it was happening 
+sometimes with the data intensive enopsc tests xfstests so I threw it in there 
+because it made a tiny difference, plus it's actually correct.
+
+It definitely affects the metadata case more for sure, but I only noticed it 
+when I forgot I had compression enabled for one of my xfstests runs.  Thanks,
+
+Joosef
