@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E75150A8F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA61150A92
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgBCQMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 11:12:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52326 "EHLO mx2.suse.de"
+        id S1728362AbgBCQNR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 11:13:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53334 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727720AbgBCQMg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 11:12:36 -0500
+        id S1727253AbgBCQNQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 11:13:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BC75DADC8;
-        Mon,  3 Feb 2020 16:12:33 +0000 (UTC)
-Subject: Re: [PATCH 20/23] btrfs: don't force commit if we are data
+        by mx2.suse.de (Postfix) with ESMTP id 6B5E0ADC8;
+        Mon,  3 Feb 2020 16:13:14 +0000 (UTC)
+Subject: Re: [PATCH 21/23] btrfs: run delayed iputs before committing the
+ transaction for data
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-21-josef@toxicpanda.com>
+ <20200131223613.490779-22-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <7949d0b9-3481-e9aa-426c-5dbd88622e91@suse.com>
-Date:   Mon, 3 Feb 2020 18:12:33 +0200
+Message-ID: <9214589f-3fba-fe16-3a39-8b89861ceaf8@suse.com>
+Date:   Mon, 3 Feb 2020 18:13:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200131223613.490779-21-josef@toxicpanda.com>
+In-Reply-To: <20200131223613.490779-22-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,15 +81,32 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
-> We used to unconditionally commit the transaction at least 2 times and
-> then on the 3rd try check against pinned space to make sure committing
-> the transaction was worth the effort.  This is overkill, we know nobody
-> is going to steal our reservation, and if we can't make our reservation
-> with the pinned amount simply bail out.
+> Before we were waiting on iputs after we committed the transaction, but
+> this doesn't really make much sense.  We want to reclaim any space we
+> may have in order to be more likely to commit the transaction, due to
+> pinned space being added by running the delayed iputs.  Fix this by
+> making delayed iputs run before committing the transaction.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-I think the previous patch can be dropped and simply this one applied
-after it.
+> ---
+>  fs/btrfs/space-info.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 0c2d8e66cf5e..c86fad4174f1 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -804,8 +804,8 @@ static const enum btrfs_flush_state evict_flush_states[] = {
+>  
+>  static const enum btrfs_flush_state data_flush_states[] = {
+>  	FLUSH_DELALLOC_WAIT,
+> -	COMMIT_TRANS,
+>  	RUN_DELAYED_IPUTS,
+> +	COMMIT_TRANS,
+>  };
+>  
+>  static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+> 
