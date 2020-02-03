@@ -2,170 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 625FC1507D9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 14:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02D51507DD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 15:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgBCN7a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 08:59:30 -0500
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:37948 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726836AbgBCN7a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 08:59:30 -0500
-Received: by mail-vs1-f66.google.com with SMTP id r18so8954417vso.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 05:59:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UHnDkpmS94mZfhtFBgiO14YIupiHFYwh4c5HTfHr1ac=;
-        b=gK62ccyET0pb8p10oFmuCOBvxvad0ao7SmjagWxOeZ2A8reYfC2R+fTlaC5QRh0QtR
-         +nHN3EaAp/diVO/nDppfaJ/Akpf0xYvTlbGxmy00oHb2LLil+OsdRPcOicqTaKQKovaN
-         iCNQ6Qx4TsAdggBd9czhZdtlEhY0x8VVorFjhUPkQb0apsfm/jBBtuZDTq3j5lBO0Rn3
-         sXyohhk56uvXWD/Go7k/WkHbSVTIgzLp9Bb31RCJ2UCuVQ6LScVM3KsuzUQOAasf4z4m
-         ujRn/eYiOiT9l41Xo27bD9M2pdL3g7vPPao28n3+30KaTQhLQ4MA2ViSStKvz/NBub+h
-         qs2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=UHnDkpmS94mZfhtFBgiO14YIupiHFYwh4c5HTfHr1ac=;
-        b=bGH+JWUmB1lX68v4ob+kjZhuoQa+0p+aQIDTHD0R0fLDPx1B8prSWScvRVZcyPaAbe
-         sAtP2WKdUCIdwC8n0DRYD2YQFHhxvUW9jFZBftcAmnXKrvGLJwkXotn5xN9/lyEQA+Qy
-         jhu5OaPF/g5l3nGUo7o92+ngN0xZa3h8hKmM/2TRwyTUMOxKEoCTHER3RzXaLDspeR0H
-         P36D5jjfzwbl5c4+xy8sjzunObphzjKgS2w8ypAFIaBM8Rhv4ED6/8VpRlpIUd927/Bt
-         rD7J8Kk1m+HCyan22OWo3wyzJewQQlX+6FfD1Cq5YWJMzNmu0jLUuluf6/PV/T3z82r0
-         vjvg==
-X-Gm-Message-State: APjAAAWRqU1UTa+Qta1xGolJqqzv0Lmw8kuUN32bwWSM7MxoB9iaBUUD
-        B9teae15cO2HBU8IflIuYRsUopQRnzD7OoM7JxKh4ifT
-X-Google-Smtp-Source: APXvYqx3RBkLOFF0WXmo5RgOg6IXfqHD0PGlu909Clh8jZn4HQLYwU+Rb3FcTUL7LMoRA+LBbGmleu1IiI3WTgs0wZQ=
-X-Received: by 2002:a67:fd0d:: with SMTP id f13mr15117635vsr.125.1580738368707;
- Mon, 03 Feb 2020 05:59:28 -0800 (PST)
+        id S1728235AbgBCOAI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 09:00:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57536 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726836AbgBCOAI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 09:00:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 23D93B273;
+        Mon,  3 Feb 2020 14:00:06 +0000 (UTC)
+Subject: Re: [PATCH 12/23] btrfs: add the data transaction commit logic into
+ may_commit_transaction
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200131223613.490779-1-josef@toxicpanda.com>
+ <20200131223613.490779-13-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <1560685b-254d-062d-09b5-b2ca8a617900@suse.com>
+Date:   Mon, 3 Feb 2020 16:00:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <CAM9pMnP7PJNMCSabvPtM5hQ776uNfejjqPUhEEkoJFSeLVK2PA@mail.gmail.com>
- <9cff72cb-ef8e-2d12-45ad-3a224e86b07a@gmx.com>
-In-Reply-To: <9cff72cb-ef8e-2d12-45ad-3a224e86b07a@gmx.com>
-From:   Robert Klemme <shortcutter@googlemail.com>
-Date:   Mon, 3 Feb 2020 14:58:52 +0100
-Message-ID: <CAM9pMnOpSFnR9Dc_MyTyJevMRgiKBMPec-Y2W-iMbeyatTetog@mail.gmail.com>
-Subject: Re: Root FS damaged
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200131223613.490779-13-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey,
-
-thank you! That was quick! Some comments inline below.
-
-On Mon, Feb 3, 2020 at 2:44 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
-> On 2020/2/3 =E4=B8=8B=E5=8D=889:33, Robert Klemme wrote:
-
-> > I have an issue with one of my desktop systems. Besides the usual
-> > information below I have attached output of btrfsck and dmesg. The
-> > system did not crash but was up for about a week.
-> >
-> > My questions:
-> > 1. And ideas what is wrong?
->
-> One data extent lost its backref in extent tree.
-> So btrfs is unable to delete it, and will fallback to RO, to avoid
-> further corruption.
->
-> I have no idea how this happened, but I'm pretty confident it's caused
-> by btrfs itself, not some hardware nor disk problems.
-
-I would assume as much as there were no power outages or crashes. I
-read about a bug recently (probably on
-https://www.reddit.com/r/btrfs/) that had to do with btrfs on LUKS and
-/ or LVM. Could this be an explanation?
-
-> Any history about the fs? It may be caused by some older btrfs bug.
->
-> > 2. Should I file a bug
->
-> If you have an idea how to reproduce such problem.
-
-Not at the moment as I did not observe any unusual circumstances.
-Having the system up and running for a while is probably not a useful
-test. :-)
-
-> Or we can only help you to fix the fs, not really to locate the cause.
-
-OK, let's take that route.
-
-> > 3. can I safely repair with --repair or what else do I have to do to re=
-pair?
->
-> Btrfs check --repair should be able to repair that, but not recommended
-> for your btrfs-progs version.
->
-> There is a bug that any power loss or transaction abort in btrfs-progs
-> can further screw up your fs.
-
-That explains why a repair I recently attempted elsewhere did make
-things worse...
-
-> That bug is solved in v5.1 btrfs-progs.
-> I doubt it's backported for any btrfs-progs at all.
->
-> So please use latest btrfs-progs to fix it.
-> A liveiso from some rolling distro would help.
-
-Is there a PPA? I could not find one so far.
-
-Thank you!
-
-robert
-
->
-> Thanks,
-> Qu
->
-> >
-> > Thank you!
-> >
-> > Kind regards
-> >
-> > robert
-> >
-> > This is a Xubuntu and I am using btrfs on top of lvm on top of LUKS.
-> >
-> > $ lsb_release -a
-> > No LSB modules are available.
-> > Distributor ID: Ubuntu
-> > Description:    Ubuntu 18.04.3 LTS
-> > Release:        18.04
-> > Codename:       bionic
-> > $ uname -a
-> > Linux robunt-01 4.15.0-76-generic #86-Ubuntu SMP Fri Jan 17 17:24:28
-> > UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
-> > $ btrfs --version
-> > btrfs-progs v4.15.1
-> > $ sudo btrfs fi show
-> > Label: none  uuid: 0da6c6f7-d42e-4096-8690-97daf14d70e7
-> >         Total devices 1 FS bytes used 12.64GiB
-> >         devid    1 size 30.00GiB used 15.54GiB path
-> > /dev/mapper/main--vg-main--root
-> >
-> > Label: 'home'  uuid: cfb8c776-0dab-4596-af5b-276f0db46f79
-> >         Total devices 1 FS bytes used 50.73GiB
-> >         devid    1 size 161.57GiB used 53.07GiB path
-> > /dev/mapper/main--vg-main--home
-> >
-> > $ sudo btrfs fi df /
-> > Data, single: total=3D14.01GiB, used=3D11.83GiB
-> > System, single: total=3D32.00MiB, used=3D16.00KiB
-> > Metadata, single: total=3D1.50GiB, used=3D820.30MiB
-> > GlobalReserve, single: total=3D39.19MiB, used=3D0.00B
-> >
->
 
 
---=20
-[guy, jim, charlie, sho].each {|him| remember.him do |as, often|
-as.you_can - without end}
-http://blog.rubybestpractices.com/
+On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
+> Data space flushing currently unconditionally commits the transaction
+> twice in a row, and the last time it checks if there's enough pinned
+> extents to satisfy it's reservation before deciding to commit the
+> transaction for the 3rd and final time.
+> 
+> Encode this logic into may_commit_transaction().  In the next patch we
+
+This is incorrect since the next patch simply introduces some states. So
+this patch and the next one should be transposed. I guess even David can
+do this but he needs to be explicitly aware of this.
+
+> will pass in U64_MAX for bytes_needed the first two times, and the final
+> time we will pass in the actual bytes we need so the normal logic will
+> apply.
+> 
+> This patch exists soley to make the logical changes I will make to the
+> flushing state machine separate to make it easier to bisect any
+> performance related regressions.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Other than the nit in the changelog this LGTM:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+
+<snip>
