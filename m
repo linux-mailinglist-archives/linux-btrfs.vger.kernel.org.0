@@ -2,129 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFBD151162
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 21:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA333151188
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 22:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgBCUug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 15:50:36 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36259 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727191AbgBCUuf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 15:50:35 -0500
-Received: by mail-qk1-f195.google.com with SMTP id w25so15706221qki.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 12:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=O55hemAnFvSr6eUz3Nywbnvil8ZeELvinokrtnNZaa0=;
-        b=rUw9ZUCaoQRh8mLLR9hRuFrSbBem/iV6qrqJyHXSTTrSBGSm4NuovoZwV6Htf0HvPS
-         eALcOqhwxE5jbXzP+ruFz99Gm1XikWYA+kMw0cVL452g3HrQYrmkeVrZuegeZr5AEWsF
-         Im4iOWOBt4soehc0JSgJbBApE+iwycSL+6apaM3VcAgbmepS80QAfppjN8vUdjOAtrDy
-         +waojjZwEzC/5ar6zIovRcaeLbQ6rZ80MdW61HTKpIk1kNqDXe7nulF08TYU7z5oogu2
-         EKkWFXy7FJA+b3qE0+4Jh6/iCszpzI/+IhKzR/+v0OmBmfavbLJKUH5iyoXufXqua1qn
-         HVOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O55hemAnFvSr6eUz3Nywbnvil8ZeELvinokrtnNZaa0=;
-        b=HXF6ydFawmVp0dj6IfmxBhdA+ukl7rqaLFKaDCBaAK8IL2115W/Z2pVvCvWpx2nmyX
-         f/mAK0Q7qdPN/PEg+lCY0q5F14lI05nswddh5QfA6z/297u0oEVm9f5ZHZjFOjeylCn9
-         qIdPHY/LmdhtbJq0qjIMZRAxKagn4mjER0Gpxa3VuzQYPsLcTUEg0PDVP5w9AdhEbZUc
-         E0SA8mxFTNlYXVhjzDccj+rAF49e4qDIFcK4DJB7Nl7u8Zj/Zs6pIEp4H7jfJlnGLRTD
-         EVZwbRQrFeIXdykHPqch64WC6+aEgPtHFoA7u8XzbIfTppT0cBQbnHJzYX4pgaypTJFF
-         Qi5g==
-X-Gm-Message-State: APjAAAWhLQikj9McxYP70AtTIyYEUfUOLNsgVuuu/G/QRYkuscUqNHoy
-        RS7wJ7w/jtuWoYF3IG00NkKBnRmQLGRzdQ==
-X-Google-Smtp-Source: APXvYqwRCAPSsZQGW1prEK7IEkEOHvfrqebknPSPukiIV+PC7lueuIywdouAVWV161RyxlMM/Ii89Q==
-X-Received: by 2002:a05:620a:ce5:: with SMTP id c5mr24592542qkj.49.1580763033697;
-        Mon, 03 Feb 2020 12:50:33 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id s1sm9576181qkm.84.2020.02.03.12.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 12:50:33 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 24/24] btrfs: add a comment explaining the data flush steps
-Date:   Mon,  3 Feb 2020 15:49:51 -0500
-Message-Id: <20200203204951.517751-25-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200203204951.517751-1-josef@toxicpanda.com>
-References: <20200203204951.517751-1-josef@toxicpanda.com>
+        id S1726872AbgBCVDZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 16:03:25 -0500
+Received: from mail.as397444.net ([69.59.18.99]:37706 "EHLO mail.as397444.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726834AbgBCVDZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 16:03:25 -0500
+Received: from [10.233.42.100] (unknown [69.59.18.156])
+        by mail.as397444.net (Postfix) with ESMTPSA id E07051928C8
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2020 21:03:23 +0000 (UTC)
+Subject: Re: btrfs balance start -musage=0 / eats drive space
+To:     linux-btrfs@vger.kernel.org
+References: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
+From:   Matt Corallo <linux@bluematt.me>
+Message-ID: <4c85f64f-63f0-b856-68cb-9e5190af94c4@bluematt.me>
+Date:   Mon, 3 Feb 2020 21:03:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The data flushing steps are not obvious to people other than myself and
-Chris.  Write a giant comment explaining the reasoning behind each flush
-step for data as well as why it is in that particular order.
+Oops, forgot to mention that a full -mconvert,soft doesn't fix the
+issue, either:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c | 46 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+[255980.528000] BTRFS info (device dm-2): balance: start
+-mconvert=raid1,soft -sconvert=raid1,soft
+.....
+[263341.880115] BTRFS info (device dm-2): 151 enospc errors during balance
+[263341.880119] BTRFS info (device dm-2): balance: ended with status: -28
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 18a31d96bbbd..d3befc536a7f 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -780,6 +780,52 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 	} while (flush_state <= COMMIT_TRANS);
- }
- 
-+/*
-+ * FLUSH_DELALLOC_WAIT:
-+ *   Space is free'd from flushing delalloc in one of two ways.
-+ *
-+ *   1) compression is on and we allocate less space than we reserved.
-+ *   2) We are overwriting existing space.
-+ *
-+ *   For #1 that extra space is reclaimed as soon as the delalloc pages are
-+ *   cow'ed, by way of btrfs_add_reserved_bytes() which adds the actual extent
-+ *   length to ->bytes_reserved, and subtracts the reserved space from
-+ *   ->bytes_may_use.
-+ *
-+ *   For #2 this is trickier.  Once the ordered extent runs we will drop the
-+ *   extent in the range we are overwriting, which creates a delayed ref for
-+ *   that freed extent.  This however is not reclaimed until the transaction
-+ *   commits, thus the next stages.
-+ *
-+ * RUN_DELAYED_IPUTS
-+ *   If we are freeing inodes, we want to make sure all delayed iputs have
-+ *   completed, because they could have been on an inode with i_nlink == 0, and
-+ *   thus have been trunated and free'd up space.  But again this space is not
-+ *   immediately re-usable, it comes in the form of a delayed ref, which must be
-+ *   run and then the transaction must be committed.
-+ *
-+ * FLUSH_DELAYED_REFS
-+ *   The above two cases generate delayed refs that will affect
-+ *   ->total_bytes_pinned.  However this counter can be inconsistent with
-+ *   reality if there are outstanding delayed refs.  This is because we adjust
-+ *   the counter based on the other delayed refs that exist.  So for example, if
-+ *   we have an extent with 2 references, but we only drop 1, we'll see that
-+ *   there is a negative delayed ref count for the extent and assume that the
-+ *   space will be free'd, and thus increase ->total_bytes_pinned.
-+ *
-+ *   Running the delayed refs gives us the actual real view of what will be
-+ *   freed at the transaction commit time.  This stage will not actually free
-+ *   space for us, it just makes sure that may_commit_transaction() has all of
-+ *   the information it needs to make the right decision.
-+ *
-+ * COMMIT_TRANS
-+ *   This is where we reclaim all of the pinned space generated by the previous
-+ *   two stages.  We will not commit the transaction if we don't think we're
-+ *   likely to satisfy our request, which means if our current free space +
-+ *   total_bytes_pinned < reservation we will not commit.  This is why the
-+ *   previous states are actually important, to make sure we know for sure
-+ *   wether committing the transaction will allow us to make progress.
-+ */
- static const enum btrfs_flush_state data_flush_states[] = {
- 	FLUSH_DELALLOC_WAIT,
- 	RUN_DELAYED_IPUTS,
--- 
-2.24.1
-
+On 2/3/20 8:42 PM, Matt Corallo wrote:
+> After giving up on my previous array (see "BUG_ON in btrfs check &
+> fs/btrfs/extent-tree.c:3071"), I copied 11TB of crap (including tons of
+> small files, and a few files up to eg 2TB in size) to a fresh array
+> built on 5.4.16, with a bit of duperemove in between, partially on
+> 5.4.16 and partially on 5.4.16 + "fs: allow deduplication of eof block
+> into the end of the destination file" + "Btrfs: make deduplication with
+> range including the last block work".
+> 
+> I then added a second drive to the array (to finish copying), kicked it
+> back on again, and ran btrfs balance -mconvert=raid1 /path, waited for
+> the first one or two block groups, then btrfs balance cancel /path (so
+> that, I though, new metadata would be written with raid1, but old wont
+> convert until I had more IOPS available). This seems to have completely
+> borked my array's ability to balance. I trued running a few more balance
+> -mconvert=raid1,softs but it hits ENOSPC after allocating metadata block
+> groups and copying no data into them. After letting it run for a while,
+> I now have a ton of metadata blocks that are unused and I cant seem to
+> free them. bigraid2 started with around 500G of available unallocated
+> space, and now is rather limited:
+> 
+> Overall:
+>     Device size:		  18.19TiB
+>     Device allocated:		  13.25TiB
+>     Device unallocated:		   4.95TiB
+>     Device missing:		     0.00B
+>     Used:			  12.23TiB
+>     Free (estimated):		   4.96TiB	(min: 2.49TiB)
+>     Data ratio:			      1.00
+>     Metadata ratio:		      1.80
+>     Global reserve:		 512.00MiB	(used: 0.00B)
+> 
+> Data,single: Size:11.93TiB, Used:11.92TiB
+>    /dev/mapper/bigraid2_crypt	   8.29TiB
+>    /dev/mapper/bigraid42_crypt	   3.64TiB
+> 
+> Metadata,single: Size:151.00GiB, Used:149.04GiB
+>    /dev/mapper/bigraid2_crypt	 151.00GiB
+> 
+> Metadata,RAID1: Size:596.00GiB, Used:86.13GiB
+>    /dev/mapper/bigraid2_crypt	 596.00GiB
+>    /dev/mapper/bigraid42_crypt	 596.00GiB
+> 
+> System,RAID1: Size:32.00MiB, Used:1.38MiB
+>    /dev/mapper/bigraid2_crypt	  32.00MiB
+>    /dev/mapper/bigraid42_crypt	  32.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/bigraid2_crypt	  72.97GiB
+>    /dev/mapper/bigraid42_crypt	   4.87TiB
+> 
+> 
+> 
+> Running btrfs balance start -musage=0 /path very quickly eats drive
+> space by allocating more metadata,RAID1 blocks and then hitting enospc:
+> 
+> [264158.311333] BTRFS info (device dm-2): balance: start -musage=0 -susage=0
+> [264158.443053] BTRFS info (device dm-2): relocating block group
+> 13821436493824 flags metadata|raid1
+> [264159.103628] BTRFS info (device dm-2): relocating block group
+> 13820362752000 flags metadata|raid1
+> [264160.513106] BTRFS info (device dm-2): relocating block group
+> 13818215268352 flags metadata|raid1
+> [264161.475568] BTRFS info (device dm-2): relocating block group
+> 13816067784704 flags metadata|raid1
+> [264163.174316] BTRFS info (device dm-2): relocating block group
+> 13814994042880 flags metadata|raid1
+> [264164.326509] BTRFS info (device dm-2): relocating block group
+> 13813920301056 flags metadata|raid1
+> [264165.234746] BTRFS info (device dm-2): relocating block group
+> 13812846559232 flags metadata|raid1
+> [264166.237149] BTRFS info (device dm-2): relocating block group
+> 13811772817408 flags metadata|raid1
+> [264167.282200] BTRFS info (device dm-2): relocating block group
+> 13810699075584 flags metadata|raid1
+> [264168.207370] BTRFS info (device dm-2): relocating block group
+> 13808551591936 flags metadata|raid1
+> [264169.167734] BTRFS info (device dm-2): relocating block group
+> 13807477850112 flags metadata|raid1
+> [264170.166969] BTRFS info (device dm-2): relocating block group
+> 13806404108288 flags metadata|raid1
+> [264171.114659] BTRFS info (device dm-2): relocating block group
+> 13805330366464 flags metadata|raid1
+> [264172.985116] BTRFS info (device dm-2): relocating block group
+> 13803182882816 flags metadata|raid1
+> [264174.784420] BTRFS info (device dm-2): relocating block group
+> 13801035399168 flags metadata|raid1
+> [264175.967226] BTRFS info (device dm-2): relocating block group
+> 13799961657344 flags metadata|raid1
+> [264177.252213] BTRFS info (device dm-2): relocating block group
+> 13798887915520 flags metadata|raid1
+> [264178.499955] BTRFS info (device dm-2): relocating block group
+> 13796740431872 flags metadata|raid1
+> [264179.780731] BTRFS info (device dm-2): relocating block group
+> 13795666690048 flags metadata|raid1
+> [264180.885075] BTRFS info (device dm-2): relocating block group
+> 13793519206400 flags metadata|raid1
+> [264182.089885] BTRFS info (device dm-2): relocating block group
+> 13790297980928 flags metadata|raid1
+> [264183.358970] BTRFS info (device dm-2): relocating block group
+> 13786003013632 flags metadata|raid1
+> [264184.462920] BTRFS info (device dm-2): 137 enospc errors during balance
+> [264184.462922] BTRFS info (device dm-2): balance: canceled
+> 
+> (the above allocated some 100G or so in Metadata,RAID1).
+> 
+> 
+> Additionally, and I dont know if this was about this fs or the old,
+> broken, mounted-ro,degraded fs, but I saw this while writing:
+> 
+> [245116.074467] ------------[ cut here ]------------
+> [245116.074497] WARNING: CPU: 20 PID: 474 at fs/btrfs/inode.c:9378
+> btrfs_destroy_inode+0x1c/0x288 [btrfs]
+> [245116.074498] Modules linked in: xt_tcpudp(E) binfmt_misc(E) veth(E)
+> xt_nat(E) wireguard(OE) essiv(E) authenc(E) ip6_udp_tunnel(E)
+> udp_tunnel(E) nft_counter(E) nft_chain_nat(E) xt_MASQUERADE(E) nf_nat(E)
+> nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) nft_compat(E)
+> nf_tables(E) nfnetlink(E) btrfs(E) zstd_compress(E) zstd_decompress(E)
+> amdgpu(E) gpu_sched(E) snd_hda_codec_hdmi(E) ast(E) drm_vram_helper(E)
+> snd_hda_intel(E) ttm(E) ofpart(E) snd_hda_codec(E) drm_kms_helper(E)
+> powernv_flash(E) sg(E) mtd(E) snd_hda_core(E) uas(E) drm(E) snd_hwdep(E)
+> snd_pcm(E) tg3(E) mpt3sas(E) snd_timer(E) ipmi_powernv(E)
+> ipmi_devintf(E) drm_panel_orientation_quirks(E) libphy(E) snd(E)
+> syscopyarea(E) ipmi_msghandler(E) sysfillrect(E) sysimgblt(E)
+> fb_sys_fops(E) i2c_algo_bit(E) ptp(E) opal_prd(E) raid_class(E)
+> pps_core(E) soundcore(E) scsi_transport_sas(E) at24(E) ip_tables(E)
+> x_tables(E) autofs4(E) ext4(E) crc16(E) mbcache(E) jbd2(E) sd_mod(E)
+> raid10(E) raid456(E) crc32c_generic(E) libcrc32c(E)
+> [245116.074545]  async_raid6_recov(E) async_memcpy(E) async_pq(E)
+> evdev(E) hid_generic(E) usbhid(E) hid(E) raid6_pq(E) async_xor(E) xor(E)
+> async_tx(E) raid1(E) raid0(E) multipath(E) linear(E) md_mod(E)
+> usb_storage(E) dm_crypt(E) dm_mod(E) algif_skcipher(E) af_alg(E)
+> xhci_pci(E) xhci_hcd(E) vmx_crypto(E) nvme(E) usbcore(E) nvme_core(E)
+> usb_common(E)
+> [245116.074566] CPU: 20 PID: 474 Comm: kswapd0 Tainted: G        W  OE
+>   5.4.0-3-powerpc64le #1 Debian 5.4.16-1
+> [245116.074568] NIP:  c0080000078aec94 LR: c000000000447bb8 CTR:
+> c0080000078aec78
+> [245116.074569] REGS: c000000ff760f580 TRAP: 0700   Tainted: G        W
+> OE      (5.4.0-3-powerpc64le Debian 5.4.16-1)
+> [245116.074570] MSR:  9000000000029033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR:
+> 84048224  XER: 20040000
+> [245116.074575] CFAR: c000000000447bb4 IRQMASK: 0
+>                 GPR00: c000000000447bb8 c000000ff760f810
+> c0080000079e6800 c000000e405ce530
+>                 GPR04: 0000000000000018 0000000000000003
+> 0000000000000009 c00c000025ae0400
+>                 GPR08: 0000000ffed1d000 0000000000000001
+> c000000c6292e830 c00800000796cb30
+>                 GPR12: c0080000078aec78 c000000fffff2800
+> 0000000000000001 0000000000000001
+>                 GPR16: c000000001143be0 c000000001143bf0
+> 0000000000000000 0000000000000260
+>                 GPR20: 0000000000000000 0000000000000502
+> 0000000000000000 0000000000015bdb
+>                 GPR24: 0000000000000000 000000000004c20a
+> 0000000000000000 c000000007fff800
+>                 GPR28: c000000007fffc50 c000000e405ce530
+> c0080000079f2b00 c000000e405ce530
+> [245116.074600] NIP [c0080000078aec94] btrfs_destroy_inode+0x1c/0x288
+> [btrfs]
+> [245116.074605] LR [c000000000447bb8] destroy_inode+0x68/0xc0
+> [245116.074606] Call Trace:
+> [245116.074608] [c000000ff760f810] [c000000000447ba0]
+> destroy_inode+0x50/0xc0 (unreliable)
+> [245116.074612] [c000000ff760f840] [c000000000448290] dispose_list+0x80/0xb0
+> [245116.074614] [c000000ff760f880] [c00000000044a3a0]
+> prune_icache_sb+0x70/0xb0
+> [245116.074618] [c000000ff760f8d0] [c00000000041e6e8]
+> super_cache_scan+0x148/0x210
+> [245116.074621] [c000000ff760f940] [c00000000032f7d8]
+> do_shrink_slab+0x178/0x3b0
+> [245116.074623] [c000000ff760fa10] [c00000000032fd0c]
+> shrink_slab+0x2fc/0x4a0
+> [245116.074626] [c000000ff760faf0] [c0000000003370bc]
+> shrink_node+0x12c/0x600
+> [245116.074629] [c000000ff760fbb0] [c000000000338a84]
+> balance_pgdat+0x344/0x6b0
+> [245116.074631] [c000000ff760fce0] [c000000000339070] kswapd+0x280/0x5c0
+> [245116.074633] [c000000ff760fdb0] [c000000000155668] kthread+0x148/0x1a0
+> [245116.074638] [c000000ff760fe20] [c00000000000bd54]
+> ret_from_kernel_thread+0x5c/0x68
+> [245116.074639] Instruction dump:
+> [245116.074641] 7c0803a6 4e800020 60000000 00137b88 00000000 3c4c0013
+> 38427b88 7c0802a6
+> [245116.074646] 60000000 e9430138 312affff 7d295110 <0b090000> e94301c8
+> 312affff 7d295110
+> [245116.074651] ---[ end trace 39e70c580b2c71e0 ]---
+> 
