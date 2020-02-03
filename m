@@ -2,86 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1B4150845
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 15:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C5C150847
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 15:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727491AbgBCOU4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 09:20:56 -0500
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:37858 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727611AbgBCOU4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 09:20:56 -0500
-Received: by mail-ua1-f52.google.com with SMTP id h32so5369094uah.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 06:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=qfRO/YXYKxPhwvNFkGiwhlNlgA/kUDt4ytfIGy6NKhM=;
-        b=V8BnWGJJ8lsgqAf3U+XQuF65omW+CV+8y2CG9rkyXAMPIdW4mUvNyluZa78f9cV29K
-         kh1FP1dSnfBYX/CWpmfmZ79isVrk0uUBFO5hzvx8D1eKbqbMTojKn/I7RSAYEZC8/U1k
-         9FmwbZ8fIWxB10ip0kmXqu2u611GILEmvrbmAxVYeXzGhKDU9BRcz7w3x7LfGmd2PEe2
-         ulTpe7Yfxbh2o3WBqvI/1UwNtUmd5Qk7jqMg/SHNrYOBzmq72CtuiUIkRXd0M6TWR5Hc
-         BWnSvp4wZe2l5qPHOGruYhXAMhy1kPI8bjanhqMlg0ANchAdvR6DHkuuwVbaE2+CzGXq
-         wlvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=qfRO/YXYKxPhwvNFkGiwhlNlgA/kUDt4ytfIGy6NKhM=;
-        b=LxPyLlydMxwbVYWFXU94NndnOJ1yiy6hpse1psVLdbD0Rfanp6Wsuyz6U+FR/4aqtm
-         Y8V77grdB2TC2FXmw2CYZ2h7vxNtEQD6ejZlCRm42c/X0CmSrBdIk7S0q5w9SaU+zKDF
-         Coxw2xfaqPa4AYKmDHxaYGa9/AOvh//2i0EAqXJL9s3XBiDQABqPHXKZtEFd6GZtIX2S
-         jIfybyzZUBMi5GSr4NE3wJITfDMQErEhuM+4Y73h1IQLmqEDEHwXlyuzgWVz4ShivrZB
-         /JUyKW3G7FF73TTKL2FORn/tahst5hHKixur4vQd2XaeaRUnoKBLj0eKX3sjbok8iFyv
-         mAdA==
-X-Gm-Message-State: APjAAAVESR4E2RfQSyHASOTlWevmeRflBwHqv6JLmvFtQkinJknvuzTz
-        iBKhk6xttjghkh1HPj6uUEWbYzZ46uVaOBMSMImpww==
-X-Google-Smtp-Source: APXvYqy+plUJr7ZOMRrYJeri44hG4MGvAGrUDfj8H3Dg/+gr/4mhY7EYcdTp16Trq/ScibUCRWuQFh1TAPX6Mnvgx/I=
-X-Received: by 2002:a9f:2275:: with SMTP id 108mr13983461uad.82.1580739654903;
- Mon, 03 Feb 2020 06:20:54 -0800 (PST)
+        id S1728053AbgBCOVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 09:21:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41578 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728052AbgBCOVA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 09:21:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E52DDAE7F;
+        Mon,  3 Feb 2020 14:20:58 +0000 (UTC)
+Subject: Re: [PATCH 14/23] btrfs: add btrfs_reserve_data_bytes and use it
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200131223613.490779-1-josef@toxicpanda.com>
+ <20200131223613.490779-15-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <eb3fbf01-c442-3451-ae46-fc60ed00e712@suse.com>
+Date:   Mon, 3 Feb 2020 16:20:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <CAM9pMnP7PJNMCSabvPtM5hQ776uNfejjqPUhEEkoJFSeLVK2PA@mail.gmail.com>
- <9cff72cb-ef8e-2d12-45ad-3a224e86b07a@gmx.com> <CAM9pMnOpSFnR9Dc_MyTyJevMRgiKBMPec-Y2W-iMbeyatTetog@mail.gmail.com>
- <1f891d68-ad1e-e303-cea8-b3fff5d21f66@georgianit.com>
-In-Reply-To: <1f891d68-ad1e-e303-cea8-b3fff5d21f66@georgianit.com>
-From:   Robert Klemme <shortcutter@googlemail.com>
-Date:   Mon, 3 Feb 2020 15:20:18 +0100
-Message-ID: <CAM9pMnOm1DoXV9mD-t0mW2XQWeKmPQ-Tqz_p_EnSsA7bF_nnEw@mail.gmail.com>
-Subject: Re: Root FS damaged
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200131223613.490779-15-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
 
-On Mon, Feb 3, 2020 at 3:12 PM Remi Gauvin <remi@georgianit.com> wrote:
->
-> On 2020-02-03 8:58 a.m., Robert Klemme wrote:
->
-> >> If you have an idea how to reproduce such problem.
-> >
-> > Not at the moment as I did not observe any unusual circumstances.
-> > Having the system up and running for a while is probably not a useful
-> > test. :-)
-> >
->
-> Have you recently converted to space_cache=v2 or otherwise tried to
-> clear / manipulate space cache?
 
-No. Unless some package update would have done this. The system was
-set up in 2016 and I did no FS tweaking.
+On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
+> Create a new function btrfs_reserve_data_bytes() in order to handle data
+> reservations.  This uses the new flush types and flush states to handle
+> making data reservations.
+> 
+> This patch specifically does not change any functionality, and is
+> purposefully not cleaned up in order to make bisection easier for the
+> future patches.  The new helper is identical to the old helper in how it
+> handles data reservations.  We first try to force a chunk allocation,
+> and then we run through the flush states all at once and in the same
+> order that they were done with the old helper.
+> 
+> Subsequent patches will clean this up and change the behavior of the
+> flushing, and it is important to keep those changes separate so we can
+> easily bisect down to the patch that caused the regression, rather than
+> the patch that made us start using the new infrastructure.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-> On the 2 systems I've seen this error so far, it was shortly after
-> converting space_cache to v2.
 
-Kind regards
 
-robert
-
--- 
-[guy, jim, charlie, sho].each {|him| remember.him do |as, often|
-as.you_can - without end}
-http://blog.rubybestpractices.com/
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
