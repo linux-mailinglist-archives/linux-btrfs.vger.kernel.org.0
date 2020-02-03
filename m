@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DD11501BC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 07:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA051501C7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 07:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727137AbgBCG24 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 01:28:56 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:40137 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgBCG24 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 01:28:56 -0500
-Received: by mail-io1-f67.google.com with SMTP id x1so15401293iop.7
-        for <linux-btrfs@vger.kernel.org>; Sun, 02 Feb 2020 22:28:55 -0800 (PST)
+        id S1727455AbgBCGjB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 01:39:01 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:46337 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727302AbgBCGjB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 01:39:01 -0500
+Received: by mail-il1-f196.google.com with SMTP id t17so11608192ilm.13
+        for <linux-btrfs@vger.kernel.org>; Sun, 02 Feb 2020 22:39:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=eHjoW/vPYPURctA/E8gcp2fMMRKPgY73W4jlThCXRps=;
-        b=gheWxT2wFFrZ66lN8+qNq/+nvSu3MjYIbC4fJB3StYV7rbrh/u+3golZ77OovLIJFN
-         tm2Clqo1HoMCXRir+hSWz+xxeAf+a0yIQlESp6HMA79IaBdVJDf71+YOajHbm4MnBvhT
-         NRA6pUYhHb3zPcagSJBzzcgvrethBD5mJUkUGOVaHL9bL/KDU+E/kEhSGznQ6BKMbZpk
-         jpSnh0TggllgJ5FZPpmRuwTp3rC0oNdNOwHKevGU6i6WApzkk17Vy1J65ISUoXHUyu5k
-         2d/K3KnDm6oecHW3yEC7s1NA3w3pdu+s8RgvdIK9ilLTEz7oqzTch8SjSgWLiekiuQLA
-         +ogg==
+        bh=DrqyjuQZ2ZPxF7qQhTc4wPd9OUy3yO5lcGHXuLkL37g=;
+        b=J341HzsAjAURmVuhznlib0l3+8wtDa4HYpUK8tIFwR2K8EPz4s1bj1RlguiSIIEn3M
+         19fS+vxI1lZ/+xCD2r2h4lDDv8s28B74pLgj0QggiPCK6xVjrGqM7BHRfszvvZp+S8AG
+         tVUBko+7sIWQrIoiWfweKxjooVV/wK0YFaJWdVULH59E7hJ7g9oDB0deOOIVSI/sNqUO
+         Xg/pdMxUY/iJ21914JNAqv5nrIS8hanzekzhb7ZhjrZB5SXB2zQ6+kS+yMVYfTN6j2l7
+         vV3+TYY/lsik08cqvymRr5420KtIlXkD8vDC1zNz5apj8ZNW8Zsg9kBWlUcq7IIHqUeq
+         KzzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eHjoW/vPYPURctA/E8gcp2fMMRKPgY73W4jlThCXRps=;
-        b=EK/JuAgw277vD/bZX6luCJ+TTv5WVz/qy4D7QFHYvZv5Gdqo0bQ4dPZTbDqlRFN8Y6
-         qVa7P3BBQfv+ew+28jDn2P5NEblTmVVA4t6q4sE6vjv93ZsMUL88GvNcIbT44Q+M6rCz
-         Tegd8sU3Lrkro5ZpcydAWpgMWA7yyyyF0dWogi9TICuU5cfy8lhgvvyjHX7+9akP6GOI
-         VwUv9eZtxCahcbHrUtre3f4pKFDP8AQpBUpdy0JdNNzbRH5s7KoL8k928iJDFXWdXpgI
-         +qq+Jb/JJtGoBEkcYUZBmjAKqQ/hD4MiMosZxcr4qIIOqVizpFzBDb2yPGXlwv2xnxjY
-         y0XA==
-X-Gm-Message-State: APjAAAUFAxFsJ1nl9AYY63kQWVLrJZKLt2pd5/edLYuYA55Q/XqcMfEC
-        5+U8XmM5NTYbybVE2YClU5mR9LCqqampr1l40w0Ui7R/
-X-Google-Smtp-Source: APXvYqzvBSlG6tIgKfekbQmMRrqC3nbIukrIxXI2UC3BHbudfE/6B8d4t5fMTWNANbWB8SJU5PRDI3zV37UWhuGJEhc=
-X-Received: by 2002:a5d:9509:: with SMTP id d9mr417815iom.127.1580711335156;
- Sun, 02 Feb 2020 22:28:55 -0800 (PST)
+        bh=DrqyjuQZ2ZPxF7qQhTc4wPd9OUy3yO5lcGHXuLkL37g=;
+        b=NgPiJpaB7ig7nMaonNN7SgNVWGjSwmD3sKya5sOL1viwrizuV3N4es6m1b6s9JHX1N
+         sPQE35Qy7ZQjTzotXHxHyTnnu2mjzk2JT9aSnKsquyzDxon1hwBNiUy+PM2LfP/q7mx6
+         LWLcTOkQ7zRJ+7yykGmyeOstim8x0jpKIivcKMO6eyxhrdL70ZGknk3nJoXn49I4/TN8
+         czKpAevq+icBVsCrWxGfxPTYx3FA0rSCi2bUyePqVLJrbVOKbS+AwK7ssbr6a4k2VGqj
+         cRoEz3xr36lE3Gyrnjmx7ET33InK80ptLM3cUus0slF4PRcHuLLsaQ0IcUmQG7+y86Fz
+         suAg==
+X-Gm-Message-State: APjAAAXPfmBEPQ0jbLn4gINFulmNi6i6YbBqzbzp5RxwDFAe4by0uWgS
+        2isBQCUM5ZIiRWjAgiHZbNithaJPT3NjEvKuehCPlQ==
+X-Google-Smtp-Source: APXvYqyM9zy4Dg4sgNBcTWDkm6v6TtWqV2EIoI0LlfjRDH0yP3IM0Em520qio6YDrRVDj4+WrJjzE2ADwILrCxzaON4=
+X-Received: by 2002:a92:dac3:: with SMTP id o3mr14268884ilq.237.1580711940748;
+ Sun, 02 Feb 2020 22:39:00 -0800 (PST)
 MIME-Version: 1.0
 References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com>
- <a9069bcb-73d2-09fa-e156-a1a3037303c5@petaramesh.org> <20200202233446.GT13306@hungrycats.org>
-In-Reply-To: <20200202233446.GT13306@hungrycats.org>
+ <CAJCQCtR0hzV+9S7cggGUUTtp4R1WdnSwzsOp=9fTnxvzn3Stmw@mail.gmail.com>
+In-Reply-To: <CAJCQCtR0hzV+9S7cggGUUTtp4R1WdnSwzsOp=9fTnxvzn3Stmw@mail.gmail.com>
 From:   Skibbi <skibbi@gmail.com>
-Date:   Mon, 3 Feb 2020 07:28:44 +0100
-Message-ID: <CACN+yT-0B7ytOTEh-uv4T+NBShQBgpRGUhYMv4O=zFi5K0QRoQ@mail.gmail.com>
+Date:   Mon, 3 Feb 2020 07:38:49 +0100
+Message-ID: <CACN+yT-FrVi71HKANj7NRinyPoDG5Aowma9NT=UB2WGvqoLSVA@mail.gmail.com>
 Subject: Re: My first attempt to use btrfs failed miserably
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
-        linux-btrfs@vger.kernel.org
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,95 +57,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-pon., 3 lut 2020 o 00:34 Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-napisa=C5=82(a):
+niedz., 2 lut 2020 o 20:56 Chris Murphy <lists@colorremedies.com> napisa=C5=
+=82(a):
 >
-> Same here, except I have seen problems as well as successes.  Some hints:
+> On Sun, Feb 2, 2020 at 5:45 AM Skibbi <skibbi@gmail.com> wrote:
 >
-> The log is incomplete but there is some evidence of USB disconnects.
-> These are bad.  Fix those before you try to use this hardware to store
-> data.
-
-Yeah, I found out some errors in dmesg suggesting this:
-[  370.569700] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-using xhci_hcd
-[  428.820969] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-using xhci_hcd
-[  473.621875] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-using xhci_hcd
-[  618.254211] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-using xhci_hcd
-[  664.334958] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-using xhci_hcd
-
-> Disable write caching (hdparm -W0).  The worst case is a USB disconnect
-> while there are uncompleted writes still in the drive memory.  Filesystem=
-s
-> get severely damaged when that happens.  Most filesystems silently
-> corrupt your data when that happens.  If write cache is disabled (and
-> the USB-SATA bridge firmware isn't garbage) then a disconnect doesn't
-> do as much damage and most filesystems can recover from it.  btrfs is
-> very good at batching up writes so write caching does not contribute
-> significantly to performance.
-
-Thanks for the tip - will try this.
-
-> Cables can be a near-bottomless source of problems, because a bad
-> cable will trigger USB disconnects.  I find that a USB data cable will
-> work for a certain number of connections and disconnections, and once
-> that number is exceeded the cable is garbage and should be recycled.
-> For cheaper cables that number can be as low as 5.  Some even fail on
-> the first connection.
-
-The disk is brand new so I don't expect that cable is broken. I tested
-the drive under windows and it was working OK.
-
-> Some USB->SATA bridge firmwares are broken, just swap it out with a
-> different model and it'll be fine (though it may be difficult to do this
-> with a WD Passport drive without taking the drive apart and placing the
-> drive in a generic USB drive enclosure).  It is not possible to tell
-> what board revision or chip/firmware revision is used from the outside,
-> you have to open the drive and look at the USB-SATA bridge electronics.
-> Sometimes you can buy two of the same model USB-SATA bridges from
-> the same shop on the same day and the boards (and bugs) are completely
-> different inside.  You may find one drive mysteriously works and another
-> "identical" drive does not.
-
-Yeah, WD Passport Drives are using USB-SATA. I will experiment a bit
-more with that.
-
-> If the drive disconnects, umount it before reconnecting.  Disable any
-> configuration settings that might try to hide a USB device disconnection
-> from the upper storage layers.  btrfs normally detects this and sets
-> itself read-only, but if somehow that doesn't happen, the filesystem will
-> be destroyed because part of the commit history will be missing on disk.
-> On RAID1 arrays of USB devices it's more complicated, you need to run
-> replace or scrub on the disk that disconnected to reconstruct the
-> missing data from drives that didn't disconnect.
+> > root@rpi4b:~# dmesg |grep btrfs
+> > [223167.290255] BTRFS: error (device dm-0) in
+> > btrfs_run_delayed_refs:2935: errno=3D-5 IO failure
+> > [223167.389690] BTRFS: error (device dm-0) in
+> > btrfs_run_delayed_refs:2935: errno=3D-5 IO failure
+> > root@rpi4b:~# dmesg |grep BTRFS
 >
-> Once you've purged your setup of broken firmware and cables, it can run
-> for years without incident.
->
-> 4.19 doesn't have metadata-corrupting bugs that I know of.
->
-> I would be wary of 32-bit ARM.  btrfs is most tested on amd64, and
-> other architectures sometimes have problems that amd64 simply does not,
-> especially on large (8T+) filesystems where uint32 isn't enough for a
-> device address.  That said, I have a dozen Raspberry Pis on 5.0.21 and
-> haven't encountered issues other than the usual SD card failure every
-> few years--but the largest filesystem on these is 128GB.
->
-> Also watch out for weak power supplies on Raspberry Pi boards.  The CPU
-> and memory run at a significantly lower voltage than the USB interface,
-> and one symptom of a power supply that is too small or too old is that
-> all the USB devices stop working reliably.
+> The entire unfiltered dmesg is needed. This older kernel doesn't have
+> new enough Btrfs tree checker code to help determine what the problem
+> is.
 
-Yeah, I need to check if my Pi is not having power issues under heavy
-load (save data on encrypted partition).
+OK, I need to reformat my drive and reproduce the issue again.
 
-> > The only time I lost a filesystem whas when I got hit by the infamous
-> > 5.2 bug, and it was on a classical laptop, not on a pi...
-> >
-> > Kind regards.
-> >
+> > [203285.351377] BTRFS error (device sda1): bad tree block start, want
+> > 31457280 have 0
+>
+> > [203285.466743] BTRFS info (device sda1): read error corrected: ino 0
+> > off 32735232 (dev /dev/sda1 sector 80320)
+>
+> > [218811.383208] BTRFS error (device dm-0): bad tree block start, want
+> > 50659328 have 7653333615399691647
+>
+> These happening together suggest lower storage stack failure. Since
+> kernel messages are filtered it only shows that Btrfs is working as
+> designed, complaining about known bad file system metadata. But
+> because it's filtered, it's not clear why the metadata has gone bad.
+>
+> > [223167.290255] BTRFS: error (device dm-0) in
+> > btrfs_run_delayed_refs:2935: errno=3D-5 IO failure
+>
+> More suggestion of IO failure, whether physical device or logical
+> layer in between Btrfs and physical device. Btrfs trusts the storage
+> stack *less* than other file systems, by design. It's a kind of canary
+> in the coal mine. Other file systems assume the storage stack is
+> working, so they're less likely to complain. Only recent versions of
+> e2fsprogs will format ext4 using metadata checksumming enabled. The
+> kind of problems you're reporting look so bad and happen so fast I'd
+> expect a good chance you'd reproduce the same problem with any
+> metadata checksumming file system, if you have new enough progs to
+> enable them.
+
+I removed luks encryption and had the same btrfs errors after several
+GB of writes. Then I reformatted drive to ext4 and was able to save
+60GB without hiccups. Of course, you may be right that ext4 silently
+damages my data, but at least I was able to see it on the drive after
+remount/reboot.
+I'm beginning to think that my Pi draws more power when used with
+external drive (I used only pendrives so far) so I need to investigate
+for power issues.
+And also I need to figure out how to get newer kernel. Raspbian is not
+the freshest distro...
+
+--=20
 Best regards
