@@ -2,112 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3394F150A8E
+	by mail.lfdr.de (Postfix) with ESMTP id A8E75150A8F
 	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgBCQMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1728639AbgBCQMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 3 Feb 2020 11:12:36 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:38047 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727708AbgBCQMf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 11:12:35 -0500
-Received: by mail-wr1-f46.google.com with SMTP id y17so18976868wrh.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 08:12:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4N0QmASCFX46LFIaeYN1POeGNExQvlaR2/FlI/XPDaY=;
-        b=wI2pclgdqgXkS8yRhA3UV2GhbEeGLe0cU1kheurPlBcp5rvdxvFuMKTq9Zx9miSeNf
-         ckapo7krkF+oJJP5QU9GuMMH/I2IJ5AiF+Tbgr07b88r9mPZLQfKutRPvy7Oc46F1RV/
-         AcGsyLjZ7P7EIQTKGCol+ShXw5hDAkBloJpI80tmlZPNIQ2+RzT/A5he0a+t17SXCvEp
-         NYiuY70ry0NukfhfQglS878H7KX6YmsiAwn6MnMUZzHu7GtlnHyfA1ufl5sI2QSMKFfJ
-         Jn2kaO2JAndemQLrtJ+F5e5z91lcGB9+CyDJGkfHEG1hkQve7nF19BYyIPXjUuuwWGjj
-         w+RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4N0QmASCFX46LFIaeYN1POeGNExQvlaR2/FlI/XPDaY=;
-        b=m7dVQkb0vm78yvfyYnINXSpWEQgHh6eVAFoPqdOB2se2gdlHc7xXRX3j8jHqNEn5a8
-         u4+tByy5bHcobDnkhJmYJ5YNg5F3G48H9mSvGdkW7DE+R8tegE6GtiQkKmW0tNu58fj0
-         YlbMJHR8oJyu7zeL1eXItoiYrzYAVSI1NyJwEvfApl0y2+4Di+mT/ta+s6PwZA67YNoj
-         WgGte0zW1b0u84a37zqTAteIo/MEbO/IGuAkdlgoWqSXpkXeW5zD4WbtEKr6OaIrlDfA
-         R//eEjyej/J20685NaU9HD7T947fcfmXejoeQBdluQ5bjepHGyH01hflClTNOkfEzkwo
-         C8lA==
-X-Gm-Message-State: APjAAAUscCe8LHqoJYOwgxlhd9HGdBHy9vT5d16DGPNTNjvXHrNFDfQV
-        Zi3FtwEB6x7E/umRUVedbJrzG/7d88OoFag07OE53A==
-X-Google-Smtp-Source: APXvYqyddGjg8hHfQg5GPfppy2Hof9PcINileIVfuasxzI648b+uZSJJ4g0evkx2VpqI5mXUOBsuShhmsds84bnIEQU=
-X-Received: by 2002:adf:fa43:: with SMTP id y3mr16167603wrr.65.1580746353474;
- Mon, 03 Feb 2020 08:12:33 -0800 (PST)
+Received: from mx2.suse.de ([195.135.220.15]:52326 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727720AbgBCQMg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 11:12:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id BC75DADC8;
+        Mon,  3 Feb 2020 16:12:33 +0000 (UTC)
+Subject: Re: [PATCH 20/23] btrfs: don't force commit if we are data
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200131223613.490779-1-josef@toxicpanda.com>
+ <20200131223613.490779-21-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <7949d0b9-3481-e9aa-426c-5dbd88622e91@suse.com>
+Date:   Mon, 3 Feb 2020 18:12:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com>
- <a9069bcb-73d2-09fa-e156-a1a3037303c5@petaramesh.org> <20200202233446.GT13306@hungrycats.org>
- <CACN+yT-0B7ytOTEh-uv4T+NBShQBgpRGUhYMv4O=zFi5K0QRoQ@mail.gmail.com>
-In-Reply-To: <CACN+yT-0B7ytOTEh-uv4T+NBShQBgpRGUhYMv4O=zFi5K0QRoQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 3 Feb 2020 09:12:17 -0700
-Message-ID: <CAJCQCtRhTWJuF_=BC0Ak2UtU7RcT2xruHpkYew6zSz2jH3916A@mail.gmail.com>
-Subject: Re: My first attempt to use btrfs failed miserably
-To:     Skibbi <skibbi@gmail.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200131223613.490779-21-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Feb 2, 2020 at 11:28 PM Skibbi <skibbi@gmail.com> wrote:
->
-> pon., 3 lut 2020 o 00:34 Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-> napisa=C5=82(a):
-> >
-> > Same here, except I have seen problems as well as successes.  Some hint=
-s:
-> >
-> > The log is incomplete but there is some evidence of USB disconnects.
-> > These are bad.  Fix those before you try to use this hardware to store
-> > data.
->
-> Yeah, I found out some errors in dmesg suggesting this:
-> [  370.569700] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> using xhci_hcd
-> [  428.820969] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> using xhci_hcd
-> [  473.621875] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> using xhci_hcd
-> [  618.254211] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> using xhci_hcd
-> [  664.334958] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> using xhci_hcd
-
-I get these with a very common USB-SATA enclosure bridge chipset,
-plugged directly into an Intel NUC. I also sometimes see dropped
-writes. When I use a Dyconn USB hub (externally powered) it never
-happens. I'm not a USB expert, but my understanding is a hub isn't a
-simple thing, it's reading and rewriting the whole stream to and from
-host and device. So any peculiarities between them tend to get cleaned
-up.
-
-> Yeah, WD Passport Drives are using USB-SATA. I will experiment a bit
-> more with that.
-
-It might be defaulting to using the Linux kernel's uas driver, there's
-a way to blacklist that if it's causing problems. I have yet another
-enclosure that gives me fits with uas driver, but again no problem if
-connected through the hub.
 
 
-> Yeah, I need to check if my Pi is not having power issues under heavy
-> load (save data on encrypted partition).
+On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
+> We used to unconditionally commit the transaction at least 2 times and
+> then on the 3rd try check against pinned space to make sure committing
+> the transaction was worth the effort.  This is overkill, we know nobody
+> is going to steal our reservation, and if we can't make our reservation
+> with the pinned amount simply bail out.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-A laptop drive will draw more than 1A on startup. And about 0.3A while
-spinning and writing. That's quite a lot, hence also why I stick it on
-a hub with an external power supply.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-
---=20
-Chris Murphy
+I think the previous patch can be dropped and simply this one applied
+after it.
