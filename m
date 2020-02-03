@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F721504CA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AC51504CB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgBCLA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 06:00:29 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:40406 "EHLO
+        id S1727767AbgBCLAc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 06:00:32 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:40478 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727723AbgBCLA2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:28 -0500
+        with ESMTP id S1727236AbgBCLAc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:32 -0500
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArZWV002148;
-        Mon, 3 Feb 2020 11:00:24 GMT
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013Arirw002463;
+        Mon, 3 Feb 2020 11:00:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=hKf0TwEcVZiIZvfsOgPm5dyM/vMNYiaxRA+isJQ/FYE=;
- b=SLjPaaatSEGfWorFoD+NhB9quqvgGUVddrKYdvznlPbcvwXvBkI+/FtXVDnWoPN13U6a
- HBb+hEFz7ffFsJpKy6JcXY8yp66Fs0ezycZK5a+rmqxRku5SMvkfqeRjJyZxL3NGEawU
- S5SILxsCTlxT1QddhPTohmDnHtzEnI2QRxqblGRaEHL7Pl7yoNRrgyLliGCm8VSlXxFc
- tZawUStXF5L3gbBgaDAcKMAB2i+adM1RSjCzkgCZNqlQcqIVZTVaVNpbh6sbx+6p3wfZ
- Ia37m12l7RNpkr5Sx95vyRjp8jSjE0CAJZrR8pBabCYw5by7oD7e45S+MeH7JToQHa2K Zw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2xwyg9b7xc-1
+ bh=dROgZUuvjTrigPHObvub3oV/QkO0Sr5+RwSGNc7cnsE=;
+ b=ablcXvDakAcx7SYy6UXVCXF0wjGv2uTZcneOI5pgfVVsLBcGaILMf2sJLS701JXpJRDB
+ A+Q8cGX/uFtvOdjkmrDwbT9ySZgyBVFx8QWeBpppMrd1cOLxGpPyHauT6HZql7mE54lI
+ egwBZl9PGYsONLffPuPi+ApfZlAdtAeD01NOu6UOyflX5HmMK4L4lCXHO/CR3LYz7GO2
+ e86mKIFaHkG7duUxMrY1Yt0q/gCO2aF/sfju86qccIGdK5R4+vNedcpirPt7P7orstG7
+ QewlI8ngrUMWCu95Q3utDsNn4ABzLCI4BpaWgB7EMaLbGNxJVsXD9y4LYb4Dhw+VCJt9 qA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2xwyg9b7xt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Feb 2020 11:00:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013AsB1H081386;
-        Mon, 3 Feb 2020 11:00:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2xwkft36v1-1
+        Mon, 03 Feb 2020 11:00:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArkBx023833;
+        Mon, 3 Feb 2020 11:00:27 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2xwkg8h6h3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Feb 2020 11:00:23 +0000
+        Mon, 03 Feb 2020 11:00:26 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 013B0Mxl007025;
-        Mon, 3 Feb 2020 11:00:22 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 013B0Ord011093;
+        Mon, 3 Feb 2020 11:00:24 GMT
 Received: from localhost.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Feb 2020 03:00:22 -0800
+        with ESMTP ; Mon, 03 Feb 2020 03:00:24 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
-Subject: [PATCH resend v2 3/4] btrfs: sysfs, rename device_link add,remove functions
-Date:   Mon,  3 Feb 2020 19:00:11 +0800
-Message-Id: <20200203110012.5954-4-anand.jain@oracle.com>
+Subject: [PATCH v5 4/4] btrfs: sysfs, add devid/dev_state kobject and device attribute
+Date:   Mon,  3 Feb 2020 19:00:12 +0800
+Message-Id: <20200203110012.5954-5-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20200203110012.5954-1-anand.jain@oracle.com>
 References: <20200203110012.5954-1-anand.jain@oracle.com>
@@ -67,151 +67,312 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In preparation to add btrfs_device::dev_state attribute in
-  /sys/fs/btrfs/UUID/devinfo
+New sysfs attributes that track the filesystem status of devices, stored
+in the per-filesystem directory in /sys/fs/btrfs/FSID/devinfo . There's
+a directory for each device, with name corresponding to the numerical
+device id.
 
-Rename btrfs_sysfs_add_device_link() and btrfs_sysfs_rm_device_link() to
-btrfs_sysfs_add_devices_attr() and btrfs_sysfs_remove_devices_attr() as
-these functions is going to create device attribute rather than just
-the link to the disk. No functional changes.
+  in_fs_metadata    - device is in the list of fs metadata
+  missing           - device is missing (no device node or block device)
+  replace_target    - device is target of replace
+  writeable         - writes from fs are allowed
+
+These attributes reflect the state of the device::dev_state and created
+at mount time.
+
+Sample output:
+  $ pwd
+   /sys/fs/btrfs/6e1961f1-5918-4ecc-a22f-948897b409f7/devinfo/1/
+  $ ls
+    in_fs_metadata  missing  replace_target  writeable
+  $ cat missing
+    0
+
+The output from these attributes are 0 or 1. 0 indicates unset and 1
+indicates set.  These attributes are readonly.
+
+It is observed that the device delete thread and sysfs read thread will
+not race because the delete thread calls sysfs kobject_put() which in
+turn waits for existing sysfs read to complete.
+
+Note for device replace devid swap:
+
+During the replace the target device temporarily assumes devid 0 before
+assigning the devid of the soruce device.
+
+In btrfs_dev_replace_finishing() we remove source sysfs devid using the
+function btrfs_sysfs_remove_devices_attr(), so after that call
+kobject_rename() to update the devid in the sysfs.  This adds and calls
+btrfs_sysfs_update_devid() helper function to update the device id.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+[ update changelog ]
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
-v2: Update change log. Change ..UUID/devices to ..UUID/devinfo
+v5: squash [PATCH] btrfs: update devid after replace
+    import changes as in misc-next
+      changelog
+      rename btrfs_sysfs_xx to btrfs_devinfo_xx
+      reorder devinfo attributes
+      relocate btrfs_sysfs_update_devid with in sysfs.c
+      add device in the title
+    rename btrfs_sysfs_missing_show to btrfs_devinfo_missing_show
 
- fs/btrfs/dev-replace.c |  4 ++--
- fs/btrfs/sysfs.c       | 12 ++++++------
- fs/btrfs/sysfs.h       |  4 ++--
- fs/btrfs/volumes.c     |  8 ++++----
- 4 files changed, 14 insertions(+), 14 deletions(-)
+v4:
+   after patch
+   [PATCH v5 2/2] btrfs: reset device back to allocation state when removing
+   in misc-next, the device::devid_kobj remains stale, fix it by using
+   release.
+
+v3:
+  Use optional groupid devid in BTRFS_ATTR(), it was blank in v2.
+
+V2:
+  Make the devinfo attribute to carry one parameter, so now
+  instead of dev_state attribute, we create in_fs_metadata,
+  writeable, missing and replace_target attributes.
+---
+ fs/btrfs/dev-replace.c |   1 +
+ fs/btrfs/sysfs.c       | 155 +++++++++++++++++++++++++++++++++++------
+ fs/btrfs/sysfs.h       |   1 +
+ fs/btrfs/volumes.h     |   4 ++
+ 4 files changed, 138 insertions(+), 23 deletions(-)
 
 diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index b6a07fa93b53..13a4ebd04a7a 100644
+index 13a4ebd04a7a..131d23de5f64 100644
 --- a/fs/btrfs/dev-replace.c
 +++ b/fs/btrfs/dev-replace.c
-@@ -512,7 +512,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
- 	atomic64_set(&dev_replace->num_uncorrectable_read_errors, 0);
- 	up_write(&dev_replace->rwsem);
- 
--	ret = btrfs_sysfs_add_device_link(tgt_device->fs_devices, tgt_device);
-+	ret = btrfs_sysfs_add_devices_attr(tgt_device->fs_devices, tgt_device);
- 	if (ret)
- 		btrfs_err(fs_info, "kobj add dev failed %d", ret);
- 
-@@ -743,7 +743,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+@@ -744,6 +744,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
  
  	/* replace the sysfs entry */
--	btrfs_sysfs_rm_device_link(fs_info->fs_devices, src_device);
-+	btrfs_sysfs_remove_devices_attr(fs_info->fs_devices, src_device);
+ 	btrfs_sysfs_remove_devices_attr(fs_info->fs_devices, src_device);
++	btrfs_sysfs_update_devid(tgt_device);
  	btrfs_rm_dev_replace_free_srcdev(src_device);
  
  	/* write back the superblocks */
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 58ef2c04e5be..10b9bc551330 100644
+index 10b9bc551330..364c0db36a3f 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -960,7 +960,7 @@ void btrfs_sysfs_remove_mounted(struct btrfs_fs_info *fs_info)
- 	addrm_unknown_feature_attrs(fs_info, false);
- 	sysfs_remove_group(&fs_info->fs_devices->fsid_kobj, &btrfs_feature_attr_group);
- 	sysfs_remove_files(&fs_info->fs_devices->fsid_kobj, btrfs_attrs);
--	btrfs_sysfs_rm_device_link(fs_info->fs_devices, NULL);
-+	btrfs_sysfs_remove_devices_attr(fs_info->fs_devices, NULL);
- }
+@@ -1158,29 +1158,117 @@ int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
+ 	if (!fs_devices->devices_kobj)
+ 		return -EINVAL;
  
- static const char * const btrfs_feature_set_names[FEAT_MAX] = {
-@@ -1149,7 +1149,7 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+-	if (one_device && one_device->bdev) {
+-		disk = one_device->bdev->bd_part;
+-		disk_kobj = &part_to_dev(disk)->kobj;
++	if (one_device) {
++		if (one_device->bdev) {
++			disk = one_device->bdev->bd_part;
++			disk_kobj = &part_to_dev(disk)->kobj;
++			sysfs_remove_link(fs_devices->devices_kobj,
++					  disk_kobj->name);
++		}
  
- /* when one_device is NULL, it removes all device links */
+-		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
+-	}
++		kobject_del(&one_device->devid_kobj);
++		kobject_put(&one_device->devid_kobj);
++
++		wait_for_completion(&one_device->kobj_unregister);
  
--int btrfs_sysfs_rm_device_link(struct btrfs_fs_devices *fs_devices,
-+int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
- 		struct btrfs_device *one_device)
- {
- 	struct hd_struct *disk;
-@@ -1181,8 +1181,8 @@ int btrfs_sysfs_rm_device_link(struct btrfs_fs_devices *fs_devices,
+-	if (one_device)
+ 		return 0;
++	}
+ 
+-	list_for_each_entry(one_device,
+-			&fs_devices->devices, dev_list) {
+-		if (!one_device->bdev)
+-			continue;
+-		disk = one_device->bdev->bd_part;
+-		disk_kobj = &part_to_dev(disk)->kobj;
++	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
++
++		if (one_device->bdev) {
++			disk = one_device->bdev->bd_part;
++			disk_kobj = &part_to_dev(disk)->kobj;
++			sysfs_remove_link(fs_devices->devices_kobj,
++					  disk_kobj->name);
++		}
++		kobject_del(&one_device->devid_kobj);
++		kobject_put(&one_device->devid_kobj);
+ 
+-		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
++		wait_for_completion(&one_device->kobj_unregister);
+ 	}
+ 
  	return 0;
  }
  
--int btrfs_sysfs_add_device_link(struct btrfs_fs_devices *fs_devices,
--				struct btrfs_device *one_device)
-+int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
-+				 struct btrfs_device *one_device)
++static ssize_t btrfs_devinfo_in_fs_metadata_show(struct kobject *kobj,
++						 struct kobj_attribute *a,
++						 char *buf)
++{
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	val = !!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
++}
++BTRFS_ATTR(devid, in_fs_metadata, btrfs_devinfo_in_fs_metadata_show);
++
++static ssize_t btrfs_devinfo_missing_show(struct kobject *kobj,
++					  struct kobj_attribute *a, char *buf)
++{
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	val = !!test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
++}
++BTRFS_ATTR(devid, missing, btrfs_devinfo_missing_show);
++
++static ssize_t btrfs_devinfo_replace_target_show(struct kobject *kobj,
++						 struct kobj_attribute *a,
++						 char *buf)
++{
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	val = !!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
++}
++BTRFS_ATTR(devid, replace_target, btrfs_devinfo_replace_target_show);
++
++static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
++					    struct kobj_attribute *a, char *buf)
++{
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	val = !!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
++}
++BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
++
++static struct attribute *devid_attrs[] = {
++	BTRFS_ATTR_PTR(devid, in_fs_metadata),
++	BTRFS_ATTR_PTR(devid, missing),
++	BTRFS_ATTR_PTR(devid, replace_target),
++	BTRFS_ATTR_PTR(devid, writeable),
++	NULL
++};
++ATTRIBUTE_GROUPS(devid);
++
++static void btrfs_release_devid_kobj(struct kobject *kobj)
++{
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	memset(&device->devid_kobj, 0, sizeof(struct kobject));
++	complete(&device->kobj_unregister);
++}
++
++static struct kobj_type devid_ktype = {
++	.sysfs_ops 	= &kobj_sysfs_ops,
++	.default_groups = devid_groups,
++	.release 	= btrfs_release_devid_kobj,
++};
++
+ int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
+ 				 struct btrfs_device *one_device)
  {
- 	int error = 0;
+@@ -1188,22 +1276,31 @@ int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
  	struct btrfs_device *dev;
-@@ -1286,13 +1286,13 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
  
- 	btrfs_set_fs_info_ptr(fs_info);
+ 	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+-		struct hd_struct *disk;
+-		struct kobject *disk_kobj;
+-
+-		if (!dev->bdev)
+-			continue;
  
--	error = btrfs_sysfs_add_device_link(fs_devs, NULL);
-+	error = btrfs_sysfs_add_devices_attr(fs_devs, NULL);
- 	if (error)
- 		return error;
+ 		if (one_device && one_device != dev)
+ 			continue;
  
- 	error = sysfs_create_files(fsid_kobj, btrfs_attrs);
- 	if (error) {
--		btrfs_sysfs_rm_device_link(fs_devs, NULL);
-+		btrfs_sysfs_remove_devices_attr(fs_devs, NULL);
- 		return error;
+-		disk = dev->bdev->bd_part;
+-		disk_kobj = &part_to_dev(disk)->kobj;
++		if (dev->bdev) {
++			struct hd_struct *disk;
++			struct kobject *disk_kobj;
++
++			disk = dev->bdev->bd_part;
++			disk_kobj = &part_to_dev(disk)->kobj;
++
++			error = sysfs_create_link(fs_devices->devices_kobj,
++						  disk_kobj, disk_kobj->name);
++			if (error)
++				break;
++		}
+ 
+-		error = sysfs_create_link(fs_devices->devices_kobj,
+-					  disk_kobj, disk_kobj->name);
+-		if (error)
++		init_completion(&dev->kobj_unregister);
++		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
++					     fs_devices->devinfo_kobj, "%llu",
++					     dev->devid);
++		if (error) {
++			kobject_put(&dev->devid_kobj);
+ 			break;
++		}
  	}
+ 
+ 	return error;
+@@ -1235,6 +1332,18 @@ void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
+ 				"sysfs: failed to create fsid for sprout");
+ }
+ 
++void btrfs_sysfs_update_devid(struct btrfs_device *device)
++{
++	char tmp[24];
++
++	snprintf(tmp, sizeof(tmp), "%llu", device->devid);
++
++	if (kobject_rename(&device->devid_kobj, tmp))
++		btrfs_warn(device->fs_devices->fs_info,
++			   "sysfs: failed to update devid for %llu",
++			   device->devid);
++}
++
+ /* /sys/fs/btrfs/ entry */
+ static struct kset *btrfs_kset;
  
 diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index 3d27b39eaf94..9d97b3c8db4e 100644
+index 9d97b3c8db4e..ccf33eaf9e59 100644
 --- a/fs/btrfs/sysfs.h
 +++ b/fs/btrfs/sysfs.h
-@@ -14,9 +14,9 @@ enum btrfs_feature_set {
+@@ -34,5 +34,6 @@ void btrfs_sysfs_add_block_group_type(struct btrfs_block_group *cache);
+ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+ 				    struct btrfs_space_info *space_info);
+ void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
++void btrfs_sysfs_update_devid(struct btrfs_device *device);
  
- char *btrfs_printable_features(enum btrfs_feature_set set, u64 flags);
- const char * const btrfs_feature_set_name(enum btrfs_feature_set set);
--int btrfs_sysfs_add_device_link(struct btrfs_fs_devices *fs_devices,
-+int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
- 		struct btrfs_device *one_device);
--int btrfs_sysfs_rm_device_link(struct btrfs_fs_devices *fs_devices,
-+int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
-                 struct btrfs_device *one_device);
- int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs);
- void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 9cfc668f91f4..45dd254afb26 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2054,7 +2054,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
- 	if (device->bdev) {
- 		cur_devices->open_devices--;
- 		/* remove sysfs entry */
--		btrfs_sysfs_rm_device_link(fs_devices, device);
-+		btrfs_sysfs_remove_devices_attr(fs_devices, device);
- 	}
+ #endif
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 98535f1e208e..309cda477589 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -136,6 +136,10 @@ struct btrfs_device {
+ 	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
  
- 	num_devices = btrfs_super_num_devices(fs_info->super_copy) - 1;
-@@ -2174,7 +2174,7 @@ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev)
+ 	struct extent_io_tree alloc_state;
++
++	struct completion kobj_unregister;
++	/* For sysfs/FSID/devinfo/devid/ */
++	struct kobject devid_kobj;
+ };
  
- 	mutex_lock(&fs_devices->device_list_mutex);
- 
--	btrfs_sysfs_rm_device_link(fs_devices, tgtdev);
-+	btrfs_sysfs_remove_devices_attr(fs_devices, tgtdev);
- 
- 	if (tgtdev->bdev)
- 		fs_devices->open_devices--;
-@@ -2522,7 +2522,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 				    orig_super_num_devices + 1);
- 
- 	/* add sysfs device entry */
--	btrfs_sysfs_add_device_link(fs_devices, device);
-+	btrfs_sysfs_add_devices_attr(fs_devices, device);
- 
- 	/*
- 	 * we've got more storage, clear any full flags on the space
-@@ -2590,7 +2590,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	return ret;
- 
- error_sysfs:
--	btrfs_sysfs_rm_device_link(fs_devices, device);
-+	btrfs_sysfs_remove_devices_attr(fs_devices, device);
- 	mutex_lock(&fs_info->fs_devices->device_list_mutex);
- 	mutex_lock(&fs_info->chunk_mutex);
- 	list_del_rcu(&device->dev_list);
+ /*
 -- 
 2.23.0
 
