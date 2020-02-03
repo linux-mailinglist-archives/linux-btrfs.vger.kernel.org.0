@@ -2,92 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD60151080
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E5515108D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgBCTuM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 14:50:12 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56215 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbgBCTuL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 14:50:11 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A39E5814;
-        Mon,  3 Feb 2020 14:50:10 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 03 Feb 2020 14:50:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=3qGwQTwRO0ezqdl7FLjdG1jrWTZ
-        MrVEjYdKA0OodWKE=; b=DF6xMlafHDYL4k2RShD/bCe0GHk/D4Me9MdDldVicR5
-        vGaGjZ+TH9TL3/Fj1Aid60LMs8EVK3pwyXXZwxKT2hMHN/VclNCb63jJ6sf2lsLC
-        DSnp/LE5nmeKTUICFLQbzRyg+niyH0WzrJLhnzsgDmiP9Hp9cJXXxkmQJrKxzw4z
-        6Xxm9YBcmQu+hv6sN2o1gz6lc9NIf/tK9uvht+cvZn19LM56gT4EbAtgbVR42qXM
-        NijnWGorv6SZuHoyNCzpA4/ijboNT6lqpJNZHoQb0LwoD9l/R5dWZZZ2zX+RdLar
-        1FdIZ/LZ76kyQ+WyiP4iZR4bjP+q5bF1HQiDOa/893g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=3qGwQT
-        wRO0ezqdl7FLjdG1jrWTZMrVEjYdKA0OodWKE=; b=StKQZ0wUD3d6JP95UFFcjb
-        b6QcuQL8YEqSiODB/RW5Nokc9qAb/MrVBKnMDyNQtYKp7HRJUujJbkTJETpreIgQ
-        eegZ+Jc0kTSmfL+771RXJSGLl9mY8hUxyDNuyKLmzRfKAy0q5cJqNHYcDCvDKdwA
-        hXcBNU9yT7k/pphNSQLJ2SjsQm9dUeyjLHSTrpl/CTB3Qvv1Y6EQOfFgbRTDbb55
-        VdMcNjd9PRFIv+jUR9NvAtkfIHDBt2Ngk2nAPsowymlid19hA3o4HZuaXBl+R7fk
-        iOp4AVavpY/QbrRErcLivzOHP4rPtKLWapxerCz0nNqqEf4+DGHO0J7XOQqIC6ww
-        ==
-X-ME-Sender: <xms:cXk4XvqIA3l_waWzhn5YZoX9gSqa1aD0Q4Qi5w-fUvRPhKZr7GkZkw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrgeejgdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necukfhppedukeehrddutdegrddufeeirddvleenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:cXk4Xlrswab9pYZTK2ook7T2KY-oF7IfcI2NGJHVgjvpN1LtKRfM5w>
-    <xmx:cXk4XubOpawCEqMWBAO3DE23GnXy3RXsm75nHHUVBXivUzMNypxPvg>
-    <xmx:cXk4Xj-cN90Q7w5FZ50Dr1uSVwbZ8yF6gEuM1v4_fBB95lDzwH6OJw>
-    <xmx:cnk4XitiEMy6wApGH6H76ZtBFhXYdzT_x632xcjWcInLG22G9XIQew>
-Received: from localhost (unknown [185.104.136.29])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4006030605C8;
-        Mon,  3 Feb 2020 14:50:08 -0500 (EST)
-Date:   Mon, 3 Feb 2020 19:50:07 +0000
-From:   Greg KH <greg@kroah.com>
-To:     dsterba@suse.cz, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Please add d55966c4279bfc6 to 5.4.x and 5.5.x
-Message-ID: <20200203195007.GA3853072@kroah.com>
-References: <20200203182949.GD2654@twin.jikos.cz>
+        id S1726201AbgBCTwZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 14:52:25 -0500
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:39708 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgBCTwZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 14:52:25 -0500
+Received: by mail-ua1-f67.google.com with SMTP id 73so5804691uac.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 11:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Bkbgm2thLi+JNJYlczVeMZOY7xGZlhdYCLTevAE3MxQ=;
+        b=rKpNUC9+5EwHcQHdKudWEc2TokNOlwSewnmt6rSriVl4K/uypvFGmT01CrriRgKxc9
+         ErzWeQxBWu1hsWmcPZt90mKSxdsUCBO/RVFQX2sFXAkdFBgOeg1bVlixPjcF29ETGf1k
+         iK5iO3PojoKBuc1rHJ5R4grdLg5lbhUrAUxZZ3K5Vbay6/TkjQPb1Lk3w/lkQD3EiSGw
+         Iz+tSgXM6uacnyZJmvKbi7s9hp/4iAo32q4AeKqlOCL99dqPi8wYcT00g60ko0jh62WS
+         R7mIopreEh3fcLQGjxBiyuyqEvZfkrfHIJsB/aVuhfvRibzzWJ6YomSOYyjFY8gG3HLE
+         kmmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=Bkbgm2thLi+JNJYlczVeMZOY7xGZlhdYCLTevAE3MxQ=;
+        b=RlmhWxNbHDcxGFaysJVZArNg6tvrDhhBYfemvKP+hWQrDN71k47Z2LGk8n7r3+10Gg
+         vU31hwCWACJC7RKMqrPuzwXhdwkqTRXIl5PWQ8pQrH42T45tsvLfPiQGDiOp1qKG2ck2
+         D5s24AgDmXTjjn+TICvRuH7EdY4IsjzMKHK4AXewmPAa3nNqd9/oDVaC2DK3fTcRNcjH
+         cY+S/f9eQ+XDEGxwLAjnXXZ9TMBd9tJHDNdkaMiXSjV068u5FevYX8FzINsQ8654SLvI
+         D/HcjfjnGtm6bxKjZuBl5j/OMoWNbIGUfGLYTEj/Li7tnWaGl84vDiyCuUEwWOH6wira
+         IKOg==
+X-Gm-Message-State: APjAAAVm36GLqINZZh7QLru461LZJYxhKcgkoKjKmj6L/xmcIOx9FGpL
+        0o3cxMAEFcfKA+42EK3n6Vgt+FgTw+I/0U2YYRM=
+X-Google-Smtp-Source: APXvYqy/Pg/bMDFGvmoHWjUczGLNcvUnoKGcceZIp84j0XtTnwDb5AnoAg+NSPRsWeWlkShy9Aofju/NYMGKfY979zM=
+X-Received: by 2002:ab0:738c:: with SMTP id l12mr14603143uap.135.1580759544445;
+ Mon, 03 Feb 2020 11:52:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200203182949.GD2654@twin.jikos.cz>
+References: <20200117140224.42495-1-josef@toxicpanda.com> <20200203175933.GB2654@twin.jikos.cz>
+In-Reply-To: <20200203175933.GB2654@twin.jikos.cz>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 3 Feb 2020 19:52:13 +0000
+Message-ID: <CAL3q7H7y_4-OQrLvEreYbMgu9TVAgxePo6YcMOUo7PrqDSBUJg@mail.gmail.com>
+Subject: Re: [PATCH 0/6][v3] btrfs: fix hole corruption issue with !NO_HOLES
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 03, 2020 at 07:29:49PM +0100, David Sterba wrote:
-> Hi,
-> 
-> I'd like to ask the stable team to add the patch
-> 
-> d55966c4279bfc6a0cf0b32bf13f5df228a1eeb6
-> btrfs: do not zero f_bavail if we have available space
-> 
-> to 5.4 and 5.5 stable trees as early as possible.
-> 
-> I'm not familiar with your release schedules but I saw the large patch
-> sets for review and I hope I could squeeze that one in the upcoming
-> release.
-> 
-> The commit fixes a problem in 'df' that causes false alerts and there
-> are a lot of users hitting it. The patch itself is a one-liner, but
-> with a high impact on usability.
+On Mon, Feb 3, 2020 at 7:11 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Fri, Jan 17, 2020 at 09:02:18AM -0500, Josef Bacik wrote:
+> > v2->v3:
+> > - Rebased onto misc-next.
+> > - Added a patch to stop using ->leave_spinning in truncate_inode_items.
+> >
+> > v1->v2:
+> > - fixed a bug in 'btrfs: use the file extent tree infrastructure' that =
+would
+> >   result in 0 length files because btrfs_truncate_inode_items() was cle=
+aring the
+> >   file extent map when we fsync'ed multiple times.  Validated this with=
+ a
+> >   modified fsx and generic/521 that reproduced the problem, those modif=
+ications
+> >   were sent up as well.
+> > - dropped the RFC
+> >
+> > ----------------- Original Message -----------------------
+> > We've historically had this problem where you could flush a targeted se=
+ction of
+> > an inode and end up with a hole between extents without a hole extent i=
+tem.
+> > This of course makes fsck complain because this is not ok for a file sy=
+stem that
+> > doesn't have NO_HOLES set.  Because this is a well understood problem I=
+ and
+> > others have been ignoring fsck failures during certain xfstests (generi=
+c/475 for
+> > example) because they would regularly trigger this edge case.
+> >
+> > However this isn't a great behavior to have, we should really be taking=
+ all fsck
+> > failures seriously, and we could potentially ignore fsck legitimate fsc=
+k errors
+> > because we expect it to be this particular failure.
+> >
+> > In order to fix this we need to keep track of where we have valid exten=
+t items,
+> > and only update i_size to encompass that area.  This unfortunately mean=
+s we need
+> > a new per-inode extent_io_tree to keep track of the valid ranges.  This=
+ is
+> > relatively straightforward in practice, and helpers have been added to =
+manage
+> > this so that in the case of a NO_HOLES file system we just simply skip =
+this work
+> > altogether.
+> >
+> > I've been hammering on this for a week now and I'm pretty sure its ok, =
+but I'd
+> > really like Filipe to take a look and I still have some longer running =
+tests
+> > going on the series.  All of our boxes internally are btrfs and the box=
+ I was
+> > testing on ended up with a weird RPM db corruption that was likely from=
+ an
+> > earlier, broken version of the patch.  However I cannot be 100% sure th=
+at was
+> > the case, so I'm giving it a few more days of testing before I'm satisf=
+ied
+> > there's not some weird thing that RPM does that xfstests doesn't cover.
+> >
+> > This has gone through several iterations of xfstests already, including=
+ many
+> > loops of generic/475 for validation to make sure it was no longer faili=
+ng.  So
+> > far so good, but for something like this wider testing will definitely =
+be
+> > necessary.  Thanks,
+>
+> I've reviewed the series and will add it to for-next. The i_size
+> tracking seems to be an important part that we want to merge before
+> NO_HOLES is default in mkfs.
 
-I've snuck it in now, and if you could provide a backport for 4.4.y,
-that would be great as I think it's also needed there.
+Can you elaborate a bit? I don't understand why you say this is
+important in order to make NO_HOLES a default.
+This series fixes a problem that only happens when not using the
+NO_HOLES feature.
 
-thanks,
+Thanks.
 
-greg k-h
+> It would be good to steer more focus on
+> that during testing. If everything goes fine, the mkfs default can
+> happen in 5.7. Thanks.
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
