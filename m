@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F02D51507DD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 15:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B651507DF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 15:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgBCOAI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 09:00:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57536 "EHLO mx2.suse.de"
+        id S1728164AbgBCOAc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 09:00:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58206 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726836AbgBCOAI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 09:00:08 -0500
+        id S1728313AbgBCOAc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 09:00:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 23D93B273;
-        Mon,  3 Feb 2020 14:00:06 +0000 (UTC)
-Subject: Re: [PATCH 12/23] btrfs: add the data transaction commit logic into
- may_commit_transaction
+        by mx2.suse.de (Postfix) with ESMTP id DBC5BADF0;
+        Mon,  3 Feb 2020 14:00:29 +0000 (UTC)
+Subject: Re: [PATCH 13/23] btrfs: add flushing states for handling data
+ reservations
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-13-josef@toxicpanda.com>
+ <20200131223613.490779-14-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <1560685b-254d-062d-09b5-b2ca8a617900@suse.com>
-Date:   Mon, 3 Feb 2020 16:00:04 +0200
+Message-ID: <1f75f135-1ddf-a1b3-2678-fe5c2052962b@suse.com>
+Date:   Mon, 3 Feb 2020 16:00:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200131223613.490779-13-josef@toxicpanda.com>
+In-Reply-To: <20200131223613.490779-14-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,30 +81,19 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
-> Data space flushing currently unconditionally commits the transaction
-> twice in a row, and the last time it checks if there's enough pinned
-> extents to satisfy it's reservation before deciding to commit the
-> transaction for the 3rd and final time.
+> Currently the way we do data reservations is by seeing if we have enough
+> space in our space_info.  If we do not and we're a normal inode we'll
 > 
-> Encode this logic into may_commit_transaction().  In the next patch we
-
-This is incorrect since the next patch simply introduces some states. So
-this patch and the next one should be transposed. I guess even David can
-do this but he needs to be explicitly aware of this.
-
-> will pass in U64_MAX for bytes_needed the first two times, and the final
-> time we will pass in the actual bytes we need so the normal logic will
-> apply.
+> 1) Attempt to force a chunk allocation until we can't anymore.
+> 2) If that fails we'll flush delalloc, then commit the transaction, then
+>    run the delayed iputs.
 > 
-> This patch exists soley to make the logical changes I will make to the
-> flushing state machine separate to make it easier to bisect any
-> performance related regressions.
+> If we are a free space inode we're only allowed to force a chunk
+> allocation.  In order to use the normal flushing mechanism we need to
+> encode this into a flush state array for normal inodes.  Since both will
+> start with allocating chunks until the space info is full there is no
+> need to add this as a flush state, this will be handled specially.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Other than the nit in the changelog this LGTM:
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-
-<snip>
