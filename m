@@ -2,115 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47ECB15101F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD60151080
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgBCTG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 14:06:29 -0500
-Received: from mout.gmx.net ([212.227.17.20]:41469 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgBCTG3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 14:06:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580756787;
-        bh=CG0+lWtGXm3alu7GpugOvVz+CO/ZSXhShWlBtIGa1oo=;
-        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
-        b=Q+7Zk5NbWmqya5tj5qkBxWz1uiOLJ8zIk0DD+QN24ABjGAOJ1Tt7orzlZs1Wiuksv
-         7niDmPfjsMjaEeQjawQmUG0gQ/T4N4UD8puO/gSI/oPeLEb1wiXUGun9PRvTw7clQj
-         CUZtMHHciXyrPGMw+iGAObfavffIOUgsVHNxwgM4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from thetick.localnet ([95.90.202.39]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MmlXK-1jQpzl1A2A-00jrOY for
- <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 20:01:27 +0100
-From:   Marc Joliet <marcec@gmx.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: My first attempt to use btrfs failed miserably
-Date:   Mon, 03 Feb 2020 20:01:18 +0100
-Message-ID: <2497374.lGaqSPkdTl@thetick>
-In-Reply-To: <CAJCQCtRhTWJuF_=BC0Ak2UtU7RcT2xruHpkYew6zSz2jH3916A@mail.gmail.com>
-References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com> <CACN+yT-0B7ytOTEh-uv4T+NBShQBgpRGUhYMv4O=zFi5K0QRoQ@mail.gmail.com> <CAJCQCtRhTWJuF_=BC0Ak2UtU7RcT2xruHpkYew6zSz2jH3916A@mail.gmail.com>
+        id S1726250AbgBCTuM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 14:50:12 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56215 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725372AbgBCTuL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 14:50:11 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A39E5814;
+        Mon,  3 Feb 2020 14:50:10 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 03 Feb 2020 14:50:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=3qGwQTwRO0ezqdl7FLjdG1jrWTZ
+        MrVEjYdKA0OodWKE=; b=DF6xMlafHDYL4k2RShD/bCe0GHk/D4Me9MdDldVicR5
+        vGaGjZ+TH9TL3/Fj1Aid60LMs8EVK3pwyXXZwxKT2hMHN/VclNCb63jJ6sf2lsLC
+        DSnp/LE5nmeKTUICFLQbzRyg+niyH0WzrJLhnzsgDmiP9Hp9cJXXxkmQJrKxzw4z
+        6Xxm9YBcmQu+hv6sN2o1gz6lc9NIf/tK9uvht+cvZn19LM56gT4EbAtgbVR42qXM
+        NijnWGorv6SZuHoyNCzpA4/ijboNT6lqpJNZHoQb0LwoD9l/R5dWZZZ2zX+RdLar
+        1FdIZ/LZ76kyQ+WyiP4iZR4bjP+q5bF1HQiDOa/893g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=3qGwQT
+        wRO0ezqdl7FLjdG1jrWTZMrVEjYdKA0OodWKE=; b=StKQZ0wUD3d6JP95UFFcjb
+        b6QcuQL8YEqSiODB/RW5Nokc9qAb/MrVBKnMDyNQtYKp7HRJUujJbkTJETpreIgQ
+        eegZ+Jc0kTSmfL+771RXJSGLl9mY8hUxyDNuyKLmzRfKAy0q5cJqNHYcDCvDKdwA
+        hXcBNU9yT7k/pphNSQLJ2SjsQm9dUeyjLHSTrpl/CTB3Qvv1Y6EQOfFgbRTDbb55
+        VdMcNjd9PRFIv+jUR9NvAtkfIHDBt2Ngk2nAPsowymlid19hA3o4HZuaXBl+R7fk
+        iOp4AVavpY/QbrRErcLivzOHP4rPtKLWapxerCz0nNqqEf4+DGHO0J7XOQqIC6ww
+        ==
+X-ME-Sender: <xms:cXk4XvqIA3l_waWzhn5YZoX9gSqa1aD0Q4Qi5w-fUvRPhKZr7GkZkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrgeejgdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
+    necukfhppedukeehrddutdegrddufeeirddvleenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:cXk4Xlrswab9pYZTK2ook7T2KY-oF7IfcI2NGJHVgjvpN1LtKRfM5w>
+    <xmx:cXk4XubOpawCEqMWBAO3DE23GnXy3RXsm75nHHUVBXivUzMNypxPvg>
+    <xmx:cXk4Xj-cN90Q7w5FZ50Dr1uSVwbZ8yF6gEuM1v4_fBB95lDzwH6OJw>
+    <xmx:cnk4XitiEMy6wApGH6H76ZtBFhXYdzT_x632xcjWcInLG22G9XIQew>
+Received: from localhost (unknown [185.104.136.29])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4006030605C8;
+        Mon,  3 Feb 2020 14:50:08 -0500 (EST)
+Date:   Mon, 3 Feb 2020 19:50:07 +0000
+From:   Greg KH <greg@kroah.com>
+To:     dsterba@suse.cz, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Please add d55966c4279bfc6 to 5.4.x and 5.5.x
+Message-ID: <20200203195007.GA3853072@kroah.com>
+References: <20200203182949.GD2654@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2328398.XAFRqVoOGU"; micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Provags-ID: V03:K1:ZfsLP8Jk+Kb0G7Z2ekXiRQd+JIBBebPQOckjY3D5/ZdY6yLU9Eu
- XtcJh3GST+ltR0DnzHmCP9nCYgXnsLmpFuF71u1TdyKRMdR6770WrZnYVs1gpQDsrDKJRBo
- cco+dX9VxLC2iMr5y5V445cRdxD6wFGsm7+1wCjxZppGiahcW0Vf1GRRTl7U8Wy+qLDAzG4
- mFVg+zqkAP1/ap3taqzWA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LYTV3hT5Ryo=:J1SoXu8lVOX6Y1AnpUHURK
- EYZ8J30khdIsUBXdDsN/CopoQXaxD6o+a/e4+dVcCweJvmVqk/fTEYGzJSxp59c84VFg/ikJ+
- HqpLqxX4E6BZypE/sHNc3SJlASncnlGPWO05F+uOGBoLNAtGakssAoSiecAydOdkiuRiDt/M+
- m8PogcAQNxU90QH2QJTDAXJRtNumDIiruJR6EKMLNifA6fHKE3kQJwqrwT04D7N2kc747k9oI
- hR5Jm1/xQL9AUvoBw6MkabVD6ZC2Hx1YeXLeIWl1F5QlAA64zXjkIBCLlNAGZEoTsDPuGdDpC
- +DR83tjRpibNFTSxiuYunwfJGsnoc8oFp5EsqEpV5MteCBTJnBqkl4JFbanHzt6HEDA+4/8Ul
- 0TZ4qi4vbvn5ecDiv2Wqs+k97gYySM12StewilfqwCisoTvqCJ+p5BuzW4iZvecBO8Wx94VLw
- ILtUBJ7MXSEun+umJKsdtg+7qaKmpZ14rzNkPSkR0wrT1Uke53fGF68WTWXPDWPtNDlK+I4Ne
- m/0whSuHhmG0tgFq+EGtDGhAtHZnzj3a6Bqby1tLu6857ZAChGT+Rnt5ABH+5GlFSUy+udkG7
- HisW3xzUlhvx3XwHmkQHlH5l3uOxBmWJSKFMxrMgnB9h1NmWjIRJcicA0v5NTCRdXX/vXv4jk
- AJR/Ec0XuJcxtBXs4MNj8MaTC6W/usIni9cck9whM6gUmaPKZn24hmaTvsQB5oCiCP+EQO+xE
- 5qouBBlZxjxDaBRGbFycpTF/pgZZA4KXP7KUl8l29G34Psy4/UYX+qdxet78fKmqWv5CG3UJ4
- XCDlW6lteMjOkvqy6UcOtZABgr1GgdGXu6Z1G+Fy356CTNd1xpJ48NYaYfAO5bs9L5/EFvayo
- ttoFmNMxY4BzXs400M9SGLev/qPdfww0a492UKF70LFenPglvxTiLNQHnoz3jhc+3uT9BLYxO
- uTHkWibh50ZcaccQOgSDLjH5V82g5E8U48WoQhF1ba4yDVzXT0ZTrE8p8wrg+btqBB/B+RBb0
- 58B9P3ZftlY5/5PoySk5tnvPB6+KW+fV/neSz5hp35BkkCMsSNrp3HuO5lQWCDBfxcJeW2HX8
- LB5YumtPuvcgtc8KMmoVCvwVtOphBQFxLvUMD+LUti5i0ZxOGBESPHg3OuRtka6pUTbazoKj7
- 651BbYgLubH9r4MGOO+fB1MAx5RT0Mh20QbHSGCq/oXMzl+2B0M3NSLLwlTbyvtl2UPhZmqf8
- LDMROQYlcidPGKs36
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200203182949.GD2654@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---nextPart2328398.XAFRqVoOGU
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
+On Mon, Feb 03, 2020 at 07:29:49PM +0100, David Sterba wrote:
+> Hi,
+> 
+> I'd like to ask the stable team to add the patch
+> 
+> d55966c4279bfc6a0cf0b32bf13f5df228a1eeb6
+> btrfs: do not zero f_bavail if we have available space
+> 
+> to 5.4 and 5.5 stable trees as early as possible.
+> 
+> I'm not familiar with your release schedules but I saw the large patch
+> sets for review and I hope I could squeeze that one in the upcoming
+> release.
+> 
+> The commit fixes a problem in 'df' that causes false alerts and there
+> are a lot of users hitting it. The patch itself is a one-liner, but
+> with a high impact on usability.
 
-Am Montag, 3. Februar 2020, 17:12:17 CET schrieben Sie:
-> > Yeah, I found out some errors in dmesg suggesting this:
-> > [  370.569700] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
-> > [  428.820969] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
-> > [  473.621875] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
-> > [  618.254211] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
-> > [  664.334958] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
-> > using xhci_hcd
->
-> I get these with a very common USB-SATA enclosure bridge chipset,
-> plugged directly into an Intel NUC. I also sometimes see dropped
-> writes. When I use a Dyconn USB hub (externally powered) it never
-> happens. I'm not a USB expert, but my understanding is a hub isn't a
-> simple thing, it's reading and rewriting the whole stream to and from
-> host and device. So any peculiarities between them tend to get cleaned
-> up.
+I've snuck it in now, and if you could provide a backport for 4.4.y,
+that would be great as I think it's also needed there.
 
-FWIW, I used to see errors like this with my external HDD (3TB Toshiba), b=
-ut
-not anymore after I increased its device timeout, i.e., its SCSI command
-timeout, to 3 minutes (following a recommendation on the Debian wiki).
+thanks,
 
-=2D-
-Marc Joliet
-=2D-
-"People who think they know everything really annoy those of us who know w=
-e
-don't" - Bjarne Stroustrup
-
---nextPart2328398.XAFRqVoOGU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQS2YUPDQn1ADQEoj0uXgvYOs+E2oAUCXjht/gAKCRCXgvYOs+E2
-oFkiAPwN6epvQHoP83Nr+5OG8ESH1kDTMhwSb3uYUoWOkjJ5nAEAozQ6nSumJ1nX
-EK9hilXXITHzWc9QYDNJZl592HmUEQI=
-=l+UC
------END PGP SIGNATURE-----
-
---nextPart2328398.XAFRqVoOGU--
-
-
-
+greg k-h
