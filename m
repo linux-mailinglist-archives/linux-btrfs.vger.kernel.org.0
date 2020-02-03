@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B813C150CE0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687E7150CAF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbgBCQj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 11:39:57 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:46854 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731260AbgBCQhB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 11:37:01 -0500
-Received: by mail-qv1-f68.google.com with SMTP id y2so7053349qvu.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 08:37:01 -0800 (PST)
+        id S1730966AbgBCQii (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 11:38:38 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40202 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730562AbgBCQii (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 11:38:38 -0500
+Received: by mail-qk1-f194.google.com with SMTP id t204so14813447qke.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 08:38:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=uOlodWylk5iMlbnNfEplli+7W0l0o/w9QfaEuq22YoM=;
-        b=G2bbbQ+oL1qkMndpp9XCFqkoe1b3SQE2vMiNTcJYXvccbkxsEa0LFzp/xPGIKzq1od
-         W+/hSCSE5PWgqYj28A2U4qJ5mD/CEUO5y3PUPHTJ1fE7wtGf8TW7Fy9W2tCa3V14vknN
-         U4EIlNgWq/kO74guhx7JxiLD5YxRWmKeEj4Yis8z7t0ypgVVQXqzA60pm2Iw+W3VwatQ
-         aGv0Am0LvhqiQ5WITvENlACHmt3pbj0ZYFtGFtSLLY2Kk+L67bxeHw0ufGWBdqzwJKNn
-         /ZUIeD1geuLFTbmASNFsLvEfluDe3LasWTPe21C3DFSIHsshXCyfdSf7UclMJUGwo+sY
-         Xdnw==
+        bh=rEcmC0gmGx+LrwskHbuJ4gR8C8csiaxd0WHumSNrEEo=;
+        b=PmdTb8fDEOB9FLU0+ZGSch5BHtkhJF4ojtGWXA9lygYwwocvLfG7lAVAGt1GzApLSC
+         OqcEEM8T9n6wcu1bQ8wzFgAiI6VYPEf3IkS9nEHtBIlvO9QXXdaqqbl5AHEAMFEOBRAj
+         YHAMRlQMAItpXk/NX1uV3w/pajFx2XnHEsP4c7gB5FRZKjlYogZn12pdUTxdDDg7quGb
+         jhp8Nx3VNrBmygutMRwqbt6/ijWIT6Ul2HBbC723aAOhb7qxC4UWL6Mixc+uZTxo+GCw
+         uLeIoAxPVynKtjLc62B2BJNbtVQbDhue3NDwmRJdn0SWg6p/fflw7p/fGIHBwTv2Zn9O
+         xImQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uOlodWylk5iMlbnNfEplli+7W0l0o/w9QfaEuq22YoM=;
-        b=DOl7P35sqwHzGNbq+PyhpcQmozO7UsoiJJKAy2DnztqUtDm62DgoMokKTMNhqIhHeM
-         kk0861Mq8oVcPTn3Hu1UzDASl+YxQCnGs/PUYz7UmyWKwHrekhkZuF/js+zXZNi2G31s
-         b6rHLAnC+PrjN/rzfB1dkcjv/TYU6iDDndvoSgQLNthKCPfqlusGwRS4ypz+Vh+DSW2W
-         YTpPkIPADaZv0G3sIg4TKt/zeQo3U8lBQVv7mKIhQMBJDeGmQCj6q3HiOBj4pHYxkPiU
-         Xc/zNpvKyV7cz7KXRyyZodRvlyR0v4G/dk89ucg1jbHsb4GuQxUR0mds4WVmyUd8f3MJ
-         Lrfw==
-X-Gm-Message-State: APjAAAV7dWhBQtbdOpg6g01DYHmFSP+SvEuHtFXFcCdi3T3vheemFXe5
-        3G4T2Zaq9ORo76D2qjLf+fT6LCeWcqVDbQ==
-X-Google-Smtp-Source: APXvYqy+qdJvE+5ucpbWxQEefGPpSqqnhOa7VKcvpUIAQIXtf7FCMmKjlM1J5+edef21IyVPM33npQ==
-X-Received: by 2002:a0c:f7c3:: with SMTP id f3mr23638784qvo.52.1580747820320;
-        Mon, 03 Feb 2020 08:37:00 -0800 (PST)
+        bh=rEcmC0gmGx+LrwskHbuJ4gR8C8csiaxd0WHumSNrEEo=;
+        b=ilLcHu4W0eB4fj0kYy2xntqHZil5ko505cNceIQ8uCSrUzA+seeN8/HdqZm+i+2Mzo
+         amcFGHEFAIJuoZvoZ2aFCKQeZIQ0p1iA0R23lS7MBEGr8/XxQ/Wfed7JhKRSQrxcxrxu
+         gnmJuZvoIx3kbOOxeSWXFCrbqWoXcsIVv3G8FTvxHXYk4RWBcKd7lgxTKbf/dJk5OLsK
+         ylTYxlYx1Z+/p0KUxuyIBc+Dy0VfX9N8wxtIyIjBTeI6KD/vHMGHiCohmMpi9NNZB1yc
+         hxFek71WnaP/AD4rAjS/je0FPkQqbkiBzirYhueNd1bU+2eV2P80o6Tri/lg6bFtbrMh
+         UPSQ==
+X-Gm-Message-State: APjAAAX06QgSPe38Uhnm2Vac2vBF/Yj8Dw98/1dTVYHOquqYAWq7mOqr
+        RGqMFKoGw9C3PYqgFRk6ynSL2chZpeTHAA==
+X-Google-Smtp-Source: APXvYqy+ESkthvhLsHW4hvgIcZUFIe2o1hBtpTF/jVlY19RgDQd81WfpxGX4yB+3109bc5XQOTxLJg==
+X-Received: by 2002:a05:620a:1415:: with SMTP id d21mr23522389qkj.17.1580747916408;
+        Mon, 03 Feb 2020 08:38:36 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id o55sm10418447qtf.46.2020.02.03.08.36.59
+        by smtp.gmail.com with ESMTPSA id n4sm10037959qti.55.2020.02.03.08.38.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Feb 2020 08:36:59 -0800 (PST)
-Subject: Re: [PATCH] btrfs: qgroup: Automatically remove qgroup item when
- dropping a subvolume
+        Mon, 03 Feb 2020 08:38:35 -0800 (PST)
+Subject: Re: [PATCH] btrfs: Don't submit any btree write bio after transaction
+ is aborted
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191017073659.37687-1-wqu@suse.com>
+References: <20200203064558.27064-1-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <7f2baf8b-6826-bad9-1250-377cc8a3ce42@toxicpanda.com>
-Date:   Mon, 3 Feb 2020 11:36:58 -0500
+Message-ID: <4587d936-07c6-1319-22a1-ceb8dd7cbeff@toxicpanda.com>
+Date:   Mon, 3 Feb 2020 11:38:34 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20191017073659.37687-1-wqu@suse.com>
+In-Reply-To: <20200203064558.27064-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,54 +64,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/17/19 3:36 AM, Qu Wenruo wrote:
+On 2/3/20 1:45 AM, Qu Wenruo wrote:
 > [BUG]
-> When a subvolume is created, we automatically create a level 0 qgroup
-> for it, but don't remove it when the subvolume is dropped.
+> There is a fuzzed image which could cause KASAN report at unmount time.
 > 
-> Although it's not a big deal, it can easily pollute the output of
-> "btrfs qgroup show" and make it pretty annoying.
+>    ==================================================================
+>    BUG: KASAN: use-after-free in btrfs_queue_work+0x2c1/0x390
+>    Read of size 8 at addr ffff888067cf6848 by task umount/1922
 > 
-> [FIX]
-> For btrfs_drop_snapshot(), if it's a valid subvolume (not a reloc tree)
-> and qgroup is enabled, we do the following work to remove the qgroup:
-> - Commit transaction
->    This is to ensure that the qgroup numbers of that subvolume is updated
->    properly (all number of that subvolume should be 0).
+>    CPU: 0 PID: 1922 Comm: umount Tainted: G        W         5.0.21 #1
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+>    Call Trace:
+>     dump_stack+0x5b/0x8b
+>     print_address_description+0x70/0x280
+>     kasan_report+0x13a/0x19b
+>     btrfs_queue_work+0x2c1/0x390
+>     btrfs_wq_submit_bio+0x1cd/0x240
+>     btree_submit_bio_hook+0x18c/0x2a0
+>     submit_one_bio+0x1be/0x320
+>     flush_write_bio.isra.41+0x2c/0x70
+>     btree_write_cache_pages+0x3bb/0x7f0
+>     do_writepages+0x5c/0x130
+>     __writeback_single_inode+0xa3/0x9a0
+>     writeback_single_inode+0x23d/0x390
+>     write_inode_now+0x1b5/0x280
+>     iput+0x2ef/0x600
+>     close_ctree+0x341/0x750
+>     generic_shutdown_super+0x126/0x370
+>     kill_anon_super+0x31/0x50
+>     btrfs_kill_super+0x36/0x2b0
+>     deactivate_locked_super+0x80/0xc0
+>     deactivate_super+0x13c/0x150
+>     cleanup_mnt+0x9a/0x130
+>     task_work_run+0x11a/0x1b0
+>     exit_to_usermode_loop+0x107/0x130
+>     do_syscall_64+0x1e5/0x280
+>     entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> - Start a new transaction for later operation
+> [CAUSE]
+> The fuzzed image has a corrupted extent tree, which can pass
+> tree-checker but run_delayed_refs() will still detect such bad extent
+> tree, and abort transaction.
 > 
-> - Call btrfs_remove_qgroup()
+> The problem happens at unmount time, where btrfs will stop all workers
+> first, then call iput() on the btree inode.
 > 
-> So that qgroup can be automatically removed when the subvolume get fully
-> dropped.
+> Since btree inode still has some dirty pages, iput() will try to write
+> back such dirty pages, but all related work queues are already freed,
+> triggering use-after-free bug.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/extent-tree.c | 25 +++++++++++++++++++++++++
->   1 file changed, 25 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 49cb26fa7c63..5e8569cad16d 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -5182,6 +5182,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
->   	struct btrfs_root_item *root_item = &root->root_item;
->   	struct walk_control *wc;
->   	struct btrfs_key key;
-> +	u64 rootid = root->root_key.objectid;
->   	int err = 0;
->   	int ret;
->   	int level;
-> @@ -5384,6 +5385,30 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
->   	}
->   	root_dropped = true;
->   out_end_trans:
-> +	/* If qgroup is enabled, also try to remove the qgroup */
-> +	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) && root_dropped &&
-> +	    is_fstree(rootid) && !for_reloc) {
 
-
-Is the !for_reloc check superflous here?  is_fstree() should be enough.  Thanks,
+This sounds like our abort isn't doing the right thing?  We should be cleaning 
+all dirty pages at this point so nothing gets submitted after the fact.  Thanks,
 
 Josef
