@@ -2,81 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FF71504B2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 11:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C54A1504C7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgBCK4o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 05:56:44 -0500
-Received: from mail-il1-f171.google.com ([209.85.166.171]:35524 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbgBCK4o (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 05:56:44 -0500
-Received: by mail-il1-f171.google.com with SMTP id g12so12237239ild.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 02:56:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Uh50SS/TPTTtO20aItCHJ4nPL6yop5ZR+M/UVmadt6c=;
-        b=k3m4E1zLF0WSCSYrSi2WtT6VST2BKN7CUc6zqRfwEmBFrKi11LCwT/DyRIXY4OCQ8Y
-         N7YLbgSukQH2dqnPLHHABq5ao8y/l1pKpnl3mtenewImlh4KrxMAbQIL3MeO5OXtJaed
-         wTyoIHmKrvnjvHv0BhsdThRJYfGTl8d/EDt/Mmja2/gU6SYeQwPNCCOiiuJzXh5kWene
-         oespO9asVCn0sPbIfEmcaJZXdBkNUX/CtIlO9lMGuK8X9iAJv5JuNmhIzzLsmVzWR9Jt
-         UirnFnQRJ0UJrn3/CRP/NXdhOcLTOrKtJ7Wgt6tCuCr+dPbIZPzDVYXzs62Z6WadC5Sl
-         y+Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Uh50SS/TPTTtO20aItCHJ4nPL6yop5ZR+M/UVmadt6c=;
-        b=oxK1/qa+K45QX2R/SyM/PuLMIZxVXT/+SAOUzQPvSg0ttREA9DN8eebpK+t3GYpUFl
-         eGFd59xX8NGNdE+iXbdOPr3uKmLAZEwtYvn5c2GWP1xFB5Kj3hMQDNGuIOT8V5Wscucg
-         qtkoI2208NWFRwJFQQLvSZfZ6pYyyd28HCntayS7h+s0WHIQYmSZsSijcywkKePW1Odp
-         vQvI5XrGlnlkjVuho5qIfGf+xOQ+ap8CCNHU/RgdI6y9l16nCrDlCb5/uSEZUNA3CPAK
-         1Xw+YXHy03H1IiFgTv+1Hi3PQZEPgt3ac9SG7Aii2lWiXorM90zpgEI0nmj8XjJ54XCQ
-         M+9A==
-X-Gm-Message-State: APjAAAUc1tm3qalj2yUoyPOxG4j+0oXXEQ6iA+211d1PaYghud5AA45u
-        X9v3LoxjXUz4RN2i0bT9PgG5xvKV0AcCis43A0blPJkI
-X-Google-Smtp-Source: APXvYqwXWUWwTr9j5Nbg8wITJ1QPVZq4iMdUOx/VPTPp8o/eUNw2Uab0ntJNI3pIArq/aDYTRL5FqsKtQ7q9m05EkFQ=
-X-Received: by 2002:a92:af44:: with SMTP id n65mr441507ili.158.1580727402343;
- Mon, 03 Feb 2020 02:56:42 -0800 (PST)
+        id S1727628AbgBCLAX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 06:00:23 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50906 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbgBCLAX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:23 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013Arhku017874;
+        Mon, 3 Feb 2020 11:00:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=MF6d6P2nSNMs8IlYPh2VL1fKPUs/3gIwoxdPWeG4JZo=;
+ b=aDGxV4hSLFA9arrKrkwOj4Ow1CdgEjH/nil8S1mxHVSe8M9USHJAmFZufmPKAsCmmUvw
+ fq32cpNmlO4iaKurqPVDWZjon7OUkXKsDyT3cSybgBRQO0ET2gryllyw1h8xqzRPgefS
+ Zhn70DtkU/nYU03UOY1ZlzPZceFGT+8LtCfccGj7SXbJTg3WnjjZexQsvd7EVPWaZyi1
+ 4b1Al//42+buETY2jJx48IIein0q43q1ZuWvjZ3AKQV1AM8WHQNVvpNcRIvZuRpS1lXo
+ RKpyARBbPGYE1lkmpKPA5PW6BtrvBjUcJnDaS+UucsbsZNGI4iYdlO79MkbAvmHZEVR/ LQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2xw0rty2as-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Feb 2020 11:00:19 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArYkQ158152;
+        Mon, 3 Feb 2020 11:00:18 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2xwjv02xyw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Feb 2020 11:00:18 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 013B0Hfm006714;
+        Mon, 3 Feb 2020 11:00:17 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 Feb 2020 03:00:17 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+Subject: [PATCH 0/4 RESEND 1-3/4 v5 4/4] btrfs, sysfs cleanup and add dev_state
+Date:   Mon,  3 Feb 2020 19:00:08 +0800
+Message-Id: <20200203110012.5954-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com>
- <CAJCQCtR0hzV+9S7cggGUUTtp4R1WdnSwzsOp=9fTnxvzn3Stmw@mail.gmail.com>
- <CACN+yT-FrVi71HKANj7NRinyPoDG5Aowma9NT=UB2WGvqoLSVA@mail.gmail.com>
- <94fb7bb4-53a5-f2e8-a214-2d12cf49664c@gmx.com> <CACN+yT8OD1jFFgbdrNuqrfsfYZMpPfJaTQ+7cGUSuWaaeH9g9w@mail.gmail.com>
- <8944f055-6693-01a9-5b29-23d78c309274@gmx.com>
-In-Reply-To: <8944f055-6693-01a9-5b29-23d78c309274@gmx.com>
-From:   Skibbi <skibbi@gmail.com>
-Date:   Mon, 3 Feb 2020 11:56:30 +0100
-Message-ID: <CACN+yT_6_LaZ_Yep88FgZZcRDTDXvmBczWDUW=r0O=ts6vkLJg@mail.gmail.com>
-Subject: Re: My first attempt to use btrfs failed miserably
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9519 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2002030083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9519 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2002030083
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-pon., 3 lut 2020 o 11:11 Qu Wenruo <quwenruo.btrfs@gmx.com> napisa=C5=82(a)=
-:
+Resend:
+  Patch 4/4 is already integrated without the cleanup and preparatory
+  patches (1,2,3)/4. So I am resending those 3 patches. And the changes
+  in patch 4/4 as in misc-next is imported into patch v5 4/4 here. Patch
+  4/4 has the details of the changes.
 
-> It depends on the timing.
->
-> In fact, as your initial report said, btrfs even succeeded to read some
-> tree copy from the disk when we lost the device for a while.
-> And finally goes RO if btrfs fails to write any tree blocks.
+Patch 1/4 is a cleanup patch.
+Patch 2/4 adds the kobject devinfo which is a preparatory to patch 4/4.
+Patch 3/4 was sent before, no functional changes, change log is updated.
+Patch 4/4 creates the attribute dev_state.
 
-Yeah, it wen't RO but when I tried to remount I got bad superblock bla
-bla. And I was unable to fix this by using btrfs repair for example.
-I'm not sure if it possible to recover from the error I got. That's
-why I'm concerned about power issues in the future. I've been using
-ext4 for decades and I don't remember that fatal filesystem crash.
-Yeah I lost some data due to bad sectors or power loss but I was
-always able to mount the filesystem.
+Anand Jain (4):
+  btrfs: sysfs, use btrfs_sysfs_remove_fsid in fail return in add_fsid
+  btrfs: sysfs, add UUID/devinfo kobject
+  btrfs: sysfs, rename device_link add,remove functions
+  btrfs: sysfs, add devid/dev_state kobject and device attribute
 
---=20
-Best regards
+ fs/btrfs/dev-replace.c |   4 +-
+ fs/btrfs/sysfs.c       | 156 +++++++++++++++++++++++++++++++++++++++----------
+ fs/btrfs/sysfs.h       |   4 +-
+ fs/btrfs/volumes.c     |   8 +--
+ fs/btrfs/volumes.h     |   3 +
+ 5 files changed, 137 insertions(+), 38 deletions(-)
+
+-- 
+1.8.3.1
+
