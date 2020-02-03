@@ -2,152 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E5515108D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B83151138
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 21:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbgBCTwZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 14:52:25 -0500
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:39708 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgBCTwZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 14:52:25 -0500
-Received: by mail-ua1-f67.google.com with SMTP id 73so5804691uac.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 11:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Bkbgm2thLi+JNJYlczVeMZOY7xGZlhdYCLTevAE3MxQ=;
-        b=rKpNUC9+5EwHcQHdKudWEc2TokNOlwSewnmt6rSriVl4K/uypvFGmT01CrriRgKxc9
-         ErzWeQxBWu1hsWmcPZt90mKSxdsUCBO/RVFQX2sFXAkdFBgOeg1bVlixPjcF29ETGf1k
-         iK5iO3PojoKBuc1rHJ5R4grdLg5lbhUrAUxZZ3K5Vbay6/TkjQPb1Lk3w/lkQD3EiSGw
-         Iz+tSgXM6uacnyZJmvKbi7s9hp/4iAo32q4AeKqlOCL99dqPi8wYcT00g60ko0jh62WS
-         R7mIopreEh3fcLQGjxBiyuyqEvZfkrfHIJsB/aVuhfvRibzzWJ6YomSOYyjFY8gG3HLE
-         kmmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=Bkbgm2thLi+JNJYlczVeMZOY7xGZlhdYCLTevAE3MxQ=;
-        b=RlmhWxNbHDcxGFaysJVZArNg6tvrDhhBYfemvKP+hWQrDN71k47Z2LGk8n7r3+10Gg
-         vU31hwCWACJC7RKMqrPuzwXhdwkqTRXIl5PWQ8pQrH42T45tsvLfPiQGDiOp1qKG2ck2
-         D5s24AgDmXTjjn+TICvRuH7EdY4IsjzMKHK4AXewmPAa3nNqd9/oDVaC2DK3fTcRNcjH
-         cY+S/f9eQ+XDEGxwLAjnXXZ9TMBd9tJHDNdkaMiXSjV068u5FevYX8FzINsQ8654SLvI
-         D/HcjfjnGtm6bxKjZuBl5j/OMoWNbIGUfGLYTEj/Li7tnWaGl84vDiyCuUEwWOH6wira
-         IKOg==
-X-Gm-Message-State: APjAAAVm36GLqINZZh7QLru461LZJYxhKcgkoKjKmj6L/xmcIOx9FGpL
-        0o3cxMAEFcfKA+42EK3n6Vgt+FgTw+I/0U2YYRM=
-X-Google-Smtp-Source: APXvYqy/Pg/bMDFGvmoHWjUczGLNcvUnoKGcceZIp84j0XtTnwDb5AnoAg+NSPRsWeWlkShy9Aofju/NYMGKfY979zM=
-X-Received: by 2002:ab0:738c:: with SMTP id l12mr14603143uap.135.1580759544445;
- Mon, 03 Feb 2020 11:52:24 -0800 (PST)
+        id S1726853AbgBCUmf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 15:42:35 -0500
+Received: from mail.as397444.net ([69.59.18.99]:37704 "EHLO mail.as397444.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726331AbgBCUmf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 15:42:35 -0500
+Received: from [10.233.42.100] (unknown [69.59.18.156])
+        by mail.as397444.net (Postfix) with ESMTPSA id 57E58192823
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Feb 2020 20:42:32 +0000 (UTC)
+To:     linux-btrfs@vger.kernel.org
+From:   Matt Corallo <linux@bluematt.me>
+Subject: btrfs balance start -musage=0 / eats drive space
+Message-ID: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
+Date:   Mon, 3 Feb 2020 20:42:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200117140224.42495-1-josef@toxicpanda.com> <20200203175933.GB2654@twin.jikos.cz>
-In-Reply-To: <20200203175933.GB2654@twin.jikos.cz>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 3 Feb 2020 19:52:13 +0000
-Message-ID: <CAL3q7H7y_4-OQrLvEreYbMgu9TVAgxePo6YcMOUo7PrqDSBUJg@mail.gmail.com>
-Subject: Re: [PATCH 0/6][v3] btrfs: fix hole corruption issue with !NO_HOLES
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 3, 2020 at 7:11 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Fri, Jan 17, 2020 at 09:02:18AM -0500, Josef Bacik wrote:
-> > v2->v3:
-> > - Rebased onto misc-next.
-> > - Added a patch to stop using ->leave_spinning in truncate_inode_items.
-> >
-> > v1->v2:
-> > - fixed a bug in 'btrfs: use the file extent tree infrastructure' that =
-would
-> >   result in 0 length files because btrfs_truncate_inode_items() was cle=
-aring the
-> >   file extent map when we fsync'ed multiple times.  Validated this with=
- a
-> >   modified fsx and generic/521 that reproduced the problem, those modif=
-ications
-> >   were sent up as well.
-> > - dropped the RFC
-> >
-> > ----------------- Original Message -----------------------
-> > We've historically had this problem where you could flush a targeted se=
-ction of
-> > an inode and end up with a hole between extents without a hole extent i=
-tem.
-> > This of course makes fsck complain because this is not ok for a file sy=
-stem that
-> > doesn't have NO_HOLES set.  Because this is a well understood problem I=
- and
-> > others have been ignoring fsck failures during certain xfstests (generi=
-c/475 for
-> > example) because they would regularly trigger this edge case.
-> >
-> > However this isn't a great behavior to have, we should really be taking=
- all fsck
-> > failures seriously, and we could potentially ignore fsck legitimate fsc=
-k errors
-> > because we expect it to be this particular failure.
-> >
-> > In order to fix this we need to keep track of where we have valid exten=
-t items,
-> > and only update i_size to encompass that area.  This unfortunately mean=
-s we need
-> > a new per-inode extent_io_tree to keep track of the valid ranges.  This=
- is
-> > relatively straightforward in practice, and helpers have been added to =
-manage
-> > this so that in the case of a NO_HOLES file system we just simply skip =
-this work
-> > altogether.
-> >
-> > I've been hammering on this for a week now and I'm pretty sure its ok, =
-but I'd
-> > really like Filipe to take a look and I still have some longer running =
-tests
-> > going on the series.  All of our boxes internally are btrfs and the box=
- I was
-> > testing on ended up with a weird RPM db corruption that was likely from=
- an
-> > earlier, broken version of the patch.  However I cannot be 100% sure th=
-at was
-> > the case, so I'm giving it a few more days of testing before I'm satisf=
-ied
-> > there's not some weird thing that RPM does that xfstests doesn't cover.
-> >
-> > This has gone through several iterations of xfstests already, including=
- many
-> > loops of generic/475 for validation to make sure it was no longer faili=
-ng.  So
-> > far so good, but for something like this wider testing will definitely =
-be
-> > necessary.  Thanks,
->
-> I've reviewed the series and will add it to for-next. The i_size
-> tracking seems to be an important part that we want to merge before
-> NO_HOLES is default in mkfs.
+After giving up on my previous array (see "BUG_ON in btrfs check &
+fs/btrfs/extent-tree.c:3071"), I copied 11TB of crap (including tons of
+small files, and a few files up to eg 2TB in size) to a fresh array
+built on 5.4.16, with a bit of duperemove in between, partially on
+5.4.16 and partially on 5.4.16 + "fs: allow deduplication of eof block
+into the end of the destination file" + "Btrfs: make deduplication with
+range including the last block work".
 
-Can you elaborate a bit? I don't understand why you say this is
-important in order to make NO_HOLES a default.
-This series fixes a problem that only happens when not using the
-NO_HOLES feature.
+I then added a second drive to the array (to finish copying), kicked it
+back on again, and ran btrfs balance -mconvert=raid1 /path, waited for
+the first one or two block groups, then btrfs balance cancel /path (so
+that, I though, new metadata would be written with raid1, but old wont
+convert until I had more IOPS available). This seems to have completely
+borked my array's ability to balance. I trued running a few more balance
+-mconvert=raid1,softs but it hits ENOSPC after allocating metadata block
+groups and copying no data into them. After letting it run for a while,
+I now have a ton of metadata blocks that are unused and I cant seem to
+free them. bigraid2 started with around 500G of available unallocated
+space, and now is rather limited:
 
-Thanks.
+Overall:
+    Device size:		  18.19TiB
+    Device allocated:		  13.25TiB
+    Device unallocated:		   4.95TiB
+    Device missing:		     0.00B
+    Used:			  12.23TiB
+    Free (estimated):		   4.96TiB	(min: 2.49TiB)
+    Data ratio:			      1.00
+    Metadata ratio:		      1.80
+    Global reserve:		 512.00MiB	(used: 0.00B)
 
-> It would be good to steer more focus on
-> that during testing. If everything goes fine, the mkfs default can
-> happen in 5.7. Thanks.
+Data,single: Size:11.93TiB, Used:11.92TiB
+   /dev/mapper/bigraid2_crypt	   8.29TiB
+   /dev/mapper/bigraid42_crypt	   3.64TiB
+
+Metadata,single: Size:151.00GiB, Used:149.04GiB
+   /dev/mapper/bigraid2_crypt	 151.00GiB
+
+Metadata,RAID1: Size:596.00GiB, Used:86.13GiB
+   /dev/mapper/bigraid2_crypt	 596.00GiB
+   /dev/mapper/bigraid42_crypt	 596.00GiB
+
+System,RAID1: Size:32.00MiB, Used:1.38MiB
+   /dev/mapper/bigraid2_crypt	  32.00MiB
+   /dev/mapper/bigraid42_crypt	  32.00MiB
+
+Unallocated:
+   /dev/mapper/bigraid2_crypt	  72.97GiB
+   /dev/mapper/bigraid42_crypt	   4.87TiB
 
 
 
---=20
-Filipe David Manana,
+Running btrfs balance start -musage=0 /path very quickly eats drive
+space by allocating more metadata,RAID1 blocks and then hitting enospc:
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+[264158.311333] BTRFS info (device dm-2): balance: start -musage=0 -susage=0
+[264158.443053] BTRFS info (device dm-2): relocating block group
+13821436493824 flags metadata|raid1
+[264159.103628] BTRFS info (device dm-2): relocating block group
+13820362752000 flags metadata|raid1
+[264160.513106] BTRFS info (device dm-2): relocating block group
+13818215268352 flags metadata|raid1
+[264161.475568] BTRFS info (device dm-2): relocating block group
+13816067784704 flags metadata|raid1
+[264163.174316] BTRFS info (device dm-2): relocating block group
+13814994042880 flags metadata|raid1
+[264164.326509] BTRFS info (device dm-2): relocating block group
+13813920301056 flags metadata|raid1
+[264165.234746] BTRFS info (device dm-2): relocating block group
+13812846559232 flags metadata|raid1
+[264166.237149] BTRFS info (device dm-2): relocating block group
+13811772817408 flags metadata|raid1
+[264167.282200] BTRFS info (device dm-2): relocating block group
+13810699075584 flags metadata|raid1
+[264168.207370] BTRFS info (device dm-2): relocating block group
+13808551591936 flags metadata|raid1
+[264169.167734] BTRFS info (device dm-2): relocating block group
+13807477850112 flags metadata|raid1
+[264170.166969] BTRFS info (device dm-2): relocating block group
+13806404108288 flags metadata|raid1
+[264171.114659] BTRFS info (device dm-2): relocating block group
+13805330366464 flags metadata|raid1
+[264172.985116] BTRFS info (device dm-2): relocating block group
+13803182882816 flags metadata|raid1
+[264174.784420] BTRFS info (device dm-2): relocating block group
+13801035399168 flags metadata|raid1
+[264175.967226] BTRFS info (device dm-2): relocating block group
+13799961657344 flags metadata|raid1
+[264177.252213] BTRFS info (device dm-2): relocating block group
+13798887915520 flags metadata|raid1
+[264178.499955] BTRFS info (device dm-2): relocating block group
+13796740431872 flags metadata|raid1
+[264179.780731] BTRFS info (device dm-2): relocating block group
+13795666690048 flags metadata|raid1
+[264180.885075] BTRFS info (device dm-2): relocating block group
+13793519206400 flags metadata|raid1
+[264182.089885] BTRFS info (device dm-2): relocating block group
+13790297980928 flags metadata|raid1
+[264183.358970] BTRFS info (device dm-2): relocating block group
+13786003013632 flags metadata|raid1
+[264184.462920] BTRFS info (device dm-2): 137 enospc errors during balance
+[264184.462922] BTRFS info (device dm-2): balance: canceled
+
+(the above allocated some 100G or so in Metadata,RAID1).
+
+
+Additionally, and I dont know if this was about this fs or the old,
+broken, mounted-ro,degraded fs, but I saw this while writing:
+
+[245116.074467] ------------[ cut here ]------------
+[245116.074497] WARNING: CPU: 20 PID: 474 at fs/btrfs/inode.c:9378
+btrfs_destroy_inode+0x1c/0x288 [btrfs]
+[245116.074498] Modules linked in: xt_tcpudp(E) binfmt_misc(E) veth(E)
+xt_nat(E) wireguard(OE) essiv(E) authenc(E) ip6_udp_tunnel(E)
+udp_tunnel(E) nft_counter(E) nft_chain_nat(E) xt_MASQUERADE(E) nf_nat(E)
+nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) nft_compat(E)
+nf_tables(E) nfnetlink(E) btrfs(E) zstd_compress(E) zstd_decompress(E)
+amdgpu(E) gpu_sched(E) snd_hda_codec_hdmi(E) ast(E) drm_vram_helper(E)
+snd_hda_intel(E) ttm(E) ofpart(E) snd_hda_codec(E) drm_kms_helper(E)
+powernv_flash(E) sg(E) mtd(E) snd_hda_core(E) uas(E) drm(E) snd_hwdep(E)
+snd_pcm(E) tg3(E) mpt3sas(E) snd_timer(E) ipmi_powernv(E)
+ipmi_devintf(E) drm_panel_orientation_quirks(E) libphy(E) snd(E)
+syscopyarea(E) ipmi_msghandler(E) sysfillrect(E) sysimgblt(E)
+fb_sys_fops(E) i2c_algo_bit(E) ptp(E) opal_prd(E) raid_class(E)
+pps_core(E) soundcore(E) scsi_transport_sas(E) at24(E) ip_tables(E)
+x_tables(E) autofs4(E) ext4(E) crc16(E) mbcache(E) jbd2(E) sd_mod(E)
+raid10(E) raid456(E) crc32c_generic(E) libcrc32c(E)
+[245116.074545]  async_raid6_recov(E) async_memcpy(E) async_pq(E)
+evdev(E) hid_generic(E) usbhid(E) hid(E) raid6_pq(E) async_xor(E) xor(E)
+async_tx(E) raid1(E) raid0(E) multipath(E) linear(E) md_mod(E)
+usb_storage(E) dm_crypt(E) dm_mod(E) algif_skcipher(E) af_alg(E)
+xhci_pci(E) xhci_hcd(E) vmx_crypto(E) nvme(E) usbcore(E) nvme_core(E)
+usb_common(E)
+[245116.074566] CPU: 20 PID: 474 Comm: kswapd0 Tainted: G        W  OE
+  5.4.0-3-powerpc64le #1 Debian 5.4.16-1
+[245116.074568] NIP:  c0080000078aec94 LR: c000000000447bb8 CTR:
+c0080000078aec78
+[245116.074569] REGS: c000000ff760f580 TRAP: 0700   Tainted: G        W
+OE      (5.4.0-3-powerpc64le Debian 5.4.16-1)
+[245116.074570] MSR:  9000000000029033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR:
+84048224  XER: 20040000
+[245116.074575] CFAR: c000000000447bb4 IRQMASK: 0
+                GPR00: c000000000447bb8 c000000ff760f810
+c0080000079e6800 c000000e405ce530
+                GPR04: 0000000000000018 0000000000000003
+0000000000000009 c00c000025ae0400
+                GPR08: 0000000ffed1d000 0000000000000001
+c000000c6292e830 c00800000796cb30
+                GPR12: c0080000078aec78 c000000fffff2800
+0000000000000001 0000000000000001
+                GPR16: c000000001143be0 c000000001143bf0
+0000000000000000 0000000000000260
+                GPR20: 0000000000000000 0000000000000502
+0000000000000000 0000000000015bdb
+                GPR24: 0000000000000000 000000000004c20a
+0000000000000000 c000000007fff800
+                GPR28: c000000007fffc50 c000000e405ce530
+c0080000079f2b00 c000000e405ce530
+[245116.074600] NIP [c0080000078aec94] btrfs_destroy_inode+0x1c/0x288
+[btrfs]
+[245116.074605] LR [c000000000447bb8] destroy_inode+0x68/0xc0
+[245116.074606] Call Trace:
+[245116.074608] [c000000ff760f810] [c000000000447ba0]
+destroy_inode+0x50/0xc0 (unreliable)
+[245116.074612] [c000000ff760f840] [c000000000448290] dispose_list+0x80/0xb0
+[245116.074614] [c000000ff760f880] [c00000000044a3a0]
+prune_icache_sb+0x70/0xb0
+[245116.074618] [c000000ff760f8d0] [c00000000041e6e8]
+super_cache_scan+0x148/0x210
+[245116.074621] [c000000ff760f940] [c00000000032f7d8]
+do_shrink_slab+0x178/0x3b0
+[245116.074623] [c000000ff760fa10] [c00000000032fd0c]
+shrink_slab+0x2fc/0x4a0
+[245116.074626] [c000000ff760faf0] [c0000000003370bc]
+shrink_node+0x12c/0x600
+[245116.074629] [c000000ff760fbb0] [c000000000338a84]
+balance_pgdat+0x344/0x6b0
+[245116.074631] [c000000ff760fce0] [c000000000339070] kswapd+0x280/0x5c0
+[245116.074633] [c000000ff760fdb0] [c000000000155668] kthread+0x148/0x1a0
+[245116.074638] [c000000ff760fe20] [c00000000000bd54]
+ret_from_kernel_thread+0x5c/0x68
+[245116.074639] Instruction dump:
+[245116.074641] 7c0803a6 4e800020 60000000 00137b88 00000000 3c4c0013
+38427b88 7c0802a6
+[245116.074646] 60000000 e9430138 312affff 7d295110 <0b090000> e94301c8
+312affff 7d295110
+[245116.074651] ---[ end trace 39e70c580b2c71e0 ]---
