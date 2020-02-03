@@ -2,110 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEB2150FF7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 19:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ECB15101F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 20:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgBCSvM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 13:51:12 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37059 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgBCSvM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 13:51:12 -0500
-Received: by mail-qk1-f195.google.com with SMTP id 21so15302369qky.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 10:51:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=AFAVijNneXCH0DUQuWS+1hNYy1gvQ361eRE50lu5LRo=;
-        b=ZQd0SAkErLYXh9+iySaiu/K2uXfcw/0UBAj31cfKIobeVYjxzR69/QXKe1hihi30oC
-         2p74OZK2720V8IAiKIjt4EkB/vxB3RRP8f0luK7FmbHxfiG20Zr5zcE13oxCyTXUUeX3
-         tJlzmgyutO4KpRIW7qQBQcyn1hYD9gLJpGXvqzkt4gQsZ9ni1fStHzYo/Nj/XHxeP1rL
-         KnsK0x5Nk27hJNf6SfcMa0/wPvHwI2NQuPTqQ3TdbBVVa00DShykvkT/EyfcfKybdlFu
-         X2jF5xV6pxx/CWUEexb5T9ZByoGMihMhWwV24FWdX8/cj+3RV/KCkSTQzsQF52i7Hada
-         ZqIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AFAVijNneXCH0DUQuWS+1hNYy1gvQ361eRE50lu5LRo=;
-        b=AMTdj6IQ+L/huGAvHi+Xwvgz8mlNl7K8VuzrPG9yEsli18GN5L6OUh6jYzI8KOXmOi
-         S6FYpKl+tOGFdnz2lJm2a//SBgOkE5tiqryiH2NFFsDvE6EZHk89EDRlw6N41Y1xHHCH
-         snv0KBkjE/Riy6z3PCpoDcXuBNdOz9PmOYkrYl2SWhZ6+wfGL0Ppef8hEUXzTTtlpDRN
-         rDl98Pv8f9ze60XMg1cqp728gyOPsHYYYkYnyoPMp1xvBsPOVVcD0T5IpCha4E/uOlIc
-         5avA+mEfu8Fc8h8JzP97V4GfHD9jxX7tyS2ofAhHplREMoY02N3uHg3fPd+kU5rlaYMT
-         mu8g==
-X-Gm-Message-State: APjAAAWwZwI9qJPjonpo5GdxiHC8SleefX7VpfarX/X2CKTOsW6N1zoF
-        1n7oOKvXmfpOi3Av5iD1frHh1g==
-X-Google-Smtp-Source: APXvYqzGArOvh/eKCMAWwAnoQv7mr597LOro8B6UMw2uL6Pf43QaBboZIf5j4pdOjJWPJb8yg5ah6Q==
-X-Received: by 2002:a37:6313:: with SMTP id x19mr24143792qkb.443.1580755870946;
-        Mon, 03 Feb 2020 10:51:10 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id p19sm9700701qkm.69.2020.02.03.10.51.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Feb 2020 10:51:10 -0800 (PST)
-Subject: Re: [PATCH 23/23] btrfs: do async reclaim for data reservations
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-24-josef@toxicpanda.com>
- <e1f19786-38d1-10fd-a1a1-9354f18c6aa8@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <da1b4650-868c-cb05-197b-b560e6239f78@toxicpanda.com>
-Date:   Mon, 3 Feb 2020 13:51:09 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        id S1727207AbgBCTG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 14:06:29 -0500
+Received: from mout.gmx.net ([212.227.17.20]:41469 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgBCTG3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 14:06:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580756787;
+        bh=CG0+lWtGXm3alu7GpugOvVz+CO/ZSXhShWlBtIGa1oo=;
+        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+        b=Q+7Zk5NbWmqya5tj5qkBxWz1uiOLJ8zIk0DD+QN24ABjGAOJ1Tt7orzlZs1Wiuksv
+         7niDmPfjsMjaEeQjawQmUG0gQ/T4N4UD8puO/gSI/oPeLEb1wiXUGun9PRvTw7clQj
+         CUZtMHHciXyrPGMw+iGAObfavffIOUgsVHNxwgM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from thetick.localnet ([95.90.202.39]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MmlXK-1jQpzl1A2A-00jrOY for
+ <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 20:01:27 +0100
+From:   Marc Joliet <marcec@gmx.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: My first attempt to use btrfs failed miserably
+Date:   Mon, 03 Feb 2020 20:01:18 +0100
+Message-ID: <2497374.lGaqSPkdTl@thetick>
+In-Reply-To: <CAJCQCtRhTWJuF_=BC0Ak2UtU7RcT2xruHpkYew6zSz2jH3916A@mail.gmail.com>
+References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com> <CACN+yT-0B7ytOTEh-uv4T+NBShQBgpRGUhYMv4O=zFi5K0QRoQ@mail.gmail.com> <CAJCQCtRhTWJuF_=BC0Ak2UtU7RcT2xruHpkYew6zSz2jH3916A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e1f19786-38d1-10fd-a1a1-9354f18c6aa8@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart2328398.XAFRqVoOGU"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Provags-ID: V03:K1:ZfsLP8Jk+Kb0G7Z2ekXiRQd+JIBBebPQOckjY3D5/ZdY6yLU9Eu
+ XtcJh3GST+ltR0DnzHmCP9nCYgXnsLmpFuF71u1TdyKRMdR6770WrZnYVs1gpQDsrDKJRBo
+ cco+dX9VxLC2iMr5y5V445cRdxD6wFGsm7+1wCjxZppGiahcW0Vf1GRRTl7U8Wy+qLDAzG4
+ mFVg+zqkAP1/ap3taqzWA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LYTV3hT5Ryo=:J1SoXu8lVOX6Y1AnpUHURK
+ EYZ8J30khdIsUBXdDsN/CopoQXaxD6o+a/e4+dVcCweJvmVqk/fTEYGzJSxp59c84VFg/ikJ+
+ HqpLqxX4E6BZypE/sHNc3SJlASncnlGPWO05F+uOGBoLNAtGakssAoSiecAydOdkiuRiDt/M+
+ m8PogcAQNxU90QH2QJTDAXJRtNumDIiruJR6EKMLNifA6fHKE3kQJwqrwT04D7N2kc747k9oI
+ hR5Jm1/xQL9AUvoBw6MkabVD6ZC2Hx1YeXLeIWl1F5QlAA64zXjkIBCLlNAGZEoTsDPuGdDpC
+ +DR83tjRpibNFTSxiuYunwfJGsnoc8oFp5EsqEpV5MteCBTJnBqkl4JFbanHzt6HEDA+4/8Ul
+ 0TZ4qi4vbvn5ecDiv2Wqs+k97gYySM12StewilfqwCisoTvqCJ+p5BuzW4iZvecBO8Wx94VLw
+ ILtUBJ7MXSEun+umJKsdtg+7qaKmpZ14rzNkPSkR0wrT1Uke53fGF68WTWXPDWPtNDlK+I4Ne
+ m/0whSuHhmG0tgFq+EGtDGhAtHZnzj3a6Bqby1tLu6857ZAChGT+Rnt5ABH+5GlFSUy+udkG7
+ HisW3xzUlhvx3XwHmkQHlH5l3uOxBmWJSKFMxrMgnB9h1NmWjIRJcicA0v5NTCRdXX/vXv4jk
+ AJR/Ec0XuJcxtBXs4MNj8MaTC6W/usIni9cck9whM6gUmaPKZn24hmaTvsQB5oCiCP+EQO+xE
+ 5qouBBlZxjxDaBRGbFycpTF/pgZZA4KXP7KUl8l29G34Psy4/UYX+qdxet78fKmqWv5CG3UJ4
+ XCDlW6lteMjOkvqy6UcOtZABgr1GgdGXu6Z1G+Fy356CTNd1xpJ48NYaYfAO5bs9L5/EFvayo
+ ttoFmNMxY4BzXs400M9SGLev/qPdfww0a492UKF70LFenPglvxTiLNQHnoz3jhc+3uT9BLYxO
+ uTHkWibh50ZcaccQOgSDLjH5V82g5E8U48WoQhF1ba4yDVzXT0ZTrE8p8wrg+btqBB/B+RBb0
+ 58B9P3ZftlY5/5PoySk5tnvPB6+KW+fV/neSz5hp35BkkCMsSNrp3HuO5lQWCDBfxcJeW2HX8
+ LB5YumtPuvcgtc8KMmoVCvwVtOphBQFxLvUMD+LUti5i0ZxOGBESPHg3OuRtka6pUTbazoKj7
+ 651BbYgLubH9r4MGOO+fB1MAx5RT0Mh20QbHSGCq/oXMzl+2B0M3NSLLwlTbyvtl2UPhZmqf8
+ LDMROQYlcidPGKs36
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/3/20 12:19 PM, Nikolay Borisov wrote:
-> 
-> 
-> On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
->> Now that we have the data ticketing stuff in place, move normal data
->> reservations to use an async reclaim helper to satisfy tickets.  Before
->> we could have multiple tasks race in and both allocate chunks, resulting
->> in more data chunks than we would necessarily need.  Serializing these
->> allocations and making a single thread responsible for flushing will
->> only allocate chunks as needed, as well as cut down on transaction
->> commits and other flush related activities.
->>
->> Priority reservations will still work as they have before, simply
->> trying to allocate a chunk until they can make their reservation.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com> but look below for one
-> minor nit.
-> 
->> ---
->>   fs/btrfs/ctree.h      |   3 +-
->>   fs/btrfs/disk-io.c    |   2 +-
->>   fs/btrfs/space-info.c | 123 ++++++++++++++++++++++++++++++------------
->>   3 files changed, 91 insertions(+), 37 deletions(-)
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 865b24a1759e..709823a23c62 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -493,7 +493,7 @@ enum btrfs_orphan_cleanup_state {
->>   	ORPHAN_CLEANUP_DONE	= 2,
->>   };
->>   
->> -void btrfs_init_async_reclaim_work(struct work_struct *work);
->> +void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info);
-> 
-> nit: This doesn't bring much value apart from introducing yet another
-> function, I'd rather have the 2 INIT_WORK calls open coded in init_fs_info.
+--nextPart2328398.XAFRqVoOGU
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 
-Then I'd have to export the two reclaim functions, thats why this exists.  Thanks,
+Am Montag, 3. Februar 2020, 17:12:17 CET schrieben Sie:
+> > Yeah, I found out some errors in dmesg suggesting this:
+> > [  370.569700] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+> > [  428.820969] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+> > [  473.621875] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+> > [  618.254211] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+> > [  664.334958] usb 2-1: reset SuperSpeed Gen 1 USB device number 2
+> > using xhci_hcd
+>
+> I get these with a very common USB-SATA enclosure bridge chipset,
+> plugged directly into an Intel NUC. I also sometimes see dropped
+> writes. When I use a Dyconn USB hub (externally powered) it never
+> happens. I'm not a USB expert, but my understanding is a hub isn't a
+> simple thing, it's reading and rewriting the whole stream to and from
+> host and device. So any peculiarities between them tend to get cleaned
+> up.
 
-Josef
+FWIW, I used to see errors like this with my external HDD (3TB Toshiba), b=
+ut
+not anymore after I increased its device timeout, i.e., its SCSI command
+timeout, to 3 minutes (following a recommendation on the Debian wiki).
+
+=2D-
+Marc Joliet
+=2D-
+"People who think they know everything really annoy those of us who know w=
+e
+don't" - Bjarne Stroustrup
+
+--nextPart2328398.XAFRqVoOGU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQS2YUPDQn1ADQEoj0uXgvYOs+E2oAUCXjht/gAKCRCXgvYOs+E2
+oFkiAPwN6epvQHoP83Nr+5OG8ESH1kDTMhwSb3uYUoWOkjJ5nAEAozQ6nSumJ1nX
+EK9hilXXITHzWc9QYDNJZl592HmUEQI=
+=l+UC
+-----END PGP SIGNATURE-----
+
+--nextPart2328398.XAFRqVoOGU--
+
+
+
