@@ -2,377 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AC51504CB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36F01504CF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgBCLAc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 06:00:32 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:40478 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727236AbgBCLAc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:32 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013Arirw002463;
-        Mon, 3 Feb 2020 11:00:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=dROgZUuvjTrigPHObvub3oV/QkO0Sr5+RwSGNc7cnsE=;
- b=ablcXvDakAcx7SYy6UXVCXF0wjGv2uTZcneOI5pgfVVsLBcGaILMf2sJLS701JXpJRDB
- A+Q8cGX/uFtvOdjkmrDwbT9ySZgyBVFx8QWeBpppMrd1cOLxGpPyHauT6HZql7mE54lI
- egwBZl9PGYsONLffPuPi+ApfZlAdtAeD01NOu6UOyflX5HmMK4L4lCXHO/CR3LYz7GO2
- e86mKIFaHkG7duUxMrY1Yt0q/gCO2aF/sfju86qccIGdK5R4+vNedcpirPt7P7orstG7
- QewlI8ngrUMWCu95Q3utDsNn4ABzLCI4BpaWgB7EMaLbGNxJVsXD9y4LYb4Dhw+VCJt9 qA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2xwyg9b7xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Feb 2020 11:00:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArkBx023833;
-        Mon, 3 Feb 2020 11:00:27 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2xwkg8h6h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Feb 2020 11:00:26 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 013B0Ord011093;
-        Mon, 3 Feb 2020 11:00:24 GMT
-Received: from localhost.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Feb 2020 03:00:24 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Subject: [PATCH v5 4/4] btrfs: sysfs, add devid/dev_state kobject and device attribute
-Date:   Mon,  3 Feb 2020 19:00:12 +0800
-Message-Id: <20200203110012.5954-5-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200203110012.5954-1-anand.jain@oracle.com>
-References: <20200203110012.5954-1-anand.jain@oracle.com>
+        id S1727586AbgBCLBe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 06:01:34 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:34650 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727236AbgBCLBe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:01:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1580727693; x=1612263693;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
+  b=cBAIX01hKDshh/2yWj7ChrPH86l2O3KGzLq2Rvl/IP5eHUkcLvnmzyTG
+   Iz552SbmlVouCtZYRpQcROzcNwF3kRiWKCLd73b4Z+2JssP9y/3zmlT+W
+   hJomhhi3UH/dKLXqU2K9kflp2RN/fSHbHMgH4nIw7FChoHdB7YTaBIEfP
+   hsG8mWF+Ph1Akb0OZN2PKHkB1qzFxT0dUSFDgUqBPMPzkU2xqg6ZPtIAP
+   VjrQ2pLrqUPwFGL6Zw66+22oWVVK5y4lNJYMm60caKPyMd0kc9tRVKCfv
+   PWpuCty44ErRS8VwO+qkmYnwYp4Tz0pOGOiod2nZJSY7kHd3D5JF7MbBR
+   A==;
+IronPort-SDR: 88mpTYfNN3GrvqMkEH75PMEPSdrSkLbG3DBgt046qZMZYF2DS6HGAPtVs7QyQCgTAp0/hCmm6j
+ 617f+MaM6lQWsp0t/oK8+3YmiIjhoD91DP3+0ZVv0bvL+XlWXUmuldv3sKo8q8iJuKZgjs0OyO
+ YoDBjkVNEC406E3HlRToUZ9DxnlfPwK2Ost6KX+pX7F6Ap7WR0NRjfxqJJ0wDGo/7PENN7qMyC
+ EYi69DKeesDTJGcE6LFcfgbtXgteLaglsdD8xf9HxNKf8Nu1jNsg4he1UG7B7dCIGQwQiBOKJe
+ NBA=
+X-IronPort-AV: E=Sophos;i="5.70,397,1574092800"; 
+   d="scan'208";a="128978354"
+Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Feb 2020 19:01:33 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8v1cH8CfeQRW7HzS6TKD0FmNQ9+EL9anb7iUQE2TQO8YXNp0p6hFYTdXq2hHc/1bFdUTy5nxug4Gf476sG5j/p0AM47XsETM32S8K/02LO1yV118XnQjgcjsSX3/sFJnTJ9Zvfz6GIlQc1WLX9oNn4ZW8Ix/0P7NthVAbD9q99B+q9rJxZTwQXrE2tSyEbCpqlExSUIpUb+MLwakiDEvNu5+v72XwMpcyCnwC/aU1NFmav09vttL4Qe2nQ47bs5G5k0lacIKi81y8pm4tNywHpzyHiSrOH79nIIz1U2S74xXgZWmcLRsCYMzPEKPTjpbUc+nIVrWA6+ork8npljJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
+ b=hQpeDYa35iYWfzWhLPlH5eO3qI3k61R5pRhbG+fb7vHG/vwoIihYVDVaBMMSnHlA0UQ5kFDm5Non1OxG2ZiDlNW0TETSAZFQoryUkNS088cfCVj2g2FY+s9bjxvwQ5Ng3gQfR/6eH1R0/ASdvpHrSpIqHkVrOfnsl+NGT8FmfgSuBkEzHO02vdFfmtOI1o3VkLakOVNJwuD26A8WIgDvOzbtRAytxK8UJCKZMgJl8KHt2NpeNsR2PGFx3F02uojbQZ4fjfCz78a7na6a6XQ3UsZXyLZoWLfdQcupjTCfAxsAt2l+NlpYmT8sUyE7vw0xo/G0f9zii1MyaQs9zHmJTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
+ b=HooqJsGtjraC59+In3NC4ROfiWda9JKlMRuL8CFrTujcMCnKwpjc8cahQdFy5QwT2RHDyovW3o3xqU39Ijl4s/hmkqHy14fXT6bIpzTVLMx8wOnWAOzOuExMslWSu3pvO+ZDba5Kgtk936ZlV1rP3gJoI4IkSLEudtm9GsIIyVM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3568.namprd04.prod.outlook.com (10.167.133.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.27; Mon, 3 Feb 2020 11:01:32 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.031; Mon, 3 Feb 2020
+ 11:01:32 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+CC:     Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH 03/23] btrfs: handle U64_MAX for shrink_delalloc
+Thread-Topic: [PATCH 03/23] btrfs: handle U64_MAX for shrink_delalloc
+Thread-Index: AQHV2Ibih8Itv/f4b0CQDKnKvqgp/A==
+Date:   Mon, 3 Feb 2020 11:01:32 +0000
+Message-ID: <SN4PR0401MB3598E6ACE5954C669FDFD3209B000@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200131223613.490779-1-josef@toxicpanda.com>
+ <20200131223613.490779-4-josef@toxicpanda.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [46.244.208.208]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 58332c88-0116-4fb6-9885-08d7a8986db6
+x-ms-traffictypediagnostic: SN4PR0401MB3568:
+x-microsoft-antispam-prvs: <SN4PR0401MB356889B5595370A0ACFB12AA9B000@SN4PR0401MB3568.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0302D4F392
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(189003)(199004)(66556008)(66476007)(66946007)(86362001)(71200400001)(4270600006)(76116006)(91956017)(66446008)(64756008)(4326008)(26005)(558084003)(110136005)(316002)(33656002)(5660300002)(478600001)(2906002)(7696005)(81156014)(55016002)(8676002)(8936002)(9686003)(6506007)(52536014)(19618925003)(186003)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3568;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GmjZlIv7MtZ6MQn378sPu5N2y4vRFggwlY1JIuIP+SzSQm1y9tCChXIgcozmmhPk9N4eYMHDAH+5qe4WT/Ez8GQBjwUPkXjJBGxd8JW2BhiAAJkgxoBuOm2Cg8ZRLJkeaV+KGx9k1tgfgs3mrPooiKShiXreyz7gGwGY6kg0TlEu41Opm9iwLGlpro7WMu73/p/xLBfNBoStE5gMXPAaRn6dN7rSebf8PXI3JwK2LmiMq80ayAm/u6ZsEWWHomx5ehFYid6AjFS8DL6SPjvFpaVk6yNxo95qVUFaX1C4zAInz+i8uCeAEnCcSKx315ebze7f3UPmm+MCX3xSnW4e2alxYzOSSvOiuXVd95gHgnax+fPrzi5Pjcxsq1Fp5Djgs77NagS5ktMLKTBPjqzPXRqYv3CfiWtrQMG5b3xN8QoWvmJJ4xDEQTac+BX244Xy
+x-ms-exchange-antispam-messagedata: kgB2NMc/XW4PccHEzt4mxgLnkHmH24K6xpRr/cbOxn5AfC+qVz3TBRCtXmaXEkFivW/W56oP12kTHRcX5TnxYXuo5uTSfCFHMGw3JWUw+H6egNzVYr9oEz6gWpZ8ai78OFCm4OE0g9EGZUaQkC9fQA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9519 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2002030083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9519 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2002030083
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58332c88-0116-4fb6-9885-08d7a8986db6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2020 11:01:32.3953
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7vR6WyXJXHYshBun/biHkT6GsRAYYQiZbToQ1Q1cDRCex4NhRb06mskSXs1E33Mf3NLCCSz1zU/qXu1wTE9V99cWjoD38ce1NyiSuDT7OeA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3568
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-New sysfs attributes that track the filesystem status of devices, stored
-in the per-filesystem directory in /sys/fs/btrfs/FSID/devinfo . There's
-a directory for each device, with name corresponding to the numerical
-device id.
-
-  in_fs_metadata    - device is in the list of fs metadata
-  missing           - device is missing (no device node or block device)
-  replace_target    - device is target of replace
-  writeable         - writes from fs are allowed
-
-These attributes reflect the state of the device::dev_state and created
-at mount time.
-
-Sample output:
-  $ pwd
-   /sys/fs/btrfs/6e1961f1-5918-4ecc-a22f-948897b409f7/devinfo/1/
-  $ ls
-    in_fs_metadata  missing  replace_target  writeable
-  $ cat missing
-    0
-
-The output from these attributes are 0 or 1. 0 indicates unset and 1
-indicates set.  These attributes are readonly.
-
-It is observed that the device delete thread and sysfs read thread will
-not race because the delete thread calls sysfs kobject_put() which in
-turn waits for existing sysfs read to complete.
-
-Note for device replace devid swap:
-
-During the replace the target device temporarily assumes devid 0 before
-assigning the devid of the soruce device.
-
-In btrfs_dev_replace_finishing() we remove source sysfs devid using the
-function btrfs_sysfs_remove_devices_attr(), so after that call
-kobject_rename() to update the devid in the sysfs.  This adds and calls
-btrfs_sysfs_update_devid() helper function to update the device id.
-
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ update changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
----
-v5: squash [PATCH] btrfs: update devid after replace
-    import changes as in misc-next
-      changelog
-      rename btrfs_sysfs_xx to btrfs_devinfo_xx
-      reorder devinfo attributes
-      relocate btrfs_sysfs_update_devid with in sysfs.c
-      add device in the title
-    rename btrfs_sysfs_missing_show to btrfs_devinfo_missing_show
-
-v4:
-   after patch
-   [PATCH v5 2/2] btrfs: reset device back to allocation state when removing
-   in misc-next, the device::devid_kobj remains stale, fix it by using
-   release.
-
-v3:
-  Use optional groupid devid in BTRFS_ATTR(), it was blank in v2.
-
-V2:
-  Make the devinfo attribute to carry one parameter, so now
-  instead of dev_state attribute, we create in_fs_metadata,
-  writeable, missing and replace_target attributes.
----
- fs/btrfs/dev-replace.c |   1 +
- fs/btrfs/sysfs.c       | 155 +++++++++++++++++++++++++++++++++++------
- fs/btrfs/sysfs.h       |   1 +
- fs/btrfs/volumes.h     |   4 ++
- 4 files changed, 138 insertions(+), 23 deletions(-)
-
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 13a4ebd04a7a..131d23de5f64 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -744,6 +744,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 
- 	/* replace the sysfs entry */
- 	btrfs_sysfs_remove_devices_attr(fs_info->fs_devices, src_device);
-+	btrfs_sysfs_update_devid(tgt_device);
- 	btrfs_rm_dev_replace_free_srcdev(src_device);
- 
- 	/* write back the superblocks */
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 10b9bc551330..364c0db36a3f 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1158,29 +1158,117 @@ int btrfs_sysfs_remove_devices_attr(struct btrfs_fs_devices *fs_devices,
- 	if (!fs_devices->devices_kobj)
- 		return -EINVAL;
- 
--	if (one_device && one_device->bdev) {
--		disk = one_device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+	if (one_device) {
-+		if (one_device->bdev) {
-+			disk = one_device->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
-+			sysfs_remove_link(fs_devices->devices_kobj,
-+					  disk_kobj->name);
-+		}
- 
--		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
--	}
-+		kobject_del(&one_device->devid_kobj);
-+		kobject_put(&one_device->devid_kobj);
-+
-+		wait_for_completion(&one_device->kobj_unregister);
- 
--	if (one_device)
- 		return 0;
-+	}
- 
--	list_for_each_entry(one_device,
--			&fs_devices->devices, dev_list) {
--		if (!one_device->bdev)
--			continue;
--		disk = one_device->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
-+
-+		if (one_device->bdev) {
-+			disk = one_device->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
-+			sysfs_remove_link(fs_devices->devices_kobj,
-+					  disk_kobj->name);
-+		}
-+		kobject_del(&one_device->devid_kobj);
-+		kobject_put(&one_device->devid_kobj);
- 
--		sysfs_remove_link(fs_devices->devices_kobj, disk_kobj->name);
-+		wait_for_completion(&one_device->kobj_unregister);
- 	}
- 
- 	return 0;
- }
- 
-+static ssize_t btrfs_devinfo_in_fs_metadata_show(struct kobject *kobj,
-+						 struct kobj_attribute *a,
-+						 char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = !!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, in_fs_metadata, btrfs_devinfo_in_fs_metadata_show);
-+
-+static ssize_t btrfs_devinfo_missing_show(struct kobject *kobj,
-+					  struct kobj_attribute *a, char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = !!test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, missing, btrfs_devinfo_missing_show);
-+
-+static ssize_t btrfs_devinfo_replace_target_show(struct kobject *kobj,
-+						 struct kobj_attribute *a,
-+						 char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = !!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, replace_target, btrfs_devinfo_replace_target_show);
-+
-+static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
-+					    struct kobj_attribute *a, char *buf)
-+{
-+	int val;
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	val = !!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-+}
-+BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
-+
-+static struct attribute *devid_attrs[] = {
-+	BTRFS_ATTR_PTR(devid, in_fs_metadata),
-+	BTRFS_ATTR_PTR(devid, missing),
-+	BTRFS_ATTR_PTR(devid, replace_target),
-+	BTRFS_ATTR_PTR(devid, writeable),
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(devid);
-+
-+static void btrfs_release_devid_kobj(struct kobject *kobj)
-+{
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	memset(&device->devid_kobj, 0, sizeof(struct kobject));
-+	complete(&device->kobj_unregister);
-+}
-+
-+static struct kobj_type devid_ktype = {
-+	.sysfs_ops 	= &kobj_sysfs_ops,
-+	.default_groups = devid_groups,
-+	.release 	= btrfs_release_devid_kobj,
-+};
-+
- int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
- 				 struct btrfs_device *one_device)
- {
-@@ -1188,22 +1276,31 @@ int btrfs_sysfs_add_devices_attr(struct btrfs_fs_devices *fs_devices,
- 	struct btrfs_device *dev;
- 
- 	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
--		struct hd_struct *disk;
--		struct kobject *disk_kobj;
--
--		if (!dev->bdev)
--			continue;
- 
- 		if (one_device && one_device != dev)
- 			continue;
- 
--		disk = dev->bdev->bd_part;
--		disk_kobj = &part_to_dev(disk)->kobj;
-+		if (dev->bdev) {
-+			struct hd_struct *disk;
-+			struct kobject *disk_kobj;
-+
-+			disk = dev->bdev->bd_part;
-+			disk_kobj = &part_to_dev(disk)->kobj;
-+
-+			error = sysfs_create_link(fs_devices->devices_kobj,
-+						  disk_kobj, disk_kobj->name);
-+			if (error)
-+				break;
-+		}
- 
--		error = sysfs_create_link(fs_devices->devices_kobj,
--					  disk_kobj, disk_kobj->name);
--		if (error)
-+		init_completion(&dev->kobj_unregister);
-+		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
-+					     fs_devices->devinfo_kobj, "%llu",
-+					     dev->devid);
-+		if (error) {
-+			kobject_put(&dev->devid_kobj);
- 			break;
-+		}
- 	}
- 
- 	return error;
-@@ -1235,6 +1332,18 @@ void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
- 				"sysfs: failed to create fsid for sprout");
- }
- 
-+void btrfs_sysfs_update_devid(struct btrfs_device *device)
-+{
-+	char tmp[24];
-+
-+	snprintf(tmp, sizeof(tmp), "%llu", device->devid);
-+
-+	if (kobject_rename(&device->devid_kobj, tmp))
-+		btrfs_warn(device->fs_devices->fs_info,
-+			   "sysfs: failed to update devid for %llu",
-+			   device->devid);
-+}
-+
- /* /sys/fs/btrfs/ entry */
- static struct kset *btrfs_kset;
- 
-diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index 9d97b3c8db4e..ccf33eaf9e59 100644
---- a/fs/btrfs/sysfs.h
-+++ b/fs/btrfs/sysfs.h
-@@ -34,5 +34,6 @@ void btrfs_sysfs_add_block_group_type(struct btrfs_block_group *cache);
- int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_space_info *space_info);
- void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
-+void btrfs_sysfs_update_devid(struct btrfs_device *device);
- 
- #endif
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 98535f1e208e..309cda477589 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -136,6 +136,10 @@ struct btrfs_device {
- 	atomic_t dev_stat_values[BTRFS_DEV_STAT_VALUES_MAX];
- 
- 	struct extent_io_tree alloc_state;
-+
-+	struct completion kobj_unregister;
-+	/* For sysfs/FSID/devinfo/devid/ */
-+	struct kobject devid_kobj;
- };
- 
- /*
--- 
-2.23.0
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+=0A=
