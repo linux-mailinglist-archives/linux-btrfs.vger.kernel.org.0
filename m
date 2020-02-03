@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3137C15115F
+	by mail.lfdr.de (Postfix) with ESMTP id A489D151160
 	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 21:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgBCUuc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 15:50:32 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45233 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727191AbgBCUub (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 15:50:31 -0500
-Received: by mail-qk1-f195.google.com with SMTP id x1so15671973qkl.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 12:50:30 -0800 (PST)
+        id S1727225AbgBCUud (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 15:50:33 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35708 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727215AbgBCUud (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 15:50:33 -0500
+Received: by mail-qt1-f194.google.com with SMTP id n17so11442901qtv.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 12:50:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vqpKuRQE6Hr0QtsgBEGRCqdqnkEeEYCYq9IV7B/vDV8=;
-        b=Zi50bDUTINgtwocVatqxy+QXM30ll8w9Oj3slvhvYH8dPrvf+ipnRq6uhoXT6nrnuy
-         cchzHn+5MXBLTDXlFlvqiqR+noAXx42U8+xzOnbmr1kTEoWbZKnQg3oG0KFxILaFtcIg
-         BB8dmH7sRnNuexMjKZUQagy5HYxqkF4V8jpuW8nT8UU1baDlM8YNrSaS2gie3cTU+7R3
-         jE5yYNy0tox5RD3n3ktHL6x3knzoLsZa2agedvWWaVlgdMkHRFV1upFLUelpoR9Nk43/
-         Ib5gGlvJZ6GQeqnX3JWncQFsJ3rKCSW0osHls8mnHg0L00KNWxjftJC/ubVFLB4f/WgG
-         AXkw==
+        bh=YFAcPg4djdO95KN66+LsxZOdz0HVQ8aUClZQzb7cE+g=;
+        b=0bmBrLvgMbjh8buI3Y8Qq5HPrl1jl0VuKJIY0vf9b6S6UwbWMNXayXXiEfNwqqCcFk
+         aiMGdBpwkXfwRpZGMdgHxCggRsDTjvQjHS25BwLfjv55l5xb8Qk8brlQoQTZGrjMwFp7
+         wxMpJAU2nf59l6qnbAfkd+FlIK4Qo/d28zTueV7+G4UWb7vN0vfCp35J45uyseMCAlbm
+         YbuVQB64vDS8hYd5t4oDUkkgVyfxqgsAVmHVaCGZSu9HoKv64t3B5b/Ot6O4zhE7oq4u
+         twHUWNE/ggv5hzPF09Qr5O7g7jtxzhCuYBbZOWaXxwaXXuERo7aEc9R0qXBJgLAPZo8O
+         iReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vqpKuRQE6Hr0QtsgBEGRCqdqnkEeEYCYq9IV7B/vDV8=;
-        b=bBKEdzE5Amipm1WeY0waGfvEQYh+nBPG6lNT5Qhy8ZJVfHepxljEytL81uWvHNN90v
-         wOFQw0YZ9D44Ud4aedqQPjjKvGtGzz3cYUdlbCzGjOa2muumycLarFyTx4IawjRsXYO+
-         ad46nFSdLUYLtXWehNP6i6phicyt56aY5Ffl1gfTRe7b4iUpEQncZ8BuuPbkvIp5rz2r
-         0zbM1J5DpsidM7yiq/vkNW2xtZKqvR2oRmhk7/XLosj96lkg/4a+y1yRqmorJT0LER69
-         94EqhbBu7AWJaN9/9TWA/DZM4wAdltp1bD/ePuiUg9vQAu4sZ+DGCUFwgiELv4WdPESC
-         jrTg==
-X-Gm-Message-State: APjAAAVhMbAcN+hHwgmnMCD3GPiMW/Cazy6eEgcyVjB/W8zCGWnmCrda
-        NK2pcZG3lxEK7FNRpsWF2eTNa4LUEvVquA==
-X-Google-Smtp-Source: APXvYqyLPIpVXH6KZe0cyLZc7Q7e/WTCdvGHWLyKLF3A44ICyaOwjGHlo20Z82gJB/7i1x1cHzscvw==
-X-Received: by 2002:a37:4755:: with SMTP id u82mr24979131qka.43.1580763028927;
-        Mon, 03 Feb 2020 12:50:28 -0800 (PST)
+        bh=YFAcPg4djdO95KN66+LsxZOdz0HVQ8aUClZQzb7cE+g=;
+        b=kbx7u0tbNRB/bjBOOXwUg8IDDtrZ+/OEg9od3BwjrAxCJf4OrVuLAOf917uhI63IJw
+         ggY/MjT1lMHvKjQ0RdStqF/vQwDorFyEYynQZdPKUbIKIDuXQUpdBP+wkyEWro/lsXD5
+         +kcbk1QOmscPvD+3yrOOv8E03UBXEaXuj2qpMOdqaQGP/7+0AnEVtoN0Mi5vk2Qc8s42
+         wnC0SPEQ6qXsckBzJU/Hi1paxAUuPCO6jEzgq+pkUhZ/Y7bMBVqRplli1o/+rMo7B6Pm
+         YAjTYX2RggZhPfdSLcC2PwMXm3bmVKIT2jt7LwZcPZs+UZmmjUnyviEaOqB59qCuvH8u
+         Z6Kw==
+X-Gm-Message-State: APjAAAVmgo7N+UEPlCfx01n34MVeJ6HpcIUnumhOn1qNfZmvL9Vqj/iH
+        gHMiKR8ldMSmaZRFVBfriJeGRm89L4IuBw==
+X-Google-Smtp-Source: APXvYqwyx3FTZVPOZs/Lm20AS0kffAiOi4AvcZ5GJinU1mpEW17npnzJYa6p3H/YxqCIgm/jJEMoZQ==
+X-Received: by 2002:ac8:33f8:: with SMTP id d53mr25208473qtb.86.1580763030560;
+        Mon, 03 Feb 2020 12:50:30 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w41sm10752312qtj.49.2020.02.03.12.50.27
+        by smtp.gmail.com with ESMTPSA id z185sm4459250qkb.116.2020.02.03.12.50.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 12:50:28 -0800 (PST)
+        Mon, 03 Feb 2020 12:50:29 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 21/24] btrfs: run delayed iputs before committing the transaction for data
-Date:   Mon,  3 Feb 2020 15:49:48 -0500
-Message-Id: <20200203204951.517751-22-josef@toxicpanda.com>
+Subject: [PATCH 22/24] btrfs: flush delayed refs when trying to reserve data space
+Date:   Mon,  3 Feb 2020 15:49:49 -0500
+Message-Id: <20200203204951.517751-23-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200203204951.517751-1-josef@toxicpanda.com>
 References: <20200203204951.517751-1-josef@toxicpanda.com>
@@ -59,31 +59,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Before we were waiting on iputs after we committed the transaction, but
-this doesn't really make much sense.  We want to reclaim any space we
-may have in order to be more likely to commit the transaction, due to
-pinned space being added by running the delayed iputs.  Fix this by
-making delayed iputs run before committing the transaction.
+We can end up with free'd extents in the delayed refs, and thus
+may_commit_transaction() may not think we have enough pinned space to
+commit the transaction and we'll ENOSPC early.  Handle this by running
+the delayed refs in order to make sure pinned is uptodate before we try
+to commit the transaction.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/space-info.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index abd6f35d8fd0..d9085322bacd 100644
+index d9085322bacd..8d5d57d4aba3 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -804,8 +804,8 @@ static const enum btrfs_flush_state evict_flush_states[] = {
- 
+@@ -805,6 +805,7 @@ static const enum btrfs_flush_state evict_flush_states[] = {
  static const enum btrfs_flush_state data_flush_states[] = {
  	FLUSH_DELALLOC_WAIT,
--	COMMIT_TRANS,
  	RUN_DELAYED_IPUTS,
-+	COMMIT_TRANS,
++	FLUSH_DELAYED_REFS,
+ 	COMMIT_TRANS,
  };
  
- static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
 -- 
 2.24.1
 
