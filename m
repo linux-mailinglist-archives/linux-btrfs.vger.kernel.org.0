@@ -2,62 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D71FD1511FE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 22:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA29315122E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 23:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgBCVlR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 16:41:17 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:38087 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgBCVlQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 16:41:16 -0500
-Received: by mail-wr1-f53.google.com with SMTP id y17so20278597wrh.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 13:41:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eWG4zl0E2oVjyVtnSncZXLUtPczcWZy9C66UEVs/dyo=;
-        b=PsD7xlHqHcXCCN9xMgQ2JO8q4FWBFwcw3Nd6LCDJV1TB1IGua/u4C1lhSGpz2ReLjv
-         5bCmF1QiEpVUSXacxWbTosfA+UcPW92se8p/5RNwmvt0VgZ3oOvIRkDKa02q2nBGeQQA
-         4Z2+XiDyhOMP4hFY/lq2LXbsdTSpfj4g1ufJVngmGpk6gtKv3X4tqadMBKIsxk7ZJuKI
-         jr77CuQNoZ4ZI5+40dEYW3ZOmrztJfwlIUkllnuOg14Ybcy2WEgUusiUm8aJul5DU62m
-         sEKTutnw9qbccVClcODYRdAMFCiaTWPKAgHLgcl+NE1tNsK0pBHNPUNhEE4Gif6O87j9
-         epsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eWG4zl0E2oVjyVtnSncZXLUtPczcWZy9C66UEVs/dyo=;
-        b=k2EDFR55K2fgshGggiKCxvygoP+aapfFACAdX/dR4qn/9sNDp4T4QvukahKS08mutc
-         /u3F3iY1SdpLpUaUvaiTkRHPkQ2bdTczXohUu12NW6xp/w0NoE5t7r40LyeCWgQkmOVC
-         qBW6GFoAdJUf7JWlP7guU3mpelTuwIjgZsk72d/djgL8hl4lYPDydlBW6a4BwwdZ/Xf7
-         pEWAtr7TvNNddkPQXF0adursMg1gV7NLrfV8W5zEJlTzOWtYtHdpOumhUKt/YPYQwUek
-         TNKd6MS1IVSB+NLFZUEegQNY2NQ1AgYfc5Fh1m8M59y/XN/aVGhG5UJOud1txOWolEql
-         PfBA==
-X-Gm-Message-State: APjAAAVlza0Ei7EsHeB0Uy/FCBKuKAr+KQKP5VFUeE8b4PoxUZJ+HuY9
-        faQ4Ft07w7JBe9XxIrtO13PQH1G4J6aXoqipjabhAjSIT5DlkA==
-X-Google-Smtp-Source: APXvYqzfJXGt+4RBL86KJLoJtHgsmJblNyIIzymvsT0CM4UPTIzh9m9DB7XNkThHn+fYzjUAjvt7MnHIBByLs8JqN8M=
-X-Received: by 2002:adf:f3cc:: with SMTP id g12mr17108979wrp.236.1580766075443;
- Mon, 03 Feb 2020 13:41:15 -0800 (PST)
+        id S1726834AbgBCWAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 17:00:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726278AbgBCWAn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 17:00:43 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 506012084E;
+        Mon,  3 Feb 2020 22:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580767242;
+        bh=FS3+zcIq9vRjfPIEGimk0dwflndvQTLHJeH8VhY+sIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pmLQCC6s2uvKL+xFeLTk8E2306JBO0ihQqpvIe+wIcLDueqqLouK1pQmOJEGQovMS
+         wkDeJCgPbqvQ2uWe5TMSTuqVCozO8izIY57mIJ8Km48kyXha6tSiUJloVRN8HujXz/
+         l4uo9o9FKI7hbdkcNkbKRKU95+f6cXhMZ5Bo1B1w=
+Date:   Mon, 3 Feb 2020 17:00:41 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     dsterba@suse.cz, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Please add d55966c4279bfc6 to 5.4.x and 5.5.x
+Message-ID: <20200203220041.GA31482@sasha-vm>
+References: <20200203182949.GD2654@twin.jikos.cz>
+ <20200203195007.GA3853072@kroah.com>
 MIME-Version: 1.0
-References: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
-In-Reply-To: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 3 Feb 2020 14:40:59 -0700
-Message-ID: <CAJCQCtTuKnsQJNKupKbmBxGpkZSqWcYXBD+36v9aT6zZAqmuhg@mail.gmail.com>
-Subject: Re: btrfs balance start -musage=0 / eats drive space
-To:     Matt Corallo <linux@bluematt.me>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200203195007.GA3853072@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A developer might find it useful to see this reproduced with mount
-option enospc_debug. And soon after enospc the output from:
+On Mon, Feb 03, 2020 at 07:50:07PM +0000, Greg KH wrote:
+>On Mon, Feb 03, 2020 at 07:29:49PM +0100, David Sterba wrote:
+>> Hi,
+>>
+>> I'd like to ask the stable team to add the patch
+>>
+>> d55966c4279bfc6a0cf0b32bf13f5df228a1eeb6
+>> btrfs: do not zero f_bavail if we have available space
+>>
+>> to 5.4 and 5.5 stable trees as early as possible.
+>>
+>> I'm not familiar with your release schedules but I saw the large patch
+>> sets for review and I hope I could squeeze that one in the upcoming
+>> release.
+>>
+>> The commit fixes a problem in 'df' that causes false alerts and there
+>> are a lot of users hitting it. The patch itself is a one-liner, but
+>> with a high impact on usability.
+>
+>I've snuck it in now, and if you could provide a backport for 4.4.y,
+>that would be great as I think it's also needed there.
 
- cd /sys/fs/btrfs/UUID/allocation/ && grep -Tr .
+To help my OCD I snuck it in to 4.4 as well, it just depended on
+ae02d1bd0707 ("btrfs: fix mixed block count of available space") which
+is a fix on it's own.
 
-yep, space then dot at the end
+-- 
+Thanks,
+Sasha
