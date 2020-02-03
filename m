@@ -2,110 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BAA1504E0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FE31504EF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgBCLGI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 06:06:08 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58534 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727268AbgBCLGI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:06:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1580727988; x=1612263988;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=XqexVmN/5hw3hAxzrXvD0sIusHWgnfRUVk4l6pi3Ikg=;
-  b=dKTedXV3blLMx8UdBhBgij/AYxAUS5npWmQNe1mIhTG4rCV80FDxjCi4
-   JMGtbN96rNYgwnwYbBy1vgn/H1EFalUBk96ZBUqkYd4YGnImLE6FiMxdf
-   oDGml+p3TKZW9q24FPI9/NTmYKOrg9y5jN8RwDUL+3aO/hOX0cQwjtKGn
-   +ukyaWR8o6D3N8L8Nc3Wg/F89x/D2O6h5aDwtWRVB4kXZsrqZZ/U9gKP0
-   xMzSUfIHx9OIxzKnDrcABHkthZ6rZgILs53Gcz/pboJJ/yLPDyEh7UB8u
-   GhtKRZRLCSl9/NSYgbegIcCxIIIyDs34Kq8QveaI94qHM3qSZfV0g77CI
-   w==;
-IronPort-SDR: 5Bs2J6wRowH0Fk9QeeyaXjuRGWu82YuRHWiBLRKd2jpbZWtUo8EzcxA7rv+iVy2OkpS/23Db8S
- uKRdzGKwj5/OqaRJKALXuz0XW2MfG9fc/mg+e4f0ADRuocjnAcgmggMVCcSBJHXALzCfal7OI5
- 4qGn/JrUfNl52xF9B7HxWNzBFC3ipvKUiOh1f5G84s2Iu/UIOoTwvm5/w05pvrQSBBCzGDuaZx
- z36V9GuBkPCeVKwtvvwJZVhvA24Hm9cGe1z6tXOQnFY+B0pNOuoM5rFHnpU5Fuqn7fJKq9cI6e
- Mq0=
-X-IronPort-AV: E=Sophos;i="5.70,397,1574092800"; 
-   d="scan'208";a="230704248"
-Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Feb 2020 19:06:10 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lGkFaxub/OSHqA+0cle8Uup16lzPHgTWRbHV5yMjcNidtKVfIz7Wi8NsQeL0kZ3DO214TiWKXBLF5Xni/77pGUA6Jr+tmOqFMTXJcJ7Nehr0gxZaqUevSr+ceMf/KJVe5d1B4lZ9Le1d3AZa22B5ccJB5EgTgom+gCUADFMh0RF1Mrxj4tdE64kKKJ7bLyOCaKhXLskopefiDv0yp2LIPRzAl7Sp+Y2vW4WMGDqceX/n5/J8/tWXZZ5/sptgkCFd4OUUQRk3YvVQtmuzZRaKo+iALXLW/y8Pf0SmtdJHZJqS+GPzfmnN1KljTUGulH1aAg8uQ8xPgWITLcV0wK1R9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XqexVmN/5hw3hAxzrXvD0sIusHWgnfRUVk4l6pi3Ikg=;
- b=WzpGERhAq1qn7sLjVTaMVJQ6SjJvVuBLhJiHgSfRbbGcw94b4oBzhrtWpfVBO+/5mqJupA0oqaXsafERLNvjsnGdm8DL0CNTo/UITOfaw4U8V6ZpSMGe8JWW+dGkxQi4Zv7EHmQeCHHWpc+DARkMxsb9AgG00ZmaB3/Ksu/HH6k57W1LvxTy2M60+Mn1bQeQ64Ykv022evAhZThKv2zizBOvuCA2oCsjFbLQ5H2qDn1VyzKd2rnkP9zq0ah0ZhrTjEHQYjS72pwh/7MZ5PFtbWVBQUe2LZlMbtC58MWqE1+WlYiCc4sqItcHrXIRzfIOpz+68fIgXMc/6wX/Sf21Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XqexVmN/5hw3hAxzrXvD0sIusHWgnfRUVk4l6pi3Ikg=;
- b=neVbHmd+GM4fBGRlOB+s6Z0gdku0r/I/mbEt8vbwAVwrObpDgDU/wtJf3fT6RwYPfNlRH3Pdevnt/h4VHdr1I5Umh/SdJHUHkKaKhE13P67KdSzuCD8/hh/D/4uNQcDdvphXkTN7Q34BinSX4yeUgj1jK50ADKAE7zM8vUO+2MM=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3597.namprd04.prod.outlook.com (10.167.129.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.27; Mon, 3 Feb 2020 11:05:55 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.031; Mon, 3 Feb 2020
- 11:05:55 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-CC:     Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH 03/23] btrfs: handle U64_MAX for shrink_delalloc
-Thread-Topic: [PATCH 03/23] btrfs: handle U64_MAX for shrink_delalloc
-Thread-Index: AQHV2Ibih8Itv/f4b0CQDKnKvqgp/A==
-Date:   Mon, 3 Feb 2020 11:05:55 +0000
-Message-ID: <SN4PR0401MB359869E79393D140D49D1E8E9B000@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-4-josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [46.244.208.208]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4d8f2d15-51d4-4a51-d806-08d7a8990a7c
-x-ms-traffictypediagnostic: SN4PR0401MB3597:
-x-microsoft-antispam-prvs: <SN4PR0401MB35975EFEF8AAD73920F0FA099B000@SN4PR0401MB3597.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0302D4F392
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(189003)(199004)(19618925003)(86362001)(8936002)(8676002)(81166006)(81156014)(71200400001)(6506007)(2906002)(66946007)(76116006)(91956017)(52536014)(33656002)(4326008)(26005)(66446008)(64756008)(66556008)(66476007)(186003)(5660300002)(9686003)(55016002)(558084003)(7696005)(4270600006)(110136005)(316002)(478600001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3597;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KzaXkxS3V/rVZd1ulzy0eNvfG8FaJeKxeFURCF4mIZzI/YUjNnBLnCmaNCFH9FEUPY6cBfg8sXBbOZr4yIMRa109unUrPvp47AuRaFEIcnDR0AisK8GtjMPCvvYaHz34cswoMzwuxnUvI94mpeXlVmheT45DTkGsnEmB3W6R8PmlgMPQIgUPmefGLa2YhNf5+okeXcpMqJtyB1NBeBf+1TmlxHhmvkFH1ZaNK3Tptr964om8b5UW1IiGPr3VvtI2ISLu1/No4Opo64YY4/H6MxLuLxLMgHsHwZ1zXpWsAQKbeLohrC0Ix65DLbmu+cOQM7XDn2F7X+tUnozUdPgXoPWhHe0Ny+D10TaulENnhnefvi1oUS2rbDvql41hj2F6kqi8csIquGc7gkYd757hTBjRB5MCQHb34BQmdaJrXI/wgJuay5r99uyiQ0QJOftU
-x-ms-exchange-antispam-messagedata: KDjxxyqvTrZv2FYhCKs6AEQwQklK3D017qzmACCB7fZarKivehIwPKQUoSm48sjQFDVIPZwxLpVGoFJm3XKQWlPZH3NeZ8TXRVzo3U2xn4D3G/SiCsn9/QURHmt80PuvjksRM95QfeW64wHltxEoGQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727779AbgBCLJv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 06:09:51 -0500
+Received: from mout.gmx.net ([212.227.17.22]:36349 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727509AbgBCLJu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 06:09:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580728187;
+        bh=7G36NyB25cIIa+x+iuWU/sC+bJ0EYLGDwXrUpuCSrZM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=W02+ag/U/nDpmLVFunnZeP4S5ab5MxUPG+RwDWQmRnZZUF/xdisr86UX1WnHAagDm
+         AE9aUFdCbZ6L+5QyzEnvIs58ZVQhMjOqvY/YcHC28p778VmKgnXoU3786rZnkCnXQ4
+         H52+nHYs2xrLvcbTBk6dCCEQlyznNG9+r4bHWDMY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MS3il-1j8dGb0CXz-00TRHO; Mon, 03
+ Feb 2020 12:09:47 +0100
+Subject: Re: My first attempt to use btrfs failed miserably
+To:     Skibbi <skibbi@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CACN+yT_AYiLc29M41U+WrQHtk4t==D-4AkH+wRROKJY=WstGAA@mail.gmail.com>
+ <CAJCQCtR0hzV+9S7cggGUUTtp4R1WdnSwzsOp=9fTnxvzn3Stmw@mail.gmail.com>
+ <CACN+yT-FrVi71HKANj7NRinyPoDG5Aowma9NT=UB2WGvqoLSVA@mail.gmail.com>
+ <94fb7bb4-53a5-f2e8-a214-2d12cf49664c@gmx.com>
+ <CACN+yT8OD1jFFgbdrNuqrfsfYZMpPfJaTQ+7cGUSuWaaeH9g9w@mail.gmail.com>
+ <8944f055-6693-01a9-5b29-23d78c309274@gmx.com>
+ <CACN+yT_6_LaZ_Yep88FgZZcRDTDXvmBczWDUW=r0O=ts6vkLJg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <14db65cb-f0d5-5af1-3efa-de8dfaf23f18@gmx.com>
+Date:   Mon, 3 Feb 2020 19:09:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d8f2d15-51d4-4a51-d806-08d7a8990a7c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2020 11:05:55.4911
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1qeY/2I62dTuAotUBZT0EkejRiTysv/aWKfkdoSpe0EFgXF6geKpvnntEw6hdtTLszEfUU/JOnvbdbzFHN1lybNS6hfQhB4lvHoGVBLoN4s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3597
+In-Reply-To: <CACN+yT_6_LaZ_Yep88FgZZcRDTDXvmBczWDUW=r0O=ts6vkLJg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YvD4Ub3xJAr2IHlx5SoVc0UpdItWpK7gf"
+X-Provags-ID: V03:K1:ujz17dWAygpyXk8VvoQOx1v7VK20q7CtS1nPQPGzLju1uTX0nS7
+ 736Y2CIFGFo2Gkkaj9JTHR2A9ilZCb8Ic/YWQj7lX0BESjjeeXv2Siu+d95Qs4Zp0Y5Yy/m
+ /dDYe5B4rNfp1ZpPGb6re4gfYxd3rGRAUAz8rEPynIFTk5p2S6/3LGYw1svScbQ3ScPi5EC
+ uRqWic3e8dr8LAkG/R5IQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3IvJlUnXL7o=:Goex3d1fS2WyCadgDFFFgE
+ 10xHUwQbL82Obv7yQIm3LBors8oIb+g7GqwiWK7ZzAeZz+8ntHOlzv75jxxGTvxtfYWsulWdO
+ 7qQ/brFnBbtrGFDzkp06euWFJJTDhJOU27I4kanHi4/a9vyMyaKJRZWLxS7RrpHVlmySp2Q//
+ qlDfdwWWdYooLECFpl5rLFIWgiCoGOhP825Wy1YojpR7IMWZ8RkdAx1MZnGWKjYtQvwtTdcBX
+ aZSrVpXeh481+qF9dnoM5Lk2F1QguHMY0XMlf0v+3Rer9UwPCaM4FtvkOQY1pwh56wkdF1kRq
+ H9qC7/BpngWP/9z+tlKPWPCzp1vfDwMpDHZlHNkYx0chEjcZTJKch5HzLR2a7HmlWiY9eW98K
+ Q/Zzz8SwFkKJA7crLMtTqF2uPM3DX77T26qIg+niA+xxu9QHDgucnfzZyQhYTnv8cXpFUwEDJ
+ mJy5vZ3CLjEqtxlpQR4AaGGu3DtD1puFaf54gAfTmglbQrv3AY0qqBIA/n2IBqJNadu7mcH53
+ cA0BWg134qb+mscR9Un+9P6jNiNOvJBdS6D09yrTVE0NAqbCXhR8a7+I3WJHA2mSf1PDtcI5P
+ vXvUoaSR8fmg0NhTa0GbGQp3lzi4HTQMv6lwADD1Zqbwx7h2EOnfUl4p7ytVRdlm63qy6wkRc
+ wJD8S6JGJ2CgSYW+L4RuiEhVjQYuq99u78pMEpOw5iGDKbmO5HP+xu01JXKnEQWT4412TeKiL
+ HF6Q4aLRFNRXY5+6MvY6nuzdPUtN4z1t4Shv2/n9vXlrZWtbNOKyfdlMNakCb75hFsNuWpKeL
+ B0/YM1Sndc69HwairU0sObdjanOcodz8RK9oBTHMjfvfOb3PGST8FHjt5gWXJof3EEOtjcXwU
+ vR41qgGk+2bRx0Hl2SolkmJl1t5dTPLr3bK0qulpxZIhMibPmXw7fn2wN8QogmFtpSI1VLHFv
+ k3VcY8iZWSElLYV7Ud0SF0VY/zSEZvehSNo9dh8rtSm32HoEcONU/yTCN+iMAgLI5TQchzKhE
+ Dya9L8nPTpxOvc4dkQzbqS+RNbCRhEENDMFtGw3h1Tg/PUb1M1xzkNwzhVxZ9KxbIFgG5XH+i
+ VXlhLZS6Dgg7l+njJClRoeAVtU93ufXupnjqAdVOF6kucd2A4jl9QnsAHiRR6qqKrN8B66dt6
+ wrWzRKpg5ZMDJSPym0RoB8XI0i7uzBkgVjHPVETVuh6UK19g0i2nCBxlVv7KoFagoAxdfMvVx
+ 69ZqXPen8W6n9gvVP
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YvD4Ub3xJAr2IHlx5SoVc0UpdItWpK7gf
+Content-Type: multipart/mixed; boundary="XQ0ToYzeaqxJQlG4qeqXpp6AENGCGauaR"
+
+--XQ0ToYzeaqxJQlG4qeqXpp6AENGCGauaR
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/2/3 =E4=B8=8B=E5=8D=886:56, Skibbi wrote:
+> pon., 3 lut 2020 o 11:11 Qu Wenruo <quwenruo.btrfs@gmx.com> napisa=C5=82=
+(a):
+>=20
+>> It depends on the timing.
+>>
+>> In fact, as your initial report said, btrfs even succeeded to read som=
+e
+>> tree copy from the disk when we lost the device for a while.
+>> And finally goes RO if btrfs fails to write any tree blocks.
+>=20
+> Yeah, it wen't RO but when I tried to remount I got bad superblock bla
+> bla.
+
+Then that's the most important part.
+
+> And I was unable to fix this by using btrfs repair for example.
+
+btrfs check --repair is really the hardest part.
+In theory we shouldn't even need it, but you know that's not the reality.=
+
+
+> I'm not sure if it possible to recover from the error I got. That's
+> why I'm concerned about power issues in the future. I've been using
+> ext4 for decades and I don't remember that fatal filesystem crash.
+
+All fses should survive power loss, obviously including btrfs.
+
+> Yeah I lost some data due to bad sectors or power loss but I was
+> always able to mount the filesystem.
+>=20
+The current conclusion is, as long as the disk follows FUA/FLUSH
+correctly, btrfs should provide even data consistency across power loss.
+(except certain known bugs in the past, which should all have been fixed)=
+
+
+But the problem is, there seems to be some disks not following such
+spec, especially in consumer grade HDDs, thus sometimes it's recommended
+to disable write cache (aka, all writes returns when it reaches disk).
+
+If you want to be extra safe, then you can go that solution.
+The performance impact shouldn't be obvious, as linux page cache is
+handling thing really well.
+
+Thanks,
+Qu
+
+
+--XQ0ToYzeaqxJQlG4qeqXpp6AENGCGauaR--
+
+--YvD4Ub3xJAr2IHlx5SoVc0UpdItWpK7gf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl43/3YACgkQwj2R86El
+/qhT1gf+JOqodt1XUZz5c8HFQDiXST/4nX9I5xEgiJJWyPkXHv61YHeUklRNWJE3
+7u9JWoGe3+FKLX4hZw7+e2OrbHPrrgcaLIGV3jVXDrvYily6B3qx2VYzMcycTiF0
+zVL+wZUs9pjSMoXrg4Q+ouKdgzde3IrxHhWZUbXfLih4l7aQfq0Tq6V+F7TJqs02
+6FBYPSD7DjKZj778ZlKk1Cu8gxhlbru96fBFzrMaS5uvELLfABsZ+m0VESzpHUI1
+KQu2FyVm6vN1WhecqQ+IB/e2d3zCiFwZWeT9eB/fuRXIh1sRhxTfTsfav4V8Yy7w
+2smf6677OYuXNon+iEnr/0eI71F6QQ==
+=5NB6
+-----END PGP SIGNATURE-----
+
+--YvD4Ub3xJAr2IHlx5SoVc0UpdItWpK7gf--
