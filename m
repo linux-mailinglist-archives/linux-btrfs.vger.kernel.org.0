@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DF1505CE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 13:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D0415069C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 14:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727722AbgBCMDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 07:03:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53282 "EHLO mx2.suse.de"
+        id S1727616AbgBCNKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 08:10:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34248 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgBCMDp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 07:03:45 -0500
+        id S1727267AbgBCNKv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 08:10:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AF2EEAEA8;
-        Mon,  3 Feb 2020 12:03:43 +0000 (UTC)
-Subject: Re: [PATCH 10/23] btrfs: use btrfs_start_delalloc_roots in
- shrink_delalloc
+        by mx2.suse.de (Postfix) with ESMTP id CA95CB1FA;
+        Mon,  3 Feb 2020 13:10:49 +0000 (UTC)
+Subject: Re: [PATCH 11/23] btrfs: check tickets after waiting on ordered
+ extents
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-11-josef@toxicpanda.com>
+ <20200131223613.490779-12-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <39072cbc-25ba-28a9-4eed-9f34bac5a9cc@suse.com>
-Date:   Mon, 3 Feb 2020 14:03:42 +0200
+Message-ID: <bff2845a-6947-dfdf-ae1f-d04ebd10eca4@suse.com>
+Date:   Mon, 3 Feb 2020 15:10:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200131223613.490779-11-josef@toxicpanda.com>
+In-Reply-To: <20200131223613.490779-12-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,25 +81,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
-> The original iteration of flushing had us flushing delalloc and then
-> checking to see if we could make our reservation, thus we were very
-> careful about how many pages we would flush at once.
-> 
-> But now that everything is async and we satisfy tickets as the space
-> becomes available we don't have to keep track of any of this, simply try
-> and flush the number of dirty inodes we may have in order to reclaim
-> space to make our reservation.  This cleans up our delalloc flushing
-> significantly.
-> 
-> The async_pages stuff is dropped because btrfs_start_delalloc_roots()
-> handles the case that we generate async extents for us, so we no longer
-> require this extra logic.
+> Right now if the space is free'd up after the ordered extents complete
+> (which is likely since the reservations are held until they complete),
+> we would do extra delalloc flushing before we'd notice that we didn't
+> have any more tickets.  Fix this by moving the tickets check after our
+> wait_ordered_extents check.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+This patch makes sense only for metadata. Is this your intention -
+tweaking the metadata change behavior? Correct me if I'm wrong but
 
-This change really equates to calling ->writepages() for every delalloc
-inode. The old code in btrfs_writeback_inodes_sb_nr was more or less
-doing the same. So :
+btrfs_start_delalloc_roots from previous patch will essentially call
+btrfs_run_delalloc_range for the roots which will create ordered extents in:
+btrfs_run_delalloc_range
+  cow_file_range
+   add_ordered_extents
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Following page writeout, from the endio routines we'll eventually do:
+
+finish_ordered_fn
+ btrfs_finish_ordered_io
+  insert_reserved_file_extent
+   btrfs_alloc_reserved_file_extent
+    create delayed ref  <---- after the delayed extent is run this will
+free some data space. But this happens in transaction commit context and
+not when runnig ordered extents
+  btrfs_remove_ordered_extent
+   btrfs_delalloc_release_metadata <- this is only for metadata
+    btrfs_inode_rsv_release
+     __btrfs_block_rsv_release <-- frees metadata but not data?
+
+
+I'm looking those patches thinking every change should be pertinent to
+data space but apparently it's not. If so I think it will be best if you
+update the cover letter for V2 to mention which patches can go in
+independently or give more context why this particular patch is
+pertinent to data flush.
