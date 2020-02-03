@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C92A150A75
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0470A150A8A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 17:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgBCQC6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 11:02:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44114 "EHLO mx2.suse.de"
+        id S1728629AbgBCQKi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 11:10:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50160 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727145AbgBCQC5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 11:02:57 -0500
+        id S1728621AbgBCQKi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 11:10:38 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B1313ADC2;
-        Mon,  3 Feb 2020 16:02:55 +0000 (UTC)
-Subject: Re: [PATCH 18/23] btrfs: drop the commit_cycles stuff for data
- reservations
+        by mx2.suse.de (Postfix) with ESMTP id 40B81B039;
+        Mon,  3 Feb 2020 16:10:36 +0000 (UTC)
+Subject: Re: [PATCH 19/23] btrfs: don't pass bytes_needed to
+ may_commit_transaction
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200131223613.490779-1-josef@toxicpanda.com>
- <20200131223613.490779-19-josef@toxicpanda.com>
+ <20200131223613.490779-20-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <8d1bed14-35e1-bfcc-98b6-026b060508e5@suse.com>
-Date:   Mon, 3 Feb 2020 18:02:54 +0200
+Message-ID: <463638f9-deaf-f070-8dea-d9fd09a9c4fd@suse.com>
+Date:   Mon, 3 Feb 2020 18:10:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200131223613.490779-19-josef@toxicpanda.com>
+In-Reply-To: <20200131223613.490779-20-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,71 +81,58 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 1.02.20 г. 0:36 ч., Josef Bacik wrote:
-> This was an old wart left over from how we previously did data
-> reservations.  Before we could have people race in and take a
-> reservation while we were flushing space, so we needed to make sure we
-> looped a few times before giving up.  Now that we're using the ticketing
-> infrastructure we don't have to worry about this and can drop the logic
-> altogether.
+> This was put into place in order to mirror the way data flushing handled
+> committing the transaction.  Now that we do not loop on committing the
+> transaction simply force a transaction commit if we are data.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/space-info.c | 22 ++--------------------
->  1 file changed, 2 insertions(+), 20 deletions(-)
+>  fs/btrfs/space-info.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
 > 
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 13a3692a0122..3060754a3341 100644
+> index 3060754a3341..cef14a4d4167 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -858,7 +858,6 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
->  					int states_nr)
+> @@ -412,14 +412,14 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+>   * will return -ENOSPC.
+>   */
+>  static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+> -				  struct btrfs_space_info *space_info,
+> -				  u64 bytes_needed)
+> +				  struct btrfs_space_info *space_info)
 >  {
->  	int flush_state = 0;
-> -	int commit_cycles = 2;
+>  	struct reserve_ticket *ticket = NULL;
+>  	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_block_rsv;
+>  	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+>  	struct btrfs_trans_handle *trans;
+>  	u64 reclaim_bytes = 0;
+> +	u64 bytes_needed;
+>  	u64 cur_free_bytes = 0;
+>  	bool do_commit = false;
 >  
->  	while (!space_info->full) {
->  		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-> @@ -869,21 +868,9 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
->  		}
->  		spin_unlock(&space_info->lock);
->  	}
-> -again:
-> -	while (flush_state < states_nr) {
-> -		u64 flush_bytes = U64_MAX;
-> -
-> -		if (!commit_cycles) {
-> -			if (states[flush_state] == FLUSH_DELALLOC_WAIT) {
-> -				flush_state++;
-> -				continue;
-> -			}
-> -			if (states[flush_state] == COMMIT_TRANS)
-> -				flush_bytes = ticket->bytes;
-> -		}
+> @@ -428,12 +428,10 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+>  		return -EAGAIN;
 >  
-> -		flush_space(fs_info, space_info, flush_bytes,
-> -			    states[flush_state]);
-> +	while (flush_state < states_nr) {
-> +		flush_space(fs_info, space_info, U64_MAX, states[flush_state]);
+>  	/*
+> -	 * If we are data and have passed in U64_MAX we just want to
+> -	 * unconditionally commit the transaction to match the previous data
+> -	 * flushing behavior.
+> +	 * If we are data just force the commit, we aren't likely to do this
+> +	 * over and over again.
+>  	 */
 
-nit: Wouldn't make much of a difference but I wonder if the semantic
-here is closer to a for loop rather than a while.
+I don't think the 2nd part of the comment brings any value hence can  be
+removed.
 
->  		spin_lock(&space_info->lock);
->  		if (ticket->bytes == 0) {
->  			spin_unlock(&space_info->lock);
-> @@ -892,11 +879,6 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
->  		spin_unlock(&space_info->lock);
->  		flush_state++;
+> -	if ((space_info->flags & BTRFS_BLOCK_GROUP_DATA) &&
+> -	   bytes_needed == U64_MAX) {
+> +	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA) {
+>  		do_commit = true;
+>  		goto check_pinned;
 >  	}
-> -	if (commit_cycles) {
-> -		commit_cycles--;
-> -		flush_state = 0;
-> -		goto again;
-> -	}
->  }
->  
->  static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
-> 
+
+<snip>
