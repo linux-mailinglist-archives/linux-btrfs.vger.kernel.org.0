@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF0215115C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 21:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F05715115D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 21:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727190AbgBCUu1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 15:50:27 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:46290 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgBCUu0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 15:50:26 -0500
-Received: by mail-qv1-f66.google.com with SMTP id y2so7468100qvu.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 12:50:24 -0800 (PST)
+        id S1727202AbgBCUu2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 15:50:28 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34251 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727192AbgBCUu2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 15:50:28 -0500
+Received: by mail-qk1-f195.google.com with SMTP id g3so7101563qka.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Feb 2020 12:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=HuSDBpvuCX+F7bi3/CaZw77Ffglwhc/jS68wIUdCPhc=;
-        b=u9ZBfuon8bApPXIIuTB1+FrDWOrhBVltO4PT7nuvJ/d63PzmddVSYWy9uls59+iS59
-         T7M5jVD/SAlx/O3nlpMyy3lPU5XnamQwMoXwBG63yv0+dvnNd1gxyTWBBUJcYENCXBg7
-         6UzDOqUJBBQmdawbVHoUqTx4KG/bt1X/A/ItggjzoQxkrhtsgrx12CFGJGU9TIL5VgJp
-         1qX25WQCqDeCw3MeAE7B+25QeEfAMFNxD0VdaUcI8j6kYau0/umLEk22FrZfiO0s97vx
-         XPciIpjQMHIcNSB5hjiQMNZ7LLtg37XTzmXGmPlQtuoVpTlBIFTjuObEjdqV5DW6QxeU
-         ADZg==
+        bh=UCKwbA1DFbxJ1Jc5tBULr5K2ntsdL8gyXZF5no1yEHA=;
+        b=jUdDPvK+9b1HDd4QRhcmOsWyhGBVPzVo5AATXYQcSu1hyhgvAdDZLuLSO2Kp3Ftq0k
+         eqslyJ0wDuiKH1JIgThGRIWkgSCoFkV6N8w1oq4VnoOi9sv9pGi9PcX5sv4YvkQMnDBh
+         VVVLcgxY7BipmeyEj2z3wAK5y0hF1iP/rMJuFhRHIzimbGSVv5yBLxsnCDvpCW/Bc4wH
+         n6JhHw9wr7V+6euBClDcnPtbhFs5pmpFg9A1lV5P48rI3/BbLK/GQQa0A9YWtatp2Wsn
+         5K6cY2IaBxzaVdQOQgQBff9bi0bU941oX4Wl62AdqmmqRswPUvKxI0GOExNfnROGPUnp
+         GfGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HuSDBpvuCX+F7bi3/CaZw77Ffglwhc/jS68wIUdCPhc=;
-        b=dsG8ZqSX98+qyUEvLNoD5n3qsVNUIW6ZIG7Yc9y+v8E+z2Gx/Prkt4eU6Nj6nGLBWR
-         HdMDSHbiRRU+Dqs1VTTROv29ojJ5cleS5kzMISNdkoHW3KxZx6Hj7whe53RwEG+cYac8
-         BvzrHu1oYtdz0xZewLx4PLhzxMHxoBy1JqDgmOXDatXuN4+iWKHPAOFeRtqZvVnmcyqe
-         rOL9bPnOuitq+p7e5RWWLtXvq3jSmW+G9sAEB653Zpt7uBEdwBuze2GC/jpePNENbwm6
-         hn4TUS/f5a8x8BuDIvSmFb7XeCqaoUgFSWSJcb/85wKBCFiM73zGNRyAY2QoNO06oM/R
-         cnhA==
-X-Gm-Message-State: APjAAAVxPAX0UpQ+5qXAshG3gw4OpYi95TDjtPipWjdF7AYrIoF4N84Z
-        MWUvZWbPy2AH+hrVW9ZwQTdw3mYj08Gr2Q==
-X-Google-Smtp-Source: APXvYqwtmN3wVVAuJHncIjvKfhGjHjs72IYlsRgFLwqOhuFLq+YyEbVV8O4YaTgqV9tRy38tWRGJ+w==
-X-Received: by 2002:ad4:518b:: with SMTP id b11mr25010184qvp.195.1580763023796;
-        Mon, 03 Feb 2020 12:50:23 -0800 (PST)
+        bh=UCKwbA1DFbxJ1Jc5tBULr5K2ntsdL8gyXZF5no1yEHA=;
+        b=WLiThvMqOYFw+/8b4Jrfy1ePuQbfcJqXDdDI1Dc9JzMA99V9HgWJCaYfyDRaixyLxN
+         b/kaj6WQoGaNVqY6VVWSVRNweQdP7PpNuosbiwQKFG2Fa/MV7VMAYRyDK5Ry1izuLzUZ
+         FV9V4NVrRoNS6CmpgrpfKloE8LI56VU9g+qFMWDN3Uo1NjeDv6u8EGn9kelz02FQn/MK
+         JJy58WdTEPGqcpi67UTHziPIBuEn8q1eq3HGHpwIMIaqSF+hk4GKQuzu6J+M3Zamx5RG
+         0SP5BIIfFcO73T41TujYFjnaPXni3/2wEktEa0U5gjGGp9xfsdh1ZJRPeJ0Lp7RgIiUa
+         X2jw==
+X-Gm-Message-State: APjAAAULbfpX4pAG9kF/w1tMqPhnNT+IMafjPNYvDQOxIT8C2c4uUIWc
+        jaWnsRB6KZfvIgcAGQaIdfZH9+2wBxWZ9Q==
+X-Google-Smtp-Source: APXvYqw5V1D9xuqyC2skrEpP39vbf1AhMWE/OJtR/3umwBvsWdfLH+3rh6IziF7ldNgxJv2Jij8RKA==
+X-Received: by 2002:a37:5805:: with SMTP id m5mr9477570qkb.450.1580763025355;
+        Mon, 03 Feb 2020 12:50:25 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id h8sm10537419qtm.51.2020.02.03.12.50.22
+        by smtp.gmail.com with ESMTPSA id e64sm10569974qtd.45.2020.02.03.12.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 12:50:23 -0800 (PST)
+        Mon, 03 Feb 2020 12:50:24 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 18/24] btrfs: drop the commit_cycles stuff for data reservations
-Date:   Mon,  3 Feb 2020 15:49:45 -0500
-Message-Id: <20200203204951.517751-19-josef@toxicpanda.com>
+Subject: [PATCH 19/24] btrfs: don't pass bytes_needed to may_commit_transaction
+Date:   Mon,  3 Feb 2020 15:49:46 -0500
+Message-Id: <20200203204951.517751-20-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200203204951.517751-1-josef@toxicpanda.com>
 References: <20200203204951.517751-1-josef@toxicpanda.com>
@@ -59,66 +59,70 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This was an old wart left over from how we previously did data
-reservations.  Before we could have people race in and take a
-reservation while we were flushing space, so we needed to make sure we
-looped a few times before giving up.  Now that we're using the ticketing
-infrastructure we don't have to worry about this and can drop the logic
-altogether.
+This was put into place in order to mirror the way data flushing handled
+committing the transaction.  Now that we do not loop on committing the
+transaction simply force a transaction commit if we are data.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 22 ++--------------------
- 1 file changed, 2 insertions(+), 20 deletions(-)
+ fs/btrfs/space-info.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 225f7f8a0503..8c5543328ec4 100644
+index 8c5543328ec4..d20c338f2780 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -859,7 +859,6 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 					int states_nr)
+@@ -412,14 +412,14 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+  * will return -ENOSPC.
+  */
+ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+-				  struct btrfs_space_info *space_info,
+-				  u64 bytes_needed)
++				  struct btrfs_space_info *space_info)
  {
- 	int flush_state = 0;
--	int commit_cycles = 2;
+ 	struct reserve_ticket *ticket = NULL;
+ 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_block_rsv;
+ 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+ 	struct btrfs_trans_handle *trans;
+ 	u64 reclaim_bytes = 0;
++	u64 bytes_needed;
+ 	u64 cur_free_bytes = 0;
+ 	bool do_commit = false;
  
- 	while (!space_info->full) {
- 		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-@@ -870,21 +869,9 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 		}
- 		spin_unlock(&space_info->lock);
+@@ -428,12 +428,10 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+ 		return -EAGAIN;
+ 
+ 	/*
+-	 * If we are data and have passed in U64_MAX we just want to
+-	 * unconditionally commit the transaction to match the previous data
+-	 * flushing behavior.
++	 * If we are data just force the commit, we aren't likely to do this
++	 * over and over again.
+ 	 */
+-	if ((space_info->flags & BTRFS_BLOCK_GROUP_DATA) &&
+-	   bytes_needed == U64_MAX) {
++	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA) {
+ 		do_commit = true;
+ 		goto check_pinned;
  	}
--again:
--	while (flush_state < states_nr) {
--		u64 flush_bytes = U64_MAX;
--
--		if (!commit_cycles) {
--			if (states[flush_state] == FLUSH_DELALLOC_WAIT) {
--				flush_state++;
--				continue;
--			}
--			if (states[flush_state] == COMMIT_TRANS)
--				flush_bytes = ticket->bytes;
--		}
+@@ -451,7 +449,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+ 	else if (!list_empty(&space_info->tickets))
+ 		ticket = list_first_entry(&space_info->tickets,
+ 					  struct reserve_ticket, list);
+-	bytes_needed = (ticket) ? ticket->bytes : bytes_needed;
++	bytes_needed = (ticket) ? ticket->bytes : 0;
  
--		flush_space(fs_info, space_info, flush_bytes,
--			    states[flush_state]);
-+	while (flush_state < states_nr) {
-+		flush_space(fs_info, space_info, U64_MAX, states[flush_state]);
- 		spin_lock(&space_info->lock);
- 		if (ticket->bytes == 0) {
- 			spin_unlock(&space_info->lock);
-@@ -893,11 +880,6 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 		spin_unlock(&space_info->lock);
- 		flush_state++;
- 	}
--	if (commit_cycles) {
--		commit_cycles--;
--		flush_state = 0;
--		goto again;
--	}
- }
- 
- static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+ 	if (bytes_needed > cur_free_bytes)
+ 		bytes_needed -= cur_free_bytes;
+@@ -584,7 +582,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
+ 		btrfs_wait_on_delayed_iputs(fs_info);
+ 		break;
+ 	case COMMIT_TRANS:
+-		ret = may_commit_transaction(fs_info, space_info, num_bytes);
++		ret = may_commit_transaction(fs_info, space_info);
+ 		break;
+ 	default:
+ 		ret = -ENOSPC;
 -- 
 2.24.1
 
