@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE0E1504C8
+	by mail.lfdr.de (Postfix) with ESMTP id 819EE1504C9
 	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Feb 2020 12:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727716AbgBCLAZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 06:00:25 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:50932 "EHLO
+        id S1727741AbgBCLA0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 06:00:26 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50936 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgBCLAY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:24 -0500
+        with ESMTP id S1727669AbgBCLAZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 06:00:25 -0500
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArsZ2018023;
-        Mon, 3 Feb 2020 11:00:21 GMT
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013Arf7L017842;
+        Mon, 3 Feb 2020 11:00:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=8r9ONH+cvqJkISB6j5xTjK+HCEM/Kf0vNke7MZe4eho=;
- b=L/6Ar669xVsgKMyy9NpWprsSpGv+T48fTXYzxBn0a/2YU+TiznZOgK5jKthAbNYJVdiH
- tOvKu3rF6KNRBdmFT7hzP2YXc2itzyY5tczHUBRw55Qi6cgLHn0ysnxmtxFog8jipnh7
- QZepGdnM2bNH3vf0SRRSagX5G/QnlOYvtwScnicHT8aMkpJt/AQFBHGd9hPzaaC3gjgB
- cQRZH1vvNUIPTXMrWQ6Nz/qqizTO1qRpcX0t6MaJiJsaf86C7BWlBohNkQKDM4yG69zE
- ewwkCLeB5SuCJ+0EaziiLWuha4O7aqVoe+iad8BsvDgc5V2Nk5qGxeHc5VRBYdFRgpf/ /w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2xw0rty2b2-1
+ bh=p54uBINHa8UN+TIHL8PzQuVKfxL+Opodx0R1K95iQmg=;
+ b=kvIL03VnwZSKDyFTbM8imlJYCVjFEkzSZdMglx76oNoTXbWbY+X0I6IqAeu1Y/5hPJoA
+ grr4P4yP5/KOWIleNTnS/jPEaGe0WrvI+kyFsoyX4teQR8Er/3g8AxHRKOYaaWAFuFzl
+ gDbrkRKzMolutGblkBysgwK2BxLimoZ2WnkCSNUN227yy1zKh0Y34R8G3Jlyh5wftN8j
+ yYh2w/p0o42vMQQ5qRZkQRqmqp/86S5JT117nSpYRVfx/NQSaL+S+pNO+wblxdV7KD4k
+ VVWIgkQaldar6XnxSjntBRQm2lrxtnIn3AFjyHjJDQh+Ye3aNKTvb7X1LiMTmCZ7H3df UA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2xw0rty2b7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 Feb 2020 11:00:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013Areta082718;
+        Mon, 3 Feb 2020 11:00:21 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2xwjt3q6mh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Mon, 03 Feb 2020 11:00:21 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 013ArkFO023906;
-        Mon, 3 Feb 2020 11:00:20 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2xwkg8h69h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 Feb 2020 11:00:19 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 013B0JIe006998;
-        Mon, 3 Feb 2020 11:00:19 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 013B0Lx5011052;
+        Mon, 3 Feb 2020 11:00:21 GMT
 Received: from localhost.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Feb 2020 03:00:18 -0800
+        with ESMTP ; Mon, 03 Feb 2020 03:00:20 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
-Subject: [PATCH resend 1/4] btrfs: sysfs, use btrfs_sysfs_remove_fsid in fail return in add_fsid
-Date:   Mon,  3 Feb 2020 19:00:09 +0800
-Message-Id: <20200203110012.5954-2-anand.jain@oracle.com>
+Subject: [PATCH resend 2/4] btrfs: sysfs, add UUID/devinfo kobject
+Date:   Mon,  3 Feb 2020 19:00:10 +0800
+Message-Id: <20200203110012.5954-3-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20200203110012.5954-1-anand.jain@oracle.com>
 References: <20200203110012.5954-1-anand.jain@oracle.com>
@@ -67,36 +67,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have one simple function btrfs_sysfs_remove_fsid() to cleanup
-kobjects added by btrfs_sysfs_add_fsid() and calls kobject_put() and
-kobject_delete() only if the kobject is initialized or not null.
-So use this function while retreating in the function
-btrfs_sysfs_add_fsid().
+Preparatory patch creates kobject /sys/fs/btrfs/UUID/devinfo to hold
+btrfs_fs_devices::dev_state attribute.
 
-One difference though, earlier we did not call kobject_del() during
-retreat in btrfs_sysfs_add_fsid() and I did experiment to figureout
-if that's an error or warning, however I didn't notice any such issues
-with or without kobject_del() not being called.
-
-So this patch is just for cleanup.
+This is being added in the mount context, that means we don't see
+UUID/devinfo before the mount (yet).
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/sysfs.c   | 15 +++++++++++++++
+ fs/btrfs/volumes.h |  1 +
+ 2 files changed, 16 insertions(+)
 
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 55e4ed1af29c..8def038dc2bd 100644
+index 8def038dc2bd..58ef2c04e5be 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -1256,7 +1256,7 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs)
- 	if (!fs_devs->devices_kobj) {
- 		btrfs_err(fs_devs->fs_info,
- 			  "failed to init sysfs device interface");
--		kobject_put(&fs_devs->fsid_kobj);
-+		btrfs_sysfs_remove_fsid(fs_devs);
+@@ -901,6 +901,12 @@ static int addrm_unknown_feature_attrs(struct btrfs_fs_info *fs_info, bool add)
+ 
+ static void __btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs)
+ {
++	if (fs_devs->devinfo_kobj) {
++		kobject_del(fs_devs->devinfo_kobj);
++		kobject_put(fs_devs->devinfo_kobj);
++		fs_devs->devinfo_kobj = NULL;
++	}
++
+ 	if (fs_devs->devices_kobj) {
+ 		kobject_del(fs_devs->devices_kobj);
+ 		kobject_put(fs_devs->devices_kobj);
+@@ -1260,6 +1266,15 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs)
  		return -ENOMEM;
  	}
+ 
++	fs_devs->devinfo_kobj = kobject_create_and_add("devinfo",
++						       &fs_devs->fsid_kobj);
++	if (!fs_devs->devinfo_kobj) {
++		btrfs_err(fs_devs->fs_info,
++			  "failed to init sysfs devinfo kobject");
++		btrfs_sysfs_remove_fsid(fs_devs);
++		return -ENOMEM;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 9c7d4fe5c39a..98535f1e208e 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -254,6 +254,7 @@ struct btrfs_fs_devices {
+ 	/* sysfs kobjects */
+ 	struct kobject fsid_kobj;
+ 	struct kobject *devices_kobj;
++	struct kobject *devinfo_kobj;
+ 	struct completion kobj_unregister;
+ };
  
 -- 
 2.23.0
