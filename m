@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6A1151C3F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 15:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FA8151C40
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 15:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbgBDOcv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 09:32:51 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:41396 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbgBDOcu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 09:32:50 -0500
-Received: by mail-qv1-f68.google.com with SMTP id s7so8623828qvn.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 06:32:49 -0800 (PST)
+        id S1727279AbgBDOcw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 09:32:52 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35937 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727256AbgBDOcv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 09:32:51 -0500
+Received: by mail-qk1-f194.google.com with SMTP id w25so18109282qki.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 06:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=5J6Ek4hzUve+e8R5ZLGFZHJQcANfHjuLHxkqFiigqjk=;
-        b=snpNQS0XTYTgMWqiQVM7Wvmqt+DLYrOM3ezpX7mldNeF5hy7bwgoIWlaWwgUVpi0Wh
-         XzwEvrUu7VZXUA3FIMb880sSb20kICsUdiklISCJyLo92RqIcotWGFbUMmpOYq5PcdK7
-         hoFQdUpLejRukJTyU+WbQU6Js7896tr0GgpALtkF0oV6IaTCFxOf9dzWPOkxTh7KY9wG
-         kPWZOPEBCxNGEbIqIvCAPQxOYitqtdpPpPbnMTQc1lXVDRRxVuKnLRf1QRewl+J1AtC9
-         0NpzCbZA4l9dWKi826t+dgZso2sLH84PHn8PYZor+BLLPz1xy79Lne+GQhYamzWgnBfN
-         FkkQ==
+        bh=SVveTweD7pRJBCgwGMJkijo5InLnOXzel1JZpscbdsk=;
+        b=Pzr/9RRWIbDO2ZVr2Ni4oFiuSm0Qh+32AOQTl7zVTY3ZeR+SdJ1CUaufTAvvjlyUis
+         varsKsKcwuFX/hdKFBqrsojxVODeWuOMLC/k6Tf1nfzTtbitdxDzc0SyP4Q1kkfxVGc+
+         UfCK+TgTiDgImfpoqQXe0RR+38ce55Ku01Qt8GO4brBnRtgFuXLovkebLJ4UN1BReE/1
+         HMh8M1wyhCsuRUsDQ+/2MlgeyepCXGtSWMrdxqfFAUZn9b4l3r2wY8/vrcmHohAOQp3O
+         8tOb1w99Ju7cGjUhCoLGFHRWhr0t7T86YwgQnsH7al2fvFbe1YT7+ePFqhmoICBrXmvE
+         yrpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5J6Ek4hzUve+e8R5ZLGFZHJQcANfHjuLHxkqFiigqjk=;
-        b=iVm/ieW0KBTbPMarZW7su5WHm96v/bsrQAGlorlanVHUK1b/53Vjr2BJZbERwV6DLY
-         4wfAuQrmRdGNMKGz74DRk7oaf58EpTZ3iHJGoD764c+tuC88yWN5orRB3FFfrT7KU+CH
-         9QJEjAyAZvjCHuqBm5uROI34xS0X8yx6Vp8hr3fcko0E8QpBIyjmqAuqtLeKichskurq
-         lZ2eF7yr4K9pyAXctLrgyIvc6RfKs1s2QOsnGNB58dcEsMHghoNUXsQw+9F4OgtwhMJr
-         0hnpTutYSk34HFUd6KfTaFyIN8Ci0f/kZp6QHuWOepIknjpaS9TDlc3LO4aD2u/f7y6P
-         GRUQ==
-X-Gm-Message-State: APjAAAXxoP5RLz3wQiSQS+ZxV8lT6w7521rqfTEEmvZmPufgMiGWVo9K
-        ihN6WrABTwCkZoZvkNpjZUWu/LqhDFYKCg==
-X-Google-Smtp-Source: APXvYqwFk6Auwgjtglo5uC8UaDFwrDy72gH+CvjQ/Piy2mWJ56xgWdDHp0qAsJyuvGv7Pna1P/bSlg==
-X-Received: by 2002:ad4:58a8:: with SMTP id ea8mr27518963qvb.93.1580826769079;
-        Tue, 04 Feb 2020 06:32:49 -0800 (PST)
+        bh=SVveTweD7pRJBCgwGMJkijo5InLnOXzel1JZpscbdsk=;
+        b=BHECUeTLqyIQkxh497mEdLWZBga0Hwv2IfNg7k7SMCyerjleFdyiBfB2yp+jgjCI/Z
+         T2LGk2ZVSJiXLaFjsFZuNnkOYzyJKTe3YVjSveChxL8fvZ17+76EY4/MqnIrYsji1OKa
+         GRfXf+bsfnzE3SP3QMKMArAo2MVt4tBTAFNBzVlQhq8rwhX1av+cCwX1DgvHfzCqkZHo
+         qM6+5rC9UfWhWOlxsMTkWXcCtEHFDTnyM4mkMM95PALOkiKc3qgawcY5kjMTITteNRPm
+         1AUjq3Lws9j8o7aV2SsX1zqPph1fjPWlgJBFddMR9puqN1MsqRndPplaepzu4TsdLAjB
+         fYYA==
+X-Gm-Message-State: APjAAAVDeXTbldyL4zlm7A3nwuoqz3cdo4KMInsPYsetbP+tTEE/ICYW
+        dcolOcVtGFwB4mVyN2NUUVUJQNQdpljAew==
+X-Google-Smtp-Source: APXvYqw9ldg/+mpt1Uj7jpqrRyU8VixC5c62yCTLecropb4UFpZ1mC4eZOAMFLXvHq07PRddVHeHUA==
+X-Received: by 2002:a05:620a:16ad:: with SMTP id s13mr28774338qkj.388.1580826770594;
+        Tue, 04 Feb 2020 06:32:50 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id t2sm10930302qkc.31.2020.02.04.06.32.48
+        by smtp.gmail.com with ESMTPSA id v1sm11103722qkg.90.2020.02.04.06.32.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 06:32:48 -0800 (PST)
+        Tue, 04 Feb 2020 06:32:49 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs-progs: fix lowmem check's handling of holes
-Date:   Tue,  4 Feb 2020 09:32:41 -0500
-Message-Id: <20200204143243.696500-3-josef@toxicpanda.com>
+Subject: [PATCH 3/3] btrfs-progs: fix hole error output in fsck
+Date:   Tue,  4 Feb 2020 09:32:42 -0500
+Message-Id: <20200204143243.696500-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200204143243.696500-1-josef@toxicpanda.com>
 References: <20200204143243.696500-1-josef@toxicpanda.com>
@@ -59,60 +59,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lowmem check had the opposite problem of normal check, it caught gaps
-that started at 0, but would still fail with my fixes in place.  This is
-because lowmem check doesn't take into account the isize of the inode.
-Address this by making sure we do not complain about gaps that are after
-isize.  This makes lowmem pass with my fixes applied, and still fail
-without my fixes.
+If we don't find holes in our hole rb tree we'll just assume there's a
+gap from 0 to the length of the file and print that out.  But this
+simply isn't correct, we could have a gap between the last extent and
+the isize, or 0 and the start of the first extent.  Fix the error
+message to tell us exactly where the hole is.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/mode-lowmem.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ check/main.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 2f76d634..fd503aa6 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -2029,7 +2029,8 @@ static int check_file_extent_inline(struct btrfs_root *root,
-  * Return 0 if no error occurred.
-  */
- static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
--			     unsigned int nodatasum, u64 *size, u64 *end)
-+			     unsigned int nodatasum, u64 isize, u64 *size,
-+			     u64 *end)
- {
- 	struct btrfs_file_extent_item *fi;
- 	struct btrfs_key fkey;
-@@ -2152,7 +2153,7 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
- 	}
- 
- 	/* Check EXTENT_DATA hole */
--	if (!no_holes && *end != fkey.offset) {
-+	if (!no_holes && (fkey.offset < isize) && (*end != fkey.offset)) {
- 		if (repair)
- 			ret = punch_extent_hole(root, path, fkey.objectid,
- 						*end, fkey.offset - *end);
-@@ -2165,7 +2166,8 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
+diff --git a/check/main.c b/check/main.c
+index 22f4e24c..71b68ff9 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -639,10 +639,20 @@ static void print_inode_error(struct btrfs_root *root, struct inode_record *rec)
+ 				hole->start, hole->len);
+ 			node = rb_next(node);
  		}
+-		if (!found)
+-			fprintf(stderr, "\tstart: 0, len: %llu\n",
+-				round_up(rec->isize,
+-					 root->fs_info->sectorsize));
++		if (!found) {
++			u64 start, len;
++			if (rec->extent_end < rec->isize) {
++				start = rec->extent_end;
++				len = round_up(rec->isize,
++					       root->fs_info->sectorsize) -
++					start;
++			} else {
++				start = 0;
++				len = rec->extent_start;
++			}
++			fprintf(stderr, "\tstart: %llu, len: %llu\n", start,
++				len);
++		}
  	}
  
--	*end = fkey.offset + extent_num_bytes;
-+	if (fkey.offset + extent_num_bytes < isize)
-+		*end = fkey.offset + extent_num_bytes;
- 	if (!is_hole)
- 		*size += extent_num_bytes;
- 
-@@ -2726,7 +2728,7 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
- 					root->objectid, inode_id, key.objectid,
- 					key.offset);
- 			}
--			ret = check_file_extent(root, path, nodatasum,
-+			ret = check_file_extent(root, path, nodatasum, isize,
- 						&extent_size, &extent_end);
- 			err |= ret;
- 			break;
+ 	/* Print dir item with mismatch hash */
 -- 
 2.24.1
 
