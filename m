@@ -2,184 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA1715150C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 05:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E65151511
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 05:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgBDEk4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 23:40:56 -0500
-Received: from mout.gmx.net ([212.227.15.15]:54281 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgBDEk4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 23:40:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580791250;
-        bh=0e2CSHt9cfDoUqQCGxsTrqFSC3RB3d15jYl2tZMllxM=;
-        h=X-UI-Sender-Class:From:Subject:To:References:Date:In-Reply-To;
-        b=JsjBNxIAwWs2tZRPIhjuyec3huX1Qyq7neMOaXoM7aLBj0T9fkhJNl+EuG7xeaWTA
-         dI+ulIkSMHFBZayGvQ0sFVNLKLY4LHQjI8S3LEJ3sly+Q1UI87OPEFf4oPSLYsvcFr
-         ByMeQLnLTtT/D6TTec592qX9n5pjGPPor+BmOW6I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.111] ([104.199.231.176]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFsUv-1ilJlO1zkl-00HLkZ; Tue, 04
- Feb 2020 05:40:50 +0100
-From:   Su Yue <Damenly_Su@gmx.com>
-Subject: Re: [PATCH 02/11] btrfs-progs: misc-tests/034: mount the second
- device if first device mount failed
-To:     Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <20191212110204.11128-3-Damenly_Su@gmx.com>
- <2eba385b-1d75-ce1b-669f-f8722dc016fa@suse.com>
- <000a9744-a72d-88ff-51f1-2705be98bd75@gmx.com>
- <0145aaff-0e5f-af9d-4bc3-057c983ab52a@suse.com>
-Message-ID: <7795cdb5-a17b-bea4-52ab-f4ab4e773bfd@gmx.com>
-Date:   Tue, 4 Feb 2020 12:40:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        id S1727072AbgBDEne (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 23:43:34 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:34494 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgBDEne (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 23:43:34 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 943845A84F6; Mon,  3 Feb 2020 23:43:33 -0500 (EST)
+Date:   Mon, 3 Feb 2020 23:43:33 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: repeatable(ish) corrupt leaf filesystem splat on 5.1.x - fixed
+ in 5.4.14, 5.5.0
+Message-ID: <20200204044333.GZ13306@hungrycats.org>
+References: <20190704210323.GK11831@hungrycats.org>
 MIME-Version: 1.0
-In-Reply-To: <0145aaff-0e5f-af9d-4bc3-057c983ab52a@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OAv6cnlPkyrifRAFRbmI9nq326xyVvwIfwUelAGO5+RIciDW1j5
- EDlENwjnsA1Qt4vlJl0Y4vUG2rWajRKcjucNdL/lba821gM5nCqRbgHwPhT1UcgT/wpNJqH
- 25qhLQ2MVK8k4b0/Thz/wkw1eFY2JUy9p/bk1q7D6Z5RBEiKJ6VALFXvR7Nv+CFVx0WH0N1
- Gm1Xlg3JRyG4oTnqvb08Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fOG49JMeBec=:rhSjPZQ7krDsH2JWyylJwW
- DR6YH+rQtlfRK6VJWFVQ2VXPB7SMaL1BOTAgb8JBa7N/Jqrww2bMho/GdiQ3dnWul9hpFbF58
- yzrub3Q3vIeC2/dz5lkpZTzXadZIXqftteBVKzDCcYidx+1W11A/JiUG7vd60egVJX4i1u0aL
- Wkb/UlZfwpd9F3Bxm+0tNNxY6QwBLq4o9tt6hxhk+0vQJ5/N/3Wb5fKMB7KL/8qIqyMTji55Q
- WQ+0zywymtbht1vT7MfDFIyZ37jniMwGQArs5OOf3YsuhcYrVkL7bWpWC+axzE9ZENFallawO
- 7yYBYrWaIDcKWrkEQZJsz7RStg/w1Mc1VaBoNO++1l193iOvTWpnl472+UPRn4iWL7T5OGTwY
- AQrVegLbis4R0dM+elDvJMR1AJa3wvo8rFbspqZ1/ZQ6+fvXKSe9u/i3Ayng0y20FBbMWBIn6
- BkLLnk5gXo0K8SWyZT9PIl0l95r6qzw2nQNIwaR15ENRiqK1XwKVjJVd+8CSCTlEgB0G/vBJt
- 6nbI0elraF5fBlVTth3hhgG8WJiW+sfxFOXnJz1e7GLz/02eVmsH4kaDhmAYoFGryCv3nXYT9
- v4jXdfEgD0X7I5+t2vZT2996HgDr12wLYOCTVpnXJg8gKA1C3qXeNTj/fPY39qaajDoC97anQ
- QwK1CSSZ99FcvLAqEJTNcxSVhamOVLQxlsoOgndtZ253691BTrAmvy0h2/75Ss5nsquZKNJVN
- BObvYnuvFLJcn5UeBvhWNTIYbJ3YeCvF+g9/6Y/0x/sNKEMPqJOTO4YAweOHciHh5m6fnJ3QM
- QTL/5u9qekVpZ5bePw0uu8x87FyRN2A6v68DoTf31L5E+rvVbIvaUjRGMiwbjaX5GfDoBFgxU
- dV0mkd6zB5WA+lQ4FjUwdHYFndyC5xiuD72A9M9xNmn+Lsh5CR2U6qqN7W9rdpyzPb3sp+hk1
- R7c2bqSREOS1ptTHE3blFIG283P6+CF5drGRS2SOzV636+TyyCkhwJhAfY5Oa00nSbhTZ8sb6
- nuB20/dqMd20ssePmellKwf9i3oJ02Nu3nWDF24p/w45Gb6Wkbiml5Q4xr7XFykWO2sB6Y1Gq
- 3K2Nwlbi4mzvp33nmSmghhRHmt+YoXs9wNiakQ7he+cZUtgBBG0vF6SAbkJKgyEwshoS26fG5
- Vf7JakAjT0jqtGjXnjbkabNzWKOQ7g35WhzbvYKyIsWZYK21H9u9osg/LDEozQ10GSKqGMamF
- a/Ui0MDP5hiK1O3Ly
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bIBSTgLWjO5xMb20"
+Content-Disposition: inline
+In-Reply-To: <20190704210323.GK11831@hungrycats.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020/1/31 8:47 PM, Nikolay Borisov wrote:
->
->
-> On 31.01.20 =D0=B3. 12:01 =D1=87., Su Yue wrote:
->> On 2020/1/31 4:03 PM, Nikolay Borisov wrote:
->>>
->>>
->>> On 12.12.19 =D0=B3. 13:01 =D1=87., damenly.su@gmail.com wrote:
->>>> From: Su Yue <Damenly_Su@gmx.com>
->>>>
->>>> The 034 test may fail to mount, and dmesg says open_ctree() failed du=
-e
->>>> to device missing.
->>>>
->>>> The partly work flow is
->>>> step1 loop1 =3D losetup image1
->>>> step2 loop2 =3D losetup image2
->>>> setp3 mount loop1
->>>>
->>>> The dmesg says the loop2 device is missing.
->>>> It's possible and known that while step3 is in open_ctree() and
->>>> fs_devices->opened is nonzero, loop2 device has not been added into t=
-he
->>>
->>>
->>> Care to give more details how this can happen? I haven't observed such=
- a
->>> failure, meaning it's likely due to some race condition. More details
->>> are needed though. In your change log you say "it's known" but
->>> apparently only to you in this case.
->>>
->>
->> Sure. There's a device missing situation[1] if two
->> devices(raid 1/0) were caught by udev. Yes, it's
->> not related to the metadata fsid feature. It just
->> makes the mount operation due to the missing device then
->> the test fails.
->
-> Ok but in those mail posts it says the problem occurs if we have a
-> multi-device btrfs volume, in this case raid1, and one of the devices is
-> missing. The pertinent question is why would any of the testing devices
-> be missing? Did you actually experience such failure ? loop1 is acquired
-> after running losetup --find --show, implying that after the command is
-> finished the given loopback device is fully present to the system?
->
->
-Yes, I did experience such failures. Although I'm not familiar with
-udevd, found something for your questions.
-My superficial answers blow after looking through loop device
-and udevd codes. If found something wrong please correct me.
 
-After "losetup --find --show", the loopback devices are full
-present to the system. And userspace received uevents from
-kernel. Losetup only handles the loopback device things but
-not such fs things on the loopback device. It's udevd' work to
-handle the uevent for the device by rules.
+--bIBSTgLWjO5xMb20
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The issue is that udevd may be handling the uevent of one device while
-doing mount the another device. For btrfs, udevd calls ioctls on
-/dev/btrfs-control.
+On Thu, Jul 04, 2019 at 05:03:23PM -0400, Zygo Blaxell wrote:
+> I've seen this twice in 3 days after releasing 5.1.x kernels from the
+> test lab:
+>=20
+> 5.1.15 on 2xSATA RAID1 SSD, during a balance:
+>=20
+> 	[48714.200014][ T3498] BTRFS critical (device dm-21): corrupt leaf: root=
+=3D2 block=3D117776711680 slot=3D57, unexpected item end, have 109534755 ex=
+pect 12632
+> 	[48714.200381][ T3498] BTRFS critical (device dm-21): corrupt leaf: root=
+=3D2 block=3D117776711680 slot=3D57, unexpected item end, have 109534755 ex=
+pect 12632
+> 	[48714.200399][ T9749] BTRFS: error (device dm-21) in __btrfs_free_exten=
+t:7109: errno=3D-5 IO failure
+> 	[48714.200401][ T9749] BTRFS info (device dm-21): forced readonly
+> 	[48714.200405][ T9749] BTRFS: error (device dm-21) in btrfs_run_delayed_=
+refs:3008: errno=3D-5 IO failure
+> 	[48714.200419][ T9749] BTRFS info (device dm-21): found 359 extents
+> 	[48714.200442][ T9749] BTRFS info (device dm-21): 1 enospc errors during=
+ balance
+> 	[48714.200445][ T9749] BTRFS info (device dm-21): balance: ended with st=
+atus: -30
+>=20
+> and 5.1.9 on 1xNVME, a few hours after some /proc NULL pointer dereference
+> bugs:
+>=20
+> 	[89244.144505][ T7009] BTRFS critical (device dm-4): corrupt leaf: root=
+=3D2 block=3D1854946361344 slot=3D32, unexpected item end, have 1335222703 =
+expect 15056
+> 	[89244.144822][ T7009] BTRFS critical (device dm-4): corrupt leaf: root=
+=3D2 block=3D1854946361344 slot=3D32, unexpected item end, have 1335222703 =
+expect 15056
+> 	[89244.144832][ T2403] BTRFS: error (device dm-4) in btrfs_run_delayed_r=
+efs:3008: errno=3D-5 IO failure
+> 	[89244.144836][ T2403] BTRFS info (device dm-4): forced readonly
+>=20
+> The machines had been upgraded from 5.0.x to 5.1.x for less than 24
+> hours each.
+>=20
+> The 5.1.9 machine had crashed (on 5.0.15) before, but a scrub had passed
+> while running 5.1.9 after the crash.  The filesystem failure occurred
+> 20 hours later.  There were some other NULL pointer deferences in that
+> uptime, so maybe 5.1.9 is just a generally buggy kernel that nobody
+> should ever run.  I expect better from 5.1.15, though, which had no
+> unusual events reported in the 8 hours between its post-reboot scrub
+> and the filesystem failure.
+>=20
+> I have several other machines running 5.1.x kernels that have not yet had
+> such a failure--including all of my test machines, which don't seem to hit
+> this issue after 25+ days of stress-testing.  Most of the test machines
+> are using rotating disks, a few are running SSD+HDD with lvmcache.
+>=20
+> One correlation that may be interesting:  both of the failing filesystems
+> had 1MB unallocated on all disks; all of the non-failing filesystems have
+> 1GB or more unallocated on all disks.  I was running the balance on the
+> first filesystem to try to free up some unallocated space.  The second
+> filesystem died without any help from me.
+>=20
+> It turns out that 'btrfs check --repair' can fix these!  First time
+> I've ever seen check --repair fix a broken filesystem.  A few files are
+> damaged, but the filesystem is read-write again and still working so far
+> (on a 5.0.21 kernel) .
 
+Since this report I have repeated this event several times on kernels
+=66rom 5.1 to 5.4, running my 10x rsync, bees dedupe, balance, scrub,
+snapshot create and delete stress test.
 
-Thread *mounting device1*            Thread *scanning device2*
+The symptoms on each kernel are different because the bug interacts with
+other capabilities and fixes in each kernel:
 
+	5.1.21 - all test runs eventually end with corrupted metadata
+	on disk (*)
 
-btrfs_mount_root                     btrfs_control_ioctl
+	5.2.21, 5.3.18 - write time tree checker (usually) detects
+	filesystem corruption and aborts transaction before metadata on
+	disk is damaged
 
-   mutex_lock(&uuid_mutex);
+	5.4.13 - NULL pointer splats in various places, especially
+	snapshot create and during mount.  These end the test too quickly
+	to see if there is also metadata corruption.
 
-     btrfs_read_disk_super
-     btrfs_scan_one_device
-     --> there is only device1
-     in the fs_devices
+These are all fixed by:
 
-     btrfs_open_devices
-       fs_devices->opened =3D 1
-     mutex_unlock(&uuid_mutex);
+	707de9c0806d btrfs: relocation: fix reloc_root lifespan and access
 
-                                       mutex_lock(&uuid_mutex);
-                                       btrfs_scan_one_device
-                                         btrfs_read_disk_super
+When this patch is applied to kernels 5.1, 5.2, or 5.3, it fixes all of
+the above problems.
 
-                                         device_list_add
-                                           found fs_devices
-                                             device =3D btrfs_find_device
+Thanks Qu for this patch.
 
-                                           if (!device)
-                                              if(fs_devices->opened)
-                                                 return -EBUSY
-                                              --> the device2 adding
-                                                  aborts since
-						 fs_devices was opened
-                                       mutex_unlock(&uuid_mutex);
-   btrfs_fill_super
-     open_ctree
-       btrfs_read_sys_array
-         read_one_chunk
-	--> error due to the
-	    device2 missing
+(*) or one of the tree mod log UAF bugs--but the metadata corruption
+usually happens much faster.
 
+--bIBSTgLWjO5xMb20
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Then mount failed because of the missing device.
+-----BEGIN PGP SIGNATURE-----
 
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjj2cwAKCRCB+YsaVrMb
+nAPcAKCAdrj3cm9/Ymc1BvFw5/jmjUnvMwCfeYijx4G2p86ygSJCX817iIFI41U=
+=/SxX
+-----END PGP SIGNATURE-----
 
->
->>
->> In this script, $loop1 *may* be failed to be mounted because
->> $loop2 is "missing". Mounting $loop2 device can verify the
->> metadata fsid functionality but without the degraded option.
->>
->>
->> [1]: https://www.spinics.net/lists/linux-btrfs/msg96312.html
-
+--bIBSTgLWjO5xMb20--
