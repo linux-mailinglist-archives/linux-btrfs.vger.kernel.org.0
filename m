@@ -2,115 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 419C8151538
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 06:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA8F15158A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 06:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgBDFE5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 00:04:57 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:36430 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgBDFE4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 00:04:56 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 3310C5A8555; Tue,  4 Feb 2020 00:04:56 -0500 (EST)
-Date:   Tue, 4 Feb 2020 00:04:56 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Kernels 4.15..5.5:  "WARNING: CPU: 2 PID: 4150 at
- fs/fs-writeback.c:2363 __writeback_inodes_sb_nr+0xa9/0xc0"
-Message-ID: <20200204050456.GB13306@hungrycats.org>
-References: <20190322041731.GF16651@hungrycats.org>
+        id S1726566AbgBDFlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 00:41:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47404 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725813AbgBDFlo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 00:41:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5CA48B1A9;
+        Tue,  4 Feb 2020 05:41:41 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: update the comment of btrfs_control_ioctl()
+To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
+Cc:     Su Yue <Damenly_Su@gmx.com>
+References: <20200204045156.1662-1-Damenly_Su@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f24dfd5d-1699-1f95-32a5-2690dd47ff10@suse.com>
+Date:   Tue, 4 Feb 2020 07:41:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gz4FNQG/2iJjJcgR"
-Content-Disposition: inline
-In-Reply-To: <20190322041731.GF16651@hungrycats.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200204045156.1662-1-Damenly_Su@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---gz4FNQG/2iJjJcgR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2019 at 12:17:32AM -0400, Zygo Blaxell wrote:
-> When filesystems are mounted flushoncommit, I get this warning roughly
-> every 30 seconds:
->=20
-> 	[ 4575.142805] WARNING: CPU: 3 PID: 4150 at fs/fs-writeback.c:2363 __wri=
-teback_inodes_sb_nr+0xa9/0xc0
-> 	[ 4575.145567] Modules linked in: crct10dif_pclmul crc32_pclmul dm_cache=
-_smq crc32c_intel dm_cache snd_pcm ghash_clmulni_intel aesni_intel sr_mod d=
-m_persistent_data ppdev joydev dm_bio_prison aes_x86_64 crypto_simd snd_tim=
-er dm_bufio cryptd cdrom snd glue_helper dm_mod parport_pc soundcore sg flo=
-ppy parport pcspkr psmouse bochs_drm rtc_cmos ide_pci_generic piix input_le=
-ds i2c_piix4 ide_core serio_raw evbug qemu_fw_cfg evdev ip_tables x_tables =
-ipv6 crc_ccitt autofs4
-> 	[ 4575.160021] CPU: 3 PID: 4150 Comm: btrfs-transacti Tainted: G        =
-W         5.0.3-zb64+ #1
-> 	[ 4575.162484] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS 1.10.2-1 04/01/2014
-> 	[ 4575.164505] RIP: 0010:__writeback_inodes_sb_nr+0xa9/0xc0
-> 	[ 4575.165809] Code: 0f b6 d2 e8 b9 f8 ff ff 48 89 ee 48 89 df e8 0e f8 =
-ff ff 48 8b 44 24 48 65 48 33 04 25 28 00 00 00 75 0b 48 83 c4 50 5b 5d c3 =
-<0f> 0b eb cb e8 4e e9 d6 ff 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00
-> 	[ 4575.171927] RSP: 0018:ffffa9cac0eabde8 EFLAGS: 00010246
-> 	[ 4575.173045] RAX: 0000000000000000 RBX: ffff9353e23af000 RCX: 00000000=
-00000000
-> 	[ 4575.175639] RDX: 0000000000000002 RSI: 0000000000030c67 RDI: ffffa9ca=
-c0eabe30
-> 	[ 4575.177619] RBP: ffffa9cac0eabdec R08: ffffa9cac0eabdf0 R09: ffff9353=
-f12da000
-> 	[ 4575.179736] R10: 0000000000000000 R11: 0000000000000001 R12: ffff9353=
-e1980000
-> 	[ 4575.181661] R13: ffff9353e1981430 R14: ffff9353f27e4260 R15: ffff9353=
-e1981518
-> 	[ 4575.183871] FS:  0000000000000000(0000) GS:ffff9353f6800000(0000) knl=
-GS:0000000000000000
-> 	[ 4575.185940] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> 	[ 4575.188072] CR2: 00007fb81841fa20 CR3: 00000002218c0006 CR4: 00000000=
-001606e0
-> 	[ 4575.190094] Call Trace:
-> 	[ 4575.190828]  btrfs_commit_transaction+0x7a6/0x9e0
-> 	[ 4575.192115]  ? start_transaction+0x91/0x4d0
-> 	[ 4575.193197]  transaction_kthread+0x146/0x180
-> 	[ 4575.194415]  kthread+0x106/0x140
-> 	[ 4575.195403]  ? btrfs_cleanup_transaction+0x620/0x620
-> 	[ 4575.196903]  ? kthread_park+0x90/0x90
-> 	[ 4575.198412]  ret_from_fork+0x3a/0x50
-> 	[ 4575.199374] irq event stamp: 54922780
-> 	[ 4575.200218] hardirqs last  enabled at (54922779): [<ffffffffa3d5f2e2>=
-] _raw_spin_unlock_irqrestore+0x32/0x60
-> 	[ 4575.202753] hardirqs last disabled at (54922780): [<ffffffffa300379f>=
-] trace_hardirqs_off_thunk+0x1a/0x1c
-> 	[ 4575.205921] softirqs last  enabled at (54922378): [<ffffffffa40003a4>=
-] __do_softirq+0x3a4/0x45f
-> 	[ 4575.208350] softirqs last disabled at (54922361): [<ffffffffa30a3d44>=
-] irq_exit+0xe4/0xf0
-> 	[ 4575.210616] ---[ end trace 5309dcf3a1920eca ]---
->=20
-> For my own kernel builds I just comment out the line in fs-writeback.c,
-> but that's not a real solution.
+On 4.02.20 г. 6:51 ч., damenly.su@gmail.com wrote:
+> From: Su Yue <Damenly_Su@gmx.com>
+> 
+> Btrfsctl was removed in 2012, now the function btrfs_control_ioctl()
+> is only used for devices ioctls. So update the comment.
+> 
+> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
 
-This still happens in 5.5.0.  No changes in behavior or workaround, no
-apparent harmful effect, almost 2 years running in stress-testing and
-production.
-
-I, for one, am glad we fixed all those other bugs before doing anything
-about this one.  It is utterly harmless.
-
---gz4FNQG/2iJjJcgR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjj7dwAKCRCB+YsaVrMb
-nKRRAKCuKxEXPaCy96U1sxLciONrraPtKQCcC+fh/CwMt06VcOYvU1PfDHtU1ew=
-=NcLD
------END PGP SIGNATURE-----
-
---gz4FNQG/2iJjJcgR--
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
