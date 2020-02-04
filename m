@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A0A15168D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 08:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5B015168E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 08:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgBDHnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 02:43:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35580 "EHLO mx2.suse.de"
+        id S1726603AbgBDHnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 02:43:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35606 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726000AbgBDHnD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 02:43:03 -0500
+        id S1726378AbgBDHnQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 02:43:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7B90FB32C;
-        Tue,  4 Feb 2020 07:43:01 +0000 (UTC)
-Subject: Re: [PATCH 20/24] btrfs: don't force commit if we are data
+        by mx2.suse.de (Postfix) with ESMTP id DBA0CB32C;
+        Tue,  4 Feb 2020 07:43:14 +0000 (UTC)
+Subject: Re: [PATCH 21/24] btrfs: run delayed iputs before committing the
+ transaction for data
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200203204951.517751-1-josef@toxicpanda.com>
- <20200203204951.517751-21-josef@toxicpanda.com>
+ <20200203204951.517751-22-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <a2fe30c7-be51-d647-7c23-66f74fd4aa7d@suse.com>
-Date:   Tue, 4 Feb 2020 09:43:00 +0200
+Message-ID: <8db31490-1e50-0b67-7bf5-387a0a04be6a@suse.com>
+Date:   Tue, 4 Feb 2020 09:43:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200203204951.517751-21-josef@toxicpanda.com>
+In-Reply-To: <20200203204951.517751-22-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,11 +81,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.02.20 г. 22:49 ч., Josef Bacik wrote:
-> We used to unconditionally commit the transaction at least 2 times and
-> then on the 3rd try check against pinned space to make sure committing
-> the transaction was worth the effort.  This is overkill, we know nobody
-> is going to steal our reservation, and if we can't make our reservation
-> with the pinned amount simply bail out.
+> Before we were waiting on iputs after we committed the transaction, but
+> this doesn't really make much sense.  We want to reclaim any space we
+> may have in order to be more likely to commit the transaction, due to
+> pinned space being added by running the delayed iputs.  Fix this by
+> making delayed iputs run before committing the transaction.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
