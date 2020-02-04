@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 531BA151688
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 08:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C7A15168B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 08:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgBDHkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 02:40:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35024 "EHLO mx2.suse.de"
+        id S1726554AbgBDHmH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 02:42:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35322 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726230AbgBDHkL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 02:40:11 -0500
+        id S1726151AbgBDHmH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 02:42:07 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 63EDAB2FF;
-        Tue,  4 Feb 2020 07:40:09 +0000 (UTC)
-Subject: Re: [PATCH 01/24] btrfs: change nr to u64 in
- btrfs_start_delalloc_roots
+        by mx2.suse.de (Postfix) with ESMTP id 59830B302;
+        Tue,  4 Feb 2020 07:42:04 +0000 (UTC)
+Subject: Re: [PATCH 19/24] btrfs: don't pass bytes_needed to
+ may_commit_transaction
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200203204951.517751-1-josef@toxicpanda.com>
- <20200203204951.517751-2-josef@toxicpanda.com>
+ <20200203204951.517751-20-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <6be83fa6-2da6-9dac-9ed3-eedddd256bb3@suse.com>
-Date:   Tue, 4 Feb 2020 09:40:08 +0200
+Message-ID: <65f68a99-52d8-4df1-fdc1-fc8cfa78ee87@suse.com>
+Date:   Tue, 4 Feb 2020 09:42:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200203204951.517751-2-josef@toxicpanda.com>
+In-Reply-To: <20200203204951.517751-20-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,22 +81,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.02.20 г. 22:49 ч., Josef Bacik wrote:
-> We have btrfs_wait_ordered_roots() which takes a u64 for nr, but
-> btrfs_start_delalloc_roots() that takes an int for nr, which makes using
-> them in conjunction, especially for something like (u64)-1, annoying and
-> inconsistent.  Fix btrfs_start_delalloc_roots() to take a u64 for nr and
-> adjust start_delalloc_inodes() and it's callers appropriately.
-> 
-> This means we've adjusted start_delalloc_inodes() to take a pointer of
-> nr since we want to preserve the ability for start-delalloc_inodes() to
-> return an error, so simply make it do the nr adjusting as necessary.
-> 
-> Part of adjusting the callers to this means changing
-> btrfs_writeback_inodes_sb_nr() to take a u64 for items.  This may be
-> confusing because it seems unrelated, but the caller of
-> btrfs_writeback_inodes_sb_nr() already passes in a u64, it's just the
-> function variable that needs to be changed.
+> This was put into place in order to mirror the way data flushing handled
+> committing the transaction.  Now that we do not loop on committing the
+> transaction simply force a transaction commit if we are data.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Same as previous patch.
+
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
