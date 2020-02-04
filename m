@@ -2,23 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA8F15158A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 06:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01971151687
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 08:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgBDFlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 00:41:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47404 "EHLO mx2.suse.de"
+        id S1726151AbgBDHkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 02:40:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35004 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725813AbgBDFlo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 00:41:44 -0500
+        id S1726230AbgBDHkB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 02:40:01 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5CA48B1A9;
-        Tue,  4 Feb 2020 05:41:41 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: update the comment of btrfs_control_ioctl()
-To:     damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-Cc:     Su Yue <Damenly_Su@gmx.com>
-References: <20200204045156.1662-1-Damenly_Su@gmx.com>
+        by mx2.suse.de (Postfix) with ESMTP id 354B4B2FF;
+        Tue,  4 Feb 2020 07:39:59 +0000 (UTC)
+Subject: Re: [PATCH 18/24] btrfs: drop the commit_cycles stuff for data
+ reservations
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200203204951.517751-1-josef@toxicpanda.com>
+ <20200203204951.517751-19-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <f24dfd5d-1699-1f95-32a5-2690dd47ff10@suse.com>
-Date:   Tue, 4 Feb 2020 07:41:40 +0200
+Message-ID: <f02bbb9a-302f-2a5f-f94d-916b3c8fa964@suse.com>
+Date:   Tue, 4 Feb 2020 09:39:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200204045156.1662-1-Damenly_Su@gmx.com>
+In-Reply-To: <20200203204951.517751-19-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,12 +80,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 4.02.20 г. 6:51 ч., damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
+On 3.02.20 г. 22:49 ч., Josef Bacik wrote:
+> This was an old wart left over from how we previously did data
+> reservations.  Before we could have people race in and take a
+> reservation while we were flushing space, so we needed to make sure we
+> looped a few times before giving up.  Now that we're using the ticketing
+> infrastructure we don't have to worry about this and can drop the logic
+> altogether.
 > 
-> Btrfsctl was removed in 2012, now the function btrfs_control_ioctl()
-> is only used for devices ioctls. So update the comment.
-> 
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Same as previous patch so:
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
