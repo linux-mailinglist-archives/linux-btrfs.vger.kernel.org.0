@@ -2,114 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E811514A8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 04:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEF31514B1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 04:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgBDDej (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 22:34:39 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:45186 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgBDDej (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 22:34:39 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 03D2D5A8420; Mon,  3 Feb 2020 22:34:38 -0500 (EST)
-Date:   Mon, 3 Feb 2020 22:34:38 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: A collection of btrfs lockup stack traces (4.14..4.20.17, but
- not later kernels)
-Message-ID: <20200204033438.GX13306@hungrycats.org>
-References: <20190320033957.GA16651@hungrycats.org>
- <20190320034950.GC16651@hungrycats.org>
+        id S1726924AbgBDDl2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 22:41:28 -0500
+Received: from mail.as397444.net ([69.59.18.99]:37710 "EHLO mail.as397444.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726694AbgBDDl2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Feb 2020 22:41:28 -0500
+Received: from [10.233.42.100] (unknown [69.59.18.156])
+        by mail.as397444.net (Postfix) with ESMTPSA id 22F2E192D93;
+        Tue,  4 Feb 2020 03:41:26 +0000 (UTC)
+Subject: Re: btrfs balance start -musage=0 / eats drive space
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <526cb529-770c-9279-aad8-7632f07832b8@bluematt.me>
+ <CAJCQCtTuKnsQJNKupKbmBxGpkZSqWcYXBD+36v9aT6zZAqmuhg@mail.gmail.com>
+From:   Matt Corallo <linux@bluematt.me>
+Message-ID: <2353c20b-95c2-2d58-65eb-9d574ff506ee@bluematt.me>
+Date:   Tue, 4 Feb 2020 03:41:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="tpZe61tYkA9f+p/0"
-Content-Disposition: inline
-In-Reply-To: <20190320034950.GC16651@hungrycats.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJCQCtTuKnsQJNKupKbmBxGpkZSqWcYXBD+36v9aT6zZAqmuhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Things settled a tiny bit after unmount (see last email for the errors
+that generated) and remount, and a balance -mconvert,soft worked:
 
---tpZe61tYkA9f+p/0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[268093.588482] BTRFS info (device dm-2): balance: start
+-mconvert=raid1,soft -sconvert=raid1,soft
+...
+[288405.946776] BTRFS info (device dm-2): balance: ended with status: 0
 
-On Tue, Mar 19, 2019 at 11:49:51PM -0400, Zygo Blaxell wrote:
-> On Tue, Mar 19, 2019 at 11:39:59PM -0400, Zygo Blaxell wrote:
-> > I haven't been able to easily reproduce these in a test environment;
-> > however, they have been happening several times a year on servers in
-> > production.
-> >=20
-> > Kernel:  most recent observation on 4.14.105 + cherry-picked deadlock
-> > and misc hang fixes:
-> >=20
-> > 	btrfs: wakeup cleaner thread when adding delayed iput
-> > 	Btrfs: fix deadlock when allocating tree block during leaf/node split
-> > 	Btrfs: use nofs context when initializing security xattrs to avoid dea=
-dlock
-> > 	Btrfs: fix deadlock with memory reclaim during scrub
-> > 	Btrfs: fix deadlock between clone/dedupe and rename
-> >=20
-> > Also observed on 4.20.13, and 4.14.0..4.14.105 (4.14.106 is currently
-> > running, but hasn't locked up yet).
-> >=20
-> > Filesystem mount flags:  compress=3Dzstd,ssd,flushoncommit,space_cache=
-=3Dv2.
-> > Configuration is either -draid1/-mraid1 or -dsingle/-mraid1.  I've
-> > also reproduced a lockup without flushoncommit.
-> >=20
-> > The machines that are locking up all run the same workload:
-> >=20
-> > 	rsync receiving data continuously (gigabytes aren't enough,
-> > 	I can barely reproduce this once a month with 2TB of rsync
-> > 	traffic from 10 simulated clients)
-> >=20
-> > 	bees doing continuous dedupe
-> >=20
-> > 	snapshots daily and after each rsync
-> >=20
-> > 	snapshot deletes as required to maintain free space
-> >=20
-> > 	scrubs twice monthly plus after each crash
-> >=20
-> > 	watchdog does a 'mkdir foo; rmdir foo' every few seconds.
-> > 	If this takes longer than 50 minutes, collect a stack trace;
-> > 	longer than 60 minutes, reboot the machine.
+However, the enospc issue still appears and seems tied to a few of the
+previously-allocated metadata blocks:
 
-These deadlocks still occur on the LTS kernels 4.14 and 4.19 (I have
-not tested earlier LTS kernels).  The deadlocks also occur on 4.15..4.18
-and 4.20, but the deadlocks stopped on 5.0 and haven't occurred since.
+# btrfs balance start -musage=0 /bigraid
+...
 
-I'm running a bisect to see if I can find where in 5.0 this was fixed,
-and whether it is something that can be backported to stable.  This might
-take a month or so, as it takes a few days to get a negative deadlock
-result and I can only spare one VM for the tests.
+[289714.420418] BTRFS info (device dm-2): balance: start -musage=0 -susage=0
+[289714.508411] BTRFS info (device dm-2): 64 enospc errors during balance
+[289714.508413] BTRFS info (device dm-2): balance: ended with status: -28
 
-In the meantime several other bugs have been fixed and those _have_
-been backported to 4.14 and 4.19, so the test case for the bisect is
-more aggressive:
+# cd /sys/fs/btrfs/e2843f83-aadf-418d-b36b-5642f906808f/allocation/ &&
+grep -Tr .
+metadata/raid1/used_bytes:	255838797824
+metadata/raid1/total_bytes:	441307889664
+metadata/disk_used:	511677595648
+metadata/bytes_pinned:	0
+metadata/bytes_used:	255838797824
+metadata/total_bytes_pinned:	999424
+metadata/disk_total:	882615779328
+metadata/total_bytes:	441307889664
+metadata/bytes_reserved:	4227072
+metadata/bytes_readonly:	65536
+metadata/bytes_may_use:	433502945280
+metadata/flags:	4
+system/raid1/used_bytes:	1474560
+system/raid1/total_bytes:	33554432
+system/disk_used:	2949120
+system/bytes_pinned:	0
+system/bytes_used:	1474560
+system/total_bytes_pinned:	0
+system/disk_total:	67108864
+system/total_bytes:	33554432
+system/bytes_reserved:	0
+system/bytes_readonly:	0
+system/bytes_may_use:	0
+system/flags:	2
+global_rsv_reserved:	536870912
+data/disk_used:	13645423230976
+data/bytes_pinned:	0
+data/bytes_used:	13645423230976
+data/single/used_bytes:	13645423230976
+data/single/total_bytes:	13661217226752
+data/total_bytes_pinned:	0
+data/disk_total:	13661217226752
+data/total_bytes:	13661217226752
+data/bytes_reserved:	117518336
+data/bytes_readonly:	196608
+data/bytes_may_use:	15064711168
+data/flags:	1
+global_rsv_size:	536870912
 
-	10x rsync write/updates
-	bees dedupe, 4 threads
-	snapshot create at random intervals (60-600 seconds)
-	snapshot delete at random intervals
-	balance start continuously
-	balance cancel at random intervals
-	scrub start continuously
-	scrub cancel at random intervals
 
---tpZe61tYkA9f+p/0
-Content-Type: application/pgp-signature; name="signature.asc"
+Somewhat more frightening, this also happens on the system blocks:
 
------BEGIN PGP SIGNATURE-----
+[288405.946776] BTRFS info (device dm-2): balance: ended with status: 0
+[289589.506357] BTRFS info (device dm-2): balance: start -musage=5 -susage=5
+[289589.905675] BTRFS info (device dm-2): relocating block group
+9676759498752 flags system|raid1
+[289590.807033] BTRFS info (device dm-2): found 89 extents
+[289591.300212] BTRFS info (device dm-2): 16 enospc errors during balance
+[289591.300216] BTRFS info (device dm-2): balance: ended with status: -28
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjjmTAAKCRCB+YsaVrMb
-nN7aAKCScGU/5Ppi6qkP5JxTZHaICPF2AACfTTaPberTNCYmTEtxy4CUpLaCYqU=
-=HaLm
------END PGP SIGNATURE-----
+Matt
 
---tpZe61tYkA9f+p/0--
+On 2/3/20 9:40 PM, Chris Murphy wrote:
+> A developer might find it useful to see this reproduced with mount
+> option enospc_debug. And soon after enospc the output from:
+> 
+>  cd /sys/fs/btrfs/UUID/allocation/ && grep -Tr .
+> 
+> yep, space then dot at the end
+> 
