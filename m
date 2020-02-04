@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C44151825
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 10:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2B7151829
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 10:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbgBDJrU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 04:47:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40568 "EHLO mx2.suse.de"
+        id S1726329AbgBDJsp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 04:48:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41378 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgBDJrU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 04:47:20 -0500
+        id S1726151AbgBDJsp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 04:48:45 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2F790ABF4;
-        Tue,  4 Feb 2020 09:47:17 +0000 (UTC)
-Subject: Re: [PATCH 24/24] btrfs: add a comment explaining the data flush
- steps
+        by mx2.suse.de (Postfix) with ESMTP id E53A6AD76;
+        Tue,  4 Feb 2020 09:48:41 +0000 (UTC)
+Subject: Re: [PATCH 00/24][v3] Convert data reservations to the ticketing
+ infrastructure
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200203204951.517751-1-josef@toxicpanda.com>
- <20200203204951.517751-25-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <593bda62-3f25-28d6-bb5c-efaa677872c6@suse.com>
-Date:   Tue, 4 Feb 2020 11:47:16 +0200
+Message-ID: <8dee9e37-4d3f-9a1d-01e0-e7ef367ae5f7@suse.com>
+Date:   Tue, 4 Feb 2020 11:48:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200203204951.517751-25-josef@toxicpanda.com>
+In-Reply-To: <20200203204951.517751-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,102 +80,97 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.02.20 г. 22:49 ч., Josef Bacik wrote:
-> The data flushing steps are not obvious to people other than myself and
-> Chris.  Write a giant comment explaining the reasoning behind each flush
-> step for data as well as why it is in that particular order.
+> v2->v3:
+> - added a comment patch for the flushing states for data.
+> - I forgot to add cancel_work_sync() for the new async data flusher thread.
+> - Cleaned up a few of Nikolay's nits.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/space-info.c | 46 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
+> v1->v2:
+> - dropped the RFC
+> - realized that I mis-translated the transaction commit logic from the old way
+>   to the new way, so I've reworked a bunch of patches to clearly pull that
+>   behavior into the generic flushing code.  I've then cleaned it up later to
+>   make it easy to bisect down to behavior changes.
+> - Cleaned up the priority flushing, there's no need for an explicit state array.
+> - Removed the CHUNK_FORCE_ALLOC from the normal flushing as well, simply keep
+>   the logic of allocating chunks until we've made our reservation or we are
+>   full, then fall back on the normal flushing mechanism.
 > 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 18a31d96bbbd..d3befc536a7f 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -780,6 +780,52 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
->  	} while (flush_state <= COMMIT_TRANS);
->  }
->  
-> +/*
-> + * FLUSH_DELALLOC_WAIT:
-> + *   Space is free'd from flushing delalloc in one of two ways.
-> + *
-> + *   1) compression is on and we allocate less space than we reserved.
-> + *   2) We are overwriting existing space.
-> + *
-> + *   For #1 that extra space is reclaimed as soon as the delalloc pages are
-> + *   cow'ed, by way of btrfs_add_reserved_bytes() which adds the actual extent
-> + *   length to ->bytes_reserved, and subtracts the reserved space from
-> + *   ->bytes_may_use.
-> + *
-> + *   For #2 this is trickier.  Once the ordered extent runs we will drop the
-> + *   extent in the range we are overwriting, which creates a delayed ref for
-> + *   that freed extent.  This however is not reclaimed until the transaction
-> + *   commits, thus the next stages.
-> + *
-> + * RUN_DELAYED_IPUTS
-> + *   If we are freeing inodes, we want to make sure all delayed iputs have
-> + *   completed, because they could have been on an inode with i_nlink == 0, and
-> + *   thus have been trunated and free'd up space.  But again this space is not
-> + *   immediately re-usable, it comes in the form of a delayed ref, which must be
-> + *   run and then the transaction must be committed.
-> + *
-> + * FLUSH_DELAYED_REFS
-> + *   The above two cases generate delayed refs that will affect
-> + *   ->total_bytes_pinned.  However this counter can be inconsistent with
-> + *   reality if there are outstanding delayed refs.  This is because we adjust
-> + *   the counter based on the other delayed refs that exist.  So for example, if
-
-IMO this sentence would be clearer if it simply says something along the
-lines of " This is because we adjust the counter based solely on the
-current set of delayed refs and disregard any on-disk state which might
-include more refs".
-
-> + *   we have an extent with 2 references, but we only drop 1, we'll see that
-> + *   there is a negative delayed ref count for the extent and assume that the
-> + *   space will be free'd, and thus increase ->total_bytes_pinned.
-> + *
-> + *   Running the delayed refs gives us the actual real view of what will be
-> + *   freed at the transaction commit time.  This stage will not actually free
-> + *   space for us, it just makes sure that may_commit_transaction() has all of
-> + *   the information it needs to make the right decision.
-
-Is there any particular reason why total_bytes_pinned is sort of double
-accounted. I.e first add_pinned_bytes is called when a DROP del ref is
-added with negative ref. Then during processing of that delref
-__btrfs_free_extent either:
-
-a) Removes the ref but doesn't free the extent if there were other,
-non-del refs for this extent
-
-b) Removes the extent and calls btrfs_update_block_group to account it
-again as pinned (this time also setting the respective ranges as pinned)
-
-This double accounting doesn't really happen because after the
-processing of the DROP del ref is finished
-cleanup_ref_head->btrfs_cleanup_ref_head_accounting will actually clean
-the pinned bytes added at creation time of the DROP del ref. Can we
-avoid this and simply rely on the update of total_bytes_pinned when an
-extent is freed.
-
-
-> + *
-> + * COMMIT_TRANS
-> + *   This is where we reclaim all of the pinned space generated by the previous
-> + *   two stages.  We will not commit the transaction if we don't think we're
-> + *   likely to satisfy our request, which means if our current free space +
-> + *   total_bytes_pinned < reservation we will not commit.  This is why the
-> + *   previous states are actually important, to make sure we know for sure
-> + *   wether committing the transaction will allow us to make progress.
-
-typo: s/wether/whether/
-
-> + */
->  static const enum btrfs_flush_state data_flush_states[] = {
->  	FLUSH_DELALLOC_WAIT,
->  	RUN_DELAYED_IPUTS,
+> -------------- Original email --------------
+> Nikolay reported a problem where we'd occasionally fail generic/371.  This test
+> has two tasks running in a loop, one that fallocate and rm's, and one that
+> pwrite's and rm's.  There is enough space for both of these files to exist at
+> one time, but sometimes the pwrite would fail.
+> 
+> It would fail because we do not serialize data reseravtions.  If one task is
+> stuck doing the reclaim work, and another task comes in and steals it's
+> reservation enough times, we'll give up and return ENOSPC.  We validated this by
+> adding a printk to the data reservation path to tell us that it was succeeding
+> at making a reservation while another task was flushing.
+> 
+> To solve this problem I've converted data reservations over to the ticketing
+> system that metadata uses.  There are some cleanups and some fixes that have to
+> come before we could do that.  The following are simply cleanups
+> 
+>   [PATCH 01/20] btrfs: change nr to u64 in btrfs_start_delalloc_roots
+>   [PATCH 02/20] btrfs: remove orig from shrink_delalloc
+>   [PATCH 03/20] btrfs: handle U64_MAX for shrink_delalloc
+> 
+> The following are fixes that are needed to handle data space infos properly.
+> 
+>   [PATCH 04/20] btrfs: make shrink_delalloc take space_info as an arg
+>   [PATCH 05/20] btrfs: make ALLOC_CHUNK use the space info flags
+>   [PATCH 06/20] btrfs: call btrfs_try_granting_tickets when freeing
+>   [PATCH 07/20] btrfs: call btrfs_try_granting_tickets when unpinning
+>   [PATCH 08/20] btrfs: call btrfs_try_granting_tickets when reserving
+>   [PATCH 09/20] btrfs: use the btrfs_space_info_free_bytes_may_use
+> 
+> I then converted the data reservation path over to the ticketing infrastructure,
+> but I did it in a way that mirrored exactly what we currently have.  The idea is
+> that I want to be able to bisect regressions that happen from behavior change,
+> and doing that would be hard if I just had a single patch doing the whole
+> conversion at once.  So the following patches are only moving code around
+> logically, but preserve the same behavior as before
+> 
+>   [PATCH 10/20] btrfs: add flushing states for handling data
+>   [PATCH 11/20] btrfs: add btrfs_reserve_data_bytes and use it
+>   [PATCH 12/20] btrfs: use ticketing for data space reservations
+> 
+> And then the following patches were changing the behavior of how we flush space
+> for data reservations.
+> 
+>   [PATCH 13/20] btrfs: run delayed iputs before committing the
+>   [PATCH 14/20] btrfs: flush delayed refs when trying to reserve data
+>   [PATCH 15/20] btrfs: serialize data reservations if we are flushing
+>   [PATCH 16/20] btrfs: rework chunk allocate for data reservations
+>   [PATCH 17/20] btrfs: drop the commit_cycles stuff for data
+> 
+> And then a cleanup now that the data reservation code is the same as the
+> metadata reservation code.
+> 
+>   [PATCH 18/20] btrfs: use the same helper for data and metadata
+> 
+> Finally a patch to change the flushing from direct to asynchronous, mirroring
+> what we do for metadata for better latency.
+> 
+>   [PATCH 19/20] btrfs: do async reclaim for data reservations
+> 
+> And then a final cleanup now that we're where we want to be with the data
+> reservation path.
+> 
+>   [PATCH 20/20] btrfs: kill the priority_reclaim_space helper
+> 
+> I've marked this as an RFC because I've only tested this with generic/371.  I'm
+> starting my overnight runs of xfstests now and will likely find regressions, but
+> I'd like to get review started so this can get merged ASAP.  Thanks,
+> 
+> Josef
+> 
 > 
 
-This looks good and helped me understand the machinery and put some
-context into the code.
+For the whole series:
+
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+
+There are no regressions in xfstest, fixes generic/371 and also the
+tests that exhibited performance problems in v1 are now fixed (as of v2).
