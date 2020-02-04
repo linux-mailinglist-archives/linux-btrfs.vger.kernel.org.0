@@ -2,54 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF09151E1C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 17:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85004151E1D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 17:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgBDQT4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 11:19:56 -0500
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:40189 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727290AbgBDQT4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 11:19:56 -0500
-Received: by mail-qk1-f171.google.com with SMTP id b7so3269003qkl.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 08:19:55 -0800 (PST)
+        id S1727355AbgBDQT7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 11:19:59 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:37231 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbgBDQT6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 11:19:58 -0500
+Received: by mail-qk1-f193.google.com with SMTP id 21so18513849qky.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 08:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aqw6cDTVWGXm6THa7zbRW8lp5WtYjqjUBHlnlRVe/u0=;
-        b=WEsaUzBLSc7D8YCSr8BVkgI1LVjuGLP/0L7UQS3ovQZ0WVkTdWp3ZqPhrKhKZNHnQ8
-         AgnBuLl0lb7iF/J5B28gEYwi4gp8D1fJ5rxFyY2y89XLwqyuxHfSq5lYu+kzIalhAcrW
-         xYED/9AZA7kBAVKbEB3ZgGbfmMGnswGE91lEpS9oZxGswZx9e+ZIZkqOwE6tnWF94ZMg
-         tTHWDnkUMDiQQAnVZJSh+3X2bJsJXZP6j/wmB3cLEyqq4TlFv7SEEPQ2Aobwp61nHxqq
-         4kPAd+sd2cPy7oYVHulKHkbSab8MuKLOiq1Ejo7KchXVRwD80zH8ruzGRNH5uSD9xSDe
-         pCDg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3V8NDRPLi1mh5S/HcCUVZsc8Mf4FJqHg1o4nAIdsc8o=;
+        b=MC3fG+g2xjgyo4BKFyVkZFX9ansMqqmwKEjTuPmU6rO0n/x617gvoTj+l7oKWqRKTl
+         fPiittVxHzDMRl22G5LuCYNmRGws1dZWfuN7sRvcr3i8hw6yYY4c59ngivv8nZK3T1Yd
+         ZM1+0tCRvRsCr6e+O6iQHos4cjN4qPOLuBnmk6l9X/z6/LApF++umSqdwbMwEINL4ZVV
+         7sNXhTY6RauZpX4/gcBb7PkaG6kZf6NAjawehvt6LOT2SWxVDzb0zqJaPDpWMHsTnI0F
+         hxhytmr3PwzeFal5W1LKXjgE4n6QlisPBd5FIEKVpkmbPvtgx4BHQ9wOf59pjk0UdTtK
+         81KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aqw6cDTVWGXm6THa7zbRW8lp5WtYjqjUBHlnlRVe/u0=;
-        b=TdqjSlgmu/5bNeUSFLuqO9oyc/PB8OKfPSF1VwzlhF2AbeIYnxrZTqhghMp6/doin4
-         kfThnwYIsJVuA3ZVuAIchtifaK33nmIAL1b15sCmuCZI6VkEwV8RefGSlF93n7LoXmYS
-         N+qpFOnpzR72iHSkzs8lWmgPctPxLztk08yy9/prn4sl6rxZdspWGt50BROixze2yE5r
-         4u1yT/sUZmjUCzZaBAx+sd4uZCUxOV8KAfEwIFQlbu9NFlk9VQ1fL9P5CaDuCBOIrKL5
-         ObTdq2Oz8u4Gdpm0AZvaqt1fGMoSpup+LI2q+bql5JAbRrWoN0PdgAuzyy3Yu65E9yxW
-         FBDw==
-X-Gm-Message-State: APjAAAU7ZFXBG1aKB7XFkownyBIUk/ma7rO6iEsPIgZgz+jKqaOJBOVe
-        AasS28JopyiluKmuVl4o7FmLxb9DW4YJ0A==
-X-Google-Smtp-Source: APXvYqw6gfHsqdu9HxehToxq+tTqEdLuWYSiuUzEd3nKmcXNjS0BsOqfzmnyc9lMZ/6XrUdVlGPqZw==
-X-Received: by 2002:a05:620a:23a:: with SMTP id u26mr28620573qkm.426.1580833194277;
-        Tue, 04 Feb 2020 08:19:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3V8NDRPLi1mh5S/HcCUVZsc8Mf4FJqHg1o4nAIdsc8o=;
+        b=NslU4Mn3BQs49yoF1NjzF7C4cnHYMLW0O6dBdnOtzMDxPldYCMIW9IZGlbXNKFZyZi
+         28+fzBmOtbcYR1tQ2GcLbF7TaR8Vhqhs0+/E+/Vndy67Cj0kFhlaY8hNXFJIjkkb71aW
+         LZsqVQ3dsSrSykdsW4mWBaz0qM1TWdb/QKL++0iwHgDg+wlovBVlw5d9/Qm9FlOoF7pa
+         NVkSlcgXX3gS7uRQL3FRlXjDqzLzHrWUT2o+8aMVk+gpCP37+oxk+usTpaxMXaC4p25o
+         HFZVGBCipLyPNhUlW/ymDqWV0Kgqv/sH1Iu3tem72/9lWR8gHYUX3sCGNsvI6ACpbKHw
+         ssrA==
+X-Gm-Message-State: APjAAAVLhXg1augHGp7NyTxJpuaeOOZgGRQDiDLZgCVf1JoFK6mVl2xr
+        rbETgRGUgHFUq7p9Hsvc7RlXvo/RbbqzEw==
+X-Google-Smtp-Source: APXvYqwtym6mlV1HxJDcLuGbF4n1FjNM/P6sLgW0XkhvqcWBoZ+6E6EtjoFhLzN4weoSEhB5famSWQ==
+X-Received: by 2002:a37:b8b:: with SMTP id 133mr29144498qkl.418.1580833195900;
+        Tue, 04 Feb 2020 08:19:55 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f10sm11294093qkk.70.2020.02.04.08.19.53
+        by smtp.gmail.com with ESMTPSA id 141sm5318454qkk.62.2020.02.04.08.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 08:19:53 -0800 (PST)
+        Tue, 04 Feb 2020 08:19:55 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/23][v4] Convert data reservations to the ticketing infrastructure
-Date:   Tue,  4 Feb 2020 11:19:28 -0500
-Message-Id: <20200204161951.764935-1-josef@toxicpanda.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 01/23] btrfs: change nr to u64 in btrfs_start_delalloc_roots
+Date:   Tue,  4 Feb 2020 11:19:29 -0500
+Message-Id: <20200204161951.764935-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200204161951.764935-1-josef@toxicpanda.com>
+References: <20200204161951.764935-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -57,95 +60,153 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v3->v4:
-- merged the patch that stopped forcing commit for data with the patch that
-  removed the bytes_needed parameter to may_commit_transaction.
-- fixed the wording in the comment patch as per Nikolay.
-- Added the reviewed-by's and tested-by's to everything
+We have btrfs_wait_ordered_roots() which takes a u64 for nr, but
+btrfs_start_delalloc_roots() that takes an int for nr, which makes using
+them in conjunction, especially for something like (u64)-1, annoying and
+inconsistent.  Fix btrfs_start_delalloc_roots() to take a u64 for nr and
+adjust start_delalloc_inodes() and it's callers appropriately.
 
-v2->v3:
-- added a comment patch for the flushing states for data.
-- I forgot to add cancel_work_sync() for the new async data flusher thread.
-- Cleaned up a few of Nikolay's nits.
+This means we've adjusted start_delalloc_inodes() to take a pointer of
+nr since we want to preserve the ability for start-delalloc_inodes() to
+return an error, so simply make it do the nr adjusting as necessary.
 
-v1->v2:
-- dropped the RFC
-- realized that I mis-translated the transaction commit logic from the old way
-  to the new way, so I've reworked a bunch of patches to clearly pull that
-  behavior into the generic flushing code.  I've then cleaned it up later to
-  make it easy to bisect down to behavior changes.
-- Cleaned up the priority flushing, there's no need for an explicit state array.
-- Removed the CHUNK_FORCE_ALLOC from the normal flushing as well, simply keep
-  the logic of allocating chunks until we've made our reservation or we are
-  full, then fall back on the normal flushing mechanism.
+Part of adjusting the callers to this means changing
+btrfs_writeback_inodes_sb_nr() to take a u64 for items.  This may be
+confusing because it seems unrelated, but the caller of
+btrfs_writeback_inodes_sb_nr() already passes in a u64, it's just the
+function variable that needs to be changed.
 
--------------- Original email --------------
-Nikolay reported a problem where we'd occasionally fail generic/371.  This test
-has two tasks running in a loop, one that fallocate and rm's, and one that
-pwrite's and rm's.  There is enough space for both of these files to exist at
-one time, but sometimes the pwrite would fail.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/ctree.h       |  2 +-
+ fs/btrfs/dev-replace.c |  2 +-
+ fs/btrfs/inode.c       | 27 +++++++++++----------------
+ fs/btrfs/ioctl.c       |  2 +-
+ fs/btrfs/space-info.c  |  2 +-
+ 5 files changed, 15 insertions(+), 20 deletions(-)
 
-It would fail because we do not serialize data reseravtions.  If one task is
-stuck doing the reclaim work, and another task comes in and steals it's
-reservation enough times, we'll give up and return ENOSPC.  We validated this by
-adding a printk to the data reservation path to tell us that it was succeeding
-at making a reservation while another task was flushing.
-
-To solve this problem I've converted data reservations over to the ticketing
-system that metadata uses.  There are some cleanups and some fixes that have to
-come before we could do that.  The following are simply cleanups
-
-  [PATCH 01/20] btrfs: change nr to u64 in btrfs_start_delalloc_roots
-  [PATCH 02/20] btrfs: remove orig from shrink_delalloc
-  [PATCH 03/20] btrfs: handle U64_MAX for shrink_delalloc
-
-The following are fixes that are needed to handle data space infos properly.
-
-  [PATCH 04/20] btrfs: make shrink_delalloc take space_info as an arg
-  [PATCH 05/20] btrfs: make ALLOC_CHUNK use the space info flags
-  [PATCH 06/20] btrfs: call btrfs_try_granting_tickets when freeing
-  [PATCH 07/20] btrfs: call btrfs_try_granting_tickets when unpinning
-  [PATCH 08/20] btrfs: call btrfs_try_granting_tickets when reserving
-  [PATCH 09/20] btrfs: use the btrfs_space_info_free_bytes_may_use
-
-I then converted the data reservation path over to the ticketing infrastructure,
-but I did it in a way that mirrored exactly what we currently have.  The idea is
-that I want to be able to bisect regressions that happen from behavior change,
-and doing that would be hard if I just had a single patch doing the whole
-conversion at once.  So the following patches are only moving code around
-logically, but preserve the same behavior as before
-
-  [PATCH 10/20] btrfs: add flushing states for handling data
-  [PATCH 11/20] btrfs: add btrfs_reserve_data_bytes and use it
-  [PATCH 12/20] btrfs: use ticketing for data space reservations
-
-And then the following patches were changing the behavior of how we flush space
-for data reservations.
-
-  [PATCH 13/20] btrfs: run delayed iputs before committing the
-  [PATCH 14/20] btrfs: flush delayed refs when trying to reserve data
-  [PATCH 15/20] btrfs: serialize data reservations if we are flushing
-  [PATCH 16/20] btrfs: rework chunk allocate for data reservations
-  [PATCH 17/20] btrfs: drop the commit_cycles stuff for data
-
-And then a cleanup now that the data reservation code is the same as the
-metadata reservation code.
-
-  [PATCH 18/20] btrfs: use the same helper for data and metadata
-
-Finally a patch to change the flushing from direct to asynchronous, mirroring
-what we do for metadata for better latency.
-
-  [PATCH 19/20] btrfs: do async reclaim for data reservations
-
-And then a final cleanup now that we're where we want to be with the data
-reservation path.
-
-  [PATCH 20/20] btrfs: kill the priority_reclaim_space helper
-
-I've marked this as an RFC because I've only tested this with generic/371.  I'm
-starting my overnight runs of xfstests now and will likely find regressions, but
-I'd like to get review started so this can get merged ASAP.  Thanks,
-
-Josef
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8a2c1665baad..6afa0885a9bb 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2884,7 +2884,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+ 			       u32 min_type);
+ 
+ int btrfs_start_delalloc_snapshot(struct btrfs_root *root);
+-int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, int nr);
++int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr);
+ int btrfs_set_extent_delalloc(struct inode *inode, u64 start, u64 end,
+ 			      unsigned int extra_bits,
+ 			      struct extent_state **cached_state);
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index f639dde2a679..6ff08eb3c35d 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -593,7 +593,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	 * flush all outstanding I/O and inode extent mappings before the
+ 	 * copy operation is declared as being finished
+ 	 */
+-	ret = btrfs_start_delalloc_roots(fs_info, -1);
++	ret = btrfs_start_delalloc_roots(fs_info, U64_MAX);
+ 	if (ret) {
+ 		mutex_unlock(&dev_replace->lock_finishing_cancel_unmount);
+ 		return ret;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 9320f13778ce..5c6ce78bff1d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9619,7 +9619,8 @@ static struct btrfs_delalloc_work *btrfs_alloc_delalloc_work(struct inode *inode
+  * some fairly slow code that needs optimization. This walks the list
+  * of all the inodes with pending delalloc and forces them to disk.
+  */
+-static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
++static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr,
++				 bool snapshot)
+ {
+ 	struct btrfs_inode *binode;
+ 	struct inode *inode;
+@@ -9659,9 +9660,11 @@ static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
+ 		list_add_tail(&work->list, &works);
+ 		btrfs_queue_work(root->fs_info->flush_workers,
+ 				 &work->work);
+-		ret++;
+-		if (nr != -1 && ret >= nr)
+-			goto out;
++		if (*nr != U64_MAX) {
++			(*nr)--;
++			if (*nr == 0)
++				goto out;
++		}
+ 		cond_resched();
+ 		spin_lock(&root->delalloc_lock);
+ 	}
+@@ -9686,18 +9689,15 @@ static int start_delalloc_inodes(struct btrfs_root *root, int nr, bool snapshot)
+ int btrfs_start_delalloc_snapshot(struct btrfs_root *root)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	int ret;
++	u64 nr = U64_MAX;
+ 
+ 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+ 		return -EROFS;
+ 
+-	ret = start_delalloc_inodes(root, -1, true);
+-	if (ret > 0)
+-		ret = 0;
+-	return ret;
++	return start_delalloc_inodes(root, &nr, true);
+ }
+ 
+-int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, int nr)
++int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr)
+ {
+ 	struct btrfs_root *root;
+ 	struct list_head splice;
+@@ -9720,15 +9720,10 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, int nr)
+ 			       &fs_info->delalloc_roots);
+ 		spin_unlock(&fs_info->delalloc_root_lock);
+ 
+-		ret = start_delalloc_inodes(root, nr, false);
++		ret = start_delalloc_inodes(root, &nr, false);
+ 		btrfs_put_root(root);
+ 		if (ret < 0)
+ 			goto out;
+-
+-		if (nr != -1) {
+-			nr -= ret;
+-			WARN_ON(nr < 0);
+-		}
+ 		spin_lock(&fs_info->delalloc_root_lock);
+ 	}
+ 	spin_unlock(&fs_info->delalloc_root_lock);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index ecb6b188df15..442c89502f06 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -5510,7 +5510,7 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 	case BTRFS_IOC_SYNC: {
+ 		int ret;
+ 
+-		ret = btrfs_start_delalloc_roots(fs_info, -1);
++		ret = btrfs_start_delalloc_roots(fs_info, U64_MAX);
+ 		if (ret)
+ 			return ret;
+ 		ret = btrfs_sync_fs(inode->i_sb, 1);
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 01297c5b2666..edda1ee0455e 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -310,7 +310,7 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ }
+ 
+ static void btrfs_writeback_inodes_sb_nr(struct btrfs_fs_info *fs_info,
+-					 unsigned long nr_pages, int nr_items)
++					 unsigned long nr_pages, u64 nr_items)
+ {
+ 	struct super_block *sb = fs_info->sb;
+ 
+-- 
+2.24.1
 
