@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2098C15204F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 19:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BA3152050
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 19:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbgBDSTC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 13:19:02 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:44957 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727355AbgBDSTC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 13:19:02 -0500
-Received: by mail-qt1-f196.google.com with SMTP id w8so15054793qts.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 10:19:01 -0800 (PST)
+        id S1727484AbgBDSTF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 13:19:05 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40381 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727355AbgBDSTF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 13:19:05 -0500
+Received: by mail-qk1-f193.google.com with SMTP id b7so3705441qkl.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 10:19:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=AThYQH1oc9FV/hGd/nLbIoBnev8JkhtMp5idHf3QVyg=;
-        b=hwYAeKq74Br/15Tj+NXfEQ2SJ498Tav8H4TlzLj10r12oPA9AZ71FjmdLCLPrW7t7m
-         e1wCIa/AS1DKaYKnui8eWy2zgP30gAPeLKxwrRw2jCPfjRqPzJ9mil241b3hPJzpKls6
-         sUoy5qApjJNWOIYFDeWGFKm4YejqFdr6mwGUmdyIblqMGDPx+B1yZwnGyEe+dC7rZ9XW
-         QikObd5UjpfeyrnxqUC1aslztBmru3sCjH0HS7QAvj79MOycQBim72AWR7kLy0vA3Wxu
-         wzTsvxePiLpbub0jCTOrbaHNwkwgHHR6JSgEAk865CSv4kSKqUT3WQ+zDz/p2ruSLWGm
-         //ew==
+        bh=H2sQXRMnTW9DFA5QB5mCe0NRB2ify8aDDA9ambZeoKg=;
+        b=FMidWas3EwZnOBKfXbDEFVIriF6szR2euUz8pAkdUwuFYk5Lpvi9TRnl12SsEngomp
+         WKAPodRfSsWmQsmjJ26kDFZ1vddDBmj1yBKF3R+uftgjUsEmHuOxlsm73i75JQb2KGmx
+         kgrsg2F6VYMR1oHuWFYJpE2tog1aF+I/uQWPX2dbX86d7iAQRrwnhLFApDg240mTihYI
+         tupUJD13nvCK3MABacNm/o0pToWv+GP9y7oatje7NTMo+2iXEhGwpqptXNS8blaMzg94
+         WOz5o6AI9HiBLEox8b4PZeOvmg3y4zgCMlqCIKcjHVS4/lD+f5pFIG2uu7XY//6ZtHxV
+         I9BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AThYQH1oc9FV/hGd/nLbIoBnev8JkhtMp5idHf3QVyg=;
-        b=LrZ5AOJBQ+0I/Sc+ZLLwgj6WwYyoGo/oCpnLjzZxK/qeZXzv5z/gC6B5T6Y+dUpEcn
-         7ws4ah2b0tv/2tCOUar+H1zpzAQMHL9+7bVz3e3chl1Jpe0TU8FVXeiSyp3lgnrZVgEQ
-         wB2CIChfTPr7TL2ckh0hZR8tGMpucrCLKU4rJBTft3rr8ci9q+dPsJTcLwlsTWL3HwR5
-         2flrCdRfFOcoNlK3+1gCW0Zyv1Xtib2Px5WCNyyA57eFcf5r+Ymzw0dXdi0jxGvPYQkc
-         F+jxEJY/X+Rdhten+AZVUTyv+GhFaJwr1Mc5izfPAXqfl813IDZ/QKJ3rh9twHqkGRaG
-         PXkw==
-X-Gm-Message-State: APjAAAWkrTHmuUK9YrWMd0UAZEPk5Wt/i7iWRT8f1xY5LmG/W0aHSwZy
-        SpXx6IAp2E/zVpTGWLHuM+ai0rgr590vog==
-X-Google-Smtp-Source: APXvYqwcjGDnYg3EOejUdaBAY9eWF589rEjgOfGWt2oiWOa+0kXQZ+AssAqoSaMKEJ96nX41Y8BfyQ==
-X-Received: by 2002:aed:3109:: with SMTP id 9mr30342522qtg.166.1580840340492;
-        Tue, 04 Feb 2020 10:19:00 -0800 (PST)
+        bh=H2sQXRMnTW9DFA5QB5mCe0NRB2ify8aDDA9ambZeoKg=;
+        b=TNHoTlbwKXsw+DN5vr9+XOiZCZlVkcTZR+NJVt3P00BCVAPvdpCmnpfr6uwbOkogrQ
+         N8Ph9w+lBRyJlXEEiU6KgcDerypDi+5LNcvxb5qHJWC7lATQMst1sviunXQfaD86LiFn
+         nJNYxCVWldj9zViYA6RleZFw3eyDN2iOeTTI3mabC7RVCcYPSIMgFErfoQrITeGFPPCY
+         V9t+sRtxebZHkJ7oexw2+CbI0IKKYgmDgAxEBAX78QtPoM37TpBl4OMHgmwOj8erNXEZ
+         S0Odot9pVcDiSwySaqVccJxFQ5B9IHhOiN2IKCCJqltrGH/R0AWB+eaQFaC89FHqo6kJ
+         C/Kg==
+X-Gm-Message-State: APjAAAWTdYkCyzbU5lGkCTqmJeZIinHtUW3vkdlHveeKOS8RpDWGlhN3
+        mamLsU7PDffxEODxqkq6teM52nPkglAH+w==
+X-Google-Smtp-Source: APXvYqzyVrn16XMWqPXFhM3RoOWgDkQ7rhlYDe0G5v6I60icqOabZQiOPxCvfkNDCRAkSifeCLpe3Q==
+X-Received: by 2002:a05:620a:3de:: with SMTP id r30mr30671943qkm.189.1580840342183;
+        Tue, 04 Feb 2020 10:19:02 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 135sm11675041qkl.68.2020.02.04.10.18.59
+        by smtp.gmail.com with ESMTPSA id d25sm11324044qka.39.2020.02.04.10.19.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 10:18:59 -0800 (PST)
+        Tue, 04 Feb 2020 10:19:01 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/3] btrfs: add a comment describing block-rsvs
-Date:   Tue,  4 Feb 2020 13:18:54 -0500
-Message-Id: <20200204181856.765916-2-josef@toxicpanda.com>
+Subject: [PATCH 2/3] btrfs: add a comment describing delalloc space reservation
+Date:   Tue,  4 Feb 2020 13:18:55 -0500
+Message-Id: <20200204181856.765916-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200204181856.765916-1-josef@toxicpanda.com>
 References: <20200204181856.765916-1-josef@toxicpanda.com>
@@ -59,117 +59,128 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a giant comment at the top of block-rsv.c describing generally
-how block rsvs work.  It is purely about the block rsv's themselves, and
-nothing to do with how the actual reservation system works.
+delalloc space reservation is tricky because it encompasses both data
+and metadata.  Make it clear what each side does, the general flow of
+how space is moved throughout the lifetime of a write, and what goes
+into the calculations.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-rsv.c | 91 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ fs/btrfs/delalloc-space.c | 101 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index d07bd41a7c1e..c3843a0001cb 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -6,6 +6,97 @@
- #include "space-info.h"
- #include "transaction.h"
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index c13d8609cc99..9366509917fc 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -9,6 +9,107 @@
+ #include "qgroup.h"
+ #include "block-group.h"
  
 +/*
-+ * HOW DO BLOCK RSVS WORK
++ * HOW DOES THIS WORK
 + *
-+ *   Think of block_rsv's as buckets for logically grouped metadata
-+ *   reservations.  Each block_rsv has a ->size and a ->reserved.  ->size is how
-+ *   large we want our block rsv to be, ->reserved is how much space is
-+ *   currently reserved for this block reserve.
++ * There are two stages to data reservations, one for data and one for metadata
++ * to handle the new extents and checksums generated by writing data.
 + *
-+ *   ->failfast exists for the truncate case, and is described below.
 + *
-+ * NORMAL OPERATION
++ * DATA RESERVATION
++ *   The general flow of the data reservation is as follows
 + *
 + *   -> Reserve
-+ *     Entrance: btrfs_block_rsv_add, btrfs_block_rsv_refill
-+ *
-+ *     We call into btrfs_reserve_metadata_bytes() with our bytes, which is
-+ *     accounted for in space_info->bytes_may_use, and then add the bytes to
-+ *     ->reserved, and ->size in the case of btrfs_block_rsv_add.
-+ *
-+ *     ->size is an over-estimation of how much we may use for a particular
-+ *     operation.
++ *     We call into btrfs_reserve_data_bytes() for the user request bytes that
++ *     they wish to write.  We make this reservation and add it to
++ *     space_info->bytes_may_use.  We set EXTENT_DELALLOC on the inode io_tree
++ *     for the range and carry on if this is buffered, or follow up trying to
++ *     make a real allocation if we are pre-allocating or doing O_DIRECT.
 + *
 + *   -> Use
-+ *     Entrance: btrfs_use_block_rsv
++ *     At writepages()/prealloc/O_DIRECT time we will call into
++ *     btrfs_reserve_extent() for some part or all of this range of bytes.  We
++ *     will make the allocation and subtract space_info->bytes_may_use by the
++ *     original requested length and increase the space_info->bytes_reserved by
++ *     the allocated length.  This distinction is important because compression
++ *     may allocate a smaller on disk extent than we previously reserved.
 + *
-+ *     When we do a btrfs_alloc_tree_block() we call into btrfs_use_block_rsv()
-+ *     to determine the appropriate block_rsv to use, and then verify that
-+ *     ->reserved has enough space for our tree block allocation.  Once
-+ *     successful we subtract fs_info->nodesize from ->reserved.
++ *   -> Allocation
++ *     finish_ordered_io() will insert the new file extent item for this range,
++ *     and then add a delayed ref update for the extent tree.  Once that delayed
++ *     ref is written the extent size is subtracted from
++ *     space_info->bytes_reserved and added to space_info->bytes_used.
 + *
-+ *   -> Finish
-+ *     Entrance: btrfs_block_rsv_release
++ *   Error handling
 + *
-+ *     We are finished with our operation, subtract our individual reservation
-+ *     from ->size, and then subtract ->size from ->reserved and free up the
-+ *     excess if there is any.
-+ *
-+ *     There is some logic here to refill the delayed refs rsv or the global rsv
-+ *     as needed, otherwise the excess is subtracted from
++ *   -> By the reservation maker
++ *     This is the simplest case, we haven't completed our operation and we know
++ *     how much we reserved, we can simply call
++ *     btrfs_free_reserved_data_space*() and it will be removed from
 + *     space_info->bytes_may_use.
 + *
-+ * TYPES OF BLOCK RSVS
++ *   -> After the reservation has been made, but before cow_file_range()
++ *     This is specifically for the delalloc case.  You must clear
++ *     EXTENT_DELALLOC with the EXTENT_CLEAR_DATA_RESV bit, and the range will
++ *     be subtracted from space_info->bytes_may_use.
 + *
-+ * BLOCK_RSV_TRANS, BLOCK_RSV_DELOPS, BLOCK_RSV_CHUNK
-+ *   These behave normally, as described above, just within the confines of the
-+ *   lifetime of their particular operation (transaction for the whole trans
-+ *   handle lifetime, for example).
++ * METADATA RESERVATION
++ *   The general metadata reservation lifetimes are discussed elsewhere, this
++ *   will just focus on how it is used for delalloc space.
 + *
-+ * BLOCK_RSV_GLOBAL
-+ *   It is impossible to properly account for all the space that may be required
-+ *   to make our extent tree updates.  This block reserve acts as an overflow
-+ *   buffer in case our delayed refs rsv does not reserve enough space to update
-+ *   the extent tree.
++ *   We keep track of two things on a per inode bases
 + *
-+ *   We can steal from this in some cases as well, notably on evict() or
-+ *   truncate() in order to help users recover from ENOSPC conditions.
++ *   ->outstanding_extents
++ *     This is the number of file extent items we'll need to handle all of the
++ *     outstanding DELALLOC space we have in this inode.  We limit the maximum
++ *     size of an extent, so a large contiguous dirty area may require more than
++ *     one outstanding_extent, which is why count_max_extents() is used to
++ *     determine how many outstanding_extents get added.
 + *
-+ * BLOCK_RSV_DELALLOC
-+ *   The individual item sizes are determined by the per-inode size
-+ *   calculations, which are described with the delalloc code.  This is pretty
-+ *   straightforward, it's just the calculation of ->size encodes a lot of
-+ *   different items, and thus it gets used when updating inodes, inserting file
-+ *   extents, and inserting checksums.
++ *   ->csum_bytes
++ *     This is essentially how many dirty bytes we have for this inode, so we
++ *     can calculate the number of checksum items we would have to add in order
++ *     to checksum our outstanding data.
 + *
-+ * BLOCK_RSV_DELREFS
-+ *   We keep a running tally of how many delayed refs we have on the system.
-+ *   We assume each one of these delayed refs are going to use a full
-+ *   reservation.  We use the transaction items and pre-reserve space for every
-+ *   operation, and use this reservation to refill any gap between ->size and
-+ *   ->reserved that may exist.
++ *   We keep a per-inode block_rsv in order to make it easier to keep track of
++ *   our reservation.  We use btrfs_calculate_inode_block_rsv_size() to
++ *   calculate the current theoretical maximum reservation we would need for the
++ *   metadata for this inode.  We call this and then adjust our reservation as
++ *   necessary, either by attempting to reserve more space, or freeing up excess
++ *   space.
 + *
-+ *   From there it's straightforward, removing a delayed ref means we remove its
-+ *   count from ->size and free up reservations as necessary.  Since this is the
-+ *   most dynamic block rsv in the system, we will try to refill this block rsv
-+ *   first with any excess returned by any other block reserve.
++ * OUTSTANDING_EXTENTS HANDLING
++ *  ->outstanding_extents is used for keeping track of how many extents we will
++ *  need to use for this inode, and it will fluctuate depending on where you are
++ *  in the life cycle of the dirty data.  Consider the following normal case for
++ *  a completely clean inode, with a num_bytes < our maximum allowed extent size
 + *
-+ * BLOCK_RSV_EMPTY
-+ *   This is the fallback block rsv to make us try to reserve space if we don't
-+ *   have a specific bucket for this allocation.  It is mostly used for updating
-+ *   the device tree and such, since that is a separate pool we're content to
-+ *   just reserve space from the space_info on demand.
++ *  -> reserve
++ *    ->outstanding_extents += 1 (current value is 1)
 + *
-+ * BLOCK_RSV_TEMP
-+ *   This is used by things like truncate and iput.  We will temporarily
-+ *   allocate a block rsv, set it to some size, and then truncate bytes until we
-+ *   have no space left.  With ->failfast set we'll simply return ENOSPC from
-+ *   btrfs_use_block_rsv() to signal that we need to unwind and try to make a
-+ *   new reservation.  This is because these operations are unbounded, so we
-+ *   want to do as much work as we can, and then back off and re-reserve.
++ *  -> set_delalloc
++ *    ->outstanding_extents += 1 (currrent value is 2)
++ *
++ *  -> btrfs_delalloc_release_extents()
++ *    ->outstanding_extents -= 1 (current value is 1)
++ *
++ *    We must call this once we are done, as we hold our reservation for the
++ *    duration of our operation, and then assume set_delalloc will update the
++ *    counter appropriately.
++ *
++ *  -> add ordered extent
++ *    ->outstanding_extents += 1 (current value is 2)
++ *
++ *  -> btrfs_clear_delalloc_extent
++ *    ->outstanding_extents -= 1 (current value is 1)
++ *
++ *  -> finish_ordered_io/btrfs_remove_ordered_extent
++ *    ->outstanding_extents -= 1 (current value is 0)
++ *
++ *  Each stage is responsible for their own accounting of the extent, thus
++ *  making error handling and cleanup easier.
 + */
 +
- static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_block_rsv *block_rsv,
- 				    struct btrfs_block_rsv *dest, u64 num_bytes,
+ int btrfs_alloc_data_chunk_ondemand(struct btrfs_inode *inode, u64 bytes)
+ {
+ 	struct btrfs_root *root = inode->root;
 -- 
 2.24.1
 
