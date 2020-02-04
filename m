@@ -2,247 +2,246 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A882151AA1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 13:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5475151AC3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 13:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbgBDMje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 07:39:34 -0500
-Received: from mout.gmx.net ([212.227.17.20]:47053 "EHLO mout.gmx.net"
+        id S1727164AbgBDMuQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 07:50:16 -0500
+Received: from mail.orlives.de ([148.251.55.246]:50164 "EHLO mail.orlives.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgBDMjd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 07:39:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580819964;
-        bh=g69kJNcdFR7UVsjfPqsYMvYj9aqjbZ73oWRTJtD/02w=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Iz7S4b2WO3gxkhW7lMMu5TOAGbFE/SgNAcRypY1LHkU7LO8JWw2ItCem1nsHUFdKE
-         MPgFbtZ63bTAuEHQGNhmKz6DQZa+jom8Rv9zp17R9cwZBrgls7hCjlJ4F2pqET2uAI
-         972NWaJQ+wgCkzX4/VUAjSyzn8fZRUSIpYB41V10=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V4J-1jgAZI1C7L-013uxf; Tue, 04
- Feb 2020 13:39:23 +0100
-Subject: Re: [PATCH 2/3] btrfs: add a comment describing delalloc space
- reservation
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200203204436.517473-1-josef@toxicpanda.com>
- <20200203204436.517473-3-josef@toxicpanda.com>
- <7000f8a2-4d78-d9a1-2e3f-143b88ace1eb@gmx.com>
- <55055cf9-2c36-8e3e-d1b8-b3fb53cc03c1@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <356f2d03-bc34-7d13-ff0c-15cf39676333@gmx.com>
-Date:   Tue, 4 Feb 2020 20:39:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
-MIME-Version: 1.0
-In-Reply-To: <55055cf9-2c36-8e3e-d1b8-b3fb53cc03c1@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1E1fT7POdjN5tQjxLDqIQwpC0PqJui9TbhlTV1wMMxf4pEq6iZK
- C8ZR14fdx/EaWyhRDmF2+FQip0+OAE8xPJEBiqrNiZnRuMHSP0LXieMKjoM06FUYsSnzBGt
- 5txFftVFHlpij96dszgw5qgPI0fcCtiNqbnsaJELgm8FuRzEA4qCvktYrSvgdNJY6eSHAiG
- cnxxm0SCT+cFa0wJAdoIA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gL2MmUpKE9w=:NnS7iSVcMeuR/OdQBZwVkh
- U5gqzCuKW4bhmqqvRjvN5yLFAJiZxmi5pzheWABiRopRSgU4YOc/XGUQxEJvOSD/Jzccp4PYn
- 68SDtCweYAcfm+AZvvatlPX+ktYbAbNOXNiTgt0xc+NrvzP7W0NB+tkkpK+Ly36UMrUnzIq9M
- v0j9EJkJUgeN0Olr1tK/eYhBJlcnX45fY00Wmcy6fufIV8mbkqzY/0sC9c1PceqNdGtY66pYA
- 5Z4aCMiEXX18eHSzpmAnZjKiBLgqfz0pwIIP/9ibNJYQGYlLjPqgaPJnEFLUCvcJl11h3aq2j
- sET5WqjJz2MsQeBZM4k4Rk4oPjELx9h95KO7yFqdthAv7xeghghriht/E5muWrl9kyRWMbqiG
- czcSWWaN1XoZYpCbu50f1y/ilLuK1J2r26Xgz5dzK2UhHkDMgRJwh5KYKT5MUmE3ZtqFm+cBC
- SCjm+7MbW47V5O66KllSD49ZOouJZGvC5s+ZAIS3HHH7hO+fg3EX4ChCFpFC/GzCgiSOPvmtc
- PceCYAnlI6dAz5TZPaHz0sFS3WS8yikBG8jSVtTCfCkfq00FmGtXsPA4R1bVgcaYrSzEcOOBB
- sG448NFVKxDzikxDPWaUclbOAEORxovaKqO1Jl3XxlyH8+UFid+TGyxuOLqS+W8UKI54lAZpV
- 5uInUdMEjIePZu1H+QqZCG7L948bJyg3sO92PV+gVeI14AguYvPKh4RPaswE7Mv27oAms3X6h
- G0PDi/z1/8tjOVT1rc1xagiE5l6BjflxIbA5r4jKnHVZ+EVM18ffna+jsDEJMum+66RtXoJfM
- Qy7CbbSrPYIQmW0c7K0aDMVQs2+Lnjx9IGQY7jr2xGtVoS5x9uu4aHmqiHxncTtbuVmSocS7Z
- 9brnEQH/0/zntBSkCVZZyt2Ls65hCd1qzSDQ7vs38mrPVyNjt70X8+FvUXaQUAGDoV3Zs0eBC
- k7J/nAXEtsIeUlxAU+uVYfozM6ruDInNAFOOAMrXI0QhA+/fqyfLA/UCgqfaOFnRetEtAR+eo
- mhBmBIifHel1syrmvDRaNYeituwBlu55z6bCnK8N+9nfRlSPy/ulNjfa8CdRExu708KPqFtCZ
- L1S51rmJDAGaPwXsw+62Qi841AhLgTPWEE5OVqyHIppZZYwik0txhOjArAjEkHRaPQ1G2YSNI
- 8fhR87EW0f9OmBCcwc2yb1DlTqDqyXRYS3I1xRvRcWcsh65og+oaPL7gk9OI90Y+k5c0aQjiz
- T3SBvbP6dJZwDycvd
+        id S1727126AbgBDMuQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Feb 2020 07:50:16 -0500
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Feb 2020 07:50:14 EST
+Received: from mail.orlives.de (localhost [127.0.0.1])
+        by mail.orlives.de (Postfix) with ESMTPSA id 1FB83A0040
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Feb 2020 13:44:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orlives.de; s=dkim1;
+        t=1580820280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+        to:to:cc:mime-version:mime-version:content-type:content-type:autocrypt:autocrypt;
+        bh=bTJcAwGuoH6fUARF4ipWyxzcFXBteNkZdJ/5Typk1eU=;
+        b=wmLOG4vNrJVpYMxcGh7a+qP1s8Qx/pm2fQ486ybc7R3HqOOlDwGFHf29rsu/fAGJFX5iT4
+        BELQH1f75pTEJWMWPvVIYri6XZXR0ZrxCjxIldAlgvOm7Mp7vuHn7v7bjPD1nwQoNpbOlm
+        5vray4cXNnCq+f5TbLnVFC/plLi2ZjCFgTcdtD0Ce3NEuPKfJ52wtCuiAAykWKO7perIjW
+        bGPF0Vpo97UssdgIBfRPnkaQCzm0pYTWh6eM9y5kIj20rj/xAl+xLcVLBRcmlUinY8STOi
+        m3PT/naCJGculbdEq8J9UB3kZ4Lqa/UuhIvf3BBIYiJHCFjrJ7iynY+0kk/pwx6/1KYZsi
+        FZVpz26TS5ex3GgvfyntejGv7+2XKj21UV2D/vS5E17zBi9fYizAItj6ymPdqCCySzoJ9s
+        /KsYFhxorp8VLXGdnjqS71gHz76EQE3LGZMQxGdZrEk2Z21YugeCUaf84Cy1ySy57P8XAh
+        Q3C4gsBdFzb0X7WQC2yHfCE8LWd9z6wdVN7hnqMdojl+nkV4JXzwXj9pPJdIIwhuIQVy/m
+        HCSV11SZaMsKKPXMchq6TWh0XYYsYo5j451r6gqudNcAH9ZjoTNL/Gs5PnlfXOkRJ74JYP
+        aKb/bgmFcK6hADUww5y0htA/oD7clNotbWUfvyRIwuzp6AVOpVT/o=
+To:     linux-btrfs@vger.kernel.org
+From:   Trolli Schmittlauch <t.schmittlauch+ml@orlives.de>
+Autocrypt: addr=t.schmittlauch+ml@orlives.de; prefer-encrypt=mutual; keydata=
+ mQENBF4y2DoBCADCzwZ+V1tJOR2JK20uAVPkAOC5PdIe/UYCVZsYIbh8aIz0HsiqWeTCj3J8
+ nZEVKKm6fQRtyMILZeWNHQ98ck+1tmr4a6UQ4UDl+Xb1VuhU4frZI/d75olkn2JNwYcJJcdn
+ MJ4WUZ8BWhmia+8ng+7nJ1yOw1ad0uS8dL+w+m+eimFr7HjIXUV/Y5I8NGhkROFDu72byMn1
+ OTaq4HFfgilYsDGu8AWUtn+ZBXmCDIYbvXANjDcyuGTTnS/vgyFx66rHOgZKqTafuSAC1k61
+ dAYvLlo06yb4S4VNwkW17ho9L6sgqfY5rFd+zQYnXdau7AK7TLAFywHgafHU20Ffv6PbABEB
+ AAG0Gzx0LnNjaG1pdHRsYXVjaEBvcmxpdmVzLmRlPokBSQQQAQgAMwIZAQUCXjLYQAIbAwQL
+ CQgHBhUICQoLAgMWAgEWIQSJFhEikPObK3+nglaeUEWy+uvFawAKCRCeUEWy+uvFa6UPCACt
+ EeMFD8HIbP6vIfs0dQdYw7SyG/Ws/ZEhi61+HfBeltem2LMbcY3B1UNGWWt1px1oFq0sCd12
+ j8JhjTPyFoQv+vRDEygMk/OrXfnn32dl9Ttubgz68ktxjv6xQ2q+TGHStUCe9Q1opGqjWqV0
+ bqFV9nbpX5DX3urG4eDqjUrvUMasp3/RBBC6dSzRcutbmnFEUhbnQcG2JhxkUqJxErJO7Rs7
+ dw5wR+43zipZznrtP/W8nCmL7E8VYn3KWFSb4jSmMyYneqBrhSZMB/BfiOMrWnnMpPChRLyR
+ GLqZoyhWDPZyAbKyjlVQVS3d9BtLn5PzNaYRAl9Gad8h+o/WWHGXuQENBF4y2DoBCACmbQWs
+ /CCONpIwsHxKt4fEfbW1XhQFoKPmGF2Xonas6kN3Oh8XXFekkXfnRQJX+fOuv7DbaUsmkPzd
+ TB2YtfidZJ6xIYPzSgSMsA945dEOY5yYfeNCH1pQYcq1xfM7bHGSwaNervx0wnK/g7yBgp6E
+ 1stOwqoR9M3KgmQJPuaSISSfUH5NKcx38S6w+56I3//f1jyCRG5vkQzHsdioBWkAOfagQmcv
+ 6fMhDYCoxlTooxlj1/5mSkspCS7fDkVcZn48t+sPfQAywpUDrWBZhp1vrDHfl+wUvCSXPYEz
+ 9dkT9NmLz24H20tLV+btVgMsPXSlnM34lNjABg2x7isCoCZ9ABEBAAGJATYEGAEIACAFAl4y
+ 2EACGwwWIQSJFhEikPObK3+nglaeUEWy+uvFawAKCRCeUEWy+uvFayO5CACDYH46Tay5BSwn
+ FK3EwAYSpXIFzhQet7os7InGRS8/2yuqzsunRDbMy11rTGmXXA1LuTizqsgebQbALpkuHEpi
+ gX9b20RfsfuZYbdbtLzzVDuOVuGP3+CSJrB1Z+nGeF1+L4m5n7VDPX0MyWKwhlWY9hVmNQ2+
+ lMt+fb6+330M9cXCz6H2/k7b2BTEM9xZPytt2ICT8I9rX5+8tuHDrstr13P40QOR0Exh5EHw
+ LA00FYsr0e+ijzxRP9EC3AA9Gt/518IRS7FGvszu4qWWRT33P2cABoVUPpsybrhvuApgpf5y
+ DLO17h0Vxwoq2qqCO/RqIw+o8Lj89xOl4VkPpXe4
+Subject: btrfs scrub prevents system suspend
+Message-ID: <6055ac8f-b13d-85ed-7109-3314c5c71c1f@localhost>
+Date:   Tue, 4 Feb 2020 13:44:38 +0100
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="a7dRvWnDqXMr59N9K6VnyYwSufa4iIeNO"
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=t.schmittlauch@orlives.de smtp.mailfrom=t.schmittlauch@orlives.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--a7dRvWnDqXMr59N9K6VnyYwSufa4iIeNO
+Content-Type: multipart/mixed; boundary="GIf1s07HPIygTrXfGPLPSI6bFLNkSomvX";
+ protected-headers="v1"
+From: Trolli Schmittlauch <t.schmittlauch+ml@orlives.de>
+To: linux-btrfs@vger.kernel.org
+Message-ID: <6055ac8f-b13d-85ed-7109-3314c5c71c1f@localhost>
+Subject: btrfs scrub prevents system suspend
 
+--GIf1s07HPIygTrXfGPLPSI6bFLNkSomvX
+Content-Type: multipart/mixed;
+ boundary="------------B0FC79D74FFA3842D9F1D651"
+Content-Language: en-US
 
-On 2020/2/4 =E4=B8=8B=E5=8D=888:27, Nikolay Borisov wrote:
->
->
-> On 4.02.20 =D0=B3. 11:48 =D1=87., Qu Wenruo wrote:
->>
->
->
-> <snip>
->
->>
->>> + *
->>> + *   Once this space is reserved, it is added to space_info->bytes_ma=
-y_use.  The
->>> + *   caller must keep track of this reservation and free it up if it =
-is never
->>> + *   used.  With the buffered IO case this is handled via the EXTENT_=
-DELALLOC
->>> + *   bit's on the inode's io_tree.  For direct IO it's more straightf=
-orward, we
->>> + *   take the reservation at the start of the operation, and if we wr=
-ite less
->>> + *   than we reserved we free the excess.
->>
->> This part involves the lifespan and state machine of data.
->> I guess more explanation on the state machine would help a lot.
->>
->> Like:
->> Page clean
->> |
->> +- btrfs_buffered_write()
->> |  Reserve data space for data, metadata space for csum/file
->> |  extents/inodes.
->> |
->> Page dirty
->> |
->> +- run_delalloc_range()
->> |  Allocate data extents, submit ordered extents to do csum calculation
->> |  and bio submission
->> Page write back
->> |
->> +- finish_oredred_io()
->> |  Insert csum and file extents
->> |
->> Page clean
->>
->> Although I'm not sure if such lifespan should belong to delalloc-space.=
-c.
->
-> This omits a lot of critical details. FOr example it should be noted
-> that in btrfs_buffered_write we reserve as much space as is requested by
-> the user. Then in run_delalloc_range it must be mentioned that in case
-> of compressed extents it can be called to allocate an extent which is
-> less than the space reserved in btrfs_buffered_write =3D> that's where t=
-he
-> possible space savings in case of compressed come from.
+This is a multi-part message in MIME format.
+--------------B0FC79D74FFA3842D9F1D651
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-If you spoiler everything in the introduction, I guess it's no longer
-introduction.
-An introduction should only tell the overall picture, not every details.
-For details, we go read mentioned functions.
+Hi
 
-And too many details would make the introduction pretty hard to
-maintain. What if one day we don't the current always reserve behavior
-for buffered write?
+I noticed that a running `btrfs scrub` operation prevents a system from s=
+uspending to RAM. I wonder whether this is a known issue and being worked=
+ on.
+A kernel trace leading to btrfs scrub can be found attached.
 
-So I tend to have just a overview, and entrance function. With minimal
-details unless it's a really complex design.
+My current system setup:
+NixOS 19.09
+kernel 4.19.98
+btrfs-progs v5.2.1
 
-Thanks,
-Qu
+I can also try to reproduce this issue with a more recent kernel version.=
+ (am currently on a train with bad link)
 
->
-> As a matter of fact running ordered io doesn't really clean any space
-> apart from a bit of metadata space (unless we do overwrites, as per our
-> discussion with josef in the slack channel).
->
-> <snip>
->
->>> + *
->>> + *   1) Updating the inode item.  We hold a reservation for this inod=
-e as long
->>> + *   as there are dirty bytes outstanding for this inode.  This is be=
-cause we
->>> + *   may update the inode multiple times throughout an operation, and=
- there is
->>> + *   no telling when we may have to do a full cow back to that inode =
-item.  Thus
->>> + *   we must always hold a reservation.
->>> + *
->>> + *   2) Adding an extent item.  This is trickier, so a few sub points
->>> + *
->>> + *     a) We keep track of how many extents an inode may need to crea=
-te in
->>> + *     inode->outstanding_extents.  This is how many items we will ha=
-ve reserved
->>> + *     for the extents for this inode.
->>> + *
->>> + *     b) count_max_extents() is used to figure out how many extent i=
-tems we
->>> + *     will need based on the contiguous area we have dirtied.  Thus =
-if we are
->>> + *     writing 4k extents but they coalesce into a very large extent,=
- we will
->
-> I THe way you have worded this is a bit confusing because first you
-> mention that count_max_extents calcs how many extent items we'll need
-> for a contiguous area. Then you mention that if we make a bunch of 4k
-> writes that coalesce to a single extent i.e create 1 large contiguous
-> (that's what coalescing implies in this context) we'll have to split it
-> them. This is counter-intuitive.
->
-> I guess what you meant here is physically contiguous as opposed to
-> logically contiguous?
->
->>> + *     break this into smaller extents which means we'll need a reser=
-vation for
->>> + *     each of those extents.
->>> + *
->>> + *     c) When we set EXTENT_DELALLOC on the inode io_tree we will fi=
-gure out
->>> + *     the nummber of extents needed for the contiguous area we just =
-created,
->
-> nit: s/nummber/number
->
->>> + *     and add that to inode->outstanding_extents.
->
-> <snip>
->
->>> + *
->>> + *   3) Adding csums for the range.  This is more straightforward tha=
-n the
->>> + *   extent items, as we just want to hold the number of bytes we'll =
-need for
->>> + *   checksums until the ordered extent is removed.  If there is an e=
-rror it is
->>> + *   cleared via the EXTENT_CLEAR_META_RESV bit when clearning EXTENT=
-_DELALLOC
->
-> nit: s/clearning/clearing
->
->>> + *   on the inode io_tree.
->>> + */
->>> +
->>>  int btrfs_alloc_data_chunk_ondemand(struct btrfs_inode *inode, u64 by=
-tes)
->>>  {
->>>  	struct btrfs_root *root =3D inode->root;
->>>
->>
+In the downstream bug report [1] suggests that this could be resolved/ wo=
+rked around in systemd by adding `Conflicts=3Dsuspend.target sleep.target=
+? to the scrubbing service's systemd unit.
+So should this be managed at btrfs (kernel) level or in systemd?
+
+All the best
+schmittlauch
+
+[1] https://github.com/NixOS/nixpkgs/issues/79086
+
+--------------B0FC79D74FFA3842D9F1D651
+Content-Type: text/x-log; charset=UTF-8;
+ name="btrfs-scrub-suspend_partial.log"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="btrfs-scrub-suspend_partial.log"
+
+systemd[1]: Starting Suspend...
+systemd-sleep[15702]: Suspending system...
+kernel: PM: Syncing filesystems ... done.
+kernel: Freezing user space processes ...=20
+kernel: Freezing of tasks failed after 20.007 seconds (1 tasks refusing t=
+o freeze, wq_busy=3D0):
+kernel: btrfs           D    0 12483      1 0x00000004
+kernel: Call Trace:
+kernel:  ? __schedule+0x1f4/0x820
+kernel:  ? scrub_missing_raid56_end_io+0x40/0x40 [btrfs]
+kernel:  schedule+0x28/0x80
+kernel:  scrub_add_page_to_rd_bio+0x211/0x2c0 [btrfs]
+kernel:  ? wait_woken+0x80/0x80
+kernel:  scrub_pages+0x239/0x430 [btrfs]
+kernel:  scrub_stripe+0x72b/0xee0 [btrfs]
+kernel:  ? kmem_cache_alloc+0x158/0x1c0
+kernel:  ? btrfs_check_space_for_delayed_refs+0xc7/0x100 [btrfs]
+kernel:  ? btrfs_block_rsv_check+0x20/0x60 [btrfs]
+kernel:  ? scrub_chunk+0xd2/0x130 [btrfs]
+kernel:  scrub_chunk+0xd2/0x130 [btrfs]
+kernel:  scrub_enumerate_chunks+0x20f/0x570 [btrfs]
+kernel:  ? wait_woken+0x60/0x80
+kernel:  btrfs_scrub_dev+0x1e2/0x580 [btrfs]
+kernel:  ? __kmalloc_track_caller+0x167/0x210
+kernel:  btrfs_ioctl+0xfea/0x31b0 [btrfs]
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? do_vfs_ioctl+0xa4/0x620
+kernel:  do_vfs_ioctl+0xa4/0x620
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? get_task_io_context+0x43/0x80
+kernel:  ksys_ioctl+0x60/0x90
+kernel:  ? __switch_to+0x115/0x440
+kernel:  __x64_sys_ioctl+0x16/0x20
+kernel:  do_syscall_64+0x4e/0x100
+kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+kernel: RIP: 0033:0x7f7da656cb57
+kernel: Code: Bad RIP value.
+kernel: RSP: 002b:00007f7da647dd48 EFLAGS: 00000246 ORIG_RAX: 00000000000=
+00010
+kernel: RAX: ffffffffffffffda RBX: 0000000000b163e0 RCX: 00007f7da656cb57=
+
+kernel: RDX: 0000000000b163e0 RSI: 00000000c400941b RDI: 0000000000000003=
+
+kernel: RBP: 0000000000000000 R08: 00007f7da647e700 R09: 0000000000000000=
+
+kernel: R10: 00007f7da647e700 R11: 0000000000000246 R12: 00007ffd7f26ddce=
+
+kernel: R13: 00007ffd7f26ddcf R14: 00007f7da647e700 R15: 00007f7da67c9000=
+
+kernel: OOM killer enabled.
+kernel: Restarting tasks ... done.
+kernel: PM: suspend exit
+kernel: PM: suspend entry (s2idle)
+rtkit-daemon[2121]: Demoted 5 threads.
+kernel: PM: Syncing filesystems ... done.
+kernel: Freezing user space processes ...=20
+kernel: Freezing of tasks failed after 20.001 seconds (1 tasks refusing t=
+o freeze, wq_busy=3D0):
+kernel: btrfs           D    0 12483      1 0x00000004
+kernel: Call Trace:
+kernel:  ? __schedule+0x1f4/0x820
+kernel:  ? scrub_missing_raid56_end_io+0x40/0x40 [btrfs]
+kernel:  schedule+0x28/0x80
+kernel:  scrub_add_page_to_rd_bio+0x211/0x2c0 [btrfs]
+kernel:  ? wait_woken+0x80/0x80
+kernel:  scrub_pages+0x239/0x430 [btrfs]
+kernel:  ? btrfs_lookup_csums_range+0x93/0x450 [btrfs]
+kernel:  scrub_stripe+0x72b/0xee0 [btrfs]
+kernel:  ? start_transaction+0xef/0x3f0 [btrfs]
+kernel:  ? kmem_cache_alloc+0x158/0x1c0
+kernel:  ? btrfs_check_space_for_delayed_refs+0xc7/0x100 [btrfs]
+kernel:  ? btrfs_block_rsv_check+0x20/0x60 [btrfs]
+kernel:  ? scrub_chunk+0xd2/0x130 [btrfs]
+kernel:  ? scrub_chunk+0xd2/0x130 [btrfs]
+kernel:  ? scrub_enumerate_chunks+0x20f/0x570 [btrfs]
+kernel:  ? wait_woken+0x60/0x80
+kernel:  ? btrfs_scrub_dev+0x1e2/0x580 [btrfs]
+kernel:  ? __kmalloc_track_caller+0x167/0x210
+kernel:  ? btrfs_ioctl+0xfea/0x31b0 [btrfs]
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? do_vfs_ioctl+0xa4/0x620
+kernel:  ? do_vfs_ioctl+0xa4/0x620
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? __switch_to_asm+0x35/0x70
+kernel:  ? __switch_to_asm+0x41/0x70
+kernel:  ? get_task_io_context+0x43/0x80
+kernel:  ? ksys_ioctl+0x60/0x90
+kernel:  ? __switch_to+0x115/0x440
+kernel:  ? __x64_sys_ioctl+0x16/0x20
+kernel:  ? do_syscall_64+0x4e/0x100
+kernel:  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+kernel: OOM killer enabled.
+kernel: Restarting tasks ... done.
+
+--------------B0FC79D74FFA3842D9F1D651--
+
+--GIf1s07HPIygTrXfGPLPSI6bFLNkSomvX--
+
+--a7dRvWnDqXMr59N9K6VnyYwSufa4iIeNO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEiRYRIpDzmyt/p4JWnlBFsvrrxWsFAl45ZzYACgkQnlBFsvrr
+xWs/RQf+PfVkTvTHmjaiVJ+gcQr8rY5lKCCGEsDIfpNhXHCVmoFzNG9s2pOW25RF
+9RlBu19wk6QWNpLkYMkEvrZtNsc0/1oncGAMMXgGfYJywVwCZuWyoXZ8vXOHUk9X
+A8SjlB82GwF9hKHz2WzrzNB2vtXxLUg9dksRKL0loutqz2XgiNk89wDkVMcuMyRV
+Cthq2n38ilP7pqdhWFWtkgLPbmlSnoCmvRtieclpV1F/u1dJQNulZxQDco+NPrkh
+Uep+GF/9TnXsvrj8KKzifOV06nhyqKpj44EEMsD9t9X4oXbSlLAxILcFCYwBnVEe
+Zi654tjHvNZMi3dHz95dcsVGzEoQdQ==
+=FssW
+-----END PGP SIGNATURE-----
+
+--a7dRvWnDqXMr59N9K6VnyYwSufa4iIeNO--
