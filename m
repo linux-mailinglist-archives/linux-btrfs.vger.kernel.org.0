@@ -2,112 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3457D15194F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 12:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15819151A6C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 13:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgBDLKz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 06:10:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37712 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726892AbgBDLKz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Feb 2020 06:10:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B088CAD2C;
-        Tue,  4 Feb 2020 11:10:52 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: drop math for block_reserved which is block_rsv
- size
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <1580814358-1468-1-git-send-email-anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f35d657a-bbee-119c-793d-9871d0fc2c65@suse.com>
-Date:   Tue, 4 Feb 2020 13:10:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727174AbgBDMRW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 07:17:22 -0500
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:35984 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727156AbgBDMRW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 07:17:22 -0500
+Received: by mail-vs1-f65.google.com with SMTP id a2so11186749vso.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Feb 2020 04:17:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=k/EzLHy956tTwPGe2CvpIXk2Cw3d04yIjRTyANwWmTc=;
+        b=C64y17721MqxgcZ90Yw/YFttVqhpZ3UlHtgfxAbVhFA1qQ8/htZ3IryNECDzvnFZHF
+         fsM/4ReV/Lj4E6RT2aX3HLhGHZ8r2oZaq+KAtzDF3RFgn9k8DMbpe8STWwGM9r4sT02o
+         S88cnGvq+nQyEZHd+H6FXtEBGV5CLUX5eP1bt7fzywMxYzK1GihKF14TreX6g6iTb0s9
+         ku4ylziuSwk3+hQXukY1V1rd+oYMXtFBup5dT72xi3nI6s4e4KAVOhoF1cfH6sdzc6ja
+         BaWvyotxd0dfQzbVfnb0YDUTaTu62Z7TpTyaI0MvM3VLcDwQq3scHvkqroPAsuijIE4m
+         6Rdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=k/EzLHy956tTwPGe2CvpIXk2Cw3d04yIjRTyANwWmTc=;
+        b=fjg2rs8kJRDLH3cL1pppzoADFvHA29fdam7YsuJ+v5BUO3LKwJnDnFWlMcpz9YmcZY
+         ch/5i+3iUlVy51bocsLE50tHYlITFRxREqXDiKtiX/OUMYXPyDYWhviUKVnb5GI9eZRB
+         j7ByWwZTcv8Jkv2+wCoSS70NK57yn6cs/nWbz+ogXUjMunecSwcYqlW9eiGMCSipvdzj
+         k34IFfm02w6jfTD6IqCyB8z+HP97dfruZI9EJUikQxnl4iAMFkZvrVv4SmgVc07DFG4Y
+         Ptf/uPLDdndIpwdH9DG0mwZKqQiThbgfrPtYVa+zxOJnP5aaydc6jzVl9weZL7irPQdu
+         rGkw==
+X-Gm-Message-State: APjAAAV6qr3OFdUJWuqiqtgJyhgv7gXUOt7j0Bp3DX5bgwktm1iaTZ3z
+        BQmStU0H+6IwwsXzqShee2tSBEyOTrY1Bdv3Ms9vGPH7
+X-Google-Smtp-Source: APXvYqyVDBdp+BOCT8wOEZeSezl3uT6aunWiduTqUmM5DwH+lpncNWS3sbaCuBUW+TEnW694HS68f3ZiHQKSVhZay00=
+X-Received: by 2002:a67:ff14:: with SMTP id v20mr18299937vsp.114.1580818641196;
+ Tue, 04 Feb 2020 04:17:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1580814358-1468-1-git-send-email-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAM9pMnP7PJNMCSabvPtM5hQ776uNfejjqPUhEEkoJFSeLVK2PA@mail.gmail.com>
+ <9cff72cb-ef8e-2d12-45ad-3a224e86b07a@gmx.com> <CAM9pMnOpSFnR9Dc_MyTyJevMRgiKBMPec-Y2W-iMbeyatTetog@mail.gmail.com>
+ <6f39d3a5-fdae-a0af-007a-5e95067b5921@gmx.com>
+In-Reply-To: <6f39d3a5-fdae-a0af-007a-5e95067b5921@gmx.com>
+From:   Robert Klemme <shortcutter@googlemail.com>
+Date:   Tue, 4 Feb 2020 13:16:45 +0100
+Message-ID: <CAM9pMnOkuqfu8Grwc2ddBsUTCJgJb2Y4Z5RnHmCLX1_fAHfeCQ@mail.gmail.com>
+Subject: Re: Root FS damaged
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Feb 3, 2020 at 3:10 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> On 2020/2/3 =E4=B8=8B=E5=8D=889:58, Robert Klemme wrote:
 
+> > I would assume as much as there were no power outages or crashes. I
+> > read about a bug recently (probably on
+> > https://www.reddit.com/r/btrfs/) that had to do with btrfs on LUKS and
+> > / or LVM. Could this be an explanation?
+>
+> No, it should only be some bug inside btrfs, nothing to do with lower sta=
+ck.
 
-On 4.02.20 г. 13:05 ч., Anand Jain wrote:
-> In btrfs_update_global_block_rsv the lines
->   num_bytes = block_rsv->size - block_rsv->reserved;
->   block_rsv->reserved += num_bytes;
-> imply
->   block_rsv->reserved = block_rsv->size;
-> 
-> Just assign block_rsv->size to block_rsv->reserved instead of the math.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/block-rsv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-> index 6dacde9a7e93..62e0885c1e5d 100644
-> --- a/fs/btrfs/block-rsv.c
-> +++ b/fs/btrfs/block-rsv.c
-> @@ -304,9 +304,9 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
->  
->  	if (block_rsv->reserved < block_rsv->size) {
->  		num_bytes = block_rsv->size - block_rsv->reserved;
-> -		block_rsv->reserved += num_bytes;
->  		btrfs_space_info_update_bytes_may_use(fs_info, sinfo,
->  						      num_bytes);
-> +		block_rsv->reserved = block_rsv->size;
+Unfortunately I have not found the source again. IIRC that was about a
+bug in btrfs code but showed only in combination with either LUKS and
+/ or LVM.
 
-Any particular reason why you put the assignment after
-btrfs_space_info_update_bytes_may_use and not before?
->  	} else if (block_rsv->reserved > block_rsv->size) {
->  		num_bytes = block_rsv->reserved - block_rsv->size;
->  		btrfs_space_info_update_bytes_may_use(fs_info, sinfo,
-> 
+> >> Btrfs check --repair should be able to repair that, but not recommende=
+d
+> >> for your btrfs-progs version.
+> >>
+> >> There is a bug that any power loss or transaction abort in btrfs-progs
+> >> can further screw up your fs.
+> >
+> > That explains why a repair I recently attempted elsewhere did make
+> > things worse...
+> >
+> >> That bug is solved in v5.1 btrfs-progs.
+> >> I doubt it's backported for any btrfs-progs at all.
+> >>
+> >> So please use latest btrfs-progs to fix it.
+> >> A liveiso from some rolling distro would help.
+> >
+> > Is there a PPA? I could not find one so far.
+>
+> For "some rolling distro", I mean Arch...
+
+:-) Understood, but I would have liked to also install the newer tool
+version on that system. Anyway, I pulled a Xubuntu 19.10 and that has
+more recent btrfs tools. Repair went smoothly and system is up and
+running. As additional measure I installed Ubuntu's HWE packages to
+get a newer kernel (from 4.15 to 5.3.0).
+
+$ sudo apt install linux-generic-hwe-18.04 xserver-xorg-hwe-18.04
+
+Just wanted to give you an update how it went. Again, thank you for
+your support!
+
+Kind regards
+
+robert
+
+--=20
+[guy, jim, charlie, sho].each {|him| remember.him do |as, often|
+as.you_can - without end}
+http://blog.rubybestpractices.com/
