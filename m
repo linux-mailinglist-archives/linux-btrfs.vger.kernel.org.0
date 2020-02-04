@@ -2,128 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7B0151ED3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 18:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7FF151ED4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 18:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgBDRAk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Feb 2020 12:00:40 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:17431 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbgBDRAk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 12:00:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1580835640; x=1612371640;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=tsSv1j6PipCqqcwo8W4fNfp8zYo+tWa/IovSX70JZKM=;
-  b=BEZIj4OAj3RrZa1V4qbxMwFHBeXR7VecQ3ej49XCajtmddJ0fdOFIjm+
-   lQDds/RywmEJnZC5HkLaWFNEs4vScnDYvgwTS1hZ32ALSAUqRd2iVlPTZ
-   lwFZQOSJI8jf76Afx8es7hGAZRtUJ3bHUFT6OgRvbd7cYhYxeIVl0Dvvs
-   C/HTg52PYf4cfOlID9Ov643Q39m7rcpO1MBK0tqFutMU10KNyBXPmUxVn
-   zP4YR633acKasBR+IPzpAsCw11JLtAd482j1OazzOUa61MY1GZ/ZD3OMu
-   Gm90hkJzJGNkFSCm5qkYFlEgD3rfh++GlZFbhjlxTlWdrYiIzFrGfSVgH
-   A==;
-IronPort-SDR: 9sJYNyR0Gm9nW6uAv0P1NZJt4DbZtxWckAQRIqnNfgme9MJBhWW6/AbME4n4B8iBMVJx9kfi9v
- DXVs7Mt40UGB8LKf2RSC3QwnHc8wEYhMsXJTOz8D/eXMGuaSUcQRxPAORR62zHUF4iRmue9j5B
- Sx61N5Uh/Dp0o++tj7fgj8eadbFI41Fw4Ig+HPSsnLGosqwx8yzfvpM3BTTMdP78wRoOV0ndAV
- FCycfmmTgf0kQCidJwHEZ9SkOZ7Oip9Aeu3FInO8HZBQz6hs+ex687t17281AmcbIGjk4rUjSl
- jGo=
-X-IronPort-AV: E=Sophos;i="5.70,402,1574092800"; 
-   d="scan'208";a="130540409"
-Received: from mail-sn1nam04lp2055.outbound.protection.outlook.com (HELO NAM04-SN1-obe.outbound.protection.outlook.com) ([104.47.44.55])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2020 01:00:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g0sxWJp0F6oEd99fB7GyDeNkX/bJiYnqzLvFggiqG48RaFO/pgiCXgVfywIv5O/FE+sqyyR3Qw68yShk7rn+COAUM5axJH3ZgPR4kh8hOh1yNra4XtDpjFeM4996Kylxv8FD2LVxq669LQS0Cg3seKpPgCfvEsWgNuYzvEpeuL8u51Tb2DBeOYc/B4euPkaAtWUTqwu3LAAdvbJ0P/Ng4wRiCAi6ATb6czZJD2OxoZiKBOdqNBm47UE4Mj/PH9GcGO6rWGPqBxlp4TZ+cuOOnueD5I6WCb/ZF6V9SE3z/a0DzY9s2hKsYsWXjAKe0zmRIdskvwUi7Rie1RV3Fsyn8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iWnH2qJCd1KW8+op9pX5VvYOJC8zPJTPEfMNUC5t4Ew=;
- b=NbyeS0Rt+KI46C867GCt542lWfOhlfGWYxT6HqEss7cXo1mQ03uqNYUYenuPC/NEg2yWgzbxERrnXParNeUS1krZ3TNSTGonEezdcX8q4FHZGDYP+TjtNdu1vHswjcHwl3Gs/NsRiVUGQLEcbi+WAvnUY4TrjGTfMKNqxH0UdDV0jqM+sbDTi/rgyXRD+vnsqnJVSFC2ygiqX3WysJQCLt0MbvGvGOZ2rrVrf18Sshpc/mqDVVsqSIcsxKL5up1F2P1xWGXiZ41DLdApiMKtYFZWD393jxLP/bEhbd9OOGSdNXLDuof5mGgCB8KiTVByeEZ/YY6a9UdxADvXXjTzYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1727359AbgBDRAm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Feb 2020 12:00:42 -0500
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:41185 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727310AbgBDRAm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Feb 2020 12:00:42 -0500
+Received: by mail-ua1-f68.google.com with SMTP id f7so6994202uaa.8;
+        Tue, 04 Feb 2020 09:00:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iWnH2qJCd1KW8+op9pX5VvYOJC8zPJTPEfMNUC5t4Ew=;
- b=GYg/8oF3hZ3D2s7J1SGcXugxd3m4y6H8onbay/koZRPflrg7dU2TQO4tp/77V6Sr5MW378dp9Se2q2+gy2IVK/K0EVi9hiyuyFY39QiE+fqabbBJTxEilinKo/zMc6CY/VRDYLHTDUX2h42zFeIgaWeqjb9Q7N8f5e3HdRb64R0=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3567.namprd04.prod.outlook.com (10.167.141.155) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.29; Tue, 4 Feb 2020 17:00:23 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.031; Tue, 4 Feb 2020
- 17:00:23 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-CC:     Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH 14/23] btrfs: add btrfs_reserve_data_bytes and use it
-Thread-Topic: [PATCH 14/23] btrfs: add btrfs_reserve_data_bytes and use it
-Thread-Index: AQHV23cKBIAC95C6xUijWk5WLsbbcQ==
-Date:   Tue, 4 Feb 2020 17:00:23 +0000
-Message-ID: <SN4PR0401MB3598D3D8EAFC177418DD020F9B030@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200204161951.764935-1-josef@toxicpanda.com>
- <20200204161951.764935-15-josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 503e0e35-1248-42b9-7f3f-08d7a993b9ce
-x-ms-traffictypediagnostic: SN4PR0401MB3567:
-x-microsoft-antispam-prvs: <SN4PR0401MB356784C1D1A4E750932B74829B030@SN4PR0401MB3567.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 03030B9493
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(199004)(189003)(33656002)(86362001)(186003)(26005)(316002)(110136005)(53546011)(7696005)(6506007)(5660300002)(81166006)(8676002)(478600001)(52536014)(81156014)(66946007)(64756008)(8936002)(66556008)(66446008)(4326008)(66476007)(76116006)(91956017)(2906002)(4744005)(9686003)(55016002)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3567;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fUwlYrxnj8KZMPcQzj13/DigFunNTrEkDCcDpT5sPXcvYNqK9YW7Xn9uPz8BMBXQjusW/u1ekUSOFpbEQCGT2U2hTaTu4TpPBKLEpEFOqT3smyUgRPzaYygYesiHr3jtedRV4ZXkQjJFDNaqXEBSZqI3+82jsGD/jTbscxbQwfewLVXVlv3HDrBOSoSwWz2/TlM0hC0XsYkzlAf5DVwO4J7ZFzjXEmTYi2K8KcEBXnqVe9TXOWIEiEm/uBkrzhHAz3yLotl7yNDkKcRM1WuYTggFOuX/97UV2e1uHIz5zmQHCmCav+5hY9UFlyER5HwLudX9vt0WD7dim7BLwJAGVEAw39KgWWauTWbgjTJMS6NAtuT+6UqZUszyqq5EwPhBxjPtGB2z5JD952smH1YVHIyr6MGAi6cQ5IAOV9oqM1181M3ib7jL3oK/dCqgwK8a
-x-ms-exchange-antispam-messagedata: bEzi/szNUzWufuUufEPKnA6UojuXsJJovCzK0Gnib5UkKF2RUFYnVkRice93j4ffPTipbkQGj9yKecmITE+SUsMwOhiZZ29ZREuqcWtYBAfCvbirMHQxI9Iu6RNcGs+t8JAmL8Lk8HkXijIC68TtkA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Y3Gu57aTqRvDmHSkxeoVWh8nA1QeUVJELfh/b5I4Brg=;
+        b=VhrHYpxH2WFKjfBgWdVGKxFEjk6OCHRY9n3cT3Rq5O0xEG0G05lAe8rAci/M77ptf8
+         io2089x7ljFTQts47RXwKlZZmbpqjHE7Mkxj6fRqp5Q3bwsJZoVzFbRtcgMZusQycgLA
+         APB864QbPSdDThbSxNrYEEslTkwB2ZAIGWD80Avfhm/Je17TKsa/RRPSD9cV7liMiJHW
+         u0h0hFMx+Wy8+ZaJ2mSdUajIX+R1YuKut9YTTI+MykBrDc+zqGV8DS0xbC4k2Eh8zLCM
+         7DiXli3wd6rfpJgjvhfEHnzltVeYdDNoXDgEtrSgCVnbTLKtdfDsSD9IH4V/vsrEvtCh
+         VazA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Y3Gu57aTqRvDmHSkxeoVWh8nA1QeUVJELfh/b5I4Brg=;
+        b=dtBscBqzt2wgvHY8Io6hNn4RRC5L8Qme3zgV6jFwTK1ceZxSKaQg54r08cVnE49vX0
+         13PYuLZiWoYsTiUlyGGeOKzx8jQKD6v+YsN2+vI/ygD7GN6bTL9xIbeB2nnZ65HzX62X
+         YSyEY4jhdasCW0sfdLNlIKYuo9nvh8hreYWGVs19oLAzUH5EbmNpDB+EsEz8X/s06SKi
+         UfX0o8DlA/JfaFJbTF9KD1hySbbIIZF+1sH0kra2Wump2CZnyaEW9gNn5e031QkNPLDV
+         yc5rdqN0/JkZFgTxh2B+bKEwNs3Z/Jo0IR7HIr+3GAZ8coea3qnVP3sD31ZE5nI6RTc8
+         SOfQ==
+X-Gm-Message-State: APjAAAWR6nMTZKDY3sw4/u9PNqnU+gf4uzLIiEgikqWU7+wv6QlabSvf
+        HQepMpbkeNicR6Shhv+5Rd7bNx1VI0HWWLgPpLvwK3vw
+X-Google-Smtp-Source: APXvYqwOFufUYy74IerdGdQ9QqO0kPZ07+YmrMrZW27YwVg1saHG+gzil11tGcnM0D/6U0xb8JtrXMIuunQ8sTCrFFk=
+X-Received: by 2002:ab0:724c:: with SMTP id d12mr18469254uap.0.1580835638832;
+ Tue, 04 Feb 2020 09:00:38 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 503e0e35-1248-42b9-7f3f-08d7a993b9ce
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Feb 2020 17:00:23.7789
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K2xHc2uS7lIf6gyWCuD7ooL+z7F4FYYqIGpG30K/pH6p1sP4k/UNtPWeuLTo21RDGJ3JTVzSWeGF9iyH/aVuKj0+1ocq+ackuyRiq7FbClQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3567
+References: <20200204143759.697376-1-josef@toxicpanda.com>
+In-Reply-To: <20200204143759.697376-1-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 4 Feb 2020 17:00:25 +0000
+Message-ID: <CAL3q7H7S2amma2OWGVujPM-jdLcor4zb5suXWsa_LHrwL-x8DA@mail.gmail.com>
+Subject: Re: [PATCH][v2] xfstest: add a test for the btrfs file extent gap issue
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 04/02/2020 17:20, Josef Bacik wrote:=0A=
-> +/**=0A=
-> + * btrfs_reserve_data_bytes - try to reserve data bytes for an allocatio=
-n=0A=
-> + * @root - the root we are allocating for=0A=
-> + * @bytes - the number of bytes we need=0A=
-> + * @flush - how we are allowed to flush=0A=
-> + *=0A=
-> + * This will reserve bytes from the data space info.  If there is not en=
-ough=0A=
-> + * space then we will attempt to flush space as specified ty flush.=0A=
-> + */=0A=
-> +int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,=
-=0A=
-> +			     enum btrfs_reserve_flush_enum flush)=0A=
-> +{=0A=
-=0A=
-s/@root/@fs_info/=0A=
-=0A=
-Otherwise:=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Tue, Feb 4, 2020 at 2:39 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> This is a test to validate that we're not adjusting up i_size before we
+> have the appropriate file extents on disk.  We had a problem where
+> i_size would be adjusted up without a contiguous range of file extents,
+> which isn't ok without a special option enabled.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> ---
+> v1->v2:
+> - adjusted the commit interval time to make the test shorter
+> - adjusted the write range so we didn't get tripped up by btrfs's delallo=
+c
+>   behavior
+> - integrated all of Filipe's suggestions
+>
+>  tests/btrfs/172     | 76 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/172.out |  3 ++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 80 insertions(+)
+>  create mode 100755 tests/btrfs/172
+>  create mode 100644 tests/btrfs/172.out
+>
+> diff --git a/tests/btrfs/172 b/tests/btrfs/172
+> new file mode 100755
+> index 00000000..cae5f623
+> --- /dev/null
+> +++ b/tests/btrfs/172
+> @@ -0,0 +1,76 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Facebook.  All Rights Reserved.
+> +#
+> +# FS QA Test 172
+> +#
+> +# Validate that without no-holes we do not get an i_size that is after a=
+ gap in
+> +# the file extents on disk.  This is fixed by the following patches
+> +#
+> +#     btrfs: use the file extent tree infrastructure
+> +#     btrfs: replace all uses of btrfs_ordered_update_i_size
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/dmlogwrites
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch
+> +_require_log_writes
+> +_require_xfs_io_command "sync_range"
+> +
+> +_log_writes_init $SCRATCH_DEV
+> +_log_writes_mkfs "-O ^no-holes" >> $seqres.full 2>&1
+> +
+> +# There's not a straightforward way to commit the transaction without al=
+so
+> +# flushing dirty pages, so shorten the commit interval to 1 so we're sur=
+e to get
+> +# a commit with our broken file
+> +_log_writes_mount -o commit=3D1
+> +
+> +$XFS_IO_PROG -f -c "pwrite 0 5m" $SCRATCH_MNT/file | _filter_xfs_io
+> +$XFS_IO_PROG -f -c "sync_range -abw 4m 1m" $SCRATCH_MNT/file | _filter_x=
+fs_io
+> +
+> +# Now wait for a transaction commit to happen, wait 2x just to be super =
+sure
+> +sleep 2
+> +
+> +_log_writes_unmount
+> +_log_writes_remove
+> +
+> +cur=3D$(_log_writes_find_next_fua 0)
+> +echo "cur=3D$cur" >> $seqres.full
+> +while [ ! -z "$cur" ]; do
+> +       _log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqres.full
+> +
+> +       # We only care about the fs consistency, so just run fsck, we don=
+'t have
+> +       # to mount the fs to validate it
+> +       _check_scratch_fs
+> +
+> +       cur=3D$(_log_writes_find_next_fua $(($cur + 1)))
+> +done
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/172.out b/tests/btrfs/172.out
+> new file mode 100644
+> index 00000000..45051739
+> --- /dev/null
+> +++ b/tests/btrfs/172.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 172
+> +wrote 5242880/5242880 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 4b64bf8b..53cb3451 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -174,6 +174,7 @@
+>  169 auto quick send
+>  170 auto quick snapshot
+>  171 auto quick qgroup
+> +172 auto quick log replay
+>  173 auto quick swap
+>  174 auto quick swap
+>  175 auto quick swap volume
+> --
+> 2.24.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
