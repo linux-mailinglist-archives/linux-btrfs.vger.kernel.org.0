@@ -2,167 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB2C1513AE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 01:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97A6151482
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Feb 2020 04:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgBDAhV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Feb 2020 19:37:21 -0500
-Received: from mout.gmx.net ([212.227.15.15]:39443 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgBDAhV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Feb 2020 19:37:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580776638;
-        bh=IDAbNuGZENAP9ca+HznWBm2qLTeZBQ5+Yw2UMbmbmSE=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=b6+w111Yrlnlml7Vh1t0Gv2BuRQubRnd1Nd4aQe6o7A1by75dBOyLCUtp7n2k7uFI
-         ZOKq7FEUIe5Z0KgVvJyzRP012fvo18xQIAZrYDqrCreFbpq8LVWy/7FW03s7EK0fvc
-         4PPKmtzXk+5gMzVoXIL/S1f3dENCatFsptfqCbwo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2mFi-1jfYcj2s4i-0136d4; Tue, 04
- Feb 2020 01:37:18 +0100
-To:     David Sterba <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: About stale qgroup auto removal behavior change
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <2dfbf017-9c82-1224-bdfc-73d0c0111e40@gmx.com>
-Date:   Tue, 4 Feb 2020 08:37:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1726924AbgBDDQo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Feb 2020 22:16:44 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:43504 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgBDDQo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Feb 2020 22:16:44 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 5A43B5A83CD; Mon,  3 Feb 2020 22:16:43 -0500 (EST)
+Date:   Mon, 3 Feb 2020 22:16:42 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: WARNING at fs/btrfs/delayed-ref.c:296
+ btrfs_merge_delayed_refs+0x3dc/0x410 (fixed in 5.2)
+Message-ID: <20200204031642.GW13306@hungrycats.org>
+References: <20190326025028.GG16651@hungrycats.org>
+ <20190429223454.GB20359@hungrycats.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="VKSK9rP8gzJCtGzlo0TZFtQZfyQ6trBTm"
-X-Provags-ID: V03:K1:MrhWxCp9NCYTaO16ToS4g6fdLzSeZr0I3WMaiKP7LEk0NUqjryW
- jDe76AtUWvBZ8M5XrYfZif99uy9Z6CUWjrJ0rvtwAbFbgrpIfM9P09XzGGyxONT8HzF14Y4
- 1FW9PocTqikVUNiDPLpUpdO/My5qrrzRY3sPe4O5D1WPUebhDJtZrCbI5lS8ob1U1xdHboT
- V9/aTcX2joIkyGxgcD0mw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dddEZaaY96w=:7N3Vhzj9QL5tfSKYXCfvP1
- z7IcPF7cG1/xGE0rNVJsvNzbn0Vkf7qfj8ok/zonOa/e/0BA69mu5j1X3JkQHqGM3eqLcO0Gp
- qVDnRFdHlwJBdmkRbKHb086tM+KydkLqMjHbUecVIcPDkkjt/itE95qSTa6YRAzFnYEvAHUa3
- 8wZSW5DytRqLBNKR1Sr+6tRzbfbaNPMOo461JKH6UkQsB8EfTuWT8l44jRPl7pjIxJVl24v2B
- lywtmerKwWzoZ2aHdy2EGjCp6CK32WvECvI3BrjT1T0wuNCiM2GpvsK8ft9Cr2QET0iFnnA4w
- M+jNR/8tR2x+522MWY8WmX64Qu5bPrHGX+ECLAn2Ud+57zp34Fqcl3AzNBlkbsz3G9GSz0Bxv
- ijwca2+ek3ZDjNtu4rbkcBAGxvomr1Oo8i+V1agQ0I2Zc1ny/PPp47yBDt4ts5ZXcdIbeCBW/
- caYNiOHeX2C+F6qzvIJufr5GcWrTabGvLsIdVOkmudk1ul45Xs1vFRUJp/i0g/tXnTwcL4sMm
- ypw/oyiIm9zevDQ+qpLUhzPZh7ihq+PKx+vOe+ymASTcp6oEZTXJwMDkgIhgFwlaYK/dIljCa
- ULUzGCqtt4dU6cjJg7gFPu+0PtuBNlH1LjLO0mN0y0oJGo2pewB4Bd2NbZWXlwnog4EkuvT5J
- 7AhSmB2ANufba4UQSMjDbfBTu1nMNUKFUpD582iKyMuKqIOSC/VLOS2P0ucnCgRWGp4BImVZ9
- FKSt/66qjDWkAEi4hlM9GSjgUrkAjGllEdV7+na5bJRCV79EdF9dBxf8L449E5BxhSajRSrpy
- bHe0JlvdXbPupeNkM9pYVgXGGwQM01cJw64ho59gjEZCt3xKdmscv59dVpJYwVvXl+4mjhkyR
- vinwxxjjyqg3Cht6eR/+Yjq0Xt4ggxEk9WjDAkWcpm2/EiEqVZ8I8jJsrFpSedxohCCXf/10y
- Nne1k2L8EGxKOOiwczJ3/0+qE9OZAfzuKmrUnMK8+A6LFto7uHMpNDGS0ioQzvkxRRwW+yy/E
- MrhPwMiacn9tNBZ2FkFeBT4PNqH9JREyS8IaqQ/GFseP+txYWf5FuiArOcaau+R8Dg6GGtjmU
- C/eXd0WS0igA03oe20gd93ct7kyfgOO5SUK8IeWGMXEQWe2fEyUz3C3RHOeVExC6dy+dxJGgQ
- UKwa7sDZW9axJEnX8OAvJFyb7XPKPj1F36n2fh9UbTA4Zb2WaMBOwAxBAh2xrjjODDA/zaXGt
- +zWEF0lsVK0OMWiyf
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="SvF6CGw9fzJC4Rcx"
+Content-Disposition: inline
+In-Reply-To: <20190429223454.GB20359@hungrycats.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VKSK9rP8gzJCtGzlo0TZFtQZfyQ6trBTm
-Content-Type: multipart/mixed; boundary="pKwZfUxw1jdz998iJ0OMa173iSMdcKgSY"
 
---pKwZfUxw1jdz998iJ0OMa173iSMdcKgSY
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+--SvF6CGw9fzJC4Rcx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi David,
+On Mon, Apr 29, 2019 at 06:34:55PM -0400, Zygo Blaxell wrote:
+> On Mon, Mar 25, 2019 at 10:50:28PM -0400, Zygo Blaxell wrote:
+> > Running balance, rsync, and dedupe, I get kernel warnings every few
+> > minutes on 5.0.4.  No warnings on 5.0.3 under similar conditions.
+> >=20
+> > Mount options are:  flushoncommit,space_cache=3Dv2,compress=3Dzstd.
+> >=20
+> > There are two different stacks on the warnings.  This one comes from
+> > btrfs balance:
+> >=20
+> > 	[Mon Mar 25 18:22:42 2019] WARNING: CPU: 0 PID: 4786 at fs/btrfs/delay=
+ed-ref.c:296 btrfs_merge_delayed_refs+0x3dc/0x410
+> > 	[Mon Mar 25 18:22:42 2019] Modules linked in: ppdev joydev crct10dif_p=
+clmul crc32_pclmul dm_cache_smq crc32c_intel ghash_clmulni_intel dm_cache d=
+m_persistent_data dm_bio_prison dm_bufio dm_mod rtc_cmos floppy parport_pc =
+parport aesni_intel sr_mod cdrom aes_x86_64 crypto_simd cryptd glue_helper =
+sg ide_pci_generic piix ide_core evbug evdev bochs_drm i2c_piix4 input_leds=
+ psmouse serio_raw snd_pcm snd_timer snd soundcore pcspkr qemu_fw_cfg ip_ta=
+bles x_tables ipv6 crc_ccitt autofs4
+> > 	[Mon Mar 25 18:22:42 2019] CPU: 0 PID: 4786 Comm: btrfs-balance Tainte=
+d: G        W         5.0.4-zb64-303ce93b05c9+ #1
+> > 	[Mon Mar 25 18:22:42 2019] Hardware name: QEMU Standard PC (i440FX + P=
+IIX, 1996), BIOS 1.10.2-1 04/01/2014
+> > 	[Mon Mar 25 18:22:42 2019] RIP: 0010:btrfs_merge_delayed_refs+0x3dc/0x=
+410
+> > 	[Mon Mar 25 18:22:42 2019] Code: 7c 24 28 be ff ff ff ff e8 31 a0 c1 f=
+f 85 c0 0f 85 7c fe ff ff 0f 0b e9 75 fe ff ff 0f 0b e9 0a fe ff ff 0f 0b e=
+9 1b fe ff ff <0f> 0b e9 25 ff ff ff 0f 0b e9 b0 fe ff ff 48 c7 44 24 10 00=
+ 00 00
+> > 	[Mon Mar 25 18:22:42 2019] RSP: 0018:ffffabb981377b70 EFLAGS: 00010246
+> > 	[Mon Mar 25 18:22:42 2019] RAX: 00000000000000b6 RBX: 00000000ffffffff=
+ RCX: 0000000000000001
+> > 	[Mon Mar 25 18:22:42 2019] RDX: 0000000000000000 RSI: 00000000ffffffff=
+ RDI: 0000000000000282
+> > 	[Mon Mar 25 18:22:42 2019] RBP: ffff9392514bbb80 R08: ffff9392514bbc80=
+ R09: 0000000000000000
+> > 	[Mon Mar 25 18:22:42 2019] R10: 0000000000000000 R11: 0000000000000001=
+ R12: ffff93928a5c8f08
+> > 	[Mon Mar 25 18:22:42 2019] R13: ffff939269744e38 R14: ffff939269744e38=
+ R15: ffff9392697449c0
+> > 	[Mon Mar 25 18:22:42 2019] FS:  0000000000000000(0000) GS:ffff939475c0=
+0000(0000) knlGS:0000000000000000
+> > 	[Mon Mar 25 18:22:42 2019] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080=
+050033
+> > 	[Mon Mar 25 18:22:42 2019] CR2: 00007f0882d38600 CR3: 0000000230eb6002=
+ CR4: 00000000001606f0
+> > 	[Mon Mar 25 18:22:42 2019] Call Trace:
+> > 	[Mon Mar 25 18:22:42 2019]  __btrfs_run_delayed_refs+0x70/0x170
+> > 	[Mon Mar 25 18:22:42 2019]  btrfs_run_delayed_refs+0x7d/0x1d0
+> > 	[Mon Mar 25 18:22:42 2019]  btrfs_commit_transaction+0x50/0x9e0
+> > 	[Mon Mar 25 18:22:42 2019]  ? start_transaction+0x91/0x4d0
+> > 	[Mon Mar 25 18:22:42 2019]  relocate_block_group+0x1bd/0x600
+> > 	[Mon Mar 25 18:22:42 2019]  btrfs_relocate_block_group+0x15b/0x260
+> > 	[Mon Mar 25 18:22:42 2019]  btrfs_relocate_chunk+0x46/0xf0
+> > 	[Mon Mar 25 18:22:42 2019]  btrfs_balance+0xa60/0x12b0
+> > 	[Mon Mar 25 18:22:42 2019]  balance_kthread+0x36/0x50
+> > 	[Mon Mar 25 18:22:42 2019]  kthread+0x106/0x140
+> > 	[Mon Mar 25 18:22:42 2019]  ? btrfs_balance+0x12b0/0x12b0
+> > 	[Mon Mar 25 18:22:42 2019]  ? kthread_park+0x90/0x90
+> > 	[Mon Mar 25 18:22:42 2019]  ret_from_fork+0x3a/0x50
+> > 	[Mon Mar 25 18:22:42 2019] irq event stamp: 81529004
+> > 	[Mon Mar 25 18:22:42 2019] hardirqs last  enabled at (81529003): [<fff=
+fffffaa2be2b7>] kmem_cache_free+0x67/0x1e0
+> > 	[Mon Mar 25 18:22:42 2019] hardirqs last disabled at (81529004): [<fff=
+fffffaa00379f>] trace_hardirqs_off_thunk+0x1a/0x1c
+> > 	[Mon Mar 25 18:22:42 2019] softirqs last  enabled at (81527500): [<fff=
+fffffab0003a4>] __do_softirq+0x3a4/0x45f
+> > 	[Mon Mar 25 18:22:42 2019] softirqs last disabled at (81527493): [<fff=
+fffffaa0a3d24>] irq_exit+0xe4/0xf0
+> > 	[Mon Mar 25 18:22:42 2019] ---[ end trace 3d8cdfff7444099a ]---
+> >=20
+> > This one comes from btrfs-transaction:
+> >=20
+> > 	[Mon Mar 25 18:27:58 2019] WARNING: CPU: 3 PID: 4137 at fs/btrfs/delay=
+ed-ref.c:296 btrfs_merge_delayed_refs+0x3dc/0x410
+> > 	[Mon Mar 25 18:27:58 2019] Modules linked in: ppdev joydev crct10dif_p=
+clmul crc32_pclmul dm_cache_smq crc32c_intel ghash_clmulni_intel dm_cache d=
+m_persistent_data dm_bio_prison dm_bufio dm_mod rtc_cmos floppy parport_pc =
+parport aesni_intel sr_mod cdrom aes_x86_64 crypto_simd cryptd glue_helper =
+sg ide_pci_generic piix ide_core evbug evdev bochs_drm i2c_piix4 input_leds=
+ psmouse serio_raw snd_pcm snd_timer snd soundcore pcspkr qemu_fw_cfg ip_ta=
+bles x_tables ipv6 crc_ccitt autofs4
+> > 	[Mon Mar 25 18:27:58 2019] CPU: 3 PID: 4137 Comm: btrfs-transacti Tain=
+ted: G        W         5.0.4-zb64-303ce93b05c9+ #1
+> > 	[Mon Mar 25 18:27:58 2019] Hardware name: QEMU Standard PC (i440FX + P=
+IIX, 1996), BIOS 1.10.2-1 04/01/2014
+> > 	[Mon Mar 25 18:27:58 2019] RIP: 0010:btrfs_merge_delayed_refs+0x3dc/0x=
+410
+> > 	[Mon Mar 25 18:27:58 2019] Code: 7c 24 28 be ff ff ff ff e8 31 a0 c1 f=
+f 85 c0 0f 85 7c fe ff ff 0f 0b e9 75 fe ff ff 0f 0b e9 0a fe ff ff 0f 0b e=
+9 1b fe ff ff <0f> 0b e9 25 ff ff ff 0f 0b e9 b0 fe ff ff 48 c7 44 24 10 00=
+ 00 00
+> > 	[Mon Mar 25 18:27:58 2019] RSP: 0018:ffffabb9812f7d40 EFLAGS: 00010246
+> > 	[Mon Mar 25 18:27:58 2019] RAX: 00000000000000b6 RBX: 00000000ffffffff=
+ RCX: 0000000000000001
+> > 	[Mon Mar 25 18:27:58 2019] RDX: 0000000000000000 RSI: 00000000ffffffff=
+ RDI: 0000000000000286
+> > 	[Mon Mar 25 18:27:58 2019] RBP: ffff93925b187ce0 R08: ffff93925b187de0=
+ R09: 0000000000000000
+> > 	[Mon Mar 25 18:27:58 2019] R10: 0000000000000000 R11: 0000000000000001=
+ R12: ffff93938b59d308
+> > 	[Mon Mar 25 18:27:58 2019] R13: ffff9393a5d09820 R14: ffff9393a5d09820=
+ R15: ffff939261978820
+> > 	[Mon Mar 25 18:27:58 2019] FS:  0000000000000000(0000) GS:ffff93947680=
+0000(0000) knlGS:0000000000000000
+> > 	[Mon Mar 25 18:27:58 2019] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080=
+050033
+> > 	[Mon Mar 25 18:27:58 2019] CR2: 00007f91f6321c50 CR3: 00000001ef54e003=
+ CR4: 00000000001606e0
+> > 	[Mon Mar 25 18:27:58 2019] Call Trace:
+> > 	[Mon Mar 25 18:27:58 2019]  __btrfs_run_delayed_refs+0x70/0x170
+> > 	[Mon Mar 25 18:27:58 2019]  btrfs_run_delayed_refs+0x7d/0x1d0
+> > 	[Mon Mar 25 18:27:58 2019]  btrfs_commit_transaction+0x50/0x9e0
+> > 	[Mon Mar 25 18:27:58 2019]  ? start_transaction+0x91/0x4d0
+> > 	[Mon Mar 25 18:27:58 2019]  transaction_kthread+0x146/0x180
+> > 	[Mon Mar 25 18:27:58 2019]  kthread+0x106/0x140
+> > 	[Mon Mar 25 18:27:58 2019]  ? btrfs_cleanup_transaction+0x620/0x620
+> > 	[Mon Mar 25 18:27:58 2019]  ? kthread_park+0x90/0x90
+> > 	[Mon Mar 25 18:27:58 2019]  ret_from_fork+0x3a/0x50
+> > 	[Mon Mar 25 18:27:58 2019] irq event stamp: 81665152
+> > 	[Mon Mar 25 18:27:58 2019] hardirqs last  enabled at (81665151): [<fff=
+fffffaa2be2b7>] kmem_cache_free+0x67/0x1e0
+> > 	[Mon Mar 25 18:27:58 2019] hardirqs last disabled at (81665152): [<fff=
+fffffaa00379f>] trace_hardirqs_off_thunk+0x1a/0x1c
+> > 	[Mon Mar 25 18:27:58 2019] softirqs last  enabled at (81664580): [<fff=
+fffffab0003a4>] __do_softirq+0x3a4/0x45f
+> > 	[Mon Mar 25 18:27:58 2019] softirqs last disabled at (81664565): [<fff=
+fffffaa0a3d24>] irq_exit+0xe4/0xf0
+> > 	[Mon Mar 25 18:27:58 2019] ---[ end trace 3d8cdfff7444099c ]---
+> >
+> > Pausing the balance makes the warnings stop.
 
-This is the reminder of how we could handle the behavior change of
-staled qgroup auto removal.
+This warning appears in test runs on kernels 4.20.17, 5.0.21, 5.1.21
+(and several kernels in between).  It does not appear on 5.2.21, 5.3.18,
+5.4.16, or 5.5.0.
 
-[PROBLEM]
-If btrfs has dropped one subvolume, it will not delete the level 0
-qgroup automatically, leaving the qgroup still hanging there, with all
-numbers set to 0.
-This needs manual user interaction to delete all those staled qgroups.
+I was never able to associate the warning with any bad behavior on 5.0,
+which received the most testing and use of the affected kernels.
 
-[SOLUTIONS]
-There are several way to solve it, all with its advantage and disadvantag=
-e.
+If you wrote the commit that fixed it somewhere between 5.1 and 5.2
+(or possibly backported to stable from 5.3), thank you!
 
-- Auto remove them by default, and no way to keep the the staled qgroups
-  Pro: Easy to implement (already submitted)
-  Con: User has no choice to keep staled qgroups. But I could argue that
-       no one sane would want to keep them anyway.
-
-- Mount option `qg_auto_remove`
-  Pro: Still easy to implement, and users can have their choice
-  Con: Mount options are never a good nor extendable solution, not to
-       mention there are tons of users who will never user qgroup.
-       Introducing a default mount option for users who will never use
-       qgroup doesn't look good to me.
-
-- New qgroup status flag (QGROUP_STATUS_FLAG_AUTO_REMOVE)
-  Pro: Only affects qgroup, users can have their choice
-  Con: More complex to implement, needs both btrfs-progs and kernel
-       change, and even change the ioctl interface, as we don't have
-       method to pass extra flags to btrfs_quota_enable().
-       I strongly doubt if such hassle is really needed if no one wants
-       staled qgroup.
-
-One of the biggest concern is, is there any user cares about the staled
-qgroups? Their numbers are all 0, and doesn't affect anything.
-The only impact is, users need to delete them manually.
-
-Thus except back-compatible issue, I see no reason to allow user to keep
-staled qgroups.
-
-Anyway you have the final call, I just hope we won't leave some complex
-mechanism and let later developers to wonder why all this hassle is neede=
-d.
-
-Thanks,
-Qu
+> After sorting out some unrelated issues with 5.0 kernels, these warnings
+> are now the top of my list of unresolved 5.0 kernel issues.  They are
+> popping up more often:  31804 times over two machine-days.  Too much
+> spam for the kernel logs.
+>=20
+> This is the code surrounding the WARN_ON:
+>=20
+> static bool merge_ref(...
+> {
+> 	// ...
+> 		drop_delayed_ref(trans, delayed_refs, head, next);
+>                 ref->ref_mod +=3D mod;
+>                 if (ref->ref_mod =3D=3D 0) {
+>                         drop_delayed_ref(trans, delayed_refs, head, ref);
+>                         done =3D true;
+>                 } else {
+>                         /*
+>                          * Can't have multiples of the same ref on a tree=
+ block.
+>                          */
+>                         WARN_ON(ref->type =3D=3D BTRFS_TREE_BLOCK_REF_KEY=
+ ||
+>                                 ref->type =3D=3D BTRFS_SHARED_BLOCK_REF_K=
+EY);
+>                 }
+> 	// ...
+> }
+>=20
+> Should the warning be removed?  If something bad was going to happen,
+> I would have expected it to happen some time in the last month of
+> stress-testing, but I can find no evidence of failure related to
+> this warning.
 
 
---pKwZfUxw1jdz998iJ0OMa173iSMdcKgSY--
 
---VKSK9rP8gzJCtGzlo0TZFtQZfyQ6trBTm
+--SvF6CGw9fzJC4Rcx
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl44vLoACgkQwj2R86El
-/qhCfQf/bq597aypJLQGsuj8KE9fizM+eytVSFHLUN/KfObXKRRp3hST8PWpQVT/
-khB2hs6nGzoZPUTOrmyIUHI4BwNJ7/m4MhzFZ82Xvkkk0ZzDrqt8rIqPLnzXnL92
-LcgEAsn6Masryijjh14TnVvvpHRkAGE7hkv3gyiV9IwytsHWx7eEHdwvezfBHKyv
-PV0VpugVFdu7TWEVApWmKh7c5DCEhkP72LA/bBRsto6qtq18V2twjQ0E7EP471sY
-2atSBWhb81daZD4Xz86IR7OVBe8Be82uUcL8NtiF0zOuW6gQvv8sXCHEQ4N3uzan
-p0f84FwU8FYiH6flkcIaB+LgrxARGw==
-=vVS9
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjjiFwAKCRCB+YsaVrMb
+nFSqAJsEpClYgGFdUnTMMW87KG+P3poCCgCgruZQUbxwtv/nskoT2+yRP+APB9E=
+=R8f4
 -----END PGP SIGNATURE-----
 
---VKSK9rP8gzJCtGzlo0TZFtQZfyQ6trBTm--
+--SvF6CGw9fzJC4Rcx--
