@@ -2,61 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 317B615367B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 18:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE29153745
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 19:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgBERaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 12:30:22 -0500
-Received: from mail-io1-f42.google.com ([209.85.166.42]:44164 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbgBERaW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Feb 2020 12:30:22 -0500
-Received: by mail-io1-f42.google.com with SMTP id z16so3011609iod.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Feb 2020 09:30:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=/2VtFM99rBJ4F25aTyuRHSIAtqEfcsV0ozhPb5k4ZUU=;
-        b=C1/e19G9YE1iLZNoMX85emwkcPcJtrE/zAL+6NsQdZjmCDymgjXiP5jajoySPEU2HV
-         UNEHGU03siKmFjSxBvzZWuwM5WQBcAuhQ6pJNg+57JoghFwgAgScJvEeedu5vDds0NmT
-         w3wKnGDUc6SV/V33lGxAsyWJ2Jp5kaeKwwYeMeTJUVZT/1IrRPGFsQa4xvnVJ3d79bJj
-         ShWgCLCUw0/t8xEgUCKh3GrsE+hcOqdxuBm/70JW6ms99zNTYBrs6jb1AZpYlK+KMbbn
-         vXZme7JcNx50u2y2aPiXGoDmamEn7ZahTN8mEjtmlvGaHcJLulO9D72WJNFs6A9Yb5kA
-         7QBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=/2VtFM99rBJ4F25aTyuRHSIAtqEfcsV0ozhPb5k4ZUU=;
-        b=EYBLJwmRWHkSQF/OznTPKGOCgQr3hbL0AcRd7vT9koh2EC7BGb/HlkJPuWIqbhLotT
-         lp4ycXmVRUx12WILM/8lGpfHBXfSmyXg+tSZZ/2t9GdTmlRUzO2xthlmJSSHBRK81mOT
-         XcYlAEUXuPU/UoDNvJYBQfVQlr7Sf5LVNSJyAUFPjoVl198OU+tcLaRuVM3OcR4N9N7K
-         qHRorS37ldufua3G5gG5IVT7jQymUa1j+17sJxtfx3pcVFTlFzSn6P/mMDg2tP7g4RAX
-         EECG8WSyBulLIpL3Fs3OxpkkLQ6Vy1aElSfYt42WJXmUa65bOx1VsU4BDRo9OlneOpEC
-         hfAA==
-X-Gm-Message-State: APjAAAWqe9JiRWDk8Mt5Pn2v14YF2vP5f1lwFog8syazbSPF5+1UqxPl
-        L0g/B42/xzU6XUvlVks5AupDUsLJRxmsnv7XF5laFQ==
-X-Google-Smtp-Source: APXvYqxoWUG4RYq44tZCuYX0fQ9ZppIDYklIb/wakMjbSWH4fCoygS3yYiFGng4TJjzUb5g2OwnOSo7qWhGSGP5xIi8=
-X-Received: by 2002:a6b:b745:: with SMTP id h66mr28234915iof.128.1580923821232;
- Wed, 05 Feb 2020 09:30:21 -0800 (PST)
+        id S1727104AbgBESJi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 13:09:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57534 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727085AbgBESJi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Feb 2020 13:09:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 236E1ACE0;
+        Wed,  5 Feb 2020 18:09:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 22898DA735; Wed,  5 Feb 2020 19:09:23 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/8] Cleanup io_tree arguments in extent read/write path
+Date:   Wed,  5 Feb 2020 19:09:23 +0100
+Message-Id: <cover.1580925977.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-From:   Steven Clark <davolfman@gmail.com>
-Date:   Wed, 5 Feb 2020 09:30:10 -0800
-Message-ID: <CAOCvsSkuMLsZJssA1ae2LC=qN9d+HjQ_Ou9+RsdxHQ7gTjCL=w@mail.gmail.com>
-Subject: What determines the inode-number bit width of a converted BTRFS volume.
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I was reading through the mount options and the man paragraph on
-inode-cache seemed pretty ominous.  My question is: what determines
-whether a btrfs-convert, created volume has 32 bit inode numbers?  In
-order of assumed likelihood: Is it the compiled architecture of the
-btrfs-progs package? Is it the architecture of the kernel? Is it the
-inode width of the ancestor filesystem?
+The io_tree is passed to several functions that do extent page
+read/write, but there's a lot of redundancy and things can be
+simplified.
 
-I'm likely to see a fair amount of churn (for a desktop) on the
-contents of volumes once converted with a pretty long term support
-period.  I'd like to head off this concern before implementation.
+David Sterba (8):
+  btrfs: remove extent_page_data::tree
+  btrfs: drop argument tree from submit_extent_page
+  btrfs: add assertions for tree == inode->io_tree to extent IO helpers
+  btrfs: drop argument tree from btrfs_lock_and_flush_ordered_range
+  btrfs: sink argument tree to extent_read_full_page
+  btrfs: sink argument tree to __extent_read_full_page
+  btrfs: sink arugment tree to contiguous_readpages
+  btrfs: sink argument tree to __do_readpage
+
+ fs/btrfs/disk-io.c      |  4 +---
+ fs/btrfs/extent_io.c    | 50 ++++++++++++++++-------------------------
+ fs/btrfs/extent_io.h    |  4 ++--
+ fs/btrfs/file.c         |  2 +-
+ fs/btrfs/inode.c        |  6 ++---
+ fs/btrfs/ordered-data.c |  8 +++----
+ fs/btrfs/ordered-data.h |  3 +--
+ 7 files changed, 29 insertions(+), 48 deletions(-)
+
+-- 
+2.25.0
+
