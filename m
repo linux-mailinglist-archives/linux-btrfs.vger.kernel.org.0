@@ -2,273 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A5F153550
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 17:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 609821535A0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 17:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbgBEQex (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 11:34:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44714 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727052AbgBEQex (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Feb 2020 11:34:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 10D4FACAC;
-        Wed,  5 Feb 2020 16:34:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 42F3DDA7E6; Wed,  5 Feb 2020 17:34:37 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: add wrapper for transaction abort predicate
-Date:   Wed,  5 Feb 2020 17:34:34 +0100
-Message-Id: <20200205163434.6367-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.24.0
+        id S1727486AbgBEQxY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 11:53:24 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:48916 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgBEQxY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Feb 2020 11:53:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Hts3IxM0M+kQCDFrmgLQ5fGKAqg2RUUFBgWdkP5EVss=; b=YKXGmzxU2SWaIa38iYp/J69vUp
+        7FQIqybu3xMVGu18wZvuRGwUX+8AAImbc66UUvbm7Z8UoSRJ5tlUGE2G6zdbOjNqGwAgGwdPaj0yo
+        sDiCA9WmmrZ3/jfj60wxaFEEG7vhSuxBo/RdjNh5gi3NysOWKHQP6lQ8D5qi17aK7s8fsMRejszhV
+        pzYeGe3YbUzTti30/XP4lO5xKCOPPf8sbXnkL3slPJqUjJwL/ufeRT38MFiGblxlVAnfBI+wpxmEf
+        kiSlfSY00xIvt4sh/mOZY2dqudO3DG4uNCE457xpINqN8PLFYPou3LUHo7q5POxpLrxdeM/QdlJzK
+        SPWlP7JA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1izNvT-0003g0-33; Wed, 05 Feb 2020 16:53:19 +0000
+Date:   Wed, 5 Feb 2020 08:53:19 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 1/5] btrfs: use the page-cache for super block reading
+Message-ID: <20200205165319.GA6326@infradead.org>
+References: <20200205143831.13959-1-johannes.thumshirn@wdc.com>
+ <20200205143831.13959-2-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200205143831.13959-2-johannes.thumshirn@wdc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The status of aborted transaction can change between calls and it needs
-to be accessed by READ_ONCE. Add a helper that also wraps the unlikely
-hint.
+On Wed, Feb 05, 2020 at 11:38:27PM +0900, Johannes Thumshirn wrote:
+> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads have
+> some drawbacks, like not being able to propagate errors from the lower
+> layers.
+> 
+> Directly use the page cache for reading the super-blocks from disk or
+> invalidating an on-disk super-block. We have to use the page-cache so to
+> avoid races between mkfs and udev. See also 6f60cbd3ae44 ("btrfs: access
+> superblock via pagecache in scan_one_device").
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> ---
+> Changes to v3:
+> - Use read_cache_pages() and write_one_page() for IO (hch)
+> - Changed subject (David)
+> - Dropped Josef's R-b due to change
+> 
+> Changes to v2:
+> - open-code kunmap() + put_page() (David)
+> - fix double kunmap() (David)
+> - don't use bi_set_op_attrs() (David)
+> 
+> Changes to v1:
+> - move 'super_page' into for-loop in btrfs_scratch_superblocks() (Nikolay)
+> - switch to using pagecahce instead of alloc_pages() (Nikolay, David)
+> ---
+>  fs/btrfs/disk-io.c | 78 +++++++++++++++++++++++++---------------------
+>  fs/btrfs/disk-io.h |  4 +--
+>  fs/btrfs/volumes.c | 57 +++++++++++++++++----------------
+>  fs/btrfs/volumes.h |  2 --
+>  4 files changed, 76 insertions(+), 65 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 28622de9e642..bc14ef1aadda 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2617,11 +2617,12 @@ int __cold open_ctree(struct super_block *sb,
+>  	u64 features;
+>  	u16 csum_type;
+>  	struct btrfs_key location;
+> -	struct buffer_head *bh;
+>  	struct btrfs_super_block *disk_super;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>  	struct btrfs_root *tree_root;
+>  	struct btrfs_root *chunk_root;
+> +	struct page *super_page;
+> +	u8 *superblock;
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/block-group.c   |  2 +-
- fs/btrfs/delayed-inode.c |  2 +-
- fs/btrfs/extent-tree.c   | 10 +++++-----
- fs/btrfs/super.c         |  2 +-
- fs/btrfs/transaction.c   | 25 +++++++++++++------------
- fs/btrfs/transaction.h   | 12 ++++++++++++
- 6 files changed, 33 insertions(+), 20 deletions(-)
+I thought you agree to turn this into a struct btrfs_super_block
+pointer?
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 404e050ce8ee..d422fc0eceee 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2345,7 +2345,7 @@ static int cache_save_setup(struct btrfs_block_group *block_group,
- 		return 0;
- 	}
- 
--	if (trans->aborted)
-+	if (TRANS_ABORTED(trans))
- 		return 0;
- again:
- 	inode = lookup_free_space_inode(block_group, path);
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 9b23883a1086..ee70584ddc45 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1139,7 +1139,7 @@ static int __btrfs_run_delayed_items(struct btrfs_trans_handle *trans, int nr)
- 	int ret = 0;
- 	bool count = (nr > 0);
- 
--	if (trans->aborted)
-+	if (TRANS_ABORTED(trans))
- 		return -EIO;
- 
- 	path = btrfs_alloc_path();
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 0163fdd59f8f..4c80f5409fb3 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1583,7 +1583,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
- 	int err = 0;
- 	int metadata = !extent_op->is_data;
- 
--	if (trans->aborted)
-+	if (TRANS_ABORTED(trans))
- 		return 0;
- 
- 	if (metadata && !btrfs_fs_incompat(fs_info, SKINNY_METADATA))
-@@ -1703,7 +1703,7 @@ static int run_one_delayed_ref(struct btrfs_trans_handle *trans,
- {
- 	int ret = 0;
- 
--	if (trans->aborted) {
-+	if (TRANS_ABORTED(trans)) {
- 		if (insert_reserved)
- 			btrfs_pin_extent(trans->fs_info, node->bytenr,
- 					 node->num_bytes, 1);
-@@ -2191,7 +2191,7 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
- 	int run_all = count == (unsigned long)-1;
- 
- 	/* We'll clean this up in btrfs_cleanup_transaction */
--	if (trans->aborted)
-+	if (TRANS_ABORTED(trans))
- 		return 0;
- 
- 	if (test_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags))
-@@ -2913,7 +2913,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 	else
- 		unpin = &fs_info->freed_extents[0];
- 
--	while (!trans->aborted) {
-+	while (!TRANS_ABORTED(trans)) {
- 		struct extent_state *cached_state = NULL;
- 
- 		mutex_lock(&fs_info->unused_bg_unpin_mutex);
-@@ -2950,7 +2950,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 		u64 trimmed = 0;
- 
- 		ret = -EROFS;
--		if (!trans->aborted)
-+		if (!TRANS_ABORTED(trans))
- 			ret = btrfs_discard_extent(fs_info,
- 						   block_group->start,
- 						   block_group->length,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 580ba7db67e5..661ebbab5e89 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -244,7 +244,7 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 
--	trans->aborted = errno;
-+	WRITE_ONCE(trans->aborted, errno);
- 	/* Nothing used. The other threads that have joined this
- 	 * transaction may be able to continue. */
- 	if (!trans->dirty && list_empty(&trans->new_bgs)) {
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 541d3dc262e9..c2fff16842ac 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -241,7 +241,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
- 
- 	cur_trans = fs_info->running_transaction;
- 	if (cur_trans) {
--		if (cur_trans->aborted) {
-+		if (TRANS_ABORTED(cur_trans)) {
- 			spin_unlock(&fs_info->trans_lock);
- 			return cur_trans->aborted;
- 		}
-@@ -457,7 +457,7 @@ static inline int is_transaction_blocked(struct btrfs_transaction *trans)
- {
- 	return (trans->state >= TRANS_STATE_COMMIT_START &&
- 		trans->state < TRANS_STATE_UNBLOCKED &&
--		!trans->aborted);
-+		!TRANS_ABORTED(trans));
- }
- 
- /* wait for commit against the current transaction to become unblocked
-@@ -476,7 +476,7 @@ static void wait_current_trans(struct btrfs_fs_info *fs_info)
- 
- 		wait_event(fs_info->transaction_wait,
- 			   cur_trans->state >= TRANS_STATE_UNBLOCKED ||
--			   cur_trans->aborted);
-+			   TRANS_ABORTED(cur_trans));
- 		btrfs_put_transaction(cur_trans);
- 	} else {
- 		spin_unlock(&fs_info->trans_lock);
-@@ -935,7 +935,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
- 	if (throttle)
- 		btrfs_run_delayed_iputs(info);
- 
--	if (trans->aborted ||
-+	if (TRANS_ABORTED(trans) ||
- 	    test_bit(BTRFS_FS_STATE_ERROR, &info->fs_state)) {
- 		wake_up_process(info->transaction_kthread);
- 		err = -EIO;
-@@ -1792,7 +1792,8 @@ static void wait_current_trans_commit_start(struct btrfs_fs_info *fs_info,
- 					    struct btrfs_transaction *trans)
- {
- 	wait_event(fs_info->transaction_blocked_wait,
--		   trans->state >= TRANS_STATE_COMMIT_START || trans->aborted);
-+		   trans->state >= TRANS_STATE_COMMIT_START ||
-+		   TRANS_ABORTED(trans));
- }
- 
- /*
-@@ -1804,7 +1805,8 @@ static void wait_current_trans_commit_start_and_unblock(
- 					struct btrfs_transaction *trans)
- {
- 	wait_event(fs_info->transaction_wait,
--		   trans->state >= TRANS_STATE_UNBLOCKED || trans->aborted);
-+		   trans->state >= TRANS_STATE_UNBLOCKED ||
-+		   TRANS_ABORTED(trans));
- }
- 
- /*
-@@ -2024,7 +2026,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	trans->dirty = true;
- 
- 	/* Stop the commit early if ->aborted is set */
--	if (unlikely(READ_ONCE(cur_trans->aborted))) {
-+	if (TRANS_ABORTED(cur_trans)) {
- 		ret = cur_trans->aborted;
- 		btrfs_end_transaction(trans);
- 		return ret;
-@@ -2098,7 +2100,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 		wait_for_commit(cur_trans);
- 
--		if (unlikely(cur_trans->aborted))
-+		if (TRANS_ABORTED(cur_trans))
- 			ret = cur_trans->aborted;
- 
- 		btrfs_put_transaction(cur_trans);
-@@ -2117,7 +2119,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 			spin_unlock(&fs_info->trans_lock);
- 
- 			wait_for_commit(prev_trans);
--			ret = prev_trans->aborted;
-+			ret = READ_ONCE(prev_trans->aborted);
- 
- 			btrfs_put_transaction(prev_trans);
- 			if (ret)
-@@ -2171,8 +2173,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	wait_event(cur_trans->writer_wait,
- 		   atomic_read(&cur_trans->num_writers) == 1);
- 
--	/* ->aborted might be set after the previous check, so check it */
--	if (unlikely(READ_ONCE(cur_trans->aborted))) {
-+	if (TRANS_ABORTED(cur_trans)) {
- 		ret = cur_trans->aborted;
- 		goto scrub_continue;
- 	}
-@@ -2290,7 +2291,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * The tasks which save the space cache and inode cache may also
- 	 * update ->aborted, check it.
- 	 */
--	if (unlikely(READ_ONCE(cur_trans->aborted))) {
-+	if (TRANS_ABORTED(cur_trans)) {
- 		ret = cur_trans->aborted;
- 		mutex_unlock(&fs_info->tree_log_mutex);
- 		mutex_unlock(&fs_info->reloc_mutex);
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 49f7196368f5..453cea7c7a72 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -115,6 +115,10 @@ struct btrfs_trans_handle {
- 	struct btrfs_block_rsv *orig_rsv;
- 	refcount_t use_count;
- 	unsigned int type;
-+	/*
-+	 * Error code of transaction abort, set outside of locks and must use
-+	 * the READ_ONCE/WRITE_ONCE access
-+	 */
- 	short aborted;
- 	bool adding_csums;
- 	bool allocating_chunk;
-@@ -126,6 +130,14 @@ struct btrfs_trans_handle {
- 	struct list_head new_bgs;
- };
- 
-+/*
-+ * The abort status can be changed between calls and is not protected by locks.
-+ * This accepts btrfs_transaction and btrfs_trans_handle as types. Once it's
-+ * set to a non-zero value it does not change, so the macro should be in checks
-+ * but is not necessary for further reads of the value.
-+ */
-+#define TRANS_ABORTED(trans)		(unlikely(READ_ONCE((trans)->aborted)))
-+
- struct btrfs_pending_snapshot {
- 	struct dentry *dentry;
- 	struct inode *dir;
--- 
-2.24.0
+>  	bytenr = btrfs_sb_offset(copy_num);
+>  	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
+>  		return -EINVAL;
+>  
+> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
+> -	/*
+> -	 * If we fail to read from the underlying devices, as of now
+> -	 * the best option we have is to mark it EIO.
+> -	 */
+> -	if (!bh)
+> -		return -EIO;
+> +	gfp_mask = mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL;
+> +	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, gfp_mask);
+> +	if (IS_ERR_OR_NULL(page))
+> +		return -ENOMEM;
 
+Why do you need the __GFP_NOFAIL given that failures are handled
+properly here?  Also I think instead of using mapping_gfp_constraint you
+can use GFP_NOFS directly here.
+
+>  
+> -	super = (struct btrfs_super_block *)bh->b_data;
+> +	super = kmap(page);
+>  	if (btrfs_super_bytenr(super) != bytenr ||
+>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> -		brelse(bh);
+> +		kunmap(page);
+> +		put_page(page);
+>  		return -EINVAL;
+>  	}
+> +	kunmap(page);
+
+Also last time I wondered why we can't leave the page mapped for the
+caller and also return the virtual address?  That would keep the
+callers a little cleaner.  Note that you don't need to pass the
+struct page in that case as the unmap helper can use kmap_to_page (and
+I think a helper would be really nice for the unmap and put anyway).
