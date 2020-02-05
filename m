@@ -2,291 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6641528FB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 11:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DDF152922
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 11:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgBEKSe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 05:18:34 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:36130 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbgBEKSe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Feb 2020 05:18:34 -0500
-Received: by mail-ot1-f66.google.com with SMTP id j20so1434100otq.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 Feb 2020 02:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=MUBgMS+0ygpQqHJsxkHuCjolYZz8rq72Ogq0qcwbNfs=;
-        b=m7OVXPTo1JrxaUh1mwfKU6E2fJGC6nzw2D6HLy6Uyif8jV0cZrB82MKerc6ANju2TR
-         pPUn1eVIckqw+Q2HjL3hGlUzOT7tFvHn4tiEAULolo+7ZsOf9bI3twmp1DUs6+hHWTQP
-         B8FKlMCPXKB2FRVQOYvF3NNm4pdl1mylQYugs54BGYOetB9TM7HfFPAXS8q79PYH0LY7
-         g+6vkL7gMxZlvU4lGQCJN+pFSoVASuYE9xxI7RySGEyrdJ7zDPKwbh+MvvaJ4TmFOT4e
-         Byn/NZT3TbLa/c7LmrfHkSrcywfLcgr1ZFrGx7oB1Ka0N4R0v/MEp7H2G/uV9BesK+8r
-         d+6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=MUBgMS+0ygpQqHJsxkHuCjolYZz8rq72Ogq0qcwbNfs=;
-        b=JzZKCGLqD/F4Bo223R/TPpupPbWP7vbYw4FyHNXCTfsIlvJ+YvcCH5WtDJC3VnwLF5
-         LO0OB9r0+16sM9kTd4SmA/ApifDF/yjkpqwULW46DHkZCdbcREA/pdpJ1UPni6v+/j43
-         rNCekidGAeDOfnbdjXOz/r/0AR8Op1PSTB3m0QwDl2pKCV3b9x0wvfFvn1yOIFfJzymy
-         6l0THEe3b7wO5UsiAdXwDU+eZLrviFa4JPCW8M47wtD6eDNqYXJtF3OwWkvErgKOytEg
-         pHU1lSAyZgVUcUyz6oD2FsR3J0Po54GdFUytly3i81dpsc18vMHK/onxznXrfskQ+ic+
-         jSHw==
-X-Gm-Message-State: APjAAAUZe4DNsszZ4SHBn9Hv47XLpb9lkF5S0oTQEyWl343XqO3De9k+
-        yDJgs+OPEPnMPU3VcQco62igzvQPCefety4FVT6zLcrjY/8=
-X-Google-Smtp-Source: APXvYqxhJxXMLUjAgB6JSvdGrVuDUrt6sEF0RgNorzziykfJLljHOQTlIQwc0vRraS++OGF0og+SxHusgIfUjXSMfaU=
-X-Received: by 2002:a05:6830:1e95:: with SMTP id n21mr26133596otr.25.1580897911744;
- Wed, 05 Feb 2020 02:18:31 -0800 (PST)
+        id S1727790AbgBEK3d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 05:29:33 -0500
+Received: from mout.gmx.net ([212.227.17.20]:38223 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727771AbgBEK3d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Feb 2020 05:29:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580898570;
+        bh=irafO4ZLvFq+DwVDYng9bQfNZszECoZEevtkiGJF2tQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=VenzGVTakppWR3An2wws93KkB+mlBLxsz0vo23Ma79HnmvluGC+RK0fyWLQ4fW+iz
+         5FLpb1RDM10gFxZ6gi2pnLBb2SnrqVTrpNyFzlrCKoOHFO9FKSdNUK8ethx7uhORJZ
+         8NCjVm/gSLaF1qyJkW+09/AqcuUaUr1Xds/+mT8c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3se8-1jhFgf3g9Y-00zqrJ; Wed, 05
+ Feb 2020 11:29:30 +0100
+Subject: Re: How to Fix 'Error: could not find extent items for root 257'?
+To:     Chiung-Ming Huang <photon3108@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAEOGEKHSFCNMpSpNTOxrkDgW_7v5oJzU5rBUSgYZoB8eVZjV_A@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <6cea6393-1bb0-505e-b311-bff4a818c71b@gmx.com>
+Date:   Wed, 5 Feb 2020 18:29:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-From:   Chiung-Ming Huang <photon3108@gmail.com>
-Date:   Wed, 5 Feb 2020 18:18:20 +0800
-Message-ID: <CAEOGEKHSFCNMpSpNTOxrkDgW_7v5oJzU5rBUSgYZoB8eVZjV_A@mail.gmail.com>
-Subject: How to Fix 'Error: could not find extent items for root 257'?
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEOGEKHSFCNMpSpNTOxrkDgW_7v5oJzU5rBUSgYZoB8eVZjV_A@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="nQvKDSFE5cgwNZy5CnW0JhyX2DMNxGU4o"
+X-Provags-ID: V03:K1:+hyNdMhOyU2z4g+Rxr5XwoQ7Tdi7GB9TqLswB0vc0aFq9Dpq8XH
+ zsvrxxXFIhGhofA/Aj6LqSgd2Ma1auShtg0GOsCs5L+BvWIjLskgYejs11UayJbPZLBdbXz
+ aBOSvj2CXYoWf91jZ5Sjx6mfBCE5XBtZzH1Mv5jOTQNMRwkoYfj9dz/f6UHqjd559jdy221
+ Q9o0JCf2UUJ7xwchGHQ+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hseC7kYC7x0=:3YokEfhvbtbISjd0KQxgEJ
+ BFh75lqBHdcdkGJb62KIH6IfFA9wqvAi2MOptH4dSUUMRBB0OfTr6Y9DnrNdaPINoRScb/Dbm
+ rSBzJB8KgbI9BALAiUoVoi2mJWIvi5wgEj6OJXp2otSSh0EtX1R78oXSpnBgNeMOlfSKpd/Gb
+ Puy5S6nxk3MWS97pqawcfphejgend6aI5fJCAK/toPRRTNMhFyASv74dRGQa6wSzYRlE2au6u
+ TOfcWVwSMn7kA4zm6fTta6DC1xN/iqNnk38bqG6mUQkgWQkqTxqHb6xMXQOvfuGo95S0pBpdt
+ yXkApbwfytUuM4kLweoxfSrmfyxI0X/eYrCFEqU3jyZ925G9AYCZpSJJe21Hnf2MyR+UbTISn
+ L6z36+0z3kz3ieytHsJEGvu16NOonNzxcjiP2VZskhTnCU0IKjhUC4AUDhe4rU86pR4GrCEQL
+ /Xx/5PbUTVf8T7WbTs6HSITz48xC1QCuIIHJ+2zNBA2KEvH/GJRRYGwvMRjzwMfp5zrxSF4x6
+ fuQ4RX0sUtZoMFmQAY1HJUevvQ3lypJb7yb5tjzx4SK6nUxEJDVAylWmMvogBHroO4GhpTEfe
+ ULQnSC8jKXg5XLPkkTxVQTcf5wy/ZWb3c/GVFo5HvnoRl1NIs/Ixon7PALs060tyMOjdPGRBj
+ 7uW5tYDqm9zoeaCl2/vRQOL/uinhI5SyF4U638cIegIW6a4mQIPo1KYueYfnN6L0A6CwThToc
+ ZZQ279/5LFLa5qGKfonbZyzC3mELBvW8XzK0qMBeDI3g1U4XQjuqgx+n1Sv/0+dZM9nfvjIPV
+ JHnV+X/14qoGOSRYaCZwcbDncRTFD+Fpk5SO5+JZECgvWiywU0ERZHNTGNuo6d0XoQF//y2fM
+ yTjmGF33PyZe2NtiPPh/4L5U7dbtrpx13juk4z/t9wdNNXqGAZ0UPqlBQjthGGRuHBzrWwPuB
+ m8/Sph5uTarx2/W3lt4AZNJedn/K/ji/IKdmlL1hn4na4DtnpTFgkVRSos1GXqipnO/VuYAUv
+ T1mkAClAdELzF23PK6WvhuH+meg0ZngnLnTMsQetRukQEusuO7wAGu4S5DhXOkJ3l7j6/j9R6
+ 5yvmjlKU965IjOHVN3/ST24jMc2RDzwPYVG0LTktT4xxkXNUw0j4KCQ5jvGPQTJpPivxiNO1q
+ rRIyyji5aByr7ow0dtNQuJHWkHIZDUfL5SmCoizw662Gns4WklzjCsH6Gesu0f+R8XC++AIk5
+ 28Ne3eo8QBzarGnu4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi everyone
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nQvKDSFE5cgwNZy5CnW0JhyX2DMNxGU4o
+Content-Type: multipart/mixed; boundary="zGLPEnFFAGRX1Z84ZnuZqDscLYbc3huQJ"
 
-It's a long story. I try to describe it shortly. My btrfs RAID1
-includes 5 HDDs, 10Tx2, 1Tx1, 2Tx1 and 3Tx1. They all based on bcache
-(1Tx1 SSD as cache) and luks. I tried to reorder it to ` Luks -->
-Bcache --> SSD --> HDD` with only one layer of luks on bcache. But I
-failed because of power-off accidentally. Please help me to fix it.
-Thanks.
-
-1. OS: Ubuntu 18.04
-
-2. $ uname -a
-Linux rescue 5.3.0-26-generic #28~18.04.1-Ubuntu SMP Wed Dec 18
-16:40:14 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-
-3. $ btrfs --version
-btrfs-progs v5.4.1
-
-4. $ btrfs fi show
-Label: none  uuid: 0b79cf54-c424-40ed-adca-bd66b38ad57a
-        Total devices 5 FS bytes used 496.00KiB
-        devid    1 size 9.09TiB used 3.93TiB path /dev/bcache2
-        devid    3 size 2.73TiB used 746.00GiB path /dev/bcache3
-        devid    5 size 9.09TiB used 7.09TiB path /dev/bcache4
-        devid    6 size 931.51GiB used 0.00B path /dev/mapper/disk-1t
-        devid    7 size 1.82TiB used 0.00B path /dev/mapper/disk-2t
-
-5. $ mount /dev/bcache4 /mnt
-It showed the second part of messages after about 10 seconds and
-remount it as readonly
------------------- dmesg part 1/2 ------------------
-
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): disk space
-caching is enabled
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): has skinny
-extents
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): bdev
-/dev/bcache2 errs: wr 0, rd 0, flush 0, corrupt 266140, gen 8928
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): bdev
-/dev/bcache3 errs: wr 0, rd 0, flush 0, corrupt 0, gen 3
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): enabling ssd
-optimizations
-[Wed Feb  5 17:09:04 2020] BTRFS info (device bcache2): checking UUID
-tree
-[Wed Feb  5 17:09:04 2020] BTRFS error (device bcache2): tree level
-mismatch detected, bytenr=3D19499133206528 level expected=3D0 has=3D2
-[Wed Feb  5 17:09:04 2020] BTRFS error (device bcache2): tree level
-mismatch detected, bytenr=3D19499133206528 level expected=3D0 has=3D2
-[Wed Feb  5 17:09:04 2020] BTRFS warning (device bcache2): iterating
-uuid_tree failed -117
-btrfs fi df /
-
------------------- dmesg part 2/2 ------------------
-
-[Wed Feb  5 17:09:36 2020] BTRFS error (device bcache2): tree block
-14963956514816 owner 3 already locked by pid=3D3187, extent tree
-corruption detected
-[Wed Feb  5 17:09:36 2020] ------------[ cut here ]------------
-[Wed Feb  5 17:09:36 2020] BTRFS: Transaction aborted (error -117)
-[Wed Feb  5 17:09:36 2020] WARNING: CPU: 4 PID: 3187 at
-/build/linux-hwe-3HpQOB/linux-hwe-5.3.0/fs/btrfs/volumes.c:3025
-btrfs_remove_chunk+0x76e/0x8a0 [btrfs]
-[Wed Feb  5 17:09:36 2020] Modules linked in: cmac bnep nls_iso8859_1
-snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic
-ledtrig_audio snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep
-edac_mce_amd kvm_amd snd_pcm ccp kvm snd_seq_midi snd_seq_midi_event
-irqby
-pass k10temp snd_rawmidi btusb fam15h_power btrtl btbcm btintel joydev
-nouveau snd_seq input_leds bluetooth snd_seq_device mxm_wmi snd_timer
-video ecdh_generic snd ecc ttm i2c_algo_bit soundcore mac_hid
-sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 b
-trfs xor zstd_compress raid6_pq libcrc32c algif_skcipher af_alg
-dm_crypt hid_logitech_hidpp bcache crc64 hid_logitech_dj hid_generic
-usbhid hid uas usb_storage nvidia_drm(POE) nvidia_modeset(POE)
-crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel
-nvidia(POE) ae
-s_x86_64 crypto_simd drm_kms_helper syscopyarea cryptd sysfillrect
-glue_helper sysimgblt fb_sys_fops drm r8169 nvme realtek i2c_piix4
-ahci ipmi_devintf nvme_core(E) libahci ipmi_msghandler wmi
-[Wed Feb  5 17:09:36 2020] CPU: 4 PID: 3187 Comm: btrfs-cleaner
-Tainted: P        W  OE     5.3.0-26-generic #28~18.04.1-Ubuntu
-[Wed Feb  5 17:09:36 2020] Hardware name: MSI MS-7974/970A-G43 PLUS
-(MS-7974), BIOS V1.1 07/04/2016
-[Wed Feb  5 17:09:36 2020] RIP: 0010:btrfs_remove_chunk+0x76e/0x8a0 [btrfs]
-[Wed Feb  5 17:09:36 2020] Code: 48 8b 50 50 f0 48 0f ba aa 40 ce 00
-00 02 8b 45 a0 72 1c 83 f8 fb 0f 84 af 00 00 00 89 c6 48 c7 c7 f0 52
-7d c1 e8 72 fa 73 eb <0f> 0b 8b 45 a0 48 8b 7d 90 89 c1 ba d1 0b 00 00
-48 c7 c6 90 54 7c
-[Wed Feb  5 17:09:36 2020] RSP: 0018:ffffa7a5035d3d98 EFLAGS: 00010282
-[Wed Feb  5 17:09:36 2020] RAX: 0000000000000000 RBX: 0000000040000000
-RCX: 0000000000000006
-[Wed Feb  5 17:09:36 2020] RDX: 0000000000000007 RSI: 0000000000000092
-RDI: ffff97cea7b17440
-[Wed Feb  5 17:09:36 2020] RBP: ffffa7a5035d3e48 R08: 00000000000005d3
-R09: 0000000000000004
-[Wed Feb  5 17:09:36 2020] R10: 00000000ffffffff R11: 0000000000000001
-R12: ffff97ce9b647c00
-[Wed Feb  5 17:09:36 2020] R13: ffff97ce95c2e800 R14: ffff97ce9c1d03b8
-R15: ffff97ce9253ec40
-[Wed Feb  5 17:09:36 2020] FS:  0000000000000000(0000)
-GS:ffff97cea7b00000(0000) knlGS:0000000000000000
-[Wed Feb  5 17:09:36 2020] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3
-[Wed Feb  5 17:09:36 2020] CR2: 000055b322010290 CR3: 000000061d628000
-CR4: 00000000000406e0
-[Wed Feb  5 17:09:36 2020] Call Trace:
-[Wed Feb  5 17:09:36 2020]  btrfs_delete_unused_bgs+0x36a/0x490 [btrfs]
-[Wed Feb  5 17:09:36 2020]  cleaner_kthread+0xed/0x130 [btrfs]
-[Wed Feb  5 17:09:36 2020]  kthread+0x121/0x140
-[Wed Feb  5 17:09:36 2020]  ? __btrfs_btree_balance_dirty+0x60/0x60 [btrfs]
-[Wed Feb  5 17:09:36 2020]  ? kthread_park+0xb0/0xb0
-[Wed Feb  5 17:09:36 2020]  ret_from_fork+0x22/0x40
-[Wed Feb  5 17:09:36 2020] ---[ end trace c34270cb20778d7d ]---
-[Wed Feb  5 17:09:36 2020] BTRFS: error (device bcache2) in
-btrfs_remove_chunk:3025: errno=3D-117 unknown
-[Wed Feb  5 17:09:36 2020] BTRFS info (device bcache2): forced readonly
-[Wed Feb  5 17:09:36 2020] ------------[ cut here ]------------
-[Wed Feb  5 17:09:36 2020] WARNING: CPU: 4 PID: 3187 at
-/build/linux-hwe-3HpQOB/linux-hwe-5.3.0/fs/btrfs/space-info.h:106
-btrfs_space_info_update_bytes_may_use.part.10+0x14/0x21 [btrfs]
-[Wed Feb  5 17:09:36 2020] Modules linked in: cmac bnep nls_iso8859_1
-snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic
-ledtrig_audio snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep
-edac_mce_amd kvm_amd snd_pcm ccp kvm snd_seq_midi snd_seq_midi_event
-irqby
-pass k10temp snd_rawmidi btusb fam15h_power btrtl btbcm btintel joydev
-nouveau snd_seq input_leds bluetooth snd_seq_device mxm_wmi snd_timer
-video ecdh_generic snd ecc ttm i2c_algo_bit soundcore mac_hid
-sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 b
-trfs xor zstd_compress raid6_pq libcrc32c algif_skcipher af_alg
-dm_crypt hid_logitech_hidpp bcache crc64 hid_logitech_dj hid_generic
-usbhid hid uas usb_storage nvidia_drm(POE) nvidia_modeset(POE)
-crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel
-nvidia(POE) ae
-s_x86_64 crypto_simd drm_kms_helper syscopyarea cryptd sysfillrect
-glue_helper sysimgblt fb_sys_fops drm r8169 nvme realtek i2c_piix4
-ahci ipmi_devintf nvme_core(E) libahci ipmi_msghandler wmi
-[Wed Feb  5 17:09:36 2020] CPU: 4 PID: 3187 Comm: btrfs-cleaner
-Tainted: P        W  OE     5.3.0-26-generic #28~18.04.1-Ubuntu
-[Wed Feb  5 17:09:36 2020] Hardware name: MSI MS-7974/970A-G43 PLUS
-(MS-7974), BIOS V1.1 07/04/2016
-[Wed Feb  5 17:09:36 2020] RIP:
-0010:btrfs_space_info_update_bytes_may_use.part.10+0x14/0x21 [btrfs]
-[Wed Feb  5 17:09:36 2020] Code: 74 05 e8 22 a5 6d eb 48 8d 65 d8 5b
-41 5a 41 5c 41 5d 41 5e 5d c3 55 48 89 e5 53 48 89 fb 48 c7 c7 e8 a4
-7d c1 e8 d2 84 74 eb <0f> 0b 48 c7 43 28 00 00 00 00 5b 5d c3 55 48 89
-e5 53 48 89 fb 48
-[Wed Feb  5 17:09:36 2020] RSP: 0018:ffffa7a5035d3ca8 EFLAGS: 00010286
-[Wed Feb  5 17:09:36 2020] RAX: 0000000000000024 RBX: ffff97ce96ed5800
-RCX: 0000000000000006
-[Wed Feb  5 17:09:36 2020] RDX: 0000000000000000 RSI: 0000000000000092
-RDI: ffff97cea7b17440
-[Wed Feb  5 17:09:36 2020] RBP: ffffa7a5035d3cb0 R08: 00000000000005ed
-R09: 0000000000000004
-[Wed Feb  5 17:09:36 2020] R10: 0000000000000002 R11: 0000000000000001
-R12: ffff97ce96ed5800
-[Wed Feb  5 17:09:36 2020] R13: 0000000000080000 R14: 000000000007c000
-R15: ffff97ce9c1d0000
-[Wed Feb  5 17:09:36 2020] FS:  0000000000000000(0000)
-GS:ffff97cea7b00000(0000) knlGS:0000000000000000
-[Wed Feb  5 17:09:36 2020] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3
-[Wed Feb  5 17:09:36 2020] CR2: 000055b322010290 CR3: 000000061d628000
-CR4: 00000000000406e0
-[Wed Feb  5 17:09:36 2020] Call Trace:
-[Wed Feb  5 17:09:36 2020]  btrfs_space_info_add_old_bytes+0x261/0x280 [btr=
-fs]
-[Wed Feb  5 17:09:36 2020]  __btrfs_block_rsv_release+0x16e/0x1a0 [btrfs]
-[Wed Feb  5 17:09:36 2020]  btrfs_trans_release_chunk_metadata+0x35/0x50 [b=
-trfs]
-[Wed Feb  5 17:09:36 2020]
-btrfs_create_pending_block_groups+0x13d/0x240 [btrfs]
-[Wed Feb  5 17:09:36 2020]  __btrfs_end_transaction+0x6e/0x1e0 [btrfs]
-[Wed Feb  5 17:09:36 2020]  btrfs_end_transaction+0x10/0x20 [btrfs]
-[Wed Feb  5 17:09:36 2020]  btrfs_delete_unused_bgs+0x28b/0x490 [btrfs]
-[Wed Feb  5 17:09:36 2020]  cleaner_kthread+0xed/0x130 [btrfs]
-[Wed Feb  5 17:09:36 2020]  kthread+0x121/0x140
-[Wed Feb  5 17:09:36 2020]  ? __btrfs_btree_balance_dirty+0x60/0x60 [btrfs]
-[Wed Feb  5 17:09:36 2020]  ? kthread_park+0xb0/0xb0
-[Wed Feb  5 17:09:36 2020]  ret_from_fork+0x22/0x40
-[Wed Feb  5 17:09:36 2020] ---[ end trace c34270cb20778d7e ]---
-
-6. $ btrfs fi df /mnt
-Data, RAID1: total=3D4.21TiB, used=3D0.00B
-Data, single: total=3D3.30TiB, used=3D0.00B
-System, RAID1: total=3D32.00MiB, used=3D0.00B
-Metadata, RAID1: total=3D12.00GiB, used=3D496.00KiB
-Metadata, single: total=3D8.00GiB, used=3D0.00B
-GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-
-7. $ btrfs check -p /dev/bcache4
-Opening filesystem to check...
-Checking filesystem on /dev/bcache4
-UUID: 0b79cf54-c424-40ed-adca-bd66b38ad57a
-Error: could not find extent items for root 257(0:00:00 elapsed, 1199
-items checked)
-[1/7] checking root items                      (0:00:00 elapsed, 7748
-items checked)
-ERROR: failed to repair root items: No such file or directory
-
-8. $ btrfs scrub start -B -R /mnt
-The status is aborted because the file system was forcely re-mounted readon=
-ly.
-
-9. $ lsblk -o NAME,SIZE,TYPE,FSTYPE
-sda                     931.5G disk  bcache
-=E2=94=94=E2=94=80bcache0               931.5G disk  crypto_LUKS
-  =E2=94=94=E2=94=80disk-1t                931.5G crypt btrfs
-sdb                     232.9G disk
-=E2=94=94=E2=94=80sdb6                     10G part  crypto_LUKS
-  =E2=94=94=E2=94=80rescue                 10G crypt btrfs
-sdc                       2.7T disk  crypto_LUKS
-=E2=94=94=E2=94=80disk-3t             2.7T crypt bcache
-  =E2=94=94=E2=94=80bcache3               2.7T disk  btrfs
-sdd                       9.1T disk  crypto_LUKS
-=E2=94=94=E2=94=80disk-10t           9.1T crypt bcache
-  =E2=94=94=E2=94=80bcache2               9.1T disk  btrfs
-sde                       1.8T disk  bcache
-=E2=94=94=E2=94=80bcache1                 1.8T disk  crypto_LUKS
-  =E2=94=94=E2=94=80disk-2t          1.8T crypt btrfs
-sdf                       9.1T disk  crypto_LUKS
-=E2=94=94=E2=94=80disk-10t          9.1T crypt bcache
-  =E2=94=94=E2=94=80bcache4               9.1T disk  btrfs
-nvme0n1                 953.9G disk
-=E2=94=94=E2=94=80nvme0n1p1               636G part  crypto_LUKS
-  =E2=94=94=E2=94=80cache                 636G crypt bcache
-    =E2=94=9C=E2=94=80bcache0           931.5G disk  crypto_LUKS
-    =E2=94=82 =E2=94=94=E2=94=80disk-1t           931.5G crypt btrfs
-    =E2=94=9C=E2=94=80bcache1             1.8T disk  crypto_LUKS
-    =E2=94=82 =E2=94=94=E2=94=80disk-2t          1.8T crypt btrfs
-    =E2=94=9C=E2=94=80bcache2             9.1T disk  btrfs
-    =E2=94=9C=E2=94=80bcache3             2.7T disk  btrfs
-    =E2=94=94=E2=94=80bcache4             9.1T disk  btrfs
+--zGLPEnFFAGRX1Z84ZnuZqDscLYbc3huQJ
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-Regards,
-Chiung-Ming Huang
+
+On 2020/2/5 =E4=B8=8B=E5=8D=886:18, Chiung-Ming Huang wrote:
+> Hi everyone
+>=20
+> It's a long story. I try to describe it shortly. My btrfs RAID1
+> includes 5 HDDs, 10Tx2, 1Tx1, 2Tx1 and 3Tx1. They all based on bcache
+> (1Tx1 SSD as cache) and luks. I tried to reorder it to ` Luks -->
+> Bcache --> SSD --> HDD` with only one layer of luks on bcache. But I
+> failed because of power-off accidentally. Please help me to fix it.
+> Thanks.
+>=20
+> 1. OS: Ubuntu 18.04
+>=20
+> 2. $ uname -a
+> Linux rescue 5.3.0-26-generic #28~18.04.1-Ubuntu SMP Wed Dec 18
+> 16:40:14 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+=2E..
+> [Wed Feb  5 17:09:04 2020] BTRFS error (device bcache2): tree level
+> mismatch detected, bytenr=3D19499133206528 level expected=3D0 has=3D2
+> [Wed Feb  5 17:09:04 2020] BTRFS error (device bcache2): tree level
+> mismatch detected, bytenr=3D19499133206528 level expected=3D0 has=3D2
+> [Wed Feb  5 17:09:04 2020] BTRFS warning (device bcache2): iterating
+> uuid_tree failed -117
+> btrfs fi df /
+>=20
+> ------------------ dmesg part 2/2 ------------------
+>=20
+> [Wed Feb  5 17:09:36 2020] BTRFS error (device bcache2): tree block
+> 14963956514816 owner 3 already locked by pid=3D3187, extent tree
+> corruption detected
+
+This shows the problem. Your extent tree is corrupted.
+
+I don't believe the lower storage stack is involved.
+
+Full histroy of the fs please (from mkfs to current stage)
+
+
+=2E..
+>=20
+> 7. $ btrfs check -p /dev/bcache4
+> Opening filesystem to check...
+> Checking filesystem on /dev/bcache4
+> UUID: 0b79cf54-c424-40ed-adca-bd66b38ad57a
+> Error: could not find extent items for root 257(0:00:00 elapsed, 1199
+> items checked)
+> [1/7] checking root items                      (0:00:00 elapsed, 7748
+> items checked)
+> ERROR: failed to repair root items: No such file or directory
+
+Have you tried btrfs check --repair then mount?
+Is that mentioned dmesg the first time you hit, not something after
+btrfs check --repair?
+
+And `btrfs check` without --repair please, that's the most important
+info to evaluate how to fix it (if possible).
+
+Thanks,
+Qu
+
+>=20
+> 8. $ btrfs scrub start -B -R /mnt
+> The status is aborted because the file system was forcely re-mounted re=
+adonly.
+>=20
+> 9. $ lsblk -o NAME,SIZE,TYPE,FSTYPE
+> sda                     931.5G disk  bcache
+> =E2=94=94=E2=94=80bcache0               931.5G disk  crypto_LUKS
+>   =E2=94=94=E2=94=80disk-1t                931.5G crypt btrfs
+> sdb                     232.9G disk
+> =E2=94=94=E2=94=80sdb6                     10G part  crypto_LUKS
+>   =E2=94=94=E2=94=80rescue                 10G crypt btrfs
+> sdc                       2.7T disk  crypto_LUKS
+> =E2=94=94=E2=94=80disk-3t             2.7T crypt bcache
+>   =E2=94=94=E2=94=80bcache3               2.7T disk  btrfs
+> sdd                       9.1T disk  crypto_LUKS
+> =E2=94=94=E2=94=80disk-10t           9.1T crypt bcache
+>   =E2=94=94=E2=94=80bcache2               9.1T disk  btrfs
+> sde                       1.8T disk  bcache
+> =E2=94=94=E2=94=80bcache1                 1.8T disk  crypto_LUKS
+>   =E2=94=94=E2=94=80disk-2t          1.8T crypt btrfs
+> sdf                       9.1T disk  crypto_LUKS
+> =E2=94=94=E2=94=80disk-10t          9.1T crypt bcache
+>   =E2=94=94=E2=94=80bcache4               9.1T disk  btrfs
+> nvme0n1                 953.9G disk
+> =E2=94=94=E2=94=80nvme0n1p1               636G part  crypto_LUKS
+>   =E2=94=94=E2=94=80cache                 636G crypt bcache
+>     =E2=94=9C=E2=94=80bcache0           931.5G disk  crypto_LUKS
+>     =E2=94=82 =E2=94=94=E2=94=80disk-1t           931.5G crypt btrfs
+>     =E2=94=9C=E2=94=80bcache1             1.8T disk  crypto_LUKS
+>     =E2=94=82 =E2=94=94=E2=94=80disk-2t          1.8T crypt btrfs
+>     =E2=94=9C=E2=94=80bcache2             9.1T disk  btrfs
+>     =E2=94=9C=E2=94=80bcache3             2.7T disk  btrfs
+>     =E2=94=94=E2=94=80bcache4             9.1T disk  btrfs
+>=20
+>=20
+> Regards,
+> Chiung-Ming Huang
+>=20
+
+
+--zGLPEnFFAGRX1Z84ZnuZqDscLYbc3huQJ--
+
+--nQvKDSFE5cgwNZy5CnW0JhyX2DMNxGU4o
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl46mQYACgkQwj2R86El
+/qihcQf+JhOob3oEMhvDKhXDHuk7TDjq6O6LqrPJT7cpc645PKfnUMRJV8TGnPUQ
+tKVco1DT+e0A7rry4skim0OqkxPfrkP51P5FNMCeWh0VTaUM+QVkGEk9paYJkK33
+7PEvgeVEJlV4u6T6eS1qg1ZEp6Chv9unV5GU/d0PTa7xZoppexU1Vq96QspHIoJP
+H566thz3uKYPSjFdawfaJSY/14mrYeg0m7t+f03Ac0p+nJ5no6yGCp+l/nz+fRHx
+qa9+cmKyuE0MShvdEun9FsS50Ajmj9miETBl0tetE2IZyJhs8TEGeeg5qRgdbQ1l
+Bko6GZpfpFSZ5AGOhJbPc8zDLK6FCA==
+=fXma
+-----END PGP SIGNATURE-----
+
+--nQvKDSFE5cgwNZy5CnW0JhyX2DMNxGU4o--
