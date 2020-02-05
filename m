@@ -2,150 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BAB152796
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 09:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14FD152798
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 09:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgBEIcM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 03:32:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37584 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgBEIcL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Feb 2020 03:32:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 83BF8AD45
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 Feb 2020 08:32:09 +0000 (UTC)
-Subject: Re: [PATCH 01/11] btrfs: Perform pinned cleanup directly in
- btrfs_destroy_delayed_refs
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20200120140918.15647-1-nborisov@suse.com>
- <20200120140918.15647-2-nborisov@suse.com>
- <20200130135127.GQ3929@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <23f01744-e974-f1d2-8e40-64600db61a56@suse.com>
-Date:   Wed, 5 Feb 2020 10:32:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200130135127.GQ3929@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+        id S1728059AbgBEIeP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 03:34:15 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:59928 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728012AbgBEIeP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Feb 2020 03:34:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1580891654; x=1612427654;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=oEc3A56iGJsPYBGMCrB8UfzrJwwVdwo9B7QYofBJTP9e0921nnwwEYyn
+   xVf3lpfbSCLJ/Oe3s7+aoXvOJf8dtmvyfsSWDUxdZUqG/2aZeHi+z1L0b
+   dNN/zJv62xebLwmb6sO4UKWmaOua33AkxbsimH8xXptitNj7V+rZLrzD3
+   pfXnl9Q758QWCn6Yv4s9SeSjXVoM+Ezxj2405RMA0Lr6llsZ1zC0U0/H8
+   OiNnWxgctt6QNtWbkEoStdkaGARcxxhPaKtE0iSWLt7VTJOytSAlaqJVl
+   CXePjliYZ/nu3pXqudKJZFWJG2yV7OSCdG1ICXW2qLlVp/JS+EjH0Hch9
+   Q==;
+IronPort-SDR: XFNveosUXB3fQ6+7K1oufOKMETcBb+Ogo19vWonEn4zTzyDBSYiekFUuY7yrTND9YPvcErB76f
+ TaLSrTZc+cfONRLRkTYM2fEjRQGDhz5r2xiSma1ZucIFnzp4nOEvADo3Z2ABmhLQLAelnESepm
+ 0pQ/VQmiDjkw9A5bBJTugzjdLJ8GSdeO4JJbPHJWehlq1Cbm31rLLGMIzJC3onfxRO5sW6/VZ5
+ dF7Rdc9ItpAqxigNzGFxHkgECJ3tLbGKZ4x6mDyx3w9Hwbpjl+ZLsJDIyMmX+f3ay4Or2aocat
+ DSA=
+X-IronPort-AV: E=Sophos;i="5.70,405,1574092800"; 
+   d="scan'208";a="237100114"
+Received: from mail-bl2nam02lp2058.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.58])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2020 16:34:13 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QSvJQRazrOJjBIAocrDMUnny7FqQBz/03c9dcGy5FcHo3OZ5zLoPErbz48jhsbThb8WFLSsaSwIY9aWW/1DfF5w3k+7Tf0TSyTVVyZ8dIfbzYZfD+TgKqk+4oIZdzs+GygTJqeX4z8xHhU1WEzIdG8P2TDAPDCpaQxh2UklV5kFJ/zrTsMxi+2b4rQAwT2e73o48doqkQhE/h/SVQx0RmFVIS82fd4q1Wo+Nop0rnPBlyyRF7xtjz8aHxh8heDk+h7L8si5VspU2VSvbFv/pgYQ0X0b45nI89E1OZZEBub6gNxzVbxIsXbRGd8gMNmBBIgOkxGXMMjCD+cRSThVWMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=d31jFJNfq/MiUH9XGsRnIl01iRmnQfS3J4ZP9c7a7iBc+aU9SU84keKeQmFnxFjHj1knzdjPXtbkS6bMDBdN9edshynXz4Y7Ldlj4iBrCtYNHM8mvi4/KfCVhbvTZUD968LCkUshFVwnWx0QJFI13MDL1+MkjAXI8791H21FL9y0fFobCm5RjA/48RHA/FoRSrcHmM/1wIjeOzn7mG/Vqwqji+aeQQqnBxcUe20obCybZzK4ytkeih+dHwD6QdLF/QMzJG9qGWVVMkXpUe0NqqD7JJjS/8CA/rFhNMSfbV3Dlduvzsign5vcuciFzfnmGgDjWY8GBrY6IME/UCIoww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=znMd4Oe+Sit3A/rPhfu4DdtONj+NQ3yWAwNJex1LZD02hjCr33sIoj05B59Xfy49Nk8KjlIObKkyIJ/Qo9KtdbHE75PBkAQuDQYPSRP3OGz7Gn6ulcs7MT4gxhF2rYG2e8P0N0KCESnpMj6ni98VqZvKllrYRWMJm7U5rr3yFHE=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3616.namprd04.prod.outlook.com (10.167.140.150) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.27; Wed, 5 Feb 2020 08:34:12 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.031; Wed, 5 Feb 2020
+ 08:34:12 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+CC:     Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH 21/23] btrfs: flush delayed refs when trying to reserve
+ data space
+Thread-Topic: [PATCH 21/23] btrfs: flush delayed refs when trying to reserve
+ data space
+Thread-Index: AQHV23cKE4a3wzU7JU+19+j3JOcZRA==
+Date:   Wed, 5 Feb 2020 08:34:12 +0000
+Message-ID: <SN4PR0401MB3598C94605F08BFD823E0CB89B020@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200204161951.764935-1-josef@toxicpanda.com>
+ <20200204161951.764935-22-josef@toxicpanda.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 02e1be53-5d34-494b-7b51-08d7aa162d6f
+x-ms-traffictypediagnostic: SN4PR0401MB3616:
+x-microsoft-antispam-prvs: <SN4PR0401MB3616F2094DAE3030ECDA75859B020@SN4PR0401MB3616.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0304E36CA3
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(199004)(189003)(26005)(6506007)(8676002)(86362001)(186003)(81156014)(81166006)(7696005)(8936002)(52536014)(5660300002)(71200400001)(19618925003)(110136005)(2906002)(33656002)(316002)(4326008)(66946007)(66556008)(66476007)(64756008)(558084003)(66446008)(76116006)(91956017)(9686003)(478600001)(4270600006)(55016002);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3616;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bs78qy+yKfzIrSyN1Lymc3Nq1z5IL/wv9ZPWlT4bofCArfKQgxYgY86cO5LstYJ/cHjJLfcYdj56fZzlXq7omkDPxhmeJVUXWgYpAxk4bkXT7vjD5iuUt14DI68bY5EHDBxKPYcZmvpP1IoQA2oa4RR7trVCYoh/s06vnfxyuMjuSQdWusqbWVoGR1seP2ERcOLO/k6RGmUcbayDbAbmYzIo34dD2jMyA8Hj/0WPllehEqdqXJGPFN4OYfVG5A/R9cEArvZzmfGcaPnR3RwpQRdcKP1JJak0ukyDuV3TNDDwvsvaH460ap2LW6eYQpapDCwxsmlou28r9PrzLh323gE0fboL7LXw4++jpjjTR40/6VXVOH0BLgTo68iBhciVWzWARntMych4c7TWLveADbTsAMvXAXBm0NbwzsYHeQ205tYvi7eFbsQ0iujVxCC4
+x-ms-exchange-antispam-messagedata: ey2/K783/1zsJZvLAXOl0M2OyTqtu7CFnB1bd8hP/tzRlbHIsVpSgJKxLlzvwUB9xGUuuJUW9SNDPbWEtkVtefaEUAWu10LeKHaSqM6lsLwrePejmuKK4KQtOkpTyS5yk1xfxAi3YPuCkJsdGgYg1A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02e1be53-5d34-494b-7b51-08d7aa162d6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2020 08:34:12.2898
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jabtMzRdgBuKx+sglNGceDQwhswnTYBxkqyohOx7mApZzkxUJWEzrrab7Q6Z0MPgVXsc/vpn0zjbkB8tC50fxzlCUQt0lKLY7jFkNW+35mM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3616
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 30.01.20 г. 15:51 ч., David Sterba wrote:
-> On Mon, Jan 20, 2020 at 04:09:08PM +0200, Nikolay Borisov wrote:
->> Having btrfs_destroy_delayed_refs call btrfs_pin_extent is problematic
->> for making pinned extents tracking per-transaction since
->> btrfs_trans_handle cannot be passed to btrfs_pin_extent in this context.
->> Additionally delayed refs heads pinned in btrfs_destroy_delayed_refs
->> are going to be handled very closely, in btrfs_destroy_pinned_extent.
->>
->> To enable btrfs_pin_extent to take btrfs_trans_handle simply open code
->> it in btrfs_destroy_delayed_refs and call btrfs_error_unpin_extent_range
->> on the range. This enables us to do less work in
->> btrfs_destroy_pinned_extent and leaves btrfs_pin_extent being called in
->> contexts which have a valid btrfs_trans_handle.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>  fs/btrfs/disk-io.c | 26 +++++++++++++++++++++++---
->>  1 file changed, 23 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 5ce2801f8388..9209c7b0997c 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -42,6 +42,7 @@
->>  #include "ref-verify.h"
->>  #include "block-group.h"
->>  #include "discard.h"
->> +#include "space-info.h"
->>  
->>  #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
->>  				 BTRFS_HEADER_FLAG_RELOC |\
->> @@ -4261,9 +4262,28 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->>  		spin_unlock(&delayed_refs->lock);
->>  		mutex_unlock(&head->mutex);
->>  
->> -		if (pin_bytes)
->> -			btrfs_pin_extent(fs_info, head->bytenr,
->> -					 head->num_bytes, 1);
->> +		if (pin_bytes) {
->> +			struct btrfs_block_group *cache;
->> +			cache = btrfs_lookup_block_group(fs_info, head->bytenr);
->> +			BUG_ON(!cache);
-> 
-> So this BUG_ON is propagated from btrfs_pin_extent but not turned into
-> proper error handling in any of the followup patches.
-
-This BUGON should be there or it could be turned into an ASSERT. It's
-used to catch racing block group freeing i.e if it triggers it's a
-logical error, a real bug.
-
-> 
-
-<snip>
-
->> +			btrfs_error_unpin_extent_range(fs_info, head->bytenr,
->> +						       head->bytenr + head->num_bytes - 1);
-> 
-> This should also handle errors
-
-Turns out unpin_extent_range cane just return void, since it cannot fail
-so there's nothing to handle.
-
-> 
->> +		}
->>  		btrfs_cleanup_ref_head_accounting(fs_info, delayed_refs, head);
->>  		btrfs_put_delayed_ref_head(head);
->>  		cond_resched();
->> -- 
->> 2.17.1
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
