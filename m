@@ -2,79 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3617B153216
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 14:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2991532E1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 15:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgBENoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 08:44:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51990 "EHLO mx2.suse.de"
+        id S1726831AbgBEOaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 09:30:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51080 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726308AbgBENoQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Feb 2020 08:44:16 -0500
+        id S1726413AbgBEOaf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Feb 2020 09:30:35 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F137BAC84;
-        Wed,  5 Feb 2020 13:44:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 856DCB133;
+        Wed,  5 Feb 2020 14:30:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2EE48DA7E6; Wed,  5 Feb 2020 14:44:02 +0100 (CET)
-Date:   Wed, 5 Feb 2020 14:44:01 +0100
+        id AA232DA7E6; Wed,  5 Feb 2020 15:30:21 +0100 (CET)
+Date:   Wed, 5 Feb 2020 15:30:20 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/3] btrfs: add a comment describing delalloc space
- reservation
-Message-ID: <20200205134401.GK2654@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 17/44] btrfs: hold a ref on the root in
+ btrfs_search_path_in_tree
+Message-ID: <20200205143020.GL2654@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200203204436.517473-1-josef@toxicpanda.com>
- <20200203204436.517473-3-josef@toxicpanda.com>
- <7000f8a2-4d78-d9a1-2e3f-143b88ace1eb@gmx.com>
- <55055cf9-2c36-8e3e-d1b8-b3fb53cc03c1@suse.com>
- <356f2d03-bc34-7d13-ff0c-15cf39676333@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <20200124143301.2186319-1-josef@toxicpanda.com>
+ <20200124143301.2186319-18-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <356f2d03-bc34-7d13-ff0c-15cf39676333@gmx.com>
+In-Reply-To: <20200124143301.2186319-18-josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 08:39:19PM +0800, Qu Wenruo wrote:
-> >> Although I'm not sure if such lifespan should belong to delalloc-space.c.
-> >
-> > This omits a lot of critical details. FOr example it should be noted
-> > that in btrfs_buffered_write we reserve as much space as is requested by
-> > the user. Then in run_delalloc_range it must be mentioned that in case
-> > of compressed extents it can be called to allocate an extent which is
-> > less than the space reserved in btrfs_buffered_write => that's where the
-> > possible space savings in case of compressed come from.
+On Fri, Jan 24, 2020 at 09:32:34AM -0500, Josef Bacik wrote:
+> We look up an arbitrary fs root, we need to hold a ref on it while we're
+> doing our search.
 > 
-> If you spoiler everything in the introduction, I guess it's no longer
-> introduction.
-> An introduction should only tell the overall picture, not every details.
-> For details, we go read mentioned functions.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/ioctl.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> And too many details would make the introduction pretty hard to
-> maintain. What if one day we don't the current always reserve behavior
-> for buffered write?
-> 
-> So I tend to have just a overview, and entrance function. With minimal
-> details unless it's a really complex design.
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 62dd06b65686..c721b4fce1c0 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2328,6 +2328,12 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+>  	root = btrfs_get_fs_root(info, &key, true);
+>  	if (IS_ERR(root)) {
+>  		ret = PTR_ERR(root);
+> +		root = NULL;
+> +		goto out;
+> +	}
+> +	if (!btrfs_grab_fs_root(root)) {
+> +		ret = -ENOENT;
+> +		root = NULL;
+>  		goto out;
+>  	}
+>  
+> @@ -2378,6 +2384,8 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+>  	name[total_len] = '\0';
+>  	ret = 0;
+>  out:
+> +	if (root)
+> +		btrfs_put_fs_root(root);
 
-I'd rather keep it as it is and enhance more, the ascii graphics might
-help but I don't insist. Even if it's introductory, giving just pointers
-would be IMHO too little. I'm assuming the overview should be enough to
-read and then go to code and already have a clue what's happening.
+The NULL check is not necessary, you added that into btrfs_put_fs_root
+and I think it's readable without it here.
 
-We can update the docs further but we need a start so I've applied v2 to
-misc-next and let's take that as starting point so we can discuss
-suggested improvements as new patches. In case there's something that
-really does not fit the .c file comment there's always the docs git
-repository.
+>  	btrfs_free_path(path);
+>  	return ret;
+>  }
+> -- 
+> 2.24.1
