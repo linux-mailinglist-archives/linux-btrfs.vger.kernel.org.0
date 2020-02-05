@@ -2,201 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7733B153328
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 15:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD84B15332C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Feb 2020 15:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgBEOhf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Feb 2020 09:37:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56068 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgBEOhe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Feb 2020 09:37:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8A02AADA1;
-        Wed,  5 Feb 2020 14:37:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4BE4FDA7E6; Wed,  5 Feb 2020 15:37:19 +0100 (CET)
-Date:   Wed, 5 Feb 2020 15:37:18 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 18/44] btrfs: hold a ref on the root in
- btrfs_search_path_in_tree_user
-Message-ID: <20200205143718.GM2654@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        kernel-team@fb.com, linux-btrfs@vger.kernel.org
-References: <20200124143301.2186319-1-josef@toxicpanda.com>
- <20200124143301.2186319-19-josef@toxicpanda.com>
+        id S1726592AbgBEOii (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Feb 2020 09:38:38 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:34704 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgBEOii (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Feb 2020 09:38:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1580913518; x=1612449518;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3UQyNOZPY9ZmSyLkXUlEzo7I23OK+G7VhKaVroTFWlU=;
+  b=LGxVgyolrsTyTusT52tLweo4zQ7rSAfT1Lw31Xt5kGxJknTgHyzmzMni
+   46Bywi0VvHTXu3UooIr/E3XcaR7zW1me2GeOlMCqhY+5fGTpySSZ7NWSV
+   edLbTi6WlwLN9irqZbkuiabM8ekKUDf4+fzoSK7pDkmv4nQwZz8UB3jmJ
+   7UDQXOoVJwC8rLpofnw9/TLITQeMYnjeVWK/dF45aVKZhHvGTi7m0eDU3
+   fK6c0qw7rJty2QkZH9AkL6gxLgsiqnLBZ07CQpHsvdiMWz1i5lrNOp8HI
+   Znl235Gbht/zvJ3iy7lZ68MkCjZlahvAHje2067V23N25g8adAEyglyZk
+   g==;
+IronPort-SDR: GYI9StNYB0iGD+Jgof1Gzs6b98qR+eiOIFZ2/fV6D0xWABXuWxLi/SZ1XfZAxCfOe3yBZtnhh0
+ bso3x4Ecx9FCSY/S5yEiIkCkwd3+jFaACjuqSZF2HJGz6w1mKCMzbBlNuBqtnZj3250Pedm48k
+ BXmtObzCNwO7BEmDzdIi4VaPWku9edG6LEuW0MmKc7fwCH4UC6KFBIky6S6Bovvqy4nEcTY3O+
+ ao010TD06u7SUEPZdlHklQ2pl9fKiOBIMyqE6R1M30KFNRkozm8IimZwSaH1YWULG+5syG0F7n
+ Mw8=
+X-IronPort-AV: E=Sophos;i="5.70,405,1574092800"; 
+   d="scan'208";a="133512040"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2020 22:38:37 +0800
+IronPort-SDR: nyYHv7Nnbc07ErSt1Jf6ltgpihCA8pf0ODNvoyXJnZS2u0pB7LNhP1eAHEv+Mi5I6kikU2A3In
+ jxTeZJK5Zubk4w7P+qyYrgYI43vzYQm3K5hagwVFhHgFVZxWh2nR+/kgjy0/7PtrhKHGauj/qs
+ kdBHHjvE6Fbsq5i3l/0zUaeFW/IWiEgVrTS3f+XDjp6b49QsWaU+zQTv6UW7gyoP0QSbnSH6dn
+ Mg1c0Sw5UWFQ57MBKQrIlWvEVUGXfb9lz23gqOH0YiyGiFvLdupwCX8tGkXDrq+sUOqawHRRCz
+ yFhaUHjvgRzYk97jB1jweBQD
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2020 06:31:37 -0800
+IronPort-SDR: CilWTUSaM2TCxnDJjj3/RY29wHrQ2ZmrpsqU+riXzNoWo0ArP2Q5pVVfG5N+Gn1duzBYArhNNQ
+ MPvU0Qet7RwC9ZhExhj4nEWnJXtZVmeNdwAPb8GE1i/5wPFwLeywxNTU/a8GoTrhqx/+U4Dxur
+ aBieMdRTmjeZb6OTNwfir7DUwXptUsKWavnMRxMUbn+jQvjIs6cUQoFhhhxWX+VSXbjwFzcCi2
+ wjvvA4UyrKy25JHSPiAzDOmVJ1DeO6DPq4P5FgeTdceugAG2MEyzfbnjJ1iRP+DJrgkP702xK7
+ C18=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 05 Feb 2020 06:38:36 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v4 0/5] btrfs: remove buffer heads form superblock handling
+Date:   Wed,  5 Feb 2020 23:38:26 +0900
+Message-Id: <20200205143831.13959-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200124143301.2186319-19-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 09:32:35AM -0500, Josef Bacik wrote:
-> We can wander into a different root, so grab a ref on the root we look
-> up.  Later on we make root = fs_info->tree_root so we need this separate
-> out label to make sure we do the right cleanup only in the case we're
-> looking up a different root.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/ioctl.c | 28 ++++++++++++++++++----------
->  1 file changed, 18 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index c721b4fce1c0..5fffa1b6f685 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2432,6 +2432,10 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  			ret = PTR_ERR(root);
->  			goto out;
->  		}
-> +		if (!btrfs_grab_fs_root(root)) {
-> +			ret = -ENOENT;
-> +			goto out;
-> +		}
->  
->  		key.objectid = dirid;
->  		key.type = BTRFS_INODE_REF_KEY;
-> @@ -2439,15 +2443,15 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  		while (1) {
->  			ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
->  			if (ret < 0) {
-> -				goto out;
-> +				goto out_put;
->  			} else if (ret > 0) {
->  				ret = btrfs_previous_item(root, path, dirid,
->  							  BTRFS_INODE_REF_KEY);
->  				if (ret < 0) {
-> -					goto out;
-> +					goto out_put;
->  				} else if (ret > 0) {
->  					ret = -ENOENT;
-> -					goto out;
-> +					goto out_put;
->  				}
->  			}
->  
-> @@ -2461,7 +2465,7 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  			total_len += len + 1;
->  			if (ptr < args->path) {
->  				ret = -ENAMETOOLONG;
-> -				goto out;
-> +				goto out_put;
->  			}
->  
->  			*(ptr + len) = '/';
-> @@ -2472,10 +2476,10 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  			ret = btrfs_previous_item(root, path, dirid,
->  						  BTRFS_INODE_ITEM_KEY);
->  			if (ret < 0) {
-> -				goto out;
-> +				goto out_put;
->  			} else if (ret > 0) {
->  				ret = -ENOENT;
-> -				goto out;
-> +				goto out_put;
->  			}
->  
->  			leaf = path->nodes[0];
-> @@ -2483,26 +2487,26 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  			btrfs_item_key_to_cpu(leaf, &key2, slot);
->  			if (key2.objectid != dirid) {
->  				ret = -ENOENT;
-> -				goto out;
-> +				goto out_put;
->  			}
->  
->  			temp_inode = btrfs_iget(sb, &key2, root);
->  			if (IS_ERR(temp_inode)) {
->  				ret = PTR_ERR(temp_inode);
-> -				goto out;
-> +				goto out_put;
->  			}
->  			ret = inode_permission(temp_inode, MAY_READ | MAY_EXEC);
->  			iput(temp_inode);
->  			if (ret) {
->  				ret = -EACCES;
-> -				goto out;
-> +				goto out_put;
->  			}
->  
->  			if (key.offset == upper_limit.objectid)
->  				break;
->  			if (key.objectid == BTRFS_FIRST_FREE_OBJECTID) {
->  				ret = -EACCES;
-> -				goto out;
-> +				goto out_put;
->  			}
->  
->  			btrfs_release_path(path);
-> @@ -2513,6 +2517,7 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  
->  		memmove(args->path, ptr, total_len);
->  		args->path[total_len] = '\0';
-> +		btrfs_put_fs_root(root);
->  		btrfs_release_path(path);
->  	}
->  
-> @@ -2551,6 +2556,9 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
->  out:
->  	btrfs_free_path(path);
->  	return ret;
-> +out_put:
-> +	btrfs_put_fs_root(root);
-> +	goto out;
+This patch series removes the use of buffer_heads from btrfs' super block read
+and write paths. It also converts the integrity-checking code to only work
+with pages and BIOs.
 
-That's the ugly goto pattern we'd rather not use
+Compared to buffer heads, this gives us a leaner call path, as the
+buffer_head code wraps around getting pages from the page-cache and adding
+them to BIOs to submit.
 
-I see a simple way to merge the gotos to one: set root to NULL after the
-proper btrfs_put_fs_root (next to the memmove call above), and do the
-error btrfs_put_fs_root before free path.
+The first patch removes buffer_heads from superblock reading.  The second
+removes it from super_block writing and the subsequent patches remove the
+buffer_heads from the integrity check code.
 
-There's one catch, 'root' is used to hold tree_root that's only passed
-to search slot, but that can be simplified so 'root' is always the
-referenced root.
+It's based on misc-next from Wednesday February 5, and doesn't show any
+regressions in xfstests to the baseline.
 
-Incremental diff:
+This is more or less a consolidation submission, as I lost track what changes
+have been requested.
 
----
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2518,15 +2518,15 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
-                memmove(args->path, ptr, total_len);
-                args->path[total_len] = '\0';
-                btrfs_put_fs_root(root);
-+               root = NULL;
-                btrfs_release_path(path);
-        }
- 
-        /* Get the bottom subvolume's name from ROOT_REF */
--       root = fs_info->tree_root;
-        key.objectid = treeid;
-        key.type = BTRFS_ROOT_REF_KEY;
-        key.offset = args->treeid;
--       ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-+       ret = btrfs_search_slot(NULL, fs_info->tree_root, &key, path, 0, 0);
-        if (ret < 0) {
-                goto out;
-        } else if (ret > 0) {
-@@ -2553,12 +2553,11 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
-        read_extent_buffer(leaf, args->name, item_off, item_len);
-        args->name[item_len] = 0;
- 
-+out_put:
-+       btrfs_put_fs_root(root);
- out:
-        btrfs_free_path(path);
-        return ret;
--out_put:
--       btrfs_put_fs_root(root);
--       goto out;
- }
----
+Changes to v3:
+- Incroporated feedback from Christoph
+
+Changes to v2:
+- Removed patch #1 again
+- Added Reviews from Josef
+- Re-visited page locking, but not changes, it retains the same locking scheme
+  the buffer_heads had
+- Incroptorated comments from David regarding open-coding functions
+- For more details see the idividual patches.
+
+Changes to v1:
+- Added patch #1
+- Converted sb reading and integrity checking to use the page cache
+- Added rationale behind the conversion to the commit messages.
+- For more details see the idividual patches.
+
+
+Johannes Thumshirn (5):
+  btrfs: use the page-cache for super block reading
+  btrfs: use BIOs instead of buffer_heads from superblock writeout
+  btrfs: remove btrfsic_submit_bh()
+  btrfs: remove buffer_heads from btrfsic_process_written_block()
+  btrfs: remove buffer_heads form superblock mirror integrity checking
+
+ fs/btrfs/check-integrity.c | 218 +++++++++++--------------------------
+ fs/btrfs/check-integrity.h |   2 -
+ fs/btrfs/disk-io.c         | 195 +++++++++++++++++++--------------
+ fs/btrfs/disk-io.h         |   4 +-
+ fs/btrfs/volumes.c         |  57 +++++-----
+ fs/btrfs/volumes.h         |   2 -
+ 6 files changed, 210 insertions(+), 268 deletions(-)
+
+-- 
+2.24.1
+
