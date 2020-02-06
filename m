@@ -2,117 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1367715484E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 16:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B64B154858
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 16:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbgBFPnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 10:43:14 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:65006 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgBFPnN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 10:43:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581003793; x=1612539793;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=ilsFRuSBIclhWGUN9rDbszXW5Ye8u2qGQBA7Vq3tznc=;
-  b=fe4AEg/1fAOETHoAHZI2N468Z5QEtzBI7luOQtoXeme4QSZaWtFOJxw1
-   8DoAtTBqKqtn3XwMrUD5qykcpqXQ/7JmAzU9yS1R2KeE4VDC+2EiJoaPC
-   x0yrt9g/hlAx/QxriIA8wx0rD55uRfG0dYT6MKRtueM+KEN6Qu59gk3DS
-   Xr8BQBG5p47PV9L126ZlBL/9Nnq6ZzPKjnAq/THGLfFdMO4PUVMTSXV9e
-   hxBsiHODX4pADL6wd6xkPWIbLoqZcxqucRdAvpegnDNDVCd+du/zjxaO0
-   RHYgvUxrMkbZwOcFdM7eoeK6D4E0BsmpgJZlWdikIwJzjIkiLHrwlvB+O
-   Q==;
-IronPort-SDR: T2HgrStMtn913HJQIfGeWg/uWzunzyXfrNH+8tow92rbuJhr/fVhLjhg9OioAWwsvJBtMoJgAg
- nuhCkUkxX1/YRmfzkZqIkVthyNKwfNCiRKWmmMqEexGS+YNlbMTSdcfEzuTcShgq5H4DRVRCh/
- nd7IGPrHNPnNwnZURdbPM3FsdrEoCfRWhjavQT2PIOKzdK/vDHRVt6pXEfhwKi25rE0nP+MU39
- 8M22jPyYJCl98urFXAfhFfTV4eJgEvhEK8kct1/dBU0VPcOhqZwZNAkHM0AE6po/rjBnzURZd1
- cGc=
-X-IronPort-AV: E=Sophos;i="5.70,410,1574092800"; 
-   d="scan'208";a="133613193"
-Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Feb 2020 23:43:12 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gxOyW0H3g3wN7w0jKVcS+9Xn/o+OL7GoluWdkl5uUQUGj8//vJbfcLHxeNOGojtuUmAkFTQypehoTJMDtcuGaKQYcHZgQzgfKPsI/NYVb+oexTSZBdDRagAIjDaAri36bXA0XaBkPHA0B93JBeaiSGOXqs/5DCV+LZWdJC0VECKKoUuShYFZbvr9jaNuhXPCfs3zU1p7W/aBoXcD6CNywNdVpN4YOH8lCn2qR2FW7lFhB07VThO/yerhkxuOzFI+e7l9ld9iThmIt28yCUIFnLNhH2Cs1pru1d0AWP1DW7hKpnu2vevpCI+C0Tna8pwpfezatCTz2ZS1DoYXts9F8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tIVAhN7u20P2fIEeQkul9Q6+u+xeZXSMPYZ8/0Rb23k=;
- b=Xyk0OWzQER9liE4vsRZOFPwmQjPw/KvwJqJDSgolbtxPsAKuVDqSdIKlhVmPihzZVPN4nChfDSPbZ8F4CK7LgTyQXG09z9yTdzgo1hH8dxFlTi8CKzChlL9w452esPLCitEOv04EgAFfI8ADns4zM1qLGJJjfy67y+RwG95Vb+oYF3xEDF8TVYfx091fRhTWNAYIaPT3383gUJVGV6w5NnNB0z0QJX3yBjOxxUfU8QyLy9zIsJSIqRRUjtJHM8EGNffvXJjOdnZMTXQO//rVJarBs2OIqAWOknK7wQpBThO6N8engAO9ZcGwZncK2GYeyaWaX0tsyIjFGjCkx6Gc0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1727532AbgBFPpK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 10:45:10 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40789 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727060AbgBFPpK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 10:45:10 -0500
+Received: by mail-qt1-f193.google.com with SMTP id v25so4807714qto.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 07:45:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tIVAhN7u20P2fIEeQkul9Q6+u+xeZXSMPYZ8/0Rb23k=;
- b=UQ1uZks78GIK+KC7HEWsGQCnqShwF9YHeUuGXGq4/B4Y2QRDmz7v+6AaDV13cxbkdw+BMXMSoP3KWRxZP4dkkRITRryztPxChn1qWvUIbglEH5OQ7JelFGLBurvhgbjuzhbnrfQo6R2Zltr38G/MFZWU8vNxKEC99wN/+Kj4qwA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3631.namprd04.prod.outlook.com (10.167.141.153) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.27; Thu, 6 Feb 2020 15:43:10 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.036; Thu, 6 Feb 2020
- 15:43:10 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 06/20] btrfs: factor out gather_device_info()
-Thread-Topic: [PATCH 06/20] btrfs: factor out gather_device_info()
-Thread-Index: AQHV3NprfbSNZ8/YvUyBGXFoTfjQug==
-Date:   Thu, 6 Feb 2020 15:43:10 +0000
-Message-ID: <SN4PR0401MB3598D4A69FB9C890F8C25D999B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200206104214.400857-1-naohiro.aota@wdc.com>
- <20200206104214.400857-7-naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5a916a2f-b52e-4e35-0090-08d7ab1b4523
-x-ms-traffictypediagnostic: SN4PR0401MB3631:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN4PR0401MB3631203E366E263629A17FFD9B1D0@SN4PR0401MB3631.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0305463112
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(366004)(396003)(39860400002)(136003)(346002)(199004)(189003)(55016002)(186003)(478600001)(2906002)(71200400001)(91956017)(86362001)(76116006)(8676002)(7696005)(53546011)(4326008)(6506007)(9686003)(26005)(558084003)(110136005)(81166006)(81156014)(5660300002)(8936002)(54906003)(33656002)(316002)(52536014)(66556008)(66476007)(66446008)(66946007)(64756008);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3631;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2rzY+uVfS109gHqpCVBLZ+Y6RkqrP7BN3p3lYuKM4BEa8T4/ixAxCs82Ul7jnFgCrZLpKn9tX2a+CxlXi4w+r107i2r2S+SAGZ7Ij699sdtO12pY7TAwKFPgOAsJKHMJ7GdrXtFrxO0HGWFvvajN71Th2DLgOLGo8zMTbzVr+0zBUu58V404ATTRnQgeu515SvpfVEmioahULZP+C4IXtcjQC+Sm9M05YhF0Z2VyNDa5j57gll2vqD/bY2aOAOEcWzDIOUIk4X/EGSPiFISRajLBCwGN9j3LRcqORfYdsqcFORY0iiad2EmCc/+GC8G5IGczUGFTuqEhk/jzGBpK/keCwOoIE1ZIv0+JxXG5wijVWfMHlCoT6davbRsC6A5pu7mXQSzGxHDJozbmFTq/2/a5Rlq1JYdGTjco9e++8j6hvBq8ndBFjj9H8ATy3Zve
-x-ms-exchange-antispam-messagedata: 1T5p+b3XGlD92QuoUAjvvbAGrTKjrqp6q+qGrDWTguuGrL+i+lVGwgJqWZ3/9057Zl5jWQF0PKXn1MYtBcrwUd9EjKXQ/tl4O8HhP/Vts38Lci1s1dMEiWlxKYW6PrT+1CDsd5nRfYx3+Ovx/H0SvA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=tnocuWwg2m0jQI/GHQnRpzXDXWVNi+JOd3A9J1HIwrU=;
+        b=wy58cgh07rvIYEt1ICzQYC/fZsFLpu2Uvvq92TZMqzNxmZKbB5Vlk+dtsQOvmXOzjP
+         TzSrZ3FNRh2WBNe1vN5MbDMiOozLYhkIe78QzzIEu+2xFaj/71yIoP9x/I20RRKNGm7+
+         iforg/5RQyfhcuSYNAzEfUy4e7bqhda0LKTvtKADIdmeWoJgTDqHTMKW7pyudZ1qzw/3
+         ZlIArd7DAiEPD03PHY9G1SqajzcBvvZZRRkZzzFlK281Af7qy9r2n7tqrvfaj+RcCRN1
+         B9UqUZxl2dzqWXyHcMsKJTM7FtrVuG9CJ5Ubeb7I7Tv1Dvi4XQp4jRnHDoJSYMZo+ZE2
+         SKdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tnocuWwg2m0jQI/GHQnRpzXDXWVNi+JOd3A9J1HIwrU=;
+        b=oRyb7OV2BHIbAbSBX28tUy+5wBM/wLjCv7vIQAj7YyNt4iksWZ7N9Ey7lTxe65r8LR
+         WWnFVsvgYPJPtkZl+vJ7NCaZOY2d/WhAGPZbK+CgFM7fnTg6p+kTBNwuGKmXGIRKq3Og
+         a5QGTAJM9XGKcIdiKpdNf/eA3yF0XWFsJk0nN35PLO/S3BhyX6J76oO+hD1jX6m7uhL3
+         Z5D4TiP9p354URfn1ReY36yiDii2kqNaXlfG9WKZ5BuGPcU1HSjLiZSg5HroY6SzH2WI
+         Krn6MUff2CMaIBCNL+nCuJiqbLu8L++VMseWwgRh5jgO7+hEMgpoYHZTsOaOYK68/eMY
+         tNLA==
+X-Gm-Message-State: APjAAAV/PE4iDrozo6RZq8T8gXRj2L7k8cl24NS2DicBqJLiz2fyTjdP
+        dfi8T8CfoNAC4DmqBeoZq5TM8kUVHzQ=
+X-Google-Smtp-Source: APXvYqzje/OwlYcR6q8QLiq/wFg7H9Edvhbja36iNn0zRMZ2b1bUmGPF3NZRofkCL6TBfN2cRDXgBw==
+X-Received: by 2002:ac8:3676:: with SMTP id n51mr3150807qtb.208.1581003908357;
+        Thu, 06 Feb 2020 07:45:08 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id r1sm1806140qtu.83.2020.02.06.07.45.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Feb 2020 07:45:07 -0800 (PST)
+Subject: Re: [PATCH] btrfs: add wrapper for transaction abort predicate
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200205163434.6367-1-dsterba@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <88648e59-f12a-3272-7bbd-8b08117f6b25@toxicpanda.com>
+Date:   Thu, 6 Feb 2020 10:45:05 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a916a2f-b52e-4e35-0090-08d7ab1b4523
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2020 15:43:10.7543
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oXhxeHAgrgl2rsJjNw+tCi9lwvUPDkLJVeNBxVNMqgGZj+PNUa/2NSK8hW361pASLw/P0jHAQ1xazk8FVrawUKbcM2aVNYAcS5XQCXoptjk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3631
+In-Reply-To: <20200205163434.6367-1-dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 06/02/2020 11:44, Naohiro Aota wrote:=0A=
-> +	BUG_ON(!alloc_profile_is_valid(type, 0));=0A=
-=0A=
-I know this was present in the old code as well, but can we turn this =0A=
-into an ASSERT() + error return?=0A=
+On 2/5/20 11:34 AM, David Sterba wrote:
+> The status of aborted transaction can change between calls and it needs
+> to be accessed by READ_ONCE. Add a helper that also wraps the unlikely
+> hint.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
