@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D35191549A4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 17:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09651549B6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 17:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgBFQuB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 11:50:01 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:33825 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727479AbgBFQuB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 11:50:01 -0500
-Received: by mail-qv1-f67.google.com with SMTP id o18so3170516qvf.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 08:50:00 -0800 (PST)
+        id S1727737AbgBFQwW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 11:52:22 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41549 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbgBFQwV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 11:52:21 -0500
+Received: by mail-qk1-f194.google.com with SMTP id x82so6179442qkb.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 08:52:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EsboVX+Q83iwwmS3c/xaIgQlo5LvdhtMp+9KmyPsvO4=;
-        b=YRZLjr5ZARRYd0zuAL2hHzx4Csb6S+XbNNBbB250P9NEkQPK7gmbyFlDUN9Lbe7ArM
-         ZzuuLe6lLU9VbaLX67bPkYzsGOmb8iwWC7odEJxSqFWq2SAUjBEW5IZwCybYFSZYi/bz
-         +AI3p4rcz+vw+X1Ymo5HKu5tBkkfVVStDrPESIjx166UL+zttI4qtQLrXEH50I/Jvof3
-         LA7KidYfDCf1MzzyQo2S4So7Jjfvh34cL97ACkb+eaPxIGleJSgcm//t1odrY+bISvJB
-         2DmrDkgK3sSh1EdDScCPC/+CEsKiFcHnwI+R+rRgZ8aooQzeKU0NkckLN1eml7V9EWZU
-         rmLw==
+        bh=4tt4nfdiit9U7XpM53n0RKTZMiAVVYwGAawHfl5Fsek=;
+        b=ACS2bzwOM3Uoi3wDTiZ/iMGh4c2dU92xnrlqk5j91FRj2Qb+iCN3qm5nyADOd0bE8G
+         vbTECqlXQBS+sp1XIfsyUt+8CjmM6cTcTz67j8H9ouIaKaxkt8TmxV24pb+jvUYTrVTY
+         VhKtow8Vr2efNsVv8ZJcUzyl7OiqUWhGfURiSKkdxCO3imCPYeR2b8dLuxoulHXWXO6+
+         6M1uYDJMINp5oBwMcqQQDlQH+9PbaYVKPLd8G41g3F9hiWYhoNdDnpzCBkZNa9+rW+mv
+         1sPRaJGSUiOfS0it0QQW2drtecdyrZ06Rc9FUUQ2v9M+Y8ErXfwiV4gyPFRHFXn7evRb
+         hZXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EsboVX+Q83iwwmS3c/xaIgQlo5LvdhtMp+9KmyPsvO4=;
-        b=PnOGo/J2vffq6UZHEepEk3LycNj+9CjUiME5HLowGpH4ikPnzFoIbWRi9jOLE8PyLH
-         npRTsrkh2lR2Qm9fuN5YmueHHa8TeciyFBJ3fkgqx15B7UDVx8JDiaOwncFClteuo26D
-         b+j4AhHQE9PuJBkyVaejCGETw6+TAU7z+h0jNry3u3xY3a8loYU1D1xnYK4xkMr+tsqM
-         cuOVE9WsgRuEhJCj685yXoamm9Ugrz9S9uZxcTdOMZNzxI/SxBlzqGEwvOW6KhB2m0Yb
-         NqsjMlHJuHiebbtHAYiNf88hauAdtLVunp9mrnVbHL/lF6s+O8JWsyKEIqawPPnWv50s
-         rfiw==
-X-Gm-Message-State: APjAAAWRAf2rJM9ulQuB6cc8hrU72xS3jdsFPh9S/N3PGPSNhBQw1Yqg
-        iXt592tlIhF04GmX03elZE6SAA==
-X-Google-Smtp-Source: APXvYqzLrNmT7nXUqV7mBWvfxlOKm1wqPOcIb7wYJ85O7FqQq3gHSJrltGtGRzUEaFlRXCfiql9B0w==
-X-Received: by 2002:a0c:a910:: with SMTP id y16mr3176907qva.139.1581007799952;
-        Thu, 06 Feb 2020 08:49:59 -0800 (PST)
+        bh=4tt4nfdiit9U7XpM53n0RKTZMiAVVYwGAawHfl5Fsek=;
+        b=LxzMn+/9XK8Hti41WV1i1R6RPbBlNy0Cu22jvWU/JfgDguAmdg0PcqS0wifDmrV+U0
+         GwJ5U7Dqxr23/ANUP5UQMCGpNK4kuu9u2ohpJaWvWwhWR8GiPbbmO6/Wwpdpza+l611G
+         pyuE51UggK6KFgxmBDdPenVBtCqBS1P6MqnZexZ2TnElzli+IvkZEv37dQ5ieCUs21H+
+         r5Bmk3TqxXySmbdYSzadVtNHs5UqhjgWhVloZecR2WVd0d0A0cV+OEPWJDMSdWSa5CKU
+         S8adDIraH8S79qRLipaRa/TWAvNpJweBIigAx7a0FFIwQkSanC21/JxyWyuc3AqxgALO
+         A+rA==
+X-Gm-Message-State: APjAAAXnxM8ehx9zCGkqkH2AFMkIehQNNFaiWcaBAv/kgWrVK0gfVyA1
+        pzmBXHZ0cSByWj2RBrb3O/qp2A==
+X-Google-Smtp-Source: APXvYqwHE/KHy5XiaDLKibC1o/Xmw+U6W6UdX2v4ND6Q9W4c1EOAlJuEZmVNrNRAiNoaFALTzqfBvA==
+X-Received: by 2002:a05:620a:12cf:: with SMTP id e15mr3479056qkl.120.1581007940793;
+        Thu, 06 Feb 2020 08:52:20 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k37sm1013028qtf.70.2020.02.06.08.49.58
+        by smtp.gmail.com with ESMTPSA id 141sm1633035qkk.62.2020.02.06.08.52.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Feb 2020 08:49:59 -0800 (PST)
-Subject: Re: [PATCH 08/20] btrfs: factor out create_chunk()
+        Thu, 06 Feb 2020 08:52:20 -0800 (PST)
+Subject: Re: [PATCH 09/20] btrfs: parameterize dev_extent_min
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>
 Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
@@ -55,14 +55,14 @@ Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
         Anand Jain <anand.jain@oracle.com>,
         linux-fsdevel@vger.kernel.org
 References: <20200206104214.400857-1-naohiro.aota@wdc.com>
- <20200206104214.400857-9-naohiro.aota@wdc.com>
+ <20200206104214.400857-10-naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ce201812-22c2-9799-f453-780a5b16e49b@toxicpanda.com>
-Date:   Thu, 6 Feb 2020 11:49:58 -0500
+Message-ID: <b8c284f3-520c-5777-9309-0fb913227824@toxicpanda.com>
+Date:   Thu, 6 Feb 2020 11:52:19 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200206104214.400857-9-naohiro.aota@wdc.com>
+In-Reply-To: <20200206104214.400857-10-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,42 +72,53 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 2/6/20 5:42 AM, Naohiro Aota wrote:
-> Factor out create_chunk() from __btrfs_alloc_chunk(). This function finally
-> creates a chunk. There is no functional changes.
+> Currently, we ignore a device whose available space is less than
+> "BTRFS_STRIPE_LEN * dev_stripes". This is a lower limit for current
+> allocation policy (to maximize the number of stripes). This commit
+> parameterizes dev_extent_min, so that other policies can set their own
+> lower limitation to ignore a device with an insufficient space.
 > 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>   fs/btrfs/volumes.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 15837374db9c..4a6cc098ee3e 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4836,6 +4836,7 @@ struct alloc_chunk_ctl {
+>   				   store parity information */
+>   	u64 max_stripe_size;
+>   	u64 max_chunk_size;
+> +	u64 dev_extent_min;
+>   	u64 stripe_size;
+>   	u64 chunk_size;
+>   	int ndevs;
+> @@ -4868,6 +4869,7 @@ static void set_parameters_regular(struct btrfs_fs_devices *fs_devices,
+>   	/* We don't want a chunk larger than 10% of writable space */
+>   	ctl->max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
+>   				  ctl->max_chunk_size);
+> +	ctl->dev_extent_min = BTRFS_STRIPE_LEN * ctl->dev_stripes;
+>   }
+>   
+>   static void set_parameters(struct btrfs_fs_devices *fs_devices,
+> @@ -4903,7 +4905,6 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+>   	struct btrfs_device *device;
+>   	u64 total_avail;
+>   	u64 dev_extent_want = ctl->max_stripe_size * ctl->dev_stripes;
+> -	u64 dev_extent_min = BTRFS_STRIPE_LEN * ctl->dev_stripes;
+>   	int ret;
+>   	int ndevs = 0;
+>   	u64 max_avail;
+> @@ -4931,7 +4932,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+>   			total_avail = 0;
+>   
+>   		/* If there is no space on this device, skip it. */
+> -		if (total_avail == 0)
+> +		if (total_avail < ctl->dev_extent_min)
 
-<snip>
-> +
-> +	ctl.start = start;
-> +	ctl.type = type;
-> +	set_parameters(fs_devices, &ctl);
-> +
-> +	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
-> +			       GFP_NOFS);
-> +	if (!devices_info)
-> +		return -ENOMEM;
-> +
-> +	ret = gather_device_info(fs_devices, &ctl, devices_info);
-> +	if (ret < 0)
-> +		goto error;
-> +
-> +	ret = decide_stripe_size(fs_devices, &ctl, devices_info);
-> +	if (ret < 0)
-> +		goto error;
-> +
-> +	ret = create_chunk(trans, &ctl, devices_info);
-> +	if (ret < 0)
-> +		goto error;
-> +
-
-This can just be
-
-out:
-	kfree(devcies_info);
-	return ret;
-
-and all the above people can just do goto out on error and we can drop the 
-error: part below.  Thanks,
+This isn't correct, dev_extent_min is the total size with all stripes added up, 
+not the size of a single stripe.  Thanks,
 
 Josef
