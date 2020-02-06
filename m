@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A2115494E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 17:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC12F154959
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 17:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgBFQeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 11:34:24 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44149 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727390AbgBFQeY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 11:34:24 -0500
-Received: by mail-qk1-f196.google.com with SMTP id v195so6103390qkb.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 08:34:24 -0800 (PST)
+        id S1727630AbgBFQiT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 11:38:19 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46450 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727613AbgBFQiT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 11:38:19 -0500
+Received: by mail-qk1-f193.google.com with SMTP id g195so6097812qke.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 08:38:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TwJziLlj9lhJSWv2LT4V4xc4c1KA7a/LzV66F8uVef0=;
-        b=DZBMgj8yogl9lgyBw2YOoEnEvkLey2vlPVryha3ACM5hH6n1FsjCIVU2XIzmVeM2k4
-         xYuhytu2/kXvMVAK+bqXI4EcEWjLU2FOdGMJB24MzfXR0sBB59ets3wtWyt10KXc2Vhv
-         jcw4uWcntJfG3AbS+C+WLtBC/kzi/Z6ZxE/n5Nc3TfB3bJ+GMbz0GtHgy1o9TEirUn4v
-         2ZAPEn7mhl8fV+OMlRJgTFfh3ZbQ83TLPNHwBMaPTHahy/U7PuXIb5aNIsnyaVzGg1yH
-         jbI+IgViqCEFT2RKCUmJPCDCB2F+M4MXMjjz0aHbi4w3IJJkDCcq01BjBN1BnnAoYEDa
-         TgOg==
+        bh=JwbNSDXLFkV23H3mnDJ/2zWJ/rMSlb7SLMBnqprGayk=;
+        b=qtfutCMGSQ3v7L/BuKdQ/R8xGtuMK/r7lbIhduTLvUeH/aiDtvrWVzUEr6HPrZ1IFa
+         oAXqLpXH1PchmGGcS8tRyltbJF7EYB/hqXKYn6YHjkMoW1aRlE56wIPySEMLIxn3NR58
+         DffSwWetNxRVhVSeGsOBOFsWp8iYEAhUzH8TI6QOF6WOv4no48vCDaGi9qlffrSE4Xuy
+         C5lmFw32CPACt9eqQkawe/hMxmkStFed8cvrP4V9kLKgMH26/PzlJ4ZsptViKx4RI/Xm
+         jqdro873zoMnyRtqIrxrHtXQlXmxAUqWEVc44Tv+rcdC+1h/xKQsscWwzeKJph419xHF
+         czBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TwJziLlj9lhJSWv2LT4V4xc4c1KA7a/LzV66F8uVef0=;
-        b=coTHIQWWc/p8HunUFfLJqL4GUwRIG2HhE6mLJC7V8l/Q9z6fN/FRLnHZinnjuEtgO9
-         F9jB85vWlLP2kct7M+AduwpKuHAjtwacbfmUMznwySv98koqiQcYc7oED9SvabXAkIUd
-         TSK2UDnAi/P12Zy3l4CrakEO6+RF7J31wmW7mM7KvcZ7uNkRVLnZRJ4tWCP8LXC4oNE1
-         XCejTFQ6Tsl6UDqOETlkcaXTn/V7pPBkhSXRWqyAxr5UxlzPfFHIE/EqYApeqXKztWeU
-         SfXD8tRQMm7VjqD+opqhT0IuBpMFcCQX1zp4XHC9gmfiAnmcnVrt3AZG7abs5nnRCvHD
-         AnBA==
-X-Gm-Message-State: APjAAAUebx5spMU6k5iguIvweHmL7wyKQj9SnJeo5GzxEEy08hy4LK9w
-        Bvk4kczPUoCZ4M6bufQh3BGOFg==
-X-Google-Smtp-Source: APXvYqzSwMw8V/dEC7k1aJHMmegKawf9WVvvAsy8zY82cLlR2W0pv2PaxSxQyI3CcUyOVWNG98vvTQ==
-X-Received: by 2002:ae9:c018:: with SMTP id u24mr3343134qkk.339.1581006863541;
-        Thu, 06 Feb 2020 08:34:23 -0800 (PST)
+        bh=JwbNSDXLFkV23H3mnDJ/2zWJ/rMSlb7SLMBnqprGayk=;
+        b=AA083xfuzWq51BOxoI/zzLVe9G8UWKSQHKF+19NF2o96KiTQng6rG/w2Ky7e5fbluL
+         zQ/nVf4Woh0oLSnxeBqZyGrAw6jWK91ckxa2U/2Y0mMBckCby9KTFVuYDntO7MH6DvfP
+         Zw1y/zO08DAnGljrAID/a0LF1FLdazjgxBOFDJxmTxTPdJTNiZGBvaiJGStgcIgNT7XK
+         Qo8cCS0yWn27WEpyhLZLYtKhHgD/Sju+xm0ubzpok1EyftRtNRWyXOy8DaQeBktJ5wER
+         r+FVGx2zy+MbQ+zqHL9+aYdjEz/vhADzgL26OByEfLBUrhubGyTTI2PxcsWPhCqzNVhw
+         sghg==
+X-Gm-Message-State: APjAAAUBI2CunoQCdYU1p0G+WIAfeoNVtE3p+dWe1XsDoWZCYJj28IR0
+        kbN9jpqkQzWQFUd5+ExfCDZ8XQ==
+X-Google-Smtp-Source: APXvYqz07Z8rAqUoX2S4huJOtnIIlNrgHCJnPUCEiLFTgHXKB4tij98aSsiCm3/5+qitWt+/NJ6SdA==
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr3222237qko.116.1581007095950;
+        Thu, 06 Feb 2020 08:38:15 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id y27sm2003882qta.50.2020.02.06.08.34.22
+        by smtp.gmail.com with ESMTPSA id z11sm1605400qkj.91.2020.02.06.08.38.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Feb 2020 08:34:22 -0800 (PST)
-Subject: Re: [PATCH 03/20] btrfs: refactor find_free_dev_extent_start()
+        Thu, 06 Feb 2020 08:38:15 -0800 (PST)
+Subject: Re: [PATCH 04/20] btrfs: introduce alloc_chunk_ctl
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>
 Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
@@ -55,14 +55,14 @@ Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
         Anand Jain <anand.jain@oracle.com>,
         linux-fsdevel@vger.kernel.org
 References: <20200206104214.400857-1-naohiro.aota@wdc.com>
- <20200206104214.400857-4-naohiro.aota@wdc.com>
+ <20200206104214.400857-5-naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <1992a0f8-f355-e1c3-17b9-f75feb3a2c20@toxicpanda.com>
-Date:   Thu, 6 Feb 2020 11:34:21 -0500
+Message-ID: <bcccefe4-8cff-d50d-ddd1-784e3d194607@toxicpanda.com>
+Date:   Thu, 6 Feb 2020 11:38:14 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200206104214.400857-4-naohiro.aota@wdc.com>
+In-Reply-To: <20200206104214.400857-5-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,18 +72,247 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 2/6/20 5:41 AM, Naohiro Aota wrote:
-> Factor out two functions from find_free_dev_extent_start().
-> dev_extent_search_start() decides the starting position of the search.
-> dev_extent_hole_check() checks if a hole found is suitable for device
-> extent allocation.
+> Introduce "struct alloc_chunk_ctl" to wrap needed parameters for the chunk
+> allocation.  This will be used to split __btrfs_alloc_chunk() into smaller
+> functions.
 > 
-> These functions also have the switch-cases to change the allocation
-> behavior depending on the policy.
+> This commit folds a number of local variables in __btrfs_alloc_chunk() into
+> one "struct alloc_chunk_ctl ctl". There is no functional change.
 > 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>   fs/btrfs/volumes.c | 143 +++++++++++++++++++++++++--------------------
+>   1 file changed, 81 insertions(+), 62 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 9bb673df777a..cfde302bf297 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4818,6 +4818,29 @@ static void check_raid1c34_incompat_flag(struct btrfs_fs_info *info, u64 type)
+>   	btrfs_set_fs_incompat(info, RAID1C34);
+>   }
+>   
+> +/*
+> + * Structure used internally for __btrfs_alloc_chunk() function.
+> + * Wraps needed parameters.
+> + */
+> +struct alloc_chunk_ctl {
+> +	u64 start;
+> +	u64 type;
+> +	int num_stripes;	/* total number of stripes to allocate */
+> +	int sub_stripes;	/* sub_stripes info for map */
+> +	int dev_stripes;	/* stripes per dev */
+> +	int devs_max;		/* max devs to use */
+> +	int devs_min;		/* min devs needed */
+> +	int devs_increment;	/* ndevs has to be a multiple of this */
+> +	int ncopies;		/* how many copies to data has */
+> +	int nparity;		/* number of stripes worth of bytes to
+> +				   store parity information */
+> +	u64 max_stripe_size;
+> +	u64 max_chunk_size;
+> +	u64 stripe_size;
+> +	u64 chunk_size;
+> +	int ndevs;
+> +};
+> +
+>   static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   			       u64 start, u64 type)
+>   {
+> @@ -4828,23 +4851,11 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   	struct extent_map_tree *em_tree;
+>   	struct extent_map *em;
+>   	struct btrfs_device_info *devices_info = NULL;
+> +	struct alloc_chunk_ctl ctl;
+>   	u64 total_avail;
+> -	int num_stripes;	/* total number of stripes to allocate */
+>   	int data_stripes;	/* number of stripes that count for
+>   				   block group size */
+> -	int sub_stripes;	/* sub_stripes info for map */
+> -	int dev_stripes;	/* stripes per dev */
+> -	int devs_max;		/* max devs to use */
+> -	int devs_min;		/* min devs needed */
+> -	int devs_increment;	/* ndevs has to be a multiple of this */
+> -	int ncopies;		/* how many copies to data has */
+> -	int nparity;		/* number of stripes worth of bytes to
+> -				   store parity information */
+>   	int ret;
+> -	u64 max_stripe_size;
+> -	u64 max_chunk_size;
+> -	u64 stripe_size;
+> -	u64 chunk_size;
+>   	int ndevs;
+>   	int i;
+>   	int j;
+> @@ -4858,32 +4869,36 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   		return -ENOSPC;
+>   	}
+>   
+> +	ctl.start = start;
+> +	ctl.type = type;
+> +
+>   	index = btrfs_bg_flags_to_raid_index(type);
+>   
+> -	sub_stripes = btrfs_raid_array[index].sub_stripes;
+> -	dev_stripes = btrfs_raid_array[index].dev_stripes;
+> -	devs_max = btrfs_raid_array[index].devs_max;
+> -	if (!devs_max)
+> -		devs_max = BTRFS_MAX_DEVS(info);
+> -	devs_min = btrfs_raid_array[index].devs_min;
+> -	devs_increment = btrfs_raid_array[index].devs_increment;
+> -	ncopies = btrfs_raid_array[index].ncopies;
+> -	nparity = btrfs_raid_array[index].nparity;
+> +	ctl.sub_stripes = btrfs_raid_array[index].sub_stripes;
+> +	ctl.dev_stripes = btrfs_raid_array[index].dev_stripes;
+> +	ctl.devs_max = btrfs_raid_array[index].devs_max;
+> +	if (!ctl.devs_max)
+> +		ctl.devs_max = BTRFS_MAX_DEVS(info);
+> +	ctl.devs_min = btrfs_raid_array[index].devs_min;
+> +	ctl.devs_increment = btrfs_raid_array[index].devs_increment;
+> +	ctl.ncopies = btrfs_raid_array[index].ncopies;
+> +	ctl.nparity = btrfs_raid_array[index].nparity;
+>   
+>   	if (type & BTRFS_BLOCK_GROUP_DATA) {
+> -		max_stripe_size = SZ_1G;
+> -		max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
+> +		ctl.max_stripe_size = SZ_1G;
+> +		ctl.max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
+>   	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
+>   		/* for larger filesystems, use larger metadata chunks */
+>   		if (fs_devices->total_rw_bytes > 50ULL * SZ_1G)
+> -			max_stripe_size = SZ_1G;
+> +			ctl.max_stripe_size = SZ_1G;
+>   		else
+> -			max_stripe_size = SZ_256M;
+> -		max_chunk_size = max_stripe_size;
+> +			ctl.max_stripe_size = SZ_256M;
+> +		ctl.max_chunk_size = ctl.max_stripe_size;
+>   	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
+> -		max_stripe_size = SZ_32M;
+> -		max_chunk_size = 2 * max_stripe_size;
+> -		devs_max = min_t(int, devs_max, BTRFS_MAX_DEVS_SYS_CHUNK);
+> +		ctl.max_stripe_size = SZ_32M;
+> +		ctl.max_chunk_size = 2 * ctl.max_stripe_size;
+> +		ctl.devs_max = min_t(int, ctl.devs_max,
+> +				      BTRFS_MAX_DEVS_SYS_CHUNK);
+>   	} else {
+>   		btrfs_err(info, "invalid chunk type 0x%llx requested",
+>   		       type);
+> @@ -4891,8 +4906,8 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   	}
+>   
+>   	/* We don't want a chunk larger than 10% of writable space */
+> -	max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
+> -			     max_chunk_size);
+> +	ctl.max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
+> +				  ctl.max_chunk_size);
+>   
+>   	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
+>   			       GFP_NOFS);
+> @@ -4929,20 +4944,20 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   			continue;
+>   
+>   		ret = find_free_dev_extent(device,
+> -					   max_stripe_size * dev_stripes,
+> +				ctl.max_stripe_size * ctl.dev_stripes,
+>   					   &dev_offset, &max_avail);
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+If you are going to adjust the indentation of arguments, you need to adjust them 
+all.
 
-Thanks,
+>   		if (ret && ret != -ENOSPC)
+>   			goto error;
+>   
+>   		if (ret == 0)
+> -			max_avail = max_stripe_size * dev_stripes;
+> +			max_avail = ctl.max_stripe_size * ctl.dev_stripes;
+>   
+> -		if (max_avail < BTRFS_STRIPE_LEN * dev_stripes) {
+> +		if (max_avail < BTRFS_STRIPE_LEN * ctl.dev_stripes) {
+>   			if (btrfs_test_opt(info, ENOSPC_DEBUG))
+>   				btrfs_debug(info,
+>   			"%s: devid %llu has no free space, have=%llu want=%u",
+>   					    __func__, device->devid, max_avail,
+> -					    BTRFS_STRIPE_LEN * dev_stripes);
+> +				BTRFS_STRIPE_LEN * ctl.dev_stripes);
+
+Same here.
+
+>   			continue;
+>   		}
+>   
+> @@ -4957,30 +4972,31 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   		devices_info[ndevs].dev = device;
+>   		++ndevs;
+>   	}
+> +	ctl.ndevs = ndevs;
+>   
+>   	/*
+>   	 * now sort the devices by hole size / available space
+>   	 */
+> -	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+> +	sort(devices_info, ctl.ndevs, sizeof(struct btrfs_device_info),
+>   	     btrfs_cmp_device_info, NULL);
+>   
+>   	/*
+>   	 * Round down to number of usable stripes, devs_increment can be any
+>   	 * number so we can't use round_down()
+>   	 */
+> -	ndevs -= ndevs % devs_increment;
+> +	ctl.ndevs -= ctl.ndevs % ctl.devs_increment;
+>   
+> -	if (ndevs < devs_min) {
+> +	if (ctl.ndevs < ctl.devs_min) {
+>   		ret = -ENOSPC;
+>   		if (btrfs_test_opt(info, ENOSPC_DEBUG)) {
+>   			btrfs_debug(info,
+>   	"%s: not enough devices with free space: have=%d minimum required=%d",
+> -				    __func__, ndevs, devs_min);
+> +				    __func__, ctl.ndevs, ctl.devs_min);
+>   		}
+>   		goto error;
+>   	}
+>   
+> -	ndevs = min(ndevs, devs_max);
+> +	ctl.ndevs = min(ctl.ndevs, ctl.devs_max);
+>   
+>   	/*
+>   	 * The primary goal is to maximize the number of stripes, so use as
+> @@ -4989,14 +5005,15 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   	 * The DUP profile stores more than one stripe per device, the
+>   	 * max_avail is the total size so we have to adjust.
+>   	 */
+> -	stripe_size = div_u64(devices_info[ndevs - 1].max_avail, dev_stripes);
+> -	num_stripes = ndevs * dev_stripes;
+> +	ctl.stripe_size = div_u64(devices_info[ctl.ndevs - 1].max_avail,
+> +				   ctl.dev_stripes);
+> +	ctl.num_stripes = ctl.ndevs * ctl.dev_stripes;
+>   
+>   	/*
+>   	 * this will have to be fixed for RAID1 and RAID10 over
+>   	 * more drives
+>   	 */
+> -	data_stripes = (num_stripes - nparity) / ncopies;
+> +	data_stripes = (ctl.num_stripes - ctl.nparity) / ctl.ncopies;
+>   
+>   	/*
+>   	 * Use the number of data stripes to figure out how big this chunk
+> @@ -5004,44 +5021,44 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>   	 * and compare that answer with the max chunk size. If it's higher,
+>   	 * we try to reduce stripe_size.
+>   	 */
+> -	if (stripe_size * data_stripes > max_chunk_size) {
+> +	if (ctl.stripe_size * data_stripes > ctl.max_chunk_size) {
+>   		/*
+>   		 * Reduce stripe_size, round it up to a 16MB boundary again and
+>   		 * then use it, unless it ends up being even bigger than the
+>   		 * previous value we had already.
+>   		 */
+> -		stripe_size = min(round_up(div_u64(max_chunk_size,
+> +		ctl.stripe_size = min(round_up(div_u64(ctl.max_chunk_size,
+>   						   data_stripes), SZ_16M),
+> -				  stripe_size);
+> +				       ctl.stripe_size);
+
+And here.  Thanks,
 
 Josef
