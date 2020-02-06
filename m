@@ -2,51 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7446D154AD0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 19:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F223154AD9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 19:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbgBFSLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 13:11:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58526 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgBFSLJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Feb 2020 13:11:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A97C5AEDC;
-        Thu,  6 Feb 2020 18:11:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9AB2EDA790; Thu,  6 Feb 2020 19:10:54 +0100 (CET)
-Date:   Thu, 6 Feb 2020 19:10:54 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 11/11 v3] btrfs: Use btrfs_transaction::pinned_extents
-Message-ID: <20200206181054.GD2654@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200124103541.6415-1-nborisov@suse.com>
- <20200124151830.25984-1-nborisov@suse.com>
+        id S1727747AbgBFSNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 13:13:55 -0500
+Received: from mail-io1-f53.google.com ([209.85.166.53]:37166 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727703AbgBFSNz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 13:13:55 -0500
+Received: by mail-io1-f53.google.com with SMTP id k24so7384972ioc.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 10:13:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ulRWRcKUaiH1efhT4lSTRl3NA34p+HCm79zrqCkkvp4=;
+        b=gmUx6q6lVMMEjP6Ku3lt8InVQWTk54i65pUz9fioiy2v8pgsDDLZjIULDhkeGZ2G4+
+         UAOCNk5blc32Yj3cCbYBR7ctosT8+ud/z4tddVOBmsZeFTDQvBC9toeEUjQawOrjDl9P
+         CUJlIz1/SbCFzAzrtYatF4lLYfSd5HLstwUCJasICh9coZVep6RD7StnDFlsY+eRHqW5
+         YUKbXIpvUWCavM4mGUO0uUq7/y330o/K2gUCoNc/FDxd6ARC0U00pHCJXPrEerRQWdH4
+         eyu1ZvgqWMhuB/ZiHcuKxT8FTQchXDW4AP2u6WtrClhTd/RsBphz0R56J3VCPHwHRlCn
+         VNVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ulRWRcKUaiH1efhT4lSTRl3NA34p+HCm79zrqCkkvp4=;
+        b=NHe7k14EzMf6NcCbnZzSo9+jqaplqiRy19NpOoeLsFcG9m+tNIVoCdMBHme9YvQ+W0
+         lHfKEePqT0ec4D1ahW6jQC2yIl4yEG5u6YxZ+6UptmWizHODtzGvT+Qa3ONNIGZC6eQI
+         P1YleMDlqjq500pkXJ0qVvxdp8IXlOOnCEm1e9jwloHfAuyrdBcBQBSKjw+xc8+iWDoV
+         JtRBxGVMSc8RlqBgYSfA3fClyPFEDRciLFDn0bH3MMymx3voD3IwkrUMPt2pnnqZfUFS
+         7MbOWr8abc4DfYWCgdPod4G5A4IiTTI6wLL9KhdkG+jakQkX0NDvA6ki953NZZVGhTzq
+         0j1w==
+X-Gm-Message-State: APjAAAU8u7suDeXe48J8/X+Zm2i9dXQWnuxj9k5dNDg6ulFkSrtJqTKH
+        +9D77WlJbkafrN7mgxl/B2U/M+kUFgfHvr9lCVY=
+X-Google-Smtp-Source: APXvYqwMEB8VLKp0Jmp5nPGnhNU1HrCel80nYoO1Ri8FvV7oi9dBqQ1jXdxCl5qbaTJztB1DlMisP3c4Ic0jzUSFbzY=
+X-Received: by 2002:a05:6638:34e:: with SMTP id x14mr10909350jap.38.1581012834468;
+ Thu, 06 Feb 2020 10:13:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200124151830.25984-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CADkZQan+F47nHo49RRhWLi2DfWeJLrhCYvw4=Zw_W7gFedneDw@mail.gmail.com>
+ <CAOLfK3UoH1akySt47Wg8JDDFCHqbcm8otZyEAPp1jX0Ye+41-w@mail.gmail.com>
+In-Reply-To: <CAOLfK3UoH1akySt47Wg8JDDFCHqbcm8otZyEAPp1jX0Ye+41-w@mail.gmail.com>
+From:   =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
+Date:   Thu, 6 Feb 2020 19:13:41 +0100
+Message-ID: <CADkZQanf+--iDj3Y+toiRybPZC2UsCtbuCn7BQb6d8FeqLSeXw@mail.gmail.com>
+Subject: Re: btrfs-scrub: slow scrub speed (raid5)
+To:     Matt Zagrabelny <mzagrabe@d.umn.edu>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 05:18:30PM +0200, Nikolay Borisov wrote:
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -334,6 +334,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
->  	list_add_tail(&cur_trans->list, &fs_info->trans_list);
->  	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
->  			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
-> +	extent_io_tree_init(fs_info, &cur_trans->pinned_extents, 0, NULL);
+(oops, forgot to reply all the first time)
 
-What's the reason there's no symbolic name for pinned_extents? Also 0
-matches IO_TREE_FS_INFO_EXCLUDED_EXTENTS because it's first in the enum
-list.
+> Is RAID5 stable? I was under the impression that it wasn't.
+>
+> -m
+
+Not sure, but AFAIK most of the known issues have been addressed.
+
+I did some informal testing with a bunch of usb devices, ripping them
+out during writes, remounting the array with a device missing in
+degraded mode, then replacing the device with a fresh one, etc. Always
+worked fine. Good enough for me. The scary write hole seems hard to
+hit, power outages are rare and if they happen I will just run a scrub
+immediately.
