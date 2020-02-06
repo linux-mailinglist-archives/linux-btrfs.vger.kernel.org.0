@@ -2,88 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A462154AA8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DCC154AAD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgBFRyP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 12:54:15 -0500
-Received: from mta-p8.oit.umn.edu ([134.84.196.208]:38012 "EHLO
-        mta-p8.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgBFRyO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 12:54:14 -0500
-X-Greylist: delayed 480 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Feb 2020 12:54:14 EST
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p8.oit.umn.edu (Postfix) with ESMTP id 48D5T20Fjhz9vdhh
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Feb 2020 17:46:14 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p8.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6HFlWDptCfv3 for <linux-btrfs@vger.kernel.org>;
-        Thu,  6 Feb 2020 11:46:13 -0600 (CST)
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 48D5T15HHXz9vdhf
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Feb 2020 11:46:13 -0600 (CST)
-Received: by mail-ed1-f72.google.com with SMTP id v11so4891754edw.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 09:46:13 -0800 (PST)
+        id S1727685AbgBFR6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 12:58:30 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:45589 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbgBFR6a (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 12:58:30 -0500
+Received: by mail-ed1-f68.google.com with SMTP id v28so6880708edw.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 09:58:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Scr8FE9UjeyoTsxN2WVid1ivCmekeTQZ7vseqzqGr4A=;
-        b=buzj8gnODah19knPaV6Mi6QsuzwFo3hwkHvAHqAq2OOloaXr7yghNeaLzR+7Tb46dA
-         VDh9Ct3k3nb/Yimbc8q7DvSLJKP4sK+w9BkCG+gsxM4h7ZtvHXCbKNbLaFvTXOlhc2sM
-         V/mRIR5uMLRnAQ5EEDoleiXXPrH4lGm0xSwimgFSWTwW3kJi87PRk/yCn+eAGYB/fZpG
-         A94AC+AY5My2VOd/WJT6Mt3eCYaSsptFx7ViKqn2pjOR4BDCs+4uW/vorFMyg9/VALQ4
-         ABG8yHl4ZkxMpOS7hm8mtS3BL0a2mQqyxJunecq7BgYVeKGqeP+LfZqaOu0ankzFFztt
-         qFPQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YFKNa4y1XDgY6MlVtmJo+XC4Kn3trna0vncDsVcW3Kg=;
+        b=e72jYPDz/Pwg+XT6eECK0jKmhy85Ico9x2yjdWT/OBFAUoK0Ev7qzotPkT3s7AGL+c
+         z4a82H+uD5aSSL3m36c7aULvWErPgpdXf4q9O7i3rwh/WLFfWwUPrmpvULa7WvM1TYWU
+         wr+v2kfP0gPb1R5nEapA7vZYpKOuKQY+NBA8YjwPjHw2E/Nkrgcv9gg8EJmqPYC0Ggpq
+         jl+RNItiHkJquwqnRRwNnQCGu5I+zMdgBjE68CCWevxCB6BPOl7Zue6ltOpKFmNp31BE
+         6GagH8NdvUWob0VdWkHyCrpO3v9HODHzhOIn2FjzH6lAfVeRWcevZsGtqTffNSeoO5sv
+         9UxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Scr8FE9UjeyoTsxN2WVid1ivCmekeTQZ7vseqzqGr4A=;
-        b=uW7w46DTq93AXd8Nud87hsV+JEKv/JpVtX9h/mncz605R3j0egS2dBjG9WdQeZZk0A
-         aisgS28LBWT1kjQz0IGTrjw/5f6uZdNVLbl9e6XkBqRCyAbPQExYsZfHYLV49EkE0MPL
-         IyNSpKDHIhWCa+Q/k1TO/tyvJegfYwd7SrqwI/2KzX4SmbFI/iJooJDFSCP6pLPI+W5y
-         UoO01Th88wfq1hdLp6NsGfkk5VknWDZbqlTFDNFXlSzWK5VeMF2kgiQRtAoAbNcQbDAT
-         wdQNgLwb3C0fNtbdrVWlEwPrAPLg9oMNx/rgy2GkAKEn89s7j81HpxtOJVABBaK2al4l
-         vtOw==
-X-Gm-Message-State: APjAAAUUI8xcxSBMiVn7fcL6Te5r3hHOyAz/44wmuAP1X6/7s3S6+f/c
-        9L+0sGhf2ON8FrItj8e4VBbfFzj5Jvap4zl5HZK5/odGLdoESZpRkwz3m/PIjF0ORUhImQDTErL
-        JOn1U1ewJDkcRrfYixO6lAfz3oqO8DZlNi6II0WOceb4=
-X-Received: by 2002:a17:906:1cd0:: with SMTP id i16mr4191991ejh.186.1581011172549;
-        Thu, 06 Feb 2020 09:46:12 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwISDoY7FhYmNkmu8GRGeuzURuuinpp9sPz9+WXNebbH8MIMNjfAYenAO7DeZz37iQdefhAH3048DIygCVfyw4=
-X-Received: by 2002:a17:906:1cd0:: with SMTP id i16mr4191981ejh.186.1581011172341;
- Thu, 06 Feb 2020 09:46:12 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YFKNa4y1XDgY6MlVtmJo+XC4Kn3trna0vncDsVcW3Kg=;
+        b=ZEd5fNBLcPlwhkEqOo+mePFVmQCaR0JjufGOsqz89r6z7HXsCO/iPEThcr+8dZUm9f
+         n4mxjHC4d2/wyoRj1l2xCx0N21rDzomC3RQUzzr3MBqQ4CXaZm5nQ5E7gqxh4yUSCfhu
+         9yl6O9E/ZnYKt70FUZfvbaYGqRL7IJzh4ZMEIt0skfY+swHQofvpnnQjBWR9oKJIX16u
+         Q+8b/E1BYHqTiGel4+0Mp6sXVW0KGwFNTpELU0aEnSNfuIxQhRTSHM3GDXa0XUls3ypx
+         oLkTfA8+Gr85jqMsL5+6V8lwoPtBuNegvtDYEP7LzjTaMRIFAGIKDbuP4aznRVtGP3HQ
+         Mw4g==
+X-Gm-Message-State: APjAAAUFscYvnGffe7rgg+003XH06Nlv3UG91c5yUQm71yKE2lEvp3nX
+        Uus1IaPKGiSTMMu1D9h57+EA7XaiD1IWqWtOWAE=
+X-Google-Smtp-Source: APXvYqy45f5wjhtew7bSNyPiTm0xQUlTu4hN0pvaDmHg596U6R3PnSw11ET7oFXUJACU7kSUsKVAbyS0i5pO06dTsz8=
+X-Received: by 2002:a17:906:af84:: with SMTP id mj4mr4458565ejb.341.1581011907069;
+ Thu, 06 Feb 2020 09:58:27 -0800 (PST)
 MIME-Version: 1.0
-References: <CADkZQan+F47nHo49RRhWLi2DfWeJLrhCYvw4=Zw_W7gFedneDw@mail.gmail.com>
-In-Reply-To: <CADkZQan+F47nHo49RRhWLi2DfWeJLrhCYvw4=Zw_W7gFedneDw@mail.gmail.com>
-From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date:   Thu, 6 Feb 2020 11:46:01 -0600
-Message-ID: <CAOLfK3UoH1akySt47Wg8JDDFCHqbcm8otZyEAPp1jX0Ye+41-w@mail.gmail.com>
-Subject: Re: btrfs-scrub: slow scrub speed (raid5)
-To:     =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
+Reply-To: yoshikoazumi9@gmail.com
+Received: by 2002:a17:906:5e55:0:0:0:0 with HTTP; Thu, 6 Feb 2020 09:58:26
+ -0800 (PST)
+From:   yoshiko Azumi <yoshikoazumi09@gmail.com>
+Date:   Thu, 6 Feb 2020 20:58:26 +0300
+X-Google-Sender-Auth: x1pF4MEoeJf_qNdZp2ew-wk77K8
+Message-ID: <CAMTWkFrs=Vg6H0EN95ytVAk85Ao3LA-q+iPhOz4=OhGXn7c6-g@mail.gmail.com>
+Subject: Good evening
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Slightly offtopic...
+Hello, i have been waiting for your response, kindly check your
+inbox and get back to me, i really need your responds as soon as
+possible, i look forward to hear from you soon. Thanks
 
-On Thu, Feb 6, 2020 at 11:33 AM Sebastian D=C3=B6ring <moralapostel@gmail.c=
-om> wrote:
->
-> Hi everyone,
->
-> when I run a scrub on my 5 disk raid5 array (data: raid5, metadata:
-> raid6) I notice very slow scrubbing speed: max. 5MB/s per device,
-> about 23-24 MB/s in sum (according to btrfs scrub status).
-
-Is RAID5 stable? I was under the impression that it wasn't.
-
--m
+Yours Sincerely
+Yoshiko.
