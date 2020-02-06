@@ -2,135 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8760D154A2D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D06F154A3E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbgBFRWP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 12:22:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35328 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727390AbgBFRWP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Feb 2020 12:22:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ED274ACD6;
-        Thu,  6 Feb 2020 17:22:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EBE75DA790; Thu,  6 Feb 2020 18:21:59 +0100 (CET)
-Date:   Thu, 6 Feb 2020 18:21:59 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix race between using extent maps and merging
- them
-Message-ID: <20200206172159.GC2654@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200131140607.26923-1-fdmanana@kernel.org>
+        id S1727593AbgBFRdJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 12:33:09 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:37094 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbgBFRdJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 12:33:09 -0500
+Received: by mail-io1-f66.google.com with SMTP id k24so7241568ioc.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 09:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=susLVxPwU9t8+5jj2AzDETD+/1CnMrZt9dJFJDdEnBU=;
+        b=ALWyqz7NdluhG2Gdhaz4DaivO7P1gQ7ctzV2nySYajdB1DOoVwqt+lLN2QmMYGWxf2
+         3kKzwc1RwFEZ9JCgN3ibFNbXMomSLXoKgh1yic3hcL9cS0VtpSy7OKL9WQFFuGa06GXw
+         A6Jw7QRkXHrSN4T959n0pPawDTLgFgdpCZ4ihs269Jp94A1SdGgkjgcL+hrJr0cT5a7Y
+         Z3wlaQVVttIzTEhQcj/W8+ljRAY0FWTrBV7cCyiDZhsO3QEx3nmgMsDZbXsa5wLGzjrL
+         U7fMEDOlMqSDWBSWOL0DftFhP0xIQ2x4nWzehkLxR5diu5dL6mkyP79oC9e2FeoxZFMF
+         W4gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=susLVxPwU9t8+5jj2AzDETD+/1CnMrZt9dJFJDdEnBU=;
+        b=oe/ZI7k1aPIxv99tyIJJCY98xEqvT16ulAoCmG3VzRIiyL5UCq99mVuUCwSswNc+4z
+         5yDcRe2il1taIKWaM6RG8h4U26Slyv+anCMsM740DCsBRDP9KZu1Nq2m8xX3Lm/RCJfW
+         4+sGVphL5eLe+zQNlYEahzza5fOLPvMJ7YClLWbniwUain0n7l9x+2URaktzbekTioW9
+         NWunG9Hvy21VOaO4SpNBhmC0yIxXP+wtCBQHcYxq7cgnxn3A2l0LW4LVPpTuCQOU9hGn
+         y34o74vduag2pWclyNO/usSMrktv/EDLs1ZssGTKGs1qHqq2XaESFWFqdAaAjbfo3C+T
+         SYtg==
+X-Gm-Message-State: APjAAAU6436i0VsjJ33baTbluHuwiXZN/hod9kTqLqgp+RVjnNDGUV1Q
+        ujP/njR4IcauZ+t+Y+WmeGP7NCT74C1ezm5TppHbgQpM0xQ=
+X-Google-Smtp-Source: APXvYqxo+AAeWYllxo4pOgxEDrfjIfdmRdN9zb3FzkJ29XZba7/lJSXYtl0bomC8aEKIE+XoHmvyGNkBfTY00ZdueCo=
+X-Received: by 2002:a5d:9dd9:: with SMTP id 25mr34690493ioo.287.1581010387597;
+ Thu, 06 Feb 2020 09:33:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200131140607.26923-1-fdmanana@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
+Date:   Thu, 6 Feb 2020 18:32:54 +0100
+Message-ID: <CADkZQan+F47nHo49RRhWLi2DfWeJLrhCYvw4=Zw_W7gFedneDw@mail.gmail.com>
+Subject: btrfs-scrub: slow scrub speed (raid5)
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 02:06:07PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> We have a few cases where we allow an extent map that is in an extent map
-> tree to be merged with other extents in the tree. Such cases include the
-> unpinning of an extent after the respective ordered extent completed or
-> after logging an extent during a fast fsync. This can lead to subtle and
-> dangerous problems because when doing the merge some other task might be
-> using the same extent map and as consequence see an inconsistent state of
-> the extent map - for example sees the new length but has seen the old start
-> offset.
-> 
-> With luck this triggers a BUG_ON(), and not some silent bug, such as the
-> following one in __do_readpage():
-> 
->   $ cat -n fs/btrfs/extent_io.c
->   3061  static int __do_readpage(struct extent_io_tree *tree,
->   3062                           struct page *page,
->   (...)
->   3127                  em = __get_extent_map(inode, page, pg_offset, cur,
->   3128                                        end - cur + 1, get_extent, em_cached);
->   3129                  if (IS_ERR_OR_NULL(em)) {
->   3130                          SetPageError(page);
->   3131                          unlock_extent(tree, cur, end);
->   3132                          break;
->   3133                  }
->   3134                  extent_offset = cur - em->start;
->   3135                  BUG_ON(extent_map_end(em) <= cur);
->   (...)
-> 
-> Consider the following example scenario, where we end up hitting the
-> BUG_ON() in __do_readpage().
-> 
-> We have an inode with a size of 8Kb and 2 extent maps:
-> 
->   extent A: file offset 0, length 4Kb, disk_bytenr = X, persisted on disk by
->             a previous transaction
-> 
->   extent B: file offset 4Kb, length 4Kb, disk_bytenr = X + 4Kb, not yet
->             persisted but writeback started for it already. The extent map
-> 	    is pinned since there's writeback and an ordered extent in
-> 	    progress, so it can not be merged with extent map A yet
-> 
-> The following sequence of steps leads to the BUG_ON():
-> 
-> 1) The ordered extent for extent B completes, the respective page gets its
->    writeback bit cleared and the extent map is unpinned, at that point it
->    is not yet merged with extent map A because it's in the list of modified
->    extents;
-> 
-> 2) Due to memory pressure, or some other reason, the mm subsystem releases
->    the page corresponding to extent B - btrfs_releasepage() is called and
->    returns 1, meaning the page can be released as it's not dirty, not under
->    writeback anymore and the extent range is not locked in the inode's
->    iotree. However the extent map is not released, either because we are
->    not in a context that allows memory allocations to block or because the
->    inode's size is smaller than 16Mb - in this case our inode has a size
->    of 8Kb;
-> 
-> 3) Task B needs to read extent B and ends up __do_readpage() through the
->    btrfs_readpage() callback. At __do_readpage() it gets a reference to
->    extent map B;
-> 
-> 4) Task A, doing a fast fsync, calls clear_em_loggin() against extent map B
->    while holding the write lock on the inode's extent map tree - this
->    results in try_merge_map() being called and since it's possible to merge
->    extent map B with extent map A now (the extent map B was removed from
->    the list of modified extents), the merging begins - it sets extent map
->    B's start offset to 0 (was 4Kb), but before it increments the map's
->    length to 8Kb (4kb + 4Kb), task A is at:
-> 
->    BUG_ON(extent_map_end(em) <= cur);
-> 
->    The call to extent_map_end() sees the extent map has a start of 0
->    and a length still at 4Kb, so it returns 4Kb and 'cur' is 4Kb, so
->    the BUG_ON() is triggered.
-> 
-> So it's dangerous to modify an extent map that is in the tree, because some
-> other task might have got a reference to it before and still using it, and
-> needs to see a consistent map while using it. Generally this is very rare
-> since most paths that lookup and use extent maps also have the file range
-> locked in the inode's iotree. The fsync path is pretty much the only
-> exception where we don't do it to avoid serialization with concurrent
-> reads.
-> 
-> Fix this by not allowing an extent map do be merged if if it's being used
-> by tasks other then the one attempting to merge the extent map (when the
-> reference count of the extent map is greater than 2).
-> 
-> Reported-by: ryusuke1925 <st13s20@gm.ibaraki-ct.ac.jp>
-> Reported-by: Koki Mitani <koki.mitani.xg@hco.ntt.co.jp>
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206211
-> CC: stable@vger.kernel.org # 4.4+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hi everyone,
 
-Added to misc-next, thanks.
+when I run a scrub on my 5 disk raid5 array (data: raid5, metadata:
+raid6) I notice very slow scrubbing speed: max. 5MB/s per device,
+about 23-24 MB/s in sum (according to btrfs scrub status).
+
+What's interesting is at the same time the gross read speed across the
+involved devices (according to iostat) is about ~71 MB/s in sum (14-15
+MB/s per device). Where are the remaining 47 MB/s going? I expect
+there would be some overhead because it's a raid5, but it shouldn't be
+much more than a factor of (n-1) / n , no? At the moment it appears to
+be only scrubbing 1/3 of all data that is being read and the rest is
+thrown out (and probably re-read again at a different time).
+
+Surely this can't be right? Are iostat or possibly btrfs scrub status
+lying to me? What am I seeing here? I've never seen this problem with
+scrubbing a raid1, so maybe there's a bug in how scrub is reading data
+from raid5 data profile?
+
+Just to be clear: I can read data from the array in regular file
+system usage much faster - it's just the scrub that's very slow for
+some reason:
+
+ionice -c idle dd if=3D/mnt/raid5/testfile.mkv bs=3D1M of=3D/dev/null
+7876+1 records in
+7876+1 records out
+8258797247 bytes (8.3 GB, 7.7 GiB) copied, 63.2118 s, 131 MB/s
+
+It seems to me that I could perform a much faster scrub by rsyncing
+the whole fs into /dev/null... btrfs is comparing the checksums anyway
+when reading data, no?
+
+
+Best regards,
+
+Sebastian
+
+
+~ =C2=BB btrfs --version
+btrfs-progs v5.4.1
+
+kernel version: 5.5.2
