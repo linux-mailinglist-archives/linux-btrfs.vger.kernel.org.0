@@ -2,220 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6451153FCF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 09:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381AF153FD0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 09:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgBFIRY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 03:17:24 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:17387 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgBFIRX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 03:17:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1580977042; x=1612513042;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=BkVMhsVl0xmqBllqBa3+rhSvpvM9Kd/BkyT4ySugfGw=;
-  b=FVdWsFAflVlhJQLDeMskKTCBCtUyOs8UJohqiwW0iRfadnoYRj23REd5
-   9Qv8WwfbNN1tCd6ICIc+imK5lMI2b0o+rUs9KEsfOkrhx+Vdpl1lBYLdL
-   yik8gFiUiWXSHhzgSWCjRKZ41DNnTZOKIbFnUzuMRM6aS7kjDgS7YT6fF
-   jS9MIRhz55yHPydUeJsRsB/SLuU3nMh8u/YNEqk2zQj5ElED1e8XkIfyI
-   xmV6jAzBKDzIyVLT7TheKswwa3KIavEsF7Ceq/bI6eC+/Pa6bd1ui5Eja
-   vj5i0pY2eJHUnfq/wyN7JtRBTn7U1t1GPVSh8efotTpOe+WTuSUCFqUJZ
-   w==;
-IronPort-SDR: OksjOTM1HCX1itHDGMZn2aNntrQ6emjYuzyUoeyvYP28TqVC8vsW8raiZNPsiwnIGRQK5KkNuQ
- zuDq+5Zn3vuotKGFLW5eSmSszxF2xEGB0S3aq/efAD6QAuTM9A60lnJQylUYiqkSQKStCC/ORa
- 4l2R9TXFu83q28MbArzMRBAim0G2Wvhwl/1IU1x5Q+8bRcwivks0CmPGu9uotGPlYL24ym8BlJ
- C8B/MBuPKAJZD7SDBEnDvTNDR0NtbyfdjphaiIAk95N16qB5qfaL1WIvOSjDzEc7U5QP+CXm0U
- raw=
-X-IronPort-AV: E=Sophos;i="5.70,408,1574092800"; 
-   d="scan'208";a="133581489"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Feb 2020 16:17:22 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gHCw9lLetWbO8XZwnsU9DeE62io+2cQUvH+HsJ4otA2l6YetK5K7fbfOiuOGEsPCu7dPSamoBcKh2fC4kd2A+2uA8KfGQqqxkELPFyhNIg61gdrgzdaHyNfDeDWmFpfPAym6fljvamV89isRdmHvKHOXqvJB2BSNqy0zc0SleAOJUkCSJ1a9mMd+FKyu2hiix7mVybps+EVa8Td8sOHp08P6NDpH6gWxngUf4ZUHgarK2KS68708sXWPWePiaiNWS6UDeVqs8AMDWySvMS/XTl7m73GC+3r9eGOLTty/toLeOh98q3fDMqMf29REZaN6knAGjqpEAIR9ogiIGfuDTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d8xREJSs5NA5dY7eKLu6GbBoLE+5cs95p71BKx9IlEk=;
- b=aPLZojWkxi606MZn+LGPEKrvjgSRdWCz0thPnuIMwUJWN1Sh5QXEAHIMBuDcFJiXE1BrlACsMxaRP5HZUQ2ONCy0Nj2diT7NAiA6E7zWrFOQ8jAmf0IdVs1+FM/wyGPxD21C1spgRl/pBsC+x1FTtJPtD0BpTo8FsUJ9GMeBOzk6B98x2Bb7XNAVUXYp1iAyPJi0cftv2kQmydCUqqTW5gOAWBjo2LKnoMbTNU0F4ChaMDE0BoGq4YItrkVsCmDnLi+GjTwYKXko10ebksMRKZZzpTwk3K1gggC9IIL5qE4dElmqhfmPFWFdMlVDC0FnGPY/Mp0cKOuSqshenp7iBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d8xREJSs5NA5dY7eKLu6GbBoLE+5cs95p71BKx9IlEk=;
- b=z5RfSA8MfMyY/chiEkA/ra0DXmZk1JHtROQfOIbeTOGUm0/ZWs211wuFd4CJBb1whT9I5I5xc9IoEQ8w2yY/zloxmp5cz51cE9yviHMCHd2S+qbqDp9tzvQRKXAo95C1+a10Oj7dfHrNquykxnhLlBqE6PI4RgdW6a5/tBa4C4g=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3678.namprd04.prod.outlook.com (10.167.139.156) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.23; Thu, 6 Feb 2020 08:17:20 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2686.031; Thu, 6 Feb 2020
- 08:17:20 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     David Sterba <dsterba@suse.cz>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 1/5] btrfs: use the page-cache for super block reading
-Thread-Topic: [PATCH v4 1/5] btrfs: use the page-cache for super block reading
-Thread-Index: AQHV3DH3mC4sQyE5G0ifuyrJtqLY6Q==
-Date:   Thu, 6 Feb 2020 08:17:20 +0000
-Message-ID: <SN4PR0401MB359854D81C504BBE28B8B2EB9B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200205143831.13959-1-johannes.thumshirn@wdc.com>
- <20200205143831.13959-2-johannes.thumshirn@wdc.com>
- <20200205165319.GA6326@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0a4006aa-a734-4fd5-b371-08d7aadcfc9e
-x-ms-traffictypediagnostic: SN4PR0401MB3678:
-x-microsoft-antispam-prvs: <SN4PR0401MB36787AB8FFC27998A75647F39B1D0@SN4PR0401MB3678.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0305463112
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(396003)(366004)(376002)(136003)(39860400002)(189003)(199004)(54906003)(2906002)(26005)(186003)(8676002)(33656002)(8936002)(71200400001)(6506007)(81156014)(53546011)(316002)(81166006)(4326008)(66446008)(55016002)(66476007)(66556008)(64756008)(76116006)(91956017)(6916009)(9686003)(66946007)(478600001)(5660300002)(52536014)(86362001)(7696005);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3678;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +WQgxiOv3RUBzZ65i+j7fRrBIGtA9T09YF7dWA0Sn/i2vaEFlblBkzJ0ygVNCggJLgnrEu0lfePBy0sY4DdUNpV9ljhBjoBZ4Yg2kuZV48AX/IpIRpLuyZooWbtkDIaaFmyDzebgDUB3XHGK9R+Qf9ig0z91nTakOEMfDJNwIdUCbsXMe0DdCZP9veu/DVDKQLgdMDWlq02KfqsOXuCdlHAhFSplJ+9yihUf6p5Hnz5xsMZE58gFZSvmV97apbq0q+EZFcrY4P46ptaAIZTnbTmB2mPk2tLPdtKfPGPBo3znvSJKUCI8HkLIQtg607Afv0TtFKoeCOymngon6bUJrUijDKiNf+Vyt6hkM+iueM+qF4VssZgWPCLYQD0nVBE2AeNFyQfeg37Mg7hpibP6QgOd2kzJATM4ACIpPeXnmtK3Szkuw066QV+IpTRkWyAI
-x-ms-exchange-antispam-messagedata: OQ0hRVLQP3lmFa1eOUv6XMrcKzVq1G0zYh3gx5IFrXl4uQmEuz4o2a4iYV2aaomhVXzS3fuSQ8GkzdN+gJW/vlh9Q2i2HAWXu71Gf5Bz/44UP9qX0IIKwspQVO5yEmLM1KYfhJSrWrsE6BBign/GqA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727930AbgBFIRu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 03:17:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727877AbgBFIRu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 03:17:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 19174AF93;
+        Thu,  6 Feb 2020 08:17:47 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Jeff Mahoney <jeffm@suse.com>
+Subject: [PATCH] btrfs: qgroups, fix rescan worker running races
+Date:   Thu,  6 Feb 2020 16:17:41 +0800
+Message-Id: <20200206081741.9023-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a4006aa-a734-4fd5-b371-08d7aadcfc9e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2020 08:17:20.1951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NZZUurjHXLpEemam9EOqOhDhmLKkuSapzjOm9T8GrAXtvPN8jyygWb486dNswre1WBOuWQFHb9bmTZmbrpFX0hBSMLl39GY7CXtrf8ZDkM8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3678
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/02/2020 17:53, Christoph Hellwig wrote:=0A=
-> On Wed, Feb 05, 2020 at 11:38:27PM +0900, Johannes Thumshirn wrote:=0A=
->> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads ha=
-ve=0A=
->> some drawbacks, like not being able to propagate errors from the lower=
-=0A=
->> layers.=0A=
->>=0A=
->> Directly use the page cache for reading the super-blocks from disk or=0A=
->> invalidating an on-disk super-block. We have to use the page-cache so to=
-=0A=
->> avoid races between mkfs and udev. See also 6f60cbd3ae44 ("btrfs: access=
-=0A=
->> superblock via pagecache in scan_one_device").=0A=
->>=0A=
->> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
->>=0A=
->> ---=0A=
->> Changes to v3:=0A=
->> - Use read_cache_pages() and write_one_page() for IO (hch)=0A=
->> - Changed subject (David)=0A=
->> - Dropped Josef's R-b due to change=0A=
->>=0A=
->> Changes to v2:=0A=
->> - open-code kunmap() + put_page() (David)=0A=
->> - fix double kunmap() (David)=0A=
->> - don't use bi_set_op_attrs() (David)=0A=
->>=0A=
->> Changes to v1:=0A=
->> - move 'super_page' into for-loop in btrfs_scratch_superblocks() (Nikola=
-y)=0A=
->> - switch to using pagecahce instead of alloc_pages() (Nikolay, David)=0A=
->> ---=0A=
->>   fs/btrfs/disk-io.c | 78 +++++++++++++++++++++++++---------------------=
-=0A=
->>   fs/btrfs/disk-io.h |  4 +--=0A=
->>   fs/btrfs/volumes.c | 57 +++++++++++++++++----------------=0A=
->>   fs/btrfs/volumes.h |  2 --=0A=
->>   4 files changed, 76 insertions(+), 65 deletions(-)=0A=
->>=0A=
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c=0A=
->> index 28622de9e642..bc14ef1aadda 100644=0A=
->> --- a/fs/btrfs/disk-io.c=0A=
->> +++ b/fs/btrfs/disk-io.c=0A=
->> @@ -2617,11 +2617,12 @@ int __cold open_ctree(struct super_block *sb,=0A=
->>   	u64 features;=0A=
->>   	u16 csum_type;=0A=
->>   	struct btrfs_key location;=0A=
->> -	struct buffer_head *bh;=0A=
->>   	struct btrfs_super_block *disk_super;=0A=
->>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);=0A=
->>   	struct btrfs_root *tree_root;=0A=
->>   	struct btrfs_root *chunk_root;=0A=
->> +	struct page *super_page;=0A=
->> +	u8 *superblock;=0A=
-> =0A=
-> I thought you agree to turn this into a struct btrfs_super_block=0A=
-> pointer?=0A=
-=0A=
-As stated in the cover letter, I lost track of the TODOs ;-)=0A=
-=0A=
->>   	bytenr =3D btrfs_sb_offset(copy_num);=0A=
->>   	if (bytenr + BTRFS_SUPER_INFO_SIZE >=3D i_size_read(bdev->bd_inode))=
-=0A=
->>   		return -EINVAL;=0A=
->>   =0A=
->> -	bh =3D __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_S=
-IZE);=0A=
->> -	/*=0A=
->> -	 * If we fail to read from the underlying devices, as of now=0A=
->> -	 * the best option we have is to mark it EIO.=0A=
->> -	 */=0A=
->> -	if (!bh)=0A=
->> -		return -EIO;=0A=
->> +	gfp_mask =3D mapping_gfp_constraint(mapping, ~__GFP_FS) | __GFP_NOFAIL=
-;=0A=
->> +	page =3D read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, gfp_mask);=
-=0A=
->> +	if (IS_ERR_OR_NULL(page))=0A=
->> +		return -ENOMEM;=0A=
-> =0A=
-> Why do you need the __GFP_NOFAIL given that failures are handled=0A=
-> properly here?  Also I think instead of using mapping_gfp_constraint you=
-=0A=
-> can use GFP_NOFS directly here.=0A=
-=0A=
-OK=0A=
-=0A=
->>   =0A=
->> -	super =3D (struct btrfs_super_block *)bh->b_data;=0A=
->> +	super =3D kmap(page);=0A=
->>   	if (btrfs_super_bytenr(super) !=3D bytenr ||=0A=
->>   		    btrfs_super_magic(super) !=3D BTRFS_MAGIC) {=0A=
->> -		brelse(bh);=0A=
->> +		kunmap(page);=0A=
->> +		put_page(page);=0A=
->>   		return -EINVAL;=0A=
->>   	}=0A=
->> +	kunmap(page);=0A=
-> =0A=
-> Also last time I wondered why we can't leave the page mapped for the=0A=
-> caller and also return the virtual address?  That would keep the=0A=
-> callers a little cleaner.  Note that you don't need to pass the=0A=
-> struct page in that case as the unmap helper can use kmap_to_page (and=0A=
-> I think a helper would be really nice for the unmap and put anyway).=0A=
-> =0A=
-=0A=
-There's btrfs_release_disk_super() but David didn't like the use of it =0A=
-in v2 of this series. But when using a 'struct btrfs_disk_super' instead =
-=0A=
-of a 'struct page' I think he could be ok.=0A=
+[BUG]
+There are some reports about btrfs wait forever to unmount itself, with
+the following call trace:
+  INFO: task umount:4631 blocked for more than 491 seconds.
+        Tainted: G               X  5.3.8-2-default #1
+  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+  umount          D    0  4631   3337 0x00000000
+  Call Trace:
+  ([<00000000174adf7a>] __schedule+0x342/0x748)
+   [<00000000174ae3ca>] schedule+0x4a/0xd8
+   [<00000000174b1f08>] schedule_timeout+0x218/0x420
+   [<00000000174af10c>] wait_for_common+0x104/0x1d8
+   [<000003ff804d6994>] btrfs_qgroup_wait_for_completion+0x84/0xb0 [btrfs]
+   [<000003ff8044a616>] close_ctree+0x4e/0x380 [btrfs]
+   [<0000000016fa3136>] generic_shutdown_super+0x8e/0x158
+   [<0000000016fa34d6>] kill_anon_super+0x26/0x40
+   [<000003ff8041ba88>] btrfs_kill_super+0x28/0xc8 [btrfs]
+   [<0000000016fa39f8>] deactivate_locked_super+0x68/0x98
+   [<0000000016fcb198>] cleanup_mnt+0xc0/0x140
+   [<0000000016d6a846>] task_work_run+0xc6/0x110
+   [<0000000016d04f76>] do_notify_resume+0xae/0xb8
+   [<00000000174b30ae>] system_call+0xe2/0x2c8
+
+[CAUSE]
+The problem can happen like this:
+
+	Qgroup ioctl thread		|	Unmount thread
+----------------------------------------+-----------------------------------
+Fs has QGROUP_STATUS_RESCAN bit set	|
+And is mounted RO			|
+					|
+open_ctree()				|
+|- btrfs_read_qgroup_config()		|
+|  |- qgroup_rescan_init()		|
+|     |- qgroup_rescan_running = true;	|
+|- btrfs_qgroup_rescan_resume()		|
+|  |- rescan work queued		|
+|     but not yet executing		|
+-- open_ctree() returned		|
+					| close_ctree()
+					| |- btrfs_qgroup_wait_for_completion()
+					|    |- running == true;
+					|    |- wait_for_completion();
+					|
+btrfs_qgroup_rescan_worker()		|
+ Which is expected to be run here,	|
+
+Since rescan worker is not yet executed , no one will wake up
+btrfs_qgroup_wait_for_completion().
+
+[FIX]
+This patch will introduce a new status (qgroup_rescan_queued) to ensure
+above race won't happen.
+
+Now the lifespan of qgroup enable/rescan looks like this:
+
+  qgroup_rescan_init()				--
+  |- qgroup_rescan_queued = true;		|  Section A
+     qgroup_rescan_running is still false	|
+						--
+  btrfs_qgroup_rescan_worker()			|
+  |- qgroup_rescan_queued = false;		|
+  |- qgroup_rescan_running = true;		|  Section B
+						--
+
+No cross section can happen since qgroup_rescan_* are all protected by
+qgroup_rescan_lock.
+
+In section A, btrfs_qgroup_wait_for_completion() will exit as rescan is
+not running.
+In section B, btrfs_qgroup_wait_for_completion() will fail current
+rescan to finish.
+
+So that no race can happen now.
+
+Fixes: 8d9eddad194 (Btrfs: fix qgroup rescan worker initialization)
+Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+[Move the queued = false to btrfs_qgroup_rescan_worker, commit message
+ update]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+The original version still has a window as that running bit is still set
+before rescan worker get running, thus it only reduces the window, not
+eliminate it.
+---
+ fs/btrfs/ctree.h  |  2 ++
+ fs/btrfs/ioctl.c  |  4 +++-
+ fs/btrfs/qgroup.c | 15 +++++++--------
+ 3 files changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 54efb21c2727..d3bf4b62df83 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -847,6 +847,8 @@ struct btrfs_fs_info {
+ 	struct btrfs_workqueue *qgroup_rescan_workers;
+ 	struct completion qgroup_rescan_completion;
+ 	struct btrfs_work qgroup_rescan_work;
++	/* qgroup rescan worker queued, but not yet executed */
++	bool qgroup_rescan_queued;	/* protected by qgroup_rescan_lock */
+ 	bool qgroup_rescan_running;	/* protected by qgroup_rescan_lock */
+ 
+ 	/* filesystem state */
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 18e328ce4b54..505a36196fb9 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4963,10 +4963,12 @@ static long btrfs_ioctl_quota_rescan_status(struct btrfs_fs_info *fs_info,
+ 	if (!qsa)
+ 		return -ENOMEM;
+ 
+-	if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
++	mutex_lock(&fs_info->qgroup_rescan_lock);
++	if (fs_info->qgroup_rescan_queued || fs_info->qgroup_rescan_running) {
+ 		qsa->flags = 1;
+ 		qsa->progress = fs_info->qgroup_rescan_progress.objectid;
+ 	}
++	mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 
+ 	if (copy_to_user(arg, qsa, sizeof(*qsa)))
+ 		ret = -EFAULT;
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index d4282e12f2a6..1ee057cc2125 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2458,7 +2458,7 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
+ 	}
+ 
+ 	mutex_lock(&fs_info->qgroup_rescan_lock);
+-	if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
++	if (fs_info->qgroup_rescan_queued || fs_info->qgroup_rescan_running) {
+ 		if (fs_info->qgroup_rescan_progress.objectid <= bytenr) {
+ 			mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 			ret = 0;
+@@ -3144,6 +3144,11 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+ 	path->search_commit_root = 1;
+ 	path->skip_locking = 1;
+ 
++	mutex_lock(&fs_info->qgroup_rescan_lock);
++	fs_info->qgroup_rescan_queued = false;
++	fs_info->qgroup_rescan_running = true;
++	mutex_unlock(&fs_info->qgroup_rescan_lock);
++
+ 	err = 0;
+ 	while (!err && !btrfs_fs_closing(fs_info)) {
+ 		trans = btrfs_start_transaction(fs_info->fs_root, 0);
+@@ -3246,7 +3251,6 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+ 	}
+ 
+ 	mutex_lock(&fs_info->qgroup_rescan_lock);
+-	spin_lock(&fs_info->qgroup_lock);
+ 
+ 	if (init_flags) {
+ 		if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
+@@ -3261,7 +3265,6 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+ 		}
+ 
+ 		if (ret) {
+-			spin_unlock(&fs_info->qgroup_lock);
+ 			mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 			return ret;
+ 		}
+@@ -3272,9 +3275,7 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+ 		sizeof(fs_info->qgroup_rescan_progress));
+ 	fs_info->qgroup_rescan_progress.objectid = progress_objectid;
+ 	init_completion(&fs_info->qgroup_rescan_completion);
+-	fs_info->qgroup_rescan_running = true;
+-
+-	spin_unlock(&fs_info->qgroup_lock);
++	fs_info->qgroup_rescan_queued = true;
+ 	mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 
+ 	btrfs_init_work(&fs_info->qgroup_rescan_work,
+@@ -3348,9 +3349,7 @@ int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
+ 	int ret = 0;
+ 
+ 	mutex_lock(&fs_info->qgroup_rescan_lock);
+-	spin_lock(&fs_info->qgroup_lock);
+ 	running = fs_info->qgroup_rescan_running;
+-	spin_unlock(&fs_info->qgroup_lock);
+ 	mutex_unlock(&fs_info->qgroup_rescan_lock);
+ 
+ 	if (!running)
+-- 
+2.25.0
+
