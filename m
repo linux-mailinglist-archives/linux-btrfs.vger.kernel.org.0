@@ -2,158 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A081549DF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD35154A21
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgBFRBc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 12:01:32 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:32822 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgBFRBc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 12:01:32 -0500
-Received: by mail-qk1-f194.google.com with SMTP id h4so6265832qkm.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 09:01:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mmS/7wtgn9N71iOUdFHNX5Vdg3GTma2dtOP/iagF/e4=;
-        b=Y9xpuvnqudEsbja267CpPg+QhdIA4ilUst52q5l7AgAeqjSGCyzOS/WPtQj/8stv7z
-         QqW+wxwT4by9munenixAhBh/e1fOMdGJTIqz7ix24BprsmT1zEmjp+bhvX4P1YXE2Msv
-         jNr/3vSE7TzyO5mbWrACkxtnYH3UdP2pb7j/4zE3lYi22TVzF7hOSB4baWY/vjHLa1WI
-         PhL5qka43jC+eIUUfdGvBqEKLxWSL3k9IBVe40mYhNZE6Vydi5+QoyB7BXDcw9H21ZsO
-         bqq5sAZTZXwQBBGGoO5qrsGRYv2ieIvJ5xdNvfE902PrGGXaNfKdDQaA9UXhoZikhbdp
-         auBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mmS/7wtgn9N71iOUdFHNX5Vdg3GTma2dtOP/iagF/e4=;
-        b=JBa+P1qvKE/a6Z0AU9HYErbp4UeYgwm7uIec0v+L3WJSGwosqY92cYT7WfuVxjWK8N
-         37WCiYuw0amUKGMfj3AKR8xNNJEZJ9iOvp9TDjWbbRItYcEXGQJXm8lY62/VusFtPSN2
-         QlFWW6HHWouFvZfKRP144M9pONS3Bv/KXauNzjEK5THf8/lOHM3Lc/hjTI7WAQ/NNFg3
-         4Qrdlfz4QUQZllKObNhhQOglbkl+ZiQHVUNehm1g+Gb8Ae3BIekxWHUqK5cRqkqk8UoI
-         qXQyWKRpTtaEldjqNlMjWKVJNFQG0D/cRtHrhHmUYk314rmm7Tl9XdsInA41r2HEa6WS
-         KX4w==
-X-Gm-Message-State: APjAAAUKWmewfKgv0/Hw45eN1FCb0vs4O8hyx3wqcfb/syY9qLiOrrmp
-        o2v3/QpukF6sEOTPafjLxScRQA==
-X-Google-Smtp-Source: APXvYqy5A0pKzeXDiUIi0sPsG44E7E25EGodU46J5ai+gBkIzKGFALXjVWU7usm7bBvkruoXUvjzbQ==
-X-Received: by 2002:a37:9d0c:: with SMTP id g12mr3238743qke.35.1581008490406;
-        Thu, 06 Feb 2020 09:01:30 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id y21sm1875819qto.15.2020.02.06.09.01.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Feb 2020 09:01:29 -0800 (PST)
-Subject: Re: [PATCH 12/20] btrfs: introduce clustered_alloc_info
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <20200206104214.400857-1-naohiro.aota@wdc.com>
- <20200206104214.400857-13-naohiro.aota@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ae469d32-e2a7-72df-cdd7-30a81734201f@toxicpanda.com>
-Date:   Thu, 6 Feb 2020 12:01:28 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        id S1727858AbgBFRRY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 12:17:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59812 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727843AbgBFRRY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 12:17:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B4289AAA6;
+        Thu,  6 Feb 2020 17:17:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A5712DA790; Thu,  6 Feb 2020 18:17:09 +0100 (CET)
+Date:   Thu, 6 Feb 2020 18:17:09 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     qiwuchen55@gmail.com
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        trivial@kernel.org, linux-btrfs@vger.kernel.org,
+        chenqiwu <chenqiwu@xiaomi.com>
+Subject: Re: [PATCH] btrfs: remove trivial nowait check
+Message-ID: <20200206171709.GB2654@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, qiwuchen55@gmail.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, trivial@kernel.org,
+        linux-btrfs@vger.kernel.org, chenqiwu <chenqiwu@xiaomi.com>
+References: <1580529093-26170-1-git-send-email-qiwuchen55@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200206104214.400857-13-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1580529093-26170-1-git-send-email-qiwuchen55@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/6/20 5:42 AM, Naohiro Aota wrote:
-> Introduce struct clustered_alloc_info to manage parameters related to
-> clustered allocation. By separating clustered_alloc_info and
-> find_free_extent_ctl, we can introduce other allocation policy. One can
-> access per-allocation policy private information from "alloc_info" of
-> struct find_free_extent_ctl.
+On Sat, Feb 01, 2020 at 11:51:33AM +0800, qiwuchen55@gmail.com wrote:
+> From: chenqiwu <chenqiwu@xiaomi.com>
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Remove trivial nowait check for btrfs_file_write_iter(),
+> since buffered writes will return -EINVAL if IOCB_NOWAIT
+> passed in the follow-up function generic_write_checks().
+> 
+> Signed-off-by: chenqiwu <chenqiwu@xiaomi.com>
 > ---
->   fs/btrfs/extent-tree.c | 99 +++++++++++++++++++++++++-----------------
->   1 file changed, 59 insertions(+), 40 deletions(-)
+>  fs/btrfs/file.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index b1f52eee24fe..8124a6461043 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -3456,9 +3456,6 @@ struct find_free_extent_ctl {
->   	/* Where to start the search inside the bg */
->   	u64 search_start;
->   
-> -	/* For clustered allocation */
-> -	u64 empty_cluster;
-> -
->   	bool have_caching_bg;
->   	bool orig_have_caching_bg;
->   
-> @@ -3470,18 +3467,6 @@ struct find_free_extent_ctl {
->   	 */
->   	int loop;
->   
-> -	/*
-> -	 * Whether we're refilling a cluster, if true we need to re-search
-> -	 * current block group but don't try to refill the cluster again.
-> -	 */
-> -	bool retry_clustered;
-> -
-> -	/*
-> -	 * Whether we're updating free space cache, if true we need to re-search
-> -	 * current block group but don't try updating free space cache again.
-> -	 */
-> -	bool retry_unclustered;
-> -
->   	/* If current block group is cached */
->   	int cached;
->   
-> @@ -3499,8 +3484,28 @@ struct find_free_extent_ctl {
->   
->   	/* Allocation policy */
->   	enum btrfs_extent_allocation_policy policy;
-> +	void *alloc_info;
->   };
->   
-> +struct clustered_alloc_info {
-> +	/* For clustered allocation */
-> +	u64 empty_cluster;
-> +
-> +	/*
-> +	 * Whether we're refilling a cluster, if true we need to re-search
-> +	 * current block group but don't try to refill the cluster again.
-> +	 */
-> +	bool retry_clustered;
-> +
-> +	/*
-> +	 * Whether we're updating free space cache, if true we need to re-search
-> +	 * current block group but don't try updating free space cache again.
-> +	 */
-> +	bool retry_unclustered;
-> +
-> +	struct btrfs_free_cluster *last_ptr;
-> +	bool use_cluster;
-This isn't the right place for this, rather I'd put it in the 
-find_free_extent_ctl if you want it at all.
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index a16da27..320af95 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1896,10 +1896,6 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+>  	loff_t oldsize;
+>  	int clean_page = 0;
+>  
+> -	if (!(iocb->ki_flags & IOCB_DIRECT) &&
+> -	    (iocb->ki_flags & IOCB_NOWAIT))
+> -		return -EOPNOTSUPP;
 
-And in fact I question the whole need for this in the first place.  I assume 
-your goal is to just disable clustered allocation for shingle drives, so why 
-don't you just handle that with your extent allocation policy flag?  If it's set 
-to shingled then use_cluster = false and you are good to go, no need to add all 
-this complication of the cluster ctl.
-
-If you are looking to save space in the ctl, then I would just union {} the 
-cluster stuff inside of the find_free_extent_ctl so the right flags are used for 
-the correction allocation policy.
-
-This whole last set of 10 patches needs to be reworked.  Thanks,
-
-Josef
+This returns a different error code for the condition than
+generic_write_checks, and is checked without the inode lock. I'm not
+sure if we should remove it, it's a fast-fail path for buffered+nowait,
+that probably does not happen that often.
