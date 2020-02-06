@@ -2,62 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DCC154AAD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 18:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7446D154AD0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Feb 2020 19:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgBFR6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 12:58:30 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:45589 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgBFR6a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 12:58:30 -0500
-Received: by mail-ed1-f68.google.com with SMTP id v28so6880708edw.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 09:58:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=YFKNa4y1XDgY6MlVtmJo+XC4Kn3trna0vncDsVcW3Kg=;
-        b=e72jYPDz/Pwg+XT6eECK0jKmhy85Ico9x2yjdWT/OBFAUoK0Ev7qzotPkT3s7AGL+c
-         z4a82H+uD5aSSL3m36c7aULvWErPgpdXf4q9O7i3rwh/WLFfWwUPrmpvULa7WvM1TYWU
-         wr+v2kfP0gPb1R5nEapA7vZYpKOuKQY+NBA8YjwPjHw2E/Nkrgcv9gg8EJmqPYC0Ggpq
-         jl+RNItiHkJquwqnRRwNnQCGu5I+zMdgBjE68CCWevxCB6BPOl7Zue6ltOpKFmNp31BE
-         6GagH8NdvUWob0VdWkHyCrpO3v9HODHzhOIn2FjzH6lAfVeRWcevZsGtqTffNSeoO5sv
-         9UxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=YFKNa4y1XDgY6MlVtmJo+XC4Kn3trna0vncDsVcW3Kg=;
-        b=ZEd5fNBLcPlwhkEqOo+mePFVmQCaR0JjufGOsqz89r6z7HXsCO/iPEThcr+8dZUm9f
-         n4mxjHC4d2/wyoRj1l2xCx0N21rDzomC3RQUzzr3MBqQ4CXaZm5nQ5E7gqxh4yUSCfhu
-         9yl6O9E/ZnYKt70FUZfvbaYGqRL7IJzh4ZMEIt0skfY+swHQofvpnnQjBWR9oKJIX16u
-         Q+8b/E1BYHqTiGel4+0Mp6sXVW0KGwFNTpELU0aEnSNfuIxQhRTSHM3GDXa0XUls3ypx
-         oLkTfA8+Gr85jqMsL5+6V8lwoPtBuNegvtDYEP7LzjTaMRIFAGIKDbuP4aznRVtGP3HQ
-         Mw4g==
-X-Gm-Message-State: APjAAAUFscYvnGffe7rgg+003XH06Nlv3UG91c5yUQm71yKE2lEvp3nX
-        Uus1IaPKGiSTMMu1D9h57+EA7XaiD1IWqWtOWAE=
-X-Google-Smtp-Source: APXvYqy45f5wjhtew7bSNyPiTm0xQUlTu4hN0pvaDmHg596U6R3PnSw11ET7oFXUJACU7kSUsKVAbyS0i5pO06dTsz8=
-X-Received: by 2002:a17:906:af84:: with SMTP id mj4mr4458565ejb.341.1581011907069;
- Thu, 06 Feb 2020 09:58:27 -0800 (PST)
+        id S1727761AbgBFSLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 13:11:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58526 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgBFSLJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 13:11:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A97C5AEDC;
+        Thu,  6 Feb 2020 18:11:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9AB2EDA790; Thu,  6 Feb 2020 19:10:54 +0100 (CET)
+Date:   Thu, 6 Feb 2020 19:10:54 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 11/11 v3] btrfs: Use btrfs_transaction::pinned_extents
+Message-ID: <20200206181054.GD2654@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200124103541.6415-1-nborisov@suse.com>
+ <20200124151830.25984-1-nborisov@suse.com>
 MIME-Version: 1.0
-Reply-To: yoshikoazumi9@gmail.com
-Received: by 2002:a17:906:5e55:0:0:0:0 with HTTP; Thu, 6 Feb 2020 09:58:26
- -0800 (PST)
-From:   yoshiko Azumi <yoshikoazumi09@gmail.com>
-Date:   Thu, 6 Feb 2020 20:58:26 +0300
-X-Google-Sender-Auth: x1pF4MEoeJf_qNdZp2ew-wk77K8
-Message-ID: <CAMTWkFrs=Vg6H0EN95ytVAk85Ao3LA-q+iPhOz4=OhGXn7c6-g@mail.gmail.com>
-Subject: Good evening
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200124151830.25984-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, i have been waiting for your response, kindly check your
-inbox and get back to me, i really need your responds as soon as
-possible, i look forward to hear from you soon. Thanks
+On Fri, Jan 24, 2020 at 05:18:30PM +0200, Nikolay Borisov wrote:
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -334,6 +334,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+>  	list_add_tail(&cur_trans->list, &fs_info->trans_list);
+>  	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
+>  			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
+> +	extent_io_tree_init(fs_info, &cur_trans->pinned_extents, 0, NULL);
 
-Yours Sincerely
-Yoshiko.
+What's the reason there's no symbolic name for pinned_extents? Also 0
+matches IO_TREE_FS_INFO_EXCLUDED_EXTENTS because it's first in the enum
+list.
