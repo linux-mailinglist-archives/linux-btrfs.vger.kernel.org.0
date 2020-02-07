@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C841554FD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E07155502
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgBGJrB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 04:47:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34758 "EHLO mx2.suse.de"
+        id S1726819AbgBGJsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 04:48:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35328 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgBGJrB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 04:47:01 -0500
+        id S1726619AbgBGJsQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 04:48:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E6267ABD7;
-        Fri,  7 Feb 2020 09:46:58 +0000 (UTC)
-Subject: Re: [PATCH 2/3] fstests: btrfs/022: Match qgroup id more correctly
+        by mx2.suse.de (Postfix) with ESMTP id EF6CCAC65;
+        Fri,  7 Feb 2020 09:48:13 +0000 (UTC)
+Subject: Re: [PATCH 3/3] fstests: btrfs/022: Add debug output
 To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
         linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
 References: <20200207015942.9079-1-wqu@suse.com>
- <20200207015942.9079-3-wqu@suse.com>
+ <20200207015942.9079-4-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <fa00355c-5c99-1c5c-9af5-eb0bf221b528@suse.com>
-Date:   Fri, 7 Feb 2020 11:46:58 +0200
+Message-ID: <ec164fd9-32a3-e5ef-7e15-fa1691c634ab@suse.com>
+Date:   Fri, 7 Feb 2020 11:48:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200207015942.9079-3-wqu@suse.com>
+In-Reply-To: <20200207015942.9079-4-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,76 +80,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 7.02.20 г. 3:59 ч., Qu Wenruo wrote:
-> [BUG]
-> Btrfs/022 sometimes fails with snapshot's reference mismatch with its
-> source.
+> When btrfs/022 fails, its $seqres.full doesn't contain much useful info
+> to debug.
 > 
-> [CAUSE]
-> Since commit fd0830929573 ("fsstress: add the ability to create
-> snapshots") adds the ability for fsstress to create/delete snapshot and
-> subvolumes, fsstress will create new subvolumes under test dir.
+> This patch will add extra debug, including subvolid and full "btrfs
+> qgroup show" output.
 > 
-> For example, we could have the following subvolumes created by fsstress:
-> subvol a id=256
-> subvol b id=306
-> qgroupid         rfer         excl
-> --------         ----         ----
-> 0/5             16384        16384
-> 0/256        13914112        16384
-> ...
-> 0/263         3080192      2306048 		<< 2 *306* 048
-> ...
-> 0/306        13914112        16384 		<< 0/ *306
-> 
-> So when we're greping for subvolid 306, it matches qgroup 0/263 first,
-> which has difference size, and caused false alert.
-> 
-> [FIX]
-> Instead of greping "$subvolid" blindly, now grep "0/$subvolid" to catch
-> qgroupid correctly, without hitting rfer/excl values.
-
-That 0/ can it ever be a number different than 0, if so a more correct
-regular expression should be:
-grep "[[:digit:]]/306"  ?
-
-
-> 
-> Suggested-by: Josef Bacik <josef@toxicpanda.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/btrfs/022 | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tests/btrfs/022 b/tests/btrfs/022
-> index 5348d3ed..3e729852 100755
-> --- a/tests/btrfs/022
-> +++ b/tests/btrfs/022
-> @@ -49,10 +49,10 @@ _basic_test()
->  
->  	# the shared values of both the original subvol and snapshot should
->  	# match
-> -	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
-> +	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->  	a_shared=$(echo $a_shared | awk '{ print $2 }')
->  	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
-> -	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
-> +	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->  	b_shared=$(echo $b_shared | awk '{ print $2 }')
->  	[ $b_shared -eq $a_shared ] || _fail "shared values don't match"
->  }
-> @@ -68,12 +68,12 @@ _rescan_test()
->  	run_check $FSSTRESS_PROG -d $SCRATCH_MNT/a -w -p 1 -n 2000 \
->  		$FSSTRESS_AVOID
->  	sync
-> -	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
-> +	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->  	echo $output >> $seqres.full
->  	refer=$(echo $output | awk '{ print $2 }')
->  	excl=$(echo $output | awk '{ print $3 }')
->  	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
-> -	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
-> +	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->  	echo $output >> $seqres.full
->  	[ $refer -eq $(echo $output | awk '{ print $2 }') ] || \
->  		_fail "reference values don't match after rescan"
-> 
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
