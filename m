@@ -2,156 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40759154FDE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 01:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5B915500C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 02:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgBGA6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 19:58:44 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:47068 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgBGA6o (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 19:58:44 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 35D8C5B028D; Thu,  6 Feb 2020 19:58:43 -0500 (EST)
-Date:   Thu, 6 Feb 2020 19:58:43 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Sebastian =?iso-8859-1?Q?D=F6ring?= <moralapostel@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs-scrub: slow scrub speed (raid5)
-Message-ID: <20200207005843.GE13306@hungrycats.org>
-References: <CADkZQan+F47nHo49RRhWLi2DfWeJLrhCYvw4=Zw_W7gFedneDw@mail.gmail.com>
- <CAJCQCtTgK08eY3j4VYC=htY5bYj6cu9w3_58nzGo4BoWCQL7uQ@mail.gmail.com>
+        id S1727003AbgBGBj3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 20:39:29 -0500
+Received: from mout.gmx.net ([212.227.15.19]:52245 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726597AbgBGBj3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 20:39:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581039563;
+        bh=+lVpM8B7PRL2UHiTeMRyrYhDLck/zCRAmirGaeatvhA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=AVRi0oBcU6/0Wt60b67mcPxAus7+70R7nLhMNUXxv+3MCb80jteqVsCj4dQHJes0m
+         35Da9OkZKv4NBZ0jRorMFTns0piSIDBi/6YZpvg7xI/yl2ZMDxJ+yCu1tSTlQvWf4/
+         ls+jW4ZldbVM81xzgtVSzrHl3+7Gix5pQ6zXK1R8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MBUmD-1ioYU90r1T-00D2ig; Fri, 07
+ Feb 2020 02:39:22 +0100
+Subject: Re: [PATCH] fstests: btrfs/022: Disable snapshot ioctl in fsstress
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20200206053226.23624-1-wqu@suse.com>
+ <e3c530b6-af9d-97de-7008-5bc02c77e037@toxicpanda.com>
+ <8199544d-c5cb-eb1e-ed7c-f9b170324997@suse.com>
+ <7da58abd-eb5e-0a7f-f3bf-205f1daf95cd@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <bc0a2e79-bad6-9fab-045e-80c995f017fc@gmx.com>
+Date:   Fri, 7 Feb 2020 09:39:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="p1zxN+PsucbyOM2v"
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtTgK08eY3j4VYC=htY5bYj6cu9w3_58nzGo4BoWCQL7uQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7da58abd-eb5e-0a7f-f3bf-205f1daf95cd@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VtdIsolkwmxTG95N9TqW9emNiSAc558X7"
+X-Provags-ID: V03:K1:HRtCAAHu5TBWxIoQaUrUQFzfOA1+VbmhueGOjk+uMubsGcbFBaF
+ V1FVNGI5vod93Eu+fXnEy++t2NYQbUZn3zBTpHjAvgzWdO208SWlNly1eWWJ7KIdWQum0iI
+ ZTKZAfTM+yglirogLbh5LBAfuukFZZpPTzz1kT9TLuoXePoe+JJqgY6MD9NVHSsPQ1aKqRH
+ xwqZpMGBDfF6HwBqT0eHA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TH3NSVF9zlw=:2YN0w6f5oLQU1/0lOqgv6U
+ c7+rBqttGOJa2PTf1Ctd/kqSxgVVJAhp6jFfij9mNQKuMvgkspuWRkTugVUPIJkiIa6KF1gtz
+ L4gX/579guA+YBsnYSInutXCe3xZvdcF91l3sWWS4cqAIziy9HcxsciGNTNjtqG5VjfhdgY6K
+ xvTbsnNTzwBrhLXYUEBCQgc2+Il5s6iB/dv6uqpSe84iQQP+51KZZpG6JeU9TAVyoCVitvmpD
+ +TkekPvCh8WUK90jTzyAjP9aHW4ZtfKsQHdYaUz076z157fCKxqy9igYv1vHcbYzQ13fdUe0g
+ SO9ARM5mmvzLUiyTw8ETzgh0wpV3kAxpxwyCWmT5eZwa36jm2znMm56SmBnpUwX4+5T3N2AXO
+ KBqtxV+/LDU7+GPF6BPLzqmc5ihS+zlmQ8c7V70zdcc2fwpk8uekMZ733OCIPrUNiOgDVe6IU
+ yEIbqGuAfAZLax7MKKbKc8gvk7YSTnyR/5FHp3mVeNk/9yWrgL0DAB9jBoBr9DNJmLEp8O8nM
+ zokeA5xG9pv91gDPYErrZCxfz+eOzgSFwPyH0SmymC9u7MmvDmUH3WpBlqw+cpCMj9K5MqAEt
+ fcnvWfDBmbP+PBesotQwEMxFdLlR2SI5fJx1/vYLeBwDp46C79wNyatNp6yhClYAHIx3TvrSI
+ t9PIbYN8u/XhIvTd2GKDkFkjMxnuu6eH4hujHIO5ukTBiV1THbP+1yt/K54nhlbO+oJZVNchI
+ N4uIfQ3yQjHNILHUtY6Xl3DXdOLBJBv8lLJl88QKvNkbt/CAVZ9gyImeMbUi0ePpF3GkoU/KX
+ ofAUPW4P8431WWme0K2b2rKsQ1FJofRw/LEZsrg9b5Qb7m9UBJKSrZaojvv08IR8wqEb3mrJy
+ 8q4V7cG+Ef30SXarEZlI3gMF9LeJK4muIfZCXH56WTvJ2qfzVe2yaePm7y6pS8E86kWd566Ob
+ VVglM7UGiWcmW1+C7c5fSv3I48ErezHon6u/QM7AuV5rn/9SfBAdYsymnJvuOBCXXr3+pumBo
+ +A9vGp0hamcPHI9C883ywG7QIecM5lDfdio6Z6TVgjNAoub9Q01onhUmaoPjEp7hIsuUK+QXP
+ Wkin8GsIw+RJ+WFGDgkW6KFr+eUE/TC8WXK/yjkmYn73Y/55qDBPoYVv10MgwBg+gndMxJerz
+ Hn29HghJHVhedp9xg1S76pQURlAbwTHSiPMzKOm6n40LOfk8u3wJSaMFVURIsYX3LEiAHX3ge
+ +xp5u+yWTCDvtfOsc
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VtdIsolkwmxTG95N9TqW9emNiSAc558X7
+Content-Type: multipart/mixed; boundary="FU5qqwfSjTLb20pc7sc23xndE5bSx05LF"
 
---p1zxN+PsucbyOM2v
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--FU5qqwfSjTLb20pc7sc23xndE5bSx05LF
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 06, 2020 at 01:51:06PM -0700, Chris Murphy wrote:
-> On Thu, Feb 6, 2020 at 10:33 AM Sebastian D=F6ring <moralapostel@gmail.co=
-m> wrote:
-> >
-> > Hi everyone,
-> >
-> > when I run a scrub on my 5 disk raid5 array (data: raid5, metadata:
-> > raid6) I notice very slow scrubbing speed: max. 5MB/s per device,
-> > about 23-24 MB/s in sum (according to btrfs scrub status).
+
+
+On 2020/2/7 =E4=B8=8A=E5=8D=888:38, Josef Bacik wrote:
+> On 2/6/20 7:35 PM, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/2/6 =E4=B8=8B=E5=8D=8811:47, Josef Bacik wrote:
+>>> On 2/6/20 12:32 AM, Qu Wenruo wrote:
+>>>> Since commit fd0830929573 ("fsstress: add the ability to create
+>>>> snapshots") adds the ability for fsstress to create/delete snapshot =
+and
+>>>> subvolume, test case btrfs/022 fails as _btrfs_get_subvolid can't
+>>>> handle multiple subvolumes under the same path.
+>>>>
+>>>> So manually disable snapshot/subvolume creation and deletion ioctl i=
+n
+>>>> this
+>>>> test case. Other qgroup test cases aren't affected.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>
+>>> Why not just fix _btrfs_get_subvolid?=C2=A0 You can use egrep to make=
+ sure
+>>> the name matches exactly.=C2=A0 Thanks,
+>>
+>> Because we have other requirement, like limit tests.
+>>
+>> If we have other snapshots/subvolumes, they don't have the same limit,=
+
+>> thus unable to test qgroup properly.
+>>
 >=20
-> raid56 is not recommended for metadata. With raid5 data, it's
-> recommended to use raid1 metadata. It's possible to convert from raid6
-> to raid1 metadata, but you'll need to use -f flag due to the reduced
-> redundancy.
+> That's fair, but we should also fix _btrfs_get_subvolid since we know i=
+t
+> doesn't work in this case.=C2=A0 Thanks,
 
-Definitely do not use raid5 or raid6 for metadata.  All test runs end
-in total filesystem loss.  Use raid1 or raid1c3 metadata for raid5 or
-raid6 data respectively.
+My bad. It's not the limit test, it doesn't utilize fsstress at all.
 
-> If you can consistently depend on kernel 5.5+ you can use raid1c3 or
-> raid1c4 for metadata, although even though the file system itself can
-> survive a two or three device failure, most of your data won't
-> survive. It would allow getting some fraction of the files smaller
-> than 64KiB (raid5 strip size) off the volume.
+It's completely the bad greping for qgroup ids.
+
+We could have the following subvolume layouts in btrfs qgroup show output=
+:
+subvol a id=3D256
+subvol b id=3D306
+qgroupid         rfer         excl
+--------         ----         ----
+0/5             16384        16384
+0/256        13914112        16384
+=2E..
+0/263         3080192      2306048 << 306 matches here first
+=2E..
+0/306        13914112        16384 << Then match here
+
+Although disabling snapshot/subvolume creation solves the problem since
+there will be no other subvolumes to start with, we're still not that saf=
+e.
+
+The root fix is to grep qgroupid by "0/$subvolid", not just $subvolid.
+
+I'll do a proer fix, and keep the snapshot/subvolume creation to take
+advantage of your enhanced fsstress.
+
+Thanks,
+Qu
 >=20
-> I'm not sure this accounts for the slow scrub though. It could be some
-> combination of heavy block group fragmentation, i.e. a lot of free
-> space in block groups, in both metadata and data block groups, and
-> then raid6 on top of it. But, I'm not convinced. It's be useful to see
-> IO and utilization during the scrub from iostat 5, to see if any one
-> of the drives is ever getting close to 100% utilization.
+> Josef
 
-When you run the scrub userspace utility, it creates one thread for
-every drive to run the scrub ioctl.  This works well for the other RAID
-levels as each drive can be read independently of all others; however,
-it's a terrible idea for raid5/6 as each thread has to read all the
-drives to recompute parity.  Patches welcome!
 
-(e.g. a patch to make the btrfs scrub userspace utility detect and handle
-raid5/6 differently, or to fix the kernel's raid5/6 implementation, or
-to add a new scrub ioctl interface that is block-group based instead of
-device based).
+--FU5qqwfSjTLb20pc7sc23xndE5bSx05LF--
 
-A workaround is to run scrub on each disk sequentially.  This will take
-N times longer than necessary for N disks, but that's better than 20-100
-times longer than necessary with all the thrashing of disk heads between
-threads on spinning disks.  'btrfs scrub' on a filesystem mountpoint is
-exactly equivalent to running several independent 'btrfs scrub' ioctls
-on each disk at the same time, so there's no change in behavior to scrub
-separate disks one at a time on raid5/6, except for the massive speedup.
-
-Currently btrfs raid5/6 csum error correction works roughly 99.999% of
-the time on corrupted data blocks, and utterly fails the other 0.001%.
-Recovery will work for things like total-loss disk failures (as long as
-you're not writing to the filesystem during recovery).  If you have a
-more minor failure, e.g. a disk being offline for a few minutes and then
-reconnecting, or a drive silently corrupting data but otherwise healthy,
-then the effort to recover and the amount of data lost go *up*.
-
-I just updated this bug report today with some details:
-
-	https://www.spinics.net/lists/linux-btrfs/msg94594.html
-
-> > What's interesting is at the same time the gross read speed across the
-> > involved devices (according to iostat) is about ~71 MB/s in sum (14-15
-> > MB/s per device). Where are the remaining 47 MB/s going? I expect
-> > there would be some overhead because it's a raid5, but it shouldn't be
-> > much more than a factor of (n-1) / n , no? At the moment it appears to
-> > be only scrubbing 1/3 of all data that is being read and the rest is
-> > thrown out (and probably re-read again at a different time).
->=20
-> What do you get for
-> btrfs fi df /mountpoint/
-> btrfs fi us /mountpoint/
->=20
-> Is it consistently this slow or does it vary a lot?
->=20
-> >
-> > Surely this can't be right? Are iostat or possibly btrfs scrub status
-> > lying to me? What am I seeing here? I've never seen this problem with
-> > scrubbing a raid1, so maybe there's a bug in how scrub is reading data
-> > from raid5 data profile?
->=20
-> I'd say more likely it's a lack of optimization for the moderate to
-> high fragmentation case. Both LVM and mdadm raid have no idea what the
-> layout is, there's no fs metadata to take into account, so every scrub
-> read is a full stripe read. However, that means it reads unused
-> portions of the array too, where Btrfs won't because every read is
-> deliberate. But that means performance can be impacted by disk
-> contention.
->=20
->=20
-> > It seems to me that I could perform a much faster scrub by rsyncing
-> > the whole fs into /dev/null... btrfs is comparing the checksums anyway
-> > when reading data, no?
->=20
-> Yes.
-
-No.  Reads will not verify or update the parity unless a csum error
-is detected.  Scrub reads the entire stripe if any portion of the
-stripe contains data.
-
-> --=20
-> Chris Murphy
-
---p1zxN+PsucbyOM2v
+--VtdIsolkwmxTG95N9TqW9emNiSAc558X7
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjy2QAAKCRCB+YsaVrMb
-nA1nAJ9MD118LT3UojTZt6lj8Z/a7RwaKACfbsjVjA3zAi2bKCaH1nZZs/e0mgs=
-=enby
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl48v8YACgkQwj2R86El
+/qiDsgf9HH+VnJJArRaC0r4y9QG9U5spp1sKInvrNNup9ctsi8u6gUbpVTvBwX4y
+Fmy0o4BfseZQ1s7O1HU3ui2Fp1TU6wwHhPSSSHFdFn1FVsQnfuNZIlk0Um04aK9+
+0pwFOSdgod5kr9z1uGssdFpbaYogNGSMBd8PJcCGVzi3WFLF9vM6Y1UrwnhkhTAZ
+OALLUwm9Ss7CaOyDnDF5fTYNIcpGu5MiUyUMutFyMj/PlDyTfaerhEVyNXh15iRo
+0zuv7ft/0rQiwqm0c3DFYJb0AESZ6S4KLXV7SrCgktTudt0ezokc2UR8rO7D+HGl
+Q5DQPSmkKET/9yU54yj51dHNTi2A1Q==
+=MgjM
 -----END PGP SIGNATURE-----
 
---p1zxN+PsucbyOM2v--
+--VtdIsolkwmxTG95N9TqW9emNiSAc558X7--
