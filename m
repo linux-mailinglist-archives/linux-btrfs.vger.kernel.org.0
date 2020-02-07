@@ -2,27 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3724155633
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 11:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1B115565D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 12:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgBGK7S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 05:59:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56164 "EHLO mx2.suse.de"
+        id S1726874AbgBGLH4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 06:07:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36502 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgBGK7S (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 05:59:18 -0500
+        id S1726798AbgBGLH4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 06:07:56 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BD21FAD48;
-        Fri,  7 Feb 2020 10:59:15 +0000 (UTC)
-Subject: Re: [PATCH v5 7/7] btrfs: remove buffer_heads form superblock mirror
- integrity checking
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-References: <20200207072005.22867-1-johannes.thumshirn@wdc.com>
- <20200207072005.22867-8-johannes.thumshirn@wdc.com>
+        by mx2.suse.de (Postfix) with ESMTP id 591A4AD76;
+        Fri,  7 Feb 2020 11:07:54 +0000 (UTC)
+Subject: Re: [PATCH 1/3] fstests: btrfs: Use word mathcing for
+ _btrfs_get_subvolid()
+To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+References: <20200207015942.9079-1-wqu@suse.com>
+ <20200207015942.9079-2-wqu@suse.com>
+ <b7a6bacf-0434-9743-1ff0-41f9344421db@suse.com>
+ <829c0acb-a734-56a6-9649-5dd697fea6cf@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -66,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ef06f3e8-4b8c-234b-7c69-b19ce0bb9010@suse.com>
-Date:   Fri, 7 Feb 2020 12:59:14 +0200
+Message-ID: <5eab7b33-b507-cc29-128a-5b9426e0d915@suse.com>
+Date:   Fri, 7 Feb 2020 13:07:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200207072005.22867-8-johannes.thumshirn@wdc.com>
+In-Reply-To: <829c0acb-a734-56a6-9649-5dd697fea6cf@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,11 +83,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 7.02.20 г. 9:20 ч., Johannes Thumshirn wrote:
-> The integrity checking code for the superblock mirrors is the last remaining
-> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
+On 7.02.20 г. 12:02 ч., Qu Wenruo wrote:
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> On 2020/2/7 下午5:41, Nikolay Borisov wrote:
+>>
+>>
+>> On 7.02.20 г. 3:59 ч., Qu Wenruo wrote:
+>>> Current _btrfs_get_subvolid() can't handle the following case at all:
+>>>   # btrfs subvol list $SCRATCH_MNT
+>>>   ID 256 gen 9 top level 5 path subv1
+>>>   ID 257 gen 7 top level 256 path subv1/subv2
+>>>   ID 258 gen 8 top level 256 path subv1/subv3
+>>>   ID 259 gen 9 top level 256 path subv1/subv4
+>>>
+>>> If we call "_btrfs_get_subvolid $SCRATCH_MNT subv1" we will get a list
+>>> of all subvolumes, not the subvolid of subv1.
+>>>
+>>> To address this problem, we go egrep to match $name which starts with a
+>>> space, and at the end of a line.
+>>> So that all other subvolumes won't hit.
+>>>
+>>> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>>
+>>> ---
+>>>  common/btrfs | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/common/btrfs b/common/btrfs
+>>> index 19ac7cc4..85b33e4c 100644
+>>> --- a/common/btrfs
+>>> +++ b/common/btrfs
+>>> @@ -7,7 +7,7 @@ _btrfs_get_subvolid()
+>>>  	mnt=$1
+>>>  	name=$2
+>>>  
+>>> -	$BTRFS_UTIL_PROG sub list $mnt | grep $name | awk '{ print $2 }'
+>>> +	$BTRFS_UTIL_PROG sub list $mnt | egrep "\s$name$" | awk '{ print $2 }'
+>>
+>> nit: But you don't even need egrep for this, you could have simply used
+>> "grep $name$"
+> 
+> That \s is needed. Or the following case can't be handled:
+> 
+>    ID 256 gen 9 top level 5 path subv1
+>    ID 257 gen 7 top level 256 path subv1/subv1
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+Good point.
+
+> 
+> Thanks,
+> Qu
+> 
+>>
+>>>  }
+>>>  
+>>>  # _require_btrfs_command <command> [<subcommand>|<option>]
+>>>
