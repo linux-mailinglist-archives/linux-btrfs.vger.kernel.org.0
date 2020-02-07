@@ -2,115 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9E8155555
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 11:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB2A155550
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 11:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgBGKJO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 7 Feb 2020 05:09:14 -0500
-Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:46318 "EHLO
-        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726816AbgBGKJO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 05:09:14 -0500
-Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
- Fri,  7 Feb 2020 10:08:33 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Fri, 7 Feb 2020 10:03:46 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (15.124.72.12) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Fri, 7 Feb 2020 10:03:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vr0aURAjgoRpEO4cM9SEYLQhBHAQ3F9siq/qfrRNfqWWwhfnVuMVtKjqFK/cV86fY7eHc3/STLcZQxHilccXXIXZg0C1F7en98Fds4+D433yhrTWUjKTtag83iXwXeNV5gQ+67Ou1OlzgVU7HdLAtAW9TS53xckco5HkdlMilltBvIZqhuFwBf9ieXkluWsyjSglkkB3A6nGAWxD1ozYC3bdGrwSWhZD2B7J68LbmeQ5CP8blulZZeQkkl4zKHAQOGtvaofIJvCAtoWyK8zvoGmcEJxwnNRYntdjed1WvVhaA48cxqG+q0QeNwZApEpnzCxSi8qvoBU9qylAUhJ/hQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e5DHvL5xJQQlUpd0ZQjA0g8l5R8sQQOozY62LZlw0tk=;
- b=G4WhkFDn/UUrA/O6vhY3V6mMON6kPOb9WN00w6gZ+TGZw8nxtFRsA+uH0MIWlgXfX6e81OnaN1f7nfLgd2UDBep9BcWugWdtsL8WHz2uuLW9riPWA1czuFEgmdmj411L7eu7CgLcw0sm4fecY3/KUvDqe/5rWskXE4HoyBLlE1VfyhFGikYNBRhuEA64MaW581KVzE4QBN8u2K2CD9u+mEgxYJncdN2cIDZnPULLWgX4HG6iJelgHL33fJxPSjQMCGHttxak4gAJIG7G5CqRMrre2ScLI7m3iCJZt2d3LGE+hdOFvQ3uaKkyNCDhpoLQ/NswOfe1XjOFYFI6AnRdfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3427.namprd18.prod.outlook.com (10.255.139.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.32; Fri, 7 Feb 2020 10:03:44 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd%7]) with mapi id 15.20.2707.024; Fri, 7 Feb 2020
- 10:03:44 +0000
-Subject: Re: [PATCH 2/3] fstests: btrfs/022: Match qgroup id more correctly
-To:     Nikolay Borisov <nborisov@suse.com>, <fstests@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>
-CC:     Josef Bacik <josef@toxicpanda.com>
-References: <20200207015942.9079-1-wqu@suse.com>
- <20200207015942.9079-3-wqu@suse.com>
- <fa00355c-5c99-1c5c-9af5-eb0bf221b528@suse.com>
-From:   Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <8e99dc23-017a-35c3-74a9-4742e0164095@suse.com>
-Date:   Fri, 7 Feb 2020 18:03:41 +0800
+        id S1726982AbgBGKIF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 05:08:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51278 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726954AbgBGKIE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 05:08:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 69D0EB120;
+        Fri,  7 Feb 2020 10:08:01 +0000 (UTC)
+Subject: Re: [PATCH v5 2/7] btrfs: use the page-cache for super block reading
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+References: <20200207072005.22867-1-johannes.thumshirn@wdc.com>
+ <20200207072005.22867-3-johannes.thumshirn@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <1905a50e-a008-0b67-ff56-080e07eaa2da@suse.com>
+Date:   Fri, 7 Feb 2020 12:08:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
-In-Reply-To: <fa00355c-5c99-1c5c-9af5-eb0bf221b528@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: BYAPR05CA0069.namprd05.prod.outlook.com
- (2603:10b6:a03:74::46) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0069.namprd05.prod.outlook.com (2603:10b6:a03:74::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.15 via Frontend Transport; Fri, 7 Feb 2020 10:03:43 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90847e7c-9e37-4371-3169-08d7abb50457
-X-MS-TrafficTypeDiagnostic: BY5PR18MB3427:
-X-LD-Processed: 856b813c-16e5-49a5-85ec-6f081e13b527,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR18MB342756DDC53877B108A9153DD61C0@BY5PR18MB3427.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-Forefront-PRVS: 0306EE2ED4
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(199004)(189003)(316002)(81166006)(6486002)(16576012)(8676002)(81156014)(8936002)(16526019)(186003)(26005)(2906002)(31696002)(52116002)(86362001)(36756003)(66556008)(956004)(66476007)(2616005)(478600001)(4326008)(6706004)(31686004)(5660300002)(66946007)(78286006);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3427;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 55zuKRsIv0yL9gbAmrqhP/lc2eEG855hkFZ6lARIIWUQ6+6lwG82Om4LYxfrBEArQpdv5ojDvBMtmCkGURg6N+rKxyEXyL+BLSKTr+PRDAPIBcvzEZO79PkNCLWjPiT+U6rRFX2fztr9WtdsgaqmNRD81e3jwPaeiwz9u7qkbrsyM3Q4CGbi8uHB3Dm6ssl4cuixseKS9IUQFzBR6q4tWQ+wxxWYkcGTQPj3ZZMZa+wx3z1uCaXIOtVdQsWehUXUHMfy+EjqwsTCnMV8DLrwsCESgzxbVKZaZjh5NIOlfTmOC08V5mEmv1XlwXXQwOBi7/s+XRwEYTmZ1a2WymNRXvnQjnZdWA4QpLom7kNFu47UeX6MGHP13DjJ2XvbZmd4I8dq6PHx6EYNFqArBeQl/Q1I1z/q4BHRlRcHm5LatKM6nshQI4PpJBfg7znJizOsQzw0Ru+Lmhdn/ppYB2k6G2hI6jV/sKwjUCxJ3OvKyDpasyXpQZREnujzTFGuNFEmmHbJQV4+7j45lIPD0VV9a6vAklQumWbYUVK6alm9deo=
-X-MS-Exchange-AntiSpam-MessageData: CmLi68ZbCEqceYC3SWHn8GLzoHe05NKCYXD4C4Z9beyzxOdQ9x8QzFY1H4sY9zaDwgrOB0bxLuRE8AzunLKagjDM9XlPdpIJT935Vo8NtqJcQ+XCh+zjXBm/7/0l4m/bud9rZEN6nqA1PsOfHCHf5A==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90847e7c-9e37-4371-3169-08d7abb50457
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2020 10:03:44.8226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dkvm/SN5kfA5q5/JKkidc459sq8sIsxuNpgT5ODIyf34uvQyZWdx7AoU+Lkm23T+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3427
-X-OriginatorOrg: suse.com
+In-Reply-To: <20200207072005.22867-3-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -118,88 +81,110 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/2/7 下午5:46, Nikolay Borisov wrote:
+On 7.02.20 г. 9:20 ч., Johannes Thumshirn wrote:
+> Super-block reading in BTRFS is done using buffer_heads. Buffer_heads have
+> some drawbacks, like not being able to propagate errors from the lower
+> layers.
 > 
+> Directly use the page cache for reading the super-blocks from disk or
+> invalidating an on-disk super-block. We have to use the page-cache so to
+> avoid races between mkfs and udev. See also 6f60cbd3ae44 ("btrfs: access
+> superblock via pagecache in scan_one_device").
 > 
-> On 7.02.20 г. 3:59 ч., Qu Wenruo wrote:
->> [BUG]
->> Btrfs/022 sometimes fails with snapshot's reference mismatch with its
->> source.
->>
->> [CAUSE]
->> Since commit fd0830929573 ("fsstress: add the ability to create
->> snapshots") adds the ability for fsstress to create/delete snapshot and
->> subvolumes, fsstress will create new subvolumes under test dir.
->>
->> For example, we could have the following subvolumes created by fsstress:
->> subvol a id=256
->> subvol b id=306
->> qgroupid         rfer         excl
->> --------         ----         ----
->> 0/5             16384        16384
->> 0/256        13914112        16384
->> ...
->> 0/263         3080192      2306048 		<< 2 *306* 048
->> ...
->> 0/306        13914112        16384 		<< 0/ *306
->>
->> So when we're greping for subvolid 306, it matches qgroup 0/263 first,
->> which has difference size, and caused false alert.
->>
->> [FIX]
->> Instead of greping "$subvolid" blindly, now grep "0/$subvolid" to catch
->> qgroupid correctly, without hitting rfer/excl values.
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> That 0/ can it ever be a number different than 0, if so a more correct
-> regular expression should be:
-> grep "[[:digit:]]/306"  ?
+> ---
+> Changes to v4:
+> - Remove mapping_gfp_constraint() and GFP_NOFAIL (hch)
+> 
+> Changes to v3:
+> - Use read_cache_pages() and write_one_page() for IO (hch)
+> - Changed subject (David)
+> - Dropped Josef's R-b due to change
+> 
+> Changes to v2:
+> - open-code kunmap() + put_page() (David)
+> - fix double kunmap() (David)
+> - don't use bi_set_op_attrs() (David)
+> 
+> Changes to v1:
+> - move 'super_page' into for-loop in btrfs_scratch_superblocks() (Nikolay)
+> - switch to using pagecahce instead of alloc_pages() (Nikolay, David)
+> ---
+>  fs/btrfs/disk-io.c | 76 +++++++++++++++++++++++++---------------------
+>  fs/btrfs/disk-io.h |  4 +--
+>  fs/btrfs/volumes.c | 57 ++++++++++++++++++----------------
+>  fs/btrfs/volumes.h |  2 --
+>  4 files changed, 74 insertions(+), 65 deletions(-)
+> 
 
-In this particular case, we only care level 0 qgroup, thus it's enough.
+<snip>
 
-If we're extracting it into a generic wrapper, then your
-[[:digit:]]/$subvolid will be needed.
+>  
+> @@ -3355,40 +3363,38 @@ static void btrfs_end_buffer_write_sync(struct buffer_head *bh, int uptodate)
+>  }
+>  
+>  int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> -			struct buffer_head **bh_ret)
+> +			struct page **super_page)
+>  {
+> -	struct buffer_head *bh;
+>  	struct btrfs_super_block *super;
+> +	struct page *page;
+>  	u64 bytenr;
+> +	struct address_space *mapping = bdev->bd_inode->i_mapping;
+>  
+>  	bytenr = btrfs_sb_offset(copy_num);
+>  	if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
+>  		return -EINVAL;
 
-Thanks,
-Qu
-> 
-> 
->>
->> Suggested-by: Josef Bacik <josef@toxicpanda.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  tests/btrfs/022 | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/tests/btrfs/022 b/tests/btrfs/022
->> index 5348d3ed..3e729852 100755
->> --- a/tests/btrfs/022
->> +++ b/tests/btrfs/022
->> @@ -49,10 +49,10 @@ _basic_test()
->>  
->>  	# the shared values of both the original subvol and snapshot should
->>  	# match
->> -	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
->> +	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->>  	a_shared=$(echo $a_shared | awk '{ print $2 }')
->>  	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
->> -	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
->> +	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->>  	b_shared=$(echo $b_shared | awk '{ print $2 }')
->>  	[ $b_shared -eq $a_shared ] || _fail "shared values don't match"
->>  }
->> @@ -68,12 +68,12 @@ _rescan_test()
->>  	run_check $FSSTRESS_PROG -d $SCRATCH_MNT/a -w -p 1 -n 2000 \
->>  		$FSSTRESS_AVOID
->>  	sync
->> -	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
->> +	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->>  	echo $output >> $seqres.full
->>  	refer=$(echo $output | awk '{ print $2 }')
->>  	excl=$(echo $output | awk '{ print $3 }')
->>  	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
->> -	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
->> +	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
->>  	echo $output >> $seqres.full
->>  	[ $refer -eq $(echo $output | awk '{ print $2 }') ] || \
->>  		_fail "reference values don't match after rescan"
->>
+You don't use page_offset(bytenr) here but you do it in
+btrfs_scratch_superblocks. I'm aware that this could be omitted entirely
+since the sb is always aligned on a 4k. But in this case either you omit
+it everywhere or you use it everywhere for the sake of consistency.
+
+>  
+> -	bh = __bread(bdev, bytenr / BTRFS_BDEV_BLOCKSIZE, BTRFS_SUPER_INFO_SIZE);
+> -	/*
+> -	 * If we fail to read from the underlying devices, as of now
+> -	 * the best option we have is to mark it EIO.
+> -	 */
+> -	if (!bh)
+> -		return -EIO;
+> +	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
+> +	if (IS_ERR_OR_NULL(page))
+> +		return -ENOMEM;
+
+read_cache_page can return an error from ->readpage as well. Also
+looking at do_read_cache_page it doesn't seem like it can return a NULL
+pointer.
+
+>  
+> -	super = (struct btrfs_super_block *)bh->b_data;
+> +	super = kmap(page);
+>  	if (btrfs_super_bytenr(super) != bytenr ||
+>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> -		brelse(bh);
+> +		kunmap(page);
+> +		put_page(page);
+>  		return -EINVAL;
+>  	}
+> +	kunmap(page);
+>  
+> -	*bh_ret = bh;
+> +	*super_page = page;
+>  	return 0;
+>  }
+>  
+>  
+> -struct buffer_head *btrfs_read_dev_super(struct block_device *bdev)
+> +int btrfs_read_dev_super(struct block_device *bdev, struct page **page)
+>  {
+> -	struct buffer_head *bh;
+> -	struct buffer_head *latest = NULL;
+> +	struct page *latest = NULL;
+>  	struct btrfs_super_block *super;
+>  	int i;
+>  	u64 transid = 0;
+
+<snip>
