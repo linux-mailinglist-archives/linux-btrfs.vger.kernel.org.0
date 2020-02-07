@@ -2,214 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CD41552D1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 08:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FB1155364
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 08:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgBGHVA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 02:21:00 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:46765 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgBGHU7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 02:20:59 -0500
+        id S1727113AbgBGH7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 02:59:05 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:28832 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgBGH7E (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 02:59:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581060064; x=1612596064;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2MsQZCM+1kFp5Cy5xsSXmV+8HPX7+AyGa8ck9taCsWw=;
-  b=GNmwaCif9wfm6pYx8wPj02pcipq5G0FnHno05mm2Xmp4sOFoL2QZ8pYN
-   h+suvITJPHR0+3DmPW56dBtWIRHVn4lcir9unSPUDi43cQ0zgGBhs580F
-   z7b/IDJXCsvoMx08Utv9mrpX1UwNoxYionwp4qcB4dwb4MEc5du5T4i+6
-   3fnPr11nABVyZZ8RXIQQPPoetfywCGRqDoqSJozKqJ2lGyclsBHqelBbN
-   YcQKhcXEUm8QNB/oeBNNL3U4wlYUj9VfavZyW5Ton/CyGWlBBDxkrglmZ
-   4OQlQ+PVi4iiLvAi7sXsrueE9VRGMwnlqEXVdeakgdLMEh2wL7LFhDd2Y
+  t=1581062344; x=1612598344;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kRGU8VDfii+JwOMDIHg0U7aPmqCXdOJdsX6jlCMGZKg=;
+  b=J+ADxy09aqILcqWg0DF18/o2caDFaPcqX/6TsW3h+ix/iYqrkqdt1CzC
+   kJ71o50zKwaRJqQxeMM4Tm+YsBHghTPNuRLHS+eVykePNkYESZUGndbyg
+   GiaJJgGa7NJim3SORilNyIKb+QerWpc6R5tMc8LmsgRRROyaHnbNKs3+U
+   tQVpQwXb95Q6JGL4iVak3qyVptVeg80UybZGb4MyvQ+RCYpgwXiBQwrao
+   FrOhkvgINLf6O66pFKStajNfexFW+oLwz8ZOHcad7NXotM3YWE5CRcGSS
+   Wj72fY37ZENDlUQ5rr4VCLfiOjnpN5Ak5r1+ecOCQPjHy+dFJOdffbSfA
    g==;
-IronPort-SDR: nKZhhSfiLpsdmWX4hY1jY8J/0EFHdIvIANI2p6facqYJS/6a50WN3ipuyDzzADWV4E2YYHyrGi
- bHR7VXWYYiiD1plyLy+1ASrQ2XJDo9TTkaACvScEO8uGrJ6tIR28RBTYjnPhMl6FmIFSDtIZAx
- /85mx8lTEPJNEjFAmG0ypO0RJKJmqaep68lh6x+oPoUuqzTOUwiR9h//3Gk/rvxZ6XPUFDOJAk
- BWXCLpzVbCvc2e7SCjMhgTdf3/lMFKn68JBqbXjXqNx7tUd/WxymtrZVDPV2NmKFa2D8PC/nOD
- 8I4=
+IronPort-SDR: xtF/2JEEBNmmrhKeizytPeWggeoYJbVxUKgUwfsxGPeUNDB9mG4wxVY8W5N0MbmZwFFYyrvaVw
+ uTmuCfnBbkKn3JWtZH6hSZ+DaXnIiBVVaZt2dpRVmS/MiNP/nleM7caahAziyTZW9ka9AU40a9
+ dwAeVpBv5uQ5FCSx1J/kHWb2XVYGQscgCwBD635zvpllDvahbe2SJf5o/u9xQ4WD4ZW4CHvCzD
+ tMVsWQ469dcVW4q9j4DhgNjQPiLU8H7f3XcU9JNQxhLU8g/ErqCyZ2OfIcaWOurF6FF8mm0sXp
+ z38=
 X-IronPort-AV: E=Sophos;i="5.70,412,1574092800"; 
-   d="scan'208";a="231092236"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2020 15:20:28 +0800
-IronPort-SDR: izy88DOShBYEilEk6elLjLTzk6opH5zLYeIoLQqJK59qL8Y6naBJsgzqR8rawHk3ePfLLOwpML
- anV2Ox0ntAYTCuiHkG0ppM1VNd9mneyTDg+dc1wzXlCPVOhEW70zjLxfwWxc9LKVp3X5qDZGqQ
- hZBSjVZ/9xoMwQrISPauT6BoZQj07GsLtk1uzSC8mKlwuIA3WLiilFwQLX11rECrUCKwQm0mlh
- gmYsHdRaarbFkH88iDoPcTwTFQE+F7Ac9ICSpUnjce4QtdmWRC6T4kp91GXwu4bMUuQQVKoO/Y
- cpLAv7TfPcHyIuk2C98gMi3A
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2020 23:13:17 -0800
-IronPort-SDR: VXG+xGaH6SAy3UUo120Le3uL5b6AFlRP2qm8DO5esYi/b7SuTAry47/AzzIJDBuiKdTWDQe4X7
- 7jBdHcisREpRC7yI2fLDajkBSDh1Fr8vPapMiQmgqN/lLJFUY6sYskZlQnwdVHVuqj0MXNPSbs
- xVxsEUQMsT21qUoNHmumBDLL+PfeOJCw/ihquPAG07/BnMTySvpklHeEgi1nxSabRIOaLnmz40
- n/LhDdNrdOFp5edBYQlzf7K6/FiE2gyXObgP0dtgezOJC8v9SqAAKOZscAX7kwnjS4APME1Usd
- KOY=
+   d="scan'208";a="129334777"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2020 15:59:03 +0800
+IronPort-SDR: uUbad4o7tPZf4AnTeXVX/aEIGsvnS1Dx2wLyIArXI6oWD453vUJJuMJbNNewMpc04z/GrdW5XV
+ 6N3AWTW44FKAzEElNjt68vamdE+vmssdQnrqsqp6xnFnkWEF8NZj5ZckRqDDjSlNtURarccin2
+ eUcTBR6e/owXEVl+AuashGYQhDmutV6ZqF8P7bLWLtYgHcp7U1bT3g9+f+sw8UX4+kDXhT7NDg
+ gBj62rxJRO4rUVSNnWS7Y14LaDHgRiB251aHpGTOWAWWM4Qxa3BRNNsrQE9sSvo2rSNvMJ3/QY
+ 8U2Ee1yBuCDpp3v9VKMHCA9/
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2020 23:52:02 -0800
+IronPort-SDR: pmFc+8G2YkTT5xTAgGqME1mLV/BSAHegChGzvtWFnkV+rlhwWwwYfMniHEWvtOkLjpFP+z1R3v
+ bgWIqujCWx4dlJBrNPGhxxZWA7IiZ+6J3QiT86Gy+/WYZz1RaCAn0ENSgdlwsuMOMdXZ3fiVxZ
+ HZXI2J4c6mDsb0p+UgcoXGSNFp6f4nPfm2+lfR4XGAVHHFH8BwHrC85gOXXNxH1mxGKtPzoBRV
+ xsXZ/b1QO2nxGvg8kCkCJHqOAZEksZ4yKJtFZnvxUuB53z+fnTvWyeDj+Yep4xgZJ424+fwZ6c
+ nb4=
 WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Feb 2020 23:20:19 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v5 7/7] btrfs: remove buffer_heads form superblock mirror integrity checking
-Date:   Fri,  7 Feb 2020 16:20:05 +0900
-Message-Id: <20200207072005.22867-8-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200207072005.22867-1-johannes.thumshirn@wdc.com>
-References: <20200207072005.22867-1-johannes.thumshirn@wdc.com>
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip02.wdc.com with SMTP; 06 Feb 2020 23:59:02 -0800
+Received: (nullmailer pid 856616 invoked by uid 1000);
+        Fri, 07 Feb 2020 07:59:01 -0000
+Date:   Fri, 7 Feb 2020 16:59:01 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 05/20] btrfs: factor out set_parameters()
+Message-ID: <20200207075901.o4lfuf3txharr4co@naota.dhcp.fujisawa.hgst.com>
+References: <20200206104214.400857-1-naohiro.aota@wdc.com>
+ <20200206104214.400857-6-naohiro.aota@wdc.com>
+ <82286a4a-0688-2ada-b245-abdb998147c4@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <82286a4a-0688-2ada-b245-abdb998147c4@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The integrity checking code for the superblock mirrors is the last remaining
-user of buffer_heads in BTRFS, change it to using plain BIOs as well.
+On Thu, Feb 06, 2020 at 11:40:37AM -0500, Josef Bacik wrote:
+>On 2/6/20 5:41 AM, Naohiro Aota wrote:
+>>Factor out set_parameters() from __btrfs_alloc_chunk(). This function
+>>initialises parameters of "struct alloc_chunk_ctl" for allocation.
+>>set_parameters() handles a common part of the initialisation to load the
+>>RAID parameters from btrfs_raid_array. set_parameters_regular() decides
+>>some parameters for its allocation.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/volumes.c | 96 ++++++++++++++++++++++++++++------------------
+>>  1 file changed, 59 insertions(+), 37 deletions(-)
+>>
+>>diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>index cfde302bf297..a5d6f0b5ca70 100644
+>>--- a/fs/btrfs/volumes.c
+>>+++ b/fs/btrfs/volumes.c
+>>@@ -4841,6 +4841,60 @@ struct alloc_chunk_ctl {
+>>  	int ndevs;
+>>  };
+>>+static void set_parameters_regular(struct btrfs_fs_devices *fs_devices,
+>>+				   struct alloc_chunk_ctl *ctl)
+>
+>init_alloc_chunk_ctl_policy_regular()
+>
+>>+{
+>>+	u64 type = ctl->type;
+>>+
+>>+	if (type & BTRFS_BLOCK_GROUP_DATA) {
+>>+		ctl->max_stripe_size = SZ_1G;
+>>+		ctl->max_chunk_size = BTRFS_MAX_DATA_CHUNK_SIZE;
+>>+	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
+>>+		/* for larger filesystems, use larger metadata chunks */
+>>+		if (fs_devices->total_rw_bytes > 50ULL * SZ_1G)
+>>+			ctl->max_stripe_size = SZ_1G;
+>>+		else
+>>+			ctl->max_stripe_size = SZ_256M;
+>>+		ctl->max_chunk_size = ctl->max_stripe_size;
+>>+	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
+>>+		ctl->max_stripe_size = SZ_32M;
+>>+		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
+>>+		ctl->devs_max = min_t(int, ctl->devs_max,
+>>+				      BTRFS_MAX_DEVS_SYS_CHUNK);
+>>+	} else {
+>>+		BUG();
+>>+	}
+>>+
+>>+	/* We don't want a chunk larger than 10% of writable space */
+>>+	ctl->max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
+>>+				  ctl->max_chunk_size);
+>>+}
+>>+
+>>+static void set_parameters(struct btrfs_fs_devices *fs_devices,
+>>+			   struct alloc_chunk_ctl *ctl)
+>
+>init_alloc_chunk_ctl().  These function names need to be more descriptive.  Thanks,
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+I see. I renamed these two.
 
----
-Changes to v4:
-- Remove mapping_gfp_constraint()
-
-Changes to v2:
-- Open-code kunmap() + put_page() (David)
-- Remove __GFP_NOFAIL from allocation (Josef)
-- Merge error paths (David)
-
-Changes to v1:
-- Convert from alloc_page() to find_or_create_page()
----
- fs/btrfs/check-integrity.c | 55 +++++++++++++++++++++++++-------------
- 1 file changed, 36 insertions(+), 19 deletions(-)
-
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 4f6db2fe482a..e10a27d6db08 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -77,7 +77,6 @@
- 
- #include <linux/sched.h>
- #include <linux/slab.h>
--#include <linux/buffer_head.h>
- #include <linux/mutex.h>
- #include <linux/genhd.h>
- #include <linux/blkdev.h>
-@@ -762,29 +761,45 @@ static int btrfsic_process_superblock_dev_mirror(
- 	struct btrfs_fs_info *fs_info = state->fs_info;
- 	struct btrfs_super_block *super_tmp;
- 	u64 dev_bytenr;
--	struct buffer_head *bh;
- 	struct btrfsic_block *superblock_tmp;
- 	int pass;
- 	struct block_device *const superblock_bdev = device->bdev;
-+	struct page *page;
-+	struct bio bio;
-+	struct bio_vec bio_vec;
-+	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
-+	int ret;
- 
- 	/* super block bytenr is always the unmapped device bytenr */
- 	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
- 	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
- 		return -1;
--	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
--		     BTRFS_SUPER_INFO_SIZE);
--	if (NULL == bh)
-+
-+	page = find_or_create_page(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
-+	if (!page)
-+		return -1;
-+
-+	bio_init(&bio, &bio_vec, 1);
-+	bio.bi_iter.bi_sector = dev_bytenr >> SECTOR_SHIFT;
-+	bio_set_dev(&bio, superblock_bdev);
-+	bio_set_op_attrs(&bio, REQ_OP_READ, 0);
-+	bio_add_page(&bio, page, BTRFS_SUPER_INFO_SIZE, 0);
-+
-+	ret = submit_bio_wait(&bio);
-+	if (ret)
- 		return -1;
--	super_tmp = (struct btrfs_super_block *)
--	    (bh->b_data + (dev_bytenr & (BTRFS_BDEV_BLOCKSIZE - 1)));
-+
-+	unlock_page(page);
-+
-+	super_tmp = kmap(page);
- 
- 	if (btrfs_super_bytenr(super_tmp) != dev_bytenr ||
- 	    btrfs_super_magic(super_tmp) != BTRFS_MAGIC ||
- 	    memcmp(device->uuid, super_tmp->dev_item.uuid, BTRFS_UUID_SIZE) ||
- 	    btrfs_super_nodesize(super_tmp) != state->metablock_size ||
- 	    btrfs_super_sectorsize(super_tmp) != state->datablock_size) {
--		brelse(bh);
--		return 0;
-+		ret = 0;
-+		goto out_unmap;
- 	}
- 
- 	superblock_tmp =
-@@ -795,8 +810,8 @@ static int btrfsic_process_superblock_dev_mirror(
- 		superblock_tmp = btrfsic_block_alloc();
- 		if (NULL == superblock_tmp) {
- 			pr_info("btrfsic: error, kmalloc failed!\n");
--			brelse(bh);
--			return -1;
-+			ret = -1;
-+			goto out_unmap;
- 		}
- 		/* for superblock, only the dev_bytenr makes sense */
- 		superblock_tmp->dev_bytenr = dev_bytenr;
-@@ -880,8 +895,8 @@ static int btrfsic_process_superblock_dev_mirror(
- 					      mirror_num)) {
- 				pr_info("btrfsic: btrfsic_map_block(bytenr @%llu, mirror %d) failed!\n",
- 				       next_bytenr, mirror_num);
--				brelse(bh);
--				return -1;
-+				ret = -1;
-+				goto out_unmap;
- 			}
- 
- 			next_block = btrfsic_block_lookup_or_add(
-@@ -890,8 +905,8 @@ static int btrfsic_process_superblock_dev_mirror(
- 					mirror_num, NULL);
- 			if (NULL == next_block) {
- 				btrfsic_release_block_ctx(&tmp_next_block_ctx);
--				brelse(bh);
--				return -1;
-+				ret = -1;
-+				goto out_unmap;
- 			}
- 
- 			next_block->disk_key = tmp_disk_key;
-@@ -902,16 +917,18 @@ static int btrfsic_process_superblock_dev_mirror(
- 					BTRFSIC_GENERATION_UNKNOWN);
- 			btrfsic_release_block_ctx(&tmp_next_block_ctx);
- 			if (NULL == l) {
--				brelse(bh);
--				return -1;
-+				ret = -1;
-+				goto out_unmap;
- 			}
- 		}
- 	}
- 	if (state->print_mask & BTRFSIC_PRINT_MASK_INITIAL_ALL_TREES)
- 		btrfsic_dump_tree_sub(state, superblock_tmp, 0);
- 
--	brelse(bh);
--	return 0;
-+out_unmap:
-+	kunmap(page);
-+	put_page(page);
-+	return ret;
- }
- 
- static struct btrfsic_stack_frame *btrfsic_stack_frame_alloc(void)
--- 
-2.24.1
-
+Thanks,
