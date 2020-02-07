@@ -2,56 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98696155837
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5A6155838
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgBGNRN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 08:17:13 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:50485 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbgBGNRN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:17:13 -0500
-Received: by mail-wm1-f54.google.com with SMTP id a5so2582684wmb.0;
-        Fri, 07 Feb 2020 05:17:11 -0800 (PST)
+        id S1727041AbgBGNRQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 08:17:16 -0500
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:39032 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgBGNRP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:17:15 -0500
+Received: by mail-wm1-f50.google.com with SMTP id c84so2723432wme.4;
+        Fri, 07 Feb 2020 05:17:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SBHu5U0uvH5H56CpCyXRGzMU6jSsuBweVkooO6pytvM=;
-        b=a1r7Rsr01qt8/44a9yHgGJB7k4UF+IS1/I1DWAq//+X37B6nBuk3B2C2hPTWMizS4B
-         GpOpDxPsSb3ha1DC4Li7Gqj4Jsz7p/f5KKPwobRnIEY8sfRzgiTFjVdkZ6UJzZMl7no6
-         ToJsrRVaMsxufhpA8JzY0FQ+0IfKNfpFOodRTPw/obB/cSOeTFm6gnpvuvnTMPZR1u1h
-         9WBmhoMCF81AgKK0XBwBN0kqGEVySodDlwspiKSfjPIyi0NkGHXQvXR4zAW/2+BdHkgk
-         yY3IfFnKSnxGL5vW3i8HfjIW7A8k0mSsYXUu9m4R/5iPAjytQYJRrSVff9onpH22cXLj
-         ghDg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZeCy0SlBZPOr5VrbSJdZIRhfwnw/AitJ1GVrZSolHI8=;
+        b=LS6kCk2A6b66ybZd4lvfGbkd43PPrk+EyZw94HKKUnKQ/7jf8DVIaBxWd/qImjYJJT
+         ObVKiwjYAg10ub0ig5ICcmCQSIi1pY24/6NncG7AILYEevTAbiBcgNHJtIJUn+mFDs5F
+         47oajW8Ic5khIiosZ7q661OZDL2Wx8JfUbQmMLNY6uDJXQoqhEjErLnv8FCFdQNdktZF
+         U5EsHOmq5V1ROmapwRhPJBi/ygLNK9C7n8imkDpsXW7KJbg6JjtZ4jg8r0TCdhnGKE+/
+         w6e64i9uOhSkCYdfZxXaqmtfhIl4RK1v8IeQxwQLkEozTelry4jzifpQKYyMqsXmhFL3
+         gATg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SBHu5U0uvH5H56CpCyXRGzMU6jSsuBweVkooO6pytvM=;
-        b=Vz60LmaEpevB1ezy6kxjd7v5XvrB2+XrdKsfwbCkC4Lmtv1nowJUhhBCiJ1dESnMre
-         iTeWMoGCnjkEpkaeoWvMPX568CiuqMr6iqvd/ZN8qhB0iOf+OSlmE5G+RCtmZzYa7rHh
-         FxHoflCRjXnbnW9hAdxptxUYc78SFPMWOMszUgh7ZqhFYUA639tGdvKBMIq61mEglomq
-         xtlzDsCeY33t8pHX7tEiZQtYH25ab4eGPF+SXffJ/IUIQHX8mIsYAzvRubYMZOSOPIea
-         1KGKPcstDbIxQQ9GfKwrD+fwf9GafE7kky8CQs1S8tW50K8Ca5J5a04eLXs2QABm/BQ/
-         q+4Q==
-X-Gm-Message-State: APjAAAVR3KDu5Z+jPGRE4TAB4XZKb5XRy9WvOm8QsFJbJ/u34Mra+SCW
-        ChiDUI0grFTIHgnmFtrgh8BbzlQG
-X-Google-Smtp-Source: APXvYqwKmDv4sn4PGGwUhak7t0g3oY+dqcvWHoPLK1Sdlo6QjScFBa64DXd2qn9YEMY9OxQ2cidNdA==
-X-Received: by 2002:a1c:3d46:: with SMTP id k67mr4541898wma.171.1581081431048;
-        Fri, 07 Feb 2020 05:17:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZeCy0SlBZPOr5VrbSJdZIRhfwnw/AitJ1GVrZSolHI8=;
+        b=C+ZqiZPcBRZIxObmaP+NXPOqGv2rS+OnEljqFwE5MeEw0AmEd5hYJpwFuKZSRVgtEK
+         t9U1nLk4dtwY8yOBjQF6GkioDWpYFnvzWX1KgoAoUeBmPe7QrzyUUgv+90a1L8ALvIoG
+         prZw4VgcwWcneEiM4fkBP+Yjzb84mJYl9dQasY9WxsNnR9SoowULmWD/uh/695igPfD+
+         mh4mQlfXyVy81mOQAGIE2DxewoLeRwdjUFBfLPkvyioHHpAUGfsdbVY7Rxy2XXjboItD
+         ZTY04GSnDT9La/KAH9dwdjvoqAHwOpsMIwyGUSi7NCo/MulcQTkuzEw75nI1KBUoyEh8
+         YIFQ==
+X-Gm-Message-State: APjAAAXfnZ2X5sqTFTbqjlsl6ehq2XtxOSaELY6kwyW4jORzbRhkAPpy
+        Z3pjFWTFSH+ggtEKv0H0fXmZCbhp
+X-Google-Smtp-Source: APXvYqxQind+od5Fegn2+0IRzV76/ieYOpgXu5K+bOwbAVSIcIFFPnBA+4H5vbc2WVuX+2FdX7jC3Q==
+X-Received: by 2002:a05:600c:21c5:: with SMTP id x5mr4511601wmj.72.1581081433798;
+        Fri, 07 Feb 2020 05:17:13 -0800 (PST)
 Received: from hephaestus.suse.de ([186.212.94.124])
-        by smtp.gmail.com with ESMTPSA id i204sm3472723wma.44.2020.02.07.05.17.08
+        by smtp.gmail.com with ESMTPSA id i204sm3472723wma.44.2020.02.07.05.17.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 05:17:10 -0800 (PST)
+        Fri, 07 Feb 2020 05:17:13 -0800 (PST)
 From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 To:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
         fstests@vger.kernel.org
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCHv2 0/2] btrfs: Test subvolume delete by id feature
-Date:   Fri,  7 Feb 2020 10:19:49 -0300
-Message-Id: <20200207131951.15859-1-marcos.souza.org@gmail.com>
+Subject: [PATCHv2 1/2] common: btrfs: Improve _require_btrfs_command
+Date:   Fri,  7 Feb 2020 10:19:50 -0300
+Message-Id: <20200207131951.15859-2-marcos.souza.org@gmail.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20200207131951.15859-1-marcos.souza.org@gmail.com>
+References: <20200207131951.15859-1-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,25 +63,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
+Now _require_btrfs_command can also check for subfuntion options, like
+"subvolume delete --subvolid".
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+
 Changes from v1:
-* Added some prints printing what is being tested
-* The test now uses the _btrfs_get_subvolid to get subvolumeids instead of using
-  plain integers
 * New patch expanding the funtionality of _require_btrfs_command, which now
   check for argument of subcommands
 
-Marcos Paulo de Souza (2):
-  common: btrfs: Improve _require_btrfs_command
-  btrfs: Test subvolume delete --subvolid feature
+ common/btrfs | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
- common/btrfs        | 13 ++++++--
- tests/btrfs/203     | 73 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/203.out | 14 +++++++++
- tests/btrfs/group   |  1 +
- 4 files changed, 99 insertions(+), 2 deletions(-)
- create mode 100755 tests/btrfs/203
- create mode 100644 tests/btrfs/203.out
-
+diff --git a/common/btrfs b/common/btrfs
+index 19ac7cc4..ae3142b6 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -12,12 +12,14 @@ _btrfs_get_subvolid()
+ 
+ # _require_btrfs_command <command> [<subcommand>|<option>]
+ # We check for btrfs and (optionally) features of the btrfs command
+-# It can both subfunction like "inspect-internal dump-tree" and
+-# options like "check --qgroup-report"
++# This function support both subfunction like "inspect-internal dump-tree" and
++# options like "check --qgroup-report", and also subfunction options like
++# "subvolume delete --subvolid"
+ _require_btrfs_command()
+ {
+ 	local cmd=$1
+ 	local param=$2
++	local param_arg=$3
+ 	local safe_param
+ 
+ 	_require_command "$BTRFS_UTIL_PROG" btrfs
+@@ -39,6 +41,13 @@ _require_btrfs_command()
+ 
+ 	$BTRFS_UTIL_PROG $cmd $param --help &> /dev/null
+ 	[ $? -eq 0 ] || _notrun "$BTRFS_UTIL_PROG too old (must support $cmd $param)"
++
++	test -z "$param_arg" && return
++
++	# replace leading "-"s for grep
++	safe_param=$(echo $param_arg | sed 's/^-*//')
++	$BTRFS_UTIL_PROG $cmd $param --help | grep -wq $safe_param || \
++		_notrun "$BTRFS_UTIL_PROG too old (must support $cmd $param $param_arg)"
+ }
+ 
+ # Require extra check on btrfs qgroup numbers
 -- 
 2.24.0
 
