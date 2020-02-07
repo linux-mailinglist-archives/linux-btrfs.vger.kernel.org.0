@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6DD1554DA
+	by mail.lfdr.de (Postfix) with ESMTP id EFC2D1554DB
 	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgBGJjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 04:39:10 -0500
-Received: from mail.synology.com ([211.23.38.101]:60722 "EHLO synology.com"
+        id S1726819AbgBGJjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 04:39:11 -0500
+Received: from mail.synology.com ([211.23.38.101]:60826 "EHLO synology.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726417AbgBGJjJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 04:39:09 -0500
+        id S1726626AbgBGJjK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 04:39:10 -0500
 From:   ethanwu <ethanwu@synology.com>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1581068347; bh=h8uXtPYS6sUt5T5icoksnayKUL2jbL9d1RE/0ZidOZQ=;
+        t=1581068348; bh=DN6oPp7/qubvcVXENAeo/CY33lD+jUMsajYXbkFyNXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Pw7KXGPUDotrM9IWhHH5uHmmrCCYlzDMR++96OvfvGCZGE7JFY4E2jf1czqbKoir/
-         6wfD9/O9+zLHWK9KZZryez3fhWwqwujIwuF+8WExM94BuxQ10n8q+7Gv6E4bPFTr3T
-         cbkvVZteV5rjFFGomABCCzj70+gw62blbNDPp9Q4=
+        b=MzYneM3kIqtdhf9HzOO98iogaX8T+yrbR16SqkxXD9iC0tS7WbnQbYFtkFrKbia1/
+         yISAoSK8UGrc0aQ0N2kztW+8ZHuYQhEG28MQaHRLkcLtPSiYbMgvRKG9U6VOy+rv/2
+         cqaFQQhft9chXKHvmp7ouX5pC7A949LB/fvPczmw=
 To:     linux-btrfs@vger.kernel.org
 Cc:     ethanwu <ethanwu@synology.com>
-Subject: [PATCH 1/4] btrfs: backref, only collect file extent items matching backref offset
-Date:   Fri,  7 Feb 2020 17:38:15 +0800
-Message-Id: <20200207093818.23710-2-ethanwu@synology.com>
+Subject: [PATCH 2/4] btrfs: backref, not adding refs from shared block when resolving normal backref
+Date:   Fri,  7 Feb 2020 17:38:16 +0800
+Message-Id: <20200207093818.23710-3-ethanwu@synology.com>
 In-Reply-To: <20200207093818.23710-1-ethanwu@synology.com>
 References: <20200207093818.23710-1-ethanwu@synology.com>
 X-Synology-MCP-Status: no
@@ -34,130 +34,149 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When resolving one backref of type EXTENT_DATA_REF, we collect all
-references that simply references the EXTENT_ITEM even though
-their (file_pos- file_extent_item::offset) are not the same as the
-btrfs_extent_data_ref::offset we are searching.
+All references from the block of SHARED_DATA_REF belong to that
+shared block backref.
 
-This patch add additional check so that we only collect references whose
-(file_pos- file_extent_item::offset) == btrfs_extent_data_ref::offset.
+For example,
+item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize 95
+    extent refs 24 gen 7302 flags DATA
+    extent data backref root 257 objectid 260 offset 65536 count 5
+    extent data backref root 258 objectid 265 offset 0 count 9
+    shared data backref parent 394985472 count 10
+
+block 394985472 might be leaf from root 257, and the item obejctid and
+(file_pos - file_extent_item::offset) in that leaf just happends to be
+260 and 65536 which is equal to the first extent data backref entry.
+
+Before this patch, when we resolving backref:
+root 257 objectid 260 offset 65536, we will add those refs in block
+394985472 and wrongly treat those as the refs we want.
+
+Fix this by checking if the leaf we are processing is shared data backref,
+if so, just skip this leaf.
+
+shared data refs added into preftrees.direct have all entry value = 0
+(root_id = 0, key = NULL, level = 0) except parent entry.
+Other refs from indirect tree will have key value and root id != 0, and
+these value won't be changed when their parent is resolved and added to
+preftrees.direct. Therefore, we could reuse the preftrees.direct
+and search ref with all values = 0 except parent is set to avoid
+getting those resolved refs block.
 
 Signed-off-by: ethanwu <ethanwu@synology.com>
 ---
- fs/btrfs/backref.c | 63 ++++++++++++++++++++++++----------------------
- 1 file changed, 33 insertions(+), 30 deletions(-)
+ fs/btrfs/backref.c | 61 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 52 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e5d85311d5d5..1572eab3cc06 100644
+index 1572eab3cc06..b4b68af48726 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -347,33 +347,10 @@ static int add_prelim_ref(const struct btrfs_fs_info *fs_info,
- 		return -ENOMEM;
+@@ -386,8 +386,34 @@ static int add_indirect_ref(const struct btrfs_fs_info *fs_info,
+ 			      wanted_disk_byte, count, sc, gfp_mask);
+ }
  
- 	ref->root_id = root_id;
--	if (key) {
-+	if (key)
- 		ref->key_for_search = *key;
--		/*
--		 * We can often find data backrefs with an offset that is too
--		 * large (>= LLONG_MAX, maximum allowed file offset) due to
--		 * underflows when subtracting a file's offset with the data
--		 * offset of its corresponding extent data item. This can
--		 * happen for example in the clone ioctl.
--		 * So if we detect such case we set the search key's offset to
--		 * zero to make sure we will find the matching file extent item
--		 * at add_all_parents(), otherwise we will miss it because the
--		 * offset taken form the backref is much larger then the offset
--		 * of the file extent item. This can make us scan a very large
--		 * number of file extent items, but at least it will not make
--		 * us miss any.
--		 * This is an ugly workaround for a behaviour that should have
--		 * never existed, but it does and a fix for the clone ioctl
--		 * would touch a lot of places, cause backwards incompatibility
--		 * and would not fix the problem for extents cloned with older
--		 * kernels.
--		 */
--		if (ref->key_for_search.type == BTRFS_EXTENT_DATA_KEY &&
--		    ref->key_for_search.offset >= LLONG_MAX)
--			ref->key_for_search.offset = 0;
--	} else {
-+	else
- 		memset(&ref->key_for_search, 0, sizeof(ref->key_for_search));
--	}
- 
- 	ref->inode_list = NULL;
- 	ref->level = level;
-@@ -424,6 +401,7 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 	u64 disk_byte;
- 	u64 wanted_disk_byte = ref->wanted_disk_byte;
- 	u64 count = 0;
-+	u64 data_offset;
- 
- 	if (level != 0) {
- 		eb = path->nodes[level];
-@@ -457,11 +435,15 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 
- 		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
- 		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
-+		data_offset = btrfs_file_extent_offset(eb, fi);
- 
- 		if (disk_byte == wanted_disk_byte) {
- 			eie = NULL;
- 			old = NULL;
--			count++;
-+			if (ref->key_for_search.offset == key.offset - data_offset)
-+				count++;
-+			else
-+				goto next;
- 			if (extent_item_pos) {
- 				ret = check_extent_in_eb(&key, eb, fi,
- 						*extent_item_pos,
-@@ -513,6 +495,7 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 	int root_level;
- 	int level = ref->level;
- 	int index;
-+	struct btrfs_key search_key = ref->key_for_search;
- 
- 	root_key.objectid = ref->root_id;
- 	root_key.type = BTRFS_ROOT_ITEM_KEY;
-@@ -545,13 +528,33 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 		goto out;
++static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
++{
++	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
++	struct rb_node *parent = NULL;
++	struct prelim_ref *ref = NULL;
++	struct prelim_ref target = {0};
++	int result;
++
++	target.parent = bytenr;
++
++	while (*p) {
++		parent = *p;
++		ref = rb_entry(parent, struct prelim_ref, rbnode);
++		result = prelim_ref_compare(ref, &target);
++
++		if (result < 0)
++			p = &(*p)->rb_left;
++		else if (result > 0)
++			p = &(*p)->rb_right;
++		else
++			return 1;
++	}
++	return 0;
++}
++
+ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
+-			   struct ulist *parents, struct prelim_ref *ref,
++			   struct ulist *parents,
++			   struct preftrees *preftrees, struct prelim_ref *ref,
+ 			   int level, u64 time_seq, const u64 *extent_item_pos,
+ 			   u64 total_refs, bool ignore_offset)
+ {
+@@ -412,11 +438,16 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
  	}
  
-+	/*
-+	 * We can often find data backrefs with an offset that is too
-+	 * large (>= LLONG_MAX, maximum allowed file offset) due to
-+	 * underflows when subtracting a file's offset with the data
-+	 * offset of its corresponding extent data item. This can
-+	 * happen for example in the clone ioctl.
-+	 * So if we detect such case we set the search key's offset to
-+	 * zero to make sure we will find the matching file extent item
-+	 * at add_all_parents(), otherwise we will miss it because the
-+	 * offset taken form the backref is much larger then the offset
-+	 * of the file extent item. This can make us scan a very large
-+	 * number of file extent items, but at least it will not make
-+	 * us miss any.
-+	 * This is an ugly workaround for a behaviour that should have
-+	 * never existed, but it does and a fix for the clone ioctl
-+	 * would touch a lot of places, cause backwards incompatibility
-+	 * and would not fix the problem for extents cloned with older
-+	 * kernels.
-+	 */
-+	if (search_key.type == BTRFS_EXTENT_DATA_KEY &&
-+	    search_key.offset >= LLONG_MAX)
-+		search_key.offset = 0;
- 	path->lowest_level = level;
- 	if (time_seq == SEQ_LAST)
--		ret = btrfs_search_slot(NULL, root, &ref->key_for_search, path,
--					0, 0);
-+		ret = btrfs_search_slot(NULL, root, &search_key, path, 0, 0);
- 	else
--		ret = btrfs_search_old_slot(root, &ref->key_for_search, path,
--					    time_seq);
-+		ret = btrfs_search_old_slot(root, &search_key, path, time_seq);
+ 	/*
+-	 * We normally enter this function with the path already pointing to
+-	 * the first item to check. But sometimes, we may enter it with
+-	 * slot==nritems. In that case, go to the next leaf before we continue.
++	 * 1. We normally enter this function with the path already pointing to
++	 *    the first item to check. But sometimes, we may enter it with
++	 *    slot==nritems.
++	 * 2. We are searching for normal backref but bytenr of this leaf
++	 *    matches shared data backref
++	 * For these cases, go to the next leaf before we continue.
+ 	 */
+-	if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
++	eb = path->nodes[0];
++	if (path->slots[0] >= btrfs_header_nritems(eb) ||
++		is_shared_data_backref(preftrees, eb->start)) {
+ 		if (time_seq == SEQ_LAST)
+ 			ret = btrfs_next_leaf(root, path);
+ 		else
+@@ -433,6 +464,17 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
+ 		    key.type != BTRFS_EXTENT_DATA_KEY)
+ 			break;
  
- 	/* root node has been locked, we can release @subvol_srcu safely here */
- 	srcu_read_unlock(&fs_info->subvol_srcu, index);
++		/*
++		 * We are searching for normal backref but bytenr of this
++		 * leaf matches shared data backref.
++		 */
++		if (slot == 0 && is_shared_data_backref(preftrees, eb->start)) {
++			if (time_seq == SEQ_LAST)
++				ret = btrfs_next_leaf(root, path);
++			else
++				ret = btrfs_next_old_leaf(root, path, time_seq);
++			continue;
++		}
+ 		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+ 		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+ 		data_offset = btrfs_file_extent_offset(eb, fi);
+@@ -484,6 +526,7 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
+  */
+ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 				struct btrfs_path *path, u64 time_seq,
++				struct preftrees *preftrees,
+ 				struct prelim_ref *ref, struct ulist *parents,
+ 				const u64 *extent_item_pos, u64 total_refs,
+ 				bool ignore_offset)
+@@ -577,8 +620,8 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 		eb = path->nodes[level];
+ 	}
+ 
+-	ret = add_all_parents(root, path, parents, ref, level, time_seq,
+-			      extent_item_pos, total_refs, ignore_offset);
++	ret = add_all_parents(root, path, parents, preftrees, ref, level,
++			      time_seq, extent_item_pos, total_refs, ignore_offset);
+ out:
+ 	path->lowest_level = 0;
+ 	btrfs_release_path(path);
+@@ -656,8 +699,8 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
+ 			ret = BACKREF_FOUND_SHARED;
+ 			goto out;
+ 		}
+-		err = resolve_indirect_ref(fs_info, path, time_seq, ref,
+-					   parents, extent_item_pos,
++		err = resolve_indirect_ref(fs_info, path, time_seq, preftrees,
++					   ref, parents, extent_item_pos,
+ 					   total_refs, ignore_offset);
+ 		/*
+ 		 * we can only tolerate ENOENT,otherwise,we should catch error
 -- 
 2.17.1
 
