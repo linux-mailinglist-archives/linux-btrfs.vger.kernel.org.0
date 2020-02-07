@@ -2,183 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D6B1554DD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E41554E7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgBGJjN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 04:39:13 -0500
-Received: from mail.synology.com ([211.23.38.101]:60882 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726798AbgBGJjM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 04:39:12 -0500
-From:   ethanwu <ethanwu@synology.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1581068350; bh=kYzqRcvrE0dZjUBIGqWukkMstMlgohVbSXpdH9J5Tas=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=mlf78lb/p9PxnNQ+bY3A/kuT1087jFL33zZL1eIUbx3lJpYu8yV1Lc1l8kw0Iv0QL
-         u8V5z3SY6ecd3+0fIDJJV/HRgXKKFWvL13WSwF5voWo6OBZArNcPe25z02bf4wH0YL
-         B5PJrLDAP2qhJ/9BoCUO1hXggz4PykFpasqd/p9w=
-To:     linux-btrfs@vger.kernel.org
-Cc:     ethanwu <ethanwu@synology.com>
-Subject: [PATCH 4/4] btrfs: backref, use correct count to resolve normal data refs
-Date:   Fri,  7 Feb 2020 17:38:18 +0800
-Message-Id: <20200207093818.23710-5-ethanwu@synology.com>
-In-Reply-To: <20200207093818.23710-1-ethanwu@synology.com>
-References: <20200207093818.23710-1-ethanwu@synology.com>
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1726619AbgBGJl3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 04:41:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60036 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726451AbgBGJl3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 04:41:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D2521AFE4;
+        Fri,  7 Feb 2020 09:41:26 +0000 (UTC)
+Subject: Re: [PATCH 1/3] fstests: btrfs: Use word mathcing for
+ _btrfs_get_subvolid()
+To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+References: <20200207015942.9079-1-wqu@suse.com>
+ <20200207015942.9079-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b7a6bacf-0434-9743-1ff0-41f9344421db@suse.com>
+Date:   Fri, 7 Feb 2020 11:41:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200207015942.9079-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the following patches:
-btrfs: backref, only collect file extent items matching backref offset
-btrfs: backref, not adding refs from shared block when resolving normal backref
-btrfs: backref, only search backref entries from leaves of the same root
 
-we only collect the normal data refs we want, so the imprecise
-upper bound total_refs of that EXTENT_ITEM could now be changed
-to the count of the normal backref entry we want to search.
 
-Signed-off-by: ethanwu <ethanwu@synology.com>
----
- fs/btrfs/backref.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+On 7.02.20 г. 3:59 ч., Qu Wenruo wrote:
+> Current _btrfs_get_subvolid() can't handle the following case at all:
+>   # btrfs subvol list $SCRATCH_MNT
+>   ID 256 gen 9 top level 5 path subv1
+>   ID 257 gen 7 top level 256 path subv1/subv2
+>   ID 258 gen 8 top level 256 path subv1/subv3
+>   ID 259 gen 9 top level 256 path subv1/subv4
+> 
+> If we call "_btrfs_get_subvolid $SCRATCH_MNT subv1" we will get a list
+> of all subvolumes, not the subvolid of subv1.
+> 
+> To address this problem, we go egrep to match $name which starts with a
+> space, and at the end of a line.
+> So that all other subvolumes won't hit.
+> 
+> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 7e2e647ec846..46cd6ed1a016 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -415,7 +415,7 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 			   struct ulist *parents,
- 			   struct preftrees *preftrees, struct prelim_ref *ref,
- 			   int level, u64 time_seq, const u64 *extent_item_pos,
--			   u64 total_refs, bool ignore_offset)
-+			   bool ignore_offset)
- {
- 	int ret = 0;
- 	int slot;
-@@ -456,7 +456,7 @@ static int add_all_parents(struct btrfs_root *root, struct btrfs_path *path,
- 			ret = btrfs_next_old_leaf(root, path, time_seq);
- 	}
- 
--	while (!ret && count < total_refs) {
-+	while (!ret && count < ref->count) {
- 		eb = path->nodes[0];
- 		slot = path->slots[0];
- 
-@@ -533,8 +533,7 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 				struct btrfs_path *path, u64 time_seq,
- 				struct preftrees *preftrees,
- 				struct prelim_ref *ref, struct ulist *parents,
--				const u64 *extent_item_pos, u64 total_refs,
--				bool ignore_offset)
-+				const u64 *extent_item_pos, bool ignore_offset)
- {
- 	struct btrfs_root *root;
- 	struct btrfs_key root_key;
-@@ -626,7 +625,7 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	ret = add_all_parents(root, path, parents, preftrees, ref, level,
--			      time_seq, extent_item_pos, total_refs, ignore_offset);
-+			      time_seq, extent_item_pos, ignore_offset);
- out:
- 	path->lowest_level = 0;
- 	btrfs_release_path(path);
-@@ -660,7 +659,7 @@ unode_aux_to_inode_list(struct ulist_node *node)
- static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_path *path, u64 time_seq,
- 				 struct preftrees *preftrees,
--				 const u64 *extent_item_pos, u64 total_refs,
-+				 const u64 *extent_item_pos,
- 				 struct share_check *sc, bool ignore_offset)
- {
- 	int err;
-@@ -706,7 +705,7 @@ static int resolve_indirect_refs(struct btrfs_fs_info *fs_info,
- 		}
- 		err = resolve_indirect_ref(fs_info, path, time_seq, preftrees,
- 					   ref, parents, extent_item_pos,
--					   total_refs, ignore_offset);
-+					   ignore_offset);
- 		/*
- 		 * we can only tolerate ENOENT,otherwise,we should catch error
- 		 * and return directly.
-@@ -809,8 +808,7 @@ static int add_missing_keys(struct btrfs_fs_info *fs_info,
-  */
- static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
- 			    struct btrfs_delayed_ref_head *head, u64 seq,
--			    struct preftrees *preftrees, u64 *total_refs,
--			    struct share_check *sc)
-+			    struct preftrees *preftrees, struct share_check *sc)
- {
- 	struct btrfs_delayed_ref_node *node;
- 	struct btrfs_delayed_extent_op *extent_op = head->extent_op;
-@@ -844,7 +842,6 @@ static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
- 		default:
- 			BUG();
- 		}
--		*total_refs += count;
- 		switch (node->type) {
- 		case BTRFS_TREE_BLOCK_REF_KEY: {
- 			/* NORMAL INDIRECT METADATA backref */
-@@ -927,7 +924,7 @@ static int add_delayed_refs(const struct btrfs_fs_info *fs_info,
- static int add_inline_refs(const struct btrfs_fs_info *fs_info,
- 			   struct btrfs_path *path, u64 bytenr,
- 			   int *info_level, struct preftrees *preftrees,
--			   u64 *total_refs, struct share_check *sc)
-+			   struct share_check *sc)
- {
- 	int ret = 0;
- 	int slot;
-@@ -951,7 +948,6 @@ static int add_inline_refs(const struct btrfs_fs_info *fs_info,
- 
- 	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
- 	flags = btrfs_extent_flags(leaf, ei);
--	*total_refs += btrfs_extent_refs(leaf, ei);
- 	btrfs_item_key_to_cpu(leaf, &found_key, slot);
- 
- 	ptr = (unsigned long)(ei + 1);
-@@ -1176,8 +1172,6 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 	struct prelim_ref *ref;
- 	struct rb_node *node;
- 	struct extent_inode_elem *eie = NULL;
--	/* total of both direct AND indirect refs! */
--	u64 total_refs = 0;
- 	struct preftrees preftrees = {
- 		.direct = PREFTREE_INIT,
- 		.indirect = PREFTREE_INIT,
-@@ -1246,7 +1240,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 			}
- 			spin_unlock(&delayed_refs->lock);
- 			ret = add_delayed_refs(fs_info, head, time_seq,
--					       &preftrees, &total_refs, sc);
-+					       &preftrees, sc);
- 			mutex_unlock(&head->mutex);
- 			if (ret)
- 				goto out;
-@@ -1267,8 +1261,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 		    (key.type == BTRFS_EXTENT_ITEM_KEY ||
- 		     key.type == BTRFS_METADATA_ITEM_KEY)) {
- 			ret = add_inline_refs(fs_info, path, bytenr,
--					      &info_level, &preftrees,
--					      &total_refs, sc);
-+					      &info_level, &preftrees, sc);
- 			if (ret)
- 				goto out;
- 			ret = add_keyed_refs(fs_info, path, bytenr, info_level,
-@@ -1287,7 +1280,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- 	WARN_ON(!RB_EMPTY_ROOT(&preftrees.indirect_missing_keys.root.rb_root));
- 
- 	ret = resolve_indirect_refs(fs_info, path, time_seq, &preftrees,
--				    extent_item_pos, total_refs, sc, ignore_offset);
-+				    extent_item_pos, sc, ignore_offset);
- 	if (ret)
- 		goto out;
- 
--- 
-2.17.1
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
+> ---
+>  common/btrfs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/common/btrfs b/common/btrfs
+> index 19ac7cc4..85b33e4c 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -7,7 +7,7 @@ _btrfs_get_subvolid()
+>  	mnt=$1
+>  	name=$2
+>  
+> -	$BTRFS_UTIL_PROG sub list $mnt | grep $name | awk '{ print $2 }'
+> +	$BTRFS_UTIL_PROG sub list $mnt | egrep "\s$name$" | awk '{ print $2 }'
+
+nit: But you don't even need egrep for this, you could have simply used
+"grep $name$"
+
+>  }
+>  
+>  # _require_btrfs_command <command> [<subcommand>|<option>]
+> 
