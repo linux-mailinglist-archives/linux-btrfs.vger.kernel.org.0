@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FD115581C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED42E15581E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgBGNIN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 08:08:13 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:38099 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgBGNIN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:08:13 -0500
-Received: by mail-wm1-f54.google.com with SMTP id a9so2701024wmj.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Feb 2020 05:08:12 -0800 (PST)
+        id S1727048AbgBGNIQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 08:08:16 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:36535 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727009AbgBGNIP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:08:15 -0500
+Received: by mail-wr1-f44.google.com with SMTP id z3so2635662wru.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Feb 2020 05:08:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9/eeeHlzoWhaSK6jaeBjzRsz51KkIgRQMHuC/ESSF2U=;
-        b=fVgsqZa+5UkmKw69WhK9JYgRH6g3/1VnPvvg3uKo/Y52Si0XJ6ok6ZTjdsaTuiEta+
-         mzfUjUxiFG6GDHxD5Z0N2Q8RmAqXRZ58DURGtSPVVXU03Eo5td39yL7wxRYsILtFiEeB
-         zI4/Qf8gpaNTFqbB+3dJM083lP81j9bpZ8P5r1dq2ACtjmJQ8/AoRvo2CohFyovVA6mZ
-         E+YxDko8gWcnEs3AX3bf5pFz4OSst6x0TlQfJ1e8ZvbTLGZUcgp1Yu638SeGOR/NAbM3
-         1dJVmxVDoh1jeSeE72LkH4ZakWIpkfvzN6vcST1RK+Mz3uYjaDGFNSWQMstXVyuYnoFu
-         LIwQ==
+        bh=U2Nx0CU20NEgvi6F51a4zB9i7nxAW6X62OkyehGmyzo=;
+        b=QVLe9kzDn82xs2tsSRFzx4ZNDsEYAvp5971DdNgxL6IU1kWw949v5JpcY4GXPcCJOj
+         TOf2RfuoRZwzvuQe3eV+NJSPXYPnjP+FSkLyEXTt1ioBjQuIP2Ko6szcSJgPdm7jR1R5
+         2/1f/H41CFNSrcIAM6tDcIubb7ih8ln0FLxDpK6jnUYRjKqGPFsj3puA/mRonqVGff0Y
+         fTRP4HYn0KVYrsGnSg0cWs+HDn35qSTx6W1cwGDOyTcLFQ8Af76UyjMRcyodE9e01m95
+         wRtxl7kU8hCr0w/+kj02SxyhCZdsEJYZCBzXdK19WdQucgWcwjMI0gHkSI5WHyGep1dK
+         4XeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9/eeeHlzoWhaSK6jaeBjzRsz51KkIgRQMHuC/ESSF2U=;
-        b=kZanKDcXmspsvfQ+SWEWxwjrbiM2jaHOwiJ+lAQ+uHiMv06Z9uXwI2X/9gaOldCdxg
-         WpwTifRs3dkFv/CnoxFto8xFygkWte2ryrx5SIGzhxDkKlGgN62dh3QuXoolRQCZHuuE
-         1K2Y+E2h5YtRlfCdRKxSq2RZsmKvkYQFJB92EUv+HeABpggIWofE8dRricEFYZZ1/WYb
-         kHIkXAjFWwH73jw6mmy3TjPqcknqJ7s5eBTivGsHFxloF1NYAJPysNpqMlHq4933tXLf
-         b1e3CrDXwApjhIEWFJgwylul1Xb3bNf5/Uk/R+Ww7DFE9rAfyV0WuVn0L6bwmNnr/GpZ
-         xroQ==
-X-Gm-Message-State: APjAAAVjQHG4gMJdQLh7qqWakBUsR/pH+83HP7c+NGb25CS04wTkHlH+
-        1sm6ayc9EJeSG2Hm9tNaeC0=
-X-Google-Smtp-Source: APXvYqzct3B+1F4M0vosfPAMULQ960gMgWqpTCMkNaLsOy+liFRzfhCva2koRlj3gcrgHfPIP8sHsw==
-X-Received: by 2002:a1c:4d07:: with SMTP id o7mr4497369wmh.174.1581080891341;
-        Fri, 07 Feb 2020 05:08:11 -0800 (PST)
+        bh=U2Nx0CU20NEgvi6F51a4zB9i7nxAW6X62OkyehGmyzo=;
+        b=SAPeg0gLTBi/lTdUTi/3nBcdYJvZ4x5/AEVmntmhIL+nPtI14gR6yl7YBYNeqvoZew
+         jfAo32N4AXshrq7G+1B1sRFRgYdpcUVK5xG+BEfoiNfdV/l55jQP0rxYCGvphamxZFWx
+         4455G2M99HIUoGYyVLo9ssd74kPzRTSUYBS2lqIxI+1+zqpWZgvDWzysHy9JQYVyi2fL
+         c//dT+PEf7A1nEnB3At2ikcW3DoGBbGeXFYqiPbJSoIZ8Ad1xuBKKfVrkyGWEnoqvHU1
+         CiAWjAgZOxK9QGipUmWpZF7aF2ej+51GaqMDgMW/HV/5dKQSDXeiW9+G1LRkTaxGIG5w
+         G5lA==
+X-Gm-Message-State: APjAAAVZWLjRHoKGOxaUbMh7wRq02s6ZVVNaMY7W5yM8Kce6WZ5qb2fo
+        Rjh6ulAg49mY5rTs8CDJGIBUNbLa
+X-Google-Smtp-Source: APXvYqxlgulW+bDFm5TenowbAR3DXAFyR+voFtsyK155zUSz68fVylMmwwsvVCgPbk/o72pIjqjh+g==
+X-Received: by 2002:a5d:608f:: with SMTP id w15mr4640073wrt.20.1581080893847;
+        Fri, 07 Feb 2020 05:08:13 -0800 (PST)
 Received: from hephaestus.suse.de ([186.212.94.124])
-        by smtp.gmail.com with ESMTPSA id n1sm3260702wrw.52.2020.02.07.05.08.09
+        by smtp.gmail.com with ESMTPSA id n1sm3260702wrw.52.2020.02.07.05.08.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 05:08:10 -0800 (PST)
+        Fri, 07 Feb 2020 05:08:13 -0800 (PST)
 From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 To:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCHv2 1/4] btrfs-progs: add IOC_SNAP_DESTROY_V2 to ioctl.h
-Date:   Fri,  7 Feb 2020 10:10:25 -0300
-Message-Id: <20200207131028.9977-2-marcos.souza.org@gmail.com>
+Subject: [PATCHv2 2/4] libbtrfsutil: add IOC_SNAP_DESTROY_V2 to ioctl.h
+Date:   Fri,  7 Feb 2020 10:10:26 -0300
+Message-Id: <20200207131028.9977-3-marcos.souza.org@gmail.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20200207131028.9977-1-marcos.souza.org@gmail.com>
 References: <20200207131028.9977-1-marcos.souza.org@gmail.com>
@@ -73,18 +73,19 @@ Changes from v1:
 * Changed BTRFS_SUBVOL_DELETE_BY_ID to BTRFS_SUBVOL_SPEC_BY_ID (David,
   Christoph)
 
- ioctl.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/ioctl.h b/ioctl.h
-index 1d53c100..1a2882df 100644
---- a/ioctl.h
-+++ b/ioctl.h
-@@ -53,12 +53,14 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_vol_args) == 4096);
- #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
- #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+ libbtrfsutil/btrfs.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
+index c9a61b30..d1206410 100644
+--- a/libbtrfsutil/btrfs.h
++++ b/libbtrfsutil/btrfs.h
+@@ -36,12 +36,14 @@ struct btrfs_ioctl_vol_args {
+ #define BTRFS_DEVICE_PATH_NAME_MAX 1024
+ 
  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
-+#define BTRFS_SUBVOL_SPEC_BY_ID		(1ULL << 4)
++#define BTRFS_SUBVOL_SPEC_BY_ID	(1ULL << 4)
  
  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
  			(BTRFS_SUBVOL_CREATE_ASYNC |	\
@@ -96,7 +97,7 @@ index 1d53c100..1a2882df 100644
  
  #define BTRFS_FSID_SIZE 16
  #define BTRFS_UUID_SIZE 16
-@@ -104,6 +106,7 @@ struct btrfs_ioctl_vol_args_v2 {
+@@ -119,6 +121,7 @@ struct btrfs_ioctl_vol_args_v2 {
  	};
  	union {
  		char name[BTRFS_SUBVOL_NAME_MAX + 1];
@@ -104,16 +105,14 @@ index 1d53c100..1a2882df 100644
  		__u64 devid;
  	};
  };
-@@ -940,6 +943,9 @@ static inline char *btrfs_err_str(enum btrfs_err_code err_code)
+@@ -942,5 +945,7 @@ enum btrfs_err_code {
  				struct btrfs_ioctl_get_subvol_rootref_args)
  #define BTRFS_IOC_INO_LOOKUP_USER _IOWR(BTRFS_IOCTL_MAGIC, 62, \
  				struct btrfs_ioctl_ino_lookup_user_args)
 +#define BTRFS_IOC_SNAP_DESTROY_V2 _IOW(BTRFS_IOCTL_MAGIC, 63, \
-+				   struct btrfs_ioctl_vol_args_v2)
-+
- #ifdef __cplusplus
- }
- #endif
++				struct btrfs_ioctl_vol_args_v2)
+ 
+ #endif /* _LINUX_BTRFS_H */
 -- 
 2.24.0
 
