@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45B155571
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 11:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3724155633
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 11:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgBGKR4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 05:17:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60590 "EHLO mx2.suse.de"
+        id S1726915AbgBGK7S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 05:59:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56164 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgBGKRz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 05:17:55 -0500
+        id S1726587AbgBGK7S (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Feb 2020 05:59:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A74E2AC0C;
-        Fri,  7 Feb 2020 10:17:53 +0000 (UTC)
-Subject: Re: [PATCH v5 6/7] btrfs: remove buffer_heads from
- btrfsic_process_written_block()
+        by mx2.suse.de (Postfix) with ESMTP id BD21FAD48;
+        Fri,  7 Feb 2020 10:59:15 +0000 (UTC)
+Subject: Re: [PATCH v5 7/7] btrfs: remove buffer_heads form superblock mirror
+ integrity checking
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.cz>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
 References: <20200207072005.22867-1-johannes.thumshirn@wdc.com>
- <20200207072005.22867-7-johannes.thumshirn@wdc.com>
+ <20200207072005.22867-8-johannes.thumshirn@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <63ebf1b0-a009-b37e-630b-454a374a32d7@suse.com>
-Date:   Fri, 7 Feb 2020 12:17:52 +0200
+Message-ID: <ef06f3e8-4b8c-234b-7c69-b19ce0bb9010@suse.com>
+Date:   Fri, 7 Feb 2020 12:59:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200207072005.22867-7-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200207072005.22867-8-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,9 +83,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 7.02.20 г. 9:20 ч., Johannes Thumshirn wrote:
-> Now that the last caller of btrfsic_process_written_block() with
-> buffer_heads is gone, remove the buffer_head processing path from it as
-> well.
+> The integrity checking code for the superblock mirrors is the last remaining
+> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
