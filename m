@@ -2,107 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D4D155260
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 07:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079FD155268
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 07:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgBGGQm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 01:16:42 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:38642 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgBGGQm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 01:16:42 -0500
-Received: by mail-ot1-f52.google.com with SMTP id z9so1099868oth.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 22:16:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o/VfNf/UtaEsWN57i9UtjxYqGxloDz5/jH6sJ1RkrnQ=;
-        b=HEsLIy/ODnRQJwtuI9MtGRfKPVvP4nBDYWbHtlf1j56bzQlnfWicEtLXX8GsSNdGGH
-         Aq+7UVa2VUFyBGauD/I2xbyXr/xtgqQdwNGMB/MVPkdLVQEUudCCasesTh4y1EBrO3Ej
-         hL/jKEtICtpfUtlM1SQNZgVXRnAVe834g94u5LQCnBQMpuWs7JQt/vDKTBPvYOr7QLLA
-         0BQdnoLASk80+sjwLGh4d/JAvBr12C+YDQ/7GbSdl/V8hdl7JIpceb3xaJzeQA+0TVGZ
-         td/I5gXhyQZdrJN3RJZdyO3qjNgBct7xuqMKlu6aGI2GxCN+Qv2fl64lu/15QwPhYLQW
-         fXcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o/VfNf/UtaEsWN57i9UtjxYqGxloDz5/jH6sJ1RkrnQ=;
-        b=sk7TTep4RhuLNCKwkn3JydnMlIv4S4tsctVQYJBUAZnn/Kx1J9xjBZHRigh96N7eQK
-         ey0DHNzySPTKeFZySfP7ZD9w1H5DAB3ZjE3VeFVDhk6crImRozy7QAqjcnagrxeFhw6x
-         I+YBtvUVNGlGAXITAboEmN8UThEHLEW4uyt4aKlFX32W49crwzPRy7VTH0RUO5m2Yhwi
-         ASRXpevm5/53Az2MlMYyWdProf6o7SWY/f+Pd9niAZ0zTivWdUVkVDryYJbBxYJH/s0p
-         syOYhXK1qY2LZwhFc+lAFyb4W+oyxx2svZyvS48d/9fAJ/8Pg+GXggR7G/hor+SByRy6
-         7b/A==
-X-Gm-Message-State: APjAAAVo6NotnBbZ8xIuWSgkR3S+6oZ1JP/5SSVEgFuu1qZUneW0sbSg
-        VDvgIxqUxORMzBf/sn8YD42UGRzBA7nNvHg4JZNTP3vX
-X-Google-Smtp-Source: APXvYqwPcoMLeD4EC3ctrsWczoE4bTQ2iJgWdDOWDyT1WvTcsuzGav6gvvFz9HkxAKKTw3CF5QrReDF66UfxUCJ8QaE=
-X-Received: by 2002:a05:6830:1e95:: with SMTP id n21mr1521505otr.25.1581056200971;
- Thu, 06 Feb 2020 22:16:40 -0800 (PST)
+        id S1726626AbgBGGWo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 01:22:44 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:15440 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgBGGWo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 01:22:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581056565; x=1612592565;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=J0GPMbDdHVJhTCcVTtgSsLWjRWSYRFjDt3+8Ib0Xk0c=;
+  b=ZcRIXlW6DfvC2NCKXp4V7rrtJ3vp3iUoDuoMA+04DwmJKQNdYyyz8x5h
+   MPSFLqWdN1pbOs8tjVNQL1gVZPWGVqgtqVX/gWwY0/ofSUO+ClXaVtzn+
+   Vi5+vLq7Ev4gmILLVa1aRzXRvrjCoGMTbO1YLqi0hwcsxWjJkaI+61zOH
+   tSgGDZVowLEIMfFbPjeXcok3DKgAmJN6bcCGvvBIV6DPOupPW/c6hjtsb
+   OjVYsVGompZKsMcbRLcmPhZjPwsLbsYCSC2yixan0pA6lkLWBurfSMtnr
+   PJPaAG3uVGIO7mlX3lekynHb1fewDzRd4xnqZJFUds3cCgZpLyytLqTgH
+   g==;
+IronPort-SDR: XpCMt/qvZFuz0zHKyKg6josU87ZswGjeBcUXY6Ei4iJRvK9ZwlCTeXhfacCnVf9zL/M3bC86c9
+ laPIJNtrCvzTB1NbiCWCF6NpTmnP4JDtJpkTJW9RcKxwShDC7A3Lyyx5CfJKc8carwK2GSWiuH
+ qkWYXeSEkoA4WuwP/btwFoSCGYYiIWZthAFcPwPtaACMbNy1yUgmzz+i0tIlPyJ6Ls3uU7JKFD
+ eAD+YJnE41rQGsiCFNrfBMtbju+7KRV7bUeW2uOBKkjAPZEjCp7tOVirurniCybJraW9taZxx/
+ h74=
+X-IronPort-AV: E=Sophos;i="5.70,412,1574092800"; 
+   d="scan'208";a="130788455"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2020 14:22:44 +0800
+IronPort-SDR: qDviYGOQjOK7RJlCpbfcUyYFEybcFeSwY0il0B6tZ6b2qcx9y9HZQjG18nYptPmAKG9NiAal7E
+ WP2Z5JFcArS+hh1RrYc4lFaZCOZJu7sdQBm+KTYVWvLUIppStCAzQPvCNZ72wXZtRhAGE4clUY
+ 7M2bw4tFt4Cy6cpAAGXTGuGdc8rCKUE5fUMw1XJUNEuiwWJnerdWB4bsVBPN747AHywO7DeRSE
+ AituyQVSfvcvlC3lR1niw49XKveuGAEoaAJEFI25ZMj2xe8a2OVSIPmCGWRcq2VwqZVhQdffdJ
+ o/90gJvwaxtkS0RpXAiSLp6v
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2020 22:15:41 -0800
+IronPort-SDR: TM8rlh9Eg0VU12xHnt0W6jaUJS3HYYp3oZlW/1mZBxi+9O++rHeZqtjeWXNs/VcLwzXId+r6GD
+ 6cN+GGNg+35V9mbsfBK0jCD9IOqT38+F9loPFCPG1sLbQzo+XQBIosT+x8W2ZhJE0jjacUWU5r
+ jfHEhhBiTEz0VzXHxicoytjzfHV7L53Rrqv4qyjP4UXqkICe7RYv4gS5SPQUZVDsFjWhghxOcm
+ BwOojZp+qUBHOoeoDdGbSfdfqAI9LJD5xRd6w9vgWdeCPGmT82rqr1G58PrVqT9bvIEc7KsCVH
+ i9Q=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip02.wdc.com with SMTP; 06 Feb 2020 22:22:41 -0800
+Received: (nullmailer pid 773781 invoked by uid 1000);
+        Fri, 07 Feb 2020 06:22:41 -0000
+Date:   Fri, 7 Feb 2020 15:22:41 +0900
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 03/20] btrfs: refactor find_free_dev_extent_start()
+Message-ID: <20200207062241.fnmptspzmf5cv6e2@naota.dhcp.fujisawa.hgst.com>
+References: <20200206104214.400857-1-naohiro.aota@wdc.com>
+ <20200206104214.400857-4-naohiro.aota@wdc.com>
+ <SN4PR0401MB3598B575B00C5519FD9937419B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <CAEOGEKHSFCNMpSpNTOxrkDgW_7v5oJzU5rBUSgYZoB8eVZjV_A@mail.gmail.com>
- <6cea6393-1bb0-505e-b311-bff4a818c71b@gmx.com> <CAEOGEKHf9F0VM=au-42MwD63_V8RwtqiskV0LsGpq-c=J_qyPg@mail.gmail.com>
- <f2ad6b4f-b011-8954-77e1-5162c84f7c1f@gmx.com> <CAEOGEKHEeENOdmxgxCZ+76yc2zjaJLdsbQD9ywLTC-OcgMBpBA@mail.gmail.com>
- <b92465bc-bc92-aa86-ad54-900fce10d514@gmx.com> <CAEOGEKGsMgT5EAdU74GG=0WbzJx81oAXM0p_0rFhZ4vFmbM3Zg@mail.gmail.com>
- <efb830f0-9990-efba-aead-60cef00ab3cb@gmx.com>
-In-Reply-To: <efb830f0-9990-efba-aead-60cef00ab3cb@gmx.com>
-From:   Chiung-Ming Huang <photon3108@gmail.com>
-Date:   Fri, 7 Feb 2020 14:16:29 +0800
-Message-ID: <CAEOGEKGgA7-3CsjYhgZJdZjzHPJNQ9xZETjjZwAoNh_efeetAA@mail.gmail.com>
-Subject: Re: How to Fix 'Error: could not find extent items for root 257'?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <SN4PR0401MB3598B575B00C5519FD9937419B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> =E6=96=BC 2020=E5=B9=B42=E6=9C=887=E6=97=
-=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8812:00=E5=AF=AB=E9=81=93=EF=BC=9A
+On Thu, Feb 06, 2020 at 12:02:12PM +0000, Johannes Thumshirn wrote:
+>On 06/02/2020 11:44, Naohiro Aota wrote:
+>> +/*
 >
-> All these subvolumes had a missing root dir. That's not good either.
-> I guess btrfs-restore is your last chance, or RO mount with my
-> rescue=3Dskipbg patchset:
-> https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D170715
+>Nit: /**
+
+Fixed.
+
+>> + * dev_extent_hole_check - check if specified hole is suitable for allocation
+>> + * @device:	the device which we have the hole
+>> + * @hole_start: starting position of the hole
+>> + * @hole_size:	the size of the hole
+>> + * @num_bytes:	the size of the free space that we need
+>> + *
+>> + * This function may modify @hole_start and @hole_end to reflect the
+>> + * suitable position for allocation. Returns 1 if hole position is
+>> + * updated, 0 otherwise.
+>> + */
+>> +static int dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
+>> +				 u64 *hole_size, u64 num_bytes)
+>> +{
+>> +	int ret = 0;
+>> +	u64 hole_end = *hole_start + *hole_size;
+>> +
 >
+>Couldn't this be bool?
 
-Is it possible to use original disks to keep the restored data safely?
-I would like
-to restore the data of /dev/bcache3 to the new btrfs RAID0 at the first and=
- then
-add it to the new btrfs RAID0. Does `btrfs restore` need metadata or someth=
-ing
-in /dev/bcache3 to restore /dev/bcache2 and /dev/bcache4?
+Good point. I changed it to bool and also renamed "ret" to "changed"
+to make it clear.
 
-/dev/bcache2, ID: 1
-   Device size:             9.09TiB
-   Device slack:              0.00B
-   Data,RAID1:              3.93TiB
-   Metadata,RAID1:          2.00GiB
-   System,RAID1:           32.00MiB
-   Unallocated:             5.16TiB
+Thanks,
 
-/dev/bcache3, ID: 3
-   Device size:             2.73TiB
-   Device slack:              0.00B
-   Data,single:           378.00GiB
-   Data,RAID1:            355.00GiB
-   Metadata,single:         2.00GiB
-   Metadata,RAID1:         11.00GiB
-   Unallocated:             2.00TiB
-
-/dev/bcache4, ID: 5
-   Device size:             9.09TiB
-   Device slack:              0.00B
-   Data,single:             2.93TiB
-   Data,RAID1:              4.15TiB
-   Metadata,single:         6.00GiB
-   Metadata,RAID1:         11.00GiB
-   System,RAID1:           32.00MiB
-   Unallocated:             2.00TiB
-
-Regards,
-Chiung-Ming Huang
+>Thanks,
+>	Johannes
+>
