@@ -2,91 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D103B15524D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 07:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D4D155260
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 07:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgBGGLX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 01:11:23 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:31937 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgBGGLW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 01:11:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581055884; x=1612591884;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XK5Dr3azdLybQMxGVTr6vOXvQ4grvTnFSL3+eeJXcGE=;
-  b=NhrOhb+Ld+eAiFzKveTgoeyYHsfU9xVIry1NW7PzmnMG7uSxUjsj5HCu
-   aEoRFaeNvPrt0ZwH+dxZOfXBJ9jK5QDBT4OkXuEQINIoriI93sResxzv3
-   TH3J6Vszzp1R/g6n/0VbRYyZg6la5uT5bOYK2/oSyhpZFLrqOMiv1H92w
-   8VbuaIgGxSTxN1NllX/YbGpXXOuzVVQLSMswg1KHDRbS1XS1lcJ3804bI
-   nMnxI/O5w3U2j6x/cMkChnpqGN5URc47TtT8piEi4QCeFpWx9B4Q18now
-   XysgDrKOib8eIdv1t5ofQZCSytfrSrDH+WxBN1w0wxW3ZAFegNX7q+Sl5
-   w==;
-IronPort-SDR: N4TXK5f28EAbWnSnlDZ2PMwmIbplAVKSYfYF+J+j9GNAhDSTdQAEJCKYoyjzP4x3cDaKG+zjEa
- Lap3ZN+ejQE4ZBrkNr1ZcM9TMrCdvOyhDgd5+KLSyXnd7+rCtbPkwKz98yW/gIKJS1VSUywYgc
- +0T5ul/MBKpYs/cLrd+jVxV3haovhTllo2sS3RdQ3pHjviqyzTONwexT/E3KoXN12+oh3o1Mzk
- 6JvVdhPNpzL9mIvtXPVyA1YyfkW9HfISwWvyPwVQWGOqOcD3ByMmo2MkZ7sf/tkoxrAVlhDw0K
- IT8=
-X-IronPort-AV: E=Sophos;i="5.70,411,1574092800"; 
-   d="scan'208";a="133680910"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2020 14:11:23 +0800
-IronPort-SDR: R7wazCqumdQV2IFS7Vx1k32OkZwc7/D+2HtoM3VK3TJpqrRiBy50f5eb3uH/1JSwm8FY2sxb81
- 0fxzCHmo4231QSQ5HUfBI+3EuwwodQENPCuRXGEiIuMSHYomH8VgTVFyA0niVcKlLMMsRcw2R+
- l5urw0pwMsAoq9Wxfdc6d4JvN4kgNogB/tec0XfPK0MZPISNTi7WkLPPCXoBOUPa4qn9BryPH2
- 2fCBngtybyMQO/vt0q1cAwVXCwHNiPhtMm4n3ICIhx2o4LV5TonZA4n1s8B0019Gb4ZDepRU4V
- MddCfhjHOmR97ZIg0N5YTlJs
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2020 22:04:19 -0800
-IronPort-SDR: SywZMEInlaJnihKWKXi2nlJZ/rYf5hR7wC1d6p667wPgR2F7E0u6MzaJrYt0ZL1m/uOqPPMVwb
- PPQv2WoFtz1cO1kTjqzqIZBlybupr1OXMMZvDTEH6226NOh2Xn97FQImVix8hvvfdTKG5Ab4nV
- d0txHIT8aUZqP5VO7BATV4xJzE5GsTIhZTqqT54N9m16nTqlOtfpQaglvkyOhW1oRhpSLCe9XZ
- 5Fx6i3c+oN+fDyJwtx8wB78R/d0vYDAirwro5nklGHqQT26NsLhnm5dO4qo3RY8ohBRzEIoRuq
- 490=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with SMTP; 06 Feb 2020 22:11:19 -0800
-Received: (nullmailer pid 756200 invoked by uid 1000);
-        Fri, 07 Feb 2020 06:11:19 -0000
-Date:   Fri, 7 Feb 2020 15:11:19 +0900
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 02/20] btrfs: introduce chunk allocation policy
-Message-ID: <20200207061119.bmvqcq7sv4yrktle@naota.dhcp.fujisawa.hgst.com>
-References: <20200206104214.400857-1-naohiro.aota@wdc.com>
- <20200206104214.400857-3-naohiro.aota@wdc.com>
- <SN4PR0401MB3598D9897CF42A343A03D4739B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1726626AbgBGGQm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 01:16:42 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:38642 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgBGGQm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 01:16:42 -0500
+Received: by mail-ot1-f52.google.com with SMTP id z9so1099868oth.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Feb 2020 22:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=o/VfNf/UtaEsWN57i9UtjxYqGxloDz5/jH6sJ1RkrnQ=;
+        b=HEsLIy/ODnRQJwtuI9MtGRfKPVvP4nBDYWbHtlf1j56bzQlnfWicEtLXX8GsSNdGGH
+         Aq+7UVa2VUFyBGauD/I2xbyXr/xtgqQdwNGMB/MVPkdLVQEUudCCasesTh4y1EBrO3Ej
+         hL/jKEtICtpfUtlM1SQNZgVXRnAVe834g94u5LQCnBQMpuWs7JQt/vDKTBPvYOr7QLLA
+         0BQdnoLASk80+sjwLGh4d/JAvBr12C+YDQ/7GbSdl/V8hdl7JIpceb3xaJzeQA+0TVGZ
+         td/I5gXhyQZdrJN3RJZdyO3qjNgBct7xuqMKlu6aGI2GxCN+Qv2fl64lu/15QwPhYLQW
+         fXcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o/VfNf/UtaEsWN57i9UtjxYqGxloDz5/jH6sJ1RkrnQ=;
+        b=sk7TTep4RhuLNCKwkn3JydnMlIv4S4tsctVQYJBUAZnn/Kx1J9xjBZHRigh96N7eQK
+         ey0DHNzySPTKeFZySfP7ZD9w1H5DAB3ZjE3VeFVDhk6crImRozy7QAqjcnagrxeFhw6x
+         I+YBtvUVNGlGAXITAboEmN8UThEHLEW4uyt4aKlFX32W49crwzPRy7VTH0RUO5m2Yhwi
+         ASRXpevm5/53Az2MlMYyWdProf6o7SWY/f+Pd9niAZ0zTivWdUVkVDryYJbBxYJH/s0p
+         syOYhXK1qY2LZwhFc+lAFyb4W+oyxx2svZyvS48d/9fAJ/8Pg+GXggR7G/hor+SByRy6
+         7b/A==
+X-Gm-Message-State: APjAAAVo6NotnBbZ8xIuWSgkR3S+6oZ1JP/5SSVEgFuu1qZUneW0sbSg
+        VDvgIxqUxORMzBf/sn8YD42UGRzBA7nNvHg4JZNTP3vX
+X-Google-Smtp-Source: APXvYqwPcoMLeD4EC3ctrsWczoE4bTQ2iJgWdDOWDyT1WvTcsuzGav6gvvFz9HkxAKKTw3CF5QrReDF66UfxUCJ8QaE=
+X-Received: by 2002:a05:6830:1e95:: with SMTP id n21mr1521505otr.25.1581056200971;
+ Thu, 06 Feb 2020 22:16:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB3598D9897CF42A343A03D4739B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <CAEOGEKHSFCNMpSpNTOxrkDgW_7v5oJzU5rBUSgYZoB8eVZjV_A@mail.gmail.com>
+ <6cea6393-1bb0-505e-b311-bff4a818c71b@gmx.com> <CAEOGEKHf9F0VM=au-42MwD63_V8RwtqiskV0LsGpq-c=J_qyPg@mail.gmail.com>
+ <f2ad6b4f-b011-8954-77e1-5162c84f7c1f@gmx.com> <CAEOGEKHEeENOdmxgxCZ+76yc2zjaJLdsbQD9ywLTC-OcgMBpBA@mail.gmail.com>
+ <b92465bc-bc92-aa86-ad54-900fce10d514@gmx.com> <CAEOGEKGsMgT5EAdU74GG=0WbzJx81oAXM0p_0rFhZ4vFmbM3Zg@mail.gmail.com>
+ <efb830f0-9990-efba-aead-60cef00ab3cb@gmx.com>
+In-Reply-To: <efb830f0-9990-efba-aead-60cef00ab3cb@gmx.com>
+From:   Chiung-Ming Huang <photon3108@gmail.com>
+Date:   Fri, 7 Feb 2020 14:16:29 +0800
+Message-ID: <CAEOGEKGgA7-3CsjYhgZJdZjzHPJNQ9xZETjjZwAoNh_efeetAA@mail.gmail.com>
+Subject: Re: How to Fix 'Error: could not find extent items for root 257'?
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 11:30:06AM +0000, Johannes Thumshirn wrote:
->On 06/02/2020 11:44, Naohiro Aota wrote:
->> This commit introduces chuk allocation policy for btrfs.
+Qu Wenruo <quwenruo.btrfs@gmx.com> =E6=96=BC 2020=E5=B9=B42=E6=9C=887=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8812:00=E5=AF=AB=E9=81=93=EF=BC=9A
 >
->Maybe "Introduce a per-device chink allocation policy for btrfs."
-
-What do you mean with "per-device"? Might be misunderstanding? One
-chunk allocation policy is set to one btrfs file system. There is no
-per-device policy for now.
-
-# yep, I found my typo and fixed it: "chuk" -> "chunk"
-
->Code wise,
->Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> All these subvolumes had a missing root dir. That's not good either.
+> I guess btrfs-restore is your last chance, or RO mount with my
+> rescue=3Dskipbg patchset:
+> https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D170715
 >
+
+Is it possible to use original disks to keep the restored data safely?
+I would like
+to restore the data of /dev/bcache3 to the new btrfs RAID0 at the first and=
+ then
+add it to the new btrfs RAID0. Does `btrfs restore` need metadata or someth=
+ing
+in /dev/bcache3 to restore /dev/bcache2 and /dev/bcache4?
+
+/dev/bcache2, ID: 1
+   Device size:             9.09TiB
+   Device slack:              0.00B
+   Data,RAID1:              3.93TiB
+   Metadata,RAID1:          2.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             5.16TiB
+
+/dev/bcache3, ID: 3
+   Device size:             2.73TiB
+   Device slack:              0.00B
+   Data,single:           378.00GiB
+   Data,RAID1:            355.00GiB
+   Metadata,single:         2.00GiB
+   Metadata,RAID1:         11.00GiB
+   Unallocated:             2.00TiB
+
+/dev/bcache4, ID: 5
+   Device size:             9.09TiB
+   Device slack:              0.00B
+   Data,single:             2.93TiB
+   Data,RAID1:              4.15TiB
+   Metadata,single:         6.00GiB
+   Metadata,RAID1:         11.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             2.00TiB
+
+Regards,
+Chiung-Ming Huang
