@@ -2,252 +2,271 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8008C154F6A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 00:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06429154FB6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 01:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgBFXki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 18:40:38 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:37754 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbgBFXki (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Feb 2020 18:40:38 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4445E5B00E5; Thu,  6 Feb 2020 18:40:37 -0500 (EST)
-Date:   Thu, 6 Feb 2020 18:40:37 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: RAID5 fails to correct correctable errors, makes them
- uncorrectable instead (sometimes).  With reproducer for kernel 5.3.11, still
- works on 5.5.1
-Message-ID: <20200206234037.GD13306@hungrycats.org>
-References: <20191119040827.GC22121@hungrycats.org>
+        id S1726628AbgBGAYr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 19:24:47 -0500
+Received: from mout.gmx.net ([212.227.17.21]:54097 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726509AbgBGAYr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 19:24:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581035079;
+        bh=aZPs6gmn6UQDaHK2Rsyp/UBkbSo2Z9xkNXV3AS5sKO0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=D8/iKj24xENW23tVwB3Z9LydEDO1sfUbtivG/Hhkpuu7Wo4OOQx1IcnLQp4Zi8AAv
+         YQm47UvPW4mn9kJsm6l/HYXqyBNeQ20s+bkM52wSxMAlXYvjhdCjJvsl5ywGHdvBWx
+         1PcB0oM5JI/JnCYGaawUL4hwdmB8/pZhvWots0Gg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mf078-1jSsXt0P50-00gVV5; Fri, 07
+ Feb 2020 01:24:39 +0100
+Subject: Re: [PATCH v3] btrfs: Don't submit any btree write bio after
+ transaction is aborted
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200205071015.19621-1-wqu@suse.com>
+ <3dce6f8a-c577-66b7-d104-b8409255b49b@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <443a3b4a-c751-741c-1f27-f39f16ad1ded@gmx.com>
+Date:   Fri, 7 Feb 2020 08:24:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="xOS8do0ZRfB5pORP"
-Content-Disposition: inline
-In-Reply-To: <20191119040827.GC22121@hungrycats.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3dce6f8a-c577-66b7-d104-b8409255b49b@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="5DmM3Cp5UiqYIF8mFVH1NNDZCldGeVkDT"
+X-Provags-ID: V03:K1:t1oN454GlRiU46JvQE1FoCKnBUl+Vt3mDEsrcxYCAlmw/KraPQo
+ zIXNevwjXLoHuIll8+PiOZHiFraw4ugP5IGqV3/B+vxY7f8F7EhLDrNK3UpFKGm+g1UZALV
+ IQJHwSGYQo8CYFIBdhNLNU9uoOSjYSp+K8lvQp25/9+RUABkVoySVf3DEmHON5KFENtHf5f
+ b4nm7x6z98DpxiEq6e+9g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ixYu7PZQPtg=:xhkbohxEmRbxop8cETqNib
+ EG3YDFfZbuexdiCRNyUniij58nhHltQcmP6DNRFybeXZ9mZcmGoJJoIrI59vrWZMdOfF9iAMv
+ VZ3o8M1eIAG3Xi8pP2MfaGdB1tnmT+KIl4snlZ2ggebLs6+Xxg6wR0R4k+HIHAYQU2qcn0PAM
+ IsZrytOfmrkDtrjZg37rVDF2G/r2EajkcbAibmQDCSqk6X70N9D7VQAGlkAslkAxS0/O9DUyT
+ jHJITuB0zn3ghhTetKsEeohn+pGfHwRZGxEcemmn4bdL2GryIYy9/4tKLjiBEnCtoizVsIRPw
+ /iyTaF3ufbET0eeTpd2VMXM3nsdssqpqUq+sg+wTAVIqX8DrMC8OvUQYZLvL/tG3j742OIHxK
+ g6SW/ZmQD4lwUQWOa/r0xNESPgPpBHJ2mUJwzjuJIcFzWpsoO7nZjoQ/CwsHessYmMuro3lEd
+ r9BdQ1toMoXJIL2lcO6Q8ti11dC3VHTTG5Foazc1nNwfrK90iznIlSJ2T0lHyUJo7hPLwU+qn
+ 6UKVzwvyiFM9tLxBIxykMEOHyYSeoA3xLwY8A+C2SOiyjHLH1qctSK5ntRYXYfGFBkTW0E/Gf
+ JoEu0/B6ISoe6pO8jIIKT8kYfGEfseYC+uqJT+9MThTXXhl8Qgr8QK17ysRI0ZhvUa9BU7exr
+ w2SFt1NQtOx+NbnbGKY/cIoCcciUOOx8hf9L2uCFvIkwf+CUk34BS4tk2lSXKiFIwjOFFOH8K
+ 5P8/6CwubfQ9R0wW3IsrAF3lqTJV2ouJcRAcAY8jH7ay2pFcdD4Kvm6avr4JYerLx1zqhuaZ8
+ +w8LVTjoVnlOCiOVjM98geYfWgvRxHlmWreAYMfKXd2LUtVz55ph4T0dVnC/WkQZoLY8HEZEU
+ fNau1WC/hivz9QUju4mFGALa+RJzoauTskY51N7vX2/FvdVj3FfNvhzBMCUVwlDgiWSZY4eSu
+ AhdwTU6QSduVMbzFCpDYAf4xxXb12nMvWbkRwmxobwg1Pik2Xbo3Ovu1VJxB6dWykTjl4lhlM
+ 3YgVn74wI2vngj9d/8CbOwp+gHtiupUD6x4voWTZ9RIKrl76gDaQ0Pgu7qOwbGulmH0vwmkmF
+ wipdmV/MUiLH8LKebwFO8Uk/Hb2uG4EMqatlw8JNS3E9rmrNtGhCfFiG9vyhoc4TTSLFYjal9
+ rWpJHvHqB496wRA51cnZxsvLDxp9zxIMswHYPrZ9VP9iuXvwAFIRpgrEL1eh2dimHOMvjgc8+
+ FOlXN87IH54NWW+Op
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5DmM3Cp5UiqYIF8mFVH1NNDZCldGeVkDT
+Content-Type: multipart/mixed; boundary="QgxOsLL01B7qpQt9FUyGamWmWqgadJ3IM"
 
---xOS8do0ZRfB5pORP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--QgxOsLL01B7qpQt9FUyGamWmWqgadJ3IM
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 18, 2019 at 11:08:27PM -0500, Zygo Blaxell wrote:
-> Sometimes, btrfs raid5 not only fails to recover corrupt data with a
-> parity stripe, it also copies bad data over good data.  This propagates
-> errors between drives and makes a correctable failure uncorrectable.
-> Reproducer script at the end.
+
+
+On 2020/2/7 =E4=B8=8A=E5=8D=8812:00, Josef Bacik wrote:
+> On 2/5/20 2:10 AM, Qu Wenruo wrote:
+>> [BUG]
+>> There is a fuzzed image which could cause KASAN report at unmount time=
+=2E
+>>
+>> =C2=A0=C2=A0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> =C2=A0=C2=A0 BUG: KASAN: use-after-free in btrfs_queue_work+0x2c1/0x39=
+0
+>> =C2=A0=C2=A0 Read of size 8 at addr ffff888067cf6848 by task umount/19=
+22
+>>
+>> =C2=A0=C2=A0 CPU: 0 PID: 1922 Comm: umount Tainted: G=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 W=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ 5.0.21 #1
+>> =C2=A0=C2=A0 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
+OS
+>> 1.10.2-1ubuntu1 04/01/2014
+>> =C2=A0=C2=A0 Call Trace:
+>> =C2=A0=C2=A0=C2=A0 dump_stack+0x5b/0x8b
+>> =C2=A0=C2=A0=C2=A0 print_address_description+0x70/0x280
+>> =C2=A0=C2=A0=C2=A0 kasan_report+0x13a/0x19b
+>> =C2=A0=C2=A0=C2=A0 btrfs_queue_work+0x2c1/0x390
+>> =C2=A0=C2=A0=C2=A0 btrfs_wq_submit_bio+0x1cd/0x240
+>> =C2=A0=C2=A0=C2=A0 btree_submit_bio_hook+0x18c/0x2a0
+>> =C2=A0=C2=A0=C2=A0 submit_one_bio+0x1be/0x320
+>> =C2=A0=C2=A0=C2=A0 flush_write_bio.isra.41+0x2c/0x70
+>> =C2=A0=C2=A0=C2=A0 btree_write_cache_pages+0x3bb/0x7f0
+>> =C2=A0=C2=A0=C2=A0 do_writepages+0x5c/0x130
+>> =C2=A0=C2=A0=C2=A0 __writeback_single_inode+0xa3/0x9a0
+>> =C2=A0=C2=A0=C2=A0 writeback_single_inode+0x23d/0x390
+>> =C2=A0=C2=A0=C2=A0 write_inode_now+0x1b5/0x280
+>> =C2=A0=C2=A0=C2=A0 iput+0x2ef/0x600
+>> =C2=A0=C2=A0=C2=A0 close_ctree+0x341/0x750
+>> =C2=A0=C2=A0=C2=A0 generic_shutdown_super+0x126/0x370
+>> =C2=A0=C2=A0=C2=A0 kill_anon_super+0x31/0x50
+>> =C2=A0=C2=A0=C2=A0 btrfs_kill_super+0x36/0x2b0
+>> =C2=A0=C2=A0=C2=A0 deactivate_locked_super+0x80/0xc0
+>> =C2=A0=C2=A0=C2=A0 deactivate_super+0x13c/0x150
+>> =C2=A0=C2=A0=C2=A0 cleanup_mnt+0x9a/0x130
+>> =C2=A0=C2=A0=C2=A0 task_work_run+0x11a/0x1b0
+>> =C2=A0=C2=A0=C2=A0 exit_to_usermode_loop+0x107/0x130
+>> =C2=A0=C2=A0=C2=A0 do_syscall_64+0x1e5/0x280
+>> =C2=A0=C2=A0=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> [CAUSE]
+>> The fuzzed image has a completely screwd up extent tree:
+>> =C2=A0=C2=A0 leaf 29421568 gen 8 total ptrs 6 free space 3587 owner EX=
+TENT_TREE
+>> =C2=A0=C2=A0 refs 2 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 cu=
+rrent 5938
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 0 ke=
+y (12587008 168 4096) itemoff 3942 itemsize 53
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: extent data backref root 5 ob=
+jectid 259
+>> offset 0 count 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 1 ke=
+y (12591104 168 8192) itemoff 3889 itemsize 53
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: extent data backref root 5 ob=
+jectid 271
+>> offset 0 count 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 2 ke=
+y (12599296 168 4096) itemoff 3836 itemsize 53
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: extent data backref root 5 ob=
+jectid 259
+>> offset 4096 count 1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 3 ke=
+y (29360128 169 0) itemoff 3803 itemsize 33
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 2
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: tree block backref root 5
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 4 ke=
+y (29368320 169 1) itemoff 3770 itemsize 33
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 2
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: tree block backref root 5
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 5 ke=
+y (29372416 169 0) itemoff 3737 itemsize 33
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent refs 1 gen 9 flags 2
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ref#0: tree block backref root 5
+>>
+>> Note that, leaf 29421568 doesn't has its backref in extent tree.
+>> Thus extent allocator can re-allocate leaf 29421568 for other trees.
+>>
+>> Short version for the corruption:
+>> - Extent tree corruption
+>> =C2=A0=C2=A0 Existing tree block X can be allocated as new tree block.=
+
+>>
+>> - Tree block X allocated to log tree
+>> =C2=A0=C2=A0 The tree block X generation get bumped, and is traced by
+>> =C2=A0=C2=A0 log_root->dirty_log_pages now.
+>>
+>> - Log tree writes tree blocks
+>> =C2=A0=C2=A0 log_root->dirty_log_pages is cleaned.
+>>
+>> - The original owner of tree block X wants to modify its content
+>> =C2=A0=C2=A0 Instead of COW tree block X to a new eb, due to the bumpe=
+d
+>> =C2=A0=C2=A0 generation, tree block X is reused as is.
+>>
+>> =C2=A0=C2=A0 Btrfs believes tree block X is already dirtied due to its=
+ transid,
+>> =C2=A0=C2=A0 but it is not tranced by transaction->dirty_pages.
+>>
 >=20
-> This doesn't happen very often.  The repro script corrupts *every*
-> data block on one of the RAID5 drives, and only a handful of blocks
-> fail to be corrected--about 16 errors per 3GB of data, but sometimes
-> half or double that rate.  It behaves more like a race condition than
-> a boundary condition.  It can take a few tries to get a failure with a
-> 16GB disk array.  It seems to happen more often on 2-disk raid5 than
-> 5-disk raid5, but if you repeat the test enough times even a 5-disk
-> raid5 will eventually fail.
+> But at the write part we should have gotten BTRFS_HEADER_FLAG_WRITTEN,
+> so we should have cow'ed this block.=C2=A0 So this isn't what's happeni=
+ng,
+> right?
+
+=46rom my debugging, it's not the case. By somehow, after log tree writes=
+
+back, the tree block just got reused.
+
+>=C2=A0 Or is something else clearing the BTRFS_HEADER_FLAG_WRITTEN in
+> between the writeout and this part?=C2=A0 Thanks,
+
+It didn't occur to me at the time of writing, is it possible that log
+tree get freed, thus that tree block X is considered free, and get
+re-allocated to extent tree again?
+
+The problem is really killing me to digging.
+Can't we use this last-resort method anyway? The corrupted extent tree
+is really causing all kinds of issues we didn't expect...
+
+Thanks,
+Qu
+
 >=20
-> Kernels 4.16..5.3 all seem to behave similarly, so this is not a new bug.
-> I haven't tried this reproducer on kernels earlier than 4.16 due to
-> other raid5 issues in earlier kernels.
+> Josef
 
-Still reproducible on 5.5.1.  Some more details below:
 
-> [...snip...]
-> Reproducer part 1 (runs in a qemu with test disks on /dev/vdb and /dev/vd=
-c):
->=20
-> 	#!/bin/bash
-> 	set -x
->=20
-> 	# Reset state
-> 	umount /try
-> 	mkdir -p /try
->=20
-> 	# Create FS and mount.	Use raid1 metadata so the filesystem
-> 	# has a fair chance of survival.
-> 	mkfs.btrfs -draid5 -mraid1 -f /dev/vd[bc] || exit 1
-> 	btrfs dev scan
-> 	mount -onoatime /dev/vdb /try || exit 1
->=20
-> 	# Must be on btrfs
-> 	cd /try || exit 1
-> 	btrfs sub list . || exit 1
->=20
-> 	# Fill disk with files.  Increase seq for more test data
-> 	# to increase the chance of finding corruption.
-> 	for x in $(seq 0 3); do
-> 		sync &
-> 		rsync -axHSWI "/usr/." "/try/$(date +%s)" &
-> 		sleep 2
-> 	done
-> 	wait
->=20
-> 	# Remove half the files.  If you increased seq above, increase the
-> 	# '-2' here as well.
-> 	find /try/* -maxdepth 0 -type d -print | unsort | head -2 | while read x=
-; do
-> 		sync &
-> 		rm -fr "$x" &
-> 		sleep 2
-> 	done
-> 	wait
->=20
-> 	# Fill in some of the holes.  This is to get a good mix of
-> 	# partially filled RAID stripes of various sizes.
-> 	for x in $(seq 0 1); do
-> 		sync &
-> 		rsync -axHSWI "/usr/." "/try/$(date +%s)" &
-> 		sleep 2
-> 	done
-> 	wait
->=20
-> 	# Calculate hash we will use to verify data later
-> 	find -type f -exec sha1sum {} + > /tmp/sha1sums.txt
->=20
-> 	# Make sure it's all on the disk
-> 	sync
-> 	sysctl vm.drop_caches=3D3
->=20
-> 	# See distribution of data across drives
-> 	btrfs dev usage /try
-> 	btrfs fi usage /try
->=20
-> 	# Corrupt one byte of each of the first 4G on /dev/vdb,
-> 	# so that the crc32c algorithm will always detect the corruption.
-> 	# If you need a bigger test disk then increase the '4'.
-> 	# Leave the first 16MB of the disk alone so we don't kill the superblock.
-> 	perl -MFcntl -e '
-> 		for my $x (0..(4 * 1024 * 1024 * 1024 / 4096)) {
-> 			my $pos =3D int(rand(4096)) + 16777216 + ($x * 4096);
-> 			sysseek(STDIN, $pos, SEEK_SET) or die "seek: $!";
-> 			sysread(STDIN, $dat, 1) or die "read: $!";
-> 			sysseek(STDOUT, $pos, SEEK_SET) or die "seek: $!";
-> 			syswrite(STDOUT, chr(ord($dat) ^ int(rand(255) + 1)), 1) or die "write=
-: $!";
-> 		}
-> 	' </dev/vdb >/dev/vdb
->=20
-> 	# Make sure all that's on disk and our caches are empty
-> 	sync
-> 	sysctl vm.drop_caches=3D3
+--QgxOsLL01B7qpQt9FUyGamWmWqgadJ3IM--
 
-I split the test into two parts: everything up to the above line (let's
-call it part 1), and everything below this line (part 2).  Part 1 creates
-a RAID5 array with corruption on one disk.  Part 2 tries to read all the
-original data and correct the corrupted disk with sha1sum and btrfs scrub.
-
-I saved a copy of the VM's disk images after part 1, so I could repeatedly
-reset and run part 2 on identical filesystem images.
-
-I also split up
-
-	btrfs scrub start -rBd /try
-
-and replaced it with
-
-	btrfs scrub start -rBd /dev/vdb
-	btrfs scrub start -rBd /dev/vdc
-
-(and same for the non-read-only scrubs) so the scrub runs sequentially
-on each disk, instead of running on both in parallel.
-
-Original part 2:
-
-> 	# Before and after dev stat and read-only scrub to see what the damage l=
-ooks like.
-> 	# This will produce some ratelimited kernel output.
-> 	btrfs dev stat /try | grep -v ' 0$'
-> 	btrfs scrub start -rBd /try
-> 	btrfs dev stat /try | grep -v ' 0$'
->=20
-> 	# Verify all the files are correctly restored transparently by btrfs.
-> 	# btrfs repairs correctable blocks as a side-effect.
-> 	sha1sum --quiet -c /tmp/sha1sums.txt
->=20
-> 	# Do a scrub to clean up stray corrupted blocks (including superblocks)
-> 	btrfs dev stat /try | grep -v ' 0$'
-> 	btrfs scrub start -Bd /try
-> 	btrfs dev stat /try | grep -v ' 0$'
->=20
-> 	# This scrub should be clean, but sometimes is not.
-> 	btrfs scrub start -Bd /try
-> 	btrfs dev stat /try | grep -v ' 0$'
->=20
-> 	# Verify that the scrub didn't corrupt anything.
-> 	sha1sum --quiet -c /tmp/sha1sums.txt
-
-Multiple runs of part 2 produce different results in scrub:
-
-	result-1581019560.txt:scrub device /dev/vdb (id 1) done
-	result-1581019560.txt:Error summary:    super=3D1 csum=3D273977
-	result-1581019560.txt:scrub device /dev/vdc (id 2) done
-	result-1581019560.txt:Error summary:    read=3D1600744 csum=3D230813
-	result-1581019560.txt:[/dev/vdb].corruption_errs  504791
-
-	result-1581029949.txt:scrub device /dev/vdb (id 1) done
-	result-1581029949.txt:Error summary:    super=3D1 csum=3D273799
-	result-1581029949.txt:scrub device /dev/vdc (id 2) done
-	result-1581029949.txt:Error summary:    read=3D1600744 csum=3D230813
-	result-1581029949.txt:[/dev/vdb].corruption_errs  504613
-
-With scrub on the filesystem it is no better:
-
-	result-1.txt:scrub device /dev/vdb (id 1) done
-	result-1.txt:Error summary:    super=3D1 csum=3D272757
-	result-1.txt:scrub device /dev/vdc (id 2) done
-	result-1.txt:Error summary:    read=3D1600744 csum=3D230813
-	result-1.txt:[/dev/vdb].corruption_errs  503571
-	result-2.txt:scrub device /dev/vdb (id 1) done
-	result-2.txt:Error summary:    super=3D1 csum=3D273430
-	result-2.txt:scrub device /dev/vdc (id 2) done
-	result-2.txt:Error summary:    read=3D1600744 csum=3D230813
-	result-2.txt:[/dev/vdb].corruption_errs  504244
-	result-3.txt:scrub device /dev/vdb (id 1) done
-	result-3.txt:Error summary:    super=3D1 csum=3D273456
-	result-3.txt:scrub device /dev/vdc (id 2) done
-	result-3.txt:Error summary:    read=3D1600744 csum=3D230813
-	result-3.txt:[/dev/vdb].corruption_errs  504270
-
-The scrub summaries after the sha1sum -c are different too, although in
-this case the errors were all corrected (sha1sum -c is clean):
-
-	result-1.txt:scrub device /dev/vdb (id 1) done
-	result-1.txt:Error summary:    csum=3D29911
-	result-1.txt:scrub device /dev/vdc (id 2) done
-	result-1.txt:Error summary:    csum=3D11
-	result-2.txt:scrub device /dev/vdb (id 1) done
-	result-2.txt:Error summary:    csum=3D29919
-	result-2.txt:scrub device /dev/vdc (id 2) done
-	result-2.txt:Error summary:    csum=3D14
-	result-3.txt:scrub device /dev/vdb (id 1) done
-	result-3.txt:Error summary:    csum=3D29713
-	result-3.txt:scrub device /dev/vdc (id 2) done
-	result-3.txt:Error summary:    csum=3D9
-
-The error counts on /dev/vdb are different after the sha1sum -c,
-indicating that file reads are nondeterministically correcting or not
-correcting csum errors on btrfs raid5.  This could be due to readahead
-or maybe something else.
-
-The error counts on /dev/vdc are interesting, as that drive is not
-corrupted, nor does it have read errors, but it is very consistently
-reporting read=3D1600744 csum=3D230813 in scrub output.
-
---xOS8do0ZRfB5pORP
+--5DmM3Cp5UiqYIF8mFVH1NNDZCldGeVkDT
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXjyj8AAKCRCB+YsaVrMb
-nAoSAJ9D5lRgqhqbwTrGoGKRmGYj3byB0gCfbRPsy5hegkxaJKp9o17MTpWqMVM=
-=XdTr
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl48rkMACgkQwj2R86El
+/qhzdwf7BBKr5EgQb5L2+1ftfIsBnLUkCoe/7jtCU7Bp4JG5WKeZFbhVyEY4EvOJ
+/Ju3vUqY1bHcAGwmkMcR45kvjQ+CrKKqJRPAhWVlhnyP3YRm1Al0FudQPSILoM/L
+zSYVMWdlWPlrHuQdS4Lp9sdVcKrjMvBxh+k0asH5yBSxjZLfr2CPbBajZTvKoP8R
+Xybfpvh2e84vxdpR7wVANsb7Ni/0Sbbh1c3ZwqTiKPpeWNGewEk3b4f5SBc/CoYT
+ztHj4HBJccDDZu4GAEwQ2D7A9vj+QBL0o5eNNmcrHWEAVHCUjXy0d6ZT9QNcBGKe
+uec8JyvBL0aiSlpX9wa8G56Lhw16YA==
+=4p8v
 -----END PGP SIGNATURE-----
 
---xOS8do0ZRfB5pORP--
+--5DmM3Cp5UiqYIF8mFVH1NNDZCldGeVkDT--
