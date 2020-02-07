@@ -2,90 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E07155502
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB40715551C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 10:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgBGJsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 04:48:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35328 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgBGJsQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Feb 2020 04:48:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EF6CCAC65;
-        Fri,  7 Feb 2020 09:48:13 +0000 (UTC)
-Subject: Re: [PATCH 3/3] fstests: btrfs/022: Add debug output
-To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200207015942.9079-1-wqu@suse.com>
- <20200207015942.9079-4-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <ec164fd9-32a3-e5ef-7e15-fa1691c634ab@suse.com>
-Date:   Fri, 7 Feb 2020 11:48:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727178AbgBGJxF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 04:53:05 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:10557 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726728AbgBGJxF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 04:53:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581069184; x=1612605184;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uAhaW1PCwfpLEY/AjgTXX0WT17aWZpd3hV4pcZcfrvk=;
+  b=fyfbtuLpsxwG8+AuHJ0WdEicK/2AoJBfaT+E4rgkzuRBZU++SzoJvGTO
+   kqqX2/3z/RCV8KjZhIDvkbB9Shkyu4+c8vEgGJTdZ3NN66d5NHzaDHdK1
+   E1fxivxiNBpbNnyhKyWMfisAUWXLPEy2qu09Ul374E6c7qdLHgQwYux3r
+   SuTeZ5Jw3t9ymsPrOGoUXBg2UfOtyxJ16+qEFjdh3JGwShjkddX1pjfAX
+   oA7oF3QPkjQGvq+vxOEBUi7PBrvfKLdGIfOfG46uPwoCp0Lb/rVVPOwh4
+   8HtWK5J1zW3CBmSodVHo30/ncOt38VHFGsR6aq6VAlByPiKSHeqfIG/fP
+   A==;
+IronPort-SDR: m+9CnK2RHtuVm2UWZmQMb32mmLfglCDOiJuBuPdME9GNS7Dzh0tNk6NFM6idya+VWckZNxvkFD
+ HHBhY3Hoy5dqEqX8f2QEKkD2bRuU8Z++k2qPhG8DkyaLBtfiiMZ5CwgOFB5vgbqgJjclk561+a
+ NGy1efxu1Ry0j+afsjOrTyW8lVFQTNoCJMvpV9oBfRp2asNabROAqZhb63Ya2NxmXjoiOtWtUh
+ 8gFSNbxuQqk4b7M8zV4VYZKLQ5IFR4Ax+6VhrTI5ESadxr+gyfrfksrlHMAm4+QJv/TNQUROku
+ jAY=
+X-IronPort-AV: E=Sophos;i="5.70,412,1574092800"; 
+   d="scan'208";a="129341481"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2020 17:53:04 +0800
+IronPort-SDR: qJcSue52ogLl+svGGTqfnDCLvyUFhkPD55pKC82QCYhcQPxc9eJa/tSjb1VicraRo1+BAeSj/n
+ e7wRoVYE7Mql6nKO7/xK176Zb1cVk03gwmRIDgt5QZwpj9rTJyEF3Cahroth7own3bQWkvtYyO
+ eb8DZEtabAi6nvm4De0gMvf5qCkC1FWr/ucs4hdqiOIIBEMPaDbKDbQGOGEl7VyBKvolHQwIsE
+ tMzkDq5dmZcKNDHaYtMOqM5A3237Ln5GrG7Pp9W8Lcs29LNag2BuRm+6vMQGIJW/eswEZ4mQPK
+ zEuLA5Uh6DIMObdvypeUTCnS
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2020 01:46:02 -0800
+IronPort-SDR: MAlY9cJwe1Fts3ws/tHOaXWVw6oTtBnuDLoIzU5WdNMp078m3FYNMrKExbH0K0xuxJCIC3To9T
+ zwn+f8XlTHIMw6e+FvckYZjGEeTKKCGtAT8cIUFdor5AsOoGYFxgAAm6oPEot30sdS/JBW5fbm
+ rrL8OVzucS4I+VOkqa3HQmubNdZk9LghFB9/0FYXLPgiB7bgYkiUn/+Q/9zlfNoM7rqo14elQ+
+ p3pup2bAjbxGhj1dk/yCmywiz3d3HXEI+ATZVno3af2BHrxz4JzOhkSAWxK6GDE0Je6gMBpENX
+ Ccc=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip02.wdc.com with SMTP; 07 Feb 2020 01:53:03 -0800
+Received: (nullmailer pid 968290 invoked by uid 1000);
+        Fri, 07 Feb 2020 09:53:02 -0000
+Date:   Fri, 7 Feb 2020 18:53:02 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 12/20] btrfs: introduce clustered_alloc_info
+Message-ID: <20200207095302.62scyueq2zdxi6ac@naota.dhcp.fujisawa.hgst.com>
+References: <20200206104214.400857-1-naohiro.aota@wdc.com>
+ <20200206104214.400857-13-naohiro.aota@wdc.com>
+ <ae469d32-e2a7-72df-cdd7-30a81734201f@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20200207015942.9079-4-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ae469d32-e2a7-72df-cdd7-30a81734201f@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Feb 06, 2020 at 12:01:28PM -0500, Josef Bacik wrote:
+>On 2/6/20 5:42 AM, Naohiro Aota wrote:
+>>Introduce struct clustered_alloc_info to manage parameters related to
+>>clustered allocation. By separating clustered_alloc_info and
+>>find_free_extent_ctl, we can introduce other allocation policy. One can
+>>access per-allocation policy private information from "alloc_info" of
+>>struct find_free_extent_ctl.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/extent-tree.c | 99 +++++++++++++++++++++++++-----------------
+>>  1 file changed, 59 insertions(+), 40 deletions(-)
+>>
+>>diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+>>index b1f52eee24fe..8124a6461043 100644
+>>--- a/fs/btrfs/extent-tree.c
+>>+++ b/fs/btrfs/extent-tree.c
+>>@@ -3456,9 +3456,6 @@ struct find_free_extent_ctl {
+>>  	/* Where to start the search inside the bg */
+>>  	u64 search_start;
+>>-	/* For clustered allocation */
+>>-	u64 empty_cluster;
+>>-
+>>  	bool have_caching_bg;
+>>  	bool orig_have_caching_bg;
+>>@@ -3470,18 +3467,6 @@ struct find_free_extent_ctl {
+>>  	 */
+>>  	int loop;
+>>-	/*
+>>-	 * Whether we're refilling a cluster, if true we need to re-search
+>>-	 * current block group but don't try to refill the cluster again.
+>>-	 */
+>>-	bool retry_clustered;
+>>-
+>>-	/*
+>>-	 * Whether we're updating free space cache, if true we need to re-search
+>>-	 * current block group but don't try updating free space cache again.
+>>-	 */
+>>-	bool retry_unclustered;
+>>-
+>>  	/* If current block group is cached */
+>>  	int cached;
+>>@@ -3499,8 +3484,28 @@ struct find_free_extent_ctl {
+>>  	/* Allocation policy */
+>>  	enum btrfs_extent_allocation_policy policy;
+>>+	void *alloc_info;
+>>  };
+>>+struct clustered_alloc_info {
+>>+	/* For clustered allocation */
+>>+	u64 empty_cluster;
+>>+
+>>+	/*
+>>+	 * Whether we're refilling a cluster, if true we need to re-search
+>>+	 * current block group but don't try to refill the cluster again.
+>>+	 */
+>>+	bool retry_clustered;
+>>+
+>>+	/*
+>>+	 * Whether we're updating free space cache, if true we need to re-search
+>>+	 * current block group but don't try updating free space cache again.
+>>+	 */
+>>+	bool retry_unclustered;
+>>+
+>>+	struct btrfs_free_cluster *last_ptr;
+>>+	bool use_cluster;
+>This isn't the right place for this, rather I'd put it in the 
+>find_free_extent_ctl if you want it at all.
+>
+>And in fact I question the whole need for this in the first place.  I 
+>assume your goal is to just disable clustered allocation for shingle 
+>drives, so why don't you just handle that with your extent allocation 
+>policy flag?  If it's set to shingled then use_cluster = false and you 
+>are good to go, no need to add all this complication of the cluster 
+>ctl.
 
+Not really. The clustered allocator (= the current allocator) first
+try allocation using a cluster by calling find_free_extent_clustered()
+and, if it failed, try allocation without cluster by calling
+find_free_extent_unclustered(). This "use_cluster" indicates to skip
+the first find_free_extent_clustered().
 
-On 7.02.20 г. 3:59 ч., Qu Wenruo wrote:
-> When btrfs/022 fails, its $seqres.full doesn't contain much useful info
-> to debug.
-> 
-> This patch will add extra debug, including subvolid and full "btrfs
-> qgroup show" output.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+When not in BTRFS_EXTENT_ALLOC_CLUSTERED, then both of these functions
+are skipped (actually, another function for the policy is called). So
+the policy controls higher-level function call and the "use_cluster"
+controls lower level (only in BTRFS_EXTENT_ALLOC_CLUSTERED level)
+function call.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>If you are looking to save space in the ctl, then I would just union 
+>{} the cluster stuff inside of the find_free_extent_ctl so the right 
+>flags are used for the correction allocation policy.
+>
+>This whole last set of 10 patches needs to be reworked.  Thanks,
+
+I'm fine with keeping these variable in find_free_extent_ctl. We can
+delay this separation of clustered_alloc_info until we really want to
+e.g. when some other policy want to use many per-policy
+variables. (and, actually, zoned allocator is not using any per-policy
+variable)
+
+Thanks,
+Naohiro
