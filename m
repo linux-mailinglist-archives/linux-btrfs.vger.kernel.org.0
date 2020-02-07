@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB3E155047
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5D5155048
 	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 03:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgBGB7x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Feb 2020 20:59:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35040 "EHLO mx2.suse.de"
+        id S1727831AbgBGB74 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Feb 2020 20:59:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35074 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727600AbgBGB7w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Feb 2020 20:59:52 -0500
+        id S1727600AbgBGB74 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Feb 2020 20:59:56 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 288A6AC79;
-        Fri,  7 Feb 2020 01:59:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 04690AEA2;
+        Fri,  7 Feb 2020 01:59:53 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH 1/3] fstests: btrfs: Use word mathcing for _btrfs_get_subvolid()
-Date:   Fri,  7 Feb 2020 09:59:40 +0800
-Message-Id: <20200207015942.9079-2-wqu@suse.com>
+Subject: [PATCH 2/3] fstests: btrfs/022: Match qgroup id more correctly
+Date:   Fri,  7 Feb 2020 09:59:41 +0800
+Message-Id: <20200207015942.9079-3-wqu@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200207015942.9079-1-wqu@suse.com>
 References: <20200207015942.9079-1-wqu@suse.com>
@@ -31,39 +31,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Current _btrfs_get_subvolid() can't handle the following case at all:
-  # btrfs subvol list $SCRATCH_MNT
-  ID 256 gen 9 top level 5 path subv1
-  ID 257 gen 7 top level 256 path subv1/subv2
-  ID 258 gen 8 top level 256 path subv1/subv3
-  ID 259 gen 9 top level 256 path subv1/subv4
+[BUG]
+Btrfs/022 sometimes fails with snapshot's reference mismatch with its
+source.
 
-If we call "_btrfs_get_subvolid $SCRATCH_MNT subv1" we will get a list
-of all subvolumes, not the subvolid of subv1.
+[CAUSE]
+Since commit fd0830929573 ("fsstress: add the ability to create
+snapshots") adds the ability for fsstress to create/delete snapshot and
+subvolumes, fsstress will create new subvolumes under test dir.
 
-To address this problem, we go egrep to match $name which starts with a
-space, and at the end of a line.
-So that all other subvolumes won't hit.
+For example, we could have the following subvolumes created by fsstress:
+subvol a id=256
+subvol b id=306
+qgroupid         rfer         excl
+--------         ----         ----
+0/5             16384        16384
+0/256        13914112        16384
+...
+0/263         3080192      2306048 		<< 2 *306* 048
+...
+0/306        13914112        16384 		<< 0/ *306
+
+So when we're greping for subvolid 306, it matches qgroup 0/263 first,
+which has difference size, and caused false alert.
+
+[FIX]
+Instead of greping "$subvolid" blindly, now grep "0/$subvolid" to catch
+qgroupid correctly, without hitting rfer/excl values.
 
 Suggested-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/btrfs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests/btrfs/022 | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/common/btrfs b/common/btrfs
-index 19ac7cc4..85b33e4c 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -7,7 +7,7 @@ _btrfs_get_subvolid()
- 	mnt=$1
- 	name=$2
+diff --git a/tests/btrfs/022 b/tests/btrfs/022
+index 5348d3ed..3e729852 100755
+--- a/tests/btrfs/022
++++ b/tests/btrfs/022
+@@ -49,10 +49,10 @@ _basic_test()
  
--	$BTRFS_UTIL_PROG sub list $mnt | grep $name | awk '{ print $2 }'
-+	$BTRFS_UTIL_PROG sub list $mnt | egrep "\s$name$" | awk '{ print $2 }'
+ 	# the shared values of both the original subvol and snapshot should
+ 	# match
+-	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
++	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
+ 	a_shared=$(echo $a_shared | awk '{ print $2 }')
+ 	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
+-	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
++	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
+ 	b_shared=$(echo $b_shared | awk '{ print $2 }')
+ 	[ $b_shared -eq $a_shared ] || _fail "shared values don't match"
  }
- 
- # _require_btrfs_command <command> [<subcommand>|<option>]
+@@ -68,12 +68,12 @@ _rescan_test()
+ 	run_check $FSSTRESS_PROG -d $SCRATCH_MNT/a -w -p 1 -n 2000 \
+ 		$FSSTRESS_AVOID
+ 	sync
+-	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
++	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
+ 	echo $output >> $seqres.full
+ 	refer=$(echo $output | awk '{ print $2 }')
+ 	excl=$(echo $output | awk '{ print $3 }')
+ 	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+-	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep $subvolid)
++	output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid")
+ 	echo $output >> $seqres.full
+ 	[ $refer -eq $(echo $output | awk '{ print $2 }') ] || \
+ 		_fail "reference values don't match after rescan"
 -- 
 2.23.0
 
