@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED42E15581E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A8F15581F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Feb 2020 14:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgBGNIQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Feb 2020 08:08:16 -0500
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:36535 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgBGNIP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:08:15 -0500
-Received: by mail-wr1-f44.google.com with SMTP id z3so2635662wru.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Feb 2020 05:08:14 -0800 (PST)
+        id S1727068AbgBGNIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Feb 2020 08:08:19 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:42595 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgBGNIT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Feb 2020 08:08:19 -0500
+Received: by mail-wr1-f52.google.com with SMTP id k11so2588150wrd.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Feb 2020 05:08:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=U2Nx0CU20NEgvi6F51a4zB9i7nxAW6X62OkyehGmyzo=;
-        b=QVLe9kzDn82xs2tsSRFzx4ZNDsEYAvp5971DdNgxL6IU1kWw949v5JpcY4GXPcCJOj
-         TOf2RfuoRZwzvuQe3eV+NJSPXYPnjP+FSkLyEXTt1ioBjQuIP2Ko6szcSJgPdm7jR1R5
-         2/1f/H41CFNSrcIAM6tDcIubb7ih8ln0FLxDpK6jnUYRjKqGPFsj3puA/mRonqVGff0Y
-         fTRP4HYn0KVYrsGnSg0cWs+HDn35qSTx6W1cwGDOyTcLFQ8Af76UyjMRcyodE9e01m95
-         wRtxl7kU8hCr0w/+kj02SxyhCZdsEJYZCBzXdK19WdQucgWcwjMI0gHkSI5WHyGep1dK
-         4XeQ==
+        bh=XcmUwL5ya8Anb5xEWqigLuvAVCthUDkFcuayJ2Poc4c=;
+        b=Fn/3kt8RNQM1CAtDzKCZspkDVVZ+d+WjK6iIejDjthLVaiqfeo4tYo502EvEunNdD3
+         0osUOWuphF4t6uzZRR2G7t2DkYf4OIvf3Gm2hXmXEyyuzhYaq3ao8GKiQ7Ln2g6EtHDg
+         bUjm+zNXCoSrnhBNXACUs7Fv8kwcp+Aw2Xj/Sr4q1397MIAgmgA18+5Vv3DsKNdox16v
+         U7r6ITreAy74goBBd0TamsjapaTgFttQ0UHdQLN/kMWKSIn/wGYZBDB4wX92epIQs2g0
+         F45Jo0cC2QRUCjGxVkN9U2Bq99OR/B7UBoZ1coDVoM0jQBVtjERN4e/WFUDFaxnZiRAQ
+         UzAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=U2Nx0CU20NEgvi6F51a4zB9i7nxAW6X62OkyehGmyzo=;
-        b=SAPeg0gLTBi/lTdUTi/3nBcdYJvZ4x5/AEVmntmhIL+nPtI14gR6yl7YBYNeqvoZew
-         jfAo32N4AXshrq7G+1B1sRFRgYdpcUVK5xG+BEfoiNfdV/l55jQP0rxYCGvphamxZFWx
-         4455G2M99HIUoGYyVLo9ssd74kPzRTSUYBS2lqIxI+1+zqpWZgvDWzysHy9JQYVyi2fL
-         c//dT+PEf7A1nEnB3At2ikcW3DoGBbGeXFYqiPbJSoIZ8Ad1xuBKKfVrkyGWEnoqvHU1
-         CiAWjAgZOxK9QGipUmWpZF7aF2ej+51GaqMDgMW/HV/5dKQSDXeiW9+G1LRkTaxGIG5w
-         G5lA==
-X-Gm-Message-State: APjAAAVZWLjRHoKGOxaUbMh7wRq02s6ZVVNaMY7W5yM8Kce6WZ5qb2fo
-        Rjh6ulAg49mY5rTs8CDJGIBUNbLa
-X-Google-Smtp-Source: APXvYqxlgulW+bDFm5TenowbAR3DXAFyR+voFtsyK155zUSz68fVylMmwwsvVCgPbk/o72pIjqjh+g==
-X-Received: by 2002:a5d:608f:: with SMTP id w15mr4640073wrt.20.1581080893847;
-        Fri, 07 Feb 2020 05:08:13 -0800 (PST)
+        bh=XcmUwL5ya8Anb5xEWqigLuvAVCthUDkFcuayJ2Poc4c=;
+        b=EwukFW1JnY32NCEs4IVMpcwhNVbsbwpy7g2/uS/NEW7lTUyqTCnhDffBeikB2KbjhP
+         uWO9MwVmkqYWVKPY90s6B3rAp3qLX5vgwq0KSazTnOfmL9WtOb2MkNF8q4pcspkwV2m4
+         dfDTLVoM1t1aQGCWZ1fbAq6SB1VEX1hPQmk8AcRIkU5gdKXv7fB2HKJ+/cB6ajmtBVWG
+         mJhZTYNyTB6llWUOLT6QGmpqXrPDvyJ2n9oDnFF2LdZTY1O12+t7GGYeYbGLOGmfA7j7
+         hQJ3fHasrj0+yY9y7ut9AotqwrhuJWsN6a/nHZxJ3kuRp0a7ZFK/NFXKcva5KUbRM19S
+         Rc1g==
+X-Gm-Message-State: APjAAAV+TILVaTqaY1JWLAOticKAWjymZFUoO0gv7vnc/lpM0CBysLTn
+        9TTp6wT9Vxb0SNx8KtiECMc=
+X-Google-Smtp-Source: APXvYqzH0sT4+XrPHgiO9WRthafjEWzoN3yd3M7MfIg7wiet4Yuw6s1olK8AkT6FDxbCyWS90J3vlA==
+X-Received: by 2002:a5d:5706:: with SMTP id a6mr4686142wrv.108.1581080896321;
+        Fri, 07 Feb 2020 05:08:16 -0800 (PST)
 Received: from hephaestus.suse.de ([186.212.94.124])
-        by smtp.gmail.com with ESMTPSA id n1sm3260702wrw.52.2020.02.07.05.08.11
+        by smtp.gmail.com with ESMTPSA id n1sm3260702wrw.52.2020.02.07.05.08.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 05:08:13 -0800 (PST)
+        Fri, 07 Feb 2020 05:08:15 -0800 (PST)
 From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 To:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCHv2 2/4] libbtrfsutil: add IOC_SNAP_DESTROY_V2 to ioctl.h
-Date:   Fri,  7 Feb 2020 10:10:26 -0300
-Message-Id: <20200207131028.9977-3-marcos.souza.org@gmail.com>
+Subject: [PATCHv2 3/4] libbtrfsutil: Introduce btrfs_util_delete_subvolume_by_id_fd
+Date:   Fri,  7 Feb 2020 10:10:27 -0300
+Message-Id: <20200207131028.9977-4-marcos.souza.org@gmail.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20200207131028.9977-1-marcos.souza.org@gmail.com>
 References: <20200207131028.9977-1-marcos.souza.org@gmail.com>
@@ -62,57 +62,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-This ioctl will make possible to delete a subvolume/snapshot by using
-the subvolume id.
+This new function will use the new BTRFS_IOC_SNAP_DESTROY_V2 to delete a
+subvolume using it's id. The parent_fs argument should be a mount point.
 
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
+ libbtrfsutil/btrfsutil.h | 11 +++++++++++
+ libbtrfsutil/subvolume.c | 16 ++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-Changes from v1:
-* Moved subvolid member to the same union containing name and devid (David)
-* Changed BTRFS_SUBVOL_DELETE_BY_ID to BTRFS_SUBVOL_SPEC_BY_ID (David,
-  Christoph)
-
-
- libbtrfsutil/btrfs.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
-index c9a61b30..d1206410 100644
---- a/libbtrfsutil/btrfs.h
-+++ b/libbtrfsutil/btrfs.h
-@@ -36,12 +36,14 @@ struct btrfs_ioctl_vol_args {
- #define BTRFS_DEVICE_PATH_NAME_MAX 1024
+diff --git a/libbtrfsutil/btrfsutil.h b/libbtrfsutil/btrfsutil.h
+index 0442af6e..c4cab2e0 100644
+--- a/libbtrfsutil/btrfsutil.h
++++ b/libbtrfsutil/btrfsutil.h
+@@ -488,6 +488,17 @@ enum btrfs_util_error btrfs_util_delete_subvolume_fd(int parent_fd,
+ 						     const char *name,
+ 						     int flags);
  
- #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
-+#define BTRFS_SUBVOL_SPEC_BY_ID	(1ULL << 4)
++/**
++ * btrfs_util_delete_subvolume_by_id_fd() - Delete a subvolume or snapshot using
++ * subvolume id.
++ * @path: Path of the subvolume to delete.
++ * @subvolid: Subvolume id of the subvolume or snapshot to be deleted.
++ *
++ * Return: %BTRFS_UTIL_OK on success, non-zero error code on failure.
++ */
++enum btrfs_util_error btrfs_util_delete_subvolume_by_id_fd(int parent_fd,
++							uint64_t subvolid);
++
+ struct btrfs_util_subvolume_iterator;
  
- #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
- 			(BTRFS_SUBVOL_CREATE_ASYNC |	\
- 			BTRFS_SUBVOL_RDONLY |		\
- 			BTRFS_SUBVOL_QGROUP_INHERIT |	\
--			BTRFS_DEVICE_SPEC_BY_ID)
-+			BTRFS_DEVICE_SPEC_BY_ID |	\
-+			BTRFS_SUBVOL_SPEC_BY_ID)
+ /**
+diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
+index 3f8343a2..204a837b 100644
+--- a/libbtrfsutil/subvolume.c
++++ b/libbtrfsutil/subvolume.c
+@@ -1290,6 +1290,22 @@ PUBLIC enum btrfs_util_error btrfs_util_delete_subvolume_fd(int parent_fd,
+ 	return BTRFS_UTIL_OK;
+ }
  
- #define BTRFS_FSID_SIZE 16
- #define BTRFS_UUID_SIZE 16
-@@ -119,6 +121,7 @@ struct btrfs_ioctl_vol_args_v2 {
- 	};
- 	union {
- 		char name[BTRFS_SUBVOL_NAME_MAX + 1];
-+		__u64 subvolid;
- 		__u64 devid;
- 	};
- };
-@@ -942,5 +945,7 @@ enum btrfs_err_code {
- 				struct btrfs_ioctl_get_subvol_rootref_args)
- #define BTRFS_IOC_INO_LOOKUP_USER _IOWR(BTRFS_IOCTL_MAGIC, 62, \
- 				struct btrfs_ioctl_ino_lookup_user_args)
-+#define BTRFS_IOC_SNAP_DESTROY_V2 _IOW(BTRFS_IOCTL_MAGIC, 63, \
-+				struct btrfs_ioctl_vol_args_v2)
- 
- #endif /* _LINUX_BTRFS_H */
++PUBLIC enum btrfs_util_error btrfs_util_delete_subvolume_by_id_fd(int parent_fd,
++							    uint64_t subvolid)
++{
++	struct btrfs_ioctl_vol_args_v2 args = {};
++	int ret;
++
++	args.flags = BTRFS_SUBVOL_SPEC_BY_ID;
++	args.subvolid = subvolid;
++
++	ret = ioctl(parent_fd, BTRFS_IOC_SNAP_DESTROY_V2, &args);
++	if (ret == -1)
++		return BTRFS_UTIL_ERROR_SNAP_DESTROY_FAILED;
++
++	return BTRFS_UTIL_OK;
++}
++
+ PUBLIC void btrfs_util_destroy_subvolume_iterator(struct btrfs_util_subvolume_iterator *iter)
+ {
+ 	if (iter) {
 -- 
 2.24.0
 
