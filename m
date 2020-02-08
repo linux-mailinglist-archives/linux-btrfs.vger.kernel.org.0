@@ -2,183 +2,286 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B56156388
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Feb 2020 10:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2746E1563C2
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Feb 2020 11:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgBHJHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 8 Feb 2020 04:07:12 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:41650 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgBHJHL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 8 Feb 2020 04:07:11 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 01894vhT057588;
-        Sat, 8 Feb 2020 09:07:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fBlNkLj7F+aOk6tLBCyoaTh6Qi9ABDfmT1WVlXD+6nI=;
- b=Fnhdvo66F1OC6YqZPeftn1WxuvHSyTQ1974gMitfCI2Z9RbFXFVRMVtJhgFbICFXTzc6
- I2BcTISCJTGclD3TVY7RE1j+02Ty/K8VgO0wpoeJ+SBBG7OD2RIk0N8kWoHnBrx8neM/
- ZRYb42+BZP+AxKbUS3WBnAPGanza4oBGMHNqRXKq0hNy7AssPvPvcixXPyHjgTWo9Qwd
- uSMb/umCeDpqrtMqGQ7lv8R71P0jjqqMbEH9xVm5zVYpKdCTRzfgi1CSmgOwDR5MeHpQ
- 9O4tKi3t8ZPCd+d72Vs0h4+4AFoLdVY6+NvXlLvmaNM1Jc15OHYIZSlb4CZXHb67siu9 mA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2y1nms0f10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 Feb 2020 09:07:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 01894k01122625;
-        Sat, 8 Feb 2020 09:07:05 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2y1k1snc6e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 Feb 2020 09:07:05 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01897323008508;
-        Sat, 8 Feb 2020 09:07:03 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 08 Feb 2020 01:07:03 -0800
-Subject: Re: [PATCH] fstests: btrfs/179 call quota rescan
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <1581076895-6688-1-git-send-email-anand.jain@oracle.com>
- <1fae4e42-e8ce-d16d-8b2f-cada33ee67bf@gmx.com>
- <580c99c8-dcfd-d12b-6ede-7636bf404d32@oracle.com>
- <e4a8a688-40bc-c88e-7ccb-ca7c958fc457@gmx.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <84b66420-4c4a-93b9-52af-37e85a343773@oracle.com>
-Date:   Sat, 8 Feb 2020 17:06:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726918AbgBHKHr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 8 Feb 2020 05:07:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37038 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726876AbgBHKHr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 8 Feb 2020 05:07:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6FEE8B0B6
+        for <linux-btrfs@vger.kernel.org>; Sat,  8 Feb 2020 10:07:44 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v4] btrfs: Don't submit any btree write bio after transaction is aborted
+Date:   Sat,  8 Feb 2020 18:07:40 +0800
+Message-Id: <20200208100740.81762-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <e4a8a688-40bc-c88e-7ccb-ca7c958fc457@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9524 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2002080076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9524 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2002080076
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+There is a fuzzed image which could cause KASAN report at unmount time.
 
+  ==================================================================
+  BUG: KASAN: use-after-free in btrfs_queue_work+0x2c1/0x390
+  Read of size 8 at addr ffff888067cf6848 by task umount/1922
 
-On 2/8/20 7:28 AM, Qu Wenruo wrote:
-> 
-> 
-> On 2020/2/7 下午11:59, Anand Jain wrote:
->>
->>
->> On 7/2/20 8:15 PM, Qu Wenruo wrote:
->>>
->>>
->>> On 2020/2/7 下午8:01, Anand Jain wrote:
->>>> On some systems btrfs/179 fails as the check finds that there is
->>>> difference in the qgroup counts.
->>>>
->>>> By the async nature of qgroup tree scan, the latest qgroup counts at the
->>>> time of umount might not be upto date,
->>>
->>> Yes, so far so good.
->>>
->>>> if it isn't then the check will
->>>> report the difference in count. The difference in qgroup counts are
->>>> anyway
->>>> updated in the following mount, so it is not a real issue that this test
->>>> case is trying to verify.
->>>
->>> No problem either.
->>>
->>>> So make sure the qgroup counts are updated
->>>> before unmount happens and make the check happy.
->>>
->>> But the solution doesn't look correct to me.
->>>
->>> We should either make btrfs-check to handle such half-dropped case
->>> better,
->>
->>   Check is ok. The count as check counts matches with the count after the
->> mount. So what is recorded in the qgroup is not upto date.
-> 
-> Nope. Qgroup records what's in commit tree. For unmounted fs, there is
-> no difference in commit tree and current tree.
-> 
-> Thus the qgroup scan in btrfs-progs is different from kernel.
-> Please go check how the btrfs-progs code to see how the difference comes.
-> 
->>
->>> or find a way to wait for all subvolume drop to be finished in
->>> test case.
->>
->> Yes this is one way. Just wait for few seconds will do, test passes. Do
->> you know any better way?
-> 
-> I didn't remember when, but it looks like `btrfs fi sync` used to wait
-> for snapshot drop.
-> But not now. If we have a way to wait for cleaner to finish, we can
-> solve it pretty easily.
+  CPU: 0 PID: 1922 Comm: umount Tainted: G        W         5.0.21 #1
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+  Call Trace:
+   dump_stack+0x5b/0x8b
+   print_address_description+0x70/0x280
+   kasan_report+0x13a/0x19b
+   btrfs_queue_work+0x2c1/0x390
+   btrfs_wq_submit_bio+0x1cd/0x240
+   btree_submit_bio_hook+0x18c/0x2a0
+   submit_one_bio+0x1be/0x320
+   flush_write_bio.isra.41+0x2c/0x70
+   btree_write_cache_pages+0x3bb/0x7f0
+   do_writepages+0x5c/0x130
+   __writeback_single_inode+0xa3/0x9a0
+   writeback_single_inode+0x23d/0x390
+   write_inode_now+0x1b5/0x280
+   iput+0x2ef/0x600
+   close_ctree+0x341/0x750
+   generic_shutdown_super+0x126/0x370
+   kill_anon_super+0x31/0x50
+   btrfs_kill_super+0x36/0x2b0
+   deactivate_locked_super+0x80/0xc0
+   deactivate_super+0x13c/0x150
+   cleanup_mnt+0x9a/0x130
+   task_work_run+0x11a/0x1b0
+   exit_to_usermode_loop+0x107/0x130
+   do_syscall_64+0x1e5/0x280
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-A sleep at the end of the test case also makes it count consistent.
-As the intention of the test case is to test for the hang, so sleep 5
-at the end of the test case is reasonable.
+[CAUSE]
+The fuzzed image has a completely screwd up extent tree:
+  leaf 29421568 gen 8 total ptrs 6 free space 3587 owner EXTENT_TREE
+  refs 2 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 current 5938
+          item 0 key (12587008 168 4096) itemoff 3942 itemsize 53
+                  extent refs 1 gen 9 flags 1
+                  ref#0: extent data backref root 5 objectid 259 offset 0 count 1
+          item 1 key (12591104 168 8192) itemoff 3889 itemsize 53
+                  extent refs 1 gen 9 flags 1
+                  ref#0: extent data backref root 5 objectid 271 offset 0 count 1
+          item 2 key (12599296 168 4096) itemoff 3836 itemsize 53
+                  extent refs 1 gen 9 flags 1
+                  ref#0: extent data backref root 5 objectid 259 offset 4096 count 1
+          item 3 key (29360128 169 0) itemoff 3803 itemsize 33
+                  extent refs 1 gen 9 flags 2
+                  ref#0: tree block backref root 5
+          item 4 key (29368320 169 1) itemoff 3770 itemsize 33
+                  extent refs 1 gen 9 flags 2
+                  ref#0: tree block backref root 5
+          item 5 key (29372416 169 0) itemoff 3737 itemsize 33
+                  extent refs 1 gen 9 flags 2
+                  ref#0: tree block backref root 5
 
-Thanks, Anand
+Note that, leaf 29421568 doesn't has its backref in extent tree.
+Thus extent allocator can re-allocate leaf 29421568 for other trees.
 
-> Thanks,
-> Qu
-> 
->>
->> Thanks, Anand
->>
->>> Papering the test by rescan is not a good idea at all.
->>> If one day we really hit some qgroup accounting problem, this papering
->>> way could hugely reduce the coverage.
->>>
->>
->>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>>> ---
->>>>    tests/btrfs/179 | 8 ++++++++
->>>>    1 file changed, 8 insertions(+)
->>>>
->>>> diff --git a/tests/btrfs/179 b/tests/btrfs/179
->>>> index 4a24ea419a7e..74e91841eaa6 100755
->>>> --- a/tests/btrfs/179
->>>> +++ b/tests/btrfs/179
->>>> @@ -109,6 +109,14 @@ wait $snapshot_pid
->>>>    kill $delete_pid
->>>>    wait $delete_pid
->>>>    +# By the async nature of qgroup tree scan, the latest qgroup
->>>> counts at the time
->>>> +# of umount might not be upto date, if it isn't then the check will
->>>> report the
->>>> +# difference in count. The difference in qgroup counts are anyway
->>>> updated in the
->>>> +# following mount, so it is not a real issue that this test case is
->>>> trying to
->>>> +# verify. So make sure the qgroup counts are updated before unmount
->>>> happens.
->>>> +
->>>> +$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
->>>> +
->>>>    # success, all done
->>>>    echo "Silence is golden"
->>>>   
->>>
-> 
+In short, the bug is caused by:
+- Existing tree block get allocated to log tree
+  This got its generation bumped.
+
+- Log tree balance cleaned dirty bit of offending tree block
+  It will not be written back to disk, thus no WRITTEN flag.
+
+- Original owner of the tree block get COWed
+  Since the tree block has higher transid, no WRITTEN flag, it's reused,
+  and not traced by transaction::dirty_pages.
+
+- Transaction aborted
+  Tree blocks get cleaned according to transaction::dirty_pages. But the
+  offending tree block is not recorded at all.
+
+- Fs unmount
+  Btrfs believes all pages are cleaned, destroying all workqueue, then
+  call iput(btree_inode).
+  But offending tree block is still dirty, which triggers writeback, and
+  cause use-after-free bug.
+
+The detailed sequence looks like this:
+- Initial status
+  eb: 29421568, header=WRITTEN bflags_dirty=0, page_dirty=0, gen=8,
+      not traced by any dirty extent_iot_tree.
+
+- New tree block is allocated
+  Since there is no backref for 29421568, it's re-allocated as new tree
+  block.
+  Keep in mind that, tree block 29421568 is still referred by extent
+  tree.
+
+- Tree block 29421568 is filled for log tree
+  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9 << (gen bumped)
+      traced by btrfs_root::dirty_log_pages
+
+- Some log tree operations
+  Since the fs is using node size 4096, the log tree can easily go a
+  level higher.
+
+- Log tree needs balance
+  Tree block 29421568 gets all it content pushed to right, thus now
+  it is empty, and btrfs don't need it.
+  btrfs_clean_tree_block() from __push_leaf_right() get called.
+
+  eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
+      traced by btrfs_root::dirty_log_pages
+
+- Log tree write back
+  btree_write_cache_pages() go through dirty pages ranges, but since
+  page of tree block 29421568 gets cleaned already, it's not written
+  back to disk. Thus it doesn't have WRITTEN bit set.
+  But ranges in dirty_log_pages are cleared.
+
+  eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
+      not traced by any dirty extent_iot_tree.
+
+- Extent tree update when committing transaction
+  Since tree block 29421568 has transid equals to running trans, and has
+  no WRITTEN bit, should_cow_block() will use it directly without adding
+  it to btrfs_transaction::dirty_pages.
+
+  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
+      not traced by any dirty extent_iot_tree.
+
+  At this stage, we're doomed. We have a dirty eb not traced by any
+  extent io tree.
+
+- Transaction get aborted due to corrupted extent tree
+  Btrfs cleans up dirty pages according to transaction::dirty_pages and
+  btrfs_root::dirty_log_pages.
+  But since tree block 29421568 is not traced by either of them, it's
+  still dirty.
+
+  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
+      not traced by any dirty extent_iot_tree.
+
+- Fs unmount
+  Since btrfs believes all its cleanup has done, it destroys all its
+  workqueue. Then call iput(btree_inode), expecting no dirty pages.
+  But tree 29421568 is still dirty, thus triggering writeback.
+  Since all workqueues are already freed, we cause use-after-free.
+
+This shows us that, log tree blocks + back extent tree can cause wild
+dirty pages.
+
+[FIX]
+To fix the problem, don't submit any btree write bio after aborted
+transaction.
+This is the last safe net, just in case there are other cases can
+cause similar problem.
+
+Link: https://github.com/bobfuzzer/CVE/tree/master/CVE-2019-19377
+CVE: CVE-2019-19377
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+To Josef,
+
+There is another solution, by resetting the eb's generation to 0 in
+btrfs_clean_tree_block(), so that later should_cow_block() will choose
+to COW other than reuse.
+
+But that would cause ASSERT() if CONFIG_BTRFS_FS_CHECK_INTEGRITY is
+enabled.
+As described, the offending tree block is completely empty during log
+tree rebalance, if it's COWed for extent tree, tree-checker won't
+allow empty extent tree at all, thus we will hit ASSERT() in
+btrfs_mark_buffer_dirty().
+
+I'm not sure if we should go that direction. So I only go the
+last-safe-net method.
+
+Changelog:
+v2:
+- More detailed reason on why the dirty pages are not cleaned up
+  So regular cleanup method won't work on this extremely corrupted case.
+  Thus we still need this last resort method to prevent use-after-free.
+
+v3:
+- Dig further to find out the cause
+  It's log tree bumping transid of existing tree blocks causing the
+  problem.
+  This breaks COW condition, making btrfs to dirty eb but not tracing
+  it.
+
+  The existing cleanup for log tree is fine for sane fs.
+  But when fs goes insane, no sane cleanup makes sense now.
+
+v4:
+- Add the missing piece of why WRITTEN bit is not set
+  It's in tree balance, which calls btrfs_clean_tree_block(), making
+  that tree block to have no WRITTEN bit but still has bumped
+  generation.
+  It's a good adventure, but I won't want to debug such damn complex
+  case any more.
+---
+ fs/btrfs/extent_io.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 2f4802f405a2..59fb3270d3cf 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3927,6 +3927,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 		.extent_locked = 0,
+ 		.sync_io = wbc->sync_mode == WB_SYNC_ALL,
+ 	};
++	struct btrfs_fs_info *fs_info = tree->fs_info;
+ 	int ret = 0;
+ 	int done = 0;
+ 	int nr_to_write_done = 0;
+@@ -4036,7 +4037,39 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 		end_write_bio(&epd, ret);
+ 		return ret;
+ 	}
+-	ret = flush_write_bio(&epd);
++	/*
++	 * If transaction is aborted, don't allow any write bio to be
++	 * submitted.
++	 *
++	 * This would prevent use-after-free if we had dirty pages not
++	 * cleaned up, which can still happen by fuzzed images.
++	 *
++	 * - Bad extent tree
++	 *   Allowing existing tree block to be allocated for other trees.
++	 *
++	 * - Log tree operations
++	 *   Exiting tree blocks get allocated to log tree, bumps its
++	 *   generation, then get cleaned in tree re-balance.
++	 *   Such tree block will not be written back, since it's clean,
++	 *   thus no WRITTEN flag set.
++	 *   And after log writes back, this tree block is not traced by
++	 *   any dirty extent_io_tree.
++	 *
++	 * - Offending tree block gets re-dirtied from its original owner
++	 *   Since it has bumped generation, no WRITTEN flag, it can be
++	 *   reused without COWing. This tree block will not be traced
++	 *   by btrfs_transaction::dirty_pages.
++	 *
++	 *   Now such dirty tree block will not be cleaned by any dirty
++	 *   extent io tree. Thus we don't want to submit such wild eb
++	 *   if transaction is aborted.
++	 */
++	if (!test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state)) {
++		ret = flush_write_bio(&epd);
++	} else {
++		ret = -EUCLEAN;
++		end_write_bio(&epd, ret);
++	}
+ 	return ret;
+ }
+ 
+-- 
+2.25.0
+
