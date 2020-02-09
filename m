@@ -2,234 +2,213 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DAB156B40
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 16:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B55156BAD
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 18:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgBIPxC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Feb 2020 10:53:02 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:53735 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727692AbgBIPxC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Feb 2020 10:53:02 -0500
-Received: by mail-pj1-f66.google.com with SMTP id n96so3078756pjc.3;
-        Sun, 09 Feb 2020 07:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rg3xtxUVxTdvNUv6i3nkOtjO2KPDKiqBIT9VHd1+jr4=;
-        b=c6p8btqpouR9XCizjPgKAdQbUosUfrlWVA1BUTamjdr+dm6uyCDI9cn1AhCUTjBVes
-         8ijSv055Y4zczgAbpB95O7nfdQafA3oVnbRF/eAFqm11HjJrPmPHkb5FnCylaJWtfbjH
-         /7m9qzj1MyL13naXNDbgLfjSYO44v54QI1ZOKxklYVxYadbMoUaszIdUVte50/YsQZpr
-         1VRYxrwcyurR7SCdiv5RaFDBBZn+1xLULsP6Mejw76PhfqCH4zKZGyS5QXDZPz6NYLI7
-         4d5aPJVDWOGieQv8MtsMsSXH1tlwQL6PR7JbzsBVSpFIKGz6wjFloqZe5eZCyoGpuYXU
-         IPrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rg3xtxUVxTdvNUv6i3nkOtjO2KPDKiqBIT9VHd1+jr4=;
-        b=avFa7iMeyZwRXGOw4DLXMaMRUX1NgAK215avZHLV596z9QSrL81cgP5vqJAGoBMiNd
-         6xeuJ+8od6ljnOuVRnJigW7DBqRl8iz5F8z+fKLFZo8F499SPKBXXK+yhSnsH8bMBQ9b
-         1aulzXJHdB5nofCroQ9C1DUpgWtW9QNMULuGEOpEzWP21JKFnAPdx4K0lgwCQ+v/HGqr
-         ArSQvR6otwoSqLP5tiJnsjqjNiEltykCT56K9yE6+T233B+eWP/h54xSbzUDPPPWTQa7
-         Q/MeC1QLPoYv5VHVcZuX1ZseWiuDseSj0ruYVrV1s6tVi+gGV5ZAj0cfjTrQgC/+Ds3F
-         o2gA==
-X-Gm-Message-State: APjAAAWigPvcVZ1EB2t10w2S0gErTzX9lGCpcYoKPp8IoIRZr/GbHZfc
-        nruGwangRNmyBsXzqfMdYqM=
-X-Google-Smtp-Source: APXvYqyt92+/G7ON72Vzm92BJjyVirVR9lBE8cO52g012ziz6rp8rFvGwpXmKRThpS5xlfFsjZK3/w==
-X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr16230575pjn.59.1581263581175;
-        Sun, 09 Feb 2020 07:53:01 -0800 (PST)
-Received: from localhost ([178.128.102.47])
-        by smtp.gmail.com with ESMTPSA id v5sm9328747pgc.11.2020.02.09.07.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Feb 2020 07:53:00 -0800 (PST)
-Date:   Sun, 9 Feb 2020 23:52:55 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] fstests: btrfs: Fix a bug where test case can't grab
- the 2nd device when glob is used
-Message-ID: <20200209155255.GG2697@desktop>
-References: <20200120070938.30247-1-wqu@suse.com>
- <20200120070938.30247-2-wqu@suse.com>
+        id S1727399AbgBIRJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Feb 2020 12:09:02 -0500
+Received: from a4-4.smtp-out.eu-west-1.amazonses.com ([54.240.4.4]:39902 "EHLO
+        a4-4.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727388AbgBIRJB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 9 Feb 2020 12:09:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1581268138;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=ILcP3hPce3h5FkmDoe9THV9Or7lcJSROg7GQ6YeuMZQ=;
+        b=NghZ4Rc8O1cZ1449pO7niVer45m652EnzQtyi8zQdIvzSwvVK+I7gSzOv2yg9E6b
+        OqYNXpwtMy0ct37ikDlsOytA20Tg/AM6po0lUXTzljgZp4aRs7pZcM8NaRo89iLKQeg
+        mxIdh8xQaSBRxw7TcQYvcRxZuaDzjZUwKI6t1MJk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1581268138;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+        bh=ILcP3hPce3h5FkmDoe9THV9Or7lcJSROg7GQ6YeuMZQ=;
+        b=egmRY5xQ2EJXUTGDa7m1xkG8W6xmHTJJG1rzjmeCJje/ZKcWUPz/P0zquhNghPny
+        eR5pAZmoF3wYI47IC0dkawiq9sPphyN3pS6bp7B7AEtNcb05v99zNzIu0fbwtV7Ihnv
+        skhS719uNFHyGrDxza55gWv0O+BF4dlYEom/oP54=
+Subject: Re: data rolled back 5 hours after crash, long fsync running times,
+ watchdog evasion on 5.4.11
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+Cc:     Timothy Pearson <tpearson@raptorengineering.com>
+References: <20200209004307.GG13306@hungrycats.org>
+From:   Martin Raiber <martin@urbackup.org>
+Message-ID: <010201702aecfa9f-9cda3f94-c05f-4fe0-b6b0-5803c086dc65-000000@eu-west-1.amazonses.com>
+Date:   Sun, 9 Feb 2020 17:08:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200120070938.30247-2-wqu@suse.com>
+In-Reply-To: <20200209004307.GG13306@hungrycats.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-SES-Outgoing: 2020.02.09-54.240.4.4
+Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 03:09:38PM +0800, Qu Wenruo wrote:
-> If SCRATCH_DEV_POOL is definted using glob, e.g.
-> SCRATCH_DEV_POOL="/dev/mapper/test-scratch[123456]", then btrfs/175 will
+On 09.02.2020 01:43 Zygo Blaxell wrote:
+> I reproduced a filesystem rollback similar to one reported back in
+> November by Timothy Pearson:
+>
+> 	https://www.spinics.net/lists/linux-btrfs/msg94318.html
+>
+> The timeline is something like this:
+>
+> 1.  System gets loaded, lots of writes, a few processes calling fsync().
+> Fairly normal stuff.
+>
+> 2.  Just enough new data is written continuously to keep a transaction
+> from finishing, but not enough to block new writes (i.e. the filesystem
+> is kept in equilibrium between dirty_background_bytes and dirty_bytes).
+> Typically an application gets stuck in fsync() here, but the rest of
+> the system is unaffected.  Here is one:
+>
+> 	TIMESTAMP: Fri Feb  7 01:03:21 EST 2020
+> 	==> /proc/31872/task/31872/stack <==
+> 	[<0>] wait_on_page_bit+0x172/0x250
+> 	[<0>] read_extent_buffer_pages+0x2e5/0x3a0
+> 	[<0>] btree_read_extent_buffer_pages+0xa3/0x120
+> 	[<0>] read_tree_block+0x4e/0x70
+> 	[<0>] read_block_for_search.isra.34+0x1aa/0x350
+> 	[<0>] btrfs_search_slot+0x20a/0x940
+> 	[<0>] lookup_extent_data_ref+0x7e/0x210
+> 	[<0>] __btrfs_free_extent.isra.45+0x22f/0xa10
+> 	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
+> 	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
+> 	[<0>] btrfs_commit_transaction+0x52/0xa70
+> 	[<0>] btrfs_sync_file+0x248/0x490
+> 	[<0>] vfs_fsync_range+0x48/0x80
+> 	[<0>] do_fsync+0x3d/0x70
+> 	[<0>] __x64_sys_fdatasync+0x17/0x20
+> 	[<0>] do_syscall_64+0x5f/0x1f0
+> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+> 3.  The transid of the subvol roots never increases as long as the balance
+> of incoming and outgoing data flows in #2 is maintained.  This can go on
+> for hours or even days on recent kernels (much longer than was possible on
+> 5.0). In this particular case it was 3 hours, in earlier cases I've caught
+> it delayed by 14 hours or more, and been able to recover by pausing write
+> workloads long enough for btrfs to keep up.  Here is an excerpt from bees
+> logs showing this (the filesystem's current transid is the "count" field):
+>
+> 	2020-02-07 00:04:24 10386.10408<7> crawl_transid: Polling 561.882s for next 100 transid RateEstimator { count = 4441796, raw = 7412.98 / 42429.6, ratio = 7412.98 / 42440.2, rate = 0.174669, duration(1) = 5.72512, seconds_for(1) = 1 }
+>
+> and 3 hours later the filesystem transid hasn't moved:
+>
+> 	2020-02-07 03:06:53 10386.10408<7> crawl_transid: Polling 719.095s for next 100 transid RateEstimator { count = 4441796, raw = 6248.72 / 45912.8, ratio = 6248.72 / 45928.7, rate = 0.136053, duration(1) = 7.35009, seconds_for(1) = 1 }
+>
+> 4.  Most writes continue without incident:  git commits, log files,
+> bees dedupe, kernel builds, rsync all run normally.  Some things block:
+> applications that call fsync() or sync() get stuck.  Snapshot creation
+> blocks.  Maintenance balances, when the maintenance window opens, also
+> block, and snapshot deletes are then blocked waiting for balance.
+>
+> In most cases this is as far as we get:  eventually something breaks
+> the equilibrium from #2, the stalled transaction commit completes,
+> and everything is normal; however, in this case, we never finish the
+> transaction.  fsync (the same one!) is still running some hours later:
+>
+> 	TIMESTAMP: Fri Feb  7 03:47:40 EST 2020
+> 	==> /proc/31872/task/31872/stack <==
+> 	[<0>] btrfs_tree_lock+0x120/0x260
+> 	[<0>] btrfs_lock_root_node+0x34/0x50
+> 	[<0>] btrfs_search_slot+0x4d5/0x940
+> 	[<0>] lookup_inline_extent_backref+0x164/0x5a0
+> 	[<0>] __btrfs_free_extent.isra.45+0x1f0/0xa10
+> 	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
+> 	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
+> 	[<0>] btrfs_commit_transaction+0x52/0xa70
+> 	[<0>] btrfs_sync_file+0x248/0x490
+> 	[<0>] vfs_fsync_range+0x48/0x80
+> 	[<0>] do_fsync+0x3d/0x70
+> 	[<0>] __x64_sys_fdatasync+0x17/0x20
+> 	[<0>] do_syscall_64+0x5f/0x1f0
+> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+> We know it's the same fsync call because a supervisor process killed
+> pid 31872 with SIGKILL at around 01:10.  It's not deadlocked here--the
+> stack changes continuously the whole time--but it doesn't finish running.
+>
+> 5.  2 hours later, lstat() in the watchdog daemon blocks:  
+>
+> 	TIMESTAMP: Fri Feb  7 05:15:07 EST 2020
+> 	4506 pts/10   DN+    0:00 /bin/bash /root/bin/watchdog-mdtest
+> 	==> /proc/4506/task/4506/stack <==
+> 	[<0>] lookup_slow+0x2c/0x60
+> 	[<0>] walk_component+0x1bf/0x330
+> 	[<0>] path_lookupat.isra.44+0x6d/0x220
+> 	[<0>] filename_lookup.part.59+0xa0/0x170
+> 	[<0>] user_path_at_empty+0x3e/0x50
+> 	[<0>] vfs_statx+0x76/0xe0
+> 	[<0>] __do_sys_newlstat+0x3d/0x70
+> 	[<0>] __x64_sys_newlstat+0x16/0x20
+> 	[<0>] do_syscall_64+0x5f/0x1f0
+> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+> Up to that point, a few processes have been blocked for up to 5 hours,
+> but this is not unusual on a big filesystem given #1.  Usually processes
+> that read the filesystem (e.g. calling lstat) are not blocked, unless they
+> try to access a directory being modified by a process that is blocked.
+> lstat() being blocked is unusual.
+>
+> 6.  60 seconds later, the system reboots due to watchdog timeout.
+>
+> Upon reboot, the filesystem reverts to its state at the last completed
+> transaction 4441796 at #2, which is 5 hours earlier.  Everything seems to
+> be intact, but there is no trace of any update to the filesystem after
+> the transaction 4441796.  The last 'fi usage' logged before the crash
+> and the first 'fi usage' after show 40GB of data and 25GB of metadata
+> block groups freed in between.
+>
+> I have only observed this on kernel 5.4, but I've seen the commit blocking
+> behavior twice in two days.  I have not observed it so far on 5.0 and
+> earlier (since it was released in March 2019).  I don't have data from
+> kernels in between due to other test-blocking bugs.
+>
+> TBH I can't really say 5.0 _doesn't_ do this--while writing this post,
+> I've seen some transactions on 5.0 running for 5-10 minutes, and I
+> haven't been checking for this specific behavior in earlier testing;
+> however, 5.0 crashes a lot, so if there was a behavior like this in 5.0,
+> I'd expect somebody would have noticed.
+>
+> On kernel 5.4 we see fewer processes blocked under heavy write loads,
+> but the processes that do block are blocked longer.  In particular, our
+> watchdog daemon, which creates and removes a directory every 30 seconds
+> to detect lockups, didn't fire.  The system ran for 3 hours before the
+> watchdog detected a problem in this case, and the previous day the system
+> ran 14 hours without completing a transaction and the watchdog didn't
+> fire at all.  We'll add an fsync to the watchdog too, as the logs for
+> systems running 5.4 are full of processes stuck many hours in fsync.
+>
+> Going forward we will add an alert to our server monitoring to verify that
+> the superblock's generation number field updates at regular intervals
+> (at least once an hour) and apply a workaround if not.  I'll also add
+> to my test workload and start a bisect to see if this is a regression in
+> recent kernels.
+>
+> There is a workaround:  detect when the superblock generation field stops
+> updating, and pause (freeze or SIGSTOP) all writing processes long enough
+> for btrfs to catch up and complete the current transaction.
 
-I don't think this is necessary, and I think it's not a problem that
-fstests should resolve.
+I have the same problem. Have a dozen threads with high throughput
+(simply writing data to a single file sequentially) combined with a
+dozen threads doing metadata-heavy workloads and it'll take a long time
+for a sync() to finish. Work-around is the same as well: Throttle the
+application if the sync doesn't finish after a (configurable) amount of
+time.
+I have seen the same problem with ZFS on FreeBSD, though, so it is by no
+means btrfs or even Linux specific. My guess is that since most file
+systems are constrained/throttled by journal (size), there is no
+mechanism for metadata vs. data fairness.
+As for most congestion problems the best solution is to increase
+capacity (storage IOPS) so everything runs below max capacity most of
+the time or to throttle at the source to reach the same goal.
 
-Usually Config file is not always changing, setting SCRATCH_DEV_POOL
-correctly for once should be fine. A simple command could expand the
-device list for you:
+https://www.spinics.net/lists/linux-btrfs/msg72909.html was my report
+back then, maybe take a look at the number of btrfs_delayed_ref_head in
+slabtop as well?
 
-    [root@fedoravm xfstests]# ls /dev/mapper/testvg-lv[1234567]
-    /dev/mapper/testvg-lv1  /dev/mapper/testvg-lv2 /dev/mapper/testvg-lv3  /dev/mapper/testvg-lv4 /dev/mapper/testvg-lv5  /dev/mapper/testvg-lv6 /dev/mapper/testvg-lv7
 
-Then just copy/paste the device list.
 
-Thanks,
-Eryu
-
-> fail like this:
-> btrfs/175 15s ... - output mismatch (see results//btrfs/175.out.bad)
->     --- tests/btrfs/175.out     2019-10-22 15:18:14.085632007 +0800
->     +++ results//btrfs/175.out.bad      2020-01-20 14:53:56.518567916 +0800
->     @@ -6,3 +6,4 @@
->      Single on multiple devices
->      swapon: SCRATCH_MNT/swap: swapon failed: Invalid argument
->      Single on one device
->     +ERROR: checking status of : No such file or directory
->     ...
->     (Run 'diff -u tests/btrfs/175.out results//btrfs/175.out.bad'  to see the entire diff)
-> 
-> This is caused by the extra quotation mark (and the complexity nature of
-> bash glob).
-> 
->   # SCRATCH_DEV_POOL="/dev/mapper/test-scratch[123]"
->   # echo ${SCRATCH_DEV_POOL}
->   /dev/mapper/test-scratch1 /dev/mapper/test-scratch2 /dev/mapper/test-scratch3
->   # echo "${SCRATCH_DEV_POOL}"
->   /dev/mapper/test-scratch[123]
-> 
-> To fix the problem, remove the quotation mark out of
-> ${SCRATCH_DEV_POOL} or $SCRATCH_DEV_POOL for all related test cases.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> The weirdest thing is, only btrfs/17[56], all other related test cases
-> pass without any problem.
-> 
-> Maybe it's time to provide a proper wrapper to do such thing?
-> ---
->  tests/btrfs/140 | 2 +-
->  tests/btrfs/141 | 2 +-
->  tests/btrfs/142 | 2 +-
->  tests/btrfs/143 | 2 +-
->  tests/btrfs/157 | 2 +-
->  tests/btrfs/158 | 2 +-
->  tests/btrfs/175 | 2 +-
->  tests/btrfs/176 | 6 +++---
->  8 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tests/btrfs/140 b/tests/btrfs/140
-> index f0db8022cb48..0e6c91019854 100755
-> --- a/tests/btrfs/140
-> +++ b/tests/btrfs/140
-> @@ -65,7 +65,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  _scratch_dev_pool_get 2
-> diff --git a/tests/btrfs/141 b/tests/btrfs/141
-> index c8c184ba29b0..5678e6513f80 100755
-> --- a/tests/btrfs/141
-> +++ b/tests/btrfs/141
-> @@ -65,7 +65,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  _scratch_dev_pool_get 2
-> diff --git a/tests/btrfs/142 b/tests/btrfs/142
-> index db0a3377a1ed..ae480352c4d9 100755
-> --- a/tests/btrfs/142
-> +++ b/tests/btrfs/142
-> @@ -66,7 +66,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  start_fail()
-> diff --git a/tests/btrfs/143 b/tests/btrfs/143
-> index 0388a52899c9..9e1e7ea0874d 100755
-> --- a/tests/btrfs/143
-> +++ b/tests/btrfs/143
-> @@ -73,7 +73,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  SYSFS_BDEV=`_sysfs_dev $SCRATCH_DEV`
-> diff --git a/tests/btrfs/157 b/tests/btrfs/157
-> index 634370b97ec0..c60d05ce36f3 100755
-> --- a/tests/btrfs/157
-> +++ b/tests/btrfs/157
-> @@ -70,7 +70,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  _scratch_dev_pool_get 4
-> diff --git a/tests/btrfs/158 b/tests/btrfs/158
-> index d6df9eaa7dea..179c620b223f 100755
-> --- a/tests/btrfs/158
-> +++ b/tests/btrfs/158
-> @@ -62,7 +62,7 @@ get_devid()
->  get_device_path()
->  {
->  	local devid=$1
-> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
-> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
->  }
->  
->  _scratch_dev_pool_get 4
-> diff --git a/tests/btrfs/175 b/tests/btrfs/175
-> index d13be3e95ed4..e1c3c28fe5a4 100755
-> --- a/tests/btrfs/175
-> +++ b/tests/btrfs/175
-> @@ -63,7 +63,7 @@ _scratch_mount
->  # Create the swap file, then add the device. That way we know it's all on one
->  # device.
->  _format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
-> -scratch_dev2="$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $2 }')"
-> +scratch_dev2="$(echo ${SCRATCH_DEV_POOL} | awk '{ print $2 }')"
->  $BTRFS_UTIL_PROG device add -f "$scratch_dev2" "$SCRATCH_MNT"
->  swapon "$SCRATCH_MNT/swap" 2>&1 | _filter_scratch
->  swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
-> diff --git a/tests/btrfs/176 b/tests/btrfs/176
-> index 196ba2b8bdf6..c2d67c6f807a 100755
-> --- a/tests/btrfs/176
-> +++ b/tests/btrfs/176
-> @@ -39,9 +39,9 @@ _require_scratch_swapfile
->  # We check the filesystem manually because we move devices around.
->  rm -f "${RESULT_DIR}/require_scratch"
->  
-> -scratch_dev1="$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $1 }')"
-> -scratch_dev2="$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $2 }')"
-> -scratch_dev3="$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $3 }')"
-> +scratch_dev1="$(echo ${SCRATCH_DEV_POOL} | awk '{ print $1 }')"
-> +scratch_dev2="$(echo ${SCRATCH_DEV_POOL} | awk '{ print $2 }')"
-> +scratch_dev3="$(echo ${SCRATCH_DEV_POOL} | awk '{ print $3 }')"
->  
->  echo "Remove device"
->  _scratch_mkfs >> $seqres.full 2>&1
-> -- 
-> 2.24.1
-> 
