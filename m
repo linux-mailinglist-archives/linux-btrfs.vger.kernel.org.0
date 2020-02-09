@@ -2,197 +2,491 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2230615683F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 01:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7914C156840
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 01:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgBIAnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 8 Feb 2020 19:43:10 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:43824 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727073AbgBIAnK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 8 Feb 2020 19:43:10 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 5E3495B5CB3; Sat,  8 Feb 2020 19:43:08 -0500 (EST)
-Date:   Sat, 8 Feb 2020 19:43:07 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Timothy Pearson <tpearson@raptorengineering.com>
-Subject: data rolled back 5 hours after crash, long fsync running times,
- watchdog evasion on 5.4.11
-Message-ID: <20200209004307.GG13306@hungrycats.org>
+        id S1727569AbgBIAvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 8 Feb 2020 19:51:53 -0500
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:40159 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727559AbgBIAvx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 8 Feb 2020 19:51:53 -0500
+Received: by mail-vs1-f65.google.com with SMTP id g23so1957260vsr.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 08 Feb 2020 16:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VLi1Riah1UMtUjatXnU2gtOuKYPho7A5Wc92qPUAGFY=;
+        b=Zz3vrib47YofJ3SiHuJQQcet179bjV5NUEbzx0KMu78EHc9Iy1V2qllEjGmtxhdHeR
+         172TvSi0WtRq6khG0yjyNCNynLJWPBTMto1/aysK48Qe3zI/M8XI8w8vCjVrQT6riqMk
+         q5Tu5CFlGlt96jDfz6bpw+Oavv5ZNRSBIYFtjMXZE2C1y1uITj3DXMBwHWQHYcUA7K5s
+         4UCg7W+jCNSsNovguUL9sskSTpPDvxQBPoGR18vD9wtd6EMIW5af1Xfq1ofyD2lhHALO
+         aJ86MB8EYacaiMFRPzwl34UgwsNsGquUqj2FpMALKB5mfaHjqyubZLfntyrGCnac8IeS
+         hDdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VLi1Riah1UMtUjatXnU2gtOuKYPho7A5Wc92qPUAGFY=;
+        b=SqtgRLosNGoLlkweWOflNoJ2Tqu84dYriGYbZcLvCBqYqy5uGoPvC1NExaPHKi23m6
+         DGj2B6uSK6yqjWymrT2flV+8MSXUxGbxfNwSNEaM7S0mzBJnB9W0jfdpQ5rfnaagfpI7
+         5xmgQDlRzK7C3X/Tc9UE2TutsrR+xYRS9DS/hzR5zm/HqVJSQKzcHFmZrup4xQXUrdap
+         3jKhINdm5ZRpXdsZOS43cn3D8QNPMQSWn15eITCDyqAR8Nl46+5GsLxjQ26DcwCJdIB/
+         YCR0yf2bK9WW/kyxxOYjEj08Z27cCyxGbPxuAZhS1iu9Gg8GqMbmUVuMCFlHcu1wBp4i
+         cccg==
+X-Gm-Message-State: APjAAAX3SeFMeEDKcwZ+6VOI3dNota8KhtIkV+JKdT+yxg8ulDgSFVDC
+        TWbi8zNwlZcnDz51eXMnuJRJe+zZQ6HKTGYvVn8=
+X-Google-Smtp-Source: APXvYqz6PyjzrmYGykpuwdcVYEcJY6Niykcjuj7iUQFm98dneHGhZHozsjgM6SGfo2DE1aEmve5mTux7Lta1rZhOa44=
+X-Received: by 2002:a67:e248:: with SMTP id w8mr2864442vse.74.1581209510659;
+ Sat, 08 Feb 2020 16:51:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="cMwMn/tF35tO7kHm"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
+ <CA+M2ft9ANwKT1+ENS6-w9HLtdx0MDOiVhi5RWKLucaT_WtZLkg@mail.gmail.com>
+ <40b47145-f965-ec5f-2caf-68434c4fbc62@gmx.com> <CA+M2ft8zMv8nhs6VzZWnzgcP2nRasrwxLzjKgaZPnm_prtWQow@mail.gmail.com>
+ <3e5f4de7-fec1-f8cd-c8b1-20b5a3f38f60@gmx.com> <CA+M2ft_6_1pkP75G79qj4dLxOjJr0bOGtATaGPTVQGn25sAo+A@mail.gmail.com>
+ <CA+M2ft9dcMKKQstZVcGQ=9MREbfhPF5GG=xoMoh5Aq8MK9P8wA@mail.gmail.com> <75f86be2-80fe-26c1-235f-1c6d3a618eeb@gmx.com>
+In-Reply-To: <75f86be2-80fe-26c1-235f-1c6d3a618eeb@gmx.com>
+From:   John Hendy <jw.hendy@gmail.com>
+Date:   Sat, 8 Feb 2020 18:51:39 -0600
+Message-ID: <CA+M2ft9PjH29SY+nBqfFEapr9g7BjjMFeE_p2P0oL1q8xHGUBw@mail.gmail.com>
+Subject: Re: btrfs root fs started remounting ro
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Feb 8, 2020 at 5:56 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2020/2/9 =E4=B8=8A=E5=8D=885:57, John Hendy wrote:
+> > On phone due to no OS, so apologies if this is in html mode. Indeed, I
+> > can't mount or boot any longer. I get the error:
+> >
+> > Error (device dm-0) in btrfs_replay_log:2228: errno=3D-22 unknown (Fail=
+ed
+> > to recover log tree)
+> > BTRFS error (device dm-0): open_ctree failed
+>
+> That can be easily fixed by `btrfs rescue zero-log`.
+>
 
---cMwMn/tF35tO7kHm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Whew. This was most helpful and it is wonderful to be booting at
+least. I think the outstanding issues are:
+- what should I do about `btrfs check --repair seg` faulting?
+- how can I deal with this (probably related to seg fault) ghost file
+that cannot be deleted?
+- I'm not sure if you looked at the post --repair log, but there a ton
+of these errors that didn't used to be there:
 
-I reproduced a filesystem rollback similar to one reported back in
-November by Timothy Pearson:
+backpointer mismatch on [13037375488 20480]
+ref mismatch on [13037395968 892928] extent item 0, found 1
+data backref 13037395968 root 263 owner 4257169 offset 0 num_refs 0
+not found in extent tree
+incorrect local backref count on 13037395968 root 263 owner 4257169
+offset 0 found 1 wanted 0 back 0x5627f59cadc0
 
-	https://www.spinics.net/lists/linux-btrfs/msg94318.html
+Here is the latest btrfs check output after the zero-log operation.
+- https://pastebin.com/KWeUnk0y
 
-The timeline is something like this:
+I'm hoping once that file is deleted, it's a matter of
+--init-csum-tree and perhaps I'm set? Or --init-extent-tree?
 
-1.  System gets loaded, lots of writes, a few processes calling fsync().
-Fairly normal stuff.
+Thanks,
+John
 
-2.  Just enough new data is written continuously to keep a transaction
-=66rom finishing, but not enough to block new writes (i.e. the filesystem
-is kept in equilibrium between dirty_background_bytes and dirty_bytes).
-Typically an application gets stuck in fsync() here, but the rest of
-the system is unaffected.  Here is one:
-
-	TIMESTAMP: Fri Feb  7 01:03:21 EST 2020
-	=3D=3D> /proc/31872/task/31872/stack <=3D=3D
-	[<0>] wait_on_page_bit+0x172/0x250
-	[<0>] read_extent_buffer_pages+0x2e5/0x3a0
-	[<0>] btree_read_extent_buffer_pages+0xa3/0x120
-	[<0>] read_tree_block+0x4e/0x70
-	[<0>] read_block_for_search.isra.34+0x1aa/0x350
-	[<0>] btrfs_search_slot+0x20a/0x940
-	[<0>] lookup_extent_data_ref+0x7e/0x210
-	[<0>] __btrfs_free_extent.isra.45+0x22f/0xa10
-	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
-	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
-	[<0>] btrfs_commit_transaction+0x52/0xa70
-	[<0>] btrfs_sync_file+0x248/0x490
-	[<0>] vfs_fsync_range+0x48/0x80
-	[<0>] do_fsync+0x3d/0x70
-	[<0>] __x64_sys_fdatasync+0x17/0x20
-	[<0>] do_syscall_64+0x5f/0x1f0
-	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-3.  The transid of the subvol roots never increases as long as the balance
-of incoming and outgoing data flows in #2 is maintained.  This can go on
-for hours or even days on recent kernels (much longer than was possible on
-5.0). In this particular case it was 3 hours, in earlier cases I've caught
-it delayed by 14 hours or more, and been able to recover by pausing write
-workloads long enough for btrfs to keep up.  Here is an excerpt from bees
-logs showing this (the filesystem's current transid is the "count" field):
-
-	2020-02-07 00:04:24 10386.10408<7> crawl_transid: Polling 561.882s for nex=
-t 100 transid RateEstimator { count =3D 4441796, raw =3D 7412.98 / 42429.6,=
- ratio =3D 7412.98 / 42440.2, rate =3D 0.174669, duration(1) =3D 5.72512, s=
-econds_for(1) =3D 1 }
-
-and 3 hours later the filesystem transid hasn't moved:
-
-	2020-02-07 03:06:53 10386.10408<7> crawl_transid: Polling 719.095s for nex=
-t 100 transid RateEstimator { count =3D 4441796, raw =3D 6248.72 / 45912.8,=
- ratio =3D 6248.72 / 45928.7, rate =3D 0.136053, duration(1) =3D 7.35009, s=
-econds_for(1) =3D 1 }
-
-4.  Most writes continue without incident:  git commits, log files,
-bees dedupe, kernel builds, rsync all run normally.  Some things block:
-applications that call fsync() or sync() get stuck.  Snapshot creation
-blocks.  Maintenance balances, when the maintenance window opens, also
-block, and snapshot deletes are then blocked waiting for balance.
-
-In most cases this is as far as we get:  eventually something breaks
-the equilibrium from #2, the stalled transaction commit completes,
-and everything is normal; however, in this case, we never finish the
-transaction.  fsync (the same one!) is still running some hours later:
-
-	TIMESTAMP: Fri Feb  7 03:47:40 EST 2020
-	=3D=3D> /proc/31872/task/31872/stack <=3D=3D
-	[<0>] btrfs_tree_lock+0x120/0x260
-	[<0>] btrfs_lock_root_node+0x34/0x50
-	[<0>] btrfs_search_slot+0x4d5/0x940
-	[<0>] lookup_inline_extent_backref+0x164/0x5a0
-	[<0>] __btrfs_free_extent.isra.45+0x1f0/0xa10
-	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
-	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
-	[<0>] btrfs_commit_transaction+0x52/0xa70
-	[<0>] btrfs_sync_file+0x248/0x490
-	[<0>] vfs_fsync_range+0x48/0x80
-	[<0>] do_fsync+0x3d/0x70
-	[<0>] __x64_sys_fdatasync+0x17/0x20
-	[<0>] do_syscall_64+0x5f/0x1f0
-	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-We know it's the same fsync call because a supervisor process killed
-pid 31872 with SIGKILL at around 01:10.  It's not deadlocked here--the
-stack changes continuously the whole time--but it doesn't finish running.
-
-5.  2 hours later, lstat() in the watchdog daemon blocks: =20
-
-	TIMESTAMP: Fri Feb  7 05:15:07 EST 2020
-	4506 pts/10   DN+    0:00 /bin/bash /root/bin/watchdog-mdtest
-	=3D=3D> /proc/4506/task/4506/stack <=3D=3D
-	[<0>] lookup_slow+0x2c/0x60
-	[<0>] walk_component+0x1bf/0x330
-	[<0>] path_lookupat.isra.44+0x6d/0x220
-	[<0>] filename_lookup.part.59+0xa0/0x170
-	[<0>] user_path_at_empty+0x3e/0x50
-	[<0>] vfs_statx+0x76/0xe0
-	[<0>] __do_sys_newlstat+0x3d/0x70
-	[<0>] __x64_sys_newlstat+0x16/0x20
-	[<0>] do_syscall_64+0x5f/0x1f0
-	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Up to that point, a few processes have been blocked for up to 5 hours,
-but this is not unusual on a big filesystem given #1.  Usually processes
-that read the filesystem (e.g. calling lstat) are not blocked, unless they
-try to access a directory being modified by a process that is blocked.
-lstat() being blocked is unusual.
-
-6.  60 seconds later, the system reboots due to watchdog timeout.
-
-Upon reboot, the filesystem reverts to its state at the last completed
-transaction 4441796 at #2, which is 5 hours earlier.  Everything seems to
-be intact, but there is no trace of any update to the filesystem after
-the transaction 4441796.  The last 'fi usage' logged before the crash
-and the first 'fi usage' after show 40GB of data and 25GB of metadata
-block groups freed in between.
-
-I have only observed this on kernel 5.4, but I've seen the commit blocking
-behavior twice in two days.  I have not observed it so far on 5.0 and
-earlier (since it was released in March 2019).  I don't have data from
-kernels in between due to other test-blocking bugs.
-
-TBH I can't really say 5.0 _doesn't_ do this--while writing this post,
-I've seen some transactions on 5.0 running for 5-10 minutes, and I
-haven't been checking for this specific behavior in earlier testing;
-however, 5.0 crashes a lot, so if there was a behavior like this in 5.0,
-I'd expect somebody would have noticed.
-
-On kernel 5.4 we see fewer processes blocked under heavy write loads,
-but the processes that do block are blocked longer.  In particular, our
-watchdog daemon, which creates and removes a directory every 30 seconds
-to detect lockups, didn't fire.  The system ran for 3 hours before the
-watchdog detected a problem in this case, and the previous day the system
-ran 14 hours without completing a transaction and the watchdog didn't
-fire at all.  We'll add an fsync to the watchdog too, as the logs for
-systems running 5.4 are full of processes stuck many hours in fsync.
-
-Going forward we will add an alert to our server monitoring to verify that
-the superblock's generation number field updates at regular intervals
-(at least once an hour) and apply a workaround if not.  I'll also add
-to my test workload and start a bisect to see if this is a regression in
-recent kernels.
-
-There is a workaround:  detect when the superblock generation field stops
-updating, and pause (freeze or SIGSTOP) all writing processes long enough
-for btrfs to catch up and complete the current transaction.
-
---cMwMn/tF35tO7kHm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXj9VkAAKCRCB+YsaVrMb
-nBUFAJ4oM0e9QLD2j+d/+WGVrikpUstxtwCgj5jh+oCfAQfSbOU7Awx6pLFzQ5E=
-=LjQz
------END PGP SIGNATURE-----
-
---cMwMn/tF35tO7kHm--
+> At least, btrfs check --repair didn't make things worse.
+>
+> Thanks,
+> Qu
+> >
+> > John
+> >
+> > On Sat, Feb 8, 2020, 1:56 PM John Hendy <jw.hendy@gmail.com
+> > <mailto:jw.hendy@gmail.com>> wrote:
+> >
+> >     This is not going so hot. Updates:
+> >
+> >     booted from arch install, pre repair btrfs check:
+> >     - https://pastebin.com/6vNaSdf2
+> >
+> >     btrfs check --mode=3Dlowmem as requested by Chris:
+> >     - https://pastebin.com/uSwSTVVY
+> >
+> >     Then I did btrfs check --repair, which seg faulted at the end. I've
+> >     typed them off of pictures I took:
+> >
+> >     Starting repair.
+> >     Opening filesystem to check...
+> >     Checking filesystem on /dev/mapper/ssd
+> >     [1/7] checking root items
+> >     Fixed 0 roots.
+> >     [2/7] checking extents
+> >     parent transid verify failed on 20271138064 wanted 68719924810 foun=
+d
+> >     448074
+> >     parent transid verify failed on 20271138064 wanted 68719924810 foun=
+d
+> >     448074
+> >     Ignoring transid failure
+> >     # ... repeated the previous two lines maybe hundreds of times
+> >     # ended with this:
+> >     ref mismatch on [12797435904 268505088] extent item 1, found 412
+> >     [1] 1814 segmentation fault (core dumped) btrfs check --repair
+> >     /dev/mapper/ssd
+> >
+> >     This was with btrfs-progs 5.4 (the install USB is maybe a month old=
+).
+> >
+> >     Here is the output of btrfs check after the --repair attempt:
+> >     - https://pastebin.com/6MYRNdga
+> >
+> >     I rebooted to write this email given the seg fault, as I wanted to
+> >     make sure that I should still follow-up --repair with
+> >     --init-csum-tree. I had pictures of the --repair output, but Firefo=
+x
+> >     just wouldn't load imgur.com <http://imgur.com> for me to post the
+> >     pics and was acting
+> >     really weird. In suspiciously checking dmesg, things have gone ro o=
+n
+> >     me :(  Here is the dmesg from this session:
+> >     - https://pastebin.com/a2z7xczy
+> >
+> >     The gist is:
+> >
+> >     [   40.997935] BTRFS critical (device dm-0): corrupt leaf: root=3D7
+> >     block=3D172703744 slot=3D0, csum end range (12980568064) goes beyon=
+d the
+> >     start range (12980297728) of the next csum item
+> >     [   40.997941] BTRFS info (device dm-0): leaf 172703744 gen 450983
+> >     total ptrs 34 free space 29 owner 7
+> >     [   40.997942]     item 0 key (18446744073709551606 128 12979060736=
+)
+> >     itemoff 14811 itemsize 1472
+> >     [   40.997944]     item 1 key (18446744073709551606 128 12980297728=
+)
+> >     itemoff 13895 itemsize 916
+> >     [   40.997945]     item 2 key (18446744073709551606 128 12981235712=
+)
+> >     itemoff 13811 itemsize 84
+> >     # ... there's maybe 30 of these item n key lines in total
+> >     [   40.997984] BTRFS error (device dm-0): block=3D172703744 write t=
+ime
+> >     tree block corruption detected
+> >     [   41.016793] BTRFS: error (device dm-0) in
+> >     btrfs_commit_transaction:2332: errno=3D-5 IO failure (Error while
+> >     writing out transaction)
+> >     [   41.016799] BTRFS info (device dm-0): forced readonly
+> >     [   41.016802] BTRFS warning (device dm-0): Skipping commit of abor=
+ted
+> >     transaction.
+> >     [   41.016804] BTRFS: error (device dm-0) in cleanup_transaction:18=
+90:
+> >     errno=3D-5 IO failure
+> >     [   41.016807] BTRFS info (device dm-0): delayed_refs has NO entry
+> >     [   41.023473] BTRFS warning (device dm-0): Skipping commit of abor=
+ted
+> >     transaction.
+> >     [   41.024297] BTRFS info (device dm-0): delayed_refs has NO entry
+> >     [   44.509418] systemd-journald[416]:
+> >     /var/log/journal/45c06c25e25f434195204efa939019ab/system.journal:
+> >     Journal file corrupted, rotating.
+> >     [   44.509440] systemd-journald[416]: Failed to rotate
+> >     /var/log/journal/45c06c25e25f434195204efa939019ab/system.journal:
+> >     Read-only file system
+> >     [   44.509450] systemd-journald[416]: Failed to rotate
+> >     /var/log/journal/45c06c25e25f434195204efa939019ab/user-1000.journal=
+:
+> >     Read-only file system
+> >     [   44.509540] systemd-journald[416]: Failed to write entry (23 ite=
+ms,
+> >     705 bytes) despite vacuuming, ignoring: Bad message
+> >     # ... then a bunch of these failed journal attempts (of note:
+> >     /var/log/journal was one of the bad inodes from btrfs check
+> >     previously)
+> >
+> >     Kindly let me know what you would recommend. I'm sadly back to an
+> >     unusable system vs. a complaining/worrisome one. This is similar to
+> >     the behavior I had with the m2.sata nvme drive in my original
+> >     experience. After trying all of --repair, --init-csum-tree, and
+> >     --init-extent-tree, I couldn't boot anymore. After my dm-crypt
+> >     password at boot, I just saw a bunch of [FAILED] in the text splash
+> >     output. Hoping to not repeat that with this drive.
+> >
+> >     Thanks,
+> >     John
+> >
+> >
+> >     On Sat, Feb 8, 2020 at 1:29 AM Qu Wenruo <quwenruo.btrfs@gmx.com
+> >     <mailto:quwenruo.btrfs@gmx.com>> wrote:
+> >     >
+> >     >
+> >     >
+> >     > On 2020/2/8 =E4=B8=8B=E5=8D=8812:48, John Hendy wrote:
+> >     > > On Fri, Feb 7, 2020 at 5:42 PM Qu Wenruo <quwenruo.btrfs@gmx.co=
+m
+> >     <mailto:quwenruo.btrfs@gmx.com>> wrote:
+> >     > >>
+> >     > >>
+> >     > >>
+> >     > >> On 2020/2/8 =E4=B8=8A=E5=8D=881:52, John Hendy wrote:
+> >     > >>> Greetings,
+> >     > >>>
+> >     > >>> I'm resending, as this isn't showing in the archives. Perhaps
+> >     it was
+> >     > >>> the attachments, which I've converted to pastebin links.
+> >     > >>>
+> >     > >>> As an update, I'm now running off of a different drive (ssd,
+> >     not the
+> >     > >>> nvme) and I got the error again! I'm now inclined to think
+> >     this might
+> >     > >>> not be hardware after all, but something related to my setup
+> >     or a bug
+> >     > >>> with chromium.
+> >     > >>>
+> >     > >>> After a reboot, chromium wouldn't start for me and demsg show=
+ed
+> >     > >>> similar parent transid/csum errors to my original post below.
+> >     I used
+> >     > >>> btrfs-inspect-internal to find the inode traced to
+> >     > >>> ~/.config/chromium/History. I deleted that, and got a new set=
+ of
+> >     > >>> errors tracing to ~/.config/chromium/Cookies. After I deleted
+> >     that and
+> >     > >>> tried starting chromium, I found that my btrfs /home/jwhendy
+> >     pool was
+> >     > >>> mounted ro just like the original problem below.
+> >     > >>>
+> >     > >>> dmesg after trying to start chromium:
+> >     > >>> - https://pastebin.com/CsCEQMJa
+> >     > >>
+> >     > >> So far, it's only transid bug in your csum tree.
+> >     > >>
+> >     > >> And two backref mismatch in data backref.
+> >     > >>
+> >     > >> In theory, you can fix your problem by `btrfs check --repair
+> >     > >> --init-csum-tree`.
+> >     > >>
+> >     > >
+> >     > > Now that I might be narrowing in on offending files, I'll wait
+> >     to see
+> >     > > what you think from my last response to Chris. I did try the ab=
+ove
+> >     > > when I first ran into this:
+> >     > > -
+> >     https://lore.kernel.org/linux-btrfs/CA+M2ft8FpjdDQ7=3DXwMdYQazhyB95=
+aha_D4WU_n15M59QrimrRg@mail.gmail.com/
+> >     >
+> >     > That RO is caused by the missing data backref.
+> >     >
+> >     > Which can be fixed by btrfs check --repair.
+> >     >
+> >     > Then you should be able to delete offending files them. (Or the w=
+hole
+> >     > chromium cache, and switch to firefox if you wish :P )
+> >     >
+> >     > But also please keep in mind that, the transid mismatch looks
+> >     happen in
+> >     > your csum tree, which means your csum tree is no longer reliable,=
+ and
+> >     > may cause -EIO reading unrelated files.
+> >     >
+> >     > Thus it's recommended to re-fill the csum tree by --init-csum-tre=
+e.
+> >     >
+> >     > It can be done altogether by --repair --init-csum-tree, but to be
+> >     safe,
+> >     > please run --repair only first, then make sure btrfs check report=
+s no
+> >     > error after that. Then go --init-csum-tree.
+> >     >
+> >     > >
+> >     > >> But I'm more interesting in how this happened.
+> >     > >
+> >     > > Me too :)
+> >     > >
+> >     > >> Have your every experienced any power loss for your NVME drive=
+?
+> >     > >> I'm not say btrfs is unsafe against power loss, all fs should
+> >     be safe
+> >     > >> against power loss, I'm just curious about if mount time log
+> >     replay is
+> >     > >> involved, or just regular internal log replay.
+> >     > >>
+> >     > >> From your smartctl, the drive experienced 61 unsafe shutdown
+> >     with 2144
+> >     > >> power cycles.
+> >     > >
+> >     > > Uhhh, hell yes, sadly. I'm a dummy running i3 and every time I =
+get
+> >     > > caught off gaurd by low battery and instant power-off, I kick m=
+yself
+> >     > > and mean to set up a script to force poweroff before that
+> >     happens. So,
+> >     > > indeed, I've lost power a ton. Surprised it was 61 times, but m=
+aybe
+> >     > > not over ~2 years. And actually, I mis-stated the age. I haven'=
+t
+> >     > > *booted* from this drive in almost 2yrs. It's a corporate lapto=
+p,
+> >     > > issued every 3, so the ssd drive is more like 5 years old.
+> >     > >
+> >     > >> Not sure if it's related.
+> >     > >>
+> >     > >> Another interesting point is, did you remember what's the
+> >     oldest kernel
+> >     > >> running on this fs? v5.4 or v5.5?
+> >     > >
+> >     > > Hard to say, but arch linux maintains a package archive. The nv=
+me
+> >     > > drive is from ~May 2018. The archives only go back to Jan 2019
+> >     and the
+> >     > > kernel/btrfs-progs was at 4.20 then:
+> >     > > - https://archive.archlinux.org/packages/l/linux/
+> >     >
+> >     > There is a known bug in v5.2.0~v5.2.14 (fixed in v5.2.15), which =
+could
+> >     > cause metadata corruption. And the symptom is transid error, whic=
+h
+> >     also
+> >     > matches your problem.
+> >     >
+> >     > Thanks,
+> >     > Qu
+> >     >
+> >     > >
+> >     > > Searching my Amazon orders, the SSD was in the 2015 time frame,
+> >     so the
+> >     > > kernel version would have been even older.
+> >     > >
+> >     > > Thanks for your input,
+> >     > > John
+> >     > >
+> >     > >>
+> >     > >> Thanks,
+> >     > >> Qu
+> >     > >>>
+> >     > >>> Thanks for any pointers, as it would now seem that my purchas=
+e
+> >     of a
+> >     > >>> new m2.sata may not buy my way out of this problem! While I d=
+idn't
+> >     > >>> want to reinstall, at least new hardware is a simple fix. Now=
+ I'm
+> >     > >>> worried there is a deeper issue bound to recur :(
+> >     > >>>
+> >     > >>> Best regards,
+> >     > >>> John
+> >     > >>>
+> >     > >>> On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.co=
+m
+> >     <mailto:jw.hendy@gmail.com>> wrote:
+> >     > >>>>
+> >     > >>>> Greetings,
+> >     > >>>>
+> >     > >>>> I've had this issue occur twice, once ~1mo ago and once a
+> >     couple of
+> >     > >>>> weeks ago. Chromium suddenly quit on me, and when trying to
+> >     start it
+> >     > >>>> again, it complained about a lock file in ~. I tried to dele=
+te it
+> >     > >>>> manually and was informed I was on a read-only fs! I ended u=
+p
+> >     biting
+> >     > >>>> the bullet and re-installing linux due to the number of dead=
+ end
+> >     > >>>> threads and slow response rates on diagnosing these issues,
+> >     and the
+> >     > >>>> issue occurred again shortly after.
+> >     > >>>>
+> >     > >>>> $ uname -a
+> >     > >>>> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020
+> >     16:38:40
+> >     > >>>> +0000 x86_64 GNU/Linux
+> >     > >>>>
+> >     > >>>> $ btrfs --version
+> >     > >>>> btrfs-progs v5.4
+> >     > >>>>
+> >     > >>>> $ btrfs fi df /mnt/misc/ # full device; normally would be
+> >     mounting a subvol on /
+> >     > >>>> Data, single: total=3D114.01GiB, used=3D80.88GiB
+> >     > >>>> System, single: total=3D32.00MiB, used=3D16.00KiB
+> >     > >>>> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
+> >     > >>>> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
+> >     > >>>>
+> >     > >>>> This is a single device, no RAID, not on a VM. HP Zbook 15.
+> >     > >>>> nvme0n1                                       259:5    0
+> >     232.9G  0 disk
+> >     > >>>> =E2=94=9C=E2=94=80nvme0n1p1                                 =
+  259:6    0
+> >      512M  0
+> >     > >>>> part  (/boot/efi)
+> >     > >>>> =E2=94=9C=E2=94=80nvme0n1p2                                 =
+  259:7    0
+> >      1G  0 part  (/boot)
+> >     > >>>> =E2=94=94=E2=94=80nvme0n1p3                                 =
+  259:8    0
+> >     231.4G  0 part (btrfs)
+> >     > >>>>
+> >     > >>>> I have the following subvols:
+> >     > >>>> arch: used for / when booting arch
+> >     > >>>> jwhendy: used for /home/jwhendy on arch
+> >     > >>>> vault: shared data between distros on /mnt/vault
+> >     > >>>> bionic: root when booting ubuntu bionic
+> >     > >>>>
+> >     > >>>> nvme0n1p3 is encrypted with dm-crypt/LUKS.
+> >     > >>>>
+> >     > >>>> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
+> >     > >>>
+> >     > >>> Edit: links now:
+> >     > >>> - btrfs check: https://pastebin.com/nz6Bc145
+> >     > >>> - dmesg: https://pastebin.com/1GGpNiqk
+> >     > >>> - smartctl: https://pastebin.com/ADtYqfrd
+> >     > >>>
+> >     > >>> btrfs dev stats (not worth a link):
+> >     > >>>
+> >     > >>> [/dev/mapper/old].write_io_errs    0
+> >     > >>> [/dev/mapper/old].read_io_errs     0
+> >     > >>> [/dev/mapper/old].flush_io_errs    0
+> >     > >>> [/dev/mapper/old].corruption_errs  0
+> >     > >>> [/dev/mapper/old].generation_errs  0
+> >     > >>>
+> >     > >>>
+> >     > >>>> If these are of interested, here are reddit threads where I
+> >     posted the
+> >     > >>>> issue and was referred here.
+> >     > >>>> 1)
+> >     https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recoveri=
+ng_from_various_errors_root/
+> >     > >>>> 2)
+> >     https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs_ro=
+ot_started_remounting_as_ro/
+> >     > >>>>
+> >     > >>>> It has been suggested this is a hardware issue. I've already
+> >     ordered a
+> >     > >>>> replacement m2.sata, but for sanity it would be great to kno=
+w
+> >     > >>>> definitively this was the case. If anything stands out above=
+ that
+> >     > >>>> could indicate I'm not setup properly re. btrfs, that would
+> >     also be
+> >     > >>>> fantastic so I don't repeat the issue!
+> >     > >>>>
+> >     > >>>> The only thing I've stumbled on is that I have been mounting=
+ with
+> >     > >>>> rd.luks.options=3Ddiscard and that manually running fstrim i=
+s
+> >     preferred.
+> >     > >>>>
+> >     > >>>>
+> >     > >>>> Many thanks for any input/suggestions,
+> >     > >>>> John
+> >     > >>
+> >     >
+> >
+>
