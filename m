@@ -2,68 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C8C1569BF
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 10:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA632156B2F
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Feb 2020 16:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgBIJAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Feb 2020 04:00:37 -0500
-Received: from luna.lichtvoll.de ([194.150.191.11]:55923 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726078AbgBIJAh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Feb 2020 04:00:37 -0500
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id F3E10AF9AC;
-        Sun,  9 Feb 2020 10:00:34 +0100 (CET)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org,
-        Timothy Pearson <tpearson@raptorengineering.com>
-Subject: Re: data rolled back 5 hours after crash, long fsync running times, watchdog evasion on 5.4.11
-Date:   Sun, 09 Feb 2020 10:00:34 +0100
-Message-ID: <2202848.tjv8jjdcNr@merkaba>
-In-Reply-To: <20200209004307.GG13306@hungrycats.org>
-References: <20200209004307.GG13306@hungrycats.org>
+        id S1727930AbgBIPsr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Feb 2020 10:48:47 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38003 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727881AbgBIPsr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Feb 2020 10:48:47 -0500
+Received: by mail-pl1-f196.google.com with SMTP id t6so1786572plj.5;
+        Sun, 09 Feb 2020 07:48:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eBHJ23t3af84Xj83/gZ6pVZL31LMLCGqZ9QDtHGTAEU=;
+        b=mTY2+34YfZ04qqZMsVRTF68kQTTnzYLf5UFLo9vR3Q5PTFTigJdSSE59PjD9+7W4FH
+         YdQGVi28cDjugjuPBJLJA/RKBMzT5P4J09oL33k191DRHVuPkvCc9999e8/e8j8Urtr+
+         Bs3fJylu7a1xdyRGJixtoJMB+oUwcAZ7HmLs8kxe0B9S5zIwnvWloRAECYuDM4xGWjhv
+         3rTGW6eDlQ1N4lVOS4w1+wbg51WKovUYM+TL+fkCJingIJK5QRHKBf5/CUOEeKkZnvno
+         k9ilyO1rPIrIi0v6pqBTvPqpc/5GeP/gKSr+U2w/SvYp/RKFsSnnZqqsCA/G99muGwJ5
+         hRKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eBHJ23t3af84Xj83/gZ6pVZL31LMLCGqZ9QDtHGTAEU=;
+        b=Eh/360MSyygGt01Jqc0/A2r4yeAtn1BjkTqbjNjv2Wxl7H+OmTtbK3QyC38LNgEkBA
+         gt4H8qQyEQeS9ODdfq7SyVS0fhdViEVRA8oGz0+35+geju42yY8VrgZ+FhIoJzydvNiG
+         k0NMz2wrKWkt+rSRIDTOpxGDxrAwAMDnxK1T374OF0LGnkVZTPafUBv+qXB2CvHmilMM
+         q8bRdoMqSe7JkEIYmeDSvyI1LWpmAvYrAJzQVybF9w+74dgTj01PnCUEUAztDbq86BS3
+         XKzmCvt3oj0ZW93R0A2+m98RBFNBocT0GemR+DzKEYnyAifQ4Q+nD4C59KPEkIxHadR5
+         dT9g==
+X-Gm-Message-State: APjAAAWTam7gnPN+3aixZ9/qr94AuGv5HFdmz/ti0ymaZ7LaHyedCsQj
+        Yf1sFdEV4FnpmicqaNHFKpA=
+X-Google-Smtp-Source: APXvYqwC75O54SYhA7g0m+jFr1/9k8lQkShevesp2EbbeuIbPlCZ1Q23Kdb8rBmw4A3wJS0K385EtQ==
+X-Received: by 2002:a17:902:d705:: with SMTP id w5mr8804042ply.68.1581263326562;
+        Sun, 09 Feb 2020 07:48:46 -0800 (PST)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id n15sm9565679pfq.168.2020.02.09.07.48.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Feb 2020 07:48:46 -0800 (PST)
+Date:   Sun, 9 Feb 2020 23:48:40 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] fstests: Always dump dmesg for failed test cases
+Message-ID: <20200209154840.GF2697@desktop>
+References: <20200120070938.30247-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200120070938.30247-1-wqu@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Zygo Blaxell - 09.02.20, 01:43:07 CET:
-> Up to that point, a few processes have been blocked for up to 5 hours,
-> but this is not unusual on a big filesystem given #1.  Usually
-> processes that read the filesystem (e.g. calling lstat) are not
-> blocked, unless they try to access a directory being modified by a
-> process that is blocked. lstat() being blocked is unusual.
+On Mon, Jan 20, 2020 at 03:09:37PM +0800, Qu Wenruo wrote:
+> When hard-to-hit bugs happened, we really want every piece of info to
+> help us debugging.
+> 
+> Although we already have KEEP_DMESG config, not everyone is utilizing
+> it, thus when hard-to-hit bugs happened, one could only set it and retry
+> until next hit.
+> 
+> This patch will change the behavior by always dumping the dmesg for
+> failed tests, so that developers can always get extra info from any
+> failure.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  check | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/check b/check
+> index 2e148e5776e5..e580b2249f06 100755
+> --- a/check
+> +++ b/check
+> @@ -840,6 +840,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
+>  
+>  	# make sure we record the status of the last test we ran.
+>  	if $err ; then
+> +		if [ ! -f $seqres.dmesg ]; then
+> +			_dmesg_since_test_start >$seqres.dmesg
+> +		fi
 
-This is really funny, cause what you consider not being unusual, I'd 
-consider a bug or at least a huge limitation.
+So this only saves the dmesg of the last test?
 
-But in a sense I never really got that processed can be stuck in 
-uninterruptible sleep on Linux or Unix *at all*. Such a situation 
-without giving a user at least the ability to end it by saying "I don't 
-care about the data that process is to write, let me remove it already" 
-for me is a major limitation to what appears to be kind of specific to 
-the UNIX architecture or at least the way the Linux virtual memory 
-manager is working.
+And I don't think this is necessary, even if it saves the dmesgs of all
+failed tests, this behavior change requires some more diskspace and may
+fulfill / more easily.
 
-That written I may be completely ignorant of something very important 
-here and some may tell me it can't be any other way for this and that 
-reason. Currently I still think it can.
+I think if one knows he/she's debugging a hard-to-hit bug, set
+KEEP_DMESG. Or again, make "save dmesg of every failed test" a tunable
+behavior.
 
-And even if uninterruptible sleep can still happen cause it is really 
-necessary, five hours is at least about five hours minus probably a minute 
-or so too long.
+Thanks,
+Eryu
 
-Ciao,
--- 
-Martin
-
-
+>  		bad="$bad $seqnum"
+>  		n_bad=`expr $n_bad + 1`
+>  		tc_status="fail"
+> -- 
+> 2.24.1
+> 
