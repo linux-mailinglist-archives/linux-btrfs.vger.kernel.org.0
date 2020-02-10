@@ -2,109 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81ECB158070
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 18:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3374715825C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 19:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgBJRFx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Feb 2020 12:05:53 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:48942 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727558AbgBJRFx (ORCPT
+        id S1727121AbgBJScc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Feb 2020 13:32:32 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:25711 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726991AbgBJScb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Feb 2020 12:05:53 -0500
+        Mon, 10 Feb 2020 13:32:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581354353; x=1612890353;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=CuFmzbTlDqG4xNfyiHNGIBmEhJrhIY/oCpkXrOcXGRTPKmRW7JFabeYr
-   LBnJ2H7e7WfQccP2UbXHNoiVncej2c+IWlfF3o+PTe+qRhVUUpw6NHIW9
-   w4j7ebNTTORx+ywB0Z2zwpM5dcEb4rhP+TB0704ttdbUSUW2Z6WSsFXW/
-   vtdu1tP6p8HMsENS/S6cfxfKaVPXrrF72sSzo2DCNRF3ksGscymYS9uly
-   afH2cAa4EXaiTclU3BG7+a/+zQTm2dwo0r91am62b28zQYutM6kUGPz4Q
-   Lje/60k7Zk3l1OFJwykFbSzZh9HZb93anSePRU4w0/znXmBoHciFbQ5J8
-   w==;
-IronPort-SDR: 7EE9Kqht61SOibyRNLjRzlifDYAJkHqy/zB4HrNFAHZXzdSAeyruHiFy4WB7/TjpyFEpFu/0px
- NrhlvWYAwVLRMlVCr4SkOHZYLLjg2J/cvxESMSct/GNkaPa9ZhOUabUpfvS8V4g1oI8TqtlIcu
- XlhVZaQtfUNnfKxCV2nqtMsjauO+WE32ptycBoMpyY/KfCeU5Kgd6OEY+G3xG6O1lhjR93ETsN
- hBPFqKRO8AyCuaG0HMoSP9SRVSW2fpxD91lQXwWaMwtBbvvXRS8Ja46SXzf1CxSow23z37vR1V
- 38I=
+  t=1581359551; x=1612895551;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xNXmdWQBmTVBdM10g7b+6CYZEf/GWzR92+ITUNMLcco=;
+  b=NnIcIB98ywMVCiSKqmRnwYski4BHEZAZy7vzHAmZqJczV5BJoiRmGNt/
+   IuxJgIeZvKzRTqw+xbDAfGP4CkMsphoB06MCazQPOUO2ksylIX4b0TBqI
+   Qi6OOB09VagtZOJVGcOPF4FAz6e6gBfuteHTjwewU/omVwc/E+zzL3a3U
+   r576NLdFlLyio9PHN6XjD8WYFWQ5u5vtRUmb17vlvxK3blCl23K3mppvX
+   RbDSlyYmTScNbCI16gfua63rpQ8s1eWyGqS0fzqNKPnpl1T6eqyRIXbhR
+   Qr1TnVkB9pBz3bEOliXcPvo+GOaPHdkqRwIBIsLEFhy3cSms2+dTIdSBP
+   A==;
+IronPort-SDR: B7xcAVC8A8wIStH/t/Ri+bB9t4+ju0LxCpMhgBUk21Z5Z6ciAaSP04CuMEL0TaYqTJVXjCr1wh
+ pOacUFMUrEGpAsXh0g3BZvBKyNylt8bgcBM9zk3bB0r1qxg/B5aHhBsP2C0EcwQb2dx5HfvdPh
+ An/4zo8Ql0HC1TCnapE2v72gIYpqTutdpVKVIgIE4arTqaplwz1DzOe31POGQ2RyPzfluFmJIH
+ 3nQ9u4EIbvravXZ54+/VBPL4lCOaxiI9TsO5jpQqFd5IfYfBHr9+EGCg1mLrpWB4IyhqmPqiBv
+ 6UQ=
 X-IronPort-AV: E=Sophos;i="5.70,425,1574092800"; 
-   d="scan'208";a="130057949"
-Received: from mail-co1nam11lp2174.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.174])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2020 01:05:49 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fi6y+lE4J6BICY4PeDB2D0qzCIIsD9d/ifxDDruK5pXRT3x5MBEX9beXfwDoALQ3aWPRsSXUidB45y8No5cikKvVdc16U+ftd9RUczIEOtk7Uu5DG1tnCbaQcjUoKvQ/Xx0bpTyb7BZuBn421Ee7XvZny43iuW/q4XYOvIG3qAqrvtC7/xAmCDiIXIPIrZ/zz3CsYov8yh1+lzdffSDiiToo+woAxItDbxTVE7pQdxLdhk69C1fAGsjDEdl4VegwXhLF5mAhSSdmlE56WMtncfdYyULZPGkLpfj2QHzj2eT4wppM1NTeS0mke+CQBk8q4oTMv8ga3edShmOqONPWSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=X7cBGyFL3h2vkG61vuLDYyx/JRBH9npQCTDeB0aaJZIAp07AujqLNUZ90rYwxyHGL9g+1/0pu9uxPUnRfdoJuxjFSXwFtyFfWpi86QW3BwIlQmsEzn11WqKyXQtE3UFacC4NV6L8YTjoq6A4maUgd/UuGAw4e9q6owiasikZe/pu1EsfO1Z7lImVw8/w+vJU4dXCftccMSf76k2ZlZbn0/ZUk2E0wxjMYpuaZoR9PeA296xOvENwbRahxP1yLUAnbN68FvufOtD5Dy4c80WZmU7MClMfp8oVg+Ed2vIIQ7DZkyySH2Vt45h/PnvC+RrWtIMfALHg8LqTyJIZAC7Piw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=c1HBgfrvlCIt+qMIDApg/fHnOIH9bzyhxflHwSlb+kVznrZMPdvjsbah5/txCYsCk1qVA/nrZUVKJyS8Cg0Tm6txdHKyX5g6WdG90JE5oCqOpEUMqfndyuehzkFh2q0Hel4skLkOFzx3alkWmo7/ZcWvUAwRbM5tuifVIui3OdY=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3615.namprd04.prod.outlook.com (10.167.139.140) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.21; Mon, 10 Feb 2020 17:05:46 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.028; Mon, 10 Feb 2020
- 17:05:46 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH] mkfs-tests: Only check supported checksums
-Thread-Topic: [PATCH] mkfs-tests: Only check supported checksums
-Thread-Index: AQHV4DQESvjPrcY5fUCyv4q4HuOWPQ==
-Date:   Mon, 10 Feb 2020 17:05:46 +0000
-Message-ID: <SN4PR0401MB3598799A051F215E34196D1B9B190@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200210164300.14177-1-marcos@mpdesouza.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7b857a21-432c-41ca-3a46-08d7ae4b787c
-x-ms-traffictypediagnostic: SN4PR0401MB3615:
-x-microsoft-antispam-prvs: <SN4PR0401MB36156DF6E42064ACB6B697749B190@SN4PR0401MB3615.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 03094A4065
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(366004)(396003)(376002)(136003)(39860400002)(189003)(199004)(4270600006)(110136005)(81166006)(66946007)(66446008)(71200400001)(66556008)(91956017)(86362001)(8936002)(2906002)(76116006)(33656002)(66476007)(316002)(64756008)(81156014)(4326008)(8676002)(558084003)(55016002)(9686003)(26005)(52536014)(6506007)(19618925003)(7696005)(478600001)(5660300002)(186003);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3615;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UvwFnkygXfipnuHnZwlXnuHgE5FSiZBqm7gOfXVAocbLVWEEx0c/lZYRdy5ZLZGzaEvsZG3GJrq0K0PkXIhhGY5j8jJNkBHaNquaYkPfbxBvrbcYZ1pGGKzwXpewIYp/brEPFzyUThwXg4v+N93XeFaL0jB+R25dQUPRlRjT+dinQCBqEu3kiAzGtX+2PU+sRcYIoK0NgqvsQXCaxQxSw+rn4e+SFonCNTw4gcZswl4mUqSWpr0RafFZ03iiAl/rwobzzYvEbSfRO0/b1X67ugFdQtSZeifdWn9mPyXzM4GIwD+15yFiLO73fA3JRQJPhflYcd2zzDfI2mfsUofX2xVbXmhyhZRheIV2zoU0tbt42yX0ln0+wuY1d1IdMEUOV+Sj14w2tg0I1dyKcsfwBEYcxgvsFcFnOkpZEF6qfbSn3LATp5ej/SIK0invhe6n
-x-ms-exchange-antispam-messagedata: vOnjJgTdsjGvC83lXvAjHZZdZqy3gr1keM8oWKqSfnQsyjYeWVMUFxlH61dquOewO3TKgjb23P3+ip/+K8dUjY/EBkfO0mXHze/gjUA3D8iKkg2j9uapJGR2VaBAcpKY0mq4deK2BLcrybWmtOTGDw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="237529173"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2020 02:32:31 +0800
+IronPort-SDR: nP2pyTO5uBuRK94zz0IysHXTXIZQAeyywUOo6hobN+2SjzypB4d21Z09bRNiLn6pjyD1ZP86C5
+ DXd4Rth9rcMK0NxCOwYf+L1rb8Kn2Z3rKtTTqPOhsOvO1Knk1yp0V6B+VG7bvbLnohYH8CZc/1
+ LNgak3UBcIftfegxjpwFuDDeRKrxSMVRi7O7C2yHM3b0L1RBUgdG6CkZgyiwBhW+03Q+O2YmH5
+ v+bWnCSsJPGfbYLK7NnRT0XcHJKn5XopnH8ruMpsJmLHYt6lu3kHGzuwlQhQqtJpaBCiyOp6Ta
+ EhDWkudxKKofA+KYUEuA+b2t
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 10:25:23 -0800
+IronPort-SDR: yIpej9bqQDqeWD71TAx5gOdg2z6yFQTVSxdVwE0i2EVF4fvkw9eVewYUb8fsqNBdiRydBnAgbj
+ l18KZABhDFDAkN9MZzzF3NxzHY/Xg9GpXjacl8Dpkf4AEBWxQ4JrE5UEhyYyUv3X6NRDl1D7Zc
+ d51T1tH7wio8KBHaJDxle9ypg8Z0zlCiGq1Qq5Vpxr6Qeaa244sqZKgtKz1CEORxChDSLd49g5
+ RnVMQygcxCVf8mrRSxEgbKXPIY0yaZ/VvH5LI2Cy+PSq0XSE4ObWzsIUpHFbES3DA51X2FlV4Q
+ TK0=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 Feb 2020 10:32:29 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v6 0/7] btrfs: remove buffer heads form superblock handling
+Date:   Tue, 11 Feb 2020 03:32:18 +0900
+Message-Id: <20200210183225.10137-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b857a21-432c-41ca-3a46-08d7ae4b787c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2020 17:05:46.2602
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZiJOPQqVoH4gAZEeuYrcqJ/TkNcZRNVe61iBpSBN6NMdiWUFtI7gcJMX1Dh1P1/IDSwsF/o7a5xlV5uOYbys5jzowoB/9pfdotOjoyzYofo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3615
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+This patch series removes the use of buffer_heads from btrfs' super block read
+and write paths. It also converts the integrity-checking code to only work
+with pages and BIOs.
+
+Compared to buffer heads, this gives us a leaner call path, as the
+buffer_head code wraps around getting pages from the page-cache and adding
+them to BIOs to submit.
+
+Patches one and two are preparatory patches, the first one exports
+btrfs_release_disk_super() as a commomn helper to release pages containig a
+super block, the second removes the kmap() calls from block device mappings as
+suggested by Christoph.
+
+The third patch removes buffer_heads from superblock reading. The forth
+removes it from super_block writing and the subsequent patches remove the
+buffer_heads from the integrity check code.
+
+Due to a rebase error patch #3 of v5 got merged into the patch removing the
+BHs form super-block reading, but in the end it isn't too bad this way either.
+
+It's based on misc-next from Monday February 11
+(23ba1a90f0571d91b55bdfef7f06f380a74e8475), and doesn't show any regressions
+in xfstests to the baseline.
+
+Changes to v5:
+- Rebase to newer misc-next
+- Merge old patches 2 and 3
+- Remove kmap()s of pages from block devices (both in new code as well as
+  existing code)
+
+Changes to v4:
+- Ressurected Nikolay's patch exporting btrfs_release_disk_super()
+- Incroporated feedback from Christoph
+
+Changes to v3:
+- Incroporated feedback from Christoph
+
+Changes to v2:
+- Removed patch #1 again
+- Added Reviews from Josef
+- Re-visited page locking, but not changes, it retains the same locking scheme
+  the buffer_heads had
+- Incroptorated comments from David regarding open-coding functions
+- For more details see the idividual patches.
+
+Changes to v1:
+- Added patch #1
+- Converted sb reading and integrity checking to use the page cache
+- Added rationale behind the conversion to the commit messages.
+- For more details see the idividual patches.
+
+
+Johannes Thumshirn (6):
+  btrfs: don't kmap() pages from block devices
+  btrfs: use the page-cache for super block reading
+  btrfs: use BIOs instead of buffer_heads from superblock writeout
+  btrfs: remove btrfsic_submit_bh()
+  btrfs: remove buffer_heads from btrfsic_process_written_block()
+  btrfs: remove buffer_heads form superblock mirror integrity checking
+
+Nikolay Borisov (1):
+  btrfs: Export btrfs_release_disk_super
+
+ fs/btrfs/check-integrity.c | 215 +++++++++++--------------------------
+ fs/btrfs/check-integrity.h |   2 -
+ fs/btrfs/disk-io.c         | 191 ++++++++++++++++----------------
+ fs/btrfs/disk-io.h         |   6 +-
+ fs/btrfs/volumes.c         |  64 +++++------
+ fs/btrfs/volumes.h         |   3 +-
+ 6 files changed, 195 insertions(+), 286 deletions(-)
+
+-- 
+2.24.1
+
