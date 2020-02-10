@@ -2,114 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AFD157B8A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 14:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E80D157F39
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 16:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgBJNah (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Feb 2020 08:30:37 -0500
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:39250 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731489AbgBJNad (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Feb 2020 08:30:33 -0500
-Received: by mail-vs1-f43.google.com with SMTP id p14so4090024vsq.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Feb 2020 05:30:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=cqSR5i88tRjDQklOUokObYXi81pse2mIcHkoD3hzU40=;
-        b=eF7zY+MHqHANO2kqM14uwGKU78NMIczlrbqSAQbDMNQDyONZEJVYgwXx0YvsmwQiPW
-         KEGwWlhlIU8IHMWQHNL5q9Y9NRTj8+0pLLEBNgbyd4zOvFxQ/Ocw29jcYHKXnsQ0m3du
-         2TWS5fVthQO0Qdm1aq/djAGuKSY1vGrPO88QnmRi3ht+EAIIRwvuZZFejxDJBDd6IZYR
-         qsBd/HcGYwP2ZjH7hn1dmkAnjcoQSFMou9yakbeT6DKslZKx/ckUDonfsblGoqCGInkp
-         qdbulAuqPjk7s0MOFLPT54UjEeEcbQaXtj6J8r4yb8F74fD+kb2+tvu8551BRl6gVtvg
-         F/Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=cqSR5i88tRjDQklOUokObYXi81pse2mIcHkoD3hzU40=;
-        b=APKRqyM4qEE/6KQjOMiQ4szCI018D1rN7TBi8HVhYujatW7GCSJMMXwMj1vW+R+Q0P
-         rpfJ1in0uql2RWeG/CanwJIoofCf9nQUlaIfLQO5qytp4iE5E10Dug2jotHRI53jDxjO
-         PB9cZjPNlbwlBXeV+5JmNr2YGJdr3ZJ0j8i26x/LFwilAdZnHgkGnn7K8IhwOeR/SSBk
-         svSJ1/JwdH/VLTwa63t1HlvmbIhLDQH/LExMjc2TTJKSXl0tFhGQL45gcsHDKeesEX/H
-         yONJ1gjK6ddZUcFsCK1ipT8Mi7znpPIDSnqdZPHMnWTjISM/lTlgu4+Eqq6wCJXrOUua
-         JPdw==
-X-Gm-Message-State: APjAAAXF3EIsQN+o8euVoH4MMeggmmU4wrqfO67tPyc7LHorN61x6evz
-        Jx7T4aTq0+Ov8DHKKUuUY6QOgv1XYnRdsYJ6B9lmwwqa
-X-Google-Smtp-Source: APXvYqyff0RAngtCvolltGsazEBMpRXHqzjaDY4PQnnKnYDCb6cV+I1QH/CYuWv8cMqRfLLXqo7aXG9EB3QuGt6Fz2U=
-X-Received: by 2002:a05:6102:303a:: with SMTP id v26mr6818526vsa.119.1581341432218;
- Mon, 10 Feb 2020 05:30:32 -0800 (PST)
+        id S1727499AbgBJPwX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Feb 2020 10:52:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56504 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727120AbgBJPwX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Feb 2020 10:52:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1378FAD9F;
+        Mon, 10 Feb 2020 15:52:21 +0000 (UTC)
+Subject: Re: [PATCH] fstests: common/btrfs: use complete sub command
+To:     Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200210031322.1177-1-anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <aab31229-ebe6-7319-6b49-75ec448ad3f3@suse.com>
+Date:   Mon, 10 Feb 2020 17:52:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Christian_R=C3=A4del?= <christian.raedel@gmail.com>
-Date:   Mon, 10 Feb 2020 14:29:56 +0100
-Message-ID: <CAH6ZjHqkPN9vdXHoneTeYA4xejZMLkVffu=cUnxcQvQrSx+R1Q@mail.gmail.com>
-Subject: Restore almost all files from non-mountable filesystem
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200210031322.1177-1-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-$> uname -a
 
-Linux core 5.5.2-arch1-1 #1 SMP PREEMPT Tue, 04 Feb 2020 18:56:18
-+0000 x86_64 GNU/Linux
 
-$> btrfs --version
+On 10.02.20 г. 5:13 ч., Anand Jain wrote:
+> Grep failed to find this subcommand of btrfs, leading to a wrong
+> inference for a moment.
+> 
+> Make sure we use the full subcommand name in the btrfs command.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-btrfs-progs v5.4.1
+NAK.
 
-$> btrfs fi show /dev/sdd1
-
-Label: 'data'  uuid: 5bdd91dd-8a61-408d-9a22-f2f10293c36e
-Total devices 1 FS bytes used 2.92TiB
-devid    1 size 3.64TiB used 3.15TiB path /dev/sdd1
-
-$> mount -o compress=lzo,clear_cache,nospace_cache,ro -L data /media/data
-
-mount: /media/data: wrong fs type, bad option, bad superblock on
-/dev/sdd1, missing                            codepage or helper
-program, or other error.
-
-$> dmesg | grep -i btrfs
-
-[    2.846524] Btrfs loaded, crc32c=crc32c-intel
-[    2.851902] BTRFS: device label data devid 1 transid 45682
-/dev/sdd1 scanned by systemd-udevd (232)
-[ 3704.305920] BTRFS info (device sdd1): use lzo compression, level 0
-[ 3704.305923] BTRFS info (device sdd1): force clearing of disk cache
-[ 3704.305925] BTRFS info (device sdd1): disabling disk space caching
-[ 3704.305926] BTRFS info (device sdd1): has skinny extents
-[ 3704.989970] BTRFS error (device sdd1): parent transid verify failed
-on 33357824 wanted 45668 found 45681
-[ 3704.990327] BTRFS error (device sdd1): parent transid verify failed
-on 33357824 wanted 45668 found 45681
-[ 3704.990336] BTRFS warning (device sdd1): failed to read root (objectid=4): -5
-[ 3705.042892] BTRFS error (device sdd1): open_ctree failed
-
-Hi,
-
-I've done a
-
-$> btrfs restore -m -S /dev/sdd1 /media/backup
-parent transid verify failed on 33357824 wanted 45668 found 45681
-parent transid verify failed on 33357824 wanted 45668 found 45681
-parent transid verify failed on 33357824 wanted 45668 found 45681
-Ignoring transid failure
-parent transid verify failed on 31899648 wanted 45662 found 45680
-parent transid verify failed on 31899648 wanted 45662 found 45680
-parent transid verify failed on 31899648 wanted 45662 found 45680
-Ignoring transid failure
-
-but it has found nothing. After experimenting with the parameters -d
-and --path-regex, it has found some deleted files, maybe from the root
-directory. So my question: How to restore almost all files that can be
-restored with the btrfs restore command without a knowledge of the
-directory structure? By the way: There exists an application called
-Reclaime (for Windows) that can scan and find all my files, and is
-able to show/play them. But since it is only an evaluation version, I
-cannot save anything.
-
-Sincerly,
-Christian
+It's not entirely clearly what this patch fixes, since grep doesn't
+interact with the subcomand at all, it interacts with its result.
+Furthermore command expansion is performed by btrfs-completion script so
+fixes about command expansion should go there.
+> ---
+>  common/btrfs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/common/btrfs b/common/btrfs
+> index 19ac7cc4b18c..33ad7e3b41cc 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -7,7 +7,7 @@ _btrfs_get_subvolid()
+>  	mnt=$1
+>  	name=$2
+>  
+> -	$BTRFS_UTIL_PROG sub list $mnt | grep $name | awk '{ print $2 }'
+> +	$BTRFS_UTIL_PROG subvolume list $mnt | grep $name | awk '{ print $2 }'
+>  }
+>  
+>  # _require_btrfs_command <command> [<subcommand>|<option>]
+> 
