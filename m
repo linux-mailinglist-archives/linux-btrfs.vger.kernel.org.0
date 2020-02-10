@@ -2,68 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A0E157162
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 10:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBBE157178
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 10:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727433AbgBJJCZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Feb 2020 04:02:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60428 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726968AbgBJJCZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Feb 2020 04:02:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A6915AD3A;
-        Mon, 10 Feb 2020 09:02:23 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Doc: Fix the wrong doc about `btrfs filesystem sync`
-Date:   Mon, 10 Feb 2020 17:02:01 +0800
-Message-Id: <20200210090201.29979-1-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1727022AbgBJJMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Feb 2020 04:12:50 -0500
+Received: from mail.synology.com ([211.23.38.101]:49016 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726961AbgBJJMu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Feb 2020 04:12:50 -0500
+Received: from _ (localhost [127.0.0.1])
+        by synology.com (Postfix) with ESMTPA id BC63CDB1819F;
+        Mon, 10 Feb 2020 17:12:48 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1581325968; bh=kRz7zuzDH6uzUhVHJjrFqNDa3Nh/zMl7jU+W4GFZUsg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=rtqRp3zvqbusKE/PKJ+82sv9NQ0Rd7zDGHOH0LNcc1HFznZ77NqpNfskjPdsGwOst
+         1x7s7zDVo8FXfY1LLSnVh6ul3p5ctBudy3TK7GZHJMSslI9CBBquLqLyNbvW9YaHar
+         GwxGZfYXLtd05Vy2MwTTS2fbF0LnQeCRm5QoQAhc=
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Mon, 10 Feb 2020 17:12:48 +0800
+From:   ethanwu <ethanwu@synology.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] btrfs: backref, only collect file extent items
+ matching backref offset
+In-Reply-To: <0badf0be-d481-10fb-c23d-1b69b985e145@toxicpanda.com>
+References: <20200207093818.23710-1-ethanwu@synology.com>
+ <20200207093818.23710-2-ethanwu@synology.com>
+ <0badf0be-d481-10fb-c23d-1b69b985e145@toxicpanda.com>
+Message-ID: <c0453c3eb7c9b4e56bd66dbe647c5f0a@synology.com>
+X-Sender: ethanwu@synology.com
+User-Agent: Roundcube Webmail/1.1.2
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since commit ecd4bb607f35 ("btrfs-progs: docs: enhance btrfs-filesystem
-manual page"), the man page of `btrfs filesystem` shows `sync`
-subcommand will wait for all existing orphan subvolumes to be dropped.
+Josef Bacik 於 2020-02-08 00:26 寫到:
+> On 2/7/20 4:38 AM, ethanwu wrote:
+>> When resolving one backref of type EXTENT_DATA_REF, we collect all
+>> references that simply references the EXTENT_ITEM even though
+>> their (file_pos- file_extent_item::offset) are not the same as the
+>> btrfs_extent_data_ref::offset we are searching.
+>> 
+>> This patch add additional check so that we only collect references 
+>> whose
+>> (file_pos- file_extent_item::offset) == btrfs_extent_data_ref::offset.
+>> 
+>> Signed-off-by: ethanwu <ethanwu@synology.com>
+> 
+> I just want to make sure that btrfs/097 passes still right?  That's
+> what the key_for_search thing was about, so I want to make sure we're
+> not regressing.  I assume you've run xfstests but I just want to make
+> doubly sure we're good here. If you did then you can add
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Thanks,
+> 
+> Josef
 
-That's not true, even at that commit, `btrfs fi sync` only calls
-BTRFS_IOC_SYNC ioctl, which is not that much different from vanilla
-sync.
-It doesn't wait for orphan subvolumes to be dropped from the very
-beginning.
+Thanks for reviewing.
 
-It's `btrfs subvolume sync` doing the wait work.
+I've run the btrfs part of xfstests, 097 passed.
+Failed at following tests:
+074 (failed 2 out of 5 runs),
+139, 153, 154,
+197, 198(Patches related to these 2 tests seem to be not merged yet?)
+201, 202
 
-Reported-by: Nikolay Borisov <nborisov@suse.com>
-Fixes: ecd4bb607f35 ("btrfs-progs: docs: enhance btrfs-filesystem manual page")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/btrfs-filesystem.asciidoc | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+My kernel environment is 5.5-rc5, and this branch doesn't contain
+fixes for tests 201 and 202.
+All these failing tests also failed at the same version without my 
+patch.
 
-diff --git a/Documentation/btrfs-filesystem.asciidoc b/Documentation/btrfs-filesystem.asciidoc
-index 84efaa1a8f8f..3f62a3608cb1 100644
---- a/Documentation/btrfs-filesystem.asciidoc
-+++ b/Documentation/btrfs-filesystem.asciidoc
-@@ -253,9 +253,8 @@ show sizes in GiB, or GB with --si
- show sizes in TiB, or TB with --si
- 
- *sync* <path>::
--Force a sync of the filesystem at 'path'. This is done via a special ioctl and
--will also trigger cleaning of deleted subvolumes. Besides that it's equivalent
--to the `sync`(1) command.
-+Force a sync of the filesystem at 'path'. This should be the same as vanilla
-+'sync' command, but only for specified btrfs.
- 
- *usage* [options] <path> [<path>...]::
- Show detailed information about internal filesystem usage. This is supposed to
--- 
-2.25.0
+Thanks,
+ethanwu
 
