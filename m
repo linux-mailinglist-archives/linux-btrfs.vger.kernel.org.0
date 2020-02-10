@@ -2,132 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3619156FC7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 08:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7C815700E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 08:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgBJHQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Feb 2020 02:16:30 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:63460 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgBJHQ3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Feb 2020 02:16:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581318990; x=1612854990;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=8xzGgvjgsfgJE3K/Xcwl3HLmItv2W5wt08Am1aTHmrE=;
-  b=qsDOW/tB/g3CG+T8TK/AMtLUSpsIO8QtKCnCQfx+8Oa1UK47SrWKlm5G
-   KeZobFiGsdJ8l5LNfZWo7PDN815MkzE9awpALqVDvIrpnVdT2YVyuHSUd
-   T0thrc5z/hPs+YcLk18Tuo9m63VoIw9FbJ6jRAyksbgn3YROKnCErOYao
-   KDY3kh6vtkV15Woka9eXqbYQBMrxjUtPaGq4EyurlucCiecjKxt5Ku2dQ
-   sBuo7VPHNerQ7qAreQYLKKoEwDBnIo3kHSUgAwOM+zo3d48HbJqwA5DF0
-   tKF0WcOV5StKVGmptTJMTnKNfa/nGP2jcqRqWPwQYFOKAm9rcQzwwaBoh
-   g==;
-IronPort-SDR: YIMoYYjlUsQWqKzpKbYD9Q2d2QGINZ+kFEOF9NSDmVsDDZl8GXtRObFc1HUHngTam+98vF5rXF
- 4XAU20gvXdPNXrSAdlNU7X73A99nPuxB+rGPAN8ipoEbzOIJCcK1/ZUjFnVjeVGnJxh2oYzFMi
- Dp09BoTMaeLrUZg4HrsYhUl+mHG1L3QmSIx74OaBBgBMV5ShSD2SICQ6T9tWpF30OV4lFwjMPq
- knNlWqp0NAnoEzkDFm/h5BOzy1yWb1BYemlC5NX2MLCCeQ7W6gJrTrhrlD90c1gtQLNou6RFoJ
- s4c=
-X-IronPort-AV: E=Sophos;i="5.70,424,1574092800"; 
-   d="scan'208";a="130939050"
-Received: from mail-mw2nam10lp2104.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.104])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2020 15:16:28 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HjSr9wdbt6k2AwCg5dzPU03hvCDc8JrV03GX85uEKmb9nHtpJ0CYDbB6Lj9osjo0tV6rvHLH0/lKNY70hxNB/UDn9SUJ9hAb3e4zGPkWLhEesjHdOqGTukcmv6pXyxvEynUZx8J4CiCGJ+L2bdzWH4jWcfx7s7kowu5oWgNzWd00GgBD78Wmi//uwyyN57f0E6kemgF18sNBodeY/E6pwDQFZfLKa8Gp8jTdShR+BcnMLVdIZE3JTW317rT1kpoz3zkULiuBuNKs8RnsYxZPGEqjQ44NOC7mu/uw6pd9C9+TfjxJIRiiyhuZ2Zt5QDKJV/GIGlaqI1MGeqiQmE9u2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8xzGgvjgsfgJE3K/Xcwl3HLmItv2W5wt08Am1aTHmrE=;
- b=HTUnQzTOk+gPv8pP0xJ0jP0U9mGsID1CggSLaB+iviFyiNUYgjASdbeEGgaXYk3WcnNsi+4vP7kYcw2mlIzDjqvJx1H/HBcyRCJeFFOGwcgR+WOxtQnCI8PRq/xSY7/jGyggeBg/rUhfpX41qmWDAHzMJV7usyqO+KAb+XoiZHWXQrbccR8DGWPPKCozD1mPxIvVdNmRyf97FhsYCkEkgjMps7fC/lAIkdqxEcLtcTqVq+9ZADKNZkBYcMDhzfAPop4mVeBGmd/kIACSpTfWdUzUIDFW5jYZinyTVoTYZP9w795FLgZpvEpjpHvFCeQfg5kqIydlQSJmxdz2m6Uwzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8xzGgvjgsfgJE3K/Xcwl3HLmItv2W5wt08Am1aTHmrE=;
- b=WCzk1+CD6Ggbc7E/USm5hgU6oF0MHSZA+sWCZpqeViKIiFlpavSEjHCXtAxAaLLg+sXTdL7C+ORQGTIzcKHHqFxwCvUJ2Vqj9UeBHrDuaVWLL2aa/XygyrzU6OAQEQwlH4uq+g5b/w9owP1A+3uzf3SV8DeLkF0epA1KMsoW2u0=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3565.namprd04.prod.outlook.com (10.167.139.145) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.29; Mon, 10 Feb 2020 07:16:26 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.028; Mon, 10 Feb 2020
- 07:16:26 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 1/5] btrfs: use the page-cache for super block reading
-Thread-Topic: [PATCH v4 1/5] btrfs: use the page-cache for super block reading
-Thread-Index: AQHV3DH3mC4sQyE5G0ifuyrJtqLY6Q==
-Date:   Mon, 10 Feb 2020 07:16:26 +0000
-Message-ID: <SN4PR0401MB359872E1D656FE7F0451462A9B190@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200205143831.13959-1-johannes.thumshirn@wdc.com>
- <20200205143831.13959-2-johannes.thumshirn@wdc.com>
- <20200205165319.GA6326@infradead.org>
- <SN4PR0401MB359854D81C504BBE28B8B2EB9B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200206145759.GA24780@infradead.org>
- <SN4PR0401MB359856AB4365DC83FBE99E0A9B1D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200207161358.GH2654@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1c324b82-8391-4580-9887-08d7adf9248c
-x-ms-traffictypediagnostic: SN4PR0401MB3565:
-x-microsoft-antispam-prvs: <SN4PR0401MB3565C702A8280817A37C9E439B190@SN4PR0401MB3565.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 03094A4065
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(376002)(136003)(396003)(366004)(39860400002)(189003)(199004)(9686003)(316002)(4744005)(2906002)(54906003)(81156014)(52536014)(6916009)(33656002)(53546011)(55016002)(6506007)(26005)(8936002)(86362001)(71200400001)(478600001)(81166006)(7696005)(91956017)(76116006)(4326008)(186003)(5660300002)(66556008)(64756008)(66446008)(66946007)(66476007)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3565;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZeyWc8ttTw43GUpgMdai5Amn/f/FZSlHWnRUEfApFHQxWzegSZPBfL2JYJFSxNriJG5yFFB91XkRDevq3imyaAfBGTAGkXKqgKYTfYHlNYvTKZfVe/oGBRnSLF6hWy8qlHF4h4AVos4Yv+WFiuc4U6b7hBbVrjfR5sWdHIoKOSbiONpTDT7MnF/YWM1w0TRWiM8Bx0ckHqkwNFUiCSgbPjiPGg0swdfxaLZv0S2ER9Kz+ZJoPuUQzjJDq6A1boCN/jke26Aupee3D37KYjaPUFucm9Tqz31uT2JHH32dnhxQ7ncTKnMG6m3ZmBztowj7DXgwnn1zUe/OR3WkW1hoFFKXmZBMUxkTeDCggQEpshjJq2jUy6TM9uJNvK2bHvQsvFqmYHudIqH/gr8HJtX5r3OkVTUettasUdMbt8wS1PQzypIJKAT3SuQWqWHOTges
-x-ms-exchange-antispam-messagedata: +34Lu64eiNA760g/lT8vcMOF+EWh8rWpCuK5CZzxjiWRUQJ1itP4Mf9L7TK7bau8LEnm1dOJsZ5s47eOWW3x2ng0eOtRLWgO+7TLChUc4xyjC/avxinBgIDYb076w4DybLia/jTz1Pvgqs6utI3k5g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727056AbgBJHpt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Feb 2020 02:45:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34702 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726796AbgBJHpt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Feb 2020 02:45:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 17AA2AE4E;
+        Mon, 10 Feb 2020 07:45:46 +0000 (UTC)
+Subject: Re: [PATCH] fstests: btrfs/179 call quota rescan
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <1581076895-6688-1-git-send-email-anand.jain@oracle.com>
+ <1fae4e42-e8ce-d16d-8b2f-cada33ee67bf@gmx.com>
+ <580c99c8-dcfd-d12b-6ede-7636bf404d32@oracle.com>
+ <e4a8a688-40bc-c88e-7ccb-ca7c958fc457@gmx.com>
+ <84b66420-4c4a-93b9-52af-37e85a343773@oracle.com>
+ <73b9d157-840b-b93f-b86a-5041745f08ce@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <2937988f-3ebc-8cd8-a6dd-82648faf126e@suse.com>
+Date:   Mon, 10 Feb 2020 09:45:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c324b82-8391-4580-9887-08d7adf9248c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2020 07:16:26.6651
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bNeUQ6hG3T5AQ54zGYVc9nkFyLmtnGEahSPXfDKxvijHn5vqQrp8efuOnpsIgm8AH7ACo5YKIG27LJTio4tNysdObKFc/V8Mgua3IJT30Is=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3565
+In-Reply-To: <73b9d157-840b-b93f-b86a-5041745f08ce@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/02/2020 17:14, David Sterba wrote:=0A=
-> On Thu, Feb 06, 2020 at 03:29:57PM +0000, Johannes Thumshirn wrote:=0A=
->> On 06/02/2020 15:58, Christoph Hellwig wrote:=0A=
->>> Also I just noticed don't even need the kmap/kunmap at all given that t=
-he=0A=
->>> block device mapping is never in highmem.=0A=
->>>=0A=
->>=0A=
->> This potentially touches more places, I'll cover that in a dedicated=0A=
->> patchset.=0A=
-> =0A=
-> Are the kmap/kunmaps anywhere on the buffer_head call paths? I can't=0A=
-> find it anywhere, and given that the mapping does not contain highmem=0A=
-> pages we could rather avoid adding it from the beginning.=0A=
-=0A=
-=0A=
-There's at least one more in btrfs_read_disk_super(), but yes I can =0A=
-avoid them in the BH path and remove the ones I find in the next go.=0A=
+
+
+On 10.02.20 г. 3:36 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/2/8 下午5:06, Anand Jain wrote:
+>>
+>>
+>> On 2/8/20 7:28 AM, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2020/2/7 下午11:59, Anand Jain wrote:
+>>>>
+>>>>
+>>>> On 7/2/20 8:15 PM, Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> On 2020/2/7 下午8:01, Anand Jain wrote:
+>>>>>> On some systems btrfs/179 fails as the check finds that there is
+>>>>>> difference in the qgroup counts.
+>>>>>>
+>>>>>> By the async nature of qgroup tree scan, the latest qgroup counts
+>>>>>> at the
+>>>>>> time of umount might not be upto date,
+>>>>>
+>>>>> Yes, so far so good.
+>>>>>
+>>>>>> if it isn't then the check will
+>>>>>> report the difference in count. The difference in qgroup counts are
+>>>>>> anyway
+>>>>>> updated in the following mount, so it is not a real issue that this
+>>>>>> test
+>>>>>> case is trying to verify.
+>>>>>
+>>>>> No problem either.
+>>>>>
+>>>>>> So make sure the qgroup counts are updated
+>>>>>> before unmount happens and make the check happy.
+>>>>>
+>>>>> But the solution doesn't look correct to me.
+>>>>>
+>>>>> We should either make btrfs-check to handle such half-dropped case
+>>>>> better,
+>>>>
+>>>>   Check is ok. The count as check counts matches with the count after
+>>>> the
+>>>> mount. So what is recorded in the qgroup is not upto date.
+>>>
+>>> Nope. Qgroup records what's in commit tree. For unmounted fs, there is
+>>> no difference in commit tree and current tree.
+>>>
+>>> Thus the qgroup scan in btrfs-progs is different from kernel.
+>>> Please go check how the btrfs-progs code to see how the difference comes.
+>>>
+>>>>
+>>>>> or find a way to wait for all subvolume drop to be finished in
+>>>>> test case.
+>>>>
+>>>> Yes this is one way. Just wait for few seconds will do, test passes. Do
+>>>> you know any better way?
+>>>
+>>> I didn't remember when, but it looks like `btrfs fi sync` used to wait
+>>> for snapshot drop.
+>>> But not now. If we have a way to wait for cleaner to finish, we can
+>>> solve it pretty easily.
+>>
+>> A sleep at the end of the test case also makes it count consistent.
+>> As the intention of the test case is to test for the hang, so sleep 5
+>> at the end of the test case is reasonable.
+> 
+> That looks like a valid workaround.
+> 
+> Although the immediate number 5 looks no that generic for all test
+> environments.
+> 
+> I really hope to find a stable way to wait for all subvolume drops other
+> than rely on some hard coded numbers.
+
+ what about btrfs filesystem sync?
+
+
+<snip>
