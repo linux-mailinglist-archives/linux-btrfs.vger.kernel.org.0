@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7B2156E66
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 05:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1625156E72
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 05:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgBJEKm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Feb 2020 23:10:42 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48110 "EHLO
+        id S1727008AbgBJE1f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Feb 2020 23:27:35 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33490 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgBJEKm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Feb 2020 23:10:42 -0500
+        with ESMTP id S1726950AbgBJE1f (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Feb 2020 23:27:35 -0500
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4DFF45B79FD; Sun,  9 Feb 2020 23:10:41 -0500 (EST)
-Date:   Sun, 9 Feb 2020 23:10:41 -0500
+        id 339F25B7A44; Sun,  9 Feb 2020 23:27:34 -0500 (EST)
+Date:   Sun, 9 Feb 2020 23:27:34 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Martin Steigerwald <martin@lichtvoll.de>
-Cc:     linux-btrfs@vger.kernel.org,
-        Timothy Pearson <tpearson@raptorengineering.com>
+To:     Timothy Pearson <tpearson@raptorengineering.com>
+Cc:     Martin Raiber <martin@urbackup.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Subject: Re: data rolled back 5 hours after crash, long fsync running times,
  watchdog evasion on 5.4.11
-Message-ID: <20200210041041.GH13306@hungrycats.org>
+Message-ID: <20200210042734.GI13306@hungrycats.org>
 References: <20200209004307.GG13306@hungrycats.org>
- <2202848.tjv8jjdcNr@merkaba>
+ <010201702aecfa9f-9cda3f94-c05f-4fe0-b6b0-5803c086dc65-000000@eu-west-1.amazonses.com>
+ <427597294.18207443.1581289860634.JavaMail.zimbra@raptorengineeringinc.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="DlCDOi0rxj7hgWX9"
+        protocol="application/pgp-signature"; boundary="csjV5iuXLa65tnQH"
 Content-Disposition: inline
-In-Reply-To: <2202848.tjv8jjdcNr@merkaba>
+In-Reply-To: <427597294.18207443.1581289860634.JavaMail.zimbra@raptorengineeringinc.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -35,84 +36,275 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---DlCDOi0rxj7hgWX9
+--csjV5iuXLa65tnQH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 09, 2020 at 10:00:34AM +0100, Martin Steigerwald wrote:
-> Zygo Blaxell - 09.02.20, 01:43:07 CET:
-> > Up to that point, a few processes have been blocked for up to 5 hours,
-> > but this is not unusual on a big filesystem given #1.  Usually
-> > processes that read the filesystem (e.g. calling lstat) are not
-> > blocked, unless they try to access a directory being modified by a
-> > process that is blocked. lstat() being blocked is unusual.
->=20
-> This is really funny, cause what you consider not being unusual, I'd=20
-> consider a bug or at least a huge limitation.
->=20
-> But in a sense I never really got that processed can be stuck in=20
-> uninterruptible sleep on Linux or Unix *at all*. Such a situation=20
-> without giving a user at least the ability to end it by saying "I don't=
-=20
-> care about the data that process is to write, let me remove it already"=
-=20
-> for me is a major limitation to what appears to be kind of specific to=20
-> the UNIX architecture or at least the way the Linux virtual memory=20
-> manager is working.
-
-> That written I may be completely ignorant of something very important=20
-> here and some may tell me it can't be any other way for this and that=20
-> reason. Currently I still think it can.
-
-The process in uninterruptible sleep is waiting for the filesystem code to
-finish whatever it's doing so the in-memory and on-disk structures end in
-a consistent state.  If whatever it's doing is "waiting for a lock held by
-some other thread doing an expensive thing", it can block for a long time.
-
-We can't simply abort the kernel thread here, which is why it's
-uninterruptible wait (*).  Generic interruption would need to unwind the
-kernel stack all the way back to userspace, reverting all changes made
-to the filesystem's internal data structures as we go, without tripping
-over the need for some other lock in the process, and without introducing
-horrible new regressions.
-
-In theory we can interrupt any kernel thread at any time--that happens
-naturally whenever there's a BUG() or power failure, for instance--but
-the effect on all the other threads that might be running is pretty
-painful.
-
-If you add a level of indirection--e.g. run the btrfs code in a VM and
-access it via a network or virtio client--then we can interrupt the
-client, but the server ends up having to finish whatever operation the
-client requested anyway, so the client just gets to immediately hang
-waiting for the server on its next call.
-
-> And even if uninterruptible sleep can still happen cause it is really=20
-> necessary, five hours is at least about five hours minus probably a minut=
-e=20
-> or so too long.
-
-Yes it would be nice if btrfs could avoid overcommitting itself so badly,
-but that's a somewhat older and larger-scoped bug.
-
-> Ciao,
-> --=20
-> Martin
+On Sun, Feb 09, 2020 at 05:11:00PM -0600, Timothy Pearson wrote:
 >=20
 >=20
+> ----- Original Message -----
+> > From: "Martin Raiber" <martin@urbackup.org>
+> > To: "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>, "linux-btrfs" <lin=
+ux-btrfs@vger.kernel.org>
+> > Cc: "Timothy Pearson" <tpearson@raptorengineering.com>
+> > Sent: Sunday, February 9, 2020 11:08:58 AM
+> > Subject: Re: data rolled back 5 hours after crash, long fsync running t=
+imes, watchdog evasion on 5.4.11
+>=20
+> > On 09.02.2020 01:43 Zygo Blaxell wrote:
+> >> I reproduced a filesystem rollback similar to one reported back in
+> >> November by Timothy Pearson:
+> >>
+> >> 	https://www.spinics.net/lists/linux-btrfs/msg94318.html
+> >>
+> >> The timeline is something like this:
+> >>
+> >> 1.  System gets loaded, lots of writes, a few processes calling fsync(=
+).
+> >> Fairly normal stuff.
+> >>
+> >> 2.  Just enough new data is written continuously to keep a transaction
+> >> from finishing, but not enough to block new writes (i.e. the filesystem
+> >> is kept in equilibrium between dirty_background_bytes and dirty_bytes).
+> >> Typically an application gets stuck in fsync() here, but the rest of
+> >> the system is unaffected.  Here is one:
+> >>
+> >> 	TIMESTAMP: Fri Feb  7 01:03:21 EST 2020
+> >> 	=3D=3D> /proc/31872/task/31872/stack <=3D=3D
+> >> 	[<0>] wait_on_page_bit+0x172/0x250
+> >> 	[<0>] read_extent_buffer_pages+0x2e5/0x3a0
+> >> 	[<0>] btree_read_extent_buffer_pages+0xa3/0x120
+> >> 	[<0>] read_tree_block+0x4e/0x70
+> >> 	[<0>] read_block_for_search.isra.34+0x1aa/0x350
+> >> 	[<0>] btrfs_search_slot+0x20a/0x940
+> >> 	[<0>] lookup_extent_data_ref+0x7e/0x210
+> >> 	[<0>] __btrfs_free_extent.isra.45+0x22f/0xa10
+> >> 	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
+> >> 	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
+> >> 	[<0>] btrfs_commit_transaction+0x52/0xa70
+> >> 	[<0>] btrfs_sync_file+0x248/0x490
+> >> 	[<0>] vfs_fsync_range+0x48/0x80
+> >> 	[<0>] do_fsync+0x3d/0x70
+> >> 	[<0>] __x64_sys_fdatasync+0x17/0x20
+> >> 	[<0>] do_syscall_64+0x5f/0x1f0
+> >> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>
+> >> 3.  The transid of the subvol roots never increases as long as the bal=
+ance
+> >> of incoming and outgoing data flows in #2 is maintained.  This can go =
+on
+> >> for hours or even days on recent kernels (much longer than was possibl=
+e on
+> >> 5.0). In this particular case it was 3 hours, in earlier cases I've ca=
+ught
+> >> it delayed by 14 hours or more, and been able to recover by pausing wr=
+ite
+> >> workloads long enough for btrfs to keep up.  Here is an excerpt from b=
+ees
+> >> logs showing this (the filesystem's current transid is the "count" fie=
+ld):
+> >>
+> >> 	2020-02-07 00:04:24 10386.10408<7> crawl_transid: Polling 561.882s fo=
+r next 100
+> >> 	transid RateEstimator { count =3D 4441796, raw =3D 7412.98 / 42429.6,=
+ ratio =3D
+> >> 	7412.98 / 42440.2, rate =3D 0.174669, duration(1) =3D 5.72512, second=
+s_for(1) =3D 1 }
+> >>
+> >> and 3 hours later the filesystem transid hasn't moved:
+> >>
+> >> 	2020-02-07 03:06:53 10386.10408<7> crawl_transid: Polling 719.095s fo=
+r next 100
+> >> 	transid RateEstimator { count =3D 4441796, raw =3D 6248.72 / 45912.8,=
+ ratio =3D
+> >> 	6248.72 / 45928.7, rate =3D 0.136053, duration(1) =3D 7.35009, second=
+s_for(1) =3D 1 }
+> >>
+> >> 4.  Most writes continue without incident:  git commits, log files,
+> >> bees dedupe, kernel builds, rsync all run normally.  Some things block:
+> >> applications that call fsync() or sync() get stuck.  Snapshot creation
+> >> blocks.  Maintenance balances, when the maintenance window opens, also
+> >> block, and snapshot deletes are then blocked waiting for balance.
+> >>
+> >> In most cases this is as far as we get:  eventually something breaks
+> >> the equilibrium from #2, the stalled transaction commit completes,
+> >> and everything is normal; however, in this case, we never finish the
+> >> transaction.  fsync (the same one!) is still running some hours later:
+> >>
+> >> 	TIMESTAMP: Fri Feb  7 03:47:40 EST 2020
+> >> 	=3D=3D> /proc/31872/task/31872/stack <=3D=3D
+> >> 	[<0>] btrfs_tree_lock+0x120/0x260
+> >> 	[<0>] btrfs_lock_root_node+0x34/0x50
+> >> 	[<0>] btrfs_search_slot+0x4d5/0x940
+> >> 	[<0>] lookup_inline_extent_backref+0x164/0x5a0
+> >> 	[<0>] __btrfs_free_extent.isra.45+0x1f0/0xa10
+> >> 	[<0>] __btrfs_run_delayed_refs+0x2d5/0x12d0
+> >> 	[<0>] btrfs_run_delayed_refs+0x105/0x1b0
+> >> 	[<0>] btrfs_commit_transaction+0x52/0xa70
+> >> 	[<0>] btrfs_sync_file+0x248/0x490
+> >> 	[<0>] vfs_fsync_range+0x48/0x80
+> >> 	[<0>] do_fsync+0x3d/0x70
+> >> 	[<0>] __x64_sys_fdatasync+0x17/0x20
+> >> 	[<0>] do_syscall_64+0x5f/0x1f0
+> >> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>
+> >> We know it's the same fsync call because a supervisor process killed
+> >> pid 31872 with SIGKILL at around 01:10.  It's not deadlocked here--the
+> >> stack changes continuously the whole time--but it doesn't finish runni=
+ng.
+> >>
+> >> 5.  2 hours later, lstat() in the watchdog daemon blocks:
+> >>
+> >> 	TIMESTAMP: Fri Feb  7 05:15:07 EST 2020
+> >> 	4506 pts/10   DN+    0:00 /bin/bash /root/bin/watchdog-mdtest
+> >> 	=3D=3D> /proc/4506/task/4506/stack <=3D=3D
+> >> 	[<0>] lookup_slow+0x2c/0x60
+> >> 	[<0>] walk_component+0x1bf/0x330
+> >> 	[<0>] path_lookupat.isra.44+0x6d/0x220
+> >> 	[<0>] filename_lookup.part.59+0xa0/0x170
+> >> 	[<0>] user_path_at_empty+0x3e/0x50
+> >> 	[<0>] vfs_statx+0x76/0xe0
+> >> 	[<0>] __do_sys_newlstat+0x3d/0x70
+> >> 	[<0>] __x64_sys_newlstat+0x16/0x20
+> >> 	[<0>] do_syscall_64+0x5f/0x1f0
+> >> 	[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>
+> >> Up to that point, a few processes have been blocked for up to 5 hours,
+> >> but this is not unusual on a big filesystem given #1.  Usually process=
+es
+> >> that read the filesystem (e.g. calling lstat) are not blocked, unless =
+they
+> >> try to access a directory being modified by a process that is blocked.
+> >> lstat() being blocked is unusual.
+> >>
+> >> 6.  60 seconds later, the system reboots due to watchdog timeout.
+> >>
+> >> Upon reboot, the filesystem reverts to its state at the last completed
+> >> transaction 4441796 at #2, which is 5 hours earlier.  Everything seems=
+ to
+> >> be intact, but there is no trace of any update to the filesystem after
+> >> the transaction 4441796.  The last 'fi usage' logged before the crash
+> >> and the first 'fi usage' after show 40GB of data and 25GB of metadata
+> >> block groups freed in between.
+> >>
+> >> I have only observed this on kernel 5.4, but I've seen the commit bloc=
+king
+> >> behavior twice in two days.  I have not observed it so far on 5.0 and
+> >> earlier (since it was released in March 2019).  I don't have data from
+> >> kernels in between due to other test-blocking bugs.
+> >>
+> >> TBH I can't really say 5.0 _doesn't_ do this--while writing this post,
+> >> I've seen some transactions on 5.0 running for 5-10 minutes, and I
+> >> haven't been checking for this specific behavior in earlier testing;
+> >> however, 5.0 crashes a lot, so if there was a behavior like this in 5.=
+0,
+> >> I'd expect somebody would have noticed.
+> >>
+> >> On kernel 5.4 we see fewer processes blocked under heavy write loads,
+> >> but the processes that do block are blocked longer.  In particular, our
+> >> watchdog daemon, which creates and removes a directory every 30 seconds
+> >> to detect lockups, didn't fire.  The system ran for 3 hours before the
+> >> watchdog detected a problem in this case, and the previous day the sys=
+tem
+> >> ran 14 hours without completing a transaction and the watchdog didn't
+> >> fire at all.  We'll add an fsync to the watchdog too, as the logs for
+> >> systems running 5.4 are full of processes stuck many hours in fsync.
+> >>
+> >> Going forward we will add an alert to our server monitoring to verify =
+that
+> >> the superblock's generation number field updates at regular intervals
+> >> (at least once an hour) and apply a workaround if not.  I'll also add
+> >> to my test workload and start a bisect to see if this is a regression =
+in
+> >> recent kernels.
+> >>
+> >> There is a workaround:  detect when the superblock generation field st=
+ops
+> >> updating, and pause (freeze or SIGSTOP) all writing processes long eno=
+ugh
+> >> for btrfs to catch up and complete the current transaction.
+> >=20
+> > I have the same problem. Have a dozen threads with high throughput
+> > (simply writing data to a single file sequentially) combined with a
+> > dozen threads doing metadata-heavy workloads and it'll take a long time
+> > for a sync() to finish. Work-around is the same as well: Throttle the
+> > application if the sync doesn't finish after a (configurable) amount of
+> > time.
+> > I have seen the same problem with ZFS on FreeBSD, though, so it is by no
+> > means btrfs or even Linux specific. My guess is that since most file
+> > systems are constrained/throttled by journal (size), there is no
+> > mechanism for metadata vs. data fairness.
+> > As for most congestion problems the best solution is to increase
+> > capacity (storage IOPS) so everything runs below max capacity most of
+> > the time or to throttle at the source to reach the same goal.
+> >=20
+> > https://www.spinics.net/lists/linux-btrfs/msg72909.html was my report
+> > back then, maybe take a look at the number of btrfs_delayed_ref_head in
+> > slabtop as well?
+>=20
+> If I might suggest a stopgap measure, simply firing a warning in the
+> kernel log to the effect of "metadata write bandwidth insufficient,
+> DATA LOSS MAY OCCUR" in this situation would be most helpful.  As it
 
-(*) well we could, if all the filesystem code was written that way.
-Patches welcome!
+This is fairly easy in userspace:
 
---DlCDOi0rxj7hgWX9
+        #!/bin/sh
+        fsDev=3D"$1"
+        lastGen=3D"$(btrfs ins dump-super "$fsDev" | grep ^generation)"
+        while true; do
+                sleep 15m
+                thisGen=3D"$(btrfs ins dump-super "$fsDev" | grep ^generati=
+on)"
+                if [ "$thisGen" =3D "$lastGen" ]; then
+                        echo "BTRFS: DATA LOSS MAY OCCUR on $fsDev: $thisGe=
+n" > /dev/kmsg
+                fi
+                lastGen=3D"$thisGen"
+        done
+
+Adjust the "15m" to whatever interval of data loss you can tolerate,
+but be warned that setting it to less than 5 minutes will generate a
+crapton of noise warnings on a busy server whenever you create a snapshot.
+
+> stands right now largest problem isn't so much the reversion effect
+> itself as the silence until the data loss occurs -- the system isn't
+> sending any messages that anything is potentially wrong, so using
+> BTRFS feels like playing Russian Roulette at the moment  Downstream
+> apps don't exactly tend to list their maximum sustained IOPS, so
+> trying to balance array IOPS with application IOPS across a large
+> server cluster is not feasible from a pure calculation standpoint,
+> and is normally done semi-empirically knowing the worst case effect
+> is app stall, not data loss for an indeterminate, relatively large
+> period along with potential data corruption.
+>=20
+> This same thought applies to ZFS, assuming it is also silently eating
+> data in the situation mentioned.  Very interesting to know it's a
+> general problem with this class of storage.
+
+I'm pretty sure it's a new bug in btrfs.  I've been monitoring
+this server running 5.0 since Friday, and the superblock generation
+never gets _too_ out of date, though it does fall some minutes behind.
+There are occasional hour-long transactions, but we don't get data loss
+with those because we can't write any data during that hour.  Also this
+hasn't happened in kernel versions 3.18..4.20 that I've ever seen.
+
+I think btrfs got too successful at unblocking writes during commits,
+and we need to start blocking them again (ideally by blocking the writes
+that make commits run longer, and maybe some of the reads too).
+
+
+> Thanks!
+
+--csjV5iuXLa65tnQH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXkDXvgAKCRCB+YsaVrMb
-nLVFAJ9ndrgeH4NtsfrA3xjnW++mSFewRACfU0YF1hq8Nf1ZMv8ThYOyLNbtLrw=
-=m6A0
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXkDbswAKCRCB+YsaVrMb
+nHjQAJ49v02AGUVGGzmNza22iBYTvwA6lwCeKrt4H1TNAOH9hwkACBDfa/uLyEE=
+=43o6
 -----END PGP SIGNATURE-----
 
---DlCDOi0rxj7hgWX9--
+--csjV5iuXLa65tnQH--
