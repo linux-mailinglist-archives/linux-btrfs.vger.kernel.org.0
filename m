@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 069E7156D29
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 01:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C526156D2F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Feb 2020 01:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgBJA3R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Feb 2020 19:29:17 -0500
-Received: from mout.gmx.net ([212.227.15.18]:39131 "EHLO mout.gmx.net"
+        id S1726915AbgBJAaj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Feb 2020 19:30:39 -0500
+Received: from mout.gmx.net ([212.227.15.15]:41267 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgBJA3Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 9 Feb 2020 19:29:16 -0500
+        id S1725868AbgBJAaj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 9 Feb 2020 19:30:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581294550;
-        bh=cggfV9LbpJQBPUOmcHm3Sufx6z56Ueks81V1fPYbPU8=;
+        s=badeba3b8450; t=1581294631;
+        bh=GGdynS1LQ/z3msVZqffC2S6i6d7k1iCfPJm1XUk0C4g=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=IUxEJPUvS+7v9VThQYAVHZ2Hnzmy581BNmXIYH1GftqC+bJlSLrsDOCVtBGJYNJRn
-         YTBA/dz4ZZHFdqUqEEuz/CbJSae1RJ1hc+c5zK/9J4+oF1B3dc53NYHl1/VwmPRZjW
-         btwMsygkcGKRvf4vpV8ZTKNGzxLwfLttZVfJLV08=
+        b=Ie5GjPHHBfh+0i4UmLPYa15ZZp7qAdgBX1sOOWM/wVX6ADsK4fIHZ4pWHF6R8PzmI
+         R+SqH6hFjr9JljaoeyZMCohcXMccs869jPIQsjFLm8fK4gv7f0d+BTNIV9sNYIhg4B
+         IE98IOej7wiyqwZUQhQCkEJBWDpJEbVaAs+Ya+R8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuUj2-1jJ1jL33aM-00rZBB; Mon, 10
- Feb 2020 01:29:10 +0100
-Subject: Re: [PATCH 1/2] fstests: Always dump dmesg for failed test cases
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnJhO-1jjs5i3ULk-00jHEp; Mon, 10
+ Feb 2020 01:30:31 +0100
+Subject: Re: [PATCH 2/2] fstests: btrfs: Fix a bug where test case can't grab
+ the 2nd device when glob is used
 To:     Eryu Guan <guaneryu@gmail.com>, Qu Wenruo <wqu@suse.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 References: <20200120070938.30247-1-wqu@suse.com>
- <20200209154840.GF2697@desktop>
+ <20200120070938.30247-2-wqu@suse.com> <20200209155255.GG2697@desktop>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,101 +53,77 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f6243f1d-3df5-3eb1-35eb-6e7aeb2a568f@gmx.com>
-Date:   Mon, 10 Feb 2020 08:29:05 +0800
+Message-ID: <5068f488-72e0-4187-64e1-d8f53323abf1@gmx.com>
+Date:   Mon, 10 Feb 2020 08:30:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200209154840.GF2697@desktop>
+In-Reply-To: <20200209155255.GG2697@desktop>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="mSBrKArHbciMTXK5PKKoqb26D5ybtpkM6"
-X-Provags-ID: V03:K1:awnA9H0YnlOHosgJLb7FiJ6wrMwTGhhjjKZX+RtAjXG2fgJ4OqL
- PKMPqWc0arIpQgsiDmGb/RNmr/TDK+UZjX1OgSmEEFIq5j4yg9J+aNOUeiC7WQOFnvOz7RK
- uOBjnMQ7/YZQf/IeHOJlxGJsSK5Eg3I/XE8Zvw7i1YpS6Oa1f9lfQb7u2dn7/gRBxBmSHgE
- hYjzi+Z8ig7jxOW6Z/Fhg==
+ boundary="wryjpwLhei6sZdOPOn96Dvu0vkEio5jhF"
+X-Provags-ID: V03:K1:Ytt+d71sLTof6hp1jL0tl+TbxUegZF9kdvqijisUpEDDVmJkvaA
+ PsEU63udVM/uLvDj7upou3SvO3s0oVHW3u21k6E0LlOLbgElY9Uk3XohkAbt6BNcmBqHbPg
+ Nvuh9+QRQkQH/kaQv7XzWWhmnly3L0w+IGrmAj3weix5A3pY/Z691dBbniu6B1sKMdL5b5p
+ EogF9eeJ0YXiQW5OEzn4g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mQCGT0GzaZs=:dEO2gLvmI1fhHb7/d8Q2dQ
- D0gnwC5jlUV+OnBUIodiLVbnYqRnQI+0KmqQPer7yAwxL6hiV7DZKVzGMp1wHLQJHV4ycBbZ/
- ZQCMc7dSEKndAMhuDoA2ZWcb8+pc2tAGVKKhIBVR6h5F3AlL4GaP2OYwsV5Ov/X01EZEgFvN9
- twHkhxGRKCca43xRakYzkVLXRENjHbsyPBye3pv/wTKtv1oMs+yao2yg3qW+bgsHlWGu0D46N
- u32UM4RwIk9mFFi0DUxAcz2uv7KQNc50LTDHQSNWuaLYNI2MYPPU2TnrmGcXe9hgyHuKtlBEg
- nWCijMcBcHd5DYCOg3kom8Cwb72pvMwsf0zz8yLQ5+fwp5LLikAu6x5X1pi7+x/GWDY41H3jp
- H3zNNafl49HhrNSaC1HMIiwTrOKUfc/VbhabW3NB4t4DZtrMhyc5dSaE+goI0du+zTfDFfG41
- rH+P4cQ/iws1E0IiqPHGzTG8+dNXqonQgGgqBnWRKfUJws+AHzgILWkTFTPUELMh9yOOTOTkD
- kujMvv4cunCH4c9Mp9NROYeTI4YnrJghv2H3DCdNyVSGhVK965k9QBVjhhDI8WtQkaKjUSltU
- ZWapDyg4ywUavF66CAjpxKkAtc3oTXg137xE/aqqQ+AgXs+D0cXLen9WPoPWDHOuttvyIbXBy
- qlXLwxTyeryzN4UrY4GnWnByoJBSGgRgmK7+F0k41B74ZOwpWgpsg4A+1XADSJD3FAoJo53Pw
- GjhF3a9DfFFmbqXeBQYnqNHCIfO8A4csm2sLDgfcL0TnYsItv8EP+1ixxVEeKe7IAHLOTuzAz
- KmPjjsj+x2o/2nEJtObyqFU6cQwt2PXZjNQ+vRRNbs5xC73IYS2o9O05k6HcN/lTZYoGPkLX1
- 4cY91DG0YCzdFuoAzDMpoaUYQPImDQcG3hoZ1EePuVRwrKRsZQ6tkycMfzdGBg267D6RVN5CI
- zzlG/E/gJKbEkSCRcKCi1opGJpgn4mkW/MmPidQX76FC1l7cm/U5eg/58v1iZS/MYux8ZrFDw
- lMsvgRgJ8IMfxmm8M6S5oTcwTBl2sa+bErRWCI9jKvZW9DSFBZ4QnUPTxYdw020Zu0NyyLIaC
- 3rBibmffeaSsisgPwhgsEoTnv8wHxrSY7Vm/D9wYt+ZcMcq+9jLksllQlOUodMzoKMfvN0/9b
- pWfFkGWeyN9B9qASJSDdvBWkK1n4bj60s4I6+C8l4yrgeWUrv0srY8LlYAriA7ZaSNevkQ6ca
- yFX9dxsaWMuUIA8Ri
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2EPqmW+OYPU=:jFPpRlzb2FWnFwgOsawShF
+ J46JO7nNvRjiSnozkUeB9xkFjbciiKcFaEYuO7xEbMgJQbop0varcdQ5ZO+VfslILCkw3jcwb
+ XH5kSZTvhO3GR4tS3DIX8N6QYslmD7Y0L1qeOOOv1/SQvTuUW2aJYQJd67vCL08EXhXjShCJ2
+ OkVMGdK2teMfaIeiZgnen1j8Fyjwr8s73Zc/xTq/feUv9wwBFU7gJRAE2zLVdwEoh0m4/o3Ox
+ NCzGKxK/JXgQ4bmak1L5uymGtPhFtc5uT8ZqK33gMIKwbCqf0edektXziYHVbLoS+VVcS2i/v
+ sSpHsA44sWXBp5DYwauWPvq5X0t7N1Qu+6074lnB0kxjnLkIAon7ISbMr+SVWagWGWtik+11m
+ +H27OT1BrGO1vIv+5BORqa+ZICz8zpDLf3cEf18rbs3bmJMj18ROAZAkKqzQpOT6GEwak/8GM
+ EG3tDFRRBszJiMEIchAr/5Q/eXJGrJPp3ToosFk5Tn2d0b6N8i/hsPY4tguWwr39l5vyrH2oU
+ TR+SqTPRUSzxelKpzWeRqvzUTIk/nzEzhAhGImw/MzIl0MbNJy6QIAscKmjaoVfSuAzboucz8
+ Pr5mQesHOM7vZdERndO3uu5Qe4Q8gwqHIqQz4I1QpSSLA+r+hvtiGmZh1ngJvWF6eeqH1hvme
+ RuimTaEBK2ikcj62b9buxqM7JMSSpoB2DUVYjBCqc5AcLxIGm11sAtdXEWbE9Ca3dRo0YXYOG
+ loP30xvuOUbf9tWfLyNz4Y/q7SYHNRddXE0DmF3OB44iKimbYc/z8Tv0nhZoRNPhUHmkKdOCe
+ Ye7mrKH5EnFiz8MVwe36sBwKMKrv3yTtaS/6/Kt9PxTChnvKqFn8vgV0Kco5QVHjiaIKYvecJ
+ Ds224U8gU1Grd4wbMWSOedtMzOpttnPQY946xf0N0wkkgmRc3OipDKF0Ri/Arp+oaP5w6CY6f
+ TFkHX3DGhEkBlNvRNSsSJGbG386n+xV1m/JXW9rU8wzUDn96KaOEJ2tbYa3pCuytoLwBk9XJZ
+ vT7i3qsVADXXJkftqeCHh333KUOndX5bGbR1ArcpwpqHJR3JprkD9NDun3x6hz7uYXrNoElYR
+ vh66q89TDed5CzoAGB2v0UV1IKgvw+UHfxPKj+Kb1pNgQpt8FwiunbsIv5BQmvhntBQMdIV7g
+ zoV61ra1w6+y/YWgmlqnwae+6jIOv3pdi+4Bjs5Vj+skCuwBqoyY07d0vX/nb4Uw1cD+4+36a
+ CwOxJxxjwH3GplyHM
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mSBrKArHbciMTXK5PKKoqb26D5ybtpkM6
-Content-Type: multipart/mixed; boundary="IL0Cnch6ZeCJzmKO1COFp0WImLcl7z4gA"
+--wryjpwLhei6sZdOPOn96Dvu0vkEio5jhF
+Content-Type: multipart/mixed; boundary="0E9xMCoZ7dmkW9E7smndk0Tj0vF0Ph0xa"
 
---IL0Cnch6ZeCJzmKO1COFp0WImLcl7z4gA
+--0E9xMCoZ7dmkW9E7smndk0Tj0vF0Ph0xa
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/9 =E4=B8=8B=E5=8D=8811:48, Eryu Guan wrote:
-> On Mon, Jan 20, 2020 at 03:09:37PM +0800, Qu Wenruo wrote:
->> When hard-to-hit bugs happened, we really want every piece of info to
->> help us debugging.
->>
->> Although we already have KEEP_DMESG config, not everyone is utilizing
->> it, thus when hard-to-hit bugs happened, one could only set it and ret=
-ry
->> until next hit.
->>
->> This patch will change the behavior by always dumping the dmesg for
->> failed tests, so that developers can always get extra info from any
->> failure.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  check | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/check b/check
->> index 2e148e5776e5..e580b2249f06 100755
->> --- a/check
->> +++ b/check
->> @@ -840,6 +840,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
->> =20
->>  	# make sure we record the status of the last test we ran.
->>  	if $err ; then
->> +		if [ ! -f $seqres.dmesg ]; then
->> +			_dmesg_since_test_start >$seqres.dmesg
->> +		fi
+On 2020/2/9 =E4=B8=8B=E5=8D=8811:52, Eryu Guan wrote:
+> On Mon, Jan 20, 2020 at 03:09:38PM +0800, Qu Wenruo wrote:
+>> If SCRATCH_DEV_POOL is definted using glob, e.g.
+>> SCRATCH_DEV_POOL=3D"/dev/mapper/test-scratch[123456]", then btrfs/175 =
+will
 >=20
-> So this only saves the dmesg of the last test?
+> I don't think this is necessary, and I think it's not a problem that
+> fstests should resolve.
 >=20
-> And I don't think this is necessary, even if it saves the dmesgs of all=
-
-> failed tests, this behavior change requires some more diskspace and may=
-
-> fulfill / more easily.
+> Usually Config file is not always changing, setting SCRATCH_DEV_POOL
+> correctly for once should be fine. A simple command could expand the
+> device list for you:
 >=20
-> I think if one knows he/she's debugging a hard-to-hit bug, set
-> KEEP_DMESG. Or again, make "save dmesg of every failed test" a tunable
-> behavior.
+>     [root@fedoravm xfstests]# ls /dev/mapper/testvg-lv[1234567]
+>     /dev/mapper/testvg-lv1  /dev/mapper/testvg-lv2 /dev/mapper/testvg-l=
+v3  /dev/mapper/testvg-lv4 /dev/mapper/testvg-lv5  /dev/mapper/testvg-lv6=
+ /dev/mapper/testvg-lv7
+>=20
+> Then just copy/paste the device list.
 
-Makes sense.
-
-As I just went the same solution.
+Then at least adding some comment for how to set SCRATCH_DEV_POOL would
+help.
 
 Thanks,
 Qu
@@ -154,31 +131,183 @@ Qu
 > Thanks,
 > Eryu
 >=20
->>  		bad=3D"$bad $seqnum"
->>  		n_bad=3D`expr $n_bad + 1`
->>  		tc_status=3D"fail"
+>> fail like this:
+>> btrfs/175 15s ... - output mismatch (see results//btrfs/175.out.bad)
+>>     --- tests/btrfs/175.out     2019-10-22 15:18:14.085632007 +0800
+>>     +++ results//btrfs/175.out.bad      2020-01-20 14:53:56.518567916 =
++0800
+>>     @@ -6,3 +6,4 @@
+>>      Single on multiple devices
+>>      swapon: SCRATCH_MNT/swap: swapon failed: Invalid argument
+>>      Single on one device
+>>     +ERROR: checking status of : No such file or directory
+>>     ...
+>>     (Run 'diff -u tests/btrfs/175.out results//btrfs/175.out.bad'  to =
+see the entire diff)
+>>
+>> This is caused by the extra quotation mark (and the complexity nature =
+of
+>> bash glob).
+>>
+>>   # SCRATCH_DEV_POOL=3D"/dev/mapper/test-scratch[123]"
+>>   # echo ${SCRATCH_DEV_POOL}
+>>   /dev/mapper/test-scratch1 /dev/mapper/test-scratch2 /dev/mapper/test=
+-scratch3
+>>   # echo "${SCRATCH_DEV_POOL}"
+>>   /dev/mapper/test-scratch[123]
+>>
+>> To fix the problem, remove the quotation mark out of
+>> ${SCRATCH_DEV_POOL} or $SCRATCH_DEV_POOL for all related test cases.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> The weirdest thing is, only btrfs/17[56], all other related test cases=
+
+>> pass without any problem.
+>>
+>> Maybe it's time to provide a proper wrapper to do such thing?
+>> ---
+>>  tests/btrfs/140 | 2 +-
+>>  tests/btrfs/141 | 2 +-
+>>  tests/btrfs/142 | 2 +-
+>>  tests/btrfs/143 | 2 +-
+>>  tests/btrfs/157 | 2 +-
+>>  tests/btrfs/158 | 2 +-
+>>  tests/btrfs/175 | 2 +-
+>>  tests/btrfs/176 | 6 +++---
+>>  8 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/tests/btrfs/140 b/tests/btrfs/140
+>> index f0db8022cb48..0e6c91019854 100755
+>> --- a/tests/btrfs/140
+>> +++ b/tests/btrfs/140
+>> @@ -65,7 +65,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  _scratch_dev_pool_get 2
+>> diff --git a/tests/btrfs/141 b/tests/btrfs/141
+>> index c8c184ba29b0..5678e6513f80 100755
+>> --- a/tests/btrfs/141
+>> +++ b/tests/btrfs/141
+>> @@ -65,7 +65,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  _scratch_dev_pool_get 2
+>> diff --git a/tests/btrfs/142 b/tests/btrfs/142
+>> index db0a3377a1ed..ae480352c4d9 100755
+>> --- a/tests/btrfs/142
+>> +++ b/tests/btrfs/142
+>> @@ -66,7 +66,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  start_fail()
+>> diff --git a/tests/btrfs/143 b/tests/btrfs/143
+>> index 0388a52899c9..9e1e7ea0874d 100755
+>> --- a/tests/btrfs/143
+>> +++ b/tests/btrfs/143
+>> @@ -73,7 +73,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  SYSFS_BDEV=3D`_sysfs_dev $SCRATCH_DEV`
+>> diff --git a/tests/btrfs/157 b/tests/btrfs/157
+>> index 634370b97ec0..c60d05ce36f3 100755
+>> --- a/tests/btrfs/157
+>> +++ b/tests/btrfs/157
+>> @@ -70,7 +70,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  _scratch_dev_pool_get 4
+>> diff --git a/tests/btrfs/158 b/tests/btrfs/158
+>> index d6df9eaa7dea..179c620b223f 100755
+>> --- a/tests/btrfs/158
+>> +++ b/tests/btrfs/158
+>> @@ -62,7 +62,7 @@ get_devid()
+>>  get_device_path()
+>>  {
+>>  	local devid=3D$1
+>> -	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
+>> +	echo $SCRATCH_DEV_POOL | $AWK_PROG "{print \$$devid}"
+>>  }
+>> =20
+>>  _scratch_dev_pool_get 4
+>> diff --git a/tests/btrfs/175 b/tests/btrfs/175
+>> index d13be3e95ed4..e1c3c28fe5a4 100755
+>> --- a/tests/btrfs/175
+>> +++ b/tests/btrfs/175
+>> @@ -63,7 +63,7 @@ _scratch_mount
+>>  # Create the swap file, then add the device. That way we know it's al=
+l on one
+>>  # device.
+>>  _format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
+>> -scratch_dev2=3D"$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $2 }')"
+>> +scratch_dev2=3D"$(echo ${SCRATCH_DEV_POOL} | awk '{ print $2 }')"
+>>  $BTRFS_UTIL_PROG device add -f "$scratch_dev2" "$SCRATCH_MNT"
+>>  swapon "$SCRATCH_MNT/swap" 2>&1 | _filter_scratch
+>>  swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
+>> diff --git a/tests/btrfs/176 b/tests/btrfs/176
+>> index 196ba2b8bdf6..c2d67c6f807a 100755
+>> --- a/tests/btrfs/176
+>> +++ b/tests/btrfs/176
+>> @@ -39,9 +39,9 @@ _require_scratch_swapfile
+>>  # We check the filesystem manually because we move devices around.
+>>  rm -f "${RESULT_DIR}/require_scratch"
+>> =20
+>> -scratch_dev1=3D"$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $1 }')"
+>> -scratch_dev2=3D"$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $2 }')"
+>> -scratch_dev3=3D"$(echo "${SCRATCH_DEV_POOL}" | awk '{ print $3 }')"
+>> +scratch_dev1=3D"$(echo ${SCRATCH_DEV_POOL} | awk '{ print $1 }')"
+>> +scratch_dev2=3D"$(echo ${SCRATCH_DEV_POOL} | awk '{ print $2 }')"
+>> +scratch_dev3=3D"$(echo ${SCRATCH_DEV_POOL} | awk '{ print $3 }')"
+>> =20
+>>  echo "Remove device"
+>>  _scratch_mkfs >> $seqres.full 2>&1
 >> --=20
 >> 2.24.1
 >>
 
 
---IL0Cnch6ZeCJzmKO1COFp0WImLcl7z4gA--
+--0E9xMCoZ7dmkW9E7smndk0Tj0vF0Ph0xa--
 
---mSBrKArHbciMTXK5PKKoqb26D5ybtpkM6
+--wryjpwLhei6sZdOPOn96Dvu0vkEio5jhF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Ao9EACgkQwj2R86El
-/qj0xgf/Slc2ohAEEpb0XHKhbSDITdzh7jMB3AuhdscaFNa/c6v9O7ZGQprnOLlZ
-MHEc2KuIKH+2udIBGNbc17aCZu7pYLLQeXCxt82C+kXphkBcGOFrt3JMCZm4XcMe
-sIeqxF4y/JMIEDDgAgBwhdymhAua7k5df/IWq0haiiQHdA0CCOz8Q0ELpdzAfiLR
-z8p0T1RxxMIdnu3HpfYMiYRX8WNo/W16VxcobDxrCdaAdxJuGl0aUlQNEiwzZy9z
-s0mtuTmZrFKI9MMU4zgrACsQlk/lz7OaGYKrnqr9qTa//W1LYJhq9+f+puFgIhAc
-Tq39PPJRkkwtsmmuYpWMFbKmKZJMPw==
-=WiLC
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5ApCIACgkQwj2R86El
+/qiJwggAov6j9mkNQpe3v9U+ljzxtXU2Ks39JKhvfQ7c4M9qSimbFaDFi4dxBlbP
+yOn2IxUcTyyD8wRFdmayDoG4aHpFPRFmC5x1ZD/KKcoTRyTRH42glTxWn3Rl4czS
+IqgQbhOubZq3Eamp6QyaAEOQJ5YCjfFQ9tCOhu+jyAh8xsG0q4a7zMGY/Hh5HofY
+cHljm8T2OdF8rbEJ4Ql3NDxl7E6AHYISUHJ/yFki/CADxv8Xg5mRQoD0zMRGwQmO
+4LGBcfPRo3gm62nsNDDyKFX3hwMLJDinZ3LvJr4YBzPw47J8UaExvYvldk1iqBRS
+LGQiBIcF/dt92ZCJNpeqDghD92lr7g==
+=JCPf
 -----END PGP SIGNATURE-----
 
---mSBrKArHbciMTXK5PKKoqb26D5ybtpkM6--
+--wryjpwLhei6sZdOPOn96Dvu0vkEio5jhF--
