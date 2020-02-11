@@ -2,114 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA56D158A53
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 08:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75284158B2E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 09:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbgBKHZs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 02:25:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727041AbgBKHZs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 02:25:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8FD1EAD66;
-        Tue, 11 Feb 2020 07:25:46 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Jeff Mahoney <jeffm@suse.com>
-Subject: [PATCH v2] btrfs: destroy qgroup extent records on transaction abort
-Date:   Tue, 11 Feb 2020 15:25:37 +0800
-Message-Id: <20200211072537.25751-1-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1727904AbgBKITR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 03:19:17 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:27006 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727613AbgBKITR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 03:19:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581409157; x=1612945157;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=FDQF7YmUbf7aiT8pwm9gfOrtDMSYksmXliNItnHvbJM=;
+  b=ii6MWg1HKZX+3NNN5/LQ0JC1jWrdLKgnKm0P3SAyC9CFyMKHUXKXLgIn
+   W0Xx7xCEuMUMaRMLD/DhNeEigBrEeN6+TNAYwggwbYpEJ6/5qbp3mCiOE
+   YdR/DVl2nrlU5shgxFn7N239YROdgPQ1HLFR2KXNxxcRf1oRE5WxcnRMd
+   b6ctcXE84bDt7OZEkblWo9/5McGjkXDLMoXPF7fi+Y2HD2I/gJCy+VjPh
+   rflejigzhd//R1d8bm3mUy2x5w4DDfPQWECLubsPQmVJDprBxY3aezhJO
+   U75hOZF+x4jZC+H0LaCgxiPCCXs/VDkqPyL2yXvGiQA0hoq+O5+J2L+8O
+   Q==;
+IronPort-SDR: TTpGiZ+CrPrMqQD08kY+UMnaQ1VC8AGR3aneqoIUUY8TfLa6+gcKWb/1LnnK2sf5VVJpNfwodD
+ eprhvkWp2D1y/As6LgwFt3RkNXQxROHtkx4jMzzq2dBDB1cytEO8cGS3akB+WaKNt8yrJkbpj1
+ zT0ezXDptkOTRqEcQHdOzE/cfAUd5swPx02ua+4uNLHkxGkhvTzn5PlkNbyziR0tAnVQudOrXx
+ PQTfZviWsfowVKubfDgGAxm3k1l4SLnUaZ45XNsnA1nGNnC+rLBrqC2Xyf9me48/6WhV6Eh+5+
+ wJY=
+X-IronPort-AV: E=Sophos;i="5.70,428,1574092800"; 
+   d="scan'208";a="130107720"
+Received: from mail-mw2nam12lp2049.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.49])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2020 16:19:16 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DbOZ8PGX+pHGj8jZlYa7H686mXG5I5hjC92WnaqgN4AaL1gNhTtl9g7728BhIL67Pa0SEs1xZAyZAGhEQTofn5LAFhTdska0A0PzVs6pGyB1XgR/LCfyB6uGVWIuSGnL5qUFNBrtePvKSatxT9R3CdxPvlAvj40OFIEQYeF2Oo7BTj9ik96CBmVvuYLJiPOTyO7zaQhEHWp+ChZN9m6YA2j1WApo9+wqzAPG5cLPt7R4oSOCxigfzlOyrKE2dPYb4Syn/UBTKOOE7pTe2ZtcFP+rV5U8LLsnlfd7uswgujETcxbAq1xcN6PJboAI7yit67u/PIGryqHT4d6nivZY8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FDQF7YmUbf7aiT8pwm9gfOrtDMSYksmXliNItnHvbJM=;
+ b=alcXa2EsGIL1Z1u/bimwyTA7Z1Gty5+WjaSIQpFBB4K9SRRxxKCP2vYM00yM+hHWb+rQEhkqX9Mm69yJdDGCIDH8Qq15nK31VXN73KaKL9u9gqbR7kEkBOmM852kPwJ/9T28xpwxHsiHXZahx5Ur+S5/SOIlrCtM2cmkVGYHl1ADIsMVFJahFmAJo51uFIAHT0QfeMSuaYrgJXFEgGc30FC9URtbi7lk6yddTRk2o/a3VGsopKE/9U/BC/O2/zjJL2VbgJp4JOo8wNq3qM0VBAAiLyziETvtJ6T54/vgOTszX0Qw9P5trPAli3mSLfXHlw7Y+6Iuo309lC5cCyFJ+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FDQF7YmUbf7aiT8pwm9gfOrtDMSYksmXliNItnHvbJM=;
+ b=IE59z5+qfoiES6btuEYw/qK3SrBZJVRQBphYhK1Uw3zNftDlj6VNzH1BRJ/yIyu/BKfKxpJWUYdnjofN5YZFl0xUfRoZXWvJQ/sZzWWAakENjX/lLozVrqWiPsn83F7FeohsxPsQw6bb89DWHJS5tPdZl9XZr98kEnwJbxW5UG0=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3600.namprd04.prod.outlook.com (10.167.133.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.23; Tue, 11 Feb 2020 08:19:14 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.030; Tue, 11 Feb 2020
+ 08:19:14 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v5 01/13] mm: Fix the return type of
+ __do_page_cache_readahead
+Thread-Topic: [PATCH v5 01/13] mm: Fix the return type of
+ __do_page_cache_readahead
+Thread-Index: AQHV4HdLtCSr29ig40CbWBOKZ39/Iw==
+Date:   Tue, 11 Feb 2020 08:19:14 +0000
+Message-ID: <SN4PR0401MB3598602411B75B46F5267B829B180@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200211010348.6872-1-willy@infradead.org>
+ <20200211010348.6872-2-willy@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 783a7c5e-dfd1-4f05-3ff8-08d7aecb14cd
+x-ms-traffictypediagnostic: SN4PR0401MB3600:
+x-microsoft-antispam-prvs: <SN4PR0401MB3600BE4DF5FBBC2A07AC38609B180@SN4PR0401MB3600.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-forefront-prvs: 0310C78181
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(366004)(136003)(396003)(346002)(199004)(189003)(8936002)(9686003)(86362001)(110136005)(55016002)(52536014)(5660300002)(7416002)(66446008)(54906003)(8676002)(64756008)(66556008)(558084003)(81156014)(81166006)(316002)(76116006)(91956017)(66946007)(66476007)(26005)(33656002)(53546011)(6506007)(7696005)(71200400001)(478600001)(186003)(2906002)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3600;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: J13A6ReA9TSTt1c6bdBpTxtzneb1Ofpyc3HHteWqvtuXD5BIp25wWX5Jj9rty+z8IuBPjt/gIuHTYUfEoYTkHZrnnDILfKSy45g6ryMvZTy61yO2Q+D6ULUDMigsCCjurNntAWZl0Xm/OPaC21h9Uhg9UsfGDU8yRR7pJp/4RtZPLu8Aa+pkHWfnddkRl+me9f0vLAAtyn91TZCvcIqa+pIWQqEAD41sQwhxTwrZ9YYK66o/AOKckkO5BFfhPOEMko2jHkIElHDKQ2xLih2gDaEWxDyXVbnwiNcDQ14fDOc61glpj0fPDXD9wLRF+uURWIoMWc/4/v/xEcylXlRAUCkkC3JGDfLGO5P1vDoTTsL8HhGcdLdCMRrLdg1L3yxaPXNcB6PpBTBIbmB1SpRGyXF5mmIccM3isWoZ/4rvj3nw9fQi+IKdlplFkQzhShVs
+x-ms-exchange-antispam-messagedata: gfEyOKrwkPk8qghET5Arq6HHfBJaC0LBjYfYag1yvJsZYT4ZAH1sGnViMxzNGt5I12U+7zjXvc7zduxy+tXWxZcvuxjY2ApX92T48YFRi0PQXQLlLzOjG4KsqnzrprU7tnMP+4Gc0+BVeUyg7Qnipg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 783a7c5e-dfd1-4f05-3ff8-08d7aecb14cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2020 08:19:14.6094
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +UkunN43yImZCGMmfIBExV/09gy+m2seRDcVr8m/zRykHkafS94C2sa/Bp5+xgnFqs3xnQdRlYKfhKG8VEjtTHo39tQdr+ZsU+hlmizKQRg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3600
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Jeff Mahoney <jeffm@suse.com>
-
-We clean up the delayed references when we abort a transaction but
-we leave the pending qgroup extent records behind, leaking memory.
-
-This patch destroyes the extent records when we destroy the delayed
-refs and checks to ensure they're gone before releasing the transaction.
-
-Fixes: 3368d001ba5df (btrfs: qgroup: Record possible quota-related extent for qgroup.)
-Signed-off-by: Jeff Mahoney <jeffm@suse.com>
-[Rebased to latest upstream, remove to_qgroup() helper, use
- rbtree_postorder_for_each_entry_safe() wrapper]
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Update the commit message to remove to_qgroup()
----
- fs/btrfs/disk-io.c     |  1 +
- fs/btrfs/qgroup.c      | 13 +++++++++++++
- fs/btrfs/qgroup.h      |  1 +
- fs/btrfs/transaction.c |  2 ++
- 4 files changed, 17 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7fa9bb79ad08..e8154e2747da 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4275,6 +4275,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 		cond_resched();
- 		spin_lock(&delayed_refs->lock);
- 	}
-+	btrfs_qgroup_destroy_extent_records(trans);
- 
- 	spin_unlock(&delayed_refs->lock);
- 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 98d9a50352d6..184e3f66ee94 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4002,3 +4002,16 @@ int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *trans,
- 	}
- 	return ret;
- }
-+
-+void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans)
-+{
-+	struct btrfs_delayed_ref_root *delayed_refs = &trans->delayed_refs;
-+	struct btrfs_qgroup_extent_record *entry;
-+	struct btrfs_qgroup_extent_record *next;
-+	struct rb_root *root = &delayed_refs->dirty_extent_root;
-+
-+	rbtree_postorder_for_each_entry_safe(entry, next, root, node) {
-+		ulist_free(entry->old_roots);
-+		kfree(entry);
-+	}
-+}
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 236f12224d52..1bc654459469 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -414,5 +414,6 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_trans_handle *trans,
- 		u64 last_snapshot);
- int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *trans,
- 		struct btrfs_root *root, struct extent_buffer *eb);
-+void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans);
- 
- #endif
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 33dcc88b428a..beb6c69cd1e5 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -121,6 +121,8 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
- 		BUG_ON(!list_empty(&transaction->list));
- 		WARN_ON(!RB_EMPTY_ROOT(
- 				&transaction->delayed_refs.href_root.rb_root));
-+		WARN_ON(!RB_EMPTY_ROOT(
-+				&transaction->delayed_refs.dirty_extent_root));
- 		if (transaction->delayed_refs.pending_csums)
- 			btrfs_err(transaction->fs_info,
- 				  "pending csums is %llu",
--- 
-2.25.0
-
+On 11/02/2020 02:05, Matthew Wilcox wrote:=0A=
+> even though I'm pretty sure we're not going to readahead more than 2^32=
+=0A=
+> pages ever.=0A=
+=0A=
+And 640K is more memory than anyone will ever need on a computer *scnr*=0A=
+=0A=
