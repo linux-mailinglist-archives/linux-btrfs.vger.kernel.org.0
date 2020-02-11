@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A44D81589DB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 06:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA56D158A53
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 08:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgBKF67 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 00:58:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52864 "EHLO mx2.suse.de"
+        id S1727556AbgBKHZs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 02:25:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44814 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727430AbgBKF67 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 00:58:59 -0500
+        id S1727041AbgBKHZs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 02:25:48 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6010DACD9;
-        Tue, 11 Feb 2020 05:58:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8FD1EAD66;
+        Tue, 11 Feb 2020 07:25:46 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Jeff Mahoney <jeffm@suse.com>
-Subject: [PATCH] btrfs: destroy qgroup extent records on transaction abort
-Date:   Tue, 11 Feb 2020 13:58:49 +0800
-Message-Id: <20200211055849.24072-1-wqu@suse.com>
+Subject: [PATCH v2] btrfs: destroy qgroup extent records on transaction abort
+Date:   Tue, 11 Feb 2020 15:25:37 +0800
+Message-Id: <20200211072537.25751-1-wqu@suse.com>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -37,14 +37,15 @@ we leave the pending qgroup extent records behind, leaking memory.
 This patch destroyes the extent records when we destroy the delayed
 refs and checks to ensure they're gone before releasing the transaction.
 
-Also, add a to_qrecord helper that converts an rbtree node to a qgroup
-extent record.
-
 Fixes: 3368d001ba5df (btrfs: qgroup: Record possible quota-related extent for qgroup.)
 Signed-off-by: Jeff Mahoney <jeffm@suse.com>
 [Rebased to latest upstream, remove to_qgroup() helper, use
  rbtree_postorder_for_each_entry_safe() wrapper]
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Update the commit message to remove to_qgroup()
 ---
  fs/btrfs/disk-io.c     |  1 +
  fs/btrfs/qgroup.c      | 13 +++++++++++++
