@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 474FE158967
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 06:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 150411589A7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 06:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727600AbgBKFVW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 00:21:22 -0500
-Received: from mout.gmx.net ([212.227.17.20]:54787 "EHLO mout.gmx.net"
+        id S1727752AbgBKFf6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 00:35:58 -0500
+Received: from mout.gmx.net ([212.227.17.20]:43915 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727557AbgBKFVW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 00:21:22 -0500
+        id S1727662AbgBKFf6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 00:35:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581398476;
-        bh=RbRJDrpuvuaor3espzcmJgLupTlNBWSOQdMLVv5SxlU=;
+        s=badeba3b8450; t=1581399352;
+        bh=YBAy8Ds0FeEwVEsSMnr8ySizSQiyhQYXW9yNL38KFl4=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=d3g45o4leiiMXLCVddnydSNfJ+ZupxL/dkLX9dQyl967QvS5GadoVE9LKix7olDBZ
-         y8rmtCIua2c2aL2vMp8/L+sPzYycfo2CJkzdPRG7BUCehlLXHMgYhfSBtm6UiB2Dxh
-         cXwAFDi0x/TSaZadHUNwTn+a8HijvrjSVgu5S2kQ=
+        b=RiyNzrgztqixSkx7BNbzUiFov32oly9AGDnVx3WpUMyw8swa+qJVLokCp025xyStq
+         kIh9OdUGpCIyqVngxf+yYYkIH/sW9dAKTNLBHmNPAi0N+HEa/Ztfa8t4Dl4+jZFrP8
+         9IaSvNDGKpxEqSeewvqfZ8KlIRJr+lkRHQs4ocMk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wpt-1jUQ8A0Sd7-012Joa; Tue, 11
- Feb 2020 06:21:15 +0100
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7JzQ-1j93iE3oE8-007iHD; Tue, 11
+ Feb 2020 06:35:52 +0100
 Subject: Re: [PATCH 0/4] btrfs: Make balance cancelling response faster
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20191203064254.22683-1-wqu@suse.com>
  <20191204163954.GG2734@twin.jikos.cz>
+ <fb81b112-3be5-f86a-3da8-621c1dae6bc1@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,138 +53,162 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fb81b112-3be5-f86a-3da8-621c1dae6bc1@gmx.com>
-Date:   Tue, 11 Feb 2020 13:21:09 +0800
+Message-ID: <380022b6-38f3-268d-850e-c9529c183930@gmx.com>
+Date:   Tue, 11 Feb 2020 13:35:46 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20191204163954.GG2734@twin.jikos.cz>
+In-Reply-To: <fb81b112-3be5-f86a-3da8-621c1dae6bc1@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="pz7eyoph3HfmHrZEzHWjFQBIRf9cEgNME"
-X-Provags-ID: V03:K1:xp/TnhvlbLH7f7uO9CaRxLSrm1LDdn1HEK0AE/Wg63JLvPZbZhQ
- c7q50C1xlcCD1yUyosdJGzTgyKKeRVi9BU0GTmYep1x2YH/GcrwAUu648q6Km8JlD5IeG5E
- H0vvOiBq8pIeaLkkETQSzCgE7i/3lFXjlmF/BL/t1V+mkTW+1NJuUH3Y3ClLlIcS6SpKdJ7
- jYEXT1oX3bHgftMvQihLQ==
+ boundary="ULvLojv8Hv9N6naIANs3J3XP7RcgJ93gf"
+X-Provags-ID: V03:K1:6rK0QWkuU+WFtAZmo+ejqNTONoz1lxKb2gklfnlF7uWIXzIXvx4
+ Iry2d3XedbCt0xtdHxiz+XDp//kvIwSHrULC/FeayaxhMqSvYs0amFSlx9LNr25IhNJxV63
+ 0Q120noHAJ8mBg43AYc5iXFNrl4d9t60TrQSx99gPbGpWc5Ws24WyK/6wrpigHgmxEFlGKJ
+ j2Zjl4u5Rctm8DwXTzZeg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XX2skHgsgkc=:auK5FcBoNZ/t1Ctlxw/Hw3
- A0tRcmSVTXMoyHpEFYXWkIzNBzY+rN7tWdGW1j0s95e7DntWViCA4qy+MwO0gRqoqin8LuAuT
- s6p2deITbl6UO80DOSN2orM2JFEpKIyZis2L1yzLRE6NQf6J33B4IVMI+0njJz4CXag+0Z1ch
- AsW5iZRwRsG0/QETwbid1X5FQL11jvpz5n9MKsUeQtA16d93MqEFItwgvk9qqLvjZX8sd3ljN
- b3FsM3uMlMMVmyjCnL2srwBk3m3XXr4UiuisvlxQsaJgynETd0fm1Xrh7HKTeiFAL/IkWiMiW
- VuGtsVl5kN2d8RB3LKSKN4tW0NRCS43mfldv4wNWU4JIz1+UvQgJknctTQeutjN1MRA6t4mb2
- no8POnZzhrnpLlWWm2AF4lF7PnVtpJmyEvURO6NYSnW+sSEUtYI8LkzxPaSVOXB9DjQrb6v42
- bfKdnVKr7P6QZkXasx6NxS37XhsuuvLNV7v3ZpJIBSxepLcGoM2TQrQL10EWjm/7YjpWVHfFq
- hudodZ8seSv2Qn4iB1+/H1NpsQM7bKH/W8Wjjejs+KAa4GZcDWmq5l8Qcy574DOzEq3Fh+A3h
- 287npG1eF5bepgvbUwn5SHNY2nufmE7xo0OODNJVH2RK3IVlsXYJ8nJ6esMCfIcWT2sFyxCH9
- /ncJhxFTtuyomiZVIpS725/5GnCmOAsmjwB8j/nVWm14AbwlhOqYi7JFxsDU4V4BKoWjkedVc
- Js6cXzco4QFfMorbWYpuVtpsjxjENPPXBXIgULhq7bRF5zO+wCT4hN9tC8gLUy+fDIiVKVXFZ
- QFen9r2NtFr+h52Xdd6/HGanZ4ureRnXTEEBYLZThlNcLqpg6+E6860hH5jtFy0XZx0x3kqZl
- ALu4hgceTlJSDKHWVtD+4+ajpwiLH1s0VtBUQL3Jx53ycHzCnxcnkTCl5lc5JRq4JhYolEQCy
- TL0f7E2ognLr2+DYN3sIMqmY+1p1IOVrRc9egKyFllJkk9lCG5Rfp8vVP9j2XU+sgUewcXvci
- 5r3JkzCtKfLT/Ih8Pv++yPARJxnYltHn2xOWzqUegR1I6TxbXA+gDfMhTjrB/jmI1GYI+28AW
- XsYQlXYrZ9MVqhBTW4vJXGgkzLD0UcznypeDOlM+DVshrizWKHCA1izJPH9xHOs9yKj+IQ93f
- AzgXEOZEvPV8+rTYLWC2W1QxCSFoPtXtFbH1W/skxpWpJ5aimJakXZLu1QHwws82Q3d9PY8JG
- zmogBIBXd2BR1/NsZ
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T8YN8+I4q9I=:/LsIEmhPXl+C3qgxYwd0mG
+ XJi4hYRScIhIzyy+VROcNzLdiz7Q/j1IkxLW+qMcWTkl7Et5PP2Lt+jqhkgwkZ4Py6gqF8Q72
+ ZD99ackWDgAVdVDjfGdjZowwlFAfgk07hcik6FCuMiLiUaFP6jX80unXCyXpYEqrR1w7TJZjS
+ 5QDrj/G6kLIKwfYIOQGrCjPkLrPN26xzAO85Tuh/IWCeY5MdmVzUbuABmZgfxEq/GfMY/am8p
+ F02Hw3TNv0PMcli5mZ2t+NJ0qP2rtbaStukguJYm1eHGBClN7cJ6ttVIggi0Tc4q/FxJDzzVE
+ H3WCEWqE6tgH/tugPs4KgNA8Lw1+UYTja6ggTJF4xJaY3cIolvhGvfpEJRv3UkedD0cjgJSo2
+ JtDmtQfeUjDCt6s/IBtp6NLrIhVhCFBivsyDngrZV2DgjPyRmeFmCwtJ/bYV1wQaACZSFk/UI
+ pvPblPRPodfUOTmw9BtvjCOK+H+Jhvq/lJH6tvih15MV+eFmkS/i1/p2TQvpCwWmTzVvbq9fI
+ +gX+RAdy0sUNEgm/08/ac0d0thqnon/NORfB4ZRUmsXDUaqMDpPf1MOpQn3nq0vCvAshWUmQq
+ IgL3gypBwmSTyhVXQggGxxIgfxii0iMJMsYpf8eFjUARk2UK/5sF5mOnGTsOHlovcrxIyaa1s
+ vp9OQuSZm4ovPWCvBSyAX9iUGG3//fUqAG55odmIMwExkrL892KIo/0bdta6DnvoqAU4nqJd4
+ hlIAOJkiTTIS5XEM6RtxMZclFUyqlB+P63Nw9xulOB0uLe6pDfEBSLvA8VWgXwEaXBEr16GFc
+ SQDhNQ+fpYNZQzRzBDnQr/8Mn//so+yy+UmYwy9lrjZ699carTHbJOaBYbB9icpgC2gqT0RES
+ qE/MZ1oPt/cmCKAXAEuatC/odpnQkX2IzoXWStCBBVJV32kZ5cb/Kqun0Z9t06GUXZwUD0rxS
+ QJVdZqRBy8RPVazm3/rafm8wC0RGYvVT6v9gGoXlAeaY+Rw9ENOakcKbnbf20X/YSKPl3/hrf
+ ucq344v0raDiY31CGgvy/fOCHJTdCCBtqJ/E/5l0+C/oB5BL6VvDN7afKFqw+fsQPx443NM8V
+ LDPfubfQ5fTIAswI+39rIZgL6v3+69lWMB8Gvmwa0tFazOE1bz6EfHOvjNv4l/cMojpUYc+ma
+ PJSS8JxUX+xNzd5DQlzlAtaF4UaR0NEGKyHyqtnU5lvS0XTg0ZNmG238jwCA05yB73zg+A6wY
+ oNAOtp0vBUw5m8xW8
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pz7eyoph3HfmHrZEzHWjFQBIRf9cEgNME
-Content-Type: multipart/mixed; boundary="vb2un7HDUdPft7WRiTyulbUNsDI4H6BAP"
+--ULvLojv8Hv9N6naIANs3J3XP7RcgJ93gf
+Content-Type: multipart/mixed; boundary="kYiMXgw7tMrDkLyL9pKgCnhiZnpMzf7bz"
 
---vb2un7HDUdPft7WRiTyulbUNsDI4H6BAP
+--kYiMXgw7tMrDkLyL9pKgCnhiZnpMzf7bz
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/12/5 =E4=B8=8A=E5=8D=8812:39, David Sterba wrote:
-> On Tue, Dec 03, 2019 at 02:42:50PM +0800, Qu Wenruo wrote:
->> [PROBLEM]
->> There are quite some users reporting that 'btrfs balance cancel' slow =
-to
->> cancel current running balance, or even doesn't work for certain dead
->> balance loop.
->>
->> With the following script showing how long it takes to fully stop a
->> balance:
->>   #!/bin/bash
->>   dev=3D/dev/test/test
->>   mnt=3D/mnt/btrfs
->>
->>   umount $mnt &> /dev/null
->>   umount $dev &> /dev/null
->>
->>   mkfs.btrfs -f $dev
->>   mount $dev -o nospace_cache $mnt
->>
->>   dd if=3D/dev/zero bs=3D1M of=3D$mnt/large &
->>   dd_pid=3D$!
->>
->>   sleep 3
->>   kill -KILL $dd_pid
->>   sync
->>
->>   btrfs balance start --bg --full $mnt &
->>   sleep 1
->>
->>   echo "cancel request" >> /dev/kmsg
->>   time btrfs balance cancel $mnt
->>   umount $mnt
->>
->> It takes around 7~10s to cancel the running balance in my test
->> environment.
->>
->> [CAUSE]
->> Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cancel=
-
->> request are queued.
->> However that cancelling request is only checked after relocating a blo=
-ck
->> group.
+On 2020/2/11 =E4=B8=8B=E5=8D=881:21, Qu Wenruo wrote:
 >=20
-> Yes that's the reason why it takes so long to cancel. Adding more
-> cancellation points is fine, but I don't know what exactly happens when=
+>=20
+> On 2019/12/5 =E4=B8=8A=E5=8D=8812:39, David Sterba wrote:
+>> On Tue, Dec 03, 2019 at 02:42:50PM +0800, Qu Wenruo wrote:
+>>> [PROBLEM]
+>>> There are quite some users reporting that 'btrfs balance cancel' slow=
+ to
+>>> cancel current running balance, or even doesn't work for certain dead=
 
-> the block group relocation is not finished. There's code to merge the
-> reloc inode and commit that, but that's only a high-level view of the
-> thing.
+>>> balance loop.
+>>>
+>>> With the following script showing how long it takes to fully stop a
+>>> balance:
+>>>   #!/bin/bash
+>>>   dev=3D/dev/test/test
+>>>   mnt=3D/mnt/btrfs
+>>>
+>>>   umount $mnt &> /dev/null
+>>>   umount $dev &> /dev/null
+>>>
+>>>   mkfs.btrfs -f $dev
+>>>   mount $dev -o nospace_cache $mnt
+>>>
+>>>   dd if=3D/dev/zero bs=3D1M of=3D$mnt/large &
+>>>   dd_pid=3D$!
+>>>
+>>>   sleep 3
+>>>   kill -KILL $dd_pid
+>>>   sync
+>>>
+>>>   btrfs balance start --bg --full $mnt &
+>>>   sleep 1
+>>>
+>>>   echo "cancel request" >> /dev/kmsg
+>>>   time btrfs balance cancel $mnt
+>>>   umount $mnt
+>>>
+>>> It takes around 7~10s to cancel the running balance in my test
+>>> environment.
+>>>
+>>> [CAUSE]
+>>> Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cance=
+l
+>>> request are queued.
+>>> However that cancelling request is only checked after relocating a bl=
+ock
+>>> group.
+>>
+>> Yes that's the reason why it takes so long to cancel. Adding more
+>> cancellation points is fine, but I don't know what exactly happens whe=
+n
+>> the block group relocation is not finished. There's code to merge the
+>> reloc inode and commit that, but that's only a high-level view of the
+>> thing.
+>=20
+> When cancelled, we still merge the reloc roots with its source (if
+> possible, as we still do the check for last_snapshot generation).
+>=20
+> That means, if balance is canceled halfway, we still merge what is
+> relocated. Then do the regular cleanup (cleanup the reloc tree).
 
-When cancelled, we still merge the reloc roots with its source (if
-possible, as we still do the check for last_snapshot generation).
+My bad, that's not the case. But it doesn't matter anyway.
 
-That means, if balance is canceled halfway, we still merge what is
-relocated. Then do the regular cleanup (cleanup the reloc tree).
+Since we error out by setting @err to -ECANCELD, we won't go through the
+merge part.
 
-I see no problem doing faster canceling here.
+We just mark all related reloc roots as orphan, then go through the
+cleanup path without doing the merge.
 
-Or do you have any extra concern?
+That's the existing error handling code, and we should have experienced
+quite some of them for the random data reloc tree csum mismatch bug.
+
+At least the error handling part looks pretty solid.
+
+I'll add this explanation into the cover letter of next version.
 
 Thanks,
 Qu
 
+>=20
+> I see no problem doing faster canceling here.
+>=20
+> Or do you have any extra concern?
+>=20
+> Thanks,
+> Qu
+>=20
 
---vb2un7HDUdPft7WRiTyulbUNsDI4H6BAP--
 
---pz7eyoph3HfmHrZEzHWjFQBIRf9cEgNME
+--kYiMXgw7tMrDkLyL9pKgCnhiZnpMzf7bz--
+
+--ULvLojv8Hv9N6naIANs3J3XP7RcgJ93gf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5COcUACgkQwj2R86El
-/qi5+ggAlvRQynsQRtEKy7W8Dddn3/ZSvEeehUXE2y0QWDRnA2BSjv5abYQiJdAh
-B4AVCcOsRgGuubGS5ZzRZrp1c8gqmm3bmKiLMkn7PP0fHSCAywV9F4hOOHVd328C
-mlF7KLlgD/HjSD+s94bEbKwlCpe8UjeD15xaKschtjaaL15OWKI3sn97kFJVwE3r
-DlM/Se466Q6guuUu1JSx/+LNcpyOVJQ0aGmS6yInC5ZVM3oOjUATL2u2jeZLMrQX
-jbG+wyKc4AOYqc39TU3teRHUkYPPjCyBzKe7u2EvUAo3+VCGXsDUvyTjfMzVK1YV
-F4zvOGA2CNoh7QrzAk57D9e3aaMhAA==
-=FEWr
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5CPTIACgkQwj2R86El
+/qg21ggAoL3JgntREaTImdyNrMKsn5s1bNTA6kY114kSAbTabyw6YuhjomxC9/BA
+sbtki8ptpTLHFk/ynqY1j2hiaPMH/IgAso3chGkorWpwlo30iDnt+lJVNB+SpyN9
+jGVbkWZbeUbigUbmctuDB2jUhZtxqcdFosbss8PKRbpuSlRiBGhdqgymlXaDQ1jB
+C8u99UlEUcFneMw10b1rzmEmMgCWHO34E+EzQhgjjSfy5mEpP5V+eTtpaEOzTrzS
+LTWaYeaieax+CBNVVLnsLGOs4do2m7svI9Rpoad2rYBxiuFm/HHTJPz+GLqXy3JJ
+D1+PQaFgZl5z7BdBM1mui8iSIANEKA==
+=fhjg
 -----END PGP SIGNATURE-----
 
---pz7eyoph3HfmHrZEzHWjFQBIRf9cEgNME--
+--ULvLojv8Hv9N6naIANs3J3XP7RcgJ93gf--
