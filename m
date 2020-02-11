@@ -2,105 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1FC159488
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 17:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2285C1598F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 19:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgBKQMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 11:12:52 -0500
-Received: from gateway20.websitewelcome.com ([192.185.49.40]:36717 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729390AbgBKQMv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 11:12:51 -0500
-X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Feb 2020 11:12:51 EST
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 60474400D059E
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2020 08:11:12 -0600 (CST)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 1XP3jYr22AGTX1XP3jlIeZ; Tue, 11 Feb 2020 09:24:45 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hm/23NW+SCo6nlE9b57ji0EYuqf5cV9tPkdyZTDdTQ8=; b=ImeXzwnyNIMnAZ/x68MtAhO9qs
-        EencLIgV8uhbSE01pD6cPy9jZ+NZj4THnkbh8hyXQhmDKnQ7jgKm/G2qFU8JcyiIyXP0lVAc2rPmv
-        KHRMUylDriEeR2XCNUIRxfIhZtxdS1WAg/lxJRsXCKqZDgplvq3sKDQe8KRqlYZXAv2z9CAvHR5Qy
-        cq/bVXi7B2+tYecgZ61b4lsyVTKkdE1SqotiP5G0XD1tQbern3P89+dDzNaTgzywqsf+wZ+wor9yd
-        0GFvqe9R0Opimm4hv9joVTfWqUHCWK/4L3EgFdrtq278joKnuVVoVoCz08FZiy7e5JlbySxD2xmBC
-        Ru0X2ZoA==;
-Received: from [189.114.219.35] (port=33874 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1j1Vy7-0017fX-Dc; Tue, 11 Feb 2020 10:52:51 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com,
-        wqu@suse.com
-Cc:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Subject: [PATCH] btrfs: ioctl: resize: Only how new size if size changed
-Date:   Tue, 11 Feb 2020 10:55:26 -0300
-Message-Id: <20200211135526.22793-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.24.0
+        id S1730367AbgBKSpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 13:45:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42412 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729554AbgBKSpN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 13:45:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A8B5BADB3;
+        Tue, 11 Feb 2020 18:45:11 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 87070DA703; Tue, 11 Feb 2020 18:17:02 +0100 (CET)
+Date:   Tue, 11 Feb 2020 18:17:02 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] btrfs: Doc: Fix the wrong doc about `btrfs filesystem
+ sync`
+Message-ID: <20200211171702.GA2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Graham Cobb <g.btrfs@cobb.uk.net>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Nikolay Borisov <nborisov@suse.com>
+References: <20200210090201.29979-1-wqu@suse.com>
+ <20200210160929.GJ2654@twin.jikos.cz>
+ <49498052-99f8-25b6-1db4-569ebc4658b7@cobb.uk.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 189.114.219.35
-X-Source-L: No
-X-Exim-ID: 1j1Vy7-0017fX-Dc
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [189.114.219.35]:33874
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 0
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49498052-99f8-25b6-1db4-569ebc4658b7@cobb.uk.net>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is no point to inform the user about "new size" if didn't changed
-at all.
+On Mon, Feb 10, 2020 at 04:26:22PM +0000, Graham Cobb wrote:
+> On 10/02/2020 16:09, David Sterba wrote:
+> > On Mon, Feb 10, 2020 at 05:02:01PM +0800, Qu Wenruo wrote:
+> >> Since commit ecd4bb607f35 ("btrfs-progs: docs: enhance btrfs-filesystem
+> >> manual page"), the man page of `btrfs filesystem` shows `sync`
+> >> subcommand will wait for all existing orphan subvolumes to be dropped.
+> > 
+> > But this is not what the docs say, nor what the ioctl claims to do.
+> > 
+> > 'trigger cleaning of deleted subvolumes' means that it just starts the
+> > process in some way (eg. by waking up the cleaner kthread that does the
+> > actual cleaning).
+> > 
+> > For waiting on the subvolumes there's 'btrfs subvol sync' and that works
+> > as expected.
+> 
+> I agree. The original wording may be unclear (particularly so for users
+> who may have limited English and be confused by the use of "trigger"),
+> but it does seem to be different from sync(1) and the proposed change is
+> worse.
+> 
+> How about:
+> 
+> Force a sync of the filesystem at 'path', similar to the `sync`(1)
+> command. In addition, it starts cleaning of deleted subvolumes. To wait
+> for subvolume deletion to complete use the `btrfs subvolume sync` command.
+> 
+> SEE ALSO
+>  btrfs-subvolume(8)
 
-Signed-off-by: Marcos Paulo de Souza <marcos@mpdesouza.com>
----
- fs/btrfs/ioctl.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index be5350582955..fa31a8021d24 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1712,9 +1712,6 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 
- 	new_size = round_down(new_size, fs_info->sectorsize);
- 
--	btrfs_info_in_rcu(fs_info, "new size for %s is %llu",
--			  rcu_str_deref(device->name), new_size);
--
- 	if (new_size > old_size) {
- 		trans = btrfs_start_transaction(root, 0);
- 		if (IS_ERR(trans)) {
-@@ -1727,6 +1724,9 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 		ret = btrfs_shrink_device(device, new_size);
- 	} /* equal, nothing need to do */
- 
-+	if (ret == 0 && new_size != old_size)
-+		btrfs_info_in_rcu(fs_info, "new size for %s is %llu",
-+			  rcu_str_deref(device->name), new_size);
- out_free:
- 	kfree(vol_args);
- out:
--- 
-2.24.0
-
+That's perfect, thanks. I'll update the docs.
