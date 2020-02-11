@@ -2,120 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3968159A3D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 21:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09054159B49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 22:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730568AbgBKUIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 15:08:35 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:38631 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728537AbgBKUIf (ORCPT
+        id S1727936AbgBKVkr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 16:40:47 -0500
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:39373 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727961AbgBKVkr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 15:08:35 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 2D0293A3899;
-        Wed, 12 Feb 2020 07:08:28 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j1bpa-0002l0-DL; Wed, 12 Feb 2020 07:08:26 +1100
-Date:   Wed, 12 Feb 2020 07:08:26 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
-Message-ID: <20200211200826.GK10776@dread.disaster.area>
-References: <20200211010348.6872-1-willy@infradead.org>
- <20200211010348.6872-5-willy@infradead.org>
- <20200211045230.GD10776@dread.disaster.area>
- <20200211125413.GU8731@bombadil.infradead.org>
+        Tue, 11 Feb 2020 16:40:47 -0500
+Received: by mail-qt1-f179.google.com with SMTP id c5so15625qtj.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2020 13:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MAMSwIEzg0vMCmlmg9bS5b+g9N53VqyU1MlE+9wg5No=;
+        b=mi4c5xV4Q3X5vvckb0vygOl0j12wjjGAk4WwfOlnuBjhXzERdzcHfUJoWoBEq6L+0p
+         NpiISZmZlw504Up0spvX0qn99hducmVkUZm8FiuvTksHd8YIaJN6/M7Q4Pp1bSwYaonQ
+         kYbBY0erZ2IFFoYfEvyGbBILxpFTOyNurlQtIgUaiSBxmjFnjEP2/LNZGJQz+SE5hQdd
+         TnP+GbC3t9Dcb+jxC6Ov9Je2zhaObdatEfOdw4UnO62pPipNfTtc1BsrMZrQ8+CGQQcI
+         Sk6ex6+/Q0enKCgtKmV7FpBrwUzDNbu8KxX7phmJ72HFcPuH2oPXnpu9Ea3cZbU6FaSM
+         Ke3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MAMSwIEzg0vMCmlmg9bS5b+g9N53VqyU1MlE+9wg5No=;
+        b=SsbXMV1S+rW8e1ofslxpqQtZwQCwLw1/uFkDoR9JVOtsmZDqVYLAM40+pCoa0SXjve
+         SnRcvdocqfylGlJ4XF9KVvpdhpMV2cru+l3CvebbH8DVKcBdmsuMjzoE3/7gTrVy11ZP
+         o4MHtFHXI9Vpagg8jkIKp9EyP2dxjyKNXw6hPil/5TH8QOkqrvmdl0+lKjoXXmnLhlr9
+         r9whLxG+gKrTDgkCH0JoiXquL40P1JVYJvnaRxvCejjGwwkgFIpmTtZ1NEdSImJ8ZRap
+         /1iU4Eab141Gnrx4+Jb3uikC9C6+KRdK8P0LNImgLoG4N5X1gFKg681aAloCVGKvYsG6
+         4wgQ==
+X-Gm-Message-State: APjAAAXuUPwW/6fMTpCSD5vnXuLBUrq6Os3WwTvfzXoteSw/ClG84C4C
+        ZgkZhITGrawtoi6KZCZ6zH3zcpTqLdU=
+X-Google-Smtp-Source: APXvYqzOXkO03ugQmZ4dlDPuSi9lJFDjYMy2R1z8+zOGRnb9RhVjh0VFgtScMooBOTFRTpjNGoHVfw==
+X-Received: by 2002:aed:25a4:: with SMTP id x33mr4472185qtc.165.1581457245637;
+        Tue, 11 Feb 2020 13:40:45 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id n123sm2676180qke.58.2020.02.11.13.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 13:40:44 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4] Error condition failure fixes
+Date:   Tue, 11 Feb 2020 16:40:38 -0500
+Message-Id: <20200211214042.4645-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200211125413.GU8731@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=7-415B0cAAAA:8 a=EnYlyWvjhy6VBD_eMqkA:9 a=CdacwtsPoHkD4rhW:21
-        a=vlsg44Ume0T2P6Xz:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 04:54:13AM -0800, Matthew Wilcox wrote:
-> On Tue, Feb 11, 2020 at 03:52:30PM +1100, Dave Chinner wrote:
-> > > +struct readahead_control {
-> > > +	struct file *file;
-> > > +	struct address_space *mapping;
-> > > +/* private: use the readahead_* accessors instead */
-> > > +	pgoff_t start;
-> > > +	unsigned int nr_pages;
-> > > +	unsigned int batch_count;
-> > > +};
-> > > +
-> > > +static inline struct page *readahead_page(struct readahead_control *rac)
-> > > +{
-> > > +	struct page *page;
-> > > +
-> > > +	if (!rac->nr_pages)
-> > > +		return NULL;
-> > > +
-> > > +	page = xa_load(&rac->mapping->i_pages, rac->start);
-> > > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> > > +	rac->batch_count = hpage_nr_pages(page);
-> > > +	rac->start += rac->batch_count;
-> > 
-> > There's no mention of large page support in the patch description
-> > and I don't recall this sort of large page batching in previous
-> > iterations.
-> > 
-> > This seems like new functionality to me, not directly related to
-> > the initial ->readahead API change? What have I missed?
-> 
-> I had a crisis of confidence when I was working on this -- the loop
-> originally looked like this:
-> 
-> #define readahead_for_each(rac, page)                                   \
->         for (; (page = readahead_page(rac)); rac->nr_pages--)
-> 
-> and then I started thinking about what I'd need to do to support large
-> pages, and that turned into
-> 
-> #define readahead_for_each(rac, page)                                   \
->         for (; (page = readahead_page(rac));				\
-> 		rac->nr_pages -= hpage_nr_pages(page))
-> 
-> but I realised that was potentially a use-after-free because 'page' has
-> certainly had put_page() called on it by then.  I had a brief period
-> where I looked at moving put_page() away from being the filesystem's
-> responsibility and into the iterator, but that would introduce more
-> changes into the patchset, as well as causing problems for filesystems
-> that want to break out of the loop.
-> 
-> By this point, I was also looking at the readahead_for_each_batch()
-> iterator that btrfs uses, and so we have the batch count anyway, and we
-> might as well use it to store the number of subpages of the large page.
-> And so it became easier to just put the whole ball of wax into the initial
-> patch set, rather than introduce the iterator now and then fix it up in
-> the patch set that I'm basing on this.
-> 
-> So yes, there's a certain amount of excess functionality in this patch
-> set ... I can remove it for the next release.
+I've been running my bpf error injection stress script and been fixing what has
+fallen out.  I don't think I've fixed everything yet, but to reduce the noise
+from Dave's testing here's the current set of fixes I have.  These are based on
+misc-next from late last week, but should apply cleanly to the recent set.
+These aren't super important, but will cut down on the noise from things like
+generic/019 and generic/475.  Thanks,
 
-I'd say "Just document it" as that was the main reason I noticed it.
-Or perhaps add the batching function as a stand-alone patch so it's
-clear that the batch interface solves two problems at once - large
-pages and the btrfs page batching implementation...
+Josef
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
