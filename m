@@ -2,105 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CBD158F41
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 13:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E561591AC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 15:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgBKMyP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 07:54:15 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:48964 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgBKMyP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 07:54:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+uQN30cS5Bj87iEEBzdOLx8lg9+i0ExEu8VOZjq8Ndo=; b=eWC7poTUmbgHCYbKut5tUcDZwL
-        w3YYTT854/6orjDXWt0o8myOrLaqYxmNildHwtqHwB9P6sAmRSzUVkC2ndTa5MBo6vPhEIM38iBQg
-        3QFH9rbgbTMx5jUAauOSubj91u3I4QqJCftUeJ3u2BRZFY7uw1LRQwqgp3/dZBByXH8F5OzZAb0t+
-        miBihdnvmVJGXqnRBr1rG3atRoSZFunPwyyK3rI6Tg1RqDm7wVtET7WbIVm0KlJr9sAYInPEKF3Lu
-        GTYeC4TiyWPK4e73vfdDf6T1j5MFZMYQQejC42VttS5bt+wx+jfOtOIGuI60RBaTCQF1YD4hRLaX6
-        1eYOefYA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j1V3O-0006U6-1C; Tue, 11 Feb 2020 12:54:14 +0000
-Date:   Tue, 11 Feb 2020 04:54:13 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
-Message-ID: <20200211125413.GU8731@bombadil.infradead.org>
-References: <20200211010348.6872-1-willy@infradead.org>
- <20200211010348.6872-5-willy@infradead.org>
- <20200211045230.GD10776@dread.disaster.area>
+        id S1729913AbgBKORJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 09:17:09 -0500
+Received: from mout.gmx.net ([212.227.15.15]:57355 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729894AbgBKORJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 09:17:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581430628;
+        bh=Kfsu1Ry2ZOGm7olD4s5Rf+J8qbeQ5jrK+t8ZBG76rpM=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=dls63aN+PyVntGKE7JhQQHupaWF8TtT5Jyw7E4hesXS1YaO3xP3Q6Z2gIimEarOZR
+         B2vehzSXSWURcTJYICVURo4Rx9UNobTjZvE+c37BrH4tDfl1Yz+ht1e7EHeiOXK2Tb
+         V/B5dKps7lP3incjvbOkrfNNbp8ra1Dw0O+oT5m4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.19.20] ([77.191.244.223]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNKhs-1iq1sc00Hy-00OpLV for
+ <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2020 15:17:08 +0100
+To:     linux-btrfs@vger.kernel.org
+From:   telsch <telsch@gmx.de>
+Subject: tree-checker read time corruption
+Message-ID: <5b974158-4691-c33e-71a7-1e5417eb258a@gmx.de>
+Date:   Tue, 11 Feb 2020 15:17:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200211045230.GD10776@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aoLZoBYnH+lGe56MYZXG7sMay0+BqsOuLpNFZn3dusdbSl4Thcu
+ lYXpbwa43MhkIIKGLeVSAzv6oHJb1OvQOiDCISNTfxFlPQdOSBfep5VTJdr83NrTSI+DHWd
+ ptqKP8F/4Hqoj+my7k6wSu1DtU7Bj3OKK3FhjBcewbeIwOYOjer8keH14Hej5Xp/AYct6mX
+ chN56dltrcdPHRzH+JSlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DMr00veyGzY=:9l3cTz2lef6wrLMAV/QnuZ
+ cutiHjgd8rU55euccfEeV/ui8+xY4tbP8UlJy9EMBeJ++0U/SbNXiCbgNJrQMqGhUcb2gda0J
+ 8GCgTGqbuchNTbN1fCZa1LCIARt+U2cpQ0RD03djOdhR7Z7aUI7Dom0yRStg62HG+k0Tzs/S+
+ kNBUUx5e6PO6HFb4danc05UT1naTHZK06FGfqh4gnOEdE9n4UGNUXRk+4h98dWUZQ3JjK4NNJ
+ kPbTE6ji9/bIzIXzQpCORxmTYzY5WqWnpuv7nyx3K9xsezr3y6468HqfLRwj75P+03AhdCUiP
+ iShhck6HcWzcBMXvrJAnTDg+OgD2x45jqt3JTgf+efSxMowwpHZQcHP3zYQ4cXOeziPtVmJDi
+ +Bx+2iQHV6RlCF1ihQcNBpNjnwJe+kLCnLMZYt7zcwwxxCx1oOLX6WY1WX9Mq5mCgj8AmRKXm
+ +jqwldDmyFLGcbX2eNSYcntC/s5SXbOeuviCfsCEu6QGHwfOeWru9hh7esThs+PW1HbxxIIWb
+ 4yNQ94/H7B0CXiufXxvSSWBp7fPvUTFY7fb/RZRiu6Izi3CxQ7Vvicha9QyTTdoK6kIJUVK6B
+ 9w5SiRPiUKKmuXmqtYEqC1R0nXtW5m3zFkHCkTBQ77wT/bHPpKBRz8kYt5PNde5OAx5dU+Wzv
+ EAsR3rIcNOc6fHU+XMsjakBXfqJBe5x0zkLc7oaIqoWFh+zRK3YD4uWuMdPL09qKXbd6GP0GN
+ QsKKeBmEkw+saCl2thbro0Hn8Ogm6cD/sLKZ1CPisAphQPzNwAu70pF8U1s0AhY1Uqznahoqr
+ ZXiW6qVa6T/G9tPt0iRWDatsyi0YzRC/WAqF8iDsUpHNZnJuy2KDjHgKRt5AuElgdOmQpmdf4
+ H8qu/RhVm4uKHKmc8LGThiH4jX2ZfmMxHNLhfAcCWSCAf4tNpY/idgGMahN6EKGCEu8y5tHoJ
+ 0Tq6wIiyvw5eJSak946xNKcdwxLm/ZXnHtVQB9y2am4GkbtVRT9h6PSoHQGopspfklQc97JMp
+ C9lYe7dCcKwGoJaCq1y6nMQyW3/MaLOk2Q61Y/1jS+KD050aNn7HgM7IaAk6C0igUXWHM9MaJ
+ yfmpLxTJS76BY/se2Asjwh+Ef0g02zgiVsVGEbCLpECdOeqGX4VHOnnOHcJxioPswJNseC1oS
+ 44pwSiDVUVM8skQFqy8EFNGy8OeCeGVK/Ia0K68zOFJHz1Phi2xZl9RBBL5+lH4U7hdxxiyYQ
+ kfU2jmL+1LBNR7K6I
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 03:52:30PM +1100, Dave Chinner wrote:
-> > +struct readahead_control {
-> > +	struct file *file;
-> > +	struct address_space *mapping;
-> > +/* private: use the readahead_* accessors instead */
-> > +	pgoff_t start;
-> > +	unsigned int nr_pages;
-> > +	unsigned int batch_count;
-> > +};
-> > +
-> > +static inline struct page *readahead_page(struct readahead_control *rac)
-> > +{
-> > +	struct page *page;
-> > +
-> > +	if (!rac->nr_pages)
-> > +		return NULL;
-> > +
-> > +	page = xa_load(&rac->mapping->i_pages, rac->start);
-> > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
-> > +	rac->batch_count = hpage_nr_pages(page);
-> > +	rac->start += rac->batch_count;
-> 
-> There's no mention of large page support in the patch description
-> and I don't recall this sort of large page batching in previous
-> iterations.
-> 
-> This seems like new functionality to me, not directly related to
-> the initial ->readahead API change? What have I missed?
+Dear devs,
 
-I had a crisis of confidence when I was working on this -- the loop
-originally looked like this:
 
-#define readahead_for_each(rac, page)                                   \
-        for (; (page = readahead_page(rac)); rac->nr_pages--)
 
-and then I started thinking about what I'd need to do to support large
-pages, and that turned into
+after upgrading from kernel 4.19.101 to 5.5.2 i got read time tree block
+error as
 
-#define readahead_for_each(rac, page)                                   \
-        for (; (page = readahead_page(rac));				\
-		rac->nr_pages -= hpage_nr_pages(page))
+described here:
 
-but I realised that was potentially a use-after-free because 'page' has
-certainly had put_page() called on it by then.  I had a brief period
-where I looked at moving put_page() away from being the filesystem's
-responsibility and into the iterator, but that would introduce more
-changes into the patchset, as well as causing problems for filesystems
-that want to break out of the loop.
+     https://btrfs.wiki.kernel.org/index.php/Tree-checker#For_end_users
 
-By this point, I was also looking at the readahead_for_each_batch()
-iterator that btrfs uses, and so we have the batch count anyway, and we
-might as well use it to store the number of subpages of the large page.
-And so it became easier to just put the whole ball of wax into the initial
-patch set, rather than introduce the iterator now and then fix it up in
-the patch set that I'm basing on this.
 
-So yes, there's a certain amount of excess functionality in this patch
-set ... I can remove it for the next release.
+
+Working with kernel 4.19.101:
+
+
+
+Linux Arch 4.19.101-1-lts #1 SMP Sat, 01 Feb 2020 16:35:36 +0000 x86_64
+GNU/Linux
+
+
+
+btrfs --version
+
+btrfs-progs v5.4
+
+
+
+btrfs fi show
+
+Label: none  uuid: 56e753f4-1346-49ad-a34f-e93a0235b82a
+
+         Total devices 1 FS bytes used 92.54GiB
+
+         devid    1 size 95.14GiB used 95.14GiB path /dev/mapper/home
+
+
+
+btrfs fi df /home
+
+Data, single: total=3D94.11GiB, used=3D91.95GiB
+
+System, single: total=3D31.00MiB, used=3D12.00KiB
+
+Metadata, single: total=3D1.00GiB, used=3D599.74MiB
+
+GlobalReserve, single: total=3D199.32MiB, used=3D0.00B
+
+
+
+After upgrading to kernel 5.5.2:
+
+
+
+[   13.413025] BTRFS: device fsid 56e753f4-1346-49ad-a34f-e93a0235b82a
+devid 1 transid 468295 /dev/dm-1 scanned by systemd-udevd (417)
+
+[   13.589952] BTRFS info (device dm-1): force zstd compression, level 3
+
+[   13.589956] BTRFS info (device dm-1): disk space caching is enabled
+
+[   13.594707] BTRFS info (device dm-1): bdev /dev/mapper/home errs: wr
+0, rd 47, flush 0, corrupt 0, gen 0
+
+[   13.622912] BTRFS info (device dm-1): enabling ssd optimizations
+
+[   13.624300] BTRFS critical (device dm-1): corrupt leaf: root=3D5
+block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: has
+18446744073709551492 expect [0, 468296]
+
+[   13.624381] BTRFS error (device dm-1): block=3D122395779072 read time
+tree block corruption detected
+
+
+
+
+
+Booting from 4.19 kernel can mount fs again.
