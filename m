@@ -2,65 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FFB159228
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 15:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97415928F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Feb 2020 16:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgBKOqU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 09:46:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728602AbgBKOqU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 09:46:20 -0500
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A632620708
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2020 14:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581432379;
-        bh=HrHoOHIL2qv2IekL9FtJQZfxiLcpkMnOkTbuqWwfWBg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J7KkfY2AXS8ifgCTyy/SMNAR17w6HmlZ21lrkmO+Tj4BvUfIHhhf6ybXhYSlIlxPO
-         1sUTS33oLZQRNitQRCP2Yp/4ayP/4zhj31WzwyC2Xr7nQHGf0inZPzwt9pATOEKJxF
-         cGvtekyc3FI8ohTFvDN22f4FMMeoehcjNfuuh8b0=
-Received: by mail-vs1-f52.google.com with SMTP id r18so6433062vso.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Feb 2020 06:46:19 -0800 (PST)
-X-Gm-Message-State: APjAAAVE64Tjb+Ilw+vt61HWuWZpIl6vaL4e1veapFNyc7RQBFp+QUD9
-        9GKvvJf7FiNYCa+B+mNTLazLKQok14YHk/8TjYk=
-X-Google-Smtp-Source: APXvYqyQNnFZXbb8eXekXdQAzkUw5CF2zvyP6w01hoxv7egLKmvgpw24ncKme1VslNscT7A6C3S2I0UyvIr7qtc21uQ=
-X-Received: by 2002:a05:6102:535:: with SMTP id m21mr8931491vsa.95.1581432378676;
- Tue, 11 Feb 2020 06:46:18 -0800 (PST)
+        id S1728349AbgBKPK3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 10:10:29 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:35875 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727111AbgBKPK3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 10:10:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581433829; x=1612969829;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Z6/oNl5fCqrWsZv5kCRdk5Kp8wD8KPTsVVg8kwy+imA=;
+  b=DEeM07CKIctRXUhBiQpDEOcpKvTkDJbYhhuWEgbeAEV8EU/VUb7j3Vm4
+   uWHb0/63Y7hrZz3ffX+8jm8FzBlxxBqNZ4WR1lswhu47DCqml0+4fF661
+   Lp4PeIhBnZwzevmQpH5lAh1uHPla7pHKVfP5hEUzeux8y6h0DPixBXRq0
+   UKiBDPqxzwJ1WJbon40/tQM5yJriltc3CbeXvPBkNvDhx7fzOTBwK6Lh+
+   c0wQLaid/Bjqe1nkxuFeGh1pH98l1lX6dcm6ERVBW2Mj3QRPiLsZV5b6o
+   1Hrs5eSK/c8w3YEge+YhzKmn5d2mR98QkBdd+5OlN5M+dZA+OIjhW62+g
+   A==;
+IronPort-SDR: eIR4V/GoNu+uofO/NAhlSLWcfwjMtqmlYLx5DA95ocih8FmpvmTQpk9shzpBclF1VFEWTkLVq3
+ ByGjV1dKnWiuZdA3i3lakRevxpScWXnLxZdsyIgaX5X9WrQSKlluRsF68BYbEMF/VCXP1t/Yug
+ HO1NoMEmtZfzcRIqb3jh+d4aIQlOhZRn+CgXUfVIXJPfqOYpdCpGdNxNJ5xXIwexiLTdON2Sqw
+ tkvvrO4AhQ8ix0RE4phLjAde76ht9iOuCpbKDTMpWGI08Ju4ZpIxtecKTS27YOh7LHvL1913cf
+ WGw=
+X-IronPort-AV: E=Sophos;i="5.70,428,1574092800"; 
+   d="scan'208";a="130128669"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2020 23:10:29 +0800
+IronPort-SDR: TO9k3NPjHzeFIz16rorxjjD9yVkDo0FC2gbUnwVmQp99JWl0ATP1/cadPix1GkTq2OKWPGa/7i
+ sGZtJKH5xvHRhfg3s1BBMqj3z39TIeNj7QaGQGPQtJ9ReOsJxh/XgTNUR/GCye6tOlqquT3PZm
+ mOSHMnZMgn6qSqykF4iADgQVu20q8K46tEXe4sB+QY1h1IR/aI5joZRiolGcx/xS5aOb8V6E53
+ IJsW8YCVK+U6g6wGm2b1CBgUfJ5yDzKlJ3nOp+uGkoragz+U6ZD3+Z/0z1XrhiyOznNswYBjzp
+ LwGBh2Ll7LO4glsmGs5Ec1fM
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2020 07:03:19 -0800
+IronPort-SDR: 7quCl7yGqMn7H3ZhsCIqnoOOpufLuMZp8/IbCdbfGpG35PM6pRLyqUex80FAClirHYTeKQ40uh
+ yUUwq2X3wa4SC5BJTo245YCOmdcWB3LGio82k+/wK49B+aPQOOn698KH5TwgzSjgVH5jCs1Tlw
+ xnCam35KzWCWcWlayRbJAg/yoO6nt7unljYugI8aJrsja+i6cd/ZfNdpVIClNEcEuPalqaRmUE
+ IJnAUtCV0juUiBZVM1jhv4Y2Lf/IENoRC3swyflYxWOYDNDr+j6Q3hE0WuStjCti7VOkvz3JuZ
+ UDQ=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 11 Feb 2020 07:10:28 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/5] Fix memory leak on failed cache-writes
+Date:   Wed, 12 Feb 2020 00:10:18 +0900
+Message-Id: <20200211151023.16060-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200124115204.4086-1-fdmanana@kernel.org> <20200129170953.13945-1-fdmanana@kernel.org>
- <8727d06b4bef8f337dea40c83d3fc4132f721585.camel@scientia.net>
-In-Reply-To: <8727d06b4bef8f337dea40c83d3fc4132f721585.camel@scientia.net>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 11 Feb 2020 14:46:07 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5ETtr_DAjTUkrzDY6-OpDJYzSsuWbZnzpR7sDh-WXqgg@mail.gmail.com>
-Message-ID: <CAL3q7H5ETtr_DAjTUkrzDY6-OpDJYzSsuWbZnzpR7sDh-WXqgg@mail.gmail.com>
-Subject: Re: [PATCH v2] Btrfs: send, fix emission of invalid clone operations
- within the same file
-To:     Christoph Anton Mitterer <calestyo@scientia.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 2:41 PM Christoph Anton Mitterer
-<calestyo@scientia.net> wrote:
->
-> Hey.
->
-> Just wanted to ask whether this is going to be backported to 5.5?
+Fstests' test case generic/475 reliably leaks the btrfs_io_ctl::pages
+allocated in __btrfs_write_out_cache().
 
-It's a bug fix, so yes. In fact you can check that yourself:
+The first four patches are small things I noticed while hunting down the
+problem and are independant of the last patch in this series freeing the pages
+when we throw away a dirty block group.
 
-https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.5.3
+Johannes Thumshirn (5):
+  btrfs: use inode from io_ctl in io_ctl_prepare_pages
+  btrfs: make the uptodate argument of io_ctl_add_pages() boolean.
+  btrfs: use standard debug config option to enable free-space-cache
+    debug prints
+  btrfs: simplify error handling in __btrfs_write_out_cache()
+  btrfs: free allocated pages jon failed cache write-out
 
-thanks
->
-> Cheers,
-> Chris.
->
+ fs/btrfs/disk-io.c          |  6 ++++++
+ fs/btrfs/free-space-cache.c | 44 ++++++++++++++++++++++++--------------------
+ fs/btrfs/free-space-cache.h |  1 +
+ 3 files changed, 31 insertions(+), 20 deletions(-)
+
+-- 
+2.16.4
+
