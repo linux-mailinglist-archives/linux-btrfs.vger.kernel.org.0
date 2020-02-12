@@ -2,87 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D7F15A4C5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 10:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A5415A4ED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 10:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgBLJ3y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 04:29:54 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:56572 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728530AbgBLJ3y (ORCPT
+        id S1728835AbgBLJfV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 04:35:21 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:45216 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728626AbgBLJfU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 04:29:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01C9MQF7043850;
-        Wed, 12 Feb 2020 09:29:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=rtjbavNA4zglgCv5CAcHBn5B6k3ImdLrcxAlbKvidd8=;
- b=ICzoaZlNPA8TL/9k0SVhN5QMSKeZ/EWXJRmk27NhRS2rjWX/KRgHm6yl2PAfQFhY/uSH
- zb5Dp4c1ZbVcBQoCnC/RRNn5oCP9/wvXF51Y+HS3ndTH9k+Or6kUVSChF/+ExZ356pSn
- 6/F8/nsoAf7MVrSXmbq2srsa+RZ1cYE2nZPpiaKWFZNA2OM7Bl35leW/lNh+rLIXe3TB
- zSiQoq0+Si4rwo7gnL4nmJ8QyYnPFFdIWcaedom699I3+w1g6SGUgruzilMdzdGjF9jl
- fBaJmI2g17IoRxoKctaSMZMKkmmTQbbmwh73eb364/p4WMY+SNWb34rIgpXeZDszaa5F aQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2y2jx697xm-1
+        Wed, 12 Feb 2020 04:35:20 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01C9WenN157848;
+        Wed, 12 Feb 2020 09:35:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=UZgTeNn3pFfDcQDEzGHX4wvZEumYLpiPqufzcgnzhzM=;
+ b=l5rDAAoBXbYSNDm63UQes8gq3pht7ZLMM7TI5meUOEoE56p0rosGjphKpAfWY2WSH5fK
+ 80LiJOtNL3rFP3zcdoueJWh6eqW6OMsQ3ziQkp6jd++p42G2CMbx1OxiCPXW2aW4k5Jw
+ GK9Q5NusirRKKFBFZlG9qNhUciO8Irxkjw8NWgiuPdk5Y+j8dJ3ORivxA0cKthAHEcyR
+ ALvIKFmBWPliwgKWNdhOtsTVLgJUto/1c4+tS1LI7zM3zqx2tb3Uy0Tf3OKFgKgczYB7
+ gTELIjWgYE9t3oenvEezBRaPeEgwRiVzfZ9gnKWQ9uXxXU4U6mxZy+9/4LmliHX6KRL4 gw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2y2k88914p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Feb 2020 09:29:47 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01C9MD85115388;
-        Wed, 12 Feb 2020 09:29:47 GMT
+        Wed, 12 Feb 2020 09:35:19 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01C9WVq2068296;
+        Wed, 12 Feb 2020 09:35:18 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2y26hwkhqd-1
+        by aserp3020.oracle.com with ESMTP id 2y26svxrd5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Feb 2020 09:29:47 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01C9TkaC010716;
-        Wed, 12 Feb 2020 09:29:46 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
+        Wed, 12 Feb 2020 09:35:18 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01C9ZIuP015123;
+        Wed, 12 Feb 2020 09:35:18 GMT
+Received: from tp.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 12 Feb 2020 01:29:46 -0800
-Subject: Re: [PATCH 0/4 RESEND 1-3/4 v5 4/4] btrfs, sysfs cleanup and add
- dev_state
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <20200203110012.5954-1-anand.jain@oracle.com>
- <20200203171659.GA2654@twin.jikos.cz>
- <c0ac6404-ed46-be94-ac05-01c723f05134@oracle.com>
- <20200206141136.GX2654@twin.jikos.cz>
- <5a9e45e2-645c-e15e-c87c-6914d3e2f397@oracle.com>
- <20200211192904.GG2902@twin.jikos.cz>
+        with ESMTP ; Wed, 12 Feb 2020 01:35:18 -0800
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <4f037b58-ed6a-7f78-24bb-4465d4e5b713@oracle.com>
-Date:   Wed, 12 Feb 2020 17:29:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200211192904.GG2902@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] fstests: btrfs/179 call sync qgroup counts
+Date:   Wed, 12 Feb 2020 17:35:09 +0800
+Message-Id: <1581500109-22736-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9528 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002120075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9528 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 spamscore=0
- bulkscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1015
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=13 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002120075
+ definitions=main-2002120076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9528 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ suspectscore=13 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002120076
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On some systems btrfs/179 fails because the check finds that there is
+difference in the qgroup counts.
 
+So as the intention of the test case is to test any hang like situation
+during heavy snapshot create/delete operation with quota enabled, so
+make sure the qgroup counts are consistent at the end of the test case,
+so to make the check happy.
 
-> * "btrfs: sysfs, add UUID/devinfo kobject"
-> * fixup of the device id files created under devices
-> * the other cleanups
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+v2: Use subvolume sync at the end of the test case.
+    Patch title changed.
 
-  Done. Its here:
+ tests/btrfs/179 | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-  https://patchwork.kernel.org/cover/11378051/
+diff --git a/tests/btrfs/179 b/tests/btrfs/179
+index 4a24ea419a7e..8795d59c01f8 100755
+--- a/tests/btrfs/179
++++ b/tests/btrfs/179
+@@ -109,6 +109,15 @@ wait $snapshot_pid
+ kill $delete_pid
+ wait $delete_pid
+ 
++# By the async nature of qgroup tree scan and subvolume delete, the latest
++# qgroup counts at the time of umount might not be upto date, if it isn't
++# then the check will report the difference in count. The difference in
++# qgroup counts are anyway updated in the following mount, so it is not a
++# real issue that this test case is trying to verify. So make sure the
++# qgroup counts are in sync before unmount happens.
++
++$BTRFS_UTIL_PROG subvolume sync $SCRATCH_MNT >> $seqres.full
++
+ # success, all done
+ echo "Silence is golden"
+ 
+-- 
+1.8.3.1
 
