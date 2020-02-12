@@ -2,54 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14B15AED1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 18:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D915AF75
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 19:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgBLRfl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 12:35:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36950 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727054AbgBLRfk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 12:35:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 111C4B20D;
-        Wed, 12 Feb 2020 17:35:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C0086DA8DB; Wed, 12 Feb 2020 18:35:24 +0100 (CET)
-Date:   Wed, 12 Feb 2020 18:35:23 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: sysfs, add devinfo, fix devid and cleanups
-Message-ID: <20200212173523.GO2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <1581499693-22407-1-git-send-email-anand.jain@oracle.com>
+        id S1727548AbgBLSNG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 13:13:06 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:39740 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbgBLSNG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 13:13:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=b9Wc8ZHUSvtlXYPRBuL9QAzpZ1
+        i6SPrSfXvzBfNiiJ7IUq2jqiyaG5dj/mlwjGHwvy2GRjUk5w7Q+g9koooaJp5m4fIaguZQozcPV5A
+        kRFyWZKkcGJQRncpKAUhBL+c/1HtngUjyD5hWDolAKSQvtabJGB9lGov0JHIdvVVwemD/Ma36RjFs
+        lU+bBKlaNpG9rGBQL9FzmSerNfyty7xgY5L8pRCIsuK6/8a+ZZcTFBruX/9A2C+MWicUkzadyb5hB
+        oioAPwv6C9UAeMoV3+IqK9+yuhskV/ffKoOhL1lm7ppWZY6wlcRIXfWioTYVwIm2/4+kiZzBFiYli
+        BHIq9Edw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j1wVV-0002br-B5; Wed, 12 Feb 2020 18:13:05 +0000
+Date:   Wed, 12 Feb 2020 10:13:05 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v5 01/13] mm: Fix the return type of
+ __do_page_cache_readahead
+Message-ID: <20200212181305.GA9756@infradead.org>
+References: <20200211010348.6872-1-willy@infradead.org>
+ <20200211010348.6872-2-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1581499693-22407-1-git-send-email-anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200211010348.6872-2-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 05:28:09PM +0800, Anand Jain wrote:
-> Here, first patch creates UUID/devinfo. 2nd relocates devid kobject to
-> UUID/devinfo.
-> 
-> Patches 3 and 4 are cleanups.
-> 
-> Anand Jain (4):
->   btrfs: sysfs, add UUID/devinfo kobject
->   btrfs: sysfs, move dev_state kobject under UUID/devinfo
->   btrfs: sysfs, use btrfs_sysfs_remove_fsid in fail return in add_fsid
->   btrfs: sysfs, rename device_link add,remove functions
+Looks good,
 
-Thanks, all added to misc-next, 1 and 2 are going to 5.6-rc.
-
-Please number the patchset iterations only, not versions of individual
-patches.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
