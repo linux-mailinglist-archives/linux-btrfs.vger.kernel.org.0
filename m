@@ -2,61 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8698F15A199
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 08:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080E515A19A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 08:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgBLHRJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 02:17:09 -0500
+        id S1728338AbgBLHRK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 02:17:10 -0500
 Received: from esa2.hgst.iphmx.com ([68.232.143.124]:46465 "EHLO
         esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727669AbgBLHRJ (ORCPT
+        with ESMTP id S1728327AbgBLHRJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 12 Feb 2020 02:17:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581491840; x=1613027840;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Zg0o49RIAl9eY/S9AHa+AZUrnlOB5g9oeSIGJ7/jidY=;
-  b=EamZuiFms5fQXh/gJegPxAPGfJ4iVMy5JJmGDOFuXoBVidh8DXVhzr4s
-   Bjp0Dj1luCbAAN0DfDd/Zk9C9nux5YLiph8HKxZ/nRr8cEyVxWWuF2vo1
-   1gak3jy/Ai04eYs9fclBzxry//VXfpi14A/7hS6qUaN88PoHBbTPnR9il
-   qj8VfkL60rIoL649UWCHcqhM//BP728yNAkdDmOxhIDvmDWawJLk5FGg0
-   ozXYpZJu6YvEjFmGABcbJC6xQbtvEDpE3onrBk6KYL4YdRd/U9mzstb1l
-   PlKtSTF0ayzOxUWNPSRO9N/+vHFpwRr3Zp/CFKNBFcCHmbfPCz0NbCbDE
+  t=1581491841; x=1613027841;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=z2X4aHgnvPPXZMjaOmCVZ7Drr3KtgumDXJtALPCwaAw=;
+  b=eLpI5rWkj3Mv0aUKORShZPu2B4WwXUQeXfSO7h8yXg2zEj3jx+zRlmTd
+   IChZhicEjZjQrLiVkqoqxJj2SnaGkIACpaQf+nVip87z2ZyW8Mq/P9Rdd
+   e01xl0xSxoypBvLoYtfulqsObv/vtbdMmH7uz6lxC8g+89Xisy6/NrKx4
+   +vk8FsgmAOvlwUMnx/fd0Ze3XmrsQVx1DaodJYG1I/qLlZL24zpbSYXdV
+   JdY7QCZCNaUPuTkWlBOSWnVZfd6J8MZqK4NOStX65GesiqIy55Hl1ZwBo
+   p74+F1Qrkrm9vd5aX9FkqTvL8HWC8qZic1QYKlUKBdUwMwYqBo5fCWZSt
    g==;
-IronPort-SDR: aiSeEF/l9Tx6ORzYWdwKCRUl9zWRql7KePgrHgU6rbqnbCEnyfdA3ipbOlZLwaicrKwSobf9aT
- /cSckcqtonYNyMCjLAa7mtBNgV+GX3nnz0uimyvsjj8UhPGo44leHma3nCZ5g4FTKIwNYpCEFu
- HSHgncd0s0UOAr1tHzsG/3F++zqs0KYJnBoXyL4tRbWoc4pQbPbpQAhLQZMFfksr7+LSrpBsN7
- vlbjrTHzJmZFpQX5Yv2G48XafLg4HwOg4pH/Fo3fwCv1iiMBIbgg3r9y1eBcmwUvYnMZ9Td51Y
- 7K0=
+IronPort-SDR: bNq3N4tcgvg50zQwR2lc/Qu0ClLp4CSXumKUST91zrN43LwnSvV7GBJpPqy0aCfrrJEs9czmhU
+ LNE5UuJk8+pdc8C7dgiLamueL1JHtIwzK46g1QujDsI1sAONRJcLJuUmxhyF3vuCmqdOohejmE
+ kvwGBWVymuQ3oWBduyBW80zJOlEzv3e/mE/nby6Y/ZB82/YAINss33aMyTLyXO++webwiu1Rjv
+ 0wFjBK8C2HVYTMdED6eOfGcRjWWf1ceXby+ByX+BHRs59MESdn5CfUy9n9aKR+xdpukJhnt+jJ
+ LnU=
 X-IronPort-AV: E=Sophos;i="5.70,428,1574092800"; 
-   d="scan'208";a="231448454"
+   d="scan'208";a="231448455"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Feb 2020 15:17:20 +0800
-IronPort-SDR: 5ud4lA84RvYurt9zxCAVb+I3zyqP7GzXG4lIIacmf3QAoLoGEuVQuWGl0avdGgGlix0S+I5DoQ
- cmXbhNXXfP5kNU3tPmvXeIQ7gliilQzDOUE14rfbyiwFcccZJypcbHg/EfwThbd4KeqYicSnDy
- XtFwztIarZ2978ybnr7yIgoMh8YljEDcyieBMeC+18uZvJZwMS4uFPQYyI0sUG2EMwywYjvPTV
- DeI3S7eEACrO+yI1PWaj3M6Vn3IqyjlYOLJ+Y45eYzXH0uMrDcAfH86K2Qh8cXl04SxgmMGhoN
- cPTOogppXtqE+kX210dD/RAt
+  by ob1.hgst.iphmx.com with ESMTP; 12 Feb 2020 15:17:21 +0800
+IronPort-SDR: OYBCrbuLcnoJ4pxfyDpUzRJ/5TkTPVrz6lAUoZ2bU+YIWUwt7cv2vzE+52MGG+iWTqNfGAUPrQ
+ 65aDxCjh2vvyderfpkekXtBTmyZL0gCpNZv0FIZ9axiCeNhi0VdD6Y+yBtVkHniB20WULr8nvq
+ +n7aN96SsRjuj5b56ZO0SvZzxF5b43FYDRq4eRDKN0pS33mOBMA5NzMsneU9YqDeAEYkZIiYwQ
+ mOFdqho66rpQKUGy5FDkMDW9AAcJV14tJir6XROMbSAp3dlU4Pc6hh4h1rKGcHFisGUt2OcsFH
+ JgAgOgGJixQonL3UWU2WV7CL
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2020 23:09:57 -0800
-IronPort-SDR: unYqkGdwjTHje3H1I4FmJRNC41VEa4nO16iDLK4aWSzEffmqgkpWCShs/V1Mvi5PjC6VOgFvg3
- 2DbccsvIuo2AZsBxSDVhfW742fztikCktmg0YZyPub3oRUEDctBhX842JCCth3nSdzmaK9c33M
- Zsa21L8fkkDvX9YiTDgcP6sXfmDHGy1hDmvPL9lgr+TZarHWPcm9nkCJcflP+Mcao/uxzrkeMm
- U/E+5UzBJv6stuc9s11o7VPSXIqN7Wq1faqtu/jYj4BXxvbUy8nUV9yuLAFGEq2f+KTuzl1gIf
- W4M=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2020 23:09:58 -0800
+IronPort-SDR: LdsyK39Is5ddR80wu//BG5BCox2x+A9cpVc0Ih7F+jpKSWvEJv/Qwxv2+1Qp+uecB5KHLNmINV
+ 0BmdNxsA9EFlktX6Gs0UomfR5H96WgfGAAALbCDLXfgxXX9/yKTfvNOcwkpN1fCf3Wpl3oNm8G
+ RefsW5V5fY8JaEZteD8uCF+XZXsHdlNiCIHhpYTwuYfFObgKx9JyreiKoHr2YA8D91qyQAUWLu
+ H1NTWIZX4DEqmuiZ8lLUdB6I4oBJWf50a68wZqikBJoS/crIS63WL0grK5iUH6W0lKCCqG5FxT
+ CaE=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 11 Feb 2020 23:17:08 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 11 Feb 2020 23:17:09 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v7 0/8] btrfs: remove buffer heads form superblock handling
-Date:   Wed, 12 Feb 2020 16:16:56 +0900
-Message-Id: <20200212071704.17505-1-johannes.thumshirn@wdc.com>
+Subject: [PATCH v7 1/8] btrfs: Export btrfs_release_disk_super
+Date:   Wed, 12 Feb 2020 16:16:57 +0900
+Message-Id: <20200212071704.17505-2-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200212071704.17505-1-johannes.thumshirn@wdc.com>
+References: <20200212071704.17505-1-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -64,82 +67,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch series removes the use of buffer_heads from btrfs' super block read
-and write paths. It also converts the integrity-checking code to only work
-with pages and BIOs.
+From: Nikolay Borisov <nborisov@suse.com>
 
-Compared to buffer heads, this gives us a leaner call path, as the
-buffer_head code wraps around getting pages from the page-cache and adding
-them to BIOs to submit.
+Preparatory patch for removal of buffer_head usage in btrfs.
 
-Patches one to three are preparatory patches, the first one exports
-btrfs_release_disk_super() as a commomn helper to release pages containig a
-super block, the second removes the kmap() calls from block device mappings as
-suggested by Christoph. The third one unexports btrfs_scratch_superblocks()
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/volumes.c | 2 +-
+ fs/btrfs/volumes.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-The fourth patch removes buffer_heads from superblock reading. The fifth
-removes it from super_block writing and the subsequent patches remove the
-buffer_heads from the integrity check code.
-
-Due to a rebase error patch #3 of v5 got merged into the patch removing the
-BHs form super-block reading, but in the end it isn't too bad this way either.
-
-It's based on misc-next from Monday February 11
-(23ba1a90f0571d91b55bdfef7f06f380a74e8475), and doesn't show any regressions
-in xfstests to the baseline.
-
-Changes to v6:
-- Fixed build warning about unused result of write_one_page() (David)
-- Unexport btrfs_scratch_superblocks()
-
-Changes to v5:
-- Rebase to newer misc-next
-- Merge old patches 2 and 3
-- Remove kmap()s of pages from block devices (both in new code as well as
-  existing code)
-
-Changes to v4:
-- Ressurected Nikolay's patch exporting btrfs_release_disk_super()
-- Incroporated feedback from Christoph
-
-Changes to v3:
-- Incroporated feedback from Christoph
-
-Changes to v2:
-- Removed patch #1 again
-- Added Reviews from Josef
-- Re-visited page locking, but not changes, it retains the same locking scheme
-  the buffer_heads had
-- Incroptorated comments from David regarding open-coding functions
-- For more details see the idividual patches.
-
-Changes to v1:
-- Added patch #1
-- Converted sb reading and integrity checking to use the page cache
-- Added rationale behind the conversion to the commit messages.
-- For more details see the idividual patches.
-
-
-Johannes Thumshirn (7):
-  btrfs: don't kmap() pages from block devices
-  btrfs: unexport btrfs_scratch_superblocks
-  btrfs: use the page-cache for super block reading
-  btrfs: use BIOs instead of buffer_heads from superblock writeout
-  btrfs: remove btrfsic_submit_bh()
-  btrfs: remove buffer_heads from btrfsic_process_written_block()
-  btrfs: remove buffer_heads form superblock mirror integrity checking
-
-Nikolay Borisov (1):
-  btrfs: Export btrfs_release_disk_super
-
- fs/btrfs/check-integrity.c | 215 +++++++++++--------------------------
- fs/btrfs/check-integrity.h |   2 -
- fs/btrfs/disk-io.c         | 191 ++++++++++++++++----------------
- fs/btrfs/disk-io.h         |   6 +-
- fs/btrfs/volumes.c         |  85 ++++++++-------
- fs/btrfs/volumes.h         |   4 +-
- 6 files changed, 212 insertions(+), 291 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index b092021e41e9..6ebdd95b798d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1247,7 +1247,7 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 	return ret;
+ }
+ 
+-static void btrfs_release_disk_super(struct page *page)
++void btrfs_release_disk_super(struct page *page)
+ {
+ 	kunmap(page);
+ 	put_page(page);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 690d4f5a0653..b7f2edbc6581 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -483,6 +483,7 @@ int btrfs_finish_chunk_alloc(struct btrfs_trans_handle *trans,
+ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset);
+ struct extent_map *btrfs_get_chunk_map(struct btrfs_fs_info *fs_info,
+ 				       u64 logical, u64 length);
++void btrfs_release_disk_super(struct page *page);
+ 
+ static inline void btrfs_dev_stat_inc(struct btrfs_device *dev,
+ 				      int index)
 -- 
 2.24.1
 
