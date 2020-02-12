@@ -2,189 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3324B15A8DC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 13:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3537815A96B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 13:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbgBLMMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 07:12:13 -0500
-Received: from mout.gmx.net ([212.227.15.18]:47403 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726470AbgBLMMN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 07:12:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581509521;
-        bh=ra5ITDwjgBh1KvYEpcfTq97+E6i7WsJNiQmhxv+9lMg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=eRmpZiFucMIbsUNJg9YeTYKpqEBGAi8Ef9a7XnYCVRtCH2KM61sK+GWQWgDAnO7ol
-         cMokAk7WVROJsQk03i6zaQGR2ZcWiqx57K6i3X7WpI4uh7CwVxhzNnQyOxSnUwRGoV
-         6cj0vrFE0JZuiYB7tPdynkx6D4zN7FcbumdPAh/c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbzuH-1jdNYF49tv-00dXbx; Wed, 12
- Feb 2020 13:12:01 +0100
-Subject: Re: [PATCH 1/4] btrfs: backref, only collect file extent items
- matching backref offset
-To:     ethanwu <ethanwu@synology.com>, dsterba@suse.cz,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20200207093818.23710-1-ethanwu@synology.com>
- <20200207093818.23710-2-ethanwu@synology.com>
- <0badf0be-d481-10fb-c23d-1b69b985e145@toxicpanda.com>
- <c0453c3eb7c9b4e56bd66dbe647c5f0a@synology.com>
- <20200210162927.GK2654@twin.jikos.cz>
- <5901b2be7358137e691b319cbad43111@synology.com>
- <aeb36a34-bc9c-8500-9f36-554729a078fc@gmx.com>
- <20200211182159.GD2902@twin.jikos.cz>
- <c3b0f59840b81f4dd440264fb4276d9f@synology.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8eeca7c0-8283-8cd6-2354-9eb9373c9bd3@gmx.com>
-Date:   Wed, 12 Feb 2020 20:11:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1727548AbgBLMuo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 07:50:44 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44513 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgBLMuo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 07:50:44 -0500
+Received: by mail-qk1-f194.google.com with SMTP id v195so1857346qkb.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 04:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=FVaXK8VbQkWrmw5JICNZ14VjVvoyXP1f9Vn4seZ/yHs=;
+        b=A0KxYrgljBmfofzHFWwIpfTZXL25MwYEoan1YQvTChQtuGr9/K3/B+u7VP362JyjA7
+         p4bWya36vZ3iCeSDP9cmlNnLCGJZ3hsTNQWsiJHe6yDhR4tbjuNhngwGDZCMYbNVHtJx
+         ytZDODGlGkLMycVgW9/JudRyZx4TgkyD6JW7gXEeqsTv8/gFZbCc6f3v95yQIqB8bgS+
+         cIG5ev08N4cbOgf2yw5YAKZ24rqiUGF64p5R2mh2mpgi/7fJqjgLGrUp4+k6/2V0EyjT
+         /ACedzrahg0y9kgeWDgRdeKI7JPXmrT8gwvkejGikK4tpKRyRdkC1bcksSd4XV9+S/3L
+         IJsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FVaXK8VbQkWrmw5JICNZ14VjVvoyXP1f9Vn4seZ/yHs=;
+        b=dytWHDlRaxXBJprLIaLJGxKnOz2MY1cZBNLZfRb7gbVHp+dzN5orXtCKLUIf4og21r
+         E4+7iDgu3fkVtICnb+TDqraubV+W03/7y9bigpJ/Z3JqvX2TotmOopSRw922jMztCxm5
+         Q2dwNON/KUmyCv01LiYcipgUm0hOqS6q3ju2dzIAZxumAgEpqvwKMhNuhQZIaNtwJPpn
+         dk3eRMR2pHrTrHdlzJor2eW9J6eVj/ntYOmHqhYuey6PhrFbtdyQJbpEUenKyxPIIOSI
+         yskPnHw7Aj8xPJdMTt/Pg8cZtLL12W7BUkWkTTiCTjBr0svawYWfzfHDWYgvxCQdC0G0
+         Su4w==
+X-Gm-Message-State: APjAAAWNGCs0q/AVl5y+wqXQsWclKwbrPEYOZjXWe9Kdl0qNSYnerfeX
+        OyROqdekCVzNTgRPYAvVLKZBkbLMr44=
+X-Google-Smtp-Source: APXvYqzHxFpe8eB72Om07q0s1gGJ2NQI2guyKUwnIsUk1R4nT7EFnsBg+jLUuwmst2DGZpE3OHVjzw==
+X-Received: by 2002:a37:b707:: with SMTP id h7mr6808531qkf.345.1581511840921;
+        Wed, 12 Feb 2020 04:50:40 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::de08])
+        by smtp.gmail.com with ESMTPSA id c14sm120369qkj.80.2020.02.12.04.50.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Feb 2020 04:50:40 -0800 (PST)
+Subject: Re: [PATCH v5] btrfs: Don't submit any btree write bio if the fs has
+ error
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200212061244.26851-1-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <f04b12ee-4f72-6c64-db01-4f353900e2f8@toxicpanda.com>
+Date:   Wed, 12 Feb 2020 07:50:38 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <c3b0f59840b81f4dd440264fb4276d9f@synology.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ltXwPmsbSr1cvfO1oRmOKcBcrQYImWq0u"
-X-Provags-ID: V03:K1:4X2gXWnTf8k4cDWNMkP/gYOKLcWpGWLJDeqzBjQ2W9JeBh1yztN
- vDhzq36jr3kWaFac5iO0YLuTCjoY46DMjlCFSyaYyLmUerAt3qtt2EVXvHAjakTU+4pGP7C
- IURlwvTIZXZPWQfNcHxJ93fZBlh6oGyNUgkVzVwnzEe8/tQ2h3WvYq/3Otd0oE2y9uov0VT
- 2X4/GKOxpjOz0jbCYEGuQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JxKBwriOy+E=:Di6gOHTVbZruTnJPexIryC
- U9igmbT3W3AAD85oSwEu1j71ATuCa8W1OTfJJK0lxxpBBUrgL4pYsAYs2HInpv5LWCj+mVNsj
- Zz82iPPtXV9OiUVmzmSCzEOd3G8h8nIzUAaOXYxA2B8CcEIXkUiVsY3rtXi5mj8lrKC0Ibpwc
- t7ZN+gLBUk/WIHUX3Mq8fB5PNDkB+/HrbfD4hevklV8flyfCk/fjxXXu+9xvPK4ss+asTa5vk
- Zi6vbnxUPyVzXAlZvkF2yfzwpoV6U0hXidow1EGn27oc0KGUeC714OAuVWP/eggZZuv8+TyWX
- IIhqPRNNXr20W90jUAT0Ppo9tBj64/O75RaN9VnBnrNuHRYRYiBKHP1URk8ZnuOYI8+v8u4VP
- 4Q1bBX+/gsSSDBC/K0I2G7gxtVrKmWaKCfnxtZkYiVMRrdp0s1qIWYNkEnuGnRIrElS/RJ3sR
- kvagGs+PpHdxZA5gbQLfT/A/pEC3i75fOiUSPO2rTKz3pkLyD40a7XQNMSbqXggSTXNWoJPXw
- TL65SR9ep0oNLggg0RWV6y2pVfk+npgnIS5m3rfUEVaMbCxlnCUPUwWZqBDh294Y0qq8uq1y6
- 469niypcukI0R9MJmpSdsOGanqBMG1c2QRks0SWmq1ku+hK6PZ3oROuvkqF/5j/uW3CiT0GTd
- BIEYBTdXC1LB62ii01MSm54SJ3G7Z0/IN8RPLCZpJq87//WxfxII5aXH0pYOQQBmLKYlcxQIZ
- T+LQ4UPnz3xz0lvtZFPEK68B3Q8WIBXBUowEBeyIyOfGRo7g1Devb9p0cksqBCPABKWXaHFYt
- Y886yj85Gbabka6pB6LIG0XZzK4x/D2I0VWddJ7dgN2vCWidTovQcqjFsLD+gZV98QODS7GRx
- vDMams2abG1+DjyH8zCumuz9CevfYKZLyQIt8uYu0N7zVYnZZOWe4mHuadeIpFwlEWbBZqMD9
- 3qf1QfNWi/6lcDkqlrvCowg+uCPlhHF+7QF5XdCPfTzWT0gAYb2JD7T7s5FkJuK4AwodSB8qx
- Dziz+myEA/fGUENR6kR9lgnRguKgjk0B53w3FapfVvvwnA9wfhM72pkiust1gn9/TnrMjSHGt
- Bt7ABM3wi4tK5aPUfVyWFRG3lFITSYYcn5QaW4rqdf3qBD/3wlJfI/Ab9IzpKkYW+HTK9kCXA
- HUU5C529IzxKyUhIxf4uOe8jany3PqfbVC25fbHAHhj8gc5oSdAg8OrRU1xZAUDV9U7WSyX5Y
- f1LXZlFzFesACytgi
+In-Reply-To: <20200212061244.26851-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ltXwPmsbSr1cvfO1oRmOKcBcrQYImWq0u
-Content-Type: multipart/mixed; boundary="eSy2dJKgE40AnV85pLZj67rNEoj5Cmw84"
+On 2/12/20 1:12 AM, Qu Wenruo wrote:
+> [BUG]
+> There is a fuzzed image which could cause KASAN report at unmount time.
+> 
+>    ==================================================================
+>    BUG: KASAN: use-after-free in btrfs_queue_work+0x2c1/0x390
+>    Read of size 8 at addr ffff888067cf6848 by task umount/1922
+> 
+>    CPU: 0 PID: 1922 Comm: umount Tainted: G        W         5.0.21 #1
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+>    Call Trace:
+>     dump_stack+0x5b/0x8b
+>     print_address_description+0x70/0x280
+>     kasan_report+0x13a/0x19b
+>     btrfs_queue_work+0x2c1/0x390
+>     btrfs_wq_submit_bio+0x1cd/0x240
+>     btree_submit_bio_hook+0x18c/0x2a0
+>     submit_one_bio+0x1be/0x320
+>     flush_write_bio.isra.41+0x2c/0x70
+>     btree_write_cache_pages+0x3bb/0x7f0
+>     do_writepages+0x5c/0x130
+>     __writeback_single_inode+0xa3/0x9a0
+>     writeback_single_inode+0x23d/0x390
+>     write_inode_now+0x1b5/0x280
+>     iput+0x2ef/0x600
+>     close_ctree+0x341/0x750
+>     generic_shutdown_super+0x126/0x370
+>     kill_anon_super+0x31/0x50
+>     btrfs_kill_super+0x36/0x2b0
+>     deactivate_locked_super+0x80/0xc0
+>     deactivate_super+0x13c/0x150
+>     cleanup_mnt+0x9a/0x130
+>     task_work_run+0x11a/0x1b0
+>     exit_to_usermode_loop+0x107/0x130
+>     do_syscall_64+0x1e5/0x280
+>     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> [CAUSE]
+> The fuzzed image has a completely screwd up extent tree:
+>    leaf 29421568 gen 8 total ptrs 6 free space 3587 owner EXTENT_TREE
+>    refs 2 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 current 5938
+>            item 0 key (12587008 168 4096) itemoff 3942 itemsize 53
+>                    extent refs 1 gen 9 flags 1
+>                    ref#0: extent data backref root 5 objectid 259 offset 0 count 1
+>            item 1 key (12591104 168 8192) itemoff 3889 itemsize 53
+>                    extent refs 1 gen 9 flags 1
+>                    ref#0: extent data backref root 5 objectid 271 offset 0 count 1
+>            item 2 key (12599296 168 4096) itemoff 3836 itemsize 53
+>                    extent refs 1 gen 9 flags 1
+>                    ref#0: extent data backref root 5 objectid 259 offset 4096 count 1
+>            item 3 key (29360128 169 0) itemoff 3803 itemsize 33
+>                    extent refs 1 gen 9 flags 2
+>                    ref#0: tree block backref root 5
+>            item 4 key (29368320 169 1) itemoff 3770 itemsize 33
+>                    extent refs 1 gen 9 flags 2
+>                    ref#0: tree block backref root 5
+>            item 5 key (29372416 169 0) itemoff 3737 itemsize 33
+>                    extent refs 1 gen 9 flags 2
+>                    ref#0: tree block backref root 5
+> 
+> Note that, leaf 29421568 doesn't has its backref in extent tree.
+> Thus extent allocator can re-allocate leaf 29421568 for other trees.
+> 
+> In short, the bug is caused by:
+> - Existing tree block get allocated to log tree
+>    This got its generation bumped.
+> 
+> - Log tree balance cleaned dirty bit of offending tree block
+>    It will not be written back to disk, thus no WRITTEN flag.
+> 
+> - Original owner of the tree block get COWed
+>    Since the tree block has higher transid, no WRITTEN flag, it's reused,
+>    and not traced by transaction::dirty_pages.
+> 
+> - Transaction aborted
+>    Tree blocks get cleaned according to transaction::dirty_pages. But the
+>    offending tree block is not recorded at all.
+> 
+> - Fs unmount
+>    Btrfs believes all pages are cleaned, destroying all workqueue, then
+>    call iput(btree_inode).
+>    But offending tree block is still dirty, which triggers writeback, and
+>    cause use-after-free bug.
+> 
+> The detailed sequence looks like this:
+> - Initial status
+>    eb: 29421568, header=WRITTEN bflags_dirty=0, page_dirty=0, gen=8,
+>        not traced by any dirty extent_iot_tree.
+> 
+> - New tree block is allocated
+>    Since there is no backref for 29421568, it's re-allocated as new tree
+>    block.
+>    Keep in mind that, tree block 29421568 is still referred by extent
+>    tree.
+> 
+> - Tree block 29421568 is filled for log tree
+>    eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9 << (gen bumped)
+>        traced by btrfs_root::dirty_log_pages
+> 
+> - Some log tree operations
+>    Since the fs is using node size 4096, the log tree can easily go a
+>    level higher.
+> 
+> - Log tree needs balance
+>    Tree block 29421568 gets all it content pushed to right, thus now
+>    it is empty, and btrfs don't need it.
+>    btrfs_clean_tree_block() from __push_leaf_right() get called.
+> 
+>    eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
+>        traced by btrfs_root::dirty_log_pages
+> 
+> - Log tree write back
+>    btree_write_cache_pages() go through dirty pages ranges, but since
+>    page of tree block 29421568 gets cleaned already, it's not written
+>    back to disk. Thus it doesn't have WRITTEN bit set.
+>    But ranges in dirty_log_pages are cleared.
+> 
+>    eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
+>        not traced by any dirty extent_iot_tree.
+> 
+> - Extent tree update when committing transaction
+>    Since tree block 29421568 has transid equals to running trans, and has
+>    no WRITTEN bit, should_cow_block() will use it directly without adding
+>    it to btrfs_transaction::dirty_pages.
+> 
+>    eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
+>        not traced by any dirty extent_iot_tree.
+> 
+>    At this stage, we're doomed. We have a dirty eb not traced by any
+>    extent io tree.
+> 
+> - Transaction get aborted due to corrupted extent tree
+>    Btrfs cleans up dirty pages according to transaction::dirty_pages and
+>    btrfs_root::dirty_log_pages.
+>    But since tree block 29421568 is not traced by either of them, it's
+>    still dirty.
+> 
+>    eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
+>        not traced by any dirty extent_iot_tree.
+> 
+> - Fs unmount
+>    Since btrfs believes all its cleanup has done, it destroys all its
+>    workqueue. Then call iput(btree_inode), expecting no dirty pages.
+>    But tree 29421568 is still dirty, thus triggering writeback.
+>    Since all workqueues are already freed, we cause use-after-free.
+> 
+> This shows us that, log tree blocks + bad extent tree can cause wild
+> dirty pages.
+> 
+> [FIX]
+> To fix the problem, don't submit any btree write bio if the fs has any
+> error.
+> This is the last safe net, just in case other cleanup didn't catch it.
+> 
+> Link: https://github.com/bobfuzzer/CVE/tree/master/CVE-2019-19377
+> CVE: CVE-2019-19377
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
---eSy2dJKgE40AnV85pLZj67rNEoj5Cmw84
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/2/12 =E4=B8=8B=E5=8D=887:32, ethanwu wrote:
-> David Sterba =E6=96=BC 2020-02-12 02:21 =E5=AF=AB=E5=88=B0:
->> On Tue, Feb 11, 2020 at 12:33:48PM +0800, Qu Wenruo wrote:
->>> >> 39862272 have 30949376
->>> >> [ 5949.328136] repair_io_failure: 22 callbacks suppressed
->>> >> [ 5949.328139] BTRFS info (device vdb): read error corrected: ino =
-0
->>> >> off 39862272 (dev /dev/vdd sector 19488)
->>> >> [ 5949.333447] BTRFS info (device vdb): read error corrected: ino =
-0
->>> >> off 39866368 (dev /dev/vdd sector 19496)
->>> >> [ 5949.336875] BTRFS info (device vdb): read error corrected: ino =
-0
->>> >> off 39870464 (dev /dev/vdd sector 19504)
->>> >> [ 5949.340325] BTRFS info (device vdb): read error corrected: ino =
-0
->>> >> off 39874560 (dev /dev/vdd sector 19512)
->>> >> [ 5949.409934] BTRFS warning (device vdb): csum failed root -9 ino=
-
->>> 257
->>> >> off 2228224 csum
->>>
->>> This looks like an existing bug, IIRC Zygo reported it before.
->>>
->>> Btrfs balance just randomly failed at data reloc tree.
->>>
->>> Thus I don't believe it's related to Ethan's patches.
->>
->> Ok, than the patches make it more likely to happen, which could mean
->> that faster backref processing hits some race window. As there could b=
-e
->> more we should first fix the bug you say Zygo reported.
->=20
-> I added a log to check if find_parent_nodes is ever called under
-> test btrfs/125. It turns out that btrfs/125 doesn't pass through the
-> function. What my patches do is all under find_parent_nodes.
-
-Balance goes through its own backref cache, thus it doesn't utilize the
-path you're modifying.
-
-So don't worry your patches look pretty good.
-
-Furthermore, this csum mismatch is not related to backref walk, but the
-data csum and the data in data reloc tree, which are all created by balan=
-ce.
-
-So there is really no reason to block such good optimization.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
 Thanks,
-Qu
-> Therefore, I don't think my patch would make btrfs/125 more likely
-> to happen, at least it doesn't change the behavior of functions
-> btrfs/125 run through.
->=20
-> Is it easy to reproduce in your test environment?>
-> Thanks,
-> ethanwu
 
-
---eSy2dJKgE40AnV85pLZj67rNEoj5Cmw84--
-
---ltXwPmsbSr1cvfO1oRmOKcBcrQYImWq0u
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5D64wACgkQwj2R86El
-/qgGwAf8D/b0ieD/wqKVuS7f9pXntwgesiaNRP5kDfZ9NuGEt3jh69PKi9T9UUFs
-7Dsu85pi8kifnjL4zmU4XYwYfI+f8qNP+O0z80JKfMLl+TUZpvyC0KdjxpLswrhc
-IGtQvCeLUqROwFpiGclOt2hPA4/usduWO6OQz4hf6sfHjCvFgxdTVwPTb87+8nVe
-J79JVe5TFumN+y10olIu8pNZ2CI4PENK95jCI7gBWMv+cW0sCyvZ7/iDvCvkF/JY
-WV2t1L8P9QOfRB8aWTQs9dMX+Jyz3bXLpWrDt6yxeQZAqK6JcO8sX0dnhl9z8kLe
-PNyc889n1u0XkBbiY10ciZJqhyvvzA==
-=muFz
------END PGP SIGNATURE-----
-
---ltXwPmsbSr1cvfO1oRmOKcBcrQYImWq0u--
+Josef
