@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD666159E67
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 01:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDF2159E68
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 01:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgBLA4A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 19:56:00 -0500
-Received: from mout.gmx.net ([212.227.15.19]:37349 "EHLO mout.gmx.net"
+        id S1728120AbgBLA56 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 19:57:58 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54569 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728103AbgBLA4A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 19:56:00 -0500
+        id S1728103AbgBLA56 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 19:57:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581468955;
-        bh=kIkBezxdjW6FACH0XB0NnVD9bO2DpdL8nMdfMgNRor8=;
+        s=badeba3b8450; t=1581469072;
+        bh=wx/4cpdNuWt2VzE9Uq7/qGSXJ3hctMRrZTZBNNOAOVU=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=VaEdWmtOK39uYVJDJaJ1Pj/LkmyP151llvOGIY73nsmE9HPZBzmVQlJwQ547Rz6Wi
-         KpqXb3R40VdkjLBg7GWSCXxZew1fWvVDcusCvydkjlTDGOxCkcjvMVqE8K3WXcXrog
-         tdYVUSbNjciw/PeLH7AeERBAWnUyEMpuasRgIW/4=
+        b=HqqRh3TNM48TLOwnHxkPttqCasjhyHpeVZWZv7swTZtZ/SHpzLX08gLhgyS9+MkjG
+         GtcqhtCfFKaQ+DoMxHFYfvX0vL3q5V7na4tk4dIWg6fuuzy4IEsqmKPKVs1VHD4kLQ
+         ABJuDTyzo844zSzR0fEkRWTeqwPtFA/77Dto0hPQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQ5vW-1ioQmo2zh2-00M1Gs; Wed, 12
- Feb 2020 01:55:55 +0100
-Subject: Re: [PATCH 1/4] btrfs: set fs_root = NULL on error
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7i8O-1jW3Jd2alG-014oNP; Wed, 12
+ Feb 2020 01:57:52 +0100
+Subject: Re: [PATCH 2/4] btrfs: do not check delayed items are empty for
+ single trans cleanup
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200211214042.4645-1-josef@toxicpanda.com>
- <20200211214042.4645-2-josef@toxicpanda.com>
+ <20200211214042.4645-3-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,49 +53,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6bbb98bb-f9c8-aad3-ab86-da097544e38f@gmx.com>
-Date:   Wed, 12 Feb 2020 08:55:51 +0800
+Message-ID: <cc635031-9a6f-9e60-2a98-5f47bc3dcc02@gmx.com>
+Date:   Wed, 12 Feb 2020 08:57:48 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200211214042.4645-2-josef@toxicpanda.com>
+In-Reply-To: <20200211214042.4645-3-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ"
-X-Provags-ID: V03:K1:ZY9KgQ74iDnINOpVlg1oJvG1ADj9NlxALNCUa9S+5OpvRpE+Rq6
- zo8EDX7aUL5MUhsoT0cYfn602ryyUXDL5UYD3HhneinXOMzkYhWEDxEkD1Q94iqAHsbF1Yb
- chm3ZWX96jxkFfzzoKFdJqLN5KCS8xx31gF727pZXmAi2eiO25SidM3cG94rf1h51Ggc+U+
- amMrWyMekZ8RNKcS5fSHg==
+ boundary="XvdN3m9hmEYm4ydVd6L69Jb8JscQJYRxj"
+X-Provags-ID: V03:K1:due0AerI0ijIMzQe5pWfGVS60Bd2b0SCbIRA25ZFl3Lab8S95XL
+ mrDlGgUb7yDlITkx/uyIijICuvNjFw8QJ5aNbNAOWka5PAe1JKzSFvXVuhBseq8Bb7HhYl6
+ 7CqEynf/GbjLijnIKOdzQIJGI+bG3teAQgXvCbp0YzMABj24PPE0/RevRWG955fVhJmmr5m
+ EU5Xl+dxFgechAfti/fTg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Qoacqclx0Ts=:BZE5diHjJm4o2aFlyj4QS2
- tjnXdVWAcpxEMbBgZd7/GTTKW84wrqcXtC9FsPKkkB7GMpfpDf+SFR3Z/Zvqut5qy+536viJo
- mk+6WXq9ELekE8hmDEv8TS1uuzr02Z0A/mMeR06tFYms3GHX/vqUwCLA7OdtlV1sPGZse4nIg
- z0d4rZBM5aldEIfhAfyeCibKMqRAetLKcv0V1M8peAF9lWw1umMfDoN7u/X3ififM6+lRKyPF
- aRqM0kclewoe7D1i40p2EEGaWXuf3GKQkkzSt03rxhnVI0boDQDYwTmFt2IT3nKude/g/ePg7
- RbEDklG07D6Lib8aoyM+PAeJQUlueG3V07QowwaFPlQad5Kk0k3A0Ls+Ey1YuWrL27AMMzGCd
- pvJbgWuvA5N8CT8nTV2eSL/GhIQDzuGxLmVMg8OGrmeE8OpJEsOkcumyZHJTtRiBBsjTWFFEm
- PyYSbJy/nFJB5C19P8t/Tat1bJyesJzN/E8OF0pFz8EBVQhsgHf3yDDrfP0aCqQ4bTFRkWp1F
- IPBxBwvm4Vh40RyFVBChPd9Am2iCm4+IBvWW5Vnp8KygRWXK4u19BKPJBqGN7bND1DDcNnmlo
- kJIgoziOGSh2HiyV26KcKasH5SLZHbij3p7lJ05xV09QXHqoJJ6aBJpTencTRGKeCyGHIoKa6
- 0VF0obQZ87Szm/YPW9BExP2dkn1cyf3M4NUs2BRUVAASa3oWSwn6mRj/NdSXgqA5nN0EPrAjG
- 7YhSAmz0dV9XEuUZ6RKQ1AgWNLXxOhNYVuPXifOx+3Pkp3GjR9GU3VvUxJ7IH/CNiD+r/BwUh
- 2w2+zESpvOYJJu2VOeFQwnV33ldRaM5HSJevf2TVzhqVmliJJB/QTvCAfT24ehCZ3lQCp52CK
- mrCrC1S6ReGB4eMtKC9oTLSh+fld3CIq65qepl1elmDuk0DYiLtbmXPJRknwC6PZrZT7DdJhb
- j2e/3L4ih5Far3/bqYoHRJlTyRvjU9osRMotVcWyKniPlY/IgevzP5fGP8Bf++L+9sXFmT+m3
- cMq1UiOJPWvMNsr0BDgjUi9X+2lYK1GVSMZnJZ55PgsMP1zb2nr7ptrnSf+5Rcd97As63W3ME
- kk6750Ecvsjbm5sSyyA0epWP3FebbkmVNCmkfT7Xyla25uIu47gfWbO/5VORP2VrmmX6THK1I
- jsn58xr7cFXrOF2fUvDyGp+KP1qgt3JqSRz+wY2BniFVqqPq+ucegWa4qVv7PmT4Bn41elTml
- a+gYDK+c7gFQAF9Dy
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C1YktKihkwo=:Cz7jQ0OcF2iQeRgal+cC4A
+ 6MapIVn6iDsxNdMjuQGS1rOBXv/weCV6QfZsylr/L76l15uexXdFqesLopv63v+QeUtmVKJvl
+ 8mbsJ/+J0Jaa2pLmkGUXNpO2FpJqfLkxRezA7KV5t7YDKqJ/zHhST7nsjorPwyPUlHH8un11j
+ WMNaVaC2zqaGce6qd+VW8q9PadLJKNHj8bLDhgCDSDCaJBcs2GrzIPqAsyZ7YANksv6PYthuH
+ tPajS03+NSYOsg1JYj2wsqU8DeRdUekMOZGHrS+xhGLO0CpSfFVzP5uBy72Ly5z5n+667DXLl
+ MCLU3O2HAbDyNjkQDKyB/cgnVfTX2X1P7Y/2qtv+5x0Gjp9gZV8JlId3QHLy0m8dUSFRFcaOf
+ EuyxqoQvEufPokbHqe1+uFf69zyZOk350+ulTTeJdWpOX/WiWPjSt+g0jgU8sb8dtihKsejRA
+ r4pObQIN6laKDqnKPFEsgtUBkfY9fnTZGG73tmH+0vweNDJG1d5XaOM+QTHjgLuE9nxYS9SNj
+ KK3TsFWjpEt87NsZnOsBIItD7vQwdw9aUC5On5qj5YzqxakqSo3g46rEBijBygncGm7vng1dV
+ 47O8ft8wiaET821v0bUPIRVsWAlUP1tsLINMfzbosk2OCD2otmgBrt/dgvW4QG9+IEVZkrcD0
+ iDSoHkjL+If/QFexWdirff1niNydLmlmM1HOEfiqg2p1Ia2ZaUWCSb4AoVu0HBJ0WOoxinsH/
+ Si/bZV+G8QwRDs2BPXeW7g1txnqB//jFdC5qidOEhWMMrhyR2wdzb7mCkK+T4MsNbxjiI1Rwa
+ 8vkCxEcbpSJ3zVd88IhUmLJ9X9jQs/MnwRzxr9mtr1CiUrAieGAOkwztd8Y9412/T55JXNWM5
+ waae7b2POI6Zg/QRSfZBgEsrZziSeAkyop5VQpdlHgMI9cusKINZmPxq6bmCqz4UUpALGttZs
+ FwFJHOcnnFEdpGKbIYkN7QHQ/I48In6kWTPjD6LUY915n4kmPcwOu3hNwHNSczZTGB44CjYBN
+ 3vYwCTer+++hBa8+IhRpJrVtXlEhFfHq7BAprFgDCvVaZ0iUC4P8oxWqVTmvL/H7stfx+P7md
+ Tcew72WBpzqECcb2zsSeiJvlLuHl2LvjaLEoxOy1LQ1oead6SvXBTyOOADc1sLzlX0izQ5LWB
+ j7cKTr+fUHNtNKT7BDeWrYogAz8A8rk8iByN1mcoa1KzUWkbAMDqqzvvVEtmypRqL/bpBnC9b
+ F/I+0kGjdbDG3lE2S
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ
-Content-Type: multipart/mixed; boundary="WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ"
+--XvdN3m9hmEYm4ydVd6L69Jb8JscQJYRxj
+Content-Type: multipart/mixed; boundary="MvttGA5jTA2wU9hqqZirzhl5xq2jAFraQ"
 
---WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ
+--MvttGA5jTA2wU9hqqZirzhl5xq2jAFraQ
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -102,61 +103,62 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/2/12 =E4=B8=8A=E5=8D=885:40, Josef Bacik wrote:
-> While running my error injection script I hit a panic when we tried to
-> clean up the fs_root when free'ing the fs_root.  This is because
-> fs_info->fs_root =3D=3D PTR_ERR(-EIO), which isn't great.  Fix this by
-> setting fs_info->fs_root =3D NULL; if we fail to read the root.
+> btrfs_assert_delayed_root_empty() will check if the delayed root is
+> completely empty, but this is a fs wide check.  On cleanup we may have
+> allowed other transactions to begin, for whatever reason, and thus the
+> delayed root is not empty.  So remove this check from
+> cleanup_one_transation().  This however can stay in
+> btrfs_cleanup_transaction(), because it checks only after all of the
+> transactions have been properly cleaned up, and thus is valid.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Just one off-topic idea, can we have test cases in fstests to do
-specific error injection test?
-
-For your fix, we can inject ENOMEM error with call chain
-btrfs_read_fs_root_no_name()->open_ctree() to get a 100% reproducible
-test, which looks to be a solid test case.
+Just a nitpick, to allow other user to verify the fix, would you mind to
+provide a specific reproducer?
+Like the error injection (I guess it's still memory allocation failure),
+the call chain.
 
 Thanks,
 Qu
-
 > ---
->  fs/btrfs/disk-io.c | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/btrfs/disk-io.c | 1 -
+>  1 file changed, 1 deletion(-)
 >=20
 > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index eb441fa3711b..5b6140482cef 100644
+> index 5b6140482cef..601ed3335cf6 100644
 > --- a/fs/btrfs/disk-io.c
 > +++ b/fs/btrfs/disk-io.c
-> @@ -3260,6 +3260,7 @@ int __cold open_ctree(struct super_block *sb,
->  	if (IS_ERR(fs_info->fs_root)) {
->  		err =3D PTR_ERR(fs_info->fs_root);
->  		btrfs_warn(fs_info, "failed to read fs tree: %d", err);
-> +		fs_info->fs_root =3D NULL;
->  		goto fail_qgroup;
->  	}
+> @@ -4543,7 +4543,6 @@ void btrfs_cleanup_one_transaction(struct btrfs_t=
+ransaction *cur_trans,
+>  	wake_up(&fs_info->transaction_wait);
 > =20
+>  	btrfs_destroy_delayed_inodes(fs_info);
+> -	btrfs_assert_delayed_root_empty(fs_info);
+> =20
+>  	btrfs_destroy_marked_extents(fs_info, &cur_trans->dirty_pages,
+>  				     EXTENT_DIRTY);
 >=20
 
 
---WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ--
+--MvttGA5jTA2wU9hqqZirzhl5xq2jAFraQ--
 
---bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ
+--XvdN3m9hmEYm4ydVd6L69Jb8JscQJYRxj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5DTRcACgkQwj2R86El
-/qgFSAf/at5ifdkLU4f0OyHPGLgi2pHXr37zgABAHVDe7pveXIkFMrm4Qe+5HVwo
-/lK1n7SnxGuCdVezTRQu0yIFHUHGAsYal0FtCcaibh6r0JYfMXQX3THzaO8uEj7y
-kBureTwZufdCdCvb2gMgC2EmpMYx7W5D1xJDd1UytggaVJGOopCpmOGByDmCN8Lc
-th6hBDzu75WS/DYcC22S/N+PRD3uUYqX5EnPBz8hFUW8ZYE3TkuVhmH4w6b2vo7f
-WxW/uaAaRSyXX2B0usJrCLWaUCYbn3VF/AP2cbZbKoLu7ze1OqKsR6E1+wCgq6UA
-P1NlkL2K/2+znMHA3sd0e1xTTNEdhw==
-=JL7C
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5DTYwACgkQwj2R86El
+/qh9/QgAhg7rfPpA+NaAYRj6BXFatBpTHD48NHj42iso/9O6DQL13M/40kA8y0sB
+PwXkGF9ENxibxstRK5SgSkkFrmzPniQZYA8nYtVWGnbeilKpNohYZIFB4hpbGsEA
+fENtWpvmONLz+4NnkI699RK5Y4/y9S82VCm/sO69OZgHrFIdN+2ml/106ac4kssu
+xuMajFkjEUQpX4stUp/nNlb6hID7rgUi6jGodVrUfoncXglhvNV7iBNpWFtsFM07
+q1kV4uEt6acTiKJyYSwF+m70SKTFE25QxW4QbqU7+ZvzG4itboAdQwUhekWdBTaK
+UQ5gchdbY2lcOoZ313D1nBGXAbBpaw==
+=3Pv2
 -----END PGP SIGNATURE-----
 
---bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ--
+--XvdN3m9hmEYm4ydVd6L69Jb8JscQJYRxj--
