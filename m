@@ -2,163 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD0315B145
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 20:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D175415B33B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 22:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgBLTot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 14:44:49 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43844 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727372AbgBLTot (ORCPT
+        id S1728098AbgBLV6b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 16:58:31 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:32783 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgBLV6b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 14:44:49 -0500
-Received: by mail-qk1-f194.google.com with SMTP id p7so3260671qkh.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 11:44:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1WfMKVDeX+w4widGKOWPOZRHixW+dosI7VBt7wspxfE=;
-        b=uvMRKeT4yAu5s1oJHbQeEyT0YnC5fU26iAzftUfO9B5bHVRMvBojSEoUn7mKWEfTY5
-         n/Zd5xauV6Py3IQASFYIdeKhy8O9TqPHLL/n579i87LGqL/ukYRMTltkZCZ93cPwh0EY
-         43GnDXKQ7wh6R1CZTG82a/BFEOIz9Ix6ILhPeGUoGGSTjLrH+FU1/+74rsP44u19C0sZ
-         WCiI6kwJrh+sMc0oZhWN1NdFHOJMRK0jqtgssdkKty6QJw0C8pGNwFUox4u2L+4Tia8F
-         +INlfPor6a94B+uLBn6e9h7wcpLhjwu0sc/ImfnD4Iujjjs/SME9Jle3kpxNVJelwalk
-         BJvw==
+        Wed, 12 Feb 2020 16:58:31 -0500
+Received: by mail-wr1-f45.google.com with SMTP id u6so4282560wrt.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 13:58:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1WfMKVDeX+w4widGKOWPOZRHixW+dosI7VBt7wspxfE=;
-        b=GxqG7FWoMK8CMwlYzRr5b6Uh1pvemMyhqIVRe+NLsO7bVJIlhJpSsyZK8WxquJvR9t
-         e0+mWB0tsp3IY23u/X+l7qnYTCHzCzf/5ZIbxOHfca2DXmS8U2WZMtm4vmN1nll2REWy
-         kdyNk15F8KVbgGQ1K4ioAlNuajjHaUbbZ7JxxQaoL6rVpAC6z/AAcyds8d3tzPTJmGPn
-         ubLqlPveP/B2AAFK3QCv9mc654+9a90Q5ebi/oJVnkh+NTDqzKA11VVYOYGGvKR+Pa7t
-         xqXoCnQlx/YU0kTRY2BaR3lE7OXqob98ZtM/a0oiaWjRVFk9u0lehu040x5uuKn/Q+ol
-         BrRw==
-X-Gm-Message-State: APjAAAVTFOlKqu6tzyVzyyx/LBYzRfCS6WM8rZfyvjElyVxKjCmpurWq
-        RN/PAp1VD9nO7tu/JVfZRVbODA==
-X-Google-Smtp-Source: APXvYqzoeFC6Bz9JYq6Lp28gALTTXAj0U3jBnVv5cCM1tnOdcKS5t03Wk9GZtpSh4semTXpTHvmc6g==
-X-Received: by 2002:a37:ef13:: with SMTP id j19mr12362584qkk.188.1581536686116;
-        Wed, 12 Feb 2020 11:44:46 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::1d9])
-        by smtp.gmail.com with ESMTPSA id p92sm73379qtd.14.2020.02.12.11.44.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Feb 2020 11:44:45 -0800 (PST)
-Subject: Re: [PATCH] btrfs: add a find_contiguous_extent_bit helper and use it
- for safe isize
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-References: <20200212183831.78293-1-josef@toxicpanda.com>
- <CAL3q7H7vUxcghnxfyVTrG0ztHZT-=9uo7H7nwRCJUzyB25CiPQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <7279d1d5-0b27-f319-0591-90750323c3a7@toxicpanda.com>
-Date:   Wed, 12 Feb 2020 14:44:44 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=ThcSZskV4+lQhc0CEfhvdl51YkgMeO9R4AUsN8PpUhY=;
+        b=MnZldDiqKEDSYuthuAYBqgQQM3RHl8kUOlb8AgghsFgJqXIriNbY2SPzF1TAe1+TcO
+         SFXZfOKT9DxpHYBQ8sIhy7eQyVvvLTI+t2Hz1xzfPM51HhVJIvY5/2fDmZPiTcVR/NKp
+         FYZQ3FI4AaFerlWoLJuQYnf6BziN5C44j1ewPpuZS09Da5olLJRot13Nf1OJI92+P/gk
+         ssZiMjkr+DP/mMUbJVoX3WlLvRaX2q5j6EKlbeU+yCOWOct45WVCeiRf2TqTQUsEfGnL
+         ClBgYMbV8yp648/7FAZq2zrN4lR0KeJUqEB4+A8XXhT5lVcMf5Z6bTGEqSqH3N/VP2rk
+         zEnQ==
+X-Gm-Message-State: APjAAAUju6bR2KFVtdW9xeJpjxfe3c9xb6VHWvfe3A/jeg67OuroZQBS
+        iaTTsZ7RxYwNGYib2qfQ1qmSRi5y
+X-Google-Smtp-Source: APXvYqw5jiqQqJmL9pYlIIVYVSEFyFBj3BRF6qf4t3T7zapzksSqJrlefhmxEk7oUDQ/PcAlSAUpPQ==
+X-Received: by 2002:a5d:4289:: with SMTP id k9mr17955116wrq.280.1581544707497;
+        Wed, 12 Feb 2020 13:58:27 -0800 (PST)
+Received: from localhost (0541c831.skybroadband.com. [5.65.200.49])
+        by smtp.gmail.com with ESMTPSA id z10sm166856wmk.31.2020.02.12.13.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2020 13:58:26 -0800 (PST)
+Date:   Wed, 12 Feb 2020 21:58:22 +0000
+From:   Samir Benmendil <me@rmz.io>
+To:     linux-btrfs@vger.kernel.org
+Subject: read time tree block corruption detected
+Message-ID: <20200212215822.bcditmpiwuun6nxt@hactar>
+X-Clacks-Overhead: GNU Terry Pratchett
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H7vUxcghnxfyVTrG0ztHZT-=9uo7H7nwRCJUzyB25CiPQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zgzddi4fnc44vpup"
+Content-Disposition: inline
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/12/20 1:44 PM, Filipe Manana wrote:
-> On Wed, Feb 12, 2020 at 6:40 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> Filipe noticed a race where we would sometimes get the wrong answer for
->> the i_disk_size for !NO_HOLES with my patch.  That is because I expected
->> that find_first_extent_bit() would find the contiguous range, since I'm
->> only ever setting EXTENT_DIRTY.  However the way set_extent_bit() works
->> is it'll temporarily split the range, loop around and set our bits, and
->> then merge the state.  When it loops it drops the tree->lock, so there
->> is a window where we can have two adjacent states instead of one large
->> state.  Fix this by walking forward until we find a non-contiguous
->> state, and set our end_ret to the end of our logically contiguous area.
->> This fixes the problem without relying on specific behavior from
->> set_extent_bit().
->>
->> Fixes: 79ceff7f6e5d ("btrfs: introduce per-inode file extent tree")
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->> Dave, I assume you'll want to fold this in to the referenced patch, if not let
->> me know and I'll rework the series to include this as a different patch.
->>
->>   fs/btrfs/extent-io-tree.h |  2 ++
->>   fs/btrfs/extent_io.c      | 36 ++++++++++++++++++++++++++++++++++++
->>   fs/btrfs/file-item.c      |  4 ++--
->>   3 files changed, 40 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
->> index 16fd403447eb..cc3037f9765e 100644
->> --- a/fs/btrfs/extent-io-tree.h
->> +++ b/fs/btrfs/extent-io-tree.h
->> @@ -223,6 +223,8 @@ int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
->>                            struct extent_state **cached_state);
->>   void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
->>                                   u64 *start_ret, u64 *end_ret, unsigned bits);
->> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
->> +                              u64 *start_ret, u64 *end_ret, unsigned bits);
->>   int extent_invalidatepage(struct extent_io_tree *tree,
->>                            struct page *page, unsigned long offset);
->>   bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index d91a48d73e8f..50bbaf1c7cf0 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -1578,6 +1578,42 @@ int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
->>          return ret;
->>   }
->>
->> +/**
->> + * find_contiguous_extent_bit: find a contiguous area of bits
->> + * @tree - io tree to check
->> + * @start - offset to start the search from
->> + * @start_ret - the first offset we found with the bits set
->> + * @end_ret - the final contiguous range of the bits that were set
->> + *
->> + * set_extent_bit anc clear_extent_bit can temporarily split contiguous ranges
->> + * to set bits appropriately, and then merge them again.  During this time it
->> + * will drop the tree->lock, so use this helper if you want to find the actual
->> + * contiguous area for given bits.  We will search to the first bit we find, and
->> + * then walk down the tree until we find a non-contiguous area.  The area
->> + * returned will be the full contiguous area with the bits set.
->> + */
->> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
->> +                              u64 *start_ret, u64 *end_ret, unsigned bits)
->> +{
->> +       struct extent_state *state;
->> +       int ret = 1;
->> +
->> +       spin_lock(&tree->lock);
->> +       state = find_first_extent_bit_state(tree, start, bits);
->> +       if (state) {
->> +               *start_ret = state->start;
->> +               *end_ret = state->end;
->> +               while ((state = next_state(state)) != NULL) {
->> +                       if (state->start > (*end_ret + 1))
->> +                               break;
->> +                       *end_ret = state->end;
->> +               }
->> +               ret = 0;
-> 
-> So as long as the tree is not empty, we will always be returning 0
-> (success), right?
-> If we break from the while loop we should return with 1, but this
-> makes us return 0.
-> 
 
-Yeah, that's the same behavior we have with find_first_extent_bit, that's why we do
+--zgzddi4fnc44vpup
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-if (!ret && start == 0)
-	i_size = min(i_size, end + 1);
-else
-	i_size = 0;
+Hello,
 
-Thanks,
+I've been getting the following "BTRFS errors" for a while now, the wiki=20
+[0] advises to report such occurrences to this list.
 
-Josef
+BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D194756837376=
+ slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have fi=
+le offset 475136 extent num bytes 18446744073709486080
+BTRFS error (device sda2): block=3D194756837376 read time tree block corrup=
+tion detected
+BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D194756837376=
+ slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have fi=
+le offset 475136 extent num bytes 18446744073709486080
+BTRFS error (device sda2): block=3D194756837376 read time tree block corrup=
+tion detected
+BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D194347958272=
+ slot=3D131 ino=3D1357455 file_offset=3D1044480, extent end overflow, have =
+file offset 1044480 extent num bytes 18446744073708908544
+BTRFS error (device sda2): block=3D194347958272 read time tree block corrup=
+tion detected
+
+I can reproduce these errors consistently by running `updatedb`, I=20
+suppose some tree block in one of the file it reads is corrupted.
+
+Thanks in advance for your help,
+Regards,
+Samir
+
+[0] https://btrfs.wiki.kernel.org/index.php/Tree-checker#How_to_handle_such=
+_error
+
+--zgzddi4fnc44vpup
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEO8iRpJat6BxHTtT0gmAAVevIWpMFAl5EdPsACgkQgmAAVevI
+WpO3+Q//WW+S4dfkt/VcCyg2BJKvBc/JFiTMkppYZbhbjTUjrgkvGGeRJTfsM25f
+H17VJ8eA402U+erk0viAvyeQAwOYsoK0G8C+i9EIJC9XBuEze+bk8Yq+Qy2wcmwO
+xu8ig3Y4B2nenq+r2U7RjXezC1++2Egzy0wWBNR19O4/UMGeNr/2YFHPToFpeZHr
+L8+/T6WMxOLOKfm3KXI1GST6cUNvLUsZjaDNKHX+3HnpPqx77wNTgKaxncgzUi98
+B2Cfb1WH8YXh8l91QrM86PKsxY4b/Ih2k9UPWKg2Ds9XLpo5fv6B7AE6vQIiJJoJ
+hOv/2dnOE6vZ80dZfJE309/q2Funa/PT65CO8i5924Rd8laLuKZ2ahHubPl7lwZn
+VDm9ru5ZX2uiNjT/+mQz1ewb3vAXV20OMous5Uxqja8b9Z51kA0WYGjgSvOZlPbq
+rv12YGQmTV7ciBjKfqIECQvl6KbBvid64gbQ0N2sYx+4sySC8/fmL8PRmnGCPfg6
+L9NZubUqmy/n+wOac+SRFeZ9xf2/IN6FJeZ2DEijK4MmnqU5rV0jCvxG0q/7O43r
+EJ8mWihoBEaHMS3DEbK4J5wPiR8S3A46SD/RRo80+IiG96GJEa8SqcfU4HBe1q4b
+4kwNZB0XR6lbRPlFP6CFcr24GN7Ra/MD4yXAqiqxE1lOivmxKo0=
+=lpYh
+-----END PGP SIGNATURE-----
+
+--zgzddi4fnc44vpup--
