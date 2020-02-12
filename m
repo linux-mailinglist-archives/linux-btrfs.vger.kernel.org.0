@@ -2,93 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986315A019
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 05:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FE515A0A5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 06:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727912AbgBLEXb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 23:23:31 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:43144 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727602AbgBLEXb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 23:23:31 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id D71435BCD34; Tue, 11 Feb 2020 23:23:29 -0500 (EST)
-Date:   Tue, 11 Feb 2020 23:23:29 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+        id S1728103AbgBLFau (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 00:30:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52300 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgBLFat (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 00:30:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 86EF5AC65
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 05:30:47 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: Re: some more information on multi-hour data rollbacks, fsync, and
- superblock updates or lack thereof
-Message-ID: <20200212042329.GM13306@hungrycats.org>
-References: <20200212040154.GL13306@hungrycats.org>
+Subject: [PATCH] btrfs: Only require sector size alignment for parent eb bytenr
+Date:   Wed, 12 Feb 2020 13:30:40 +0800
+Message-Id: <20200212053040.23221-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Tc49Tft5g1TIuAea"
-Content-Disposition: inline
-In-Reply-To: <20200212040154.GL13306@hungrycats.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+A completely sane converted fs will cause kernel warning at balance
+time:
 
---Tc49Tft5g1TIuAea
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ 1557.188633] BTRFS info (device sda7): relocating block group 8162107392 flags data
+[ 1563.358078] BTRFS info (device sda7): found 11722 extents
+[ 1563.358277] BTRFS info (device sda7): leaf 7989321728 gen 95 total ptrs 213 free space 3458 owner 2
+[ 1563.358280] 	item 0 key (7984947200 169 0) itemoff 16250 itemsize 33
+[ 1563.358281] 		extent refs 1 gen 90 flags 2
+[ 1563.358282] 		ref#0: tree block backref root 4
+[ 1563.358285] 	item 1 key (7985602560 169 0) itemoff 16217 itemsize 33
+[ 1563.358286] 		extent refs 1 gen 93 flags 258
+[ 1563.358287] 		ref#0: shared block backref parent 7985602560
+[ 1563.358288] 			(parent 7985602560 is NOT ALIGNED to nodesize 16384)
+[ 1563.358290] 	item 2 key (7985635328 169 0) itemoff 16184 itemsize 33
+...
+[ 1563.358995] BTRFS error (device sda7): eb 7989321728 invalid extent inline ref type 182
+[ 1563.358996] ------------[ cut here ]------------
+[ 1563.359005] WARNING: CPU: 14 PID: 2930 at 0xffffffff9f231766
 
-On Tue, Feb 11, 2020 at 11:01:54PM -0500, Zygo Blaxell wrote:
-> One reboot later:
->=20
-> 	# ls -l
-> 	total 8448
-> 	-rw-r--r-- 1 root root   92256 Feb 11 20:56 fsync.log
-> 	-rw------- 1 root root 8550048 Feb 11 22:09 test-fsync
-> 	-rw-r--r-- 1 root root    3652 Feb 11 19:57 transid.log
-> 	# cmp test-fsync /boot/vmlinuz
-> 	#
->=20
-> So the file that was fsynced is complete and correct, but the file
-> that was not fsynced--and 73 minutes of other writes throughout the
-> filesystem--neatly disappeared.
->=20
-> This was the third of three consecutive hour-plus transactions on
-> this host:
->=20
->         end of transaction timestamp   seconds with same transid
->         2020-02-11-19-57-39 1581469059 4315.585493582
->         2020-02-11-21-22-06 1581474126 5067.863739094
->         [third transaction aborted by reboot 47 minutes later]
->=20
-> The timestamps don't quite line up here--there is data on the filesystem
-> after the last superblock update (at 21:22), but still far from current
-> (73 minutes lost).  Maybe btrfs is updating one superblock at a time,
-> so I only see one of every 3 transid updates with this method?  But the
-> transid increment is always 1, and I'd expect to see increments 3 at a
-> time if I was missing two thirds of them.
+Then with transaction abort, and obviously failed to balance the fs.
 
-Sorry, I have the above backwards:  the superblock was updated at 21:22,
-but the last data that survived without help from fsync was at 20:56,
-26 minutes earlier, not later.  That makes more sense--the transaction
-could include only data that was written before the superblock update.
+[CAUSE]
+That mentioned inline ref type 182 is completely sane, it's
+BTRFS_SHARED_BLOCK_REF_KEY, it's some extra check making kernel to
+believe it's invalid.
 
-transid.log would not contain the last transaction update record, since
-that record is necessarily written after the transaction is complete.
-So the file transid.log has the timestamp of the earlier transaction at
-19:57.  The log update at 19:57:01 is included in the later transaction
-at 21:22.  The log message about the 21:22 transaction died in the reboot,
-because it was written at 21:22:01 and lost--I only have it because I
-made copies of the logs to another machine before rebooting.
+Commit 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref
+type") introduced extra checks for backref type.
 
---Tc49Tft5g1TIuAea
-Content-Type: application/pgp-signature; name="signature.asc"
+One of the requirement is, parent bytenr must be aligned to node size,
+which is not correct, especially for converted fs or mixed fs.
 
------BEGIN PGP SIGNATURE-----
+One tree block can start at any bytenr aligned to sector size. Node size
+should never be an alignment requirement.
+Thus such bad check is causing above bug.
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXkN9vgAKCRCB+YsaVrMb
-nKZTAJ0aqFaN041JURnpAAz4KciWF11wYgCeKlWJQfDZhDVZlfPIdOC979pYLIk=
-=QuFA
------END PGP SIGNATURE-----
+[FIX]
+Change the alignment requirement from node size alignment to sector size
+alignment.
 
---Tc49Tft5g1TIuAea--
+Also, to make our lives a little easier, also output @iref when
+btrfs_get_extent_inline_ref_type() failed, so we can locate the item
+easier.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=205475
+Fixes: 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref type")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent-tree.c | 13 +++++++------
+ fs/btrfs/print-tree.c  | 12 +++++++-----
+ 2 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 0163fdd59f8f..5caec0e9c49a 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -405,10 +405,10 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 				/*
+ 				 * Every shared one has parent tree
+ 				 * block, which must be aligned to
+-				 * nodesize.
++				 * sector size.
+ 				 */
+ 				if (offset &&
+-				    IS_ALIGNED(offset, eb->fs_info->nodesize))
++				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+ 					return type;
+ 			}
+ 		} else if (is_data == BTRFS_REF_TYPE_DATA) {
+@@ -419,10 +419,10 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 				/*
+ 				 * Every shared one has parent tree
+ 				 * block, which must be aligned to
+-				 * nodesize.
++				 * sector size.
+ 				 */
+ 				if (offset &&
+-				    IS_ALIGNED(offset, eb->fs_info->nodesize))
++				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+ 					return type;
+ 			}
+ 		} else {
+@@ -432,8 +432,9 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 	}
+ 
+ 	btrfs_print_leaf((struct extent_buffer *)eb);
+-	btrfs_err(eb->fs_info, "eb %llu invalid extent inline ref type %d",
+-		  eb->start, type);
++	btrfs_err(eb->fs_info,
++		  "eb %llu iref 0x%lu invalid extent inline ref type %d",
++		  eb->start, (unsigned long)iref, type);
+ 	WARN_ON(1);
+ 
+ 	return BTRFS_REF_TYPE_INVALID;
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index 61f44e78e3c9..68138e14f039 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -95,9 +95,10 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
+ 			 * offset is supposed to be a tree block which
+ 			 * must be aligned to nodesize.
+ 			 */
+-			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
+-				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
+-					offset, (unsigned long long)eb->fs_info->nodesize);
++			if (!IS_ALIGNED(offset, eb->fs_info->sectorsize))
++				pr_info(
++		"\t\t\t(parent %llu is NOT ALIGNED to sectorsize %u)\n",
++					offset, eb->fs_info->sectorsize);
+ 			break;
+ 		case BTRFS_EXTENT_DATA_REF_KEY:
+ 			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
+@@ -112,8 +113,9 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
+ 			 * must be aligned to nodesize.
+ 			 */
+ 			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
+-				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
+-				     offset, (unsigned long long)eb->fs_info->nodesize);
++				pr_info(
++		"\t\t\t(parent %llu is NOT ALIGNED to sectorsize %u)\n",
++				     offset, eb->fs_info->sectorsize);
+ 			break;
+ 		default:
+ 			pr_cont("(extent %llu has INVALID ref type %d)\n",
+-- 
+2.25.0
+
