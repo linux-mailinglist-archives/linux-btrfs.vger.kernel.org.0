@@ -2,180 +2,481 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 310D215AADA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 15:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5539515AADB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 15:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgBLOUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 09:20:15 -0500
-Received: from mout.gmx.net ([212.227.15.19]:54735 "EHLO mout.gmx.net"
+        id S1728080AbgBLOUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 09:20:25 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35471 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727732AbgBLOUO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 09:20:14 -0500
+        id S1727732AbgBLOUZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 09:20:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581517207;
-        bh=oo6qY20kC04YNhEd8Bj9VWo5iqLnjV4vXtFl73na9BU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ejKlrPRfs7epNWCrQzDYBjCP+J201tfWXOFB3RY0DNZkc6190jv5+Cl2mAs3TyyZu
-         9yf1MtlxV4vbk60h3MszylV+qxFtE+VWS7LeQQ7Ox+wCRSrZnnWPgl1y3zrgtzSX3L
-         dae6jV6Fz3OEPAHRcVf+9da2Gg2QRSvlGW4tdnEo=
+        s=badeba3b8450; t=1581517221;
+        bh=nmTNB/7VLM1cDPHbjZRSRwPjPuXCbllGG421JJdqIm4=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=gBoIzQWRUH3J91W3j5pytV94rb1JiREnVV80Xym7FZABoo6bolKrFYh8jygRitSyv
+         yvgpdKRLhK10DoKSKkZ4Lb9FpJj8Y3aELgcLDBHZ9IJrZ3F25E8BlnWrY1/Oil8hRr
+         IbEjTXBFNGXn617rT2q6i2cHH7RtqY6NrIOxxvZ8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MplXz-1jpq5C09ZV-00qFGR; Wed, 12
- Feb 2020 15:20:07 +0100
-Subject: Re: [PATCH v2] fstests: btrfs/179 call sync qgroup counts
-To:     Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <1581500109-22736-1-git-send-email-anand.jain@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d6fb1d1b-351c-bdb8-692d-b767840193f1@gmx.com>
-Date:   Wed, 12 Feb 2020 22:20:01 +0800
+Received: from [192.168.19.20] ([78.55.209.178]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhD6W-1jgBi32THG-00eNUd; Wed, 12
+ Feb 2020 15:20:21 +0100
+Subject: Re: tree-checker read time corruption
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <5b974158-4691-c33e-71a7-1e5417eb258a@gmx.de>
+ <e35d0318-4d3e-50ce-55b1-178e235e89d7@gmx.com>
+From:   telsch <telsch@gmx.de>
+Message-ID: <14db7da5-dc42-90e6-0743-b656ff42a976@gmx.de>
+Date:   Wed, 12 Feb 2020 15:20:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <1581500109-22736-1-git-send-email-anand.jain@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="dYrctnbqnCJeqPwHVrfFBKBSFusBonrjf"
-X-Provags-ID: V03:K1:vJiy3HJK54lgIceZ9FEhkTsJOEl5fD2/BMyHt0qH2ivCiGHwmH5
- emfvPvr5DLzdxoSUjUovUjFJy9wOaJNA7jOmr0OF4OuaOHNTHVA+3TGGD5e3wTuFBMKZpVe
- V0B/jfb+TXvJ+xUm4kppunnE2D0dNYMVFcVHQc2cD8nEyK9hO2LDJmkhemL4mG+QJ07lIKC
- BRZ3DFrIwcFRBzamt9J5w==
+In-Reply-To: <e35d0318-4d3e-50ce-55b1-178e235e89d7@gmx.com>
+Content-Type: multipart/mixed;
+ boundary="------------6393DB95171F0C94C0251DC1"
+Content-Language: en-US
+X-Provags-ID: V03:K1:QEr7EolKcaVPKDzDWOObIc7P7y8F56eZY/OxaA/to9XRUuUzaBX
+ 9q8d2mfGJ+ui6qjuMGay1hkcbIExQZ6+cMSXauRqb22bNv381lJGf2jhFj4QzWhDcVbML1r
+ YxopVF7Kx45FDn8xx0tCeoKr36nWrsNcNYbnXuQg1nyBk1+RzXfS/ctRx8MERpj6JS0srZ0
+ nnPNbw+WcKv9SWdGo2aHQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NnImzBsOT4c=:KBQA3+B3taaW/isTyT3W+F
- PM4Nac3f7a1h85Ow5dU/mF1SrKx7zG1+Dqclw06Y20EKDLLgJSIeIO+v99/QQLgy8lhoI57dT
- m5dKTO/7XAORYqGwJGUteaA7Ah8egNqnCD5wdDEGK7QYjZvovxM0NHtjdHSnUBsikuoTgOuOR
- NveZOlmh2drA62i/JI8NeFziB3jNgVDrX5/usEvhfOGkGojQu915Qz+9gLQiVbkhzPkoPWnOI
- vHU9gsf+puaYFsj/3/bA/qr3z2FVXCXFI+9fXvwCI6rrhaGKWkD1LIda+/m75MSl+tmr4ErsI
- MgfUdg9alQWV3pT2L9yFvYCrYQJJMCcEHvvKWhEQS5tGXg0jQJKbu2mA2I6PPsTv9vN8xNXf7
- oLnVuKafYi0eP9fLgJoEjLQkM/uMK1tg95oblE/HbEjDJo6f+qYhEC3kNImIlE2w7hljJhNJY
- 8FVDfWzamzdUAn2CMmMnLdmvk6X1zfGFeMkr0nqko0akkp/zaNbNzZZHm/8mCpiPw9dsBNTx1
- TcU0lk/n4LUD0Auc8pYGXEE85Str5cPJwrizPECFJhARTMRVDGTntkBL+GuR5oDColudXyl14
- nR/P2rjmhn4C3ZIwPfnc0bwrmHiTQ9Iel4aiEFs6plKHBcceiBNMtCLGPvO/bb+3YM1Yrl5Y0
- yIaqlp9O2nPI8Mex0Cy9axCaXbo2Zbl2V5+GpOMWtYZkYar0o8vY1AnUl7OGdFODdHT7O3lcB
- H8iUXvZFIklzA1pCdXbw2LgQM9+7yVTF2OY+y1jPKvy4b05zdYW9phqZSjrWv7T/cmMn00QCq
- HUxIqqHfsRNJow5BIbNYXpUzpWlFSSWeLYMZdxMGPoKdeXxovBanQI9AdDupsYf82RCahXoSc
- We+uP8j7oGYHTX781QwfcEh+ZzZ5l18SnuYaGZ8CzOrzd/xhjWgNg9Ta3oVg1/iS+4Wvob2Ty
- tLNpqr6UKpemCicsSzYDKM0WYzeTUtAjFRFU8AtNeGAqwg32zj7J/ERWmOhgZHqzYA98rsG7c
- 8NVvMTAefW/xtI9IEGef68jfk/ypmek114zMDNPQZUERkiShhvhkE2SX/xY3sai3Qb1qSx2Gp
- lJE8Vl5ZF3yjO2qWSB5J9XI1DBV/mOXBdLHGrEPQwmfn4bAGu04V7H0QPAYP59QWjMceQ1hLv
- C7z5/pB9hFcOvcrdjxQKcoh8g7BOzM77ukxXZ4yipRRd+RqGNCRpbTs03xrSjumh+oISXAIz/
- uLE+wcJn0/LlxJylo
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VlkSjjl8oHs=:DrZGGA2y2sqW+f0PjJjYLs
+ +daXBeYnQ1Fld0cRDT8b65bj84E3iCrFzIXuQ6Kw+D8t52N/Qr6MiRGr4e1MCNghu21ss3x54
+ Lv6BnLCLcQZRedPOCIPLPX23OGt9ac+8osVKynxusvSeMQsLqmHPm/H9piwXpyAj1ByXp8Rwj
+ z4SYIRrQOZ5BFegsG9WmMEuTZKN1EyViGY18hW9nwSxMEpjqPRqiC5i2i1qehoZQVq/bF801U
+ 72nXWuAfyrUYIMbLfanMW/MvLFOhVp4TLWttftdU/zzN06WW/fwPlE30cOX5A7Oz0EuhAVXdS
+ gXUaxnKjoVUzNoAIqK+gsfCkyKsW6QA8qlrgKcqr8jkzSa1AsOOR8jy+hlqrVyfrILRjkD88M
+ miWllbZf2XbwMG+51Kkq75wTcDvrfb6WFfJ7bIwF4tlkHarfn0E9gMhMgt86BkfFRQwdsdNvp
+ BpOkF/0f4zR1gyQNKEgwAGOK3LRABKkT42Mc4hLL8Usy6J5OR/WdNrsbY5L4ZkoBHe+3sEM2y
+ 3Ryrrc/0DCiW2FyPebUXT/9DAS7iORRYnFr2Gui1giKTOW2y8wUG2lgcyDshE8eJhjufwUBgV
+ 1Fg5UdSoQHZYnyh7LZSraaWpjHIGs09JuFfextFC561cvJ8aHZRTNRqoOKtDdN97Z0r3oXR+y
+ sSsu9R6Wz+a4JitqU8yzT5t7KNVx1h9xjU2F6xmMDe5gISVfrQNtNieDD6O+JUKu1GAULeNRp
+ QPT55Z9bHNBswbpDqYJ94ZA3/TWm/5ifrwo9WQ4P1LnhtrcpR8YlUdsMNYT4O2kCX6CZfC6lD
+ NYpVkP3aVRSt3qlnuc8MaYR47ZiYWZFvZmEqYKav4EwNpQU2w3pT82JZYE9XTfipv08oSDfpg
+ Z7wcxc57pTylqADbQjXIeWc/kB5Q+7YXghFES8kaMBxJzIR676ZkhZql+I4miagnM9Y7BEBzn
+ DA8o9ZB9RX/gKUsyap2iqdacFzVGL7q/lOcjNEdvuZTI1mwDH0Cd/zT51p/EY1Z6byjoP+0QO
+ VzNl494XOYBysQjlDOdvRuF4dufatMSAfIv8gfxixryt1FJPN/Z+xj0rPtwbNr65PLlBYNSln
+ SXnHEKx5SzuDTOXW8rZ4LGrfFY+OYYHucFARQaCymm7ezQq9+uKoV72ro7nL5odsFa7uFoxFx
+ +yXVcNfvUCsIFA1IzjgqYbi1PLerCLsEB1DVIdQhmPdfxAscaaDTh+0yHxRvMsTokXI3C7fdO
+ iBkKTXuu6vIw/ESqU
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dYrctnbqnCJeqPwHVrfFBKBSFusBonrjf
-Content-Type: multipart/mixed; boundary="44FlbcQx4HlCTyrVlwi0mCj4nZXkxAcyJ"
-
---44FlbcQx4HlCTyrVlwi0mCj4nZXkxAcyJ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+This is a multi-part message in MIME format.
+--------------6393DB95171F0C94C0251DC1
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/12 =E4=B8=8B=E5=8D=885:35, Anand Jain wrote:
-> On some systems btrfs/179 fails because the check finds that there is
-> difference in the qgroup counts.
->=20
-> So as the intention of the test case is to test any hang like situation=
+On 2/12/20 1:41 AM, Qu Wenruo wrote:
+>
+>
+> On 2020/2/11 =E4=B8=8B=E5=8D=8810:17, telsch wrote:
+>> Dear devs,
+>>
+>>
+>>
+>> after upgrading from kernel 4.19.101 to 5.5.2 i got read time tree bloc=
+k
+>> error as
+>>
+>> described here:
+>>
+>>  =C2=A0=C2=A0=C2=A0 https://btrfs.wiki.kernel.org/index.php/Tree-checke=
+r#For_end_users
+>>
+>>
+>>
+>> Working with kernel 4.19.101:
+>>
+>>
+>>
+>> Linux Arch 4.19.101-1-lts #1 SMP Sat, 01 Feb 2020 16:35:36 +0000 x86_64
+>> GNU/Linux
+>>
+>>
+>>
+>> btrfs --version
+>>
+>> btrfs-progs v5.4
+>>
+>>
+>>
+>> btrfs fi show
+>>
+>> Label: none=C2=A0 uuid: 56e753f4-1346-49ad-a34f-e93a0235b82a
+>>
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes us=
+ed 92.54GiB
+>>
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 s=
+ize 95.14GiB used 95.14GiB path /dev/mapper/home
+>>
+>>
+>>
+>> btrfs fi df /home
+>>
+>> Data, single: total=3D94.11GiB, used=3D91.95GiB
+>>
+>> System, single: total=3D31.00MiB, used=3D12.00KiB
+>>
+>> Metadata, single: total=3D1.00GiB, used=3D599.74MiB
+>>
+>> GlobalReserve, single: total=3D199.32MiB, used=3D0.00B
+>>
+>>
+>>
+>> After upgrading to kernel 5.5.2:
+>>
+>>
+>>
+>> [=C2=A0=C2=A0 13.413025] BTRFS: device fsid 56e753f4-1346-49ad-a34f-e93=
+a0235b82a
+>> devid 1 transid 468295 /dev/dm-1 scanned by systemd-udevd (417)
+>>
+>> [=C2=A0=C2=A0 13.589952] BTRFS info (device dm-1): force zstd compressi=
+on, level 3
+>>
+>> [=C2=A0=C2=A0 13.589956] BTRFS info (device dm-1): disk space caching i=
+s enabled
+>>
+>> [=C2=A0=C2=A0 13.594707] BTRFS info (device dm-1): bdev /dev/mapper/hom=
+e errs: wr
+>> 0, rd 47, flush 0, corrupt 0, gen 0
+>>
+>> [=C2=A0=C2=A0 13.622912] BTRFS info (device dm-1): enabling ssd optimiz=
+ations
+>>
+>> [=C2=A0=C2=A0 13.624300] BTRFS critical (device dm-1): corrupt leaf: ro=
+ot=3D5
+>> block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: has
+>> 18446744073709551492 expect [0, 468296]
+>
+> An older kernel caused underflow/garbage generation.
+> Much strict tree checker is detecting it and rejecting the tree block to
+> prevent further corruption.
+>
+> It can be fixed in by btrfs-progs v5.4 and later, by using 'btrfs check
+> --repair'
+>
+> Early btrfs-progs can't detect nor fix it.
+>
+> Thanks,
+> Qu
+>
 
-> during heavy snapshot create/delete operation with quota enabled, so
-> make sure the qgroup counts are consistent at the end of the test case,=
+As you suggest booting to kernel 5.5.3 with btrfs-progs v5.4 and run
+'btrfs check --repair'. But didn't fix this error.
 
-> so to make the check happy.
->=20
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v2: Use subvolume sync at the end of the test case.
->     Patch title changed.
->=20
->  tests/btrfs/179 | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/tests/btrfs/179 b/tests/btrfs/179
-> index 4a24ea419a7e..8795d59c01f8 100755
-> --- a/tests/btrfs/179
-> +++ b/tests/btrfs/179
-> @@ -109,6 +109,15 @@ wait $snapshot_pid
->  kill $delete_pid
->  wait $delete_pid
-> =20
-> +# By the async nature of qgroup tree scan and subvolume delete, the la=
-test
-> +# qgroup counts at the time of umount might not be upto date, if it is=
-n't
-> +# then the check will report the difference in count. The difference i=
-n
-> +# qgroup counts are anyway updated in the following mount, so it is no=
-t a
-> +# real issue that this test case is trying to verify. So make sure the=
+mount: /home: can't read superblock on /dev/mapper/home.
+[  325.121475] BTRFS info (device dm-1): force zstd compression, level 3
+[  325.121482] BTRFS info (device dm-1): disk space caching is enabled
+[  325.126234] BTRFS info (device dm-1): bdev /dev/mapper/home errs: wr
+0, rd 47, flush 0, corrupt 0, gen 0
+[  325.143521] BTRFS info (device dm-1): enabling ssd optimizations
+[  325.146138] BTRFS critical (device dm-1): corrupt leaf: root=3D5
+block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: has
+18446744073709551492 expect [0, 469820]
+[  325.148637] BTRFS error (device dm-1): block=3D122395779072 read time
+tree block corruption detected
 
-> +# qgroup counts are in sync before unmount happens.
+>>
+>> [=C2=A0=C2=A0 13.624381] BTRFS error (device dm-1): block=3D12239577907=
+2 read time
+>> tree block corruption detected
+>>
+>>
+>>
+>>
+>>
+>> Booting from 4.19 kernel can mount fs again.
+>
 
-It could be a little easier. Just btrfs-progs has a bug accounting
-qgroups for subvolume being dropped.
-Btrfs-progs tends to account more extents than it should be.
+--------------6393DB95171F0C94C0251DC1
+Content-Type: text/x-log; charset=UTF-8;
+ name="check_repair.log"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="check_repair.log"
 
-The subvolume sync would be a workaround for it.
+enabling repair mode
+WARNING:
 
-Despite the commment, it looks good to me.
+	Do not use --repair unless you are advised to do so by a developer
+	or an experienced user, and then only after having accepted that no
+	fsck can successfully repair all types of filesystem corruption. Eg.
+	some software or hardware bugs can fatally damage a volume.
+	The operation will start in 10 seconds.
+	Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1[1/7] checking root items
+Fixed 0 roots.
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+there are no extents for csum range 0-69632
+csum exists for 0-69632 but there is no extent record
+there are no extents for csum range 37908480-37912576
+csum exists for 37908480-37912576 but there is no extent record
+there are no extents for csum range 37916672-38178816
+csum exists for 37916672-38178816 but there is no extent record
+there are no extents for csum range 38182912-39735296
+csum exists for 38182912-39735296 but there is no extent record
+there are no extents for csum range 39751680-39890944
+csum exists for 39751680-39890944 but there is no extent record
+there are no extents for csum range 39895040-40103936
+csum exists for 39895040-40103936 but there is no extent record
+there are no extents for csum range 40108032-40284160
+csum exists for 40108032-40284160 but there is no extent record
+there are no extents for csum range 40288256-40697856
+csum exists for 40288256-40697856 but there is no extent record
+there are no extents for csum range 40706048-40726528
+csum exists for 40706048-40726528 but there is no extent record
+there are no extents for csum range 40730624-40742912
+csum exists for 40730624-40742912 but there is no extent record
+there are no extents for csum range 40747008-40751104
+csum exists for 40747008-40751104 but there is no extent record
+there are no extents for csum range 40755200-41033728
+csum exists for 40755200-41033728 but there is no extent record
+there are no extents for csum range 41037824-41148416
+csum exists for 41037824-41148416 but there is no extent record
+there are no extents for csum range 41152512-41164800
+csum exists for 41152512-41164800 but there is no extent record
+there are no extents for csum range 41168896-41218048
+csum exists for 41168896-41218048 but there is no extent record
+there are no extents for csum range 41222144-42913792
+csum exists for 41222144-42913792 but there is no extent record
+there are no extents for csum range 42917888-43802624
+csum exists for 42917888-43802624 but there is no extent record
+there are no extents for csum range 43806720-43929600
+csum exists for 43806720-43929600 but there is no extent record
+there are no extents for csum range 43933696-49299456
+csum exists for 43933696-49299456 but there is no extent record
+there are no extents for csum range 49303552-49340416
+csum exists for 49303552-49340416 but there is no extent record
+there are no extents for csum range 49344512-49385472
+csum exists for 49344512-49385472 but there is no extent record
+there are no extents for csum range 49389568-49397760
+csum exists for 49389568-49397760 but there is no extent record
+there are no extents for csum range 49401856-49422336
+csum exists for 49401856-49422336 but there is no extent record
+there are no extents for csum range 49426432-49463296
+csum exists for 49426432-49463296 but there is no extent record
+there are no extents for csum range 49467392-49471488
+csum exists for 49467392-49471488 but there is no extent record
+there are no extents for csum range 49479680-49549312
+csum exists for 49479680-49549312 but there is no extent record
+there are no extents for csum range 49553408-49565696
+csum exists for 49553408-49565696 but there is no extent record
+there are no extents for csum range 49569792-49688576
+csum exists for 49569792-49688576 but there is no extent record
+there are no extents for csum range 49692672-49717248
+csum exists for 49692672-49717248 but there is no extent record
+there are no extents for csum range 49721344-49766400
+csum exists for 49721344-49766400 but there is no extent record
+there are no extents for csum range 49774592-49790976
+csum exists for 49774592-49790976 but there is no extent record
+there are no extents for csum range 49795072-49885184
+csum exists for 49795072-49885184 but there is no extent record
+there are no extents for csum range 49889280-49950720
+csum exists for 49889280-49950720 but there is no extent record
+there are no extents for csum range 49954816-50176000
+csum exists for 49954816-50176000 but there is no extent record
+there are no extents for csum range 50180096-50315264
+csum exists for 50180096-50315264 but there is no extent record
+there are no extents for csum range 50319360-50384896
+csum exists for 50319360-50384896 but there is no extent record
+there are no extents for csum range 50388992-50454528
+csum exists for 50388992-50454528 but there is no extent record
+there are no extents for csum range 50462720-50495488
+csum exists for 50462720-50495488 but there is no extent record
+there are no extents for csum range 50499584-50593792
+csum exists for 50499584-50593792 but there is no extent record
+there are no extents for csum range 50597888-50610176
+csum exists for 50597888-50610176 but there is no extent record
+there are no extents for csum range 50622464-50659328
+csum exists for 50622464-50659328 but there is no extent record
+there are no extents for csum range 50663424-50831360
+csum exists for 50663424-50831360 but there is no extent record
+there are no extents for csum range 50835456-50909184
+csum exists for 50835456-50909184 but there is no extent record
+there are no extents for csum range 50913280-51499008
+csum exists for 50913280-51499008 but there is no extent record
+there are no extents for csum range 51503104-51523584
+csum exists for 51503104-51523584 but there is no extent record
+there are no extents for csum range 51527680-51896320
+csum exists for 51527680-51896320 but there is no extent record
+there are no extents for csum range 51900416-51924992
+csum exists for 51900416-51924992 but there is no extent record
+there are no extents for csum range 51929088-52924416
+csum exists for 51929088-52924416 but there is no extent record
+there are no extents for csum range 52928512-52961280
+csum exists for 52928512-52961280 but there is no extent record
+there are no extents for csum range 52965376-53174272
+csum exists for 52965376-53174272 but there is no extent record
+there are no extents for csum range 53178368-53477376
+csum exists for 53178368-53477376 but there is no extent record
+there are no extents for csum range 53481472-53485568
+csum exists for 53481472-53485568 but there is no extent record
+there are no extents for csum range 53489664-53944320
+csum exists for 53489664-53944320 but there is no extent record
+there are no extents for csum range 53948416-54038528
+csum exists for 53948416-54038528 but there is no extent record
+there are no extents for csum range 54042624-55513088
+csum exists for 54042624-55513088 but there is no extent record
+there are no extents for csum range 55517184-55521280
+csum exists for 55517184-55521280 but there is no extent record
+there are no extents for csum range 55525376-55730176
+csum exists for 55525376-55730176 but there is no extent record
+there are no extents for csum range 55734272-55885824
+csum exists for 55734272-55885824 but there is no extent record
+there are no extents for csum range 55894016-55939072
+csum exists for 55894016-55939072 but there is no extent record
+there are no extents for csum range 55943168-56045568
+csum exists for 55943168-56045568 but there is no extent record
+there are no extents for csum range 56049664-56066048
+csum exists for 56049664-56066048 but there is no extent record
+there are no extents for csum range 56070144-56078336
+csum exists for 56070144-56078336 but there is no extent record
+there are no extents for csum range 56082432-56111104
+csum exists for 56082432-56111104 but there is no extent record
+there are no extents for csum range 56119296-56193024
+csum exists for 56119296-56193024 but there is no extent record
+there are no extents for csum range 56197120-56221696
+csum exists for 56197120-56221696 but there is no extent record
+there are no extents for csum range 56225792-56352768
+csum exists for 56225792-56352768 but there is no extent record
+there are no extents for csum range 56356864-56627200
+csum exists for 56356864-56627200 but there is no extent record
+there are no extents for csum range 56631296-56668160
+csum exists for 56631296-56668160 but there is no extent record
+there are no extents for csum range 56672256-56717312
+csum exists for 56672256-56717312 but there is no extent record
+there are no extents for csum range 56721408-56762368
+csum exists for 56721408-56762368 but there is no extent record
+there are no extents for csum range 56766464-56770560
+csum exists for 56766464-56770560 but there is no extent record
+there are no extents for csum range 56774656-56786944
+csum exists for 56774656-56786944 but there is no extent record
+there are no extents for csum range 56791040-56836096
+csum exists for 56791040-56836096 but there is no extent record
+there are no extents for csum range 56840192-57008128
+csum exists for 56840192-57008128 but there is no extent record
+there are no extents for csum range 57012224-59416576
+csum exists for 57012224-59416576 but there is no extent record
+there are no extents for csum range 59420672-59424768
+csum exists for 59420672-59424768 but there is no extent record
+there are no extents for csum range 59428864-59543552
+csum exists for 59428864-59543552 but there is no extent record
+there are no extents for csum range 59547648-59564032
+csum exists for 59547648-59564032 but there is no extent record
+there are no extents for csum range 59568128-59777024
+csum exists for 59568128-59777024 but there is no extent record
+there are no extents for csum range 59781120-59826176
+csum exists for 59781120-59826176 but there is no extent record
+there are no extents for csum range 59830272-60186624
+csum exists for 59830272-60186624 but there is no extent record
+there are no extents for csum range 60190720-60203008
+csum exists for 60190720-60203008 but there is no extent record
+there are no extents for csum range 60207104-60534784
+csum exists for 60207104-60534784 but there is no extent record
+there are no extents for csum range 60538880-60620800
+csum exists for 60538880-60620800 but there is no extent record
+there are no extents for csum range 60624896-60833792
+csum exists for 60624896-60833792 but there is no extent record
+there are no extents for csum range 60846080-61054976
+csum exists for 60846080-61054976 but there is no extent record
+there are no extents for csum range 61059072-61267968
+csum exists for 61059072-61267968 but there is no extent record
+there are no extents for csum range 61272064-61407232
+csum exists for 61272064-61407232 but there is no extent record
+there are no extents for csum range 61411328-61435904
+csum exists for 61411328-61435904 but there is no extent record
+there are no extents for csum range 61440000-61825024
+csum exists for 61440000-61825024 but there is no extent record
+there are no extents for csum range 61829120-61911040
+csum exists for 61829120-61911040 but there is no extent record
+there are no extents for csum range 61915136-62087168
+csum exists for 61915136-62087168 but there is no extent record
+there are no extents for csum range 62091264-63688704
+csum exists for 62091264-63688704 but there is no extent record
+there are no extents for csum range 63692800-63709184
+csum exists for 63692800-63709184 but there is no extent record
+there are no extents for csum range 63713280-63823872
+csum exists for 63713280-63823872 but there is no extent record
+there are no extents for csum range 63827968-63877120
+csum exists for 63827968-63877120 but there is no extent record
+there are no extents for csum range 63881216-64843776
+csum exists for 63881216-64843776 but there is no extent record
+there are no extents for csum range 64847872-64851968
+csum exists for 64847872-64851968 but there is no extent record
+there are no extents for csum range 64860160-64888832
+csum exists for 64860160-64888832 but there is no extent record
+there are no extents for csum range 64892928-64999424
+csum exists for 64892928-64999424 but there is no extent record
+there are no extents for csum range 65003520-65204224
+csum exists for 65003520-65204224 but there is no extent record
+there are no extents for csum range 65208320-65339392
+csum exists for 65208320-65339392 but there is no extent record
+there are no extents for csum range 65343488-65527808
+csum exists for 65343488-65527808 but there is no extent record
+there are no extents for csum range 65531904-65892352
+csum exists for 65531904-65892352 but there is no extent record
+there are no extents for csum range 65896448-65953792
+csum exists for 65896448-65953792 but there is no extent record
+there are no extents for csum range 65957888-65978368
+csum exists for 65957888-65978368 but there is no extent record
+there are no extents for csum range 65982464-66056192
+csum exists for 65982464-66056192 but there is no extent record
+there are no extents for csum range 66060288-66166784
+csum exists for 66060288-66166784 but there is no extent record
+there are no extents for csum range 66170880-66379776
+csum exists for 66170880-66379776 but there is no extent record
+there are no extents for csum range 66383872-66392064
+csum exists for 66383872-66392064 but there is no extent record
+there are no extents for csum range 66396160-66441216
+csum exists for 66396160-66441216 but there is no extent record
+there are no extents for csum range 66445312-66494464
+csum exists for 66445312-66494464 but there is no extent record
+there are no extents for csum range 66498560-66514944
+csum exists for 66498560-66514944 but there is no extent record
+there are no extents for csum range 66519040-66543616
+csum exists for 66519040-66543616 but there is no extent record
+there are no extents for csum range 66547712-66560000
+csum exists for 66547712-66560000 but there is no extent record
+there are no extents for csum range 66564096-66592768
+csum exists for 66564096-66592768 but there is no extent record
+there are no extents for csum range 66596864-66789376
+csum exists for 66596864-66789376 but there is no extent record
+there are no extents for csum range 66793472-66969600
+csum exists for 66793472-66969600 but there is no extent record
+there are no extents for csum range 66973696-67018752
+csum exists for 66973696-67018752 but there is no extent record
+there are no extents for csum range 67022848-67072000
+csum exists for 67022848-67072000 but there is no extent record
+there are no extents for csum range 67076096-67108864
+csum exists for 67076096-67108864 but there is no extent record
+ERROR: errors found in csum tree
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
 
-Thanks,
-Qu
+Starting repair.
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/home
+UUID: 56e753f4-1346-49ad-a34f-e93a0235b82a
+No device size related problem found
+cache and super generation don't match, space cache will be invalidated
+found 98139639936 bytes used, error(s) found
+total csum bytes: 95137100
+total tree bytes: 576499712
+total fs tree bytes: 370470912
+total extent tree bytes: 79908864
+btree space waste bytes: 139168270
+file data blocks allocated: 262370742272
+ referenced 212897402880
 
-> +
-> +$BTRFS_UTIL_PROG subvolume sync $SCRATCH_MNT >> $seqres.full
-> +
->  # success, all done
->  echo "Silence is golden"
-> =20
->=20
-
-
---44FlbcQx4HlCTyrVlwi0mCj4nZXkxAcyJ--
-
---dYrctnbqnCJeqPwHVrfFBKBSFusBonrjf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5ECZEACgkQwj2R86El
-/qjFYwf/b8irjBQWXSDWD4DsQGZuJBdI1LyOAhlXAoXhqE5WW6NfFEDzl667nP4j
-SIBhDCi+xQnJl2zac3tt8bUdvNhSSlByHgHTQTIedx1EO1ezRWhfCSvfoj3h3xSj
-jokx6q6wAhPN/iXT/j6EIjq2pUNOEcs+wNIrwxnS7yhKgznpA9sZrUmEvaY8GGb/
-YSnREFZrIn9RJ6D/hObRMaL2VtfhpHHfHMuolRn4TdVy09gtvpLU4ZMRrtYMWsVy
-WPJ6MqlIFnekcpmcydXEOIpajZJbJpai6Z1OoewB1KPiwe59ImysA09MTGL1hhuJ
-gnM3n4m0r565TxKUgzF1fooOlt3L7g==
-=KXpE
------END PGP SIGNATURE-----
-
---dYrctnbqnCJeqPwHVrfFBKBSFusBonrjf--
+--------------6393DB95171F0C94C0251DC1--
