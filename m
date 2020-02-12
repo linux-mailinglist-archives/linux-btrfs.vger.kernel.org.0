@@ -2,60 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C1E15A9A3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 14:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F2415A9B0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 14:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727582AbgBLNEO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 08:04:14 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42600 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgBLNEN (ORCPT
+        id S1727548AbgBLNHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 08:07:05 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41567 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgBLNHF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 08:04:13 -0500
-Received: by mail-qk1-f194.google.com with SMTP id o28so572429qkj.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 05:04:13 -0800 (PST)
+        Wed, 12 Feb 2020 08:07:05 -0500
+Received: by mail-qt1-f194.google.com with SMTP id l21so1459047qtr.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 05:07:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=s1yFcAbf50k865toDawBCplvyBk+Id/LRJ+MzeuQEi0=;
-        b=EHpUfy+K2YkdkZCrFxGUSNBiHX3zAypzvf/3Srd2uiuHT6tcbLPvwp2B3Ch18XtQdJ
-         93EcTVIZDnWOhFGNzNR0ZOnqzDopnAycmsGgSkh3H/bbDel93LdvK6C2MjRvjg6cHsLW
-         6xxaRjtdt5Q+ZCUjF/M+jkcBTfcof/nS31I1cbjyNdGc7nQEsrjZou86XzFS8Y/fr5Qy
-         L/gqky+NEOyWku1Rl1rgaOJbMADgIOPnrRciC/OiuaKNKM6ITt+de8SGrSv2N7qk4sVy
-         vf40QbBtYoadOSbQKMgUqVe0tSLxp5xKk6SaSOck2soEYzDcFHFmc6jAMiOa6JNO5M0p
-         4iPA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mHdCILFKkUG6WkOpI2Vw27Zx0R8ms5UtGVq7fElTqTY=;
+        b=1zvKAYTOPAgT4gL1y9t+13uQ7MUUYts6IVbpOZ1wHZnFzs7LKSU1WpcO03hHQZY1Rt
+         M8yBWgJwftez2yC6KO6yFr8EsL4X5JKJYlq7O3UIKpxTSGlWGL13BnqlheuIvH87EN9e
+         3NJXlgsAgsZViO2M166q5CcwiOg5MNatn97ekuOx4nB/Zt2Ymi791MrrBRjZsBu/OLI2
+         0bBTbSh7O2HMmNNmI7wvHgB2WAA3XfzJljE5eWfk4/oKeX6uwKKk/qumqoLwtqoVtpdj
+         2v352xtobfMb2z7U6OmaASzYYW9FOeUQV+HdTVm4VfkGiR+SU9SMUHWiJugrjIcJvCM2
+         uOCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=s1yFcAbf50k865toDawBCplvyBk+Id/LRJ+MzeuQEi0=;
-        b=ULw/UKV+Wi9eLYkWblwwBC8oDQlt8+0iSHNlyH0pZhMR/1jcn+RA/c4ZDVEcg0dIWu
-         SuwpmE9CrJG9u1llwgHfCrTv0qzU7RzK6sPyzocnQxLjsSiBqc4h6FTfM/qv6Jv2ICPN
-         r6MoZ1iURTK+7Xwn6H5spTUnkw/Lotg/7lXMNGLXtfFICZUdc8rCo3tMf7sFta5PAOdn
-         tkQ7RJQwOG9TioOhC2FbRTWOp9wSM+ymYUtSzb/uP1+aelxFDzjMc3yawDLZtAG//cAQ
-         0e70/09NFRaZOFseM0CYfbKh+rxfOjL77luq1tHPt0W30RRonOY+kf9yzFz9y5ui93Eg
-         83oQ==
-X-Gm-Message-State: APjAAAWTa1IORE1oeqseUGury7ObsgiTFreQjs2qPrcWYolloBpbK6Mz
-        2Te6UgBbrzg5rCJeiyhohcHOor692WU=
-X-Google-Smtp-Source: APXvYqz6pDQo7Azycorkq4yi+UyBbe+sGuiwaic9D/0MCP22/iTOOURcP8Z40yB37KaboDG0NVZahA==
-X-Received: by 2002:a37:a78d:: with SMTP id q135mr10234657qke.158.1581512652240;
-        Wed, 12 Feb 2020 05:04:12 -0800 (PST)
+        bh=mHdCILFKkUG6WkOpI2Vw27Zx0R8ms5UtGVq7fElTqTY=;
+        b=iwB98ozPSAypZ6tFB2FHyMHZT2ZkZm+iUywXu5wX+qeXEYrBIq2ZmCcG5p1ssEknRa
+         d2FAD9A14YXQHh+IY4+8cG/SxMhyAc8UI5cHgy5lh8ZgLLJ745qLk/fCdwcXwPk3UgBu
+         m504VRD3gscVkSmIhjWoe3zFFzM+zJvnsvZKBFujZqMv2wqe7OQWHfm3evYsq7L8eIQ+
+         TC5DRsLfeBoJo6rVbUKKt1HVlFUJHP3wrh08rUVaDvGhxEDM4CWGkweDtCnypCWe+tOU
+         o61Faw+53jL87iZDbEOP2brYmwfKq4SX+JRN8Hv4/l8S9LpofSENnBQTUd/IXB6rvezC
+         AzLg==
+X-Gm-Message-State: APjAAAV9LfGD7oU+ovj0JzVH25EWqacz8Z+a8wMcUyNILkx2Jdotq6vA
+        ttzussa7B0a2fjZqeVVNUoQslQ==
+X-Google-Smtp-Source: APXvYqzV1noKAUlY5/0Nf2fkFT/eTy2TBcOZYv+Ywb3SC/7k6aOcArPifulZw0Wj82+kMYGUdBbiCw==
+X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr7017910qtv.276.1581512823764;
+        Wed, 12 Feb 2020 05:07:03 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::de08])
-        by smtp.gmail.com with ESMTPSA id m27sm124141qta.21.2020.02.12.05.04.09
+        by smtp.gmail.com with ESMTPSA id y194sm136943qkb.113.2020.02.12.05.07.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Feb 2020 05:04:10 -0800 (PST)
-Subject: Re: [PATCH] btrfs: Add comment for BTRFS_ROOT_REF_COWS
+        Wed, 12 Feb 2020 05:07:02 -0800 (PST)
+Subject: Re: [PATCH v2] btrfs: destroy qgroup extent records on transaction
+ abort
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200212074651.33008-1-wqu@suse.com>
+Cc:     Jeff Mahoney <jeffm@suse.com>
+References: <20200211072537.25751-1-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <2158c382-a3ec-1c0e-df9f-9ff6d4017b9f@toxicpanda.com>
-Date:   Wed, 12 Feb 2020 08:04:09 -0500
+Message-ID: <ccc3f912-b4f9-f8ed-37b9-9bb71f0052ee@toxicpanda.com>
+Date:   Wed, 12 Feb 2020 08:06:59 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200212074651.33008-1-wqu@suse.com>
+In-Reply-To: <20200211072537.25751-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,17 +66,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/12/20 2:46 AM, Qu Wenruo wrote:
-> This bit is being used in too many locations while there is still no
-> good enough explaination for how this bit is used.                  ^^
-               explanation
+On 2/11/20 2:25 AM, Qu Wenruo wrote:
+> From: Jeff Mahoney <jeffm@suse.com>
 > 
-> Not to mention its name really doesn't make much sense.
+> We clean up the delayed references when we abort a transaction but
+> we leave the pending qgroup extent records behind, leaking memory.
 > 
-> So this patch will add my explanation on this bit, considering only
-> subvolume trees, along with its reloc trees have this bit, to me it
-> looks like this bit shows whether tree blocks of a root can be shared.
+> This patch destroyes the extent records when we destroy the delayed
+> refs and checks to ensure they're gone before releasing the transaction.
 > 
+> Fixes: 3368d001ba5df (btrfs: qgroup: Record possible quota-related extent for qgroup.)
+> Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+> [Rebased to latest upstream, remove to_qgroup() helper, use
+>   rbtree_postorder_for_each_entry_safe() wrapper]
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
