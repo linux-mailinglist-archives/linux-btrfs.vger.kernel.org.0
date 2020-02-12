@@ -2,87 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F2415A9B0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 14:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3638015AAC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 15:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727548AbgBLNHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 08:07:05 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41567 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgBLNHF (ORCPT
+        id S1727756AbgBLOL6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 09:11:58 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:53847 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727662AbgBLOL6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 08:07:05 -0500
-Received: by mail-qt1-f194.google.com with SMTP id l21so1459047qtr.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Feb 2020 05:07:05 -0800 (PST)
+        Wed, 12 Feb 2020 09:11:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581516717; x=1613052717;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=bMICyRdgWtoHFsuXi5Mc2VQhMFN7xft9X4ISYYWfBPpd08mGTB/IsiJX
+   mXfI3SPXOEBtnUV5Uckc9Fdsrcvxwj23+HtMNuUprR0VvavLX3y8gD+xr
+   Fee82N4J+hckUd34tXmSZLLp9L2qdLpfVzo0YSvR1Xca15sOUbs/QKT7i
+   +AuL0Cje7WkuooGDulOqjNL7pmBXZWMjBe50shO9lmhbOElYzhl15lszf
+   sC+XXPvlv20G8XQB6TnvF7CHCFd2GZhN7OSozRJdCuQiiF6NUAQ8Z/4pU
+   5hcLNfosmRSmnsLT4S5APi/srU8PTYcf5F71hHqdydWKBgp2NJVe5JFJ3
+   w==;
+IronPort-SDR: Q1ZiD2KmzlNurelh54xDRR6WIDsb6GC9DBZZMudtY0k/0ij6z7T4zK1bt4+YsC+Dzz+oslRXdb
+ MJ71DqdRs43eFa5LNMovblh0QGQM8cSYOdg8FSaWxd0DIlYhtZgTSfnM1tjZkkbeJtXE4DkO3A
+ WcfZ/fMIe8Ro04frc+XN2d9KUh5dSRYV0nyBIAFwP+Bzk/4nK6fKORpGi7q73FeuW2V58tU2/b
+ mQbQI/DaRNK5h3QqbpfyXYl+4agMK23fWigPkQtoVxNtBWm6sRRH27B0azqAhwMVsXt6HT6EQQ
+ oxE=
+X-IronPort-AV: E=Sophos;i="5.70,433,1574092800"; 
+   d="scan'208";a="130212187"
+Received: from mail-co1nam11lp2176.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.176])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Feb 2020 22:11:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a0Cpfw2FwlGVEghmVGEdJXtwjXwyN8hEfxIrKNTYPzHHA7egebXZZg0ByKtXhqo7aJo4YIOGT1TV5i/b2qkOqJ8pzPrlRZZgauBf4rQQWqUZfkLoiD1ermcsenJQThhO994i01LweCz66126NGuiHjmIi/r+xAY8iY20uaW7M1a8hTmyYaTsrkxzzEfP0x5cNzhVWL2k/9nEWxLRtnnSbs+oBHlSjC3JSfSX5+qMGcIPYEL8YeD7TVNr3d+D4hN8E/PSCa/fLYFNiI+nVBSH/t3C3eIv+cuILbrYuNOgda+XM3Ind/F8ts9V6m8qpbKPOdQSGu+Uib5eEqMueWFSKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=VHQ2SxOG/JobSou4SMlEmgYIcF9tfdZ0JA/vVH0JkC5VJmxx4B7B2JT1hpd/zJzSKEns3IY78H99GDSZaa2h0KVRnMxlHA6UMKD1YoLp+bNkEcSUOweUN18N00DAD1zzfzCi/Knz1xDnuFKgDFYvAYphPe31qpWTQhFPpHFbMfnZ+rz31jGMkXJJ+Op9P4MFsn2gwJrqPe5YlmrBG81+IiUAvePh9I6uCYlw9vVD7Xq/ywayIX/GhXIlJcuOU04vVwa2zBBgeEd2uZWHHvjIBb6cGNd09/0ubbtqZSeRFN9nNNd707yLG1+RMy2qpd2N9JjMGAk1H/EbxuLmIHlyug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mHdCILFKkUG6WkOpI2Vw27Zx0R8ms5UtGVq7fElTqTY=;
-        b=1zvKAYTOPAgT4gL1y9t+13uQ7MUUYts6IVbpOZ1wHZnFzs7LKSU1WpcO03hHQZY1Rt
-         M8yBWgJwftez2yC6KO6yFr8EsL4X5JKJYlq7O3UIKpxTSGlWGL13BnqlheuIvH87EN9e
-         3NJXlgsAgsZViO2M166q5CcwiOg5MNatn97ekuOx4nB/Zt2Ymi791MrrBRjZsBu/OLI2
-         0bBTbSh7O2HMmNNmI7wvHgB2WAA3XfzJljE5eWfk4/oKeX6uwKKk/qumqoLwtqoVtpdj
-         2v352xtobfMb2z7U6OmaASzYYW9FOeUQV+HdTVm4VfkGiR+SU9SMUHWiJugrjIcJvCM2
-         uOCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mHdCILFKkUG6WkOpI2Vw27Zx0R8ms5UtGVq7fElTqTY=;
-        b=iwB98ozPSAypZ6tFB2FHyMHZT2ZkZm+iUywXu5wX+qeXEYrBIq2ZmCcG5p1ssEknRa
-         d2FAD9A14YXQHh+IY4+8cG/SxMhyAc8UI5cHgy5lh8ZgLLJ745qLk/fCdwcXwPk3UgBu
-         m504VRD3gscVkSmIhjWoe3zFFzM+zJvnsvZKBFujZqMv2wqe7OQWHfm3evYsq7L8eIQ+
-         TC5DRsLfeBoJo6rVbUKKt1HVlFUJHP3wrh08rUVaDvGhxEDM4CWGkweDtCnypCWe+tOU
-         o61Faw+53jL87iZDbEOP2brYmwfKq4SX+JRN8Hv4/l8S9LpofSENnBQTUd/IXB6rvezC
-         AzLg==
-X-Gm-Message-State: APjAAAV9LfGD7oU+ovj0JzVH25EWqacz8Z+a8wMcUyNILkx2Jdotq6vA
-        ttzussa7B0a2fjZqeVVNUoQslQ==
-X-Google-Smtp-Source: APXvYqzV1noKAUlY5/0Nf2fkFT/eTy2TBcOZYv+Ywb3SC/7k6aOcArPifulZw0Wj82+kMYGUdBbiCw==
-X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr7017910qtv.276.1581512823764;
-        Wed, 12 Feb 2020 05:07:03 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::de08])
-        by smtp.gmail.com with ESMTPSA id y194sm136943qkb.113.2020.02.12.05.07.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Feb 2020 05:07:02 -0800 (PST)
-Subject: Re: [PATCH v2] btrfs: destroy qgroup extent records on transaction
- abort
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Jeff Mahoney <jeffm@suse.com>
-References: <20200211072537.25751-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ccc3f912-b4f9-f8ed-37b9-9bb71f0052ee@toxicpanda.com>
-Date:   Wed, 12 Feb 2020 08:06:59 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200211072537.25751-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=QGjP1yL1hFGaj9QbnrgcbiEtpdQcwd1Z+PJMs5v5BRcdxp7TXtn+mUftlzt0FZQX0BVbEhn1DtIuB+14P46IvHvCBPYDO2vX1Nq+cVP6AMyAqJ1yeoOQtVB6F+IHL8SCw5pVX3zYtRIX1MZMJIguFp75uNDopkCWTSkWYID2Sk4=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3584.namprd04.prod.outlook.com (10.167.139.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.21; Wed, 12 Feb 2020 14:11:55 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.030; Wed, 12 Feb 2020
+ 14:11:55 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 12/21] btrfs: move hint_byte into find_free_extent_ctl
+Thread-Topic: [PATCH v2 12/21] btrfs: move hint_byte into find_free_extent_ctl
+Thread-Index: AQHV4XUJmksLRytey0On/SyVNZ2ehQ==
+Date:   Wed, 12 Feb 2020 14:11:55 +0000
+Message-ID: <SN4PR0401MB3598256309D3236B4C1CEFCD9B1B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200212072048.629856-1-naohiro.aota@wdc.com>
+ <20200212072048.629856-13-naohiro.aota@wdc.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b412ee5d-38e4-497b-6311-08d7afc58401
+x-ms-traffictypediagnostic: SN4PR0401MB3584:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0401MB358443FEACC85BC581AEC2739B1B0@SN4PR0401MB3584.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0311124FA9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(189003)(199004)(4326008)(54906003)(110136005)(5660300002)(86362001)(8936002)(8676002)(19618925003)(7696005)(81166006)(81156014)(33656002)(2906002)(66476007)(64756008)(66556008)(66446008)(91956017)(26005)(66946007)(558084003)(186003)(52536014)(9686003)(71200400001)(55016002)(316002)(6506007)(4270600006)(478600001)(76116006);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3584;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Y8OgMZHy076EHF5s/XcqeeKxJ4F8F3Rb6VNMN8XhzyqAONDkKAcg8AZe9fxOlOuH3CLQggmTYkBsKlmKrtOzeoXe7An7r67YyoGl+Y5Pig4oEJupnzBii9NLDWTaA2nl96eB/q+MCBEXX8lttc2IypM8QlfS7m6ddeQCnWR4tGWhHJ5XwWe8Fx7SqdKYQfU8kF/naRoii4kbOfRatieEujrgU41v0o2zukZ2cClhjbw3B7mlE6E6tFrLo2ThG6MDNqOa2jF0J8R0opYI3Si7bpHl7LYUdIFcThSEi2Klm45wXcEB1LAUqQwxGgz/jEkeY+nBeHily6goppXrcgqaD2nJtCqG7a+aOJ3EdNo1sVrDqw2e6hZapy5UXujZtRIgW3l4bRgvfrELnb3XOulMqOpDvPH+MyNIdEz80PTa3siTcy4tLVe9rhQRiYh0+ESe
+x-ms-exchange-antispam-messagedata: j3xR8WrPGokwW4t6jVfu7NvNflXQmfvg40CsinOFttdII5xcf5V++kE+6we3GycprYbh9YKzBZQxPjqYxYp963OvLONEWuq9YtSxFpWAJ3lZN/RDSJgnkj7uc9zJVMQqKLMsk1DMxJHROW7Q92DbYQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b412ee5d-38e4-497b-6311-08d7afc58401
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2020 14:11:55.3286
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7r4bGgAJ7i5aEQ7Ka9rHoQQnN1YTep/3NdpRFVha++qLUJS1VrKLn7kfTlEpFJtqUUMzsaJwGXj1QxwVieyjkEWZFfYVABehgoeK++i9+Ns=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3584
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/11/20 2:25 AM, Qu Wenruo wrote:
-> From: Jeff Mahoney <jeffm@suse.com>
-> 
-> We clean up the delayed references when we abort a transaction but
-> we leave the pending qgroup extent records behind, leaking memory.
-> 
-> This patch destroyes the extent records when we destroy the delayed
-> refs and checks to ensure they're gone before releasing the transaction.
-> 
-> Fixes: 3368d001ba5df (btrfs: qgroup: Record possible quota-related extent for qgroup.)
-> Signed-off-by: Jeff Mahoney <jeffm@suse.com>
-> [Rebased to latest upstream, remove to_qgroup() helper, use
->   rbtree_postorder_for_each_entry_safe() wrapper]
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
