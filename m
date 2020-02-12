@@ -2,29 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CED159E2D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 01:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD666159E67
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Feb 2020 01:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgBLAlS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Feb 2020 19:41:18 -0500
-Received: from mout.gmx.net ([212.227.15.18]:48311 "EHLO mout.gmx.net"
+        id S1728168AbgBLA4A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Feb 2020 19:56:00 -0500
+Received: from mout.gmx.net ([212.227.15.19]:37349 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728091AbgBLAlS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Feb 2020 19:41:18 -0500
+        id S1728103AbgBLA4A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Feb 2020 19:56:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581468075;
-        bh=9IbiQ45JKV7UoDF9Ip/BG7gg+uiaPZh6WIBDHX7GyCU=;
+        s=badeba3b8450; t=1581468955;
+        bh=kIkBezxdjW6FACH0XB0NnVD9bO2DpdL8nMdfMgNRor8=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Yqs5s+y8iQvPVJRTMs6Vb9t6ASVTa2vvchDPJ+muODNtTo7RM07NLhLbb8nZLnM21
-         VKXzxlF/q958jGdvCBUVsqjwLFKtR/+pOgrjFz9s6Rcb6heVDBrbFruxNo7yvgvmkF
-         vBYHbYjal3fqDKmVfGwY/R6hzZY0JFPG6+u2sysk=
+        b=VaEdWmtOK39uYVJDJaJ1Pj/LkmyP151llvOGIY73nsmE9HPZBzmVQlJwQ547Rz6Wi
+         KpqXb3R40VdkjLBg7GWSCXxZew1fWvVDcusCvydkjlTDGOxCkcjvMVqE8K3WXcXrog
+         tdYVUSbNjciw/PeLH7AeERBAWnUyEMpuasRgIW/4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mel3n-1jbqBj3Rbx-00amoJ; Wed, 12
- Feb 2020 01:41:15 +0100
-Subject: Re: tree-checker read time corruption
-To:     telsch <telsch@gmx.de>, linux-btrfs@vger.kernel.org
-References: <5b974158-4691-c33e-71a7-1e5417eb258a@gmx.de>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQ5vW-1ioQmo2zh2-00M1Gs; Wed, 12
+ Feb 2020 01:55:55 +0100
+Subject: Re: [PATCH 1/4] btrfs: set fs_root = NULL on error
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200211214042.4645-1-josef@toxicpanda.com>
+ <20200211214042.4645-2-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,179 +52,111 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e35d0318-4d3e-50ce-55b1-178e235e89d7@gmx.com>
-Date:   Wed, 12 Feb 2020 08:41:12 +0800
+Message-ID: <6bbb98bb-f9c8-aad3-ab86-da097544e38f@gmx.com>
+Date:   Wed, 12 Feb 2020 08:55:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <5b974158-4691-c33e-71a7-1e5417eb258a@gmx.de>
+In-Reply-To: <20200211214042.4645-2-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="lldkIf5sZ1Y0OYW8Uvi2Z0Xcgut0RBpe6"
-X-Provags-ID: V03:K1:jo7P1zqA4dO7yaV1DbRiahdh7POoMJIzcmPd3TCgq0LcVcYADeu
- P6H7lTALyYoURqd+3Bc41dWdMiEGdO5qJLAkgYrnOhMKE6vM/K/DkwrnWBPAtOBT3BZhYex
- AGIWTObdlqu72y7pajodOorwmtRvEiEDPKPXFXlamDC2fl+hWxy22xkJ+Nt/web2VCYGTgS
- ai7itIFMbcNCTCLX9S+UA==
+ boundary="bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ"
+X-Provags-ID: V03:K1:ZY9KgQ74iDnINOpVlg1oJvG1ADj9NlxALNCUa9S+5OpvRpE+Rq6
+ zo8EDX7aUL5MUhsoT0cYfn602ryyUXDL5UYD3HhneinXOMzkYhWEDxEkD1Q94iqAHsbF1Yb
+ chm3ZWX96jxkFfzzoKFdJqLN5KCS8xx31gF727pZXmAi2eiO25SidM3cG94rf1h51Ggc+U+
+ amMrWyMekZ8RNKcS5fSHg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ra5/owq3cGs=:jELEKeZWvm8v1w0rFuY9JH
- r2EBGrO2DPti7c92sMt5kM0QeHpIY/MQTnV+KQfqScoF6m5XF3t+de/Yj0l3D968fMwC70MMg
- VIdj/9n/NBgNRsuTW0dhYxY+8IZnxEW0SxrEXGV13q3dnW5dw6DoYwNzEQXHBxVBjiSlx9AdP
- XFt8jgBXfcGjYKAbd0pYtNRzVsOMh7ubdNfNvn6QIej+hz5xtbDH1nne041oNXgW5CRx15yEu
- CghYk3JsZGdha7S7XmBfgVlifQ9T6rYN/uObJQnYGeZGg7HZEAScGUsbJo1uarjSFIqq17am8
- pRp1ENgdMtnxVQtiJ1+9G1YqLitHySS/vloT+dtIvIpvmkrFdV0xd2ZPnA3QFKQyw/0FR7abW
- bbdnhExWIgEzNqTP4UyoqFKQIiGbdaYC1s0EDDr9DrPEDjw10dqen0keV+HYY2+K0khsHs6t6
- mBZUqa7ei37T++0hme+GldmK+SVeNbGiGy4i5gt4xjUBmEF43Oo4sXKsFhdJiS2Hu5QBY0YJq
- 4ibRys5yuqHQYEjvqfWPZ+JSsge/6v3SrQB8EsDD4ihCJ8jvte0eu15eM/FO3EA/WteFHdFHW
- aEj+5gHIyxfsolNyh45QB9rAGwONeZK5dzbkiBfT83tcrc94iC3nNYEBnoHv3RegiUM3jcB9V
- obBRewRVK3Gb1yazYpV2w7Qm02W/k4uev+d90HGFNHShwAdFOsHnjeblz0EuO5bOv2+M7leSd
- b4u2pDUzFIGKfyYPEQSsyWLXRk5ZcV9lainfJ3KTvsCDqod0VmLM8PrJXVWD/iAKgl0yIVGts
- nrNNPD0N5yotR0m+JoUH4bIOyNDxkTz5WhGK8KWb+vAScxOGaWK1XOessh4ef1sM8P9bWxC2S
- vW0kYdTWu34kGHoqFkWaaF/tvw9uQfI3uCjXYF4CR57etUKKzgccD67sH6ZQ2Rb84ZHV2jnU0
- FxjXcEXvJTHgWUVXiRXH/ivq9++Hne0jBMH1bBYu9IimQnXSlCnU2VjRI4SNn9ftXQ8PmZ38E
- EXRWcBYlN64JL3U8DOsq0iuREBjuAWgNFwZ+3GQgRNGFJAjr/szunubNZl/Nyirk5dfUaH2qE
- mtTBbH9cgJMr0XtAal03jlcRc2PKQUzM75PQukl58V4as81FJthOaBunF6O2s3OUcvThZ9ArM
- /U24jWJ6PZGYN+yeAyy0UVnFX2v4U5Ptku7+hosomvv6nuFCzJM3M/2NuUJ8xv8Iy5g6GCG11
- FOPTOxoCT6alozGfW
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Qoacqclx0Ts=:BZE5diHjJm4o2aFlyj4QS2
+ tjnXdVWAcpxEMbBgZd7/GTTKW84wrqcXtC9FsPKkkB7GMpfpDf+SFR3Z/Zvqut5qy+536viJo
+ mk+6WXq9ELekE8hmDEv8TS1uuzr02Z0A/mMeR06tFYms3GHX/vqUwCLA7OdtlV1sPGZse4nIg
+ z0d4rZBM5aldEIfhAfyeCibKMqRAetLKcv0V1M8peAF9lWw1umMfDoN7u/X3ififM6+lRKyPF
+ aRqM0kclewoe7D1i40p2EEGaWXuf3GKQkkzSt03rxhnVI0boDQDYwTmFt2IT3nKude/g/ePg7
+ RbEDklG07D6Lib8aoyM+PAeJQUlueG3V07QowwaFPlQad5Kk0k3A0Ls+Ey1YuWrL27AMMzGCd
+ pvJbgWuvA5N8CT8nTV2eSL/GhIQDzuGxLmVMg8OGrmeE8OpJEsOkcumyZHJTtRiBBsjTWFFEm
+ PyYSbJy/nFJB5C19P8t/Tat1bJyesJzN/E8OF0pFz8EBVQhsgHf3yDDrfP0aCqQ4bTFRkWp1F
+ IPBxBwvm4Vh40RyFVBChPd9Am2iCm4+IBvWW5Vnp8KygRWXK4u19BKPJBqGN7bND1DDcNnmlo
+ kJIgoziOGSh2HiyV26KcKasH5SLZHbij3p7lJ05xV09QXHqoJJ6aBJpTencTRGKeCyGHIoKa6
+ 0VF0obQZ87Szm/YPW9BExP2dkn1cyf3M4NUs2BRUVAASa3oWSwn6mRj/NdSXgqA5nN0EPrAjG
+ 7YhSAmz0dV9XEuUZ6RKQ1AgWNLXxOhNYVuPXifOx+3Pkp3GjR9GU3VvUxJ7IH/CNiD+r/BwUh
+ 2w2+zESpvOYJJu2VOeFQwnV33ldRaM5HSJevf2TVzhqVmliJJB/QTvCAfT24ehCZ3lQCp52CK
+ mrCrC1S6ReGB4eMtKC9oTLSh+fld3CIq65qepl1elmDuk0DYiLtbmXPJRknwC6PZrZT7DdJhb
+ j2e/3L4ih5Far3/bqYoHRJlTyRvjU9osRMotVcWyKniPlY/IgevzP5fGP8Bf++L+9sXFmT+m3
+ cMq1UiOJPWvMNsr0BDgjUi9X+2lYK1GVSMZnJZ55PgsMP1zb2nr7ptrnSf+5Rcd97As63W3ME
+ kk6750Ecvsjbm5sSyyA0epWP3FebbkmVNCmkfT7Xyla25uIu47gfWbO/5VORP2VrmmX6THK1I
+ jsn58xr7cFXrOF2fUvDyGp+KP1qgt3JqSRz+wY2BniFVqqPq+ucegWa4qVv7PmT4Bn41elTml
+ a+gYDK+c7gFQAF9Dy
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lldkIf5sZ1Y0OYW8Uvi2Z0Xcgut0RBpe6
-Content-Type: multipart/mixed; boundary="qLqpMdnMcwAOfaqst2ZZsAGCNoSKs8W3T"
+--bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ
+Content-Type: multipart/mixed; boundary="WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ"
 
---qLqpMdnMcwAOfaqst2ZZsAGCNoSKs8W3T
+--WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/11 =E4=B8=8B=E5=8D=8810:17, telsch wrote:
-> Dear devs,
+On 2020/2/12 =E4=B8=8A=E5=8D=885:40, Josef Bacik wrote:
+> While running my error injection script I hit a panic when we tried to
+> clean up the fs_root when free'ing the fs_root.  This is because
+> fs_info->fs_root =3D=3D PTR_ERR(-EIO), which isn't great.  Fix this by
+> setting fs_info->fs_root =3D NULL; if we fail to read the root.
 >=20
->=20
->=20
-> after upgrading from kernel 4.19.101 to 5.5.2 i got read time tree bloc=
-k
-> error as
->=20
-> described here:
->=20
-> =C2=A0=C2=A0=C2=A0 https://btrfs.wiki.kernel.org/index.php/Tree-checker=
-#For_end_users
->=20
->=20
->=20
-> Working with kernel 4.19.101:
->=20
->=20
->=20
-> Linux Arch 4.19.101-1-lts #1 SMP Sat, 01 Feb 2020 16:35:36 +0000 x86_64=
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-> GNU/Linux
->=20
->=20
->=20
-> btrfs --version
->=20
-> btrfs-progs v5.4
->=20
->=20
->=20
-> btrfs fi show
->=20
-> Label: none=C2=A0 uuid: 56e753f4-1346-49ad-a34f-e93a0235b82a
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
-d 92.54GiB
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
-ze 95.14GiB used 95.14GiB path /dev/mapper/home
->=20
->=20
->=20
-> btrfs fi df /home
->=20
-> Data, single: total=3D94.11GiB, used=3D91.95GiB
->=20
-> System, single: total=3D31.00MiB, used=3D12.00KiB
->=20
-> Metadata, single: total=3D1.00GiB, used=3D599.74MiB
->=20
-> GlobalReserve, single: total=3D199.32MiB, used=3D0.00B
->=20
->=20
->=20
-> After upgrading to kernel 5.5.2:
->=20
->=20
->=20
-> [=C2=A0=C2=A0 13.413025] BTRFS: device fsid 56e753f4-1346-49ad-a34f-e93=
-a0235b82a
-> devid 1 transid 468295 /dev/dm-1 scanned by systemd-udevd (417)
->=20
-> [=C2=A0=C2=A0 13.589952] BTRFS info (device dm-1): force zstd compressi=
-on, level 3
->=20
-> [=C2=A0=C2=A0 13.589956] BTRFS info (device dm-1): disk space caching i=
-s enabled
->=20
-> [=C2=A0=C2=A0 13.594707] BTRFS info (device dm-1): bdev /dev/mapper/hom=
-e errs: wr
-> 0, rd 47, flush 0, corrupt 0, gen 0
->=20
-> [=C2=A0=C2=A0 13.622912] BTRFS info (device dm-1): enabling ssd optimiz=
-ations
->=20
-> [=C2=A0=C2=A0 13.624300] BTRFS critical (device dm-1): corrupt leaf: ro=
-ot=3D5
-> block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: has=
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-> 18446744073709551492 expect [0, 468296]
+Just one off-topic idea, can we have test cases in fstests to do
+specific error injection test?
 
-An older kernel caused underflow/garbage generation.
-Much strict tree checker is detecting it and rejecting the tree block to
-prevent further corruption.
-
-It can be fixed in by btrfs-progs v5.4 and later, by using 'btrfs check
---repair'
-
-Early btrfs-progs can't detect nor fix it.
+For your fix, we can inject ENOMEM error with call chain
+btrfs_read_fs_root_no_name()->open_ctree() to get a 100% reproducible
+test, which looks to be a solid test case.
 
 Thanks,
 Qu
 
+> ---
+>  fs/btrfs/disk-io.c | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
-> [=C2=A0=C2=A0 13.624381] BTRFS error (device dm-1): block=3D12239577907=
-2 read time
-> tree block corruption detected
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index eb441fa3711b..5b6140482cef 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3260,6 +3260,7 @@ int __cold open_ctree(struct super_block *sb,
+>  	if (IS_ERR(fs_info->fs_root)) {
+>  		err =3D PTR_ERR(fs_info->fs_root);
+>  		btrfs_warn(fs_info, "failed to read fs tree: %d", err);
+> +		fs_info->fs_root =3D NULL;
+>  		goto fail_qgroup;
+>  	}
+> =20
 >=20
->=20
->=20
->=20
->=20
-> Booting from 4.19 kernel can mount fs again.
 
 
---qLqpMdnMcwAOfaqst2ZZsAGCNoSKs8W3T--
+--WSzzvdRTaRwfpfI8R1S9OMApIB4dElXKZ--
 
---lldkIf5sZ1Y0OYW8Uvi2Z0Xcgut0RBpe6
+--bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5DSagACgkQwj2R86El
-/qj1OQgAsLQC8PWXi001tV5xYsI7Dp4J3blcZc7BcmlCla09Cx96cUID+0b/mIU6
-jMW3VKlqCyg8SkslVAvkOZEgFEDPWuU8p3NtBjtMr3vs+zitn+eV+tpafqi2ghiP
-TY39AV7gXY9bNeBgKXAs2fz8BjRhA7qiIgaUNFjbjUFYG6GCxfJF7oclVETY7WoT
-lRBOJjixcQO3xx4ruv7Qx7V+tm0Q3RevhxZkAmU8MtNmRJvgqZM63mrF1L3q0W9z
-FI5+7zq9gXLO7zlXZLDDTs1bMPx02n8QhtDkYnhSvFnmW+0SSEnFb06dr3xWCGdV
-2J5ubsrE+xVizDdIz3ZaecgUrlN7Kg==
-=crT7
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5DTRcACgkQwj2R86El
+/qgFSAf/at5ifdkLU4f0OyHPGLgi2pHXr37zgABAHVDe7pveXIkFMrm4Qe+5HVwo
+/lK1n7SnxGuCdVezTRQu0yIFHUHGAsYal0FtCcaibh6r0JYfMXQX3THzaO8uEj7y
+kBureTwZufdCdCvb2gMgC2EmpMYx7W5D1xJDd1UytggaVJGOopCpmOGByDmCN8Lc
+th6hBDzu75WS/DYcC22S/N+PRD3uUYqX5EnPBz8hFUW8ZYE3TkuVhmH4w6b2vo7f
+WxW/uaAaRSyXX2B0usJrCLWaUCYbn3VF/AP2cbZbKoLu7ze1OqKsR6E1+wCgq6UA
+P1NlkL2K/2+znMHA3sd0e1xTTNEdhw==
+=JL7C
 -----END PGP SIGNATURE-----
 
---lldkIf5sZ1Y0OYW8Uvi2Z0Xcgut0RBpe6--
+--bRG4FfLiRVTmLQY6yFvmWJhuGuCJzzNKJ--
