@@ -2,31 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C78A115B5CC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 01:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C715B5D1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 01:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgBMAYp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 19:24:45 -0500
-Received: from mout.gmx.net ([212.227.15.15]:50495 "EHLO mout.gmx.net"
+        id S1729185AbgBMA0a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 19:26:30 -0500
+Received: from mout.gmx.net ([212.227.15.18]:60321 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729119AbgBMAYp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 19:24:45 -0500
+        id S1727032AbgBMA0a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 19:26:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581553483;
-        bh=EBjNmcKm9DBZSsQCbzrH5u3UJq1kRT3RNQPGsnHN6E0=;
+        s=badeba3b8450; t=1581553586;
+        bh=5Pa/3TMKhXgeoY7Gk+c4FKNng5QU1xlqj0KtoWt2/7s=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=gu+bDu5Og9N9HyTxHX6r9dUpZfVfWgZYrpnjpT7si0wQY1amG4q3BM++mcDoTDq2e
-         MljqtqklM60mxj9c6ZZdDJ0a2gLdn0OlnMYVFX+9NvQZ3Sm3Z/2T6KpxrdRPjeQ3W9
-         kfAWf7mCztJrJPLzOoUCtVgcEW15t1gNevmGJvCQ=
+        b=gYKyicsdYVklAOBSyjP20O7WiTsJxsMwV5Q4a+YO1rpFAmTIKaH3dAIR8EMJCPVF4
+         B+wJrX9DKZ9ZM9LnMW4R6LE55yGodUQZ5KzPz5yU45JJWNLD3VoLV88RucJzwU/WSx
+         yYyeVgmKs7U0N8T++/iGRVkIBsFELD771K0ucMXA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1jjvmR36dk-00iDIY; Thu, 13
- Feb 2020 01:24:43 +0100
-Subject: Re: tree-checker read time corruption
-To:     telsch <telsch@gmx.de>, linux-btrfs@vger.kernel.org
-References: <5b974158-4691-c33e-71a7-1e5417eb258a@gmx.de>
- <e35d0318-4d3e-50ce-55b1-178e235e89d7@gmx.com>
- <14db7da5-dc42-90e6-0743-b656ff42a976@gmx.de>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5VDE-1jZXTf2Nyc-016ugX; Thu, 13
+ Feb 2020 01:26:26 +0100
+Subject: Re: read time tree block corruption detected
+To:     Samir Benmendil <me@rmz.io>, linux-btrfs@vger.kernel.org
+References: <20200212215822.bcditmpiwuun6nxt@hactar>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,220 +50,122 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5037cdd7-8d10-bc2b-195d-59c5929c0c50@gmx.com>
-Date:   Thu, 13 Feb 2020 08:24:36 +0800
+Message-ID: <94cb47d7-625c-ab36-0087-504fd6efd7ef@gmx.com>
+Date:   Thu, 13 Feb 2020 08:26:22 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <14db7da5-dc42-90e6-0743-b656ff42a976@gmx.de>
+In-Reply-To: <20200212215822.bcditmpiwuun6nxt@hactar>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="MddOv4zuJLigWFc08xuWF5oAzKlCa9eZ2"
-X-Provags-ID: V03:K1:9SE9dGKd3LSKwjmtFDMvl8fhDyyd4c95BrlgOJFrSXLR3e8ZRkg
- y30+ATdLB1qifV2/GPYXs/kmzrQKddv3YC5/WTQI8B2yXS7XTHXVNxVYtlmzY4L3YEOK4da
- mGuRSgOJg6uqv/kE2iAQaImS23S3n5k5FYVvjK0feQ75S5xeDphMxGf/++Lc3gUOmQIMprP
- BF6zwRuQ9NR/xmPPV1k/g==
+ boundary="jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4"
+X-Provags-ID: V03:K1:HtwOyLbzpCTQxmctcpbwVoIqRjEugKBPX+sHhV45mxFBA+JbRmB
+ bvO7MwyGtTHhhqM7Oa9Y0iwpUQCI5oaX5azBvrVgdaPZoe4SzSwUIUVbgnEitjV8cx2fAbM
+ JbT6KcR+7xBnHGgAOkMjhefoxdIe4KFKnLhYzQkfj3OwnylRVBMGsPES/QD5Cixh1i6gYM0
+ n85I7ctigPEIDIfRYPM7w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kEXUHFkTd7Q=:cvRcU01OJR1U4Jmq7sVW1d
- dqhaEb/rAz1FeCBX8fDxCZBr+E1ujtSkDb/cijGvQOKI3Ou61N39tdOhh57my2B0BH4vMBzNs
- /VuMFRXFkDFGutCamKodxvkjhuMyCNIXfkyz03FqpxprFluMerO7aeLEsJIzPkNMaSxOsb3VX
- +gFLu4d+u+UEUXGE30KP03Gyb/oXOatnDCzUdseEL/OTgAzz95vzleJ6ZmyFHSHMHdjdn2+C6
- O08QRdS19+R+rdfXqM1SSKlL3RxlgVWW6LsioIdz7Lz7EjPgq+zSoop44qoIqXsFRO9wPWZEC
- MZPelMW/btCnjxHFHyWqWQiiULYbW8rv/8rKVxp8V8O50xQNOYS6rRRT/BX28dzXeHb/3+S9h
- Y+PxWjr7xWtDf7Y5PxiIAYbdQqdLeBvGyyuMZlvgIuhqjkCjxVaekJrp3ErI+IoTkGPHmJEVB
- fU2z80PkYjHlU1ffSwBCH8sITJ2s/VSI0xOd3TzWoDeSvSIw3Yam/7mcIXBPzDXvKqOyTTrj/
- q/jFrsWXrAHpynS5KFCwZmf9oEk45mXdXy6LTrdckbRXVhIPCtftdR/DATA4gMJa9DFDQYoD4
- IjCslev0qUsI4ZNPSEaSojlO3TeDcNBJACez/30H8W+LhuQ7jUDiBHfkcRBwJhehj3uc0239j
- snE4/1taQFA5HBBJnKkBz8CMQk+iVdD7fF2zBv3isZYlqjJTivJV04YmM/RfaQ+Z5AEzjxTBM
- uftgn/evQEUiyNYyRGwVZRJhyM21m9iziQg0+Q48AbyN2GH0XooydduZ3vxBKQoaF2KOiEDsh
- yV650a9WVjYCzmS/mHWHCjb1Cuw6Ee+ffvCvAWMbrtbA8o7iXnlo1np0nCFijiTD/XasD/aKf
- ewswOM2Dy/4FOihKr6MRWZPsBn1prU+flcGio8pIQUmkMJ9EWEwwqDzVQqKGPWXKN776YbmKm
- EzPyXWWBwXZdhUVYZwm2w9jePwuv4CWEXN5I3lbFWrSHshljq8AMZSp5Rs4AP7mSY/0riIRsa
- yD+jDi7Ztx/l1g1nU901ENteJYTNBWiyvHC1UmrGkOIddFI0hLfi80g2z38U3Uv/AeWnXFnX+
- RBiHJ1vZfTmd2QIs4N6gNTQDU3151QOw0LcmKO+yNAWCh9M70LBkSeXjlomc43x4mQB4gW7/I
- f5Ie/oWYGR2tNZjnHfffZIWeF7Je+qOsmR+xtUNc3UHX1uaY7dvqcZ6nRRai0UaRYJuOp+SJH
- HSMLECZ/MyntLWP/r
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gRMSRyVBm8g=:aG1SLJop6cuEAYyQY2gDlr
+ Fg7m1ixlZEXGKdfrXEHhUNADZiyx6mntLEnseXic/ahpW4Nuir1U/lLcFO6ETlcPnJxitmug9
+ +K7p/eIi3BggnTQOk7PAyykSy4zl+DqJ3rxZp/pv2qGlG3m+OSlXq4+HZJHZDH281vVocutWQ
+ vUf32Iw9U3rxivathAHwD9uE8lEk53BpSMtJBd0jLz7bhlpTXK1ri5080Sye7+53myRkDhraA
+ 5SK8473kD0tWU29RdzzPgA111C/CIsXuHq3gicdPX54e099o87GibhL4bnEEBOebSIlC67olo
+ hNLtWaTfrCDxrMU2Mg3gaixLPI12hFTxpBLih64BnAns9PNi8n8TkcxcgYFEHbfHxCNO2sCXi
+ Ioqckkl965h2MbDTRnHVSTMfxoopy9wmkMbCmGnxHc+T9ED/5C1UvUXIVnSJ+k3C9QmFpaOfl
+ zNlvojXnFydkqKkSHPvRmxRTYl3ytr4b5jCewXv1LWrYOTfkVK9Rn0PY0VQ/kRY7A/gmXcsc8
+ W7BpmjnuvyA8st2dFBREJLJnjQYOfMIonUDvRUYuANiaV5PUl/MK4xNtyTEjb43MrCH7RODDR
+ MEybSKRJyXlopogOjoo7iHLXnJqq6/jvalU7FjBNAHEi+dyYG2BpLHQsqFeY1ALBDKoSsJRS2
+ NI0I9D5tEIS2QM6/RO13Q6gOnrnxunIkE9inXKSgllRa/WiHHYftkbHnCDlqXB2W27vdGxkru
+ KMl9jLUXB00etSA8PH6EpkDJf365IgvBvdOkpRCZRNPx9jsxGKyJjN8Bohguk28vg5NPzzjN/
+ KDNFobrohzRwB6zCuIVVND60RmzweTvKOK0eUP+0538GpVFndn/Jg+dziQbdGdgTixChLJ2cQ
+ g7aTIJOR/ZJrdydjvPkAHUdI1R2aJLKEjCe77PJwKKFY4qBH07GjpM4IJwKJawhGawY8ybnOs
+ 7yd0gQXnH5YEy7CIva3e6ZK/8tWMNqcwTLa7BbqQj7buNceepXEetY8UwjUxhBaURiU/RiAHC
+ KClba8M9A+N0XAlja9Je1l9O5fG59Oj0JoJUWwe7VSYRlLX0nV4nk93OejPqowFeSsZ02U5z4
+ c2wpH+Bc/pUNMrah4jkQeSkAl4a9RIE22xOQLx+XHk2IvE/hWUVd/8QdD3zlolkACdixcKDg+
+ AepAhVKG/bJ8/vQo8xP6R2jX+jvDzo8u7qRrOXek60zhfsgpU46CvZivwZWJGSi3bZ/RYoIlD
+ tb4J9Q7l6exe0htmx
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MddOv4zuJLigWFc08xuWF5oAzKlCa9eZ2
-Content-Type: multipart/mixed; boundary="IVAuvGxMURdogj5KCIdKWtuyXDld1tzgm"
+--jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4
+Content-Type: multipart/mixed; boundary="bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0"
 
---IVAuvGxMURdogj5KCIdKWtuyXDld1tzgm
+--bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/12 =E4=B8=8B=E5=8D=8810:20, telsch wrote:
+On 2020/2/13 =E4=B8=8A=E5=8D=885:58, Samir Benmendil wrote:
+> Hello,
 >=20
->=20
-> On 2/12/20 1:41 AM, Qu Wenruo wrote:
->>
->>
->> On 2020/2/11 =E4=B8=8B=E5=8D=8810:17, telsch wrote:
->>> Dear devs,
->>>
->>>
->>>
->>> after upgrading from kernel 4.19.101 to 5.5.2 i got read time tree bl=
-ock
->>> error as
->>>
->>> described here:
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0 https://btrfs.wiki.kernel.org/index.php/Tree=
--checker#For_end_users
->>>
->>>
->>>
->>> Working with kernel 4.19.101:
->>>
->>>
->>>
->>> Linux Arch 4.19.101-1-lts #1 SMP Sat, 01 Feb 2020 16:35:36 +0000 x86_=
-64
->>> GNU/Linux
->>>
->>>
->>>
->>> btrfs --version
->>>
->>> btrfs-progs v5.4
->>>
->>>
->>>
->>> btrfs fi show
->>>
->>> Label: none=C2=A0 uuid: 56e753f4-1346-49ad-a34f-e93a0235b82a
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS b=
-ytes used 92.54GiB
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=
-=A0 1 size 95.14GiB used 95.14GiB path /dev/mapper/home
->>>
->>>
->>>
->>> btrfs fi df /home
->>>
->>> Data, single: total=3D94.11GiB, used=3D91.95GiB
->>>
->>> System, single: total=3D31.00MiB, used=3D12.00KiB
->>>
->>> Metadata, single: total=3D1.00GiB, used=3D599.74MiB
->>>
->>> GlobalReserve, single: total=3D199.32MiB, used=3D0.00B
->>>
->>>
->>>
->>> After upgrading to kernel 5.5.2:
->>>
->>>
->>>
->>> [=C2=A0=C2=A0 13.413025] BTRFS: device fsid 56e753f4-1346-49ad-a34f-e=
-93a0235b82a
->>> devid 1 transid 468295 /dev/dm-1 scanned by systemd-udevd (417)
->>>
->>> [=C2=A0=C2=A0 13.589952] BTRFS info (device dm-1): force zstd compres=
-sion, level 3
->>>
->>> [=C2=A0=C2=A0 13.589956] BTRFS info (device dm-1): disk space caching=
- is enabled
->>>
->>> [=C2=A0=C2=A0 13.594707] BTRFS info (device dm-1): bdev /dev/mapper/h=
-ome errs: wr
->>> 0, rd 47, flush 0, corrupt 0, gen 0
->>>
->>> [=C2=A0=C2=A0 13.622912] BTRFS info (device dm-1): enabling ssd optim=
-izations
->>>
->>> [=C2=A0=C2=A0 13.624300] BTRFS critical (device dm-1): corrupt leaf: =
-root=3D5
->>> block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: h=
-as
->>> 18446744073709551492 expect [0, 468296]
->>
->> An older kernel caused underflow/garbage generation.
->> Much strict tree checker is detecting it and rejecting the tree block =
-to
->> prevent further corruption.
->>
->> It can be fixed in by btrfs-progs v5.4 and later, by using 'btrfs chec=
-k
->> --repair'
->>
->> Early btrfs-progs can't detect nor fix it.
->>
->> Thanks,
->> Qu
->>
->=20
-> As you suggest booting to kernel 5.5.3 with btrfs-progs v5.4 and run
-> 'btrfs check --repair'. But didn't fix this error.
->=20
-> mount: /home: can't read superblock on /dev/mapper/home.
-> [=C2=A0 325.121475] BTRFS info (device dm-1): force zstd compression, l=
-evel 3
-> [=C2=A0 325.121482] BTRFS info (device dm-1): disk space caching is ena=
-bled
-> [=C2=A0 325.126234] BTRFS info (device dm-1): bdev /dev/mapper/home err=
-s: wr
-> 0, rd 47, flush 0, corrupt 0, gen 0
-> [=C2=A0 325.143521] BTRFS info (device dm-1): enabling ssd optimization=
-s
-> [=C2=A0 325.146138] BTRFS critical (device dm-1): corrupt leaf: root=3D=
-5
-> block=3D122395779072 slot=3D10 ino=3D265, invalid inode generation: has=
+> I've been getting the following "BTRFS errors" for a while now, the wik=
+i
+> [0] advises to report such occurrences to this list.
 
-> 18446744073709551492 expect [0, 469820]
-> [=C2=A0 325.148637] BTRFS error (device dm-1): block=3D122395779072 rea=
-d time
-> tree block corruption detected
+Please provide the following dump:
 
-According to the repair log, btrfs-progs doesn't detect it at all.
-Thus I'm not sure if it's a bug in btrfs-progs or it's just not newer
-enough.
-
-Anyway, you can delete inode 265 manually using older kernel.
+# btrfs ins dump-tree -b 194756837376 /dev/sda2
+# btrfs ins dump-tree -b 194347958272 /dev/sda2
 
 Thanks,
 Qu
 >=20
->>>
->>> [=C2=A0=C2=A0 13.624381] BTRFS error (device dm-1): block=3D122395779=
-072 read time
->>> tree block corruption detected
->>>
->>>
->>>
->>>
->>>
->>> Booting from 4.19 kernel can mount fs again.
->>
+> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19475683=
+7376
+> slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have=
+ file
+> offset 475136 extent num bytes 18446744073709486080
+> BTRFS error (device sda2): block=3D194756837376 read time tree block
+> corruption detected
+> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19475683=
+7376
+> slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have=
+ file
+> offset 475136 extent num bytes 18446744073709486080
+> BTRFS error (device sda2): block=3D194756837376 read time tree block
+> corruption detected
+> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19434795=
+8272
+> slot=3D131 ino=3D1357455 file_offset=3D1044480, extent end overflow, ha=
+ve file
+> offset 1044480 extent num bytes 18446744073708908544
+> BTRFS error (device sda2): block=3D194347958272 read time tree block
+> corruption detected
+>=20
+> I can reproduce these errors consistently by running `updatedb`, I
+> suppose some tree block in one of the file it reads is corrupted.
+>=20
+> Thanks in advance for your help,
+> Regards,
+> Samir
+>=20
+> [0]
+> https://btrfs.wiki.kernel.org/index.php/Tree-checker#How_to_handle_such=
+_error
+>=20
 
 
---IVAuvGxMURdogj5KCIdKWtuyXDld1tzgm--
+--bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0--
 
---MddOv4zuJLigWFc08xuWF5oAzKlCa9eZ2
+--jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5El0QACgkQwj2R86El
-/qh77Qf/b+KyZ7SE/8lpsiSYYD7w/LJrNJqckwSUYcHAXuhqKR53gOyAl3RVRFok
-x8qIjjsogIFkLsRqFNRuNodEWGOd1MG8VDep7dAsaMUSlyepGZ+rQkvd6xqcQa9N
-RsQxroZb4PGKMLWc0qcZkxO1UVZJnejWqPGOjlfpYE55eQqX7lSdyTUPLZj5ciZD
-Y1il7c8jmnIULLGphBsBBOzqcLjUOjLAlW4lyw+b67L/arkJG6VO+iukYj0aF4qx
-vW3kGUUN73gD12Ks0eSeYVrtY8D1pvQlQuSxZTW+S4+iOIrzLC6KItwEi3eUKdPz
-gmASAvqRom1O79+k+ducW78nc7xjAg==
-=AzLq
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5El64ACgkQwj2R86El
+/qj+mgf7BMVmlf9v3/khi0o88Q9T55JnF9M1AzC3n9YCmCwJadf5sHQiaP4ao9Tf
+uqZ8nChYTiSrRFLwjD5aHkX5uyU6OUpFrvdKpyQsmzEecPuTMPNX9CjH/srhsy3I
+bVct81ckyzrXUGLXsNWTBRQ8a8HfYA4g5/73N0Q6F78CvPf9WwroaApS2SAtiMZ6
+/eCqOIxkYKalWZECeV8IU1qM7bZoGDixh98FwGk3oxb7npJ4spah3LtnXvmOR5fi
+E0yq03RRRMNR8w7IfDO4acmFzLFp8ul1M2iXdhbeUcwc8zyAczXNtNxT8V//BxBM
+s5WElXZVa5rqyiiTXaieamxo61aqPA==
+=KYjD
 -----END PGP SIGNATURE-----
 
---MddOv4zuJLigWFc08xuWF5oAzKlCa9eZ2--
+--jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4--
