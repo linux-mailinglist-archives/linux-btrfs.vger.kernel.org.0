@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F7C15BD8B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 12:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355FC15BDA9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 12:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgBMLRB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 06:17:01 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:20075 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729526AbgBMLRB (ORCPT
+        id S1729572AbgBMLc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 06:32:57 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:52830 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729544AbgBMLc4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 06:17:01 -0500
+        Thu, 13 Feb 2020 06:32:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581592623; x=1613128623;
-  h=from:to:subject:date:message-id:references:
+  t=1581593577; x=1613129577;
+  h=from:to:cc:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
   bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=TRfv8BB67NZZyZ3iXVQRaDw/+LDiScrPR/qF97dtYCo7FjeE3ItGIN5z
-   b0K2srzKjyloSkrR/f2QlRSCZnxuqatplybbfRcgHiLPdV/X1JablcruE
-   k98L5UAegNtlbfdaCQ/7dI2xPgbcO6Du3qs6S/FWyTZ5bjo4UhU3D7iTA
-   Wdv80vuiJla18AWqnSPbYT67mmnM8xQEFQgRbrG4ajltHmMk16ZFKCDuu
-   +8MtFsOFw4gItwoHJ43cbPX0fabxTmoxKPJ9qhLIsllW9jbasL22aSK9g
-   8ox7bryDv2X4afAPIhVuskYnFht4/czDQzF10gaGTdZ4GIrSS+o8ZNACb
-   g==;
-IronPort-SDR: BCqE6mKFUAl3offPyi8XuKAUmt5fI0bozFDMuiaLOoT3hLeYh5KIT70Xg5vkBw1uQnL6F0CDFD
- ZkudnHKcOeiOBFc/ulEJNGrLFDIFoz3Mcnw3ZEYEOj2F0VFd8YBv3M7n2XpKy3YDXSqo/H1N1z
- Z95i+wFfOyNAMg+nikcazTpxr14R31bozuAtltB5fGwf8sP3WqFCKvGda6MPA1PSu2BU0FuX7P
- jnHVwYCdpGa+0PvbO+WjPLVGdh1ucBBOS7Yp/bAvqaZD+UfqpG0+fEDFTgiIo84eEpl/RfxCxR
- uOo=
+  b=Rd6RE3zbmGXhz0C09ffUhhPBMFUQ6yb9zYRGajwpKPNBaVcpNmE5/2qK
+   k7quYe/tSQ4MG+dtNsMwycj/b2cAk3ZOAZ4OZ5jKf9w5K6dJx6xdVC7gy
+   C7Mz0w3yWRwOKhE+/AXyeN4dLBy04iv1VBRPT7uzBj76apI3uFL0Be4Dn
+   q+faQ8grdqPdk5fs5sedST/PAbP5RSFgnfiBraGqVzL7sPBxIgQXWS95F
+   TnOP7MHkO6bEBxSF+cnvwb17K0DYnLx10unEVGghOWs+e5u1IUqCcz4MJ
+   iL1seg2+aCEh24tF/dGIgwC6NQXmZ264KJ3iT6Luj/Ol2PGG/0A/tm2oZ
+   Q==;
+IronPort-SDR: civMeK4Ca78gBT6OVxi4RsCwMEPBU8jPZCdZHJoCRdjaXV/qdUqZ+1zGy7BgpuZ5UnN2E3Tn2C
+ 8cLKvw+55MC1jLKjdmpoMRAXvE6QjauIGVDx1eTOWymvY9bF79B6O2KJi5XB8gXZk7Q+zeJu6O
+ POcm4S0+M4ptCuyNiX4tOiJOLuZlqWv+UAzVUFg/0rO03Yn1gKLn05eNTYDEvBJb9sbESW5mmR
+ oGkwRr3KF7XF8aCm+HeXrrR5Y2we+n+HJQXW0RGy9H+2O0IW/aT/uOFDaZIEY6wVhPWQG9e/Gn
+ JLc=
 X-IronPort-AV: E=Sophos;i="5.70,436,1574092800"; 
-   d="scan'208";a="231569375"
-Received: from mail-bn8nam12lp2173.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.173])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2020 19:17:00 +0800
+   d="scan'208";a="131214897"
+Received: from mail-mw2nam12lp2048.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.48])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2020 19:32:56 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D7wTqA34qk6081fIvZ5NbAxf4sgBkUSHQHlHNhJf8W+LXA0QqjX+ABjIHbc8+yQbqScAA83JZerlhyf+jnAYjwzk7qwdF0iY/PWwREgxA4QKj/3jnLTAXOIQIwzlBTsBhqM5hpNTHf92g13MMj01IdIw6ZML5uoC1o224S2FiWn1Sksj9llpPo/4PyG/AW/NwNQbNpT5G2uUCim3Rte82esUmKvbEYfvDgOZL4JyWpre9XfsmSda76jfQju5DtuBG2fB8vKASq3IFim0xCgBxt9bMWREj9SFiYCJKtq0fejt/Hfrv9qGMy62u1hyCbVjovvdyMhHiDDJ2ztIO6riFA==
+ b=IbWonj9JTg/3gnuUDOLmDzBIv6Y1geJAjSOYmw/9cVnTDGJR7B9cEpIO+Nxi44yClDHIobbuFF00bZeHwgCM/g3+DQfDxHcKA1X2SC9zDFa4dCU9BR0YVcqqhTeDdWhgEPdFDYvEsDBNJ51uDYWbgeSbHMunR2VYFnPBzO90NuW5bqVL9Lkl68A0s6eEXv4TByMpH7lFSnCOA1NT/XBSTIMS8hht0zQP2eoy0etLRQE42I2Z2v3vAnBl9UMRBv80tvGE5oUyVDBMnKUkxk2T/La5ysBHxEjlyQDYqhsw5C8nhbwdkQ/MFvpwZ1YT13dVHkJf8meLTTMMWR7xy4h1iA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=i8Uzfc1GQGVvA4Z/z+P0XLz2se0EljhQrp2X0rOw0kony7JRjYTdcGINi1s4p6jH3cTz/CyNTgaD9ivTHlB4W4jgFW/jtN+P/QvJo18DMxcLHYXo4ZembnR5QsoubX3CzD3tKUVY9f/Xi3i6woBo/21YGaqkJVzM5r89r7o70G+VNxrKRgypU+ckL5KwMkmUv7nSln3aCsMV4PjGUWiBguRkuPgnWdKdNi5xYCktDhZjXOYRykpZVkm8piOi4yj815otlRliPIE1MQ6lAwB72VRdtEzo/tE+G8ycTk/1wtTqWldbDTR99NqnCBKTgYxwjA+VmNiTVaxd65/XFEwPsw==
+ b=oJRQ69IEuXdw2Lr/AKE3FLBSbcHb8VymHYxuRoIto2jztgX3dLmn6Qx5bTOW/WIMPQqAXtVtUItZnX4lGp9AUMvr4IO/88F63wk6qeQ1bDCH1kNWImHoW/IO8H8XBlZAMua5p3ndeOstE75sTKdYXBrae6a5hzzzgp2mS+njaYugRdlIE7nkbexk735qiKcFtI4143jrcDcbv7Z12TmoTIxXyv7emddBVwfqatNY4M8VMw5QylYYVsvJ+i77WJs4hnSFK1CaP5x4MXtDPw3NO/1S5yA5Q7bHMk4LI8W1RUmFYyDhRaKU2KQGYxfMQTwp1ggI8mdV/KpmT8tZGspGgw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
@@ -48,26 +48,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=yN75bffVdUDI5u17uoT03QBMF+GCiaBHL4p3Q/5Tb/3kkMw/mw4IttBjzQPzRFlf8Vm8qOeb11c40gTssVqNk5jS2m5onT3tFacBtJ4Lg3mZB00Vaboe4D1GUG+idoJiV0BOXN6iESy7w0s/8d1su7JDpyeg9a10ughDyDCjCCc=
+ b=PmM2Uf5ob8CI7DtoFFijU/IVo1tOlvENsAot2MFDTuUjohALslSWR/jBl/HJx84E0yZXLFaieecnxWkpWJuWxbTWBmX22gM7GHb/6BmTMQpkQhgzGrYyFAj9iiOvUU1BeIeH8tt7dUuPWlGUCpeW15u5cyqAu9i1Y9BvFqSS2ys=
 Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3568.namprd04.prod.outlook.com (10.167.133.23) with Microsoft SMTP
+ SN4PR0401MB3550.namprd04.prod.outlook.com (10.167.133.17) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.23; Thu, 13 Feb 2020 11:16:57 +0000
+ 15.20.2729.22; Thu, 13 Feb 2020 11:32:53 +0000
 Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
  ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
  ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.030; Thu, 13 Feb 2020
- 11:16:57 +0000
+ 11:32:53 +0000
 From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH 3/4] btrfs: handle logged extent failure properly
-Thread-Topic: [PATCH 3/4] btrfs: handle logged extent failure properly
-Thread-Index: AQHV4SPyP7ePYh/++0ml8G7zVqoFsg==
-Date:   Thu, 13 Feb 2020 11:16:57 +0000
-Message-ID: <SN4PR0401MB3598FBBEE6940E8243FCF3DF9B1A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200211214042.4645-1-josef@toxicpanda.com>
- <20200211214042.4645-4-josef@toxicpanda.com>
+        David Sterba <dsterba@suse.com>
+CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 04/21] btrfs: refactor find_free_dev_extent_start()
+Thread-Topic: [PATCH v2 04/21] btrfs: refactor find_free_dev_extent_start()
+Thread-Index: AQHV4XUCS9lV+S1Pw0SExZfEWPqjZg==
+Date:   Thu, 13 Feb 2020 11:32:53 +0000
+Message-ID: <SN4PR0401MB3598C96EA1A54EB3534A80A79B1A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200212072048.629856-1-naohiro.aota@wdc.com>
+ <20200212072048.629856-5-naohiro.aota@wdc.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -77,30 +83,30 @@ authentication-results: spf=none (sender IP is )
 x-originating-ip: [129.253.240.72]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0c49dca7-54f8-4c18-2af4-08d7b0763d2a
-x-ms-traffictypediagnostic: SN4PR0401MB3568:
-x-microsoft-antispam-prvs: <SN4PR0401MB3568D4E50859D56D667F93249B1A0@SN4PR0401MB3568.namprd04.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 4235f13b-fe4c-48fd-fb36-08d7b0787739
+x-ms-traffictypediagnostic: SN4PR0401MB3550:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0401MB3550DAD230E2D15CBE8A9BE49B1A0@SN4PR0401MB3550.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
 x-ms-oob-tlc-oobclassifiers: OLM:1728;
 x-forefront-prvs: 031257FE13
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(366004)(376002)(136003)(396003)(39860400002)(189003)(199004)(66556008)(64756008)(66476007)(66946007)(76116006)(66446008)(33656002)(186003)(2906002)(55016002)(110136005)(9686003)(558084003)(6506007)(316002)(91956017)(4270600006)(19618925003)(26005)(8936002)(86362001)(5660300002)(81166006)(71200400001)(8676002)(81156014)(52536014)(478600001)(7696005);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3568;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(189003)(199004)(186003)(54906003)(5660300002)(316002)(110136005)(19618925003)(26005)(2906002)(8676002)(7696005)(81156014)(81166006)(33656002)(6506007)(478600001)(8936002)(55016002)(4270600006)(9686003)(86362001)(71200400001)(4326008)(52536014)(66446008)(66946007)(66476007)(66556008)(64756008)(91956017)(558084003)(76116006);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3550;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ap/PCp8FA+RZFfVb3dxF5p/kEQQzIc87zuDgE6rfewJSOdhb/iyEygarmT6NIa2BPOyIMuPYKXU0TLBP9eRJSxh/i8R9fNUHD+7ByxjFthK7/uNGOvLhirkQyM29enMOo5pK81by0bGf8o83k7h8BLEbZDUPZVBHNrIz1pPmfzkE7strgsS3A5sN69GMmd3FNSSqNnEU2O/b/hmKNt0hrYmkwBKJKsGY3BFEgH6tcYyOipvjLmIGr3S/2BqbcEhQM8GcjItdgnhaBAgjSWKLs2ywgQdj/ITw6dVu7+bV/eDwiwwYVDVVjOqQ7bc1YP4ktrYDcZ2lztvNCFjrzKRJ4zUubmP+T5LenN6+H5zB0xCn2zu+tkxhkQvEXE3GDMJ4hiG+gXIPGjIei0LxtzGXlaUg1+3HNvraBKPScLXeFov2L9Xt1tAn6KwsiqoQAPwr
-x-ms-exchange-antispam-messagedata: ubL3iyvLOO9oAuS/XBy+SUGOre5v3ZCTbkstxKF4OwjWEoIFuCDBhsBtzSpl87zaVxOPHLFepr11cX9icV/+ev/egqjDJG4o0jC81d/xEIt2pyyxz/VS15wlOu5mPysMCSEeBuaOJLzg6zsmnS2VAg==
-x-ms-exchange-transport-forked: True
+x-microsoft-antispam-message-info: kWGSqEUAtDSf0XiiMDrrXlu2al9g7Wqy14SKzS5LktMAuhQWmkJ4fZ4LUCV94U1+qmu1QNQoXxFC1tyd168oucTVqurzMWexTOcNgqR8pyjABgZ5nXglUpZriY81PCEHjnMPStz5vuhtd8f/Fey8xUcJl4UZuGtH+zpW/+Fm1f1heSEKBrqjHeeHGZci5if9HEmo4HArAQ4JV8al0RYkq1jVhB836l/fkl9dc3EZ4aatN26YOCH1Z5tnZorx0ofEadl1SeG/CnmYdc+sFQ0aLhj1EYR8sS090gBz23+cmXjI4hngE8SyldPRLqmv0G7yOfY9pYinxroFG/3ITkBd/uh0EQtMcst9GyTMooitkWOVKVQYTiw7TeoTZjR1OM1LIvu9LBg9r9lpdA4m2fuUkIQh95PRI3jQej/Zw5MDj3Dl1hYtdPdShSJw/sYQ4xWQ
+x-ms-exchange-antispam-messagedata: sZrALWlOSuF/sUbUPyYhIotypCTC9WSZsRRuR8fgBHF6GMtsq7b0pfUd6I/8hvvl8fR2sq6Lo8K2h8KnjWr7JZ3UyqAkzve/R6F6uj0JMaVGgRHztEy4f0Z7eQ4Z0nRXpYjddWFuFTHDsFZyw1In0Q==
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c49dca7-54f8-4c18-2af4-08d7b0763d2a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2020 11:16:57.3988
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4235f13b-fe4c-48fd-fb36-08d7b0787739
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2020 11:32:53.7628
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ESYvmVGHe3r2A8JCIsb4yOowR44MhW9LSO8VkfImxNIzv7kThhpYByOVbtjQllozG1Wteck70K1Pg3JKcq9u/mL7gexpTdlN98fQxGD8skE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3568
+X-MS-Exchange-CrossTenant-userprincipalname: f5oZHgjHtbVGuxqdVcHftOybTVwd2KUg5btI2lF8rKuZAzbFjr0ffzOa3i2Ff/zsjmBE93cKEL6xWXXRFEj/JLWWL9MH2FW8s2Kc8ob0AW8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3550
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
