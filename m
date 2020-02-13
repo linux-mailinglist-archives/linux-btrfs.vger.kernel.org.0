@@ -2,192 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C11EB15BCAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E8D15BCC9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgBMKWY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 05:22:24 -0500
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:46598 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729428AbgBMKWY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 05:22:24 -0500
-Received: by mail-vs1-f66.google.com with SMTP id t12so3214347vso.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 02:22:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=dme1qrHm8Yzv+xCYRnFB0JZETyMPQED75KaiXjLTixo=;
-        b=Nf2AQCr8ZeCS47D0elBzdIHt0wUrQ+bliezGP1h3mRAV8Q9lIMVULGRbJNFbdDM2Dg
-         GjQWKjTcq8KVyrho5feFSdMuViRkWTCoC+3mh5k7Dn7Yw24otdNmOMStLQtKOde62Z/+
-         o+MXJNGZiFCiYN0rNMTIai+4XGi2HAmzsix2BFDGxyJEDB1QuE6Bs4Y/BEV2hXGRV9/0
-         yz4VKCKKrHuXEckOdjjl/d0kx4vELXaYPdF2TekwknSKoTG7uYyOaJeu83d4qW2eQYnC
-         cggrnirZcXR28dodi3/MV4VN1TCssOJZf+l0pLkB3nUgT2A268bZeoa6y02IWUUnnHdT
-         OW4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=dme1qrHm8Yzv+xCYRnFB0JZETyMPQED75KaiXjLTixo=;
-        b=tU4v+7sFqcYhYiqODOmNzfLXmXLd3zuALvH/2PBjLGc/FhdIjHVJVajCSMXnPy5zqV
-         CejVGKZDhdALG1mqvkrrlfyAVdOT0xD3QYsbroktolAA84IMF0MBmC50QwHVI+SsDu8a
-         8gtmGg/xyZMrkeT+yRPwicF+BNtyze2DpJ0HLwOXFk4PBsnP5PALRFfuikV08sSkaPN7
-         yg9POwh0ZV+MtX6Tc7io8+hlKN4in+IaNghUjcWKMJIAUdX/fvk1AaPeynq+vsbH014l
-         q3jmr33SH3Omt+p4r3St9zT+FfoIA85MsE3vpKDvvCePNqzdnrp7JxC5BmXZplMtGULJ
-         ykIQ==
-X-Gm-Message-State: APjAAAXlzZwNy4uupY0ghuU0bBxj+tvarAHS0EzAYyvYzt7iUiwnjMoX
-        7PL6mWtK17kNP1ME9lPt90HJ2O4Au0aCN8P3JIQ=
-X-Google-Smtp-Source: APXvYqz4faVWDNSGiWnFWxuTzDX0yKj5H4QxVKu0UN4431K5aDii0MvtjF6ASdm03xUuSV0p3hpxiFFTCriZYHHvqEA=
-X-Received: by 2002:a05:6102:18f:: with SMTP id r15mr1649211vsq.206.1581589342705;
- Thu, 13 Feb 2020 02:22:22 -0800 (PST)
+        id S1729511AbgBMK0r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 05:26:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56582 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729428AbgBMK0r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Feb 2020 05:26:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id F1746AD57;
+        Thu, 13 Feb 2020 10:26:44 +0000 (UTC)
+Subject: Re: [PATCH 3/4] btrfs: handle logged extent failure properly
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200211214042.4645-1-josef@toxicpanda.com>
+ <20200211214042.4645-4-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <ee9467b3-9d58-1c3e-a0b1-286ee045761f@suse.com>
+Date:   Thu, 13 Feb 2020 12:26:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200212183831.78293-1-josef@toxicpanda.com>
-In-Reply-To: <20200212183831.78293-1-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 13 Feb 2020 10:22:11 +0000
-Message-ID: <CAL3q7H7H1=Fq6z+-4FUzai+yTEgJbhxuNCiDBH0SnesZS8UWqA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: add a find_contiguous_extent_bit helper and use it
- for safe isize
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200211214042.4645-4-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 6:40 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> Filipe noticed a race where we would sometimes get the wrong answer for
-> the i_disk_size for !NO_HOLES with my patch.  That is because I expected
-> that find_first_extent_bit() would find the contiguous range, since I'm
-> only ever setting EXTENT_DIRTY.  However the way set_extent_bit() works
-> is it'll temporarily split the range, loop around and set our bits, and
-> then merge the state.  When it loops it drops the tree->lock, so there
-> is a window where we can have two adjacent states instead of one large
-> state.  Fix this by walking forward until we find a non-contiguous
-> state, and set our end_ret to the end of our logically contiguous area.
-> This fixes the problem without relying on specific behavior from
-> set_extent_bit().
->
-> Fixes: 79ceff7f6e5d ("btrfs: introduce per-inode file extent tree")
+
+
+On 11.02.20 г. 23:40 ч., Josef Bacik wrote:
+> If we're allocating a logged extent we attempt to insert an extent
+> record for the file extent directly.  We increase
+> space_info->bytes_reserved, because the extent entry addition will call
+> btrfs_update_block_group(), which will convert the ->bytes_reserved to
+> ->bytes_used.  However if we fail at any point while inserting the
+> extent entry we will bail and leave space on ->bytes_reserved, which
+> will trigger a WARN_ON() on umount.  Fix this by pinning the space if we
+> fail to insert, which is what happens in every other failure case that
+> involves adding the extent entry.
+> 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Alright, survived overnight tests (without my optimization patch), so
-it's all good.
-Thanks.
-
-> ---
-> Dave, I assume you'll want to fold this in to the referenced patch, if no=
-t let
-> me know and I'll rework the series to include this as a different patch.
->
->  fs/btrfs/extent-io-tree.h |  2 ++
->  fs/btrfs/extent_io.c      | 36 ++++++++++++++++++++++++++++++++++++
->  fs/btrfs/file-item.c      |  4 ++--
->  3 files changed, 40 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-> index 16fd403447eb..cc3037f9765e 100644
-> --- a/fs/btrfs/extent-io-tree.h
-> +++ b/fs/btrfs/extent-io-tree.h
-> @@ -223,6 +223,8 @@ int find_first_extent_bit(struct extent_io_tree *tree=
-, u64 start,
->                           struct extent_state **cached_state);
->  void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
->                                  u64 *start_ret, u64 *end_ret, unsigned b=
-its);
-> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
-> +                              u64 *start_ret, u64 *end_ret, unsigned bit=
-s);
->  int extent_invalidatepage(struct extent_io_tree *tree,
->                           struct page *page, unsigned long offset);
->  bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index d91a48d73e8f..50bbaf1c7cf0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1578,6 +1578,42 @@ int find_first_extent_bit(struct extent_io_tree *t=
-ree, u64 start,
->         return ret;
->  }
->
-> +/**
-> + * find_contiguous_extent_bit: find a contiguous area of bits
-> + * @tree - io tree to check
-> + * @start - offset to start the search from
-> + * @start_ret - the first offset we found with the bits set
-> + * @end_ret - the final contiguous range of the bits that were set
-> + *
-> + * set_extent_bit anc clear_extent_bit can temporarily split contiguous =
-ranges
-> + * to set bits appropriately, and then merge them again.  During this ti=
-me it
-> + * will drop the tree->lock, so use this helper if you want to find the =
-actual
-> + * contiguous area for given bits.  We will search to the first bit we f=
-ind, and
-> + * then walk down the tree until we find a non-contiguous area.  The are=
-a
-> + * returned will be the full contiguous area with the bits set.
-> + */
-> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
-> +                              u64 *start_ret, u64 *end_ret, unsigned bit=
-s)
-> +{
-> +       struct extent_state *state;
-> +       int ret =3D 1;
-> +
-> +       spin_lock(&tree->lock);
-> +       state =3D find_first_extent_bit_state(tree, start, bits);
-> +       if (state) {
-> +               *start_ret =3D state->start;
-> +               *end_ret =3D state->end;
-> +               while ((state =3D next_state(state)) !=3D NULL) {
-> +                       if (state->start > (*end_ret + 1))
-> +                               break;
-> +                       *end_ret =3D state->end;
-> +               }
-> +               ret =3D 0;
-> +       }
-> +       spin_unlock(&tree->lock);
-> +       return ret;
-> +}
-> +
->  /**
->   * find_first_clear_extent_bit - find the first range that has @bits not=
- set.
->   * This range could start before @start.
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index a73878051761..6c849e8fd5a1 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -51,8 +51,8 @@ void btrfs_inode_safe_disk_i_size_write(struct inode *i=
-node, u64 new_i_size)
->         }
->
->         spin_lock(&BTRFS_I(inode)->lock);
-> -       ret =3D find_first_extent_bit(&BTRFS_I(inode)->file_extent_tree, =
-0,
-> -                                   &start, &end, EXTENT_DIRTY, NULL);
-> +       ret =3D find_contiguous_extent_bit(&BTRFS_I(inode)->file_extent_t=
-ree, 0,
-> +                                        &start, &end, EXTENT_DIRTY);
->         if (!ret && start =3D=3D 0)
->                 i_size =3D min(i_size, end + 1);
->         else
-> --
-> 2.24.1
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
