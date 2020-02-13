@@ -2,58 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EAE15C47D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 16:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A119D15C66E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 17:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgBMPrq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 10:47:46 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34870 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729345AbgBMPrp (ORCPT
+        id S1729568AbgBMQAe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 11:00:34 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43895 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728206AbgBMPYp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:47:45 -0500
-Received: by mail-qk1-f195.google.com with SMTP id v2so6118636qkj.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 07:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mqg/GgvdfGEGTnTTwE9OKg0ZA4Kue1VMfko7sV3Fl5k=;
-        b=hyC6Y00O57g1wZ0lXSQ1EuTH1d1DmKHktjwrIlcnaph/MteoX3z2tkApKBQql+TyK+
-         z/xGTsWPKOUQZqNXpy0ouW0G25QE7iIguqV+NRe/E7PtSaE7pf8WMW4MzOxLCuXur7sz
-         cPIYEn+Rss1YkwwH3ScLO8MDQrWep9lhY6VtjDyHUaXx8IZzCbCb63EIHEjkxy4ol1aB
-         ZjEouNm52qJW+ksW3uxavCh5SLeLp8LDmdmt/e/vGS8yMyEr62sOcJ7IODQ0LDbgqSzc
-         VcNerHep+gLs2t9MBqtar2jYKt5R5odtZ+S70IlScff1EZZh1ZdNWVIogzzKUDVXt6Xp
-         fkmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mqg/GgvdfGEGTnTTwE9OKg0ZA4Kue1VMfko7sV3Fl5k=;
-        b=RiOLA4Or9l7pBwo1ZLjyqj2MxLZD77Fbnoj7Jy2GlgYcuFfGtpozPPFdBsQL0HxK3t
-         uNdMTE7kWZECYFIx+GWpBsxjRLcXk2n0GLXu716U7etqIiBEQvaAqIP6ZH0UMnWcEuDv
-         KUdOUNGFypFY58W4tFeNzZwhDtagCIiPW14SnN1/Vt8wCbz5KvRrPfGp4IyUmIE4HLy+
-         H3VzDUWrJ9bnM2VrL9ATxG30GBgvjXYzDt+Xjd+UGh2rO75yut2te/GcsynkKvfPLXi8
-         Uf/be3M8y+G3UuMOsjx/m8P8UFTQEgj9clutqHFAD44t/HRLzw0qmS3+g4BI7Do+TJiL
-         wyUA==
-X-Gm-Message-State: APjAAAW9fP8M6HUgv9ZBwW3UpFvL+0Vv1Nn1J9ambIhC5+Y7qKbaYWZm
-        57qT9MePh4htJobfGTqREZzYxxFT1to=
-X-Google-Smtp-Source: APXvYqyG2csrBOZDdqQ6I+sL+1LmAqRXdUB937xruq5KzbqDuk/TcTXhZucEX9IsGfXwji256kR36w==
-X-Received: by 2002:a05:620a:13a9:: with SMTP id m9mr16623092qki.359.1581608863674;
-        Thu, 13 Feb 2020 07:47:43 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id q6sm1468363qkm.46.2020.02.13.07.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Feb 2020 07:47:42 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 4/4] btrfs: fix bytes_may_use underflow in prealloc error condtition
-Date:   Thu, 13 Feb 2020 10:47:31 -0500
-Message-Id: <20200213154731.90994-5-josef@toxicpanda.com>
+        Thu, 13 Feb 2020 10:24:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581607485; x=1613143485;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qdaUHDz78Va59/mVTsP6Q8kl4bUPU2oD+RDwn42wdx8=;
+  b=Lt9CGOHN642XPlfK4t4U59/ICF8bf0A1KhyDl5OlrxFBlQLacoInYF+A
+   k5D4JNPlRVD4/H1at57Ao5PLtO9iEQ6qUJH3n+Oi9C09m25jMie9out0f
+   oB/vl3xa7VJZ8gdSiCvS8NJax1jRUvp2OhzlLU5JnGMDiKHwt2P4Phxun
+   xEhodlFdCFZCCwHFZZGs+HEuMxhaRsyAmpEQShfpviPIvzPLN4A17WVI9
+   aPOv7BlYf6vn2y+ipI+2gNiz4Vt8S5l0jo2MGV4toAqiaMPuyP0Zf8wB3
+   qufBHA9nKryzSSBH1oNs1PL8Ro0QGD0ivoCgxPAjC1awDK3rhNMzBkfnt
+   w==;
+IronPort-SDR: sKKgogdmUfmhtTFFPmegflxDm/IAE31xuCTvcNq5W6znTacPJ5Ms75rU6XqXzWtR5yg1swoPyw
+ +DhxVEuUa/NZ5eRuHZjx3kuiBh0TG2oU41Ig3xcvT11dNt7vFKRBbyfAHPrRwfG6zq8lLn8oot
+ TyhCCXh+nM+SSa3GOtsonYad4ukLJ1KzqJWwaFvRYl1mWUgZIU1rDY2kkqB/cgn2fhtXHrvPhg
+ sDU3RT2iUcH/N1n1uSfZWGw4cmqOU3ZtRzdgKLICDrcVueDlqJawtwM5a5FlTUin791ltGLPJL
+ Uxk=
+X-IronPort-AV: E=Sophos;i="5.70,437,1574092800"; 
+   d="scan'208";a="131227877"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2020 23:24:45 +0800
+IronPort-SDR: 50Y3Jg8SZoCTaNxqOCqFMFLm/CIOCbngIcET6220zXjG/moXcif9RLix6Jm6sXvk5td1cx1WaX
+ mLBL1Q9AmGo55Onbc0A5GFuT+0LYmpY3hU9DNqKKUMsqlwr94AqvW1tn/zfzDyWoNGCban2xho
+ VSSal0AvVvOkGmYNUkUVixYVs8OGOYNSyzPG/KoKxT5/ik9YXzSd8d5ENPBGNXIyoqoeFKw6TA
+ TDXEH2b0/lun6R/FcEGvs6Yfk2/p8s3LohAj8weaskfXzG7ruKY/F5DbeElWlHqKmF1a9xvNAQ
+ /0dpguqApUAfImIBpZ2P997p
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2020 07:17:31 -0800
+IronPort-SDR: qeomJd0ohD5IHz4/JAiaiFTcHeDjZx+Ti7DiCu+tYXK/111F2iAFfnlpBPFYFWwDabkZEMw1Al
+ jkS7b8aK3Hsr1re329xT4VI5lCdN3SPzC3JtPLCiWt34GdwLd2cMlcfMvvamofE4LQXLhY0YzZ
+ bWIZVpRYbpjD3iBEvhAnggw/3OrfY5p1NbmzPgDZGy4AGeO1IBgbduLdxlPzIcuC+auAvdXGsv
+ Xn/2crXrbrYfEwzw33CVnP3Bq/tw1uZWl3lPI3pi7dEzWSK7H9V534nc7d+73OZqDTL1n/e8lX
+ bpU=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 Feb 2020 07:24:42 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v8 0/8] btrfs: remove buffer heads form superblock handling
+Date:   Fri, 14 Feb 2020 00:24:28 +0900
+Message-Id: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200213154731.90994-1-josef@toxicpanda.com>
-References: <20200213154731.90994-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,91 +67,86 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I hit the following warning while running my error injection stress testing
+This patch series removes the use of buffer_heads from btrfs' super block read
+and write paths. It also converts the integrity-checking code to only work
+with pages and BIOs.
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 1453 at fs/btrfs/space-info.h:108 btrfs_free_reserved_data_space_noquota+0xfd/0x160 [btrfs]
-RIP: 0010:btrfs_free_reserved_data_space_noquota+0xfd/0x160 [btrfs]
-Call Trace:
-btrfs_free_reserved_data_space+0x4f/0x70 [btrfs]
-__btrfs_prealloc_file_range+0x378/0x470 [btrfs]
-elfcorehdr_read+0x40/0x40
-? elfcorehdr_read+0x40/0x40
-? btrfs_commit_transaction+0xca/0xa50 [btrfs]
-? dput+0xb4/0x2a0
-? btrfs_log_dentry_safe+0x55/0x70 [btrfs]
-? btrfs_sync_file+0x30e/0x420 [btrfs]
-? do_fsync+0x38/0x70
-? __x64_sys_fdatasync+0x13/0x20
-? do_syscall_64+0x5b/0x1b0
-? entry_SYSCALL_64_after_hwframe+0x44/0xa9
----[ end trace 70ccb5d0fe51151c ]---
+Compared to buffer heads, this gives us a leaner call path, as the
+buffer_head code wraps around getting pages from the page-cache and adding
+them to BIOs to submit.
 
-This happens if we fail to insert our reserved file extent.  At this
-point we've already converted our reservation from ->bytes_may_use to
-->bytes_reserved.  However once we break we will attempt to free
-everything from [cur_offset, end] from ->bytes_may_use, but our extent
-reservation will overlap part of this.
+Patches one to three are preparatory patches, the first one exports
+btrfs_release_disk_super() as a commomn helper to release pages containig a
+super block, the second removes the kmap() calls from block device mappings as
+suggested by Christoph. The third one unexports btrfs_scratch_superblocks()
 
-Fix this problem by adding ins.offset (our extent allocation size) to
-cur_offset so we remove the actual remaining part from ->bytes_may_use.
+The fourth patch removes buffer_heads from superblock reading. The fifth
+removes it from super_block writing and the subsequent patches remove the
+buffer_heads from the integrity check code.
 
-I validated this fix using my inject-error.py script
+Due to a rebase error patch #3 of v5 got merged into the patch removing the
+BHs form super-block reading, but in the end it isn't too bad this way either.
 
-python inject-error.py -o should_fail_bio -t cache_save_setup -t \
-	__btrfs_prealloc_file_range \
-	-t insert_reserved_file_extent.constprop.0 \
-	-r "-5" ./run-fsstress.sh
+It's based on misc-next from Monday February 11
+(23ba1a90f0571d91b55bdfef7f06f380a74e8475), and doesn't show any regressions
+in xfstests to the baseline.
 
-where run-fsstress.sh simply mounts and runs fsstress on a disk.
+Changes to v7:
+- Remove forward declaration for btrfs_scratch_superblocks() (Nikolay)
+- Fix kmap()/kunmap() in check-integrity.c (David)
+- Fix subject of patch 2 (hch)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+Changes to v6:
+- Fixed build warning about unused result of write_one_page() (David)
+- Unexport btrfs_scratch_superblocks()
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 84e649724549..ffc6fcfe805c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9876,6 +9876,7 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct btrfs_key ins;
- 	u64 cur_offset = start;
-+	u64 clear_offset = start;
- 	u64 i_size;
- 	u64 cur_bytes;
- 	u64 last_alloc = (u64)-1;
-@@ -9910,6 +9911,15 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
- 				btrfs_end_transaction(trans);
- 			break;
- 		}
-+
-+		/*
-+		 * We've reserved this space, and thus converted it from
-+		 * ->bytes_may_use to ->bytes_reserved.  Any error that happens
-+		 * from here on out we will only need to clear our reservation
-+		 * for the remaining unreserved area, so advance our
-+		 * clear_offset by our extent size.
-+		 */
-+		clear_offset += ins.offset;
- 		btrfs_dec_block_group_reservations(fs_info, ins.objectid);
- 
- 		last_alloc = ins.offset;
-@@ -9989,9 +9999,9 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
- 		if (own_trans)
- 			btrfs_end_transaction(trans);
- 	}
--	if (cur_offset < end)
--		btrfs_free_reserved_data_space(inode, NULL, cur_offset,
--			end - cur_offset + 1);
-+	if (clear_offset < end)
-+		btrfs_free_reserved_data_space(inode, NULL, clear_offset,
-+			end - clear_offset + 1);
- 	return ret;
- }
- 
+Changes to v5:
+- Rebase to newer misc-next
+- Merge old patches 2 and 3
+- Remove kmap()s of pages from block devices (both in new code as well as
+  existing code)
+
+Changes to v4:
+- Ressurected Nikolay's patch exporting btrfs_release_disk_super()
+- Incroporated feedback from Christoph
+
+Changes to v3:
+- Incroporated feedback from Christoph
+
+Changes to v2:
+- Removed patch #1 again
+- Added Reviews from Josef
+- Re-visited page locking, but not changes, it retains the same locking scheme
+  the buffer_heads had
+- Incroptorated comments from David regarding open-coding functions
+- For more details see the idividual patches.
+
+Changes to v1:
+- Added patch #1
+- Converted sb reading and integrity checking to use the page cache
+- Added rationale behind the conversion to the commit messages.
+- For more details see the idividual patches.
+
+Johannes Thumshirn (7):
+  btrfs: don't kmap() pages from block devices
+  btrfs: reduce scope of btrfs_scratch_superblocks()
+  btrfs: use the page-cache for super block reading
+  btrfs: use BIOs instead of buffer_heads from superblock writeout
+  btrfs: remove btrfsic_submit_bh()
+  btrfs: remove buffer_heads from btrfsic_process_written_block()
+  btrfs: remove buffer_heads form superblock mirror integrity checking
+
+Nikolay Borisov (1):
+  btrfs: Export btrfs_release_disk_super
+
+ fs/btrfs/check-integrity.c | 202 +++++++++----------------------------
+ fs/btrfs/check-integrity.h |   2 -
+ fs/btrfs/disk-io.c         | 191 ++++++++++++++++++-----------------
+ fs/btrfs/disk-io.h         |   6 +-
+ fs/btrfs/volumes.c         | 125 ++++++++++++-----------
+ fs/btrfs/volumes.h         |   4 +-
+ 6 files changed, 217 insertions(+), 313 deletions(-)
+
 -- 
 2.24.1
 
