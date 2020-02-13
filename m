@@ -2,218 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9CA15BC9E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D8815BCA5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgBMKUG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 05:20:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729428AbgBMKUG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 05:20:06 -0500
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD4B2217F4;
-        Thu, 13 Feb 2020 10:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581589205;
-        bh=+fiioPgccicJo9MKKpP7Sm4yzs8aNAbAyPMLPLLUjx0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=A+B2oFv4dO2vdp7cbHC/aKFuJqL9JyyIPzbSn2ZtJ+UlsV1KbaMUWFOyvxpF9T6vP
-         LY5pPM0TlNFKF9WgZyg8N6WjTeoZ4BHgL2TEDnXA2WSzgzFwiRlhagwunXxhHCYJga
-         sWZ+J1yRxW+d2fun4wB5D2OOHjC7MxjuxNflPjHg=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-Subject: [PATCH] Btrfs: avoid unnecessary splits when setting bits on an extent io tree
-Date:   Thu, 13 Feb 2020 10:20:02 +0000
-Message-Id: <20200213102002.6176-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1729721AbgBMKVW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 05:21:22 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:33651 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729428AbgBMKVW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Feb 2020 05:21:22 -0500
+Received: by mail-vs1-f67.google.com with SMTP id n27so3585700vsa.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 02:21:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=ZsMVGYco0HV4JWx0XkSkCJFZz683ipi8JH8zrtLfWGk=;
+        b=jitXEzcHj0IfJpsVRW8USP77URge2WndO+PpSZ9QVIDnCllDQs6C2Y9weS2SB8LkJS
+         hgXh56XB6Il6/anCkaE0KqdvGfleXxKSqTyA43wdsrSuLmdzT1utg6FBhtQdcinW5n+Y
+         FgDOoXSL/8Z9fsaiMlEkbQBq7eXEBn5vLQVz+n/sWNYsjvTHj8ZI3F/W9bqk2/DaZ3wr
+         nP2FOolAlhq4eIsJL0Z/cWeEqNLfoqlLQkYtz6k71yymoSxvmIiQQlpq5tTOBKWo+BvQ
+         gZ39OsI5VUYnNER3LdTryK/Cw1K72TZJWhC6YxMEjY3Uezkyq55LkVskEI4ByQjivV0O
+         hkwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZsMVGYco0HV4JWx0XkSkCJFZz683ipi8JH8zrtLfWGk=;
+        b=UhEz1vc74P/oNts5oqR/JsWgeQrdLSM1sSLS41MRHhMpu3lgHslss18vKYkfhvTH99
+         dm6yMKUAdKbwMYIKdVEhjxHLt71V3VgRKb6QFHNBKR+Fiyv+YOFpGLzXFcAJWw78sUoI
+         f1HMUHNzYjZAEp+QTazxn0bS5k9ZZDDWrgffpNpNla5CdQtKy4fvg+lCU44BjQg6TNQb
+         cjOa0strG2AQcHoPhi91lSMUQMsoTfAw3WU3ufOM/mZej0s9nEecy0WmQO0XDceKvNd7
+         7IqHLhlBfuWnc2v641gabnx8o75gz/Mh1OHtDu0/jWafHdWTfi9W9u1s1xzRC5rnqgQO
+         RKlg==
+X-Gm-Message-State: APjAAAXgCRtbEEytH5rpBwTQKdZj94tMA8lCRXYWoW1wca58FKazptjN
+        zCITJOxEo95HaeW+4oPAZrJaNTz0EzxKyTWzGDQ=
+X-Google-Smtp-Source: APXvYqx6T2XSeGtRQ1vPsIu6xFkzEKLJFIhBZOZgsLkoxwDNNdsMS5OsSHqU3GX9/zwunciFMn3znTRKQtSbd6e+mnE=
+X-Received: by 2002:a67:af11:: with SMTP id v17mr1519341vsl.99.1581589281386;
+ Thu, 13 Feb 2020 02:21:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20200212183831.78293-1-josef@toxicpanda.com> <CAL3q7H7vUxcghnxfyVTrG0ztHZT-=9uo7H7nwRCJUzyB25CiPQ@mail.gmail.com>
+ <7279d1d5-0b27-f319-0591-90750323c3a7@toxicpanda.com>
+In-Reply-To: <7279d1d5-0b27-f319-0591-90750323c3a7@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 13 Feb 2020 10:21:10 +0000
+Message-ID: <CAL3q7H7172R2H8encxqAvpLbWUufGaRYKEGo3hpDBP55DB2YbA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: add a find_contiguous_extent_bit helper and use it
+ for safe isize
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Feb 12, 2020 at 7:44 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On 2/12/20 1:44 PM, Filipe Manana wrote:
+> > On Wed, Feb 12, 2020 at 6:40 PM Josef Bacik <josef@toxicpanda.com> wrot=
+e:
+> >>
+> >> Filipe noticed a race where we would sometimes get the wrong answer fo=
+r
+> >> the i_disk_size for !NO_HOLES with my patch.  That is because I expect=
+ed
+> >> that find_first_extent_bit() would find the contiguous range, since I'=
+m
+> >> only ever setting EXTENT_DIRTY.  However the way set_extent_bit() work=
+s
+> >> is it'll temporarily split the range, loop around and set our bits, an=
+d
+> >> then merge the state.  When it loops it drops the tree->lock, so there
+> >> is a window where we can have two adjacent states instead of one large
+> >> state.  Fix this by walking forward until we find a non-contiguous
+> >> state, and set our end_ret to the end of our logically contiguous area=
+.
+> >> This fixes the problem without relying on specific behavior from
+> >> set_extent_bit().
+> >>
+> >> Fixes: 79ceff7f6e5d ("btrfs: introduce per-inode file extent tree")
+> >> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> >> ---
+> >> Dave, I assume you'll want to fold this in to the referenced patch, if=
+ not let
+> >> me know and I'll rework the series to include this as a different patc=
+h.
+> >>
+> >>   fs/btrfs/extent-io-tree.h |  2 ++
+> >>   fs/btrfs/extent_io.c      | 36 ++++++++++++++++++++++++++++++++++++
+> >>   fs/btrfs/file-item.c      |  4 ++--
+> >>   3 files changed, 40 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+> >> index 16fd403447eb..cc3037f9765e 100644
+> >> --- a/fs/btrfs/extent-io-tree.h
+> >> +++ b/fs/btrfs/extent-io-tree.h
+> >> @@ -223,6 +223,8 @@ int find_first_extent_bit(struct extent_io_tree *t=
+ree, u64 start,
+> >>                            struct extent_state **cached_state);
+> >>   void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 st=
+art,
+> >>                                   u64 *start_ret, u64 *end_ret, unsign=
+ed bits);
+> >> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start=
+,
+> >> +                              u64 *start_ret, u64 *end_ret, unsigned =
+bits);
+> >>   int extent_invalidatepage(struct extent_io_tree *tree,
+> >>                            struct page *page, unsigned long offset);
+> >>   bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *sta=
+rt,
+> >> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> >> index d91a48d73e8f..50bbaf1c7cf0 100644
+> >> --- a/fs/btrfs/extent_io.c
+> >> +++ b/fs/btrfs/extent_io.c
+> >> @@ -1578,6 +1578,42 @@ int find_first_extent_bit(struct extent_io_tree=
+ *tree, u64 start,
+> >>          return ret;
+> >>   }
+> >>
+> >> +/**
+> >> + * find_contiguous_extent_bit: find a contiguous area of bits
+> >> + * @tree - io tree to check
+> >> + * @start - offset to start the search from
+> >> + * @start_ret - the first offset we found with the bits set
+> >> + * @end_ret - the final contiguous range of the bits that were set
+> >> + *
+> >> + * set_extent_bit anc clear_extent_bit can temporarily split contiguo=
+us ranges
+> >> + * to set bits appropriately, and then merge them again.  During this=
+ time it
+> >> + * will drop the tree->lock, so use this helper if you want to find t=
+he actual
+> >> + * contiguous area for given bits.  We will search to the first bit w=
+e find, and
+> >> + * then walk down the tree until we find a non-contiguous area.  The =
+area
+> >> + * returned will be the full contiguous area with the bits set.
+> >> + */
+> >> +int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start=
+,
+> >> +                              u64 *start_ret, u64 *end_ret, unsigned =
+bits)
+> >> +{
+> >> +       struct extent_state *state;
+> >> +       int ret =3D 1;
+> >> +
+> >> +       spin_lock(&tree->lock);
+> >> +       state =3D find_first_extent_bit_state(tree, start, bits);
+> >> +       if (state) {
+> >> +               *start_ret =3D state->start;
+> >> +               *end_ret =3D state->end;
+> >> +               while ((state =3D next_state(state)) !=3D NULL) {
+> >> +                       if (state->start > (*end_ret + 1))
+> >> +                               break;
+> >> +                       *end_ret =3D state->end;
+> >> +               }
+> >> +               ret =3D 0;
+> >
+> > So as long as the tree is not empty, we will always be returning 0
+> > (success), right?
+> > If we break from the while loop we should return with 1, but this
+> > makes us return 0.
+> >
+>
+> Yeah, that's the same behavior we have with find_first_extent_bit, that's=
+ why we do
+>
+> if (!ret && start =3D=3D 0)
+>         i_size =3D min(i_size, end + 1);
+> else
+>         i_size =3D 0;
 
-When attempting to set bits on a range of an exent io tree that already
-has those bits set we can end up splitting an extent state record, use
-the preallocated extent state record, insert it into the red black tree,
-do another search on the red black tree, merge the preallocated extent
-state record with the previous extent state record, remove that previous
-record from the red black tree and then free it. This is all unnecessary
-work that consumes time.
+Yes, never mind, evening confusion.
+It's correct indeed, and it fixes the problem as well (even without my
+optimization patch).
 
-This happens specifically at the following case at __set_extent_bit():
+>
+> Thanks,
+>
+> Josef
 
-  $ cat -n fs/btrfs/extent_io.c
-   957  static int __must_check
-   958  __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
-  (...)
-  1044          /*
-  1045           *     | ---- desired range ---- |
-  1046           * | state |
-  1047           *   or
-  1048           * | ------------- state -------------- |
-  1049           *
-  (...)
-  1060          if (state->start < start) {
-  1061                  if (state->state & exclusive_bits) {
-  1062                          *failed_start = start;
-  1063                          err = -EEXIST;
-  1064                          goto out;
-  1065                  }
-  1066
-  1067                  prealloc = alloc_extent_state_atomic(prealloc);
-  1068                  BUG_ON(!prealloc);
-  1069                  err = split_state(tree, state, prealloc, start);
-  1070                  if (err)
-  1071                          extent_io_tree_panic(tree, err);
-  1072
-  1073                  prealloc = NULL;
 
-So if our extent state represents a range from 0 to 1Mb for example, and
-we want to set bits in the range 128Kb to 256Kb for example, and that
-extent state record already has all those bits set, we end up splitting
-that record, so we end up with extent state records in the tree which
-represent the ranges from 0 to 128Kb and from 128Kb to 1Mb. This is
-temporary because a subsequent iteration in that function will end up
-merging the records.
 
-The splitting requires using the preallocated extent state record, so
-a future iteration that needs to do another split will need to allocate
-another extent state record in an atomic context, something not ideal
-that we try to avoid as much as possible. The splitting also requires
-an insertion in the red black tree, and a subsequent merge will require
-a deletion from the red black tree and freeing an extent state record.
+--=20
+Filipe David Manana,
 
-This change just skips the splitting of an extent state record when it
-already has all the bits the we need to set.
-
-Setting a bit that is already set for a range is very common in the
-inode's 'file_extent_tree' extent io tree for example, where we keep
-setting the EXTENT_DIRTY bit every time we replace an extent.
-
-This change also fixes a bug that happens after the recent patchset from
-Josef that avoids having implicit holes after a power failure when not
-using the NO_HOLES feature, more specifically the patch with the subject:
-
-  "btrfs: introduce the inode->file_extent_tree"
-
-This patch introduced an extent io tree per inode to keep track of
-completed ordered extents and figure out at any time what is the safe
-value for the inode's disk_i_size. This assumes that for contiguous
-ranges in a file we always end up with a single extent state record in
-the io tree, but that is not the case, as there is a short time window
-where we can have two extent state records representing contiguous
-ranges. When this happens we end setting up an incorrect value for the
-inode's disk_i_size, resulting in data loss after a clean unmount
-of the filesystem. The following example explains how this can happen.
-
-Suppose we have an inode with an i_size and a disk_i_size of 1Mb, so in
-the inode's file_extent_tree we have a single extent state record that
-represents the range [0, 1Mb[ with the EXTENT_DIRTY bit set. Then the
-following steps happen:
-
-1) A buffered write against file range [512Kb, 768Kb[ is made. At this
-   point delalloc was not flushed yet;
-
-2) Deduplication from some other inode into this inode's range
-   [128Kb, 256Kb[ is made. This causes btrfs_inode_set_file_extent_range()
-   to be called, from btrfs_insert_clone_extent(), to mark the range
-   [128Kb, 256Kb[ with EXTENT_DIRTY in the inode's file_extent_tree;
-
-3) When btrfs_inode_set_file_extent_range() calls set_extent_bits(), we
-   end up at __set_extent_bit(). In the first iteration of that function's
-   loop we end up in the following branch:
-
-   $ cat -n fs/btrfs/extent_io.c
-    957  static int __must_check
-    958  __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
-   (...)
-   1044          /*
-   1045           *     | ---- desired range ---- |
-   1046           * | state |
-   1047           *   or
-   1048           * | ------------- state -------------- |
-   1049           *
-   (...)
-   1060          if (state->start < start) {
-   1061                  if (state->state & exclusive_bits) {
-   1062                          *failed_start = start;
-   1063                          err = -EEXIST;
-   1064                          goto out;
-   1065                  }
-   1066
-   1067                  prealloc = alloc_extent_state_atomic(prealloc);
-   1068                  BUG_ON(!prealloc);
-   1069                  err = split_state(tree, state, prealloc, start);
-   1070                  if (err)
-   1071                          extent_io_tree_panic(tree, err);
-   1072
-   1073                  prealloc = NULL;
-   (...)
-   1089                  goto search_again;
-
-   This splits the state record into two, one for range [0, 128Kb[ and
-   another for the range [128Kb, 1Mb[. Both already have the EXTENT_DIRTY
-   bit set. Then we jump to the 'search_again' label, where we unlock the
-   the spinlock protecting the extent io tree before jumping to the
-   'again' label to perform the next iteration;
-
-4) In the meanwhile, delalloc is flushed, the ordered extent for the range
-   [512Kb, 768Kb[ is created and when it completes, at
-   btrfs_finish_ordered_io(), it calls btrfs_inode_safe_disk_i_size_write()
-   with a value of 0 for its 'new_size' argument;
-
-5) Before the deduplication task currently at __set_extent_bit() moves to
-   the next iteration, the task finishing the ordered extent calls
-   find_first_extent_bit() through btrfs_inode_safe_disk_i_size_write()
-   and gets 'start' set to 0 and 'end' set to 128Kb - because at this
-   moment the io tree has two extent state records, one representing the
-   range [0, 128Kb[ and another representing the range [128Kb, 1Mb[,
-   both with EXTENT_DIRTY set. Then we set 'isize' to:
-
-   isize = min(isize, end + 1)
-         = min(1Mb, 128Kb - 1 + 1)
-         = 128Kb
-
-   Then we set the inode's disk_i_size to 128Kb (isize).
-
-   After a clean unmount of the filesystem and mounting it again, we have
-   the file with a size of 128Kb, and effectively lost all the data it
-   had before in the range from 128Kb to 1Mb.
-
-This change fixes that issue too, as we never end up splitting extent
-state records when they already have all the bits we want set.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/extent_io.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 56258f4e3e50..a477862121cc 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1064,6 +1064,16 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 			goto out;
- 		}
- 
-+		/*
-+		 * If this extent already has all the bits we want set, then
-+		 * skip it, not necessary to split it or do anything with it.
-+		 */
-+		if ((state->state & bits) == bits) {
-+			start = state->end + 1;
-+			cache_state(state, cached_state);
-+			goto search_again;
-+		}
-+
- 		prealloc = alloc_extent_state_atomic(prealloc);
- 		BUG_ON(!prealloc);
- 		err = split_state(tree, state, prealloc, start);
--- 
-2.11.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
