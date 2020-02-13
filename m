@@ -2,64 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1320815C29A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 16:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFED215C28F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 16:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgBMPft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 10:35:49 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43803 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387704AbgBMPb0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:31:26 -0500
-Received: by mail-qk1-f193.google.com with SMTP id p7so6027102qkh.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 07:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=8F6/huWpEjMmTpZmLnALCncdUUWSazxZLlRF3iqnI54=;
-        b=k5TTuP6JzDZY4y7f5wQwhoiAW+VFfTlKD++jxYjb7FgbPs1LjlHw6N5G49hScBEn/B
-         iunbl1XdDTLEZZHT9kZKWWDEzpnt4tLnwgYvi/zeVNY9elkyfiJEpeAUmPHqj8HkQBTz
-         8zHkppNz9f6kLSm4DWPVGMGsdLSQsw6a9Q0rQYxO8XwJTr0uJkr1gm5oqXarajGkPf1L
-         CEVu73Q9cA6Yn7C1p9ZTtKuMhXA/kqGM/RkZzEZzRV7JElDMLE6I11kva4343pYH6fwH
-         K1lNxJXUfzxR0G+1mkbCHLlkwAFBaOeVqhVUrFEwSo3Q9D6sKYHSuNIYQB6b8es3WI/i
-         KWqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8F6/huWpEjMmTpZmLnALCncdUUWSazxZLlRF3iqnI54=;
-        b=ie/FaecGYelypvQ273l7BzQDfA9FRpcA9BKJpRtdOQ3fsCMI2P4/h+GCUb0jEAjPgd
-         CJZriDE8I4mcZ4kfY80VA3U6XxDPhvMQS5XZPIVvJWQIMZz3YCqYNl1zS02RTbY4mM26
-         yes7drdEVjtDnd772sJWsPlPQ2RIIM/REnUtcRf35L704vwLHPBeQVAONXlOVM9y1fRE
-         ZKFwh0gZ8Y062CbRCr54wcSObZpMaWG7VR8ZFVIssAO/UDi0TUKgxQLBYfT/tFJZjfJo
-         f1JcaXD/qx7uUc+2SkLtZ9MW6YVP2FYnMOF4mSFDUpfOF1McTy0vST6y9D+G4F3X3pJX
-         azDQ==
-X-Gm-Message-State: APjAAAXpKDHgv9PLXnH9/qosQ7s/EXCjVas1S6R8IUKY/HQrtCkeEv2y
-        sbR4CwFfRVhqqqQlMMlDa7/iCqg/rAo=
-X-Google-Smtp-Source: APXvYqxL6UaqfhOSR2vhLAuOmojTSYL9w1922MxLFIz5YBO8XC0NwgvMxEkA+crFDHwvIJi4a8HYmw==
-X-Received: by 2002:a37:de16:: with SMTP id h22mr12634717qkj.400.1581607885101;
-        Thu, 13 Feb 2020 07:31:25 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k37sm1710575qtf.70.2020.02.13.07.31.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Feb 2020 07:31:24 -0800 (PST)
+        id S1727877AbgBMPeh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 10:34:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729890AbgBMPd1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Feb 2020 10:33:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 386BAB152;
+        Thu, 13 Feb 2020 15:33:25 +0000 (UTC)
 Subject: Re: [PATCH 1/4] btrfs: set fs_root = NULL on error
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200211214042.4645-1-josef@toxicpanda.com>
  <20200211214042.4645-2-josef@toxicpanda.com>
  <e1ec6363-0b6e-bfbb-5fde-f2824d758d20@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ca02dd70-3332-14e4-0719-09f75cad499a@toxicpanda.com>
-Date:   Thu, 13 Feb 2020 10:31:23 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+ <ca02dd70-3332-14e4-0719-09f75cad499a@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <259ff5ff-6acc-ae9e-7d74-1352b69571d1@suse.com>
+Date:   Thu, 13 Feb 2020 17:32:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <e1ec6363-0b6e-bfbb-5fde-f2824d758d20@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <ca02dd70-3332-14e4-0719-09f75cad499a@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -67,29 +79,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/13/20 5:48 AM, Nikolay Borisov wrote:
-> 
-> 
-> On 11.02.20 г. 23:40 ч., Josef Bacik wrote:
->> While running my error injection script I hit a panic when we tried to
->> clean up the fs_root when free'ing the fs_root.  This is because
->> fs_info->fs_root == PTR_ERR(-EIO), which isn't great.  Fix this by
->> setting fs_info->fs_root = NULL; if we fail to read the root.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> 
-> 
-> While looking to see how ->fs_root (git grep "\->fs_root\W" fs/btrfs) is
-> used I realized we almost never query it through that member. It's
-> cleaned up via the btrfs_free_fs_roots which queries the root radix.
-> Given this I fail to see how the presence of a bogus value in
-> fs_info->fs_root would cause a crash (it's certainly wrong so your patch
-> per-se is fine). Can you provide an example call trace?
-> 
 
-We do a btrfs_put_root(fs_info->fs_root); in btrfs_free_fs_info.  There's for 
-sure an argument to be made for getting rid of fs_info->fs_root, and just using 
-the radix lookup.  Once all of my root ref patches are merged I'll take a run at 
-that.  Thanks,
 
-Josef
+On 13.02.20 г. 17:31 ч., Josef Bacik wrote:
+> 
+> We do a btrfs_put_root(fs_info->fs_root); in btrfs_free_fs_info. 
+> There's for sure an argument to be made for getting rid of
+> fs_info->fs_root, and just using the radix lookup.  Once all of my root
+> ref patches are merged I'll take a run at that.  Thanks,
+
+
+This makes sense, I was looking at linux master which don't have your
+patches, hence I wasn't seeing this. Fair point.
