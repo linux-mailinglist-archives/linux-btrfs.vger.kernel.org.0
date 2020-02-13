@@ -2,64 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C5115C2E5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 16:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1320815C29A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 16:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgBMPiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 10:38:08 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45254 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387818AbgBMP3T (ORCPT
+        id S1727799AbgBMPft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 10:35:49 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43803 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387704AbgBMPb0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:29:19 -0500
-Received: by mail-qt1-f194.google.com with SMTP id d9so4619234qte.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 07:29:19 -0800 (PST)
+        Thu, 13 Feb 2020 10:31:26 -0500
+Received: by mail-qk1-f193.google.com with SMTP id p7so6027102qkh.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Feb 2020 07:31:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=kodiMKGBjBcSfIvaenwgjSe7A1p4yFG28LJSfaCFuic=;
-        b=2NpeZuxUg0a1AYwXittI32Yg7C3dw7ZfDlI5Xg2jj0whfL+PxYOIOaMdTF7jf01VW4
-         eh12CQ3urcmnHyzA6sXYiQyh/jlPm6p7RyuzlzcKAETrw6zjmDg3D7a2y6qf9EqCSe1d
-         R1zg5AE2JayHJEbNtoDV+LtW1J5GKtGydkJHCecoxrVWKUiJDxGVVjIqZXGCbZNSrLPt
-         +Ga7Xae9QFcRPIBEz/B3oR0JfbEWEij5ZYM/iaibSHhZEIfAY8Qe41VUERGyu/VZMgB/
-         Go+2cVM54sAMQIf4ZIZGGe25CaVUXFUJorDW4oxrWRUhYEGMx2coFaSGUtbBhhGGw1Sq
-         SHRA==
+        bh=8F6/huWpEjMmTpZmLnALCncdUUWSazxZLlRF3iqnI54=;
+        b=k5TTuP6JzDZY4y7f5wQwhoiAW+VFfTlKD++jxYjb7FgbPs1LjlHw6N5G49hScBEn/B
+         iunbl1XdDTLEZZHT9kZKWWDEzpnt4tLnwgYvi/zeVNY9elkyfiJEpeAUmPHqj8HkQBTz
+         8zHkppNz9f6kLSm4DWPVGMGsdLSQsw6a9Q0rQYxO8XwJTr0uJkr1gm5oqXarajGkPf1L
+         CEVu73Q9cA6Yn7C1p9ZTtKuMhXA/kqGM/RkZzEZzRV7JElDMLE6I11kva4343pYH6fwH
+         K1lNxJXUfzxR0G+1mkbCHLlkwAFBaOeVqhVUrFEwSo3Q9D6sKYHSuNIYQB6b8es3WI/i
+         KWqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kodiMKGBjBcSfIvaenwgjSe7A1p4yFG28LJSfaCFuic=;
-        b=pFhzi/WBKcStU3sWQ6BcLhTUPhXqzVOkFY5ghvwjhZn508rGI/LsxEIUFkOjJRzrYN
-         ANzK1T2LAIjhM29Sa+WOqwoLLHJ9lyPTdY30ZaJJ7QAutTBU8d3gXlPBqPuoMmcYH1y4
-         73BX8KzzRUloTe9i16fUTw31rZTr0KgQsAV5Ct7XJbxCqqXRd1nre8/ShSBREbUdCnH0
-         3ThHlY2Kff9WOccSv7XruJJeZWEih4vnBmiX9/rBgZV0Gz4AF/R3vz+VM5Jzs/MHFm53
-         5i2zfbpptZHOmPSEOgIRXNnk66cBvip13mntYlLjND3rufuKyeF9tO5OM6X9IqxU3Emk
-         a3rA==
-X-Gm-Message-State: APjAAAU3gbfWYTV/Z6XMeF9aWdccewb5Fo3/iD6kSBBoBzpLFzLN4AeB
-        7sW6G6HH3xszSUAf8ILhxb8Bs+zpxhc=
-X-Google-Smtp-Source: APXvYqzUa+oTYU3CPMpUpT/KeGOdOvzSHl2s17RsqaDmUykAJXr71UMbVKusVLU73FsPk2qrqb3IWA==
-X-Received: by 2002:ac8:2b82:: with SMTP id m2mr11927625qtm.161.1581607758490;
-        Thu, 13 Feb 2020 07:29:18 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::edcc])
-        by smtp.gmail.com with ESMTPSA id 64sm1480464qkh.98.2020.02.13.07.29.16
+        bh=8F6/huWpEjMmTpZmLnALCncdUUWSazxZLlRF3iqnI54=;
+        b=ie/FaecGYelypvQ273l7BzQDfA9FRpcA9BKJpRtdOQ3fsCMI2P4/h+GCUb0jEAjPgd
+         CJZriDE8I4mcZ4kfY80VA3U6XxDPhvMQS5XZPIVvJWQIMZz3YCqYNl1zS02RTbY4mM26
+         yes7drdEVjtDnd772sJWsPlPQ2RIIM/REnUtcRf35L704vwLHPBeQVAONXlOVM9y1fRE
+         ZKFwh0gZ8Y062CbRCr54wcSObZpMaWG7VR8ZFVIssAO/UDi0TUKgxQLBYfT/tFJZjfJo
+         f1JcaXD/qx7uUc+2SkLtZ9MW6YVP2FYnMOF4mSFDUpfOF1McTy0vST6y9D+G4F3X3pJX
+         azDQ==
+X-Gm-Message-State: APjAAAXpKDHgv9PLXnH9/qosQ7s/EXCjVas1S6R8IUKY/HQrtCkeEv2y
+        sbR4CwFfRVhqqqQlMMlDa7/iCqg/rAo=
+X-Google-Smtp-Source: APXvYqxL6UaqfhOSR2vhLAuOmojTSYL9w1922MxLFIz5YBO8XC0NwgvMxEkA+crFDHwvIJi4a8HYmw==
+X-Received: by 2002:a37:de16:: with SMTP id h22mr12634717qkj.400.1581607885101;
+        Thu, 13 Feb 2020 07:31:25 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id k37sm1710575qtf.70.2020.02.13.07.31.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Feb 2020 07:29:16 -0800 (PST)
-Subject: Re: [PATCH 4/4] btrfs: fix bytes_may_use underflow in prealloc error
- condtition
+        Thu, 13 Feb 2020 07:31:24 -0800 (PST)
+Subject: Re: [PATCH 1/4] btrfs: set fs_root = NULL on error
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200211214042.4645-1-josef@toxicpanda.com>
- <20200211214042.4645-5-josef@toxicpanda.com>
- <55467ec8-f966-d4f9-d882-8c5881328f77@suse.com>
+ <20200211214042.4645-2-josef@toxicpanda.com>
+ <e1ec6363-0b6e-bfbb-5fde-f2824d758d20@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <42fac191-f4a4-ab70-01ce-307c80909905@toxicpanda.com>
-Date:   Thu, 13 Feb 2020 10:29:16 -0500
+Message-ID: <ca02dd70-3332-14e4-0719-09f75cad499a@toxicpanda.com>
+Date:   Thu, 13 Feb 2020 10:31:23 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <55467ec8-f966-d4f9-d882-8c5881328f77@suse.com>
+In-Reply-To: <e1ec6363-0b6e-bfbb-5fde-f2824d758d20@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -68,44 +67,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/13/20 5:17 AM, Nikolay Borisov wrote:
+On 2/13/20 5:48 AM, Nikolay Borisov wrote:
 > 
 > 
 > On 11.02.20 г. 23:40 ч., Josef Bacik wrote:
->> I hit the following warning while running my error injection stress testing
+>> While running my error injection script I hit a panic when we tried to
+>> clean up the fs_root when free'ing the fs_root.  This is because
+>> fs_info->fs_root == PTR_ERR(-EIO), which isn't great.  Fix this by
+>> setting fs_info->fs_root = NULL; if we fail to read the root.
 >>
->> ------------[ cut here ]------------
->> WARNING: CPU: 3 PID: 1453 at fs/btrfs/space-info.h:108 btrfs_free_reserved_data_space_noquota+0xfd/0x160 [btrfs]
->> RIP: 0010:btrfs_free_reserved_data_space_noquota+0xfd/0x160 [btrfs]
->> Call Trace:
->> btrfs_free_reserved_data_space+0x4f/0x70 [btrfs]
->> __btrfs_prealloc_file_range+0x378/0x470 [btrfs]
->> elfcorehdr_read+0x40/0x40
->> ? elfcorehdr_read+0x40/0x40
->> ? btrfs_commit_transaction+0xca/0xa50 [btrfs]
->> ? dput+0xb4/0x2a0
->> ? btrfs_log_dentry_safe+0x55/0x70 [btrfs]
->> ? btrfs_sync_file+0x30e/0x420 [btrfs]
->> ? do_fsync+0x38/0x70
->> ? __x64_sys_fdatasync+0x13/0x20
->> ? do_syscall_64+0x5b/0x1b0
->> ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> ---[ end trace 70ccb5d0fe51151c ]---
->>
->> This happens if we fail to insert our reserved file extent.  At this
->> point we've already converted our reservation from ->bytes_may_use to
->> ->bytes_reserved.  However once we break we will attempt to free
->> everything from [cur_offset, end] from ->bytes_may_use, but our extent
->> reservation will overlap part of this.
->>
->> Fix this problem by adding ins.offset (our extent allocation size) to
->> cur_offset so we remove the actual remaining part from ->bytes_may_use.
-> This contradicts the code, you are adding ins.objectid which is the
-> offset and not the size. This means either the code is buggy.
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> 
+> While looking to see how ->fs_root (git grep "\->fs_root\W" fs/btrfs) is
+> used I realized we almost never query it through that member. It's
+> cleaned up via the btrfs_free_fs_roots which queries the root radix.
+> Given this I fail to see how the presence of a bogus value in
+> fs_info->fs_root would cause a crash (it's certainly wrong so your patch
+> per-se is fine). Can you provide an example call trace?
+> 
 
-Ooops you're right, I was getting lucky because we're making the whole 
-allocation at once, and ins.objectid was past extent_end so we ended up doing 
-the right thing, but for the wrong reasons.  In fact I need to adjust this for 
-the other error condition, so I'll fix this up.  Thanks,
+We do a btrfs_put_root(fs_info->fs_root); in btrfs_free_fs_info.  There's for 
+sure an argument to be made for getting rid of fs_info->fs_root, and just using 
+the radix lookup.  Once all of my root ref patches are merged I'll take a run at 
+that.  Thanks,
 
 Josef
