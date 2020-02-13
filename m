@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AFF15C66A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 17:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78D215C665
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 17:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgBMQAc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 11:00:32 -0500
+        id S1728265AbgBMQAT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 11:00:19 -0500
 Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43900 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728772AbgBMPYr (ORCPT
+        with ESMTP id S1728786AbgBMPYs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:24:47 -0500
+        Thu, 13 Feb 2020 10:24:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581607488; x=1613143488;
+  t=1581607489; x=1613143489;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+Uv1J16vyERjQrFnyemT8NsEtR8xlBwSfNrtMPfZ+YY=;
-  b=JzbFSn+YSor1/66u+ip3M0/ZF31aymSJRdwlqv1RKJRPup1nb04EUvcJ
-   ZdjrqAILjmGrtpAiIYjiqQ++53fw+ewg9V65e9fawOVMVnyk6yOAS9Ox8
-   6sgq/LYg2p0f/KWXFmI0yU1Lov0SqlEJGneRXngHc4L7QFMUHnMY6dhss
-   7WA2SaW1VcV3tJIUw9h2Aabx8LjPz8r8XdrmN0hhv6tkZ1nwiTEKb7KT/
-   fwjbeIOSAFKoJarvDVVGntq1drm/9Sohw6pTZR6Yl4jWjuvxeytwxXXKB
-   aCofsFC5cdfRJ1k+CoNH5OovYCHng8PaFg0YOwq3aCg94moXSk4qwtiXn
-   w==;
-IronPort-SDR: 3mqWA1DPzR7fqhAry3t0VFCWetaEGM9WDL7c3V12oy3JmKY5068IOZ0oA+5dr4/bJWz7ivDsaE
- WCIPwYvgl1+6DY2j9sDnftfY6XnwID159FHGpOOYUswz4AM7fvst2EVIqY1FBv4ibb09jxdar0
- H33L1h1TEyy4CDmZA1Sn6ulcdNjKNd+x9rTyUleL2xJZnznaOC0ijk5fDJt5N89nABKJi41Y+f
- Y4gWRuu8Rpn7SIbTqde+AGkX6qO3Sa9W4bczle3LtEw18aBw3+BLAPrQnY0uXVcO838HX6AXEO
- gNY=
+  bh=TX/uUxZ/HGtxEWFTBh8wXf8Z714XLMpbfm7PHCdgo/k=;
+  b=DGyIswtj74MFJ9+aFN4aKXjNLVvIQs6mGqOkFra79KKUW94meOUtvNVk
+   y6GDJDynJedoxrIkhRRCw/X85cuOZnhy2SlcORyI8Mkm7b5tz7VzPuRmd
+   oKv1ov+lt9ZZOMOK+6oWYjPbWpe1Q/WGU/VaCKuGAjrjUOEhM4L1Je/ZX
+   X8HKICR+FZCQLVFCMvKFAQ3l+/rNMH3xlUYBX7PV0EvWz7+ezQBKmem0J
+   SCNFKu1MYI2RFsH9zDd1AvuHZIJiVQkPgoJMKzbKMq55nHRRarsMoNmRC
+   /cd43p0N4TOaCIyY+nmfAt8J60yVrGIXrWLl82/Y4Qdvni4jbDRLjZUA2
+   g==;
+IronPort-SDR: OUBna9y+40mK5ycOXP22A0cIFTMOPLe7yqGC+ZEw0paVKwh4WefEW0ZXvjjALbJWCa/LrPONfH
+ 040pCOJMxJUAGKG76L7vcdNfrQbDVjY5osiYL23MDrDfPwXkYu0ME9sTSjtO4toKoJgSunuALY
+ ej1ez3FZ7NzC0CpkwReKn8oLRoLlz/cQMPyPp621IaDHo+5F51siEcafrO0a42uVDib9inykE2
+ NJ8VXXj6u6pSiflPW3xajN3GSBPbtryWQdjV1c/AklSkFpdLsWX4jxUOhSvWPlHozG/rtE82fZ
+ aUA=
 X-IronPort-AV: E=Sophos;i="5.70,437,1574092800"; 
-   d="scan'208";a="131227885"
+   d="scan'208";a="131227886"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2020 23:24:47 +0800
-IronPort-SDR: W9QxjDCvzs4Eg+EKXvo0+dnrL+GjRwKJelssoKA4d5yBP3DSXEcdPv7Ly7vnwwm1UH6PoFeIkM
- pp9DX0RSosE7qlthCnulAMX27nVHePuTMdKsQJ/BXo4xIQQvEBfs2Ji1EhOea8yxNSSGUUjyuj
- cGkI42l/k9qpmr6d8APP/0IkSka5SNRq8JeYOdVU0UxUavtm+8/Qp9flKjPw3CBvYP6wvopEgL
- /8Uk26CYIDLWYmYWKJ16TpPjPxdg4UTc4a96/V8A6vbh+sFh5UHyBf1qHEOXW07JwrB3lxaD7U
- 9pEuRIVhcrVKiKyxPaYwRogO
+  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2020 23:24:48 +0800
+IronPort-SDR: knDBsoQAyPOW4NNHSx369OaZgRY8XW5Wr63UZzl1IygPZoFyPYKJ18+DqycLX11KzsLDAWcfUd
+ ixxcrD5ms/xhsV9230KlgmwhNupArQln7+AWTh6AzMbW+ao1mP5VehjaTL8sBeB4UX/HYbNCIO
+ pUeW+2eQLbqjFRpAlBDqf84CR+Baykz8iQm85LT/gUIm251slsehdfn90Xs+eeMOWbVfSyNBot
+ RjEGueA6fqSSKzbJvLw6SAK2fLrQUd3ZIbAqziN9key9yxQVXhKCrluQp84LK264eoj0en5iwD
+ 6lKBCg8jKMfZfUmAzfSXJrYv
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2020 07:17:34 -0800
-IronPort-SDR: zxPZPllmfHYm4IEqkF+jkVI8qOSpXLjHxYL+qDmmIEXWkc1a8L6vXEusaT8FUIScLzfSHzhS9A
- NVSFhSqF5nXRMKlM+EMk8XhogWdmNXFJcV6rklAWqKDT/Xjk/Lh4CPHUig/Ze6axKklSTyR+R6
- Pj3LsKPNnUvk3Xgwu7GAp2uEvvMXzWgKLggT5Z17XvALVVzA3CSPNCXnEYbfeqt6wLSSqfV6v5
- xreUTSK2xFOq0+OYXgkfG1TamcvFXmOEWC+XQUaA6twGDj6WetulW/LeRqRbqU1BCwuPOxwo+h
- VjA=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2020 07:17:35 -0800
+IronPort-SDR: PApH0gWMRuWF4ePqWnpIg0HUrwg04dF0bb2dRlLhuvoY1HgyHTxymivO4kwzQA+5q07AuQt3xS
+ U7oRHdPb3VGZXujGROJfYzNp/THCucbkewUECTucFNwlYo5LqyROKObzsIrJwsUED8/LVHgBzf
+ I62qyph8AcEja9LAW4IgA7QV72RkIwJ2Mf4/6JsuiKDHdpuYEHB9HIPWLljxlT2jr4n+TdQzen
+ e1EVrcaSWP8IadpZQlHb09dvYvi1AxX24F+PSXyZhinlhbSDHVfDgbuMTptyHMVjg8rv8hv0sa
+ Dm0=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 13 Feb 2020 07:24:45 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 Feb 2020 07:24:46 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     Nikolay Borisov <nborisov@suse.com>,
@@ -56,9 +56,9 @@ Cc:     Nikolay Borisov <nborisov@suse.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v8 2/8] btrfs: don't kmap() pages from block devices
-Date:   Fri, 14 Feb 2020 00:24:30 +0900
-Message-Id: <20200213152436.13276-3-johannes.thumshirn@wdc.com>
+Subject: [PATCH v8 3/8] btrfs: reduce scope of btrfs_scratch_superblocks()
+Date:   Fri, 14 Feb 2020 00:24:31 +0900
+Message-Id: <20200213152436.13276-4-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
 References: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
@@ -69,46 +69,114 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Block device mappings are never in highmem so kmap() / kunmap() calls for
-pages from block devices are unneeded. Use page_address() instead of
-kmap() to get to the virtual addreses.
+btrfs_scratch_superblocks() isn't used anywhere outside volumes.c so
+remove it from the header file and mark it as static.
 
-While we're at it, read_cache_page_gfp() doesn't return NULL on error,
-only an ERR_PTR, so use IS_ERR() to check for errors.
+Also move it above it's callers so we don't need a forward declaration.
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 ---
- fs/btrfs/volumes.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+
+Changes to v7:
+- Remove forward declaration of btrfs_scratch_superblocks() (Nikolay)
+- Reword subject (hch)
+---
+ fs/btrfs/volumes.c | 61 +++++++++++++++++++++++-----------------------
+ fs/btrfs/volumes.h |  1 -
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6ebdd95b798d..620794f1ea64 100644
+index 620794f1ea64..461196b03b6c 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1249,7 +1249,6 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 
- void btrfs_release_disk_super(struct page *page)
- {
--	kunmap(page);
- 	put_page(page);
+@@ -1948,6 +1948,37 @@ static u64 btrfs_num_devices(struct btrfs_fs_info *fs_info)
+ 	return num_devices;
  }
  
-@@ -1277,10 +1276,10 @@ static int btrfs_read_disk_super(struct block_device *bdev, u64 bytenr,
- 	*page = read_cache_page_gfp(bdev->bd_inode->i_mapping,
- 				   index, GFP_KERNEL);
++static void btrfs_scratch_superblocks(struct block_device *bdev,
++				      const char *device_path)
++{
++	struct buffer_head *bh;
++	struct btrfs_super_block *disk_super;
++	int copy_num;
++
++	if (!bdev)
++		return;
++
++	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
++		copy_num++) {
++
++		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
++			continue;
++
++		disk_super = (struct btrfs_super_block *)bh->b_data;
++
++		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
++		set_buffer_dirty(bh);
++		sync_dirty_buffer(bh);
++		brelse(bh);
++	}
++
++	/* Notify udev that device has changed */
++	btrfs_kobject_uevent(bdev, KOBJ_CHANGE);
++
++	/* Update ctime/mtime for device path for libblkid */
++	update_dev_time(device_path);
++}
++
+ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+ 		u64 devid)
+ {
+@@ -7316,36 +7347,6 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+ 	return 0;
+ }
  
--	if (IS_ERR_OR_NULL(*page))
-+	if (IS_ERR(*page))
- 		return 1;
- 
--	p = kmap(*page);
-+	p = page_address(*page);
- 
- 	/* align our pointer to the offset of the super block */
- 	*disk_super = p + offset_in_page(bytenr);
+-void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path)
+-{
+-	struct buffer_head *bh;
+-	struct btrfs_super_block *disk_super;
+-	int copy_num;
+-
+-	if (!bdev)
+-		return;
+-
+-	for (copy_num = 0; copy_num < BTRFS_SUPER_MIRROR_MAX;
+-		copy_num++) {
+-
+-		if (btrfs_read_dev_one_super(bdev, copy_num, &bh))
+-			continue;
+-
+-		disk_super = (struct btrfs_super_block *)bh->b_data;
+-
+-		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+-		set_buffer_dirty(bh);
+-		sync_dirty_buffer(bh);
+-		brelse(bh);
+-	}
+-
+-	/* Notify udev that device has changed */
+-	btrfs_kobject_uevent(bdev, KOBJ_CHANGE);
+-
+-	/* Update ctime/mtime for device path for libblkid */
+-	update_dev_time(device_path);
+-}
+-
+ /*
+  * Update the size and bytes used for each device where it changed.  This is
+  * delayed since we would otherwise get errors while writing out the
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index b7f2edbc6581..a3d86ee6a883 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -473,7 +473,6 @@ int btrfs_run_dev_stats(struct btrfs_trans_handle *trans);
+ void btrfs_rm_dev_replace_remove_srcdev(struct btrfs_device *srcdev);
+ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev);
+ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev);
+-void btrfs_scratch_superblocks(struct block_device *bdev, const char *device_path);
+ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info,
+ 			   u64 logical, u64 len);
+ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
 -- 
 2.24.1
 
