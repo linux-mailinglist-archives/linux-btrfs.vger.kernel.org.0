@@ -2,29 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 805C715B5D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 01:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79AF15B647
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 02:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgBMA0a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Feb 2020 19:26:30 -0500
-Received: from mout.gmx.net ([212.227.15.18]:60321 "EHLO mout.gmx.net"
+        id S1729190AbgBMBAU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Feb 2020 20:00:20 -0500
+Received: from mout.gmx.net ([212.227.17.20]:46565 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727032AbgBMA0a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Feb 2020 19:26:30 -0500
+        id S1729132AbgBMBAT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Feb 2020 20:00:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581553586;
-        bh=5Pa/3TMKhXgeoY7Gk+c4FKNng5QU1xlqj0KtoWt2/7s=;
+        s=badeba3b8450; t=1581555604;
+        bh=qGxjBvebJPKwl15cBDYfFLOTlodLUFVcyPkoBkOXRio=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=gYKyicsdYVklAOBSyjP20O7WiTsJxsMwV5Q4a+YO1rpFAmTIKaH3dAIR8EMJCPVF4
-         B+wJrX9DKZ9ZM9LnMW4R6LE55yGodUQZ5KzPz5yU45JJWNLD3VoLV88RucJzwU/WSx
-         yYyeVgmKs7U0N8T++/iGRVkIBsFELD771K0ucMXA=
+        b=UHrIpv1OAvDCBOw1QPLr7c3YFRVHkpT2jglndnF/3gtQ2Ujha5MHKceO01e1AubuZ
+         HBTDqkMgKgqSQ3hJIjjbVDCU250OlAoIzw0dGq2UkMlqhLHfURZ0S+vs0J8RvJoClb
+         ZFmOq/po2IGkfbbJY+es5DAVjb+UUqwrVLHQ4ucY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5VDE-1jZXTf2Nyc-016ugX; Thu, 13
- Feb 2020 01:26:26 +0100
-Subject: Re: read time tree block corruption detected
-To:     Samir Benmendil <me@rmz.io>, linux-btrfs@vger.kernel.org
-References: <20200212215822.bcditmpiwuun6nxt@hactar>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5G9t-1jRZw61t8X-011E9j; Thu, 13
+ Feb 2020 02:00:04 +0100
+Subject: Re: [PATCH 1/4] btrfs: backref, only collect file extent items
+ matching backref offset
+To:     dsterba@suse.cz, ethanwu <ethanwu@synology.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20200207093818.23710-1-ethanwu@synology.com>
+ <20200207093818.23710-2-ethanwu@synology.com>
+ <0badf0be-d481-10fb-c23d-1b69b985e145@toxicpanda.com>
+ <c0453c3eb7c9b4e56bd66dbe647c5f0a@synology.com>
+ <20200210162927.GK2654@twin.jikos.cz>
+ <5901b2be7358137e691b319cbad43111@synology.com>
+ <aeb36a34-bc9c-8500-9f36-554729a078fc@gmx.com>
+ <20200211182159.GD2902@twin.jikos.cz>
+ <c3b0f59840b81f4dd440264fb4276d9f@synology.com>
+ <8eeca7c0-8283-8cd6-2354-9eb9373c9bd3@gmx.com>
+ <20200212145740.GK2902@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,122 +62,126 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <94cb47d7-625c-ab36-0087-504fd6efd7ef@gmx.com>
-Date:   Thu, 13 Feb 2020 08:26:22 +0800
+Message-ID: <0aa5bb89-d8ed-973b-9cd2-8e787fabe301@gmx.com>
+Date:   Thu, 13 Feb 2020 08:59:56 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200212215822.bcditmpiwuun6nxt@hactar>
+In-Reply-To: <20200212145740.GK2902@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4"
-X-Provags-ID: V03:K1:HtwOyLbzpCTQxmctcpbwVoIqRjEugKBPX+sHhV45mxFBA+JbRmB
- bvO7MwyGtTHhhqM7Oa9Y0iwpUQCI5oaX5azBvrVgdaPZoe4SzSwUIUVbgnEitjV8cx2fAbM
- JbT6KcR+7xBnHGgAOkMjhefoxdIe4KFKnLhYzQkfj3OwnylRVBMGsPES/QD5Cixh1i6gYM0
- n85I7ctigPEIDIfRYPM7w==
+ boundary="LVRo5u79gKGlX3gt2Rp7rMI6Whiw7gUnB"
+X-Provags-ID: V03:K1:Ju/KlYzRCp21GEGvezCsSeMAIGqcfHqLW3pgOTpAlk6j0pgazqU
+ VaQDOKoE7IWt3vmrS9rXdtjeAFkb52th35mF8WDc21ak5ClzbFCaIF3isnDwwAO0KowOa32
+ QF8IogwatY1GbQveQc+YEPRYMyY6cddnHAblW9voKnjUo+j9/GfiVCfhPM2GlEMjtMt2/0O
+ QgaLrW/ag9nSE/DsgxIcQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gRMSRyVBm8g=:aG1SLJop6cuEAYyQY2gDlr
- Fg7m1ixlZEXGKdfrXEHhUNADZiyx6mntLEnseXic/ahpW4Nuir1U/lLcFO6ETlcPnJxitmug9
- +K7p/eIi3BggnTQOk7PAyykSy4zl+DqJ3rxZp/pv2qGlG3m+OSlXq4+HZJHZDH281vVocutWQ
- vUf32Iw9U3rxivathAHwD9uE8lEk53BpSMtJBd0jLz7bhlpTXK1ri5080Sye7+53myRkDhraA
- 5SK8473kD0tWU29RdzzPgA111C/CIsXuHq3gicdPX54e099o87GibhL4bnEEBOebSIlC67olo
- hNLtWaTfrCDxrMU2Mg3gaixLPI12hFTxpBLih64BnAns9PNi8n8TkcxcgYFEHbfHxCNO2sCXi
- Ioqckkl965h2MbDTRnHVSTMfxoopy9wmkMbCmGnxHc+T9ED/5C1UvUXIVnSJ+k3C9QmFpaOfl
- zNlvojXnFydkqKkSHPvRmxRTYl3ytr4b5jCewXv1LWrYOTfkVK9Rn0PY0VQ/kRY7A/gmXcsc8
- W7BpmjnuvyA8st2dFBREJLJnjQYOfMIonUDvRUYuANiaV5PUl/MK4xNtyTEjb43MrCH7RODDR
- MEybSKRJyXlopogOjoo7iHLXnJqq6/jvalU7FjBNAHEi+dyYG2BpLHQsqFeY1ALBDKoSsJRS2
- NI0I9D5tEIS2QM6/RO13Q6gOnrnxunIkE9inXKSgllRa/WiHHYftkbHnCDlqXB2W27vdGxkru
- KMl9jLUXB00etSA8PH6EpkDJf365IgvBvdOkpRCZRNPx9jsxGKyJjN8Bohguk28vg5NPzzjN/
- KDNFobrohzRwB6zCuIVVND60RmzweTvKOK0eUP+0538GpVFndn/Jg+dziQbdGdgTixChLJ2cQ
- g7aTIJOR/ZJrdydjvPkAHUdI1R2aJLKEjCe77PJwKKFY4qBH07GjpM4IJwKJawhGawY8ybnOs
- 7yd0gQXnH5YEy7CIva3e6ZK/8tWMNqcwTLa7BbqQj7buNceepXEetY8UwjUxhBaURiU/RiAHC
- KClba8M9A+N0XAlja9Je1l9O5fG59Oj0JoJUWwe7VSYRlLX0nV4nk93OejPqowFeSsZ02U5z4
- c2wpH+Bc/pUNMrah4jkQeSkAl4a9RIE22xOQLx+XHk2IvE/hWUVd/8QdD3zlolkACdixcKDg+
- AepAhVKG/bJ8/vQo8xP6R2jX+jvDzo8u7qRrOXek60zhfsgpU46CvZivwZWJGSi3bZ/RYoIlD
- tb4J9Q7l6exe0htmx
+X-UI-Out-Filterresults: notjunk:1;V03:K0:e9VzlB5QnSU=:NXI8bIu/gxLhhjBA1U/pgi
+ 3UmIT+TXnt/xoBgPqC2XEIcdV/VHoRQzEmApRQyfHikyRDWs6cfV+Utx76Xg4M8l4FGFRGBzv
+ F/dC1beOwYtAmcV6vk7Lk0mWd5p/vCJo+5mej0V6bBSCalL3QKbV3BJZCJaMin+sRCS63uHsM
+ LC/1hYISEw6a07K/X3IVjQfGMxv/6GE5uQAykQvDUZjaKfoFqI2acVJsIbjzGg5JKsAUPX2rp
+ k6kwP6UCEVb1akb9bbBJ2aJBwhxmoYJWC6/WEorJK5xbjB5gPXQvn9WybtD8599/GC5zva79n
+ Ou8P+dQiZrTZWTRG/Pfe704OYKCzGi+Mk17bpiUlZoxLnvT6AklLEPjsrzAVsf30PRXtcTiWY
+ 2GLTR5/YzCyO0I5JBHwi/8aqAucJBhozrg3VO7qSVOfO8OIvJpaso530+dTBJ7dUpaW18ORha
+ aC4MVg+HOb6kMXnGvP8DfeNFSb51gKNmROcOvGxS9AN/V/5pkiNYIQ++dmv5/eXO7jnIk1n7M
+ 8aSEejIYWgKZlrNojF+xYXIws2coFAUDUYkh9DBFp9sb/1Dd8OL0MjWr4aF6pxXeOOMRtl7+n
+ C6r9PPzi3m8qnygVjyPVRt/F362mNFGb84a9LV/Vu7LgVzighmQy1rQensRa1Mv39TsUiAFE6
+ rS/XWynO5lGQ1JDLYDW9C/hf/Rw5O+k0Yb5VTzVx5PGK5AaH8u78ttSaWJA2kRNTD69s7yLfT
+ UnCi4DXUutoaFxZwwB1MQWXapNWXmznoOonzDNIsd8jcNYX89TY5GoevXGO1/HHI8yIn9ncKE
+ dwsr4NGKtkLeRFR8onuLq24kBbSh4CJx2tmA2Wgy2FDySRZdTg1cDJbTxSd2yahseWXwBbByX
+ ftaQklDPGnjKDsMsKcHCAYNvFrTTusCCgjw/nT0NvwR9XL1kXq/GREWSIEQvvqgspjFLK7TMB
+ HD3SHWoGf02lDWWLglcirW1zaUD+kxNamDIzVWtCYZyMOuoqkvb+BCA6CTruQDd1wjZJuuUWM
+ WAjog0lRdnCs5+2LxBCBkHVRcJSV7kYcg8aIWhal52zaICkKa41xVMXO9f/OuA7kb4z8eAfUi
+ jbnGliHhsCSshv9w+l+4c4PfgrMyTrYjN4Cs30GGN/GZpLkCRfVtjQJqkwZMPws4YTgCisIxD
+ tXmmmQTZmOvgTTRJ17gReWuy06BmLkWww25ZqKApO7zLYBIj7d7EYzYNNltltA7rVoeDOWEIb
+ xGC8jUVNBwFc3k3Xu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4
-Content-Type: multipart/mixed; boundary="bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0"
+--LVRo5u79gKGlX3gt2Rp7rMI6Whiw7gUnB
+Content-Type: multipart/mixed; boundary="5OxFGrU5fHatDCFEdjev0CQZqEf6MWnVc"
 
---bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0
+--5OxFGrU5fHatDCFEdjev0CQZqEf6MWnVc
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/13 =E4=B8=8A=E5=8D=885:58, Samir Benmendil wrote:
-> Hello,
+On 2020/2/12 =E4=B8=8B=E5=8D=8810:57, David Sterba wrote:
+> On Wed, Feb 12, 2020 at 08:11:56PM +0800, Qu Wenruo wrote:
+>>>>>
+>>>>> This looks like an existing bug, IIRC Zygo reported it before.
+>>>>>
+>>>>> Btrfs balance just randomly failed at data reloc tree.
+>>>>>
+>>>>> Thus I don't believe it's related to Ethan's patches.
+>>>>
+>>>> Ok, than the patches make it more likely to happen, which could mean=
+
+>>>> that faster backref processing hits some race window. As there could=
+ be
+>>>> more we should first fix the bug you say Zygo reported.
+>>>
+>>> I added a log to check if find_parent_nodes is ever called under
+>>> test btrfs/125. It turns out that btrfs/125 doesn't pass through the
+>>> function. What my patches do is all under find_parent_nodes.
+>>
+>> Balance goes through its own backref cache, thus it doesn't utilize th=
+e
+>> path you're modifying.
+>>
+>> So don't worry your patches look pretty good.
+>>
+>> Furthermore, this csum mismatch is not related to backref walk, but th=
+e
+>> data csum and the data in data reloc tree, which are all created by ba=
+lance.
+>>
+>> So there is really no reason to block such good optimization.
 >=20
-> I've been getting the following "BTRFS errors" for a while now, the wik=
-i
-> [0] advises to report such occurrences to this list.
+> I don't mean to block the patchset but when I test patchsets from 5
+> people and tests start to fail I need to know what's the cause and if
+> there's a fix in sight. So far the test failed 2 out of 2 (once the
+> branch itself and then with for-next), I can do more rounds but at this=
 
-Please provide the following dump:
+> point it's too reliable to reproduce so there is some connection.
+>=20
+> Sometimes it looks like I blame the messenger and complaining under
+> patches that don't cause the bugs, but often I don't have anyting bette=
+r
+> than new warnings between 2 test rounds. Once we have more eyes on the
+> problem we'll narrow it down and find the root cause.
+>=20
+BTW, from your initial report, the csum looks pretty long.
 
-# btrfs ins dump-tree -b 194756837376 /dev/sda2
-# btrfs ins dump-tree -b 194347958272 /dev/sda2
+Are you testing with those new csum algos? And could that be the reason
+why it's much easier to reproduce?
 
 Thanks,
 Qu
->=20
-> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19475683=
-7376
-> slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have=
- file
-> offset 475136 extent num bytes 18446744073709486080
-> BTRFS error (device sda2): block=3D194756837376 read time tree block
-> corruption detected
-> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19475683=
-7376
-> slot=3D72 ino=3D1359622 file_offset=3D475136, extent end overflow, have=
- file
-> offset 475136 extent num bytes 18446744073709486080
-> BTRFS error (device sda2): block=3D194756837376 read time tree block
-> corruption detected
-> BTRFS critical (device sda2): corrupt leaf: root=3D466 block=3D19434795=
-8272
-> slot=3D131 ino=3D1357455 file_offset=3D1044480, extent end overflow, ha=
-ve file
-> offset 1044480 extent num bytes 18446744073708908544
-> BTRFS error (device sda2): block=3D194347958272 read time tree block
-> corruption detected
->=20
-> I can reproduce these errors consistently by running `updatedb`, I
-> suppose some tree block in one of the file it reads is corrupted.
->=20
-> Thanks in advance for your help,
-> Regards,
-> Samir
->=20
-> [0]
-> https://btrfs.wiki.kernel.org/index.php/Tree-checker#How_to_handle_such=
-_error
->=20
 
 
---bpb1cv9hzIDwZT5N08rEDzL3IYUyfwfs0--
+--5OxFGrU5fHatDCFEdjev0CQZqEf6MWnVc--
 
---jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4
+--LVRo5u79gKGlX3gt2Rp7rMI6Whiw7gUnB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5El64ACgkQwj2R86El
-/qj+mgf7BMVmlf9v3/khi0o88Q9T55JnF9M1AzC3n9YCmCwJadf5sHQiaP4ao9Tf
-uqZ8nChYTiSrRFLwjD5aHkX5uyU6OUpFrvdKpyQsmzEecPuTMPNX9CjH/srhsy3I
-bVct81ckyzrXUGLXsNWTBRQ8a8HfYA4g5/73N0Q6F78CvPf9WwroaApS2SAtiMZ6
-/eCqOIxkYKalWZECeV8IU1qM7bZoGDixh98FwGk3oxb7npJ4spah3LtnXvmOR5fi
-E0yq03RRRMNR8w7IfDO4acmFzLFp8ul1M2iXdhbeUcwc8zyAczXNtNxT8V//BxBM
-s5WElXZVa5rqyiiTXaieamxo61aqPA==
-=KYjD
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5En4wACgkQwj2R86El
+/qimkwf/V3dzj+73htoW6JmB7oiD6TRpBbLY7h/KYzJiW0D+TLuQzy1TkeuwxvtL
+ACFQcQPfxElS6AXXDrpFjQwUV2p6730FzwrD+3Gm+W4GX6ntmHRw4/IorfMbhGXp
+E0Wr7iGd6ZYeGSFCsF6QqYGol4irmcrEVllFGxFAxqmprRDOTImDVSjrO6pAL1WO
+e+9JJTEq1oIu1BNlbOHU5vyIwqVl8RZaSQGb4IiQjiYtvY1ZRC4kzq+2NNvXtOr+
+2e5up8aVF6BkrTLf3mcT8E9QBPv6h6vniLPlwCAlGNr/4gqufCHQ5gFxWCZZAZ1K
+AiUz9wrtIdJQQppSKTa7S8fNScVP6g==
+=M1fN
 -----END PGP SIGNATURE-----
 
---jKRTIBlw3GZNOh2B7X3YI7m9L78Q2zBm4--
+--LVRo5u79gKGlX3gt2Rp7rMI6Whiw7gUnB--
