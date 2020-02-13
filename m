@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E8D15BCC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2546415BCCD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Feb 2020 11:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgBMK0r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Feb 2020 05:26:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56582 "EHLO mx2.suse.de"
+        id S1729466AbgBMK2r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Feb 2020 05:28:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57068 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729428AbgBMK0r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Feb 2020 05:26:47 -0500
+        id S1726232AbgBMK2r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Feb 2020 05:28:47 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F1746AD57;
-        Thu, 13 Feb 2020 10:26:44 +0000 (UTC)
-Subject: Re: [PATCH 3/4] btrfs: handle logged extent failure properly
+        by mx2.suse.de (Postfix) with ESMTP id 36207AC0C;
+        Thu, 13 Feb 2020 10:28:45 +0000 (UTC)
+Subject: Re: [PATCH 2/4] btrfs: do not check delayed items are empty for
+ single trans cleanup
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200211214042.4645-1-josef@toxicpanda.com>
- <20200211214042.4645-4-josef@toxicpanda.com>
+ <20200211214042.4645-3-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ee9467b3-9d58-1c3e-a0b1-286ee045761f@suse.com>
-Date:   Thu, 13 Feb 2020 12:26:44 +0200
+Message-ID: <9a03de9b-090e-6077-5071-d700550f468b@suse.com>
+Date:   Thu, 13 Feb 2020 12:28:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200211214042.4645-4-josef@toxicpanda.com>
+In-Reply-To: <20200211214042.4645-3-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,15 +81,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 11.02.20 г. 23:40 ч., Josef Bacik wrote:
-> If we're allocating a logged extent we attempt to insert an extent
-> record for the file extent directly.  We increase
-> space_info->bytes_reserved, because the extent entry addition will call
-> btrfs_update_block_group(), which will convert the ->bytes_reserved to
-> ->bytes_used.  However if we fail at any point while inserting the
-> extent entry we will bail and leave space on ->bytes_reserved, which
-> will trigger a WARN_ON() on umount.  Fix this by pinning the space if we
-> fail to insert, which is what happens in every other failure case that
-> involves adding the extent entry.
+> btrfs_assert_delayed_root_empty() will check if the delayed root is
+> completely empty, but this is a fs wide check.  On cleanup we may have
+> allowed other transactions to begin, for whatever reason, and thus the
+> delayed root is not empty.  So remove this check from
+> cleanup_one_transation().  This however can stay in
+> btrfs_cleanup_transaction(), because it checks only after all of the
+> transactions have been properly cleaned up, and thus is valid.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
