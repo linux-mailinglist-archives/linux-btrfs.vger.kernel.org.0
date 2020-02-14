@@ -2,100 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C3015DB06
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 16:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C3215DB3D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 16:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387523AbgBNPeC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 10:34:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44632 "EHLO mx2.suse.de"
+        id S1728775AbgBNPoK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 10:44:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387397AbgBNPeC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:34:02 -0500
+        id S1728264AbgBNPoK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:44:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E8B65B1D3;
-        Fri, 14 Feb 2020 15:34:00 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 37477B049;
+        Fri, 14 Feb 2020 15:44:08 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 63623DA703; Fri, 14 Feb 2020 16:33:46 +0100 (CET)
-Date:   Fri, 14 Feb 2020 16:33:46 +0100
+        id 8080CDA703; Fri, 14 Feb 2020 16:43:36 +0100 (CET)
+Date:   Fri, 14 Feb 2020 16:43:36 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 11/11 v3] btrfs: Use btrfs_transaction::pinned_extents
-Message-ID: <20200214153346.GZ2902@twin.jikos.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v8 8/8] btrfs: remove buffer_heads form superblock mirror
+ integrity checking
+Message-ID: <20200214154336.GA2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200124103541.6415-1-nborisov@suse.com>
- <20200124151830.25984-1-nborisov@suse.com>
- <20200206181054.GD2654@twin.jikos.cz>
- <ce572fd3-feef-262a-0fa8-06cb8f8299f1@suse.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
+ <20200213152436.13276-9-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce572fd3-feef-262a-0fa8-06cb8f8299f1@suse.com>
+In-Reply-To: <20200213152436.13276-9-johannes.thumshirn@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 09:40:35PM +0200, Nikolay Borisov wrote:
+On Fri, Feb 14, 2020 at 12:24:36AM +0900, Johannes Thumshirn wrote:
+> The integrity checking code for the superblock mirrors is the last remaining
+> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
 > 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 > 
-> On 6.02.20 г. 20:10 ч., David Sterba wrote:
-> > On Fri, Jan 24, 2020 at 05:18:30PM +0200, Nikolay Borisov wrote:
-> >> --- a/fs/btrfs/transaction.c
-> >> +++ b/fs/btrfs/transaction.c
-> >> @@ -334,6 +334,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
-> >>  	list_add_tail(&cur_trans->list, &fs_info->trans_list);
-> >>  	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
-> >>  			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
-> >> +	extent_io_tree_init(fs_info, &cur_trans->pinned_extents, 0, NULL);
-> > 
-> > What's the reason there's no symbolic name for pinned_extents? Also 0
-> > matches IO_TREE_FS_INFO_EXCLUDED_EXTENTS because it's first in the enum
-> > list.
-> > 
+> ---
+> Changes to v7:
+> - Use read_Cache_page_gfp()
+> - Don't kmap() block device mappings (David)
 > 
-> No reason, I'll change it in next version :)
+> Changes to v4:
+> - Remove mapping_gfp_constraint()
+> 
+> Changes to v2:
+> - Open-code kunmap() + put_page() (David)
+> - Remove __GFP_NOFAIL from allocation (Josef)
+> - Merge error paths (David)
+> 
+> Changes to v1:
+> - Convert from alloc_page() to find_or_create_page()
+> ---
+>  fs/btrfs/check-integrity.c | 42 +++++++++++++++++++++-----------------
+>  1 file changed, 23 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+> index 4f6db2fe482a..d8d915d7beda 100644
+> --- a/fs/btrfs/check-integrity.c
+> +++ b/fs/btrfs/check-integrity.c
+> @@ -77,7 +77,6 @@
+>  
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+> -#include <linux/buffer_head.h>
+>  #include <linux/mutex.h>
+>  #include <linux/genhd.h>
+>  #include <linux/blkdev.h>
+> @@ -762,29 +761,33 @@ static int btrfsic_process_superblock_dev_mirror(
+>  	struct btrfs_fs_info *fs_info = state->fs_info;
+>  	struct btrfs_super_block *super_tmp;
+>  	u64 dev_bytenr;
+> -	struct buffer_head *bh;
+>  	struct btrfsic_block *superblock_tmp;
+>  	int pass;
+>  	struct block_device *const superblock_bdev = device->bdev;
+> +	struct page *page;
+> +	struct bio bio;
+> +	struct bio_vec bio_vec;
+> +	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
+> +	int ret;
+>  
+>  	/* super block bytenr is always the unmapped device bytenr */
+>  	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
+>  	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
+>  		return -1;
+> -	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
+> -		     BTRFS_SUPER_INFO_SIZE);
+> -	if (NULL == bh)
+> +
+> +	page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
 
-Patchset going to misc-next with the following fixup:
+Reed-Solomon error correction in page cache? Have I missed the news? :)
 
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -36,6 +36,7 @@ struct io_failure_record;
- #define CHUNK_TRIMMED                          EXTENT_DEFRAG
- 
- enum {
-+       IO_TREE_FS_PINNED_EXTENTS,
-        IO_TREE_FS_EXCLUDED_EXTENTS,
-        IO_TREE_INODE_IO,
-        IO_TREE_INODE_IO_FAILURE,
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e39cc15646a4..559a7a38d5a8 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -334,7 +334,8 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
-        list_add_tail(&cur_trans->list, &fs_info->trans_list);
-        extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
-                        IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
--       extent_io_tree_init(fs_info, &cur_trans->pinned_extents, 0, NULL);
-+       extent_io_tree_init(fs_info, &cur_trans->pinned_extents,
-+                       IO_TREE_FS_PINNED_EXTENTS, NULL);
-        fs_info->generation++;
-        cur_trans->transid = fs_info->generation;
-        fs_info->running_transaction = cur_trans;
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 0f11f1fb982d..bcbc763b8814 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -81,6 +81,7 @@ TRACE_DEFINE_ENUM(COMMIT_TRANS);
- 
- #define show_extent_io_tree_owner(owner)                                      \
-        __print_symbolic(owner,                                                \
-+               { IO_TREE_FS_PINNED_EXTENTS,      "PINNED_EXTENTS" },          \
-                { IO_TREE_FS_EXCLUDED_EXTENTS,    "EXCLUDED_EXTENTS" },        \
-                { IO_TREE_INODE_IO,               "INODE_IO" },                \
-                { IO_TREE_INODE_IO_FAILURE,       "INODE_IO_FAILURE" },        \
+  CC [M]  fs/btrfs/check-integrity.o
+fs/btrfs/check-integrity.c: In function ‘btrfsic_process_superblock_dev_mirror’:
+fs/btrfs/check-integrity.c:778:9: error: implicit declaration of function ‘reed_cache_page_gfp’; did you mean ‘read_cache_page_gfp’? [-Werror=implicit-function-declaration]
+  778 |  page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         read_cache_page_gfp
+
+And with that fixed there are still the following warnings.
+
+fs/btrfs/check-integrity.c:778:7: warning: assignment to ‘struct page *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+  778 |  page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
+      |       ^
+fs/btrfs/check-integrity.c:769:17: warning: unused variable ‘bio_vec’ [-Wunused-variable]
+  769 |  struct bio_vec bio_vec;
+      |                 ^~~~~~~
+fs/btrfs/check-integrity.c:768:13: warning: unused variable ‘bio’ [-Wunused-variable]
+  768 |  struct bio bio;
+      |             ^~~
