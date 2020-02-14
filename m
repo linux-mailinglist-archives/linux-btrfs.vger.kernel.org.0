@@ -2,135 +2,276 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7880915D43F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6954C15D494
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgBNJAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 04:00:17 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:42811 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbgBNJAR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 04:00:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581670816; x=1613206816;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=gsCVaVamtA8IsZMF6Cwduzyki3g2qlOgwozj93G00eI=;
-  b=Ss2vpvtBSkYe+UiVAwNJj0RI0CEtOlhWdsimSAEY+bUj1fuk3vXqKW2T
-   KPW7a3o8P9ujKjBLjck2bk2VzNU8OC2gjWS6hxpdFwuOL9d9Y3Xmjh5RC
-   ZoC0fMDQ7Ne+44sr9VibUu5Lk3Arhbdbv6OYbFB9h5r16Iu09Rnio7/ng
-   klkN8hUR7GItw2qX61nZyvwmSWWc1nXuDemb5MyilS52IkkO4VF9oUMIe
-   4xMIMv/GEffCle68L3aXTJpToT/0/Z2Q3+iybhvj7pC540JugMAiQe9AG
-   RltvuPzVoguuh7uGyaOwrLHQZlFp6G3i62J+hLfuFKOYCP/USIhQiQVm7
-   g==;
-IronPort-SDR: mpc+dHnR6C8011iJT9ntdZDpbLCo4Ta16KBiaD7woErWsHc0lWIaVxU2P5hJiCcCKOpTDuL3i5
- ytXXlzoIOFKHUXK0l1Z5afxJ6B+QNyRtIp7zRGWgqMFYJCfZcLKGHJ3rONFiGOeq1pA3fH1KCQ
- 4sKFYibnCdk+Ypi/OE+gAU0p0dOSdKzIYcGTGCfrRaDkneKWP2qiV1aqaXeo5TSBVljHnsNO1O
- Xd2oPTpVKN/7wqLGqJi/QgUcnqbm5vQbtZUB3aRyJJtu6s7EMLqfXnfgZviX+QfYnq5A2w9ll5
- 5Rw=
-X-IronPort-AV: E=Sophos;i="5.70,440,1574092800"; 
-   d="scan'208";a="129853126"
-Received: from mail-dm6nam10lp2105.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.105])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Feb 2020 17:00:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YREOuFH1ea6Uqq3TTJLo8ISyLlxAPQ93QB7uruJptlegNti4wyXoAANZTEVLaqZBFmbNhFnN1+YpMSRust9IiP81meZqHQumkLWrT8GPwTJiGiOXB/PJ2fuQYQ3Ow+48zbt0zmr/5JY01aWCak/U4zYaoKZBZVlO+Tffdq9LRLbwBtqsKgHI6kypVMY2YY+cAZTz1FfjuoJi1JdZb5/W6ExdkTlL5Uie2tVoAyUFFCQl1LuQpEVbLjRbzisyVbYUWNVktsBX2Qc2JiX1b9jlGc/I+L7RKwuKys6CdO5TgrkKJX/o4QoqY8bSj9M8xfVw17BujyfReXkgw65/RM0K7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WAYS385k3VPn/HzClMCnx7UQFBrDNbzNicjDvAF7YKg=;
- b=iDO6egaOrXU1NdBl55tcovVeK7sZBda9lRzomzdlm40wmkdoqRNnwhoGnPZBEnBLIZT733sEG9F0SIqs5G/kATLhomThgj9OFTFrNmZW7+b9uOBQwvCJsBS3Za0q3MsBKDqzpSdf8rWS69FxLgHfyS6iofiNeXdbL65x7budywb2XpqhAmbwfSaowEi9A/JR9kVcBcVE7qVqYQnLnT0wyO8mFLQ6lUxkRMxFQ5jod7yMgV+izfRTXK2x4+6/Gwu4jdJk/gRHAe6xSeprmqb2dZvhFi2bGc3Sqw7Yc57cuPcDlEj0AR+x+p94KHxIDQ1VeDJ0zf+2BYzh/xQNW2VS3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WAYS385k3VPn/HzClMCnx7UQFBrDNbzNicjDvAF7YKg=;
- b=fSsWxfIcK+VeBcNIeHttPyif73NB5/FlPCYyw3E2BonIeTYY5A9JKrSlGK5/Fl00dYjDehJyPkAy+T7stFMOia0cChNCBHf/WTr2E1tPF/tJ/Z5qEkU7mxlYbGFbMG95xu503ejxs3G2YTjtF3r55r8qZH8i1zniu2m7xegMdBc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3582.namprd04.prod.outlook.com (10.167.142.10) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.22; Fri, 14 Feb 2020 09:00:15 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.030; Fri, 14 Feb 2020
- 09:00:15 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] btrfs: relocation: Use btrfs_backref_iterator
- infrastructure
-Thread-Topic: [PATCH v2 3/3] btrfs: relocation: Use btrfs_backref_iterator
- infrastructure
-Thread-Index: AQHV4w7Hm1V6+DxUT0CNbGIJidtL/w==
-Date:   Fri, 14 Feb 2020 09:00:14 +0000
-Message-ID: <SN4PR0401MB3598CB039EE0C0220A06F6039B150@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1728994AbgBNJTw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 04:19:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38530 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726769AbgBNJTv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 04:19:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C135BB1A8;
+        Fri, 14 Feb 2020 09:19:48 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iterator
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200214081354.56605-1-wqu@suse.com>
- <20200214081354.56605-4-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3adcbd88-a72a-46e9-f1e8-08d7b12c4e86
-x-ms-traffictypediagnostic: SN4PR0401MB3582:
-x-microsoft-antispam-prvs: <SN4PR0401MB3582A78C2AE562115787B7309B150@SN4PR0401MB3582.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:431;
-x-forefront-prvs: 03137AC81E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(39860400002)(136003)(376002)(396003)(366004)(199004)(189003)(55016002)(81166006)(52536014)(8676002)(66476007)(6506007)(66946007)(91956017)(71200400001)(53546011)(76116006)(81156014)(64756008)(4744005)(66556008)(66446008)(110136005)(86362001)(7696005)(5660300002)(186003)(9686003)(26005)(316002)(8936002)(2906002)(33656002)(478600001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3582;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6DaSMOSgNdzs23mzEMWzBuQCx1w8Hob/3HK6Bqi77K4HcH7sjAquY5Dv2f9gUp+uZimfycvL5K6x4yfjWmWe/CKnH3mwDvjJLuiSHsz2uqVHryKyj9a28Cx/rasj/KPBq/7+qulhK+/zTCJEsS5MtTbvkZR9Ptny+2QeBBBV+u1aI/rKtDrw3grsOK5l7NOsNjbSo8ULtKxJylzF0uRglAAWtnyLcViijecZ3atUo5jrQQ2dVcB6Iz9CqJsHvJ/dvH2aOckyZ03KIA45lZ4+o/er+arkwnutinYkaggY5PGBDUxFiKvT77c7RSLWMeQ/zQZjSt9GaY3QPxbIJ/MGNMLU6D/HBG5sG10DIQovuT5aD/bhY32JrT6AE/8Bdd+oaxt/hgFsDLORqBVBjHAqFGA24kMFFIxanBlABV1AMff5ZLKZm3Z0gD8m4M/+blQk
-x-ms-exchange-antispam-messagedata: hOGE+CZJTqzR5zjoOUE462+jrFERHxF1IdU6GprqHnTrfihY5xoE9kvULBe2+euQCenPZC7Vh5rRmQ1cUinKs6J3zOhvnDbUs29RaLgbVXhlIPn6jlZzr53a7QCWhdb0tRaRI7jMnoK7IlZdsz33rw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <20200214081354.56605-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <689800fa-ae4a-e2fc-b699-92e969d0e389@suse.com>
+Date:   Fri, 14 Feb 2020 11:19:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3adcbd88-a72a-46e9-f1e8-08d7b12c4e86
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2020 09:00:14.9069
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: opFJmKjRSv+y4AxYA8/rRqONz+wPgBwNckyZuLkJ+8TM9XaAqWCXilOVIOcEvPhSuzfAR/lw/IW6BAI6iDJkm444cIUYC3HA0eoWdPMY00A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3582
+In-Reply-To: <20200214081354.56605-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14/02/2020 09:14, Qu Wenruo wrote:=0A=
-> @@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct reloc_=
-control *rc,=0A=
->   	struct backref_node *exist =3D NULL;=0A=
->   	struct backref_edge *edge;=0A=
->   	struct rb_node *rb_node;=0A=
-> -	struct btrfs_key key;=0A=
-> -	unsigned long end;=0A=
-> -	unsigned long ptr;=0A=
->   	LIST_HEAD(list); /* Pending edge list, upper node needs to be checked =
-*/=0A=
->   	LIST_HEAD(useless);=0A=
->   	int cowonly;=0A=
-> @@ -687,14 +642,14 @@ struct backref_node *build_backref_tree(struct relo=
-c_control *rc,=0A=
->   	int err =3D 0;=0A=
->   	bool need_check =3D true;=0A=
->   =0A=
-> -	path1 =3D btrfs_alloc_path();=0A=
-> -	path2 =3D btrfs_alloc_path();=0A=
-> -	if (!path1 || !path2) {=0A=
-> +	iterator =3D btrfs_backref_iterator_alloc(rc->extent_root->fs_info,=0A=
-> +						GFP_NOFS);=0A=
-=0A=
-btrfs_backref_iterator_alloc() can fail and I don't see where a=0A=
-iterator =3D=3D NULL condition is handled.=0A=
-=0A=
+
+
+On 14.02.20 г. 10:13 ч., Qu Wenruo wrote:
+> Due to the complex nature of btrfs extent tree, when we want to iterate
+> all backrefs of one extent, it involves quite a lot of works, like
+> search the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+> backrefs.
+> 
+> Normally this would result pretty complex code, something like:
+>   btrfs_search_slot()
+>   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+>   while (1) {	/* Loop for extent tree items */
+> 	while (ptr < end) { /* Loop for inlined items */
+> 		/* REAL WORK HERE */
+> 	}
+>   next:
+>   	ret = btrfs_next_item()
+> 	/* Ensure we're still at keyed item for specified bytenr */
+>   }
+> 
+> The idea of btrfs_backref_iterator is to avoid such complex and hard to
+> read code structure, but something like the following:
+> 
+>   iterator = btrfs_backref_iterator_alloc();
+>   ret = btrfs_backref_iterator_start(iterator, bytenr);
+>   if (ret < 0)
+> 	goto out;
+>   for (; ; ret = btrfs_backref_iterator_next(iterator)) {
+> 	/* REAL WORK HERE */
+>   }
+>   out:
+>   btrfs_backref_iterator_free(iterator);
+> 
+> This patch is just the skeleton + btrfs_backref_iterator_start() code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/backref.c | 58 +++++++++++++++++++++++++++++++++++
+>  fs/btrfs/backref.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 134 insertions(+)
+> 
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index e5d85311d5d5..73c4829609c9 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -2252,3 +2252,61 @@ void free_ipath(struct inode_fs_paths *ipath)
+>  	kvfree(ipath->fspath);
+>  	kfree(ipath);
+>  }
+> +
+> +int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
+> +				 u64 bytenr)
+> +{
+> +	struct btrfs_fs_info *fs_info = iterator->fs_info;
+> +	struct btrfs_path *path = iterator->path;
+> +	struct btrfs_extent_item *ei;
+> +	struct btrfs_key key;
+> +	int ret;
+> +
+> +	key.objectid = bytenr;
+> +	key.type = BTRFS_METADATA_ITEM_KEY;
+> +	key.offset = (u64)-1;
+> +
+> +	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (ret == 0) {
+> +		ret = -EUCLEAN;
+> +		goto release;
+> +	}
+> +	if (path->slots[0] == 0) {
+> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> +		ret = -EUCLEAN;
+> +		goto release;
+> +	}
+> +	path->slots[0]--;
+> +
+> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +	if (!(key.type == BTRFS_EXTENT_ITEM_KEY ||
+> +	      key.type == BTRFS_METADATA_ITEM_KEY) || key.objectid != bytenr) {
+> +		ret = -ENOENT;
+> +		goto release;
+> +	}
+> +	memcpy(&iterator->cur_key, &key, sizeof(key));
+> +	iterator->end_ptr = btrfs_item_end_nr(path->nodes[0], path->slots[0]);
+> +	iterator->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
+> +						   path->slots[0]);
+> +	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
+> +			    struct btrfs_extent_item);
+> +
+> +	/* Only support iteration on tree backref yet */
+> +	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA) {
+> +		ret = -ENOTTY;
+> +		goto release;
+> +	}
+
+Isn't this implied bye the fact you are searching for METADATA ITEMS to
+begin with ? Considering this shouldn't detecting EXTENT_FLAG_DATA in
+the backrefs of a METADATA_EXTENT be considered a corruption?
+
+> +	iterator->cur_ptr = iterator->item_ptr + sizeof(*ei);
+> +	return 0;
+> +release:
+> +	iterator->end_ptr = 0;
+> +	iterator->cur_ptr = 0;
+> +	iterator->item_ptr = 0;
+> +	iterator->cur_key.objectid = 0;
+> +	iterator->cur_key.type = 0;
+> +	iterator->cur_key.offset = 0;
+> +	btrfs_release_path(path);
+> +	return ret;
+> +}
+> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+> index 777f61dc081e..b53301f2147f 100644
+> --- a/fs/btrfs/backref.h
+> +++ b/fs/btrfs/backref.h
+> @@ -74,4 +74,80 @@ struct prelim_ref {
+>  	u64 wanted_disk_byte;
+>  };
+>  
+> +/*
+> + * Helper structure to help iterate backrefs of one extent.
+> + *
+> + * Now it only supports iteration for tree block in commit root.
+> + */
+> +struct btrfs_backref_iterator {
+> +	u64 bytenr;
+> +	struct btrfs_path *path;
+> +	struct btrfs_fs_info *fs_info;
+> +	struct btrfs_key cur_key;
+> +	unsigned long item_ptr;
+> +	unsigned long cur_ptr;
+> +	unsigned long end_ptr;
+> +};
+> +
+> +static inline struct btrfs_backref_iterator *
+> +btrfs_backref_iterator_alloc(struct btrfs_fs_info *fs_info, gfp_t gfp_flag)
+> +{
+> +	struct btrfs_backref_iterator *ret;
+> +
+> +	ret = kzalloc(sizeof(*ret), gfp_flag);
+> +	if (!ret)
+> +		return NULL;
+> +
+> +	ret->path = btrfs_alloc_path();
+> +	if (!ret) {
+> +		kfree(ret);
+> +		return NULL;
+> +	}
+> +
+> +	/* Current backref iterator only supports iteration in commit root */
+> +	ret->path->search_commit_root = 1;
+> +	ret->path->skip_locking = 1;
+> +	ret->path->reada = READA_FORWARD;
+> +	ret->fs_info = fs_info;
+> +
+> +	return ret;
+> +}
+> +
+> +static inline void btrfs_backref_iterator_free(
+> +		struct btrfs_backref_iterator *iterator)
+> +{
+> +	if (!iterator)
+> +		return;
+> +	btrfs_free_path(iterator->path);
+> +	kfree(iterator);
+> +}
+> +
+> +static inline struct extent_buffer *
+> +btrfs_backref_get_eb(struct btrfs_backref_iterator *iterator)
+> +{
+> +	if (!iterator)
+> +		return NULL;
+> +	return iterator->path->nodes[0];
+> +}
+> +
+> +/*
+> + * For metadata with EXTENT_ITEM key (non-skinny) case, the first inline data
+> + * is btrfs_tree_block_info, without a btrfs_extent_inline_ref header.
+> + *
+> + * This helper is here to determine if that's the case.
+> + */
+> +static inline bool btrfs_backref_has_tree_block_info(
+> +		struct btrfs_backref_iterator *iterator)
+> +{
+> +	if (iterator->cur_key.type == BTRFS_EXTENT_ITEM_KEY &&
+> +	    iterator->cur_ptr - iterator->item_ptr ==
+> +	    sizeof(struct btrfs_extent_item))
+> +		return true;
+> +	return false;
+> +}
+> +
+> +int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
+> +				 u64 bytenr);
+> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator);
+> +
+>  #endif
+> 
