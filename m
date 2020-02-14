@@ -2,25 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C618B15D4AB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C66B15D4B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729028AbgBNJZk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 04:25:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40066 "EHLO mx2.suse.de"
+        id S1728911AbgBNJ2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 04:28:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40808 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727965AbgBNJZk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 04:25:40 -0500
+        id S1727965AbgBNJ2c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 04:28:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BAB07B1D6;
-        Fri, 14 Feb 2020 09:25:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 25569AC77;
+        Fri, 14 Feb 2020 09:28:30 +0000 (UTC)
 Subject: Re: [PATCH v2 2/3] btrfs: backref: Implement
  btrfs_backref_iterator_next()
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200214081354.56605-1-wqu@suse.com>
  <20200214081354.56605-3-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <4c5cae62-d74e-7ce4-2ed8-4cfc91f19059@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <4c5cae62-d74e-7ce4-2ed8-4cfc91f19059@suse.com>
-Date:   Fri, 14 Feb 2020 11:25:37 +0200
+Message-ID: <5b527b52-9a3a-9384-35dd-037b05a1e3c5@suse.com>
+Date:   Fri, 14 Feb 2020 11:28:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200214081354.56605-3-wqu@suse.com>
+In-Reply-To: <4c5cae62-d74e-7ce4-2ed8-4cfc91f19059@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,72 +80,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 14.02.20 г. 10:13 ч., Qu Wenruo wrote:
-> This function will go next inline/keyed backref for
-> btrfs_backref_iterator infrastructure.
+On 14.02.20 г. 11:25 ч., Nikolay Borisov wrote:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/backref.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
 > 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 73c4829609c9..c5f87439f31c 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2310,3 +2310,51 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
->  	btrfs_release_path(path);
->  	return ret;
->  }
-> +
-> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator)
-> +{
+> On 14.02.20 г. 10:13 ч., Qu Wenruo wrote:
+>> This function will go next inline/keyed backref for
+>> btrfs_backref_iterator infrastructure.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/backref.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 48 insertions(+)
+>>
+>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+>> index 73c4829609c9..c5f87439f31c 100644
+>> --- a/fs/btrfs/backref.c
+>> +++ b/fs/btrfs/backref.c
+>> @@ -2310,3 +2310,51 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
+>>  	btrfs_release_path(path);
+>>  	return ret;
+>>  }
+>> +
+>> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator)
+>> +{
+> 
+> make it a bool function.
 
-make it a bool function.
-
-> +	struct extent_buffer *eb = btrfs_backref_get_eb(iterator);
-> +	struct btrfs_path *path = iterator->path;
-> +	struct btrfs_extent_inline_ref *iref;
-> +	int ret;
-> +	u32 size;
-> +
-> +	if (iterator->cur_key.type == BTRFS_EXTENT_ITEM_KEY ||
-> +	    iterator->cur_key.type == BTRFS_METADATA_ITEM_KEY) {
-> +		/* We're still inside the inline refs */
-> +		if (btrfs_backref_has_tree_block_info(iterator)) {
-> +			/* First tree block info */
-> +			size = sizeof(struct btrfs_tree_block_info);
-> +		} else {
-> +			/* Use inline ref type to determine the size */
-> +			int type;
-> +
-> +			iref = (struct btrfs_extent_inline_ref *)
-> +				(iterator->cur_ptr);
-> +			type = btrfs_extent_inline_ref_type(eb, iref);
-> +
-> +			size = btrfs_extent_inline_ref_size(type);
-> +		}
-> +		iterator->cur_ptr += size;
-> +		if (iterator->cur_ptr < iterator->end_ptr)
-> +			return 0;
-> +
-> +		/* All inline items iterated, fall through */
-> +	}
-> +	/* We're at keyed items, there is no inline item, just go next item */
-> +	ret = btrfs_next_item(iterator->fs_info->extent_root, iterator->path);
-> +	if (ret > 0 || ret < 0)
-> +		return ret;
-> +
-> +	btrfs_item_key_to_cpu(path->nodes[0], &iterator->cur_key,
-> +			      path->slots[0]);
-> +	if (iterator->cur_key.objectid != iterator->bytenr ||
-> +	    (iterator->cur_key.type != BTRFS_TREE_BLOCK_REF_KEY &&
-> +	     iterator->cur_key.type != BTRFS_SHARED_BLOCK_REF_KEY))
-> +		return 1;
-> +	iterator->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
-> +						   path->slots[0]);
-> +	iterator->cur_ptr = iterator->item_ptr;
-> +	iterator->end_ptr = btrfs_item_end_nr(path->nodes[0], path->slots[0]);
-> +	return 0;
-> +}
-> 
+Disregard this .
