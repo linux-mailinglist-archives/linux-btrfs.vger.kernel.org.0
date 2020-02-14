@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 649F515EE53
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EACF15F3E7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 19:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388942AbgBNQEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 11:04:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52098 "EHLO mail.kernel.org"
+        id S2404851AbgBNSQZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 13:16:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389391AbgBNQEM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:04:12 -0500
+        id S1730798AbgBNPvf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:51:35 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1184324654;
-        Fri, 14 Feb 2020 16:04:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A3E6217F4;
+        Fri, 14 Feb 2020 15:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696251;
-        bh=06HiugEeIyT64UGKH2uwweFX+Jujms0kwmNzncT3wpo=;
+        s=default; t=1581695494;
+        bh=a2SdUff50JqRTa6pXuw1AYaIrrYJC/eCaJF4QanUVjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XQhTmyH0SF1M8O6xLCislbbPQpPmJWGcIZRbgN3t11Qj+zzC9XWirT1bHhxKt36WM
-         sU9jljALkfefsoJEWOSXvW/Lj0rOeA2ZK6Jf5YkNCXW8hM45uchSSFJ6rDmNCVbtrh
-         XK0EQ5j1IFhxaGeNrxhWR3BHJGx4LRMtVIh0B9N0=
+        b=XxphjzyK0iU+0oF38fviZbDmba1QzduOGGlimbm60wYciIaLfadZthO4Dcq59sA2V
+         zHgMJKjFo7whF4s51HLG/KYmM9PWsHM9ntO2saAGdW8x01ks8556uE4gAD0XYx2P7n
+         7yVJP6WoN11oi72PcgDIqGJtXBWZWJnPhiDmvWcM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 107/459] Btrfs: keep pages dirty when using btrfs_writepage_fixup_worker
-Date:   Fri, 14 Feb 2020 10:55:57 -0500
-Message-Id: <20200214160149.11681-107-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 123/542] Btrfs: keep pages dirty when using btrfs_writepage_fixup_worker
+Date:   Fri, 14 Feb 2020 10:41:55 -0500
+Message-Id: <20200214154854.6746-123-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
-References: <20200214160149.11681-1-sashal@kernel.org>
+In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
+References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -89,10 +89,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 44 insertions(+), 17 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6f0568fb58997..1b4ab02be9243 100644
+index c70baafb2a392..27f2c554cac32 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2181,17 +2181,27 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+@@ -2204,17 +2204,27 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
  	struct inode *inode;
  	u64 page_start;
  	u64 page_end;
@@ -124,7 +124,7 @@ index 6f0568fb58997..1b4ab02be9243 100644
  	inode = page->mapping->host;
  	page_start = page_offset(page);
  	page_end = page_offset(page) + PAGE_SIZE - 1;
-@@ -2216,24 +2226,22 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+@@ -2239,24 +2249,22 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
  
  	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
  					   PAGE_SIZE);
@@ -159,7 +159,7 @@ index 6f0568fb58997..1b4ab02be9243 100644
  out_reserved:
  	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
  	if (ret)
-@@ -2243,6 +2251,17 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+@@ -2266,6 +2274,17 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
  	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
  			     &cached_state);
  out_page:
@@ -177,7 +177,7 @@ index 6f0568fb58997..1b4ab02be9243 100644
  	unlock_page(page);
  	put_page(page);
  	kfree(fixup);
-@@ -2270,6 +2289,13 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
+@@ -2293,6 +2312,13 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
  	if (TestClearPagePrivate2(page))
  		return 0;
  
@@ -191,7 +191,7 @@ index 6f0568fb58997..1b4ab02be9243 100644
  	if (PageChecked(page))
  		return -EAGAIN;
  
-@@ -2282,7 +2308,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
+@@ -2305,7 +2331,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
  	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
  	fixup->page = page;
  	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
