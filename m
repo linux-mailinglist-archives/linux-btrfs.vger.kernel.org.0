@@ -2,87 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CECFD15E8D5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6762D15E8DC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404292AbgBNRDM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 12:03:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
+        id S2404749AbgBNRDX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 12:03:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35070 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403815AbgBNQP4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:15:56 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1137A246F4;
-        Fri, 14 Feb 2020 16:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696956;
-        bh=LO9osZihFUTbpG6o//SCjgXWqG9dLGPwwMhlrka+frI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g40jxIQ/U9EverZuTMa0rDERzfmal3Xyj/XZ8Oy2+HJZr3SdQbt493ACjyL12Se4M
-         R7Vtk1hoq6M9xsK2XbQIwkd6MeCr2Hw88tCcQrsNwtDkiiAGYUbdOFBKgCHV7qIeRQ
-         7l6NqfCll4Bc8nhjKK4Rc5FOGgXWxFYjje5J3hmU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>, philip@philip-seeger.de,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 196/252] btrfs: device stats, log when stats are zeroed
-Date:   Fri, 14 Feb 2020 11:10:51 -0500
-Message-Id: <20200214161147.15842-196-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
-References: <20200214161147.15842-1-sashal@kernel.org>
+        id S2404533AbgBNRDV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 12:03:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1036DB123;
+        Fri, 14 Feb 2020 17:03:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3E8DFDA703; Fri, 14 Feb 2020 18:03:05 +0100 (CET)
+Date:   Fri, 14 Feb 2020 18:03:04 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>
+Subject: Re: [PATCH v2] btrfs: destroy qgroup extent records on transaction
+ abort
+Message-ID: <20200214170304.GD2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>
+References: <20200211072537.25751-1-wqu@suse.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211072537.25751-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+On Tue, Feb 11, 2020 at 03:25:37PM +0800, Qu Wenruo wrote:
+> From: Jeff Mahoney <jeffm@suse.com>
+> 
+> We clean up the delayed references when we abort a transaction but
+> we leave the pending qgroup extent records behind, leaking memory.
+> 
+> This patch destroyes the extent records when we destroy the delayed
+> refs and checks to ensure they're gone before releasing the transaction.
+> 
+> Fixes: 3368d001ba5df (btrfs: qgroup: Record possible quota-related extent for qgroup.)
+> Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+> [Rebased to latest upstream, remove to_qgroup() helper, use
+>  rbtree_postorder_for_each_entry_safe() wrapper]
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Update the commit message to remove to_qgroup()
 
-[ Upstream commit a69976bc69308aa475d0ba3b8b3efd1d013c0460 ]
+Added to misc-next, thanks.
 
-We had a report indicating that some read errors aren't reported by the
-device stats in the userland. It is important to have the errors
-reported in the device stat as user land scripts might depend on it to
-take the reasonable corrective actions. But to debug these issue we need
-to be really sure that request to reset the device stat did not come
-from the userland itself. So log an info message when device error reset
-happens.
+> +void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans)
+> +{
+> +	struct btrfs_delayed_ref_root *delayed_refs = &trans->delayed_refs;
+> +	struct btrfs_qgroup_extent_record *entry;
+> +	struct btrfs_qgroup_extent_record *next;
+> +	struct rb_root *root = &delayed_refs->dirty_extent_root;
 
-For example:
- BTRFS info (device sdc): device stats zeroed by btrfs(9223)
+I've removed the delayed_refs varaible indirection:
 
-Reported-by: philip@philip-seeger.de
-Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
+	root = &trans->delayed_refs.dirty_extent_root;
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 5bbcdcff68a9e..9c3b394b99fa2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7260,6 +7260,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
- 			else
- 				btrfs_dev_stat_reset(dev, i);
- 		}
-+		btrfs_info(fs_info, "device stats zeroed by %s (%d)",
-+			   current->comm, task_pid_nr(current));
- 	} else {
- 		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
- 			if (stats->nr_items > i)
--- 
-2.20.1
-
+> +	rbtree_postorder_for_each_entry_safe(entry, next, root, node) {
+> +		ulist_free(entry->old_roots);
+> +		kfree(entry);
+> +	}
+> +}
