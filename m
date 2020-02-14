@@ -2,134 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAB815F7C4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 21:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318E715F7EF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 21:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgBNUee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 15:34:34 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45057 "EHLO
+        id S1730266AbgBNUp7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 15:45:59 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43755 "EHLO
         mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730005AbgBNUee (ORCPT
+        with ESMTP id S1727742AbgBNUp7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 15:34:34 -0500
-Received: by mail-qt1-f193.google.com with SMTP id d9so7827555qte.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2020 12:34:33 -0800 (PST)
+        Fri, 14 Feb 2020 15:45:59 -0500
+Received: by mail-qt1-f193.google.com with SMTP id d18so7877185qtj.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2020 12:45:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cMd6saOdi3DDi8CRdIOgvhgNU02W4rGFc1+0LI1/+d0=;
-        b=2R68OHPhYM3u7KgG8bg0Q84oJu4niwMadwOI8C2lZzmZOr0zTYIhKSLLgJekCBKJMQ
-         +rEMXC54PABqI/MQ/x8fH/2ppC9ZTgzAh2VSahPAErbc6kd3fW/OhCdRWfXaxbhmWCNQ
-         I14y+wyQOIQuLFYkaOuckpdexiGIK0UzvDGrb5uVzQb5IXcDar8WkK5XJ94CCMygrCd6
-         rj5MGGgWl/sRrxDOifX3KcW6yxEwfELHMKpANcIOCtKU+PCwhBbJhnogjxHH0UPP+pyZ
-         E2Fvp04/8xRbRBq02XlTg8951qe/xQVnR17MvKpnWF1gUb8VowOvFzpuLAV81dmYvbHF
-         b3BQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=wvWeHQR7gnvhyFcIq+ebbZwZM2D7X9oj8XTuNAoMQLc=;
+        b=MlhyLVhhmLzVHjMXRb+X3KOPrqGoqqScjzcbCnRxL1R3swmCjlN6UvhwdmJkrUaP3l
+         od6q2jQ8uXbb7gNEyNK4qTmxe4A0CGLQ0aQ8+g89aVT6lyQouGQUX0QevrH1LltnlS8w
+         Ic20nbWV0LWPWZLkM4eNsB4+b8b8PRCt2MnZngazNSH9JDLs3p/7DASS6zDTC1f0pgQ5
+         WHRR7Y8ZEv/SlY7V0N0qbhNe5V7BSrtwuapVfp2TjeZA0FmKtZOt3AaJ0i4cvT4SUGrW
+         CHUAtoSwBxonZOQeKlCnBDOW38GJBB8bwyom74VUW2Ze5FI33Y/vA878ME5oNMmgLFL3
+         Yp3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cMd6saOdi3DDi8CRdIOgvhgNU02W4rGFc1+0LI1/+d0=;
-        b=X3lN+s3cHPPJorbjfkz4m0rPG8W1zPOWQ5Mq/KLqca+LHPOURj7TAE2WemLApbP+M9
-         mmKzJ35UEUf3qfDbgF7EouDt0jBVyLQ37N0Yz18mkMD23L4eHVh4d2WWjzjx0NB/4b1+
-         oZ2yBBLwua9fwqb8zm1qBMpu+6oDCy+JG7IgTE2X8iPI9oXvgaeHDG1fbhAVtJD7udxh
-         IgIXT0F8KrCevvoD8ruyMzFtPogUYGHWvMjmW68fOTlgZxemzhbbVVE7Ofhq3GYj6stq
-         vG+C9rw3R2KpLSHZiTjmhuCfR8af87o6WIAWIRI37vM0eSyXiuY+VR3s0RMbDlbUFnJz
-         VoYA==
-X-Gm-Message-State: APjAAAUhJA7dzWzLpn4LlXjCeyZ0gaCFTpiH4r/hw8LlNFk4CFhNmYAy
-        0T4uX5e/2iabi93In4RH+TPSdOQhmyg=
-X-Google-Smtp-Source: APXvYqw9un91A7rs7cHgHwlgL91WG5yFjRh/Ns9R0eZwuuRXy2lXRhl7A/nX/IxTPowMGclaY3Jy5Q==
-X-Received: by 2002:ac8:67d7:: with SMTP id r23mr4070356qtp.20.1581712472948;
-        Fri, 14 Feb 2020 12:34:32 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id z5sm4216026qta.7.2020.02.14.12.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2020 12:34:32 -0800 (PST)
+        bh=wvWeHQR7gnvhyFcIq+ebbZwZM2D7X9oj8XTuNAoMQLc=;
+        b=KNnWbAWCduz96LV7OdLilszw/TzIDHG7onWokKNIH3qDn7tORFBZew4CRD9BF8NjYx
+         r5JzsNWYImWd+kqupVpnuqrhxFZDVsKacuW6WXevIYyr5rgGvIwuO8SNxZREFY/VPMAJ
+         Qw4ZDjp+eSQ/pUIW92GWx2tEMMBjFL8GKBWIVnO7U9gKOwrOKhrTrymi9auEi+e5/V61
+         raTaY/JEhhP84NbhlJbeXi5nsaFuPJj5MWFThEB5xJ7rIo/GJMIFKbWyZuc2Iol0Fm+2
+         geuLAA6LIE8skDzW/c72eQo2IFQJPeDicVJ15wM/D+ybcK6bZPisTEkQ+kHG8Eu5P9ki
+         Eegg==
+X-Gm-Message-State: APjAAAU8v+rWGDRpyJVVZpFUFFrBuuo6/EvmWwUBaJy5y0wCWYim8nd1
+        gmv+TU5Y8/hZunwGkkFiGQeYh12qzfs=
+X-Google-Smtp-Source: APXvYqwXbQovESCeBuJ1ISEqaww4LSWEq7lE8slvPF2vNtriZmw5N2UtijsbqiNhinyyiSeseb49bA==
+X-Received: by 2002:ac8:6f0b:: with SMTP id g11mr4079749qtv.308.1581713155945;
+        Fri, 14 Feb 2020 12:45:55 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::c065])
+        by smtp.gmail.com with ESMTPSA id z21sm4122002qka.122.2020.02.14.12.45.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Feb 2020 12:45:53 -0800 (PST)
+Subject: Re: [PATCH] Btrfs: avoid unnecessary splits when setting bits on an
+ extent io tree
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200213102002.6176-1-fdmanana@kernel.org>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH] xfstests: add a CGROUP configuration option
-Date:   Fri, 14 Feb 2020 15:34:31 -0500
-Message-Id: <20200214203431.24506-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+Message-ID: <152c9721-8c15-f976-c9ac-df04e01f63ce@toxicpanda.com>
+Date:   Fri, 14 Feb 2020 15:45:52 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200213102002.6176-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I want to add some extended statistic gathering for xfstests, but it's
-tricky to isolate xfstests from the rest of the host applications.  The
-most straightforward way to do this is to run every test inside of it's
-own cgroup.  From there we can monitor the activity of tasks in the
-specific cgroup using BPF.
+On 2/13/20 5:20 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When attempting to set bits on a range of an exent io tree that already
+> has those bits set we can end up splitting an extent state record, use
+> the preallocated extent state record, insert it into the red black tree,
+> do another search on the red black tree, merge the preallocated extent
+> state record with the previous extent state record, remove that previous
+> record from the red black tree and then free it. This is all unnecessary
+> work that consumes time.
+> 
+> This happens specifically at the following case at __set_extent_bit():
+> 
+>    $ cat -n fs/btrfs/extent_io.c
+>     957  static int __must_check
+>     958  __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+>    (...)
+>    1044          /*
+>    1045           *     | ---- desired range ---- |
+>    1046           * | state |
+>    1047           *   or
+>    1048           * | ------------- state -------------- |
+>    1049           *
+>    (...)
+>    1060          if (state->start < start) {
+>    1061                  if (state->state & exclusive_bits) {
+>    1062                          *failed_start = start;
+>    1063                          err = -EEXIST;
+>    1064                          goto out;
+>    1065                  }
+>    1066
+>    1067                  prealloc = alloc_extent_state_atomic(prealloc);
+>    1068                  BUG_ON(!prealloc);
+>    1069                  err = split_state(tree, state, prealloc, start);
+>    1070                  if (err)
+>    1071                          extent_io_tree_panic(tree, err);
+>    1072
+>    1073                  prealloc = NULL;
+> 
+> So if our extent state represents a range from 0 to 1Mb for example, and
+> we want to set bits in the range 128Kb to 256Kb for example, and that
+> extent state record already has all those bits set, we end up splitting
+> that record, so we end up with extent state records in the tree which
+> represent the ranges from 0 to 128Kb and from 128Kb to 1Mb. This is
+> temporary because a subsequent iteration in that function will end up
+> merging the records.
+> 
+> The splitting requires using the preallocated extent state record, so
+> a future iteration that needs to do another split will need to allocate
+> another extent state record in an atomic context, something not ideal
+> that we try to avoid as much as possible. The splitting also requires
+> an insertion in the red black tree, and a subsequent merge will require
+> a deletion from the red black tree and freeing an extent state record.
+> 
+> This change just skips the splitting of an extent state record when it
+> already has all the bits the we need to set.
+> 
+> Setting a bit that is already set for a range is very common in the
+> inode's 'file_extent_tree' extent io tree for example, where we keep
+> setting the EXTENT_DIRTY bit every time we replace an extent.
+> 
+> This change also fixes a bug that happens after the recent patchset from
+> Josef that avoids having implicit holes after a power failure when not
+> using the NO_HOLES feature, more specifically the patch with the subject:
+> 
+>    "btrfs: introduce the inode->file_extent_tree"
+> 
+> This patch introduced an extent io tree per inode to keep track of
+> completed ordered extents and figure out at any time what is the safe
+> value for the inode's disk_i_size. This assumes that for contiguous
+> ranges in a file we always end up with a single extent state record in
+> the io tree, but that is not the case, as there is a short time window
+> where we can have two extent state records representing contiguous
+> ranges. When this happens we end setting up an incorrect value for the
+> inode's disk_i_size, resulting in data loss after a clean unmount
+> of the filesystem. The following example explains how this can happen.
+> 
+> Suppose we have an inode with an i_size and a disk_i_size of 1Mb, so in
+> the inode's file_extent_tree we have a single extent state record that
+> represents the range [0, 1Mb[ with the EXTENT_DIRTY bit set. Then the
+> following steps happen:
+> 
+> 1) A buffered write against file range [512Kb, 768Kb[ is made. At this
+>     point delalloc was not flushed yet;
+> 
+> 2) Deduplication from some other inode into this inode's range
+>     [128Kb, 256Kb[ is made. This causes btrfs_inode_set_file_extent_range()
+>     to be called, from btrfs_insert_clone_extent(), to mark the range
+>     [128Kb, 256Kb[ with EXTENT_DIRTY in the inode's file_extent_tree;
+> 
+> 3) When btrfs_inode_set_file_extent_range() calls set_extent_bits(), we
+>     end up at __set_extent_bit(). In the first iteration of that function's
+>     loop we end up in the following branch:
+> 
+>     $ cat -n fs/btrfs/extent_io.c
+>      957  static int __must_check
+>      958  __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+>     (...)
+>     1044          /*
+>     1045           *     | ---- desired range ---- |
+>     1046           * | state |
+>     1047           *   or
+>     1048           * | ------------- state -------------- |
+>     1049           *
+>     (...)
+>     1060          if (state->start < start) {
+>     1061                  if (state->state & exclusive_bits) {
+>     1062                          *failed_start = start;
+>     1063                          err = -EEXIST;
+>     1064                          goto out;
+>     1065                  }
+>     1066
+>     1067                  prealloc = alloc_extent_state_atomic(prealloc);
+>     1068                  BUG_ON(!prealloc);
+>     1069                  err = split_state(tree, state, prealloc, start);
+>     1070                  if (err)
+>     1071                          extent_io_tree_panic(tree, err);
+>     1072
+>     1073                  prealloc = NULL;
+>     (...)
+>     1089                  goto search_again;
+> 
+>     This splits the state record into two, one for range [0, 128Kb[ and
+>     another for the range [128Kb, 1Mb[. Both already have the EXTENT_DIRTY
+>     bit set. Then we jump to the 'search_again' label, where we unlock the
+>     the spinlock protecting the extent io tree before jumping to the
+>     'again' label to perform the next iteration;
+> 
+> 4) In the meanwhile, delalloc is flushed, the ordered extent for the range
+>     [512Kb, 768Kb[ is created and when it completes, at
+>     btrfs_finish_ordered_io(), it calls btrfs_inode_safe_disk_i_size_write()
+>     with a value of 0 for its 'new_size' argument;
+> 
+> 5) Before the deduplication task currently at __set_extent_bit() moves to
+>     the next iteration, the task finishing the ordered extent calls
+>     find_first_extent_bit() through btrfs_inode_safe_disk_i_size_write()
+>     and gets 'start' set to 0 and 'end' set to 128Kb - because at this
+>     moment the io tree has two extent state records, one representing the
+>     range [0, 128Kb[ and another representing the range [128Kb, 1Mb[,
+>     both with EXTENT_DIRTY set. Then we set 'isize' to:
+> 
+>     isize = min(isize, end + 1)
+>           = min(1Mb, 128Kb - 1 + 1)
+>           = 128Kb
+> 
+>     Then we set the inode's disk_i_size to 128Kb (isize).
+> 
+>     After a clean unmount of the filesystem and mounting it again, we have
+>     the file with a size of 128Kb, and effectively lost all the data it
+>     had before in the range from 128Kb to 1Mb.
+> 
+> This change fixes that issue too, as we never end up splitting extent
+> state records when they already have all the bits we want set.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-The support for this is pretty simple, allow users to specify
-CGROUP=/path/to/cgroup.  We will create the path if it doesn't already
-exist, and validate we can add things to cgroup.procs.  If we cannot
-it'll be disabled, otherwise we will use this when we do _run_seq by
-echo'ing the bash pid into cgroup.procs, which will cause any children
-to run under that cgroup.
+Sorry, forgot to say
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- README |  3 +++
- check  | 17 ++++++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-diff --git a/README b/README
-index 593c1052..722dc170 100644
---- a/README
-+++ b/README
-@@ -102,6 +102,9 @@ Preparing system for tests:
-              - set USE_KMEMLEAK=yes to scan for memory leaks in the kernel
-                after every test, if the kernel supports kmemleak.
-              - set KEEP_DMESG=yes to keep dmesg log after test
-+             - set CGROUP=/path/to/cgroup to create a cgroup to run tests inside
-+               of.  The main check will run outside of the cgroup, only the test
-+               itself and any child processes will run under the cgroup.
- 
-         - or add a case to the switch in common/config assigning
-           these variables based on the hostname of your test
-diff --git a/check b/check
-index 2e148e57..07a0e251 100755
---- a/check
-+++ b/check
-@@ -509,11 +509,23 @@ _expunge_test()
- OOM_SCORE_ADJ="/proc/self/oom_score_adj"
- test -w ${OOM_SCORE_ADJ} && echo -1000 > ${OOM_SCORE_ADJ}
- 
-+# Initialize the cgroup path if it doesn't already exist
-+if [ ! -z "$CGROUP" ]; then
-+	mkdir -p ${CGROUP}
-+
-+	# If we can't write to cgroup.procs then unset cgroup
-+	test -w ${CGROUP}/cgroup.procs || unset CGROUP
-+fi
-+
- # ...and make the tests themselves somewhat more attractive to it, so that if
- # the system runs out of memory it'll be the test that gets killed and not the
- # test framework.
- _run_seq() {
--	bash -c "test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ}; exec ./$seq"
-+	_extra="test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ};"
-+	if [ ! -z "$CGROUP" ]; then
-+		_extra+="echo $$ > ${CGROUP}/cgroup.procs;"
-+	fi
-+	bash -c "${_extra} exec ./$seq"
- }
- 
- _detect_kmemleak
-@@ -615,6 +627,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
- 	  echo "MKFS_OPTIONS  -- `_scratch_mkfs_options`"
- 	  echo "MOUNT_OPTIONS -- `_scratch_mount_options`"
- 	fi
-+	if [ ! -z "$CGROUP" ]; then
-+	  echo "CGROUP        -- ${CGROUP}"
-+	fi
- 	echo
- 	needwrap=true
- 
--- 
-2.24.1
+Thanks,
 
+Josef
