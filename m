@@ -2,87 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EED115E6B8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAB015E4F9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbgBNQtl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 11:49:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54046 "EHLO mail.kernel.org"
+        id S2404675AbgBNQjB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 11:39:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405214AbgBNQUX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:20:23 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7027224734;
-        Fri, 14 Feb 2020 16:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697223;
-        bh=5vOT5Cbvh9GNxrUOd50DskvivDNUfqGcKhlzkAN2f3Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UW1E8UYrnS9PjUyuSs9xD35aAKPLM2yFAwbRNj3JIyhrWSSQQGbuGLxXStYmwSf7N
-         cJlzqxLdEHWYi9qSGIVwRFZwcfJMdhFVnCyGHHOhPkieYbgsNE3SamILcDicpPTdXl
-         6MVqG/GsksY5j+pcJb+KX2KtfumyyksG5c4/+m0A=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>, philip@philip-seeger.de,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 146/186] btrfs: device stats, log when stats are zeroed
-Date:   Fri, 14 Feb 2020 11:16:35 -0500
-Message-Id: <20200214161715.18113-146-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
-References: <20200214161715.18113-1-sashal@kernel.org>
+        id S2404422AbgBNQi7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:38:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 4621BB011;
+        Fri, 14 Feb 2020 16:38:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A5C95DA703; Fri, 14 Feb 2020 17:38:43 +0100 (CET)
+Date:   Fri, 14 Feb 2020 17:38:42 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: relocation: Remove is_cowonly_root()
+Message-ID: <20200214163842.GB2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200212074331.32800-1-wqu@suse.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212074331.32800-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+On Wed, Feb 12, 2020 at 03:43:31PM +0800, Qu Wenruo wrote:
+> This function is only used in read_fs_root(), which is just a wrapper of
+> btrfs_get_fs_root().
+> 
+> For all the mentioned essential roots except log root tree,
+> btrfs_get_fs_root() has its own quick path to grab them from fs_info
+> directly, thus no need for key.offset modification.
+> 
+> For subvolume trees, btrfs_get_fs_root() with key.offset == -1 is
+> completely fine.
+> 
+> For log trees and log root tree, it's impossible to hit them, as for
+> relocation all backrefs are fetched from commit root, which never
+> records log tree blocks.
+> 
+> Log tree blocks either get freed in regular transaction commit, or
+> replayed at mount time. At runtime we should never hit an backref for
+> log tree in extent tree.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit a69976bc69308aa475d0ba3b8b3efd1d013c0460 ]
-
-We had a report indicating that some read errors aren't reported by the
-device stats in the userland. It is important to have the errors
-reported in the device stat as user land scripts might depend on it to
-take the reasonable corrective actions. But to debug these issue we need
-to be really sure that request to reset the device stat did not come
-from the userland itself. So log an info message when device error reset
-happens.
-
-For example:
- BTRFS info (device sdc): device stats zeroed by btrfs(9223)
-
-Reported-by: philip@philip-seeger.de
-Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 358e930df4acd..6d34842912e80 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7227,6 +7227,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
- 			else
- 				btrfs_dev_stat_reset(dev, i);
- 		}
-+		btrfs_info(fs_info, "device stats zeroed by %s (%d)",
-+			   current->comm, task_pid_nr(current));
- 	} else {
- 		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
- 			if (stats->nr_items > i)
--- 
-2.20.1
-
+Added to misc-next, thanks.
