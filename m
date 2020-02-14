@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6F515DF98
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCEE15E1C6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391290AbgBNQJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 11:09:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33964 "EHLO mail.kernel.org"
+        id S2405207AbgBNQUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 11:20:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391284AbgBNQJa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:09:30 -0500
+        id S2404964AbgBNQUV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:20:21 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1B5824682;
-        Fri, 14 Feb 2020 16:09:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D4C024722;
+        Fri, 14 Feb 2020 16:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696569;
-        bh=pLqWsJQGIs+4qcANymREjBjxFeOyl45gGvkYi5cjcRw=;
+        s=default; t=1581697220;
+        bh=JrqyDo3x/1o+v5c62+1zKO0XnJlzXMNnrtph6kSO1Tc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0xFutytQMFZ/g5c+pLm6dm5YdrJM6nD8mBWHCL2Mn76CnmJ6xPH1NUfygC5HJfrQH
-         DbVHM1n7t6cMgFWKqZcjvm+73sBRg3nVwUVTRRsjUnCfKCYUnrII1unERWnlXWhI9Q
-         X2LgaP2SzJGwbr/O2rsRcClfZCIGwJqb+iLVBri4=
+        b=I2B496mHgRwiIC7JPDAjpRll+JSUPDRJQ8+sPbtE1aNLZAMW+HTmmxiPStcnEUBRX
+         CP0hzps1iiTPK+0FTeMb/9/5hAiw8AloZXi/kHAB6twRLLzHZe2oP+0QPgyICBo3YP
+         MwaO2leDgukpfzpssqCREgf+WGhwBTIdjxN3eB+I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Johannes Thumshirn <jth@kernel.org>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 359/459] btrfs: fix possible NULL-pointer dereference in integrity checks
-Date:   Fri, 14 Feb 2020 11:00:09 -0500
-Message-Id: <20200214160149.11681-359-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 144/186] btrfs: fix possible NULL-pointer dereference in integrity checks
+Date:   Fri, 14 Feb 2020 11:16:33 -0500
+Message-Id: <20200214161715.18113-144-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
-References: <20200214160149.11681-1-sashal@kernel.org>
+In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
+References: <20200214161715.18113-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -66,10 +66,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 0b52ab4cb9649..72c70f59fc605 100644
+index 7d5a9b51f0d7a..4be07cf31d74c 100644
 --- a/fs/btrfs/check-integrity.c
 +++ b/fs/btrfs/check-integrity.c
-@@ -629,7 +629,6 @@ static struct btrfsic_dev_state *btrfsic_dev_state_hashtable_lookup(dev_t dev,
+@@ -642,7 +642,6 @@ static struct btrfsic_dev_state *btrfsic_dev_state_hashtable_lookup(dev_t dev,
  static int btrfsic_process_superblock(struct btrfsic_state *state,
  				      struct btrfs_fs_devices *fs_devices)
  {
@@ -77,7 +77,7 @@ index 0b52ab4cb9649..72c70f59fc605 100644
  	struct btrfs_super_block *selected_super;
  	struct list_head *dev_head = &fs_devices->devices;
  	struct btrfs_device *device;
-@@ -700,7 +699,7 @@ static int btrfsic_process_superblock(struct btrfsic_state *state,
+@@ -713,7 +712,7 @@ static int btrfsic_process_superblock(struct btrfsic_state *state,
  			break;
  		}
  
