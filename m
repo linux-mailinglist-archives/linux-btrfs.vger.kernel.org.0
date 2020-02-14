@@ -2,196 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E50DE15D4DE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E8615D4DF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgBNJgr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 04:36:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43966 "EHLO mx2.suse.de"
+        id S1729051AbgBNJhJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 04:37:09 -0500
+Received: from mout.gmx.net ([212.227.15.15]:57677 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgBNJgr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 04:36:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ED54CACD0;
-        Fri, 14 Feb 2020 09:36:45 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] btrfs: backref: Introduce the skeleton of
- btrfs_backref_iterator
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+        id S1729026AbgBNJhJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 04:37:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581673020;
+        bh=yjE1pgv3C9A/42TE/9R5s4CtPyxyAqJ8NQcL7rJiLzo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=eKhNAIHqVQPpGruXd92L/hL92eP56Lx7Fa9sGZkuSX1cfjrFyqnUkhBwzulF12AsR
+         W95s19j0wN4yX8CZ99vQiS0zBTh+IYHLoBj6FsP09ZiBs61eQRVmb1AdH1ft0HTK7k
+         QeOQoHBcDH+/6zSS+8H8omMrMnV69gO1Qr5UH6nw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhU5R-1jg0x50UTL-00ee8S; Fri, 14
+ Feb 2020 10:37:00 +0100
+Subject: Re: [PATCH v2 3/3] btrfs: relocation: Use btrfs_backref_iterator
+ infrastructure
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20200214081354.56605-1-wqu@suse.com>
- <20200214081354.56605-2-wqu@suse.com>
- <689800fa-ae4a-e2fc-b699-92e969d0e389@suse.com>
- <1f17ed5b-978e-8a45-813d-3fdce61a8e9c@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9a4ded8d-929c-4081-2033-b923a4639087@suse.com>
-Date:   Fri, 14 Feb 2020 11:36:45 +0200
+ <20200214081354.56605-4-wqu@suse.com>
+ <SN4PR0401MB3598CB039EE0C0220A06F6039B150@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <6b9f7d71-2164-e74d-42bf-92e1aaa8153d@gmx.com>
+Date:   Fri, 14 Feb 2020 17:36:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <1f17ed5b-978e-8a45-813d-3fdce61a8e9c@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <SN4PR0401MB3598CB039EE0C0220A06F6039B150@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="QMOexNHvzuDMRvoh6Q5A8t2GrSHAbK0bm"
+X-Provags-ID: V03:K1:QBgghWvkjtwD0kgw8D556+c/w5ySNknMGWtzzwj9Mv96Tqd2MyN
+ 0c42gUl1p5I30KMx7lbtt3iBBYI9wO8osPEvd4nWN5yceyKYWgf4nEIa3JQpQNu6xna/nW/
+ XYKeWDg2KNbpr+RLmS/Psr9md2ZrmtzqUZ5Ygcr05SwIx/peck+LZrv+aEMbpErSvNYF9w0
+ A40CmGDHHaBBQnr86tDoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:20dIYRpYUDo=:fkg8Le12c+R7ljMRckUQLR
+ dV4lLNT9UMUagCBTGJ5X5TT8fzmxEr0v9lNDneY9gqQu61Q49nKFh2nMZIfNSQwE9YAjIZA3m
+ rleADTB3mLgIxJ6fmhXg1g7iEAsgTH++Xp414Hj3rjJ2aPcxul9y4D/EAMHlMfjQyz9+1z1fJ
+ W9TM6ErVkDzQ91hWoPWqaB9iMgi3n/BkqAoApZO7IlL25NsboglLG1UTOdcGlxbaaRxd7dlIm
+ Of+ApsQwssfoZiUrSO2OtKzZQg2K3LyY+7Oxbkd2T2u0GzWDrVu8DovaDu/xrG8UMznBmnX1V
+ VwpMnLZWIbiILAoloh13OZkPvDRVeA/dDQBLPANRK642OL/lr26NGf/n6sk0m+jHk5Gz7DOEi
+ 9aDVDCmBjiTmJc12upBsGxoITldxcFnz0QuAwGkx7jnnOSs4ch3qd47zXbM2/TH3Wk5okRLX+
+ aRmkCOFOhE1KX2LOHhfecaL4A4bxak/Lh5w+kbYbe4UFqZqFitLPqbiaep74pgzt/YiwDdez0
+ LBxmxd0VXdM7WHIDUn2M1+Ltz57fg0/EFAMmasGoyHBjC0Agp06YlMq4pyNiBr0KO8OkQZDY6
+ cFIAHuIwiKdVYdJ8EajzpUO32oyWNxjeTjeVg6ZSWvZyE2feC5elZExDU7n+oW9jU11D4Go3t
+ v/CDkr5XfRJyCcTEd/85ZnKQ9gEIhk+dk2DHW9CWukXaOZwuPItIQCvf2ZQmpAI5OjE0DCFAR
+ AQLiMZ+9frGZuBUKr2A4YVQ38cC02iMHmHMiskhb2jhB/Ekm8oQvrdSu1l4iy2YRtx878ALJh
+ sRccZtgYacpu/TX8I3ywta65toP3vZODq5K+kprsjVKXDV6tHVW/8+Kf1s4JeWBc/lC5tCirT
+ Z0uX3tT3vUOMDr2jFfsDBfX3KkYv9F9daiJ61ojiyVv8SylgivV/Nkw5qMQ/LanfxsjUFF6Ns
+ 7nkZH41DDEVxSIGlarZ4YLdElRC5FY3SAg11Lr6JcnpC7rRQhaRNQxI6TtUl2q55KtLtMP+S9
+ dFbmGjaYJZ4CB0shPgJwCTUUjCSF1zkVQXsucjKFYIpUkExVmRWPB3r3GLVAC8IeHy25NC3t8
+ 7+4aMsWdDpfCWXU7nvnhjxjvr58Ki1d356LNaS2hiiUyeDKBu0kCPXSu4lD2uYjXVjhsKBi7V
+ nC/WoQYOm3unM0OpOeUlfpNcFlZ1MXaaarY+JVcCa05TeBj8FyDOYdAMGx4UUzZ4Q3mlDM3HN
+ EydVGLb2iEKSiB/Lf
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QMOexNHvzuDMRvoh6Q5A8t2GrSHAbK0bm
+Content-Type: multipart/mixed; boundary="hxvyzPbckXKhnuWgrX0z0GqstyVpNs0UE"
+
+--hxvyzPbckXKhnuWgrX0z0GqstyVpNs0UE
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 14.02.20 г. 11:33 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2020/2/14 下午5:19, Nikolay Borisov wrote:
->>
->>
->> On 14.02.20 г. 10:13 ч., Qu Wenruo wrote:
->>> Due to the complex nature of btrfs extent tree, when we want to iterate
->>> all backrefs of one extent, it involves quite a lot of works, like
->>> search the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
->>> backrefs.
->>>
->>> Normally this would result pretty complex code, something like:
->>>   btrfs_search_slot()
->>>   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
->>>   while (1) {	/* Loop for extent tree items */
->>> 	while (ptr < end) { /* Loop for inlined items */
->>> 		/* REAL WORK HERE */
->>> 	}
->>>   next:
->>>   	ret = btrfs_next_item()
->>> 	/* Ensure we're still at keyed item for specified bytenr */
->>>   }
->>>
->>> The idea of btrfs_backref_iterator is to avoid such complex and hard to
->>> read code structure, but something like the following:
->>>
->>>   iterator = btrfs_backref_iterator_alloc();
->>>   ret = btrfs_backref_iterator_start(iterator, bytenr);
->>>   if (ret < 0)
->>> 	goto out;
->>>   for (; ; ret = btrfs_backref_iterator_next(iterator)) {
->>> 	/* REAL WORK HERE */
->>>   }
->>>   out:
->>>   btrfs_backref_iterator_free(iterator);
->>>
->>> This patch is just the skeleton + btrfs_backref_iterator_start() code.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>>  fs/btrfs/backref.c | 58 +++++++++++++++++++++++++++++++++++
->>>  fs/btrfs/backref.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++
->>>  2 files changed, 134 insertions(+)
->>>
->>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
->>> index e5d85311d5d5..73c4829609c9 100644
->>> --- a/fs/btrfs/backref.c
->>> +++ b/fs/btrfs/backref.c
->>> @@ -2252,3 +2252,61 @@ void free_ipath(struct inode_fs_paths *ipath)
->>>  	kvfree(ipath->fspath);
->>>  	kfree(ipath);
->>>  }
->>> +
->>> +int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
->>> +				 u64 bytenr)
->>> +{
->>> +	struct btrfs_fs_info *fs_info = iterator->fs_info;
->>> +	struct btrfs_path *path = iterator->path;
->>> +	struct btrfs_extent_item *ei;
->>> +	struct btrfs_key key;
->>> +	int ret;
->>> +
->>> +	key.objectid = bytenr;
->>> +	key.type = BTRFS_METADATA_ITEM_KEY;
->>> +	key.offset = (u64)-1;
->>> +
->>> +	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +	if (ret == 0) {
->>> +		ret = -EUCLEAN;
->>> +		goto release;
->>> +	}
->>> +	if (path->slots[0] == 0) {
->>> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
->>> +		ret = -EUCLEAN;
->>> +		goto release;
->>> +	}
->>> +	path->slots[0]--;
->>> +
->>> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
->>> +	if (!(key.type == BTRFS_EXTENT_ITEM_KEY ||
->>> +	      key.type == BTRFS_METADATA_ITEM_KEY) || key.objectid != bytenr) {
->>> +		ret = -ENOENT;
->>> +		goto release;
->>> +	}
->>> +	memcpy(&iterator->cur_key, &key, sizeof(key));
->>> +	iterator->end_ptr = btrfs_item_end_nr(path->nodes[0], path->slots[0]);
->>> +	iterator->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
->>> +						   path->slots[0]);
->>> +	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
->>> +			    struct btrfs_extent_item);
->>> +
->>> +	/* Only support iteration on tree backref yet */
->>> +	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA) {
->>> +		ret = -ENOTTY;
->>> +		goto release;
->>> +	}
->>
->> Isn't this implied bye the fact you are searching for METADATA ITEMS to
->> begin with ? Considering this shouldn't detecting EXTENT_FLAG_DATA in
->> the backrefs of a METADATA_EXTENT be considered a corruption?
-> 
-> For non skinny-metadata fs, we can hit with EXTENT_ITEM.
-> So it's still possible to hit a corruption undetected by tree-checker.
-> 
-> But you're right, we shouldn't really hit a data extent here, as
-> previous loops have excluded all data extents.
 
-Then put a comment saying this is done as an extra precaution.
+On 2020/2/14 =E4=B8=8B=E5=8D=885:00, Johannes Thumshirn wrote:
+> On 14/02/2020 09:14, Qu Wenruo wrote:
+>> @@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct rel=
+oc_control *rc,
+>>   	struct backref_node *exist =3D NULL;
+>>   	struct backref_edge *edge;
+>>   	struct rb_node *rb_node;
+>> -	struct btrfs_key key;
+>> -	unsigned long end;
+>> -	unsigned long ptr;
+>>   	LIST_HEAD(list); /* Pending edge list, upper node needs to be check=
+ed */
+>>   	LIST_HEAD(useless);
+>>   	int cowonly;
+>> @@ -687,14 +642,14 @@ struct backref_node *build_backref_tree(struct r=
+eloc_control *rc,
+>>   	int err =3D 0;
+>>   	bool need_check =3D true;
+>>  =20
+>> -	path1 =3D btrfs_alloc_path();
+>> -	path2 =3D btrfs_alloc_path();
+>> -	if (!path1 || !path2) {
+>> +	iterator =3D btrfs_backref_iterator_alloc(rc->extent_root->fs_info,
+>> +						GFP_NOFS);
+>=20
+> btrfs_backref_iterator_alloc() can fail and I don't see where a
+> iterator =3D=3D NULL condition is handled.
+>=20
+Oops.
 
-<split>
+Thanks for catching this!
+Qu
+
+
+--hxvyzPbckXKhnuWgrX0z0GqstyVpNs0UE--
+
+--QMOexNHvzuDMRvoh6Q5A8t2GrSHAbK0bm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5GajcACgkQwj2R86El
+/qi0owf/Z0p/tBlEf7Xv6Y7NvKmZLPTOBi1ueBMD2z1UBdh5XZP9GAlbnP3B5E/F
+vZdJFJ+vNifmPqdOv2isT0nydgjbWtIItNlnFLXDfumvoUokZeakWnafbuMjV+ww
+OvHACD7RZvteeO4g5NkWxupspVUfoMKCnCBsV0+3feldbOkIMwL082scAtApQoQw
+RVXW0/q7KEWALX8UiWUD3XbSKMk3je9BWHwdy7sa3BNUR+SDv0gQxC/BKTKzUcS2
+P6pKov5jqV3OPoW8yGDTpTKce0oMhIPGOLljemV6iB8PBEESOpCaWuxMe9EtIOgL
+YG/Abg1SbYy+5w2WQZkoVhb1TqEm5g==
+=iyj+
+-----END PGP SIGNATURE-----
+
+--QMOexNHvzuDMRvoh6Q5A8t2GrSHAbK0bm--
