@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 464D615EBC6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EF215EBB6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390208AbgBNQJe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 11:09:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        id S2403990AbgBNRWY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 12:22:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391294AbgBNQJc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:09:32 -0500
+        id S2391378AbgBNQKA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:10:00 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 389AA2467E;
-        Fri, 14 Feb 2020 16:09:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EAAC24693;
+        Fri, 14 Feb 2020 16:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696572;
-        bh=OJ3QoIR3qxJpH00wRqFPDjc6ftqQZW1lGIxutzeBQR4=;
+        s=default; t=1581696600;
+        bh=fFOQjnVPcFd1wvOtxaBYad+RJUFESpmrhGZ80I46uD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IUEtYfAjjlyVFA+5au781zBe0ojTh5q235EJ0WQIXkUK/ZQK3Rro525z1sArHlxeO
-         UOIjLzetVBPk8UWOPTDHQYJsG0PRJLzF95DYB54kv5zMmqzvwrEOoO8mAgwIb1JB0d
-         u405GLJyB9MiH3sjHEChqFcTavvdTl+VI9sEQ1bQ=
+        b=Q+sDNSbv4Bv0vb5rnFpjF//6HIS3OcjfALxxIyWFJjW6q9SeVngl58AeekkbqnqS5
+         b4o1hitqIVPzzsPRzo6p2vX/g+/lsx+bNJwFGUY30iMmn7vCUFSmAlNp8TdtQKCsi5
+         k30ASvz51Pd3ewliBAdjw6CBfqaTQLr5QocWMIqI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>, philip@philip-seeger.de,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+Cc:     David Sterba <dsterba@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 361/459] btrfs: device stats, log when stats are zeroed
-Date:   Fri, 14 Feb 2020 11:00:11 -0500
-Message-Id: <20200214160149.11681-361-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 385/459] btrfs: separate definition of assertion failure handlers
+Date:   Fri, 14 Feb 2020 11:00:35 -0500
+Message-Id: <20200214160149.11681-385-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
@@ -44,45 +44,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit a69976bc69308aa475d0ba3b8b3efd1d013c0460 ]
+[ Upstream commit 68c467cbb2f389b6c933e235bce0d1756fc8cc34 ]
 
-We had a report indicating that some read errors aren't reported by the
-device stats in the userland. It is important to have the errors
-reported in the device stat as user land scripts might depend on it to
-take the reasonable corrective actions. But to debug these issue we need
-to be really sure that request to reset the device stat did not come
-from the userland itself. So log an info message when device error reset
-happens.
+There's a report where objtool detects unreachable instructions, eg.:
 
-For example:
- BTRFS info (device sdc): device stats zeroed by btrfs(9223)
+  fs/btrfs/ctree.o: warning: objtool: btrfs_search_slot()+0x2d4: unreachable instruction
 
-Reported-by: philip@philip-seeger.de
-Link: https://www.spinics.net/lists/linux-btrfs/msg96528.html
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+This seems to be a false positive due to compiler version. The cause is
+in the ASSERT macro implementation that does the conditional check as
+IS_DEFINED(CONFIG_BTRFS_ASSERT) and not an #ifdef.
+
+To avoid that, use the ifdefs directly.
+
+There are still 2 reports that aren't fixed:
+
+  fs/btrfs/extent_io.o: warning: objtool: __set_extent_bit()+0x71f: unreachable instruction
+  fs/btrfs/relocation.o: warning: objtool: find_data_references()+0x4e0: unreachable instruction
+
+Co-developed-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/ctree.h | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index f7d9fc1a6fc2f..9ab3ae5df3005 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7561,6 +7561,8 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
- 			else
- 				btrfs_dev_stat_set(dev, i, 0);
- 		}
-+		btrfs_info(fs_info, "device stats zeroed by %s (%d)",
-+			   current->comm, task_pid_nr(current));
- 	} else {
- 		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
- 			if (stats->nr_items > i)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 290ca193c6c0f..169075550a5a2 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3107,17 +3107,21 @@ do {								\
+ 	rcu_read_unlock();					\
+ } while (0)
+ 
+-__cold
+-static inline void assfail(const char *expr, const char *file, int line)
++#ifdef CONFIG_BTRFS_ASSERT
++__cold __noreturn
++static inline void assertfail(const char *expr, const char *file, int line)
+ {
+-	if (IS_ENABLED(CONFIG_BTRFS_ASSERT)) {
+-		pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
+-		BUG();
+-	}
++	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
++	BUG();
+ }
+ 
+-#define ASSERT(expr)	\
+-	(likely(expr) ? (void)0 : assfail(#expr, __FILE__, __LINE__))
++#define ASSERT(expr)						\
++	(likely(expr) ? (void)0 : assertfail(#expr, __FILE__, __LINE__))
++
++#else
++static inline void assertfail(const char *expr, const char* file, int line) { }
++#define ASSERT(expr)	(void)(expr)
++#endif
+ 
+ /*
+  * Use that for functions that are conditionally exported for sanity tests but
 -- 
 2.20.1
 
