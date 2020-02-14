@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FD415F874
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 22:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE6815F875
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 22:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387774AbgBNVL5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 16:11:57 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42614 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387511AbgBNVL4 (ORCPT
+        id S2388023AbgBNVL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 16:11:59 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:33188 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387511AbgBNVL7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 16:11:56 -0500
-Received: by mail-qk1-f194.google.com with SMTP id o28so9247607qkj.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2020 13:11:55 -0800 (PST)
+        Fri, 14 Feb 2020 16:11:59 -0500
+Received: by mail-qt1-f194.google.com with SMTP id d5so7956902qto.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2020 13:11:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=df/kI5FewQ+LdbeAdWhZpkflHBpxPFf0n1wrtmLe/NM=;
-        b=f1ehJqmuAASIrvgS2RGqNQUQ846TBjGn8JtJipkj+/9XPA26Xa4zYt544uaMBZeckv
-         BVaVgO/ADjLVhh799cdNepteP6rXMU1VOFKvV1ntXjHfBADU2IeuiPv8NBCywpeVnfq2
-         JzIsSgx7+AR1cq30+SiS498BDGYFoNyk2O9oA683/gzYJ7XzUnztMln1uBauvQl7xZGW
-         d9IG0XbDzzF/dBRJZnCgdXQuFuxLJ2sQyg18r5xPYKINEdg1V/d/uWe9emGHLXN5Elw8
-         OosvEJNzdxvPxuTKVK76SoiW71Zu2n+MGfM6G6y/vnB/6jokunFqLnh+KRcEEPWLp9vD
-         42DQ==
+        bh=PcN9QmDSePETznHY2Dq50vka60gBcbGc6DE2jrMKxwY=;
+        b=cjyf2+fWeoWgRb9TnLCcp8CNxpJ84nv0mc9+vp+XDuGNij+rrZwSMul79jhtF+/3OR
+         xomcbozlJs+jX2MYcxFFnioPmh05Hbb57P4eBCSKlp5We831UlIKlC0Lmhk7PlCLWnpS
+         f00I6fB5OwtTtxibD7Wza93z176K3pzCbfr5/aX1+H6tqMJviETKMBR0X1BVf2UMbwQV
+         X6aFUCtgGhLYbgnX+eVk0L08Bap7rmXMA9e25VhPXjNlqKh8fH4b8RNzRvLmaTAnmsFA
+         IiUMe2HZTZNGNE4Uw0tNd54yTLDQexQdrURwA7P8fE9OX7KP5CCZFrZBEGC0Gz47gDv5
+         Pczg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=df/kI5FewQ+LdbeAdWhZpkflHBpxPFf0n1wrtmLe/NM=;
-        b=g3yVOVSb30aj3Gko9RsJsUirQk6wz+rw0vRxb2zNG8LHp/RF6lhgrw9XM6VkhvQ+v5
-         D7uPRCbMrHvqJSWzm4tsX61N2Cyr1aKk6ePrwD/geDKeFmCDu6jXnCJ0wLsh8oBf5kC4
-         MrPHpvkz/qAB1g4biNJCjpkMGMxacYKIpuFxPPWuwOS0g6pDyLa+mBoSryHB9Pipy1zl
-         7zREFgeKblPlZaR+nGZfXYI4X7DxxXnNfji+CCI5SVjsXeRzllg7EznIG1spor8KJb7L
-         Gwl2JB6XIZLrIn1yJ3ykNuSm6JJkeSoYEs9g1QUCSQOh0G6+jO4znJfIquBmaR9zPxUI
-         No6g==
-X-Gm-Message-State: APjAAAXTkGZZlYpxmwGOs9G5BAdU22IRHDC+jVyla/9POu+T37k9/emq
-        W7KqW39ghDz+cH3ayfHVmpFXL4PrKmw=
-X-Google-Smtp-Source: APXvYqyqRfUiOHdWZPxuxzOkO48p9Xn4V0fUNwULKVmj27YVnai+vkvqe9/u7gzzCLHj9SH8G5BOTA==
-X-Received: by 2002:a37:4b4b:: with SMTP id y72mr4382632qka.175.1581714714841;
-        Fri, 14 Feb 2020 13:11:54 -0800 (PST)
+        bh=PcN9QmDSePETznHY2Dq50vka60gBcbGc6DE2jrMKxwY=;
+        b=iDurSDzq74dPiq74c1YtSOt8VDSGBXvYiAFLhqTqqwrE0omSN8eEwtug4/l32i909s
+         fKkfn+iYJ/Ay5HSHuxx7AvcjYoMlYfp1+yDK2oBuCSuDWLPzz8i7/H7KsFPH3Zc+yDWt
+         PDoxrzvX2W+0oUt2Ui03toeURU9/bOJ3pLTBYW2HbgbjvS87g2INGntYV+oujV3HWHnu
+         y/s2zc1icuD37ludjb6SPVMBJuiAhdw1YyU58kL5elklj5G+WxzXRm4kNeLngaoXsd70
+         6Ub04xFvJbGZyom5dicE0xEcoXBl0Zu2eQBF6T2Jb+8j74HYbzWwQvVb2Vq1dB0xHiRG
+         OYvA==
+X-Gm-Message-State: APjAAAUHIdP2VXL/Gi1SavDx0H5qRgTHpdD+71qxr7lCa1b9jcsSvwYY
+        zj21CH5CdmuKR+26D8x+8twTpoKpTTA=
+X-Google-Smtp-Source: APXvYqzSIz/cNlLx/XtNK5u2UWRMMXvpHwAbviNpM4kEf/aVpnBCQJlLOUfsDiD2A7rw3GAxxdxwhQ==
+X-Received: by 2002:aed:3022:: with SMTP id 31mr4138357qte.282.1581714716489;
+        Fri, 14 Feb 2020 13:11:56 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f7sm3913483qtj.92.2020.02.14.13.11.53
+        by smtp.gmail.com with ESMTPSA id r37sm3934023qtj.44.2020.02.14.13.11.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2020 13:11:54 -0800 (PST)
+        Fri, 14 Feb 2020 13:11:55 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/8] btrfs: move the root freeing stuff into btrfs_put_root
-Date:   Fri, 14 Feb 2020 16:11:42 -0500
-Message-Id: <20200214211147.24610-4-josef@toxicpanda.com>
+Subject: [PATCH 4/8] btrfs: make inodes hold a ref on their roots
+Date:   Fri, 14 Feb 2020 16:11:43 -0500
+Message-Id: <20200214211147.24610-5-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200214211147.24610-1-josef@toxicpanda.com>
 References: <20200214211147.24610-1-josef@toxicpanda.com>
@@ -60,427 +60,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are a few different ways to free roots, either you allocated them
-yourself and you just do
-
-free_extent_buffer(root->node);
-free_extent_buffer(root->commit_node);
-btrfs_put_root(root);
-
-Which is the pattern for log roots.  Or for snapshots/subvolumes that
-are being dropped you simply call btrfs_free_fs_root() which does all
-the cleanup for you.
-
-Unify this all into btrfs_put_root(), so that we don't free up things
-associated with the root until the last reference is dropped.  This
-makes the root freeing code much more significant.
-
-The only caveat is at close_ctree() time we have to free the extent
-buffers for all of our main roots (extent_root, chunk_root, etc) because
-we have to drop the btree_inode and we'll run into issues if we hold
-onto those nodes until ->kill_sb() time.  This will be addressed in the
-future when we kill the btree_inode.
+If we make sure all the inodes have refs on their root we don't have to
+worry about the root disappearing while we have open inodes.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c           | 64 ++++++++++++++++++------------------
- fs/btrfs/disk-io.h           | 16 +--------
- fs/btrfs/extent-tree.c       |  7 ++--
- fs/btrfs/extent_io.c         | 16 +++++++--
- fs/btrfs/free-space-tree.c   |  2 --
- fs/btrfs/qgroup.c            |  7 +---
- fs/btrfs/relocation.c        |  4 ---
- fs/btrfs/tests/btrfs-tests.c |  5 +--
- fs/btrfs/tree-log.c          |  6 ----
- 9 files changed, 50 insertions(+), 77 deletions(-)
+ fs/btrfs/disk-io.c | 2 +-
+ fs/btrfs/inode.c   | 8 +++++---
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b7d6b4436f7d..953190b03043 100644
+index 953190b03043..26eb1564028d 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -1302,11 +1302,8 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 	return root;
+@@ -2142,7 +2142,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
  
- fail:
--	if (leaf) {
-+	if (leaf)
- 		btrfs_tree_unlock(leaf);
--		free_extent_buffer(root->commit_root);
--		free_extent_buffer(leaf);
--	}
- 	btrfs_put_root(root);
+ 	BTRFS_I(inode)->io_tree.ops = &btree_extent_io_ops;
  
- 	return ERR_PTR(ret);
-@@ -1429,10 +1426,10 @@ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
- 				     generation, level, NULL);
- 	if (IS_ERR(root->node)) {
- 		ret = PTR_ERR(root->node);
-+		root->node = NULL;
- 		goto find_fail;
- 	} else if (!btrfs_buffer_uptodate(root->node, generation, 0)) {
- 		ret = -EIO;
--		free_extent_buffer(root->node);
- 		goto find_fail;
- 	}
- 	root->commit_root = btrfs_root_node(root);
-@@ -1661,14 +1658,14 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
- 	if (ret) {
- 		btrfs_put_root(root);
- 		if (ret == -EEXIST) {
--			btrfs_free_fs_root(root);
-+			btrfs_put_root(root);
- 			goto again;
- 		}
- 		goto fail;
- 	}
- 	return root;
- fail:
--	btrfs_free_fs_root(root);
-+	btrfs_put_root(root);
- 	return ERR_PTR(ret);
+-	BTRFS_I(inode)->root = fs_info->tree_root;
++	BTRFS_I(inode)->root = btrfs_grab_root(fs_info->tree_root);
+ 	memset(&BTRFS_I(inode)->location, 0, sizeof(struct btrfs_key));
+ 	set_bit(BTRFS_INODE_DUMMY, &BTRFS_I(inode)->runtime_flags);
+ 	btrfs_insert_inode_hash(inode);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 20a6ee83f709..338283bb66f1 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5234,7 +5234,8 @@ static int btrfs_init_locked_inode(struct inode *inode, void *p)
+ 	inode->i_ino = args->location->objectid;
+ 	memcpy(&BTRFS_I(inode)->location, args->location,
+ 	       sizeof(*args->location));
+-	BTRFS_I(inode)->root = args->root;
++	BTRFS_I(inode)->root = btrfs_grab_root(args->root);
++	BUG_ON(args->root && !BTRFS_I(inode)->root);
+ 	return 0;
  }
  
-@@ -2040,11 +2037,35 @@ static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
- 	free_root_extent_buffers(info->csum_root);
- 	free_root_extent_buffers(info->quota_root);
- 	free_root_extent_buffers(info->uuid_root);
-+	free_root_extent_buffers(info->fs_root);
- 	if (free_chunk_root)
- 		free_root_extent_buffers(info->chunk_root);
- 	free_root_extent_buffers(info->free_space_root);
+@@ -5315,7 +5316,7 @@ static struct inode *new_simple_dir(struct super_block *s,
+ 	if (!inode)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	BTRFS_I(inode)->root = root;
++	BTRFS_I(inode)->root = btrfs_grab_root(root);
+ 	memcpy(&BTRFS_I(inode)->location, key, sizeof(*key));
+ 	set_bit(BTRFS_INODE_DUMMY, &BTRFS_I(inode)->runtime_flags);
+ 
+@@ -5883,7 +5884,7 @@ static struct inode *btrfs_new_inode(struct btrfs_trans_handle *trans,
+ 	 */
+ 	BTRFS_I(inode)->index_cnt = 2;
+ 	BTRFS_I(inode)->dir_index = *index;
+-	BTRFS_I(inode)->root = root;
++	BTRFS_I(inode)->root = btrfs_grab_root(root);
+ 	BTRFS_I(inode)->generation = trans->transid;
+ 	inode->i_generation = BTRFS_I(inode)->generation;
+ 
+@@ -8898,6 +8899,7 @@ void btrfs_destroy_inode(struct inode *inode)
+ 	inode_tree_del(inode);
+ 	btrfs_drop_extent_cache(BTRFS_I(inode), 0, (u64)-1, 0);
+ 	btrfs_inode_clear_file_extent_range(BTRFS_I(inode), 0, (u64)-1);
++	btrfs_put_root(BTRFS_I(inode)->root);
  }
  
-+void btrfs_put_root(struct btrfs_root *root)
-+{
-+	if (!root)
-+		return;
-+	if (refcount_dec_and_test(&root->refs)) {
-+		WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
-+		if (root->anon_dev)
-+			free_anon_bdev(root->anon_dev);
-+		if (root->subv_writers)
-+			btrfs_free_subvolume_writers(root->subv_writers);
-+		free_extent_buffer(root->node);
-+		free_extent_buffer(root->commit_root);
-+		kfree(root->free_ino_ctl);
-+		kfree(root->free_ino_pinned);
-+#ifdef CONFIG_BTRFS_DEBUG
-+		spin_lock(&root->fs_info->fs_roots_radix_lock);
-+		list_del_init(&root->leak_list);
-+		spin_unlock(&root->fs_info->fs_roots_radix_lock);
-+#endif
-+		kfree(root);
-+	}
-+}
-+
- void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
- {
- 	int ret;
-@@ -2056,13 +2077,10 @@ void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info)
- 				     struct btrfs_root, root_list);
- 		list_del(&gang[0]->root_list);
- 
--		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state)) {
-+		if (test_bit(BTRFS_ROOT_IN_RADIX, &gang[0]->state))
- 			btrfs_drop_and_free_fs_root(fs_info, gang[0]);
--		} else {
--			free_extent_buffer(gang[0]->node);
--			free_extent_buffer(gang[0]->commit_root);
-+		else
- 			btrfs_put_root(gang[0]);
--		}
- 	}
- 
- 	while (1) {
-@@ -2269,11 +2287,11 @@ static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
- 	if (IS_ERR(log_tree_root->node)) {
- 		btrfs_warn(fs_info, "failed to read log tree");
- 		ret = PTR_ERR(log_tree_root->node);
-+		log_tree_root->node = NULL;
- 		btrfs_put_root(log_tree_root);
- 		return ret;
- 	} else if (!extent_buffer_uptodate(log_tree_root->node)) {
- 		btrfs_err(fs_info, "failed to read log tree");
--		free_extent_buffer(log_tree_root->node);
- 		btrfs_put_root(log_tree_root);
- 		return -EIO;
- 	}
-@@ -2282,7 +2300,6 @@ static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
- 	if (ret) {
- 		btrfs_handle_fs_error(fs_info, ret,
- 				      "Failed to recover log tree");
--		free_extent_buffer(log_tree_root->node);
- 		btrfs_put_root(log_tree_root);
- 		return ret;
- 	}
-@@ -3893,8 +3910,6 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
- 		btrfs_free_log(NULL, root);
- 		if (root->reloc_root) {
--			free_extent_buffer(root->reloc_root->node);
--			free_extent_buffer(root->reloc_root->commit_root);
- 			btrfs_put_root(root->reloc_root);
- 			root->reloc_root = NULL;
- 		}
-@@ -3908,20 +3923,6 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 		iput(root->ino_cache_inode);
- 		root->ino_cache_inode = NULL;
- 	}
--	btrfs_free_fs_root(root);
--}
--
--void btrfs_free_fs_root(struct btrfs_root *root)
--{
--	WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
--	if (root->anon_dev)
--		free_anon_bdev(root->anon_dev);
--	if (root->subv_writers)
--		btrfs_free_subvolume_writers(root->subv_writers);
--	free_extent_buffer(root->node);
--	free_extent_buffer(root->commit_root);
--	kfree(root->free_ino_ctl);
--	kfree(root->free_ino_pinned);
- 	btrfs_put_root(root);
- }
- 
-@@ -4073,8 +4074,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	btrfs_sysfs_remove_mounted(fs_info);
- 	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
- 
--	btrfs_free_fs_roots(fs_info);
--
- 	btrfs_put_block_group_cache(fs_info);
- 
- 	/*
-@@ -4086,6 +4085,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 
- 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
- 	free_root_pointers(fs_info, true);
-+	btrfs_free_fs_roots(fs_info);
- 
- 	/*
- 	 * We must free the block groups after dropping the fs_roots as we could
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index db21ab614357..860a9a3bd8d1 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -76,7 +76,6 @@ void btrfs_btree_balance_dirty(struct btrfs_fs_info *fs_info);
- void btrfs_btree_balance_dirty_nodelay(struct btrfs_fs_info *fs_info);
- void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_root *root);
--void btrfs_free_fs_root(struct btrfs_root *root);
- 
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
- struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
-@@ -98,20 +97,7 @@ static inline struct btrfs_root *btrfs_grab_root(struct btrfs_root *root)
- 	return NULL;
- }
- 
--static inline void btrfs_put_root(struct btrfs_root *root)
--{
--	if (!root)
--		return;
--	if (refcount_dec_and_test(&root->refs)) {
--#ifdef CONFIG_BTRFS_DEBUG
--		spin_lock(&root->fs_info->fs_roots_radix_lock);
--		list_del_init(&root->leak_list);
--		spin_unlock(&root->fs_info->fs_roots_radix_lock);
--#endif
--		kfree(root);
--	}
--}
--
-+void btrfs_put_root(struct btrfs_root *root);
- void btrfs_mark_buffer_dirty(struct extent_buffer *buf);
- int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
- 			  int atomic);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 08481a64f5d4..bb9a180e5b96 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5411,13 +5411,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
- 		}
- 	}
- 
--	if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state)) {
-+	if (test_bit(BTRFS_ROOT_IN_RADIX, &root->state))
- 		btrfs_add_dropped_root(trans, root);
--	} else {
--		free_extent_buffer(root->node);
--		free_extent_buffer(root->commit_root);
-+	else
- 		btrfs_put_root(root);
--	}
- 	root_dropped = true;
- out_end_trans:
- 	btrfs_end_transaction_throttle(trans);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e82e3817e811..deab1430d9c5 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -64,12 +64,20 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info)
- 	struct extent_buffer *eb;
- 	unsigned long flags;
- 
-+	/*
-+	 * If we didn't get into open_ctree our alloced_ebs will not be init'ed,
-+	 * so just skip this.
-+	 */
-+	if (fs_info->alloced_ebs.next == NULL)
-+		return;
-+
- 	spin_lock_irqsave(&fs_info->eb_leak_lock, flags);
- 	while (!list_empty(&fs_info->alloced_ebs)) {
- 		eb = list_first_entry(&fs_info->alloced_ebs,
- 				      struct extent_buffer, leak_list);
--		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
--		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
-+		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu owner %llu\n",
-+		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags,
-+		       btrfs_header_owner(eb));
- 		list_del(&eb->leak_list);
- 		kmem_cache_free(extent_buffer_cache, eb);
- 	}
-@@ -4795,7 +4803,6 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 
- static void __free_extent_buffer(struct extent_buffer *eb)
- {
--	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
- 	kmem_cache_free(extent_buffer_cache, eb);
- }
- 
-@@ -4861,6 +4868,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
- {
- 	btrfs_release_extent_buffer_pages(eb);
-+	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
- 	__free_extent_buffer(eb);
- }
- 
-@@ -5248,6 +5256,8 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 			spin_unlock(&eb->refs_lock);
- 		}
- 
-+		btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock,
-+				     &eb->leak_list);
- 		/* Should be safe to release our pages at this point */
- 		btrfs_release_extent_buffer_pages(eb);
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index bc43950eb32f..8b1f5c8897b7 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -1251,8 +1251,6 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
- 	btrfs_free_tree_block(trans, free_space_root, free_space_root->node,
- 			      0, 1);
- 
--	free_extent_buffer(free_space_root->node);
--	free_extent_buffer(free_space_root->commit_root);
- 	btrfs_put_root(free_space_root);
- 
- 	return btrfs_commit_transaction(trans);
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 6ae868eb9a17..ac192a7696f3 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1037,11 +1037,8 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- out_free_path:
- 	btrfs_free_path(path);
- out_free_root:
--	if (ret) {
--		free_extent_buffer(quota_root->node);
--		free_extent_buffer(quota_root->commit_root);
-+	if (ret)
- 		btrfs_put_root(quota_root);
--	}
- out:
- 	if (ret) {
- 		ulist_free(fs_info->qgroup_ulist);
-@@ -1104,8 +1101,6 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	btrfs_tree_unlock(quota_root->node);
- 	btrfs_free_tree_block(trans, quota_root, quota_root->node, 0, 1);
- 
--	free_extent_buffer(quota_root->node);
--	free_extent_buffer(quota_root->commit_root);
- 	btrfs_put_root(quota_root);
- 
- end_trans:
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 034f5f151a74..4fb7e3cc2aca 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2549,10 +2549,6 @@ void free_reloc_roots(struct list_head *list)
- 		reloc_root = list_entry(list->next, struct btrfs_root,
- 					root_list);
- 		__del_reloc_root(reloc_root);
--		free_extent_buffer(reloc_root->node);
--		free_extent_buffer(reloc_root->commit_root);
--		reloc_root->node = NULL;
--		reloc_root->commit_root = NULL;
- 	}
- }
- 
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index 69c9afef06e3..42e62fd2809c 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -194,6 +194,7 @@ void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info)
- 	cleanup_srcu_struct(&fs_info->subvol_srcu);
- 	kfree(fs_info->super_copy);
- 	btrfs_check_leaked_roots(fs_info);
-+	btrfs_extent_buffer_leak_debug_check(fs_info);
- 	kfree(fs_info->fs_devices);
- 	kfree(fs_info);
- }
-@@ -205,10 +206,6 @@ void btrfs_free_dummy_root(struct btrfs_root *root)
- 	/* Will be freed by btrfs_free_fs_roots */
- 	if (WARN_ON(test_bit(BTRFS_ROOT_IN_RADIX, &root->state)))
- 		return;
--	if (root->node) {
--		/* One for allocate_extent_buffer */
--		free_extent_buffer(root->node);
--	}
- 	btrfs_put_root(root);
- }
- 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 4ea47bac5fcf..d27aa289dc50 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3288,7 +3288,6 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
- 
- 	clear_extent_bits(&log->dirty_log_pages, 0, (u64)-1,
- 			  EXTENT_DIRTY | EXTENT_NEW | EXTENT_NEED_WAIT);
--	free_extent_buffer(log->node);
- 	btrfs_put_root(log);
- }
- 
-@@ -6181,8 +6180,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 				ret = btrfs_pin_extent_for_log_replay(fs_info,
- 							log->node->start,
- 							log->node->len);
--			free_extent_buffer(log->node);
--			free_extent_buffer(log->commit_root);
- 			btrfs_put_root(log);
- 
- 			if (!ret)
-@@ -6220,8 +6217,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 
- 		wc.replay_dest->log_root = NULL;
- 		btrfs_put_root(wc.replay_dest);
--		free_extent_buffer(log->node);
--		free_extent_buffer(log->commit_root);
- 		btrfs_put_root(log);
- 
- 		if (ret)
-@@ -6253,7 +6248,6 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
- 	if (ret)
- 		return ret;
- 
--	free_extent_buffer(log_root_tree->node);
- 	log_root_tree->log_root = NULL;
- 	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
- 	btrfs_put_root(log_root_tree);
+ int btrfs_drop_inode(struct inode *inode)
 -- 
 2.24.1
 
