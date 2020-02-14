@@ -2,97 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8284015D781
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 13:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C503015D7F1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 14:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728529AbgBNMg4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 07:36:56 -0500
-Received: from len.romanrm.net ([91.121.86.59]:55582 "EHLO len.romanrm.net"
+        id S1729210AbgBNNIa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 08:08:30 -0500
+Received: from mail.nethype.de ([5.9.56.24]:43633 "EHLO mail.nethype.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728336AbgBNMg4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 07:36:56 -0500
-Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
-        by len.romanrm.net (Postfix) with SMTP id 7BC4A40E3A;
-        Fri, 14 Feb 2020 12:36:54 +0000 (UTC)
-Date:   Fri, 14 Feb 2020 17:36:54 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Marc Lehmann <schmorp@schmorp.de>
+        id S1728036AbgBNNIa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 08:08:30 -0500
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1j2aho-001scB-A1; Fri, 14 Feb 2020 13:08:28 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1j2aH1-0008U9-Qs; Fri, 14 Feb 2020 12:40:47 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1j2aH1-0002D7-Lg; Fri, 14 Feb 2020 13:40:47 +0100
+Date:   Fri, 14 Feb 2020 13:40:47 +0100
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Filipe Manana <fdmanana@gmail.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: cpu bound I/O behaviour in linux 5.4 (possibly others)
-Message-ID: <20200214173654.394c1c7d@natsu>
-In-Reply-To: <20200214113027.GA6855@schmorp.de>
-References: <20200214113027.GA6855@schmorp.de>
+Message-ID: <20200214124040.GA7686@schmorp.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H7SPyXB+5G6+XtgfviJdBQQSYD1YyJZPX6rbWxhes-+qw@mail.gmail.com>
+ <7a472107-ab87-d787-9f4f-d0d0e148061a@suse.com>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 14 Feb 2020 12:30:27 +0100
-Marc Lehmann <schmorp@schmorp.de> wrote:
+First of all, thanks for the response - and if my mails are somehow
+off-topic for the list, also feelf ree to tell me :)
 
-> I've upgraded a machine to linux 5.4.15 that runs a small netnews
+On Fri, Feb 14, 2020 at 01:57:33PM +0200, Nikolay Borisov <nborisov@suse.com> wrote:
+> > one core) in top:
+> 
+> So this is a 50tb useful space, right?
 
-You don't seem to mention which version you upgraded from. If a full bisect is
-impractical, this is the (very distant) next best thing you can do. Was it from
-5.14.14, or from 3.4? :)
+Yup, pretty full, too. I also forgot to mention that the vast majority
+of files are between 400kB and 2MB, and not, as one might expect from
+textgroups, a few kilobytes.
 
-Also would be nice if you can double-check that returning to that previous
-version right now makes the issue go away, and it's not a coincidence of
-something else changed on the FS or OS (such as other package upgrades beside
-the kernel).
+> >    [<0>] tree_search_offset.isra.0+0x16a/0x1d0 [btrfs]
+> 
+> This points to freespace cache. One thing that I might suggest is try
 
-> system. It normally pulls news with about 20MB/s. After upgrading (it
-> seems) that this process is now CPU bound, and I get only about 10mb/s
-> throughput. Otherwise, everything seems fine - no obvious bugs, and no
-> obvious performance problems.
-> 
-> "CPU-bound" specifically means that the disk(s) seem pretty idle (it an
-> 6x10TB raid5), I can do a lot of I/O without slowing down the transfer,
-> but there is always a single kworker which is constantly at 100% cpu (i.e.
-> one core) in top:
-> 
->  8963 root      20   0       0      0      0 R 2 100.0   0.0   2:04 [kworker/u8:15+flush-btrfs-3]
-> 
-> When I cat /proc/8963/task/8963/stack regularly, I get either no output or
-> (most often) this single line:
-> 
->    [<0>] tree_search_offset.isra.0+0x16a/0x1d0 [btrfs]
-> 
-> It is possible that this is _not_ new behaviour with 5.4, but I often use
-> top, and I can't remember having a kworker stuck at 100% cpu for days.
-> (The fs is about a year old and had no issues so far, the last scrub is about
-> a week old).
-> 
-> Another symptom is that Dirty in /proc/meminfo is typically at 7-8GB,
-> which is more or less the value of /proc/sys/vm/dirty_ratio, Writeback is
-> usually 0 or has small values, and running sync often takes 30m or more.
-> 
-> The 100% cpu is definitely caused by the news transfer - pausing it and
-> waiting a while makes it effectively disappear and everything goes back to
-> normal.
-> 
-> The news process effectively does this in multiple parallel loops:
-> 
->    openat(AT_FDCWD, "/store/04267/26623~", O_WRONLY|O_CREAT|O_EXCL, 0600...
->    write(75, "Path: ask005.abavia.com!"..., 656453...
->    close(75)                   = 0
->    renameat2(AT_FDCWD, "/store/04267/26623~", AT_FDCWD, "/store/04267/26623", 0 ...
-> 
-> The file layout is one layer of subdirectories with 100000 files inside
-> each, which has posed absolutely no probelms withe xt4/xfs in the past,
-> and also btrfs didn't seem to mind.
-> 
-> My question is, would this be expected behaviour? If yes, is it something
-> that can be influenced/improved on my side?
-> 
-> I can investigate and do some experiments, but I cannot easily update
-> kernels/do reboots on this system.
-> 
+Hmm, I did switch to the free space tree on all larger filesystems long
+ago, or at least I thought so. I use these mount options on the fs in
+question:
 
+   rw,noatime,nossd,space_cache=v2,commit=120,subvolid=5,subvol=/
+
+I assume this is the correct way to get it (and your space_cache=2 is a
+typo, or an alternative?).
+
+So either I am not switching on the free space tree properly, or it's not
+the problem. I did notice major speedups form it in the past, though.
+
+> So you can't deduce that the free space cache is being used, and
+> despite being the default, it was not mentioned by Marc if he's not
+> using already the free space tree (-o space_cache=v2).
+
+Yes, sorry, it's alwayss hard to strike a balance between needed info and
+too much.
+
+> Switching from one to the other might make the problem go away, simply
+> because it cause free space to be scanned and build a new cache or
+> tree.
+
+So clearing the free space tree might also help? Can I do this while its
+mounted using remount or do I haver to umount/mount (or use btrfs check)?
 
 -- 
-With respect,
-Roman
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
