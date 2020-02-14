@@ -2,132 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C3215DB3D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 16:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6F515DF98
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgBNPoK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 10:44:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57994 "EHLO mx2.suse.de"
+        id S2391290AbgBNQJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 11:09:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728264AbgBNPoK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:44:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 37477B049;
-        Fri, 14 Feb 2020 15:44:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8080CDA703; Fri, 14 Feb 2020 16:43:36 +0100 (CET)
-Date:   Fri, 14 Feb 2020 16:43:36 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v8 8/8] btrfs: remove buffer_heads form superblock mirror
- integrity checking
-Message-ID: <20200214154336.GA2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
- <20200213152436.13276-9-johannes.thumshirn@wdc.com>
+        id S2391284AbgBNQJa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:09:30 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1B5824682;
+        Fri, 14 Feb 2020 16:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581696569;
+        bh=pLqWsJQGIs+4qcANymREjBjxFeOyl45gGvkYi5cjcRw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0xFutytQMFZ/g5c+pLm6dm5YdrJM6nD8mBWHCL2Mn76CnmJ6xPH1NUfygC5HJfrQH
+         DbVHM1n7t6cMgFWKqZcjvm+73sBRg3nVwUVTRRsjUnCfKCYUnrII1unERWnlXWhI9Q
+         X2LgaP2SzJGwbr/O2rsRcClfZCIGwJqb+iLVBri4=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Johannes Thumshirn <jth@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 359/459] btrfs: fix possible NULL-pointer dereference in integrity checks
+Date:   Fri, 14 Feb 2020 11:00:09 -0500
+Message-Id: <20200214160149.11681-359-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200213152436.13276-9-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 12:24:36AM +0900, Johannes Thumshirn wrote:
-> The integrity checking code for the superblock mirrors is the last remaining
-> user of buffer_heads in BTRFS, change it to using plain BIOs as well.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> ---
-> Changes to v7:
-> - Use read_Cache_page_gfp()
-> - Don't kmap() block device mappings (David)
-> 
-> Changes to v4:
-> - Remove mapping_gfp_constraint()
-> 
-> Changes to v2:
-> - Open-code kunmap() + put_page() (David)
-> - Remove __GFP_NOFAIL from allocation (Josef)
-> - Merge error paths (David)
-> 
-> Changes to v1:
-> - Convert from alloc_page() to find_or_create_page()
-> ---
->  fs/btrfs/check-integrity.c | 42 +++++++++++++++++++++-----------------
->  1 file changed, 23 insertions(+), 19 deletions(-)
-> 
-> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-> index 4f6db2fe482a..d8d915d7beda 100644
-> --- a/fs/btrfs/check-integrity.c
-> +++ b/fs/btrfs/check-integrity.c
-> @@ -77,7 +77,6 @@
->  
->  #include <linux/sched.h>
->  #include <linux/slab.h>
-> -#include <linux/buffer_head.h>
->  #include <linux/mutex.h>
->  #include <linux/genhd.h>
->  #include <linux/blkdev.h>
-> @@ -762,29 +761,33 @@ static int btrfsic_process_superblock_dev_mirror(
->  	struct btrfs_fs_info *fs_info = state->fs_info;
->  	struct btrfs_super_block *super_tmp;
->  	u64 dev_bytenr;
-> -	struct buffer_head *bh;
->  	struct btrfsic_block *superblock_tmp;
->  	int pass;
->  	struct block_device *const superblock_bdev = device->bdev;
-> +	struct page *page;
-> +	struct bio bio;
-> +	struct bio_vec bio_vec;
-> +	struct address_space *mapping = superblock_bdev->bd_inode->i_mapping;
-> +	int ret;
->  
->  	/* super block bytenr is always the unmapped device bytenr */
->  	dev_bytenr = btrfs_sb_offset(superblock_mirror_num);
->  	if (dev_bytenr + BTRFS_SUPER_INFO_SIZE > device->commit_total_bytes)
->  		return -1;
-> -	bh = __bread(superblock_bdev, dev_bytenr / BTRFS_BDEV_BLOCKSIZE,
-> -		     BTRFS_SUPER_INFO_SIZE);
-> -	if (NULL == bh)
-> +
-> +	page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
+From: Johannes Thumshirn <jth@kernel.org>
 
-Reed-Solomon error correction in page cache? Have I missed the news? :)
+[ Upstream commit 3dbd351df42109902fbcebf27104149226a4fcd9 ]
 
-  CC [M]  fs/btrfs/check-integrity.o
-fs/btrfs/check-integrity.c: In function ‘btrfsic_process_superblock_dev_mirror’:
-fs/btrfs/check-integrity.c:778:9: error: implicit declaration of function ‘reed_cache_page_gfp’; did you mean ‘read_cache_page_gfp’? [-Werror=implicit-function-declaration]
-  778 |  page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
-      |         ^~~~~~~~~~~~~~~~~~~
-      |         read_cache_page_gfp
+A user reports a possible NULL-pointer dereference in
+btrfsic_process_superblock(). We are assigning state->fs_info to a local
+fs_info variable and afterwards checking for the presence of state.
 
-And with that fixed there are still the following warnings.
+While we would BUG_ON() a NULL state anyways, we can also just remove
+the local fs_info copy, as fs_info is only used once as the first
+argument for btrfs_num_copies(). There we can just pass in
+state->fs_info as well.
 
-fs/btrfs/check-integrity.c:778:7: warning: assignment to ‘struct page *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
-  778 |  page = reed_cache_page_gfp(mapping, dev_bytenr >> PAGE_SHIFT, GFP_NOFS);
-      |       ^
-fs/btrfs/check-integrity.c:769:17: warning: unused variable ‘bio_vec’ [-Wunused-variable]
-  769 |  struct bio_vec bio_vec;
-      |                 ^~~~~~~
-fs/btrfs/check-integrity.c:768:13: warning: unused variable ‘bio’ [-Wunused-variable]
-  768 |  struct bio bio;
-      |             ^~~
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205003
+Signed-off-by: Johannes Thumshirn <jth@kernel.org>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/check-integrity.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+index 0b52ab4cb9649..72c70f59fc605 100644
+--- a/fs/btrfs/check-integrity.c
++++ b/fs/btrfs/check-integrity.c
+@@ -629,7 +629,6 @@ static struct btrfsic_dev_state *btrfsic_dev_state_hashtable_lookup(dev_t dev,
+ static int btrfsic_process_superblock(struct btrfsic_state *state,
+ 				      struct btrfs_fs_devices *fs_devices)
+ {
+-	struct btrfs_fs_info *fs_info = state->fs_info;
+ 	struct btrfs_super_block *selected_super;
+ 	struct list_head *dev_head = &fs_devices->devices;
+ 	struct btrfs_device *device;
+@@ -700,7 +699,7 @@ static int btrfsic_process_superblock(struct btrfsic_state *state,
+ 			break;
+ 		}
+ 
+-		num_copies = btrfs_num_copies(fs_info, next_bytenr,
++		num_copies = btrfs_num_copies(state->fs_info, next_bytenr,
+ 					      state->metablock_size);
+ 		if (state->print_mask & BTRFSIC_PRINT_MASK_NUM_COPIES)
+ 			pr_info("num_copies(log_bytenr=%llu) = %d\n",
+-- 
+2.20.1
+
