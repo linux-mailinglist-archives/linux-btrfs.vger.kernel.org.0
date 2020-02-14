@@ -2,91 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEB815D4D6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50DE15D4DE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 10:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgBNJfr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 04:35:47 -0500
-Received: from mout.gmx.net ([212.227.15.18]:43487 "EHLO mout.gmx.net"
+        id S1729139AbgBNJgr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 04:36:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43966 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbgBNJfq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 04:35:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581672940;
-        bh=uwIkdjRwuSbYg0f+qTJRXdEKJPIlvB3m+fquz2k3fJo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=KwzfKYVsSC3AQnm9bu5SOIyiAjAEjVpfWTrYoxf9eKWPVUuF1qg1Yul/mmZ+0nOLW
-         jbCr5+PuMPHTa//i93w0zEY+Y0XmXaiS9dIcvL9c9P5fF8UoV9k7fVWw+pTy/sWJaS
-         dws/Sc6QNM57CgAQ9OtP+/l+4YdklOJLTKkTMTL0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3siA-1jSy9T2GNU-00zliv; Fri, 14
- Feb 2020 10:35:40 +0100
-Subject: Re: [PATCH v2 2/3] btrfs: backref: Implement
- btrfs_backref_iterator_next()
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        id S1729051AbgBNJgr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 04:36:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id ED54CACD0;
+        Fri, 14 Feb 2020 09:36:45 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iterator
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20200214081354.56605-1-wqu@suse.com>
- <20200214081354.56605-3-wqu@suse.com>
- <4c5cae62-d74e-7ce4-2ed8-4cfc91f19059@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <950d7c55-0e18-e710-4d2e-224b7bf054f2@gmx.com>
-Date:   Fri, 14 Feb 2020 17:35:36 +0800
+ <20200214081354.56605-2-wqu@suse.com>
+ <689800fa-ae4a-e2fc-b699-92e969d0e389@suse.com>
+ <1f17ed5b-978e-8a45-813d-3fdce61a8e9c@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9a4ded8d-929c-4081-2033-b923a4639087@suse.com>
+Date:   Fri, 14 Feb 2020 11:36:45 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <4c5cae62-d74e-7ce4-2ed8-4cfc91f19059@suse.com>
+In-Reply-To: <1f17ed5b-978e-8a45-813d-3fdce61a8e9c@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vOJTGRsIQFuusOpwkNozf2WFEcUM763LEH0KiZONrCUoQmkolSF
- KKYU0RGjRDu1JmDKSfa68QKNwTVZWqEV3DAzX0HWmLmcy46HjXZpGMYh7YxxTHtDGDbj9sn
- g9AcPjh2x35dKkN4pslwgY0Dno0F9FnQ8QiiSc/eEYhk/6htMaoTV5oK/JP4ITAhxP9zL5J
- REAsQaEGU+erTeBM66zUA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L0RP45vtQ7k=:0QFPtxoV+Qocc8X2Csonf5
- mP99zdobMZxOVq/scuU421X6suDbiX/xrk0ocdEvzF4NA7HtMGHg8b2wdAVLUyaA7tH9zxNPz
- l62UUG/UtZojoEvxREUAb0s7Y9ZPysJTRLSPkhQuPhoE0OXY41QQThTagY4aRihqe/HhGKa0v
- mHQB2mIEaz1Mua4TqOIKJexM7B+ZtQDNML6ZAQwJognwHmgrIF12tt3YP/C8SC+J1X29HvzR4
- ct6RWrKpyil2zkBeKyr9CgJH3nFOlD8V9EFEnO8JowfrpJRYQhRbTEd5sAqLahaxsLwQSgC5u
- Jlet2Qszq5AOZij8CL/oEC/b5CVgc+dPo4Ba2l/n/uG2EvmLYKCn0E8SxCtpYgZy+BGI++MDl
- skpK6i41suCkdKVMBeYX9fHOH1SkGiz2DKg0M3tJm45LwWnAcxnWxlzloaJD5zApQIT62zc8p
- Oi2KWEO8PANrGfB2Wr8uBdIdouZaHk3RXGAdZP0h8Gr7Pqr8i36K+dF8SxFlAFfUkQUZsyEaJ
- Bk2mGkM2T59y52g/SjMnuEO1AqFwl6Ql0oyl0uBRyOV+iz6VBV+ZLGgV5FdyHx7eBByiTRtI4
- kg9Qm2BbhDFkVL1qLsMDHutBzl08NbNipZWgt30NvToiA7IqShkenpRryT4UiE28JxtuE+IuK
- gRPet4w5Gowdd7feU37VRqguP5z0f3XwImpffP9fzkl31LbHXOmlRsVC/pKp3oHi3sRxYJLRF
- JwE/hF02+Uj3rDzez7fKlJDnwXspYCcvlmJ8dr0OIu71X813jpHtd+Cws1c/6+sWAxWK7JG+7
- aumtD/UvH4uHt+IA7G0RWCYoqoVG7zgYDp2BGX7Kpjo3An9hY/hwY1UDvXCdAWt1Iiiad9Hyj
- WJT4mS5zzEJarC+T+RC/++8eJ2ws+E4Wcqio03FK4xwyw1S3a6AwwdqLqeLLP/F3yzjQuBfKv
- FeUJ44Q+YUE84VPjVRLI0U+iApBvhnPzCI/kWwFYgAy1oIIU+4qN+9W+nlSw8nf6gUwNYWcYC
- FFMTcX2uH7c5RK20LP+2NRtbH3n4jsLzaNFlt85fdyd1Iezz/ilttwofvq7GrueY3uf/5Huqz
- vlHXmmd42PIRbPT75PDRbR4yKfpNW6uysfHFmcpMiNLnoQwRFdQuPkhkqXGN8tQ/w8qSYD5lw
- ph0Q7YnBLtZ6G+YjoSRxlOB8WkFELjq5UtjM7rZ389abIhBgHjVmO0W8pwbXAhlCWb5iXWhFm
- HWak2Bxe6qbgA1z/i
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -94,89 +82,116 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/2/14 =E4=B8=8B=E5=8D=885:25, Nikolay Borisov wrote:
->
->
-> On 14.02.20 =D0=B3. 10:13 =D1=87., Qu Wenruo wrote:
->> This function will go next inline/keyed backref for
->> btrfs_backref_iterator infrastructure.
+On 14.02.20 г. 11:33 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/2/14 下午5:19, Nikolay Borisov wrote:
 >>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/backref.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 48 insertions(+)
 >>
->> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
->> index 73c4829609c9..c5f87439f31c 100644
->> --- a/fs/btrfs/backref.c
->> +++ b/fs/btrfs/backref.c
->> @@ -2310,3 +2310,51 @@ int btrfs_backref_iterator_start(struct btrfs_ba=
-ckref_iterator *iterator,
->>  	btrfs_release_path(path);
->>  	return ret;
->>  }
->> +
->> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterato=
-r)
->> +{
->
-> make it a bool function.
-
-Even when we could hit error in this case?
-
-In the next patch, you would see we handle end of backrefs and error
-different.
-Thus I don't think it's a good idea to make it bool.
-
-Thanks,
-Qu
->
->> +	struct extent_buffer *eb =3D btrfs_backref_get_eb(iterator);
->> +	struct btrfs_path *path =3D iterator->path;
->> +	struct btrfs_extent_inline_ref *iref;
->> +	int ret;
->> +	u32 size;
->> +
->> +	if (iterator->cur_key.type =3D=3D BTRFS_EXTENT_ITEM_KEY ||
->> +	    iterator->cur_key.type =3D=3D BTRFS_METADATA_ITEM_KEY) {
->> +		/* We're still inside the inline refs */
->> +		if (btrfs_backref_has_tree_block_info(iterator)) {
->> +			/* First tree block info */
->> +			size =3D sizeof(struct btrfs_tree_block_info);
->> +		} else {
->> +			/* Use inline ref type to determine the size */
->> +			int type;
->> +
->> +			iref =3D (struct btrfs_extent_inline_ref *)
->> +				(iterator->cur_ptr);
->> +			type =3D btrfs_extent_inline_ref_type(eb, iref);
->> +
->> +			size =3D btrfs_extent_inline_ref_size(type);
->> +		}
->> +		iterator->cur_ptr +=3D size;
->> +		if (iterator->cur_ptr < iterator->end_ptr)
->> +			return 0;
->> +
->> +		/* All inline items iterated, fall through */
->> +	}
->> +	/* We're at keyed items, there is no inline item, just go next item *=
-/
->> +	ret =3D btrfs_next_item(iterator->fs_info->extent_root, iterator->pat=
-h);
->> +	if (ret > 0 || ret < 0)
->> +		return ret;
->> +
->> +	btrfs_item_key_to_cpu(path->nodes[0], &iterator->cur_key,
->> +			      path->slots[0]);
->> +	if (iterator->cur_key.objectid !=3D iterator->bytenr ||
->> +	    (iterator->cur_key.type !=3D BTRFS_TREE_BLOCK_REF_KEY &&
->> +	     iterator->cur_key.type !=3D BTRFS_SHARED_BLOCK_REF_KEY))
->> +		return 1;
->> +	iterator->item_ptr =3D btrfs_item_ptr_offset(path->nodes[0],
->> +						   path->slots[0]);
->> +	iterator->cur_ptr =3D iterator->item_ptr;
->> +	iterator->end_ptr =3D btrfs_item_end_nr(path->nodes[0], path->slots[0=
-]);
->> +	return 0;
->> +}
+>> On 14.02.20 г. 10:13 ч., Qu Wenruo wrote:
+>>> Due to the complex nature of btrfs extent tree, when we want to iterate
+>>> all backrefs of one extent, it involves quite a lot of works, like
+>>> search the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+>>> backrefs.
+>>>
+>>> Normally this would result pretty complex code, something like:
+>>>   btrfs_search_slot()
+>>>   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+>>>   while (1) {	/* Loop for extent tree items */
+>>> 	while (ptr < end) { /* Loop for inlined items */
+>>> 		/* REAL WORK HERE */
+>>> 	}
+>>>   next:
+>>>   	ret = btrfs_next_item()
+>>> 	/* Ensure we're still at keyed item for specified bytenr */
+>>>   }
+>>>
+>>> The idea of btrfs_backref_iterator is to avoid such complex and hard to
+>>> read code structure, but something like the following:
+>>>
+>>>   iterator = btrfs_backref_iterator_alloc();
+>>>   ret = btrfs_backref_iterator_start(iterator, bytenr);
+>>>   if (ret < 0)
+>>> 	goto out;
+>>>   for (; ; ret = btrfs_backref_iterator_next(iterator)) {
+>>> 	/* REAL WORK HERE */
+>>>   }
+>>>   out:
+>>>   btrfs_backref_iterator_free(iterator);
+>>>
+>>> This patch is just the skeleton + btrfs_backref_iterator_start() code.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  fs/btrfs/backref.c | 58 +++++++++++++++++++++++++++++++++++
+>>>  fs/btrfs/backref.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++
+>>>  2 files changed, 134 insertions(+)
+>>>
+>>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+>>> index e5d85311d5d5..73c4829609c9 100644
+>>> --- a/fs/btrfs/backref.c
+>>> +++ b/fs/btrfs/backref.c
+>>> @@ -2252,3 +2252,61 @@ void free_ipath(struct inode_fs_paths *ipath)
+>>>  	kvfree(ipath->fspath);
+>>>  	kfree(ipath);
+>>>  }
+>>> +
+>>> +int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
+>>> +				 u64 bytenr)
+>>> +{
+>>> +	struct btrfs_fs_info *fs_info = iterator->fs_info;
+>>> +	struct btrfs_path *path = iterator->path;
+>>> +	struct btrfs_extent_item *ei;
+>>> +	struct btrfs_key key;
+>>> +	int ret;
+>>> +
+>>> +	key.objectid = bytenr;
+>>> +	key.type = BTRFS_METADATA_ITEM_KEY;
+>>> +	key.offset = (u64)-1;
+>>> +
+>>> +	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +	if (ret == 0) {
+>>> +		ret = -EUCLEAN;
+>>> +		goto release;
+>>> +	}
+>>> +	if (path->slots[0] == 0) {
+>>> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+>>> +		ret = -EUCLEAN;
+>>> +		goto release;
+>>> +	}
+>>> +	path->slots[0]--;
+>>> +
+>>> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+>>> +	if (!(key.type == BTRFS_EXTENT_ITEM_KEY ||
+>>> +	      key.type == BTRFS_METADATA_ITEM_KEY) || key.objectid != bytenr) {
+>>> +		ret = -ENOENT;
+>>> +		goto release;
+>>> +	}
+>>> +	memcpy(&iterator->cur_key, &key, sizeof(key));
+>>> +	iterator->end_ptr = btrfs_item_end_nr(path->nodes[0], path->slots[0]);
+>>> +	iterator->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
+>>> +						   path->slots[0]);
+>>> +	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
+>>> +			    struct btrfs_extent_item);
+>>> +
+>>> +	/* Only support iteration on tree backref yet */
+>>> +	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA) {
+>>> +		ret = -ENOTTY;
+>>> +		goto release;
+>>> +	}
 >>
+>> Isn't this implied bye the fact you are searching for METADATA ITEMS to
+>> begin with ? Considering this shouldn't detecting EXTENT_FLAG_DATA in
+>> the backrefs of a METADATA_EXTENT be considered a corruption?
+> 
+> For non skinny-metadata fs, we can hit with EXTENT_ITEM.
+> So it's still possible to hit a corruption undetected by tree-checker.
+> 
+> But you're right, we shouldn't really hit a data extent here, as
+> previous loops have excluded all data extents.
+
+Then put a comment saying this is done as an extra precaution.
+
+<split>
