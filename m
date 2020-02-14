@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D5015EF85
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649F515EE53
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389188AbgBNRsa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 12:48:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44554 "EHLO mail.kernel.org"
+        id S2388942AbgBNQEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 11:04:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388965AbgBNP7j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:59:39 -0500
+        id S2389391AbgBNQEM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:04:12 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D40024688;
-        Fri, 14 Feb 2020 15:59:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1184324654;
+        Fri, 14 Feb 2020 16:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695978;
-        bh=etzUjo5SB8lRMJUN8Z+EUaIVz1ztdnj+e9dCu+IdJfs=;
+        s=default; t=1581696251;
+        bh=06HiugEeIyT64UGKH2uwweFX+Jujms0kwmNzncT3wpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0ALUcG41JDpykHMUSuVal3IbDidRdXlfZn9268N3c02QfHra/aATYH6xZjvYS3+0
-         HnAhmx6b2uthep+mzhbPDuP2MXenarpvoND+YV6kEIZtHGtScrdg04fVvIJaYPn9o9
-         64JnWJnR0v/N311GPZbpuCNkkCVuPiiv4y1Bmbdg=
+        b=XQhTmyH0SF1M8O6xLCislbbPQpPmJWGcIZRbgN3t11Qj+zzC9XWirT1bHhxKt36WM
+         sU9jljALkfefsoJEWOSXvW/Lj0rOeA2ZK6Jf5YkNCXW8hM45uchSSFJ6rDmNCVbtrh
+         XK0EQ5j1IFhxaGeNrxhWR3BHJGx4LRMtVIh0B9N0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 503/542] btrfs: do not do delalloc reservation under page lock
-Date:   Fri, 14 Feb 2020 10:48:15 -0500
-Message-Id: <20200214154854.6746-503-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 107/459] Btrfs: keep pages dirty when using btrfs_writepage_fixup_worker
+Date:   Fri, 14 Feb 2020 10:55:57 -0500
+Message-Id: <20200214160149.11681-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,218 +43,164 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Chris Mason <clm@fb.com>
 
-[ Upstream commit f4b1363cae43fef7c86c993b7ca7fe7d546b3c68 ]
+[ Upstream commit 25f3c5021985e885292980d04a1423fd83c967bb ]
 
-We ran into a deadlock in production with the fixup worker.  The stack
-traces were as follows:
+For COW, btrfs expects pages dirty pages to have been through a few setup
+steps.  This includes reserving space for the new block allocations and marking
+the range in the state tree for delayed allocation.
 
-Thread responsible for the writeout, waiting on the page lock
+A few places outside btrfs will dirty pages directly, especially when unmapping
+mmap'd pages.  In order for these to properly go through COW, we run them
+through a fixup worker to wait for stable pages, and do the delalloc prep.
 
-  [<0>] io_schedule+0x12/0x40
-  [<0>] __lock_page+0x109/0x1e0
-  [<0>] extent_write_cache_pages+0x206/0x360
-  [<0>] extent_writepages+0x40/0x60
-  [<0>] do_writepages+0x31/0xb0
-  [<0>] __writeback_single_inode+0x3d/0x350
-  [<0>] writeback_sb_inodes+0x19d/0x3c0
-  [<0>] __writeback_inodes_wb+0x5d/0xb0
-  [<0>] wb_writeback+0x231/0x2c0
-  [<0>] wb_workfn+0x308/0x3c0
-  [<0>] process_one_work+0x1e0/0x390
-  [<0>] worker_thread+0x2b/0x3c0
-  [<0>] kthread+0x113/0x130
-  [<0>] ret_from_fork+0x35/0x40
-  [<0>] 0xffffffffffffffff
+87826df0ec36 added a window where the dirty pages were cleaned, but pending
+more action from the fixup worker.  We clear_page_dirty_for_io() before
+we call into writepage, so the page is no longer dirty.  The commit
+changed it so now we leave the page clean between unlocking it here and
+the fixup worker starting at some point in the future.
 
-Thread of the fixup worker who is holding the page lock
+During this window, page migration can jump in and relocate the page.  Once our
+fixup work actually starts, it finds page->mapping is NULL and we end up
+freeing the page without ever writing it.
 
-  [<0>] start_delalloc_inodes+0x241/0x2d0
-  [<0>] btrfs_start_delalloc_roots+0x179/0x230
-  [<0>] btrfs_alloc_data_chunk_ondemand+0x11b/0x2e0
-  [<0>] btrfs_check_data_free_space+0x53/0xa0
-  [<0>] btrfs_delalloc_reserve_space+0x20/0x70
-  [<0>] btrfs_writepage_fixup_worker+0x1fc/0x2a0
-  [<0>] normal_work_helper+0x11c/0x360
-  [<0>] process_one_work+0x1e0/0x390
-  [<0>] worker_thread+0x2b/0x3c0
-  [<0>] kthread+0x113/0x130
-  [<0>] ret_from_fork+0x35/0x40
-  [<0>] 0xffffffffffffffff
+This leads to crc errors and other exciting problems, since it screws up the
+whole statemachine for waiting for ordered extents.  The fix here is to keep
+the page dirty while we're waiting for the fixup worker to get to work.
+This is accomplished by returning -EAGAIN from btrfs_writepage_cow_fixup
+if we queued the page up for fixup, which will cause the writepage
+function to redirty the page.
 
-Thankfully the stars have to align just right to hit this.  First you
-have to end up in the fixup worker, which is tricky by itself (my
-reproducer does DIO reads into a MMAP'ed region, so not a common
-operation).  Then you have to have less than a page size of free data
-space and 0 unallocated space so you go down the "commit the transaction
-to free up pinned space" path.  This was accomplished by a random
-balance that was running on the host.  Then you get this deadlock.
+Because we now expect the page to be dirty once it gets to the fixup
+worker we must adjust the error cases to call clear_page_dirty_for_io()
+on the page.  That is the bulk of the patch, but it is not the fix, the
+fix is the -EAGAIN from btrfs_writepage_cow_fixup.  We cannot separate
+these two changes out because the error conditions change with the new
+expectations.
 
-I'm still in the process of trying to force the deadlock to happen on
-demand, but I've hit other issues.  I can still trigger the fixup worker
-path itself so this patch has been tested in that regard, so the normal
-case is fine.
-
-Fixes: 87826df0ec36 ("btrfs: delalloc for page dirtied out-of-band in fixup worker")
+Signed-off-by: Chris Mason <clm@fb.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 76 ++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 60 insertions(+), 16 deletions(-)
+ fs/btrfs/inode.c | 61 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 17 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 27f2c554cac32..537b4c563f09c 100644
+index 6f0568fb58997..1b4ab02be9243 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2191,6 +2191,7 @@ int btrfs_set_extent_delalloc(struct inode *inode, u64 start, u64 end,
- /* see btrfs_writepage_start_hook for details on why this is required */
- struct btrfs_writepage_fixup {
- 	struct page *page;
-+	struct inode *inode;
- 	struct btrfs_work work;
- };
- 
-@@ -2205,9 +2206,20 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+@@ -2181,17 +2181,27 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	struct inode *inode;
  	u64 page_start;
  	u64 page_end;
- 	int ret = 0;
-+	bool free_delalloc_space = true;
+-	int ret;
++	int ret = 0;
  
  	fixup = container_of(work, struct btrfs_writepage_fixup, work);
  	page = fixup->page;
-+	inode = fixup->inode;
-+	page_start = page_offset(page);
-+	page_end = page_offset(page) + PAGE_SIZE - 1;
-+
-+	/*
-+	 * This is similar to page_mkwrite, we need to reserve the space before
-+	 * we take the page lock.
-+	 */
-+	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
-+					   PAGE_SIZE);
  again:
  	lock_page(page);
- 
-@@ -2216,25 +2228,48 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 	 * page->mapping may go NULL, but it shouldn't be moved to a different
- 	 * address space.
- 	 */
--	if (!page->mapping || !PageDirty(page) || !PageChecked(page))
-+	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
-+		/*
-+		 * Unfortunately this is a little tricky, either
-+		 *
-+		 * 1) We got here and our page had already been dealt with and
-+		 *    we reserved our space, thus ret == 0, so we need to just
-+		 *    drop our space reservation and bail.  This can happen the
-+		 *    first time we come into the fixup worker, or could happen
-+		 *    while waiting for the ordered extent.
-+		 * 2) Our page was already dealt with, but we happened to get an
-+		 *    ENOSPC above from the btrfs_delalloc_reserve_space.  In
-+		 *    this case we obviously don't have anything to release, but
-+		 *    because the page was already dealt with we don't want to
-+		 *    mark the page with an error, so make sure we're resetting
-+		 *    ret to 0.  This is why we have this check _before_ the ret
-+		 *    check, because we do not want to have a surprise ENOSPC
-+		 *    when the page was already properly dealt with.
-+		 */
-+		if (!ret) {
-+			btrfs_delalloc_release_extents(BTRFS_I(inode),
-+						       PAGE_SIZE);
-+			btrfs_delalloc_release_space(inode, data_reserved,
-+						     page_start, PAGE_SIZE,
-+						     true);
-+		}
-+		ret = 0;
+-	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
+-		ClearPageChecked(page);
++
++	/*
++	 * Before we queued this fixup, we took a reference on the page.
++	 * page->mapping may go NULL, but it shouldn't be moved to a different
++	 * address space.
++	 */
++	if (!page->mapping || !PageDirty(page) || !PageChecked(page))
  		goto out_page;
-+	}
+-	}
  
- 	/*
--	 * We keep the PageChecked() bit set until we're done with the
--	 * btrfs_start_ordered_extent() dance that we do below.  That drops and
--	 * retakes the page lock, so we don't want new fixup workers queued for
--	 * this page during the churn.
-+	 * We can't mess with the page state unless it is locked, so now that
-+	 * it is locked bail if we failed to make our space reservation.
- 	 */
--	inode = page->mapping->host;
--	page_start = page_offset(page);
--	page_end = page_offset(page) + PAGE_SIZE - 1;
++	/*
++	 * We keep the PageChecked() bit set until we're done with the
++	 * btrfs_start_ordered_extent() dance that we do below.  That drops and
++	 * retakes the page lock, so we don't want new fixup workers queued for
++	 * this page during the churn.
++	 */
+ 	inode = page->mapping->host;
+ 	page_start = page_offset(page);
+ 	page_end = page_offset(page) + PAGE_SIZE - 1;
+@@ -2216,24 +2226,22 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 
+ 	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+ 					   PAGE_SIZE);
+-	if (ret) {
+-		mapping_set_error(page->mapping, ret);
+-		end_extent_writepage(page, ret, page_start, page_end);
+-		ClearPageChecked(page);
 +	if (ret)
-+		goto out_page;
+ 		goto out;
+-	 }
  
- 	lock_extent_bits(&BTRFS_I(inode)->io_tree, page_start, page_end,
- 			 &cached_state);
- 
- 	/* already ordered? We're done */
- 	if (PagePrivate2(page))
--		goto out;
-+		goto out_reserved;
- 
- 	ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), page_start,
- 					PAGE_SIZE);
-@@ -2247,11 +2282,6 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 		goto again;
- 	}
- 
--	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
--					   PAGE_SIZE);
--	if (ret)
--		goto out;
--
  	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
  					&cached_state);
- 	if (ret)
-@@ -2265,12 +2295,12 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 	 * The page was dirty when we started, nothing should have cleaned it.
- 	 */
- 	BUG_ON(!PageDirty(page));
-+	free_delalloc_space = false;
+-	if (ret) {
+-		mapping_set_error(page->mapping, ret);
+-		end_extent_writepage(page, ret, page_start, page_end);
+-		ClearPageChecked(page);
++	if (ret)
+ 		goto out_reserved;
+-	}
+ 
+-	ClearPageChecked(page);
+-	set_page_dirty(page);
++	/*
++	 * Everything went as planned, we're now the owner of a dirty page with
++	 * delayed allocation bits set and space reserved for our COW
++	 * destination.
++	 *
++	 * The page was dirty when we started, nothing should have cleaned it.
++	 */
++	BUG_ON(!PageDirty(page));
  out_reserved:
  	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
--	if (ret)
-+	if (free_delalloc_space)
- 		btrfs_delalloc_release_space(inode, data_reserved, page_start,
- 					     PAGE_SIZE, true);
--out:
+ 	if (ret)
+@@ -2243,6 +2251,17 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
  	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
  			     &cached_state);
  out_page:
-@@ -2289,6 +2319,12 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
++	if (ret) {
++		/*
++		 * We hit ENOSPC or other errors.  Update the mapping and page
++		 * to reflect the errors and clean the page.
++		 */
++		mapping_set_error(page->mapping, ret);
++		end_extent_writepage(page, ret, page_start, page_end);
++		clear_page_dirty_for_io(page);
++		SetPageError(page);
++	}
++	ClearPageChecked(page);
+ 	unlock_page(page);
  	put_page(page);
  	kfree(fixup);
- 	extent_changeset_free(data_reserved);
-+	/*
-+	 * As a precaution, do a delayed iput in case it would be the last iput
-+	 * that could need flushing space. Recursing back to fixup worker would
-+	 * deadlock.
-+	 */
-+	btrfs_add_delayed_iput(inode);
- }
+@@ -2270,6 +2289,13 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
+ 	if (TestClearPagePrivate2(page))
+ 		return 0;
  
- /*
-@@ -2326,10 +2362,18 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
- 	if (!fixup)
++	/*
++	 * PageChecked is set below when we create a fixup worker for this page,
++	 * don't try to create another one if we're already PageChecked()
++	 *
++	 * The extent_io writepage code will redirty the page if we send back
++	 * EAGAIN.
++	 */
+ 	if (PageChecked(page))
  		return -EAGAIN;
  
-+	/*
-+	 * We are already holding a reference to this inode from
-+	 * write_cache_pages.  We need to hold it because the space reservation
-+	 * takes place outside of the page lock, and we can't trust
-+	 * page->mapping outside of the page lock.
-+	 */
-+	ihold(inode);
- 	SetPageChecked(page);
- 	get_page(page);
+@@ -2282,7 +2308,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
  	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
  	fixup->page = page;
-+	fixup->inode = inode;
  	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+-	return -EBUSY;
++
++	return -EAGAIN;
+ }
  
- 	return -EAGAIN;
+ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
 -- 
 2.20.1
 
