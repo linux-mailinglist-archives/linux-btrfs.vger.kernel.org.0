@@ -2,412 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 507F315D39E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 09:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F7115D420
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 09:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387400AbgBNIOY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 03:14:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46938 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387398AbgBNIOY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 03:14:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6AF2AAC91
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Feb 2020 08:14:21 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: relocation: Use btrfs_backref_iterator infrastructure
-Date:   Fri, 14 Feb 2020 16:13:54 +0800
-Message-Id: <20200214081354.56605-4-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200214081354.56605-1-wqu@suse.com>
+        id S1728239AbgBNIxn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 03:53:43 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:3200 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgBNIxm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 03:53:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1581670422; x=1613206422;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=rj1jGXFHCgpx+mTBKFlIF45XVxcqimS4dxcFlTwEVXY=;
+  b=WE+rTIgFxi89v1McL0iUKIJ7di93lzw6sWDSUlg8Mj50O5vWFvCaQ2gn
+   PkCnuk8KS9UKoRjcHPJI6WRl6h1A/nPeBAd4QK2Ju6UpMbuEYcuEKy7SF
+   iwp1O5cQ+i3Q1GeOzzsiCoNdDs7ibxBZpMuMZxeZTtT65WyAuyT3Q0Qll
+   RDXsmqNjdwkeTu+Mu6/iEexokqGOrrG3bchcoyOin/BZlFcxOg7an/aj9
+   27WH3Uh34htDTC30Wp7KejA2mKmlWwtwuW2YtyO/wma3GRDOK2Hk77a3Q
+   JbwbbGyY0azyvvq3Fj8h1eRufV+P1U7494D1hh2cX0hnAen0Al6bp2B0Y
+   w==;
+IronPort-SDR: 7QVQ0Eb/eY2nbwPLepbwLhpS2VSH/d0vIZAVQCKApRYmnvgtotcwxxW9aD86X1+aPZ7pdAVLIb
+ C+6d4/yZJkMdTrsTyXDxCl2HZqx48cw3ZsKU+6vs7DLvMVJTNKZuCydaYehrHtUm6Q+i37fDse
+ crorL+sRvdhMHOfK1Zjz4n2B1R0p0meT02Dk0smsn5e/shRV7N2epfo3AUp4X7G4ced3zc1dGr
+ gv+RMVWLGHD07Qp8lerdCGXmelxy5C00s8/j02WhhSFXvwB97CqjqpCLlOUdfXb6tH/BKTXNki
+ 88s=
+X-IronPort-AV: E=Sophos;i="5.70,440,1574092800"; 
+   d="scan'208";a="237878367"
+Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Feb 2020 16:53:41 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iHfNRjP2ZYixZjl+IgAXiL1opC4FxsMUTl5drTnu86jrYlLK+4ecbosHzMjoP2voOzBj3RS8ShXhkiz8lyhWXjFcUdi3+H7fU7T5PQZHoPZQzcgXK+golNRvVVgG7vgYyIVgBtaKtvVc4ytFRqDSho5RXd/uIuPpbXa3r0dwN1Y7YG9XYBCo/k4jFmoFPeR8MczdUeJ0plryUOwhki0U3MiitjsxqTn+TMk3GlZsgedM5nRQVFZjvOfKhpWsONqn4wpTUq7Pu+V/bfvoXm/3T06p2ZYGA5xEQ0JeM8iM3mCUuQ4mhzQ7y9WKyS0GJYxLCYWcthJzFr3FtSGU9kMYQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jp4K8yJqKPdWRUk6kXESmx13gjiJzYlCWYzISDNcoZU=;
+ b=FPac7Z7G6JC4YNij66IAVFLTg9vcMSs1DRJ7vgy+sxqd2UbfEF1+Y3Og1z+aPX9p7skY06zguI+4Kj8KFSIasESYZs+vTeuyevAHzFRgI4JIQ0/NIjgLmEBKA+8JLITKi2WrrWyrjOm1y3vIV0Uf+HtGXlvdzOePJVCDfI+EqadxSSMD297juL/oL73VLxiC9YNzzkEVe3QHTzqJAJubWfay7v26zXT0KBwc34VCbG/eN5My5fPnsLttcOPD0NI8cDbxQHg06J+Jq2TKZjU2oHLoRKfBdKu4WTSqj5BNFHt5hOJWvl3uiiCcwrNakzfGlCjygQnUYV21UGVW2Y+8mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jp4K8yJqKPdWRUk6kXESmx13gjiJzYlCWYzISDNcoZU=;
+ b=UnzBv5qVkeVIEwgPpIlV0t1uGI0c2aVMpGjs8+EDt8XKfDAMIh72+S9RMaECkwTMs3/0YEfom+mFxk70Um+xrhVB9e9q0shY8juZ3LemnNAgz3a8Bpa1sucXjZy8ynyOR5h0K9l4V77rNAWImrK5uxxX8SaoPiw61YrKa6BvvkA=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3519.namprd04.prod.outlook.com (10.167.133.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.24; Fri, 14 Feb 2020 08:53:40 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2707.030; Fri, 14 Feb 2020
+ 08:53:40 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iterator
+Thread-Topic: [PATCH v2 1/3] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iterator
+Thread-Index: AQHV4w7AawHM4rC3gku58k/EoZpqqQ==
+Date:   Fri, 14 Feb 2020 08:53:40 +0000
+Message-ID: <SN4PR0401MB3598D637DBFE9DC79FB1A4419B150@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <20200214081354.56605-1-wqu@suse.com>
+ <20200214081354.56605-2-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b70b15bf-69a3-4d65-b2aa-08d7b12b633b
+x-ms-traffictypediagnostic: SN4PR0401MB3519:
+x-microsoft-antispam-prvs: <SN4PR0401MB351996881087F906F8B997C69B150@SN4PR0401MB3519.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 03137AC81E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(39860400002)(366004)(376002)(136003)(396003)(199004)(189003)(5660300002)(91956017)(76116006)(86362001)(316002)(4744005)(33656002)(52536014)(9686003)(6506007)(64756008)(66946007)(66556008)(55016002)(66476007)(71200400001)(66446008)(53546011)(8676002)(7696005)(81166006)(2906002)(81156014)(186003)(26005)(110136005)(8936002)(478600001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3519;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MEG+1nhVwW7jLsKdwPEzJxPmp6Y4MtP4ACXaZ0++EPJfRguvH9AbrhGUX49ur0DqR0X8y2aiDe35Z6vY6wweKnsFq1rna7C54XcE87lqHI/gcGOC+exD/3aomeJDQL13bNGZyDkJo75j48Ea4mysNHLsDAUX/PsFurIkiBOTF/1n5Cu+L9XJq5u/DvpOopUEk/dzvzTBu+wxU8AsWqlF76vIUHvdeCLhSYO/UiMHR+3xwv4z0UrrMn5EdoOJ6eudtjZfmlswkvRB5vvLyGARNEkdDbitel9ZB0atKK2BjuloFDSoO+RfDodprK0Nj5L2f7gWtN+P0Q6Zwoul5F/H2otobuig52HDaODjnOOsvSlE2FMy6hphJF+DWhSSMbieQPo+aIdi8VPlTXwUW1zTbrKmTNWt9ACnMbEWQqvWcKDYyFkWeY7o2TLRjCKPXKXa
+x-ms-exchange-antispam-messagedata: gwZlcDk6/pJ3YVORnuYe2Rm9xwZLlZCmZgYlcNHhfOv8ONbt2bFlS+Sv7wdnwr74hdXM1On0SOVzrIgiRcfaRskafulCxtzd5voq0w4RnRiyVZrgMAbZTNj3FL8lvKoijNexHxHoBbn+yyMZKvkIHw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b70b15bf-69a3-4d65-b2aa-08d7b12b633b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2020 08:53:40.1572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8q7wOC8ynSBZ+D5vL7/Korm1LUOrJIQYDzuzR3R77JAhL4rbiNelLovxAQ++qwghGqt6l6jP+e78IpRDIOaxDnm9EULjYDBTDdfdxsinEkE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3519
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the core function of relocation, build_backref_tree, it needs to
-iterate all backref items of one tree block.
-
-We don't really want to spend our code and reviewers' time to going
-through tons of supportive code just for the backref walk.
-
-Use btrfs_backref_iterator infrastructure to do the loop.
-
-The backref items look would be much more easier to read:
-
-	ret = btrfs_backref_iterator_start(iterator, cur->bytenr);
-	for (; ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
-		/* The really important work */
-	}
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/backref.h    |  20 +++++
- fs/btrfs/relocation.c | 193 ++++++++++++++----------------------------
- 2 files changed, 82 insertions(+), 131 deletions(-)
-
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index b53301f2147f..016999339be1 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -150,4 +150,24 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
- 				 u64 bytenr);
- int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator);
- 
-+static inline bool
-+btrfs_backref_iterator_is_inline_ref(struct btrfs_backref_iterator *iterator)
-+{
-+	if (iterator->cur_key.type == BTRFS_EXTENT_ITEM_KEY ||
-+	    iterator->cur_key.type == BTRFS_METADATA_ITEM_KEY)
-+		return true;
-+	return false;
-+}
-+
-+static inline void
-+btrfs_backref_iterator_release(struct btrfs_backref_iterator *iterator)
-+{
-+	iterator->bytenr = 0;
-+	iterator->item_ptr = 0;
-+	iterator->cur_ptr = 0;
-+	iterator->end_ptr = 0;
-+	btrfs_release_path(iterator->path);
-+	memset(&iterator->cur_key, 0, sizeof(iterator->cur_key));
-+}
-+
- #endif
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index b1365a516a25..21e4482c8232 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -22,6 +22,7 @@
- #include "print-tree.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "backref.h"
- 
- /*
-  * backref_node, mapping_node and tree_block start with this
-@@ -604,48 +605,6 @@ static struct btrfs_root *read_fs_root(struct btrfs_fs_info *fs_info,
- 	return btrfs_get_fs_root(fs_info, &key, false);
- }
- 
--static noinline_for_stack
--int find_inline_backref(struct extent_buffer *leaf, int slot,
--			unsigned long *ptr, unsigned long *end)
--{
--	struct btrfs_key key;
--	struct btrfs_extent_item *ei;
--	struct btrfs_tree_block_info *bi;
--	u32 item_size;
--
--	btrfs_item_key_to_cpu(leaf, &key, slot);
--
--	item_size = btrfs_item_size_nr(leaf, slot);
--	if (item_size < sizeof(*ei)) {
--		btrfs_print_v0_err(leaf->fs_info);
--		btrfs_handle_fs_error(leaf->fs_info, -EINVAL, NULL);
--		return 1;
--	}
--	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
--	WARN_ON(!(btrfs_extent_flags(leaf, ei) &
--		  BTRFS_EXTENT_FLAG_TREE_BLOCK));
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY &&
--	    item_size <= sizeof(*ei) + sizeof(*bi)) {
--		WARN_ON(item_size < sizeof(*ei) + sizeof(*bi));
--		return 1;
--	}
--	if (key.type == BTRFS_METADATA_ITEM_KEY &&
--	    item_size <= sizeof(*ei)) {
--		WARN_ON(item_size < sizeof(*ei));
--		return 1;
--	}
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY) {
--		bi = (struct btrfs_tree_block_info *)(ei + 1);
--		*ptr = (unsigned long)(bi + 1);
--	} else {
--		*ptr = (unsigned long)(ei + 1);
--	}
--	*end = (unsigned long)ei + item_size;
--	return 0;
--}
--
- /*
-  * build backref tree for a given tree block. root of the backref tree
-  * corresponds the tree block, leaves of the backref tree correspond
-@@ -665,10 +624,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					struct btrfs_key *node_key,
- 					int level, u64 bytenr)
- {
-+	struct btrfs_backref_iterator *iterator;
- 	struct backref_cache *cache = &rc->backref_cache;
--	struct btrfs_path *path1; /* For searching extent root */
--	struct btrfs_path *path2; /* For searching parent of TREE_BLOCK_REF */
--	struct extent_buffer *eb;
-+	struct btrfs_path *path; /* For searching parent of TREE_BLOCK_REF */
- 	struct btrfs_root *root;
- 	struct backref_node *cur;
- 	struct backref_node *upper;
-@@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	struct backref_node *exist = NULL;
- 	struct backref_edge *edge;
- 	struct rb_node *rb_node;
--	struct btrfs_key key;
--	unsigned long end;
--	unsigned long ptr;
- 	LIST_HEAD(list); /* Pending edge list, upper node needs to be checked */
- 	LIST_HEAD(useless);
- 	int cowonly;
-@@ -687,14 +642,14 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	int err = 0;
- 	bool need_check = true;
- 
--	path1 = btrfs_alloc_path();
--	path2 = btrfs_alloc_path();
--	if (!path1 || !path2) {
-+	iterator = btrfs_backref_iterator_alloc(rc->extent_root->fs_info,
-+						GFP_NOFS);
-+	path = btrfs_alloc_path();
-+	if (!path) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
--	path1->reada = READA_FORWARD;
--	path2->reada = READA_FORWARD;
-+	path->reada = READA_FORWARD;
- 
- 	node = alloc_backref_node(cache);
- 	if (!node) {
-@@ -707,25 +662,28 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	node->lowest = 1;
- 	cur = node;
- again:
--	end = 0;
--	ptr = 0;
--	key.objectid = cur->bytenr;
--	key.type = BTRFS_METADATA_ITEM_KEY;
--	key.offset = (u64)-1;
--
--	path1->search_commit_root = 1;
--	path1->skip_locking = 1;
--	ret = btrfs_search_slot(NULL, rc->extent_root, &key, path1,
--				0, 0);
-+	ret = btrfs_backref_iterator_start(iterator, cur->bytenr);
- 	if (ret < 0) {
- 		err = ret;
- 		goto out;
- 	}
--	ASSERT(ret);
--	ASSERT(path1->slots[0]);
--
--	path1->slots[0]--;
- 
-+	/*
-+	 * We skip the first btrfs_tree_block_info, as we don't use the key
-+	 * stored in it, but fetch it from the tree block.
-+	 */
-+	if (btrfs_backref_has_tree_block_info(iterator)) {
-+		ret = btrfs_backref_iterator_next(iterator);
-+		if (ret < 0) {
-+			err = ret;
-+			goto out;
-+		}
-+		/* No extra backref? This means the tree block is corrupted */
-+		if (ret > 0) {
-+			err = -EUCLEAN;
-+			goto out;
-+		}
-+	}
- 	WARN_ON(cur->checked);
- 	if (!list_empty(&cur->upper)) {
- 		/*
-@@ -747,42 +705,21 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		exist = NULL;
- 	}
- 
--	while (1) {
--		cond_resched();
--		eb = path1->nodes[0];
--
--		if (ptr >= end) {
--			if (path1->slots[0] >= btrfs_header_nritems(eb)) {
--				ret = btrfs_next_leaf(rc->extent_root, path1);
--				if (ret < 0) {
--					err = ret;
--					goto out;
--				}
--				if (ret > 0)
--					break;
--				eb = path1->nodes[0];
--			}
-+	for (; ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
-+		struct extent_buffer *eb;
-+		struct btrfs_key key;
-+		int type;
- 
--			btrfs_item_key_to_cpu(eb, &key, path1->slots[0]);
--			if (key.objectid != cur->bytenr) {
--				WARN_ON(exist);
--				break;
--			}
-+		cond_resched();
-+		eb = btrfs_backref_get_eb(iterator);
- 
--			if (key.type == BTRFS_EXTENT_ITEM_KEY ||
--			    key.type == BTRFS_METADATA_ITEM_KEY) {
--				ret = find_inline_backref(eb, path1->slots[0],
--							  &ptr, &end);
--				if (ret)
--					goto next;
--			}
--		}
-+		key.objectid = iterator->bytenr;
-+		if (btrfs_backref_iterator_is_inline_ref(iterator)) {
-+			struct btrfs_extent_inline_ref *iref;
- 
--		if (ptr < end) {
- 			/* update key for inline back ref */
--			struct btrfs_extent_inline_ref *iref;
--			int type;
--			iref = (struct btrfs_extent_inline_ref *)ptr;
-+			iref = (struct btrfs_extent_inline_ref *)
-+				iterator->cur_ptr;
- 			type = btrfs_get_extent_inline_ref_type(eb, iref,
- 							BTRFS_REF_TYPE_BLOCK);
- 			if (type == BTRFS_REF_TYPE_INVALID) {
-@@ -791,9 +728,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			}
- 			key.type = type;
- 			key.offset = btrfs_extent_inline_ref_offset(eb, iref);
--
--			WARN_ON(key.type != BTRFS_TREE_BLOCK_REF_KEY &&
--				key.type != BTRFS_SHARED_BLOCK_REF_KEY);
-+		} else {
-+			key.type = iterator->cur_key.type;
-+			key.offset = iterator->cur_key.offset;
- 		}
- 
- 		/*
-@@ -806,7 +743,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		     (key.type == BTRFS_SHARED_BLOCK_REF_KEY &&
- 		      exist->bytenr == key.offset))) {
- 			exist = NULL;
--			goto next;
-+			continue;
- 		}
- 
- 		/* SHARED_BLOCK_REF means key.offset is the parent bytenr */
-@@ -852,7 +789,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			edge->node[LOWER] = cur;
- 			edge->node[UPPER] = upper;
- 
--			goto next;
-+			continue;
- 		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
- 			err = -EINVAL;
- 			btrfs_print_v0_err(rc->extent_root->fs_info);
-@@ -860,7 +797,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					      NULL);
- 			goto out;
- 		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
--			goto next;
-+			continue;
- 		}
- 
- 		/*
-@@ -891,20 +828,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		level = cur->level + 1;
- 
- 		/* Search the tree to find parent blocks referring the block. */
--		path2->search_commit_root = 1;
--		path2->skip_locking = 1;
--		path2->lowest_level = level;
--		ret = btrfs_search_slot(NULL, root, node_key, path2, 0, 0);
--		path2->lowest_level = 0;
-+		path->search_commit_root = 1;
-+		path->skip_locking = 1;
-+		path->lowest_level = level;
-+		ret = btrfs_search_slot(NULL, root, node_key, path, 0, 0);
-+		path->lowest_level = 0;
- 		if (ret < 0) {
- 			err = ret;
- 			goto out;
- 		}
--		if (ret > 0 && path2->slots[level] > 0)
--			path2->slots[level]--;
-+		if (ret > 0 && path->slots[level] > 0)
-+			path->slots[level]--;
- 
--		eb = path2->nodes[level];
--		if (btrfs_node_blockptr(eb, path2->slots[level]) !=
-+		eb = path->nodes[level];
-+		if (btrfs_node_blockptr(eb, path->slots[level]) !=
- 		    cur->bytenr) {
- 			btrfs_err(root->fs_info,
- 	"couldn't find block (%llu) (level %d) in tree (%llu) with key (%llu %u %llu)",
-@@ -920,7 +857,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 
- 		/* Add all nodes and edges in the path */
- 		for (; level < BTRFS_MAX_LEVEL; level++) {
--			if (!path2->nodes[level]) {
-+			if (!path->nodes[level]) {
- 				ASSERT(btrfs_root_bytenr(&root->root_item) ==
- 				       lower->bytenr);
- 				if (should_ignore_root(root))
-@@ -936,7 +873,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 				goto out;
- 			}
- 
--			eb = path2->nodes[level];
-+			eb = path->nodes[level];
- 			rb_node = tree_search(&cache->rb_root, eb->start);
- 			if (!rb_node) {
- 				upper = alloc_backref_node(cache);
-@@ -993,20 +930,14 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			lower = upper;
- 			upper = NULL;
- 		}
--		btrfs_release_path(path2);
--next:
--		if (ptr < end) {
--			ptr += btrfs_extent_inline_ref_size(key.type);
--			if (ptr >= end) {
--				WARN_ON(ptr > end);
--				ptr = 0;
--				end = 0;
--			}
--		}
--		if (ptr >= end)
--			path1->slots[0]++;
-+		btrfs_release_path(path);
-+	}
-+	if (ret < 0) {
-+		err = ret;
-+		goto out;
- 	}
--	btrfs_release_path(path1);
-+	ret = 0;
-+	btrfs_backref_iterator_release(iterator);
- 
- 	cur->checked = 1;
- 	WARN_ON(exist);
-@@ -1124,8 +1055,8 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		}
- 	}
- out:
--	btrfs_free_path(path1);
--	btrfs_free_path(path2);
-+	btrfs_backref_iterator_free(iterator);
-+	btrfs_free_path(path);
- 	if (err) {
- 		while (!list_empty(&useless)) {
- 			lower = list_entry(useless.next,
--- 
-2.25.0
-
+On 14/02/2020 09:14, Qu Wenruo wrote:=0A=
+> Due to the complex nature of btrfs extent tree, when we want to iterate=
+=0A=
+> all backrefs of one extent, it involves quite a lot of works, like=0A=
+                                                 Nit: work ^=0A=
+=0A=
+> search the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed=
+=0A=
+   ^ searching I think but a native English speaker might want to double =
+=0A=
+check on that.=0A=
+=0A=
+[...]=0A=
+=0A=
+> The idea of btrfs_backref_iterator is to avoid such complex and hard to=
+=0A=
+> read code structure, but something like the following:=0A=
+> =0A=
+>    iterator =3D btrfs_backref_iterator_alloc();=0A=
+>    ret =3D btrfs_backref_iterator_start(iterator, bytenr);=0A=
+>    if (ret < 0)=0A=
+> 	goto out;=0A=
+>    for (; ; ret =3D btrfs_backref_iterator_next(iterator)) {=0A=
+> 	/* REAL WORK HERE */=0A=
+>    }=0A=
+>    out:=0A=
+>    btrfs_backref_iterator_free(iterator);=0A=
+=0A=
+=0A=
+I personally like for each style macros to wrap these a lot, but seeing =0A=
+the loop is only used once in your patchset I'm not sure it's worth =0A=
+adding it.=0A=
