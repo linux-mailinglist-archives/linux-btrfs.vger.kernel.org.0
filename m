@@ -2,63 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A4415E767
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 17:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B6515EBC3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 18:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392143AbgBNQxw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 11:53:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56690 "EHLO mx2.suse.de"
+        id S2391298AbgBNQJc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 11:09:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404393AbgBNQxv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:53:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 793CEB019;
-        Fri, 14 Feb 2020 16:53:49 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E4A8BDA703; Fri, 14 Feb 2020 17:53:34 +0100 (CET)
-Date:   Fri, 14 Feb 2020 17:53:34 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Add comment for BTRFS_ROOT_REF_COWS
-Message-ID: <20200214165334.GC2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200212074651.33008-1-wqu@suse.com>
+        id S2391291AbgBNQJb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:09:31 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F5062468D;
+        Fri, 14 Feb 2020 16:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581696570;
+        bh=bKdze+iTRjZ+6yDQsmCbsOAAgJXbF6/hex2eF8Vicfc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=inuNYD8URlA57gUjyN97JkZL7glWJcmk7hOljJnGJG73CHob4UiZDpAtFTCknQjnO
+         kwbyFTXkYB40ScaItPDGZoR6b3wK2QWY6+ZZ2g0avw5Wn4Z8hvxjQDXzbqR4xCkRjy
+         v30O6yLP+qvadTgRwyLwn/hfF1JBBLvtIkVRhlnU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 360/459] btrfs: safely advance counter when looking up bio csums
+Date:   Fri, 14 Feb 2020 11:00:10 -0500
+Message-Id: <20200214160149.11681-360-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200212074651.33008-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 03:46:51PM +0800, Qu Wenruo wrote:
-> This bit is being used in too many locations while there is still no
-> good enough explaination for how this bit is used.
-> 
-> Not to mention its name really doesn't make much sense.
-> 
-> So this patch will add my explanation on this bit, considering only
-> subvolume trees, along with its reloc trees have this bit, to me it
-> looks like this bit shows whether tree blocks of a root can be shared.
+From: David Sterba <dsterba@suse.com>
 
-I think there's more tan just sharing, it should say something about
-reference counted sharing. See eg. btrfs_block_can_be_shared:
+[ Upstream commit 4babad10198fa73fe73239d02c2e99e3333f5f5c ]
 
- 864         /*
- 865          * Tree blocks not in reference counted trees and tree roots
- 866          * are never shared. If a block was allocated after the last
- 867          * snapshot and the block was not allocated by tree relocation,
- 868          * we know the block is not shared.
- 869          */
+Dan's smatch tool reports
 
-And there can be more specialities found when grepping for REF_COWS. The
-comment explaination should be complete or at least mention what's not
-documenting. The I find the suggested version insufficient but don't
-have a concrete suggestions for improvement. By reading the comment and
-going through code I don't feel any wiser.
+  fs/btrfs/file-item.c:295 btrfs_lookup_bio_sums()
+  warn: should this be 'count == -1'
+
+which points to the while (count--) loop. With count == 0 the check
+itself could decrement it to -1. There's a WARN_ON a few lines below
+that has never been seen in practice though.
+
+It turns out that the value of page_bytes_left matches the count (by
+sectorsize multiples). The loop never reaches the state where count
+would go to -1, because page_bytes_left == 0 is found first and this
+breaks out.
+
+For clarity, use only plain check on count (and only for positive
+value), decrement safely inside the loop. Any other discrepancy after
+the whole bio list processing should be reported by the exising
+WARN_ON_ONCE as well.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/file-item.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index c878bc25d0460..f62a179f85bb6 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -274,7 +274,8 @@ static blk_status_t __btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio
+ 		csum += count * csum_size;
+ 		nblocks -= count;
+ next:
+-		while (count--) {
++		while (count > 0) {
++			count--;
+ 			disk_bytenr += fs_info->sectorsize;
+ 			offset += fs_info->sectorsize;
+ 			page_bytes_left -= fs_info->sectorsize;
+-- 
+2.20.1
+
