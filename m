@@ -2,78 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C136F15F89E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Feb 2020 22:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF84015FBE6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Feb 2020 02:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389481AbgBNVRc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Feb 2020 16:17:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37934 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388965AbgBNVRc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Feb 2020 16:17:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A0CEBB234;
-        Fri, 14 Feb 2020 21:17:30 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 61911DA7A0; Fri, 14 Feb 2020 22:17:14 +0100 (CET)
-Date:   Fri, 14 Feb 2020 22:17:14 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: add a find_contiguous_extent_bit helper and use
- it for safe isize
-Message-ID: <20200214211713.GG2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200212183831.78293-1-josef@toxicpanda.com>
+        id S1727658AbgBOBPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Feb 2020 20:15:07 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:51234 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727602AbgBOBPG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Feb 2020 20:15:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8vF3wmoykU6jc6+10TSp5NOFVxwRnMSI+FSzYO1WEQQ=; b=bYTz4ixAcXgUBn5lU/9H4Qkc8U
+        psonlrVRSl1w2Efajn8sSvZ4fc66CBslbfJ8hYC7paJRLK+yJwFFKlpcmnCuSqQ3VgQIQc9bRKzS3
+        RKpTi9vip5bJenIXktMAoR2hmT8VH80rF4tgY3sf4QnBz8MWKa+ALVxAEtDMgRdz1VPOIaUeTItOS
+        2pxc8IX2HDPzzkM5B4sWPw6NpUySd6jYHfalkiD/26kIZxfM118k/TIVrruZyhX4bQ6tIJjKq3niB
+        ldfXT72DOy+DLMs6ox4SNWF1RllK7qc+dkUXgtwEY31BR65L8+zEdJD+0mj8Hsxex+wOSOCKsfGso
+        5F0cnt9Q==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j2m2z-0006lw-H3; Sat, 15 Feb 2020 01:15:05 +0000
+Date:   Fri, 14 Feb 2020 17:15:05 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
+Message-ID: <20200215011505.GD7778@bombadil.infradead.org>
+References: <20200211010348.6872-1-willy@infradead.org>
+ <20200211010348.6872-5-willy@infradead.org>
+ <755399a8-8fdf-bfac-9f23-81579ff63ddf@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200212183831.78293-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <755399a8-8fdf-bfac-9f23-81579ff63ddf@nvidia.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 01:38:31PM -0500, Josef Bacik wrote:
-> Filipe noticed a race where we would sometimes get the wrong answer for
-> the i_disk_size for !NO_HOLES with my patch.  That is because I expected
-> that find_first_extent_bit() would find the contiguous range, since I'm
-> only ever setting EXTENT_DIRTY.  However the way set_extent_bit() works
-> is it'll temporarily split the range, loop around and set our bits, and
-> then merge the state.  When it loops it drops the tree->lock, so there
-> is a window where we can have two adjacent states instead of one large
-> state.  Fix this by walking forward until we find a non-contiguous
-> state, and set our end_ret to the end of our logically contiguous area.
-> This fixes the problem without relying on specific behavior from
-> set_extent_bit().
+On Thu, Feb 13, 2020 at 09:36:25PM -0800, John Hubbard wrote:
+> > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > +{
+> > +	struct page *page;
+> > +
+> > +	if (!rac->nr_pages)
+> > +		return NULL;
+> > +
+> > +	page = xa_load(&rac->mapping->i_pages, rac->start);
 > 
-> Fixes: 79ceff7f6e5d ("btrfs: introduce per-inode file extent tree")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> Dave, I assume you'll want to fold this in to the referenced patch, if not let
-> me know and I'll rework the series to include this as a different patch.
+> 
+> Is it worth asserting that the page was found:
+> 
+> 	VM_BUG_ON_PAGE(!page || xa_is_value(page), page);
+> 
+> ? Or is that overkill here?
 
-Folding looks like a good option, the patch adds other helper for
-btrfs_inode_clear_file_extent_range so this patch fits in nicely.
+It shouldn't be possible since they were just added in a locked state.
+If it did happen, it'll be caught by the assert below -- dereferencing
+a NULL pointer or a shadow entry is not going to go well.
 
-> +/**
-> + * find_contiguous_extent_bit: find a contiguous area of bits
-> + * @tree - io tree to check
-> + * @start - offset to start the search from
-> + * @start_ret - the first offset we found with the bits set
-> + * @end_ret - the final contiguous range of the bits that were set
-> + *
-> + * set_extent_bit anc clear_extent_bit can temporarily split contiguous ranges
-> + * to set bits appropriately, and then merge them again.  During this time it
-> + * will drop the tree->lock, so use this helper if you want to find the actual
-> + * contiguous area for given bits.  We will search to the first bit we find, and
-> + * then walk down the tree until we find a non-contiguous area.  The area
-> + * returned will be the full contiguous area with the bits set.
-> + */
+> > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> > +	rac->batch_count = hpage_nr_pages(page);
+> > +	rac->start += rac->batch_count;
+> 
+> The above was surprising, until I saw the other thread with Dave and you.
+> I was reviewing this patchset in order to have a chance at understanding the 
+> follow-on patchset ("Large pages in the page cache"), and it seems like that
+> feature has a solid head start here. :)  
 
-This summarizes why it's needed so the changelog does not need to be
-updated AFAICS. Patch updated and misc-next pushed. Thanks.
+Right, I'll document that.
