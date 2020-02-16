@@ -2,131 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FA2160134
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Feb 2020 00:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D0E1602FE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Feb 2020 09:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727640AbgBOXtU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Feb 2020 18:49:20 -0500
-Received: from gateway30.websitewelcome.com ([192.185.149.4]:44658 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726504AbgBOXtT (ORCPT
+        id S1725993AbgBPImF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Feb 2020 03:42:05 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:40355 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgBPImE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Feb 2020 18:49:19 -0500
-X-Greylist: delayed 1429 seconds by postgrey-1.27 at vger.kernel.org; Sat, 15 Feb 2020 18:49:18 EST
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id A120D1BC36
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Feb 2020 17:25:28 -0600 (CST)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 36oSjiB3fEfyq36oSjr1LL; Sat, 15 Feb 2020 17:25:28 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=bdCNfpW7t6VNwFasy7k2VvIB/wm+0mbQILc3SvG+KcA=; b=MxGIgd12ZjNojfH1YaeWuUh12w
-        ByIAm3HFdZgLOn8XVhOLydaDBXG2xnkf6clnUcNRw8MZ/8ElJm40iv+NDQ2Afa0EadoUav2FXH0rQ
-        l0ETpM6NTmWsgD6tk2ag1c6MHYn3UcpXgPncCBJ7wcqDL0xU5Agfjp7CeVyloRtTxfz2hHcQpQ1Xi
-        66tTawkbDyFaj/WJ9wEzh+3Odjf0PuHYe4HLNOzE70OyGeyQuzJexgv+0t8Tfm67EVHJ3wWWOLDQK
-        EdL9MMjqCsaZsHoxei0iJg/FsRtCWr/NtaL4vtBMma8KW/jv2kgkmw/ILEAwtaHfePR9lLsy/AzvH
-        p8pwBD8w==;
-Received: from [179.183.207.150] (port=37504 helo=localhost.localdomain)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1j36oS-003VO6-4k; Sat, 15 Feb 2020 20:25:28 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] progs: tests: Avoid multidevice test on 32bit platforms
-Date:   Sat, 15 Feb 2020 20:28:19 -0300
-Message-Id: <20200215232819.30280-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.25.0
+        Sun, 16 Feb 2020 03:42:04 -0500
+Received: by mail-il1-f194.google.com with SMTP id i7so11696351ilr.7
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Feb 2020 00:42:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0zYadg2uO9N/k2dC3bx6GEX29cv50NfJkV80mi9oNqg=;
+        b=ueyIowAfwUuv/NZlFAb+5ae4Yk6NqdtdwEdkbk56Z3QuY7tu45Gy5s4f7r09n2dn2d
+         qfIPos2Th3jkuMyYvy5qXcllxRYdzjSFgko8BZ6ckTxAXilwPL6bm648YPy1OaJH64EP
+         cIsLbBbR+52/QQ7jKGnfbI8EtCiDejLCETmoMgAtgzfQhJdMmBm2jPq8dWgd9hs+rZG9
+         fSZKs11NrrTwkH9sVJYCdYqj6Bk7auZ+iG4/IwGZdmSS2T02LgyCf0H3qwZAsEVn2mqf
+         n3g8CgdA1UbdM8AqpoFrcF6YLjYgRTggrNXPSnNDJZiQqzwg7y3iU1HKbWZbe/t9p4ur
+         9zig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0zYadg2uO9N/k2dC3bx6GEX29cv50NfJkV80mi9oNqg=;
+        b=hQwzzSy348cvoyQY/kdIbwT90y94u/jhHvAMJTEXQ/MVWZur1iVhgI2lusjZ/Oxpj3
+         cZzf+NjLf7RJ2SEtx8hSeMd27/xP54Rd+2eF5U1ZJUp1S3b1D6m+CdfFLyGZHi4Zabg8
+         VAakdZfFS/W6QVvnMLxELkYdF2Ic03ErlkH343QRBX1REzD8+zt3GD2WTLcXdWx3ce71
+         q+38La0CPOHj/HekOaqkJ9i4QaM2nkbV3K4KRkbHNBb6Gpg76qQqTgGvpe2onMc/YB8I
+         u6cT3lqB5g5IN68ZvLuextZgBEeodBDpeUry5ugtH3Po/npFBxbSFSfTJoSF4U5nFEpE
+         47Yg==
+X-Gm-Message-State: APjAAAVDHvaloVqaoiTUemEhtCeoIg2FTojff14gfD6n6WhF5Hd5XcEX
+        88DvHqTXJB2MCzd2Sk2DbpgYrxRGapAMAO1jw1Y=
+X-Google-Smtp-Source: APXvYqwh8WY8U0eavu25d+NpDF68Kjhos84quoAd28ucgY3KEpfcQtn9D/z9O9Ix3ppWiGpyfmB8DUQkdVDrEb6mia4=
+X-Received: by 2002:a92:7402:: with SMTP id p2mr9681329ilc.64.1581842523995;
+ Sun, 16 Feb 2020 00:42:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 179.183.207.150
-X-Source-L: No
-X-Exim-ID: 1j36oS-003VO6-4k
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (localhost.localdomain) [179.183.207.150]:37504
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 4
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Received: by 2002:a92:3947:0:0:0:0:0 with HTTP; Sun, 16 Feb 2020 00:42:03
+ -0800 (PST)
+Reply-To: ashabuhtal72@gmail.com
+From:   "Mrs. Asha Buhtal" <mr.waliahzida@gmail.com>
+Date:   Sun, 16 Feb 2020 10:42:03 +0200
+Message-ID: <CALTxDvficOEqBSHkAf8pA0ZTMpBA2hUa6Ypg=c-Xt8M2X_gtHQ@mail.gmail.com>
+Subject: I await your urgent communication.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Hello my dear
 
-This test uses truncate utility to create a 6E file but this fails
-currently fails for PPC32[1], but it will also fail to other 32bit
-platforms, so skip this test in these platforms.
+May peace of our almighty God be unto you
 
-[1]: https://github.com/kdave/btrfs-progs/issues/192
+Greeting in the name of our almighty God i wish you and your family
+happy moments of life now and forever more amen.my name is Mrs. Asha
+Buhtal ,72 yers old from Iran living in in Ougadougou Burkina
+Faso,please, i do not have formal relationship with you but because of
+my present predicament and circumstances, after going through your
+details profile, i am made to contact you.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
+Presentely I am suffering of cancer It has defiled all forms of
+medical treatment and right now I have only about a few months to
+live, according to the medical experts, My Doctors and have a short
+life to leave.i have made up my mind to donate my inheritance of
+15.5Million USD to the less privileged please help me to fulfill my
+last wish.
 
- I couldn't find a way to make truncate to use O_LARGEFILE option. I though even
- to write a helper to open the file using this flag and later on call ftruncate,
- but isn't it one more helper to maintain?
+I would want to have a Personal and Trustworthy Relationship with you,
+as I intend and willing to empower the change of ownership for the
+transfer of my inheritance of 15.5Million USD to your personal
+possession for further Charity Disbursement to the Less Privilege and
+Homeless Motherless babies.
 
- If there are better ideas to avoid skipping this test, please let me know!
+I wait to hear from you immediately
 
- tests/common                                      | 15 +++++++++++++++
- tests/mkfs-tests/018-multidevice-overflow/test.sh |  1 +
- 2 files changed, 16 insertions(+)
+Thanks
 
-diff --git a/tests/common b/tests/common
-index 605cf72c..9aa69a1a 100644
---- a/tests/common
-+++ b/tests/common
-@@ -580,6 +580,21 @@ check_min_kernel_version()
- 	return 0
- }
- 
-+check_32bit_machine()
-+{
-+	local msg
-+
-+	msg="$1"
-+	if [ -z "$msg" ]; then
-+		msg="Skipping test on 32bit machines"
-+	fi
-+
-+	long_bit=$(getconf LONG_BIT)
-+	if [ $long_bit -eq 32 ]; then
-+		_not_run "$msg"
-+	fi
-+}
-+
- # how many files to create.
- DATASET_SIZE=50
- 
-diff --git a/tests/mkfs-tests/018-multidevice-overflow/test.sh b/tests/mkfs-tests/018-multidevice-overflow/test.sh
-index 6c2f4dba..8bb3d5a9 100755
---- a/tests/mkfs-tests/018-multidevice-overflow/test.sh
-+++ b/tests/mkfs-tests/018-multidevice-overflow/test.sh
-@@ -5,6 +5,7 @@ source "$TEST_TOP/common"
- 
- check_prereq mkfs.btrfs
- check_prereq btrfs
-+check_32bit_machine "32bit machines can't handle 6E file sizes"
- 
- setup_root_helper
- prepare_test_dev
--- 
-2.24.0
-
+Mrs. Asha Buhtal
