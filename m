@@ -2,201 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CF8161243
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 13:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C78C1612B4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 14:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgBQMnS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 07:43:18 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42355 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgBQMnS (ORCPT
+        id S1727135AbgBQNKP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 08:10:15 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:35148 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgBQNKP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 07:43:18 -0500
-Received: by mail-pl1-f193.google.com with SMTP id e8so6675781plt.9;
-        Mon, 17 Feb 2020 04:43:17 -0800 (PST)
+        Mon, 17 Feb 2020 08:10:15 -0500
+Received: by mail-pf1-f194.google.com with SMTP id y73so8877167pfg.2;
+        Mon, 17 Feb 2020 05:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=eFO35s5Ky07X/mGIAKSwzxotrlVv59NIdxN2RO+AkxA=;
-        b=ibHuOs+tSlumPgXUcfrrVYlJBsiXDuUTBSVxnVTmP9hqQKgXnZDbzvNooUZIxzTtVE
-         bm/lqTEBgYLyp0KIagkl0mZvRnu0c2oz6uja5N7B5ESS6bqnjU5I+xlCu1gUQNjxCMNC
-         ZZ49SWy4Obt3XXtDC4NLVRlQSBoogxEYRMdSgwwj2CK5HYDYRqbFseM9mUGzMNRKP07S
-         M2u5W+J1fBQ2erHxuFFAHyJGpD2IJOYoDLaC2LAWIVudPOleZb6zlAXI0Q9tDgz5IUOK
-         0633s7nCAMXLgTIoUhgyzYjmNrWgw1agPYpJNXYLGweirYhNn0GsWj7VvVJpoH4vcxtg
-         CHiw==
+        bh=a+yDUU9TIHk8Twh90LmCjRC3Qz78kOz6L565IaPsqqY=;
+        b=Uk6bPDxKhPv7jHBnUlTBrX3ESzhRDQrFFhcNFn/+LwXmz5Iu8pDHDUnTUWpqYD1F1z
+         4+S2Wv7/ahYFHKYm04LZHJ7JnLGPMVX4gWwir9/CdOqXjFLMNFOkPwe24LDLFNkHRzmv
+         y4uKNPj1x7jrP1xdIydi8K3v3GHnBx4SqScUfYDDsQzNd7cYPseABMvP2giiAmbR85PA
+         hXy6uCiAtu8lRJzJZlRP6LciMr363FGaYQAUtRLx7BKq2/4j2ZfZyV/v7SrRlJqRRtI9
+         KOTFn7Tb2RzlI0f4XGkJaYe2BmUpnD+TC7jPgNeUMz3DSlKst52FxyM51a1zv2ewadii
+         lyQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eFO35s5Ky07X/mGIAKSwzxotrlVv59NIdxN2RO+AkxA=;
-        b=twLw47VhaMsU2G3QoDARusDnhszOzutdWRpISbe1rbiyvbFJp+KkdntwFqTcIdn9Zm
-         NyDdlOPYwjSsQgI31enbwIR45ndzNeCXAPaB0J3CnVlGnJmnt6/GNrTQfikcigPGU/KZ
-         RpV21gRYI3M7AZsp6c3Ih4OeilMTVE8w93Kvb8vM6IwOijoQzX9UfluE2EID5g9aCGE2
-         PRtk30GHbL8a+vczem8r2v+oqKWs3UpnbmGOU0CVqud/VnIfmb4wanLt5O+dvHd5uwLA
-         4ivygfYr//rxAI4w5MQvfRgGjbH0IxrGWs9IU2ijQulgBxhNeaYi7+0gwgigU8rYpotx
-         PQYA==
-X-Gm-Message-State: APjAAAWEwvr2FS1hU12i/5PVuuoVAF95knRThj7EJiwGtSOJojr5ZUM7
-        ldT1Bd5DzS7suQfUBHXvPLk=
-X-Google-Smtp-Source: APXvYqwnnMMhmoFTmrRol9eOqHqlEEC8v6ZnIMHGAI0QoHjc03ggFMzg6VbC5gVmzmHnNyZcc4RKiw==
-X-Received: by 2002:a17:902:45:: with SMTP id 63mr16112839pla.109.1581943397226;
-        Mon, 17 Feb 2020 04:43:17 -0800 (PST)
+        bh=a+yDUU9TIHk8Twh90LmCjRC3Qz78kOz6L565IaPsqqY=;
+        b=ms85eozNzcQogVpCUFS6In476U+B8qE+Phouk9mIUWu9Vhy+BAvGq1xWZ4b+xhYuFc
+         HYrqycvTbqsXU/31pqba39k5/v5YdWPLlDAFvolAPF1Scu+vLvHwe4vawVUflJeoYKlj
+         2pATQyhdSQ95eKePg+4PTEU3S7kBaNWeRrwUdkKgnkkGSQ5C09CSd8EguJSfZ4xK+Oe5
+         lxJ17tR6ADf2t2W4GD1XPnu2qUeurvQuWR6PXptI+qyYphy/u04TybFNiKj6FoA3uIzI
+         bfAoQNzMb8MhafNmqT4uSVcQqKO2cxj8mGZnDAZ3zE7C6uYToWh1HuPqbFSj+u5PrlFK
+         BC+g==
+X-Gm-Message-State: APjAAAWvC46Q7m8b5nokG7WfwKAszKQz1Ywg2ptHcuH2gDAhy405larr
+        0bKj+MYjVNoUdInvUKhHlKj3tvTgQ1k=
+X-Google-Smtp-Source: APXvYqyU4LBjKc0XHNVccZ6Wjx9wIQNNbGPzdrUxiMgtQqZjG4fU/UjdL7PJnkSICGtGWnWusQttcg==
+X-Received: by 2002:a17:90b:1256:: with SMTP id gx22mr19883622pjb.94.1581945014811;
+        Mon, 17 Feb 2020 05:10:14 -0800 (PST)
 Received: from localhost ([178.128.102.47])
-        by smtp.gmail.com with ESMTPSA id q8sm337349pfs.161.2020.02.17.04.43.15
+        by smtp.gmail.com with ESMTPSA id b1sm950824pgs.27.2020.02.17.05.10.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 04:43:16 -0800 (PST)
-Date:   Mon, 17 Feb 2020 20:43:11 +0800
+        Mon, 17 Feb 2020 05:10:14 -0800 (PST)
+Date:   Mon, 17 Feb 2020 21:10:08 +0800
 From:   Eryu Guan <guaneryu@gmail.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: test unaligned punch hole at ENOSPC
-Message-ID: <20200217124309.GJ2697@desktop>
-References: <526051b1-4a48-fd40-c8dc-af7e1b399111@gmx.com>
- <20200131050957.3491-1-anand.jain@oracle.com>
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [PATCHv2 2/2]  btrfs: Test subvolume delete --subvolid feature
+Message-ID: <20200217131006.GM2697@desktop>
+References: <20200207131951.15859-1-marcos.souza.org@gmail.com>
+ <20200207131951.15859-3-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200131050957.3491-1-anand.jain@oracle.com>
+In-Reply-To: <20200207131951.15859-3-marcos.souza.org@gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 01:09:57PM +0800, Anand Jain wrote:
-> Try to punch hole with unaligned size and offset when the FS is
-> full and mounted with nodatacow option.
-> Mainly holes are punched at locations which are unaligned
-> with the file extent boundaries when the FS is full by data.
-> As the punching holes at unaligned location will involve
-> truncating blocks instead of just dropping the extents, it shall
-> involve reserving data and metadata space for delalloc and so data
-> alloc fails as the FS is full.
+On Fri, Feb 07, 2020 at 10:19:51AM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> btrfs_punch_hole()
->  btrfs_truncate_block()
->    btrfs_check_data_free_space() <-- ENOSPC
-> 
-> We don't fail punch hole if the holes are aligned with the file
-> extent boundaries as it shall involve just dropping the related
-> extents, without truncating data extent blocks.
-> 
-> Link: https://patchwork.kernel.org/patch/11357415/
-
-I've went through above link, and all btrfs developers involved there
-agreed to restore the original btrfs/172 case. Then I'm fine with it
-too. But we really should avoid such remove/reconstruct again,
-especially this time btrfs/172 is already taken by other test..
-
-Thanks,
-Eryu
-
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Eryu Guan <guaneryu@gmail.com>
-> (cherry picked from commit 4c2c678cd56a81a210cb16f9f9347073e91e2fb0)
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> 
-> Conflicts:
-> 	tests/btrfs/group
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 > ---
-> Its decided to bring back this test case, now the problem is better understood
-> and the fix is available in the ML as in [Link].
-> v2: mention nodatacow option used in the testcase in the commit log.
+> Changes from v1:
+> * Added some prints printing what is being tested
+> * The test now uses the _btrfs_get_subvolid to get subvolumeids instead of using
+>   plain integers
 > 
->  tests/btrfs/204     | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/204.out |  2 ++
+>  tests/btrfs/203     | 73 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/203.out | 14 +++++++++
 >  tests/btrfs/group   |  1 +
->  3 files changed, 76 insertions(+)
->  create mode 100755 tests/btrfs/204
->  create mode 100644 tests/btrfs/204.out
+>  3 files changed, 88 insertions(+)
+>  create mode 100755 tests/btrfs/203
+>  create mode 100644 tests/btrfs/203.out
 > 
-> diff --git a/tests/btrfs/204 b/tests/btrfs/204
+> diff --git a/tests/btrfs/203 b/tests/btrfs/203
 > new file mode 100755
-> index 000000000000..0dffb2dff40b
+> index 00000000..b9f1391f
 > --- /dev/null
-> +++ b/tests/btrfs/204
+> +++ b/tests/btrfs/203
 > @@ -0,0 +1,73 @@
 > +#! /bin/bash
 > +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2018 Oracle. All Rights Reserved.
+> +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
 > +#
-> +# FS QA Test 204
+> +# FSQA Test No. 203
 > +#
-> +# Test if the unaligned (by size and offset) punch hole is successful when FS
-> +# is at ENOSPC.
+> +# Test subvolume deletion using the subvolume id, even when the subvolume in
+> +# question is in a different mount space.
 > +#
 > +seq=`basename $0`
 > +seqres=$RESULT_DIR/$seq
 > +echo "QA output created by $seq"
-> +
-> +here=`pwd`
 > +tmp=/tmp/$$
 > +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
 > +
 > +# get standard environment, filters and checks
 > +. ./common/rc
 > +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
+> +. ./common/filter.btrfs
 > +
 > +# real QA test starts here
-> +
-> +# Modify as appropriate.
 > +_supported_fs btrfs
 > +_supported_os Linux
 > +_require_scratch
-> +_require_xfs_io_command "fpunch"
+> +_require_btrfs_command subvolume delete --subvolid
 > +
-> +_scratch_mkfs_sized $((256 * 1024 *1024)) >> $seqres.full
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
 > +
-> +# max_inline ensures data is not inlined within metadata extents
-> +_scratch_mount "-o max_inline=0,nodatacow"
+> +# Test creating a normal subvolumes
+> +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/subvol1 | _filter_scratch
+> +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/subvol2 | _filter_scratch
+> +_run_btrfs_util_prog subvolume create $SCRATCH_MNT/subvol3 | _filter_scratch
+
+The usa of _run_btrfs_util_prog is deprecated, please use bare
+$BTRFS_UTIL_PROG commands, and do filter as needed.
+
 > +
-> +cat /proc/self/mounts | grep $SCRATCH_DEV >> $seqres.full
-> +$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
+> +echo "Current subvolume ids:"
+> +$BTRFS_UTIL_PROG subvolume list $SCRATCH_MNT | awk '{ print $NF }'
+
+Use $AWK_PROG instead of bare awk. And I noticed this pattern repeated
+for several times, make it a local helper function?
+
 > +
-> +extent_size=$(_scratch_btrfs_sectorsize)
-> +unalign_by=512
-> +echo extent_size=$extent_size unalign_by=$unalign_by >> $seqres.full
+> +# Delete the subvolume subvol1 using it's subvolume id
+> +SUBVOLID=$(_btrfs_get_subvolid $SCRATCH_MNT subvol1)
+> +$BTRFS_UTIL_PROG subvolume delete --subvolid $SUBVOLID  $SCRATCH_MNT | _filter_scratch
 > +
-> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 $((extent_size * 10))" \
-> +					$SCRATCH_MNT/testfile >> $seqres.full
+> +echo "After deleting one subvolume:"
+> +# should present only two subvolumes
+> +$BTRFS_UTIL_PROG subvolume list $SCRATCH_MNT | awk '{ print $NF }'
 > +
-> +echo "Fill all space available for data and all unallocated space." >> $seqres.full
-> +dd status=none if=/dev/zero of=$SCRATCH_MNT/filler bs=512 >> $seqres.full 2>&1
+> +umount $SCRATCH_MNT
+
+Does _scratch_unmount work here?
+
 > +
-> +hole_offset=0
-> +hole_len=$unalign_by
-> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +# Now we mount the subvol2, which makes subvol3 not accessible for this mount
+> +# point, but we should be able to delete it using it's subvolume id
+> +$MOUNT_PROG -o subvol=subvol2 $SCRATCH_DEV $SCRATCH_MNT
+> +SUBVOLID=$(_btrfs_get_subvolid $SCRATCH_MNT subvol3)
+> +$BTRFS_UTIL_PROG subvolume delete --subvolid $SUBVOLID $SCRATCH_MNT | _filter_scratch
 > +
-> +hole_offset=$(($extent_size + $unalign_by))
-> +hole_len=$(($extent_size - $unalign_by))
-> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +echo "Last remaining subvolume:"
+> +$BTRFS_UTIL_PROG subvolume list $SCRATCH_MNT | awk '{ print $NF }'
 > +
-> +hole_offset=$(($extent_size * 2 + $unalign_by))
-> +hole_len=$(($extent_size * 5))
-> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +umount $SCRATCH_MNT
+
+_scratch_unmount
+
+> +
+> +# now mount the rootfs
+> +_scratch_mount
+> +
+> +# Delete the subvol2
+> +SUBVOLID=$(_btrfs_get_subvolid $SCRATCH_MNT subvol2)
+> +$BTRFS_UTIL_PROG subvolume delete --subvolid $SUBVOLID  $SCRATCH_MNT | _filter_scratch
+> +
+> +echo "All subvolumes removed."
+> +$BTRFS_UTIL_PROG subvolume list $SCRATCH_MNT | awk '{ print $NF }'
+> +
+> +umount $SCRATCH_MNT
+
+_scratch_unmount
+
+Thanks,
+Eryu
+
 > +
 > +# success, all done
-> +echo "Silence is golden"
 > +status=0
 > +exit
-> diff --git a/tests/btrfs/204.out b/tests/btrfs/204.out
+> diff --git a/tests/btrfs/203.out b/tests/btrfs/203.out
 > new file mode 100644
-> index 000000000000..ce2de3f0d107
+> index 00000000..bca18c32
 > --- /dev/null
-> +++ b/tests/btrfs/204.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 204
-> +Silence is golden
+> +++ b/tests/btrfs/203.out
+> @@ -0,0 +1,14 @@
+> +QA output created by 203
+> +Current subvolume ids:
+> +subvol1
+> +subvol2
+> +subvol3
+> +Delete subvolume (no-commit): 'SCRATCH_MNT/subvol1'
+> +After deleting one subvolume:
+> +subvol2
+> +subvol3
+> +Delete subvolume (no-commit): 'SCRATCH_MNT/subvol3'
+> +Last remaining subvolume:
+> +subvol2
+> +Delete subvolume (no-commit): 'SCRATCH_MNT/subvol2'
+> +All subvolumes removed.
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 79f85e97..e7744217 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -204,3 +204,4 @@
+>  200 auto quick send clone
+>  201 auto quick punch log
+>  202 auto quick subvol snapshot
+> +203 auto quick subvol
 > -- 
-> 1.8.3.1
+> 2.24.0
 > 
