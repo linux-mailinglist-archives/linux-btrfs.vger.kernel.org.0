@@ -2,108 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DB4160C8D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 09:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A32160DD3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 09:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727462AbgBQILr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 03:11:47 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:22373 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgBQILr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 03:11:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1581927106; x=1613463106;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=iAH9L87AiYPaCpK2Svvx8ZdQ+2DtEGWp2faXkzedaPmc8gD34CbR11Il
-   7n2UxaCdV7lXRsErc3QKRiQzoP2VwIFigwQD8el9b1Y7RmHWbw5iNBSMC
-   LaaqHObLrSAnk9hREEI2B1BNrAa7TsD+4GCVqaE2R/LZyQb+K/TiG2pi1
-   UkidTgG2YLsntUD3BPYNlZCbu9KZnd0KQPAvNUGiTAexMQKjOVNoxUcP/
-   MxnnRVLRWlA9U36r/yfoo/czWQIV10L6V4rr6vjxT/MItgr9Xnm649WMC
-   9I0EBJom8ZGVofKc8tR0RO0HgFOpt4TmXqyqBbFkmkoehbJrBuXq3N2nM
-   g==;
-IronPort-SDR: eSjvN0pSoAo4MVhQ8nqB9JxE1wxlllrhH2FpESxAqQpmmfpecjvpIO+AGXnhMaSdWdScs5whig
- CHRss0KUUzUK3N6LLXkf4KKKIOtUNalwLMKqRayzzriTN6MniKbHaKOSgfftz6rFWyiNw77Hgz
- fSqT322OBiJl8nqD00kBP5miKjAPwhN/HxZKpRoFsfdQeiyul4Oh09fzSugvPIXYtvmef7yI+E
- ZRITu3FRd3c7c/wLM52Ri9Oh0U5CAMi8pAUB01sz0Kcj8jpvz1ACAlg60nXFe7xOTc7bR0HxYf
- h1o=
-X-IronPort-AV: E=Sophos;i="5.70,451,1574092800"; 
-   d="scan'208";a="238067322"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Feb 2020 16:11:46 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E/tRMuvSsp7F24hO+qitkReOrmnT0VnDQemdCbCt+g83q4uFnb1WmPdopeS6dnbbob+5wttfl4E6Tca0n9ihj5Il59dMhp90b0tsMF1l+T0ivgrhiZeSw+pLIWL0SPL2xjqNz/A8AiUTFJx/3/BLQF/D4R2t/bBFY6Whetn43oRN+bUN7DddXF0QKgvvGxdqh7+A+umnK7VKX99aGp++XE8Q50k71qBGRqfI1WcJZ+CkC3PuYlW1Iab9tFiTltVag6Qq16tDTJxZSf97XzN3MDn+H8DNvOczP/FZtn2lZLgQDCibMnRdnWG8M7lXNGotn7Wig42tE9ppz7L+pp4+6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=UQaISnU8X0PEIzA7DCKJxy4E0qpf7B1LU8OSwKt3SepuCxiJ4M1DxFBmw2NLRSeV08OxwV5HMMgdCq3kz6XSfyst5u0/9q1nIllVf7UtRvf+pnwnwnuLhRZW9qPkSW+lQo6YFs+/OvQSaDk49FCTJw8QCeqT4DveyrqEfndLtwgyU37wFd5j8AOJkfmeB1n0MG2cv0JV7UbOR5H32DGBHuiDPxOkGx/qJLxsFpiAYbzJcyja1fSFRJqZC8eqsf6HUSK+ntQRAeFzqDSakBgfdRoW7JSRcr1Tpky5LZ0R1JO6+HOeO9VLuKiHz1JMDbp15em30i9CM5emHd9CxXclFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=qiLGydOlh4m4tdciS8vyL58eVXW/3HTK43mYe2iOlxeh8v0QoOd6thVlPKZMJnw6niFI1vZpYzt9hhh4GH54ubyrFT1qWYe5rBDALkqNvVePdgzcXOShyP39Co9Uf+3zJ7ckS0oVq6O4cSY1xEksRmL4d88n2o//MxmNa/t2i/Y=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
- SN4PR0401MB3534.namprd04.prod.outlook.com (10.167.133.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.31; Mon, 17 Feb 2020 08:11:44 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2729.032; Mon, 17 Feb 2020
- 08:11:44 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH] btrfs: bail out of uuid tree scanning if we're closing
-Thread-Topic: [PATCH] btrfs: bail out of uuid tree scanning if we're closing
-Thread-Index: AQHV43IPZOezMYRVS0u2ftUiMaLqrg==
-Date:   Mon, 17 Feb 2020 08:11:44 +0000
-Message-ID: <SN4PR0401MB3598F22E309F3930756DA9179B160@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200214200501.2524-1-josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 86a950a9-4e91-4b44-51a6-08d7b3810732
-x-ms-traffictypediagnostic: SN4PR0401MB3534:
-x-microsoft-antispam-prvs: <SN4PR0401MB353468C61C80C647A8B71D0C9B160@SN4PR0401MB3534.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0316567485
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(366004)(396003)(39860400002)(376002)(136003)(189003)(199004)(316002)(86362001)(26005)(110136005)(186003)(6506007)(66946007)(64756008)(66446008)(19618925003)(66556008)(76116006)(478600001)(66476007)(558084003)(91956017)(55016002)(5660300002)(9686003)(71200400001)(2906002)(8676002)(81166006)(81156014)(33656002)(7696005)(4270600006)(52536014)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3534;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6YrRNvumUucHytpOg0Rq6Rerj6SFnfzHJ5qkH7jkttETKSYEjKjW+bD7jEtL4b2E3C/5soiZYcQksH9zfIzvVt81MVQK/Y2lsfGWqhpTf035x/s6XGtmfAZi/tmwkkf0t6a+mfCvbmBebcGB22qrku+S9vHKuRP6XL8EcXutVFzvYGv19OfDrkeBtY3OZhwxqHBuRdIuTgSTeZg9S2ymK9rrXrrTbVvwYQ5Klr35PTPxWUEDi8qbfzek/G+yu/Wxge/d+eYAFERuDrT1iot/5BybrI2MlSWs+8a3v+DUOIr+5DBxcf4BxtXTXfmsksAeot8hD0sMqu6OC303ilwmYrSgiHzMN2Vtow67V/m7ZRqdEJCDqQ4dyGZQENFyCY4NmGm349MMHUS3zUC5dkE/LfwwhSL609Fnk6YeSgFSGnVK9MxtGqyL4FFI6JR02+3a
-x-ms-exchange-antispam-messagedata: ABnVjF7mI2hd5xNKSzx60rru2mzQwjDOcX/oA1na3/vfz+aJP/9ypW3FjOnuOARekcYiFrzBb0lmOAVDa0neKZ8sUDIossCQd7XwPDMyp2uepou8rdUEU9CU7ZGdX+MgmAiPvNcrZWacLsgWlgsF9g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728462AbgBQIyW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 03:54:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728217AbgBQIyV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 03:54:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id F13C4B3E9;
+        Mon, 17 Feb 2020 08:54:19 +0000 (UTC)
+Subject: Re: [PATCH] progs: misc-test: 034: Call "udevmadm settle" before
+ mount
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+References: <20200216211221.31471-1-marcos@mpdesouza.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4686232f-fda3-bedf-665d-622a0543e78b@suse.com>
+Date:   Mon, 17 Feb 2020 10:54:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86a950a9-4e91-4b44-51a6-08d7b3810732
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2020 08:11:44.7916
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DkU1E1y+8l2cC5j5rb5fQCHMMr5DoXL2gHw8I1PW9Qyzymax0fwKcKqJYCGq6NeVaA820eTVHkyCz/C/0/r2NZhTiuDW2ch7ZWkJvSXobsA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3534
+In-Reply-To: <20200216211221.31471-1-marcos@mpdesouza.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 16.02.20 г. 23:12 ч., Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> As seem in this issue[1], this test can fail from time to time. The
+> issue happens when a mount is issued before the new device is processed
+> by systemd-udevd, as we can see by the og bellow:
+> 
+> [ 2346.028809] BTRFS: device fsid 593e23af-a7e6-4360-b16a-229f415de697 devid 1 transid 6 /dev/loop10 scanned by systemd-udevd (3418)
+> [ 2346.265401] BTRFS info (device loop10): found metadata UUID change in progress flag, clearing
+> [ 2346.272474] BTRFS info (device loop10): disk space caching is enabled
+> [ 2346.277472] BTRFS info (device loop10): has skinny extents
+> [ 2346.281840] BTRFS info (device loop10): flagging fs with big metadata feature
+> [ 2346.308428] BTRFS error (device loop10): devid 2 uuid cde07de6-db7e-4b34-909e-d3db6e7c0b06 is missing
+> [ 2346.315363] BTRFS error (device loop10): failed to read the system array: -2
+> [ 2346.329887] BTRFS error (device loop10): open_ctree failed
+> failed: mount /dev/loop10 /home/marcos/git/suse/btrfs-progs/tests//mnt
+> test failed for case 034-metadata-uuid
+> make: *** [Makefile:401: test-misc] Error 1
+> [ 2346.666865] BTRFS: device fsid 593e23af-a7e6-4360-b16a-229f415de697 devid 2 transid 5 /dev/loop11 scanned by systemd-udevd (3422)
+> [ 2346.853233] BTRFS: device fsid 1c2debeb-e829-4d6b-84df-aa7c5d246fd5 devid 1 transid 7 /dev/loop6 scanned by systemd-udevd (3418)
+> 
+> A few moments after the test failed systemd-udevd processed the new
+> device (registered the new device under btrfs). This can be
+> tested by executing a mount after the test failed, resulting in a
+> successful mount:
+> 
+> mount /dev/loop10 /mnt
+> [ 2398.955254] BTRFS info (device loop10): found metadata UUID change in progress flag, clearing
+> [ 2398.959416] BTRFS info (device loop10): disk space caching is enabled
+> [ 2398.962483] BTRFS info (device loop10): has skinny extents
+> [ 2398.965070] BTRFS info (device loop10): flagging fs with big metadata feature
+> [ 2399.012617] BTRFS info (device loop10): enabling ssd optimizations
+> [ 2399.022375] BTRFS info (device loop10): checking UUID tree
+> 
+> This problem can be avoided is we execute "udevadm settle" before the
+> mount is executed.
+> 
+> [1]: https://github.com/kdave/btrfs-progs/issues/192
+> 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+
+This seems to be fixing the same problem that Su Yue had reported before
+:
+https://lore.kernel.org/linux-btrfs/20191212110204.11128-3-Damenly_Su@gmx.com/
+
+
+I think yours is a cleaner way to fixing it so:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
