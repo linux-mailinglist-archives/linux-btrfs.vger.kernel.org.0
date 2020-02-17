@@ -2,124 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B2B1616E3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 17:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2491616EA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 17:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbgBQQAq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 11:00:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52838 "EHLO mail.kernel.org"
+        id S1729556AbgBQQBu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 11:01:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46050 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727277AbgBQQAp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 11:00:45 -0500
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D049206F4
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 16:00:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581955244;
-        bh=KL4ioOz6NCyIq6iZU3dCofR/NqUuhoyOsOYkTiKSgmw=;
-        h=From:To:Subject:Date:From;
-        b=JY5ddVu1irkqca8/Pj4h5OB4EUHC671ssY49sWLhjaGiARZBztgNI5SPpVb7LMjy/
-         1l3HT7+9Q4E5b7mDZf+fFK7w1RlQ6TVGWypdXeQ0qTnOkCelIweGnAC5ZIpQNJ/JW5
-         g4WP/YO0LzCPcBk3sMrQL97M+1su4u8oyCqvDyRw=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix possible sleep in atomic context during a shrinking truncate
-Date:   Mon, 17 Feb 2020 16:00:40 +0000
-Message-Id: <20200217160040.21922-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1726891AbgBQQBu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 11:01:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9DFBFB9C0;
+        Mon, 17 Feb 2020 16:01:47 +0000 (UTC)
+Subject: Re: [PATCH v3 3/3] btrfs: relocation: Use btrfs_backref_iterator
+ infrastructure
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200217063111.65941-1-wqu@suse.com>
+ <20200217063111.65941-4-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a0c78263-dba1-1ac2-6b51-720d70dfb0f1@suse.com>
+Date:   Mon, 17 Feb 2020 18:01:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200217063111.65941-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-Commit 28553fa992cb28 ("Btrfs: fix race between shrinking truncate and
-fiemap") added a file range unlock before freeing and releasing a path.
-This can trigger a sleep while in an atomic context, which is reported
-by a debugging kernel:
 
-[   70.794783] BUG: sleeping function called from invalid context at mm/slab.h:565
-[   70.794834] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1141, name: rsync
-[   70.794863] 5 locks held by rsync/1141:
-[   70.794876]  #0: ffff888417b9c408 (sb_writers#17){.+.+}, at: mnt_want_write+0x20/0x50
-[   70.795030]  #1: ffff888428de28e8 (&type->i_mutex_dir_key#13/1){+.+.}, at: lock_rename+0xf1/0x100
-[   70.795051]  #2: ffff888417b9c608 (sb_internal#2){.+.+}, at: start_transaction+0x394/0x560
-[   70.795124]  #3: ffff888403081768 (btrfs-fs-01){++++}, at: btrfs_try_tree_write_lock+0x2f/0x160
-[   70.795203]  #4: ffff888403086568 (btrfs-fs-00){++++}, at: btrfs_try_tree_write_lock+0x2f/0x160
-[   70.795222] CPU: 5 PID: 1141 Comm: rsync Not tainted 5.6.0-rc2-backup+ #2
-[   70.795291] Hardware name: ASUS All Series/Z97-DELUXE, BIOS 3503 04/18/2018
-[   70.795362] Call Trace:
-[   70.795374]  dump_stack+0x71/0xa0
-[   70.795445]  ___might_sleep.part.96.cold.106+0xa6/0xb6
-[   70.795459]  kmem_cache_alloc+0x1d3/0x290
-[   70.795471]  alloc_extent_state+0x22/0x1c0
-[   70.795544]  __clear_extent_bit+0x3ba/0x580
-[   70.795557]  ? _raw_spin_unlock_irq+0x24/0x30
-[   70.795569]  btrfs_truncate_inode_items+0x339/0xe50
-[   70.795647]  btrfs_evict_inode+0x269/0x540
-[   70.795659]  ? dput.part.38+0x29/0x460
-[   70.795671]  evict+0xcd/0x190
-[   70.795682]  __dentry_kill+0xd6/0x180
-[   70.795754]  dput.part.38+0x2ad/0x460
-[   70.795765]  do_renameat2+0x3cb/0x540
-[   70.795777]  __x64_sys_rename+0x1c/0x20
-[   70.795788]  do_syscall_64+0x6d/0x6b0
-[   70.795864]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-[   70.795876]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[   70.795889] RIP: 0033:0x7f7fa39256d7
-(...)
-[   70.795990] RSP: 002b:00007ffc8ad171a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
-[   70.796070] RAX: ffffffffffffffda RBX: 00007ffc8ad19350 RCX: 00007f7fa39256d7
-[   70.796084] RDX: 0000000000000000 RSI: 00007ffc8ad17350 RDI: 00007ffc8ad19350
-[   70.796097] RBP: 00007ffc8ad17350 R08: 0000000000000000 R09: 0000000000000000
-[   70.796170] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-[   70.796184] R13: 0000000000000004 R14: 00000000000081a4 R15: 0000000000000000
+On 17.02.20 г. 8:31 ч., Qu Wenruo wrote:
+> In the core function of relocation, build_backref_tree, it needs to
+> iterate all backref items of one tree block.
+> 
+> We don't really want to spend our code and reviewers' time to going
+> through tons of supportive code just for the backref walk.
+> 
+> Use btrfs_backref_iterator infrastructure to do the loop.
+> 
+> The backref items look would be much more easier to read:
+> 
+> 	ret = btrfs_backref_iterator_start(iterator, cur->bytenr);
+> 	for (; ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
+> 		/* The really important work */
+> 	}
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-This happens because when we unlock the range we might be still holding
-spin locks on some extent buffers in our search path, since the path has
-the property 'leave_spinning' set, and unlocking the range attempts to
-allocate an extent_state structure in a non-atomic mode at
-__clear_extent_bit().
+Even with your branch this patch is triggering warnings on btrfs/187 :
 
-The patch was developed against the integration branch, 'misc-next' from
-David Sterba, where we don't use a path in spinning mode anymore, whence
-it was not detected earlier.
 
-To fix this just free the path, which releases any spin locks on the
-search path, before unlocking the file range. This is temporary and it
-will no longer be necessary for the next merge window.
+[ 1053.603321] WARNING: CPU: 1 PID: 3110 at fs/btrfs/relocation.c:945
+build_backref_tree+0x270c/0x50b0
 
-Reported-by: Dave Jones <davej@codemonkey.org.uk>
-Fixes: 28553fa992cb28 ("Btrfs: fix race between shrinking truncate and fiemap")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 90c404ae242a..b7b6baa38e10 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4998,10 +4998,15 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 		btrfs_inode_safe_disk_i_size_write(inode, last_size);
- 	}
- 
-+	/*
-+	 * Release and free the path before unlocking the range because we might
-+	 * be holding spin locks on some extent buffers.
-+	 */
-+	btrfs_free_path(path);
-+
- 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, lock_start, (u64)-1,
- 			     &cached_state);
- 
--	btrfs_free_path(path);
- 	return ret;
- }
- 
--- 
-2.11.0
+That's         WARN_ON(exist);
 
