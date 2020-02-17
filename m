@@ -2,69 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A19160A0C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 06:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3217160A4C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 07:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgBQF0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 00:26:13 -0500
-Received: from len.romanrm.net ([91.121.86.59]:54102 "EHLO len.romanrm.net"
+        id S1726267AbgBQGRA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 01:17:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41726 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725855AbgBQF0N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 00:26:13 -0500
-Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
-        by len.romanrm.net (Postfix) with SMTP id 7A69E40503;
-        Mon, 17 Feb 2020 05:26:11 +0000 (UTC)
-Date:   Mon, 17 Feb 2020 10:26:10 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: dev loop ~23% slower?
-Message-ID: <20200217102610.6e92da97@natsu>
-In-Reply-To: <CAJCQCtSUzj4V__vo5LxrF1Jv2MgUNux=d8JwXq6H_VN=sYunvA@mail.gmail.com>
-References: <CAJCQCtSUzj4V__vo5LxrF1Jv2MgUNux=d8JwXq6H_VN=sYunvA@mail.gmail.com>
+        id S1725835AbgBQGRA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 01:17:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 03482B01F
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 06:16:59 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/3] btrfs: Make balance cancelling response faster
+Date:   Mon, 17 Feb 2020 14:16:51 +0800
+Message-Id: <20200217061654.65567-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, 16 Feb 2020 20:18:05 -0700
-Chris Murphy <lists@colorremedies.com> wrote:
+[PROBLEM]
+There are quite some users reporting that 'btrfs balance cancel' slow to
+cancel current running balance, or even doesn't work for certain dead
+balance loop.
 
-> I don't think file system over accounts for much more than a couple
-> percent of this, so I'm curious where the slow down might be
-> happening? The "hosting" Btrfs file system is not busy at all at the
-> time of the loop mounted filesystem's scrub. I did issue 'echo 3 >
-> /proc/sys/vm/drop_caches' before the loop mount image being scrubbed,
-> otherwise I get ~1.72GiB/s scrubs which exceeds the performance of the
-> SSD (which is in the realm of 550MiB/s max)
+With the following script showing how long it takes to fully stop a
+balance:
+  #!/bin/bash
+  dev=/dev/test/test
+  mnt=/mnt/btrfs
 
-Try comparing just simple dd read speed of that FS image, compared to dd speed
-from the underlying device of the host filesystem. With scrubs you might be
-testing the same metric, but it's a rather elaborate way to do so -- and also
-to exclude any influence from the loop device driver, or at least to figure
-out the extent of it.
+  umount $mnt &> /dev/null
+  umount $dev &> /dev/null
 
-For me on 5.4.20:
+  mkfs.btrfs -f $dev
+  mount $dev -o nospace_cache $mnt
 
-dd if=zerofile iflag=direct of=/dev/null bs=1M
-2048+0 records in
-2048+0 records out
-2147483648 bytes (2.1 GB, 2.0 GiB) copied, 3.68213 s, 583 MB/s
+  dd if=/dev/zero bs=1M of=$mnt/large &
+  dd_pid=$!
 
-dd if=/dev/mapper/cryptohome iflag=direct of=/dev/null bs=1M count=2048
-2048+0 records in
-2048+0 records out
-2147483648 bytes (2.1 GB, 2.0 GiB) copied, 3.12917 s, 686 MB/s
+  sleep 3
+  kill -KILL $dd_pid
+  sync
 
-Personally I am not really surprised by this difference, of course going
-through a filesystem is going to introduce overhead when compared to reading
-directly from the block device that it sits on. Although briefly testing the
-same on XFS, it does seem to have less of it, about 6% instead of 15% here.
+  btrfs balance start --bg --full $mnt &
+  sleep 1
+
+  echo "cancel request" >> /dev/kmsg
+  time btrfs balance cancel $mnt
+  umount $mnt
+
+It takes around 7~10s to cancel the running balance in my test
+environment.
+
+[CAUSE]
+Btrfs uses btrfs_fs_info::balance_cancel_req to record how many cancel
+request are queued.
+However that cancelling request is only checked after relocating a block
+group.
+
+That behavior is far from optimal to provide a faster cancelling.
+
+[FIX]
+This patchset will add more cancelling check points, to make cancelling
+faster.
+
+And also, introduce a new error injection points to cover these newly
+introduced and future check points.
+
+
+For the canceled balance during relocate_block_group(), we are re-using
+the existing error handling path.
+It will mark all existing reloc_roots as orphan in prepare_to_merge(),
+then queue all of them for cleanup in merge_reloc_roots().
+Thus it shouldn't cause any problem.
+
+Changelog:
+v2:
+- Rebased to v5.6-rc1
+  There is a small conflicts caused by extra finished stage output.
+  Other than that, everything is pretty straightforward
+
+- Add explanation for the error handling path in cover letter.
+
+v3:
+- Add comment explaining how cancelling/error handling is done in
+  relocate_block_group()
+- Remove one patch which is already covered by patch 2 and 3.
+
+Qu Wenruo (3):
+  btrfs: relocation: Introduce error injection points for cancelling
+    balance
+  btrfs: relocation: Check cancel request after each data page read
+  btrfs: relocation: Check cancel request after each extent found
+
+ fs/btrfs/ctree.h      |  1 +
+ fs/btrfs/relocation.c | 27 +++++++++++++++++++++++++++
+ fs/btrfs/volumes.c    |  2 +-
+ 3 files changed, 29 insertions(+), 1 deletion(-)
 
 -- 
-With respect,
-Roman
+2.25.0
+
