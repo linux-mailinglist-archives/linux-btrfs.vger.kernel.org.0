@@ -2,384 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DA7160A72
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 07:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2F2160B6E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 08:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgBQGbg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 01:31:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46258 "EHLO mx2.suse.de"
+        id S1725985AbgBQHKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 02:10:51 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35921 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgBQGbg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 01:31:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 55F05AD21
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 06:31:33 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 3/3] btrfs: relocation: Use btrfs_backref_iterator infrastructure
-Date:   Mon, 17 Feb 2020 14:31:11 +0800
-Message-Id: <20200217063111.65941-4-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200217063111.65941-1-wqu@suse.com>
-References: <20200217063111.65941-1-wqu@suse.com>
+        id S1725873AbgBQHKu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 02:10:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581923214;
+        bh=LDPyWvs6hn/kvyk5EoUGuzLbR82uxW2c49akT6R9BlA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=kIkepvCNmAAvVsI2a4LP0yFe3uZYPb2rld6MxUGfGTM+pSP91QTRcz0p5SzQYxzR7
+         4NEuLYCq5HdMzdeO8bwU+blz/JqtSn0u5i0bRqT75T1SQDrRpj2p9BkYfhLCfNo4uO
+         dYbW2WZuUh8yeHXof2g3iSTj1abh6F/e5R7+uXLk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4hzZ-1jUz2v08Rz-011flZ; Mon, 17
+ Feb 2020 08:06:54 +0100
+Subject: Re: [PATCH] btrfs: Add comment for BTRFS_ROOT_REF_COWS
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200212074651.33008-1-wqu@suse.com>
+ <20200214165334.GC2902@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <54ffe5f9-19d1-f916-04fa-3eceedc5aca7@gmx.com>
+Date:   Mon, 17 Feb 2020 15:06:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200214165334.GC2902@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XHTiaAfSgKNWxvjPsENRDpYvffyooMwb5"
+X-Provags-ID: V03:K1:fWbQYRUUD2pVMUCeZ5Pi+pTsS60Fez1i8KJQ8dF8DvjGIxwPDmk
+ DJFkkUwAoXEyyZEdHQhXQ6yIZaaA2wZdiF2CkLIeqHLQdjzloJ9X8U3YTOUYmQ+4jxh0ktd
+ GZdoiH/dol9vsmRPsAMz+Z8KMy9nyh+q0zglTOsG209ZSu1A5jRtXbMFZqPz8+JKbJzo8t/
+ 9jrJr+AKkojFJ7UGdjBmw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Fpmd2pBAD90=:TG+q7ve05nbIEZ0AfEhtbh
+ EcOVHvbTv0OqQy8ztxTb7VQUbkhqbUuyb2z//v+tO2xEkOX2ZTzC5CDfbbCC9Jgl9A8feZwFi
+ FwR6+ly9kNwWg6E/DvMgZFVgOKd9IQ7akGE/Aga7oGPIZskdSTgAnfOK0rElETU1hUVpWMsJP
+ x1iNJVee4c09V9FVQoqNmkVxIKW+DO6ULOBH03SPtWWvUER8pnW8fPz++RzLHIqEVR8WgyJUc
+ tOSTSG4YVlk/58P+6RTEogxLAsPLR2lG6fCRgLXQn5hVZzIiIxN19m3iG12prbj1DeoEXmPwo
+ 4f2JK/AETG3iue7k/zCHLP/Ef8P+yP11wEjWyr3qZ45Qn0toDFO1t2cPFou03vHkFS2DfNmiB
+ 82h4d/ijuC7LXC1ag3K0QtvyczOtfbssCoPhQcnTsWwZT8PhEOT3LP62bGeV/QsXcKYqL6e9w
+ xP41io8levtflhHoM4cOpbOUoISWSrxTqpvzQQ05e48h3/h83oBGnk3ZOdmeNDriArT09bDH/
+ vggZtS+Isc+5fcO2CejB0CJTAg910oDXeiDWEaFjKqRKSemtYvy4uYactExfN36pE6goWkJ/o
+ Eg5t11AX8onsFUZlbZlsGtAdzUGuvC2vS416XRNnbOSLQDTF2mf5q+26pv1DnVD8vdU+/fldN
+ RXPmYcS5DQTZ6NGV5yr8cWrnpP2ytD3Uae4qQjh9sELiGkIml7fTgmAm+mAu76gaQzvZLschB
+ +mftQuzVQKctUVlP6zMNpIv1ezGQ1woYZB25uz/Zo58LWw7bRcMssSaDIuYv/HWWa96BuW9Mq
+ tDpxFzJYJNGJikARXG5JFyh6kAY4dKEWKn/y6zbVZfn2bAYbMQDdEyNZeJ/bDjWboLhTtU1pP
+ E5HqvafVyIOMlQRRJW6eys5ahfA5KymasSZLBsKpzc0kCR2w4cvgFtZ0iLNlPdpsVcLJFaCE/
+ V4RadDGomsFPOUVpP9sNleUZVaMm9rZgEdJlLlUHeLgugDDYYKXRx0UwgSYEzP6iJUZDZy+mx
+ PVDkrzRvEx0tR1gbJPG022LKyJ4QZyAiA1v9NYZHrGQR6iKttQDg7WZA6VeMSWPt9RgUVLN+l
+ k345yJrN+kEqxl6zbTNkgCn6KsSSwKGlsGhtt7XZD6X/GYPP6IEHMitqEx2vdfxsOV7e5pSW4
+ cg6d9lom4BzFK9n+ygK1uKhhY3P+B3OPvhYsSYTa8EFI6iiEA3IWBjSn1rXMvCYCU/3U3knyG
+ hAaaHcSJst+NFuToa
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the core function of relocation, build_backref_tree, it needs to
-iterate all backref items of one tree block.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XHTiaAfSgKNWxvjPsENRDpYvffyooMwb5
+Content-Type: multipart/mixed; boundary="ezW0ZxuaLxk5zLf8ji8ycsXmNtW9gPOTn"
 
-We don't really want to spend our code and reviewers' time to going
-through tons of supportive code just for the backref walk.
+--ezW0ZxuaLxk5zLf8ji8ycsXmNtW9gPOTn
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Use btrfs_backref_iterator infrastructure to do the loop.
 
-The backref items look would be much more easier to read:
 
-	ret = btrfs_backref_iterator_start(iterator, cur->bytenr);
-	for (; ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
-		/* The really important work */
-	}
+On 2020/2/15 =E4=B8=8A=E5=8D=8812:53, David Sterba wrote:
+> On Wed, Feb 12, 2020 at 03:46:51PM +0800, Qu Wenruo wrote:
+>> This bit is being used in too many locations while there is still no
+>> good enough explaination for how this bit is used.
+>>
+>> Not to mention its name really doesn't make much sense.
+>>
+>> So this patch will add my explanation on this bit, considering only
+>> subvolume trees, along with its reloc trees have this bit, to me it
+>> looks like this bit shows whether tree blocks of a root can be shared.=
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/relocation.c | 195 ++++++++++++++----------------------------
- 1 file changed, 64 insertions(+), 131 deletions(-)
+>=20
+> I think there's more tan just sharing, it should say something about
+> reference counted sharing. See eg. btrfs_block_can_be_shared:
+>=20
+>  864         /*
+>  865          * Tree blocks not in reference counted trees and tree roo=
+ts
+>  866          * are never shared. If a block was allocated after the la=
+st
+>  867          * snapshot and the block was not allocated by tree reloca=
+tion,
+>  868          * we know the block is not shared.
+>  869          */
+>=20
+> And there can be more specialities found when grepping for REF_COWS. Th=
+e
+> comment explaination should be complete or at least mention what's not
+> documenting. The I find the suggested version insufficient but don't
+> have a concrete suggestions for improvement. By reading the comment and=
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index b1365a516a25..499318acbfbf 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -22,6 +22,7 @@
- #include "print-tree.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "backref.h"
- 
- /*
-  * backref_node, mapping_node and tree_block start with this
-@@ -604,48 +605,6 @@ static struct btrfs_root *read_fs_root(struct btrfs_fs_info *fs_info,
- 	return btrfs_get_fs_root(fs_info, &key, false);
- }
- 
--static noinline_for_stack
--int find_inline_backref(struct extent_buffer *leaf, int slot,
--			unsigned long *ptr, unsigned long *end)
--{
--	struct btrfs_key key;
--	struct btrfs_extent_item *ei;
--	struct btrfs_tree_block_info *bi;
--	u32 item_size;
--
--	btrfs_item_key_to_cpu(leaf, &key, slot);
--
--	item_size = btrfs_item_size_nr(leaf, slot);
--	if (item_size < sizeof(*ei)) {
--		btrfs_print_v0_err(leaf->fs_info);
--		btrfs_handle_fs_error(leaf->fs_info, -EINVAL, NULL);
--		return 1;
--	}
--	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
--	WARN_ON(!(btrfs_extent_flags(leaf, ei) &
--		  BTRFS_EXTENT_FLAG_TREE_BLOCK));
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY &&
--	    item_size <= sizeof(*ei) + sizeof(*bi)) {
--		WARN_ON(item_size < sizeof(*ei) + sizeof(*bi));
--		return 1;
--	}
--	if (key.type == BTRFS_METADATA_ITEM_KEY &&
--	    item_size <= sizeof(*ei)) {
--		WARN_ON(item_size < sizeof(*ei));
--		return 1;
--	}
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY) {
--		bi = (struct btrfs_tree_block_info *)(ei + 1);
--		*ptr = (unsigned long)(bi + 1);
--	} else {
--		*ptr = (unsigned long)(ei + 1);
--	}
--	*end = (unsigned long)ei + item_size;
--	return 0;
--}
--
- /*
-  * build backref tree for a given tree block. root of the backref tree
-  * corresponds the tree block, leaves of the backref tree correspond
-@@ -665,10 +624,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					struct btrfs_key *node_key,
- 					int level, u64 bytenr)
- {
-+	struct btrfs_backref_iterator *iterator;
- 	struct backref_cache *cache = &rc->backref_cache;
--	struct btrfs_path *path1; /* For searching extent root */
--	struct btrfs_path *path2; /* For searching parent of TREE_BLOCK_REF */
--	struct extent_buffer *eb;
-+	struct btrfs_path *path; /* For searching parent of TREE_BLOCK_REF */
- 	struct btrfs_root *root;
- 	struct backref_node *cur;
- 	struct backref_node *upper;
-@@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	struct backref_node *exist = NULL;
- 	struct backref_edge *edge;
- 	struct rb_node *rb_node;
--	struct btrfs_key key;
--	unsigned long end;
--	unsigned long ptr;
- 	LIST_HEAD(list); /* Pending edge list, upper node needs to be checked */
- 	LIST_HEAD(useless);
- 	int cowonly;
-@@ -687,14 +642,16 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	int err = 0;
- 	bool need_check = true;
- 
--	path1 = btrfs_alloc_path();
--	path2 = btrfs_alloc_path();
--	if (!path1 || !path2) {
-+	iterator = btrfs_backref_iterator_alloc(rc->extent_root->fs_info,
-+						GFP_NOFS);
-+	if (!iterator)
-+		return ERR_PTR(-ENOMEM);
-+	path = btrfs_alloc_path();
-+	if (!path) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
--	path1->reada = READA_FORWARD;
--	path2->reada = READA_FORWARD;
-+	path->reada = READA_FORWARD;
- 
- 	node = alloc_backref_node(cache);
- 	if (!node) {
-@@ -707,25 +664,28 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	node->lowest = 1;
- 	cur = node;
- again:
--	end = 0;
--	ptr = 0;
--	key.objectid = cur->bytenr;
--	key.type = BTRFS_METADATA_ITEM_KEY;
--	key.offset = (u64)-1;
--
--	path1->search_commit_root = 1;
--	path1->skip_locking = 1;
--	ret = btrfs_search_slot(NULL, rc->extent_root, &key, path1,
--				0, 0);
-+	ret = btrfs_backref_iterator_start(iterator, cur->bytenr);
- 	if (ret < 0) {
- 		err = ret;
- 		goto out;
- 	}
--	ASSERT(ret);
--	ASSERT(path1->slots[0]);
--
--	path1->slots[0]--;
- 
-+	/*
-+	 * We skip the first btrfs_tree_block_info, as we don't use the key
-+	 * stored in it, but fetch it from the tree block.
-+	 */
-+	if (btrfs_backref_has_tree_block_info(iterator)) {
-+		ret = btrfs_backref_iterator_next(iterator);
-+		if (ret < 0) {
-+			err = ret;
-+			goto out;
-+		}
-+		/* No extra backref? This means the tree block is corrupted */
-+		if (ret > 0) {
-+			err = -EUCLEAN;
-+			goto out;
-+		}
-+	}
- 	WARN_ON(cur->checked);
- 	if (!list_empty(&cur->upper)) {
- 		/*
-@@ -747,42 +707,21 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		exist = NULL;
- 	}
- 
--	while (1) {
--		cond_resched();
--		eb = path1->nodes[0];
--
--		if (ptr >= end) {
--			if (path1->slots[0] >= btrfs_header_nritems(eb)) {
--				ret = btrfs_next_leaf(rc->extent_root, path1);
--				if (ret < 0) {
--					err = ret;
--					goto out;
--				}
--				if (ret > 0)
--					break;
--				eb = path1->nodes[0];
--			}
-+	for (; ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
-+		struct extent_buffer *eb;
-+		struct btrfs_key key;
-+		int type;
- 
--			btrfs_item_key_to_cpu(eb, &key, path1->slots[0]);
--			if (key.objectid != cur->bytenr) {
--				WARN_ON(exist);
--				break;
--			}
-+		cond_resched();
-+		eb = btrfs_backref_get_eb(iterator);
- 
--			if (key.type == BTRFS_EXTENT_ITEM_KEY ||
--			    key.type == BTRFS_METADATA_ITEM_KEY) {
--				ret = find_inline_backref(eb, path1->slots[0],
--							  &ptr, &end);
--				if (ret)
--					goto next;
--			}
--		}
-+		key.objectid = iterator->bytenr;
-+		if (btrfs_backref_iterator_is_inline_ref(iterator)) {
-+			struct btrfs_extent_inline_ref *iref;
- 
--		if (ptr < end) {
- 			/* update key for inline back ref */
--			struct btrfs_extent_inline_ref *iref;
--			int type;
--			iref = (struct btrfs_extent_inline_ref *)ptr;
-+			iref = (struct btrfs_extent_inline_ref *)
-+				iterator->cur_ptr;
- 			type = btrfs_get_extent_inline_ref_type(eb, iref,
- 							BTRFS_REF_TYPE_BLOCK);
- 			if (type == BTRFS_REF_TYPE_INVALID) {
-@@ -791,9 +730,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			}
- 			key.type = type;
- 			key.offset = btrfs_extent_inline_ref_offset(eb, iref);
--
--			WARN_ON(key.type != BTRFS_TREE_BLOCK_REF_KEY &&
--				key.type != BTRFS_SHARED_BLOCK_REF_KEY);
-+		} else {
-+			key.type = iterator->cur_key.type;
-+			key.offset = iterator->cur_key.offset;
- 		}
- 
- 		/*
-@@ -806,7 +745,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		     (key.type == BTRFS_SHARED_BLOCK_REF_KEY &&
- 		      exist->bytenr == key.offset))) {
- 			exist = NULL;
--			goto next;
-+			continue;
- 		}
- 
- 		/* SHARED_BLOCK_REF means key.offset is the parent bytenr */
-@@ -852,7 +791,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			edge->node[LOWER] = cur;
- 			edge->node[UPPER] = upper;
- 
--			goto next;
-+			continue;
- 		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
- 			err = -EINVAL;
- 			btrfs_print_v0_err(rc->extent_root->fs_info);
-@@ -860,7 +799,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					      NULL);
- 			goto out;
- 		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
--			goto next;
-+			continue;
- 		}
- 
- 		/*
-@@ -891,20 +830,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		level = cur->level + 1;
- 
- 		/* Search the tree to find parent blocks referring the block. */
--		path2->search_commit_root = 1;
--		path2->skip_locking = 1;
--		path2->lowest_level = level;
--		ret = btrfs_search_slot(NULL, root, node_key, path2, 0, 0);
--		path2->lowest_level = 0;
-+		path->search_commit_root = 1;
-+		path->skip_locking = 1;
-+		path->lowest_level = level;
-+		ret = btrfs_search_slot(NULL, root, node_key, path, 0, 0);
-+		path->lowest_level = 0;
- 		if (ret < 0) {
- 			err = ret;
- 			goto out;
- 		}
--		if (ret > 0 && path2->slots[level] > 0)
--			path2->slots[level]--;
-+		if (ret > 0 && path->slots[level] > 0)
-+			path->slots[level]--;
- 
--		eb = path2->nodes[level];
--		if (btrfs_node_blockptr(eb, path2->slots[level]) !=
-+		eb = path->nodes[level];
-+		if (btrfs_node_blockptr(eb, path->slots[level]) !=
- 		    cur->bytenr) {
- 			btrfs_err(root->fs_info,
- 	"couldn't find block (%llu) (level %d) in tree (%llu) with key (%llu %u %llu)",
-@@ -920,7 +859,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 
- 		/* Add all nodes and edges in the path */
- 		for (; level < BTRFS_MAX_LEVEL; level++) {
--			if (!path2->nodes[level]) {
-+			if (!path->nodes[level]) {
- 				ASSERT(btrfs_root_bytenr(&root->root_item) ==
- 				       lower->bytenr);
- 				if (should_ignore_root(root))
-@@ -936,7 +875,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 				goto out;
- 			}
- 
--			eb = path2->nodes[level];
-+			eb = path->nodes[level];
- 			rb_node = tree_search(&cache->rb_root, eb->start);
- 			if (!rb_node) {
- 				upper = alloc_backref_node(cache);
-@@ -993,20 +932,14 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			lower = upper;
- 			upper = NULL;
- 		}
--		btrfs_release_path(path2);
--next:
--		if (ptr < end) {
--			ptr += btrfs_extent_inline_ref_size(key.type);
--			if (ptr >= end) {
--				WARN_ON(ptr > end);
--				ptr = 0;
--				end = 0;
--			}
--		}
--		if (ptr >= end)
--			path1->slots[0]++;
-+		btrfs_release_path(path);
-+	}
-+	if (ret < 0) {
-+		err = ret;
-+		goto out;
- 	}
--	btrfs_release_path(path1);
-+	ret = 0;
-+	btrfs_backref_iterator_release(iterator);
- 
- 	cur->checked = 1;
- 	WARN_ON(exist);
-@@ -1124,8 +1057,8 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		}
- 	}
- out:
--	btrfs_free_path(path1);
--	btrfs_free_path(path2);
-+	btrfs_backref_iterator_free(iterator);
-+	btrfs_free_path(path);
- 	if (err) {
- 		while (!list_empty(&useless)) {
- 			lower = list_entry(useless.next,
--- 
-2.25.0
+> going through code I don't feel any wiser.
+>=20
 
+I see nothing extra conflicting the "shared tree blocks" part from
+btrfs_block_can_be_shared().
+
+In fact, reloc tree can only be created for trees with REF_COW bit.
+
+For tree without that bit, we go a completely different way to relocate
+them, by just cowing the path (aka the cowonly bit in build_backref_tree(=
+)).
+
+	if (root) {
+		if (test_bit(BTRFS_ROOT_REF_COWS, &root->state)) {
+			BUG_ON(node->new_bytenr);
+			BUG_ON(!list_empty(&node->list));
+			btrfs_record_root_in_trans(trans, root);
+			root =3D root->reloc_root;
+			node->new_bytenr =3D root->node->start;
+			node->root =3D root;
+			list_add_tail(&node->list, &rc->backref_cache.changed);
+		} else {
+			path->lowest_level =3D node->level;
+			ret =3D btrfs_search_slot(trans, root, key, path, 0, 1);  <<<
+			btrfs_release_path(path);
+			if (ret > 0)
+				ret =3D 0;
+		}
+
+So the "REF_COW means tree blocks can be shared" still looks pretty
+valid to me.
+
+Thanks,
+Qu
+
+
+--ezW0ZxuaLxk5zLf8ji8ycsXmNtW9gPOTn--
+
+--XHTiaAfSgKNWxvjPsENRDpYvffyooMwb5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5KO4kXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg+gwf/ZJ0Z3yXxr9LuXkzN4itT5lRL
+8EiUKy7DdNMiqymNR4/xeQLdlI8iZSoD/02BzRqWRUyVJNgiK96uE0vozIu5tXqd
+bC7Esyn+r9ytK9a9XMTFVSseWGfBw5eksjK3km4vSkl4fPCKEtBfzZOEBR2bx9Ca
+/UhcEKMUUbRbwgZuy9IK2f2XTd2XJ/8eAqNLIjS1lTerAryUlj24oW5e3c/10LlB
+FOOTtjqd0ErRIDRWKeQLiD36NGDxZ8wzREzpZRn57APje8He50htUAkohbOpubB0
+vJ12AQF7CYGlxe0IbOwxPvWyzHsYWBY7ZV3tBV7OP/X0cUTDiYF5roiulJ2ahw==
+=P28g
+-----END PGP SIGNATURE-----
+
+--XHTiaAfSgKNWxvjPsENRDpYvffyooMwb5--
