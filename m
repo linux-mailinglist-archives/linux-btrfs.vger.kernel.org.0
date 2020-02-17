@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5C7160FCC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 11:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1425A161066
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 11:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgBQKS0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 05:18:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48884 "EHLO mx2.suse.de"
+        id S1728147AbgBQKrg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 05:47:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35646 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726397AbgBQKS0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 05:18:26 -0500
+        id S1727803AbgBQKrg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 05:47:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 79EAEAFF4;
-        Mon, 17 Feb 2020 10:18:24 +0000 (UTC)
-Subject: Re: [PATCH v3 1/3] btrfs: backref: Introduce the skeleton of
- btrfs_backref_iterator
+        by mx2.suse.de (Postfix) with ESMTP id 63C65AB7F;
+        Mon, 17 Feb 2020 10:47:33 +0000 (UTC)
+Subject: Re: [PATCH v3 2/3] btrfs: backref: Implement
+ btrfs_backref_iterator_next()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200217063111.65941-1-wqu@suse.com>
- <20200217063111.65941-2-wqu@suse.com>
+ <20200217063111.65941-3-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <446b857b-691b-036a-4891-a8aa6a21e8a1@suse.com>
-Date:   Mon, 17 Feb 2020 12:18:23 +0200
+Message-ID: <e5e5ba05-2f9f-d8be-63bb-9bcd3e0c090e@suse.com>
+Date:   Mon, 17 Feb 2020 12:47:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200217063111.65941-2-wqu@suse.com>
+In-Reply-To: <20200217063111.65941-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,39 +80,89 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.02.20 г. 8:31 ч., Qu Wenruo wrote:
-> Due to the complex nature of btrfs extent tree, when we want to iterate
-> all backrefs of one extent, it involves quite a lot of work, like
-> searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
-> backrefs.
-> 
-> Normally this would result pretty complex code, something like:
->   btrfs_search_slot()
->   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
->   while (1) {	/* Loop for extent tree items */
-> 	while (ptr < end) { /* Loop for inlined items */
-> 		/* REAL WORK HERE */
-> 	}
->   next:
->   	ret = btrfs_next_item()
-> 	/* Ensure we're still at keyed item for specified bytenr */
->   }
-> 
-> The idea of btrfs_backref_iterator is to avoid such complex and hard to
-> read code structure, but something like the following:
-> 
->   iterator = btrfs_backref_iterator_alloc();
->   ret = btrfs_backref_iterator_start(iterator, bytenr);
->   if (ret < 0)
-> 	goto out;
->   for (; ; ret = btrfs_backref_iterator_next(iterator)) {
-> 	/* REAL WORK HERE */
->   }
->   out:
->   btrfs_backref_iterator_free(iterator);
-> 
-> This patch is just the skeleton + btrfs_backref_iterator_start() code.
+> This function will go next inline/keyed backref for
+> btrfs_backref_iterator infrastructure.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/backref.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/backref.h | 34 +++++++++++++++++++++++++++++++++
+>  2 files changed, 81 insertions(+)
+> 
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index 8bd5e067831c..fb0abe344851 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -2310,3 +2310,50 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
+>  	btrfs_backref_iterator_release(iterator);
+>  	return ret;
+>  }
+> +
+> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator)
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Document the return values: 0 in case there are more backerfs for the
+given bytenr or 1 in case there are'nt. And a negative value in case of
+error.
 
+> +{
+> +	struct extent_buffer *eb = btrfs_backref_get_eb(iterator);
+> +	struct btrfs_path *path = iterator->path;
+> +	struct btrfs_extent_inline_ref *iref;
+> +	int ret;
+> +	u32 size;
+> +
+> +	if (btrfs_backref_iterator_is_inline_ref(iterator)) {
+> +		/* We're still inside the inline refs */
+> +		if (btrfs_backref_has_tree_block_info(iterator)) {
+> +			/* First tree block info */
+> +			size = sizeof(struct btrfs_tree_block_info);
+> +		} else {
+> +			/* Use inline ref type to determine the size */
+> +			int type;
+> +
+> +			iref = (struct btrfs_extent_inline_ref *)
+> +				(iterator->cur_ptr);
+> +			type = btrfs_extent_inline_ref_type(eb, iref);
+> +
+> +			size = btrfs_extent_inline_ref_size(type);
+> +		}
+> +		iterator->cur_ptr += size;
+> +		if (iterator->cur_ptr < iterator->end_ptr)
+> +			return 0;
+> +
+> +		/* All inline items iterated, fall through */
+> +	}
+
+This if could be rewritten as:
+if (btrfs_backref_iterator_is_inline_ref(iterator) && iterator->cur_ptr
+< iterator->end_ptr)
+
+what this achieves is:
+
+1. Clarity that this whole branch is executed only if we are within the
+inline refs limits
+2. It also optimises that function since in the current version, after
+the last inline backref has been processed iterator->cur_ptr ==
+iterator->end_ptr. On the next call to btrfs_backref_iterator_next you
+will execute (needlessly)
+
+(struct btrfs_extent_inline_ref *) (iterator->cur_ptr);
+type = btrfs_extent_inline_ref_type(eb, iref);
+size = btrfs_extent_inline_ref_size(type);
+iterator->cur_ptr += size;
+only to fail "if (iterator->cur_ptr < iterator->end_ptr)" check and
+continue processing keyed items.
+
+As a matter of fact you will be reading past the metadata_item  since
+cur_ptr will be at the end of them and any deferences will read from the
+next item this might not cause a crash but it's still wrong.
+
+
+> +	/* We're at keyed items, there is no inline item, just go next item */
+> +	ret = btrfs_next_item(iterator->fs_info->extent_root, iterator->path);
+> +	if (ret > 0 || ret < 0)
+> +		return ret;
+
+nit: if (ret != 0) return ret;
+
+<snip>
