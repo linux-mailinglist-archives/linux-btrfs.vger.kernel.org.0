@@ -2,133 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A77B91611EE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 13:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CF8161243
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 13:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgBQMUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 07:20:38 -0500
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:42674 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbgBQMUi (ORCPT
+        id S1728414AbgBQMnS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 07:43:18 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42355 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgBQMnS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 07:20:38 -0500
-Received: by mail-vs1-f65.google.com with SMTP id b79so10174028vsd.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 04:20:37 -0800 (PST)
+        Mon, 17 Feb 2020 07:43:18 -0500
+Received: by mail-pl1-f193.google.com with SMTP id e8so6675781plt.9;
+        Mon, 17 Feb 2020 04:43:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VRtfFtJodasSOZkJzfEhzp8q5YPwqoLlezlBGXzTHEs=;
-        b=c+lRhEmARPuECub/lHGat+9qCBkxHxnK+MIgzfj47Mv2LUVrarimEWIP4qsBNX5zGH
-         Awn8o/VdraJ3g+oGhi8uDi7dv/0TmaxDs+23kk0KVhevt/GDpnjJcNHT3o2zuEddkaDI
-         ysdxj1Ss9qqMsCaZOdOv19zqYD4LO05UCP1iPhI5crsyoKYjNEzKWbMNRxsoNFxMG8B7
-         cpOdTJVVM50FpeE0Hm3SX5qdRQzsr2n5Kw1+RlAYqEixUFIFoXuIAVn/k3M4TROjyCNw
-         t/oe7DhZuN2uZht/dkFKezrQuNCTgT2wLTYrI9GWo15ig6D/5HpL9zi/y9Jb3JWvBVtr
-         MlJw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eFO35s5Ky07X/mGIAKSwzxotrlVv59NIdxN2RO+AkxA=;
+        b=ibHuOs+tSlumPgXUcfrrVYlJBsiXDuUTBSVxnVTmP9hqQKgXnZDbzvNooUZIxzTtVE
+         bm/lqTEBgYLyp0KIagkl0mZvRnu0c2oz6uja5N7B5ESS6bqnjU5I+xlCu1gUQNjxCMNC
+         ZZ49SWy4Obt3XXtDC4NLVRlQSBoogxEYRMdSgwwj2CK5HYDYRqbFseM9mUGzMNRKP07S
+         M2u5W+J1fBQ2erHxuFFAHyJGpD2IJOYoDLaC2LAWIVudPOleZb6zlAXI0Q9tDgz5IUOK
+         0633s7nCAMXLgTIoUhgyzYjmNrWgw1agPYpJNXYLGweirYhNn0GsWj7VvVJpoH4vcxtg
+         CHiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VRtfFtJodasSOZkJzfEhzp8q5YPwqoLlezlBGXzTHEs=;
-        b=E8/sZOpMrR7kozLwrOPD/EASTDHO4FM+rTyP1viY5+VVDmIO3fpQUU5WiWtIkoG0nw
-         MxmdkjsliwfPdT1g1OCJgcOo7v8ipKZ493sgxac35fwLMgIURYYrdsh76BHZ3CoBDYxb
-         pXl1ksrxIJwN5zGxm5pSiZJbqkWBRTiCNhoGXyCLVyjROYRL4dO3sjwmSBICTgRBemLz
-         7ISj5GxoQofFUN/ZzLTAMSpn4/am9nUG3SGaKAd9H0MH12VCKf8xwkTGiBcrJKNYuALf
-         A71aNab5PE1ZMAXSt6o3d6ZquO0C2BIpSzz2jLfYC8SP51hi1j9tp00Z48IyFGuJaMHK
-         mlog==
-X-Gm-Message-State: APjAAAUy6Ts417N9kxPgqcyw5Y4fkRsjkzvlq5vDOXtB7gmqhPKnrRYl
-        EurgoamsRoqZu0HPkLHDDFrMPozncuIbrautIPctrvXE
-X-Google-Smtp-Source: APXvYqyqDIRUlu7GoMZ81YPgUn0cyLYA1iAIrekJBh1zdB3Ih0uPa6SUtNcOPrDPYNKfh1/j6JFbYTBUf4PzjTCzn88=
-X-Received: by 2002:a67:ec41:: with SMTP id z1mr8242672vso.197.1581942037143;
- Mon, 17 Feb 2020 04:20:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eFO35s5Ky07X/mGIAKSwzxotrlVv59NIdxN2RO+AkxA=;
+        b=twLw47VhaMsU2G3QoDARusDnhszOzutdWRpISbe1rbiyvbFJp+KkdntwFqTcIdn9Zm
+         NyDdlOPYwjSsQgI31enbwIR45ndzNeCXAPaB0J3CnVlGnJmnt6/GNrTQfikcigPGU/KZ
+         RpV21gRYI3M7AZsp6c3Ih4OeilMTVE8w93Kvb8vM6IwOijoQzX9UfluE2EID5g9aCGE2
+         PRtk30GHbL8a+vczem8r2v+oqKWs3UpnbmGOU0CVqud/VnIfmb4wanLt5O+dvHd5uwLA
+         4ivygfYr//rxAI4w5MQvfRgGjbH0IxrGWs9IU2ijQulgBxhNeaYi7+0gwgigU8rYpotx
+         PQYA==
+X-Gm-Message-State: APjAAAWEwvr2FS1hU12i/5PVuuoVAF95knRThj7EJiwGtSOJojr5ZUM7
+        ldT1Bd5DzS7suQfUBHXvPLk=
+X-Google-Smtp-Source: APXvYqwnnMMhmoFTmrRol9eOqHqlEEC8v6ZnIMHGAI0QoHjc03ggFMzg6VbC5gVmzmHnNyZcc4RKiw==
+X-Received: by 2002:a17:902:45:: with SMTP id 63mr16112839pla.109.1581943397226;
+        Mon, 17 Feb 2020 04:43:17 -0800 (PST)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id q8sm337349pfs.161.2020.02.17.04.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2020 04:43:16 -0800 (PST)
+Date:   Mon, 17 Feb 2020 20:43:11 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: test unaligned punch hole at ENOSPC
+Message-ID: <20200217124309.GJ2697@desktop>
+References: <526051b1-4a48-fd40-c8dc-af7e1b399111@gmx.com>
+ <20200131050957.3491-1-anand.jain@oracle.com>
 MIME-Version: 1.0
-References: <20200216211221.31471-1-marcos@mpdesouza.com>
-In-Reply-To: <20200216211221.31471-1-marcos@mpdesouza.com>
-From:   Su Yue <damenly.su@gmail.com>
-Date:   Mon, 17 Feb 2020 20:20:25 +0800
-Message-ID: <CABnRu54Wub2+Oa58xK1ui3c+0XHyHBy5Y7oJMnAqyEwsc6p_8Q@mail.gmail.com>
-Subject: Re: [PATCH] progs: misc-test: 034: Call "udevmadm settle" before mount
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200131050957.3491-1-anand.jain@oracle.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 5:36 AM Marcos Paulo de Souza
-<marcos@mpdesouza.com> wrote:
->
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->
-> As seem in this issue[1], this test can fail from time to time. The
-> issue happens when a mount is issued before the new device is processed
-> by systemd-udevd, as we can see by the og bellow:
->
-> [ 2346.028809] BTRFS: device fsid 593e23af-a7e6-4360-b16a-229f415de697 devid 1 transid 6 /dev/loop10 scanned by systemd-udevd (3418)
-> [ 2346.265401] BTRFS info (device loop10): found metadata UUID change in progress flag, clearing
-> [ 2346.272474] BTRFS info (device loop10): disk space caching is enabled
-> [ 2346.277472] BTRFS info (device loop10): has skinny extents
-> [ 2346.281840] BTRFS info (device loop10): flagging fs with big metadata feature
-> [ 2346.308428] BTRFS error (device loop10): devid 2 uuid cde07de6-db7e-4b34-909e-d3db6e7c0b06 is missing
-> [ 2346.315363] BTRFS error (device loop10): failed to read the system array: -2
-> [ 2346.329887] BTRFS error (device loop10): open_ctree failed
-> failed: mount /dev/loop10 /home/marcos/git/suse/btrfs-progs/tests//mnt
-> test failed for case 034-metadata-uuid
-> make: *** [Makefile:401: test-misc] Error 1
-> [ 2346.666865] BTRFS: device fsid 593e23af-a7e6-4360-b16a-229f415de697 devid 2 transid 5 /dev/loop11 scanned by systemd-udevd (3422)
-> [ 2346.853233] BTRFS: device fsid 1c2debeb-e829-4d6b-84df-aa7c5d246fd5 devid 1 transid 7 /dev/loop6 scanned by systemd-udevd (3418)
->
-> A few moments after the test failed systemd-udevd processed the new
-> device (registered the new device under btrfs). This can be
-> tested by executing a mount after the test failed, resulting in a
-> successful mount:
->
-> mount /dev/loop10 /mnt
-> [ 2398.955254] BTRFS info (device loop10): found metadata UUID change in progress flag, clearing
-> [ 2398.959416] BTRFS info (device loop10): disk space caching is enabled
-> [ 2398.962483] BTRFS info (device loop10): has skinny extents
-> [ 2398.965070] BTRFS info (device loop10): flagging fs with big metadata feature
-> [ 2399.012617] BTRFS info (device loop10): enabling ssd optimizations
-> [ 2399.022375] BTRFS info (device loop10): checking UUID tree
->
-> This problem can be avoided is we execute "udevadm settle" before the
-> mount is executed.
->
-> [1]: https://github.com/kdave/btrfs-progs/issues/192
->
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Fri, Jan 31, 2020 at 01:09:57PM +0800, Anand Jain wrote:
+> Try to punch hole with unaligned size and offset when the FS is
+> full and mounted with nodatacow option.
+> Mainly holes are punched at locations which are unaligned
+> with the file extent boundaries when the FS is full by data.
+> As the punching holes at unaligned location will involve
+> truncating blocks instead of just dropping the extents, it shall
+> involve reserving data and metadata space for delalloc and so data
+> alloc fails as the FS is full.
+> 
+> btrfs_punch_hole()
+>  btrfs_truncate_block()
+>    btrfs_check_data_free_space() <-- ENOSPC
+> 
+> We don't fail punch hole if the holes are aligned with the file
+> extent boundaries as it shall involve just dropping the related
+> extents, without truncating data extent blocks.
+> 
+> Link: https://patchwork.kernel.org/patch/11357415/
 
-Yes, as Nikolay said, your fix in udevd way is more graceful than mine. So
+I've went through above link, and all btrfs developers involved there
+agreed to restore the original btrfs/172 case. Then I'm fine with it
+too. But we really should avoid such remove/reconstruct again,
+especially this time btrfs/172 is already taken by other test..
 
-Reviewed-by: Su Yue <Damenly_Su@gmx.com>
+Thanks,
+Eryu
 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Eryu Guan <guaneryu@gmail.com>
+> (cherry picked from commit 4c2c678cd56a81a210cb16f9f9347073e91e2fb0)
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> 
+> Conflicts:
+> 	tests/btrfs/group
 > ---
->  tests/misc-tests/034-metadata-uuid/test.sh | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/tests/misc-tests/034-metadata-uuid/test.sh b/tests/misc-tests/034-metadata-uuid/test.sh
-> index 6ac55b1c..9791285b 100755
-> --- a/tests/misc-tests/034-metadata-uuid/test.sh
-> +++ b/tests/misc-tests/034-metadata-uuid/test.sh
-> @@ -6,6 +6,7 @@ check_prereq mkfs.btrfs
->  check_prereq btrfs
->  check_prereq btrfstune
->  check_prereq btrfs-image
-> +check_global_prereq udevadm
->
->  setup_root_helper
->  prepare_test_dev
-> @@ -172,6 +173,8 @@ failure_recovery() {
->         loop1=$(run_check_stdout $SUDO_HELPER losetup --find --show "$image1")
->         loop2=$(run_check_stdout $SUDO_HELPER losetup --find --show "$image2")
->
-> +       run_check $SUDO_HELPER udevadm settle
+> Its decided to bring back this test case, now the problem is better understood
+> and the fix is available in the ML as in [Link].
+> v2: mention nodatacow option used in the testcase in the commit log.
+> 
+>  tests/btrfs/204     | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/204.out |  2 ++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 76 insertions(+)
+>  create mode 100755 tests/btrfs/204
+>  create mode 100644 tests/btrfs/204.out
+> 
+> diff --git a/tests/btrfs/204 b/tests/btrfs/204
+> new file mode 100755
+> index 000000000000..0dffb2dff40b
+> --- /dev/null
+> +++ b/tests/btrfs/204
+> @@ -0,0 +1,73 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2018 Oracle. All Rights Reserved.
+> +#
+> +# FS QA Test 204
+> +#
+> +# Test if the unaligned (by size and offset) punch hole is successful when FS
+> +# is at ENOSPC.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
 > +
->         # Mount and unmount, on trans commit all disks should be consistent
->         run_check $SUDO_HELPER mount "$loop1" "$TEST_MNT"
->         run_check $SUDO_HELPER umount "$TEST_MNT"
-> --
-> 2.25.0
->
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch
+> +_require_xfs_io_command "fpunch"
+> +
+> +_scratch_mkfs_sized $((256 * 1024 *1024)) >> $seqres.full
+> +
+> +# max_inline ensures data is not inlined within metadata extents
+> +_scratch_mount "-o max_inline=0,nodatacow"
+> +
+> +cat /proc/self/mounts | grep $SCRATCH_DEV >> $seqres.full
+> +$BTRFS_UTIL_PROG filesystem df $SCRATCH_MNT >> $seqres.full
+> +
+> +extent_size=$(_scratch_btrfs_sectorsize)
+> +unalign_by=512
+> +echo extent_size=$extent_size unalign_by=$unalign_by >> $seqres.full
+> +
+> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 $((extent_size * 10))" \
+> +					$SCRATCH_MNT/testfile >> $seqres.full
+> +
+> +echo "Fill all space available for data and all unallocated space." >> $seqres.full
+> +dd status=none if=/dev/zero of=$SCRATCH_MNT/filler bs=512 >> $seqres.full 2>&1
+> +
+> +hole_offset=0
+> +hole_len=$unalign_by
+> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +
+> +hole_offset=$(($extent_size + $unalign_by))
+> +hole_len=$(($extent_size - $unalign_by))
+> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +
+> +hole_offset=$(($extent_size * 2 + $unalign_by))
+> +hole_len=$(($extent_size * 5))
+> +$XFS_IO_PROG -c "fpunch $hole_offset $hole_len" $SCRATCH_MNT/testfile
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/204.out b/tests/btrfs/204.out
+> new file mode 100644
+> index 000000000000..ce2de3f0d107
+> --- /dev/null
+> +++ b/tests/btrfs/204.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 204
+> +Silence is golden
+> -- 
+> 1.8.3.1
+> 
