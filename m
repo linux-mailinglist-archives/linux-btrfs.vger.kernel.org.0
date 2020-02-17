@@ -2,220 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB991610CA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 12:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661E8161121
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 12:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgBQLNO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 06:13:14 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44724 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728337AbgBQLNO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 06:13:14 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01HBCimS065758;
-        Mon, 17 Feb 2020 11:13:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=sfM4yRxQV+UarcXhYNPFqqnrjr6q3Vu93VaTwG4aaVU=;
- b=ACldi618mop91bDWRScoJmnT6Fh15VmNlpZCCeTc7JdP6wtundkQAg1c8vPdqzItG+S/
- ahckL1BHpUDQCtfvC1LKwI41VzL3OT0oxd1OSzqN/dcGDJTS5mmDzGF++DGD7hSfmMGX
- i2EHl9uMERle41XXVzUeiejYltoAFQVqWRFbjmqTVaX5mlISgTPWO5e+QzS/vyO0xijs
- S3UAxE+F6aCSqhYUqt1CDrnM+PxCrNuN6LV5V+S8FXNDZ3z8GFi+8s5cNj+z33aAwF7C
- hSYZSqqkDF9EkGiGrcYFxCBKikTJQ0NGZux+lxaxJu1NFR0/GaFT8bU9fm4uU7OrX4Mr Rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2y7aq5jspe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Feb 2020 11:13:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01HBC6Fm086622;
-        Mon, 17 Feb 2020 11:13:08 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2y6t6thm03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Feb 2020 11:13:08 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01HBD724007847;
-        Mon, 17 Feb 2020 11:13:07 GMT
-Received: from tp.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Feb 2020 03:13:07 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, dsterba@suse.com
-Subject: [PATCH v5 5/5] btrfs: introduce new read_policy device
-Date:   Mon, 17 Feb 2020 19:12:45 +0800
-Message-Id: <1581937965-16569-6-git-send-email-anand.jain@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1581937965-16569-1-git-send-email-anand.jain@oracle.com>
-References: <1581937965-16569-1-git-send-email-anand.jain@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9533 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 bulkscore=0 spamscore=0 suspectscore=1 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002170097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9533 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
- spamscore=0 priorityscore=1501 suspectscore=1 clxscore=1015 bulkscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002170097
+        id S1728928AbgBQL35 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 06:29:57 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38885 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728926AbgBQL34 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 06:29:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581938990;
+        bh=h0kzELxuH2CQbFn+62LHDHuj4+MbKdIzBbDifYfopbc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=iS+2t3asZYkBXBX++3ZsuKRNVEGBZEZ+nomrRoPFX6Z0BKOQgKptGk5nKQ7fZLA8w
+         WqnxXREObU9ay2jvl+SoYO4AX6FqLMncz8KLwH8Lvp1wXAc/kAGKKznfGsMZw3845c
+         oEbEVywJIaGuv8wHEujVkEJxNkhYbanzMrBwFdqI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXXyP-1ixkv41LPb-00Ywnu; Mon, 17
+ Feb 2020 12:29:50 +0100
+Subject: Re: [PATCH v3 2/3] btrfs: backref: Implement
+ btrfs_backref_iterator_next()
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200217063111.65941-1-wqu@suse.com>
+ <20200217063111.65941-3-wqu@suse.com>
+ <e5e5ba05-2f9f-d8be-63bb-9bcd3e0c090e@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <2cee1b97-b6a3-bffd-8cb0-cb7d903497ca@gmx.com>
+Date:   Mon, 17 Feb 2020 19:29:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
+MIME-Version: 1.0
+In-Reply-To: <e5e5ba05-2f9f-d8be-63bb-9bcd3e0c090e@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:en2syb0ScueBX1CfYpm/HYcj7J3/u7ameP7oR6PJAgmYC+JfBRm
+ aTGwJMYDXeuEAbC97E1SXwJ7axqNMt4HCuiPEDgKseEIg5DexAlj3dgk3HKO8WQzP20Fb5F
+ 7NzC7YqJtxlO3ZpEFA1KwrfBAcIQexzJN9ljhDgjE36m/G8XnPz6lQfCkvyaiYG5cRsEDDk
+ 208BYpwV+6DCB05PHOVxQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yq4/bqQZeh0=:cX4XUer+vVIiUUIq7aY5vZ
+ 1Lj958j94lKxHdvk4Rlgf4hw+mPJ4kI+qucbT86O8zQbgadfnw27IzC6ojO9Nr+kMHDQdcT9T
+ 1IIkusevFGuy20jnZVly7czrF/maPhS/XJfDPn2Nam4SjRtyB87rbXFF9VRRNdbz1PKWiYw0B
+ KL50CxCLpDowfCz2T/iPIXHrueqPsJcIu/YeUiRU2XLtsHKG7bXJOOtrMTV3abwwtbtO6iXB3
+ CgUgGkOXSyT7jE0YxYi0uX9C5/30L8qAL2+sy0G1Q7geAMOmYUu7nMe8TUoEAWDo2Azhopvpr
+ 4FV9wjF1z2XX1a5+yFnCbVYMU9YH7BngKKKd3BZ/tGIQTRqSZw6Ioly2+XwtXNj6c0cy7ezLL
+ ztu/z9BpDdEtCb/Cduk4Wpo1qkS9vjc7/FHB1SMqQkcoAPSDBddKy2Xm9ibKfubAa2iju14mr
+ OtrbjecJ8uu0+XPBFzBgUHCJfk18ZcPJsB4GTBXLGr6gYtyKe81AQs6PEIm8FahofFP0MUZF/
+ yS2jv3G0S3xi1PRgBbNjhydwP1eTBlatYAyeCk0GhCzr1vl+aNc1UjiBHVM21jf39PXl0QUSz
+ ApfKP7j/y7rPPRyPdpsQCnLUeZVaYpDKUhMeuAiQt9+LsQ/jW90MRIb/0+VQQWaFC+T2L/4Fn
+ fFC/xDCGiQC0gInY8vtCrDANJ9MrZdyQJNgI4AYUYF55bvBKVrSfgpDYwP4DCr7C/umBtdF/Z
+ 8vQPOhDVU9HcSIMEFziqNqLbtWlkhsjVOmJp/zQIKKfxg8c1tJt3PYTnALE1OqCTHVi5w8Lrz
+ drFWKKfTzF8ypZQhStAqE2k0Sq8snkteu7c+MD7sDC/PZX4j+pHMV31NS9c/s+zT0PirHk86d
+ ST54BPrsbPpmxe3FtfdZzjrit25OPlX5SzUdGQ7J20zXPublDlTIgfcCaLdHyi4fKjVi6goAa
+ xrTaNFQ2cO822deufqKqyvm3PoTLc4wZ2XCjdzVAI3HVsLjY+KEXajpNQ9tW73RvLCFaA+xrk
+ QPUfpDc6uI5YqS4nHkWk62feFwH4vzEL5nbwIwfZbAcrsR0bkcVuUPB4H+iwsYOkNDm/kSec0
+ 0Tv6VnVtfZBy8jrDT8dRbHL9bwxW8H6ZeWcU3WWETfMrsFMw+i8dR6bgbYokoBo5YiwlZGarX
+ Q/phnRqfPbJhZM6KfI/Xy8ULqPy5sjE4r2HbAXp8kO1pmgxaZ7QRPRMN+NpriJK5TDX0RXUTe
+ xJrwGDyJSXDYqDMlF
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A new read policy 'device' is introduced with this patch, which when set
-can pick the read_preferred device for reading. This tunable is for
-advance users who knows what they are doing so that they have the
-flexibility of making sure that reads are read from the device they
-prefer.
 
-For example:
 
-$ cat /sys/fs/btrfs/UUID/read_policy
-[pid] device
+On 2020/2/17 =E4=B8=8B=E5=8D=886:47, Nikolay Borisov wrote:
+>
+>
+> On 17.02.20 =D0=B3. 8:31 =D1=87., Qu Wenruo wrote:
+>> This function will go next inline/keyed backref for
+>> btrfs_backref_iterator infrastructure.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/backref.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/backref.h | 34 +++++++++++++++++++++++++++++++++
+>>  2 files changed, 81 insertions(+)
+>>
+>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+>> index 8bd5e067831c..fb0abe344851 100644
+>> --- a/fs/btrfs/backref.c
+>> +++ b/fs/btrfs/backref.c
+>> @@ -2310,3 +2310,50 @@ int btrfs_backref_iterator_start(struct btrfs_ba=
+ckref_iterator *iterator,
+>>  	btrfs_backref_iterator_release(iterator);
+>>  	return ret;
+>>  }
+>> +
+>> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterato=
+r)
+>
+> Document the return values: 0 in case there are more backerfs for the
+> given bytenr or 1 in case there are'nt. And a negative value in case of
+> error.
+>
+>> +{
+>> +	struct extent_buffer *eb =3D btrfs_backref_get_eb(iterator);
+>> +	struct btrfs_path *path =3D iterator->path;
+>> +	struct btrfs_extent_inline_ref *iref;
+>> +	int ret;
+>> +	u32 size;
+>> +
+>> +	if (btrfs_backref_iterator_is_inline_ref(iterator)) {
+>> +		/* We're still inside the inline refs */
+>> +		if (btrfs_backref_has_tree_block_info(iterator)) {
+>> +			/* First tree block info */
+>> +			size =3D sizeof(struct btrfs_tree_block_info);
+>> +		} else {
+>> +			/* Use inline ref type to determine the size */
+>> +			int type;
+>> +
+>> +			iref =3D (struct btrfs_extent_inline_ref *)
+>> +				(iterator->cur_ptr);
+>> +			type =3D btrfs_extent_inline_ref_type(eb, iref);
+>> +
+>> +			size =3D btrfs_extent_inline_ref_size(type);
+>> +		}
+>> +		iterator->cur_ptr +=3D size;
+>> +		if (iterator->cur_ptr < iterator->end_ptr)
+>> +			return 0;
+>> +
+>> +		/* All inline items iterated, fall through */
+>> +	}
+>
+> This if could be rewritten as:
+> if (btrfs_backref_iterator_is_inline_ref(iterator) && iterator->cur_ptr
+> < iterator->end_ptr)
+>
+> what this achieves is:
+>
+> 1. Clarity that this whole branch is executed only if we are within the
+> inline refs limits
+> 2. It also optimises that function since in the current version, after
+> the last inline backref has been processed iterator->cur_ptr =3D=3D
+> iterator->end_ptr. On the next call to btrfs_backref_iterator_next you
+> will execute (needlessly)
+>
+> (struct btrfs_extent_inline_ref *) (iterator->cur_ptr);
+> type =3D btrfs_extent_inline_ref_type(eb, iref);
+> size =3D btrfs_extent_inline_ref_size(type);
+> iterator->cur_ptr +=3D size;
+> only to fail "if (iterator->cur_ptr < iterator->end_ptr)" check and
+> continue processing keyed items.
+>
+> As a matter of fact you will be reading past the metadata_item  since
+> cur_ptr will be at the end of them and any deferences will read from the
+> next item this might not cause a crash but it's still wrong.
 
-$echo 1 > /sys/fs/btrfs/UUID/devinfo/1/read_preferred
+This shouldn't happen, as we must ensure the cur_ptr < item_end for caller=
+s.
 
-$echo device > /sys/fs/btrfs/UUID/read_policy
+For the _next() call, the check after increased cur_ptr check it's OK.
 
-$cat /sys/fs/btrfs/UUID/read_policy
-pid [device]
+But it's a problem for _start() call, as we may have a case where an
+EXTENT_ITEM/METADATA_ITEM has no inlined ref.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v5: born
+I'll fix this in next version.
 
- fs/btrfs/sysfs.c   | 26 +++++++++++++++++++++++++-
- fs/btrfs/volumes.c | 36 ++++++++++++++++++++++++++++++++++--
- fs/btrfs/volumes.h |  1 +
- 3 files changed, 60 insertions(+), 3 deletions(-)
+Thanks,
+Qu
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 638ce3f4abe3..e142a31c62e7 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -832,7 +832,8 @@ static int btrfs_strmatch(const char *given, const char *golden)
- 	return -EINVAL;
- }
- 
--static const char* const btrfs_read_policy_name[] = { "pid" };
-+/* Must follow the order as in enum btrfs_read_policy */
-+static const char* const btrfs_read_policy_name[] = { "pid", "device" };
- 
- static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 				      struct kobj_attribute *a, char *buf)
-@@ -857,6 +858,25 @@ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 	return ret;
- }
- 
-+static bool btrfs_has_read_pref_device(struct btrfs_fs_devices *fs_devices)
-+{
-+	struct btrfs_device *device;
-+
-+	/*
-+	 * rcu is good enough. If read preferred device is deleted by another
-+	 * thread, the find_live_mirror will reset the policy to default.
-+	 */
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
-+		if (test_bit(BTRFS_DEV_STATE_READ_PREFERRED,
-+			     &device->dev_state))
-+			return true;
-+	}
-+	rcu_read_unlock();
-+
-+	return false;
-+}
-+
- static ssize_t btrfs_read_policy_store(struct kobject *kobj,
- 				       struct kobj_attribute *a,
- 				       const char *buf, size_t len)
-@@ -866,6 +886,10 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
- 
- 	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
- 		if (btrfs_strmatch(buf, btrfs_read_policy_name[i]) == 0) {
-+			if (i == BTRFS_READ_POLICY_DEVICE &&
-+			    ! btrfs_has_read_pref_device(fs_devices))
-+					return -EINVAL;
-+
- 			if (i != fs_devices->read_policy) {
- 				fs_devices->read_policy = i;
- 				btrfs_info(fs_devices->fs_info,
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b6efb87bb0ae..53020699c6cc 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5341,6 +5341,25 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- 	return ret;
- }
- 
-+static int btrfs_find_read_preferred(struct map_lookup *map, int num_stripe)
-+{
-+	int i;
-+
-+	/*
-+	 * If there are more than one read preferred devices, then just pick the
-+	 * first found read preferred device as of now. Once we have the Qdepth
-+	 * based device selection, we could pick the least busy device among the
-+	 * read preferred devices.
-+	 */
-+	for (i = 0; i < num_stripe; i++) {
-+		if (test_bit(BTRFS_DEV_STATE_READ_PREFERRED,
-+			     &map->stripes[i].dev->dev_state))
-+			return i;
-+        }
-+
-+	return -EINVAL;
-+}
-+
- static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 			    struct map_lookup *map, int first,
- 			    int dev_replace_is_ongoing)
-@@ -5360,15 +5379,28 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 		num_stripes = map->num_stripes;
- 
- 	switch (fs_info->fs_devices->read_policy) {
-+	case BTRFS_READ_POLICY_DEVICE:
-+		preferred_mirror = btrfs_find_read_preferred(map, num_stripes);
-+		if (preferred_mirror != -EINVAL) {
-+			preferred_mirror = first + preferred_mirror;
-+			break;
-+		}
-+		/* Reset the read_policy to the default */
-+		fs_info->fs_devices->read_policy = BTRFS_READ_POLICY_PID;
-+		btrfs_warn_rl(fs_info,
-+		      "No read preferred device found, fallback to default");
-+		/* Fall through if there isn't any read preferred device */
-+	case BTRFS_READ_POLICY_PID:
-+		preferred_mirror = first + current->pid % num_stripes;
-+		break;
- 	default:
- 		/*
- 		 * Shouldn't happen, just warn and use pid instead of failing.
- 		 */
-+		preferred_mirror = first + current->pid % num_stripes;
- 		btrfs_warn_rl(fs_info,
- 			      "unknown read_policy type %u, fallback to pid",
- 			      fs_info->fs_devices->read_policy);
--	case BTRFS_READ_POLICY_PID:
--		preferred_mirror = first + current->pid % num_stripes;
- 	}
- 
- 	if (dev_replace_is_ongoing &&
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 07962a0ce898..9c3c6ba7aad5 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -216,6 +216,7 @@ struct btrfs_device {
-  */
- enum btrfs_read_policy {
- 	BTRFS_READ_POLICY_PID,
-+	BTRFS_READ_POLICY_DEVICE,
- 	BTRFS_NR_READ_POLICY,
- };
- 
--- 
-1.8.3.1
-
+>
+>
+>> +	/* We're at keyed items, there is no inline item, just go next item *=
+/
+>> +	ret =3D btrfs_next_item(iterator->fs_info->extent_root, iterator->pat=
+h);
+>> +	if (ret > 0 || ret < 0)
+>> +		return ret;
+>
+> nit: if (ret !=3D 0) return ret;
+>
+> <snip>
+>
