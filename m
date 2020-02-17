@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A52AC160A6F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 07:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A4F160A70
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 07:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgBQGbZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 01:31:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46218 "EHLO mx2.suse.de"
+        id S1726492AbgBQGb3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 01:31:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46228 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726401AbgBQGbZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 01:31:25 -0500
+        id S1725873AbgBQGb3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 01:31:29 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6464CAD21
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 06:31:23 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id CB75DAAC2
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Feb 2020 06:31:26 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/3] Btrfs: relocation: Refactor build_backref_tree() using btrfs_backref_iterator infrastructure
-Date:   Mon, 17 Feb 2020 14:31:08 +0800
-Message-Id: <20200217063111.65941-1-wqu@suse.com>
+Subject: [PATCH v3 1/3] btrfs: backref: Introduce the skeleton of btrfs_backref_iterator
+Date:   Mon, 17 Feb 2020 14:31:09 +0800
+Message-Id: <20200217063111.65941-2-wqu@suse.com>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200217063111.65941-1-wqu@suse.com>
+References: <20200217063111.65941-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,100 +30,181 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is part 1 of the incoming refactor patches for build_backref_tree()
+Due to the complex nature of btrfs extent tree, when we want to iterate
+all backrefs of one extent, it involves quite a lot of work, like
+searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+backrefs.
 
-[THE PLAN]
-The overall plan of refactoring build_backref_tree() is:
-- Refactor how we iterate through backref items
-  This patchset, the smallest I guess.
-
-- Make build_backref_tree() easier to read.
-  In short, that function is doing breadth-first-search to build a map
-  which starts from one tree block, to all root nodes referring it.
-
-  It involves backref iteration part, and a lot of backref cache only
-  works.
-  At least I hope to make this function less bulky and more structured.
-
-- Make build_backref_tree() independent from relocation
-  The hardest I guess.
-
-  Current it even accepts reloc_control as its first parameter.
-  Don't have a clear plan yet, but I guess at least I should make
-  build_backref_tree() to do some more coverage, other than taking
-  certain relocation-dependent shortcut.
-
-[THIS PATCHSET]
-For the patchset itself, the main purpose is to change how we iterate
-through all backref items of one tree block.
-
-The old way:
-
-  path->search_commit_root = 1;
-  path->skip_locking = 1;
-  ret = btrfs_search_slot(NULL, extent_root, path, &key, 0, 0);
-  ptr = btrfs_item_offset_nr()
-  end = btrfs_item_end_nr()
-  /* Inline item loop */
-  while (ptr < end) {
-	/* Handle each inline item here */
+Normally this would result pretty complex code, something like:
+  btrfs_search_slot()
+  /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+  while (1) {	/* Loop for extent tree items */
+	while (ptr < end) { /* Loop for inlined items */
+		/* REAL WORK HERE */
+	}
+  next:
+  	ret = btrfs_next_item()
+	/* Ensure we're still at keyed item for specified bytenr */
   }
-  while (1) {
-  	ret = btrfs_next_item();
-	btrfs_item_key_to_cpu()
-	if (key.objectid != bytenr ||
-	    !(key.type == XXX || key.type == YYY)) 
-		break;
-	/* Handle each keyed item here */
-  }
-  
-The new way:
+
+The idea of btrfs_backref_iterator is to avoid such complex and hard to
+read code structure, but something like the following:
 
   iterator = btrfs_backref_iterator_alloc();
-  for (ret = btrfs_backref_iterator_start(iterator, bytenr);
-       ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
-	/*
-	 * Handle both keyed and inlined item here.
-	 *
-	 * We can use iterator->key to determine if it's inlined or
-	 * keyed.
-	 * Even for inlined item, it can be easily converted to keyed
-	 * item, just like we did in build_backref_tree().
-	 */
+  ret = btrfs_backref_iterator_start(iterator, bytenr);
+  if (ret < 0)
+	goto out;
+  for (; ; ret = btrfs_backref_iterator_next(iterator)) {
+	/* REAL WORK HERE */
   }
+  out:
+  btrfs_backref_iterator_free(iterator);
 
-Currently, only build_backref_tree() can utilize this infrastructure.
+This patch is just the skeleton + btrfs_backref_iterator_start() code.
 
-Backref.c has more requirement, as it needs to handle iteration for both
-data and metadata, both commit root and current root.
-And more importantly, backref.c uses depth first search, thus not a
-perfect match for btrfs_backref_iterator.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/backref.c | 58 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/backref.h | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 120 insertions(+)
 
-Extra naming suggestion is welcomed.
-The current naming, btrfs_backref_iterator_* looks pretty long to me
-already.
-Shorter naming would be much better.
-
-Changelog:
-v2:
-- Fix a completion bug in btrfs_backref_iterator_next()
-  It should be btrfs_extent_inline_ref_type().
-
-v3:
-- Comment and commit message update
-- Move helper definitions to where they get first used
-- Use helpers to replace some internal open code
-
-Qu Wenruo (3):
-  btrfs: backref: Introduce the skeleton of btrfs_backref_iterator
-  btrfs: backref: Implement btrfs_backref_iterator_next()
-  btrfs: relocation: Use btrfs_backref_iterator infrastructure
-
- fs/btrfs/backref.c    | 105 +++++++++++++++++++++++
- fs/btrfs/backref.h    |  96 +++++++++++++++++++++
- fs/btrfs/relocation.c | 195 ++++++++++++++----------------------------
- 3 files changed, 265 insertions(+), 131 deletions(-)
-
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index e5d85311d5d5..8bd5e067831c 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2252,3 +2252,61 @@ void free_ipath(struct inode_fs_paths *ipath)
+ 	kvfree(ipath->fspath);
+ 	kfree(ipath);
+ }
++
++int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
++				 u64 bytenr)
++{
++	struct btrfs_fs_info *fs_info = iterator->fs_info;
++	struct btrfs_path *path = iterator->path;
++	struct btrfs_extent_item *ei;
++	struct btrfs_key key;
++	int ret;
++
++	key.objectid = bytenr;
++	key.type = BTRFS_METADATA_ITEM_KEY;
++	key.offset = (u64)-1;
++
++	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
++	if (ret < 0)
++		return ret;
++	if (ret == 0) {
++		ret = -EUCLEAN;
++		goto release;
++	}
++	if (path->slots[0] == 0) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		ret = -EUCLEAN;
++		goto release;
++	}
++	path->slots[0]--;
++
++	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
++	if (!(key.type == BTRFS_EXTENT_ITEM_KEY ||
++	      key.type == BTRFS_METADATA_ITEM_KEY) || key.objectid != bytenr) {
++		ret = -ENOENT;
++		goto release;
++	}
++	memcpy(&iterator->cur_key, &key, sizeof(key));
++	iterator->end_ptr = btrfs_item_end_nr(path->nodes[0], path->slots[0]);
++	iterator->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
++						   path->slots[0]);
++	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
++			    struct btrfs_extent_item);
++
++	/*
++	 * Only support iteration on tree backref yet.
++	 *
++	 * This is extra precaustion for non skinny-metadata, where
++	 * EXTENT_ITEM is also used for tree blocks, that we can only use
++	 * extent flags to determine if it's a tree block.
++	 */
++	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA) {
++		ret = -ENOTTY;
++		goto release;
++	}
++	iterator->cur_ptr = iterator->item_ptr + sizeof(*ei);
++	return 0;
++release:
++	btrfs_backref_iterator_release(iterator);
++	return ret;
++}
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 777f61dc081e..fa73f02f14f6 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -74,4 +74,66 @@ struct prelim_ref {
+ 	u64 wanted_disk_byte;
+ };
+ 
++/*
++ * Helper structure to help iterate backrefs of one extent.
++ *
++ * Now it only supports iteration for tree block in commit root.
++ */
++struct btrfs_backref_iterator {
++	u64 bytenr;
++	struct btrfs_path *path;
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_key cur_key;
++	unsigned long item_ptr;
++	unsigned long cur_ptr;
++	unsigned long end_ptr;
++};
++
++static inline struct btrfs_backref_iterator *
++btrfs_backref_iterator_alloc(struct btrfs_fs_info *fs_info, gfp_t gfp_flag)
++{
++	struct btrfs_backref_iterator *ret;
++
++	ret = kzalloc(sizeof(*ret), gfp_flag);
++	if (!ret)
++		return NULL;
++
++	ret->path = btrfs_alloc_path();
++	if (!ret) {
++		kfree(ret);
++		return NULL;
++	}
++
++	/* Current backref iterator only supports iteration in commit root */
++	ret->path->search_commit_root = 1;
++	ret->path->skip_locking = 1;
++	ret->path->reada = READA_FORWARD;
++	ret->fs_info = fs_info;
++
++	return ret;
++}
++
++static inline void btrfs_backref_iterator_free(
++		struct btrfs_backref_iterator *iterator)
++{
++	if (!iterator)
++		return;
++	btrfs_free_path(iterator->path);
++	kfree(iterator);
++}
++
++int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
++				 u64 bytenr);
++
++static inline void
++btrfs_backref_iterator_release(struct btrfs_backref_iterator *iterator)
++{
++	iterator->bytenr = 0;
++	iterator->item_ptr = 0;
++	iterator->cur_ptr = 0;
++	iterator->end_ptr = 0;
++	btrfs_release_path(iterator->path);
++	memset(&iterator->cur_key, 0, sizeof(iterator->cur_key));
++}
++
+ #endif
 -- 
 2.25.0
 
