@@ -2,173 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66880160F4C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 10:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5C7160FCC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 11:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbgBQJxO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 04:53:14 -0500
-Received: from mout.gmx.net ([212.227.17.22]:53261 "EHLO mout.gmx.net"
+        id S1729182AbgBQKS0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 05:18:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48884 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbgBQJxN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 04:53:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581933189;
-        bh=XieleQsLlNm3lvzBqZ95OS4fQCofivGJhBCNx2TTzy4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QEdE8BJx/52CRhZGsEIY38VMePUIlApxZVxMit2Bk/hzEsViQSON9B5EZbSa7O6Gk
-         IXMcqxZVejX5DRXmMPj68s4aDgQ7OEJoXhTDiGz9X8Yh7595wwaRjM5Vbb3741FgYD
-         LhflyVABjtYNBzBwRCuz+gy7TBBMwjhYDPYsrR0c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4Qwg-1jUc8Q2eQA-011UrG; Mon, 17
- Feb 2020 10:53:09 +0100
-Subject: Re: [PATCH v3 0/3] btrfs: Make balance cancelling response faster
-To:     Graham Cobb <g.btrfs@cobb.uk.net>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200217061654.65567-1-wqu@suse.com>
- <d4161c6c-7629-3d64-fdf9-51a8841b193b@cobb.uk.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <efb5f007-7d25-468e-6b35-329a9e625dfe@gmx.com>
-Date:   Mon, 17 Feb 2020 17:53:03 +0800
+        id S1726397AbgBQKS0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 05:18:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 79EAEAFF4;
+        Mon, 17 Feb 2020 10:18:24 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iterator
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200217063111.65941-1-wqu@suse.com>
+ <20200217063111.65941-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <446b857b-691b-036a-4891-a8aa6a21e8a1@suse.com>
+Date:   Mon, 17 Feb 2020 12:18:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <d4161c6c-7629-3d64-fdf9-51a8841b193b@cobb.uk.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="KQoFB5wIvIieQ4mxVzeaoqZPyceDooo1a"
-X-Provags-ID: V03:K1:bHeaFCYptT84CR2Sg3SZ7znapLC9Ie7OasUkwJqJfKUcVe/sxT0
- WewoviA3HrLB24IzALapxZ7bMuRy3bo2RUO/cKcGfq2IheuIOFbpheOFHts4RGKE0VYHZ8M
- 03FtLQ8MTHBLQY7xlL4BrIbV2b4ZviKuGlDuO9ASdJc0Fjkvl2dCpkmkan18jHV6jOQutRV
- g+rgBs8bURk976ql6EjAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HIJWQmmiw7o=:cmF/yf7PtkybRAhLQllI7o
- gNQzVKFY/pKBjrePWXPZyIiVqVlK9Zgg6jiElpmDqO2LNFRmEJqSoa4SyPpz/QjS2idqiWLUu
- EvVP2BD/gpoSFadTDpAUnNTVk9tqWPvtI14WtSJAmW9ChkVgE8bJGW6xFM7LVlNHpSkfXEv/N
- 9WQnWXdyYqhVOolbQ9cpQ2IyZ7FK73WveXNtGuKJ/qicEquorpl1YFysSCu/FmTS94CVrHOD3
- NpyOGGiOIP44CcWsNEfJV0lu03XKxARlAII1A4BRqeGVlfJGOF6kUYPtismaIGUOE3CbnSNPj
- FU/YclIiK7/ivCL1IKbIqBAypr8GAveYSBy8uNY4SI7HnXDV9EmqvICYdYQYcNWFYK+m9DFz7
- Bd14VyErmTmPGZGYJ/qzCxTrFhmYQVdfWq5UqFRxOEtLlgk1SVlJAaKx1qJD4YK6+CB2F3+TE
- rN5NpAeGbOEnFChFGOHDq4HOLH2oa2+shknCV0/hVjZLcpVVPOjhldJUNMMPi610uKOYsh2Uo
- NStf8eeZxpw/KT4+8J5XS0MUZzD6e6/M9f6H/qvUX6uMd1erUHbHWoysCX9cchT4fW6V9FUuB
- lRfbhltW6XM2+NT2PW82A08GpOgHH5g3JB0I2hABhMS6bYK6whwqEqoCOP2sLg7d1nBbyKjcB
- yPdSmCja5IHOi3miXbvXqWK+zQextxX6Jz82YTGJDmCBnOUGn3K5wE8osO3w8OAPw+JyFW5En
- /YyF5GiVwlLWQ7wYsVo2qE59cougi2yYiUEwYs+UWGtkifyf5I6CZV4cwIQEg1KDJJBzWuZpW
- iCNrCBgAqndXB5FOEEEhbi12V+IPuPOcS1G6rfCt4cdPcGF9uuAcMrFfVR+jLr5S8/BjCuN23
- CQLpp7lqnLFovXO6ecMy4D1ot0tttzmpztuLMh7geUtOpA9TPcdEtHVALdgOPxuoQC/kVNj11
- HZVBVS3cSODGoUl+ZpH9sXicqiuqKOfw1w9IUG17KDxVm2VVDlCPhMaiVfe5wDh+H1ZBNNmzM
- 6+KEZy6nqyBeobvImpOuVgn9BhB5kAtMoDI/dHr4URR5rKVvOCEkIhVG/tLsrqIpK4eiiWKrl
- JpMZ3jDgQzhbQQqDtSD9IfofeEjfaZITYZyWb0VS6q/QvG16JesErW9Dmlpcqs5gFEt9pdEZh
- jwVAcHYjpPsAuOqArzlklvNUgDXJnI5jGmWEtebkUJPIRb9dtftOA1JW2mcyl0Gph+hhuqwsP
- GB44OzGsEDo8S857d
+In-Reply-To: <20200217063111.65941-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KQoFB5wIvIieQ4mxVzeaoqZPyceDooo1a
-Content-Type: multipart/mixed; boundary="fMl1LfwGDKJFQt5tXVpN7PUVcrDgulIDq"
-
---fMl1LfwGDKJFQt5tXVpN7PUVcrDgulIDq
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 17.02.20 г. 8:31 ч., Qu Wenruo wrote:
+> Due to the complex nature of btrfs extent tree, when we want to iterate
+> all backrefs of one extent, it involves quite a lot of work, like
+> searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+> backrefs.
+> 
+> Normally this would result pretty complex code, something like:
+>   btrfs_search_slot()
+>   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+>   while (1) {	/* Loop for extent tree items */
+> 	while (ptr < end) { /* Loop for inlined items */
+> 		/* REAL WORK HERE */
+> 	}
+>   next:
+>   	ret = btrfs_next_item()
+> 	/* Ensure we're still at keyed item for specified bytenr */
+>   }
+> 
+> The idea of btrfs_backref_iterator is to avoid such complex and hard to
+> read code structure, but something like the following:
+> 
+>   iterator = btrfs_backref_iterator_alloc();
+>   ret = btrfs_backref_iterator_start(iterator, bytenr);
+>   if (ret < 0)
+> 	goto out;
+>   for (; ; ret = btrfs_backref_iterator_next(iterator)) {
+> 	/* REAL WORK HERE */
+>   }
+>   out:
+>   btrfs_backref_iterator_free(iterator);
+> 
+> This patch is just the skeleton + btrfs_backref_iterator_start() code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-On 2020/2/17 =E4=B8=8B=E5=8D=885:39, Graham Cobb wrote:
-> On 17/02/2020 06:16, Qu Wenruo wrote:
-> ...
->> [FIX]
->> This patchset will add more cancelling check points, to make cancellin=
-g
->> faster.
->=20
-> I have a question on what this means for users of the balance ioctl.
->=20
-> I *think* that, today, there is a guarantee that if I issue the ioctl t=
-o
-> start a balance, and then immediately (or, some time later) cancel it, =
-I
-> will be guaranteed that at least one block group will be balanced.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-Nope, even for the original behavior.
-
-The original check happens before we relocate one block group, so even
-for the old behavior, you can still cancel the balance before it even
-starts.
-
-
-> In
-> particular, if I repeat that behaviour, the balance will eventually
-> complete.
->=20
-> Is that true?
->=20
-> If so, what happens to this guarantee with these changes?
->=20
-> I think, from your description, that the cancel can complete without
-> even one block group being balanced. Is it guaranteed to have made
-> progress on that bg so that if I repeat the behaviour that bg (and
-> eventually all eligible bgs) will be balanced? Or is it now possible to=
-
-> cancel before any progress has been made sp that process never finishes=
-?
->=20
-> If the latter, how long do I have to wait before cancelling to make sur=
-e
-> that progress has been made? Is there any way to know whether progress
-> has been made when the ioctl completes with the cancelled status?
-
-The ioctl itself already has the status recording how many block group
-has been relocated, and the bytenr of the last relocated block group.
-These behaviors haven't been changed by this patchset.
-
-
-
-Thanks,
-Qu
-
->=20
-> This is a real question because I have some filesystems where balancing=
-
-> a single block group can sometimes take tens of minutes, and the system=
-
-> is impacted during that time. I already have my btrfs-balance-slowly
-> script which allows me to control impact by not trying to balance the
-> next bg for a while, so the system can recover and progress other tasks=
-=2E
-> And it would be great to be able to limit the impact further by
-> cancelling during a single bg, but only if I can be sure that progress
-> has been made and that by repeating the process I am guaranteed that it=
-
-> will eventually finish.
->=20
-> In any case, I suggest that the patch cover letter (and maybe code
-> comments) explains what guarantees (if any) userspace is given.
->=20
-> Graham
->=20
-
-
---fMl1LfwGDKJFQt5tXVpN7PUVcrDgulIDq--
-
---KQoFB5wIvIieQ4mxVzeaoqZPyceDooo1a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5KYoAXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjIZwf8CRnUoFgNwTNI5xN/6wFDyTY+
-nWB8Jgsgnwn4pYE/mwhDSpXFVIdNmxP/luRviNa8ic/wRGrWEE5Idr/M8r3D7a9A
-zLBE7NTclyA8kZ5k62GrmfAQzZzVk/YbPY1rWNt9SK57hD/8XUgTB4Gr1bx1OqVD
-Dvn1eLROxlWLrzJtwpFyvY3brt9NfBTuZeqqgfxIik0KLuL8nJXG+5VFPqWW2wxU
-PpJMaPwb/YissH8l6t5SuovXgGnj2BM4StaEGBn12ftmdjzRSmtxqWLZmsM8WKZc
-VwBUMbD93S6/6otYdQJqcVlvsgubpi5BK5JKPEam2MxxGkFcsqA3TpaDa8g4GQ==
-=VTBH
------END PGP SIGNATURE-----
-
---KQoFB5wIvIieQ4mxVzeaoqZPyceDooo1a--
