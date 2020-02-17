@@ -2,142 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB98161814
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 17:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007B416195C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 19:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgBQQia (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 11:38:30 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52256 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728935AbgBQQia (ORCPT
+        id S1729315AbgBQSFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 13:05:15 -0500
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:57920 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgBQSFP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 11:38:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581957508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xrwhq1ZkGCeVkJgDZm7aKusobjUIkFeIngZsha42Tis=;
-        b=RI32SMksS/ILz45ayWKb+ZwFz0soyoy5uDAg5wb938UgfQ1LBN6QvQS/p0WovgTGw/tZ1i
-        EJZf0CsoZjHAVv6ViuFHZTn5A+DiZwFW1XA+S6ZC3ZgfQUEKhVoNJJ9zKi4z5hCYIDIOKT
-        ikKG7R1UkW5LU3X+cc0Tb3MIO7AaMMs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-ldWIcyuXNe-cg-HbNDBypQ-1; Mon, 17 Feb 2020 11:38:25 -0500
-X-MC-Unique: ldWIcyuXNe-cg-HbNDBypQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7034E800D5A;
-        Mon, 17 Feb 2020 16:38:24 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA7732CC39;
-        Mon, 17 Feb 2020 16:38:23 +0000 (UTC)
-Date:   Mon, 17 Feb 2020 11:38:21 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] xfstests: add a CGROUP configuration option
-Message-ID: <20200217163821.GB6633@bfoster>
-References: <20200214203431.24506-1-josef@toxicpanda.com>
+        Mon, 17 Feb 2020 13:05:15 -0500
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 8D7819C3AE; Mon, 17 Feb 2020 18:05:13 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1581962713;
+        bh=RSrFtLYDm97qzF6z41Vo6tV3C2Am+SbON6R4Ugy9kpk=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=PtCi381NUOk2Jt2Ga7Oc1nsaJtXZ0/gnnvp6Ts+0BTsjVWBTeKEIcWtbTJwdKSZQX
+         MEQOBFtdG1xPNJYD6tJZ5d4QTQKkT5DjN4RrizPBblIcxTIG/rQwQf+XT2gYhDIAC9
+         IcBzyPHow1z1qVILkMb8LldOKvY4PjIbbEiHfufHuNhXR0XziCP9BtP+PzzQvc/JwO
+         ce/68VRzYw+XJjbWbuoQMp1ls9Hmeod9a+i4C1u+hAuSEN5Vh+n5ax/lUO95Xc1nsd
+         vMeCFJIyymjehJWJjOvadYItCZe8abgFTD5JnEDSZmK7NWteHpbA1CkUe52NT+th8R
+         ZMagkepvLFhIA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id BA3BB9B9B1;
+        Mon, 17 Feb 2020 18:05:10 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1581962710;
+        bh=RSrFtLYDm97qzF6z41Vo6tV3C2Am+SbON6R4Ugy9kpk=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=sB2+mCKk/+E+USFkl7I5oTsX1yMAJIdqn5FyFBgmddNBZIjbykdy8f47hzNvtKbOW
+         nmLflqCjpjU1+9wolM4uFQxfP+auTW1ZQVqOItrJ+C6DxU6FzUJAnLA1ul8FYIYdI5
+         Jljx54IPUous21SQZ8T/oDZLMNNkEBuCFpvogcq+DHgDhIw2FZiKiCtgdrjyZVq/Vn
+         BEAl0dKgTpQT/NqMCVews/QA2a3VObcKJM9M9hGB6Nvw2avn2E9sd3d5SMjAAV1HHy
+         YXokxMf5gyaulYCHE/khEqDNkvcaccnmrdmi/NW+bWb3ioTgXEPx1dtQB/sif5Re11
+         UJWaDdyacaZ4A==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 6C1C6C62B0;
+        Mon, 17 Feb 2020 18:05:10 +0000 (GMT)
+Subject: Re: btrfs: convert metadata from raid5 to raid1
+To:     Menion <menion@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAJVZm6ewSViEzKRV4bwZFEYXYLhtx2QFvGiQJOD1sNdizL4HjA@mail.gmail.com>
+ <641d8ba2-89c1-83ac-155f-f661f511218a@petaramesh.org>
+ <CAJVZm6f6ntgnTuC76Juz9tkro1ybQaVLCV2xmPqyt5_9tPQP1Q@mail.gmail.com>
+ <baa25ede-ee93-b11e-31e9-63c9e458e6e1@petaramesh.org>
+ <CAJVZm6dyD1w6i6oRECGMhVOZcEH7OQvS_fP5bOyC3C7ZEi6Omg@mail.gmail.com>
+ <20200217141708.GE1235@savella.carfax.org.uk>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <a42ef272-3ea7-5d44-8261-6665fa1d4a60@cobb.uk.net>
+Date:   Mon, 17 Feb 2020 18:05:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200214203431.24506-1-josef@toxicpanda.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200217141708.GE1235@savella.carfax.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 03:34:31PM -0500, Josef Bacik wrote:
-> I want to add some extended statistic gathering for xfstests, but it's
-> tricky to isolate xfstests from the rest of the host applications.  The
-> most straightforward way to do this is to run every test inside of it's
-> own cgroup.  From there we can monitor the activity of tasks in the
-> specific cgroup using BPF.
+On 17/02/2020 14:17, Hugo Mills wrote:
+> On Mon, Feb 17, 2020 at 03:12:35PM +0100, Menion wrote:
+>> ok thanks
+>> I have launched it (in a tmux session), after 5 minutes the command
+>> did not return yet, but dmesg and  btrfs balance status
+>> /array/mount/point report it in progress (0%).
+>> Is it normal?
 > 
+>    Yes, it's got to rewrite all of your metadata. This can take a
+> while (especially if you have lots of snapshots or reflinks -- such as
+> from running a deduper). You should be able to see progress happening
+> fairly regularly in dmesg. This is typically one chunk every minute or
+> so, although some chunks can take much *much* longer.
 
-I'm curious what kind of info you're looking for from tests..
+Also, you can watch what is happening by using "btrfs filesystem usage
+/your/mount/point". You should see "Metadata,RAID5:" going down and
+"Metadata,RAID1" going up. I often leave:
 
-> The support for this is pretty simple, allow users to specify
-> CGROUP=/path/to/cgroup.  We will create the path if it doesn't already
-> exist, and validate we can add things to cgroup.procs.  If we cannot
-> it'll be disabled, otherwise we will use this when we do _run_seq by
-> echo'ing the bash pid into cgroup.procs, which will cause any children
-> to run under that cgroup.
-> 
+watch -n 10 btrfs fi usage /mount/point
 
-Seems reasonable, but is there any opportunity to combine this with what
-we have in common/cgroup2? It's not clear to me if this cares about
-cgroup v1 or v2, but perhaps the cgroup2 checks could be built on top of
-a generic CGROUP var? I'm also wondering if we'd want to change runtime
-behavior purely based on the existence of the path as opposed to some
-kind of separate knob (in the event some future test requires the path
-for some reason without wanting to enable this mechanism).
+running in a window while doing these sorts of things so I can see how
+things are going at a glance.
 
-Brian
-
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  README |  3 +++
->  check  | 17 ++++++++++++++++-
->  2 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/README b/README
-> index 593c1052..722dc170 100644
-> --- a/README
-> +++ b/README
-> @@ -102,6 +102,9 @@ Preparing system for tests:
->               - set USE_KMEMLEAK=yes to scan for memory leaks in the kernel
->                 after every test, if the kernel supports kmemleak.
->               - set KEEP_DMESG=yes to keep dmesg log after test
-> +             - set CGROUP=/path/to/cgroup to create a cgroup to run tests inside
-> +               of.  The main check will run outside of the cgroup, only the test
-> +               itself and any child processes will run under the cgroup.
->  
->          - or add a case to the switch in common/config assigning
->            these variables based on the hostname of your test
-> diff --git a/check b/check
-> index 2e148e57..07a0e251 100755
-> --- a/check
-> +++ b/check
-> @@ -509,11 +509,23 @@ _expunge_test()
->  OOM_SCORE_ADJ="/proc/self/oom_score_adj"
->  test -w ${OOM_SCORE_ADJ} && echo -1000 > ${OOM_SCORE_ADJ}
->  
-> +# Initialize the cgroup path if it doesn't already exist
-> +if [ ! -z "$CGROUP" ]; then
-> +	mkdir -p ${CGROUP}
-> +
-> +	# If we can't write to cgroup.procs then unset cgroup
-> +	test -w ${CGROUP}/cgroup.procs || unset CGROUP
-> +fi
-> +
->  # ...and make the tests themselves somewhat more attractive to it, so that if
->  # the system runs out of memory it'll be the test that gets killed and not the
->  # test framework.
->  _run_seq() {
-> -	bash -c "test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ}; exec ./$seq"
-> +	_extra="test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ};"
-> +	if [ ! -z "$CGROUP" ]; then
-> +		_extra+="echo $$ > ${CGROUP}/cgroup.procs;"
-> +	fi
-> +	bash -c "${_extra} exec ./$seq"
->  }
->  
->  _detect_kmemleak
-> @@ -615,6 +627,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
->  	  echo "MKFS_OPTIONS  -- `_scratch_mkfs_options`"
->  	  echo "MOUNT_OPTIONS -- `_scratch_mount_options`"
->  	fi
-> +	if [ ! -z "$CGROUP" ]; then
-> +	  echo "CGROUP        -- ${CGROUP}"
-> +	fi
->  	echo
->  	needwrap=true
->  
-> -- 
-> 2.24.1
-> 
 
