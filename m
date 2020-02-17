@@ -2,167 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1425A161066
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 11:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2032D1610C5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Feb 2020 12:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgBQKrg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 05:47:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727803AbgBQKrg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 05:47:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 63C65AB7F;
-        Mon, 17 Feb 2020 10:47:33 +0000 (UTC)
-Subject: Re: [PATCH v3 2/3] btrfs: backref: Implement
- btrfs_backref_iterator_next()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200217063111.65941-1-wqu@suse.com>
- <20200217063111.65941-3-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <e5e5ba05-2f9f-d8be-63bb-9bcd3e0c090e@suse.com>
-Date:   Mon, 17 Feb 2020 12:47:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200217063111.65941-3-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728182AbgBQLNC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 06:13:02 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33696 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgBQLNC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Feb 2020 06:13:02 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01HB34Tb155619;
+        Mon, 17 Feb 2020 11:12:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=ZmRVs+kgSdE4AVul1HudBn2b4d/ETDj/p1KDRCpOVo4=;
+ b=Tm4w5iqB9TukJcHK3hSDGCxQ5Wi0eIYWSN/kQQtUa6TD/HCt/0eCANBdUlugjLiLD9dG
+ PtbgWe/s8zgi1OFACCNf8x7uBvA5Mz+ybcMZ0UBs40tqh9x9VmIR+tCJItdxqnUWnyLL
+ MT3gwKz5ZX+HlLDS2XlBfYFyY+NEDjun/zlhKLCtzTrR7aa0mxKdNPGAa+6nX4tawF04
+ hsuGioTTsLJsGEXC1ZoXPSpYM8u/uleZ9Q5f+i8/zTu2ez1jLPXveBdKCU494FphCFeI
+ ERQfiA3MFMr32T4/mzSVOV7FGh6tqO2oEjwbvAYrdpZQ7TyuOpXCKHakcjna3u+BDUeS Jw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2y68kqqmm7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 Feb 2020 11:12:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01HBC6De086820;
+        Mon, 17 Feb 2020 11:12:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2y6t6thkfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 Feb 2020 11:12:56 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01HBCtxQ007780;
+        Mon, 17 Feb 2020 11:12:55 GMT
+Received: from tp.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 17 Feb 2020 03:12:54 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     josef@toxicpanda.com, dsterba@suse.com
+Subject: [PATCH v5 0/5] readmirror feature (sysfs and in-memory only approach; with new read_policy device)
+Date:   Mon, 17 Feb 2020 19:12:40 +0800
+Message-Id: <1581937965-16569-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9533 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002170097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9533 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002170096
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v5:
+Worked on review comments as received in its previous version.
+Please refer to individual patches for the specific changes.
+Introduces the new read_policy 'device'.
+
+v4:
+Rename readmirror attribute to read_policy. Drop separate kobj for
+readmirror instead create read_policy attribute in fsid kobj.
+merge v2:2/3 and v2:3/3 into v4:2/2. Patch titles have changed.
+ 
+v3:
+v2:
+Mainly fixes the fs_devices::readmirror declaration type from atomic_t
+to u8. (Thanks Josef).
+
+v1:
+As of now we use only %pid method to read stripped mirrored data. So
+application's process id determines the stripe id to be read. This type
+of routing typically helps in a system with many small independent
+applications tying to read random data. On the other hand the %pid
+based read IO distribution policy is inefficient if there is a single
+application trying to read large data as because the overall disk
+bandwidth would remains under utilized.
+
+One type of readmirror policy isn't good enough and other choices are
+routing the IO based on device's waitqueue or manual when we have a
+read-preferred device or a readmirror policy based on the target storage
+caching. So this patch-set introduces a framework where we could add more
+readmirror policies.
+
+This policy is a filesystem wide policy as of now, and though the
+readmirror policy at the subvolume level is a novel approach as it
+provides maximum flexibility in the data center, but as of now its not
+practical to implement such a granularity as you can't really ensure
+reflinked extents will be read from the stripe of its desire and so
+there will be more limitations and it can be assessed separately.
+
+The approach in this patch-set is sys interface with in-memory policy.
+And does not add any new readmirror type in this set, which can be add
+once we are ok with the framework. Also the default policy remains %pid.
+
+Previous works:
+----------------------------------------------------------------------
+There were few RFCs [1] before, mainly to figure out storage
+(or in memory only) for the readmirror policy and the interface needed.
+
+[1]
+https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg86368.html
+
+https://lore.kernel.org/linux-btrfs/20190826090438.7044-1-anand.jain@oracle.com/
+
+https://lore.kernel.org/linux-btrfs/5fcf9c23-89b5-b167-1f80-a0f4ac107d0b@oracle.com/
+
+https://patchwork.kernel.org/cover/10859213/
+
+Mount -o:
+In the first trial it was attempted to use the mount -o option to carry
+the readmirror policy, this is good for debugging which can make sure
+even the mount thread metadata tree blocks are read from the disk desired.
+It was very effective in testing radi1/raid10 write-holes.
+
+Extended attribute:
+As extended attribute is associated with the inode, to implement this
+there is bit of extended attribute abuse or else makes it mandatory to
+mount the rootid 5. Its messy unless readmirror policy is applied at the
+subvol level which is not possible as of now. 
+
+An item type:
+The proposed patch was to create an item to hold the readmirror policy,
+it makes sense when compared to the abusive extended attribute approach
+but introduces a new item and so no backward compatibility.
+-----------------------------------------------------------------------
 
 
-On 17.02.20 г. 8:31 ч., Qu Wenruo wrote:
-> This function will go next inline/keyed backref for
-> btrfs_backref_iterator infrastructure.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/backref.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/backref.h | 34 +++++++++++++++++++++++++++++++++
->  2 files changed, 81 insertions(+)
-> 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 8bd5e067831c..fb0abe344851 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2310,3 +2310,50 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
->  	btrfs_backref_iterator_release(iterator);
->  	return ret;
->  }
-> +
-> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator)
+Anand Jain (5):
+  btrfs: add btrfs_strmatch helper
+  btrfs: create read policy framework
+  btrfs: create read policy sysfs attribute, pid
+  btrfs: introduce new device-state read_preferred
+  btrfs: introduce new read_policy device
 
-Document the return values: 0 in case there are more backerfs for the
-given bytenr or 1 in case there are'nt. And a negative value in case of
-error.
+ fs/btrfs/sysfs.c   | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c |  45 ++++++++++++++++-
+ fs/btrfs/volumes.h |  16 ++++++
+ 3 files changed, 205 insertions(+), 1 deletion(-)
 
-> +{
-> +	struct extent_buffer *eb = btrfs_backref_get_eb(iterator);
-> +	struct btrfs_path *path = iterator->path;
-> +	struct btrfs_extent_inline_ref *iref;
-> +	int ret;
-> +	u32 size;
-> +
-> +	if (btrfs_backref_iterator_is_inline_ref(iterator)) {
-> +		/* We're still inside the inline refs */
-> +		if (btrfs_backref_has_tree_block_info(iterator)) {
-> +			/* First tree block info */
-> +			size = sizeof(struct btrfs_tree_block_info);
-> +		} else {
-> +			/* Use inline ref type to determine the size */
-> +			int type;
-> +
-> +			iref = (struct btrfs_extent_inline_ref *)
-> +				(iterator->cur_ptr);
-> +			type = btrfs_extent_inline_ref_type(eb, iref);
-> +
-> +			size = btrfs_extent_inline_ref_size(type);
-> +		}
-> +		iterator->cur_ptr += size;
-> +		if (iterator->cur_ptr < iterator->end_ptr)
-> +			return 0;
-> +
-> +		/* All inline items iterated, fall through */
-> +	}
+-- 
+1.8.3.1
 
-This if could be rewritten as:
-if (btrfs_backref_iterator_is_inline_ref(iterator) && iterator->cur_ptr
-< iterator->end_ptr)
-
-what this achieves is:
-
-1. Clarity that this whole branch is executed only if we are within the
-inline refs limits
-2. It also optimises that function since in the current version, after
-the last inline backref has been processed iterator->cur_ptr ==
-iterator->end_ptr. On the next call to btrfs_backref_iterator_next you
-will execute (needlessly)
-
-(struct btrfs_extent_inline_ref *) (iterator->cur_ptr);
-type = btrfs_extent_inline_ref_type(eb, iref);
-size = btrfs_extent_inline_ref_size(type);
-iterator->cur_ptr += size;
-only to fail "if (iterator->cur_ptr < iterator->end_ptr)" check and
-continue processing keyed items.
-
-As a matter of fact you will be reading past the metadata_item  since
-cur_ptr will be at the end of them and any deferences will read from the
-next item this might not cause a crash but it's still wrong.
-
-
-> +	/* We're at keyed items, there is no inline item, just go next item */
-> +	ret = btrfs_next_item(iterator->fs_info->extent_root, iterator->path);
-> +	if (ret > 0 || ret < 0)
-> +		return ret;
-
-nit: if (ret != 0) return ret;
-
-<snip>
