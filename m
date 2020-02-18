@@ -2,207 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AAA162137
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDED516226D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 09:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgBRG6E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 01:58:04 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:33665 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbgBRG6D (ORCPT
+        id S1726266AbgBRIfM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 03:35:12 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:39944 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgBRIfM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 01:58:03 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 7C5BF3A2771;
-        Tue, 18 Feb 2020 17:57:59 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j3wpS-0006Wf-5F; Tue, 18 Feb 2020 17:57:58 +1100
-Date:   Tue, 18 Feb 2020 17:57:58 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 11/19] btrfs: Convert from readpages to readahead
-Message-ID: <20200218065758.GQ10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-19-willy@infradead.org>
+        Tue, 18 Feb 2020 03:35:12 -0500
+Received: by mail-qv1-f67.google.com with SMTP id q9so7859583qvu.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 00:35:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zXemrpsZrqy8Wm9mmrRfZFiPb2H8T9VScIReW431hA4=;
+        b=Xe4C3rUouaUq+iEK2zBtbHm4TIv9ozM0IwcQhWuMywOHQHwcSs55Md+R5O2KI2V+2h
+         SAjrNhvNQod0lrP11mx3du+UDXcwHwiyaTCO5Ee5xw+bGRrHJdeNDUUq2AD1lwHgzOvh
+         tJ3T+uwvCv2R+GF/2wbKXpPdFwVxDMXegrLn+Y6ggjNUs+rKAZ4fC1wr6Oi2A+CR7wQp
+         eq846yMNZ6a6mjlsgVfmESMxPmZKDv68rHIEcjkX93GkBoH1aDyepjW5D/0r2gYxrAU5
+         SOPUHFF4jwTkrTnzFq4eErqtJDHOpJAvi1EHk8gm5NxDi9bIzx4VJCNZ6FmmUASyysmg
+         LbnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zXemrpsZrqy8Wm9mmrRfZFiPb2H8T9VScIReW431hA4=;
+        b=ex4y2qnYxYdA9jI1P06ozh6J0pGAT/8tm6Y8L2xsxcEzk30NAv0bnFrb9sq7IvNnQN
+         6qasbN8GKEziAKMNuZeDgJWZW5/PCO1NvFtszOUkdOVgMS40KEe9/VPz8TLhHBzi3pSl
+         z/erjZdZ8wmkZDuDoI3wqzWdKGmnSHzMRvp5hIbGOTbJBHHUvks37Pey2KYQHEthSEWB
+         5gpT2N8UYYkTBIdIx7AdlUYXrwlOCeUE5ZMi5yVOIVPriJbbei3iYMcld4OKhbD7DglV
+         VPm5W/GoSKDi2N2m0FaE/HaF0/uZ5jYTa+wWOFHao8Es2+IKCmm4yoLObC9zsWLlQJnr
+         NcQg==
+X-Gm-Message-State: APjAAAUgqA+HuoemxMZ0rrduo34isOg0uiDYmkhdDG84O8VHvwNNYKSl
+        a/EWcG4UN1mHmqYyWH9zKlIqa0Y5t9bJQjMKXKs=
+X-Google-Smtp-Source: APXvYqxtH1U5PBi3VGmTVS2HsPicWHzSI3J3sVoo8Iq0AGmTrncgR4R+o7aZaclafCz7dwPvBxiUN2r41XKN1PWcDkE=
+X-Received: by 2002:a05:6214:b23:: with SMTP id w3mr16136006qvj.181.1582014910765;
+ Tue, 18 Feb 2020 00:35:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-19-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=cHVu4ezWpKoVtZSsmu8A:9
-        a=a6t_wt_lAo5S5IOh:21 a=CcahuoPPjRgWG3dV:21 a=CjuIK1q_8ugA:10
-        a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <CAJVZm6ewSViEzKRV4bwZFEYXYLhtx2QFvGiQJOD1sNdizL4HjA@mail.gmail.com>
+ <641d8ba2-89c1-83ac-155f-f661f511218a@petaramesh.org> <CAJVZm6f6ntgnTuC76Juz9tkro1ybQaVLCV2xmPqyt5_9tPQP1Q@mail.gmail.com>
+ <baa25ede-ee93-b11e-31e9-63c9e458e6e1@petaramesh.org> <CAJVZm6dyD1w6i6oRECGMhVOZcEH7OQvS_fP5bOyC3C7ZEi6Omg@mail.gmail.com>
+In-Reply-To: <CAJVZm6dyD1w6i6oRECGMhVOZcEH7OQvS_fP5bOyC3C7ZEi6Omg@mail.gmail.com>
+From:   Menion <menion@gmail.com>
+Date:   Tue, 18 Feb 2020 09:34:59 +0100
+Message-ID: <CAJVZm6eQs228cH-VpDcuqudKHVr2zq=K4_RV--2bbAoGqTLL7g@mail.gmail.com>
+Subject: Re: btrfs: convert metadata from raid5 to raid1
+To:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:45:59AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Use the new readahead operation in btrfs.  Add a
-> readahead_for_each_batch() iterator to optimise the loop in the XArray.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/btrfs/extent_io.c    | 46 +++++++++++++----------------------------
->  fs/btrfs/extent_io.h    |  3 +--
->  fs/btrfs/inode.c        | 16 +++++++-------
->  include/linux/pagemap.h | 27 ++++++++++++++++++++++++
->  4 files changed, 49 insertions(+), 43 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c0f202741e09..e97a6acd6f5d 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4278,52 +4278,34 @@ int extent_writepages(struct address_space *mapping,
->  	return ret;
->  }
->  
-> -int extent_readpages(struct address_space *mapping, struct list_head *pages,
-> -		     unsigned nr_pages)
-> +void extent_readahead(struct readahead_control *rac)
->  {
->  	struct bio *bio = NULL;
->  	unsigned long bio_flags = 0;
->  	struct page *pagepool[16];
->  	struct extent_map *em_cached = NULL;
-> -	struct extent_io_tree *tree = &BTRFS_I(mapping->host)->io_tree;
-> -	int nr = 0;
-> +	struct extent_io_tree *tree = &BTRFS_I(rac->mapping->host)->io_tree;
->  	u64 prev_em_start = (u64)-1;
-> +	int nr;
->  
-> -	while (!list_empty(pages)) {
-> -		u64 contig_end = 0;
-> -
-> -		for (nr = 0; nr < ARRAY_SIZE(pagepool) && !list_empty(pages);) {
-> -			struct page *page = lru_to_page(pages);
-> -
-> -			prefetchw(&page->flags);
-> -			list_del(&page->lru);
-> -			if (add_to_page_cache_lru(page, mapping, page->index,
-> -						readahead_gfp_mask(mapping))) {
-> -				put_page(page);
-> -				break;
-> -			}
-> -
-> -			pagepool[nr++] = page;
-> -			contig_end = page_offset(page) + PAGE_SIZE - 1;
-> -		}
-> +	readahead_for_each_batch(rac, pagepool, ARRAY_SIZE(pagepool), nr) {
-> +		u64 contig_start = page_offset(pagepool[0]);
-> +		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
+Hello again
 
-So this assumes a contiguous page range is returned, right?
+Task completed, I see in three occurrence of this event:
 
->  
-> -		if (nr) {
-> -			u64 contig_start = page_offset(pagepool[0]);
-> +		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
+[518366.156963] INFO: task btrfs-cleaner:1034 blocked for more than 120 sec=
+onds.
+[518366.156989]       Not tainted 5.5.3-050503-generic #202002110832
+[518366.157024] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[518366.157044] btrfs-cleaner   D    0  1034      2 0x80004000
+[518366.157054] Call Trace:
+[518366.157082]  __schedule+0x2d8/0x760
+[518366.157094]  schedule+0x55/0xc0
+[518366.157105]  schedule_preempt_disabled+0xe/0x10
+[518366.157113]  __mutex_lock.isra.0+0x182/0x4f0
+[518366.157125]  __mutex_lock_slowpath+0x13/0x20
+[518366.157132]  mutex_lock+0x2e/0x40
+[518366.157261]  btrfs_delete_unused_bgs+0xc0/0x560 [btrfs]
+[518366.157322]  ? __wake_up+0x13/0x20
+[518366.157424]  cleaner_kthread+0x124/0x130 [btrfs]
+[518366.157437]  kthread+0x104/0x140
+[518366.157531]  ? kzalloc.constprop.0+0x40/0x40 [btrfs]
+[518366.157565]  ? kthread_park+0x90/0x90
+[518366.157575]  ret_from_fork+0x35/0x40
 
-Ok, yes it does. :)
+and
 
-I don't see how readahead_for_each_batch() guarantees that, though.
+[518486.984177] INFO: task btrfs-cleaner:1034 blocked for more than 241 sec=
+onds.
+[518486.984204]       Not tainted 5.5.3-050503-generic #202002110832
+[518486.984216] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[518486.984233] btrfs-cleaner   D    0  1034      2 0x80004000
+[518486.984243] Call Trace:
+[518486.984271]  __schedule+0x2d8/0x760
+[518486.984284]  schedule+0x55/0xc0
+[518486.984295]  schedule_preempt_disabled+0xe/0x10
+[518486.984305]  __mutex_lock.isra.0+0x182/0x4f0
+[518486.984319]  __mutex_lock_slowpath+0x13/0x20
+[518486.984326]  mutex_lock+0x2e/0x40
+[518486.984451]  btrfs_delete_unused_bgs+0xc0/0x560 [btrfs]
+[518486.984464]  ? __wake_up+0x13/0x20
+[518486.984562]  cleaner_kthread+0x124/0x130 [btrfs]
+[518486.984573]  kthread+0x104/0x140
+[518486.984666]  ? kzalloc.constprop.0+0x40/0x40 [btrfs]
+[518486.984675]  ? kthread_park+0x90/0x90
+[518486.984686]  ret_from_fork+0x35/0x40
 
->  
-> -			ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
-> -
-> -			contiguous_readpages(tree, pagepool, nr, contig_start,
-> -				     contig_end, &em_cached, &bio, &bio_flags,
-> -				     &prev_em_start);
-> -		}
-> +		contiguous_readpages(tree, pagepool, nr, contig_start,
-> +				contig_end, &em_cached, &bio, &bio_flags,
-> +				&prev_em_start);
->  	}
->  
->  	if (em_cached)
->  		free_extent_map(em_cached);
->  
-> -	if (bio)
-> -		return submit_one_bio(bio, 0, bio_flags);
-> -	return 0;
-> +	if (bio) {
-> +		if (submit_one_bio(bio, 0, bio_flags))
-> +			return;
-> +	}
->  }
+and
 
-Shouldn't that just be
+[518728.646379] INFO: task btrfs-cleaner:1034 blocked for more than 120 sec=
+onds.
+[518728.646413]       Not tainted 5.5.3-050503-generic #202002110832
+[518728.646428] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[518728.646447] btrfs-cleaner   D    0  1034      2 0x80004000
+[518728.646460] Call Trace:
+[518728.646494]  __schedule+0x2d8/0x760
+[518728.646508]  schedule+0x55/0xc0
+[518728.646522]  schedule_preempt_disabled+0xe/0x10
+[518728.646534]  __mutex_lock.isra.0+0x182/0x4f0
+[518728.646550]  __mutex_lock_slowpath+0x13/0x20
+[518728.646559]  mutex_lock+0x2e/0x40
+[518728.646719]  btrfs_delete_unused_bgs+0xc0/0x560 [btrfs]
+[518728.646735]  ? __wake_up+0x13/0x20
+[518728.646859]  cleaner_kthread+0x124/0x130 [btrfs]
+[518728.646875]  kthread+0x104/0x140
+[518728.647019]  ? kzalloc.constprop.0+0x40/0x40 [btrfs]
+[518728.647031]  ? kthread_park+0x90/0x90
+[518728.647045]  ret_from_fork+0x35/0x40
 
-	if (bio)
-		submit_one_bio(bio, 0, bio_flags);
+Is it a kind of normal?
+Thanks, bye
 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 4f36c06d064d..1bbb60a0bf16 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -669,6 +669,33 @@ static inline void readahead_next(struct readahead_control *rac)
->  #define readahead_for_each(rac, page)					\
->  	for (; (page = readahead_page(rac)); readahead_next(rac))
->  
-> +static inline unsigned int readahead_page_batch(struct readahead_control *rac,
-> +		struct page **array, unsigned int size)
-> +{
-> +	unsigned int batch = 0;
-
-Confusing when put alongside rac->_batch_count counting the number
-of pages in the batch, and "batch" being the index into the page
-array, and they aren't the same counts....
-
-> +	XA_STATE(xas, &rac->mapping->i_pages, rac->_start);
-> +	struct page *page;
-> +
-> +	rac->_batch_count = 0;
-> +	xas_for_each(&xas, page, rac->_start + rac->_nr_pages - 1) {
-
-That just iterates pages in the start,end doesn't it? What
-guarantees that this fills the array with a contiguous page range?
-
-> +		VM_BUG_ON_PAGE(!PageLocked(page), page);
-> +		VM_BUG_ON_PAGE(PageTail(page), page);
-> +		array[batch++] = page;
-> +		rac->_batch_count += hpage_nr_pages(page);
-> +		if (PageHead(page))
-> +			xas_set(&xas, rac->_start + rac->_batch_count);
-
-What on earth does this do? Comments please!
-
-> +
-> +		if (batch == size)
-> +			break;
-> +	}
-> +
-> +	return batch;
-> +}
-
-Seems a bit big for an inline function.
-
-> +
-> +#define readahead_for_each_batch(rac, array, size, nr)			\
-> +	for (; (nr = readahead_page_batch(rac, array, size));		\
-> +			readahead_next(rac))
-
-I had to go look at the caller to work out what "size" refered to
-here.
-
-This is complex enough that it needs proper API documentation.
-
-Cheers,
-
-Dave.
-
--- 
-Dave Chinner
-david@fromorbit.com
+Il giorno lun 17 feb 2020 alle ore 15:12 Menion <menion@gmail.com> ha scrit=
+to:
+>
+> ok thanks
+> I have launched it (in a tmux session), after 5 minutes the command
+> did not return yet, but dmesg and  btrfs balance status
+> /array/mount/point report it in progress (0%).
+> Is it normal?
+>
+> Il giorno lun 17 feb 2020 alle ore 14:55 Sw=C3=A2mi Petaramesh
+> <swami@petaramesh.org> ha scritto:
+> >
+> > On 2020-02-17 14:50, Menion wrote:
+> > > Is it ok to run it on a mounted filesystem with concurrent read and
+> > > write operations?
+> >
+> > Yes. Please check man btrfs-balance.
+> >
+> > All such BTRFS operations are to be run on live, mounted filesystems.
+> >
+> > Performance will suffer and it might be long though.
+> >
+> > > Also, since the number of HDD is 5, how this "raid1" scheme is deploy=
+ed?
+> >
+> > BTRFS will manage storing 2 copies of every metadata block on 2
+> > different disks, and will choose how by itself.
+> >
+> > =E0=A5=90
+> >
+> > --
+> > Sw=C3=A2mi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+> >
