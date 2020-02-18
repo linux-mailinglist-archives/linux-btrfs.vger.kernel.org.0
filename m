@@ -2,86 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 156D4161F55
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 04:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A812D161FDE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 05:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgBRDOg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Feb 2020 22:14:36 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:39664 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgBRDOg (ORCPT
+        id S1726293AbgBRErf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 23:47:35 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:33849 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726261AbgBRErf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 22:14:36 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I3DE7Q112614;
-        Tue, 18 Feb 2020 03:14:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=TjPXhulibGYh6gesJn2QXRjUMlybOft5mytGvTPclgk=;
- b=vwYbkbOdJ8MpmI50y6rlZtUIjHntGPB02nlnYmlC9g0LkbWxMBn5h4ksEUZXbNZ/RTlC
- QURbQ1F3sTG/HNdDlSzR7N92sZshZ6fShgWRghZYTJRM1Bmxtyhh1RHHIXNFXsGFzu4K
- FPIHT4Amaqq7heLwn4mIGyHNt/BcWBftRLHcE0F0NouQttNPySXBHEidOUkSvHyfawyn
- 9BV5pytru4S87g06VRudh8CP0N2KsFQuW3Hv5klGjwufWK5iMK1QubSkbGG6DfS8a3Jc
- Vp+WVMTQH+mSgL3PyPw1yNxM+/SXmlZDJNKsN2KxlY5NBrK20gUpKUQN24SNZfp0JSBf rQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2y68kqtwgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 03:14:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I3C0v0068946;
-        Tue, 18 Feb 2020 03:14:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2y6tenav78-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 03:14:26 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01I3EMlC019411;
-        Tue, 18 Feb 2020 03:14:22 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Feb 2020 19:14:22 -0800
-Subject: Re: [PATCH v8 3/8] btrfs: reduce scope of btrfs_scratch_superblocks()
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
- <20200213152436.13276-4-johannes.thumshirn@wdc.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <5800c692-6860-e9b1-41dc-c028ce2137f7@oracle.com>
-Date:   Tue, 18 Feb 2020 11:14:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Mon, 17 Feb 2020 23:47:35 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id D76033A19D6;
+        Tue, 18 Feb 2020 15:47:31 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j3unC-0005hw-70; Tue, 18 Feb 2020 15:47:30 +1100
+Date:   Tue, 18 Feb 2020 15:47:30 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 01/19] mm: Return void from various readahead functions
+Message-ID: <20200218044730.GF10776@dread.disaster.area>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-2-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200213152436.13276-4-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=797 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002180024
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=831 malwarescore=0 priorityscore=1501
- clxscore=1011 mlxscore=0 suspectscore=0 impostorscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002180024
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200217184613.19668-2-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=JfrnYn6hAAAA:8 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=XMwvCbM7UuQ64GsG45gA:9
+        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/13/20 11:24 PM, Johannes Thumshirn wrote:
-> btrfs_scratch_superblocks() isn't used anywhere outside volumes.c so
-> remove it from the header file and mark it as static.
+On Mon, Feb 17, 2020 at 10:45:42AM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Also move it above it's callers so we don't need a forward declaration.
+> ondemand_readahead has two callers, neither of which use the return value.
+> That means that both ra_submit and __do_page_cache_readahead() can return
+> void, and we don't need to worry that a present page in the readahead
+> window causes us to return a smaller nr_pages than we ought to have.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Looks good.
+
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+
+-- 
+Dave Chinner
+david@fromorbit.com
