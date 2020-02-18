@@ -2,96 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 828E0161E1D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 01:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77686161EA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 02:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgBRAB4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 17 Feb 2020 19:01:56 -0500
-Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:46280 "EHLO
-        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgBRAB4 (ORCPT
+        id S1726283AbgBRBvc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Feb 2020 20:51:32 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:33092 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726107AbgBRBvc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Feb 2020 19:01:56 -0500
-Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.146) BY m4a0072g.houston.softwaregrp.com WITH ESMTP;
- Tue, 18 Feb 2020 00:00:54 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 18 Feb 2020 00:00:06 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (15.124.72.14) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Tue, 18 Feb 2020 00:00:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DI6VX0RYCyLwk9GHOgArdnYgu+JgEhVATMfk0X3Z3hOQsl5KsIAZEgP6AzM6gEaH64I0QMUwncrZbFBRP6/HD891G1coeueUpg/wn+hhgI8r1e2HeQUQw1pnMPvEx9JOB5c48DWnTsnF8TZV9QugF5ZSTZWqRVWMYqsBooHy+3rLXSm9hGbi8P6lxgSR8G62lprkNt71sVlVjQviNkI9HQbY800B1nft6VIlqmrTyCsOmuEFlODajBWOMQ3fLpnRt1ILLat3lHyyr2iE4nGRB4WJTUcB+sY1WTw/fY6SdrwQSm2dZXA5EV3P+IotX6mDmvI6ri7zmoZgGBbV+XjMhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cv8LHyXraLAGLrXI091ateF9d74mI7taVik5Q3HLN1g=;
- b=BOZCW449qdLImtp8Zlyn5NrfZnNJoMOrgzTnzak+IBJFVJ2aV/V2CW+2UWmDCjS1sO4jYD8VXv93A52l0H4cTalG1mmuEZLWFrQK+3Mbi6DXhijM4jYazJCKWt1cmSQLu/dBDI93aUljeQiaBtS0+71TM/hjgPtxoFTpb53x+Dgvzsmuqv1AYCJhyo6ic/Q+agGh0CXz1SXI3uBzLVPhKHbOuQyWoABMrFHQWux1qxrc+7vaLn76Avl/88J3b1jz0yzgK1la8klfWCqtNIR/YUM9LDGzle3ucedXO//4LLHvupA9SxP3b+fz5Ke0zvynsDHRPPRPMAN5AObAwFhQvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3364.namprd18.prod.outlook.com (10.255.136.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.22; Tue, 18 Feb 2020 00:00:03 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::d948:61b9:971a:facd%7]) with mapi id 15.20.2729.032; Tue, 18 Feb 2020
- 00:00:03 +0000
-Subject: Re: [PATCH v3 2/3] btrfs: backref: Implement
- btrfs_backref_iterator_next()
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        <linux-btrfs@vger.kernel.org>
-References: <20200217063111.65941-1-wqu@suse.com>
- <20200217063111.65941-3-wqu@suse.com>
- <e5e5ba05-2f9f-d8be-63bb-9bcd3e0c090e@suse.com>
- <2cee1b97-b6a3-bffd-8cb0-cb7d903497ca@gmx.com>
- <696547c7-84ea-d346-cecb-6270c2430031@suse.com>
- <3aadef5b-7bd2-b830-869f-67de417a4600@gmx.com>
- <c75fb84e-fa6b-a666-a30a-811d95c6735a@suse.com>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <0664de30-80df-7654-ba64-5325837cf249@suse.com>
-Date:   Tue, 18 Feb 2020 07:59:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
-In-Reply-To: <c75fb84e-fa6b-a666-a30a-811d95c6735a@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: BYAPR05CA0041.namprd05.prod.outlook.com
- (2603:10b6:a03:74::18) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
+        Mon, 17 Feb 2020 20:51:32 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04452;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TqCOW.3_1581990682;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TqCOW.3_1581990682)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 18 Feb 2020 09:51:23 +0800
+Subject: Re: [Ocfs2-devel] [PATCH v6 10/19] fs: Convert mpage_readpages to
+ mpage_readahead
+To:     Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-18-willy@infradead.org>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <f742e606-104e-478b-c84c-a5f5207f9fac@linux.alibaba.com>
+Date:   Tue, 18 Feb 2020 09:51:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0041.namprd05.prod.outlook.com (2603:10b6:a03:74::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.9 via Frontend Transport; Tue, 18 Feb 2020 00:00:01 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d8640feb-4653-4ead-ef9c-08d7b4058079
-X-MS-TrafficTypeDiagnostic: BY5PR18MB3364:
-X-LD-Processed: 856b813c-16e5-49a5-85ec-6f081e13b527,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR18MB3364C0D9516E48A9EDDDA130D6110@BY5PR18MB3364.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 031763BCAF
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(189003)(199004)(110136005)(31686004)(26005)(5660300002)(36756003)(478600001)(31696002)(2906002)(16576012)(16526019)(186003)(8936002)(52116002)(81156014)(81166006)(2616005)(8676002)(316002)(6666004)(6486002)(86362001)(66946007)(956004)(66476007)(6706004)(66556008)(78286006);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3364;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tWWlB0/jbzxu0QkELCgM0duWw1vncJZiff2HADl5vdzcOnVH70OHvgMRdc6bOT1+ysOkdiFMyyzhrZ0N+19Lk8fp646IXrFriX/+2uDrNP5DLmZDl1eke8Ydz8o0VIgXY1h71iksyLtlRl6uFI4M0Gaojw3un2tmq6oEz+lCXNzbU1yhdfHLN8PDNC3EJoaHCbxN8ZLTMLUUUTiZLB0A8z/ItrA6F5aK4yaE+qRtFszX6jlgfsRcRZMAQeCIqG7lknkUbjCPs/ihGl7bVaIACRvd3ywpABXCcoOouACQdu/i48aPwEuQcs4qmPzAZQm5gvKUmo7OMRBUtGwtL8+hXDV7XwGW0SLcrJ3+0oHcjRG4GC+4Jj3HKLdgSTuyMucHCjNWGLxsjTOR02FsuVtdFros6olVGpxBMm/ZvD+r+qnK+WUqzzKhBTWMMeDg3j8NQuUFKaX9LbM1gBsk6sdnwAy7bfHLDY4tDFt0tNruR8gwVgMy7QtsG2m4V0st+NWzNNRBYkr10cQhrKV0oA03Dw==
-X-MS-Exchange-AntiSpam-MessageData: IUvUtvZLOPnSMiFSeXQrSQgolKfaxUdblXfvFGnmSPtM3ssyxwdGKy4zo8LhmAEu96gc+vbfDu/MnrlHRDA3jE7quhMGSiKvL0ka2zRryGySvGj92OZTbI9kTTazblgDLPjFBe9NDl5qgSgS3HgbHA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8640feb-4653-4ead-ef9c-08d7b4058079
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2020 00:00:03.3477
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UxfmUtZwqIoLOtkfBTSFuXufHURWB/MG83bkVpjTRSrgdVUU4KBFXgSXFsltO+Hy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3364
-X-OriginatorOrg: suse.com
+In-Reply-To: <20200217184613.19668-18-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -99,175 +43,637 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/2/17 下午10:13, Nikolay Borisov wrote:
+On 20/2/18 02:45, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
+> Implement the new readahead aop and convert all callers (block_dev,
+> exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qnx6,
+> reiserfs & udf).  The callers are all trivial except for GFS2 & OCFS2.
 > 
-> On 17.02.20 г. 13:45 ч., Qu Wenruo wrote:
->>
->>
->> On 2020/2/17 下午7:42, Nikolay Borisov wrote:
->>>
->>>
->>> On 17.02.20 г. 13:29 ч., Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2020/2/17 下午6:47, Nikolay Borisov wrote:
->>>>>
->>>>>
->>>>> On 17.02.20 г. 8:31 ч., Qu Wenruo wrote:
->>>>>> This function will go next inline/keyed backref for
->>>>>> btrfs_backref_iterator infrastructure.
->>>>>>
->>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>>>> ---
->>>>>>  fs/btrfs/backref.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
->>>>>>  fs/btrfs/backref.h | 34 +++++++++++++++++++++++++++++++++
->>>>>>  2 files changed, 81 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
->>>>>> index 8bd5e067831c..fb0abe344851 100644
->>>>>> --- a/fs/btrfs/backref.c
->>>>>> +++ b/fs/btrfs/backref.c
->>>>>> @@ -2310,3 +2310,50 @@ int btrfs_backref_iterator_start(struct btrfs_backref_iterator *iterator,
->>>>>>  	btrfs_backref_iterator_release(iterator);
->>>>>>  	return ret;
->>>>>>  }
->>>>>> +
->>>>>> +int btrfs_backref_iterator_next(struct btrfs_backref_iterator *iterator)
->>>>>
->>>>> Document the return values: 0 in case there are more backerfs for the
->>>>> given bytenr or 1 in case there are'nt. And a negative value in case of
->>>>> error.
->>>>>
->>>>>> +{
->>>>>> +	struct extent_buffer *eb = btrfs_backref_get_eb(iterator);
->>>>>> +	struct btrfs_path *path = iterator->path;
->>>>>> +	struct btrfs_extent_inline_ref *iref;
->>>>>> +	int ret;
->>>>>> +	u32 size;
->>>>>> +
->>>>>> +	if (btrfs_backref_iterator_is_inline_ref(iterator)) {
->>>>>> +		/* We're still inside the inline refs */
->>>>>> +		if (btrfs_backref_has_tree_block_info(iterator)) {
->>>>>> +			/* First tree block info */
->>>>>> +			size = sizeof(struct btrfs_tree_block_info);
->>>>>> +		} else {
->>>>>> +			/* Use inline ref type to determine the size */
->>>>>> +			int type;
->>>>>> +
->>>>>> +			iref = (struct btrfs_extent_inline_ref *)
->>>>>> +				(iterator->cur_ptr);
->>>>>> +			type = btrfs_extent_inline_ref_type(eb, iref);
->>>>>> +
->>>>>> +			size = btrfs_extent_inline_ref_size(type);
->>>>>> +		}
->>>>>> +		iterator->cur_ptr += size;
->>>>>> +		if (iterator->cur_ptr < iterator->end_ptr)
->>>>>> +			return 0;
->>>>>> +
->>>>>> +		/* All inline items iterated, fall through */
->>>>>> +	}
->>>>>
->>>>> This if could be rewritten as:
->>>>> if (btrfs_backref_iterator_is_inline_ref(iterator) && iterator->cur_ptr
->>>>> < iterator->end_ptr)
->>>>>
->>>>> what this achieves is:
->>>>>
->>>>> 1. Clarity that this whole branch is executed only if we are within the
->>>>> inline refs limits
->>>>> 2. It also optimises that function since in the current version, after
->>>>> the last inline backref has been processed iterator->cur_ptr ==
->>>>> iterator->end_ptr. On the next call to btrfs_backref_iterator_next you
->>>>> will execute (needlessly)
->>>>>
->>>>> (struct btrfs_extent_inline_ref *) (iterator->cur_ptr);
->>>>> type = btrfs_extent_inline_ref_type(eb, iref);
->>>>> size = btrfs_extent_inline_ref_size(type);
->>>>> iterator->cur_ptr += size;
->>>>> only to fail "if (iterator->cur_ptr < iterator->end_ptr)" check and
->>>>> continue processing keyed items.
->>>>>
->>>>> As a matter of fact you will be reading past the metadata_item  since
->>>>> cur_ptr will be at the end of them and any deferences will read from the
->>>>> next item this might not cause a crash but it's still wrong.
->>>>
->>>> This shouldn't happen, as we must ensure the cur_ptr < item_end for callers.
->>>
->>>
->>> How are you ensuring this? Before processing the last inline ref
->>> cur_ptr  would be end_ptr - btrfs_extent_inline_ref_size(type);
->>
->> Firstly, in _start() call, we can easily check if we have any inline refs.
->>
->> If no, search next item.
->> If yes, return cur_ptr which points to the current inline extent ref.
->>
->> Secondly, in _next() call, we keep current check. Increase cur_ptr, then
->> check against ptr_end.
->>
->> So that, all backref_iter callers will get a cur_ptr that is always
->> smaller than ptr_end.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com> # ocfs2
+> ---
+>  drivers/staging/exfat/exfat_super.c |  7 +++---
+>  fs/block_dev.c                      |  7 +++---
+>  fs/ext2/inode.c                     | 10 +++-----
+>  fs/fat/inode.c                      |  7 +++---
+>  fs/gfs2/aops.c                      | 23 ++++++-----------
+>  fs/hpfs/file.c                      |  7 +++---
+>  fs/iomap/buffered-io.c              |  2 +-
+>  fs/isofs/inode.c                    |  7 +++---
+>  fs/jfs/inode.c                      |  7 +++---
+>  fs/mpage.c                          | 38 +++++++++--------------------
+>  fs/nilfs2/inode.c                   | 15 +++---------
+>  fs/ocfs2/aops.c                     | 34 ++++++++++----------------
+>  fs/omfs/file.c                      |  7 +++---
+>  fs/qnx6/inode.c                     |  7 +++---
+>  fs/reiserfs/inode.c                 |  8 +++---
+>  fs/udf/inode.c                      |  7 +++---
+>  include/linux/mpage.h               |  4 +--
+>  mm/migrate.c                        |  2 +-
+>  18 files changed, 73 insertions(+), 126 deletions(-)
 > 
-> Apparently not, btrfs/003 with the following assert:
-> 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index fb0abe344851..403a75f0c99c 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2328,6 +2328,7 @@ int btrfs_backref_iterator_next(struct
-> btrfs_backref_iterator *iterator)
->                         /* Use inline ref type to determine the size */
->                         int type;
-> 
-> +                       ASSERT(iterator->cur_ptr < iterator->end_ptr);
->                         iref = (struct btrfs_extent_inline_ref *)
->                                 (iterator->cur_ptr);
->                         type = btrfs_extent_inline_ref_type(eb, iref);
+> diff --git a/drivers/staging/exfat/exfat_super.c b/drivers/staging/exfat/exfat_super.c
+> index b81d2a87b82e..96aad9b16d31 100644
+> --- a/drivers/staging/exfat/exfat_super.c
+> +++ b/drivers/staging/exfat/exfat_super.c
+> @@ -3002,10 +3002,9 @@ static int exfat_readpage(struct file *file, struct page *page)
+>  	return  mpage_readpage(page, exfat_get_block);
+>  }
+>  
+> -static int exfat_readpages(struct file *file, struct address_space *mapping,
+> -			   struct list_head *pages, unsigned int nr_pages)
+> +static void exfat_readahead(struct readahead_control *rac)
+>  {
+> -	return  mpage_readpages(mapping, pages, nr_pages, exfat_get_block);
+> +	mpage_readahead(rac, exfat_get_block);
+>  }
+>  
+>  static int exfat_writepage(struct page *page, struct writeback_control *wbc)
+> @@ -3104,7 +3103,7 @@ static sector_t _exfat_bmap(struct address_space *mapping, sector_t block)
+>  
+>  static const struct address_space_operations exfat_aops = {
+>  	.readpage    = exfat_readpage,
+> -	.readpages   = exfat_readpages,
+> +	.readahead   = exfat_readahead,
+>  	.writepage   = exfat_writepage,
+>  	.writepages  = exfat_writepages,
+>  	.write_begin = exfat_write_begin,
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 69bf2fb6f7cd..2fd9c7bd61f6 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -614,10 +614,9 @@ static int blkdev_readpage(struct file * file, struct page * page)
+>  	return block_read_full_page(page, blkdev_get_block);
+>  }
+>  
+> -static int blkdev_readpages(struct file *file, struct address_space *mapping,
+> -			struct list_head *pages, unsigned nr_pages)
+> +static void blkdev_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, blkdev_get_block);
+> +	mpage_readahead(rac, blkdev_get_block);
+>  }
+>  
+>  static int blkdev_write_begin(struct file *file, struct address_space *mapping,
+> @@ -2062,7 +2061,7 @@ static int blkdev_writepages(struct address_space *mapping,
+>  
+>  static const struct address_space_operations def_blk_aops = {
+>  	.readpage	= blkdev_readpage,
+> -	.readpages	= blkdev_readpages,
+> +	.readahead	= blkdev_readahead,
+>  	.writepage	= blkdev_writepage,
+>  	.write_begin	= blkdev_write_begin,
+>  	.write_end	= blkdev_write_end,
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index c885cf7d724b..2875c0a705b5 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -877,11 +877,9 @@ static int ext2_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, ext2_get_block);
+>  }
+>  
+> -static int
+> -ext2_readpages(struct file *file, struct address_space *mapping,
+> -		struct list_head *pages, unsigned nr_pages)
+> +static void ext2_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, ext2_get_block);
+> +	mpage_readahead(rac, ext2_get_block);
+>  }
+>  
+>  static int
+> @@ -967,7 +965,7 @@ ext2_dax_writepages(struct address_space *mapping, struct writeback_control *wbc
+>  
+>  const struct address_space_operations ext2_aops = {
+>  	.readpage		= ext2_readpage,
+> -	.readpages		= ext2_readpages,
+> +	.readahead		= ext2_readahead,
+>  	.writepage		= ext2_writepage,
+>  	.write_begin		= ext2_write_begin,
+>  	.write_end		= ext2_write_end,
+> @@ -981,7 +979,7 @@ const struct address_space_operations ext2_aops = {
+>  
+>  const struct address_space_operations ext2_nobh_aops = {
+>  	.readpage		= ext2_readpage,
+> -	.readpages		= ext2_readpages,
+> +	.readahead		= ext2_readahead,
+>  	.writepage		= ext2_nobh_writepage,
+>  	.write_begin		= ext2_nobh_write_begin,
+>  	.write_end		= nobh_write_end,
+> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> index 594b05ae16c9..3496f5fc3e6d 100644
+> --- a/fs/fat/inode.c
+> +++ b/fs/fat/inode.c
+> @@ -210,10 +210,9 @@ static int fat_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, fat_get_block);
+>  }
+>  
+> -static int fat_readpages(struct file *file, struct address_space *mapping,
+> -			 struct list_head *pages, unsigned nr_pages)
+> +static void fat_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, fat_get_block);
+> +	mpage_readahead(rac, fat_get_block);
+>  }
+>  
+>  static void fat_write_failed(struct address_space *mapping, loff_t to)
+> @@ -344,7 +343,7 @@ int fat_block_truncate_page(struct inode *inode, loff_t from)
+>  
+>  static const struct address_space_operations fat_aops = {
+>  	.readpage	= fat_readpage,
+> -	.readpages	= fat_readpages,
+> +	.readahead	= fat_readahead,
+>  	.writepage	= fat_writepage,
+>  	.writepages	= fat_writepages,
+>  	.write_begin	= fat_write_begin,
+> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+> index ba83b49ce18c..5e63c13c12c1 100644
+> --- a/fs/gfs2/aops.c
+> +++ b/fs/gfs2/aops.c
+> @@ -577,7 +577,7 @@ int gfs2_internal_read(struct gfs2_inode *ip, char *buf, loff_t *pos,
+>  }
+>  
+>  /**
+> - * gfs2_readpages - Read a bunch of pages at once
+> + * gfs2_readahead - Read a bunch of pages at once
+>   * @file: The file to read from
+>   * @mapping: Address space info
+>   * @pages: List of pages to read
+> @@ -590,31 +590,24 @@ int gfs2_internal_read(struct gfs2_inode *ip, char *buf, loff_t *pos,
+>   *    obviously not something we'd want to do on too regular a basis.
+>   *    Any I/O we ignore at this time will be done via readpage later.
+>   * 2. We don't handle stuffed files here we let readpage do the honours.
+> - * 3. mpage_readpages() does most of the heavy lifting in the common case.
+> + * 3. mpage_readahead() does most of the heavy lifting in the common case.
+>   * 4. gfs2_block_map() is relied upon to set BH_Boundary in the right places.
+>   */
+>  
+> -static int gfs2_readpages(struct file *file, struct address_space *mapping,
+> -			  struct list_head *pages, unsigned nr_pages)
+> +static void gfs2_readahead(struct readahead_control *rac)
+>  {
+> -	struct inode *inode = mapping->host;
+> +	struct inode *inode = rac->mapping->host;
+>  	struct gfs2_inode *ip = GFS2_I(inode);
+> -	struct gfs2_sbd *sdp = GFS2_SB(inode);
+>  	struct gfs2_holder gh;
+> -	int ret;
+>  
+>  	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
+> -	ret = gfs2_glock_nq(&gh);
+> -	if (unlikely(ret))
+> +	if (gfs2_glock_nq(&gh))
+>  		goto out_uninit;
+>  	if (!gfs2_is_stuffed(ip))
+> -		ret = mpage_readpages(mapping, pages, nr_pages, gfs2_block_map);
+> +		mpage_readahead(rac, gfs2_block_map);
+>  	gfs2_glock_dq(&gh);
+>  out_uninit:
+>  	gfs2_holder_uninit(&gh);
+> -	if (unlikely(gfs2_withdrawn(sdp)))
+> -		ret = -EIO;
+> -	return ret;
+>  }
+>  
+>  /**
+> @@ -828,7 +821,7 @@ static const struct address_space_operations gfs2_aops = {
+>  	.writepage = gfs2_writepage,
+>  	.writepages = gfs2_writepages,
+>  	.readpage = gfs2_readpage,
+> -	.readpages = gfs2_readpages,
+> +	.readahead = gfs2_readahead,
+>  	.bmap = gfs2_bmap,
+>  	.invalidatepage = gfs2_invalidatepage,
+>  	.releasepage = gfs2_releasepage,
+> @@ -842,7 +835,7 @@ static const struct address_space_operations gfs2_jdata_aops = {
+>  	.writepage = gfs2_jdata_writepage,
+>  	.writepages = gfs2_jdata_writepages,
+>  	.readpage = gfs2_readpage,
+> -	.readpages = gfs2_readpages,
+> +	.readahead = gfs2_readahead,
+>  	.set_page_dirty = jdata_set_page_dirty,
+>  	.bmap = gfs2_bmap,
+>  	.invalidatepage = gfs2_invalidatepage,
+> diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
+> index b36abf9cb345..2de0d3492d15 100644
+> --- a/fs/hpfs/file.c
+> +++ b/fs/hpfs/file.c
+> @@ -125,10 +125,9 @@ static int hpfs_writepage(struct page *page, struct writeback_control *wbc)
+>  	return block_write_full_page(page, hpfs_get_block, wbc);
+>  }
+>  
+> -static int hpfs_readpages(struct file *file, struct address_space *mapping,
+> -			  struct list_head *pages, unsigned nr_pages)
+> +static void hpfs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, hpfs_get_block);
+> +	mpage_readahead(rac, hpfs_get_block);
+>  }
+>  
+>  static int hpfs_writepages(struct address_space *mapping,
+> @@ -198,7 +197,7 @@ static int hpfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>  const struct address_space_operations hpfs_aops = {
+>  	.readpage = hpfs_readpage,
+>  	.writepage = hpfs_writepage,
+> -	.readpages = hpfs_readpages,
+> +	.readahead = hpfs_readahead,
+>  	.writepages = hpfs_writepages,
+>  	.write_begin = hpfs_write_begin,
+>  	.write_end = hpfs_write_end,
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 7c84c4c027c4..cb3511eb152a 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -359,7 +359,7 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+>  	}
+>  
+>  	/*
+> -	 * Just like mpage_readpages and block_read_full_page we always
+> +	 * Just like mpage_readahead and block_read_full_page we always
+>  	 * return 0 and just mark the page as PageError on errors.  This
+>  	 * should be cleaned up all through the stack eventually.
+>  	 */
+> diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+> index 62c0462dc89f..95b1f377ad09 100644
+> --- a/fs/isofs/inode.c
+> +++ b/fs/isofs/inode.c
+> @@ -1185,10 +1185,9 @@ static int isofs_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, isofs_get_block);
+>  }
+>  
+> -static int isofs_readpages(struct file *file, struct address_space *mapping,
+> -			struct list_head *pages, unsigned nr_pages)
+> +static void isofs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, isofs_get_block);
+> +	mpage_readahead(rac, isofs_get_block);
+>  }
+>  
+>  static sector_t _isofs_bmap(struct address_space *mapping, sector_t block)
+> @@ -1198,7 +1197,7 @@ static sector_t _isofs_bmap(struct address_space *mapping, sector_t block)
+>  
+>  static const struct address_space_operations isofs_aops = {
+>  	.readpage = isofs_readpage,
+> -	.readpages = isofs_readpages,
+> +	.readahead = isofs_readahead,
+>  	.bmap = _isofs_bmap
+>  };
+>  
+> diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+> index 9486afcdac76..6f65bfa9f18d 100644
+> --- a/fs/jfs/inode.c
+> +++ b/fs/jfs/inode.c
+> @@ -296,10 +296,9 @@ static int jfs_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, jfs_get_block);
+>  }
+>  
+> -static int jfs_readpages(struct file *file, struct address_space *mapping,
+> -		struct list_head *pages, unsigned nr_pages)
+> +static void jfs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, jfs_get_block);
+> +	mpage_readahead(rac, jfs_get_block);
+>  }
+>  
+>  static void jfs_write_failed(struct address_space *mapping, loff_t to)
+> @@ -358,7 +357,7 @@ static ssize_t jfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  
+>  const struct address_space_operations jfs_aops = {
+>  	.readpage	= jfs_readpage,
+> -	.readpages	= jfs_readpages,
+> +	.readahead	= jfs_readahead,
+>  	.writepage	= jfs_writepage,
+>  	.writepages	= jfs_writepages,
+>  	.write_begin	= jfs_write_begin,
+> diff --git a/fs/mpage.c b/fs/mpage.c
+> index ccba3c4c4479..8a09e6002dc2 100644
+> --- a/fs/mpage.c
+> +++ b/fs/mpage.c
+> @@ -91,7 +91,7 @@ mpage_alloc(struct block_device *bdev,
+>  }
+>  
+>  /*
+> - * support function for mpage_readpages.  The fs supplied get_block might
+> + * support function for mpage_readahead.  The fs supplied get_block might
+>   * return an up to date buffer.  This is used to map that buffer into
+>   * the page, which allows readpage to avoid triggering a duplicate call
+>   * to get_block.
+> @@ -338,13 +338,8 @@ static struct bio *do_mpage_readpage(struct mpage_readpage_args *args)
+>  }
+>  
+>  /**
+> - * mpage_readpages - populate an address space with some pages & start reads against them
+> - * @mapping: the address_space
+> - * @pages: The address of a list_head which contains the target pages.  These
+> - *   pages have their ->index populated and are otherwise uninitialised.
+> - *   The page at @pages->prev has the lowest file offset, and reads should be
+> - *   issued in @pages->prev to @pages->next order.
+> - * @nr_pages: The number of pages at *@pages
+> + * mpage_readahead - start reads against pages
+> + * @rac: Describes which pages to read.
+>   * @get_block: The filesystem's block mapper function.
+>   *
+>   * This function walks the pages and the blocks within each page, building and
+> @@ -381,36 +376,25 @@ static struct bio *do_mpage_readpage(struct mpage_readpage_args *args)
+>   *
+>   * This all causes the disk requests to be issued in the correct order.
+>   */
+> -int
+> -mpage_readpages(struct address_space *mapping, struct list_head *pages,
+> -				unsigned nr_pages, get_block_t get_block)
+> +void mpage_readahead(struct readahead_control *rac, get_block_t get_block)
+>  {
+> +	struct page *page;
+>  	struct mpage_readpage_args args = {
+>  		.get_block = get_block,
+>  		.is_readahead = true,
+>  	};
+> -	unsigned page_idx;
+> -
+> -	for (page_idx = 0; page_idx < nr_pages; page_idx++) {
+> -		struct page *page = lru_to_page(pages);
+>  
+> +	readahead_for_each(rac, page) {
+>  		prefetchw(&page->flags);
+> -		list_del(&page->lru);
+> -		if (!add_to_page_cache_lru(page, mapping,
+> -					page->index,
+> -					readahead_gfp_mask(mapping))) {
+> -			args.page = page;
+> -			args.nr_pages = nr_pages - page_idx;
+> -			args.bio = do_mpage_readpage(&args);
+> -		}
+> +		args.page = page;
+> +		args.nr_pages = readahead_count(rac);
+> +		args.bio = do_mpage_readpage(&args);
+>  		put_page(page);
+>  	}
+> -	BUG_ON(!list_empty(pages));
+>  	if (args.bio)
+>  		mpage_bio_submit(REQ_OP_READ, REQ_RAHEAD, args.bio);
+> -	return 0;
+>  }
+> -EXPORT_SYMBOL(mpage_readpages);
+> +EXPORT_SYMBOL(mpage_readahead);
+>  
+>  /*
+>   * This isn't called much at all
+> @@ -563,7 +547,7 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
+>  		 * Page has buffers, but they are all unmapped. The page was
+>  		 * created by pagein or read over a hole which was handled by
+>  		 * block_read_full_page().  If this address_space is also
+> -		 * using mpage_readpages then this can rarely happen.
+> +		 * using mpage_readahead then this can rarely happen.
+>  		 */
+>  		goto confused;
+>  	}
+> diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+> index 671085512e0f..ceeb3b441844 100644
+> --- a/fs/nilfs2/inode.c
+> +++ b/fs/nilfs2/inode.c
+> @@ -145,18 +145,9 @@ static int nilfs_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, nilfs_get_block);
+>  }
+>  
+> -/**
+> - * nilfs_readpages() - implement readpages() method of nilfs_aops {}
+> - * address_space_operations.
+> - * @file - file struct of the file to be read
+> - * @mapping - address_space struct used for reading multiple pages
+> - * @pages - the pages to be read
+> - * @nr_pages - number of pages to be read
+> - */
+> -static int nilfs_readpages(struct file *file, struct address_space *mapping,
+> -			   struct list_head *pages, unsigned int nr_pages)
+> +static void nilfs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, nilfs_get_block);
+> +	mpage_readahead(rac, nilfs_get_block);
+>  }
+>  
+>  static int nilfs_writepages(struct address_space *mapping,
+> @@ -308,7 +299,7 @@ const struct address_space_operations nilfs_aops = {
+>  	.readpage		= nilfs_readpage,
+>  	.writepages		= nilfs_writepages,
+>  	.set_page_dirty		= nilfs_set_page_dirty,
+> -	.readpages		= nilfs_readpages,
+> +	.readahead		= nilfs_readahead,
+>  	.write_begin		= nilfs_write_begin,
+>  	.write_end		= nilfs_write_end,
+>  	/* .releasepage		= nilfs_releasepage, */
+> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+> index 3a67a6518ddf..e8137efaafec 100644
+> --- a/fs/ocfs2/aops.c
+> +++ b/fs/ocfs2/aops.c
+> @@ -350,14 +350,11 @@ static int ocfs2_readpage(struct file *file, struct page *page)
+>   * grow out to a tree. If need be, detecting boundary extents could
+>   * trivially be added in a future version of ocfs2_get_block().
+>   */
+> -static int ocfs2_readpages(struct file *filp, struct address_space *mapping,
+> -			   struct list_head *pages, unsigned nr_pages)
+> +static void ocfs2_readahead(struct readahead_control *rac)
+>  {
+> -	int ret, err = -EIO;
+> -	struct inode *inode = mapping->host;
+> +	int ret;
+> +	struct inode *inode = rac->mapping->host;
+>  	struct ocfs2_inode_info *oi = OCFS2_I(inode);
+> -	loff_t start;
+> -	struct page *last;
+>  
+>  	/*
+>  	 * Use the nonblocking flag for the dlm code to avoid page
+> @@ -365,36 +362,31 @@ static int ocfs2_readpages(struct file *filp, struct address_space *mapping,
+>  	 */
+>  	ret = ocfs2_inode_lock_full(inode, NULL, 0, OCFS2_LOCK_NONBLOCK);
+>  	if (ret)
+> -		return err;
+> +		return;
+>  
+> -	if (down_read_trylock(&oi->ip_alloc_sem) == 0) {
+> -		ocfs2_inode_unlock(inode, 0);
+> -		return err;
+> -	}
+> +	if (down_read_trylock(&oi->ip_alloc_sem) == 0)
+> +		goto out_unlock;
+>  
+>  	/*
+>  	 * Don't bother with inline-data. There isn't anything
+>  	 * to read-ahead in that case anyway...
+>  	 */
+>  	if (oi->ip_dyn_features & OCFS2_INLINE_DATA_FL)
+> -		goto out_unlock;
+> +		goto out_up;
+>  
+>  	/*
+>  	 * Check whether a remote node truncated this file - we just
+>  	 * drop out in that case as it's not worth handling here.
+>  	 */
+> -	last = lru_to_page(pages);
+> -	start = (loff_t)last->index << PAGE_SHIFT;
+> -	if (start >= i_size_read(inode))
+> -		goto out_unlock;
+> +	if (readahead_offset(rac) >= i_size_read(inode))
+> +		goto out_up;
+>  
+> -	err = mpage_readpages(mapping, pages, nr_pages, ocfs2_get_block);
+> +	mpage_readahead(rac, ocfs2_get_block);
+>  
+> -out_unlock:
+> +out_up:
+>  	up_read(&oi->ip_alloc_sem);
+> +out_unlock:
+>  	ocfs2_inode_unlock(inode, 0);
+> -
+> -	return err;
+>  }
+>  
+>  /* Note: Because we don't support holes, our allocation has
+> @@ -2474,7 +2466,7 @@ static ssize_t ocfs2_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+>  
+>  const struct address_space_operations ocfs2_aops = {
+>  	.readpage		= ocfs2_readpage,
+> -	.readpages		= ocfs2_readpages,
+> +	.readahead		= ocfs2_readahead,
+>  	.writepage		= ocfs2_writepage,
+>  	.write_begin		= ocfs2_write_begin,
+>  	.write_end		= ocfs2_write_end,
+For ocfs2 part, looks good.
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 
-Exactly what I said, in _start() there is not enough check to ensure
-cur_ptr is always smaller than end_ptr.
-
-Thus it triggers the ASSERT().
-Will fix in next version.
-
-Thanks,
-Qu
+> diff --git a/fs/omfs/file.c b/fs/omfs/file.c
+> index d640b9388238..d7b5f09d298c 100644
+> --- a/fs/omfs/file.c
+> +++ b/fs/omfs/file.c
+> @@ -289,10 +289,9 @@ static int omfs_readpage(struct file *file, struct page *page)
+>  	return block_read_full_page(page, omfs_get_block);
+>  }
+>  
+> -static int omfs_readpages(struct file *file, struct address_space *mapping,
+> -		struct list_head *pages, unsigned nr_pages)
+> +static void omfs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, omfs_get_block);
+> +	mpage_readahead(rac, omfs_get_block);
+>  }
+>  
+>  static int omfs_writepage(struct page *page, struct writeback_control *wbc)
+> @@ -373,7 +372,7 @@ const struct inode_operations omfs_file_inops = {
+>  
+>  const struct address_space_operations omfs_aops = {
+>  	.readpage = omfs_readpage,
+> -	.readpages = omfs_readpages,
+> +	.readahead = omfs_readahead,
+>  	.writepage = omfs_writepage,
+>  	.writepages = omfs_writepages,
+>  	.write_begin = omfs_write_begin,
+> diff --git a/fs/qnx6/inode.c b/fs/qnx6/inode.c
+> index 345db56c98fd..755293c8c71a 100644
+> --- a/fs/qnx6/inode.c
+> +++ b/fs/qnx6/inode.c
+> @@ -99,10 +99,9 @@ static int qnx6_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, qnx6_get_block);
+>  }
+>  
+> -static int qnx6_readpages(struct file *file, struct address_space *mapping,
+> -		   struct list_head *pages, unsigned nr_pages)
+> +static void qnx6_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, qnx6_get_block);
+> +	mpage_readahead(rac, qnx6_get_block);
+>  }
+>  
+>  /*
+> @@ -499,7 +498,7 @@ static sector_t qnx6_bmap(struct address_space *mapping, sector_t block)
+>  }
+>  static const struct address_space_operations qnx6_aops = {
+>  	.readpage	= qnx6_readpage,
+> -	.readpages	= qnx6_readpages,
+> +	.readahead	= qnx6_readahead,
+>  	.bmap		= qnx6_bmap
+>  };
+>  
+> diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+> index 6419e6dacc39..0031070b3692 100644
+> --- a/fs/reiserfs/inode.c
+> +++ b/fs/reiserfs/inode.c
+> @@ -1160,11 +1160,9 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
+>  	return retval;
+>  }
+>  
+> -static int
+> -reiserfs_readpages(struct file *file, struct address_space *mapping,
+> -		   struct list_head *pages, unsigned nr_pages)
+> +static void reiserfs_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, reiserfs_get_block);
+> +	mpage_readahead(rac, reiserfs_get_block);
+>  }
+>  
+>  /*
+> @@ -3434,7 +3432,7 @@ int reiserfs_setattr(struct dentry *dentry, struct iattr *attr)
+>  const struct address_space_operations reiserfs_address_space_operations = {
+>  	.writepage = reiserfs_writepage,
+>  	.readpage = reiserfs_readpage,
+> -	.readpages = reiserfs_readpages,
+> +	.readahead = reiserfs_readahead,
+>  	.releasepage = reiserfs_releasepage,
+>  	.invalidatepage = reiserfs_invalidatepage,
+>  	.write_begin = reiserfs_write_begin,
+> diff --git a/fs/udf/inode.c b/fs/udf/inode.c
+> index e875bc5668ee..adaba8e8b326 100644
+> --- a/fs/udf/inode.c
+> +++ b/fs/udf/inode.c
+> @@ -195,10 +195,9 @@ static int udf_readpage(struct file *file, struct page *page)
+>  	return mpage_readpage(page, udf_get_block);
+>  }
+>  
+> -static int udf_readpages(struct file *file, struct address_space *mapping,
+> -			struct list_head *pages, unsigned nr_pages)
+> +static void udf_readahead(struct readahead_control *rac)
+>  {
+> -	return mpage_readpages(mapping, pages, nr_pages, udf_get_block);
+> +	mpage_readahead(rac, udf_get_block);
+>  }
+>  
+>  static int udf_write_begin(struct file *file, struct address_space *mapping,
+> @@ -234,7 +233,7 @@ static sector_t udf_bmap(struct address_space *mapping, sector_t block)
+>  
+>  const struct address_space_operations udf_aops = {
+>  	.readpage	= udf_readpage,
+> -	.readpages	= udf_readpages,
+> +	.readahead	= udf_readahead,
+>  	.writepage	= udf_writepage,
+>  	.writepages	= udf_writepages,
+>  	.write_begin	= udf_write_begin,
+> diff --git a/include/linux/mpage.h b/include/linux/mpage.h
+> index 001f1fcf9836..f4f5e90a6844 100644
+> --- a/include/linux/mpage.h
+> +++ b/include/linux/mpage.h
+> @@ -13,9 +13,9 @@
+>  #ifdef CONFIG_BLOCK
+>  
+>  struct writeback_control;
+> +struct readahead_control;
+>  
+> -int mpage_readpages(struct address_space *mapping, struct list_head *pages,
+> -				unsigned nr_pages, get_block_t get_block);
+> +void mpage_readahead(struct readahead_control *, get_block_t get_block);
+>  int mpage_readpage(struct page *page, get_block_t get_block);
+>  int mpage_writepages(struct address_space *mapping,
+>  		struct writeback_control *wbc, get_block_t get_block);
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index b1092876e537..a32122095702 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1020,7 +1020,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>  		 * to the LRU. Later, when the IO completes the pages are
+>  		 * marked uptodate and unlocked. However, the queueing
+>  		 * could be merging multiple pages for one bio (e.g.
+> -		 * mpage_readpages). If an allocation happens for the
+> +		 * mpage_readahead). If an allocation happens for the
+>  		 * second or third page, the process can end up locking
+>  		 * the same page twice and deadlocking. Rather than
+>  		 * trying to be clever about what pages can be locked,
 > 
-> 
-> Trigger:
-> 
-> [   58.884441] assertion failed: iterator->cur_ptr < iterator->end_ptr,
-> in fs/btrfs/backref.c:2331
-> 
-> 
->>
->> Thanks,
->> Qu
->>>
->>> After it's processed cur_ptr == end_ptr. THen you will do another call
->>> to btrfs_backref_iterator_next which will do the same calculation? What
->>> am I missing?
->>>
->>>>
->>>> For the _next() call, the check after increased cur_ptr check it's OK.
->>>>
->>>> But it's a problem for _start() call, as we may have a case where an
->>>> EXTENT_ITEM/METADATA_ITEM has no inlined ref.
->>>>
->>>> I'll fix this in next version.
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>>
->>>>>
->>>>>> +	/* We're at keyed items, there is no inline item, just go next item */
->>>>>> +	ret = btrfs_next_item(iterator->fs_info->extent_root, iterator->path);
->>>>>> +	if (ret > 0 || ret < 0)
->>>>>> +		return ret;
->>>>>
->>>>> nit: if (ret != 0) return ret;
->>>>>
->>>>> <snip>
->>>>>
