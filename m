@@ -2,88 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DD9162363
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 10:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAA41625B3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 12:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgBRJbC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 04:31:02 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48634 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgBRJbC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 04:31:02 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I9NcCv018424;
-        Tue, 18 Feb 2020 09:30:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=wHeRGNs5r0XIDzwii/HBqitZVlegZVihK+X1WGO4zUA=;
- b=QiLxt9CAor6LisUkZTsZ1MR/+cH8n1uTFI2mpiMbwa39b6IKk55OVx+CP8yTOHGBoX9q
- vYLfH4Z/RYv4TAxFkcHcrTZG+6jjOaJ0OyQTMOhZKBXmWOZW6D7e7fqZ1G9gUYRAFaE9
- WpIDlQi8OxzOYmbJJbWP5PGbUwV/VZhovE4LB1L9z5wB+0C9BUWvv8FpiLtnB3SmVTf0
- hx1NHcm8AmKqfg5EzkLsRdErjaRl5g8A/aU+yf2iWiAT7Yd2Xq3wvvpOd+J4cYueLeIz
- UPtVNulHxG7+z1guNJ8Mfmj2oVA2epYAQchqJE3GHCIpHWkXLSKMZQ+W2cZiUb9+EZSq wg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2y68kqva65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 09:30:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I9RwB3015804;
-        Tue, 18 Feb 2020 09:30:52 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2y6t4hudh0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 09:30:52 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01I9Uo1j024973;
-        Tue, 18 Feb 2020 09:30:50 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 18 Feb 2020 01:30:50 -0800
-Subject: Re: [PATCH v8 6/8] btrfs: remove btrfsic_submit_bh()
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
+        id S1726582AbgBRLpI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 06:45:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59458 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726373AbgBRLpI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Feb 2020 06:45:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 39B6CAC23;
+        Tue, 18 Feb 2020 11:45:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 09C1FDA917; Tue, 18 Feb 2020 12:44:48 +0100 (CET)
+Date:   Tue, 18 Feb 2020 12:44:47 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-fsdevel@vger.kernel.org, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200213152436.13276-1-johannes.thumshirn@wdc.com>
- <20200213152436.13276-7-johannes.thumshirn@wdc.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <135ec05e-5cc9-2a21-86cd-7eebf7971b08@oracle.com>
-Date:   Tue, 18 Feb 2020 17:30:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 08/44] docs: filesystems: convert btrfs.txt to ReST
+Message-ID: <20200218114447.GJ2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1581955849.git.mchehab+huawei@kernel.org>
+ <1ef76da4ac24a9a6f6187723554733c702ea19ae.1581955849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200213152436.13276-7-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002180076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
- clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002180076
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ef76da4ac24a9a6f6187723554733c702ea19ae.1581955849.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/13/20 11:24 PM, Johannes Thumshirn wrote:
-> Now that the last use of btrfsic_submit_bh() is gone, remove the function
-> as well.
+On Mon, Feb 17, 2020 at 05:11:54PM +0100, Mauro Carvalho Chehab wrote:
+> Just trivial changes:
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> - Add a SPDX header;
+> - Add it to filesystems/index.rst.
+> 
+> While here, adjust document title, just to make it use the same
+> style of the other docs.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-looks good.
+Acked-by: David Sterba <dsterba@suse.com>
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+As discussed, please merge it with the rest of the series.
