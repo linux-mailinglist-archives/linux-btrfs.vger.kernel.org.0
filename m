@@ -2,384 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5C1162130
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AAA162137
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgBRG5K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 01:57:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58370 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgBRG5J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 01:57:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 64B94AE17;
-        Tue, 18 Feb 2020 06:57:04 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4 3/3] btrfs: relocation: Use btrfs_backref_iter infrastructure
-Date:   Tue, 18 Feb 2020 14:56:49 +0800
-Message-Id: <20200218065649.126255-4-wqu@suse.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200218065649.126255-1-wqu@suse.com>
-References: <20200218065649.126255-1-wqu@suse.com>
+        id S1726266AbgBRG6E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 01:58:04 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:33665 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726072AbgBRG6D (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Feb 2020 01:58:03 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 7C5BF3A2771;
+        Tue, 18 Feb 2020 17:57:59 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j3wpS-0006Wf-5F; Tue, 18 Feb 2020 17:57:58 +1100
+Date:   Tue, 18 Feb 2020 17:57:58 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 11/19] btrfs: Convert from readpages to readahead
+Message-ID: <20200218065758.GQ10776@dread.disaster.area>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-19-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200217184613.19668-19-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=cHVu4ezWpKoVtZSsmu8A:9
+        a=a6t_wt_lAo5S5IOh:21 a=CcahuoPPjRgWG3dV:21 a=CjuIK1q_8ugA:10
+        a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the core function of relocation, build_backref_tree, it needs to
-iterate all backref items of one tree block.
+On Mon, Feb 17, 2020 at 10:45:59AM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> Use the new readahead operation in btrfs.  Add a
+> readahead_for_each_batch() iterator to optimise the loop in the XArray.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/btrfs/extent_io.c    | 46 +++++++++++++----------------------------
+>  fs/btrfs/extent_io.h    |  3 +--
+>  fs/btrfs/inode.c        | 16 +++++++-------
+>  include/linux/pagemap.h | 27 ++++++++++++++++++++++++
+>  4 files changed, 49 insertions(+), 43 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index c0f202741e09..e97a6acd6f5d 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4278,52 +4278,34 @@ int extent_writepages(struct address_space *mapping,
+>  	return ret;
+>  }
+>  
+> -int extent_readpages(struct address_space *mapping, struct list_head *pages,
+> -		     unsigned nr_pages)
+> +void extent_readahead(struct readahead_control *rac)
+>  {
+>  	struct bio *bio = NULL;
+>  	unsigned long bio_flags = 0;
+>  	struct page *pagepool[16];
+>  	struct extent_map *em_cached = NULL;
+> -	struct extent_io_tree *tree = &BTRFS_I(mapping->host)->io_tree;
+> -	int nr = 0;
+> +	struct extent_io_tree *tree = &BTRFS_I(rac->mapping->host)->io_tree;
+>  	u64 prev_em_start = (u64)-1;
+> +	int nr;
+>  
+> -	while (!list_empty(pages)) {
+> -		u64 contig_end = 0;
+> -
+> -		for (nr = 0; nr < ARRAY_SIZE(pagepool) && !list_empty(pages);) {
+> -			struct page *page = lru_to_page(pages);
+> -
+> -			prefetchw(&page->flags);
+> -			list_del(&page->lru);
+> -			if (add_to_page_cache_lru(page, mapping, page->index,
+> -						readahead_gfp_mask(mapping))) {
+> -				put_page(page);
+> -				break;
+> -			}
+> -
+> -			pagepool[nr++] = page;
+> -			contig_end = page_offset(page) + PAGE_SIZE - 1;
+> -		}
+> +	readahead_for_each_batch(rac, pagepool, ARRAY_SIZE(pagepool), nr) {
+> +		u64 contig_start = page_offset(pagepool[0]);
+> +		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
 
-We don't really want to spend our code and reviewers' time to going
-through tons of supportive code just for the backref walk.
+So this assumes a contiguous page range is returned, right?
 
-Use btrfs_backref_iter infrastructure to do the loop.
+>  
+> -		if (nr) {
+> -			u64 contig_start = page_offset(pagepool[0]);
+> +		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
 
-The backref items look would be much more easier to read:
+Ok, yes it does. :)
 
-	ret = btrfs_backref_iter_start(iter, cur->bytenr);
-	for (; ret == 0; ret = btrfs_backref_iter_next(iter)) {
-		/* The really important work */
-	}
+I don't see how readahead_for_each_batch() guarantees that, though.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/relocation.c | 193 ++++++++++++++----------------------------
- 1 file changed, 62 insertions(+), 131 deletions(-)
+>  
+> -			ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
+> -
+> -			contiguous_readpages(tree, pagepool, nr, contig_start,
+> -				     contig_end, &em_cached, &bio, &bio_flags,
+> -				     &prev_em_start);
+> -		}
+> +		contiguous_readpages(tree, pagepool, nr, contig_start,
+> +				contig_end, &em_cached, &bio, &bio_flags,
+> +				&prev_em_start);
+>  	}
+>  
+>  	if (em_cached)
+>  		free_extent_map(em_cached);
+>  
+> -	if (bio)
+> -		return submit_one_bio(bio, 0, bio_flags);
+> -	return 0;
+> +	if (bio) {
+> +		if (submit_one_bio(bio, 0, bio_flags))
+> +			return;
+> +	}
+>  }
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index b1365a516a25..1fe34d8eef6d 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -22,6 +22,7 @@
- #include "print-tree.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "backref.h"
- 
- /*
-  * backref_node, mapping_node and tree_block start with this
-@@ -604,48 +605,6 @@ static struct btrfs_root *read_fs_root(struct btrfs_fs_info *fs_info,
- 	return btrfs_get_fs_root(fs_info, &key, false);
- }
- 
--static noinline_for_stack
--int find_inline_backref(struct extent_buffer *leaf, int slot,
--			unsigned long *ptr, unsigned long *end)
--{
--	struct btrfs_key key;
--	struct btrfs_extent_item *ei;
--	struct btrfs_tree_block_info *bi;
--	u32 item_size;
--
--	btrfs_item_key_to_cpu(leaf, &key, slot);
--
--	item_size = btrfs_item_size_nr(leaf, slot);
--	if (item_size < sizeof(*ei)) {
--		btrfs_print_v0_err(leaf->fs_info);
--		btrfs_handle_fs_error(leaf->fs_info, -EINVAL, NULL);
--		return 1;
--	}
--	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
--	WARN_ON(!(btrfs_extent_flags(leaf, ei) &
--		  BTRFS_EXTENT_FLAG_TREE_BLOCK));
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY &&
--	    item_size <= sizeof(*ei) + sizeof(*bi)) {
--		WARN_ON(item_size < sizeof(*ei) + sizeof(*bi));
--		return 1;
--	}
--	if (key.type == BTRFS_METADATA_ITEM_KEY &&
--	    item_size <= sizeof(*ei)) {
--		WARN_ON(item_size < sizeof(*ei));
--		return 1;
--	}
--
--	if (key.type == BTRFS_EXTENT_ITEM_KEY) {
--		bi = (struct btrfs_tree_block_info *)(ei + 1);
--		*ptr = (unsigned long)(bi + 1);
--	} else {
--		*ptr = (unsigned long)(ei + 1);
--	}
--	*end = (unsigned long)ei + item_size;
--	return 0;
--}
--
- /*
-  * build backref tree for a given tree block. root of the backref tree
-  * corresponds the tree block, leaves of the backref tree correspond
-@@ -665,10 +624,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					struct btrfs_key *node_key,
- 					int level, u64 bytenr)
- {
-+	struct btrfs_backref_iter *iter;
- 	struct backref_cache *cache = &rc->backref_cache;
--	struct btrfs_path *path1; /* For searching extent root */
--	struct btrfs_path *path2; /* For searching parent of TREE_BLOCK_REF */
--	struct extent_buffer *eb;
-+	struct btrfs_path *path; /* For searching parent of TREE_BLOCK_REF */
- 	struct btrfs_root *root;
- 	struct backref_node *cur;
- 	struct backref_node *upper;
-@@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	struct backref_node *exist = NULL;
- 	struct backref_edge *edge;
- 	struct rb_node *rb_node;
--	struct btrfs_key key;
--	unsigned long end;
--	unsigned long ptr;
- 	LIST_HEAD(list); /* Pending edge list, upper node needs to be checked */
- 	LIST_HEAD(useless);
- 	int cowonly;
-@@ -687,14 +642,15 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	int err = 0;
- 	bool need_check = true;
- 
--	path1 = btrfs_alloc_path();
--	path2 = btrfs_alloc_path();
--	if (!path1 || !path2) {
-+	iter = btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS);
-+	if (!iter)
-+		return ERR_PTR(-ENOMEM);
-+	path = btrfs_alloc_path();
-+	if (!path) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
--	path1->reada = READA_FORWARD;
--	path2->reada = READA_FORWARD;
-+	path->reada = READA_FORWARD;
- 
- 	node = alloc_backref_node(cache);
- 	if (!node) {
-@@ -707,25 +663,28 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 	node->lowest = 1;
- 	cur = node;
- again:
--	end = 0;
--	ptr = 0;
--	key.objectid = cur->bytenr;
--	key.type = BTRFS_METADATA_ITEM_KEY;
--	key.offset = (u64)-1;
--
--	path1->search_commit_root = 1;
--	path1->skip_locking = 1;
--	ret = btrfs_search_slot(NULL, rc->extent_root, &key, path1,
--				0, 0);
-+	ret = btrfs_backref_iter_start(iter, cur->bytenr);
- 	if (ret < 0) {
- 		err = ret;
- 		goto out;
- 	}
--	ASSERT(ret);
--	ASSERT(path1->slots[0]);
--
--	path1->slots[0]--;
- 
-+	/*
-+	 * We skip the first btrfs_tree_block_info, as we don't use the key
-+	 * stored in it, but fetch it from the tree block.
-+	 */
-+	if (btrfs_backref_has_tree_block_info(iter)) {
-+		ret = btrfs_backref_iter_next(iter);
-+		if (ret < 0) {
-+			err = ret;
-+			goto out;
-+		}
-+		/* No extra backref? This means the tree block is corrupted */
-+		if (ret > 0) {
-+			err = -EUCLEAN;
-+			goto out;
-+		}
-+	}
- 	WARN_ON(cur->checked);
- 	if (!list_empty(&cur->upper)) {
- 		/*
-@@ -747,42 +706,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		exist = NULL;
- 	}
- 
--	while (1) {
--		cond_resched();
--		eb = path1->nodes[0];
--
--		if (ptr >= end) {
--			if (path1->slots[0] >= btrfs_header_nritems(eb)) {
--				ret = btrfs_next_leaf(rc->extent_root, path1);
--				if (ret < 0) {
--					err = ret;
--					goto out;
--				}
--				if (ret > 0)
--					break;
--				eb = path1->nodes[0];
--			}
-+	for (; ret == 0; ret = btrfs_backref_iter_next(iter)) {
-+		struct extent_buffer *eb;
-+		struct btrfs_key key;
-+		int type;
- 
--			btrfs_item_key_to_cpu(eb, &key, path1->slots[0]);
--			if (key.objectid != cur->bytenr) {
--				WARN_ON(exist);
--				break;
--			}
-+		cond_resched();
-+		eb = btrfs_backref_get_eb(iter);
- 
--			if (key.type == BTRFS_EXTENT_ITEM_KEY ||
--			    key.type == BTRFS_METADATA_ITEM_KEY) {
--				ret = find_inline_backref(eb, path1->slots[0],
--							  &ptr, &end);
--				if (ret)
--					goto next;
--			}
--		}
-+		key.objectid = iter->bytenr;
-+		if (btrfs_backref_iter_is_inline_ref(iter)) {
-+			struct btrfs_extent_inline_ref *iref;
- 
--		if (ptr < end) {
- 			/* update key for inline back ref */
--			struct btrfs_extent_inline_ref *iref;
--			int type;
--			iref = (struct btrfs_extent_inline_ref *)ptr;
-+			iref = (struct btrfs_extent_inline_ref *)iter->cur_ptr;
- 			type = btrfs_get_extent_inline_ref_type(eb, iref,
- 							BTRFS_REF_TYPE_BLOCK);
- 			if (type == BTRFS_REF_TYPE_INVALID) {
-@@ -791,9 +728,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			}
- 			key.type = type;
- 			key.offset = btrfs_extent_inline_ref_offset(eb, iref);
--
--			WARN_ON(key.type != BTRFS_TREE_BLOCK_REF_KEY &&
--				key.type != BTRFS_SHARED_BLOCK_REF_KEY);
-+		} else {
-+			key.type = iter->cur_key.type;
-+			key.offset = iter->cur_key.offset;
- 		}
- 
- 		/*
-@@ -806,7 +743,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		     (key.type == BTRFS_SHARED_BLOCK_REF_KEY &&
- 		      exist->bytenr == key.offset))) {
- 			exist = NULL;
--			goto next;
-+			continue;
- 		}
- 
- 		/* SHARED_BLOCK_REF means key.offset is the parent bytenr */
-@@ -852,7 +789,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			edge->node[LOWER] = cur;
- 			edge->node[UPPER] = upper;
- 
--			goto next;
-+			continue;
- 		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
- 			err = -EINVAL;
- 			btrfs_print_v0_err(rc->extent_root->fs_info);
-@@ -860,7 +797,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 					      NULL);
- 			goto out;
- 		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
--			goto next;
-+			continue;
- 		}
- 
- 		/*
-@@ -891,20 +828,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		level = cur->level + 1;
- 
- 		/* Search the tree to find parent blocks referring the block. */
--		path2->search_commit_root = 1;
--		path2->skip_locking = 1;
--		path2->lowest_level = level;
--		ret = btrfs_search_slot(NULL, root, node_key, path2, 0, 0);
--		path2->lowest_level = 0;
-+		path->search_commit_root = 1;
-+		path->skip_locking = 1;
-+		path->lowest_level = level;
-+		ret = btrfs_search_slot(NULL, root, node_key, path, 0, 0);
-+		path->lowest_level = 0;
- 		if (ret < 0) {
- 			err = ret;
- 			goto out;
- 		}
--		if (ret > 0 && path2->slots[level] > 0)
--			path2->slots[level]--;
-+		if (ret > 0 && path->slots[level] > 0)
-+			path->slots[level]--;
- 
--		eb = path2->nodes[level];
--		if (btrfs_node_blockptr(eb, path2->slots[level]) !=
-+		eb = path->nodes[level];
-+		if (btrfs_node_blockptr(eb, path->slots[level]) !=
- 		    cur->bytenr) {
- 			btrfs_err(root->fs_info,
- 	"couldn't find block (%llu) (level %d) in tree (%llu) with key (%llu %u %llu)",
-@@ -920,7 +857,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 
- 		/* Add all nodes and edges in the path */
- 		for (; level < BTRFS_MAX_LEVEL; level++) {
--			if (!path2->nodes[level]) {
-+			if (!path->nodes[level]) {
- 				ASSERT(btrfs_root_bytenr(&root->root_item) ==
- 				       lower->bytenr);
- 				if (should_ignore_root(root))
-@@ -936,7 +873,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 				goto out;
- 			}
- 
--			eb = path2->nodes[level];
-+			eb = path->nodes[level];
- 			rb_node = tree_search(&cache->rb_root, eb->start);
- 			if (!rb_node) {
- 				upper = alloc_backref_node(cache);
-@@ -993,20 +930,14 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 			lower = upper;
- 			upper = NULL;
- 		}
--		btrfs_release_path(path2);
--next:
--		if (ptr < end) {
--			ptr += btrfs_extent_inline_ref_size(key.type);
--			if (ptr >= end) {
--				WARN_ON(ptr > end);
--				ptr = 0;
--				end = 0;
--			}
--		}
--		if (ptr >= end)
--			path1->slots[0]++;
-+		btrfs_release_path(path);
-+	}
-+	if (ret < 0) {
-+		err = ret;
-+		goto out;
- 	}
--	btrfs_release_path(path1);
-+	ret = 0;
-+	btrfs_backref_iter_release(iter);
- 
- 	cur->checked = 1;
- 	WARN_ON(exist);
-@@ -1124,8 +1055,8 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
- 		}
- 	}
- out:
--	btrfs_free_path(path1);
--	btrfs_free_path(path2);
-+	btrfs_backref_iter_free(iter);
-+	btrfs_free_path(path);
- 	if (err) {
- 		while (!list_empty(&useless)) {
- 			lower = list_entry(useless.next,
+Shouldn't that just be
+
+	if (bio)
+		submit_one_bio(bio, 0, bio_flags);
+
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 4f36c06d064d..1bbb60a0bf16 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -669,6 +669,33 @@ static inline void readahead_next(struct readahead_control *rac)
+>  #define readahead_for_each(rac, page)					\
+>  	for (; (page = readahead_page(rac)); readahead_next(rac))
+>  
+> +static inline unsigned int readahead_page_batch(struct readahead_control *rac,
+> +		struct page **array, unsigned int size)
+> +{
+> +	unsigned int batch = 0;
+
+Confusing when put alongside rac->_batch_count counting the number
+of pages in the batch, and "batch" being the index into the page
+array, and they aren't the same counts....
+
+> +	XA_STATE(xas, &rac->mapping->i_pages, rac->_start);
+> +	struct page *page;
+> +
+> +	rac->_batch_count = 0;
+> +	xas_for_each(&xas, page, rac->_start + rac->_nr_pages - 1) {
+
+That just iterates pages in the start,end doesn't it? What
+guarantees that this fills the array with a contiguous page range?
+
+> +		VM_BUG_ON_PAGE(!PageLocked(page), page);
+> +		VM_BUG_ON_PAGE(PageTail(page), page);
+> +		array[batch++] = page;
+> +		rac->_batch_count += hpage_nr_pages(page);
+> +		if (PageHead(page))
+> +			xas_set(&xas, rac->_start + rac->_batch_count);
+
+What on earth does this do? Comments please!
+
+> +
+> +		if (batch == size)
+> +			break;
+> +	}
+> +
+> +	return batch;
+> +}
+
+Seems a bit big for an inline function.
+
+> +
+> +#define readahead_for_each_batch(rac, array, size, nr)			\
+> +	for (; (nr = readahead_page_batch(rac, array, size));		\
+> +			readahead_next(rac))
+
+I had to go look at the caller to work out what "size" refered to
+here.
+
+This is complex enough that it needs proper API documentation.
+
+Cheers,
+
+Dave.
+
 -- 
-2.25.0
-
+Dave Chinner
+david@fromorbit.com
