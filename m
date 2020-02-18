@@ -2,68 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC16C162073
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 06:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2A0162080
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 06:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgBRFdY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 00:33:24 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:50773 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725878AbgBRFdY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 00:33:24 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 8B4E77EA1B5;
-        Tue, 18 Feb 2020 16:33:20 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j3vVX-00063Y-Ld; Tue, 18 Feb 2020 16:33:19 +1100
-Date:   Tue, 18 Feb 2020 16:33:19 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v6 06/19] mm: rename readahead loop variable to 'i'
-Message-ID: <20200218053319.GL10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-10-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-10-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=Ikd4Dj_1AAAA:8 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
-        a=hst_v9hiAf68Pp7nMRMA:9 a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1726134AbgBRFkS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 00:40:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725909AbgBRFkS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Feb 2020 00:40:18 -0500
+Subject: Re: [GIT PULL] Btrfs fix for 5.6-rc2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582004418;
+        bh=97SUQ24phw+psmy6TmZZtzFUJl9LBoxcMVLoYt+B9J4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Jxurf7V69n3HGzrX8kB998tHCcoRjW5MdICDq6ctwEH3nP1XQJ38bC6M4WNdkYcAd
+         J8HJoSl7HkxBXS0GBQKNqJV38T4WdBAomF42Gp3po/4i6M/O2T/PitfOrkVOv+R1D1
+         0/xI/dWda852eSZZquom4L4XbtCS91ZLqZClTXF4=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1581962653.git.dsterba@suse.com>
+References: <cover.1581962653.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1581962653.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.6-rc1-tag
+X-PR-Tracked-Commit-Id: 52e29e331070cd7d52a64cbf1b0958212a340e28
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eaea2947063ac694cddff1787d43e7807490dbc7
+Message-Id: <158200441799.24167.9075205058877968253.pr-tracker-bot@kernel.org>
+Date:   Tue, 18 Feb 2020 05:40:17 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:45:50AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Change the type of page_idx to unsigned long, and rename it -- it's
-> just a loop counter, not a page index.
-> 
-> Suggested-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/readahead.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+The pull request you sent on Mon, 17 Feb 2020 19:43:26 +0100:
 
-Looks fine.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.6-rc1-tag
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eaea2947063ac694cddff1787d43e7807490dbc7
+
+Thank you!
 
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
