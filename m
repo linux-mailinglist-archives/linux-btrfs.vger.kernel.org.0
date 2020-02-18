@@ -2,179 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F351162961
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 16:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD8D162993
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 16:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbgBRP1P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 10:27:15 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:38463 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgBRP1P (ORCPT
+        id S1726444AbgBRPkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 10:40:41 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42147 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726338AbgBRPkl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 10:27:15 -0500
-Received: by mail-qv1-f67.google.com with SMTP id g6so9316308qvy.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 07:27:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qO1MAHUsz/XGo3/d7jph1BijIhee9edW9+K6IMqVfWE=;
-        b=QNDkuz2GgQkitM0JLDhhJrIxet6qN/ieBu2pDHMBwZqH7MnzChaYC58hl6LuUzN4xj
-         ByB1m3CoZThOkUJhhFmcR1XXXWXzE2afInlBgZJBEgNQZiArCZg6GovU6DoZw7Nt5GTn
-         eYWTfVRhp/6zUMgtayfrlSOh7g4BvV7qrkdMOqvrLqzRmdp0XgkvSs6oeF/foyi7sZ68
-         96bwco29b0mdfgAAtK0J2UVCYxxTdbyKRcrKzkc20W7LldTaYgHKCieKq2+G2WeXOV56
-         JPQ3mp61bGeZQPdV0WVfiaGTmwSbYy+fOdYtdOa95K/OocLjSTvrsIoO7cgeMGa51oz6
-         SNSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qO1MAHUsz/XGo3/d7jph1BijIhee9edW9+K6IMqVfWE=;
-        b=iaQv+jUgIgr3r3Iw1igA+1t6wsdYPCgDv2/DBk240N5iB/O3R2g1wZnPyXfn1QmjI0
-         TJLkb+tYOlSsPAeICEvhZpm01JN67GwhCaW8yYHSACQrCt6QUdSTxq0VXDowQOLb3lF0
-         B89ySezrHjP1JHpo6OTbAWYUMzX6RPdPdMMOXkAKtVzTFhTvcGJvXKtEHwL86cNkHF87
-         TljJlKQ+adGEIBfDac+wTGQkZSHrXrFQpxeeqilY+NWSCLypwTRYZUJUKCXzteTSuM+K
-         qSjkhG3BBalG1ZQwGG8kkaz2NO7wu7j0ofOAZdvbMh9dFswMRG6NLesizh0IOY1tmZNg
-         Pe+g==
-X-Gm-Message-State: APjAAAX77gHmqNQ5e4KiiwCRjbou1F92vu34lbLochdDHBIdYQ6ViXNr
-        Q7+YJ6zdHc6ixE4JxgCdvFpJSg==
-X-Google-Smtp-Source: APXvYqz1OUTLpisKH8559ZUPrlu2JMpvjFeWahWs7kBmMEh09+bZvV9B9INReAxOIeTunaSaRofsLw==
-X-Received: by 2002:ad4:57c7:: with SMTP id y7mr16449884qvx.174.1582039634114;
-        Tue, 18 Feb 2020 07:27:14 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id n4sm1948752qti.55.2020.02.18.07.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 07:27:13 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     kernel-team@fb.com, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH][v2] xfstests: add a option to run xfstests under a cgroup
-Date:   Tue, 18 Feb 2020 10:27:12 -0500
-Message-Id: <20200218152712.3750130-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Tue, 18 Feb 2020 10:40:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582040440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MPDSJagHBif548aMbDjzaIcvP2AHCn4dh2vIC3MX1QU=;
+        b=hT9I09aVmAuGNlpiD5gNugu1MMO827H4uBqM5YInu02z4aBw9LKoEmiUrzKSNQSeNWtFPf
+        1fLwYOEpDGV2ZrEVsmBT3/IOcbUMzRPwruYTLK0eDodsmhsy9kQtJn/OqQt3bEPQDmsRDf
+        U5LRwMjfqgHHk9vrnqKNIv8ITTZ6Gh4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-3pyTI1qzOmupi835c6s0Ow-1; Tue, 18 Feb 2020 10:40:36 -0500
+X-MC-Unique: 3pyTI1qzOmupi835c6s0Ow-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A5C7107ACC4;
+        Tue, 18 Feb 2020 15:40:35 +0000 (UTC)
+Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8805C19756;
+        Tue, 18 Feb 2020 15:40:34 +0000 (UTC)
+Date:   Tue, 18 Feb 2020 10:40:32 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] xfstests: add a CGROUP configuration option
+Message-ID: <20200218154032.GA14734@bfoster>
+References: <20200214203431.24506-1-josef@toxicpanda.com>
+ <20200217163821.GB6633@bfoster>
+ <ad711a8b-f79d-380a-dc11-7e6d1e1e79ba@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad711a8b-f79d-380a-dc11-7e6d1e1e79ba@toxicpanda.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I want to add some extended statistic gathering for xfstests, but it's
-tricky to isolate xfstests from the rest of the host applications.  The
-most straightforward way to do this is to run every test inside of it's
-own cgroup.  From there we can monitor the activity of tasks in the
-specific cgroup using BPF.
+On Tue, Feb 18, 2020 at 09:17:10AM -0500, Josef Bacik wrote:
+> On 2/17/20 11:38 AM, Brian Foster wrote:
+> > On Fri, Feb 14, 2020 at 03:34:31PM -0500, Josef Bacik wrote:
+> > > I want to add some extended statistic gathering for xfstests, but it's
+> > > tricky to isolate xfstests from the rest of the host applications.  The
+> > > most straightforward way to do this is to run every test inside of it's
+> > > own cgroup.  From there we can monitor the activity of tasks in the
+> > > specific cgroup using BPF.
+> > > 
+> > 
+> > I'm curious what kind of info you're looking for from tests..
+> > 
+> 
+> Latencies.  We have all of these tests doing all sorts of interesting
+> things, I want to track operation latencies with code we're actually testing
+> so I can see if I've introduced a performance regression somewhere.  Since
+> Facebook's whole fleet is on btrfs I want to make sure I'm only getting
+> information from things being run by xfstests so I can easily go back and
+> hunt down regressions that get introduced.  With BPF I can filter on cgroup
+> membership, so I know I'm only recording stats I care about.
+> 
 
-The support for this is pretty simple, allow users to pass -C <cgroup
-name>.  We will create the path if it doesn't already exist, and
-validate we can add things to cgroup.procs.  If we cannot it'll be
-disabled, otherwise we will use this when we do _run_seq by echo'ing the
-bash pid into cgroup.procs, which will cause any children to run under
-that cgroup.
+Interesting, might be useful to document the use case in the commit log.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- Changed it from a local.config option to a command line option.
-- Export CGROUP2_PATH for everything, utilize that path when generating our
-  cgroup for the scripts to run in.
+> > > The support for this is pretty simple, allow users to specify
+> > > CGROUP=/path/to/cgroup.  We will create the path if it doesn't already
+> > > exist, and validate we can add things to cgroup.procs.  If we cannot
+> > > it'll be disabled, otherwise we will use this when we do _run_seq by
+> > > echo'ing the bash pid into cgroup.procs, which will cause any children
+> > > to run under that cgroup.
+> > > 
+> > 
+> > Seems reasonable, but is there any opportunity to combine this with what
+> > we have in common/cgroup2? It's not clear to me if this cares about
+> > cgroup v1 or v2, but perhaps the cgroup2 checks could be built on top of
+> > a generic CGROUP var? I'm also wondering if we'd want to change runtime
+> > behavior purely based on the existence of the path as opposed to some
+> > kind of separate knob (in the event some future test requires the path
+> > for some reason without wanting to enable this mechanism).
+> > 
+> 
+> Oh I probably should have looked around, yeah we can definitely use this.
+> My initial thought is to just make CGROUP2_PATH exported always, we create
+> /path/to/cgroup2/xfstests and point CGROUP2_PATH at that, and then any tests
+> that use the cgroup2 path for their test will automatically be populated
+> under that global xfstests directory, so I can still capture them with my
+> scripts. Does that sound reasonable?  Thanks,
+> 
 
- check          | 24 +++++++++++++++++++++++-
- common/cgroup2 |  2 --
- common/config  |  1 +
- 3 files changed, 24 insertions(+), 3 deletions(-)
+Not sure I follow.. are you saying that we'd change CGROUP2_PATH from
+simply pointing at the local cgroup2 root on the local box to some magic
+field that directs creation of a cgroup for the particular test? Or did
+you mean to use a different variable name in the second case? Maybe it's
+just easier to see a patch...
 
-diff --git a/check b/check
-index 2e148e57..df33628e 100755
---- a/check
-+++ b/check
-@@ -72,6 +72,7 @@ check options
-     --large-fs		optimise scratch device for large filesystems
-     -s section		run only specified section from config file
-     -S section		exclude the specified section from the config file
-+    -C cgroup_name	run all the tests in the specified cgroup name
- 
- testlist options
-     -g group[,group...]	include tests from these groups
-@@ -101,6 +102,10 @@ excluded from the list of tests to run from that test dir.
- external_file argument is a path to a single file containing a list of tests
- to exclude in the form of <test dir>/<test name>.
- 
-+cgroup_name is just a plain name, or a path relative to the root cgroup path.
-+If CGROUP2_PATH does not point at where cgroup2 is mounted then adjust it
-+accordingly.
-+
- examples:
-  check xfs/001
-  check -g quick
-@@ -307,6 +312,7 @@ while [ $# -gt 0 ]; do
- 		;;
- 	--large-fs) export LARGE_SCRATCH_DEV=yes ;;
- 	--extra-space=*) export SCRATCH_DEV_EMPTY_SPACE=${r#*=} ;;
-+	-C)	CGROUP=$2 ; shift ;;
- 
- 	-*)	usage ;;
- 	*)	# not an argument, we've got tests now.
-@@ -509,11 +515,24 @@ _expunge_test()
- OOM_SCORE_ADJ="/proc/self/oom_score_adj"
- test -w ${OOM_SCORE_ADJ} && echo -1000 > ${OOM_SCORE_ADJ}
- 
-+# Initialize the cgroup path if it doesn't already exist
-+if [ ! -z "$CGROUP" ]; then
-+	CGROUP=${CGROUP2_PATH}/${CGROUP}
-+	mkdir -p ${CGROUP}
-+
-+	# If we can't write to cgroup.procs then unset cgroup
-+	test -w ${CGROUP}/cgroup.procs || unset CGROUP
-+fi
-+
- # ...and make the tests themselves somewhat more attractive to it, so that if
- # the system runs out of memory it'll be the test that gets killed and not the
- # test framework.
- _run_seq() {
--	bash -c "test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ}; exec ./$seq"
-+	_extra="test -w ${OOM_SCORE_ADJ} && echo 250 > ${OOM_SCORE_ADJ};"
-+	if [ ! -z "$CGROUP" ]; then
-+		_extra+="echo $$ > ${CGROUP}/cgroup.procs;"
-+	fi
-+	bash -c "${_extra} exec ./$seq"
- }
- 
- _detect_kmemleak
-@@ -615,6 +634,9 @@ for section in $HOST_OPTIONS_SECTIONS; do
- 	  echo "MKFS_OPTIONS  -- `_scratch_mkfs_options`"
- 	  echo "MOUNT_OPTIONS -- `_scratch_mount_options`"
- 	fi
-+	if [ ! -z "$CGROUP" ]; then
-+	  echo "CGROUP        -- ${CGROUP}"
-+	fi
- 	echo
- 	needwrap=true
- 
-diff --git a/common/cgroup2 b/common/cgroup2
-index 8833c9c8..554bd238 100644
---- a/common/cgroup2
-+++ b/common/cgroup2
-@@ -1,7 +1,5 @@
- # cgroup2 specific common functions
- 
--export CGROUP2_PATH="${CGROUP2_PATH:-/sys/fs/cgroup}"
--
- _require_cgroup2()
- {
- 	if [ `findmnt -d backward -n -o FSTYPE -f ${CGROUP2_PATH}` != "cgroup2" ]; then
-diff --git a/common/config b/common/config
-index 9a9c7760..0eaf35c3 100644
---- a/common/config
-+++ b/common/config
-@@ -259,6 +259,7 @@ case "$HOSTOS" in
- 	export E2FSCK_PROG=$(type -P e2fsck)
- 	export TUNE2FS_PROG=$(type -P tune2fs)
- 	export FSCK_OVERLAY_PROG=$(type -P fsck.overlay)
-+	export CGROUP2_PATH="${CGROUP2_PATH:-/sys/fs/cgroup}"
-         ;;
- esac
- 
--- 
-2.24.1
+Brian
+
+> Josef
+> 
 
