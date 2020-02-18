@@ -2,87 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 061CA1620FD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E9316212D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgBRGhh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 01:37:37 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:38081 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726065AbgBRGhh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 01:37:37 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 76F237EA064;
-        Tue, 18 Feb 2020 17:37:33 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j3wVg-0006PR-Ey; Tue, 18 Feb 2020 17:37:32 +1100
-Date:   Tue, 18 Feb 2020 17:37:32 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
-        Junxiao Bi <junxiao.bi@oracle.com>
-Subject: Re: [PATCH v6 10/19] fs: Convert mpage_readpages to mpage_readahead
-Message-ID: <20200218063732.GP10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-18-willy@infradead.org>
+        id S1726105AbgBRG47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 01:56:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58326 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgBRG46 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Feb 2020 01:56:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 717C9AE17
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 06:56:56 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v4 0/3] Btrfs: relocation: Refactor build_backref_tree() using btrfs_backref_iterator infrastructure
+Date:   Tue, 18 Feb 2020 14:56:46 +0800
+Message-Id: <20200218065649.126255-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-18-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=yPCof4ZbAAAA:8 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
-        a=VP4A6UuYfbXrVXFT8kYA:9 a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:45:58AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Implement the new readahead aop and convert all callers (block_dev,
-> exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qnx6,
-> reiserfs & udf).  The callers are all trivial except for GFS2 & OCFS2.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com> # ocfs2
-> ---
->  drivers/staging/exfat/exfat_super.c |  7 +++---
->  fs/block_dev.c                      |  7 +++---
->  fs/ext2/inode.c                     | 10 +++-----
->  fs/fat/inode.c                      |  7 +++---
->  fs/gfs2/aops.c                      | 23 ++++++-----------
->  fs/hpfs/file.c                      |  7 +++---
->  fs/iomap/buffered-io.c              |  2 +-
->  fs/isofs/inode.c                    |  7 +++---
->  fs/jfs/inode.c                      |  7 +++---
->  fs/mpage.c                          | 38 +++++++++--------------------
->  fs/nilfs2/inode.c                   | 15 +++---------
->  fs/ocfs2/aops.c                     | 34 ++++++++++----------------
->  fs/omfs/file.c                      |  7 +++---
->  fs/qnx6/inode.c                     |  7 +++---
->  fs/reiserfs/inode.c                 |  8 +++---
->  fs/udf/inode.c                      |  7 +++---
->  include/linux/mpage.h               |  4 +--
->  mm/migrate.c                        |  2 +-
->  18 files changed, 73 insertions(+), 126 deletions(-)
+This is part 1 of the incoming refactor patches for build_backref_tree()
 
-That's actually pretty simple changeover. Nothing really scary
-there. :)
+[THE PLAN]
+The overall plan of refactoring build_backref_tree() is:
+- Refactor how we iterate through backref items
+  This patchset, the smallest I guess.
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+- Make build_backref_tree() easier to read.
+  In short, that function is doing breadth-first-search to build a map
+  which starts from one tree block, to all root nodes referring it.
+
+  It involves backref iteration part, and a lot of backref cache only
+  works.
+  At least I hope to make this function less bulky and more structured.
+
+- Make build_backref_tree() independent from relocation
+  The hardest I guess.
+
+  Current it even accepts reloc_control as its first parameter.
+  Don't have a clear plan yet, but I guess at least I should make
+  build_backref_tree() to do some more coverage, other than taking
+  certain relocation-dependent shortcut.
+
+[THIS PATCHSET]
+For the patchset itself, the main purpose is to change how we iterate
+through all backref items of one tree block.
+
+The old way:
+
+  path->search_commit_root = 1;
+  path->skip_locking = 1;
+  ret = btrfs_search_slot(NULL, extent_root, path, &key, 0, 0);
+  ptr = btrfs_item_offset_nr()
+  end = btrfs_item_end_nr()
+  /* Inline item loop */
+  while (ptr < end) {
+	/* Handle each inline item here */
+  }
+  while (1) {
+  	ret = btrfs_next_item();
+	btrfs_item_key_to_cpu()
+	if (key.objectid != bytenr ||
+	    !(key.type == XXX || key.type == YYY)) 
+		break;
+	/* Handle each keyed item here */
+  }
+  
+The new way:
+
+  iterator = btrfs_backref_iterator_alloc();
+  for (ret = btrfs_backref_iterator_start(iterator, bytenr);
+       ret == 0; ret = btrfs_backref_iterator_next(iterator)) {
+	/*
+	 * Handle both keyed and inlined item here.
+	 *
+	 * We can use iterator->key to determine if it's inlined or
+	 * keyed.
+	 * Even for inlined item, it can be easily converted to keyed
+	 * item, just like we did in build_backref_tree().
+	 */
+  }
+
+Currently, only build_backref_tree() can utilize this infrastructure.
+
+Backref.c has more requirement, as it needs to handle iteration for both
+data and metadata, both commit root and current root.
+And more importantly, backref.c uses depth first search, thus not a
+perfect match for btrfs_backref_iterator.
+
+Extra naming suggestion is welcomed.
+The current naming, btrfs_backref_iterator_* looks pretty long to me
+already.
+Shorter naming would be much better.
+
+Changelog:
+v2:
+- Fix a completion bug in btrfs_backref_iterator_next()
+  It should be btrfs_extent_inline_ref_type().
+
+v3:
+- Comment and commit message update
+- Move helper definitions to where they get first used
+- Use helpers to replace some internal open code
+
+v4:
+- Fix a bug in end_ptr calculation
+  The old btrfs_item_end_nr() doesn't take LEAF_DATA_OFFSET into
+  consideration, thus causes failure in btrfs/003.
+
+- Add extra check for keyed only backrefs
+  btrfs_backref_iter_start() doesn't handle keyed only backrefs well.
+  Add extra check to ensure callers get the correct cur_ptr set.
+
+- Shorten the name, iterator->iter
+
+
+Qu Wenruo (3):
+  btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+  btrfs: backref: Implement btrfs_backref_iter_next()
+  btrfs: relocation: Use btrfs_backref_iter infrastructure
+
+ fs/btrfs/backref.c    | 135 +++++++++++++++++++++++++++++
+ fs/btrfs/backref.h    |  94 ++++++++++++++++++++
+ fs/btrfs/relocation.c | 193 ++++++++++++++----------------------------
+ 3 files changed, 291 insertions(+), 131 deletions(-)
 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.25.0
+
