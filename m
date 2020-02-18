@@ -2,113 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD8D162993
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 16:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88751629A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 16:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgBRPkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 10:40:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42147 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726338AbgBRPkl (ORCPT
+        id S1726569AbgBRPmX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 10:42:23 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:36464 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgBRPmX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 10:40:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582040440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MPDSJagHBif548aMbDjzaIcvP2AHCn4dh2vIC3MX1QU=;
-        b=hT9I09aVmAuGNlpiD5gNugu1MMO827H4uBqM5YInu02z4aBw9LKoEmiUrzKSNQSeNWtFPf
-        1fLwYOEpDGV2ZrEVsmBT3/IOcbUMzRPwruYTLK0eDodsmhsy9kQtJn/OqQt3bEPQDmsRDf
-        U5LRwMjfqgHHk9vrnqKNIv8ITTZ6Gh4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-3pyTI1qzOmupi835c6s0Ow-1; Tue, 18 Feb 2020 10:40:36 -0500
-X-MC-Unique: 3pyTI1qzOmupi835c6s0Ow-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A5C7107ACC4;
-        Tue, 18 Feb 2020 15:40:35 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8805C19756;
-        Tue, 18 Feb 2020 15:40:34 +0000 (UTC)
-Date:   Tue, 18 Feb 2020 10:40:32 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] xfstests: add a CGROUP configuration option
-Message-ID: <20200218154032.GA14734@bfoster>
-References: <20200214203431.24506-1-josef@toxicpanda.com>
- <20200217163821.GB6633@bfoster>
- <ad711a8b-f79d-380a-dc11-7e6d1e1e79ba@toxicpanda.com>
+        Tue, 18 Feb 2020 10:42:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oQ+wHGdx1ULBXPBam1g8Uipf1yyfaaqxmlrcZ982o9k=; b=Wj2hN1Ys6lneGYnt6lyt28p7dX
+        xcPHY3DggtQF0V8rHudxsyMEruSBB+yksYd5K4jTPpH1Sb6FwieHFjL9L4y2tE2u/FKfJKGHM07zk
+        7aVuKRme2EL4Yz9RAVR+an3Misj05c3UKPtIB2h8TZRI5Is3OFhiQdPCfewKzO/jjjB0pr4J84clk
+        JoeAVeGLWbHKY/xgLceP9WBHTLk19SxEnQx8FM7lcnxbWFWqoM7F8w+JhQvm0Ci7daJwE+nGYHtn3
+        +8vcZGb7YOcxncpzTgWcLFEqCwt6gz/YgXx5oaJ9EhecdpELGPuj8YQkK5ZbDKGuAWwReHfNZzohN
+        EfWd+hMA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j450w-0007Ik-FJ; Tue, 18 Feb 2020 15:42:22 +0000
+Date:   Tue, 18 Feb 2020 07:42:22 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 07/19] mm: Put readahead pages in cache earlier
+Message-ID: <20200218154222.GQ7778@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-12-willy@infradead.org>
+ <20200218061459.GM10776@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ad711a8b-f79d-380a-dc11-7e6d1e1e79ba@toxicpanda.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20200218061459.GM10776@dread.disaster.area>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 09:17:10AM -0500, Josef Bacik wrote:
-> On 2/17/20 11:38 AM, Brian Foster wrote:
-> > On Fri, Feb 14, 2020 at 03:34:31PM -0500, Josef Bacik wrote:
-> > > I want to add some extended statistic gathering for xfstests, but it's
-> > > tricky to isolate xfstests from the rest of the host applications.  The
-> > > most straightforward way to do this is to run every test inside of it's
-> > > own cgroup.  From there we can monitor the activity of tasks in the
-> > > specific cgroup using BPF.
-> > > 
+On Tue, Feb 18, 2020 at 05:14:59PM +1100, Dave Chinner wrote:
+> On Mon, Feb 17, 2020 at 10:45:52AM -0800, Matthew Wilcox wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > > 
-> > I'm curious what kind of info you're looking for from tests..
-> > 
+> > At allocation time, put the pages in the cache unless we're using
+> > ->readpages.  Add the readahead_for_each() iterator for the benefit of
+> > the ->readpage fallback.  This iterator supports huge pages, even though
+> > none of the filesystems to be converted do yet.
 > 
-> Latencies.  We have all of these tests doing all sorts of interesting
-> things, I want to track operation latencies with code we're actually testing
-> so I can see if I've introduced a performance regression somewhere.  Since
-> Facebook's whole fleet is on btrfs I want to make sure I'm only getting
-> information from things being run by xfstests so I can easily go back and
-> hunt down regressions that get introduced.  With BPF I can filter on cgroup
-> membership, so I know I'm only recording stats I care about.
+> This could be better written - took me some time to get my head
+> around it and the code.
 > 
-
-Interesting, might be useful to document the use case in the commit log.
-
-> > > The support for this is pretty simple, allow users to specify
-> > > CGROUP=/path/to/cgroup.  We will create the path if it doesn't already
-> > > exist, and validate we can add things to cgroup.procs.  If we cannot
-> > > it'll be disabled, otherwise we will use this when we do _run_seq by
-> > > echo'ing the bash pid into cgroup.procs, which will cause any children
-> > > to run under that cgroup.
-> > > 
-> > 
-> > Seems reasonable, but is there any opportunity to combine this with what
-> > we have in common/cgroup2? It's not clear to me if this cares about
-> > cgroup v1 or v2, but perhaps the cgroup2 checks could be built on top of
-> > a generic CGROUP var? I'm also wondering if we'd want to change runtime
-> > behavior purely based on the existence of the path as opposed to some
-> > kind of separate knob (in the event some future test requires the path
-> > for some reason without wanting to enable this mechanism).
-> > 
+> "When populating the page cache for readahead, mappings that don't
+> use ->readpages need to have their pages added to the page cache
+> before ->readpage is called. Do this insertion earlier so that the
+> pages can be looked up immediately prior to ->readpage calls rather
+> than passing them on a linked list. This early insert functionality
+> is also required by the upcoming ->readahead method that will
+> replace ->readpages.
 > 
-> Oh I probably should have looked around, yeah we can definitely use this.
-> My initial thought is to just make CGROUP2_PATH exported always, we create
-> /path/to/cgroup2/xfstests and point CGROUP2_PATH at that, and then any tests
-> that use the cgroup2 path for their test will automatically be populated
-> under that global xfstests directory, so I can still capture them with my
-> scripts. Does that sound reasonable?  Thanks,
+> Optimise and simplify the readpage loop by adding a
+> readahead_for_each() iterator to provide the pages we need to read.
+> This iterator also supports huge pages, even though none of the
+> filesystems have been converted to use them yet."
+
+Thanks, I'll use that.
+
+> > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > +{
+> > +	struct page *page;
+> > +
+> > +	if (!rac->_nr_pages)
+> > +		return NULL;
 > 
-
-Not sure I follow.. are you saying that we'd change CGROUP2_PATH from
-simply pointing at the local cgroup2 root on the local box to some magic
-field that directs creation of a cgroup for the particular test? Or did
-you mean to use a different variable name in the second case? Maybe it's
-just easier to see a patch...
-
-Brian
-
-> Josef
+> Hmmmm.
 > 
+> > +
+> > +	page = xa_load(&rac->mapping->i_pages, rac->_start);
+> > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> > +	rac->_batch_count = hpage_nr_pages(page);
+> 
+> So we could have rac->_nr_pages = 2, and then we get an order 2
+> large page returned, and so rac->_batch_count = 4.
 
+Well, no, we couldn't.  rac->_nr_pages is incremented by 4 when we add
+an order-2 page to the readahead.  I can put a
+	BUG_ON(rac->_batch_count > rac->_nr_pages)
+in here to be sure to catch any logic error like that.
+
+> > @@ -159,6 +152,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
+> >  	unsigned long i;
+> >  	loff_t isize = i_size_read(inode);
+> >  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
+> > +	bool use_list = mapping->a_ops->readpages;
+> >  	struct readahead_control rac = {
+> >  		.mapping = mapping,
+> >  		.file = filp,
+> 
+> [ I do find these unstructured mixes of declarations and
+> initialisations dense and difficult to read.... ]
+
+Fair ... although I didn't create this mess, I can tidy it up a bit.
+
+> > -		page->index = offset;
+> > -		list_add(&page->lru, &page_pool);
+> > +		if (use_list) {
+> > +			page->index = offset;
+> > +			list_add(&page->lru, &page_pool);
+> > +		} else if (add_to_page_cache_lru(page, mapping, offset,
+> > +					gfp_mask) < 0) {
+> > +			put_page(page);
+> > +			goto read;
+> > +		}
+> 
+> Ok, so that's why you put read code at the end of the loop. To turn
+> the code into spaghetti :/
+> 
+> How much does this simplify down when we get rid of ->readpages and
+> can restructure the loop? This really seems like you're trying to
+> flatten two nested loops into one by the use of goto....
+
+I see it as having two failure cases in this loop.  One for "page is
+already present" (which already existed) and one for "allocated a page,
+but failed to add it to the page cache" (which used to be done later).
+I didn't want to duplicate the "call read_pages()" code.  So I reshuffled
+the code rather than add a nested loop.  I don't think the nested loop
+is easier to read (we'll be at 5 levels of indentation for some statements).
+Could do it this way ...
+
+@@ -218,18 +218,17 @@ void page_cache_readahead_limit(struct address_space *mapping,
+                } else if (add_to_page_cache_lru(page, mapping, offset,
+                                        gfp_mask) < 0) {
+                        put_page(page);
+-                       goto read;
++read:
++                       if (readahead_count(&rac))
++                               read_pages(&rac, &page_pool);
++                       rac._nr_pages = 0;
++                       rac._start = ++offset;
++                       continue;
+                }
+                if (i == nr_to_read - lookahead_size)
+                        SetPageReadahead(page);
+                rac._nr_pages++;
+                offset++;
+-               continue;
+-read:
+-               if (readahead_count(&rac))
+-                       read_pages(&rac, &page_pool);
+-               rac._nr_pages = 0;
+-               rac._start = ++offset;
+        }
+ 
+        /*
+
+but I'm not sure that's any better.
