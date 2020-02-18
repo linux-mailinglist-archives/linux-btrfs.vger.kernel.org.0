@@ -2,106 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF43D1627E0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 15:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFFC1627EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 15:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgBROPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 09:15:50 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44717 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgBROPt (ORCPT
+        id S1726528AbgBRORN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 09:17:13 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:46879 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbgBRORN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 09:15:49 -0500
-Received: by mail-wr1-f66.google.com with SMTP id m16so24092101wrx.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 06:15:47 -0800 (PST)
+        Tue, 18 Feb 2020 09:17:13 -0500
+Received: by mail-qt1-f193.google.com with SMTP id i14so7339045qtv.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 06:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zvii3gCmTQrJe3pCpaePM/qXXxpVM1N6ONh16q15oXo=;
-        b=l2a794euLnXA4kbVULsCIjcvUDuKyYHuKAqo7Uxulh4bJrE2i5oeG18By7/zfpXGdW
-         lcD/lyaiXALOKIU+qnAeqHGQuSe3zq2CJ5r7fMFVctVu6QIJSYjGQTyXD2Q2CAUdfZYM
-         ThdiSUc0Jgbs6mMugQ2zuG75UFXL0g9vlS5JfrxWW9tfSrTjMGZHYI3LuiwAFBbEwa9+
-         TKQi5ur6v2epqESY4rGJUR+h/X3w02k9hDtb+WAuM6ZE7BGpotFtzG66EM5QHUV0wWKt
-         jnuGg3fZ/1iyWPVDI6xJisMJTbPB8y70yKTu34+HBlzqyta9WO4iakuI96Bl4DNq8FdM
-         DUFg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+UCgxyYmsy9OBO3kh/zA2QazjAJ14ZIlvINx4SkM/hw=;
+        b=awt3V+d9PrBKzBzdikVmlN5H+FLXC1kyY79D3WFOFDKJbnKpklnI0CZLxSqeLyGOxN
+         aeiMkoweDdCw2xze4pOPs9bJYzKx7cNJ8mBSV/xq5bhuydtbaXUHRYiOlmFkVLwL0Dlp
+         jfLSBv5Xtsxfk0w8j6VSv0OT+rYjeM+KZNUZNK7JbSvkxg3B+aiTUjEPRJ8Wde+dFZA/
+         /BbjI0NQGOHH6YDuKQjNoSGLRmHSla54KaLQU3Po17yG6hHlXMUcHtj+xvOcoXCU28jv
+         p48EjILYwHcMFJxgl+hVZN2bMOgsai4YGNAPjji/ImVDammu613T1/K/5UnBUF9v6U9f
+         i7bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zvii3gCmTQrJe3pCpaePM/qXXxpVM1N6ONh16q15oXo=;
-        b=GV4B7mPRdhHyq3TPzdgyPaR5lZw+19dxQXtt31+xF0YuqOiRRr9GqpZmQi+XF28Mya
-         4VI4YgoykauiVTe0FPxgCsCQLLIo5XzpDOZTUjdctj8s61ZNKRG9AqLNdCZWt/kyUv8Z
-         aiMy3PT6fb6kJ9HB+esC5mzj2nV5+r9pJs4C3sCsgm3F/VRfTLn96pNgIUKBzf+Htb63
-         dq6pEsFmsfh3jSIWJIBM7HJ1w9fslj8s2knFmO3kJCpwoYVXbpjRvY2Q3YcSAhI4Q3Ba
-         NVuZr1nZ594TWwVfrrMf5HkBgKNyNtvQ7HnTLOgmjilu+LFFSpESQ+dV/AiSJtVykpA4
-         PgEw==
-X-Gm-Message-State: APjAAAUZCAifIjTIX2haX+QWGP2iuSB9tngpR7DKVuZDnbOkZ8LxuU5j
-        QRz/yqrSfMa1XS2y/nBJyQKHj/WNJYM/QRuHT2mDiXbN
-X-Google-Smtp-Source: APXvYqzAxfF6gI9+hLUa2IolFPytER8T+0VQZm65Gxowp5aIpzvNV+Y7pb9VXDCOJ1uwZYDFlqOang8vBQ6431DE2vk=
-X-Received: by 2002:a5d:4a48:: with SMTP id v8mr29122448wrs.42.1582035346457;
- Tue, 18 Feb 2020 06:15:46 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+UCgxyYmsy9OBO3kh/zA2QazjAJ14ZIlvINx4SkM/hw=;
+        b=ZpYfZCxFEeAt1Wqlff5KFoVrpouQj7zGx3MW8TyCed+UIE/42s5AtDuJ8iT3P1dceG
+         ak/XldUJgVqEW4Y46UKPxxaz+4Tt2WorMpQcdFZQSgL6acL/gR+nthFN+QDMJ1RWunn8
+         8MOJ5q5LPa+3WI2DjmjKlDAf+ppE6ReJkiYey0ZIRFWt3I9CkcLFgEphXdA+I8Esm9x4
+         XQF005/+B+aGdljNqCcTNx6cEepplmPq7XRjjflK/KR8B7gakIRm8iyFzMkqgrMYx10t
+         utnjhOyx6Z7ulrEkVTlFgkAAPSLlaJOtuljFy+YTZHWyfKVlkTAu67jZueLbVz6JoYAn
+         dw9g==
+X-Gm-Message-State: APjAAAWMlPsuCl9HGW4fDwXfCUFZm8KxlG3piI9+HI+xyY7MsMvue0dg
+        /YtLOKgHd5lBgTaxVq2Ller1d3OjERs=
+X-Google-Smtp-Source: APXvYqxL+77fmIFQfqT2MiKgUvUTbXZt+kdtNMquU7513VZuZrMc0RX/3sRjLRxKfTknrvV3A4sQBA==
+X-Received: by 2002:ac8:584:: with SMTP id a4mr17644492qth.240.1582035432145;
+        Tue, 18 Feb 2020 06:17:12 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id b26sm1918809qkk.5.2020.02.18.06.17.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Feb 2020 06:17:11 -0800 (PST)
+Subject: Re: [PATCH] xfstests: add a CGROUP configuration option
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20200214203431.24506-1-josef@toxicpanda.com>
+ <20200217163821.GB6633@bfoster>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <ad711a8b-f79d-380a-dc11-7e6d1e1e79ba@toxicpanda.com>
+Date:   Tue, 18 Feb 2020 09:17:10 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <8fb8442b-dbf9-4d4b-42bb-ce460048f891@sfelis.de> <CAPmG0ja40xPPcXxM+uv_v339v+8Jc5TLP_kONbkw1vWHFUer-Q@mail.gmail.com>
-In-Reply-To: <CAPmG0ja40xPPcXxM+uv_v339v+8Jc5TLP_kONbkw1vWHFUer-Q@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 18 Feb 2020 07:15:30 -0700
-Message-ID: <CAJCQCtQjRMctPYtPM-v2=ZGBMJ5T88eyVcvdgR9SfpTVWBgSOQ@mail.gmail.com>
-Subject: Re: kernel incompatibility?
-To:     Henk Slager <eye1tm@gmail.com>
-Cc:     Simeon Felis <simeon_btrfs@sfelis.de>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200217163821.GB6633@bfoster>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 4:54 AM Henk Slager <eye1tm@gmail.com> wrote:
->
-> On Sun, Feb 16, 2020 at 10:29 AM Simeon Felis <simeon_btrfs@sfelis.de> wrote:
-> > [1] https://lists.archlinux.org/pipermail/arch-general/2020-February/047463.html
-> The partition size calculations done in the reference are not correct,
-> they are 1 512-byte-sized sector too smal (compare: if start_sector=0,
-> end_sector=9, size is 10).
+On 2/17/20 11:38 AM, Brian Foster wrote:
+> On Fri, Feb 14, 2020 at 03:34:31PM -0500, Josef Bacik wrote:
+>> I want to add some extended statistic gathering for xfstests, but it's
+>> tricky to isolate xfstests from the rest of the host applications.  The
+>> most straightforward way to do this is to run every test inside of it's
+>> own cgroup.  From there we can monitor the activity of tasks in the
+>> specific cgroup using BPF.
+>>
+> 
+> I'm curious what kind of info you're looking for from tests..
+> 
 
-The btrfs device size is smaller than the partition size in both
-cases. Using an identically sized sparse file (same number of 512 byte
-sectors), both fdisk and gdisk produce a single partition that fails
-to end on a 4KiB boundary. But in any case Btrfs doesn't seem to care,
-it sets the total number of bytes for the partition to the nearest
-4KiB.
+Latencies.  We have all of these tests doing all sorts of interesting things, I 
+want to track operation latencies with code we're actually testing so I can see 
+if I've introduced a performance regression somewhere.  Since Facebook's whole 
+fleet is on btrfs I want to make sure I'm only getting information from things 
+being run by xfstests so I can easily go back and hunt down regressions that get 
+introduced.  With BPF I can filter on cgroup membership, so I know I'm only 
+recording stats I care about.
 
-> Then still, there are some other errors somewhere, that might be
-> triggered by having unequeal sized partitions sdb1 and sdc1\
+>> The support for this is pretty simple, allow users to specify
+>> CGROUP=/path/to/cgroup.  We will create the path if it doesn't already
+>> exist, and validate we can add things to cgroup.procs.  If we cannot
+>> it'll be disabled, otherwise we will use this when we do _run_seq by
+>> echo'ing the bash pid into cgroup.procs, which will cause any children
+>> to run under that cgroup.
+>>
+> 
+> Seems reasonable, but is there any opportunity to combine this with what
+> we have in common/cgroup2? It's not clear to me if this cares about
+> cgroup v1 or v2, but perhaps the cgroup2 checks could be built on top of
+> a generic CGROUP var? I'm also wondering if we'd want to change runtime
+> behavior purely based on the existence of the path as opposed to some
+> kind of separate knob (in the event some future test requires the path
+> for some reason without wanting to enable this mechanism).
+> 
 
-I'm not sure how it'll matter, since Btrfs allocates a chunk, with
-same stripe sizes, and any difference between partition sizes is
-overcome by chunk allocation. Within the allocated chunks, they're the
-same. Unallocated space isn't used for anything. Quite a lot of people
-are using Btrfs raid1 with dissimilar sized devices.
+Oh I probably should have looked around, yeah we can definitely use this.  My 
+initial thought is to just make CGROUP2_PATH exported always, we create 
+/path/to/cgroup2/xfstests and point CGROUP2_PATH at that, and then any tests 
+that use the cgroup2 path for their test will automatically be populated under 
+that global xfstests directory, so I can still capture them with my scripts. 
+Does that sound reasonable?  Thanks,
 
-> You could look at backports w.r.t. 32-bit vs. 64-bit, maybe related to
-> changes 512 sector sizes and 4k page sizes.
-
-I wasn't aware Btrfs ever had an internal sector size less than 4KiB.
-
-
-> And better use gdisk
-> instead of fdisk I think. And maybe check first 1MiB and last 2MiB of
-> both disks.
-
-Yeah we did that, they're fine. The backup GPT is in the correct
-location and intact according to both fdisk and gdisk.
-
-> There are also Ubuntu 32-bit and 64-bit images available for
-> RaspberryPi's with kernel 5.3.x, maybe that gives hints where the
-> root-cause is.
-
-Maybe. There is a bug here, even accounting for 32-bit. If either the
-device or volume become too large to reliably support on 32-bit OS,
-there needs to be a clear INFO or WARNING, and perhaps even only mount
-ro.
-
--- 
-Chris Murphy
+Josef
