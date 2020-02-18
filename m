@@ -2,71 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1C2163571
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 22:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97BB16351B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 22:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgBRVtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 16:49:16 -0500
-Received: from mailgw.unisannio.it ([193.206.108.11]:42211 "EHLO
-        mailgw.unisannio.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgBRVtQ (ORCPT
+        id S1727274AbgBRVdV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 16:33:21 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15423 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgBRVdV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 16:49:16 -0500
-X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Feb 2020 16:49:14 EST
-Received: from localhost (unknown [127.0.0.1])
-        by mailgw.unisannio.it (Postfix) with ESMTP id 4E272500B1B;
-        Tue, 18 Feb 2020 21:44:48 +0000 (UTC)
-Received: from mailgw.unisannio.it ([127.0.0.1])
- by localhost (mailgw.unisannio.it [127.0.0.1]) (amavisd-maia, port 10024)
- with ESMTP id 06300-06-5; Tue, 18 Feb 2020 22:44:47 +0100 (CET)
-Received: from pamx1.unisannio.it (pamx1.unisannio.it [193.206.108.12])
-        by mailgw.unisannio.it (Postfix) with ESMTP id 18917500B0E;
-        Tue, 18 Feb 2020 22:44:46 +0100 (CET)
-Received: from webmail.unisannio.it (webmail.unisannio.it [193.206.108.9])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bmuhammad)
-        by pamx1.unisannio.it (Postfix) with ESMTPSA id C715A1E04C0;
-        Tue, 18 Feb 2020 22:04:46 +0100 (CET)
+        Tue, 18 Feb 2020 16:33:21 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e4c57d90000>; Tue, 18 Feb 2020 13:32:09 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 18 Feb 2020 13:33:20 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 18 Feb 2020 13:33:20 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 18 Feb
+ 2020 21:33:19 +0000
+Subject: Re: [PATCH v6 02/19] mm: Ignore return value of ->readpages
+To:     Matthew Wilcox <willy@infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-3-willy@infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <ed5b3635-be1b-c290-0e19-b516e7af2aca@nvidia.com>
+Date:   Tue, 18 Feb 2020 13:33:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 19 Feb 2020 00:04:46 +0300
-From:   "Banca IMI S.P.A" <bmuhammad@unisannio.it>
-To:     undisclosed-recipients:;
-Subject: Finanzielle Hilfe (Darlehen @ 1,3%)
-Organization: Banca IMI S.P.A
-Reply-To: info.bancaimi.uk@gmail.com
-Mail-Reply-To: info.bancaimi.uk@gmail.com
-Message-ID: <daa2e3cbf534c9d57e3be79a4e2cdaf2@unisannio.it>
-X-Sender: bmuhammad@unisannio.it
-User-Agent: Roundcube Webmail/1.3.9
-X-Virus-Scanned: Maia Mailguard 1.0.0
+In-Reply-To: <20200217184613.19668-3-willy@infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1582061529; bh=RXve5/fUA3oBILhUm8o+y+17c7pBmRijpBQPJAnmP80=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=f5Iuo6blIXbcDZrM05UIgCY8ANT5xW9HB6FXMMGQCfaHMfBnR1DfaWLTMAYIE7XBP
+         B9QOW8wSO4ij5j+4bCfhLlUR2LpeSTGJV0y8tnLGhP+d4at2LBMPXmcd1007q6GV+V
+         F6nXmc1d8pgAlmrCaaR8bklkj+n7DiCZH8Mj9XZsOl6SUYvt06XEAlqdCtbjrJAqsO
+         JEKRbCwBCkx6iNbCJyyfXN8/DDeOTx/qKgkY7yedkT+Pn0V+QFJNvk6ybzosDhS50D
+         pgn5lvAGlEV280+lBsRM1YfSDahNeoARNWUSdQ6PSTGWm5OdOjiCPRr9K7h5I26KXq
+         jvW6k1ji+T2MA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2/17/20 10:45 AM, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> We used to assign the return value to a variable, which we then ignored.
+> Remove the pretence of caring.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/readahead.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 
+Looks good,
 
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+thanks,
 -- 
-Grüße Herr / Frau,
+John Hubbard
+NVIDIA
 
-Benötigen Sie finanzielle Unterstützung (Darlehen)?
-Sprechen Sie mit uns bei Banca IMI S.P.A, wir lösen Ihre finanziellen 
-Probleme.
-
-Unser Zinssatz beträgt 1,3% Jahreszinssatz. Bitte bewerben Sie sich 
-jetzt und geben Sie folgende Bewerbungsdetails ein:
-
-Vollständiger Name:____________________
-Darlehensbetrag: _______________________
-Leihdauer: ___________________
-Darlehen Zweck: _________________
-Telefon:____________________
-
-Wir warten auf Ihren Antrag, damit Ihr Kreditantrag bearbeitet werden 
-kann.
-
-Freundliche Grüße
+> 
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 8ce46d69e6ae..12d13b7792da 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -113,17 +113,16 @@ int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+>  
+>  EXPORT_SYMBOL(read_cache_pages);
+>  
+> -static int read_pages(struct address_space *mapping, struct file *filp,
+> +static void read_pages(struct address_space *mapping, struct file *filp,
+>  		struct list_head *pages, unsigned int nr_pages, gfp_t gfp)
+>  {
+>  	struct blk_plug plug;
+>  	unsigned page_idx;
+> -	int ret;
+>  
+>  	blk_start_plug(&plug);
+>  
+>  	if (mapping->a_ops->readpages) {
+> -		ret = mapping->a_ops->readpages(filp, mapping, pages, nr_pages);
+> +		mapping->a_ops->readpages(filp, mapping, pages, nr_pages);
+>  		/* Clean up the remaining pages */
+>  		put_pages_list(pages);
+>  		goto out;
+> @@ -136,12 +135,9 @@ static int read_pages(struct address_space *mapping, struct file *filp,
+>  			mapping->a_ops->readpage(filp, page);
+>  		put_page(page);
+>  	}
+> -	ret = 0;
+>  
+>  out:
+>  	blk_finish_plug(&plug);
+> -
+> -	return ret;
+>  }
+>  
+>  /*
+> 
