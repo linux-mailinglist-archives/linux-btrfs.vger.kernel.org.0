@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB72A16212F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5C1162130
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 07:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbgBRG5E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 01:57:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58352 "EHLO mx2.suse.de"
+        id S1726246AbgBRG5K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 01:57:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58370 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgBRG5E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 01:57:04 -0500
+        id S1726072AbgBRG5J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Feb 2020 01:57:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E2641AE9E;
-        Tue, 18 Feb 2020 06:57:01 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 64B94AE17;
+        Tue, 18 Feb 2020 06:57:04 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4 2/3] btrfs: backref: Implement btrfs_backref_iter_next()
-Date:   Tue, 18 Feb 2020 14:56:48 +0800
-Message-Id: <20200218065649.126255-3-wqu@suse.com>
+Subject: [PATCH v4 3/3] btrfs: relocation: Use btrfs_backref_iter infrastructure
+Date:   Tue, 18 Feb 2020 14:56:49 +0800
+Message-Id: <20200218065649.126255-4-wqu@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200218065649.126255-1-wqu@suse.com>
 References: <20200218065649.126255-1-wqu@suse.com>
@@ -31,120 +31,355 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This function will go next inline/keyed backref for
-btrfs_backref_iter infrastructure.
+In the core function of relocation, build_backref_tree, it needs to
+iterate all backref items of one tree block.
+
+We don't really want to spend our code and reviewers' time to going
+through tons of supportive code just for the backref walk.
+
+Use btrfs_backref_iter infrastructure to do the loop.
+
+The backref items look would be much more easier to read:
+
+	ret = btrfs_backref_iter_start(iter, cur->bytenr);
+	for (; ret == 0; ret = btrfs_backref_iter_next(iter)) {
+		/* The really important work */
+	}
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/backref.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/backref.h | 34 ++++++++++++++++++++++++++++++++
- 2 files changed, 83 insertions(+)
+ fs/btrfs/relocation.c | 193 ++++++++++++++----------------------------
+ 1 file changed, 62 insertions(+), 131 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e8e1d263c38b..56b32a0a931a 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2338,3 +2338,52 @@ int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr)
- 	btrfs_backref_iter_release(iter);
- 	return ret;
- }
-+
-+int btrfs_backref_iter_next(struct btrfs_backref_iter *iter)
-+{
-+	struct extent_buffer *eb = btrfs_backref_get_eb(iter);
-+	struct btrfs_path *path = iter->path;
-+	struct btrfs_extent_inline_ref *iref;
-+	int ret;
-+	u32 size;
-+
-+	if (btrfs_backref_iter_is_inline_ref(iter)) {
-+		/* We're still inside the inline refs */
-+		ASSERT(iter->cur_ptr < iter->end_ptr);
-+
-+		if (btrfs_backref_has_tree_block_info(iter)) {
-+			/* First tree block info */
-+			size = sizeof(struct btrfs_tree_block_info);
-+		} else {
-+			/* Use inline ref type to determine the size */
-+			int type;
-+
-+			iref = (struct btrfs_extent_inline_ref *)
-+				(iter->cur_ptr);
-+			type = btrfs_extent_inline_ref_type(eb, iref);
-+
-+			size = btrfs_extent_inline_ref_size(type);
-+		}
-+		iter->cur_ptr += size;
-+		if (iter->cur_ptr < iter->end_ptr)
-+			return 0;
-+
-+		/* All inline items iterated, fall through */
-+	}
-+	/* We're at keyed items, there is no inline item, just go next item */
-+	ret = btrfs_next_item(iter->fs_info->extent_root, iter->path);
-+	if (ret)
-+		return ret;
-+
-+	btrfs_item_key_to_cpu(path->nodes[0], &iter->cur_key, path->slots[0]);
-+	if (iter->cur_key.objectid != iter->bytenr ||
-+	    (iter->cur_key.type != BTRFS_TREE_BLOCK_REF_KEY &&
-+	     iter->cur_key.type != BTRFS_SHARED_BLOCK_REF_KEY))
-+		return 1;
-+	iter->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
-+					       path->slots[0]);
-+	iter->cur_ptr = iter->item_ptr;
-+	iter->end_ptr = iter->item_ptr + btrfs_item_size_nr(path->nodes[0],
-+							    path->slots[0]);
-+	return 0;
-+}
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 8b1ec11d4b28..42fd76dfe553 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -121,8 +121,42 @@ static inline void btrfs_backref_iter_free(struct btrfs_backref_iter *iter)
- 	kfree(iter);
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index b1365a516a25..1fe34d8eef6d 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -22,6 +22,7 @@
+ #include "print-tree.h"
+ #include "delalloc-space.h"
+ #include "block-group.h"
++#include "backref.h"
+ 
+ /*
+  * backref_node, mapping_node and tree_block start with this
+@@ -604,48 +605,6 @@ static struct btrfs_root *read_fs_root(struct btrfs_fs_info *fs_info,
+ 	return btrfs_get_fs_root(fs_info, &key, false);
  }
  
-+static inline struct extent_buffer *
-+btrfs_backref_get_eb(struct btrfs_backref_iter *iter)
-+{
-+	if (!iter)
-+		return NULL;
-+	return iter->path->nodes[0];
-+}
-+
-+/*
-+ * For metadata with EXTENT_ITEM key (non-skinny) case, the first inline data
-+ * is btrfs_tree_block_info, without a btrfs_extent_inline_ref header.
-+ *
-+ * This helper is here to determine if that's the case.
-+ */
-+static inline bool btrfs_backref_has_tree_block_info(
-+		struct btrfs_backref_iter *iter)
-+{
-+	if (iter->cur_key.type == BTRFS_EXTENT_ITEM_KEY &&
-+	    iter->cur_ptr - iter->item_ptr == sizeof(struct btrfs_extent_item))
-+		return true;
-+	return false;
-+}
-+
- int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr);
- 
-+int btrfs_backref_iter_next(struct btrfs_backref_iter *iter);
-+
-+static inline bool
-+btrfs_backref_iter_is_inline_ref(struct btrfs_backref_iter *iter)
-+{
-+	if (iter->cur_key.type == BTRFS_EXTENT_ITEM_KEY ||
-+	    iter->cur_key.type == BTRFS_METADATA_ITEM_KEY)
-+		return true;
-+	return false;
-+}
-+
- static inline void
- btrfs_backref_iter_release(struct btrfs_backref_iter *iter)
+-static noinline_for_stack
+-int find_inline_backref(struct extent_buffer *leaf, int slot,
+-			unsigned long *ptr, unsigned long *end)
+-{
+-	struct btrfs_key key;
+-	struct btrfs_extent_item *ei;
+-	struct btrfs_tree_block_info *bi;
+-	u32 item_size;
+-
+-	btrfs_item_key_to_cpu(leaf, &key, slot);
+-
+-	item_size = btrfs_item_size_nr(leaf, slot);
+-	if (item_size < sizeof(*ei)) {
+-		btrfs_print_v0_err(leaf->fs_info);
+-		btrfs_handle_fs_error(leaf->fs_info, -EINVAL, NULL);
+-		return 1;
+-	}
+-	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
+-	WARN_ON(!(btrfs_extent_flags(leaf, ei) &
+-		  BTRFS_EXTENT_FLAG_TREE_BLOCK));
+-
+-	if (key.type == BTRFS_EXTENT_ITEM_KEY &&
+-	    item_size <= sizeof(*ei) + sizeof(*bi)) {
+-		WARN_ON(item_size < sizeof(*ei) + sizeof(*bi));
+-		return 1;
+-	}
+-	if (key.type == BTRFS_METADATA_ITEM_KEY &&
+-	    item_size <= sizeof(*ei)) {
+-		WARN_ON(item_size < sizeof(*ei));
+-		return 1;
+-	}
+-
+-	if (key.type == BTRFS_EXTENT_ITEM_KEY) {
+-		bi = (struct btrfs_tree_block_info *)(ei + 1);
+-		*ptr = (unsigned long)(bi + 1);
+-	} else {
+-		*ptr = (unsigned long)(ei + 1);
+-	}
+-	*end = (unsigned long)ei + item_size;
+-	return 0;
+-}
+-
+ /*
+  * build backref tree for a given tree block. root of the backref tree
+  * corresponds the tree block, leaves of the backref tree correspond
+@@ -665,10 +624,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 					struct btrfs_key *node_key,
+ 					int level, u64 bytenr)
  {
++	struct btrfs_backref_iter *iter;
+ 	struct backref_cache *cache = &rc->backref_cache;
+-	struct btrfs_path *path1; /* For searching extent root */
+-	struct btrfs_path *path2; /* For searching parent of TREE_BLOCK_REF */
+-	struct extent_buffer *eb;
++	struct btrfs_path *path; /* For searching parent of TREE_BLOCK_REF */
+ 	struct btrfs_root *root;
+ 	struct backref_node *cur;
+ 	struct backref_node *upper;
+@@ -677,9 +635,6 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 	struct backref_node *exist = NULL;
+ 	struct backref_edge *edge;
+ 	struct rb_node *rb_node;
+-	struct btrfs_key key;
+-	unsigned long end;
+-	unsigned long ptr;
+ 	LIST_HEAD(list); /* Pending edge list, upper node needs to be checked */
+ 	LIST_HEAD(useless);
+ 	int cowonly;
+@@ -687,14 +642,15 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 	int err = 0;
+ 	bool need_check = true;
+ 
+-	path1 = btrfs_alloc_path();
+-	path2 = btrfs_alloc_path();
+-	if (!path1 || !path2) {
++	iter = btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS);
++	if (!iter)
++		return ERR_PTR(-ENOMEM);
++	path = btrfs_alloc_path();
++	if (!path) {
+ 		err = -ENOMEM;
+ 		goto out;
+ 	}
+-	path1->reada = READA_FORWARD;
+-	path2->reada = READA_FORWARD;
++	path->reada = READA_FORWARD;
+ 
+ 	node = alloc_backref_node(cache);
+ 	if (!node) {
+@@ -707,25 +663,28 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 	node->lowest = 1;
+ 	cur = node;
+ again:
+-	end = 0;
+-	ptr = 0;
+-	key.objectid = cur->bytenr;
+-	key.type = BTRFS_METADATA_ITEM_KEY;
+-	key.offset = (u64)-1;
+-
+-	path1->search_commit_root = 1;
+-	path1->skip_locking = 1;
+-	ret = btrfs_search_slot(NULL, rc->extent_root, &key, path1,
+-				0, 0);
++	ret = btrfs_backref_iter_start(iter, cur->bytenr);
+ 	if (ret < 0) {
+ 		err = ret;
+ 		goto out;
+ 	}
+-	ASSERT(ret);
+-	ASSERT(path1->slots[0]);
+-
+-	path1->slots[0]--;
+ 
++	/*
++	 * We skip the first btrfs_tree_block_info, as we don't use the key
++	 * stored in it, but fetch it from the tree block.
++	 */
++	if (btrfs_backref_has_tree_block_info(iter)) {
++		ret = btrfs_backref_iter_next(iter);
++		if (ret < 0) {
++			err = ret;
++			goto out;
++		}
++		/* No extra backref? This means the tree block is corrupted */
++		if (ret > 0) {
++			err = -EUCLEAN;
++			goto out;
++		}
++	}
+ 	WARN_ON(cur->checked);
+ 	if (!list_empty(&cur->upper)) {
+ 		/*
+@@ -747,42 +706,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		exist = NULL;
+ 	}
+ 
+-	while (1) {
+-		cond_resched();
+-		eb = path1->nodes[0];
+-
+-		if (ptr >= end) {
+-			if (path1->slots[0] >= btrfs_header_nritems(eb)) {
+-				ret = btrfs_next_leaf(rc->extent_root, path1);
+-				if (ret < 0) {
+-					err = ret;
+-					goto out;
+-				}
+-				if (ret > 0)
+-					break;
+-				eb = path1->nodes[0];
+-			}
++	for (; ret == 0; ret = btrfs_backref_iter_next(iter)) {
++		struct extent_buffer *eb;
++		struct btrfs_key key;
++		int type;
+ 
+-			btrfs_item_key_to_cpu(eb, &key, path1->slots[0]);
+-			if (key.objectid != cur->bytenr) {
+-				WARN_ON(exist);
+-				break;
+-			}
++		cond_resched();
++		eb = btrfs_backref_get_eb(iter);
+ 
+-			if (key.type == BTRFS_EXTENT_ITEM_KEY ||
+-			    key.type == BTRFS_METADATA_ITEM_KEY) {
+-				ret = find_inline_backref(eb, path1->slots[0],
+-							  &ptr, &end);
+-				if (ret)
+-					goto next;
+-			}
+-		}
++		key.objectid = iter->bytenr;
++		if (btrfs_backref_iter_is_inline_ref(iter)) {
++			struct btrfs_extent_inline_ref *iref;
+ 
+-		if (ptr < end) {
+ 			/* update key for inline back ref */
+-			struct btrfs_extent_inline_ref *iref;
+-			int type;
+-			iref = (struct btrfs_extent_inline_ref *)ptr;
++			iref = (struct btrfs_extent_inline_ref *)iter->cur_ptr;
+ 			type = btrfs_get_extent_inline_ref_type(eb, iref,
+ 							BTRFS_REF_TYPE_BLOCK);
+ 			if (type == BTRFS_REF_TYPE_INVALID) {
+@@ -791,9 +728,9 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			}
+ 			key.type = type;
+ 			key.offset = btrfs_extent_inline_ref_offset(eb, iref);
+-
+-			WARN_ON(key.type != BTRFS_TREE_BLOCK_REF_KEY &&
+-				key.type != BTRFS_SHARED_BLOCK_REF_KEY);
++		} else {
++			key.type = iter->cur_key.type;
++			key.offset = iter->cur_key.offset;
+ 		}
+ 
+ 		/*
+@@ -806,7 +743,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		     (key.type == BTRFS_SHARED_BLOCK_REF_KEY &&
+ 		      exist->bytenr == key.offset))) {
+ 			exist = NULL;
+-			goto next;
++			continue;
+ 		}
+ 
+ 		/* SHARED_BLOCK_REF means key.offset is the parent bytenr */
+@@ -852,7 +789,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			edge->node[LOWER] = cur;
+ 			edge->node[UPPER] = upper;
+ 
+-			goto next;
++			continue;
+ 		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
+ 			err = -EINVAL;
+ 			btrfs_print_v0_err(rc->extent_root->fs_info);
+@@ -860,7 +797,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 					      NULL);
+ 			goto out;
+ 		} else if (key.type != BTRFS_TREE_BLOCK_REF_KEY) {
+-			goto next;
++			continue;
+ 		}
+ 
+ 		/*
+@@ -891,20 +828,20 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		level = cur->level + 1;
+ 
+ 		/* Search the tree to find parent blocks referring the block. */
+-		path2->search_commit_root = 1;
+-		path2->skip_locking = 1;
+-		path2->lowest_level = level;
+-		ret = btrfs_search_slot(NULL, root, node_key, path2, 0, 0);
+-		path2->lowest_level = 0;
++		path->search_commit_root = 1;
++		path->skip_locking = 1;
++		path->lowest_level = level;
++		ret = btrfs_search_slot(NULL, root, node_key, path, 0, 0);
++		path->lowest_level = 0;
+ 		if (ret < 0) {
+ 			err = ret;
+ 			goto out;
+ 		}
+-		if (ret > 0 && path2->slots[level] > 0)
+-			path2->slots[level]--;
++		if (ret > 0 && path->slots[level] > 0)
++			path->slots[level]--;
+ 
+-		eb = path2->nodes[level];
+-		if (btrfs_node_blockptr(eb, path2->slots[level]) !=
++		eb = path->nodes[level];
++		if (btrfs_node_blockptr(eb, path->slots[level]) !=
+ 		    cur->bytenr) {
+ 			btrfs_err(root->fs_info,
+ 	"couldn't find block (%llu) (level %d) in tree (%llu) with key (%llu %u %llu)",
+@@ -920,7 +857,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 
+ 		/* Add all nodes and edges in the path */
+ 		for (; level < BTRFS_MAX_LEVEL; level++) {
+-			if (!path2->nodes[level]) {
++			if (!path->nodes[level]) {
+ 				ASSERT(btrfs_root_bytenr(&root->root_item) ==
+ 				       lower->bytenr);
+ 				if (should_ignore_root(root))
+@@ -936,7 +873,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 				goto out;
+ 			}
+ 
+-			eb = path2->nodes[level];
++			eb = path->nodes[level];
+ 			rb_node = tree_search(&cache->rb_root, eb->start);
+ 			if (!rb_node) {
+ 				upper = alloc_backref_node(cache);
+@@ -993,20 +930,14 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			lower = upper;
+ 			upper = NULL;
+ 		}
+-		btrfs_release_path(path2);
+-next:
+-		if (ptr < end) {
+-			ptr += btrfs_extent_inline_ref_size(key.type);
+-			if (ptr >= end) {
+-				WARN_ON(ptr > end);
+-				ptr = 0;
+-				end = 0;
+-			}
+-		}
+-		if (ptr >= end)
+-			path1->slots[0]++;
++		btrfs_release_path(path);
++	}
++	if (ret < 0) {
++		err = ret;
++		goto out;
+ 	}
+-	btrfs_release_path(path1);
++	ret = 0;
++	btrfs_backref_iter_release(iter);
+ 
+ 	cur->checked = 1;
+ 	WARN_ON(exist);
+@@ -1124,8 +1055,8 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		}
+ 	}
+ out:
+-	btrfs_free_path(path1);
+-	btrfs_free_path(path2);
++	btrfs_backref_iter_free(iter);
++	btrfs_free_path(path);
+ 	if (err) {
+ 		while (!list_empty(&useless)) {
+ 			lower = list_entry(useless.next,
 -- 
 2.25.0
 
