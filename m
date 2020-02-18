@@ -2,93 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D23D31634DE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 22:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C2163571
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Feb 2020 22:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgBRV06 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 16:26:58 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:50224 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726339AbgBRV06 (ORCPT
+        id S1728040AbgBRVtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 16:49:16 -0500
+Received: from mailgw.unisannio.it ([193.206.108.11]:42211 "EHLO
+        mailgw.unisannio.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgBRVtQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 16:26:58 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 0B3B97EA1A6;
-        Wed, 19 Feb 2020 08:26:54 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j4AOK-0003K5-Rm; Wed, 19 Feb 2020 08:26:52 +1100
-Date:   Wed, 19 Feb 2020 08:26:52 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 00/19] Change readahead API
-Message-ID: <20200218212652.GR10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200218045633.GH10776@dread.disaster.area>
- <20200218134230.GN7778@bombadil.infradead.org>
+        Tue, 18 Feb 2020 16:49:16 -0500
+X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Feb 2020 16:49:14 EST
+Received: from localhost (unknown [127.0.0.1])
+        by mailgw.unisannio.it (Postfix) with ESMTP id 4E272500B1B;
+        Tue, 18 Feb 2020 21:44:48 +0000 (UTC)
+Received: from mailgw.unisannio.it ([127.0.0.1])
+ by localhost (mailgw.unisannio.it [127.0.0.1]) (amavisd-maia, port 10024)
+ with ESMTP id 06300-06-5; Tue, 18 Feb 2020 22:44:47 +0100 (CET)
+Received: from pamx1.unisannio.it (pamx1.unisannio.it [193.206.108.12])
+        by mailgw.unisannio.it (Postfix) with ESMTP id 18917500B0E;
+        Tue, 18 Feb 2020 22:44:46 +0100 (CET)
+Received: from webmail.unisannio.it (webmail.unisannio.it [193.206.108.9])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bmuhammad)
+        by pamx1.unisannio.it (Postfix) with ESMTPSA id C715A1E04C0;
+        Tue, 18 Feb 2020 22:04:46 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200218134230.GN7778@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=l697ptgUJYAA:10
-        a=7-415B0cAAAA:8 a=13k90lvrXjaGpILklQQA:9 a=QEXdDO2ut3YA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Date:   Wed, 19 Feb 2020 00:04:46 +0300
+From:   "Banca IMI S.P.A" <bmuhammad@unisannio.it>
+To:     undisclosed-recipients:;
+Subject: Finanzielle Hilfe (Darlehen @ 1,3%)
+Organization: Banca IMI S.P.A
+Reply-To: info.bancaimi.uk@gmail.com
+Mail-Reply-To: info.bancaimi.uk@gmail.com
+Message-ID: <daa2e3cbf534c9d57e3be79a4e2cdaf2@unisannio.it>
+X-Sender: bmuhammad@unisannio.it
+User-Agent: Roundcube Webmail/1.3.9
+X-Virus-Scanned: Maia Mailguard 1.0.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 05:42:30AM -0800, Matthew Wilcox wrote:
-> On Tue, Feb 18, 2020 at 03:56:33PM +1100, Dave Chinner wrote:
-> > Latest version in your git tree:
-> > 
-> > $ ▶ glo -n 5 willy/readahead
-> > 4be497096c04 mm: Use memalloc_nofs_save in readahead path
-> > ff63497fcb98 iomap: Convert from readpages to readahead
-> > 26aee60e89b5 iomap: Restructure iomap_readpages_actor
-> > 8115bcca7312 fuse: Convert from readpages to readahead
-> > 3db3d10d9ea1 f2fs: Convert from readpages to readahead
-> > $
-> > 
-> > merged into a 5.6-rc2 tree fails at boot on my test vm:
-> > 
-> > [    2.423116] ------------[ cut here ]------------
-> > [    2.424957] list_add double add: new=ffffea000efff4c8, prev=ffff8883bfffee60, next=ffffea000efff4c8.
-> > [    2.428259] WARNING: CPU: 4 PID: 1 at lib/list_debug.c:29 __list_add_valid+0x67/0x70
-> > [    2.457484] Call Trace:
-> > [    2.458171]  __pagevec_lru_add_fn+0x15f/0x2c0
-> > [    2.459376]  pagevec_lru_move_fn+0x87/0xd0
-> > [    2.460500]  ? pagevec_move_tail_fn+0x2d0/0x2d0
-> > [    2.461712]  lru_add_drain_cpu+0x8d/0x160
-> > [    2.462787]  lru_add_drain+0x18/0x20
-> 
-> Are you sure that was 4be497096c04 ?  I ask because there was a
 
-Yes, because it's the only version I've actually merged into my
-working tree, compiled and tried to run. :P
 
-> version pushed to that git tree that did contain a list double-add
-> (due to a mismerge when shuffling patches).  I noticed it and fixed
-> it, and 4be497096c04 doesn't have that problem.  I also test with
-> CONFIG_DEBUG_LIST turned on, but this problem you hit is going to be
-> probabilistic because it'll depend on the timing between whatever other
-> list is being used and the page actually being added to the LRU.
-
-I'll see if I can reproduce it.
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Grüße Herr / Frau,
+
+Benötigen Sie finanzielle Unterstützung (Darlehen)?
+Sprechen Sie mit uns bei Banca IMI S.P.A, wir lösen Ihre finanziellen 
+Probleme.
+
+Unser Zinssatz beträgt 1,3% Jahreszinssatz. Bitte bewerben Sie sich 
+jetzt und geben Sie folgende Bewerbungsdetails ein:
+
+Vollständiger Name:____________________
+Darlehensbetrag: _______________________
+Leihdauer: ___________________
+Darlehen Zweck: _________________
+Telefon:____________________
+
+Wir warten auf Ihren Antrag, damit Ihr Kreditantrag bearbeitet werden 
+kann.
+
+Freundliche Grüße
