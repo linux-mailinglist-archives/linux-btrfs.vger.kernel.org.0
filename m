@@ -2,183 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C96F41637F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 01:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848AC16384B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 01:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727601AbgBSAFm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Feb 2020 19:05:42 -0500
-Received: from mail-yb1-f196.google.com ([209.85.219.196]:36325 "EHLO
-        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgBSAFm (ORCPT
+        id S1726761AbgBSANE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Feb 2020 19:13:04 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18092 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgBSANE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Feb 2020 19:05:42 -0500
-Received: by mail-yb1-f196.google.com with SMTP id u26so7906271ybd.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Feb 2020 16:05:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=NC3ZbOggDylBT09l7Vlerw8w0eAVci5KzQCC1cGIPws=;
-        b=G4hRElh8RtKmSD4WD835HYae7yq2fQKfjCtq14fQREhW/Sr5jdQQ9Al/4Ica0WVJ16
-         214vMnwaqoPMWSEZXge5vsXDGcqX1ijSeP3wPzhj1zItoGFrlSs7S/FAZDtQjvPV4pFv
-         yiIZwDtojjuJyNV1pY+EZ7xhj7t3NXMY4fGRG+F6v+dLRENiNO8HRacnQcp4Z3sy7igm
-         U+8tieoorRmdM8B0ndKPXKlrTmtaLkxoLjrylDLC931SXy+wggLaPYll36tXMltrJJN2
-         HJD/JxONTfl39t0GusxqD1sYQnysAag5ZI0rBQFpPgazN4DMWNFOQG6gFVcRt80bpsFO
-         PLIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=NC3ZbOggDylBT09l7Vlerw8w0eAVci5KzQCC1cGIPws=;
-        b=DfCjfuoUMC0VOwKPyofB47qhImz6OjgTmMF1lXXqJTWawXOPgekF607S1GcouvIkEx
-         QLAV9zPDgmxwaHNJeRZsDJ441cV69NbngKf+9i5viQwYFHDZjSdo/hnIgp4E2IKAzjpj
-         OAGPzQtPv6nNPfR0wetuCNJrqJXzdIpV4GQoK+NNle13ojnB/dFJnbXWMcAkPBC5YhvK
-         ZSnaWT4UpHlO3HQ/GqgGPVBN87PpL0yDrBYwi6nEb5ZiE1b81z4lXat56FzpTKNNfPJB
-         Lvwg+vBBRD3hKDhp3O6lKoji/DOwyb4eUydejW+cFU75r76j9NnUdS96zgyStR8BdxL0
-         jaJw==
-X-Gm-Message-State: APjAAAWkr7PDSYLDBDJodk76dSIyKTGGagJiRsIxhc6ULV6jE7Do07XS
-        Hpnp2XsPPLP6PucY1ap7ecR7Lee/0AyCSq1U4L2VERmY
-X-Google-Smtp-Source: APXvYqzxrfXBXgh3iZWFMikTIVER74BPotA9Xp4dZsZr4OVdw45ZTE+TGhB56vqsaXkVXha9txfbW4IxEUcy5BqLzCU=
-X-Received: by 2002:a5b:9ca:: with SMTP id y10mr21664483ybq.195.1582070739246;
- Tue, 18 Feb 2020 16:05:39 -0800 (PST)
+        Tue, 18 Feb 2020 19:13:04 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e4c7d6b0000>; Tue, 18 Feb 2020 16:12:27 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 18 Feb 2020 16:12:59 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 18 Feb 2020 16:12:59 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 19 Feb
+ 2020 00:12:59 +0000
+Subject: Re: [PATCH v6 08/19] mm: Add readahead address space operation
+To:     Matthew Wilcox <willy@infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-14-willy@infradead.org>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e6687fed-bbe9-005b-4fde-d888f3d9873f@nvidia.com>
+Date:   Tue, 18 Feb 2020 16:12:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-From:   Steven Fosdick <stevenfosdick@gmail.com>
-Date:   Wed, 19 Feb 2020 00:05:28 +0000
-Message-ID: <CAG_8rEeESu5Dv=4GbazRBPbRDonfwfpDY8pTZtsYWq1kZ7Zruw@mail.gmail.com>
-Subject: Balance / Remove Device Errors and Loops
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200217184613.19668-14-willy@infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1582071148; bh=XYyqV3UUSvdocn4sI3PrA/ovYe/qDo2rL7zzBYFMHHQ=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=LZUXi8JQOUsxM4MhkbKZoN+us77X32agHHEERvyhJFQIOA1HQvZOoIGniinVZGnwn
+         pZ2VcWEgxoh8iz45kjTzfdIeohxKJWjgA24H8/wDDP9a0/3dFwa4tJpxgpapBn1SP0
+         6/Wfm0vT02ejD0TSvYWlZdshSpOysFqkccwchWZ9fxvkGg5guUZEdfBxSiI/mMsYEp
+         FgymXJQ1zao4g21+WHoUfPhqNPoyrsbrhqpLdsNEHa/aoseWOTMxw940mhXVsqG1Ib
+         OHqwlrvjGtIuPOEVEUVsVzgkbxTMVawyEuM/R5wrTMKOe7ZmOR2cspeFnXDRI9uYLT
+         teYbgBQPqd3OA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Guys,
+On 2/17/20 10:45 AM, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> This replaces ->readpages with a saner interface:
+>  - Return void instead of an ignored error code.
+>  - Pages are already in the page cache when ->readahead is called.
+>  - Implementation looks up the pages in the page cache instead of
+>    having them passed in a linked list.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  Documentation/filesystems/locking.rst |  6 +++++-
+>  Documentation/filesystems/vfs.rst     | 13 +++++++++++++
+>  include/linux/fs.h                    |  2 ++
+>  include/linux/pagemap.h               | 18 ++++++++++++++++++
+>  mm/readahead.c                        |  8 +++++++-
+>  5 files changed, 45 insertions(+), 2 deletions(-)
+> 
 
-The recent patch to allow a balance operation to be cancelled more
-quickly is very welcome.  I have applied that to 5.5.4 and it has
-already avoided me having to do a hard reset.
+Looks nice,
 
-On a filesystem which has suffered one disc failure I am trying to get
-the data properly redundant across the remaining discs.  According to
-the documentation 'device replace' needs to be able to read the
-superblock on the outgoing device.  As this one has failed and that is
-not possible so I mounted the filesystem in degraded mode, added a new
-device, which worked fine, and then tried removing the missing device
-which did not work.  After some checsum warnings:
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494749184 csum 0x8941f998 expected csum
-0x4c946d24 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494753280 csum 0x8941f998 expected csum
-0x3cacfa54 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494757376 csum 0x8941f998 expected csum
-0x453f4f60 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494761472 csum 0x8941f998 expected csum
-0x5630f6fa mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494765568 csum 0x8941f998 expected csum
-0xbf215c7a mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494769664 csum 0x8941f998 expected csum
-0x242df5b3 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494773760 csum 0x8941f998 expected csum
-0x84d8643c mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494777856 csum 0x8941f998 expected csum
-0xcd4799e3 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494781952 csum 0x8941f998 expected csum
-0x84e72065 mirror 2
-Feb 10 19:49:44 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 272 off 1494786048 csum 0x8941f998 expected csum
-0xa1a55d97 mirror 2
 
-The device remove failed with I/O error.  As another way to move the
-data onto the three remaining discs I tried using a balance filter.  I
-was able, I think, to move all the metadata to the remaining discs
-with:
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-btrfs balance start -mdevid=3
-
-and then start on the data.  Trying to do the whole device at once
-fails after a checksum warning so I tried working in units of 100Gb,
-for example:
-
-btrfs balance start -ddevid=3,drange=0..107374182400 /data
-
-and then:
-
-btrfs balance start -ddevid=3,drange=107374182400..214748364800 /data
-
-etc.  The first ten of these succeeded, though three found nothing to
-move.  The next, 1073741824000..1181116006400 failed after a checksum
-warning:
-
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070544384 csum 0x8941f998 expected csum
-0x963bbe29 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070552576 csum 0x8941f998 expected csum
-0xb1aa5076 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070556672 csum 0x8941f998 expected csum
-0x8eefa0c0 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070548480 csum 0x8941f998 expected csum
-0xf865c292 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070560768 csum 0x8941f998 expected csum
-0x8e37b369 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070564864 csum 0x8941f998 expected csum
-0xcf28e045 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070568960 csum 0x8941f998 expected csum
-0xe37e32c0 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070573056 csum 0x8941f998 expected csum
-0xed9dd8b2 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070577152 csum 0x8941f998 expected csum
-0x2f48ca31 mirror 2
-Feb 18 23:50:23 meije kernel: BTRFS warning (device sda): csum failed
-root -9 ino 601 off 2070581248 csum 0x8941f998 expected csum
-0xfb166087 mirror 2
-
-Thereafter, all higher offsets seem to get stuck in a loop.  For example:
-
-Feb 18 23:55:02 meije kernel: BTRFS info (device sda): balance: start
--ddevid=3,drange=1181116006400..1288490188800
-Feb 18 23:55:02 meije kernel: BTRFS info (device sda): relocating
-block group 2573789560832 flags data|raid5
-Feb 18 23:55:27 meije kernel: BTRFS info (device sda): found 865 extents
-Feb 18 23:55:30 meije kernel: BTRFS info (device sda): found 862 extents
-Feb 18 23:55:31 meije kernel: BTRFS info (device sda): found 855 extents
-Feb 18 23:55:32 meije kernel: BTRFS info (device sda): found 855 extents
-Feb 18 23:55:33 meije kernel: BTRFS info (device sda): found 855 extents
-Feb 18 23:55:34 meije kernel: BTRFS info (device sda): found 855 extents
-...
-
-Any idea what is going on here?  There are no errors logged for the
-case of being stuck in a loop.  What would cause that loop to go round
-again?  I don't even understand why it normally goes round twice.
-
-This doesn't seem close to balancing the majority of the data onto the
-working devices:
-
-Data,RAID5: Size:8.95TiB, Used:8.93TiB (99.73%)
-   /dev/sda    4.48TiB
-   /dev/sdc    4.48TiB
-   missing    3.52TiB
-   /dev/sdb 976.00GiB # the new device.
-
-This is kernel version 5.5.4-arch1-1 and btrfs --version v5.4.  I
-cannot see any changes to btrfs, i.e. the fs/btrfs directory, between
-the arch kernel and the vanilla 5.4 (though I have installed the
-balance cancel patch from this list as mentioned previously).
-
-Regards,
-Steve.
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index 5057e4d9dcd1..0ebc4491025a 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -239,6 +239,7 @@ prototypes::
+>  	int (*readpage)(struct file *, struct page *);
+>  	int (*writepages)(struct address_space *, struct writeback_control *);
+>  	int (*set_page_dirty)(struct page *page);
+> +	void (*readahead)(struct readahead_control *);
+>  	int (*readpages)(struct file *filp, struct address_space *mapping,
+>  			struct list_head *pages, unsigned nr_pages);
+>  	int (*write_begin)(struct file *, struct address_space *mapping,
+> @@ -271,7 +272,8 @@ writepage:		yes, unlocks (see below)
+>  readpage:		yes, unlocks
+>  writepages:
+>  set_page_dirty		no
+> -readpages:
+> +readahead:		yes, unlocks
+> +readpages:		no
+>  write_begin:		locks the page		 exclusive
+>  write_end:		yes, unlocks		 exclusive
+>  bmap:
+> @@ -295,6 +297,8 @@ the request handler (/dev/loop).
+>  ->readpage() unlocks the page, either synchronously or via I/O
+>  completion.
+>  
+> +->readahead() unlocks the pages like ->readpage().
+> +
+>  ->readpages() populates the pagecache with the passed pages and starts
+>  I/O against them.  They come unlocked upon I/O completion.
+>  
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 7d4d09dd5e6d..81ab30fbe45c 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -706,6 +706,7 @@ cache in your filesystem.  The following members are defined:
+>  		int (*readpage)(struct file *, struct page *);
+>  		int (*writepages)(struct address_space *, struct writeback_control *);
+>  		int (*set_page_dirty)(struct page *page);
+> +		void (*readahead)(struct readahead_control *);
+>  		int (*readpages)(struct file *filp, struct address_space *mapping,
+>  				 struct list_head *pages, unsigned nr_pages);
+>  		int (*write_begin)(struct file *, struct address_space *mapping,
+> @@ -781,12 +782,24 @@ cache in your filesystem.  The following members are defined:
+>  	If defined, it should set the PageDirty flag, and the
+>  	PAGECACHE_TAG_DIRTY tag in the radix tree.
+>  
+> +``readahead``
+> +	Called by the VM to read pages associated with the address_space
+> +	object.  The pages are consecutive in the page cache and are
+> +	locked.  The implementation should decrement the page refcount
+> +	after starting I/O on each page.  Usually the page will be
+> +	unlocked by the I/O completion handler.  If the function does
+> +	not attempt I/O on some pages, the caller will decrement the page
+> +	refcount and unlock the pages for you.	Set PageUptodate if the
+> +	I/O completes successfully.  Setting PageError on any page will
+> +	be ignored; simply unlock the page if an I/O error occurs.
+> +
+>  ``readpages``
+>  	called by the VM to read pages associated with the address_space
+>  	object.  This is essentially just a vector version of readpage.
+>  	Instead of just one page, several pages are requested.
+>  	readpages is only used for read-ahead, so read errors are
+>  	ignored.  If anything goes wrong, feel free to give up.
+> +	This interface is deprecated; implement readahead instead.
+>  
+>  ``write_begin``
+>  	Called by the generic buffered write code to ask the filesystem
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 3cd4fe6b845e..d4e2d2964346 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -292,6 +292,7 @@ enum positive_aop_returns {
+>  struct page;
+>  struct address_space;
+>  struct writeback_control;
+> +struct readahead_control;
+>  
+>  /*
+>   * Write life time hint values.
+> @@ -375,6 +376,7 @@ struct address_space_operations {
+>  	 */
+>  	int (*readpages)(struct file *filp, struct address_space *mapping,
+>  			struct list_head *pages, unsigned nr_pages);
+> +	void (*readahead)(struct readahead_control *);
+>  
+>  	int (*write_begin)(struct file *, struct address_space *mapping,
+>  				loff_t pos, unsigned len, unsigned flags,
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 3613154e79e4..bd4291f78f41 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -665,6 +665,24 @@ static inline void readahead_next(struct readahead_control *rac)
+>  #define readahead_for_each(rac, page)					\
+>  	for (; (page = readahead_page(rac)); readahead_next(rac))
+>  
+> +/* The byte offset into the file of this readahead block */
+> +static inline loff_t readahead_offset(struct readahead_control *rac)
+> +{
+> +	return (loff_t)rac->_start * PAGE_SIZE;
+> +}
+> +
+> +/* The number of bytes in this readahead block */
+> +static inline loff_t readahead_length(struct readahead_control *rac)
+> +{
+> +	return (loff_t)rac->_nr_pages * PAGE_SIZE;
+> +}
+> +
+> +/* The index of the first page in this readahead block */
+> +static inline unsigned int readahead_index(struct readahead_control *rac)
+> +{
+> +	return rac->_start;
+> +}
+> +
+>  /* The number of pages in this readahead block */
+>  static inline unsigned int readahead_count(struct readahead_control *rac)
+>  {
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 9e430daae42f..975ff5e387be 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -121,7 +121,13 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages)
+>  
+>  	blk_start_plug(&plug);
+>  
+> -	if (aops->readpages) {
+> +	if (aops->readahead) {
+> +		aops->readahead(rac);
+> +		readahead_for_each(rac, page) {
+> +			unlock_page(page);
+> +			put_page(page);
+> +		}
+> +	} else if (aops->readpages) {
+>  		aops->readpages(rac->file, rac->mapping, pages,
+>  				readahead_count(rac));
+>  		/* Clean up the remaining pages */
+> 
