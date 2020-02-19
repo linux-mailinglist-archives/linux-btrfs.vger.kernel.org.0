@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 533DF163D66
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 08:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA22163D68
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 08:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgBSHEw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 02:04:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54780 "EHLO mx2.suse.de"
+        id S1726495AbgBSHEz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 02:04:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54790 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726297AbgBSHEw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 02:04:52 -0500
+        id S1726297AbgBSHEz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 02:04:55 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D1F96ACAE;
-        Wed, 19 Feb 2020 07:04:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BA294ACB1
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2020 07:04:52 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Samir Benmendil <me@rmz.io>
-Subject: [PATCH 1/2] btrfs-progs: check: Detect file extent end overflow
-Date:   Wed, 19 Feb 2020 15:04:42 +0800
-Message-Id: <20200219070443.43189-1-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: fsck-tests: Add test image for file extent overflow
+Date:   Wed, 19 Feb 2020 15:04:43 +0800
+Message-Id: <20200219070443.43189-2-wqu@suse.com>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200219070443.43189-1-wqu@suse.com>
+References: <20200219070443.43189-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,95 +30,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a report about tree-checker rejecting some leaves due to bad
-EXTENT_DATA.
+Now it only tests detection.
 
-The offending EXTENT_DATA looks like:
-	item 72 key (1359622 EXTENT_DATA 475136) itemoff 11140 itemsize 53
-		generation 954719 type 1 (regular)
-		extent data disk byte 0 nr 0
-		extent data offset 0 nr 18446744073709486080 ram 18446744073709486080
-		extent compression 0 (none)
-
-Add such check to both original and lowmem mode to detect such problem.
-
-Reported-by: Samir Benmendil <me@rmz.io>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c          | 4 ++++
- check/mode-common.h   | 7 +++++++
- check/mode-lowmem.c   | 7 +++++++
- check/mode-original.h | 1 +
- 4 files changed, 19 insertions(+)
+ .../045-file-extent-overflow/default.img.xz      | Bin 0 -> 1864 bytes
+ .../fsck-tests/045-file-extent-overflow/test.sh  |  15 +++++++++++++++
+ 2 files changed, 15 insertions(+)
+ create mode 100644 tests/fsck-tests/045-file-extent-overflow/default.img.xz
+ create mode 100755 tests/fsck-tests/045-file-extent-overflow/test.sh
 
-diff --git a/check/main.c b/check/main.c
-index d02dd1636852..f71bf4f74129 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -597,6 +597,8 @@ static void print_inode_error(struct btrfs_root *root, struct inode_record *rec)
- 		fprintf(stderr, ", odd file extent");
- 	if (errors & I_ERR_BAD_FILE_EXTENT)
- 		fprintf(stderr, ", bad file extent");
-+	if (errors & I_ERR_FILE_EXTENT_OVERFLOW)
-+		fprintf(stderr, ", file extent end overflow");
- 	if (errors & I_ERR_FILE_EXTENT_OVERLAP)
- 		fprintf(stderr, ", file extent overlap");
- 	if (errors & I_ERR_FILE_EXTENT_TOO_LARGE)
-@@ -1595,6 +1597,8 @@ static int process_file_extent(struct btrfs_root *root,
- 		num_bytes = btrfs_file_extent_num_bytes(eb, fi);
- 		disk_bytenr = btrfs_file_extent_disk_bytenr(eb, fi);
- 		extent_offset = btrfs_file_extent_offset(eb, fi);
-+		if (u64_add_overflow(key->offset, num_bytes))
-+			rec->errors |= I_ERR_FILE_EXTENT_OVERFLOW;
- 		if (num_bytes == 0 || (num_bytes & mask))
- 			rec->errors |= I_ERR_BAD_FILE_EXTENT;
- 		if (num_bytes + extent_offset >
-diff --git a/check/mode-common.h b/check/mode-common.h
-index edf9257edaf0..daa5741e1d67 100644
---- a/check/mode-common.h
-+++ b/check/mode-common.h
-@@ -173,4 +173,11 @@ static inline u32 btrfs_type_to_imode(u8 type)
- 
- 	return imode_by_btrfs_type[(type)];
- }
+diff --git a/tests/fsck-tests/045-file-extent-overflow/default.img.xz b/tests/fsck-tests/045-file-extent-overflow/default.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..ba6bb471e1e455dba6dd73556368fb0dce04f5aa
+GIT binary patch
+literal 1864
+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
+Cp_5Di
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/fsck-tests/045-file-extent-overflow/test.sh b/tests/fsck-tests/045-file-extent-overflow/test.sh
+new file mode 100755
+index 000000000000..7a635a490d84
+--- /dev/null
++++ b/tests/fsck-tests/045-file-extent-overflow/test.sh
+@@ -0,0 +1,15 @@
++#!/bin/bash
++#
++# Make sure btrfs check can detect file extent end overflow
 +
-+static inline bool u64_add_overflow(u64 a, u64 b)
-+{
-+	if (a > (u64)-1 - b)
-+		return true;
-+	return false;
++source "$TEST_TOP/common"
++
++check_prereq btrfs
++
++check_image() {
++	run_mustfail \
++		"btrfs check failed to detect file extent overflow" \
++		"$TOP/btrfs" check "$1"
 +}
- #endif
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 630fabf66919..d257a44f3086 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -2085,6 +2085,13 @@ static int check_file_extent(struct btrfs_root *root, struct btrfs_path *path,
- 		err |= INVALID_GENERATION;
- 	}
- 
-+	/* Extent end shouldn't overflow */
-+	if (u64_add_overflow(fkey.offset, extent_num_bytes)) {
-+		error(
-+	"file extent end over flow, file offset %llu extent num bytes %llu",
-+			fkey.offset, extent_num_bytes);
-+		err |= FILE_EXTENT_ERROR;
-+	}
- 	/*
- 	 * Check EXTENT_DATA csum
- 	 *
-diff --git a/check/mode-original.h b/check/mode-original.h
-index b075a95c9757..07d741f4a1b5 100644
---- a/check/mode-original.h
-+++ b/check/mode-original.h
-@@ -186,6 +186,7 @@ struct unaligned_extent_rec_t {
- #define I_ERR_MISMATCH_DIR_HASH		(1 << 18)
- #define I_ERR_INVALID_IMODE		(1 << 19)
- #define I_ERR_INVALID_GEN		(1 << 20)
-+#define I_ERR_FILE_EXTENT_OVERFLOW	(1 << 21)
- 
- struct inode_record {
- 	struct list_head backrefs;
++
++check_all_images
 -- 
 2.25.0
 
