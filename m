@@ -2,77 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3711116437E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 12:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEC0164384
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 12:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgBSLfY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 06:35:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38428 "EHLO mx2.suse.de"
+        id S1726495AbgBSLhX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 06:37:23 -0500
+Received: from mout.gmx.net ([212.227.15.19]:51387 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgBSLfY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 06:35:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CC048AF00;
-        Wed, 19 Feb 2020 11:35:21 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: remove set but not used variable 'root_owner'
-To:     yu kuai <yukuai3@huawei.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhengbin13@huawei.com, yi.zhang@huawei.com
-References: <20200219112148.16914-1-yukuai3@huawei.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <3bdc85f0-7f48-5008-58c5-065b62c2934c@suse.com>
-Date:   Wed, 19 Feb 2020 13:35:20 +0200
+        id S1726484AbgBSLhW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 06:37:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1582112226;
+        bh=DHxUnEMxDuvtBG6HG4JjAdy3oeOGrlU3dvmUDrxEJWI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=gYsvVH0Caa45zaLi509CqTotmgpho3RvY3FtKNQTory0TjJWQk2t2AV2BHSzJmrnp
+         rJ5j5GkuTwkNHBLI5zk0q861DD9JtD6X/kSy+bhH1Mj30xrJ75fcC4bxZcHtTifcZZ
+         JOp+bvoBY6dHE43VeellR6I7snOAPJWNjtcAqSao=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2mFi-1jRhpm0Im4-01351d; Wed, 19
+ Feb 2020 12:37:06 +0100
+Subject: Re: [PATCH 1/2] btrfs-progs: check: Detect file extent end overflow
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Samir Benmendil <me@rmz.io>
+References: <20200219070443.43189-1-wqu@suse.com>
+ <3bc4fa9f-ffbd-9965-bdf7-07606218c526@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <fba00905-f71f-5488-0fd3-ef2458bfcd31@gmx.com>
+Date:   Wed, 19 Feb 2020 19:37:02 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200219112148.16914-1-yukuai3@huawei.com>
+In-Reply-To: <3bc4fa9f-ffbd-9965-bdf7-07606218c526@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XqGfoMzgTq1DZ50Zt9ZAljlYlRX29pUK4WJfOHBjTndS7t9JSON
+ WCfPJHR2zOnku4ypeXZHa7REik9EpHW11F4DHplP69jT/FL18VWWB+hpIZgqmnZyDn0dvUr
+ lJII8s8lxWpfPPNP++6lO1NPkIxCiYJsNJCpvKcXOIsV4+wW8CWFfcKH0FWbXh0+3tUeN8/
+ ddn2djGkQPsgfs0FeQrtQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jt9PzG+Xmqs=:wHzJBZKLcThAw7uiSW/zLV
+ Ic07sb7+FnEsxrCisvxaI7SSQIxHL6TAA5eQSuCzsjLOAu9Ufg5S3QNCrEChOs1EPU8Y8JW75
+ 43GFUmdygf9yinAppdcRiumNKyc6xh+zOL2T/f1g711j9zu5Asfuv7+FeOrK5OOtO2LZAP34b
+ x7aRvU5C7NkD6W1UJH9l4y6EqmhHyxyQZcJca/btfYWgXw+5HCBRh36jMf1Ocra5dTUA6G5Rq
+ O3m6VgFbQe7DXgkQ3/F0VKVcLOf1I6dMwE91A/nO6WnDtL947EH6PAN3L+cKspy9FZnfC4jBr
+ n6haA5wK1DwcD/gV1/tO8I5mALvm2n49NyxWuAqXGBbAFXnetY6rRHboIfWR+T3+NF6jO7jZg
+ YnGwSHYzl0CMD1ZyrtopH8OPH1Zh3SU1zzsfXxJWOhGQ8UgKqw+4+mMAXO/9BEEX/AXF673ds
+ /tXMommA1smLJ6UE67XBAoKPf4dzzHYrgxaAai1/ZmHzfeOp2X1/jewF0wslgdS/01BQIgequ
+ kGYRv+nZ19+Nf1Tf1Utgj1TMlcFV7DMT15pO1XfQFDDKGNz415EUWerOHdoYEeF/ZZqBLgSrC
+ +DlYWKBM0zk7fPGgRGHxz7WaEQmeAV5YCDpJOlpNe91fVT6HrT673D86xXIreIm9KTOH03BhS
+ UfizCLzTWSK2PcXAB7D0h3epy7Aj/tudoF00f/A5N+Uye5n4NuPkCF6roNbHYW9kbI7gXLtai
+ Nm8vHmOqY6o7bq3KA61FzwMrmWlE2UMjZJDhZYtawVU3PFpUfNt6cAepUDjWYi/Yh304iA6lp
+ jwfG6xPPYximHws3FOeDyBDlzzFXKnhzRpS2CJahCzbdpZ8RD4QR71C6WSuYw6yszymqG+/Q+
+ vxj62sE+pylFSMi49MJRDhR/pyYLU7lbKQpptuxDoEYxcYyZr8bSnXy1CNEOp7ZHjBXwkIFX1
+ pi7te32/JXVxsp57U1KHbt9Nd73tLdzweHpF89IpvuGbETJ4JvVTVLZjK89m94jAJiQLAP4Cl
+ VYz4yaFVo4vMxDC8J+8jJN65xc5zilcZfJlJ2uxc1I/qAyVQcjnOiVI3aRoMjYka5ryKxQBdB
+ MYS/jSxfBwObvUO8YM+FerkiKbm/vxvMMSxNBPD0WcxZJO004aVtQt5w0J67dAypUACMRxN8m
+ QcBpyThEQYK8pAPOo2rJomBb010LqIDdl0s/yBbpUbKWbFCslFI5UZQ76/62kilb9LAFvB53p
+ qYrouYI8S3NfrLIuJ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -80,24 +93,132 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 19.02.20 г. 13:21 ч., yu kuai wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> fs/btrfs/tree-log.c: In function ‘walk_down_log_tree’:
-> fs/btrfs/tree-log.c:2698:6: warning: variable ‘root_owner’
-> set but not used [-Wunused-but-set-variable]
-> fs/btrfs/tree-log.c: In function ‘walk_up_log_tree’:
-> fs/btrfs/tree-log.c:2793:6: warning: variable ‘root_owner’
-> set but not used [-Wunused-but-set-variable]
-> 
-> They are never used, and so can be removed.
-> 
-> Signed-off-by: yu kuai <yukuai3@huawei.com>
+On 2020/2/19 =E4=B8=8B=E5=8D=885:19, Nikolay Borisov wrote:
+>
+>
+> On 19.02.20 =D0=B3. 9:04 =D1=87., Qu Wenruo wrote:
+>> There is a report about tree-checker rejecting some leaves due to bad
+>> EXTENT_DATA.
+>>
+>> The offending EXTENT_DATA looks like:
+>> 	item 72 key (1359622 EXTENT_DATA 475136) itemoff 11140 itemsize 53
+>> 		generation 954719 type 1 (regular)
+>> 		extent data disk byte 0 nr 0
+>> 		extent data offset 0 nr 18446744073709486080 ram 18446744073709486080
+>> 		extent compression 0 (none)
+>>
+>> Add such check to both original and lowmem mode to detect such problem.
+>>
+>> Reported-by: Samir Benmendil <me@rmz.io>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  check/main.c          | 4 ++++
+>>  check/mode-common.h   | 7 +++++++
+>>  check/mode-lowmem.c   | 7 +++++++
+>>  check/mode-original.h | 1 +
+>>  4 files changed, 19 insertions(+)
+>>
+>> diff --git a/check/main.c b/check/main.c
+>> index d02dd1636852..f71bf4f74129 100644
+>> --- a/check/main.c
+>> +++ b/check/main.c
+>> @@ -597,6 +597,8 @@ static void print_inode_error(struct btrfs_root *ro=
+ot, struct inode_record *rec)
+>>  		fprintf(stderr, ", odd file extent");
+>>  	if (errors & I_ERR_BAD_FILE_EXTENT)
+>>  		fprintf(stderr, ", bad file extent");
+>> +	if (errors & I_ERR_FILE_EXTENT_OVERFLOW)
+>> +		fprintf(stderr, ", file extent end overflow");
+>>  	if (errors & I_ERR_FILE_EXTENT_OVERLAP)
+>>  		fprintf(stderr, ", file extent overlap");
+>>  	if (errors & I_ERR_FILE_EXTENT_TOO_LARGE)
+>> @@ -1595,6 +1597,8 @@ static int process_file_extent(struct btrfs_root =
+*root,
+>>  		num_bytes =3D btrfs_file_extent_num_bytes(eb, fi);
+>>  		disk_bytenr =3D btrfs_file_extent_disk_bytenr(eb, fi);
+>>  		extent_offset =3D btrfs_file_extent_offset(eb, fi);
+>> +		if (u64_add_overflow(key->offset, num_bytes))
+>> +			rec->errors |=3D I_ERR_FILE_EXTENT_OVERFLOW;
+>>  		if (num_bytes =3D=3D 0 || (num_bytes & mask))
+>>  			rec->errors |=3D I_ERR_BAD_FILE_EXTENT;
+>>  		if (num_bytes + extent_offset >
+>> diff --git a/check/mode-common.h b/check/mode-common.h
+>> index edf9257edaf0..daa5741e1d67 100644
+>> --- a/check/mode-common.h
+>> +++ b/check/mode-common.h
+>> @@ -173,4 +173,11 @@ static inline u32 btrfs_type_to_imode(u8 type)
+>>
+>>  	return imode_by_btrfs_type[(type)];
+>>  }
+>> +
+>> +static inline bool u64_add_overflow(u64 a, u64 b)
+>
+> Rename this to check_add_overflow and use the generic version from the
+> kernel :
 
-Yep, can be squashed into :
-e084c5ab48f9 ("btrfs: Call btrfs_pin_reserved_extent only during active
-transaction")
+That's also my first idea.
 
-in any case:
+But I'm not a fan of the 3rd parameter, and there is no other type other
+than u64, so I hesitate to use the generic one.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+However since you mentioned the kernel one, I guess it's time to
+backport it to user space.
+
+Thanks,
+Qu
+
+>
+> #define check_add_overflow(a, b, d) ({          \
+>
+>         typeof(a) __a =3D (a);                    \
+>
+>         typeof(b) __b =3D (b);                    \
+>
+>         typeof(d) __d =3D (d);                    \
+>
+>         (void) (&__a =3D=3D &__b);                  \
+>
+>         (void) (&__a =3D=3D __d);                   \
+>
+>         __builtin_add_overflow(__a, __b, __d);  \
+>
+> })
+>
+>> +{
+>> +	if (a > (u64)-1 - b)
+>> +		return true;
+>> +	return false;
+>> +}
+>>  #endif
+>> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+>> index 630fabf66919..d257a44f3086 100644
+>> --- a/check/mode-lowmem.c
+>> +++ b/check/mode-lowmem.c
+>> @@ -2085,6 +2085,13 @@ static int check_file_extent(struct btrfs_root *=
+root, struct btrfs_path *path,
+>>  		err |=3D INVALID_GENERATION;
+>>  	}
+>>
+>> +	/* Extent end shouldn't overflow */
+>> +	if (u64_add_overflow(fkey.offset, extent_num_bytes)) {
+>> +		error(
+>> +	"file extent end over flow, file offset %llu extent num bytes %llu",
+>> +			fkey.offset, extent_num_bytes);
+>> +		err |=3D FILE_EXTENT_ERROR;
+>> +	}
+>>  	/*
+>>  	 * Check EXTENT_DATA csum
+>>  	 *
+>> diff --git a/check/mode-original.h b/check/mode-original.h
+>> index b075a95c9757..07d741f4a1b5 100644
+>> --- a/check/mode-original.h
+>> +++ b/check/mode-original.h
+>> @@ -186,6 +186,7 @@ struct unaligned_extent_rec_t {
+>>  #define I_ERR_MISMATCH_DIR_HASH		(1 << 18)
+>>  #define I_ERR_INVALID_IMODE		(1 << 19)
+>>  #define I_ERR_INVALID_GEN		(1 << 20)
+>> +#define I_ERR_FILE_EXTENT_OVERFLOW	(1 << 21)
+>>
+>>  struct inode_record {
+>>  	struct list_head backrefs;
+>>
