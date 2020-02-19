@@ -2,152 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD968164979
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 17:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC67164A25
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 17:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgBSQHp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 11:07:45 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29830 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726528AbgBSQHp (ORCPT
+        id S1726736AbgBSQXp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 11:23:45 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:42996 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgBSQXp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 11:07:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582128463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qjh7DNlxCt2Yi8k2at8mw228NWz8ITJbOMC53NUmKao=;
-        b=guCqB9fALshu/P/+cPwJyFlCfGmpmHxQ//ByrHkjP8N9uKFWBhTPJIQDpKlk7G+NRw/FiK
-        n/MxjrgAkAqs3Zl1m9qK8zTBdgjkx5eH+cLs8UIH/Mmy8N/q6Rt/SUUE1m8MaLcZNpGHyc
-        RHqAeLjS06G2s1JEtcxKf8HRPHnpftk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-WIdkAKErMga8sf2cCRfZUQ-1; Wed, 19 Feb 2020 11:07:39 -0500
-X-MC-Unique: WIdkAKErMga8sf2cCRfZUQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D4F319305F7;
-        Wed, 19 Feb 2020 16:07:37 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB6D15C112;
-        Wed, 19 Feb 2020 16:07:36 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 11:07:34 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH][v2] xfstests: add a option to run xfstests under a cgroup
-Message-ID: <20200219160734.GG24157@bfoster>
-References: <20200218152712.3750130-1-josef@toxicpanda.com>
- <20200219154850.GF24157@bfoster>
- <7e7476f4-3edd-3bff-657d-3ab627b0a75f@toxicpanda.com>
+        Wed, 19 Feb 2020 11:23:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1582129425; x=1613665425;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=C38uddcVCmLSE4BBzoEqgKVfQ5YD2nGgsIa8IyPwMYJo+7BrL5Lru0ii
+   wK020p2ZbNjgjfdNTHBS6+YuSRkqcLCTRDvUbpfXiCOaivjLbqNvhMXo8
+   usFMg8JehtUDy6k+JA7hd/e2wM3xoOznGGConRxYg8K4mqQpPrR2AeA+1
+   fleE5navK1+WHFtA16c+u0V7FVkd2LuZIrBKnTOpCyeztSrqgl/E2wcLH
+   mpMuOVsbFtYXvpevUEbSwHIzLg8QDzCzPuvshcoBVGKVIMOcZ76LJCQQH
+   a1tEFPApo+c56MOCq5nt9TcDuOcLb+sLjd1Ejj6HQkBi2YWN6rxAaJ5xN
+   g==;
+IronPort-SDR: pisXkhwoF4w2Wwz4UW2mWvwTJmF9pQmqC+tUtlDRI4PkW+uzr1YKUF/0tJFwM9prj5pa/5Bn3V
+ YzVamFgqFQenYzyI6ilTLwd5MqjFJpdEipZPgfBqO1E+2lSUmCGCeWA5fq+zokDt5D/LX3RT4N
+ z+8wKD9EouoG8f810vK4u9azNNQV95QbhjD7yWOUL4otbMnZ0JmJlQoDMIas75O7RgLO53d1to
+ CArNE7OrDZnuTXTbLihkV5brIFgGTc2WwgR5uHN7Wce9DdPhY2WmA7DvkgmaZRy01PiX2HoSDn
+ qCI=
+X-IronPort-AV: E=Sophos;i="5.70,461,1574092800"; 
+   d="scan'208";a="134557244"
+Received: from mail-bn3nam04lp2051.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.51])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Feb 2020 00:23:44 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QxBaQ5LMiA/lk557nD+dAmOXMaQw1zFfZk9vCh0k+87ywOvA6NXpq6sSjKNQ+QSqImXegTJO/fBhuwVA3PZYj7zfmtl34d6AzqnyBtyT44KL9lbUbDXsPF3Zp0YwaCGFx1uwiKKL787WZeR/n7PGsK8wyCHbOQSCeTyqNaKVvwxclA1F/YDetiIW9e1zBlp6r1E64KJOTT1SFssIHZkK7aMgndFVYDw2vi/X/xOfNU/zsUP7VvFlhipczxBgMW+7/OPE+9sfvz+l1n2dexFUJHBuOqr61EPmNyUCPeA8BU/PqaJPCx3zMV7Q5+Y6+xw8CBFtiUwvsfwrUZxHDwol1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=mCSIyH6bo13LMSbv5DR4ealUmlEpMkD5I2Bp52ECiC1c11E033ZwWj9Y/r5JtJenb9RggFQ2Hm6XRIXMKXI1MlVAmThWtGM6f1rE6QAfF3gduXWjtQFoCKNU/VCR5doUJTafG/WcylEaoME5w+CC8PPw+hS4YTryKtEgQyO2sIIVoLnbYKqjIfHBP2HNx9zdqoG9iowJuC+s8+AgeQki9vvkwDuuftTPUXcBodxxBAx1qH1VR95egOj5K8OzVz47L0JbNWfbaNmZwrGNJ4+mt+yx4p1nKfxb7qclV3e8hcw27ej4PxxIB63IHPIeoxR5eJKSDm6Qoj991htRnP3vPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=VqyIxkARX5VCFSbQjxBkPQpbJsYe1oMhtQowN0XUXJIb2dZm9LBjXUEmmbiMg2VVUJmFzUX8kWgjcaFx/vYAKXStoxrAaBBuVR8XKQ2P0zOCe8fCLytFxWT2TGN6rli2zsnxviX/MO/Wz8hGtIefRAusxnluk+aGrJYFfiof83I=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3677.namprd04.prod.outlook.com (10.167.129.144) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.22; Wed, 19 Feb 2020 16:23:42 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2729.032; Wed, 19 Feb 2020
+ 16:23:42 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: raid56: simplify tracking of Q stripe presence
+Thread-Topic: [PATCH] btrfs: raid56: simplify tracking of Q stripe presence
+Thread-Index: AQHV5y9cVYI04IX97kGUrZHs9F5X+Q==
+Date:   Wed, 19 Feb 2020 16:23:42 +0000
+Message-ID: <SN4PR0401MB3598C29FBE4CD9FAF268A3D89B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200219141720.21549-1-dsterba@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [46.244.220.154]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1ffd7aa7-0b76-4e60-d32e-08d7b55815b2
+x-ms-traffictypediagnostic: SN4PR0401MB3677:
+x-microsoft-antispam-prvs: <SN4PR0401MB3677B89DD196798363AA5AB79B100@SN4PR0401MB3677.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 0318501FAE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(199004)(189003)(8676002)(33656002)(66476007)(186003)(81166006)(8936002)(110136005)(316002)(52536014)(81156014)(4270600006)(5660300002)(6506007)(66446008)(64756008)(91956017)(76116006)(66946007)(19618925003)(26005)(66556008)(55016002)(558084003)(9686003)(71200400001)(7696005)(2906002)(478600001)(86362001);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3677;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xakKbKGGN7dFzAtVIHHWnXNs3fgHSQA6OC+KiA9RkdOaHRE6/pisvgHtCqclOzb9n0PJ8x+WdA3bEF4TNp6Tqjp4IrO+6MfglSXuz8HPZF26B8ExKR6RUj2cbZZy0I3XzA2qB2CLrH253+Pp7bYiZbQeU55dFDj4QmFWurY9md0DCIVuKCKzFzL+zEcZkgra66Y85rCx+zaXbUlxw/3SEaclPGPPL3LoE141gg6/zlvqKl3ZunM8+ZMKgpvJALqEb+H+EneUsXeBdeZoproA8RfMYNRu4FLwujp9jBdtriHcwVwf9ulcLl9+bHnlhM74aIyb7Sy/wLJyZFK2ClotHj9dOIM8NCD7lBIrRmQ7GyWL4yyzl8UtwZ99k2n2g7d5RzAhfm+62fevCfa/1pxpgSEyx98Xwk+uz6IIboNADQtWkFXKH77Z/nq50ubAsaKu
+x-ms-exchange-antispam-messagedata: U/skKbropFWK6+IF2l2nQjml8IwmtbXtgXTd5UtQBxiYyGUtp2eJ5IaZQCtnzfkXTPFv9tbq4KE8h06oTpdbv2Ymgn+02IcO2ez8n6HhF9SCgS8K0jDCBHUUfG3v4P2KtyY/8yv7ccRK2uVmLm2S0w==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e7476f4-3edd-3bff-657d-3ab627b0a75f@toxicpanda.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ffd7aa7-0b76-4e60-d32e-08d7b55815b2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2020 16:23:42.0845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RJdIXtkgnUHf7INgtTBRAvpi1geAR27gjtKki1dvqj4xOMGlwLTbLVszf2weFp3RNcm4/lhly+Ho2EGbDTV5ny0Lepr3vyTPYo6ZXLZHGo8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3677
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 10:52:43AM -0500, Josef Bacik wrote:
-> On 2/19/20 10:48 AM, Brian Foster wrote:
-> > On Tue, Feb 18, 2020 at 10:27:12AM -0500, Josef Bacik wrote:
-> > > I want to add some extended statistic gathering for xfstests, but it's
-> > > tricky to isolate xfstests from the rest of the host applications.  The
-> > > most straightforward way to do this is to run every test inside of it's
-> > > own cgroup.  From there we can monitor the activity of tasks in the
-> > > specific cgroup using BPF.
-> > > 
-> > > The support for this is pretty simple, allow users to pass -C <cgroup
-> > > name>.  We will create the path if it doesn't already exist, and
-> > > validate we can add things to cgroup.procs.  If we cannot it'll be
-> > > disabled, otherwise we will use this when we do _run_seq by echo'ing the
-> > > bash pid into cgroup.procs, which will cause any children to run under
-> > > that cgroup.
-> > > 
-> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > > ---
-> > > v1->v2:
-> > > - Changed it from a local.config option to a command line option.
-> > > - Export CGROUP2_PATH for everything, utilize that path when generating our
-> > >    cgroup for the scripts to run in.
-> > > 
-> > >   check          | 24 +++++++++++++++++++++++-
-> > >   common/cgroup2 |  2 --
-> > >   common/config  |  1 +
-> > >   3 files changed, 24 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/check b/check
-> > > index 2e148e57..df33628e 100755
-> > > --- a/check
-> > > +++ b/check
-> > > @@ -72,6 +72,7 @@ check options
-> > >       --large-fs		optimise scratch device for large filesystems
-> > >       -s section		run only specified section from config file
-> > >       -S section		exclude the specified section from the config file
-> > > +    -C cgroup_name	run all the tests in the specified cgroup name
-> > >   testlist options
-> > >       -g group[,group...]	include tests from these groups
-> > > @@ -101,6 +102,10 @@ excluded from the list of tests to run from that test dir.
-> > >   external_file argument is a path to a single file containing a list of tests
-> > >   to exclude in the form of <test dir>/<test name>.
-> > > +cgroup_name is just a plain name, or a path relative to the root cgroup path.
-> > > +If CGROUP2_PATH does not point at where cgroup2 is mounted then adjust it
-> > > +accordingly.
-> > > +
-> > >   examples:
-> > >    check xfs/001
-> > >    check -g quick
-> > > @@ -307,6 +312,7 @@ while [ $# -gt 0 ]; do
-> > >   		;;
-> > >   	--large-fs) export LARGE_SCRATCH_DEV=yes ;;
-> > >   	--extra-space=*) export SCRATCH_DEV_EMPTY_SPACE=${r#*=} ;;
-> > > +	-C)	CGROUP=$2 ; shift ;;
-> > >   	-*)	usage ;;
-> > >   	*)	# not an argument, we've got tests now.
-> > > @@ -509,11 +515,24 @@ _expunge_test()
-> > >   OOM_SCORE_ADJ="/proc/self/oom_score_adj"
-> > >   test -w ${OOM_SCORE_ADJ} && echo -1000 > ${OOM_SCORE_ADJ}
-> > > +# Initialize the cgroup path if it doesn't already exist
-> > > +if [ ! -z "$CGROUP" ]; then
-> > > +	CGROUP=${CGROUP2_PATH}/${CGROUP}
-> > > +	mkdir -p ${CGROUP}
-> > > +
-> > > +	# If we can't write to cgroup.procs then unset cgroup
-> > > +	test -w ${CGROUP}/cgroup.procs || unset CGROUP
-> > > +fi
-> > > +
-> > 
-> > Do we need to fix up generic/563 to use this new $CGROUP value, when
-> > set? That test explicitly moves tasks to new/temporary groups, but looks
-> > like it resets back to the top-level CGROUP2_PATH group. I'm not sure
-> > how much that really matters since presumably the next test should move
-> > back into $CGROUP. Otherwise this looks reasonable enough to me.
-> > 
-> 
-> Wtf I had an explanation for this in my commit message, I must have exited
-> without saving.
-> 
-> I tried to do this actually, and it ended up spewing because you cannot
-> change cgroup.subtree_control for a cgroup you are currently inside of.  We
-> can fix this by just making sure all controllers are enabled in our test
-> cgroup, and then fix 562 to not bother messing subtree and just assume
-> everything is enabled.  But since it's just one test and I wasn't sure if it
-> would create more wonkiness I just left it as is.  I'm open to either
-> solution, I just opted for the less change route.  Thanks,
-> 
-
-Oh, Ok. Eh, it seems the test should still work either way so I'm fine
-with leaving it as is as well until there's some better reason to do
-otherwise, as long as you can add that explanation back into the commit
-log..
-
-Brian
-
-> Josef
-> 
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
