@@ -2,93 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BBF1651C9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 22:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAC8165269
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 23:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbgBSVkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 16:40:05 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29549 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727429AbgBSVkE (ORCPT
+        id S1727637AbgBSWVc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 17:21:32 -0500
+Received: from luna.lichtvoll.de ([194.150.191.11]:37819 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726760AbgBSWVc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 16:40:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582148403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Akm5nZ5Nk5RDJvPlHXdmc1pTXqzcrHwStmylDtS4kdo=;
-        b=Q7FEeBlmVUh0HfH0GHlPoGXauLp7DnFB6j6lWOhAMobuz6Bvil01pYOrKCVXZ5j+ALZb/6
-        LTf2FDXpJx8MyQCpCZ2xsY8CHR+BzRQ7WRv8ZvriohhuqX/gmjvWSTqAruI+K0vJ8/gueG
-        jIRGGzP2zMHrQa2QbkAMqZVZdGyQhWY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-lYV3sqb5NxSus3qboGNwYQ-1; Wed, 19 Feb 2020 16:39:58 -0500
-X-MC-Unique: lYV3sqb5NxSus3qboGNwYQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 19 Feb 2020 17:21:32 -0500
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF399800D50;
-        Wed, 19 Feb 2020 21:39:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-122-163.rdu2.redhat.com [10.10.122.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A04215C1B0;
-        Wed, 19 Feb 2020 21:39:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wgtAEvD6J_zVPKXHDjZ7rNe3piRzD_bX2HcVgY3AMGhjw@mail.gmail.com>
-References: <CAHk-=wgtAEvD6J_zVPKXHDjZ7rNe3piRzD_bX2HcVgY3AMGhjw@mail.gmail.com> <158212290024.224464.862376690360037918.stgit@warthog.procyon.org.uk> <CAMuHMdV+H0p3qFV=gDz0dssXVhzd+L_eEn6s0jzrU5M79_50HQ@mail.gmail.com> <227117.1582124888@warthog.procyon.org.uk> <CAHk-=wjFwT-fRw0kH-dYS9M5eBz3Jg0FeUfhf6VnGrPMVDDCBg@mail.gmail.com> <241568.1582134931@warthog.procyon.org.uk> <CAHk-=wi=UbOwm8PMQUB1xaXRWEhhoVFdsKDSz=bX++rMQOUj0w@mail.gmail.com> <CAHk-=whfoWHvL29PPXncxV6iprC4e_m6CQWQJ1G4-JtR+uGVUA@mail.gmail.com> <252465.1582142281@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, jaltman@auristor.com,
-        Al Viro <viro@zeniv.linux.org.uk>, coda@cs.cmu.edu,
-        linux-afs@lists.infradead.org, CIFS <linux-cifs@vger.kernel.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] vfs: syscalls: Add create_automount() and remove_automount()
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 5DFFBB3757;
+        Wed, 19 Feb 2020 23:21:29 +0100 (CET)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Marc MERLIN <marc@merlins.org>, dsterba@suse.cz,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
+Date:   Wed, 19 Feb 2020 23:21:29 +0100
+Message-ID: <2656316.bop9uDDU3N@merkaba>
+In-Reply-To: <20200219225051.39ca1082@natsu>
+References: <20200131143105.52092-1-josef@toxicpanda.com> <20200219153652.GA26873@merlins.org> <20200219225051.39ca1082@natsu>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <260917.1582148393.1@warthog.procyon.org.uk>
-Date:   Wed, 19 Feb 2020 21:39:53 +0000
-Message-ID: <260918.1582148393@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> so you _could_ actually just make the rule be something simple like
+Roman Mamedov - 19.02.20, 18:50:51 CET:
+> On Wed, 19 Feb 2020 07:36:52 -0800
 > 
->    symlink(target, "//datagoeshere")
+> Marc MERLIN <marc@merlins.org> wrote:
+> > Thanks. For some reason, debian's latest make-kpkg hangs forever on
+> > 5.5 kernels (not sure why) so I can't build it right now, but I
+> > just got 5.4.20 and I'm compiling that now, thanks.
 > 
-> being the "create magic autolink directory using "datagoeshere".
+> Debian deprecates their own tooling for regular users (as opposed to
+> package mantainers) to easily make custom kernel deb packages[1],
+> they now suggest to use the kernel-provided "make bindeb-pkg"
+> instead.
 
-Interesting.  I'll ask around to see if this is feasible.  Some applications
-(emacs being one maybe) sometimes appear to store information in symlink
-bodies - I'm not sure if any of those could be a problem.
+Yes. I use
 
-Since the mountpoint body is formulaic:
+eatmydata make -j4 bindeb-pkg LOCALVERSION=-tp520
 
-	[%#](<cellname>:)?<volumename>(.readonly|.backup)?.
+to build my kernels meanwhile (still that good old ThinkPad T520 with 
+the keyboard before Lenovo made it worse).
 
-maybe I can use that pattern.
+You also get a linux-headers package which I believe you need to install 
+in order to have dkms build 3rd party modules if you have any.
 
-symlink() would be returning a dentry that appears to be a directory, but it
-doesn't look like that should be a problem.
+> [1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925411#17
 
-> So then you could again script things with
-> 
->    mknod dirname c X Y
->    echo "datagoeshere" > dirname
+Best,
+-- 
+Martin
 
-This would be tricky to get right as it's not atomic and the second part could
-fail to happen.  For extra fun, another client could interfere between the
-steps (setxattr would be safer than write here).
-
-David
 
