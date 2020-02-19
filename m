@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B7616437B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 12:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3711116437E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 12:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgBSLfB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 06:35:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38264 "EHLO mx2.suse.de"
+        id S1726617AbgBSLfY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 06:35:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38428 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgBSLfB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 06:35:01 -0500
+        id S1726491AbgBSLfY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 06:35:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 17951B1B2;
-        Wed, 19 Feb 2020 11:34:54 +0000 (UTC)
-Subject: Re: [PATCH 2/3] btrfs: remove set but not used variable 'parent'
+        by mx2.suse.de (Postfix) with ESMTP id CC048AF00;
+        Wed, 19 Feb 2020 11:35:21 +0000 (UTC)
+Subject: Re: [PATCH 1/3] btrfs: remove set but not used variable 'root_owner'
 To:     yu kuai <yukuai3@huawei.com>, clm@fb.com, josef@toxicpanda.com,
         dsterba@suse.com
 Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhengbin13@huawei.com, yi.zhang@huawei.com
-References: <20200219112203.17075-1-yukuai3@huawei.com>
+References: <20200219112148.16914-1-yukuai3@huawei.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <f7bc478c-2fe9-2694-cd0c-92c188d178c5@suse.com>
-Date:   Wed, 19 Feb 2020 13:34:53 +0200
+Message-ID: <3bdc85f0-7f48-5008-58c5-065b62c2934c@suse.com>
+Date:   Wed, 19 Feb 2020 13:35:20 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200219112203.17075-1-yukuai3@huawei.com>
+In-Reply-To: <20200219112148.16914-1-yukuai3@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,26 +80,24 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 19.02.20 г. 13:22 ч., yu kuai wrote:
+On 19.02.20 г. 13:21 ч., yu kuai wrote:
 > Fixes gcc '-Wunused-but-set-variable' warning:
 > 
 > fs/btrfs/tree-log.c: In function ‘walk_down_log_tree’:
-> fs/btrfs/tree-log.c:2702:24: warning: variable ‘parent’
+> fs/btrfs/tree-log.c:2698:6: warning: variable ‘root_owner’
 > set but not used [-Wunused-but-set-variable]
 > fs/btrfs/tree-log.c: In function ‘walk_up_log_tree’:
-> fs/btrfs/tree-log.c:2803:26: warning: variable ‘parent’
+> fs/btrfs/tree-log.c:2793:6: warning: variable ‘root_owner’
 > set but not used [-Wunused-but-set-variable]
 > 
 > They are never used, and so can be removed.
 > 
 > Signed-off-by: yu kuai <yukuai3@huawei.com>
 
-Ah yes, those two are a result of my :
-
+Yep, can be squashed into :
 e084c5ab48f9 ("btrfs: Call btrfs_pin_reserved_extent only during active
-transaction")  (in misc-next branch)
+transaction")
 
-David perhaps you can squash the two var removals into the original patch?
-
+in any case:
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
