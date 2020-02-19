@@ -2,64 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB5D164C7F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 18:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202FA164D12
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 18:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgBSRuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 12:50:54 -0500
-Received: from len.romanrm.net ([91.121.86.59]:36752 "EHLO len.romanrm.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgBSRuy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 12:50:54 -0500
-Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
-        by len.romanrm.net (Postfix) with SMTP id 8AC1A4051D;
-        Wed, 19 Feb 2020 17:50:51 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 22:50:51 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     dsterba@suse.cz, Martin Steigerwald <martin@lichtvoll.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
-Message-ID: <20200219225051.39ca1082@natsu>
-In-Reply-To: <20200219153652.GA26873@merlins.org>
-References: <20200131143105.52092-1-josef@toxicpanda.com>
-        <20200202175247.GB3929@twin.jikos.cz>
-        <CAKhhfD7S=kcKLRURdNFZ8H4beS8=XjFvnOQXche7+SVOGFGC_w@mail.gmail.com>
-        <2776783.E9KYCc1pZO@merkaba>
-        <20200219134327.GD30993@merlins.org>
-        <20200219143114.GY2902@suse.cz>
-        <20200219153652.GA26873@merlins.org>
+        id S1726659AbgBSRzr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 12:55:47 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52184 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726514AbgBSRzq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 12:55:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582134944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=woJrYBQ5G1rIzUoBIxisrRt/fHuFNb6jWX81Ut30+Bc=;
+        b=XepYboAfsQQNWtCx50VGEyzOfnRussqI55aiEJLCIQoTbXH/A4+DO9cuY7zKEfrg59NDwz
+        8R0pIs4iH2CM8+DG1WWzKdFgmr0BqASAIZz9G3Fzl2Y8fq6RhJc+opDkAy1sPD4fK+fKbm
+        eNhMkdgnTas7RhkhjGNRfn7WFeAQMrE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-c4VgchpyOW2sfzE38trctg-1; Wed, 19 Feb 2020 12:55:36 -0500
+X-MC-Unique: c4VgchpyOW2sfzE38trctg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DBF413F9;
+        Wed, 19 Feb 2020 17:55:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-122-163.rdu2.redhat.com [10.10.122.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 64AC21001920;
+        Wed, 19 Feb 2020 17:55:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wjFwT-fRw0kH-dYS9M5eBz3Jg0FeUfhf6VnGrPMVDDCBg@mail.gmail.com>
+References: <CAHk-=wjFwT-fRw0kH-dYS9M5eBz3Jg0FeUfhf6VnGrPMVDDCBg@mail.gmail.com> <158212290024.224464.862376690360037918.stgit@warthog.procyon.org.uk> <CAMuHMdV+H0p3qFV=gDz0dssXVhzd+L_eEn6s0jzrU5M79_50HQ@mail.gmail.com> <227117.1582124888@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, coda@cs.cmu.edu,
+        linux-afs@lists.infradead.org, CIFS <linux-cifs@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] vfs: syscalls: Add create_automount() and remove_automount()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <241567.1582134931.1@warthog.procyon.org.uk>
+Date:   Wed, 19 Feb 2020 17:55:31 +0000
+Message-ID: <241568.1582134931@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 19 Feb 2020 07:36:52 -0800
-Marc MERLIN <marc@merlins.org> wrote:
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> Thanks. For some reason, debian's latest make-kpkg hangs forever on 5.5
-> kernels (not sure why) so I can't build it right now, but I just got
-> 5.4.20 and I'm compiling that now, thanks.
+> What are the insane pioctl semantics you want?
 
-Debian deprecates their own tooling for regular users (as opposed to package
-mantainers) to easily make custom kernel deb packages[1], they now suggest to
-use the kernel-provided "make bindeb-pkg" instead. 
+There's a file type beyond file, dir and symlink that AFS supports:
+mountpoint.  It appears as a directory with no lookup op in Linux - though it
+does support readlink.  When a client walks over it, it causes an automount of
+the volume named by the content of the mountpoint "file" on that point.  NFS
+and CIFS have similar things.
 
-[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925411#17
+AFS allows the user to create them and remove them:
 
-> As for dm-thin, I'm not sure yet, I'll find out when the new kernel is
-> installed. I was also hoping fstrim would work, I guess I'll find out.
+	http://docs.openafs.org/Reference/1/fs_mkmount.html
+	http://docs.openafs.org/Reference/1/fs_rmmount.html
 
-Indeed fstrim does deprovision backing storage on thin LVM just fine.
+provided the server grants permission to do so.
 
-However I am not sure what is the relation with the bug being discussed. The
-"zero f_bavail" was just returning "0" to df, while that was not actually
-true. Seems puzzling how would that lead to increased usage of dm-thin for you.
+OpenAFS, Coda, etc. do this by means of a pair of pioctl() functions (at
+least, I think Coda does - it ships the pioctl parameters off to userspace to
+handle, so the handling is not actually in the kernel).
 
--- 
-With respect,
-Roman
+> If you can't even open a file on the filesystem, you damn well
+> shouldn't be able to to "pioctl" on it.
+> 
+> And if you *can* open a file on the filesystem, why can't you just use
+> ioctl on it?
+
+Directory, not file.  You can do mkdir (requiring write and execute), for
+example, in a directory you cannot open (which would require read).  If you
+cannot open it, you cannot do ioctl on it.
+
+open(O_PATH) doesn't help because that doesn't let you do ioctl.
+
+David
+
