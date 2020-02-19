@@ -2,127 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F275164B81
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 18:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB5D164C7F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 18:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgBSRGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 12:06:44 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:37054 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgBSRGn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 12:06:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6hWL64aU7/cD1s4UTpPss89s1pka8CcWGCJ5BHjUC9M=; b=YD6KASfCXNzBE2g7U8C3OPAIMa
-        RN+ihaDs+TqA1PVmJY/G+571Br5Ulv0XQc9EhsoYwQWJIGDt5eVY3v+7OW0ZDPPydpAvd+XANKK7o
-        Yieli5fHS4G8IkuA6ZGWdtYi3uF69BcBtjkIg1txQfTuEC38FUNQpMva7d6LZIwTpJqOi2eTnjQ26
-        vNRvjsTCftaqhGEu3hEvctNIgYhTUrWaBzOu7hsE+5KmGRNAeS2s5R2DU2EMQh/fz/4XG6YC8Yfkl
-        lb7zA1cZfGKpjcKVeyriFSjz0Jf9srJLBGVWu7kMAFznlMRG+bjJHweFWDFekIpMDNj5yFPnAlDOG
-        rO8cGwug==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4So6-00016p-If; Wed, 19 Feb 2020 17:06:42 +0000
-Date:   Wed, 19 Feb 2020 09:06:42 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 17/19] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200219170642.GS24185@bombadil.infradead.org>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-31-willy@infradead.org>
- <20200219032900.GE10776@dread.disaster.area>
- <20200219060415.GO24185@bombadil.infradead.org>
- <20200219064005.GL10776@dread.disaster.area>
+        id S1726613AbgBSRuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 12:50:54 -0500
+Received: from len.romanrm.net ([91.121.86.59]:36752 "EHLO len.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726514AbgBSRuy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 12:50:54 -0500
+Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
+        by len.romanrm.net (Postfix) with SMTP id 8AC1A4051D;
+        Wed, 19 Feb 2020 17:50:51 +0000 (UTC)
+Date:   Wed, 19 Feb 2020 22:50:51 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     dsterba@suse.cz, Martin Steigerwald <martin@lichtvoll.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
+Message-ID: <20200219225051.39ca1082@natsu>
+In-Reply-To: <20200219153652.GA26873@merlins.org>
+References: <20200131143105.52092-1-josef@toxicpanda.com>
+        <20200202175247.GB3929@twin.jikos.cz>
+        <CAKhhfD7S=kcKLRURdNFZ8H4beS8=XjFvnOQXche7+SVOGFGC_w@mail.gmail.com>
+        <2776783.E9KYCc1pZO@merkaba>
+        <20200219134327.GD30993@merlins.org>
+        <20200219143114.GY2902@suse.cz>
+        <20200219153652.GA26873@merlins.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219064005.GL10776@dread.disaster.area>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 05:40:05PM +1100, Dave Chinner wrote:
-> Ok, that's what the ctx.cur_page_in_bio check is used to detect i.e.
-> if we've got a page that the readahead cursor points at, and we
-> haven't actually added it to a bio, then we can leave it to the
-> read_pages() to unlock and clean up. If it's in a bio, then IO
-> completion will unlock it and so we only have to drop the submission
-> reference and move the readahead cursor forwards so read_pages()
-> doesn't try to unlock this page. i.e:
-> 
-> 	/* clean up partial page submission failures */
-> 	if (ctx.cur_page && ctx.cur_page_in_bio) {
-> 		put_page(ctx.cur_page);
-> 		readahead_next(rac);
-> 	}
-> 
-> looks to me like it will handle the case of "ret == 0" in the actor
-> function just fine.
+On Wed, 19 Feb 2020 07:36:52 -0800
+Marc MERLIN <marc@merlins.org> wrote:
 
-Here's what I ended up with:
+> Thanks. For some reason, debian's latest make-kpkg hangs forever on 5.5
+> kernels (not sure why) so I can't build it right now, but I just got
+> 5.4.20 and I'm compiling that now, thanks.
 
-@@ -400,15 +400,9 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-                void *data, struct iomap *iomap, struct iomap *srcmap)
- {
-        struct iomap_readpage_ctx *ctx = data;
--       loff_t done, ret;
--
--       for (done = 0; done < length; done += ret) {
--               if (ctx->cur_page && offset_in_page(pos + done) == 0) {
--                       if (!ctx->cur_page_in_bio)
--                               unlock_page(ctx->cur_page);
--                       put_page(ctx->cur_page);
--                       ctx->cur_page = NULL;
--               }
-+       loff_t ret, done = 0;
-+
-+       while (done < length) {
-                if (!ctx->cur_page) {
-                        ctx->cur_page = iomap_next_page(inode, ctx->pages,
-                                        pos, length, &done);
-@@ -418,6 +412,20 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-                }
-                ret = iomap_readpage_actor(inode, pos + done, length - done,
-                                ctx, iomap, srcmap);
-+               done += ret;
-+
-+               /* Keep working on a partial page */
-+               if (ret && offset_in_page(pos + done))
-+                       continue;
-+
-+               if (!ctx->cur_page_in_bio)
-+                       unlock_page(ctx->cur_page);
-+               put_page(ctx->cur_page);
-+               ctx->cur_page = NULL;
-+
-+               /* Don't loop forever if we made no progress */
-+               if (WARN_ON(!ret))
-+                       break;
-        }
- 
-        return done;
-@@ -451,11 +459,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
- done:
-        if (ctx.bio)
-                submit_bio(ctx.bio);
--       if (ctx.cur_page) {
--               if (!ctx.cur_page_in_bio)
--                       unlock_page(ctx.cur_page);
--               put_page(ctx.cur_page);
--       }
-+       BUG_ON(ctx.cur_page);
- 
-        /*
-         * Check that we didn't lose a page due to the arcance calling
+Debian deprecates their own tooling for regular users (as opposed to package
+mantainers) to easily make custom kernel deb packages[1], they now suggest to
+use the kernel-provided "make bindeb-pkg" instead. 
 
-so we'll WARN if we get a ret == 0 (matching ->readpage), and we'll
-BUG if we ever see a page being leaked out of readpages_actor, which
-is a thing that should never happen and we definitely want to be noisy
-about if it does.
+[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925411#17
+
+> As for dm-thin, I'm not sure yet, I'll find out when the new kernel is
+> installed. I was also hoping fstrim would work, I guess I'll find out.
+
+Indeed fstrim does deprovision backing storage on thin LVM just fine.
+
+However I am not sure what is the relation with the bug being discussed. The
+"zero f_bavail" was just returning "0" to df, while that was not actually
+true. Seems puzzling how would that lead to increased usage of dm-thin for you.
+
+-- 
+With respect,
+Roman
