@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB9D163FDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 09:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57982163FDE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 10:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgBSI6w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 03:58:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54310 "EHLO mx2.suse.de"
+        id S1726265AbgBSJBK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 04:01:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55860 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726202AbgBSI6v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 03:58:51 -0500
+        id S1726202AbgBSJBK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 04:01:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 46950AD20;
-        Wed, 19 Feb 2020 08:58:49 +0000 (UTC)
-Subject: Re: [PATCH v5 1/3] btrfs: backref: Introduce the skeleton of
- btrfs_backref_iter
+        by mx2.suse.de (Postfix) with ESMTP id 34EAEAE7F;
+        Wed, 19 Feb 2020 09:01:08 +0000 (UTC)
+Subject: Re: [PATCH v5 2/3] btrfs: backref: Implement
+ btrfs_backref_iter_next()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20200218090129.134450-1-wqu@suse.com>
- <20200218090129.134450-2-wqu@suse.com>
+ <20200218090129.134450-3-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <8ce5abd5-5154-906f-33c9-5c64c4929b1c@suse.com>
-Date:   Wed, 19 Feb 2020 10:58:47 +0200
+Message-ID: <f2fca20b-fc1e-6d2c-ea26-4ee7bceb7755@suse.com>
+Date:   Wed, 19 Feb 2020 11:01:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200218090129.134450-2-wqu@suse.com>
+In-Reply-To: <20200218090129.134450-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,39 +81,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 18.02.20 г. 11:01 ч., Qu Wenruo wrote:
-> Due to the complex nature of btrfs extent tree, when we want to iterate
-> all backrefs of one extent, it involves quite a lot of work, like
-> searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
-> backrefs.
-> 
-> Normally this would result pretty complex code, something like:
->   btrfs_search_slot()
->   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
->   while (1) {	/* Loop for extent tree items */
-> 	while (ptr < end) { /* Loop for inlined items */
-> 		/* REAL WORK HERE */
-> 	}
->   next:
->   	ret = btrfs_next_item()
-> 	/* Ensure we're still at keyed item for specified bytenr */
->   }
-> 
-> The idea of btrfs_backref_iter is to avoid such complex and hard to
-> read code structure, but something like the following:
-> 
->   iter = btrfs_backref_iter_alloc();
->   ret = btrfs_backref_iter_start(iter, bytenr);
->   if (ret < 0)
-> 	goto out;
->   for (; ; ret = btrfs_backref_iter_next(iter)) {
-> 	/* REAL WORK HERE */
->   }
->   out:
->   btrfs_backref_iter_free(iter);
-> 
-> This patch is just the skeleton + btrfs_backref_iter_start() code.
+> This function will go next inline/keyed backref for
+> btrfs_backref_iter infrastructure.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+The assert doesn't trigger so :
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
