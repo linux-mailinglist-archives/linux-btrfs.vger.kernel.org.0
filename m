@@ -2,71 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F471646AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715421646F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgBSORv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 09:17:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35534 "EHLO mx2.suse.de"
+        id S1727809AbgBSObe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 09:31:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46946 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgBSORv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 09:17:51 -0500
+        id S1727434AbgBSObe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:31:34 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0CF03B9E7;
-        Wed, 19 Feb 2020 14:17:47 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 43646ACCA;
+        Wed, 19 Feb 2020 14:31:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5F881DA70E; Wed, 19 Feb 2020 15:17:30 +0100 (CET)
-Date:   Wed, 19 Feb 2020 15:17:30 +0100
+        id A222EDA70E; Wed, 19 Feb 2020 15:31:14 +0100 (CET)
+Date:   Wed, 19 Feb 2020 15:31:14 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     yu kuai <yukuai3@huawei.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhengbin13@huawei.com,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH 2/3] btrfs: remove set but not used variable 'parent'
-Message-ID: <20200219141730.GX2902@suse.cz>
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
+Message-ID: <20200219143114.GY2902@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        yu kuai <yukuai3@huawei.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhengbin13@huawei.com,
-        yi.zhang@huawei.com
-References: <20200219112203.17075-1-yukuai3@huawei.com>
- <f7bc478c-2fe9-2694-cd0c-92c188d178c5@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Marc MERLIN <marc@merlins.org>,
+        Martin Steigerwald <martin@lichtvoll.de>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200131143105.52092-1-josef@toxicpanda.com>
+ <20200202175247.GB3929@twin.jikos.cz>
+ <CAKhhfD7S=kcKLRURdNFZ8H4beS8=XjFvnOQXche7+SVOGFGC_w@mail.gmail.com>
+ <2776783.E9KYCc1pZO@merkaba>
+ <20200219134327.GD30993@merlins.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7bc478c-2fe9-2694-cd0c-92c188d178c5@suse.com>
+In-Reply-To: <20200219134327.GD30993@merlins.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 01:34:53PM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 19.02.20 г. 13:22 ч., yu kuai wrote:
-> > Fixes gcc '-Wunused-but-set-variable' warning:
+On Wed, Feb 19, 2020 at 05:43:27AM -0800, Marc MERLIN wrote:
+> On Wed, Feb 19, 2020 at 10:17:24AM +0100, Martin Steigerwald wrote:
+> > Marc MERLIN - 19.02.20, 01:42:57 CET:
+> > > Has the patch gotten to any 5.5 release too?
 > > 
-> > fs/btrfs/tree-log.c: In function ‘walk_down_log_tree’:
-> > fs/btrfs/tree-log.c:2702:24: warning: variable ‘parent’
-> > set but not used [-Wunused-but-set-variable]
-> > fs/btrfs/tree-log.c: In function ‘walk_up_log_tree’:
-> > fs/btrfs/tree-log.c:2803:26: warning: variable ‘parent’
-> > set but not used [-Wunused-but-set-variable]
-> > 
-> > They are never used, and so can be removed.
-> > 
-> > Signed-off-by: yu kuai <yukuai3@huawei.com>
+> > Yes, as git log easily reveals.
 > 
-> Ah yes, those two are a result of my :
+> Sorry if I suck, but right now I only have pre-made kernel releases from
+> kernel.org.
+> This bug in 5.4 messed up some of my dm-thin volumes which now took 28% of a dm-thin
+> 14TB pool when the actual data is only using 4GB :( (at the same time it
+> also shows my FS is full when of course it's not).
 > 
-> e084c5ab48f9 ("btrfs: Call btrfs_pin_reserved_extent only during active
-> transaction")  (in misc-next branch)
-> 
-> David perhaps you can squash the two var removals into the original patch?
+> I'll likely have to destroy the dm-thin to recover that space (or maybe
+> not, we'll see), but I'm travelling and don't really have countless time
+> to allocate to this.
+> If 5.5.4 is supposed to fix this too, I'll build it, install it and hope
+> it reclaims my lost dm-thin space, and if not suck up the deletion,
+> re-creation and backup/restore.
 
-Yes I'll do that.
+The fix got to stable 5.5.2 and 5.4.18. I don't know if dm-thin actually
+allows that, but is there a non-destructive way to reclaim the space?
+Like using fstrim (the filesystem can tell the underlying storage which
+blocks are free). According to
+http://man7.org/linux/man-pages/man7/lvmthin.7.html ("Manually manage
+free data space of thin pool LV") this should work but I have no
+practical experience with that.
