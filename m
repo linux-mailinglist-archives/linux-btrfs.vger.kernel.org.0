@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9841816464F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427B4164650
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgBSOGA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 09:06:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
+        id S1727802AbgBSOGK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 09:06:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727781AbgBSOGA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 09:06:00 -0500
+        id S1727781AbgBSOGK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:06:10 -0500
 Received: from debian5.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1E7C2176D
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2020 14:05:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 486AE2176D
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2020 14:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582121159;
-        bh=bq9OgEV6aivXt5rr7wiEyFeNsgI7KYBhCX0vF13ASSk=;
+        s=default; t=1582121168;
+        bh=NxuQWdS8+eAufg1UYF0iRrjGN0qVtlYULB7kUphHwJY=;
         h=From:To:Subject:Date:From;
-        b=eYY1a6aDjxKMw/X/qc6R/c4E0FKhKhI9WHAJ3epHTmGGd/nSLvufoi+tsbAkLJ1ll
-         orXqgQwo8qtojr8giLtdUtBp0FOOgjPch2J66WXgd7E3phKZ5kLqJfJH7Tp1U7kKw4
-         2NthbZxwcYVqE5kNvNAY0fXNVEdhpk4Zdejk2TuE=
+        b=gnzeKLNsn/5WAiGo7JnppBl55Yhli4c3HT1tpE/FAEm+n/WJ6wlHa3Y7fPZF6RAYI
+         06xmSyRcwK/GxrhK+XzKYgCkocoR+xyzBUxsfDB3eXuBCM6GPHD/aanpt5SrvRRu0R
+         dIMXxjwPBK4oXghHvEinGRaXl0F9/gF/YAdAzgaA=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/4] Btrfs: simplify inline extent handling when doing reflinks
-Date:   Wed, 19 Feb 2020 14:05:56 +0000
-Message-Id: <20200219140556.1641567-1-fdmanana@kernel.org>
+Subject: [PATCH 3/4] Btrfs: resurrect extent_read_full_page_nolock()
+Date:   Wed, 19 Feb 2020 14:06:06 +0000
+Message-Id: <20200219140606.1641625-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,136 +38,172 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We can not reflink parts of an inline extent, we must always reflink the
-whole inline extent. We know that inline extents always start at file
-offset 0 and that can never represent an amount of data larger then the
-filesystem's sector size (both compressed and uncompressed). We also have
-had the constraints that reflink operations must have a start offset that
-is aligned to the sector size and an end offset that is also aligned or
-it ends the inode's i_size, so there's no way for user space to be able
-to do a reflink operation that will refer to only a part of an inline
-extent.
+Commit 7f042a8370a5bb ("Btrfs: remove no longer used function
+extent_read_full_page_nolock()") removed extent_read_full_page_nolock()
+because it was not needed anymore.
 
-Initially there was a bug in the inlining code that could allow compressed
-inline extents that encoded more than 1 page, but that was fixed in 2008
-by commit 70b99e6959a4c2 ("Btrfs: Compression corner fixes") since that
-was problematic.
+This function was used to read a page while holding the respective range
+locked in the inode's iotree, to avoid deadlocks when using the other
+APIs we have for reading a page (which lock and unlock the range
+themselves).
 
-So remove all the extent cloning code that deals with the possibility
-of cloning only partial inline extents.
+Since this type of functionality is needed for the upcoming changes to
+the reflink implementation dealing with cloning of inline extents, bring
+back this function to life.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/reflink.c | 53 ++++++++++++----------------------------------
- 1 file changed, 14 insertions(+), 39 deletions(-)
+ fs/btrfs/compression.c |  8 ++++++-
+ fs/btrfs/extent_io.c   | 47 ++++++++++++++++++++++++++++++++++--------
+ fs/btrfs/extent_io.h   |  3 +++
+ 3 files changed, 48 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index f780fb8852ec..7e7f46116db3 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -74,9 +74,8 @@ static int clone_copy_inline_extent(struct inode *dst,
- 				    struct btrfs_key *new_key,
- 				    const u64 drop_start,
- 				    const u64 datal,
--				    const u64 skip,
- 				    const u64 size,
--				    char *inline_data)
-+				    const char *inline_data)
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 9ab610cc9114..4096cd3b1a2f 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -722,7 +722,13 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	faili = nr_pages - 1;
+ 	cb->nr_pages = nr_pages;
+ 
+-	add_ra_bio_pages(inode, em_start + em_len, cb);
++	/*
++	 * In the parent-locked case we only locked the range we are interested
++	 * in.  In all other cases, we can opportunistically cache decompressed
++	 * data that goes beyond the requested range.
++	 */
++	if (!(bio_flags & EXTENT_BIO_PARENT_LOCKED))
++		add_ra_bio_pages(inode, em_start + em_len, cb);
+ 
+ 	/* include any pages we added in add_ra-bio_pages */
+ 	cb->len = bio->bi_iter.bi_size;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d644da00cca4..72b6c6d4c7e6 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3104,7 +3104,8 @@ static int __do_readpage(struct page *page,
+ 	size_t iosize;
+ 	size_t disk_io_size;
+ 	size_t blocksize = inode->i_sb->s_blocksize;
+-	unsigned long this_bio_flag = 0;
++	const bool parent_locked = *bio_flags & EXTENT_BIO_PARENT_LOCKED;
++	unsigned long this_bio_flag = *bio_flags & EXTENT_BIO_PARENT_LOCKED;
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 
+ 	set_page_extent_mapped(page);
+@@ -3144,15 +3145,19 @@ static int __do_readpage(struct page *page,
+ 			kunmap_atomic(userpage);
+ 			set_extent_uptodate(tree, cur, cur + iosize - 1,
+ 					    &cached, GFP_NOFS);
+-			unlock_extent_cached(tree, cur,
+-					     cur + iosize - 1, &cached);
++			if (parent_locked)
++				free_extent_state(cached);
++			else
++				unlock_extent_cached(tree, cur,
++						     cur + iosize - 1, &cached);
+ 			break;
+ 		}
+ 		em = __get_extent_map(inode, page, pg_offset, cur,
+ 				      end - cur + 1, get_extent, em_cached);
+ 		if (IS_ERR_OR_NULL(em)) {
+ 			SetPageError(page);
+-			unlock_extent(tree, cur, end);
++			if (!parent_locked)
++				unlock_extent(tree, cur, end);
+ 			break;
+ 		}
+ 		extent_offset = cur - em->start;
+@@ -3234,8 +3239,11 @@ static int __do_readpage(struct page *page,
+ 			flush_dcache_page(page);
+ 			kunmap_atomic(userpage);
+ 
+-			set_extent_uptodate(tree, cur, cur + iosize - 1,
+-					    &cached, GFP_NOFS);
++			if (parent_locked)
++				free_extent_state(cached);
++			else
++				set_extent_uptodate(tree, cur, cur + iosize - 1,
++						    &cached, GFP_NOFS);
+ 			unlock_extent_cached(tree, cur,
+ 					     cur + iosize - 1, &cached);
+ 			cur = cur + iosize;
+@@ -3246,7 +3254,8 @@ static int __do_readpage(struct page *page,
+ 		if (test_range_bit(tree, cur, cur_end,
+ 				   EXTENT_UPTODATE, 1, NULL)) {
+ 			check_page_uptodate(tree, page);
+-			unlock_extent(tree, cur, cur + iosize - 1);
++			if (!parent_locked)
++				unlock_extent(tree, cur, cur + iosize - 1);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+@@ -3256,7 +3265,8 @@ static int __do_readpage(struct page *page,
+ 		 */
+ 		if (block_start == EXTENT_MAP_INLINE) {
+ 			SetPageError(page);
+-			unlock_extent(tree, cur, cur + iosize - 1);
++			if (!parent_locked)
++				unlock_extent(tree, cur, cur + iosize - 1);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+@@ -3274,7 +3284,8 @@ static int __do_readpage(struct page *page,
+ 			*bio_flags = this_bio_flag;
+ 		} else {
+ 			SetPageError(page);
+-			unlock_extent(tree, cur, cur + iosize - 1);
++			if (!parent_locked)
++				unlock_extent(tree, cur, cur + iosize - 1);
+ 			goto out;
+ 		}
+ 		cur = cur + iosize;
+@@ -3340,6 +3351,24 @@ int extent_read_full_page(struct page *page, get_extent_t *get_extent,
+ 	return ret;
+ }
+ 
++/*
++ * Similar to extent_read_full_page() but the responsability to lock the range
++ * in the respective inode is from the caller.
++ */
++int extent_read_full_page_nolock(struct page *page, get_extent_t *get_extent,
++				 int mirror_num)
++{
++	struct bio *bio = NULL;
++	unsigned long bio_flags = EXTENT_BIO_PARENT_LOCKED;
++	int ret;
++
++	ret = __do_readpage(page, get_extent, NULL, &bio, mirror_num,
++			    &bio_flags, READ, NULL);
++	if (bio)
++		ret = submit_one_bio(bio, mirror_num, bio_flags);
++	return ret;
++}
++
+ static void update_nr_written(struct writeback_control *wbc,
+ 			      unsigned long nr_written)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(dst->i_sb);
- 	struct btrfs_root *root = BTRFS_I(dst)->root;
-@@ -172,12 +171,6 @@ static int clone_copy_inline_extent(struct inode *dst,
- 	if (ret)
- 		return ret;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 234622101230..8d891a598e24 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -12,6 +12,7 @@
+  * type for this bio
+  */
+ #define EXTENT_BIO_COMPRESSED 1
++#define EXTENT_BIO_PARENT_LOCKED 4
+ #define EXTENT_BIO_FLAG_SHIFT 16
  
--	if (skip) {
--		const u32 start = btrfs_file_extent_calc_inline_size(0);
--
--		memmove(inline_data + start, inline_data + start + skip, datal);
--	}
--
- 	write_extent_buffer(path->nodes[0], inline_data,
- 			    btrfs_item_ptr_offset(path->nodes[0],
- 						  path->slots[0]),
-@@ -241,7 +234,6 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 		struct btrfs_key new_key;
- 		u64 disko = 0, diskl = 0;
- 		u64 datao = 0, datal = 0;
--		u8 comp;
- 		u64 drop_start;
+ enum {
+@@ -191,6 +192,8 @@ int try_release_extent_buffer(struct page *page);
  
- 		/*
-@@ -287,7 +279,6 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 
- 		extent = btrfs_item_ptr(leaf, slot,
- 					struct btrfs_file_extent_item);
--		comp = btrfs_file_extent_compression(leaf, extent);
- 		type = btrfs_file_extent_type(leaf, extent);
- 		if (type == BTRFS_FILE_EXTENT_REG ||
- 		    type == BTRFS_FILE_EXTENT_PREALLOC) {
-@@ -370,23 +361,18 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 			if (ret)
- 				goto out;
- 		} else if (type == BTRFS_FILE_EXTENT_INLINE) {
--			u64 skip = 0;
--			u64 trim = 0;
--
--			if (off > key.offset) {
--				skip = off - key.offset;
--				new_key.offset += skip;
--			}
--
--			if (key.offset + datal > off + len)
--				trim = key.offset + datal - (off + len);
--
--			if (comp && (skip || trim)) {
--				ret = -EINVAL;
--				goto out;
--			}
--			size -= skip + trim;
--			datal -= skip + trim;
-+			/*
-+			 * Inline extents always have to start at file offset 0
-+			 * and can never be bigger then the sector size. We can
-+			 * never clone only parts of an inline extent, since all
-+			 * reflink operations must start at a sector size aligned
-+			 * offset, and the length must be aligned too or end at
-+			 * the i_size (which implies the whole inlined data).
-+			 */
-+			ASSERT(key.offset == 0);
-+			ASSERT(datal <= fs_info->sectorsize);
-+			if (key.offset != 0 || datal > fs_info->sectorsize)
-+				return -EUCLEAN;
- 
- 			/*
- 			 * If our extent is inline, we know we will drop or
-@@ -404,7 +390,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 
- 			ret = clone_copy_inline_extent(inode, trans, path,
- 						       &new_key, drop_start,
--						       datal, skip, size, buf);
-+						       datal, size, buf);
- 			if (ret) {
- 				if (ret != -EOPNOTSUPP)
- 					btrfs_abort_transaction(trans, ret);
-@@ -550,17 +536,6 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
- 	u64 len = olen;
- 	u64 bs = fs_info->sb->s_blocksize;
- 
--	/*
--	 * TODO:
--	 * - split compressed inline extents.  annoying: we need to
--	 *   decompress into destination's address_space (the file offset
--	 *   may change, so source mapping won't do), then recompress (or
--	 *   otherwise reinsert) a subrange.
--	 *
--	 * - split destination inode's inline extents.  The inline extents can
--	 *   be either compressed or non-compressed.
--	 */
--
- 	/*
- 	 * VFS's generic_remap_file_range_prep() protects us from cloning the
- 	 * eof block into the middle of a file, which would result in corruption
+ int extent_read_full_page(struct page *page, get_extent_t *get_extent,
+ 			  int mirror_num);
++int extent_read_full_page_nolock(struct page *page, get_extent_t *get_extent,
++				 int mirror_num);
+ int extent_write_full_page(struct page *page, struct writeback_control *wbc);
+ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
+ 			      int mode);
 -- 
 2.25.0
 
