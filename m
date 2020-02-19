@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2440C164654
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC45C164655
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 15:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgBSOGe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 09:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
+        id S1727862AbgBSOGr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 09:06:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727597AbgBSOGe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 09:06:34 -0500
+        id S1727762AbgBSOGr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:06:47 -0500
 Received: from debian5.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A4D524656;
-        Wed, 19 Feb 2020 14:06:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43FBE20801;
+        Wed, 19 Feb 2020 14:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582121193;
-        bh=XARpIrS6yltExNqzaLJ4ZG7/Iep+jv1FVoBu4F/X70Q=;
+        s=default; t=1582121206;
+        bh=n04l4rVV0EFIBmk6k9i85/7pikHGwzb8g0NJGfqOfvI=;
         h=From:To:Cc:Subject:Date:From;
-        b=1EPMnYBNQr60LA9NItAnb48BUGjK6BK/mP7Y553r54nDuZ1KNQLHvr4+ZbmsXSwgL
-         WA+nEcdZPXJxYJTrBcATTNz/NDdGdM+sXmoFg/81aGO+mwt/L8YXV4/0GJuRL/DVO0
-         vOHxruBm6Zqt3KnN4Z3Hk9cIpx1uXtXB0xC/I4ww=
+        b=WGtlgrslqazOKEL/uvHXDOTmiRCtD8cMwvm6EHfsaGwHeGPIMwtjOQp/NDuD85H8v
+         XgVyRs0ioj/njnlS+fQnch9mh2QFpz+0pFCBIbiTnjDcic+nsbJUN6k5tx5kC3r5Ei
+         uEuTxH8CESkajwLaL9aRHGU2XrLsrHi0yuYX2pt0=
 From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/2] btrfs/112: remove some tests for cloning inline extents
-Date:   Wed, 19 Feb 2020 14:06:27 +0000
-Message-Id: <20200219140627.1641733-1-fdmanana@kernel.org>
+Subject: [PATCH 2/2] btrfs: add test case for newly supported cases of cloning inline extents
+Date:   Wed, 19 Feb 2020 14:06:41 +0000
+Message-Id: <20200219140641.1642570-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,181 +39,460 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-This test case, btrfs/112, tests that some clone operations that have a
-range covering inline extents fail with either -EOPNOTSUPP or -EINVAL.
-These cases were unsupported on btrfs because they used to lead to file
-corruptions and were not trivial to implement.
+Test several scenarios of cloning operations where the source range includes
+inline extents. They used to not be supported on btrfs because their
+implementation was not straightforward, and therefore these operations used
+to fail with errno EOPNOTSUPP on older kernels.
 
-But there's now a patchset that adds support for them, and the relevant
-patch of that patchset has the following subject:
+This currently fails on any released kernel. It passes only when the patch
+with the following subject is applied:
 
   "Btrfs: implement full reflink support for inline extents"
 
-So just remove these tests from test case btrfs/112, since this test
-case is about testing only the unsupported reflink operations. A new
-test case that verifies that these cases now work, as long as some other
-new cases, will follow in another patch.
-
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/112     | 31 -----------------------------
- tests/btrfs/112.out | 48 ---------------------------------------------
- 2 files changed, 79 deletions(-)
+ tests/btrfs/205     | 173 +++++++++++++++++++++++++++++++
+ tests/btrfs/205.out | 241 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/group   |   1 +
+ 3 files changed, 415 insertions(+)
+ create mode 100755 tests/btrfs/205
+ create mode 100644 tests/btrfs/205.out
 
-diff --git a/tests/btrfs/112 b/tests/btrfs/112
-index e4e9d322..13c19863 100755
---- a/tests/btrfs/112
-+++ b/tests/btrfs/112
-@@ -83,22 +83,6 @@ test_cloning_inline_extents()
- 	od -t x1 $SCRATCH_MNT/foo2
- 	$XFS_IO_PROG -c "pwrite -S 0xee 0 90" $SCRATCH_MNT/foo2 | _filter_xfs_io
- 
--	# Test cloning the inline extent against a file which has a size of zero
--	# but has a prealloc extent. It should not be possible as well to clone
--	# the inline extent from file bar into this file.
--	$XFS_IO_PROG -f -c "falloc -k 0 1M" $SCRATCH_MNT/foo3 | _filter_xfs_io
--	$CLONER_PROG -s 0 -d 0 -l 0 $SCRATCH_MNT/bar $SCRATCH_MNT/foo3 \
--		| _filter_btrfs_cloner_error
--
--	# Doing IO against any range in the first 4K of the file should work.
--	# Due to a past clone ioctl bug which allowed cloning the inline extent,
--	# these operations resulted in EIO errors.
--	echo "First 50 bytes of foo3 after clone operation:"
--	# Should not be able to read any bytes, file has 0 bytes i_size (the
--	# clone operation failed and did not modify our file).
--	od -t x1 $SCRATCH_MNT/foo3
--	$XFS_IO_PROG -c "pwrite -S 0xff 0 90" $SCRATCH_MNT/foo3 | _filter_xfs_io
--
- 	# Test cloning the inline extent against a file which consists of a
- 	# single inline extent that has a size not greater than the size of
- 	# bar's inline extent (40 < 50).
-@@ -157,21 +141,6 @@ test_cloning_inline_extents()
- 	# Must have a size of 50 bytes, with all bytes having a value of 0xbb.
- 	od -t x1 $SCRATCH_MNT/foo7
- 
--	# Test cloning the inline extent against a file which has a size not
--	# greater than the size of bar's inline extent (20 < 50) but has
--	# a prealloc extent that goes beyond the file's size. It should not be
--	# possible to clone the inline extent from bar into this file.
--	$XFS_IO_PROG -f -c "falloc -k 0 1M" \
--			-c "pwrite -S 0x88 0 20" \
--			$SCRATCH_MNT/foo8 | _filter_xfs_io
--	$CLONER_PROG -s 0 -d 0 -l 0 $SCRATCH_MNT/bar $SCRATCH_MNT/foo8 \
--		| _filter_btrfs_cloner_error
--
--	echo "File foo8 data after clone operation:"
--	# Must have a size of 20 bytes, with all bytes having a value of 0x88
--	# (the clone operation did not modify our file).
--	od -t x1 $SCRATCH_MNT/foo8
--
- 	_scratch_unmount
- }
- 
-diff --git a/tests/btrfs/112.out b/tests/btrfs/112.out
-index 3a95e14d..8c26d758 100644
---- a/tests/btrfs/112.out
-+++ b/tests/btrfs/112.out
-@@ -24,11 +24,6 @@ File foo2 data after clone operation:
- 0040000
- wrote 90/90 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--First 50 bytes of foo3 after clone operation:
--0000000
--wrote 90/90 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 40/40 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File foo4 data after clone operation:
-@@ -56,13 +51,6 @@ File foo7 data after clone operation:
- *
- 0000060 bb bb
- 0000062
--wrote 20/20 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--File foo8 data after clone operation:
--0000000 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88
--0000020 88 88 88 88
--0000024
- 
- Testing with compression and without the no-holes feature...
- 
-@@ -88,11 +76,6 @@ File foo2 data after clone operation:
- 0040000
- wrote 90/90 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--First 50 bytes of foo3 after clone operation:
--0000000
--wrote 90/90 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 40/40 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File foo4 data after clone operation:
-@@ -120,13 +103,6 @@ File foo7 data after clone operation:
- *
- 0000060 bb bb
- 0000062
--wrote 20/20 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--File foo8 data after clone operation:
--0000000 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88
--0000020 88 88 88 88
--0000024
- 
- Testing without compression and with the no-holes feature...
- 
-@@ -152,11 +128,6 @@ File foo2 data after clone operation:
- 0040000
- wrote 90/90 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--First 50 bytes of foo3 after clone operation:
--0000000
--wrote 90/90 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 40/40 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File foo4 data after clone operation:
-@@ -184,13 +155,6 @@ File foo7 data after clone operation:
- *
- 0000060 bb bb
- 0000062
--wrote 20/20 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--File foo8 data after clone operation:
--0000000 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88
--0000020 88 88 88 88
--0000024
- 
- Testing with compression and with the no-holes feature...
- 
-@@ -216,11 +180,6 @@ File foo2 data after clone operation:
- 0040000
- wrote 90/90 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--First 50 bytes of foo3 after clone operation:
--0000000
--wrote 90/90 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 40/40 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File foo4 data after clone operation:
-@@ -248,10 +207,3 @@ File foo7 data after clone operation:
- *
- 0000060 bb bb
- 0000062
--wrote 20/20 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--clone failed: Invalid argument
--File foo8 data after clone operation:
--0000000 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88
--0000020 88 88 88 88
--0000024
+diff --git a/tests/btrfs/205 b/tests/btrfs/205
+new file mode 100755
+index 00000000..9bec2bfa
+--- /dev/null
++++ b/tests/btrfs/205
+@@ -0,0 +1,173 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 205
++#
++# Test several scenarios of cloning operations where the source range includes
++# inline extents. They used to not be supported on btrfs because their
++# implementation was not straightforward, and therefore these operations used
++# to fail with errno EOPNOTSUPP on older kernels.
++#
++# Support for this was added by a patch with the following subject:
++#
++#   "Btrfs: implement full reflink support for inline extents"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/reflink
++
++# real QA test starts here
++_supported_fs btrfs
++_supported_os Linux
++_require_scratch_reflink
++_require_xfs_io_command "falloc" "-k"
++_require_command "$CHATTR_PROG" chattr
++_require_btrfs_fs_feature "no_holes"
++_require_btrfs_mkfs_feature "no-holes"
++
++run_tests()
++{
++    rm -f $SCRATCH_MNT/foo* $SCRATCH_MNT/bar*
++
++    # File foo1 has an inline extent encoding 4K of data followed by a regular
++    # extent. It has a file size of 128K.
++    echo "Creating file foo1"
++    touch $SCRATCH_MNT/foo1
++    $CHATTR_PROG +c $SCRATCH_MNT/foo1
++    $XFS_IO_PROG -c "pwrite -S 0xab 0 4K" \
++		 -c "fsync" \
++		 -c "pwrite -S 0xab 4K 124K" \
++		 $SCRATCH_MNT/foo1 | _filter_xfs_io
++
++    # File bar1 has a single 128K extent, and a file size of 128K.
++    echo "Creating file bar1"
++    $XFS_IO_PROG -f -c "pwrite -S 0xcd 0 128K" $SCRATCH_MNT/bar1 | _filter_xfs_io
++
++    echo "Cloning foo1 into the end of bar1"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo1 0 128K 128K" $SCRATCH_MNT/bar1 \
++        | _filter_xfs_io
++
++    echo "File bar1 digest = $(_md5_checksum $SCRATCH_MNT/bar1)"
++
++    # File foo2 has an inline extent with 1000 bytes of data and it's followed
++    # by a regular extent of 60K. It has a file size of 64K.
++    echo "Creating file foo2"
++    $XFS_IO_PROG -f -c "pwrite -S 0xab 0 1000" \
++		 -c "fsync" \
++		 -c "falloc 0 4K" \
++		 -c "pwrite -S 0xab 4K 60K" \
++		 $SCRATCH_MNT/foo2 | _filter_xfs_io
++
++    # File bar2 has a regular extent of 64K and a file size of 64K too.
++    echo "Creating file bar2"
++    $XFS_IO_PROG -f -c "pwrite -S 0xcd 0 64K" $SCRATCH_MNT/bar2 | _filter_xfs_io
++
++    echo "Cloning foo2 into the end of bar2"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo2 0 64K 64K" $SCRATCH_MNT/bar2 \
++        | _filter_xfs_io
++
++    echo "File bar2 digest = $(_md5_checksum $SCRATCH_MNT/bar2)"
++
++    # File bar3 has a regular extent of 128K and a file size of 128K too.
++    echo "Creating file bar3"
++    $XFS_IO_PROG -f -c "pwrite -S 0xcd 0 128K" $SCRATCH_MNT/bar3 \
++        | _filter_xfs_io
++
++    echo "Cloning foo2 into the middle of bar3"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo2 0 64K 64K" $SCRATCH_MNT/bar3 \
++        | _filter_xfs_io
++
++    echo "File bar3 digest = $(_md5_checksum $SCRATCH_MNT/bar3)"
++
++    # File bar4 has a 64K hole at offset 0 followed by a 64K regular extent, and
++    # a file size of 128K.
++    echo "Creating file bar4"
++    $XFS_IO_PROG -f -c "pwrite -S 0xcd 64K 64K" $SCRATCH_MNT/bar4 | _filter_xfs_io
++
++    echo "Cloning foo1 into bar4"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo1 0 0 128K" $SCRATCH_MNT/bar4 \
++        | _filter_xfs_io
++
++    echo "File bar4 digest = $(_md5_checksum $SCRATCH_MNT/bar4)"
++
++    # File bar5 has a 1Mb prealloc extent at file offset 0 and a file size of 0.
++    echo "Creating file bar5"
++    $XFS_IO_PROG -f -c "falloc -k 0 1M" $SCRATCH_MNT/bar5
++
++    echo "Cloning foo1 into bar5"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo1 0 0 128K" $SCRATCH_MNT/bar5 \
++        | _filter_xfs_io
++
++    echo "File bar5 digest = $(_md5_checksum $SCRATCH_MNT/bar5)"
++
++    # File bar6 has an inline extent encoding 500 bytes of data followed by a
++    # prealloc extent of 1Mb at file offset 4K. The file size is 500 bytes.
++    echo "Creating file bar6"
++    $XFS_IO_PROG -f -c "pwrite -S 0xef 0 500" \
++		 -c "falloc -k 4K 1M" \
++		 $SCRATCH_MNT/bar6 | _filter_xfs_io
++
++    echo "Cloning foo1 into bar6"
++    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo1 0 0 128K" $SCRATCH_MNT/bar6 \
++        | _filter_xfs_io
++
++    echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
++
++    # Unmount and mount again the filesystem. We want to verify the reflink
++    # operations were durably persisted.
++    _scratch_cycle_mount
++
++    echo "File digests after mounting again the filesystem:"
++    echo "File bar1 digest = $(_md5_checksum $SCRATCH_MNT/bar1)"
++    echo "File bar2 digest = $(_md5_checksum $SCRATCH_MNT/bar2)"
++    echo "File bar3 digest = $(_md5_checksum $SCRATCH_MNT/bar3)"
++    echo "File bar4 digest = $(_md5_checksum $SCRATCH_MNT/bar4)"
++    echo "File bar5 digest = $(_md5_checksum $SCRATCH_MNT/bar5)"
++    echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
++}
++
++_scratch_mkfs "-O ^no-holes" >>$seqres.full 2>&1
++_scratch_mount
++
++echo
++echo "Testing with defaults"
++echo
++run_tests
++
++echo
++echo "Testing with -o compress"
++echo
++_scratch_cycle_mount "compress"
++run_tests
++
++echo
++echo "Testing with -o nodatacow"
++echo
++_scratch_cycle_mount "nodatacow"
++run_tests
++
++echo
++echo "Testing with -O no-holes"
++echo
++_scratch_unmount
++_scratch_mkfs "-O no-holes" >>$seqres.full 2>&1
++_scratch_mount
++run_tests
++
++status=0
++exit
+diff --git a/tests/btrfs/205.out b/tests/btrfs/205.out
+new file mode 100644
+index 00000000..948e0634
+--- /dev/null
++++ b/tests/btrfs/205.out
+@@ -0,0 +1,241 @@
++QA output created by 205
++
++Testing with defaults
++
++Creating file foo1
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 126976/126976 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar1
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into the end of bar1
++linked 131072/131072 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++Creating file foo2
++wrote 1000/1000 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 61440/61440 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar2
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the end of bar2
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar3
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the middle of bar3
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar4
++wrote 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar4
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar5
++Cloning foo1 into bar5
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar6
++wrote 500/500 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar6
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++File digests after mounting again the filesystem:
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++
++Testing with -o compress
++
++Creating file foo1
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 126976/126976 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar1
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into the end of bar1
++linked 131072/131072 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++Creating file foo2
++wrote 1000/1000 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 61440/61440 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar2
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the end of bar2
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar3
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the middle of bar3
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar4
++wrote 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar4
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar5
++Cloning foo1 into bar5
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar6
++wrote 500/500 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar6
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++File digests after mounting again the filesystem:
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++
++Testing with -o nodatacow
++
++Creating file foo1
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 126976/126976 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar1
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into the end of bar1
++linked 131072/131072 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++Creating file foo2
++wrote 1000/1000 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 61440/61440 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar2
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the end of bar2
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar3
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the middle of bar3
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar4
++wrote 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar4
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar5
++Cloning foo1 into bar5
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar6
++wrote 500/500 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar6
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++File digests after mounting again the filesystem:
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++
++Testing with -O no-holes
++
++Creating file foo1
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 126976/126976 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar1
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into the end of bar1
++linked 131072/131072 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++Creating file foo2
++wrote 1000/1000 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 61440/61440 bytes at offset 4096
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Creating file bar2
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the end of bar2
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar3
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo2 into the middle of bar3
++linked 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++Creating file bar4
++wrote 65536/65536 bytes at offset 65536
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar4
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar5
++Cloning foo1 into bar5
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++Creating file bar6
++wrote 500/500 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Cloning foo1 into bar6
++linked 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
++File digests after mounting again the filesystem:
++File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
++File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
++File bar4 digest = 4b48829714d20a4e73a0cf1565270076
++File bar5 digest = 4b48829714d20a4e73a0cf1565270076
++File bar6 digest = 4b48829714d20a4e73a0cf1565270076
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 79893747..0e77dbaa 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -207,3 +207,4 @@
+ 202 auto quick subvol snapshot
+ 203 auto quick send clone
+ 204 auto quick punch
++205 auto quick clone compress
 -- 
 2.25.0
 
