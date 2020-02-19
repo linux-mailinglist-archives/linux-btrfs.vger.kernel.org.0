@@ -2,96 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAA716439D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 12:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E2C16440B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Feb 2020 13:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgBSLos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Feb 2020 06:44:48 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:38454 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgBSLor (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Feb 2020 06:44:47 -0500
-Received: by mail-lj1-f194.google.com with SMTP id w1so30810ljh.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Feb 2020 03:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=MBYdY7YmJFAze+FI1YzaTjLSxr777+pClRagLHMOXDJovCzP4zvUljmkRcXrTyNxIN
-         zOTKxAm0qeBoFkKlwoJwSHFRWBNxYSPs6+BX4fXI53vazzK11SOc5bgvfb+akWU2hzck
-         wIwZaaG1TRBogMM3W+KAyQGr7YEmxCXTfBY9kwgqA1Ucu5jYQvPb1WicWdIqhfOLG+ut
-         wx3aCnsElDCP6nyCuv+j4jSKNbfDYwvUT1lkPNTpvr7vvlPV411arXWRbaki+KVzMAq0
-         cPTqaMugjwpt9jc0iz71wQSo/x7NK6ESwUF8fTmvrmmNGKhCCfcsYw6Qie/zvLo4YNDk
-         p4aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=h5kxahaJUZKcAfg8mG7Kmq6fgm/65cM7xHrxo+ug0mn5ibjyDOrgsrcRuG6dQikbjn
-         /T6saQsiwrY5WUNHG1gDNFXlWTIlg7eprrmFiXH1KpMBX0PxoQI/KoZcGFV8AU1Yf4ur
-         t9WbfUdXLhrKs8H+gUZFW96Pz24odm3horcuC5EBVf+0YnxMBkmX3yRj5vnhZvOV7NkJ
-         CmWjEoDi+FtZLP/7nufSG0GJ7uQbGB5kjM7hEDAw3xdRk8TMxo3kRVPnbvlRU/wM3TMv
-         iXjsiN/gdxAqhPPOOnZ0ZPO3B1S76UazhTIA/0asnIcD8nVMq0g4yWk/MZ4KGoZUBaqo
-         YrVg==
-X-Gm-Message-State: APjAAAX8se7QXf1MhLabuiZPuH4Ernnvx0rqYYZrp+Q57gx9QatLHDi1
-        Nq9eZSi8QE3ulkqJ7sUd4U0CBr3+5qAfgSm3F+w=
-X-Google-Smtp-Source: APXvYqwWJL+KorR71B19Ob3K8zexrT5D7RrteOzwWgNpdff2hG+Afz16cWgUBBbEtGu2khRKBv3kd9+V7Lcjhgu/ZLU=
-X-Received: by 2002:a2e:9218:: with SMTP id k24mr15240954ljg.262.1582112683726;
- Wed, 19 Feb 2020 03:44:43 -0800 (PST)
+        id S1726891AbgBSMSY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Feb 2020 07:18:24 -0500
+Received: from bang.steev.me.uk ([81.2.120.65]:57113 "EHLO smtp.steev.me.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726514AbgBSMSY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Feb 2020 07:18:24 -0500
+Received: from localhost ([::1] helo=webmail.steev.me.uk)
+        by smtp.steev.me.uk with esmtp (Exim 4.92.2)
+        id 1j4OIy-001vnQ-R1; Wed, 19 Feb 2020 12:18:16 +0000
 MIME-Version: 1.0
-Received: by 2002:ab3:4281:0:0:0:0:0 with HTTP; Wed, 19 Feb 2020 03:44:43
- -0800 (PST)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
-Date:   Wed, 19 Feb 2020 03:44:43 -0800
-Message-ID: <CAKHB8qdA5-UXcog27z=iSOhdJkBWO6NQE1ijAUU2uxof=pW7rQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 19 Feb 2020 12:18:16 +0000
+From:   Steven Davies <btrfs-list@steev.me.uk>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     josef@toxicpanda.com, dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v6 5/5] btrfs: introduce new read_policy device
+In-Reply-To: <1582111766-8372-6-git-send-email-anand.jain@oracle.com>
+References: <1582111766-8372-1-git-send-email-anand.jain@oracle.com>
+ <1582111766-8372-6-git-send-email-anand.jain@oracle.com>
+Message-ID: <ca5fe4b1232aadb3aa0d39b3b339dcbe@steev.me.uk>
+X-Sender: btrfs-list@steev.me.uk
+User-Agent: Roundcube Webmail/1.3.8
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On 2020-02-19 11:29, Anand Jain wrote:
+> A new read policy 'device' is introduced with this patch, which when 
+> set
+> can pick only the device flagged as read_preferred for reading. This
+> tunable is for the advance users and the testers, which can make sure 
+> that
+> reads are read from the device they prefer for chunks of type raid1,
+> raid10, raid1c3 and raid1c4.
+> 
+> The default read policy is pid which can be changed to device as below.
+> 
+> $ pwd
+> /sys/fs/btrfs/12345678-1234-1234-1234-123456789abc
+> 
+> $ cat read_policy; echo device > ./read_policy; cat read_policy
+> [pid] device
+> pid [device]
+> 
+> One or more devices which are favored for reading should set the flag
+> read-preferred. In an example below a typical two disk raid1, devid1 is
+> configured as read preferred.
+> 
+> $ echo 1 > devinfo/1/read_preferred
+> $ cat devinfo/1/read_preferred; cat devinfo/2/read_preffered
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Typo: should be read_preferred
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+> 1
+> 0
+> 
+> So now when the file is read, the read IO would prefer device(s) with
+> read_preferred flags for reading.
+> 
+> $ echo 3 > /proc/sys/vm/drop_caches; md5sum /btrfs/YkZI
+> 
+> Since the devid 1 (sdb) is our read preferred device, the reads are set
+> to sdb only.
+> $ iostat -zy 1 | egrep 'sdb|sdc' (from another terminal)
+> sdb              50.00     40048.00         0.00      40048          0
+> 
+> $ echo 0 > ./devinfo/1/read_preferred; echo 1 >
+> ./devinfo/2/read_preferred;
+> 
+> [ 3343.918658] BTRFS info (device sdb): reset read preferred on devid 1
+> (1334)
+> [ 3343.919876] BTRFS info (device sdb): set read preferred on devid 2
+> (1334)
+> 
+> $ echo 3 > /proc/sys/vm/drop_caches; md5sum /btrfs/YkZI
+> 
+> Since now we changed the read preferred from devid 1 (sdb) to 2 (sdc),
+> now all the read IO goes to sdc.
+> 
+> $ iostat -zy 1 | egrep 'sdb|sdc' (from another terminal)
+> sdc              49.00     40048.00         0.00      40048          0
+> 
+> Whenever there isn't any read preferred device(s) or if more than one
+> stripe is marked as read preferred device then this read policy shall
+> use the stripe 0 for reading.
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+Should we consider the situation where more than one device is preferred 
+(perhaps for a future patch) - e.g. devid1 is HDD, devid2 is SSD, devid3 
+is SSD and data is RAID1C3?
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+Will there be a warning when this fallback to stripe 0 happens? Although 
+I imagine that would either always display on mount before 
+read_preferred is set or flood dmesg for every read.
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+Perhaps fallback to the %pid policy to give some form of balancing would 
+be a better default?
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+-- 
+Steven Davies
