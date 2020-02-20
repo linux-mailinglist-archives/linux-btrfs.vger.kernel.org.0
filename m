@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A019F166079
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B460166081
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgBTPIN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 10:08:13 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:46392 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728176AbgBTPIN (ORCPT
+        id S1728410AbgBTPJR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 10:09:17 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36261 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728176AbgBTPJQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 10:08:13 -0500
-Received: by mail-qv1-f65.google.com with SMTP id y2so1999853qvu.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:08:11 -0800 (PST)
+        Thu, 20 Feb 2020 10:09:16 -0500
+Received: by mail-qt1-f195.google.com with SMTP id t13so3080579qto.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:09:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=puw7OfTSiwVS9EqBzYUwccBf0DMnA/uq7YTgjAvSfpU=;
-        b=QgIHfcExqZOKbg19F5brUn7+4gUUSc6yrDrxCAazrfEabNxvdQWJjVV5GnUfwJ5MGN
-         tK2qKfRwr4lv5elhtDmb9AvXP9mupVaCxEO+aglaQ8TcFPeWJFPpJVPfzFkSCXRJg6ur
-         EzJg9o9Any4pB/O1ewLE2B2C2HvOZHSKxcp1ymwslUqQuvM9l9fOM2c5IZIxyY9EttZK
-         rkqjzCiTI3Y99Ph4ro/0LuKx/q6Wu8tvBizofkhaDv35DrTpXmQTOQQ8w60O4Zu3Fy+H
-         OXeA607SpfjS8TLCkx7rpSbaPGux1hVO8VQ8QDG+CSv4yMFKvLa1x1dEzhV1QwZZ+1fh
-         4nNw==
+        bh=ts3TuJBaR4oSpJuBgqD/oHUUKI8A0EX1qKsoYTrfSG4=;
+        b=BmjUZ76LPRhin4GcyihIc50bJ8pCpRxlwmIcWnPZc7zvxomhf7TRM+hvPeRoQOxSst
+         Hvza6HO3KSu4yp/i3DI0MN1IeCAJaFZ0sEhyFR/OOT/HSJg4ZPAQ2QLawrALicjnd3qw
+         ddPA2EIa1PTsKrjyuG71pig7gJ8wYw3+pdZEOXbtDWZxt1iTeSApKyhpnV6bdBhP8Ykz
+         ze7SNxSfQnfSe3iiBqW6Zt53O/38f3BgttvuPUly5qd3LO1u5Bma+2jT2nT7nhmcX7SS
+         RwDHf+jISf5JXF7gktmLRWy6FS0f7fQ01L/Vk/0ET+COsAjYfvUCIpPZiwToiLEhVhEO
+         Tjmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=puw7OfTSiwVS9EqBzYUwccBf0DMnA/uq7YTgjAvSfpU=;
-        b=pK7HKO9/Nm+I1pqOcUTHaqmyFFNmiMAD2CJ/E0tg5bWTqS/ipwJr42MeQ71yly1i4y
-         4um8BAsOrnLCmEOFsbAnPNV6Lxh2eHR5wa7sXr3T78qStNfiZLhtPiFLNt+NZjg4P/PG
-         nJcY5vf07FD62TQox7/CNQIHwSytPB8ehz/n3ezdpIxc8mVQVxjYT8p4FEpmQm11TZcQ
-         +dQW03PJiybopLZ+PV5QZkOBwt2nqRIhnGwVJRq2OUO8tO6ucZc2eu8syCwDeP67XCNb
-         PHWPlYhHXDnBMqDkiP3xTrS1CI4UJQfT109eAXAswpELy6e7xiHf1hDGGem/lP0Ab0eO
-         f37g==
-X-Gm-Message-State: APjAAAWjOnX1QYC6IVlXgmVJHH8ZVgSYrr52dx2Yz4yzAMjxG3xt2LXL
-        p1Hb6182G6KK3ujcUvkxsM/IkQ==
-X-Google-Smtp-Source: APXvYqxMBWuLsFPuoYq91f/Uhzzpbr3BDFOLYhu8xVj81EsFCaQsJKmGW0E8ZNzhgf0wJaAhgjUmog==
-X-Received: by 2002:a0c:b61c:: with SMTP id f28mr26361927qve.101.1582211290845;
-        Thu, 20 Feb 2020 07:08:10 -0800 (PST)
+        bh=ts3TuJBaR4oSpJuBgqD/oHUUKI8A0EX1qKsoYTrfSG4=;
+        b=W1r/Jt5NtERjtgOWp+qTk+Is/Vd0V2hEq1VGE8MoZqSzcJuDVV/hZYCKFqWKutg1Wz
+         O7SUGoOlvw6A8VCSa+7C9goxe4pdm6NTRcpeLebIPHXiDHu86+1Yt5F4aRglvH0dKw57
+         n2oJ9Rv3xfAjI3OAhLw9Q+Cxwzvp/xFvBqy7dahPsNDW1xjeq8snE3zjwL+soq0YQnOJ
+         wUv28+Ic2bP2+334P7nE9/AqzhrlnxQWG5lDd0yqHz5lXBy3nSQXCglGGU355CizZZU0
+         /BzuIE+wpYpG2/rvUXCOcC21SvH0TQrt7fFNj8VWoaTWGyKslvhU7kS98shjqHvf5va8
+         h3Mg==
+X-Gm-Message-State: APjAAAXKXdZT51TGEsW1Ncfq8GQRNI8DpavEVvzNKBKX2qI7h9cO8wjm
+        o77Bfkc0k2kGVv5yt8GQjQX5Lw==
+X-Google-Smtp-Source: APXvYqxGnN8Mjpn8LyDwbbxskbGfVyvaBXrc2Pz4/JUVRj2B0IdhVSTxrm6fqEuoTFbefOzKafWowg==
+X-Received: by 2002:ac8:1835:: with SMTP id q50mr25839220qtj.210.1582211355822;
+        Thu, 20 Feb 2020 07:09:15 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id c14sm1674818qkj.80.2020.02.20.07.08.09
+        by smtp.gmail.com with ESMTPSA id a2sm1763819qka.75.2020.02.20.07.09.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2020 07:08:09 -0800 (PST)
-Subject: Re: [PATCH v5 2/3] btrfs: backref: Implement
- btrfs_backref_iter_next()
+        Thu, 20 Feb 2020 07:09:14 -0800 (PST)
+Subject: Re: [PATCH v5 3/3] btrfs: relocation: Use btrfs_backref_iter
+ infrastructure
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20200218090129.134450-1-wqu@suse.com>
- <20200218090129.134450-3-wqu@suse.com>
+ <20200218090129.134450-4-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e4f1dfe9-a8c9-74d4-8c04-9c29b9dd8cd7@toxicpanda.com>
-Date:   Thu, 20 Feb 2020 10:08:09 -0500
+Message-ID: <9c480f4a-ab7b-afa6-3f81-5842e2874ca2@toxicpanda.com>
+Date:   Thu, 20 Feb 2020 10:09:14 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200218090129.134450-3-wqu@suse.com>
+In-Reply-To: <20200218090129.134450-4-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,8 +68,20 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 2/18/20 4:01 AM, Qu Wenruo wrote:
-> This function will go next inline/keyed backref for
-> btrfs_backref_iter infrastructure.
+> In the core function of relocation, build_backref_tree, it needs to
+> iterate all backref items of one tree block.
+> 
+> We don't really want to spend our code and reviewers' time to going
+> through tons of supportive code just for the backref walk.
+> 
+> Use btrfs_backref_iter infrastructure to do the loop.
+> 
+> The backref items look would be much more easier to read:
+> 
+> 	ret = btrfs_backref_iter_start(iter, cur->bytenr);
+> 	for (; ret == 0; ret = btrfs_backref_iter_next(iter)) {
+> 		/* The really important work */
+> 	}
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
