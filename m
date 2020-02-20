@@ -2,146 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C76166158
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDB516615B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgBTPs2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 10:48:28 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:40180 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgBTPs2 (ORCPT
+        id S1728522AbgBTPtN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 10:49:13 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:54704 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728380AbgBTPtN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 10:48:28 -0500
-Received: by mail-qt1-f193.google.com with SMTP id v25so3173265qto.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:48:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=j7UqOLx4FKB3O3OsMpRSCpY5Dpdzfq+rXgGPAGNIChQ=;
-        b=RHGodba5W0pJjl2eXcqGhzCpi3TCy+ZDBB397PR+D0l5qShdVz+yD+TwFk8cPPAWJp
-         6qcN6amhzBWeuk7wF2mX+06U7S5W0dzMhrAY2TcvA2QJsg4+ys5RGCq+YwTOWXTScYHH
-         C0WRqflA5mCGWJWxTdQQ60InDGhn7Zz0mLuPByAdddvh7pnGPSVbAe3TVKmEMVfnNVAe
-         jNDnQnVbWuUDBhxgrEKOylyy1hlL4+fv6WloCuLxji9/H5Hz2TP3JRJKEhY5u2zIRwbn
-         wFYKlUyLFrR+rgBwt+sW/bPauBL+AHA1LsSKd4kpCbeTRI7ffPnjgNUt/+ecDR2mX+oq
-         wdqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j7UqOLx4FKB3O3OsMpRSCpY5Dpdzfq+rXgGPAGNIChQ=;
-        b=j4PdAV9W0jaQS/S87xhSSwJlCCd9bwzdJssc/YiSkiMUbO8PrvpZ6m1S1PUKy0hU/R
-         Ukjsn3Bfj7e+EjpB5qniXcvuWYeed4S2NmTVmXiIqQG+hBgftuE/QE8l5/P8Zn3nr0sg
-         S0MI+Ho9lTFiZ6yG+3C5c2UGvcxubatahflF4fq/Na+msIz4qdt6VgHM64wWezcgWIWZ
-         Y201YLBFvj6haPSWVThBtP0BqeTV9xb3fzBZrMAAxH9gdLIC2Pmmw16ucfhKVr+cPdBG
-         hK4RxMQVqy7NAgDLPeYehklPIazqcXOTxbghyOsol6v4guW052qCHt0djHFofYnr/0Gi
-         jqag==
-X-Gm-Message-State: APjAAAWvgFjv2xnuJI9N/EdWwN3zaB3QEClYyWGtG3ziHdhYFDHQdaym
-        xTATSyomNMZUqHV2qayeyv33zNzuQ5Y=
-X-Google-Smtp-Source: APXvYqzGAsEhS6R1P0tjFuQrtK03e6ucDYVuj8NFgw5MVRAILOB+9qtf5vq5cpBhfS2sf0lVobFiRg==
-X-Received: by 2002:ac8:1205:: with SMTP id x5mr26765960qti.238.1582213706330;
-        Thu, 20 Feb 2020 07:48:26 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k4sm1872024qtj.74.2020.02.20.07.48.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2020 07:48:25 -0800 (PST)
-Subject: Re: [PATCH 3/8] btrfs: move the root freeing stuff into
- btrfs_put_root
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200214211147.24610-1-josef@toxicpanda.com>
- <20200214211147.24610-4-josef@toxicpanda.com>
- <058f94f8-7fb6-9dfb-61e0-21dc989e22bc@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <842ad5d0-fada-40da-2d20-bf255a36691f@toxicpanda.com>
-Date:   Thu, 20 Feb 2020 10:48:24 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        Thu, 20 Feb 2020 10:49:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7g85dNFHzF/fBL9mBZEQmhhyGBt/I3eV6QDa1nqOoos=; b=IvfiRDAgsZm0A9toDG9h8/8uAA
+        KbYE+2vwy69rK19el39MgBf1l8Zem4llp2DdKaoFaLssf9HIohLYHoTx3yLoNphAL3B4OW2a3TqaQ
+        APCgNVOUP8g+TxCalGnh8EI42nuAFMrX9cE9OX4zt+hbxXsL+0/NJcWdbqDoY7JufhSpOQo1f3wfV
+        fkGP7cFp6XG76uPR5pdo5zTHChgWTTy+EJ1gchARS9Yknu04TeExGo+IFyyvEtOZG64LP3eWb02w2
+        WqzkFJXmy1vTEJVCbYJfZJxS0vJbpIavKWbr+CHQ6AfPHzIjCreIBNVndGPsy/9SPIGuaAwSRaJS4
+        bnKVMu2g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4o4e-0005Ks-N5; Thu, 20 Feb 2020 15:49:12 +0000
+Date:   Thu, 20 Feb 2020 07:49:12 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 22/24] iomap: Convert from readpages to readahead
+Message-ID: <20200220154912.GC19577@infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-23-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <058f94f8-7fb6-9dfb-61e0-21dc989e22bc@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219210103.32400-23-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/19/20 10:10 AM, Nikolay Borisov wrote:
+On Wed, Feb 19, 2020 at 01:01:01PM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
+> Use the new readahead operation in iomap.  Convert XFS and ZoneFS to
+> use it.
 > 
-> On 14.02.20 г. 23:11 ч., Josef Bacik wrote:
->> There are a few different ways to free roots, either you allocated them
->> yourself and you just do
->>
->> free_extent_buffer(root->node);
->> free_extent_buffer(root->commit_node);
->> btrfs_put_root(root);
->>
->> Which is the pattern for log roots.  Or for snapshots/subvolumes that
->> are being dropped you simply call btrfs_free_fs_root() which does all
->> the cleanup for you.
->>
->> Unify this all into btrfs_put_root(), so that we don't free up things
->> associated with the root until the last reference is dropped.  This
->> makes the root freeing code much more significant.
->>
->> The only caveat is at close_ctree() time we have to free the extent
->> buffers for all of our main roots (extent_root, chunk_root, etc) because
->> we have to drop the btree_inode and we'll run into issues if we hold
->> onto those nodes until ->kill_sb() time.  This will be addressed in the
->> future when we kill the btree_inode.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/iomap/buffered-io.c | 90 +++++++++++++++---------------------------
+>  fs/iomap/trace.h       |  2 +-
+>  fs/xfs/xfs_aops.c      | 13 +++---
+>  fs/zonefs/super.c      |  7 ++--
+>  include/linux/iomap.h  |  3 +-
+>  5 files changed, 41 insertions(+), 74 deletions(-)
 > 
-> Nit: This patch obsoleted the last comment in btrfs_init_fs_root, namely:
-> 
-> /* The caller is responsible to call btrfs_free_fs_root */
-> 
->> ---
->>   fs/btrfs/disk-io.c           | 64 ++++++++++++++++++------------------
->>   fs/btrfs/disk-io.h           | 16 +--------
->>   fs/btrfs/extent-tree.c       |  7 ++--
->>   fs/btrfs/extent_io.c         | 16 +++++++--
->>   fs/btrfs/free-space-tree.c   |  2 --
->>   fs/btrfs/qgroup.c            |  7 +---
->>   fs/btrfs/relocation.c        |  4 ---
->>   fs/btrfs/tests/btrfs-tests.c |  5 +--
->>   fs/btrfs/tree-log.c          |  6 ----
->>   9 files changed, 50 insertions(+), 77 deletions(-)
->>
-> 
-> <snip>
-> 
->> @@ -4795,7 +4803,6 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->>   
->>   static void __free_extent_buffer(struct extent_buffer *eb)
->>   {
->> -	btrfs_leak_debug_del(&eb->fs_info->eb_leak_lock, &eb->leak_list);
->>   	kmem_cache_free(extent_buffer_cache, eb);
->>   }
-> 
-> This function becomes a trivial wrapper so should be eliminated altogether.
-> 
-> <snip>
-> 
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index 034f5f151a74..4fb7e3cc2aca 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -2549,10 +2549,6 @@ void free_reloc_roots(struct list_head *list)
->>   		reloc_root = list_entry(list->next, struct btrfs_root,
->>   					root_list);
->>   		__del_reloc_root(reloc_root);
->> -		free_extent_buffer(reloc_root->node);
->> -		free_extent_buffer(reloc_root->commit_root);
->> -		reloc_root->node = NULL;
->> -		reloc_root->commit_root = NULL;
-> 
-> Shouldn't you do btrfs_put_root(reloc_root) here ?
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 31899e6cb0f8..66cf453f4bb7 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -214,9 +214,8 @@ iomap_read_end_io(struct bio *bio)
+>  struct iomap_readpage_ctx {
+>  	struct page		*cur_page;
+>  	bool			cur_page_in_bio;
+> -	bool			is_readahead;
+>  	struct bio		*bio;
+> -	struct list_head	*pages;
+> +	struct readahead_control *rac;
+>  };
+>  
+>  static void
+> @@ -307,11 +306,11 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>  		if (ctx->bio)
+>  			submit_bio(ctx->bio);
+>  
+> -		if (ctx->is_readahead) /* same as readahead_gfp_mask */
+> +		if (ctx->rac) /* same as readahead_gfp_mask */
+>  			gfp |= __GFP_NORETRY | __GFP_NOWARN;
+>  		ctx->bio = bio_alloc(gfp, min(BIO_MAX_PAGES, nr_vecs));
+>  		ctx->bio->bi_opf = REQ_OP_READ;
+> -		if (ctx->is_readahead)
+> +		if (ctx->rac)
+>  			ctx->bio->bi_opf |= REQ_RAHEAD;
+>  		ctx->bio->bi_iter.bi_sector = sector;
+>  		bio_set_dev(ctx->bio, iomap->bdev);
+> @@ -367,36 +366,8 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+>  }
+>  EXPORT_SYMBOL_GPL(iomap_readpage);
+>  
+> -static struct page *
+> -iomap_next_page(struct inode *inode, struct list_head *pages, loff_t pos,
+> -		loff_t length, loff_t *done)
+> -{
+> -	while (!list_empty(pages)) {
+> -		struct page *page = lru_to_page(pages);
+> -
+> -		if (page_offset(page) >= (u64)pos + length)
+> -			break;
+> -
+> -		list_del(&page->lru);
+> -		if (!add_to_page_cache_lru(page, inode->i_mapping, page->index,
+> -				GFP_NOFS))
+> -			return page;
+> -
+> -		/*
+> -		 * If we already have a page in the page cache at index we are
+> -		 * done.  Upper layers don't care if it is uptodate after the
+> -		 * readpages call itself as every page gets checked again once
+> -		 * actually needed.
+> -		 */
+> -		*done += PAGE_SIZE;
+> -		put_page(page);
+> -	}
+> -
+> -	return NULL;
+> -}
+> -
+>  static loff_t
+> -iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+> +iomap_readahead_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_readpage_ctx *ctx = data;
+> @@ -404,10 +375,7 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+>  
+>  	while (done < length) {
+>  		if (!ctx->cur_page) {
+> -			ctx->cur_page = iomap_next_page(inode, ctx->pages,
+> -					pos, length, &done);
+> -			if (!ctx->cur_page)
+> -				break;
+> +			ctx->cur_page = readahead_page(ctx->rac);
+>  			ctx->cur_page_in_bio = false;
+>  		}
+>  		ret = iomap_readpage_actor(inode, pos + done, length - done,
+> @@ -431,44 +399,48 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+>  	return done;
+>  }
+>  
+> -int
+> -iomap_readpages(struct address_space *mapping, struct list_head *pages,
+> -		unsigned nr_pages, const struct iomap_ops *ops)
+> +/**
+> + * iomap_readahead - Attempt to read pages from a file.
+> + * @rac: Describes the pages to be read.
+> + * @ops: The operations vector for the filesystem.
+> + *
+> + * This function is for filesystems to call to implement their readahead
+> + * address_space operation.
+> + *
+> + * Context: The file is pinned by the caller, and the pages to be read are
+> + * all locked and have an elevated refcount.  This function will unlock
+> + * the pages (once I/O has completed on them, or I/O has been determined to
+> + * not be necessary).  It will also decrease the refcount once the pages
+> + * have been submitted for I/O.  After this point, the page may be removed
+> + * from the page cache, and should not be referenced.
+> + */
 
-No, but I can see how this is confusing.  The reloc root is actually cleaned up 
-in clean_dirty_subvols(), so it's final put happens there.  Thanks,
-
-Josef
+Isn't the context documentation something that belongs into the aop
+documentation?  I've never really seen the value of duplicating this
+information in method instances, as it is just bound to be out of date
+rather sooner than later.
