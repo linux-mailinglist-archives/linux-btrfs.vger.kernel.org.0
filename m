@@ -2,151 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B729B165FB8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 15:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F32A165FCC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 15:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgBTO3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 09:29:51 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45977 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgBTO3v (ORCPT
+        id S1728219AbgBTOgY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 09:36:24 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2562 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727943AbgBTOgX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 09:29:51 -0500
-Received: by mail-qt1-f196.google.com with SMTP id d9so2950168qte.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 06:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lrNF0/z83Fj9P6pcUUq8d1jIcnoQzNsFhOxPjPy2Fv0=;
-        b=HpssgzAgTE6Iy9ZkhuTrHHFQTD+hYi5Mr4xv1/+VAqcXEapwh3FzhVSRib7JBH+HwW
-         jI+eq8vX9twlGQVATWo5GpefcUz5oXwdRXE08pZc5jzdo2O7T+vhfgfKAD40lzLfhWi6
-         +NCFEnCowbjeEmjSXQJZicLM8HnKxfKq2KyYewRVNY2R2dGPvVtc21adGTraomHP49cG
-         tLEwOUaKfQwqumDtuyTRCvD1aScVsV/2LOAKInvpxMtEa1wmnnYVOZvnIskr2Mddo1TV
-         jEM4iem055oisE6L3BQ4RMUigqmOgUWwU7WUXrw5C388U2awOwUKn9E7VPzPbRrs9xum
-         rknQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lrNF0/z83Fj9P6pcUUq8d1jIcnoQzNsFhOxPjPy2Fv0=;
-        b=CqA8l46P35cmHkg+9HOxxNulFRANcDnxbldec4xFoGE6MwvAkAZ7uA10oOl9dprj7x
-         p7dgsHXKncQbmYfaTUB/sGX4U1KmVJhWb/W/hKDN3nesNkPi3YECci9cNXkNo48Fw4+h
-         Ze48bRBnmLHBlm2Pokw1f2OoIeNvegMpIpWJ5xp2ExuClylt2yu6Bi9OH5pHHhMaay8Y
-         o5tKu7t0KdTpGQWksif1QhtMfHvzTj89hzpGKBTcIHoEeUCciCD1P62QLEk2EVQfIJYi
-         /l4PW+IiYn+wy3LKcRjXOoB91NxBi8SygJO9J3KO7EXmBRQHPTScZceXXu9Kj6ImCSmN
-         kf4w==
-X-Gm-Message-State: APjAAAXwFQCo7BQRNseXSn5lNxa8B8Ab6rCiF1pKoxbJtDW/CHMPm5ZV
-        3Qm9jr5poqXjDV2Y7vwXL/WrLGgYcXc=
-X-Google-Smtp-Source: APXvYqxCWV/tr8PUxjXVfew8U+nhE/ertKHjViWTSTkLWaWuaC7QHjyW/kD0vXtB4MkphWcCtpSm2w==
-X-Received: by 2002:ac8:319c:: with SMTP id h28mr27206936qte.186.1582208989257;
-        Thu, 20 Feb 2020 06:29:49 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id s48sm1815294qtc.96.2020.02.20.06.29.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 06:29:48 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: clear file extent mapping for punch past i_size
-Date:   Thu, 20 Feb 2020 09:29:47 -0500
-Message-Id: <20200220142947.3880392-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Thu, 20 Feb 2020 09:36:23 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e4e99460000>; Thu, 20 Feb 2020 06:35:50 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 20 Feb 2020 06:36:23 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 20 Feb 2020 06:36:23 -0800
+Received: from [10.2.165.18] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 20 Feb
+ 2020 14:36:22 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v7 04/24] mm: Move readahead nr_pages check into
+ read_pages
+Date:   Thu, 20 Feb 2020 09:36:19 -0500
+X-Mailer: MailMate (1.13.1r5678)
+Message-ID: <DD2E8059-DA56-468F-9185-6C0082266067@nvidia.com>
+In-Reply-To: <20200219210103.32400-5-willy@infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-5-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_4CC2553B-18F9-4690-BE6D-05CCB84498AD_=";
+        micalg=pgp-sha1; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1582209350; bh=SnJgwePGNz1KwP9XyCGDsyTNIXJm80RakRuVGnRNh2k=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=FDT0nYs8cnBGBsD6LKu9r++ThtzZy580JjSbKP96scj+mumshmfRQ2FjF9WE2bWgG
+         ZZd9Fkvay66NTmXX6GgKLwclVAHoCvF5uyeVrtd+8sdUsLUkbjdjbG8TvhaCarpiIx
+         JlVLlpbLLJJjFXv6LO/jrVsBsRX6mKL01/zN9gcaxnklD5XBnv+o9jI5hIeKrWeIFv
+         QY0c6t8P3/c4rXn9W5moLgbjwvi63enWEhSpHRtmkPjazAasGSOg2mg9+nm8O5ImLC
+         OSi8yuXPNFPHWC7TOSxXEFi3U+IFL3YDIgGIX1mnREWvHTr/ZC/ZmoovE5FHlDuD+z
+         N1sfrm/KY8NyA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In my stress testing we were still seeing some hole's with my patches to
-fix missing hole extents.  Turns out we do not fill in holes during hole
-punch if the punch is past i_size.  I incorrectly assumed this was fine,
-because anybody extending would use btrfs_cont_expand, however there is
-a corner that still can give us trouble.  Start with an empty file and
+--=_MailMate_4CC2553B-18F9-4690-BE6D-05CCB84498AD_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-fallocate KEEP_SIZE 1m-2m
+On 19 Feb 2020, at 16:00, Matthew Wilcox wrote:
 
-We now have a 0 length file, and a hole file extent from 0-1m, and a
-prealloc extent from 1m-2m.  Now
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>
+> Simplify the callers by moving the check for nr_pages and the BUG_ON
+> into read_pages().
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  mm/readahead.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 61b15b6b9e72..9fcd4e32b62d 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -119,6 +119,9 @@ static void read_pages(struct address_space *mappin=
+g, struct file *filp,
+>  	struct blk_plug plug;
+>  	unsigned page_idx;
+>
+> +	if (!nr_pages)
+> +		return;
+> +
+>  	blk_start_plug(&plug);
+>
+>  	if (mapping->a_ops->readpages) {
+> @@ -138,6 +141,8 @@ static void read_pages(struct address_space *mappin=
+g, struct file *filp,
+>
+>  out:
+>  	blk_finish_plug(&plug);
+> +
+> +	BUG_ON(!list_empty(pages));
+>  }
+>
+>  /*
+> @@ -180,8 +185,7 @@ void __do_page_cache_readahead(struct address_space=
+ *mapping,
+>  			 * contiguous pages before continuing with the next
+>  			 * batch.
+>  			 */
+> -			if (nr_pages)
+> -				read_pages(mapping, filp, &page_pool, nr_pages,
+> +			read_pages(mapping, filp, &page_pool, nr_pages,
+>  						gfp_mask);
+>  			nr_pages =3D 0;
+>  			continue;
+> @@ -202,9 +206,7 @@ void __do_page_cache_readahead(struct address_space=
+ *mapping,
+>  	 * uptodate then the caller will launch readpage again, and
+>  	 * will then handle the error.
+>  	 */
+> -	if (nr_pages)
+> -		read_pages(mapping, filp, &page_pool, nr_pages, gfp_mask);
+> -	BUG_ON(!list_empty(&page_pool));
+> +	read_pages(mapping, filp, &page_pool, nr_pages, gfp_mask);
+>  }
+>
+>  /*
+> -- =
 
-punch 1m-1.5m
+> 2.25.0
 
-Because this is past i_size we have
+Looks good to me. Thanks.
 
-[HOLE EXTENT][ NOTHING ][PREALLOC]
-[0        1m][1m   1.5m][1.5m  2m]
+Reviewed-by: Zi Yan <ziy@nvidia.com>
 
-with an i_size of 0.  Now if we pwrite 0-1.5m we'll increas our i_size
-to 1.5m, but our disk_i_size is still 0 until the ordered extent
-completes.
 
-However if we now immediately truncate 2m on the file we'll just call
-btrfs_cont_expand(inode, 1.5m, 2m), since our old i_size is 1.5m.  If we
-commit the transaction here and crash we'll expose the gap.
+--
+Best Regards,
+Yan Zi
 
-To fix this we need to clear the file extent mapping for the range that
-we punched but didn't insert a corresponding file extent for.  This will
-mean the truncate will only get an disk_i_size set to 1m if we crash
-before the finish ordered io happens.
+--=_MailMate_4CC2553B-18F9-4690-BE6D-05CCB84498AD_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I've written an xfstest to reproduce the problem and validate this fix.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-- Dave, this needs to be folded into "btrfs: use the file extent tree
-  infrastructure" and the changelog needs to be adjusted since I incorrectly
-  point out that we don't need to clear for hole punch.  We definitely need to
-  clear for the case that we're punching past i_size as we aren't inserting hole
-  file extents.
+iQJDBAEBAgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl5OmWMPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKYawQAJnDCzvIOBkSaYYorEht2VZXHuWxGxkTwhkM
+TvpQUkB3Cff2onVNqU2DPF0usuD2Nr1qda6WHnPwGeTbxCokAwTsFkkn8JhJkqVf
+2/xydKKHCGEdaL5n8d86v6J0kQx6Do1jBCqLOIx0rGVuCL0apnya4jKfrNO4OCAb
+T4pwf6/Qm2E2bBj3ISvybn/TYKq9WPpAu/ryMLNPidYqMqJiX4iqJ/RnBZ7srPcH
+TutPMCYvOJ4oUtbTzYq6AHiFfANTGKnBBeiH3v9QdJAla6/7FeiL9G6fEwMK0C3g
+FnzbqkYnPf+nR7a6Yg5ZejT33u9g7CP18xykij7jYUxPe7G1P2gVFflDIzkDie0+
+LgYPICjmeYOKQxi2nrax2NpS+PqKq2mcGoZANosRwWvdlS0N/pUfOVZiCk2E8q7V
+UIi0c16u5lhuGpTCd2Y0rDxpItZ/eh912iqaxkjhKqlgxNdO1n78/2tiAXf/JqD9
+xt1LEjKMkDUxiqvvCvJNXONKWSyATDPWlwXZSdjMi0jjsdusO+74WDheJm9Y0ylN
+o8+lS74JyYFdmRRMlyfPDeNDdIjLJf5FL1Ke+8vR85rwt0yBRY7CGj37O6LlCHMM
+eo4carZ4q5rC3EnAG0+Lf3uYaQXCbr0R1vvZkqnLJZfJuhFdMjI0l7fb/02PBG3L
+f+4j17Gl
+=Jsz+
+-----END PGP SIGNATURE-----
 
- fs/btrfs/file.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 5cdcdbdd908b..6f6f1805e6fd 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2597,6 +2597,24 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
- 				btrfs_abort_transaction(trans, ret);
- 				break;
- 			}
-+		} else if (!clone_info && cur_offset < drop_end) {
-+			/*
-+			 * We are past the i_size here, but since we didn't
-+			 * insert holes we need to clear the mapped area so we
-+			 * know to not set disk_i_size in this area until a new
-+			 * file extent is inserted here.
-+			 */
-+			ret = btrfs_inode_clear_file_extent_range(BTRFS_I(inode),
-+					cur_offset, drop_end - cur_offset);
-+			if (ret) {
-+				/*
-+				 * We couldn't clear our area, so we could
-+				 * presumably adjust up and corrupt the fs, so
-+				 * we need to abort.
-+				 */
-+				btrfs_abort_transaction(trans, ret);
-+				break;
-+			}
- 		}
- 
- 		if (clone_info && drop_end > clone_info->file_offset) {
-@@ -2687,6 +2705,15 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
- 			btrfs_abort_transaction(trans, ret);
- 			goto out_trans;
- 		}
-+	} else if (!clone_info && cur_offset < drop_end) {
-+		/* See the comment in the loop above for the reasoning here. */
-+		ret = btrfs_inode_clear_file_extent_range(BTRFS_I(inode),
-+					cur_offset, drop_end - cur_offset);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			goto out_trans;
-+		}
-+
- 	}
- 	if (clone_info) {
- 		ret = btrfs_insert_clone_extent(trans, inode, path, clone_info,
--- 
-2.24.1
-
+--=_MailMate_4CC2553B-18F9-4690-BE6D-05CCB84498AD_=--
