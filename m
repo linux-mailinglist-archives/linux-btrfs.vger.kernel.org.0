@@ -2,63 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD6316608A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3BE16608D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgBTPKt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 10:10:49 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:47078 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728176AbgBTPKs (ORCPT
+        id S1728347AbgBTPLL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 10:11:11 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:34444 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728079AbgBTPLL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 10:10:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G2o7/2wQz4I2bSTa23Jz+2T7ehA7+Qh/DABLcJ7++Gg=; b=rNJKV58kH2Hi3xhQxkLMMzx8lV
-        RipoN223ZmXSatYqltHsRF6idpZbBmyf0GL9X+CH+Ks6Wc6k43+EjLitqhF4xF2b133YQH9ZG5EHi
-        9S2PEh7TBE1weivsELdxeyxuCZbNPOZ2MqqDqE2ZOhY+EIiIxbWx+hcdKp9lxQ0cgIgNcZkczih6K
-        9FdryOmrnuCo9AOOf+joSEfiifv0Cop4iRUq+zKJAofsbwZLBBoyX6i8M/2kx+6/2vGI/vLfIxQw1
-        2Ucmc3/Mow9vozyw390izexHNWNfoWyIucqRv+4NiQ+0nLq6AIcDZr0SBA/Y13JQUbUW+KN6Xz/8C
-        FKW5FgEA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4nTU-00007F-C8; Thu, 20 Feb 2020 15:10:48 +0000
-Date:   Thu, 20 Feb 2020 07:10:48 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 10/24] mm: Add readahead address space operation
-Message-ID: <20200220151048.GW24185@bombadil.infradead.org>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-11-willy@infradead.org>
- <5D7CE6BD-FABD-4901-AEF0-E0F10FC00EB1@nvidia.com>
+        Thu, 20 Feb 2020 10:11:11 -0500
+Received: by mail-qv1-f67.google.com with SMTP id o18so2034592qvf.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5xo0/VVbnOmNDrzDAqAlXDqiSAiWNSsTExxNPuxk+C4=;
+        b=WUynoY28PU23Uc2mWomA8BWC3D4YmxIythkagVtEd5DzrVKK2JWQO2gJlP2gqgPTXk
+         Q5MW9GNBaoNlY80+tUHRqYvzRbBhyAWg1xeTlLDICz/4cOpn1g/SnlHM7IGZln6ZCPI5
+         xLIIrjtVkVWpqxRN1Y5H+DZCxzwHnNJoyfV910qUvlIBtHkGSMwcRe+/98q34YP4UcN2
+         M39t5hVckt9wAYchXBo0xFEUtVXVTyYQwAqXbrlQtKgt9TkC8BT4EEezW540B0t/k2xw
+         wkkEh51wYSMHiyaA/fVJh03Q7E/xHR2BT9BtHEQMpi00irE2zPW985uFXuZ8mBkq8//c
+         m0KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5xo0/VVbnOmNDrzDAqAlXDqiSAiWNSsTExxNPuxk+C4=;
+        b=VIl+y1rg34je3vkbE49fZ0tYiM+RRGDG6xX4haB/nV1+T8zEI9Mola/56yVpEyowsn
+         /i7EDnHQoO/ptw5ngv55YQi/Ap9c7CX+9SRyrFhZdvmwr1Ix6DPSVjgJTH5NRIoK/vdu
+         qneAVxvaFl0KicQlVU+7j+aJPGOWFUDP0ZQ22qIbKGj6MMaMWDdMTXPzh3xVtf5RLY99
+         HvZWBmFLGZEAGl3AMqnKrIAcYVcr7lMQYsVFCd+tW/dqOsdRPhijZSc+LLm9VD+xNcdf
+         yvOfkYKs70j3eLCe10BozLLdStQaDILmjPZG+D+9sqnVb1YLqt1u/Xx87OxOcwQgJ1hH
+         BBwQ==
+X-Gm-Message-State: APjAAAUJxThXctWMTJIEV1kQcibyRjrR6UXMWQmIbm5U8NK1XXYQU/3g
+        vjIPtI+IIkAxC9Ly0xh9lKiEeE33KA8=
+X-Google-Smtp-Source: APXvYqwQesf3kahpZIl3y643XJZfWwIgpJg3ibOWgP+n/4hRkWAt5Ff5MGe0nWcBdR7UOMXERj90jg==
+X-Received: by 2002:a0c:ac4e:: with SMTP id m14mr25316105qvb.37.1582211469464;
+        Thu, 20 Feb 2020 07:11:09 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id a1sm1699462qkd.126.2020.02.20.07.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Feb 2020 07:11:08 -0800 (PST)
+Subject: Re: [PATCH 1/4] Btrfs: move all reflink implementation code into its
+ own file
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200219140547.1641512-1-fdmanana@kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <ed4abab6-af99-6227-29c8-f628c41dda66@toxicpanda.com>
+Date:   Thu, 20 Feb 2020 10:11:07 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5D7CE6BD-FABD-4901-AEF0-E0F10FC00EB1@nvidia.com>
+In-Reply-To: <20200219140547.1641512-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 10:00:30AM -0500, Zi Yan wrote:
-> > +/* The index of the first page in this readahead block */
-> > +static inline unsigned int readahead_index(struct readahead_control *rac)
-> > +{
-> > +	return rac->_index;
-> > +}
+On 2/19/20 9:05 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> rac->_index is pgoff_t, so readahead_index() should return the same type, right?
-> BTW, pgoff_t is unsigned long.
+> The reflink code is quite large and has been living in ioctl.c since ever.
+> It has grown over the years after many bug fixes and improvements, and
+> since I'm planning on making some further improvements on it, it's time
+> to get it better organized by moving into its own file, reflink.c
+> (similar to what xfs does for example).
+> 
+> This change only moves the code out of ioctl.c into the new file, it
+> doesn't do any other change.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Oh my goodness!  Thank you for spotting that.  Fortunately, it's only
-currently used by tracepoints, so it wasn't causing any trouble, but
-that's a nasty landmine to leave lying around.  Fixed:
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-static inline pgoff_t readahead_index(struct readahead_control *rac)
+Thanks,
 
+Josef
