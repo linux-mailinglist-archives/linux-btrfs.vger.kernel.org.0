@@ -2,61 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9DC16609B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F63D1660BD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 16:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgBTPNJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 10:13:09 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36126 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgBTPNJ (ORCPT
+        id S1728364AbgBTPQc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 10:16:32 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44991 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbgBTPQc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 10:13:09 -0500
-Received: by mail-qk1-f194.google.com with SMTP id t83so3878204qke.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:13:07 -0800 (PST)
+        Thu, 20 Feb 2020 10:16:32 -0500
+Received: by mail-qt1-f194.google.com with SMTP id j23so3072882qtr.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 07:16:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=yjKrfOgohnsQm9GOW20cIij1yGSFbOJkM4Cy+u94Mnk=;
-        b=HAsTn4SKTtrbgTjg/ncmW+7HBbRXSP/h6uZ3q/yIKwpwXYMn//rqaT8FcDw1rwNte/
-         ABCZC2TJZJmIPkfODxSEtlvH4OLOwqOQhi/EBLwY0/VpoTOvpH/bll/p8kkV6KJgnVo9
-         vWc2MkpDk3zpa7YRCwN8TDAQV/YzxxIxWvNPodJWdfRrWrN24QZeqEA5eRhmjxGJDRcF
-         EWRR07pPiQZAP4GTyKww5tyVFIQL1TjisvRrWCPEdyuxhNAVqp0MQMGF6BwaVnc7tu9J
-         143pZty/C60mXnMrU3xGC/kpA3wye0+3L8chVqY7KJz6X8F/Kh8iSB2+BR4Njf8sb2Y9
-         YmbQ==
+        bh=pknUJyJyyl6UPOil8tWgOstfUw0VOmI5UxQdaP5uHNY=;
+        b=UVnJMm/rF2rXEfrFgyvPkGJjsFII1kn2jN7U0qou9gkWAgM/RsLsYN7JSjzEpT2F4K
+         f+cLoV3fPZJiuv7ZKOopUyEysS9/z5sNL/E3IbSsZ3QyANUG7tBcw3gmX3W0TksCD42Y
+         6y9oEVnKrIPFX/HIlZdVlMTSqHVLYNYNTq/MNb3AhZf8PKHIAlAsS5I/Z1FwYKaQaI9k
+         /PUwf6G7W962oydbrmrn6DUx3PRrr6hrjCd0PJxpdY1++47dQvc3iHW6+S9BqowWP+SI
+         WY15txqS1G2PZF6pIY4QGdsSbSy6SXfm0haZ9YwNsrIZomyYJ+LA8+bMbrwKPf572ZXG
+         +KBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=yjKrfOgohnsQm9GOW20cIij1yGSFbOJkM4Cy+u94Mnk=;
-        b=M+iUNWwqptUtym1NY23sDHncwr+XDe3ryM4jvPwAC3DjraEelJjOx4Ds1RdpgoyaTQ
-         MCyc9wrBZZQSyxN8I1xwcxAzbWCUr0SQDEW8mP5lImaAQWWFVw2ciQuM42+pKIUgMVk1
-         54BBgg4OHxXpvWVs3mACGw2rRLRM/XpedPY48+S9ifX3FlG15UqgrqaOXatDse2GRS3K
-         50x4jlX/enCTzBJzuvqC//75XiTNSzCd+78+vnBRmS2fASbqGbGG5wpnyN+YB/2mqVj3
-         79YTtdWspg5YOF1FmJiL85+BA17BIXz9NoaZhP9XWmfSksK0bRB5/EUglGrrHPvBPU0K
-         0Ljw==
-X-Gm-Message-State: APjAAAW82jFftHd/cSKGxjiBzdFINvpifKiFGwMwmtKAXvkdpyIvWbKn
-        lSE4aBhdBo0sCDmDQj79RNuFb5RsJLw=
-X-Google-Smtp-Source: APXvYqxWom4FVY7sujCKbM4shQvmhFmASdaDpehDYjdp/QVj8abIVii4eRFnGr5YUZE816MA+mca7w==
-X-Received: by 2002:a05:620a:542:: with SMTP id o2mr28503599qko.318.1582211586748;
-        Thu, 20 Feb 2020 07:13:06 -0800 (PST)
+        bh=pknUJyJyyl6UPOil8tWgOstfUw0VOmI5UxQdaP5uHNY=;
+        b=hN5OWIehKyFSJSpFwsumBVZhiCvQrX6IRXUGe+8SbcwNPrc2koAJp22WlQhM2t9ngO
+         OdmJh68rNuaYMWrhKNMVasxgtmx4SUDD8k/qgpwCJ53tZ2em9tCf/WcIZNb/6SlBbM4b
+         8MMPLvCwt+hLseqTcm7KXG/LwwF/0qv/a7ssHHOJZ0n66bkPQ1P4vNTUYKiexQLckz22
+         0LQ4aUt6d6gI309cF/sfI9MrJhcwGdqHiidgfYDGh/qMbRPFv5HvcaOfddJdG1EfOESM
+         fe19b/aYZJcq//lj6dca+FdTXXduqKHnfxfIX7tE+2xORI3oOGdVdR6Dz5ea3ERBEoUX
+         +g7Q==
+X-Gm-Message-State: APjAAAXZx0rYHB+pazqsKXD9H2YcYr0XGnfK3yOmoPZiYDbrjzdG3YSN
+        fMMNM1Q9ZixwvZbuTBxb39LQgDxMIdg=
+X-Google-Smtp-Source: APXvYqxqOU9hzJpgKufarw3u2D1ZZ2G7lHRUQcN8REFfcrGtV3Z4uo1qoN0HeLTB6k1z6y+OPdQ8pQ==
+X-Received: by 2002:ac8:7299:: with SMTP id v25mr27117985qto.128.1582211791163;
+        Thu, 20 Feb 2020 07:16:31 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 139sm1752664qkg.79.2020.02.20.07.13.05
+        by smtp.gmail.com with ESMTPSA id z27sm1856754qtv.11.2020.02.20.07.16.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2020 07:13:06 -0800 (PST)
-Subject: Re: [PATCH 2/4] Btrfs: simplify inline extent handling when doing
- reflinks
+        Thu, 20 Feb 2020 07:16:30 -0800 (PST)
+Subject: Re: [PATCH 3/4] Btrfs: resurrect extent_read_full_page_nolock()
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200219140556.1641567-1-fdmanana@kernel.org>
+References: <20200219140606.1641625-1-fdmanana@kernel.org>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <c1f63392-ef54-48f9-e04c-74f72641142b@toxicpanda.com>
-Date:   Thu, 20 Feb 2020 10:13:05 -0500
+Message-ID: <db89548c-bb4e-0bb9-57b8-30d1930d8e34@toxicpanda.com>
+Date:   Thu, 20 Feb 2020 10:16:29 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200219140556.1641567-1-fdmanana@kernel.org>
+In-Reply-To: <20200219140606.1641625-1-fdmanana@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,26 +64,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/19/20 9:05 AM, fdmanana@kernel.org wrote:
+On 2/19/20 9:06 AM, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> We can not reflink parts of an inline extent, we must always reflink the
-> whole inline extent. We know that inline extents always start at file
-> offset 0 and that can never represent an amount of data larger then the
-> filesystem's sector size (both compressed and uncompressed). We also have
-> had the constraints that reflink operations must have a start offset that
-> is aligned to the sector size and an end offset that is also aligned or
-> it ends the inode's i_size, so there's no way for user space to be able
-> to do a reflink operation that will refer to only a part of an inline
-> extent.
+> Commit 7f042a8370a5bb ("Btrfs: remove no longer used function
+> extent_read_full_page_nolock()") removed extent_read_full_page_nolock()
+> because it was not needed anymore.
 > 
-> Initially there was a bug in the inlining code that could allow compressed
-> inline extents that encoded more than 1 page, but that was fixed in 2008
-> by commit 70b99e6959a4c2 ("Btrfs: Compression corner fixes") since that
-> was problematic.
+> This function was used to read a page while holding the respective range
+> locked in the inode's iotree, to avoid deadlocks when using the other
+> APIs we have for reading a page (which lock and unlock the range
+> themselves).
 > 
-> So remove all the extent cloning code that deals with the possibility
-> of cloning only partial inline extents.
+> Since this type of functionality is needed for the upcoming changes to
+> the reflink implementation dealing with cloning of inline extents, bring
+> back this function to life.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
