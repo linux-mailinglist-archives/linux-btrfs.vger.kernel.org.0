@@ -2,267 +2,274 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA62165B55
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 11:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8746F165DDA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 13:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgBTKUi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 05:20:38 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:31555 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgBTKUh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 05:20:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1582194036; x=1613730036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zPIopc4hc9wGtddw/CRNjqDtmaOzXzN+cAoSSvPhd5Y=;
-  b=KT6jBCNbpoDzHIvImi8LRZk4rXv9+hxzTCAdKQpk4TfhYjQ53dyR1m5E
-   Tu9bSpeLjaA0w1Y/7grueieL+0Vul8Bf1R7NJtQmtoRdUHqNfqih5PERK
-   6IkPMr6utSwr6atzYAtaz1usVx2Y611CeDwIxL/A6CUcD5fh26Yf16lPj
-   xc5xtRwI7oJkBH7cWf3Ft5HFBrQKsJNJb0NVM/ZSVWKOnZ7Ueo9Dwqq5b
-   naBNl0clXD+Gvo7wQfzxAOh05MQJ05usuNX+S/Tyy6Ap+AuLukfy1sDmU
-   +sLgJeQXYEwz+U0e8YQRYrv3FKD86Wbgv3J+noHo6yremIiAlG34AP6D8
-   A==;
-IronPort-SDR: yh4vWmd81RIS7DyThAClZb9RCtBlUeeJ5/5iNToTLmYcewl7yKg9SCX7u8JrqjjIachuJNUy2B
- sOpNwUDxlpe9PK6+JuHmbC3IfCCzWQFr7+t137+GZUkWfhSGPR0T5mEd9YsFISgZd3xyu/cbPp
- ftaPMpm/3pqHZCFn6qc0IDd5kbJ8yjsdikSpDRh1+g0ILvwPJnNzCprSepw52vHRIR4Y3b2u6i
- +iL4NlvEOM4eV4W9J0NnRocU1LHyOygcjt3dgC3NHAtGC+pt+/J9hRw2pFe/vyeePosTKocB71
- o4k=
-X-IronPort-AV: E=Sophos;i="5.70,464,1574092800"; 
-   d="scan'208";a="130792440"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Feb 2020 18:17:26 +0800
-IronPort-SDR: +bLrpsWeDprzGqhvwjqBn/aOMSlevnBRXkAMsOGyjV5JS/D4P/aCGSKi2JBo4td41tZqb2iIUx
- D3spfdCcNP14lQCKgsNN0M37QSlEa+mWKGZvEUA9JiCp80kSJ1+t5o+B8G0drncT25cyXcnFhi
- Ih2y0iRRaanf35Xctfi1bo34HfIIKvtMpt8553qtj+orxPu7V+/mN73ZIUIPYO3lmsa/7UJUhH
- Kcb8NlaXJgFWXRjFblqZjq/d1Pb9CbR3M7BaHVRw2oyOJnRa2inLOn83w88egY9qM9bBIdYOvX
- zRwMH1VmigmhqVjnKsa+kBbh
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2020 02:10:01 -0800
-IronPort-SDR: grRjqvjTB5QpQgPGip3ZGDKqykzQva++X5C2OuLyDtTAR53/rcfNVlbnxjBdzqOnaxHDRxKsUY
- et34175jl67zjkf5Q+P7/c1A8/TYNrHo/4l8Sa3bWq8+zNEOVcHCATwwviAJTyG2yv/vsVYYbd
- sNwZaGZx0TwOBgtjvVY+Dp8/j8tObuD0/wpHA5h83dWgWqhMFcKV/fjmWds6/Uade5l53LGWkp
- M8kh1MELAE2JfnffglzogTHo/QfCOgRHmNZ+oOzF31CFIMlhZwGHf7RQIfhrKR/1ZfE25eVNPv
- vOc=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with SMTP; 20 Feb 2020 02:17:23 -0800
-Received: (nullmailer pid 2544450 invoked by uid 1000);
-        Thu, 20 Feb 2020 10:17:23 -0000
-Date:   Thu, 20 Feb 2020 19:17:23 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 09/21] btrfs: factor out create_chunk()
-Message-ID: <20200220101723.5wpidi3wd2a7wvgn@naota.dhcp.fujisawa.hgst.com>
-References: <20200212072048.629856-1-naohiro.aota@wdc.com>
- <20200212072048.629856-10-naohiro.aota@wdc.com>
- <7514070d-b7a8-be1c-c23a-f01b9ee3c7ce@toxicpanda.com>
+        id S1727761AbgBTMtj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 07:49:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53574 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727088AbgBTMtj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Feb 2020 07:49:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3F2BAAD3F;
+        Thu, 20 Feb 2020 12:49:36 +0000 (UTC)
+Subject: Re: [PATCH v7 1/5] btrfs: Introduce per-profile available space
+ facility
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+References: <20200211051153.19466-1-wqu@suse.com>
+ <20200211051153.19466-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <329cf703-f3f2-4583-73bf-c90c9e001956@suse.com>
+Date:   Thu, 20 Feb 2020 14:49:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <7514070d-b7a8-be1c-c23a-f01b9ee3c7ce@toxicpanda.com>
+In-Reply-To: <20200211051153.19466-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 11:24:57AM -0500, Josef Bacik wrote:
->On 2/12/20 2:20 AM, Naohiro Aota wrote:
->>Factor out create_chunk() from __btrfs_alloc_chunk(). This function finally
->>creates a chunk. There is no functional changes.
->>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>---
->>  fs/btrfs/volumes.c | 130 ++++++++++++++++++++++++---------------------
->>  1 file changed, 70 insertions(+), 60 deletions(-)
->>
->>diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>index 00085943e4dd..3e2e3896d72a 100644
->>--- a/fs/btrfs/volumes.c
->>+++ b/fs/btrfs/volumes.c
->>@@ -5052,90 +5052,53 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
->>  	}
->>  }
->>-static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>-			       u64 start, u64 type)
->>+static int create_chunk(struct btrfs_trans_handle *trans,
->>+			struct alloc_chunk_ctl *ctl,
->>+			struct btrfs_device_info *devices_info)
->>  {
->>  	struct btrfs_fs_info *info = trans->fs_info;
->>-	struct btrfs_fs_devices *fs_devices = info->fs_devices;
->>  	struct map_lookup *map = NULL;
->>  	struct extent_map_tree *em_tree;
->>  	struct extent_map *em;
->>-	struct btrfs_device_info *devices_info = NULL;
->>-	struct alloc_chunk_ctl ctl;
->>+	u64 start = ctl->start;
->>+	u64 type = ctl->type;
->>  	int ret;
->>  	int i;
->>  	int j;
->>-	if (!alloc_profile_is_valid(type, 0)) {
->>-		ASSERT(0);
->>-		return -EINVAL;
->>-	}
->>-
->>-	if (list_empty(&fs_devices->alloc_list)) {
->>-		if (btrfs_test_opt(info, ENOSPC_DEBUG))
->>-			btrfs_debug(info, "%s: no writable device", __func__);
->>-		return -ENOSPC;
->>-	}
->>-
->>-	if (!(type & BTRFS_BLOCK_GROUP_TYPE_MASK)) {
->>-		btrfs_err(info, "invalid chunk type 0x%llx requested", type);
->>-		BUG();
->>-	}
->>-
->>-	ctl.start = start;
->>-	ctl.type = type;
->>-	init_alloc_chunk_ctl(fs_devices, &ctl);
->>-
->>-	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
->>-			       GFP_NOFS);
->>-	if (!devices_info)
->>+	map = kmalloc(map_lookup_size(ctl->num_stripes), GFP_NOFS);
->>+	if (!map)
->>  		return -ENOMEM;
->>+	map->num_stripes = ctl->num_stripes;
->>-	ret = gather_device_info(fs_devices, &ctl, devices_info);
->>-	if (ret < 0)
->>-		goto error;
->>-
->>-	ret = decide_stripe_size(fs_devices, &ctl, devices_info);
->>-	if (ret < 0)
->>-		goto error;
->>-
->>-	map = kmalloc(map_lookup_size(ctl.num_stripes), GFP_NOFS);
->>-	if (!map) {
->>-		ret = -ENOMEM;
->>-		goto error;
->>-	}
->>-
->>-	map->num_stripes = ctl.num_stripes;
->>-
->>-	for (i = 0; i < ctl.ndevs; ++i) {
->>-		for (j = 0; j < ctl.dev_stripes; ++j) {
->>-			int s = i * ctl.dev_stripes + j;
->>+	for (i = 0; i < ctl->ndevs; ++i) {
->>+		for (j = 0; j < ctl->dev_stripes; ++j) {
->>+			int s = i * ctl->dev_stripes + j;
->>  			map->stripes[s].dev = devices_info[i].dev;
->>  			map->stripes[s].physical = devices_info[i].dev_offset +
->>-						   j * ctl.stripe_size;
->>+						   j * ctl->stripe_size;
->>  		}
->>  	}
->>  	map->stripe_len = BTRFS_STRIPE_LEN;
->>  	map->io_align = BTRFS_STRIPE_LEN;
->>  	map->io_width = BTRFS_STRIPE_LEN;
->>  	map->type = type;
->>-	map->sub_stripes = ctl.sub_stripes;
->>+	map->sub_stripes = ctl->sub_stripes;
->>-	trace_btrfs_chunk_alloc(info, map, start, ctl.chunk_size);
->>+	trace_btrfs_chunk_alloc(info, map, start, ctl->chunk_size);
->>  	em = alloc_extent_map();
->>  	if (!em) {
->>  		kfree(map);
->>-		ret = -ENOMEM;
->>-		goto error;
->>+		return -ENOMEM;
->>  	}
->>  	set_bit(EXTENT_FLAG_FS_MAPPING, &em->flags);
->>  	em->map_lookup = map;
->>  	em->start = start;
->>-	em->len = ctl.chunk_size;
->>+	em->len = ctl->chunk_size;
->>  	em->block_start = 0;
->>  	em->block_len = em->len;
->>-	em->orig_block_len = ctl.stripe_size;
->>+	em->orig_block_len = ctl->stripe_size;
->>  	em_tree = &info->mapping_tree;
->>  	write_lock(&em_tree->lock);
->>@@ -5143,11 +5106,11 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>  	if (ret) {
->>  		write_unlock(&em_tree->lock);
->>  		free_extent_map(em);
->>-		goto error;
->>+		return ret;
->>  	}
->>  	write_unlock(&em_tree->lock);
->>-	ret = btrfs_make_block_group(trans, 0, type, start, ctl.chunk_size);
->>+	ret = btrfs_make_block_group(trans, 0, type, start, ctl->chunk_size);
->>  	if (ret)
->>  		goto error_del_extent;
->>@@ -5155,20 +5118,19 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>  		struct btrfs_device *dev = map->stripes[i].dev;
->>  		btrfs_device_set_bytes_used(dev,
->>-					    dev->bytes_used + ctl.stripe_size);
->>+					    dev->bytes_used + ctl->stripe_size);
->>  		if (list_empty(&dev->post_commit_list))
->>  			list_add_tail(&dev->post_commit_list,
->>  				      &trans->transaction->dev_update_list);
->>  	}
->>-	atomic64_sub(ctl.stripe_size * map->num_stripes,
->>+	atomic64_sub(ctl->stripe_size * map->num_stripes,
->>  		     &info->free_chunk_space);
->>  	free_extent_map(em);
->>  	check_raid56_incompat_flag(info, type);
->>  	check_raid1c34_incompat_flag(info, type);
->>-	kfree(devices_info);
->>  	return 0;
->>  error_del_extent:
->>@@ -5180,7 +5142,55 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>  	free_extent_map(em);
->>  	/* One for the tree reference */
->>  	free_extent_map(em);
->>-error:
->>+
->>+	return ret;
->>+}
->>+
->>+static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
->>+			       u64 start, u64 type)
->>+{
->>+	struct btrfs_fs_info *info = trans->fs_info;
->>+	struct btrfs_fs_devices *fs_devices = info->fs_devices;
->>+	struct btrfs_device_info *devices_info = NULL;
->>+	struct alloc_chunk_ctl ctl;
->>+	int ret;
->>+
->>+	if (!alloc_profile_is_valid(type, 0)) {
->>+		ASSERT(0);
->>+		return -EINVAL;
->>+	}
->>+
->>+	if (list_empty(&fs_devices->alloc_list)) {
->>+		if (btrfs_test_opt(info, ENOSPC_DEBUG))
->>+			btrfs_debug(info, "%s: no writable device", __func__);
->>+		return -ENOSPC;
->>+	}
->>+
->>+	if (!(type & BTRFS_BLOCK_GROUP_TYPE_MASK)) {
->>+		btrfs_err(info, "invalid chunk type 0x%llx requested", type);
->>+		BUG();
->>+	}
->
->This is superfluous, alloc_profile_is_valid() handles this check.  Thanks,
->
->Josef
+<snip>
 
-This checks if at least one block group type (data, metadata or
-system) flag is set. OTOH, alloc_profile_is_valid() checks if profile
-bits are valid.
+> 
+> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/volumes.c | 216 ++++++++++++++++++++++++++++++++++++++++-----
+>  fs/btrfs/volumes.h |  11 +++
+>  2 files changed, 207 insertions(+), 20 deletions(-)
+> 
 
-Maybe, we can move this check into alloc_profile_is_valid()?
+<snip>
 
-Thanks,
+> +
+> +/*
+> + * Return 0 if we allocated any virtual(*) chunk, and restore the size to
+> + * @allocated_size
+> + * Return -ENOSPC if we have no more space to allocate virtual chunk
+> + *
+> + * *: virtual chunk is a space holder for per-profile available space
+> + *    calculator.
+> + *    Such virtual chunks won't take on-disk space, thus called virtual, and
+> + *    only affects per-profile available space calulation.
+> + */
+
+Document that the last parameter is an output value which contains the
+size of the allocated virtual chunk.
+
+> +static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
+> +			       struct btrfs_device_info *devices_info,
+> +			       enum btrfs_raid_types type,
+> +			       u64 *allocated)
+> +{
+> +	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
+> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +	struct btrfs_device *device;
+> +	u64 stripe_size;
+> +	int i;
+> +	int ndevs = 0;
+> +
+> +	lockdep_assert_held(&fs_info->chunk_mutex);
+> +
+> +	/* Go through devices to collect their unallocated space */
+> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
+> +		u64 avail;
+> +		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
+> +					&device->dev_state) ||
+> +		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
+> +			continue;
+> +
+> +		if (device->total_bytes > device->bytes_used +
+> +				device->virtual_allocated)
+> +			avail = device->total_bytes - device->bytes_used -
+> +				device->virtual_allocated;
+> +		else
+> +			avail = 0;
+> +
+> +		/* And exclude the [0, 1M) reserved space */
+> +		if (avail > SZ_1M)
+> +			avail -= SZ_1M;
+> +		else
+> +			avail = 0;
+> +
+> +		if (avail < fs_info->sectorsize)
+> +			continue;
+> +		/*
+> +		 * Unlike chunk allocator, we don't care about stripe or hole
+> +		 * size, so here we use @avail directly
+> +		 */
+> +		devices_info[ndevs].dev_offset = 0;
+> +		devices_info[ndevs].total_avail = avail;
+> +		devices_info[ndevs].max_avail = avail;
+> +		devices_info[ndevs].dev = device;
+> +		++ndevs;
+> +	}
+> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+> +	     btrfs_cmp_device_info, NULL);
+> +	ndevs -= ndevs % raid_attr->devs_increment;
+
+nit: ndevs = rounddown(ndevs, raid_attr->devs_increment);
+makes it more clear what's going on. Since you are working with at most
+int it's not a problem for 32bits.
+
+
+> +	if (ndevs < raid_attr->devs_min)
+> +		return -ENOSPC;
+> +	if (raid_attr->devs_max)
+> +		ndevs = min(ndevs, (int)raid_attr->devs_max);
+> +	else
+> +		ndevs = min(ndevs, (int)BTRFS_MAX_DEVS(fs_info));
+
+Instead of casting simply use min_t(int, ndevs, BTRFS_MAX_DEVS...)
+
+> +
+> +	/*
+> +	 * Now allocate a virtual chunk using the unallocate space of the
+
+nit: missing d after 'unallocate'
+
+> +	 * device with the least unallocated space.
+> +	 */
+> +	stripe_size = round_down(devices_info[ndevs - 1].total_avail,
+> +				 fs_info->sectorsize);
+> +	if (stripe_size == 0)
+> +		return -ENOSPC;
+
+Isn't this check redundant - in the loop where you iterate the devices
+you always ensure total_avail is at least a sector size, this guarantees
+that stripe_size cannot be 0 at this point.
+
+> +
+> +	for (i = 0; i < ndevs; i++)
+> +		devices_info[i].dev->virtual_allocated += stripe_size;
+> +	*allocated = stripe_size * (ndevs - raid_attr->nparity) /
+> +		     raid_attr->ncopies;
+> +	return 0;
+> +}
+> +
+> +static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
+> +				  enum btrfs_raid_types type,
+> +				  u64 *result_ret)
+> +{
+> +	struct btrfs_device_info *devices_info = NULL;
+> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +	struct btrfs_device *device;
+> +	u64 allocated;
+> +	u64 result = 0;
+> +	int ret = 0;
+> +
+
+lockdep assert that chunk mutex is held since you access alloc_list.
+
+> +	ASSERT(type >= 0 && type < BTRFS_NR_RAID_TYPES);
+> +
+> +	/* Not enough devices, quick exit, just update the result */
+> +	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
+> +		goto out;
+
+You can directly return.
+
+> +
+> +	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
+> +			       GFP_NOFS);
+> +	if (!devices_info) {
+> +		ret = -ENOMEM;
+> +		goto out;
+
+Same here.
+
+> +	}
+> +	/* Clear virtual chunk used space for each device */
+> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
+> +		device->virtual_allocated = 0;
+> +	while (ret == 0) {
+> +		ret = alloc_virtual_chunk(fs_info, devices_info, type,
+> +					  &allocated);
+The 'allocated' variable is used only in this loop so declare it in the
+loop. Ideally we want variables to have the shortest possible lifecycle.
+
+> +		if (ret == 0)
+> +			result += allocated;
+> +	}
+
+Why do you need to call this in a loop calling alloc_virtual_chunk once
+simply calculate the available space for the given raid type.
+
+> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
+> +		device->virtual_allocated = 0;
+> +out:
+> +	kfree(devices_info);
+> +	if (ret < 0 && ret != -ENOSPC)
+> +		return ret;
+> +	*result_ret = result;
+> +	return 0;
+> +}
+
+<snip>
+
+> @@ -259,6 +266,10 @@ struct btrfs_fs_devices {
+>  	struct kobject fsid_kobj;
+>  	struct kobject *devices_kobj;
+>  	struct completion kobj_unregister;
+> +
+> +	/* Records per-type available space */
+> +	spinlock_t per_profile_lock;
+> +	u64 per_profile_avail[BTRFS_NR_RAID_TYPES];
+
+Since every avail quantity is independent of any other, can you turn
+this into an array of atomic64 values and get rid of the spinlock? My
+head spins how many locks we have in btrfs.
+
+>  };
+>  
+>  #define BTRFS_BIO_INLINE_CSUM_SIZE	64
+> 
