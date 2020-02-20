@@ -2,274 +2,323 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8746F165DDA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 13:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B029165DFC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 13:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbgBTMtj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 07:49:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53574 "EHLO mx2.suse.de"
+        id S1727298AbgBTM7x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 07:59:53 -0500
+Received: from mout.gmx.net ([212.227.15.18]:60909 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727088AbgBTMtj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 07:49:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3F2BAAD3F;
-        Thu, 20 Feb 2020 12:49:36 +0000 (UTC)
+        id S1726959AbgBTM7w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Feb 2020 07:59:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1582203583;
+        bh=ZaOvJ5g0U569vl7zFjnHi6uJXOc3Wv8qU4TE2nT4gKY=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=cUm4YJJmQdXk0GU2d+w0sGfHBcIPv+6Mmw/SkfPgbNmjfZEyMdAQaH/bvPvkeSkSV
+         HDdCkncXVQfEpti7aeR79Jvp0R8/Dirp1kECgJX+RxilbdD6n11t3IRRPtcuh3wQT+
+         AVMq5B5vShhFzlv4Ww8jo9P2ViT8/ZCtLfFNM7A0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1ixCJl3Bl6-00Y7lX; Thu, 20
+ Feb 2020 13:59:42 +0100
 Subject: Re: [PATCH v7 1/5] btrfs: Introduce per-profile available space
  facility
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>
 References: <20200211051153.19466-1-wqu@suse.com>
  <20200211051153.19466-2-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <329cf703-f3f2-4583-73bf-c90c9e001956@suse.com>
-Date:   Thu, 20 Feb 2020 14:49:34 +0200
+ <329cf703-f3f2-4583-73bf-c90c9e001956@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <0f3b2eb2-1af4-13fb-8d9a-867dd7e68fb8@gmx.com>
+Date:   Thu, 20 Feb 2020 20:59:37 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200211051153.19466-2-wqu@suse.com>
+In-Reply-To: <329cf703-f3f2-4583-73bf-c90c9e001956@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BEf6IjCuoSOYQCQBziBHO38cTFfKAAGRMjZTdjveNI+vfysbbQq
+ xl0eF2VslzoFh6AzcKdD0wXLcFU9bfl0HkbInjxXShz9JEeOLS1wVYCnFHBPDfWH3jiILtm
+ uibxEd7+Z9pjlbRHE48EHYm9dLt8G+db59P92cUJ8lsDssR+TccxfFHVA+eo2CTEPbm5oV8
+ iMO6AoYrRvJl9Fu8+zaqw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OcnVT92BUFU=:hP2uo/n2ZZ/U+gpSGDuh9k
+ T+Gyt4I/Qu1ZnXKljwrZVNj3f8pdBnOFHIIWNHUcKB8ybvQqWI7mZ20JziInCSkWp2ta8Bg4R
+ tk7oqzKg5KrErqUqqcPOUeIt2eMrAzuzvxNiOGLzM4cit/DmCNHCDwVCqcM5ET6MsyvnB1M5v
+ 0eYvYTAj02HjJb+vx9NC768AptLKLo7X504kUhyLy/GCTE6N8w99YspawQbsO62FeMKvjD/Qm
+ CUPtEZZ3irbRIlfA01vbs5GIJO0l12iToEE83WLXurzy5ObdxS/cJQXggnr3ftdWVAkbwm+a5
+ n8kuSdUepud5aEAkOaLKUMruSgmVf7qn9ZsJJRhuRuzWEWRKClUmTlnglZu2r37lBnlTyZ52T
+ D5eRjigNMIdChrWZpDeDIyzhUhn33LB3HXd4BrMVB4+yeKzV6JY8K4OH1CEGpO3/e4f3yEpRk
+ /VRwt6l83rG9xUMhl2EJRMSxx7+j0mpyHB813OZQMEFIMtcxZTZLcQluuOlVlm/+b5tAMquu/
+ 9d1Kyzj6R/NIves2yq86LOlYsmS04y+cOQ6dZJuDC5hHISlhyRkmO5Cwng0pwNC6STFAbeqYu
+ xsyj5KpQJJ0sOd/EIoO8T5Y78edc/dLXfanjv/wsZjxvnmKBrqn8QvWG5yC5AzG22WrfBhSwT
+ 4E/XXyRhqwZX6gOkURXDxzXs/FHgss7qzTRKnbUk2YjhL9AqcvSbpgo9KS2oa7piF2ExVyCdA
+ kJ4RuR8Kp7LUdp7YlLvAUu0UWde6Meg7UTFzFuOySIW2jeO4mkphvb04/MKB8Nj/5oPUOSu0A
+ +Na4M9D+RBXpUQyqSpVE4tApUCJGMFEuQRwVuPMxsSj/Yp4JYg/OVKkWIMCyvt4tHZni1HYBX
+ 4yZanQmznzMd8HPZlNuHT5oohpNgzH61VXJa0AkBzhoiGtFEdgaRMivR5cVtFEt+v17IWvPK/
+ 2GydXJLGXAH/sq2Q6ZPTV71Nu0Dq4SyhAOda/qVeZT87VLZPyE6gSqBNDju7/FfewwhsYwO+3
+ zmDOP/Ioop6LCK/c4jVTz8/7nCRHtTzvTiRNuqgLBpetUT5sRYJqgh9cYv26yN45vqbEAhD9d
+ GRwwTI84qHDo4sJbZtvi4zQnOe8QlNYgr0i6epZ8GxtUbtdN7TS7r4gOPrD5fF8L9zMnG6AJX
+ yi9nN2Qeb94dBjj9ZnU9RMCVwLF6L7td2KwGDFOV7nV1xbaxKygYx9rKk3Bwh9LLzamyREcr2
+ Fa/Eubt6HO6DLlQWG
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-<snip>
-
-> 
-> Suggested-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/volumes.c | 216 ++++++++++++++++++++++++++++++++++++++++-----
->  fs/btrfs/volumes.h |  11 +++
->  2 files changed, 207 insertions(+), 20 deletions(-)
-> 
-
-<snip>
-
-> +
-> +/*
-> + * Return 0 if we allocated any virtual(*) chunk, and restore the size to
-> + * @allocated_size
-> + * Return -ENOSPC if we have no more space to allocate virtual chunk
-> + *
-> + * *: virtual chunk is a space holder for per-profile available space
-> + *    calculator.
-> + *    Such virtual chunks won't take on-disk space, thus called virtual, and
-> + *    only affects per-profile available space calulation.
-> + */
-
-Document that the last parameter is an output value which contains the
-size of the allocated virtual chunk.
-
-> +static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
-> +			       struct btrfs_device_info *devices_info,
-> +			       enum btrfs_raid_types type,
-> +			       u64 *allocated)
-> +{
-> +	const struct btrfs_raid_attr *raid_attr = &btrfs_raid_array[type];
-> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-> +	struct btrfs_device *device;
-> +	u64 stripe_size;
-> +	int i;
-> +	int ndevs = 0;
-> +
-> +	lockdep_assert_held(&fs_info->chunk_mutex);
-> +
-> +	/* Go through devices to collect their unallocated space */
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
-> +		u64 avail;
-> +		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
-> +					&device->dev_state) ||
-> +		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
-> +			continue;
-> +
-> +		if (device->total_bytes > device->bytes_used +
-> +				device->virtual_allocated)
-> +			avail = device->total_bytes - device->bytes_used -
-> +				device->virtual_allocated;
-> +		else
-> +			avail = 0;
-> +
-> +		/* And exclude the [0, 1M) reserved space */
-> +		if (avail > SZ_1M)
-> +			avail -= SZ_1M;
-> +		else
-> +			avail = 0;
-> +
-> +		if (avail < fs_info->sectorsize)
-> +			continue;
-> +		/*
-> +		 * Unlike chunk allocator, we don't care about stripe or hole
-> +		 * size, so here we use @avail directly
-> +		 */
-> +		devices_info[ndevs].dev_offset = 0;
-> +		devices_info[ndevs].total_avail = avail;
-> +		devices_info[ndevs].max_avail = avail;
-> +		devices_info[ndevs].dev = device;
-> +		++ndevs;
-> +	}
-> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-> +	     btrfs_cmp_device_info, NULL);
-> +	ndevs -= ndevs % raid_attr->devs_increment;
-
-nit: ndevs = rounddown(ndevs, raid_attr->devs_increment);
-makes it more clear what's going on. Since you are working with at most
-int it's not a problem for 32bits.
 
 
-> +	if (ndevs < raid_attr->devs_min)
-> +		return -ENOSPC;
-> +	if (raid_attr->devs_max)
-> +		ndevs = min(ndevs, (int)raid_attr->devs_max);
-> +	else
-> +		ndevs = min(ndevs, (int)BTRFS_MAX_DEVS(fs_info));
+On 2020/2/20 =E4=B8=8B=E5=8D=888:49, Nikolay Borisov wrote:
+> <snip>
+>
+>>
+>> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/volumes.c | 216 ++++++++++++++++++++++++++++++++++++++++-----
+>>  fs/btrfs/volumes.h |  11 +++
+>>  2 files changed, 207 insertions(+), 20 deletions(-)
+>>
+>
+> <snip>
+>
+>> +
+>> +/*
+>> + * Return 0 if we allocated any virtual(*) chunk, and restore the size=
+ to
+>> + * @allocated_size
+>> + * Return -ENOSPC if we have no more space to allocate virtual chunk
+>> + *
+>> + * *: virtual chunk is a space holder for per-profile available space
+>> + *    calculator.
+>> + *    Such virtual chunks won't take on-disk space, thus called virtua=
+l, and
+>> + *    only affects per-profile available space calulation.
+>> + */
+>
+> Document that the last parameter is an output value which contains the
+> size of the allocated virtual chunk.
+>
+>> +static int alloc_virtual_chunk(struct btrfs_fs_info *fs_info,
+>> +			       struct btrfs_device_info *devices_info,
+>> +			       enum btrfs_raid_types type,
+>> +			       u64 *allocated)
+>> +{
+>> +	const struct btrfs_raid_attr *raid_attr =3D &btrfs_raid_array[type];
+>> +	struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
+>> +	struct btrfs_device *device;
+>> +	u64 stripe_size;
+>> +	int i;
+>> +	int ndevs =3D 0;
+>> +
+>> +	lockdep_assert_held(&fs_info->chunk_mutex);
+>> +
+>> +	/* Go through devices to collect their unallocated space */
+>> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) =
+{
+>> +		u64 avail;
+>> +		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
+>> +					&device->dev_state) ||
+>> +		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
+>> +			continue;
+>> +
+>> +		if (device->total_bytes > device->bytes_used +
+>> +				device->virtual_allocated)
+>> +			avail =3D device->total_bytes - device->bytes_used -
+>> +				device->virtual_allocated;
+>> +		else
+>> +			avail =3D 0;
+>> +
+>> +		/* And exclude the [0, 1M) reserved space */
+>> +		if (avail > SZ_1M)
+>> +			avail -=3D SZ_1M;
+>> +		else
+>> +			avail =3D 0;
+>> +
+>> +		if (avail < fs_info->sectorsize)
+>> +			continue;
+>> +		/*
+>> +		 * Unlike chunk allocator, we don't care about stripe or hole
+>> +		 * size, so here we use @avail directly
+>> +		 */
+>> +		devices_info[ndevs].dev_offset =3D 0;
+>> +		devices_info[ndevs].total_avail =3D avail;
+>> +		devices_info[ndevs].max_avail =3D avail;
+>> +		devices_info[ndevs].dev =3D device;
+>> +		++ndevs;
+>> +	}
+>> +	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+>> +	     btrfs_cmp_device_info, NULL);
+>> +	ndevs -=3D ndevs % raid_attr->devs_increment;
+>
+> nit: ndevs =3D rounddown(ndevs, raid_attr->devs_increment);
 
-Instead of casting simply use min_t(int, ndevs, BTRFS_MAX_DEVS...)
+IIRC round_down() can only be used when the alignment is power of 2.
 
-> +
-> +	/*
-> +	 * Now allocate a virtual chunk using the unallocate space of the
+Don't forget we have RAID1C3 now.
 
-nit: missing d after 'unallocate'
+> makes it more clear what's going on. Since you are working with at most
+> int it's not a problem for 32bits.
+>
+>
+>> +	if (ndevs < raid_attr->devs_min)
+>> +		return -ENOSPC;
+>> +	if (raid_attr->devs_max)
+>> +		ndevs =3D min(ndevs, (int)raid_attr->devs_max);
+>> +	else
+>> +		ndevs =3D min(ndevs, (int)BTRFS_MAX_DEVS(fs_info));
+>
+> Instead of casting simply use min_t(int, ndevs, BTRFS_MAX_DEVS...)
 
-> +	 * device with the least unallocated space.
-> +	 */
-> +	stripe_size = round_down(devices_info[ndevs - 1].total_avail,
-> +				 fs_info->sectorsize);
-> +	if (stripe_size == 0)
-> +		return -ENOSPC;
+That looks the same to me...
 
-Isn't this check redundant - in the loop where you iterate the devices
-you always ensure total_avail is at least a sector size, this guarantees
-that stripe_size cannot be 0 at this point.
+>
+>> +
+>> +	/*
+>> +	 * Now allocate a virtual chunk using the unallocate space of the
+>
+> nit: missing d after 'unallocate'
+>
+>> +	 * device with the least unallocated space.
+>> +	 */
+>> +	stripe_size =3D round_down(devices_info[ndevs - 1].total_avail,
+>> +				 fs_info->sectorsize);
+>> +	if (stripe_size =3D=3D 0)
+>> +		return -ENOSPC;
+>
+> Isn't this check redundant - in the loop where you iterate the devices
+> you always ensure total_avail is at least a sector size, this guarantees
+> that stripe_size cannot be 0 at this point.
+>
+>> +
+>> +	for (i =3D 0; i < ndevs; i++)
+>> +		devices_info[i].dev->virtual_allocated +=3D stripe_size;
+>> +	*allocated =3D stripe_size * (ndevs - raid_attr->nparity) /
+>> +		     raid_attr->ncopies;
+>> +	return 0;
+>> +}
+>> +
+>> +static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
+>> +				  enum btrfs_raid_types type,
+>> +				  u64 *result_ret)
+>> +{
+>> +	struct btrfs_device_info *devices_info =3D NULL;
+>> +	struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
+>> +	struct btrfs_device *device;
+>> +	u64 allocated;
+>> +	u64 result =3D 0;
+>> +	int ret =3D 0;
+>> +
+>
+> lockdep assert that chunk mutex is held since you access alloc_list.
+>
+>> +	ASSERT(type >=3D 0 && type < BTRFS_NR_RAID_TYPES);
+>> +
+>> +	/* Not enough devices, quick exit, just update the result */
+>> +	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
+>> +		goto out;
+>
+> You can directly return.
+>
+>> +
+>> +	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_info=
+),
+>> +			       GFP_NOFS);
+>> +	if (!devices_info) {
+>> +		ret =3D -ENOMEM;
+>> +		goto out;
+>
+> Same here.
+>
+>> +	}
+>> +	/* Clear virtual chunk used space for each device */
+>> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
+>> +		device->virtual_allocated =3D 0;
+>> +	while (ret =3D=3D 0) {
+>> +		ret =3D alloc_virtual_chunk(fs_info, devices_info, type,
+>> +					  &allocated);
+> The 'allocated' variable is used only in this loop so declare it in the
+> loop. Ideally we want variables to have the shortest possible lifecycle.
+>
+>> +		if (ret =3D=3D 0)
+>> +			result +=3D allocated;
+>> +	}
+>
+> Why do you need to call this in a loop calling alloc_virtual_chunk once
+> simply calculate the available space for the given raid type.
 
-> +
-> +	for (i = 0; i < ndevs; i++)
-> +		devices_info[i].dev->virtual_allocated += stripe_size;
-> +	*allocated = stripe_size * (ndevs - raid_attr->nparity) /
-> +		     raid_attr->ncopies;
-> +	return 0;
-> +}
-> +
-> +static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
-> +				  enum btrfs_raid_types type,
-> +				  u64 *result_ret)
-> +{
-> +	struct btrfs_device_info *devices_info = NULL;
-> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-> +	struct btrfs_device *device;
-> +	u64 allocated;
-> +	u64 result = 0;
-> +	int ret = 0;
-> +
+For this case, we must go several loops:
+Dev1: 10G
+Dev2: 5G
+Dev3: 5G
+Type: RAID1.
 
-lockdep assert that chunk mutex is held since you access alloc_list.
+The first loop will use 5G from dev1, 5G from dev2.
+Then the 2nd loop will use the remaining 5G from dev1, 5G from dev3.
 
-> +	ASSERT(type >= 0 && type < BTRFS_NR_RAID_TYPES);
-> +
-> +	/* Not enough devices, quick exit, just update the result */
-> +	if (fs_devices->rw_devices < btrfs_raid_array[type].devs_min)
-> +		goto out;
+And that's the core problem per-profile available space system want to
+address.
 
-You can directly return.
+>
+>> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
+>> +		device->virtual_allocated =3D 0;
+>> +out:
+>> +	kfree(devices_info);
+>> +	if (ret < 0 && ret !=3D -ENOSPC)
+>> +		return ret;
+>> +	*result_ret =3D result;
+>> +	return 0;
+>> +}
+>
+> <snip>
+>
+>> @@ -259,6 +266,10 @@ struct btrfs_fs_devices {
+>>  	struct kobject fsid_kobj;
+>>  	struct kobject *devices_kobj;
+>>  	struct completion kobj_unregister;
+>> +
+>> +	/* Records per-type available space */
+>> +	spinlock_t per_profile_lock;
+>> +	u64 per_profile_avail[BTRFS_NR_RAID_TYPES];
+>
+> Since every avail quantity is independent of any other, can you turn
+> this into an array of atomic64 values and get rid of the spinlock? My
+> head spins how many locks we have in btrfs.
 
-> +
-> +	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
-> +			       GFP_NOFS);
-> +	if (!devices_info) {
-> +		ret = -ENOMEM;
-> +		goto out;
+OK, that won't hurt, since they are updated separately, there is indeed
+no need for a spinlock.
 
-Same here.
-
-> +	}
-> +	/* Clear virtual chunk used space for each device */
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-> +		device->virtual_allocated = 0;
-> +	while (ret == 0) {
-> +		ret = alloc_virtual_chunk(fs_info, devices_info, type,
-> +					  &allocated);
-The 'allocated' variable is used only in this loop so declare it in the
-loop. Ideally we want variables to have the shortest possible lifecycle.
-
-> +		if (ret == 0)
-> +			result += allocated;
-> +	}
-
-Why do you need to call this in a loop calling alloc_virtual_chunk once
-simply calculate the available space for the given raid type.
-
-> +	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list)
-> +		device->virtual_allocated = 0;
-> +out:
-> +	kfree(devices_info);
-> +	if (ret < 0 && ret != -ENOSPC)
-> +		return ret;
-> +	*result_ret = result;
-> +	return 0;
-> +}
-
-<snip>
-
-> @@ -259,6 +266,10 @@ struct btrfs_fs_devices {
->  	struct kobject fsid_kobj;
->  	struct kobject *devices_kobj;
->  	struct completion kobj_unregister;
-> +
-> +	/* Records per-type available space */
-> +	spinlock_t per_profile_lock;
-> +	u64 per_profile_avail[BTRFS_NR_RAID_TYPES];
-
-Since every avail quantity is independent of any other, can you turn
-this into an array of atomic64 values and get rid of the spinlock? My
-head spins how many locks we have in btrfs.
-
->  };
->  
->  #define BTRFS_BIO_INLINE_CSUM_SIZE	64
-> 
+Thanks,
+Qu
+>
+>>  };
+>>
+>>  #define BTRFS_BIO_INLINE_CSUM_SIZE	64
+>>
