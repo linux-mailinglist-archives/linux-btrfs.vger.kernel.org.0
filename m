@@ -2,166 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AC7166296
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 17:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C310A166358
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 17:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgBTQ2C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 11:28:02 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40268 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728119AbgBTQ2C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 11:28:02 -0500
-Received: by mail-qt1-f196.google.com with SMTP id v25so3274578qto.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 08:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UviHg6tUmGt8eoUwlbI62s/9N8nSevzkd+LqP7c9NqY=;
-        b=A/n52aAfprsjs/eWWnLZhbZfO4rwWXs/XLXKC7ZSnyTSTocJdHUZ5zjwiE8yP8QISd
-         4+eM7OZNPZYm0nUQL2MpopaNqSx++JowYEZp6oBPf2QwgOVgy+CvSn2VU8IrVDZW60ZB
-         SHgD3KIGtEBhAHiEwQUKmZqcCBgq4LxxXH8RvWRLCdZWgqJesgQXyE7LLNsIhnTfTWVi
-         QxOUiXnI1hEbaIw/23KZC8UoAugSwnAm/cchlhKnC4EpOkzp4wWQMnFEpf0hxRmejh6j
-         93gqHx5peUDpG3JlFtdCdNzpAU7FjVgEI28EVEKUJKyeZ+tG4/9GovXFFw+FGWQ8xHwF
-         1k4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UviHg6tUmGt8eoUwlbI62s/9N8nSevzkd+LqP7c9NqY=;
-        b=mqLXEHGc7MX0tXS0FZ8y4XlvXiMfk4aYyVx2k9iZJbXdyxXezRoYxrsngFHbGms0ml
-         v5ELWm1J/teFLXgRBaSq50NAKr0UIkDKv3OO8Az3EQAGAu6iZPex94nzziKd2mE9a3R8
-         d2V0AMBqwyX1MCHe03B6tmW6tzXIaeAf0/BvvWqD7yi8m/8Xkj9FO0HM/N2HN8yyCgWm
-         cnFsS8o+8BarIUCoPLPyHBT5O6rCshN20axAlDTUqROwn4DGlVTIUOZoVpuEeAZm7ugG
-         9Y7QkgWhgG1xpLrKdESo1VfISJ6WAvnYT6guIvwGC5PoGw9HbnbrXZPbekeSdGDm9oxL
-         4REw==
-X-Gm-Message-State: APjAAAUOQepAqhWxUUWhINCDJt0asxU+RsRLzSfms3sC6RwyDYNGa6In
-        z8Y+MS8SZIjNpes8NBNQPTPUB+RkRdAgkw==
-X-Google-Smtp-Source: APXvYqwXcq/biGMNLFREkfHGaJYecS0coWqLF2kBfpDmdV482XuKLCCF54r3N7+BNX+E8XL8O3t0QQ==
-X-Received: by 2002:aed:33e2:: with SMTP id v89mr27364868qtd.162.1582216080633;
-        Thu, 20 Feb 2020 08:28:00 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id c26sm2357qtn.19.2020.02.20.08.27.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2020 08:27:59 -0800 (PST)
-Subject: Re: [PATCH 4/4] Btrfs: implement full reflink support for inline
- extents
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20200219140615.1641680-1-fdmanana@kernel.org>
- <4ac11008-d118-1877-151d-3e7da3e9a73a@toxicpanda.com>
- <CAL3q7H5buWQjhR2JTNyPVhZStJui8DKpUBhv1J_m8FVsbBWZ=Q@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <3beb82d2-f4fc-8c49-1262-e23aa70680bc@toxicpanda.com>
-Date:   Thu, 20 Feb 2020 11:27:59 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        id S1728368AbgBTQly (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 11:41:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44094 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728224AbgBTQly (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Feb 2020 11:41:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 47CF8B1E8;
+        Thu, 20 Feb 2020 16:41:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 99A45DA70E; Thu, 20 Feb 2020 17:41:34 +0100 (CET)
+Date:   Thu, 20 Feb 2020 17:41:34 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     ethanwu <ethanwu@synology.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] btrfs: improve normal backref walking
+Message-ID: <20200220164134.GA2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, ethanwu <ethanwu@synology.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200207093818.23710-1-ethanwu@synology.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H5buWQjhR2JTNyPVhZStJui8DKpUBhv1J_m8FVsbBWZ=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200207093818.23710-1-ethanwu@synology.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/20/20 11:09 AM, Filipe Manana wrote:
-> On Thu, Feb 20, 2020 at 3:30 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> On 2/19/20 9:06 AM, fdmanana@kernel.org wrote:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> There are a few cases where we don't allow cloning an inline extent into
->>> the destination inode, returning -EOPNOTSUPP to user space. This was done
->>> to prevent several types of file corruption and because it's not very
->>> straightforward to deal with these cases, as they can't rely on simply
->>> copying the inline extent between leaves. Such cases require copying the
->>> inline extent's data into the respective page of the destination inode.
->>>
->>> Not supporting these cases makes it harder and more cumbersome to write
->>> applications/libraries that work on any filesystem with reflink support,
->>> since all these cases for which btrfs fails with -EOPNOTSUPP work just
->>> fine on xfs for example. These unsupported cases are also not documented
->>> anywhere and explaining which exact cases fail require a bit of too
->>> technical understanding of btrfs's internal (inline extents and when and
->>> where can they exist in a file), so it's not really user friendly.
->>>
->>> Also some test cases from fstests that use fsx, such as generic/522 for
->>> example, can sporadically fail because they trigger one of these cases,
->>> and fsx expects all operations to succeed.
->>>
->>> This change adds supports for cloning all these cases by copying the
->>> inline extent's data into the respective page of the destination inode.
->>>
->>> With this change test case btrfs/112 from fstests fails because it
->>> expects some clone operations to fail, so it will be updated. Also a
->>> new test case that exercises all these previously unsupported cases
->>> will be added to fstests.
->>>
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>> ---
->>>    fs/btrfs/reflink.c | 212 ++++++++++++++++++++++++++++++++-------------
->>>    1 file changed, 152 insertions(+), 60 deletions(-)
->>>
->>> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
->>> index 7e7f46116db3..c19c87de6d4a 100644
->>> --- a/fs/btrfs/reflink.c
->>> +++ b/fs/btrfs/reflink.c
->>> @@ -1,8 +1,12 @@
->>>    // SPDX-License-Identifier: GPL-2.0
->>>
->>>    #include <linux/iversion.h>
->>> +#include <linux/blkdev.h>
->>>    #include "misc.h"
->>>    #include "ctree.h"
->>> +#include "btrfs_inode.h"
->>> +#include "compression.h"
->>> +#include "delalloc-space.h"
->>>    #include "transaction.h"
->>>
->>>    #define BTRFS_MAX_DEDUPE_LEN        SZ_16M
->>> @@ -43,30 +47,121 @@ static int clone_finish_inode_update(struct btrfs_trans_handle *trans,
->>>        return ret;
->>>    }
->>>
->>> +static int copy_inline_to_page(struct inode *inode,
->>> +                            const u64 file_offset,
->>> +                            char *inline_data,
->>> +                            const u64 size,
->>> +                            const u64 datal,
->>> +                            const u8 comp_type)
->>> +{
->>> +     const u64 block_size = btrfs_inode_sectorsize(inode);
->>> +     const u64 range_end = file_offset + block_size - 1;
->>> +     const size_t inline_size = size - btrfs_file_extent_calc_inline_size(0);
->>> +     char *data_start = inline_data + btrfs_file_extent_calc_inline_size(0);
->>> +     struct extent_changeset *data_reserved = NULL;
->>> +     struct page *page = NULL;
->>> +     bool page_locked = false;
->>> +     int ret;
->>> +
->>> +     ASSERT(IS_ALIGNED(file_offset, block_size));
->>> +
->>> +     ret = btrfs_delalloc_reserve_space(inode, &data_reserved, file_offset,
->>> +                                        block_size);
->>
->> This could potentially deadlock, as we could need to flush delalloc for this
->> inode that we've dirtied pages for and not be able to make progress because we
->> have this range locked.
+On Fri, Feb 07, 2020 at 05:38:14PM +0800, ethanwu wrote:
+> Btrfs has two types of data backref.
+> For BTRFS_EXTENT_DATA_REF_KEY type of backref, we don't have the
+> exact block number. Therefore, we need to call resolve_indirect_refs.
+> It uses btrfs_search_slot to locate the leaf block. Then
+> we need to walk through the leaves to search for the EXTENT_DATA items
+> that have disk bytenr matching the extent item(add_all_parents).
 > 
-> But we have already flushed the range before, after locking the inode
-> and waiting for dio requests,
-> so during the reflink operation no one should be able to dirty pages
-> in the range. Or did I miss some edge case?
+> When resolving indirect refs, we could take entries that don't
+> belong to the backref entry we are searching for right now.
+> For that reason when searching backref entry, we always use total
+> refs of that EXTENT_ITEM rather than individual count.
+> 
+> For example:
+> item 11 key (40831553536 EXTENT_ITEM 4194304) itemoff 15460 itemsize
+>   extent refs 24 gen 7302 flags DATA
+>   shared data backref parent 394985472 count 10 #1
+>   extent data backref root 257 objectid 260 offset 1048576 count 3 #2
+>   extent data backref root 256 objectid 260 offset 65536 count 6 #3
+>   extent data backref root 257 objectid 260 offset 65536 count 5 #4
+> 
+> For example, when searching backref entry #4, we'll use total_refs
+> 24, a very loose loop ending condition, instead of total_refs = 5.
+> 
+> But using total_refs=24 is not accurate. Sometimes, we'll never find
+> all the refs from specific root.
+> As a result, the loop keeps on going until we reach the end of that inode.
+> 
+> The first 3 patches, handle 3 different types refs we might encounter.
+> These refs do not belong to the normal backref we are searching, and
+> hence need to be skipped.
+> 
+> The last patch changes the total_refs to correct number so that we could
+> end loop as soon as we find all the refs we want.
+> 
+> btrfs send uses backref to find possible clone sources, the following
+> is a simple test to compare the results with and without this patch
+> 
+> btrfs subvolume create /volume1/sub1
+> for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=64K count=1 seek=$((i-1)) conv=notrunc oflag=direct 2>/dev/null; done
+> btrfs subvolume snapshot /volume1/sub1 /volume1/sub2
+> for i in `seq 1 163840`; do dd if=/dev/zero of=/volume1/sub1/file bs=4K count=1 seek=$(((i-1)*16+10)) conv=notrunc oflag=direct 2>/dev/null; done
+> btrfs subvolume snapshot -r /volume1/sub1 /volume1/snap1
+> time btrfs send /volume1/snap1 | btrfs receive /volume2
+> 
+> without this patch
+> real 69m48.124s
+> user 0m50.199s
+> sys  70m15.600s
+> 
+> with this patch
+> real    1m59.683s
+> user    0m35.421s
+> sys     2m42.684s
 
-I had it in my head that we could do this multiple times, but that's stupid 
-because there's only one inline extent to copy from.  You can add
+This is too good to be left only in the cover letter and lost in the
+mailinglist, so I copied that to the 4th patch that puts all the things
+together and the explanation is very useful. Also the numbers show a
+significant improvement.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+I've moved the patchset from a topic branch to misc-next for wider
+testing. The test failure I reported is not directly caused by these
+changes but it's still something to watch for. The target merge is 5.7
+so there's plenty of time to test, backreferences are the corner stone
+of btrfs so this must work 100%.
 
-Thanks,
-
-Josef
+Thanks.
