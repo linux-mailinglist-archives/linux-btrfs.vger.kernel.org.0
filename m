@@ -2,220 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C6916640B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 18:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D79166585
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Feb 2020 18:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgBTRMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 12:12:31 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33514 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgBTRMa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 12:12:30 -0500
-Received: by mail-qk1-f196.google.com with SMTP id h4so4289909qkm.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Feb 2020 09:12:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RKWY0DMoXnEu1WmHgr5Iqe8RfZpYOw8d33B6eKLen4s=;
-        b=U5KOU6impQ77VfnnLOo9c834YJrna49cNohqnYW/N8QNPMiHzJFdXbk8v6xAacT6En
-         ZfToCbkSlu0TqXhEc9TeE4T4kKd2BkTD0erIOCRAn3CMk4cc9hwPYau28xhno+nTl4JH
-         riSNN3kmE3q5xBuECJv0Me0q4qVkQ7e3oOowEV7aAwqU4dz5HO16CfmvoUuRCRyE8UIn
-         H1HbkF6K/GRo5fGoyrTaA5y+BceRozTSmmTbksWW7ezWO7ksSX0fwcvX/xEex/xCaEdW
-         6sTcx8Q41JTe2Tnfw9Z1ogW/Zff8B0K4eSxsP0voPQnMVBWCHpVzWArzf62YRard/HRi
-         aEqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RKWY0DMoXnEu1WmHgr5Iqe8RfZpYOw8d33B6eKLen4s=;
-        b=JMFJWWNLSay4fmzg5XqV49vfAmgqnVq3UzyHViqxb4DRrADCjX0fa343YXTKxl3ltJ
-         /3dZk/I9uHdfxI3/iWsWgbyoLFu+U+pSTa/XE7bJs4JyeoRQjkTXFIv2VqE8vi6mNilP
-         xCFDumB9Jq9tej01Tb71gU4DwRF858EKaIwM7GY8NRxnMBnUiwfFs9wVGe6igpTpIzLE
-         i220qMmDxYzeb6+mHOiYhFOe0d1AhydrYf2hxE2HzvihEC3ueXaFQJ2TNQLQBS1IvOld
-         of1n7UJroEuAfFFXEIjkJWrt6+A1upZLpi8TisFLI/hJB2SEJaK2oIBv1KuwEoji6eqe
-         9iYA==
-X-Gm-Message-State: APjAAAWuNMR0Dwp/UqbZXIkTkPEbWzKFoefr1smoTR9L85xx/YKe/Ndh
-        HyqoGB6nkvZFednTluiC4MipGw==
-X-Google-Smtp-Source: APXvYqyMiHnUjA3b4dtPOVH810ig8a+ZxQxBRCOfhSoms2Jz8bmiMvDSv16AvSZv9DeU5cvHQOKUaQ==
-X-Received: by 2002:a37:742:: with SMTP id 63mr29117750qkh.31.1582218749639;
-        Thu, 20 Feb 2020 09:12:29 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id a13sm77179qkh.123.2020.02.20.09.12.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2020 09:12:28 -0800 (PST)
-Subject: Re: [PATCH] fstests: add a another gap extent testcase for btrfs
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
-        fstests <fstests@vger.kernel.org>
-References: <20200220143855.3883650-1-josef@toxicpanda.com>
- <CAL3q7H7UaJ-_aT4-Ab1eheVJUDwyuc6UQ6-Q9cQZCU1GqjuSGQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <4969c822-5775-b91c-ba29-6d3f15d6cc40@toxicpanda.com>
-Date:   Thu, 20 Feb 2020 12:12:27 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        id S1728811AbgBTRyV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 12:54:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45190 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727285AbgBTRyV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Feb 2020 12:54:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 56EF1AE79;
+        Thu, 20 Feb 2020 17:54:18 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2CDCCDA70E; Thu, 20 Feb 2020 18:54:01 +0100 (CET)
+Date:   Thu, 20 Feb 2020 18:54:00 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 00/23] Change readahead API
+Message-ID: <20200220175400.GB2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+References: <20200219210103.32400-1-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H7UaJ-_aT4-Ab1eheVJUDwyuc6UQ6-Q9cQZCU1GqjuSGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219210103.32400-1-willy@infradead.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/20/20 11:24 AM, Filipe Manana wrote:
-> On Thu, Feb 20, 2020 at 2:39 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> This is a testcase for a corner that I missed when trying to fix gap
->> extents for btrfs.  We would end up with gaps if we hole punched past
->> isize and then extended past the gap in a specific way.  This is a
->> simple reproducer to show the problem, and has been properly fixed by my
->> patches now.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   tests/btrfs/204     | 85 +++++++++++++++++++++++++++++++++++++++++++++
->>   tests/btrfs/204.out |  5 +++
->>   tests/btrfs/group   |  1 +
->>   3 files changed, 91 insertions(+)
->>   create mode 100755 tests/btrfs/204
->>   create mode 100644 tests/btrfs/204.out
->>
->> diff --git a/tests/btrfs/204 b/tests/btrfs/204
->> new file mode 100755
->> index 00000000..0d5c4bed
->> --- /dev/null
->> +++ b/tests/btrfs/204
->> @@ -0,0 +1,85 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2020 Facebook.  All Rights Reserved.
->> +#
->> +# FS QA Test 204
->> +#
->> +# Validate that without no-holes we do not get a i_size that is after a gap in
->> +# the file extents on disk when punching a hole past i_size.  This is fixed by
->> +# the following patches
->> +#
->> +#      btrfs: use the file extent tree infrastructure
->> +#      btrfs: replace all uses of btrfs_ordered_update_i_size
->> +#
->> +seq=`basename $0`
->> +seqres=$RESULT_DIR/$seq
->> +echo "QA output created by $seq"
->> +
->> +here=`pwd`
->> +tmp=/tmp/$$
->> +status=1       # failure is the default!
->> +trap "_cleanup; exit \$status" 0 1 2 3 15
->> +
->> +_cleanup()
->> +{
->> +       cd /
->> +       rm -f $tmp.*
->> +}
->> +
->> +# get standard environment, filters and checks
->> +. ./common/rc
->> +. ./common/filter
->> +. ./common/dmlogwrites
->> +
->> +# remove previous $seqres.full before test
->> +rm -f $seqres.full
->> +
->> +# real QA test starts here
->> +
->> +# Modify as appropriate.
->> +_supported_fs generic
->> +_supported_os Linux
->> +_require_test
->> +_require_scratch
->> +_require_log_writes
+On Wed, Feb 19, 2020 at 01:00:39PM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> _require_xfs_io_command "falloc" "-k"
-> _require_xfs_io_command "fpunch"
+> This series adds a readahead address_space operation to eventually
+> replace the readpages operation.  The key difference is that
+> pages are added to the page cache as they are allocated (and
+> then looked up by the filesystem) instead of passing them on a
+> list to the readpages operation and having the filesystem add
+> them to the page cache.  It's a net reduction in code for each
+> implementation, more efficient than walking a list, and solves
+> the direct-write vs buffered-read problem reported by yu kuai at
+> https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 > 
->> +
->> +_log_writes_init $SCRATCH_DEV
->> +_log_writes_mkfs "-O ^no-holes" >> $seqres.full 2>&1
->> +
->> +# There's not a straightforward way to commit the transaction without also
->> +# flushing dirty pages, so shorten the commit interval to 1 so we're sure to get
->> +# a commit with our broken file
->> +_log_writes_mount -o commit=1
->> +
->> +# This creates a gap extent because fpunch doesn't insert hole extents past
->> +# i_size
->> +xfs_io -f -c "falloc -k 4k 8k" $SCRATCH_MNT/file
->> +xfs_io -f -c "fpunch 4k 4k" $SCRATCH_MNT/file
->> +
->> +# The pwrite extends the i_size to cover the gap extent, and then the truncate
->> +# sets the disk_i_size to 12k because it assumes everything was a-ok.
->> +xfs_io -f -c "pwrite 0 4k" $SCRATCH_MNT/file | _filter_xfs_io
->> +xfs_io -f -c "pwrite 0 8k" $SCRATCH_MNT/file | _filter_xfs_io
->> +xfs_io -f -c "truncate 12k" $SCRATCH_MNT/file
->> +
->> +# Wait for a transaction commit
->> +sleep 2
->> +
->> +_log_writes_unmount
->> +_log_writes_remove
->> +
->> +cur=$(_log_writes_find_next_fua 0)
->> +echo "cur=$cur" >> $seqres.full
->> +while [ ! -z "$cur" ]; do
->> +       _log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqres.full
->> +
->> +       # We only care about the fs consistency, so just run fsck, we don't have
->> +       # to mount the fs to validate it
->> +       _check_scratch_fs
->> +
->> +       cur=$(_log_writes_find_next_fua $(($cur + 1)))
->> +done
->> +
->> +# success, all done
->> +status=0
->> +exit
->> diff --git a/tests/btrfs/204.out b/tests/btrfs/204.out
->> new file mode 100644
->> index 00000000..44c7c8ae
->> --- /dev/null
->> +++ b/tests/btrfs/204.out
->> @@ -0,0 +1,5 @@
->> +QA output created by 204
->> +wrote 4096/4096 bytes at offset 0
->> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> +wrote 8192/8192 bytes at offset 0
->> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> diff --git a/tests/btrfs/group b/tests/btrfs/group
->> index 6acc6426..7a840177 100644
->> --- a/tests/btrfs/group
->> +++ b/tests/btrfs/group
->> @@ -206,3 +206,4 @@
->>   201 auto quick punch log
->>   202 auto quick subvol snapshot
->>   203 auto quick send clone
->> +204 auto quick log replay
+> The only unconverted filesystems are those which use fscache.
+> Their conversion is pending Dave Howells' rewrite which will make the
+> conversion substantially easier.
 > 
-> "prealloc" and "punch" groups as well.
+> I want to thank the reviewers; Dave Chinner, John Hubbard and Christoph
+> Hellwig have done a marvellous job of providing constructive criticism.
+> Eric Biggers pointed out how I'd broken ext4 (which led to a substantial
+> change).  I've tried to take it all on board, but I may have missed
+> something simply because you've done such a thorough job.
 > 
-> Since this just tests another variant of the same problem, maybe it
-> could be added to btrfs/172, since that test is very recent and you
-> authored it as well.
-> Anyway, I don't have a strong preference.
+> This series can also be found at
+> http://git.infradead.org/users/willy/linux-dax.git/shortlog/refs/tags/readahead_v7
+> (I also pushed the readahead_v6 tag there in case anyone wants to diff, and
+> they're both based on 5.6-rc2 so they're easy to diff)
 > 
-> The test itself looks good to me, and with the _require_xfs_io_command
-> thing added and the groups (maybe Eryu can add these at commit time):
-> 
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> 
+> v7:
+>  - Now passes an xfstests run on ext4!
 
-I like to keep these things discrete, if a test is testing two different things 
-and it fails I have to go comment out one part and re-run to figure out which 
-actually failed.  Thanks,
+On btrfs it still chokes on the first test btrfs/001, with the following
+warning, the test is stuck there.
 
-Josef
+[   21.100922] WARNING: suspicious RCU usage
+[   21.103107] 5.6.0-rc2-default+ #996 Not tainted
+[   21.105133] -----------------------------
+[   21.106864] include/linux/xarray.h:1164 suspicious rcu_dereference_check() usage!
+[   21.109948]
+[   21.109948] other info that might help us debug this:
+[   21.109948]
+[   21.113373]
+[   21.113373] rcu_scheduler_active = 2, debug_locks = 1
+[   21.115801] 4 locks held by umount/793:
+[   21.117135]  #0: ffff964a736890e8 (&type->s_umount_key#26){+.+.}, at: deactivate_super+0x2f/0x40
+[   21.120188]  #1: ffff964a7347ba68 (&delayed_node->mutex){+.+.}, at: __btrfs_commit_inode_delayed_items+0x44c/0x4e0 [btrfs]
+[   21.123042]  #2: ffff964a612fe5c8 (&space_info->groups_sem){++++}, at: find_free_extent+0x27d/0xf00 [btrfs]
+[   21.126068]  #3: ffff964a60b93280 (&caching_ctl->mutex){+.+.}, at: btrfs_cache_block_group+0x1f0/0x500 [btrfs]
+[   21.129655]
+[   21.129655] stack backtrace:
+[   21.131943] CPU: 1 PID: 793 Comm: umount Not tainted 5.6.0-rc2-default+ #996
+[   21.134164] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[   21.138076] Call Trace:
+[   21.139441]  dump_stack+0x71/0xa0
+[   21.140954]  xas_start+0x1a4/0x240
+[   21.142473]  xas_load+0xa/0x50
+[   21.143874]  xas_find+0x226/0x280
+[   21.145298]  extent_readahead+0xcb/0x4f0 [btrfs]
+[   21.146934]  ? mem_cgroup_commit_charge+0x56/0x400
+[   21.148654]  ? rcu_read_lock_sched_held+0x5d/0x90
+[   21.150382]  ? __add_to_page_cache_locked+0x327/0x380
+[   21.152155]  read_pages+0x80/0x1f0
+[   21.153531]  page_cache_readahead_unbounded+0x1b7/0x210
+[   21.155196]  __load_free_space_cache+0x1c1/0x730 [btrfs]
+[   21.157014]  load_free_space_cache+0xb9/0x190 [btrfs]
+[   21.158222]  btrfs_cache_block_group+0x1f8/0x500 [btrfs]
+[   21.159717]  ? finish_wait+0x90/0x90
+[   21.160723]  find_free_extent+0xa17/0xf00 [btrfs]
+[   21.161798]  ? kvm_sched_clock_read+0x14/0x30
+[   21.163022]  ? sched_clock_cpu+0x10/0x120
+[   21.164361]  btrfs_reserve_extent+0x9b/0x180 [btrfs]
+[   21.165952]  btrfs_alloc_tree_block+0xc1/0x350 [btrfs]
+[   21.167680]  ? __lock_acquire+0x272/0x1320
+[   21.169353]  alloc_tree_block_no_bg_flush+0x4a/0x60 [btrfs]
+[   21.171313]  __btrfs_cow_block+0x143/0x7a0 [btrfs]
+[   21.173080]  btrfs_cow_block+0x15f/0x310 [btrfs]
+[   21.174487]  btrfs_search_slot+0x93b/0xf70 [btrfs]
+[   21.175940]  btrfs_lookup_inode+0x3a/0xc0 [btrfs]
+[   21.177419]  ? __btrfs_commit_inode_delayed_items+0x417/0x4e0 [btrfs]
+[   21.179032]  ? __btrfs_commit_inode_delayed_items+0x44c/0x4e0 [btrfs]
+[   21.180787]  __btrfs_update_delayed_inode+0x73/0x260 [btrfs]
+[   21.182174]  __btrfs_commit_inode_delayed_items+0x46c/0x4e0 [btrfs]
+[   21.183907]  ? btrfs_first_delayed_node+0x4c/0x90 [btrfs]
+[   21.185204]  __btrfs_run_delayed_items+0x8e/0x140 [btrfs]
+[   21.186521]  btrfs_commit_transaction+0x312/0xae0 [btrfs]
+[   21.188142]  ? btrfs_attach_transaction_barrier+0x1f/0x50 [btrfs]
+[   21.189684]  sync_filesystem+0x6e/0x90
+[   21.190878]  generic_shutdown_super+0x22/0x100
+[   21.192693]  kill_anon_super+0x14/0x30
+[   21.194389]  btrfs_kill_super+0x12/0x20 [btrfs]
+[   21.196078]  deactivate_locked_super+0x2c/0x70
+[   21.197732]  cleanup_mnt+0x100/0x160
+[   21.199033]  task_work_run+0x90/0xc0
+[   21.200331]  exit_to_usermode_loop+0x96/0xa0
+[   21.201744]  do_syscall_64+0x1df/0x210
+[   21.203187]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
