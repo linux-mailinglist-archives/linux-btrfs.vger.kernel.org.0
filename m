@@ -2,66 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3EF167DE4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 14:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 170DB167E13
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 14:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728434AbgBUNCj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Feb 2020 08:02:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40008 "EHLO mx2.suse.de"
+        id S1728314AbgBUNL2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Feb 2020 08:11:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46170 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgBUNCj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Feb 2020 08:02:39 -0500
+        id S1727699AbgBUNL1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Feb 2020 08:11:27 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D2B02AD2D;
-        Fri, 21 Feb 2020 13:02:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 80A81DA70E; Fri, 21 Feb 2020 14:02:20 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 4137FAE9E;
+        Fri, 21 Feb 2020 13:11:26 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 3/3] btrfs: use ioctl args support mask for device delete
-Date:   Fri, 21 Feb 2020 14:02:20 +0100
-Message-Id: <35813380382186dcd381e759e665f59f77c1f287.1582289899.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <cover.1582289899.git.dsterba@suse.com>
-References: <cover.1582289899.git.dsterba@suse.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 1/2] btrfs:  Remove superflous lock acquisition in __del_reloc_root
+Date:   Fri, 21 Feb 2020 15:11:23 +0200
+Message-Id: <20200221131124.24105-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the device remove v2 ioctl was added, the full support mask was
-added to sanity check the flags. However this would allow to let the
-subvolume related flags to be accepted. This is not supposed to happen.
+__del_reloc_root is called from:
 
-Use the correct support mask, which means that now any of
-BTRFS_SUBVOL_CREATE_ASYNC, BTRFS_SUBVOL_RDONLY or
-BTRFS_SUBVOL_QGROUP_INHERIT will be rejected as ENOTSUPP. Though this is
-a user-visible change, specifying subvolume flags for device deletion
-does not make sense and there are hopefully no applications doing that.
+a) Transaction commit via:
+btrfs_transaction_commit
+ commit_fs_roots
+  btrfs_update_reloc_root
+   __del_reloc_root
 
-Signed-off-by: David Sterba <dsterba@suse.com>
+b) From the relocation thread with the following call chains:
+
+relocate_block_group
+ merge_reloc_roots
+  insert_dirty_subvol
+   btrfs_update_reloc_root
+    __del_reloc_root
+
+c) merge_reloc_roots
+    free_reloc_roots
+     __del_reloc_roots
+
+(The above call chain can called from btrfs_recover_relocation as well
+but for the purpose of this fix this is irrelevant).
+
+The commont data structure that needs protecting is
+fs_info->reloc_ctl->reloc_list as reloc roots are anchored at this list.
+Turns out it's no needed to hold the trans_lock in __del_reloc_root
+since consistency is already guaranteed by call chain b) above holding
+a transaction while calling insert_dirty_subvol, meaning we cannot have
+a concurrent transaction commit. For call chain c) above a snapshot of
+the fs_info->reloc_ctl->reloc_list is taken with reloc_mutex held and
+free_reloc_roots is called on this local snapshot.
+
+Those invariants are sufficient to prevent racing calls to
+__del_reloc_root alongside other users of the list, as such it's fine
+to drop the lock acquisition.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ioctl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a7872cacd0aa..cd2d11dcd477 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3075,8 +3075,7 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 		goto err_drop;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 8076c340749f..e5cb64409f7c 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1381,9 +1381,7 @@ static void __del_reloc_root(struct btrfs_root *root)
+ 		BUG_ON((struct btrfs_root *)node->data != root);
  	}
  
--	/* Check for compatibility reject unknown flags */
--	if (vol_args->flags & ~BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED) {
-+	if (vol_args->flags & ~BTRFS_DEVICE_REMOVE_ARGS_MASK) {
- 		ret = -EOPNOTSUPP;
- 		goto out;
- 	}
+-	spin_lock(&fs_info->trans_lock);
+ 	list_del_init(&root->root_list);
+-	spin_unlock(&fs_info->trans_lock);
+ 	kfree(node);
+ }
+ 
 -- 
-2.25.0
+2.17.1
 
