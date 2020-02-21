@@ -2,68 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C23166F50
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 06:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0C0166F75
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 07:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgBUFpr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Feb 2020 00:45:47 -0500
-Received: from len.romanrm.net ([91.121.86.59]:60346 "EHLO len.romanrm.net"
+        id S1726331AbgBUGLQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Feb 2020 01:11:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgBUFpr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Feb 2020 00:45:47 -0500
-Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
-        by len.romanrm.net (Postfix) with SMTP id 581B140653;
-        Fri, 21 Feb 2020 05:45:45 +0000 (UTC)
-Date:   Fri, 21 Feb 2020 10:45:45 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     dsterba@suse.cz, Martin Steigerwald <martin@lichtvoll.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: do not zero f_bavail if we have available space
-Message-ID: <20200221104545.6335cbd1@natsu>
-In-Reply-To: <20200221053804.GA7869@merlins.org>
-References: <2656316.bop9uDDU3N@merkaba>
-        <20200219225051.39ca1082@natsu>
-        <20200219153652.GA26873@merlins.org>
-        <20200220214649.GD26873@merlins.org>
-        <20200221053804.GA7869@merlins.org>
+        id S1725973AbgBUGLP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Feb 2020 01:11:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A1B4EAB8F
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2020 06:11:13 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v8 0/5] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Fri, 21 Feb 2020 14:11:02 +0800
+Message-Id: <20200221061107.65981-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 20 Feb 2020 21:38:04 -0800
-Marc MERLIN <marc@merlins.org> wrote:
+There are several bug reports of ENOSPC error in
+btrfs_run_delalloc_range().
 
-> I had a closer look, and even with 5.4.20, my whole lv is full now:
->   LV Name                thinpool2
->   Allocated pool data    99.99%
->   Allocated metadata     59.88%
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
 
-Oversubscribing thin storage should be done carefully and only with a very
-good reason, and when you run out of something you didn't have in the first
-place, seems hard to blame Btrfs or anyone else for it.
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
 
-> Sure enough, that broken ubuntu one (that really only needs 4GB or so),
-> is now taking 60% of the mapped size (i.e. everything that was left)
->   LV Name                ubuntu
->   Mapped size            60.26%
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
 
-Provide full output of lvdisplay -m, not snippets of it. As is, "omg 60%"
-tells nothing to anyone, who knows maybe this LV is maybe 6 GB in size, and at
-60% used, it comes out to 4GB exactly.
 
-> I'm now running this overnight, but any command on that filesystem, just
-> hangs for now:
-> gargamel:/mnt/btrfs_pool2/backup/ubuntu# fstrim -v .
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
 
-At this point "Data%" in `lvs` output should be decreasing steadily. (if not,
-check your dmesg for some kind of a hang or deadlock).
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
+
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
+
+And statfs() can also grab that pre-calculated value for instance usage.
+
+Since this patch introduced a new failure pattern, some new error
+handling are introduced:
+- __btrfs_alloc_chunk()
+  At the end of that function where calc_per_profile_avail() get called,
+  if it failed due to -ENOMEM, we will revert device used space, and
+  remove the allocated chunk.
+  This is the only new error handling added by patch 5.
+
+- btrfs_remove_chunk()
+  There is no good way to revert the change. So here we abort
+  transaction, just like what the old error handling does.
+
+- btrfs_grow_device()
+  This function has its problem by not reverting device used space from
+  the very beginning.
+  This patchset will enhance it in patch 4.
+
+- btrfs_shrink_device()
+- btrfs_init_new_device()
+- btrfs_rm_device()
+  This function already has good error handling, reuse it.
+
+- btrfs_verify_dev_extents()
+  Mount time error will lead to mount failure, nothing to worry about.
+
+Contents of the patchset:
+Patch 1:	Core facility, with basic (not perfect) error handling
+Patch 2:	Fix for over-confident can_overcommit()
+Patch 3:	Make statfs() more accurate
+Patch 4:	Better error handling for btrfs_grow_device()
+Patch 5:	Better error handling for __btrfs_alloc_chunk()
+
+If needed, patch 4 and patch 5 can be merged into patch 1.
+
+Changelog:
+v1:
+- Fix a bug where we forgot to update per-profile array after allocating
+  a chunk.
+  To avoid ABBA deadlock, this introduce a small windows at the end
+  __btrfs_alloc_chunk(), it's not elegant but should be good enough
+  before we rework chunk and device list mutex.
+  
+- Make statfs() to use virtual chunk allocator to do better estimation
+  Now statfs() can report not only more accurate result, but can also
+  handle RAID5/6 better.
+
+v2:
+- Fix a deadlock caused by acquiring device_list_mutex under
+  __btrfs_alloc_chunk()
+  There is no need to acquire device_list_mutex when holding
+  chunk_mutex.
+  Fix it and remove the lockdep assert.
+
+v3:
+- Use proper chunk_mutex instead of device_list_mutex
+  Since they are protecting two different things, and we only care about
+  alloc_list, we should only use chunk_mutex.
+  With improved lock situation, it's easier to fold
+  calc_per_profile_available() calls into the first patch.
+
+- Add performance benchmark for statfs() modification
+  As Facebook seems to run into some problems with statfs() calls, add
+  some basic ftrace results.
+
+v4:
+- Keep the lock-free design for statfs()
+  As extra sleeping in statfs() may not be a good idea, keep the old
+  lock-free design, and use factor based calculation as fall back.
+
+v5:
+- Enhance btrfs_update_device() error handling in btrfs_grow_device()
+- Ensure all failure caused by calc_per_profile_available() is the same
+  with existing error handling
+- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
+
+v6:
+- Don't update the array if we hit any error.
+  To avoid calling calc_per_profile_avail() in error handling path.
+
+- Re-order the patchset
+  Make the core facility the first patch.
+  Error handling improvement in later patches.
+
+- Add better error handling
+  Improve one existing bad error handling, and provide a better solution
+  for __btrfs_alloc_chunk()
+
+v7:
+- Remove btrfs_calc_avail_data_space() completely
+  Now we only need to grab the pre-calculated number, no need for a
+  function over 100 lines.
+
+- Keep the 0-avail-if-metadata-exhausted behavior
+  Now it's handled by space_info->full, which indicates if we can
+  allocate new chunks in metadata space info.
+  We have no need to bother that now.
+
+v8:
+- Cosmetic changes
+  * Comment fixes
+  * Use rounddown() to replace one open-code
+  * while() loop reformat
+  * Remove one redundant 0-size check
+  * Add one lockdep_assert() for calc_one_profile_avail()
+  * Use atomic64_t to remove spinlock
+
+- Add two more timing to call calc_per_profile_avail()
+  * btrfs_rm_device()
+  * btrfs_init_new_device()
+
+Qu Wenruo (5):
+  btrfs: Introduce per-profile available space facility
+  btrfs: space-info: Use per-profile available space in can_overcommit()
+  btrfs: statfs: Use pre-calculated per-profile available space
+  btrfs: Reset device size when btrfs_update_device() failed in
+    btrfs_grow_device()
+  btrfs: volumes: Revert device used bytes when calc_per_profile_avail()
+    failed
+
+ fs/btrfs/space-info.c |  13 +--
+ fs/btrfs/super.c      | 131 ++--------------------
+ fs/btrfs/volumes.c    | 246 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h    |  10 ++
+ 4 files changed, 247 insertions(+), 153 deletions(-)
 
 -- 
-With respect,
-Roman
+2.25.1
+
