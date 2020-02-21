@@ -2,47 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D721680CD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 15:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E931681C4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 16:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgBUOvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Feb 2020 09:51:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35296 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727096AbgBUOvk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Feb 2020 09:51:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 562B3AD61;
-        Fri, 21 Feb 2020 14:51:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A123CDA70E; Fri, 21 Feb 2020 15:51:21 +0100 (CET)
-Date:   Fri, 21 Feb 2020 15:51:21 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 0/2] Refactor snapshot vs nocow writers locking
-Message-ID: <20200221145120.GK2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200130125945.7383-1-nborisov@suse.com>
- <20200130125945.7383-4-nborisov@suse.com>
- <20200130142144.GU3929@twin.jikos.cz>
+        id S1728228AbgBUPfh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Feb 2020 10:35:37 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:42160 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgBUPfh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Feb 2020 10:35:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+ZsaQJllFuL8jpNObDQrHmpdC/B73n9RqMvE0qPHxaM=; b=e19h/tTJERLUFpOL5Gva3Nh5/X
+        wd0VH9aVgKh+1Blgs+9Q15ijaVkaoTLAy7WypYckq6maI2+/Qpa5TYpUzL45zkwW6/rKVd4gOa/Q3
+        37XTTlJ3n85F+yMLVB8w0BnbSlS+Y+mVNSOJqRCX3b4kHG/mSGnd+/RHhL7LSbdq0PycpO3gHljyg
+        1ePLpWP66QKkQwSW3hqI4AmWyW4KZvprzI+VqeFwh8xfQgZxihaUIj3MuUi6DWndVunwNc8HfQSPa
+        cJzgSNpVLmszdlcuXvTGALnsMeU2uXmuwM6kJU9UgfbmbAX46oAsryhNENVSPO0btKS8JfbqGc1YR
+        ErE1c+gA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j5AL3-00062c-43; Fri, 21 Feb 2020 15:35:37 +0000
+Date:   Fri, 21 Feb 2020 07:35:37 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 11/24] mm: Move end_index check out of readahead loop
+Message-ID: <20200221153537.GE24185@bombadil.infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-12-willy@infradead.org>
+ <e6ef2075-b849-299e-0f11-c6ee82b0a3c7@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200130142144.GU3929@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <e6ef2075-b849-299e-0f11-c6ee82b0a3c7@nvidia.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 03:21:44PM +0100, David Sterba wrote:
-> Please add comments with the lock semantics overview and to all the
-> public functions. Having more assertions would be also good, like the
-> tree locks do. Thanks.
+On Thu, Feb 20, 2020 at 07:50:39PM -0800, John Hubbard wrote:
+> This tiny patch made me pause, because I wasn't sure at first of the exact
+> intent of the lines above. Once I worked it out, it seemed like it might
+> be helpful (or overkill??) to add a few hints for the reader, especially since
+> there are no hints in the function's (minimal) documentation header. What
+> do you think of this?
+> 
+> 	/*
+> 	 * If we can't read *any* pages without going past the inodes's isize
+> 	 * limit, give up entirely:
+> 	 */
+> 	if (index > end_index)
+> 		return;
+> 
+> 	/* Cap nr_to_read, in order to avoid overflowing the ULONG type: */
+> 	if (index + nr_to_read < index)
+> 		nr_to_read = ULONG_MAX - index + 1;
+> 
+> 	/* Cap nr_to_read, to avoid reading past the inode's isize limit: */
+> 	if (index + nr_to_read >= end_index)
+> 		nr_to_read = end_index - index + 1;
 
-The patches started to conflict with others so I've removed it from
-for-next until the updated version with comments arrives.
+A little verbose for my taste ... How about this?
+
+        end_index = (isize - 1) >> PAGE_SHIFT;
+        if (index > end_index)
+                return;
+        /* Avoid wrapping to the beginning of the file */
+        if (index + nr_to_read < index)
+                nr_to_read = ULONG_MAX - index + 1;
+        /* Don't read past the page containing the last byte of the file */
+        if (index + nr_to_read >= end_index)
+                nr_to_read = end_index - index + 1;
+
