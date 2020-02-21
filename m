@@ -2,155 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE0A166E15
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 04:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7A5166E6E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Feb 2020 05:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729654AbgBUDum (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Feb 2020 22:50:42 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16239 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729546AbgBUDul (ORCPT
+        id S1729651AbgBUEUV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Feb 2020 23:20:21 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2518 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729280AbgBUEUV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Feb 2020 22:50:41 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e4f53820000>; Thu, 20 Feb 2020 19:50:26 -0800
+        Thu, 20 Feb 2020 23:20:21 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e4f5a130002>; Thu, 20 Feb 2020 20:18:27 -0800
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 20 Feb 2020 19:50:40 -0800
+  Thu, 20 Feb 2020 20:19:40 -0800
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 20 Feb 2020 19:50:40 -0800
+        by hqpgpgate101.nvidia.com on Thu, 20 Feb 2020 20:19:40 -0800
 Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 21 Feb
- 2020 03:50:40 +0000
-Subject: Re: [PATCH v7 11/24] mm: Move end_index check out of readahead loop
-To:     Matthew Wilcox <willy@infradead.org>,
-        <linux-fsdevel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-        <linux-ext4@vger.kernel.org>,
+ 2020 04:19:40 +0000
+Subject: Re: [PATCH v7 09/24] mm: Put readahead pages in cache earlier
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
         <linux-f2fs-devel@lists.sourceforge.net>,
         <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
         <linux-xfs@vger.kernel.org>
 References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-12-willy@infradead.org>
+ <20200219210103.32400-10-willy@infradead.org>
+ <5691442b-56c7-7b0d-d91b-275be52abb42@nvidia.com>
+ <20200221034304.GC24185@bombadil.infradead.org>
 From:   John Hubbard <jhubbard@nvidia.com>
 X-Nvconfidentiality: public
-Message-ID: <e6ef2075-b849-299e-0f11-c6ee82b0a3c7@nvidia.com>
-Date:   Thu, 20 Feb 2020 19:50:39 -0800
+Message-ID: <7abd9e60-bcc0-7474-4535-51ec9fe3be5b@nvidia.com>
+Date:   Thu, 20 Feb 2020 20:19:39 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200219210103.32400-12-willy@infradead.org>
+In-Reply-To: <20200221034304.GC24185@bombadil.infradead.org>
 X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
  HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1582257026; bh=tk14qMbQgXhzPHJvBXnjmNLCT+UAZJLvtKqXUx6iDgc=;
+        t=1582258708; bh=CIGWblNjMnlEw9Q0Ky7Ta6pH9+iEVsHlBGm1uvPtL0Q=;
         h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
          Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
          X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
          Content-Transfer-Encoding;
-        b=oCi6E75tCEIn+Ss5EINKDG6zfT/kx05YcufkjkALI/HJzrO/QVaq0+TS7NDuf6dDG
-         3KJUx4kwLE0srSqcQb7ewkvP+MwPzM4WzzCl9NCAzj0iF7hBEKUI95wSnO5C+VYO8N
-         PBHbwat8gbjdVT/oYADJD3U9KNdo/nsrMbDFNPGW66rGomZN4nRYnGdVhk/MG8IqMF
-         qrYsOtbFP9PSayIDVKbUcW4lGHlBbQ/hIiN9gWwSGKey8zhdYc7nXNitnRnVppR8hu
-         ugDl43YDuHfHI/5RPeAj7AoT/5aAHccP0NTXqSNiQSxuAloaSAzsHHurCa1NnOWQDL
-         yLHsrmucQ0bFA==
+        b=QAZjj+re8Z5ndHhIjF2VRFDwaG0bhNkGpOaYeLkouTf94ecI4+6g17dWTyJz7DL72
+         DctTTxvPN0tXj5OC1WBEfadH1p8SB7eh3lcLcu68j446CCrhtSL4uR0Ltn3Ly1Ig7V
+         9MIOKaIVmarYhCtpPLNHIDlI6cqfZH9evydC7gODPs5UoOiEpsjkrPxuEgCRzigRaN
+         SKdOa1l/36LLcF3uNxgMwfxno4JatXC+uZhTd8X1u4qKRd8jQXDWHdmWtD/0ORHM/U
+         0tqKAMS7F93WqoI7rh3y7hGnfNIA0Tu4RSaZfJORHjEA0JGLSwgia/FzEoVLZSuAOv
+         zBHfNLpt7rBpQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/19/20 1:00 PM, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On 2/20/20 7:43 PM, Matthew Wilcox wrote:
+> On Thu, Feb 20, 2020 at 07:19:58PM -0800, John Hubbard wrote:
+>>> +static inline struct page *readahead_page(struct readahead_control *rac)
+>>> +{
+>>> +	struct page *page;
+>>> +
+>>> +	BUG_ON(rac->_batch_count > rac->_nr_pages);
+>>> +	rac->_nr_pages -= rac->_batch_count;
+>>> +	rac->_index += rac->_batch_count;
+>>> +	rac->_batch_count = 0;
+>>
+>>
+>> Is it intentional, to set rac->_batch_count twice (here, and below)? The
+>> only reason I can see is if a caller needs to use ->_batch_count in the
+>> "return NULL" case, which doesn't seem to come up...
 > 
-> By reducing nr_to_read, we can eliminate this check from inside the loop.
+> Ah, but it does.  Not in this patch, but the next one ...
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/readahead.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+> +       if (aops->readahead) {
+> +               aops->readahead(rac);
+> +               /* Clean up the remaining pages */
+> +               while ((page = readahead_page(rac))) {
+> +                       unlock_page(page);
+> +                       put_page(page);
+> +               }
 > 
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 07cdfbf00f4b..ace611f4bf05 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -166,8 +166,6 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		unsigned long lookahead_size)
->  {
->  	struct inode *inode = mapping->host;
-> -	struct page *page;
-> -	unsigned long end_index;	/* The last page we want to read */
->  	LIST_HEAD(page_pool);
->  	loff_t isize = i_size_read(inode);
->  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
-> @@ -179,22 +177,27 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		._nr_pages = 0,
->  	};
->  	unsigned long i;
-> +	pgoff_t end_index;	/* The last page we want to read */
->  
->  	if (isize == 0)
->  		return;
->  
-> -	end_index = ((isize - 1) >> PAGE_SHIFT);
-> +	end_index = (isize - 1) >> PAGE_SHIFT;
-> +	if (index > end_index)
-> +		return;
-> +	if (index + nr_to_read < index)
-> +		nr_to_read = ULONG_MAX - index + 1;
-> +	if (index + nr_to_read >= end_index)
-> +		nr_to_read = end_index - index + 1;
+> In the normal case, the ->readahead method will consume all the pages,
+> and we need readahead_page() to do nothing if it is called again.
+> 
+>>> +	if (!rac->_nr_pages)
+>>> +		return NULL;
+> 
+> ... admittedly I could do:
+> 
+> 	if (!rac->_nr_pages) {
+> 		rac->_batch_count = 0;
+> 		return NULL;
+> 	}
+> 
+> which might be less confusing.
 
 
-This tiny patch made me pause, because I wasn't sure at first of the exact
-intent of the lines above. Once I worked it out, it seemed like it might
-be helpful (or overkill??) to add a few hints for the reader, especially since
-there are no hints in the function's (minimal) documentation header. What
-do you think of this?
-
-	/*
-	 * If we can't read *any* pages without going past the inodes's isize
-	 * limit, give up entirely:
-	 */
-	if (index > end_index)
-		return;
-
-	/* Cap nr_to_read, in order to avoid overflowing the ULONG type: */
-	if (index + nr_to_read < index)
-		nr_to_read = ULONG_MAX - index + 1;
-
-	/* Cap nr_to_read, to avoid reading past the inode's isize limit: */
-	if (index + nr_to_read >= end_index)
-		nr_to_read = end_index - index + 1;
+Yes, that would be a nice bit of polish if you end up doing another revision for other
+reasons.
 
 
-Either way, it looks corrected written to me, so:
+> 
+>>> @@ -130,23 +129,23 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages,
+>>>  				readahead_count(rac));
+>>>  		/* Clean up the remaining pages */
+>>>  		put_pages_list(pages);
+>>> -		goto out;
+>>> -	}
+>>> -
+>>> -	for (page_idx = 0; page_idx < readahead_count(rac); page_idx++) {
+>>> -		struct page *page = lru_to_page(pages);
+>>> -		list_del(&page->lru);
+>>> -		if (!add_to_page_cache_lru(page, rac->mapping, page->index,
+>>> -				gfp))
+>>> +		rac->_index += rac->_nr_pages;
+>>> +		rac->_nr_pages = 0;
+>>> +	} else {
+>>> +		while ((page = readahead_page(rac))) {
+>>>  			aops->readpage(rac->file, page);
+>>> -		put_page(page);
+>>> +			put_page(page);
+>>> +		}
+>>>  	}
+>>>  
+>>> -out:
+>>>  	blk_finish_plug(&plug);
+>>>  
+>>>  	BUG_ON(!list_empty(pages));
+>>> -	rac->_nr_pages = 0;
+>>> +	BUG_ON(readahead_count(rac));
+>>> +
+>>> +out:
+>>> +	/* If we were called due to a conflicting page, skip over it */
+>>
+>> Tiny documentation nit: What if we were *not* called due to a conflicting page? 
+>> (And what is a "conflicting page", in this context, btw?) The next line unconditionally 
+>> moves the index ahead, so the "if" part of the comment really confuses me.
+> 
+> By the end of the series, read_pages() is called in three places:
+> 
+> 1.              if (page && !xa_is_value(page)) {
+>                         read_pages(&rac, &page_pool);
+> 
+> 2.              } else if (add_to_page_cache_lru(page, mapping, index + i,
+>                                         gfp_mask) < 0) {
+>                         put_page(page);
+>                         read_pages(&rac, &page_pool);
+> 
+> 3.      read_pages(&rac, &page_pool);
+> 
+> In the first two cases, there's an existing page in the page cache
+> (which conflicts with this readahead operation), and so we need to
+> advance index.  In the third case, we're exiting the function, so it
+> does no harm to advance index one further.
 
-    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+OK, I see. As you know, I tend toward maybe over-documenting, but what about
+adding just a *few* hints to help new readers, like this approximately (maybe
+it should be pared down):
+
+
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 9fb5f77dcf69..0dd5b09c376e 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -114,6 +114,10 @@ int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+ 
+ EXPORT_SYMBOL(read_cache_pages);
+ 
++/*
++ * Read pages into the page cache, OR skip over a page if it is already in the
++ * page cache.
++ */
+ static void read_pages(struct readahead_control *rac, struct list_head *pages)
+ {
+        const struct address_space_operations *aops = rac->mapping->a_ops;
+@@ -152,7 +156,11 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages)
+        BUG_ON(readahead_count(rac));
+ 
+ out:
+-       /* If we were called due to a conflicting page, skip over it */
++       /*
++        * This routine might have been called in order to skip over a page
++        * that is already in the page cache. And for other cases, the index is
++        * ignored by the caller. So just increment unconditionally:
++        */
+        rac->_index++;
+ }
+
+
+?
+
+> 
+>>> +		} else if (add_to_page_cache_lru(page, mapping, index + i,
+>>> +					gfp_mask) < 0) {
+>>
+>> I still think you'll want to compare against !=0, rather than < 0, here.
+> 
+> I tend to prefer < 0 when checking for an error value in case the function
+> decides to start using positive numbers to mean something.  I don't think
+> it's a particularly important preference though (after all, returning 1
+> might mean "failed, but for this weird reason rather than an errno").
+> 
+>>> +			put_page(page);
+>>> +			read_pages(&rac, &page_pool);
+>>
+>> Doing a read_pages() in the error case is because...actually, I'm not sure yet.
+>> Why do we do this? Effectively it's a retry?
+> 
+> Same as the reason we call read_pages() if we found a page in the page
+> cache earlier -- we're sending down a set of pages which are consecutive
+> in the file's address space, and now we have to skip one.  At least one ;-)
+> 
+
+Got it. Finally. :)
 
 
 thanks,
 -- 
 John Hubbard
 NVIDIA
-
->  
->  	/*
->  	 * Preallocate as many pages as we will need.
->  	 */
->  	for (i = 0; i < nr_to_read; i++) {
-> -		if (index + i > end_index)
-> -			break;
-> +		struct page *page = xa_load(&mapping->i_pages, index + i);
->  
->  		BUG_ON(index + i != rac._index + rac._nr_pages);
->  
-> -		page = xa_load(&mapping->i_pages, index + i);
->  		if (page && !xa_is_value(page)) {
->  			/*
->  			 * Page already present?  Kick off the current batch of
-> 
