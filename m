@@ -2,99 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E27168A81
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2020 00:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B5B168AA2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2020 01:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729556AbgBUXr3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Feb 2020 18:47:29 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:40300 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgBUXr3 (ORCPT
+        id S1729732AbgBVABt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Feb 2020 19:01:49 -0500
+Received: from magic.merlins.org ([209.81.13.136]:39556 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgBVABs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Feb 2020 18:47:29 -0500
-Received: by mail-qv1-f65.google.com with SMTP id q9so1747024qvu.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Feb 2020 15:47:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CfYByrcXqAl6Fj0bC6qhAGGY7OmvDD2HeDOHKtJnd8E=;
-        b=FZ3tJ/4kh4T5ZANz26bqH2s8/a7xTl2QmmwSPTXdXMj7h0exHWHRJArDuFqSAyPwwq
-         TgbwCkaIy2BGLFTSFy48p/M5gN8P7hrpUJGJpBllzGbxiOPY5xKS8X03RZiBosmbWLi8
-         8+qJPGocKmarOsk148ij0GR6QuZFvPOFE+LGJjRLHpjFzS3AHtiBW3WoPn46bXFrIfeK
-         QblnaP9cVNdiC3nr3BR8rCdoeC98VkBjwDgmRq1Mn0renUkTLF/IEqQIl1o+LurHgwYK
-         YdrYD6z4JGhL+a0Z1Adyp16OBe52n6r0Q4gWPg7K3abtST+dLL9DDasWveD4Fx0desXa
-         2ZjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CfYByrcXqAl6Fj0bC6qhAGGY7OmvDD2HeDOHKtJnd8E=;
-        b=bDRaDB/yWhFUiE0pXDh4uRSqtgJpe0xDNF3hHDvPbmPT0n8GcjoaW5KUuM4P2cUVXb
-         Qg994hr+8PNSuQts7CXltkpvC2Ixi1Zi7w5vGqyCDxzs5FJGLJ28RuVY8vj8RaKQmT86
-         0lPc6SGL7KCQFozWbsjudLenlx0Voh7CXviFtOtRIXWBhIowCIRcusEOaRLxnhWjt9KP
-         Q7G6CXiScYIPh5TD/beFd0NPnT9P4cE+2okjA6W2S1Dunqx1UpTDEtcLWVJjHIyNrY4o
-         hkSo65gsHNgTeGGXNC77aPFdhkgexl8Jt9OMgWPZA5P7J6YOCr3xHatBCVglzBKD47Hy
-         e9GQ==
-X-Gm-Message-State: APjAAAW7fwFo1C3v1Nx9Ck7ZgDNixsUt/twGbpQcCIPoAfrp9kXWVkYs
-        pGDe97DzbuYrPKYJk0yRNl+MSQ==
-X-Google-Smtp-Source: APXvYqytbGo2uXFkmckKKqALcWCkZ2xo8mLjTM0717IU4p92uxl0kDQvfKPgMNPI3HgomhSQ5x/xjw==
-X-Received: by 2002:a0c:f98a:: with SMTP id t10mr33497114qvn.144.1582328848009;
-        Fri, 21 Feb 2020 15:47:28 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::31fe])
-        by smtp.gmail.com with ESMTPSA id a128sm115004qkc.44.2020.02.21.15.47.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Feb 2020 15:47:27 -0800 (PST)
-Subject: Re: How to roll back btrfs filesystem a few revisions?
-To:     Marc MERLIN <marc@merlins.org>, Roman Mamedov <rm@romanrm.net>
-Cc:     dsterba@suse.cz, Martin Steigerwald <martin@lichtvoll.de>,
+        Fri, 21 Feb 2020 19:01:48 -0500
+Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
+        id 1j5IEo-0000gy-IK by authid <merlin>; Fri, 21 Feb 2020 16:01:42 -0800
+Date:   Fri, 21 Feb 2020 16:01:42 -0800
+From:   Marc MERLIN <marc@merlins.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Roman Mamedov <rm@romanrm.net>, dsterba@suse.cz,
+        Martin Steigerwald <martin@lichtvoll.de>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <2656316.bop9uDDU3N@merkaba> <20200219225051.39ca1082@natsu>
- <20200219153652.GA26873@merlins.org> <20200220214649.GD26873@merlins.org>
- <20200221053804.GA7869@merlins.org> <20200221104545.6335cbd1@natsu>
- <20200221230740.GQ19481@merlins.org> <20200221231738.GD11482@merlins.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5cb4781d-5580-0a8d-562b-c8bfa3def5b4@toxicpanda.com>
-Date:   Fri, 21 Feb 2020 18:47:26 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+Subject: Re: btrfs filled up dm-thin and df%: shows 8.4TB of data used when
+ I'm only using 10% of that.
+Message-ID: <20200222000142.GA31491@merlins.org>
+References: <2656316.bop9uDDU3N@merkaba>
+ <20200219225051.39ca1082@natsu>
+ <20200219153652.GA26873@merlins.org>
+ <20200220214649.GD26873@merlins.org>
+ <20200221053804.GA7869@merlins.org>
+ <20200221104545.6335cbd1@natsu>
+ <20200221230740.GQ19481@merlins.org>
+ <3e94351d-6f32-1036-ab24-0dc1b843c969@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20200221231738.GD11482@merlins.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e94351d-6f32-1036-ab24-0dc1b843c969@toxicpanda.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/21/20 6:17 PM, Marc MERLIN wrote:
-> On Fri, Feb 21, 2020 at 03:07:40PM -0800, Marc MERLIN wrote:
->> And now for extra points, this also damaged a 2nd of my filesystems on the same VG :(
->> [64723.601630] BTRFS error (device dm-17): bad tree block start, want 5782272294912 have 0
->> [64723.628708] BTRFS error (device dm-17): bad tree block start, want 5782272294912 have 0
->> [64897.028176] BTRFS error (device dm-13): parent transid verify failed on 22724608 wanted 10005 found 10001
->> [64897.080355] BTRFS error (device dm-13): parent transid verify failed on 22724608 wanted 10005 found 10001
+On Fri, Feb 21, 2020 at 06:43:45PM -0500, Josef Bacik wrote:
+> > Well, carap, see how 'used' went from 445.73GiB to 8.42TiB after balance?
 > 
-> While I'm going to destroy and recreate one of the two filesystems, the
-> other one has lots of of btrfs relationships I really don't want to lose
-> and have to re-create.
-> 
-> I'm sure it got in a bad state because it got write denied when trying
-> to write.
-> I don't care about last data written, is there a clean way to open the
-> filesystem and revert it a few revisions?
-> Basically I want
-> git reset --hard HEAD^ or HEAD^^
-> 
-> I'm ok with data loss, I just want to get back to a previous good known
-> consistent state. If I've not disabled COW (which I have not), this
-> should be possible, correct?
-> 
-> If so, how to I proceed?]
+> Wtf?  Can you do btrfs filesystem usage on that fs?  I'd like to see the
+> breakdown.  I'm super confused about what's happening there.
 
-Yeah you can try the backup roots, btrfs check -b and see if that works out? 
-Thanks,
+You and me both :)
+gargamel:/mnt/btrfs_pool2/backup/ubuntu# btrfs fi df .
+Data, single: total=8.40TiB, used=8.40TiB
+System, DUP: total=8.00MiB, used=912.00KiB
+Metadata, DUP: total=17.00GiB, used=16.33GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
 
-Josef
+Looks like used is back to 8.4TB there too.
+
+
+
+> > And now for extra points, this also damaged a 2nd of my filesystems on the same VG :(
+> > [64723.601630] BTRFS error (device dm-17): bad tree block start, want 5782272294912 have 0
+> > [64723.628708] BTRFS error (device dm-17): bad tree block start, want 5782272294912 have 0
+> > [64897.028176] BTRFS error (device dm-13): parent transid verify failed on 22724608 wanted 10005 found 10001
+> > [64897.080355] BTRFS error (device dm-13): parent transid verify failed on 22724608 wanted 10005 found 10001
+> 
+> This will happen if the transaction aborts, does it still happen after you
+> unmount and remount?  Thanks,
+
+the problematic filesystem mounts fine, but that doesn't mean it's
+clean. 
+the one that I'd like very much not to be damaged, I'm not touching it
+until I can get my VG back to having it's 50% of free space it needs to
+have, with 99.9x%, it's not safe to use anything on it.
+But thanks for the heads up that my other filesystem may be ok. I'll run
+a btrfs check on it later when it's safe.
+
+Back to dm-13, it's now hung on umount, I'm getting a string of these:
+[67980.657803] BTRFS info (device dm-13): the free space cache file (4344624709632) is invalid, skip it
+[67991.562812] BTRFS info (device dm-13): the free space cache file (4447703924736) is invalid, skip it
+[67991.755262] BTRFS info (device dm-13): the free space cache file (4448777666560) is invalid, skip it
+[68000.379059] BTRFS info (device dm-13): the free space cache file (4518570885120) is invalid, skip it
+[68013.462077] BTRFS info (device dm-13): the free space cache file (4574405459968) is invalid, skip it
+[68015.286730] BTRFS info (device dm-13): the free space cache file (4589437845504) is invalid, skip it
+[68015.318239] BTRFS info (device dm-13): the free space cache file (4589437845504) is invalid, skip it
+[68016.212246] BTRFS info (device dm-13): the free space cache file (4596954038272) is invalid, skip it
+[68016.730826] BTRFS info (device dm-13): the free space cache file (4602322747392) is invalid, skip it
+[68020.547135] BTRFS info (device dm-13): the free space cache file (4634535002112) is invalid, skip it
+[68021.812820] BTRFS info (device dm-13): the free space cache file (4646346162176) is invalid, skip it
+[68037.173441] BTRFS info (device dm-13): the free space cache file (4768752730112) is invalid, skip it
+[68039.559383] BTRFS info (device dm-13): the free space cache file (4778416406528) is invalid, skip it
+[68040.531083] BTRFS info (device dm-13): the free space cache file (4781637632000) is invalid, skip it
+[68050.184300] BTRFS info (device dm-13): the free space cache file (4843914657792) is invalid, skip it
+[68074.134080] BTRFS info (device dm-13): the free space cache file (4988869804032) is invalid, skip it
+[68078.943126] BTRFS info (device dm-13): the free space cache file (5015713349632) is invalid, skip it
+[68099.512978] BTRFS info (device dm-13): the free space cache file (5151004819456) is invalid, skip it
+[68100.575692] BTRFS info (device dm-13): the free space cache file (5160668495872) is invalid, skip it
+[68100.689222] BTRFS info (device dm-13): the free space cache file (5161742237696) is invalid, skip it
+
+I knew that filling up a btrfs filesystem was bad, but filling it the
+normal way makes it slow down enough that you usually know and fix it.
+Filling it by having an underlying dm-thin deny writes, is much worse (I expected
+it wouldn't be pretty though, which is why I had a cronjob to catch this before it
+happened, but I missed it due to the df bug).
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
