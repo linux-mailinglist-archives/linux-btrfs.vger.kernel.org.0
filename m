@@ -2,159 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F7A168B29
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2020 01:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4D3168B52
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Feb 2020 02:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgBVApI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Feb 2020 19:45:08 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57560 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgBVApI (ORCPT
+        id S1726852AbgBVBAo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Feb 2020 20:00:44 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:46282 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgBVBAn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Feb 2020 19:45:08 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01M0iXKo069490;
-        Sat, 22 Feb 2020 00:44:33 GMT
+        Fri, 21 Feb 2020 20:00:43 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01M0wwHb129568;
+        Sat, 22 Feb 2020 01:00:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2020-01-29;
- bh=RJWVxIQBtpVgLNZnOCgy+9DNBRETFyaw+B0IqQ80Smk=;
- b=nN7Sv9aAp1H5VNNHgY3l0Y8a6GkUkVAQwxYCK7nBY3u4+U0MhiP8X5I4zx8YknXK7zVO
- kSiV7uX0W1ht1ti0UCfB9WMesmmPQQNYMgrjYAKzWbu9+zDyk1QLFzxk2eXMBu12OgOb
- IK11lZpex2Vs79Mc9GOI67PGIte05b1FhvOddV/Hmp6TCKu+/8YmKr57C9gshxW+71eS
- k9YCRmVeiiMcdml+G/0dXbBKhQpDRF4Jb5reMrmO6oBEKdRiXFUaNCeG2SoUS7s1lCC0
- vObNA+f+EtvbzMBjjuEOJkL0chWUualvFuiinduRft/uSF2RD+r78eE7lIG3Vpw6kQnj OA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2y8udkuk25-1
+ bh=VcOdDrdgp6sTa2C/PE8UFkKJ4XmWQi4h4q5KM+wvorQ=;
+ b=Qw9/5EygXyPqZTaT1/YntEwofNrMw4v86w6icv8lCqeyY+8kexnyOFb7+8XLTT1hyWWJ
+ tEEQxaNC0+/AWCv8NKpg0xnsAIwKPe5Pu8cyP1sB66hBY/h4m/euRaClgUVYzuBmpgs8
+ 1tJLQrIvuEeN9AeNQD3tE00eUTYUJoQDicvqX6hlwrP2i4OqShE5zpGZxrDPiOK0/w3Q
+ Ju1O2Zc2cdfyIH1Mw2INeYU+ooi8ekwGDOxhgP/e443KVEtqp81ZRwjQkyilp18I5+Az
+ SEQRfVIjVNGt2OwZZmRFTo5xmlZjCSjSg7XjD2+k4ub0ZEx3yaV87SMBmUKXlWuUsDC7 4Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2y8uddkkxh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 Feb 2020 00:44:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01M0h54Z146709;
-        Sat, 22 Feb 2020 00:44:33 GMT
+        Sat, 22 Feb 2020 01:00:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01M0wAGX166595;
+        Sat, 22 Feb 2020 01:00:16 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2y8udg8m3c-1
+        by aserp3020.oracle.com with ESMTP id 2y8udrmdde-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 22 Feb 2020 00:44:33 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01M0iWwv149129;
-        Sat, 22 Feb 2020 00:44:32 GMT
+        Sat, 22 Feb 2020 01:00:16 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01M10Gmj170782;
+        Sat, 22 Feb 2020 01:00:16 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2y8udg8m32-1
+        by aserp3020.oracle.com with ESMTP id 2y8udrmdb3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 Feb 2020 00:44:32 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01M0iRp8021588;
-        Sat, 22 Feb 2020 00:44:27 GMT
+        Sat, 22 Feb 2020 01:00:16 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01M10Ft2027686;
+        Sat, 22 Feb 2020 01:00:15 GMT
 Received: from localhost (/10.145.179.117)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 21 Feb 2020 16:44:27 -0800
-Date:   Fri, 21 Feb 2020 16:44:25 -0800
+        with ESMTP ; Fri, 21 Feb 2020 17:00:15 -0800
+Date:   Fri, 21 Feb 2020 17:00:13 -0800
 From:   "Darrick J. Wong" <darrick.wong@oracle.com>
 To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
         linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
         ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 21/24] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200222004425.GG9506@magnolia>
+Subject: Re: [PATCH v7 22/24] iomap: Convert from readpages to readahead
+Message-ID: <20200222010013.GH9506@magnolia>
 References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-22-willy@infradead.org>
+ <20200219210103.32400-23-willy@infradead.org>
+ <20200220154912.GC19577@infradead.org>
+ <20200220165734.GZ24185@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200219210103.32400-22-willy@infradead.org>
+In-Reply-To: <20200220165734.GZ24185@bombadil.infradead.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9538 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 adultscore=0 mlxscore=0 clxscore=1011
- malwarescore=0 mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002220001
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002220003
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 01:01:00PM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Thu, Feb 20, 2020 at 08:57:34AM -0800, Matthew Wilcox wrote:
+> On Thu, Feb 20, 2020 at 07:49:12AM -0800, Christoph Hellwig wrote:
+> > > +/**
+> > > + * iomap_readahead - Attempt to read pages from a file.
+> > > + * @rac: Describes the pages to be read.
+> > > + * @ops: The operations vector for the filesystem.
+> > > + *
+> > > + * This function is for filesystems to call to implement their readahead
+> > > + * address_space operation.
+> > > + *
+> > > + * Context: The file is pinned by the caller, and the pages to be read are
+> > > + * all locked and have an elevated refcount.  This function will unlock
+> > > + * the pages (once I/O has completed on them, or I/O has been determined to
+> > > + * not be necessary).  It will also decrease the refcount once the pages
+> > > + * have been submitted for I/O.  After this point, the page may be removed
+> > > + * from the page cache, and should not be referenced.
+> > > + */
+> > 
+> > Isn't the context documentation something that belongs into the aop
+> > documentation?  I've never really seen the value of duplicating this
+> > information in method instances, as it is just bound to be out of date
+> > rather sooner than later.
 > 
-> By putting the 'have we reached the end of the page' condition at the end
-> of the loop instead of the beginning, we can remove the 'submit the last
-> page' code from iomap_readpages().  Also check that iomap_readpage_actor()
-> didn't return 0, which would lead to an endless loop.
+> I'm in two minds about it as well.  There's definitely no value in
+> providing kernel-doc for implementations of a common interface ... so
+> rather than fixing the nilfs2 kernel-doc, I just deleted it.  But this
+> isn't just the implementation, like nilfs2_readahead() is, it's a library
+> function for filesystems to call, so it deserves documentation.  On the
+> other hand, there's no real thought to this on the part of the filesystem;
+> the implementation just calls this with the appropriate ops pointer.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/iomap/buffered-io.c | 32 ++++++++++++++++++--------------
->  1 file changed, 18 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index cb3511eb152a..31899e6cb0f8 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -400,15 +400,9 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
->  		void *data, struct iomap *iomap, struct iomap *srcmap)
->  {
->  	struct iomap_readpage_ctx *ctx = data;
-> -	loff_t done, ret;
-> -
-> -	for (done = 0; done < length; done += ret) {
-> -		if (ctx->cur_page && offset_in_page(pos + done) == 0) {
-> -			if (!ctx->cur_page_in_bio)
-> -				unlock_page(ctx->cur_page);
-> -			put_page(ctx->cur_page);
-> -			ctx->cur_page = NULL;
-> -		}
-> +	loff_t ret, done = 0;
-> +
-> +	while (done < length) {
->  		if (!ctx->cur_page) {
->  			ctx->cur_page = iomap_next_page(inode, ctx->pages,
->  					pos, length, &done);
-> @@ -418,6 +412,20 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
->  		}
->  		ret = iomap_readpage_actor(inode, pos + done, length - done,
->  				ctx, iomap, srcmap);
-> +		done += ret;
-> +
-> +		/* Keep working on a partial page */
-> +		if (ret && offset_in_page(pos + done))
-> +			continue;
-> +
-> +		if (!ctx->cur_page_in_bio)
-> +			unlock_page(ctx->cur_page);
-> +		put_page(ctx->cur_page);
-> +		ctx->cur_page = NULL;
-> +
-> +		/* Don't loop forever if we made no progress */
-> +		if (WARN_ON(!ret))
-> +			break;
->  	}
->  
->  	return done;
-> @@ -451,11 +459,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
->  done:
->  	if (ctx.bio)
->  		submit_bio(ctx.bio);
-> -	if (ctx.cur_page) {
-> -		if (!ctx.cur_page_in_bio)
-> -			unlock_page(ctx.cur_page);
-> -		put_page(ctx.cur_page);
-> -	}
-> +	BUG_ON(ctx.cur_page);
+> Then again, I kind of feel like we need more documentation of iomap to
+> help filesystems convert to using it.  But maybe kernel-doc isn't the
+> mechanism to provide that.
 
-Whoah, is the system totally unrecoverably hosed at this point?
+I think we need more documentation of the parts of iomap where it can
+call back into the filesystem (looking at you, iomap_dio_ops).
 
-I get that this /shouldn't/ happen, but should we somehow end up with a
-page here, are we unable either to release it or even just leak it?  I'd
-have thought a WARN_ON would be just fine here.
+I'm not opposed to letting this comment stay, though I don't see it as
+all that necessary since iomap_readahead implements a callout that's
+documented in vfs.rst and is thus subject to all the constraints listed
+in the (*readahead) documentation.
 
 --D
-
->  
->  	/*
->  	 * Check that we didn't lose a page due to the arcance calling
-> -- 
-> 2.25.0
-> 
