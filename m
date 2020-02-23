@@ -2,92 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D513E169AE7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 00:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5C3169AEE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 00:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbgBWXR6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Feb 2020 18:17:58 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42759 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbgBWXR5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Feb 2020 18:17:57 -0500
-Received: by mail-wr1-f67.google.com with SMTP id p18so4599902wre.9;
-        Sun, 23 Feb 2020 15:17:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XOWxBzMu1Tr1kESKNK3MjAE/ivG0oS+MP+wwV4gJaxc=;
-        b=LYlWMx6tQnhBnK+RPyBuYSnK7VJCHTCJsBHxoBOJPGHciR2FtHRWkllVAllTKe+TPt
-         rH7GUEkBVCVxgBirrDS/pOwYPiXcNNriCE0YJUWqeiZT1yBKbTgM6AF2ftsgv+pJ3fNL
-         Q84mWTwNNY/O0Dve4U/8lgd6pvOVlOQc78G93y4zjDUBr/uLlTD9uRdN+rI44wbX6CuV
-         Yr+iLtooO6U4OgILxuMjPPstHVG+83FVfPUyrjUte/wnGWt+Ey1Zf6B/CiyrhKa2eYAe
-         u7J4G4Zc8yQGD9xvbXPsurj8Pujjum+Z5Njaz5/Odz2tjdKzGaPw5QmwdCLguQUoTWtz
-         c5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XOWxBzMu1Tr1kESKNK3MjAE/ivG0oS+MP+wwV4gJaxc=;
-        b=nZlKVGejli2ObnD3JjIthmNtMeWcWtxSngRnSVHqyr5lF96+7MWypG1GV+Z5ZW82x9
-         DY/+/gwF5jb+lUEsg0BlotuXkvROGM5Ag4ioadtooaYbdGJA4wAusq1cFqEJX5xeckpi
-         Pr8H3l56FBvS06eFIEe19m/NuloHA03/jhj1bcwdAJ09e73YF3YnRZcWbMnv+IPbaSfD
-         INIfOtSmx+OmPy2KWjBq5eM6wRB7AxspWETbjufm4HP3A9sjjkhTOtVau8Gxl/CPILTc
-         9aIemTSl28WF06P5aAOMY4765I7Q/vuwF/RZiJIO3dxo216n4YlJ8gZSiKwPXqzilNnn
-         QKvg==
-X-Gm-Message-State: APjAAAWTfGj4q2/h/TCQTj58HANm3eWGDfuDzmc6rYTPpFIpIx6gZViv
-        QDTDlFawCucgNTFMf0W7c+vyhf245A==
-X-Google-Smtp-Source: APXvYqybPH8c6FwwdT6e/hCdRCrsRHzwMpD1UH8pFx2wVbI2R83W06aNfH89fPPDVGd/0uDAoI3Ptw==
-X-Received: by 2002:adf:e4ca:: with SMTP id v10mr186452wrm.305.1582499874397;
-        Sun, 23 Feb 2020 15:17:54 -0800 (PST)
-Received: from ninjahost.lan (host-2-102-13-223.as13285.net. [2.102.13.223])
-        by smtp.googlemail.com with ESMTPSA id q6sm8968203wrf.67.2020.02.23.15.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2020 15:17:54 -0800 (PST)
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     boqun.feng@gmail.com
-Cc:     jbi.octave@gmail.com, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        id S1727133AbgBWX1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Feb 2020 18:27:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726534AbgBWX1q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 23 Feb 2020 18:27:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 12A82AC42;
+        Sun, 23 Feb 2020 23:27:43 +0000 (UTC)
+Subject: Re: [PATCH 01/30] btrfs: Add missing annotation for
+ release_extent_buffer()
+To:     Jules Irenge <jbi.octave@gmail.com>, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM)
-Subject: [PATCH 01/30] btrfs: Add missing annotation for release_extent_buffer()
-Date:   Sun, 23 Feb 2020 23:16:42 +0000
-Message-Id: <20200223231711.157699-2-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200223231711.157699-1-jbi.octave@gmail.com>
-References: <0/30>
- <20200223231711.157699-1-jbi.octave@gmail.com>
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>
+References: <0/30> <20200223231711.157699-1-jbi.octave@gmail.com>
+ <20200223231711.157699-2-jbi.octave@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9d5abcb3-dd57-c9e6-33c1-f883e8d364c4@suse.com>
+Date:   Mon, 24 Feb 2020 01:27:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200223231711.157699-2-jbi.octave@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sparse reports a warning at release_extent_buffer()
-warning: context imbalance in release_extent_buffer() - unexpected unlock
 
-The root cause is the missing annotation at release_extent_buffer()
-Add the missing __releases(&eb->refs_lock) annotation
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- fs/btrfs/extent_io.c | 1 +
- 1 file changed, 1 insertion(+)
+On 24.02.20 г. 1:16 ч., Jules Irenge wrote:
+> Sparse reports a warning at release_extent_buffer()
+> warning: context imbalance in release_extent_buffer() - unexpected unlock
+> 
+> The root cause is the missing annotation at release_extent_buffer()
+> Add the missing __releases(&eb->refs_lock) annotation
+> 
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c0f202741e09..8b6d6893e7a7 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5230,6 +5230,7 @@ static inline void btrfs_release_extent_buffer_rcu(struct rcu_head *head)
- }
- 
- static int release_extent_buffer(struct extent_buffer *eb)
-+	__releases(&eb->refs_lock)
- {
- 	lockdep_assert_held(&eb->refs_lock);
- 
--- 
-2.24.1
-
+ Reviewed-by: Nikolay Borisov <nborisov@suse.com>
