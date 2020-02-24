@@ -2,76 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C9C16B35F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 22:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC5116B367
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 22:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgBXV4I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 16:56:08 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35708 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727421AbgBXV4H (ORCPT
+        id S1728022AbgBXV5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 16:57:44 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:41384 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727421AbgBXV5n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 16:56:07 -0500
-Received: from callcc.thunk.org ([4.28.11.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01OLu1MZ030221
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Feb 2020 16:56:02 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9D0924211EF; Mon, 24 Feb 2020 16:56:00 -0500 (EST)
-Date:   Mon, 24 Feb 2020 16:56:00 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs: sleeping function called from invalid context
-Message-ID: <20200224215600.GB6688@mit.edu>
-References: <20200223234246.GA1208467@mit.edu>
- <0c0fa96f-60d6-6a66-3542-d78763bbe269@suse.com>
- <20200224064605.GA1258811@mit.edu>
- <CAL3q7H4-edAwsSc0Z+dYVzphm6-D1BjvToywL0A2v6unsCCtyg@mail.gmail.com>
+        Mon, 24 Feb 2020 16:57:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IhFcixf6xB7flTgkTYeOnbWlEpWZuV6CKSy7ZQez0WI=; b=Xsl1VicGy/cUMy3nKSfLYsp4JQ
+        XuauTs+SlYeSgQlRLvumnWjOr2cplAYv962X+iwgIS1cxx+dgzmOltxe84qM829HlpGa7tIVs0rCR
+        UHY9vePWsKoMCOJwVPvOJVEDVFCToUF9yNOI+tB8g0de/RYeV2SMFMNQdVuKQtuM7NwbEbskf1eLg
+        dUXO0x+mn96sZpwZlnDzQxbegLQ/KMtN7w/7oKgd1oDm9ELzK0l9J7YruyW3Oz774Ix0HS0VLNMdY
+        vEye7QuENdlHLI1W4ae0sgNhwCA9TIm6YccKAq+w4+qAYpIVZfjL3mSg7AgI6bRAZf2eZBA7qbemA
+        dCabWfIw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j6LjT-0006S8-Ch; Mon, 24 Feb 2020 21:57:43 +0000
+Date:   Mon, 24 Feb 2020 13:57:43 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v7 14/24] btrfs: Convert from readpages to readahead
+Message-ID: <20200224215743.GA24044@infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-15-willy@infradead.org>
+ <SN4PR0401MB35987D7B76007B93B1C5CE5E9B130@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200220134849.GV24185@bombadil.infradead.org>
+ <20200220154658.GA19577@infradead.org>
+ <20200220155452.GX24185@bombadil.infradead.org>
+ <20200220155727.GA32232@infradead.org>
+ <20200224214347.GH13895@infradead.org>
+ <20200224215414.GR24185@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H4-edAwsSc0Z+dYVzphm6-D1BjvToywL0A2v6unsCCtyg@mail.gmail.com>
+In-Reply-To: <20200224215414.GR24185@bombadil.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 10:14:06AM +0000, Filipe Manana wrote:
-> We do have some tests that fail in any kernel release so far. Some
-> because the corresponding fixes are not yet merged or some fail often
-> due to known problems.
-> Looking at your list of failure, I see some that shouldn't be failing
-> like btrfs/053.
+On Mon, Feb 24, 2020 at 01:54:14PM -0800, Matthew Wilcox wrote:
+> > First I think the implicit ARRAY_SIZE in readahead_page_batch is highly
+> > dangerous, as it will do the wrong thing when passing a pointer or
+> > function argument.
+> 
+> somebody already thought of that ;-)
+> 
+> #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
 
-I've sent you the compressed tarfile with the test artifacts under
-separate cover.  The files that you'll probably want to look at first
-are ./runtests.log and ./syslog.  The xfstests results artifacts will
-be in ./btrfs/results-default/.
-
-If you have a wiki page or some other pointer of what tests that you
-expect to fail, I can put them into a btrfs-specific or file system
-configuration specific exclude file.  For example, see [1] and [2].
-
-[1] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-appliance/files/root/fs/ext4/exclude
-[2] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/bigalloc.exclude
-
-I'm planning on running btrfs and xfs tests more frequently to support
-some $WORK initiatives.  So if there are tests which are known
-failures that would be good for me to suppress, and if there are some
-file system configurations that would be useful for me to run, please
-let me know and I'm happy to set them so that gce-xfstests and
-kvm-xfstests can better test btrfs.
-
-Also, I assume you do have some btrfs developers who are regularly
-running xfstests, so I don't know how helpful this would be to you,
-but given that I'm going to be running the tests *anyway*, if it would
-be helpful for me to forward test results to you, or to only send you
-a note when test regressions show up, I'm happy to do that.
-
-Cheers,
-
-					- Ted
+Ok.  Still find it pretty weird to design a primary interface that
+just works with an array type.
