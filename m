@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 017D816AA07
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 16:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4FE16AA23
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 16:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgBXP0p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 10:26:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49004 "EHLO mx2.suse.de"
+        id S1727693AbgBXPcW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 10:32:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51036 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727670AbgBXP0o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 10:26:44 -0500
+        id S1727498AbgBXPcW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Feb 2020 10:32:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0F051AE24;
-        Mon, 24 Feb 2020 15:26:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A13A5ADBE;
+        Mon, 24 Feb 2020 15:32:20 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 2/2] btrfs: Hook btrfs' DRW lock to locktorture infrastructure
-Date:   Mon, 24 Feb 2020 17:26:37 +0200
-Message-Id: <20200224152637.30774-3-nborisov@suse.com>
+Subject: [PATCH 1/2] btrfs: Implement DRW lock
+Date:   Mon, 24 Feb 2020 17:32:18 +0200
+Message-Id: <20200224153218.31304-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200224152637.30774-1-nborisov@suse.com>
 References: <20200224152637.30774-1-nborisov@suse.com>
@@ -29,188 +29,174 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
+to have multiple readers or multiple writers but not multiple readers
+and writers holding it concurrently. The code is factored out from
+the existing open-coded locking scheme used to exclude pending
+snapshots from nocow writers and vice-versa. Current implementation
+actually favors Readers (that is snapshot creaters) to writers (nocow
+writers of the filesystem).
+
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/locking.c           |  5 +++
- fs/btrfs/locking.h           |  1 +
- kernel/locking/locktorture.c | 77 +++++++++++++++++++++++++++++++++++-
- 3 files changed, 82 insertions(+), 1 deletion(-)
+ fs/btrfs/ctree.h   |  1 +
+ fs/btrfs/locking.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/locking.h | 21 +++++++++++
+ 3 files changed, 112 insertions(+)
 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index ad275d06e95f..efc2cd147141 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -33,6 +33,7 @@
+ #include "extent_map.h"
+ #include "async-thread.h"
+ #include "block-rsv.h"
++#include "locking.h"
+ 
+ struct btrfs_trans_handle;
+ struct btrfs_transaction;
 diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-index d890833694c9..e7645f3fd9cd 100644
+index e713900f96b6..d890833694c9 100644
 --- a/fs/btrfs/locking.c
 +++ b/fs/btrfs/locking.c
-@@ -614,6 +614,7 @@ bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock)
- 
- 	return true;
- }
-+EXPORT_SYMBOL(btrfs_drw_try_write_lock);
- 
- void btrfs_drw_write_lock(struct btrfs_drw_lock *lock)
- {
-@@ -623,12 +624,14 @@ void btrfs_drw_write_lock(struct btrfs_drw_lock *lock)
- 		wait_event(lock->pending_writers, !atomic_read(&lock->readers));
+@@ -565,3 +565,93 @@ struct extent_buffer *btrfs_read_lock_root_node(struct btrfs_root *root)
  	}
+ 	return eb;
  }
-+EXPORT_SYMBOL(btrfs_drw_write_lock);
- 
- void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock)
- {
- 	percpu_counter_dec(&lock->writers);
- 	cond_wake_up(&lock->pending_readers);
- }
-+EXPORT_SYMBOL(btrfs_drw_write_unlock);
- 
- void btrfs_drw_read_lock(struct btrfs_drw_lock *lock)
- {
-@@ -645,6 +648,7 @@ void btrfs_drw_read_lock(struct btrfs_drw_lock *lock)
- 	wait_event(lock->pending_readers,
- 		   percpu_counter_sum(&lock->writers) == 0);
- }
-+EXPORT_SYMBOL(btrfs_drw_read_lock);
- 
- void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock)
- {
-@@ -655,3 +659,4 @@ void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock)
- 	if (atomic_dec_and_test(&lock->readers))
- 		wake_up(&lock->pending_writers);
- }
-+EXPORT_SYMBOL(btrfs_drw_read_unlock);
++
++/*
++ * DRW stands for double-reader-writer lock. It's used in situation where you
++ * want to provide A-B exclusion but not AA or BB. Currently implementation
++ * gives more priority to reader. If a reader and a writer both race to acquire
++ * their respective sides of the lock the writer would yield its lock as soon as
++ * it detects a concurrent reader. Additionally if there are pending readers no
++ * new writers would be allowed to come in and acquire the lock.
++ */
++int btrfs_drw_lock_init(struct btrfs_drw_lock *lock)
++{
++	int ret;
++
++	ret = percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
++	if (ret)
++		return ret;
++
++	atomic_set(&lock->readers, 0);
++	init_waitqueue_head(&lock->pending_readers);
++	init_waitqueue_head(&lock->pending_writers);
++
++	return 0;
++}
++
++void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock)
++{
++	percpu_counter_destroy(&lock->writers);
++}
++
++/* Return true if acquisition is successful, false otherwise */
++bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock)
++{
++	if (atomic_read(&lock->readers))
++		return false;
++
++	percpu_counter_inc(&lock->writers);
++
++	/*
++	 * Ensure writers count is updated before we check for
++	 * pending readers
++	 */
++	smp_mb();
++	if (atomic_read(&lock->readers)) {
++		btrfs_drw_write_unlock(lock);
++		return false;
++	}
++
++	return true;
++}
++
++void btrfs_drw_write_lock(struct btrfs_drw_lock *lock)
++{
++	while (true) {
++		if (btrfs_drw_try_write_lock(lock))
++			return;
++		wait_event(lock->pending_writers, !atomic_read(&lock->readers));
++	}
++}
++
++void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock)
++{
++	percpu_counter_dec(&lock->writers);
++	cond_wake_up(&lock->pending_readers);
++}
++
++void btrfs_drw_read_lock(struct btrfs_drw_lock *lock)
++{
++	atomic_inc(&lock->readers);
++
++	/*
++	 * Ensure the pending reader count is perceieved BEFORE this reader
++	 * goes to sleep in case of active writers. This guarantees new writers
++	 * won't be allowed and that the current reader will be woken up when
++	 * the last active writer finishes its jobs.
++	 */
++	smp_mb__after_atomic();
++
++	wait_event(lock->pending_readers,
++		   percpu_counter_sum(&lock->writers) == 0);
++}
++
++void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock)
++{
++	/*
++	 * atomic_dec_and_test implies a full barrier, so woken up writers
++	 * are guaranteed to see the decrement
++	 */
++	if (atomic_dec_and_test(&lock->readers))
++		wake_up(&lock->pending_writers);
++}
 diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index ba60318c53d5..c56b0cf59357 100644
+index 21a285883e89..ba60318c53d5 100644
 --- a/fs/btrfs/locking.h
 +++ b/fs/btrfs/locking.h
-@@ -10,6 +10,7 @@
- #include <linux/atomic.h>
- #include <linux/wait.h>
- #include <linux/percpu_counter.h>
-+#include "extent_io.h"
+@@ -7,12 +7,17 @@
+ #define BTRFS_LOCKING_H
+ 
+ #include "extent_io.h"
++#include <linux/atomic.h>
++#include <linux/wait.h>
++#include <linux/percpu_counter.h>
  
  #define BTRFS_WRITE_LOCK 1
  #define BTRFS_READ_LOCK 2
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 99475a66c94f..921afbd58fff 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -29,6 +29,8 @@
- #include <linux/slab.h>
- #include <linux/percpu-rwsem.h>
- #include <linux/torture.h>
-+#include "../../fs/btrfs/ctree.h"
-+#include "../../fs/btrfs/locking.h"
+ #define BTRFS_WRITE_LOCK_BLOCKING 3
+ #define BTRFS_READ_LOCK_BLOCKING 4
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
-@@ -84,6 +86,7 @@ struct lock_torture_ops {
++struct btrfs_path;
++
+ void btrfs_tree_lock(struct extent_buffer *eb);
+ void btrfs_tree_unlock(struct extent_buffer *eb);
  
- 	unsigned long flags; /* for irq spinlocks */
- 	const char *name;
-+	bool multiple;
- };
- 
- struct lock_torture_cxt {
-@@ -599,6 +602,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
- 	percpu_up_read(&pcpu_rwsem);
+@@ -48,4 +53,20 @@ static inline void btrfs_tree_unlock_rw(struct extent_buffer *eb, int rw)
+ 		BUG();
  }
  
 +
- static struct lock_torture_ops percpu_rwsem_lock_ops = {
- 	.init		= torture_percpu_rwsem_init,
- 	.writelock	= torture_percpu_rwsem_down_write,
-@@ -611,6 +615,76 @@ static struct lock_torture_ops percpu_rwsem_lock_ops = {
- 	.name		= "percpu_rwsem_lock"
- };
- 
-+static struct btrfs_drw_lock torture_drw_lock;
-+
-+void torture_drw_init(void)
-+{
-+	BUG_ON(btrfs_drw_lock_init(&torture_drw_lock));
-+}
-+
-+static int torture_drw_write_lock(void) __acquires(torture_drw_lock)
-+{
-+	btrfs_drw_write_lock(&torture_drw_lock);
-+	return 0;
-+}
-+
-+static void torture_drw_write_unlock(void) __releases(torture_drw_lock)
-+{
-+	btrfs_drw_write_unlock(&torture_drw_lock);
-+}
-+
-+static int torture_drw_read_lock(void) __acquires(torture_drw_lock)
-+{
-+	btrfs_drw_read_lock(&torture_drw_lock);
-+	return 0;
-+}
-+
-+static void torture_drw_read_unlock(void) __releases(torture_drw_lock)
-+{
-+	btrfs_drw_read_unlock(&torture_drw_lock);
-+}
-+
-+static void torture_drw_write_delay(struct torture_random_state *trsp)
-+{
-+	const unsigned long longdelay_ms = 100;
-+
-+	/* We want a long delay occasionally to force massive contention.  */
-+	if (!(torture_random(trsp) %
-+	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-+		mdelay(longdelay_ms * 10);
-+	else
-+		mdelay(longdelay_ms / 10);
-+	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-+		torture_preempt_schedule();  /* Allow test to be preempted. */
-+}
-+
-+static void torture_drw_read_delay(struct torture_random_state *trsp)
-+{
-+	const unsigned long longdelay_ms = 100;
-+
-+	/* We want a long delay occasionally to force massive contention.  */
-+	if (!(torture_random(trsp) %
-+	      (cxt.nrealreaders_stress * 2000 * longdelay_ms)))
-+		mdelay(longdelay_ms * 2);
-+	else
-+		mdelay(longdelay_ms / 2);
-+	if (!(torture_random(trsp) % (cxt.nrealreaders_stress * 20000)))
-+		torture_preempt_schedule();  /* Allow test to be preempted. */
-+}
-+
-+static struct lock_torture_ops btrfs_drw_lock_ops = {
-+	.init		= torture_drw_init,
-+	.writelock	= torture_drw_write_lock,
-+	.write_delay	= torture_drw_write_delay,
-+	.task_boost     = torture_boost_dummy,
-+	.writeunlock	= torture_drw_write_unlock,
-+	.readlock       = torture_drw_read_lock,
-+	.read_delay     = torture_drw_read_delay, /* figure what to do with this */
-+	.readunlock     = torture_drw_read_unlock,
-+	.multiple = true,
-+	.name		= "btrfs_drw_lock"
++struct btrfs_drw_lock {
++	atomic_t readers;
++	struct percpu_counter writers;
++	wait_queue_head_t pending_writers;
++	wait_queue_head_t pending_readers;
 +};
 +
- /*
-  * Lock torture writer kthread.  Repeatedly acquires and releases
-  * the lock, checking for duplicate acquisitions.
-@@ -629,7 +703,7 @@ static int lock_torture_writer(void *arg)
- 
- 		cxt.cur_ops->task_boost(&rand);
- 		cxt.cur_ops->writelock();
--		if (WARN_ON_ONCE(lock_is_write_held))
-+		if (!cxt.cur_ops->multiple && WARN_ON_ONCE(lock_is_write_held))
- 			lwsp->n_lock_fail++;
- 		lock_is_write_held = 1;
- 		if (WARN_ON_ONCE(lock_is_read_held))
-@@ -851,6 +925,7 @@ static int __init lock_torture_init(void)
++int btrfs_drw_lock_init(struct btrfs_drw_lock *lock);
++void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock);
++void btrfs_drw_write_lock(struct btrfs_drw_lock *lock);
++bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock);
++void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock);
++void btrfs_drw_read_lock(struct btrfs_drw_lock *lock);
++void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock);
++
  #endif
- 		&rwsem_lock_ops,
- 		&percpu_rwsem_lock_ops,
-+		&btrfs_drw_lock_ops
- 	};
- 
- 	if (!torture_init_begin(torture_type, verbose))
 -- 
 2.17.1
 
