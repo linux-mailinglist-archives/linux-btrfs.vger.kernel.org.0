@@ -2,96 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2E7169EBC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 07:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EE316A2EB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 10:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgBXGqR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 01:46:17 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32852 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726452AbgBXGqQ (ORCPT
+        id S1726687AbgBXJpR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 04:45:17 -0500
+Received: from mail.render-wahnsinn.de ([176.9.37.177]:32816 "EHLO
+        mail.render-wahnsinn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgBXJpR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 01:46:16 -0500
-Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01O6k6hK015170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Feb 2020 01:46:07 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 99E9D4211EF; Mon, 24 Feb 2020 01:46:05 -0500 (EST)
-Date:   Mon, 24 Feb 2020 01:46:05 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: btrfs: sleeping function called from invalid context
-Message-ID: <20200224064605.GA1258811@mit.edu>
-References: <20200223234246.GA1208467@mit.edu>
- <0c0fa96f-60d6-6a66-3542-d78763bbe269@suse.com>
+        Mon, 24 Feb 2020 04:45:17 -0500
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Feb 2020 04:45:16 EST
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 506247C330
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2020 10:39:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
+        s=dkim; t=1582537175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DOWv6eli4jN1Y3vktXMQWxYpq5Uy0lOvzBvMArtjqiA=;
+        b=KEtZofM9eOd+jjTtgfoz0t8xmn7cNwBS6HpMxwYrWaglDMJui/UXhhLk8VfwVqfucgezKa
+        n6Y/Mu5uiiO8Ir1ZsQoxUuUyuM5VQ3zltNztjcfbpHVTut1RHRQZ5gaf0qevrKGMZ7lJ58
+        d02m36Q9JfGoUOpHJSM6AHyrXPMrVMxMfYM9WDTWXJrW/DK6yLXjm90s+hs6aM32FHhFDX
+        KOUQWeaR7tOHFckSid4xFmgGRN4hz2SeRIqwKyZ1r45cI6jkrL1fF/UVH5ZVH4VR2vQMeN
+        s7Kn7BhQo9b+o50fCgQt01C3ahf5miPSy7iIxkFJYT/ljZkG6vyHgDwdIBcPNQ==
+Message-ID: <e476b0aec351754b3cd72ed7d9135a6900f57554.camel@render-wahnsinn.de>
+Subject: scrub resume after suspend not working
+From:   Robert Krig <robert.krig@render-wahnsinn.de>
+To:     linux-btrfs@vger.kernel.org
+Date:   Mon, 24 Feb 2020 10:39:25 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c0fa96f-60d6-6a66-3542-d78763bbe269@suse.com>
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 02:28:22AM +0200, Nikolay Borisov wrote:
-> So this is fallout from 28553fa992cb28be6a65566681aac6cafabb4f2d because
-> it's being called while we have locked extent buffers (before calling
-> btrfs_free_Path which is holding a rwlock (a variant of spinlock). And
-> actually unlocking btrfs' extent requires allocating structures to
-> reflect the new state. This allocation is currently done with GFP_NOFS
-> which implies DIRECT_RECLAIM hence the maybe sleep from slab allocator
-> is triggered.
-> 
-> Filipe, can the unlock be done _after_ freeing the path or even better -
-> reduce the critical section altogether in btrfs_truncate_inode_items?
-> 
-> I don't think '[PATCH] Btrfs: fix deadlock during fast fsync when
-> logging prealloc extents beyond eof' actually fixes the problem since
-> the unlock can happen under the path again.
+Hi guys. 
 
-Hmm... I don't know if the problem has been *completely* fixed, but I
-can say that with -rc3 (which has the "fix deadlock during fast fsync
-when..." commit), I'm no longer seeing the kernel complaints when I
-run "gce-xfstests -c btrfs -g auto".  Here are the test results:
+I have a backup server which is running a BTRFS raid10. This server is
+in the bedroom. So I have it set to suspend at night because of the
+noise, and then a systemd timer which resumes it at 07:00 a.m the next
+morning.
 
-TESTRUNID: tytso-20200223230308
-KERNEL:    kernel 5.6.0-rc3-xfstests #1522 SMP Sun Feb 23 23:01:10 EST 2020 x86_64
-CMDLINE:   -c btrfs -g auto
-CPUS:      2
-MEM:       7680
+As part of the suspend/resume script i issue a btrfs cancel before
+suspending and a btrfs scrub resume when the server wakes up again.
 
-btrfs/default: 988 tests, 8 failures, 203 skipped, 8739 seconds
-  Failures: btrfs/056 btrfs/153 btrfs/204 generic/065 generic/260 
-    generic/475 generic/562 shared/298 
-Totals: 785 tests, 203 skipped, 8 failures, 0 errors, 8678s
+I've noticed however that after a suspend the btrfs scrub resume
+doesn't seem to work properly. It just never finishes, even if the
+original estimate (before the resume) was roughly about 20hours, which
+it should have finished in one or two days.
 
-FSTESTIMG: gce-xfstests/xfstests-202002211357
-FSTESTPRJ: gce-xfstests
-FSTESTVER: blktests f7b47c5 (Tue, 11 Feb 2020 14:22:21 -0800)
-FSTESTVER: e2fsprogs v1.45.4-15-g4b4f7b35 (Wed, 9 Oct 2019 20:25:01 -0400)
-FSTESTVER: fio  fio-3.18 (Wed, 5 Feb 2020 07:59:58 -0700)
-FSTESTVER: fsverity v1.0 (Wed, 6 Nov 2019 10:35:02 -0800)
-FSTESTVER: ima-evm-utils v1.2 (Fri, 26 Jul 2019 07:42:17 -0400)
-FSTESTVER: nvme-cli v1.10.1 (Tue, 7 Jan 2020 13:55:21 -0700)
-FSTESTVER: quota  9a001cc (Tue, 5 Nov 2019 16:12:59 +0100)
-FSTESTVER: util-linux v2.35 (Tue, 21 Jan 2020 11:15:21 +0100)
-FSTESTVER: xfsprogs v5.4.0 (Fri, 20 Dec 2019 16:47:12 -0500)
-FSTESTVER: xfstests-bld a7ae9ff (Tue, 18 Feb 2020 14:22:36 -0500)
-FSTESTVER: xfstests linux-v3.8-2692-g3fe2fd0d (Fri, 21 Feb 2020 13:42:43 -0500)
-FSTESTCFG: btrfs
-FSTESTSET: -g auto
-FSTESTOPT: aex
-GCE ID:    9110223165715314154
+After waking up from a suspend, the btrfs scrub resume does indeed
+"resume" but it seems to have forgotten it's progress. It "looks" as
+though it just started over. 
 
-If you want the full test artifacts for this run, in case you want to
-dig into the test failures, let me know; I'm happy to send them.  The
-compressed tarfile is is 1952k, so it's a bit too large for the vger
-mailing list.
+Is this expected behavior or is it a bug?
 
-Cheers,
 
-						- Ted
+I'm running Debian Buster with backported Kernel 5.4.0 and btrfs
+version 5.4.1
+
+
