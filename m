@@ -2,91 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B34916A82B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 15:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079B516A8C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 15:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727501AbgBXOTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 09:19:17 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37345 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727489AbgBXOTQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 09:19:16 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id CB0BA4B9
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2020 09:19:15 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 24 Feb 2020 09:19:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=cJ/CDD
-        k+5zM8aw5YRizRLQ4Qc97GznDcRdsd4XGdUW8=; b=1LnuLJmez2qjIzv2rRpprS
-        h4gw2DkgIeIAW11MCf1dAw985k5z8VIyCNUnyn47rPJmualP0hyO4q3VQyMFYdNi
-        oIvX1DRNdS5S6jRSOI8Eniq+tiL7jq/OB/kCLDKAzt+biXpM6Ocq8EmVZOv2z+PX
-        q1uCacOVAO6S6AWDg4wvCQreCTx9ETNn9kwj33Lx4qvkZrilfHluUihvh8dr26x9
-        v1UwSXLB8fqWq8ZVtEopLFCRtPSyRz8R/COGXOPMTxnmM2oyG+884eIpcSzJ41s4
-        0t6Tbgwbr1x21BLAKXiLd3fmNSJwpNwoBUARoFTrdH7xW+CS0aD5Z+xHjddByZ+Q
-        ==
-X-ME-Sender: <xms:Y9tTXn7CciFDSx1vDwO02bypeQKnG5-LZ6gTMUR12ipkcANNJNNdhQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrledtgdeivdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepvffhuffkffgfgggtgfesthejredttd
-    efjeenucfhrhhomhepvfhomhcujfgrlhgvuceothhomheshhgrlhgvrdgvvgeqnecukfhp
-    pedukeefrdekledrfeehrdejtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehtohhmsehhrghlvgdrvggv
-X-ME-Proxy: <xmx:Y9tTXmMeTBMW9VL3B3_aTK7u6ca8qPVW5j2yJ2uuiA-fha-Zpg5OGw>
-    <xmx:Y9tTXq2hP3iUak_4zOpPx51z14OMvwLEAq2tcOJVowZzGcO3YldHpg>
-    <xmx:Y9tTXvtknQsHMVnHXdEKLrrri17J18IcI63d7YMrnNNCrWldHozxzQ>
-    <xmx:Y9tTXn1H4IYXR2yLEnGL49NF895o9Dipe9SL5g7lCVPcihTqq7W35Q>
-Received: from [192.168.0.107] (mx-ll-183.89.35-70.dynamic.3bb.co.th [183.89.35.70])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AC34F3280069
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2020 09:19:14 -0500 (EST)
-To:     linux-btrfs@vger.kernel.org
-From:   Tom Hale <tom@hale.ee>
-Subject: Reproducable un-receive-able snapshot send
-Message-ID: <e52e68aa-1ad5-b186-395a-6559e3212fd3@hale.ee>
-Date:   Mon, 24 Feb 2020 21:19:11 +0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1727730AbgBXOrx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 09:47:53 -0500
+Received: from mail.itouring.de ([188.40.134.68]:46412 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727640AbgBXOrx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Feb 2020 09:47:53 -0500
+Received: from tux.applied-asynchrony.com (p5B07E2B3.dip0.t-ipconnect.de [91.7.226.179])
+        by mail.itouring.de (Postfix) with ESMTPSA id 5F623416DF52;
+        Mon, 24 Feb 2020 15:47:51 +0100 (CET)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 16349F01606;
+        Mon, 24 Feb 2020 15:47:51 +0100 (CET)
+Subject: Re: scrub resume after suspend not working
+To:     Robert Krig <robert.krig@render-wahnsinn.de>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <e476b0aec351754b3cd72ed7d9135a6900f57554.camel@render-wahnsinn.de>
+ <87a3111e-598d-9a1a-3235-07bc81372520@applied-asynchrony.com>
+ <ac8e321bedfc590b96c06973327620244624dccc.camel@render-wahnsinn.de>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <37691afb-bc88-cd7b-b428-4b577b363537@applied-asynchrony.com>
+Date:   Mon, 24 Feb 2020 15:47:51 +0100
 MIME-Version: 1.0
+In-Reply-To: <ac8e321bedfc590b96c06973327620244624dccc.camel@render-wahnsinn.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-AU
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Would anyone be interested in helping me debug:
+On 2/24/20 2:47 PM, Robert Krig wrote:
+> I'm assuming you're referring to the version of btrfs-progs and not the
+> kernel, right?
 
-* btrfs-progs v5.4
+I honestly don't know what lead you to this assumption, there is no
+btrfs-progs release 5.4.14, let alone .22. You can find details in:
+https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.4.14
+when searching for "cef6f2aeda".
 
-* A FS which is reported as OK by 'scrub'
-
-* A parent and child snapshot combination which cannot be received - 
-even on the same FS it was sent from. (In fact, many children cannot be 
-received based on the one parent)
-
-* Send aborts with this message:
-ERROR: cannot open 
-/media/ssd/btrbk/rootfs/TEST/rootfs.20200126T0000/o3658332-53841-0: No 
-such file or directory
-
-* Lots of directories (not created by me) in the "root" of the partially 
-received subvolume named such as:
-o1101063-3046-0
-o1194908-3075-0
-o127448-2877-0
-o127454-2877-0
-o127714-2877-0
-o128369-2877-0
-o1305760-3109-0
-
-If so, please give me directions / point me at resources to gather 
-information for you :)
-
-[Please reply-all - I'm  not on-list]
-
--- 
-Tom Hale
+-h
