@@ -2,214 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4EC169CC2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 04:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCCD169CFD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 05:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgBXD4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Feb 2020 22:56:22 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:46638 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbgBXD4W (ORCPT
+        id S1727260AbgBXEd4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Feb 2020 23:33:56 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:56642 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbgBXEd4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Feb 2020 22:56:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01O3s0hx131696;
-        Mon, 24 Feb 2020 03:56:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Prwns41aZe5scg4CzMqwIYEhl2oRlHHmw8JUOEr3pZY=;
- b=mvtKdXY0B5rWviv6tXfOiBOyGDpxIjCNXxmbA6eDmc/DiG9NsfG81sfaIIymkymwkbkV
- pddxXKeoknHNd/BAdjrrWrgJwFL+mJnybMbeI9b3O+rRKrnjrUDo2RZzMBo6DDFJBPz3
- bxjssnv6qdI1a5r8fYBGkR/tP9wmrUjYejvAn50q46IBjPkFzngPR+o1pU9O29ZnfOpL
- HJSCxJa93JQi/d32SaC1Jd36s0wHXweBRuZo0/dMLyqok0VRliq+T2kJly6nO+GpeAPW
- 163p9FQ3f8PmyOoe8aU5tIgP98OrDy1bST7wAP/qGvxxYtchrdWwKPUCO7k1d+HyBi3C Ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2ybvr4h0mu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Feb 2020 03:56:18 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01O3q1Qg127350;
-        Mon, 24 Feb 2020 03:56:17 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2ybe106gw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Feb 2020 03:56:17 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01O3uGEU031902;
-        Mon, 24 Feb 2020 03:56:16 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 23 Feb 2020 19:56:16 -0800
-Subject: Re: [PATCH 10/11] btrfs: merge unlocking to common exit block in
- btrfs_commit_transaction
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1582302545.git.dsterba@suse.com>
- <133258557ae4387d6a1d01bafa3e5214ca91228d.1582302545.git.dsterba@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <b011fa16-bfd3-674a-b067-d98ad6551858@oracle.com>
-Date:   Mon, 24 Feb 2020 11:56:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Sun, 23 Feb 2020 23:33:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oZOe8S6XU8WPAzzWKK+7v8HQwuSfqOL+eNbf+Acq4Wc=; b=ALNrh1EBEZbPI0eohwoy43k7IJ
+        XJ2e9816/Cs/vRrqDf3S6gKYY5tNTkWN4kjJFPML+eVKwmz8Ej5/NJIR097xCbOVGT4n/3FVCtY3O
+        gn/yNbyTTS/qLVvgD8a/9uv4J4ws/6B3fng445cylTypcWambS3YaUfmoMD+/TOtojzWbjZpE6/zo
+        ghV8g3yRtNrjP80Aoo51Pd9fIJz1CgBzZuRDbL9STCkWsJuA7Fz9M8l7mClCERunvUnwRHI/iy7J0
+        DR9XgSFpwQPqfjwVfkmT0/g0k3jsyI3Efuhg2HSWlBcxnyFp7l7jjt1QI9lutMTR51+hhwlnhGP9z
+        +ZZz/7SQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j65RL-0000Cd-GT; Mon, 24 Feb 2020 04:33:55 +0000
+Date:   Sun, 23 Feb 2020 20:33:55 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 22/24] iomap: Convert from readpages to readahead
+Message-ID: <20200224043355.GL24185@bombadil.infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-23-willy@infradead.org>
+ <20200220154912.GC19577@infradead.org>
+ <20200220165734.GZ24185@bombadil.infradead.org>
+ <20200222010013.GH9506@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <133258557ae4387d6a1d01bafa3e5214ca91228d.1582302545.git.dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002240031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002240031
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200222010013.GH9506@magnolia>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/22/20 12:31 AM, David Sterba wrote:
-> The tree_log_mutex and reloc_mutex locks are properly nested so we can
-> simplify error handling and add labels for them. This reduces line count
-> of the function.
+On Fri, Feb 21, 2020 at 05:00:13PM -0800, Darrick J. Wong wrote:
+> On Thu, Feb 20, 2020 at 08:57:34AM -0800, Matthew Wilcox wrote:
+> > On Thu, Feb 20, 2020 at 07:49:12AM -0800, Christoph Hellwig wrote:
+> > +/**
+> > + * iomap_readahead - Attempt to read pages from a file.
+> > + * @rac: Describes the pages to be read.
+> > + * @ops: The operations vector for the filesystem.
+> > + *
+> > + * This function is for filesystems to call to implement their readahead
+> > + * address_space operation.
+> > + *
+> > + * Context: The file is pinned by the caller, and the pages to be read are
+> > + * all locked and have an elevated refcount.  This function will unlock
+> > + * the pages (once I/O has completed on them, or I/O has been determined to
+> > + * not be necessary).  It will also decrease the refcount once the pages
+> > + * have been submitted for I/O.  After this point, the page may be removed
+> > + * from the page cache, and should not be referenced.
+> > + */
+> > 
+> > > Isn't the context documentation something that belongs into the aop
+> > > documentation?  I've never really seen the value of duplicating this
+> > > information in method instances, as it is just bound to be out of date
+> > > rather sooner than later.
+> > 
+> > I'm in two minds about it as well.  There's definitely no value in
+> > providing kernel-doc for implementations of a common interface ... so
+> > rather than fixing the nilfs2 kernel-doc, I just deleted it.  But this
+> > isn't just the implementation, like nilfs2_readahead() is, it's a library
+> > function for filesystems to call, so it deserves documentation.  On the
+> > other hand, there's no real thought to this on the part of the filesystem;
+> > the implementation just calls this with the appropriate ops pointer.
+> > 
+> > Then again, I kind of feel like we need more documentation of iomap to
+> > help filesystems convert to using it.  But maybe kernel-doc isn't the
+> > mechanism to provide that.
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/transaction.c | 57 +++++++++++++++---------------------------
->   1 file changed, 20 insertions(+), 37 deletions(-)
+> I think we need more documentation of the parts of iomap where it can
+> call back into the filesystem (looking at you, iomap_dio_ops).
 > 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index fdfdfc426539..3610b6fec627 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -2194,10 +2194,8 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	 * core function of the snapshot creation.
->   	 */
->   	ret = create_pending_snapshots(trans);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_reloc;
->   
->   	/*
->   	 * We insert the dir indexes of the snapshots and update the inode
-> @@ -2210,16 +2208,12 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	 * the nodes and leaves.
->   	 */
->   	ret = btrfs_run_delayed_items(trans);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_reloc;
->   
->   	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_reloc;
->   
->   	/*
->   	 * make sure none of the code above managed to slip in a
-> @@ -2245,11 +2239,8 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	mutex_lock(&fs_info->tree_log_mutex);
->   
->   	ret = commit_fs_roots(trans);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_reloc;
+> I'm not opposed to letting this comment stay, though I don't see it as
+> all that necessary since iomap_readahead implements a callout that's
+> documented in vfs.rst and is thus subject to all the constraints listed
+> in the (*readahead) documentation.
 
-                goto unlock_tree_log;
+Right.  And that's not currently in kernel-doc format, but should be.
+Something for a different patchset, IMO.
 
+What we need documenting _here_ is the conditions under which the
+iomap_ops are called so the filesystem author doesn't need to piece them
+together from three different places.  Here's what I currently have:
 
-Otherwise looks good. When fixed this you may add.
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-
-Thanks, Anand
-
->   	/*
->   	 * Since the transaction is done, we can apply the pending changes
-> @@ -2267,29 +2258,20 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	 * new delayed refs. Must handle them or qgroup can be wrong.
->   	 */
->   	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_tree_log;
->   
->   	/*
->   	 * Since fs roots are all committed, we can get a quite accurate
->   	 * new_roots. So let's do quota accounting.
->   	 */
->   	ret = btrfs_qgroup_account_extents(trans);
-> -	if (ret < 0) {
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret < 0)
-> +		goto unlock_tree_log;
->   
->   	ret = commit_cowonly_roots(trans);
-> -	if (ret) {
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> -	}
-> +	if (ret)
-> +		goto unlock_tree_log;
->   
->   	/*
->   	 * The tasks which save the space cache and inode cache may also
-> @@ -2297,9 +2279,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	 */
->   	if (TRANS_ABORTED(cur_trans)) {
->   		ret = cur_trans->aborted;
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		mutex_unlock(&fs_info->reloc_mutex);
-> -		goto scrub_continue;
-> +		goto unlock_tree_log;
->   	}
->   
->   	btrfs_prepare_extent_commit(fs_info);
-> @@ -2346,8 +2326,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	if (ret) {
->   		btrfs_handle_fs_error(fs_info, ret,
->   				      "Error while writing out transaction");
-> -		mutex_unlock(&fs_info->tree_log_mutex);
-> -		goto scrub_continue;
-> +		goto unlock_tree_log;
->   	}
->   
->   	ret = write_all_supers(fs_info, 0);
-> @@ -2394,6 +2373,10 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   
->   	return ret;
->   
-> +unlock_tree_log:
-> +	mutex_unlock(&fs_info->tree_log_mutex);
-> +unlock_reloc:
-> +	mutex_unlock(&fs_info->reloc_mutex);
->   scrub_continue:
->   	btrfs_scrub_continue(fs_info);
->   cleanup_transaction:
-> 
+ * Context: The @ops callbacks may submit I/O (eg to read the addresses of
+ * blocks from disc), and may wait for it.  The caller may be trying to
+ * access a different page, and so sleeping excessively should be avoided.
+ * It may allocate memory, but should avoid large allocations.  This
+ * function is called with memalloc_nofs set, so allocations will not cause
+ * the filesystem to be reentered.
 
