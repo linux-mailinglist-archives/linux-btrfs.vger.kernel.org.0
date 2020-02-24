@@ -2,51 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A4916A8D1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 15:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F7B16A8D9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 15:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgBXOvV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 09:51:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54576 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727581AbgBXOvV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 09:51:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0FB62AD2C;
-        Mon, 24 Feb 2020 14:51:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3035CDA727; Mon, 24 Feb 2020 15:51:01 +0100 (CET)
-Date:   Mon, 24 Feb 2020 15:51:01 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 05/11] btrfs: simplify parameters of
- btrfs_set_disk_extent_flags
-Message-ID: <20200224145101.GT2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1582302545.git.dsterba@suse.com>
- <e9483711e6f093259df9488c1d4d9753426fdf0a.1582302545.git.dsterba@suse.com>
- <SN4PR0401MB35988FDCB6B7180E0C2E30129BEE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1727359AbgBXOyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 09:54:04 -0500
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:46344 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727326AbgBXOyD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Feb 2020 09:54:03 -0500
+Received: by mail-ua1-f67.google.com with SMTP id l6so3285939uap.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Feb 2020 06:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=hj7aVEDgGw3n2atYrZR8LxjrrJ9LdMIEuJ7GPO0ZKos=;
+        b=IEKw2VXrIus664PXNZbdp7PaqLgMKQNF/FYZNnFPtyKnDJH8OwSqUCAy9K9nqcIuXW
+         4BEycEBomEk0Qdw3KyhMl70VMyih4VC8SJw0W95x4UbXjRpMTIeuYmT2GwqOgtLF4uTW
+         HGaHjEdl3umH3pFXdaM3Um6aEX+VfbySaUfULs3+Zy8yrCttB53eeuApWouna0Pt6W7M
+         Jf4vxhBc6hiEszRB8kRvDDcnudl6wBuJIT/XPAVtuibXz9Alc6tstEjDkuJMqiRMKMbx
+         d+aW6yFknknxAe/ZZmfH0DXARi+j010vV1rngzD6r/yxMzAqJs++MBgj6BkwDdEOdEDC
+         5U3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=hj7aVEDgGw3n2atYrZR8LxjrrJ9LdMIEuJ7GPO0ZKos=;
+        b=Tog1ylpdkJSsbGDy4Y5VNKQwYmCYnXln1sClmkHz5lw/RulLk4jewjJ1L04zmYC/9J
+         fQJNI8m8K/uYusOAZ4TT77Vaqe1JNK/xzF1r83yPcu6NyODCzV8q2KT2cepPG/LqCfGk
+         chr1b+HBtmbWBUmNLyiNS+tlXvok9W9zKykeEL1pv8oJPyqBj80ReGEI2VbzsbG6az2C
+         uK8BjcaNu965+NLGQjZUY8sjAL0RgWAfsg4FQVw7tvwd5PCEtJPIJ1jYpT4Xlf2YH3Oy
+         9oKd9gIZcBp5mhQGjkMHcsCgGULHPYRtvbCFNmrnOMU3GUFMd5neMNOyY42H55uEFBBg
+         3auQ==
+X-Gm-Message-State: APjAAAVW+zm8/xKA02/WSZ4Rt4/UH2cCZ/PYEbYeRcv7ckO9Mz+tdy2Y
+        uDkbd2y5nPIShXWb8qI4t6bQerPj0viSq3u3nWvt+A==
+X-Google-Smtp-Source: APXvYqzoJ+tijNyQR+x5VwSoqSoC/FrltC3HHpjWJdzalSwEVTPJ+lYEzfi0uYQ0cJzAP6oanhFZX99z+QpeyYhDwbo=
+X-Received: by 2002:a9f:3e84:: with SMTP id x4mr24578061uai.83.1582556042647;
+ Mon, 24 Feb 2020 06:54:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB35988FDCB6B7180E0C2E30129BEE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <cover.1563822638.git.osandov@fb.com> <66ec0a6323c64aec74336e99696b6ad6576e091e.1563822638.git.osandov@fb.com>
+ <CAL3q7H6sDTbMrjQqu_6Q6fy=Do0pgayHM-EGLXnG47BoitCScA@mail.gmail.com>
+In-Reply-To: <CAL3q7H6sDTbMrjQqu_6Q6fy=Do0pgayHM-EGLXnG47BoitCScA@mail.gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 24 Feb 2020 14:53:51 +0000
+Message-ID: <CAL3q7H7Yv+OjcJ4cDxwZ7x+k2z10s7yin0FTkNxaZvZ7AkVJ3A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] btrfs-progs: receive: don't lookup clone root for
+ received subvolume
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 22, 2020 at 08:45:32AM +0000, Johannes Thumshirn wrote:
-> A similar change should work for btrfs_add_delayed_extent_op() as well, 
-> shouldn't it?
+On Tue, Jul 23, 2019 at 12:19 PM Filipe Manana <fdmanana@gmail.com> wrote:
+>
+> On Tue, Jul 23, 2019 at 3:25 AM Omar Sandoval <osandov@osandov.com> wrote=
+:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > When we process a clone request, we look up the source subvolume by
+> > UUID, even if the source is the subvolume that we're currently
+> > receiving. Usually, this is fine. However, if for some reason we
+> > previously received the same subvolume, then this will use paths
+> > relative to the previously received subvolume instead of the current
+> > one. This is incorrect, since the send stream may use temporary names
+> > for the clone source. This can be reproduced as follows:
+> >
+> > btrfs subvolume create subvol
+> > dd if=3D/dev/urandom of=3Dsubvol/foo bs=3D1M count=3D1
+> > cp --reflink subvol/foo subvol/bar
+> > mkdir subvol/dir
+> > mv subvol/foo subvol/dir/
+> > btrfs property set subvol ro true
+> > btrfs send -f send.data subvol
+> > mkdir first second
+> > btrfs receive -f send.data first
+> > btrfs receive -f send.data second
+> >
+> > The second receive results in this error:
+> >
+> > ERROR: cannot open first/subvol/o259-7-0/foo: No such file or directory
+> >
+> > Fix it by always cloning from the current subvolume if its UUID matches=
+.
+> > This has the nice side effect of avoiding unnecessary UUID tree lookups
+> > in that case.
+> >
+> > Fixes: f1c24cd80dfd ("Btrfs-progs: add btrfs send/receive commands")
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Yes. Possibly pushing that further down the call chain to the delayed
-refs, if all num_bytes is extent_buffer->len then this can be simplified
-to fs_info->nodesize.
+I can't find this patch in btrfs-progs. Any reason why it was never applied=
+?
+
+thanks
+
+>
+> Thanks!
+>
+> > ---
+> >  cmds/receive.c | 18 ++++++++----------
+> >  1 file changed, 8 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/cmds/receive.c b/cmds/receive.c
+> > index dba05982..1e6a29dd 100644
+> > --- a/cmds/receive.c
+> > +++ b/cmds/receive.c
+> > @@ -744,15 +744,14 @@ static int process_clone(const char *path, u64 of=
+fset, u64 len,
+> >         if (ret < 0)
+> >                 goto out;
+> >
+> > -       si =3D subvol_uuid_search(&rctx->sus, 0, clone_uuid, clone_ctra=
+nsid,
+> > -                               NULL,
+> > -                               subvol_search_by_received_uuid);
+> > -       if (IS_ERR_OR_NULL(si)) {
+> > -               if (memcmp(clone_uuid, rctx->cur_subvol.received_uuid,
+> > -                               BTRFS_UUID_SIZE) =3D=3D 0) {
+> > -                       /* TODO check generation of extent */
+> > -                       subvol_path =3D rctx->cur_subvol_path;
+> > -               } else {
+> > +       if (memcmp(clone_uuid, rctx->cur_subvol.received_uuid,
+> > +                  BTRFS_UUID_SIZE) =3D=3D 0) {
+> > +               subvol_path =3D rctx->cur_subvol_path;
+> > +       } else {
+> > +               si =3D subvol_uuid_search(&rctx->sus, 0, clone_uuid, cl=
+one_ctransid,
+> > +                                       NULL,
+> > +                                       subvol_search_by_received_uuid)=
+;
+> > +               if (IS_ERR_OR_NULL(si)) {
+> >                         if (!si)
+> >                                 ret =3D -ENOENT;
+> >                         else
+> > @@ -760,7 +759,6 @@ static int process_clone(const char *path, u64 offs=
+et, u64 len,
+> >                         error("clone: did not find source subvol");
+> >                         goto out;
+> >                 }
+> > -       } else {
+> >                 /* strip the subvolume that we are receiving to from th=
+e start of subvol_path */
+> >                 if (rctx->full_root_path) {
+> >                         size_t root_len =3D strlen(rctx->full_root_path=
+);
+> > --
+> > 2.22.0
+> >
+>
+>
+> --
+> Filipe David Manana,
+>
+> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
+re right.=E2=80=9D
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
