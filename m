@@ -2,98 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BBB169B2F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 01:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67C6169CD6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 04:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgBXA22 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Feb 2020 19:28:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51898 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgBXA21 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Feb 2020 19:28:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 23127AE2B;
-        Mon, 24 Feb 2020 00:28:25 +0000 (UTC)
-Subject: Re: btrfs: sleeping function called from invalid context
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-btrfs@vger.kernel.org
-References: <20200223234246.GA1208467@mit.edu>
-Cc:     Filipe Manana <fdmanana@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <0c0fa96f-60d6-6a66-3542-d78763bbe269@suse.com>
-Date:   Mon, 24 Feb 2020 02:28:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727221AbgBXD7i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Feb 2020 22:59:38 -0500
+Received: from gateway31.websitewelcome.com ([192.185.143.47]:31020 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727202AbgBXD7i (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 23 Feb 2020 22:59:38 -0500
+X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Sun, 23 Feb 2020 22:59:38 EST
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 2C4963AC9
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Feb 2020 21:10:55 -0600 (CST)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id 6491jJAE9RP4z6491jiSvY; Sun, 23 Feb 2020 21:10:55 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0ero3NyMggozYrVIkVkRv1FRU//V7ZobE8nQa+kvk2M=; b=pS3wFvk3XL7ipp5yOjsQPorFgz
+        PYPZPk+4SczyvjfxJ0OKCJN105GuKXs/2vCeZdhEUW/EEArSzG/ytJfMWpmp7cpp8X1+1FfjLoN0C
+        S8Ybr1dAia9Su1AZQQ1nFVGQE3+gC1I+u4oWz/GW0qDAPt1pX1GE9+G6q2knnCVg9zYdA8ZFPcCzK
+        SA1Gz6ZWL9tFkRJeoLb9lS2BJpwhEH3n6C9VYTZChU/6uBXsbVgGbKR4HgCeXuHx3mYJtyi/2zwM9
+        khtqpZPBWGkNg88IQZolm6ytF1PBLyC/Evz46PaXlCQbB4wFCHA1G/jDk0xcV4MXzy9jwus8EjPx9
+        fu7pfEMQ==;
+Received: from [179.185.222.161] (port=40232 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1j6490-0034Sn-H6; Mon, 24 Feb 2020 00:10:54 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, nborisov@suse.com, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, guaneryu@gmail.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [ fstests PATCHv3 0/2] btrfs: Test subvolume delete by id feature
+Date:   Mon, 24 Feb 2020 00:13:39 -0300
+Message-Id: <20200224031341.27740-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200223234246.GA1208467@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.185.222.161
+X-Source-L: No
+X-Exim-ID: 1j6490-0034Sn-H6
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [179.185.222.161]:40232
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 4
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
+Changes from v2:
+* Added Reviewed-by from Nikolay to patch 0001
+* Changed awk to $AWK_PROG, suggested by Eryu
+* Changed _run_btrfs_util_prog to $BTRFS_UTIL_PROG, suggested by Eryu
+* Use _scratch_unmount instead of executing umount by hand, sugested by Eryu
+* Created a local function to delete and list subvolumes, suggested by Eryu
 
-On 24.02.20 г. 1:42 ч., Theodore Y. Ts'o wrote:
-> Hi, I noticed this when I was doing some build tests; is this a known issue?
-> 
+Changes from v1:
+* Added some prints printing what is being tested
+* The test now uses the _btrfs_get_subvolid to get subvolumeids instead of using
+  plain integers
+* New patch expanding the funtionality of _require_btrfs_command, which now
+  check for argument of subcommands
 
-So this is fallout from 28553fa992cb28be6a65566681aac6cafabb4f2d because
-it's being called while we have locked extent buffers (before calling
-btrfs_free_Path which is holding a rwlock (a variant of spinlock). And
-actually unlocking btrfs' extent requires allocating structures to
-reflect the new state. This allocation is currently done with GFP_NOFS
-which implies DIRECT_RECLAIM hence the maybe sleep from slab allocator
-is triggered.
+Marcos Paulo de Souza (2):
+  common: btrfs: Improve _require_btrfs_command
+  btrfs: Test subvolume delete --subvolid feature
 
-Filipe, can the unlock be done _after_ freeing the path or even better -
-reduce the critical section altogether in btrfs_truncate_inode_items?
+ common/btrfs        | 13 ++++++--
+ tests/btrfs/203     | 73 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/203.out | 14 +++++++++
+ tests/btrfs/group   |  1 +
+ 4 files changed, 99 insertions(+), 2 deletions(-)
+ create mode 100755 tests/btrfs/203
+ create mode 100644 tests/btrfs/203.out
 
-I don't think '[PATCH] Btrfs: fix deadlock during fast fsync when
-logging prealloc extents beyond eof' actually fixes the problem since
-the unlock can happen under the path again.
+-- 
+2.25.0
 
