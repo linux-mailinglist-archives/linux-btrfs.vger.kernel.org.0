@@ -2,78 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A736F16B22E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 22:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB6516B27D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Feb 2020 22:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgBXV1h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 16:27:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42268 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726722AbgBXV1h (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 16:27:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1B7FBAEA7;
-        Mon, 24 Feb 2020 21:27:36 +0000 (UTC)
-Message-ID: <795cb7cc9d36eb84c1ed03efdbb8702ef9282774.camel@suse.de>
-Subject: Re: [PATCH misc-next] btrfs: fix compilation error in
- btree_write_cache_pages()
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-Date:   Mon, 24 Feb 2020 18:30:38 -0300
-In-Reply-To: <20200224202251.37787-1-johannes.thumshirn@wdc.com>
-References: <20200224202251.37787-1-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.3 
+        id S1727960AbgBXVcV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 16:32:21 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:58886 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgBXVcV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Feb 2020 16:32:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=emtDgV24Eo0XKJNO3XWaY50cgCvPe4AajCupipZ+mFM=; b=faavxfwYgJ6BV4aMG0yBGMTdvs
+        FIHOEugMta99lUrJ1bnzTZ/FRNYp6SPEABIaJ5EtGCi+eQP8a0kjK0ZbLdgXYa/37U/swNDVC13km
+        Va5rLvps0hefygpoSkbchuXiH08P6MV/rAg7EcSCaaM7QZSEw0JsM/CNamhza4du/dvIO9YVBTlnB
+        RoHdf0GoNG+qOIjDajjFjogi72piGjB1CilX1d9marpYm2pZ/fzynRHB+WFG63bofIN3ZLXSOH6JY
+        ttUElXB1HnhGmHknkGtgPrvb11HJuWiiU/SslxTdDxTUKWpXvJpAQegm1IrAR6sPxW+YVNdZRQbOd
+        Gj+d14cg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j6LKu-0003kl-Dd; Mon, 24 Feb 2020 21:32:20 +0000
+Date:   Mon, 24 Feb 2020 13:32:20 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 01/24] mm: Move readahead prototypes from mm.h
+Message-ID: <20200224213220.GA13895@infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-2-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219210103.32400-2-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 2020-02-25 at 05:22 +0900, Johannes Thumshirn wrote:
-> CC [M]  fs/btrfs/extent_io.o
-> fs/btrfs/extent_io.c: In function ‘btree_write_cache_pages’:
-> fs/btrfs/extent_io.c:3959:34: error: ‘tree’ undeclared (first use in
-> this function); did you mean ‘true’?
->  3959 |  struct btrfs_fs_info *fs_info = tree->fs_info;
->       |                                  ^~~~
->       |                                  true
-> fs/btrfs/extent_io.c:3959:34: note: each undeclared identifier is
-> reported only once for each function it appears in
-> make[2]: *** [scripts/Makefile.build:268: fs/btrfs/extent_io.o] Error
-> 1
-> make[1]: *** [scripts/Makefile.build:505: fs/btrfs] Error 2
-> make: *** [Makefile:1681: fs] Error 2
+On Wed, Feb 19, 2020 at 01:00:40PM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Fixes: 75c39607eb0a ("btrfs: Don't submit any btree write bio if the
-> fs has errors")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> The readahead code is part of the page cache so should be found in the
+> pagemap.h file.  force_page_cache_readahead is only used within mm,
+> so move it to mm/internal.h instead.  Remove the parameter names where
+> they add no value, and rename the ones which were actively misleading.
 
-Indeed, it fixes the build of misc-next.
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Looks good,
 
-> ---
->  fs/btrfs/extent_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 903a85d8fbe3..837262d54e28 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3956,7 +3956,7 @@ int btree_write_cache_pages(struct
-> address_space *mapping,
->  		.extent_locked = 0,
->  		.sync_io = wbc->sync_mode == WB_SYNC_ALL,
->  	};
-> -	struct btrfs_fs_info *fs_info = tree->fs_info;
-> +	struct btrfs_fs_info *fs_info = BTRFS_I(mapping->host)->root-
-> >fs_info;
->  	int ret = 0;
->  	int done = 0;
->  	int nr_to_write_done = 0;
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
