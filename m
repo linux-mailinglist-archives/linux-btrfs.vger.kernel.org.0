@@ -2,66 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8E516EBB9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 17:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672E416F041
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 21:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730842AbgBYQt7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Feb 2020 11:49:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728200AbgBYQt7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Feb 2020 11:49:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DAB1DAF05;
-        Tue, 25 Feb 2020 16:49:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C956DDA726; Tue, 25 Feb 2020 17:49:38 +0100 (CET)
-Date:   Tue, 25 Feb 2020 17:49:38 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v2 2/2] btrfs: qgroup: Remove the unnecesaary spin lock
- for qgroup_rescan_running|queued
-Message-ID: <20200225164938.GH2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20200207053821.25643-1-wqu@suse.com>
- <20200207053821.25643-3-wqu@suse.com>
- <20200224164541.GY2902@twin.jikos.cz>
- <e797ac40-e5a2-b1a1-90f2-756c0b1fd67a@gmx.com>
+        id S1730837AbgBYUkJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Feb 2020 15:40:09 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:38887 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728119AbgBYUkH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Feb 2020 15:40:07 -0500
+Received: by mail-wr1-f44.google.com with SMTP id e8so279697wrm.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2020 12:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=JK7E0kIr4KZUij9M1JjmwPEonY1lu+WxHb7q6BfsHgY=;
+        b=FLPjXDFUwOypLuGl1+5J4ct/jHoNy7eioQVF5YoSEKlhY4OqYx5JfnS7pqOiBMF4zT
+         r/rSbme6xEjCs9N8dGVFpZ8oUhlxCsWZlPyqLB6bU4nvCOMmORkwpBIL3wbPr6hbODkH
+         j523PDbCgSTfvg3kE9Ph66s1wxV2q0fUTLe5u7Cj7TjKwiobYrGtGhfXwtQH7ggKC7Nz
+         kfwxJSE2EFcjfr+SuvkE1Crp2WIGCeoQ0BnTwWUM9G8x8zveDmH5yT41cO8IhVMeNbpN
+         bj9m6D9q5GLJJj5rfzhwx9AWjFc4LpIhMd67hTpoklkoNIjzYt4LppuRijio/g1bPeeV
+         xBgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=JK7E0kIr4KZUij9M1JjmwPEonY1lu+WxHb7q6BfsHgY=;
+        b=NkrCpUt5ItoAqAG7MKLDT+4hqJxeisTr00RqMabMtQ1agBVNolGqBWNEV8GGGxIRoE
+         PUSUB20VwOt3eJ63v0llb3ppl2k9eICR1ArRnyorqIUaVKZDQ0aGNXMslcLrZYgeFCEJ
+         EfiLnYrMfk4YxQf/vMqDdymzzx6antLcPuwjNFfDSu3v9awtAuTZsQuPUOXWb6jm8q2n
+         xd8HCD9ypkiMyTh8vr1Xv8CQSf68WCXLRCHHtuKj9WJim/WngfGfQziVDrrgPGitA6i1
+         GhWOhs+k7b3E/UDWmhM7XSZeFttxoD09p2CDAWThrSmSd6bzrAk1q30ZXQyk0S6LTxrE
+         ZJGA==
+X-Gm-Message-State: APjAAAWxwn4k11J4SN5T1g3GpKUqJlbdnMZiOE2aH4tzTUVIBGuMecY8
+        kLy9a1VOHyLtnhhxnvhYt9RKr7mBGSTBngDbiqFVPo1xeg==
+X-Google-Smtp-Source: APXvYqxbK5YJuMomeF9hbz6gLrAFJr02kCFHVk9cOm6ear1nIdSV4cNS5QvRQhpUz754uTBljDXpK0XMCfR0B7EpgAM=
+X-Received: by 2002:adf:ed8c:: with SMTP id c12mr872617wro.231.1582663205501;
+ Tue, 25 Feb 2020 12:40:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e797ac40-e5a2-b1a1-90f2-756c0b1fd67a@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   Jonathan H <pythonnut@gmail.com>
+Date:   Tue, 25 Feb 2020 12:39:39 -0800
+Message-ID: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+Subject: USB reset + raid6 = majority of files unreadable
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 07:44:12AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/2/25 上午12:45, David Sterba wrote:
-> > On Fri, Feb 07, 2020 at 01:38:21PM +0800, Qu Wenruo wrote:
-> >> Those two members are all protected by
-> >> btrfs_fs_info::qgroup_rescan_lock, thus no need for the extra spinlock.
-> > 
-> > Two members refers to btrfs_fs_info::qgroup_rescan_lock and what else?
-> > Byt the subject it's something 'queued' but I can't find what it's
-> > referring to.
-> > 
-> My bad, with the latest version, there is only qgroup_rescan_running, no
-> qgroup_rescan_queued.
-> 
-> Just one member now.
-> 
-> Do I need to resend the patch with commit message updated?
+Hello everyone,
 
-Not needed, I only wanted to clarify if I'm not missing something. I'll
-update changelog and push to misc-next.
+Previously, I was running an array with six disks all connected via
+USB. I am running raid1c3 for metadata and raid6 for data, kernel
+5.5.4-arch1-1 and btrfs --version v5.4, and I use bees for
+deduplication. Four of the six drives are stored in a single four-bay
+enclosure. Due to my oversight, TLER was not enabled for any of the
+drives, so when one of them started failing, the enclosure was reset
+and all four drives were disconnected.
+
+After rebooting, the file system was still mountable. I saw some
+transid errors in dmesg, but I didn't really pay attention to them
+because I was trying to get rid of the now failed drive. I tried to
+"btrfs replace" the drive with a different one, but the replace
+stopped making progress because all reads to the dead drive in a
+certain location were failing (even with the "-r") flag. So I tried
+mounting degraded without the dead drive and doing "btrfs dev delete
+missing" instead. The deletion failed with the following kernel
+message:
+
+[  +2.697798] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 1
+[  +0.003381] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 2
+[  +0.002514] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 4
+[  +0.000543] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 1
+[  +0.001170] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 2
+[  +0.001151] BTRFS warning (device sdb): csum failed root -9 ino 257
+off 2083160064 csum 0xd0a0b14c expected csum 0x7f3ec5ab mirror 4
+
+I noticed that almost all of the files give an I/O error when read,
+and similar kernel messages are generated, but with positive roots. I
+also see "read error corrected" messages, but
+if I try to read the files again, I the exact same messages are
+printed again, which seems to suggest that the errors haven't really
+been corrected? (But maybe this is intended behavior.)
+
+I also attempted to use "btrfs restore" to recover the files, but
+almost all of the files produce "ERROR: zstd decompress failed Unknown
+frame descriptor" and the recovery does not succeed.
+
+Since, then, I have been scrubbing the file system. The first scrub
+produce lots of Uncorrectable read errors and several hundred csum
+errors. I'm assuming the read errors are due to the missing drive. The
+puzzling thing is, the scrub can "complete" (actually, it is aborted
+after it completes on all drives but the missing one) and I can delete
+all of the files with unrecoverable csum errors, but all of the issues
+above persist. I can then turn around scrub again, and the scrub will
+find new csum errors, which seems bizarre to me, since I would have
+expected them all to be fixed. However, all transid related errors
+have disappeared after the first scrub.
+
+I have also tried deleting the file referenced in the device deletion
+error and restarting the deletion. This seems to be working, but
+progress has been very slow and I fear I'll have to delete all of the
+I/O error-producing files above, which I would like to avoid if
+possible.
+
+What should I do in this situation and how can I avoid this in the future?
+
+Thanks,
+Jonathan
