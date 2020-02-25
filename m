@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F44B16B60E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 00:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF8416B638
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 01:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgBXXyv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 18:54:51 -0500
-Received: from mout.gmx.net ([212.227.17.22]:60031 "EHLO mout.gmx.net"
+        id S1728469AbgBYACZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 19:02:25 -0500
+Received: from mout.gmx.net ([212.227.17.21]:44021 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgBXXyu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 18:54:50 -0500
+        id S1728316AbgBYACY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Feb 2020 19:02:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1582588480;
-        bh=Isee1c1CKR/y8+Sb4AJMzg8GtWOqzryHMUNgCXpURsc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=U1FBNw4+R8N6tvZpgeVRRsrLc/Bs2TGQfEIWbF7c9AjzgO/22LKEu4fnvJNvMwqhh
-         pZ0zsJHM3WipavjIO5IWOAOWI7wEnnvjpYdCVwNyr5rAW2Sih/3AEwGpFzf2wDsVd0
-         rmpraB1DttGSGCOH9Z5zhP5Npg9ndkq5Q/iU+FPw=
+        s=badeba3b8450; t=1582588938;
+        bh=Ic65jJ6ahJD7wyjpdZujZ3aSZPfm2hmyL+BkVHOi//o=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Lpj8CTx7VfK5OPTjE3K01e6hk2nL+RFjJ15J3Vqy96SfAP99gcdI0etMXnh9QIkta
+         yqdbDQ13dYZ5equ1WBKYH/d6tg5/NaxftPjXvkK7e9KO4KlH4J0alUnYtOYUcjp1gd
+         w9ZYisKea0MsMecS8flOCDJHcRfewdb9QO01P5J4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCtj-1jfRWp0MXn-00bLIr; Tue, 25
- Feb 2020 00:54:40 +0100
-Subject: Re: [PATCH misc-next] btrfs: fix compilation error in
- btree_write_cache_pages()
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
-References: <20200224202251.37787-1-johannes.thumshirn@wdc.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPokN-1il9w20y1b-00Mqmi; Tue, 25
+ Feb 2020 01:02:17 +0100
+Subject: Re: [PATCH v5] btrfs: Don't submit any btree write bio if the fs has
+ error
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200212061244.26851-1-wqu@suse.com>
+ <20200221133559.GG2902@twin.jikos.cz>
+ <8e100fed-13ba-febf-14da-452635094aad@suse.com>
+ <20200224170615.GZ2902@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,119 +55,168 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <4dd7cba8-9a94-069e-7f80-c2fdb8fff631@gmx.com>
-Date:   Tue, 25 Feb 2020 07:54:36 +0800
+Message-ID: <90aa8815-2989-3472-e706-9a3a87f0f13e@gmx.com>
+Date:   Tue, 25 Feb 2020 08:02:13 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200224202251.37787-1-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200224170615.GZ2902@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="0j5AQ5DuD8eUdmSbs9BkNnFE30xlyisVe"
-X-Provags-ID: V03:K1:Ij9dbAMEcKQMQOtupdbQAQJmhc+83O2XRoAh9mUL5YD6gK+42jX
- 24wg4FUqS6fomVQZalhTxp09exEN02SQ/PAkCWIMO3zNZLo6JrBGcKL2Oh2wg68KaGkLBww
- WGVqrRwdPv5z7xHCgnu/tnENPkt9ouBizyuVtHh/Uo6YKI+O8kW9HYO/98yB3puZ9f5PqrQ
- lr0W/K7KyO6b0Y4fSh5/g==
+ boundary="0TCD7dsxLYauccKZG1zO4Uhph5TbM6wiu"
+X-Provags-ID: V03:K1:GuEY6CzpaplfulTzEz8Bt8IXyk9KVAy35+2GVXfCTPVchjETiq9
+ KwsPxXTu05vohsXZu+ZN2WtuLJsMKT/puzxPfwXAN3JRar6Iq928jxIs6BgbK4TJU3Arl/A
+ NJ+fwesOOHw9R078HLV8J0KlYfNKG6VOkpTJDGAJP8PWvZnrrqfVBquKt6sVKubSK0qiPel
+ M2vRbA648+jLsZ3BxIDCw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:z3war5VRnsI=:69KJdTHwkgBwydkIFCQQEk
- zYTVm4Ny95szlmGgmkz0SrLcBzUIJsGfzuGGBFq0CvAmyZInFBA+g92MXDtlq47ZBNA5/WM7e
- Eo+/zo96mpenVxS6UCOHdLpiJ1ISYH/KNr9J3B56f1E7voV0IGo1F4QWmAKesyKyTNFdq5sL1
- 6F8r61eBtTzLIFXM8H13tqEgQMK6ahdjyrzMULhMUKCoHi6rRfyuigcBLPQxrItor7HdyutZ1
- 6W+2sPcGJSoFi884wLOsKtd1qsJDgaMmno7LjPHvHztIK9rP6QGJTxlZ1DP2vQazT61Fmg7/A
- 13UHFZ50Q/M+jJ6ImzoudZAc7a07jjFw5qC5o+5Mn7hIWpFKptpWavnSPnaIMwbnvZxaTtOLi
- 85jUPGCRNYyd2/NKfzwa5Wq06npTovAAAITfwB+CPd3Jwtd2BuSXNvXYSNlZ4ezU/HF3bU8pq
- gzdmjJdq3N4oWfvuoqn3mKeAoyhWeEK2FHhRSjr8qDqyTaY8JCYktB1KuZkLxYqZTE4kshZMT
- lPGMSoyiZqyW5PG3kARivKQaN9woxeymb1qeHbu8qPyYStDfmGV1iQo07DBMV0t/SEeTmkmYB
- EbeaW5zKhRjQ1f2jgSE1DGLIpbBBXC3p1ySybVP4WJWwit/Fcxqge75X93cWjVRHWilNqjoHd
- EFw2/TV2fJgqqYQWZHoUvzDNCXPBommT5N7fKctSHBwftB50AqvbbsLVCQU2Sj5R+KeK+wg3u
- iPwEzFuhzOeXnPY1HG79NfczzIdp579cGI6w1mresvgNEDZXl7NdTxWA4GPXcIwKeezbStA2J
- 5t+AcGpr/KDEycaIoAiIgjcpEIpdLFAI6S80SLqJkHtJpNjkxJTqT5GkuGysLwfwmdPVNlLun
- Iw4Ko/Z0EaQEVIvmURjeSA+fQITsUTRt6N/RLN8djWSELn4h1RnEXp/Lh8beZ+wC+1HqnIe0T
- 68fJmfiIzuPSH5b4uDuGkWqwtevBSN1jDmQzJQOkCpN4P0zw9qLcjRtjDA2+BoyZU4pmKbzet
- VrBXHIlOj947m048bLJ4k6ZnYC+IpmV/L7JJdE40B1hYZD3vCqCd1HpTPzl7BqtFMNl2OekrR
- ps6JF8ZVEz9ZU8lwLTYkNkv8FDOJnw+OpA9PlG2iByoMJ7D7nw08ssMf2LwQ5+4sgH9rA8vYe
- NcaysXS8vVwZ750DNP8g78SQopmUwJu4ZKM/GSWlW5gOCPw7fvxAURZ2dCzIw/BKmvlOG2MrU
- QYvbYF2O/EGkRxL/g
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bEEsIumhp5o=:0ZxUh71xzpWeYtlU6QoRAJ
+ aFlZgn+TAFalRxFRqGivDRoMHQutUZl1Xu4sVn/H9hebAppWRT2OBW9bADrVoTY5t2XypEysm
+ X+tgKtXEq0xtSff72ELWV2Xq4MqMukkgGWrc29EY48lpN7ZJV6Nj7p5TA+HE/X8VR/9i4Yjei
+ uHtST1qcbnWFp3XmD2H+BrGpWIqdz97S44Rse8GTWPFTy2UqQG6kVa/KAl4tPk7WPPnhfc3aG
+ olWad2+r128EfcJa12JCrAC9CbazURQFDpf9/fmy7gFNn/lIyNSR+zaWCZQkYhV/iEfA7Awf9
+ DvvGTQTjOMquursbvaVYRnpNcvogpfIEQfWIFNvNZyCl828EbaJmLfIEniwbYcEQoeaT6sU4H
+ 1kGpG7k1N/7r06fY/sZh/piQbCr/xtl6hSJzjAUiayBX3HE6mqw0PHEniLsBGWRa6MhEP8YDo
+ dGQ+Pfjv2RdONDGmxAOgNbAQ0Z5cz0xaolBQgY8yBl7cVnU1+6Qbe8Lm5V6+F+c9IDA8bjvST
+ +A9MNjYU48KOye70eOBkvXL/yqS27PH+jSaQFOtIk7TPJEdVgf/M7Puho4CiXP8iL7UcF+GSC
+ yBOOZiQp12t5/NS6xE7rJ5xBojkXKggXz/DKB+ONdndjStzNyn2NmYlCubKhm7z+TlIwHelrE
+ efYLd1RNc39PuxsqLlKEZ0glVPDMjnB5In2+R5y4gFszsXQaSF7pZ1E1+LzoYEAoA+KP8GaB/
+ yRcleBfA1gUylLXTpyQpBd9KhkFrBr3C+fDR/tiMrUAYTYGat9j4TqPmez9vDCxR93WJfP1Bs
+ Gemzbqn6smDfkxKbSHcLorwK/h4lBpYr+AotH8Fl/X9rTn8ociVf2WDt3mEnC19xRfYZBFGXm
+ RXmpGYzESHiejnnMHMY7lHPoxku3IdhromBJQjdVs4c3R6ZhJU8no/GlxveiEk5VguIZZ8d1z
+ sHo50UKpT7MAZgjMvS7cQd36TEXBKQotFmOUtnKqcaPTezInzP3FXKTxcY/BbgRcdNN3t4i/E
+ rgg0fe4L70JtWIPFS4YGhBCKtjhlUbs14rNZTBBdr1CXO2/x3b8O0xGY986vhaTMrLA29TW18
+ JlRcLwbuJ04R6twO4aQHNCWuKk9my9Y/ue7kgI3f3zN1Z1cYTwtQrH/KWOIFVfntZdGR5c9xv
+ nllQzOOTZz4FStSx0oz57FF2+ffrjkb9XyyitdpayqDFcM2Uxi/tj6wVlZCHOxh8kdqK9SzGp
+ 77601QOe0XE5Pgssv
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0j5AQ5DuD8eUdmSbs9BkNnFE30xlyisVe
-Content-Type: multipart/mixed; boundary="A45oIHWwtNPktTX2uEvvCOgq79RXGb84M"
+--0TCD7dsxLYauccKZG1zO4Uhph5TbM6wiu
+Content-Type: multipart/mixed; boundary="e80hRYItKO5RGtaqBmfpG01Vn7AlazKzp"
 
---A45oIHWwtNPktTX2uEvvCOgq79RXGb84M
+--e80hRYItKO5RGtaqBmfpG01Vn7AlazKzp
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/2/25 =E4=B8=8A=E5=8D=884:22, Johannes Thumshirn wrote:
-> CC [M]  fs/btrfs/extent_io.o
-> fs/btrfs/extent_io.c: In function =E2=80=98btree_write_cache_pages=E2=80=
-=99:
-> fs/btrfs/extent_io.c:3959:34: error: =E2=80=98tree=E2=80=99 undeclared =
-(first use in this function); did you mean =E2=80=98true=E2=80=99?
->  3959 |  struct btrfs_fs_info *fs_info =3D tree->fs_info;
->       |                                  ^~~~
->       |                                  true
-> fs/btrfs/extent_io.c:3959:34: note: each undeclared identifier is repor=
-ted only once for each function it appears in
-> make[2]: *** [scripts/Makefile.build:268: fs/btrfs/extent_io.o] Error 1=
+On 2020/2/25 =E4=B8=8A=E5=8D=881:06, David Sterba wrote:
+> On Fri, Feb 21, 2020 at 09:40:32PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/2/21 =E4=B8=8B=E5=8D=889:35, David Sterba wrote:
+>>> On Wed, Feb 12, 2020 at 02:12:44PM +0800, Qu Wenruo wrote:
+>>>> @@ -4036,7 +4037,39 @@ int btree_write_cache_pages(struct address_sp=
+ace *mapping,
+>>>>  		end_write_bio(&epd, ret);
+>>>>  		return ret;
+>>>>  	}
+>>>> -	ret =3D flush_write_bio(&epd);
+>>>> +	/*
+>>>> +	 * If something went wrong, don't allow any metadata write bio to =
+be
+>>>> +	 * submitted.
+>>>> +	 *
+>>>> +	 * This would prevent use-after-free if we had dirty pages not
+>>>> +	 * cleaned up, which can still happen by fuzzed images.
+>>>> +	 *
+>>>> +	 * - Bad extent tree
+>>>> +	 *   Allowing existing tree block to be allocated for other trees.=
 
-> make[1]: *** [scripts/Makefile.build:505: fs/btrfs] Error 2
-> make: *** [Makefile:1681: fs] Error 2
+>>>> +	 *
+>>>> +	 * - Log tree operations
+>>>> +	 *   Exiting tree blocks get allocated to log tree, bumps its
+>>>> +	 *   generation, then get cleaned in tree re-balance.
+>>>> +	 *   Such tree block will not be written back, since it's clean,
+>>>> +	 *   thus no WRITTEN flag set.
+>>>> +	 *   And after log writes back, this tree block is not traced by
+>>>> +	 *   any dirty extent_io_tree.
+>>>> +	 *
+>>>> +	 * - Offending tree block gets re-dirtied from its original owner
+>>>> +	 *   Since it has bumped generation, no WRITTEN flag, it can be
+>>>> +	 *   reused without COWing. This tree block will not be traced
+>>>> +	 *   by btrfs_transaction::dirty_pages.
+>>>> +	 *
+>>>> +	 *   Now such dirty tree block will not be cleaned by any dirty
+>>>> +	 *   extent io tree. Thus we don't want to submit such wild eb
+>>>> +	 *   if the fs already has error.
+>>>> +	 */
+>>>> +	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+>>>> +		ret =3D flush_write_bio(&epd);
+>>>> +	} else {
+>>>> +		ret =3D -EUCLEAN;
+>>>> +		end_write_bio(&epd, ret);
+>>>> +	}
+>>>
+>>> This replaces one instance of flush_write_bio, would it make sense to=
+
+>>> wrap it to flush_write_bio or some other helper? There might be place=
+s
+>>> where not handling the fs error state would be acceptable, so eg.
+>>>
+>>> flush_write_bio =3D as it is now
+>>>
+>>> flush_write_bio_or_end =3D does the above
+>>>
+>>
+>> I don't believe there are other call sites needs such special handling=
+,
+>> thus a wrapper only used once doesn't make much sense.
+>>
+>> Unless we're going to introduce more path for btree writeback, current=
+
+>> one would be good enough I guess.
 >=20
-> Fixes: 75c39607eb0a ("btrfs: Don't submit any btree write bio if the fs=
- has errors")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> I see, thanks. The steps to reproduce are quite complicated already and=
 
-Just for reference, that @tree is removed in commit 0bad2c5142ee
-("btrfs: remove extent_page_data::tree").
+> expecting crafted data. There's probably more but would need a similarl=
+y
+> convoluted way of hitting a missing error code fixup.
 
-Thanks for the fix,
+The reproducer is complex, mostly because we're catching the problem at
+the final stage.
+
+In theory we should catch it as early as possible, although we can't
+catch it at tree-checker time, we should still be able to catch it at
+tree block allocation time.
+
+For create_tree_block() if we get an eb which has refs > 2, then it may
+indicate corrupted extent tree.
+IIRC I have submitted similar patch before, but not merged due to some
+false alert I guess, maybe it's time to verify that patch.
+
+Thanks,
 Qu
-> ---
->  fs/btrfs/extent_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+
 >=20
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 903a85d8fbe3..837262d54e28 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3956,7 +3956,7 @@ int btree_write_cache_pages(struct address_space =
-*mapping,
->  		.extent_locked =3D 0,
->  		.sync_io =3D wbc->sync_mode =3D=3D WB_SYNC_ALL,
->  	};
-> -	struct btrfs_fs_info *fs_info =3D tree->fs_info;
-> +	struct btrfs_fs_info *fs_info =3D BTRFS_I(mapping->host)->root->fs_in=
-fo;
->  	int ret =3D 0;
->  	int done =3D 0;
->  	int nr_to_write_done =3D 0;
+> We could add more invariant checks that would catch that something is
+> done at a wrong time, like here metadata writeback after everything has=
+
+> been shut down.
 >=20
 
 
---A45oIHWwtNPktTX2uEvvCOgq79RXGb84M--
+--e80hRYItKO5RGtaqBmfpG01Vn7AlazKzp--
 
---0j5AQ5DuD8eUdmSbs9BkNnFE30xlyisVe
+--0TCD7dsxLYauccKZG1zO4Uhph5TbM6wiu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5UYjwACgkQwj2R86El
-/qjzkQf9Eclaqe5R8pRl3sS6jw427Zwiyu6NzEZ7kXKHFrFTHST6xIR0eUPJpX6n
-A6QDcdyPsVV9zq0iaLSdhzR2UHFQHOBjm+fOutrv5WrO60aR+3I+sY6V/F4KI+Wd
-GbKxjKXW/RcIKW66F/yPGDaLuCQySCVAIhBP/mqlsiir4MsoppWMa+IcCAPnuz/z
-NsfzhZU2jS8b//tCT5YSTGiGGYQznrQ7Kn0+k+CqQdgiZAstO35YqbnxQRapR2Ve
-zUjUPCt8xtRIxjCvBeQoaWN/pnOhwPURyRn3UKOJuE0ZQ6Zg08w8FEpOrrgoyKaj
-VDQ+fmbhEaVsGc/h/36fVSyTwwzzfw==
-=/YV1
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5UZAUACgkQwj2R86El
+/qixdAf/QFHjdsXIF5bz5MSWQ/Wq5/dugyRDUAjvUfGgWOei1zP7dsFcYLsJ0kCe
+MwKqUxqvidu4lggVqo8ZJ39lVbmzruNOzAVKGzT9rZMOXKB01w8V67ACshXNuLJr
+tVxknRRkM/5cyhCs2GnBG3H1ep/S4x5cHKDOplQzJqwJ0aHBNykwyLkQqzTFREJR
+3WXafyG1F2XYaEdVtnR4YWCh+XdpE6VwE0zTj75+EBMW9hMRTKku+KWPkyYs7JaN
+NOozYCC+gbDIuQELyrus4e4xh2XQfnF12IsGZNqyze0JZnv5H2olkcHAYEt5sM4V
+AY23qBiQ/IEKMYclioesLg5chUUUzA==
+=TxV9
 -----END PGP SIGNATURE-----
 
---0j5AQ5DuD8eUdmSbs9BkNnFE30xlyisVe--
+--0TCD7dsxLYauccKZG1zO4Uhph5TbM6wiu--
