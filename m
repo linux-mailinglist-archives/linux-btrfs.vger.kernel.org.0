@@ -2,211 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A79F16B855
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 04:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2410316B85A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 05:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgBYD5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 22:57:24 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:34241 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728988AbgBYD5W (ORCPT
+        id S1728862AbgBYEAi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 23:00:38 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:47414 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728846AbgBYEAi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 22:57:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1582603042; x=1614139042;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=D/o4C3jAvJlpnMDRfZCjJPHU27WatnH5haOBXeabW0s=;
-  b=VtXvjIwsHxPczzpSOne34AWAbl6cQk9eJ1tOEHoSABRQtlR5zKKzGTgJ
-   rdBtGYEiNvtGxyPHqhsfoqHe2zxEOCihfTt0qruldTVPLASBcTU3zbq5x
-   QcjVqjFtKtMuDj8hveKVJfVyAxgbh+YFTl1kvp3QcUIPp+DZ/DSblykHB
-   asT+OFdW2WPahxSKfzzTjV5XbFXw+8ECEfgF+3BAm29LxkphDzqfcWclH
-   aSHLW329jkbBqdtra3Gt1tUWX7n7zOLkYsEndHhIiD4fZ7K6bT6uXQY9C
-   t3OugJA+lVb9/gLWTKrb7wWpash1RB8GsozMWMFqhtOkZTHuJ34rZN3py
-   g==;
-IronPort-SDR: /f1drOPCf0gh+1eCfHK2pYk21die39adGsIo/qVQz/dRbPUGSx32MGAsongHT+C1MI5KwTBjgl
- OqxYaKUbhMxCPZAE19fmpl6GtaXqm96IatOH2MPX2puVooywDGjEZ404wk/tIZyB5WHZ1qloaq
- IoYQcUgUXU74/XDpIxOMmYrLai2JfZcdLMvanI6jmxyA50hrlnOQvwNnw3lpKwg7j4IDc2qNPy
- 5X5wvFZKvIOOig9q+mXXOPZC21RfY21j47hZpaHsLBd4+CL5nTe6ZpaSJXVfHl1jSlmjQdjczw
- OB8=
-X-IronPort-AV: E=Sophos;i="5.70,482,1574092800"; 
-   d="scan'208";a="131168315"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Feb 2020 11:57:22 +0800
-IronPort-SDR: C5vn9e8GFqmuKJF4x7o0E/JLtvhcZ/Uax4yoXf1AGASmQRSufS0T1azmDYoZwMVr+VduzDBtw3
- tVNTn57x/pmK0V3cnoGZozHG4Zu88Fa7KhzwsDJQwJK4yZjXVNgaK+C3j/wgw35RQCcWNAT1xr
- mwmxXEqK7DNO37yfTwndaBwzI92McT/zJ7LaSsBzBYtedZgyzQ/UlpX+TinoFXwsXQydSM+t5a
- ms20LpZ2qaRUrEDO6bCRNCgcSzl+8wScmLeQKbIelpN6PzqzqhBaMqPtH3pBntWrBnAWxk65mR
- CuJt69nhy/KxJundFyTxoI9C
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 19:49:50 -0800
-IronPort-SDR: AvEXL6ulo6szn/RhkHuGEOyeZuzdJGy8h7iHHGWdvZES1O+t0FgD00K3kWGGVwEQZeDGnMnCKR
- vfM/EGzp//Xm5IxkIoKmsVp1DaVZ0TqBoDJv996DTbdg30NeaRkTLNbRHcTWJYvgLaC8ze+x6t
- 2pfjSJZB7Qik0ojdY7S5FDRDXks/T0Zao3q/Eme9U0bISAxoxyuFtT6Q7v0T2lKAqjoCPhouLR
- LYYXgu3rK0D7PY+08k8cKMynRBvtYbY4jAed7PCTCrevinVJHLeNNbI7mrVtAkf5ElRjvS9KwA
- rpc=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 24 Feb 2020 19:57:22 -0800
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v3 21/21] btrfs: factor out prepare_allocation()
-Date:   Tue, 25 Feb 2020 12:56:26 +0900
-Message-Id: <20200225035626.1049501-22-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200225035626.1049501-1-naohiro.aota@wdc.com>
-References: <20200225035626.1049501-1-naohiro.aota@wdc.com>
+        Mon, 24 Feb 2020 23:00:38 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01P3xYsw177552;
+        Tue, 25 Feb 2020 04:00:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ktLGmEGWz4Iu7baH4gMWCQOD/oz6lcC4Imrz6G4DM00=;
+ b=J3V9CBMFejkNAaj1osOCxDQIA5++ntxPONTWYdTnv7D50O6zMmfz75A36PB0VPzVVWUC
+ Mv5gLl4CDZ+3ulSPiLE4Jy9fxDZzeFpMUZ0nnSOqlqMTR0rhCO8OHuBgpy2LsC7+1G6A
+ YAsovLe9U7ZhvhQAut+phbuHz8xB1cW1uy7clWO3ZFn3oOkZ9hOxf69SiAPKrvJUQ4uK
+ 2lSHHWDkcKl+m2xarMkk2b8bjKzNW4ep7zQMH/a1VIa1JfkfXqSLnnnlyrlIhwdHE7/B
+ bPmZ0tzxgXUpSL/P+BqAp3OcqSuRnD0uI2B7bH7AApgf7WY3jZ82RNaOa36hCi8+eVTQ QA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2ycppr957g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Feb 2020 04:00:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01P3wCmB148199;
+        Tue, 25 Feb 2020 04:00:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2ybdsjbbnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Feb 2020 04:00:33 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01P40Vlk005662;
+        Tue, 25 Feb 2020 04:00:31 GMT
+Received: from [192.168.1.145] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Feb 2020 20:00:31 -0800
+Subject: Re: [PATCH v2] btrfs: merge unlocking to common exit block in
+ btrfs_commit_transaction
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Johannes.Thumshirn@wdc.com
+References: <133258557ae4387d6a1d01bafa3e5214ca91228d.1582302545.git.dsterba@suse.com>
+ <20200224151345.14174-1-dsterba@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <7f7008d8-f501-7181-253d-df5bc1a1e213@oracle.com>
+Date:   Tue, 25 Feb 2020 12:00:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200224151345.14174-1-dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9541 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002250030
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9541 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 impostorscore=0
+ spamscore=0 phishscore=0 mlxscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002250030
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This function finally factor out prepare_allocation() form
-find_free_extent(). This function is called before the allocation loop and
-a specific allocator function like prepare_allocation_clustered() should
-initialize their private information and can set proper hint_byte to
-indicate where to start the allocation with.
+On 2/24/20 11:13 PM, David Sterba wrote:
+> The tree_log_mutex and reloc_mutex locks are properly nested so we can
+> simplify error handling and add labels for them. This reduces line count
+> of the function.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+> 
+> v2:
+> - fixed label after commit_fs_roots, to point to unlock_tree_log
+> - added comment after btrfs_handle_fs_error and keep the locks as is
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent-tree.c | 110 +++++++++++++++++++++++++----------------
- 1 file changed, 68 insertions(+), 42 deletions(-)
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 055097bff12b..1340485b392b 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3866,6 +3866,71 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
- 	return -ENOSPC;
- }
- 
-+static int prepare_allocation_clustered(struct btrfs_fs_info *fs_info,
-+					struct find_free_extent_ctl *ffe_ctl,
-+					struct btrfs_space_info *space_info,
-+					struct btrfs_key *ins)
-+{
-+	/*
-+	 * If our free space is heavily fragmented we may not be able to make
-+	 * big contiguous allocations, so instead of doing the expensive search
-+	 * for free space, simply return ENOSPC with our max_extent_size so we
-+	 * can go ahead and search for a more manageable chunk.
-+	 *
-+	 * If our max_extent_size is large enough for our allocation simply
-+	 * disable clustering since we will likely not be able to find enough
-+	 * space to create a cluster and induce latency trying.
-+	 */
-+	if (unlikely(space_info->max_extent_size)) {
-+		spin_lock(&space_info->lock);
-+		if (space_info->max_extent_size &&
-+		    ffe_ctl->num_bytes > space_info->max_extent_size) {
-+			ins->offset = space_info->max_extent_size;
-+			spin_unlock(&space_info->lock);
-+			return -ENOSPC;
-+		} else if (space_info->max_extent_size) {
-+			ffe_ctl->use_cluster = false;
-+		}
-+		spin_unlock(&space_info->lock);
-+	}
-+
-+	ffe_ctl->last_ptr = fetch_cluster_info(fs_info, space_info,
-+					       &ffe_ctl->empty_cluster);
-+	if (ffe_ctl->last_ptr) {
-+		struct btrfs_free_cluster *last_ptr = ffe_ctl->last_ptr;
-+
-+		spin_lock(&last_ptr->lock);
-+		if (last_ptr->block_group)
-+			ffe_ctl->hint_byte = last_ptr->window_start;
-+		if (last_ptr->fragmented) {
-+			/*
-+			 * We still set window_start so we can keep track of the
-+			 * last place we found an allocation to try and save
-+			 * some time.
-+			 */
-+			ffe_ctl->hint_byte = last_ptr->window_start;
-+			ffe_ctl->use_cluster = false;
-+		}
-+		spin_unlock(&last_ptr->lock);
-+	}
-+
-+	return 0;
-+}
-+
-+static int prepare_allocation(struct btrfs_fs_info *fs_info,
-+			      struct find_free_extent_ctl *ffe_ctl,
-+			      struct btrfs_space_info *space_info,
-+			      struct btrfs_key *ins)
-+{
-+	switch (ffe_ctl->policy) {
-+	case BTRFS_EXTENT_ALLOC_CLUSTERED:
-+		return prepare_allocation_clustered(fs_info, ffe_ctl,
-+						    space_info, ins);
-+	default:
-+		BUG();
-+	}
-+}
-+
- /*
-  * walks the btree of allocated extents and find a hole of a given size.
-  * The key ins is changed to record the hole:
-@@ -3935,48 +4000,9 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
- 		return -ENOSPC;
- 	}
- 
--	/*
--	 * If our free space is heavily fragmented we may not be able to make
--	 * big contiguous allocations, so instead of doing the expensive search
--	 * for free space, simply return ENOSPC with our max_extent_size so we
--	 * can go ahead and search for a more manageable chunk.
--	 *
--	 * If our max_extent_size is large enough for our allocation simply
--	 * disable clustering since we will likely not be able to find enough
--	 * space to create a cluster and induce latency trying.
--	 */
--	if (unlikely(space_info->max_extent_size)) {
--		spin_lock(&space_info->lock);
--		if (space_info->max_extent_size &&
--		    num_bytes > space_info->max_extent_size) {
--			ins->offset = space_info->max_extent_size;
--			spin_unlock(&space_info->lock);
--			return -ENOSPC;
--		} else if (space_info->max_extent_size) {
--			ffe_ctl.use_cluster = false;
--		}
--		spin_unlock(&space_info->lock);
--	}
--
--	ffe_ctl.last_ptr = fetch_cluster_info(fs_info, space_info,
--					      &ffe_ctl.empty_cluster);
--	if (ffe_ctl.last_ptr) {
--		struct btrfs_free_cluster *last_ptr = ffe_ctl.last_ptr;
--
--		spin_lock(&last_ptr->lock);
--		if (last_ptr->block_group)
--			ffe_ctl.hint_byte = last_ptr->window_start;
--		if (last_ptr->fragmented) {
--			/*
--			 * We still set window_start so we can keep track of the
--			 * last place we found an allocation to try and save
--			 * some time.
--			 */
--			ffe_ctl.hint_byte = last_ptr->window_start;
--			ffe_ctl.use_cluster = false;
--		}
--		spin_unlock(&last_ptr->lock);
--	}
-+	ret = prepare_allocation(fs_info, &ffe_ctl, space_info, ins);
-+	if (ret < 0)
-+		return ret;
- 
- 	ffe_ctl.search_start = max(ffe_ctl.search_start,
- 				   first_logical_byte(fs_info, 0));
--- 
-2.25.1
 
