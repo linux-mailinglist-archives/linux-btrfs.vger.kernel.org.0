@@ -2,89 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2410316B85A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 05:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA6E16BD5E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 10:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgBYEAi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 23:00:38 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:47414 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728846AbgBYEAi (ORCPT
+        id S1729536AbgBYJhE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Feb 2020 04:37:04 -0500
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:36853 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729130AbgBYJhD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 23:00:38 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01P3xYsw177552;
-        Tue, 25 Feb 2020 04:00:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ktLGmEGWz4Iu7baH4gMWCQOD/oz6lcC4Imrz6G4DM00=;
- b=J3V9CBMFejkNAaj1osOCxDQIA5++ntxPONTWYdTnv7D50O6zMmfz75A36PB0VPzVVWUC
- Mv5gLl4CDZ+3ulSPiLE4Jy9fxDZzeFpMUZ0nnSOqlqMTR0rhCO8OHuBgpy2LsC7+1G6A
- YAsovLe9U7ZhvhQAut+phbuHz8xB1cW1uy7clWO3ZFn3oOkZ9hOxf69SiAPKrvJUQ4uK
- 2lSHHWDkcKl+m2xarMkk2b8bjKzNW4ep7zQMH/a1VIa1JfkfXqSLnnnlyrlIhwdHE7/B
- bPmZ0tzxgXUpSL/P+BqAp3OcqSuRnD0uI2B7bH7AApgf7WY3jZ82RNaOa36hCi8+eVTQ QA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2ycppr957g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Feb 2020 04:00:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01P3wCmB148199;
-        Tue, 25 Feb 2020 04:00:33 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2ybdsjbbnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Feb 2020 04:00:33 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01P40Vlk005662;
-        Tue, 25 Feb 2020 04:00:31 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Feb 2020 20:00:31 -0800
-Subject: Re: [PATCH v2] btrfs: merge unlocking to common exit block in
- btrfs_commit_transaction
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Johannes.Thumshirn@wdc.com
-References: <133258557ae4387d6a1d01bafa3e5214ca91228d.1582302545.git.dsterba@suse.com>
- <20200224151345.14174-1-dsterba@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <7f7008d8-f501-7181-253d-df5bc1a1e213@oracle.com>
-Date:   Tue, 25 Feb 2020 12:00:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 25 Feb 2020 04:37:03 -0500
+Received: by mail-vs1-f66.google.com with SMTP id a2so7586208vso.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Feb 2020 01:37:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=HQSvyZrho8qfIzLFxWK02wQlEaIAB/WSm2swJ+ej/ww=;
+        b=MtGLgMqG3o2lErCazbcC6p5PQny0IGvUOnF3xiPLZIyUQzEk2cqHcoMVVTQPYg18qQ
+         atMimRhkkgAm5pW+REBSm4fiXNbX1q5upihyg8t197uw7R28WGou880lL/acWIWpw5vK
+         +VC93OiCC5Gn9CvDqKTOJ/cVX3JOpa7kfL7U00WCnTO+Dx9AlymAdAVj2zqXHG4Lj/ak
+         uZiaXHfwqLessiCIXywBOR3ljR3ZyCZt979HlJSu5IZU2S0CZ1Sg/Ndh8nZs1gMfrp+u
+         dLHAL//QJJZR8ApoWB5tWdt5AcflAGMML2r9RUIw69X0IIVkl3JsJC9oY0pjlvikMH6a
+         cSMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=HQSvyZrho8qfIzLFxWK02wQlEaIAB/WSm2swJ+ej/ww=;
+        b=NRlRicJKaD2HYzB6/2iMVeh+giC2T7KoI1c5u/SpxoFepKvHkYX8AajPXYZXyfM89f
+         AreeceMcZVdAF8sib2NKGZPstEJ6WHwNrUQX/hxxFUot/vagDLlf80kD72uhIeqA08Xo
+         8NOrcHHl1i6VqlYvTONLR9MhEcpyWDw7I13TMhlXJQKSP/Y+bkeRfUdsEY7U6HYIlbGN
+         X645dAUMG7Rb16QxzQUUrWL/DygqKcdf1LevidYE7xq7jIIAiG8MNm9qFkIrqgInXdXc
+         y7ajFxb70Ur4U6l6nTEKDWFBPsBMOXQLR0Rq1yn09QDlyKk/CzsI8HEcDWor5d9fo/gp
+         99yg==
+X-Gm-Message-State: APjAAAU5RtFVejaE8QpSnNa8w3W/K2FieVDOriN2zsIz/3izOwtkX2IN
+        VnBfN7o4o7aRIeO6Ke6TtwPDUvSK4BalaRnC65uwanN6
+X-Google-Smtp-Source: APXvYqyWVStw9QgV+lF7/NzY9w8QE7RthfhuPLXOOw3tc+Zt1Ou+T6Tega2PQeNvvNd0SICmC2itv1SYjMnxxxs8Sjo=
+X-Received: by 2002:a67:8010:: with SMTP id b16mr28247420vsd.90.1582623422528;
+ Tue, 25 Feb 2020 01:37:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200224151345.14174-1-dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9541 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002250030
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9541 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 suspectscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002250030
+References: <20200223234246.GA1208467@mit.edu> <0c0fa96f-60d6-6a66-3542-d78763bbe269@suse.com>
+ <20200224064605.GA1258811@mit.edu> <CAL3q7H4-edAwsSc0Z+dYVzphm6-D1BjvToywL0A2v6unsCCtyg@mail.gmail.com>
+ <20200224215600.GB6688@mit.edu>
+In-Reply-To: <20200224215600.GB6688@mit.edu>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 25 Feb 2020 09:36:51 +0000
+Message-ID: <CAL3q7H5QDqQzj5a12O=saddTnE+UzhrteBk0kysxC9Vr8cEZMA@mail.gmail.com>
+Subject: Re: btrfs: sleeping function called from invalid context
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/24/20 11:13 PM, David Sterba wrote:
-> The tree_log_mutex and reloc_mutex locks are properly nested so we can
-> simplify error handling and add labels for them. This reduces line count
-> of the function.
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
-> 
-> v2:
-> - fixed label after commit_fs_roots, to point to unlock_tree_log
-> - added comment after btrfs_handle_fs_error and keep the locks as is
+On Mon, Feb 24, 2020 at 9:56 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Feb 24, 2020 at 10:14:06AM +0000, Filipe Manana wrote:
+> > We do have some tests that fail in any kernel release so far. Some
+> > because the corresponding fixes are not yet merged or some fail often
+> > due to known problems.
+> > Looking at your list of failure, I see some that shouldn't be failing
+> > like btrfs/053.
+>
+> I've sent you the compressed tarfile with the test artifacts under
+> separate cover.  The files that you'll probably want to look at first
+> are ./runtests.log and ./syslog.  The xfstests results artifacts will
+> be in ./btrfs/results-default/.
+>
+> If you have a wiki page or some other pointer of what tests that you
+> expect to fail, I can put them into a btrfs-specific or file system
+> configuration specific exclude file.  For example, see [1] and [2].
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+I don't think we do. Usually people keep their own list.
+It's also very frequent to have tests fail because the corresponding
+patches that fix them were not yet merged, specially for recently
+added tests.
+
+>
+> [1] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-a=
+ppliance/files/root/fs/ext4/exclude
+> [2] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-a=
+ppliance/files/root/fs/ext4/cfg/bigalloc.exclude
+>
+> I'm planning on running btrfs and xfs tests more frequently to support
+> some $WORK initiatives.  So if there are tests which are known
+> failures that would be good for me to suppress, and if there are some
+> file system configurations that would be useful for me to run, please
+> let me know and I'm happy to set them so that gce-xfstests and
+> kvm-xfstests can better test btrfs.
+>
+> Also, I assume you do have some btrfs developers who are regularly
+> running xfstests,
+
+I run them daily. And I suppose other developers run them frequently as wel=
+l.
+
+> so I don't know how helpful this would be to you,
+> but given that I'm going to be running the tests *anyway*, if it would
+> be helpful for me to forward test results to you, or to only send you
+> a note when test regressions show up, I'm happy to do that.
+
+Regarding the failures you got:
+
+btrfs/056 - failure to setup dmflakey, this happens sporadically to me
+and others as well, for any test that uses dmflakey and it seems to
+happen more often when running dmflakey tests in sequence
+
+btrfs/153 - has been failing for a long time, known issue, just ignore
+it for now
+
+btrfs/204 - expected to fail, there's a fix in the mailing list but it
+wasn't merged yet (https://patchwork.kernel.org/patch/11357415/)
+
+generic/065 - another failure to create the dmflakey device
+
+generic/260 - expected to fail on btrfs, due to the way space is
+allocated and managed in btrfs
+
+generic/475 - this one can fail often for several different reasons.
+Some reasons why it can fail are fixed by patches sent to rc3 for
+example, other problems like the one you hit (missing file extent
+holes) are addressed by a patchset that is in the integration branch
+and will likely go into the next merge window
+
+generic/562 - fails with ENOSPC. Doesn't fail for me here, needs to be
+investigated.
+
+shared/298 - The test fails with error trying to open a file that
+doesn't exists apparently (/root/xfstests/src/parse-extent-tree.awk).
+Never seen this failure in my vms, the test always passes for me.
+Needs investigation.
+
+Thanks for the report and logs.
 
 
+>
+> Cheers,
+>
+>                                         - Ted
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
