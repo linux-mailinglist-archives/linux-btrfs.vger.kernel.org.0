@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8531816B844
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 04:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029F216B845
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 04:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgBYD5F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 22:57:05 -0500
+        id S1728943AbgBYD5I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 22:57:08 -0500
 Received: from esa5.hgst.iphmx.com ([216.71.153.144]:34216 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728866AbgBYD5F (ORCPT
+        with ESMTP id S1728866AbgBYD5I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Feb 2020 22:57:05 -0500
+        Mon, 24 Feb 2020 22:57:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1582603025; x=1614139025;
+  t=1582603028; x=1614139028;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oUGVNLNv/Xw1+4E0FweGNhJuWYzoIgjs7aWOG25iDyo=;
-  b=C24u+x5ujizJutypIotzv6Pw9baaVyN0KKAPhqe7t608jZpL5ZLsT1Tk
-   AKFz7iMKQetm/y+lRYfXdIL+ZaswkRYUoXsrumZPkCgiOTUEKqKi3Ul8W
-   G6dbD4AIgGvlLX8h77RXu+yr3zAoaoB+IgAAyO1i/GmHNwqpkuXWigbqL
-   94gDljjdH1WmpkfhjOgqSKHVA6VvCgYd0heQyxTKuVJ+rOGefCbB0OvQX
-   eX41XoHj1t/FW3ysUprlbFZ2dte84TRelv0bz/q1/Cmx+m/97gZS4bb3a
-   oTqJVOHZTthsPnATdRL0ticafq83Wv7idD9w2u6Fw9ZunLviqRMwhBrD0
-   Q==;
-IronPort-SDR: +SiF8UWNWXNUy+0PH27sFWOPi0PFa9ap1VCwE0TwtTih1Z3xqP5fAMGjxK6zHmtKce9O327NTX
- 3C8ngYseMq/LBlHWiuyTUG1WGu0RNcMolYcRpqRedF3RRhfWiwkSAJm6qS270QtCH3mnjMR57t
- NTVKaSDLo04CzfySreHnbhFM7LozbYcmvF2Tu67ebeQSAGDlEJEodGvHeZsd3CY1x2N4PENWjL
- zak5W3z91ka1jRTiAWoTFQ9tuXaCOmci3/z/ie55ELGb2tWkunOk4dr89zL9Qb/h5fH0qB6PTt
- 7uI=
+  bh=p76b2Z9W1j9sNe0wGDijDSAPLjG4vHyi/VECMPT1Duc=;
+  b=bvPi3JaR4gBNASKqSnC0KEUJhn3QUUIW8al41uWjy7qoj6y1RE+nt6J1
+   Tlh0ffhPZKfshN8NADQrtNb9bVFX6n+zASyAuZumCyp6k2lsaEfM7UGqr
+   3U3kKh06VW19NmpoVqKnSjPtg0Bx66tfjkDpUj+N+xPJL5ib++Y2r99sX
+   8Zx9GIs+P15OtubsrN6hNSpjhA3wF3qhuJNL79Y40141A2uPf1UWRdlMs
+   NSmN4lt4CYfBZkx5fMPaNMlnSgcpqI23/koDe4zeOgmDF+GiGxhJZgVwT
+   JNqkHQMMrAz0Lt/pfPufV0Z2cRCStm9g1zhMlCcf/Ywfoas9wIZbasNCa
+   w==;
+IronPort-SDR: qKRdP/wVg66FC74EQzf+D+BJCJvmbjIJN5jf3fxCOy1NzzPg8vu5kVd2KteeScaNIAVQK87X/g
+ 9f9OF5JSPG8qx28NWYyThdeJ5f/ZZWyh2hkVAJARWu4CBv/nob+b8XHudrsPOUdnrkN0K89Su7
+ l8zPYUdUQJH763rdj9gOmBBReoeTAU/+ieT48FDxIPh4SlTWAzUjzSbk0OmjHED24srKCuJW6r
+ wvEUmh1oi5juyt3RhytqmDsrzrMJ6VlwRoK15fEku9INaJyI/cneQkobIbBur+0QadaAbUHVCR
+ KNE=
 X-IronPort-AV: E=Sophos;i="5.70,482,1574092800"; 
-   d="scan'208";a="131168270"
+   d="scan'208";a="131168277"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Feb 2020 11:56:59 +0800
-IronPort-SDR: aXty77n9zTc4eca0Nj5sxe2B9m5eaDEXghoifpSwUkasHc/4waJSblTQf32fWmUn3FY/BulMG5
- DrJqmmp1SKHmLEBg2v7f1CrkJg/TzexGr6QYej3pBhddsadez+pg/YemVdKwLfQ536TiaM5rwd
- C1Koi1O7Xx/G67/bChlcwUVhcXC5dXe+zPnnAVQacXZcD3eErxGnw0XUBSxLBo5Rsek1HWFXuY
- Rb7qQWsOqEtteT3fQ2FJobZt3KhEwSTwWHE1Zfx2N+BnTcVjzdlqcwq+XSIZ1VVZyIdmQSBZZy
- UaZ2s4DcXz5IMeBNUrVb9Mzo
+  by ob1.hgst.iphmx.com with ESMTP; 25 Feb 2020 11:57:00 +0800
+IronPort-SDR: P0iy3/Z6ZKKVTte6G8eNRqQkaJnjPXrCa3XbV9Tl9Fod8KgXetQYulS/gc6HW6qjTRm/BBtbPh
+ tftw59/3ubWzA4NgBmGhm5nOeZr30XKuMzbj9hcVT6q/I7Wh8quoLBEcTctXywupwXgOsaOe4r
+ EWbpUV/Zqsd2+pKbHRWKHfREqX5WjyAE1c1JvPrbfarTQHFDi8fiDE5gs9ywUSSILuwjlsvNHf
+ rZSXP3Mpag9R0r3aNp8k/hj8J6gZyCDRP1bBFOf/JH0P+nNI52zOCaaC0fhRryoaqsFs4t+SCf
+ nW3KnsMSXU22OfrwxqB2MI2g
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 19:49:27 -0800
-IronPort-SDR: PDgzJIZcZldsS0B55yUMsUMnEuJEVi3tX3HNlwY6HwskILyxuoyVU8sGwVcR9gx062UgWMzX/3
- OInz7ee8CXh5IzJkiVv2US1yPz8YGYqipWMeh+fgUR3Yuw0BQdmS9BFLkZrgPOP2oMx0Bc9fHC
- RCM3pQO72uIRdZSBV+FTFcQfOSQZA3aBx51Azllal1KKEKVjcHvTYOLAlFnOSKw3aRw9S1Xvdj
- fDYln1cZd3pTvOtHfOavEQZJIPd05GL7U53xNBAtr7vwBSGAHpx0FjvY8cym9WP1bCWmqQW8C2
- 97g=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 19:49:28 -0800
+IronPort-SDR: PyI20wHEXcTfzvowH0Gj/vPNtk93S4lcAUVnc/KJEASRA2TNJYxlW76h5/+hBIe4jMX2ZkRh0s
+ MVoNUZo5hNapbHT1CVTQNBAFyxJ9AiQHgkSvfdhWsY06Ui4W7C4npvRYDo1p95eQSQu6tGE5zX
+ q9nVJciZj8CKUQ0crqa1Cexe/QcTvMXohSm+xElpyuiKB3vQFEIGgw8wdo+3cHme65Zvtyj7EF
+ Koxg06L0XuAiepVUNjDlhNxiBfX1/q0idjUEIqenKLM8ECsMG9TuQYhYQjqRcp0rko/dZwcMyP
+ 1bA=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 24 Feb 2020 19:56:58 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 24 Feb 2020 19:57:00 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         Nikolay Borisov <nborisov@suse.com>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 03/21] btrfs: introduce chunk allocation policy
-Date:   Tue, 25 Feb 2020 12:56:08 +0900
-Message-Id: <20200225035626.1049501-4-naohiro.aota@wdc.com>
+Subject: [PATCH v3 04/21] btrfs: refactor find_free_dev_extent_start()
+Date:   Tue, 25 Feb 2020 12:56:09 +0900
+Message-Id: <20200225035626.1049501-5-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200225035626.1049501-1-naohiro.aota@wdc.com>
 References: <20200225035626.1049501-1-naohiro.aota@wdc.com>
@@ -68,55 +68,133 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This commit introduces chunk allocation policy for btrfs. This policy
-controls how btrfs allocate a chunk and device extents from devices.
+Factor out two functions from find_free_dev_extent_start().
+dev_extent_search_start() decides the starting position of the search.
+dev_extent_hole_check() checks if a hole found is suitable for device
+extent allocation.
 
-There is no functional change introduced with this commit.
+These functions also have the switch-cases to change the allocation
+behavior depending on the policy.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/volumes.c | 1 +
- fs/btrfs/volumes.h | 6 ++++++
- 2 files changed, 7 insertions(+)
+ fs/btrfs/volumes.c | 80 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 60 insertions(+), 20 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 911c6b7c650b..9fcbed9b57f9 100644
+index 9fcbed9b57f9..5f4e875a42f6 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1209,6 +1209,7 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- 	fs_devices->opened = 1;
- 	fs_devices->latest_bdev = latest_dev->bdev;
- 	fs_devices->total_rw_bytes = 0;
-+	fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_REGULAR;
- out:
- 	return ret;
+@@ -1384,6 +1384,61 @@ static bool contains_pending_extent(struct btrfs_device *device, u64 *start,
+ 	return false;
  }
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 309cda477589..6f462b337fce 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -209,6 +209,10 @@ BTRFS_DEVICE_GETSET_FUNCS(total_bytes);
- BTRFS_DEVICE_GETSET_FUNCS(disk_total_bytes);
- BTRFS_DEVICE_GETSET_FUNCS(bytes_used);
  
-+enum btrfs_chunk_allocation_policy {
-+	BTRFS_CHUNK_ALLOC_REGULAR,
-+};
++static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
++{
++	switch (device->fs_devices->chunk_alloc_policy) {
++	case BTRFS_CHUNK_ALLOC_REGULAR:
++		/*
++		 * We don't want to overwrite the superblock on the
++		 * drive nor any area used by the boot loader (grub
++		 * for example), so we make sure to start at an offset
++		 * of at least 1MB.
++		 */
++		return max_t(u64, start, SZ_1M);
++	default:
++		BUG();
++	}
++}
 +
- struct btrfs_fs_devices {
- 	u8 fsid[BTRFS_FSID_SIZE]; /* FS specific uuid */
- 	u8 metadata_uuid[BTRFS_FSID_SIZE];
-@@ -260,6 +264,8 @@ struct btrfs_fs_devices {
- 	struct kobject *devices_kobj;
- 	struct kobject *devinfo_kobj;
- 	struct completion kobj_unregister;
++/**
++ * dev_extent_hole_check - check if specified hole is suitable for allocation
++ * @device:	the device which we have the hole
++ * @hole_start: starting position of the hole
++ * @hole_size:	the size of the hole
++ * @num_bytes:	the size of the free space that we need
++ *
++ * This function may modify @hole_start and @hole_end to reflect the
++ * suitable position for allocation. Returns 1 if hole position is
++ * updated, 0 otherwise.
++ */
++static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
++				  u64 *hole_size, u64 num_bytes)
++{
++	bool changed = false;
++	u64 hole_end = *hole_start + *hole_size;
 +
-+	enum btrfs_chunk_allocation_policy chunk_alloc_policy;
- };
++	/*
++	 * Have to check before we set max_hole_start, otherwise we
++	 * could end up sending back this offset anyway.
++	 */
++	if (contains_pending_extent(device, hole_start, *hole_size)) {
++		if (hole_end >= *hole_start)
++			*hole_size = hole_end - *hole_start;
++		else
++			*hole_size = 0;
++		changed = true;
++	}
++
++	switch (device->fs_devices->chunk_alloc_policy) {
++	case BTRFS_CHUNK_ALLOC_REGULAR:
++		/* No extra check */
++		break;
++	default:
++		BUG();
++	}
++
++	return changed;
++}
  
- #define BTRFS_BIO_INLINE_CSUM_SIZE	64
+ /*
+  * find_free_dev_extent_start - find free space in the specified device
+@@ -1430,12 +1485,7 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	int slot;
+ 	struct extent_buffer *l;
+ 
+-	/*
+-	 * We don't want to overwrite the superblock on the drive nor any area
+-	 * used by the boot loader (grub for example), so we make sure to start
+-	 * at an offset of at least 1MB.
+-	 */
+-	search_start = max_t(u64, search_start, SZ_1M);
++	search_start = dev_extent_search_start(device, search_start);
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+@@ -1493,18 +1543,8 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 
+ 		if (key.offset > search_start) {
+ 			hole_size = key.offset - search_start;
+-
+-			/*
+-			 * Have to check before we set max_hole_start, otherwise
+-			 * we could end up sending back this offset anyway.
+-			 */
+-			if (contains_pending_extent(device, &search_start,
+-						    hole_size)) {
+-				if (key.offset >= search_start)
+-					hole_size = key.offset - search_start;
+-				else
+-					hole_size = 0;
+-			}
++			dev_extent_hole_check(device, &search_start, &hole_size,
++					      num_bytes);
+ 
+ 			if (hole_size > max_hole_size) {
+ 				max_hole_start = search_start;
+@@ -1543,8 +1583,8 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	 */
+ 	if (search_end > search_start) {
+ 		hole_size = search_end - search_start;
+-
+-		if (contains_pending_extent(device, &search_start, hole_size)) {
++		if (dev_extent_hole_check(device, &search_start, &hole_size,
++					  num_bytes)) {
+ 			btrfs_release_path(path);
+ 			goto again;
+ 		}
 -- 
 2.25.1
 
