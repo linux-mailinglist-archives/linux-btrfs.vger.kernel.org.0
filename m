@@ -2,14 +2,14 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFC216B84F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 04:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B93616B850
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Feb 2020 04:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgBYD5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Feb 2020 22:57:18 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:34237 "EHLO
+        id S1728982AbgBYD5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Feb 2020 22:57:19 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:34233 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728971AbgBYD5R (ORCPT
+        with ESMTP id S1728972AbgBYD5R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 24 Feb 2020 22:57:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -17,46 +17,47 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1582603037; x=1614139037;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=WszfEOyJxfwxKdrqWiMsACV0CNVMVid1fA7DXhfQYxA=;
-  b=IBj5M84cN8G7p43p0GUs9tZOtImj/JO+InmicYASiMbHaYjF8MlBcFWT
-   DfY+zQZ4rIoGyCb9wxWzjw9dKWRJOc8MDdtQ3V+lOq8tjlGdV+WySqIAP
-   WlhYxh72//b63Sjrd3k5P7dhO3ombG7Bl5Js6+YyJHtzvLHZ9FLH0G0Ge
-   Pl2cuCnCh2zzoD58E7lJemzC5beGoV5TN3adIqHJ9luHknAFbUg6/hKm0
-   g615NaITx0Q2xsmCKkjqe5r69fWeU97VqjJ5Ic+LnZ92aXc4CodRMaVKm
-   BU3A6ZcfDrFZL9Zr2wwzEi9todN8416IpMF/RKdiG6x2LpKir/BUwLtrQ
-   Q==;
-IronPort-SDR: N2rrXzvxgrEUZDfruhnOhjH940tC2YF85UbrjhNP6BPmEE5ex3kIPzuJBiarKuxCAhSeW7iD1F
- 68OT5gX4Hu5QM1kFH/Qpgy8CCeGPucnPMSJVQKLPQCmnFhaMKW5sEyUXKx1ziBrCQkmDXZhiWV
- zPr90HvbluWbeI/WrWH5POqdrFPxNo22YUCxknH0XffkaL1Bi4+RhJchK8/59oh6WyLiJJ5lOG
- LdatseH8GiuFfKlQ/3CYoyewafKBbz5m4XkJ8RmwsGKTOlGafLSAJmrCZFflPGu1tZHle6uIrW
- hYA=
+  bh=Nc1KMUIXBP1u4BIelQu8vLGgpaHwULi+6lmDWLNOIb4=;
+  b=ICxVAsT9b/9k3Iw8cI83gPx08mQh8mrCoQkOOKFsZafDW4LOOFUSBo4H
+   z3YMRTjl54y0AUsseUaI964ylPyWYNsMdGztWZ0Vi3YXw16I9S3Jn75vV
+   48hT8IH3ixyZ/QbUAiHt4WaeNcoqJvwJvoA6xahgL2eoIsttYxFhQoOXs
+   D3fxGWPyXIgj2ZTBxgDwpZaEAmEFkgrmsnONAd8U8bhwQPmqXv5C5SXVX
+   R9VJdz6icrnD1QxXyRFQbEzyOAduM5QHAGg8epruz8pCrC1QSiOWnmbYD
+   ltUODUHuB1C1uKdjtUm4zOS1hNQ1JiOgmD2wJhs1Zs+GhIyXXFfPr3nqg
+   A==;
+IronPort-SDR: 6Na8bBhhne928wWw6Ugvo3YEvxNfjAsZJmhA44WRGhGW/+vb66jtrG6zxsZLaTZYtcXCjQvH6E
+ /9Vle+ARvKCG986aDKmRZwCRCl8KPBAi9ubDh4bz6uV/1CP8KmhEuUJwxCgML16jL3BMJKz2G3
+ MUYZbq7qRVdzanCSYXSgsXuFR0a5b4OT8Egx13utwpj6ie1KkswaRtOjFjNgcfdkmKMsYbeaS+
+ YXzCaswXZ+yZg9cRXCMJAEolH2nMSA1BTsiVOp55IiNuJ2jqDXRGlL5BrZmWhpFIe0JXFPMvO6
+ JuQ=
 X-IronPort-AV: E=Sophos;i="5.70,482,1574092800"; 
-   d="scan'208";a="131168302"
+   d="scan'208";a="131168303"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Feb 2020 11:57:15 +0800
-IronPort-SDR: zj4TSWMaohhnupbpCZZNerFfrL4N9llyBeV3oEHWA+o1wKMNOWav7eZaBwtfK8K4+flA5HVtMT
- 6i+e7U4gap8qBapbUhKtBnuxasKZ2gmWxZzY8x0HSP7qh1H55lU3WzjORlLl3CybDXO+f02tmv
- qBZH8rt9DP9FVLSAyCrHE6GhV0bheu99TS12d3SLeXeUaI0y05DwHLxrv+1OdOo2IUiHwUeACY
- LlEVTYjB0PexzUaoD4ht5W9JPKzWgbcSFe4+F3tDN4GTTiRbOpfl2eWegiN2GyFO+qtOrP0rB7
- jSfSdmrgF8v2UGbDhBMbPRHa
+  by ob1.hgst.iphmx.com with ESMTP; 25 Feb 2020 11:57:16 +0800
+IronPort-SDR: 0RyhmNCsIq8cmYE3rmu4Z5WKucfgKZNR9vMhraclS3POrp6bPWYpzQWj6gBjVDv5zn207PSpQq
+ YHIkELwt3nqdCgJu195dZnAV+jJ+dyUiYgK8vSQ/EqihxUOEziyW0BDxvyqVrpjpzCF0xrpRZo
+ jtRdi8L8Z/n9hKBTkWQNQJUl6zIKv3qGcycr3QS5i8EZrLguvvRDlLPw0tewe8qcvYPmmwaYck
+ q9WX+1Ru6bSzzD2LzCnTgF/20UgmAD1y0wt27eI+xGLY9GUn7glP/mDgIKTzXcGcZ4TgfeigAK
+ Y1b1xNbNBR2zT1NG5Zeq6RbB
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 19:49:43 -0800
-IronPort-SDR: yVgXqp+UxezeIxfcWKvYcY2/oz3alplTut9ES/YjGAXTw8X2BU7FRAU7eosoYWAx0G0bRUyNS8
- I/McIKDoqgVirDKJneOIv2J+EeGmtt59iXq6ZyzmoR7JzwcAF/XYW2g6Ttqd+Au4L6+dhkq/wY
- fAcikBZPS7RvQlO1bnyQ5bV5NJsFjF0PFxJfuuhAPt6B76WcbPJGZZv8YjGIkDBYCVIIJSyCh2
- uU3dVhRiocPRn1xJfpSPumzZcyN4UWk50NTLcRKVEndoRINR8NhMBXLdkgFwM4iksuxmuNdcVu
- d4s=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 19:49:44 -0800
+IronPort-SDR: xneidgKyQHH2ArnQKzLTHZz67/h3YjpiXZ0u9HwdjPBdJuBiHzq7hAlwUjiqaMrCDh+TXDPea/
+ z1zDRJTUAkOfbs9Y3d+4BbjL3gGGcR1WsXgpy1je53uI2K4l+wgX2JYBYt7W6n70exnywOTL14
+ N6qM0R225Pk862XwUW0183/NHNi5sIHEN5qwI/c37HgFsMsRJMTbgBFfdsyuLtuUQBqWxzabic
+ mSrrnTRzwpF9FBGx71v4d8eowMbRqbAo+5j3wK4ga1FwFEGiQ17GNA1OSaR7DEXsJ1l7xjHBYr
+ jfo=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 24 Feb 2020 19:57:14 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 24 Feb 2020 19:57:15 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         Nikolay Borisov <nborisov@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v3 15/21] btrfs: drop unnecessary arguments from clustered allocation functions
-Date:   Tue, 25 Feb 2020 12:56:20 +0900
-Message-Id: <20200225035626.1049501-16-naohiro.aota@wdc.com>
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 16/21] btrfs: factor out release_block_group()
+Date:   Tue, 25 Feb 2020 12:56:21 +0900
+Message-Id: <20200225035626.1049501-17-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200225035626.1049501-1-naohiro.aota@wdc.com>
 References: <20200225035626.1049501-1-naohiro.aota@wdc.com>
@@ -67,65 +68,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that, find_free_extent_clustered() and find_free_extent_unclustered() can
-access "last_ptr" from the "clustered" variable, we can drop it from the
-arguments.
+Factor out release_block_group() from find_free_extent(). This function is
+called when it gives up an allocation from a block group. Each allocation
+policy should reset their information for an allocation in the next block
+group.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ fs/btrfs/extent-tree.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 1ed12a033ba9..1c0c94a2a8e0 100644
+index 1c0c94a2a8e0..76e05ed33f1f 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -3513,11 +3513,11 @@ struct find_free_extent_ctl {
-  * Return 0 means we have found a location and set ffe_ctl->found_offset.
-  */
- static int find_free_extent_clustered(struct btrfs_block_group *bg,
--		struct btrfs_free_cluster *last_ptr,
--		struct find_free_extent_ctl *ffe_ctl,
--		struct btrfs_block_group **cluster_bg_ret)
-+				      struct find_free_extent_ctl *ffe_ctl,
-+				      struct btrfs_block_group **cluster_bg_ret)
- {
- 	struct btrfs_block_group *cluster_bg;
-+	struct btrfs_free_cluster *last_ptr = ffe_ctl->last_ptr;
- 	u64 aligned_cluster;
- 	u64 offset;
- 	int ret;
-@@ -3617,9 +3617,9 @@ static int find_free_extent_clustered(struct btrfs_block_group *bg,
-  * Return -EAGAIN to inform caller that we need to re-search this block group
-  */
- static int find_free_extent_unclustered(struct btrfs_block_group *bg,
--		struct btrfs_free_cluster *last_ptr,
--		struct find_free_extent_ctl *ffe_ctl)
-+					struct find_free_extent_ctl *ffe_ctl)
- {
-+	struct btrfs_free_cluster *last_ptr = ffe_ctl->last_ptr;
- 	u64 offset;
- 
- 	/*
-@@ -3685,15 +3685,13 @@ static int do_allocation_clustered(struct btrfs_block_group *block_group,
- 	 * Ok we want to try and use the cluster allocator, so lets look there
- 	 */
- 	if (ffe_ctl->last_ptr && ffe_ctl->use_cluster) {
--		ret = find_free_extent_clustered(block_group, ffe_ctl->last_ptr,
--						 ffe_ctl, bg_ret);
-+		ret = find_free_extent_clustered(block_group, ffe_ctl, bg_ret);
- 		if (ret >= 0 || ret == -EAGAIN)
- 			return ret;
- 		/* ret == -ENOENT case falls through */
+@@ -3706,6 +3706,24 @@ static int do_allocation(struct btrfs_block_group *block_group,
  	}
- 
--	return find_free_extent_unclustered(block_group, ffe_ctl->last_ptr,
--					    ffe_ctl);
-+	return find_free_extent_unclustered(block_group, ffe_ctl);
  }
  
- static int do_allocation(struct btrfs_block_group *block_group,
++static void release_block_group(struct btrfs_block_group *block_group,
++				struct find_free_extent_ctl *ffe_ctl,
++				int delalloc)
++{
++	switch (ffe_ctl->policy) {
++	case BTRFS_EXTENT_ALLOC_CLUSTERED:
++		ffe_ctl->retry_clustered = false;
++		ffe_ctl->retry_unclustered = false;
++		break;
++	default:
++		BUG();
++	}
++
++	BUG_ON(btrfs_bg_flags_to_raid_index(block_group->flags) !=
++		ffe_ctl->index);
++	btrfs_release_block_group(block_group, delalloc);
++}
++
+ /*
+  * Return >0 means caller needs to re-search for free extent
+  * Return 0 means we have the needed free extent.
+@@ -4083,11 +4101,7 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+ 		btrfs_release_block_group(block_group, delalloc);
+ 		break;
+ loop:
+-		ffe_ctl.retry_clustered = false;
+-		ffe_ctl.retry_unclustered = false;
+-		BUG_ON(btrfs_bg_flags_to_raid_index(block_group->flags) !=
+-		       ffe_ctl.index);
+-		btrfs_release_block_group(block_group, delalloc);
++		release_block_group(block_group, &ffe_ctl, delalloc);
+ 		cond_resched();
+ 	}
+ 	up_read(&space_info->groups_sem);
 -- 
 2.25.1
 
