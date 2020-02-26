@@ -2,30 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F6A16FD10
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2020 12:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9117316FF77
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2020 14:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgBZLMk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Feb 2020 06:12:40 -0500
-Received: from hadar.uberspace.de ([185.26.156.13]:48162 "EHLO
+        id S1726673AbgBZNDp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Feb 2020 08:03:45 -0500
+Received: from hadar.uberspace.de ([185.26.156.13]:34918 "EHLO
         hadar.uberspace.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgBZLMk (ORCPT
+        with ESMTP id S1726277AbgBZNDp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Feb 2020 06:12:40 -0500
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Feb 2020 06:12:37 EST
-Received: (qmail 27682 invoked from network); 26 Feb 2020 11:05:54 -0000
+        Wed, 26 Feb 2020 08:03:45 -0500
+Received: (qmail 30133 invoked from network); 26 Feb 2020 13:03:39 -0000
 Received: from localhost (HELO ?192.168.178.66?) (127.0.0.1)
-  by hadar.uberspace.de with SMTP; 26 Feb 2020 11:05:54 -0000
+  by hadar.uberspace.de with SMTP; 26 Feb 2020 13:03:39 -0000
 To:     linux-btrfs@vger.kernel.org
 From:   btrfs@iooioio.hadar.uberspace.de
 Subject: Confused about scrub output
-Message-ID: <5cf53e9b-dcb8-3c23-dbb2-06df056d3ac2@hadar.uberspace.de>
-Date:   Wed, 26 Feb 2020 12:05:53 +0100
+Message-ID: <b3e5a1ec-0cb2-b8cb-e502-f84e1a08181c@hadar.uberspace.de>
+Date:   Wed, 26 Feb 2020 14:03:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------649E95558F3609BB8EE46EA6"
+ boundary="------------B5654D32841735C88AD4EFB8"
 Content-Language: en-GB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -33,7 +32,7 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is a multi-part message in MIME format.
---------------649E95558F3609BB8EE46EA6
+--------------B5654D32841735C88AD4EFB8
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
@@ -62,22 +61,22 @@ btrfs-progs v5.4.1
 
 $ sudo btrfs fi show
 Label: none  uuid: 7b39ba35-352a-4b76-9f33-79a05c7a1e1b
-	Total devices 2 FS bytes used 426.41GiB
-	devid    1 size 878.99GiB used 436.06GiB path /dev/sda5
-	devid    2 size 894.25GiB used 436.06GiB path /dev/sdb
+   Total devices 2 FS bytes used 426.41GiB
+   devid    1 size 878.99GiB used 436.06GiB path /dev/sda5
+   devid    2 size 894.25GiB used 436.06GiB path /dev/sdb
 
 Label: 'storage'  uuid: cb041791-3931-429d-a249-d9fd4f2ba081
-	Total devices 1 FS bytes used 728.32GiB
-	devid    1 size 831.51GiB used 738.09GiB path /dev/sdc3
+   Total devices 1 FS bytes used 728.32GiB
+   devid    1 size 831.51GiB used 738.09GiB path /dev/sdc3
 
 Label: 'snow'  uuid: 1ef734b2-5dc0-4349-8b5b-e4ba46e2f165
-	Total devices 1 FS bytes used 761.16GiB
-	devid    1 size 931.51GiB used 766.02GiB path 
+   Total devices 1 FS bytes used 761.16GiB
+   devid    1 size 931.51GiB used 766.02GiB path 
 /dev/mapper/luks-726a8c1f-e8f2-4d59-91d5-a0b52b43cb5e
 
 Label: 'akasha'  uuid: 265cdb90-5b04-42a4-a40b-7ac9d2f9b881
-	Total devices 1 FS bytes used 1.86TiB
-	devid    1 size 2.73TiB used 1.89TiB path 
+   Total devices 1 FS bytes used 1.86TiB
+   devid    1 size 2.73TiB used 1.89TiB path 
 /dev/mapper/luks-aff1ccef-a303-470c-9eb3-27fdb97b544d
 
 $ sudo btrfs fi df /
@@ -119,65 +118,7 @@ doing this wrong and appreciate pointers on etiquette and best practices.
 [2] 
 https://www.reddit.com/r/btrfs/comments/f089hh/confused_about_scrub_output/
 
---------------649E95558F3609BB8EE46EA6
-Content-Type: text/plain; charset=UTF-8;
- name="output.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="output.txt"
-
-PDEzPkZlYiAyNiAwMDo1NDozNCByb290OiBRdWljayBNZXRhZGF0YSBhbmQgRGF0YSBCYWxh
-bmNlIG9mIC9tZWRpYS9qb3NoL3Nub3cgKC9kZXYvbWFwcGVyL2x1a3MtNzI2YThjMWYtZThm
-Mi00ZDU5LTkxZDUtYTBiNTJiNDNjYjVlKQpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQg
-b2YgNzY1IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzY1IGNodW5r
-cwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzY1IGNodW5rcwo8MTM+RmViIDI2
-IDAwOjU0OjM5IHJvb3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC9tZWRpYS9qb3NoL3Nub3cKYnRy
-ZnMgc2NydWIgc3RhcnQgLUJkIC9tZWRpYS9qb3NoL3Nub3cKc2NydWIgZGV2aWNlIC9kZXYv
-bWFwcGVyL2x1a3MtNzI2YThjMWYtZThmMi00ZDU5LTkxZDUtYTBiNTJiNDNjYjVlIChpZCAx
-KSBkb25lClNjcnViIHN0YXJ0ZWQ6ICAgIFdlZCBGZWIgMjYgMDA6NTQ6MzkgMjAyMApTdGF0
-dXM6ICAgICAgICAgICBmaW5pc2hlZApEdXJhdGlvbjogICAgICAgICAxOjUyOjM5ClRvdGFs
-IHRvIHNjcnViOiAgIDc2Ni4wMkdpQgpSYXRlOiAgICAgICAgICAgICAxMTUuNjNNaUIvcwpF
-cnJvciBzdW1tYXJ5OiAgICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVj
-dGVkIGR1cmluZyBzY3J1YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDAyOjQ3OjE4IHJv
-b3Q6IFF1aWNrIE1ldGFkYXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgL21lZGlhL2pvc2gvYWth
-c2hhICgvZGV2L21hcHBlci9sdWtzLWFmZjFjY2VmLWEzMDMtNDcwYy05ZWIzLTI3ZmRiOTdi
-NTQ0ZCkKRG9uZSwgaGFkIHRvIHJlbG9jYXRlIDAgb3V0IG9mIDE5MTAgY2h1bmtzCkRvbmUs
-IGhhZCB0byByZWxvY2F0ZSAwIG91dCBvZiAxOTEwIGNodW5rcwpEb25lLCBoYWQgdG8gcmVs
-b2NhdGUgMCBvdXQgb2YgMTkxMCBjaHVua3MKPDEzPkZlYiAyNiAwMjo0NzoxOCByb290OiBT
-dGFydGluZyBzY3J1YiBvZiAvbWVkaWEvam9zaC9ha2FzaGEKYnRyZnMgc2NydWIgc3RhcnQg
-LUJkIC9tZWRpYS9qb3NoL2FrYXNoYQpzY3J1YiBkZXZpY2UgL2Rldi9tYXBwZXIvbHVrcy1h
-ZmYxY2NlZi1hMzAzLTQ3MGMtOWViMy0yN2ZkYjk3YjU0NGQgKGlkIDEpIGRvbmUKU2NydWIg
-c3RhcnRlZDogICAgV2VkIEZlYiAyNiAwMjo0NzoxOCAyMDIwClN0YXR1czogICAgICAgICAg
-IGZpbmlzaGVkCkR1cmF0aW9uOiAgICAgICAgIDM6NTE6MjkKVG90YWwgdG8gc2NydWI6ICAg
-MS44OVRpQgpSYXRlOiAgICAgICAgICAgICAxNDIuNDFNaUIvcwpFcnJvciBzdW1tYXJ5OiAg
-ICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVjdGVkIGR1cmluZyBzY3J1
-YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDA2OjM4OjQ3IHJvb3Q6IFF1aWNrIE1ldGFk
-YXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgLyAoL2Rldi9zZGE1KQpEb25lLCBoYWQgdG8gcmVs
-b2NhdGUgMCBvdXQgb2YgNDM3IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQg
-b2YgNDM3IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNDM3IGNodW5r
-cwo8MTM+RmViIDI2IDA2OjM4OjQ3IHJvb3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC8KYnRyZnMg
-c2NydWIgc3RhcnQgLUJkIC8Kc2NydWIgZGV2aWNlIC9kZXYvc2RhNSAoaWQgMSkgZG9uZQpT
-Y3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA2OjM4OjQ3IDIwMjAKU3RhdHVzOiAgICAg
-ICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMDoyNjoxOQpUb3RhbCB0byBzY3J1
-YjogICA0MzYuMDNHaUIKUmF0ZTogICAgICAgICAgICAgMjc2LjQ4TWlCL3MKRXJyb3Igc3Vt
-bWFyeTogICAgbm8gZXJyb3JzIGZvdW5kCnNjcnViIGRldmljZSAvZGV2L3NkYiAoaWQgMikg
-ZG9uZQpTY3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA2OjM4OjQ3IDIwMjAKU3RhdHVz
-OiAgICAgICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMjoyODoxNApUb3RhbCB0
-byBzY3J1YjogICA0MzYuMDNHaUIKUmF0ZTogICAgICAgICAgICAgNDkuMDhNaUIvcwpFcnJv
-ciBzdW1tYXJ5OiAgICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVjdGVk
-IGR1cmluZyBzY3J1YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDA5OjA3OjAxIHJvb3Q6
-IFF1aWNrIE1ldGFkYXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgL21lZGlhL2pvc2gvc3RvcmFn
-ZSAoL2Rldi9zZGMzKQpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzM0IGNodW5r
-cwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzM0IGNodW5rcwpEb25lLCBoYWQg
-dG8gcmVsb2NhdGUgMSBvdXQgb2YgNzM0IGNodW5rcwo8MTM+RmViIDI2IDA5OjA3OjA4IHJv
-b3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC9tZWRpYS9qb3NoL3N0b3JhZ2UKYnRyZnMgc2NydWIg
-c3RhcnQgLUJkIC9tZWRpYS9qb3NoL3N0b3JhZ2UKc2NydWIgZGV2aWNlIC9kZXYvc2RjMyAo
-aWQgMSkgZG9uZQpTY3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA5OjA3OjA4IDIwMjAK
-U3RhdHVzOiAgICAgICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMToyMDo1OApU
-b3RhbCB0byBzY3J1YjogICA3MzguMDJHaUIKUmF0ZTogICAgICAgICAgICAgMTU0LjY3TWlC
-L3MKRXJyb3Igc3VtbWFyeTogICAgbm8gZXJyb3JzIGZvdW5kCldBUk5JTkc6IGVycm9ycyBk
-ZXRlY3RlZCBkdXJpbmcgc2NydWJiaW5nLCBjb3JyZWN0ZWQK
---------------649E95558F3609BB8EE46EA6
+--------------B5654D32841735C88AD4EFB8
 Content-Type: text/plain; charset=UTF-8;
  name="dmesg.txt"
 Content-Transfer-Encoding: base64
@@ -259,4 +200,62 @@ ZSBzZGMzKTogYmFsYW5jZTogZW5kZWQgd2l0aCBzdGF0dXM6IDAKWzQ3MTMxLjc1ODc0M10g
 QlRSRlMgaW5mbyAoZGV2aWNlIHNkYzMpOiBzY3J1Yjogc3RhcnRlZCBvbiBkZXZpZCAxCls1
 MTk5MC4zNTQ1NzddIEJUUkZTIGluZm8gKGRldmljZSBzZGMzKTogc2NydWI6IGZpbmlzaGVk
 IG9uIGRldmlkIDEgd2l0aCBzdGF0dXM6IDAK
---------------649E95558F3609BB8EE46EA6--
+--------------B5654D32841735C88AD4EFB8
+Content-Type: text/plain; charset=UTF-8;
+ name="output.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="output.txt"
+
+PDEzPkZlYiAyNiAwMDo1NDozNCByb290OiBRdWljayBNZXRhZGF0YSBhbmQgRGF0YSBCYWxh
+bmNlIG9mIC9tZWRpYS9qb3NoL3Nub3cgKC9kZXYvbWFwcGVyL2x1a3MtNzI2YThjMWYtZThm
+Mi00ZDU5LTkxZDUtYTBiNTJiNDNjYjVlKQpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQg
+b2YgNzY1IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzY1IGNodW5r
+cwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzY1IGNodW5rcwo8MTM+RmViIDI2
+IDAwOjU0OjM5IHJvb3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC9tZWRpYS9qb3NoL3Nub3cKYnRy
+ZnMgc2NydWIgc3RhcnQgLUJkIC9tZWRpYS9qb3NoL3Nub3cKc2NydWIgZGV2aWNlIC9kZXYv
+bWFwcGVyL2x1a3MtNzI2YThjMWYtZThmMi00ZDU5LTkxZDUtYTBiNTJiNDNjYjVlIChpZCAx
+KSBkb25lClNjcnViIHN0YXJ0ZWQ6ICAgIFdlZCBGZWIgMjYgMDA6NTQ6MzkgMjAyMApTdGF0
+dXM6ICAgICAgICAgICBmaW5pc2hlZApEdXJhdGlvbjogICAgICAgICAxOjUyOjM5ClRvdGFs
+IHRvIHNjcnViOiAgIDc2Ni4wMkdpQgpSYXRlOiAgICAgICAgICAgICAxMTUuNjNNaUIvcwpF
+cnJvciBzdW1tYXJ5OiAgICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVj
+dGVkIGR1cmluZyBzY3J1YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDAyOjQ3OjE4IHJv
+b3Q6IFF1aWNrIE1ldGFkYXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgL21lZGlhL2pvc2gvYWth
+c2hhICgvZGV2L21hcHBlci9sdWtzLWFmZjFjY2VmLWEzMDMtNDcwYy05ZWIzLTI3ZmRiOTdi
+NTQ0ZCkKRG9uZSwgaGFkIHRvIHJlbG9jYXRlIDAgb3V0IG9mIDE5MTAgY2h1bmtzCkRvbmUs
+IGhhZCB0byByZWxvY2F0ZSAwIG91dCBvZiAxOTEwIGNodW5rcwpEb25lLCBoYWQgdG8gcmVs
+b2NhdGUgMCBvdXQgb2YgMTkxMCBjaHVua3MKPDEzPkZlYiAyNiAwMjo0NzoxOCByb290OiBT
+dGFydGluZyBzY3J1YiBvZiAvbWVkaWEvam9zaC9ha2FzaGEKYnRyZnMgc2NydWIgc3RhcnQg
+LUJkIC9tZWRpYS9qb3NoL2FrYXNoYQpzY3J1YiBkZXZpY2UgL2Rldi9tYXBwZXIvbHVrcy1h
+ZmYxY2NlZi1hMzAzLTQ3MGMtOWViMy0yN2ZkYjk3YjU0NGQgKGlkIDEpIGRvbmUKU2NydWIg
+c3RhcnRlZDogICAgV2VkIEZlYiAyNiAwMjo0NzoxOCAyMDIwClN0YXR1czogICAgICAgICAg
+IGZpbmlzaGVkCkR1cmF0aW9uOiAgICAgICAgIDM6NTE6MjkKVG90YWwgdG8gc2NydWI6ICAg
+MS44OVRpQgpSYXRlOiAgICAgICAgICAgICAxNDIuNDFNaUIvcwpFcnJvciBzdW1tYXJ5OiAg
+ICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVjdGVkIGR1cmluZyBzY3J1
+YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDA2OjM4OjQ3IHJvb3Q6IFF1aWNrIE1ldGFk
+YXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgLyAoL2Rldi9zZGE1KQpEb25lLCBoYWQgdG8gcmVs
+b2NhdGUgMCBvdXQgb2YgNDM3IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQg
+b2YgNDM3IGNodW5rcwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNDM3IGNodW5r
+cwo8MTM+RmViIDI2IDA2OjM4OjQ3IHJvb3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC8KYnRyZnMg
+c2NydWIgc3RhcnQgLUJkIC8Kc2NydWIgZGV2aWNlIC9kZXYvc2RhNSAoaWQgMSkgZG9uZQpT
+Y3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA2OjM4OjQ3IDIwMjAKU3RhdHVzOiAgICAg
+ICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMDoyNjoxOQpUb3RhbCB0byBzY3J1
+YjogICA0MzYuMDNHaUIKUmF0ZTogICAgICAgICAgICAgMjc2LjQ4TWlCL3MKRXJyb3Igc3Vt
+bWFyeTogICAgbm8gZXJyb3JzIGZvdW5kCnNjcnViIGRldmljZSAvZGV2L3NkYiAoaWQgMikg
+ZG9uZQpTY3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA2OjM4OjQ3IDIwMjAKU3RhdHVz
+OiAgICAgICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMjoyODoxNApUb3RhbCB0
+byBzY3J1YjogICA0MzYuMDNHaUIKUmF0ZTogICAgICAgICAgICAgNDkuMDhNaUIvcwpFcnJv
+ciBzdW1tYXJ5OiAgICBubyBlcnJvcnMgZm91bmQKV0FSTklORzogZXJyb3JzIGRldGVjdGVk
+IGR1cmluZyBzY3J1YmJpbmcsIGNvcnJlY3RlZAo8MTM+RmViIDI2IDA5OjA3OjAxIHJvb3Q6
+IFF1aWNrIE1ldGFkYXRhIGFuZCBEYXRhIEJhbGFuY2Ugb2YgL21lZGlhL2pvc2gvc3RvcmFn
+ZSAoL2Rldi9zZGMzKQpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzM0IGNodW5r
+cwpEb25lLCBoYWQgdG8gcmVsb2NhdGUgMCBvdXQgb2YgNzM0IGNodW5rcwpEb25lLCBoYWQg
+dG8gcmVsb2NhdGUgMSBvdXQgb2YgNzM0IGNodW5rcwo8MTM+RmViIDI2IDA5OjA3OjA4IHJv
+b3Q6IFN0YXJ0aW5nIHNjcnViIG9mIC9tZWRpYS9qb3NoL3N0b3JhZ2UKYnRyZnMgc2NydWIg
+c3RhcnQgLUJkIC9tZWRpYS9qb3NoL3N0b3JhZ2UKc2NydWIgZGV2aWNlIC9kZXYvc2RjMyAo
+aWQgMSkgZG9uZQpTY3J1YiBzdGFydGVkOiAgICBXZWQgRmViIDI2IDA5OjA3OjA4IDIwMjAK
+U3RhdHVzOiAgICAgICAgICAgZmluaXNoZWQKRHVyYXRpb246ICAgICAgICAgMToyMDo1OApU
+b3RhbCB0byBzY3J1YjogICA3MzguMDJHaUIKUmF0ZTogICAgICAgICAgICAgMTU0LjY3TWlC
+L3MKRXJyb3Igc3VtbWFyeTogICAgbm8gZXJyb3JzIGZvdW5kCldBUk5JTkc6IGVycm9ycyBk
+ZXRlY3RlZCBkdXJpbmcgc2NydWJiaW5nLCBjb3JyZWN0ZWQK
+--------------B5654D32841735C88AD4EFB8--
