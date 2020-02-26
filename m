@@ -2,25 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D4E16F7B0
+	by mail.lfdr.de (Postfix) with ESMTP id E6CC316F7B1
 	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Feb 2020 06:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgBZF5A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Feb 2020 00:57:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36558 "EHLO mx2.suse.de"
+        id S1726089AbgBZF5D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Feb 2020 00:57:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36566 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbgBZF5A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Feb 2020 00:57:00 -0500
+        id S1725789AbgBZF5D (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 26 Feb 2020 00:57:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C93E2AC65
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 05:56:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 2E7F4AC65;
+        Wed, 26 Feb 2020 05:57:01 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/10] btrfs: relocation: Refactor build_backref_tree()
-Date:   Wed, 26 Feb 2020 13:56:42 +0800
-Message-Id: <20200226055652.24857-1-wqu@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 01/10] btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+Date:   Wed, 26 Feb 2020 13:56:43 +0800
+Message-Id: <20200226055652.24857-2-wqu@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200226055652.24857-1-wqu@suse.com>
+References: <20200226055652.24857-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,129 +31,209 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This branch can be fetched from github:
-https://github.com/adam900710/linux/tree/backref_cache_new
+Due to the complex nature of btrfs extent tree, when we want to iterate
+all backrefs of one extent, it involves quite a lot of work, like
+searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+backrefs.
 
-The main objective of this patchset is to refactor build_backref_tree()
-and get myself more familiar with the backref cache.
+Normally this would result pretty complex code, something like:
+  btrfs_search_slot()
+  /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+  while (1) {	/* Loop for extent tree items */
+	while (ptr < end) { /* Loop for inlined items */
+		/* REAL WORK HERE */
+	}
+  next:
+  	ret = btrfs_next_item()
+	/* Ensure we're still at keyed item for specified bytenr */
+  }
 
-The refactor also add quite some comments explaining how the backref
-cache is built, but I'm also working on crafting a new dev doc for the
-backref cache.
+The idea of btrfs_backref_iter is to avoid such complex and hard to
+read code structure, but something like the following:
 
-As some more example would greatly help reader to go through the
-somewhat weird code.
+  iter = btrfs_backref_iter_alloc();
+  ret = btrfs_backref_iter_start(iter, bytenr);
+  if (ret < 0)
+	goto out;
+  for (; ; ret = btrfs_backref_iter_next(iter)) {
+	/* REAL WORK HERE */
+  }
+  out:
+  btrfs_backref_iter_free(iter);
 
-Patch 1~8 haven already been sent to the mail list. This time they are
-included for a better review.
+This patch is just the skeleton + btrfs_backref_iter_start() code.
 
-There are 3 main structures involved:
-- backref_cache
-  The main cache structure, store all the existing cached map.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/backref.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/backref.h | 60 ++++++++++++++++++++++++++++++++
+ 2 files changed, 147 insertions(+)
 
-- backref_node
-  Represent one tree block.
-  It can have multiple parent and multiple children backref_edges
-  related.
-
-- backref_edge
-  Represent one parent-child relationship between two backref_node.
-  Both parent (upper) and child (lower) backref_node can iterate through
-  their list to locate the edge.
-
-The objective build_backref_cache() is to build a map, starting from
-specified node, to reach all its parents. E.g:
-
-  build_backref_tree() is called on bytenr X, then the following map
-  is added to backref_cache:
-     Root 257   Root 258
-	  A      B
-          |    /
-          |  /
-	  |/  
-	  C
-	  |
-	  X
-  We will have backref_nodes for X, A, B, C in the backref_cache, and
-  3 edges between (X, C), (C, A), (C, B).
-
-
-The short workflow of build_backref_tree() is:
-
-- Iterate through all parent nodes of the specified node
-  (ITERATION)
-
-  Here we go breadth first search. We go through direct parent of
-  current node. The iteration is bottom-up.
-
-  For how each backref item is handled, check handle_one_tree_backref()
-  for details.
-
-  When a direct parent is found, we check if the direct parent is
-  cached:
-  * Cached:
-    Allocate the edge between this node and parent. Call it a day, and
-    process next parent.
-  * Not cached:
-    Allocate both edges and nodes. And queue the parent node for
-    iteration.
-
-  During this stage, new nodes are only allocated, not yet added to
-  cache, and new edges are only linked to lower nodes.
-
-  After this step, we have reached all roots referring to the specified
-  node.
-  Some root nodes may be useless (reloc tree root), they will be queued
-  for later cleanup.
-
-- Finish the linkage between newly added nodes and edges.
-  (WEAVING)
-  Since previous step only allocated new nodes, and only linked edges
-  with its lower node, we still need to add the nodes to cache, and
-  finish the linkage.
-
-  See finish_upper_links() for details.
-
-- Cleanup the useless trees
-  (CLEANUP)
-  For reloc trees, we only cache the backref nodes for higher tree
-  nodes. And don't keep any edges. So such backref nodes are marked
-  detached.
-  Tree leaves for reloc trees are not cached.
-
-  Such behavior is to reduce memory usage for useless trees, but still
-  allow backref cache hit, to avoid unnecessary cache search.
-
-  And also mark the useless nodes as processed for relocation.
-
-
-With the refactor, only the CLEANUP part of build_backref_tree() is
-coupled with relocation.
-And now build_backref_tree() is only 125 lines, it's a pretty good start
-point for us to reuse backref_cache for other workload, like qgroups.
-
-Qu Wenruo (10):
-  btrfs: backref: Introduce the skeleton of btrfs_backref_iter
-  btrfs: backref: Implement btrfs_backref_iter_next()
-  btrfs: relocation: Use btrfs_backref_iter infrastructure
-  btrfs: relocation: Rename mark_block_processed() and
-    __mark_block_processed()
-  btrfs: relocation: Refactor tree backref processing into its own
-    function
-  btrfs: relocation: Use wrapper to replace open-coded edge linking
-  btrfs: relocation: Specify essential members for alloc_backref_node()
-  btrfs: relocation: Remove the open-coded goto loop for breadth-first
-    search
-  btrfs: relocation: Refactor the finishing part of upper linkage into
-    finish_upper_links()
-  btrfs: relocation: Refactor the useless nodes handling into its own
-    function
-
- fs/btrfs/backref.c    | 145 +++++++
- fs/btrfs/backref.h    |  94 +++++
- fs/btrfs/relocation.c | 959 ++++++++++++++++++++++--------------------
- 3 files changed, 750 insertions(+), 448 deletions(-)
-
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index e5d85311d5d5..c78d15bb999d 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2252,3 +2252,90 @@ void free_ipath(struct inode_fs_paths *ipath)
+ 	kvfree(ipath->fspath);
+ 	kfree(ipath);
+ }
++
++int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr)
++{
++	struct btrfs_fs_info *fs_info = iter->fs_info;
++	struct btrfs_path *path = iter->path;
++	struct btrfs_extent_item *ei;
++	struct btrfs_key key;
++	int ret;
++
++	key.objectid = bytenr;
++	key.type = BTRFS_METADATA_ITEM_KEY;
++	key.offset = (u64)-1;
++	iter->bytenr = bytenr;
++
++	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
++	if (ret < 0)
++		return ret;
++	if (ret == 0) {
++		ret = -EUCLEAN;
++		goto release;
++	}
++	if (path->slots[0] == 0) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		ret = -EUCLEAN;
++		goto release;
++	}
++	path->slots[0]--;
++
++	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
++	if (!(key.type == BTRFS_EXTENT_ITEM_KEY ||
++	      key.type == BTRFS_METADATA_ITEM_KEY) || key.objectid != bytenr) {
++		ret = -ENOENT;
++		goto release;
++	}
++	memcpy(&iter->cur_key, &key, sizeof(key));
++	iter->item_ptr = btrfs_item_ptr_offset(path->nodes[0],
++					       path->slots[0]);
++	iter->end_ptr = iter->item_ptr + btrfs_item_size_nr(path->nodes[0],
++							    path->slots[0]);
++	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
++			    struct btrfs_extent_item);
++
++	/*
++	 * Only support iteration on tree backref yet.
++	 *
++	 * This is extra precaustion for non skinny-metadata, where
++	 * EXTENT_ITEM is also used for tree blocks, that we can only use
++	 * extent flags to determine if it's a tree block.
++	 */
++	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA) {
++		ret = -ENOTTY;
++		goto release;
++	}
++	iter->cur_ptr = iter->item_ptr + sizeof(*ei);
++
++	/* If there is no inline backref, go search for keyed backref */
++	if (iter->cur_ptr >= iter->end_ptr) {
++		ret = btrfs_next_item(fs_info->extent_root, path);
++
++		/* No inline nor keyed ref */
++		if (ret > 0) {
++			ret = -ENOENT;
++			goto release;
++		}
++		if (ret < 0)
++			goto release;
++
++		btrfs_item_key_to_cpu(path->nodes[0], &iter->cur_key,
++				path->slots[0]);
++		if (iter->cur_key.objectid != bytenr ||
++		    (iter->cur_key.type != BTRFS_SHARED_BLOCK_REF_KEY &&
++		     iter->cur_key.type != BTRFS_TREE_BLOCK_REF_KEY)) {
++			ret = -ENOENT;
++			goto release;
++		}
++		iter->cur_ptr = btrfs_item_ptr_offset(path->nodes[0],
++						      path->slots[0]);
++		iter->item_ptr = iter->cur_ptr;
++		iter->end_ptr = iter->item_ptr + btrfs_item_size_nr(
++				path->nodes[0], path->slots[0]);
++	}
++
++	return 0;
++release:
++	btrfs_backref_iter_release(iter);
++	return ret;
++}
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 777f61dc081e..8b1ec11d4b28 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -74,4 +74,64 @@ struct prelim_ref {
+ 	u64 wanted_disk_byte;
+ };
+ 
++/*
++ * Helper structure to help iterate backrefs of one extent.
++ *
++ * Now it only supports iteration for tree block in commit root.
++ */
++struct btrfs_backref_iter {
++	u64 bytenr;
++	struct btrfs_path *path;
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_key cur_key;
++	unsigned long item_ptr;
++	unsigned long cur_ptr;
++	unsigned long end_ptr;
++};
++
++static inline struct btrfs_backref_iter *
++btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info, gfp_t gfp_flag)
++{
++	struct btrfs_backref_iter *ret;
++
++	ret = kzalloc(sizeof(*ret), gfp_flag);
++	if (!ret)
++		return NULL;
++
++	ret->path = btrfs_alloc_path();
++	if (!ret) {
++		kfree(ret);
++		return NULL;
++	}
++
++	/* Current backref iterator only supports iteration in commit root */
++	ret->path->search_commit_root = 1;
++	ret->path->skip_locking = 1;
++	ret->path->reada = READA_FORWARD;
++	ret->fs_info = fs_info;
++
++	return ret;
++}
++
++static inline void btrfs_backref_iter_free(struct btrfs_backref_iter *iter)
++{
++	if (!iter)
++		return;
++	btrfs_free_path(iter->path);
++	kfree(iter);
++}
++
++int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr);
++
++static inline void
++btrfs_backref_iter_release(struct btrfs_backref_iter *iter)
++{
++	iter->bytenr = 0;
++	iter->item_ptr = 0;
++	iter->cur_ptr = 0;
++	iter->end_ptr = 0;
++	btrfs_release_path(iter->path);
++	memset(&iter->cur_key, 0, sizeof(iter->cur_key));
++}
++
+ #endif
 -- 
 2.25.1
 
