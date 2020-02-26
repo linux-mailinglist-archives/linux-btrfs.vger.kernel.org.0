@@ -2,223 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FAB170C36
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 00:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECBF170C6E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 00:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgBZXFd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Feb 2020 18:05:33 -0500
-Received: from syrinx.knorrie.org ([82.94.188.77]:46922 "EHLO
-        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbgBZXFc (ORCPT
+        id S1727930AbgBZXPB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Feb 2020 18:15:01 -0500
+Received: from mail-yw1-f45.google.com ([209.85.161.45]:42121 "EHLO
+        mail-yw1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727749AbgBZXPA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Feb 2020 18:05:32 -0500
-X-Greylist: delayed 553 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Feb 2020 18:05:31 EST
-Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id B18DA6035B516;
-        Wed, 26 Feb 2020 23:56:17 +0100 (CET)
-Subject: Re: Newly added disks not used after "soft" rebalance, not used after
- rebalance < 1%
-To:     Leszek Dubiel <leszek@dubiel.pl>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <cc151941-15c1-b15f-04ba-a2085724aa10@dubiel.pl>
-From:   Hans van Kranenburg <hans@knorrie.org>
-Autocrypt: addr=hans@knorrie.org; keydata=
- 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
-Message-ID: <764d9836-58cd-1573-eba7-47acd569f93c@knorrie.org>
-Date:   Wed, 26 Feb 2020 23:56:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Wed, 26 Feb 2020 18:15:00 -0500
+Received: by mail-yw1-f45.google.com with SMTP id n127so1200571ywd.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 15:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0VhhTaABA7pe2x5kcWrmSM1l4i08UozkQiRGZYUue9E=;
+        b=eeW6L6Tsg+xZhCXyG7vO5dXOYvazbiPnLIuh3/pHVwS8SzhumN2/wBkRrvjR8xNFN8
+         DBi6t/dmD1CT7HWzHoPeTkAIrI1PVKR5621GNMUCFx42cs+USlrqvp331bu60IMnfzj/
+         zv/yZXXzFcoqmuvM9Ri1Z7Yz4uyOeymsE4IdQU1EtPI+PTLjX2lEHm4wGgp2NQ0QnyRf
+         MiRRchaSBhDCtiMSfQ1W6zSA83MabJvIonNHro+xZjFr/tUaLpDGPeJ51gg9SO1Pjbmp
+         XrmAiVxD2QZ/3GeDgV9pRHIeV8Lx338ZKavABFhdKI6vxYY8nspo5XG9SYLbbcXCNKXC
+         hlLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0VhhTaABA7pe2x5kcWrmSM1l4i08UozkQiRGZYUue9E=;
+        b=DVUD/5K8HDO9Tmi5uYgve5Y4S8iAY0vN+D3XISQWMNYiDHNmV/IU6Wwscc45rzyHn0
+         c/mqpg3jwvb9A2rjkNegVnwtYzB/pSER6uwNR+wj/scbZ4+a9wQ5UyDsHFv/Pk4KeTDP
+         +5ij9tLL9+HZ04vaR7RS/zPJn8x7NVFFDYEXmpT6obLGrtA0yahvuO7taxzyxWmdS3/R
+         oSx5no6AIW/zLcIAuwpcUlC0lrNU2oSFHqXm71Af0e4jt30sSAJriOTFChTVj7JbcBtL
+         z527UJi77hQALGYh7tGo1ReD7+BL66oubPVb7ncnLlHehKsAC6q/IK1muX4JgLJ0Bhd9
+         Y0DA==
+X-Gm-Message-State: APjAAAUGgHF2WtzrBFO1DytugIHVGDmQYXUu9KYZRJYlZT2DRsWb3LX5
+        dAn7UtVPCCQMLv2A0hW0tsD8k6qlZzAv4ZDnt5s=
+X-Google-Smtp-Source: APXvYqx6fjEyxXjhxqqCY6nWy/qaY2iEPnF0ZkY+rkxFyhy2h1MKcRXbn5OZv6XtpBaHPdxcRF8VwCBKgczMPnrSx8Y=
+X-Received: by 2002:a81:415:: with SMTP id 21mr1593620ywe.432.1582758899685;
+ Wed, 26 Feb 2020 15:14:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cc151941-15c1-b15f-04ba-a2085724aa10@dubiel.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+ <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
+ <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
+ <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
+In-Reply-To: <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
+From:   Steven Fosdick <stevenfosdick@gmail.com>
+Date:   Wed, 26 Feb 2020 23:14:48 +0000
+Message-ID: <CAG_8rEddjjA2kta486kZ7B9J7s4F5twyqrxL-kff783atxSFXQ@mail.gmail.com>
+Subject: Re: USB reset + raid6 = majority of files unreadable
+To:     Jonathan H <pythonnut@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Ok so the last message wasn't so easy to read due to line wrap so here
+it is again with the log output replaced by ix.io links.
 
-On 2/26/20 3:36 PM, Leszek Dubiel wrote:
-> 
-> Added /dev/sdb3, /dev/sdd3 and /dev/sdf3 to btrfs filesystem:
-> 
-> 
-> Label: none  uuid: 44803366-3981-4ebb-853b-6c991380c8a6
->      Total devices 6 FS bytes used 8.20TiB
->      devid    2 size 5.45TiB used 4.36TiB path /dev/sda2
->      devid    3 size 5.45TiB used 4.36TiB path /dev/sdc2
->      devid    4 size 10.90TiB used 8.71TiB path /dev/sde3
->      devid    5 size 9.06TiB used 0.00B path /dev/sdb3 <<<
->      devid    6 size 5.43TiB used 0.00B path /dev/sdd3 <<<<
->      devid    7 size 3.61TiB used 0.00B path /dev/sdf3 <<<<
-> 
-> 
-> 
-> Filessytem df looks good 20T of filesystem:
-> 
-> root@wawel:~# df -h /
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/sda2        20T  8.3T  9.2T  48% /
-> 
-> 
-> 
-> But disks seem to be NOT used by btrfs:
-> 
-> root@wawel:~# btrfs dev usag /
-> /dev/sda2, ID: 2
->     Device size:             5.45TiB
->     Device slack:              0.00B
->     Data,RAID1:              4.28TiB
->     Metadata,RAID1:         89.00GiB
->     Unallocated:             1.09TiB
-> 
-> /dev/sdb3, ID: 5
->     Device size:             9.06TiB   <<<<  no data usage?
->     Device slack:            3.50KiB
->     Unallocated:             9.06TiB
-> 
-> /dev/sdc2, ID: 3
->     Device size:             5.45TiB
->     Device slack:              0.00B
->     Data,RAID1:              4.28TiB
->     Metadata,RAID1:         83.00GiB
->     System,RAID1:           32.00MiB
->     Unallocated:             1.09TiB
-> 
-> /dev/sdd3, ID: 6
->     Device size:             5.43TiB <<<<<<<<????
->     Device slack:            3.50KiB
->     Unallocated:             5.43TiB
-> 
-> /dev/sde3, ID: 4
->     Device size:            10.90TiB
->     Device slack:            3.50KiB
->     Data,RAID1:              8.55TiB
->     Metadata,RAID1:        162.00GiB
->     System,RAID1:           32.00MiB
->     Unallocated:             2.19TiB
-> 
-> /dev/sdf3, ID: 7
->     Device size:             3.61TiB   <????
->     Device slack:            3.50KiB
->     Unallocated:             3.61TiB
-> 
-> 
-> 
-> Newly added disks seemed not to be used... So I've done:
+To expand on my previous message, I have what was a 3-drive
+filesystem with RAID1 metadata and RAID5 data.  One drive failed so I
+mounted degraded, added a replacement and tried to remove the missing
+(failed) drive.  It won't remove - the remove aborts with an I/O error
+after checksum errors have been logged as reported in my last e-mail.
 
-What did you in order do to make them being used? Write a huge amount of
-new data to the filesystem?
+I have run a btrfs check on the filesystem and this gives the following output:
 
-> btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /
-> 
-> 
-> It didn't help.
+WARNING: filesystem mounted, continuing because of --force
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+Opening filesystem to check...
+Checking filesystem on /dev/sda
+UUID: a3d38933-ee90-4b84-8f24-3a5c36dfd9be
+found 9834224820224 bytes used, no error found
+total csum bytes: 9588337304
+total tree bytes: 13656375296
+total fs tree bytes: 2760966144
+total extent tree bytes: 388759552
+btree space waste bytes: 1321640764
+file data blocks allocated: 9820591190016
+ referenced 9820501786624
 
-If you read the documentation, you'll learn what soft means, and why it
-did not do anything.
+The filesystem was mounted r/o to avoid any changes upsetting the
+check.  I have now started a scrub to see what that finds but the ETA
+is Sat Feb 29 07:57:49 2020 so I will report what that finds at the
+time.
 
-> So I used:
-> 
-> root@wawel:~# btrfs balance start -dusage=0 -musage=0 /
-> Done, had to relocate 0 out of 9050 chunks
+Regarding kernel messages I have found a few of these in the log
+starting before the disc failure:
 
-This will remove block groups which are entirely empty (afaik). How
-would that start using a new drive?
+http://ix.io/2cLX
 
-> then:
-> 
-> root@wawel:~# btrfs balance start -dusage=1 -musage=1 /
-> Done, had to relocate 106 out of 9050 chunks
+but I think these may have nothing to do with it - they may be another
+filesystem (root) and the timeout may be because that is a USB stick
+which is rather slow.  My reason for thinking that is that the process
+that gave rise to the timeout appears to be pacman, the Arch package
+manager which primarily writes to the root fileystem.
 
-You're pointing balance at block groups that are 1% full.
+It looks like the disc started to fail here:
 
-> And I still don't see any usage of the devices...
+http://ix.io/2cM1
 
-The contents were probably moved into free space inside already existing
-block groups.
+This goes on for pages and quite a few days, I can extract more if it
+is of interest.  Next is a reboot - this is the shutdown part:
 
-> Shall I activate these newly added block devices somehow?
-> Those 106 reallocated chunks should have been put to new devices, right?
+http://ix.io/2cM2
 
-Don't panic.
+then on the way back up:
 
-Hans
+http://ix.io/2cM3
 
+then after mounting degraded, add a new device and attempt to remove
+the missing one:
+
+http://ix.io/2cM4
+
+and at that point the device remove aborted with an I/O error.
+
+I did discover I could use balance with a filter to balance much of
+the data onto the three working discs, away from the missing one but I also
+discovered that whenever the checksum error appears the space cache
+seems to get corrupted.  Any further balance attempt results in
+getting stuck in a loop.  Mounting with clear_cache resolves that.
+
+Regards.
+Steve.
