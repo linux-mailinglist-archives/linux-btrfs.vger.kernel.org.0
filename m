@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD16172924
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 21:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A4172925
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 21:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730789AbgB0UBL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Feb 2020 15:01:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55698 "EHLO mx2.suse.de"
+        id S1730793AbgB0UBO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Feb 2020 15:01:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55720 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730761AbgB0UBL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Feb 2020 15:01:11 -0500
+        id S1730761AbgB0UBO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Feb 2020 15:01:14 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E9D32B117;
-        Thu, 27 Feb 2020 20:01:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 43C43B17A;
+        Thu, 27 Feb 2020 20:01:12 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0C3D3DA83A; Thu, 27 Feb 2020 21:00:50 +0100 (CET)
+        id 532ABDA83A; Thu, 27 Feb 2020 21:00:52 +0100 (CET)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 3/4] btrfs: return void from csum_tree_block
-Date:   Thu, 27 Feb 2020 21:00:49 +0100
-Message-Id: <c6518711b16ccd373084b8df681db41c198cb1ec.1582832619.git.dsterba@suse.com>
+Subject: [PATCH 4/4] btrfs: balance: factor out convert profile validation
+Date:   Thu, 27 Feb 2020 21:00:52 +0100
+Message-Id: <0432001929a87bd8fc75019ca67257d21d1b1315.1582832619.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <cover.1582832619.git.dsterba@suse.com>
 References: <cover.1582832619.git.dsterba@suse.com>
@@ -33,60 +33,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that csum_tree_block is not returning any errors, we can make
-csum_tree_block return void and simplify callers.
+The validation follows the same steps for all three block group types,
+the existing helper validate_convert_profile can be enhanced and do more
+of the common things.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/disk-io.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ fs/btrfs/volumes.c | 45 +++++++++++++++++++++------------------------
+ 1 file changed, 21 insertions(+), 24 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5f74eb69f2fe..8401852cf9c0 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -253,10 +253,8 @@ struct extent_map *btree_get_extent(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 3d35466f34b0..b5d7dc561b68 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3762,13 +3762,25 @@ static inline int balance_need_close(struct btrfs_fs_info *fs_info)
+ 		 atomic_read(&fs_info->balance_cancel_req) == 0);
+ }
  
- /*
-  * Compute the csum of a btree block and store the result to provided buffer.
-- *
-- * Returns error if the extent buffer cannot be mapped.
-  */
--static int csum_tree_block(struct extent_buffer *buf, u8 *result)
-+static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+-/* Non-zero return value signifies invalidity */
+-static inline int validate_convert_profile(struct btrfs_balance_args *bctl_arg,
+-		u64 allowed)
++/*
++ * Validate target profile against allowed profiles and return true if it's OK.
++ * Otherwise print the error message and return false.
++ */
++static inline int validate_convert_profile(struct btrfs_fs_info *fs_info,
++		const struct btrfs_balance_args *bargs,
++		u64 allowed, const char *type)
  {
- 	struct btrfs_fs_info *fs_info = buf->fs_info;
- 	const int num_pages = fs_info->nodesize >> PAGE_SHIFT;
-@@ -276,8 +274,6 @@ static int csum_tree_block(struct extent_buffer *buf, u8 *result)
- 	}
- 	memset(result, 0, BTRFS_CSUM_SIZE);
- 	crypto_shash_final(shash, result);
--
--	return 0;
+-	return ((bctl_arg->flags & BTRFS_BALANCE_ARGS_CONVERT) &&
+-		(!alloc_profile_is_valid(bctl_arg->target, 1) ||
+-		 (bctl_arg->target & ~allowed)));
++	if (!(bargs->flags & BTRFS_BALANCE_ARGS_CONVERT))
++		return true;
++
++	/* Profile is valid and does not have bits outside of the allowed set */
++	if (alloc_profile_is_valid(bargs->target, 1) &&
++	    (bargs->target & ~allowed) == 0)
++		return true;
++
++	btrfs_err(fs_info, "balance: invalid convert %s profile %s",
++			type, btrfs_bg_type_to_raid_name(bargs->target));
++	return false;
  }
  
  /*
-@@ -528,8 +524,7 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct page *page)
- 				    offsetof(struct btrfs_header, fsid),
- 				    BTRFS_FSID_SIZE) == 0);
+@@ -3984,24 +3996,9 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 		if (num_devices >= btrfs_raid_array[i].devs_min)
+ 			allowed |= btrfs_raid_array[i].bg_flag;
  
--	if (csum_tree_block(eb, result))
--		return -EINVAL;
-+	csum_tree_block(eb, result);
- 
- 	if (btrfs_header_level(eb))
- 		ret = btrfs_check_node(eb);
-@@ -640,9 +635,7 @@ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
- 	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb),
- 				       eb, found_level);
- 
--	ret = csum_tree_block(eb, result);
--	if (ret)
--		goto err;
-+	csum_tree_block(eb, result);
- 
- 	if (memcmp_extent_buffer(eb, result, 0, csum_size)) {
- 		u32 val;
+-	if (validate_convert_profile(&bctl->data, allowed)) {
+-		btrfs_err(fs_info,
+-			  "balance: invalid convert data profile %s",
+-			  btrfs_bg_type_to_raid_name(bctl->data.target));
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-	if (validate_convert_profile(&bctl->meta, allowed)) {
+-		btrfs_err(fs_info,
+-			  "balance: invalid convert metadata profile %s",
+-			  btrfs_bg_type_to_raid_name(bctl->meta.target));
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-	if (validate_convert_profile(&bctl->sys, allowed)) {
+-		btrfs_err(fs_info,
+-			  "balance: invalid convert system profile %s",
+-			  btrfs_bg_type_to_raid_name(bctl->sys.target));
++	if (!validate_convert_profile(fs_info, &bctl->data, allowed, "data") ||
++	    !validate_convert_profile(fs_info, &bctl->meta, allowed, "metadata") ||
++	    !validate_convert_profile(fs_info, &bctl->sys,  allowed, "system")) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
 -- 
 2.25.0
 
