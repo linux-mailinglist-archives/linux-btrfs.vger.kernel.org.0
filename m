@@ -2,79 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B8C1721C0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 16:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C701721D3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 16:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729688AbgB0PCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Feb 2020 10:02:48 -0500
-Received: from mail-qk1-f169.google.com ([209.85.222.169]:43113 "EHLO
-        mail-qk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729337AbgB0PCr (ORCPT
+        id S1731643AbgB0PHN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Feb 2020 10:07:13 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40531 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729930AbgB0PHM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Feb 2020 10:02:47 -0500
-Received: by mail-qk1-f169.google.com with SMTP id q18so3372261qki.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2020 07:02:47 -0800 (PST)
+        Thu, 27 Feb 2020 10:07:12 -0500
+Received: by mail-qk1-f193.google.com with SMTP id m2so3409759qka.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2020 07:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I9lttMKr8ZTFNgiMmrIpwfm6d5kcranG0q1JSeyg/0c=;
-        b=kBeph1ZzA8w4fNpfUcE8H2RLQIW27NL1sKQz7SHnqTk0xDqzpuNSXQPG+HWYNV66nM
-         U8p7CiF3jUFFwEZN7K6Yyai9XwGbK73oSHuKbAEadOZ4M1cPnU8mt8yCIeJI3UTIJ7+T
-         XsKCNr8lqldfvWEl9909dS29uNtMsiPBs4MtbkS446TeKj0dSqz6P5C2L+3zWmqbuMch
-         0TRJNl31BvyDIKxn+13RYwtYGqT8jCWHgtGGHAc0FS+GutGMRPxD+xJ9jD0FNZUUZDDv
-         cVKSQsSJ3JopuKVcMAyO8p/ql7gc1eABxD/raZOqV9kryTnjysR7AKtUCuTvXGDcCCdY
-         M+aw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dSvkhxdyEmqrE70vHF9aoFMW2HtdnZsj8RL28OWB0v4=;
+        b=e9rXKYP1EB/waTxFPn0Y+fvYMmPCFaNMXA31zUjhrAXuCR1UR6AlCD2s3Rx3YocpZ0
+         oIi3iReJADnNfOLCQhmT185I6nAcJCc50FI73RxHOjIu9B3K2KK1pnXmgj1xCg/JHxRk
+         T9g77CJJji0X1OM88JERbp0N3iwbY55FMLE15xjwRulEtioXqqdrwSDaXNqaCuhY5x2a
+         KaczuMKjC6k9EMbou0NeeQJWeYgmDCXsogQtMAWNrTjRKxkYgNAnUM8mg3M3h2to9EaG
+         x9FogcUTh1i/bx9jjnB5bGJzFH7iIjrQyud4ICJknwgq88/N/lDRor3Rwv2+W7nF+Gt2
+         qaDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=I9lttMKr8ZTFNgiMmrIpwfm6d5kcranG0q1JSeyg/0c=;
-        b=oDtiTbM3cZ8POuLRg7Syz8S2MdhLUbV8aFle8IQGCCZ0xnUhTHn59gn95y4v+3bZsx
-         vGqXOAWmhBUYBSvIiuhJmNAId/q2ZHThzmTDW+MudQiHIXLv3hEgVeLGZt7uBbNwFT/x
-         azqhBaghO2aa0ac9AA3ZjQvm5/2uEGTCAhw+PCZ/iEtPMcwYQ9rY/06+8ZPxCwz9oJ/4
-         HsHxKcyrckmwopwvzwEz1pm6XsgORD7sJVLaY7k00dNyZt5xOqyFAsPpYxrPUHGzKpoR
-         p5AJ1zUtnMW6sfWZJUKktawydZPA1uf6ZuXD0ptid1Ga1CH1Zr5jMB6CGvAFt+Ifz+Jd
-         3t+A==
-X-Gm-Message-State: APjAAAVZ3BjWOyH6UNT0oK2vF3BS5hT0eqJWB/MfGdEXFzVdxVCVCWPr
-        EnTUFbP5lnuIZa9B1a6XRA9mC4puv2k=
-X-Google-Smtp-Source: APXvYqyfFRCEx04yar9rWKomsI72agMCHCAXGraanr2+DrqYclWlJy6ujgI1dQFT9+IZztJb2Wr2vQ==
-X-Received: by 2002:ae9:edd8:: with SMTP id c207mr6168638qkg.244.1582815765077;
-        Thu, 27 Feb 2020 07:02:45 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id j127sm3243765qkc.36.2020.02.27.07.02.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2020 07:02:43 -0800 (PST)
-Subject: Re: [bug report] btrfs: hold a ref on the root in
- btrfs_search_path_in_tree_user
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200227134737.bq6cz7bo6jjciswe@kili.mountain>
+        bh=dSvkhxdyEmqrE70vHF9aoFMW2HtdnZsj8RL28OWB0v4=;
+        b=ZNMmez4x2+9qdjdBOj3XYek7j7bkGfswy72g37Fe7y1S95EubilB3wKg4pkvrlbWi4
+         xyd4AvoRIjNbadzYYnCyoJ6/xKXLBl+rs+PnfzYOIZo2RJ7tEl2G3qXVMS2uCaqmGQ+Y
+         astvGRDOL3S3G/uwiDnpc3n/NZYbB7JA+h/KGxfzGg6bgWwZ/xguapXMYRBHyc9BbJYW
+         mMtFCXxxVTzkyOgVi1q/nVk6bpa75SkXDd2M/20fpaDw/NQJEYWKvy70zgCYZVtpCvf7
+         cDzGyjj/dqBVTPtZ9qOUE5CfKq7J82z7iKU/E4Rm8q6c7UtLnNcU089lbEwd8p/24gSD
+         3QRA==
+X-Gm-Message-State: APjAAAX88i/1+g+VOkU1QaUOpAN7JJ7COALK81s1hvuYsHZtFDMhAj9F
+        osmBqZ/hqEpoOUFlGYnhMTNUP2ZPbhk=
+X-Google-Smtp-Source: APXvYqwU1pD7qEu2EBk77hFo5xSyx7wbMQB9bMeby6Up5L1xIcTsNjCexUFlV8BwQr3S3KbwVL0rzA==
+X-Received: by 2002:a37:64cb:: with SMTP id y194mr5787012qkb.364.1582816030566;
+        Thu, 27 Feb 2020 07:07:10 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id t55sm3381903qte.24.2020.02.27.07.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2020 07:07:09 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <17def594-0e06-d0a5-6c68-ece1bc02a99b@toxicpanda.com>
-Date:   Thu, 27 Feb 2020 10:02:42 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] btrfs: set root to null in btrfs_search_path_in_tree_user
+Date:   Thu, 27 Feb 2020 10:07:08 -0500
+Message-Id: <20200227150708.4026770-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200227134737.bq6cz7bo6jjciswe@kili.mountain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/27/20 8:47 AM, Dan Carpenter wrote:
-> [ It's weird that I haven't reported before...  - dan ]
-> 
-> Hello Josef Bacik,
-> 
-> The patch d8359e551d00: "btrfs: hold a ref on the root in
-> btrfs_search_path_in_tree_user" from Jan 24, 2020, leads to the
-> following static checker warning:
+We could potentially have root uninitialized in some cases, so this will
+cause problems with btrfs_put_root.
 
-Thanks Dan, I'll get this fixed.
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+- Dave, this can be folded into "btrfs: hold a ref on the root in
+  btrfs_search_path_in_tree_user"
 
-Josef
+ fs/btrfs/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0bd691055e51..92cb38c9889a 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2388,7 +2388,7 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
+ 	unsigned long item_len;
+ 	struct btrfs_inode_ref *iref;
+ 	struct btrfs_root_ref *rref;
+-	struct btrfs_root *root;
++	struct btrfs_root *root = NULL;
+ 	struct btrfs_path *path;
+ 	struct btrfs_key key, key2;
+ 	struct extent_buffer *leaf;
+-- 
+2.24.1
+
