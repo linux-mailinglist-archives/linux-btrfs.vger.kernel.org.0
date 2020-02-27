@@ -2,167 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F830170D11
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 01:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C28170D49
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 01:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgB0ANn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Feb 2020 19:13:43 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:33385 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbgB0ANm (ORCPT
+        id S1728019AbgB0AjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Feb 2020 19:39:24 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:35292 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727987AbgB0AjY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Feb 2020 19:13:42 -0500
-Received: by mail-wr1-f54.google.com with SMTP id u6so1138645wrt.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 16:13:41 -0800 (PST)
+        Wed, 26 Feb 2020 19:39:24 -0500
+Received: by mail-wr1-f65.google.com with SMTP id w12so1180687wrt.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 16:39:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5Eta5Y/dCrVejSSwjlRI77C6VVF9LDqSs3idWAYxezs=;
-        b=B3cpxW/wMcDv/4OKvhh0N5Qf5cwn2P7JXX9+gja9EuLbn51nBE8MaKy9cMOl4MCF9l
-         cmDULpor/sceVMWS9lGFH6jHnp1xeYsA3dAr2CS/pnNdLthwqep4wGAJaoMhYzUpEjhS
-         tWqFye0FuSQIyX+CJcRfzisUlsBbJEPE2qdLzPSRnxStm7ueXIBMV0ryJRm6/pipSUZ2
-         q9YhB4ykNRwq1UwJBlDsglBnTmA//TFkQOfNYRAsBWFvU6QP/X4Bw38XybwPIvoCp+x5
-         fECQmgL6KTqHinIIqcPred0TqUl0JnUM7Iah2WiRJqkTn58+3KE1onjwkRsqiCO6Lx39
-         WWFw==
+        bh=pd1ehrHUMHuiJuwNBznf1kkjhAjShhInO1VrKJaFC4s=;
+        b=GiCi2O1MICtBXSrB5Xjv+ONVaJ2fTTDRsJKNq+erYHHgl0d3ZxKG6qOvT3Psj0sW33
+         y8h1xymcqXXho6iHEIyZ5MV4WMkO3d6lYVrHy9w3MEAiyehxeWJ/tkwWgjAieqvsWTHO
+         UlZ73AKm++d9UQdBM6Bq0zm5JzGNHOAtA+5wqzYR9ZTTFaWN82BvRCy9ShXMWIaMqViG
+         HNGywNDw0nxDz8lZTG7+HftGViTumPumHK2J5DDK3S2qBNZbL8VsPGU8FWaCQtMcMoBC
+         tLK0XNdgTtghajTWfl2iC8aLIB0woJgBbRoyPYeVvKXDZIPYEDDJlREw7Ll00Z2Q67+c
+         PZTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5Eta5Y/dCrVejSSwjlRI77C6VVF9LDqSs3idWAYxezs=;
-        b=hwvuMcy2ISPR2sg43+dT9V08E3adCoSBdk29DYEvaG7fXfvIAoVEXGcsK7P3MSH4ob
-         jem8c1Xq3OpqUXAZ3EKDqXlQ7q96ZI9hIPtKUk+mjrqM4VfICal3NA36wvunNV7fA2nI
-         w9sWySWm5QSdBqj2I2tESA1xU/ChNIqwBedglhMpPCy6cLpxOznMPJmBNqJPqpnE+Jx7
-         CRyih3wKi/2Q1ZH6IpY1hLSsUGTUKQiHFYN2S8n3KJrNUdZaYppQAGmuZ3EWeNls8dMW
-         vlQ0pF9/nxaLWwPiKfUS/PQEmxjNREIICn5iqHFszKfilRMzyK0bw/3zk+ofLcoBYSHr
-         gU4A==
-X-Gm-Message-State: APjAAAWMCB3Z5QholXRx+ObHZM0a+IQa14ZJltYLmD5r2tULl85RpY22
-        CYcNX2zUuhDNJsrwmPbCmy8MYcuurGdTEmAX4zJYexw/
-X-Google-Smtp-Source: APXvYqx8S5FD+Ux3YSrGoi0qZyuykRlHRtyiFCdE5DtILnk9HDtP7svvgXTVVgWJFVxNL5nmzVSAtWy4GXiwHO+RWzU=
-X-Received: by 2002:adf:f3cc:: with SMTP id g12mr1183996wrp.236.1582762421133;
- Wed, 26 Feb 2020 16:13:41 -0800 (PST)
+        bh=pd1ehrHUMHuiJuwNBznf1kkjhAjShhInO1VrKJaFC4s=;
+        b=YNn94v+XGh9ekh2TTzFfGkXW+mifg0c+LXeRPjUcjz7bGxgLrP2msrLVE9wVgrfuuT
+         igT0/lFxUTt4tSZiNALzZiL5CHjtPaiH3dEsY7WwYbXmuwpUtgBcou/1AU0wsHk1maIL
+         c85b8JpFVh749HvsL6AXv2m3vgPhNAAMgcRpnXp2QAeMJK4xxU5oBVRsec4VXOxFHMhD
+         x/FS/3gbb90TVcaWcuNji57tSFDvRjJq1cfd/WmK8z9tDEMSI+Ax4KArBnwaE1faV+q9
+         6BsC1AEE2NSajuAtbqwzli5BsSLZ0zmjxCOlvBeiqoZKwF/UxPSpNysqW9wcYLcGiN4g
+         DXOw==
+X-Gm-Message-State: APjAAAVNFAlM+pPpBJbEPLuNayG6HI3o08dVwSL5ZuaXDyE0GNeysgE7
+        qwwimYbL+WNrSo9ODQtSrqHsFxNarBL72+xGwHHQ5A==
+X-Google-Smtp-Source: APXvYqzQvmRI5E2PEQohTdJtM4G8ayH5zAmWY2olSzgSEa2Pyz4ruwhmE2LM5hhqxON2HOB8sQ1phvgc9UOERuKgU3s=
+X-Received: by 2002:adf:a48f:: with SMTP id g15mr1356665wrb.42.1582763961417;
+ Wed, 26 Feb 2020 16:39:21 -0800 (PST)
 MIME-Version: 1.0
-References: <cc151941-15c1-b15f-04ba-a2085724aa10@dubiel.pl>
-In-Reply-To: <cc151941-15c1-b15f-04ba-a2085724aa10@dubiel.pl>
+References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+ <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
+ <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
+ <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
+In-Reply-To: <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 26 Feb 2020 17:13:25 -0700
-Message-ID: <CAJCQCtT93kuFYM_j2WNR82bz79Af_J4S+WcqDZr_y=M-JWjtkw@mail.gmail.com>
-Subject: Re: Newly added disks not used after "soft" rebalance, not used after
- rebalance < 1%
-To:     Leszek Dubiel <leszek@dubiel.pl>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Wed, 26 Feb 2020 17:39:05 -0700
+Message-ID: <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
+Subject: Re: USB reset + raid6 = majority of files unreadable
+To:     Steven Fosdick <stevenfosdick@gmail.com>
+Cc:     Jonathan H <pythonnut@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 7:45 AM Leszek Dubiel <leszek@dubiel.pl> wrote:
->
->
-> Added /dev/sdb3, /dev/sdd3 and /dev/sdf3 to btrfs filesystem:
->
->
-> Label: none  uuid: 44803366-3981-4ebb-853b-6c991380c8a6
->      Total devices 6 FS bytes used 8.20TiB
->      devid    2 size 5.45TiB used 4.36TiB path /dev/sda2
->      devid    3 size 5.45TiB used 4.36TiB path /dev/sdc2
->      devid    4 size 10.90TiB used 8.71TiB path /dev/sde3
->      devid    5 size 9.06TiB used 0.00B path /dev/sdb3 <<<
->      devid    6 size 5.43TiB used 0.00B path /dev/sdd3 <<<<
->      devid    7 size 3.61TiB used 0.00B path /dev/sdf3 <<<<
->
->
->
-> Filessytem df looks good 20T of filesystem:
->
-> root@wawel:~# df -h /
-> Filesystem      Size  Used Avail Use% Mounted on
-> /dev/sda2        20T  8.3T  9.2T  48% /
->
->
->
-> But disks seem to be NOT used by btrfs:
->
-> root@wawel:~# btrfs dev usag /
-> /dev/sda2, ID: 2
->     Device size:             5.45TiB
->     Device slack:              0.00B
->     Data,RAID1:              4.28TiB
->     Metadata,RAID1:         89.00GiB
->     Unallocated:             1.09TiB
->
-> /dev/sdb3, ID: 5
->     Device size:             9.06TiB   <<<<  no data usage?
->     Device slack:            3.50KiB
->     Unallocated:             9.06TiB
->
-> /dev/sdc2, ID: 3
->     Device size:             5.45TiB
->     Device slack:              0.00B
->     Data,RAID1:              4.28TiB
->     Metadata,RAID1:         83.00GiB
->     System,RAID1:           32.00MiB
->     Unallocated:             1.09TiB
->
-> /dev/sdd3, ID: 6
->     Device size:             5.43TiB <<<<<<<<????
->     Device slack:            3.50KiB
->     Unallocated:             5.43TiB
->
-> /dev/sde3, ID: 4
->     Device size:            10.90TiB
->     Device slack:            3.50KiB
->     Data,RAID1:              8.55TiB
->     Metadata,RAID1:        162.00GiB
->     System,RAID1:           32.00MiB
->     Unallocated:             2.19TiB
->
-> /dev/sdf3, ID: 7
->     Device size:             3.61TiB   <????
->     Device slack:            3.50KiB
->     Unallocated:             3.61TiB
->
->
->
-> Newly added disks seemed not to be used... So I've done:
->
-> btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /
->
->
-> It didn't help. So I used:
->
->
->
-> root@wawel:~# btrfs balance start -dusage=0 -musage=0 /
-> Done, had to relocate 0 out of 9050 chunks
->
->
-> then:
->
->
-> root@wawel:~# btrfs balance start -dusage=1 -musage=1 /
-> Done, had to relocate 106 out of 9050 chunks
->
->
->
-> And I still don't see any usage of the devices...
->
->
-> Shall I activate these newly added block devices somehow?
-> Those 106 reallocated chunks should have been put to new devices, right?
+On Wed, Feb 26, 2020 at 3:37 PM Steven Fosdick <stevenfosdick@gmail.com> wrote:
 
-Only if you do a full balance. It's not strictly necessary, and may
-not be advantageous, but that depends on the workload. As you start
-writing, eventually Btrfs will allocate a new raid1 block group, and
-it will pick the devices that have the most free space. That suggests
-/dev/sde3 and /dev/sdb3. They'll be used for quite a while, until one
-or two other disks have the most free space remaining, and then
-they'll accept the writes.
+> It looks like the disc started to fail here:
+>
+> Jan 30 13:41:04 meije kernel: scsi_io_completion_action: 806 callbacks
+> suppressed
+> Jan 30 13:41:04 meije kernel: sd 3:0:0:0: [sde] tag#18 FAILED Result:
+> hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+> Jan 30 13:41:04 meije kernel: sd 3:0:0:0: [sde] tag#18 CDB: Read(16)
+> 88 00 00 00 00 00 a2 d3 3b 00 00 00 00 40 00 00
+> Jan 30 13:41:04 meije kernel: print_req_error: 806 callbacks suppressed
+> Jan 30 13:41:04 meije kernel: blk_update_request: I/O error, dev sde,
+> sector 2731752192 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+> Jan 30 13:41:04 meije kernel: sd 3:0:0:0: [sde] tag#15 FAILED Result:
+> hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+> Jan 30 13:41:04 meije kernel: sd 3:0:0:0: [sde] tag#15 CDB: Write(16)
+> 8a 00 00 00 00 00 a2 d3 3b 00 00 00 00 08 00 00
+> Jan 30 13:41:04 meije kernel: blk_update_request: I/O error, dev sde,
+> sector 2731752192 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+> Jan 30 13:41:04 meije kernel: btrfs_dev_stat_print_on_error: 732
+> callbacks suppressed
 
-So you can let Btrfs balance them lazy style by doing nothing. Or you
-can do a full balance to balance them now, which might take ~50 hours
-depending on the performance of the drives.
+Both read and write errors reported by the hardware. These aren't the
+typical UNC error though. I'm not sure what DID_BAD_TARGET means. Some
+errors might be suppressed.
+
+Write errors are generally fatal. Read errors, if they include sector
+LBA, Btrfs can fix if there's an extra copy (dup, raid1, raid56, etc),
+otherwise, it may or may not be fatal depending on what's missing, and
+what's affected by it being missing.
+
+Btrfs might survive the write errors though with metadata raid1c3. But
+later you get more concerning messages...
+
+
+> This goes on for pages and quite a few days, I can extract more if it
+> is of interest.
+
+Ahhh yeah. So for what it's worth, in an md driver backed world, this
+drive would have been ejected (faulty) upon the first write error. md
+does retries for reads but writes it pretty much considers the drive
+written off, which means the array is degraded.
+
+As btrfs doesn't have such a concept of faulty drives, ejected drives,
+yet; you kinda have to keep an eye on this, and setup monitoring so
+you know when the array goes degraded like this.
+
+It's vaguely possible to get the array into a kind of split brain
+situation, if two drives experience transient write errors. And in
+that case, right now, there's no recovery. Btrfs just gets too
+confused.
+
+You need to replace the bad drive, and do a scrub to fix things up.
+And double check with 'btrfs fi us /mountpoint/' that all block groups
+have one profile set, and that it's the correct one.
+
+
+> then after mounting degraded, add a new device and attempt to remove
+> the missing one:
+
+That's not a good idea in my opinion... you really need to replace the
+drive. Otherwise you're doing a really expensive full rebalance while
+degraded, effectively. That means nothing else can go wrong or you're
+in much bigger trouble. In particular it's really common for there to
+be a mismatch between physical drive SCT ERC timeouts, and the
+kernel's command timer. Mismatches can cause a of confusion because
+upon kernel timer being reached, it resets the block device that
+contains the "late" command, which then blows away that drive's entire
+command queue.
+
+https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+
+
+> Feb 10 19:38:36 meije kernel: BTRFS info (device sda): disk added /dev/sdb
+> Feb 10 19:39:18 meije kernel: BTRFS info (device sda): relocating
+> block group 10045992468480 flags data|raid5
+> Feb 10 19:39:27 meije kernel: BTRFS info (device sda): found 19 extents
+> Feb 10 19:39:34 meije kernel: BTRFS info (device sda): found 19 extents
+> Feb 10 19:39:39 meije kernel: BTRFS info (device sda): clearing
+> incompat feature flag for RAID56 (0x80)
+> Feb 10 19:39:39 meije kernel: BTRFS info (device sda): relocating
+> block group 10043844984832 flags data|raid5
+
+I'm not sure what's going on here. This is a raid6 volume and raid56
+flag is being cleared? That's unexpected and I dn't know why you have
+raid5 block groups on a raid6 array.
+
+
+> and at that point the device remove aborted with an I/O error.
+
+OK well you didn't include that so we have no idea if this I/O error
+is about the same failed device or another device. If it's another
+device it's more complicated what can happen to the array. Hence why
+timeout mismatches are important. And why it's important to have
+monitoring so you aren't running a degraded array for three days.
+
+>
+> I did discover I could use balance with a filter to balance much of
+> the onto the three working discs, away from the missing one but I also
+> discovered that whenever the checksum error appears the space cache
+> seems to get corrupted.  Any further balance attempt results in
+> getting stuck in a loop.  Mounting with clear_cache resolves that.
+
+This sounds like a bug. The default space cache is stored in the data
+block group which for you should be raid6, with a missing device it's
+effectively raid5. But there's some kind of conversion happening
+during the balance/missing device removal, hence the clearing of the
+raid56 flag per block group, and maybe this corruption is happening
+related to that removal.
 
 -- 
 Chris Murphy
