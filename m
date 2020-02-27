@@ -2,96 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D6F170D75
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 01:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044121710CC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Feb 2020 07:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgB0ArW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Feb 2020 19:47:22 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:39956 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgB0ArW (ORCPT
+        id S1726785AbgB0GAK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Feb 2020 01:00:10 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:33638 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726378AbgB0GAK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Feb 2020 19:47:22 -0500
-Received: by mail-wr1-f66.google.com with SMTP id r17so1168399wrj.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 16:47:21 -0800 (PST)
+        Thu, 27 Feb 2020 01:00:10 -0500
+Received: by mail-ot1-f50.google.com with SMTP id w6so1887668otk.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Feb 2020 22:00:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Ir3nFId8X4nGE3DC65SYCT1SO9SyR7sSUMERsIscc8=;
-        b=WSZQKk0OdJRJLkRlxOH9aT28ybZ4FMkb0sz9R3K0uPOrmjRzIXOTkPoLEt+WRIrT3M
-         eQX2asVudGPWHrGdHNtEMf67EBVwlMyzNoLiC4Yop3sUxyFxsKY/ofooPvXm33LteZ1U
-         yiqNe9XCFXjHnhIzUvltYjf9Ouq4syVuFVGUEO3pC2HGcGIbb/4Tu4f7akHxUBcP93TH
-         r5CWuaOfZFz6rHG6vtPu3wy9zFM9QHXT0rDJSmo5Ax76g0p/qy04F//jqp8yqlgsjkso
-         3+dA5izq+bQcvhMeRCZgXGMi2RY/3QEWE+oqYHObzXc/TzkwjAfxTrTLiVhTnBGoPxHe
-         BVtg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ZCe1GTsKTUya4K+K8ajm+b6J28ijG/EbB5LN/mLfkWw=;
+        b=Sf4n8Dd0AvSa3kFzm7MQTIKED2SYX30EXH4KtNBitBIB84RWemhbGc4/toyBIB8zye
+         tCd7MU5v+ol+wUjxv2f29PZyLIxdxM9ZjmhrjGTuiCMJ7vlBABBSdOwqohYCwzTD3hDj
+         csy6H7esdRX5GNrRb2/GN3W478/JGVnPFVutKnOxOfD9IkXzVr5Gkx9EdwMfyRTzSA8t
+         qkPQV+Pl1f/wPxSO8V7Ikbfy/LLKQ23UgwALip2w14g5PRBPFU+YvFpJyq/lKzuIrYFQ
+         GNNXurC2ry0lAbinhoDWFOAUr45ZLsPyRXOYmqCr9dAoKaiYcat7vSwr8vvuAzqVEXej
+         BW6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Ir3nFId8X4nGE3DC65SYCT1SO9SyR7sSUMERsIscc8=;
-        b=m1dQNelbytWZuYsQp4OwBRNaGRW5lcfECQYFCPT+rWpNlaUqTqzES09xIO3rjSTNJW
-         2AW9l/UFSvqpPkVGV3WLYlHT01WKNs2O5AG8FuW2Ijg4orCIF6lxnFx+a8GFc/meunMW
-         f6jdc7QTiCkyJpO1QKR5yMEQ/PJwSkxaJRFnl17Y3xTzln2cfq5uavjAt4aIIOcpb46R
-         w7ocK9owUkjA223I4/JlmyqYSz76o1vcVA4+TSxNvlTBsSlS7GI5kK/AwSWP/rGf72PX
-         dhgD0G0qVL26pypF8jRxSX0/1jGsjO2lyhGSgBRIeVobsVHKLOTgLPs+CM6P9G+H8IH1
-         4ddw==
-X-Gm-Message-State: APjAAAUzxWkExTJc1U/x1GKyh3PKUsVszkDLqS5JfflLaAyBJ1Ww1+ek
-        CZDCzFmPP/9Nn3TbNgAtcJYo3Qt3ajnWgw1J2NoJqCcFCVM=
-X-Google-Smtp-Source: APXvYqwA1g6Mxbjh1FRNlb1G92btja3kTY5G552GG9YPZ27Nujq9k0huYhTBmVzAXV/pFFvhpvPY8Jnp8u2dN3qbg4I=
-X-Received: by 2002:a5d:4dce:: with SMTP id f14mr1338615wru.65.1582764440334;
- Wed, 26 Feb 2020 16:47:20 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ZCe1GTsKTUya4K+K8ajm+b6J28ijG/EbB5LN/mLfkWw=;
+        b=N0o3TJHSz8VG9Ga7wGIkcwrfk0kfHhtaitTo0l21ALgx70JTFCMm/N1c6FKGFW0oDO
+         xjrJYBC7gvxF+mbRlIzZ2VJJKAngDfEzmtm1nzwlS+Stvug9vDcU+MWca8XA2ddVpzyJ
+         AtF8Up8Tpgx83fsERToymMO97nu1Wqu7rOjhBLrHhPQkiD9J02RGRu0zhwIIytOWU4Mq
+         QsB4AaD78lIiMk91tY9Hn8r7tSsdYjbyeAHcuCoVdvqXZOjEnAM05NgvuwQ/Ve11x7Xu
+         w4bWKsJK2qdJT/YGy/B1Jc5MLMYCp4QNfvMiGyBgMtXecP/1gwArb4kzf3YjCjhlsHOB
+         QdZw==
+X-Gm-Message-State: APjAAAVjx9zg0QhkmcrAw6HVXE0YhpKwii3YsWNXfQ5fbpmQORgiDHgR
+        uQ/fSumSVmApT4htk+1SdQxvqyU1EZIrY0APk4KW20cC
+X-Google-Smtp-Source: APXvYqylaqzlZviEljl3p3DKWzW4nymK2/hmhaARQ3gBWJr2+p0a+PmLNsOoz9SgaePVQF7U4zQo1rFbsSx+maRhjAw=
+X-Received: by 2002:a05:6830:1317:: with SMTP id p23mr2031782otq.3.1582783208481;
+ Wed, 26 Feb 2020 22:00:08 -0800 (PST)
 MIME-Version: 1.0
-References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
- <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
- <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
- <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com> <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
-In-Reply-To: <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 26 Feb 2020 17:47:04 -0700
-Message-ID: <CAJCQCtRjsfMiFRvz8rO1-VEUcNwU68Ah7FOGsRz_bmPwav9qtA@mail.gmail.com>
-Subject: Re: USB reset + raid6 = majority of files unreadable
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Steven Fosdick <stevenfosdick@gmail.com>,
-        Jonathan H <pythonnut@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   4e868df3 <4e868df3@gmail.com>
+Date:   Wed, 26 Feb 2020 22:59:32 -0700
+Message-ID: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
+Subject: corrupt leaf
+To:     linux-btrfs@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000e61372059f886ec9"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 5:39 PM Chris Murphy <lists@colorremedies.com> wrote:
->
-> > Feb 10 19:38:36 meije kernel: BTRFS info (device sda): disk added /dev/sdb
-> > Feb 10 19:39:18 meije kernel: BTRFS info (device sda): relocating
-> > block group 10045992468480 flags data|raid5
-> > Feb 10 19:39:27 meije kernel: BTRFS info (device sda): found 19 extents
-> > Feb 10 19:39:34 meije kernel: BTRFS info (device sda): found 19 extents
-> > Feb 10 19:39:39 meije kernel: BTRFS info (device sda): clearing
-> > incompat feature flag for RAID56 (0x80)
-> > Feb 10 19:39:39 meije kernel: BTRFS info (device sda): relocating
-> > block group 10043844984832 flags data|raid5
->
-> I'm not sure what's going on here. This is a raid6 volume and raid56
-> flag is being cleared? That's unexpected and I dn't know why you have
-> raid5 block groups on a raid6 array.
+--000000000000e61372059f886ec9
+Content-Type: text/plain; charset="UTF-8"
 
+I updated kernels recently and now am getting a corrupt leaf error.
+The drives decrypt and mount, and I can touch a file briefly until the
+mount switches over to read-only mode. Extended SMART tests show all 6
+of my drives have a healthy status. I have a backup of the data. The
+array is configured as RAID10. As the BTRFS filesystem remains
+accessible / read-only, I am able to take an additional backup. What
+is the best way to recover from this error?
 
-OK part of my confusion is that you sorta threadjacked, while still
-being on topic, and didn't realize you weren't the original poster. So
-you started out with a raid5 from the get go. Original poster had a
-raid6.
+--000000000000e61372059f886ec9
+Content-Type: text/plain; charset="US-ASCII"; name="info.txt"
+Content-Disposition: attachment; filename="info.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k74c1j5r0>
+X-Attachment-Id: f_k74c1j5r0
 
-I still don't know why you're getting messages:
-
-clearing incompat feature flag for RAID56 (0x80)
-
-I think that's confusing if you haven't asked for a conversion from
-raid5 to a non-raid56 profile.
-
-
-
--- 
-Chris Murphy
+bGF5b3V0OiBwcm94bW94IHdpdGggZGlyZWN0IC9kZXYgcGFzc3Rocm91Z2ggdG8gVk1zCgokIHVu
+YW1lIC1hClZNOiBMaW51eCBzZXJ2ZXIwIDUuNS42LWFyY2gxLTEgIzEgU01QIFBSRUVNUFQgTW9u
+LCAyNCBGZWIgMjAyMCAxMjoyMDoxNiArMDAwMCB4ODZfNjQgR05VL0xpbnV4CnByb3htb3g6IExp
+bnV4IHB4ZSA0LjE1LjE4LTI2LXB2ZSAjMSBTTVAgUFZFIDQuMTUuMTgtNTQgKFNhdCwgMTUgRmVi
+IDIwMjAgMTU6MzQ6MjQgKzAxMDApIHg4Nl82NCBHTlUvTGludXgKCiQgYnRyZnMgLS12ZXJzaW9u
+IChWTSkKYnRyZnMtcHJvZ3MgdjUuNAoKJCBidHJmcyBmaSBzaG93CkxhYmVsOiBub25lICB1dWlk
+OiA4YzFkZWE4OC1mYTQwLTRlNmUtYTFhMS0yMTRlYTZiY2RiMDAKICAgICAgICBUb3RhbCBkZXZp
+Y2VzIDYgRlMgYnl0ZXMgdXNlZCAyLjg4VGlCCiAgICAgICAgZGV2aWQgICAgMSBzaXplIDIuNzNU
+aUIgdXNlZCAxLjAyVGlCIHBhdGggL2Rldi9tYXBwZXIvbHVrczAKICAgICAgICBkZXZpZCAgICAy
+IHNpemUgMi43M1RpQiB1c2VkIDEuMDJUaUIgcGF0aCAvZGV2L21hcHBlci9sdWtzMQogICAgICAg
+IGRldmlkICAgIDMgc2l6ZSAyLjczVGlCIHVzZWQgMS4wMlRpQiBwYXRoIC9kZXYvbWFwcGVyL2x1
+a3MyCiAgICAgICAgZGV2aWQgICAgNCBzaXplIDIuNzNUaUIgdXNlZCAxLjAyVGlCIHBhdGggL2Rl
+di9tYXBwZXIvbHVrczMKICAgICAgICBkZXZpZCAgICA1IHNpemUgMi43M1RpQiB1c2VkIDEuMDJU
+aUIgcGF0aCAvZGV2L21hcHBlci9sdWtzNAogICAgICAgIGRldmlkICAgIDYgc2l6ZSAyLjczVGlC
+IHVzZWQgMS4wMlRpQiBwYXRoIC9kZXYvbWFwcGVyL2x1a3M1CgokIGJ0cmZzIGZpIGRmIC9tbnQv
+cmFpZCAgCkRhdGEsIFJBSUQxMDogdG90YWw9My4wNVRpQiwgdXNlZD0yLjg3VGlCClN5c3RlbSwg
+UkFJRDEwOiB0b3RhbD0xMDMuODhNaUIsIHVzZWQ9MzIwLjAwS2lCCk1ldGFkYXRhLCBSQUlEMTA6
+IHRvdGFsPTYuMDlHaUIsIHVzZWQ9NC40NkdpQgpHbG9iYWxSZXNlcnZlLCBzaW5nbGU6IHRvdGFs
+PTUxMi4wME1pQiwgdXNlZD0wLjAwQgoKJCBkbWVzZyB8IGdyZXAgQlRSRlMKWyAgIDE5LjA2MDU4
+MV0gQlRSRlM6IGRldmljZSBmc2lkIDhjMWRlYTg4LWZhNDAtNGU2ZS1hMWExLTIxNGVhNmJjZGIw
+MCBkZXZpZCA1IHRyYW5zaWQgMzYxNjg3IC9kZXYvZG0tNSBzY2FubmVkIGJ5IHN5c3RlbWQtdWRl
+dmQgKDU1MykKWyAgIDE5LjA2MTIzMl0gQlRSRlM6IGRldmljZSBmc2lkIDhjMWRlYTg4LWZhNDAt
+NGU2ZS1hMWExLTIxNGVhNmJjZGIwMCBkZXZpZCAxIHRyYW5zaWQgMzYxNjg3IC9kZXYvZG0tMCBz
+Y2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDUyNikKWyAgIDE5LjA2Mjc1Nl0gQlRSRlM6IGRldmlj
+ZSBmc2lkIDhjMWRlYTg4LWZhNDAtNGU2ZS1hMWExLTIxNGVhNmJjZGIwMCBkZXZpZCAyIHRyYW5z
+aWQgMzYxNjg3IC9kZXYvZG0tMyBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDUzOCkKWyAgIDE5
+LjA2MzI2NV0gQlRSRlM6IGRldmljZSBmc2lkIDhjMWRlYTg4LWZhNDAtNGU2ZS1hMWExLTIxNGVh
+NmJjZGIwMCBkZXZpZCA0IHRyYW5zaWQgMzYxNjg3IC9kZXYvZG0tMiBzY2FubmVkIGJ5IHN5c3Rl
+bWQtdWRldmQgKDU0NSkKWyAgIDE5LjA3MTUyNV0gQlRSRlM6IGRldmljZSBmc2lkIDhjMWRlYTg4
+LWZhNDAtNGU2ZS1hMWExLTIxNGVhNmJjZGIwMCBkZXZpZCA2IHRyYW5zaWQgMzYxNjg3IC9kZXYv
+ZG0tMSBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDU1NykKWyAgIDE5LjA3MzcwOF0gQlRSRlM6
+IGRldmljZSBmc2lkIDhjMWRlYTg4LWZhNDAtNGU2ZS1hMWExLTIxNGVhNmJjZGIwMCBkZXZpZCAz
+IHRyYW5zaWQgMzYxNjg3IC9kZXYvZG0tNCBzY2FubmVkIGJ5IHN5c3RlbWQtdWRldmQgKDUzMykK
+WyAgIDE5LjE5MDE1OV0gQlRSRlMgaW5mbyAoZGV2aWNlIGRtLTApOiBlbmFibGluZyBhdXRvIGRl
+ZnJhZwpbICAgMTkuMTkwMTcyXSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMCk6IGRpc2sgc3BhY2Ug
+Y2FjaGluZyBpcyBlbmFibGVkClsgICAxOS4xOTAxNzRdIEJUUkZTIGluZm8gKGRldmljZSBkbS0w
+KTogaGFzIHNraW5ueSBleHRlbnRzClsgICAxOS40NDg5NzFdIEJUUkZTIGluZm8gKGRldmljZSBk
+bS0wKTogYmRldiAvZGV2L21hcHBlci9sdWtzMCBlcnJzOiB3ciAxMzc5MCwgcmQgMzg3LCBmbHVz
+aCAwLCBjb3JydXB0IDM1MzIsIGdlbiA1NzgKWyAgIDE5LjQ0ODk3N10gQlRSRlMgaW5mbyAoZGV2
+aWNlIGRtLTApOiBiZGV2IC9kZXYvbWFwcGVyL2x1a3M1IGVycnM6IHdyIDEzNjczLCByZCAyMDcs
+IGZsdXNoIDAsIGNvcnJ1cHQgMzU0MCwgZ2VuIDcwNQpbICAxMzAuMTcyOTU2XSBCVFJGUyBpbmZv
+IChkZXZpY2UgZG0tMCk6IHRoZSBmcmVlIHNwYWNlIGNhY2hlIGZpbGUgKDk2OTI5MDU0NzIpIGlz
+IGludmFsaWQsIHNraXAgaXQKWyAgMTMwLjIwNjQ5MF0gQlRSRlMgaW5mbyAoZGV2aWNlIGRtLTAp
+OiB0aGUgZnJlZSBzcGFjZSBjYWNoZSBmaWxlICgzMjI0MTQ4Mzc3NikgaXMgaW52YWxpZCwgc2tp
+cCBpdApbICAxMzAuMjIxODYyXSBCVFJGUyBpbmZvIChkZXZpY2UgZG0tMCk6IHRoZSBmcmVlIHNw
+YWNlIGNhY2hlIGZpbGUgKDM4NjgzOTM0NzIwKSBpcyBpbnZhbGlkLCBza2lwIGl0ClsgIDEzMC4y
+NTQ5MjZdIEJUUkZTIGluZm8gKGRldmljZSBkbS0wKTogdGhlIGZyZWUgc3BhY2UgY2FjaGUgZmls
+ZSAoNTQ3OTAwNjIwODApIGlzIGludmFsaWQsIHNraXAgaXQKWyAgMTMwLjI1NjU4Nl0gQlRSRlMg
+aW5mbyAoZGV2aWNlIGRtLTApOiB0aGUgZnJlZSBzcGFjZSBjYWNoZSBmaWxlICg1ODAxMTI4NzU1
+MikgaXMgaW52YWxpZCwgc2tpcCBpdApbICAxMzAuMjYxMDg1XSBCVFJGUyBpbmZvIChkZXZpY2Ug
+ZG0tMCk6IHRoZSBmcmVlIHNwYWNlIGNhY2hlIGZpbGUgKDYxMjMyNTEzMDI0KSBpcyBpbnZhbGlk
+LCBza2lwIGl0ClsgIDEzMC4yNjE3NzFdIEJUUkZTIGluZm8gKGRldmljZSBkbS0wKTogdGhlIGZy
+ZWUgc3BhY2UgY2FjaGUgZmlsZSAoNjc2NzQ5NjM5NjgpIGlzIGludmFsaWQsIHNraXAgaXQKWyAg
+MTMwLjM5NTY5Nl0gQlRSRlMgY3JpdGljYWwgKGRldmljZSBkbS0wKTogY29ycnVwdCBsZWFmOiBy
+b290PTcgYmxvY2s9MjUzMzcwNjg0MjExMiBzbG90PTUsIGNzdW0gZW5kIHJhbmdlICg2ODc2MTIy
+MzE2OCkgZ29lcyBiZXlvbmQgdGhlIHN0YXJ0IHJhbmdlICg2ODc2MTE3ODExMikgb2YgdGhlIG5l
+eHQgY3N1bSBpdGVtClsgIDEzMC4zOTU4MjldIEJUUkZTIGVycm9yIChkZXZpY2UgZG0tMCk6IGJs
+b2NrPTI1MzM3MDY4NDIxMTIgcmVhZCB0aW1lIHRyZWUgYmxvY2sgY29ycnVwdGlvbiBkZXRlY3Rl
+ZApbICAxMzAuNDA2NjI0XSBCVFJGUyBjcml0aWNhbCAoZGV2aWNlIGRtLTApOiBjb3JydXB0IGxl
+YWY6IHJvb3Q9NyBibG9jaz0yNTMzNzA2ODQyMTEyIHNsb3Q9NSwgY3N1bSBlbmQgcmFuZ2UgKDY4
+NzYxMjIzMTY4KSBnb2VzIGJleW9uZCB0aGUgc3RhcnQgcmFuZ2UgKDY4NzYxMTc4MTEyKSBvZiB0
+aGUgbmV4dCBjc3VtIGl0ZW0KWyAgMTMwLjQwNjgwM10gQlRSRlMgZXJyb3IgKGRldmljZSBkbS0w
+KTogYmxvY2s9MjUzMzcwNjg0MjExMiByZWFkIHRpbWUgdHJlZSBibG9jayBjb3JydXB0aW9uIGRl
+dGVjdGVkClsgIDEzMC40MTIzNDNdIEJUUkZTIGNyaXRpY2FsIChkZXZpY2UgZG0tMCk6IGNvcnJ1
+cHQgbGVhZjogcm9vdD03IGJsb2NrPTI1MzM3MDY4NDIxMTIgc2xvdD01LCBjc3VtIGVuZCByYW5n
+ZSAoNjg3NjEyMjMxNjgpIGdvZXMgYmV5b25kIHRoZSBzdGFydCByYW5nZSAoNjg3NjExNzgxMTIp
+IG9mIHRoZSBuZXh0IGNzdW0gaXRlbQpbICAxMzAuNDEyNTI2XSBCVFJGUyBlcnJvciAoZGV2aWNl
+IGRtLTApOiBibG9jaz0yNTMzNzA2ODQyMTEyIHJlYWQgdGltZSB0cmVlIGJsb2NrIGNvcnJ1cHRp
+b24gZGV0ZWN0ZWQKWyAgMTMwLjQxNDg0N10gQlRSRlMgY3JpdGljYWwgKGRldmljZSBkbS0wKTog
+Y29ycnVwdCBsZWFmOiByb290PTcgYmxvY2s9MjUzMzcwNjg0MjExMiBzbG90PTUsIGNzdW0gZW5k
+IHJhbmdlICg2ODc2MTIyMzE2OCkgZ29lcyBiZXlvbmQgdGhlIHN0YXJ0IHJhbmdlICg2ODc2MTE3
+ODExMikgb2YgdGhlIG5leHQgY3N1bSBpdGVtClsgIDEzMC40MTUwNTZdIEJUUkZTIGVycm9yIChk
+ZXZpY2UgZG0tMCk6IGJsb2NrPTI1MzM3MDY4NDIxMTIgcmVhZCB0aW1lIHRyZWUgYmxvY2sgY29y
+cnVwdGlvbiBkZXRlY3RlZAo=
+--000000000000e61372059f886ec9--
