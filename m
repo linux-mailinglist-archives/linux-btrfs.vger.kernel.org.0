@@ -2,173 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB7E172CDE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 01:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3517F172ECF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 03:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgB1APa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Feb 2020 19:15:30 -0500
-Received: from mout.gmx.net ([212.227.17.22]:59393 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730009AbgB1APa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Feb 2020 19:15:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1582848923;
-        bh=hGwiqx6o+rEc8k+BQbjyDV3qxd3OJIF1igrf1lNdk8g=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=aOhn/qcmVZYjI6fNjIjmSng9/kDvCoKjOo2q6r4frAc8W9YwGz74Qoh1UE8h4yErH
-         u8SJ51RsXsDaBgXzhbQ4RG7FJiCWFiswHlkZMEjnfYwPtiP9uqCWgU32t/SAwAiixP
-         ltYZLez92KGU4iBTdtJOd1HDU301G6c+1hfFqMnM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLQxX-1iqcsi0Dnn-00IVED; Fri, 28
- Feb 2020 01:15:23 +0100
-Subject: Re: [PATCH 3/3] btrfs: relocation: Remove the open-coded goto loop
- for breadth-first search
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200224060200.31323-1-wqu@suse.com>
- <20200224060200.31323-4-wqu@suse.com>
- <72797bb0-b20c-3e80-6a15-131e33c9bd26@toxicpanda.com>
- <013d9b26-d7b8-bc81-6d5b-1585924af4df@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c6295678-d999-b93a-2350-de58a1951a89@gmx.com>
-Date:   Fri, 28 Feb 2020 08:15:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1730445AbgB1C3D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Feb 2020 21:29:03 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:38104 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726943AbgB1C3D (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Feb 2020 21:29:03 -0500
+Received: by mail-ot1-f53.google.com with SMTP id z9so1249875oth.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Feb 2020 18:29:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PYJrCFc/wHCj74TgPVXcHDywlNjE7knAgpJJ5+2BOR4=;
+        b=vh+oLdzmNedaZWqpSdImlCdeSm/E6voJr4Y7gopjaw8DyIe1LUQ+I7slx991CBNtU6
+         l0EZ9ox9khJ5j7ZY5JVD8bsMhn4q3WpcGjN0TopcZfWojXNSjdBZ+hXNW6HI6cPafBoT
+         4SNuw6QogyoJOBNdGB3ywNA3U1g8pUKPSUdf87XuqJv9OVU9Xk8f2NpiH1M362pSupd7
+         3EpY2thmob78mkzKVPehCEsA93WkDcqpGYYoNPXh+uvc+WNhWAE6qhad2RolIL0VaYos
+         CSzWeUQo+wcVvnah5Gstlzj69rM4+ttvBa7UxERND3TUiaINvJi88+FKvHjGFrMxRLT4
+         ZN0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PYJrCFc/wHCj74TgPVXcHDywlNjE7knAgpJJ5+2BOR4=;
+        b=pqG87N4iB64Nk93qDLkN2zjPwx/7Bv4IRnx++3oWUyS/jeAV4UjDfuoWSiBfb9lUsW
+         Rw+tocCKG4wLpw/DttcyXgadij75e940bZ7Oqvm9QAK8L/3Fzz9NAeQxMXJbr092zPL/
+         AUlXWwoARGuzxtP+Wbk0mDCv8D3Xpu3kD4DKCqz55AfVX7xlanwbFctota6nIMtqHLbX
+         DU6u0LEkbp2HKOb32I9zSi1tbkGVTwrNAb4hgFzFHSAaOw4rEROpacaupJCFVJShrpgl
+         86tjbj6xi+wo0b9XUxYR+bQxrtLvjtNCLdft+x58x+Nxn+HdWi1xLJRoY9roScvq/DrX
+         fITg==
+X-Gm-Message-State: APjAAAUdjLEG0YGamv96ybJ50bR48frsnkAni/hKWRoCpxxH3dAF2MB1
+        nBpfbTyy8JkJL1uTOO3ds0kF6tHHDebqzeMpym0=
+X-Google-Smtp-Source: APXvYqw6RBtFmrbNJo8c2AyO5H+YK+vXPc8kLziw3ceBpliiLiydQl0NlmAj0zfoGc2X/54n7hRI984ZINLA2xmYsoY=
+X-Received: by 2002:a05:6830:1317:: with SMTP id p23mr1554160otq.3.1582856940185;
+ Thu, 27 Feb 2020 18:29:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <013d9b26-d7b8-bc81-6d5b-1585924af4df@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="NFd2t2UogYmFSlXKK4RauvYFQ61OPAlnK"
-X-Provags-ID: V03:K1:ZPRD4eWTzqkehV0s3vZDLFxbzVXQlBYkrdD2tfVCaT/nJ7t/EK1
- E6FldwjFD8bkeP/p8+xnIjgkym85+bh2Lv+wVy4oXH64HDGaYDaIvQLD2lPboeAbtDih55x
- /mECv+ER6e+OQfIUXHvi+0xSnKxsYVB3rL7zcErXs9YggOA+mMomLRdoqHUOfqlxC4clTym
- WCUcJw3rRPx7QMFl8tFPA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yRcmLMOJ2pQ=:lrCcGbnhrzbGbgUty+wEtO
- LrAQ81JBIu+MRRjoejksusuIrlyseRpQe3c2/UN4ATtL/6YW++qgkZTg1jTMTE7VXp3AIfkBA
- c/SXYmwpiv6Vb7gd0+9zhaxvF0Vdwbus/XawUGPFOD79W63Nnk5l82sNtypQpM4Qb1KqoHoCT
- GkUYgTaggE8CipcdiI6Gs8G/D4pXMrvh/QCHHYRLeIOp7UzC1HbKCco+qfzBOZlIc3RfF+yUj
- LL9z/00yhFXKfMDu34QC/6qMyQ3Dsf9XDzhN7K4504au2dIzDMS6HD78hP/FX8OWzwvoOrG7c
- TvbGm0vGprUKRSGpNq83rUzA7udVqdmqaEKr/x0zj1s5xJ77zslMsdQn3g0jMPuWxX/yXkD0p
- G+lnUXJP4CYaJ8sGox/DlChDtx9M5/+JMzh6cw+GUoZe3AR2CV92W4I7s+3OJwqVKaKEvWvGp
- TQlqj51+nDNQDUvRvNrE0GVI65uIELvwelHpah0KAWEggugkMTjvd0fnunz0vWVxJOdbGRKtn
- ANwEv0gpfRWF8ZSo1TvWGGZV4NOb6uHzVyUtgPwWAG1B34/i8PtxTlOxoI18PQRJPaXe0KQKo
- eCY5hg5Xsv4BDJLQZoYGNq/2C4mY53UKEaB3cb3pb4eHb53aUHvM+aTQBJ0GnEfeF5/QHiYZY
- BFuEaKGZHw6L7710UNctk9z3oQPLRpzQm1kvUdXIYb4wMyE4DhXri0oB4IoMPhkNoeA3RbhAc
- ZSmF3KZEt32ghxwzAJazh3RTYnksMhTUjIS/Vxv3wiparyM7zXuFPbyPjieUYgWcmy32ivLt0
- tAgg2YcwrXeQ2/QXjncoyFERyPnBJ0NCSrUH5/wEPdBwtDN6XFug7TfNCH9KXLr2HmodWE5or
- z7SP7T9ATMfPYWuQaZ08tGlapFo8pcyZxAY15zklb/PRBZ8WWwhYfje2yWgfFsoVYaDGRe08D
- yng4HIOKxYy8tJUsnzeLIxuBJjjTfqIakwlkUUc7YEDNdMMDN141yVmV15F1TEOQDYdOtI/SD
- L7lSytJbAT0jUQWPYFsna17eu/xRT3+JcUYw1LixleguDCfoh+l11dXEMjXhTcKi7gqPmaI0P
- fmylvPAV+MkYqH4J9+MZIZlSsqzUphQfySbKlDcDfKMpmmzlyKpVxFXO1D8HLeBJPcwohaLQB
- hFnjHnTCgYEvf0WyyGx+kx6A7dHD8nI4eFroiER3K9PELoKP5Q2OwkRdnqWOicY1RkUZETrcO
- FkE52TM2YpldKLA2G
+References: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
+ <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com>
+In-Reply-To: <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com>
+From:   4e868df3 <4e868df3@gmail.com>
+Date:   Thu, 27 Feb 2020 19:28:23 -0700
+Message-ID: <CADq=pgn3-4S3ErK0G+ajf-5M=8CSaE6iow25ASaBxCygedy=7g@mail.gmail.com>
+Subject: Re: corrupt leaf
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NFd2t2UogYmFSlXKK4RauvYFQ61OPAlnK
-Content-Type: multipart/mixed; boundary="dBRiycPQ2UPGEXwKQevrwgUg3QBRvWWGa"
+> What are the details of the storage stack? What are the Btrfs devices backed by on the host? Physical partitions, or qcow2, or raw files? If they are files, is chattr +C set?
+6x 2tb scsi drives. Raw physical partitions, working through LUKS.
+Proxmox passes the devices directly through to the VM without touching
+them.
 
---dBRiycPQ2UPGEXwKQevrwgUg3QBRvWWGa
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+> btrfs ins dump-tree -b 2533706842112 /dev/dm-0
+btrfs-progs v5.4
+leaf 2533706842112 items 9 free space 5914 generation 360253 owner CSUM_TREE
+leaf 2533706842112 flags 0x1(WRITTEN) backref revision 1
+fs uuid 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+chunk uuid c3b187d2-64c1-46f0-a83f-d0aeb0e37fe4
+        item 0 key (EXTENT_CSUM EXTENT_CSUM 68754231296) itemoff 16279
+itemsize 4
+                range start 68754231296 end 68754235392 length 4096
+        item 1 key (EXTENT_CSUM EXTENT_CSUM 68754235392) itemoff 13167
+itemsize 3112
+                range start 68754235392 end 68757422080 length 3186688
+        item 2 key (EXTENT_CSUM EXTENT_CSUM 68757422080) itemoff 12891
+itemsize 276
+                range start 68757422080 end 68757704704 length 282624
+        item 3 key (EXTENT_CSUM EXTENT_CSUM 68757819392) itemoff 12767
+itemsize 124
+                range start 68757819392 end 68757946368 length 126976
+        item 4 key (EXTENT_CSUM EXTENT_CSUM 68757946368) itemoff 11359
+itemsize 1408
+                range start 68757946368 end 68759388160 length 1441792
+        item 5 key (EXTENT_CSUM EXTENT_CSUM 68759388160) itemoff 9567
+itemsize 1792
+                range start 68759388160 end 68761223168 length 1835008
+        item 6 key (EXTENT_CSUM EXTENT_CSUM 68761178112) itemoff 9363
+itemsize 204
+                range start 68761178112 end 68761387008 length 208896
+        item 7 key (EXTENT_CSUM EXTENT_CSUM 68761387008) itemoff 7739
+itemsize 1624
+                range start 68761387008 end 68763049984 length 1662976
+        item 8 key (EXTENT_CSUM EXTENT_CSUM 68763049984) itemoff 6139
+itemsize 1600
+                range start 68763049984 end 68764688384 length 1638400
 
-
-
-On 2020/2/28 =E4=B8=8A=E5=8D=888:08, Qu Wenruo wrote:
->=20
->=20
-> On 2020/2/28 =E4=B8=8A=E5=8D=883:51, Josef Bacik wrote:
->> On 2/24/20 1:02 AM, Qu Wenruo wrote:
->>> build_backref_tree() uses "goto again;" to implement a breadth-first
->>> search to build backref cache.
->>>
->>> This patch will extract most of its work into a wrapper,
->>> handle_one_tree_block(), and use a while() loop to implement the same=
-
->>> thing.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>
->> Do you have this in a tree somewhere that I can look at it?=C2=A0 I tr=
-ied
->> applying these but they don't apply cleanly to anything I have, and it=
-'s
->> hard to review this one without seeing how the code ends up after your=
-
->> diff.=C2=A0 Thanks,
->=20
-> Sure, here you go:
-> https://github.com/adam900710/linux/tree/backref_cache_new
->=20
-> But please ignore the latest 1 or 2 commits, as they are still under
-> development.
->=20
-> Every submitted patches will not undergo any extra modification in that=
-
-> branch.
-
-Except this commit,  "btrfs: relocation: Rename mark_block_processed()
-and __mark_block_processed()", Nikolay had some pretty good advice on
-it, and it's updated to address his comment.
-
-Thanks,
-Qu
->=20
-> Thanks,
-> Qu
->=20
->>
->> Josef
->=20
-
-
---dBRiycPQ2UPGEXwKQevrwgUg3QBRvWWGa--
-
---NFd2t2UogYmFSlXKK4RauvYFQ61OPAlnK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5YW5cACgkQwj2R86El
-/qhyowgArknXKWqnJdc4JIxhHE69TYJgNadNdUCV7AQLPDQnMql0VrDoBUsqRIZc
-H3zDrZiM68dngGw+/BRf+rWY06K+mgPZR5zcfb+Xs0MrjGSxRy2//KUAEr2yoVHh
-LWVrG2VsyOC9/FLKxdVb0nRZiFygDNF5sa7Y8v1ZO0+QYM+iQmpFy7MxZ7wM24ja
-WKXdyYMv9qw5iRYQPSnp6LV8tW0r8VEgfZTaDqydkL/UHdDKtFpQPSTzPR0O175p
-ffTDbxuCGbm2NcPmk7MpcggHFkDCNLRYNSVUCUKcqDs3PkXj93glWTuLmFT+01OR
-O7F4ahNJpsu6RCqWkVE6DWfAcy2+dQ==
-=lPkD
------END PGP SIGNATURE-----
-
---NFd2t2UogYmFSlXKK4RauvYFQ61OPAlnK--
+> btrfs check --force /dev/mapper/luks0
+Opening filesystem to check...
+WARNING: filesystem mounted, continuing because of --force
+Checking filesystem on /dev/mapper/luks0
+UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+there are no extents for csum range 68757573632-68757704704
+Right section didn't have a record
+there are no extents for csum range 68754427904-68757704704
+csum exists for 68750639104-68757704704 but there is no extent record
+there are no extents for csum range 68760719360-68761223168
+Right section didn't have a record
+there are no extents for csum range 68757819392-68761223168
+csum exists for 68757819392-68761223168 but there is no extent record
+there are no extents for csum range 68761362432-68761378816
+Right section didn't have a record
+there are no extents for csum range 68761178112-68836831232
+csum exists for 68761178112-68836831232 but there is no extent record
+there are no extents for csum range 1168638763008-1168638803968
+csum exists for 1168638763008-1168645861376 but there is no extent record
+ERROR: errors found in csum tree
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 3165125918720 bytes used, error(s) found
+total csum bytes: 3085473228
+total tree bytes: 4791877632
+total fs tree bytes: 1177714688
+total extent tree bytes: 94617600
+btree space waste bytes: 492319296
+file data blocks allocated: 3160334041088
+ referenced 3157401378816
