@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0881817330F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 09:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE33D17331A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 09:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgB1IjD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Feb 2020 03:39:03 -0500
-Received: from mout.gmx.net ([212.227.15.19]:39979 "EHLO mout.gmx.net"
+        id S1726287AbgB1Ilh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Feb 2020 03:41:37 -0500
+Received: from mout.gmx.net ([212.227.17.22]:43531 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgB1IjD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Feb 2020 03:39:03 -0500
+        id S1725877AbgB1Ilh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Feb 2020 03:41:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1582879128;
-        bh=RH7CSZiXqW0C4T/ypr5krHIp8KFrF58ypQQEtcp5xBk=;
+        s=badeba3b8450; t=1582879288;
+        bh=TdNes+75c1hh89dP0/XUyrszPizxUjTwDL4xGsIcODY=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=bZQ57bhEqqRNdGacPTNlK9eUihJrR6puHuxkzytUafJL0H8dX/GjoBALL6Cl/D9ii
-         8ihmWMeEQismjWPwp7wGfC0LwmDmOD99xEgSrw/eEARn8DR0IQaUodeDfqiOLjjyGd
-         BrW9OiFDJIBM8g8eIfAFZJi3qCCLr4uS5vi9lO1k=
+        b=WPbN09qpF/8AS+BeLUBsFRBum7im9joYjqPvJy+0c9Y3TXHL48SpjfBDNdWF2I+jb
+         pKRlLMB0K6YB1hOECj2h4a5ej/xG0x8dSojhqKyLLp0BGTJ11fZFqAtq+jUH6mFnKh
+         pyOFcRGXBWlR8zOo3duPZmoYZlO7hQZjURaMkvng=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUUw-1jjzKN2FMy-00pvjN; Fri, 28
- Feb 2020 09:38:48 +0100
-Subject: Re: [PATCH 1/4] btrfs: inline checksum name and driver definitions
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1jnqm52T9O-00kzIL; Fri, 28
+ Feb 2020 09:41:28 +0100
+Subject: Re: [PATCH 2/4] btrfs: simplify tree block checksumming loop
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1582832619.git.dsterba@suse.com>
- <91753cb284a2dbce72e5b5b31b658e1c50ef084e.1582832619.git.dsterba@suse.com>
+ <4f450bbeec245479a3bc2b40d023d1979d622587.1582832619.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,49 +51,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <690a6f32-d219-b3d6-a4b0-795ba6aeeef4@gmx.com>
-Date:   Fri, 28 Feb 2020 16:38:44 +0800
+Message-ID: <a21a2263-c2d1-084b-4ebe-6f909da4afcb@gmx.com>
+Date:   Fri, 28 Feb 2020 16:41:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <91753cb284a2dbce72e5b5b31b658e1c50ef084e.1582832619.git.dsterba@suse.com>
+In-Reply-To: <4f450bbeec245479a3bc2b40d023d1979d622587.1582832619.git.dsterba@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="pyOdW97sL22UylBrPoDLXPqxL3BIc0rrQ"
-X-Provags-ID: V03:K1:bVs4g4HNUJBkQ4HoE47H5h3+xgE8q8qNmy0nhod59S6BroftJkL
- +e2M2125nGFXrBWFQE6+dtNg0TYtW1a/BWeUpdlSKRgYe6OM1YQfjvdlu2+k7NLV9KYD5cJ
- d6VSkD0adUYrPREtkJ/KvuA29qsCz4R4fKLJlpZE5guN5B+cbxc6NFeXocHXH8nBKZe/BLv
- 9T5+hTgDKgcbGP8Trz9lg==
+ boundary="ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl"
+X-Provags-ID: V03:K1:odEKCSz9/r9Xg2I4B2bWz2Zwhw0DiTkGkNG2txCSrxhgsuUa9Dq
+ 6Uoaf/Bh26feXKX6BfzINuyhATN9MlwNyR8P7GGO1BbdftssspE++ElbQVln15iQNZIfkBG
+ SckP7ygpEeZw+dwdcFM7M4zPZuV0zHRU7m/xYEt1LCaOSL4lV2+d3ZkBsZIxfxPvURbI3UM
+ pdtmyvYnWUqpIO4TofscQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Fms+CdVxz9Y=:NdZAK6N/siLIn8uGVmFxY7
- Ex0gB2PIqqZqY9NLIBuHCF1vv1JDZzUsIwmPh+JYJOHzgk2VQ7FteYAGm7XMX1Q+zEKF9jkxF
- DOq4k1TSEBsS9Hy0lsvuu5/+9LgoVpTP8BdYOFxCDAJOpovOVfGx3joZb5EQ34Z2Dv4CulUSY
- NdhTX6E1Lgp7K+90DvTVKiG+bASmDUbU4efUN6vegcOAImyADYnaUgHFweqXny/+dnsIagbna
- Ct3u/rJCVkUuMLqcyasZ6Q6BvTDIb+ItiNxgml7r+e6UgY9eCk0lYM04Qa/P0WWx8Z72wWizM
- RxmTePCbE91AG2r6JlsXLtppuqVEC62rKFSVEhh2nOPhTB9c1QcmL+znaJyfbqFbuUzD+hOKy
- y68gi13eUan996MIk5ZU/gcP3lPYh6bq+BwRW4O6InT3Ee9quPPOGdSWMX7qRKfFg6lFNqqLd
- /oAqMwyuMGVtrWC9k+Q0Je4gb8R/QtDTXzibTkoAXsbn5Ain56vh5YhyxUZg8KYPZQ4pNC+Fk
- 4FU/CNsT3qREBvvxh39BIr2/hj1urGPQesOxgsnkQdE1B2ezr9cGRbk89m2CUIdcc5eTE49iq
- LnVjaqZJQyVcb8njF7J3/tK21jLib8/+ankWvAio/k7V9nOPraLUs4IA/f1QayXeVme84B66Y
- MTDi5l5cuKFY8l2JPfc29ZlIksec9rr7MbESSHWwbFPECtg4VfqqqCs9SqQ60GmG9Dfr/u7FW
- g+Oo0EIxL+3RrA5YJ9nI9jpmKFdcb64BfwICTLMK897iudD8fRb5On/0zrYz8jjYWUDr9t2z/
- P6g4b2mosGSN7xp22lZAyrWsEkmL5FavGJbnxAjfVHDzwBoFIglyd177uFysU95zB48jDAJnQ
- zqaL8Hx9hSWV8Vi/e0fjG9O0s8EWSchXunXTwYTx+etj+zvCwnOfvRC6UCKrl2EzX9mBALT0/
- 9IBwTMCdauLvgSI9SFleOUpyESCozomUEaFEWci3kyalOgmlMESaMR6y+IyXb1J0XUbFL8pJB
- pZpG1kH2wThbm9FL8wFRHWfgh8BM0+yOghaNC7Xo+NvT0tdtDbwpd/M2Vai14ltkrwqw3rPOY
- apMR7sffMe+FKSVic8NedzDhA5hoPyApP6MsCHpnx9DqxmWb0Fd1ZNGNi+rZ82kxdLNi7IR1v
- a5z8H6kOj03AhbBG5XDojmwsO3nXi0vKWSDUPfP5BC+dsevmCYaXedMiHiq/ifPc/SnXpJ07V
- TeLXQweEQFT0UwXS9
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nm3fF6fMNa8=:oXnSp8elF/t4Gp/+kEov5o
+ PlKl+lcengnbFZGMNoRWx5yu5uVHCBe2gUREwfjsE2M6NAz47iqrU64VC6zpYdM2r6nxJC+q+
+ U47OMtKtIY4pfycYJFaJDP7p4HSW+eFYvQk5rzt79p7DwjSIOp7wemtWDLnMpQsUPYfgIUv0I
+ QB1mxj440u7jMJYmRbxJnh7Gg6keVdg/Fwvcfcrc+AJxRgE/CH0TTlZnf76fOsfs6JJV+hcAA
+ 0yf/bnQOS+lOPL5wPchjBfufNXhiiCK5VWJVhggSKqrIrvs1rE0/2t6U2mkjJB9OIPph3uM6m
+ yHxHixCOwzzK/i/21WS/PartKyWTCWRE4gFkWQeidGWKNGPW8wPUWpkAuXnT3w3Pf6Nd3o7dt
+ EFrzvyMeqC5QV3nFbbJ2P39W1oYX33ubuoru5ncZM11BIzvRHoPfzeLIYC7ppEr4VfTM4bYtS
+ ybH8rV2SDKldl3bPVBzs/NkIeDFJGPv4mvsiZ0K6+H6PA7mzgqmXZeOg3qT/n0DjsTnlCQ8P7
+ Vg1qUPbBkXtzOmZKoea6Cc7KnyDcTuWVa1KB/5f7Yst+S6xmdMSDKwqbhQ4IHjLg6OXCRElRu
+ 8KALfUmAY7Nunq6wnMUCHyBITj71jr8o73NN6mzfDMlOzC6cLcoWlEnf0LLUr4sWrZasjoXec
+ xZdGMttedhhAF75OcWOZ4iRPE7mfD1N4agLbLugoAKKtZnNF8rcChc8zJrEMsp/OxIV4Gc5W2
+ tgNHJPoN71VN9iSQn6sCZKm4AtMcdna/kSN8bEaLfYZQezldfxWqMc/xMHwyoO6UMXm/aXjp4
+ ktSzHGqq0MdFN4EgjHKkuKuMRKd8QCdiVvu0FSI4MoKrAoBPFfHCA8uF1XLMg7TyLZemVZV26
+ GPflVPISLN3AOM8aU2r2ayyu82Qqbn9ydDMqDCH6e0etvq/Ti7XeqK+PaAM97bqkhem4m9XC2
+ PIvi+k4uUOYd4B2HVhbjdVqnZpkbyqDnPpGFtjyWGfOWq26MsDyV9LAOyMudBTbEi9CX/rGr/
+ +lAi/4kwy/0fAomHPdENS4+fieC0AqQuUo2t0A2YVkO9+dRGIdoxb4fDmIBB3j2TE/sqJXSB5
+ HEXdChWJCGcbRaw+lbHAzT7H9KSf1/UOd8Ma0x2yXjdkMeGkSdS72jw9DOHjVvtD+3dh+sjTv
+ TdMRIgohzZ85rDbumYaAjWZh2Jhia09Qz+LwwmcJ9arzwANYfcMihjDXHbZtIxOgG/oBsMHjg
+ S6vdzfLk/hg/1B2A5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pyOdW97sL22UylBrPoDLXPqxL3BIc0rrQ
-Content-Type: multipart/mixed; boundary="MraujC4WPO6RiUfs6202t3dWQhpds0DX3"
+--ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl
+Content-Type: multipart/mixed; boundary="lm576WCyOeJa6THeof6zfJF1pE2soeLcu"
 
---MraujC4WPO6RiUfs6202t3dWQhpds0DX3
+--lm576WCyOeJa6THeof6zfJF1pE2soeLcu
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -101,72 +101,103 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/2/28 =E4=B8=8A=E5=8D=884:00, David Sterba wrote:
-> There's an unnecessary indirection in the checksum definition table,
-> pointer and the string itself. The strings are short and the overall
-> size of one entry is now 24 bytes.
->=20
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/ctree.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index f948435e87df..bfedbbe2311f 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -31,8 +31,8 @@ static void del_ptr(struct btrfs_root *root, struct b=
-trfs_path *path,
-> =20
->  static const struct btrfs_csums {
->  	u16		size;
-> -	const char	*name;
-> -	const char	*driver;
-> +	const char	name[10];
+> Thw whole point of csum_tree_block is to iterate over all extent buffer=
 
-Just a nitpick, the longest name I haven seen is "xxhash64" which is
-only 8 chars, +1 for '\n'.
-Thus we can save one extra byte here.
+> pages and pass it to checksumming functions. The bytes where checksum i=
+s
+> stored must be skipped, thus map_private_extent_buffer. This complicate=
+s
+> further offset calculations.
+>=20
+> As the first page will be always present, checksum the relevant bytes
+> unconditionally and then do a simple iteration over the remaining pages=
+=2E
 
-Despite that.
+The new operation looks much better.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-> +	const char	driver[12];
->  } btrfs_csums[] =3D {
->  	[BTRFS_CSUM_TYPE_CRC32] =3D { .size =3D 4, .name =3D "crc32c" },
->  	[BTRFS_CSUM_TYPE_XXHASH] =3D { .size =3D 8, .name =3D "xxhash64" },
-> @@ -63,7 +63,8 @@ const char *btrfs_super_csum_name(u16 csum_type)
->  const char *btrfs_super_csum_driver(u16 csum_type)
+
+>=20
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/disk-io.c | 32 ++++++++------------------------
+>  1 file changed, 8 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 3952e4a2f3d7..5f74eb69f2fe 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -259,38 +259,22 @@ struct extent_map *btree_get_extent(struct btrfs_=
+inode *inode,
+>  static int csum_tree_block(struct extent_buffer *buf, u8 *result)
 >  {
->  	/* csum type is validated at mount time */
-> -	return btrfs_csums[csum_type].driver ?:
-> +	return btrfs_csums[csum_type].driver[0] ?
-> +		btrfs_csums[csum_type].driver :
->  		btrfs_csums[csum_type].name;
->  }
+>  	struct btrfs_fs_info *fs_info =3D buf->fs_info;
+> +	const int num_pages =3D fs_info->nodesize >> PAGE_SHIFT;
+>  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+> -	unsigned long len;
+> -	unsigned long cur_len;
+> -	unsigned long offset =3D BTRFS_CSUM_SIZE;
+>  	char *kaddr;
+> -	unsigned long map_start;
+> -	unsigned long map_len;
+> -	int err;
+> +	int i;
 > =20
+>  	shash->tfm =3D fs_info->csum_shash;
+>  	crypto_shash_init(shash);
+> +	kaddr =3D page_address(buf->pages[0]);
+> +	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+> +			    PAGE_SIZE - BTRFS_CSUM_SIZE);
+> =20
+> -	len =3D buf->len - offset;
+> -
+> -	while (len > 0) {
+> -		/*
+> -		 * Note: we don't need to check for the err =3D=3D 1 case here, as
+> -		 * with the given combination of 'start =3D BTRFS_CSUM_SIZE (32)'
+> -		 * and 'min_len =3D 32' and the currently implemented mapping
+> -		 * algorithm we cannot cross a page boundary.
+> -		 */
+> -		err =3D map_private_extent_buffer(buf, offset, 32,
+> -					&kaddr, &map_start, &map_len);
+> -		if (WARN_ON(err))
+> -			return err;
+> -		cur_len =3D min(len, map_len - (offset - map_start));
+> -		crypto_shash_update(shash, kaddr + offset - map_start, cur_len);
+> -		len -=3D cur_len;
+> -		offset +=3D cur_len;
+> +	for (i =3D 1; i < num_pages; i++) {
+> +		kaddr =3D page_address(buf->pages[i]);
+> +		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+>  	}
+>  	memset(result, 0, BTRFS_CSUM_SIZE);
+> -
+>  	crypto_shash_final(shash, result);
+> =20
+>  	return 0;
 >=20
 
 
---MraujC4WPO6RiUfs6202t3dWQhpds0DX3--
+--lm576WCyOeJa6THeof6zfJF1pE2soeLcu--
 
---pyOdW97sL22UylBrPoDLXPqxL3BIc0rrQ
+--ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Y0ZQACgkQwj2R86El
-/qjVqgf+N47IUyvBgh5V6gwekoi8HzQ4wxVSzYobg1+GQiBg6u9iHJnowzYx9G5m
-wCocYae8U9ev+myU6zolwvDAf0FKWG0gEpQT4PENFqv0hRjzzo5j3Y3AkhAqsFfd
-7TW8TsJWbhzuXHS4Jn3o4HoJ3MxIXC+Yo88/gCPgr8yeSZ0l6DrTs9poufEti00Q
-cbxhI/0WlHp84bX2QFJV/mtbjNeqsEHNcMcwXRKbONYRG0X4mmqoRcKFjEqAMM4a
-At5VPNrYTUBQdL9rk8+oVwM6CNIZy9jFRKXpSLCxPABjcYcMgubiW8k2vEYXelh9
-wQRykZBE9G2Yczo7RWEsoK1MD74dSA==
-=HOqY
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Y0jMACgkQwj2R86El
+/qgNjAgAiv43xMINCXPvi+qRHG9wwy5+l4DdsGaAjkmlbxCYwwI4SF57E5afdwE/
+/z8ShkByd9wNmYc1ufpibSVaSHxKay5Bg8CHPaufzQlFQ7PGc1DVnb0WcpoDc/cX
+tQ3B/o20zrCwMf+Wgl9PI0MwDXIz8A3Hr1OLXb3OUj1QzK/M2V8Wa9x9OUeJZV+O
+L/JrjwUZGDz6p5uRmp63sjCXOx1A7ap//sAdwSw6Q5w7viIQbYhbz2l6nZ2Y0Ruq
+0OZoNqSCIw72oKUKVi6eEpWw/QOEyKapSUoy9xbDjs9Rvu87uuDQoQQxdnMTIow8
+fEdnkvq5wEVKWnt3z+NXt1gziPNjxQ==
+=5nsK
 -----END PGP SIGNATURE-----
 
---pyOdW97sL22UylBrPoDLXPqxL3BIc0rrQ--
+--ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl--
