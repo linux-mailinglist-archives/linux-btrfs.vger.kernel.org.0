@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF76173CD2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 17:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C2F173D28
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 17:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgB1Q0j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Feb 2020 11:26:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45936 "EHLO mx2.suse.de"
+        id S1726046AbgB1Qjg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Feb 2020 11:39:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53670 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgB1Q0j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Feb 2020 11:26:39 -0500
+        id S1725730AbgB1Qjf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Feb 2020 11:39:35 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7A10EB33A;
-        Fri, 28 Feb 2020 16:26:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 558C8AD55;
+        Fri, 28 Feb 2020 16:39:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 26C74DA79B; Fri, 28 Feb 2020 17:26:17 +0100 (CET)
-Date:   Fri, 28 Feb 2020 17:26:16 +0100
+        id B1BFCDA79B; Fri, 28 Feb 2020 17:39:13 +0100 (CET)
+Date:   Fri, 28 Feb 2020 17:39:13 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH] btrfs: fix btrfs_calc_reclaim_metadata_size calculation
-Message-ID: <20200228162616.GQ2902@twin.jikos.cz>
+Message-ID: <20200228163913.GR2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
@@ -58,30 +58,10 @@ On Fri, Feb 21, 2020 at 04:41:10PM -0500, Josef Bacik wrote:
 > This makes it so we attempt to reclaim a lot more delalloc space, which
 > allows us to make our reservations and we no longer are allocating a
 > bunch of needless metadata chunks.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Added to misc-next, thanks.
+This seems to be relevant for stable@ but does not apply due to some
+cleanups that are not even on 5.5 and for the reset the code has moved
+to other files so this would need manual backport.
 
-> ---
->  fs/btrfs/space-info.c | 44 ++++++++++++++++++++++++++++++++++---------
->  1 file changed, 35 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index f216ab72f5fc..26e1c492b9b5 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -306,25 +306,20 @@ static inline u64 calc_global_rsv_need_space(struct btrfs_block_rsv *global)
->  	return (global->size << 1);
->  }
->  
-> -int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
-> -			 struct btrfs_space_info *space_info, u64 bytes,
-> -			 enum btrfs_reserve_flush_enum flush)
-> +static inline u64
-> +calc_available_free_space(struct btrfs_fs_info *fs_info,
-> +			  struct btrfs_space_info *space_info,
-> +			  enum btrfs_reserve_flush_enum flush)
-
-It does not seem to be a candidate for 'static inline', it's not in a
-header and the function body is beyond what looks suitable for inlining.
+I'll add the CC: tag so we have that tracked but none of the patches
+will apply.
