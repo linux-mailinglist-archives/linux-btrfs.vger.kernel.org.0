@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE33D17331A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 09:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C240617331C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Feb 2020 09:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgB1Ilh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Feb 2020 03:41:37 -0500
-Received: from mout.gmx.net ([212.227.17.22]:43531 "EHLO mout.gmx.net"
+        id S1726188AbgB1ImO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Feb 2020 03:42:14 -0500
+Received: from mout.gmx.net ([212.227.15.18]:46129 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgB1Ilh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Feb 2020 03:41:37 -0500
+        id S1725877AbgB1ImN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Feb 2020 03:42:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1582879288;
-        bh=TdNes+75c1hh89dP0/XUyrszPizxUjTwDL4xGsIcODY=;
+        s=badeba3b8450; t=1582879327;
+        bh=FgOBgVgTqNdJ+lnG5p2Od+gGclIkS+4eZAkmQNr9sRQ=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=WPbN09qpF/8AS+BeLUBsFRBum7im9joYjqPvJy+0c9Y3TXHL48SpjfBDNdWF2I+jb
-         pKRlLMB0K6YB1hOECj2h4a5ej/xG0x8dSojhqKyLLp0BGTJ11fZFqAtq+jUH6mFnKh
-         pyOFcRGXBWlR8zOo3duPZmoYZlO7hQZjURaMkvng=
+        b=S7ytYertjylLX4Rfy/o7toyk0WtIbnLyvaZDmHBvkappZ4ee0tHL9KGSkjk1+6y+1
+         cqKRAT2ra14I8wMy76bIjT8e1/qEpIZkLO8awwfzIWm9cTzXfVe+6+iKko124G9ydx
+         XP5521FCzWrzvw+mncG9j5Akih0yYuLoFMQhMAmM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1jnqm52T9O-00kzIL; Fri, 28
- Feb 2020 09:41:28 +0100
-Subject: Re: [PATCH 2/4] btrfs: simplify tree block checksumming loop
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3bWr-1jYeMe0IVP-010ZMZ; Fri, 28
+ Feb 2020 09:42:07 +0100
+Subject: Re: [PATCH 3/4] btrfs: return void from csum_tree_block
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1582832619.git.dsterba@suse.com>
- <4f450bbeec245479a3bc2b40d023d1979d622587.1582832619.git.dsterba@suse.com>
+ <c6518711b16ccd373084b8df681db41c198cb1ec.1582832619.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,49 +51,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <a21a2263-c2d1-084b-4ebe-6f909da4afcb@gmx.com>
-Date:   Fri, 28 Feb 2020 16:41:23 +0800
+Message-ID: <744be167-b3c1-99ac-e9c6-694a92a6f63b@gmx.com>
+Date:   Fri, 28 Feb 2020 16:41:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <4f450bbeec245479a3bc2b40d023d1979d622587.1582832619.git.dsterba@suse.com>
+In-Reply-To: <c6518711b16ccd373084b8df681db41c198cb1ec.1582832619.git.dsterba@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl"
-X-Provags-ID: V03:K1:odEKCSz9/r9Xg2I4B2bWz2Zwhw0DiTkGkNG2txCSrxhgsuUa9Dq
- 6Uoaf/Bh26feXKX6BfzINuyhATN9MlwNyR8P7GGO1BbdftssspE++ElbQVln15iQNZIfkBG
- SckP7ygpEeZw+dwdcFM7M4zPZuV0zHRU7m/xYEt1LCaOSL4lV2+d3ZkBsZIxfxPvURbI3UM
- pdtmyvYnWUqpIO4TofscQ==
+ boundary="1CV0npFssdq0x9wIysPAfIdTujuee7uk5"
+X-Provags-ID: V03:K1:VMHFE1BoGlyxRB33q1TnKrG1dC4C37AHYH1WbQFWlgUEyS4SrhT
+ 6coHBAP4SP1cg+rqBVuXQK4XDi6Mbn+7NU3irerLCUeuV7lwt2XsVwbXR0CR7UfdaDZXBC7
+ FSZV2H7RP6+STPouEh3zp6KDr16Swqyln1T4XN31uqrWCgRP9YL1gFacVib3v1iNqflAh6Z
+ 9NJWUTVJBkwdZBWPigECw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nm3fF6fMNa8=:oXnSp8elF/t4Gp/+kEov5o
- PlKl+lcengnbFZGMNoRWx5yu5uVHCBe2gUREwfjsE2M6NAz47iqrU64VC6zpYdM2r6nxJC+q+
- U47OMtKtIY4pfycYJFaJDP7p4HSW+eFYvQk5rzt79p7DwjSIOp7wemtWDLnMpQsUPYfgIUv0I
- QB1mxj440u7jMJYmRbxJnh7Gg6keVdg/Fwvcfcrc+AJxRgE/CH0TTlZnf76fOsfs6JJV+hcAA
- 0yf/bnQOS+lOPL5wPchjBfufNXhiiCK5VWJVhggSKqrIrvs1rE0/2t6U2mkjJB9OIPph3uM6m
- yHxHixCOwzzK/i/21WS/PartKyWTCWRE4gFkWQeidGWKNGPW8wPUWpkAuXnT3w3Pf6Nd3o7dt
- EFrzvyMeqC5QV3nFbbJ2P39W1oYX33ubuoru5ncZM11BIzvRHoPfzeLIYC7ppEr4VfTM4bYtS
- ybH8rV2SDKldl3bPVBzs/NkIeDFJGPv4mvsiZ0K6+H6PA7mzgqmXZeOg3qT/n0DjsTnlCQ8P7
- Vg1qUPbBkXtzOmZKoea6Cc7KnyDcTuWVa1KB/5f7Yst+S6xmdMSDKwqbhQ4IHjLg6OXCRElRu
- 8KALfUmAY7Nunq6wnMUCHyBITj71jr8o73NN6mzfDMlOzC6cLcoWlEnf0LLUr4sWrZasjoXec
- xZdGMttedhhAF75OcWOZ4iRPE7mfD1N4agLbLugoAKKtZnNF8rcChc8zJrEMsp/OxIV4Gc5W2
- tgNHJPoN71VN9iSQn6sCZKm4AtMcdna/kSN8bEaLfYZQezldfxWqMc/xMHwyoO6UMXm/aXjp4
- ktSzHGqq0MdFN4EgjHKkuKuMRKd8QCdiVvu0FSI4MoKrAoBPFfHCA8uF1XLMg7TyLZemVZV26
- GPflVPISLN3AOM8aU2r2ayyu82Qqbn9ydDMqDCH6e0etvq/Ti7XeqK+PaAM97bqkhem4m9XC2
- PIvi+k4uUOYd4B2HVhbjdVqnZpkbyqDnPpGFtjyWGfOWq26MsDyV9LAOyMudBTbEi9CX/rGr/
- +lAi/4kwy/0fAomHPdENS4+fieC0AqQuUo2t0A2YVkO9+dRGIdoxb4fDmIBB3j2TE/sqJXSB5
- HEXdChWJCGcbRaw+lbHAzT7H9KSf1/UOd8Ma0x2yXjdkMeGkSdS72jw9DOHjVvtD+3dh+sjTv
- TdMRIgohzZ85rDbumYaAjWZh2Jhia09Qz+LwwmcJ9arzwANYfcMihjDXHbZtIxOgG/oBsMHjg
- S6vdzfLk/hg/1B2A5
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yWFgB8SK8Po=:4iWlMg3RsTwcfg3lFixVtc
+ pLA3GbHwR7BxHsRJ3h2dxugnGNIapbm5VZoS1rh85UnBuQSqOHjycKoZVDTYOxfbNVb+KNVN/
+ A2abBZN5YzVhHYKcVxr28Al9pbOC3QWEfMlmrfa0z71+ZFdiLF9uBKVN4V6P0xXBhyxwSamEl
+ 4cZ86NjlUVoZwmOQzDvpKZdeOwLwgiPXvM9ia2zjAHLYwkfHD6CP/ci3cBzPQccky5/qf/9/+
+ PXL6Oi7mu1lcG4XaNqhTDdBCBYSbKXqQg0+9PkjxcHiciQCVmsFyl5MQ944JjQYsa04/2kCay
+ 53ZckHbXFtCY5M2i8/dD3GxWmhWlbYGpr40Fxt8yjyd4BhubnsZ5UkaRZCWbT8903bQ+4MHWq
+ Xb15YoqWXfX3uehzHYP1UbgsYtHqlPqKfsn33ZUm3FVbwDocchaAQvoAcoyfjWzwL/j6R5786
+ HD7i0Pz3iplgLSAi2TNdRergpvnK4jjolWWdyWUs92+WMb1eMUpabncuk4MtMj2PQbFa3+Es1
+ Puh6xxK1FtEWoT+T3KTYYQIGPMlopSm5XSzqRZB5ruWD6+fRXcSQfbIFkhcSsmqHx1pzEMx9E
+ voE3bGI5A4SBYz+E0PLrczsZfw8VE3rf2uZNQUhRidrFwuf2RQMmB2B5MF5/UN8pC96VFsW5c
+ MhWG0AKIxFXbFkkrPotVrgtyf1KAuYNVTi6w8Su9Cr65ux/WSFbLOGJY45Lz4RvYS1rheMhnt
+ KhlId7Wu0PnfGQpcptYAsep57aHG0FWDT/EF3xtgJJkLSguuX1bt2QIO3jePiPJFSEOSCUGAg
+ K8fysu7rlAsiBeulzwWrGCOWlXSXgBtddGyI1WzJahiNzyAWt/LN/wn2imWAn80AkgnsCzENc
+ 3pS/OdD6vdJqQK+vBEzrVEO2ciYrenBd1Yn/LsMfp1XmNDuXa3ILS//4Yzxsa2DYlqNK8Qd7a
+ 09cv1xbyy0sFZpcd+x5mmdPEjDYO77MDWyZu0HKP2EUr837oeE6YESuef8LXzgBiTIrFOs37P
+ NSejSRbb+5koh1r+3XdTWcUx4zH/P5N/YsyfglSTR4gwKBgEdfGKSc5z0yhrevdJslfcB+bSE
+ OTmxY1OsM+IlwVXF2bQEf7L3Uur4HsVfixmgytZOD1LrDJrZWVLxYM2gJ/BX0ugp+UABJ9zhK
+ L1ovVBCs5CtnrL2Y2h+VSlqJ4qsBtlbVarG6RijBoEcLsf/QVXoglirKtF4mlJdhD8iubXldm
+ sTNyJd2XPKj4as0cZ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl
-Content-Type: multipart/mixed; boundary="lm576WCyOeJa6THeof6zfJF1pE2soeLcu"
+--1CV0npFssdq0x9wIysPAfIdTujuee7uk5
+Content-Type: multipart/mixed; boundary="N7JyszjJnq2rZFiPqanXfFcaRm2ABEfWK"
 
---lm576WCyOeJa6THeof6zfJF1pE2soeLcu
+--N7JyszjJnq2rZFiPqanXfFcaRm2ABEfWK
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -101,103 +101,91 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/2/28 =E4=B8=8A=E5=8D=884:00, David Sterba wrote:
-> Thw whole point of csum_tree_block is to iterate over all extent buffer=
-
-> pages and pass it to checksumming functions. The bytes where checksum i=
-s
-> stored must be skipped, thus map_private_extent_buffer. This complicate=
-s
-> further offset calculations.
+> Now that csum_tree_block is not returning any errors, we can make
+> csum_tree_block return void and simplify callers.
 >=20
-> As the first page will be always present, checksum the relevant bytes
-> unconditionally and then do a simple iteration over the remaining pages=
-=2E
-
-The new operation looks much better.
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
->=20
-> Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->  fs/btrfs/disk-io.c | 32 ++++++++------------------------
->  1 file changed, 8 insertions(+), 24 deletions(-)
+>  fs/btrfs/disk-io.c | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
 >=20
 > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 3952e4a2f3d7..5f74eb69f2fe 100644
+> index 5f74eb69f2fe..8401852cf9c0 100644
 > --- a/fs/btrfs/disk-io.c
 > +++ b/fs/btrfs/disk-io.c
-> @@ -259,38 +259,22 @@ struct extent_map *btree_get_extent(struct btrfs_=
-inode *inode,
->  static int csum_tree_block(struct extent_buffer *buf, u8 *result)
+> @@ -253,10 +253,8 @@ struct extent_map *btree_get_extent(struct btrfs_i=
+node *inode,
+> =20
+>  /*
+>   * Compute the csum of a btree block and store the result to provided =
+buffer.
+> - *
+> - * Returns error if the extent buffer cannot be mapped.
+>   */
+> -static int csum_tree_block(struct extent_buffer *buf, u8 *result)
+> +static void csum_tree_block(struct extent_buffer *buf, u8 *result)
 >  {
 >  	struct btrfs_fs_info *fs_info =3D buf->fs_info;
-> +	const int num_pages =3D fs_info->nodesize >> PAGE_SHIFT;
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
-> -	unsigned long len;
-> -	unsigned long cur_len;
-> -	unsigned long offset =3D BTRFS_CSUM_SIZE;
->  	char *kaddr;
-> -	unsigned long map_start;
-> -	unsigned long map_len;
-> -	int err;
-> +	int i;
-> =20
->  	shash->tfm =3D fs_info->csum_shash;
->  	crypto_shash_init(shash);
-> +	kaddr =3D page_address(buf->pages[0]);
-> +	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
-> +			    PAGE_SIZE - BTRFS_CSUM_SIZE);
-> =20
-> -	len =3D buf->len - offset;
-> -
-> -	while (len > 0) {
-> -		/*
-> -		 * Note: we don't need to check for the err =3D=3D 1 case here, as
-> -		 * with the given combination of 'start =3D BTRFS_CSUM_SIZE (32)'
-> -		 * and 'min_len =3D 32' and the currently implemented mapping
-> -		 * algorithm we cannot cross a page boundary.
-> -		 */
-> -		err =3D map_private_extent_buffer(buf, offset, 32,
-> -					&kaddr, &map_start, &map_len);
-> -		if (WARN_ON(err))
-> -			return err;
-> -		cur_len =3D min(len, map_len - (offset - map_start));
-> -		crypto_shash_update(shash, kaddr + offset - map_start, cur_len);
-> -		len -=3D cur_len;
-> -		offset +=3D cur_len;
-> +	for (i =3D 1; i < num_pages; i++) {
-> +		kaddr =3D page_address(buf->pages[i]);
-> +		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+>  	const int num_pages =3D fs_info->nodesize >> PAGE_SHIFT;
+> @@ -276,8 +274,6 @@ static int csum_tree_block(struct extent_buffer *bu=
+f, u8 *result)
 >  	}
 >  	memset(result, 0, BTRFS_CSUM_SIZE);
-> -
 >  	crypto_shash_final(shash, result);
+> -
+> -	return 0;
+>  }
 > =20
->  	return 0;
+>  /*
+> @@ -528,8 +524,7 @@ static int csum_dirty_buffer(struct btrfs_fs_info *=
+fs_info, struct page *page)
+>  				    offsetof(struct btrfs_header, fsid),
+>  				    BTRFS_FSID_SIZE) =3D=3D 0);
+> =20
+> -	if (csum_tree_block(eb, result))
+> -		return -EINVAL;
+> +	csum_tree_block(eb, result);
+> =20
+>  	if (btrfs_header_level(eb))
+>  		ret =3D btrfs_check_node(eb);
+> @@ -640,9 +635,7 @@ static int btree_readpage_end_io_hook(struct btrfs_=
+io_bio *io_bio,
+>  	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb),
+>  				       eb, found_level);
+> =20
+> -	ret =3D csum_tree_block(eb, result);
+> -	if (ret)
+> -		goto err;
+> +	csum_tree_block(eb, result);
+> =20
+>  	if (memcmp_extent_buffer(eb, result, 0, csum_size)) {
+>  		u32 val;
 >=20
 
 
---lm576WCyOeJa6THeof6zfJF1pE2soeLcu--
+--N7JyszjJnq2rZFiPqanXfFcaRm2ABEfWK--
 
---ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl
+--1CV0npFssdq0x9wIysPAfIdTujuee7uk5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Y0jMACgkQwj2R86El
-/qgNjAgAiv43xMINCXPvi+qRHG9wwy5+l4DdsGaAjkmlbxCYwwI4SF57E5afdwE/
-/z8ShkByd9wNmYc1ufpibSVaSHxKay5Bg8CHPaufzQlFQ7PGc1DVnb0WcpoDc/cX
-tQ3B/o20zrCwMf+Wgl9PI0MwDXIz8A3Hr1OLXb3OUj1QzK/M2V8Wa9x9OUeJZV+O
-L/JrjwUZGDz6p5uRmp63sjCXOx1A7ap//sAdwSw6Q5w7viIQbYhbz2l6nZ2Y0Ruq
-0OZoNqSCIw72oKUKVi6eEpWw/QOEyKapSUoy9xbDjs9Rvu87uuDQoQQxdnMTIow8
-fEdnkvq5wEVKWnt3z+NXt1gziPNjxQ==
-=5nsK
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Y0lYACgkQwj2R86El
+/qi9LwgAk0dAxNruUGLkVe/nQT5XVBXq1+JjDxRxnuBvipueFp54Wkk+CsidzJXa
+1Y7+bngIHwptgWccimdULOUDZ1OzSRek7UoOKC7ab7ONRtHNXw8kfI0nsLVqgnBh
+H7x1ubwzn81XfEPSrIYm3w2VIAs14rj6b6gnJ2ehc6MkcGc07AHK2UAsupfyJ+7p
+oPTVeF+8nUoRf3KCWgc+eRRUM1TmJplP2ytgAzHpUEeJLx4w+9CChCzklCGFxRuK
+V/2TURh66+1DWIXfYGZu7gdGYQYqaILjx3uUoac+lq2nofvnwtJAkfj/Jaas5jwD
+PFegcZtg32FvqwdVL8vUqiZXP+Iqbg==
+=n5mZ
 -----END PGP SIGNATURE-----
 
---ZmfEJ3DPv6rluK2IEI3H4Vq8ggc4NJPFl--
+--1CV0npFssdq0x9wIysPAfIdTujuee7uk5--
