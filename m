@@ -2,157 +2,367 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9074F1747BE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 16:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA24174889
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 19:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgB2PsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Feb 2020 10:48:03 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:43014 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgB2PsD (ORCPT
+        id S1727341AbgB2SDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Feb 2020 13:03:41 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:37670 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgB2SDl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Feb 2020 10:48:03 -0500
-Received: by mail-ot1-f50.google.com with SMTP id j5so4624603otn.10
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Feb 2020 07:48:01 -0800 (PST)
+        Sat, 29 Feb 2020 13:03:41 -0500
+Received: by mail-pj1-f67.google.com with SMTP id o2so719373pjp.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Feb 2020 10:03:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MHRtmj/SrkxXriNQu7qORkzvHaAKhF/u4jKtFQ7YH4I=;
-        b=amcFkcFRc/yDSh/IVJjeEvzkkLIS8qWW0OsQzHr9cB4UrAsptfeaZznnQMNzPwP3Gc
-         EtY5gFbY5QNz3y21SNfAH2684hzJXwA01LdAZ7da0AKBBlKZFIGYWSx0VlX3FcLjFZmf
-         9l0M/SltMSLyuCuMlP78g8X9Y/WZC53Wje5uw5LwVnnRPmmNPuStE6RU+lnNGH0c2YER
-         497k7+GzcJbY7Du+AGc0D+GKYFL61joGv/+Dm6OLTMFWlNskHTwb1iGpN8t5F6nCZzuR
-         23RwPNRMCJYJUYMa31h8jC/aPRul3rTWO1PGvPO1Kjl5F3NReKcaLIBI5jZ8Ud12n6VG
-         wBKQ==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z89W4g4aiTyqMWeFu9TbmpRWadrcXuWSXAxV5E/i9Ks=;
+        b=NUAUSjMc3PylWqoNwD9tmPdW1meYULD//Jlozs3Xa+VZ5Ui3CCoFpfStCRKbMx1a3r
+         F3/Vl9YoQbPRExQjDKDl+Z5TjtfwgSErqpiPASKhCKtkeJDmORLQoqBnHIXaQU96diqY
+         xyoISm6dKqGIti0CFVD+4YQBStyo13x4cVbpJlhWoyvOidgFvCrSQOpc7FVoz2fkwfUU
+         vX4SLHgFgA4LtXPlbJDmqJ25Nu4fYgMONjX3Rogf03cQXkOHYM6RA4x1VmNlADfwRMf7
+         yfpmFipstyhAqK6dUohMXoDNt/4DZ01v4WBnx9lARerqGtZocE+pzlkCw8Vcdwi50sR9
+         EE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MHRtmj/SrkxXriNQu7qORkzvHaAKhF/u4jKtFQ7YH4I=;
-        b=ROM37wP4v70i08v+5wPAqCV3MtW9Fec2bdU7wrorPlrpyrTFzxriFD31gj61j0Avrw
-         gFH6g7IPwt6jbJ1Y/h5DfRIFNa8j6PN8gyJmYXLvcVadMzxzzYRQhULFCnUnDbapaCDh
-         jz7cisc1GJJn3VjM0az+4Af3YbuAKS+4hyQbLvdcSQ1GcIFTPuFrMUGnCr1L/8nTP5Ww
-         Qr0iaH0b4UVuZI9X/AwXzsBmD2bpgehtC8BMyEG0JrsgBNtSD+XLPlzjTF0srVNwBcNN
-         WWwSdWslj6C94Wsvmq/0GWr2pam0UAGCQIdQ4MXc0uX/Er3MJto+xWyFxbH3D0KofvUA
-         7NJA==
-X-Gm-Message-State: APjAAAUPpsxY8tlMsYpb020JGFkKm/s6O7g8xr+Cic6qmur1RdxA+hfZ
-        j4YNUV6m8h90ajFBjN87EuSfOI5AblFtzTYi86g=
-X-Google-Smtp-Source: APXvYqwIt+SiKUP0rsbCO6fWX6EqjDfQ42BKhZPlhEWPJ9bzUbwWRXN3EPkNmGXV4zywaLNPyp3uNu9uFDMtCqLwNXg=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr7717620otq.281.1582991280924;
- Sat, 29 Feb 2020 07:48:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z89W4g4aiTyqMWeFu9TbmpRWadrcXuWSXAxV5E/i9Ks=;
+        b=HBJQeqwLjU7XjS5aGLZ0R4VbEfaATbClGGAhksfozQwQqqkICj9JiZ2Rj+Pc8vyUht
+         pJWVJX8tAI//b9dxJfsWSiy/3avNsm0yj/nlOsRgcv6RANyaxpD+CWHgmWUjKd4n0Qv7
+         Ecxp/Xvr1WMJm2HKty15so8g/hUDAJzKK8vnnMJ6xQpOXUxOR4+6+agQ1Q5xashqHEt0
+         Gixk6PcOxLMaCcjjpRnlfpq/R9k7rY6eygjLToZYuaMr9ODGDJb9z/k22n23KDOr8TMh
+         kTvvU+KVMOWa6pG/GjipidbCpuA/3aoh6l3GlwyCx6x0qGibNHl5Ys5VDlFBgu2enbrb
+         rhdQ==
+X-Gm-Message-State: ANhLgQ31pRGNdULAJDi42l1vpHM2/yleM5QTQS8Bf769DjLK8YbPSGZQ
+        +DGbmQo+CL6lvxeRDvBHaKJOmA==
+X-Google-Smtp-Source: ADFU+vvMt8ivPleB4YG6JegTWPMHA/ki9R8MO9nGfTA1OEmFOIvT68B8kGaLz5bk0qlPx/4kYflYfA==
+X-Received: by 2002:a17:90a:9303:: with SMTP id p3mr3769348pjo.35.1582999419354;
+        Sat, 29 Feb 2020 10:03:39 -0800 (PST)
+Received: from vader ([2607:fb90:8365:d596:e6a7:a0ff:fe0b:c9a8])
+        by smtp.gmail.com with ESMTPSA id 5sm2791302pfw.179.2020.02.29.10.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Feb 2020 10:03:38 -0800 (PST)
+Date:   Sat, 29 Feb 2020 10:03:35 -0800
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH man-pages v4] Document encoded I/O
+Message-ID: <20200229180335.GA157744@vader>
+References: <cover.1582930832.git.osandov@fb.com>
+ <00f86ed7c25418599e6067cb1dfb186c90ce7bf3.1582931488.git.osandov@fb.com>
+ <CAOQ4uxgym1C3JZHrLhBmEh_T7UbQOukxTBKVzHqp4NSdjredSg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
- <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com> <CADq=pgn3-4S3ErK0G+ajf-5M=8CSaE6iow25ASaBxCygedy=7g@mail.gmail.com>
- <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com>
-In-Reply-To: <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com>
-From:   4e868df3 <4e868df3@gmail.com>
-Date:   Sat, 29 Feb 2020 08:47:24 -0700
-Message-ID: <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
-Subject: Re: corrupt leaf
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxgym1C3JZHrLhBmEh_T7UbQOukxTBKVzHqp4NSdjredSg@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It came up with some kind of `840 abort`. Then I reran btrfs check and
-tried again.
+On Sat, Feb 29, 2020 at 12:28:41PM +0200, Amir Goldstein wrote:
+> > +encoded_io \- overview of encoded I/O
+> > +.SH DESCRIPTION
+> > +Several filesystems (e.g., Btrfs) support transparent encoding
+> > +(e.g., compression, encryption) of data on disk:
+> > +written data is encoded by the kernel before it is written to disk,
+> > +and read data is decoded before being returned to the user.
+> > +In some cases, it is useful to skip this encoding step.
+> > +For example, the user may want to read the compressed contents of a file
+> > +or write pre-compressed data directly to a file.
+> > +This is referred to as "encoded I/O".
+> > +.SS Encoded I/O API
+> > +Encoded I/O is specified with the
+> > +.B RWF_ENCODED
+> > +flag to
+> > +.BR preadv2 (2)
+> > +and
+> > +.BR pwritev2 (2).
+> > +If
+> > +.B RWF_ENCODED
+> > +is specified, then
+> > +.I iov[0].iov_base
+> > +points to an
+> > +.I
+> > +encoded_iov
+> > +structure, defined in
+> > +.I <linux/fs.h>
+> > +as:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +struct encoded_iov {
+> > +    __aligned_u64 len;
+> > +    __aligned_u64 unencoded_len;
+> > +    __aligned_u64 unencoded_offset;
+> > +    __u32 compression;
+> > +    __u32 encryption;
+> > +};
+> 
+> This new API can generate many diverse error conditions that the standard errno
+> codes are not rich enough to describe.
+> Maybe add room for encoded io specific error codes in the metadata structure
+> would be good practice, for example:
+> - compression method not supported
+> - encryption method not supported
+> - the combination of enc/comp is not supported
+> - and so on
 
-$ btrfs check --init-csum-tree /dev/mapper/luks0
-Creating a new CRC tree
-WARNING:
+I like this idea, but it feels like even more iovec abuse. Namely, for
+pwritev2(), it feels a little off that we'd be copying _to_ user memory
+rather than only copying from. It's probably worth it for better errors,
+though.
 
-        Do not use --repair unless you are advised to do so by a developer
-        or an experienced user, and then only after having accepted that no
-        fsck can successfully repair all types of filesystem corruption. Eg.
-        some software or hardware bugs can fatally damage a volume.
-        The operation will start in 10 seconds.
-        Use Ctrl-C to stop it.
-10 9 8 7 6 5 4 3 2 1
-Starting repair.
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/luks0
-UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-Reinitialize checksum tree
-Unable to find block group for 0
-Unable to find block group for 0
-Unable to find block group for 0
-ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
-btrfs(+0x71e09)[0x564eef35ee09]
-btrfs(btrfs_search_slot+0xfb1)[0x564eef360431]
-btrfs(btrfs_csum_file_block+0x442)[0x564eef37c412]
-btrfs(+0x35bde)[0x564eef322bde]
-btrfs(+0x47ce4)[0x564eef334ce4]
-btrfs(main+0x94)[0x564eef3020c4]
-/usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7ff12a43e023]
-btrfs(_start+0x2e)[0x564eef30235e]
-[1]    840 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
+> > +.EE
+> > +.in
+> > +.PP
+> > +This may be extended in the future, so
+> > +.I iov[0].iov_len
+> > +must be set to
+> > +.I "sizeof(struct\ encoded_iov)"
+> > +for forward/backward compatibility.
+> > +The remaining buffers contain the encoded data.
+> > +.PP
+> > +.I compression
+> > +and
+> > +.I encryption
+> > +are the encoding fields.
+> > +.I compression
+> > +is one of
+> > +.B ENCODED_IOV_COMPRESSION_NONE
+> > +(zero),
+> > +.BR ENCODED_IOV_COMPRESSION_ZLIB ,
+> > +.BR ENCODED_IOV_COMPRESSION_LZO ,
+> > +or
+> > +.BR ENCODED_IOV_COMPRESSION_ZSTD .
+> > +.I encryption
+> > +is currently always
+> > +.B ENCODED_IOV_ENCRYPTION_NONE
+> > +(zero).
+> > +.PP
+> > +.I unencoded_len
+> > +is the length of the unencoded (i.e., decrypted and decompressed) data.
+> > +.I unencoded_offset
+> > +is the offset into the unencoded data where the data in the file begins
+> > +(less than or equal to
+> > +.IR unencoded_len ).
+> > +.I len
+> > +is the length of the data in the file
+> > +(less than or equal to
+> > +.I unencoded_len
+> > +-
+> > +.IR unencoded_offset ).
+> > +.I
+> > +.PP
+> > +In most cases,
+> > +.I len
+> > +is equal to
+> > +.I unencoded_len
+> > +and
+> > +.I unencoded_offset
+> > +is zero.
+> > +However, it may be necessary to refer to a subset of the unencoded data,
+> > +usually because a read occurred in the middle of an encoded extent,
+> > +because part of an extent was overwritten or deallocated in some
+> > +way (e.g., with
+> > +.BR write (2),
+> > +.BR truncate (2),
+> > +or
+> > +.BR fallocate (2))
+> > +or because part of an extent was added to the file (e.g., with
+> > +.BR ioctl_ficlonerange (2)
+> > +or
+> > +.BR ioctl_fideduperange (2)).
+> > +For example, if
+> > +.I len
+> > +is 300,
+> > +.I unencoded_len
+> > +is 1000,
+> > +and
+> > +.I unencoded_offset
+> > +is 600,
+> > +then the encoded data is 1000 bytes long when decoded,
+> > +of which only the 300 bytes starting at offset 600 are used;
+> > +the first 600 and last 100 bytes should be ignored.
+> > +.PP
+> > +If the unencoded data is actually longer than
+> > +.IR unencoded_len ,
+> > +then it is truncated;
+> > +if it is shorter, then it is extended with zeroes.
+> 
+> I find the unencoded_len/unencoded_offset API extremely confusing and all
+> the clarifications above did not help to ease this feeling.
+> Please remind me why does the API need to expose unencoded details at all.
+> I understand the backup/restore use case for read/write encoded data.
+> I do not understand how unencoded offset info is relevant to this use case
+> or what are the other use cases it is relevant for.
 
-$ btrfs check /dev/mapper/luks0
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/luks0
-UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-there are no extents for csum range 68757573632-68757704704
-Right section didn't have a record
-there are no extents for csum range 68754427904-68757704704
-csum exists for 68750639104-68757704704 but there is no extent record
-there are no extents for csum range 68760719360-68761223168
-Right section didn't have a record
-there are no extents for csum range 68757819392-68761223168
-csum exists for 68757819392-68761223168 but there is no extent record
-there are no extents for csum range 68761362432-68761378816
-Right section didn't have a record
-there are no extents for csum range 68761178112-68836831232
-csum exists for 68761178112-68836831232 but there is no extent record
-there are no extents for csum range 1168638763008-1168638803968
-csum exists for 1168638763008-1168645861376 but there is no extent
-record
-ERROR: errors found in csum tree
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 3165125918720 bytes used, error(s) found
-total csum bytes: 3085473228
-total tree bytes: 4791877632
-total fs tree bytes: 1177714688
-total extent tree bytes: 94617600
-btree space waste bytes: 492319296
-file data blocks allocated: 3160334041088
- referenced 3157401378816
+I agree, it's confusing. However, without this concept on the read side,
+there's no way to represent some file extent layouts, and without the
+write side, those layouts can't be written back out. That would make
+this interface much less useful for backups.
 
-$ btrfs check --init-csum-tree /dev/mapper/luks0
-Creating a new CRC tree
-WARNING:
+These cases arise in a few ways on Btrfs:
 
-        Do not use --repair unless you are advised to do so by a developer
-        or an experienced user, and then only after having accepted that no
-        fsck can successfully repair all types of filesystem corruption. Eg.
-        some software or hardware bugs can fatally damage a volume.
-        The operation will start in 10 seconds.
-        Use Ctrl-C to stop it.
-10 9 8 7 6 5 4 3 2 1
-Starting repair.
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/luks0
-UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-Reinitialize checksum tree
-Unable to find block group for 0
-Unable to find block group for 0
-Unable to find block group for 0
-ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
-btrfs(+0x71e09)[0x559260a6de09]
-btrfs(btrfs_search_slot+0xfb1)[0x559260a6f431]
-btrfs(btrfs_csum_file_block+0x442)[0x559260a8b412]
-btrfs(+0x35bde)[0x559260a31bde]
-btrfs(+0x47ce4)[0x559260a43ce4]
-btrfs(main+0x94)[0x559260a110c4]
-/usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7f212eb1f023]
-btrfs(_start+0x2e)[0x559260a1135e]
-[1]    848 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
+1. Files with a size unaligned to the block size.
+
+   Ignoring inline data, Btrfs always pads data to the filesystem block
+   size when compressing. So, a file with a size unaligned to the block
+   size will end with an extent that decompresses to a multiple of the
+   block size, but logically the file only contains the data up to
+   i_size. In this case, len (length up to i_size) < unencoded_len (full
+   decompressed length). This can arise simply from writing out an
+   unaligned file or from truncating a file unaligned.
+
+2. FICLONERANGE from the middle of an extent.
+
+   Suppose file A has a large compressed extent with
+   len = unencoded_len = 128k and unencoded_offset = 0. If the user does
+   an FICLONERANGE out of the middle of that extent (say, 64k long and
+   4k from the start of the extent), Btrfs creates a "partial" extent
+   which references the original extent (in my example, the result would
+   have len = 64k, unencoded_offset = 4k, and unencoded_len still 128k).
+
+3. Overwriting the middle of an extent.
+
+   In some cases, when the middle of an extent is overwritten (e.g., an
+   O_DIRECT write, FICLONERANGE, or FIDEDUPERANGE), Btrfs splits up the
+   overwritten extents into partial extents referencing the original
+   extent instead of rewriting the whole extent.
+
+These aren't specific to compression or Btrfs' on-disk format. fscrypt
+uses block ciphers for file data, so case 1 is just as relevant for
+that. The way Btrfs handles case 2 is the only sane way I can see for
+supporting FICLONERANGE for encoded data.
+
+> > +.PP
+> > +For
+> > +.BR pwritev2 (),
+> > +the metadata should be specified in
+> > +.IR iov[0] .
+> > +If
+> > +.I iov[0].iov_len
+> > +is less than
+> > +.I "sizeof(struct\ encoded_iov)"
+> > +in the kernel,
+> > +then any fields unknown to userspace are treated as if they were zero;
+> > +if it is greater and any fields unknown to the kernel are non-zero,
+> > +then this returns -1 and sets
+> > +.I errno
+> > +to
+> > +.BR E2BIG .
+> > +The encoded data should be passed in the remaining buffers.
+> > +This returns the number of encoded bytes written (that is, the sum of
+> > +.I iov[n].iov_len
+> > +for 1 <=
+> > +.I n
+> > +<
+> > +.IR iovcnt ;
+> > +partial writes will not occur).
+> > +If the
+> > +.I offset
+> > +argument to
+> > +.BR pwritev2 ()
+> > +is -1, then the file offset is incremented by
+> > +.IR len .
+> > +At least one encoding field must be non-zero.
+> > +Note that the encoded data is not validated when it is written;
+> > +if it is not valid (e.g., it cannot be decompressed),
+> > +then a subsequent read may return an error.
+> > +.PP
+> > +For
+> > +.BR preadv2 (),
+> > +the metadata is returned in
+> > +.IR iov[0] .
+> > +If
+> > +.I iov[0].iov_len
+> > +is less than
+> > +.I "sizeof(struct\ encoded_iov)"
+> > +in the kernel and any fields unknown to userspace are non-zero,
+> > +then this returns -1 and sets
+> > +.I errno
+> > +to
+> > +.BR E2BIG ;
+> > +if it is greater,
+> > +then any fields unknown to the kernel are returned as zero.
+> > +The encoded data is returned in the remaining buffers.
+> > +If the provided buffers are not large enough to return an entire encoded
+> > +extent,
+> > +then this returns -1 and sets
+> > +.I errno
+> > +to
+> > +.BR ENOBUFS .
+> > +This returns the number of encoded bytes read.
+> > +If the
+> > +.I offset
+> > +argument to
+> > +.BR preadv2 ()
+> > +is -1, then the file offset is incremented by
+> > +.IR len .
+> > +This will only return one encoded extent per call.
+> > +This can also read data which is not encoded;
+> > +all encoding fields will be zero in that case.
+> > +.PP
+> > +As the filesystem page cache typically contains decoded data,
+> > +encoded I/O bypasses the page cache.
+> > +.SS Security
+> > +Encoded I/O creates the potential for some security issues:
+> > +.IP * 3
+> > +Encoded writes allow writing arbitrary data which the kernel will decode on
+> > +a subsequent read. Decompression algorithms are complex and may have bugs
+> > +which can be exploited by maliciously crafted data.
+> > +.IP *
+> > +Encoded reads may return data which is not logically present in the file
+> > +(see the discussion of
+> > +.I len
+> > +vs.
+> > +.I unencoded_len
+> > +above).
+> > +It may not be intended for this data to be readable.
+> > +.PP
+> > +Therefore, encoded I/O requires privilege.
+> > +Namely, the
+> > +.B RWF_ENCODED
+> > +flag may only be used when the file was opened with the
+> > +.B O_ALLOW_ENCODED
+> > +flag to
+> > +.BR open (2),
+> > +which requires the
+> > +.B CAP_SYS_ADMIN
+> > +capability.
+> > +.B O_ALLOW_ENCODED
+> > +may be set and cleared with
+> > +.BR fcntl (2).
+> > +Note that it is not cleared on
+> > +.BR fork (2)
+> > +or
+> > +.BR execve (2);
+> > +one may wish to use
+> > +.B O_CLOEXEC
+> > +with
+> > +.BR O_ALLOW_ENCODED .
+> 
+> Sigh! If I were an attacker I would be drooling right now.
+> We want to create a new API to read/write raw encrypted data (even though
+> you have not implemented any encryption yet) and we use the same old
+> vulnerable practices that security people have been fighting for decades?
+> I am not very comfortable with this attitude.
+> I think we should be much more prudent for the first version of the API.
+> 
+> How about not allowing to set O_ALLOW_ENCODED without O_CLOEXEC.
+> We may or may not allow to clear O_CLOEXEC while O_ALLOW_ENCODED
+> is set, in case this is the user intention, but leaving the API as it is is just
+> asking for trouble IMO.
+
+Ok, I'm fine with requiring O_CLOEXEC for O_ALLOW_ENCODED on open. I'm
+pretty sure we want to allow clearing it with fcntl, as that is a very
+intentional action.
