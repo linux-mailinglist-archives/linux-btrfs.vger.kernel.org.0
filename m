@@ -2,95 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C7E17464A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 11:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C0C1746F5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 14:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgB2Kot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Feb 2020 05:44:49 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:40188 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbgB2Kot (ORCPT
+        id S1726973AbgB2NC0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 29 Feb 2020 08:02:26 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:55319 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726933AbgB2NCZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Feb 2020 05:44:49 -0500
-Received: by mail-il1-f194.google.com with SMTP id g6so3873850ilc.7;
-        Sat, 29 Feb 2020 02:44:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4HS7ztuzh2BqQBQpmiC2ldOUNPcEghbC3hm9/CwArk8=;
-        b=BV2VCG7xY1cHoSJQXUawO1Jn5fjQ/f2a+BJqaBZ7uklC2vgMwUkWk73peg8x9MTleH
-         PK/VT/Bv/UYeb97zF4jKPApKPqPWbm0bHTcaken5Z/5qVuokXPnNVF+354oDEM1F+rBG
-         MQN2JT5uDVuOf4DMFJ8gShiNnTpiIjoBhIcuzlxd1Ka0EOf5jqRqOMAU8dRkH5augo8c
-         2LVJ8HAIoy+5SoaihcYVjI4kMdUR4glqXL5yDFZKDDgAnQoU1tVgFrpKtGBcANgFP3ez
-         SPx7O7Y9kBloTGOxtcox5RmYvEXTCnuD05cD1FqUrtClijCuDEBwh49FOFD6ccINX1PD
-         KBDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4HS7ztuzh2BqQBQpmiC2ldOUNPcEghbC3hm9/CwArk8=;
-        b=nnLfrFqEscqBmB8rhRJnzWKbfqV+J0x97w9MfvswxBF9HOcmORQ2xBysj9ZRgpt0Ep
-         RpzkH30pmAh/+4ktINgJ9v/bFbjksE7qA14XT3ae0Gj+kpL4rX/ubYE3OaYCiVISWZJv
-         489aigdQ70mICDxe7L9DjqPuRfXe8t69Z0v0/yHJ27fwrHypgK5+pPxgThQTLuEQ2U0X
-         xaU3aWMm6b5E864fwfoYqC7o9bgMM5JYnsepr09w3ASXZJFgamYy4Fh9ebGQSICP2d61
-         3c19x2FKYo0vvPfgxCtp9MYOpWqrTOUStBVih85OqKO5/UwqL7uodBFRf5Xpfm3HEJNj
-         iYEA==
-X-Gm-Message-State: APjAAAWwWVoGzSMkJfkatGZVu8J7YBxgBky8Y9v6ryHNNpt3lMjn0kvx
-        SPnDYOxoAnhI+V9lP+Rr230GA0SCMiIsqmTzhnY=
-X-Google-Smtp-Source: APXvYqwsKB1pyCBf2wFgfD6pKiOO4Fa49e6pn0I55/sGIyOC7iwurRtReDDtI3hxPKkWsK4hCy1Nd6oFFLeBPbxixeo=
-X-Received: by 2002:a92:6f10:: with SMTP id k16mr8238494ilc.275.1582973088687;
- Sat, 29 Feb 2020 02:44:48 -0800 (PST)
+        Sat, 29 Feb 2020 08:02:25 -0500
+Received: from [192.168.38.25] (vau38-1-78-245-226-90.fbx.proxad.net [78.245.226.90])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 997DC100007;
+        Sat, 29 Feb 2020 13:02:23 +0000 (UTC)
+To:     linux-btrfs@vger.kernel.org, swami@petaramesh.org
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Subject: (One more) BTRFS damaged FS... Any hope ?
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
+ 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
+ BtUAN08OPA==
+Organization: Secte des Adorateurs de Cela
+Message-ID: <55a1612f-e9af-dabd-5b91-f09cb1528486@petaramesh.org>
+Date:   Sat, 29 Feb 2020 14:02:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <cover.1582930832.git.osandov@fb.com> <6d67d097e295ddfe0b9a6499f4ddf00bfdb46789.1582930832.git.osandov@fb.com>
-In-Reply-To: <6d67d097e295ddfe0b9a6499f4ddf00bfdb46789.1582930832.git.osandov@fb.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 29 Feb 2020 12:44:37 +0200
-Message-ID: <CAOQ4uxjAvgjWmSA28CrzX6E-O_nVW0P-X422LdCd2LpME2ZAHg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] fs: add O_ALLOW_ENCODED open flag
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB-large
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 1:14 AM Omar Sandoval <osandov@osandov.com> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> The upcoming RWF_ENCODED operation introduces some security concerns:
->
-> 1. Compressed writes will pass arbitrary data to decompression
->    algorithms in the kernel.
-> 2. Compressed reads can leak truncated/hole punched data.
->
-> Therefore, we need to require privilege for RWF_ENCODED. It's not
-> possible to do the permissions checks at the time of the read or write
-> because, e.g., io_uring submits IO from a worker thread. So, add an open
-> flag which requires CAP_SYS_ADMIN. It can also be set and cleared with
-> fcntl(). The flag is not cleared in any way on fork or exec; it should
-> probably be used with O_CLOEXEC in most cases.
->
+Hi there,
 
-So let's be more proactive and disallow setting O_ALLOW_ENCODED without
-O_CLOEXEC, shall we?
+Booting a Linux Mint :
 
-> Note that the usual issue that unknown open flags are ignored doesn't
-> really matter for O_ALLOW_ENCODED; if the kernel doesn't support
-> O_ALLOW_ENCODED, then it doesn't support RWF_ENCODED, either.
->
+(initramfs) uname -r
 
-And for that matter, setting O_ALLOW_ENCODED without O_CLOEXEC
-won't do any harm with old kernels - even better, it can serve as a fast
-test for kernel RWF_ENCODED support using only the openat() syscall.
+5.3.0-26-generic
 
-Thanks,
-Amir.
+(initramfs) mount -t btrfs -o subvol=@,noatime /dev/sdb1 /root
+
+BTRFS info (device sdb1): disk space caching is enabled
+
+BTRFS info (device sdb1): has skinny extents
+
+BTRFS error (device sdb1): parent transid verify failed on 8176123904
+wanted 183574 found 183573
+
+BTRFS warning (device sdb1): failed to read root (objectid=7): -5
+
+BTRFS error (device sdb1): open_ctree failed
+
+mount: mounting /dev/sdb1 on /root failed: Invalid argument
+
+
+Is this one dead, or is there any hope ?
+
+TIA.
+
+Kind regards.
+
+
