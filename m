@@ -2,163 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF02F17440C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 02:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E675C17456A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 07:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgB2BAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Feb 2020 20:00:54 -0500
-Received: from mout.gmx.net ([212.227.15.19]:50563 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726561AbgB2BAy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Feb 2020 20:00:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1582938047;
-        bh=kGO/1ONakhlDBocsHdhfmEzBHghkOZHBJFn/qsRLTf4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=PBuZ6Og9yGmKBxCclu/mM6MTqNw5hXOKX26JW69BmFfryD64LcvMEQhQcYX5OXbp9
-         cNFnI4E9Rg4wXlulaNlPrlJExGo6y60ggKYl9xTMYJ5lUaCVCKn+T579Y/Gjj52MXy
-         cnIdDM3rFuLL61resp7R8gb3f/Bn/VEuEAwKOOtY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MkYc0-1jp7ej0aL8-00m65s; Sat, 29
- Feb 2020 02:00:47 +0100
-Subject: Re: [PATCH 00/10] btrfs: relocation: Refactor build_backref_tree()
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200226055652.24857-1-wqu@suse.com>
- <20200228154555.GN2902@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <99a7a002-65bb-6077-7303-c4076c34e05e@gmx.com>
-Date:   Sat, 29 Feb 2020 09:00:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726170AbgB2GbW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Feb 2020 01:31:22 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46143 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgB2GbW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 29 Feb 2020 01:31:22 -0500
+Received: by mail-wr1-f67.google.com with SMTP id j7so5727207wrp.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 Feb 2020 22:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2J5I9jBzSqSszH/W9vRa6XLuIpLtNr//nEMIIHioOao=;
+        b=aaNqSwdfsG51DkSssWRqjZ8fxAEULpGLnDF8iibt4BlF+FSFecIC/kDV1qoaBIhIRQ
+         aIQBnxJ9W6745eKylegDFCneNZKp4P7VxUBdU5E+upI7oVAsMr0OgGcgCAh+rbhohFws
+         ThUtVMzlEcI7FK84LE8T9doKdm44ACIxU7wU0eH5kr+izBebNEKEpiivNLwwgLK3pVua
+         SDNODmbk22MkF7VFJm0RFJKRZDoRjKPRpftCY9s2PtV4LpjuQnfM1ErKz3wAwQtrYUJJ
+         N43TEqStc2yqbwDn0+iaxelKaEmfSfeD+b1TB9L1rpwQmTM1nzjW6CIjwPNNxHtBhQme
+         OnEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2J5I9jBzSqSszH/W9vRa6XLuIpLtNr//nEMIIHioOao=;
+        b=E7VgGpQ8ehpjEvzAt0UlOUuq2filv9cu6cFRkRr3V1jQM7nmy/guC+qRUmiqesTnQ3
+         PkgVJIBSiZQnf5fBjxvw43yqH48kO4aNk3DJ/mOy1cP7UW4OEWXpqmce2oK331FBCc9v
+         jWR4QbueKH9HEiz2D4C7EjhNjmCECCfXLS35SYsloM8C+D4IxfQN8/EXwJYt8GFucz6w
+         m+9tWaqGz/hSxlIvTnDoR/qKk7k+rtrOO9JTC6t1l9ncf6LN/1V0jRpfMC94AbhjNOGn
+         EaWF9akCoJOe9UIIeGq6A7XSMHa0EVt0jFZ9fOdmhN7TiZgfPEknqTKoweNo740vwrUb
+         Etlg==
+X-Gm-Message-State: APjAAAWi3b/08UHO8Z+dSGQVhxcv9kzFw2HWNeTIllJf/qRc/a7vxjXb
+        kAFBxUuCUUHuqy0q5AuSgkupypkOh/ExgqQJg/4qkg==
+X-Google-Smtp-Source: APXvYqxBUDbihbuS7cNPcnTIoKXX6kLIss7BY5t6y6To1p/FhxnddWJwp5dX9XcDazzxD8lIb4nCu0YGhazTLDrgDh0=
+X-Received: by 2002:a5d:6881:: with SMTP id h1mr8818581wru.236.1582957878041;
+ Fri, 28 Feb 2020 22:31:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200228154555.GN2902@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="HQM6ZNz83BnpBvBfN5Jbt2cmZ0Wdgh8Kf"
-X-Provags-ID: V03:K1:neC5QzjrEtP8div4zP1QxHWKDlJzfBEc9Mbr7Pyi9vzyF81woIt
- 5dt4LBMunGCwXNwwE/UgxSlxoWVu0RIbOV+zffXPIQ3cXxQ9l4vyw5rs9ZiJoudVhpTyzQl
- rML8heMaXhC9QX+VshfaTwuXiM8xPJJKwfDdJ6oOJfmHIsaG2AAgcTer+n3XDxptiN6HEEg
- FC2UjMLJom8+2XsbnHLaA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uTFirtzJU+U=:V636x/pdse0j7LuCLzqo+S
- wy3imAX1tsPiKW/bznYlm0D8+Eo5KZCgheE4gqpJFBoqKRSKpBQkyNdo17KR7UsZniE8wbM7q
- +9I1envvX1KOxVZMaV6XbC0g/c9z3dOQj8Zzms3KRWi173PPZGTA2+Xx3wmRvCkoHp+yz4XXZ
- mgRayTb93oKUv1SpHMdj9yCygs0v1Q5TqjFNlG5AcSL2siUJX30OG3np9x9+kUbHGRTZhNHPB
- W33A2joSI3qpBtxhZO8a6NRXtLqSHvdfaH8zispKJPBITSn1uuyZTPXHYQqFuNaCtjkGLq1ux
- tpj6RkIymkoIUzewunhCMF8RAZmxyEeJMiOONcPgt85HmLy79gRqJHQZzGYsX0X0RMVLxYEoH
- qtTM9Xm694LA1q7HZIt/K1h0j6Yh+5b1N8SzR4giv7fWum8QbkhhaQifYuL13RdVyJh1yOJWs
- v75JbI+b/gaJTYCZCrF2CWtnSuETYhUn0zoiSXO+4ZLPSomoLGrwZzSWu8u9n+sgRyDmYLMI+
- fAYAD5m37UbloFQivILra6WF1+bR9+EV/urK0A4eNV7Amo7uqdaVaLVVLEI/uuFwx0j2qh1c+
- UMqa/tzoiTfWdkiYCf+iGOoxD5j+602gODSrsV8UXF8f/X7t1wS5dbCYle2HDyr7+DsYEm86b
- /Dd3FbXVzw90U7osKWROJAqsSCy4AGFHca2733JM9l4H7J8PqzhFEcDc97gc1xnijGKzfoXXP
- XBfAaIm0+AtlYVD2H9JCCV95sp5FBXNLJZRoBnU8TmDtLl1lQa5dGrqbyFC9N5ntyhjdWRINS
- ecucZyh8fnsDceaT2Ejse5NKGR82mQMBtySxsI0bGS4wVaiwUE/YQ5hPtpu/MXiTiChBd4W5B
- LR8YCqFE8tDchC8KzPUqUr0x9op6GFZrIa8xDgZwaNFKKXJ/LIeLGDwxKjvJgWdsp3QppiSE2
- +FDjSp5SJHzWBn252hRZnSyqtYX/4uzj6LcDU4TC8UBKO4E4bbpcmlrqN4PC0GC2lLXuDsWsm
- QNiGh6t5Ip/R9GQrAmk3R2YtG9rurhvgwY/HRHlTtRkHqZ9nuLcLsJdBCZtNst8ewRYeezoi9
- Y/jsZT9g3RNPikdwXbykMthjfFDUNN8fu6VjTZvih8UpaWTvChUxcSSsWD7npQHPH8vtKcBIi
- Bk3DWgdQAYj285OMO5kJA5MXU/rQ9apeq7A3wXgBrZ5SIzpnJp/5oMyQpbFdpEw4tGlAJgCYH
- eS2ndFvb1BA+N1xdk
+References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+ <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
+ <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
+ <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
+ <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com> <CAG_8rEcXpWUyUqmi3fe8BicZXQODJP2ZS69Z=BBcBPfAQBuSHA@mail.gmail.com>
+In-Reply-To: <CAG_8rEcXpWUyUqmi3fe8BicZXQODJP2ZS69Z=BBcBPfAQBuSHA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 28 Feb 2020 23:31:01 -0700
+Message-ID: <CAJCQCtR7prMai9dYndLZ4Wg4tSL7kHZaLLK8c5p_4fDG2qoYnA@mail.gmail.com>
+Subject: Re: USB reset + raid6 = majority of files unreadable
+To:     Steven Fosdick <stevenfosdick@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Jonathan H <pythonnut@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HQM6ZNz83BnpBvBfN5Jbt2cmZ0Wdgh8Kf
-Content-Type: multipart/mixed; boundary="eOZ1y763YswufvwXZupO7oGWOZdPQa4ja"
+On Thu, Feb 27, 2020 at 5:20 AM Steven Fosdick <stevenfosdick@gmail.com> wrote:
+>
+> Chris,
+>
+> Thanks for getting back to me.  I have read your subsequent e-mails too.
+>
+> On Thu, 27 Feb 2020 at 00:39, Chris Murphy <lists@colorremedies.com> wrote:
+>
+> > Both read and write errors reported by the hardware. These aren't the
+> > typical UNC error though. I'm not sure what DID_BAD_TARGET means. Some
+> > errors might be suppressed.
+>
+> What are UNC errors?
 
---eOZ1y763YswufvwXZupO7oGWOZdPQa4ja
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Uncorrectable (read or write). An error associated with bad sectors.
 
+> > Btrfs might survive the write errors though with metadata raid1c3. But
+> > later you get more concerning messages...
+>
+> So if each of these writes had succeeded, in that the drive reported
+> success, but then the drive was subsequently unable to read the data
+> back surely btrfs should be able to reconstruct the data in the failed
+> write as it will either be mirrored, in the case of metadata, or
+> raid5, in the case of data.  So why should this be worse if the drive
+> reports that the write has failed?
 
-
-On 2020/2/28 =E4=B8=8B=E5=8D=8811:45, David Sterba wrote:
-> On Wed, Feb 26, 2020 at 01:56:42PM +0800, Qu Wenruo wrote:
->> This branch can be fetched from github:
->> https://github.com/adam900710/linux/tree/backref_cache_new
->=20
-> This is based on v5.6-rc1, you should base on something more recent.
-> There are many non-trivial conflicts at patch 5 so I stopped there but
-> if you and I like to get the pathes merged, the branch needs to be in a=
-
-> state where it's not that hard to apply the patches.
-
-Because it looks like current misc-next is not a good place to do proper
-testing, and it's undergoing frequent updates.
-
-Thus I choose the latest rc when I started the development.
-
-Currently the branch is only for review and my local testing, I just
-want to make sure that everything works fine before rebasing them to
-misc-next.
-
-Anyway, next time I'll mention the basis, and explicitly shows that I'll
-do the rebase (and retest) if you want to try merge.
-
-Thanks,
-Qu
-
->=20
-> Minor conflicts are expected, like obvious differences in context or
-> renames, there are tools that can deal with that automatically (I use
-> wiggle).
->=20
-> The branch also contains unrelated patches to the backref code, some of=
-
-> them either upstream or in misc-next. All of that makes it unnecessaril=
-y
-> hard to get the patches to for-next when the time comes (reviews, patch=
-
-> backlog processed).
->=20
+s/might/should
 
 
---eOZ1y763YswufvwXZupO7oGWOZdPQa4ja--
+>
+> > As btrfs doesn't have such a concept of faulty drives, ejected drives,
+> > yet; you kinda have to keep an eye on this, and setup monitoring so
+> > you know when the array goes degraded like this.
+>
+> So given that I probably don't have a spare drive lying around to
+> replace the failed one and also given that this server is not
+> hot-plug, is there anything, other than just alerting me, that this
+> monitoring could do automatically to minimise or avoid damage to the
+> filesystem?  Can be btrfs be instructed to mark a drive missing and go
+> into degraded mode on-line?
 
---HQM6ZNz83BnpBvBfN5Jbt2cmZ0Wdgh8Kf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+No. I'm not sure how to quiet the kernel noise that'll happen for
+every write failure. You could stop all writes, unmount, remove the
+offending drive, and mount degraded, and that'll be quiet. I haven't
+tried yanking the bad drive, then using -o remount,degraded, so I'm
+not sure if that will silence things.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5Zt7sACgkQwj2R86El
-/qixBwf6AxD1CdaDG7+ZgJGbNEvBn/Me5JJqNjSsF2zuI4hsupZTs22hfY7kRaZ7
-2thl0PjybVkG7i8Gts6qCEi27gjYwQYJdPuaf2wopB00zbQ/dN250uBJryoqPm9/
-eSGzDEUUel3o13qcjOnLCqP/uZBqz6grbfiLmJ1Zv2HHbiqVgWgkEi1ws+WXkvAW
-vvW2GxbmN2a4Wu0jgQU00Z+1IhPhBGWZlbuh8RCWpmFjDf6rlCMJ2RdMqFlt4RPo
-0giftlIg4hpk8yjUqyvyxIJ9aRfcaMqW2Pu+49/BVnVOIHbbmPv8fkuV6lmuo3CF
-I6vovCAw7Irl2xRXm506MumEvbJetg==
-=kZ8z
------END PGP SIGNATURE-----
+>
+> > You need to replace the bad drive, and do a scrub to fix things up.
+>
+> Qu previously asked Jonathan for the output of btrfs check.
+> I ran 'btrfs check --force --check-data-csum /dev/sda'
+> and it found no errors.  Does this check all accessible devices in the
+> filesystem or just the one specified on the command line?
 
---HQM6ZNz83BnpBvBfN5Jbt2cmZ0Wdgh8Kf--
+I'm curious why you had to use force, but yes that should check all of
+them. If this is a mounted file system, there's 'btrfs scrub' for this
+purpose though too and it can be set to run read-only on a read-only
+mounted file system.
+
+> > And double check with 'btrfs fi us /mountpoint/' that all block groups
+> > have one profile set, and that it's the correct one.
+>
+> Here is the output:
+>
+> # btrfs fi us /data
+> WARNING: RAID56 detected, not implemented
+> Overall:
+>     Device size:   21.83TiB
+>     Device allocated:   30.06GiB
+>     Device unallocated:   21.80TiB
+>     Device missing:    5.46TiB
+>     Used:   25.44GiB
+>     Free (estimated):      0.00B (min: 8.00EiB)
+>     Data ratio:       0.00
+>     Metadata ratio:       2.00
+>     Global reserve: 512.00MiB (used: 0.00B)
+>
+> Data,RAID5: Size:8.93TiB, Used:8.93TiB (99.98%)
+>    /dev/sda    4.47TiB
+>    /dev/sdc    4.47TiB
+>    missing   65.00GiB
+>    /dev/sdb    4.40TiB
+>
+> Metadata,RAID1: Size:15.00GiB, Used:12.72GiB (84.78%)
+>    /dev/sda    9.00GiB
+>    /dev/sdc   11.00GiB
+>    /dev/sdb   10.00GiB
+>
+> System,RAID1: Size:32.00MiB, Used:816.00KiB (2.49%)
+>    /dev/sda   32.00MiB
+>    /dev/sdb   32.00MiB
+>
+> Unallocated:
+>    /dev/sda 1006.00GiB
+>    /dev/sdc 1004.03GiB
+>    missing    5.39TiB
+>    /dev/sdb    1.04TiB
+>
+> The only thing that looks odd to me is the overall summary in that
+> both "Device Allocated" and "Free (estimated)" seem wrong.
+
+That looks like a bug. I'd try a newer btrfs-progs version. Kernel 5.1
+is EOL but I don't think that's related to the usage info. Still, tons
+of btrfs bugs fixed between 5.1 and 5.5...
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/?id=v5.5&id2=v5.1
+
+Including raid56 specific fixes:z
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/raid56.c?id=v5.5&id2=v5.1
+
+
+> As you noted in your other e-mail I did add another device first.  I
+> would have used btrfs device replace but the documentation I found
+> said that the superblock of the device being removed needs to be
+> readable.  After the reboot the failed device was not found by the
+> BIOS or Linux so the superblock is not readable.
+>
+> Is the documentation correct, or can device replace now cope with
+> completely unreadable devices?
+
+I'm not sure what btrfs-progs version you've got or what man page
+you're looking at. But replace will work whether the drive being
+replaced is present or not.
+
+man btrfs replace
+
+           On a live filesystem, duplicate the data to the target
+device which is currently stored on the source device. If the source
+device is not available anymore, or if the -r option is set, the data
+is built only using the RAID redundancy mechanisms.
+
+There are two requirements that don't apply to add then remove. a) the
+replacement drive needs to be the same size or bigger than the source;
+b) fs resize is not automatically performed, so if the replacement
+drive is bigger, and if you want to use all of that space you need to
+use 'btrfs fi resize <devid>:max' or whatever size you want it set to.
+
+
+-- 
+Chris Murphy
