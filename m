@@ -2,99 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C0C1746F5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 14:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9074F1747BE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 16:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgB2NC0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 29 Feb 2020 08:02:26 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:55319 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726933AbgB2NCZ (ORCPT
+        id S1727210AbgB2PsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Feb 2020 10:48:03 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:43014 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbgB2PsD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Feb 2020 08:02:25 -0500
-Received: from [192.168.38.25] (vau38-1-78-245-226-90.fbx.proxad.net [78.245.226.90])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 997DC100007;
-        Sat, 29 Feb 2020 13:02:23 +0000 (UTC)
-To:     linux-btrfs@vger.kernel.org, swami@petaramesh.org
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Subject: (One more) BTRFS damaged FS... Any hope ?
-Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
- 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
- BtUAN08OPA==
-Organization: Secte des Adorateurs de Cela
-Message-ID: <55a1612f-e9af-dabd-5b91-f09cb1528486@petaramesh.org>
-Date:   Sat, 29 Feb 2020 14:02:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Sat, 29 Feb 2020 10:48:03 -0500
+Received: by mail-ot1-f50.google.com with SMTP id j5so4624603otn.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 Feb 2020 07:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MHRtmj/SrkxXriNQu7qORkzvHaAKhF/u4jKtFQ7YH4I=;
+        b=amcFkcFRc/yDSh/IVJjeEvzkkLIS8qWW0OsQzHr9cB4UrAsptfeaZznnQMNzPwP3Gc
+         EtY5gFbY5QNz3y21SNfAH2684hzJXwA01LdAZ7da0AKBBlKZFIGYWSx0VlX3FcLjFZmf
+         9l0M/SltMSLyuCuMlP78g8X9Y/WZC53Wje5uw5LwVnnRPmmNPuStE6RU+lnNGH0c2YER
+         497k7+GzcJbY7Du+AGc0D+GKYFL61joGv/+Dm6OLTMFWlNskHTwb1iGpN8t5F6nCZzuR
+         23RwPNRMCJYJUYMa31h8jC/aPRul3rTWO1PGvPO1Kjl5F3NReKcaLIBI5jZ8Ud12n6VG
+         wBKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MHRtmj/SrkxXriNQu7qORkzvHaAKhF/u4jKtFQ7YH4I=;
+        b=ROM37wP4v70i08v+5wPAqCV3MtW9Fec2bdU7wrorPlrpyrTFzxriFD31gj61j0Avrw
+         gFH6g7IPwt6jbJ1Y/h5DfRIFNa8j6PN8gyJmYXLvcVadMzxzzYRQhULFCnUnDbapaCDh
+         jz7cisc1GJJn3VjM0az+4Af3YbuAKS+4hyQbLvdcSQ1GcIFTPuFrMUGnCr1L/8nTP5Ww
+         Qr0iaH0b4UVuZI9X/AwXzsBmD2bpgehtC8BMyEG0JrsgBNtSD+XLPlzjTF0srVNwBcNN
+         WWwSdWslj6C94Wsvmq/0GWr2pam0UAGCQIdQ4MXc0uX/Er3MJto+xWyFxbH3D0KofvUA
+         7NJA==
+X-Gm-Message-State: APjAAAUPpsxY8tlMsYpb020JGFkKm/s6O7g8xr+Cic6qmur1RdxA+hfZ
+        j4YNUV6m8h90ajFBjN87EuSfOI5AblFtzTYi86g=
+X-Google-Smtp-Source: APXvYqwIt+SiKUP0rsbCO6fWX6EqjDfQ42BKhZPlhEWPJ9bzUbwWRXN3EPkNmGXV4zywaLNPyp3uNu9uFDMtCqLwNXg=
+X-Received: by 2002:a9d:7f11:: with SMTP id j17mr7717620otq.281.1582991280924;
+ Sat, 29 Feb 2020 07:48:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-GB-large
+References: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
+ <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com> <CADq=pgn3-4S3ErK0G+ajf-5M=8CSaE6iow25ASaBxCygedy=7g@mail.gmail.com>
+ <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com>
+In-Reply-To: <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com>
+From:   4e868df3 <4e868df3@gmail.com>
+Date:   Sat, 29 Feb 2020 08:47:24 -0700
+Message-ID: <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
+Subject: Re: corrupt leaf
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi there,
+It came up with some kind of `840 abort`. Then I reran btrfs check and
+tried again.
 
-Booting a Linux Mint :
+$ btrfs check --init-csum-tree /dev/mapper/luks0
+Creating a new CRC tree
+WARNING:
 
-(initramfs) uname -r
+        Do not use --repair unless you are advised to do so by a developer
+        or an experienced user, and then only after having accepted that no
+        fsck can successfully repair all types of filesystem corruption. Eg.
+        some software or hardware bugs can fatally damage a volume.
+        The operation will start in 10 seconds.
+        Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting repair.
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks0
+UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+Reinitialize checksum tree
+Unable to find block group for 0
+Unable to find block group for 0
+Unable to find block group for 0
+ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
+btrfs(+0x71e09)[0x564eef35ee09]
+btrfs(btrfs_search_slot+0xfb1)[0x564eef360431]
+btrfs(btrfs_csum_file_block+0x442)[0x564eef37c412]
+btrfs(+0x35bde)[0x564eef322bde]
+btrfs(+0x47ce4)[0x564eef334ce4]
+btrfs(main+0x94)[0x564eef3020c4]
+/usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7ff12a43e023]
+btrfs(_start+0x2e)[0x564eef30235e]
+[1]    840 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
 
-5.3.0-26-generic
+$ btrfs check /dev/mapper/luks0
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks0
+UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+there are no extents for csum range 68757573632-68757704704
+Right section didn't have a record
+there are no extents for csum range 68754427904-68757704704
+csum exists for 68750639104-68757704704 but there is no extent record
+there are no extents for csum range 68760719360-68761223168
+Right section didn't have a record
+there are no extents for csum range 68757819392-68761223168
+csum exists for 68757819392-68761223168 but there is no extent record
+there are no extents for csum range 68761362432-68761378816
+Right section didn't have a record
+there are no extents for csum range 68761178112-68836831232
+csum exists for 68761178112-68836831232 but there is no extent record
+there are no extents for csum range 1168638763008-1168638803968
+csum exists for 1168638763008-1168645861376 but there is no extent
+record
+ERROR: errors found in csum tree
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 3165125918720 bytes used, error(s) found
+total csum bytes: 3085473228
+total tree bytes: 4791877632
+total fs tree bytes: 1177714688
+total extent tree bytes: 94617600
+btree space waste bytes: 492319296
+file data blocks allocated: 3160334041088
+ referenced 3157401378816
 
-(initramfs) mount -t btrfs -o subvol=@,noatime /dev/sdb1 /root
+$ btrfs check --init-csum-tree /dev/mapper/luks0
+Creating a new CRC tree
+WARNING:
 
-BTRFS info (device sdb1): disk space caching is enabled
-
-BTRFS info (device sdb1): has skinny extents
-
-BTRFS error (device sdb1): parent transid verify failed on 8176123904
-wanted 183574 found 183573
-
-BTRFS warning (device sdb1): failed to read root (objectid=7): -5
-
-BTRFS error (device sdb1): open_ctree failed
-
-mount: mounting /dev/sdb1 on /root failed: Invalid argument
-
-
-Is this one dead, or is there any hope ?
-
-TIA.
-
-Kind regards.
-
-
+        Do not use --repair unless you are advised to do so by a developer
+        or an experienced user, and then only after having accepted that no
+        fsck can successfully repair all types of filesystem corruption. Eg.
+        some software or hardware bugs can fatally damage a volume.
+        The operation will start in 10 seconds.
+        Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting repair.
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks0
+UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+Reinitialize checksum tree
+Unable to find block group for 0
+Unable to find block group for 0
+Unable to find block group for 0
+ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
+btrfs(+0x71e09)[0x559260a6de09]
+btrfs(btrfs_search_slot+0xfb1)[0x559260a6f431]
+btrfs(btrfs_csum_file_block+0x442)[0x559260a8b412]
+btrfs(+0x35bde)[0x559260a31bde]
+btrfs(+0x47ce4)[0x559260a43ce4]
+btrfs(main+0x94)[0x559260a110c4]
+/usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7f212eb1f023]
+btrfs(_start+0x2e)[0x559260a1135e]
+[1]    848 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
