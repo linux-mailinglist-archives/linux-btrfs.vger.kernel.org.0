@@ -2,50 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A62E174F8F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2020 21:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A1A1750B8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 00:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgCAUc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Mar 2020 15:32:57 -0500
-Received: from mail-io1-f51.google.com ([209.85.166.51]:46966 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgCAUc4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 15:32:56 -0500
-Received: by mail-io1-f51.google.com with SMTP id x21so4766388iox.13
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 12:32:56 -0800 (PST)
+        id S1726579AbgCAXDQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Mar 2020 18:03:16 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:39639 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgCAXDP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 18:03:15 -0500
+Received: by mail-lj1-f193.google.com with SMTP id o15so9652731ljg.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 15:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=+Xk+LCMFg2XEb8AmwcbxvBRfnVX0HrcyS9hpXwstSPA=;
-        b=p64LrrbM2Hn6vb893YZMJ8XRgiarfqS9CJoh+p2D+qyKum4rYx4iWFSKxfBDZde3W5
-         Iqk+wLPHxXAss54EZiXVeLqcbSPzjta4pQCnlDc4MGJmdAlkOdI9JKXCadJyuE2AM6HZ
-         JxkGUt2wSsyB+ldQL0aQsyW9wtF97vVorGm/yLnYGudX8WVRxpW1HskbPrxByoPhe+0h
-         GXvjsWHiQEYlwPQ5//E+4iOipGa7Pc4HRJTJfYouJE+9sbiXpKbjNx+BshIPabdAbTk2
-         iRjaAFuQm2qDBk7sAVAqo3RUORU/hWLstfWKqcSVteYXNtV1Cg0x7JTd+NX8+MzQGezc
-         ktbQ==
+        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
+        b=CTlWhx9VUQAHO8/A4kgT9VW4ARfwHaYQLsvkcdJRrQVlUfLdxYgk0oziVKRdpyYlTs
+         xsV7M+8ShxxJtFYBQXwPc8bp07i16kJe2IB4au7hGPn/dn+bHuQbHZP4GHrlsWvm7amS
+         fYbmwEKDUP3D8PjV+zVv48hn9LPzg7nagySax7ZsUahqxdH53G8vrD2/QUHupYRGmqj9
+         Irnyn5rKjnQzI+pKsX8NGqThEeSQkV+9sSdZGVYHMaRvzLXScLDten4K0Cauy6/lntDZ
+         WQMS8H3olnXHAuj7meuvJRueZVreWvwDtqiHJpv+ryMib3lopZPftJnQDsKNg6wh1h4g
+         Y4UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=+Xk+LCMFg2XEb8AmwcbxvBRfnVX0HrcyS9hpXwstSPA=;
-        b=iUuEiXjM4kQEhVS+SRRZsH6FUfzw54u1U7RxlSpyrxnF1ywjw/qHzqQZI/PgwMPti2
-         T0bQf7EmQmNTED+PK/Gwk6RCHWyP1lUpymrcoEHP6o46XCAaEvK5J1vENEuKlM8PD3eP
-         aZD+sIBjWrthgAM+nHPG/0kl/t69709MBcwcnLqmyrfBqmfbarKQTyxbIFi725E3nidM
-         Q6C1BcdRbCjdYJHm9U/onRErySve63nzN414ntnBXhUGKoYm21dinVVHH12sCSFj8k94
-         8BvYzCaxhX7Hf+/6JooTsqVctHchydEOLZAQ2od7vM87gmdjW0tsVuIatgM7N7SMaVMS
-         bT9A==
-X-Gm-Message-State: ANhLgQ03RvHkpM9emU+nIkStH9m1KTxMTDhV4CT+zwGHjSChstCZJuBB
-        l1ivxbEzYYj0SkSH6WeXDcwgntIsYr/7RGq9mVUJiu36+qY=
-X-Google-Smtp-Source: ADFU+vvMmFfT4nr7rg4QlzRcIaSEW8LfwPgsRBfcj35u6nBctXPbXE9ZfcVZf5x64p+IqtjW/vgGucmZ11rH4J9PVNE=
-X-Received: by 2002:a02:c888:: with SMTP id m8mr3194776jao.86.1583094775243;
- Sun, 01 Mar 2020 12:32:55 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
+        b=FfgWAQcBNaFfWWNnAkITwr7SThwsAESs78ktEPOoqx9cyUW5869YPvST2k0NTfKISX
+         eYjlgBUs3LfQJXTPhRzfBEcnjIq+sbK7emoPTu2jgD5Gza71peu5oPGJNPW33V6ulWF+
+         RoQOj67AcdPQMS9dXrPHqxqZSovoUwgjWn04ZxQ5F0SFZIfx2zD9taNAuLeUns3j/m9O
+         KHbT3M3SDAeQYaFmrItiE6to1wnROkOuMdGJWX5yZHrnEmbQxdQZaKeIj+7pU/zD8Obw
+         Dpjgx38y7N6rt3O4IcEwmSEwUcPyt+d5m/+JVjft3MLQ92eQfsB18OBZf15xWEgiFqP4
+         5BpA==
+X-Gm-Message-State: ANhLgQ0hRkb/rpdnEYEruIPjJtl/RAObegJBVQYvjjCCfQ9NZGsFRNWA
+        2+C/4HQoA18KBlRNbiiDzCfxMvqhQQLpc8grnns=
+X-Google-Smtp-Source: ADFU+vsg2IG1i5RNjLJUjEY6LSsxKLa5vrMFhkny5ITzr8a8UHW/dKB+I45fUESKkxTrUBOtwmyrQpHH1RDeUKWdFq4=
+X-Received: by 2002:a2e:a401:: with SMTP id p1mr466869ljn.80.1583103793699;
+ Sun, 01 Mar 2020 15:03:13 -0800 (PST)
 MIME-Version: 1.0
-From:   Rich Rauenzahn <rrauenza@gmail.com>
-Date:   Sun, 1 Mar 2020 12:32:43 -0800
-Message-ID: <CAG+QAKWwvevCz5zYDtkOO5V0AA7bJuoZWHJ2CZjc1ofsO-c7xQ@mail.gmail.com>
-Subject: btrfs balance to add new drive taking ~60 hours, no progress?
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Received: by 2002:a05:6512:308a:0:0:0:0 with HTTP; Sun, 1 Mar 2020 15:03:13
+ -0800 (PST)
+Reply-To: wyne010@gmail.com
+From:   "Mrs. Maile .(A) Roberto" <mrjohnmoses8@gmail.com>
+Date:   Sun, 1 Mar 2020 15:03:13 -0800
+Message-ID: <CACkZuE3a9NEfVuLJ=RN4YVyBnat2xmHsXpT=7x8H5jhcfuuEGg@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -53,141 +56,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-(Is this just taking really long because I didn't provide filters when
-balancing across the new drive?)
+Greetings
 
-Also, I DID just change my /etc/fstab to not resume the balance just
-in case I reboot:
+My Name is Mrs. Maile .(A) Roberto, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Roberto,
+A gold merchant who owns a small gold mine in Madrid   Spain; He died of
+Cardiovascular Disease in mid-March 2011. During his lifetime he
+deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
+d
+thousand Euros in a HSBC Bank  in Madrid the capital city of Spain.
+The deposited money was from the sale of the
+shares, death benefits payment and entitlements of my deceased
+husbandry his company.
 
-/.BACKUPS               btrfs   compress=3Dlzo,subvol=3D.BACKUPS,skip_balan=
-ce   1 2
+I am sending this message to you praying that it will reach you in
+good health since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently I am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunate that we don't have a child, my
+doctor confided in me that I have less chance to live. Having known my
+health condition, I decided to contact you to claim the fund since I
+don't have any relation I grew up from an orphanage home.
 
-Kernel version:
+I have decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed with cancer for about 2 years ago. I have been touched by
+God Almighty to donate from what I have inherited from my late husband
+to you for the good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has because He is a Merciful God, I will be
+going in for an operation surgery soon
 
-Kernel:  5.5.5-1.el7.elrepo.x86_64
+This is the reason I need your services to stand as my next of kin or
+the executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+information on how the fund will be transferred to your bank account.
 
-The pool is mirrored, 2 copies.
-
-The last drive in the list is the one I added.  I think it's been at
-8MiB the whole time.
-
-$ sudo btrfs fi show /.BACKUPS/
-Label: 'BACKUPS'  uuid: cfd65dcd-2a63-4fb1-89a7-0bb9ebe66ddf
-        Total devices 4 FS bytes used 3.64TiB
-        devid    2 size 1.82TiB used 1.82TiB path /dev/sda1
-        devid    3 size 1.82TiB used 1.82TiB path /dev/sdc1
-        devid    4 size 3.64TiB used 3.64TiB path /dev/sdb1
-        devid    5 size 3.64TiB used 8.31MiB path /dev/sdj1
-
-$ sudo btrfs fi df /.BACKUPS/
-Data, RAID1: total=3D3.63TiB, used=3D3.63TiB
-System, RAID1: total=3D32.00MiB, used=3D736.00KiB
-Metadata, RAID1: total=3D5.00GiB, used=3D3.88GiB
-GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-
-$ btrfs fi usage /.BACKUPS/
-WARNING: cannot read detailed chunk info, RAID5/6 numbers will be
-incorrect, run as root
-Overall:
-    Device size:                  10.92TiB
-    Device allocated:              7.28TiB
-    Device unallocated:            3.64TiB
-    Device missing:               10.92TiB
-    Used:                          7.27TiB
-    Free (estimated):              1.82TiB      (min: 1.82TiB)
-    Data ratio:                       2.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-
-$ sudo btrfs fi usage /.BACKUPS/
-Overall:
-    Device size:                  10.92TiB
-    Device allocated:              7.28TiB
-    Device unallocated:            3.64TiB
-    Device missing:                  0.00B
-    Used:                          7.27TiB
-    Free (estimated):              1.82TiB      (min: 1.82TiB)
-    Data ratio:                       2.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-
-Data,RAID1: Size:3.63TiB, Used:3.63TiB
-   /dev/sda1       1.82TiB
-   /dev/sdb1       3.63TiB
-   /dev/sdc1       1.82TiB
-   /dev/sdj1       8.31MiB
-
-Metadata,RAID1: Size:5.00GiB, Used:3.88GiB
-   /dev/sda1       3.00GiB
-   /dev/sdb1       5.00GiB
-   /dev/sdc1       2.00GiB
-
-System,RAID1: Size:32.00MiB, Used:736.00KiB
-   /dev/sda1      32.00MiB
-   /dev/sdb1      32.00MiB
-
-Unallocated:
-   /dev/sda1       1.00MiB
-   /dev/sdb1       1.00MiB
-   /dev/sdc1       1.00MiB
-   /dev/sdj1       3.64TiB
-
-
-Processes (I also tried a cancel, which is just hung as well)
-
-4 S root      3665     1  0  80   0 - 60315 -      06:45 ?
-00:00:00 sudo btrfs balance cancel /.BACKUPS/
-4 D root      3666  3665  0  80   0 -  3983 -      06:45 ?
-00:00:00 btrfs balance cancel /.BACKUPS/
-4 S root     14035     1  0  80   0 - 60315 -      Feb28 ?
-00:00:00 sudo btrfs filesystem balance /.BACKUPS/
-4 D root     14036 14035  2  80   0 -  3984 -      Feb28 ?
-00:59:12 btrfs filesystem balance /.BACKUPS/
-
-All four drives ARE blinking, and the process takes <10% CPU, but > 0%.
-
-2.6%:
-
-14036 root      20   0   15936    656    520 D   2.6  0.0  59:13.90
-btrfs filesystem balance /.BACKUPS/
-
-df, while probably misleading with btrfs:
-
-Filesystem      1K-blocks       Used  Available Use% Mounted on
-/dev/sda1      5860531080 3906340128        384 100% /.BACKUPS
-
-dmesg has a lot of these, and you can see they are issued pretty quickly:
-
-[773986.367090] BTRFS info (device sda1): found 472 extents
-[773986.583133] BTRFS info (device sda1): found 472 extents
-[773986.799169] BTRFS info (device sda1): found 472 extents
-
-sar output of relevant drives (10 secs):
-
-10:26:23 AM       DEV       tps  rd_sec/s  wr_sec/s  avgrq-sz
-avgqu-sz     await     svctm     %util
-10:26:26 AM       sdb     78.45      0.00   2312.37     29.48
-0.48      6.64      0.58      4.52
-10:26:26 AM       sda     78.80      0.00   2312.37     29.35
-0.94     12.53      0.53      4.20
-10:26:26 AM       sdc     36.40      0.00    220.49      6.06
-0.25      7.24      0.85      3.11
-10:26:26 AM       sdj     36.40      0.00    220.49      6.06
-0.23      6.74      0.83      3.04
-
-$ sudo btrfs balance status -v /.BACKUPS/
-Balance on '/.BACKUPS/' is running, cancel requested
-0 out of about 3733 chunks balanced (29 considered), 100% left
-Dumping filters: flags 0x7, state 0x5, force is off
-  DATA (flags 0x0): balancing
-  METADATA (flags 0x0): balancing
-  SYSTEM (flags 0x0): balancing
-
-Oh, and the drive does think it is out of space even though the drive
-has been added:
-
-$ dd if=3D/dev/random of=3Drandom
-dd: writing to =E2=80=98random=E2=80=99: No space left on device
-0+7 records in
-0+0 records out
-0 bytes (0 B) copied, 0.341074 s, 0.0 kB/s
+Thanks
+Mrs. Maile .(A) Roberto
