@@ -2,102 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A1A1750B8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 00:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E50175125
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 00:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgCAXDQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Mar 2020 18:03:16 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39639 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgCAXDP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 18:03:15 -0500
-Received: by mail-lj1-f193.google.com with SMTP id o15so9652731ljg.6
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 15:03:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
-        b=CTlWhx9VUQAHO8/A4kgT9VW4ARfwHaYQLsvkcdJRrQVlUfLdxYgk0oziVKRdpyYlTs
-         xsV7M+8ShxxJtFYBQXwPc8bp07i16kJe2IB4au7hGPn/dn+bHuQbHZP4GHrlsWvm7amS
-         fYbmwEKDUP3D8PjV+zVv48hn9LPzg7nagySax7ZsUahqxdH53G8vrD2/QUHupYRGmqj9
-         Irnyn5rKjnQzI+pKsX8NGqThEeSQkV+9sSdZGVYHMaRvzLXScLDten4K0Cauy6/lntDZ
-         WQMS8H3olnXHAuj7meuvJRueZVreWvwDtqiHJpv+ryMib3lopZPftJnQDsKNg6wh1h4g
-         Y4UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
-        b=FfgWAQcBNaFfWWNnAkITwr7SThwsAESs78ktEPOoqx9cyUW5869YPvST2k0NTfKISX
-         eYjlgBUs3LfQJXTPhRzfBEcnjIq+sbK7emoPTu2jgD5Gza71peu5oPGJNPW33V6ulWF+
-         RoQOj67AcdPQMS9dXrPHqxqZSovoUwgjWn04ZxQ5F0SFZIfx2zD9taNAuLeUns3j/m9O
-         KHbT3M3SDAeQYaFmrItiE6to1wnROkOuMdGJWX5yZHrnEmbQxdQZaKeIj+7pU/zD8Obw
-         Dpjgx38y7N6rt3O4IcEwmSEwUcPyt+d5m/+JVjft3MLQ92eQfsB18OBZf15xWEgiFqP4
-         5BpA==
-X-Gm-Message-State: ANhLgQ0hRkb/rpdnEYEruIPjJtl/RAObegJBVQYvjjCCfQ9NZGsFRNWA
-        2+C/4HQoA18KBlRNbiiDzCfxMvqhQQLpc8grnns=
-X-Google-Smtp-Source: ADFU+vsg2IG1i5RNjLJUjEY6LSsxKLa5vrMFhkny5ITzr8a8UHW/dKB+I45fUESKkxTrUBOtwmyrQpHH1RDeUKWdFq4=
-X-Received: by 2002:a2e:a401:: with SMTP id p1mr466869ljn.80.1583103793699;
- Sun, 01 Mar 2020 15:03:13 -0800 (PST)
+        id S1726755AbgCAX6m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Mar 2020 18:58:42 -0500
+Received: from mail.dsns.gov.ua ([194.0.148.101]:33748 "EHLO mail.dsns.gov.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726525AbgCAX6m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 1 Mar 2020 18:58:42 -0500
+X-Greylist: delayed 1539 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Mar 2020 18:58:37 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 36BBB1FC430B;
+        Sun,  1 Mar 2020 22:20:40 +0200 (EET)
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id W8EYmZFFqJKN; Sun,  1 Mar 2020 22:20:40 +0200 (EET)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 7E4E51FA35DE;
+        Sun,  1 Mar 2020 22:05:46 +0200 (EET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.dsns.gov.ua 7E4E51FA35DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dsns.gov.ua;
+        s=1E60DAC0-2607-11E9-81E6-7A77C2B36653; t=1583093146;
+        bh=njlCkWFc0hcw8eBX6ul4CN7Q0eDgIqGtksJn7ge99kc=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=PAZ0aGNxgR5KBJsjGRjkjs61eIoKXHaTznuRUeLarojkjmXg//pRgDArBm6BcyViL
+         GifqU0GWxOOr3GY0HZaBFV1ryIjqaOpMxrPzCRJaovAHm3ec7AUBmYps1+EKtPR0RJ
+         1EXOsbD6o7VcYIgyQ5tAa45M0jsEDmGB7ILSAXkPmz3GpBmE2eH3epKMWSqUHbETz8
+         RvVDrzezu2IrXd5JHT9fq2GCjkKFqPBDztmFeeJtneyp4s/N7RBS7oD2bq/38zRwh6
+         IR5QQBWgPGRHKSyXLOZKW/njkmoYuBLX5FMj4QLQMq/DacH5QKgs88nemByivE5qmy
+         VHTDmrGRWFPqA==
+X-Virus-Scanned: amavisd-new at dsns.gov.ua
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zTXU5xJfITb2; Sun,  1 Mar 2020 22:05:46 +0200 (EET)
+Received: from mail.dsns.gov.ua (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id B0F9B1FC4E95;
+        Sun,  1 Mar 2020 21:59:48 +0200 (EET)
+Date:   Sun, 1 Mar 2020 21:59:48 +0200 (EET)
+From:   Peter Wong <sport08@dsns.gov.ua>
+Reply-To: petrwong@hotmail.com
+Message-ID: <1314446558.3674585.1583092788690.JavaMail.zimbra@dsns.gov.ua>
+Subject: Hello
 MIME-Version: 1.0
-Received: by 2002:a05:6512:308a:0:0:0:0 with HTTP; Sun, 1 Mar 2020 15:03:13
- -0800 (PST)
-Reply-To: wyne010@gmail.com
-From:   "Mrs. Maile .(A) Roberto" <mrjohnmoses8@gmail.com>
-Date:   Sun, 1 Mar 2020 15:03:13 -0800
-Message-ID: <CACkZuE3a9NEfVuLJ=RN4YVyBnat2xmHsXpT=7x8H5jhcfuuEGg@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [5.154.174.49, 172.68.102.151]
+X-Mailer: Zimbra 8.8.15_GA_3899 (zclient/8.8.15_GA_3899)
+Thread-Index: QDiGNMxb89tOxY1vOzGfXokne4cQUg==
+Thread-Topic: Hello
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings
 
-My Name is Mrs. Maile .(A) Roberto, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick Roberto,
-A gold merchant who owns a small gold mine in Madrid   Spain; He died of
-Cardiovascular Disease in mid-March 2011. During his lifetime he
-deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
-d
-thousand Euros in a HSBC Bank  in Madrid the capital city of Spain.
-The deposited money was from the sale of the
-shares, death benefits payment and entitlements of my deceased
-husbandry his company.
 
-I am sending this message to you praying that it will reach you in
-good health since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently I am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunate that we don't have a child, my
-doctor confided in me that I have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from an orphanage home.
-
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed with cancer for about 2 years ago. I have been touched by
-God Almighty to donate from what I have inherited from my late husband
-to you for the good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has because He is a Merciful God, I will be
-going in for an operation surgery soon
-
-This is the reason I need your services to stand as my next of kin or
-the executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-information on how the fund will be transferred to your bank account.
-
-Thanks
-Mrs. Maile .(A) Roberto
+Can we talk now?
