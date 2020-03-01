@@ -2,287 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A8B174898
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Feb 2020 19:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053D0174A87
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2020 01:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgB2SLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Feb 2020 13:11:00 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:44352 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727366AbgB2SLA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Feb 2020 13:11:00 -0500
-Received: by mail-pl1-f195.google.com with SMTP id d9so2527029plo.11
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Feb 2020 10:10:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7sy8AOJ/15eT2KVP4UWt2JpZHRiEAQnmxmL1o6lYero=;
-        b=boYMWy0uH+IGGQmZ9jR9o/oMeVuC1J2Vk0aQ4D2AJNgzv3nUtfC9EIbHaRI6i34gPM
-         SbkrlyvZArKyc4DPoNXiYhlrvZn5dJNu4CfnBhWX901WWM9vTpB3uBlLfW5jbtWrSjyo
-         eo4HOrEdyMyaUzvNWnK9V9mTH1+ZoBKjbNRfBGDx2In7lCAptkh5Uv2tyolS0IgUm4cR
-         gXzx3q2/uy3u//9LAxtkRuVB8T3qFjf9e2w/FoBBawSCIHs2k3Q1i+pN7Dbza8GvyuC/
-         JXZFYjEtriuIs7gT4que4PlLtylT4e6HTqDLfvao16GrS3JequXyBMiemXgY+d8lXe6A
-         DBMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7sy8AOJ/15eT2KVP4UWt2JpZHRiEAQnmxmL1o6lYero=;
-        b=CwRXBbI2U+rhRC6Yy7JrE1CcZ3IIY+WGqwwRim6oKvxyxWpbm5tdvaD4i9Y/7e/Doi
-         /K8/HJ3j1Mn294IcohpSe3cwW2nRk7Nm7+zOt6foLJLQ3omERYTzTvSFMZ/Dq8OiESid
-         PByxHYbLWouqvYSIXu69uBgrZ3lUF1p/3FKmtyEi9f4i+Jrp3vEM/T8SsBIwFCxNAepW
-         Ve5jbvmrbsbYj3e7HKfInaeDgmhJShIJ0Ol8vnMo8fH8zrEdrJ+qXGBZVko8zcs94cEz
-         ISyzvXblZTffi8xtMVxaPM2++V+ESdczOSgd9LSEtymp3eihUHn/aLrB4/8NiQJUCTRG
-         1Qtg==
-X-Gm-Message-State: APjAAAWsdwWy3PZrwacqDOGMS3lQIHNTz1ENDw/RPSMSOpp62yYbRO4B
-        YKZLGWN4mjGgNaqldtsMxBIZ3Q==
-X-Google-Smtp-Source: APXvYqybeS5MbSric+KrWp1UODE4dnY4mGpqShiZFnfzfg5BetSTd/rk0guzRj9/e465cj5luyQuQw==
-X-Received: by 2002:a17:902:be04:: with SMTP id r4mr9771281pls.315.1582999857094;
-        Sat, 29 Feb 2020 10:10:57 -0800 (PST)
-Received: from vader ([2607:fb90:8365:d596:e6a7:a0ff:fe0b:c9a8])
-        by smtp.gmail.com with ESMTPSA id l37sm6283692pjb.15.2020.02.29.10.10.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Feb 2020 10:10:56 -0800 (PST)
-Date:   Sat, 29 Feb 2020 10:10:53 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH v4 3/9] fs: add RWF_ENCODED for reading/writing
- compressed data
-Message-ID: <20200229181053.GB157744@vader>
-References: <cover.1582930832.git.osandov@fb.com>
- <4f8b9a66f5f6efdb9cab566581acb292f0b5b528.1582930832.git.osandov@fb.com>
- <CAOQ4uxi_KRZFiEsDj_yn0f+Zo4tgAkKKcuAp3jiAmB4r7xjiEA@mail.gmail.com>
+        id S1727210AbgCAAlO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Feb 2020 19:41:14 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38291 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727170AbgCAAlO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 29 Feb 2020 19:41:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583023270;
+        bh=2BgfqoMAYdwlINA7WfGP3OB5eeVhXO0U0dDyu9DnvdQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=eItRPzGF1FkPK23CyftheYztW+wAZLTfZQkKlTJgMyezTXYyOX1nPc+vWvgidx83H
+         KBdVP/h0YkUU7kI7KssO4qkmu6mpj6tLsuq7psiPEU8hv9YztBR7AGY8U5YXeJma7r
+         sxLpAgexi+tUIhvk/QXsUSBeNpgSPO/2XY6eCkes=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWRRZ-1is6zG3u71-00XssP; Sun, 01
+ Mar 2020 01:41:10 +0100
+Subject: Re: corrupt leaf
+To:     4e868df3 <4e868df3@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
+ <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com>
+ <CADq=pgn3-4S3ErK0G+ajf-5M=8CSaE6iow25ASaBxCygedy=7g@mail.gmail.com>
+ <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com>
+ <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <81a5e4cb-c6a6-23e0-9a29-76eaa07a6166@gmx.com>
+Date:   Sun, 1 Mar 2020 08:41:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxi_KRZFiEsDj_yn0f+Zo4tgAkKKcuAp3jiAmB4r7xjiEA@mail.gmail.com>
+In-Reply-To: <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ddLiOrvXnLwOMDSn27sUEuM3nfZ0wyTAS"
+X-Provags-ID: V03:K1:qP+5E354xyuN7lwIjsa5H89glc2TwabR5l7veuEUtr+cDVryqu+
+ J77+Vg03/UgNUIGLo+Dy0rH0KYIHBI5TynGih9rbssFagb14RDIUx4gSbHzEPUPXrM9Mdkx
+ m6C2i9g19KF9YTSAfiWakCW4LXiOMyaPHuDSoOS3sCqnQyBLfN+ng0ayfs1F26tZwEN0Ywx
+ 7CCguYxnR0I6vgf+KXa8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Meacx15U5eI=:tKFst/jWo3ByUKNLFyqc7Y
+ 5QTivQLvRdLWXml239RAWBrWWrJ0uIFJS+nHCT/rr0D9ZlGyfvnGyhmJHG8iTp7YrlX8HeWAj
+ tmFGCn+9vVN9nkpm4KPAGCEDXpejkU5dplYHoNdg7xQ+/pJH2f7Hk5POUrpkxdP/T3PeCT3oh
+ SnYspRDY7HGDHkDx+FW9Q0QQLlXvSLhIOSP7uS/lUt0j8lR3Gb7vmZmuyIo+/RW9RH9QaJr2k
+ mwygzOdAbhIFlTrLgerw+CSWMSbeLlCi0zDoUYINXZlLOUWKyYTu9ghjvw5vVgE62pDRJT8yQ
+ XaNcbWMy8ToVwsPkXqTNgnxX1ho97pnXAi3c3ZZ194ZB42j97PSK3rdpysrHpwseFmxCiX53R
+ ASiPfjYkQarwf08u2Te7PEYmrBoKSbh7VfpeExhhcR+uPaN/uixDx/p5tZFyOjmySSLdnVGfa
+ RKNmN0ecwQ0wBTU+CJcW2fhBprFj2QMNmCdycQg82K16+E2sqVPT9JCAt+E8j0U29huA3w25y
+ FXKAA9gNiA3/+cFI5d0Q6p3gTceKJ45xHG06UT1uLpHKmqf0cbyG+bYiasvr+gHMYDpKXYsAR
+ 44Fga+jveWQpqkwqgpQ5bIs7Mfxabaqy7T03cXVsmZlbRIovyE4NUr5fmR+AjI4UBIQEB/Xi9
+ Kdx5hUcPaZUA2BsLgt+lmkmh3P4CX7SCrCdRLN6FkKDAGXmFflHbbIUdLsKUAmJlwfUPl8Fkd
+ MLofZ8vQEom8fM1JbmPaK9aq43UkbRVOGgF+K4LWs++T2fLfm0KHu0RorTYCj0avh+vZcMbDv
+ oHJQXiMlAmOEFRfEjMmSjzXSQA+/ZhkI6+XqcSBhA3OlcnNANldbJlGHTazKVLxhd0RWjCTGR
+ x/EUAXqgxAqAX1uh0AkSADdVDitt7TvUZy0J84WjW734JYPFGKBdjRiWFtT8UdlrBoRPfwF2+
+ dOwR70HJQxQwenxt2TQfLJEF82gLy8lSjFVPUw4om9zQ24fVDPm1OD9C0Pi1c+iNWmKCYD2ct
+ h2sgQxGAPaF1Ql0TJv8thyzElhI99ys4idpm7jZmZXWF0cVkNb/sBqi4uS+vU22ZiNIxxI5VI
+ LHsMqt2CDdZwVtBmYNpyC60VbpHLOtABgJmj3v/37nz682JAU+UHj0MAojkNKL+7LnWiB8m0T
+ RmnkWH/ypmGpLgQ3uqw4bF1XtCJzPXVZX5jxzumZjJ2GhuMyYKHdMpmUidWb4GnZFe+qPmzjw
+ tUPC8Vf2g503qUoAe
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 12:40:58PM +0200, Amir Goldstein wrote:
-> On Sat, Feb 29, 2020 at 1:14 AM Omar Sandoval <osandov@osandov.com> wrote:
-> >
-> > From: Omar Sandoval <osandov@fb.com>
-> >
-> > Btrfs supports transparent compression: data written by the user can be
-> > compressed when written to disk and decompressed when read back.
-> > However, we'd like to add an interface to write pre-compressed data
-> > directly to the filesystem, and the matching interface to read
-> > compressed data without decompressing it. This adds support for
-> > so-called "encoded I/O" via preadv2() and pwritev2().
-> >
-> > A new RWF_ENCODED flags indicates that a read or write is "encoded". If
-> > this flag is set, iov[0].iov_base points to a struct encoded_iov which
-> > is used for metadata: namely, the compression algorithm, unencoded
-> > (i.e., decompressed) length, and what subrange of the unencoded data
-> > should be used (needed for truncated or hole-punched extents and when
-> > reading in the middle of an extent). For reads, the filesystem returns
-> > this information; for writes, the caller provides it to the filesystem.
-> > iov[0].iov_len must be set to sizeof(struct encoded_iov), which can be
-> > used to extend the interface in the future a la copy_struct_from_user().
-> > The remaining iovecs contain the encoded extent.
-> >
-> > This adds the VFS helpers for supporting encoded I/O and documentation
-> > for filesystem support.
-> >
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  Documentation/filesystems/encoded_io.rst |  74 ++++++++++
-> >  Documentation/filesystems/index.rst      |   1 +
-> >  include/linux/fs.h                       |  16 +++
-> >  include/uapi/linux/fs.h                  |  33 ++++-
-> >  mm/filemap.c                             | 166 +++++++++++++++++++++--
-> >  5 files changed, 276 insertions(+), 14 deletions(-)
-> >  create mode 100644 Documentation/filesystems/encoded_io.rst
-> >
-> > diff --git a/Documentation/filesystems/encoded_io.rst b/Documentation/filesystems/encoded_io.rst
-> > new file mode 100644
-> > index 000000000000..50405276d866
-> > --- /dev/null
-> > +++ b/Documentation/filesystems/encoded_io.rst
-> > @@ -0,0 +1,74 @@
-> > +===========
-> > +Encoded I/O
-> > +===========
-> > +
-> > +Encoded I/O is a mechanism for reading and writing encoded (e.g., compressed
-> > +and/or encrypted) data directly from/to the filesystem. The userspace interface
-> > +is thoroughly described in the :manpage:`encoded_io(7)` man page; this document
-> > +describes the requirements for filesystem support.
-> > +
-> > +First of all, a filesystem supporting encoded I/O must indicate this by setting
-> > +the ``FMODE_ENCODED_IO`` flag in its ``file_open`` file operation::
-> > +
-> > +    static int foo_file_open(struct inode *inode, struct file *filp)
-> > +    {
-> > +            ...
-> > +            filep->f_mode |= FMODE_ENCODED_IO;
-> > +            ...
-> > +    }
-> > +
-> > +Encoded I/O goes through ``read_iter`` and ``write_iter``, designated by the
-> > +``IOCB_ENCODED`` flag in ``kiocb->ki_flags``.
-> > +
-> > +Reads
-> > +=====
-> > +
-> > +Encoded ``read_iter`` should:
-> > +
-> > +1. Call ``generic_encoded_read_checks()`` to validate the file and buffers
-> > +   provided by userspace.
-> > +2. Initialize the ``encoded_iov`` appropriately.
-> > +3. Copy it to the user with ``copy_encoded_iov_to_iter()``.
-> > +4. Copy the encoded data to the user.
-> > +5. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
-> > +6. Return the size of the encoded data read, not including the ``encoded_iov``.
-> > +
-> > +There are a few details to be aware of:
-> > +
-> > +* Encoded ``read_iter`` should support reading unencoded data if the extent is
-> > +  not encoded.
-> > +* If the buffers provided by the user are not large enough to contain an entire
-> > +  encoded extent, then ``read_iter`` should return ``-ENOBUFS``. This is to
-> > +  avoid confusing userspace with truncated data that cannot be properly
-> > +  decoded.
-> > +* Reads in the middle of an encoded extent can be returned by setting
-> > +  ``encoded_iov->unencoded_offset`` to non-zero.
-> > +* Truncated unencoded data (e.g., because the file does not end on a block
-> > +  boundary) may be returned by setting ``encoded_iov->len`` to a value smaller
-> > +  value than ``encoded_iov->unencoded_len - encoded_iov->unencoded_offset``.
-> > +
-> > +Writes
-> > +======
-> > +
-> > +Encoded ``write_iter`` should (in addition to the usual accounting/checks done
-> > +by ``write_iter``):
-> > +
-> > +1. Call ``copy_encoded_iov_from_iter()`` to get and validate the
-> > +   ``encoded_iov``.
-> > +2. Call ``generic_encoded_write_checks()`` instead of
-> > +   ``generic_write_checks()``.
-> > +3. Check that the provided encoding in ``encoded_iov`` is supported.
-> > +4. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
-> > +5. Return the size of the encoded data written.
-> > +
-> > +Again, there are a few details:
-> > +
-> > +* Encoded ``write_iter`` doesn't need to support writing unencoded data.
-> > +* ``write_iter`` should either write all of the encoded data or none of it; it
-> > +  must not do partial writes.
-> > +* ``write_iter`` doesn't need to validate the encoded data; a subsequent read
-> > +  may return, e.g., ``-EIO`` if the data is not valid.
-> > +* The user may lie about the unencoded size of the data; a subsequent read
-> > +  should truncate or zero-extend the unencoded data rather than returning an
-> > +  error.
-> > +* Be careful of page cache coherency.
-> > diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> > index 386eaad008b2..e074a3f1f856 100644
-> > --- a/Documentation/filesystems/index.rst
-> > +++ b/Documentation/filesystems/index.rst
-> > @@ -37,6 +37,7 @@ filesystem implementations.
-> >     journalling
-> >     fscrypt
-> >     fsverity
-> > +   encoded_io
-> >
-> >  Filesystems
-> >  ===========
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 3cd4fe6b845e..aa7efd3430d1 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -175,6 +175,9 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
-> >  /* File does not contribute to nr_files count */
-> >  #define FMODE_NOACCOUNT                ((__force fmode_t)0x20000000)
-> >
-> > +/* File supports encoded IO */
-> > +#define FMODE_ENCODED_IO       ((__force fmode_t)0x40000000)
-> > +
-> >  /*
-> >   * Flag for rw_copy_check_uvector and compat_rw_copy_check_uvector
-> >   * that indicates that they should check the contents of the iovec are
-> > @@ -314,6 +317,7 @@ enum rw_hint {
-> >  #define IOCB_SYNC              (1 << 5)
-> >  #define IOCB_WRITE             (1 << 6)
-> >  #define IOCB_NOWAIT            (1 << 7)
-> > +#define IOCB_ENCODED           (1 << 8)
-> >
-> >  struct kiocb {
-> >         struct file             *ki_filp;
-> > @@ -3109,6 +3113,13 @@ extern int sb_min_blocksize(struct super_block *, int);
-> >  extern int generic_file_mmap(struct file *, struct vm_area_struct *);
-> >  extern int generic_file_readonly_mmap(struct file *, struct vm_area_struct *);
-> >  extern ssize_t generic_write_checks(struct kiocb *, struct iov_iter *);
-> > +struct encoded_iov;
-> > +extern int generic_encoded_write_checks(struct kiocb *,
-> > +                                       const struct encoded_iov *);
-> > +extern int copy_encoded_iov_from_iter(struct encoded_iov *, struct iov_iter *);
-> > +extern ssize_t generic_encoded_read_checks(struct kiocb *, struct iov_iter *);
-> > +extern int copy_encoded_iov_to_iter(const struct encoded_iov *,
-> > +                                   struct iov_iter *);
-> >  extern int generic_remap_checks(struct file *file_in, loff_t pos_in,
-> >                                 struct file *file_out, loff_t pos_out,
-> >                                 loff_t *count, unsigned int remap_flags);
-> > @@ -3434,6 +3445,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
-> >                         return -EOPNOTSUPP;
-> >                 ki->ki_flags |= IOCB_NOWAIT;
-> >         }
-> > +       if (flags & RWF_ENCODED) {
-> > +               if (!(ki->ki_filp->f_mode & FMODE_ENCODED_IO))
-> > +                       return -EOPNOTSUPP;
-> > +               ki->ki_flags |= IOCB_ENCODED;
-> > +       }
-> >         if (flags & RWF_HIPRI)
-> >                 ki->ki_flags |= IOCB_HIPRI;
-> >         if (flags & RWF_DSYNC)
-> > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> > index 379a612f8f1d..f8c6c1e08def 100644
-> > --- a/include/uapi/linux/fs.h
-> > +++ b/include/uapi/linux/fs.h
-> > @@ -278,6 +278,34 @@ struct fsxattr {
-> >                                          SYNC_FILE_RANGE_WAIT_BEFORE | \
-> >                                          SYNC_FILE_RANGE_WAIT_AFTER)
-> >
-> > +enum {
-> > +       ENCODED_IOV_COMPRESSION_NONE,
-> > +#define ENCODED_IOV_COMPRESSION_NONE ENCODED_IOV_COMPRESSION_NONE
-> > +       ENCODED_IOV_COMPRESSION_ZLIB,
-> > +#define ENCODED_IOV_COMPRESSION_ZLIB ENCODED_IOV_COMPRESSION_ZLIB
-> > +       ENCODED_IOV_COMPRESSION_LZO,
-> > +#define ENCODED_IOV_COMPRESSION_LZO ENCODED_IOV_COMPRESSION_LZO
-> > +       ENCODED_IOV_COMPRESSION_ZSTD,
-> > +#define ENCODED_IOV_COMPRESSION_ZSTD ENCODED_IOV_COMPRESSION_ZSTD
-> > +       ENCODED_IOV_COMPRESSION_TYPES = ENCODED_IOV_COMPRESSION_ZSTD,
-> > +};
-> > +
-> > +enum {
-> > +       ENCODED_IOV_ENCRYPTION_NONE,
-> > +#define ENCODED_IOV_ENCRYPTION_NONE ENCODED_IOV_ENCRYPTION_NONE
-> > +       ENCODED_IOV_ENCRYPTION_TYPES = ENCODED_IOV_ENCRYPTION_NONE,
-> > +};
-> > +
-> 
-> What are those defines???
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ddLiOrvXnLwOMDSn27sUEuM3nfZ0wyTAS
+Content-Type: multipart/mixed; boundary="kxtdsbeMlEl9Vhh4bUnAvi5UlJIW5WU0J"
 
-They're so you can check whether an enum value is defined in the UAPI
-headers via ifdef. E.g., if we were to add
-ENCODED_IOV_COMPRESSION_SOME_NEW_ALGORITHM, applications could use:
+--kxtdsbeMlEl9Vhh4bUnAvi5UlJIW5WU0J
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-#ifndef ENCODED_IOV_COMPRESSION_SOME_NEW_ALGORITHM
-#define ENCODED_IOV_COMPRESSION_SOME_NEW_ALGORITHM 4
-#endif
 
-In my experience, this makes dealing with lagging UAPI headers less
-annoying. This is done elsewhere in UAPI headers (e.g.,
-include/uapi/linux/in.h).
+
+On 2020/2/29 =E4=B8=8B=E5=8D=8811:47, 4e868df3 wrote:
+> It came up with some kind of `840 abort`. Then I reran btrfs check and
+> tried again.
+>=20
+> $ btrfs check --init-csum-tree /dev/mapper/luks0
+> Creating a new CRC tree
+> WARNING:
+>=20
+>         Do not use --repair unless you are advised to do so by a develo=
+per
+>         or an experienced user, and then only after having accepted tha=
+t no
+>         fsck can successfully repair all types of filesystem corruption=
+=2E Eg.
+>         some software or hardware bugs can fatally damage a volume.
+>         The operation will start in 10 seconds.
+>         Use Ctrl-C to stop it.
+> 10 9 8 7 6 5 4 3 2 1
+> Starting repair.
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/luks0
+> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+> Reinitialize checksum tree
+> Unable to find block group for 0
+> Unable to find block group for 0
+> Unable to find block group for 0
+
+This means the metadata space is used up.
+
+Which btrfs-progs version are you using?
+Some older btrfs-progs have a bug in space reservation.
+
+Thanks,
+Qu
+> ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
+> btrfs(+0x71e09)[0x564eef35ee09]
+> btrfs(btrfs_search_slot+0xfb1)[0x564eef360431]
+> btrfs(btrfs_csum_file_block+0x442)[0x564eef37c412]
+> btrfs(+0x35bde)[0x564eef322bde]
+> btrfs(+0x47ce4)[0x564eef334ce4]
+> btrfs(main+0x94)[0x564eef3020c4]
+> /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7ff12a43e023]
+> btrfs(_start+0x2e)[0x564eef30235e]
+> [1]    840 abort      sudo btrfs check --init-csum-tree /dev/mapper/luk=
+s0
+>=20
+> $ btrfs check /dev/mapper/luks0
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/luks0
+> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> there are no extents for csum range 68757573632-68757704704
+> Right section didn't have a record
+> there are no extents for csum range 68754427904-68757704704
+> csum exists for 68750639104-68757704704 but there is no extent record
+> there are no extents for csum range 68760719360-68761223168
+> Right section didn't have a record
+> there are no extents for csum range 68757819392-68761223168
+> csum exists for 68757819392-68761223168 but there is no extent record
+> there are no extents for csum range 68761362432-68761378816
+> Right section didn't have a record
+> there are no extents for csum range 68761178112-68836831232
+> csum exists for 68761178112-68836831232 but there is no extent record
+> there are no extents for csum range 1168638763008-1168638803968
+> csum exists for 1168638763008-1168645861376 but there is no extent
+> record
+> ERROR: errors found in csum tree
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 3165125918720 bytes used, error(s) found
+> total csum bytes: 3085473228
+> total tree bytes: 4791877632
+> total fs tree bytes: 1177714688
+> total extent tree bytes: 94617600
+> btree space waste bytes: 492319296
+> file data blocks allocated: 3160334041088
+>  referenced 3157401378816
+>=20
+> $ btrfs check --init-csum-tree /dev/mapper/luks0
+> Creating a new CRC tree
+> WARNING:
+>=20
+>         Do not use --repair unless you are advised to do so by a develo=
+per
+>         or an experienced user, and then only after having accepted tha=
+t no
+>         fsck can successfully repair all types of filesystem corruption=
+=2E Eg.
+>         some software or hardware bugs can fatally damage a volume.
+>         The operation will start in 10 seconds.
+>         Use Ctrl-C to stop it.
+> 10 9 8 7 6 5 4 3 2 1
+> Starting repair.
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/luks0
+> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
+> Reinitialize checksum tree
+> Unable to find block group for 0
+> Unable to find block group for 0
+> Unable to find block group for 0
+> ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
+> btrfs(+0x71e09)[0x559260a6de09]
+> btrfs(btrfs_search_slot+0xfb1)[0x559260a6f431]
+> btrfs(btrfs_csum_file_block+0x442)[0x559260a8b412]
+> btrfs(+0x35bde)[0x559260a31bde]
+> btrfs(+0x47ce4)[0x559260a43ce4]
+> btrfs(main+0x94)[0x559260a110c4]
+> /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7f212eb1f023]
+> btrfs(_start+0x2e)[0x559260a1135e]
+> [1]    848 abort      sudo btrfs check --init-csum-tree /dev/mapper/luk=
+s0
+>=20
+
+
+--kxtdsbeMlEl9Vhh4bUnAvi5UlJIW5WU0J--
+
+--ddLiOrvXnLwOMDSn27sUEuM3nfZ0wyTAS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5bBKMACgkQwj2R86El
+/qhjAQf7B6ygn2u8Ruo10vRRZ3vh1iIsyeUyIhGWG7/GPUUO+VLSu6BP1deC6JcW
+2cNZOJ/VXPqN7pXtJ5ELWifgdRYlkhVEvxUazweDq2qPydv/jtHqM2R430nj/IE1
+8tI5T2/VgZQUlBOrZC6Nt35QdFI6RA6qq5NAmXsKqW6BPz+ncLnzNoaki9vjaYCf
+QTA6Jtf8eh7eMtefsGXq356u2Tqe79Pje6lhBUrJNQhio3ILD9RkV8WQUQLZNRMT
+IA/bw9bvipcDXJo4dLiKzUGxe6YomXkONjLWpmIlJLuPzx2pJGTkxARKuCLjsrsn
++W2sjT/Ava8RzyFc9FgsfZ5EMY7BmA==
+=4Ua6
+-----END PGP SIGNATURE-----
+
+--ddLiOrvXnLwOMDSn27sUEuM3nfZ0wyTAS--
