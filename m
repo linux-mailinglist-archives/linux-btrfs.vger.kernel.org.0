@@ -2,168 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 850961753D2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 07:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8E01753DD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 07:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgCBGf1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 01:35:27 -0500
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:42665 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgCBGf1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 01:35:27 -0500
-Received: by mail-wr1-f44.google.com with SMTP id z11so2229078wro.9
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 22:35:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CTBlPYOLCNDSEsztdYj9fhuS74+syUHBTb4qV7+toFw=;
-        b=hZ5OWMzDC9IauOHYQtmaSvjOA+azM7t7C7ugUV+kbhPXSxhCqTtEK6EpJbnXTOjJIS
-         fXQFkf1FOs9DyAjBax1dfGdXFpTwzogWBRcTV+PetQJXZnLxhTc7fhS/X/R0/16n/ASx
-         Zm/52tKgl2NMgeN2Z1SUaDSK3nAWtk0BbYpx+5XOoBpKCEEH6m/l8hsSs0B9FRxiXnWI
-         MaVZviO1gMK+ZuK71aIXyd0xYxj6Zy5VjCjtTvkR4B6sWYzKPfvHZ/h0Z4EPfBHcT249
-         2FD24UD3h9qb+KT2UH4wOA+/jP4kSrPJPyP26HPxzZgeVs05t0nkLVuagFd2onmw/mJ5
-         tZLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CTBlPYOLCNDSEsztdYj9fhuS74+syUHBTb4qV7+toFw=;
-        b=t+Tq6LBJ6cYfEGZ350UEjonRiktmVa8zCU3fy6A3Xtt0F+jFDHPCZubc9NC7P1gRZP
-         mRUQ1/TZrkRAjgD2cE/buP1WcSDsZVaBiKYwurc5KPw5ruYVSfltYs6vGalJx16bt3ja
-         /lhkpAWHMrdIR64r6tJvHu2XDDCYj8zTmnwWnNEceMUnZM+Zz/VWNZJqrmVbaoUMXGBB
-         zNb1N022lDqvWGO2WGEH/5kyaVmSvyFn53MJTXqXH7pr4O7tYt3WcISytKSQogwd/0ki
-         Bs1tkFV8OW1+UtuLUZs5ut8jKqW73aW4u0lqWL0HCg2yr4LneqwPrIOLpP4h6ZkMpLeK
-         dGWg==
-X-Gm-Message-State: APjAAAWXu2FY1Lp78ciEtefjqgWKrkIEXmUyW+9pbmg5lVsf0iBP5nvw
-        C6bsne3bIQqVikOKEIwLXjNnd8MLPYcRZWC8485KD2Zy
-X-Google-Smtp-Source: APXvYqz1xKeP87D40UPKIdExyndY/0QDHGVEY2f1S8TqoeGGbzA3nq5aBukychfUPwq6armxVUmj8vJRGfRFoNxBf6Y=
-X-Received: by 2002:a5d:6881:: with SMTP id h1mr20011727wru.236.1583130923112;
- Sun, 01 Mar 2020 22:35:23 -0800 (PST)
+        id S1726426AbgCBGjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 01:39:24 -0500
+Received: from mout.gmx.net ([212.227.15.18]:34557 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726300AbgCBGjX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 01:39:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583131158;
+        bh=w8umxVxuFgH8otnCWY/HRTVKvM25KU2HqftwTQ66KfQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:In-reply-to:Date;
+        b=Iln78JqxCppMRIZjoMdgUctvuWIWoStOtK/bzCbyTnHzsbvHH4MHRxc89uvWm8kaC
+         OS04lnWf8ztS2NrCEXJUL0G2XJjoof8t12xtniKZsTif71dprS/POBV5Inq77Laaxh
+         y8spj+errKYHtzfIqT+2RLamH4pUbmnTjkrHlEVk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from p ([129.146.208.210]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4QwW-1jYP7y3ekw-011Q9h; Mon, 02
+ Mar 2020 07:39:18 +0100
+From:   Su Yue <Damenly_Su@gmx.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: disk-io: Kill the BUG_ON()s in write_and_map_eb()
+References: <20200302045509.38573-1-wqu@suse.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+In-reply-to: <20200302045509.38573-1-wqu@suse.com>
+Date:   Mon, 02 Mar 2020 14:38:54 +0800
+Message-ID: <m2blpf5kht.fsf@gmx.com>
 MIME-Version: 1.0
-References: <CADq=pg=g47zrfKiqGFUHOJg8=+bdSGQeawihKcVcp_BahzPT+Q@mail.gmail.com>
- <587446db-5168-d91d-c1fa-c7bef48959d9@gmx.com> <CADq=pgn3-4S3ErK0G+ajf-5M=8CSaE6iow25ASaBxCygedy=7g@mail.gmail.com>
- <2ffbf268-437c-b90e-21f3-7ea44aa9e7e6@gmx.com> <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
-In-Reply-To: <CADq=pgkuxOf7h=25Qice9q5Q-RiFXQiDzx0ZuEUCs4uN++3sxw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 1 Mar 2020 23:35:07 -0700
-Message-ID: <CAJCQCtR5t0-5q_R5Zn3fq39dFUj5uO0JYw3g-mfQ4mwuwLYEEw@mail.gmail.com>
-Subject: Re: corrupt leaf
-To:     4e868df3 <4e868df3@gmail.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
+X-Provags-ID: V03:K1:m5e8DMVZoXExGErBb3ixMggu4k9UGgQsTPNdpVVSUDpO+e97Eip
+ UsJD3zA95YRRMlgQDgw5KurkisR24BPhBq+AmsiwiKxlx+NLNhUUeBo6dJYvs8CQTCqH4Cn
+ 88BYMQ/kBS4WJefDHOmPEIMMUZ0lEaE74g7shGNvM2rL6UlRuC+Ybi+urS1QA/qKBbuMqB7
+ 3LMG1Yk+gsFBCfd51fLQw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jemH9YRzHBM=:a9o8WY6+leuELhILun/9dY
+ dY2TXBnYzDO9Mr/NXVVUD6H+6FOJVbHhwDr7aWiP/UNL1S06B2Ule5U1hYyg9+PHY/SW7IYEr
+ /XRTUKFbhcwtJ2MXQn5VtOltvvbzm7HwweBJuxH5ULBxPb/GcuusPe+3e/8v3FfGPXwiAR7hd
+ Ikr8xCzi8pXcn13eyczkIrdjaNzX9hNA3bADCn/67vxnJfS7V1rClVWvCxoleGsYZr/pyDfTw
+ b+AuKwI2vmDIPaDHobGfVACWYjyEEhnXxc3vmO1yrsPaKRDYzKbwN0K2jm1vloO8PUBVLlazO
+ ASvDa384wV1+LGKr9FpXYzSKJOXznncm3M+/OF8I4wWgfILBak/KsFEohoucWcur9iOYkg7xv
+ TU42XDCIUUy2INQFt22ufwmcwKA/ruoV/7f+7sNMNmC8ez5neikenamiuDw/4I4L3jxDqM4Y6
+ IeYR+Y+uJytwG5dbin5U+XTi3K1ToEDMpiQ+ws4o6wy1y7kwkDlyuHE5IRLRplRNONwR2h9Po
+ r4fDq2o6xCAS61FsSIsEcJQBsOevfjMSp5YVGovldh0CR9vZPa83KjVLLSqy0ZRtCWVEHWEy1
+ UiGadNzD5D4ZAM7HOcom6cooDoRsswTGB7PXHA59u9nyko3nUwnN9aVJcIs9pjhMilLZOmzJd
+ Z8OAcfO7BCYKNBW8h7gNFCd+3EAY3lkgmDud92Ple262LP4vBGzuFFGN390H6bteOVMGSZUOp
+ 054o/vZIu8i9VSTczCPKzD8GKbmZj1GLb5omvjE0o6C+VS7yEhVDuyvwHcISvICSzLlWsnxlr
+ 4ylnWkVb0D/m7BbX1wIhsCEmju04iWKdrgq1ZrCtpYEzBShQy4wy6GVQnYCEOrj1Co5FOFaGs
+ YgbahnZW0Fz/DB8zQufKXX7UmtcZaS2f0VzESF00p8HO6YsaCqU0Dp2G6npBr//F8FEk88WiB
+ MPfzgsNKcpuOMgfrP5HXy87PY13RjwIkNHP1AFk/mgS0yA965Gbipi4fQAHU0CSAaQNiFOfMy
+ Y2lhk2Rizd4ZtqsYKYmiJ6QIN8mU3F2+VumBjZ0c+YQbTF7bgzAkCI4QWWV+Ua7L/xZxWGfvt
+ pEFaUybKUksJr1DQLjgrT1f8L7LYvvc4I1xxpSIcT6nl15pxhvWGpTaB8zQ41i0G5wgRhDd0A
+ suAgBMEgS2bpqZye7geY7ywRvtVh3DE9RNRRSEWPVcI+GjmxLavTkDVaUXb6vVYjBWNvuxO/x
+ Cb4qiFpNIywlQ/2fu
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 8:48 AM 4e868df3 <4e868df3@gmail.com> wrote:
->
-> It came up with some kind of `840 abort`. Then I reran btrfs check and
-> tried again.
->
-> $ btrfs check --init-csum-tree /dev/mapper/luks0
-> Creating a new CRC tree
-> WARNING:
->
->         Do not use --repair unless you are advised to do so by a developer
->         or an experienced user, and then only after having accepted that no
->         fsck can successfully repair all types of filesystem corruption. Eg.
->         some software or hardware bugs can fatally damage a volume.
->         The operation will start in 10 seconds.
->         Use Ctrl-C to stop it.
-> 10 9 8 7 6 5 4 3 2 1
-> Starting repair.
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/luks0
-> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-> Reinitialize checksum tree
-> Unable to find block group for 0
-> Unable to find block group for 0
-> Unable to find block group for 0
-> ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
-> btrfs(+0x71e09)[0x564eef35ee09]
-> btrfs(btrfs_search_slot+0xfb1)[0x564eef360431]
-> btrfs(btrfs_csum_file_block+0x442)[0x564eef37c412]
-> btrfs(+0x35bde)[0x564eef322bde]
-> btrfs(+0x47ce4)[0x564eef334ce4]
-> btrfs(main+0x94)[0x564eef3020c4]
-> /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7ff12a43e023]
-> btrfs(_start+0x2e)[0x564eef30235e]
-> [1]    840 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
->
-> $ btrfs check /dev/mapper/luks0
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/luks0
-> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> there are no extents for csum range 68757573632-68757704704
-> Right section didn't have a record
-> there are no extents for csum range 68754427904-68757704704
-> csum exists for 68750639104-68757704704 but there is no extent record
-> there are no extents for csum range 68760719360-68761223168
-> Right section didn't have a record
-> there are no extents for csum range 68757819392-68761223168
-> csum exists for 68757819392-68761223168 but there is no extent record
-> there are no extents for csum range 68761362432-68761378816
-> Right section didn't have a record
-> there are no extents for csum range 68761178112-68836831232
-> csum exists for 68761178112-68836831232 but there is no extent record
-> there are no extents for csum range 1168638763008-1168638803968
-> csum exists for 1168638763008-1168645861376 but there is no extent
-> record
-> ERROR: errors found in csum tree
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 3165125918720 bytes used, error(s) found
-> total csum bytes: 3085473228
-> total tree bytes: 4791877632
-> total fs tree bytes: 1177714688
-> total extent tree bytes: 94617600
-> btree space waste bytes: 492319296
-> file data blocks allocated: 3160334041088
->  referenced 3157401378816
->
-> $ btrfs check --init-csum-tree /dev/mapper/luks0
-> Creating a new CRC tree
-> WARNING:
->
->         Do not use --repair unless you are advised to do so by a developer
->         or an experienced user, and then only after having accepted that no
->         fsck can successfully repair all types of filesystem corruption. Eg.
->         some software or hardware bugs can fatally damage a volume.
->         The operation will start in 10 seconds.
->         Use Ctrl-C to stop it.
-> 10 9 8 7 6 5 4 3 2 1
-> Starting repair.
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/luks0
-> UUID: 8c1dea88-fa40-4e6e-a1a1-214ea6bcdb00
-> Reinitialize checksum tree
-> Unable to find block group for 0
-> Unable to find block group for 0
-> Unable to find block group for 0
-> ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
-> btrfs(+0x71e09)[0x559260a6de09]
-> btrfs(btrfs_search_slot+0xfb1)[0x559260a6f431]
-> btrfs(btrfs_csum_file_block+0x442)[0x559260a8b412]
-> btrfs(+0x35bde)[0x559260a31bde]
-> btrfs(+0x47ce4)[0x559260a43ce4]
-> btrfs(main+0x94)[0x559260a110c4]
-> /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7f212eb1f023]
-> btrfs(_start+0x2e)[0x559260a1135e]
-> [1]    848 abort      sudo btrfs check --init-csum-tree /dev/mapper/luks0
 
+On Mon 02 Mar 2020 at 12:55, Qu Wenruo <wqu@suse.com> wrote:
 
-A crash is a bug, but at least it didn't make the problem worse. I'm
-not sure if 5.4.1 can do any better, but it's the current version.
+> All callers of write_and_map_eb(), except btrfs-corrupt-block,
+> have handled error, but inside write_and_map_eb() itself, the
+> only error handling is BUG_ON().
+>
+> This patch will kill all the BUG_ON()s inside
+> write_and_map_eb(), and enhance the the caller in
+> btrfs-corrupt-block() to handle the error.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
+Reviewed-by: Su Yue <Damenly_Su@gmx.com>
 
+> ---
+> Changelog:
+> v2:
+> - Remove one unrelated test hunk
+> - Fix the patch prefix
+> ---
+>  btrfs-corrupt-block.c |  9 ++++++++-
+>  disk-io.c             | 26 +++++++++++++++++++++++---
+>  2 files changed, 31 insertions(+), 4 deletions(-)
+>
+> diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
+> index 95df871a7822..3c236e146176 100644
+> --- a/btrfs-corrupt-block.c
+> +++ b/btrfs-corrupt-block.c
+> @@ -771,8 +771,15 @@ static int corrupt_metadata_block(struct btrfs_fs_i=
+nfo *fs_info, u64 block,
+>  		u64 bogus =3D generate_u64(orig);
+>
+>  		btrfs_set_header_generation(eb, bogus);
+> -		write_and_map_eb(fs_info, eb);
+> +		ret =3D write_and_map_eb(fs_info, eb);
+>  		free_extent_buffer(eb);
+> +		if (ret < 0) {
+> +			errno =3D -ret;
+> +			fprintf(stderr,
+> +				"failed to write extent buffer at %llu: %m",
+> +				eb->start);
+> +			return ret;
+> +		}
+>  		break;
+>  		}
+>  	case BTRFS_METADATA_BLOCK_SHIFT_ITEMS:
+> diff --git a/disk-io.c b/disk-io.c
+> index e8a2e4afa93a..9ff62fcd54d1 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -487,20 +487,40 @@ int write_and_map_eb(struct btrfs_fs_info *fs_info=
+, struct extent_buffer *eb)
+>  	length =3D eb->len;
+>  	ret =3D btrfs_map_block(fs_info, WRITE, eb->start, &length,
+>  			      &multi, 0, &raid_map);
+> +	if (ret < 0) {
+> +		errno =3D -ret;
+> +		error("failed to map bytenr %llu length %u: %m",
+> +			eb->start, eb->len);
+> +		goto out;
+> +	}
+>
+>  	if (raid_map) {
+>  		ret =3D write_raid56_with_parity(fs_info, eb, multi,
+>  					       length, raid_map);
+> -		BUG_ON(ret);
+> +		if (ret < 0) {
+> +			errno =3D -ret;
+> +			error(
+> +		"failed to write raid56 stripe for bytenr %llu length %llu: %m",
+> +				eb->start, length);
+> +			goto out;
+> +		}
+>  	} else while (dev_nr < multi->num_stripes) {
+> -		BUG_ON(ret);
+>  		eb->fd =3D multi->stripes[dev_nr].dev->fd;
+>  		eb->dev_bytenr =3D multi->stripes[dev_nr].physical;
+>  		multi->stripes[dev_nr].dev->total_ios++;
+>  		dev_nr++;
+>  		ret =3D write_extent_to_disk(eb);
+> -		BUG_ON(ret);
+> +		if (ret < 0) {
+> +			errno =3D -ret;
+> +			error(
+> +"failed to write bytenr %llu length %u devid %llu dev_bytenr %llu: %m",
+> +				eb->start, eb->len,
+> +				multi->stripes[dev_nr].dev->devid,
+> +				eb->dev_bytenr);
+> +			goto out;
+> +		}
+>  	}
+> +out:
+>  	kfree(raid_map);
+>  	kfree(multi);
+>  	return 0;
 
--- 
-Chris Murphy
