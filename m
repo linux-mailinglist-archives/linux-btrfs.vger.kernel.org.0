@@ -2,89 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 741E817658B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 22:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD9F17668D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 23:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgCBVD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 16:03:29 -0500
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:51870 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgCBVD2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 16:03:28 -0500
-Received: by mail-wm1-f51.google.com with SMTP id a132so632328wme.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 13:03:27 -0800 (PST)
+        id S1726700AbgCBWDD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 17:03:03 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:42396 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgCBWDD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 17:03:03 -0500
+Received: by mail-pf1-f194.google.com with SMTP id f5so367920pfk.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 14:03:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pTEsypi0vapzRDBTwJfHJBhW7C+MzpmIIwzqIbZls7s=;
-        b=blSduI8W3JkBeqMYpiBsndtZePt+STJznNb9rH5b960BjcJHKs9EqnGrtMvTS5PL/Y
-         kd/3fI/DO/3FeHgU/OHoYEdmz4yGgI+qDGCyKkY75BuiRSPNyQaxhttG+pYFaQ0NtkRI
-         07fOpHUuarkJiPaDvb1dZwUsfGQkXuZh+pUDsbfGdVtJv83k0nqQDEveTicm0F4ohkKp
-         nqlEspje7AnFKNoMusBgqQVmm4PE7AyBHp9mjVD4H8BSplP/xfz25YLtv93Cjw2IdVab
-         q3/m3hhO5neajBRgyyvmixm+eZPEg1O/y0TrEqauPEdvxn3LKuRzAy55Q5FqlLotgWFJ
-         C5lA==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GoBo/XiL0oJfu5q6secdI5mX9SvJvSEmQoVYAEx/ewA=;
+        b=tNvaOe4m/ROD/dWPf5gZi+qqthrf8fKytAiRAk1xGIdEILqONWeASulz//h7c6c916
+         WO00Jy8LafoW8UhltvnVtATgP3tQO0wbezkpxJckD4sAJAQ0vKMowrNGsg13Slou/1tR
+         5tbZbbnjDZ5nBrlLTVqi6GClqOYqt3ZTvwxz8NpzNnONFFKtTCnwjIEyu6d4GR5H5C0d
+         owpnmVclWK8Rf+QfkPDrzwZLAxOvZe5VlMxIrZSxlKimUAK0mQRZYsCvpHgMakGCBcDd
+         80yfa+mGXTvhMPxI5AmSDMFtSX4b9G/6jrU/LKXbJh7MiqykuoOWlFfcB1+sI3k2PcXX
+         jhMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pTEsypi0vapzRDBTwJfHJBhW7C+MzpmIIwzqIbZls7s=;
-        b=KEogJf2+Nv9+lcMAgililbJplBaCzBIbbbhP0d5RTL4NYev3MGxeT0JENzuMqtgQVS
-         xPWVdI+5CvpkLVPhkV2ukW1yenIYt1jeSJ7eWht3DuDaOznFL0m+5b+IPxx+OHFO8ht4
-         m0K6GFbz0e1pnKKGYbvPcgPK5p0SxDfnE7T2VXnXXXGW8ckZIc83N2gNRWrsSjsOtlYE
-         TMyK2i1GF2Z7QMX0pSlIAZuIcnfWc5WdHt6kDWTAtV3D121UUGwSWxBVHsjmYP1KMUl/
-         aCfa6SJmm5IVkmwRYNpDOCMiuWfH4K9TDTaE6MlZAsLM9a6Z5+Qinhf2pYK/WgYF8+ZV
-         5jdw==
-X-Gm-Message-State: ANhLgQ1pQ2YQpxFVDfwmQpd2MxzCh4vi25F3TWXVm27GT0kKKWGw41SL
-        ykdzPeJjqUlxHOV4k81Vwn/xVLchoEf38Jl4oIzaYA==
-X-Google-Smtp-Source: ADFU+vt+IgzIfwC72jdRG8JIlNT0mUPcgiDBb8po5IUkIUXR5Q/VNT9P146lWL8MSLY2coe9amVZdp0ggQgKbxdtzso=
-X-Received: by 2002:a1c:1fd0:: with SMTP id f199mr286971wmf.168.1583183006719;
- Mon, 02 Mar 2020 13:03:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GoBo/XiL0oJfu5q6secdI5mX9SvJvSEmQoVYAEx/ewA=;
+        b=Aw8IZ5kzhl7Y7mp7h9bjqj+PlCHLzqUKaQVXl4c3bb4Ii/VInd/DCQmNeyFIvYCKBj
+         3f5i4OW5iZulOW3PMh7Lo+Yc4xqhlpfyI5fy1UaMK7v/azft4ZaE1iKILibB0WW43QWm
+         5AqLUHXfPwqnMPi6oX5y7cnzk7ibk+dJpG9Ph5Qlsugml7wqoinDfpht2tmioCUNMTTw
+         la3UaM3vHybcBoWBWr10vBgag5tpPIguMn4O5H+3yPT+2DUkfV9fdonlFiKGukfnNire
+         rpS5ftAFsz2ubeOFhTnTDRwA2jWFvX8RxpdqKwrsMzDuDHL3g9gM6CB31M/vH6gmujul
+         TDhg==
+X-Gm-Message-State: ANhLgQ1oQ6V/luuPPMO+XQCogliv/mP64/U0rdFRH3P0IYLWnCcUa6wq
+        Y2f6V5r/TMLN1xMXwUVftRVe+kpxMu8=
+X-Google-Smtp-Source: ADFU+vsmNV+yN7/Bvfus5WYSAVtgMD6dQfJ7xEliyKDHjKaL5LfksAMNH+SAWtKwU6tsoB96dkmLRw==
+X-Received: by 2002:a63:c4e:: with SMTP id 14mr932365pgm.444.1583186581331;
+        Mon, 02 Mar 2020 14:03:01 -0800 (PST)
+Received: from vader.thefacebook.com ([2620:10d:c090:500::5:755a])
+        by smtp.gmail.com with ESMTPSA id 6sm6216303pfx.32.2020.03.02.14.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2020 14:03:00 -0800 (PST)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH] btrfs: fix RAID direct I/O reads with alternate csums
+Date:   Mon,  2 Mar 2020 14:02:49 -0800
+Message-Id: <b88c888c800d66ad39b4a561ec6601d2db59529e.1583186403.git.osandov@fb.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <56ef4bcdd854a9dde3cbe2f5760592ed@wpkg.org> <CAJCQCtTq_ccnhV9BPU3CA08=m6LDtSxgyve_GUckpPB2HKC1fw@mail.gmail.com>
- <fdcfef7036565db2d2fb26d715dce0c1@wpkg.org>
-In-Reply-To: <fdcfef7036565db2d2fb26d715dce0c1@wpkg.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 2 Mar 2020 14:03:10 -0700
-Message-ID: <CAJCQCtQ0DU5uv0pwJSxRfpc1-bWQnRvtZ07u8JYD8y9jUs=hvg@mail.gmail.com>
-Subject: Re: balance conversion from RAID-1 to RAID-10 leaves some metadata in RAID-1?
-To:     Tomasz Chmielewski <mangoo@wpkg.org>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 2, 2020 at 12:39 AM Tomasz Chmielewski <mangoo@wpkg.org> wrote:
->
-> On 2020-03-02 15:29, Chris Murphy wrote:
-> > On Sun, Mar 1, 2020 at 3:41 AM Tomasz Chmielewski <mangoo@wpkg.org>
-> > wrote:
-> >>
-> >> To my surprise, some metadata is still RAID-1 - is it expected?
-> >
-> > I'd say it's not expected but also balance is pretty complicated. Try
-> >
-> > 'btrfs balance start -dconvert=raid10,soft /mountpoint/'
-> >
-> > What does dmesg report for that command? And are those raid1 bg's
-> > converted to raid10? I don't think it should matter in this case, but
-> > what's the btrfs-progs version?
->
-> I did one more balance, for metadata only:
->
-> btrfs balance start -dconvert=raid10 /mountpoint/
+From: Omar Sandoval <osandov@fb.com>
 
-Sorry mine had a typo too; should be '-mconvert=raid10,soft /mountpoint/'
+btrfs_lookup_and_bind_dio_csum() does pointer arithmetic which assumes
+32-bit checksums. If using a larger checksum, this leads to spurious
+failures when a direct I/O read crosses a stripe. This is easy
+to reproduce:
 
->
-> And it fully converted the remaining RAID-1 metadata to RAID-10.
->
-> Still, a bit "weird".
+  # mkfs.btrfs -f --checksum BLAKE2b -d raid0 /dev/vdc /dev/vdd
+  ...
+  # mount /dev/vdc /mnt
+  # cd /mnt
+  # dd if=/dev/urandom of=foo bs=1M count=1 status=none
+  # dd if=foo of=/dev/null bs=1M iflag=direct status=none
+  dd: error reading 'foo': Input/output error
+  # dmesg | tail -1
+  [  135.821568] BTRFS warning (device vdc): csum failed root 5 ino 257 off 421888 ...
 
-Yep, I think Hugo's guess is a likely explanation.
+Fix it by using the actual checksum size.
 
+Fixes: 1e25a2e3ca0d ("btrfs: don't assume ordered sums to be 4 bytes")
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+---
+I wasn't sure what commit to point at for the fixes tag (or whether to
+just add a stable tag).
+
+Based on misc-next. xfstest to follow.
+
+Thanks,
+Omar
+
+ fs/btrfs/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index dacfd17a3121..8a3bc19d83ff 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7840,6 +7840,7 @@ static inline blk_status_t btrfs_lookup_and_bind_dio_csum(struct inode *inode,
+ {
+ 	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
+ 	struct btrfs_io_bio *orig_io_bio = btrfs_io_bio(dip->orig_bio);
++	u16 csum_size;
+ 	blk_status_t ret;
+ 
+ 	/*
+@@ -7859,7 +7860,8 @@ static inline blk_status_t btrfs_lookup_and_bind_dio_csum(struct inode *inode,
+ 
+ 	file_offset -= dip->logical_offset;
+ 	file_offset >>= inode->i_sb->s_blocksize_bits;
+-	io_bio->csum = (u8 *)(((u32 *)orig_io_bio->csum) + file_offset);
++	csum_size = btrfs_super_csum_size(btrfs_sb(inode->i_sb)->super_copy);
++	io_bio->csum = orig_io_bio->csum + csum_size * file_offset;
+ 
+ 	return 0;
+ }
 -- 
-Chris Murphy
+2.25.1
+
