@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CA417512C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 01:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3117512E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 01:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgCBAC5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Mar 2020 19:02:57 -0500
-Received: from mout.gmx.net ([212.227.17.20]:44873 "EHLO mout.gmx.net"
+        id S1726627AbgCBAEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Mar 2020 19:04:12 -0500
+Received: from mout.gmx.net ([212.227.15.18]:55205 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726621AbgCBAC5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 1 Mar 2020 19:02:57 -0500
+        id S1726614AbgCBAEM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 1 Mar 2020 19:04:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583107357;
-        bh=QeMpmZfuxnoKOorDJHu+lkHpdbgI4akPfDnC+vuFGJY=;
+        s=badeba3b8450; t=1583107433;
+        bh=6MtUgX+LEbikKxlPRsZLr3JZB6HDLS36pMyMF/4hoyE=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=R6uNGmnw6LbBN1in/zW+bThAyCgkixKV47l64IeJ19jRSIqZqcd5N2Z4i1aujxVys
-         f7fhhFrOQ/2fkQ+L4B3OkECy6nGlBPodinprwUaZnjUf0W05FAayQDDusenzbN5OV4
-         /RaEXo+xBu/78GUY6VbkEodsIZ1Jyu15xEkj5A/U=
+        b=QsRd+mbpuxclYWLAJuhB6n9TLf6kcb2vYXH7DSRP4DSBEby7XJ322eOL1jObeXmPl
+         OjHPuw+78rYrhQL6uuWPyST3f7jUkPZuit54rdKZMcFqIcnOiKbdphWaB3HrBT/DlJ
+         I4fiMxzHsreqhsAjYdB73+HwWR0K9iGdCciqgl7s=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8ygY-1j3caY3Oic-00696r; Mon, 02
- Mar 2020 01:02:37 +0100
-Subject: Re: [PATCH 2/3] progs: Include btrfs-find-root and btrfs-select-super
- in testsuite
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N17Ye-1jXOxn03OE-012X4s; Mon, 02
+ Mar 2020 01:03:53 +0100
+Subject: Re: [PATCH 3/3] progs: tests: misc: btrfs-{find-root,select-super}
+ are internal commands
 To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>, dsterba@suse.com,
         linux-btrfs@vger.kernel.org
 References: <20200301033344.808-1-marcos@mpdesouza.com>
- <20200301033344.808-3-marcos@mpdesouza.com>
+ <20200301033344.808-4-marcos@mpdesouza.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,49 +54,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c0521ff0-2adb-0ef5-3dbe-e4f698188ec0@gmx.com>
-Date:   Mon, 2 Mar 2020 08:02:32 +0800
+Message-ID: <2f20c573-99e7-d1bd-337f-bf2ef613e051@gmx.com>
+Date:   Mon, 2 Mar 2020 08:03:48 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200301033344.808-3-marcos@mpdesouza.com>
+In-Reply-To: <20200301033344.808-4-marcos@mpdesouza.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="2QDc1CiT0R6FldNhAGmPPYNfSUPHYIRS3"
-X-Provags-ID: V03:K1:Zm0d+uv575+RjmG2j7nIdwWKfyC36Xb4bukuYXZzVdiPoXRKL3s
- Solw5n6OrM3deGmb6V9dxnq+AKNSS1Vp+CdWNhhuXvnIht8zKYWFFoF7xhk/DpgHORa4MED
- jMHNILXdK8nqGVHtpN+b7VGop4xMmDz2FJLfA1FjF+SYl5AS3j+UYpyTnRAWzYbEVT50nLj
- fTGqh4HPSm2sWqHRIPBwQ==
+ boundary="DymrNkrGT9zD5aGmZfmf0rySZl2wkuTrM"
+X-Provags-ID: V03:K1:P26a333a9/h6fU7qDdqa0k2Hv/x43AJ8yZwNyz6bG4lffB4KOJK
+ fpXCsI0MYavMTcKTboykGRgwi41NBdCVNQ7UCVsZ+VKwLjvZl+6ZW0lvAwko7JHO89MiLrU
+ GTraoMY3RbM17CbmuHsHIRQtP3W2fndrpbEccKCtlqAyWKXoaugUTSvaqmgT2LJ0vnB4ZJ9
+ 5k4pMq5wjrVSyNSzQPOtA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0irI6fugUKY=:zJ8w+uLHQwXeXWk8js7TV/
- wTd6Gu8onTsFLHvuzQiEn3mL5zY+jsJZVpph6L4umHTe4fn7iuajdcgP0vDIPjqXgId446AgM
- FH4e1ggpAQqNiYKxqtvzdjHff522sRuhwNSujHiiMGRKhm/4Gh07OYW5XesTHxg4JvdjX5bx1
- Lvs6wh6ULGbr8RfiNwEAVEiT6TDU1Gy8zwv6zYEPp40RPQoyBxdot+L6tVzdah3sSFVNuRfS9
- kiEsDW3B6PiFPpSSswpqLfHVyuSIBCPpSe6FpH9jq3LtMgro5S9YG6YE29FTspffT4g5Ctg5X
- n289hxRcTEOyn0In3vHukDcFpXzXhX6b++ScK10vPp5TCSc3WUzpyIyWhpkAc5ED8G2wImKWL
- sPxEo0A0uwsnDPymWlxrsRY8LzgxnZ+oCmbMbykxoBoYnPOStQ+FN85JXq4SYuYt7dUM/SVzL
- T50CFIZx5RyL+5Z31fRVjZxpYcANEQLmmV8tHZeBa3T5rRnW9yFRTSXN6PXlX/FEaT6zADjWY
- i0y1Rc8Caroo/R0LDHCz+xoezg7V03vIfIwGP4OheqV4PsDToHPF+D+QGfPT/EckBtI+P/zSG
- WrSZkO24qI3Wt65PH7Ak+a40Ce+dvCx5142d7iFOt1nrCAw1iqAaCZNCMAQtSDecGzxCGhhvr
- MfEUuAnvTwG+9KjE1o+JXc2Grm4BEAyDMu5u/SPv17A0F1F9pT74X1bbFkXP0i9XhiaoyZPUe
- vgyvRTUiaThRkk8LzisbueyXeLk8qClo6a7OjafeD1XdZMyGITB3sSZXBHKeGIk0BRRhBWAWq
- jl0YpPoLLp0XIq5CAKBg4+OQcLyg2GKpBJRWUulIPfM3rvp7o39BM6+PVxQ+OgI4sxQfm4n0Q
- 1pn7E60ixCF73mGBD4wspQGrtdHdv2GIxdqucpQ2LJlBl0A5pAl8DF5tYJKt24vR+HCZHxT3m
- NtPBZC5yjFW3icGLOzkGAXolWqZUr7cV5QDq4eD6a8bCCI0WxSd6WM3OKFiYUFwCQZlPTdvfq
- q1sVm4uB27Dllk9F55nijWGCe2XYNJ9jN80dnn7cOBrPsy5sJwBcQwuLSAZDYu7ikNjnidzjn
- ay/6RoQJhiZgo7cjcbX7sQrn5j+SzC3orMxweLyFqPFq7IRV9ndkXKE893Y675C0jphKBRHh/
- VoUaiLCxggyL2bs0dRAYC1mtQs+0SR133lq06mXKFbeqnK39cP+howtr/5X1w2bVVXQf3BLyt
- wQxJriTkDfy0EYFLT
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IsmYeg97uEY=:KTYXX/Uk2PMHrVybVilf+3
+ Lq9LJZb385s/HI4HD84DE/GMwZu803B446DsttHFwsleV0iksmtx+esWS6xAKsb0orXqXwCM4
+ B1/Qsp20qtv/vUwxNKscVHdsbN4JFYYPofSCsQ3j281veuZdVnIaQoWLJQR29ln7OkKoKmEYW
+ hgECFJ7zVrpzePKqnK2eeYZBqp7uAXDmsQCuFfUYDj80JegAsrtoRWrH/WIGQCU610AQd6yb2
+ tGNWsqRIald4tGPj+KBfJZHSa9uDFUjrs6Rcii5nYtLJFMPeQuyWeYEaPWV1CYsgemKvOwoxv
+ iRiDCELWXy+KoPr9BgbtriIh+MahqW8O7NvJrYyz7rZvlgruzX5LycsXLAgkG610VD/bg/W3w
+ YrSZNgKgt1jhdp+AZ0wHGAurrZ6KCiGbripOdoG2NoCB21c/AAYxYmJECxLRJpGnVmZwheNvL
+ 1HWkiBGUJFkyqg4LIvPciLyY7ZzQfLKM1ZaYWVr2oFJALIPGdaaOt3OXnk/vSsfmbsawVYGJL
+ hZDzu7g2q4MSYC3wirCGDLRm8yhSBLqMn4JXQsuFI7dYOyHsOepFxKSQxt/QpEGPhvq4SkXK9
+ gEOp8DWucZWQYaS/bTzw0/KlGeXXj2jr0EOuBW3beU+ttdybEAkbkLEAXEMmmHHAsIpTDdD8H
+ 7OtQr5hFQ1FCjrjeoFoFoxKVmhU0Vqz3qij90oW1KmQHa/+l3nf9qPjYjiIDnbCNZtSgweJWd
+ CunGqE263rRrizAcEswObqBMSPgO/AATCX7nwWPfyv71Tu/lKkqg9KyORr5XOHdkNizj+XMpn
+ EMbaOSOVMYqtUBQw2l8RI8TqhuGXtgusGmaWfLVQRdBA1q4lVa/45DCN+hBcn2KADdtwn5xPO
+ i7BjdCg1z606R0ZuwYb7ALEO5gUdceblAwS+kCrtyfUAkYrqMwxJpI6zGLRnXjCGTBnrbpOvb
+ rqDJCrl3bF2WSeouciq0MdTtIZiIxY/ck1BHNkolov3Cax2l72yZKYJUSh6NwmFtgxan1TM6X
+ a/sbxqen887uXAA8NnmO05ncXzwzeygx85F3MxR2SwguGKRLaq4XccCr4S9x6kRz1Ql+lVpRK
+ D4gR+Uv5L4IjCPrK/8Jr7T/Lx3Qiy4ilVwesywwSi1Jl4zQ+eqBMVX5QeU7R94XkKsPvA3uh8
+ 8nCFJFeCsPay/GLM2cuSoOam1SuBPPmYENMYDmJ4nkc7YQXptZ9MeKmI+xnL9gATVa1oTu+9I
+ hyJmVyKJ7rTb6o0t+
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2QDc1CiT0R6FldNhAGmPPYNfSUPHYIRS3
-Content-Type: multipart/mixed; boundary="vnBb21zbm06exBls2Q4LTA3V9qrIfFEs9"
+--DymrNkrGT9zD5aGmZfmf0rySZl2wkuTrM
+Content-Type: multipart/mixed; boundary="rP9GSb7UaNBIlJtwHNMtruRbMBnB4yb1t"
 
---vnBb21zbm06exBls2Q4LTA3V9qrIfFEs9
+--rP9GSb7UaNBIlJtwHNMtruRbMBnB4yb1t
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -106,69 +106,100 @@ Content-Transfer-Encoding: quoted-printable
 On 2020/3/1 =E4=B8=8A=E5=8D=8811:33, Marcos Paulo de Souza wrote:
 > From: Marcos Paulo de Souza <mpdesouza@suse.com>
 >=20
-> Since these two binaries are not shipped into userspace, and they are
-> used by the testsuite, they need to be include in the final tar.
+> With this commit, testsuite works as expected.
 >=20
 > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Just a small nitpick, the prefix for the patch should be "btrfs-progs: "
-not "progs: ".
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->  Makefile              | 2 +-
->  tests/testsuite-files | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
+>  tests/common                                        | 13 +++++++++----=
+
+>  tests/misc-tests/012-find-root-no-result/test.sh    |  2 +-
+>  .../020-fix-superblock-corruption/test.sh           |  2 +-
+>  3 files changed, 11 insertions(+), 6 deletions(-)
 >=20
-> diff --git a/Makefile b/Makefile
-> index b00eafe4..0cd7f0c1 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -424,7 +424,7 @@ test-inst: all
+> diff --git a/tests/common b/tests/common
+> index 605cf72c..26190d85 100644
+> --- a/tests/common
+> +++ b/tests/common
+> @@ -305,13 +305,18 @@ run_mustfail_stdout()
 > =20
->  test: test-fsck test-mkfs test-misc test-cli test-convert test-fuzz
+>  check_prereq()
+>  {
+> -	if [ "$1" =3D "btrfs-corrupt-block" -o "$1" =3D "fssum" ]; then
+> +	case "$1" in
+> +	btrfs-corrupt-block|btrfs-find-root|btrfs-select-super|fssum)
+>  		if ! [ -f "$INTERNAL_BIN/$1" ]; then
+>  			_fail "Failed prerequisites: $INTERNAL_BIN/$1";
+>  		fi
+> -	elif ! [ -f "$TOP/$1" ]; then
+> -		_fail "Failed prerequisites: $TOP/$1";
+> -	fi
+> +		;;
+> +	*)
+> +		if ! [ -f "$TOP/$1" ]; then
+> +			_fail "Failed prerequisites: $TOP/$1";
+> +		fi
+> +		;;
+> +	esac
+>  }
 > =20
-> -testsuite: btrfs-corrupt-block fssum
-> +testsuite: btrfs-corrupt-block btrfs-find-root btrfs-select-super fssu=
-m
->  	@echo "Export tests as a package"
->  	$(Q)cd tests && ./export-testsuite.sh
+>  check_global_prereq()
+> diff --git a/tests/misc-tests/012-find-root-no-result/test.sh b/tests/m=
+isc-tests/012-find-root-no-result/test.sh
+> index 6dd447f3..edfdfd38 100755
+> --- a/tests/misc-tests/012-find-root-no-result/test.sh
+> +++ b/tests/misc-tests/012-find-root-no-result/test.sh
+> @@ -11,7 +11,7 @@ check_prereq btrfs-image
+>  run_check "$TOP/btrfs-image" -r first_meta_chunk.btrfs-image test.img =
+|| \
+>  	_fail "failed to extract first_meta_chunk.btrfs-image"
 > =20
-> diff --git a/tests/testsuite-files b/tests/testsuite-files
-> index 09df6298..507d35fb 100644
-> --- a/tests/testsuite-files
-> +++ b/tests/testsuite-files
-> @@ -3,6 +3,8 @@ G Documentation/
->  F testsuite-id
->  F ../fssum
->  F ../btrfs-corrupt-block
-> +F ../btrfs-find-root
-> +F ../btrfs-select-super
->  F common
->  F common.convert
->  F common.local
+> -result=3D$(run_check_stdout "$TOP/btrfs-find-root" test.img | sed '/^S=
+uperblock/d')
+> +result=3D$(run_check_stdout "$INTERNAL_BIN/btrfs-find-root" test.img |=
+ sed '/^Superblock/d')
+> =20
+>  if [ -z "$result" ]; then
+>  	_fail "btrfs-find-root failed to find tree root"
+> diff --git a/tests/misc-tests/020-fix-superblock-corruption/test.sh b/t=
+ests/misc-tests/020-fix-superblock-corruption/test.sh
+> index 404d416b..d67a87c3 100755
+> --- a/tests/misc-tests/020-fix-superblock-corruption/test.sh
+> +++ b/tests/misc-tests/020-fix-superblock-corruption/test.sh
+> @@ -25,7 +25,7 @@ test_superblock_restore()
+>  		_fail "btrfs check should detect corruption"
+> =20
+>  	# Copy backup superblock to primary
+> -	run_check "$TOP/btrfs-select-super" -s 1 "$TEST_DEV"
+> +	run_check "$INTERNAL_BIN/btrfs-select-super" -s 1 "$TEST_DEV"
+> =20
+>  	# Perform btrfs check
+>  	run_check "$TOP/btrfs" check "$TEST_DEV"
 >=20
 
 
---vnBb21zbm06exBls2Q4LTA3V9qrIfFEs9--
+--rP9GSb7UaNBIlJtwHNMtruRbMBnB4yb1t--
 
---2QDc1CiT0R6FldNhAGmPPYNfSUPHYIRS3
+--DymrNkrGT9zD5aGmZfmf0rySZl2wkuTrM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5cTRgACgkQwj2R86El
-/qg38wf/c5rPS/aoqP8D3J/3ixt/kjRqV2eYtx5ZCTEeqFbI0chLRtQs3UhpDSGl
-3FFpJvfZ9EysVwmETfPeWQcYQHx2FkCFQZEKrn9wLi/IbuA43m2lA93xgzlCAnoj
-XLwcMN5MdA3LOYqXEwI/hwaU+KvX9A9KTVGXXb9uMnbTzKDvnBJMcvXg6vnd24cA
-UFzipy37y3aGJqAcx16zynR540MovDfV56/ln+VwIl9mW26l61Hy8mr0McIqUuU2
-SmPECQeSynKT8UF2Zs6S8/I9/ZzSCaUqndGDgdT33IfSwqE+Ztv2jP/TcV/eNCM5
-jncz7niPfN86DHfVb3DmHleBctXQrQ==
-=qrz2
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5cTWQACgkQwj2R86El
+/qjM7wgAkymLuhJBIiiAzn8O9XFHu8o42TefXUk2ENGy0breTxso+HURaqGJ7cYf
+Jo3hOQzuKjDaYZb9tOd8gpDSAbWByrh4NTrcA4zCX49aJrn7SRSjr1fjiJmPkvKo
+r6brHTrl4yP2fdNh5UDwzkOoNj4FhW8YNIYYJ+EBW3Gyb2oucaoiibx+d9Yka9wR
+a8EVPmUtkHWuNxFdAfEE6hhwpgMKvyllc9v7FlPRXIvAuiwSIkWo+LbMHT8b2Rh5
+bKLaY6dkT0r/Zy31W7+cL8lusO5fSNAUDqM4+hIFUM8iDDG5J/NWvj6Rl8RVKfcO
+Dnvmm2sHfQ2r6CmWBo4u+wsm6YXH9A==
+=R724
 -----END PGP SIGNATURE-----
 
---2QDc1CiT0R6FldNhAGmPPYNfSUPHYIRS3--
+--DymrNkrGT9zD5aGmZfmf0rySZl2wkuTrM--
