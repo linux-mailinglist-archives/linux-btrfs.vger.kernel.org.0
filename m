@@ -2,74 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E635D1764CA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 21:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D645C1764DE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 21:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgCBUS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 15:18:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48998 "EHLO mx2.suse.de"
+        id S1726263AbgCBU0q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 15:26:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55964 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgCBUS2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Mar 2020 15:18:28 -0500
+        id S1725781AbgCBU0q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 15:26:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CFCE4B264;
-        Mon,  2 Mar 2020 20:18:26 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C1740AC2C;
+        Mon,  2 Mar 2020 20:26:44 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 19C9ADA7AA; Mon,  2 Mar 2020 21:18:05 +0100 (CET)
-Date:   Mon, 2 Mar 2020 21:18:05 +0100
+        id 32C2EDA7AA; Mon,  2 Mar 2020 21:26:23 +0100 (CET)
+Date:   Mon, 2 Mar 2020 21:26:22 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH][RESEND] btrfs: kill update_block_group_flags
-Message-ID: <20200302201804.GX2902@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/10] btrfs: relocation: Refactor build_backref_tree()
+Message-ID: <20200302202622.GY2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Holger =?iso-8859-1?Q?Hoffst=E4tte?= <holger@applied-asynchrony.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200117140826.42616-1-josef@toxicpanda.com>
- <2e16f37e-014e-6d86-76c6-801d6cb7bc20@applied-asynchrony.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200226055652.24857-1-wqu@suse.com>
+ <20200228154555.GN2902@twin.jikos.cz>
+ <99a7a002-65bb-6077-7303-c4076c34e05e@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2e16f37e-014e-6d86-76c6-801d6cb7bc20@applied-asynchrony.com>
+In-Reply-To: <99a7a002-65bb-6077-7303-c4076c34e05e@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 01, 2020 at 06:58:02PM +0100, Holger Hoffst�tte wrote:
-> On 1/17/20 3:08 PM, Josef Bacik wrote:
-> > +		alloc_flags = btrfs_get_alloc_profile(fs_info, cache->flags);
-> >   		if (alloc_flags != cache->flags) {
-> >   			ret = btrfs_chunk_alloc(trans, alloc_flags,
-> >   						CHUNK_ALLOC_FORCE);
-> > @@ -2252,7 +2204,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
-> >   	ret = inc_block_group_ro(cache, 0);
-> >   out:
-> >   	if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
-> > -		alloc_flags = update_block_group_flags(fs_info, cache->flags);
-> > +		alloc_flags = btrfs_get_alloc_profile(fs_info, cache->flags);
-> >   		mutex_lock(&fs_info->chunk_mutex);
-> >   		check_system_chunk(trans, alloc_flags);
-> >   		mutex_unlock(&fs_info->chunk_mutex);
+On Sat, Feb 29, 2020 at 09:00:43AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2020/2/28 下午11:45, David Sterba wrote:
+> > On Wed, Feb 26, 2020 at 01:56:42PM +0800, Qu Wenruo wrote:
+> >> This branch can be fetched from github:
+> >> https://github.com/adam900710/linux/tree/backref_cache_new
 > > 
+> > This is based on v5.6-rc1, you should base on something more recent.
+> > There are many non-trivial conflicts at patch 5 so I stopped there but
+> > if you and I like to get the pathes merged, the branch needs to be in a
+> > state where it's not that hard to apply the patches.
 > 
-> It seems that this patch breaks forced metadata rebalance from dup to single;
-> all chunks remain dup (or are rewritten as dup again). I bisected the broken
-> balance behaviour to this commit which for some reason was in my tree ;-) and
-> reverting it immediately fixed things.
-> 
-> I don't (yet) see this applied anywhere, but couldn't find any discussion or
-> revocation either. Maybe the logic between update_block_group_flags() and
-> btrfs_get_alloc_profile() is not completely exchangeable?
+> Because it looks like current misc-next is not a good place to do proper
+> testing, and it's undergoing frequent updates.
 
-The patch was not applied because I was not sure about it and had some
-suspicion, https://lore.kernel.org/linux-btrfs/20200108170340.GK3929@twin.jikos.cz/
-I don't want to apply the patch until I try the mentioned test with
-raid1c34 but it's possible that it gets fixed by the updated patch.
+Well yes, that's the point and has been like that for a long time. It's
+a development base that should be reasonably stable, IOW I add patches
+there when the branch itself passes fstests and the to-be merged patches
+pass as well.
+
+For the 'reasonably stable' part, fixups and additional functional
+updates should be minimal but they happen as this is branch that more
+people start to test, unlike some random patchsets.
+
+> Thus I choose the latest rc when I started the development.
+
+Yes but you should also have rebased each week so the latest rc is
+still the latest one.
+
+> Currently the branch is only for review and my local testing, I just
+> want to make sure that everything works fine before rebasing them to
+> misc-next.
+
+Maybe I have missed you saying it's for review and independent testing,
+for cleanups this should make no difference once the branch is ported on
+top of current devel queue (misc-next).
+
+I still think that rebasing once a week on top of current rc+misc-next
+is feasible and should save time to all of us in the future.
+
+> Anyway, next time I'll mention the basis, and explicitly shows that I'll
+> do the rebase (and retest) if you want to try merge.
+
+Yes mentioning the patch base helps in case it's not something that
+others would expect, which in most cases is misc-next.
