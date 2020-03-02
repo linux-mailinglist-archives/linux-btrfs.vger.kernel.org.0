@@ -2,123 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5AD176446
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 20:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEF717648A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 21:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgCBTvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 14:51:14 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42475 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgCBTvO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 14:51:14 -0500
-Received: by mail-qt1-f196.google.com with SMTP id r6so920490qtt.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 11:51:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=L2JnGFHO8nad49gww5trL3iiLOP9OVbaIh5vHRmaYOU=;
-        b=BpcikHDqvFqRndxNjereD3K6/e1qLYzVgOmqnE5nnXWVqJBVyzgpGKG2mibQ0MO/wx
-         XZOplfivByV+DnLxwKbMEwpvWrZbmCrokqEpQ7kAKHu9ugP+11fUbMZTSC0PtrdmgbO9
-         tAZqaSfJZ30eumi6GELJesmiBvdKBI8uiUwGRU3qInQ7z6VyMJPLUdg2hj+w7Ii+mHYO
-         wBLo2oNWyr/YByBswv64Z7ktu1eKcQjg2yW41hYmkOTKClYS/ESqoeH55FyhuUtbOT3z
-         9LDDhdRJQNaJcjyi00x2/09QQGf8c8Oi/aZ3Z+1lNnP+VcPvK7GdM/YdNfKYj5M1Ef8B
-         mwiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L2JnGFHO8nad49gww5trL3iiLOP9OVbaIh5vHRmaYOU=;
-        b=fl6v0ZUTmdPVY3DijGU0hifxHBI/4FMguNn0874I+fqMLn7BV+/I6m4sGDy7D5QpZw
-         WvsKfVcJ4c1VKD8TnD5Ym9UWB85pfzEI9fn9+kiqxbkLJb+NoMGsak771ZPd7ZaFAEqu
-         eoFITmmTF+kXxrgijMJf13uB7vRjvqqMmRQ48eSXUHYvhQGYyFVE+1iwynh9kFlH9CQt
-         TE/DMVzciYnz+e12rLdkj66QJW0VN0OeVUjNrFD2LiVuS3hlgQHRqCH1SHuwRxDrci/N
-         QpyP2cgzVTy4UX2UFWVEa5MsisEfYKiUa33WNEPzhf9eneIdXQbE4srknxo9GMUzr3ai
-         d/FA==
-X-Gm-Message-State: ANhLgQ3I+Cqj49GXQNeXKHCQ7GjO7qHW2msXGx+mrbgMW4dDGHmoWFH6
-        Ywmvcq91NkqqiQixfmrak69Gyh7UZno=
-X-Google-Smtp-Source: ADFU+vtK3dnwdXZZhrOVA4gr2V6Vo9THBxoYpx3ix0L5hKmcVPt5lktaeJ05faDKo7ABaGgkKBduIA==
-X-Received: by 2002:ac8:140e:: with SMTP id k14mr1287600qtj.222.1583178672831;
-        Mon, 02 Mar 2020 11:51:12 -0800 (PST)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id o10sm10729500qtp.38.2020.03.02.11.51.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Mar 2020 11:51:12 -0800 (PST)
-Subject: Re: [PATCH 5/7] btrfs: clear BTRFS_ROOT_DEAD_RELOC_TREE before
- dropping the reloc root
-To:     dsterba@suse.cz, kernel-team@fb.com, linux-btrfs@vger.kernel.org
-References: <20200302184757.44176-1-josef@toxicpanda.com>
- <20200302184757.44176-6-josef@toxicpanda.com>
- <20200302193120.GS2902@twin.jikos.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ab3e1533-d0e3-8ab7-0d72-acf71ce66968@toxicpanda.com>
-Date:   Mon, 2 Mar 2020 14:51:11 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        id S1726838AbgCBUCz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 15:02:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgCBUCz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 15:02:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B004EB133;
+        Mon,  2 Mar 2020 20:02:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CDF2ADA733; Mon,  2 Mar 2020 21:02:31 +0100 (CET)
+Date:   Mon, 2 Mar 2020 21:02:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] progs: Remove manpages of not packaged binaries
+Message-ID: <20200302200231.GU2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+References: <20200301033344.808-1-marcos@mpdesouza.com>
+ <20200301033344.808-2-marcos@mpdesouza.com>
+ <e8a6bb6a-5c8b-5898-d00a-39a739816664@gmx.com>
+ <7a2549f38537c5a0f9262ae5e7aefd82e8464fb0.camel@mpdesouza.com>
 MIME-Version: 1.0
-In-Reply-To: <20200302193120.GS2902@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7a2549f38537c5a0f9262ae5e7aefd82e8464fb0.camel@mpdesouza.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/2/20 2:31 PM, David Sterba wrote:
-> On Mon, Mar 02, 2020 at 01:47:55PM -0500, Josef Bacik wrote:
->> We were doing the clear dance for the reloc root after doing the drop of
->> the reloc root, which means we have a giant window where we could miss
->> having BTRFS_ROOT_DEAD_RELOC_TREE unset and the reloc_root == NULL.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   fs/btrfs/relocation.c | 13 +++++++------
->>   1 file changed, 7 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index e60450c44406..acd21c156378 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -2291,18 +2291,19 @@ static int clean_dirty_subvols(struct reloc_control *rc)
->>   
->>   			list_del_init(&root->reloc_dirty_list);
->>   			root->reloc_root = NULL;
->> -			if (reloc_root) {
->> -
->> -				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
->> -				if (ret2 < 0 && !ret)
->> -					ret = ret2;
->> -			}
->>   			/*
->>   			 * Need barrier to ensure clear_bit() only happens after
->>   			 * root->reloc_root = NULL. Pairs with have_reloc_root.
->>   			 */
->>   			smp_wmb();
->>   			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
->> +
->> +			if (reloc_root) {
->> +
->> +				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
->> +				if (ret2 < 0 && !ret)
->> +					ret = ret2;
->> +			}
+On Sun, Mar 01, 2020 at 11:28:55AM -0300, Marcos Paulo de Souza wrote:
+> On Sun, 2020-03-01 at 16:26 +0800, Qu Wenruo wrote:
+> > 
+> > On 2020/3/1 上午11:33, Marcos Paulo de Souza wrote:
+> > > From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > > 
+> > > btrfs-find-root and btrfs-select-super stopped to be shipped in
+> > 2014, so
+> > > remove all references to these manpages as well.
+> > 
+> > Nope, my distro is still shipping it, and I find it kinda useful for
+> > certain recovery scenario.
+> > 
+> > Thus it's better to keep their documents.
 > 
-> This reverts fix 1fac4a54374f7ef385938f3c6cf7649c0fe4f6cd that moved if
-> (reloc_root) before the clear_bit.
+> Thanks for checking this Qu. What do you think about the other two
+> patches?
 > 
+> David, do you think you can only patches 2 and 3? The first patch can
+> be skipped, since only the later two solve the issue.
 
-Hmm we should probably keep this and move the
-
-if (root->reloc_root)
-
-thing after the
-
-         if (!rc || !rc->create_reloc_tree ||
-             root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
-                 return 0;
-
-to properly fix this.  I'll add this and send an updated series.  Thanks,
-
-Josef
+I was not expecing to see actual removal of the manual pages but rather
+removing manual pages installed by distro packages without the related
+binaries. In the long term we want to migrate the functionality of
+find-root and select-super to the 'rescue' subcommand and at that time
+the manual pages' text will be moved. Until then it should be kept but
+it's up to the distro package to either ship the binaries + manual pages
+or neither.
