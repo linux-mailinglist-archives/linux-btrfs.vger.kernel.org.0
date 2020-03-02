@@ -2,54 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99881176321
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 19:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A317176322
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 19:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727580AbgCBSsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1727589AbgCBSsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 2 Mar 2020 13:48:03 -0500
-Received: from mail-qt1-f178.google.com ([209.85.160.178]:40980 "EHLO
-        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727408AbgCBSsC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 13:48:02 -0500
-Received: by mail-qt1-f178.google.com with SMTP id l21so763413qtr.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 10:48:01 -0800 (PST)
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36375 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727578AbgCBSsD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 13:48:03 -0500
+Received: by mail-qt1-f195.google.com with SMTP id t13so792343qto.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 10:48:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=kyMMPyKkFjciX+fN4LzaYyYEwCCtHP598Z9VBvPwKYY=;
-        b=TvlTq5AzXJLBXedN4wpEHPBhSdqc0vukhdrdgTjnMDOWXFBSSdGfTHK1HyXFuZQKkp
-         mvlzvYrAPtH7iF0wMa9PoHqA49ar5cvx131VR9f0XYtoQy1c19DnNRC1xwXxR9uVu15o
-         8anL77iZKk6ajJDLj5segpATh1uRNxjK/eaE6MtXA/UWtXSi9m8EnTMgpY6YIWEdLuGE
-         GHe6BFvIF0QXdYKoQ5tqSiGKGZK/InBCOTX/F0DvlzbCIFG6j8u//v2B19oDbe5pEY9Z
-         H6R0oSp64Ldq9wuqDVmM0VOv2oHIm/2+JyPcPjvXGfA37uLL2erDCeX96WlolyAtSimg
-         yzEg==
+        bh=Lt3R0PwHR8RzOkN8CpItcScVihBk66gzuAVrELTCWyM=;
+        b=fymMPgrEl3f8Y2LfyicuVABEno+4f369M0f9eefWBQL52dfvCvmFQiRLep83brkAYk
+         h6EcVfvlCuFQxckLc/hlh2ShEee9duECAPB9DZRjm8JEqX4Uqka5huvmmis0TcTgPtTs
+         kAaJLV21XGeLkJfUdiUZ3UwfA9A+tZloBFAUMHjeNST8d7YDNkVnn+jT8QkxlP3xhzVb
+         klKf33Mz2fCGqTw1Ile1kLENS8rhULS55/Rwziwp84jfChN5QVYG0DQZrGU28+oxQ/hO
+         lLkj4zcfOo3t9RdYhJTJFoA5bEnnkkP09j79fxJLfjLROzoMPBBvEMRnF0z+r7SQEBuJ
+         Fm9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kyMMPyKkFjciX+fN4LzaYyYEwCCtHP598Z9VBvPwKYY=;
-        b=tio0zh8aqREMN93ND2hXQAmPI1USTL+F2HkUidzfB/yFqnRtzvHwORunol65CSK2oU
-         byJ1sNxyYs9cGR1Hz4Wb+l/pmlNvXhblqKbV7ZF+BkdezU3EXsL0AmdvbQayimgSkhWM
-         baUj7V4DI1T+qEQ9ttz0izv+AfpbM19kR6TzSaaVHHyFmtKAS09xTjJ9g4uK3Ughhvs2
-         G+KN8IFllnmWHXkPo08ohAPxTZPUIY63WMNouYMmnL/8wALYLxVdgSjMm4ZcIshGKG40
-         64ItND2n1vZtjkW6AYj6WCGZsnfB4bxDhVn8Vy4vLD3nETSuTu3JT5I3ornpqW5/iwbq
-         +gBQ==
-X-Gm-Message-State: ANhLgQ27OP8n1c1EjARfFfz9QP0Cri3yJnth8ETRLO8eoHIJbiWSVXQM
-        wNAqDAE8HIwdw1n7ou6/DVeucA==
-X-Google-Smtp-Source: ADFU+vu3KNLsuhDuvs2ORfIOymliXQJ3p9lxc2RQ9tXvvOt/ug7RziYAUa2MjNs9r1O3clKTTp04/Q==
-X-Received: by 2002:ac8:4993:: with SMTP id f19mr1035720qtq.305.1583174880399;
-        Mon, 02 Mar 2020 10:48:00 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Lt3R0PwHR8RzOkN8CpItcScVihBk66gzuAVrELTCWyM=;
+        b=liRKwW1qmUvrS1Tv+UfUrjIUM7ahUYKn+iBnJuU1bUBGfYXSCcszkaOZDiFGGwjRYW
+         YKRvWmzDWgBDnF/UuSB0znf05faTSonvE8EE9QAZRttr+zfe4l9P6ms/2YrFUmzIeKvY
+         lR3CZWzzb3AZX1sXQxo25y/Zcjo9SHYcRDQR2RXKeWavwB0eEPnBoTM2oYYOAn1fj+H5
+         VyzEgBwgSQXc24/zirlrMv4rST8Ye0u52D7Dz+znusc5KrYy9m0b/a2y5gqYw5gstyto
+         aluuXBYGqWkZUAapVIwpXxrPZWpK7QKkFISzmeirxV2dZkfDNY4haKMl8Wux6dU4F8lj
+         2ROw==
+X-Gm-Message-State: ANhLgQ0VbiDQdqQhHseHQpYmjLhru9mVOCF2w/x5cvPGdK3BEeLEm0Ov
+        fjxhEYJJgQPrpIN5htxShyDx8RqNZYQ=
+X-Google-Smtp-Source: ADFU+vuBiH7LKoUwA/Fzdt9vYoKwQyh1ogRm2pwdSb4nY/L72FiDwZnPgAR7yMkTVa2SEOVpaAcwvw==
+X-Received: by 2002:ac8:7b9a:: with SMTP id p26mr1016754qtu.281.1583174882088;
+        Mon, 02 Mar 2020 10:48:02 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id o3sm10396988qkk.87.2020.03.02.10.47.59
+        by smtp.gmail.com with ESMTPSA id 65sm10797701qtf.95.2020.03.02.10.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 10:47:59 -0800 (PST)
+        Mon, 02 Mar 2020 10:48:01 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/7] relocation error handling fixes
-Date:   Mon,  2 Mar 2020 13:47:50 -0500
-Message-Id: <20200302184757.44176-1-josef@toxicpanda.com>
+Subject: [PATCH 1/7] btrfs: drop block from cache on error in relocation
+Date:   Mon,  2 Mar 2020 13:47:51 -0500
+Message-Id: <20200302184757.44176-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200302184757.44176-1-josef@toxicpanda.com>
+References: <20200302184757.44176-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -57,23 +59,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My root ref patches have uncovered weird failures in some of our xfstests,
-particularly those that do balance while having errors.
+If we have an error while building the backref tree in relocation we'll
+process all the pending edges and then free the node.  This isn't quite
+right however as the node could be integrated into the existing cache
+partially, linking children within itself into the cache, but not
+properly linked into the cache itself.  The fix for this is simple, use
+remove_backref_node() instead of free_backref_node(), which will clean
+up the cache related to this node completely.
 
-I ran relocation through my eio-stress bpf script and loads of things fell out,
-these are the fixes required to make the stress test run to completion.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/relocation.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Dave this is just based on my master, I assume it'll apply cleanly to what you
-have, but if not let me know which branch you want me to rebase onto to get it
-to work right.
-
-Most of these are straightforward, the only tricky/subtle one is 7/7, and I've
-added a lot of explanation there around my reasoning.  6/7 is also a little bit
-more complicated as it changes the rules slightly for reference holding for
-roots.  Before we just sort of hoped and prayed we go the right reference
-dropped when we dropped root->reloc_root.  Now we hold one ref for the list of
-reloc roots and one ref for root->reloc_root, so it's more clear when we need to
-be dropping references.  Everything else is relatively straightforward.  Thanks,
-
-Josef 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 4fb7e3cc2aca..507361e99316 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1244,7 +1244,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 			free_backref_node(cache, lower);
+ 		}
+ 
+-		free_backref_node(cache, node);
++		remove_backref_node(cache, node);
+ 		return ERR_PTR(err);
+ 	}
+ 	ASSERT(!node || !node->detached);
+-- 
+2.24.1
 
