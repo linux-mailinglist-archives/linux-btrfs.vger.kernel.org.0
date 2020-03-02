@@ -2,151 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE02F175743
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 10:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D38175786
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 10:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbgCBJhM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 04:37:12 -0500
-Received: from savella.carfax.org.uk ([85.119.84.138]:45502 "EHLO
-        savella.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbgCBJhM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 04:37:12 -0500
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1j8hVd-0002AA-Hz; Mon, 02 Mar 2020 09:37:09 +0000
-Date:   Mon, 2 Mar 2020 09:37:09 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Tomasz Chmielewski <mangoo@wpkg.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: balance conversion from RAID-1 to RAID-10 leaves some metadata
- in RAID-1?
-Message-ID: <20200302093709.GL1235@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        Tomasz Chmielewski <mangoo@wpkg.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <56ef4bcdd854a9dde3cbe2f5760592ed@wpkg.org>
+        id S1726887AbgCBJqA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 04:46:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43860 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726654AbgCBJqA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 04:46:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 2AFE3AD10
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2020 09:45:58 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/10] btrfs: relocation: Refactor build_backref_tree()
+Date:   Mon,  2 Mar 2020 17:45:43 +0800
+Message-Id: <20200302094553.58827-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56ef4bcdd854a9dde3cbe2f5760592ed@wpkg.org>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 01, 2020 at 07:30:34PM +0900, Tomasz Chmielewski wrote:
-> Just finished a conversion from RAID-1 to RAID-10, on Linux 5.5.6:
-> 
-> # time btrfs balance start -dconvert=raid10 -mconvert=raid10 /data/lxd
-> Done, had to relocate 2064 out of 2064 chunks
-> 
-> real    1811m51.427s
-> user    0m0.000s
-> sys     1259m34.448s
-> 
-> 
-> # echo $?
-> 0
-> 
-> # dmesg
-> (...)
-> [211862.205521] BTRFS info (device sda2): found 40805 extents
-> [211910.773888] BTRFS info (device sda2): found 40805 extents
-> [211965.321150] BTRFS info (device sda2): relocating block group
-> 3492979671040 flags data|raid1
-> [211972.743476] BTRFS info (device sda2): found 37221 extents
-> [212020.193342] BTRFS info (device sda2): found 37221 extents
-> [212084.580739] BTRFS info (device sda2): balance: ended with status: 0
-> 
-> 
-> To my surprise, some metadata is still RAID-1 - is it expected?
+This branch can be fetched from github:
+https://github.com/adam900710/linux/tree/backref_cache_refactor
 
-   It's definitely something that can happen. I think what happens is
-that new chunks are created while the balance process is going, so
-they never get picked up by the converter. I'd guess it's most likely
-to happen on an FS with active writes on it while the balance is
-running.
+The basis is:
+10f3586f65b0d0 (david/misc-next) btrfs: fix btrfs_calc_reclaim_metadata_size calculation
 
-   If it happens again, you can finish off just the unconverted chunks
-by adding the "soft" option to the conversion filter:
+The main objective of this patchset is to refactor build_backref_tree()
+and get myself more familiar with the backref cache.
 
-# btrfs balance start -dconvert=raid10,sort -mconvert=raid10,soft /data/lxd
+The refactor also add quite some comments explaining how the backref
+cache is built, but I'm also working on crafting a new dev doc for the
+backref cache.
 
-which will convert only those chunks that aren't already in the target
-RAID level.
+As some more example would greatly help reader to go through the
+somewhat weird code.
 
-   Hugo.
+Patch 1~8 haven already been sent to the mail list. This time they are
+included for a better review.
 
-> # btrfs fi usage /data/lxd
-> Overall:
->     Device size:                   6.91TiB
->     Device allocated:              6.70TiB
->     Device unallocated:          210.40GiB
->     Device missing:                  0.00B
->     Used:                          3.96TiB
->     Free (estimated):              1.46TiB      (min: 1.46TiB)
->     Data ratio:                       2.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
-> 
-> Data,RAID10: Size:3.32TiB, Used:1.97TiB (59.20%)
->    /dev/sda2       1.66TiB
->    /dev/sdd2       1.66TiB
->    /dev/sdc2       1.66TiB
->    /dev/sdb2       1.66TiB
-> 
-> Metadata,RAID1: Size:2.00GiB, Used:85.02MiB (4.15%)
->    /dev/sdc2       2.00GiB
->    /dev/sdb2       2.00GiB
-> 
-> Metadata,RAID10: Size:29.00GiB, Used:12.55GiB (43.27%)
->    /dev/sda2      14.50GiB
->    /dev/sdd2      14.50GiB
->    /dev/sdc2      14.50GiB
->    /dev/sdb2      14.50GiB
-> 
-> System,RAID10: Size:64.00MiB, Used:400.00KiB (0.61%)
->    /dev/sda2      32.00MiB
->    /dev/sdd2      32.00MiB
->    /dev/sdc2      32.00MiB
->    /dev/sdb2      32.00MiB
-> 
-> Unallocated:
->    /dev/sda2      53.60GiB
->    /dev/sdd2      53.60GiB
->    /dev/sdc2      51.60GiB
->    /dev/sdb2      51.60GiB
-> 
-> 
-> # btrfs fi df /data/lxd
-> Data, RAID10: total=3.32TiB, used=1.97TiB
-> System, RAID10: total=64.00MiB, used=400.00KiB
-> Metadata, RAID10: total=29.00GiB, used=12.55GiB
-> Metadata, RAID1: total=2.00GiB, used=85.02MiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> # btrfs fi show /data/lxd
-> Label: 'lxd5'  uuid: 2b77b498-a644-430b-9dd9-2ad3d381448a
->         Total devices 4 FS bytes used 1.98TiB
->         devid    1 size 1.73TiB used 1.67TiB path /dev/sda2
->         devid    3 size 1.73TiB used 1.67TiB path /dev/sdd2
->         devid    4 size 1.73TiB used 1.68TiB path /dev/sdc2
->         devid    5 size 1.73TiB used 1.68TiB path /dev/sdb2
-> 
-> 
-> 
-> 
-> Tomasz Chmielewski
-> https://lxadm.com
+There are 3 main structures involved:
+- backref_cache
+  The main cache structure, store all the existing cached map.
+
+- backref_node
+  Represent one tree block.
+  It can have multiple parent and multiple children backref_edges
+  related.
+
+- backref_edge
+  Represent one parent-child relationship between two backref_node.
+  Both parent (upper) and child (lower) backref_node can iterate through
+  their list to locate the edge.
+
+The objective build_backref_cache() is to build a map, starting from
+specified node, to reach all its parents. E.g:
+
+  build_backref_tree() is called on bytenr X, then the following map
+  is added to backref_cache:
+     Root 257   Root 258
+	  A      B
+          |    /
+          |  /
+	  |/  
+	  C
+	  |
+	  X
+  We will have backref_nodes for X, A, B, C in the backref_cache, and
+  3 edges between (X, C), (C, A), (C, B).
+
+
+The short workflow of build_backref_tree() is:
+
+- Iterate through all parent nodes of the specified node
+  (ITERATION)
+
+  Here we go breadth first search. We go through direct parent of
+  current node. The iteration is bottom-up.
+
+  For how each backref item is handled, check handle_one_tree_backref()
+  for details.
+
+  When a direct parent is found, we check if the direct parent is
+  cached:
+  * Cached:
+    Allocate the edge between this node and parent. Call it a day, and
+    process next parent.
+  * Not cached:
+    Allocate both edges and nodes. And queue the parent node for
+    iteration.
+
+  During this stage, new nodes are only allocated, not yet added to
+  cache, and new edges are only linked to lower nodes.
+
+  After this step, we have reached all roots referring to the specified
+  node.
+  Some root nodes may be useless (reloc tree root), they will be queued
+  for later cleanup.
+
+- Finish the linkage between newly added nodes and edges.
+  (WEAVING)
+  Since previous step only allocated new nodes, and only linked edges
+  with its lower node, we still need to add the nodes to cache, and
+  finish the linkage.
+
+  See finish_upper_links() for details.
+
+- Cleanup the useless trees
+  (CLEANUP)
+  For reloc trees, we only cache the backref nodes for higher tree
+  nodes. And don't keep any edges. So such backref nodes are marked
+  detached.
+  Tree leaves for reloc trees are not cached.
+
+  Such behavior is to reduce memory usage for useless trees, but still
+  allow backref cache hit, to avoid unnecessary cache search.
+
+  And also mark the useless nodes as processed for relocation.
+
+
+With the refactor, only the CLEANUP part of build_backref_tree() is
+really coupled with relocation.
+And now build_backref_tree() is only 125 lines, it's a pretty good start
+point for us to reuse backref_cache for other workload, like qgroups.
+
+Changelog:
+v2:
+- Rebased to misc-next branch
+  There are some small conflicts due to Josef's root ref count patches.
+  To make sure everything is fine, the main code move part is re-written
+  from scratch to ensure no btrfs_put_fs_root() is missing
+
+- Better handling mark_block_processed()
+  Now uses in_range() macro, and remove the set_extent_bit() wrapper
+  which only get called in one location.
+
+Qu Wenruo (10):
+  btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+  btrfs: backref: Implement btrfs_backref_iter_next()
+  btrfs: relocation: Use btrfs_backref_iter infrastructure
+  btrfs: relocation: Rename mark_block_processed() and
+    __mark_block_processed()
+  btrfs: relocation: Refactor tree backref processing into its own
+    function
+  btrfs: relocation: Use wrapper to replace open-coded edge linking
+  btrfs: relocation: Specify essential members for alloc_backref_node()
+  btrfs: relocation: Remove the open-coded goto loop for breadth-first
+    search
+  btrfs: relocation: Refactor the finishing part of upper linkage into
+    finish_upper_links()
+  btrfs: relocation: Refactor the useless nodes handling into its own
+    function
+
+ fs/btrfs/backref.c    | 145 +++++++
+ fs/btrfs/backref.h    |  94 ++++
+ fs/btrfs/relocation.c | 968 ++++++++++++++++++++++--------------------
+ 3 files changed, 749 insertions(+), 458 deletions(-)
 
 -- 
-Hugo Mills             | The problem with programmers and the law is not that
-hugo@... carfax.org.uk | they treat laws as code, but that they don't
-http://carfax.org.uk/  | understand the VM it runs on.
-PGP: E2AB1DE4          |
+2.25.1
+
