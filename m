@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F27A31751C7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 03:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D7D1751D5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 03:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgCBCYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Mar 2020 21:24:22 -0500
-Received: from mail-il1-f169.google.com ([209.85.166.169]:42749 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726720AbgCBCYW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 21:24:22 -0500
-Received: by mail-il1-f169.google.com with SMTP id x2so7955010ila.9
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 18:24:21 -0800 (PST)
+        id S1726720AbgCBCic (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Mar 2020 21:38:32 -0500
+Received: from mail-io1-f53.google.com ([209.85.166.53]:42716 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbgCBCic (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 21:38:32 -0500
+Received: by mail-io1-f53.google.com with SMTP id q128so1784021iof.9
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 18:38:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/IktJnsIhHfy0cem0YHXikWKkWaigeh/WmYDeTRqFz4=;
-        b=F+tuw4EJI89HRG3goFDfZrexkcudcmcIYGxTvdnZu4Qbdp3kI7217MGt6c3J7Ih0Oi
-         zbhYisXPwqRV/yjkS1j7H3pDknmc7t+um2zkcKIm9zH1uJBlAdEf/RSuVyb3gawo4nI1
-         yMAv3EshF44kFVDYhzPBJUrN3Yarz1QuejGRTL0FcdhyMO0MBjMEK2JaEhMM3FvTxehf
-         2eZXhwBqPsL+4KrZILzeYS5nWHspaduCRh1mq/qTqyaMm1n4gaZJo7oEe08w46pgFuXp
-         Whz0iCLsUIKbBEg+AZzh9saEoQfbsdtrzP4GQYQwaxFkzecjNkKCwUURAnJ6pQNtQJJ0
-         7g0A==
+        bh=E+4bafpZw//Ech8Z7N2f+fGI3ziuN5jTbYyVZMYZKqM=;
+        b=iAi74zYJ3GnkcSeAaZimBWzIOmey61jqcEkStVK3RkHH+JKZlUk2NCcxw2ZHwJaTjp
+         0MbofhUreykxRRLrSdKQb/y+kyqcqg9gqvs+E/JVzWKtR+biCLl2LQNrXmRL57ilRJ1+
+         lxvdvTdn4IfAGJ8hB5fsr7tP3aTaa7quJyFOfBX6a8ZMRvj0F5t7nrgWKtjcUdRoO5nK
+         /OBwu+TSbFwohkpXKTvucWgE1DHRFlAOzTANA6dhUF8gdsVD90UcRRq3vrMuojjmXGwt
+         mNu3Z6RTeGjFofoxgJ50pOeZ2BdlxE9GJmYpBZ5SQumOF7RegLTidA+mumeQZAWWqXnv
+         U2Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/IktJnsIhHfy0cem0YHXikWKkWaigeh/WmYDeTRqFz4=;
-        b=K7eLapAN2SbZvmFhCOxLTl/0mwmzlecdFawaL3/jEGLlKgY4YMIFWdh+51OeshWpS+
-         jk9pPE68mC7Q2Q+sPA/w0oXGfHqHMb/DvKMCIY1JkPKj/c4NIyhkUPot/1n5E4SOASv7
-         0GL6Owq/YWUEVXzFDTrJipx4qkg0YI5duXzsPgsHpP7Xz+fVve74pT5oTu/DshQZShEg
-         Dxsnp4FdhQXtmCb893E8VdHkXf+I5sFPB4UMHtqgiqqaxoF9+Ce8L3FOEf33qThKT1MS
-         RuEnc9hRaPiL0qnn9+yk8Q3pqrCM0tTtHkXtpcFZ8dEK4//KpSWKTR3hf5lijOOYwXu7
-         9DhA==
-X-Gm-Message-State: APjAAAVK7EraMJ0Jz95a4RiNHGoWMP0+auYh54YKQFLB4lpmLx5rcbP7
-        7rbPpze3iHringnS8uxFUS0MtiebmALYGYEFTHM+1lXEZ5o=
-X-Google-Smtp-Source: APXvYqxU48LfnbalYfpJEktTbto1aAq6I6pd016fnAKp0PC4kQvCjEHnGQmbZw8gt4QTfpKrUTKaQk7NdWvk+GY0cQc=
-X-Received: by 2002:a92:af8e:: with SMTP id v14mr14140834ill.150.1583115861155;
- Sun, 01 Mar 2020 18:24:21 -0800 (PST)
+        bh=E+4bafpZw//Ech8Z7N2f+fGI3ziuN5jTbYyVZMYZKqM=;
+        b=QihPru9GnTjXonkrOli5KIuDMqk7PDw+sXGj6KK0whTY0brFXgQTrbnuKVHlh6v7zi
+         tclkodt9A5708deQm2ukWww+QWSbXx/OEGUtqlWypjeGU2qTdVJKbq6eGhhLnwvLnT6o
+         C9lXj0YXoUWczmOMri0bB3gheARcIRBwR7EyKMXFgE5OMCsSFpvZoiQuJMSGwrzWVp55
+         McIN2P3E81iA4V5z8YoI74khfmrz7YEMt5uFyTbcJ0T3seVPS5Oavag0GUb+TxGRS0Du
+         cix4FX33/0hmQFCpyyMt9NCtw+GYRMHLR+f2K/6/4czz9ysGb2GetT0lNWDbnX5Y/el+
+         LEqA==
+X-Gm-Message-State: APjAAAXfPSiijQerpZhEjLYcry63IU+1udFlJmWQl92nGOkncrNrNn3/
+        o/lPAfFKFpVhodZyE5oKZUgKGIWg8popjKlQ7YGIWbdt
+X-Google-Smtp-Source: APXvYqylMzNXV/0IqKTXpFcj+2LkBlpQxqD2Em58F/Ct38qJ1wngIOkuFnumYIYZi5dvZEQRftw5m2KQtfk+RmgJGTQ=
+X-Received: by 2002:a5d:970d:: with SMTP id h13mr11457110iol.279.1583116711489;
+ Sun, 01 Mar 2020 18:38:31 -0800 (PST)
 MIME-Version: 1.0
 References: <CAG+QAKWwvevCz5zYDtkOO5V0AA7bJuoZWHJ2CZjc1ofsO-c7xQ@mail.gmail.com>
  <CAJCQCtQF8f0UsVuFU_TXxWJ2DZQcFZABTSwPu18ob7RcSUKW_A@mail.gmail.com>
  <CAG+QAKUzqdVf88G9ZdLKLa3YUQRcvJMS47qQkhLsgiQ46R19Bw@mail.gmail.com> <CAJCQCtQvEOX--M5pXN=2fSmfPDM2ADK3JhStTWiTdXTCV_XBXQ@mail.gmail.com>
 In-Reply-To: <CAJCQCtQvEOX--M5pXN=2fSmfPDM2ADK3JhStTWiTdXTCV_XBXQ@mail.gmail.com>
 From:   Rich Rauenzahn <rrauenza@gmail.com>
-Date:   Sun, 1 Mar 2020 18:24:10 -0800
-Message-ID: <CAG+QAKVf7nxzHr+yfj-7eXEWD+Zdc7-DwuVkZBYDK9fmzAQxKA@mail.gmail.com>
+Date:   Sun, 1 Mar 2020 18:38:20 -0800
+Message-ID: <CAG+QAKXf9JuRgUU1+shTmTNe=UZNQCLHqomUMiQm+zfqFak3tQ@mail.gmail.com>
 Subject: Re: btrfs balance to add new drive taking ~60 hours, no progress?
 To:     Chris Murphy <lists@colorremedies.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
@@ -58,43 +58,17 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Sun, Mar 1, 2020 at 5:57 PM Chris Murphy <lists@colorremedies.com> wrote:
-> > I'm not following the btrfs logic here - I had three drives, 2 x 1 TB and a 1 x 4 TB and added a 4TB.
+>  >But I still don't get why it wouldn't move blocks from the full drives...
 >
-> The original three drives:
->
->         devid    2 size 1.82TiB used 1.82TiB path /dev/sda1
->         devid    3 size 1.82TiB used 1.82TiB path /dev/sdc1
->         devid    4 size 3.64TiB used 3.64TiB path /dev/sdb1
->
-> Simplistically, devid 2 mirrors with 50% of devid 4, and devid 3
-> mirrors with the other 50% of devid 4. You have 4TB of data on an 8TB
-> volume in a raid1 configuration. That's completely full and using up
-> all space.
->
-> Then you added one drive. Doesn't matter what its size is. There's no
-> where for more data to go.
->
-> https://carfax.org.uk/btrfs-usage/
+> To where? There's only one drive with unallocated space.
 
-That shows I should have 6TB at RAID1, but only 4TB at RAID10.  I'm at
-RAID1,  not RAID10.  (Although I'm not sure what the difference is
-exactly in this context...):
+...but that's what I'd expect the balance to do?  If Block (Chunk?) A
+is on, say device 1 (4TB) and device 2 (2TB), why wouldn't it move
+Block A to the new drive from device 1 or 2 in order to free up space
+and balance/spread out usage across the drives?  Is that not what
+balance's purpose is?   Or is free space required on 1 or 2 in order
+to move the allocation to the new drive?
 
-$ sudo btrfs fi df /.BACKUPS/
-Data, RAID1: total=3.63TiB, used=3.62TiB
-System, RAID1: total=32.00MiB, used=736.00KiB
-Metadata, RAID1: total=5.00GiB, used=3.87GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+OH!  Just checked -- the balance finally cancelled after freeing up the 150GB.
 
-The web tool says:
-
-Total space for files: 6000
-Unusable: 0
-
-Device 2 has size 4000
-Device 3 has size 4000
-Device 0 has size 2000
-Device 1 has size 2000
-Allocate 2 chunks at a time
-Trivial bound is 12000 / 2 = 6000
-q=0 bound is 8000 / 1 = 8000
+Rich
