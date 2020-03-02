@@ -2,138 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3362A1751AA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 02:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74821751AB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 02:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgCBB50 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Mar 2020 20:57:26 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52987 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgCBB5Z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 20:57:25 -0500
-Received: by mail-wm1-f65.google.com with SMTP id p9so9390557wmc.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 17:57:22 -0800 (PST)
+        id S1726690AbgCBB5z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Mar 2020 20:57:55 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:46353 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgCBB5y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Mar 2020 20:57:54 -0500
+Received: by mail-il1-f194.google.com with SMTP id e8so3257760ilc.13
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2020 17:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DyIo7WFbm4tot3cZZRjY7OEzqzpW9npkV1D6H0bIAvE=;
-        b=Hbd2f2hnJqznZr8KV6qw0yEA21mbCd9HHOj3qSPqKfiTuRLi0iBctzecyGzLxzVJCr
-         U7KTj/XU0XVFcFT0gXhP54cq+AXPI3kHj/nQrgJZQibQ1fEMIpF4yGXBlifdgZJLfyxy
-         ZfkHmLIzjL6A1DEB22vMXNGRHzUTDsmq3sIN02oSgUOXA5zZbvfuOWoImMIyaLL9BXsE
-         Sr+L3RPD9YLxPzdHRt5Ck3DwwpOz6McJzFfQpgiD6plSlLiOmmMRWbK3wQSOuMyXWvGK
-         eDQG7X9UHrnYZnPan/4SDhKX3us9PFoyyQJnEQlv/5wqKUR4PZFx/cR6DNu2xll+C0Bp
-         d4Yg==
+         :cc:content-transfer-encoding;
+        bh=ur/4nuVr6V1fkpSMUO4TLg9+9opaMRHCkjWx6aBQd/E=;
+        b=OLLgenp1+GWv8WY+yBkUlzIJ1pMEx9HdiC8d2t0avXbDmw6Y50qAEWA6nX21xOanPo
+         7XPcM4lFZHuZhE6Cyrqw7RDvemjPMIIBJ3V6tjkQ8xYjnlYX+yts3fCocgiYQK3TV2Fh
+         RKoqjHUtU6OCneBD0KbCG7CnXK7iuny5ySkI0KX5rVIG7rC/xSIRV6w7eOIx8WNdYKXo
+         l45Ylm1pfIjfnkvM/2LqRSYgYd6fu96Wl8mNaiaLO8MpNRH3fLeXuezHJO1P03w2EhdJ
+         PXSb/aBjOclfuSeO4BqRge4H3G2Hjc41PHccuu1TtC2u2syDtPNyOIBIBzAvvmxrPJW+
+         cytA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DyIo7WFbm4tot3cZZRjY7OEzqzpW9npkV1D6H0bIAvE=;
-        b=Rm7eOUAoImri2oIhu3x47TSX3greTlKD3SF9WBqeSseXgi/9J+imdWVEzNk7gJ0AGs
-         j7pbwm/ZurE37aMqrjkutAmiE1vNSKSmzHS/dHY/e5fMM6jRekSfFE5S6Ce3rVBGDhRn
-         d3LMD5kMB8CVQIUC1fUU4RLq/SztvG2t3FWtma8DCyt2yuKVgaC77TR6T58Rbpj8afel
-         4W7tG8mGpl+T4UxNzwDUkOS82khAfpyqucdr95Re/gtgtBdBk74lzfy0FHoUtHxP85MM
-         CImxaT5lltOskdVUZnEal1moCm3Qfi1i6JOtZQ6H2nvmjcoqiDfVRE6JZfEzKEz3ozLR
-         JK5g==
-X-Gm-Message-State: APjAAAUYhrhfypVUCN2Ob9pOgQ6/ekD09qt25d+V9RTE22iuXnD/Sdzq
-        vVWVKATjCxm9ERM5MrTrO7Fd1uUO2MVK+eDRsP373A==
-X-Google-Smtp-Source: APXvYqxF9qheEZYvs3ZAEg/ArZXXK3WzGFwk4drRQEdEWmf3diZcmTn3VYyck5bjdfsK4LRIra8o0LiPIrAIImnbaq8=
-X-Received: by 2002:a05:600c:214a:: with SMTP id v10mr17272054wml.182.1583114241631;
- Sun, 01 Mar 2020 17:57:21 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ur/4nuVr6V1fkpSMUO4TLg9+9opaMRHCkjWx6aBQd/E=;
+        b=icgsZ4aBFWphrgXAWF9ptjbguqvAFuLyKwlPIPzP6qDc/AljEomNuhXQ8GnrmceiKa
+         zPSzzIs+EIfiqlXeUr349j3r7TKaaTuS1GB9CtykQ3cwMVh3Bu4B4BgZpTFzBJ7z44sh
+         3Uf557iUEbHymMzDTF5OZjtFAsXxurxzMgGbSRbLB5tR8PjbfWk/AwgJngFG4cpn471L
+         yRAWzKYWeazL/JiFOZBZvruFzsJegLPFuXNcM648YVJPyH/9dOmzry1xNNPLOSuW9RNn
+         +RvXQNrtLPlkRfMtV+W+7sfQgpjUzjWlM3Znkj2bcRiVTpstSIU6EiLOpOO1hs2JmoGP
+         Fcew==
+X-Gm-Message-State: APjAAAVJIUp9U9lN9lm7SvJ2DI6eOU1QkWVLjrXJuyJB/EJQ/KHi4ph+
+        ZGffQRHNQ+miXDd4OqRJaRc3m+O0CYOAt1+1eL4=
+X-Google-Smtp-Source: APXvYqzVhu4CzVFPtqffEhK18Sk4E9AYkqJWLqLcCl6oVMW8xp8egqZXwFjp75GevGPYjpHPu+oKwLZyMy9RFfc3QK0=
+X-Received: by 2002:a92:da01:: with SMTP id z1mr15459581ilm.108.1583114274039;
+ Sun, 01 Mar 2020 17:57:54 -0800 (PST)
 MIME-Version: 1.0
-References: <CAG+QAKWwvevCz5zYDtkOO5V0AA7bJuoZWHJ2CZjc1ofsO-c7xQ@mail.gmail.com>
- <CAJCQCtQF8f0UsVuFU_TXxWJ2DZQcFZABTSwPu18ob7RcSUKW_A@mail.gmail.com> <CAG+QAKUzqdVf88G9ZdLKLa3YUQRcvJMS47qQkhLsgiQ46R19Bw@mail.gmail.com>
-In-Reply-To: <CAG+QAKUzqdVf88G9ZdLKLa3YUQRcvJMS47qQkhLsgiQ46R19Bw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 1 Mar 2020 18:57:05 -0700
-Message-ID: <CAJCQCtQvEOX--M5pXN=2fSmfPDM2ADK3JhStTWiTdXTCV_XBXQ@mail.gmail.com>
-Subject: Re: btrfs balance to add new drive taking ~60 hours, no progress?
-To:     Rich Rauenzahn <rrauenza@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <1746386.HyI1YD2b7T@merkaba> <BA3238FF-0884-40AA-9E32-89DA35D8CD0A@bluematt.me>
+ <7ab6c91f-6185-06be-0091-f3540858de29@gmx.com>
+In-Reply-To: <7ab6c91f-6185-06be-0091-f3540858de29@gmx.com>
+From:   Etienne Champetier <champetier.etienne@gmail.com>
+Date:   Sun, 1 Mar 2020 20:57:42 -0500
+Message-ID: <CAOdf3gpeyRSNEp_efkxG9be1PaFx7xzF5GO9STXYRSm3DsH9Rw@mail.gmail.com>
+Subject: Re: With Linux 5.5: Filesystem full while still 90 GiB free
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Matt Corallo <kernel@bluematt.me>,
+        Martin Steigerwald <martin@lichtvoll.de>,
+        Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 1, 2020 at 6:26 PM Rich Rauenzahn <rrauenza@gmail.com> wrote:
+Hello Qu,
+
+Le jeu. 30 janv. 2020 =C3=A0 20:57, Qu Wenruo <quwenruo.btrfs@gmx.com> a =
+=C3=A9crit :
 >
 >
 >
-> On Sun, Mar 1, 2020 at 5:10 PM Chris Murphy <lists@colorremedies.com> wrote:
->>
->> Free is 1.82 exactly half of  unallocated on one drive and no
->> unallocate on the other drives, so yeah this file system is 100% full.
->> Adding one drive was not enough, it's raid1. You needed to add two
->> drives.
+> On 2020/1/31 =E4=B8=8A=E5=8D=889:43, Matt Corallo wrote:
+> > This is a pretty critical regression for me. I have a few applications =
+that regularly check space available and exit if they find low available sp=
+ace, as well as a number of applications that, eg, rsync small files, causi=
+ng this bug to appear (even with many TB free). It looks like the suggested=
+ patch isn=E2=80=99t moving towards stable, is there some other patch we sh=
+ould be testing?
 >
+> That mentioned patch is no longer maintained, since it was original
+> planned for a quick fix for v5.5, but extra concern about whether we
+> should report 0 available space when metadata is exhausted is the
+> blockage for merge.
 >
-> I'm not following the btrfs logic here - I had three drives, 2 x 1 TB and a 1 x 4 TB and added a 4TB.
-
-The original three drives:
-
-        devid    2 size 1.82TiB used 1.82TiB path /dev/sda1
-        devid    3 size 1.82TiB used 1.82TiB path /dev/sdc1
-        devid    4 size 3.64TiB used 3.64TiB path /dev/sdb1
-
-Simplistically, devid 2 mirrors with 50% of devid 4, and devid 3
-mirrors with the other 50% of devid 4. You have 4TB of data on an 8TB
-volume in a raid1 configuration. That's completely full and using up
-all space.
-
-Then you added one drive. Doesn't matter what its size is. There's no
-where for more data to go.
-
-https://carfax.org.uk/btrfs-usage/
-
+> The proper fix for next release can be found here:
+> https://github.com/adam900710/linux/tree/per_type_avail
 >
-> That was a total of 4TB in RAID0.
+> I hope this time, the patchset can be merged without extra blockage.
 
-The volume is 8TB in a RAID 1 before adding the 4th drive. You can put
-4TB of data on that volume, and it will be full and balanced.
+I see that there is a v8 of this patchset but can't find it in 5.6, is
+it targetted at 5.7 now ?
+https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D245113
 
-> Wouldn't adding a fourth drive give me 6TB and some of the blocks just moved from the three drives onto the fourth?
+Thanks
+Etienne
 
-Adding one 4TB drive gives you one empty 4TB, and three full drives.
-The first copy of a chunk can go to the new drive, but there's nowhere
-for the 2nd copy to go because the other three drives are full.
-
-
-> Is there a particular 2nd copy policy I'm not aware of?
-
-Btrfs raid1 is not block based like either mdadm or LVM raid. It's
-based on the block group. A data block group is typically 1GiB. When a
-data block group has raid1 profile, it has two stripes. In this case a
-stripe is a copy.  Using your devid 2, 3, 4 where 2 and 3 are the same
-size and devid 4 is 2x you have three possible kinds of blockgroup
-stripe combinations:
-
-2+3
-2+4
-3+4
-
-How many you have of each just depends on the life history of the
-volume; but if it were never balance and all three drives were
-together from the start,  you might in theory have only 2+4 and 3+4
-block groups.
-
-
-> Or is it that it is trying to create new allocations on the new drive as part of the balance but can't because they wouldn't be mirrored?
-
-Correct. The balance must move "the block group" and there are
-effectively two copies. You have room for one to be moved. Not two.
-
-If there was even 10GiB unallocated on one of the drives, this would
-be going a LOT faster. But it looks like the three drives were full
-before you got started (?) so it's wedged itself in.
-
-
- >But I still don't get why it wouldn't move blocks from the full drives...
-
-To where? There's only one drive with unallocated space.
-
-
-
--- 
-Chris Murphy
+> Thanks,
+> Qu
+> >
+> >> On Jan 30, 2020, at 18:12, Martin Steigerwald <martin@lichtvoll.de> wr=
+ote:
+> >>
+> >> =EF=BB=BFRemi Gauvin - 30.01.20, 22:20:47 CET:
+> >>>> On 2020-01-30 4:10 p.m., Martin Steigerwald wrote:
+> >>>> I am done with re-balancing experiments.
+> >>>
+> >>> It should be pretty easy to fix.. use the metadata_ratio=3D1 mount
+> >>> option, then write enough to force the allocation of more data
+> >>> space,,
+> >>>
+> >>> In your earlier attempt, you wrote 500MB, but from your btrfs
+> >>> filesystem usage, you had over 1GB of allocated but unused space.
+> >>>
+> >>> If you wrote and deleted, say, 20GB of zeroes, that should force the
+> >>> allocation of metatada space to get you past the global reserve size
+> >>> that is causing this bug,, (Assuming this bug is even impacting you.
+> >>> I was unclear from your messages if you are seeing any ill effects
+> >>> besides the misreporting in df.)
+> >>
+> >> I thought more about writing a lot of little files as I expect that to
+> >> use more metadata, but=E2=80=A6 I can just work around it by using com=
+mand line
+> >> tools instead of Dolphin to move data around. This is mostly my music,
+> >> photos and so on filesystem, I do not change data on it very often, so
+> >> that will most likely work just fine for me until there is a proper fi=
+x.
+> >>
+> >> So do need to do any more things that could potentially age the
+> >> filesystem. :)
+> >>
+> >> --
+> >> Martin
+> >>
+> >>
+> >
+>
