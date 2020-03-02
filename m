@@ -2,34 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6C6175DCA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 16:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5ED31760F3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 18:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgCBPCI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 10:02:08 -0500
-Received: from mail.itouring.de ([188.40.134.68]:45020 "EHLO mail.itouring.de"
+        id S1727000AbgCBRVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 12:21:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58320 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbgCBPCI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Mar 2020 10:02:08 -0500
-Received: from tux.applied-asynchrony.com (p5B07E2B3.dip0.t-ipconnect.de [91.7.226.179])
-        by mail.itouring.de (Postfix) with ESMTPSA id A9F4D416D794;
-        Mon,  2 Mar 2020 16:02:06 +0100 (CET)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 5A4E4F01606;
-        Mon,  2 Mar 2020 16:02:06 +0100 (CET)
-Subject: Re: [PATCH][RESEND] btrfs: kill update_block_group_flags
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200117140826.42616-1-josef@toxicpanda.com>
- <2e16f37e-014e-6d86-76c6-801d6cb7bc20@applied-asynchrony.com>
- <20200302141042.by7jjjokwttqfyzn@jbacik-mbp>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <5dab8982-1e6f-a840-9d2b-cf8e1626cf1f@applied-asynchrony.com>
-Date:   Mon, 2 Mar 2020 16:02:06 +0100
+        id S1726451AbgCBRVe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 12:21:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C5A91AE48;
+        Mon,  2 Mar 2020 17:21:31 +0000 (UTC)
+Subject: Re: [PATCH v2 04/10] btrfs: relocation: Rename mark_block_processed()
+ and __mark_block_processed()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200302094553.58827-1-wqu@suse.com>
+ <20200302094553.58827-5-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <15177671-5925-1d20-1446-0bd8655e4ab9@suse.com>
+Date:   Mon, 2 Mar 2020 19:21:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200302141042.by7jjjokwttqfyzn@jbacik-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200302094553.58827-5-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -37,63 +77,19 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/2/20 3:10 PM, Josef Bacik wrote:
-> On Sun, Mar 01, 2020 at 06:58:02PM +0100, Holger Hoffstätte wrote:
->> On 1/17/20 3:08 PM, Josef Bacik wrote:
->>> btrfs/061 has been failing consistently for me recently with a
->>> transaction abort.  We run out of space in the system chunk array, which
->>> means we've allocated way too many system chunks than we need.
-[snip]
->> It seems that this patch breaks forced metadata rebalance from dup to single;
->> all chunks remain dup (or are rewritten as dup again). I bisected the broken
->> balance behaviour to this commit which for some reason was in my tree ;-) and
->> reverting it immediately fixed things.
->>
->> I don't (yet) see this applied anywhere, but couldn't find any discussion or
->> revocation either. Maybe the logic between update_block_group_flags() and
->> btrfs_get_alloc_profile() is not completely exchangeable?
->>
-> 
-> Well cool, it looks like we just ignore the restriping stuff if it's not what we
-> already have available, which is silly considering we probably don't have any
-> block groups of the stripe that we had before.  The previous helpers just
-> unconditionally used the restripe target, so can you apply this patch ontop of
-> this one and see if it starts working?  I'll wire up a xfstest for this so we
-> don't miss it again.  Thanks,
-> 
-> Josef
-> 
->  From 01ec038b8fa64c2bbec6d117860e119a49c01f60 Mon Sep 17 00:00:00 2001
-> From: Josef Bacik <josef@toxicpanda.com>
-> Date: Mon, 2 Mar 2020 09:08:33 -0500
-> Subject: [PATCH] we're restriping, use the target
-> 
-> ---
->   fs/btrfs/block-group.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 60e9bb136f34..becad9c7486b 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -66,11 +66,8 @@ static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
->   	spin_lock(&fs_info->balance_lock);
->   	target = get_restripe_target(fs_info, flags);
->   	if (target) {
-> -		/* Pick target profile only if it's already available */
-> -		if ((flags & target) & BTRFS_EXTENDED_PROFILE_MASK) {
-> -			spin_unlock(&fs_info->balance_lock);
-> -			return extended_to_chunk(target);
-> -		}
-> +		spin_unlock(&fs_info->balance_lock);
-> +		return extended_to_chunk(target);
->   	}
->   	spin_unlock(&fs_info->balance_lock);
->   
-> 
 
-Applied it on top & it makes dup -> single balancing work again. \o/
-Feel free to add my Tested-by.
 
-Thanks!
-Holger
+On 2.03.20 г. 11:45 ч., Qu Wenruo wrote:
+> These two functions are weirdly named, mark_block_processed() in fact
+> just mark a range dirty unconditionally, while __mark_block_processed()
+> does extra check before doing the marking.
+> 
+> This patch will open code old mark_block_processed, and rename
+> __mark_block_processed() to remove the "__" prefix.
+> 
+> Since we're here, also kill the forward declaration, which could also
+> kill in_block_group() with in_range() macro.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
