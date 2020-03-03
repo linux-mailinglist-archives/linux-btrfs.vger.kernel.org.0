@@ -2,32 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DBE1769D0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 02:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D2A1769E1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 02:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgCCBE4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 20:04:56 -0500
-Received: from mout.gmx.net ([212.227.15.18]:48837 "EHLO mout.gmx.net"
+        id S1726793AbgCCBMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 20:12:31 -0500
+Received: from mout.gmx.net ([212.227.15.19]:43181 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgCCBE4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Mar 2020 20:04:56 -0500
+        id S1726752AbgCCBMb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 20:12:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583197490;
-        bh=Ty11vv0ieWW/QvG3WgmvnoMxbWPH2VvY/MBUDDkJ3Q0=;
+        s=badeba3b8450; t=1583197945;
+        bh=m9WK1Bbqx8o6mElJj6xpaLWcShhvDL5H+zFdsERa3nA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=P4UwrI5Fmw3//6xoZpru97+jLESYNiiJggqFOtbDUP7OV1i2HoUv7ljtEU8Hnrx/a
-         5qiB4j/O1WilPyL9NOe/d+LIlaSLvlA+8OlPINUk6HXUCNSNqCXFD0o+WuRePKp05d
-         NKcqYrWg9wv9Su5NhV22dO0ffDfJmXAC5a7qp7u4=
+        b=N6g5GVO91PMqYnOWUlPVgnYT5clZe/wkK+e9+Y+YNgT4ycI3poWzsHQEksBJ9AwhR
+         cT21pRX0tP9SUW0JjZEF16yJQ3eQW2/GP8VOizSfONi+jjoq9pBf+r695biXBA12Yx
+         wZbeTaT8oPQazHwwl8jOJ4CHv33W2WhBZSJg9d+A=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7K3i-1j1Et11fZ6-007nKX; Tue, 03
- Mar 2020 02:04:50 +0100
-Subject: Re: [PATCH 4/7] btrfs: run clean_dirty_subvols if we fail to start a
- trans
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJmKh-1iovJZ349Z-00K6mo; Tue, 03
+ Mar 2020 02:12:25 +0100
+Subject: Re: [PATCH 6/7] btrfs: hold a ref on the root->reloc_root
 To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
 References: <20200302184757.44176-1-josef@toxicpanda.com>
- <20200302184757.44176-5-josef@toxicpanda.com>
+ <20200302184757.44176-7-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,49 +52,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <194b7844-918e-f0b0-c685-90335ddfc359@gmx.com>
-Date:   Tue, 3 Mar 2020 09:04:42 +0800
+Message-ID: <1b3545b5-ab19-6f0d-7dd3-d80fe20a865e@gmx.com>
+Date:   Tue, 3 Mar 2020 09:12:21 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200302184757.44176-5-josef@toxicpanda.com>
+In-Reply-To: <20200302184757.44176-7-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="l04gNA8J2ipZFtZHKrvZdp5jgoIexbI3l"
-X-Provags-ID: V03:K1:PRNGfLRjakAvi4sW6NTmvrH5gQDiZf1waT+G+W0N5sd5KcuGXGJ
- x0ESF9TQoS7duVjor8I1SL8d9IOVqwMmD3bIL0cDWqg8MwlSQXEow+VdKaj5DDAc7kcu29p
- rKZ8I8ldyDlA0a/HRZMzHNt5x6JHSuudLUCwwMhlsbqmQwz2QB3jmKokr6+VBJy/qQjmbFS
- ER/x4Mu+VQt6VP+XRwOFA==
+ boundary="DBoqneUcLlIENKIEB6QOnVr2Y6p5sQ4cw"
+X-Provags-ID: V03:K1:0uDut/u2YVTIm1l/dGMFaeOpVhqTrY5DF4XacNuspZk3VXgKQWB
+ z7AQQOqWlCTjAmffleM7wgVrpxtlI95TsKhgG+OL/gwtrzMTrUGPb1T+dkju2InWe5AFSj9
+ mnvp534ZVfU9skxD6NM06YR2OPaLvXlMeCxdPY3736FZ3M0etLB0H0O1IqU+N6CWMwWSDJK
+ DfAzKMIvs8iH1mAxWDaVg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LNtM7gI1yWA=:g0i52KWtenH/RmS1X3smlR
- x04IfVg/5+y8WDmgh17/OGu+1+TZiVhy91r2QFDIuIrNVuI36e55Y9lLNEIM1qIXfXZsjz3lw
- vTbaC2NWAi1qk3hJGoqWV6PcWsm9OL2o9LZngWZzWUdi3rVhLewiiz/Tlsc7JXc57jrXD4DJw
- X5FBmOKZm70kQycsb92WMTsnGko8paLbDvhPQbCeQh7TsUazWMJVQ7VjivTl0KqBuaBnRMpjy
- /S7SiwXblJrLmdecPkO/qpq6hl48OJL7EFxWMDC1lcNqdJXvfQAuGbjVEbtYllQXthN3nYtyx
- tZr2y+67MIdSH58a0UkVEawSeESZ3Nliq0/zj72z4vnHUdE+/r5tYrSpIbYgHsVyqeytRzHqx
- nZKp+M437ZB+/xR6xRXk1VWZiE0qMuBlcL0XmUf6uouLCt5NhMgoZgrxcvdizAsW8r1K8VNDT
- w4PgtW6CZMNsQ12S4zuySmHhZvmf8Yj3VoMZrfLh2XW5R0Cc+6N7O+7XD7wQA57eVwYca8fIY
- U9nIbHb008XdsFFMExoPyacUtP0hvknp9ppDYQfbHyXJoXnGd0lkUpFTS4BLEMIBhRkAfYLf5
- 1yrIzk1H98X9WNgtunJ7FfVbrgCxqNpToj4XmarotPtDkxrQuhHhxexLSwbeWAohwq1VFV29e
- OuukQsDokk3Kc4MS41WaKhfePyXVk1RXINLIzKXJJ5TbG5BZXPQJlJIoTFodBiT8smlP46tNp
- Wgi5psA6I3e3tHkHwzqIQ177DH3H7edQGqXwff269FBuObVODwgO5R714nC8cydK7KXqEdyMc
- Vfx31HWrJhvgKHgnsb4UA58taheWHzAASu8acGfEBoyjqr2nJWhCDUFZSfeIeRNAB5XuyyN0g
- XDWnhkoA+azBgRnEZoK6LNnrjjYccTs7sRz6DXi28nSbyiZAsog/TrXLmtC3O78deqmyPcppu
- o9PTZb1C7mMb4LGVy83v7jKUl/ofbu4abMFWIF0G7mQQWa9BsCbKALHPdDifp/aavwICoKvDw
- ux/IiQQvLvZJM3AE/thDt1JftrlwyITmh5Itj0ZsepjmITCHn3b7HO7J364LHgODi78rMxxyF
- IztuWNsdGczpg0NLS73nG77AifOiu8w2wLqJTSOG+1I86fNtetvLxrfkVPrWAp0hV+L3L/XGc
- ZmCCpDTsCPFfqNAFgH/bZZ/cUxJ8pm2Xbao66ZCJ7xTg/PdfMHBKTwOyeljUx+/t+RkI09WcI
- R4Dk53ZC3elDBE/V8
+X-UI-Out-Filterresults: notjunk:1;V03:K0:257DKAVuT98=:rM0G1uCJaNM+oG+VrDIg+U
+ 1DHKq59E5O7AmmguWJCMoVj4ICL/05SiOue/H7Wm5zctseWshUzWqv/5veNnlcCUt6Eu6wsHS
+ TMby13B+7ujn7f6PjSvAxSN2VmqHsl7HmK+YcQdaOLFf7GhSAzahNOGc9bXvjb2n7syzR9Y80
+ JH1cm8srf6sXqX4O29R6W0FmYl8sQwiZXdolTZ2UnyKSn68OF6n8sL8DzZEPObp4iBem81ppo
+ l6giTIEMOMyxNON936u6AErGx+qp98MRz+873RzbWeHWMTxm8Fx0eklZHAHHE023g64egRPQh
+ XnUH4P0kDg8zwXEy2LrYwWBGd+ngMrIs0Erj8JdVKTBcEEAxUaZeu0M9W+mY6lPzkAX8Plip6
+ wujrr59NGJ5b0O9aEchzNBCDX8kp9vVAcMRbV+nApH33stxlgOpWlzT5/6NykIgg3Eo28X3GG
+ gWgrzMQ/Yzg2axclIQsu2zQmWpUR+z7oYBFdPS+EEVQPfnhIC9PBdrd7Oy/Qxe0FwOxn/q+q9
+ r8FKmDFfKx1nuyLFfXLVKHuVeNJ8tFUy4D8AcVNG0L8lswMnPiFBH4+d2m9Bj+5/u1YI8skZ9
+ u3hRcm2JaMxjJjThhP0MAxMJnzlHtNv1vi2yO625NW6icJxv6C/5lWS+0+xGqvbf1s/Z7RGoo
+ 73QVmuwNDVdsgQ3vk8Yv6AEaUpqlLz4/Mg5O5oWYGhZZ9iAQoDczhN3tlaOfYNR2l4GN7WhFB
+ rI8XmxPCUkxPMEXZS/3qx804JprX4cdEc0rkI0A/NvvwYGWPLoztwMO8LUIqBNBoFFLubVPV7
+ /oxOvthWsWMBBlIXYP0ShNoeGK3J5lziDtyy5DDfvceo45N/JriAZLFAP1zsAQFxQ8H9GL69P
+ z1YBCbq4ILKfRWc4ZCUmbF1OM7l0ScU/BqnXX26YWOwJX3f+5wBtE1m7Oeb+rWyYO7NqxegFz
+ Qx895ZpGHQ67Imvw7t45WAXFljr/3ZaUapVuBA3CNeFn74m+42IVm40OjGanLU1I6uwM8y8gk
+ LFf+UO8t3A7DPkF5bF0GukZS2SrXMA4XBv1xLpJs1p04mj6ZsnmzkFuZJtz0GgY/lECOjwl0e
+ B99zmhpUvN/egCDdGWUOJY96Yk4cNckIUDcQMK0X3s+BqVpqH6fwTs4VMXyv4biqNhiy1CN+c
+ Hh8Z5I3xkwq4x7q2tQEkAS4iTNehimMEQqXdbGtB0/bwJ5psL0S5S9J3YJ/5jd2z0xMNXTuaZ
+ Qbra/p5ggJbsOUPoZ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---l04gNA8J2ipZFtZHKrvZdp5jgoIexbI3l
-Content-Type: multipart/mixed; boundary="y62wlLH1jzZsPz5A40pmQ0TZr3ggeSBHx"
+--DBoqneUcLlIENKIEB6QOnVr2Y6p5sQ4cw
+Content-Type: multipart/mixed; boundary="VD83qaxGGpE41CRHUOoto4boDG8a3CisL"
 
---y62wlLH1jzZsPz5A40pmQ0TZr3ggeSBHx
+--VD83qaxGGpE41CRHUOoto4boDG8a3CisL
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -103,67 +102,190 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/3/3 =E4=B8=8A=E5=8D=882:47, Josef Bacik wrote:
-> If we do merge_reloc_roots() we could insert a few roots onto the dirty=
+> We previously were relying on root->reloc_root to be cleaned up by the
+> drop snapshot, or the error handling.  However if btrfs_drop_snapshot()=
 
-> subvol roots list, where we hold a ref on them.  If we fail to start th=
-e
-> transaction we need to run clean_dirty_subvols() in order to cleanup th=
-e
-> refs.
+> failed it wouldn't drop the ref for the root.  Also we sort of depend o=
+n
+> the right thing to happen with moving reloc roots between lists and the=
+
+> fs root they belong to, which makes it hard to figure out who owns the
+> reference.
+>=20
+> Fix this by explicitly holding a reference on the reloc root for
+> roo->reloc_root.  This means that we hold two references on reloc roots=
+,
+> one for whichever reloc_roots list it's attached to, and the
+> root->reloc_root we're on.
+>=20
+> This makes it easier to reason out who owns a reference on the root, an=
+d
+> when it needs to be dropped.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+A small question inlined below, despite that,
+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+> ---
+>  fs/btrfs/relocation.c | 44 ++++++++++++++++++++++++++++++++-----------=
+
+>  1 file changed, 33 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index acd21c156378..c8ff28930677 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -1384,6 +1384,7 @@ static void __del_reloc_root(struct btrfs_root *r=
+oot)
+>  	struct rb_node *rb_node;
+>  	struct mapping_node *node =3D NULL;
+>  	struct reloc_control *rc =3D fs_info->reloc_ctl;
+> +	bool put_ref =3D false;
+> =20
+>  	if (rc && root->node) {
+>  		spin_lock(&rc->reloc_root_tree.lock);
+> @@ -1400,8 +1401,13 @@ static void __del_reloc_root(struct btrfs_root *=
+root)
+>  	}
+> =20
+>  	spin_lock(&fs_info->trans_lock);
+> -	list_del_init(&root->root_list);
+> +	if (!list_empty(&root->root_list)) {
+
+Can we make the ref of reloc root completely free from the list operation=
+?
+It still looks like a compromise between fully ref counted reloc root
+and original non-ref counted one.
 
 Thanks,
 Qu
 
-> ---
->  fs/btrfs/relocation.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index f42589cb351c..e60450c44406 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4275,6 +4275,7 @@ static noinline_for_stack int relocate_block_grou=
-p(struct reloc_control *rc)
->  	/* get rid of pinned extents */
->  	trans =3D btrfs_join_transaction(rc->extent_root);
->  	if (IS_ERR(trans)) {
-> +		clean_dirty_subvols(rc);
->  		err =3D PTR_ERR(trans);
->  		goto out_free;
+> +		put_ref =3D true;
+> +		list_del_init(&root->root_list);
+> +	}
+>  	spin_unlock(&fs_info->trans_lock);
+> +	if (put_ref)
+> +		btrfs_put_root(root);
+>  	kfree(node);
+>  }
+> =20
+> @@ -1555,7 +1561,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_hand=
+le *trans,
+> =20
+>  	ret =3D __add_reloc_root(reloc_root);
+>  	BUG_ON(ret < 0);
+> -	root->reloc_root =3D reloc_root;
+> +	root->reloc_root =3D btrfs_grab_root(reloc_root);
+>  	return 0;
+>  }
+> =20
+> @@ -1576,6 +1582,13 @@ int btrfs_update_reloc_root(struct btrfs_trans_h=
+andle *trans,
+>  	reloc_root =3D root->reloc_root;
+>  	root_item =3D &reloc_root->root_item;
+> =20
+> +	/*
+> +	 * We are probably ok here, but __del_reloc_root() will drop its ref =
+of
+> +	 * the root.  We have the ref fro root->reloc_root, but just in case
+
+s/fro/for/
+
+> +	 * hold it while we update the reloc root.
+> +	 */
+> +	btrfs_grab_root(reloc_root);
+> +
+>  	/* root->reloc_root will stay until current relocation finished */
+>  	if (fs_info->reloc_ctl->merge_reloc_tree &&
+>  	    btrfs_root_refs(root_item) =3D=3D 0) {
+> @@ -1597,7 +1610,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_ha=
+ndle *trans,
+>  	ret =3D btrfs_update_root(trans, fs_info->tree_root,
+>  				&reloc_root->root_key, root_item);
+>  	BUG_ON(ret);
+> -
+> +	btrfs_put_root(reloc_root);
+>  out:
+>  	return 0;
+>  }
+> @@ -2297,19 +2310,28 @@ static int clean_dirty_subvols(struct reloc_con=
+trol *rc)
+>  			 */
+>  			smp_wmb();
+>  			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
+> -
+>  			if (reloc_root) {
+> -
+> +				/*
+> +				 * btrfs_drop_snapshot drops our ref we hold for
+> +				 * ->reloc_root.  If it fails however we must
+> +				 * drop the ref ourselves.
+> +				 */
+>  				ret2 =3D btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
+> -				if (ret2 < 0 && !ret)
+> -					ret =3D ret2;
+> +				if (ret2 < 0) {
+> +					btrfs_put_root(reloc_root);
+> +					if (!ret)
+> +						ret =3D ret2;
+> +				}
+>  			}
+>  			btrfs_put_root(root);
+>  		} else {
+>  			/* Orphan reloc tree, just clean it up */
+>  			ret2 =3D btrfs_drop_snapshot(root, NULL, 0, 1);
+> -			if (ret2 < 0 && !ret)
+> -				ret =3D ret2;
+> +			if (ret2 < 0) {
+> +				btrfs_put_root(root);
+> +				if (!ret)
+> +					ret =3D ret2;
+> +			}
+>  		}
 >  	}
-> @@ -4701,6 +4702,7 @@ int btrfs_recover_relocation(struct btrfs_root *r=
+>  	return ret;
+> @@ -4687,7 +4709,7 @@ int btrfs_recover_relocation(struct btrfs_root *r=
 oot)
 > =20
->  	trans =3D btrfs_join_transaction(rc->extent_root);
->  	if (IS_ERR(trans)) {
-> +		clean_dirty_subvols(rc);
->  		err =3D PTR_ERR(trans);
->  		goto out_free;
+>  		err =3D __add_reloc_root(reloc_root);
+>  		BUG_ON(err < 0); /* -ENOMEM or logic error */
+> -		fs_root->reloc_root =3D reloc_root;
+> +		fs_root->reloc_root =3D btrfs_grab_root(reloc_root);
+>  		btrfs_put_root(fs_root);
 >  	}
+> =20
+> @@ -4912,7 +4934,7 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_=
+handle *trans,
+> =20
+>  	ret =3D __add_reloc_root(reloc_root);
+>  	BUG_ON(ret < 0);
+> -	new_root->reloc_root =3D reloc_root;
+> +	new_root->reloc_root =3D btrfs_grab_root(reloc_root);
+> =20
+>  	if (rc->create_reloc_tree)
+>  		ret =3D clone_backref_node(trans, rc, root, reloc_root);
 >=20
 
 
---y62wlLH1jzZsPz5A40pmQ0TZr3ggeSBHx--
+--VD83qaxGGpE41CRHUOoto4boDG8a3CisL--
 
---l04gNA8J2ipZFtZHKrvZdp5jgoIexbI3l
+--DBoqneUcLlIENKIEB6QOnVr2Y6p5sQ4cw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5drSoACgkQwj2R86El
-/qjXPgf/Z0Xtl8++cbFRsA/HDzE40m1uX+feNBsqbzv5pstRwmlJbKzU+RhuTSVs
-2/gobxdwizwQShF8mxnppgQlsesFvHAHwUF2kJeb8nWE5Gf2G2I+l1cfMa7HHGml
-5IXjBT+PKKQp0GsYnGa8ZvEDly2P2eyTCXOC0w4DV3Q6dhpo8qEVtNymnzz2GZ/O
-JeKn5H7Uv/HK2ybtKWJrukIXvfE1Nlk4q7l+eDbuGWvqvRuXvYHd68L6XcU1DYf/
-5Ho1+VLfx4CPGVq00VyaK7C4EWob0JW6JpO8GHOdtiIad7Qt2F9fi3BfqMhDANb4
-QF8TZo8ZulRvUY3rBPTMW/X0x8FTNA==
-=mv+e
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5drvUACgkQwj2R86El
+/qjHKgf/QYX66GrrnmM7IxQ4N4cPS0mOf9ezYid33bE8jpsd3/FbpfeubJ7UbwLN
+PErNCMFKcJyLi7s/0fburJKxXREIGFk+V6tRxu2udZfyp9vAEchU9C8G+CyJH6md
+wSS+cjA7WNP8Zm/P9Ki5/ZwSk3sPgh+AI7R+F3XFMAORBjQPUwhG2hnpqilQ4JCt
+PleXwT40mxzpmW99PMGjeXWKc5S6M/OjWhpuzPSRCUSh7tlBeu7LEuUzMRKcqd73
+xl2iHNGqM2+QDRrqbVim03BURy2HTs3w3htYTquuKVFHHNUqHs0vXSSENevJyRsJ
+39rPoQKvPDXQwOFuMEl3DEYA3i8EVQ==
+=FxLg
 -----END PGP SIGNATURE-----
 
---l04gNA8J2ipZFtZHKrvZdp5jgoIexbI3l--
+--DBoqneUcLlIENKIEB6QOnVr2Y6p5sQ4cw--
