@@ -2,161 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3055176695
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2020 23:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9287D17695C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 01:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgCBWIw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Mar 2020 17:08:52 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:34083 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgCBWIv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Mar 2020 17:08:51 -0500
-Received: by mail-pj1-f66.google.com with SMTP id f2so351059pjq.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2020 14:08:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6eilX2BTsDDxBviroTez5tkOrUqYg+t+Zvzkt65hfjQ=;
-        b=UAg7epZshV0DfHgJu9gwHnswSsUAfC3j6CNxB9p/i20kT7tNIkBqPQnTnXzKO5i5M7
-         tmNH5upyOPee3FOdjGcUrkalpRT+l5ejW3SPYh6a6aB6ETblTBIB38VVSpIWSak3rCzv
-         DerCVOUg1MUSZFrT3k4Yk9/AYSkQsUfO1HddvJF89v2OkFzj0zCn6gbqBukOtZWKn9mu
-         y4fzIIUwAD5ZoXi0X68SaspceJC5pEZ0r2l+aVWSCZztnJULsqJqTUnISyTci6TtVDmI
-         xb75cy7BUb9IjIFvjnFMXQRUbRmbPKVVuSPeCvIF0hPMcbRtehNT/4ASN1fk8B38tg5Z
-         mA4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6eilX2BTsDDxBviroTez5tkOrUqYg+t+Zvzkt65hfjQ=;
-        b=Ndrtr5CNUrP3N0WFhAWp/+WglKDuSYxUOCXPrfmZ6d2y6ufQosoRs0zNLBMwRGYRjv
-         Ei6wOWeFmEfszjejwdyzy3Wn6X37/bCoTxA73bH5GlgOaiD28/vaOS9SfnwWEqUmQNcY
-         di55DtpSm+WPioDrHv0MlUjkdp/slnzN1qpEW6tNmrLcKbb2wm217Bvy5w/ZLRZlmS9I
-         oZVOxP6mxi6adCG9cSMQPH+ptrgPL8DoIHuPHw3uKeI/CAQX9bf3ZccojNp4BS1zOpoB
-         qTFyFsByJT12nLd8H5E1Ht+ZA8rgt2mkSbhbk5qVHr/cyn6GwG4z6+SpHHVCkd2o0581
-         u4WQ==
-X-Gm-Message-State: ANhLgQ2lo+xVyQKE7RCCTfLwAy3Upb3B62OhkIyPXtdCqXxkEHTpy4t8
-        Fb2KX3Ccqlr0hvZC3G/8FKJPjQv4/RM=
-X-Google-Smtp-Source: ADFU+vtIqksBZgzw9SLpezCTNWRaTcNPFHKO8RpZ6EGMuP98CiggT0WBaxBQ0n+zQEYBN80HZvyyiw==
-X-Received: by 2002:a17:90a:102:: with SMTP id b2mr630005pjb.64.1583186930599;
-        Mon, 02 Mar 2020 14:08:50 -0800 (PST)
-Received: from vader.thefacebook.com ([2620:10d:c090:500::5:755a])
-        by smtp.gmail.com with ESMTPSA id iq22sm207648pjb.9.2020.03.02.14.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 14:08:50 -0800 (PST)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: [PATCH fstests] btrfs: add test for large direct I/O reads w/ RAID
-Date:   Mon,  2 Mar 2020 14:08:45 -0800
-Message-Id: <f9a293a382e81ba55e2a321634cb1548d7f69627.1583186857.git.osandov@fb.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726793AbgCCAcA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Mar 2020 19:32:00 -0500
+Received: from mout.gmx.net ([212.227.15.19]:53655 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726752AbgCCAb7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Mar 2020 19:31:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583195514;
+        bh=kNGE0Rl2nD3lklkR0tBX7sWbzKXng3SRHFzQbR4BLjo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=N2dyALouVJjSqhiw9i9F3g7FEvMC6oNkZP0zU7ceC9/uw/iLlLY7DGECKPkzbvdh+
+         UJpKr6e0ZOhcrOzmRKJOoyV0ii/ZWP809wl9D+JdhxjXoTUoVB6ewQaIfFrQEvYokD
+         RDUFQeqQcOYeO949mJ4qMg2rPuKF+Q0YFNqriN6s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MplXz-1jinVk1ljZ-00qFEr; Tue, 03
+ Mar 2020 01:31:54 +0100
+Subject: Re: [PATCH 5/7] btrfs: clear BTRFS_ROOT_DEAD_RELOC_TREE before
+ dropping the reloc root
+To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+References: <20200302184757.44176-1-josef@toxicpanda.com>
+ <20200302184757.44176-6-josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <0b219848-9cbc-400e-e967-3cbab2fcdd4c@gmx.com>
+Date:   Tue, 3 Mar 2020 08:31:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200302184757.44176-6-josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="FLCvvYgSpEeYmFbivSxsjklPfa7pwLN9Z"
+X-Provags-ID: V03:K1:AOrsbgCSFHsP7tR16ZYOWJeB3h1oMTuDu5GqLnP4HnIdOdWym4v
+ bkSTVTrMtZuglv0hG84JfiDyd0V2Ge9cJVCPrnhlBaqeW8veIXk4K/DiNJpWiyncUU4bBfH
+ I/AVhUnVbJw4ZZ0XX3PFVYsD5jwktk67dWa4ubut1j5RD3ymfdZAkrYQqrCfn+u5SI1EF4d
+ eEpsvI/8yZPnQ7U5XxI7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:O2miL/HjGSI=:vddlUFO+WB+uisWuoNREr3
+ 7Mpot+mJ4m/YoeP4fOcc721R2s9DAksmSm1uyOVRUen8e9WvhfdnAOpTjEaZDwvt91v5WaoDi
+ 6fLovBzmPm7VA74bjGP20genIcoLIFv//vvSZPFgMeUW0AB4YHoopJSqYbnKXiI6PbujQX1kQ
+ 5e++oJlaUkxuOmWMNP3a44cm8WdmjnmuZpE34dTUZN79cY07AVxBSg7RvTKD0N18oPJbiJKL+
+ DFcYjGH8YMyQf+/41h5AMC73FR1yPLO7+VvCXTYbIcKm/B4vYeGnxuHTkmohl0XU02SortyYy
+ ISuZn6IZnO/AQMPGOADo/sApgQYSK/UWefutcL24WqRlHd49QT78Ehtf78t/3oWLIVkzPFwiX
+ RnaYmSScTRScvQar+Lo1eFJECJpOKgYNEUDADVxtLXdXlxXRf1wwwDs4dSY0oHAvPKGPKZkZl
+ +jwnVkNwGTkUtj/GwBI/lcfFF4VuYX4sfM8GEpD+BToB3x43BI8KDWLeY6EAFvvKiRkEnZb7n
+ N2VN7uZBKuJwvXGLvoxYc2AWS8wFyW6weFQbE0wn4dPzaakHy8eLmlFt6HYuMJ3LlzsalBVqi
+ 3lO2TVqcznNnrTDSGiQclSqGMdlUGFG8JK+0Y0ENKiOfMYxZPlHgdzlalbhSCJE+81ysZgGOg
+ oftxlIn6ZloU8tktPUv3u1IIsoV9medTJJM+mJeN3nMMEIiDUBrmsGp2az3DAJ7vxEIFejJrs
+ CxterUPOflec79OQxeBLy/CouJhiAfEzlMZLqoHQxfjTXvgYcj3SATgIG4bAz8sDctqZYqalj
+ gnBB+C8W+NyoGrpW1d1Sxb3s+cyzjYumbU19yJbNQNhYgS+AWhkqVZRYYRQKzgM88KYrIkpcB
+ rdwdGgm5WakedikYb1C5GsD5QR8RelpyphE76nwDnJ0AmuZWieWVdp1eLBpHTKzWBXuJr16tG
+ ojeywC6BNPuVZXSXGksxsPq4BY1A2XLeRUHZHppwSrEzjYoITCJLfNb4vIuOgmKT4hZoiwbxH
+ IwW6DpSqLl8upvoZ0BMrPMgaSg2Qfs1+aEDVb40I3kJwx795ycy7GTTHrwk1sEHQrtXjSiz/C
+ MvSRNc/8Tx/Ee+A1+nFAYKY8EBTO5Ua1NyigY7+FXQMRLiyCegW+d3nbJKsh7xF4U3oI9vqp3
+ CpyGx2OaRhyUNurIoxSiT2MyVmG3cJA6y8x5S8QRbXvc83brIOFVt8XKSSOIeitfh4T16ZVRe
+ BCYBNAGwy7eHO6oXt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FLCvvYgSpEeYmFbivSxsjklPfa7pwLN9Z
+Content-Type: multipart/mixed; boundary="O7GB2XNrkrOfcysS0yroSGYiuHWSiccbG"
 
-Apparently we don't have any tests which exercise the code path in Btrfs
-that has to split up direct I/Os for RAID stripes. Add one to catch the
-bug fixed by "btrfs: fix RAID direct I/O reads with alternate csums".
----
-I also had to fix up the tests/btrfs/group file, which had a renumbering
-issue that was preventing me from adding a new test.
+--O7GB2XNrkrOfcysS0yroSGYiuHWSiccbG
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
- tests/btrfs/207     | 58 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/207.out |  2 ++
- tests/btrfs/group   |  3 ++-
- 3 files changed, 62 insertions(+), 1 deletion(-)
- create mode 100755 tests/btrfs/207
- create mode 100644 tests/btrfs/207.out
 
-diff --git a/tests/btrfs/207 b/tests/btrfs/207
-new file mode 100755
-index 00000000..99e57cb8
---- /dev/null
-+++ b/tests/btrfs/207
-@@ -0,0 +1,58 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Facebook.  All Rights Reserved.
-+#
-+# FS QA Test 207
-+#
-+# Test large DIO reads with various profiles. Regression test for patch "btrfs:
-+# fix RAID direct I/O reads with alternate csums".
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+# we check scratch dev after each loop
-+_require_scratch_nocheck
-+_require_scratch_dev_pool 4
-+_btrfs_get_profile_configs
-+
-+for mkfs_opts in "${_btrfs_profile_configs[@]}"; do
-+	echo "Test $mkfs_opts" >>$seqres.full
-+	_scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
-+	_scratch_mount >>$seqres.full 2>&1
-+
-+	dd if=/dev/urandom of="$SCRATCH_MNT/$seq" \
-+		bs=1M count=64 conv=fsync status=none
-+	dd if="$SCRATCH_MNT/$seq" of="$SCRATCH_MNT/$seq.copy" \
-+		bs=1M iflag=direct status=none
-+	diff -q "$SCRATCH_MNT/$seq" "$SCRATCH_MNT/$seq.copy" |
-+		tee -a $seqres.full
-+
-+	_scratch_unmount
-+	_check_scratch_fs
-+done
-+
-+echo "Silence is golden"
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/207.out b/tests/btrfs/207.out
-new file mode 100644
-index 00000000..cb8e0e2b
---- /dev/null
-+++ b/tests/btrfs/207.out
-@@ -0,0 +1,2 @@
-+QA output created by 207
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index e3ad347b..c87a042e 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -208,4 +208,5 @@
- 203 auto quick send clone
- 204 auto quick punch
- 205 auto quick clone compress
--204 auto quick log replay
-+206 auto quick log replay
-+207 auto quick rw raid
--- 
-2.25.1
 
+On 2020/3/3 =E4=B8=8A=E5=8D=882:47, Josef Bacik wrote:
+> We were doing the clear dance for the reloc root after doing the drop o=
+f
+> the reloc root, which means we have a giant window where we could miss
+> having BTRFS_ROOT_DEAD_RELOC_TREE unset and the reloc_root =3D=3D NULL.=
+
+
+Sorry I didn't see the problem of having BTRF_ROOT_DEAD_RELOC_TREE and
+reloc_root =3D=3D NULL.
+
+The whole idea of BTRFS_ROOT_DEAD_RELOC_TREE is to avoid accessing
+root->reloc_root, no matter if reloc_root is NULL or not.
+
+Or did I miss anything?
+
+Thanks,
+Qu
+
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/relocation.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index e60450c44406..acd21c156378 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -2291,18 +2291,19 @@ static int clean_dirty_subvols(struct reloc_con=
+trol *rc)
+> =20
+>  			list_del_init(&root->reloc_dirty_list);
+>  			root->reloc_root =3D NULL;
+> -			if (reloc_root) {
+> -
+> -				ret2 =3D btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
+> -				if (ret2 < 0 && !ret)
+> -					ret =3D ret2;
+> -			}
+>  			/*
+>  			 * Need barrier to ensure clear_bit() only happens after
+>  			 * root->reloc_root =3D NULL. Pairs with have_reloc_root.
+>  			 */
+>  			smp_wmb();
+>  			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
+> +
+> +			if (reloc_root) {
+> +
+> +				ret2 =3D btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
+> +				if (ret2 < 0 && !ret)
+> +					ret =3D ret2;
+> +			}
+>  			btrfs_put_root(root);
+>  		} else {
+>  			/* Orphan reloc tree, just clean it up */
+>=20
+
+
+--O7GB2XNrkrOfcysS0yroSGYiuHWSiccbG--
+
+--FLCvvYgSpEeYmFbivSxsjklPfa7pwLN9Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5dpXYACgkQwj2R86El
+/qjIVAf/QI90Z8GzXtB9n6gCAjsMOZpjCs5Zk980R2JZAxBwLzoFndngvPmJh+47
+EY3y1mjVBtuOuyZtysdU84du07M5kxwmCsQ0J5nRqqXaVdOYWCaCngkmgFHFNAsk
+9kOu7OnVOMKWIo5ggMF4YugYN9Ncx2djlILzAVEYg3Plb6raxsIFpr8Hy6/pCv2f
+7sZx/SqHljS+dORTReuXVWTMj3yKKsYEJHi5KU0KNnkZgai34tW1vgp1quPdEqLd
+W1hRUvK4jqIXrczUKVWNi8GgscsH21lBtizVbE/UJjCjAZSU5ruwnWTBJarnWWQ2
+mDFkGpZJkIhMdfdRN9/DGDu/PM0PgQ==
+=n6vw
+-----END PGP SIGNATURE-----
+
+--FLCvvYgSpEeYmFbivSxsjklPfa7pwLN9Z--
