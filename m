@@ -2,135 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8897D177D79
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 18:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2C0177DE7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 18:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730355AbgCCRak (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 12:30:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43482 "EHLO mx2.suse.de"
+        id S1730817AbgCCRou (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 12:44:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49862 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726899AbgCCRak (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Mar 2020 12:30:40 -0500
+        id S1730810AbgCCRor (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 12:44:47 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 99C33B153;
-        Tue,  3 Mar 2020 17:30:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 373A2AE5E;
+        Tue,  3 Mar 2020 17:44:45 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A5279DA7AE; Tue,  3 Mar 2020 18:30:15 +0100 (CET)
-Date:   Tue, 3 Mar 2020 18:30:15 +0100
+        id 22CC7DA7AE; Tue,  3 Mar 2020 18:44:23 +0100 (CET)
+Date:   Tue, 3 Mar 2020 18:44:22 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 06/10] btrfs: relocation: Use wrapper to replace
- open-coded edge linking
-Message-ID: <20200303173015.GL2902@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] btrfs-progs: convert, warn if converting a fs which
+ won't mount
+Message-ID: <20200303174422.GM2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200302094553.58827-1-wqu@suse.com>
- <20200302094553.58827-7-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+References: <1582877026-5487-1-git-send-email-anand.jain@oracle.com>
+ <af69d1ab-4609-d603-980c-b8a6cfb87f43@gmx.com>
+ <39c3e381-b49e-a571-d058-a01734b8b4a9@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200302094553.58827-7-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <39c3e381-b49e-a571-d058-a01734b8b4a9@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 05:45:49PM +0800, Qu Wenruo wrote:
-> Since backref_edge is used to connect upper and lower backref nodes, and
-> need to access both nodes, some code can look pretty nasty:
+On Fri, Feb 28, 2020 at 05:06:52PM +0800, Anand Jain wrote:
+> On 2/28/20 4:27 PM, Qu Wenruo wrote:
+> > On 2020/2/28 下午4:03, Anand Jain wrote:
+> >> On aarch64 with pagesize 64k, btrfs-convert of ext4 is successful,
+> >> but it won't mount because we don't yet support subpage blocksize/
+> >> sectorsize.
+> >>
+> >>   BTRFS error (device vda): sectorsize 4096 not supported yet, only support 65536
+> >>
+> >> So in this case during convert provide a warning and a 10s delay to
+> >> terminate the command.
+> > 
+> > This is no different than calling mkfs.btrfs -s 64k on x86 system.
+> > And I see no warning from mkfs.btrfs.
+> > 
+> > Thus I don't see the point of only introducing such warning to
+> > btrfs-convert.
+> > 
 > 
-> 		list_add_tail(&edge->list[LOWER], &cur->upper);
+> I have equal weight-age on the choices if blocksize != pagesize viz..
+>    delay and warn (this patch)
+>    quit (Nikolay).
+>    keep it as it is without warning (Qu).
 > 
-> The above code will link @cur to the LOWER side of the edge, while both
-> "LOWER" and "upper" words show up.
-> This can sometimes be very confusing for reader to grasp.
-> 
-> This patch introduce a new wrapper, link_backref_edge(), to handle the
-> linking behavior.
-> Which also has extra ASSERT() to ensure caller won't pass wrong nodes
-> in.
-> 
-> Also, this updates the comment of related lists of backref_node and
-> backref_edge, to make it more clear that each list points to what.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/relocation.c | 53 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 37 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 04416489d87a..c76849409c81 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -91,10 +91,12 @@ struct backref_node {
->  	u64 owner;
->  	/* link to pending, changed or detached list */
->  	struct list_head list;
-> -	/* list of upper level blocks reference this block */
-> +
-> +	/* List of upper level edges, which links this node to its parent(s) */
->  	struct list_head upper;
-> -	/* list of child blocks in the cache */
-> +	/* List of lower level edges, which links this node to its child(ren) */
->  	struct list_head lower;
-> +
->  	/* NULL if this node is not tree root */
->  	struct btrfs_root *root;
->  	/* extent buffer got by COW the block */
-> @@ -123,17 +125,26 @@ struct backref_node {
->  	unsigned int detached:1;
->  };
->  
-> +#define LOWER	0
-> +#define UPPER	1
-> +#define RELOCATION_RESERVED_NODES	256
->  /*
-> - * present a block pointer in the backref cache
-> + * present an edge connecting upper and lower backref nodes.
->   */
->  struct backref_edge {
-> +	/*
-> +	 * list[LOWER] is linked to backref_node::upper of lower level node,
-> +	 * and list[UPPER] is linked to backref_node::lower of upper level node.
-> +	 *
-> +	 * Also, build_backref_tree() uses list[UPPER] for pending edges, before
-> +	 * linking list[UPPER] to its upper level nodes.
-> +	 */
->  	struct list_head list[2];
-> +
-> +	/* Two related nodes */
->  	struct backref_node *node[2];
->  };
->  
-> -#define LOWER	0
-> -#define UPPER	1
-> -#define RELOCATION_RESERVED_NODES	256
->  
->  struct backref_cache {
->  	/* red black tree of all backref nodes in the cache */
-> @@ -332,6 +343,22 @@ static struct backref_edge *alloc_backref_edge(struct backref_cache *cache)
->  	return edge;
->  }
->  
-> +#define		LINK_LOWER	(1 << 0)
-> +#define		LINK_UPPER	(1 << 1)
-> +static inline void link_backref_edge(struct backref_edge *edge,
-> +				     struct backref_node *lower,
-> +				     struct backref_node *upper,
-> +				     int link_which)
+>   Here we are dealing with already user data. Should it be different
+>   from mkfs?
+>   Quit is fine, but convert tool should it be system neutral?
 
-Again not a static inline, but plain static function.
+The delays should be used in exceptional cases, now we have it for check
+--repair and for unfiltered balance. Both on user request because
+expecting users to know everything in advance what the commands do has
+shown to be too optimistic.
 
-> +{
-> +	ASSERT(upper && lower && upper->level == lower->level + 1);
-> +	edge->node[LOWER] = lower;
-> +	edge->node[UPPER] = upper;
-> +	if (link_which & LINK_LOWER)
-> +		list_add_tail(&edge->list[LOWER], &lower->upper);
-> +	if (link_which & LINK_UPPER)
-> +		list_add_tail(&edge->list[UPPER], &upper->lower);
-> +}
+Refusing to allow the conversion does not make much sense for usability,
+mising the unmounted and mounted constraints.
+
+A warning might be in place but there's nothing wrong to let the user do
+the conversion.
+
+I've tried mkfs.ext4 with 64k block size and it warns and in the
+interactive session wants to confirm that by the user:
+
+  $ mkfs.ext4 -b 64k img
+  Warning: blocksize 65536 not usable on most systems.
+  mke2fs 1.45.5 (07-Jan-2020)
+  img contains a ext4 file system
+	  created on Tue Mar  3 18:41:46 2020
+  Proceed anyway? (y,N) y
+  mkfs.ext4: 65536-byte blocks too big for system (max 4096)
+  Proceed anyway? (y,N) y
+  Warning: 65536-byte blocks too big for system (max 4096), forced to continue
+  Creating filesystem with 32768 64k blocks and 32768 inodes
+
+  Allocating group tables: done
+  Writing inode tables: done
+  Creating journal (4096 blocks): done
+  Writing superblocks and filesystem accounting information: done
