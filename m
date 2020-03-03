@@ -2,74 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88169177ABE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 16:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9720E177B14
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 16:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgCCPmr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 10:42:47 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:36502 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbgCCPmr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Mar 2020 10:42:47 -0500
-Received: by mail-wr1-f42.google.com with SMTP id j16so4964352wrt.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 07:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IG+YmHrJPcyOyHqglHprZn3y6XRvEcQSEcpWB5o/+E4=;
-        b=Uc2iexDfobDybO2qUYW4R/2CgfiZLtZyU2dhVf/5FLPRnXfvQlrp57Hp21wkddEbks
-         RoSbSGPDC3NkZjbarZRy/c8fR6GV5GUh03VwsG2RAehyIuldvLfGf9i9A8HWgSkza1y+
-         vEqe7kHHcDS4d81tbgditssephisDHjzp/yfGfjVG7jmlWOGBogszMsBNxk+Hu7ukAxo
-         5ajuqITYwguk/GTPThyPlP1yIPxNVmI1ytzePocMw64zQt0uGWCVI957CmrGsTdbErJG
-         +K9baD0j7rO35mYrUqdbFKvVc2L/m46R8BLuNMI9Y5Vh5XCtclzLAqm6cjv2KvkLcmUo
-         5ZRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IG+YmHrJPcyOyHqglHprZn3y6XRvEcQSEcpWB5o/+E4=;
-        b=DJ8SwPlzcKcyN012NtFpmQKY0C2oAmur1rjKStGM/mhCR9DxHPIRu/dt/jIyi3bF3D
-         LngWRsHO+bRqRSUOyLLDAOjWV80QTy9e1qOhs9SQXgeX3vyoI4riG+gVO6m1rQeMOjj0
-         BLhFVaOVUmBZISteXMO0JayqB3JLMQe8zBUq1Rj+gvtDOIOShxf6gNf1SpLbGOKzf8h2
-         XNMUwVl/gsyNSHPEyJhdRDSy3CNI4k9I7xztkFS2UAsOuSUrYO11zqwn4tCiqjjkmIvg
-         Q4+bDezWq5btQI7T8khhzKnCdjmhdTio6QrfBNrgtiKdlEZ1Q1UwqUMoGfrkgyjdQK6p
-         HUYw==
-X-Gm-Message-State: ANhLgQ2wgHWmh5vcAea/HiGYFO+kfg/kxs2MIt06epOnMr+BFY5KrZd8
-        /7egAAEKUSPiIkBOcnq2ISQFdIEgVbd03K/sUpFU
-X-Google-Smtp-Source: ADFU+vtHLm7n3DwObk4mTTayOgFmk7vcbwvWubfjuKllVWCJVdw8Q4BppJWaT7QFaxkA9IVI/4aBi1T7Nx4J4cYm1xs=
-X-Received: by 2002:a5d:4b51:: with SMTP id w17mr5797123wrs.231.1583250164816;
- Tue, 03 Mar 2020 07:42:44 -0800 (PST)
+        id S1729540AbgCCPwO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 10:52:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54560 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727683AbgCCPwO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 10:52:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CD3E7B4C4;
+        Tue,  3 Mar 2020 15:52:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A70EBDA7AE; Tue,  3 Mar 2020 16:51:50 +0100 (CET)
+Date:   Tue, 3 Mar 2020 16:51:50 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 6/7] btrfs: hold a ref on the root->reloc_root
+Message-ID: <20200303155150.GG2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <20200302184757.44176-1-josef@toxicpanda.com>
+ <20200302184757.44176-7-josef@toxicpanda.com>
 MIME-Version: 1.0
-References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
- <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
- <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
-In-Reply-To: <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
-From:   Jonathan H <pythonnut@gmail.com>
-Date:   Tue, 3 Mar 2020 07:42:17 -0800
-Message-ID: <CAAW2-Zd4jGOBK6jxpqbOfwACTYkDg6Ep-EZ9Ejy7RuJEQn9F7Q@mail.gmail.com>
-Subject: Re: USB reset + raid6 = majority of files unreadable
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302184757.44176-7-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Update:
+On Mon, Mar 02, 2020 at 01:47:56PM -0500, Josef Bacik wrote:
+> We previously were relying on root->reloc_root to be cleaned up by the
+> drop snapshot, or the error handling.  However if btrfs_drop_snapshot()
+> failed it wouldn't drop the ref for the root.  Also we sort of depend on
+> the right thing to happen with moving reloc roots between lists and the
+> fs root they belong to, which makes it hard to figure out who owns the
+> reference.
+> 
+> Fix this by explicitly holding a reference on the reloc root for
+> roo->reloc_root.  This means that we hold two references on reloc roots,
+> one for whichever reloc_roots list it's attached to, and the
+> root->reloc_root we're on.
+> 
+> This makes it easier to reason out who owns a reference on the root, and
+> when it needs to be dropped.
 
-My most recent scrub just finished. It found a few hundred errors, but
-many files that were not mentioned by the scrub at all are still
-unreadable. I started another scrub and it is finding new errors and
-correcting them, but I aborted it since I do feel like constantly
-scrubbing is making progress.
+I think the functions that add a reference should say that in it's
+comment, so it can be easily pairred with btrfs_put_root.
 
-Much more interestingly, I ran `btrfs rescue chunk-recover` and it
-reported that the majority (2847/3514) of my chunks were
-unrecoverable. The output from the `chunk-recover` is too long to
-include in a pastebin. Is there anything in particular that might be
-of interest?
-
-Also, I take the existence of unrecoverable chunks to mean that the
-filesystem is not salvageable, is that true?
+Otherwise yes the explicit references make it easier to see the owner.
