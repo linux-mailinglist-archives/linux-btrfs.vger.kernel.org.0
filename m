@@ -2,61 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A4B1784C2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 22:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9411784D2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 22:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732533AbgCCVTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 16:19:06 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36860 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732484AbgCCVTG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Mar 2020 16:19:06 -0500
-Received: by mail-qt1-f193.google.com with SMTP id t13so4064138qto.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 13:19:05 -0800 (PST)
+        id S1732511AbgCCVWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 16:22:18 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:45920 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730925AbgCCVWS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Mar 2020 16:22:18 -0500
+Received: by mail-qv1-f67.google.com with SMTP id r8so5927qvs.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 13:22:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yxnmMHwhlhd0SaiT3QcuplAibur0J32QbP/LmVla2Wg=;
-        b=CbnqePb7z5JAAgC66wbJrd9xsyGwNUeTllwqNiuSAJuWRes7Wfu3yERu4e0RhFnPSe
-         KYB6O3i1aFuhhGC8AzIq6BCf+ATRvmP+0TDcZev8EFgyyv7MPzOWawdZw76S/+mH9NCv
-         fs7LfSrRYuZXJoUCc01nYdyulSF2xYlrk8ZBffz52K4jbtzVurZFeXYqRDXlFKF6w5Y0
-         WJCE6FGEtK2hhtRNbJd3z00hcFXBlLxMR+3MHry5RumYNCqOJvwHRc4c+VjC74x9FogM
-         e0Kb63scxLVdXf8/h7TwlYdKJwcqjVk8vsYWnGljnIloaS6FC2kztBce7C/v4sxDJdS3
-         T17A==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=yMMBANE3tNezRt6NcXxHFD/pqFxGZevL6fCwu4I8lD8=;
+        b=kNJvAZPpup2U42fYxPG6NUW6cpIDxnxbz3qOPGIwP3HxljVHG9pMGGc/PGqZF+sy6k
+         oDDWTQYmrHVwUOxOlmGYOMrGnt4W9tbO+gJb2NLGWo17Pj6SFnUHetSU1FS+I0RViBub
+         2dn6dZYjGGrRz4KdN/N+B/U571sTOX0mAgSq2DSyJzS5h8lNzOLs0OdbX32z9gUaPoE0
+         TiJO5zIJk+vRX0AqdGEqY++Ja5B2d+OTxUkYVh4fnFJrAk1R0SxeI6zxb3eC7vpyEwWg
+         2Smr6+BkIqTxHH+tOiMv+4+bN8yupoWhniQPNSgYr6Wh/q2K9PICnl74EbCrm1heLmYT
+         rbNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=yxnmMHwhlhd0SaiT3QcuplAibur0J32QbP/LmVla2Wg=;
-        b=pIHo6liMKWql+A14U1IKrQVswzVqdNFdcaUFE+U5GzRP6flUkaOO+rBBMhntHTyu4Y
-         bf1B+UsWoj3OSX5dLLkur+ajJznd/Bk6JIgsWTuRmWDA3VeivnbwGmXxhqZzlUk5RFL/
-         SEw/ekE4xyM7jsaHTeFy6y9dzYD5911jXB+MNwmiLiFLHg9AwWLxFEOSwCL4KFW1fWSC
-         5m/1ves0e6FwR3nB9qEpwcZ7GXKL8Xk77cnT/EFNn8fzBCfel0expBt8hlr25sX7xY01
-         DKtNxesb2Gya5G7IyXbXdwnEDUR3Wd0S6dAeWcC8wA7//vp2rHerslQjVGex40D+idyI
-         VaRA==
-X-Gm-Message-State: ANhLgQ2di7k6UK5gIAIIcb5MUAVlHGuksr1OolnyQ57KCnFcK2lFLzJX
-        eqsCWFavF4QjgaiJpn1pAWTjjg==
-X-Google-Smtp-Source: ADFU+vtyv6ViHr3DePSdjzq4wDPjYGl73tmDBr3pZGPHC2LtxgVKX+QWAa2Dj436VcAjOh0+lBYX/g==
-X-Received: by 2002:ac8:b8d:: with SMTP id h13mr6327640qti.298.1583270345277;
-        Tue, 03 Mar 2020 13:19:05 -0800 (PST)
+        bh=yMMBANE3tNezRt6NcXxHFD/pqFxGZevL6fCwu4I8lD8=;
+        b=nmu0xi2A96+8DsNi3CjhKGx1C/kpZDmrSlD1EFUrKYExzF0UsJq1BKTJA3fyIzViQc
+         o9OaUUc33p2VSKWiQ7EGVHlA+8h00sRyhab6Khai0bBvBIm+f7fTD5SpuhF5M2Ul+e37
+         8f6e9QzRObWsbZSMms65ZgJLh9BTa2/PdGixw3Z3z/GUv1CSkOif0gCNBOl8ZGHObkO2
+         xLGADhILNgR8hivtx4cKS2//IbRUBWDom6CTgkZNLgKSS15/Qzugb0pJKtY21VILUmo3
+         g76dOZ4mqY3lrtJEi7mp0iZHGlcESLNbe2xmWc4PyBi6PB1ntEgKKHbLfe+8hL1IFef4
+         BLwg==
+X-Gm-Message-State: ANhLgQ2wn4lRst7mD+ZyVdvporSYkOWl/yx8ZygypcggPJnlYm00iC29
+        +oLLAF9m+ZCSsmqqR06CE8Uw6v9ZUL0=
+X-Google-Smtp-Source: ADFU+vtw5ngU7EtvhbPdMyzHl6MnsJ1nI7EM7J9d9oPUClIEfVvCDooWl5ND/E7hnWEfZ6btwSN4CQ==
+X-Received: by 2002:a0c:f707:: with SMTP id w7mr5812894qvn.46.1583270537040;
+        Tue, 03 Mar 2020 13:22:17 -0800 (PST)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f5sm10642686qka.43.2020.03.03.13.19.04
+        by smtp.gmail.com with ESMTPSA id a7sm7530811qtw.28.2020.03.03.13.22.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Mar 2020 13:19:04 -0800 (PST)
-Subject: Re: [PATCH v3 3/3] Btrfs: implement full reflink support for inline
- extents
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-References: <20200224171327.3655282-1-fdmanana@kernel.org>
+        Tue, 03 Mar 2020 13:22:16 -0800 (PST)
+Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
+ to backref.c
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200303071409.57982-1-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5e044000-09e8-ade1-69a6-44cfc59fdc48@toxicpanda.com>
-Date:   Tue, 3 Mar 2020 16:19:03 -0500
+Message-ID: <b6520f1a-4849-4390-6aa8-e08e69bebcd8@toxicpanda.com>
+Date:   Tue, 3 Mar 2020 16:22:15 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200224171327.3655282-1-fdmanana@kernel.org>
+In-Reply-To: <20200303071409.57982-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,40 +64,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/24/20 12:13 PM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 3/3/20 2:13 AM, Qu Wenruo wrote:
+> The patchset is based on previous backref_cache_refactor branch, which
+> is further based on misc-next.
 > 
-> There are a few cases where we don't allow cloning an inline extent into
-> the destination inode, returning -EOPNOTSUPP to user space. This was done
-> to prevent several types of file corruption and because it's not very
-> straightforward to deal with these cases, as they can't rely on simply
-> copying the inline extent between leaves. Such cases require copying the
-> inline extent's data into the respective page of the destination inode.
+> The whole series can be fetched from github:
+> https://github.com/adam900710/linux/tree/backref_cache_code_move
 > 
-> Not supporting these cases makes it harder and more cumbersome to write
-> applications/libraries that work on any filesystem with reflink support,
-> since all these cases for which btrfs fails with -EOPNOTSUPP work just
-> fine on xfs for example. These unsupported cases are also not documented
-> anywhere and explaining which exact cases fail require a bit of too
-> technical understanding of btrfs's internal (inline extents and when and
-> where can they exist in a file), so it's not really user friendly.
+> All the patches in previous branch is not touched at all, thus they are
+> not re-sent in this patchset.
 > 
-> Also some test cases from fstests that use fsx, such as generic/522 for
-> example, can sporadically fail because they trigger one of these cases,
-> and fsx expects all operations to succeed.
 > 
-> This change adds supports for cloning all these cases by copying the
-> inline extent's data into the respective page of the destination inode.
+> Currently there are 3 major parts of build_backref_tree():
+> - ITERATION
+>    This will do a breadth-first search, starts from the target bytenr,
+>    and queue all parents into the backref cache.
+>    The result is a temporary map, which is only single-directional, and
+>    involved new backref nodes are not yet inserted into the cache.
 > 
-> With this change test case btrfs/112 from fstests fails because it
-> expects some clone operations to fail, so it will be updated. Also a
-> new test case that exercises all these previously unsupported cases
-> will be added to fstests.
+> - WEAVING
+>    Finish the map to make it bi-directional, and insert new nodes into
+>    the cache.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> - CLEANUP
+>    Cleanup the useless nodes, either remove it completely or add them
+>    into the cache as detached.
+> 
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+I've found a bunch of bugs in the backref code while fixing Zygo's problem, you 
+are probably going to want to wait for my patches to go in before you start 
+moving things around, because it's going to conflict a bunch.  Thanks,
 
 Josef
