@@ -2,66 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57772178157
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 20:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7295D17827F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 20:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387541AbgCCSBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 13:01:55 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:39109 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388092AbgCCSBy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Mar 2020 13:01:54 -0500
-Received: by mail-io1-f68.google.com with SMTP id h3so4611155ioj.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 10:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=TNrB465lOoQUEHml85m3CMT7CqTKrcPNORRbDy9Hz8Um6Pc5Izf0YkBI0nHs9Jg47G
-         gTMYWtyqgaA6BNnZysJlbF1kiVKs2w3nRCfDhKZkonsPc/h8P5/bx6HmxspWseysrchB
-         UsEa12e0Bmk740yUTHFdx8MEUZaMqwm1DaIVkxRx+gK8XA8YZb3jwhx0CSurevMGKavz
-         iS78OfhK2784uVWxWXXNddaIuJzx42IEenccUmVSsfNp+0ZF0cyHiYmbCSf5yjv7YWyZ
-         2DFBnjGojPs8ezu5HzFPY2fEZhBXRd3c9XAe9NSkUcIIj2dteM6BotV4x/uQkjWEXFeI
-         E9Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=qelhVKe3kNHoydi244NfNKkud20tmdn+f/wS7zNeM1oK0ACkps9Wt4MBwjCUGHslOJ
-         KbPwIY3+1qYR+S7CE8Zon4MCU5EU3xDvZ8PbvMndLkH4mGVjONdHo5KHUxmNKwgl9dMt
-         XPwKVDJExA2njFW+4rypOI46YxSTM2T/LM7OZFi+I26FJLk1eh7FKuOmrUo4FNkZBkVA
-         n33Gi3slhRK7OCCTHrQaT9inSEqM3dybUSw9KAqs6Gzcdc8nZ7iY6AEAGI/lAHww4CNp
-         SUGDp5a+6J3O0NQ5s13L6Lic3pKIpJH1FjHdaDeihRmGbDK3CrU7AHeMFkZXPd1v1mfg
-         pOyw==
-X-Gm-Message-State: ANhLgQ3JGdsMSpguNh89ID8+uiLp88+aA6u24KX+vSmgZSFdefwXR7yn
-        2/HxZ1ep5SB4rltiILaD+Cc3MejqogeRYoM8908=
-X-Google-Smtp-Source: ADFU+vs53/ow2DJbJqeOq7oBFGPf/IECU+9jzJZBVIQMANOIBVZiZkCmeS0bJPVF9YLFGJc8iQaM12MqmAjMPwc4/Uo=
-X-Received: by 2002:a02:c84a:: with SMTP id r10mr5064994jao.105.1583258514344;
- Tue, 03 Mar 2020 10:01:54 -0800 (PST)
+        id S1729979AbgCCSfW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 13:35:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54168 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729773AbgCCSfW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 13:35:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A87F5AD2B;
+        Tue,  3 Mar 2020 18:35:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6B1B5DA7C3; Tue,  3 Mar 2020 19:34:58 +0100 (CET)
+Date:   Tue, 3 Mar 2020 19:34:57 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [PATCHv2 0/4] btrfs-progs: Add BTRFS_IOC_SNAP_DESTROY_V2 support
+Message-ID: <20200303183457.GO2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+References: <20200207131028.9977-1-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:01:54 -0800 (PST)
-Reply-To: dr.challynoah@gmail.com
-From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
-Date:   Tue, 3 Mar 2020 19:01:54 +0100
-Message-ID: <CALqVJWcOi_6WjT7c3z7gWgWd34RMWE=x9jo6o=LSODttEYZiGg@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200207131028.9977-1-marcos.souza.org@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Dear,
-What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
-This said fund was issued out by the UNITED NATIONS To compensate
-you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
-at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
-fund (award)release to you or better still reply back Immediately You
-Receive This Information For An Urgent Confirmation And Release Of Your
-Fund To You Without Delays, as your email was listed among those to be
-compensated this year.Congratulations..
-Best Regards,
-Dr Chally Noah.
-Minister Of Finance On Foreign Remittance:
+On Fri, Feb 07, 2020 at 10:10:24AM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> Second version of the patchset, which pairs with v3 of kernel changes.
+> 
+> Changes from v1:
+> * Moved subvolid member to the same union containing name and devid (David)
+> * Dropped patch that was bumping the libbtrfsutils version (David, Wenruo)
+> 
+> Marcos Paulo de Souza (4):
+>   btrfs-progs: add IOC_SNAP_DESTROY_V2 to ioctl.h
+>   libbtrfsutil: add IOC_SNAP_DESTROY_V2 to ioctl.h
+>   libbtrfsutil: Introduce btrfs_util_delete_subvolume_by_id_fd
+>   cmds: subvolume: Add --subvolid argument to subvol_delete
+
+I've reworked it a bit, the libbtrfsutil changes can be done in one, and
+the test should be separate.
+
+The short option would be probably -i as I have some patches regarding
+'sync' after deletion (ie. the 'subvolume sync') and 'i' resembles the
+id more. The fstests might need to be updated once the final version is
+in progs git but the internal test has a good coverage.
+
+As for release target, this will be in 5.5 once it appears. Thanks.
