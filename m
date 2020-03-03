@@ -2,59 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9720E177B14
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 16:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA8B177BF0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2020 17:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729540AbgCCPwO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 10:52:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54560 "EHLO mx2.suse.de"
+        id S1729960AbgCCQbG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 11:31:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40768 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727683AbgCCPwO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Mar 2020 10:52:14 -0500
+        id S1727064AbgCCQbG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 11:31:06 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CD3E7B4C4;
-        Tue,  3 Mar 2020 15:52:12 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C1949B36A;
+        Tue,  3 Mar 2020 16:31:04 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A70EBDA7AE; Tue,  3 Mar 2020 16:51:50 +0100 (CET)
-Date:   Tue, 3 Mar 2020 16:51:50 +0100
+        id 59466DA7AE; Tue,  3 Mar 2020 17:30:42 +0100 (CET)
+Date:   Tue, 3 Mar 2020 17:30:42 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 6/7] btrfs: hold a ref on the root->reloc_root
-Message-ID: <20200303155150.GG2902@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
+ to backref.c
+Message-ID: <20200303163041.GH2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        kernel-team@fb.com, linux-btrfs@vger.kernel.org
-References: <20200302184757.44176-1-josef@toxicpanda.com>
- <20200302184757.44176-7-josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200303071409.57982-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200302184757.44176-7-josef@toxicpanda.com>
+In-Reply-To: <20200303071409.57982-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 01:47:56PM -0500, Josef Bacik wrote:
-> We previously were relying on root->reloc_root to be cleaned up by the
-> drop snapshot, or the error handling.  However if btrfs_drop_snapshot()
-> failed it wouldn't drop the ref for the root.  Also we sort of depend on
-> the right thing to happen with moving reloc roots between lists and the
-> fs root they belong to, which makes it hard to figure out who owns the
-> reference.
+On Tue, Mar 03, 2020 at 03:13:50PM +0800, Qu Wenruo wrote:
+> The patchset is based on previous backref_cache_refactor branch, which
+> is further based on misc-next.
 > 
-> Fix this by explicitly holding a reference on the reloc root for
-> roo->reloc_root.  This means that we hold two references on reloc roots,
-> one for whichever reloc_roots list it's attached to, and the
-> root->reloc_root we're on.
+> The whole series can be fetched from github:
+> https://github.com/adam900710/linux/tree/backref_cache_code_move
 > 
-> This makes it easier to reason out who owns a reference on the root, and
-> when it needs to be dropped.
+> All the patches in previous branch is not touched at all, thus they are
+> not re-sent in this patchset.
 
-I think the functions that add a reference should say that in it's
-comment, so it can be easily pairred with btrfs_put_root.
+The patches are cleanups and code moving, please fix the coding style
+issues you find.
 
-Otherwise yes the explicit references make it easier to see the owner.
+* missing lines between declarations and statements
+* exported functions need btrfs_ prefix
+* comments should start with an upper case letter unless it's an
+  identifier, formatted to 80 columns
+
+As this patchset depends on another one I'm not sure if it's right time
+to update it now, before the other one is merged as I think the same
+code is touched and this would cause extra work.
+
+Overall it makes sensed to add more to backref.[hc] and export that as
+an internal API.
