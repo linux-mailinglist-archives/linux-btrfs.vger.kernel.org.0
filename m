@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B74A1794DF
+	by mail.lfdr.de (Postfix) with ESMTP id D5E8E1794E0
 	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 17:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388287AbgCDQSn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 11:18:43 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45988 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388282AbgCDQSn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Mar 2020 11:18:43 -0500
-Received: by mail-qk1-f193.google.com with SMTP id z12so2144137qkg.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2020 08:18:42 -0800 (PST)
+        id S2388292AbgCDQSp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 11:18:45 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42788 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388282AbgCDQSo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Mar 2020 11:18:44 -0500
+Received: by mail-qt1-f193.google.com with SMTP id r6so1755877qtt.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2020 08:18:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vMlEv+ThwTDRGC5bEBvf0GHUwzFZBrDT7i4XBc7/BqI=;
-        b=wY06ozvDM0IgWMl6DIMqyNsUxcGPwyPZA63sG8qPjcwSLsF4r2o8+Rwv5DFj1wdXww
-         iQ3I7qQth9tOMhOVDzePGO66Zo1mAMuUWDF5vzgGCaJQwTLpXPNiHlm7a+ZpcD+YJjeo
-         EuaWhjFpiZzRvzuQoluaSH9q+0qhm25e6jHyK6NzTweXYbeleP+vuBtJvxqITrz4zXTH
-         LA0/aPUP8ej8vb7u/JmsW7DSC+N10xfsaHGSaigPNXW08SR0nTcwVcwSDy5x+HhxC0Lf
-         QRrDDX47rYi7KUeAzMWCx0/ZAnh9toMGujhWzs9wR9MlmXSVwqnT/9QV2BwDK5kAz/oB
-         SFxg==
+        bh=52QuRYoyyZaAbgdd8ICEkLGKU9LCKKQnjvmxbkT+rQk=;
+        b=ZModImvC9EYCeSfrNgTkZaCshLFEPiqRxwBKqSp4cViVgckV+i+GzwhY0SreJB4xb7
+         lltVyysdUhVtjLFxKHcYlU1/vmjT1TK4GLq0Jf/dlPBhhVwdVP5E7iA6aqkPRGFLHiVx
+         3XfL/++YKBYdzG0z5p++EeUrVVEbgvPkJEPjZwopPEwUpzT3Bg/L26GWCl8yWS8uOZ4s
+         ug91Bv/lQtOkbsh9BmIaXIIhuuzumuH3f7ulRDaYm+vjL8YlDFnnDzo7JygUI2C3sKaW
+         XBIQDG10WWCgpDgd8HQP/d//KKp0Zg7Ns7SMWPJX2nCU1rlLHjXobcS6n6Lc5hIJvIoC
+         f5ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vMlEv+ThwTDRGC5bEBvf0GHUwzFZBrDT7i4XBc7/BqI=;
-        b=WP6hRJIzY17OSp27N+xbUmiZsyuIg6toEuF8cbhW3uGCVA/ZEN0XBYcei/J5iSYNmc
-         T0tXSIWRlmXFLr+Upsydy/gdoW5dpiyReRZfqfI61i2SSAcEn4sQHO2CeCWRi+aJYWMx
-         IW4zfDSnHNbfsh5S/IY/jxjOJOsQkgxSKVZxU3AaPMQv9K3FRvkoLVR1p+FCmJU47xG9
-         WzVaxI0aTYOIEFJMGPiTACtNLq34wjXhdSyKkpeiasGxtoPs6oe1q5i0dxyDzz31ua5a
-         doz68xYsqY45rJ+kGZBEJFw4Oq/jplfjhMVHq3z8DqUYk3sf7IWFTKXt+pMWskkEUk0x
-         U4pQ==
-X-Gm-Message-State: ANhLgQ0/+xQonc/EtbyjFYt7IRXs/j2YPJjofMIIUKeDeLYqYQph4VjY
-        nqKFPkKxmweP3nw+cNG16+TD0p4ip9M=
-X-Google-Smtp-Source: ADFU+vtEAAlCBpEA1Yzzsk1eYfPcNIumpTA5qCJFMW84nXfwNq0Qb45aqywTCK5ILX6F12wGHtMbyg==
-X-Received: by 2002:a05:620a:388:: with SMTP id q8mr2718596qkm.488.1583338721845;
-        Wed, 04 Mar 2020 08:18:41 -0800 (PST)
+        bh=52QuRYoyyZaAbgdd8ICEkLGKU9LCKKQnjvmxbkT+rQk=;
+        b=S5MxAmRr8A1K5sjMMHo4Znn33lHq/uHS9W1R2H9+r+upQaK4nmnDpKAFUCNLx1Qpxp
+         Q4Y6SW8TLddnUqLYrLd0UfX+hkzdlSMYj30CjpZ/GHMEHqgU5SEEHcg/MMOZj6xFIVdS
+         opXwrpPqEAzIGMkB/vYKa56tDUVm/MCDiuR/O/087T6cOKW7avSSKiidQZpCswsPQxxv
+         wknezwpDFBMBnGENCDa3qkh+NT0D7Hjj5DTTDWXYO371ubGltFHwPacs1i8XyvIDBCdC
+         yh1T7/ylWd/IKCTLFDdiL7s3EI1hQVmIsBH1FM1MhmFjaVhZ7noyZTRyYGQZI1QD1QB7
+         +Kig==
+X-Gm-Message-State: ANhLgQ0x7e4bao5UrAY+HZy3Iq3xJiwVcCt6VNH05i1VVG9nZDkDE/pt
+        YydBghCPjBvUJVmv171mNviCcSj1Hoo=
+X-Google-Smtp-Source: ADFU+vtvnKUd2mPJuXYzTfMEj7IuOruFYk2/OZsmyydoXrRgSY8u0M4InV9bxpEq6ym0kBge2JJYdw==
+X-Received: by 2002:ac8:6e88:: with SMTP id c8mr3205707qtv.40.1583338723505;
+        Wed, 04 Mar 2020 08:18:43 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id g2sm13959356qkb.27.2020.03.04.08.18.40
+        by smtp.gmail.com with ESMTPSA id a6sm12659991qkn.104.2020.03.04.08.18.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 08:18:40 -0800 (PST)
+        Wed, 04 Mar 2020 08:18:42 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 5/8] btrfs: run clean_dirty_subvols if we fail to start a trans
-Date:   Wed,  4 Mar 2020 11:18:27 -0500
-Message-Id: <20200304161830.2360-6-josef@toxicpanda.com>
+Subject: [PATCH 6/8] btrfs: clear BTRFS_ROOT_DEAD_RELOC_TREE before dropping the reloc root
+Date:   Wed,  4 Mar 2020 11:18:28 -0500
+Message-Id: <20200304161830.2360-7-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200304161830.2360-1-josef@toxicpanda.com>
 References: <20200304161830.2360-1-josef@toxicpanda.com>
@@ -59,40 +59,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we do merge_reloc_roots() we could insert a few roots onto the dirty
-subvol roots list, where we hold a ref on them.  If we fail to start the
-transaction we need to run clean_dirty_subvols() in order to cleanup the
-refs.
+We were doing the clear dance for the reloc root after doing the drop of
+the reloc root, which means we have a giant window where we could miss
+having BTRFS_ROOT_DEAD_RELOC_TREE unset and the reloc_root == NULL.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index f6237d885fe0..53509c367eff 100644
+index 53509c367eff..ceb90d152cdd 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -4279,10 +4279,10 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 		goto out_free;
- 	}
- 	btrfs_commit_transaction(trans);
-+out_free:
- 	ret = clean_dirty_subvols(rc);
- 	if (ret < 0 && !err)
- 		err = ret;
--out_free:
- 	btrfs_free_block_rsv(fs_info, rc->block_rsv);
- 	btrfs_free_path(path);
- 	return err;
-@@ -4711,6 +4711,7 @@ int btrfs_recover_relocation(struct btrfs_root *root)
+@@ -2291,18 +2291,19 @@ static int clean_dirty_subvols(struct reloc_control *rc)
  
- 	trans = btrfs_join_transaction(rc->extent_root);
- 	if (IS_ERR(trans)) {
-+		clean_dirty_subvols(rc);
- 		err = PTR_ERR(trans);
- 		goto out_free;
- 	}
+ 			list_del_init(&root->reloc_dirty_list);
+ 			root->reloc_root = NULL;
+-			if (reloc_root) {
+-
+-				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
+-				if (ret2 < 0 && !ret)
+-					ret = ret2;
+-			}
+ 			/*
+ 			 * Need barrier to ensure clear_bit() only happens after
+ 			 * root->reloc_root = NULL. Pairs with have_reloc_root.
+ 			 */
+ 			smp_wmb();
+ 			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
++
++			if (reloc_root) {
++
++				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
++				if (ret2 < 0 && !ret)
++					ret = ret2;
++			}
+ 			btrfs_put_root(root);
+ 		} else {
+ 			/* Orphan reloc tree, just clean it up */
 -- 
 2.24.1
 
