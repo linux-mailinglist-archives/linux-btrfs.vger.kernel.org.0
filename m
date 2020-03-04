@@ -2,177 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A021789C2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 05:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89562178A99
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 07:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgCDEyh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 23:54:37 -0500
-Received: from mout.gmx.net ([212.227.15.18]:52977 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgCDEyg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Mar 2020 23:54:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583297670;
-        bh=ZIp6aKepBxU41Z2s0STpRHeYjKnIeCC3tklx7wEspuQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BKz+Mp7M1gqJl0XlF+XaKuqFHo2TpWrq5nlzun2lrNCdDin17VALSnaPYyxBSB4Uj
-         ya1Cb3rHOk+o3nBm3cz3Ageg5pjcwo4lRdBaoBL/rS13CvQ8SbqloPwM3iSxU3c1ox
-         l3PqvqJD3N9yh1G2rQllxwbD6UmP5GujnXJ0E+qk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvrL-1jahej3B6L-00hPUz; Wed, 04
- Mar 2020 05:54:30 +0100
-Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
- to backref.c
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200303071409.57982-1-wqu@suse.com>
- <b6520f1a-4849-4390-6aa8-e08e69bebcd8@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <886e97a1-2dff-7a1e-1324-6c389bb972b9@gmx.com>
-Date:   Wed, 4 Mar 2020 12:54:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1725795AbgCDGc2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 01:32:28 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33295 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgCDGc2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Mar 2020 01:32:28 -0500
+Received: by mail-wr1-f66.google.com with SMTP id x7so924882wrr.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 22:32:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ocqiAnhh2bZlEwOiWQC7d7qP8qRWSfn04t/IJ1medhs=;
+        b=O1rAgK4qZddsnA/m2mxC75959Gei8k7YD+/cBQSQls8ebDt1CfY5YXAgzstE4C37UM
+         ic7pDrbcOmJyRnXOJAtA4utK7M6GMgP7o7OF7JzxiifWsWMXxaMOFY1dnxAeV7ygHENc
+         dxPN24aGeuX0x+SsOV8Y/l99I5/hSk0htzuFEyGFMa979ObLUvhK4gZNsrt4f6svcut+
+         p0fIgMkN/Y5cup1IkkpEikuffa63uZYziHJNFHZ2t/uXzZgB1Q+wuk0zOZOwfPV/eScK
+         IxzTTeP/SI6EHzdwDAI3QAiKFTXMag7n5JQ7HLHWOSUel1FxNlZRb3fFugrrpccp/iA/
+         HATw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ocqiAnhh2bZlEwOiWQC7d7qP8qRWSfn04t/IJ1medhs=;
+        b=Mb9jEQZJ3+JShAZHR73APnE9jktYYPA28rq9uoBFo/nkj2slAPV1MmLx2fkk+v7xH2
+         yG9JwZWPxTTgg7JLdYiNChVhVam5tVe/xc+7jiMQIp/tljdOFTXDzFq4dnVOGsvLj7Vq
+         ifaD/iU8Cx3z6MfZAKpi26asONZGbmaKPouoiKoX1OGnrUpLJmXF3/31cumDO2DR78Il
+         3WBSU0xv0vAlJ2yShMIwRL1UtdZgdeI0Q8LXp66GNLzAwY8Hz7CKBfgFb2U62efN4oao
+         55u2ThxrxiJoWCL9mUd1seTqgeKsjE6ZXX6rjPUSP7LAELrMmeylTqytmfSmvKzkBoAR
+         WPzg==
+X-Gm-Message-State: ANhLgQ2i/KYW2CgGq1jVOMgd1kM3OLPQ33N7rWGJjQsCpp4J7pWpmtxN
+        dZnfA4+ftQIJ5fB3e6WTPgaav1ciicgF+iC30MREtIHyG9o=
+X-Google-Smtp-Source: ADFU+vtKWJ4Z8dJ4uSaUb1JsCVFjtqFeE5IPYGPdnRzfFAoOweGC58iL7Q3FpN6hflqTooOfbmNe4ojK3meDM2g0tBU=
+X-Received: by 2002:a5d:6881:: with SMTP id h1mr2256460wru.236.1583303544106;
+ Tue, 03 Mar 2020 22:32:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b6520f1a-4849-4390-6aa8-e08e69bebcd8@toxicpanda.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Io7PblDO7cd827y9z0kNnRTwJf68xN2sX"
-X-Provags-ID: V03:K1:8EG2YrCJppyitMVLrOVMaFXMVEd1UTk6JeGIws2JFhke2WE0mnV
- V6vzyfZFwcUBlrHIq7YhY/xl+lR4Kc/4XokQ/Iy29pNI8ZqDEONo3/mH6mXPNEFMK0BbCZg
- OeDUFLTmAN15RGahB/WiMjIT6R9CEA42p7qrEyiq7oJPLKPPBBnPBfBgCARMqs4BgKY0f15
- pRY2Lx8FGAhcjbgjVRnMA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d744VwENCYY=:oeLgHntov1tA7IUfghP99P
- Fl62AGM7VKDbGiKPDWyhwnn3JKevY97Q32N3ez6Gkieq1kvsxCUZ+96N8xMFO2gtJrHXhYPmP
- 7V/eV7ZWAjHXbk5RSgAd7wmUREcQC7wF8Vp5A/L2u2sp+ka27G5oQQnXramcJTxaDDVm79YMJ
- W1Ohvo7VOCxHi28yDGIqX4vq9B8Sxdr0uPbKAfHCUAJBFkwGQQDzWW0wT9c/07fONm2FbFty8
- YCo3TRivavsKsG3yzkAp/S2rm6w6Dv+gjqLGuWBvqaHO/KhH5+Mk/kwZsTgVyujh4SuEgxq+4
- FUXwR6luEn+JdQHKevh5hxa23Ta19JrBQUU4H9WKM06DYAM/0SJbLYDU6Gfo3hii7snnRDlwc
- xl7YVDL0uzvmBQ5QS/Ga3aVop711XT/3cw34uIP/aeiYVIWQwM0TWxtMG7rC+evr+Dbb2Eq+w
- e8t8PpFKOG1gsXHmCOUgz1gvnBQh9ycvqNUTkRYZfjVWA++Ai6teLXAAu2KRRqDu6DqPWhees
- YDbHtImfOVkJ9ECei4ppoZDi78NJIO2iGiyY2a8TntXW7dtoC605mvO5lw8k4ti9nza/A/QiG
- ZAgFcGPC7tuqBgEGkcbS5987hSCdsrY5u5Y/FA+6yPZBAJXMb3SmIjrTIQGQsrPdn6hpMmsPA
- SE6VH9JTTXBzZVOb/zyB1Esomp7pPhq5Wp+LDWahulZtcQxfpJT8g75g01MKdVq0Gy7lUb/D6
- lOe/YWthP8BG51p6reGQGksH/FafZ0QJ8WS8H9/V15/rZ74zgH/cDxKoxpIi+zJCQ+NUnmPeb
- 1ivE064bGuP2lRWrvVjdcMutUgoW+Frflp4C+/kPuscCJWsUBJgpLHurUZEqfdjXf+wn1CPKc
- azHi5a6DQu8DoITQCTnHOc7XJoeGdKlfSUtkU0UzV3ubQQu7R6ontoHFoJeE0Ak2cxeq0PEla
- m0F9YZA3GqMCZKug9UTce19tsmv7eeiStcrtwYiXc6yFgy4ocGiYpamFLOlE+2EzamDl4jCXL
- r5mzlUw+mUq9NeMZiiDv9txDlUad10sJHxTdiCXrt4Nf+nd/m95cCky62MRAcbdScgMhID42b
- RPGxxmroDASXKuWUcQ84UJVYTQvMZGU8O3fttY4rN4JlZ1oR6OgT3d254t3qJIIAIxneramsa
- Oj9PVver27vbREWisj93WWke9R7xdnE37a9uP5vWz2VEnixfu45Qgx0b5i3A9cXxFTx3VIiEh
- 359aHkUfuIudnOeqQ
+References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+ <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
+ <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
+ <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
+ <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
+ <CAG_8rEcXpWUyUqmi3fe8BicZXQODJP2ZS69Z=BBcBPfAQBuSHA@mail.gmail.com>
+ <CAJCQCtR7prMai9dYndLZ4Wg4tSL7kHZaLLK8c5p_4fDG2qoYnA@mail.gmail.com> <CAG_8rEf-kdju-OPhVUVWF8qNMM=xiUnWuBgODiwzGnRMzJYNpg@mail.gmail.com>
+In-Reply-To: <CAG_8rEf-kdju-OPhVUVWF8qNMM=xiUnWuBgODiwzGnRMzJYNpg@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 3 Mar 2020 23:32:04 -0700
+Message-ID: <CAJCQCtTz-KW4WLJtcX9NGSPiCmCZ81_bXE+YBhn2_DocvnefZw@mail.gmail.com>
+Subject: Re: USB reset + raid6 = majority of files unreadable
+To:     Steven Fosdick <stevenfosdick@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Jonathan H <pythonnut@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Io7PblDO7cd827y9z0kNnRTwJf68xN2sX
-Content-Type: multipart/mixed; boundary="f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR"
+On Tue, Mar 3, 2020 at 4:40 PM Steven Fosdick <stevenfosdick@gmail.com> wrote:
+>
+> On Sat, 29 Feb 2020 at 06:31, Chris Murphy <lists@colorremedies.com> wrote:
+>
+> > s/might/should
+>
+> I do think it is worth looking at the possibility that the "write
+> hole", because it well documented, is being blamed for all cases that
+> data proves to be unrecoverable when some of these may be due to a bug
+> or bugs.  From what I've found about the write hole this is because of
+> uncertainty over which of several discs actually got written to so
+> when copies don't match there is no way to know which one is right.
+> In the case of a disc failure, though, surely the copy that is right
+> is the one that doesn't involve the failed disc?  Or is there
+> something else I don't understand?
 
---f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/3/4 =E4=B8=8A=E5=8D=885:22, Josef Bacik wrote:
-> On 3/3/20 2:13 AM, Qu Wenruo wrote:
->> The patchset is based on previous backref_cache_refactor branch, which=
-
->> is further based on misc-next.
->>
->> The whole series can be fetched from github:
->> https://github.com/adam900710/linux/tree/backref_cache_code_move
->>
->> All the patches in previous branch is not touched at all, thus they ar=
-e
->> not re-sent in this patchset.
->>
->>
->> Currently there are 3 major parts of build_backref_tree():
->> - ITERATION
->> =C2=A0=C2=A0 This will do a breadth-first search, starts from the targ=
-et bytenr,
->> =C2=A0=C2=A0 and queue all parents into the backref cache.
->> =C2=A0=C2=A0 The result is a temporary map, which is only single-direc=
-tional, and
->> =C2=A0=C2=A0 involved new backref nodes are not yet inserted into the =
-cache.
->>
->> - WEAVING
->> =C2=A0=C2=A0 Finish the map to make it bi-directional, and insert new =
-nodes into
->> =C2=A0=C2=A0 the cache.
->>
->> - CLEANUP
->> =C2=A0=C2=A0 Cleanup the useless nodes, either remove it completely or=
- add them
->> =C2=A0=C2=A0 into the cache as detached.
->>
->=20
-> I've found a bunch of bugs in the backref code while fixing Zygo's
-> problem, you are probably going to want to wait for my patches to go in=
-
-> before you start moving things around, because it's going to conflict a=
-
-> bunch.=C2=A0 Thanks,
-
-No problem, it's expected to have some comments even for previous patchse=
-t.
-
-So rebasing is expected.
-
-Thanks,
-Qu
-
->=20
-> Josef
+a. the write hole doesn't happen with raid1, and your metadata is
+raid1 so any file system corruption is not related to the write hole
+b. the write hole can apply to your raid5 data stripes, but this is a
+rare case that happens with a crash or power failure during write and
+causes a stripe to be incompletely rewrite when it's being modified.
+That's rare conventional raid5, more rare on btrfs, but it can happen.
+c. to actually be affected by the write hole problem, the stripe with
+mismatching parity strip must have a missing data strip such as a bad
+sector making up one of the strips, or a failed device. If neither of
+those are the case, it's not the write hole, it's something else.
+d. before there's a device or sector failure, a scrub following a
+crash or power loss will correct the problem resulting from the write
+hole
 
 
---f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR--
 
---Io7PblDO7cd827y9z0kNnRTwJf68xN2sX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+> I did try running a scrub but had to abandon it as it wasn't proving
+> very useful.  It wasn't fixing the errors and wasn't providing any
+> messages that would help diagnose or fix them some other way - it only
+> seems to provide a count of the errors it didn't fix.
 
------BEGIN PGP SIGNATURE-----
+It can't fix them when the file system is mounted read only.
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5fNIAACgkQwj2R86El
-/qjSoAf/UXccCaTYOllWbBlj+P6WdzOuyLKByEgvkGy4G2H+4q/fhd0EuPQYcalj
-2iTpmm42kPuxRXsmeqlnArZHkAkqsVMtvWuDIvhTfjLWvucWY+LbOyLbqHLUdnAk
-3xjZQmKK18N/0+vwVAj7GbQz2IM7742aoks7Ugteg0fWAMAVsoow4A0H48TZybsp
-VGQmJEUWiBU7FQ1Wmw9FJuLeFrooB8NGMKUsIqjSHJE5cSb6o7j8rIZF29QBb7Ff
-+sZAHF+Ozsayd+o/lnyL6UlV+36Ke0MKJB8H9stKwq3kifrLpyfq5cb6m68j1nk+
-kdchdkqeUrWAmImpicLFGMU+sJvjIA==
-=1eox
------END PGP SIGNATURE-----
 
---Io7PblDO7cd827y9z0kNnRTwJf68xN2sX--
+>  That seems to
+> be general thing in that there seem plenty of ways an overall 'failed'
+> status can be returned to userspace, usually without anything being
+> logged.  That obviously makes sense if the request was to do something
+> stupid but if instead the error return is because corruption has been
+> found would it not be better to log an error?
+
+The most obvious case of corruption is a checksum mismatch (the
+onthefly checksum for a node/leaf/block compared to the recorded
+checksum). Btrfs always reports this.
+
+Parity strips are not checksummed. If parity is corrupt, it's only
+corrected on a scrub (or balance). They're not used during normal read
+operations. Upon degraded reads, parity is used to reconstruct data.
+Since there's no checksum, the parity is trusted, and bad parity will
+cause a corrupt reconstruction of data, and that corruption fails
+checksum - and Btrfs will tell you about it, and also EIO.
+
+So that leaves the less obvious cases of corruption where some
+metadata or data is corrupt in memory, and a valid checksum is
+computed on already corrupt data/metadata, and then written to disk.
+Now when Btrfs reads it, there's no checksum mismatch, and yet there
+is corruption. For metadata reads, the tree checker has gotten quite a
+bit better lately at sanity checking metadata. For data, well you're
+out of luck, the application will have to sanity check it and if not,
+then the data is just corrupt - but it's no different than any other
+file system. At least Btrfs gave you a chance. But that's the gotcha
+of bad RAM or other sources of bit flips in the storage stack.
+
+
+> > That looks like a bug. I'd try a newer btrfs-progs version. Kernel 5.1
+> > is EOL but I don't think that's related to the usage info. Still, tons
+> > of btrfs bugs fixed between 5.1 and 5.5...
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/?id=v5.5&id2=v5.1
+> >
+> > Including raid56 specific fixes:z
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/raid56.c?id=v5.5&id2=v5.1
+>
+> This was in response to posting dodgy output from btrfs fi usage.  My
+> output was from btrfs-progs v5.4 which, when I checked yesterday,
+> seemed to be the latest.  I am also running Linux 5.5.7.  It may have
+> been slightly older when the disk failed but would still have been
+> 5.5.x
+
+From six days ago, your dmesg:
+
+Sep 27 15:16:08 meije kernel:       Not tainted 5.1.10-arch1-1-ARCH #1
+
+Actually what I should have asked is whether you ever ran 5.2 - 5.2.14
+kernels because that series had a known corruption bug in it, fixed in
+5.2.15
+
+> Since my previous e-mail I have managed to get a 'btrfs device remove
+> missing' to work by reading all the files from userspace, deleting
+> those that returned I/O error and restoring from backup.  Even after
+> that the summary information is still wacky:
+>
+> WARNING: RAID56 detected, not implemented
+> Overall:
+>     Device size:   16.37TiB I
+>     Device allocated:   30.06GiB
+>     Device unallocated:   16.34TiB
+>     Device missing:      0.00B
+>     Used:   25.40GiB
+>     Free (estimated):      0.00B (min: 8.00EiB)
+>     Data ratio:       0.00
+>     Metadata ratio:       2.00
+>     Global reserve: 512.00MiB (used: 0.00B)
+>
+> is the clue in the warning message?  It looks like it is failing to
+> count any of the RAID5 blocks.
+
+I think btrf filesystem usage doesn't completely support raid56 is all
+it's saying.
+
+'btrfs fi df' and 'btrfs fi show' should show things correctly
+
+>
+> Point taken about device replace.  What would device replace do if the
+> remove step failed in the same way that device remove has been failing
+> for me recently?
+
+I don't understand the question. The device replace command includes
+'device add' and 'device remove' in one step, it just lacks the
+implied resize that happens with add and remove.
+
+
+
+> I'm a little disappointed we didn't get to the bottom of the bug that
+> was causing the free space cache to become corrupted when a balance
+> operation failed but when I asked what I could do to help I got no
+> reply to that part of my message (not just from you, from anyone on
+> the list).
+
+The free space cache isn't that important. It can be discarded and
+reconstructed. It's an optimization. I don't think it's checksummed
+anyway, instead corruption is determined by mismatching
+generation/transid? So it may not literally be corrupt, it's just
+ambiguous whether it can be relied upon, therefore it's marked for
+reconstruction.
+
+
+
+-- 
+Chris Murphy
