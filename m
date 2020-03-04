@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B86A31790C3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 14:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B66D1790D7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 14:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387910AbgCDNCt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 08:02:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36926 "EHLO mx2.suse.de"
+        id S1729286AbgCDNGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 08:06:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39140 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729175AbgCDNCt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 08:02:49 -0500
+        id S1729175AbgCDNGo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 08:06:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DC94BAE06;
-        Wed,  4 Mar 2020 13:02:46 +0000 (UTC)
-Subject: Re: [PATCH v2 06/10] btrfs: relocation: Use wrapper to replace
- open-coded edge linking
+        by mx2.suse.de (Postfix) with ESMTP id 653F3AC7B;
+        Wed,  4 Mar 2020 13:06:42 +0000 (UTC)
+Subject: Re: [PATCH v2 07/10] btrfs: relocation: Specify essential members for
+ alloc_backref_node()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200302094553.58827-1-wqu@suse.com>
- <20200302094553.58827-7-wqu@suse.com>
+ <20200302094553.58827-8-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <4fafe4d2-eeba-768c-ff3f-58699e49a094@suse.com>
-Date:   Wed, 4 Mar 2020 15:02:45 +0200
+Message-ID: <d416797a-c174-55a3-2fc4-4e7d31ab33ac@suse.com>
+Date:   Wed, 4 Mar 2020 15:06:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200302094553.58827-7-wqu@suse.com>
+In-Reply-To: <20200302094553.58827-8-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,26 +80,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2.03.20 г. 11:45 ч., Qu Wenruo wrote:
-> Since backref_edge is used to connect upper and lower backref nodes, and
-> need to access both nodes, some code can look pretty nasty:
-> 
-> 		list_add_tail(&edge->list[LOWER], &cur->upper);
-> 
-> The above code will link @cur to the LOWER side of the edge, while both
-> "LOWER" and "upper" words show up.
-> This can sometimes be very confusing for reader to grasp.
-> 
-> This patch introduce a new wrapper, link_backref_edge(), to handle the
-> linking behavior.
-> Which also has extra ASSERT() to ensure caller won't pass wrong nodes
-> in.
-> 
-> Also, this updates the comment of related lists of backref_node and
-> backref_edge, to make it more clear that each list points to what.
+> Bytenr and level are essential parameters for backref_node, thus it
+> makes sense to initial them at alloc time.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Apart from David's comment I don't have anything else to add and also
-the code is functionally the same so:
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/relocation.c | 25 ++++++++++++-------------
+>  1 file changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index c76849409c81..67a4a61eb86a 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -308,10 +308,12 @@ static void backref_cache_cleanup(struct backref_cache *cache)
+>  	ASSERT(!cache->nr_edges);
+>  }
+>  
+> -static struct backref_node *alloc_backref_node(struct backref_cache *cache)
+> +static struct backref_node *alloc_backref_node(struct backref_cache *cache,
+> +						u64 bytenr, int level)
+>  {
+>  	struct backref_node *node;
+>  
+> +	ASSERT(level >= 0 && level < BTRFS_MAX_LEVEL);
+>  	node = kzalloc(sizeof(*node), GFP_NOFS);
+>  	if (node) {
+>  		INIT_LIST_HEAD(&node->list);
+> @@ -319,6 +321,9 @@ static struct backref_node *alloc_backref_node(struct backref_cache *cache)
+>  		INIT_LIST_HEAD(&node->lower);
+>  		RB_CLEAR_NODE(&node->rb_node);
+>  		cache->nr_nodes++;
+> +
+> +		node->level = level;
+> +		node->bytenr = bytenr;
+>  	}
+
+nit: One suggestion for this function, feel free to ignore:
+
+What if you do it:
+if (!node)
+	return NULL
+
+and then have the initialization happen with just 1 level of nesting
+inside the function and not 2. That function is short and easy to
+understand but it might be a good time to refactor like that. If you
+think it's redundant then don't bother.
+
+>  	return node;
+>  }
+
+<snip>
