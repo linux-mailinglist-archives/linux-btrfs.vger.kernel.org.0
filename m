@@ -2,224 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB868178E79
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 11:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F589179044
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 13:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgCDKeI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 05:34:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36810 "EHLO mail.kernel.org"
+        id S2387937AbgCDMXv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 07:23:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40998 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbgCDKeI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 05:34:08 -0500
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC76820705
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2020 10:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583318048;
-        bh=bhsXzYzMoi4rRjwEGne9d8e8E6jUXmGPWL94YxKN190=;
-        h=From:To:Subject:Date:From;
-        b=M9bt3A19bO+amzLxGtBjnD+Ln4Y3xPVW01GEyqI9lXvyW+Ie61Te9F6uwIEbjmIjI
-         SSlmu5s81Vo6gDtZvcuhWwBiQg/iq6bjFNyOvfO00tq0/99Ed1ng/3S/x/RHnM+hh7
-         tE0l4e5bxV1caTxQztv2ntKqEWz6p6T++I6+HSBo=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: make ranged full fsyncs more efficient
-Date:   Wed,  4 Mar 2020 10:34:04 +0000
-Message-Id: <20200304103404.5571-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S2387776AbgCDMXv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 07:23:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6AFE6AC79;
+        Wed,  4 Mar 2020 12:23:49 +0000 (UTC)
+Subject: Re: [PATCH v2 05/10] btrfs: relocation: Refactor tree backref
+ processing into its own function
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200302094553.58827-1-wqu@suse.com>
+ <20200302094553.58827-6-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <da92b934-0463-bcdb-8c19-1de0aa763b1a@suse.com>
+Date:   Wed, 4 Mar 2020 14:23:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200302094553.58827-6-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-Commit 0c713cbab6200b ("Btrfs: fix race between ranged fsync and writeback
-of adjacent ranges") fixed a bug where we could end up with file extent
-items in a log tree that represent file ranges that overlap due to a race
-between the hole detection of a ranged full fsync and writeback for a
-different file range.
 
-The problem was solved by forcing any ranged full fsync to become a
-non-ranged full fsync - setting the range start to 0 and the end offset to
-LLONG_MAX. This was a simple solution because the code that detected and
-marked holes was very complex, it used to be done at copy_items() and
-implied several searches on the fs/subvolume tree. The drawback of that
-solution was that we started to flush delalloc for the entire file and
-wait for all the ordered extents to complete for ranged full fsyncs
-(including ordered extents covering ranges completely outside the given
-range). Fortunatelly ranged full fsyncs are not the most common case.
+On 2.03.20 г. 11:45 ч., Qu Wenruo wrote:
+> build_backref_tree() function is painfully long, as it has 3 big parts:
+> - Tree backref handling
+> - Weaving backref nodes
+> - Useless nodes pruning
+> 
+> This patch will move the tree backref handling into its own function,
+> handle_one_tree_backref().
+> 
+> And inside that function, the main works are determined by the backref
+> key:
+> - BTRFS_SHARED_BLOCK_REF_KEY
+>   We know the parent node bytenr directly.
+>   If the parent is cached, or it's root, call it a day.
+>   If the parent is not cached, add it pending list.
+> 
+> - BTRFS_TREE_BLOCK_REF_KEY
+>   The most complex work.
+>   We need to grab the fs root, do a tree search to locate all its
+>   parent nodes, weaving all needed edges, and put all uncached edges to
+>   pending edge list.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/relocation.c | 395 +++++++++++++++++++++---------------------
+>  1 file changed, 202 insertions(+), 193 deletions(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index d1e1d613ab98..04416489d87a 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -666,6 +666,206 @@ static struct btrfs_root *read_fs_root(struct btrfs_fs_info *fs_info,
+>  	return btrfs_get_fs_root(fs_info, &key, false);
+>  }
+>  
+> +static int handle_one_tree_backref(struct reloc_control *rc,
+> +				   struct list_head *useless_node,
+> +				   struct list_head *pending_edge,
+> +				   struct btrfs_path *path,
+> +				   struct btrfs_key *ref_key,
+> +				   struct btrfs_key *tree_key,
+> +				   struct backref_node *cur)
 
-However a later fix for detecting and marking holes was made by commit
-0e56315ca147b3 ("Btrfs: fix missing hole after hole punching and fsync
-when using NO_HOLES") and it simplified a lot the detection of holes,
-and now copy_items() no longer does it and we do it in a much more simple
-way at btrfs_log_holes(). This makes it now possible to simply make the
-code that detects holes to operate only on the initial range and no longer
-need to operate on the whole file, while also avoiding the need to flush
-delalloc for the entire file and wait for ordered extents that cover
-ranges that don't overlap the given range.
+That function has 7 parameters and while @rc and @path are somewhat
+self-explanatory others are not. Also it's really doing 2 distinct
+things which, in my opinion, would be much better split across 2
+functions - 1 handling BTRFS_SHARED_BLOCK_REF_KEY and the other handling
+BTRFS_TREE_BLOCK_REF_KEY. For example the @tree_key,@useless_node and
+@path are not used in BTRFS_SHARED_BLOCK_REF_KEY case. You'd have two
+functions named:
 
-So this change just does that, making any ranged full fsync to actually
-operate only on the given range and not the whole file.
+handle_(in)?direct_tree_backref
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c     | 13 -----------
- fs/btrfs/tree-log.c | 64 +++++++++++++++++++++++++++++++++++++----------------
- 2 files changed, 45 insertions(+), 32 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 6ba39f11580c..617f0d7f222f 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2094,19 +2094,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	atomic_inc(&root->log_batch);
- 
- 	/*
--	 * If the inode needs a full sync, make sure we use a full range to
--	 * avoid log tree corruption, due to hole detection racing with ordered
--	 * extent completion for adjacent ranges, and assertion failures during
--	 * hole detection. Do this while holding the inode lock, to avoid races
--	 * with other tasks.
--	 */
--	if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
--		     &BTRFS_I(inode)->runtime_flags)) {
--		start = 0;
--		end = LLONG_MAX;
--	}
--
--	/*
- 	 * Before we acquired the inode's lock, someone may have dirtied more
- 	 * pages in the target range. We need to make sure that writeback for
- 	 * any such pages does not start while we are logging the inode, because
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 19c107be9ef6..53e69791cf6b 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4534,29 +4534,43 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
- static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 			   struct btrfs_root *root,
- 			   struct btrfs_inode *inode,
--			   struct btrfs_path *path)
-+			   struct btrfs_path *path,
-+			   u64 start,
-+			   u64 end)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-+	const u64 sectorsize = fs_info->sectorsize;
- 	struct btrfs_key key;
- 	const u64 ino = btrfs_ino(inode);
- 	const u64 i_size = i_size_read(&inode->vfs_inode);
--	u64 prev_extent_end = 0;
-+	u64 prev_extent_end;
- 	int ret;
- 
- 	if (!btrfs_fs_incompat(fs_info, NO_HOLES) || i_size == 0)
- 		return 0;
- 
-+	start = ALIGN_DOWN(start, sectorsize);
-+	end = ALIGN(end, sectorsize);
-+	prev_extent_end = start;
-+
- 	key.objectid = ino;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
--	key.offset = 0;
-+	key.offset = start;
- 
- 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
- 	if (ret < 0)
- 		return ret;
- 
-+	if (ret > 0 && path->slots[0] > 0) {
-+		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0] - 1);
-+		if (key.objectid == ino && key.type == BTRFS_EXTENT_DATA_KEY)
-+			path->slots[0]--;
-+	}
-+
- 	while (true) {
- 		struct btrfs_file_extent_item *extent;
- 		struct extent_buffer *leaf = path->nodes[0];
-+		u64 extent_end;
- 		u64 len;
- 
- 		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
-@@ -4574,9 +4588,28 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 		if (key.objectid != ino || key.type != BTRFS_EXTENT_DATA_KEY)
- 			break;
- 
-+		extent = btrfs_item_ptr(leaf, path->slots[0],
-+					struct btrfs_file_extent_item);
-+		if (btrfs_file_extent_type(leaf, extent) ==
-+		    BTRFS_FILE_EXTENT_INLINE) {
-+			len = btrfs_file_extent_ram_bytes(leaf, extent);
-+			extent_end = ALIGN(key.offset + len, sectorsize);
-+		} else {
-+			len = btrfs_file_extent_num_bytes(leaf, extent);
-+			extent_end = key.offset + len;
-+		}
-+
-+		if (extent_end <= start)
-+			goto next_slot;
-+
- 		/* We have a hole, log it. */
- 		if (prev_extent_end < key.offset) {
--			const u64 hole_len = key.offset - prev_extent_end;
-+			u64 hole_len;
-+
-+			if (key.offset >= end)
-+				hole_len = end - prev_extent_end;
-+			else
-+				hole_len = key.offset - prev_extent_end;
- 
- 			/*
- 			 * Release the path to avoid deadlocks with other code
-@@ -4606,27 +4639,20 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 			leaf = path->nodes[0];
- 		}
- 
--		extent = btrfs_item_ptr(leaf, path->slots[0],
--					struct btrfs_file_extent_item);
--		if (btrfs_file_extent_type(leaf, extent) ==
--		    BTRFS_FILE_EXTENT_INLINE) {
--			len = btrfs_file_extent_ram_bytes(leaf, extent);
--			prev_extent_end = ALIGN(key.offset + len,
--						fs_info->sectorsize);
--		} else {
--			len = btrfs_file_extent_num_bytes(leaf, extent);
--			prev_extent_end = key.offset + len;
--		}
--
-+		prev_extent_end = min(extent_end, end);
-+		if (extent_end >= end)
-+			break;
-+next_slot:
- 		path->slots[0]++;
- 		cond_resched();
- 	}
- 
--	if (prev_extent_end < i_size) {
-+	if (prev_extent_end < end && prev_extent_end < i_size) {
- 		u64 hole_len;
- 
- 		btrfs_release_path(path);
--		hole_len = ALIGN(i_size - prev_extent_end, fs_info->sectorsize);
-+		hole_len = min(ALIGN(i_size, sectorsize), end);
-+		hole_len -= prev_extent_end;
- 		ret = btrfs_insert_file_extent(trans, root->log_root,
- 					       ino, prev_extent_end, 0, 0,
- 					       hole_len, 0, hole_len,
-@@ -5259,7 +5285,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	if (max_key.type >= BTRFS_EXTENT_DATA_KEY && !fast_search) {
- 		btrfs_release_path(path);
- 		btrfs_release_path(dst_path);
--		err = btrfs_log_holes(trans, root, inode, path);
-+		err = btrfs_log_holes(trans, root, inode, path, start, end);
- 		if (err)
- 			goto out_unlock;
- 	}
--- 
-2.11.0
-
+One will take only 4 parameters the other will have to, unfortunately,
+take all 7.
