@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0EA178753
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 02:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEDC178759
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 02:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgCDBAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 20:00:43 -0500
-Received: from mout.gmx.net ([212.227.15.18]:54685 "EHLO mout.gmx.net"
+        id S2387419AbgCDBCO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 20:02:14 -0500
+Received: from mout.gmx.net ([212.227.15.15]:55061 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgCDBAm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Mar 2020 20:00:42 -0500
+        id S1727854AbgCDBCO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 20:02:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583283635;
-        bh=nU7ndp1PZLwXq/7frlnp1PAB04fTmtwHtfBAjHKUbHI=;
+        s=badeba3b8450; t=1583283726;
+        bh=F3IX/ogGjG1gjW3hGFUjUOsfXJ6T7GEvyojOxiTfDfs=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MrHbH0BVSHJlvoFwprEo2HUKbwdMuYn46zv0OTmjnS3hEWwFm/a7uln2hJ4l4u0iX
-         kLX4FCWbPvd76ht/0YkWBhOMt/DogZ8tz/EUuTkd+6IZv1FWDd4H1QEE5WY+FnjZdv
-         nZAJD0zlWnIXHJpARi+abo+07FMVrkoI0fI/wBFE=
+        b=VJ+Zk9eIspBCkASE53pqXVZgVBLvFrjyquhaZzc3mk8MyJUU9+CIvjlxVO26VasIS
+         evTPxDS/rppcxNEyQEGUss7oCg7LuYtI06c5VwWxUanzGoCGlQRsQxhnOvsk0auz6M
+         hhH6DaEZKyZ1lpP60cgrW2iJd/Qib39ybLOxAjvM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWASe-1itDi41sB0-00XbxY; Wed, 04
- Mar 2020 02:00:35 +0100
-Subject: Re: [PATCH v2 05/10] btrfs: relocation: Refactor tree backref
- processing into its own function
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUosN-1j0fbb16cT-00Qi86; Wed, 04
+ Mar 2020 02:02:06 +0100
+Subject: Re: [PATCH v2 06/10] btrfs: relocation: Use wrapper to replace
+ open-coded edge linking
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20200302094553.58827-1-wqu@suse.com>
- <20200302094553.58827-6-wqu@suse.com> <20200303172917.GK2902@twin.jikos.cz>
+ <20200302094553.58827-7-wqu@suse.com> <20200303173015.GL2902@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,133 +53,189 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8e35a517-9fdd-cfed-674f-b22602e6be7b@gmx.com>
-Date:   Wed, 4 Mar 2020 09:00:31 +0800
+Message-ID: <014a0721-4aa6-9062-19c8-0ec1c35b0aec@gmx.com>
+Date:   Wed, 4 Mar 2020 09:02:02 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200303172917.GK2902@twin.jikos.cz>
+In-Reply-To: <20200303173015.GL2902@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="UZUqh3wxv7F7FRGa2z9Ug9AGLIsQiwGzc"
-X-Provags-ID: V03:K1:U6VbwBUz5WnI06PbBQjk1JtH0hQ+G42ypWd+qXrvvT4gz9ZBIl9
- QYPsODj5I+PuXXz/e3ancSkC255pqfxgF/PrBSpGvagkkaEx5Y3kBgohwCVJcruxKMngXyH
- ot9aVSDG8htI4pWJ3KAlltrkF40cfHezx6HgWx48IZuG2H65e/FZKRdPdMoL9Lkm6TKx67Q
- X04VDkT9j81X2PHj39rEA==
+ boundary="K7nmyHRErrF23rlmP468ZLw8X6cezxQgk"
+X-Provags-ID: V03:K1:YtEbhbDfAtJBURkh/1PZxqGxEWKwoPgMDnQ7CfmZUaY8OkefX8z
+ 4fWDHHVtQgxIXKUYW6vU1+c6KD+XL/mNEINuwAlVWPk2ZiKH6r2LLST/Sh6ZLkjXSynpmGP
+ mzam0aurbtuTMFL7g/zAe6kTN0HfLInxoU0XpYej9KKmQB0LZDNxuQN27/7jeh5l2CR/iDm
+ ddy7PUPgJxH9dvZokUlAw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4oWlCswgg/I=:09EioO3y/29ENmC27iTEGi
- wpY3veg0xFIoGMFdmJNX0nDO6sM9+jDiDfTwYPPu9xh760YDvmjKtrbOolwuBtOGXP1093bfC
- wBYHp87Vs6Y7cjqMpwjAufrcp4/LcKCP1dSPCljgX1YcKBePE98n1Vb+6RNrLaaTIXVIObrl6
- G2G/K+Fp+0s4is59ZZ0l7IzGzSkn/WzLJIzMT5Dz90ah5zsot9kWRkqT8lrSCmxcoWpInRJqs
- /ER3Cn4Mj3I/R7G+vqaestm+xD91bj/bnR87WyjGKo5qp49hgZeuCMvpgqdSqd8/zET9VLaCQ
- oghytCmBRH4AJt2WFd/oRIfIrZAIWFuSr2GxL5C5FqnvNxOzFjgEAUZXUqqGfsAQERF7DMrbA
- FPJumZnI6cuWheqeDNs8jUe+8dzbX1bjS4q8n31XEkYcbftG9Zl/LTL/MdwdNLDZFNaPE1uVG
- PUbWoEDTOEwKPizFtpGFAhZJ4DeID+VeK8vpjo6aQNJ4VjyIc3Wu4kz7W7T/ibPpq6Ar4zbD1
- 3qTPdcByWqnwlPpYsoHR6NRljtcWuAsNq7It8Vi7ze7Jt8Yra6LYxrTs8wB17mO9tbAoRGJ/Q
- UBjvGEk5gmMB20bgcaf4yUk2EUwnogtwiyGNtXMVfFgLAJTfzMmGxh5aUE6ls4S7QMWkbxCFe
- KR51jIxQCApPy+9a6JVJrw7LmDsb3U//wywO9oYR9NI1b79Xl4So+3pS781K6VTqIbsgKb4e4
- cSTzkzVIpJjV5g3k6Rk9qNrA2jXqSTzIx+QD5PX8kBHwywBsI+b4keUFMS01l9NUxJAmmGMym
- N806O4as8SpEKjdiUHBRkZ5SxRi4irCHGCiuZ/yju+BDrsT7tztSLMxjO+ReuZUY+P8jxJLHg
- hA4CW1F2cFbd5HpWoJXBjQf4ew2IWzxySJWaGS7ucAMVhf6f5U9MZeKV6ty6LZqYgEnUyq5kA
- 2ngFb/B/iyQIbMpmvu7p1OwBHkfKN4w4Exz9zw6lzRRRuVyUZL+BJNhIeeXar1pV4Vvr95GyU
- oc85/t0rehatrYWfLUeHldYSScZiR1RCzCJdIkub/5dZZNs6J6VmrzSctj65/86KMgPQFoco1
- S46HOxBteme8O4kP6/ohi4brg7/awC4RFKbOJgl9hBI8MDEpD14KPz2R7bhQrAKTSQGfNgbVD
- 5T43Ar9o2P1sfxQmPU9pxSTXGd3XkjV2tTIi8tvXwaNwExiHYGqppG+6s+SPxiVGzaGD+p2af
- WUL73znYfASyw9trC
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yNJHRsJP0G8=:pM5fkzKOdHcEJT7vbWMbwi
+ YVmABW4SKhkMzeMkl4SG4lPPzIuiZ9IEN2bxWAV6amw51Py45i3GyZ7YgrDSeKoqmgshx5/o+
+ zXu+UHxO/tONbafWiTNQB05XjZcBOBLbqiZHDrE69bHnp3WTBrME63pTCAHSqc7r5QJeTtKqg
+ PxAGugN122Yv2PEJwoVKm0Ztv7L/K9dq30Cdny4HjLXc4L18Z3PdKN+Agqq81a1yLGU7sr4bj
+ 8cCct8lFJF6r59TWW3btiNwuLilsEEg9G2n8tyPrrZUlNo0f9hL/gt06+pJNAecZR7roFfB+4
+ LZAqnM1EPcTzmTRFaU6omH0wK8QqgNJSIbZZCvWGy9oQT9R0TWsMbkQtK7cpmOE6/EMa9RVeh
+ 64dc/k1QAavxXWxgjzVaLg7vqUOeOGxIjZsWwmJO7Z1iuoUKL0xGBst7gVTOpU9XcZ9Fg5bJG
+ eGFm+7e83qyNaGCLfFhP4R6SaeyW86T3+MSv6/79h5eG8gmCJ4p281z68o1ujEObqd73eIckB
+ Ns5QR1z6FICDuAMCUfB/+ulWYrPCfp27PaCNIqMG4ZhnXjgv4jdlFwBn3WvvSg4/NvNw0sasK
+ awcevX4wZpCSsE7GKHf2HgRJXhLAG1MBBZ7zCFxNabyUKJG55nJwbz9mlF2mDcSw0kxr17rLT
+ kqHevFxPDOkdLd8BelZZfWzT1QiSZJ6cTI51HIQnBgDhQSj3EmXXERnuiS8v2ekjAaqUYFLVk
+ xyEcWAN+dEhNFEt+cOT7EL8kVRvcHztpv9bT4Ci4OmXAMRKBMWy22Fgw832ssrAzxVWHuUewt
+ L8WiFxTzdqLdyvL8Zn792JRhu8+HmT0mvtZS3LNL8a/DzAO2GvaIwv/2bnDZaOeklxuGaOYok
+ BI8PGkhJv1JG4lWrCyXUtYPYlUhSAkxD1dN2CJfckp/PTQeWHtFXkwAzPTnPVSB0HfosGkuHz
+ 8SJhsrtmhaV7w98T3gEW+AVZ6nmKFMQKOqrzaMjc01CwmsjObvHBhYKXQeWu1GNj4z/uWNwiE
+ Cpsa8TuwhCK31M+c1TBYVN/npCrLpqG6ANaRjqspMmg9CejbwPSP2pUImO3gbE0Byav95LVic
+ dKodmTBEu5iLNHxGur4uLa44h+mpQo49kmXhzYW2FWiAZfsqeLpHqHqqre9+rBN/Poi+WslI9
+ BhHJR17pZJTwGRA9dqeig9dyhF+81SfrYy4/8g3UI4oQ1XF1ECbx79a/hfd9DjQ/r8/JZgoSN
+ fKOleLhaIWmTiFE1X
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UZUqh3wxv7F7FRGa2z9Ug9AGLIsQiwGzc
-Content-Type: multipart/mixed; boundary="yjhSzXiX84iPhGabxCUMRccg4qdzHKUaA"
+--K7nmyHRErrF23rlmP468ZLw8X6cezxQgk
+Content-Type: multipart/mixed; boundary="GLHdrxjw4ePDzUHsz0g45r5vgVTFbxIFw"
 
---yjhSzXiX84iPhGabxCUMRccg4qdzHKUaA
+--GLHdrxjw4ePDzUHsz0g45r5vgVTFbxIFw
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/3/4 =E4=B8=8A=E5=8D=881:29, David Sterba wrote:
-> On Mon, Mar 02, 2020 at 05:45:48PM +0800, Qu Wenruo wrote:
->> build_backref_tree() function is painfully long, as it has 3 big parts=
-:
->> - Tree backref handling
->> - Weaving backref nodes
->> - Useless nodes pruning
+On 2020/3/4 =E4=B8=8A=E5=8D=881:30, David Sterba wrote:
+> On Mon, Mar 02, 2020 at 05:45:49PM +0800, Qu Wenruo wrote:
+>> Since backref_edge is used to connect upper and lower backref nodes, a=
+nd
+>> need to access both nodes, some code can look pretty nasty:
+>>
+>> 		list_add_tail(&edge->list[LOWER], &cur->upper);
+>>
+>> The above code will link @cur to the LOWER side of the edge, while bot=
+h
+>> "LOWER" and "upper" words show up.
+>> This can sometimes be very confusing for reader to grasp.
+>>
+>> This patch introduce a new wrapper, link_backref_edge(), to handle the=
+
+>> linking behavior.
+>> Which also has extra ASSERT() to ensure caller won't pass wrong nodes
+>> in.
+>>
+>> Also, this updates the comment of related lists of backref_node and
+>> backref_edge, to make it more clear that each list points to what.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/relocation.c | 53 ++++++++++++++++++++++++++++++------------=
+-
+>>  1 file changed, 37 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+>> index 04416489d87a..c76849409c81 100644
+>> --- a/fs/btrfs/relocation.c
+>> +++ b/fs/btrfs/relocation.c
+>> @@ -91,10 +91,12 @@ struct backref_node {
+>>  	u64 owner;
+>>  	/* link to pending, changed or detached list */
+>>  	struct list_head list;
+>> -	/* list of upper level blocks reference this block */
+>> +
+>> +	/* List of upper level edges, which links this node to its parent(s)=
+ */
+>>  	struct list_head upper;
+>> -	/* list of child blocks in the cache */
+>> +	/* List of lower level edges, which links this node to its child(ren=
+) */
+>>  	struct list_head lower;
+>> +
+>>  	/* NULL if this node is not tree root */
+>>  	struct btrfs_root *root;
+>>  	/* extent buffer got by COW the block */
+>> @@ -123,17 +125,26 @@ struct backref_node {
+>>  	unsigned int detached:1;
+>>  };
+>> =20
+>> +#define LOWER	0
+>> +#define UPPER	1
+>> +#define RELOCATION_RESERVED_NODES	256
+>>  /*
+>> - * present a block pointer in the backref cache
+>> + * present an edge connecting upper and lower backref nodes.
+>>   */
+>>  struct backref_edge {
+>> +	/*
+>> +	 * list[LOWER] is linked to backref_node::upper of lower level node,=
+
+>> +	 * and list[UPPER] is linked to backref_node::lower of upper level n=
+ode.
+>> +	 *
+>> +	 * Also, build_backref_tree() uses list[UPPER] for pending edges, be=
+fore
+>> +	 * linking list[UPPER] to its upper level nodes.
+>> +	 */
+>>  	struct list_head list[2];
+>> +
+>> +	/* Two related nodes */
+>>  	struct backref_node *node[2];
+>>  };
+>> =20
+>> -#define LOWER	0
+>> -#define UPPER	1
+>> -#define RELOCATION_RESERVED_NODES	256
+>> =20
+>>  struct backref_cache {
+>>  	/* red black tree of all backref nodes in the cache */
+>> @@ -332,6 +343,22 @@ static struct backref_edge *alloc_backref_edge(st=
+ruct backref_cache *cache)
+>>  	return edge;
+>>  }
+>> =20
+>> +#define		LINK_LOWER	(1 << 0)
+>> +#define		LINK_UPPER	(1 << 1)
+>> +static inline void link_backref_edge(struct backref_edge *edge,
+>> +				     struct backref_node *lower,
+>> +				     struct backref_node *upper,
+>> +				     int link_which)
 >=20
-> So this is the first patch that mentions the 'useless' nodes. This seem=
-s
-> like a misnomer or confusing at best but I haven't read enough code to
-> see if it's really the right name.
+> Again not a static inline, but plain static function.
 
-The 'useless' is from the original code, there is a list called 'useless'=
-=2E
+Oh, I mixed my further plan with my current code...
 
-It's not that useless, those nodes are just ignored, but still cached to
-prevent extra lookup.
+It would be moved to backref.h, which have to be static inline.
 
-Hopes there would be a better name.
-
->=20
-> Also the term 'weaving', that seems to be added by you. Did you mean
-> splicing or merging?
->=20
-
-It's complex, but definitely not splicing or merge.
-
-The overall workflow looks like this:
-
-1) Iteration works build a map like this: (start point is X)
-
-      A       B
-       ^     ^
-        \   /
-          C
-          ^
-          |
-          X
-
-   At this stage, it's single directional, means we can only go
-   X->C, C->A, C->B
-
-2) Weaving part makes the map bi-directional
-      A       B
-       ^     ^
-        \   /
-         v v
-          C
-          ^
-          |
-          v
-          X
-
-   That's the weaving part.
-   Any better naming is welcomed.
+Will remove the inline prefix in next version.
 
 Thanks,
 Qu
+>=20
+>> +{
+>> +	ASSERT(upper && lower && upper->level =3D=3D lower->level + 1);
+>> +	edge->node[LOWER] =3D lower;
+>> +	edge->node[UPPER] =3D upper;
+>> +	if (link_which & LINK_LOWER)
+>> +		list_add_tail(&edge->list[LOWER], &lower->upper);
+>> +	if (link_which & LINK_UPPER)
+>> +		list_add_tail(&edge->list[UPPER], &upper->lower);
+>> +}
 
 
---yjhSzXiX84iPhGabxCUMRccg4qdzHKUaA--
+--GLHdrxjw4ePDzUHsz0g45r5vgVTFbxIFw--
 
---UZUqh3wxv7F7FRGa2z9Ug9AGLIsQiwGzc
+--K7nmyHRErrF23rlmP468ZLw8X6cezxQgk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5e/a8ACgkQwj2R86El
-/qh4MAf+N2dKvkXsFvuL1HXCzSY0yGMsLPhN6+6GecL5LzNLdW0l9C3HtvFvvR52
-qcJzPIW0fdQi7bsPbdAYLJyalK6aD0zbtQ+jV48aInJQSuELImrDoClu+FI8jZ2A
-35Qs3wGveOO2cK6O1f6blFTI3arCzLJNrmXGiNTpq5mgDAsu0Rp3oJ0QxNbvvHRP
-kVkLvgE0yUJrtiWBoX5Rf0dyhvBWha9iHEcmEaj+awmhh5pCcMaZ3HFagdVHal/1
-LKbm+OVKjQMaXWO/2KMadCfyfnXwpQxTv7GcQ5LrUJuWATo9J8yOv3ZYV5z/ggJE
-6iSAXRqa4aeAJKvrwVMVZwSW2JZYpQ==
-=APRj
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5e/goACgkQwj2R86El
+/qhlAQf/Vc88CTsfWTUFf4sak4Rp8HNCzyqiQxw9fs8qrbvFG4g94TlxBOIFNOsg
+t4L2JsVJrxuq7szbcDnZWIKb9Sq7NLrxY0nLsQ0scl23+BaeyBEQmmbwQLWA3dhe
+bY+FIrZgHRTt/0HBV2ty13Hh6qRZPwjJaxqiDio23Zrys1Gg2L5vVB8G5JK9Lr0s
+L3it6DfdUDbBiKI3da3GqK8pkqDAOBuIBMSicWu9nIamkvsPsdswzSW0xWuehDyP
+kXJiqFHvBGssKoLY71rBkjLhYWOG3rpavUTTY3r3IioPuNSm7i85xEzm1+Lzjtmc
+OpvSVWG3iwA0AskNd8Jmqwy2p8/Dbw==
+=GukJ
 -----END PGP SIGNATURE-----
 
---UZUqh3wxv7F7FRGa2z9Ug9AGLIsQiwGzc--
+--K7nmyHRErrF23rlmP468ZLw8X6cezxQgk--
