@@ -2,36 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C40BB1788B3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 03:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A021789C2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 05:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387469AbgCDC4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 21:56:02 -0500
-Received: from mout.gmx.net ([212.227.17.22]:59187 "EHLO mout.gmx.net"
+        id S1727026AbgCDEyh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 23:54:37 -0500
+Received: from mout.gmx.net ([212.227.15.18]:52977 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387398AbgCDC4B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Mar 2020 21:56:01 -0500
+        id S1726094AbgCDEyg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 23:54:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583290543;
-        bh=R/N+4N3wkbGXvxGNJEC2kKs7RCQ7TPhnheYa5i0iWf4=;
+        s=badeba3b8450; t=1583297670;
+        bh=ZIp6aKepBxU41Z2s0STpRHeYjKnIeCC3tklx7wEspuQ=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=l8Wf49gzVx+DmrBydK832aaSAcXp+Dc0+gUrdBg0h32uHdS3dUJPks2GhVquLhYN+
-         6Fe9MBqF+Qnz1hhKcac1aXtMQ/7DC+4rVcm0ubnfzHJw73BaP4rFK7/cNDMhNMFs/I
-         De0yFLGPISOk7f0KbheJ7EmTQjeObTnDuo9vFnEQ=
+        b=BKz+Mp7M1gqJl0XlF+XaKuqFHo2TpWrq5nlzun2lrNCdDin17VALSnaPYyxBSB4Uj
+         ya1Cb3rHOk+o3nBm3cz3Ageg5pjcwo4lRdBaoBL/rS13CvQ8SbqloPwM3iSxU3c1ox
+         l3PqvqJD3N9yh1G2rQllxwbD6UmP5GujnXJ0E+qk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1ijWgC2MGs-00Pr8t; Wed, 04
- Mar 2020 03:55:43 +0100
-Subject: Re: [PATCH] btrfs-progs: convert, warn if converting a fs which won't
- mount
-To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>
-References: <1582877026-5487-1-git-send-email-anand.jain@oracle.com>
- <af69d1ab-4609-d603-980c-b8a6cfb87f43@gmx.com>
- <39c3e381-b49e-a571-d058-a01734b8b4a9@oracle.com>
- <20200303174422.GM2902@twin.jikos.cz>
- <fc02b904-5af5-035f-bb62-a2982409ffbe@oracle.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvrL-1jahej3B6L-00hPUz; Wed, 04
+ Mar 2020 05:54:30 +0100
+Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
+ to backref.c
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200303071409.57982-1-wqu@suse.com>
+ <b6520f1a-4849-4390-6aa8-e08e69bebcd8@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -57,131 +53,126 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6f9bf93f-30bf-2a1a-b345-f42c41ac4d1a@gmx.com>
-Date:   Wed, 4 Mar 2020 10:55:36 +0800
+Message-ID: <886e97a1-2dff-7a1e-1324-6c389bb972b9@gmx.com>
+Date:   Wed, 4 Mar 2020 12:54:24 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <fc02b904-5af5-035f-bb62-a2982409ffbe@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mEJ9/FZs+TgxJmQEutkKq0Ez+S1cbiR8aFsj8avorRDl7cLpPQE
- KBL6/gun1gHiex6Ozmp4DwW3fTR74t3+q9lL+9VnXQP+mvyyM1HGrPy90i6oTbFSdGVoYBe
- 2DvicU4kzpI8ZNg2PJF/PMFmBT+09ULoOn/IVjnHPS4VMn1d8J/Yp1y7w/wppt5bYQ52rFZ
- Y2Ll38WSzLEt0dh5iMFjQ==
+In-Reply-To: <b6520f1a-4849-4390-6aa8-e08e69bebcd8@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Io7PblDO7cd827y9z0kNnRTwJf68xN2sX"
+X-Provags-ID: V03:K1:8EG2YrCJppyitMVLrOVMaFXMVEd1UTk6JeGIws2JFhke2WE0mnV
+ V6vzyfZFwcUBlrHIq7YhY/xl+lR4Kc/4XokQ/Iy29pNI8ZqDEONo3/mH6mXPNEFMK0BbCZg
+ OeDUFLTmAN15RGahB/WiMjIT6R9CEA42p7qrEyiq7oJPLKPPBBnPBfBgCARMqs4BgKY0f15
+ pRY2Lx8FGAhcjbgjVRnMA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JcohaskGZLc=:OpnrCI0WWXrgsrOVX9p9cB
- HrtR8ixn+KNz6VdEZl7YjYVz7F8tqGm4G2JdRqjM8KI6v2g9KhVh562zYz5socW0zLeX5xtM1
- uhMa31gt1mirkIZsArA7DNoEpoUzxIFvBf74CYFLO0xbtbUvfA2Szjj4m273E9u4//t5xh2hB
- LvqQfTyP0jKUFaov3N+etf2GJAvmFklqGJt8VrjFXM53qL5OF/Y+WroNjJ42dXNaWceKMCDg7
- PgpiwORpSsJMyiu1R9FjpJ89jmBPa/DhO5sFq0a6mcDp7ehGLrZE51aAyc363y4EqgpkpVWZx
- O8JCkEIg73+zLevHmkiFH48HYx0x4XVd7G8qCi6Y5ycVM0PfCvRlE2qY/n96Nte4H9oJ4LFk9
- OPXuJsUmm8jyCRwjEtOalEJ46yjtnybi1vLUnBjKvI0N/XCxid5sp4fKxNKj8yPX3U4HqZYtP
- 6iKbMuXhkbGW+/oWc5fzKNgSlr1qg2ELoWOpInsuVl4Z9Hkdp2fd9UV72L1DlPSoNamuv1GJ3
- 6hNyp/lFBA5LQ+ExZrN5GnjLTrqXmt6zPpHtyWmVnzFGCMDcwmtA/OLX0FAPEhN6SwofMtyGy
- x2WhA9yPT84AXqP4NC2s/LTpyX+xmw7XTuyDzeUsba5sEVo+z1eZjei9mde+mGZVzK5LgL7b6
- e7CgBEEcD0u01FFrEMNk0+ZPF7cV71KlZVEtljwKsBnbhpmJlGQ4GOA+ky9dCjyOsqLupD1wj
- 84/NH0BO0b3TedzCRKylIYVZQuqW/hrl1n0yeG1D7fg1W/h09N+2bH6dNxlgTcWW2N+Ut5gB5
- VWsHFrW1Mhz+pn+PxNzxTjLm1sbDyv/n0NkMAXU5kKFexU0aofz7xuQqA1XgVxaUlyW8spkaJ
- 9UQG7ciBoiS9qZR54ESiIXqkjJRc6QIyHd3v3sAhRdWBdrlK5AQi8XMaKn/ggObnnEYDEt8nx
- CFK1dtVSxI4tcXymUsG3lkEb/Nm1aJSwrBQYa7dsopu0+BC8dQA3JPCESwAXzIdoznvQZVzvv
- DwegfCWxnPcqAEC0NwHTaNeYky8TYblWDfUsW9mew/7K/OHLjkNFJt6cN68oSE35ZbH0rDN5e
- swztTUqcmQScOB5a6/YdKwvVhYlBgWIDA4o7w/cOiJAYlmk/tWSAfcPzjDaR78Wz1JJUPNKhg
- UoxP60pOJEdCGmWXTe1M7uSGNvgQjWheoPfLbzpsIpBhABomHWnWtGorua7Fvc6lrtlbWDwQJ
- LY/oFXtQQvIG0SGnF
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d744VwENCYY=:oeLgHntov1tA7IUfghP99P
+ Fl62AGM7VKDbGiKPDWyhwnn3JKevY97Q32N3ez6Gkieq1kvsxCUZ+96N8xMFO2gtJrHXhYPmP
+ 7V/eV7ZWAjHXbk5RSgAd7wmUREcQC7wF8Vp5A/L2u2sp+ka27G5oQQnXramcJTxaDDVm79YMJ
+ W1Ohvo7VOCxHi28yDGIqX4vq9B8Sxdr0uPbKAfHCUAJBFkwGQQDzWW0wT9c/07fONm2FbFty8
+ YCo3TRivavsKsG3yzkAp/S2rm6w6Dv+gjqLGuWBvqaHO/KhH5+Mk/kwZsTgVyujh4SuEgxq+4
+ FUXwR6luEn+JdQHKevh5hxa23Ta19JrBQUU4H9WKM06DYAM/0SJbLYDU6Gfo3hii7snnRDlwc
+ xl7YVDL0uzvmBQ5QS/Ga3aVop711XT/3cw34uIP/aeiYVIWQwM0TWxtMG7rC+evr+Dbb2Eq+w
+ e8t8PpFKOG1gsXHmCOUgz1gvnBQh9ycvqNUTkRYZfjVWA++Ai6teLXAAu2KRRqDu6DqPWhees
+ YDbHtImfOVkJ9ECei4ppoZDi78NJIO2iGiyY2a8TntXW7dtoC605mvO5lw8k4ti9nza/A/QiG
+ ZAgFcGPC7tuqBgEGkcbS5987hSCdsrY5u5Y/FA+6yPZBAJXMb3SmIjrTIQGQsrPdn6hpMmsPA
+ SE6VH9JTTXBzZVOb/zyB1Esomp7pPhq5Wp+LDWahulZtcQxfpJT8g75g01MKdVq0Gy7lUb/D6
+ lOe/YWthP8BG51p6reGQGksH/FafZ0QJ8WS8H9/V15/rZ74zgH/cDxKoxpIi+zJCQ+NUnmPeb
+ 1ivE064bGuP2lRWrvVjdcMutUgoW+Frflp4C+/kPuscCJWsUBJgpLHurUZEqfdjXf+wn1CPKc
+ azHi5a6DQu8DoITQCTnHOc7XJoeGdKlfSUtkU0UzV3ubQQu7R6ontoHFoJeE0Ak2cxeq0PEla
+ m0F9YZA3GqMCZKug9UTce19tsmv7eeiStcrtwYiXc6yFgy4ocGiYpamFLOlE+2EzamDl4jCXL
+ r5mzlUw+mUq9NeMZiiDv9txDlUad10sJHxTdiCXrt4Nf+nd/m95cCky62MRAcbdScgMhID42b
+ RPGxxmroDASXKuWUcQ84UJVYTQvMZGU8O3fttY4rN4JlZ1oR6OgT3d254t3qJIIAIxneramsa
+ Oj9PVver27vbREWisj93WWke9R7xdnE37a9uP5vWz2VEnixfu45Qgx0b5i3A9cXxFTx3VIiEh
+ 359aHkUfuIudnOeqQ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Io7PblDO7cd827y9z0kNnRTwJf68xN2sX
+Content-Type: multipart/mixed; boundary="f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR"
+
+--f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/3/4 =E4=B8=8A=E5=8D=8810:14, Anand Jain wrote:
->
->
-> On 3/4/20 1:44 AM, David Sterba wrote:
->> On Fri, Feb 28, 2020 at 05:06:52PM +0800, Anand Jain wrote:
->>> On 2/28/20 4:27 PM, Qu Wenruo wrote:
->>>> On 2020/2/28 =E4=B8=8B=E5=8D=884:03, Anand Jain wrote:
->>>>> On aarch64 with pagesize 64k, btrfs-convert of ext4 is successful,
->>>>> but it won't mount because we don't yet support subpage blocksize/
->>>>> sectorsize.
->>>>>
->>>>> =C2=A0=C2=A0 BTRFS error (device vda): sectorsize 4096 not supported=
- yet,
->>>>> only support 65536
->>>>>
->>>>> So in this case during convert provide a warning and a 10s delay to
->>>>> terminate the command.
->>>>
->>>> This is no different than calling mkfs.btrfs -s 64k on x86 system.
->>>> And I see no warning from mkfs.btrfs.
->>>>
->>>> Thus I don't see the point of only introducing such warning to
->>>> btrfs-convert.
->>>>
->>>
->>> I have equal weight-age on the choices if blocksize !=3D pagesize viz.=
-.
->>> =C2=A0=C2=A0=C2=A0 delay and warn (this patch)
->>> =C2=A0=C2=A0=C2=A0 quit (Nikolay).
->>> =C2=A0=C2=A0=C2=A0 keep it as it is without warning (Qu).
->>>
->>> =C2=A0=C2=A0 Here we are dealing with already user data. Should it be =
-different
->>> =C2=A0=C2=A0 from mkfs?
->>> =C2=A0=C2=A0 Quit is fine, but convert tool should it be system neutra=
-l?
->>
->> The delays should be used in exceptional cases, now we have it for chec=
-k
->> --repair and for unfiltered balance. Both on user request because
->> expecting users to know everything in advance what the commands do has
->> shown to be too optimistic.
->>
->> Refusing to allow the conversion does not make much sense for usability=
-,
->> mising the unmounted and mounted constraints.
->>
->> A warning might be in place but there's nothing wrong to let the user d=
-o
->> the conversion.
->>
->> I've tried mkfs.ext4 with 64k block size and it warns and in the
->> interactive session wants to confirm that by the user:
->>
->> =C2=A0=C2=A0 $ mkfs.ext4 -b 64k img
->> =C2=A0=C2=A0 Warning: blocksize 65536 not usable on most systems.
->> =C2=A0=C2=A0 mke2fs 1.45.5 (07-Jan-2020)
->> =C2=A0=C2=A0 img contains a ext4 file system
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 created on Tue Mar=C2=A0 3 18:41:46 2020
->> =C2=A0=C2=A0 Proceed anyway? (y,N) y
->> =C2=A0=C2=A0 mkfs.ext4: 65536-byte blocks too big for system (max 4096)
->> =C2=A0=C2=A0 Proceed anyway? (y,N) y
->> =C2=A0=C2=A0 Warning: 65536-byte blocks too big for system (max 4096), =
-forced to
->> continue
->> =C2=A0=C2=A0 Creating filesystem with 32768 64k blocks and 32768 inodes
->>
->> =C2=A0=C2=A0 Allocating group tables: done
->> =C2=A0=C2=A0 Writing inode tables: done
->> =C2=A0=C2=A0 Creating journal (4096 blocks): done
->> =C2=A0=C2=A0 Writing superblocks and filesystem accounting information:=
- done
->>
->
-> Just warn is reasonable. But I don't think you meant to introduce
-> interactive part similar to mkfs.ext4 in btrfs-convert? we don't have it
-> anywhere in btrfs-progs. As the btrfs-convert is not an exceptional case
-> (though it deals with the user data) removing the delay makes sense,
-> mover over the conversion and the rollback does not take much time in
-> general.
->
-> Thanks, Anand
 
-+1 for warning only, especially when btrfs-convert is revertable, unlike
-mkfs.
+On 2020/3/4 =E4=B8=8A=E5=8D=885:22, Josef Bacik wrote:
+> On 3/3/20 2:13 AM, Qu Wenruo wrote:
+>> The patchset is based on previous backref_cache_refactor branch, which=
+
+>> is further based on misc-next.
+>>
+>> The whole series can be fetched from github:
+>> https://github.com/adam900710/linux/tree/backref_cache_code_move
+>>
+>> All the patches in previous branch is not touched at all, thus they ar=
+e
+>> not re-sent in this patchset.
+>>
+>>
+>> Currently there are 3 major parts of build_backref_tree():
+>> - ITERATION
+>> =C2=A0=C2=A0 This will do a breadth-first search, starts from the targ=
+et bytenr,
+>> =C2=A0=C2=A0 and queue all parents into the backref cache.
+>> =C2=A0=C2=A0 The result is a temporary map, which is only single-direc=
+tional, and
+>> =C2=A0=C2=A0 involved new backref nodes are not yet inserted into the =
+cache.
+>>
+>> - WEAVING
+>> =C2=A0=C2=A0 Finish the map to make it bi-directional, and insert new =
+nodes into
+>> =C2=A0=C2=A0 the cache.
+>>
+>> - CLEANUP
+>> =C2=A0=C2=A0 Cleanup the useless nodes, either remove it completely or=
+ add them
+>> =C2=A0=C2=A0 into the cache as detached.
+>>
+>=20
+> I've found a bunch of bugs in the backref code while fixing Zygo's
+> problem, you are probably going to want to wait for my patches to go in=
+
+> before you start moving things around, because it's going to conflict a=
+
+> bunch.=C2=A0 Thanks,
+
+No problem, it's expected to have some comments even for previous patchse=
+t.
+
+So rebasing is expected.
 
 Thanks,
 Qu
+
+>=20
+> Josef
+
+
+--f3YwZ6WFO39sfdvtcV9NKkM7KpACLXwOR--
+
+--Io7PblDO7cd827y9z0kNnRTwJf68xN2sX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5fNIAACgkQwj2R86El
+/qjSoAf/UXccCaTYOllWbBlj+P6WdzOuyLKByEgvkGy4G2H+4q/fhd0EuPQYcalj
+2iTpmm42kPuxRXsmeqlnArZHkAkqsVMtvWuDIvhTfjLWvucWY+LbOyLbqHLUdnAk
+3xjZQmKK18N/0+vwVAj7GbQz2IM7742aoks7Ugteg0fWAMAVsoow4A0H48TZybsp
+VGQmJEUWiBU7FQ1Wmw9FJuLeFrooB8NGMKUsIqjSHJE5cSb6o7j8rIZF29QBb7Ff
++sZAHF+Ozsayd+o/lnyL6UlV+36Ke0MKJB8H9stKwq3kifrLpyfq5cb6m68j1nk+
+kdchdkqeUrWAmImpicLFGMU+sJvjIA==
+=1eox
+-----END PGP SIGNATURE-----
+
+--Io7PblDO7cd827y9z0kNnRTwJf68xN2sX--
