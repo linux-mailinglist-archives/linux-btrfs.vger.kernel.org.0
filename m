@@ -2,63 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32827179993
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 21:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA0117999E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 21:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgCDUKg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 15:10:36 -0500
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:35284 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727137AbgCDUKg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Mar 2020 15:10:36 -0500
-Received: by mail-wm1-f45.google.com with SMTP id m3so3213463wmi.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2020 12:10:35 -0800 (PST)
+        id S1727835AbgCDUP2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 15:15:28 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:32883 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727137AbgCDUP2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Mar 2020 15:15:28 -0500
+Received: by mail-wr1-f67.google.com with SMTP id x7so4105041wrr.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2020 12:15:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Fpwa47Cv90yVr8kxSMxKL+tqA6sV31oIw3TQILqSgj4=;
-        b=zKB6r7d/PKPC8s5xOhr1jJk/IroYVYdHAMvCA1IZPUvXtzjnhI6m1JTHzhgqBQ9PHL
-         twJ8V4SHwpRyOjmNP9RDG6iHyAcvOmfGZYQ5i8zib03uNnL/LWPYvAa7skTzwQDDtgJY
-         ocGH3Kxu0qDUXpA36/JQVtN93/qQTQlDEXgxTcjbPv3YHikWpTdY015Y4Cwo6Sif4Oqr
-         UEDqZJm+lIhxmXLOoBSP2haD4uFwoc07fms8xljvqOZ495jK9qCCXdIGkzfYyKT8rbM1
-         hWAYC462FFijZRI2Pk4KPA0NZTAJ6zU5wwTntIkv86j9oK4k9/BKZW21EtQ2wfDHpl9r
-         VSIg==
+        bh=sczAFzvorqWkbbfMdM6cuyPT4Q8mQ3/cr/Xrm9RLhRA=;
+        b=aW7saE3UDYHNY/S52YHy9ocze8mRn00P31ACbiW3Fzyf4j60wLQhOe43PLXn4RHuPn
+         6QFSGbyvkDirRKsy1Yc2qLu+JYrZSCYCNXNIyUp51eVVJnYFZUF6s4tyhB8gr6KWoTUd
+         chE1XDuw5P1+sxzVlgZt0ubd6mTbndxhViPpaYk3hAzMlDmSYNCHbl+sI+a6g4TEq2Px
+         j/6eOX0hrODXaVAQe3N9xx5NinZLn183cerx/ThzMaA6oHp2sfF/MY0p7+kNy+cKpXrq
+         qK+ma7jI8tJDhJrZDI6bzIsUHaEruGqFJojjW+pf0vfjb9IGpLkF6NIhVL4gUWa3BBwn
+         m4eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Fpwa47Cv90yVr8kxSMxKL+tqA6sV31oIw3TQILqSgj4=;
-        b=iWaSzjyFFwQOpRNFAW6NHhmrYwRwDlo47y0AOtvZnt9XJ/eQ5lbt9e/r54SjZWAuZT
-         Hmx3Q35ALZ5R/lI6Y4pWhCBXO1KksnNzd6q/Qr78i6g1Gm7bUA5p62ozX1Xg+HDnZANE
-         29vaFGVqwwCK1UjXyZYbXkEXh0h/U1wrUFZutjEcXkKPapQJeEO2zJU0qjdvDOMFR2NB
-         KFrnkfuBDE03Q8zaFpDBCJlceNaJy1JXM1xkrq+MFlDB+mkYgstph2WC+Dk4P1szBe+J
-         fHoP3jaqPttPJwdGnhKSwvMIM+Av4IXyqMtdg950Yufr6IR9yh59uwltF7b7oC5X7fNU
-         1u9g==
-X-Gm-Message-State: ANhLgQ274nQgAsH6dbRpV1TB0Hntun4NFBAE3qhjgS0lAIu3StIPeZOg
-        ucca+Qblx7yXNTE5iigS9kY2/vx8+1dFnqEJDwxXkw==
-X-Google-Smtp-Source: ADFU+vuWt8jxNhmPYg3SXoc+07TzPTZ6o+DB9qhQpNVAwCHuALT/UCp7VlmIBo4/34pepWkAIViZ7AqKprucbTo0fwI=
-X-Received: by 2002:a1c:a50d:: with SMTP id o13mr2025780wme.128.1583352634309;
- Wed, 04 Mar 2020 12:10:34 -0800 (PST)
+        bh=sczAFzvorqWkbbfMdM6cuyPT4Q8mQ3/cr/Xrm9RLhRA=;
+        b=FwGfD1WdfLG3tJAMA1iJAkARu0b6mJz+g/nv2gyGzsmpKX9UDPuk5WS+5BBR3dYL/J
+         veQ/lldiQCK5nG4+zkXQGrGtcF0re3Ahw7geoJ3c9Eizhlo9VPUk1gJoqIAGPJrUxifj
+         EU2N+09KsgOB7dbnXCmgYVuCdaL25XLye8utdVS1FDr3tyf10UXvUppIMup5rwbMXnmf
+         KeOawcCg2E7JiWJg7Fiztyery1q1Evm47F1Vd1rFZMrxZ/gZ4XwEiBck/p2OhPYwO4zC
+         fz3py/tL/bU2LkcuTpwksI7AjaHoAWcbUWW5B2wrZq1QRuG5sKZBkHKMa2dLlP+1GMYI
+         rktw==
+X-Gm-Message-State: ANhLgQ0aiMspT4Occp013VhjegdURhgQXSdLNSWODd38V4jm9YzXvGqx
+        wt7df2HW7Uz31Lf4AG8NUrQdsm8k+hROhzOGP6jMGg==
+X-Google-Smtp-Source: ADFU+vuk50Aga6E40/av+Hx3eR+9Ohm5EcQZVkzyjOZwU0B4jACpSRzILMQ9hZbrsHgNKq9E1oy/fB3aIWpRzTYKq7k=
+X-Received: by 2002:a5d:5043:: with SMTP id h3mr686218wrt.274.1583352926197;
+ Wed, 04 Mar 2020 12:15:26 -0800 (PST)
 MIME-Version: 1.0
-References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
- <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
- <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
- <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
- <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
- <CAG_8rEcXpWUyUqmi3fe8BicZXQODJP2ZS69Z=BBcBPfAQBuSHA@mail.gmail.com>
- <CAJCQCtR7prMai9dYndLZ4Wg4tSL7kHZaLLK8c5p_4fDG2qoYnA@mail.gmail.com>
- <CAG_8rEf-kdju-OPhVUVWF8qNMM=xiUnWuBgODiwzGnRMzJYNpg@mail.gmail.com>
- <CAJCQCtTz-KW4WLJtcX9NGSPiCmCZ81_bXE+YBhn2_DocvnefZw@mail.gmail.com> <CAG_8rEey=ZNbrJYKNiyvt0_g068_Bu=XikCs=gQwd=ROQ2y50w@mail.gmail.com>
-In-Reply-To: <CAG_8rEey=ZNbrJYKNiyvt0_g068_Bu=XikCs=gQwd=ROQ2y50w@mail.gmail.com>
+References: <e8904a49-bd28-46c7-77d0-d114627ce0d9@lbl.gov>
+In-Reply-To: <e8904a49-bd28-46c7-77d0-d114627ce0d9@lbl.gov>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 4 Mar 2020 13:10:18 -0700
-Message-ID: <CAJCQCtS=uxN0ONokx8v1M24ibJ0vxKpxKajsdpB5dCsy3Ccsaw@mail.gmail.com>
-Subject: Re: USB reset + raid6 = majority of files unreadable
-To:     Steven Fosdick <stevenfosdick@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Jonathan H <pythonnut@gmail.com>,
+Date:   Wed, 4 Mar 2020 13:15:10 -0700
+Message-ID: <CAJCQCtT0CVBfupwj9wM3JAopg7YZ3FicLFGMo=is21CdyEg8Jg@mail.gmail.com>
+Subject: Re: problem with newer kernels
+To:     Arun Persaud <apersaud@lbl.gov>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -66,65 +56,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 5:45 AM Steven Fosdick <stevenfosdick@gmail.com> wrote:
+On Wed, Mar 4, 2020 at 12:30 PM Arun Persaud <apersaud@lbl.gov> wrote:
 >
-> > The most obvious case of corruption is a checksum mismatch (the
-> > onthefly checksum for a node/leaf/block compared to the recorded
-> > checksum). Btrfs always reports this.
+> Hi
 >
-> And it did, but only for the relocation tree that was being built as
-> part of the balance.  I am sure you or Qu said in a previous e-mail
-> that this is a temporary structure only built during that operation so
-> should not have been corrupted by previous problems.  As no media
-> errors were logged either that must surely mean that either there is a
-> bug in constructing the tree or corrupted data was being copied from
-> elsewhere into the tree and only detected after that copy rather than
-> before.
-
-I'm not familiar enough with data relocation tree, all I can do is
-wild speculation: It could be the reported corruption, which might
-just be reporting noise, is a consequence of the stalled/failed device
-removal, and that the actual problem remains obscured.
-
-
+> I use btrfs for a partition (/dev/sda2) and when I try to boot with a
+> newer kernel (on openSUSE tumbleweed), the system doesn't finish the
+> boot and goes into an emergency console and I get the following error
+> (don't have a log at the moment, but can produce one if needed):
 >
-> > So that leaves the less obvious cases of corruption where some
-> > metadata or data is corrupt in memory, and a valid checksum is
-> > computed on already corrupt data/metadata, and then written to disk.
+> BTRFS critical, corrupt leaf...
+
+Complete dmesg is needed, thanks.
+
+
+> However, if I boot with an older kernel (5.1.10), everything works OK.
+
+Sounds like it's hitting the tree checker which is much more
+sophisticated in kernel 5.5 than 5.1, so the problem is still there
+it's just that 5.1 doesn't complain. What is the kernel history of the
+file system? Was kernel 5.2.0 through 5.2.14 used?
+
+> this was with btrfs-progs 5.4.1
 >
-> But if the relocation tree is constructed during the balance operation
-> rather than being a permanent structure then the chance of flipped
-> bits in memory corrupting it on successive attempts is surely very
-> small indeed.
+> both didn't find any error or repaired anything, so they suggested to
+> email the list.
 
-Probably true.
+That's unexpected. What about:
 
-> > I don't understand the question. The device replace command includes
-> > 'device add' and 'device remove' in one step, it just lacks the
-> > implied resize that happens with add and remove.
->
-> When i did the add and remove separately, the add succeeded and the
-> remove failed (initially) having moved very little data.  If that were
-> to happen with those same steps within a replace would it simply stop
-> where it found the problem, leaving the new device added and the old
-> one not yet removed, or would it try to back out the whole operation?
-
-Yeah the replace code has its own ioctl in the kernel. So it's not
-entirely fair to refer to it as a mere shortcut of the add then remove
-method.
-
-First data is copied from source to new target, the copy reuses scrub
-code, and the new target isn't actually "added" until the very end of
-the process. During the copy, new blocks are written to both source
-and destination devices. Only once replication is definitely
-successful is the new device really added, and the old device removed.
-Up to the point where the two are swapped out, the source device is
-not in a "being removed" state like the add then remove method.
-
-The device add then remove method takes a while, involves resize and
-balance code, and is migrating chunks on the source to other devices.
-In the case of raid5 it means restriping all devices. Every device is
-reading and writing. It's a lot more expensive than just replacing.
+btrfs check --mode=lowmem /dev/
 
 
 -- 
