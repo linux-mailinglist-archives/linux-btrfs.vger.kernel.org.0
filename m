@@ -2,140 +2,333 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1F417868D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 00:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C6D178735
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 01:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgCCXkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Mar 2020 18:40:39 -0500
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:40686 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728224AbgCCXkj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Mar 2020 18:40:39 -0500
-Received: by mail-yw1-f67.google.com with SMTP id t192so230229ywe.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2020 15:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VoszLMNRJXfZytUhY6+IZ8Llte96Zv83W4L2RthXZQ4=;
-        b=gRtCd+jedwNeE6pfhPS07OjPO+exyWMgnt3rSSKVWKULQ1qy+Mjb9u3Afws4tXTV2T
-         GSL5tujrD33kfqyfulgLQQYwAEk/3c2tc9rn5J9d59LvseW4W6+EZc5LCulvNqGkRUPF
-         LcECmaQEnHxiCA4Dap7QkX1oTEMNQnUJqDiFB97krKszXjpkjUU2MMDZ+eTwla1LKYtA
-         1B8bHkAi2IO5khVs5gf9iAm+jAWs9VD9kvWI8Yux57yvv5QdG39/of3C3nHmoAqJQaPn
-         W87eQ1S0FVnY0t+AsKuyumsy3HKF/n4rYMllpqJmhZUHbLX/cZZP4gBjEMdJaqetDiF3
-         sXOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VoszLMNRJXfZytUhY6+IZ8Llte96Zv83W4L2RthXZQ4=;
-        b=EE2nZ4Xvdx11jKBL8UWvfZ41+AY2+OOFywKIRJ6Ij+F0OL9SEaKhe8bBLsa8F1n+7v
-         8PsPPk/92Dk+F7n6HwqWG3JXutGTSUARS6Bwh0pEw6a6tmhOOApLD1vJNLv9er57raXR
-         RxwyPvJneGlgDiJzfl3bjpX72d/fUab8IXFDEgPtgZfpOmiScb7qX7Lza2DzuKR6njBa
-         ImVlwgf32qCLAeLqaBwd+7SP/SuDEK6wbtLlQ++VvBK196zy6uXS9P1EsHp/Z79g50wz
-         N92hnNnojHVzGmKvSpmwBSjm21nENkcDgzRUN4aaC1K6BD+rCcHfIQ0zdW0J4FuQNyDq
-         AzgA==
-X-Gm-Message-State: ANhLgQ2A6eabX1lUFxiQmQMcwDZlZrNbSMsy8Q9kBWj2gi2oLleClJli
-        7b/HgrezLwbf8gkXJjDtJpeK3+s3bcpfFoo1+yRI2LCu
-X-Google-Smtp-Source: ADFU+vt/sFjch/MlYgs3RgnXRt1ltIOpdB0x0p9TSeDoDb0VkRGMMirsmQnMQvs4tJ2diwg8zHI3/gj6+FIZEQDWZv8=
-X-Received: by 2002:a81:5256:: with SMTP id g83mr256672ywb.79.1583278838318;
- Tue, 03 Mar 2020 15:40:38 -0800 (PST)
+        id S2387449AbgCDAuj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Mar 2020 19:50:39 -0500
+Received: from mout.gmx.net ([212.227.15.15]:56637 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387447AbgCDAuj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Mar 2020 19:50:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583283027;
+        bh=AkAy0PR5jK57YiuxmlAP4v3qas8gTpLtDvxaTHC0D2U=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=d7VVBpsmDvWuGHKqqV9pyh0ddRZW9i5Am1DBD5IKEzrhHNoGIrGYXrUFeYUdipnfE
+         a6/QrGSPPl6oA5SxKqNS1yQXDi0gGWVwPSA3bxqKWub7IcZC690UuJGEyuHPzfp5jB
+         Dss3ChVR0aLYnqZr6gwbu8TMxFxEtTgVep6tmn44=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mnps0-1jjwRk3Tcg-00pQ26; Wed, 04
+ Mar 2020 01:50:27 +0100
+Subject: Re: [PATCH v2 01/10] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iter
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20200302094553.58827-1-wqu@suse.com>
+ <20200302094553.58827-2-wqu@suse.com> <20200303171902.GI2902@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <d04ef1a4-025a-ef13-b3e8-99a0c7e858b4@gmx.com>
+Date:   Wed, 4 Mar 2020 08:50:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
- <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
- <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
- <CAG_8rEfjNPwT4g2DwbS9atsurLvYazt7aV4o77HGv-fssNmheQ@mail.gmail.com>
- <CAJCQCtTYBOUDmWBAA4BAenkyZS6uY+f6Ao33uHMmr_16M_1Buw@mail.gmail.com>
- <CAG_8rEcXpWUyUqmi3fe8BicZXQODJP2ZS69Z=BBcBPfAQBuSHA@mail.gmail.com> <CAJCQCtR7prMai9dYndLZ4Wg4tSL7kHZaLLK8c5p_4fDG2qoYnA@mail.gmail.com>
-In-Reply-To: <CAJCQCtR7prMai9dYndLZ4Wg4tSL7kHZaLLK8c5p_4fDG2qoYnA@mail.gmail.com>
-From:   Steven Fosdick <stevenfosdick@gmail.com>
-Date:   Tue, 3 Mar 2020 23:40:26 +0000
-Message-ID: <CAG_8rEf-kdju-OPhVUVWF8qNMM=xiUnWuBgODiwzGnRMzJYNpg@mail.gmail.com>
-Subject: Re: USB reset + raid6 = majority of files unreadable
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Jonathan H <pythonnut@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200303171902.GI2902@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="E9BdQ0SKXpl357Iuknn9Wx5lWEaXhsrB8"
+X-Provags-ID: V03:K1:hioPI3YpgFq8cJO0o6cjlGuYQ93IT8ZUG2uwKtJ2cxi7K4hHKc2
+ ECZIQRguDYzWK42CcBacyZxJ/JuVmMZksAMQpDXvOGHBJnYDJWm1OmPgSaeuFR8xJ8kEy3S
+ 5mBg1aD7ztyNY6ovo0wlu5zzc+qz4dAekkJO1NEoOrr7fP3Qs24AHu3rLF1yjV1+Tb0W7kA
+ ElAJQFPCYqZYA3scPAatA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P9B0ZVu8/2M=:da0ck/+aP/j/eLb8oNFIX4
+ E3sVyXDwUj7m3y0bzXR1ulmBlCgzFsb1okMiYut+Ywg5TytG3VA/SEEKfRuTjz4Zoc0WdC7Rm
+ W6WzVAILDb8JXunQByBNJycLr1m3+4L/Z30W1h2V4Zme0onae38Jxf3jes2Q0mIGLL5fZeGFQ
+ 0eornu/+66cqHRXAGuA4+wuY4rjQco441HF/f0ZDlGQfLZ53GbzWub1ITZ3K5841/nBh8hAA8
+ +CogjAqwQGzrK0k+q4+I/KQw8iCd6wsB3xx48g+2439RCI0srvQjDi9OEzUHOLH6eurRLVMCa
+ GRziRXz1wa7KcN9U8S9evdbv4LJns4PLcDMKu7TxEw5P2nNpKZ88B/uWhm+KTNQD8ILXMEnlh
+ jBCZ5NQ1nMVOly5SzWSIR3hHlrw/Tb4X1W9q/4tXVFKYd27lOqZW6aoiYvozxvI4rtv/64mBu
+ DhbEQvGNcIBtUlDsVvetSOmG/TEtGk+jt+JSeRZVmWv0d2Pmw8ebQDof28EWXyZpx75UGzeDW
+ GxTiyYi6PVv63VLHkI9cpMwL3N0xhLzySejhDE9klHlGAawqVT3ceJm5ULEfwXMKrO4kY3hfP
+ TfiakFmFTylU7IiKQW3s29+3D8VX3tMFJwnSkam5l0GD98dFKBKdOpjB9jImKY788I9ifPbvO
+ 0q9bXGyot1tAEy+q799l/riLMpobb+IAGcqZsn1u/+JrI5LPLZdzYNLlSRoFEJRs/2MAYw7gn
+ r2KzSsEdIoTA5+b14RWYYDodmd2R+qC2Y6MPYlRXIpb2I6PO90v89++9Q8oxGswFTzGK/2aDw
+ UdI96ZUTmcp+unjGrUSbXybHYV7h7d4qrYqy7exenbpOdrNg9hRfhe+Xs5P3AwVn6+Srv5GcK
+ UCTgkUKXyTFBvuTDD7Y8zwk7qUKT+UA7N5Tts9EtpCgg5uEo/hpUQZwDPnwD5ePx/a1vk/NOv
+ OfYgJf7hUyB2O7VkUQH+DvGB8LZZ/9W5S1fLcx1ay/Dmf3F+0fwfdVzuwEhlitoX9VqAmSmZj
+ /jMXm0gQNZL/ockb9xGJXDHAsxpR3hV0HpH2WtPnksfnjBE43/8qcllFSYsQqvqycuYYCFD5S
+ ggiAF4ETvBe2h9rVfLT9AZ7ZAfzEVneTf0uVSoZY/3ejOwGRDjEJ+JIXZffSwfTbcq8h/NL9d
+ 9R5DLBRMFSbj7ka80Jqbq5awZPv6Vpq6qnx8Mvl4zP41HlFVvGyagrmPK2A5XiEPdVdSvj6RA
+ vmSuJh/kQzlOM88Al
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 29 Feb 2020 at 06:31, Chris Murphy <lists@colorremedies.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--E9BdQ0SKXpl357Iuknn9Wx5lWEaXhsrB8
+Content-Type: multipart/mixed; boundary="awPi71kg0UpztwqJEnxJvG6NwiTtTRJ1X"
 
-> s/might/should
+--awPi71kg0UpztwqJEnxJvG6NwiTtTRJ1X
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-I do think it is worth looking at the possibility that the "write
-hole", because it well documented, is being blamed for all cases that
-data proves to be unrecoverable when some of these may be due to a bug
-or bugs.  From what I've found about the write hole this is because of
-uncertainty over which of several discs actually got written to so
-when copies don't match there is no way to know which one is right.
-In the case of a disc failure, though, surely the copy that is right
-is the one that doesn't involve the failed disc?  Or is there
-something else I don't understand?
 
-> I'm curious why you had to use force, but yes that should check all of
-> them. If this is a mounted file system, there's 'btrfs scrub' for this
-> purpose though too and it can be set to run read-only on a read-only
-> mounted file system.
 
-In the case of 'btrfs check' the filesystem was mounted r/o but I had
-things reading it so didn't want to unmount it completely.  It
-requires --force to work on a mounted filesyetem even if the mount is
-r/o.
+On 2020/3/4 =E4=B8=8A=E5=8D=881:19, David Sterba wrote:
+> On Mon, Mar 02, 2020 at 05:45:44PM +0800, Qu Wenruo wrote:
+>> Due to the complex nature of btrfs extent tree, when we want to iterat=
+e
+>> all backrefs of one extent, it involves quite a lot of work, like
+>> searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and =
+keyed
+>> backrefs.
+>>
+>> Normally this would result pretty complex code, something like:
+>>   btrfs_search_slot()
+>>   /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+>>   while (1) {	/* Loop for extent tree items */
+>> 	while (ptr < end) { /* Loop for inlined items */
+>> 		/* REAL WORK HERE */
+>> 	}
+>>   next:
+>>   	ret =3D btrfs_next_item()
+>> 	/* Ensure we're still at keyed item for specified bytenr */
+>>   }
+>>
+>> The idea of btrfs_backref_iter is to avoid such complex and hard to
+>> read code structure, but something like the following:
+>>
+>>   iter =3D btrfs_backref_iter_alloc();
+>>   ret =3D btrfs_backref_iter_start(iter, bytenr);
+>>   if (ret < 0)
+>> 	goto out;
+>>   for (; ; ret =3D btrfs_backref_iter_next(iter)) {
+>> 	/* REAL WORK HERE */
+>>   }
+>>   out:
+>>   btrfs_backref_iter_free(iter);
+>>
+>> This patch is just the skeleton + btrfs_backref_iter_start() code.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> ---
+>>  fs/btrfs/backref.c | 87 +++++++++++++++++++++++++++++++++++++++++++++=
++
+>>  fs/btrfs/backref.h | 60 ++++++++++++++++++++++++++++++++
+>>  2 files changed, 147 insertions(+)
+>>
+>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+>> index 327e4480957b..444cd5d31d87 100644
+>> --- a/fs/btrfs/backref.c
+>> +++ b/fs/btrfs/backref.c
+>> @@ -2299,3 +2299,90 @@ void free_ipath(struct inode_fs_paths *ipath)
+>>  	kvfree(ipath->fspath);
+>>  	kfree(ipath);
+>>  }
+>> +
+>> +int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 byt=
+enr)
+>> +{
+>> +	struct btrfs_fs_info *fs_info =3D iter->fs_info;
+>> +	struct btrfs_path *path =3D iter->path;
+>> +	struct btrfs_extent_item *ei;
+>> +	struct btrfs_key key;
+>> +	int ret;
+>> +
+>> +	key.objectid =3D bytenr;
+>> +	key.type =3D BTRFS_METADATA_ITEM_KEY;
+>> +	key.offset =3D (u64)-1;
+>> +	iter->bytenr =3D bytenr;
+>> +
+>> +	ret =3D btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0,=
+ 0);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +	if (ret =3D=3D 0) {
+>> +		ret =3D -EUCLEAN;
+>> +		goto release;
+>> +	}
+>> +	if (path->slots[0] =3D=3D 0) {
+>> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+>> +		ret =3D -EUCLEAN;
+>> +		goto release;
+>> +	}
+>> +	path->slots[0]--;
+>> +
+>> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+>> +	if (!(key.type =3D=3D BTRFS_EXTENT_ITEM_KEY ||
+>> +	      key.type =3D=3D BTRFS_METADATA_ITEM_KEY) || key.objectid !=3D =
+bytenr) {
+>> +		ret =3D -ENOENT;
+>> +		goto release;
+>> +	}
+>> +	memcpy(&iter->cur_key, &key, sizeof(key));
+>> +	iter->item_ptr =3D btrfs_item_ptr_offset(path->nodes[0],
+>> +					       path->slots[0]);
+>> +	iter->end_ptr =3D iter->item_ptr + btrfs_item_size_nr(path->nodes[0]=
+,
+>> +							    path->slots[0]);
+>> +	ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
+>> +			    struct btrfs_extent_item);
+>> +
+>> +	/*
+>> +	 * Only support iteration on tree backref yet.
+>> +	 *
+>> +	 * This is extra precaustion for non skinny-metadata, where
+>> +	 * EXTENT_ITEM is also used for tree blocks, that we can only use
+>> +	 * extent flags to determine if it's a tree block.
+>> +	 */
+>> +	if (btrfs_extent_flags(path->nodes[0], ei) & BTRFS_EXTENT_FLAG_DATA)=
+ {
+>> +		ret =3D -ENOTTY;
+>=20
+> What's the reason for ENOTTY?
 
-I did try running a scrub but had to abandon it as it wasn't proving
-very useful.  It wasn't fixing the errors and wasn't providing any
-messages that would help diagnose or fix them some other way - it only
-seems to provide a count of the errors it didn't fix.  That seems to
-be general thing in that there seem plenty of ways an overall 'failed'
-status can be returned to userspace, usually without anything being
-logged.  That obviously makes sense if the request was to do something
-stupid but if instead the error return is because corruption has been
-found would it not be better to log an error?
+Because it's not supported yet.
 
-> That looks like a bug. I'd try a newer btrfs-progs version. Kernel 5.1
-> is EOL but I don't think that's related to the usage info. Still, tons
-> of btrfs bugs fixed between 5.1 and 5.5...
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/?id=v5.5&id2=v5.1
->
-> Including raid56 specific fixes:z
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/fs/btrfs/raid56.c?id=v5.5&id2=v5.1
+>=20
+>> +		goto release;
+>> +	}
+>> +	iter->cur_ptr =3D iter->item_ptr + sizeof(*ei);
+>> +
+>> +	/* If there is no inline backref, go search for keyed backref */
+>> +	if (iter->cur_ptr >=3D iter->end_ptr) {
+>> +		ret =3D btrfs_next_item(fs_info->extent_root, path);
+>> +
+>> +		/* No inline nor keyed ref */
+>> +		if (ret > 0) {
+>> +			ret =3D -ENOENT;
+>> +			goto release;
+>> +		}
+>> +		if (ret < 0)
+>> +			goto release;
+>> +
+>> +		btrfs_item_key_to_cpu(path->nodes[0], &iter->cur_key,
+>> +				path->slots[0]);
+>> +		if (iter->cur_key.objectid !=3D bytenr ||
+>> +		    (iter->cur_key.type !=3D BTRFS_SHARED_BLOCK_REF_KEY &&
+>> +		     iter->cur_key.type !=3D BTRFS_TREE_BLOCK_REF_KEY)) {
+>> +			ret =3D -ENOENT;
+>> +			goto release;
+>> +		}
+>> +		iter->cur_ptr =3D btrfs_item_ptr_offset(path->nodes[0],
+>> +						      path->slots[0]);
+>> +		iter->item_ptr =3D iter->cur_ptr;
+>> +		iter->end_ptr =3D iter->item_ptr + btrfs_item_size_nr(
+>> +				path->nodes[0], path->slots[0]);
+>> +	}
+>> +
+>> +	return 0;
+>> +release:
+>> +	btrfs_backref_iter_release(iter);
+>> +	return ret;
+>> +}
+>> diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+>> index 777f61dc081e..8b1ec11d4b28 100644
+>> --- a/fs/btrfs/backref.h
+>> +++ b/fs/btrfs/backref.h
+>> @@ -74,4 +74,64 @@ struct prelim_ref {
+>>  	u64 wanted_disk_byte;
+>>  };
+>> =20
+>> +/*
+>> + * Helper structure to help iterate backrefs of one extent.
+>> + *
+>> + * Now it only supports iteration for tree block in commit root.
+>> + */
+>> +struct btrfs_backref_iter {
+>> +	u64 bytenr;
+>> +	struct btrfs_path *path;
+>> +	struct btrfs_fs_info *fs_info;
+>> +	struct btrfs_key cur_key;
+>> +	unsigned long item_ptr;
+>> +	unsigned long cur_ptr;
+>> +	unsigned long end_ptr;
+>> +};
+>> +
+>> +static inline struct btrfs_backref_iter *
+>> +btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info, gfp_t gfp_fla=
+g)
+>=20
+> This does not need to be static inline, and please keep the type and
+> function name on the same line.
 
-This was in response to posting dodgy output from btrfs fi usage.  My
-output was from btrfs-progs v5.4 which, when I checked yesterday,
-seemed to be the latest.  I am also running Linux 5.5.7.  It may have
-been slightly older when the disk failed but would still have been
-5.5.x
+OK, that makes sense.
 
-Since my previous e-mail I have managed to get a 'btrfs device remove
-missing' to work by reading all the files from userspace, deleting
-those that returned I/O error and restoring from backup.  Even after
-that the summary information is still wacky:
+Thanks,
+Qu
+>=20
+>> +{
+>> +	struct btrfs_backref_iter *ret;
+>> +
+>> +	ret =3D kzalloc(sizeof(*ret), gfp_flag);
+>> +	if (!ret)
+>> +		return NULL;
+>> +
+>> +	ret->path =3D btrfs_alloc_path();
+>> +	if (!ret) {
+>> +		kfree(ret);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	/* Current backref iterator only supports iteration in commit root *=
+/
+>> +	ret->path->search_commit_root =3D 1;
+>> +	ret->path->skip_locking =3D 1;
+>> +	ret->path->reada =3D READA_FORWARD;
+>> +	ret->fs_info =3D fs_info;
+>> +
+>> +	return ret;
+>> +}
 
-WARNING: RAID56 detected, not implemented
-Overall:
-    Device size:   16.37TiB
-    Device allocated:   30.06GiB
-    Device unallocated:   16.34TiB
-    Device missing:      0.00B
-    Used:   25.40GiB
-    Free (estimated):      0.00B (min: 8.00EiB)
-    Data ratio:       0.00
-    Metadata ratio:       2.00
-    Global reserve: 512.00MiB (used: 0.00B)
 
-is the clue in the warning message?  It looks like it is failing to
-count any of the RAID5 blocks.
+--awPi71kg0UpztwqJEnxJvG6NwiTtTRJ1X--
 
-Point taken about device replace.  What would device replace do if the
-remove step failed in the same way that device remove has been failing
-for me recently?
+--E9BdQ0SKXpl357Iuknn9Wx5lWEaXhsrB8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I'm a little disappointed we didn't get to the bottom of the bug that
-was causing the free space cache to become corrupted when a balance
-operation failed but when I asked what I could do to help I got no
-reply to that part of my message (not just from you, from anyone on
-the list).
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5e+04ACgkQwj2R86El
+/qiosAf9Gcq3pHQtDok5HvaWxvo+cjTDf3xmZ5qEYoWC9pOc98/PxruD6JTUNw67
+O1/4c+HU4Fy+lFXJIX14FstooY5yxlTOxmENiSgIEn/meR8n06WslRkFaeu+1o+8
+cfN46xgtX8IhbGDAVuKEvg1tQLM77cYbJOWFMztfk5LGG/l/BeyS3PLXoDh4bxuz
+0ie2NxMQBoHAlDoFdn293y2JVxaxotv/J9XouX0MilGx5l5LoLRn6BC4XannLffe
+A+BK0sukLyD+8hqCSH+mcbWy0VfonE1EyfmMReMWnnOPl6+kbJIF0C87XMueR38q
+S/vVrZLZyP7fHn8QLDicjQ10UnJTBg==
+=VgGy
+-----END PGP SIGNATURE-----
+
+--E9BdQ0SKXpl357Iuknn9Wx5lWEaXhsrB8--
