@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 120EF178C43
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 09:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AB0178C44
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 09:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgCDIJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 03:09:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51454 "EHLO mx2.suse.de"
+        id S1728244AbgCDIJv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 03:09:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725271AbgCDIJr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 03:09:47 -0500
+        id S1725271AbgCDIJv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 03:09:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 85B83B1A8
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2020 08:09:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D6365B19D
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2020 08:09:49 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 0/2] btrfs: Introduce new rescue= mount options
-Date:   Wed,  4 Mar 2020 16:09:39 +0800
-Message-Id: <20200304080941.50774-1-wqu@suse.com>
+Subject: [PATCH v6 1/2] btrfs: Introduce "rescue=" mount option
+Date:   Wed,  4 Mar 2020 16:09:40 +0800
+Message-Id: <20200304080941.50774-2-wqu@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200304080941.50774-1-wqu@suse.com>
+References: <20200304080941.50774-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,110 +30,182 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are quite a lot btrfs extent tree corruption report in the mail
-list.
-Since btrfs will do mount time block group item search, one corrupted
-leaf containing block group item will prevent the whole fs to be
-mounted.
+This patch introduces a new "rescue=" mount option group for all those
+mount options for data recovery.
 
-This patchset will try to address the problem by introducing a new mount
-option, "rescue=skipbg", as a last-resort rescue.
-With "rescue=skipbg", the whole extent tree will be skipped if we hit
-some problems at mount time.
-This brings some side effect that for super large fs, the mount time can
-be hugely reduced by this mount option.
+Different rescue sub options are seperated by ':'. E.g
+"ro,rescue=nologreplay:usebackuproot".
+(The original plan is to use ';', but ';' needs to be escaped/quoted,
+or it will be interpreted by bash)
 
-Of course this option will have a lot of restrictions to prevent further
-screwing up the fs, including:
+And obviously, user can specify rescue options one by one like:
+"ro,rescue=nologreplay,rescue=usebackuproot"
 
-- Permanent RO
-  No remount rw is allowed
-
-- No dirty log
-  Either clean the log or use rescue=nologreplay mount option
-
-This "rescue=skipbg" has some advantage compared to user space tool
-like "btrfs-restore":
-- Unified recovery tool
-  User can use any tool they're familiar with, as long as the kernel
-  doesn't panic.
-
-- More info for subvolume.
-  "btrfs subv list" can work now!
-
-
-Also move the following mount options to "rescue=" group:
-- nologreplay
-  to rescue=nologreplay
+The following mount options are converted to "rescue=", old mount
+options are deprecated but still available for compatibility purpose:
 
 - usebackuproot
-  to rescue=usebackuproot
+  Now it's "rescue=usebackuproot"
 
-Old options are still available for compatibility purpose, but they are
-deprecated in favor of new 'rescue=' super option.
+- nologreplay
+  Now it's "rescue=nologreplay"
 
-Different rescue sub options can be separated by ':', like:
-"rescue=nologreplay:skipbg:usebackuproot".
-Or the traditional but longer way like:
-"rescue=nologreplay,rescue=skipbg"
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/super.c | 79 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 71 insertions(+), 8 deletions(-)
 
-The separation character is chosen by:
-- No conflicts with existing character
-  Especially no conflict with ','.
-
-- No extra escaping/quota
-  Original plan is ';', but since it'll be interpreted by bash, it's
-  changed to current ':'.
-
-
-Changelog:
-v2:
-- Introduce 'rescue=' super option.
-- Rename original 'usebackuproot' and 'nologreplay'.
-  It at least makes my vim spell check happier.
-- Remove 'recovery' mount option.
-  As its successor is now deprecated, not need to keep the predecessor.
-
-v2.1:
-- Rebase to v5.1-rc4.
-- Fix the typos in the cover letter.
-
-v3:
-- Rebased to v5.2-rc2.
-- Update commit message to include an example for "rescue=" options.
-- Remove unnecessary exclusion of super blocks spaces and block group
-  ro.
-  This seems to cause incorrect df output.
-
-v4:
-- Rebased to v5.3-rc7
-  Minor conflicts due to some function name and structure change.
-- Keep the old 'recovery' mount option
-- Keep the old 'usebackuproot' and 'nologreplay' naming for 'rescue='
-  mount options
-  So just append 'rescue=' to existing mount option.
-
-v5:
-- Rebased to v5.4-rc1
-  Minor conflicts caused by block-group.[ch] code movement.
-- Fix a bug of wrong prompt and check for log tree
-  It should prompt user and check nologreplay option, not notreelog.
-
-v6:
-- Rebased to misc-next
-  Minor conflicts caused by btrfs_block_group_cache rename.
-
-Qu Wenruo (2):
-  btrfs: Introduce "rescue=" mount option
-  btrfs: Introduce new mount option to skip block group items scan
-
- fs/btrfs/block-group.c |  49 ++++++++++++++++++
- fs/btrfs/ctree.h       |   1 +
- fs/btrfs/disk-io.c     |  29 +++++++++--
- fs/btrfs/super.c       | 109 +++++++++++++++++++++++++++++++++++++----
- fs/btrfs/volumes.c     |   7 +++
- 5 files changed, 181 insertions(+), 14 deletions(-)
-
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 7932d8d07cff..6a2521781bb7 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -317,7 +317,6 @@ enum {
+ 	Opt_defrag, Opt_nodefrag,
+ 	Opt_discard, Opt_nodiscard,
+ 	Opt_discard_mode,
+-	Opt_nologreplay,
+ 	Opt_norecovery,
+ 	Opt_ratio,
+ 	Opt_rescan_uuid_tree,
+@@ -331,9 +330,13 @@ enum {
+ 	Opt_subvolid,
+ 	Opt_thread_pool,
+ 	Opt_treelog, Opt_notreelog,
+-	Opt_usebackuproot,
+ 	Opt_user_subvol_rm_allowed,
+ 
++	/* Rescue options */
++	Opt_rescue,
++	Opt_usebackuproot,
++	Opt_nologreplay,
++
+ 	/* Deprecated options */
+ 	Opt_alloc_start,
+ 	Opt_recovery,
+@@ -381,7 +384,6 @@ static const match_table_t tokens = {
+ 	{Opt_discard, "discard"},
+ 	{Opt_discard_mode, "discard=%s"},
+ 	{Opt_nodiscard, "nodiscard"},
+-	{Opt_nologreplay, "nologreplay"},
+ 	{Opt_norecovery, "norecovery"},
+ 	{Opt_ratio, "metadata_ratio=%u"},
+ 	{Opt_rescan_uuid_tree, "rescan_uuid_tree"},
+@@ -399,9 +401,13 @@ static const match_table_t tokens = {
+ 	{Opt_thread_pool, "thread_pool=%u"},
+ 	{Opt_treelog, "treelog"},
+ 	{Opt_notreelog, "notreelog"},
+-	{Opt_usebackuproot, "usebackuproot"},
+ 	{Opt_user_subvol_rm_allowed, "user_subvol_rm_allowed"},
+ 
++	/* Recovery options */
++	{Opt_rescue, "rescue=%s"},
++	{Opt_nologreplay, "nologreplay"},
++	{Opt_usebackuproot, "usebackuproot"},
++
+ 	/* Deprecated options */
+ 	{Opt_alloc_start, "alloc_start=%s"},
+ 	{Opt_recovery, "recovery"},
+@@ -424,6 +430,55 @@ static const match_table_t tokens = {
+ 	{Opt_err, NULL},
+ };
+ 
++static const match_table_t rescue_tokens = {
++	{Opt_usebackuproot, "usebackuproot"},
++	{Opt_nologreplay, "nologreplay"},
++	{Opt_err, NULL},
++};
++
++static int parse_rescue_options(struct btrfs_fs_info *info, const char *options)
++{
++	char *opts;
++	char *orig;
++	char *p;
++	substring_t args[MAX_OPT_ARGS];
++	int ret = 0;
++
++	opts = kstrdup(options, GFP_KERNEL);
++	if (!opts)
++		return -ENOMEM;
++	orig = opts;
++
++	while ((p = strsep(&opts, ":")) != NULL) {
++		int token;
++
++		if (!*p)
++			continue;
++		token = match_token(p, rescue_tokens, args);
++		switch (token){
++		case Opt_usebackuproot:
++			btrfs_info(info,
++				   "trying to use backup root at mount time");
++			btrfs_set_opt(info->mount_opt, USEBACKUPROOT);
++			break;
++		case Opt_nologreplay:
++			btrfs_set_and_info(info, NOLOGREPLAY,
++					   "disabling log replay at mount time");
++			break;
++		case Opt_err:
++			btrfs_info(info, "unrecognized rescue option '%s'", p);
++			ret = -EINVAL;
++			goto out;
++		default:
++			break;
++		}
++
++	}
++out:
++	kfree(orig);
++	return ret;
++}
++
+ /*
+  * Regular mount options parser.  Everything that is needed only when
+  * reading in a new superblock is parsed here.
+@@ -680,6 +735,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			break;
+ 		case Opt_norecovery:
+ 		case Opt_nologreplay:
++			btrfs_warn(info,
++	"'nologreplay' is deprecated, use 'rescue=nologreplay' instead");
+ 			btrfs_set_and_info(info, NOLOGREPLAY,
+ 					   "disabling log replay at mount time");
+ 			break;
+@@ -782,10 +839,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 					     "disabling auto defrag");
+ 			break;
+ 		case Opt_recovery:
+-			btrfs_warn(info,
+-				   "'recovery' is deprecated, use 'usebackuproot' instead");
+-			/* fall through */
+ 		case Opt_usebackuproot:
++			btrfs_warn(info,
++		"'%s' is deprecated, use 'rescue=usebackuproot' instead",
++				   token == Opt_recovery ? "recovery" :
++				   "usebackuproot");
+ 			btrfs_info(info,
+ 				   "trying to use backup root at mount time");
+ 			btrfs_set_opt(info->mount_opt, USEBACKUPROOT);
+@@ -872,6 +930,11 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			btrfs_set_opt(info->mount_opt, REF_VERIFY);
+ 			break;
+ #endif
++		case Opt_rescue:
++			ret = parse_rescue_options(info, args[0].from);
++			if (ret < 0)
++				goto out;
++			break;
+ 		case Opt_err:
+ 			btrfs_err(info, "unrecognized mount option '%s'", p);
+ 			ret = -EINVAL;
+@@ -1342,7 +1405,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ 	if (btrfs_test_opt(info, NOTREELOG))
+ 		seq_puts(seq, ",notreelog");
+ 	if (btrfs_test_opt(info, NOLOGREPLAY))
+-		seq_puts(seq, ",nologreplay");
++		seq_puts(seq, ",rescue=nologreplay");
+ 	if (btrfs_test_opt(info, FLUSHONCOMMIT))
+ 		seq_puts(seq, ",flushoncommit");
+ 	if (btrfs_test_opt(info, DISCARD_SYNC))
 -- 
 2.25.1
 
