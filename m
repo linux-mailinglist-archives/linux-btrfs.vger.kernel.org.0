@@ -2,102 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4C0179D35
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 02:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1035C179F4B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 06:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725773AbgCEBSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 20:18:38 -0500
-Received: from mout.gmx.net ([212.227.17.22]:33607 "EHLO mout.gmx.net"
+        id S1725844AbgCEF2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 00:28:17 -0500
+Received: from mout.gmx.net ([212.227.15.15]:34641 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgCEBSi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 20:18:38 -0500
+        id S1725818AbgCEF2R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 00:28:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583371111;
-        bh=8DqQ07vqx40dG76rjDFkcVO9sxOe9bysVB90NR2E5BE=;
+        s=badeba3b8450; t=1583386091;
+        bh=hBDUiAHsk7ucbN7mhNGZUON3lkMqppaEOKSFqSnsXko=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=la9rcA4LaugIH2/pKgOx1YCvEyUcbijfwh3CcaPIXocCAGLNh+DUGiZLlMVwCEtGu
-         Z36KlbNqqSSNXhNyecQMxiGU2yZBFfUF7uHprfc9QssRWQvKUOTMqFXZNYjm3GpMd6
-         2pNOrVG5qORP4dojxTnUvLOWRzKMU4UJ9jHl2kaA=
+        b=MWeUvRJKDPgSUmkTy+3NYyNabVVbRFYH++1PQBp/3vlNZ4fOB6MtSnomzOv8Fa5bJ
+         KM2vCfA+x+imVEA9vf0+fBx3rdiJ6I2IQlQIH5mILAjy59Jixgvo/IBewRvAy8IMID
+         NOlBkvub/DngvsQale2ZtPzrFPQbQC3V4MqMV/3o=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.111] ([34.92.246.95]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCpb-1jkvNh2nqx-00bGAv; Thu, 05
- Mar 2020 02:18:31 +0100
-Subject: Re: [PATCH 00/11] btrfs-progs: metadata_uuid feature fixes and
- portation
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <2974237d-ea96-bde8-bc48-2cf8bd6a375b@suse.com>
- <c6ceaa56-f5db-54ec-a2ba-130d469ec992@gmx.com>
- <20200304141438.GT2902@twin.jikos.cz>
-From:   Su Yue <Damenly_Su@gmx.com>
-Message-ID: <930018ec-80b9-6000-4de6-2a8cd36576bb@gmx.com>
-Date:   Thu, 5 Mar 2020 09:18:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbAcs-1jkyby1ydk-00bexC; Thu, 05
+ Mar 2020 06:28:11 +0100
+Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
+ to backref.c
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200303071409.57982-1-wqu@suse.com>
+ <20200303163041.GH2902@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <301211c5-9917-d032-3852-c8504f6d3e66@gmx.com>
+Date:   Thu, 5 Mar 2020 13:28:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200304141438.GT2902@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cBxaRbqHHJPnB5QIeISc48iBESrFd7/xP/dcs0YF9LHL+ETeLfq
- GRZb2va9VWdqK8zruGPikwI/mRGahEe5eY2hSZu73qt+U3eQOw5IUcDk6hg0JOoKW3hNW/J
- euOfnnEP70dWTofZQmmcuILV5dY84A4nXWMEly0DVGVCoeOD2OkFHng25UcmFSiQcecEQj8
- 5Gvh6xJqRiKrvhBJJBR6g==
+In-Reply-To: <20200303163041.GH2902@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD"
+X-Provags-ID: V03:K1:tKjJD09vxfbFGVYQ1on3tv3hd69UpXudaKvztl7dehRH03KFMOf
+ DVKD6g8gZmJFG3QywQZO/PbgnJgSL0drVB+u61CJurRJ+9m+CTQbqWzWjVCYrLdHw14xbTp
+ alNy1bp61yfnnPCd9wGaKV1VL2XOuV8ZCUiN4sAYbWoB4jMDWhSx/vcSziZ5/bh1jrCgHFH
+ fA3cTY0BInw4ZqKEZcFlg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/wd1xO4zpKk=:n3vDXpuxab2m7ATUgOIPbP
- /yNZIGm2Pk0ylCf7wHIUdnjFqeZCzoDZ7aDPXyrZe0c57BIWN3fsk3lrXmxJnJa7Hf2RG3ptc
- LhZYkTIVn+sjZPkayYljTBdyCpR0hunWKB5i2k5oGM/CXJ0lLX6fHG3F3sKsm2TKWvwQ4rHf9
- RGrVPtv3aOh0to2pZ1MJvOj29FGLuQLpHvoQdirdDuCNu97StFLREZx8T4lCTvVq2rcUkVD/Y
- vpce2RwpHgOKZXBOHpzGEJQxsbFBGyT09oPqVklLri4kqSNy+rBEF02t1e39hdBx5pY36s/JB
- bVwgEtHE2qiCaSPiMpnA1kzHFGPbC5zEB2e4EA7YEP8lv++agHEF0PCvZM9L9xf4xJuAMBv0b
- QaN9+1q3mRJpZDt8y5Kbbg/WaxliY8HYqyscJWd/UGq/iAFFnQVM3NHzz8yTL7TbdLM5ketDH
- yATo3uSDLbLnW7Dq+1Qvm9+3EGWP0bnHbkME0CD/1118sk+IhQczNnjifoymO7n4Qr8RBzSmE
- Yfi/pjpyfGP6FKjyy3306SGR00FT5oHmyn3zzpOzwImTisgZ3A0FqCJp7dAQ3twowzzsJpJCq
- wEBvuoAdH4utb21+1XXjsZUNdmPKxnX59T8NweBqiun08aZRHvRNx+YFoPQa5d49k3dVg2mxH
- VMYyFKMU5tzuKFHz3/VRJihtiv6ab14bwheEcsNGZamctMccdDM7hJjqY5IWEHnEImrwtjwT7
- RuS+nqGQF2VkXXl1EDBAQE3Ho7i+vV2WaddvwmzvyCVsi2l4BW4ka/6yHkZVUnuQ8uMkYtWfL
- 3zzkqKOqnPbu/XC5H8kCutTXoj1/Lmd2FiiN3gV0FAUwX4+Qygh2z/saMQTT6jrLsKsy8OB1j
- huTmvxQS7i7j4LQfBiHmF3Ngu7XEWP3jZ58VKTbc6dagVzzvfVvuXdSjgoVbuUO0j6Q3ZnV94
- NwWENSXjjEuM0TPra+ThB7b4xqtMJIqc6rLlmLV2OAD7KtpDcJ6MCvJ2hftrjh4pPQC/8Q/Iz
- sJJ/vdByKIFgrHpSx/znDKoIfD50OhE2cunq61kP8ZI1fkIlZ6zO1FcxcbsvtV4hbGGRXrMGq
- rc0WJiZNTKAeh5Po0Tyovn4fVJN9nVgmQkp8QZp4lOPzErF559Lth10NSDLZl7p37B2Rd5EC8
- OsYnfzwCv4XHaUCfnFJurXOJYXsL77PZvbNLv60Nhbr2Vb37we/9xFLUZXSTY+Vv+dQioKVG/
- jyU6Nn/XhaEPP3bhV
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QZ7SdVlmYo8=:5bAJ7iiHtjXiKL1tTjEKMZ
+ HYf/cusZ+2aJRt2sNAZDKFNN5e/mkVq11N1PIrAzp+jvzr1NMOPvXq951aAJtokLHzv5pp0DS
+ ZRny2dyz8EiNQkUxA37TsbDMH0gKHFfSjMAUNX0z/tBNUEv4c4mRck9Z8wNmMXFcA6dvOKn71
+ 1On9nBjMxgpy4Y5yJvqDARtjc8iadWsGYooOB6kmXApTqLTX5TaIWKhyaAS1l+XtJzUEZ66OH
+ LwUQ9rn2YNIFD5SYtSlGkoGVRg/u5hUNUta/WIaFP91EaflIxvZYq9uh2gj8PObMcr0jP3dpf
+ TuEEUcR6kmepTBeg3yu9a5wpnvuEodDACylyvq38hFfiv1EuplE7+hkLq/URbGN38K0sa40gO
+ QxFaI9B3MbD106l4XAm/MfviLdggypRcxV4ioiMM8bS6zYig+TZwzmed95kYGBBOmdzUHz+d/
+ WHBAOVBZ74aZc2DflEz6uXOq3xeFzjxSuQn1wEHmKAyzARXYINd1pWE6AcxrMxL3e+DL1nSMZ
+ 98J6OuwSeeTmF84Gtpa7m9TaLsFae/JGUDVVHyqWBv6cqjJjnV15cwJRktGDiW3E/f1eRgmf7
+ tuAcbMCrWvhkfSDSy3PHUhS+YRc5sAbt1JW/wu6dx9AGf4teM6Ssy+UGpLoEQ7C7JRTQ616Y0
+ 73NvSMqh/Gc8+oqig83XGl8+HKVt1qPSzfK2LG7bqQdAXcUTKWxqP/dhoO22K26urADBhjhNv
+ DFB+1jEhnhsbxRaGNhMj+WEHsK3PqNiSR8eF2NSb+k2bgrpz1csyTYZQU9346uPkZD6UM8mRf
+ jh6mnz3MCoK9ghI6tsHoWzXSMDROekDTMAiSJ+9FucSgVByd5p2CKZvcT+x//OC66TWG2ZQRI
+ szLm2r0WoeCBxHP8fYqNvQG7sNdkTX5PSz/v4kiRA9uugkMrdne3+HFAviYfH0beHr03mtUze
+ wvQCdWYXWE3nE+eYBO/TVPinvdeKNpHW0G9fTjttYcQpHiXrh8tpfmdrB9Bn1Ao/IrD4SNzyD
+ nAiYyZamOi7jiXKAYQlGueARgVqv1+BXZNi3ghPF5ISVndcykXKlfRTWVgH4b9NRc2+2u0GQ4
+ dW+44cSk1YZC0wnCnWaIBlzDI0L7Q+32TEZmq5FdcJaNIk4dwze0GLhBhMrz0AV80LG9Vczgt
+ ZmqnBLcHQOTzrsZCq5UWIMbNLutumB2V2YgEBkBiwn0eno91gHJKR1BAM7CGp7byZR/4SMss7
+ c6kr5XoYeeF7HcGYw
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020/3/4 10:14 PM, David Sterba wrote:
-> On Fri, Jan 31, 2020 at 06:04:42PM +0800, Su Yue wrote:
->> On 2020/1/31 4:05 PM, Nikolay Borisov wrote:
->>>
->>>
->>> On 12.12.19 =D0=B3. 13:01 =D1=87., damenly.su@gmail.com wrote:
->>>> From: Su Yue <Damenly_Su@gmx.com>
->>>>
->>>> The series are inspired by easy failing misc-tests/034.
->>>> Those patches fix misc-tests/034 and add new test images.
->>>>
->>>> After portation of kernel find fs_devices code, progs is able to
->>>> work on devices with FSID_CHANGING_V2 flag, not sure whether the
->>>> functionality is necessary. If not, I will remove it in next version.
->>>
->>> For now I think it's best if this is not added. Kernel is supposed to
->>> handle split-brain scenarios upon device scan which is triggered
->>> automatically by udev. If the need arises in the future then we can
->>> think about integrating this code in btrfs-progs.
->>>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD
+Content-Type: multipart/mixed; boundary="In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1"
+
+--In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/3/4 =E4=B8=8A=E5=8D=8812:30, David Sterba wrote:
+> On Tue, Mar 03, 2020 at 03:13:50PM +0800, Qu Wenruo wrote:
+>> The patchset is based on previous backref_cache_refactor branch, which=
+
+>> is further based on misc-next.
 >>
->> Okay, so drop patch[3-11].
->
-> So patches 1 and 2 have been applied. Thanks.
->
-Sorry. David, please remove the patch 2 if applied.
-There is another better solution applied by Marcos
-https://www.spinics.net/lists/linux-btrfs/msg98370.html.
+>> The whole series can be fetched from github:
+>> https://github.com/adam900710/linux/tree/backref_cache_code_move
+>>
+>> All the patches in previous branch is not touched at all, thus they ar=
+e
+>> not re-sent in this patchset.
+>=20
+> The patches are cleanups and code moving, please fix the coding style
+> issues you find.
+>=20
+> * missing lines between declarations and statements
+> * exported functions need btrfs_ prefix
 
-Try to update status about dropping things on time next time:).
+I have some question about this.
+Sometimes the "btrfs_" prefix requirement looks too mechanical.
 
-Thanks
+Some functions, like backref_cache_init() is very obvious related to
+backref cache.
+I can't see any special benefit from adding a "btrfs_" prefix.
+
+Thanks,
+Qu
+
+> * comments should start with an upper case letter unless it's an
+>   identifier, formatted to 80 columns
+>=20
+> As this patchset depends on another one I'm not sure if it's right time=
+
+> to update it now, before the other one is merged as I think the same
+> code is touched and this would cause extra work.
+>=20
+> Overall it makes sensed to add more to backref.[hc] and export that as
+> an internal API.
+>=20
+
+
+--In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1--
+
+--EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5gjeYACgkQwj2R86El
+/qjGHgf/UoK04ta8vkmGg/VqUcaZC0fNUtQZXidJUnxfv+G0w/qqA2U1jBejMTz5
+A3A43jVXW/9ZYFf4jnbZ4/sFYbjYf/ghJQ23Pq6RRf1+5JY2tieJ4WNWHrmF/xEK
+ND8pWk6yyfM8GU/tFLbc8/KnZojiPOPf+Prt4EK8kUF1Gu9ADAwngKKyCyZAp5HX
+/GbNsH41VMSqoGQcQE46OyRsri9qRWIRjlFeHZqhHdsIm3HjAPgsj1VvvTRxeqGw
+9NXSrTnhq0NPb3z7TQD4KsUCP2dlJAM8bocjgQQVLpQADNkSNaMBR0WewZl9eLkN
+dJD/alfQPlwmA3edY7zTVwFDdgtcaA==
+=0o+Q
+-----END PGP SIGNATURE-----
+
+--EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD--
