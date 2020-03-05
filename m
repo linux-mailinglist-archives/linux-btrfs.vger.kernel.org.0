@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 231E817A466
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 12:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA34317A473
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbgCELjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 06:39:49 -0500
-Received: from mout.gmx.net ([212.227.15.15]:40965 "EHLO mout.gmx.net"
+        id S1727434AbgCELk2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 06:40:28 -0500
+Received: from mout.gmx.net ([212.227.15.18]:36721 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726101AbgCELjs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 06:39:48 -0500
+        id S1725816AbgCELk2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 06:40:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583408383;
-        bh=KZD1ecu7rHVy1iHfgpq3EB67YCf414v3yuMYyD042RY=;
+        s=badeba3b8450; t=1583408422;
+        bh=2nlL83G62NUSkBD97oiTTjx52sV84vkRqAP46OKK0SU=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Jy5t8FHx6G2rStRvZu74EU2VgSQneYtdJ8TDl8uexJwsPPqymGRCUuT1nhrRVRGgT
-         ZBM3N0PsdrK7wOgNG9KSfLsUcF27CpfqtF+p+vr07c6+4Z6ZTKUy536NEvtUZ7DTQQ
-         Wr4bsO8FVMGNuLYKVAVmib1IqzY3zHdEYLzaYtZw=
+        b=iMYExaXZmQrxeq2u6W9FRZCIHgmNYn8PeCV3jPEjLFDaAs/FvV4BjqT5kEzR/XaoD
+         6+G9DoKdyyCeBDVzWBrjtIFqeZLKEsMqdJRYmgskUdOk7UzOlI+n8LsIpFJ1aKNABd
+         o78JpexlRmvmC5jh64PXpMLx2rYCsHfbhl2jMlww=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYeMj-1ioYvd2I0x-00ViWF; Thu, 05
- Mar 2020 12:39:43 +0100
-Subject: Re: [PATCH 4/8] btrfs: free the reloc_control in a consistent way
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYvY2-1injdN3xZY-00UoRu; Thu, 05
+ Mar 2020 12:40:22 +0100
+Subject: Re: [PATCH 5/8] btrfs: run clean_dirty_subvols if we fail to start a
+ trans
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200304161830.2360-1-josef@toxicpanda.com>
- <20200304161830.2360-5-josef@toxicpanda.com>
+ <20200304161830.2360-6-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,49 +53,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f77683bc-c644-25a8-6d97-fbe339bd5f98@gmx.com>
-Date:   Thu, 5 Mar 2020 19:39:33 +0800
+Message-ID: <4a6356f0-a177-8759-f89c-56f00417b2ee@gmx.com>
+Date:   Thu, 5 Mar 2020 19:40:16 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200304161830.2360-5-josef@toxicpanda.com>
+In-Reply-To: <20200304161830.2360-6-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="4h7EpSC6wxETB6m7Tv3reExkgbXAuvkiC"
-X-Provags-ID: V03:K1:YfX49xQldkcEZnO8lfRmL+8DGaVssi2x6rTpE+qQqBmq8KUaUDF
- K96uKiVDpWN3SNj2LlidOyWhrr55iGxzh2zTJalWTI+fRKqdxJozCSxP37a4YNFGyPGeZxD
- ci+mx6jXsudkjXVmnp5kcFt2/ZQ5aYVxJPwocaykIyOCqIeMvvXqw/Kb9gTXL5vWzAVezkA
- eR/GT8IsuINZ1zfEiYb5Q==
+ boundary="hvSg1ngDp3dYX4VRiIeRURP5F7NPsMzQn"
+X-Provags-ID: V03:K1:GHpXOcKqR9ohljg3LaI9jJbJ8ikqlCZJIfS10zvH8Qxe0nMHjAE
+ JbKj6RVcrZgSbX8Xrow7RbFwuXx9geJAy3dFw4IUpfTP0hvf97ssJqqsBa2tvOQ4KuDp9DO
+ BIugPj9hj7S1ryqBv2kWeRuFaakBENOwpm83WW0gWjIX55ln2Q7/THaNbEyo9fkD8iZ41lX
+ 2U1PVWz9WmUikCL8SPS1w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tWwFXO3QepY=:uYGsM2GPqtowZrqwuxfTii
- EzFAkYI/5YIE58PSddQUHOnHYI4sbRWu8BjF9LlwQyEtFpLDUaGPUbP6nw1fwueRCMOB4v6H2
- sfJ8SZKE8QcE3U3xnymrxsxc6leecRyKcAKrJGOcvsYPCSjuSX4EZeyLVoFBKrJt/14BQHtO+
- wekxsm7CNuaceWDKEXm/1J8mc15I8i0tLbQuiFk75sQuTB7nW11Z3f5MtpFgMzFmdVItYn5C8
- VK4E76s976pXIIaDY0HkuG8UdYc8dY4NwcvoUeFijf+9cZHrZK+43XJtERIu/1STLXkyd9VTH
- nOytZIaFeUrisyi3n3NKOL2193b/6IcI9IKiHBKt17GabMA61w23Cc+gMPYjsYJ0JzJtXJEUo
- kIhTrDJ9zWokMUuDBr3anaOS30XhwhQqnOLtaFfWG7ObpL/QbtGldjEknvNcsHEMy5GsA6cPZ
- VutjJuSvOWsNFg1s05EstLCtWxzHJ1z3JY2fOTeBBYRieGtd7pHpSOOt0CU7ICFf5jI4O7Axo
- EGQudi4YGMLrViOpyTimdk7436Na5o8rrBdVabmkgE0122EPdMr92SFMYSUP5j6UEDk0LV8TK
- yHDkjm1GK3eWQ3xIDDKhzazHZ3S/cF3ecDk8b64JWeI9il0NaYiXDp8suQaSDBchFmell/bGp
- A1VHtAAQqfQce4P85p6cJyx7xCdkb6TQ91K9xGRxMggwSD0WnlXPxG2twN0xc2ITv7OsRZHWG
- /iAhrxaiC6ZYM+wiHza27drWH+/uMSCFGt/I+3qwPcR6hFQdGp+adq5CM6OgZKR89IjNtaj6i
- 6WU/OT8lG5+3FHGKXMg7/bcHtO63+yA+keBkL6hAapQgTZroUVL8GuOw2rvIVrps1BqJAV00o
- UJudQDuZ2OE0FBxKLc6OAQEOpvSgRi6Ff24bj0YW/TOpab+JG25nCungS6GxQ7xv3iGh0FPRd
- lv5gkCSQhYj6VFEsEnTT6XH7UnZDEAweZTYDzIM4Am3/5lo4AbeiQNIE7YcO/IN4kY9r3CAXS
- ROQ9rom2S9u2RYMpmOIqZJgN2dYsGRxv/vIpogKhoKEw5C2lsYD/pafoKieKarHjPuq07Yp4r
- xrJBnsx7Kxk5Jjo3eAL052kgm1LzLF9pLIooFD8vmcLus9LAOOA1+anfcNW3JsdqFdI8YDcQ8
- tWANQOlSHXvnU8ewzs8w69ncwVUacgjiuai5zeUKStO7s4bPDevNiiZHPsVWdxC+7nITU4g9l
- VcDiZ8mPtcY4lZ9g0
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VnFEsdDqbeE=:QAVNTmR9my8zOPTQSeaBw3
+ viavbMrUAxas3VfON1DsZKMqXdBZECWgaX+KutPV/T/68uV6nFhDQDNn5o9RNLIY62Afa+D2l
+ SfCkEjonubbytZsmzJGq6zdb8CmiYq/RczyVE54yHBHPEW3p1NSW/IKo/+PHqeDFlJiwl04Ky
+ nWuVggmqHrPmZ+P3a0CbL2LVxGs+JyoII0alrzhtoSCyyJMX8wDSuohxK7DdL6NPxkheRUIL/
+ Q7nQGPAayLF2qqoaRYO6bHsuqEdnWw8DMut7riseuJmhq4KpxC9l4NDct4JEnCcvpe0slgs0c
+ 79W0Ge60+PvygheQgr54Oiu7CfVRWdeftS9jsgIrIXklZLZdvdvVJHF+Y128ZfbXPJv9XWB1G
+ FUjlVTZoUAP7M0jejEsQ7fNheSXmYeMBqtgQ2gqI+yPFqZwaO0w2TSYSr3lCCjEPFIiqL0Tdk
+ N32Ue7LPKP31eePhvj9NGDOI2ljMgsl14qjctyOwcgpKI1H1/ACMWqQgksf9KC8Q/wN2XEJZp
+ rCsXlgArvAFSMJxRcB37wLf4LhWMm9KGc+5tBk/REs9epKcVpeaIlv2GFdd6G5JD5Tz6slpPZ
+ BpsqUs8Gz6tKjr9kLCWH7eU+FXuJsww+X96C0o01tcWj5S8UpXC3tCceTh1hApuHvz6pExzkZ
+ GCFSxNDnYKzJrRCN7QUAflMI1jnz3t47uZ354BobEslx3O1DDjulur8tnyMc/BZDPnS7tdPyb
+ pwohWUF7rRn272r3pJsD9fd69yEq8srMb+qv33Us2VdOrDFunqLbTIo0oPvlCQhmU4lVUdWaB
+ NCqotEsNmnn4J9FaqlLwxg9gnKsm6UuR5baRdVnoQMWVM08lika/4asyBEJPBcyZ+eiYUfF4o
+ X42X6hc+FPUFLKxIYOxyT0R6Y6OBiCKv8MAokQGahEKrBZJHgLppOlKVzPHkFg9b23rWhpkTR
+ ewM4cfMmD4tqNPg8pbuhYke6vuvm1yOmUmXH1AKzic+i8yNMmjGQ6iwq2kriFBp4k6J2bs39Z
+ fqHq0hnnpqzQnsJRaqwiW66JCZD85QVf4EOmsNbrdfhr89pELZQgCgl+nglNXCGIWDM2CGwTD
+ JCQbh2KQc8fXVBL3GxvN8QRto+XMTo7MdEnihrVlWiKVPSX7OQg8peRlwVapyvK1h1MYWYJit
+ 37R1Qvs5ZPljRGyyUrsyN+GfR1hvOCCnvhg97VPkjIguIzYjlYBaM38APDn6h9fdKCvDcuRBl
+ 7CjHcK5dJJVisHOTE
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4h7EpSC6wxETB6m7Tv3reExkgbXAuvkiC
-Content-Type: multipart/mixed; boundary="hVOK2qeHKujfnbiHrChevusvE1bkuvdBH"
+--hvSg1ngDp3dYX4VRiIeRURP5F7NPsMzQn
+Content-Type: multipart/mixed; boundary="nNw7aTtqkpWtbL49fJ6AX68k8GfJdNSNS"
 
---hVOK2qeHKujfnbiHrChevusvE1bkuvdBH
+--nNw7aTtqkpWtbL49fJ6AX68k8GfJdNSNS
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -102,92 +103,70 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/3/5 =E4=B8=8A=E5=8D=8812:18, Josef Bacik wrote:
-> If we have an error while processing the reloc roots we could leak root=
-s
-> that were added to rc->reloc_roots before we hit the error.  We could
-> have also not removed the reloct tree mapping from our rb_tree, so clea=
-n
-> up any remaining nodes in the reloc root rb_tree.
+> If we do merge_reloc_roots() we could insert a few roots onto the dirty=
+
+> subvol roots list, where we hold a ref on them.  If we fail to start th=
+e
+> transaction we need to run clean_dirty_subvols() in order to cleanup th=
+e
+> refs.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/relocation.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index c496f8ed8c7e..f6237d885fe0 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4387,6 +4387,20 @@ static struct reloc_control *alloc_reloc_control=
-(struct btrfs_fs_info *fs_info)
->  	return rc;
->  }
-> =20
-> +static void free_reloc_control(struct reloc_control *rc)
-> +{
-> +	struct rb_node *rb_node;
-> +	struct mapping_node *node;
-> +
-> +	free_reloc_roots(&rc->reloc_roots);
-> +	while ((rb_node =3D rb_first(&rc->reloc_root_tree.rb_root))) {
 
-rbtree_postorder_for_each_entry_safe().
-
-So that we don't need to bother the re-balance of rbtree.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +		node =3D rb_entry(rb_node, struct mapping_node, rb_node);
-> +		rb_erase(rb_node, &rc->reloc_root_tree.rb_root);
-> +		kfree(node);
-> +	}
-> +	kfree(rc);
-> +}
-> +
->  /*
->   * Print the block group being relocated
->   */
-> @@ -4531,7 +4545,7 @@ int btrfs_relocate_block_group(struct btrfs_fs_in=
-fo *fs_info, u64 group_start)
->  		btrfs_dec_block_group_ro(rc->block_group);
->  	iput(rc->data_inode);
->  	btrfs_put_block_group(rc->block_group);
-> -	kfree(rc);
-> +	free_reloc_control(rc);
+> ---
+>  fs/btrfs/relocation.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index f6237d885fe0..53509c367eff 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -4279,10 +4279,10 @@ static noinline_for_stack int relocate_block_gr=
+oup(struct reloc_control *rc)
+>  		goto out_free;
+>  	}
+>  	btrfs_commit_transaction(trans);
+> +out_free:
+>  	ret =3D clean_dirty_subvols(rc);
+>  	if (ret < 0 && !err)
+>  		err =3D ret;
+> -out_free:
+>  	btrfs_free_block_rsv(fs_info, rc->block_rsv);
+>  	btrfs_free_path(path);
 >  	return err;
->  }
-> =20
-> @@ -4708,7 +4722,7 @@ int btrfs_recover_relocation(struct btrfs_root *r=
+> @@ -4711,6 +4711,7 @@ int btrfs_recover_relocation(struct btrfs_root *r=
 oot)
->  out_unset:
->  	unset_reloc_control(rc);
->  out_free:
-> -	kfree(rc);
-> +	free_reloc_control(rc);
->  out:
->  	if (!list_empty(&reloc_roots))
->  		free_reloc_roots(&reloc_roots);
+> =20
+>  	trans =3D btrfs_join_transaction(rc->extent_root);
+>  	if (IS_ERR(trans)) {
+> +		clean_dirty_subvols(rc);
+>  		err =3D PTR_ERR(trans);
+>  		goto out_free;
+>  	}
 >=20
 
 
---hVOK2qeHKujfnbiHrChevusvE1bkuvdBH--
+--nNw7aTtqkpWtbL49fJ6AX68k8GfJdNSNS--
 
---4h7EpSC6wxETB6m7Tv3reExkgbXAuvkiC
+--hvSg1ngDp3dYX4VRiIeRURP5F7NPsMzQn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5g5PUACgkQwj2R86El
-/qgTDwf+PooKLrG4YPPmAc7hD8A0sXbLN+RjI2pBsvDSbLPNendxd45m1OK/sy8+
-/aDBf2QkXtkGTX1iCVj6B+M2ytYROlYkBmmEes0WJRBgMPMvx50vgTle9TXSzk93
-B3KevGVsOImt248EcOAPH9s9Mifgs30vo3OaK8CZQ+qkw6DpZHSIllmx9s7Gcci+
-DOlg96I/jd76BvQXjIw0YvzRMQgyq96bjhsOLXFvja5qrQK/TtAP2VTZK2SK7IAQ
-Y2whJT72qchRJ0EAa8a2yfPM4G1jvtOWFHrTpu4PyT8oUbUEUnWnQiWZoSrlQe5K
-OS7gUwxgQudppOS3zjtQkCO3porA+g==
-=SgMH
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5g5SAACgkQwj2R86El
+/qgOZAf9HczQi+/VxKIiMM8u92tb+bgnUdStY8JzrbOUaobGUjQdH5nKNZxs1hfV
+2emRz5uEGLGu3sKfKkB+/Sr+oPQNvkXhm81lZwNaCQ+6rGWUCzuC5t7E7tdYwW4i
+idPikjAyH9eXlCN0Or0TmZXjTHn5YwwszWvLTBG+MKb6w7B/J/oHBVRQcqjvwTEq
+Vta6B7t5Ctm7UataREkXes05FkSPBk1efF4VOLUOxEfW7uYHfCowk5d/Fe+DcRoQ
+lNNYfO+YJ7Nhv9FHU4ScDpqx4CEN+CWypshvVtzXZOj97vPO+d+64ayhcliC+6Fm
+KmlXAezKKgsL8IONf8E5ONXeRoVHsw==
+=6kk3
 -----END PGP SIGNATURE-----
 
---4h7EpSC6wxETB6m7Tv3reExkgbXAuvkiC--
+--hvSg1ngDp3dYX4VRiIeRURP5F7NPsMzQn--
