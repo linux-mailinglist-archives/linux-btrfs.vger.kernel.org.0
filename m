@@ -2,165 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA82617A183
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 09:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEAB17A339
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 11:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgCEIiE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 03:38:04 -0500
-Received: from mout.gmx.net ([212.227.15.19]:57159 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726263AbgCEIiE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 03:38:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583397477;
-        bh=HycUncipTCzI0cZZSU8PPc1JKsEPxvh6YtNPDjbbt2s=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Wd+Rfd61pbaR1srClVUAgRVBlLFTg1GybmgZBRN2rXam7U3H74JIM86aAaq1iFIIp
-         A+zT2WYdb3/BVuDsD1kLi6qb53KVmqKUXvMLcOpyyRQNa/vwwSMAy//t57ACoh9IaL
-         UDVKb+AYAiRS06fZ9KWYVe5resfyTA5nQMLDhDgA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mKP-1jPrrD1gYV-017AHo; Thu, 05
- Mar 2020 09:37:57 +0100
-Subject: Re: [PATCH v2 08/10] btrfs: relocation: Remove the open-coded goto
- loop for breadth-first search
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200302094553.58827-1-wqu@suse.com>
- <20200302094553.58827-9-wqu@suse.com>
- <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
- <e76f9a62-6c7c-b1fc-e1fe-c985ff395b9d@gmx.com>
- <09fa33e1-740d-b4b0-2ff6-467cee674feb@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <bb1aa705-5735-0c93-1f55-7051810d9e33@gmx.com>
-Date:   Thu, 5 Mar 2020 16:37:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726973AbgCEKen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 05:34:43 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33438 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727026AbgCEKem (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Mar 2020 05:34:42 -0500
+Received: by mail-lf1-f68.google.com with SMTP id c20so4183108lfb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 02:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=fz2DAL/hCVOBzgx+g45rdprPzuuFcQsUW1ZHNo4nDuWKCX/fmtcJFi6lbSs9P/RfJA
+         lAVCHt1fNQbO92SbHey4yazD8D+BRVnEqK7PVKp1rcMy40FqhDMG89bJ58GSzMbwvj8U
+         zAnHbCvHz8cMGM9KEggtHMrJgl6JBjlHSjxVfYCRhwYPKx+Jjq/D+Io2Qn9ywDnb1vG6
+         OscJGDR+ktAt1dSFKcBwqG0UklQUo5kR+xK1xD7ZN4ey+k79Dp/cQzpwPp4ZcFKOa/hp
+         HQXr9qb2tQ0y+avLLK+wgv/3Axz+CmJlkglRa4MPyv4tObLkJ7AkbgA7LI04c8TOXAVI
+         wgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=jfFkAnl0y9S/m5pLekP6ve4kfgrEjPZYl40yGfCpp6+8xiOidorYTQV+cVJOCRBNqB
+         OV1gDsZ+VMz7AE84u/VyRMOq43bkRu9rgCeMT1SHXHEiI56YdqC/BkUCYP6qR6hdAmt/
+         VkLHV6Yiy9tUgcXhkzDLisq5Zmd7x+eD48REW8WO80wgx1UafaRP2iA1Y9xxLuffkcxz
+         5amJ82ZC7yPjW47nhFrqXi0u81eEbRd47EGUb/u7nnFKECiEN1Dwbyxwayic7RX45ozM
+         H9m3KN7YcOaAAAeQvoouULcjf0R3RBYaiFFFn1GE5Xov7zZVwE/Nadail9xARpZ7GASp
+         I99Q==
+X-Gm-Message-State: ANhLgQ3WSLos0kqS9g36+jHScOUsMlRrMDaF8VIwz7sQZfuy7/VnRqOt
+        smem/3n3ZCNvsKFpj8LX0r/jf1FyBX/Ak/exGjQ=
+X-Google-Smtp-Source: ADFU+vt4p78g3SCPLp2SkhMI2bIlerfed0N6TLid+L8CMxk399v6WJ1kSPdTuUyeuRHmX7GoHE72hDaaexbZ9WYxFUU=
+X-Received: by 2002:a19:c714:: with SMTP id x20mr5096973lff.107.1583404479393;
+ Thu, 05 Mar 2020 02:34:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <09fa33e1-740d-b4b0-2ff6-467cee674feb@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Received: by 2002:ab3:5d10:0:0:0:0:0 with HTTP; Thu, 5 Mar 2020 02:34:38 -0800 (PST)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
+Date:   Thu, 5 Mar 2020 02:34:38 -0800
+Message-ID: <CAKHB8qf7CPHeUuxPD-D07960Jx9qxdLt6hBH1AJUj0AYDreUzA@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BGjT1LcLC9ZUOD5+s3h5BRw1CZPFDzQAynSJSolPeVHYn0AHGTa
- Ls2vnK7kdEdIshO1h5V9uAM/0xTZAeujPrGd3dbrlC/yWa8Rr4s5a4PrVH/25kj6x5n4HMN
- HuyHSxWrT/n856boe/kYvzDpE6xZ7yBo9oEixV/1063YMp9z/yagZFkTV+O8WDeyi8ADAfZ
- NY4SOtAXaw6y3TMr6h6Eg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F7nSUewxXDQ=:JTdbO4ibFfsySBmZqpaY6w
- 4ZnWA3sTYqBTo3nivhsNKUFvyET62qe8kY9mmznUPFuhe9woINvbA/K3yLFuZs3W4RdNDupXM
- LOo3G82nTX3Wb9kh9xa4feH4arJgtm7Nt+k8FmIiSlWbWLem09IKV+AuVOvp3Ya0ap3oEvEAX
- ZAlyc4dXrHS1f6X/umcsvMOp/h9PopLrkveVVaoNZGGZs3I1PUc/EwGhq0zQvSmwNqJq+NHSY
- tQ9CD6l80Zy3TQy+Jz3Exouekv/o6y1vW/RT/lav6rXQ//A30yVyFPshreqHqV5PRwf1F+b0Z
- ZT2cWmChA5G1fjrnpJ01Cyx+UpLLEXjGf6LDb4VHCDvd+VtpredNBMSMETk7KWboIh24MbWp5
- sBLthwrAjlCdMxaPCP8VteRzxUw8o+mXylx7VS4NRI+eiK61gYUCYfJT//OGCQ9vgXCoLks1F
- /3nBpj17o1InbcYSi/BX5Myg1X5K7jq4XsjIKnB4GZPxE4cv+oMevpd8KuUeU4NKZfI1tlk7M
- nU9YYQyfSjix7OmPJY97q7ot5dULIFaqJ7CjbY7BYnSFzgsgClJ+HACiEWsRnlJTXf0vWn7dK
- A3ZntsqEIpqYfkbA7P6IBo82dW0awV5/O8qLxiEbAIZiombI01yae0kYGWLx+qtI1E9Azd10T
- gmaM/+H/rwzY7mOwPINokB2xPipZf6VIPO1nqzDMvhQsvHeqGT+71la+4ttvsqf9lWz+tD1iA
- A9gimLNuyjIUAywtkHHtSHZEFTgpl/7imSeqn3fXGV40mTLvIKoc86kWyx0+S+tCAfdORWxwV
- BBqIcVhD0aW0QMc2PLlgqruY3J/uRkXEl1zgz+Mx+YHrj/IUMjSsNcL5o8ZZWmDWNiiy5Y+6F
- uY4fMZROA7lQ4YewCxwt4/PpkDPHtJJ1NpML/QOo80PEZkbPSBIhsH+pT2y7Tm4L9LSfoMTLZ
- wDtjlHysgA4YG1cH6JLxJtjQWPgA5gNqf67+a3RFkr1IiFwOHML/TOhp4BRIvO76OJDZCiT5g
- aF1bmgUcifviLRg9GvNl+hD/dFuMKi/VzyjOp1fzGF1pjxrPXplVSYUoUyaCdCg3p/QxbeQVh
- F4/PLLOTkBCwDo1jFCPka3bAqI68qyx7qPXM/d2a4HDzLYD5TgVY0ftgy2wN6V6k+eelE5+MI
- m1KC4S84Qjtz31bAVKz0Qs/zBmdzPWqhw+1ovARXwo+ZLabakjtTyZ5Nb+LeDN+mPzDuUlj6z
- ujP5iaEXdr1BD+Exp
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+--=20
+Lieber Freund (Assalamu Alaikum),
 
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-On 2020/3/5 =E4=B8=8B=E5=8D=884:17, Nikolay Borisov wrote:
->
->
-> On 5.03.20 =D0=B3. 2:40 =D1=87., Qu Wenruo wrote:
->>
->>
->> On 2020/3/4 =E4=B8=8B=E5=8D=8810:24, Nikolay Borisov wrote:
->>>
->> [...]
->>>> +	int err =3D 0;
->>>> +
->>>> +	iter =3D btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOF=
-S);
->>>> +	if (!iter)
->>>> +		return ERR_PTR(-ENOMEM);
->>>
->>> This iterator can be made private to handle_one_tree_block as I don't =
-see it being used outside of that function.
->>
->> It's kinda a performance optimization.
->>
->> Instead of allocating memory for each loop, we allocate the memory just
->> once, and reuse it until the whole backref map for the bytenr is built.
->>>
->>>> +	path =3D btrfs_alloc_path();
->>>> +	if (!path) {
->>>> +		err =3D -ENOMEM;
->>>> +		goto out;
->>>> +	}
->>>
->>> Same thing with this path. Overall this will reduce the argument to ha=
-ndle_one_tree_block by 2.
->>
->> Same performance optimization here.
->
-> Ok, fair point.
->>
->>>
->
-> <snip>
->
->>>
->>> or simply if (!edge)
->>> break;
->>>
->>> Also this loop can be rewritten as a do {} while() and it will look:
->>
->> Yep, but I'm not sure if such do {} while() loop is preferred.
->> IIRC there are some docs saying to avoid such loop?
->
-> I'm not aware of any such docs, can you point me to them?
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-Then I guess it's not a problem. Pretty happy to utilize do {} while ()
-loop in the future.
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-Thanks,
-Qu
->
->>
->> If there is no such restriction, I would be pretty happy to go that way=
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
 .
->>
->> Thanks,
->> Qu
->>
->
-> <snip>
->
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
