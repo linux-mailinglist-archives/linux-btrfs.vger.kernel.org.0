@@ -2,80 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0573E17A736
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 15:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F9617A741
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 15:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgCEORF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 09:17:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49108 "EHLO mx2.suse.de"
+        id S1726170AbgCEOUY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 09:20:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52980 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgCEORF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 09:17:05 -0500
+        id S1726007AbgCEOUY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 09:20:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9E7E5B1BA;
-        Thu,  5 Mar 2020 14:17:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 94657B33F;
+        Thu,  5 Mar 2020 14:20:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DDCA7DA703; Thu,  5 Mar 2020 15:16:40 +0100 (CET)
-Date:   Thu, 5 Mar 2020 15:16:40 +0100
+        id 91B65DA703; Thu,  5 Mar 2020 15:19:59 +0100 (CET)
+Date:   Thu, 5 Mar 2020 15:19:59 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Su Yue <Damenly_Su@gmx.com>
-Cc:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        damenly.su@gmail.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/11] btrfs-progs: metadata_uuid feature fixes and
- portation
-Message-ID: <20200305141640.GB2902@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v3 3/3] Btrfs: implement full reflink support for inline
+ extents
+Message-ID: <20200305141959.GC2902@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Su Yue <Damenly_Su@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org
-References: <20191212110204.11128-1-Damenly_Su@gmx.com>
- <2974237d-ea96-bde8-bc48-2cf8bd6a375b@suse.com>
- <c6ceaa56-f5db-54ec-a2ba-130d469ec992@gmx.com>
- <20200304141438.GT2902@twin.jikos.cz>
- <930018ec-80b9-6000-4de6-2a8cd36576bb@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+References: <20200224171327.3655282-1-fdmanana@kernel.org>
+ <5e044000-09e8-ade1-69a6-44cfc59fdc48@toxicpanda.com>
+ <CAL3q7H7twdkw1LphkCWexABjT=WGxKHQvq7hsq+99VF5KJE3Uw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <930018ec-80b9-6000-4de6-2a8cd36576bb@gmx.com>
+In-Reply-To: <CAL3q7H7twdkw1LphkCWexABjT=WGxKHQvq7hsq+99VF5KJE3Uw@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 09:18:26AM +0800, Su Yue wrote:
-> On 2020/3/4 10:14 PM, David Sterba wrote:
-> > On Fri, Jan 31, 2020 at 06:04:42PM +0800, Su Yue wrote:
-> >> On 2020/1/31 4:05 PM, Nikolay Borisov wrote:
-> >>>
-> >>>
-> >>> On 12.12.19 г. 13:01 ч., damenly.su@gmail.com wrote:
-> >>>> From: Su Yue <Damenly_Su@gmx.com>
-> >>>>
-> >>>> The series are inspired by easy failing misc-tests/034.
-> >>>> Those patches fix misc-tests/034 and add new test images.
-> >>>>
-> >>>> After portation of kernel find fs_devices code, progs is able to
-> >>>> work on devices with FSID_CHANGING_V2 flag, not sure whether the
-> >>>> functionality is necessary. If not, I will remove it in next version.
-> >>>
-> >>> For now I think it's best if this is not added. Kernel is supposed to
-> >>> handle split-brain scenarios upon device scan which is triggered
-> >>> automatically by udev. If the need arises in the future then we can
-> >>> think about integrating this code in btrfs-progs.
-> >>>
-> >>
-> >> Okay, so drop patch[3-11].
-> >
-> > So patches 1 and 2 have been applied. Thanks.
-> >
-> Sorry. David, please remove the patch 2 if applied.
-> There is another better solution applied by Marcos
-> https://www.spinics.net/lists/linux-btrfs/msg98370.html.
+On Thu, Mar 05, 2020 at 11:57:52AM +0000, Filipe Manana wrote:
+> So this actually isn't safe.
 > 
-> Try to update status about dropping things on time next time:).
+> It can bring back the race that leads to file extent items with
+> overlapping ranges. Not because of the hole detection part but because
+> of the part where we copy extent items from the fs/subvolume tree into
+> the log tree using btrfs_search_forward(), as we copy all extent
+> items, including the ones outside the fsync range - so we could race
+> in the same way as we did during hole detection with ordered extent
+> completion for ordered extents outside the range.
+> 
+> I'll have to rework this a bit.
 
-No problem, this could happen when there's long delay between posting
-and merging. Thanks for letting me know.
+Ok, I'll remove the branch from for-next. Thanks.
