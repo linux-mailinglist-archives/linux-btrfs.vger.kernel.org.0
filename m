@@ -2,102 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B728617A4AE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 12:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA3F17A6C7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 14:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727273AbgCEL6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 06:58:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727206AbgCEL6F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 06:58:05 -0500
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B6B420848
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Mar 2020 11:58:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583409484;
-        bh=NLj51ys3qUQ1LHw4kKpA3ON4nItNllbIAr8k6twLMnk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jPk10u8XFtNZgDm35i7JuCjFlUpKNhySxNgFz9r7I3BIQr69riGCGRP7JO0gPMjip
-         EAaFCy1KJMaREjJ0ueE8KTQm5bjLz5a5S3VOzGJxflFR4awxNlEz16HbVX24Pv/87J
-         Nrw6prgBLDp5DM/AD7vHUhwauiBv/1Gni1pjOaWk=
-Received: by mail-vs1-f47.google.com with SMTP id y204so3370225vsy.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 03:58:04 -0800 (PST)
-X-Gm-Message-State: ANhLgQ0KN+ebjVT0pYH0WH5tANllCyL2u1mlOyLMfCrfduC/U+45VFFK
-        OrwE/zCKd47BzhLeK/PV/8bqpbL8Fdp1hu+UPNs=
-X-Google-Smtp-Source: ADFU+vtN9ESqwMVlCcOKAS0TO+xynnbU+Ub7yPafrBwSUTRuK7RHEz3l1pwCKc4JF1AZYJEcgpn4uNgF9Pxv3tXk8WQ=
-X-Received: by 2002:a05:6102:2268:: with SMTP id v8mr4823983vsd.90.1583409483631;
- Thu, 05 Mar 2020 03:58:03 -0800 (PST)
+        id S1726141AbgCENyL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 08:54:11 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41549 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726036AbgCENyL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Mar 2020 08:54:11 -0500
+Received: by mail-qk1-f194.google.com with SMTP id b5so5309012qkh.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 05:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zPXoKiWvKnYYVOFZRxe1CyyL7gay2zdYSa9MnMI6QkI=;
+        b=BC/K0PY9T8TS9pT5BAqwZSbBsJFPHsPmv61XqbQwOwxnfjR0jzUIEGOprCvVHDohCF
+         g4MESc0EVi+aJbe3rN8bg9VnxEYlwGIj4DVK4EQ5BVaHSUVwoMIc6kJNcJv291WgmKCp
+         IgZ5zIJVNklTrU0GhBB7qoG9g8vFpmptHUrf79+xq04KQ9XyIDfFcGOkWd1RBo7uiYAD
+         ykKofPmpGVfjhmbaPo1zEcxFEigRiVE+QxkaK503FP3nr6ALV3Qku0uoKdB51i0ZcUV2
+         Bj7QtEsc3KVdy8aqsVtSHiq21FvW+vgAjcZCjDz1go6u1PHY9X05QBArFaYKhcq4tfgJ
+         bQAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zPXoKiWvKnYYVOFZRxe1CyyL7gay2zdYSa9MnMI6QkI=;
+        b=TG7NDWF9m3nubfwGBw6KQaaaV4VWvDR2hefC0R/lBbpgj0B7AY0ThN7aICDijHPhqE
+         K/9gTsARhA+wb8jWL7XTuMzFGsOLJYLJ+QpYQOd0YPbYnWSIm1mvTj1H0FJ2uDCWSWQD
+         kuIlPd13Y23feVl8NqF6oWjmb3ed2bpAIUjg+QK7TVWzzXdykSp0Q09LMknkrRFEpnQu
+         f66du20yBOCEUSwdsOZ/dar7dvmnC0OLzNXO/gVg6/G5Eyq0PHdeBH6nYsQeTm+IYJMA
+         0fLKRLuo/tCmbA6n4sM+qaHw5xgWEytNp2Tog/pjSA6kpHobigEOOJe/GRGUNvVNuPXJ
+         CIMQ==
+X-Gm-Message-State: ANhLgQ02smCkgSfcMbAGbINSERJfkB2zASipGsEWSjSBctLcQcCw/9G2
+        +xGNLOILup7sbH+FWi/RpXFvJQ==
+X-Google-Smtp-Source: ADFU+vtDinFFtePFv5vdg7+CvlG2eKrQaWe7uHETBEC5fVNRUBlXZSU/7TEvX86Dg1hAkgkYWLaYiw==
+X-Received: by 2002:a05:620a:148e:: with SMTP id w14mr8299897qkj.473.1583416448999;
+        Thu, 05 Mar 2020 05:54:08 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id l16sm15369819qkk.118.2020.03.05.05.54.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Mar 2020 05:54:07 -0800 (PST)
+Subject: Re: [PATCH 6/8] btrfs: clear BTRFS_ROOT_DEAD_RELOC_TREE before
+ dropping the reloc root
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200304161830.2360-1-josef@toxicpanda.com>
+ <20200304161830.2360-7-josef@toxicpanda.com>
+ <21e4b656-af48-d10c-c549-11770eba541a@gmx.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <bf2b64bd-4b16-f4fb-3ef2-19d2b010824e@toxicpanda.com>
+Date:   Thu, 5 Mar 2020 08:54:06 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200224171327.3655282-1-fdmanana@kernel.org> <5e044000-09e8-ade1-69a6-44cfc59fdc48@toxicpanda.com>
-In-Reply-To: <5e044000-09e8-ade1-69a6-44cfc59fdc48@toxicpanda.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 5 Mar 2020 11:57:52 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7twdkw1LphkCWexABjT=WGxKHQvq7hsq+99VF5KJE3Uw@mail.gmail.com>
-Message-ID: <CAL3q7H7twdkw1LphkCWexABjT=WGxKHQvq7hsq+99VF5KJE3Uw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] Btrfs: implement full reflink support for inline extents
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <21e4b656-af48-d10c-c549-11770eba541a@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 9:19 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On 2/24/20 12:13 PM, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > There are a few cases where we don't allow cloning an inline extent into
-> > the destination inode, returning -EOPNOTSUPP to user space. This was done
-> > to prevent several types of file corruption and because it's not very
-> > straightforward to deal with these cases, as they can't rely on simply
-> > copying the inline extent between leaves. Such cases require copying the
-> > inline extent's data into the respective page of the destination inode.
-> >
-> > Not supporting these cases makes it harder and more cumbersome to write
-> > applications/libraries that work on any filesystem with reflink support,
-> > since all these cases for which btrfs fails with -EOPNOTSUPP work just
-> > fine on xfs for example. These unsupported cases are also not documented
-> > anywhere and explaining which exact cases fail require a bit of too
-> > technical understanding of btrfs's internal (inline extents and when and
-> > where can they exist in a file), so it's not really user friendly.
-> >
-> > Also some test cases from fstests that use fsx, such as generic/522 for
-> > example, can sporadically fail because they trigger one of these cases,
-> > and fsx expects all operations to succeed.
-> >
-> > This change adds supports for cloning all these cases by copying the
-> > inline extent's data into the respective page of the destination inode.
-> >
-> > With this change test case btrfs/112 from fstests fails because it
-> > expects some clone operations to fail, so it will be updated. Also a
-> > new test case that exercises all these previously unsupported cases
-> > will be added to fstests.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+On 3/5/20 6:41 AM, Qu Wenruo wrote:
+> 
+> 
+> On 2020/3/5 上午12:18, Josef Bacik wrote:
+>> We were doing the clear dance for the reloc root after doing the drop of
+>> the reloc root, which means we have a giant window where we could miss
+>> having BTRFS_ROOT_DEAD_RELOC_TREE unset and the reloc_root == NULL.
+> 
+> Still, I can't see the problem where we have BTRFS_ROOT_DEAD_RELOC_TREE
+> and reloc_root == NULL.
+> 
+> IMHO, that would cause anything wrong. Or is there anything I missed?
+> 
 
-So this actually isn't safe.
+I was still hitting leaks and I was convinced it was because we were re-init'ing 
+the reloc root, but I think that line of reasoning is just wrong.  I'll reword 
+the changelog, it's just a cosmetic thing at this point, not a real problem. 
+Thanks,
 
-It can bring back the race that leads to file extent items with
-overlapping ranges. Not because of the hole detection part but because
-of the part where we copy extent items from the fs/subvolume tree into
-the log tree using btrfs_search_forward(), as we copy all extent
-items, including the ones outside the fsync range - so we could race
-in the same way as we did during hole detection with ordered extent
-completion for ordered extents outside the range.
-
-I'll have to rework this a bit.
-
-thanks
-
->
-> Thanks,
->
-> Josef
+Josef
