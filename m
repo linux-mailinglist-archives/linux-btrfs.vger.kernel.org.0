@@ -2,165 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1035C179F4B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 06:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AF317A114
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 09:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725844AbgCEF2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 00:28:17 -0500
-Received: from mout.gmx.net ([212.227.15.15]:34641 "EHLO mout.gmx.net"
+        id S1726009AbgCEIRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 03:17:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34724 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgCEF2R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 00:28:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583386091;
-        bh=hBDUiAHsk7ucbN7mhNGZUON3lkMqppaEOKSFqSnsXko=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MWeUvRJKDPgSUmkTy+3NYyNabVVbRFYH++1PQBp/3vlNZ4fOB6MtSnomzOv8Fa5bJ
-         KM2vCfA+x+imVEA9vf0+fBx3rdiJ6I2IQlQIH5mILAjy59Jixgvo/IBewRvAy8IMID
-         NOlBkvub/DngvsQale2ZtPzrFPQbQC3V4MqMV/3o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbAcs-1jkyby1ydk-00bexC; Thu, 05
- Mar 2020 06:28:11 +0100
-Subject: Re: [PATCH 00/19] btrfs: Move generic backref cache build functions
- to backref.c
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        id S1725903AbgCEIRx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 03:17:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1E9E1AF2B;
+        Thu,  5 Mar 2020 08:17:51 +0000 (UTC)
+Subject: Re: [PATCH v2 08/10] btrfs: relocation: Remove the open-coded goto
+ loop for breadth-first search
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20200303071409.57982-1-wqu@suse.com>
- <20200303163041.GH2902@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <301211c5-9917-d032-3852-c8504f6d3e66@gmx.com>
-Date:   Thu, 5 Mar 2020 13:28:05 +0800
+References: <20200302094553.58827-1-wqu@suse.com>
+ <20200302094553.58827-9-wqu@suse.com>
+ <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
+ <e76f9a62-6c7c-b1fc-e1fe-c985ff395b9d@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <09fa33e1-740d-b4b0-2ff6-467cee674feb@suse.com>
+Date:   Thu, 5 Mar 2020 10:17:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200303163041.GH2902@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD"
-X-Provags-ID: V03:K1:tKjJD09vxfbFGVYQ1on3tv3hd69UpXudaKvztl7dehRH03KFMOf
- DVKD6g8gZmJFG3QywQZO/PbgnJgSL0drVB+u61CJurRJ+9m+CTQbqWzWjVCYrLdHw14xbTp
- alNy1bp61yfnnPCd9wGaKV1VL2XOuV8ZCUiN4sAYbWoB4jMDWhSx/vcSziZ5/bh1jrCgHFH
- fA3cTY0BInw4ZqKEZcFlg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QZ7SdVlmYo8=:5bAJ7iiHtjXiKL1tTjEKMZ
- HYf/cusZ+2aJRt2sNAZDKFNN5e/mkVq11N1PIrAzp+jvzr1NMOPvXq951aAJtokLHzv5pp0DS
- ZRny2dyz8EiNQkUxA37TsbDMH0gKHFfSjMAUNX0z/tBNUEv4c4mRck9Z8wNmMXFcA6dvOKn71
- 1On9nBjMxgpy4Y5yJvqDARtjc8iadWsGYooOB6kmXApTqLTX5TaIWKhyaAS1l+XtJzUEZ66OH
- LwUQ9rn2YNIFD5SYtSlGkoGVRg/u5hUNUta/WIaFP91EaflIxvZYq9uh2gj8PObMcr0jP3dpf
- TuEEUcR6kmepTBeg3yu9a5wpnvuEodDACylyvq38hFfiv1EuplE7+hkLq/URbGN38K0sa40gO
- QxFaI9B3MbD106l4XAm/MfviLdggypRcxV4ioiMM8bS6zYig+TZwzmed95kYGBBOmdzUHz+d/
- WHBAOVBZ74aZc2DflEz6uXOq3xeFzjxSuQn1wEHmKAyzARXYINd1pWE6AcxrMxL3e+DL1nSMZ
- 98J6OuwSeeTmF84Gtpa7m9TaLsFae/JGUDVVHyqWBv6cqjJjnV15cwJRktGDiW3E/f1eRgmf7
- tuAcbMCrWvhkfSDSy3PHUhS+YRc5sAbt1JW/wu6dx9AGf4teM6Ssy+UGpLoEQ7C7JRTQ616Y0
- 73NvSMqh/Gc8+oqig83XGl8+HKVt1qPSzfK2LG7bqQdAXcUTKWxqP/dhoO22K26urADBhjhNv
- DFB+1jEhnhsbxRaGNhMj+WEHsK3PqNiSR8eF2NSb+k2bgrpz1csyTYZQU9346uPkZD6UM8mRf
- jh6mnz3MCoK9ghI6tsHoWzXSMDROekDTMAiSJ+9FucSgVByd5p2CKZvcT+x//OC66TWG2ZQRI
- szLm2r0WoeCBxHP8fYqNvQG7sNdkTX5PSz/v4kiRA9uugkMrdne3+HFAviYfH0beHr03mtUze
- wvQCdWYXWE3nE+eYBO/TVPinvdeKNpHW0G9fTjttYcQpHiXrh8tpfmdrB9Bn1Ao/IrD4SNzyD
- nAiYyZamOi7jiXKAYQlGueARgVqv1+BXZNi3ghPF5ISVndcykXKlfRTWVgH4b9NRc2+2u0GQ4
- dW+44cSk1YZC0wnCnWaIBlzDI0L7Q+32TEZmq5FdcJaNIk4dwze0GLhBhMrz0AV80LG9Vczgt
- ZmqnBLcHQOTzrsZCq5UWIMbNLutumB2V2YgEBkBiwn0eno91gHJKR1BAM7CGp7byZR/4SMss7
- c6kr5XoYeeF7HcGYw
+In-Reply-To: <e76f9a62-6c7c-b1fc-e1fe-c985ff395b9d@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD
-Content-Type: multipart/mixed; boundary="In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1"
-
---In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2020/3/4 =E4=B8=8A=E5=8D=8812:30, David Sterba wrote:
-> On Tue, Mar 03, 2020 at 03:13:50PM +0800, Qu Wenruo wrote:
->> The patchset is based on previous backref_cache_refactor branch, which=
-
->> is further based on misc-next.
+On 5.03.20 г. 2:40 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/3/4 下午10:24, Nikolay Borisov wrote:
 >>
->> The whole series can be fetched from github:
->> https://github.com/adam900710/linux/tree/backref_cache_code_move
+> [...]
+>>> +	int err = 0;
+>>> +
+>>> +	iter = btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS);
+>>> +	if (!iter)
+>>> +		return ERR_PTR(-ENOMEM);
 >>
->> All the patches in previous branch is not touched at all, thus they ar=
-e
->> not re-sent in this patchset.
->=20
-> The patches are cleanups and code moving, please fix the coding style
-> issues you find.
->=20
-> * missing lines between declarations and statements
-> * exported functions need btrfs_ prefix
+>> This iterator can be made private to handle_one_tree_block as I don't see it being used outside of that function.
+> 
+> It's kinda a performance optimization.
+> 
+> Instead of allocating memory for each loop, we allocate the memory just
+> once, and reuse it until the whole backref map for the bytenr is built.
+>>
+>>> +	path = btrfs_alloc_path();
+>>> +	if (!path) {
+>>> +		err = -ENOMEM;
+>>> +		goto out;
+>>> +	}
+>>
+>> Same thing with this path. Overall this will reduce the argument to handle_one_tree_block by 2.
+> 
+> Same performance optimization here.
 
-I have some question about this.
-Sometimes the "btrfs_" prefix requirement looks too mechanical.
+Ok, fair point.
+> 
+>>
 
-Some functions, like backref_cache_init() is very obvious related to
-backref cache.
-I can't see any special benefit from adding a "btrfs_" prefix.
+<snip>
 
-Thanks,
-Qu
+>>
+>> or simply if (!edge)
+>> break;
+>>
+>> Also this loop can be rewritten as a do {} while() and it will look:
+> 
+> Yep, but I'm not sure if such do {} while() loop is preferred.
+> IIRC there are some docs saying to avoid such loop?
 
-> * comments should start with an upper case letter unless it's an
->   identifier, formatted to 80 columns
->=20
-> As this patchset depends on another one I'm not sure if it's right time=
+I'm not aware of any such docs, can you point me to them?
 
-> to update it now, before the other one is merged as I think the same
-> code is touched and this would cause extra work.
->=20
-> Overall it makes sensed to add more to backref.[hc] and export that as
-> an internal API.
->=20
+> 
+> If there is no such restriction, I would be pretty happy to go that way.
+> 
+> Thanks,
+> Qu
+> 
 
-
---In8sXymnpq3dqmnqF3tqOjeY0uBOXHLR1--
-
---EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5gjeYACgkQwj2R86El
-/qjGHgf/UoK04ta8vkmGg/VqUcaZC0fNUtQZXidJUnxfv+G0w/qqA2U1jBejMTz5
-A3A43jVXW/9ZYFf4jnbZ4/sFYbjYf/ghJQ23Pq6RRf1+5JY2tieJ4WNWHrmF/xEK
-ND8pWk6yyfM8GU/tFLbc8/KnZojiPOPf+Prt4EK8kUF1Gu9ADAwngKKyCyZAp5HX
-/GbNsH41VMSqoGQcQE46OyRsri9qRWIRjlFeHZqhHdsIm3HjAPgsj1VvvTRxeqGw
-9NXSrTnhq0NPb3z7TQD4KsUCP2dlJAM8bocjgQQVLpQADNkSNaMBR0WewZl9eLkN
-dJD/alfQPlwmA3edY7zTVwFDdgtcaA==
-=0o+Q
------END PGP SIGNATURE-----
-
---EfRlyPz3bbX2k64MdiJzCltmfeXIf7wHD--
+<snip>
