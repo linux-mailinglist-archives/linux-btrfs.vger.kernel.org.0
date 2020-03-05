@@ -2,147 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 293F3179AA1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2020 22:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CA0179CEA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 01:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387762AbgCDVE7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 16:04:59 -0500
-Received: from gateway23.websitewelcome.com ([192.185.50.108]:33711 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387398AbgCDVE7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 16:04:59 -0500
-X-Greylist: delayed 1495 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Mar 2020 16:04:58 EST
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id C7A3258DD3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2020 14:17:57 -0600 (CST)
-Received: from box2278.bluehost.com ([50.87.176.218])
-        by cmsmtp with SMTP
-        id 9aSrjZzP1RP4z9aSrjxRXI; Wed, 04 Mar 2020 14:17:57 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=casa-di-locascio.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:To:From:References:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=f222YWdHWpMhp0IffPwK3A1p3mcOIlnw509KAMX+o60=; b=W+1MQ5iMqkPpBRFe8+Q6ijP6aN
-        40ylDqAZe8KifQnwVHNw56CgmOzdDqR14xchcJL6q1hGlfwbbKtU48Iqzivz6vblg53q8A6pLzxk+
-        MfbKviUNSaawibgaFKvLIHjpV;
-Received: from host86-179-160-76.range86-179.btcentralplus.com ([86.179.160.76]:18162 helo=[192.168.1.148])
-        by box2278.bluehost.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <roosoft@casa-di-locascio.net>)
-        id 1j9aSr-0037wO-5h
-        for linux-btrfs@vger.kernel.org; Wed, 04 Mar 2020 13:17:57 -0700
-Subject: Re: USB reset + raid6 = majority of files unreadable
-References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
- <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com>
- <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
- <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com>
- <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
- <CAAW2-Zd4jGOBK6jxpqbOfwACTYkDg6Ep-EZ9Ejy7RuJEQn9F7Q@mail.gmail.com>
-From:   "RooSoft Ltd @ bluehost" <roosoft@casa-di-locascio.net>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Autocrypt: addr=roosoft@casa-di-locascio.net; prefer-encrypt=mutual; keydata=
- mQSuBFkXGawRDADa9ZSjjrupEh22ZLsQ2GhnoELMF/kjYqxNFddJmHlh1na8T0vNIDhqQuSa
- KXQkyKeVx/SfJunfDdRK0KAMnPmGUX/GZMoD7CjppoCxFx7tdx3V3ZFr1JlbxrmUhtfh2ugG
- hkhfFOd3+94dDLRAA9IU/X9UrJ0GqIbRTcvMS4IQZn62EzH5B2BOPFCPdRzdLJ5CWnI6A8R6
- XO9XCq3vuBE7zG80lkyb7PYFjj+mdVLpU64MCSnpIhUEbS7xOy9Z/47qHe10JTPCeS0pWZ5W
- gkFDvtoky5oKFa6W77j61ogLfqRdtQMJwC/IAlYIiMppbiBdF8P/A813t84ej93pXyK68rGe
- vakSWZmvSgfDK246DPbkpf1g7SYAm1a1zfkkYk6aDGy12HyIMOxf3NltsM42vQAcme5w5jAs
- 7u4EDYlJe71VqBFzDkw+1xkAscIpyxqC6lG/kW0TXoyIEpKNOs56hfknvGGzkZiopfiNrRZN
- QtYdd1MOnN2HVyfEJ4ZtU88BAMjvF0ttSIOmfaiCxnhrUfElrRiYmnVkEuquMc1vZCWzDADA
- iM+lJtApEaAk80Nk4vy3wOr5ldqiE8vHJsW0mTPSt2bhNtiWj0py2QJZcjHVAg5ux6gQIMXT
- RrLSZg5XN4oCuEGkXCQFkbD+y70FdTDCPcpn69GtJ8ctUKGkgpRdQd4LSbPNhwmo8/nevjXl
- HvAQC/+vMEn/93qvtz5aB5fNqfo2Yu8K2y2nk+Cc7DxQBddW0S1pHw4Jzhn047rE/pbcJN9I
- +Aa/B8NGSeNfEWN++kcWcadS6lFCQIOzL9g07+N7t5JgIXT6p2YWuKsdokIZe4o5vcS1i5pW
- t84n4wSstSM9wlDHbEK23k1B7zBWT/LR6NkdwEumqPrXS6YMVd8s+1ipRPPKKhTNxiRfPN9J
- N6BPjW6J1SlF7mtTsVAZAfEbRQ1ZcjQ9Ly8sNxVhB8R7bK9Pty4lVbq/qn83hyhR4VdJBJOf
- UGWG7jQQd7LxPcAJ4K8NONt990yXt9VEQdIZ1l/ryhZBhqUq70NIQCxpUFfqXB/+17TjtHhH
- vZBuSIEMALLMxv5nG1HXhXg9wK2fP3mj6+uDMWm3KOm7iuoUFWETcOpFf0vyOMY39nL5u6bB
- WvRtjfpo00R6eU4TrasxJBuV2szyfd3EkmCz9LDHl0TB4aIXVPa5MpiXT8OOd3yCT4+SyWbn
- HSe0tZ0NDeL7cNyM9DJNF7IaSTfeAEBAdGdpQY3Doq0NIJSqoPx0qQG5+wivp4yz8R9YyrUF
- 3Ij8dh/+8Wo4j3QrUh4xsvsuIcQGOi3deikRZRT6pUU/TkmPzkf115GORdksSbrVJQRGPvTG
- IbATeBHcbDKQCoz3bMJ7/6suNRtoc4t0Vy5EQTIAE20fhcl1EIiTJNi3LENBRfMkmVbV2PH6
- Gb6qq8hPkicsveNneyguS6uctG09bh7GvtyvJMDFre56I+BxPLgoRZfOURuKr65iVqvWnpHV
- bHr5QDPhOkz0yjReCftE6pQ1ByYXnqYoG6gDdi+YWxpeG0yG0n2f0DcL239Ov50//nbdZT2A
- V4xgCgKiUJiUOKavXbQlRC4gTG9DYXNjaW8gPGRsb2Nhc2NpQHJvb3NvZnQubHRkLnVrPoiW
- BBMRCAA+FiEEiqndK8G/Rn3AuCTlU7Mw4eOAFJ4FAlkXGawCGyMFCQlmAYAFCwkIBwIGFQgJ
- CgsCBBYCAwECHgECF4AACgkQU7Mw4eOAFJ6qhgD6Avrd1fdYnlkuZ7eOO85k6ULioHIv+hUQ
- yOKDRzvzZW0A/jZJ0f2LrypW4aynDayK3wS81QOQAjJZRhserRdmvdpeuQMNBFkXGawQDAC5
- sdLgywUQmblOPQ8OjLXC/7mopD1n5h0CTcb9X8cR6lTXUhEm1amWwk5NiahgaX88dD/8LyMd
- LS7wRppJuz6K/DzwRgTMz8eeFi1PHxkPCiJ6logJs1NkASBR31MiaCjoZCltzQ/eqdsEMoWD
- 4FhTbRg0bZPjyldmrQRhfFl0SLBPWWlxLtrK2rb4wapoenUb7c1Fa9ZalwuasllrJav4Uqwo
- 17+RJN35WnDQJ20tbdv8KYS/TW5C19U1m7K7VVPbHziyd5bBSAikZkQXG7jHZdmEEj49DFD0
- mOpiUPGnXACw/sXyNBVKzyQxaukrRzG4amhu9QiKPInvKgNm7J6yZr4749joh8JSwCkgdvmn
- ANz6Hoozfe3y99/ljGAIg4HfbqYvwy0u421UM1PuBCG9cpwGrkeiEykBAdcZTdf/Zv/ufB/K
- IP/CS66lL7qIO8TGHTR9lezp7lJnZL+Mbtg9nZzzas33kx5Q3j7uNRzdTzKMPj7XWjUaPkCk
- g0FPNC8AAwcL/jtwNw7j9CAaIQkagbIzQ+76H6LNznP4t2VfG9fXx6AUJOq0NoTzYEsIiFbR
- Bphc+42BaailaICW0/eXTnwGE6AlwgxEdHKW/xaa0EN+XUyCrP/864Xbe/TqNFCDN6vJ+ayF
- cpQTVApaPsxC0UbFoQy4EYBL8LX5ODOx1spu2M+kUGQcGxCqcXgWIhwIB6qiPbS8Du/tTq9T
- erigDArwZz/NS1xrNunZ/T+b5X2/TqniHy+kJcgZhEPCqxHQizAA2V10J2tLb6DXL8xiz68L
- x4mJCOHarINVFWARrYA+lehwnvgxJclbIX7Au8t6khIyfzcjU1CSN3CEsic6WZOK88s9mqHJ
- C+P9Nz5tvr10dhpOsqtOIecF8hdK7tgwgOKAoKux23I+ZLhGFikO+MkaQdTtbdzoP/aRDABt
- WhJEKEtLbl1+VLhbvDHfVLbUH6XU3m/mq8V1MtuOE4zLT/bhCxK1bqyGgRxyH+Feo//rCjnZ
- X+cr7Q4IPrInwzCbJMapfYh+BBgRCAAmFiEEiqndK8G/Rn3AuCTlU7Mw4eOAFJ4FAlkXGawC
- GwwFCQlmAYAACgkQU7Mw4eOAFJ4V6QD+M31YYJgP7CIqznNSnuIwyk2eRQH9JD9h3vibqWhv
- 5CcA/jbPUnx8zLwTx1iyPvRiyFtF9t98AD7BIdoMQPyrzP0l
-Message-ID: <15ec9ccc-6bad-dc04-5008-7168ced1f7e4@casa-di-locascio.net>
-Date:   Wed, 4 Mar 2020 20:17:55 +0000
+        id S2389432AbgCEAkO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 19:40:14 -0500
+Received: from mout.gmx.net ([212.227.17.20]:41189 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389346AbgCEAkN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 19:40:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583368806;
+        bh=7JXRW6RLhCVnSoFMM/HukmvLu5Oe6H9dzB3m9AV+3AE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZOd0YIW/SFZkRcpHCD3VrPguuQWtI76PKE0UqsVcEyoP2yqXbAVcNT9ty5GpCKbee
+         OyEcLIPR8lJ4PVVqtdxaxqfqBq40Bd8E4HIzBaiNtKYXqNhzQn4Pranh2V0jNrflII
+         DDIcslbnPO8yfARQlBhNm6v0+/jz/ykD/VEuLacM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MysRu-1jWHmZ1tzu-00vtJp; Thu, 05
+ Mar 2020 01:40:06 +0100
+Subject: Re: [PATCH v2 08/10] btrfs: relocation: Remove the open-coded goto
+ loop for breadth-first search
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200302094553.58827-1-wqu@suse.com>
+ <20200302094553.58827-9-wqu@suse.com>
+ <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <e76f9a62-6c7c-b1fc-e1fe-c985ff395b9d@gmx.com>
+Date:   Thu, 5 Mar 2020 08:40:02 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAAW2-Zd4jGOBK6jxpqbOfwACTYkDg6Ep-EZ9Ejy7RuJEQn9F7Q@mail.gmail.com>
+In-Reply-To: <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box2278.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - casa-di-locascio.net
-X-BWhitelist: no
-X-Source-IP: 86.179.160.76
-X-Source-L: No
-X-Exim-ID: 1j9aSr-0037wO-5h
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host86-179-160-76.range86-179.btcentralplus.com ([192.168.1.148]) [86.179.160.76]:18162
-X-Source-Auth: fpd_eacct+casa-di-locascio.net
-X-Email-Count: 1
-X-Source-Cap: Y2FzYWRpbG87Y2FzYWRpbG87Ym94MjI3OC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DPHQIJFXbr1B2o33OCvl5ahlaKjWqdxlp9Zq2or6WOT7LGJ/99d
+ lLLfecgcFUm8NMxp7VrEny1eQlZDc20REFuQAc/ny02OWkGDVdOLLYiGpkQlorf3GLKmQtE
+ oPMXD7fX22xqkrf8cKDaPrNCHOAAf506b8Pyrx2lRGv8VLJLdW8uKld/3t0vhK9h7kJl2w+
+ VsvqCJn5qxPw/oIEQ+7lA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a9OxV5v1Ng8=:SnjTziG70F4iDAogZZnfwv
+ qDiNNv0w9QTYdgvCSNyKGVCuoI5yNg3/qN+CJmwc+/lV7agpPqdbWFUyeypQc9uiKwOq9FlCj
+ wCuQXcOT5BZzStoxaexaR2ENlBHdMqLJm17oEl5j9fow0AnSSvueQHBVMZWuP4Xn77PVZ4iGi
+ 1Hv/EYC/n8XkLGa8CM0VV83JHWO5W9RPttjjkfoWxKcCzbJfbLu4UI7izrBW3Qj45XWA55eZv
+ 3a+uChCeW4EcM7YtiKyHi/c/yMEfJzC8q/cF9XULhhCJA0juealDFYPEqM/3UsLNA0bg0S7jF
+ mQrIYrYjDk2jy7RZKMiy+UaDpXsrfzueTWSEyrkElyD+D5V5105kB5XbHdGYqH6l2W90HMGd3
+ 5/uEZZcPj/feLVAOcezkeOMEfm3mrHOhb66X344BkIziRkDoCGC/eCcQhrYKYkvYikaVf+qvv
+ 7d5ol/AOizzE1dx8ERgQWzd4JAhu3hFuOMvYnwx5lgqsbE8kPOLf713riyS+/li8mkUOt7Q2c
+ TfwtAQIxqz86E9jhGvx+0uyRHMFz0SbZx7RhBtpHeV3+o5uW0SdbWcMOFB2exaILT1mMWgqIr
+ +1UFyCulgC21HsfyosFQzzaxadokMiDu7po1mKrXpca5caiQfzTEki1+dQbdvAiCRsin2VqE2
+ uRTCMnm3nKslxda5yob1FJ/AV8dtXY4DjsDhxiVseLxEn09TOaGW4VifdXsEs67vOfch4qVF9
+ gpg1s3dM75ksZhr8cMhtO7uSUSJu+Oauq//G8+pwKdh4EbVMYSC80WhGLOG9QtvEykkluIO0F
+ RY9h+Kq2apXvPYlfGZf/m9LSAhPcbPFI8J2TW19n/Wcv7GzPXyzIbOw3rNwYcmu7LbzpKZkSP
+ JoOIzJzlrgDt+6/vhfNaa0a3pubYx8WbcgeKaPYDi1pSk/m1ltONZ87iY3vCugligiEP3AkQn
+ zn5Ij8hFaxpm2N3ffJhiWXDIE8KIlI9CFQgxG3K/qPoVKHE0/O76D3A7KQiEki6aoNc2w7yeR
+ 4rfFnH/wK7KsX5BQMlFKcYRTYHfy5iq5XNYpmzTOj7dxfvz66GNnBj5tdtKLlJtqE+GuO9aGT
+ 32hDgdxyVOIZr/Ki7mqCD2cGWBdrf3FoaWoA/GlyCogP6yfg+z8vKVIsjWOTPpbNBY9R4dj5t
+ e4mHJGA7xEQvhTenSLdruknbNpxQaILE4BnRiF5soxNk3NmPAY14j6QxxfjCagQG5yqZ7bvEQ
+ 1FruyjQK0oqTesq2d
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/03/2020 15:42, Jonathan H wrote:
-> Update:
+
+
+On 2020/3/4 =E4=B8=8B=E5=8D=8810:24, Nikolay Borisov wrote:
 >
-> My most recent scrub just finished. It found a few hundred errors, but
-> many files that were not mentioned by the scrub at all are still
-> unreadable. I started another scrub and it is finding new errors and
-> correcting them, but I aborted it since I do feel like constantly
-> scrubbing is making progress.
+[...]
+>> +	int err =3D 0;
+>> +
+>> +	iter =3D btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS)=
+;
+>> +	if (!iter)
+>> +		return ERR_PTR(-ENOMEM);
 >
-> Much more interestingly, I ran `btrfs rescue chunk-recover` and it
-> reported that the majority (2847/3514) of my chunks were
-> unrecoverable. The output from the `chunk-recover` is too long to
-> include in a pastebin. Is there anything in particular that might be
-> of interest?
+> This iterator can be made private to handle_one_tree_block as I don't se=
+e it being used outside of that function.
+
+It's kinda a performance optimization.
+
+Instead of allocating memory for each loop, we allocate the memory just
+once, and reuse it until the whole backref map for the bytenr is built.
 >
-> Also, I take the existence of unrecoverable chunks to mean that the
-> filesystem is not salvageable, is that true?
+>> +	path =3D btrfs_alloc_path();
+>> +	if (!path) {
+>> +		err =3D -ENOMEM;
+>> +		goto out;
+>> +	}
+>
+> Same thing with this path. Overall this will reduce the argument to hand=
+le_one_tree_block by 2.
 
-I would suspect memory corruption at this stage then. Run memtest and if
-it finds anything wrong switch to ECC and don't use that memory for
-critical anything.
+Same performance optimization here.
 
--- 
-==
+>
+>> +	path->reada =3D READA_FORWARD;
+>> +
+>> +	node =3D alloc_backref_node(cache, bytenr, level);
+>> +	if (!node) {
+>> +		err =3D -ENOMEM;
+>> +		goto out;
+>> +	}
+>> +
+>> +	node->lowest =3D 1;
+>> +	cur =3D node;
+>> +
+>> +	/* Breadth-first search to build backref cache */
+>> +	while (1) {
+>> +		ret =3D handle_one_tree_block(rc, &useless, &list, path, iter,
+>> +					    node_key, cur);
+>> +		if (ret < 0) {
+>> +			err =3D ret;
+>> +			goto out;
+>> +		}
+>> +		/* the pending list isn't empty, take the first block to process */
+>> +		if (!list_empty(&list)) {
+>> +			edge =3D list_entry(list.next, struct backref_edge, list[UPPER]);
+>
+> Use list_first_entry_or_null or it would become:
+>
+> edge =3D list_first_entry_or_null();
+> if (edge) {
+> list_del_init(&edge->list[UPPER]);
+> cur =3D edge->node[UPPER]
+> } else {
+> breakl
+> }
 
-Don Alexander
+That's an interesting wrapper. Would go that way.
 
+>
+> or simply if (!edge)
+> break;
+>
+> Also this loop can be rewritten as a do {} while() and it will look:
+
+Yep, but I'm not sure if such do {} while() loop is preferred.
+IIRC there are some docs saying to avoid such loop?
+
+If there is no such restriction, I would be pretty happy to go that way.
+
+Thanks,
+Qu
+
+>
+>         /* Breadth-first search to build backref cache */
+>         do {
+>                 ret =3D handle_one_tree_block(rc, &useless, &list, path,=
+ iter,
+>                                             node_key, cur);
+>                 if (ret < 0) {
+>                         err =3D ret;
+>                         goto out;
+>                 }
+>                 edge =3D list_first_entry_or_null(&list, struct backref_=
+edge,
+>                                                 list[UPPER]);
+>                 /* the pending list isn't empty, take the first block to=
+ process */
+>                 if (edge) {
+>                         list_del_init(&edge->list[UPPER]);
+>                         cur =3D edge->node[UPPER];
+>                 }
+>         } while (edge)
+>
+> IMO this is shorter than the original version and it's very expicit abou=
+t it's terminating conditions:
+> a). handle_one_tree_block returns an error
+> b) list becomes empty.
+>
+> Alternatively list being empty is really a proxy for "is cur a valid ino=
+de". We know it's always
+> valid on the first iteration since it's passed form the caller, subseque=
+nt iterations assign cur
+> to edge->node[UPPER] so it could even be
+>
+> while(cur) {}
+>
+> In my opinion reducing while(1) loops where it makes sense (as in this c=
+ase) is preferable.
+>
+> NB: I've only compile-tested it.
+>
+>> +			list_del_init(&edge->list[UPPER]);
+>> +			cur =3D edge->node[UPPER];
+>> +		} else {
+>> +			break;
+>> +		}
+>>  	}
+>>
+>>  	/*
+>>
