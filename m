@@ -2,69 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFED17A86F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 16:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40DA17A874
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 16:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgCEPD2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 10:03:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47376 "EHLO mail.kernel.org"
+        id S1726485AbgCEPEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 10:04:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgCEPD2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Mar 2020 10:03:28 -0500
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
+        id S1726436AbgCEPEM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 10:04:12 -0500
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92DB820848
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Mar 2020 15:03:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37E8720801
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Mar 2020 15:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583420607;
-        bh=Hsu/4nWWjXW4fTZwDgk5cidvZYdjJPbjEOR2zMCo6fE=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=yWu14arwJVcif8dZY7kBkoicLd1VElXN4osC9NcGczyzGDp19XfXYLK4EY/Duc4vW
-         JWrarlKnvzbO7DpyDSJX273PRqaxZYD8qQSRHx0pwu2D0tnXROwApajk0crWdCjKKF
-         5ofAMqqIW350p/P7tqRfvnUmLZDa1ZjXyPQoRdhk=
-Received: by mail-ua1-f43.google.com with SMTP id z26so2169820uap.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 07:03:27 -0800 (PST)
-X-Gm-Message-State: ANhLgQ1+IH69YWYPBRHYuZW0hARVHAPCSJV23DmiAfbQCyu9Bg30vudR
-        CzKwlE45qnIM0YpjZhLckd8EsmGo+urt0aqvsco=
-X-Google-Smtp-Source: ADFU+vvFa0SFZyYntKIR850Oqt8isLt/L6sA9rlwsZoNqHlgQCGqQX8tFiKgo8p2NRvb8N1Ph1Ha0wMkGq9hUen15E0=
-X-Received: by 2002:ab0:7195:: with SMTP id l21mr4653333uao.27.1583420606050;
- Thu, 05 Mar 2020 07:03:26 -0800 (PST)
+        s=default; t=1583420651;
+        bh=oH1uxtotVLSrZbBw0GolzY9RrcpRylkHRq6w9EJH0lI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=swBpPJJjTWS5BjN8u99DEN6smeeZg3We86Q6R75psANP5BKgFvXCoLgbLUlqjbOIz
+         lF+3ga4kvWGDMxRJjbL9i6xk2c0imBxCJaxwWKay7TkEUjyorJFpGMRDeVhM9Mv1Ts
+         t0oqYIKsxs5Nlpuf3bHQxm7JSZMoavTRubmL429Q=
+Received: by mail-ua1-f41.google.com with SMTP id c4so2123139uaq.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 07:04:11 -0800 (PST)
+X-Gm-Message-State: ANhLgQ2Zd6oTg4qxGRh0Y0BdECredFHqrVmUOK/zrp7woU8oFfInMuAQ
+        H1yobgZNX6G8IAN0hweT6T2XWc1UzgO+5YKZcL0=
+X-Google-Smtp-Source: ADFU+vtTpxA1+2gXX3l+w958fXWNniqrpylkd5YoIR294+T17zHUjEcz3QYTUWsLg6CEsZfj6/sO8DJeebnhPWrhp20=
+X-Received: by 2002:ab0:2247:: with SMTP id z7mr4890352uan.123.1583420650183;
+ Thu, 05 Mar 2020 07:04:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20200224171327.3655282-1-fdmanana@kernel.org> <5e044000-09e8-ade1-69a6-44cfc59fdc48@toxicpanda.com>
- <CAL3q7H7twdkw1LphkCWexABjT=WGxKHQvq7hsq+99VF5KJE3Uw@mail.gmail.com> <20200305141959.GC2902@twin.jikos.cz>
-In-Reply-To: <20200305141959.GC2902@twin.jikos.cz>
+References: <20200304103404.5571-1-fdmanana@kernel.org> <31fce27a-510f-3f63-a029-2722c6e20b05@toxicpanda.com>
+In-Reply-To: <31fce27a-510f-3f63-a029-2722c6e20b05@toxicpanda.com>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 5 Mar 2020 15:03:14 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7v4iVheXM_hCt2jaK+JK360ZjA-Ff6FZTGOhm4Zho23w@mail.gmail.com>
-Message-ID: <CAL3q7H7v4iVheXM_hCt2jaK+JK360ZjA-Ff6FZTGOhm4Zho23w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] Btrfs: implement full reflink support for inline extents
-To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
+Date:   Thu, 5 Mar 2020 15:03:58 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4nYzxswJuDFNVZYDTLmjqKGW2eDTsUs6hBqx56kQumKg@mail.gmail.com>
+Message-ID: <CAL3q7H4nYzxswJuDFNVZYDTLmjqKGW2eDTsUs6hBqx56kQumKg@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: make ranged full fsyncs more efficient
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 5, 2020 at 2:20 PM David Sterba <dsterba@suse.cz> wrote:
+On Wed, Mar 4, 2020 at 6:55 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> On Thu, Mar 05, 2020 at 11:57:52AM +0000, Filipe Manana wrote:
-> > So this actually isn't safe.
+> On 3/4/20 5:34 AM, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > It can bring back the race that leads to file extent items with
-> > overlapping ranges. Not because of the hole detection part but because
-> > of the part where we copy extent items from the fs/subvolume tree into
-> > the log tree using btrfs_search_forward(), as we copy all extent
-> > items, including the ones outside the fsync range - so we could race
-> > in the same way as we did during hole detection with ordered extent
-> > completion for ordered extents outside the range.
+> > Commit 0c713cbab6200b ("Btrfs: fix race between ranged fsync and writeback
+> > of adjacent ranges") fixed a bug where we could end up with file extent
+> > items in a log tree that represent file ranges that overlap due to a race
+> > between the hole detection of a ranged full fsync and writeback for a
+> > different file range.
 > >
-> > I'll have to rework this a bit.
+> > The problem was solved by forcing any ranged full fsync to become a
+> > non-ranged full fsync - setting the range start to 0 and the end offset to
+> > LLONG_MAX. This was a simple solution because the code that detected and
+> > marked holes was very complex, it used to be done at copy_items() and
+> > implied several searches on the fs/subvolume tree. The drawback of that
+> > solution was that we started to flush delalloc for the entire file and
+> > wait for all the ordered extents to complete for ranged full fsyncs
+> > (including ordered extents covering ranges completely outside the given
+> > range). Fortunatelly ranged full fsyncs are not the most common case.
+> >
+> > However a later fix for detecting and marking holes was made by commit
+> > 0e56315ca147b3 ("Btrfs: fix missing hole after hole punching and fsync
+> > when using NO_HOLES") and it simplified a lot the detection of holes,
+> > and now copy_items() no longer does it and we do it in a much more simple
+> > way at btrfs_log_holes(). This makes it now possible to simply make the
+> > code that detects holes to operate only on the initial range and no longer
+> > need to operate on the whole file, while also avoiding the need to flush
+> > delalloc for the entire file and wait for ordered extents that cover
+> > ranges that don't overlap the given range.
+> >
+> > So this change just does that, making any ranged full fsync to actually
+> > operate only on the given range and not the whole file.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 >
-> Ok, I'll remove the branch from for-next. Thanks.
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Wrong thread, the comment was meant for:
-https://patchwork.kernel.org/patch/11419793/
+So this actually isn't safe.
+
+It can bring back the race that leads to file extent items with
+overlapping ranges. Not because of the hole detection part but because
+of the part where we copy extent items from the fs/subvolume tree into
+the log tree using btrfs_search_forward(), as we copy all extent
+items, including the ones outside the fsync range - so we could race
+in the same way as we did during hole detection with ordered extent
+completion for ordered extents outside the range.
+
+I'll have to rework this a bit.
+
+>
+> Thanks,
+>
+> Josef
