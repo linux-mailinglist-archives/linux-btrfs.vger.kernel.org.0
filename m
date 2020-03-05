@@ -2,33 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CA0179CEA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 01:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52853179CEF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 01:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389432AbgCEAkO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 19:40:14 -0500
-Received: from mout.gmx.net ([212.227.17.20]:41189 "EHLO mout.gmx.net"
+        id S1725861AbgCEAqZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 19:46:25 -0500
+Received: from mout.gmx.net ([212.227.17.20]:55307 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389346AbgCEAkN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 19:40:13 -0500
+        id S1725852AbgCEAqY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 19:46:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583368806;
-        bh=7JXRW6RLhCVnSoFMM/HukmvLu5Oe6H9dzB3m9AV+3AE=;
+        s=badeba3b8450; t=1583369178;
+        bh=yKBxtmSK7+/YS22cLugkfFcabl+sCb+4F1OZ5WVLaB4=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZOd0YIW/SFZkRcpHCD3VrPguuQWtI76PKE0UqsVcEyoP2yqXbAVcNT9ty5GpCKbee
-         OyEcLIPR8lJ4PVVqtdxaxqfqBq40Bd8E4HIzBaiNtKYXqNhzQn4Pranh2V0jNrflII
-         DDIcslbnPO8yfARQlBhNm6v0+/jz/ykD/VEuLacM=
+        b=EoLyx3NUyOIyz2hsZvtp7YN0XspYxWJtlrBQRgl/yhcfQCqY1aAoS3KKs/Wgo0qDY
+         e+U/JtWwkui84kd/ReQo7TehlvuVd7wLMP1q7KKaEt5cAhmZRyd4t3FY8kKt4KWz7f
+         3CkoD/t/QOF6eESuq7e8mOxG1Mg5Z7IwyNST5Vp8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MysRu-1jWHmZ1tzu-00vtJp; Thu, 05
- Mar 2020 01:40:06 +0100
-Subject: Re: [PATCH v2 08/10] btrfs: relocation: Remove the open-coded goto
- loop for breadth-first search
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhlKy-1jnPFR3Y8m-00dlNs; Thu, 05
+ Mar 2020 01:46:18 +0100
+Subject: Re: [PATCH] btrfs-progs: Output proper csum string if csum mismatch
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20200302094553.58827-1-wqu@suse.com>
- <20200302094553.58827-9-wqu@suse.com>
- <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
+References: <20200120093205.37824-1-wqu@suse.com>
+ <20200304142802.GU2902@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,170 +52,125 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e76f9a62-6c7c-b1fc-e1fe-c985ff395b9d@gmx.com>
-Date:   Thu, 5 Mar 2020 08:40:02 +0800
+Message-ID: <5fe0776c-4e99-e124-4211-0abe9a90924d@gmx.com>
+Date:   Thu, 5 Mar 2020 08:46:13 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <30ec7909-9ced-fb21-cf8e-1fa0c970d9a0@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DPHQIJFXbr1B2o33OCvl5ahlaKjWqdxlp9Zq2or6WOT7LGJ/99d
- lLLfecgcFUm8NMxp7VrEny1eQlZDc20REFuQAc/ny02OWkGDVdOLLYiGpkQlorf3GLKmQtE
- oPMXD7fX22xqkrf8cKDaPrNCHOAAf506b8Pyrx2lRGv8VLJLdW8uKld/3t0vhK9h7kJl2w+
- VsvqCJn5qxPw/oIEQ+7lA==
+In-Reply-To: <20200304142802.GU2902@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VMnVUQczo2bYebPDcXT1yyZXHgMydrMhc"
+X-Provags-ID: V03:K1:KzS6fFxbGq5wJV+S7QrXHk2vZP2hQxjfpqYDmKqL2szDsdVDt0k
+ vi2T7jepPbqRZATm015yeZmyaLZVZgBR+d13CbCQxKjIfTJiCrEworgcN2u59HchzV2o4hn
+ uY4+EOZEn+eU5S7uRnZDXss1PXjZc9BNoH3MohnkMiJEv/7XEYuqiRuP7Jo8vq/uv41k9l9
+ 1+9rCxwFZue+bDc6hT8zQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:a9OxV5v1Ng8=:SnjTziG70F4iDAogZZnfwv
- qDiNNv0w9QTYdgvCSNyKGVCuoI5yNg3/qN+CJmwc+/lV7agpPqdbWFUyeypQc9uiKwOq9FlCj
- wCuQXcOT5BZzStoxaexaR2ENlBHdMqLJm17oEl5j9fow0AnSSvueQHBVMZWuP4Xn77PVZ4iGi
- 1Hv/EYC/n8XkLGa8CM0VV83JHWO5W9RPttjjkfoWxKcCzbJfbLu4UI7izrBW3Qj45XWA55eZv
- 3a+uChCeW4EcM7YtiKyHi/c/yMEfJzC8q/cF9XULhhCJA0juealDFYPEqM/3UsLNA0bg0S7jF
- mQrIYrYjDk2jy7RZKMiy+UaDpXsrfzueTWSEyrkElyD+D5V5105kB5XbHdGYqH6l2W90HMGd3
- 5/uEZZcPj/feLVAOcezkeOMEfm3mrHOhb66X344BkIziRkDoCGC/eCcQhrYKYkvYikaVf+qvv
- 7d5ol/AOizzE1dx8ERgQWzd4JAhu3hFuOMvYnwx5lgqsbE8kPOLf713riyS+/li8mkUOt7Q2c
- TfwtAQIxqz86E9jhGvx+0uyRHMFz0SbZx7RhBtpHeV3+o5uW0SdbWcMOFB2exaILT1mMWgqIr
- +1UFyCulgC21HsfyosFQzzaxadokMiDu7po1mKrXpca5caiQfzTEki1+dQbdvAiCRsin2VqE2
- uRTCMnm3nKslxda5yob1FJ/AV8dtXY4DjsDhxiVseLxEn09TOaGW4VifdXsEs67vOfch4qVF9
- gpg1s3dM75ksZhr8cMhtO7uSUSJu+Oauq//G8+pwKdh4EbVMYSC80WhGLOG9QtvEykkluIO0F
- RY9h+Kq2apXvPYlfGZf/m9LSAhPcbPFI8J2TW19n/Wcv7GzPXyzIbOw3rNwYcmu7LbzpKZkSP
- JoOIzJzlrgDt+6/vhfNaa0a3pubYx8WbcgeKaPYDi1pSk/m1ltONZ87iY3vCugligiEP3AkQn
- zn5Ij8hFaxpm2N3ffJhiWXDIE8KIlI9CFQgxG3K/qPoVKHE0/O76D3A7KQiEki6aoNc2w7yeR
- 4rfFnH/wK7KsX5BQMlFKcYRTYHfy5iq5XNYpmzTOj7dxfvz66GNnBj5tdtKLlJtqE+GuO9aGT
- 32hDgdxyVOIZr/Ki7mqCD2cGWBdrf3FoaWoA/GlyCogP6yfg+z8vKVIsjWOTPpbNBY9R4dj5t
- e4mHJGA7xEQvhTenSLdruknbNpxQaILE4BnRiF5soxNk3NmPAY14j6QxxfjCagQG5yqZ7bvEQ
- 1FruyjQK0oqTesq2d
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hbl3Bnx0M4w=:ZFaURh0dooG6PAAeObnmP5
+ rU4wX6B/Lb5hwhuSrX8Dlr1/9VdFpazFs0Qpf1IwmOwakXl/Zih/X578sPiFfLwMihVsoTJZM
+ UoKloY6GUaLAptuzrtTHCatYlRPW+eUjFdw2Bdn1xqDquWayuFa0Me56yQhzsuWI7tvvTrdEW
+ kzKGpLbA8htieTflsf6j2kvuLK7DLxIxeoRc5TrsDCCiiY6EinC21CabTyYlKPW3M/7A1akV+
+ /K8f5fPykaZTiMUILY72z2JgM0gBWxZwhAH1n2E94dlQROtifDFqQcGPC5+VczcDPwMw15rHX
+ 9wH3LeKrho+aDmOBIierd/2LEeC5ZBc/nY4IvGhNSt48GOerV5jt3em3xRujqDIu+rcd0nlWy
+ DN8WQj5NiMi2MOB1yApKlZ2UdVip5Q4ThZPW6NdMj1mFe3fR0GwNfXHl0T9MEcSWZ4zzKNhpJ
+ pk2UTvT8aajxIHo6FV6qPUJsbczWl1NVaOtp32YnNh9hIP+S/R/p8hgDkjdHYxc33aMZk/BJw
+ oCYvbdqr46ofMPmb28hPc6yA+0UooNY9GScfFPzex1WFRBT34kzGNzKY/EXFPmdXDLCLqu2AU
+ bx4tI0DygUigAwkgh9mD9Dw6+2FPDp7KsC6Z4ERrE6D4az6maYSnuofig3UI3mAaa8PkxEg2G
+ W4YB78JFJxhH3VQ98o5v1dvsqEw7A/XN8UoWSGzgKLoQh7BI4MznDJ+eYuRYjFWasORfwd+VJ
+ 7Zfz4BS+KDvc/qLy/yWcylbJzjLmvpOqb1xfbocg/xE70BB5iG52WjQyhU0mWiQc+6Ey6XayE
+ Y0SDCs4C02LC6k5LxWM5i+pWYpNL0m2uk1B5ml/2dP/eNJsN5XfUmjad4TcW1etpjbeSe8H7F
+ dgeOwv6sFmDnJZ0Ilp35iLkFKDk7VWz1MGnxrItebZuZcUecRXRlkyc4JTfSoFaKUZHJ5NKg+
+ eRP7wWU2DzqGMCSHNl5MI+8VuAXbZa9spsL1YOHQ7Oty9zQuVV4yeWhiWJkBz8jl9lcstfr4/
+ CIyhE9UTGZgvTeJ5l9MoPc4SmoAwPeseBzBbhB6cwS3QNq4dkzU2PvOZvIhI/J8FLLSy7OKdu
+ QnyjldWcTBogEDlubyKJfSytopD2UoA318NwG5ctoHzQo5xgILFiFcfVIZqCibpEak3fOyehJ
+ +469OWfx4c5HuZIfek/0fQfTcUJysOfAOOjBetliv3vHlDW9ROJ+C0LXYOAxJz1RF1spCQyR5
+ u+njZ3EnCeT2BObeA
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VMnVUQczo2bYebPDcXT1yyZXHgMydrMhc
+Content-Type: multipart/mixed; boundary="PE0p4FCF0eHQ5AUTXk8OckOUHfPlCMePW"
+
+--PE0p4FCF0eHQ5AUTXk8OckOUHfPlCMePW
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/3/4 =E4=B8=8B=E5=8D=8810:24, Nikolay Borisov wrote:
->
-[...]
->> +	int err =3D 0;
->> +
->> +	iter =3D btrfs_backref_iter_alloc(rc->extent_root->fs_info, GFP_NOFS)=
-;
->> +	if (!iter)
->> +		return ERR_PTR(-ENOMEM);
->
-> This iterator can be made private to handle_one_tree_block as I don't se=
-e it being used outside of that function.
 
-It's kinda a performance optimization.
+On 2020/3/4 =E4=B8=8B=E5=8D=8810:28, David Sterba wrote:
+> On Mon, Jan 20, 2020 at 05:32:05PM +0800, Qu Wenruo wrote:
+>> Introduce a new helper, csum_to_string(), to convert binary csum to
+>> string.
+>>
+>> And use it in check_extent_csums(), so that
+>> "btrfs check --check-data-csum" could report the following human
+>> readable output:
+>>   mirror 1 bytenr 13631488 csum 0x13fec125 expected csum 0x98757625
+>>
+>> Other than the original octane one:
+>>   mirror 1 bytenr 13631488 csum 19 expected csum 152
+>>
+>> It also has the extra handling for 32 bytes csum (e.g. SHA256).
+>> For such long csum, it needs 66 characters (+2 for "0x") to just outpu=
+t
+>> one hash, so this function would truncate them into the following
+>> format:
+>>  0xaabb...ccdd
+>>     |       \- The tailing 2 bytes
+>>     \--------- The leading 2 bytes
+>=20
+> Kernel prints the whole checksum and also 2 on one line,
+> btrfs_print_data_csum_error. The short version is ok for quick comparin=
+g
+> but for consistency do you think it's too bad to print the whole
+> checksum? Eg. when I see errors, copy&paste the checksum and can cross
+> check with the kernel messages/logs.
+>=20
 
-Instead of allocating memory for each loop, we allocate the memory just
-once, and reuse it until the whole backref map for the bytenr is built.
->
->> +	path =3D btrfs_alloc_path();
->> +	if (!path) {
->> +		err =3D -ENOMEM;
->> +		goto out;
->> +	}
->
-> Same thing with this path. Overall this will reduce the argument to hand=
-le_one_tree_block by 2.
+Personally speaking, for kernel I'm in the middle land, leaning a little
+more towards shorter csum.
+But I'm not confident enough for kernel, thus there is no such patch for
+kernel submitted.
 
-Same performance optimization here.
+For longer csum, unless we have some intentional conflicting algo, it's
+really hard to craft csum which makes the leading and tailing 8 bytes.
 
->
->> +	path->reada =3D READA_FORWARD;
->> +
->> +	node =3D alloc_backref_node(cache, bytenr, level);
->> +	if (!node) {
->> +		err =3D -ENOMEM;
->> +		goto out;
->> +	}
->> +
->> +	node->lowest =3D 1;
->> +	cur =3D node;
->> +
->> +	/* Breadth-first search to build backref cache */
->> +	while (1) {
->> +		ret =3D handle_one_tree_block(rc, &useless, &list, path, iter,
->> +					    node_key, cur);
->> +		if (ret < 0) {
->> +			err =3D ret;
->> +			goto out;
->> +		}
->> +		/* the pending list isn't empty, take the first block to process */
->> +		if (!list_empty(&list)) {
->> +			edge =3D list_entry(list.next, struct backref_edge, list[UPPER]);
->
-> Use list_first_entry_or_null or it would become:
->
-> edge =3D list_first_entry_or_null();
-> if (edge) {
-> list_del_init(&edge->list[UPPER]);
-> cur =3D edge->node[UPPER]
-> } else {
-> breakl
-> }
+Furthermore, the only csum human can really use is the csum for all 0
+page. Otherwise all csum makes not much sense to human.
 
-That's an interesting wrapper. Would go that way.
+But still, full csum may still make sense for certain corner case, and I
+don't want even a small chance that user reports csum matches in dmesg
+but still causing EIO.
+So I hesitate for kernel patch.
 
->
-> or simply if (!edge)
-> break;
->
-> Also this loop can be rewritten as a do {} while() and it will look:
-
-Yep, but I'm not sure if such do {} while() loop is preferred.
-IIRC there are some docs saying to avoid such loop?
-
-If there is no such restriction, I would be pretty happy to go that way.
+As usual, you have the final say, and if kernel patch is needed I'm
+pretty happy to submit.
 
 Thanks,
 Qu
 
->
->         /* Breadth-first search to build backref cache */
->         do {
->                 ret =3D handle_one_tree_block(rc, &useless, &list, path,=
- iter,
->                                             node_key, cur);
->                 if (ret < 0) {
->                         err =3D ret;
->                         goto out;
->                 }
->                 edge =3D list_first_entry_or_null(&list, struct backref_=
-edge,
->                                                 list[UPPER]);
->                 /* the pending list isn't empty, take the first block to=
- process */
->                 if (edge) {
->                         list_del_init(&edge->list[UPPER]);
->                         cur =3D edge->node[UPPER];
->                 }
->         } while (edge)
->
-> IMO this is shorter than the original version and it's very expicit abou=
-t it's terminating conditions:
-> a). handle_one_tree_block returns an error
-> b) list becomes empty.
->
-> Alternatively list being empty is really a proxy for "is cur a valid ino=
-de". We know it's always
-> valid on the first iteration since it's passed form the caller, subseque=
-nt iterations assign cur
-> to edge->node[UPPER] so it could even be
->
-> while(cur) {}
->
-> In my opinion reducing while(1) loops where it makes sense (as in this c=
-ase) is preferable.
->
-> NB: I've only compile-tested it.
->
->> +			list_del_init(&edge->list[UPPER]);
->> +			cur =3D edge->node[UPPER];
->> +		} else {
->> +			break;
->> +		}
->>  	}
->>
->>  	/*
->>
+
+--PE0p4FCF0eHQ5AUTXk8OckOUHfPlCMePW--
+
+--VMnVUQczo2bYebPDcXT1yyZXHgMydrMhc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5gS9YACgkQwj2R86El
+/qiaqQf/Vh+PDZYLpe/g9cvRxfnhRqMCrqRgFOjASkgJC4mEYhLCKuIee5oajS6t
+4wu/FRWMs4wrc/YC9kpS0Y/wYa0t2iPK4Y6wZ0eCwSogbODwj9rJACF6Hb7Z+xis
++sXV69DnMgbkOYpvF0ceWN0HH4l9Xu7Qko1OEwuC1xs/0j4G8AAXfTQcZhu4vpJn
+50TmiQalpCCWD/atEBz7Mjev281gCuW5UJwZEp8Xohl6iGTH6YCxcrTvSDcDsUlT
+t2Z6ttPK0/aGikR+TKnyDA6UzrYdneCNnl/qKTf7BPSQ0kzUYRTv/KhYnxO8RelY
+ZcGtPaIs0VrExVwcOoMFP2iV9jRjgA==
+=JLEv
+-----END PGP SIGNATURE-----
+
+--VMnVUQczo2bYebPDcXT1yyZXHgMydrMhc--
