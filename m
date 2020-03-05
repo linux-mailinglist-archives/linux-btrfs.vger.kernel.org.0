@@ -2,153 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3362179D11
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 01:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4C0179D35
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2020 02:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgCEA5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Mar 2020 19:57:48 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8914 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725897AbgCEA5r (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Mar 2020 19:57:47 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0250vdX8013196
-        for <linux-btrfs@vger.kernel.org>; Wed, 4 Mar 2020 16:57:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=t4z4q3EF442KjvHRBupQs53iCxAhVwgsYu5CWxCrAxo=;
- b=Fr0Yabb1GzmzQ5Ku84Ky7/meVzzH8Ae4h4LxtD/7OuTWL0T2J91wSb+qvSB6/zUcT0lA
- zMtjALjQQFn587l/ldXB294WA8v+yD4b8JadoLdpB8D9602hE23E7qAWL3tKELEP78Gp
- IJ4VabzqtAkjWvWoW1hAyXXT56MOfqXl6/8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2yhwxxqph4-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2020 16:57:46 -0800
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 4 Mar 2020 16:57:38 -0800
-Received: by devvm4439.prn2.facebook.com (Postfix, from userid 111017)
-        id 2C93F103323E4; Wed,  4 Mar 2020 16:57:36 -0800 (PST)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm4439.prn2.facebook.com
-To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>, Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3] btrfs: implement migratepage callback
-Date:   Wed, 4 Mar 2020 16:57:35 -0800
-Message-ID: <20200305005735.583008-1-guro@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1725773AbgCEBSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Mar 2020 20:18:38 -0500
+Received: from mout.gmx.net ([212.227.17.22]:33607 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgCEBSi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Mar 2020 20:18:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583371111;
+        bh=8DqQ07vqx40dG76rjDFkcVO9sxOe9bysVB90NR2E5BE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=la9rcA4LaugIH2/pKgOx1YCvEyUcbijfwh3CcaPIXocCAGLNh+DUGiZLlMVwCEtGu
+         Z36KlbNqqSSNXhNyecQMxiGU2yZBFfUF7uHprfc9QssRWQvKUOTMqFXZNYjm3GpMd6
+         2pNOrVG5qORP4dojxTnUvLOWRzKMU4UJ9jHl2kaA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.111] ([34.92.246.95]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCpb-1jkvNh2nqx-00bGAv; Thu, 05
+ Mar 2020 02:18:31 +0100
+Subject: Re: [PATCH 00/11] btrfs-progs: metadata_uuid feature fixes and
+ portation
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        damenly.su@gmail.com, linux-btrfs@vger.kernel.org
+References: <20191212110204.11128-1-Damenly_Su@gmx.com>
+ <2974237d-ea96-bde8-bc48-2cf8bd6a375b@suse.com>
+ <c6ceaa56-f5db-54ec-a2ba-130d469ec992@gmx.com>
+ <20200304141438.GT2902@twin.jikos.cz>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <930018ec-80b9-6000-4de6-2a8cd36576bb@gmx.com>
+Date:   Thu, 5 Mar 2020 09:18:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-04_10:2020-03-04,2020-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 mlxlogscore=835 impostorscore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003050003
-X-FB-Internal: deliver
+In-Reply-To: <20200304141438.GT2902@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cBxaRbqHHJPnB5QIeISc48iBESrFd7/xP/dcs0YF9LHL+ETeLfq
+ GRZb2va9VWdqK8zruGPikwI/mRGahEe5eY2hSZu73qt+U3eQOw5IUcDk6hg0JOoKW3hNW/J
+ euOfnnEP70dWTofZQmmcuILV5dY84A4nXWMEly0DVGVCoeOD2OkFHng25UcmFSiQcecEQj8
+ 5Gvh6xJqRiKrvhBJJBR6g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/wd1xO4zpKk=:n3vDXpuxab2m7ATUgOIPbP
+ /yNZIGm2Pk0ylCf7wHIUdnjFqeZCzoDZ7aDPXyrZe0c57BIWN3fsk3lrXmxJnJa7Hf2RG3ptc
+ LhZYkTIVn+sjZPkayYljTBdyCpR0hunWKB5i2k5oGM/CXJ0lLX6fHG3F3sKsm2TKWvwQ4rHf9
+ RGrVPtv3aOh0to2pZ1MJvOj29FGLuQLpHvoQdirdDuCNu97StFLREZx8T4lCTvVq2rcUkVD/Y
+ vpce2RwpHgOKZXBOHpzGEJQxsbFBGyT09oPqVklLri4kqSNy+rBEF02t1e39hdBx5pY36s/JB
+ bVwgEtHE2qiCaSPiMpnA1kzHFGPbC5zEB2e4EA7YEP8lv++agHEF0PCvZM9L9xf4xJuAMBv0b
+ QaN9+1q3mRJpZDt8y5Kbbg/WaxliY8HYqyscJWd/UGq/iAFFnQVM3NHzz8yTL7TbdLM5ketDH
+ yATo3uSDLbLnW7Dq+1Qvm9+3EGWP0bnHbkME0CD/1118sk+IhQczNnjifoymO7n4Qr8RBzSmE
+ Yfi/pjpyfGP6FKjyy3306SGR00FT5oHmyn3zzpOzwImTisgZ3A0FqCJp7dAQ3twowzzsJpJCq
+ wEBvuoAdH4utb21+1XXjsZUNdmPKxnX59T8NweBqiun08aZRHvRNx+YFoPQa5d49k3dVg2mxH
+ VMYyFKMU5tzuKFHz3/VRJihtiv6ab14bwheEcsNGZamctMccdDM7hJjqY5IWEHnEImrwtjwT7
+ RuS+nqGQF2VkXXl1EDBAQE3Ho7i+vV2WaddvwmzvyCVsi2l4BW4ka/6yHkZVUnuQ8uMkYtWfL
+ 3zzkqKOqnPbu/XC5H8kCutTXoj1/Lmd2FiiN3gV0FAUwX4+Qygh2z/saMQTT6jrLsKsy8OB1j
+ huTmvxQS7i7j4LQfBiHmF3Ngu7XEWP3jZ58VKTbc6dagVzzvfVvuXdSjgoVbuUO0j6Q3ZnV94
+ NwWENSXjjEuM0TPra+ThB7b4xqtMJIqc6rLlmLV2OAD7KtpDcJ6MCvJ2hftrjh4pPQC/8Q/Iz
+ sJJ/vdByKIFgrHpSx/znDKoIfD50OhE2cunq61kP8ZI1fkIlZ6zO1FcxcbsvtV4hbGGRXrMGq
+ rc0WJiZNTKAeh5Po0Tyovn4fVJN9nVgmQkp8QZp4lOPzErF559Lth10NSDLZl7p37B2Rd5EC8
+ OsYnfzwCv4XHaUCfnFJurXOJYXsL77PZvbNLv60Nhbr2Vb37we/9xFLUZXSTY+Vv+dQioKVG/
+ jyU6Nn/XhaEPP3bhV
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs doesn't provide a migratepage callback. It means that
-fallback_migrate_page()	is used to migrate btrfs pages.
+On 2020/3/4 10:14 PM, David Sterba wrote:
+> On Fri, Jan 31, 2020 at 06:04:42PM +0800, Su Yue wrote:
+>> On 2020/1/31 4:05 PM, Nikolay Borisov wrote:
+>>>
+>>>
+>>> On 12.12.19 =D0=B3. 13:01 =D1=87., damenly.su@gmail.com wrote:
+>>>> From: Su Yue <Damenly_Su@gmx.com>
+>>>>
+>>>> The series are inspired by easy failing misc-tests/034.
+>>>> Those patches fix misc-tests/034 and add new test images.
+>>>>
+>>>> After portation of kernel find fs_devices code, progs is able to
+>>>> work on devices with FSID_CHANGING_V2 flag, not sure whether the
+>>>> functionality is necessary. If not, I will remove it in next version.
+>>>
+>>> For now I think it's best if this is not added. Kernel is supposed to
+>>> handle split-brain scenarios upon device scan which is triggered
+>>> automatically by udev. If the need arises in the future then we can
+>>> think about integrating this code in btrfs-progs.
+>>>
+>>
+>> Okay, so drop patch[3-11].
+>
+> So patches 1 and 2 have been applied. Thanks.
+>
+Sorry. David, please remove the patch 2 if applied.
+There is another better solution applied by Marcos
+https://www.spinics.net/lists/linux-btrfs/msg98370.html.
 
-fallback_migrate_page() cannot move dirty pages, instead it tries to
-flush them (in sync mode) or just fails (in async mode).
+Try to update status about dropping things on time next time:).
 
-In the sync mode pages which are scheduled to be processed by
-btrfs_writepage_fixup_worker() can't be effectively flushed by the
-migration code, because there is no established way to wait for the
-completion of the delayed work.
-
-It all leads to page migration failures.
-
-To fix it the patch implements a btrs-specific migratepage callback,
-which is similar to iomap_migrate_page() used by some other fs, except
-it does take care of the PagePrivate2 flag which is used for data
-ordering purposes.
-
-v3: fixed the build issue once again
-v2: fixed the build issue found by the kbuild test robot <lkp@intel.com>
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Chris Mason <clm@fb.com>
----
- fs/btrfs/inode.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7735ce6127c3..6ed6df4afe5a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -28,6 +28,7 @@
- #include <linux/magic.h>
- #include <linux/iversion.h>
- #include <linux/swap.h>
-+#include <linux/migrate.h>
- #include <linux/sched/mm.h>
- #include <asm/unaligned.h>
- #include "misc.h"
-@@ -8323,6 +8324,39 @@ static int btrfs_releasepage(struct page *page, gfp_t gfp_flags)
- 	return __btrfs_releasepage(page, gfp_flags);
- }
- 
-+#ifdef CONFIG_MIGRATION
-+static int btrfs_migratepage(struct address_space *mapping,
-+			     struct page *newpage, struct page *page,
-+			     enum migrate_mode mode)
-+{
-+	int ret;
-+
-+	ret = migrate_page_move_mapping(mapping, newpage, page, 0);
-+	if (ret != MIGRATEPAGE_SUCCESS)
-+		return ret;
-+
-+	if (page_has_private(page)) {
-+		ClearPagePrivate(page);
-+		get_page(newpage);
-+		set_page_private(newpage, page_private(page));
-+		set_page_private(page, 0);
-+		put_page(page);
-+		SetPagePrivate(newpage);
-+	}
-+
-+	if (PagePrivate2(page)) {
-+		ClearPagePrivate2(page);
-+		SetPagePrivate2(newpage);
-+	}
-+
-+	if (mode != MIGRATE_SYNC_NO_COPY)
-+		migrate_page_copy(newpage, page);
-+	else
-+		migrate_page_states(newpage, page);
-+	return MIGRATEPAGE_SUCCESS;
-+}
-+#endif
-+
- static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 				 unsigned int length)
- {
-@@ -10525,6 +10559,9 @@ static const struct address_space_operations btrfs_aops = {
- 	.direct_IO	= btrfs_direct_IO,
- 	.invalidatepage = btrfs_invalidatepage,
- 	.releasepage	= btrfs_releasepage,
-+#ifdef CONFIG_MIGRATION
-+	.migratepage	= btrfs_migratepage,
-+#endif
- 	.set_page_dirty	= btrfs_set_page_dirty,
- 	.error_remove_page = generic_error_remove_page,
- 	.swap_activate	= btrfs_swap_activate,
--- 
-2.24.1
-
+Thanks
