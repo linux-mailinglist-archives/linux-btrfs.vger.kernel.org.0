@@ -2,56 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0947117C6F5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 21:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C323C17C701
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 21:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgCFUUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Mar 2020 15:20:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40986 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbgCFUUR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Mar 2020 15:20:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EA471B352;
-        Fri,  6 Mar 2020 20:20:15 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 99650DA728; Fri,  6 Mar 2020 21:19:52 +0100 (CET)
-Date:   Fri, 6 Mar 2020 21:19:52 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] Add full support for cloning inline extents
-Message-ID: <20200306201952.GL2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200228130419.16719-1-fdmanana@kernel.org>
- <20200228134947.GJ2902@twin.jikos.cz>
+        id S1726314AbgCFU0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Mar 2020 15:26:07 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47118 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725873AbgCFU0H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Mar 2020 15:26:07 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-105.corp.google.com [104.133.0.105] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 026KPXT6005112
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Mar 2020 15:25:34 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 113E242045B; Fri,  6 Mar 2020 15:25:33 -0500 (EST)
+Date:   Fri, 6 Mar 2020 15:25:32 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] long live LFSMMBPF
+Message-ID: <20200306202532.GC12490@mit.edu>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+ <76B62C4B-6ECB-482B-BF7D-95F42E43E7EB@fb.com>
+ <1583523705.3653.94.camel@HansenPartnership.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200228134947.GJ2902@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <1583523705.3653.94.camel@HansenPartnership.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 02:49:47PM +0100, David Sterba wrote:
-> On Fri, Feb 28, 2020 at 01:04:16PM +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > This patchset adds support for currently unsupported cases of reflink
-> > operations that cover a file range that has inline extents, more details
-> > on why/how in patch 3/3.
-> > 
-> > It also starts by moving all the reflink code out of ioctl.c into a new
-> > file named reflink.c (like xfs does) since this code is quite significant
-> > in size and has grown over the years.
-> > 
-> > V4: Updated patch 3 to fix a deadlock due to allocating space while holding
-> >     a transaction open. No changes to the first two patches.
-> 
-> V4 replaced in for-next, thanks.
+On Fri, Mar 06, 2020 at 11:41:45AM -0800, James Bottomley wrote:
+> And, for everyone who gave us feedback in the Plumbers surveys that co-
+> locating with a big conference is *not* what you want because of
+> various problems like hallway track disruptions due to other conference
+> traffic and simply the difficulty of finding people, the current model
+> under consideration is one conference organization (the LF) but two
+> separate venues, sort of like OpenStack used to do for their big
+> conference and design summit to minimize disruption and increase
+> developer focus.
 
-Moved to misc-next.
+Ths is what I tried to push last year, which was to colocate LSF/MM
+and KS/MS in Austin, at the same time as OSS 2020, but in a separate
+hotel so we didn't have to deal with the cast of thousands which go to
+OSS.  I also liked it because OSS 2020 is in June, so it would have
+been from a spacing perspective it would have been an easy way to
+start moving MS/KS from the second half of the year into first half of
+the year.
+
+But some folks pointed out (not without reason), that Palm Springs was
+a lot more fun than Austin, and OSS still has a somewhat bad
+reputation of having some really trashy talks, and so even in separate
+venue, there were people who really didn't like the idea.
+
+Because of this, when the LF (in December 2019) suggested moving the
+MS/KS to Austin as part of OSS, I didn't think we would have critical
+mass to overcome the reputation of talks like "#OSSummit: Seven
+Properties of Highly Secure IoT." and so I told Angela, "No, we really
+can't do this without something like LSF/MM to make sure we have
+critical mass for a second Linux systems conference."
+
+						- Ted
