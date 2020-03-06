@@ -2,135 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8839617BFC8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 15:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E66417C054
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 15:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgCFOAe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Mar 2020 09:00:34 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:33075 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgCFOAe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Mar 2020 09:00:34 -0500
-Received: by mail-pl1-f193.google.com with SMTP id ay11so913427plb.0;
-        Fri, 06 Mar 2020 06:00:33 -0800 (PST)
+        id S1726378AbgCFOfr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Mar 2020 09:35:47 -0500
+Received: from mail-qv1-f49.google.com ([209.85.219.49]:45833 "EHLO
+        mail-qv1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgCFOfq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Mar 2020 09:35:46 -0500
+Received: by mail-qv1-f49.google.com with SMTP id du17so407420qvb.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Mar 2020 06:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=efYr67/bTkt21SGtVdNVaerWisMPAYyt0fWiDVwgGjk=;
-        b=ZhFOhSckcSX8pV1bWCS4o4akz+nRynoamY/zQbaiHWh4a4IFicLY2Jk2OA1ffM/i96
-         eKSC7h1EHCAaBCWypKBn5baMCTGxLnvA0ZoRF5qH3MVCUygz0pvYc4ujRChBBC2winPL
-         saqJr4tzjm/7nPA7h/3U6NFw+J6EpK7EEKiQqDwhlRq68FbeHpxlOvw/xT1YlLaN4TPv
-         P4F4KzqovD9pMu1zybSbESrlfUsJ7i1jt2NP7+iRv8sLn0VesWDFwofj1m1tPw2Us7SQ
-         NVJE1uLk/ZZM8/7mH2Gdz/DybhRTFl0UmO/yWNOtoz0NGRC0QMsV0di74laEg8OwmWBw
-         2/5Q==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=gPp/JOqSfFor2drm+SXytCIq/9gBWBTnvgG0JC6dgNM=;
+        b=R6D2fwgYCDJTLwCQ+Pv/dbaRa7A1QbxEYJ0FaGXrlUmQ0jE3K8WZZQ2+tGjrrmujzN
+         SSy0cbS/K5s9EbOvpYY+tuPSmNKsFKDYdL8jbgzxQBRWZBn3RRdpJ3kk4tvVlY6DOULE
+         nSB8pwI3jeTb7Phe1gUrVCG07Og1a7xsaUh9QuBhysVmGyRIMS96HDDBGSZCzj+mvEbo
+         qmh4WOhUeYUk5TMdC65+a7f5f8E+cbZOz5jaqlYJlZNJ71vMRGi5htZWUPvn0Zsm91Yx
+         MjFCxBtQ8deY5Y+57kwuvxdhumqCEff45QD4a7zc9VKE2UShFJXV1+ADY/u8mzaRYGKd
+         8UWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=efYr67/bTkt21SGtVdNVaerWisMPAYyt0fWiDVwgGjk=;
-        b=H5S1hDzZ1NZxCal+L06G1r/j2bBcoTG4rQ5eUuiFY4UaifIFQ7BM4yLzwZ0/R9Lxgj
-         zhl5CARQh+DEddu2ljGufjy/EXgZLsC6NOqExRt3xniKIY6Y5NUpZEvbK8u1fPORsQEv
-         RI02yD+D0ZNveOqILP/L35/3yg20uqTnGaxkwjfZ0s2VnWoMowLW5onVtfFQ9Z3oEw1r
-         hFLWrQvnPhb3DzROG0S3aVRHtCBB8dfxVaovAgUAQ1tyxr32ZBf7Q6K98CyS10kRICJf
-         8pWAlBM65JR84C2mHnthSBoQqYMtwkKbMXCGn6UWIOU+A3PCueFOhtZyCCZ575j0ctJ9
-         gDww==
-X-Gm-Message-State: ANhLgQ0P9M2+awHF/FDPmkEdRJDmJHOzNnwGNd+93tsPix3PT84B5ID6
-        SBAYjdHfE3spmSiKaIZfXw==
-X-Google-Smtp-Source: ADFU+vtNUgRRJn2bRpQQmczbG/BE5no1t/hK7c/TWORsRGmvhtlbbtZao22ZUYqyVEVeSlNkEM5WOw==
-X-Received: by 2002:a17:90a:3701:: with SMTP id u1mr3681744pjb.25.1583503233154;
-        Fri, 06 Mar 2020 06:00:33 -0800 (PST)
-Received: from madhuparna-HP-Notebook ([218.248.46.83])
-        by smtp.gmail.com with ESMTPSA id g11sm7631037pfo.184.2020.03.06.06.00.28
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Mar 2020 06:00:31 -0800 (PST)
-From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
-Date:   Fri, 6 Mar 2020 19:30:24 +0530
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     madhuparnabhowmik10@gmail.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, paulmck@kernel.org,
-        frextrite@gmail.com, linux@roeck-us.net
-Subject: Re: [PATCH] fs: btrfs: block-group.c: Fix suspicious RCU usage
- warning
-Message-ID: <20200306140023.GA14186@madhuparna-HP-Notebook>
-References: <20200306065243.11699-1-madhuparnabhowmik10@gmail.com>
- <dfd2c14c-acda-3862-9f48-a512e16a895c@gmx.com>
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=gPp/JOqSfFor2drm+SXytCIq/9gBWBTnvgG0JC6dgNM=;
+        b=SAwGK5t4NUSp167z0fSSJDiMRUFXVw7FWVXyyEYmoSWGBvt3ZppQOERqj7F6H8r+O3
+         6EGktlQDzdfY95lAqDkP80IdJ9ZjZw6jwr5tkDgcOTeGYTGdMqDWR4iTYbB2oujEGVZq
+         5oOSt815lPSMP37FI6GULRK7OqlGngC8Hry0grM9RyGihpx3CkV8ulRBQujVb9TOXZt5
+         2S4iKjlDivzsrkSGe+dsy4DXw0dvcKsSBALLo5QytyBsPTlcWmDXjrFoMN0dDGfSOtEN
+         Nrmht44XLNEScwm7ZqxjtjKjAKXkEfaORw9sEQiBC4EVlXoslOV+p79eD8PDvL9dFWoA
+         StkA==
+X-Gm-Message-State: ANhLgQ0lIqNajASfoMj9eWTW1AksTxnoUDfgkB6TChykYtaciuCJEgrN
+        vhZCfbX3kMkUZDThkA1vh9Nnvw==
+X-Google-Smtp-Source: ADFU+vuiL+duZGFstvBs9+qO3GxDUlu6yzHhQvnhTM1IVcevwWXdla3BuQCPBcBBX3IASwIQ5PjI6A==
+X-Received: by 2002:ad4:41cf:: with SMTP id a15mr3142478qvq.125.1583505343378;
+        Fri, 06 Mar 2020 06:35:43 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id i1sm12426803qtg.31.2020.03.06.06.35.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2020 06:35:42 -0800 (PST)
+To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+Date:   Fri, 6 Mar 2020 09:35:41 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dfd2c14c-acda-3862-9f48-a512e16a895c@gmx.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 06, 2020 at 03:16:53PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/3/6 下午2:52, madhuparnabhowmik10@gmail.com wrote:
-> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> > 
-> > The space_info list is rcu protected.
-> > Hence, it should be traversed with rcu_read_lock held.
-> > 
-> > Warning:
-> > [   29.104591] =============================
-> > [   29.104756] WARNING: suspicious RCU usage
-> > [   29.105046] 5.6.0-rc4-next-20200305 #1 Not tainted
-> > [   29.105231] -----------------------------
-> > [   29.105401] fs/btrfs/block-group.c:2011 RCU-list traversed in non-reader section!!
-> > 
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> > ---
-> >  fs/btrfs/block-group.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> > index 404e050ce8ee..9cabeef66f5b 100644
-> > --- a/fs/btrfs/block-group.c
-> > +++ b/fs/btrfs/block-group.c
-> > @@ -1987,6 +1987,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
-> 
-> This function is only triggered at mount time, where no other rcu
-> operation can happen.
->
-Thanks Qu.
+Hello,
 
-Joel and Paul, what should we do in this case?
-Should we just pass cond = true or use list_for_each_entry instead?
+This has been a topic that I've been thinking about a lot recently, mostly 
+because of the giant amount of work that has been organizing LSFMMBPF.  I was 
+going to wait until afterwards to bring it up, hoping that maybe it was just me 
+being done with the whole process and that time would give me a different 
+perspective, but recent discussions has made it clear I'm not the only one.
 
-Thank you,
-Madhuparna
+LSFMMBPF is not useful to me personally, and not an optimal use of the 
+communities time.  The things that we want to get out of LSFMMBPF are (generally)
 
-> Thanks,
-> Qu
-> >  		btrfs_release_path(path);
-> >  	}
-> >  
-> > +	rcu_read_lock();
-> >  	list_for_each_entry_rcu(space_info, &info->space_info, list) {
-> >  		if (!(btrfs_get_alloc_profile(info, space_info->flags) &
-> >  		      (BTRFS_BLOCK_GROUP_RAID10 |
-> > @@ -2007,7 +2008,8 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
-> >  				list)
-> >  			inc_block_group_ro(cache, 1);
-> >  	}
-> > -
-> > +	rcu_read_unlock();
-> > +		
-> >  	btrfs_init_global_block_rsv(info);
-> >  	ret = check_chunk_block_group_mappings(info);
-> >  error:
-> > 
-> 
+1) Reach consensus on any multi-subsystem contentious changes that have come up 
+over the past year.
 
+2) Inform our fellow developers of new things that we are working on that we 
+would like help with, or need to think about for the upcoming year.
 
+3) "Hallway track".  We are after all a community, and I for one like spending 
+time with developers that I don't get to interact with on a daily basis.
+
+4) Provide a way to help integrate new developers into the community with face 
+time.  It is far easier to work with people once you can put a face to a name, 
+and this is especially valuable for new developers.
+
+These are all really good goals, and why we love the idea of LSFMMBPF.  But 
+having attended these things every year for the last 13 years, it has become 
+less and less of these things, at least from my perspective.  A few problems (as 
+I see them) are
+
+1) The invitation process.  We've tried many different things, and I think we 
+generally do a good job here, but the fact is if I don't know somebody I'm not 
+going to give them a very high rating, making it difficult to actually bring in 
+new people.
+
+2) There are so many of us.  Especially with the addition of the BPF crowd we 
+are now larger than ever.  This makes problem #1 even more apparent, even if I 
+weighted some of the new people higher who's slot should they take instead?  I 
+have 0 problems finding 20 people in the FS community who should absolutely be 
+in the room.  But now I'm trying to squeeze in 1-5 extra people.  Propagate that 
+across all the tracks and now we're at an extra 20ish people.
+
+3) Half the people I want to talk to aren't even in the room.  This may be a 
+uniquely file system track problem, but most of my work is in btrfs, and I want 
+to talk to my fellow btrfs developers.  But again, we're trying to invite an 
+entire community, so many of them simply don't request invitations, or just 
+don't get invited.
+
+3) Sponsorships.  This is still the best way to get to all of the core 
+developers, so we're getting more and more sponsors in order to buy their slots 
+to get access to people.  This is working as intended, and I'm not putting down 
+our awesome sponsors, but this again adds to the amount of people that are 
+showing up at what is supposed to be a working conference.
+
+4) Presentations.  90% of the conference is 1-2 people standing at the front of 
+the room, talking to a room of 20-100 people, with only a few people in the 
+audience who cares.  We do our best to curate the presentations so we're not 
+wasting peoples time, but in the end I don't care what David Howells is doing 
+with mount, I trust him to do the right thing and he really just needs to trap 
+Viro in a room to work it out, he doesn't need all of us.
+
+5) Actually planning this thing.  I have been on the PC for at least the last 5 
+years, and this year I'm running the whole thing.  We specifically laid out 
+plans to rotate in new blood so this sort of thing stopped happening, and this 
+year we've done a good job of that.  However it is a giant amount of work for 
+anybody involved, especially for the whole conference chair.  Add in something 
+like COVID-19 to the mix and now I just want to burn the whole thing to the 
+ground.  Planning this thing is not free, it does require work and effort.
+
+So what do I propose?  I propose we kill LSFMMBPF.
+
+Many people have suggested this elsewhere, but I think we really need to 
+seriously consider it.  Most of us all go to the Linux Plumbers conference.  We 
+could accomplish our main goals with Plumbers without having to deal with all of 
+the above problems.
+
+1) The invitation process.  This goes away.  The people/companies that want to 
+discuss things with the rest of us can all get to plumbers the normal way.  We 
+get new blood that we may miss through the invitation process because they can 
+simply register for Plumbers on their own.
+
+2) Presentations.  We can have track miniconfs where we still curate talks, but 
+there could be much less of them and we could just use the time to do what 
+LSFMMBPF was meant to do, put us all in a room so we can hack on things together.
+
+3) BOFs.  Now all of the xfs/btrfs/ext4 guys can show up, because again they 
+don't have to worry about some invitation process, and now real meetings can 
+happen between people that really want to talk to each other face to face.
+
+4) Planning becomes much simpler.  I've organized miniconf's at plumbers before, 
+it is far simpler than LSFMMBPF.  You only have to worry about one thing, is 
+this presentation useful.  I no longer have to worry about am I inviting the 
+right people, do we have enough money to cover the space.  Is there enough space 
+for everybody?  Etc.
+
+I think this is worth a discussion at the very least.  Maybe killing LSFMMBPF is 
+too drastic, maybe there are some other ideas that would address the same 
+problems.  I'd love to hear the whole communities thoughts on this, because 
+after all this is supposed to be a community event, and we should all be heard. 
+Thanks,
 
