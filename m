@@ -2,57 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 993C717C46A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 18:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7203F17C496
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 18:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgCFRaO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Mar 2020 12:30:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53034 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgCFRaN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Mar 2020 12:30:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EDD71B46F;
-        Fri,  6 Mar 2020 17:30:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 75940DA728; Fri,  6 Mar 2020 18:29:48 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.6-rc5
-Date:   Fri,  6 Mar 2020 18:29:47 +0100
-Message-Id: <cover.1583514264.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726533AbgCFRiC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Mar 2020 12:38:02 -0500
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:56058 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725935AbgCFRiC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Mar 2020 12:38:02 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id AEEB78EE11D;
+        Fri,  6 Mar 2020 09:38:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1583516281;
+        bh=xEKu/eKkZNBH2WLwIN8gBntJSW3UGFxHLP7pWKKPyt0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vZMnZaLngoVwWGLvZ5rKtsBWOfvxjWispu9XBK1SoqmkGe51plCQYvk5yEPP80Bxj
+         BTNbO4Z4tW6NfMZePV/hXWvPDJnOz5qX8gNSFxv6XT3AXH+pdTbqYafkc0030ZnDU7
+         EEhl2mSZXPvwOapRQWo9pUwYlEjtFbRlvsStx5M8=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Qy21NkEM44CE; Fri,  6 Mar 2020 09:38:01 -0800 (PST)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id CC04C8EE0F8;
+        Fri,  6 Mar 2020 09:38:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1583516281;
+        bh=xEKu/eKkZNBH2WLwIN8gBntJSW3UGFxHLP7pWKKPyt0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vZMnZaLngoVwWGLvZ5rKtsBWOfvxjWispu9XBK1SoqmkGe51plCQYvk5yEPP80Bxj
+         BTNbO4Z4tW6NfMZePV/hXWvPDJnOz5qX8gNSFxv6XT3AXH+pdTbqYafkc0030ZnDU7
+         EEhl2mSZXPvwOapRQWo9pUwYlEjtFbRlvsStx5M8=
+Message-ID: <1583516279.3653.71.camel@HansenPartnership.com>
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Date:   Fri, 06 Mar 2020 09:37:59 -0800
+In-Reply-To: <20200306160548.GB25710@bombadil.infradead.org>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+         <20200306160548.GB25710@bombadil.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, 2020-03-06 at 08:05 -0800, Matthew Wilcox wrote:
+[...]
+> 2. Charge attendees $300 for a 3-day conference.  This seems to be
+> the going rate (eg BSDCan, PGCon).  This allows the conference to be
+> self-funding without sponsors, and any sponsorship can go towards
+> evening events, food, travel bursaries, etc.
 
-one fixup for DIO when in use with the new checksums, a missed case
-where the checksum size was still assuming u32. Please pull, thanks.
+Can I just inject a dose of reality here:  The most costly thing is
+Venue rental (which comes with a F&B minimum) and the continuous Tea
+and Coffee.  Last year for Plumbers, the venue cost us $37k and the
+breaks $132k (including a lunch buffet, which was a requirement of the
+venue rental).  Given we had 500 attendees, that, alone is $340 per
+head already.  Now we could cut out the continuous tea and coffee ...
+and the espresso machines you all raved about last year cost us about
+$7 per shot.  But it's not just this, it's also AV (microphones and
+projectors) and recording, and fast internet access.  That all came to
+about $100k last year (or an extra $200 per head).  So you can see,
+running at the level Plumbers does you're already looking at $540 a
+head, which, co-incidentally is close to our attendee fee.  To get to
+$300 per head, you lot will have to give up something in addition to
+the espresso machines, what is it to be?
 
-----------------------------------------------------------------
-The following changes since commit a5ae50dea9111db63d30d700766dd5509602f7ad:
+James
 
-  Btrfs: fix deadlock during fast fsync when logging prealloc extents beyond eof (2020-02-21 16:21:19 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.6-rc4-tag
-
-for you to fetch changes up to e7a04894c766daa4248cb736efee93550f2d5872:
-
-  btrfs: fix RAID direct I/O reads with alternate csums (2020-03-03 15:26:08 +0100)
-
-----------------------------------------------------------------
-Omar Sandoval (1):
-      btrfs: fix RAID direct I/O reads with alternate csums
-
- fs/btrfs/inode.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
