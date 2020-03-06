@@ -2,170 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F7617B369
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 02:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F3117B4FA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 04:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgCFBD2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Mar 2020 20:03:28 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:36742 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgCFBD2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Mar 2020 20:03:28 -0500
-Received: by mail-pj1-f66.google.com with SMTP id l41so344584pjb.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Mar 2020 17:03:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vA+SpwUYxV6vRuQ+sUl9N1NLNNbuEQF9yqQFgqr7THM=;
-        b=C7Gww0GOzSj3xOmSTOh4izW4a5HkhOpgQuiZ8CtGAxGQ+b2XXL36MPgP5JJD1NixKA
-         dVS4G4qBR6iKc1paTcLWSaqCQd/rkcR+zS9+DfrKL3MZ9LtHWYCXGOB3pB55zd9Yfsfy
-         olgykuLveoAftsMWh8Nd56J4TSFteRKdEAqsx4miXh3vXRRa9Ss2lO5x5/hsTd3et9g1
-         vXpgwJ4F62xDFU+uY9LEh4bWN2G947VeGzCI84ocypo05Gm0cYV96Z6g40AXE9ybj2vO
-         s97zc1RUmjJxwvO/Urfk9l2SKEHp6/rTO3RNiGRnKavMVyDu7p/fCEpxeSIaCwXyFONZ
-         fEwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vA+SpwUYxV6vRuQ+sUl9N1NLNNbuEQF9yqQFgqr7THM=;
-        b=Og+ZZpjFDCKetRor0aw1anKKJUAPNAYVR5Srs9LYIUbfPlzmXAv1WtPwqy+YCrAh3T
-         JNrQSNnjsQU6eAvH1M2yZQlQ69dl66XIKmqi1GsSSN4+0V9FN+v3jnNnsKTwkDdqMn4D
-         oxzGlpxyPucmTFTk7FRuKa10+kMGY068g690wqRWKocp4K8bSG5xROdSemeG1xtS58XM
-         lj/Skghrm1EzWDKKl224Y+yqIAdQn1mGPEzFJR4CkwJT4XHeidD8PQqCboT961BU4wRd
-         Od6vlk5EK3qRmBCfKAtJffAFuXfa5G/qI8wHQWm4WAwQ7+4myrRM61ZYhB6nUXJluLne
-         S75Q==
-X-Gm-Message-State: ANhLgQ23pKmNYHA7srnxqOLSEeegBlq4+6ziU+tOJGEy2nss4SrLfbha
-        VCnZrgkiU1pJ3zrMLbqAKmPvuOQ0cYE=
-X-Google-Smtp-Source: ADFU+vsBZQWMQ8luyVx3nmTxCXxm1em3yc2F3s+TbbOziCV3EawqwE/wh7Tq9aWaRIcYA7c++mfhqg==
-X-Received: by 2002:a17:902:8509:: with SMTP id bj9mr513698plb.123.1583456607128;
-        Thu, 05 Mar 2020 17:03:27 -0800 (PST)
-Received: from vader.tfbnw.net ([2620:10d:c090:400::5:7c97])
-        by smtp.gmail.com with ESMTPSA id b64sm14863153pfa.94.2020.03.05.17.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 17:03:26 -0800 (PST)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2] btrfs: add test for large direct I/O w/ RAID
-Date:   Thu,  5 Mar 2020 17:03:12 -0800
-Message-Id: <e55e1550e89c36dec53b487d7e0a73d6ece900e6.1583456541.git.osandov@fb.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726359AbgCFDgV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Mar 2020 22:36:21 -0500
+Received: from gateway23.websitewelcome.com ([192.185.49.60]:28023 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726243AbgCFDgU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Mar 2020 22:36:20 -0500
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2BFA7AC17
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Mar 2020 21:36:19 -0600 (CST)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id A3mdj9KRNRP4zA3mdjWWpF; Thu, 05 Mar 2020 21:36:19 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ZIqXbAwULCj9TuWR2cBPDNb3y0cMpsb8eA23RioXHJw=; b=KMKUqRuTpQtaU0dGfb0MA02cP
+        eDwq0/wQfw4W9IEU/IEV3XQ7NgS2nr2SQFmkrjOtoIkZOMjKitIAbFMjzADN0DFgf3AdH7FufVCqz
+        BnxicidK6My1BIY9lY1ZReO9PzJlftdGOrplMX+7Vwgos2RDxTnPnN+JjXhc354Cl+rE0uHeGE7V1
+        mcz7gt/jhchkmIvYkJkNT754iKHBtWN8SYf2/TMAwumt84Yk3va57qVINFXKqLUQzeaVhqtCb2VCM
+        Ait1CuJ93fSRaS1INYccpxWYEDBET98MbRWqok7Qm4ii+1QAyCzkkDaFWlyLOIJuu/4CscMPVnapx
+        Xn4eOXt/g==;
+Received: from 189.26.184.111.dynamic.adsl.gvt.net.br ([189.26.184.111]:43290 helo=hephaestus)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jA3mc-0027Kv-Js; Fri, 06 Mar 2020 00:36:18 -0300
+Date:   Fri, 6 Mar 2020 00:39:22 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.cz, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        wqu@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [PATCHv2] progs: mkfs-tests: Skip test if truncate failed with
+ EFBIG
+Message-ID: <20200306033922.GA32710@hephaestus>
+References: <20200224180534.15279-1-marcos@mpdesouza.com>
+ <20200302200716.GW2902@twin.jikos.cz>
+ <20200302203006.GA22707@hephaestus>
+ <20200302203649.GA2902@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+In-Reply-To: <20200302203649.GA2902@twin.jikos.cz>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 189.26.184.111
+X-Source-L: No
+X-Exim-ID: 1jA3mc-0027Kv-Js
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 189.26.184.111.dynamic.adsl.gvt.net.br (hephaestus) [189.26.184.111]:43290
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
 
-Apparently we don't have any tests which exercise the code path in Btrfs
-that has to split up direct I/Os for RAID stripes. Add one to catch the
-bug fixed by "btrfs: fix RAID direct I/O reads with alternate csums".
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+On Mon, Mar 02, 2020 at 09:36:49PM +0100, David Sterba wrote:
+> On Mon, Mar 02, 2020 at 05:30:06PM -0300, Marcos Paulo de Souza wrote:
+>
+> > >From 52b96ac75c2f8876f1ed9424cef92a4557306009 Mon Sep 17 00:00:00 2001
+> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > Date: Sat, 15 Feb 2020 19:47:12 -0300
+> > Subject: [PATCH] progs: mkfs-tests: Skip test if truncate failed with EFBIG
+> > 
+> > The truncate command can fail in some platform like PPC32[1] because it
+> > can't create files up to 6E in size. Skip the test if this was the
+> > problem why truncate failed.
+> > 
+> > [1]: https://github.com/kdave/btrfs-progs/issues/192
+> > 
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > ---
+> >  tests/mkfs-tests/018-multidevice-overflow/test.sh | 12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tests/mkfs-tests/018-multidevice-overflow/test.sh b/tests/mkfs-tests/018-multidevice-overflow/test.sh
+> > index 6c2f4dba..b8e2b18d 100755
+> > --- a/tests/mkfs-tests/018-multidevice-overflow/test.sh
+> > +++ b/tests/mkfs-tests/018-multidevice-overflow/test.sh
+> > @@ -14,7 +14,17 @@ prepare_test_dev
+> >  run_check_mkfs_test_dev
+> >  run_check_mount_test_dev
+> >  
+> > -run_check $SUDO_HELPER truncate -s 6E "$TEST_MNT/img1"
+> > +# truncate can fail with EFBIG if the OS cannot created a 6E file
+> > +stdout=$($SUDO_HELPER truncate -s 6E "$TEST_MNT/img1" 2>&1)
+> 
+> So this is reading and parsing stdout, but not using the standard
+> helpers that also log the commands. The stdout approach probably works
+> but I'd still like to avoid using plain $(...)
+
+What do you think about the patches bellow? With these two patches applied you
+can drop this one. Thanks.
+
+--k1lZvvs/B4yU6o8G
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: inline;
+	filename="0001-btrfs-progs-tests-common-Introduce-run_mayfail_stdou.patch"
+
+From f54ec71fa4e6c4153a57d519b3524300946cd8b8 Mon Sep 17 00:00:00 2001
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Date: Thu, 5 Mar 2020 23:57:52 -0300
+Subject: [PATCH 1/2] btrfs-progs: tests: common: Introduce run_mayfail_stdout
+
+This helper would help to run tests that can fail, but depending on the
+output of the error we can skip the test instead of failing.
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
-Changes from v1 -> v2:
+ tests/common | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-- Also test direct I/O writes.
-- Add Josef's reviewed-by
-
- tests/btrfs/207     | 62 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/207.out |  2 ++
- tests/btrfs/group   |  3 ++-
- 3 files changed, 66 insertions(+), 1 deletion(-)
- create mode 100755 tests/btrfs/207
- create mode 100644 tests/btrfs/207.out
-
-diff --git a/tests/btrfs/207 b/tests/btrfs/207
-new file mode 100755
-index 00000000..d4467401
---- /dev/null
-+++ b/tests/btrfs/207
-@@ -0,0 +1,62 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Facebook.  All Rights Reserved.
-+#
-+# FS QA Test 207
-+#
-+# Test large DIO reads and writes with various profiles. Regression test for
-+# patch "btrfs: fix RAID direct I/O reads with alternate csums".
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
+diff --git a/tests/common b/tests/common
+index f5efc58b..2f698e08 100644
+--- a/tests/common
++++ b/tests/common
+@@ -216,6 +216,37 @@ run_mayfail()
+ 	fi
+ }
+ 
++# same as run_mayfail but prints the error message to stdout too
++run_mayfail_stdout()
 +{
-+	cd /
-+	rm -f $tmp.*
++	local spec
++	local ins
++	local ret
++
++	ins=$(_get_spec_ins "$@")
++	spec=$(($ins-1))
++	spec=$(_cmd_spec "${@:$spec}")
++	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
++	echo "====== RUN MAYFAIL $@" >> "$RESULTS" 2>&1
++	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mayfail): $@" > /dev/tty; fi
++
++	if [ "$1" = 'root_helper' ]; then
++		"$@" 2>&1 | tee -a "$RESULTS"
++	else
++		$INSTRUMENT "$@" 2>&1 | tee -a "$RESULTS"
++	fi
++	ret=${PIPESTATUS[0]}
++	if [ $ret != 0 ]; then
++		echo "failed (ignored, ret=$ret): $@" >> "$RESULTS"
++		if [ $ret == 139 ]; then
++			_fail "mayfail: returned code 139 (SEGFAULT), not ignored"
++		elif [ $ret == 134 ]; then
++			_fail "mayfail: returned code 134 (SIGABRT), not ignored"
++		fi
++		return $ret
++	fi
 +}
 +
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+# we check scratch dev after each loop
-+_require_scratch_nocheck
-+_require_scratch_dev_pool 4
-+_btrfs_get_profile_configs
-+
-+for mkfs_opts in "${_btrfs_profile_configs[@]}"; do
-+	echo "Test $mkfs_opts" >>$seqres.full
-+	_scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
-+	_scratch_mount >>$seqres.full 2>&1
-+
-+	dd if=/dev/urandom of="$SCRATCH_MNT/$seq" \
-+		bs=1M count=64 conv=fsync status=none
-+	dd if="$SCRATCH_MNT/$seq" of="$SCRATCH_MNT/$seq.dioread" \
-+		bs=1M iflag=direct status=none
-+	dd if="$SCRATCH_MNT/$seq" of="$SCRATCH_MNT/$seq.diowrite" \
-+		bs=1M oflag=direct status=none
-+	diff -q "$SCRATCH_MNT/$seq" "$SCRATCH_MNT/$seq.dioread" |
-+		tee -a $seqres.full
-+	diff -q "$SCRATCH_MNT/$seq" "$SCRATCH_MNT/$seq.diowrite" |
-+		tee -a $seqres.full
-+
-+	_scratch_unmount
-+	_check_scratch_fs
-+done
-+
-+echo "Silence is golden"
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/207.out b/tests/btrfs/207.out
-new file mode 100644
-index 00000000..cb8e0e2b
---- /dev/null
-+++ b/tests/btrfs/207.out
-@@ -0,0 +1,2 @@
-+QA output created by 207
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index e3ad347b..c87a042e 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -208,4 +208,5 @@
- 203 auto quick send clone
- 204 auto quick punch
- 205 auto quick clone compress
--204 auto quick log replay
-+206 auto quick log replay
-+207 auto quick rw raid
+ # first argument is error message to print if it fails, otherwise
+ # same as run_check but expects the command to fail, output is logged
+ run_mustfail()
 -- 
-2.25.1
+2.25.0
 
+
+--k1lZvvs/B4yU6o8G
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: inline;
+	filename="0002-progs-mkfs-tests-018-Skip-test-if-truncate-failed-wi.patch"
+
+From 085708404477cbb40d1c6b43f4a59d9611e5eddc Mon Sep 17 00:00:00 2001
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Date: Sat, 15 Feb 2020 19:47:12 -0300
+Subject: [PATCH 2/2] progs: mkfs-tests: 018: Skip test if truncate failed with
+ EFBIG
+
+The truncate command can fail in some platform like PPC32[1] because it
+can't create files up to 6E in size. Skip the test if this was the
+problem why truncate failed.
+
+[1]: https://github.com/kdave/btrfs-progs/issues/192
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ tests/mkfs-tests/018-multidevice-overflow/test.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/tests/mkfs-tests/018-multidevice-overflow/test.sh b/tests/mkfs-tests/018-multidevice-overflow/test.sh
+index 6c2f4dba..23c0b634 100755
+--- a/tests/mkfs-tests/018-multidevice-overflow/test.sh
++++ b/tests/mkfs-tests/018-multidevice-overflow/test.sh
+@@ -14,7 +14,18 @@ prepare_test_dev
+ run_check_mkfs_test_dev
+ run_check_mount_test_dev
+ 
+-run_check $SUDO_HELPER truncate -s 6E "$TEST_MNT/img1"
++# truncate can fail with EFBIG if the OS cannot created a 6E file
++stdout=$(run_mayfail_stdout $SUDO_HELPER truncate -s 6E "$TEST_MNT/img1" 2>&1)
++ret=$?
++
++if [ $ret -ne 0 ]; then
++	run_check_umount_test_dev
++	if [[ $stdout == *"File too large"* ]]; then
++		_not_run "Current kernel could not create a 6E file"
++	fi
++	_fail "Command failed: $stdout"
++fi
++
+ run_check $SUDO_HELPER truncate -s 6E "$TEST_MNT/img2"
+ run_check $SUDO_HELPER truncate -s 6E "$TEST_MNT/img3"
+ 
+-- 
+2.25.0
+
+
+--k1lZvvs/B4yU6o8G--
