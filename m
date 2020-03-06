@@ -2,149 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A507917C5BB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 19:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5345617C5F0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2020 20:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgCFS5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Mar 2020 13:57:44 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:33699 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgCFS5n (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Mar 2020 13:57:43 -0500
-Received: by mail-wm1-f54.google.com with SMTP id a25so10027845wmm.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Mar 2020 10:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KEL7Twz6zV9sQ3hr1crsZCLEMYSYV6AepRFnAD2EZxM=;
-        b=F+7tNbST5GyuyKo3Ky9a0LzHjCZRVDl2Ohmy/kMstcihcEQuSJHTZiMvmjTHNeAziT
-         z4827+FYj9UIfS62yetwrg4XbnGmO59J6lWDxaosyjpGiSe1jfE6YVgGciUyYI7xgdl6
-         gU6ssu4FPxgQCXgxwHp4TX90f0MUMBbnwRQft3pyi059uwKCzn4XtjKDPy3IDg9nvqb9
-         2ICmlRRIP2IhxprMJfJMQj4gjrNCTEV9lm4/LQw+uDtUFBaFN8JaEE+lhddMmO09js2C
-         xqPwqPD35l95SiGewYGZrffMGDquLor9neoYMflyaKMe3cgSFKI+wT1OIkmUuUx+WtWf
-         yJLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KEL7Twz6zV9sQ3hr1crsZCLEMYSYV6AepRFnAD2EZxM=;
-        b=bo5/dW4CrR9+aLGP3UkJppkUmWWZUvhV3HQBN2HIjH7DGZKhLwa9N6dhBeQVx0sklB
-         wkFjT1v7zkTqsHkv6kHZvnqfnZQ5/VEPI2iqlpgvyRMiP78CD0cPLrB+DCinbpUTuBdZ
-         QGd/b8ONxQIfsUEEo3FkkZC9AwzHQ9rgR6a5UOVnlxD+SZ+/ymKSI7hjtByEFKoBm5iY
-         sp1KObiyKM4LTc/Kz1fWFcKNF6Tx0uvLC9rByLBeZS+qOjmbyGKxJHLP0DzTyfP546cZ
-         PhbGygz6+kFbn7Ve2tTGCy3l7/G9CdXVEXHkz2FYfT/EJsDpI2RH3Y9My+WG+jTP5DTL
-         j43w==
-X-Gm-Message-State: ANhLgQ1d8v0Wv1H4jxZLpADeA2uT6G/E2tRccL7eQk58z9mUXEWBpoG1
-        6doNEI312qqYBKIRwG2JCOIe+1x7YHW41khI1Zcc7A4e
-X-Google-Smtp-Source: ADFU+vvcvsghm7j3fA5PArv4a8XPGTnMXZsslPlC/nFm2hxi7yrqcR09ALPcjvdDFAXifgDfiyuT0RS6gzxp0OieaS8=
-X-Received: by 2002:a05:600c:301:: with SMTP id q1mr5476872wmd.182.1583521060564;
- Fri, 06 Mar 2020 10:57:40 -0800 (PST)
+        id S1726397AbgCFTIN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Mar 2020 14:08:13 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:38352 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgCFTIN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Mar 2020 14:08:13 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 026J5EVV089969;
+        Fri, 6 Mar 2020 19:07:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=7IxeGuzA35+xrdEU4Ai5zObBFjpvvFOyDrantokfJbM=;
+ b=CzhGUG7VXYVaeeFYe9jbvpj2JAxdGUagmx3uBGsCUoEIEXa/hDJblYKNWneBboX28jLU
+ wYRpLcV8zdS2/X0EavL4sYuLUlj94o9p7X2lI0yfQkteKiG/vIfzaeB4QyUTPrpVmeDg
+ cZbEGo3SdU3AJ7Du8Y9r1wDbLN/6QI4ryQCi36hAcWUuUjQ/PDx8jsdOET6y++S2FsLL
+ /afiumowox7zzydRJCpY17EtBjmBA7AnUj3xtqyHTmG4vlw1y0z6k281yxCoiaAdXQxY
+ o/LKlU4DVTmDDkNowS01wzfbiB4nuJjrWoDO4KPbc+ZEJkwIMM6ax43LZTfUeCiUAQE6 +A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2yffwrd13n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Mar 2020 19:07:55 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 026J2g6Z116410;
+        Fri, 6 Mar 2020 19:07:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2yg1pe0cd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Mar 2020 19:07:54 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 026J7op9026534;
+        Fri, 6 Mar 2020 19:07:50 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 06 Mar 2020 11:07:50 -0800
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+        <20200306160548.GB25710@bombadil.infradead.org>
+        <1583516279.3653.71.camel@HansenPartnership.com>
+        <20200306180618.GN31668@ziepe.ca>
+Date:   Fri, 06 Mar 2020 14:07:47 -0500
+In-Reply-To: <20200306180618.GN31668@ziepe.ca> (Jason Gunthorpe's message of
+        "Fri, 6 Mar 2020 14:06:18 -0400")
+Message-ID: <yq1eeu51ev0.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-References: <55a1612f-e9af-dabd-5b91-f09cb1528486@petaramesh.org>
- <CAJCQCtT+_ioV6XAUgPyD++9o_0+6-kUgGOF7mpfVHEyb7runsA@mail.gmail.com> <3234bc4b-6e93-c1f7-9ed4-a45173e22dd5@petaramesh.org>
-In-Reply-To: <3234bc4b-6e93-c1f7-9ed4-a45173e22dd5@petaramesh.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 6 Mar 2020 11:57:24 -0700
-Message-ID: <CAJCQCtR-SUsiE5L8ba=pKHbJyQ9X3sTSBJ6vV0-X0-58nV-fxw@mail.gmail.com>
-Subject: Re: (One more) BTRFS damaged FS... Any hope ?
-To:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9552 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003060117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9552 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=2
+ phishscore=0 clxscore=1011 bulkscore=0 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003060117
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 6, 2020 at 10:05 AM Sw=C3=A2mi Petaramesh <swami@petaramesh.org=
-> wrote:
->
-> Hi Chris, and thanks for your help,
->
-> Please see below...
->
-> Le 02/03/2020 =C3=A0 07:43, Chris Murphy a =C3=A9crit :
-> >
-> > The transids are close so it might work to try -o usebackuproot. If
-> > not what do you get for:
-> Unfortunately not...
-> > btrfs insp dump-t -b 8176123904 /dev/
->
-> btrfs-progs v4.15.1
 
-That's too old to really be helpful these days. It's not something
-most anyone on an upstream list is keeping track of anymore, what it
-can and can't do, what bugs are fixed, etc.
+Jason,
 
+> Yes, I can confirm this from another smaller hotel-style conference
+> I've been involved organizing on occasion. $600-$800 is required to
+> break even without major sponsorship $$ for the ~100 people mark, and
+> that is without the usual food and venue perks we see at
+> plumbers/lsfmm.
 
->
-> parent transid verify failed on 8176123904 wanted 183574 found 183573
->
-> parent transid verify failed on 8176123904 wanted 183574 found 183573
->
-> Ignoring transid failure
->
-> leaf 8176123904 flags 0x1(WRITTEN) backref revision 1
->
-> fs uuid (blah)
->
-> chunk uuid (bloh)
->
-> item 0 key (TREE_LOG ROOT_ITEM 258) itemoff 15844 itemsize 439
->
-> generation 183573 root_dirid 0 bytenr 8176107520 level 0 refs 0
->
-> lastsnap 0 byte_limit 0 bytes_used 0 flags 0x0(none)
->
-> uuid (bunch of zeroes)
->
-> drop key (0 UNKNOWN.0 0) level 0
+Yep. Our actual per-person cost for LSF/MM/BPF is in excess of $1K. That
+limits who we can invite. Personally I absolutely hate the invitation
+aspect and process. But we are very constrained wrt. how many we can
+actually accommodate by the amount of funding we get. Things appear to
+be better this year, but sponsor mergers and acquisitions have been a
+major concern the past few years.
 
-That's it? Is this trimmed? This block is for an empty tree log leaf,
-and it's not failing csum but transid match. Was there a crash or
-power failure? What do you get for:
+The premise of LSF/MM/BPF is to provide a venue where the right people
+can talk low-latency, face to face. Without the distractions of a 1000
+person event setting. The reason LSF/MM/BPF has been free to attend has
+been to ensure that attendance fees wouldn't be a deterrent for the
+people who should be there. The downside is that the invitation process
+has been a deterrent for other, likely valuable, contributors.
 
-btrfs insp dump-s /dev/
+I would love for LSF/MM/BPF/BBQ to be an umbrella event like LPC where
+we could have miniconfs with all the relevant contributors for each
+topic area to be present. The addition of the 3rd day was done to
+facilitate that so that XFS folks, btrfs folks, etc. could congregate in
+a room to discuss things only they cared about. But the current
+attendance headcount cap means that not all topics can be covered due to
+crucial people missing.
 
+Also, there are several areas where I do think that the present LSF/MM
+format still has merit. First of all, not all topics are large enough to
+justify an entire miniconf or topic-specific workshop. We have many
+topics that can be covered in an hour or less and that's the end of
+that. The other aspect is that key people straddle multiple filesystems,
+subsystems, etc. If we *only* had XFS/btrfs/BPF miniconfs, scheduling
+would be near impossible. Hence the current division between scheduled
+days and workshop day. Also, we do have cross-track topics that need
+involvement across the board. I would personally be happy with 1 track
+day and 2 workshop days if we could get critical mass for the workshop
+topics.
 
+In the old days, when LSF tracks were 10-12 people each, I felt we got
+stuff done. Since then we have more than doubled the headcount for each
+track in an attempt to get more people involved. But I feel that the
+discussions are much less useful. Despite enforcing the no-slides rules,
+etc.
 
+If we combine sponsor funding with per-attendee fees to facilitate a
+larger event, the question becomes: What should the headcount limit be?
+200? 500? The reason I ask is that I think funding can be worked
+out. But I also think it is important enough that we don't exceed the
+"productive group size" too much for a given topic. And we usually put
+that somewhere between 10 and 15. It is very rare to see more than this
+many attendees actively participate in a discussion. This means for an
+attendee cap of 200, we should aim to have ~20 concurrent topics
+happening for it to be productive. Maybe slash that number in half to
+compensate for the people in the hallway tracks?
 
->
-> >
-> > btrfs-find-root /dev/
-> Command not found
-> >
-> > btrfs check /dev/
->
-> Unhappy
->
-> Reports transid failure, then :
->
-> check/main.c:3654: check_owner_ref: BUG_ON `rec->is_root` triggered, valu=
-e 1
->
-> Then eventually aborts.
->
-> >
-> > btrfs check -b /dev/
-> >
-> VERY unhappy with lots of verbosity
->
-> (Sorry, the machine isn't booted, I have to type everything by hand...
->
-> ...any clue ?
+One thing a few of us discussed a year or two ago was to have actual
+per-session headcount limits. And make people bid on the sessions they
+wanted to participate in and then cap each session at 15. That would
+obviously be very hard to schedule and enforce. But I still think we
+need to think about how we can bring N hundred people together and make
+sure they congregate in productive groups of 10-15. That's really the
+key as far as I'm concerned. We have tried the pure unconference
+approach and that wasn't very productive either. So we need to land
+somewhere in the middle...
 
-No there really isn't enough information, there's too much trimmed
-away. The best bet is to always provide too much information and let
-devs filter it themselves. Otherwise they have to spend time asking
-for more information, and then context switch. And also the
-btrfs-progs is too old I think for this list. I mean, maybe someone
-could make heads or tails out of it, but the upstream list tends to be
-pretty much active development. And older versions are the
-responsibility of the downstream distribution.
-
-
---=20
-Chris Murphy
+-- 
+Martin K. Petersen	Oracle Linux Engineering
