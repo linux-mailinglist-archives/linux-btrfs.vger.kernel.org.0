@@ -2,75 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4F917D05B
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Mar 2020 22:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E5417D07C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Mar 2020 23:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgCGVxe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Mar 2020 16:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726116AbgCGVxe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 7 Mar 2020 16:53:34 -0500
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88EE22073C;
-        Sat,  7 Mar 2020 21:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583618013;
-        bh=B4b7WxJELJF7J22jOK5yaznKHwPE1tN5KsKh1HLsZJ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kQVi0oODaJBHU0YsHHEYGXuh1j+wWxKs+8LS9mi6nK9hjPjjePD6gO48z0vGvtfSH
-         dqZlBwLZBCFE2jccLbDZILaabLcyjE02UV3uutxz6LjVCV/Ptmuddf7rdKb2jMStOW
-         x+779S5Z8H8vBFr/PLd2Mv+nH3gxNaPwHDcG8ogM=
-Date:   Sat, 7 Mar 2020 13:53:32 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+5b658d997a83984507a6@syzkaller.appspotmail.com>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>,
-        linux-btrfs@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: kernel BUG at fs/btrfs/volumes.c:LINE!
-Message-ID: <20200307215332.GR15444@sol.localdomain>
-References: <00000000000096009b056df92dc1@google.com>
- <beffba5d-e3d7-8b06-655b-bd04349177ea@kernel.org>
- <20191205100047.GA11438@Johanness-MacBook-Pro.local>
- <CACT4Y+Z-9g59XTwpfW+3fv1_jhbsskkvt8E8fx5F44BjofZ0ow@mail.gmail.com>
- <20191205113838.GC11438@Johanness-MacBook-Pro.local>
+        id S1726180AbgCGWmY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Mar 2020 17:42:24 -0500
+Received: from gateway31.websitewelcome.com ([192.185.143.39]:21467 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726098AbgCGWmY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 7 Mar 2020 17:42:24 -0500
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 79F673D610
+        for <linux-btrfs@vger.kernel.org>; Sat,  7 Mar 2020 16:42:23 -0600 (CST)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id Ai9HjWUSYXVkQAi9Hjpnpn; Sat, 07 Mar 2020 16:42:23 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=VTmzJnSReW+OkhzXO8OcqhxOAl6C6OKacqH/t9r1Lgc=; b=Xel2NIhYpCvP1b6fU5xidK85kA
+        itH0DihdsQmIhchT7KVJUkxqfi9eo3RQPpknSL3+4DkYd9DgD16qOLt7Ag4w1WKgQ8SWdya1XovRM
+        0Xuffc02U78hCxkpYWxFJq1UTXytiiRAXx2g+TazAPJ7k0lF3ctQSKtnnGblnr0XzFg36L/z9mhdi
+        lOwnIa7pjACmX3M6s0hmfQ2SJEGRXK5zZgg4/JaVMbNIM5l5nwNyKmDtU5JKoQiN/Lz1KyLzLl/Uo
+        6ZfpYxQmNn8tVsB8Kvltws0PqT+XhgCytX4fygpJLf8WVhgYPINcHjG2xCf32wfZq0LuXE7tUXgrq
+        RBhhN3wA==;
+Received: from 189.26.190.248.dynamic.adsl.gvt.net.br ([189.26.190.248]:56604 helo=hephaestus.suse.cz)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jAi9G-002tnS-UE; Sat, 07 Mar 2020 19:42:23 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH 0/2] btrfs-progs: Auto resize fs after device replace
+Date:   Sat,  7 Mar 2020 19:45:14 -0300
+Message-Id: <20200307224516.16315-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191205113838.GC11438@Johanness-MacBook-Pro.local>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 189.26.190.248
+X-Source-L: No
+X-Exim-ID: 1jAi9G-002tnS-UE
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 189.26.190.248.dynamic.adsl.gvt.net.br (hephaestus.suse.cz) [189.26.190.248]:56604
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 2
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 12:38:38PM +0100, Johannes Thumshirn wrote:
-> On Thu, Dec 05, 2019 at 11:07:27AM +0100, Dmitry Vyukov wrote:
-> > The correct syntax would be (no dash + colon):
-> > 
-> > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/jth/linux.git
-> > close_fs_devices
-> 
-> Ah ok, thanks.
-> 
-> Although syzbot already said it can't test because it has no reproducer.
-> Anyways good to know for future reports.
-> 
-> Byte,
-> 	Johannes
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Looks like there was a fix for this merged:
+These two patches make possible to resize the fs after a successful replace
+finishes. The flag -a is responsible for doing it (-r is already use, so -a in
+this context means "automatically").
 
-	commit 321f69f86a0fc40203b43659c3a39464f15c2ee9
-	Author: Johannes Thumshirn <jthumshirn@suse.de>
-	Date:   Wed Dec 4 14:36:39 2019 +0100
+The first patch just moves the resize rationale to utils.c and the second patch
+adds the flag an calls resize if -a is informed replace finishes successfully.
 
-	    btrfs: reset device back to allocation state when removing
+Please review!
 
-So telling syzbot:
+Marcos Paulo de Souza (2):
+  btrfs-progs: Move resize into functionaly into utils.c
+  btrfs-progs: replace: New argument to resize the fs after replace
 
-#syz fix: btrfs: reset device back to allocation state when removing
+ Documentation/btrfs-replace.asciidoc |  4 +-
+ cmds/filesystem.c                    | 58 +--------------------------
+ cmds/replace.c                       | 19 ++++++++-
+ common/utils.c                       | 60 ++++++++++++++++++++++++++++
+ common/utils.h                       |  1 +
+ 5 files changed, 83 insertions(+), 59 deletions(-)
 
-In the future, please use the Reported-by line that syzbot suggested in its
-original mail, so that bugs get automatically closed.
+-- 
+2.25.0
+
