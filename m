@@ -2,173 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DC217D085
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 00:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392EB17D0AE
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 00:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgCGXHG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Mar 2020 18:07:06 -0500
-Received: from gateway34.websitewelcome.com ([192.185.148.212]:23037 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726109AbgCGXHG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 7 Mar 2020 18:07:06 -0500
-X-Greylist: delayed 1480 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Mar 2020 18:07:06 EST
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 160922747C
-        for <linux-btrfs@vger.kernel.org>; Sat,  7 Mar 2020 16:42:26 -0600 (CST)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id Ai9KjpY03RP4zAi9KjCNzH; Sat, 07 Mar 2020 16:42:26 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SA+QQmc1pIEmN+Nq6MRtFjJBYMMue438C/sLfQOcQsI=; b=LouPhJly9PHiOGdxjZyjOQ1sZF
-        U7ZQQl172eapx5O79dJIewONDOtCjvAKKXeGHttU8OLY3qL56CJj0lVZwnIp4SFHb1rnp+2YiAcod
-        EBNSdV8x/T9oys+uNLyTTrmAg/LnJMs+1DHLUWLvEAUdRC5p2WLGoZgeaW+VjjtmG3i4Pa2d1v4Tx
-        vKri5zJN6FsU3Ykf874Nxzuuhu5h13ouwLlUhyF3lZCANYhkg+TEiql8omBuZ5dMCvHVMlP56tDTb
-        LhgnpScY0LNvG30iNO8E5l4mLby7hcQ/kx/ehRFCC4/A+6IYqxiQf67ywyWOwi+Xc/ofE+Xe2+UEm
-        B+X85eRw==;
-Received: from 189.26.190.248.dynamic.adsl.gvt.net.br ([189.26.190.248]:56604 helo=hephaestus.suse.cz)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jAi9J-002tnS-Ho; Sat, 07 Mar 2020 19:42:25 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH 2/2] btrfs-progs: replace: New argument to resize the fs after replace
-Date:   Sat,  7 Mar 2020 19:45:16 -0300
-Message-Id: <20200307224516.16315-3-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200307224516.16315-1-marcos@mpdesouza.com>
-References: <20200307224516.16315-1-marcos@mpdesouza.com>
+        id S1726138AbgCGXpc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Mar 2020 18:45:32 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:36429 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgCGXpc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Mar 2020 18:45:32 -0500
+Received: by mail-il1-f194.google.com with SMTP id b17so5463204iln.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 07 Mar 2020 15:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
+        b=JDL068LTdyyzf9yXK7nLUvxbChQEXLhAVV+WM6tE/cXmFZhjTaMY/AzAXEwLGoKA+B
+         vXHU324RjQmuaCuJIcnB137SDdowFZ4yiyzakKsdBSWSEQRZmQi5LU0Ni3imS7cM2ZX6
+         Ekbor3U/dbKHBP13chYB/Ic1AsGnwtJ/PtsCkMkjOT1U3jhQi2xxb1YUrYlcsEaCbewh
+         MJSCKFcLl0pyvrsA7TVL7SWRgkSpmkLZmWZ9XXArqqEJX1FwFUNZJ/kKOAfgZyhbxKCS
+         nxq+PnGQjl7/nSJBQC0ASQNIoZwh6aILXL9P/AQR7X/wHYWotjGhQOr6K1IHO2GvrJrX
+         MDGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=6W0PydWbSO7FV7zSv4lpd4L/KA8aw5QASOufQ4Raoxc=;
+        b=Gql1GuMEUujQ0kGv3l93oKjV5Dm/THmxXDFSmYqHC/fa0sqV/8RqAs5QHpp5c6OgiY
+         JsVoTscvziCJgdB+L4tXsY3yhf+p7mychPheEzVP5GTy4XxJy8jq7reWfaVkD1K39zhv
+         nEW5lKSw/BeIrVe9EaFzo/4JPhchuhHHHpdMk/+/7h+NLunXOYkMDDSZV/m6FBDmcF2e
+         IOfDYMjjTucd77jWiAw4drcozafFedUURHkjbJUEBB/EuBHv+LcE0YIXwuUEoIue/+2w
+         Tg83Sia4d+o7WCJuY/iEe+/A+nx/4N5dC5QgcyoAQ3FwIGHEpvK4D/eSDSDCfIWeLCqd
+         +joQ==
+X-Gm-Message-State: ANhLgQ1YyEuPLVwb0G8D8MNiH3hES7JG91MXdMaKyzAK6lrpwESSw5Tx
+        7cSjcgoHzzUdnTezYuNupBMdPai+GowLMgzSEt0=
+X-Google-Smtp-Source: ADFU+vtDCf2566b3XWdtMtVHGYu9GTb4mpMYG/BAhZY6K8hT8BwycUPuUZy/GMEIjfX+jS7+Sq6Iqoiipn9gP0s+Qco=
+X-Received: by 2002:a92:d745:: with SMTP id e5mr9213077ilq.285.1583624731598;
+ Sat, 07 Mar 2020 15:45:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 189.26.190.248
-X-Source-L: No
-X-Exim-ID: 1jAi9J-002tnS-Ho
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 189.26.190.248.dynamic.adsl.gvt.net.br (hephaestus.suse.cz) [189.26.190.248]:56604
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 8
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Received: by 2002:a92:5ddd:0:0:0:0:0 with HTTP; Sat, 7 Mar 2020 15:45:31 -0800 (PST)
+Reply-To: wyne010@gmail.com
+From:   "Mrs. Maile .(A) Roberto" <barrister.c.o.mathins@gmail.com>
+Date:   Sat, 7 Mar 2020 15:45:31 -0800
+Message-ID: <CALWmkas5OkQKFd9+Y3VMo8-Ni3cp+6qHoCct39qeH3yt+a1EyA@mail.gmail.com>
+Subject: Hello Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Greetings
 
-By using the -a flag on replace makes btrfs issue a resize ioctl after
-the replace finishes. This argument is a shortcut for
+My Name is Mrs. Maile .(A) Roberto, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Roberto,
+A gold merchant who owns a small gold mine in Madrid   Spain; He died of
+Cardiovascular Disease in mid-March 2011. During his lifetime he
+deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
+d
+thousand Euros in a HSBC Bank  in Madrid the capital city of Spain.
+The deposited money was from the sale of the
+shares, death benefits payment and entitlements of my deceased
+husbandry his company.
 
-btrfs replace start -f 3 /dev/sdf BTRFS/
-btrfs fi resize 3:max BTRFS/
+I am sending this message to you praying that it will reach you in
+good health since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently I am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunate that we don't have a child, my
+doctor confided in me that I have less chance to live. Having known my
+health condition, I decided to contact you to claim the fund since I
+don't have any relation I grew up from an orphanage home.
 
-The -a stands for "automatically resize"
+I have decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed with cancer for about 2 years ago. I have been touched by
+God Almighty to donate from what I have inherited from my late husband
+to you for the good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has because He is a Merciful God, I will be
+going in for an operation surgery soon
 
-Fixes: #21
+This is the reason I need your services to stand as my next of kin or
+the executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+information on how the fund will be transferred to your bank account.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- Documentation/btrfs-replace.asciidoc |  4 +++-
- cmds/replace.c                       | 19 +++++++++++++++++--
- 2 files changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/btrfs-replace.asciidoc b/Documentation/btrfs-replace.asciidoc
-index b73bf1b3..e0b30066 100644
---- a/Documentation/btrfs-replace.asciidoc
-+++ b/Documentation/btrfs-replace.asciidoc
-@@ -18,7 +18,7 @@ SUBCOMMAND
- *cancel* <mount_point>::
- Cancel a running device replace operation.
- 
--*start* [-Bfr] <srcdev>|<devid> <targetdev> <path>::
-+*start* [-aBfr] <srcdev>|<devid> <targetdev> <path>::
- Replace device of a btrfs filesystem.
- +
- On a live filesystem, duplicate the data to the target device which
-@@ -53,6 +53,8 @@ never allowed to be used as the <targetdev>.
- +
- -B::::
- no background replace.
-++a::::
-+automatically resizes the filesystem if the <targetdev> is bigger than <srcdev>.
- 
- *status* [-1] <mount_point>::
- Print status and progress information of a running device replace operation.
-diff --git a/cmds/replace.c b/cmds/replace.c
-index 2321aa15..48f470cd 100644
---- a/cmds/replace.c
-+++ b/cmds/replace.c
-@@ -91,7 +91,7 @@ static int dev_replace_handle_sigint(int fd)
- }
- 
- static const char *const cmd_replace_start_usage[] = {
--	"btrfs replace start [-Bfr] <srcdev>|<devid> <targetdev> <mount_point>",
-+	"btrfs replace start [-aBfr] <srcdev>|<devid> <targetdev> <mount_point>",
- 	"Replace device of a btrfs filesystem.",
- 	"On a live filesystem, duplicate the data to the target device which",
- 	"is currently stored on the source device. If the source device is not",
-@@ -104,6 +104,8 @@ static const char *const cmd_replace_start_usage[] = {
- 	"from the system, you have to use the <devid> parameter format.",
- 	"The <targetdev> needs to be same size or larger than the <srcdev>.",
- 	"",
-+	"-a     automatically resize the filesystem if the <targetdev> is bigger",
-+	"       than <srcdev>",
- 	"-r     only read from <srcdev> if no other zero-defect mirror exists",
- 	"       (enable this if your drive has lots of read errors, the access",
- 	"       would be very slow)",
-@@ -129,6 +131,7 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 	char *path;
- 	char *srcdev;
- 	char *dstdev = NULL;
-+	bool auto_resize = false;
- 	int avoid_reading_from_srcdev = 0;
- 	int force_using_targetdev = 0;
- 	u64 dstdev_block_count;
-@@ -138,8 +141,11 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 	u64 dstdev_size;
- 
- 	optind = 0;
--	while ((c = getopt(argc, argv, "Brf")) != -1) {
-+	while ((c = getopt(argc, argv, "aBrf")) != -1) {
- 		switch (c) {
-+		case 'a':
-+			auto_resize = true;
-+			break;
- 		case 'B':
- 			do_not_background = 1;
- 			break;
-@@ -309,6 +315,15 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 			goto leave_with_error;
- 		}
- 	}
-+
-+	if (ret == 0 && auto_resize && dstdev_size > srcdev_size) {
-+		char amount[BTRFS_PATH_NAME_MAX + 1];
-+		snprintf(amount, BTRFS_PATH_NAME_MAX, "%s:max", srcdev);
-+
-+		if (resize_filesystem(amount, path))
-+			goto leave_with_error;
-+	}
-+
- 	close_file_or_dir(fdmnt, dirstream);
- 	return 0;
- 
--- 
-2.25.0
-
+Thanks
+Mrs. Maile .(A) Roberto
