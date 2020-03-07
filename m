@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA1517D03D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Mar 2020 22:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8732117D040
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Mar 2020 22:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgCGVRE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Mar 2020 16:17:04 -0500
-Received: from smtp.radex.nl ([178.250.146.7]:55030 "EHLO radex-web.radex.nl"
+        id S1726267AbgCGVVz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Mar 2020 16:21:55 -0500
+Received: from smtp.radex.nl ([178.250.146.7]:55032 "EHLO radex-web.radex.nl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726116AbgCGVRE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 7 Mar 2020 16:17:04 -0500
-X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Mar 2020 16:17:03 EST
+        id S1726180AbgCGVVz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 7 Mar 2020 16:21:55 -0500
 Received: from [10.8.0.6] (cust-178-250-146-69.breedbanddelft.nl [178.250.146.69])
-        by radex-web.radex.nl (Postfix) with ESMTPS id 7EB4D2409E
-        for <linux-btrfs@vger.kernel.org>; Sat,  7 Mar 2020 22:11:25 +0100 (CET)
-X-Mozilla-News-Host: news://nntp.lore.kernel.org:119
+        by radex-web.radex.nl (Postfix) with ESMTPS id 63C5924065
+        for <linux-btrfs@vger.kernel.org>; Sat,  7 Mar 2020 22:21:53 +0100 (CET)
 From:   Ferry Toth <fntoth@gmail.com>
 Subject: Howto take a snapshot from an image as ordinary user?
 To:     linux-btrfs@vger.kernel.org
-Message-ID: <adae8972-b24d-af56-8b86-3e47e0c331dd@gmail.com>
-Date:   Sat, 7 Mar 2020 22:11:24 +0100
+X-Mozilla-News-Host: news://news://nntp.lore.kernel.org:119
+Message-ID: <58ad5d52-425a-a89d-d042-e9941088828a@gmail.com>
+Date:   Sat, 7 Mar 2020 22:21:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -50,3 +49,4 @@ So what is the recommended way to generate a snapshot without becoming root?
 Thanks,
 
 Ferry
+
