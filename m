@@ -2,34 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3CD17D481
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 16:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AC817D485
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 16:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgCHPlJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Mar 2020 11:41:09 -0400
-Received: from ciao.gmane.io ([159.69.161.202]:38966 "EHLO ciao.gmane.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726259AbgCHPlJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 8 Mar 2020 11:41:09 -0400
-X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Mar 2020 11:41:08 EDT
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
-        id 1jAxyH-000MOg-MV
-        for linux-btrfs@vger.kernel.org; Sun, 08 Mar 2020 16:36:05 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-btrfs@vger.kernel.org
-From:   Ferry Toth <ftoth@telfort.nl>
+        id S1726297AbgCHPwG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Mar 2020 11:52:06 -0400
+Received: from mailfilter04-out40.webhostingserver.nl ([195.211.73.157]:10809
+        "EHLO mailfilter04-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726289AbgCHPwG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 8 Mar 2020 11:52:06 -0400
+X-Greylist: delayed 962 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Mar 2020 11:52:05 EDT
+X-Halon-ID: 83957d3b-6152-11ea-a6ff-001a4a4cb95f
+Received: from s198.webhostingserver.nl (unknown [195.211.72.171])
+        by mailfilter04.webhostingserver.nl (Halon) with ESMTPSA
+        id 83957d3b-6152-11ea-a6ff-001a4a4cb95f;
+        Sun, 08 Mar 2020 16:36:01 +0100 (CET)
+Received: from [2001:981:6fec:1:894e:adf7:dc:7e47]
+        by s198.webhostingserver.nl with esmtpa (Exim 4.92.3)
+        (envelope-from <ftoth@telfort.nl>)
+        id 1jAxyD-006ve8-0G
+        for linux-btrfs@vger.kernel.org; Sun, 08 Mar 2020 16:36:01 +0100
 Subject: Re: Howto take a snapshot from an image as ordinary user?
-Date:   Sun, 8 Mar 2020 16:39:49 +0100
-Message-ID: <d87f9e87-0e77-c758-aae9-f0d069b0e6da@telfort.nl>
+From:   Ferry Toth <ftoth@telfort.nl>
+To:     linux-btrfs@vger.kernel.org
+Newsgroups: gmane.comp.file-systems.btrfs
 References: <58ad5d52-425a-a89d-d042-e9941088828a@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <d87f9e87-0e77-c758-aae9-f0d069b0e6da@telfort.nl>
+Date:   Sun, 8 Mar 2020 16:39:49 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
+MIME-Version: 1.0
 In-Reply-To: <58ad5d52-425a-a89d-d042-e9941088828a@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SendingUser: hidden
+X-SendingServer: hidden
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+X-Authenticated-Id: hidden
+X-SendingUser: hidden
+X-SendingServer: hidden
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -62,4 +75,3 @@ But to do that I need to sudo it.
 > Ferry
 > 
 > 
-
