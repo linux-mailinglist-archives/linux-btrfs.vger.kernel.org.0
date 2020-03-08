@@ -2,107 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4C617D380
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 11:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC1917D456
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2020 16:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgCHK67 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Mar 2020 06:58:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35026 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgCHK67 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Mar 2020 06:58:59 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 028AtjVB001651;
-        Sun, 8 Mar 2020 10:58:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=kINgjCvQrFN1H94vBQ2EqzD1V+wSng60QRFxon4e8aE=;
- b=fWC9bHKS2/Ir7+oiTAuny2VNI+7Upd+WWOGyHmgph0eyVmMIwTqJJTZd+oT4jfAizueh
- Hud/U0EZBoftHuTmPX4EGu5oUWnOlICx/C7EeDW4bL8zi4MeWGHUJ00Imm1gpagXpvXb
- PP/K9guR/Txoo9+s8rPRrCfdsOLyv0y7WTCOmogEe06x+lILg0I32UqUnQQC9pbonvYD
- FjMbCglxvW5c06gZTGeYgQOh9Tni784ZfvL9JC2tpT0DAESwo9/AJpHhUN6XV1WF8GLo
- 9lv15NDZX3llvHcG1KTt/z+RPp9nlfsZlRLTS4t5ahgyJ8BEKuGLcKv9y0HpXXevoYp+ 7w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2ym31u3554-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 08 Mar 2020 10:58:42 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 028Aqwmb060957;
-        Sun, 8 Mar 2020 10:58:41 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2ymnd9pavj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 08 Mar 2020 10:58:41 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 028AweX4021342;
-        Sun, 8 Mar 2020 10:58:40 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 08 Mar 2020 03:58:39 -0700
-Subject: Re: [PATCH 0/2] btrfs-progs: Auto resize fs after device replace
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200307224516.16315-1-marcos@mpdesouza.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <95a53477-a71d-5304-f4b2-8a0225414050@oracle.com>
-Date:   Sun, 8 Mar 2020 18:58:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726271AbgCHPMB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Mar 2020 11:12:01 -0400
+Received: from mout.gmx.net ([212.227.17.21]:54063 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726260AbgCHPMB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 8 Mar 2020 11:12:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583680319;
+        bh=oGk656mVixBja9YTJT4I6WVCwDe4l5rGNTktboyjJ5g=;
+        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+        b=eJXEp/q962UNxIEimq7v5ZjpjicA8KumeYwOQNcB6chhA31XtMcTo6VDdeuQNqwEc
+         KQesBJ4LMtDoLAzn3ZAk8gft+YICdnmpJbtlm42wMS14Pg/P2LIQWyQMR/lxhDUHrH
+         MiW1vZCreQyK/4gjLaVKyfyHacutQv4f1Zu64BDc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from thetick.localnet ([95.90.202.24]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUowb-1ikOBa3AUD-00Qj1O for
+ <linux-btrfs@vger.kernel.org>; Sun, 08 Mar 2020 16:11:59 +0100
+From:   Marc Joliet <marcec@gmx.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: freezes during snapshot creation/deletion -- to be expected? (Was: Re: btrfs based backup?)
+Date:   Sun, 08 Mar 2020 16:11:52 +0100
+Message-ID: <2475371.lGaqSPkdTl@thetick>
+In-Reply-To: <4477543.Lpmng1OQLe@thetick>
+References: <20191112183425.GA1257@tik.uni-stuttgart.de> <CAJCQCtQFw=ThyCQGdG4nXX2r9--Jv3W9KWdFKLv3Gy-sYw=Xrg@mail.gmail.com> <4477543.Lpmng1OQLe@thetick>
 MIME-Version: 1.0
-In-Reply-To: <20200307224516.16315-1-marcos@mpdesouza.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9553 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003080084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9553 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003080084
+Content-Type: multipart/signed; boundary="nextPart2306082.XAFRqVoOGU"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Provags-ID: V03:K1:Cjf3uGeUaGimbHfbcXyBTpWtN9hxYqXZLtAo6htUAwZ2eXR9CV7
+ w2tZnf2eK1WKhnN81f1OdgYN1gf/7mfaspRriBj3LvcsAbrW9bIGzFB/lqYjQFb6EUB6E1l
+ i24h80bGZoVH5mQOshbvQeoxIxk2H+MXHyjOjEsyP1Mkbpg1DBJSF4a4q5OOOtN0Sy+5axd
+ 7/RiifRVZnHWG/JwhM7WA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7tnYxKuQg2U=:yzqJTP6KwT9W2OYdCgLZ7a
+ wqMtIx7LNbDs/9kBVpL+DAc5ciO+Qh8oVwrjYvyGfJFJ/fj/MY5G/K6S735rtlr/dAPUFCZKx
+ HtPLpYboeZD2OWMS3lu2OIVoYlM40ozp+EqcGChAVTpZkYl+ETdSxFeDqQHOMvlHOip3v+P4S
+ 3lBUvg3fXdud6xoNrXhpAPmT0pItjw8/JotuSTcuGZ7L+Xri2ktJ7CTVrTZ3NVlWPHPdiaKoB
+ uOLxsVBiwbXFyl8qbExMqg8BFXVi8oIqcd2uX1ms1ecbn7TirANn2QTP+wV3nMHYnQbx+Z+YQ
+ hTO4fXdA8CUiRo3VJn6OfmPpffCwN2L4Jr4/yjwCLS0JRlSxm6grmtXvJlIlaYWiVKuc01V0W
+ JAuHH/cUKlzrOp89KPI2EtgDW69/nK+bhfn/jQs5bH/WeL9X9Il0jvaMsGVgq6RwZlJRSRDO8
+ MBiXJjni/zJFbYgFJPBkPWXWqpl7bLKaoUlmUN2abBn7LKnlJm9Fy7k/uPbkM2QbO2YNqJB3L
+ rkul+ouVWzPBo8VzZfeIkFTczAV/A31juRuAZplcdIt5z34bnNtcvFNgP2T1uhsNhF5gTxNN1
+ 41NMtOqM1f+nQXd/PiahnUZhy0Ndq+t07xQ7tDhjSCHThVs2f8wGBu0rdo8+IWGStUr0zW4eD
+ u+FJ8OrHS/YY/relRE0mJNIEhsMZ7wNR88fuf9YJ2tXk7lZvJ+1uHbiIAxVxR+DYjUz4VIbW8
+ xqznmy7Z75MsgiAvFI9nmTxkU9StsQsr0ocX8UA/pBjxF3sPFk2NjI4KtK8SgM2wsX9RfOC0l
+ 9YZdYeWjEYsxStAq6Q6gjwgbi8Rv8CFC0qOASePdFDinY3Z9ndeCoqW9AjQ+PxVK37BXWE8RQ
+ L5awd5+HUlhBreWe8hGlx+IzQit+E2nFuiieSvPsO1wj58gvg6uG4/d505oZhOMRR8/uc9cDE
+ RRVtSRDL4JNnb17HUuYXr39GNiyA5xWnAn1Ezo6FuN64V5YIoTL9vyYtDhm/OyBpS2J4cZTTu
+ s7jhR5XF63EayvPzaW8ow3Dc+jL7d0zfYZOx+qbdmvr7fi7g3t24EyWVaiHl4//+cvGos6YEk
+ Fppn4GLwVWwsn5V1t/bTjnyNCBPBuiE2n397sX9ZQcIc1WtqwM0e2DANfPy6jqY9KRXIhM4Pb
+ 2mdLKa+QE6R5Q/9gmJ+RBepZMbnBtK0xroL9rwbe03XnM6gCVAEMHD9kzSTDBOmMOCw2ZeVZ8
+ chTKpPhxGkrjEGMnE
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/8/20 6:45 AM, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> These two patches make possible to resize the fs after a successful replace
-> finishes. The flag -a is responsible for doing it (-r is already use, so -a in
-> this context means "automatically").
+--nextPart2306082.XAFRqVoOGU
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 
-If resize fails we should be able to fail the replace as well which does
-not happen here. I am thinking this should be kernel feature, do the
-resize part before calling btrfs_dev_replace_finishing().
+Am Samstag, 23. November 2019, 00:21:18 CET schrieben Sie:
+> Am Freitag, 22. November 2019, 02:36:56 CET schrieb Chris Murphy:
+> > On Thu, Nov 21, 2019 at 3:39 PM Marc Joliet <marcec@gmx.de> wrote:
+> > > On a side note, I am also really annoyed by the lockups caused by
+> > > qgroups.
+> > > On my Gentoo systems (which use btrbk) I have it disabled for that
+> > > reason, but I left it on on my openSUSE laptop (a Dell XPS 13 9360),
+> > > which locks up for about 15-30 minutes while cleaning up snapshots a=
+ few
+> > > times a week (usually after reboots or after "zypper dup").
+> >
+> > 15 seconds is not at all acceptable on a desktop system, 15 minutes is
+> > atrocious. A computer that appears to hang for 15 seconds, it is
+> > completely reasonable for ordinary users to consider has totally
+> > faceplanted, will not recover, and to force power off. The
+> > distribution really needs to do something about that kind of negative
+> > user experience.
+>
+> Sadly, I can't say if it's better without snapshotting /home, because I
+> hadn't accumulated many / snapshots at that point in time.  It might hav=
+e
+> gotten worse even with only / being snapshotted.  But like I said, I'll
+> experiment with configuring snapper before blaming SUSE.  I believe the
+> installation even recommends against snapshotting /home, but hey, I want=
+ed
+> to do it anyway :-) .
+>
+> But to be precise, it's not locked up continuously during snapshot delet=
+ion.
+> Occasionally I'll be able to operate my desktop for a few seconds, and i=
+f I
+> leave top running in a GUI terminal (in my case konsole), I'll see it
+> updating (almost) the entire time.  My guess (emphasis on *guess*) is th=
+at
+> the qgroups update is holding some lock that is preventing other I/O fro=
+m
+> finishing, thus locking up any application that wants to write to disk a=
+nd
+> isn't doing so concurrently (maybe Plasma is blocking on fsync() at the
+> time?).
 
-IMO, it makes sense that replace and resize be in one command as
-proposed in this patch. We had similar discussion whether to combine
-replace and resize of missing device here:
-    https://patchwork.kernel.org/patch/11249009/
+So just to follow up on this, reducing the total number of snapshots and
+increasing the time between their creation from hourly to once every six h=
+ours
+did help a *little* bit.  However, about a week ago I decided to try an
+experiment and added the "autodefrag" mount option (which I don't usually =
+do
+on SSDs), and that helped *massively*.  Ever since, snapper-cleanup.servic=
+e
+runs without me noticing at all!
 
--Anand
+[ What made me try it was that booting the laptop and logging in started
+getting really slow and top was showing several btrfs-endio threads hoggin=
+g
+the CPU, *before* snapper-cleanup.service or anything else specific to btr=
+fs
+was running (their activity usually coincided with KDE Baloo activity), i.=
+e.,
+general I/O was performing badly. ]
 
-> The first patch just moves the resize rationale to utils.c and the second patch
-> adds the flag an calls resize if -a is informed replace finishes successfully.
-> 
-> Please review!
-> 
-> Marcos Paulo de Souza (2):
->    btrfs-progs: Move resize into functionaly into utils.c
->    btrfs-progs: replace: New argument to resize the fs after replace
-> 
->   Documentation/btrfs-replace.asciidoc |  4 +-
->   cmds/filesystem.c                    | 58 +--------------------------
->   cmds/replace.c                       | 19 ++++++++-
->   common/utils.c                       | 60 ++++++++++++++++++++++++++++
->   common/utils.h                       |  1 +
->   5 files changed, 83 insertions(+), 59 deletions(-)
-> 
+Greetings
+=2D-
+Marc Joliet
+=2D-
+"People who think they know everything really annoy those of us who know w=
+e
+don't" - Bjarne Stroustrup
+
+--nextPart2306082.XAFRqVoOGU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQS2YUPDQn1ADQEoj0uXgvYOs+E2oAUCXmULOAAKCRCXgvYOs+E2
+oDvkAP9fU2wEjCazoCnH4OQEpBJ8KvR2PBgsEqoMY7jhxf7wZAEAoHkurPwZny7W
+nhwW+nvooOGdnh2ZzvEkPTi7pNa6OQc=
+=G2W9
+-----END PGP SIGNATURE-----
+
+--nextPart2306082.XAFRqVoOGU--
+
+
 
