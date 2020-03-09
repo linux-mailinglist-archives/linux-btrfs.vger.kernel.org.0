@@ -2,332 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2208117E072
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 13:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D7817E4BD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 17:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgCIMlR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 08:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54008 "EHLO mail.kernel.org"
+        id S1727159AbgCIQZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 12:25:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38732 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgCIMlQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Mar 2020 08:41:16 -0400
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7764620848;
-        Mon,  9 Mar 2020 12:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583757676;
-        bh=bfnGp/rRMqEr9BNfDLXGU2/rF9ztCo3D5A7aqqs+URM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vwfqnQZb/njSPThZYItku3axwKcDFL4Igrz9hOJNzefG1FR2QbL/4hv9bLM9pOslF
-         6F7PGGUQLnMEdFsJzLLS8E/GGodhK7/ZlefOn9FJLeVyt+eKrW0vhV6uQhdUVV6pHK
-         1olLB3l8pItneTy+TjtLKEEmsuZOLdNv+DGLwAfY=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-Subject: [PATCH v3 4/4] Btrfs: make ranged full fsyncs more efficient
-Date:   Mon,  9 Mar 2020 12:41:08 +0000
-Message-Id: <20200309124108.18952-5-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200309124108.18952-1-fdmanana@kernel.org>
-References: <20200309124108.18952-1-fdmanana@kernel.org>
+        id S1727071AbgCIQZe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Mar 2020 12:25:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A08EEB3A7;
+        Mon,  9 Mar 2020 16:25:32 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CC547DA7A7; Mon,  9 Mar 2020 17:25:07 +0100 (CET)
+Date:   Mon, 9 Mar 2020 17:25:07 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] btrfs: scrub: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200309162507.GN2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200306221333.GA31084@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200306221333.GA31084@embeddedor>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Mar 06, 2020 at 04:13:33PM -0600, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-Commit 0c713cbab6200b ("Btrfs: fix race between ranged fsync and writeback
-of adjacent ranges") fixed a bug where we could end up with file extent
-items in a log tree that represent file ranges that overlap due to a race
-between the hole detection of a ranged full fsync and writeback for a
-different file range.
-
-The problem was solved by forcing any ranged full fsync to become a
-non-ranged full fsync - setting the range start to 0 and the end offset to
-LLONG_MAX. This was a simple solution because the code that detected and
-marked holes was very complex, it used to be done at copy_items() and
-implied several searches on the fs/subvolume tree. The drawback of that
-solution was that we started to flush delalloc for the entire file and
-wait for all the ordered extents to complete for ranged full fsyncs
-(including ordered extents covering ranges completely outside the given
-range). Fortunatelly ranged full fsyncs are not the most common case
-(hopefully for most workloads).
-
-However a later fix for detecting and marking holes was made by commit
-0e56315ca147b3 ("Btrfs: fix missing hole after hole punching and fsync
-when using NO_HOLES") and it simplified a lot the detection of holes,
-and now copy_items() no longer does it and we do it in a much more simple
-way at btrfs_log_holes().
-
-This makes it now possible to simply make the code that detects holes to
-operate only on the initial range and no longer need to operate on the
-whole file, while also avoiding the need to flush delalloc for the entire
-file and wait for ordered extents that cover ranges that don't overlap the
-given range.
-
-Another special care is that we must skip file extent items that fall
-entirely outside the fsync range when copying inode items from the
-fs/subvolume tree into the log tree - this is to avoid races with ordered
-extent completion for extents falling outside the fsync range, which could
-cause us to end up with file extent items in the log tree that have
-overlapping ranges - for example if the fsync range is [1Mb, 2Mb], when
-we copy inode items we could copy an extent item for the range [0, 512K],
-then release the search path and before moving to the next leaf, an
-ordered extent for a range of [256Kb, 512Kb] completes - this would
-cause us to copy the new extent item for range [256Kb, 512Kb] into the
-log tree after we have copied one for the range [0, 512Kb] - the extents
-overlap, resulting in a corruption.
-
-So this change just does these steps:
-
-1) When the NO_HOLES feature is enabled it leaves the initial range
-   intact - no longer sets it to [0, LLONG_MAX] when the full sync bit
-   is set in the inode. If NO_HOLES is not enabled, always set the range
-   to a full, just like before this change, to avoid missing file extent
-   items representing holes after replaying the log (for both full and
-   fast fsyncs);
-
-2) Make the hole detection code to operate only on the fsync range;
-
-3) Make the code that copies items from the fs/subvolume tree to skip
-   copying file extent items that cover a range completely outside the
-   range of the fsync.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c     | 13 --------
- fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 79 insertions(+), 27 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4a536387e992..18c88f514a0d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2103,19 +2103,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	atomic_inc(&root->log_batch);
- 
- 	/*
--	 * If the inode needs a full sync, make sure we use a full range to
--	 * avoid log tree corruption, due to hole detection racing with ordered
--	 * extent completion for adjacent ranges, and assertion failures during
--	 * hole detection. Do this while holding the inode lock, to avoid races
--	 * with other tasks.
--	 */
--	if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
--		     &BTRFS_I(inode)->runtime_flags)) {
--		start = 0;
--		end = LLONG_MAX;
--	}
--
--	/*
- 	 * Before we acquired the inode's lock, someone may have dirtied more
- 	 * pages in the target range. We need to make sure that writeback for
- 	 * any such pages does not start while we are logging the inode, because
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index bd4854ced55d..d8cc46517865 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -96,8 +96,8 @@ enum {
- static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			   struct btrfs_root *root, struct btrfs_inode *inode,
- 			   int inode_only,
--			   const loff_t start,
--			   const loff_t end,
-+			   u64 start,
-+			   u64 end,
- 			   struct btrfs_log_ctx *ctx);
- static int link_to_fixup_dir(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root,
-@@ -4534,13 +4534,15 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
- static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 			   struct btrfs_root *root,
- 			   struct btrfs_inode *inode,
--			   struct btrfs_path *path)
-+			   struct btrfs_path *path,
-+			   const u64 start,
-+			   const u64 end)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_key key;
- 	const u64 ino = btrfs_ino(inode);
- 	const u64 i_size = i_size_read(&inode->vfs_inode);
--	u64 prev_extent_end = 0;
-+	u64 prev_extent_end = start;
- 	int ret;
- 
- 	if (!btrfs_fs_incompat(fs_info, NO_HOLES) || i_size == 0)
-@@ -4548,14 +4550,21 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 
- 	key.objectid = ino;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
--	key.offset = 0;
-+	key.offset = start;
- 
- 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
- 	if (ret < 0)
- 		return ret;
- 
-+	if (ret > 0 && path->slots[0] > 0) {
-+		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0] - 1);
-+		if (key.objectid == ino && key.type == BTRFS_EXTENT_DATA_KEY)
-+			path->slots[0]--;
-+	}
-+
- 	while (true) {
- 		struct extent_buffer *leaf = path->nodes[0];
-+		u64 extent_end;
- 
- 		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
- 			ret = btrfs_next_leaf(root, path);
-@@ -4572,9 +4581,18 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 		if (key.objectid != ino || key.type != BTRFS_EXTENT_DATA_KEY)
- 			break;
- 
-+		extent_end = btrfs_file_extent_end(path);
-+		if (extent_end <= start)
-+			goto next_slot;
-+
- 		/* We have a hole, log it. */
- 		if (prev_extent_end < key.offset) {
--			const u64 hole_len = key.offset - prev_extent_end;
-+			u64 hole_len;
-+
-+			if (key.offset >= end)
-+				hole_len = end - prev_extent_end;
-+			else
-+				hole_len = key.offset - prev_extent_end;
- 
- 			/*
- 			 * Release the path to avoid deadlocks with other code
-@@ -4604,16 +4622,20 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 			leaf = path->nodes[0];
- 		}
- 
--		prev_extent_end = btrfs_file_extent_end(path);
-+		prev_extent_end = min(extent_end, end);
-+		if (extent_end >= end)
-+			break;
-+next_slot:
- 		path->slots[0]++;
- 		cond_resched();
- 	}
- 
--	if (prev_extent_end < i_size) {
-+	if (prev_extent_end < end && prev_extent_end < i_size) {
- 		u64 hole_len;
- 
- 		btrfs_release_path(path);
--		hole_len = ALIGN(i_size - prev_extent_end, fs_info->sectorsize);
-+		hole_len = min(ALIGN(i_size, fs_info->sectorsize), end);
-+		hole_len -= prev_extent_end;
- 		ret = btrfs_insert_file_extent(trans, root->log_root,
- 					       ino, prev_extent_end, 0, 0,
- 					       hole_len, 0, hole_len,
-@@ -4950,6 +4972,8 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				   const u64 logged_isize,
- 				   const bool recursive_logging,
- 				   const int inode_only,
-+				   const u64 start,
-+				   const u64 end,
- 				   struct btrfs_log_ctx *ctx,
- 				   bool *need_log_inode_item)
- {
-@@ -4958,6 +4982,21 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 	int ins_nr = 0;
- 	int ret;
- 
-+	/*
-+	 * We must make sure we don't copy extent items that are entirely out of
-+	 * the range [start, end - 1]. This is not just an optimization to avoid
-+	 * copying but also needed to avoid a corruption where we end up with
-+	 * file extent items in the log tree that have overlapping ranges - this
-+	 * can happen if we race with ordered extent completion for ranges that
-+	 * are outside our target range. For example we copy an extent item and
-+	 * when we move to the next leaf, that extent was trimmed and a new one
-+	 * covering a subrange of it, but with a higher key, was inserted - we
-+	 * would then copy this other extent too, resulting in a log tree with
-+	 * 2 extent items that represent overlapping ranges.
-+	 *
-+	 * We can copy the entire extents at the range bondaries however, even
-+	 * if they cover an area outside the target range. That's ok.
-+	 */
- 	while (1) {
- 		ret = btrfs_search_forward(root, min_key, path, trans->transid);
- 		if (ret < 0)
-@@ -5026,6 +5065,29 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 			goto next_slot;
- 		}
- 
-+		if (min_key->type == BTRFS_EXTENT_DATA_KEY) {
-+			const u64 extent_end = btrfs_file_extent_end(path);
-+
-+			if (extent_end <= start) {
-+				if (ins_nr > 0) {
-+					ret = copy_items(trans, inode, dst_path,
-+							 path, ins_start_slot,
-+							 ins_nr, inode_only,
-+							 logged_isize);
-+					if (ret < 0)
-+						return ret;
-+					ins_nr = 0;
-+				}
-+				goto next_slot;
-+			}
-+			if (extent_end >= end) {
-+				ins_nr++;
-+				if (ins_nr == 1)
-+					ins_start_slot = path->slots[0];
-+				break;
-+			}
-+		}
-+
- 		if (ins_nr && ins_start_slot + ins_nr == path->slots[0]) {
- 			ins_nr++;
- 			goto next_slot;
-@@ -5093,8 +5155,8 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 			   struct btrfs_root *root, struct btrfs_inode *inode,
- 			   int inode_only,
--			   const loff_t start,
--			   const loff_t end,
-+			   u64 start,
-+			   u64 end,
- 			   struct btrfs_log_ctx *ctx)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -5122,6 +5184,9 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		return -ENOMEM;
- 	}
- 
-+	start = ALIGN_DOWN(start, fs_info->sectorsize);
-+	end = ALIGN(end, fs_info->sectorsize);
-+
- 	min_key.objectid = ino;
- 	min_key.type = BTRFS_INODE_ITEM_KEY;
- 	min_key.offset = 0;
-@@ -5237,8 +5302,8 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 
- 	err = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
- 				      path, dst_path, logged_isize,
--				      recursive_logging, inode_only, ctx,
--				      &need_log_inode_item);
-+				      recursive_logging, inode_only,
-+				      start, end, ctx, &need_log_inode_item);
- 	if (err)
- 		goto out_unlock;
- 
-@@ -5251,7 +5316,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	if (max_key.type >= BTRFS_EXTENT_DATA_KEY && !fast_search) {
- 		btrfs_release_path(path);
- 		btrfs_release_path(dst_path);
--		err = btrfs_log_holes(trans, root, inode, path);
-+		err = btrfs_log_holes(trans, root, inode, path, start, end);
- 		if (err)
- 			goto out_unlock;
- 	}
--- 
-2.11.0
-
+Added to devel queue, thanks.
