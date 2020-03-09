@@ -2,128 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0986F17EA72
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F5E17EAE2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 22:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgCIUvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 16:51:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60198 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgCIUvz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Mar 2020 16:51:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6001FAD61;
-        Mon,  9 Mar 2020 20:51:53 +0000 (UTC)
-Subject: Re: [PATCH 3/5] btrfs: only take normal tickets into account in
- may_commit_transaction
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200309202322.12327-1-josef@toxicpanda.com>
- <20200309202322.12327-4-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <887d34c3-45ca-c5ad-e800-7c3089582452@suse.com>
-Date:   Mon, 9 Mar 2020 22:51:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726197AbgCIVKt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 17:10:49 -0400
+Received: from mail-yw1-f48.google.com ([209.85.161.48]:37514 "EHLO
+        mail-yw1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgCIVKt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 17:10:49 -0400
+Received: by mail-yw1-f48.google.com with SMTP id i1so7379267ywf.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 14:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=3kzEpzh2hKVAT32x/E22CBCBM5gWuaXo+Sele/oClSI=;
+        b=jOXJWQTO4qQNV+DimBoz+WEQES2JRFILvrbLftLHpWNhI6z8msKgDjzeHG2lliVrSp
+         C6dcxYnn5LPACwaBqWOuBUCUSPLE/Q6py9NfuypAixt61Re1gL77mjyw8vW2piqXSg9R
+         fmG4Gh7q9XG9+i92OI1SNqi6cde63Avrqw/62/h6LL2HIaN1lx3PhSUgD2pXrRsZgVji
+         ZpgUb+/YxsEn3PMEm/qxr9PO+RZtzKUTu8OrdJ8yAjdfdlTIZ3a0hmGG4pT4DcnRjdDE
+         NUCl9zXeUq7Nn4uRW6OJ+MOxVuJ1/oas4m8UIEZURE5jYt/keQvzEUCI12PdfXKt1BL6
+         thJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=3kzEpzh2hKVAT32x/E22CBCBM5gWuaXo+Sele/oClSI=;
+        b=gf2oEC0wneqDqgRs1mxm67ZYL3A/JYoRO+Z13rJFCHll/UELgKEMJMVHhbog1Qh1Ao
+         Bx/XEbPNBqcOoHnefmXYIucUs5mMTiTeAndW6t2SbNDSKf6zguTQkdXf9dMpw4dP1kFt
+         axCNE2kPlTV8DR+ZcDPltkRkeSOXef5N6X8lIM1UJN65siBwn07ywYTV5nxsHL7gNto8
+         1YfgAvFrTZMBA8TWgQJ076hblFEsGidDFE5+MXWaVf84+LDvuhfi3z3/GLsvxs5E6XCu
+         Ueo29Bw/ntADv+Ob/SLXauhiKXfrwUyOCbfmfQvUuqmUHQ7z4p4plblmYaltupnnFoeF
+         RtMA==
+X-Gm-Message-State: ANhLgQ2O9KiXttHfbkr88ndLidAp9IPAnE26TzI9m/2MTOYME9MmjGd8
+        Rxh/y/vJVMv9cjKZ8BCQ1F2qEAcLMDWMezOTnQhAvg==
+X-Google-Smtp-Source: ADFU+vs2xuvMfEM5vwqII4eUkKYpyhtzhqFpcm7jtb6jcni48wQ7/6Z3EjN2GkhUp+teUdvfZgoyLrJDbW/GzyguXFY=
+X-Received: by 2002:a25:c055:: with SMTP id c82mr17665674ybf.387.1583788248685;
+ Mon, 09 Mar 2020 14:10:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200309202322.12327-4-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAAW2-ZfunSiUscob==s6Pj+SpDjO6irBcyDtoOYarrJH1ychMQ@mail.gmail.com>
+ <2fe5be2b-16ed-14b8-ef40-ee8c17b2021c@gmx.com> <CAAW2-Zfz8goOBCLovDpA7EtBwOsqKOAP5Ta_iS6KfDFDDmn47g@mail.gmail.com>
+ <60fba046-0aef-3b25-1e7d-7e39f4884ffe@gmx.com> <CAAW2-ZdczvEfgKb++T9YGSOMxJB+jz3_mwqEt2+-g0Omr7tocQ@mail.gmail.com>
+ <CAAW2-Zd4jGOBK6jxpqbOfwACTYkDg6Ep-EZ9Ejy7RuJEQn9F7Q@mail.gmail.com> <15ec9ccc-6bad-dc04-5008-7168ced1f7e4@casa-di-locascio.net>
+In-Reply-To: <15ec9ccc-6bad-dc04-5008-7168ced1f7e4@casa-di-locascio.net>
+From:   Steven Fosdick <stevenfosdick@gmail.com>
+Date:   Mon, 9 Mar 2020 21:10:37 +0000
+Message-ID: <CAG_8rEeEDcJLa3PjwLsri-yaE+wUvdMCLWPxkMtgM37M-XY3uw@mail.gmail.com>
+Subject: Re: USB reset + raid6 = majority of files unreadable
+To:     "RooSoft Ltd @ bluehost" <roosoft@casa-di-locascio.net>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Thanks for the suggestion.  I ran memtest and it found no errors.
+This is an HP Gen8 microserver and according to the spec sheet uses
+ECC RAM.
 
-
-On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
-> In debugging a generic/320 failure on ppc64, Nikolay noticed that
-> sometimes we'd ENOSPC out with plenty of space to reclaim if we had
-> committed the transaction.  He further discovered that this was because
-> there was a priority ticket that was small enough to fit in the free
-> space currently in the space_info.  While that is a problem by itself,
-> it exposed another flaw, that we consider priority tickets in
-> may_commit_transaction.
-> 
-> Priority tickets are not allowed to commit the transaction, thus we
-> shouldn't even consider them in may_commit_transaction.  Instead we need
-> to only consider current normal tickets.  With this fix in place, we
-> will properly commit the transaction.
-
-My testing shows this fix is correct but I'd like to have a bit more
-information how priority tickets confused may_commit_transaction,
-perhaps put the example you gave on slack?
-
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/space-info.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 8d00a9ee9458..d198cfd45cf7 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -592,10 +592,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	else
->  		cur_free_bytes = 0;
->  
-> -	if (!list_empty(&space_info->priority_tickets))
-> -		ticket = list_first_entry(&space_info->priority_tickets,
-> -					  struct reserve_ticket, list);
-> -	else if (!list_empty(&space_info->tickets))
-> +	if (!list_empty(&space_info->tickets))
->  		ticket = list_first_entry(&space_info->tickets,
->  					  struct reserve_ticket, list);
-
-nit: That could be written simply :
-
-ticket = list_first_entry_or_null(&space_info->tickets, struct
-reserve_ticket, list);)
-
->  	bytes_needed = (ticket) ? ticket->bytes : 0;
-> 
+On Wed, 4 Mar 2020 at 21:05, RooSoft Ltd @ bluehost
+<roosoft@casa-di-locascio.net> wrote:
+>
+> On 03/03/2020 15:42, Jonathan H wrote:
+> > Update:
+> >
+> > My most recent scrub just finished. It found a few hundred errors, but
+> > many files that were not mentioned by the scrub at all are still
+> > unreadable. I started another scrub and it is finding new errors and
+> > correcting them, but I aborted it since I do feel like constantly
+> > scrubbing is making progress.
+> >
+> > Much more interestingly, I ran `btrfs rescue chunk-recover` and it
+> > reported that the majority (2847/3514) of my chunks were
+> > unrecoverable. The output from the `chunk-recover` is too long to
+> > include in a pastebin. Is there anything in particular that might be
+> > of interest?
+> >
+> > Also, I take the existence of unrecoverable chunks to mean that the
+> > filesystem is not salvageable, is that true?
+>
+> I would suspect memory corruption at this stage then. Run memtest and if
+> it finds anything wrong switch to ECC and don't use that memory for
+> critical anything.
+>
+> --
+> ==
+>
+> Don Alexander
+>
