@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A306317EB3E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 22:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E9117EB3F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 22:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgCIVdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 17:33:04 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43655 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726946AbgCIVdD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 17:33:03 -0400
-Received: by mail-pf1-f196.google.com with SMTP id c144so5421584pfb.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 14:33:03 -0700 (PDT)
+        id S1726980AbgCIVdG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 17:33:06 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:45608 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726946AbgCIVdF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 17:33:05 -0400
+Received: by mail-pl1-f195.google.com with SMTP id b22so4520124pls.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 14:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yua5TyER8qIELEn13ECCqGFnZ6AZvZjKXf3ys07KGec=;
-        b=ScnBdFvrRSC7aoTecoKTv3RRBni+c4SGyrc4sG5oQL/tXrh+JqAzxe6fAjZIcjbRNN
-         n/17PQOkgjuYgAqEH1+eq/pUeshm/nccHT32s1Q0eOnjU7hZrVPpRQvaakqJnX4o1EJa
-         +15t0KiPw6LK2OJ47HmRAciUcCVWo3OAh2CYjqF42jWQb0bMkgOaoXThiShMTQTBburA
-         7UA0HSLh7tFYg3wvdqEyT0JjKm+/ETV7/PRmamojMEtHY/X0coELoNQkrBTEnm7PHg+9
-         RgdEx9fR/Wp7ERFJU+je4zVAKKuYJ9T0Z6fT5/AXasT8A3jEqq87CH5ayD6ZyzgAaNwW
-         09cQ==
+        bh=liJbOg/qh8eI1EH0nzrSmHQQ3FWUVUdFOFKZ+RXSbm4=;
+        b=uhOkNM8zukTViLfTeBabOQS/77uxs6I2H+1R1kCyBUt0gAVPjrEq+Ev+16z7tIsdDZ
+         NjIKZ4jLN6WGzWcqWJWXaCVZpe56fLPZ45ATstd0jPOQXijqqSb6xy5a8AWDCySQKpVt
+         ypPOPyr6wVgpzOaviP0RKTGvTqqwXmQqG6/LFJmnLBCfnNMVdQD9AMWcWYDnQXg5zDxx
+         WTygufiein9wzMu77OaSf2QoPsOuJrJMkr5y9h2Jxj7cWEEFUFIqCNjqYLcFzVeyW8pB
+         Q5e/yHUVJQ6xl3vPtW5mYYPDremnWZICe92bTUHNu9qJlFYHP28zyM0Yrq7M40L/ztZm
+         4Z8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yua5TyER8qIELEn13ECCqGFnZ6AZvZjKXf3ys07KGec=;
-        b=T/iBH8g7jsGj51sQ0ABI+mgQtTIDaXJGZfN1EK/0Z/MKYNnT82uslW6yRRO9RrnifO
-         ymM725kzjlQoDrJwAzaNlnb/m1lOABb/LssrKsvQ2xFSZYfFL3BLnFStUb4+554cxAC1
-         LbHPONKGPTSVTINmUmjspIgNwZkG4itEjLNDDRtmN1XJaiqHlKoDqbOK5JbHqvNKCxU/
-         6cLL36az5ZCvglBenuwWE/t7IPcERdoIq5RmxPkfuuk8nMQzKGVNH8MURVOG7ulKbG0N
-         hjotYwLyCdnnGIk/F8IFvfYHNGs+iMrRNVkTvzK8sPwTKgfc+CFbxo6TnDWiYT9xrqy9
-         JziQ==
-X-Gm-Message-State: ANhLgQ1TpKol1G+e1oyn6R8GaMtrMMGoNR8jgNfRpKoO4jKRFtXXHn23
-        Dc7kvfBY9NV9PGVK8w6J7o4uApW3twQ=
-X-Google-Smtp-Source: ADFU+vvyv/K32iei+u0wc+bOS/kov+7h06hPOO2OM5O+HFLy73VEcd8yprRWMXMxjC0AzEv6b7uNCA==
-X-Received: by 2002:a63:7b18:: with SMTP id w24mr17859941pgc.22.1583789582333;
-        Mon, 09 Mar 2020 14:33:02 -0700 (PDT)
+        bh=liJbOg/qh8eI1EH0nzrSmHQQ3FWUVUdFOFKZ+RXSbm4=;
+        b=iWI53P4Ay33PmNTg9mG1oYlI7ANl3bKppHOhkS2Ja/DivjSUJIuhHmpAr62fG51aRy
+         ev1VI7HjkSffhuy+8E/9Te11ljoxp5czFY+gvqBV1OT9jllfjxtzy8HWafleYuikOfS8
+         5oJ4Hvz9X+iz7gfeGsUWV2tTZq1ZR73gH1a4iDTJ0ZS/xvnCuQ+kYxWQzWuHjlauA5Ld
+         tGrUQ8cmf1F+mR00xkR/erky60VUV0Y8Yz1zYWVt+3dfaWKWk98vbvm/TEaHVQ02KaFj
+         Ox7dYP+U3ddG2X21cbxbLCU744Kxo8vs/dWvysL3KWSGC4zy04bt9eiT8dCnfdVr4eBH
+         I+Dg==
+X-Gm-Message-State: ANhLgQ1xadri7cxa07+EB6Iz/w5XVsd9wr6vniOjS+fcMz8PImiMsu72
+        RSpl5THxUbIXQChj+LPg50lKFdp/hCw=
+X-Google-Smtp-Source: ADFU+vs75VZamV7n1udzU2iPD1IZdCsa3ixWJ3YjIxohdEyqxh4qSkA9PktuEtuOlKUh8zltDZ9FAw==
+X-Received: by 2002:a17:90a:c78b:: with SMTP id gn11mr938925pjb.97.1583789583297;
+        Mon, 09 Mar 2020 14:33:03 -0700 (PDT)
 Received: from vader.tfbnw.net ([2620:10d:c090:400::5:fe90])
-        by smtp.gmail.com with ESMTPSA id 13sm44221683pgo.13.2020.03.09.14.33.01
+        by smtp.gmail.com with ESMTPSA id 13sm44221683pgo.13.2020.03.09.14.33.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2020 14:33:01 -0700 (PDT)
+        Mon, 09 Mar 2020 14:33:02 -0700 (PDT)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/15] btrfs: make btrfs_check_repairable() static
-Date:   Mon,  9 Mar 2020 14:32:33 -0700
-Message-Id: <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
+Subject: [PATCH 08/15] btrfs: move btrfs_dio_private to inode.c
+Date:   Mon,  9 Mar 2020 14:32:34 -0700
+Message-Id: <7cb31cf9673d1d232e770145924ef779d3681058.1583789410.git.osandov@fb.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1583789410.git.osandov@fb.com>
 References: <cover.1583789410.git.osandov@fb.com>
@@ -62,48 +62,97 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-Since its introduction in commit 2fe6303e7cd0 ("Btrfs: split
-bio_readpage_error into several functions"), btrfs_check_repairable()
-has only been used from extent_io.c where it is defined.
+This hasn't been needed outside of inode.c since commit 23ea8e5a0767
+("Btrfs: load checksum data once when submitting a direct read io").
 
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 ---
- fs/btrfs/extent_io.c | 7 ++++---
- fs/btrfs/extent_io.h | 3 ---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ fs/btrfs/btrfs_inode.h | 30 ------------------------------
+ fs/btrfs/inode.c       | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 30 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 104374854cf1..aee35d431f91 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2528,9 +2528,10 @@ int btrfs_get_io_failure_record(struct inode *inode, u64 start, u64 end,
- 	return 0;
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 27a1fefce508..ade5c6adec06 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -293,36 +293,6 @@ static inline int btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
+ 	return ret;
  }
  
--bool btrfs_check_repairable(struct inode *inode, bool need_validation,
--			    struct io_failure_record *failrec,
--			    int failed_mirror)
-+static bool btrfs_check_repairable(struct inode *inode,
-+				   bool need_validation,
-+				   struct io_failure_record *failrec,
-+				   int failed_mirror)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	int num_copies;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 64e176995af2..11341a430007 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -312,9 +312,6 @@ struct io_failure_record {
+-#define BTRFS_DIO_ORIG_BIO_SUBMITTED	0x1
+-
+-struct btrfs_dio_private {
+-	struct inode *inode;
+-	unsigned long flags;
+-	u64 logical_offset;
+-	u64 disk_bytenr;
+-	u64 bytes;
+-	void *private;
+-
+-	/* number of bios pending for this dio */
+-	atomic_t pending_bios;
+-
+-	/* IO errors */
+-	int errors;
+-
+-	/* orig_bio is our btrfs_io_bio */
+-	struct bio *orig_bio;
+-
+-	/* dio_bio came from fs/direct-io.c */
+-	struct bio *dio_bio;
+-
+-	/*
+-	 * The original bio may be split to several sub-bios, this is
+-	 * done during endio of sub-bios
+-	 */
+-	blk_status_t (*subio_endio)(struct inode *, struct btrfs_io_bio *,
+-			blk_status_t);
+-};
+-
+ /*
+  * Disable DIO read nolock optimization, so new dio readers will be forced
+  * to grab i_mutex. It is used to avoid the endless truncate due to
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 50476ae96552..9d3a275ef253 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -54,6 +54,36 @@ struct btrfs_iget_args {
+ 	struct btrfs_root *root;
  };
  
- 
--bool btrfs_check_repairable(struct inode *inode, bool need_validation,
--			    struct io_failure_record *failrec,
--			    int failed_mirror);
- struct bio *btrfs_create_repair_bio(struct inode *inode, struct bio *failed_bio,
- 				    struct io_failure_record *failrec,
- 				    struct page *page, int pg_offset, int icsum,
++#define BTRFS_DIO_ORIG_BIO_SUBMITTED	0x1
++
++struct btrfs_dio_private {
++	struct inode *inode;
++	unsigned long flags;
++	u64 logical_offset;
++	u64 disk_bytenr;
++	u64 bytes;
++	void *private;
++
++	/* number of bios pending for this dio */
++	atomic_t pending_bios;
++
++	/* IO errors */
++	int errors;
++
++	/* orig_bio is our btrfs_io_bio */
++	struct bio *orig_bio;
++
++	/* dio_bio came from fs/direct-io.c */
++	struct bio *dio_bio;
++
++	/*
++	 * The original bio may be split to several sub-bios, this is
++	 * done during endio of sub-bios
++	 */
++	blk_status_t (*subio_endio)(struct inode *, struct btrfs_io_bio *,
++			blk_status_t);
++};
++
+ struct btrfs_dio_data {
+ 	u64 reserve;
+ 	u64 unsubmitted_oe_range_start;
 -- 
 2.25.1
 
