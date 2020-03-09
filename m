@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E3717E9EA
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6F417E9EB
 	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgCIUXc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 16:23:32 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36578 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgCIUXc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 16:23:32 -0400
-Received: by mail-qt1-f193.google.com with SMTP id m33so8068904qtb.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 13:23:31 -0700 (PDT)
+        id S1726582AbgCIUXe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 16:23:34 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:46876 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgCIUXd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 16:23:33 -0400
+Received: by mail-qv1-f65.google.com with SMTP id m2so5008324qvu.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 13:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=uLTPLOeB90UMR5FAKL/IUJ5HHEgSN+N4ETJQO4JMGnI=;
-        b=ZufC7zestyphZVD7j0QowvzbINZ+0/qNVue8qNdnk1xuSbqYtXyi5pyM2lxE02QRi3
-         /yqIO3Ait2dWtQ63AUpAXgks3qPGewNmdwTvqyPtMWfcpPKBC+Q3fLngEbZ3LOroD6ng
-         I/V9QoCZau7rtZ2KqIy84G0FqkWzNGwBe0CeOJLENPVibXE84tsdwFEybWkU4I1WUuLk
-         0gPbW6wr5ZUvVxtg2RqDXZtU6B6A80LdKwyZSRYs5ZaS8HG2cUCyDRb0Q8VGCOm2CJXj
-         otXMbB4eXb6x6JueTOG1IdT330A6VJQ88dmlY0axx21Zff6q3X14u4jsneARcDrbkl8o
-         VVmw==
+        bh=CQmzWklwMZ2eC7GGZTJ/d27x7JCQ1D70I7B2Iq10RRE=;
+        b=aKH5n5VfjBlDFORTkNE8SgSznUwLhvpuvsf4fCOZXW9QOrtFSHoVMg7AHLdbGGZmNm
+         MXqfcwC5l6HjtMwTNkIDlPYzufEWFmpcxRhWRZQ7zNCJnSqO8ARDyHL8VvPznuMxTUg/
+         onNV02LcATMEbCJY8NiatUAVPlYIr7u12bUHlq4zo1dI1YegD8sLlcmIVOj9SRFWGLQc
+         Ioyh1BQKiXS5XwL6GhbqLL/+rJAy6OomoXNq0hKcc3cmWsVOJ/tQYsASoFdA6zB5HHNF
+         nrjoxi9QO7x7qwFUPo4EKKZ5dLImlj7SGMvtRHycO1MF0aC5svvjbo6XF3eoI5++/47h
+         97DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uLTPLOeB90UMR5FAKL/IUJ5HHEgSN+N4ETJQO4JMGnI=;
-        b=jYOVZNEeX1RIqnhNeTWJWkZAapaYRKrgc/EBNLFejrjUKWuViChXba232zmZLefmne
-         5wiGLv3occNW3Af6hltW4QVBOErUTtrejkxMqVBVNRAO3fGf43qmEcj48vunWqdC9tod
-         O8Z5nTZV9UUyG10Ef3ZnhqaOO8cA0AmyBXH6I2eyZdkw0P+XjIUAoH9DuB0E+lHxL9Cx
-         ofFm8PHiQ0pKmRE1l06FjBy5dHctyQxKtldhCDQg6zoVXRS4u9WOKriAZg0PSqAq0+kj
-         oAzCIWtT2NA6fayc4rUYdSEQrSmE9eFk9rYEk0cw35+U5wPzwJ8FLdyRu3DR+ZiFnbTZ
-         U3tQ==
-X-Gm-Message-State: ANhLgQ2+8977OvKF32sWdhSLbaHeVPegZ8MrsUSpgqqPVS+zEaE23MIY
-        C6LzXTNQqlX2tKAO8iwVxE+Lq2/5+Ws=
-X-Google-Smtp-Source: ADFU+vvQfKssgiyNSOFvkadHUy0UXPfVlPlQv9aIoSCuMCbYucFa8BOlVCPnOlV2kM3dbYKvbZ7WRg==
-X-Received: by 2002:ac8:4d02:: with SMTP id w2mr4466616qtv.240.1583785410772;
-        Mon, 09 Mar 2020 13:23:30 -0700 (PDT)
+        bh=CQmzWklwMZ2eC7GGZTJ/d27x7JCQ1D70I7B2Iq10RRE=;
+        b=LCfCKUM9AJR5FleQNeZPF3+Aw8KlphLpRIXkCYkze1zwrEyA1M7s12So4ZUY9FLowR
+         NqoEEoyv2f/MUmU8Ou1u3b9QNPd+Gfyb95xh5Lxyi8Wj/+b6OkTzAp2nphp/AixLHz8t
+         mXBt92/9FIDimEzr0zUOZ8TmfBQSyufgZfuLI7y9Kt42spO42662Pv2GrZKxYJPzCfSn
+         ePBJx+SB1znfztRYdIRVCoqopMaGWyx3B4tyXNTtpcYKywLqEJGOqIVLw2ACyhhb4A8H
+         wXUw5AVyrk+Sj9p0akNnqahzg/22fscqG1TFBWdgMwkraWxcGxwNHL6eIf6mkDlc0iaF
+         kCfQ==
+X-Gm-Message-State: ANhLgQ3Jimifb+DoI/4tBXWMMrDoaPR+wlLZWPgdgukC49TRpaAp8GnD
+        DCKDbR8HztEGq9QHlaUxDcpno3TmT50=
+X-Google-Smtp-Source: ADFU+vuX7qXvHLs01FnqLd8dgx9kr0ua+oI5izzEYDVLfPMVf7IKmxg9nbM2htcJVFlppo+CiSFVYw==
+X-Received: by 2002:a05:6214:983:: with SMTP id dt3mr16278628qvb.145.1583785412442;
+        Mon, 09 Mar 2020 13:23:32 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id a23sm22803011qko.77.2020.03.09.13.23.29
+        by smtp.gmail.com with ESMTPSA id k202sm10146947qke.134.2020.03.09.13.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2020 13:23:30 -0700 (PDT)
+        Mon, 09 Mar 2020 13:23:31 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/5] btrfs: only take normal tickets into account in may_commit_transaction
-Date:   Mon,  9 Mar 2020 16:23:20 -0400
-Message-Id: <20200309202322.12327-4-josef@toxicpanda.com>
+Subject: [PATCH 4/5] btrfs: only check priority tickets for priority flushing
+Date:   Mon,  9 Mar 2020 16:23:21 -0400
+Message-Id: <20200309202322.12327-5-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200309202322.12327-1-josef@toxicpanda.com>
 References: <20200309202322.12327-1-josef@toxicpanda.com>
@@ -63,36 +63,82 @@ In debugging a generic/320 failure on ppc64, Nikolay noticed that
 sometimes we'd ENOSPC out with plenty of space to reclaim if we had
 committed the transaction.  He further discovered that this was because
 there was a priority ticket that was small enough to fit in the free
-space currently in the space_info.  While that is a problem by itself,
-it exposed another flaw, that we consider priority tickets in
-may_commit_transaction.
+space currently in the space_info.
 
-Priority tickets are not allowed to commit the transaction, thus we
-shouldn't even consider them in may_commit_transaction.  Instead we need
-to only consider current normal tickets.  With this fix in place, we
-will properly commit the transaction.
+This is problematic because we prioritize priority tickets, refilling
+them first as new space becomes available.  However this leaves a corner
+where we could fail to satisfy a priority ticket when we would have
+otherwise succeeded.
+
+Consider the case where there's no flushing left to happen other than
+commit the transaction, and there are tickets on the normal flushing
+list.  The priority flusher comes in, and assume there's enough space
+left in the space_info to satisfy this request.  We will still be added
+to the priority list and go through the flushing motions, and eventually
+fail returning an ENOSPC.
+
+Instead we should only add ourselves to the list if there's something on
+the priority_list already.  This way we avoid the incorrect ENOSPC
+scenario.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/btrfs/space-info.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 8d00a9ee9458..d198cfd45cf7 100644
+index d198cfd45cf7..77ea204f0b6a 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -592,10 +592,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
- 	else
- 		cur_free_bytes = 0;
+@@ -1276,6 +1276,17 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+ 	return ret;
+ }
  
--	if (!list_empty(&space_info->priority_tickets))
--		ticket = list_first_entry(&space_info->priority_tickets,
--					  struct reserve_ticket, list);
--	else if (!list_empty(&space_info->tickets))
-+	if (!list_empty(&space_info->tickets))
- 		ticket = list_first_entry(&space_info->tickets,
- 					  struct reserve_ticket, list);
- 	bytes_needed = (ticket) ? ticket->bytes : 0;
++/*
++ * This returns true if this flush state will go through the ordinary flushing
++ * code.
++ */
++static inline bool is_normal_flushing(enum btrfs_reserve_flush_enum flush)
++{
++	return (flush == BTRFS_RESERVE_FLUSH_DATA) ||
++		(flush == BTRFS_RESERVE_FLUSH_ALL) ||
++		(flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
++}
++
+ /**
+  * reserve_metadata_bytes - try to reserve bytes from the block_rsv's space
+  * @root - the root we're allocating for
+@@ -1311,8 +1322,17 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
+ 	spin_lock(&space_info->lock);
+ 	ret = -ENOSPC;
+ 	used = btrfs_space_info_used(space_info, true);
+-	pending_tickets = !list_empty(&space_info->tickets) ||
+-		!list_empty(&space_info->priority_tickets);
++
++	/*
++	 * We don't want NO_FLUSH allocations to jump everybody, they can
++	 * generally handle ENOSPC in a different way, so treat them the same as
++	 * normal flushers when it comes to skipping pending tickets.
++	 */
++	if (is_normal_flushing(flush) || (flush == BTRFS_RESERVE_NO_FLUSH))
++		pending_tickets = !list_empty(&space_info->tickets) ||
++			!list_empty(&space_info->priority_tickets);
++	else
++		pending_tickets = !list_empty(&space_info->priority_tickets);
+ 
+ 	/*
+ 	 * Carry on if we have enough space (short-circuit) OR call
+@@ -1338,9 +1358,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
+ 		ticket.error = 0;
+ 		init_waitqueue_head(&ticket.wait);
+ 		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
+-		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
+-		    flush == BTRFS_RESERVE_FLUSH_DATA ||
+-		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
++		if (is_normal_flushing(flush)) {
+ 			list_add_tail(&ticket.list, &space_info->tickets);
+ 			if (!space_info->flush) {
+ 				space_info->flush = 1;
 -- 
 2.24.1
 
