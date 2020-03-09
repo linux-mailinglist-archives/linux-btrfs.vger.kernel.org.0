@@ -2,124 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A75CF17EC81
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 00:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233A117EC9B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 00:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgCIXN4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 19:13:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47820 "EHLO mx2.suse.de"
+        id S1727300AbgCIXZz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 19:25:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53406 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgCIXN4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Mar 2020 19:13:56 -0400
+        id S1727273AbgCIXZz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Mar 2020 19:25:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5C854AAFD;
-        Mon,  9 Mar 2020 23:13:54 +0000 (UTC)
-Subject: Re: [PATCH 3/5] btrfs: only take normal tickets into account in
- may_commit_transaction
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200309202322.12327-1-josef@toxicpanda.com>
- <20200309202322.12327-4-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <de8626db-aa73-6a89-7913-25591038058a@suse.com>
-Date:   Tue, 10 Mar 2020 01:13:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        by mx2.suse.de (Postfix) with ESMTP id 93558AC6E;
+        Mon,  9 Mar 2020 23:25:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A04A5DA7A7; Tue, 10 Mar 2020 00:25:28 +0100 (CET)
+Date:   Tue, 10 Mar 2020 00:25:28 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] btrfs: Make balance cancelling response faster
+Message-ID: <20200309232528.GP2902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200217061654.65567-1-wqu@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200309202322.12327-4-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200217061654.65567-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
-> In debugging a generic/320 failure on ppc64, Nikolay noticed that
-> sometimes we'd ENOSPC out with plenty of space to reclaim if we had
-> committed the transaction.  He further discovered that this was because
-> there was a priority ticket that was small enough to fit in the free
-> space currently in the space_info.  While that is a problem by itself,
-> it exposed another flaw, that we consider priority tickets in
-> may_commit_transaction.
+On Mon, Feb 17, 2020 at 02:16:51PM +0800, Qu Wenruo wrote:
+> [PROBLEM]
+> There are quite some users reporting that 'btrfs balance cancel' slow to
+> cancel current running balance, or even doesn't work for certain dead
+> balance loop.
 > 
-> Priority tickets are not allowed to commit the transaction, thus we
-> shouldn't even consider them in may_commit_transaction.  Instead we need
-> to only consider current normal tickets.  With this fix in place, we
-> will properly commit the transaction.
+> With the following script showing how long it takes to fully stop a
+> balance:
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/space-info.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 8d00a9ee9458..d198cfd45cf7 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -592,10 +592,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	else
->  		cur_free_bytes = 0;
->  
-> -	if (!list_empty(&space_info->priority_tickets))
-> -		ticket = list_first_entry(&space_info->priority_tickets,
-> -					  struct reserve_ticket, list);
-> -	else if (!list_empty(&space_info->tickets))
-> +	if (!list_empty(&space_info->tickets))
->  		ticket = list_first_entry(&space_info->tickets,
->  					  struct reserve_ticket, list);
->  	bytes_needed = (ticket) ? ticket->bytes : 0;
-> 
+> [FIX]
+> This patchset will add more cancelling check points, to make cancelling
+> faster.
 
-
-Thinking about this a bit more, if we have a ticket here that we have
-enough free space to satisfy we just return, where is this ticket
-supposed to be granted? Can we get into the same situation we had with
-the priority tickets? I guess what I"m asking is "why don't we call try
-granting ticket" in this case?
+Patches have been in for-next and also used to develop various fixes in
+the relocation code, so from that point I think it's ok to move them to
+misc-next. The benefit for usability is also clear, so thanks for
+working on that. As pointed elsewhere, the commandline UI will need to
+be extended to wire the cancelation of resize/deletion to make use of
+it, we have time for that for the next cycle.
