@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AECC817E9E9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E3717E9EA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgCIUXc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726551AbgCIUXc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 9 Mar 2020 16:23:32 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37053 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgCIUXc (ORCPT
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36578 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgCIUXc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 16:23:32 -0400
-Received: by mail-qt1-f196.google.com with SMTP id l20so6403796qtp.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 13:23:30 -0700 (PDT)
+Received: by mail-qt1-f193.google.com with SMTP id m33so8068904qtb.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 13:23:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=+11tuGa5ypmlSF2o5NuLqbvlL8n4BkqYzntbvS9at/0=;
-        b=0yEnZzAEOjSEyZIqvpLCT8glZagXPcAk3ZrgdvpAdoQUTOL0dNLbuGdUz0XKtCkZ1+
-         jAzaPYAd8p53GFD5yEjZV1U3s9gQWg8EEZ0hANAsLeVlow9aaNWXAFmEVrVSS8SSHhK0
-         bpp0yEkk7iceS9N5E9/NV83AdzTb1m71haf4weF/NKQA41bAF9yx9hSN20WpNiEwRYIC
-         2+vdYAEJYtSue1YUKIOhGdS8qYRty0mC91cLVr43HyihvUoZkguwp3/pmLEr2UcGioSB
-         hs8mQB68/ophuxUfuUEroMin3kx4YZ09W8C6Ch/Di2LPIQff3y1IeqXU+Xq5OMps6h19
-         InVw==
+        bh=uLTPLOeB90UMR5FAKL/IUJ5HHEgSN+N4ETJQO4JMGnI=;
+        b=ZufC7zestyphZVD7j0QowvzbINZ+0/qNVue8qNdnk1xuSbqYtXyi5pyM2lxE02QRi3
+         /yqIO3Ait2dWtQ63AUpAXgks3qPGewNmdwTvqyPtMWfcpPKBC+Q3fLngEbZ3LOroD6ng
+         I/V9QoCZau7rtZ2KqIy84G0FqkWzNGwBe0CeOJLENPVibXE84tsdwFEybWkU4I1WUuLk
+         0gPbW6wr5ZUvVxtg2RqDXZtU6B6A80LdKwyZSRYs5ZaS8HG2cUCyDRb0Q8VGCOm2CJXj
+         otXMbB4eXb6x6JueTOG1IdT330A6VJQ88dmlY0axx21Zff6q3X14u4jsneARcDrbkl8o
+         VVmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+11tuGa5ypmlSF2o5NuLqbvlL8n4BkqYzntbvS9at/0=;
-        b=Nlt6RDVn0fONGG5U8ws1usAdOaUPp5dMaYVDd3y8kxiyTAgBLCEKXB5Tt/7Ze/NsnY
-         I6Tnh0kErm+Yaekf9dhxam4n0+YDdoJpANiK0vW2Ig7qO48/CkY3Bym9BUrDvd1pRoeJ
-         8fxTQqXBKVe7ies50TJ6fQ7v2VR1KLMd6dqNWAOosnl+5R2OEABfDHh7faB5YZ4hpj03
-         aniJkJmltnElFuiN6OWDCuq1YHqTcI50GoQlNSUMBSFzT86WhX/rd00W5o5AOzGdeJI7
-         T188njw7gIT6GGI0bGjOP73C4h6Nqpfm3xZZi4aobr/LpBr/ez0bUaMkNAZ6dokg0wJ+
-         6yFg==
-X-Gm-Message-State: ANhLgQ0XDnpCJ35MJMqqWBSR4gWegX5t2nl6h1WfHflN85bHTH5ZK9xr
-        zDrkIvOjP8yeft4SEJo4f9ZZUdrD5kQ=
-X-Google-Smtp-Source: ADFU+vu9CXjCyVQrIJ4z1ucqqR+XevCaNUXt49duTd0vsTnsehucTFuA+TnihWGlZ714vJTts458Fw==
-X-Received: by 2002:ac8:5497:: with SMTP id h23mr7454399qtq.226.1583785409116;
-        Mon, 09 Mar 2020 13:23:29 -0700 (PDT)
+        bh=uLTPLOeB90UMR5FAKL/IUJ5HHEgSN+N4ETJQO4JMGnI=;
+        b=jYOVZNEeX1RIqnhNeTWJWkZAapaYRKrgc/EBNLFejrjUKWuViChXba232zmZLefmne
+         5wiGLv3occNW3Af6hltW4QVBOErUTtrejkxMqVBVNRAO3fGf43qmEcj48vunWqdC9tod
+         O8Z5nTZV9UUyG10Ef3ZnhqaOO8cA0AmyBXH6I2eyZdkw0P+XjIUAoH9DuB0E+lHxL9Cx
+         ofFm8PHiQ0pKmRE1l06FjBy5dHctyQxKtldhCDQg6zoVXRS4u9WOKriAZg0PSqAq0+kj
+         oAzCIWtT2NA6fayc4rUYdSEQrSmE9eFk9rYEk0cw35+U5wPzwJ8FLdyRu3DR+ZiFnbTZ
+         U3tQ==
+X-Gm-Message-State: ANhLgQ2+8977OvKF32sWdhSLbaHeVPegZ8MrsUSpgqqPVS+zEaE23MIY
+        C6LzXTNQqlX2tKAO8iwVxE+Lq2/5+Ws=
+X-Google-Smtp-Source: ADFU+vvQfKssgiyNSOFvkadHUy0UXPfVlPlQv9aIoSCuMCbYucFa8BOlVCPnOlV2kM3dbYKvbZ7WRg==
+X-Received: by 2002:ac8:4d02:: with SMTP id w2mr4466616qtv.240.1583785410772;
+        Mon, 09 Mar 2020 13:23:30 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id p35sm3056449qtk.2.2020.03.09.13.23.28
+        by smtp.gmail.com with ESMTPSA id a23sm22803011qko.77.2020.03.09.13.23.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2020 13:23:28 -0700 (PDT)
+        Mon, 09 Mar 2020 13:23:30 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/5] btrfs: Account for trans_block_rsv in may_commit_transaction
-Date:   Mon,  9 Mar 2020 16:23:19 -0400
-Message-Id: <20200309202322.12327-3-josef@toxicpanda.com>
+Subject: [PATCH 3/5] btrfs: only take normal tickets into account in may_commit_transaction
+Date:   Mon,  9 Mar 2020 16:23:20 -0400
+Message-Id: <20200309202322.12327-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200309202322.12327-1-josef@toxicpanda.com>
 References: <20200309202322.12327-1-josef@toxicpanda.com>
@@ -59,45 +59,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On ppc64le with 64k page size (respectively 64k block size) generic/320
-was failing and debug output showed we were getting a premature ENOSPC
-with a bunch of space in btrfs_fs_info::trans_block_rsv.
+In debugging a generic/320 failure on ppc64, Nikolay noticed that
+sometimes we'd ENOSPC out with plenty of space to reclaim if we had
+committed the transaction.  He further discovered that this was because
+there was a priority ticket that was small enough to fit in the free
+space currently in the space_info.  While that is a problem by itself,
+it exposed another flaw, that we consider priority tickets in
+may_commit_transaction.
 
-This meant there were still open transaction handles holding space, yet
-the flusher didn't commit the transaction because it deemed the freed
-space won't be enough to satisfy the current reserve ticket. Fix this
-by accounting for space in trans_block_rsv when deciding whether the
-current transaction should be committed or not.
+Priority tickets are not allowed to commit the transaction, thus we
+shouldn't even consider them in may_commit_transaction.  Instead we need
+to only consider current normal tickets.  With this fix in place, we
+will properly commit the transaction.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/btrfs/space-info.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 9c9a4933f72b..8d00a9ee9458 100644
+index 8d00a9ee9458..d198cfd45cf7 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -575,6 +575,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
- 	struct reserve_ticket *ticket = NULL;
- 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_block_rsv;
- 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
-+	struct btrfs_block_rsv *trans_rsv = &fs_info->trans_block_rsv;
- 	struct btrfs_trans_handle *trans;
- 	u64 reclaim_bytes = 0;
- 	u64 bytes_needed;
-@@ -637,6 +638,11 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
- 	spin_lock(&delayed_refs_rsv->lock);
- 	reclaim_bytes += delayed_refs_rsv->reserved;
- 	spin_unlock(&delayed_refs_rsv->lock);
-+
-+	spin_lock(&trans_rsv->lock);
-+	reclaim_bytes += trans_rsv->reserved;
-+	spin_unlock(&trans_rsv->lock);
-+
- 	if (reclaim_bytes >= bytes_needed)
- 		goto commit;
- 	bytes_needed -= reclaim_bytes;
+@@ -592,10 +592,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+ 	else
+ 		cur_free_bytes = 0;
+ 
+-	if (!list_empty(&space_info->priority_tickets))
+-		ticket = list_first_entry(&space_info->priority_tickets,
+-					  struct reserve_ticket, list);
+-	else if (!list_empty(&space_info->tickets))
++	if (!list_empty(&space_info->tickets))
+ 		ticket = list_first_entry(&space_info->tickets,
+ 					  struct reserve_ticket, list);
+ 	bytes_needed = (ticket) ? ticket->bytes : 0;
 -- 
 2.24.1
 
