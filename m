@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B65F17EA69
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0986F17EA72
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 21:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgCIUsn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 16:48:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59090 "EHLO mx2.suse.de"
+        id S1726106AbgCIUvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 16:51:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60198 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725992AbgCIUsn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Mar 2020 16:48:43 -0400
+        id S1726157AbgCIUvz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Mar 2020 16:51:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 91B8DB2E9;
-        Mon,  9 Mar 2020 20:48:40 +0000 (UTC)
-Subject: Re: [PATCH 1/5] btrfs: Improve global reserve stealing logic
+        by mx2.suse.de (Postfix) with ESMTP id 6001FAD61;
+        Mon,  9 Mar 2020 20:51:53 +0000 (UTC)
+Subject: Re: [PATCH 3/5] btrfs: only take normal tickets into account in
+ may_commit_transaction
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200309202322.12327-1-josef@toxicpanda.com>
- <20200309202322.12327-2-josef@toxicpanda.com>
+ <20200309202322.12327-4-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <d2955ecf-4ed6-5931-65d3-eddde228b816@suse.com>
-Date:   Mon, 9 Mar 2020 22:48:39 +0200
+Message-ID: <887d34c3-45ca-c5ad-e800-7c3089582452@suse.com>
+Date:   Mon, 9 Mar 2020 22:51:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200309202322.12327-2-josef@toxicpanda.com>
+In-Reply-To: <20200309202322.12327-4-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,116 +81,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
-> For unlink transactions and block group removal
-> btrfs_start_transaction_fallback_global_rsv will first try to start
-> an ordinary transaction and if it fails it will fall back to reserving
-> the required amount by stealing from the global reserve. This is sound
-> in theory but current code doesn't perform any locking or throttling so
-> if there are multiple concurrent unlink() callers they can deplete
-> the global reservation which will result in ENOSPC.
+> In debugging a generic/320 failure on ppc64, Nikolay noticed that
+> sometimes we'd ENOSPC out with plenty of space to reclaim if we had
+> committed the transaction.  He further discovered that this was because
+> there was a priority ticket that was small enough to fit in the free
+> space currently in the space_info.  While that is a problem by itself,
+> it exposed another flaw, that we consider priority tickets in
+> may_commit_transaction.
+> 
+> Priority tickets are not allowed to commit the transaction, thus we
+> shouldn't even consider them in may_commit_transaction.  Instead we need
+> to only consider current normal tickets.  With this fix in place, we
+> will properly commit the transaction.
 
-Your introduction of the problem and proposed solution are better worded
-in the introduction letter so I'd rather see some of that text copied
-here, I guess David can also help.
+My testing shows this fix is correct but I'd like to have a bit more
+information how priority tickets confused may_commit_transaction,
+perhaps put the example you gave on slack?
 
 > 
-> Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
-> used to mark unlink reservation. The flushing machinery is modified to
-> steal from global reservation when it sees such reservation being on the
-> brink of failure (in maybe_fail_all_tickets).>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/block-group.c |  2 +-
->  fs/btrfs/ctree.h       |  1 +
->  fs/btrfs/inode.c       |  2 +-
->  fs/btrfs/space-info.c  | 38 +++++++++++++++++++++++++++++++++++++-
->  fs/btrfs/space-info.h  |  1 +
->  fs/btrfs/transaction.c | 42 +++++-------------------------------------
->  fs/btrfs/transaction.h |  3 +--
->  7 files changed, 47 insertions(+), 42 deletions(-)
+>  fs/btrfs/space-info.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 60e9bb136f34..faa04093b6b5 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1171,7 +1171,7 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
->  	free_extent_map(em);
->  
->  	return btrfs_start_transaction_fallback_global_rsv(fs_info->extent_root,
-> -							   num_items, 1);
-> +							   num_items);
->  }
->  
->  /*
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 2ccb2a090782..782c63f213e9 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -2528,6 +2528,7 @@ enum btrfs_reserve_flush_enum {
->  	BTRFS_RESERVE_FLUSH_DATA,
->  	BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE,
->  	BTRFS_RESERVE_FLUSH_ALL,
-> +	BTRFS_RESERVE_FLUSH_ALL_STEAL,
->  };
->  
->  enum btrfs_flush_state {
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b8dabffac767..4e3b115ef1d7 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3617,7 +3617,7 @@ static struct btrfs_trans_handle *__unlink_start_trans(struct inode *dir)
->  	 * 1 for the inode ref
->  	 * 1 for the inode
->  	 */
-> -	return btrfs_start_transaction_fallback_global_rsv(root, 5, 5);
-> +	return btrfs_start_transaction_fallback_global_rsv(root, 5);
->  }
->  
->  static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 26e1c492b9b5..9c9a4933f72b 100644
+> index 8d00a9ee9458..d198cfd45cf7 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -810,6 +810,35 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
->  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
->  }
+> @@ -592,10 +592,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
+>  	else
+>  		cur_free_bytes = 0;
 >  
-> +static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
-> +				  struct btrfs_space_info *space_info,
-> +				  struct reserve_ticket *ticket)
-> +{
-> +	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
-> +	u64 min_bytes;
-> +
-> +	if (global_rsv->space_info != space_info)
-> +		return false;
-> +
-> +	spin_lock(&global_rsv->lock);
-> +	min_bytes = div_factor(global_rsv->size, 1);
+> -	if (!list_empty(&space_info->priority_tickets))
+> -		ticket = list_first_entry(&space_info->priority_tickets,
+> -					  struct reserve_ticket, list);
+> -	else if (!list_empty(&space_info->tickets))
+> +	if (!list_empty(&space_info->tickets))
+>  		ticket = list_first_entry(&space_info->tickets,
+>  					  struct reserve_ticket, list);
 
-This is a subtle change that is not documented but it should: The old
-code ensured we'd steel if at least 50% of the block reservation were
-left after stealing, whereas now the code only leaves 10%.
+nit: That could be written simply :
 
-This essentially allows to use up more of the global reservation. I
-remember we discussed the fact that 10% on a 512m global reserve is
-around 50mb which is "enough". I think this ought to be mentioned.
-> +	if (global_rsv->reserved < min_bytes + ticket->bytes) {
-> +		spin_unlock(&global_rsv->lock);
-> +		return false;
-> +	}
-> +	global_rsv->reserved -= ticket->bytes;
-> +	ticket->bytes = 0;
-> +	trace_printk("Satisfied ticket from global rsv\n");
-> +	list_del_init(&ticket->list);
-> +	wake_up(&ticket->wait);
-> +	space_info->tickets_id++;
-> +	if (global_rsv->reserved < global_rsv->size)
-> +		global_rsv->full = 0;
-> +	spin_unlock(&global_rsv->lock);
-> +
-> +	return true;
-> +}
-> +
+ticket = list_first_entry_or_null(&space_info->tickets, struct
+reserve_ticket, list);)
 
-<snip>
+>  	bytes_needed = (ticket) ? ticket->bytes : 0;
+> 
