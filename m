@@ -2,76 +2,339 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D7817E4BD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 17:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBD117E4E3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 17:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbgCIQZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 12:25:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38732 "EHLO mx2.suse.de"
+        id S1727077AbgCIQjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 12:39:11 -0400
+Received: from fe3.lbl.gov ([131.243.228.52]:25334 "EHLO fe3.lbl.gov"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727071AbgCIQZe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Mar 2020 12:25:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A08EEB3A7;
-        Mon,  9 Mar 2020 16:25:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CC547DA7A7; Mon,  9 Mar 2020 17:25:07 +0100 (CET)
-Date:   Mon, 9 Mar 2020 17:25:07 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] btrfs: scrub: Replace zero-length array with
- flexible-array member
-Message-ID: <20200309162507.GN2902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200306221333.GA31084@embeddedor>
+        id S1726922AbgCIQjL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Mar 2020 12:39:11 -0400
+IronPort-SDR: ieirN3PLp/XO4R6GvC5xuhRprOvdYwTg1oNrXRYSp3o7IZMeqVMRYad8BhJ72rGYSBVuWfHj9Z
+ ZnoeW+6iD6KQ==
+X-Ironport-SBRS: 2.8
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2EqAADrb2ZegEXYVdFmHAEBAQEBBwE?=
+ =?us-ascii?q?BEQEEBAEBgWgGAQELAYF8gW2EcY8FghGDbpVVgXsJAQEBAQEBAQEBBgEBLwQ?=
+ =?us-ascii?q?BAYRDAoIPJDUIDgIDAQELAQEGAQEBAQEFBAICEAEBCQ0JCCeFa4Y5AQEBAgE?=
+ =?us-ascii?q?SEVYFCwtCAgICMgEFARwGAQwIAQEegkU/AYJbIAWcKYEEPYsogTKJAYEuEAk?=
+ =?us-ascii?q?BCIEmAYwrGoFBP4E4gm0+hGKCeoJeBI1liXsNOX2XAYJGg3GCO5A0IoJJiCG?=
+ =?us-ascii?q?EFRKMJI52m1ECCgcGDyOBMQNfgS4rCAIYCCEPgyhPGA2OKReORSGPQQEB?=
+X-IronPort-AV: E=Sophos;i="5.70,533,1574150400"; 
+   d="txt'?scan'208";a="189707534"
+Received: from mail-pj1-f69.google.com ([209.85.216.69])
+  by fe3.lbl.gov with ESMTP; 09 Mar 2020 09:39:09 -0700
+Received: by mail-pj1-f69.google.com with SMTP id p3so104240pjo.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 09:39:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language;
+        bh=LyBxzoTb0+aS/OsaiIc0T1FxZBxFNOcoshSXIIzWrI8=;
+        b=BnbqJxhs1DRviX/bPmATLa1p3R4CQsrlIdWl+qrJZkh3vyZIdKNhImRYrsbRbJCj/A
+         f49Nn+dUY9P7DehhjEbjMpncIoe7Od+3ABelhMYhW02oeTJrbt1AuYniMplj40rAyRdS
+         xiAKMqxOdqHgbxD1HMv36+BCD3OO4GE9wtSue/UWLGkq+LICJvXnKn2jKRqtf8/yPQ6D
+         xCnfpFqpMGB37mjQ+XSyRK7cY4e44oW1a9zdciCGzA0Ka0Z7ic2Urv5LbYgdGApVuxP4
+         ag9TQdrct5TsfmB0o2X4JMPC7541R4AkbPsPqvR57d1UK1H9REe5h45Ou4dlBAr0aGw+
+         pFQA==
+X-Gm-Message-State: ANhLgQ0DViEx0lnTuUiO4GGQm4ynE6nshSH2woELRk2IC5Rtp2oyk1hv
+        NzMirvITMn5VgcDj+mDjmPlX+7gdScMS+w6Xf830seNdYHrD2yod1Y+bDaybXl5r5zgxOT6l4RC
+        +99I4+Qdz8kh6lIiCRHAdYjHlDw==
+X-Received: by 2002:a17:90a:f48c:: with SMTP id bx12mr13924pjb.184.1583771947323;
+        Mon, 09 Mar 2020 09:39:07 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vtWfWo4BGoSxdAsqfvOsu6jDv8Ibo5XLtd2oBEmJptbP8XqcOyLD1p4yiZ6wMJ33SkEaL6HnQ==
+X-Received: by 2002:a17:90a:f48c:: with SMTP id bx12mr13884pjb.184.1583771946715;
+        Mon, 09 Mar 2020 09:39:06 -0700 (PDT)
+Received: from [128.3.131.12] (apersaud.dhcp.lbl.gov. [128.3.131.12])
+        by smtp.gmail.com with ESMTPSA id c18sm43832990pgw.17.2020.03.09.09.39.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Mar 2020 09:39:05 -0700 (PDT)
+Subject: Re: problem with newer kernels
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <e8904a49-bd28-46c7-77d0-d114627ce0d9@lbl.gov>
+ <CAJCQCtT0CVBfupwj9wM3JAopg7YZ3FicLFGMo=is21CdyEg8Jg@mail.gmail.com>
+ <aa4ba5af-1d0f-9db2-8cad-693b970bf843@lbl.gov>
+ <dd0dffb5-e248-4498-dffb-4a6e6e4fd0fb@gmx.com>
+ <99ddd844-3371-d496-701d-bc6ea9fb0779@lbl.gov>
+ <dd7f7fb0-a0da-cc8b-8af6-3b9c3bc2878a@gmx.com>
+From:   Arun Persaud <apersaud@lbl.gov>
+Autocrypt: addr=apersaud@lbl.gov; prefer-encrypt=mutual; keydata=
+ mQGiBDtE7s8RBACrbdGLHOUUZD9dDoE8Ogachh4JaLVc2S22ijcqYzCzfI6BzUrnHtTXtgdT
+ Ob2/ngs4StFtTGmLPtH38Xw+Nmr5Js9K1CiJY8eGi6009gh7hiPdIDV1Bc27si1NED7FF2Db
+ DFQWCLbAc4ymJRYfgJxzvCHrOnDbKmYHn7FODb/rDwCgxokmd848MdQnqgEM4ta6Uz2vGn8D
+ /R6WwlDaxdc0b9SUUawVbDDZnFP8ffJVc8LVzC25HljhYHczJRq4K0oAB0dgxgR5DgaFypUi
+ vzrGd4SzbIHvwxBw04s0yEyjYKExA9yWQvCLyACDPcnYnkkEeSzGb7tgFMMIp+BPHDAGsfRE
+ FfiPSCQB7UGSJfb1TOSK70ha1LTYA/4m+L+va0d89fT+rkclgvWlJEN63t225fqs4UWUZYPH
+ 67Hy3puzuBLap66DasMIsuEoxmkpndfaLwewSkCsxetr1lwKUWDywqi80mzI00NqpW6RIXQ/
+ udmCaXnaxjZyGbC/b2jvzUvRuvxdxzHjr/xUWd7/1t0SsP5SL78fO04RU7QfQXJ1biBQZXJz
+ YXVkIDxhcGVyc2F1ZEBsYmwuZ292PoiABBMRAgA4AheAAhkBFiEER9IGaaHtSGwCV8A2Kgx8
+ 8fUbxTYFAltd+PUFCwkIBwMFFQoJCAsFFgIDAQACHgEAEgdlR1BHAAEBCRAqDHzx9RvFNj8T
+ AJwNuZdMpbr4JPLZbSpGZNXOa5lL5wCgkc0c7f8px1GzlhyklJxpgcMbzsG5Ag0EW13yPAEQ
+ ANS5ePPQ/9KwWAFyv0iiF8PttONA9u2T+quOJ3Eiot1E8YjY3UbJsiNeP8iPens8galhwcPI
+ van/AMnktvOk2IzzKX825doGb4QH5Zl/btcUbmEhX6xJ2aPMsJK3gGjBe9Pjap5ENoBYh1VF
+ rOxTDSxZV11R3rwJOOqTT7xvAMButKOkpg0ZuLRq0795Sm3WKFXnvfUeWURqNsTTO+BL4JQZ
+ 3aESpgCIMAz0P57WmIJizQMQfGyg+PE3sE0zuMnaHRRT97wl+bt+S8GRTITggmbHBbUAJDIO
+ YUgYrI4keocYqPKI6F8ZtpjY/uC2gAPgmH9t1Mzr2HtSe+mgeK5BwRsp5sWdTHkoNcvkeVat
+ MiDBCH2AVaqrzfumCurEYgfBAl2p1DnGqjIkNfl5CqX28kA9nK813eJwpwg6JzG9vPny4ZKd
+ B9URMLGTxoDw2p5M8sQG0jHvEcTBbIHu2YKa2o2pPJnL++1oMe/YmUJxXQqwizbWyEaudnxl
+ zqkRcVQESesOWxtZp+xVH+nU2UMUwV0lOs5gvyx9LzLUCz/fbya/H75hXrYEZYzKEk3V6xm9
+ 9HGQf2rfTnLTH+LV95pFHiWAUb7TuMwKODoWxQqQz9aBN0RntzhJD4MVXA7Ia2MixZ4EnFxA
+ Vmx01C0k6Kxu+7lvw7jSdvQJ8GPrIeH+h3OxABEBAAGJApwEGBECACYWIQRH0gZpoe1IbAJX
+ wDYqDHzx9RvFNgUCW13yPAIbAgUJA8JnAAJACRAqDHzx9RvFNsF0IAQZAQgAHRYhBIrwqbVy
+ 85vj7Fi0ugv02V5DUCzHBQJbXfI8AAoJEAv02V5DUCzHIk4P/RgLj8jw/0AFIWuK2bBxv+SW
+ E/fSGXNobPLgBg4kgT/FFHEtYinxbrrpjRtinIdciZ6XCRgtfdzZ2qpiO/Kf+h0Fwlq6OGwE
+ rV1WhEVqH183FMlpS1HLVSs/Yjw926zcIkugIpbIdA/atMbewwvh2JA6hv+eHSu7YWfd7GyF
+ cplmCk1HTQIPThq5AbSl7g7ATtVRii5czAilLLRwsSBmt49DeOZ7axHW+jxHg9tphUDr9Srt
+ ONVeXTOEruVaWOydUlhNfAnYhW2IvZCjwzKfOE9sFkqLCPwa9ZuEYTFBH087HzG3phYfNTDe
+ Lc7AWbiWj3ClpLGoPPussWcSIrRUcanREOisWxDieg5zESxKHL1Kx/bgEnOUFh4YHU0Y6whT
+ I3mg0y81S0KtLbAJ61NDYJ+rzKpGdJJ5JvQLiiwM0Ajo5ujcyNBlE2/1TW16ntCcSaJuCGzZ
+ nQ060RMdEk91vFzeErxy25oc+NSFkGdQKkBjeJ2ld8O429p2DMDg2yjfp2eOoAMyxxs2BjVo
+ iizcSWQ03hHv1xoD3wGfCHMJoqm8G8ZGOhP6ZcKbZK4P990F2mJqTuGeBqvgMbg/WkcOhAsJ
+ bDQ/SJKBLCZ3EaWAZkQ5FylDCEE7k6iJyC5xH4321Mpjo8iFJ8DFseiwd7L+3p76XkvsA/i+
+ UEpok82kwvG/BbYAmgJk84XxIrhSuzB1yZu8bSuSSu8mAJ4yglDqNgKqtvUkw2kAtSoC3DcX
+ 57kCDQRbXfV4ARAA3Kl9gCj2o5OHACup7XdhTftzGZWWIXOKACuukwFPm0Ty7crArIHAsUIS
+ +/NcP8GxQlQXjLOi1DMckC947oNze96xsAkMUEpcs4Lf7Fcdy+oiOoVH69cJJCG7K551eRvX
+ /jiWbnX1QZIGEt4v1iW8u075HGi7Fd+7yPA+kjyfhnFxEN99wwZzivg+BuqiM5DbSDCHqxnf
+ cC1wsDNaep3igr6VSw0ZTSoXi1MJbvsIvc5cN7HTKKnkU/KGADHbyhDYtYwJ7NvboWIyv1f8
+ 8K7TV/W90J/DJbAcO+ovp4uAHBYOHwpKDyNy3ELlRoaob8uX9syUZkXrL+kZrLXzW1+5t3Gg
+ C6jZWutpTfEtjhfo873INgIFEMYmCWwHCSf1r+gKRAxHoC9Z0NV6F408WGsUTZ47y8xVhDvj
+ vz2jYhAZQ6iRYjQPn2oGcsN4kTpB6HH/YauT3u0+ExX95+5wkbzHvzy+zdv/wPkHC2f8wUZQ
+ KJAZbWTX6ay9vVrJr90kbOBjhACuLWh3sFldPrwmAfP95w6IN0/9wGZBFXNVuDt0iRk5ElxY
+ xmhYzhOmvkr7SzVh4UNdGsetsbem60bcD//yq4B2gtv8oJ2cc1DYJQ6dsKCXJYB0I1gNtTd4
+ BlJUW7Qcq2ZU2W6KcXuln3FdDzTnqnnh/nvX+hoSCzVPoUHO2i8AEQEAAYhmBBgRAgAmFiEE
+ R9IGaaHtSGwCV8A2Kgx88fUbxTYFAltd9XgCGwwFCQPCZwAACgkQKgx88fUbxTYA8wCfVT+B
+ Ej26APxF0uA6qduwr4FIRjAAoIzXfhF4dfzNMr8MtGCsZu+eqxPq
+Message-ID: <07ec54b8-207e-93f2-58e8-4f096ea96e98@lbl.gov>
+Date:   Mon, 9 Mar 2020 09:39:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200306221333.GA31084@embeddedor>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <dd7f7fb0-a0da-cc8b-8af6-3b9c3bc2878a@gmx.com>
+Content-Type: multipart/mixed;
+ boundary="------------9FA84367BB65625847B78B22"
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 06, 2020 at 04:13:33PM -0600, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+This is a multi-part message in MIME format.
+--------------9FA84367BB65625847B78B22
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Added to devel queue, thanks.
+Hi
+
+> [...] 
+> That's strange.
+> As btrfs check selftest can detect such inode generation mismatch and
+> repair it.
+> 
+> If btrfs-progs failed to repair it, you can delete that inode manually
+> using older kernel.
+> 
+> `find -inum 131072` can locate that inode.
+
+not sure how to delete it afterwards...
+
+> But before you delete it, please provide the following dump for us to
+> further debug the problem.
+> 
+> # btrfs ins dump-tree -b 14720090112 /dev/sda2
+
+sure, I can also wait a bit longer before fixing this, since I can at
+the moment always boot the old kernel.
+
+I ran the command using the old kernel (since I had that one booted). I
+then rebooted into the emergency system of the new kernel and ran again.
+Afterwards I went back to the working system (old kernel). Output is
+attached. First and second run gave the same output, the third run gave
+a lot less output?!
+
+> Please note that, the dump will contain filenames, feel free to remove
+> such filenames.
+
+I didn't see any file names in the output...
+
+HTH
+
+Arun
+
+--------------9FA84367BB65625847B78B22
+Content-Type: text/plain; charset=UTF-8;
+ name="dump2-new-not-working-kernel.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dump2-new-not-working-kernel.txt"
+
+YnRyZnMtcHJvZ3MgdjUuNC4xIApsZWFmIDE0NzIwMDkwMTEyIGl0ZW1zIDI3IGZyZWUgc3Bh
+Y2UgNjI4IGdlbmVyYXRpb24gNjYxMDUzMSBvd25lciBDU1VNX1RSRUUKbGVhZiAxNDcyMDA5
+MDExMiBmbGFncyAweDEoV1JJVFRFTikgYmFja3JlZiByZXZpc2lvbiAxCmZzIHV1aWQgZTdi
+MjljMTgtNDcwNy00OGE0LThjMjktZGQ0ZGQ3MDM3OGI4CmNodW5rIHV1aWQgYTk5MDNhYmYt
+MmQ2Zi00MTFlLTg4MTctZTRjOWM5M2ZlMzNhCglpdGVtIDAga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc4NTc2NDg2NCkgaXRlbW9mZiAzOTY3IGl0ZW1zaXplIDI4CgkJcmFu
+Z2Ugc3RhcnQgMTE3ODU3NjQ4NjQgZW5kIDExNzg1NzkzNTM2IGxlbmd0aCAyODY3MgoJaXRl
+bSAxIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODU3OTM1MzYpIGl0ZW1vZmYg
+MzkxNSBpdGVtc2l6ZSA1MgoJCXJhbmdlIHN0YXJ0IDExNzg1NzkzNTM2IGVuZCAxMTc4NTg0
+Njc4NCBsZW5ndGggNTMyNDgKCWl0ZW0gMiBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VN
+IDExNzg1OTc3ODU2KSBpdGVtb2ZmIDM4MzUgaXRlbXNpemUgODAKCQlyYW5nZSBzdGFydCAx
+MTc4NTk3Nzg1NiBlbmQgMTE3ODYwNTk3NzYgbGVuZ3RoIDgxOTIwCglpdGVtIDMga2V5IChF
+WFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4NjA5MjU0NCkgaXRlbW9mZiAzNzU1IGl0ZW1z
+aXplIDgwCgkJcmFuZ2Ugc3RhcnQgMTE3ODYwOTI1NDQgZW5kIDExNzg2MTc0NDY0IGxlbmd0
+aCA4MTkyMAoJaXRlbSA0IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODYxNzQ0
+NjQpIGl0ZW1vZmYgMzc1MSBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3ODYxNzQ0NjQg
+ZW5kIDExNzg2MTc4NTYwIGxlbmd0aCA0MDk2CglpdGVtIDUga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc4NjE3ODU2MCkgaXRlbW9mZiAzNjI3IGl0ZW1zaXplIDEyNAoJCXJh
+bmdlIHN0YXJ0IDExNzg2MTc4NTYwIGVuZCAxMTc4NjMwNTUzNiBsZW5ndGggMTI2OTc2Cglp
+dGVtIDYga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4NjMzODMwNCkgaXRlbW9m
+ZiAzNDk5IGl0ZW1zaXplIDEyOAoJCXJhbmdlIHN0YXJ0IDExNzg2MzM4MzA0IGVuZCAxMTc4
+NjQ2OTM3NiBsZW5ndGggMTMxMDcyCglpdGVtIDcga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRf
+Q1NVTSAxMTc4NjQ4NTc2MCkgaXRlbW9mZiAzNDY3IGl0ZW1zaXplIDMyCgkJcmFuZ2Ugc3Rh
+cnQgMTE3ODY0ODU3NjAgZW5kIDExNzg2NTE4NTI4IGxlbmd0aCAzMjc2OAoJaXRlbSA4IGtl
+eSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODY1NTEyOTYpIGl0ZW1vZmYgMzQzNSBp
+dGVtc2l6ZSAzMgoJCXJhbmdlIHN0YXJ0IDExNzg2NTUxMjk2IGVuZCAxMTc4NjU4NDA2NCBs
+ZW5ndGggMzI3NjgKCWl0ZW0gOSBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VNIDExNzg2
+NjMzMjE2KSBpdGVtb2ZmIDMzMjMgaXRlbXNpemUgMTEyCgkJcmFuZ2Ugc3RhcnQgMTE3ODY2
+MzMyMTYgZW5kIDExNzg2NzQ3OTA0IGxlbmd0aCAxMTQ2ODgKCWl0ZW0gMTAga2V5IChFWFRF
+TlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4Njc0NzkwNCkgaXRlbW9mZiAzMDM1IGl0ZW1zaXpl
+IDI4OAoJCXJhbmdlIHN0YXJ0IDExNzg2NzQ3OTA0IGVuZCAxMTc4NzA0MjgxNiBsZW5ndGgg
+Mjk0OTEyCglpdGVtIDExIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODcwNzU1
+ODQpIGl0ZW1vZmYgMzAwMyBpdGVtc2l6ZSAzMgoJCXJhbmdlIHN0YXJ0IDExNzg3MDc1NTg0
+IGVuZCAxMTc4NzEwODM1MiBsZW5ndGggMzI3NjgKCWl0ZW0gMTIga2V5IChFWFRFTlRfQ1NV
+TSBFWFRFTlRfQ1NVTSAxMTc4NzEyNDczNikgaXRlbW9mZiAyNzMxIGl0ZW1zaXplIDI3MgoJ
+CXJhbmdlIHN0YXJ0IDExNzg3MTI0NzM2IGVuZCAxMTc4NzQwMzI2NCBsZW5ndGggMjc4NTI4
+CglpdGVtIDEzIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODk1NDk1NjgpIGl0
+ZW1vZmYgMjUzOSBpdGVtc2l6ZSAxOTIKCQlyYW5nZSBzdGFydCAxMTc4OTU0OTU2OCBlbmQg
+MTE3ODk3NDYxNzYgbGVuZ3RoIDE5NjYwOAoJaXRlbSAxNCBrZXkgKEVYVEVOVF9DU1VNIEVY
+VEVOVF9DU1VNIDExNzkxNjQ2NzIwKSBpdGVtb2ZmIDI0NTEgaXRlbXNpemUgODgKCQlyYW5n
+ZSBzdGFydCAxMTc5MTY0NjcyMCBlbmQgMTE3OTE3MzY4MzIgbGVuZ3RoIDkwMTEyCglpdGVt
+IDE1IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE3MzY4MzIpIGl0ZW1vZmYg
+MjQ0NyBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3OTE3MzY4MzIgZW5kIDExNzkxNzQw
+OTI4IGxlbmd0aCA0MDk2CglpdGVtIDE2IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0g
+MTE3OTE3NDA5MjgpIGl0ZW1vZmYgMjQ0MyBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3
+OTE3NDA5MjggZW5kIDExNzkxNzQ1MDI0IGxlbmd0aCA0MDk2CglpdGVtIDE3IGtleSAoRVhU
+RU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE4NzIwMDApIGl0ZW1vZmYgMjQzNSBpdGVtc2l6
+ZSA4CgkJcmFuZ2Ugc3RhcnQgMTE3OTE4NzIwMDAgZW5kIDExNzkxODgwMTkyIGxlbmd0aCA4
+MTkyCglpdGVtIDE4IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE5NTgwMTYp
+IGl0ZW1vZmYgMjM3MSBpdGVtc2l6ZSA2NAoJCXJhbmdlIHN0YXJ0IDExNzkxOTU4MDE2IGVu
+ZCAxMTc5MjAyMzU1MiBsZW5ndGggNjU1MzYKCWl0ZW0gMTkga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc5MjA1NjMyMCkgaXRlbW9mZiAyMjU5IGl0ZW1zaXplIDExMgoJCXJh
+bmdlIHN0YXJ0IDExNzkyMDU2MzIwIGVuZCAxMTc5MjE3MTAwOCBsZW5ndGggMTE0Njg4Cglp
+dGVtIDIwIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTYzNjUzMTIpIGl0ZW1v
+ZmYgMjA4MyBpdGVtc2l6ZSAxNzYKCQlyYW5nZSBzdGFydCAxMTc5NjM2NTMxMiBlbmQgMTE3
+OTY1NDU1MzYgbGVuZ3RoIDE4MDIyNAoJaXRlbSAyMSBrZXkgKEVYVEVOVF9DU1VNIEVYVEVO
+VF9DU1VNIDExNzk2Nzc0OTEyKSBpdGVtb2ZmIDE3NDcgaXRlbXNpemUgMzM2CgkJcmFuZ2Ug
+c3RhcnQgMTE3OTY3NzQ5MTIgZW5kIDExNzk3MTE4OTc2IGxlbmd0aCAzNDQwNjQKCWl0ZW0g
+MjIga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5NzcxMjg5NikgaXRlbW9mZiAx
+NzIzIGl0ZW1zaXplIDI0CgkJcmFuZ2Ugc3RhcnQgMTE3OTc3MTI4OTYgZW5kIDExNzk3NzM3
+NDcyIGxlbmd0aCAyNDU3NgoJaXRlbSAyMyBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VN
+IDExNzk4NTIzOTA0KSBpdGVtb2ZmIDE1OTkgaXRlbXNpemUgMTI0CgkJcmFuZ2Ugc3RhcnQg
+MTE3OTg1MjM5MDQgZW5kIDExNzk4NjUwODgwIGxlbmd0aCAxMjY5NzYKCWl0ZW0gMjQga2V5
+IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5ODY1MDg4MCkgaXRlbW9mZiAxNTk1IGl0
+ZW1zaXplIDQKCQlyYW5nZSBzdGFydCAxMTc5ODY1MDg4MCBlbmQgMTE3OTg2NTQ5NzYgbGVu
+Z3RoIDQwOTYKCWl0ZW0gMjUga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5ODY1
+NDk3NikgaXRlbW9mZiAxMzA3IGl0ZW1zaXplIDI4OAoJCXJhbmdlIHN0YXJ0IDExNzk4NjU0
+OTc2IGVuZCAxMTc5ODk0OTg4OCBsZW5ndGggMjk0OTEyCglpdGVtIDI2IGtleSAoRVhURU5U
+X0NTVU0gRVhURU5UX0NTVU0gMTE3OTg5NDk4ODgpIGl0ZW1vZmYgMTMwMyBpdGVtc2l6ZSA0
+CgkJcmFuZ2Ugc3RhcnQgMTE3OTg5NDk4ODggZW5kIDExNzk4OTUzOTg0IGxlbmd0aCA0MDk2
+Cg==
+--------------9FA84367BB65625847B78B22
+Content-Type: text/plain; charset=UTF-8;
+ name="dump1-old-working-kernel.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dump1-old-working-kernel.txt"
+
+YnRyZnMtcHJvZ3MgdjUuNC4xIApsZWFmIDE0NzIwMDkwMTEyIGl0ZW1zIDI3IGZyZWUgc3Bh
+Y2UgNjI4IGdlbmVyYXRpb24gNjYxMDUzMSBvd25lciBDU1VNX1RSRUUKbGVhZiAxNDcyMDA5
+MDExMiBmbGFncyAweDEoV1JJVFRFTikgYmFja3JlZiByZXZpc2lvbiAxCmZzIHV1aWQgZTdi
+MjljMTgtNDcwNy00OGE0LThjMjktZGQ0ZGQ3MDM3OGI4CmNodW5rIHV1aWQgYTk5MDNhYmYt
+MmQ2Zi00MTFlLTg4MTctZTRjOWM5M2ZlMzNhCglpdGVtIDAga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc4NTc2NDg2NCkgaXRlbW9mZiAzOTY3IGl0ZW1zaXplIDI4CgkJcmFu
+Z2Ugc3RhcnQgMTE3ODU3NjQ4NjQgZW5kIDExNzg1NzkzNTM2IGxlbmd0aCAyODY3MgoJaXRl
+bSAxIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODU3OTM1MzYpIGl0ZW1vZmYg
+MzkxNSBpdGVtc2l6ZSA1MgoJCXJhbmdlIHN0YXJ0IDExNzg1NzkzNTM2IGVuZCAxMTc4NTg0
+Njc4NCBsZW5ndGggNTMyNDgKCWl0ZW0gMiBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VN
+IDExNzg1OTc3ODU2KSBpdGVtb2ZmIDM4MzUgaXRlbXNpemUgODAKCQlyYW5nZSBzdGFydCAx
+MTc4NTk3Nzg1NiBlbmQgMTE3ODYwNTk3NzYgbGVuZ3RoIDgxOTIwCglpdGVtIDMga2V5IChF
+WFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4NjA5MjU0NCkgaXRlbW9mZiAzNzU1IGl0ZW1z
+aXplIDgwCgkJcmFuZ2Ugc3RhcnQgMTE3ODYwOTI1NDQgZW5kIDExNzg2MTc0NDY0IGxlbmd0
+aCA4MTkyMAoJaXRlbSA0IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODYxNzQ0
+NjQpIGl0ZW1vZmYgMzc1MSBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3ODYxNzQ0NjQg
+ZW5kIDExNzg2MTc4NTYwIGxlbmd0aCA0MDk2CglpdGVtIDUga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc4NjE3ODU2MCkgaXRlbW9mZiAzNjI3IGl0ZW1zaXplIDEyNAoJCXJh
+bmdlIHN0YXJ0IDExNzg2MTc4NTYwIGVuZCAxMTc4NjMwNTUzNiBsZW5ndGggMTI2OTc2Cglp
+dGVtIDYga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4NjMzODMwNCkgaXRlbW9m
+ZiAzNDk5IGl0ZW1zaXplIDEyOAoJCXJhbmdlIHN0YXJ0IDExNzg2MzM4MzA0IGVuZCAxMTc4
+NjQ2OTM3NiBsZW5ndGggMTMxMDcyCglpdGVtIDcga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRf
+Q1NVTSAxMTc4NjQ4NTc2MCkgaXRlbW9mZiAzNDY3IGl0ZW1zaXplIDMyCgkJcmFuZ2Ugc3Rh
+cnQgMTE3ODY0ODU3NjAgZW5kIDExNzg2NTE4NTI4IGxlbmd0aCAzMjc2OAoJaXRlbSA4IGtl
+eSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODY1NTEyOTYpIGl0ZW1vZmYgMzQzNSBp
+dGVtc2l6ZSAzMgoJCXJhbmdlIHN0YXJ0IDExNzg2NTUxMjk2IGVuZCAxMTc4NjU4NDA2NCBs
+ZW5ndGggMzI3NjgKCWl0ZW0gOSBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VNIDExNzg2
+NjMzMjE2KSBpdGVtb2ZmIDMzMjMgaXRlbXNpemUgMTEyCgkJcmFuZ2Ugc3RhcnQgMTE3ODY2
+MzMyMTYgZW5kIDExNzg2NzQ3OTA0IGxlbmd0aCAxMTQ2ODgKCWl0ZW0gMTAga2V5IChFWFRF
+TlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc4Njc0NzkwNCkgaXRlbW9mZiAzMDM1IGl0ZW1zaXpl
+IDI4OAoJCXJhbmdlIHN0YXJ0IDExNzg2NzQ3OTA0IGVuZCAxMTc4NzA0MjgxNiBsZW5ndGgg
+Mjk0OTEyCglpdGVtIDExIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODcwNzU1
+ODQpIGl0ZW1vZmYgMzAwMyBpdGVtc2l6ZSAzMgoJCXJhbmdlIHN0YXJ0IDExNzg3MDc1NTg0
+IGVuZCAxMTc4NzEwODM1MiBsZW5ndGggMzI3NjgKCWl0ZW0gMTIga2V5IChFWFRFTlRfQ1NV
+TSBFWFRFTlRfQ1NVTSAxMTc4NzEyNDczNikgaXRlbW9mZiAyNzMxIGl0ZW1zaXplIDI3MgoJ
+CXJhbmdlIHN0YXJ0IDExNzg3MTI0NzM2IGVuZCAxMTc4NzQwMzI2NCBsZW5ndGggMjc4NTI4
+CglpdGVtIDEzIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3ODk1NDk1NjgpIGl0
+ZW1vZmYgMjUzOSBpdGVtc2l6ZSAxOTIKCQlyYW5nZSBzdGFydCAxMTc4OTU0OTU2OCBlbmQg
+MTE3ODk3NDYxNzYgbGVuZ3RoIDE5NjYwOAoJaXRlbSAxNCBrZXkgKEVYVEVOVF9DU1VNIEVY
+VEVOVF9DU1VNIDExNzkxNjQ2NzIwKSBpdGVtb2ZmIDI0NTEgaXRlbXNpemUgODgKCQlyYW5n
+ZSBzdGFydCAxMTc5MTY0NjcyMCBlbmQgMTE3OTE3MzY4MzIgbGVuZ3RoIDkwMTEyCglpdGVt
+IDE1IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE3MzY4MzIpIGl0ZW1vZmYg
+MjQ0NyBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3OTE3MzY4MzIgZW5kIDExNzkxNzQw
+OTI4IGxlbmd0aCA0MDk2CglpdGVtIDE2IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0g
+MTE3OTE3NDA5MjgpIGl0ZW1vZmYgMjQ0MyBpdGVtc2l6ZSA0CgkJcmFuZ2Ugc3RhcnQgMTE3
+OTE3NDA5MjggZW5kIDExNzkxNzQ1MDI0IGxlbmd0aCA0MDk2CglpdGVtIDE3IGtleSAoRVhU
+RU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE4NzIwMDApIGl0ZW1vZmYgMjQzNSBpdGVtc2l6
+ZSA4CgkJcmFuZ2Ugc3RhcnQgMTE3OTE4NzIwMDAgZW5kIDExNzkxODgwMTkyIGxlbmd0aCA4
+MTkyCglpdGVtIDE4IGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTE5NTgwMTYp
+IGl0ZW1vZmYgMjM3MSBpdGVtc2l6ZSA2NAoJCXJhbmdlIHN0YXJ0IDExNzkxOTU4MDE2IGVu
+ZCAxMTc5MjAyMzU1MiBsZW5ndGggNjU1MzYKCWl0ZW0gMTkga2V5IChFWFRFTlRfQ1NVTSBF
+WFRFTlRfQ1NVTSAxMTc5MjA1NjMyMCkgaXRlbW9mZiAyMjU5IGl0ZW1zaXplIDExMgoJCXJh
+bmdlIHN0YXJ0IDExNzkyMDU2MzIwIGVuZCAxMTc5MjE3MTAwOCBsZW5ndGggMTE0Njg4Cglp
+dGVtIDIwIGtleSAoRVhURU5UX0NTVU0gRVhURU5UX0NTVU0gMTE3OTYzNjUzMTIpIGl0ZW1v
+ZmYgMjA4MyBpdGVtc2l6ZSAxNzYKCQlyYW5nZSBzdGFydCAxMTc5NjM2NTMxMiBlbmQgMTE3
+OTY1NDU1MzYgbGVuZ3RoIDE4MDIyNAoJaXRlbSAyMSBrZXkgKEVYVEVOVF9DU1VNIEVYVEVO
+VF9DU1VNIDExNzk2Nzc0OTEyKSBpdGVtb2ZmIDE3NDcgaXRlbXNpemUgMzM2CgkJcmFuZ2Ug
+c3RhcnQgMTE3OTY3NzQ5MTIgZW5kIDExNzk3MTE4OTc2IGxlbmd0aCAzNDQwNjQKCWl0ZW0g
+MjIga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5NzcxMjg5NikgaXRlbW9mZiAx
+NzIzIGl0ZW1zaXplIDI0CgkJcmFuZ2Ugc3RhcnQgMTE3OTc3MTI4OTYgZW5kIDExNzk3NzM3
+NDcyIGxlbmd0aCAyNDU3NgoJaXRlbSAyMyBrZXkgKEVYVEVOVF9DU1VNIEVYVEVOVF9DU1VN
+IDExNzk4NTIzOTA0KSBpdGVtb2ZmIDE1OTkgaXRlbXNpemUgMTI0CgkJcmFuZ2Ugc3RhcnQg
+MTE3OTg1MjM5MDQgZW5kIDExNzk4NjUwODgwIGxlbmd0aCAxMjY5NzYKCWl0ZW0gMjQga2V5
+IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5ODY1MDg4MCkgaXRlbW9mZiAxNTk1IGl0
+ZW1zaXplIDQKCQlyYW5nZSBzdGFydCAxMTc5ODY1MDg4MCBlbmQgMTE3OTg2NTQ5NzYgbGVu
+Z3RoIDQwOTYKCWl0ZW0gMjUga2V5IChFWFRFTlRfQ1NVTSBFWFRFTlRfQ1NVTSAxMTc5ODY1
+NDk3NikgaXRlbW9mZiAxMzA3IGl0ZW1zaXplIDI4OAoJCXJhbmdlIHN0YXJ0IDExNzk4NjU0
+OTc2IGVuZCAxMTc5ODk0OTg4OCBsZW5ndGggMjk0OTEyCglpdGVtIDI2IGtleSAoRVhURU5U
+X0NTVU0gRVhURU5UX0NTVU0gMTE3OTg5NDk4ODgpIGl0ZW1vZmYgMTMwMyBpdGVtc2l6ZSA0
+CgkJcmFuZ2Ugc3RhcnQgMTE3OTg5NDk4ODggZW5kIDExNzk4OTUzOTg0IGxlbmd0aCA0MDk2
+Cg==
+--------------9FA84367BB65625847B78B22
+Content-Type: text/plain; charset=UTF-8;
+ name="dump3-new-after-reboot-in-old-kernel.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dump3-new-after-reboot-in-old-kernel.txt"
+
+YnRyZnMtcHJvZ3MgdjUuNC4xIApsZWFmIDE0NzIwMDkwMTEyIGl0ZW1zIDEgZnJlZSBzcGFj
+ZSAzNTMxIGdlbmVyYXRpb24gNjYxNDc4NyBvd25lciBUUkVFX0xPRwpsZWFmIDE0NzIwMDkw
+MTEyIGZsYWdzIDB4MShXUklUVEVOKSBiYWNrcmVmIHJldmlzaW9uIDEKZnMgdXVpZCBlN2Iy
+OWMxOC00NzA3LTQ4YTQtOGMyOS1kZDRkZDcwMzc4YjgKY2h1bmsgdXVpZCBhOTkwM2FiZi0y
+ZDZmLTQxMWUtODgxNy1lNGM5YzkzZmUzM2EKCWl0ZW0gMCBrZXkgKFRSRUVfTE9HIFJPT1Rf
+SVRFTSA1KSBpdGVtb2ZmIDM1NTYgaXRlbXNpemUgNDM5CgkJZ2VuZXJhdGlvbiA2NjE0Nzg3
+IHJvb3RfZGlyaWQgMCBieXRlbnIgMTQ3MjAwNzc4MjQgbGV2ZWwgMSByZWZzIDAKCQlsYXN0
+c25hcCAwIGJ5dGVfbGltaXQgMCBieXRlc191c2VkIDEyMjg4IGZsYWdzIDB4MChub25lKQoJ
+CXV1aWQgMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwCgkJZHJvcCBrZXkg
+KDAgVU5LTk9XTi4wIDApIGxldmVsIDAK
+--------------9FA84367BB65625847B78B22--
