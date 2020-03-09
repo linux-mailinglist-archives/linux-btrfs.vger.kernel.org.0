@@ -2,99 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F34B317DEB4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 12:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6880717DED5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 12:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgCIL1w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 07:27:52 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36028 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgCIL1w (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 07:27:52 -0400
-Received: by mail-il1-f193.google.com with SMTP id b17so8308109iln.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2020 04:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gl8m333ia74OFZpNmB4o7kIcYlvQPFpoCsxlN0OXKb0=;
-        b=tGqBwka3BsMMKvwYRDOrneGtj6AJt0PzJRS7VbA+QnLJQQSAdPYZ7JfZbPGYCLfqGV
-         vN/I0oopIis53csgX2q95vcoPZk19T5fl9aNr156HOSeLGnG1fuOA7XcuRN6sQUiRF17
-         kEzkSWIiDBNojuxZitiuC5ErYglQ4LxpSAnXuHPq3aYtmc30bmuHY48f0WBMtAdWWJv9
-         wToUO51sRKl2tAHzbKmrfQ06UA2GThCfrf3ECMGfsHcgks+rni+xRb7E+M71mYEbR76j
-         gJ90jEPvvxcN2pAAM8Pkw+JYnWemuXjYk3OpQvLqC56mRYAjZavUt4f5Gj/ExVqx6A4y
-         v8ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gl8m333ia74OFZpNmB4o7kIcYlvQPFpoCsxlN0OXKb0=;
-        b=bHOIn53z2FuqqEJuo+wVGio9UG6Nd5QlxgsufZ8SGos6rcCEFzm8kpyE2qaBROBo6S
-         7a6TDiSvb32c2GSTMUXFoU8cdjISbTZOEFvRkxVqKMs+JJ5v/cZHO0TU0gMHqDhQacXJ
-         gYa8qMracOqSNwa8X/ed7Mgihfxpc9bd2oOUyIVT6I3B23QEFfxLNZbT+CgHuDqyfbkQ
-         q/AXK1YMN4A2xbNZa1TUivAoM58kQkDvZBMa9LN2aSAPf1S6eaCqQhhlcPl74BdKKm/y
-         T9FYS0fWHgn8cqim4/x1qigBH19HF9cUJzSDpYXncfQPcG9gNXCSkhR9btHCeB7YkIx5
-         MvjQ==
-X-Gm-Message-State: ANhLgQ2ymlCZuxZ1cug39bkcVAxOXnbn42Zwzz6S2rm557Wy0p7FpkLO
-        7N8FcphXPbunw3tHDoWtGpGVFOGGZ81RrjgEtZI=
-X-Google-Smtp-Source: ADFU+vsJBEezC27u2fRNc9AZbRzAdroBLA68zoWrfVuuN/zQZCXsL1Is5L/7/UouJOStNQsDM5bqe3CezN5KJgq9AXY=
-X-Received: by 2002:a92:9f4e:: with SMTP id u75mr14756241ili.116.1583753271492;
- Mon, 09 Mar 2020 04:27:51 -0700 (PDT)
+        id S1726389AbgCILkn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 07:40:43 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36606 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgCILkn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Mar 2020 07:40:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 029BcJY9141166;
+        Mon, 9 Mar 2020 11:40:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=sQAFBuRTyqFk5eNVszurAkCB2lUpQ38rrXO5YBY7Zgg=;
+ b=FQJfaayZyc3Uz8OnHfLhobInFjNoM2edaZqPeIrkvAmfBrhajcPA57eMUuNTQVYX8o1d
+ 3DDz4QCVBI7Sa4yU1qceoasIsBjxksdV/GluK85Vl13TrrewiV8yP76ZpD8e5yR5g7Ak
+ sa1NDO5iBcxO3g4N1278NQhBPNHeKjIh6FL/aVxl61mRYw0fC/euZCOcz9MbXqbpD5Mb
+ uT9PcGCVounL4WR4wxPXfkb/J0wNRUhipCIZtVpt6nX6Z3W9125WRAZx+8upBA3xkj5o
+ 4EuHpIDSB5fhYheRFdjOWGcrlFv46bKgngALJPy0qdNtAIDBMFe0FOKF+g3q95CbfSwF 0A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2ym31u6gs4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Mar 2020 11:40:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 029Bb63H100198;
+        Mon, 9 Mar 2020 11:40:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2ymn3fry82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Mar 2020 11:40:41 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 029Beejn021633;
+        Mon, 9 Mar 2020 11:40:41 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Mar 2020 04:40:40 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] fstests: cleanup and fix btrfs/177
+Date:   Mon,  9 Mar 2020 19:40:34 +0800
+Message-Id: <20200309114036.5266-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Received: by 2002:a02:2410:0:0:0:0:0 with HTTP; Mon, 9 Mar 2020 04:27:51 -0700 (PDT)
-Reply-To: RevWrightWatson@yandex.com
-From:   "Rev.Wright Watson" <oriakuowen1978@gmail.com>
-Date:   Mon, 9 Mar 2020 12:27:51 +0100
-Message-ID: <CACUyLgNhe5rP5Sxuw1Z1QoSY60B7uJuKSc1OQxs8jEsS60PAyQ@mail.gmail.com>
-Subject: Dear Beloved,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9554 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=13 malwarescore=0
+ mlxlogscore=885 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003090082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9554 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=13
+ phishscore=0 mlxlogscore=949 mlxscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003090082
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Beloved,
+Patch 1/2 adds notrun for the scratch device below 3G size.
+Patch 2/2 fixes the test case failure on the system with nodesize=64K and
+chunk type single.
 
-I'm Reverend Wright Watson, I was born in USA, 1945, I was ordained
-into the Catholic Priesthood.
+Anand Jain (2):
+  fstests: btrfs/177 check for minsize of the scratch device
+  fstests: btrfs/177 fix for nodesize 64K and type single
 
-Please take your time to read this message, although we have never met
-before, this is no spam, It's a real message sent to you. I know also
-that you will be amazed at the level of trust that I am willing to
-place in a person that I have never seen nor spoken with. If I can
-receive favor from someone I barely know, its not bad entrusting this
-project to unknown person as long as my spirit directed me to you.
+ tests/btrfs/177     | 39 ++++++++++++++++++++++++++++-----------
+ tests/btrfs/177.out |  6 ++----
+ 2 files changed, 30 insertions(+), 15 deletions(-)
 
-I have been a catholic priest for over 22 years. I spent about 10
-years serving at Africa, Burkina Faso to be precise, I spend most time
-in Ouagadougou Cathedral.
-Presently, I had a heart surgery on the 23-11-2018 and the Doctors
-have informed me that I cannot live longer; I had a serious bleeding
-after the operation.
-Before I left Ouagadougou to my country for the surgery, a priest
-friend of mine visited me from Netherlands with three companion, when
-they went back, one among his companion Transferred 10M$ in my
-personal account with Bank of Africa and advised that I use the money
-to help the poor, handicaps and less privileges because he saw the
-level hardship then.
+-- 
+2.18.1
 
-Because of my present health condition, I cannot live to proceed with
-the projects, therefore, I have decided to appoint you to reclaim the
-money which total sum of $10,970,000.00 (Ten million Nine Hundred and
-seventy Thousand US DOLLARS).
-
-I want you to use this sum to make the world a better place for the
-poor and less privileged, help the needy and also help your family
-members.
-
-I took this decision because I was raised in an Orphanage so I don't
-have relatives and presently, I'm still in the hospital, where I am
-undergoing treatment. That's why I have decided to contact you so that
-you can contact my account manager in Bank of Africa, reclaim the
-money and make good use of it.
-
-then you can contact me through private email
-addres(RevWrightWatson@yandex.com)
-
-Regards,
-Rev.Wright Watson
