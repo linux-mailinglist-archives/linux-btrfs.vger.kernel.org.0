@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 423D017E070
+	by mail.lfdr.de (Postfix) with ESMTP id AC1EA17E071
 	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2020 13:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgCIMlP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Mar 2020 08:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
+        id S1726512AbgCIMlQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Mar 2020 08:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726383AbgCIMlP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726497AbgCIMlP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 9 Mar 2020 08:41:15 -0400
 Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C06120674;
-        Mon,  9 Mar 2020 12:41:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82D0F20828;
+        Mon,  9 Mar 2020 12:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583757674;
-        bh=RxpSmubY/Rge85vaIZpYQA62Mf0DO2p+svk2BXCy0f8=;
+        s=default; t=1583757675;
+        bh=RzBB9sRmS5v+SI3UtQungvCwj1g+iB7zFTL1PpS2vqA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V28LDrp9HmWGh6Xt4xHZrQOTWgI5a0z3lbh2GEJSjXzURVHm5LUNjZVMqzA2RY3lo
-         c57kNwlIJ8SQYEHYlPkyRY1fkLSgRKGOmuUvE6jE6B0NZDmVFmr/y5V4/YVuGtAqIq
-         LykIPhpVW0T8bKeIBgBHhyYjDKAozsXyJGN+y0C4=
+        b=rTH4FX6/1++W2uVPrv5oAceQMKWd+2EyEOofEOiBs7CpLgIbk2awvcUJmETbrdgrc
+         nMo9rT2If04KIZh2QGOSodVoaeO/c8cZBmIlQVeBi7CRnizOUkQxwHbUdRmhufpqjV
+         gyNWbxX65KfCKFTl/gIIK3lfZm4F3emYLQTd5Hsk=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
 Cc:     josef@toxicpanda.com
-Subject: [PATCH v3 2/4] Btrfs: add helper to get the end offset of a file extent item
-Date:   Mon,  9 Mar 2020 12:41:06 +0000
-Message-Id: <20200309124108.18952-3-fdmanana@kernel.org>
+Subject: [PATCH v3 3/4] Btrfs: factor out inode items copy loop from btrfs_log_inode()
+Date:   Mon,  9 Mar 2020 12:41:07 +0000
+Message-Id: <20200309124108.18952-4-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200309124108.18952-1-fdmanana@kernel.org>
 References: <20200309124108.18952-1-fdmanana@kernel.org>
@@ -39,244 +39,320 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Getting the end offset for a file extent item requires a bit of code since
-the extent can be either inline or regular/prealloc. There are some places
-all over the code base that open code this logic and in another patch
-later in this series it will be needed again. Therefore encapsulate this
-logic in a helper function and use it.
+The function btrfs_log_inode() is quite large and so is its loop which
+iterates the inode items from the fs/subvolume tree and copies them into
+a log tree. Because this is a large loop inside a very large function
+and because an upcoming patch in this series needs to add some more logic
+inside that loop, move the loop into a helper function to make it a bit
+more manageable.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.h     |  1 +
- fs/btrfs/file-item.c | 40 ++++++++++++++++++++++++++++------------
- fs/btrfs/inode.c     | 10 +---------
- fs/btrfs/send.c      | 44 +++-----------------------------------------
- fs/btrfs/tree-log.c  | 15 +--------------
- 5 files changed, 34 insertions(+), 76 deletions(-)
+ fs/btrfs/tree-log.c | 277 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 141 insertions(+), 136 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index ecd016f7dab1..3dc417620120 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2837,6 +2837,7 @@ int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64 start,
- int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 start,
- 				      u64 len);
- void btrfs_inode_safe_disk_i_size_write(struct inode *inode, u64 new_i_size);
-+u64 btrfs_file_extent_end(const struct btrfs_path *path);
- 
- /* inode.c */
- struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 6c849e8fd5a1..b618ad5339ba 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -1040,18 +1040,7 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 
- 	btrfs_item_key_to_cpu(leaf, &key, slot);
- 	extent_start = key.offset;
--
--	if (type == BTRFS_FILE_EXTENT_REG ||
--	    type == BTRFS_FILE_EXTENT_PREALLOC) {
--		extent_end = extent_start +
--			btrfs_file_extent_num_bytes(leaf, fi);
--	} else if (type == BTRFS_FILE_EXTENT_INLINE) {
--		size_t size;
--		size = btrfs_file_extent_ram_bytes(leaf, fi);
--		extent_end = ALIGN(extent_start + size,
--				   fs_info->sectorsize);
--	}
--
-+	extent_end = btrfs_file_extent_end(path);
- 	em->ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
- 	if (type == BTRFS_FILE_EXTENT_REG ||
- 	    type == BTRFS_FILE_EXTENT_PREALLOC) {
-@@ -1098,3 +1087,30 @@ void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
- 			  root->root_key.objectid);
- 	}
- }
-+
-+/*
-+ * Returns the end offset (non inclusive) of the file extent item the given path
-+ * points to. If it points to an inline extent, the returned offset is rounded
-+ * up to the sector size.
-+ */
-+u64 btrfs_file_extent_end(const struct btrfs_path *path)
-+{
-+	const struct extent_buffer *leaf = path->nodes[0];
-+	const int slot = path->slots[0];
-+	struct btrfs_file_extent_item *fi;
-+	struct btrfs_key key;
-+	u64 end;
-+
-+	btrfs_item_key_to_cpu(leaf, &key, slot);
-+	ASSERT(key.type == BTRFS_EXTENT_DATA_KEY);
-+	fi = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
-+
-+	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
-+		end = btrfs_file_extent_ram_bytes(leaf, fi);
-+		end = ALIGN(key.offset + end, leaf->fs_info->sectorsize);
-+	} else {
-+		end = key.offset + btrfs_file_extent_num_bytes(leaf, fi);
-+	}
-+
-+	return end;
-+}
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8a3bc19d83ff..3a636b405088 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6520,6 +6520,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
- 
- 	extent_type = btrfs_file_extent_type(leaf, item);
- 	extent_start = found_key.offset;
-+	extent_end = btrfs_file_extent_end(path);
- 	if (extent_type == BTRFS_FILE_EXTENT_REG ||
- 	    extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
- 		/* Only regular file could have regular/prealloc extent */
-@@ -6530,18 +6531,9 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
- 				   btrfs_ino(inode));
- 			goto out;
- 		}
--		extent_end = extent_start +
--		       btrfs_file_extent_num_bytes(leaf, item);
--
- 		trace_btrfs_get_extent_show_fi_regular(inode, leaf, item,
- 						       extent_start);
- 	} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
--		size_t size;
--
--		size = btrfs_file_extent_ram_bytes(leaf, item);
--		extent_end = ALIGN(extent_start + size,
--				   fs_info->sectorsize);
--
- 		trace_btrfs_get_extent_show_fi_inline(inode, leaf, item,
- 						      path->slots[0],
- 						      extent_start);
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 6b86841315be..e47f768cec3d 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -5586,10 +5586,7 @@ static int get_last_extent(struct send_ctx *sctx, u64 offset)
- {
- 	struct btrfs_path *path;
- 	struct btrfs_root *root = sctx->send_root;
--	struct btrfs_file_extent_item *fi;
- 	struct btrfs_key key;
--	u64 extent_end;
--	u8 type;
- 	int ret;
- 
- 	path = alloc_path_for_send();
-@@ -5609,18 +5606,7 @@ static int get_last_extent(struct send_ctx *sctx, u64 offset)
- 	if (key.objectid != sctx->cur_ino || key.type != BTRFS_EXTENT_DATA_KEY)
- 		goto out;
- 
--	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
--			    struct btrfs_file_extent_item);
--	type = btrfs_file_extent_type(path->nodes[0], fi);
--	if (type == BTRFS_FILE_EXTENT_INLINE) {
--		u64 size = btrfs_file_extent_ram_bytes(path->nodes[0], fi);
--		extent_end = ALIGN(key.offset + size,
--				   sctx->send_root->fs_info->sectorsize);
--	} else {
--		extent_end = key.offset +
--			btrfs_file_extent_num_bytes(path->nodes[0], fi);
--	}
--	sctx->cur_inode_last_extent = extent_end;
-+	sctx->cur_inode_last_extent = btrfs_file_extent_end(path);
- out:
- 	btrfs_free_path(path);
- 	return ret;
-@@ -5674,16 +5660,7 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
- 			break;
- 
- 		fi = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
--		if (btrfs_file_extent_type(leaf, fi) ==
--		    BTRFS_FILE_EXTENT_INLINE) {
--			u64 size = btrfs_file_extent_ram_bytes(leaf, fi);
--
--			extent_end = ALIGN(key.offset + size,
--					   root->fs_info->sectorsize);
--		} else {
--			extent_end = key.offset +
--				btrfs_file_extent_num_bytes(leaf, fi);
--		}
-+		extent_end = btrfs_file_extent_end(path);
- 		if (extent_end <= start)
- 			goto next;
- 		if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
-@@ -5704,9 +5681,6 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
- static int maybe_send_hole(struct send_ctx *sctx, struct btrfs_path *path,
- 			   struct btrfs_key *key)
- {
--	struct btrfs_file_extent_item *fi;
--	u64 extent_end;
--	u8 type;
- 	int ret = 0;
- 
- 	if (sctx->cur_ino != key->objectid || !need_send_hole(sctx))
-@@ -5718,18 +5692,6 @@ static int maybe_send_hole(struct send_ctx *sctx, struct btrfs_path *path,
- 			return ret;
- 	}
- 
--	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
--			    struct btrfs_file_extent_item);
--	type = btrfs_file_extent_type(path->nodes[0], fi);
--	if (type == BTRFS_FILE_EXTENT_INLINE) {
--		u64 size = btrfs_file_extent_ram_bytes(path->nodes[0], fi);
--		extent_end = ALIGN(key->offset + size,
--				   sctx->send_root->fs_info->sectorsize);
--	} else {
--		extent_end = key->offset +
--			btrfs_file_extent_num_bytes(path->nodes[0], fi);
--	}
--
- 	if (path->slots[0] == 0 &&
- 	    sctx->cur_inode_last_extent < key->offset) {
- 		/*
-@@ -5755,7 +5717,7 @@ static int maybe_send_hole(struct send_ctx *sctx, struct btrfs_path *path,
- 		else
- 			ret = 0;
- 	}
--	sctx->cur_inode_last_extent = extent_end;
-+	sctx->cur_inode_last_extent = btrfs_file_extent_end(path);
- 	return ret;
- }
- 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 19c107be9ef6..b723ee03de26 100644
+index b723ee03de26..bd4854ced55d 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -4555,9 +4555,7 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 		return ret;
+@@ -4941,6 +4941,141 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
  
- 	while (true) {
--		struct btrfs_file_extent_item *extent;
- 		struct extent_buffer *leaf = path->nodes[0];
--		u64 len;
++static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
++				   struct btrfs_inode *inode,
++				   struct btrfs_key *min_key,
++				   const struct btrfs_key *max_key,
++				   struct btrfs_path *path,
++				   struct btrfs_path *dst_path,
++				   const u64 logged_isize,
++				   const bool recursive_logging,
++				   const int inode_only,
++				   struct btrfs_log_ctx *ctx,
++				   bool *need_log_inode_item)
++{
++	struct btrfs_root *root = inode->root;
++	int ins_start_slot = 0;
++	int ins_nr = 0;
++	int ret;
++
++	while (1) {
++		ret = btrfs_search_forward(root, min_key, path, trans->transid);
++		if (ret < 0)
++			return ret;
++		if (ret > 0) {
++			ret = 0;
++			break;
++		}
++again:
++		/* note, ins_nr might be > 0 here, cleanup outside the loop */
++		if (min_key->objectid != max_key->objectid)
++			break;
++		if (min_key->type > max_key->type)
++			break;
++
++		if (min_key->type == BTRFS_INODE_ITEM_KEY)
++			*need_log_inode_item = false;
++
++		if ((min_key->type == BTRFS_INODE_REF_KEY ||
++		     min_key->type == BTRFS_INODE_EXTREF_KEY) &&
++		    inode->generation == trans->transid &&
++		    !recursive_logging) {
++			u64 other_ino = 0;
++			u64 other_parent = 0;
++
++			ret = btrfs_check_ref_name_override(path->nodes[0],
++					path->slots[0], min_key, inode,
++					&other_ino, &other_parent);
++			if (ret < 0) {
++				return ret;
++			} else if (ret > 0 && ctx &&
++				   other_ino != btrfs_ino(BTRFS_I(ctx->inode))) {
++				if (ins_nr > 0) {
++					ins_nr++;
++				} else {
++					ins_nr = 1;
++					ins_start_slot = path->slots[0];
++				}
++				ret = copy_items(trans, inode, dst_path, path,
++						 ins_start_slot,
++						 ins_nr, inode_only,
++						 logged_isize);
++				if (ret < 0)
++					return ret;
++				ins_nr = 0;
++
++				ret = log_conflicting_inodes(trans, root, path,
++						ctx, other_ino, other_parent);
++				if (ret)
++					return ret;
++				btrfs_release_path(path);
++				goto next_key;
++			}
++		}
++
++		/* Skip xattrs, we log them later with btrfs_log_all_xattrs() */
++		if (min_key->type == BTRFS_XATTR_ITEM_KEY) {
++			if (ins_nr == 0)
++				goto next_slot;
++			ret = copy_items(trans, inode, dst_path, path,
++					 ins_start_slot,
++					 ins_nr, inode_only, logged_isize);
++			if (ret < 0)
++				return ret;
++			ins_nr = 0;
++			goto next_slot;
++		}
++
++		if (ins_nr && ins_start_slot + ins_nr == path->slots[0]) {
++			ins_nr++;
++			goto next_slot;
++		} else if (!ins_nr) {
++			ins_start_slot = path->slots[0];
++			ins_nr = 1;
++			goto next_slot;
++		}
++
++		ret = copy_items(trans, inode, dst_path, path,
++				 ins_start_slot, ins_nr, inode_only,
++				 logged_isize);
++		if (ret < 0)
++			return ret;
++		ins_nr = 1;
++		ins_start_slot = path->slots[0];
++next_slot:
++		path->slots[0]++;
++		if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
++			btrfs_item_key_to_cpu(path->nodes[0], min_key,
++					      path->slots[0]);
++			goto again;
++		}
++		if (ins_nr) {
++			ret = copy_items(trans, inode, dst_path, path,
++					 ins_start_slot,
++					 ins_nr, inode_only, logged_isize);
++			if (ret < 0)
++				return ret;
++			ins_nr = 0;
++		}
++		btrfs_release_path(path);
++next_key:
++		if (min_key->offset < (u64)-1) {
++			min_key->offset++;
++		} else if (min_key->type < max_key->type) {
++			min_key->type++;
++			min_key->offset = 0;
++		} else {
++			break;
++		}
++	}
++	if (ins_nr)
++		ret = copy_items(trans, inode, dst_path, path,
++				 ins_start_slot, ins_nr, inode_only,
++				 logged_isize);
++
++	return ret;
++}
++
+ /* log a single inode in the tree log.
+  * At least one parent directory for this inode must exist in the tree
+  * or be logged already.
+@@ -4970,9 +5105,6 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	struct btrfs_root *log = root->log_root;
+ 	int err = 0;
+ 	int ret;
+-	int nritems;
+-	int ins_start_slot = 0;
+-	int ins_nr;
+ 	bool fast_search = false;
+ 	u64 ino = btrfs_ino(inode);
+ 	struct extent_map_tree *em_tree = &inode->extent_tree;
+@@ -5103,139 +5235,12 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		goto out_unlock;
+ 	}
  
- 		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
- 			ret = btrfs_next_leaf(root, path);
-@@ -4606,18 +4604,7 @@ static int btrfs_log_holes(struct btrfs_trans_handle *trans,
- 			leaf = path->nodes[0];
- 		}
- 
--		extent = btrfs_item_ptr(leaf, path->slots[0],
--					struct btrfs_file_extent_item);
--		if (btrfs_file_extent_type(leaf, extent) ==
--		    BTRFS_FILE_EXTENT_INLINE) {
--			len = btrfs_file_extent_ram_bytes(leaf, extent);
--			prev_extent_end = ALIGN(key.offset + len,
--						fs_info->sectorsize);
--		} else {
--			len = btrfs_file_extent_num_bytes(leaf, extent);
--			prev_extent_end = key.offset + len;
+-	while (1) {
+-		ins_nr = 0;
+-		ret = btrfs_search_forward(root, &min_key,
+-					   path, trans->transid);
+-		if (ret < 0) {
+-			err = ret;
+-			goto out_unlock;
+-		}
+-		if (ret != 0)
+-			break;
+-again:
+-		/* note, ins_nr might be > 0 here, cleanup outside the loop */
+-		if (min_key.objectid != ino)
+-			break;
+-		if (min_key.type > max_key.type)
+-			break;
+-
+-		if (min_key.type == BTRFS_INODE_ITEM_KEY)
+-			need_log_inode_item = false;
+-
+-		if ((min_key.type == BTRFS_INODE_REF_KEY ||
+-		     min_key.type == BTRFS_INODE_EXTREF_KEY) &&
+-		    inode->generation == trans->transid &&
+-		    !recursive_logging) {
+-			u64 other_ino = 0;
+-			u64 other_parent = 0;
+-
+-			ret = btrfs_check_ref_name_override(path->nodes[0],
+-					path->slots[0], &min_key, inode,
+-					&other_ino, &other_parent);
+-			if (ret < 0) {
+-				err = ret;
+-				goto out_unlock;
+-			} else if (ret > 0 && ctx &&
+-				   other_ino != btrfs_ino(BTRFS_I(ctx->inode))) {
+-				if (ins_nr > 0) {
+-					ins_nr++;
+-				} else {
+-					ins_nr = 1;
+-					ins_start_slot = path->slots[0];
+-				}
+-				ret = copy_items(trans, inode, dst_path, path,
+-						 ins_start_slot,
+-						 ins_nr, inode_only,
+-						 logged_isize);
+-				if (ret < 0) {
+-					err = ret;
+-					goto out_unlock;
+-				}
+-				ins_nr = 0;
+-
+-				err = log_conflicting_inodes(trans, root, path,
+-						ctx, other_ino, other_parent);
+-				if (err)
+-					goto out_unlock;
+-				btrfs_release_path(path);
+-				goto next_key;
+-			}
 -		}
 -
-+		prev_extent_end = btrfs_file_extent_end(path);
- 		path->slots[0]++;
- 		cond_resched();
- 	}
+-		/* Skip xattrs, we log them later with btrfs_log_all_xattrs() */
+-		if (min_key.type == BTRFS_XATTR_ITEM_KEY) {
+-			if (ins_nr == 0)
+-				goto next_slot;
+-			ret = copy_items(trans, inode, dst_path, path,
+-					 ins_start_slot,
+-					 ins_nr, inode_only, logged_isize);
+-			if (ret < 0) {
+-				err = ret;
+-				goto out_unlock;
+-			}
+-			ins_nr = 0;
+-			goto next_slot;
+-		}
+-
+-		if (ins_nr && ins_start_slot + ins_nr == path->slots[0]) {
+-			ins_nr++;
+-			goto next_slot;
+-		} else if (!ins_nr) {
+-			ins_start_slot = path->slots[0];
+-			ins_nr = 1;
+-			goto next_slot;
+-		}
+-
+-		ret = copy_items(trans, inode, dst_path, path,
+-				 ins_start_slot, ins_nr, inode_only,
+-				 logged_isize);
+-		if (ret < 0) {
+-			err = ret;
+-			goto out_unlock;
+-		}
+-		ins_nr = 1;
+-		ins_start_slot = path->slots[0];
+-next_slot:
+-
+-		nritems = btrfs_header_nritems(path->nodes[0]);
+-		path->slots[0]++;
+-		if (path->slots[0] < nritems) {
+-			btrfs_item_key_to_cpu(path->nodes[0], &min_key,
+-					      path->slots[0]);
+-			goto again;
+-		}
+-		if (ins_nr) {
+-			ret = copy_items(trans, inode, dst_path, path,
+-					 ins_start_slot,
+-					 ins_nr, inode_only, logged_isize);
+-			if (ret < 0) {
+-				err = ret;
+-				goto out_unlock;
+-			}
+-			ins_nr = 0;
+-		}
+-		btrfs_release_path(path);
+-next_key:
+-		if (min_key.offset < (u64)-1) {
+-			min_key.offset++;
+-		} else if (min_key.type < max_key.type) {
+-			min_key.type++;
+-			min_key.offset = 0;
+-		} else {
+-			break;
+-		}
+-	}
+-	if (ins_nr) {
+-		ret = copy_items(trans, inode, dst_path, path,
+-				 ins_start_slot, ins_nr, inode_only,
+-				 logged_isize);
+-		if (ret < 0) {
+-			err = ret;
+-			goto out_unlock;
+-		}
+-		ins_nr = 0;
+-	}
++	err = copy_inode_items_to_log(trans, inode, &min_key, &max_key,
++				      path, dst_path, logged_isize,
++				      recursive_logging, inode_only, ctx,
++				      &need_log_inode_item);
++	if (err)
++		goto out_unlock;
+ 
+ 	btrfs_release_path(path);
+ 	btrfs_release_path(dst_path);
 -- 
 2.11.0
 
