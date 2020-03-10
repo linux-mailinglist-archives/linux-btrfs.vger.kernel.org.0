@@ -2,173 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF928180018
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 15:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF53180086
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 15:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgCJO1m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 10:27:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37480 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgCJO1m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 10:27:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A9D99AC92;
-        Tue, 10 Mar 2020 14:27:39 +0000 (UTC)
-Subject: Re: [PATCH 1/5] btrfs: Improve global reserve stealing logic
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200309202322.12327-1-josef@toxicpanda.com>
- <20200309202322.12327-2-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <93fb53ea-1c69-a683-5c4a-d09fd32985ba@suse.com>
-Date:   Tue, 10 Mar 2020 16:27:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200309202322.12327-2-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+        id S1727476AbgCJOqD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 10:46:03 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:31507 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727317AbgCJOqD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Mar 2020 10:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1583851562; x=1615387562;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=PDkKEbHE1RL7TW2XWhWvuQ96+zmaizgdW2b4681fAcp4GYkLqW833hQy
+   SRgxFFpnM6UsxsG8Q6v990dglNt9idVlsbnjwpMO2m40/b+cwNok8A8SU
+   vy1UHp9qDV2pWuTJ11HJEoYGFPf3MNNH0xVs2hSykR2b4TYxHGxk2oApe
+   SYbI8CdBVGQYqC1kUICFPHgLVxKBeYajuUXYd2mF83vCj0z5kI0VIIC+N
+   kkAdq7rD5R6UTyygJfS0eLVi/NsHnNlUZNQuAE+OK9ogB7PTEsVIo1RIf
+   UHsRbT4PpjVa7cFJ4HyX83dfOzFrWS5zeGMWNGt8mIaS3tncKx6/pu0bI
+   g==;
+IronPort-SDR: qXnD2prOPxwfx1jQkCT/cS86VfnaFTKgXNSUA+nVS71hDwpEDqjk3X8kCEw+30dm/u9hycPudL
+ hZee//WjfVHQ8abaSs5Y4vBxpw8lcT0aTKWm6Vq9/6uGA/1Fi6zbLve9Fjjkq3E1nRfwkARWf5
+ SR+mzo/rBeqIhvaNwsj96R32SZhOtA/L+fQ/8oYkc9wHzz+WpMYDfRzLFMP7IeqfuVXzXu+BDh
+ hwYZVbQSMW+xfQayyFnjRkd+W7W9B4MKJ769YCRmXdSmWFfDkCWRlH8p+tkQrgA0tfBRygw0dw
+ YUs=
+X-IronPort-AV: E=Sophos;i="5.70,537,1574092800"; 
+   d="scan'208";a="240340284"
+Received: from mail-bn8nam12lp2176.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.176])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Mar 2020 22:46:01 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i35jajCsEA1cas92YDDaGFE3FD/uiC7HBcErGL9aYl4uN/hdPcj9weg91ETiHaOLXstnjkJwnEdOEm49/JZH1UrTNDoUTyN/uvl/A20So59Br16mCJ2LWotWNWOnJJiB4EnZ+cdZD5YnmOqeU1/i5pHeSpgGdMj+PapUSlBXNWrGhcx4C3VqpoW0AXtLCpvGmGFDpKSWwT0aomMBrq+ehOQlJQukCfQTskIyGXuJiqnu/xpqJ3V8jsZh7C1YN2yBgwSPkWrPEePkgqUfdhQhcxX/bAcEy9RIAglaMQMnWrmDsK5nKaAgEJXC2naH7MdDEgXIwt+3kESrdKaoHD1miA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=AfIE7wbMK3CUW/o1OKsH/PL6KmYbVSeXRVLtI438uBoEI4gTTl/yrYUmoMrxPNYiZzN7ND/A7ZZ2CE7ctD6OAkervKA2zOVQ6R3CEFyczgc5zjjoQKIthb8P9TeGoUF07d3habiT0hjYaxWHY3ZS4z2y0Qq+Fa7v4DBxw4deVt/7qh24b0FOBuw9rj7V4QlgV+SYIHEIUrCMANuMqPgLyAKYHqHi6VkZzxA1x5f2BSrbvMx7daRcrSE76kagbYnONntJo40FMVSo4GT6pP2Lk6ooec/X8wQFGSqvcZB48sZXSNKRXs9i8pIWTXz5xe+80TDcHXvx1dKUG5utk0boKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=DksVErCRZkywDeNENqE3K2p4TKGnW9zsk8zdZYLI8GfoM9TSeyyQb/lh1j861IQ+XQWMqhKAVMGA4TcmGWe+3Erao68HJT9Os9PgPlaQxYMZPsTSQTIhzm/sTxGymhdrDb/x3BJUGIOA809SkWapQpjL8lYngUUcNXOxj1X8+oY=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3600.namprd04.prod.outlook.com
+ (2603:10b6:803:46::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17; Tue, 10 Mar
+ 2020 14:46:00 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2793.013; Tue, 10 Mar 2020
+ 14:46:00 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Omar Sandoval <osandov@osandov.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+CC:     "kernel-team@fb.com" <kernel-team@fb.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 06/15] btrfs: rename __readpage_endio_check to
+ check_data_csum
+Thread-Topic: [PATCH 06/15] btrfs: rename __readpage_endio_check to
+ check_data_csum
+Thread-Index: AQHV9lpUHp1fU/B49EWYUtabj3FX4g==
+Date:   Tue, 10 Mar 2020 14:46:00 +0000
+Message-ID: <SN4PR0401MB3598011B26CDF3FC09AF79F69BFF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1583789410.git.osandov@fb.com>
+ <f0404525ae352a08750f56a822512a52263d7277.1583789410.git.osandov@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5d7b49f6-a448-463b-5cfd-08d7c501bfe9
+x-ms-traffictypediagnostic: SN4PR0401MB3600:
+x-microsoft-antispam-prvs: <SN4PR0401MB36000DAA46033406C2D05A2A9BFF0@SN4PR0401MB3600.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 033857D0BD
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(199004)(189003)(19618925003)(64756008)(54906003)(81156014)(316002)(110136005)(52536014)(81166006)(4270600006)(5660300002)(8676002)(66446008)(6506007)(7696005)(2906002)(71200400001)(76116006)(26005)(66946007)(478600001)(8936002)(86362001)(4326008)(66556008)(9686003)(55016002)(186003)(558084003)(66476007)(33656002)(91956017);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3600;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zEGlWAJHnn6tPdGWqS2TFxWaGWceutS3SlHLMfDn2aT4fYmYg653OxgmvgZHHy5RUzqu9pN0C1Y+Zt24rxbAcnKZ97hxG8KcIqQauIOHu5x+DjnHAOW2WPWqtkSbX1SMitQIuySL9A8UE4CX6IbABjBICWXujguBRNC1yPDv6rdxcFwZhjeaRNMlTBtnkaxLRzdA9dku3cIQ+1BgVn9Qc7OCGjVW+yVk3XasGFAFMluj3WXSgPShkBECnDD8iW3Dvgn1ceit2Cu5Zur9DDTlkJodvA0knOh53tsZUp8xLhaKyn5+HixCLh+luy1yPQ8Jj7H4G10SDTZ8K+dUkvqE1f3dnd/GZ9A7p2fUQeJCjy0sHBECWubwTdzB+5ao93QQXJmFMO+Sngvu8GUw427ITCU82j0mJ9tWQHxshcn82W+79pNpSbM3E7RIIwjiqxmz
+x-ms-exchange-antispam-messagedata: 40aLqQ9Iz0DrZRzYXdeiml+5LPbV0Ul2aO+HM1QPfALIeZy8j9aPHlT2rLIpGBItTkNLggelSgD6QCIG2Oeft+94OoLJgCcCkv/Ss0qAqD902ayFPntFKS1o4DXG4uBK1blJlSz+Eq3dIb1dZD0v0g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d7b49f6-a448-463b-5cfd-08d7c501bfe9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2020 14:46:00.0216
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: E95CkgxRTgkaTUuL7KofUYs0icTQ6FpunhztopE3CfrRHDixxbygdkI8JXDBULxxpQoLAUKZfUdZXmdz03EkBXlAXLwFrjZCUGsYdYy2Bro=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3600
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
-> For unlink transactions and block group removal
-> btrfs_start_transaction_fallback_global_rsv will first try to start
-> an ordinary transaction and if it fails it will fall back to reserving
-> the required amount by stealing from the global reserve. This is sound
-> in theory but current code doesn't perform any locking or throttling so
-> if there are multiple concurrent unlink() callers they can deplete
-> the global reservation which will result in ENOSPC.
-> 
-> Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
-> used to mark unlink reservation. The flushing machinery is modified to
-> steal from global reservation when it sees such reservation being on the
-> brink of failure (in maybe_fail_all_tickets).
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/block-group.c |  2 +-
->  fs/btrfs/ctree.h       |  1 +
->  fs/btrfs/inode.c       |  2 +-
->  fs/btrfs/space-info.c  | 38 +++++++++++++++++++++++++++++++++++++-
->  fs/btrfs/space-info.h  |  1 +
->  fs/btrfs/transaction.c | 42 +++++-------------------------------------
->  fs/btrfs/transaction.h |  3 +--
->  7 files changed, 47 insertions(+), 42 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 60e9bb136f34..faa04093b6b5 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1171,7 +1171,7 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
->  	free_extent_map(em);
->  
->  	return btrfs_start_transaction_fallback_global_rsv(fs_info->extent_root,
-> -							   num_items, 1);
-> +							   num_items);
->  }
->  
->  /*
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 2ccb2a090782..782c63f213e9 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -2528,6 +2528,7 @@ enum btrfs_reserve_flush_enum {
->  	BTRFS_RESERVE_FLUSH_DATA,
->  	BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE,
->  	BTRFS_RESERVE_FLUSH_ALL,
-> +	BTRFS_RESERVE_FLUSH_ALL_STEAL,
->  };
->  
->  enum btrfs_flush_state {
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b8dabffac767..4e3b115ef1d7 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3617,7 +3617,7 @@ static struct btrfs_trans_handle *__unlink_start_trans(struct inode *dir)
->  	 * 1 for the inode ref
->  	 * 1 for the inode
->  	 */
-> -	return btrfs_start_transaction_fallback_global_rsv(root, 5, 5);
-> +	return btrfs_start_transaction_fallback_global_rsv(root, 5);
->  }
->  
->  static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 26e1c492b9b5..9c9a4933f72b 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -810,6 +810,35 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
->  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
->  }
->  
-> +static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
-> +				  struct btrfs_space_info *space_info,
-> +				  struct reserve_ticket *ticket)
-> +{
-> +	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
-> +	u64 min_bytes;
-> +
-> +	if (global_rsv->space_info != space_info)
-> +		return false;
-> +
-> +	spin_lock(&global_rsv->lock);
-> +	min_bytes = div_factor(global_rsv->size, 1);
-> +	if (global_rsv->reserved < min_bytes + ticket->bytes) {
-> +		spin_unlock(&global_rsv->lock);
-> +		return false;
-> +	}
-> +	global_rsv->reserved -= ticket->bytes;
-> +	ticket->bytes = 0;
-> +	trace_printk("Satisfied ticket from global rsv\n");
-
-nit: that's a left-over from my debugging of this patch, it must be
-removed before being merged :)
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
