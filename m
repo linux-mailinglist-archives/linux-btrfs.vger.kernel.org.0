@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F3817F253
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 09:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C759917F261
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 09:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgCJIxQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 04:53:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51876 "EHLO mx2.suse.de"
+        id S1726569AbgCJIyy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 04:54:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52890 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726389AbgCJIxQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 04:53:16 -0400
+        id S1726389AbgCJIyy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Mar 2020 04:54:54 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 06E00B28F;
-        Tue, 10 Mar 2020 08:53:14 +0000 (UTC)
-Subject: Re: Help with my btfrs corruption after a power failure!
-To:     "hodea.stefan@gmail.com" <hodea.stefan@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <331f2df8-3eee-0186-eb41-4f0edd1bce9c@gmail.com>
+        by mx2.suse.de (Postfix) with ESMTP id 04D15AC5C;
+        Tue, 10 Mar 2020 08:54:51 +0000 (UTC)
+Subject: Re: ENOSPC in btrfs_drop_snapshot with 5.4.21
+To:     Martin Raiber <martin@urbackup.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <01020170c1c26e04-031eb2cc-f2da-4ba3-b259-986730cfae7a-000000@eu-west-1.amazonses.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ccdea277-8b85-b7ba-ba0c-2d25ee8f00fa@suse.com>
-Date:   Tue, 10 Mar 2020 10:53:13 +0200
+Message-ID: <4d136b19-b2d9-bc4a-8dba-504ae3aabdf8@suse.com>
+Date:   Tue, 10 Mar 2020 10:54:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <331f2df8-3eee-0186-eb41-4f0edd1bce9c@gmail.com>
+In-Reply-To: <01020170c1c26e04-031eb2cc-f2da-4ba3-b259-986730cfae7a-000000@eu-west-1.amazonses.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,48 +78,50 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 10.03.20 г. 10:22 ч., hodea.stefan@gmail.com wrote:
-> Hello! I need some tips on how to repair the btrfs partition, following
-> repeated power outages from home.
-> The situation: For several months I have stopped using xpenology in
-> favor of another dedicated Linux distribution for network storage (at
-> another location I ran into the same btrfs corruption issue, but then I
-> didn't have much data on the server and I didn't shake my head. in
-> solving the problem). Now being the NAS server on which all the family
-> documents can be found. On it are installed 3 hdds: one of 2 Tb and 2 of
-> 1 Gb configured in raid1 since using xpenology. The tried commands were:
+On 10.03.20 г. 2:05 ч., Martin Raiber wrote:
+> Hi,
 > 
-> btrfs scrub start /srv/dev-disk-by-label-2018.05.11-19-05-54 \ v15266 /
-> btrfs scrub status -dR /srv/dev-disk-by-label-2018.05.11-19-05-54 \
-> v15266 /
+> I get a enospc to remount-ro with 5.4.21. Details:
 > 
-> And
+> Linux 5.4.21 #1 SMP Fri Feb 21 03:20:26 CET 2020 x86_64 GNU/Linux
 > 
-> btrfs check --check-data-csum / dev / md126
-> Checking filesystem on / dev / md126
-> UUID: 3ce16830-f95b-4f0c-b96f-bd6f10c435e2
-> checking extents
-> checksum verify failed on 358432768 found 5BFBA855 wanted 0F952A4E
-> checksum verify failed on 358432768 found 5BFBA855 wanted 0F952A4E
-> Invalid key type (BLOCK_GROUP_ITEM) found in root (202)
-> ignoring invalid key
-> Invalid key type (BLOCK_GROUP_ITEM) found in root (202)
-> ignoring invalid key
-> Invalid key type (BLOCK_GROUP_ITEM) found in root (202)
-> ignoring invalid key
-> Invalid key type (BLOCK_GROUP_ITEM) found in root (202)
-> ignoring invalid key
-> Invalid key type (BLOCK_GROUP_ITEM) found in root (202)
-> ignoring invalid key
+> btrfs fi usage /media/btrfs (after remount-ro)
+> Overall:
+>     Device size:                 511.99GiB
+>     Device allocated:            511.99GiB
+>     Device unallocated:              0.00B
+>     Device missing:                  0.00B
+>     Used:                        443.68GiB
+>     Free (estimated):             54.94GiB      (min: 54.94GiB)
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
 > 
-> What is more surprising to me is, that partition configured with raid1
-> btrfs have been corrupted from those power outages.
+> Data,single: Size:490.98GiB, Used:436.04GiB (88.81%)
+>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc  490.98GiB
 > 
-> Thank you for your attention
+> Metadata,single: Size:21.01GiB, Used:7.65GiB (36.40%)
+>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc   21.01GiB
+> 
+> System,single: Size:4.00MiB, Used:80.00KiB (1.95%)
+>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc    4.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc      0.00B
+> 
+> Mount options:
+> /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc on /media/btrfs
+> type btrfs
+> (ro,noatime,compress-force=zstd:3,nossd,space_cache=v2,enospc_debug,skip_balance,metadata_ratio=8,subvolid=5,subvol=/)
+> 
+> btrfs fi df /media/btrfs
+> Data, single: total=490.98GiB, used=436.04GiB
+> System, single: total=4.00MiB, used=80.00KiB
+> Metadata, single: total=21.01GiB, used=7.65GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+> 
+> dmesg attached.
+> 
 
-What kernel version are you using and what is the version of progs?
-
-> 
-> Regards,
-> Stefan Hodea
-> 
+Were you performing any specific operation when this happened or you had
+simply deleted a snapshot and some time later you got the ENOSPC?
