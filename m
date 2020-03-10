@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E8717F513
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 11:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D3E17F518
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 11:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgCJKaz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 06:30:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52148 "EHLO mx2.suse.de"
+        id S1726269AbgCJKcx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 06:32:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52934 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbgCJKay (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 06:30:54 -0400
+        id S1725845AbgCJKcx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Mar 2020 06:32:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 239F2B066;
-        Tue, 10 Mar 2020 10:30:52 +0000 (UTC)
-Subject: Re: [PATCH 4/5] btrfs: only check priority tickets for priority
- flushing
+        by mx2.suse.de (Postfix) with ESMTP id 052D5B117;
+        Tue, 10 Mar 2020 10:32:51 +0000 (UTC)
+Subject: Re: [PATCH 5/5] btrfs: run btrfs_try_granting_tickets if a priority
+ ticket fails
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200309202322.12327-1-josef@toxicpanda.com>
- <20200309202322.12327-5-josef@toxicpanda.com>
+ <20200309202322.12327-6-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <f3378de7-0130-1064-0a40-3a7eb593363d@suse.com>
-Date:   Tue, 10 Mar 2020 12:30:51 +0200
+Message-ID: <43e5846b-17a4-8ff2-e6e1-26a3f201a672@suse.com>
+Date:   Tue, 10 Mar 2020 12:32:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200309202322.12327-5-josef@toxicpanda.com>
+In-Reply-To: <20200309202322.12327-6-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,100 +81,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
-> In debugging a generic/320 failure on ppc64, Nikolay noticed that
-> sometimes we'd ENOSPC out with plenty of space to reclaim if we had
-> committed the transaction.  He further discovered that this was because
-> there was a priority ticket that was small enough to fit in the free
-> space currently in the space_info.
+> With normal tickets we could have a large reservation at the front of
+> the list that is unable to be satisfied, but a smaller ticket later on
+> that can be satisfied.  The way we handle this is to run
+> btrfs_try_granting_tickets() in maybe_fail_all_tickets().
 > 
-> This is problematic because we prioritize priority tickets, refilling
-> them first as new space becomes available.  However this leaves a corner
-> where we could fail to satisfy a priority ticket when we would have
-> otherwise succeeded.
-
-This warrants an example.
-
+> However no such protection exists for priority tickets.  Fix this by
+> handling it in handle_reserve_ticket().  If we've returned after
+> attempting to flush space in a priority related way, we'll still be on
+> the priority list and need to be removed.
 > 
-> Consider the case where there's no flushing left to happen other than
-> commit the transaction, and there are tickets on the normal flushing
-> list. 
-
-^ does this refer to the ordinary flush
-btrfs_async_reclaim_metadata_space or priority_reclaim_metadata_space
-with evict_flush_states (which also contains a COMMIT_TRANS state).
-
- The priority flusher comes in, and assume there's enough space
-> left in the space_info to satisfy this request.  
-
-This happens _after_ we've been added to the prio list, so perhahps this
-and the next sentence need to be transposed, reworded to explicitly
-state that despite us having space to satisfy an incoming prio request
-if it see pending prio requests it will simply add this to the list.
-
-We will still be added
-> to the priority list and go through the flushing motions, and eventually
-> fail returning an ENOSPC.
+> We rely on the flushing to free up space and wake the ticket, but if
+> there is not enough space to reclaim _but_ there's enough space in the
+> space_info to handle subsequent reservations then we would have gotten
+> an ENOSPC erroneously.
 > 
-> Instead we should only add ourselves to the list if there's something on
-> the priority_list already.  This way we avoid the incorrect ENOSPC
-> scenario.
+> Address this by catching where we are still on the list, meaning we were
+> a priority ticket, and removing ourselves and then running
+> btrfs_try_granting_tickets().  This will handle this particular corner
+> case.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/space-info.c | 28 +++++++++++++++++++++++-----
->  1 file changed, 23 insertions(+), 5 deletions(-)
+>  fs/btrfs/space-info.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
 > 
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index d198cfd45cf7..77ea204f0b6a 100644
+> index 77ea204f0b6a..03172ecd9c0b 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -1276,6 +1276,17 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
->  	return ret;
->  }
->  
-> +/*
-> + * This returns true if this flush state will go through the ordinary flushing
-> + * code.
-> + */
-> +static inline bool is_normal_flushing(enum btrfs_reserve_flush_enum flush)
-> +{
-> +	return (flush == BTRFS_RESERVE_FLUSH_DATA) ||
-> +		(flush == BTRFS_RESERVE_FLUSH_ALL) ||
-> +		(flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
-> +}
+> @@ -1256,11 +1256,17 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+>  	ret = ticket->error;
+>  	if (ticket->bytes || ticket->error) {
+>  		/*
+> -		 * Need to delete here for priority tickets. For regular tickets
+> -		 * either the async reclaim job deletes the ticket from the list
+> -		 * or we delete it ourselves at wait_reserve_ticket().
+> +		 * We were a priority ticket, so we need to delete ourselves
+> +		 * from the list.  Because we could have other priority tickets
+> +		 * behind us that require less space, run
+> +		 * btrfs_try_granting_tickets() to see if their reservations can
+> +		 * now be made.
+>  		 */
+> -		list_del_init(&ticket->list);
+> +		if (!list_empty(&ticket->list)) {
+> +			list_del_init(&ticket->list);
+> +			btrfs_try_granting_tickets(fs_info, space_info);
+> +		}
+
+I'd rather have this handled in priority_reclaim_metadata_space.
 > +
->  /**
->   * reserve_metadata_bytes - try to reserve bytes from the block_rsv's space
->   * @root - the root we're allocating for
-> @@ -1311,8 +1322,17 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
->  	spin_lock(&space_info->lock);
->  	ret = -ENOSPC;
->  	used = btrfs_space_info_used(space_info, true);
-> -	pending_tickets = !list_empty(&space_info->tickets) ||
-> -		!list_empty(&space_info->priority_tickets);
-> +
-> +	/*
-> +	 * We don't want NO_FLUSH allocations to jump everybody, they can
-> +	 * generally handle ENOSPC in a different way, so treat them the same as
-> +	 * normal flushers when it comes to skipping pending tickets.
-> +	 */
-> +	if (is_normal_flushing(flush) || (flush == BTRFS_RESERVE_NO_FLUSH))
-> +		pending_tickets = !list_empty(&space_info->tickets) ||
-> +			!list_empty(&space_info->priority_tickets);
-> +	else
-> +		pending_tickets = !list_empty(&space_info->priority_tickets);
->  
->  	/*
->  	 * Carry on if we have enough space (short-circuit) OR call
-> @@ -1338,9 +1358,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
->  		ticket.error = 0;
->  		init_waitqueue_head(&ticket.wait);
->  		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
-> -		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
-> -		    flush == BTRFS_RESERVE_FLUSH_DATA ||
-> -		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
-> +		if (is_normal_flushing(flush)) {
->  			list_add_tail(&ticket.list, &space_info->tickets);
->  			if (!space_info->flush) {
->  				space_info->flush = 1;
+>  		if (!ret)
+>  			ret = -ENOSPC;
+>  	}
 > 
