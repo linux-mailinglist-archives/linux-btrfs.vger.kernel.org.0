@@ -2,169 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C298517FECE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 14:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF928180018
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 15:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbgCJNkr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 09:40:47 -0400
-Received: from mail-qt1-f171.google.com ([209.85.160.171]:45675 "EHLO
-        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgCJNkr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 09:40:47 -0400
-Received: by mail-qt1-f171.google.com with SMTP id a4so9599444qto.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Mar 2020 06:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5vu1i6JU9zdD/JCzCOO+f8X/TnDT40+qLiG1pRNeZis=;
-        b=Iq0NtN8iD4XI731ngV4spLqbk12fnGylmVITnZ9bxj57mUoRVxK+PwvvLPM/3tAibN
-         gBoInvL2JHteW6v2glnccwOP0mraO0+z90GVHrCGy7WbKgT6IRWLcRpvLhCN8UIFZ3YT
-         +fJKcI1b+B2tANT1L4y58qeoCR906gvWzfhI3HQQd/7LH8fPWPc42pLuLzpGUnlfPvbS
-         r1nWj7/gZKUiN4mNDc/iC6LgZcTuqggj1UpNx0xfrZWiaN97k9FhC/+t6q/06RBDX3in
-         5gW5xH151Mk+BVxx5QlvJYZaAaVfbk1qPd0l4LURVqryvAMCk85iACLBrHmhf3S8ym83
-         8ZoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5vu1i6JU9zdD/JCzCOO+f8X/TnDT40+qLiG1pRNeZis=;
-        b=jcpqoj5a6gOfX8DOdEYb7HELwgu5ZiduOo5JIVun84m9Kpxq7VcE2OKMPql6HkdS7X
-         inG0Opi3yxG3EZuI61teq7/VxvFkBlRg5XzaG4hWxhrnh1yw3nWOEKc9V6tlep+nFHp3
-         a5SIjXdEurXWA8H2k6jju9NFBg5w+mNDbuvaPX9t1fS8WJhMYAWoO857gt18cT5fSttX
-         NrdmhNNinZAbva8drd8OMSYct6E0+vJmUKKqI7yNSrqPjxWM1QkLIU7X5wmbLuN9hlnb
-         f/wSzrQIIVXJ+Mh0GLbGWC01labB7VMIbOf2XlmVA+jOU6KOoGzjCkGj52XVLFoEPw0t
-         iFkw==
-X-Gm-Message-State: ANhLgQ3NV+IMJ82dSt322slIq0GwJIZM+UTUOZ8rrxQm4k5sAeCw8rEm
-        oGkNLRhbzOAsLQty7P+BaRxLkA==
-X-Google-Smtp-Source: ADFU+vvXpqPLW9e1zszFsYrKPp4ZWimWnYZzklyddrU/6qoFJquPIgbZA2vWptCYb3Gq5Q8poW2WOg==
-X-Received: by 2002:ac8:6753:: with SMTP id n19mr18773081qtp.193.1583847645476;
-        Tue, 10 Mar 2020 06:40:45 -0700 (PDT)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w132sm1652276qkb.96.2020.03.10.06.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Mar 2020 06:40:44 -0700 (PDT)
-Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
- <20200310131339.GJ8447@dhcp22.suse.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <8b09da1d-d170-3857-4478-78afb647b551@toxicpanda.com>
-Date:   Tue, 10 Mar 2020 09:40:43 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        id S1726598AbgCJO1m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 10:27:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37480 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726273AbgCJO1m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Mar 2020 10:27:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A9D99AC92;
+        Tue, 10 Mar 2020 14:27:39 +0000 (UTC)
+Subject: Re: [PATCH 1/5] btrfs: Improve global reserve stealing logic
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200309202322.12327-1-josef@toxicpanda.com>
+ <20200309202322.12327-2-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <93fb53ea-1c69-a683-5c4a-d09fd32985ba@suse.com>
+Date:   Tue, 10 Mar 2020 16:27:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200310131339.GJ8447@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200309202322.12327-2-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/10/20 9:13 AM, Michal Hocko wrote:
-> On Fri 06-03-20 09:35:41, Josef Bacik wrote:
->> Hello,
->>
->> This has been a topic that I've been thinking about a lot recently, mostly
->> because of the giant amount of work that has been organizing LSFMMBPF.
-> 
-> There is undoubtedly a lot of work to make a great conference. I have hard
-> time imagine this could be ever done without a lot of time and effort on
-> the organizing side. I do not believe we can simply outsource a highly
-> technical conference to somebody outside of the community. LF is doing a
-> lot of great work to help with the venue and related stuff but content
-> wise it is still on the community IMHO.
-> 
-> [...]
->> These are all really good goals, and why we love the idea of LSFMMBPF.  But
->> having attended these things every year for the last 13 years, it has become
->> less and less of these things, at least from my perspective.  A few problems
->> (as I see them) are
->>
->> 1) The invitation process.  We've tried many different things, and I think
->> we generally do a good job here, but the fact is if I don't know somebody
->> I'm not going to give them a very high rating, making it difficult to
->> actually bring in new people.
-> 
-> My experience from the MM track involvement last few years is slightly
-> different. We have always had a higher demand than seats available
-> for the track. We have tried really hard to bring people who could
-> contribute the most requested topic into the room. We have also tried to
-> bring new contributors in. There are always compromises to be made but
-> my recollection is that discussions were usually very useful and moved
-> topics forward. The room size played an important role in that regard.
-> 
->> 2) There are so many of us.  Especially with the addition of the BPF crowd
->> we are now larger than ever.  This makes problem #1 even more apparent, even
->> if I weighted some of the new people higher who's slot should they take
->> instead?  I have 0 problems finding 20 people in the FS community who should
->> absolutely be in the room.  But now I'm trying to squeeze in 1-5 extra
->> people.  Propagate that across all the tracks and now we're at an extra
->> 20ish people.
-> 
-> Yes, BPF track made the conference larger indeed. This might be problem
-> for funding but it didn't really cause much more work for tracks
-> organization (well for MM at least).
-> 
->> 3) Half the people I want to talk to aren't even in the room.  This may be a
->> uniquely file system track problem, but most of my work is in btrfs, and I
->> want to talk to my fellow btrfs developers.  But again, we're trying to
->> invite an entire community, so many of them simply don't request
->> invitations, or just don't get invited.
-> 
-> I do not have the same experience on the MM track. Even though the whole
-> community is hard to fit into the room, there tends to be a sufficient
-> mass to move a topic forward usually. Even if we cannot conclude many
-> topics there are usually many action items as an outcome.
-> 
-> [...]
-> 
->> So what do I propose?  I propose we kill LSFMMBPF.
-> 
-> This would be really unfortunate. LSFMMBPF has been the most attractive
-> conference for me exactly because of the size and cost/benefit. I do
-> realize we are growing and that should be somehow reflected in the
-> future. I do not have good answers how to do that yet unfortunately.
-> Maybe we really need to split the core agenda and topics which could be
-> discussed/presented on other conferences. Or collocate with another
-> conference but I have a feeling that we could cover more since LSFMMBPF
-> 
 
-LSFMMBPF is still by far the most useful conference I attend, so much so that 
-it's basically the only thing I attend anymore.
 
-My point is less about no longer having a conference at all, and more about 
-changing what we currently have to be more useful to more people.  For MM, and I 
-assume BPF, it's much different as you guys are all on the same codebase.  You 
-get 25 people in the room chances are a much larger percentage of you are 
-interested in each individual topic.
+On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
+> For unlink transactions and block group removal
+> btrfs_start_transaction_fallback_global_rsv will first try to start
+> an ordinary transaction and if it fails it will fall back to reserving
+> the required amount by stealing from the global reserve. This is sound
+> in theory but current code doesn't perform any locking or throttling so
+> if there are multiple concurrent unlink() callers they can deplete
+> the global reservation which will result in ENOSPC.
+> 
+> Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
+> used to mark unlink reservation. The flushing machinery is modified to
+> steal from global reservation when it sees such reservation being on the
+> brink of failure (in maybe_fail_all_tickets).
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/block-group.c |  2 +-
+>  fs/btrfs/ctree.h       |  1 +
+>  fs/btrfs/inode.c       |  2 +-
+>  fs/btrfs/space-info.c  | 38 +++++++++++++++++++++++++++++++++++++-
+>  fs/btrfs/space-info.h  |  1 +
+>  fs/btrfs/transaction.c | 42 +++++-------------------------------------
+>  fs/btrfs/transaction.h |  3 +--
+>  7 files changed, 47 insertions(+), 42 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 60e9bb136f34..faa04093b6b5 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1171,7 +1171,7 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+>  	free_extent_map(em);
+>  
+>  	return btrfs_start_transaction_fallback_global_rsv(fs_info->extent_root,
+> -							   num_items, 1);
+> +							   num_items);
+>  }
+>  
+>  /*
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 2ccb2a090782..782c63f213e9 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -2528,6 +2528,7 @@ enum btrfs_reserve_flush_enum {
+>  	BTRFS_RESERVE_FLUSH_DATA,
+>  	BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE,
+>  	BTRFS_RESERVE_FLUSH_ALL,
+> +	BTRFS_RESERVE_FLUSH_ALL_STEAL,
+>  };
+>  
+>  enum btrfs_flush_state {
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index b8dabffac767..4e3b115ef1d7 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3617,7 +3617,7 @@ static struct btrfs_trans_handle *__unlink_start_trans(struct inode *dir)
+>  	 * 1 for the inode ref
+>  	 * 1 for the inode
+>  	 */
+> -	return btrfs_start_transaction_fallback_global_rsv(root, 5, 5);
+> +	return btrfs_start_transaction_fallback_global_rsv(root, 5);
+>  }
+>  
+>  static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 26e1c492b9b5..9c9a4933f72b 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -810,6 +810,35 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+>  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
+>  }
+>  
+> +static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+> +				  struct btrfs_space_info *space_info,
+> +				  struct reserve_ticket *ticket)
+> +{
+> +	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+> +	u64 min_bytes;
+> +
+> +	if (global_rsv->space_info != space_info)
+> +		return false;
+> +
+> +	spin_lock(&global_rsv->lock);
+> +	min_bytes = div_factor(global_rsv->size, 1);
+> +	if (global_rsv->reserved < min_bytes + ticket->bytes) {
+> +		spin_unlock(&global_rsv->lock);
+> +		return false;
+> +	}
+> +	global_rsv->reserved -= ticket->bytes;
+> +	ticket->bytes = 0;
+> +	trace_printk("Satisfied ticket from global rsv\n");
 
-File systems and storage?  Way less so.  We've expanded to 3 days of conference, 
-which has only exacerbated this issue for me.  Now I have a full day that I'm 
-trying to fill with interesting topics that we're all interested in, and it's a 
-struggle.  If instead we had everybody from the file system community there then 
-I could just say "OK day 3 is BoF day, have your FS specific meetups!" and be 
-done with it.  But as it stands I know XFS is missing probably 1/3 of their main 
-contributors, and Btrfs is missing 1/2 to 2/3 of our developers.
-
-In order to accomplish that we need to radically change the structure of the 
-conference, hence my hyperbolic suggestion.  I think what Ted suggested is 
-probably my ideal solution, we have a kernel focused spring conference where the 
-whole community gets together, and then we have tracks that we carve up.
-
-But is it a problem worth solving?  I'm not sure.  I know how I feel, but maybe 
-I'm the crazy one.  I think its worth discussing.  If more people like how we 
-currently do it then we can just keep trucking along.  It's not like I'll stop 
-showing up, this is still a tremendously useful conference.  I just think we can 
-do better.  Thanks,
-
-Josef
+nit: that's a left-over from my debugging of this patch, it must be
+removed before being merged :)
