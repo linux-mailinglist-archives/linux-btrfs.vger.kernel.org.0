@@ -2,480 +2,460 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 672C417F0A3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 07:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665C217F188
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 09:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgCJGiL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 02:38:11 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:44003 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgCJGiL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 02:38:11 -0400
-X-Originating-IP: 82.67.131.7
-Received: from [192.168.1.167] (unknown [82.67.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D9DBD20004;
-        Tue, 10 Mar 2020 06:38:06 +0000 (UTC)
-Subject: Re: (One more) BTRFS damaged FS... Any hope ?
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <55a1612f-e9af-dabd-5b91-f09cb1528486@petaramesh.org>
- <CAJCQCtT+_ioV6XAUgPyD++9o_0+6-kUgGOF7mpfVHEyb7runsA@mail.gmail.com>
- <3234bc4b-6e93-c1f7-9ed4-a45173e22dd5@petaramesh.org>
- <CAJCQCtR-SUsiE5L8ba=pKHbJyQ9X3sTSBJ6vV0-X0-58nV-fxw@mail.gmail.com>
- <b99b8106-2aa9-e288-e637-d79a200da278@petaramesh.org>
- <CAJCQCtR6DnpkmgOnDY8GmO3T86Bk7ASmpGXTUmbdi9DVwdtMoQ@mail.gmail.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <56e26938-3c85-f879-2f30-44283a6df5d1@petaramesh.org>
-Date:   Tue, 10 Mar 2020 07:38:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726342AbgCJIO2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 04:14:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52494 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725919AbgCJIO2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Mar 2020 04:14:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B605FB06B
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Mar 2020 08:14:24 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: relocation: Use btrfs_find_all_leaves() to locate parent tree leaves of a data extent
+Date:   Tue, 10 Mar 2020 16:14:15 +0800
+Message-Id: <20200310081415.49080-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtR6DnpkmgOnDY8GmO3T86Bk7ASmpGXTUmbdi9DVwdtMoQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi again Chris, and many thanks again,
+In relocation, we need to locate all parent tree leaves referring one
+data extent, thus we have a complex mechanism to iterate throught extent
+tree and subvolume trees to locate related leaves.
 
-Le 10/03/2020 à 04:46, Chris Murphy a écrit :
-> 
-> Yep, this suggests a crash or power fail during fsync.
+However this is already done in backref.c, we have
+btrfs_find_all_leaves(), which can return a ulist containing all leaves
+referring to that data extent.
 
-This wouldn't susrprise me much, the laptop belonging to a kid who I
-know for sure doesn't pay much attention to battery level and
-experiments running out of battery quite often...
+Use btrfs_find_all_leaves() to replace find_data_references().
 
-> Maybe the first 50 lines of the btrfs check are useful to get an idea
-> what's going on, but without it, it's hard to say what's wrong or what
-> to do.
+There is a special handling for v1 space cache data extents, where we
+need to delete the v1 space cache data extents, to avoid those data
+extents to hang the data relocation.
 
-Here it comes...:
+In this patch, the special handling is done by re-iterating the root
+tree leaf.
+Although it's a little less efficient than the old handling, considering
+we can reuse a lot of code, it should be acceptable.
 
-[root@zafu ~]# btrfs check /dev/sdb1 |& head -64
-parent transid verify failed on 8176123904 wanted 183574 found 183573
-parent transid verify failed on 8176123904 wanted 183574 found 183573
-Ignoring transid failure
-[1/7] checking root items
-[2/7] checking extents
-ref mismatch on [5685248 16384] extent item 1, found 0
-backref 5685248 root 258 not referenced back 0x564b1f957480
-incorrect global backref count on 5685248 found 1 wanted 0
-backpointer mismatch on [5685248 16384]
-owner ref check failed [5685248 16384]
-ref mismatch on [10420224 16384] extent item 1, found 0
-backref 10420224 root 258 not referenced back 0x564b248ea1c0
-incorrect global backref count on 10420224 found 1 wanted 0
-backpointer mismatch on [10420224 16384]
-owner ref check failed [10420224 16384]
-ref mismatch on [10436608 16384] extent item 1, found 0
-backref 10436608 root 258 not referenced back 0x564b248ea2c0
-incorrect global backref count on 10436608 found 1 wanted 0
-backpointer mismatch on [10436608 16384]
-owner ref check failed [10436608 16384]
-ref mismatch on [10534912 16384] extent item 1, found 0
-backref 10534912 root 7 not referenced back 0x564b248ea3c0
-incorrect global backref count on 10534912 found 1 wanted 0
-backpointer mismatch on [10534912 16384]
-owner ref check failed [10534912 16384]
-ref mismatch on [11567104 16384] extent item 1, found 0
-backref 11567104 root 7 not referenced back 0x564b1f9bce50
-incorrect global backref count on 11567104 found 1 wanted 0
-backpointer mismatch on [11567104 16384]
-owner ref check failed [11567104 16384]
-ref mismatch on [11862016 16384] extent item 1, found 0
-backref 11862016 root 7 not referenced back 0x564b1f9bcfd0
-incorrect global backref count on 11862016 found 1 wanted 0
-backpointer mismatch on [11862016 16384]
-owner ref check failed [11862016 16384]
-ref mismatch on [13639680 4096] extent item 1, found 0
-incorrect local backref count on 13639680 root 258 owner 949178 offset 0
-found 0 wanted 1 back 0x564b248eb0c0
-backref disk bytenr does not match extent record, bytenr=13639680, ref
-bytenr=0
-backpointer mismatch on [13639680 4096]
-owner ref check failed [13639680 4096]
-ref mismatch on [13758464 4096] extent item 1, found 0
-incorrect local backref count on 13758464 root 258 owner 769574 offset 0
-found 0 wanted 1 back 0x564b248ec030
-backref disk bytenr does not match extent record, bytenr=13758464, ref
-bytenr=0
-backpointer mismatch on [13758464 4096]
-owner ref check failed [13758464 4096]
-ref mismatch on [13963264 4096] extent item 1, found 0
-incorrect local backref count on 13963264 root 258 owner 1041188 offset
-0 found 0 wanted 1 back 0x564b248eda50
-backref disk bytenr does not match extent record, bytenr=13963264, ref
-bytenr=0
-backpointer mismatch on [13963264 4096]
-owner ref check failed [13963264 4096]
-ref mismatch on [13971456 8192] extent item 1, found 0
-incorrect local backref count on 13971456 root 258 owner 306160 offset 0
-found 0 wanted 1 back 0x564b248edcb0
-backref disk bytenr does not match extent record, bytenr=13971456, ref
-bytenr=0
-backpointer mismatch on [13971456 8192]
-owner ref check failed [13971456 8192]
-ref mismatch on [13979648 4096] extent item 1, found 0
-incorrect local backref count on 13979648 root 258 owner 306185 offset 0
-found 0 wanted 1 back 0x564b248edde0
-backref disk bytenr does not match extent record, bytenr=13979648, ref
-bytenr=0
-backpointer mismatch on [13979648 4096]
-owner ref check failed [13979648 4096]
-ref mismatch on [13996032 4096] extent item 1, found 0
-incorrect local backref count on 13996032 root 258 owner 739868 offset 0
-found 0 wanted 1 back 0x564b248ee2a0
-backref disk bytenr does not match extent record, bytenr=13996032, ref
-bytenr=0
-backpointer mismatch on [13996032 4096]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+This patch is originally in my backref cache branch, but since it's
+pretty independent from other backref cache code, and straightforward to
+test/review, it's sent for more comprehensive test/review/merge.
+---
+ fs/btrfs/backref.c    |   8 +-
+ fs/btrfs/backref.h    |   4 +
+ fs/btrfs/relocation.c | 314 ++++++++----------------------------------
+ 3 files changed, 62 insertions(+), 264 deletions(-)
 
-
-
-[root@zafu ~]# btrfs check -b /dev/sdb1 |& head -64
-[1/7] checking root items
-[2/7] checking extents
-ref mismatch on [3819245568 4096] extent item 1, found 0
-incorrect local backref count on 3819245568 root 257 owner 736217 offset
-0 found 0 wanted 1 back 0x55f5e4931c00
-backref disk bytenr does not match extent record, bytenr=3819245568, ref
-bytenr=0
-backpointer mismatch on [3819245568 4096]
-owner ref check failed [3819245568 4096]
-ref mismatch on [3819421696 4096] extent item 1, found 0
-incorrect local backref count on 3819421696 root 257 owner 736218 offset
-0 found 0 wanted 1 back 0x55f5e49327e0
-backref disk bytenr does not match extent record, bytenr=3819421696, ref
-bytenr=0
-backpointer mismatch on [3819421696 4096]
-owner ref check failed [3819421696 4096]
-ref mismatch on [3821916160 4096] extent item 1, found 0
-incorrect local backref count on 3821916160 root 257 owner 736219 offset
-0 found 0 wanted 1 back 0x55f5e1ee28e0
-backref disk bytenr does not match extent record, bytenr=3821916160, ref
-bytenr=0
-backpointer mismatch on [3821916160 4096]
-owner ref check failed [3821916160 4096]
-ref mismatch on [3822043136 4096] extent item 1, found 0
-incorrect local backref count on 3822043136 root 257 owner 736220 offset
-0 found 0 wanted 1 back 0x55f5e1ee3130
-backref disk bytenr does not match extent record, bytenr=3822043136, ref
-bytenr=0
-backpointer mismatch on [3822043136 4096]
-owner ref check failed [3822043136 4096]
-ref mismatch on [3822174208 4096] extent item 1, found 0
-incorrect local backref count on 3822174208 root 257 owner 736222 offset
-0 found 0 wanted 1 back 0x55f5e1ee3f70
-backref disk bytenr does not match extent record, bytenr=3822174208, ref
-bytenr=0
-backpointer mismatch on [3822174208 4096]
-owner ref check failed [3822174208 4096]
-ref mismatch on [3822448640 4096] extent item 1, found 0
-incorrect local backref count on 3822448640 root 257 owner 736223 offset
-0 found 0 wanted 1 back 0x55f5e1ee4c80
-backref disk bytenr does not match extent record, bytenr=3822448640, ref
-bytenr=0
-backpointer mismatch on [3822448640 4096]
-owner ref check failed [3822448640 4096]
-ref mismatch on [3822665728 4096] extent item 1, found 0
-incorrect local backref count on 3822665728 root 257 owner 736224 offset
-0 found 0 wanted 1 back 0x55f5e1ee5bf0
-backref disk bytenr does not match extent record, bytenr=3822665728, ref
-bytenr=0
-backpointer mismatch on [3822665728 4096]
-owner ref check failed [3822665728 4096]
-ref mismatch on [3823845376 4096] extent item 1, found 0
-incorrect local backref count on 3823845376 root 257 owner 736225 offset
-0 found 0 wanted 1 back 0x55f5e1754b30
-backref disk bytenr does not match extent record, bytenr=3823845376, ref
-bytenr=0
-backpointer mismatch on [3823845376 4096]
-owner ref check failed [3823845376 4096]
-ref mismatch on [3824963584 4096] extent item 1, found 0
-incorrect local backref count on 3824963584 root 257 owner 736227 offset
-0 found 0 wanted 1 back 0x55f5e175adc0
-backref disk bytenr does not match extent record, bytenr=3824963584, ref
-bytenr=0
-backpointer mismatch on [3824963584 4096]
-owner ref check failed [3824963584 4096]
-ref mismatch on [3825586176 4096] extent item 1, found 0
-incorrect local backref count on 3825586176 root 257 owner 736228 offset
-0 found 0 wanted 1 back 0x55f5e3999990
-backref disk bytenr does not match extent record, bytenr=3825586176, ref
-bytenr=0
-backpointer mismatch on [3825586176 4096]
-owner ref check failed [3825586176 4096]
-ref mismatch on [3825590272 4096] extent item 1, found 0
-incorrect local backref count on 3825590272 root 257 owner 736229 offset
-0 found 0 wanted 1 back 0x55f5e3999ac0
-backref disk bytenr does not match extent record, bytenr=3825590272, ref
-bytenr=0
-backpointer mismatch on [3825590272 4096]
-owner ref check failed [3825590272 4096]
-ref mismatch on [3825844224 4096] extent item 1, found 0
-incorrect local backref count on 3825844224 root 257 owner 736230 offset
-0 found 0 wanted 1 back 0x55f5e399b3b0
-backref disk bytenr does not match extent record, bytenr=3825844224, ref
-bytenr=0
-backpointer mismatch on [3825844224 4096]
-owner ref check failed [3825844224 4096]
-ref mismatch on [3825905664 4096] extent item 1, found 0
-incorrect local backref count on 3825905664 root 257 owner 736231 offset
-0 found 0 wanted 1 back 0x55f5e399b870
-
-
-Unhappy as it can be...
-
-
-> Another option is to zero the log tree, which will mean anything that
-> was being fsync'd at the time is probably lost. It could fix the file
-> system problem, but then result in user space data loss, depending on
-> what was happening at the time of the power loss or crash.
-> 
-> # btrfs rescue zero-log /dev/
-
-There was no important user data that couldn't be lost, so if it allows
-rescueing the FS, then...
-
-[root@zafu ~]# btrfs rescue zero-log /dev/sdb1
-parent transid verify failed on 8176123904 wanted 183574 found 183573
-parent transid verify failed on 8176123904 wanted 183574 found 183573
-Ignoring transid failure
-Clearing log on /dev/sdb1, previous log_root 8179646464, level 0
-
-[root@zafu ~]# LC_MESSAGES=C mount -t btrfs /dev/sdb1 /mnt/hd
-mount: /mnt/hd: wrong fs type, bad option, bad superblock on /dev/sdb1,
-missing codepage or helper program, or other error.
-
-[root@zafu ~]# LC_MESSAGES=C mount -t btrfs -o usebackuproot /dev/sdb1
-/mnt/hd
-
-[root@zafu ~]# mount
-[...]
-/dev/sdb1 on /mnt/hd type btrfs
-(rw,relatime,space_cache,clear_cache,subvolid=5,subvol=/)
-
-There it mounts !
-
-[root@zafu ~]# ll /mnt/hd
-total 0
-drwxr-xr-x 1 root root 234 17 janv. 20:18 @
-drwxr-xr-x 1 root root  12 14 oct.   2018 @data
-drwxr-xr-x 1 root root  82 27 juil.  2018 @home
-drwxr-xr-x 1 root root 210 12 févr. 12:00 timeshift-btrfs
-
-[root@zafu ~]# ll /mnt/hd/@
-total 16
-drwxr-xr-x 1 root root 2534  5 janv. 13:30 bin
-drwxr-xr-x 1 root root  516 17 janv. 20:19 boot
-drwxr-xr-x 1 root root    0 22 juil.  2018 cdrom
-drwxr-xr-x 1 root root    0 14 oct.   2018 data
-drwxr-xr-x 1 root root  894 22 juil.  2018 dev
-drwxr-xr-x 1 root root 4476 23 janv. 09:51 etc
-drwxr-xr-x 1 root root    0 22 juil.  2018 home
-lrwxrwxrwx 1 root root   32 17 janv. 20:18 initrd.img ->
-boot/initrd.img-5.3.0-26-generic
-lrwxrwxrwx 1 root root   32  5 janv. 17:37 initrd.img.old ->
-boot/initrd.img-5.3.0-24-generic
-drwxr-xr-x 1 root root  580  6 sept.  2019 lib
-drwxr-xr-x 1 root root   40 26 juin   2018 lib64
-drwxr-xr-x 1 root root   54 10 déc.   2018 media
-drwxr-xr-x 1 root root   18 22 juil.  2018 mnt
-drwxr-xr-x 1 root root   60  6 sept.  2019 opt
-drwxr-xr-x 1 root root    0 24 avril  2018 proc
-drwx------ 1 root root  190 28 juil.  2018 root
-drwxr-xr-x 1 root root  156 14 oct.   2018 run
-drwxr-xr-x 1 root root 4810  5 janv. 13:34 sbin
-drwxr-xr-x 1 root root    0 26 juin   2018 srv
-drwxr-xr-x 1 root root    0 24 avril  2018 sys
-drwxrwxrwt 1 root root 1188 12 févr. 15:30 tmp
-drwxr-xr-x 1 root root   84 27 avril  2019 usr
-drwxr-xr-x 1 root root  110  9 déc.  10:08 var
-lrwxrwxrwx 1 root root   29 17 janv. 20:18 vmlinuz ->
-boot/vmlinuz-5.3.0-26-generic
-lrwxrwxrwx 1 root root   29  5 janv. 17:37 vmlinuz.old ->
-boot/vmlinuz-5.3.0-24-generic
-
-[root@zafu ~]# umount /mnt/hd
-
-
-[root@zafu ~]# LC_MESSAGES=C mount -t btrfs /dev/sdb1 /mnt/hd
-
-[root@zafu ~]# ll /mnt/hd/@
-total 16
-drwxr-xr-x 1 root root 2534  5 janv. 13:30 bin
-drwxr-xr-x 1 root root  516 17 janv. 20:19 boot
-drwxr-xr-x 1 root root    0 22 juil.  2018 cdrom
-drwxr-xr-x 1 root root    0 14 oct.   2018 data
-drwxr-xr-x 1 root root  894 22 juil.  2018 dev
-drwxr-xr-x 1 root root 4476 23 janv. 09:51 etc
-drwxr-xr-x 1 root root    0 22 juil.  2018 home
-lrwxrwxrwx 1 root root   32 17 janv. 20:18 initrd.img ->
-boot/initrd.img-5.3.0-26-generic
-lrwxrwxrwx 1 root root   32  5 janv. 17:37 initrd.img.old ->
-boot/initrd.img-5.3.0-24-generic
-drwxr-xr-x 1 root root  580  6 sept.  2019 lib
-drwxr-xr-x 1 root root   40 26 juin   2018 lib64
-drwxr-xr-x 1 root root   54 10 déc.   2018 media
-drwxr-xr-x 1 root root   18 22 juil.  2018 mnt
-drwxr-xr-x 1 root root   60  6 sept.  2019 opt
-drwxr-xr-x 1 root root    0 24 avril  2018 proc
-drwx------ 1 root root  190 28 juil.  2018 root
-drwxr-xr-x 1 root root  156 14 oct.   2018 run
-drwxr-xr-x 1 root root 4810  5 janv. 13:34 sbin
-drwxr-xr-x 1 root root    0 26 juin   2018 srv
-drwxr-xr-x 1 root root    0 24 avril  2018 sys
-drwxrwxrwt 1 root root 1188 12 févr. 15:30 tmp
-drwxr-xr-x 1 root root   84 27 avril  2019 usr
-drwxr-xr-x 1 root root  110  9 déc.  10:08 var
-lrwxrwxrwx 1 root root   29 17 janv. 20:18 vmlinuz ->
-boot/vmlinuz-5.3.0-26-generic
-lrwxrwxrwx 1 root root   29  5 janv. 17:37 vmlinuz.old ->
-boot/vmlinuz-5.3.0-24-generic
-[root@zafu ~]# umount /mnt/hd
-
-Looks much happier now !
-
-However :
-
-[root@zafu ~]# !523
-btrfs check /dev/sdb1 |& head -64
-[1/7] checking root items
-[2/7] checking extents
-ref mismatch on [3819245568 4096] extent item 1, found 0
-incorrect local backref count on 3819245568 root 257 owner 736217 offset
-0 found 0 wanted 1 back 0x5559746ca680
-backref disk bytenr does not match extent record, bytenr=3819245568, ref
-bytenr=0
-backpointer mismatch on [3819245568 4096]
-owner ref check failed [3819245568 4096]
-ref mismatch on [3819421696 4096] extent item 1, found 0
-incorrect local backref count on 3819421696 root 257 owner 736218 offset
-0 found 0 wanted 1 back 0x5559746cb260
-backref disk bytenr does not match extent record, bytenr=3819421696, ref
-bytenr=0
-backpointer mismatch on [3819421696 4096]
-owner ref check failed [3819421696 4096]
-ref mismatch on [3821916160 4096] extent item 1, found 0
-incorrect local backref count on 3821916160 root 257 owner 736219 offset
-0 found 0 wanted 1 back 0x5559755abd60
-backref disk bytenr does not match extent record, bytenr=3821916160, ref
-bytenr=0
-backpointer mismatch on [3821916160 4096]
-owner ref check failed [3821916160 4096]
-ref mismatch on [3822043136 4096] extent item 1, found 0
-incorrect local backref count on 3822043136 root 257 owner 736220 offset
-0 found 0 wanted 1 back 0x5559755ac5b0
-backref disk bytenr does not match extent record, bytenr=3822043136, ref
-bytenr=0
-backpointer mismatch on [3822043136 4096]
-owner ref check failed [3822043136 4096]
-ref mismatch on [3822174208 4096] extent item 1, found 0
-incorrect local backref count on 3822174208 root 257 owner 736222 offset
-0 found 0 wanted 1 back 0x5559755ad3f0
-backref disk bytenr does not match extent record, bytenr=3822174208, ref
-bytenr=0
-backpointer mismatch on [3822174208 4096]
-owner ref check failed [3822174208 4096]
-ref mismatch on [3822448640 4096] extent item 1, found 0
-incorrect local backref count on 3822448640 root 257 owner 736223 offset
-0 found 0 wanted 1 back 0x5559755ae100
-backref disk bytenr does not match extent record, bytenr=3822448640, ref
-bytenr=0
-backpointer mismatch on [3822448640 4096]
-owner ref check failed [3822448640 4096]
-ref mismatch on [3822665728 4096] extent item 1, found 0
-incorrect local backref count on 3822665728 root 257 owner 736224 offset
-0 found 0 wanted 1 back 0x5559755af070
-backref disk bytenr does not match extent record, bytenr=3822665728, ref
-bytenr=0
-backpointer mismatch on [3822665728 4096]
-owner ref check failed [3822665728 4096]
-ref mismatch on [3823845376 4096] extent item 1, found 0
-incorrect local backref count on 3823845376 root 257 owner 736225 offset
-0 found 0 wanted 1 back 0x555974e2d300
-backref disk bytenr does not match extent record, bytenr=3823845376, ref
-bytenr=0
-backpointer mismatch on [3823845376 4096]
-owner ref check failed [3823845376 4096]
-ref mismatch on [3824963584 4096] extent item 1, found 0
-incorrect local backref count on 3824963584 root 257 owner 736227 offset
-0 found 0 wanted 1 back 0x555974e334d0
-backref disk bytenr does not match extent record, bytenr=3824963584, ref
-bytenr=0
-backpointer mismatch on [3824963584 4096]
-owner ref check failed [3824963584 4096]
-ref mismatch on [3825586176 4096] extent item 1, found 0
-incorrect local backref count on 3825586176 root 257 owner 736228 offset
-0 found 0 wanted 1 back 0x555977015850
-backref disk bytenr does not match extent record, bytenr=3825586176, ref
-bytenr=0
-backpointer mismatch on [3825586176 4096]
-owner ref check failed [3825586176 4096]
-ref mismatch on [3825590272 4096] extent item 1, found 0
-incorrect local backref count on 3825590272 root 257 owner 736229 offset
-0 found 0 wanted 1 back 0x555977015980
-backref disk bytenr does not match extent record, bytenr=3825590272, ref
-bytenr=0
-backpointer mismatch on [3825590272 4096]
-owner ref check failed [3825590272 4096]
-ref mismatch on [3825844224 4096] extent item 1, found 0
-incorrect local backref count on 3825844224 root 257 owner 736230 offset
-0 found 0 wanted 1 back 0x555977017150
-backref disk bytenr does not match extent record, bytenr=3825844224, ref
-bytenr=0
-backpointer mismatch on [3825844224 4096]
-owner ref check failed [3825844224 4096]
-ref mismatch on [3825905664 4096] extent item 1, found 0
-incorrect local backref count on 3825905664 root 257 owner 736231 offset
-0 found 0 wanted 1 back 0x555977017610
-
-So still not absolutely happy :\
-
-Many thanks however, at least the FS mounts after zeroeing the log...
-
-Kind regards.
-
-ॐ
-
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 327e4480957b..f2728fb3ee8f 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -1409,10 +1409,10 @@ static void free_leaf_list(struct ulist *blocks)
+  *
+  * returns 0 on success, <0 on error
+  */
+-static int btrfs_find_all_leafs(struct btrfs_trans_handle *trans,
+-				struct btrfs_fs_info *fs_info, u64 bytenr,
+-				u64 time_seq, struct ulist **leafs,
+-				const u64 *extent_item_pos, bool ignore_offset)
++int btrfs_find_all_leafs(struct btrfs_trans_handle *trans,
++			 struct btrfs_fs_info *fs_info, u64 bytenr,
++			 u64 time_seq, struct ulist **leafs,
++			 const u64 *extent_item_pos, bool ignore_offset)
+ {
+ 	int ret;
+ 
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 777f61dc081e..723d6da99114 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -40,6 +40,10 @@ int iterate_inodes_from_logical(u64 logical, struct btrfs_fs_info *fs_info,
+ 
+ int paths_from_inode(u64 inum, struct inode_fs_paths *ipath);
+ 
++int btrfs_find_all_leafs(struct btrfs_trans_handle *trans,
++			 struct btrfs_fs_info *fs_info, u64 bytenr,
++			 u64 time_seq, struct ulist **leafs,
++			 const u64 *extent_item_pos, bool ignore_offset);
+ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
+ 			 struct btrfs_fs_info *fs_info, u64 bytenr,
+ 			 u64 time_seq, struct ulist **roots, bool ignore_offset);
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 02afe294ee2d..319d50c7ada5 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -23,6 +23,7 @@
+ #include "print-tree.h"
+ #include "delalloc-space.h"
+ #include "block-group.h"
++#include "backref.h"
+ 
+ /*
+  * Relocation overview
+@@ -3620,31 +3621,6 @@ static int __add_tree_block(struct reloc_control *rc,
+ 	return ret;
+ }
+ 
+-/*
+- * helper to check if the block use full backrefs for pointers in it
+- */
+-static int block_use_full_backref(struct reloc_control *rc,
+-				  struct extent_buffer *eb)
+-{
+-	u64 flags;
+-	int ret;
+-
+-	if (btrfs_header_flag(eb, BTRFS_HEADER_FLAG_RELOC) ||
+-	    btrfs_header_backref_rev(eb) < BTRFS_MIXED_BACKREF_REV)
+-		return 1;
+-
+-	ret = btrfs_lookup_extent_info(NULL, rc->extent_root->fs_info,
+-				       eb->start, btrfs_header_level(eb), 1,
+-				       NULL, &flags);
+-	BUG_ON(ret);
+-
+-	if (flags & BTRFS_BLOCK_FLAG_FULL_BACKREF)
+-		ret = 1;
+-	else
+-		ret = 0;
+-	return ret;
+-}
+-
+ static int delete_block_group_cache(struct btrfs_fs_info *fs_info,
+ 				    struct btrfs_block_group *block_group,
+ 				    struct inode *inode,
+@@ -3688,174 +3664,42 @@ static int delete_block_group_cache(struct btrfs_fs_info *fs_info,
+ }
+ 
+ /*
+- * helper to add tree blocks for backref of type BTRFS_EXTENT_DATA_REF_KEY
+- * this function scans fs tree to find blocks reference the data extent
++ * Helper function to locate the free space cache EXTENT_DATA in root tree leaf
++ * and delete the cache inode, to avoid free space cache data extent blocking
++ * data relocation.
+  */
+-static int find_data_references(struct reloc_control *rc,
+-				struct btrfs_key *extent_key,
+-				struct extent_buffer *leaf,
+-				struct btrfs_extent_data_ref *ref,
+-				struct rb_root *blocks)
++static int delete_v1_space_cache(struct btrfs_fs_info *fs_info,
++				 struct extent_buffer *leaf,
++				 struct btrfs_block_group *block_group,
++				 u64 data_bytenr)
+ {
+-	struct btrfs_fs_info *fs_info = rc->extent_root->fs_info;
+-	struct btrfs_path *path;
+-	struct tree_block *block;
+-	struct btrfs_root *root;
+-	struct btrfs_file_extent_item *fi;
+-	struct rb_node *rb_node;
++	u64 space_cache_ino;
++	struct btrfs_file_extent_item *ei;
+ 	struct btrfs_key key;
+-	u64 ref_root;
+-	u64 ref_objectid;
+-	u64 ref_offset;
+-	u32 ref_count;
+-	u32 nritems;
+-	int err = 0;
+-	int added = 0;
+-	int counted;
++	bool found = false;
++	int i;
+ 	int ret;
+ 
+-	ref_root = btrfs_extent_data_ref_root(leaf, ref);
+-	ref_objectid = btrfs_extent_data_ref_objectid(leaf, ref);
+-	ref_offset = btrfs_extent_data_ref_offset(leaf, ref);
+-	ref_count = btrfs_extent_data_ref_count(leaf, ref);
+-
+-	/*
+-	 * This is an extent belonging to the free space cache, lets just delete
+-	 * it and redo the search.
+-	 */
+-	if (ref_root == BTRFS_ROOT_TREE_OBJECTID) {
+-		ret = delete_block_group_cache(fs_info, rc->block_group,
+-					       NULL, ref_objectid);
+-		if (ret != -ENOENT)
+-			return ret;
+-		ret = 0;
+-	}
+-
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
+-	path->reada = READA_FORWARD;
+-
+-	root = read_fs_root(fs_info, ref_root);
+-	if (IS_ERR(root)) {
+-		err = PTR_ERR(root);
+-		goto out_free;
+-	}
+-
+-	key.objectid = ref_objectid;
+-	key.type = BTRFS_EXTENT_DATA_KEY;
+-	if (ref_offset > ((u64)-1 << 32))
+-		key.offset = 0;
+-	else
+-		key.offset = ref_offset;
+-
+-	path->search_commit_root = 1;
+-	path->skip_locking = 1;
+-	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+-	if (ret < 0) {
+-		err = ret;
+-		goto out;
+-	}
+-
+-	leaf = path->nodes[0];
+-	nritems = btrfs_header_nritems(leaf);
+-	/*
+-	 * the references in tree blocks that use full backrefs
+-	 * are not counted in
+-	 */
+-	if (block_use_full_backref(rc, leaf))
+-		counted = 0;
+-	else
+-		counted = 1;
+-	rb_node = tree_search(blocks, leaf->start);
+-	if (rb_node) {
+-		if (counted)
+-			added = 1;
+-		else
+-			path->slots[0] = nritems;
+-	}
+-
+-	while (ref_count > 0) {
+-		while (path->slots[0] >= nritems) {
+-			ret = btrfs_next_leaf(root, path);
+-			if (ret < 0) {
+-				err = ret;
+-				goto out;
+-			}
+-			if (WARN_ON(ret > 0))
+-				goto out;
+-
+-			leaf = path->nodes[0];
+-			nritems = btrfs_header_nritems(leaf);
+-			added = 0;
+-
+-			if (block_use_full_backref(rc, leaf))
+-				counted = 0;
+-			else
+-				counted = 1;
+-			rb_node = tree_search(blocks, leaf->start);
+-			if (rb_node) {
+-				if (counted)
+-					added = 1;
+-				else
+-					path->slots[0] = nritems;
+-			}
+-		}
++	if (btrfs_header_owner(leaf) != BTRFS_ROOT_TREE_OBJECTID)
++		return 0;
+ 
+-		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+-		if (WARN_ON(key.objectid != ref_objectid ||
+-		    key.type != BTRFS_EXTENT_DATA_KEY))
++	for (i = 0; i < btrfs_header_nritems(leaf); i++) {
++		btrfs_item_key_to_cpu(leaf, &key, i);
++		if (key.type != BTRFS_EXTENT_DATA_KEY)
++			continue;
++		ei = btrfs_item_ptr(leaf, i, struct btrfs_file_extent_item);
++		if (btrfs_file_extent_type(leaf, ei) == BTRFS_FILE_EXTENT_REG &&
++		    btrfs_file_extent_disk_bytenr(leaf, ei) == data_bytenr) {
++			found = true;
++			space_cache_ino = key.objectid;
+ 			break;
+-
+-		fi = btrfs_item_ptr(leaf, path->slots[0],
+-				    struct btrfs_file_extent_item);
+-
+-		if (btrfs_file_extent_type(leaf, fi) ==
+-		    BTRFS_FILE_EXTENT_INLINE)
+-			goto next;
+-
+-		if (btrfs_file_extent_disk_bytenr(leaf, fi) !=
+-		    extent_key->objectid)
+-			goto next;
+-
+-		key.offset -= btrfs_file_extent_offset(leaf, fi);
+-		if (key.offset != ref_offset)
+-			goto next;
+-
+-		if (counted)
+-			ref_count--;
+-		if (added)
+-			goto next;
+-
+-		if (!tree_block_processed(leaf->start, rc)) {
+-			block = kmalloc(sizeof(*block), GFP_NOFS);
+-			if (!block) {
+-				err = -ENOMEM;
+-				break;
+-			}
+-			block->bytenr = leaf->start;
+-			btrfs_item_key_to_cpu(leaf, &block->key, 0);
+-			block->level = 0;
+-			block->key_ready = 1;
+-			rb_node = tree_insert(blocks, block->bytenr,
+-					      &block->rb_node);
+-			if (rb_node)
+-				backref_tree_panic(rb_node, -EEXIST,
+-						   block->bytenr);
+ 		}
+-		if (counted)
+-			added = 1;
+-		else
+-			path->slots[0] = nritems;
+-next:
+-		path->slots[0]++;
+-
+ 	}
+-out:
+-	btrfs_put_root(root);
+-out_free:
+-	btrfs_free_path(path);
+-	return err;
++	if (!found)
++		return -ENOENT;
++	ret = delete_block_group_cache(fs_info, block_group, NULL,
++					space_cache_ino);
++	return ret;
+ }
+ 
+ /*
+@@ -3867,91 +3711,41 @@ int add_data_references(struct reloc_control *rc,
+ 			struct btrfs_path *path,
+ 			struct rb_root *blocks)
+ {
+-	struct btrfs_key key;
+-	struct extent_buffer *eb;
+-	struct btrfs_extent_data_ref *dref;
+-	struct btrfs_extent_inline_ref *iref;
+-	unsigned long ptr;
+-	unsigned long end;
+-	u32 blocksize = rc->extent_root->fs_info->nodesize;
++	struct btrfs_fs_info *fs_info = rc->extent_root->fs_info;
++	struct ulist *leaves = NULL;
++	struct ulist_iterator leaf_uiter;
++	struct ulist_node *ref_node = NULL;
++	u32 blocksize = fs_info->nodesize;
+ 	int ret = 0;
+-	int err = 0;
+-
+-	eb = path->nodes[0];
+-	ptr = btrfs_item_ptr_offset(eb, path->slots[0]);
+-	end = ptr + btrfs_item_size_nr(eb, path->slots[0]);
+-	ptr += sizeof(struct btrfs_extent_item);
+ 
+-	while (ptr < end) {
+-		iref = (struct btrfs_extent_inline_ref *)ptr;
+-		key.type = btrfs_get_extent_inline_ref_type(eb, iref,
+-							BTRFS_REF_TYPE_DATA);
+-		if (key.type == BTRFS_SHARED_DATA_REF_KEY) {
+-			key.offset = btrfs_extent_inline_ref_offset(eb, iref);
+-			ret = __add_tree_block(rc, key.offset, blocksize,
+-					       blocks);
+-		} else if (key.type == BTRFS_EXTENT_DATA_REF_KEY) {
+-			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
+-			ret = find_data_references(rc, extent_key,
+-						   eb, dref, blocks);
+-		} else {
+-			ret = -EUCLEAN;
+-			btrfs_err(rc->extent_root->fs_info,
+-		     "extent %llu slot %d has an invalid inline ref type",
+-			     eb->start, path->slots[0]);
+-		}
+-		if (ret) {
+-			err = ret;
+-			goto out;
+-		}
+-		ptr += btrfs_extent_inline_ref_size(key.type);
+-	}
+-	WARN_ON(ptr > end);
++	btrfs_release_path(path);
++	ret = btrfs_find_all_leafs(NULL, fs_info, extent_key->objectid,
++				   0, &leaves, NULL, true);
++	if (ret < 0)
++		return ret;
+ 
+-	while (1) {
+-		cond_resched();
+-		eb = path->nodes[0];
+-		if (path->slots[0] >= btrfs_header_nritems(eb)) {
+-			ret = btrfs_next_leaf(rc->extent_root, path);
+-			if (ret < 0) {
+-				err = ret;
+-				break;
+-			}
+-			if (ret > 0)
+-				break;
+-			eb = path->nodes[0];
+-		}
++	ULIST_ITER_INIT(&leaf_uiter);
++	while ((ref_node = ulist_next(leaves, &leaf_uiter))) {
++		struct extent_buffer *eb;
+ 
+-		btrfs_item_key_to_cpu(eb, &key, path->slots[0]);
+-		if (key.objectid != extent_key->objectid)
++		eb = read_tree_block(fs_info, ref_node->val, 0, 0, NULL);
++		if (IS_ERR(eb)) {
++			ret = PTR_ERR(eb);
+ 			break;
+-
+-		if (key.type == BTRFS_SHARED_DATA_REF_KEY) {
+-			ret = __add_tree_block(rc, key.offset, blocksize,
+-					       blocks);
+-		} else if (key.type == BTRFS_EXTENT_DATA_REF_KEY) {
+-			dref = btrfs_item_ptr(eb, path->slots[0],
+-					      struct btrfs_extent_data_ref);
+-			ret = find_data_references(rc, extent_key,
+-						   eb, dref, blocks);
+-		} else if (unlikely(key.type == BTRFS_EXTENT_REF_V0_KEY)) {
+-			btrfs_print_v0_err(eb->fs_info);
+-			btrfs_handle_fs_error(eb->fs_info, -EINVAL, NULL);
+-			ret = -EINVAL;
+-		} else {
+-			ret = 0;
+ 		}
+-		if (ret) {
+-			err = ret;
++		ret = delete_v1_space_cache(fs_info, eb, rc->block_group,
++					    extent_key->objectid);
++		free_extent_buffer(eb);
++		if (ret < 0)
++			break;
++		ret = __add_tree_block(rc, ref_node->val, blocksize, blocks);
++		if (ret < 0)
+ 			break;
+-		}
+-		path->slots[0]++;
+ 	}
+-out:
+-	btrfs_release_path(path);
+-	if (err)
++	if (ret < 0)
+ 		free_block_list(blocks);
+-	return err;
++	ulist_free(leaves);
++	return ret;
+ }
+ 
+ /*
 -- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+2.25.1
+
