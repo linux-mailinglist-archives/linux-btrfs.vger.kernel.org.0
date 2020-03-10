@@ -2,109 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB1017F771
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 13:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEE317FBB6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Mar 2020 14:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbgCJM3k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Mar 2020 08:29:40 -0400
-Received: from a4-3.smtp-out.eu-west-1.amazonses.com ([54.240.4.3]:54686 "EHLO
-        a4-3.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726273AbgCJM3k (ORCPT
+        id S1731763AbgCJNNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Mar 2020 09:13:44 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34638 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731754AbgCJNNo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Mar 2020 08:29:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1583843378;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=jSdzJA3T0GxJuUaeAyFM0INDqDZi0A+tc/CK8AbkSDo=;
-        b=caEQm/pDwHHgXzpzX6fsDtbY2DWbWnHWfr4kJOaBP/l0w29/valrpQxEooo2xeJo
-        wbXhrW3aHgPEWUgZahAuv1ciFfeIWl7uXEv1KCIo0wBSuxcY1xuyYuCUtJ+im+WnZy3
-        dhdESfUdpB5MSD9wMcgXtOdpbpDtCr1Y74/WNvAM=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1583843378;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=jSdzJA3T0GxJuUaeAyFM0INDqDZi0A+tc/CK8AbkSDo=;
-        b=kMX/g8kZm74acuNRD1v1O7BKbz3CjalpmoRx6sfVjZHSmClgm2G0ZDmSO2t9CNvM
-        z/PKSuPjjJZXoeqaJJsTMixxswvWuQL7aXUpkCGXrkVrxGS2bno/xrUNZ1s5CBRbom1
-        CIcGZnCd+n5I55K7udXQcYXpmgweT7nW9ivz4CTI=
-Subject: Re: ENOSPC in btrfs_drop_snapshot with 5.4.21
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <01020170c1c26e04-031eb2cc-f2da-4ba3-b259-986730cfae7a-000000@eu-west-1.amazonses.com>
- <4d136b19-b2d9-bc4a-8dba-504ae3aabdf8@suse.com>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <01020170c46c0495-72dcea31-f541-4b4a-9e17-55a595d289e6-000000@eu-west-1.amazonses.com>
-Date:   Tue, 10 Mar 2020 12:29:38 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 10 Mar 2020 09:13:44 -0400
+Received: by mail-wr1-f65.google.com with SMTP id z15so15836251wrl.1;
+        Tue, 10 Mar 2020 06:13:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oa5g113veU2Vu4AlqhwVidAaDnTAra7gNy7bFO70rZc=;
+        b=GnIUrpQU/Sg7r8b+BedJ8CqwUlYG4xQ2Lo54cn98G0oZD/7TcNZKnVJDvT1FAMfcVY
+         U3SbiBvNca+R67nKlVdk9P4ZVWNnuT6CRdxrsYUOhWbG74AkEg+rxo1qTSE9DrlzlR5N
+         p1HkCTFNNHMvwd3s03CkzX+TEGLa1xqObZVUiBlioHNf81GSFQ5Gxc+MLF0iodhd/qsZ
+         t+H9xTeFZ3TVdN8Ux36lTosj+PnkQmo1kZxh7vZVvrS8vp17GGYuBjnJPzpjikoaKIc2
+         RzNkOr2OGaCk2AATfKBAUqBm1bbj85N5j2dpBvwDORMGu3Y1n5rYNa9YHRGKmoY4SHJH
+         a78w==
+X-Gm-Message-State: ANhLgQ00EKtXi9yYYkZp+12KuA9cK9EpP4PC82OuSWc5s0qaOSV4yxTG
+        m4Oo8sQO5vP2EnH61qIacCN5X/ZH5VE=
+X-Google-Smtp-Source: ADFU+vuoqLKuNCFV1S8JMIVLIpzM6ZHX7oSMYDAvFAe+RDvvRUTcPFeCW1aEmNfzgKcgFP+a7BaerA==
+X-Received: by 2002:a5d:4685:: with SMTP id u5mr26336545wrq.69.1583846022170;
+        Tue, 10 Mar 2020 06:13:42 -0700 (PDT)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id l83sm4132454wmf.43.2020.03.10.06.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 06:13:41 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 14:13:39 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <20200310131339.GJ8447@dhcp22.suse.cz>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <4d136b19-b2d9-bc4a-8dba-504ae3aabdf8@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2020.03.10-54.240.4.3
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10.03.2020 09:54 Nikolay Borisov wrote:
->
-> On 10.03.20 г. 2:05 ч., Martin Raiber wrote:
->> Hi,
->>
->> I get a enospc to remount-ro with 5.4.21. Details:
->>
->> Linux 5.4.21 #1 SMP Fri Feb 21 03:20:26 CET 2020 x86_64 GNU/Linux
->>
->> btrfs fi usage /media/btrfs (after remount-ro)
->> Overall:
->>     Device size:                 511.99GiB
->>     Device allocated:            511.99GiB
->>     Device unallocated:              0.00B
->>     Device missing:                  0.00B
->>     Used:                        443.68GiB
->>     Free (estimated):             54.94GiB      (min: 54.94GiB)
->>     Data ratio:                       1.00
->>     Metadata ratio:                   1.00
->>     Global reserve:              512.00MiB      (used: 0.00B)
->>
->> Data,single: Size:490.98GiB, Used:436.04GiB (88.81%)
->>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc  490.98GiB
->>
->> Metadata,single: Size:21.01GiB, Used:7.65GiB (36.40%)
->>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc   21.01GiB
->>
->> System,single: Size:4.00MiB, Used:80.00KiB (1.95%)
->>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc    4.00MiB
->>
->> Unallocated:
->>    /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc      0.00B
->>
->> Mount options:
->> /dev/mapper/LUKS-RC-cd46b6b4909845918eaa285c532476dc on /media/btrfs
->> type btrfs
->> (ro,noatime,compress-force=zstd:3,nossd,space_cache=v2,enospc_debug,skip_balance,metadata_ratio=8,subvolid=5,subvol=/)
->>
->> btrfs fi df /media/btrfs
->> Data, single: total=490.98GiB, used=436.04GiB
->> System, single: total=4.00MiB, used=80.00KiB
->> Metadata, single: total=21.01GiB, used=7.65GiB
->> GlobalReserve, single: total=512.00MiB, used=0.00B
->>
->> dmesg attached.
->>
-> Were you performing any specific operation when this happened or you had
-> simply deleted a snapshot and some time later you got the ENOSPC?
+On Fri 06-03-20 09:35:41, Josef Bacik wrote:
+> Hello,
+> 
+> This has been a topic that I've been thinking about a lot recently, mostly
+> because of the giant amount of work that has been organizing LSFMMBPF.
 
-It does something like this if it matters: It creates a chain of
-snapshots and writes only to the one it last created, while sometimes
-deleting files from older snapshots in the chain. It has max 5 snapshots
-in the chain and every ~60min creates a new one and later deletes the
-oldest. For example it has a_1, a_2, a_3, a_4, a_5 (a_2 being a
-writeable snapshot of a_1) and writes only to a_5. Then it snapshots a_5
-to a_6 and then only writes to a_6 and later deletes a_1.
+There is undoubtedly a lot of work to make a great conference. I have hard
+time imagine this could be ever done without a lot of time and effort on
+the organizing side. I do not believe we can simply outsource a highly
+technical conference to somebody outside of the community. LF is doing a
+lot of great work to help with the venue and related stuff but content
+wise it is still on the community IMHO.
 
-Looking at the latest ENOSPC that occured at 3:55, it created the latest
-snapshot at 3:05 and deleted the oldest at 3:48. It wrote to the latest
-snapshot while it dropped the oldest.
+[...]
+> These are all really good goals, and why we love the idea of LSFMMBPF.  But
+> having attended these things every year for the last 13 years, it has become
+> less and less of these things, at least from my perspective.  A few problems
+> (as I see them) are
+> 
+> 1) The invitation process.  We've tried many different things, and I think
+> we generally do a good job here, but the fact is if I don't know somebody
+> I'm not going to give them a very high rating, making it difficult to
+> actually bring in new people.
 
+My experience from the MM track involvement last few years is slightly
+different. We have always had a higher demand than seats available
+for the track. We have tried really hard to bring people who could
+contribute the most requested topic into the room. We have also tried to
+bring new contributors in. There are always compromises to be made but
+my recollection is that discussions were usually very useful and moved
+topics forward. The room size played an important role in that regard.
+
+> 2) There are so many of us.  Especially with the addition of the BPF crowd
+> we are now larger than ever.  This makes problem #1 even more apparent, even
+> if I weighted some of the new people higher who's slot should they take
+> instead?  I have 0 problems finding 20 people in the FS community who should
+> absolutely be in the room.  But now I'm trying to squeeze in 1-5 extra
+> people.  Propagate that across all the tracks and now we're at an extra
+> 20ish people.
+
+Yes, BPF track made the conference larger indeed. This might be problem
+for funding but it didn't really cause much more work for tracks
+organization (well for MM at least).
+
+> 3) Half the people I want to talk to aren't even in the room.  This may be a
+> uniquely file system track problem, but most of my work is in btrfs, and I
+> want to talk to my fellow btrfs developers.  But again, we're trying to
+> invite an entire community, so many of them simply don't request
+> invitations, or just don't get invited.
+
+I do not have the same experience on the MM track. Even though the whole
+community is hard to fit into the room, there tends to be a sufficient
+mass to move a topic forward usually. Even if we cannot conclude many
+topics there are usually many action items as an outcome.
+
+[...]
+
+> So what do I propose?  I propose we kill LSFMMBPF.
+
+This would be really unfortunate. LSFMMBPF has been the most attractive
+conference for me exactly because of the size and cost/benefit. I do
+realize we are growing and that should be somehow reflected in the
+future. I do not have good answers how to do that yet unfortunately.
+Maybe we really need to split the core agenda and topics which could be
+discussed/presented on other conferences. Or collocate with another
+conference but I have a feeling that we could cover more since LSFMMBPF
+-- 
+Michal Hocko
+SUSE Labs
