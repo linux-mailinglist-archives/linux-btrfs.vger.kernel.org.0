@@ -2,94 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5B181C34
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 16:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C378181CDC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 16:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbgCKPVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Mar 2020 11:21:49 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39767 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729408AbgCKPVt (ORCPT
+        id S1729870AbgCKPux (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Mar 2020 11:50:53 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:36836 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgCKPux (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Mar 2020 11:21:49 -0400
-Received: by mail-qt1-f196.google.com with SMTP id f17so540645qtq.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 08:21:47 -0700 (PDT)
+        Wed, 11 Mar 2020 11:50:53 -0400
+Received: by mail-vs1-f65.google.com with SMTP id n6so1652863vsc.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 08:50:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Otgb+VpDSgsXpZXFDW/TtT2BrHIFp431W3WYtOOqpQk=;
-        b=aTQYzHzW1M5d6QlD+AxokbGi8GpvE9NNa8oqYs/ywoaetY82kAmDQE7vvQT/9x4O/X
-         mbMne6ASeAtXgWyRyXULYdIFPiygVtJx9fz8Yk/bvHQIA0Lzy2fvU/8pDXnKB6wQZz28
-         1IfIqItjJiXRXukgjAcMBYB8hZLZ9qiR2Eh8FFibpJ/ZNmSTAsSoFU91iDFfiLcygsL5
-         fd64ekV2Po+pXFv4scPVDGX+X8bqIAtilib6Ejv1U5NX1nCB+d4607OjJI+czxq54OwC
-         gZsl4XoEvDETKYTYi3mwicLnYeLFH95ydB55Ryy5P/Dpm/uw28DFfqg8UR7jgmcgHRMv
-         zWWw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=dCNTZNZf/b634i1DN7OtrVegqEtHKJgFPQt3IWZzA4c=;
+        b=Iz5XAdkNg4J1+ZlvrQBvBTe7LS/9qRmsWPi1ha6dW3eWCvZToIRUFBBWJD2qGRI+e6
+         B/1yw2Gojbcuc4TzvxlXEUDyufy602XvZtN1ftldoflPYFzjLT6T3ct42nguzLz6zmya
+         zgT5PF8APl3qDG94WjY8KlB7DOzpfrFHHCo9bctaOqtZPX7UoNiP7QugPXwSHaf/1Ru+
+         m3i2f+GHOqVn6XbcOHIajjPx2cQ0h32sYFhBw1H2+p/RxlIuZiCUX24OW850kXIf+roM
+         a1c0Xkq0tzheoPXoYetcK9I4eig2QuSiAVFxTnBjWfg4b3TgL5t4MPiUmYnEqcBjHeyy
+         J+IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Otgb+VpDSgsXpZXFDW/TtT2BrHIFp431W3WYtOOqpQk=;
-        b=Hi5NjAgS74ydrycmtZJpAGTn89e96XbIjmZ+g3fFcGfZMwT+0d/3EYdubLEcEe30xi
-         rOYfHce2Jgj3aPKPM2qhUBQKAmvot6seFGJ1zTaBg6uvXFKJS5TBPDHcF6IMh2diFY9K
-         Vb4/1pQ7C3jFNTUuIiNXjG7Bt8oQHNpEH4aFZoevNTs5umC8aePVnPXhEGwORjv7iy9y
-         OFESnlXDmQtNEvBbemSErGlZLcd8chSqoae4sHLwqhwoYaawaM0xUcBGnPU6oKaE1HZD
-         XE5HT6JF9muet63r9dYGkC1fW4TqtabFLbUhqme4joYDFTEN1EXICxISJMetpNICvouj
-         UszQ==
-X-Gm-Message-State: ANhLgQ0WrWetovEl7LHHffvwGnmDiY+sBai0uxN4ZQQg9xDaQP1kZy+j
-        +j4Y6by+22CU6kvLtSYHmmffBtzywXg=
-X-Google-Smtp-Source: ADFU+vvpECreOw40Vdh1kl60X13RefKOAsrla2tUxrvp65eeXso3PTSfxrzr69QWUMvuJOFIscQUZg==
-X-Received: by 2002:ac8:5448:: with SMTP id d8mr3041742qtq.205.1583940106599;
-        Wed, 11 Mar 2020 08:21:46 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k14sm1083119qkh.63.2020.03.11.08.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2020 08:21:45 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: fix ref-verify to catch operations on 0 ref extents
-Date:   Wed, 11 Mar 2020 11:21:44 -0400
-Message-Id: <20200311152144.8765-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=dCNTZNZf/b634i1DN7OtrVegqEtHKJgFPQt3IWZzA4c=;
+        b=JmObNJwZNF5ZYB4AQzgvXkqbupLzEDF3m/4M2s2Ojx+e668Ey/XCsZcWxr6SUPChxe
+         YFX8/OLMtJHd+AYfZxkwRfcFnxVDL+x3xYU5Hx9DcTf6Zt+21KuXT1m/DvF89LUi83ib
+         yDxDGTk8GM+wf8QQ47PDm4SK2IStbTARtfMbAo97HhiJUnfLiCZWddDbw40h5BmfZPLi
+         P3QW+ZpA5KD79w7kUh8eVfisJnEn9mfXC61LivQa/AvYeN2LaLoXAx4AHkkmkVtdzxK3
+         D/VLoXmvAIX7a2ORzgLYfs2deDmc3H0wt31CYElnefneLujfvUVsmJKNQcfaltWLnIF/
+         27wg==
+X-Gm-Message-State: ANhLgQ37dFO7fQ1dhp1/JXdsX81PYpBv06QOTJk1VkLkXtRw0TP7K1hn
+        7sMdKQkN5HiuovlLOa2HNhHU2/C8YP52rpKHfWorCDqK
+X-Google-Smtp-Source: ADFU+vuSBHsGn3DNces1dmlpH6xgICdR4zUDLbqoD7FyCrbJa1NiV7HK+m3hojUnWONl0VPiILYdN3tslmbodJgTLmg=
+X-Received: by 2002:a67:7c8f:: with SMTP id x137mr2140786vsc.99.1583941851577;
+ Wed, 11 Mar 2020 08:50:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1583914311.git.osandov@fb.com> <ba4cd47585197cb490afbd5ad22725adfd909381.1583914311.git.osandov@fb.com>
+In-Reply-To: <ba4cd47585197cb490afbd5ad22725adfd909381.1583914311.git.osandov@fb.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 11 Mar 2020 15:50:40 +0000
+Message-ID: <CAL3q7H5bbJV21PRFC_f-+hqvckc5dinQK=Nt4cK9bUzp10=3uQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 1/3] btrfs-progs: receive: remove commented out
+ transid checks
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I was trying to debug something stupid I did and noticed I wasn't
-getting ref verify errors before everything blew up.  Turns out it's
-because we don't warn when we try to add a normal ref via
-btrfs_inc_ref() if the block entry exists but has 0 references.  This is
-incorrect, we should never be doing anything other than adding a new
-extent once a block entry drops to 0 references.  With this fix it blew
-up when I did the stupid thing, and was able to undo my stupid thing.
+On Wed, Mar 11, 2020 at 8:17 AM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> The checks for a subvolume being modified after it was received have
+> been commented out since they were added back in commit f1c24cd80dfd
+> ("Btrfs-progs: add btrfs send/receive commands"). Let's just get rid of
+> the noise.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ref-verify.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Indeed. If they were ever in place, it would have never been possible
+to do an incremental send and running dedupe against the parent
+snapshot.
+That particular use case used to cause send, the kernel side, to fail
+(initially with a BUG_ON() and later with -EIO returned to user
+space):
 
-diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-index 454a1015d026..679464e5f06a 100644
---- a/fs/btrfs/ref-verify.c
-+++ b/fs/btrfs/ref-verify.c
-@@ -803,6 +803,14 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
- 			kfree(ref);
- 			kfree(ra);
- 			goto out_unlock;
-+		} else if (be->num_refs == 0) {
-+			btrfs_err(fs_info,
-+"trying to do action %d for a bytenr that has 0 total references", action);
-+			dump_block_entry(fs_info, be);
-+			dump_ref_action(fs_info, ra);
-+			kfree(ref);
-+			kfree(ra);
-+			goto out_unlock;
- 		}
- 
- 		if (!parent) {
--- 
-2.24.1
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3Db4f9a1a87a48c255bb90d8a6c3d555a1abb88130
 
+If this code in btrfs-progs was not commented, it would have been
+easier to find that problem.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+
+
+>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  cmds/receive.c | 25 -------------------------
+>  1 file changed, 25 deletions(-)
+>
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index c4827c1d..a4bf8787 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -345,15 +345,6 @@ static int process_snapshot(const char *path, const =
+u8 *uuid, u64 ctransid,
+>                         parent_subvol->path[sub_len - root_len - 1] =3D '=
+\0';
+>                 }
+>         }
+> -       /*if (rs_args.ctransid > rs_args.rtransid) {
+> -               if (!r->force) {
+> -                       ret =3D -EINVAL;
+> -                       fprintf(stderr, "ERROR: subvolume %s was modified=
+ after it was received.\n", r->subvol_parent_name);
+> -                       goto out;
+> -               } else {
+> -                       fprintf(stderr, "WARNING: subvolume %s was modifi=
+ed after it was received.\n", r->subvol_parent_name);
+> -               }
+> -       }*/
+>
+>         if (*parent_subvol->path =3D=3D 0)
+>                 args_v2.fd =3D dup(rctx->mnt_fd);
+> @@ -771,22 +762,6 @@ static int process_clone(const char *path, u64 offse=
+t, u64 len,
+>                         goto out;
+>                 }
+>         } else {
+> -               /*if (rs_args.ctransid > rs_args.rtransid) {
+> -                       if (!r->force) {
+> -                               ret =3D -EINVAL;
+> -                               fprintf(stderr, "ERROR: subvolume %s was =
+"
+> -                                               "modified after it was "
+> -                                               "received.\n",
+> -                                               r->subvol_parent_name);
+> -                               goto out;
+> -                       } else {
+> -                               fprintf(stderr, "WARNING: subvolume %s wa=
+s "
+> -                                               "modified after it was "
+> -                                               "received.\n",
+> -                                               r->subvol_parent_name);
+> -                       }
+> -               }*/
+> -
+>                 /* strip the subvolume that we are receiving to from the =
+start of subvol_path */
+>                 if (rctx->full_root_path) {
+>                         size_t root_len =3D strlen(rctx->full_root_path);
+> --
+> 2.25.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
