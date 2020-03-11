@@ -2,110 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E97E918128D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 09:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8562D1812C2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 09:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbgCKIDd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Mar 2020 04:03:33 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:35701 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgCKIDc (ORCPT
+        id S1728195AbgCKIR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Mar 2020 04:17:26 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:45176 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgCKIRZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Mar 2020 04:03:32 -0400
-Received: by mail-pj1-f65.google.com with SMTP id mq3so612078pjb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 01:03:30 -0700 (PDT)
+        Wed, 11 Mar 2020 04:17:25 -0400
+Received: by mail-pg1-f193.google.com with SMTP id m15so748360pgv.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 01:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eHJRZCbs3KxAbriAlAN4jQIXHiK5ut/Ovc2Zx5fh6A8=;
-        b=YHs0tJifO54ah4+a9RCJo9/CktMcwe5ITU0LbQDLjTkkHqWwvFcI68lPM0MO14H6FM
-         y9Ee3Op56yWeE1YjPf+1474yRRSIvuMbp9BYa4fHrloDxJvKdsCE9BeVnLy6vKup5261
-         I2mvU7MdHuWwVOpqJTbzXfggCipyrFGih1jZZilaNBUsuR51LChY86EOuLgrw/V/5IW3
-         ukSk2EaVbAR25AT6fZOHYHc6osX+D5hTAEMPXnHxVlevagziBt8Ws0tnXedct41brVbS
-         3qcoLhMV8zDsojUXITDzsE6HUljHWyFhTZfzwn94WE0EL5OBoyYuxTIyiDRPpPRe7u0Y
-         SLdQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MuzmrD0c0ZFm46FLr9vaZUDaWwP5NimKdT1tayynHds=;
+        b=opAl3TBUfQNfp9rHVqSN58uThaRBnPWZsMHBaUO2lK/z8G18jQOhfM5GANh120fSZw
+         2eDSUNzKJingd4zlq3uAsvnM9nV1/7krArCEicH0g5KakiNytlCxC3r5BY/vsubxCa7S
+         9atvZNFppsfiXlepPAGhyz4OnFrptR1ajXIEz4OTAsN/gdaeRov/AqiA2Y0FErGiu+0q
+         VMfrjfsBDc/CrVvornV84Qm9JrezN0fHJuzwjxfYS9rE960sKNtiA48DYm1+tkprF++P
+         glg5HmZ3WDhrMpmK+2DcI+AssW9PgQm+evagwJmgXpaA8JkiTxnNuEFErZf+R3CywtGP
+         XsZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eHJRZCbs3KxAbriAlAN4jQIXHiK5ut/Ovc2Zx5fh6A8=;
-        b=NKI6EjXKUeN9aozKwSbySSF+otXvX2zd2/iaCKRmvpQ4mqcV3j7U283yCiUWfODtLV
-         +qj63VjR35z3JmQSVBk0lo/pw2JL/VyFn7C/sdvp6r9Tcdi6OMOF+vIYCAQQWhK+HHS1
-         xrKNp2b2RbX7YtGomH0SA2wjbC3vtePyv/QaM0KQe9f/9qmkQPS9fatpPSoWO/i7dk52
-         NDUCVDpPeZgeJcC+a1L5LEn8i2HVm1GuEgEhub6Y0ZMTFbSnrLGbF62LzRETnBBz1Lh+
-         HT0w7y6rCqQD4ZVuNKVglZNUV+FEoTPM0r+kJ6QCSwFO0ZHvSmuFn1Y9tdXKEtIGhOOS
-         9BSw==
-X-Gm-Message-State: ANhLgQ3S4tmKAfN7XxHeUc1daIgr6JUGo4uH//DHGr0hcrVZmEPUci1U
-        cFsJR+8NjGeT1tNB/eaegZLfMA==
-X-Google-Smtp-Source: ADFU+vs3P9d4STMyuobamomwVlX//6gsi1tNVsUjj/eWDBr/DcSMomlEfTD7tiCbX2PoLFDKrkx2gw==
-X-Received: by 2002:a17:90a:8d86:: with SMTP id d6mr2150204pjo.119.1583913809896;
-        Wed, 11 Mar 2020 01:03:29 -0700 (PDT)
-Received: from vader ([2601:602:8b80:8e0::14a2])
-        by smtp.gmail.com with ESMTPSA id z3sm50507590pfz.155.2020.03.11.01.03.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MuzmrD0c0ZFm46FLr9vaZUDaWwP5NimKdT1tayynHds=;
+        b=gYLOjp00BuxTYFTLWNHRFO1DRTmnifhKZjWvM2FUgVQBAQPTKCKSb8sKHPkRWfTlzo
+         LvU0qCEhzVKiMury5o34TPBjVVZm4FTAU+ydLqqQ9Iqz5/GKtk3CMvNgwASCk0X36+6r
+         /W3QWu7nnaBSN/RhJoBMeRRoEtiGejFccpzSZoOYOGSN3RwfKKTKB3IYczKseBsYSj0V
+         qE0ZKqCk4HXJ1+XAktStT2MPrXsDZ5pYAYN2zifVSwaQaVhV3tALeleFTjloVeie3E+H
+         pPK4gNK0cyVHxfPkUbHd3GrFL5o0NUSCreZ06GtNdF0laoVgNx0ini+YkpiyHZlzy9uV
+         E3pw==
+X-Gm-Message-State: ANhLgQ3wG0NKzg4Uk9AG0SsW7APeKeLLHM1NWhmG4sDoxk9J6ICXHBJ3
+        +/7GtgM5W5Lh7ZF1WJXVXEFNI6Rzwm4=
+X-Google-Smtp-Source: ADFU+vurtjkBATn6JDz5iEt2TS0gdTPi0hoeWtZMNVawgVj9eM0hCIysYz/lvJrpTetrpKv1b9g6VA==
+X-Received: by 2002:aa7:8283:: with SMTP id s3mr1729019pfm.106.1583914642405;
+        Wed, 11 Mar 2020 01:17:22 -0700 (PDT)
+Received: from vader.hsd1.wa.comcast.net ([2601:602:8b80:8e0::14a2])
+        by smtp.gmail.com with ESMTPSA id j8sm4692039pjb.4.2020.03.11.01.17.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2020 01:03:28 -0700 (PDT)
-Date:   Wed, 11 Mar 2020 01:03:27 -0700
+        Wed, 11 Mar 2020 01:17:21 -0700 (PDT)
 From:   Omar Sandoval <osandov@osandov.com>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH v2 3/4] btrfs-progs: receive: don't lookup clone root for
- received subvolume
-Message-ID: <20200311080327.GA252106@vader>
-References: <cover.1563822638.git.osandov@fb.com>
- <66ec0a6323c64aec74336e99696b6ad6576e091e.1563822638.git.osandov@fb.com>
- <CAL3q7H6sDTbMrjQqu_6Q6fy=Do0pgayHM-EGLXnG47BoitCScA@mail.gmail.com>
- <CAL3q7H7Yv+OjcJ4cDxwZ7x+k2z10s7yin0FTkNxaZvZ7AkVJ3A@mail.gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Filipe Manana <fdmanana@gmail.com>
+Subject: [PATCH RESEND v2 0/3] btrfs-progs: fix clone from wrong subvolume
+Date:   Wed, 11 Mar 2020 01:17:08 -0700
+Message-Id: <cover.1583914311.git.osandov@fb.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H7Yv+OjcJ4cDxwZ7x+k2z10s7yin0FTkNxaZvZ7AkVJ3A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 02:53:51PM +0000, Filipe Manana wrote:
-> On Tue, Jul 23, 2019 at 12:19 PM Filipe Manana <fdmanana@gmail.com> wrote:
-> >
-> > On Tue, Jul 23, 2019 at 3:25 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > >
-> > > From: Omar Sandoval <osandov@fb.com>
-> > >
-> > > When we process a clone request, we look up the source subvolume by
-> > > UUID, even if the source is the subvolume that we're currently
-> > > receiving. Usually, this is fine. However, if for some reason we
-> > > previously received the same subvolume, then this will use paths
-> > > relative to the previously received subvolume instead of the current
-> > > one. This is incorrect, since the send stream may use temporary names
-> > > for the clone source. This can be reproduced as follows:
-> > >
-> > > btrfs subvolume create subvol
-> > > dd if=/dev/urandom of=subvol/foo bs=1M count=1
-> > > cp --reflink subvol/foo subvol/bar
-> > > mkdir subvol/dir
-> > > mv subvol/foo subvol/dir/
-> > > btrfs property set subvol ro true
-> > > btrfs send -f send.data subvol
-> > > mkdir first second
-> > > btrfs receive -f send.data first
-> > > btrfs receive -f send.data second
-> > >
-> > > The second receive results in this error:
-> > >
-> > > ERROR: cannot open first/subvol/o259-7-0/foo: No such file or directory
-> > >
-> > > Fix it by always cloning from the current subvolume if its UUID matches.
-> > > This has the nice side effect of avoiding unnecessary UUID tree lookups
-> > > in that case.
-> > >
-> > > Fixes: f1c24cd80dfd ("Btrfs-progs: add btrfs send/receive commands")
-> > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> >
-> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> 
-> I can't find this patch in btrfs-progs. Any reason why it was never applied?
-> 
-> thanks
+From: Omar Sandoval <osandov@fb.com>
 
-It must have gotten lost at some point. I'll resend it.
+Hi,
+
+This is a resend of [1] from last July fixing a bug when the same
+subvolume is received multiple times. It appears that the series got
+lost at some point.
+
+The only changes from v2 are adding Filipe's reviewed-bys and removing
+the strdup cleanup patch that was already merged. Based on the devel
+branch.
+
+Thanks!
+
+1: https://lore.kernel.org/linux-btrfs/cover.1563822638.git.osandov@fb.com/
+
+Omar Sandoval (3):
+  btrfs-progs: receive: remove commented out transid checks
+  btrfs-progs: receive: don't lookup clone root for received subvolume
+  btrfs-progs: tests: add test for receiving clone from duplicate
+    subvolume
+
+ cmds/receive.c                                | 43 ++++---------------
+ .../test.sh                                   | 34 +++++++++++++++
+ 2 files changed, 42 insertions(+), 35 deletions(-)
+ create mode 100755 tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
+
+-- 
+2.25.1
+
