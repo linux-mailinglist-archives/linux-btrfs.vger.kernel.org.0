@@ -2,134 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADD718201C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 18:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783018201F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 18:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgCKR6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Mar 2020 13:58:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730450AbgCKR6C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Mar 2020 13:58:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EC772AFA1;
-        Wed, 11 Mar 2020 17:57:59 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Optimise space flushing machinery
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20200310090035.16676-1-nborisov@suse.com>
- <e66667cb-7be0-9d26-f462-d6094b892cde@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <412a6539-66b4-1497-d9ee-d6b2d14c4a14@suse.com>
-Date:   Wed, 11 Mar 2020 19:57:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1730610AbgCKR6T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Mar 2020 13:58:19 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46457 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730450AbgCKR6T (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Mar 2020 13:58:19 -0400
+Received: by mail-qk1-f196.google.com with SMTP id f28so2930794qkk.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 10:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0I2cP+M7dvP9KLF2IYwbOP6q1/QJVzFoNFV323wrPZI=;
+        b=fYnfNso9lOnQuYc6+oulu1OBVXxByPQSarQetihw5tMn5WTwUNN4bcJpHeFVFLia9x
+         0/F0trwTLmvhrm1gNL4GlezdTI2VpZDZcshiCwqnLx1bQFhyBT6C7j0pke8LFqy334pv
+         GxC5FUMed9q5tP6NcHmwyO7hRxGAP8VdTP/X683U+hBfUs33Jdgesad7Ust8ww0YXSUp
+         IXN/s+rxw+DMVfGKvYg/nVOsBwJossqoOXUlZlwksG2O+NtQMHW67qJG3qUvG1vel1Kp
+         CO3pEzqG6hYDhP7G7RhAy1rG+VjHiHoXuXgoiPUgmjgSZERAY8f1yIXO/mJOszU5sJ77
+         J77w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0I2cP+M7dvP9KLF2IYwbOP6q1/QJVzFoNFV323wrPZI=;
+        b=q0osrTgtwP4bAzmFApvUquFe4smLJ9z3OpQxI/e49dJ/Db5FPAykC//ogyYCTA5hiJ
+         7TMg4DIFRjigKr7BQV+BkAxrzHPmsCTapfITT0HL83qboMSMdVdhNa1dI+mGvA8+o6LU
+         /A4/7uPHVXC4uz4z8pK99xZnvROA/DQdH0HSSBLxumNyzQtnsLQL+l3Iv0uwNztt9x/7
+         f9XWdbDy6O1aeYYraeQne7r6Q21QcLmDY7NH2kFyuoNAz3i0qeRO/8vSMQQB7XB81byo
+         YBRLZJ9vzn7VMw5GtqL8ZpIv3lEJR5X1Gy2lD2SXSbepekxWn+SPlXWuGEhjsfp/DaRs
+         QOuA==
+X-Gm-Message-State: ANhLgQ0P7EcG/nReF8VKcELkCPKdBAYY+FQ1DU2sQuSiLAVlPLNxn8Mm
+        L8ZPa54fbdMEWVr1S3Ss55UFzqU3VUM=
+X-Google-Smtp-Source: ADFU+vvL9BNxU5D0+1d9ccTHdp7WAcaUdfMypV887icsiXDQ3MyRwX7i3Xky3WldGU4eeHGmq4tIkg==
+X-Received: by 2002:a37:5f07:: with SMTP id t7mr3787777qkb.159.1583949498461;
+        Wed, 11 Mar 2020 10:58:18 -0700 (PDT)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id 3sm26683512qte.59.2020.03.11.10.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Mar 2020 10:58:17 -0700 (PDT)
+Subject: Re: [PATCH 07/15] btrfs: make btrfs_check_repairable() static
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
+References: <cover.1583789410.git.osandov@fb.com>
+ <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a12a09cb-fd29-64bf-7930-2f534e84db2f@toxicpanda.com>
+Date:   Wed, 11 Mar 2020 13:58:16 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <e66667cb-7be0-9d26-f462-d6094b892cde@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.03.20 г. 19:52 ч., Josef Bacik wrote:
-> On 3/10/20 5:00 AM, Nikolay Borisov wrote:
->> Instead of iterating all pending tickets on the normal/priority list to
->> sum their total size the cost can be amortized across ticket addition/
->> removal. This turns O(n) + O(m) (where n is the size of the normal list
->> and m of the priority list) into O(1). This will mostly have effect in
->> workloads
->> that experience heavy flushing.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>   fs/btrfs/space-info.c | 13 ++++++++-----
->>   fs/btrfs/space-info.h |  4 ++++
->>   2 files changed, 12 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
->> index 9cb511d8cd9d..316a724dc990 100644
->> --- a/fs/btrfs/space-info.c
->> +++ b/fs/btrfs/space-info.c
->> @@ -389,6 +389,8 @@ void btrfs_try_granting_tickets(struct
->> btrfs_fs_info *fs_info,
->>                                     space_info,
->>                                     ticket->bytes);
->>               list_del_init(&ticket->list);
->> +            ASSERT(space_info->reclaim_size >= ticket->bytes);
->> +            space_info->reclaim_size -= ticket->bytes;
->>               ticket->bytes = 0;
->>               space_info->tickets_id++;
->>               wake_up(&ticket->wait);
->> @@ -784,16 +786,15 @@ static inline u64
->>   btrfs_calc_reclaim_metadata_size(struct btrfs_fs_info *fs_info,
->>                    struct btrfs_space_info *space_info)
->>   {
->> -    struct reserve_ticket *ticket;
->>       u64 used;
->>       u64 avail;
->>       u64 expected;
->>       u64 to_reclaim = 0;
->>
->> -    list_for_each_entry(ticket, &space_info->tickets, list)
->> -        to_reclaim += ticket->bytes;
->> -    list_for_each_entry(ticket, &space_info->priority_tickets, list)
->> -        to_reclaim += ticket->bytes;
->> +    lockdep_assert_held(&space_info->lock);
->> +
->> +    if (space_info->reclaim_size)
->> +        return space_info->reclaim_size;
+On 3/9/20 5:32 PM, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> This undoes the fix that I put up making sure we include any space we
-> can no longer overcommit.  Thanks,
-
-Which fix is that?
-
+> Since its introduction in commit 2fe6303e7cd0 ("Btrfs: split
+> bio_readpage_error into several functions"), btrfs_check_repairable()
+> has only been used from extent_io.c where it is defined.
 > 
-> Josef
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
