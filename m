@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1B4182088
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 19:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7422618209E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 19:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730755AbgCKSQv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Mar 2020 14:16:51 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42073 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730587AbgCKSQu (ORCPT
+        id S1730836AbgCKSTV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Mar 2020 14:19:21 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:37099 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730677AbgCKSTU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Mar 2020 14:16:50 -0400
-Received: by mail-qk1-f194.google.com with SMTP id e11so3022170qkg.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 11:16:49 -0700 (PDT)
+        Wed, 11 Mar 2020 14:19:20 -0400
+Received: by mail-qv1-f67.google.com with SMTP id l17so1331355qvu.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 11:19:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CjzuKJHWPneXXrfzWyekzmT3fCCMqKuYOSJQbq+NbEI=;
-        b=gSOzMb64pk7yb2AXxuMwOITUuKJWEbCxOBRN5kp/wFsJjPUzermvSouzd7NFccW+8T
-         amvIPpGpFqFNvgvO6tKOkdtY3BHQEsqBdW+wdsV67waa62fGHnQwvriWIFFuKmcWa+MM
-         Qubg+fh+vjKQXp7fpyydgEtnXADH0fWs+Qt+9aRO03UxtfKRW1Fzw0/8Eypjhck/3eZ5
-         1veog2iiFcujwamST2WOTwOGHUGPxUVeAJn8Ls0nCPZXrIV+XE9FsTH5mflIbCqWsVDS
-         U8/ul557KPXC0DKTAJ6/HXbIczt4E9eTy5ZtgSXehZxMFpobPyBea+8AVtKQmc7UjiFD
-         yexw==
+        bh=bUfyRVSLtXnFSkI5GRnKRRhHX8ZOoT6WEeoMwZ+Njf8=;
+        b=isFTPy/AXRScEg6Gt+IL5gnlW40Ua+HWTeKHf1OcpPhU+uUeoSIy8pZeNWoIs0tg37
+         SRjKXffE7U8YnRdRz5Z6gRw10NdrGDjxr7GxIY+tdCGFdzSM6kWBDTqxBr1TuL6qCHKj
+         IrzgDiC7Ngk8Xf2JsOoGRgW6RI2TN1TNizj0eETI9asWDCuhq1QmN56LSh//tu2SiP4u
+         A+uAMDhUXpnT1bR118YBV0Ncx6TufxYlx8q2U6fX3k8+OwtZvjvRQS3NcH3Oe7+kiUZH
+         ipCMa0UPQi/hcrwqwq7pnGI442bDI45tGcHOq2Re1oCoPwGvJRXffdrDpA9FO7/BdNjC
+         pVnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CjzuKJHWPneXXrfzWyekzmT3fCCMqKuYOSJQbq+NbEI=;
-        b=QwqOa7HyG9c1qh2PsaINCtLhHkeRwv4unW6qBSlyYuAbzYmUhch+geMJ7nXcvlu7J8
-         z8x/PTy6cQGlChtQN+AZxablPUjvt9zs6CVWqt4BM81+fQO97MhZ6QzNFtHZ5ucb2zr7
-         taDQtAmIx/0sJDRwQF/36ZtCu9mmJn5KwimxKNNJYljESRetXWmIFWRE9yfVEE23BgQg
-         L/XOnePJurggYFbmSOlUS+/pFn+REj5n9e+h6U7y9she24kS71T3q5wrTEm/45qzuWpP
-         80WCaeVCnpLqAOsexw2LMZnspO9hokMKMEJ4XELuSl4veWVaK7WWGZsdTOYGQVKIIdlD
-         CJvQ==
-X-Gm-Message-State: ANhLgQ2iOLS18PIMZaFL+fYO+j1VUD0AtE+VmuJ0bv1rd+Xl6G4Q381X
-        zAbrIJ7ln6FR0eFETgoej+LtOA==
-X-Google-Smtp-Source: ADFU+vuU/q0ItLyxmwzFRYWYh51WDRFnffmkwDNfl9iTljsEn+5kIccSQX6VUEDHl2zAcx6VEVZvqA==
-X-Received: by 2002:a37:9f58:: with SMTP id i85mr4110927qke.186.1583950609147;
-        Wed, 11 Mar 2020 11:16:49 -0700 (PDT)
+        bh=bUfyRVSLtXnFSkI5GRnKRRhHX8ZOoT6WEeoMwZ+Njf8=;
+        b=pGbDwWk+B4aobZe+kZ4XwIkx0EVbL4juV37kTDlw2gz4or8vCmyNlAz/mp5ruGSWNn
+         AdH2m1qmAWt0E5ro5jmn2YCNgRJ2P3TdAuUsXUfLfNcXtJWjRA1bLBsaJr1T1xMTjTv6
+         4KxzqqFdf7Yw+u9O/9rgU7RZmyJ4p1f0hM04YS1mxZI6oLbJkB9HIKuRMJBHoAtA0amY
+         vKWdSEGFbOPtAM5DRSAvFcy+E/11rDvgGKVJfOOfUfuNtLCMRFBT7U0HQXoigqiFznLs
+         9+hHJL9lWtpNfuoF50n8m+YKRq67qoj5Bj8SgZT+rnDLTT2StUSLi34z699t8rjF952s
+         sHgQ==
+X-Gm-Message-State: ANhLgQ0fQPLbifEWsnD1RczPiVPsA856YDvM9ZeT30+Pu93muY+dn6wp
+        0e3PoU3Lokf4CsyhlUYJnkKUwJMoroc=
+X-Google-Smtp-Source: ADFU+vvJmuYATdz0JSBxgyNo0wKiAvGXaHI8g0VSwpvV6sta2ppjVn1813LUVR5Kt/gOHUyhZPHwJg==
+X-Received: by 2002:a0c:fec3:: with SMTP id z3mr3867549qvs.111.1583950759750;
+        Wed, 11 Mar 2020 11:19:19 -0700 (PDT)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w2sm25968977qto.73.2020.03.11.11.16.48
+        by smtp.gmail.com with ESMTPSA id g15sm22304231qtq.71.2020.03.11.11.19.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Mar 2020 11:16:48 -0700 (PDT)
-Subject: Re: [PATCH 14/15] btrfs: get rid of endio_repair_workers
+        Wed, 11 Mar 2020 11:19:19 -0700 (PDT)
+Subject: Re: [PATCH 15/15] btrfs: unify buffered and direct I/O read repair
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <222e3f12f3a9130ec95d0c52be44b497989f8370.1583789410.git.osandov@fb.com>
+ <7c593decda73deb58515d94e979db6a68527970b.1583789410.git.osandov@fb.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <29bee7b0-1c28-5698-55b1-9c6572d0b2ad@toxicpanda.com>
-Date:   Wed, 11 Mar 2020 14:16:47 -0400
+Message-ID: <bdaae1b2-4256-a4fa-6260-3f996d74d6f5@toxicpanda.com>
+Date:   Wed, 11 Mar 2020 14:19:18 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <222e3f12f3a9130ec95d0c52be44b497989f8370.1583789410.git.osandov@fb.com>
+In-Reply-To: <7c593decda73deb58515d94e979db6a68527970b.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,11 +69,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 3/9/20 5:32 PM, Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> This was originally added in commit 8b110e393c5a ("Btrfs: implement
-> repair function when direct read fails") because the original bio waited
-> for the repair bio to complete, so the repair I/O couldn't go through
-> the same workqueue. As of the previous commit, this is no longer true,
-> so this separate workqueue is unnecessary.
+> Currently, direct I/O has its own versions of bio_readpage_error() and
+> btrfs_check_repairable() (dio_read_error() and
+> btrfs_check_dio_repairable(), respectively). The main difference is that
+> the direct I/O version doesn't do read validation. The rework of direct
+> I/O repair makes it possible to do validation, so we can get rid of
+> btrfs_check_dio_repairable() and combine bio_readpage_error() and
+> dio_read_error() into a new helper, btrfs_submit_read_repair().
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
@@ -82,3 +84,4 @@ Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Thanks,
 
 Josef
+
