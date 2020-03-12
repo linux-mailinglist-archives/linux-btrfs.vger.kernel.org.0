@@ -2,61 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E85B18237F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Mar 2020 21:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F066182D73
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Mar 2020 11:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgCKUsf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Mar 2020 16:48:35 -0400
-Received: from static.149.47.69.159.clients.your-server.de ([159.69.47.149]:53128
-        "EHLO mat.lavorato.re" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgCKUsf (ORCPT
+        id S1726733AbgCLK0U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Mar 2020 06:26:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40049 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726567AbgCLK0U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Mar 2020 16:48:35 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Mar 2020 16:48:34 EDT
-Received: from li61-168.members.linode.com (li61-168.members.linode.com [97.107.131.168])
-        by mat.lavorato.re (Postfix) with ESMTP id DC69B3E810
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Mar 2020 21:42:04 +0100 (CET)
-Received: by li61-168.members.linode.com (Postfix, from userid 0)
-        id 8806B221F2; Wed, 11 Mar 2020 20:42:04 +0000 (UTC)
-Date:   Wed, 11 Mar 2020 20:42:04 +0000
-From:   Andrea Gelmini <gelma@gelma.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Request about "Page cache invalidation failure on direct I/O."
-Message-ID: <20200311204204.GA21905@li61-168.members.linode.com>
+        Thu, 12 Mar 2020 06:26:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1584008779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mOBS2wli+ub8UNg/a0qe1B6uGroDbB2RmIKqhZCROdo=;
+        b=N16BGhWSowpR9+KhhiEOua05ybl4WeD8bC5LDzPJAM4KRkbz6LGi43srWXJNO7t5GJ4eQw
+        WYf56snqYF8vCMpbVh9sCx6dqStijmMI7sxui0DjkvhKP7b/PLfyvh3LuNPLRJcGjHmtuk
+        hY3mawBc7gof1ONBT/INPt5NIuwfmsY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-118-DhXxdGWqOnSZkj73jKhAyg-1; Thu, 12 Mar 2020 06:26:15 -0400
+X-MC-Unique: DhXxdGWqOnSZkj73jKhAyg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FBEDDB62;
+        Thu, 12 Mar 2020 10:26:13 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-182.rdu2.redhat.com [10.10.120.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 508BD10013A1;
+        Thu, 12 Mar 2020 10:26:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <1015227.1584007677@warthog.procyon.org.uk>
+References: <1015227.1584007677@warthog.procyon.org.uk> <969260.1584004779@warthog.procyon.org.uk>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     dhowells@redhat.com, mbobrowski@mbobrowski.org,
+        darrick.wong@oracle.com, jack@suse.cz, hch@lst.de,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: btrfs may be broken too - Re: Is ext4_dio_read_iter() broken?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1016627.1584008770.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 12 Mar 2020 10:26:10 +0000
+Message-ID: <1016628.1584008770@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi everybody,
-   thanks a lot for your work.
+David Howells <dhowells@redhat.com> wrote:
 
-   On my laptop (Ubuntu 19.10, Kernel 5.5.7, VirtualBox 6.1.4-136177)
-   I have an SSD (Samsung SSD 860 EVO 4TB + luks + lvm + ext4)
-   with a virtual machine, without troubles, since months.
+> > Is ext4_dio_read_iter() broken?  It calls:
+> > =
 
-   Now, I move the virtual machine on external USB
-   disk (Seagate M3 Portable 4TB + luks + BTRFS).
-   Run it, and after a few minutes of simple boot and Windows updating
-   (the guest system), I find this in dmesg:
+> > 	file_accessed(iocb->ki_filp);
+> > =
 
-[376827.145222] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-[376827.145225] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-[376827.145230] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-[376827.145231] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-[376827.145234] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-[376827.145234] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-[376827.145236] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-[376827.145237] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-[376827.145240] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-[376827.145241] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
+> > at the end of the function - but surely iocb should be expected to hav=
+e been
+> > freed when iocb->ki_complete() was called?
+> =
 
-   I kindly ask your advice. At the moment the virtual seems to work
-   without problem.
+> I think it's actually worse than that.  You also can't call
+> inode_unlock_shared(inode) because you no longer own a ref on the inode =
+since
+> ->ki_complete() is expected to call fput() on iocb->ki_filp.
+> =
 
-Thanks a lot,
-Gelma
+> Yes, you own a shared lock on it, but unless somewhere along the
+> fput-dput-iput chain the inode lock is taken exclusively, the inode can =
+be
+> freed whilst you're still holding the lock.
+> =
+
+> Oh - and ext4_dax_read_iter() is also similarly broken.
+> =
+
+> And xfs_file_dio_aio_read() appears to be broken as it touches the inode=
+ after
+> calling iomap_dio_rw() to unlock it.
+
+Seems btrfs_file_write_iter() is also broken:
+
+	if (iocb->ki_flags & IOCB_DIRECT) {
+		num_written =3D __btrfs_direct_write(iocb, from);
+	} else {
+		num_written =3D btrfs_buffered_write(iocb, from);
+		if (num_written > 0)
+			iocb->ki_pos =3D pos + num_written;
+		if (clean_page)
+			pagecache_isize_extended(inode, oldsize,
+						i_size_read(inode));
+	}
+
+	inode_unlock(inode);
+
+But if __btrfs_direct_write() returned -EIOCBQUEUED then inode may have be=
+en
+deallocated by the point it's calling inode_unlock().  Holding the lock is=
+ not
+a preventative measure that I can see.
+
+David
+
