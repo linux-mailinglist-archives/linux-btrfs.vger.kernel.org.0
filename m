@@ -2,145 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53715184EBF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 19:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47813184EE5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 19:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgCMSg5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 14:36:57 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39602 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgCMSg4 (ORCPT
+        id S1727236AbgCMSrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 14:47:37 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]:46261 "EHLO
+        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727156AbgCMSrh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 14:36:56 -0400
-Received: by mail-pf1-f196.google.com with SMTP id w65so5738440pfb.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 11:36:55 -0700 (PDT)
+        Fri, 13 Mar 2020 14:47:37 -0400
+Received: by mail-qt1-f176.google.com with SMTP id t13so8391110qtn.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q5dwsz2IwtgHSQoZq6tchWTniKWViGN4sCw8tRdk6ck=;
-        b=d6B8Mik84ybmAiGbPTWwWhjIxTsFc7PwGQPEBv3XdLV0lzAqMZgc+mRQ2JlN3d7LM8
-         U5ZGB5inpX4w9pdHjoLOM/sY8vwzuYYXIqY1IgiEojz5evbwRCAy/S6zvpFinH8Gu1lf
-         PSoN+xopRDPL8eBT5Yli9i8bSxaaeQUhqNSdYjg5QFLe/30ZxePcZke0xq0AFm4835KU
-         hDqQ5Y8eEy5sCi8RvKGScwBAT6BhmW7jXJBZo5m8tqwi1ZB+g+r9lYZhAmjc00zcq2vS
-         t8oNya9TdcdrkJAYZHeyEsSPrjXpM/tescQGUWP3Lt3FK9K1NROF+3s92r10rwFYb1dG
-         dFrg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
+        b=Mw+VFPC1w0UbdRMWSYVpgl8XZWcn/xyU7HjgZBjymT1LdxHLk54OdU9J7RryeWrV6G
+         pmCAsvxCw6XBIrR2Z5DSa9CfEeJcGKuh/zQ62J5GrmsM23BnS/TkQOWWIGVCT/cPUhnP
+         mm/zvQEUeE+q3yK42lamLdvqmphm2Ot6wWUJv1CQBEctQWHl5XrvfaJBRTO78Y/uEQWX
+         1l7qCdw3dlmrC8UvDgfJkqLAkCDAm4l7/mSIUZHe+CJjQxziWFJmZIyA+x8UAD/HVCqX
+         kJqpDXv5yS7j0ShkpKY8fpwCpz07OokC7FALZ+xhU7HVgk00IIS+O4y9al6ahGYBMuiP
+         ykgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q5dwsz2IwtgHSQoZq6tchWTniKWViGN4sCw8tRdk6ck=;
-        b=lEBeyhNG+IJBPpn05mm7/Y2gu/j8UwAadoweu/pgPWEUGt3L6PFzjHKfy+qb1bru4o
-         dJgbmwoO3pjCjSffJke4KzXO8tZV2Fpc/ByuZt7ippvYydKtVF8ZgGWxg+l78ZtKxbgt
-         a/9bFEmoWt9OkNW4cokl7PnAmbvXLJDdODeVfwsc3D2JDc51dsAqdJLLkqGldzkzGpOU
-         usz46HkU4mDeM9JujJjAE8FObbqjMq0X1imjfQjDLo73GGB4WE/YkmsClpcjrhMUXDNM
-         nxwtgXewK7HO14yom57mQV8cmdhDerp8fwMJFGOjeolDTCISa91iqfnCJH1S4/lrQYP4
-         AFzw==
-X-Gm-Message-State: ANhLgQ1WwYLeu+qK76eQIUdCgB8O2nOY5f0JnyZLd8DkG8MM9qNwqsQw
-        rU7RKkViconrfN9E+331Ff7XfA==
-X-Google-Smtp-Source: ADFU+vsqKGOOKAANCliEve5DsTemTE6GfKm5d2SpCazLWZA7UFzrJtGoWuyIlbLF5xFcBozXcDu+bA==
-X-Received: by 2002:a63:36cd:: with SMTP id d196mr14455218pga.280.1584124615060;
-        Fri, 13 Mar 2020 11:36:55 -0700 (PDT)
-Received: from vader ([2620:10d:c090:400::5:5d5d])
-        by smtp.gmail.com with ESMTPSA id w27sm8285583pfq.211.2020.03.13.11.36.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 11:36:54 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 11:36:53 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: Remove support for BTRFS_SUBVOL_CREATE_ASYNC
-Message-ID: <20200313183653.GB26442@vader>
-References: <20200313153143.23613-1-nborisov@suse.com>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
+        b=H7NGXhvDLb66EGTQGXHHDZAKvWIZwSpxW+tyH9iv2m8hcTBPD5vDjwRB8+7DOs2G5/
+         hLdqY5H4BQksiVA4MnYd3lsC9UIGf3jaM6cqPHjF9hjKqjz3WTOjrepDpHAoa/EShLlr
+         NWcCGz7NDseJ9Y+tzldUqedcxiJ3ciUuE4Rz1F42EZ0WIoLsz4/VqvpxpYpl3aX+afHN
+         hjoUU5wu3juDaqjJNmHl1OjcM8JC0iZg9n+Kx2Uf8cXk1waJneiAO0RBgJuzVYikmq7J
+         mQ9OItG00qDh1U45qhUUmn6YtwUlph00bPACfsLlC6M0kcX03NndndFnEEZh/QImeJ9o
+         AbXw==
+X-Gm-Message-State: ANhLgQ14BkkrhEhzBROcwuc59vf7E13F6gv78uipmL13T2a9o4G9bmte
+        TyN+YwlkbOcYWjjGiaKY4/fNxg==
+X-Google-Smtp-Source: ADFU+vt5NDaayPMUHsXSY8k4ZwE0SyPb1aBxsDRcUQaLRF+uXaXF3f1cbfLoYMcPhiB48Es6cJN9Mg==
+X-Received: by 2002:aed:2202:: with SMTP id n2mr14466967qtc.4.1584125254322;
+        Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id w1sm14917915qkc.117.2020.03.13.11.47.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Mar 2020 11:47:33 -0700 (PDT)
+To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: LSF/MM/BPF 2020: Postponement announcement
+Message-ID: <e4f390c7-3b25-67c8-5d6d-d7e87ba1c072@toxicpanda.com>
+Date:   Fri, 13 Mar 2020 14:47:32 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200313153143.23613-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 05:31:43PM +0200, Nikolay Borisov wrote:
-> Kernel has removed support for this feature in 5.7 so let's remove
-> support from progs as well.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  ioctl.h                  | 4 +---
->  libbtrfsutil/btrfs.h     | 4 +---
->  libbtrfsutil/subvolume.c | 4 ----
->  3 files changed, 2 insertions(+), 10 deletions(-)
+Hello,
 
-We should also update the docs in libbtrfsutil/btrfsutil.h and
-libbtrfsutil/python/module.c to note that async_transid/async_ is now
-ignored, remove the mentions of asynchronous creation from
-libbtrfsutil/README.md, and remove the async_ tests in
-libbtrfsutil/python/tests/test_subvolume.py.
+Unfortunately given the escalating nature of the response to COVID-19 we are
+making the decision to change the original LSF/MM/BPF dates in April 2020.  We
+currently do not have concrete plans about how we will reschedule, the Linux
+Foundation is working very hard at getting us alternative dates as we speak.
+Once the new plans are concretely made we will notify everyone again with the
+new plans.
 
-> diff --git a/ioctl.h b/ioctl.h
-> index d3dfd6375de1..93a19a5789b6 100644
-> --- a/ioctl.h
-> +++ b/ioctl.h
-> @@ -49,14 +49,12 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_vol_args) == 4096);
->  
->  #define BTRFS_DEVICE_PATH_NAME_MAX 1024
->  
-> -#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
->  #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
->  #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
->  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
->  
->  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
-> -			(BTRFS_SUBVOL_CREATE_ASYNC |	\
-> -			BTRFS_SUBVOL_RDONLY |		\
-> +			(BTRFS_SUBVOL_RDONLY |		\
->  			BTRFS_SUBVOL_QGROUP_INHERIT |	\
->  			BTRFS_DEVICE_SPEC_BY_ID)
->  
-> diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
-> index 944d50132456..03ac58372104 100644
-> --- a/libbtrfsutil/btrfs.h
-> +++ b/libbtrfsutil/btrfs.h
-> @@ -38,8 +38,7 @@ struct btrfs_ioctl_vol_args {
->  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
->  
->  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
-> -			(BTRFS_SUBVOL_CREATE_ASYNC |	\
-> -			BTRFS_SUBVOL_RDONLY |		\
-> +			(BTRFS_SUBVOL_RDONLY |		\
->  			BTRFS_SUBVOL_QGROUP_INHERIT |	\
->  			BTRFS_DEVICE_SPEC_BY_ID)
->  
-> @@ -101,7 +100,6 @@ struct btrfs_ioctl_qgroup_limit_args {
->   * - BTRFS_IOC_SUBVOL_GETFLAGS
->   * - BTRFS_IOC_SUBVOL_SETFLAGS
->   */
-> -#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
->  #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
->  #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
->  
-> diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
-> index 3f8343a245e9..27a6bb8130ed 100644
-> --- a/libbtrfsutil/subvolume.c
-> +++ b/libbtrfsutil/subvolume.c
-> @@ -716,8 +716,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_subvolume_fd(int parent_fd,
->  		return BTRFS_UTIL_ERROR_INVALID_ARGUMENT;
->  	}
->  
-> -	if (async_transid)
-> -		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
->  	if (qgroup_inherit) {
->  		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
->  		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
-> @@ -1153,8 +1151,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_snapshot_fd2(int fd,
->  
->  	if (flags & BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY)
->  		args.flags |= BTRFS_SUBVOL_RDONLY;
-> -	if (async_transid)
-> -		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
->  	if (qgroup_inherit) {
->  		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
->  		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
+The tentative plan is to keep the attendees as they are if we reschedule within
+2020.  This includes anybody that declined for travel related concerns.  We will
+re-send all invitations again to the original invitees so it's clear that you
+have been invited.
 
-Please remove all of the handling for async_transid from this file.
+If we have to reschedule into 2021 then we will redo the CFP once we are closer
+to the actual date again and redo all of the invites and topics so we're as up
+to date as possible with the current state of the community.
+
+We will keep the current program committee and I will continue to chair until we
+have the next LSF/MM/BPF.
+
+Thank you on behalf of the program committee:
+
+         Josef Bacik (Filesystems)
+         Amir Goldstein (Filesystems)
+         Martin K. Petersen (Storage)
+         Omar Sandoval (Storage)
+         Michal Hocko (MM)
+         Dan Williams (MM)
+         Alexei Starovoitov (BPF)
+         Daniel Borkmann (BPF)
