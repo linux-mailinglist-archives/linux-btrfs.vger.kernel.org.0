@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D69184B59
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 16:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3287184B2A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 16:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgCMPo7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 11:44:59 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42982 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727334AbgCMPo7 (ORCPT
+        id S1727364AbgCMPpC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 11:45:02 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45769 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727355AbgCMPpA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:44:59 -0400
-Received: by mail-qt1-f193.google.com with SMTP id g16so7837946qtp.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 08:44:57 -0700 (PDT)
+        Fri, 13 Mar 2020 11:45:00 -0400
+Received: by mail-qk1-f196.google.com with SMTP id c145so13200904qke.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 08:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=usB50WR/Edm48JN68lsnmBnKkhKLOjJoGtCIpKn3Uyk=;
-        b=IXAH/J/S0F8e2g358KJnrfspCLxfNYdsfNd0IilrGRzN4nCD9UEV1unkRqAjZUaxKb
-         yRTCSe3gXCfzB15gmfkpOrQWGSWjZUPOcLCCjNdXc3Awe/tUZGLErNKXTdzUArBBT13j
-         hz8cZ0nPKluz9bSfXuQ/p00NxprcskgPqFY6Fw6nB22mH0C8W6FjZSnSFAHMJXhiY8uF
-         6c3FXhT0IafOicmGspWIE+42feqVWtrRQBDUGiIVTJ45G/BMlonu4/V4epTNiiSlU6wk
-         T+CzAGcXkTjclzhGdjNRJC3NuVbQh0ceMmJ549w4DkxeY+FVkMVoBbu6ENSsBagZVGgH
-         ucIQ==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=Gjs4n62lFhPeqX6CiEBAgr+CHJMvB2RjTdobKqO9pjA=;
+        b=tsrTiS6Iu3LXow9JcXDBcTpbkFm/4eIBUBZX5AotmwQjrICN6deT910exGgGzkw1iz
+         cVvm5MhS3e1KCC1EYJ5quD3VCU+gwdgZuauw+MK3oZdYZy3x4uabqk9do/8kufxFrCy1
+         w8hsHOW5zEjWsFVLc1sy/Ox0xEdesXIoMRPV0pMVnGz155eRgVO1VHb+dRzxC99Sbknc
+         Y+4oGVXh2h73QvY3GZ6mg/TjnO6OaKaVo54QDdNBNsPAbdaWfieYHCw7iCdK+00VNhdS
+         HJk2UIub5BjzpqE6N0cO19+9d1YPxJm6R4zlzXV4F9W0lnqK2ye7O1KT+F+L5x/vHmt7
+         TzJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=usB50WR/Edm48JN68lsnmBnKkhKLOjJoGtCIpKn3Uyk=;
-        b=NCU7xwd2pI64CU4C9+gYxDcK4o3GdMkkM2E36nFCur9Las/rbrd29Sk0jKYRVBdPKq
-         3idpIrZbPrn4xoP/Zas0zTMvsDmZu1RiXBN+lAcYuGrWW1P/cbkb7Nub8EFSepBDLA0R
-         xvxLuvxaNmyS+aAY3HMV8lJcMtBxy5shd72PCq5aKB4McAcxTSarbN0+mvkb1+RloJWw
-         JXj4FAxiSl4yxD93dIC5iKOdQCUeNdBmJtNVxwga53MwC7hvzqwPVMOH7xtOKtgxVcPP
-         FrmYXpC6bPqGSA7p5MMQPjTpwbL0mrX4/bVnyhhcMfNX45oXjy927yK93px/CJ+w8iRk
-         XVRA==
-X-Gm-Message-State: ANhLgQ2oTdDNCy8uFMPmYLzAc26XJBydGFBqjcplcpHxgyghkIbTK4xF
-        zeZAZO+Mfzm5bUgt1gfIPi7oCFTaBZo=
-X-Google-Smtp-Source: ADFU+vsKaCmHw1ZcPd6HNABU8wltQkWW6ImMjz8E4wOWZAMT66N0sgXp5sEJJ1eWvFBQ8HjMgZsEAA==
-X-Received: by 2002:ac8:6043:: with SMTP id k3mr13425384qtm.336.1584114296699;
-        Fri, 13 Mar 2020 08:44:56 -0700 (PDT)
+        bh=Gjs4n62lFhPeqX6CiEBAgr+CHJMvB2RjTdobKqO9pjA=;
+        b=NZtwzuzbcoMDYr4tJ1sfBwl8Zf5GrTpToBdDmrY3nGoxAVvLA7AP8VFR7dgo1vpxcB
+         O9EH+PURwIOvgdzQPnONOalm7dVIN+pM3AVyC9csFuWJlaGxUScDHa5wl/wkbmHALQjQ
+         qXNYbJhPXiz0+TCTsgAb5xZNoBT3ghBPfobDHXUb+KIwgwPr0ZgojvUwM2qUZmT99tiE
+         pehEK9dPBxrGV4fOuAk90a5STo//haVpNilYD9QjciQQmp44q/x8R9YfJXwuU/5EWPlj
+         HulDGAdoIPdEsxVeJUwBwctagC1i3BY6mdNE2JYLyUdW059OSoa/XklU54BvN/MGXr09
+         AVnA==
+X-Gm-Message-State: ANhLgQ1THnCSZcYvlOgwnJ03p12/FqzZsprH65mLHg900CNzdBdVCYTp
+        uGKTqEX7WxEIlqQoemVo84l+JBK8i58=
+X-Google-Smtp-Source: ADFU+vtdpObM1ipjeMIj0QpuZm/LNR7NbD421rrM8qI3Y08PcEGj5PsqL4ZU9Gij0PMcCt61BByADQ==
+X-Received: by 2002:a37:b984:: with SMTP id j126mr12977933qkf.3.1584114298474;
+        Fri, 13 Mar 2020 08:44:58 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id z9sm11148340qtu.20.2020.03.13.08.44.55
+        by smtp.gmail.com with ESMTPSA id u26sm4902067qku.97.2020.03.13.08.44.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 08:44:56 -0700 (PDT)
+        Fri, 13 Mar 2020 08:44:57 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 3/8] btrfs: unset reloc control if we fail to recover
-Date:   Fri, 13 Mar 2020 11:44:43 -0400
-Message-Id: <20200313154448.53461-4-josef@toxicpanda.com>
+Subject: [PATCH 4/8] btrfs: free the reloc_control in a consistent way
+Date:   Fri, 13 Mar 2020 11:44:44 -0400
+Message-Id: <20200313154448.53461-5-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200313154448.53461-1-josef@toxicpanda.com>
 References: <20200313154448.53461-1-josef@toxicpanda.com>
@@ -61,63 +60,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we fail to load an fs root, or fail to start a transaction we can
-bail without unsetting the reloc control, which leads to problems later
-when we free the reloc control but still have it attached to the file
-system.
+If we have an error while processing the reloc roots we could leak roots
+that were added to rc->reloc_roots before we hit the error.  We could
+have also not removed the reloct tree mapping from our rb_tree, so clean
+up any remaining nodes in the reloc root rb_tree.
 
-In the normal path we'll end up calling unset_reloc_control() twice, but
-all it does is set fs_info->reloc_control = NULL, and we can only have
-one balance at a time so it's not racey.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/relocation.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 2141519a9dd0..c496f8ed8c7e 100644
+index c496f8ed8c7e..721d049ff2b5 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -4657,9 +4657,8 @@ int btrfs_recover_relocation(struct btrfs_root *root)
+@@ -4387,6 +4387,20 @@ static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *fs_info)
+ 	return rc;
+ }
  
- 	trans = btrfs_join_transaction(rc->extent_root);
- 	if (IS_ERR(trans)) {
--		unset_reloc_control(rc);
- 		err = PTR_ERR(trans);
--		goto out_free;
-+		goto out_unset;
- 	}
++static void free_reloc_control(struct reloc_control *rc)
++{
++	struct mapping_node *node, *tmp;
++
++	free_reloc_roots(&rc->reloc_roots);
++	rbtree_postorder_for_each_entry_safe(node, tmp,
++					     &rc->reloc_root_tree.rb_root,
++					     rb_node) {
++		rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
++		kfree(node);
++	}
++	kfree(rc);
++}
++
+ /*
+  * Print the block group being relocated
+  */
+@@ -4531,7 +4545,7 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
+ 		btrfs_dec_block_group_ro(rc->block_group);
+ 	iput(rc->data_inode);
+ 	btrfs_put_block_group(rc->block_group);
+-	kfree(rc);
++	free_reloc_control(rc);
+ 	return err;
+ }
  
- 	rc->merge_reloc_tree = 1;
-@@ -4679,7 +4678,7 @@ int btrfs_recover_relocation(struct btrfs_root *root)
- 		if (IS_ERR(fs_root)) {
- 			err = PTR_ERR(fs_root);
- 			list_add_tail(&reloc_root->root_list, &reloc_roots);
--			goto out_free;
-+			goto out_unset;
- 		}
- 
- 		err = __add_reloc_root(reloc_root);
-@@ -4690,7 +4689,7 @@ int btrfs_recover_relocation(struct btrfs_root *root)
- 
- 	err = btrfs_commit_transaction(trans);
- 	if (err)
--		goto out_free;
-+		goto out_unset;
- 
- 	merge_reloc_roots(rc);
- 
-@@ -4706,6 +4705,8 @@ int btrfs_recover_relocation(struct btrfs_root *root)
- 	ret = clean_dirty_subvols(rc);
- 	if (ret < 0 && !err)
- 		err = ret;
-+out_unset:
-+	unset_reloc_control(rc);
+@@ -4708,7 +4722,7 @@ int btrfs_recover_relocation(struct btrfs_root *root)
+ out_unset:
+ 	unset_reloc_control(rc);
  out_free:
- 	kfree(rc);
+-	kfree(rc);
++	free_reloc_control(rc);
  out:
+ 	if (!list_empty(&reloc_roots))
+ 		free_reloc_roots(&reloc_roots);
 -- 
 2.24.1
 
