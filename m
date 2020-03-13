@@ -2,120 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD9184A93
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 16:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2737B184AC9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 16:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgCMPXZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 11:23:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42192 "EHLO mx2.suse.de"
+        id S1726885AbgCMPbr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 11:31:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46456 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbgCMPXZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:23:25 -0400
+        id S1726591AbgCMPbr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Mar 2020 11:31:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DE079AE61;
-        Fri, 13 Mar 2020 15:23:23 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4D526AE35;
+        Fri, 13 Mar 2020 15:31:45 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 3/3] btrfs: Remove async_transid btrfs_mksubvol/create_subvol/create_snapshot
-Date:   Fri, 13 Mar 2020 17:23:20 +0200
-Message-Id: <20200313152320.22723-4-nborisov@suse.com>
+Cc:     osandov@osandov.com, Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs-progs: Remove support for BTRFS_SUBVOL_CREATE_ASYNC
+Date:   Fri, 13 Mar 2020 17:31:43 +0200
+Message-Id: <20200313153143.23613-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200313152320.22723-1-nborisov@suse.com>
-References: <20200313152320.22723-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With BTRFS_SUBVOL_CREATE_ASYNC support remove it's no longer required
-to pass the async_transid parameter so remove it and any code using it.
+Kernel has removed support for this feature in 5.7 so let's remove
+support from progs as well.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ioctl.c | 32 ++++++++------------------------
- 1 file changed, 8 insertions(+), 24 deletions(-)
+ ioctl.h                  | 4 +---
+ libbtrfsutil/btrfs.h     | 4 +---
+ libbtrfsutil/subvolume.c | 4 ----
+ 3 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index e18a56d87553..88bb2c43f437 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -551,7 +551,6 @@ int __pure btrfs_is_empty_uuid(u8 *uuid)
- static noinline int create_subvol(struct inode *dir,
- 				  struct dentry *dentry,
- 				  const char *name, int namelen,
--				  u64 *async_transid,
- 				  struct btrfs_qgroup_inherit *inherit)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(dir->i_sb);
-@@ -723,14 +722,7 @@ static noinline int create_subvol(struct inode *dir,
- 	trans->bytes_reserved = 0;
- 	btrfs_subvolume_release_metadata(fs_info, &block_rsv);
+diff --git a/ioctl.h b/ioctl.h
+index d3dfd6375de1..93a19a5789b6 100644
+--- a/ioctl.h
++++ b/ioctl.h
+@@ -49,14 +49,12 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_vol_args) == 4096);
  
--	if (async_transid) {
--		*async_transid = trans->transid;
--		err = btrfs_commit_transaction_async(trans, 1);
--		if (err)
--			err = btrfs_commit_transaction(trans);
--	} else {
--		err = btrfs_commit_transaction(trans);
--	}
-+	err = btrfs_commit_transaction(trans);
- 	if (err && !ret)
- 		ret = err;
+ #define BTRFS_DEVICE_PATH_NAME_MAX 1024
  
-@@ -748,8 +740,7 @@ static noinline int create_subvol(struct inode *dir,
- }
+-#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+ #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
+ #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+ #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
  
- static int create_snapshot(struct btrfs_root *root, struct inode *dir,
--			   struct dentry *dentry,
--			   u64 *async_transid, bool readonly,
-+			   struct dentry *dentry, bool readonly,
- 			   struct btrfs_qgroup_inherit *inherit)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(dir->i_sb);
-@@ -833,14 +824,8 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	list_add(&pending_snapshot->list,
- 		 &trans->transaction->pending_snapshots);
- 	spin_unlock(&fs_info->trans_lock);
--	if (async_transid) {
--		*async_transid = trans->transid;
--		ret = btrfs_commit_transaction_async(trans, 1);
--		if (ret)
--			ret = btrfs_commit_transaction(trans);
--	} else {
--		ret = btrfs_commit_transaction(trans);
--	}
-+
-+	ret = btrfs_commit_transaction(trans);
- 	if (ret)
- 		goto fail;
+ #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
+-			(BTRFS_SUBVOL_CREATE_ASYNC |	\
+-			BTRFS_SUBVOL_RDONLY |		\
++			(BTRFS_SUBVOL_RDONLY |		\
+ 			BTRFS_SUBVOL_QGROUP_INHERIT |	\
+ 			BTRFS_DEVICE_SPEC_BY_ID)
  
-@@ -946,7 +931,7 @@ static inline int btrfs_may_create(struct inode *dir, struct dentry *child)
- static noinline int btrfs_mksubvol(const struct path *parent,
- 				   const char *name, int namelen,
- 				   struct btrfs_root *snap_src,
--				   u64 *async_transid, bool readonly,
-+				   bool readonly,
- 				   struct btrfs_qgroup_inherit *inherit)
- {
- 	struct inode *dir = d_inode(parent->dentry);
-@@ -983,11 +968,10 @@ static noinline int btrfs_mksubvol(const struct path *parent,
- 		goto out_up_read;
+diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
+index 944d50132456..03ac58372104 100644
+--- a/libbtrfsutil/btrfs.h
++++ b/libbtrfsutil/btrfs.h
+@@ -38,8 +38,7 @@ struct btrfs_ioctl_vol_args {
+ #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
  
- 	if (snap_src) {
--		error = create_snapshot(snap_src, dir, dentry,
--					async_transid, readonly, inherit);
-+		error = create_snapshot(snap_src, dir, dentry, readonly,
-+					inherit);
- 	} else {
--		error = create_subvol(dir, dentry, name, namelen,
--				      async_transid, inherit);
-+		error = create_subvol(dir, dentry, name, namelen, inherit);
+ #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
+-			(BTRFS_SUBVOL_CREATE_ASYNC |	\
+-			BTRFS_SUBVOL_RDONLY |		\
++			(BTRFS_SUBVOL_RDONLY |		\
+ 			BTRFS_SUBVOL_QGROUP_INHERIT |	\
+ 			BTRFS_DEVICE_SPEC_BY_ID)
+ 
+@@ -101,7 +100,6 @@ struct btrfs_ioctl_qgroup_limit_args {
+  * - BTRFS_IOC_SUBVOL_GETFLAGS
+  * - BTRFS_IOC_SUBVOL_SETFLAGS
+  */
+-#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+ #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
+ #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+ 
+diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
+index 3f8343a245e9..27a6bb8130ed 100644
+--- a/libbtrfsutil/subvolume.c
++++ b/libbtrfsutil/subvolume.c
+@@ -716,8 +716,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_subvolume_fd(int parent_fd,
+ 		return BTRFS_UTIL_ERROR_INVALID_ARGUMENT;
  	}
- 	if (!error)
- 		fsnotify_mkdir(dir, dentry);
+ 
+-	if (async_transid)
+-		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
+ 	if (qgroup_inherit) {
+ 		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
+ 		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
+@@ -1153,8 +1151,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_snapshot_fd2(int fd,
+ 
+ 	if (flags & BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY)
+ 		args.flags |= BTRFS_SUBVOL_RDONLY;
+-	if (async_transid)
+-		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
+ 	if (qgroup_inherit) {
+ 		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
+ 		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
 -- 
 2.17.1
 
