@@ -2,170 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41489184F48
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 20:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F4D184FAB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 20:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgCMT2w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 15:28:52 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38673 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgCMT2w (ORCPT
+        id S1727408AbgCMTyf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 15:54:35 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46995 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727350AbgCMTyf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 15:28:52 -0400
-Received: by mail-qt1-f195.google.com with SMTP id e20so8575196qto.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 12:28:51 -0700 (PDT)
+        Fri, 13 Mar 2020 15:54:35 -0400
+Received: by mail-qk1-f196.google.com with SMTP id f28so14673646qkk.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 12:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hoPqyA9p7bHys4OBEsx8GIWVm6trRRa/aD/T7xGCj2k=;
-        b=C/FI6fNpXCr0g/rUiDeYierPV4/vRVMi7dbW2hMFRjUCACZkl7/q40Bft3gkQ9+kl5
-         OOuAGxDmE2wIyWyozmY/F/AcyldbuKrvfXbK1ooxQOhmcuE/JXe0DkRkA860a7nzN7t6
-         8a37fgZpmi1QC8iPO+7nEPysg7G/zHWNr9WnzNSzzWOxMTrkj3cFd+QBnEA/KagJFq2I
-         smgS9a9HUi6btH5vIxuhTl8uuCHVTKRrtWwz7P+pHGhceQfIOdXusBTWYRRprrVhkSkv
-         SHNDdO1UvMwQ/uk91Bb2tcWE6gB+8qTcRvW9uPJ6W2CYA/02G/9tUKij0FpNQ1dCoK4X
-         nQDA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=mV1LxLVZ6QlgXkCRhkGNJ9BAHbwYGHT8Okd+/xWpV5w=;
+        b=nooI7K4UTGHNDT0PYNXYna3loyd6iq1wvXHR8FFWHhVzD52a7h9XW+fBY+z6Q1/wjG
+         A0xzTJYf6NYPotmXqktcrTF1jUhcjwTsOx6+sQXHlJDJjGV7jq9UDt1/bZhk3LryqoXc
+         ZxJHsAe1pDXpRQ9OVsh+Ak1MGFUMInQLgFFo7zzY0Gi497JsKZ0fA5bgpOdX7n4oLPd9
+         agmTrwInHQCEEF2Nd7sVlsI2Z6o3bH5d9szwrtpNLzTg6Q+DS/bxynqRBuubVuFwtAwb
+         u8g94GoD+n4tE8BAHlbiCY4TgqE3zTDS5xX1VczxByuhl60ahnraG1vGe/R6sGm6S69p
+         p4qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hoPqyA9p7bHys4OBEsx8GIWVm6trRRa/aD/T7xGCj2k=;
-        b=SeyNGZ0+zzWBPHWN1hIEgMXUHJUGgeKGZakJXJY6mF+Tr0GrZoOu53LAuFP1+059ed
-         YXJRgo/NnTgL0E+z62vqIUnK8jTr1l7XvG3MzYoo80G7jcn0mWcVTX2JlJVeUKni0JVd
-         D8OFjK4Cy/9Mrygudffy7cwGzPD265GbUOV+Rx0GbJAHvO7gy2wNljtFDroasiEGynav
-         zHkLZUUSGFfkP+8bP5O8FrtJy+E4XR7A5KQLdV4SCoBFLKZYFusDH795hKC0JNioT+Po
-         7MfsN7vRy5SmpA6RnOzj1iVreTqTKbYY3HU2Qe3QwD5h5Hixp2ibtij/yOU4/fPw+hSs
-         NhdA==
-X-Gm-Message-State: ANhLgQ3sjHt8aGFmPIHm6lQ0fv22KGZUujBmZ8cVVo6mziGrX/YbFXnP
-        1lw5wB67HTdWT09tk6J9NVDBdjSw9CkpDQ==
-X-Google-Smtp-Source: ADFU+vvIFucyz6JwdfAc+zPzkE/k8LCoEHCU+b/wle/mPhCeFcYLOii5eflUTH6OH1NC74A0xxdLtw==
-X-Received: by 2002:ac8:6f0f:: with SMTP id g15mr14086448qtv.255.1584127730686;
-        Fri, 13 Mar 2020 12:28:50 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id c191sm15464760qkg.49.2020.03.13.12.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 12:28:49 -0700 (PDT)
+        bh=mV1LxLVZ6QlgXkCRhkGNJ9BAHbwYGHT8Okd+/xWpV5w=;
+        b=WVjZMKjn0WHBgQU/ECLYfW1t6AqR35eqqz+Y4tPskQDZ4DfKWlP89XL5+vlUNrOkzL
+         +9Sexek21j+treOim9djR3rBI5fGRq7CF9yHheqLgVG+abrpQ+NBbqDC6kuM+7XuXitD
+         niIXkLiW2aKBBhIj84cya5xaZTqu0tbHazvPdjUQDFvelpQBv8YooB1Wzq18WTKXjp9f
+         NiqISNeV/3UlIiSEAzjhtfwqPgI36Vio5evLfScXNe8ujFIrQ2pr89kpKhKwGKVC8I76
+         BKb/0Novnj36xgX52ALLzqMBuAH9YVlvr1jwfV1uEGFoLgoLJ6ps/y8CmVjfe2u+OjGM
+         R7kQ==
+X-Gm-Message-State: ANhLgQ3vd+3XSWB+qFxeRBpXN1xVvFwmTvp4qs421KFTQy7x4Yz1vreK
+        WwcTUcLrKWpO8UzaFtJmr5SeAg==
+X-Google-Smtp-Source: ADFU+vs75P6IggylxMPUOdERl46uXCnIkwf7rUFPxfAQQJu8ungWXPauCscDZgyQRTu0nihaXTt2BQ==
+X-Received: by 2002:a05:620a:55b:: with SMTP id o27mr12830087qko.291.1584129274119;
+        Fri, 13 Mar 2020 12:54:34 -0700 (PDT)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id n74sm7958549qke.125.2020.03.13.12.54.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Mar 2020 12:54:33 -0700 (PDT)
+Subject: Re: [PATCH 5/5] btrfs: run btrfs_try_granting_tickets if a priority
+ ticket fails
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200309202322.12327-1-josef@toxicpanda.com>
+ <20200309202322.12327-6-josef@toxicpanda.com>
+ <43e5846b-17a4-8ff2-e6e1-26a3f201a672@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: force chunk allocation if our global rsv is larger than metadata
-Date:   Fri, 13 Mar 2020 15:28:48 -0400
-Message-Id: <20200313192848.140759-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+Message-ID: <54608474-8d91-029a-6e3d-51af53c949c7@toxicpanda.com>
+Date:   Fri, 13 Mar 2020 15:54:32 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <43e5846b-17a4-8ff2-e6e1-26a3f201a672@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Nikolay noticed a bunch of test failures with my global rsv steal
-patches.  At first he thought they were introduced by them, but they've
-been failing for a while with 64k nodes.
+On 3/10/20 6:32 AM, Nikolay Borisov wrote:
+> 
+> 
+> On 9.03.20 г. 22:23 ч., Josef Bacik wrote:
+>> With normal tickets we could have a large reservation at the front of
+>> the list that is unable to be satisfied, but a smaller ticket later on
+>> that can be satisfied.  The way we handle this is to run
+>> btrfs_try_granting_tickets() in maybe_fail_all_tickets().
+>>
+>> However no such protection exists for priority tickets.  Fix this by
+>> handling it in handle_reserve_ticket().  If we've returned after
+>> attempting to flush space in a priority related way, we'll still be on
+>> the priority list and need to be removed.
+>>
+>> We rely on the flushing to free up space and wake the ticket, but if
+>> there is not enough space to reclaim _but_ there's enough space in the
+>> space_info to handle subsequent reservations then we would have gotten
+>> an ENOSPC erroneously.
+>>
+>> Address this by catching where we are still on the list, meaning we were
+>> a priority ticket, and removing ourselves and then running
+>> btrfs_try_granting_tickets().  This will handle this particular corner
+>> case.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/space-info.c | 14 ++++++++++----
+>>   1 file changed, 10 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index 77ea204f0b6a..03172ecd9c0b 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -1256,11 +1256,17 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+>>   	ret = ticket->error;
+>>   	if (ticket->bytes || ticket->error) {
+>>   		/*
+>> -		 * Need to delete here for priority tickets. For regular tickets
+>> -		 * either the async reclaim job deletes the ticket from the list
+>> -		 * or we delete it ourselves at wait_reserve_ticket().
+>> +		 * We were a priority ticket, so we need to delete ourselves
+>> +		 * from the list.  Because we could have other priority tickets
+>> +		 * behind us that require less space, run
+>> +		 * btrfs_try_granting_tickets() to see if their reservations can
+>> +		 * now be made.
+>>   		 */
+>> -		list_del_init(&ticket->list);
+>> +		if (!list_empty(&ticket->list)) {
+>> +			list_del_init(&ticket->list);
+>> +			btrfs_try_granting_tickets(fs_info, space_info);
+>> +		}
+> 
+> I'd rather have this handled in priority_reclaim_metadata_space.
 
-The problem is with 64k nodes we have a global reserve that calculates
-out to 13mib on a freshly made file system, which only has 8mib of
-metadata space.  Because of changes I previously made we no longer
-account for the global reserve in the overcommit logic, which means we
-correctly allow overcommit to happen even though we are already
-overcommitted.
+I'd have to put it both in there and priority_reclaim_data_space, this is 
+cleaner.  Thanks,
 
-However in some corner cases, for example btrfs/170, we will allocate
-the entire file system up with data chunks before we have enough space
-pressure to allocate a metadata chunk.  Then once the fs is full we
-ENOSPC out because we cannot overcommit and the global reserve is taking
-up all of the available space.
-
-The most ideal way to deal with this is to change our space reservation
-stuff to take into account the height of the tree's that we're
-modifying, so that our global reserve calculation does not end up so
-obscenely large.
-
-However that is a huuuuuuge undertaking.  Instead fix this by forcing a
-chunk allocation if the global reserve is larger than the total metadata
-space.  This gives us essentially the same behavior that happened
-before, we get a chunk allocated and these tests can pass.
-
-This is meant to be a stop-gap measure until we can tackle the "tree
-height only" project.
-
-Fixes: 0096420adb03 ("btrfs: do not account global reserve in can_overcommit")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/block-rsv.c   |  3 +++
- fs/btrfs/transaction.c | 18 ++++++++++++++++++
- 2 files changed, 21 insertions(+)
-
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index e46dc3688983..2e33a31dfc8e 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -5,6 +5,7 @@
- #include "block-rsv.h"
- #include "space-info.h"
- #include "transaction.h"
-+#include "block-group.h"
- 
- /*
-  * HOW DO BLOCK RESERVES WORK
-@@ -405,6 +406,8 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
- 	else
- 		block_rsv->full = 0;
- 
-+	if (block_rsv->size >= sinfo->total_bytes)
-+		sinfo->force_alloc = CHUNK_ALLOC_FORCE;
- 	spin_unlock(&block_rsv->lock);
- 	spin_unlock(&sinfo->lock);
- }
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index d171fd52c82b..304606c911e8 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -21,6 +21,7 @@
- #include "dev-replace.h"
- #include "qgroup.h"
- #include "block-group.h"
-+#include "space-info.h"
- 
- #define BTRFS_ROOT_TRANS_TAG 0
- 
-@@ -519,6 +520,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	u64 num_bytes = 0;
- 	u64 qgroup_reserved = 0;
- 	bool reloc_reserved = false;
-+	bool do_chunk_alloc = false;
- 	int ret;
- 
- 	/* Send isn't supposed to start transactions. */
-@@ -581,6 +583,9 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 							  delayed_refs_bytes);
- 			num_bytes -= delayed_refs_bytes;
- 		}
-+
-+		if (rsv->space_info->force_alloc)
-+			do_chunk_alloc = true;
- 	} else if (num_items == 0 && flush == BTRFS_RESERVE_FLUSH_ALL &&
- 		   !delayed_refs_rsv->full) {
- 		/*
-@@ -663,6 +668,19 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 
- 	if (!current->journal_info)
- 		current->journal_info = h;
-+
-+	/*
-+	 * If the space_info is marked ALLOC_FORCE then we'll get upgraded to
-+	 * ALLOC_FORCE the first run through, and then we won't allocate for
-+	 * anybody else who races in later.  We don't care about the return
-+	 * value here.
-+	 */
-+	if (do_chunk_alloc && num_bytes) {
-+		u64 flags = h->block_rsv->space_info->flags;
-+		btrfs_chunk_alloc(h, btrfs_get_alloc_profile(fs_info, flags),
-+				  CHUNK_ALLOC_NO_FORCE);
-+	}
-+
- 	return h;
- 
- join_fail:
--- 
-2.24.1
-
+Josef
