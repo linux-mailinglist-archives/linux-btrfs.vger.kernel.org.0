@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5E01850F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622AE1850F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgCMVXi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 17:23:38 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35784 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgCMVXi (ORCPT
+        id S1727401AbgCMVXl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 17:23:41 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37389 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgCMVXk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 17:23:38 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d8so15180184qka.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 14:23:37 -0700 (PDT)
+        Fri, 13 Mar 2020 17:23:40 -0400
+Received: by mail-qt1-f196.google.com with SMTP id l20so8892501qtp.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 14:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=MjpBDu3DvLHdLQlEJsG9wOFmdfa5YlOMrWBrCYztOUY=;
-        b=eirBYdHvQn20irLlyOmc/DvfGSxKLpkJRXuPwxZuZQX7zphL+vHjBUQkKqK7a4g2qP
-         vaAITl94eLqCc9pMYeZggZWexWln427EMfJs8YOzA9wxQmrbLzUCjpcSrkgu56pPGBez
-         Sirzb/3dM4Z1u5C1iiBlEblCZskpSn7Ai2GfUhD0ONSR3GIRSZDvjeyHuhVu1v4qu9JD
-         aPkU9haXH9UrXW0q3WhBEa+MthQn1OLnPF4WghzHKF7Cpa9yNOv1oNHUemE4ttJdFQnL
-         X8ayTF6/8TABQqVsbnh+5cgAGIKd55PRIvxvtprOMk6YfxEtzGVLr86NyTAjCVLso4Ug
-         m1bw==
+        bh=OOBFyqkrQr+Dn4m5CWFrw5I8BTcUf0dy0sA0giKOzqA=;
+        b=jHLDtmT8SKO9dYksEaPCXlqBgyxuHWTxxieUrkjTFC6VRbAdiO5iUt21YPlK4JiQPG
+         VGhtNiIcIr/5rGa7AC656nzzo5ixVHT5/341wInDjgKiAjAgremyiZrvRCFV7fQ3jzrZ
+         inGg7oMCBWdZ0CNZj9Ch8VTq70EbSlX7UmPvExBsaVBuzlDW0t/aKba2LJrix94jaAFV
+         m1KLvzZT3uuKPI/NAk0dx4viZi4G0TtwvQmQiGG8sOOwn7mHnjpEUu48hXvMUFkVFulQ
+         SG0Mf8N2OZxDGiGIjEYn7qHg2/whOvW3uXI8DJ+l9BY0vS1rtbUcJiGkCNR36HQr+8+B
+         diHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MjpBDu3DvLHdLQlEJsG9wOFmdfa5YlOMrWBrCYztOUY=;
-        b=bh9I9JE9Euu9i6tqrDorAKA4LpN4Evrn/gohTqUNzT0kJsHMHFy3V8y4yPicjBM+87
-         2senZENB9CoufEsOcyyk7/fFwGoVzO3h5uZDQhqua7Yjgi5QvCC7TsTtKqE82zIgYAKp
-         TgwW1ynRoJjuB8TDnxvEaCMgnWexX6RfZZOoIjTf7OVxuYhyxqjoQwvyN820aCPNLWwf
-         vdYCmYaVgGDubTl+Jq8gWtM4xmsMmm0MgaZIDFV0JJwBynl7sMVLBxFGUvt1wuFNFL/G
-         dk81Wf6DJU59aQrLU38ADD/GRV7UfRpmohr6z4cm7XdAZ0vXvIDUrLrELjbjoK3hhKSG
-         b93A==
-X-Gm-Message-State: ANhLgQ1473Yj3OBngg6dHGNaQ8B2ThHwCUrrru1Z+JrXJ0NwjqwZdnFF
-        3gX4cMRzzXIWcqxV+cZdznXbUfzxqB3JLg==
-X-Google-Smtp-Source: ADFU+vuL9ZwrKqTtoaBwTIhT6ah+X8W2KCrgEbZ+wQOROBwVhk2nPMgderIfyqJANursj7OouGzeBw==
-X-Received: by 2002:a37:393:: with SMTP id 141mr15033819qkd.393.1584134616192;
-        Fri, 13 Mar 2020 14:23:36 -0700 (PDT)
+        bh=OOBFyqkrQr+Dn4m5CWFrw5I8BTcUf0dy0sA0giKOzqA=;
+        b=nme0lUS6BN4r4cdfGYWY2SpaVZHEidRJLbI1WRSWWapFrvgshmby8dDO0E7mqcj25f
+         ptk6fAQnk2rnBJ7GJKw+oDf3wEbt6wvZ7X2N6vuRkCJBTke/tR5EwcehChe9Gy2FTTyq
+         hnTahkulxWLzTl+R0CRMFzsF33mJuqJpxJkurTw6PAWBNd9YjkOTZCR0hsesdC+ZqS04
+         nmPt6hMZxfIz9Vo97I/ifUkT2whB6a8WOGOVoAvbR2F+SCCnGTJNG4eH6hpBXPOX8A1n
+         9vPTrQ3DSYiEtcUK1cQEwk2iH+fKVrIaTctvumOhXNShTKsUINLUq/bruRsu//N2eLmI
+         RxvQ==
+X-Gm-Message-State: ANhLgQ380rP2gAnm6E93CLLxrwDWL80ExxkGZcxlAwi7FO3/oBacxCns
+        w6c7XXSqQfOAofzFcK1eb76t/K5su0Q+ag==
+X-Google-Smtp-Source: ADFU+vtBECs1hi+6qXfpMlNoIIP+/Y1plg23wpdK8cTNfIbEaua8Alk3FdLzr3QUDiYEDDbTX4nkEQ==
+X-Received: by 2002:ac8:6704:: with SMTP id e4mr14519554qtp.311.1584134617923;
+        Fri, 13 Mar 2020 14:23:37 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w134sm30254314qka.127.2020.03.13.14.23.35
+        by smtp.gmail.com with ESMTPSA id d73sm12462911qkg.113.2020.03.13.14.23.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 14:23:35 -0700 (PDT)
+        Fri, 13 Mar 2020 14:23:37 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/13] btrfs: change btrfs_should_throttle_delayed_refs to a bool
-Date:   Fri, 13 Mar 2020 17:23:19 -0400
-Message-Id: <20200313212330.149024-3-josef@toxicpanda.com>
+Subject: [PATCH 03/13] btrfs: make btrfs_should_throttle_delayed_refs only check run time
+Date:   Fri, 13 Mar 2020 17:23:20 -0400
+Message-Id: <20200313212330.149024-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200313212330.149024-1-josef@toxicpanda.com>
 References: <20200313212330.149024-1-josef@toxicpanda.com>
@@ -60,53 +60,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We don't actually check the specific value from
-btrfs_should_throttle_delayed_refs anywhere, just return a bool.
+btrfs_should_throttle_delayed_refs checks run time of the delayed refs
+and if there's enough space.  However we want to use these two checks
+independently in the future, so make btrfs_should_throttle_delayed_refs
+only check the runtime.  Then fix the only caller of
+btrfs_should_throttle_delayed_refs to check the space as well, because
+we want to throttle truncates on either space or time.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/delayed-ref.c | 6 +++---
- fs/btrfs/delayed-ref.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/delayed-ref.c | 3 +--
+ fs/btrfs/inode.c       | 3 ++-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index dfdb7d4f8406..acad9978b927 100644
+index acad9978b927..e28565dc4288 100644
 --- a/fs/btrfs/delayed-ref.c
 +++ b/fs/btrfs/delayed-ref.c
-@@ -50,7 +50,7 @@ bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info)
- 	return ret;
- }
- 
--int btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans)
-+bool btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans)
- {
- 	u64 num_entries =
- 		atomic_read(&trans->transaction->delayed_refs.num_entries);
-@@ -61,9 +61,9 @@ int btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans)
- 	avg_runtime = trans->fs_info->avg_delayed_ref_runtime;
- 	val = num_entries * avg_runtime;
- 	if (val >= NSEC_PER_SEC)
--		return 1;
-+		return true;
+@@ -64,8 +64,7 @@ bool btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans)
+ 		return true;
  	if (val >= NSEC_PER_SEC / 2)
--		return 2;
-+		return true;
- 
- 	return btrfs_check_space_for_delayed_refs(trans->fs_info);
+ 		return true;
+-
+-	return btrfs_check_space_for_delayed_refs(trans->fs_info);
++	return false;
  }
-diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-index 1c977e6d45dc..9a07480b497b 100644
---- a/fs/btrfs/delayed-ref.h
-+++ b/fs/btrfs/delayed-ref.h
-@@ -371,7 +371,7 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
- 				       struct btrfs_block_rsv *src,
- 				       u64 num_bytes);
--int btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans);
-+bool btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans);
- bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
  
- /*
+ /**
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b8dabffac767..d3e75e04a0a0 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4349,7 +4349,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+ 				break;
+ 			}
+ 			if (be_nice) {
+-				if (btrfs_should_throttle_delayed_refs(trans))
++				if (btrfs_should_throttle_delayed_refs(trans) ||
++				    btrfs_check_space_for_delayed_refs(fs_info))
+ 					should_throttle = true;
+ 			}
+ 		}
 -- 
 2.24.1
 
