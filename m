@@ -2,47 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFD21850E2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E281850F1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbgCMVTr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 17:19:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40794 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgCMVTq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 17:19:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AA96BAD81;
-        Fri, 13 Mar 2020 21:19:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 446ECDA7A7; Fri, 13 Mar 2020 22:19:19 +0100 (CET)
-Date:   Fri, 13 Mar 2020 22:19:19 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/8][v4] Cleanup how we handle root refs, part 2
-Message-ID: <20200313211919.GQ12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200214211147.24610-1-josef@toxicpanda.com>
+        id S1726691AbgCMVXf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 17:23:35 -0400
+Received: from mail-qk1-f169.google.com ([209.85.222.169]:34420 "EHLO
+        mail-qk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgCMVXf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Mar 2020 17:23:35 -0400
+Received: by mail-qk1-f169.google.com with SMTP id f3so15171872qkh.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 14:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AznfLIVPMJDVSL3w9rlY6Yf3IhKBXJzV0qTJiIxdoPQ=;
+        b=Nq2dS7zPDYWO81jKW0Rw8yc6asMexseLR5vDX0yZ+uvNM+GkgvfCDns3kZ7XyljAEq
+         hoPxD3oxv3+tfqR4F1J/Z7fAz3IcT6rKmMCxDv6XRl14b5eg4KmEYbeU1X5UQVKXqW+8
+         IbZyyQvilmzpALmuPvoa8vBwRk99dHdbbzdCeg1WS+cR0HMXI5mbtLZyI10kQakt+fhK
+         BoF0zYuPRE+xmnGA/SkQQyyW7noJRMkYbSJw4J42dF4+fdRSMs2VUv6eWsAjc0RaUYPR
+         Mdd8GoXi3UiBPs8YEXM/cMAjwX5/mdTtRJZjnamvVqivVKCQ2UrSm7nO97aYbkRJsqEJ
+         SLrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AznfLIVPMJDVSL3w9rlY6Yf3IhKBXJzV0qTJiIxdoPQ=;
+        b=ZZ6vv1tO3ppSLnXNPx22q2/xYEYF/8JspMvpftTk8ken2utmohVbfzJdY+S5fnY1Je
+         al73uiZJTfisyqnnk5TuniTZKT6VD0c349amUaVZcl6Q6rjpu2C7HQbjnD8WYkQHGLDv
+         78xeZHlLv8VMsEOi6prRKCXgPt7VHlk+jJ1qfVXMPTW2tYIuFyH/J5oA3J6Fl9URdMh9
+         eQSOh9YSXrCe0vAauHtXq1M4k5EntWle88dnPGxuITPbK19COR18mzIgloiylUmNyUvY
+         E6QGSJ0FHG0pQq3L72Hc3cAUqBMxUwvC1kUNLza69YsW1TC/Xf4Z7gaY+u5jI43Iey2h
+         nT0A==
+X-Gm-Message-State: ANhLgQ24U3VeaRccByfBpfYsornGjKNqRn/3fUiwF+CABuU/+5gjiji7
+        3fltnVsYTFVhx9J1YH8aB2vHrLSAcWStEw==
+X-Google-Smtp-Source: ADFU+vuoyUocAZ6WXSVOYSiWCIYqRSfA4jHgbfIZwZwM2dkcNLy/rz8L0GXv239eEOGYyqTN0JOhFw==
+X-Received: by 2002:a37:9b51:: with SMTP id d78mr15661271qke.65.1584134612744;
+        Fri, 13 Mar 2020 14:23:32 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id u26sm5523679qku.97.2020.03.13.14.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 14:23:32 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/13] Throttle delayed refs based on time
+Date:   Fri, 13 Mar 2020 17:23:17 -0400
+Message-Id: <20200313212330.149024-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200214211147.24610-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 04:11:39PM -0500, Josef Bacik wrote:
-> v3->v4:
-> - Rebased onto the latest misc-next, there were some subtle conflicts and
->   weirdness with the automatic merge, so resending.
+Zygo reported a problem on IRC where he was seeing multi-hour long latencies
+with his test rig with transaction commits.  This turned out to be because his
+test rig runs rsync, balance, snapshot create and delete, dedup, a infinite loop
+of mkdir/rmdirs, and I'm sure some other horrors I'm forgetting.
 
-With some last touches the series has been moved from topic branch to
-misc-next. The bugs found by the leak detector plus some other bugs
-found on the way have your fixes before this series so the bisection
-should not cause weird surprises should we ever need it. Thanks.
+When I added the delayed refs reserve, I assumed that the space pressure
+generated by generating a lot of delayed refs would result in transactions being
+ended if they needed to be, and thus we no longer needed to throttle delayed
+refs based on time.
+
+This assumption was wrong, because in Zygo's case he has a multi terabyte file
+system, so overcommit allows him to generate as many delayed refs as he wants.
+This meant that he would need to run hundreds of thousands of delayed refs at
+commit time.  To make matters worse, we didn't have a way to stop people from
+generating more delayed refs, so the transaction commit could be held open
+indefinitely by balance and snapshot delete.  This is how we were getting
+transaction commits happening every few hours.
+
+The solution to this problem is to bring back the time based delayed ref
+flushing, and then add the ability for people to throttle themselves on that.
+
+Balance and truncate already had this ability, it only needed to be added to
+snapshot delete.
+
+I've also added back the async delayed ref flushing, and I've added code to help
+throttle people when we're generating delayed refs too fast for the system to
+keep up with them.
+
+This whole patch queue has been running in some form or another on Zygo's awful
+test bed, and appears to be performing better than it was before I ripped out
+the original code.  Thanks,
+
+Josef
+
