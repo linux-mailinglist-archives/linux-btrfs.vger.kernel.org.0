@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A26451850AB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75F51850AD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 22:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgCMVM1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 17:12:27 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45827 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgCMVM0 (ORCPT
+        id S1727059AbgCMVMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 17:12:31 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40987 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbgCMVMb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 17:12:26 -0400
-Received: by mail-qk1-f196.google.com with SMTP id c145so15087028qke.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 14:12:26 -0700 (PDT)
+        Fri, 13 Mar 2020 17:12:31 -0400
+Received: by mail-qk1-f193.google.com with SMTP id s11so3809047qks.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 14:12:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=rZ5jw5H/c1mtCo8uoI4wqNL4BPb4u9s9qY7pdLNkidg=;
-        b=Rsu7rFVmhagegFo2LGpEUJRQxgUzctRAvtoy74GmI7815o47DsPjcEHH6iIpMnVLk8
-         Zt562fC+i8tx7K1K6rMUROeN7ifkCWkuudFD8FRHfLORxfH/Gt6Pq9QY+8QSNMemv9qV
-         39+DDwaY9+ImPegu0DRG/ychbPPPg/f+YGyZNaPn3n3+jZHcVKT7eQ1+h45ECCxA+brC
-         SNUl7hfGxlTe6iIKNobu46OQqg+WUSQf1O6Yi582L8p7zIH7zE7nHWAQkC3B3kS+UKkI
-         HfNcPOgglNrjB1cEzmrYng3+auwhA+oq3C7eVvGuk10/MJtBjQPZk7dIOWyLAWSqjQ4U
-         LSvA==
+        bh=eDEzxvDmITVd2vHk6pg1qrWvm+se1t2pDxfSOckeLV0=;
+        b=CM/5VZYqerCOF2Q3xn2H2zDotyFd0YRM+3TSDm5zOHJ3UruHSw046+RT4YYI1rQgtl
+         mQR9iMYbptg1QsYYmdRWKx6ALEiQYOfMsW9kxtPliQ4UdHnRklDxvnoALJLyCqDQIW/B
+         nZpzAgtgDz3n18tfKt2oPkWP2Yh2TQyT7ayC/5ea1yqz1qWFrk03beBscFHkinQmtOsG
+         6KNq0j8jnnACBRC1mPycIGNg/zS8LpH4nHRiwu667tN6VMc4Irl3bgieJ05pZgAtvDFR
+         g4LLSuKNGPICKLUSB/egQTD6pHEAOTRaWbXkHYQDQllJhyGHssBrXEQGZm/XZ2G/1cjd
+         YFaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rZ5jw5H/c1mtCo8uoI4wqNL4BPb4u9s9qY7pdLNkidg=;
-        b=r3cS3j/P/QZVt0IWRWpoP7l1VW2Tk3TLxhp4tpbo6O0oqQgGtO4gnx+JcV6mvmvaaB
-         CsU4lglUhT69OqEKk1vawAqF1fBDPPMgOGE7oRU7rRkBbApbTKRbZ2hAPUH38bSEqlBW
-         UPOX5Eqj5lO3NF4x6kjb/mNvp6HCC5t7qedot20kLuepDLcen96Cmrbve4IrKnoRgS+M
-         cFR2QWzjU3NC7AvdUi6UX8+zLGQc8se1cDtr72/eWF1D6CHcfQNU2i9+yywmNO9m2/1n
-         FW9PYyMyn3saI2+M1rBls0WOndRSaxWPXf9pXOW7hGcSDVCVouClK63nSWSpw1iadVbb
-         GvxA==
-X-Gm-Message-State: ANhLgQ3awZjm4alV+XturZPtdXe7gbMsiHSC55doPlXVpYWZQnQsYc1n
-        1R0Z3M1575+hkhZPjb/mMdwJiPIdUILXww==
-X-Google-Smtp-Source: ADFU+vtYDcJ113LSm5Yc02oTcwgcbcMxKMrAEfJJarPavFEGNzZEarW/YQWCG5WQ/0KX026d0rl5BQ==
-X-Received: by 2002:a37:a6d4:: with SMTP id p203mr15712318qke.184.1584133945124;
-        Fri, 13 Mar 2020 14:12:25 -0700 (PDT)
+        bh=eDEzxvDmITVd2vHk6pg1qrWvm+se1t2pDxfSOckeLV0=;
+        b=ssMYrwAmztFXGR1ZfA2AxQlihEGy+P3yEVYFdJwdi4k85rbaFnz4Q3E49aRf/9Ea2A
+         u3ItCpqDhbeXQbeumbH/nLke4fchdeskrIuCIhpquC+hEGhL3tsOnQ6AGCICsfCToRCw
+         gKQ9bj9/VLhOOsaqmCe0ci7D8itow5OeMT/5NhfgCwkL1aOJUYYTiAWqp9t9diBvkoBi
+         Q+Gxn/3iJTKXYia5XWlcuND98B+RC/T4+GMgJZ1MyUpK/k2h2wSJhpkmJEFDvmCACLZK
+         /6eKRD0rXEUudxCaXOQdG5dcwTte7+irbkDeMcOBwIHiX3Q64Vr8EHcBBtvu6Ee3KOg2
+         jMag==
+X-Gm-Message-State: ANhLgQ157jDlZMGkIR0fNpoNGV6mR/IcnPRfwrVMU5yuTzeFrxpk2I1J
+        05WygXUmJ9N1q+slEsyVMOBUoxHNhU5JdA==
+X-Google-Smtp-Source: ADFU+vtWP/cpbdUBBa58Q97VHGapsa3Vl5bLjyzVrUC8vLjODv78XLid9Gia7zGAcd6RIwkhbuuG1w==
+X-Received: by 2002:a37:2794:: with SMTP id n142mr14871625qkn.336.1584133946955;
+        Fri, 13 Mar 2020 14:12:26 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d72sm9932363qkg.102.2020.03.13.14.12.24
+        by smtp.gmail.com with ESMTPSA id q75sm1291676qke.12.2020.03.13.14.12.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 14:12:24 -0700 (PDT)
+        Fri, 13 Mar 2020 14:12:26 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/5] btrfs: set delayed_refs.flushing for the first delayed ref flushing
-Date:   Fri, 13 Mar 2020 17:12:16 -0400
-Message-Id: <20200313211220.148772-2-josef@toxicpanda.com>
+Subject: [PATCH 2/5] btrfs: delayed refs pre-flushing should only run the heads we have
+Date:   Fri, 13 Mar 2020 17:12:17 -0400
+Message-Id: <20200313211220.148772-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200313211220.148772-1-josef@toxicpanda.com>
 References: <20200313211220.148772-1-josef@toxicpanda.com>
@@ -60,48 +60,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We need to stop any other delayed refs flushing operations from
-happening if we're flushing delayed refs for transaction commit as we
-don't want the lock contention to make everything go slower, especially
-the transaction commit.
+Previously our delayed ref running used the total number of items as the
+items to run.  However we changed that to number of heads to run with
+the delayed_refs_rsv, as generally we want to run all of the operations
+for one bytenr.
+
+But with btrfs_run_delayed_refs(trans, 0) we set our count to 2x the
+number of items that we have.  This is generally fine, but if we have
+some operation generation loads of delayed refs while we're doing this
+pre-flushing in the transaction commit, we'll just spin forever doing
+delayed refs.
+
+Fix this to simply pick the number of delayed refs we currently have,
+that way we do not end up doing a lot of extra work that's being
+generated in other threads.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/transaction.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 53af0f55f5f9..cff767722a75 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2037,6 +2037,13 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	btrfs_trans_release_metadata(trans);
- 	trans->block_rsv = NULL;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 8e5b49baad98..2925b3ad77a1 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2196,7 +2196,7 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
  
-+	/*
-+	 * set the flushing flag so procs in this transaction have to
-+	 * start sending their work down.
-+	 */
-+	cur_trans->delayed_refs.flushing = 1;
-+	smp_wmb();
-+
- 	/* make a pass through all the delayed refs we have so far
- 	 * any runnings procs may add more while we are here
- 	 */
-@@ -2048,13 +2055,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	delayed_refs = &trans->transaction->delayed_refs;
+ 	if (count == 0)
+-		count = atomic_read(&delayed_refs->num_entries) * 2;
++		count = delayed_refs->num_heads_ready;
  
- 	cur_trans = trans->transaction;
- 
--	/*
--	 * set the flushing flag so procs in this transaction have to
--	 * start sending their work down.
--	 */
--	cur_trans->delayed_refs.flushing = 1;
--	smp_wmb();
--
- 	btrfs_create_pending_block_groups(trans);
- 
- 	ret = btrfs_run_delayed_refs(trans, 0);
+ again:
+ #ifdef SCRAMBLE_DELAYED_REFS
 -- 
 2.24.1
 
