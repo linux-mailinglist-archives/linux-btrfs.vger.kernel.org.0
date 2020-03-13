@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A1B184FBE
+	by mail.lfdr.de (Postfix) with ESMTP id BEF65184FBF
 	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 20:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgCMT6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 15:58:16 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46014 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgCMT6Q (ORCPT
+        id S1726779AbgCMT6R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 15:58:17 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35363 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgCMT6Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 13 Mar 2020 15:58:16 -0400
-Received: by mail-qt1-f196.google.com with SMTP id z8so5283850qto.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 12:58:14 -0700 (PDT)
+Received: by mail-qk1-f195.google.com with SMTP id d8so14742901qka.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 12:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=GN8js2RA/RY7LmS3Ja+YDZYLT7m7xhqm6vmieSNPwOs=;
-        b=mLK5CK0aNdLo/KzSC/uFn1LTfTVo9YzyJGOCh1/qGjHP1F3A+Q6EUoJ2nFUw/TQQIE
-         f2j3ZMXs85SC7lPKhHXXcMfWA/Rqx65tnjulrjJJaqTYlRno/JqfSSoZxvXpHgCXcmi1
-         A93bVUscAyf3Jti2ABi0I6ZplJkmRP2Nc7WXYGwaX1g4mQiq2vMJhAVv4FADB3pZGl0V
-         r2cuLRS6LMOjATxpetI8aqRE+xcUgA2C4/J6XVP+DX2zrBH+a/2MsFJLxrzOHNwFHv/N
-         jfNgvRXSHdXKRPfP+ezZKQJDuDQQpOLnzn2/UZR3PK6NsB/4QQLnVwBs0BUQtEzGrwdV
-         mQ6w==
+        bh=9D37MvBCjnOmn6nMyU5tjpe1HBXgZ6T4/fbgokRWQxA=;
+        b=W8hQObkHSvbv1b0OMFinzTbCuSmwZU+qLnyk4Fr/glMkWmkjyC2QerpRK6QspMv41R
+         WzLxHj9Zf2QCBfc4NOQt5h4elHdsrN4tRHHRZJiHZpFJ7YrVCh8Uk2vIakZjasV23si7
+         05ZIoMYd9aLvh5+wqXrpk4aoaegrJczuC9EBVbYHuI/H/HECzItWQo2o4uX9FovdQ+w8
+         d1uXpdzEzPvFr38F6xV2eCm5urbUblqzYl8tMd77DykViaAUJX9CLeSstRNbjiISi7xB
+         OTtIGySio4DgufXODpeW6iQa/s8dT9DlNKHeYAVtUYa3QERW+MhhzPzQAjs14/m2hrNr
+         TECQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GN8js2RA/RY7LmS3Ja+YDZYLT7m7xhqm6vmieSNPwOs=;
-        b=Q4cLHgTQLT+nX6IvqcmzUofwI5jbuEyT51+cySATl8RmCgPkIbH4FZ18+Tp9bJs1Af
-         4vQwXRJMiRAm9Xj3Fziy+c17mXSYCO607xCJX1AMom/eeWs98vTguVFoeRfXcVlVoVvG
-         r826d13IJDaCEpFZxZ6LNTY/WgJliv2ZwQrPyDvhgYsBNTXlhdFii4ov5feLp+B04prN
-         0UF7S6L/JJi8Ya7/YBGVfXdYtQ5N+ptwa2GuXo1qpQNEkz5+UTJG591VkyLBAb4oqgNP
-         +9wGAm3eK+DZqAWkuKG6Qf9NGYdC9GFvbkHgprDi+8a+AgwiPqT6OtkwuPJ/VIFIwW9c
-         la6g==
-X-Gm-Message-State: ANhLgQ300ogFbiI4mc3pYNYWtGT1fXt6HijDAEKsxQKJoqfRqs6riFft
-        uzMoCm/lYuBHAtARqM+1R8U7KAAIyE4OvQ==
-X-Google-Smtp-Source: ADFU+vtJ1TALiYY12C+vAnJ/l5QwevT+Zn/S/6WFy3DZK3r6uwxEWj433GHDJZe7nXEoydwuVmGN4g==
-X-Received: by 2002:aed:3225:: with SMTP id y34mr13377851qtd.19.1584129493330;
-        Fri, 13 Mar 2020 12:58:13 -0700 (PDT)
+        bh=9D37MvBCjnOmn6nMyU5tjpe1HBXgZ6T4/fbgokRWQxA=;
+        b=Co8IAseXwcA+ocidoe0X4SMGfsbpPF3SiberhxE6lqubesevNoxhu8WfN50Gb4yT/n
+         X+g+0F++Fu2E3txTS72JiicWsKGni+xMp22IDNmXIu9/ijwW2VorrkZJDW0mE7XZCC92
+         sMIcGN2mNs2Z4tjvDelj+KUqnkTfZOne3r+xCetDzTKWB/sdvHICpEyPzDBbQvj3O7sl
+         BE+GLc5snyPM6aWAzhqowBX+dPoDPfH79mxrIZV/g8cyrK/Ywf/1q3betvvXRzAHpEIS
+         LkdKUfQvYaSStIcinGLVQUpv71CtUxsIqvrRLUJW3XWOCn5tGgSiYf9HXd46WLlEWLPM
+         xZsQ==
+X-Gm-Message-State: ANhLgQ1U8qVpyj/HDIhaHL7OtLXmEPzfPxyM33O1Vx+5Z8Wv7lyaSx5c
+        ZN5KQIxZz70+q/ZYlHff7rlQaF7jW9pRLg==
+X-Google-Smtp-Source: ADFU+vuHJZ1IRTcuWijg9NelFnwQOryZLxZwEsi5JWkGMuUybm9oSMn1pdYV/4V3Z98WSYfp1vudnQ==
+X-Received: by 2002:a05:620a:132a:: with SMTP id p10mr14707078qkj.253.1584129495198;
+        Fri, 13 Mar 2020 12:58:15 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d73sm12314810qkg.113.2020.03.13.12.58.12
+        by smtp.gmail.com with ESMTPSA id d22sm10953043qte.93.2020.03.13.12.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 12:58:12 -0700 (PDT)
+        Fri, 13 Mar 2020 12:58:14 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/5] btrfs: Improve global reserve stealing logic
-Date:   Fri, 13 Mar 2020 15:58:05 -0400
-Message-Id: <20200313195809.141753-2-josef@toxicpanda.com>
+Subject: [PATCH 2/5] btrfs: allow us to use up to 90% of the global rsv for unlink
+Date:   Fri, 13 Mar 2020 15:58:06 -0400
+Message-Id: <20200313195809.141753-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200313195809.141753-1-josef@toxicpanda.com>
 References: <20200313195809.141753-1-josef@toxicpanda.com>
@@ -60,231 +60,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For unlink transactions and block group removal
-btrfs_start_transaction_fallback_global_rsv will first try to start
-an ordinary transaction and if it fails it will fall back to reserving
-the required amount by stealing from the global reserve. This is
-problematic because of all the same reasons we had with previous
-iterations of the ENOSPC handling, thundering herd.  We get a bunch of
-failures all at once, everybody tries to allocate from the global
-reserve, some win and some lose, we get an ENSOPC.
-
-Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
-used to mark unlink reservation. To fix this we need to integrate this
-logic into the normal ENOSPC infrastructure.  We still go through all of
-the normal flushing work, and at the moment we begin to fail all the
-tickets we try to satisfy any tickets that are allowed to steal by
-stealing from the global reserve.  If this works we start the flushing
-system over again just like we would with a normal ticket satisfaction.
-This serializes our global reserve stealing, so we don't have the
-thundering herd problem.
+We previously had a limit of stealing 50% of the global reserve for
+unlink.  This was from a time when the global reserve was used for the
+delayed refs as well.  However now those reservations are kept separate,
+so the global reserve can be depleted much more to allow us to make
+progress for space restoring operations like unlink.  Change the minimum
+amount of space required to be left in the global reserve to 10%.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c |  2 +-
- fs/btrfs/ctree.h       |  1 +
- fs/btrfs/inode.c       |  2 +-
- fs/btrfs/space-info.c  | 37 ++++++++++++++++++++++++++++++++++++-
- fs/btrfs/space-info.h  |  1 +
- fs/btrfs/transaction.c | 42 +++++-------------------------------------
- fs/btrfs/transaction.h |  3 +--
- 7 files changed, 46 insertions(+), 42 deletions(-)
+ fs/btrfs/space-info.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 60e9bb136f34..faa04093b6b5 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1171,7 +1171,7 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
- 	free_extent_map(em);
- 
- 	return btrfs_start_transaction_fallback_global_rsv(fs_info->extent_root,
--							   num_items, 1);
-+							   num_items);
- }
- 
- /*
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2ccb2a090782..782c63f213e9 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2528,6 +2528,7 @@ enum btrfs_reserve_flush_enum {
- 	BTRFS_RESERVE_FLUSH_DATA,
- 	BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE,
- 	BTRFS_RESERVE_FLUSH_ALL,
-+	BTRFS_RESERVE_FLUSH_ALL_STEAL,
- };
- 
- enum btrfs_flush_state {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b8dabffac767..4e3b115ef1d7 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3617,7 +3617,7 @@ static struct btrfs_trans_handle *__unlink_start_trans(struct inode *dir)
- 	 * 1 for the inode ref
- 	 * 1 for the inode
- 	 */
--	return btrfs_start_transaction_fallback_global_rsv(root, 5, 5);
-+	return btrfs_start_transaction_fallback_global_rsv(root, 5);
- }
- 
- static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 26e1c492b9b5..268ccf3db48f 100644
+index 268ccf3db48f..4759499b1b97 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -810,6 +810,34 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
- 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
- }
+@@ -821,7 +821,7 @@ static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+ 		return false;
  
-+static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
-+				  struct btrfs_space_info *space_info,
-+				  struct reserve_ticket *ticket)
-+{
-+	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
-+	u64 min_bytes;
-+
-+	if (global_rsv->space_info != space_info)
-+		return false;
-+
-+	spin_lock(&global_rsv->lock);
-+	min_bytes = div_factor(global_rsv->size, 5);
-+	if (global_rsv->reserved < min_bytes + ticket->bytes) {
-+		spin_unlock(&global_rsv->lock);
-+		return false;
-+	}
-+	global_rsv->reserved -= ticket->bytes;
-+	ticket->bytes = 0;
-+	list_del_init(&ticket->list);
-+	wake_up(&ticket->wait);
-+	space_info->tickets_id++;
-+	if (global_rsv->reserved < global_rsv->size)
-+		global_rsv->full = 0;
-+	spin_unlock(&global_rsv->lock);
-+
-+	return true;
-+}
-+
- /*
-  * maybe_fail_all_tickets - we've exhausted our flushing, start failing tickets
-  * @fs_info - fs_info for this fs
-@@ -842,6 +870,10 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		ticket = list_first_entry(&space_info->tickets,
- 					  struct reserve_ticket, list);
- 
-+		if (ticket->steal &&
-+		    steal_from_global_rsv(fs_info, space_info, ticket))
-+			return true;
-+
- 		/*
- 		 * may_commit_transaction will avoid committing the transaction
- 		 * if it doesn't feel like the space reclaimed by the commit
-@@ -1195,6 +1227,7 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 	switch (flush) {
- 	case BTRFS_RESERVE_FLUSH_DATA:
- 	case BTRFS_RESERVE_FLUSH_ALL:
-+	case BTRFS_RESERVE_FLUSH_ALL_STEAL:
- 		wait_reserve_ticket(fs_info, space_info, ticket);
- 		break;
- 	case BTRFS_RESERVE_FLUSH_LIMIT:
-@@ -1300,8 +1333,10 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 		ticket.bytes = orig_bytes;
- 		ticket.error = 0;
- 		init_waitqueue_head(&ticket.wait);
-+		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
- 		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
--		    flush == BTRFS_RESERVE_FLUSH_DATA) {
-+		    flush == BTRFS_RESERVE_FLUSH_DATA ||
-+		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
- 			list_add_tail(&ticket.list, &space_info->tickets);
- 			if (!space_info->flush) {
- 				space_info->flush = 1;
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 179f757c4a6b..a7f600efb772 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -71,6 +71,7 @@ struct btrfs_space_info {
- struct reserve_ticket {
- 	u64 bytes;
- 	int error;
-+	bool steal;
- 	struct list_head list;
- 	wait_queue_head_t wait;
- };
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 53af0f55f5f9..d171fd52c82b 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -559,7 +559,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		 * refill that amount for whatever is missing in the reserve.
- 		 */
- 		num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
--		if (delayed_refs_rsv->full == 0) {
-+		if (flush == BTRFS_RESERVE_FLUSH_ALL &&
-+		    delayed_refs_rsv->full == 0) {
- 			delayed_refs_bytes = num_bytes;
- 			num_bytes <<= 1;
- 		}
-@@ -686,43 +687,10 @@ struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
- 
- struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
- 					struct btrfs_root *root,
--					unsigned int num_items,
--					int min_factor)
-+					unsigned int num_items)
- {
--	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct btrfs_trans_handle *trans;
--	u64 num_bytes;
--	int ret;
--
--	/*
--	 * We have two callers: unlink and block group removal.  The
--	 * former should succeed even if we will temporarily exceed
--	 * quota and the latter operates on the extent root so
--	 * qgroup enforcement is ignored anyway.
--	 */
--	trans = start_transaction(root, num_items, TRANS_START,
--				  BTRFS_RESERVE_FLUSH_ALL, false);
--	if (!IS_ERR(trans) || PTR_ERR(trans) != -ENOSPC)
--		return trans;
--
--	trans = btrfs_start_transaction(root, 0);
--	if (IS_ERR(trans))
--		return trans;
--
--	num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
--	ret = btrfs_cond_migrate_bytes(fs_info, &fs_info->trans_block_rsv,
--				       num_bytes, min_factor);
--	if (ret) {
--		btrfs_end_transaction(trans);
--		return ERR_PTR(ret);
--	}
--
--	trans->block_rsv = &fs_info->trans_block_rsv;
--	trans->bytes_reserved = num_bytes;
--	trace_btrfs_space_reservation(fs_info, "transaction",
--				      trans->transid, num_bytes, 1);
--
--	return trans;
-+	return start_transaction(root, num_items, TRANS_START,
-+				 BTRFS_RESERVE_FLUSH_ALL_STEAL, false);
- }
- 
- struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root)
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 453cea7c7a72..228e8b560e42 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -192,8 +192,7 @@ struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
- 						   unsigned int num_items);
- struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
- 					struct btrfs_root *root,
--					unsigned int num_items,
--					int min_factor);
-+					unsigned int num_items);
- struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
- struct btrfs_trans_handle *btrfs_join_transaction_spacecache(struct btrfs_root *root);
- struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root);
+ 	spin_lock(&global_rsv->lock);
+-	min_bytes = div_factor(global_rsv->size, 5);
++	min_bytes = div_factor(global_rsv->size, 1);
+ 	if (global_rsv->reserved < min_bytes + ticket->bytes) {
+ 		spin_unlock(&global_rsv->lock);
+ 		return false;
 -- 
 2.24.1
 
