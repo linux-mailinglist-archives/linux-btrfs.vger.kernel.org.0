@@ -2,103 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47813184EE5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 19:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41489184F48
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 20:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgCMSrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 14:47:37 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]:46261 "EHLO
-        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727156AbgCMSrh (ORCPT
+        id S1726683AbgCMT2w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 15:28:52 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38673 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgCMT2w (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 14:47:37 -0400
-Received: by mail-qt1-f176.google.com with SMTP id t13so8391110qtn.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
+        Fri, 13 Mar 2020 15:28:52 -0400
+Received: by mail-qt1-f195.google.com with SMTP id e20so8575196qto.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 12:28:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
-        b=Mw+VFPC1w0UbdRMWSYVpgl8XZWcn/xyU7HjgZBjymT1LdxHLk54OdU9J7RryeWrV6G
-         pmCAsvxCw6XBIrR2Z5DSa9CfEeJcGKuh/zQ62J5GrmsM23BnS/TkQOWWIGVCT/cPUhnP
-         mm/zvQEUeE+q3yK42lamLdvqmphm2Ot6wWUJv1CQBEctQWHl5XrvfaJBRTO78Y/uEQWX
-         1l7qCdw3dlmrC8UvDgfJkqLAkCDAm4l7/mSIUZHe+CJjQxziWFJmZIyA+x8UAD/HVCqX
-         kJqpDXv5yS7j0ShkpKY8fpwCpz07OokC7FALZ+xhU7HVgk00IIS+O4y9al6ahGYBMuiP
-         ykgA==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoPqyA9p7bHys4OBEsx8GIWVm6trRRa/aD/T7xGCj2k=;
+        b=C/FI6fNpXCr0g/rUiDeYierPV4/vRVMi7dbW2hMFRjUCACZkl7/q40Bft3gkQ9+kl5
+         OOuAGxDmE2wIyWyozmY/F/AcyldbuKrvfXbK1ooxQOhmcuE/JXe0DkRkA860a7nzN7t6
+         8a37fgZpmi1QC8iPO+7nEPysg7G/zHWNr9WnzNSzzWOxMTrkj3cFd+QBnEA/KagJFq2I
+         smgS9a9HUi6btH5vIxuhTl8uuCHVTKRrtWwz7P+pHGhceQfIOdXusBTWYRRprrVhkSkv
+         SHNDdO1UvMwQ/uk91Bb2tcWE6gB+8qTcRvW9uPJ6W2CYA/02G/9tUKij0FpNQ1dCoK4X
+         nQDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
-        b=H7NGXhvDLb66EGTQGXHHDZAKvWIZwSpxW+tyH9iv2m8hcTBPD5vDjwRB8+7DOs2G5/
-         hLdqY5H4BQksiVA4MnYd3lsC9UIGf3jaM6cqPHjF9hjKqjz3WTOjrepDpHAoa/EShLlr
-         NWcCGz7NDseJ9Y+tzldUqedcxiJ3ciUuE4Rz1F42EZ0WIoLsz4/VqvpxpYpl3aX+afHN
-         hjoUU5wu3juDaqjJNmHl1OjcM8JC0iZg9n+Kx2Uf8cXk1waJneiAO0RBgJuzVYikmq7J
-         mQ9OItG00qDh1U45qhUUmn6YtwUlph00bPACfsLlC6M0kcX03NndndFnEEZh/QImeJ9o
-         AbXw==
-X-Gm-Message-State: ANhLgQ14BkkrhEhzBROcwuc59vf7E13F6gv78uipmL13T2a9o4G9bmte
-        TyN+YwlkbOcYWjjGiaKY4/fNxg==
-X-Google-Smtp-Source: ADFU+vt5NDaayPMUHsXSY8k4ZwE0SyPb1aBxsDRcUQaLRF+uXaXF3f1cbfLoYMcPhiB48Es6cJN9Mg==
-X-Received: by 2002:aed:2202:: with SMTP id n2mr14466967qtc.4.1584125254322;
-        Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w1sm14917915qkc.117.2020.03.13.11.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2020 11:47:33 -0700 (PDT)
-To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hoPqyA9p7bHys4OBEsx8GIWVm6trRRa/aD/T7xGCj2k=;
+        b=SeyNGZ0+zzWBPHWN1hIEgMXUHJUGgeKGZakJXJY6mF+Tr0GrZoOu53LAuFP1+059ed
+         YXJRgo/NnTgL0E+z62vqIUnK8jTr1l7XvG3MzYoo80G7jcn0mWcVTX2JlJVeUKni0JVd
+         D8OFjK4Cy/9Mrygudffy7cwGzPD265GbUOV+Rx0GbJAHvO7gy2wNljtFDroasiEGynav
+         zHkLZUUSGFfkP+8bP5O8FrtJy+E4XR7A5KQLdV4SCoBFLKZYFusDH795hKC0JNioT+Po
+         7MfsN7vRy5SmpA6RnOzj1iVreTqTKbYY3HU2Qe3QwD5h5Hixp2ibtij/yOU4/fPw+hSs
+         NhdA==
+X-Gm-Message-State: ANhLgQ3sjHt8aGFmPIHm6lQ0fv22KGZUujBmZ8cVVo6mziGrX/YbFXnP
+        1lw5wB67HTdWT09tk6J9NVDBdjSw9CkpDQ==
+X-Google-Smtp-Source: ADFU+vvIFucyz6JwdfAc+zPzkE/k8LCoEHCU+b/wle/mPhCeFcYLOii5eflUTH6OH1NC74A0xxdLtw==
+X-Received: by 2002:ac8:6f0f:: with SMTP id g15mr14086448qtv.255.1584127730686;
+        Fri, 13 Mar 2020 12:28:50 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id c191sm15464760qkg.49.2020.03.13.12.28.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 12:28:49 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-Subject: LSF/MM/BPF 2020: Postponement announcement
-Message-ID: <e4f390c7-3b25-67c8-5d6d-d7e87ba1c072@toxicpanda.com>
-Date:   Fri, 13 Mar 2020 14:47:32 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: force chunk allocation if our global rsv is larger than metadata
+Date:   Fri, 13 Mar 2020 15:28:48 -0400
+Message-Id: <20200313192848.140759-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Nikolay noticed a bunch of test failures with my global rsv steal
+patches.  At first he thought they were introduced by them, but they've
+been failing for a while with 64k nodes.
 
-Unfortunately given the escalating nature of the response to COVID-19 we are
-making the decision to change the original LSF/MM/BPF dates in April 2020.  We
-currently do not have concrete plans about how we will reschedule, the Linux
-Foundation is working very hard at getting us alternative dates as we speak.
-Once the new plans are concretely made we will notify everyone again with the
-new plans.
+The problem is with 64k nodes we have a global reserve that calculates
+out to 13mib on a freshly made file system, which only has 8mib of
+metadata space.  Because of changes I previously made we no longer
+account for the global reserve in the overcommit logic, which means we
+correctly allow overcommit to happen even though we are already
+overcommitted.
 
-The tentative plan is to keep the attendees as they are if we reschedule within
-2020.  This includes anybody that declined for travel related concerns.  We will
-re-send all invitations again to the original invitees so it's clear that you
-have been invited.
+However in some corner cases, for example btrfs/170, we will allocate
+the entire file system up with data chunks before we have enough space
+pressure to allocate a metadata chunk.  Then once the fs is full we
+ENOSPC out because we cannot overcommit and the global reserve is taking
+up all of the available space.
 
-If we have to reschedule into 2021 then we will redo the CFP once we are closer
-to the actual date again and redo all of the invites and topics so we're as up
-to date as possible with the current state of the community.
+The most ideal way to deal with this is to change our space reservation
+stuff to take into account the height of the tree's that we're
+modifying, so that our global reserve calculation does not end up so
+obscenely large.
 
-We will keep the current program committee and I will continue to chair until we
-have the next LSF/MM/BPF.
+However that is a huuuuuuge undertaking.  Instead fix this by forcing a
+chunk allocation if the global reserve is larger than the total metadata
+space.  This gives us essentially the same behavior that happened
+before, we get a chunk allocated and these tests can pass.
 
-Thank you on behalf of the program committee:
+This is meant to be a stop-gap measure until we can tackle the "tree
+height only" project.
 
-         Josef Bacik (Filesystems)
-         Amir Goldstein (Filesystems)
-         Martin K. Petersen (Storage)
-         Omar Sandoval (Storage)
-         Michal Hocko (MM)
-         Dan Williams (MM)
-         Alexei Starovoitov (BPF)
-         Daniel Borkmann (BPF)
+Fixes: 0096420adb03 ("btrfs: do not account global reserve in can_overcommit")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-rsv.c   |  3 +++
+ fs/btrfs/transaction.c | 18 ++++++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index e46dc3688983..2e33a31dfc8e 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -5,6 +5,7 @@
+ #include "block-rsv.h"
+ #include "space-info.h"
+ #include "transaction.h"
++#include "block-group.h"
+ 
+ /*
+  * HOW DO BLOCK RESERVES WORK
+@@ -405,6 +406,8 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
+ 	else
+ 		block_rsv->full = 0;
+ 
++	if (block_rsv->size >= sinfo->total_bytes)
++		sinfo->force_alloc = CHUNK_ALLOC_FORCE;
+ 	spin_unlock(&block_rsv->lock);
+ 	spin_unlock(&sinfo->lock);
+ }
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index d171fd52c82b..304606c911e8 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -21,6 +21,7 @@
+ #include "dev-replace.h"
+ #include "qgroup.h"
+ #include "block-group.h"
++#include "space-info.h"
+ 
+ #define BTRFS_ROOT_TRANS_TAG 0
+ 
+@@ -519,6 +520,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 	u64 num_bytes = 0;
+ 	u64 qgroup_reserved = 0;
+ 	bool reloc_reserved = false;
++	bool do_chunk_alloc = false;
+ 	int ret;
+ 
+ 	/* Send isn't supposed to start transactions. */
+@@ -581,6 +583,9 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 							  delayed_refs_bytes);
+ 			num_bytes -= delayed_refs_bytes;
+ 		}
++
++		if (rsv->space_info->force_alloc)
++			do_chunk_alloc = true;
+ 	} else if (num_items == 0 && flush == BTRFS_RESERVE_FLUSH_ALL &&
+ 		   !delayed_refs_rsv->full) {
+ 		/*
+@@ -663,6 +668,19 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 
+ 	if (!current->journal_info)
+ 		current->journal_info = h;
++
++	/*
++	 * If the space_info is marked ALLOC_FORCE then we'll get upgraded to
++	 * ALLOC_FORCE the first run through, and then we won't allocate for
++	 * anybody else who races in later.  We don't care about the return
++	 * value here.
++	 */
++	if (do_chunk_alloc && num_bytes) {
++		u64 flags = h->block_rsv->space_info->flags;
++		btrfs_chunk_alloc(h, btrfs_get_alloc_profile(fs_info, flags),
++				  CHUNK_ALLOC_NO_FORCE);
++	}
++
+ 	return h;
+ 
+ join_fail:
+-- 
+2.24.1
+
