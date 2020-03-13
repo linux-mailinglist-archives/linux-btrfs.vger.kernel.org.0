@@ -2,110 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9AC184DC9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 18:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53715184EBF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Mar 2020 19:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbgCMRjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 13:39:45 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:46990 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgCMRjp (ORCPT
+        id S1727188AbgCMSg5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 14:36:57 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39602 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgCMSg4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 13:39:45 -0400
-Received: by mail-qk1-f193.google.com with SMTP id f28so13881773qkk.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 10:39:44 -0700 (PDT)
+        Fri, 13 Mar 2020 14:36:56 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w65so5738440pfb.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Mar 2020 11:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=yvVfz+YxOB4NZAlBZojBk53n+Z35QTVJu5z8F1tnan4=;
-        b=wx1nEWEE1b0NzAmw4xrun85PUlHMFnOqhwLqN2NAdK3ugpwOkrgVjiYb3MkUUWg2sp
-         6IAU7om0vNWJL08syjApbO54S7wBabNB2r9ZztStEtYxamATx3yfN47qvfDxgvMQBjdN
-         gGmDu4Jrf9Mbq/UWUtb/I2WvBInllhC1oYNqb+j75AMrmD7DTGtppouitM/HBqCyvgSC
-         1cSLNFSn2G/v0OKdb/Kj8FR0WHnkxvrC5yGfVUaeP+axnsA0ytHEHP9PPrMQdkvjMuVE
-         8kFVyFxZWvUwYg9pv7C0iLzAJb8xX7L0Krc+VRRqKoYdAYFO50AYKYIEfqGpsvUWAcOi
-         wVBA==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q5dwsz2IwtgHSQoZq6tchWTniKWViGN4sCw8tRdk6ck=;
+        b=d6B8Mik84ybmAiGbPTWwWhjIxTsFc7PwGQPEBv3XdLV0lzAqMZgc+mRQ2JlN3d7LM8
+         U5ZGB5inpX4w9pdHjoLOM/sY8vwzuYYXIqY1IgiEojz5evbwRCAy/S6zvpFinH8Gu1lf
+         PSoN+xopRDPL8eBT5Yli9i8bSxaaeQUhqNSdYjg5QFLe/30ZxePcZke0xq0AFm4835KU
+         hDqQ5Y8eEy5sCi8RvKGScwBAT6BhmW7jXJBZo5m8tqwi1ZB+g+r9lYZhAmjc00zcq2vS
+         t8oNya9TdcdrkJAYZHeyEsSPrjXpM/tescQGUWP3Lt3FK9K1NROF+3s92r10rwFYb1dG
+         dFrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yvVfz+YxOB4NZAlBZojBk53n+Z35QTVJu5z8F1tnan4=;
-        b=QnG4Qek+CPE/LglWlN79QADczB9I3u7cAzNmKsaNuZPjQieNSN9LFl/WE6Vu76zeXs
-         OeNqxEg2qX1dAoQKMEhi0HJsx734fvBGWc/bw/riHh/MrIfWTqniYk7VxSrLVbtCnLGI
-         QLkNN4vcvTNhDa5he13WzPb6sKfVdmI3uDUSms2SH7V+rD67gVaeKSMb5kAoLuADbWC+
-         LmodfgJ5C7dPNX8wl4hoeSr9JgwoefRhm40QGY8njXrfF6etn8i/G7wzzss5paDZbauh
-         fYPp6bLByUYXX+Lv30ib4nP64cZ+mTouqkZhxqDgXs5vcpyhvIKJsH4EHEF+b1UIIAi/
-         CM0w==
-X-Gm-Message-State: ANhLgQ1spTHkVuukFRLCg5e1ounVMjXQKhXAYeXRLDX2jZgYh5wZ+5Ch
-        F2KSQdbEJNd1CBIkgT/mZ+xqqw==
-X-Google-Smtp-Source: ADFU+vtFeT1a1lZ5o7FrYUofcGw0fZ1A4uQEVifOGVNMxscq3RDj4ilNHg/Hh919EOoa0ERLsWDyTw==
-X-Received: by 2002:a05:620a:1669:: with SMTP id d9mr2359795qko.250.1584121183633;
-        Fri, 13 Mar 2020 10:39:43 -0700 (PDT)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u13sm29325863qtg.64.2020.03.13.10.39.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2020 10:39:42 -0700 (PDT)
-Subject: Re: [PATCH 4/8] btrfs: free the reloc_control in a consistent way
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200313154448.53461-1-josef@toxicpanda.com>
- <20200313154448.53461-5-josef@toxicpanda.com>
- <20200313171851.GO12659@twin.jikos.cz> <20200313173808.GP12659@twin.jikos.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <75665769-55ce-9420-c760-286e0a826d1b@toxicpanda.com>
-Date:   Fri, 13 Mar 2020 13:39:42 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q5dwsz2IwtgHSQoZq6tchWTniKWViGN4sCw8tRdk6ck=;
+        b=lEBeyhNG+IJBPpn05mm7/Y2gu/j8UwAadoweu/pgPWEUGt3L6PFzjHKfy+qb1bru4o
+         dJgbmwoO3pjCjSffJke4KzXO8tZV2Fpc/ByuZt7ippvYydKtVF8ZgGWxg+l78ZtKxbgt
+         a/9bFEmoWt9OkNW4cokl7PnAmbvXLJDdODeVfwsc3D2JDc51dsAqdJLLkqGldzkzGpOU
+         usz46HkU4mDeM9JujJjAE8FObbqjMq0X1imjfQjDLo73GGB4WE/YkmsClpcjrhMUXDNM
+         nxwtgXewK7HO14yom57mQV8cmdhDerp8fwMJFGOjeolDTCISa91iqfnCJH1S4/lrQYP4
+         AFzw==
+X-Gm-Message-State: ANhLgQ1WwYLeu+qK76eQIUdCgB8O2nOY5f0JnyZLd8DkG8MM9qNwqsQw
+        rU7RKkViconrfN9E+331Ff7XfA==
+X-Google-Smtp-Source: ADFU+vsqKGOOKAANCliEve5DsTemTE6GfKm5d2SpCazLWZA7UFzrJtGoWuyIlbLF5xFcBozXcDu+bA==
+X-Received: by 2002:a63:36cd:: with SMTP id d196mr14455218pga.280.1584124615060;
+        Fri, 13 Mar 2020 11:36:55 -0700 (PDT)
+Received: from vader ([2620:10d:c090:400::5:5d5d])
+        by smtp.gmail.com with ESMTPSA id w27sm8285583pfq.211.2020.03.13.11.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 11:36:54 -0700 (PDT)
+Date:   Fri, 13 Mar 2020 11:36:53 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: Remove support for BTRFS_SUBVOL_CREATE_ASYNC
+Message-ID: <20200313183653.GB26442@vader>
+References: <20200313153143.23613-1-nborisov@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200313173808.GP12659@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200313153143.23613-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/13/20 1:38 PM, David Sterba wrote:
-> On Fri, Mar 13, 2020 at 06:18:51PM +0100, David Sterba wrote:
->> On Fri, Mar 13, 2020 at 11:44:44AM -0400, Josef Bacik wrote:
->>> If we have an error while processing the reloc roots we could leak roots
->>> that were added to rc->reloc_roots before we hit the error.  We could
->>> have also not removed the reloct tree mapping from our rb_tree, so clean
->>> up any remaining nodes in the reloc root rb_tree.
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>> ---
->>>   fs/btrfs/relocation.c | 18 ++++++++++++++++--
->>>   1 file changed, 16 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->>> index c496f8ed8c7e..721d049ff2b5 100644
->>> --- a/fs/btrfs/relocation.c
->>> +++ b/fs/btrfs/relocation.c
->>> @@ -4387,6 +4387,20 @@ static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *fs_info)
->>>   	return rc;
->>>   }
->>>   
->>> +static void free_reloc_control(struct reloc_control *rc)
->>> +{
->>> +	struct mapping_node *node, *tmp;
->>> +
->>> +	free_reloc_roots(&rc->reloc_roots);
->>> +	rbtree_postorder_for_each_entry_safe(node, tmp,
->>> +					     &rc->reloc_root_tree.rb_root,
->>> +					     rb_node) {
->>> +		rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
->>
->> The rb_erase is not needed here, the postorder traversal just goes over
->> all nodes and allows to free the containing structures together with the
->> rb_node. Dangling pointers are not an issue.
+On Fri, Mar 13, 2020 at 05:31:43PM +0200, Nikolay Borisov wrote:
+> Kernel has removed support for this feature in 5.7 so let's remove
+> support from progs as well.
 > 
-> I had not seen your reply when I replied to the v2 patch but if you
-> think the rb_erase is needed, I don't see why.
-> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  ioctl.h                  | 4 +---
+>  libbtrfsutil/btrfs.h     | 4 +---
+>  libbtrfsutil/subvolume.c | 4 ----
+>  3 files changed, 2 insertions(+), 10 deletions(-)
 
-Because I looked at it and thought it was needed and was confused and had to go 
-look when you replied when you said it wasn't.  So it's needed for clarity sake ;).
+We should also update the docs in libbtrfsutil/btrfsutil.h and
+libbtrfsutil/python/module.c to note that async_transid/async_ is now
+ignored, remove the mentions of asynchronous creation from
+libbtrfsutil/README.md, and remove the async_ tests in
+libbtrfsutil/python/tests/test_subvolume.py.
 
-Josef
+> diff --git a/ioctl.h b/ioctl.h
+> index d3dfd6375de1..93a19a5789b6 100644
+> --- a/ioctl.h
+> +++ b/ioctl.h
+> @@ -49,14 +49,12 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_vol_args) == 4096);
+>  
+>  #define BTRFS_DEVICE_PATH_NAME_MAX 1024
+>  
+> -#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+>  #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
+>  #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+>  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
+>  
+>  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
+> -			(BTRFS_SUBVOL_CREATE_ASYNC |	\
+> -			BTRFS_SUBVOL_RDONLY |		\
+> +			(BTRFS_SUBVOL_RDONLY |		\
+>  			BTRFS_SUBVOL_QGROUP_INHERIT |	\
+>  			BTRFS_DEVICE_SPEC_BY_ID)
+>  
+> diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
+> index 944d50132456..03ac58372104 100644
+> --- a/libbtrfsutil/btrfs.h
+> +++ b/libbtrfsutil/btrfs.h
+> @@ -38,8 +38,7 @@ struct btrfs_ioctl_vol_args {
+>  #define BTRFS_DEVICE_SPEC_BY_ID		(1ULL << 3)
+>  
+>  #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
+> -			(BTRFS_SUBVOL_CREATE_ASYNC |	\
+> -			BTRFS_SUBVOL_RDONLY |		\
+> +			(BTRFS_SUBVOL_RDONLY |		\
+>  			BTRFS_SUBVOL_QGROUP_INHERIT |	\
+>  			BTRFS_DEVICE_SPEC_BY_ID)
+>  
+> @@ -101,7 +100,6 @@ struct btrfs_ioctl_qgroup_limit_args {
+>   * - BTRFS_IOC_SUBVOL_GETFLAGS
+>   * - BTRFS_IOC_SUBVOL_SETFLAGS
+>   */
+> -#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+>  #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
+>  #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+>  
+> diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
+> index 3f8343a245e9..27a6bb8130ed 100644
+> --- a/libbtrfsutil/subvolume.c
+> +++ b/libbtrfsutil/subvolume.c
+> @@ -716,8 +716,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_subvolume_fd(int parent_fd,
+>  		return BTRFS_UTIL_ERROR_INVALID_ARGUMENT;
+>  	}
+>  
+> -	if (async_transid)
+> -		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
+>  	if (qgroup_inherit) {
+>  		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
+>  		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
+> @@ -1153,8 +1151,6 @@ PUBLIC enum btrfs_util_error btrfs_util_create_snapshot_fd2(int fd,
+>  
+>  	if (flags & BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY)
+>  		args.flags |= BTRFS_SUBVOL_RDONLY;
+> -	if (async_transid)
+> -		args.flags |= BTRFS_SUBVOL_CREATE_ASYNC;
+>  	if (qgroup_inherit) {
+>  		args.flags |= BTRFS_SUBVOL_QGROUP_INHERIT;
+>  		args.qgroup_inherit = (struct btrfs_qgroup_inherit *)qgroup_inherit;
+
+Please remove all of the handling for async_transid from this file.
