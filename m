@@ -2,34 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2BD185331
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Mar 2020 01:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1281B18533E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Mar 2020 01:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgCNANa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 20:13:30 -0400
-Received: from mout.gmx.net ([212.227.15.19]:39823 "EHLO mout.gmx.net"
+        id S1727678AbgCNASq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 20:18:46 -0400
+Received: from mout.gmx.net ([212.227.15.19]:41825 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgCNAN3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 20:13:29 -0400
+        id S1726853AbgCNASq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Mar 2020 20:18:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1584144803;
-        bh=/6lD4tZUWF8NEVp3OlC3pK6V5nGOSP0fWWE0FFSG/pI=;
+        s=badeba3b8450; t=1584145121;
+        bh=l3rsTurRWmWdwaxBOFrCRCMIydRDRHZD1Jh58Bi3xHk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QoStu55dsym7Pys4Ta5YgBVcwRD9NBns5tGd07iLlYpoyFgV/fHaSiotJvYuU9oXV
-         O9FzaGKq/hr6vSE2MfJcLh0P/AZDzxachIQ3gQlC7tt+nJu7V/wl4FTSRzPQmCwOoZ
-         Eb423cCm45+pympJxmy+EykEpqSEMq/y6tAE+Vxg=
+        b=R57fBkXQ1HQ55jIFBZHEfjnvwduRaSeBQGEWG3Pj+7HekV0BPF6dzzE1KblN7+BMK
+         1LgYPs7e19RJCGP8impVrq1VSlVsa33Nk3LLBL8Ug6MzQmVWO01xt+ZK7zGFoRFu0B
+         rN1GKx/UgHGn+zTEisTVclixz1XC3EpFSffNJSa4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mirna-1jpZ6U1c8K-00etku; Sat, 14
- Mar 2020 01:13:23 +0100
-Subject: Re: [PATCH 4/8] btrfs: free the reloc_control in a consistent way
-To:     Josef Bacik <josef@toxicpanda.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200304161830.2360-1-josef@toxicpanda.com>
- <20200304161830.2360-5-josef@toxicpanda.com>
- <f77683bc-c644-25a8-6d97-fbe339bd5f98@gmx.com>
- <20200313151829.GN12659@twin.jikos.cz>
- <940ee1b7-a854-275e-e01f-05770435ee15@toxicpanda.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQvCv-1izWcS45Dz-00NyBn; Sat, 14
+ Mar 2020 01:18:41 +0100
+Subject: Re: [PATCH 1/2] btrfs: do not use READA for running delayed refs
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200313210954.148686-1-josef@toxicpanda.com>
+ <20200313210954.148686-2-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,156 +52,135 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e466182b-902b-2cf8-49b2-f506c35b3b48@gmx.com>
-Date:   Sat, 14 Mar 2020 08:13:18 +0800
+Message-ID: <4b7a21f7-5676-c0e6-6e5a-75cb3fdcc377@gmx.com>
+Date:   Sat, 14 Mar 2020 08:18:36 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <940ee1b7-a854-275e-e01f-05770435ee15@toxicpanda.com>
+In-Reply-To: <20200313210954.148686-2-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="NUtAOcYc2t2xGuVewM8SvSDlZWOE95nhk"
-X-Provags-ID: V03:K1:ctOPjvjXlQfnRuU80/f91Is1kK9zlEjYOpqsdYyYCkP0rzxI2o/
- uvytx97I1t5VLcSc+/MN9XCkiPvlOA1X9/oCkV9Mr7RTfd4iJizlOuk/tzObs+hX5N7loRR
- 3yCmV2x32/6M0AcFHVC4zxILSzu4qhzsK0gMPE/Buk5VKwIbpmcKxVFjAmYQhUStiXmoAvB
- nt+s4vDHcIaUVNPGfVu/w==
+ boundary="azDDdxoxfaYKiAUxpw4jhN2cZCMMuy2Ad"
+X-Provags-ID: V03:K1:qlisU75095Z6po+H6DmVDszeutuhzz3MJOoPY37X9WFIQMil3T9
+ wfO3/ov0vg7Dc71R0S16D4G9azHOGsX2DAHAaRPRTMPp7e+ROqjURgkOgVYzcqx51BR6klb
+ 4IR7dSdC1ByOX/H42baLQmG2IMM9GmrnmfD1UVfqLjkwi5QdGQvWxecUiip+XWxA+kp9BVF
+ 7quXO4WHTehpWBfRMpa8A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Nfe42Xik27Q=:/f4AEHbP0gC6IEhhs+YsUr
- TBQiIVVOShRHGqzix41r2Mvp6e2taEPsLbZu1a7ERiJaSe9cMMBVSP2eu/dmPHmHPZH0FBtRA
- h9jQWM1jZ01OzW+AbtKdrhSRtiLpPmZnL51ptIBvBt68EDhdcaEc1BNEq0Dlc1WrfwDYdvFgQ
- 722YPneWVCeu6dsh9NVVtoizXdjGyaCmZAjFqXmozidLrUdrdXVsbwa33+D4rFsxPZzC5+DXi
- 0aYwov8Km1WBiY8rEA4mpKwWY2Je3BDJqqV2IGdVcUSIuNvQnU1AaaeJJU05mWLpbU4bEUXq1
- GCE8rSWgCw79kjaLXZPRdDfNAYDSWW2VxKFh/NUrF5bvaqBcqlFYmkHlNSXH8Bkn810VdSaOg
- zhQTgLjxZERbP8QWtyrBxXRRSmszUkxYzsH2Ebtxn7U7VKOTXq9slMlE03yuG+yDUhDgzmfOf
- zC45XLxcusWXuwOvY6zBhQn+6dAFrzyiXlBO1F+GY+9VrpYI2/8oSOpcFWinc4bl23GR1irQa
- 725OpWqh5BW8QuXzLP1/wrQ67SvJr8Yw0ySjg/2YrVT3IC7/2PfVM0NrggksE/xqOYQJUVYg1
- M+gMHquSyvtJ1gVHQQHXY2S+73D0ZlowsFO9/jDyoo4gIIGucitM3AmxeJwB6JvQcSdnQkNmX
- qv9vCo3XxHZ6hJxPCeffuNFYOjDDReTidEU6kTYW2lc15Q5X4M2UsThc/NS4DBJMF3oHnhYQh
- X07jVmS3IRLI7MJpyd6QKNkLgO038j44vy05mSGmJW+me4NoaYTUMnrDMKQGdlDYop1go774O
- odjdd0cHHkvbjHGYOZ1np5rRWlbOYh4UsMPebwD+H07sPUkG0eN7FE6dT5W2F1dl4klzThAWE
- gy09v8wuqX8vhdnNhRxVH20/5W/v2zX63z5g4P1Q8YepQdey07ArwG7FaVHAEBaLJBdBNwnse
- pYgV4c2821uRAySsPCb+qpuI4Wju/O+ZWecBki055hT1WED2+Kx8bQprVu9Bhv+Gc2fe54+jV
- Gh/GArJK6Ab2rZgmiKlruhVxzNizRRvePzLtAItZV3/0nUwBWgwKYAozwXj+/0LqmqZRvcdYj
- cLo0mJUrptx6uoKQupW5QowASbjhER9fH6GSOgaR+jcBxD3KpeFDk0MZWfvddSkevgceCOEUn
- 2Pd8n6wv1UlVpVXHbKlOZE8LYh6prWuL6u7MssT9LNy5NtsDuu6WaixzzLaA2RyCPzVBuR5LC
- N+wc74W8mYkvoqNX6
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zipKpmvcHT8=:IPwu5XWfOpaF3pEUrjv3ij
+ 5R6RBZ86Ld4UP9zzjmi09sOL2zVi5WBaeKs9WK9GquaV6UmORg0zWeEARa30R5lBC2FaeeSDC
+ 0GRcg+D6DXF8otKi+6frAQogdVWyuMfuqj47cstF7qACNunI99sLUO4/MCUadGMHotA9GS24S
+ B9tE8lF/Ix78uWH/pCd+wgTXaik4H0CKnApW9bk0mNEofoWWXixn3a468opCBdXZGluTyjwr8
+ 9aAv2rls5FNsa/K10NVl0x+88zxmEKRKsxldhM1hqQRwULnO7320tz04mgEd9JR3H8DK7hqwI
+ SpKdr/N1Ig8mMyFyDvkoPXoz/o6z804LXOS9vO0OkQFLUSidggc8MxBw4TR+H3TZ4HP9hF/CH
+ pbM7BDQvibs2o6rCsHKjIC447FOZ1mD87x8Pttp5eJ1NulMstFYmQ0DIXXBcFGzE1VZ14a0h3
+ OagKlWSvajTer6I5O4uBQsj96RELEzPojEd1rczFv9jrK+XVXitl6dvXOPop3Z5iyqKxp/mwq
+ qXqch3cW1xlvUQRItyzoPrqGQiVUqvSjJPCewdjuE21dQqya13JGCp4lWKisFnSWcXsIbq60H
+ KEo4T7KblqPH9o9MVDCgR4J6SauADuPxFqtu71JuUTck2G0q8h0cTZrO99ATwu/2awwhYB+uZ
+ V+PDGsaD+C6dUf4GJPE0kfZxNyrZDuqjREgOfHfuJkUG8vU8Fgx4T0QiGhDn272DYJtpUlRSo
+ rc4gHhq51FC5CN6SdyIrlZp4Zj4Vm20AQbonMl7XgzfBeDD5xnKzOmGouC7+hMMvnuwKQCXFh
+ J5yqwLvJN4vGQydNuYMWjWtgaGXRXAviqeDqKdiIuduQ0cDJ1LNsrALtt+d8Tv6NDRWd478hT
+ 3NeOf/o8VsCiY2Nk2qmFWXgYwz1UDDNmjlPkcUp6eqfY7oG0dMVqh5MVIPdvq+LXwPigYLGel
+ araE3WMEBnHFnpG/SKTDB94UMP7ZkaXoFjhUdYCJnRWQCuWg2eEDZJbrWL/hPoQUarvvT0vBv
+ 1UDrO0NSExloRhpDddivjupnHi/4geYMN4oiSWxstZM1Rz48KIwbeoHXs8phSADXNnbyAeMgm
+ +KaTE0Y1JLSdy2QLfxqM5meG6tIsFAUFOKnvGyiZoaj3smTHgAvWiUMjEVIs4ODMlAnGohfqH
+ yubOov9bT+odicigFJB12AcYfVIY8LrUZF/2IDRz9vcGYOTw4j6pULSBj1GMWsb0e6yAyvNqb
+ +burbEIUz9esCekK5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NUtAOcYc2t2xGuVewM8SvSDlZWOE95nhk
-Content-Type: multipart/mixed; boundary="MsqgclumG8ObkzxqZwoaGifF8Y0RVptKR"
+--azDDdxoxfaYKiAUxpw4jhN2cZCMMuy2Ad
+Content-Type: multipart/mixed; boundary="Q1R4NMqOEMGxzlYvluspbDwpLFetRSrTr"
 
---MsqgclumG8ObkzxqZwoaGifF8Y0RVptKR
+--Q1R4NMqOEMGxzlYvluspbDwpLFetRSrTr
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/3/13 =E4=B8=8B=E5=8D=8811:32, Josef Bacik wrote:
-> On 3/13/20 11:18 AM, David Sterba wrote:
->> On Thu, Mar 05, 2020 at 07:39:33PM +0800, Qu Wenruo wrote:
->>>
->>>
->>> On 2020/3/5 =E4=B8=8A=E5=8D=8812:18, Josef Bacik wrote:
->>>> If we have an error while processing the reloc roots we could leak
->>>> roots
->>>> that were added to rc->reloc_roots before we hit the error.=C2=A0 We=
- could
->>>> have also not removed the reloct tree mapping from our rb_tree, so
->>>> clean
->>>> up any remaining nodes in the reloc root rb_tree.
->>>>
->>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>>> ---
->>>> =C2=A0 fs/btrfs/relocation.c | 18 ++++++++++++++++--
->>>> =C2=A0 1 file changed, 16 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->>>> index c496f8ed8c7e..f6237d885fe0 100644
->>>> --- a/fs/btrfs/relocation.c
->>>> +++ b/fs/btrfs/relocation.c
->>>> @@ -4387,6 +4387,20 @@ static struct reloc_control
->>>> *alloc_reloc_control(struct btrfs_fs_info *fs_info)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return rc;
->>>> =C2=A0 }
->>>> =C2=A0 +static void free_reloc_control(struct reloc_control *rc)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 struct rb_node *rb_node;
->>>> +=C2=A0=C2=A0=C2=A0 struct mapping_node *node;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 free_reloc_roots(&rc->reloc_roots);
->>>> +=C2=A0=C2=A0=C2=A0 while ((rb_node =3D rb_first(&rc->reloc_root_tre=
-e.rb_root))) {
->>>
->>> rbtree_postorder_for_each_entry_safe().
->>>
->>> So that we don't need to bother the re-balance of rbtree.
->>
->> I'll update the patch with this
->>
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -4240,15 +4240,13 @@ static struct reloc_control
->> *alloc_reloc_control(struct btrfs_fs_info *fs_info)
->> =C2=A0 =C2=A0 static void free_reloc_control(struct reloc_control *rc)=
-
->> =C2=A0 {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct rb_node *rb_node;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mapping_node *node;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mapping_node *node, *tmp;=
-
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_reloc_roo=
-ts(&rc->reloc_roots);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while ((rb_node =3D rb_first(&rc=
-->reloc_root_tree.rb_root))) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 node =3D rb_entry(rb_node, struct mapping_node, rb_node);=
-
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 rb_erase(rb_node, &rc->reloc_root_tree.rb_root);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rbtree_postorder_for_each_entry_=
-safe(node, tmp,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &rc->relo=
-c_root_tree.rb_root, rb_node)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 kfree(node);
+On 2020/3/14 =E4=B8=8A=E5=8D=885:09, Josef Bacik wrote:
+> READA will generate a lot of extra reads for adjacent nodes, but when
+> running delayed refs we have no idea if the next ref is going to be
+> adjacent or not, so this potentially just generates a lot of extra IO.
+> To make matters worse each ref is truly just looking for one item, it
+> doesn't generally search forward, so we simply don't need it here.
 >=20
-> You need an rb_erase() in here.=C2=A0 I'm updating the series so I'll f=
-ix it
-> before I send the new set.=C2=A0 Thanks,
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Nope, you don't.
-
-And that's why we use post order iteration for rbtree.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+> ---
+>  fs/btrfs/extent-tree.c | 4 ----
+>  1 file changed, 4 deletions(-)
 >=20
-> Josef
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index a24ef1cef9fa..8e5b49baad98 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -1469,7 +1469,6 @@ static int __btrfs_inc_extent_ref(struct btrfs_tr=
+ans_handle *trans,
+>  	if (!path)
+>  		return -ENOMEM;
+> =20
+> -	path->reada =3D READA_FORWARD;
+>  	path->leave_spinning =3D 1;
+>  	/* this will setup the path even if it fails to insert the back ref *=
+/
+>  	ret =3D insert_inline_extent_backref(trans, path, bytenr, num_bytes,
+> @@ -1494,7 +1493,6 @@ static int __btrfs_inc_extent_ref(struct btrfs_tr=
+ans_handle *trans,
+>  	btrfs_mark_buffer_dirty(leaf);
+>  	btrfs_release_path(path);
+> =20
+> -	path->reada =3D READA_FORWARD;
+>  	path->leave_spinning =3D 1;
+>  	/* now insert the actual backref */
+>  	ret =3D insert_extent_backref(trans, path, bytenr, parent, root_objec=
+tid,
+> @@ -1604,7 +1602,6 @@ static int run_delayed_extent_op(struct btrfs_tra=
+ns_handle *trans,
+>  	}
+> =20
+>  again:
+> -	path->reada =3D READA_FORWARD;
+>  	path->leave_spinning =3D 1;
+>  	ret =3D btrfs_search_slot(trans, fs_info->extent_root, &key, path, 0,=
+ 1);
+>  	if (ret < 0) {
+> @@ -2999,7 +2996,6 @@ static int __btrfs_free_extent(struct btrfs_trans=
+_handle *trans,
+>  	if (!path)
+>  		return -ENOMEM;
+> =20
+> -	path->reada =3D READA_FORWARD;
+>  	path->leave_spinning =3D 1;
+> =20
+>  	is_data =3D owner_objectid >=3D BTRFS_FIRST_FREE_OBJECTID;
+>=20
 
 
---MsqgclumG8ObkzxqZwoaGifF8Y0RVptKR--
+--Q1R4NMqOEMGxzlYvluspbDwpLFetRSrTr--
 
---NUtAOcYc2t2xGuVewM8SvSDlZWOE95nhk
+--azDDdxoxfaYKiAUxpw4jhN2cZCMMuy2Ad
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5sIZ4ACgkQwj2R86El
-/qhYAAf/Z1+BqWe7744v8IWgd0NU5V03M4Ikw71/3NS1IJVxLNEgzJvnh5BF41w0
-jRuygU/RtGvy0m3ijpwVUsD3oAXlopefU5M4xGHL/sCYpgeD0KYmV6qxmSnh91u0
-HhpdHvQUdQdF96LMfsRaLEJBw5pdUgpDG3sH7HieRS8+KDRyATRCbm1cxqYH8dLl
-hh/rQHfwpGCilyeF5Gd4/brPNMcz9NXkGjGG8NK0r+7p8fNAKi+udxfLMLMca3up
-Qc73PDbhcZrqs4cuhiVn8WnNKqNV+WW+dWSt3px3T2QOSqwv/+scIBMsz+Blg3Fv
-n4p2Wlr9KiaZoIvTujtKO9P7nMzK5g==
-=gVCZ
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5sItwACgkQwj2R86El
+/qhGZwf6AiMHOpGS3IjttRIGFlCr6EfykCrEoKMoIwCdEADqc5lTScfLuOsuh4z4
+92tcGfj4H/1pUmia8Ue3z799YoLRpHE4IEWsYnz612T7jtEYqthnyw1e/WOum0Hk
+ShUQpFvtX6tRpyRgemaXxgdjwNGQi9oG3lFjoQxrLNdVQtugpBhcJO4WmbnG1vQD
+JoAB79TmxhQinVkKqHIAsI3dZethnXuiJ6iNvprhxCjzz13Cuo2QQSlxv5Vm9Maa
+1eKReC67c7MiEbOm9BjrJhQ91nbaiZR1WlZvetqaeLZ9PBfSvb7Apab7BU/NOY37
+3Fe3COTRnbl9S/um37C6sXi5Cuxetw==
+=dhFn
 -----END PGP SIGNATURE-----
 
---NUtAOcYc2t2xGuVewM8SvSDlZWOE95nhk--
+--azDDdxoxfaYKiAUxpw4jhN2cZCMMuy2Ad--
