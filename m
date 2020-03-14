@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0A718533F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Mar 2020 01:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F8518541A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Mar 2020 03:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbgCNATM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Mar 2020 20:19:12 -0400
-Received: from mout.gmx.net ([212.227.15.19]:38227 "EHLO mout.gmx.net"
+        id S1726733AbgCNC4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Mar 2020 22:56:24 -0400
+Received: from mout.gmx.net ([212.227.17.22]:41997 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726853AbgCNATM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Mar 2020 20:19:12 -0400
+        id S1726559AbgCNC4X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Mar 2020 22:56:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1584145147;
-        bh=L/1w4R2Zr1oOVwmxsUpotlqxr9Vvq0PYX5GtYQ6qdHc=;
+        s=badeba3b8450; t=1584154578;
+        bh=i8WilJSytSDj6FNn0dPhu68n3IihdpdHTuKvjH6GW7A=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Y9SQN8nKVgJvBaub8lxW23foeznexrOEJDZL413+g8tXa0Qc2KUPUbOXUqeJ36oNx
-         pH2cY7p0nKqKawuLDs3BfOi/k6FXgRiRvDqzVs6MsNA5XLdkgEiIohLyAoCnGu0CdG
-         pOyjXPJzmH0lzyv3ZZ5awOpSova7SFxlQJNemq8k=
+        b=B/fZy2U0lqK4wLkryjyZ0orqeRDwXYVnAI1AJjwjQTA/uEBs97XkdmKt4HVB+BWxL
+         kSLnBfzDyvBljOTFOMoZ4DnzUM4OV94YH+TvBFaMbyhdRQWiJYKqXaQeY/rcN2NwZM
+         viUl0lFUG/D2XCCn87mR7P+GKDjCZCvKjeowvHA4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYNJg-1irVjn3GYE-00VMTa; Sat, 14
- Mar 2020 01:19:06 +0100
-Subject: Re: [PATCH 2/2] btrfs: do not READA in build_backref_tree
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDj4-1j1RBa2oUo-00CmQr; Sat, 14
+ Mar 2020 03:56:17 +0100
+Subject: Re: [PATCH 0/2] Drop some mis-uses of READA
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313210954.148686-1-josef@toxicpanda.com>
- <20200313210954.148686-3-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,49 +51,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6f64924e-bd32-46b8-8922-e3a2914d7d8e@gmx.com>
-Date:   Sat, 14 Mar 2020 08:19:02 +0800
+Message-ID: <91bf00f3-a851-2e84-4213-761b0d776af2@gmx.com>
+Date:   Sat, 14 Mar 2020 10:56:06 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200313210954.148686-3-josef@toxicpanda.com>
+In-Reply-To: <20200313210954.148686-1-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="7fFVVzleNYsfsZmBUWx22hv7nsInY4xMm"
-X-Provags-ID: V03:K1:042dvYT8d/iG28j2bdJzKpQzX5N0G9YpD6vHvpbk1kBWF2IcsuY
- KFsREbaACy+5WnG7rs5fdJA7cexTn2atQ2T2DqgjR0tj4uTorwoWSDicPeBZg0UKLfJo4fl
- t7ykBS1jRm/7NEou/+HN6I423HIE5goL6hqRtFvDahvT212AdbLFDaT1PU3iNCsD8cFd1oQ
- 7qZPzgCA4lS61TvH6cd9A==
+ boundary="wvVLS2a5EMbhJGoIbZagD9OBIN2ruYrzZ"
+X-Provags-ID: V03:K1:+8X58wM9dcI/Gz/7AZzsHHNPFrQE+WFVuPC3kST1zVL50T1mmIw
+ KobJYWhtCwvEuVRN3JJeoJNWOa76p8g+sZavSPf2LfM3lyM1yC2nVAPN/Qtl7Ks5MIK0Q2M
+ DgP5gqY4omLkOxIuW96iVwG9bwJJ4mi4unDeYe+TQ8POGB6IDd0tbreN20ktM/tu2ET7a7b
+ ScdidRW7eeEc6WBpDK+lw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2omNH1Flgkg=:tNLEMenionAZoqDWiEzwv0
- bssM4/PfJygOYrMm++dfEGG8R1OwYQbCDAaPsAHr6+yjW6h3/OPw2cOXnSZlsapc37zbYG9Le
- R+xfreH+rsCZq1JBpNV4fDgc7S+BTxUum4SEuj5dChxZdTzDXGxcRN1Yo/I8j8n+VDKFu8SNh
- pN0xqJLCcTK45B6VlFoqQ9MlRVjp40eDXbqPHs8df2RKZGUHrPP3N7RM94L2CrbSt+eATBXBY
- VUPHUAdYePLrp9Rx/D+FSb4Bo1nr5gpveIXvHilch0oxEl1XXz6sl7d/U0zFAyFVUPFjkMV77
- P2ZBKqNC2MBYH6BiP8GY45WfwZ8zhqsbjCnVlPC+3jiCrgb6VgY8dj3NqZBh7HJtUMsNvds53
- KYmgQLP5/5kqrvd9tjGV2XnRAN0tpAqKqWX5HTG0EkcSf/hf8B0jXhHhxkzV063uvt5GO/1Ww
- TwghHspcnLKgzDMIH/kuS5R6qNbkW4JqhNPCFLdB+XR96Cu7eIcnsFjcbojfGWCv4qDquCZ6R
- 33jBhqqpyx4BdWMLavrZMZsInOyoeumpjMwVGuoQC5WyBglEaT/Z/Z74uzX1DwP9eGVvy1CNq
- sfuf87yawp5WCOamwyk8VN43zuSKm/XyTHIGAngck5iP1hEgEU3GE5De/ys3hcZHi0rxrd5MB
- MOkJu689q6SDwpA9QnyuZ053sxQdz2mcba1B23lOnilz10VwGLHy2txMLLW38gl+GidJNN7Ep
- lqYMAHd0BWsxnZQXly7KEJRyOewqoA6D0EXB5ekXQSnU6AG7RZE9ZECiNsxnjtRuqoo+43pGr
- X1kMkwrky/zjSEiv9x50091ljWoQZgKd5GfxE1ybySzKG8ncevcvpxN7t029QLQfAtDBaQqC3
- RJqBi5Ram+DdCqPRupspcp6Jr6vuF+GG5LtrsNnprdX/EZoQpPxIPHBdxThJN1IHZao3hh/E9
- GogZhGrUv+cikIKJK5FYY0WS4q/wr7xGrlMcsad7QHUIMUe3LILvW4vj1q5Sqr9nxoyh51F2k
- Ue16m6JHXhL9LaH8rZ50iO8YXN49dW6CP1CEi0EVebaXRFV7aIdi7oIsXHUCzNsjWP6ou4104
- yvhKJSUT8lRe/Qi6rAbFk9Mhff3zdt5PAm6TMUs8xdAm5g+QDtiqQzNMNW7KDsdLBMjt74Byc
- WAAKtkt1fLpgUYoZgfPQKDdIDNoOuBWovpgJMib0iqPf2c8dYMa4O2/Xoy13sf0d8OXGrkFwY
- 6ZzHryO5B3zJ17V22
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QgR80meXEIQ=:1T4VqWTpLDYD5Z2V8Ltsc7
+ AhEyDL1VuDSJ5mGsF1ITveU/z59Vz9vc7ujj33EokxEv86OAOJnKzbFNhbnrqfN9M6YfjNRN7
+ BjanRKpKRIwipceRSL67V2NjlPVdGrzmE/k7h8PIfeHQBdcY4FbptwU5VGmvRo4TZvT3m6ZlY
+ 02/9v8yH9BJtx3VlL+YoL3vh93o1gcZGls4NnzpNsAI2Ke7/NoZuMBJ5Den8wflc+HZ2bCbcV
+ /61/YX8Y/xOM6AehN3hzgzDy3iphmgD+I83glKQok3z0mxKJvY6Db0nQSfKvJlsudwR3mhkeD
+ Ovljee+gFCjsI7kjMIC5Gm4MFrjIDuuN6buw1HYE/5A2/ebFof37EGm/N/p01hbden7a+jy45
+ qulVIJjPiUeaKbL5td84Y17TRxPSRGFBPIXWGNpqRI8nAqUYPr/8KgwN+lSOJP9A36TyyAvB1
+ wgvtRlXxNvNh/9tq2puVH/LF9u6MKXsSY7dPcQBLm7wuErCBqDfcldfK/gi5K4t9LfXTrD/z+
+ 8eX1FANXBp6gH1jEOiTO7g+9PIvD6Py5KfwY7Rmt3EyKU2aXBUPoHUeseDHWIX+8v6d19baWO
+ YiTp0tKMuiie2ARSjoreRLruy/qkdoHrofieAIrAy6gFutCN2ahWEcmFJYsDP+SaFAJaci65W
+ yUpDZXhOh2u+WgNlERUAbcSkOX6/JBFjFHT3W1LGx46L0pMd4BmA9kmc+BAIjknDRnDCYVDdf
+ MYflrJVSLtjDm9RP8bbjz2Mama8r3+8pxn6+be5pq7ql6VLBg4DHFt5IMHpkgAaSj5cn7FFjy
+ mHdviKqI7zZ0qWWXg5K7AOOCBhKlOFMRRoj816DgJ6ov35O2XkZg2zfI1CC5cHw3o5NVY4rkd
+ ABk4kkUKg+LxG2FIak1mBQvsh5HLAT0vb4BOz+ONZmPBHFi3Zaz+tyB4B6Ki98fhyBW+iOsZs
+ c8J+cGkBD/jjxHB3TJYIm38DmpC4ijMZu7aQo65LL13yINVc70KYIM0AN/uCrWCi3ihUgKIiX
+ 2v+46cb5KhBTUlvkk4cR0+Yn7KjT7y0ebdWrZ/1UGVxYwPmhVlMJ35vi3vL1dnjPV9T/Ht1Y6
+ Wtb9PUvhQ/5dEZVdYPkAIm5bZnC9P0L/yqd78rsUbqTFnY0xAPRQkbRe8KyAeNu3mmzSBC8D8
+ +HFr6fW2KxSuZEiydcYLSutsgBr066FYG83GnxeQHzcGNO5sehe/X6fEG7j6M8yAvdgRncXYd
+ kMJx6bgpyHKDuSDq+
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7fFVVzleNYsfsZmBUWx22hv7nsInY4xMm
-Content-Type: multipart/mixed; boundary="JEC0RO3OhkuKzdYbvUVQzWzUbuQWnmHZE"
+--wvVLS2a5EMbhJGoIbZagD9OBIN2ruYrzZ
+Content-Type: multipart/mixed; boundary="wuu6DMcDUerMzPbSD97p3AxXEWdQCewyc"
 
---JEC0RO3OhkuKzdYbvUVQzWzUbuQWnmHZE
+--wuu6DMcDUerMzPbSD97p3AxXEWdQCewyc
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -102,56 +101,60 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/3/14 =E4=B8=8A=E5=8D=885:09, Josef Bacik wrote:
-> Here we are just searching down to the bytenr we're building the backre=
-f
-> tree for, and all of it's paths to the roots.  These bytenrs are not
-> guaranteed to be anywhere near each other, so the READA just generates
-> extra latency.
+> In debugging Zygo's huge commit delays I noticed we were burning a bunc=
+h of time
+> doing READA in cases where we don't need to.  The way READA works in bt=
+rfs is
+> we'll load up adjacent nodes and leaves as we walk down.  This is usefu=
+l for
+> operations where we're going to be reading sequentially across the tree=
+=2E
 >=20
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> But for delayed refs we're looking up one bytenr, and then another one =
+which
+> could be elsewhere in the tree.  With large enough extent trees this re=
+sults in
+> a lot of unneeded latency.
+>=20
+> The same applies to build_backref_tree, but that's even worse because w=
+e're
+> looking up backrefs, which are essentially randomly spread out across t=
+he extent
+> root.  Thanks,
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+There are quite some other locations abusing READA.
+
+E.g. btrfs_read_block_groups(), where we're just searching for block
+group items. There is no guarantee that next block group item is in next
+a few leaves.
+
+I guess it's a good time to review all READA abuse. Or would you mind me
+to do that?
 
 Thanks,
 Qu
-> ---
->  fs/btrfs/relocation.c | 2 --
->  1 file changed, 2 deletions(-)
 >=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 4fb7e3cc2aca..3ccc126d0df3 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -759,8 +759,6 @@ struct backref_node *build_backref_tree(struct relo=
-c_control *rc,
->  		err =3D -ENOMEM;
->  		goto out;
->  	}
-> -	path1->reada =3D READA_FORWARD;
-> -	path2->reada =3D READA_FORWARD;
-> =20
->  	node =3D alloc_backref_node(cache);
->  	if (!node) {
+> Josef
 >=20
 
 
---JEC0RO3OhkuKzdYbvUVQzWzUbuQWnmHZE--
+--wuu6DMcDUerMzPbSD97p3AxXEWdQCewyc--
 
---7fFVVzleNYsfsZmBUWx22hv7nsInY4xMm
+--wvVLS2a5EMbhJGoIbZagD9OBIN2ruYrzZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5sIvYACgkQwj2R86El
-/qgdsgf/fY5ceGd1+jVBOWi5V/0BoyYyysYqsmxgFwuTh2whL6Ewqi/zkDftR8+m
-uJ5eBk1DU38XhqULb1kvbMSYu5/lwVtplouaDCjp3ZLx19bd6DAXthmo4wnLDv3h
-Dvq6styYf+XFNclW+nkS9MP3pnkuWsgfzn0YUPGyS5MqQZ8l2mlpU6wANbcxKGQL
-h7tjBDDGl7hXGQ0Jt3PYwR2KpGlN0DkmQz8n38yBxgAvXJYh5S0jZgj2G2bDhK+M
-14gQ75QzCy2KOYZz8ox5dewgRFzX+L4E6XED5yEQRJYm34z95l8jgY1dzX9cwBSW
-VxJAEqcDcZfWzYJAjzy9M5J732fGMA==
-=ArCL
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5sR8YACgkQwj2R86El
+/qh5NggAouo2Ioe93UKepUaYz5+30jMYLha72fSb5YE3KN45qub92YyV6xg0xorF
+akxkmFK9VjWL6GcTQnpnHNz9LgHNfN8F56wW9qfHzmIrg7qRmTyIJMARMVMMeqSA
+TXCOD9Q48xD6Y7QhTEL+2VfKmhKLfUkI7h66E39X+kodjThrMrxANyoVrOvb56v6
+67MD6mW8beYctJPiNMMwjd29MykkuCgUs2/cyJD3J3EmLmf/ySUxr6oD1+NudAII
+pibYX+3KVTrgZQcbqNDjxsP6DUpPoPCq18f3S5XPHDkS9ygvdHwBNP/bpGkFv8A0
+niQFmlAU/6Ykt58X+n5L8DYashLEbw==
+=Cq8J
 -----END PGP SIGNATURE-----
 
---7fFVVzleNYsfsZmBUWx22hv7nsInY4xMm--
+--wvVLS2a5EMbhJGoIbZagD9OBIN2ruYrzZ--
