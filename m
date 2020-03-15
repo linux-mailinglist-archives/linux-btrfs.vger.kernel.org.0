@@ -2,131 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6CA185E44
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Mar 2020 16:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5555E185FA0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Mar 2020 20:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgCOPtE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Mar 2020 11:49:04 -0400
-Received: from smtp.domeneshop.no ([194.63.252.55]:52217 "EHLO
-        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728310AbgCOPtE (ORCPT
+        id S1728608AbgCOTqz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 15 Mar 2020 15:46:55 -0400
+Received: from smtp66.iad3a.emailsrvr.com ([173.203.187.66]:41361 "EHLO
+        smtp66.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727329AbgCOTqy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Mar 2020 11:49:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
-        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JnBtoVBhrYW15MgnTiORI8iNnwrOhhwNExtjzAQADmk=; b=LNgMZr2YWO0aJL0oSWXxnpY4vM
-        +25ih8G+JLFdF1IB0Mt6N5ZDGIiMzNHLehtmht7OOiZ3+INoyAav6o193LjG9QhCyvtyzo0zoSfsD
-        VuIo7M4dLS8pZxE7jrzOnkGbbtpHZNdDRw6wQI7Jlvm+KUvJylkvA5H1q8o6qvwHxEyqylOvJVhPN
-        wluPUBH1x/JKkZ3Cq9lEN+/sJxDB8zfbnFggtlCyXx8WEmQUu1S2PdCyTjIfX0utAihxaqDepmiid
-        sW7CUleS6Ls8LYlIOgF2rTQn6hrRAtuhs4/InGTUQ4YHDw842GhssfqR8O/YPHsFTlQBgSgK3Ggbj
-        bDePUzew==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:14640 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1jDVVd-0000OH-IB; Sun, 15 Mar 2020 16:49:01 +0100
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: the free space cache file is invalid, skip it
-To:     Hendrik Friedel <hendrik@friedels.name>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <emfc09a7c5-74d2-4f64-92cc-9a8cffa964e1@ryzen>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <f2e7a222-0f92-a905-bd9c-6a8d1a5a0cd1@dirtcellar.net>
-Date:   Sun, 15 Mar 2020 16:49:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.1
+        Sun, 15 Mar 2020 15:46:54 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Mar 2020 15:46:53 EDT
+Received: from app55.wa-webapps.iad3a (relay-webapps.rsapps.net [172.27.255.140])
+        by smtp33.relay.iad3a.emailsrvr.com (SMTP Server) with ESMTP id 2841119BD
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Mar 2020 15:40:43 -0400 (EDT)
+X-Sender-Id: rmosemann@futurefoam.com
+Received: from app55.wa-webapps.iad3a (relay-webapps.rsapps.net [172.27.255.140])
+        by 0.0.0.0:25 (trex/5.7.12);
+        Sun, 15 Mar 2020 15:40:43 -0400
+Received: from futurefoam.com (localhost.localdomain [127.0.0.1])
+        by app55.wa-webapps.iad3a (Postfix) with ESMTP id 159CF6057F
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Mar 2020 15:40:43 -0400 (EDT)
+Received: by webmail.futurefoam.com
+    (Authenticated sender: rmosemann@futurefoam.com, from: rmosemann@futurefoam.com) 
+    with HTTP; Sun, 15 Mar 2020 14:40:43 -0500 (CDT)
+X-Auth-ID: rmosemann@futurefoam.com
+Date:   Sun, 15 Mar 2020 14:40:43 -0500 (CDT)
+Subject: 100% disk usage reported by "df"
+From:   "Russell Mosemann" <rmosemann@futurefoam.com>
+To:     linux-btrfs@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <emfc09a7c5-74d2-4f64-92cc-9a8cffa964e1@ryzen>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Importance: Normal
+X-Priority: 3 (Normal)
+X-Type: plain
+Message-ID: <1584301243.085416989@webmail.futurefoam.com>
+X-Mailer: webmail/17.2.10-RC
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-First , I am just a regular btrfs user so take what I say with a grain 
-of salt.
+df displays 100% disk usage when 119GB is used out of 9TB on a freeshly-installed system. The issue surfaces when disk usage is somewhere over the low 100GBs. Existing systems with lots of data that were upgraded to kernel 5.4 do not exhibit this problem. Other freshly-installed systems with less than 100GB do not show this problem. It is unknown if they will exhibit the problem, as disk usage increases. btrfs reports the correct disk space, and the system is writable. I wiped the drive, recreated the file system and the problem reappeared after a couple of days, when disk usage exceeded 100GB. Files are being copied with --reflink every day. Snapshots are not being made, and there are no subvolumes.
 
-However, according to the FAQ here:
-https://btrfs.wiki.kernel.org/index.php/FAQ
+# uname -a
+Linux vhost361 5.4.0-0.bpo.3-amd64 #1 SMP Debian 5.4.13-1~bpo10+1 (2020-02-07) x86_64 GNU/Linux
 
-You should run btrfs check on your filfeystem. This may be a brilliant 
-or horrific idea. You probably want to drop your free space cache file 
-as well ,but wait until a developer answers if you wanna be on the safe 
-side.
+# cat /etc/fstab
+UUID=913... /usr/local/data/datastore2 btrfs   noatime,compress-force=zstd   0  0
 
-If you expect some serious help you should probably post the outputs of 
-these commands and state just for the record what distro you are using 
-and I am sure you will get help soon (the BTRFS list is very friendly).
+# df
+Filesystem      1K-blocks      Used  Available Use% Mounted on
+/dev/sdc1      9766434816 123744020          0 100% /usr/local/data/datastore2
 
-uname -a
-btrfs --version
-btrfs filesystem show /mountpoint
-btrfs filesystem usage -T /mountpoint
+# btrfs subvolume list /usr/local/data/datastore2
+#
 
-Hendrik Friedel wrote:
-> Hello,
-> 
-> I see these errors in my syslog:
-> 
-> Mar 15 00:16:31 homeserver kernel: [524589.677551] BTRFS info (device 
-> sdf1): the free space cache file (12785106812928) is invalid, skip it
-> Mar 15 00:16:32 homeserver kernel: [524590.494705] BTRFS info (device 
-> sdf1): the free space cache file (12787254296576) is invalid, skip it
-> Mar 15 00:16:53 homeserver kernel: [524611.371823] BTRFS info (device 
-> sdf1): the free space cache file (14405383225344) is invalid, skip it
-> Mar 15 00:18:18 homeserver kernel: [524696.803108] BTRFS info (device 
-> sdf1): the free space cache file (15598377500672) is invalid, skip it
-> Mar 15 00:18:18 homeserver kernel: [524696.935340] BTRFS info (device 
-> sdf1): the free space cache file (15613409886208) is invalid, skip it
-> Mar 15 00:18:19 homeserver kernel: [524698.074946] BTRFS info (device 
-> sdf1): the free space cache file (15643474657280) is invalid, skip it
-> Mar 15 00:18:19 homeserver kernel: [524698.074952] BTRFS info (device 
-> sdf1): the free space cache file (15643474657280) is invalid, skip it
-> Mar 15 00:18:21 homeserver kernel: [524699.353843] BTRFS info (device 
-> sdf1): the free space cache file (15663875751936) is invalid, skip it
-> Mar 15 00:19:37 homeserver kernel: [524776.142963] BTRFS info (device 
-> sdf1): the free space cache file (15062513221632) is invalid, skip it
-> Mar 15 00:19:38 homeserver kernel: [524776.307788] BTRFS info (device 
-> sdf1): the free space cache file (15065734447104) is invalid, skip it
-> Mar 15 00:19:38 homeserver kernel: [524776.549028] BTRFS info (device 
-> sdf1): the free space cache file (15070029414400) is invalid, skip it
-> Mar 15 00:19:38 homeserver kernel: [524776.675084] BTRFS info (device 
-> sdf1): the free space cache file (15071103156224) is invalid, skip it
-> Mar 15 00:19:38 homeserver kernel: [524777.004195] BTRFS info (device 
-> sdf1): the free space cache file (15076471865344) is invalid, skip it
-> Mar 15 00:19:50 homeserver kernel: [524788.446974] BTRFS info (device 
-> sdf1): the free space cache file (15559722795008) is invalid, skip it
-> Mar 15 00:19:51 homeserver kernel: [524789.965874] BTRFS info (device 
-> sdf1): the free space cache file (15570460213248) is invalid, skip it
-> Mar 15 00:21:59 homeserver kernel: [524918.102725] BTRFS info (device 
-> sdf1): the free space cache file (15064660705280) is invalid, skip it
-> Mar 15 00:25:49 homeserver kernel: [525147.576735] BTRFS info (device 
-> sdf1): the free space cache file (15564017762304) is invalid, skip it
-> Mar 15 00:27:33 homeserver kernel: [525251.725178] BTRFS info (device 
-> sdf1): the free space cache file (16411300724736) is invalid, skip it
-> 
-> a scrub of that drive was finde.
-> Also, the stats look good:
-> btrfs dev stats /srv/dev-disk-by-label-DataPool1
-> [/dev/sdf1].write_io_errs    0
-> [/dev/sdf1].read_io_errs     0
-> [/dev/sdf1].flush_io_errs    0
-> [/dev/sdf1].corruption_errs  0
-> [/dev/sdf1].generation_errs  0
-> [/dev/sdc1].write_io_errs    0
-> [/dev/sdc1].read_io_errs     0
-> [/dev/sdc1].flush_io_errs    0
-> [/dev/sdc1].corruption_errs  0
-> [/dev/sdc1].generation_errs  0
-> 
-> Is this concerning?
-> What should I do?
-> 
-> Regards,
-> Hendrik
-> 
+# btrfs fi show
+Label: 'datastore2'  uuid: 91361c03-cb4f-4d8d-954d-5a1e983daabd
+       Total devices 1 FS bytes used 116.77GiB
+       devid    1 size 9.09TiB used 120.02GiB path /dev/sdc1
+
+# btrfs fi df /usr/local/data/datastore2
+Data, single: total=118.00GiB, used=115.96GiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=1.00GiB, used=827.66MiB
+GlobalReserve, single: total=444.61MiB, used=0.00B
+
+# btrfs fi usage /usr/local/data/datastore2
+Overall:
+   Device size:                   9.09TiB
+   Device allocated:            120.02GiB
+   Device unallocated:            8.98TiB
+   Device missing:                  0.00B
+   Used:                        117.58GiB
+   Free (estimated):              8.98TiB      (min: 4.49TiB)
+   Data ratio:                       1.00
+   Metadata ratio:                   2.00
+   Global reserve:              444.61MiB      (used: 0.00B)
+
+Data,single: Size:118.00GiB, Used:115.96GiB
+  /dev/sdc1     118.00GiB
+
+Metadata,DUP: Size:1.00GiB, Used:827.66MiB
+  /dev/sdc1       2.00GiB
+
+System,DUP: Size:8.00MiB, Used:16.00KiB
+  /dev/sdc1      16.00MiB
+
+Unallocated:
+  /dev/sdc1       8.98TiB
+
+# btrfsck /dev/sdc1
+Opening filesystem to check...
+Checking filesystem on /dev/sdc1
+UUID: 91361c03-cb4f-4d8d-954d-5a1e983daabd
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 125379792896 bytes used, no error found
+total csum bytes: 121563204
+total tree bytes: 867876864
+total fs tree bytes: 401555456
+total extent tree bytes: 317325312
+btree space waste bytes: 104952067
+file data blocks allocated: 265984520192
+referenced 747687165952
+
+--
+Russell Mosemann
+
