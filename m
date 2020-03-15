@@ -2,108 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE121859F5
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Mar 2020 05:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F14C185DA6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Mar 2020 15:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgCOEBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Mar 2020 00:01:55 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.91]:44985 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgCOEBy (ORCPT
+        id S1728617AbgCOOwS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 15 Mar 2020 10:52:18 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:45781 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727034AbgCOOwS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Mar 2020 00:01:54 -0400
-X-Greylist: delayed 1323 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Mar 2020 00:01:54 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id D2FA732381
-        for <linux-btrfs@vger.kernel.org>; Sat, 14 Mar 2020 22:39:50 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id DK7yj9JeqEfyqDK7yjAafg; Sat, 14 Mar 2020 22:39:50 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HdNClwA12ve4OVb/muF6YbVeejQKBuAt4B9f8BZr0aM=; b=D6X45wVQs7ibsTNvS0+7yOtMOu
-        t9TFLml0zeHVb321oRcr827KyEgJ1mRTJBGy/XWezdFk3U3o+byxlhrUBeq4eJlZEONEDfUEa4HzT
-        0J7IUVjf+nrkTowVr0ZHOoLDpYM6ip6LxhF3w1rllevgVqf89/PNFqY/nTOHyWrr0GecICZi1gg41
-        Ok/EMew5nLehd3DMWhqBXiY3LWR8r/0IJek1je6cwd9UfphEFcLLt0tYkNdbRyq1h1VMoqATlF0K8
-        L8sINtwaEfg8Oa0ZO/U8mJdSZjO1gM9SeD4Zn/cWQvyfmb4cmfD2ysL3J4Wcys8I8kaon5qYoCQc/
-        lA3meSRQ==;
-Received: from [177.96.46.32] (port=45744 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jDK7y-001qVU-9e; Sun, 15 Mar 2020 00:39:50 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-btrfs@vger.kernel.org, wqu@suse.com, dsterba@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: qgroup-verify: Remove duplicated message in report_qgroups
-Date:   Sun, 15 Mar 2020 00:42:53 -0300
-Message-Id: <20200315034253.11261-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 177.96.46.32
-X-Source-L: No
-X-Exim-ID: 1jDK7y-001qVU-9e
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [177.96.46.32]:45744
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 4
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+        Sun, 15 Mar 2020 10:52:18 -0400
+Received: from [192.168.177.20] ([91.56.77.2]) by mrelayeu.kundenserver.de
+ (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1MTikV-1ik30s3aaz-00Tyrn for <linux-btrfs@vger.kernel.org>; Sun, 15 Mar 2020
+ 15:52:16 +0100
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: the free space cache file is invalid, skip it
+Date:   Sun, 15 Mar 2020 14:52:11 +0000
+Message-Id: <emfc09a7c5-74d2-4f64-92cc-9a8cffa964e1@ryzen>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/7.2.37929.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:Jg/2+pjFIzUsUz8Azuhp2FkkTTjmRCYviZ6Olhf0thHGw3NAU59
+ oX1kWJNOO6gYFuleF7Y6xsLoi+bVco5YCwU3WwghTM04b5XCU2yRczsHKhV4UAAoL3kbXB7
+ H/GGxujb3KZFxzu2F5VKNX5ggr5jCUzswx3E4hkESceiThU8J2PyZxUxqo/JhxeOjRClMk1
+ uKFSqvuARBDkki4H6Fp+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Pg5wCiWcDI0=:jry/+BQM5TjhESsC3D35SF
+ PUoD1wZRbqHKrac/Ukdqtz7j/IbO7QJOksk7ZL5wwQttX/k4RyHiHY0trHTvT429a/nNC3oWj
+ ZNmFG5VkKN9CXL0eK+oES1Ll+xIKbjxBuVN14QrJ6e3rCc9Ao5XZaL+/8IuonHJmyfKH0zCmd
+ uxYX8GuMtBVT5MOgC9Im5OW2SdevzKCyhZWp8degPN3gz7uvSK2A1eIvmRnNivJe6SXHL0eE5
+ mi9+POmeVh4QBx/XuC9RzM+LPlp17z8w7tW4NemcaT1oh1AfSi/0pzfS0kHePPTKj40AOTZA7
+ e8KlhnI7CR6Tf69zIdIu//8Oe4U1yBZkwreltZcb2Jf6i4WVJDIxN9BaWUlCmIQkEJ2+bR6DY
+ 3rVpu6vui772OEpL2Ppt1CoL+aSbDc7C420pnS0tu4jebTjN2+CxXSmMu5wY2UBlsc0oebnyo
+ bzqvxRA92PzqZglV3G50d8kLxlcnXSHdDBmM9T9HW714eJuJoMJAfcFVm1SRZyJsym1mJasNT
+ 1wYvRmhtOhouQPB8HHxrS+4E1/TAGRu1TI72qAB9Xu/DiCinUK7vh3B3KTVz0hTxDq83bFsnK
+ LqEcyYAlV99D/8/vf2dUT82NBohAICUDH8rdQB9yNliamhG+9+b55yRMMld/OQnFuyriBmWfY
+ w7d15vLpTTFDux5JCSAlOEMv5cylGQZXtJpY+awJVYkP0Y3o0b2Djh1H8WwDqHEdSrJF47g53
+ 9jlDbb5enddGbK+0ofkGJCgVdAuzPZrDTjh9FrVA0aPTcTD5fQy+SnOUfuirI/vJvXjlzc1kq
+ LP4nHCQWKhaTaEdLTIJG5/t5JacB6jFwcbVY2Sx81I7nU2cNWhSSjmzcjLVoPaO42OwrNaa
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Hello,
 
-Since 1d5b2ad9 ("btrfs-progs: qgroup-verify: Don't treat qgroup
-difference as error if the fs hasn't initialized a rescan") a new
-message is being printed when the qgroups is incosistent and the rescan
-hasn't being executed, so remove the later message send to stderr.
+I see these errors in my syslog:
 
-While in this function, simplify the check for a not executed rescan
-since !counts.rescan_running and counts.rescan_running == 0 means the
-same thing.
+Mar 15 00:16:31 homeserver kernel: [524589.677551] BTRFS info (device 
+sdf1): the free space cache file (12785106812928) is invalid, skip it
+Mar 15 00:16:32 homeserver kernel: [524590.494705] BTRFS info (device 
+sdf1): the free space cache file (12787254296576) is invalid, skip it
+Mar 15 00:16:53 homeserver kernel: [524611.371823] BTRFS info (device 
+sdf1): the free space cache file (14405383225344) is invalid, skip it
+Mar 15 00:18:18 homeserver kernel: [524696.803108] BTRFS info (device 
+sdf1): the free space cache file (15598377500672) is invalid, skip it
+Mar 15 00:18:18 homeserver kernel: [524696.935340] BTRFS info (device 
+sdf1): the free space cache file (15613409886208) is invalid, skip it
+Mar 15 00:18:19 homeserver kernel: [524698.074946] BTRFS info (device 
+sdf1): the free space cache file (15643474657280) is invalid, skip it
+Mar 15 00:18:19 homeserver kernel: [524698.074952] BTRFS info (device 
+sdf1): the free space cache file (15643474657280) is invalid, skip it
+Mar 15 00:18:21 homeserver kernel: [524699.353843] BTRFS info (device 
+sdf1): the free space cache file (15663875751936) is invalid, skip it
+Mar 15 00:19:37 homeserver kernel: [524776.142963] BTRFS info (device 
+sdf1): the free space cache file (15062513221632) is invalid, skip it
+Mar 15 00:19:38 homeserver kernel: [524776.307788] BTRFS info (device 
+sdf1): the free space cache file (15065734447104) is invalid, skip it
+Mar 15 00:19:38 homeserver kernel: [524776.549028] BTRFS info (device 
+sdf1): the free space cache file (15070029414400) is invalid, skip it
+Mar 15 00:19:38 homeserver kernel: [524776.675084] BTRFS info (device 
+sdf1): the free space cache file (15071103156224) is invalid, skip it
+Mar 15 00:19:38 homeserver kernel: [524777.004195] BTRFS info (device 
+sdf1): the free space cache file (15076471865344) is invalid, skip it
+Mar 15 00:19:50 homeserver kernel: [524788.446974] BTRFS info (device 
+sdf1): the free space cache file (15559722795008) is invalid, skip it
+Mar 15 00:19:51 homeserver kernel: [524789.965874] BTRFS info (device 
+sdf1): the free space cache file (15570460213248) is invalid, skip it
+Mar 15 00:21:59 homeserver kernel: [524918.102725] BTRFS info (device 
+sdf1): the free space cache file (15064660705280) is invalid, skip it
+Mar 15 00:25:49 homeserver kernel: [525147.576735] BTRFS info (device 
+sdf1): the free space cache file (15564017762304) is invalid, skip it
+Mar 15 00:27:33 homeserver kernel: [525251.725178] BTRFS info (device 
+sdf1): the free space cache file (16411300724736) is invalid, skip it
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- check/qgroup-verify.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+a scrub of that drive was finde.
+Also, the stats look good:
+btrfs dev stats /srv/dev-disk-by-label-DataPool1
+[/dev/sdf1].write_io_errs    0
+[/dev/sdf1].read_io_errs     0
+[/dev/sdf1].flush_io_errs    0
+[/dev/sdf1].corruption_errs  0
+[/dev/sdf1].generation_errs  0
+[/dev/sdc1].write_io_errs    0
+[/dev/sdc1].read_io_errs     0
+[/dev/sdc1].flush_io_errs    0
+[/dev/sdc1].corruption_errs  0
+[/dev/sdc1].generation_errs  0
 
-diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
-index afe15acf..685370d6 100644
---- a/check/qgroup-verify.c
-+++ b/check/qgroup-verify.c
-@@ -1336,14 +1336,11 @@ int report_qgroups(int all)
- 	/*
- 	 * It's possible that rescan hasn't been initialized yet.
- 	 */
--	if (counts.qgroup_inconsist && !counts.rescan_running &&
--	    counts.rescan_running == 0) {
-+	if (counts.qgroup_inconsist && !counts.rescan_running) {
- 		printf(
- "Rescan hasn't been initialized, a difference in qgroup accounting is expected\n");
- 		skip_err = true;
- 	}
--	if (counts.qgroup_inconsist && !counts.rescan_running)
--		fprintf(stderr, "Qgroup are marked as inconsistent.\n");
- 	node = rb_first(&counts.root);
- 	while (node) {
- 		c = rb_entry(node, struct qgroup_count, rb_node);
--- 
-2.25.0
+Is this concerning?
+What should I do?
+
+Regards,
+Hendrik
 
