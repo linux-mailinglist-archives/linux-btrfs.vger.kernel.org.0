@@ -2,171 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2A186A88
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Mar 2020 13:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475C9186AB0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Mar 2020 13:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730901AbgCPMFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Mar 2020 08:05:17 -0400
-Received: from mout.gmx.net ([212.227.17.20]:38887 "EHLO mout.gmx.net"
+        id S1730923AbgCPMOZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Mar 2020 08:14:25 -0400
+Received: from mail.virtall.com ([46.4.129.203]:37384 "EHLO mail.virtall.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730845AbgCPMFR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Mar 2020 08:05:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1584360293;
-        bh=hUYD8jX7XuBOjLptipT/5EeuYr7POCkY5WtNrIBlGfY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=l5jEyunfb+sFR3Nl4tPXnAoNQRFwH4QjVTUNG0osmUWW4QCMq92012h14MMtFkWlS
-         Otc5iQkS3yjsnmMrJnG+doLMwa8aCGd3t1B/zYHwB527GqTdYQLao+Ev2SbYGJA1LG
-         AzyuvGbcFyIqdy0vdeH0hxKE38zreRMGbgr2Etj8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oBx-1jYWhd1mL7-00woAh; Mon, 16
- Mar 2020 13:04:53 +0100
-Subject: Re: [PATCH] btrfs-progs: qgroup-verify: Remove duplicated message in
- report_qgroups
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        linux-btrfs@vger.kernel.org, wqu@suse.com, dsterba@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200315034253.11261-1-marcos@mpdesouza.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f68333d0-b71c-b331-20da-84813a349b9c@gmx.com>
-Date:   Mon, 16 Mar 2020 20:04:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1730889AbgCPMOZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Mar 2020 08:14:25 -0400
+Received: from mail.virtall.com (localhost [127.0.0.1])
+        by mail.virtall.com (Postfix) with ESMTP id AB63C409B0CD;
+        Mon, 16 Mar 2020 12:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wpkg.org; s=default;
+        t=1584360861; bh=qBsYaZJWgaJV/6vdliZQyqFEAEWqULdLizsBkecKTy0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=P7D3BmZtAzWUQVgERreYDatW9j1XV85im50/oegAEmsCg8L028Zg8SItaSLigL3+J
+         itIANa313joMz4Weg411Gi3DYXaw9gfo4RIJPkCJBTO0VmlCXWztkSUgMkTS4jsb8Z
+         o3E0WVxWih4py4Z523FNjSr85oLZJLXQHJZIT1+8c7q4k/Cqi753QW/qwSt3Yb3e82
+         8RzN7I0o3tF9WeP6Bkda9Jzx6U9LKgKmZM0BHPtXRQsDeQNvF/fqTyKbnWxTGefs3L
+         iO3EAMiatqvVDC6rFww3twpdR063FBGBl5PvDdLTEi1DFNDAp0j2P73+sEYpI+l6JZ
+         IjNNDqkO9aSMg==
+X-Fuglu-Suspect: 0bcf401879dc4959b3c2a108bac74d53
+X-Fuglu-Spamstatus: NO
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.virtall.com
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no
+Received: from localhost (localhost [127.0.0.1]) (Authenticated sender: tch@virtall.com)
+        by mail.virtall.com (Postfix) with ESMTPSA;
+        Mon, 16 Mar 2020 12:14:20 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200315034253.11261-1-marcos@mpdesouza.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="BlZbf4usivLdoZ14aQrexWqOdrcypfUnS"
-X-Provags-ID: V03:K1:kifM7oVpgg+cPNv3LJhL5bcVoRjNyzeuoPq4m4QcSy8zBeZo0A/
- 5+LTp8tEPrinUZaizO6oJ3wy1NGD9VwaJFfaQeopQn2SrRG+jlVwdkswzn187Qt88s6eZdb
- of6jC0tUf69V6Y1ITuEhCKfZqhBJ/Nv1tN85bqIAKtMHVnAY2r9F7LJV56T/8UplzMhAIfG
- p4IHB3+d9Bs3shOLmjcoQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OfEBW4QGNSs=:WEaLVY10joXUVtRxPQSEPd
- qb2WtwE3vjo4ZjKoTck20swDpbLpfCIl9FVYrv3holCikKYUZnEwGnmbkZiyhXlL6TRfqp6Ql
- 3PuhPUmmPGXv2ZVX4iPpZnK21WY45p3Y2ddz056iV2t6PpqVigvcHZ/K/5mwBEbxlTeUAy3Xz
- U2znc+QU/9cKbRkcSPw0nJdOgmO139Ad9D3IzY6pT61GBdTVzzCSiq80l68jLNKXqtQn90O1U
- H0e/E5ulM7LwE7hKwOhQW692dvYShImdDPFY7e8pcx+F67VTmRHjDJlOaKHJC4btfSay0nH0m
- AEVVMN7cNGjXcw19UmML/+z+GwA3/lufZABJVz4uzYEThYRIGfYX0BVl6FNzA1yYhSZ6wGgku
- x5yxTQK7K4ck5HEaQPsayWV2NebbmRAinW/d5ali2hs45pLZ+BeG7KLANE6fFip/ROMDksAax
- Ipb9TkCzxa34Lg0XOege3i1SnJEfpuCKjomRa1iP7UZPz5f5Fc6MFN+cSD/h5hCIvizBQKM23
- 5hN7ns7Ji1L3ypobuRW4yfin4e1h/8L0zjikZy6XBCAcbUgX5rRitvq1gz5L5GE4+AHAYlqKS
- XOxekHvnTtB6IEzhlzYcWs+bVVso6Aydlko+N7p8yXwaeBfvsrvxTbCGxQFHrVbRW0jVSqY12
- rXSP/LRxHjT/lYsuMzdLAHFJo/fLlLYyvs1WHgwsHv2XQgDpHV8Y5Pxi8hl270uIGOVSBEuzM
- 0VRbQMuIr6T5CIK6T7t876+OcYypyZ/g1JH4q6E6fN5gGD/3iPngLz6wZtPM8/RzUWhUFLaVM
- Gudo+sdWOoCoNQxIBrlhrb53Gud7u05dy3KZK31bRxgAVOkgIpjM8v/UU2Fx/qC9PkzJRsltI
- B3DXL7V73w80nVyCt/DRS1YqNL9O0clNAKvTIYJvDCza6eRdicprUn7w6SmemImqjj33rXxXy
- SvXVWWhdPM8NVbqCoHMfan4vB8d9gXApP0mEf5M552Jd4oUQlCMO5dg9u9w0/Tx0JYLTviJfO
- LJzRwjwi82gQsv3cqgc/qrv+Z6oAUJRLUztFe0NdzEPP8kUz4A74djEISFKTKiSTd7AtBUXFF
- tbguaR/i4ftIYsgJ1OSMRS3ubHQLM7lBvG6b3DyY0kwbfKhBdQg3IsclzAV30FFahtt2QEOHK
- liT/RqLz9SFy0whLQnBYIwIufDeOpU3upHt51dQY9PA7VxTb9whVpFv1utZblJzbiZPYZnIqw
- q6FbvXRvoQxc+h6za
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 16 Mar 2020 21:14:14 +0900
+From:   Tomasz Chmielewski <mangoo@wpkg.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: kernel panic after upgrading to Linux 5.5
+In-Reply-To: <9711f986-0083-0866-68b7-f1cd8e35db11@gmx.com>
+References: <8374ca28bc970a51b3378a5a92939c01@wpkg.org>
+ <fa4d1bf5-b800-edba-1fce-ae7108ae023b@gmx.com>
+ <553b4596301e2e7bfa05476065c195d0@wpkg.org>
+ <9711f986-0083-0866-68b7-f1cd8e35db11@gmx.com>
+Message-ID: <910611ad09d3efb53b13b77bf3c4d99c@wpkg.org>
+X-Sender: mangoo@wpkg.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BlZbf4usivLdoZ14aQrexWqOdrcypfUnS
-Content-Type: multipart/mixed; boundary="IrdhYIYpCryU9XeunpYogybaV2EIS03xn"
+On 2020-03-16 19:26, Qu Wenruo wrote:
+> On 2020/3/16 下午1:19, Tomasz Chmielewski wrote:
+>> On 2020-03-16 14:06, Qu Wenruo wrote:
+>>> On 2020/3/16 上午11:13, Tomasz Chmielewski wrote:
+>>>> After upgrading to Linux 5.5 (tried 5.5.6, 5.5.9, also 5.6.0-rc5), 
+>>>> the
+>>>> system panics shortly after mounting and starting to use a btrfs
+>>>> filesystem. Here is a dmesg - please advise how to deal with it.
+>>>> It has since crashed several times, because of panic=10 parameter
+>>>> (system boots, runs for a while, crashes, boots again, and so on).
+>>>> 
+>>>> Mount options:
+>>>> 
+>>>> noatime,ssd,space_cache=v2,user_subvol_rm_allowed
+>>>> 
+>>>> 
+>>>> 
+>>>> [   65.777428] BTRFS info (device sda2): enabling ssd optimizations
+>>>> [   65.777435] BTRFS info (device sda2): using free space tree
+>>>> [   65.777436] BTRFS info (device sda2): has skinny extents
+>>>> [   98.225099] BTRFS error (device sda2): parent transid verify 
+>>>> failed
+>>>> on 19718118866944 wanted 664218442 found 674530371
+>>>> [   98.225594] BTRFS error (device sda2): parent transid verify 
+>>>> failed
+>>>> on 19718118866944 wanted 664218442 found 674530371
+>>> 
+>>> This is the root cause, not quota.
+>>> 
+>>> The metadata is already corrupted, and quota is the first to complain
+>>> about it.
+>> 
+>> Still, should it crash the server, putting it into a cycle of
+>> crash-boot-crash-boot, possibly breaking the filesystem even more?
+> 
+> The transid mismatch in the first place is the cause, and I'm not sure
+> how it happened.
+> 
+> Did you have any history of the kernel used on that server?
+> 
+> Some potential corruption source includes the v5.2.0~v5.2.14, which
+> could cause some tree block not written to disk.
 
---IrdhYIYpCryU9XeunpYogybaV2EIS03xn
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/3/15 =E4=B8=8A=E5=8D=8811:42, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->=20
-> Since 1d5b2ad9 ("btrfs-progs: qgroup-verify: Don't treat qgroup
-> difference as error if the fs hasn't initialized a rescan") a new
-> message is being printed when the qgroups is incosistent and the rescan=
-
-> hasn't being executed, so remove the later message send to stderr.
->=20
-> While in this function, simplify the check for a not executed rescan
-> since !counts.rescan_running and counts.rescan_running =3D=3D 0 means t=
-he
-> same thing.
->=20
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
->  check/qgroup-verify.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->=20
-> diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
-> index afe15acf..685370d6 100644
-> --- a/check/qgroup-verify.c
-> +++ b/check/qgroup-verify.c
-> @@ -1336,14 +1336,11 @@ int report_qgroups(int all)
->  	/*
->  	 * It's possible that rescan hasn't been initialized yet.
->  	 */
-> -	if (counts.qgroup_inconsist && !counts.rescan_running &&
-> -	    counts.rescan_running =3D=3D 0) {
-> +	if (counts.qgroup_inconsist && !counts.rescan_running) {
->  		printf(
->  "Rescan hasn't been initialized, a difference in qgroup accounting is =
-expected\n");
->  		skip_err =3D true;
->  	}
-> -	if (counts.qgroup_inconsist && !counts.rescan_running)
-> -		fprintf(stderr, "Qgroup are marked as inconsistent.\n");
->  	node =3D rb_first(&counts.root);
->  	while (node) {
->  		c =3D rb_entry(node, struct qgroup_count, rb_node);
->=20
+Yes, it used to run a lot of kernel, starting with 4.18 or perhaps even 
+earlier.
 
 
---IrdhYIYpCryU9XeunpYogybaV2EIS03xn--
+>> Also, how do I fix that corruption?
+>> 
+>> This server had a drive added, a full balance (to RAID-10 for data and
+>> metadata) and scrub a few weeks ago, with no errors. Running scrub now
+>> to see if it shows up anything.
+> 
+> Then at least at that time, it's not corrupted.
+> 
+> Is there any sudden powerloss happened in recent days?
+> Another potential cause is out of spec FLUSH/FUA behavior, which means
+> the hard disk controller is not reporting correct FLUSH/FUA finish.
+> 
+> That means if you use the same disk/controller, and manually to cause
+> powerloss, it would fail just after several cycle.
 
---BlZbf4usivLdoZ14aQrexWqOdrcypfUnS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Powerloss - possibly there was.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl5va14ACgkQwj2R86El
-/qg23AgAgUpUK2qQkvIlHh6bIs1u9vwMGPfBvvhVVW9EATLzk+6AunP5c0zrjBSc
-J/IA2EUmUxK0WSshETRU8/IPe75u4Jlp6RyMZ5WpUBUPxYC1i5J2tgKUTFYP2T64
-r4v+L2snvSofWKoHMya8+KDAxvT3zAcZxmKJNC5mxWsOLGd5QHKjgeGPBvEpbCNW
-wwQiKuwHgLpguXE0vSbh1Q1bOooExYZVlNsE282SSHo2fqKFPaaqPkl3DHJSjA1q
-cK53PoCTXBc+GqC8SYN09eDxWaWYObv/wVbZHDozjcUXswmXZKSXzOMaXeT/WBoo
-DxT60nA4eQikxxdJmT4Q01Eg3VyNjw==
-=jEIG
------END PGP SIGNATURE-----
-
---BlZbf4usivLdoZ14aQrexWqOdrcypfUnS--
+Tomasz
