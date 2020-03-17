@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D177187AF4
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8F187AF5
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 09:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgCQIMl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 04:12:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42822 "EHLO mx2.suse.de"
+        id S1726628AbgCQIMm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 04:12:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42860 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgCQIMk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 04:12:40 -0400
+        id S1725536AbgCQIMl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 04:12:41 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 34F43AEF1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 08:12:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id EBD78AE3C
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 08:12:39 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 24/39] btrfs: Rename backref_cache_cleanup() to backref_cache_release() and move it to backref.c
-Date:   Tue, 17 Mar 2020 16:11:10 +0800
-Message-Id: <20200317081125.36289-25-wqu@suse.com>
+Subject: [PATCH RFC 25/39] btrfs: Rename backref_tree_panic() to backref_cache_panic(), and move it to backref.c
+Date:   Tue, 17 Mar 2020 16:11:11 +0800
+Message-Id: <20200317081125.36289-26-wqu@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317081125.36289-1-wqu@suse.com>
 References: <20200317081125.36289-1-wqu@suse.com>
@@ -30,114 +30,125 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since we're releasing all existing nodes/edges, other than cleanup the
-mess after error, "release" is a more proper naming here.
+Also change the parameter, since all callers can easily grab an fs_info,
+there is no need for all the dancing.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/backref.c    | 30 ++++++++++++++++++++++++++++++
- fs/btrfs/backref.h    |  1 +
- fs/btrfs/relocation.c | 32 +-------------------------------
- 3 files changed, 32 insertions(+), 31 deletions(-)
+ fs/btrfs/backref.h    |  8 ++++++++
+ fs/btrfs/relocation.c | 33 +++++++++++----------------------
+ 2 files changed, 19 insertions(+), 22 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 2fd6100327d5..32af6f17d230 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2552,3 +2552,33 @@ void cleanup_backref_node(struct backref_cache *cache,
- 
- 	drop_backref_node(cache, node);
- }
-+
-+void backref_cache_release(struct backref_cache *cache)
-+{
-+	struct backref_node *node;
-+	int i;
-+
-+	while (!list_empty(&cache->detached)) {
-+		node = list_entry(cache->detached.next,
-+				  struct backref_node, list);
-+		cleanup_backref_node(cache, node);
-+	}
-+
-+	while (!list_empty(&cache->leaves)) {
-+		node = list_entry(cache->leaves.next,
-+				  struct backref_node, lower);
-+		cleanup_backref_node(cache, node);
-+	}
-+
-+	cache->last_trans = 0;
-+
-+	for (i = 0; i < BTRFS_MAX_LEVEL; i++)
-+		ASSERT(list_empty(&cache->pending[i]));
-+	ASSERT(list_empty(&cache->pending_edge));
-+	ASSERT(list_empty(&cache->useless_node));
-+	ASSERT(list_empty(&cache->changed));
-+	ASSERT(list_empty(&cache->detached));
-+	ASSERT(RB_EMPTY_ROOT(&cache->rb_root));
-+	ASSERT(!cache->nr_nodes);
-+	ASSERT(!cache->nr_edges);
-+}
 diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index a55e7cf77092..9ac76ffefd41 100644
+index 9ac76ffefd41..bd5ba061e772 100644
 --- a/fs/btrfs/backref.h
 +++ b/fs/btrfs/backref.h
-@@ -356,4 +356,5 @@ static inline void drop_backref_node(struct backref_cache *tree,
-  */
+@@ -357,4 +357,12 @@ static inline void drop_backref_node(struct backref_cache *tree,
  void cleanup_backref_node(struct backref_cache *cache,
  			  struct backref_node *node);
-+void backref_cache_release(struct backref_cache *cache);
+ void backref_cache_release(struct backref_cache *cache);
++
++static inline void backref_cache_panic(struct btrfs_fs_info *fs_info,
++				       u64 bytenr, int errno)
++{
++	btrfs_panic(fs_info, errno,
++		    "Inconsistency in backref cache found at offset %llu",
++		    bytenr);
++}
  #endif
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 9d355cf41f08..e9b18cba1b41 100644
+index e9b18cba1b41..f0291177525c 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -182,36 +182,6 @@ static void mapping_tree_init(struct mapping_tree *tree)
+@@ -182,19 +182,6 @@ static void mapping_tree_init(struct mapping_tree *tree)
  	spin_lock_init(&tree->lock);
  }
  
--static void backref_cache_cleanup(struct backref_cache *cache)
+-static void backref_tree_panic(struct rb_node *rb_node, int errno, u64 bytenr)
 -{
--	struct backref_node *node;
--	int i;
 -
--	while (!list_empty(&cache->detached)) {
--		node = list_entry(cache->detached.next,
--				  struct backref_node, list);
--		cleanup_backref_node(cache, node);
--	}
--
--	while (!list_empty(&cache->leaves)) {
--		node = list_entry(cache->leaves.next,
--				  struct backref_node, lower);
--		cleanup_backref_node(cache, node);
--	}
--
--	cache->last_trans = 0;
--
--	for (i = 0; i < BTRFS_MAX_LEVEL; i++)
--		ASSERT(list_empty(&cache->pending[i]));
--	ASSERT(list_empty(&cache->pending_edge));
--	ASSERT(list_empty(&cache->useless_node));
--	ASSERT(list_empty(&cache->changed));
--	ASSERT(list_empty(&cache->detached));
--	ASSERT(RB_EMPTY_ROOT(&cache->rb_root));
--	ASSERT(!cache->nr_nodes);
--	ASSERT(!cache->nr_edges);
+-	struct btrfs_fs_info *fs_info = NULL;
+-	struct backref_node *bnode = rb_entry(rb_node, struct backref_node,
+-					      rb_node);
+-	if (bnode->root)
+-		fs_info = bnode->root->fs_info;
+-	btrfs_panic(fs_info, errno,
+-		    "Inconsistency in backref cache found at offset %llu",
+-		    bytenr);
 -}
 -
- static void backref_tree_panic(struct rb_node *rb_node, int errno, u64 bytenr)
- {
+ /*
+  * walk up backref nodes until reach node presents tree root
+  */
+@@ -251,7 +238,7 @@ static void update_backref_node(struct backref_cache *cache,
+ 	node->bytenr = bytenr;
+ 	rb_node = simple_insert(&cache->rb_root, node->bytenr, &node->rb_node);
+ 	if (rb_node)
+-		backref_tree_panic(rb_node, -EEXIST, bytenr);
++		backref_cache_panic(cache->fs_info, bytenr, -EEXIST);
+ }
  
-@@ -4076,7 +4046,7 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 	rc->create_reloc_tree = 0;
- 	set_reloc_control(rc);
+ /*
+@@ -772,7 +759,8 @@ static int finish_upper_links(struct backref_cache *cache,
+ 		rb_node = simple_insert(&cache->rb_root, start->bytenr,
+ 					&start->rb_node);
+ 		if (rb_node)
+-			backref_tree_panic(rb_node, -EEXIST, start->bytenr);
++			backref_cache_panic(cache->fs_info, start->bytenr,
++					    -EEXIST);
+ 		list_add_tail(&start->lower, &cache->leaves);
+ 	}
  
--	backref_cache_cleanup(&rc->backref_cache);
-+	backref_cache_release(&rc->backref_cache);
- 	btrfs_block_rsv_release(fs_info, rc->block_rsv, (u64)-1);
+@@ -840,8 +828,8 @@ static int finish_upper_links(struct backref_cache *cache,
+ 			rb_node = simple_insert(&cache->rb_root, upper->bytenr,
+ 						&upper->rb_node);
+ 			if (rb_node) {
+-				backref_tree_panic(rb_node, -EEXIST,
+-						   upper->bytenr);
++				backref_cache_panic(cache->fs_info,
++						upper->bytenr, -EEXIST);
+ 				return -EUCLEAN;
+ 			}
+ 		}
+@@ -1130,7 +1118,7 @@ static int clone_backref_node(struct btrfs_trans_handle *trans,
+ 	rb_node = simple_insert(&cache->rb_root, new_node->bytenr,
+ 				&new_node->rb_node);
+ 	if (rb_node)
+-		backref_tree_panic(rb_node, -EEXIST, new_node->bytenr);
++		backref_cache_panic(trans->fs_info, new_node->bytenr, -EEXIST);
  
- 	err = prepare_to_merge(rc, err);
+ 	if (!new_node->lowest) {
+ 		list_for_each_entry(new_edge, &new_node->lower, list[UPPER]) {
+@@ -1242,7 +1230,7 @@ static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
+ 				node->bytenr, &node->rb_node);
+ 	spin_unlock(&rc->reloc_root_tree.lock);
+ 	if (rb_node)
+-		backref_tree_panic(rb_node, -EEXIST, node->bytenr);
++		backref_cache_panic(fs_info, node->bytenr, -EEXIST);
+ 	return 0;
+ }
+ 
+@@ -3328,7 +3316,8 @@ static int add_tree_block(struct reloc_control *rc,
+ 
+ 	rb_node = simple_insert(blocks, block->bytenr, &block->rb_node);
+ 	if (rb_node)
+-		backref_tree_panic(rb_node, -EEXIST, block->bytenr);
++		backref_cache_panic(rc->extent_root->fs_info, block->bytenr,
++				    -EEXIST);
+ 
+ 	return 0;
+ }
+@@ -3626,8 +3615,8 @@ static int find_data_references(struct reloc_control *rc,
+ 			rb_node = simple_insert(blocks, block->bytenr,
+ 						&block->rb_node);
+ 			if (rb_node)
+-				backref_tree_panic(rb_node, -EEXIST,
+-						   block->bytenr);
++				backref_cache_panic(fs_info, block->bytenr,
++						    -EEXIST);
+ 		}
+ 		if (counted)
+ 			added = 1;
 -- 
 2.25.1
 
