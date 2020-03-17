@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C846188812
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4CB188821
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgCQOwD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 10:52:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40414 "EHLO mx2.suse.de"
+        id S1726704AbgCQOxU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 10:53:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726777AbgCQOwD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 10:52:03 -0400
+        id S1726112AbgCQOxT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 10:53:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4D626AE0F;
-        Tue, 17 Mar 2020 14:52:01 +0000 (UTC)
-Subject: Re: [PATCH 07/15] btrfs: make btrfs_check_repairable() static
+        by mx2.suse.de (Postfix) with ESMTP id ECFC1AE64;
+        Tue, 17 Mar 2020 14:53:17 +0000 (UTC)
+Subject: Re: [PATCH 08/15] btrfs: move btrfs_dio_private to inode.c
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
+ <7cb31cf9673d1d232e770145924ef779d3681058.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5db2e9af-e505-55b5-2106-66576929657f@suse.com>
-Date:   Tue, 17 Mar 2020 16:52:00 +0200
+Message-ID: <2a73d12f-68a7-050b-7599-7fa739ca7c35@suse.com>
+Date:   Tue, 17 Mar 2020 16:53:17 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
+In-Reply-To: <7cb31cf9673d1d232e770145924ef779d3681058.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,12 +82,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Since its introduction in commit 2fe6303e7cd0 ("Btrfs: split
-> bio_readpage_error into several functions"), btrfs_check_repairable()
-> has only been used from extent_io.c where it is defined.
+> This hasn't been needed outside of inode.c since commit 23ea8e5a0767
+> ("Btrfs: load checksum data once when submitting a direct read io").
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Ok that addresses my earlier nit,
+While doing this can you perhaps remove the forward declaration in
+ctree.h as well ?
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
