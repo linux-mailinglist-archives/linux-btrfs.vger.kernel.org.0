@@ -2,79 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 988571876E9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 01:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBAA187796
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 02:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733030AbgCQAaP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Mar 2020 20:30:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46116 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733026AbgCQAaP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Mar 2020 20:30:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DF923ACD0;
-        Tue, 17 Mar 2020 00:30:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3E001DA726; Tue, 17 Mar 2020 01:29:46 +0100 (CET)
-Date:   Tue, 17 Mar 2020 01:29:46 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Andrea Gelmini <gelma@gelma.net>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Request about "Page cache invalidation failure on direct I/O."
-Message-ID: <20200317002945.GV12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Andrea Gelmini <gelma@gelma.net>,
-        linux-btrfs@vger.kernel.org
-References: <20200311204204.GA21905@li61-168.members.linode.com>
+        id S1726132AbgCQBzj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Mar 2020 21:55:39 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:40699 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgCQBzj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Mar 2020 21:55:39 -0400
+Received: by mail-io1-f67.google.com with SMTP id d8so19323083ion.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Mar 2020 18:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=72qCgtbemVTUpvzrdd2T6FECaArR3GQue5QrhrOMv0E=;
+        b=eeeogUazkesCqsrC0EWusr7lIHJl3HQRuGAr5k9p+yJky1oxbVgRlGudB9kKNorlXV
+         rPkUIb1lmIcJ76fhQDvQvRjxr+Ef0j0jJ2Du/Kgw2C+hbYLsuHIDbMXMWn7oUK3PbQy+
+         KIr4Zb9YzW3s7m6KlQ6MQ4eqA3n8gCfNs0H/+LXtsR9bdHByxhUXjzXzApetyRuMR6TX
+         4Z/iM2f6TqtYpl1yyPInAI72il0UJ7mhb+vANh+ITelVHZABGRuQlaAYYssnLEx3POTi
+         mR4s5E+ZRINz9T26bn+ptUuZQD04CQEe/qBtUYVUIOu/2KQhysZ9OSCmIuSau0JOmlFn
+         f3rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=72qCgtbemVTUpvzrdd2T6FECaArR3GQue5QrhrOMv0E=;
+        b=Q/bcmWa2zOFul6vQMznBT0ww1U620NUPdTqSgdb/FA3z/A43bg1Jgp8SG+h/3JUcJ1
+         j2YepK0bA7y90Df/0+vG5D4/ANqgzMaIFYsfQO3Ko9QG7njt2AfOdl2+ljHpR7Rjm2oD
+         ujqVtGhEPMMrArp3k63wMUgtQWGW8K5CO5VEDLH3e58coxGRq79KvimpYrUo6Nckq+ee
+         bxOxYbfZiOa1JyBOWSmXL4hoFlDSqrfSBbyF0I7RpCDdHxKH36SBy4+J/n2Fzmy3VGM3
+         wznuz4ywCsYpujsgH9f9JIIvFij0fbFP6D4sFn62tvrWlhrX/xzQbIctbZKzD4m0wOa0
+         SsDA==
+X-Gm-Message-State: ANhLgQ3b4omDm7YrGiQt01LiyCreclgzjGeO7vI89+eO+PXWEDC4i799
+        wyyYJaEnCtWSuSLYem+hdnqjplT3bWNRdOCs+q0=
+X-Google-Smtp-Source: ADFU+vtyLFcpicemtyeHTyYhLuYYN+ezCaYYZ811bQNWan+RKOFIjAK7hiZ6EDGVFb97YBX+AE3zB+aqSB18dgABOTw=
+X-Received: by 2002:a02:1987:: with SMTP id b129mr2822423jab.125.1584410138198;
+ Mon, 16 Mar 2020 18:55:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200311204204.GA21905@li61-168.members.linode.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a02:7782:0:0:0:0:0 with HTTP; Mon, 16 Mar 2020 18:55:37
+ -0700 (PDT)
+Reply-To: mualixx1@gmail.com
+From:   MUSSA ALI <larsnbarro08@gmail.com>
+Date:   Mon, 16 Mar 2020 18:55:37 -0700
+Message-ID: <CA+om7y8CGGLhvnt_h8NySvdM-Vv2daD0STiSsNAgso8Z8d9eCA@mail.gmail.com>
+Subject: Urgent Reply
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 08:42:04PM +0000, Andrea Gelmini wrote:
->    On my laptop (Ubuntu 19.10, Kernel 5.5.7, VirtualBox 6.1.4-136177)
->    I have an SSD (Samsung SSD 860 EVO 4TB + luks + lvm + ext4)
->    with a virtual machine, without troubles, since months.
-> 
->    Now, I move the virtual machine on external USB
->    disk (Seagate M3 Portable 4TB + luks + BTRFS).
->    Run it, and after a few minutes of simple boot and Windows updating
->    (the guest system), I find this in dmesg:
-> 
-> [376827.145222] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-> [376827.145225] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-> [376827.145230] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-> [376827.145231] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-> [376827.145234] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-> [376827.145234] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-> [376827.145236] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-> [376827.145237] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-> [376827.145240] Page cache invalidation failure on direct I/O.  Possible data corruption due to collision with buffered I/O!
-> [376827.145241] File: /mnt/4TB/piastrelli/home/virtual/VirtualBox VMs/Zuccotti/Snapshots/{badf36e0-30a3-4fef-b723-4cdab32f2ef0}.vdi PID: 48667 Comm: kworker/1:0
-> 
->    I kindly ask your advice. At the moment the virtual seems to work
->    without problem.
+Dear  friend,
 
-The warning is there to point out use of buffered writes and direct io
-on the same range. More details are in the commits that added the code,
-eg.
+I know this means of communication may not be morally right to you as
+a person but I also have had a great thought about it and I have come
+to this conclusion which I am about to share with you.
 
-5a9d929d6e13278  iomap: report collisions between directio and buffered writes to userspace
-a92853b6746fe5f  fs/direct-io.c: keep dio_warn_stale_pagecache() when CONFIG_BLOCK=n
+INTRODUCTION: I am a banker   and in one way or the other was hoping
+you will cooperate with me as a partner in a project of transferring
+an abandoned fund of a late customer of the bank worth of $18,000,000
+(Eighteen Million Dollars US).
 
-whether the corruption really happens depends. If the collision happens
-then fsync will report EIO at some point but if you haven't observed any
-problems I think it's ok.
+This will be disbursed or shared between the both of us in these
+percentages, 60% for me and 40% for you. Contact me immediately if
+that is alright for you so that we can enter in agreement before we
+start processing for the transfer of the funds. If you are satisfied
+with this proposal, please provide the below details for the Mutual
+Confidential Agreement:
 
-According to the timestamps, the reads happen in a quick sequence.
-It could be that something during the VM startup reads parts of the
-image as buffered and then it goes only DIO.  Looking to the code, the
-message is rate limited so the burst would appear once per day and
-without tuning of the rate I can't say if the buffered vs dio happens
-all the time or just once. For the 'once' case I would not be worried.
+1. Full Name and Address
+2. Occupation and Country of Origin
+3. Telephone Number
+
+I wait for your response so that we can commence on this project as
+soon as possible.
+
+Regards,
+Mr. Mussa  Ali
