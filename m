@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7FB188479
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 13:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D3E18847A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 13:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgCQMqU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 08:46:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58542 "EHLO mx2.suse.de"
+        id S1725916AbgCQMq4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 08:46:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58630 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726005AbgCQMqU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:46:20 -0400
+        id S1725872AbgCQMqz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:46:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B0B3BAC77;
-        Tue, 17 Mar 2020 12:46:17 +0000 (UTC)
-Subject: Re: [PATCH 1/5] btrfs: Improve global reserve stealing logic
+        by mx2.suse.de (Postfix) with ESMTP id BCAEAAC77;
+        Tue, 17 Mar 2020 12:46:53 +0000 (UTC)
+Subject: Re: [PATCH 2/5] btrfs: allow us to use up to 90% of the global rsv
+ for unlink
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313195809.141753-1-josef@toxicpanda.com>
- <20200313195809.141753-2-josef@toxicpanda.com>
+ <20200313195809.141753-3-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <61a9e47f-2580-9595-180b-4adb5e674ff9@suse.com>
-Date:   Tue, 17 Mar 2020 14:46:16 +0200
+Message-ID: <13fe663f-6c12-0180-369d-a1d9e67dc895@suse.com>
+Date:   Tue, 17 Mar 2020 14:46:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313195809.141753-2-josef@toxicpanda.com>
+In-Reply-To: <20200313195809.141753-3-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,26 +81,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.03.20 г. 21:58 ч., Josef Bacik wrote:
-> For unlink transactions and block group removal
-> btrfs_start_transaction_fallback_global_rsv will first try to start
-> an ordinary transaction and if it fails it will fall back to reserving
-> the required amount by stealing from the global reserve. This is
-> problematic because of all the same reasons we had with previous
-> iterations of the ENOSPC handling, thundering herd.  We get a bunch of
-> failures all at once, everybody tries to allocate from the global
-> reserve, some win and some lose, we get an ENSOPC.
-> 
-> Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
-> used to mark unlink reservation. To fix this we need to integrate this
-> logic into the normal ENOSPC infrastructure.  We still go through all of
-> the normal flushing work, and at the moment we begin to fail all the
-> tickets we try to satisfy any tickets that are allowed to steal by
-> stealing from the global reserve.  If this works we start the flushing
-> system over again just like we would with a normal ticket satisfaction.
-> This serializes our global reserve stealing, so we don't have the
-> thundering herd problem.
+> We previously had a limit of stealing 50% of the global reserve for
+> unlink.  This was from a time when the global reserve was used for the
+> delayed refs as well.  However now those reservations are kept separate,
+> so the global reserve can be depleted much more to allow us to make
+> progress for space restoring operations like unlink.  Change the minimum
+> amount of space required to be left in the global reserve to 10%.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
