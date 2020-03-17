@@ -2,25 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DF01888B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCAF188962
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgCQPKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 11:10:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54800 "EHLO mx2.suse.de"
+        id S1726643AbgCQPrD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 11:47:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46088 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726740AbgCQPKa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 11:10:30 -0400
+        id S1726484AbgCQPrD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 11:47:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E88B8AC6E;
-        Tue, 17 Mar 2020 15:10:27 +0000 (UTC)
-Subject: Re: [PATCH 10/15] btrfs: convert btrfs_dio_private->pending_bios to
- refcount_t
-To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
-References: <cover.1583789410.git.osandov@fb.com>
- <ca4884807ed430e3f546e50cc06678517f439df7.1583789410.git.osandov@fb.com>
+        by mx2.suse.de (Postfix) with ESMTP id AEE39ADCD;
+        Tue, 17 Mar 2020 15:46:59 +0000 (UTC)
+Subject: Re: [PATCH 0/5][v2] Deal with a few ENOSPC corner cases
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200313195809.141753-1-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <2643501e-4201-79f7-f6b1-be6d9091b9ac@suse.com>
-Date:   Tue, 17 Mar 2020 17:10:27 +0200
+Message-ID: <233da6a0-233b-ceb8-c6b4-4e3326d37f7b@suse.com>
+Date:   Tue, 17 Mar 2020 17:46:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <ca4884807ed430e3f546e50cc06678517f439df7.1583789410.git.osandov@fb.com>
+In-Reply-To: <20200313195809.141753-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,12 +78,68 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On 13.03.20 г. 21:58 ч., Josef Bacik wrote:
+> v1->v2:
+> - Dropped "btrfs: only take normal tickets into account in
+>   may_commit_transaction" because "btrfs: only check priority tickets for
+>   priority flushing" should actually fix the problem, and Nikolay pointed out
+>   that evict uses the priority list but is allowed to commit, so we need to take
+>   into account priority tickets sometimes.
+> - Added "btrfs: allow us to use up to 90% of the global rsv for" so that the
+>   global rsv change was separate from the serialization patch.
+> - Fixed up some changelogs.
+> - Dropped an extra trace_printk that made it into v2.
 > 
-> This is really a reference count now, so convert it to refcount_t and
-> rename it to refs.
+> ----------------------- Original email --------------------------------------
 > 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> Nikolay has been digging into a failure of generic/320 on ppc64.  This has
+> shaken out a variety of issues, and he's done a good job at running all of the
+> weird corners down and then testing my ideas to get them all fixed.  This is the
+> series that has survived the longest, so we're declaring victory.
+> 
+> First there is the global reserve stealing logic.  The way unlink works is it
+> attempts to start a transaction with a normal reservation amount, and if this
+> fails with ENOSPC we fall back to stealing from the global reserve.  This is
+> problematic because of all the same reasons we had with previous iterations of
+> the ENOSPC handling, thundering herd.  We get a bunch of failures all at once,
+> everybody tries to allocate from the global reserve, some win and some lose, we
+> get an ENSOPC.
+> 
+> To fix this we need to integrate this logic into the normal ENOSPC
+> infrastructure.  The idea is simple, we add a new flushing state that indicates
+> we are allowed to steal from the global reserve.  We still go through all of the
+> normal flushing work, and at the moment we begin to fail all the tickets we try
+> to satisfy any tickets that are allowed to steal by stealing from the global
+> reserve.  If this works we start the flushing system over again just like we
+> would with a normal ticket satisfaction.  This serializes our global reserve
+> stealing, so we don't have the thundering herd problem
+> 
+> This isn't the only problem however.  Nikolay also noticed that we would
+> sometimes have huge amounts of space in the trans block rsv and we would ENOSPC
+> out.  This is because the may_commit_transaction() logic didn't take into
+> account the space that would be reclaimed by all of the outstanding trans
+> handles being required to stop in order to commit the transaction.
+> 
+> Another corner here was that priority tickets could race in and make
+> may_commit_transaction() think that it had no work left to do, and thus not
+> commit the transaction.
+> 
+> Those fixes all address the failures that Nikolay was seeing.  The last two
+> patches are just cleanups around how we handle priority tickets.  We shouldn't
+> even be serializing priority tickets behind normal tickets, only behind other
+> priority tickets.  And finally there would be a small window where priority
+> tickets would fail out if there were multiple priority tickets and one of them
+> failed.  This is addressed by the previous patch.
+> 
+> Nikolay has put these through many iterations of generic/320, and so far it
+> hasn't failed.  Thanks,
+> 
+> Josef
+> 
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+I tested this on PPC64LE and didn't observe any regressions (apart form
+the one fixed by [PATCH] btrfs: force chunk allocation if our global rsv
+is larger than metadata), so:
+
+Tested-by: Nikolay Borisov <nborisov@suse.com>
