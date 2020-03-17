@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A100D1886C8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C970F1887A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgCQOEl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 10:04:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40458 "EHLO mx2.suse.de"
+        id S1726726AbgCQOim (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 10:38:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59810 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgCQOEl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 10:04:41 -0400
+        id S1726598AbgCQOil (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 10:38:41 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BB1F4AE3A;
-        Tue, 17 Mar 2020 14:04:38 +0000 (UTC)
-Subject: Re: [PATCH 02/15] btrfs: fix double __endio_write_update_ordered in
- direct I/O
+        by mx2.suse.de (Postfix) with ESMTP id 2FA80AE34;
+        Tue, 17 Mar 2020 14:38:39 +0000 (UTC)
+Subject: Re: [PATCH 03/15] btrfs: look at full bi_io_vec for repair decision
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <b4b45179cc951dde98feea48723572683daf7fb3.1583789410.git.osandov@fb.com>
+ <c0f65f07b18eee7cef4e0b0b439a45ae437a11c6.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c63df84b-34f9-3842-dc64-fb2d651794d6@suse.com>
-Date:   Tue, 17 Mar 2020 16:04:37 +0200
+Message-ID: <3e0c4e3b-61f3-f0d2-2add-435e900a90f3@suse.com>
+Date:   Tue, 17 Mar 2020 16:38:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <b4b45179cc951dde98feea48723572683daf7fb3.1583789410.git.osandov@fb.com>
+In-Reply-To: <c0f65f07b18eee7cef4e0b0b439a45ae437a11c6.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,20 +82,46 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> In btrfs_submit_direct(), if we fail to allocate the btrfs_dio_private,
-> we complete the ordered extent range. However, we don't mark that the
-> range doesn't need to be cleaned up from btrfs_direct_IO() until later.
-> Therefore, if we fail to allocate the btrfs_dio_private, we complete the
-> ordered extent range twice. We could fix this by updating
-> unsubmitted_oe_range earlier, but it's simpler to always clean up via
-> the bio once the btrfs_dio_private is allocated and leave it for
-> btrfs_direct_IO() before that.
+> Read repair does two things: it finds a good copy of data to return to
+> the reader, and it corrects the bad copy on disk. If a read of multiple
+> sectors has an I/O error, repair does an extra "validation" step that
+> issues a separate read for each sector. This allows us to find the exact
+> failing sectors and only rewrite those.
 > 
-> Fixes: f28a49287817 ("Btrfs: fix leaking of ordered extents after direct IO write error")
+> This heuristic is implemented in
+> bio_readpage_error()/btrfs_check_repairable() as:
+> 
+> 	failed_bio_pages = failed_bio->bi_iter.bi_size >> PAGE_SHIFT;
+> 	if (failed_bio_pages > 1)
+> 		do validation
+> 
+> However, at this point, bi_iter may have already been advanced. This
+> means that we'll skip the validation step and rewrite the entire failed
+> read.
+> 
+> Fix it by getting the actual size from the biovec (which we can do
+> because this is only called for non-cloned bios, although that will
+> change in a later commit).
+> 
+> Fixes: 8a2ee44a371c ("btrfs: look at bi_size for repair decisions")
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  fs/btrfs/extent_io.c | 28 ++++++++++++++++++++++------
+>  fs/btrfs/extent_io.h |  5 +++--
+>  2 files changed, 25 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 837262d54e28..279731bff0a8 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2528,8 +2528,9 @@ int btrfs_get_io_failure_record(struct inode *inode, u64 start, u64 end,
+>  	return 0;
+>  }
+>  
+> -bool btrfs_check_repairable(struct inode *inode, unsigned failed_bio_pages,
+> -			   struct io_failure_record *failrec, int failed_mirror)
+> +bool btrfs_check_repairable(struct inode *inode, bool need_validation,
 
-The result code is much nicer and also I think your suggestion of having
-just btrfs_submit_direct and factoring out the dip setup code into a
-separate function makes sense. In any case:
+nit: While at it this function can be made static. It's only used in
+extent_io.c and it's defined before its sole caller - bio_readpage_error.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
