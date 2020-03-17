@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 429021887A5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5EE1887AB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgCQOis (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 10:38:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59874 "EHLO mx2.suse.de"
+        id S1726597AbgCQOjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 10:39:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60504 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbgCQOis (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 10:38:48 -0400
+        id S1726189AbgCQOjp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 10:39:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BEA6DAE34;
-        Tue, 17 Mar 2020 14:38:44 +0000 (UTC)
-Subject: Re: [PATCH 05/15] btrfs: clarify btrfs_lookup_bio_sums documentation
+        by mx2.suse.de (Postfix) with ESMTP id E11F0B1DB;
+        Tue, 17 Mar 2020 14:39:42 +0000 (UTC)
+Subject: Re: [PATCH 06/15] btrfs: rename __readpage_endio_check to
+ check_data_csum
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <2ee5f090b52dc23569bf94a5a2609dfc49ac4a4b.1583789410.git.osandov@fb.com>
+ <f0404525ae352a08750f56a822512a52263d7277.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5b07260c-5fd6-f01c-0dde-fcc224a11f79@suse.com>
-Date:   Tue, 17 Mar 2020 16:38:44 +0200
+Message-ID: <30208fa0-f4b4-04aa-8d7f-71cd53c3d477@suse.com>
+Date:   Tue, 17 Mar 2020 16:39:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <2ee5f090b52dc23569bf94a5a2609dfc49ac4a4b.1583789410.git.osandov@fb.com>
+In-Reply-To: <f0404525ae352a08750f56a822512a52263d7277.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,61 +83,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Fix a couple of issues in the btrfs_lookup_bio_sums documentation:
-> 
-> * The bio doesn't need to be a btrfs_io_bio if dst was provided. Move
->   the declaration in the code to make that clear, too.
-> * dst must be large enough to hold nblocks * csum_size, not just
->   csum_size.
+> __readpage_endio_check() is also used from the direct I/O read code, so
+> give it a more descriptive name.
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->  fs/btrfs/file-item.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 6c849e8fd5a1..fa9f4a92f74d 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -242,11 +242,13 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
->  /**
->   * btrfs_lookup_bio_sums - Look up checksums for a bio.
->   * @inode: inode that the bio is for.
-> - * @bio: bio embedded in btrfs_io_bio.
-> + * @bio: bio to look up.
->   * @offset: Unless (u64)-1, look up checksums for this offset in the file.
->   *          If (u64)-1, use the page offsets from the bio instead.
-> - * @dst: Buffer of size btrfs_super_csum_size() used to return checksum. If
-> - *       NULL, the checksum is returned in btrfs_io_bio(bio)->csum instead.
-> + * @dst: Buffer of size nblocks * btrfs_super_csum_size() used to return
-> + *       checksum (nblocks = bio->bi_iter.bi_size / sectorsize). If NULL, the
 
-nit: sector here refers to btrfs' notion of a sector which is 4k and not
-the default understanding of 512 bytes. Dunno if it makes sense to make
-that a bit more emphatic. Also nblocks is really number of checksums.
-Looking at file-item.c I see there is only 1 menition of ncsums or
-csums_in_item. I guess if we can make that nblocks a bit more explicit?
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-> + *       checksum buffer is allocated and returned in btrfs_io_bio(bio)->csum
-> + *       instead.
->   *
->   * Return: BLK_STS_RESOURCE if allocating memory fails, BLK_STS_OK otherwise.
->   */
-> @@ -256,7 +258,6 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct bio_vec bvec;
->  	struct bvec_iter iter;
-> -	struct btrfs_io_bio *btrfs_bio = btrfs_io_bio(bio);
->  	struct btrfs_csum_item *item = NULL;
->  	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
->  	struct btrfs_path *path;
-> @@ -277,6 +278,8 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
->  
->  	nblocks = bio->bi_iter.bi_size >> inode->i_sb->s_blocksize_bits;
->  	if (!dst) {
-> +		struct btrfs_io_bio *btrfs_bio = btrfs_io_bio(bio);
-> +
->  		if (nblocks * csum_size > BTRFS_BIO_INLINE_CSUM_SIZE) {
->  			btrfs_bio->csum = kmalloc_array(nblocks, csum_size,
->  							GFP_NOFS);
-> 
