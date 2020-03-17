@@ -2,64 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33697188E55
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 20:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC07188F08
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 21:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgCQTwK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 15:52:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51614 "EHLO mx2.suse.de"
+        id S1726738AbgCQUee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 16:34:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37508 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbgCQTwJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 15:52:09 -0400
+        id S1726730AbgCQUee (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 16:34:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DDD79AC77;
-        Tue, 17 Mar 2020 19:52:08 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5E731ACE0;
+        Tue, 17 Mar 2020 20:34:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 87D8DDA726; Tue, 17 Mar 2020 20:51:40 +0100 (CET)
-Date:   Tue, 17 Mar 2020 20:51:40 +0100
+        id 3DBAEDA72F; Tue, 17 Mar 2020 21:34:05 +0100 (CET)
+Date:   Tue, 17 Mar 2020 21:34:05 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     robbieko <robbieko@synology.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix missing semaphore unlock
-Message-ID: <20200317195140.GW12659@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Johannes.Thumshirn@wdc.com
+Subject: Re: [PATCH] btrfs-progs: Fix xxhash on big endian machines
+Message-ID: <20200317203405.GX12659@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, robbieko <robbieko@synology.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200317063102.8869-1-robbieko@synology.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, Johannes.Thumshirn@wdc.com
+References: <20200316090512.21519-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200317063102.8869-1-robbieko@synology.com>
+In-Reply-To: <20200316090512.21519-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 02:31:02PM +0800, robbieko wrote:
-> From: Robbie Ko <robbieko@synology.com>
-
-This is not a trivial patch that could go without a changelog.
-
-> Fixes: aab15e8ec2576 ("Btrfs: fix rare chances for data loss when doing a fast fsync")
-> Signed-off-by: Robbie Ko <robbieko@synology.com>
-> ---
->  fs/btrfs/file.c | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, Mar 16, 2020 at 11:05:12AM +0200, Nikolay Borisov wrote:
+> xxhash's state and results are always in little, but in progs after the
+> hash was calculated it was copied to the final buffer via memcpy,
+> meaning it'd be parsed as a big endian number on big endian machines.
+> This is incompatible with the kernel implementation of xxhash which
+> results in erroneous "checksum didn't match" errors on mount.
 > 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index a16da274c9aa..ae903da21588 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2124,6 +2124,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
->  	 */
->  	ret = start_ordered_ops(inode, start, end);
->  	if (ret) {
-> +		up_write(&BTRFS_I(inode)->dio_sem);
+> Fix it by using put_unaligned_le64 which always ensures the resulting
+> checksum will be copied in little endian format as the kernel expects
+> it.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206835
+> Fixes: f070ece2e98f ("btrfs-progs: add xxhash64 to mkfs")
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  crypto/hash.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/crypto/hash.c b/crypto/hash.c
+> index 48623c798739..4009e84e8b2c 100644
+> --- a/crypto/hash.c
+> +++ b/crypto/hash.c
+> @@ -19,12 +19,7 @@ int hash_xxhash(const u8 *buf, size_t length, u8 *out)
+>  	XXH64_hash_t hash;
+> 
+>  	hash = XXH64(buf, length, 0);
+> -	/*
+> -	 * NOTE: we're not taking the canonical form here but the plain hash to
+> -	 * be compatible with the kernel implementation!
+> -	 */
+> -	memcpy(out, &hash, 8);
+> -
+> +	put_unaligned_le64(&hash, out);
 
-I did not spot on first sight that there's was missing semaphore unlock
-and a few lines below there's down_write(dio_sem). Turns out there are
-two calls to start_ordered_ops, one before dio_sem and one inside the
-locked section. So I solved the puzzle but I'd prefer not having to and
-get a patch with instructions.
+This does not work, the test mkfs/019 fails.
