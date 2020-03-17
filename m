@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCAF188962
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA72188964
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgCQPrD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 11:47:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46088 "EHLO mx2.suse.de"
+        id S1726598AbgCQPrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 11:47:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46156 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgCQPrD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 11:47:03 -0400
+        id S1726484AbgCQPrY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 11:47:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AEE39ADCD;
-        Tue, 17 Mar 2020 15:46:59 +0000 (UTC)
-Subject: Re: [PATCH 0/5][v2] Deal with a few ENOSPC corner cases
+        by mx2.suse.de (Postfix) with ESMTP id 7DACBAD46;
+        Tue, 17 Mar 2020 15:47:22 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: force chunk allocation if our global rsv is larger
+ than metadata
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <20200313195809.141753-1-josef@toxicpanda.com>
+References: <20200313192848.140759-1-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <233da6a0-233b-ceb8-c6b4-4e3326d37f7b@suse.com>
-Date:   Tue, 17 Mar 2020 17:46:58 +0200
+Message-ID: <45abfae5-8795-d0a3-2d4e-5040d1d7e6df@suse.com>
+Date:   Tue, 17 Mar 2020 17:47:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313195809.141753-1-josef@toxicpanda.com>
+In-Reply-To: <20200313192848.140759-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,68 +79,39 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 13.03.20 г. 21:58 ч., Josef Bacik wrote:
-> v1->v2:
-> - Dropped "btrfs: only take normal tickets into account in
->   may_commit_transaction" because "btrfs: only check priority tickets for
->   priority flushing" should actually fix the problem, and Nikolay pointed out
->   that evict uses the priority list but is allowed to commit, so we need to take
->   into account priority tickets sometimes.
-> - Added "btrfs: allow us to use up to 90% of the global rsv for" so that the
->   global rsv change was separate from the serialization patch.
-> - Fixed up some changelogs.
-> - Dropped an extra trace_printk that made it into v2.
+On 13.03.20 г. 21:28 ч., Josef Bacik wrote:
+> Nikolay noticed a bunch of test failures with my global rsv steal
+> patches.  At first he thought they were introduced by them, but they've
+> been failing for a while with 64k nodes.
 > 
-> ----------------------- Original email --------------------------------------
+> The problem is with 64k nodes we have a global reserve that calculates
+> out to 13mib on a freshly made file system, which only has 8mib of
+> metadata space.  Because of changes I previously made we no longer
+> account for the global reserve in the overcommit logic, which means we
+> correctly allow overcommit to happen even though we are already
+> overcommitted.
 > 
-> Nikolay has been digging into a failure of generic/320 on ppc64.  This has
-> shaken out a variety of issues, and he's done a good job at running all of the
-> weird corners down and then testing my ideas to get them all fixed.  This is the
-> series that has survived the longest, so we're declaring victory.
+> However in some corner cases, for example btrfs/170, we will allocate
+> the entire file system up with data chunks before we have enough space
+> pressure to allocate a metadata chunk.  Then once the fs is full we
+> ENOSPC out because we cannot overcommit and the global reserve is taking
+> up all of the available space.
 > 
-> First there is the global reserve stealing logic.  The way unlink works is it
-> attempts to start a transaction with a normal reservation amount, and if this
-> fails with ENOSPC we fall back to stealing from the global reserve.  This is
-> problematic because of all the same reasons we had with previous iterations of
-> the ENOSPC handling, thundering herd.  We get a bunch of failures all at once,
-> everybody tries to allocate from the global reserve, some win and some lose, we
-> get an ENSOPC.
+> The most ideal way to deal with this is to change our space reservation
+> stuff to take into account the height of the tree's that we're
+> modifying, so that our global reserve calculation does not end up so
+> obscenely large.
 > 
-> To fix this we need to integrate this logic into the normal ENOSPC
-> infrastructure.  The idea is simple, we add a new flushing state that indicates
-> we are allowed to steal from the global reserve.  We still go through all of the
-> normal flushing work, and at the moment we begin to fail all the tickets we try
-> to satisfy any tickets that are allowed to steal by stealing from the global
-> reserve.  If this works we start the flushing system over again just like we
-> would with a normal ticket satisfaction.  This serializes our global reserve
-> stealing, so we don't have the thundering herd problem
+> However that is a huuuuuuge undertaking.  Instead fix this by forcing a
+> chunk allocation if the global reserve is larger than the total metadata
+> space.  This gives us essentially the same behavior that happened
+> before, we get a chunk allocated and these tests can pass.
 > 
-> This isn't the only problem however.  Nikolay also noticed that we would
-> sometimes have huge amounts of space in the trans block rsv and we would ENOSPC
-> out.  This is because the may_commit_transaction() logic didn't take into
-> account the space that would be reclaimed by all of the outstanding trans
-> handles being required to stop in order to commit the transaction.
+> This is meant to be a stop-gap measure until we can tackle the "tree
+> height only" project.
 > 
-> Another corner here was that priority tickets could race in and make
-> may_commit_transaction() think that it had no work left to do, and thus not
-> commit the transaction.
-> 
-> Those fixes all address the failures that Nikolay was seeing.  The last two
-> patches are just cleanups around how we handle priority tickets.  We shouldn't
-> even be serializing priority tickets behind normal tickets, only behind other
-> priority tickets.  And finally there would be a small window where priority
-> tickets would fail out if there were multiple priority tickets and one of them
-> failed.  This is addressed by the previous patch.
-> 
-> Nikolay has put these through many iterations of generic/320, and so far it
-> hasn't failed.  Thanks,
-> 
-> Josef
-> 
-
-
-I tested this on PPC64LE and didn't observe any regressions (apart form
-the one fixed by [PATCH] btrfs: force chunk allocation if our global rsv
-is larger than metadata), so:
+> Fixes: 0096420adb03 ("btrfs: do not account global reserve in can_overcommit")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Tested-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
