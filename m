@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F9A188A7D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 17:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0526188B11
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 17:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgCQQhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 12:37:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44164 "EHLO mx2.suse.de"
+        id S1726491AbgCQQsj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 12:48:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48660 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgCQQhc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 12:37:32 -0400
+        id S1726016AbgCQQsi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 12:48:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D5154ACC2;
-        Tue, 17 Mar 2020 16:37:29 +0000 (UTC)
-Subject: Re: [PATCH 11/15] btrfs: put direct I/O checksums in
- btrfs_dio_private instead of bio
+        by mx2.suse.de (Postfix) with ESMTP id 72D92AD11;
+        Tue, 17 Mar 2020 16:48:37 +0000 (UTC)
+Subject: Re: [PATCH 12/15] btrfs: get rid of one layer of bios in direct I/O
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <95b275ed47f1e4bdaba53040fe6de9eefdf3a5fd.1583789410.git.osandov@fb.com>
+ <f9d0f9e8b8d11ff103654387f4370f50c6c074ae.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <31886304-c815-5bae-8dbe-ec7a8a66a3e8@suse.com>
-Date:   Tue, 17 Mar 2020 18:37:28 +0200
+Message-ID: <a34e17d4-45d2-a745-cc06-f76d529cec54@suse.com>
+Date:   Tue, 17 Mar 2020 18:48:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <95b275ed47f1e4bdaba53040fe6de9eefdf3a5fd.1583789410.git.osandov@fb.com>
+In-Reply-To: <f9d0f9e8b8d11ff103654387f4370f50c6c074ae.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,20 +82,178 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> The next commit will get rid of btrfs_dio_private->orig_bio. The only
-> thing we really need it for is containing all of the checksums, but we
-> can easily put those in btrfs_dio_private and get rid of the awkward
-> logic that looks up the checksums for orig_bio when the first split bio
-> is submitted. (Interestingly, btrfs_dio_private did contain the
-> checksums before commit 23ea8e5a0767 ("Btrfs: load checksum data once
-> when submitting a direct read io"), but it didn't look them up up
-> front.)
-
-nit: It would be useful to surmise the structural changes this patch
-does. Essentially this makes each individual cloned bio to index its
-checksums into the global checksum storage array anchored at
-btrfs_dio_private::sums.
+> In the worst case, there are _4_ layers of bios in the Btrfs direct I/O
+> path:
+> 
+> 1. The bio created by the generic direct I/O code (dio_bio).
+> 2. A clone of dio_bio we create in btrfs_submit_direct() to represent
+>    the entire direct I/O range (orig_bio).
+> 3. A partial clone of orig_bio limited to the size of a RAID stripe that
+>    we create in btrfs_submit_direct_hook().
+> 4. Clones of each of those split bios for each RAID stripe that we
+>    create in btrfs_map_bio().
+> 
+> As of the previous commit, the second layer (orig_bio) is no longer
+> needed for anything: we can split dio_bio instead, and complete dio_bio
+> directly when all of the cloned bios complete. This lets us clean up a
+> bunch of cruft, including dip->subio_endio and dip->errors (we can use
+> dio_bio->bi_status instead). It also enables the next big cleanup of
+> direct I/O read repair.
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  fs/btrfs/inode.c | 213 +++++++++++++++--------------------------------
+>  1 file changed, 66 insertions(+), 147 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 4a2e44f3e66e..40c1562704e9 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -54,11 +54,8 @@ struct btrfs_iget_args {
+>  	struct btrfs_root *root;
+>  };
+>  
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+<snip>
+
+> @@ -7400,6 +7384,29 @@ static int btrfs_get_blocks_direct(struct inode *inode, sector_t iblock,
+>  	return ret;
+>  }
+>  
+> +static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
+> +{
+> +	/*
+> +	 * This implies a barrier so that stores to dio_bio->bi_status before
+> +	 * this and the following load are fully ordered.
+> +	 */
+
+It's not obvious which load this refers to. It's not obvious where this
+ordering matters i.e what are the threads that care?
+
+> +	if (!refcount_dec_and_test(&dip->refs))
+> +		return;
+> +
+> +	if (bio_op(dip->dio_bio) == REQ_OP_WRITE) {
+> +		__endio_write_update_ordered(dip->inode, dip->logical_offset,
+> +					     dip->bytes,
+> +					     !dip->dio_bio->bi_status);
+> +	} else {
+> +		unlock_extent(&BTRFS_I(dip->inode)->io_tree,
+> +			      dip->logical_offset,
+> +			      dip->logical_offset + dip->bytes - 1);
+> +	}
+> +
+> +	dio_end_io(dip->dio_bio);
+> +	kfree(dip);
+> +}
+> +
+>  static inline blk_status_t submit_dio_repair_bio(struct inode *inode,
+>  						 struct bio *bio,
+>  						 int mirror_num)
+
+<snip>
+
+> @@ -7920,98 +7876,77 @@ static void btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
+>  	struct inode *inode = dip->inode;
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	struct bio *bio;
+> -	struct bio *orig_bio = dip->orig_bio;
+> -	u64 start_sector = orig_bio->bi_iter.bi_sector;
+> +	struct bio *dio_bio = dip->dio_bio;
+> +	u64 start_sector = dio_bio->bi_iter.bi_sector;
+>  	u64 file_offset = dip->logical_offset;
+>  	int async_submit = 0;
+> -	u64 submit_len;
+> +	u64 submit_len = dio_bio->bi_iter.bi_size;
+>  	int clone_offset = 0;
+>  	int clone_len;
+>  	int ret;
+>  	blk_status_t status;
+>  	struct btrfs_io_geometry geom;
+>  
+> -	submit_len = orig_bio->bi_iter.bi_size;
+> -	ret = btrfs_get_io_geometry(fs_info, btrfs_op(orig_bio),
+> -				    start_sector << 9, submit_len, &geom);
+> -	if (ret)
+> -		goto out_err;
+> -
+> -	if (geom.len >= submit_len) {
+> -		bio = orig_bio;
+> -		dip->flags |= BTRFS_DIO_ORIG_BIO_SUBMITTED;
+> -		goto submit;
+> -	}
+> -
+>  	/* async crcs make it difficult to collect full stripe writes. */
+>  	if (btrfs_data_alloc_profile(fs_info) & BTRFS_BLOCK_GROUP_RAID56_MASK)
+>  		async_submit = 0;
+>  	else
+>  		async_submit = 1;
+>  
+> -	/* bio split */
+>  	ASSERT(geom.len <= INT_MAX);
+
+geom.len now contains some random data since it's no longer initialised,
+meaning this ASSERT hasn't triggered by pure luck. It should be
+(re)moved inside the do {} while loop.
+
+>  	do {
+> +		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
+> +					    start_sector << 9, submit_len,
+> +					    &geom);
+> +		if (ret) {
+> +			status = errno_to_blk_status(ret);
+> +			goto out_err;
+> +		}
+> +
+>  		clone_len = min_t(int, submit_len, geom.len);
+>  
+>  		/*
+>  		 * This will never fail as it's passing GPF_NOFS and
+>  		 * the allocation is backed by btrfs_bioset.
+>  		 */
+> -		bio = btrfs_bio_clone_partial(orig_bio, clone_offset,
+> -					      clone_len);
+> +		bio = btrfs_bio_clone_partial(dio_bio, clone_offset, clone_len);
+>  		bio->bi_private = dip;
+>  		bio->bi_end_io = btrfs_end_dio_bio;
+>  		btrfs_io_bio(bio)->logical = file_offset;
+>  
+>  		ASSERT(submit_len >= clone_len);
+>  		submit_len -= clone_len;
+> -		if (submit_len == 0)
+> -			break;
+>  
+>  		/*
+>  		 * Increase the count before we submit the bio so we know
+>  		 * the end IO handler won't happen before we increase the
+>  		 * count. Otherwise, the dip might get freed before we're
+>  		 * done setting it up.
+> +		 *
+> +		 * We transfer the initial reference to the last bio, so we
+> +		 * don't need to increment the reference count for the last one.
+>  		 */
+> -		refcount_inc(&dip->refs);
+> +		if (submit_len > 0)
+> +			refcount_inc(&dip->refs);
+>  
+>  		status = btrfs_submit_dio_bio(bio, inode, file_offset,
+>  						async_submit);
+>  		if (status) {
+>  			bio_put(bio);
+> -			refcount_dec(&dip->refs);
+> +			if (submit_len > 0)
+> +				refcount_dec(&dip->refs);
+>  			goto out_err;
+>  		}
+>  
+>  		clone_offset += clone_len;
+>  		start_sector += clone_len >> 9;
+>  		file_offset += clone_len;
+> -
+> -		ret = btrfs_get_io_geometry(fs_info, btrfs_op(orig_bio),
+> -				      start_sector << 9, submit_len, &geom);
+> -		if (ret)
+> -			goto out_err;
+>  	} while (submit_len > 0);> +	return;
+
+<snip>
