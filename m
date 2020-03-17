@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA72188964
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F9A188A7D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 17:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgCQPrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 11:47:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46156 "EHLO mx2.suse.de"
+        id S1726388AbgCQQhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 12:37:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44164 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgCQPrY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 11:47:24 -0400
+        id S1726248AbgCQQhc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 12:37:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7DACBAD46;
-        Tue, 17 Mar 2020 15:47:22 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: force chunk allocation if our global rsv is larger
- than metadata
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200313192848.140759-1-josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id D5154ACC2;
+        Tue, 17 Mar 2020 16:37:29 +0000 (UTC)
+Subject: Re: [PATCH 11/15] btrfs: put direct I/O checksums in
+ btrfs_dio_private instead of bio
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
+References: <cover.1583789410.git.osandov@fb.com>
+ <95b275ed47f1e4bdaba53040fe6de9eefdf3a5fd.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <45abfae5-8795-d0a3-2d4e-5040d1d7e6df@suse.com>
-Date:   Tue, 17 Mar 2020 17:47:21 +0200
+Message-ID: <31886304-c815-5bae-8dbe-ec7a8a66a3e8@suse.com>
+Date:   Tue, 17 Mar 2020 18:37:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313192848.140759-1-josef@toxicpanda.com>
+In-Reply-To: <95b275ed47f1e4bdaba53040fe6de9eefdf3a5fd.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,39 +80,23 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 13.03.20 г. 21:28 ч., Josef Bacik wrote:
-> Nikolay noticed a bunch of test failures with my global rsv steal
-> patches.  At first he thought they were introduced by them, but they've
-> been failing for a while with 64k nodes.
+On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> The problem is with 64k nodes we have a global reserve that calculates
-> out to 13mib on a freshly made file system, which only has 8mib of
-> metadata space.  Because of changes I previously made we no longer
-> account for the global reserve in the overcommit logic, which means we
-> correctly allow overcommit to happen even though we are already
-> overcommitted.
-> 
-> However in some corner cases, for example btrfs/170, we will allocate
-> the entire file system up with data chunks before we have enough space
-> pressure to allocate a metadata chunk.  Then once the fs is full we
-> ENOSPC out because we cannot overcommit and the global reserve is taking
-> up all of the available space.
-> 
-> The most ideal way to deal with this is to change our space reservation
-> stuff to take into account the height of the tree's that we're
-> modifying, so that our global reserve calculation does not end up so
-> obscenely large.
-> 
-> However that is a huuuuuuge undertaking.  Instead fix this by forcing a
-> chunk allocation if the global reserve is larger than the total metadata
-> space.  This gives us essentially the same behavior that happened
-> before, we get a chunk allocated and these tests can pass.
-> 
-> This is meant to be a stop-gap measure until we can tackle the "tree
-> height only" project.
-> 
-> Fixes: 0096420adb03 ("btrfs: do not account global reserve in can_overcommit")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> The next commit will get rid of btrfs_dio_private->orig_bio. The only
+> thing we really need it for is containing all of the checksums, but we
+> can easily put those in btrfs_dio_private and get rid of the awkward
+> logic that looks up the checksums for orig_bio when the first split bio
+> is submitted. (Interestingly, btrfs_dio_private did contain the
+> checksums before commit 23ea8e5a0767 ("Btrfs: load checksum data once
+> when submitting a direct read io"), but it didn't look them up up
+> front.)
 
-Tested-by: Nikolay Borisov <nborisov@suse.com>
+nit: It would be useful to surmise the structural changes this patch
+does. Essentially this makes each individual cloned bio to index its
+checksums into the global checksum storage array anchored at
+btrfs_dio_private::sums.
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
