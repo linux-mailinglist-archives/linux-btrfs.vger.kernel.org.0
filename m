@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFB7188828
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DF01888B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 16:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgCQOy0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 10:54:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43120 "EHLO mx2.suse.de"
+        id S1727100AbgCQPKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 11:10:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726564AbgCQOyZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 10:54:25 -0400
+        id S1726740AbgCQPKa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 11:10:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 84C73AC2C;
-        Tue, 17 Mar 2020 14:54:23 +0000 (UTC)
-Subject: Re: [PATCH 09/15] btrfs: kill btrfs_dio_private->private
+        by mx2.suse.de (Postfix) with ESMTP id E88B8AC6E;
+        Tue, 17 Mar 2020 15:10:27 +0000 (UTC)
+Subject: Re: [PATCH 10/15] btrfs: convert btrfs_dio_private->pending_bios to
+ refcount_t
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <432c19b74bb13191a04550b630d2db1f998ba3be.1583789410.git.osandov@fb.com>
+ <ca4884807ed430e3f546e50cc06678517f439df7.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <03149a73-16d7-66f4-b18a-c0d5f66e5d46@suse.com>
-Date:   Tue, 17 Mar 2020 16:54:22 +0200
+Message-ID: <2643501e-4201-79f7-f6b1-be6d9091b9ac@suse.com>
+Date:   Tue, 17 Mar 2020 17:10:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <432c19b74bb13191a04550b630d2db1f998ba3be.1583789410.git.osandov@fb.com>
+In-Reply-To: <ca4884807ed430e3f546e50cc06678517f439df7.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,8 +83,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> We haven't used this since commit 9be3395bcd4a ("Btrfs: use a btrfs
-> bioset instead of abusing bio internals").
+> This is really a reference count now, so convert it to refcount_t and
+> rename it to refs.
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
