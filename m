@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D87F187AF1
+	by mail.lfdr.de (Postfix) with ESMTP id 88B74187AF2
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 09:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgCQIMd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 04:12:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42718 "EHLO mx2.suse.de"
+        id S1726607AbgCQIMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 04:12:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42736 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgCQIMd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 04:12:33 -0400
+        id S1726498AbgCQIMe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 04:12:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E8540ADBB
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 08:12:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BD7A6ADBB
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 08:12:33 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 21/39] btrfs: Move free_backref_node() and free_backref_edge() to backref.h
-Date:   Tue, 17 Mar 2020 16:11:07 +0800
-Message-Id: <20200317081125.36289-22-wqu@suse.com>
+Subject: [PATCH RFC 22/39] btrfs: Move drop_backref_node() and needed facilities to backref.h
+Date:   Tue, 17 Mar 2020 16:11:08 +0800
+Message-Id: <20200317081125.36289-23-wqu@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317081125.36289-1-wqu@suse.com>
 References: <20200317081125.36289-1-wqu@suse.com>
@@ -30,78 +30,104 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+With extra comment for drop_backref_node() as it has some similarity
+with remove_backref_node(), thus we need extra comment explaining the
+difference.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/backref.h    | 20 ++++++++++++++++++++
- fs/btrfs/relocation.c | 19 -------------------
- 2 files changed, 20 insertions(+), 19 deletions(-)
+ fs/btrfs/backref.h    | 37 +++++++++++++++++++++++++++++++++++++
+ fs/btrfs/relocation.c | 31 -------------------------------
+ 2 files changed, 37 insertions(+), 31 deletions(-)
 
 diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index b21304d3f3f8..99d8a9301bc1 100644
+index 99d8a9301bc1..5c0300bde7fa 100644
 --- a/fs/btrfs/backref.h
 +++ b/fs/btrfs/backref.h
-@@ -8,6 +8,7 @@
- 
- #include <linux/btrfs.h>
- #include "ulist.h"
-+#include "disk-io.h"
- #include "extent_io.h"
- 
- struct inode_fs_paths {
-@@ -290,4 +291,23 @@ static inline void link_backref_edge(struct backref_edge *edge,
- 	if (link_which & LINK_UPPER)
- 		list_add_tail(&edge->list[UPPER], &upper->lower);
+@@ -310,4 +310,41 @@ static inline void free_backref_edge(struct backref_cache *cache,
+ 	}
  }
-+static inline void free_backref_node(struct backref_cache *cache,
-+				     struct backref_node *node)
+ 
++static inline void unlock_node_buffer(struct backref_node *node)
 +{
-+	if (node) {
-+		cache->nr_nodes--;
-+		btrfs_put_root(node->root);
-+		kfree(node);
++	if (node->locked) {
++		btrfs_tree_unlock(node->eb);
++		node->locked = 0;
 +	}
 +}
 +
-+static inline void free_backref_edge(struct backref_cache *cache,
-+				     struct backref_edge *edge)
++static inline void drop_node_buffer(struct backref_node *node)
 +{
-+	if (edge) {
-+		cache->nr_edges--;
-+		kfree(edge);
++	if (node->eb) {
++		unlock_node_buffer(node);
++		free_extent_buffer(node->eb);
++		node->eb = NULL;
 +	}
++}
++
++/*
++ * Drop the backref node from cache without cleaning up its children
++ * edges.
++ *
++ * This can only be called on node without parent edges.
++ * The children edges are still kept as is.
++ */
++static inline void drop_backref_node(struct backref_cache *tree,
++				     struct backref_node *node)
++{
++	BUG_ON(!list_empty(&node->upper));
++
++	drop_node_buffer(node);
++	list_del(&node->list);
++	list_del(&node->lower);
++	if (!RB_EMPTY_NODE(&node->rb_node))
++		rb_erase(&node->rb_node, &tree->rb_root);
++	free_backref_node(tree, node);
 +}
 +
  #endif
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index efd49553ada0..bb46e2e38c4f 100644
+index bb46e2e38c4f..1f656b07fe90 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -215,25 +215,6 @@ static void backref_cache_cleanup(struct backref_cache *cache)
- 	ASSERT(!cache->nr_edges);
+@@ -275,37 +275,6 @@ static struct backref_node *walk_down_backref(struct backref_edge *edges[],
+ 	*index = 0;
+ 	return NULL;
  }
- 
--static void free_backref_node(struct backref_cache *cache,
+-
+-static void unlock_node_buffer(struct backref_node *node)
+-{
+-	if (node->locked) {
+-		btrfs_tree_unlock(node->eb);
+-		node->locked = 0;
+-	}
+-}
+-
+-static void drop_node_buffer(struct backref_node *node)
+-{
+-	if (node->eb) {
+-		unlock_node_buffer(node);
+-		free_extent_buffer(node->eb);
+-		node->eb = NULL;
+-	}
+-}
+-
+-static void drop_backref_node(struct backref_cache *tree,
 -			      struct backref_node *node)
 -{
--	if (node) {
--		cache->nr_nodes--;
--		btrfs_put_root(node->root);
--		kfree(node);
--	}
+-	BUG_ON(!list_empty(&node->upper));
+-
+-	drop_node_buffer(node);
+-	list_del(&node->list);
+-	list_del(&node->lower);
+-	if (!RB_EMPTY_NODE(&node->rb_node))
+-		rb_erase(&node->rb_node, &tree->rb_root);
+-	free_backref_node(tree, node);
 -}
 -
--static void free_backref_edge(struct backref_cache *cache,
--			      struct backref_edge *edge)
--{
--	if (edge) {
--		cache->nr_edges--;
--		kfree(edge);
--	}
--}
--
- static void backref_tree_panic(struct rb_node *rb_node, int errno, u64 bytenr)
- {
- 
+ /*
+  * remove a backref node from the backref cache
+  */
 -- 
 2.25.1
 
