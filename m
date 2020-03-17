@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5EE1887AB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C846188812
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 15:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgCQOjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 10:39:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60504 "EHLO mx2.suse.de"
+        id S1726801AbgCQOwD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 10:52:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40414 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgCQOjp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 10:39:45 -0400
+        id S1726777AbgCQOwD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 10:52:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E11F0B1DB;
-        Tue, 17 Mar 2020 14:39:42 +0000 (UTC)
-Subject: Re: [PATCH 06/15] btrfs: rename __readpage_endio_check to
- check_data_csum
+        by mx2.suse.de (Postfix) with ESMTP id 4D626AE0F;
+        Tue, 17 Mar 2020 14:52:01 +0000 (UTC)
+Subject: Re: [PATCH 07/15] btrfs: make btrfs_check_repairable() static
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
 References: <cover.1583789410.git.osandov@fb.com>
- <f0404525ae352a08750f56a822512a52263d7277.1583789410.git.osandov@fb.com>
+ <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <30208fa0-f4b4-04aa-8d7f-71cd53c3d477@suse.com>
-Date:   Tue, 17 Mar 2020 16:39:42 +0200
+Message-ID: <5db2e9af-e505-55b5-2106-66576929657f@suse.com>
+Date:   Tue, 17 Mar 2020 16:52:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <f0404525ae352a08750f56a822512a52263d7277.1583789410.git.osandov@fb.com>
+In-Reply-To: <1ba159f3930fca7d11350f798ba140e1a2176358.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,10 +82,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> __readpage_endio_check() is also used from the direct I/O read code, so
-> give it a more descriptive name.
+> Since its introduction in commit 2fe6303e7cd0 ("Btrfs: split
+> bio_readpage_error into several functions"), btrfs_check_repairable()
+> has only been used from extent_io.c where it is defined.
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Ok that addresses my earlier nit,
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
