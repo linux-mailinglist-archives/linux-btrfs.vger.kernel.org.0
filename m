@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33A1884A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 13:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAAD188631
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 14:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgCQM7X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 08:59:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35608 "EHLO mx2.suse.de"
+        id S1726498AbgCQNqm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 09:46:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54732 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgCQM7W (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:59:22 -0400
+        id S1726016AbgCQNqm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 09:46:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 105D2AC4A;
-        Tue, 17 Mar 2020 12:59:20 +0000 (UTC)
-Subject: Re: [PATCH 5/5] btrfs: run btrfs_try_granting_tickets if a priority
- ticket fails
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200313195809.141753-1-josef@toxicpanda.com>
- <20200313195809.141753-6-josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 4E09AAE2B;
+        Tue, 17 Mar 2020 13:46:39 +0000 (UTC)
+Subject: Re: [PATCH 01/15] btrfs: fix error handling when submitting direct
+ I/O bio
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
+References: <cover.1583789410.git.osandov@fb.com>
+ <4481393496a9dfe99c9432193407ebdaa27d0753.1583789410.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <036a21b0-8a43-45f5-ef2a-a4a7d8fa0478@suse.com>
-Date:   Tue, 17 Mar 2020 14:59:19 +0200
+Message-ID: <e77ff8bf-e620-c42d-0a18-ea498f33a8bc@suse.com>
+Date:   Tue, 17 Mar 2020 15:46:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313195809.141753-6-josef@toxicpanda.com>
+In-Reply-To: <4481393496a9dfe99c9432193407ebdaa27d0753.1583789410.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,27 +80,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 13.03.20 г. 21:58 ч., Josef Bacik wrote:
-> With normal tickets we could have a large reservation at the front of
-> the list that is unable to be satisfied, but a smaller ticket later on
-> that can be satisfied.  The way we handle this is to run
-> btrfs_try_granting_tickets() in maybe_fail_all_tickets().
+On 9.03.20 г. 23:32 ч., Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> However no such protection exists for priority tickets.  Fix this by
-> handling it in handle_reserve_ticket().  If we've returned after
-> attempting to flush space in a priority related way, we'll still be on
-> the priority list and need to be removed.
+> If we submit orig_bio in btrfs_submit_direct_hook(), we never increment
+> pending_bios. Then, if btrfs_submit_dio_bio() fails, we decrement
+> pending_bios to -1, and we never complete orig_bio. Fix it by
+> initializing pending_bios to 1 instead of incrementing later.
+
+nit: I'd rephrase this paragraph to put the emphasis on when this could
+happen, which is when the write falls entirely within a chunk's stripe
+(i.e doesn't span 64k region in case of having a block group with a
+profile different than SINGLE) or doesn't span a chunk in case of a
+profile different than SINGLE.
+
 > 
-> We rely on the flushing to free up space and wake the ticket, but if
-> there is not enough space to reclaim _but_ there's enough space in the
-> space_info to handle subsequent reservations then we would have gotten
-> an ENOSPC erroneously.
+> Fixing this exposes another bug: we put orig_bio prematurely and then
+> put it again from end_io. Fix it by not putting orig_bio.
 > 
-> Address this by catching where we are still on the list, meaning we were
-> a priority ticket, and removing ourselves and then running
-> btrfs_try_granting_tickets().  This will handle this particular corner
-> case.
+> After this change, pending_bios is really more of a reference count, but
+> I'll leave that cleanup separate to keep the fix small.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Fixes: e65e15355429 ("btrfs: fix panic caused by direct IO")
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+
+The changes look good, I just wonder why didn't this trip earlier...
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
