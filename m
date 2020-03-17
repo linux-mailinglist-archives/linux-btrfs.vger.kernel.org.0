@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D3E18847A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 13:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6D8188493
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 13:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgCQMq4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 08:46:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58630 "EHLO mx2.suse.de"
+        id S1726222AbgCQMzo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 08:55:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34536 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgCQMqz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:46:55 -0400
+        id S1725995AbgCQMzo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:55:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BCAEAAC77;
-        Tue, 17 Mar 2020 12:46:53 +0000 (UTC)
-Subject: Re: [PATCH 2/5] btrfs: allow us to use up to 90% of the global rsv
- for unlink
+        by mx2.suse.de (Postfix) with ESMTP id 9ADF7AC1E;
+        Tue, 17 Mar 2020 12:55:42 +0000 (UTC)
+Subject: Re: [PATCH 4/5] btrfs: only check priority tickets for priority
+ flushing
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313195809.141753-1-josef@toxicpanda.com>
- <20200313195809.141753-3-josef@toxicpanda.com>
+ <20200313195809.141753-5-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <13fe663f-6c12-0180-369d-a1d9e67dc895@suse.com>
-Date:   Tue, 17 Mar 2020 14:46:53 +0200
+Message-ID: <e314aa12-f4dc-27c6-a355-ce2b6404786c@suse.com>
+Date:   Tue, 17 Mar 2020 14:55:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313195809.141753-3-josef@toxicpanda.com>
+In-Reply-To: <20200313195809.141753-5-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,12 +81,41 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.03.20 г. 21:58 ч., Josef Bacik wrote:
-> We previously had a limit of stealing 50% of the global reserve for
-> unlink.  This was from a time when the global reserve was used for the
-> delayed refs as well.  However now those reservations are kept separate,
-> so the global reserve can be depleted much more to allow us to make
-> progress for space restoring operations like unlink.  Change the minimum
-> amount of space required to be left in the global reserve to 10%.
+> In debugging a generic/320 failure on ppc64, Nikolay noticed that
+> sometimes we'd ENOSPC out with plenty of space to reclaim if we had
+> committed the transaction.  He further discovered that this was because
+> there was a priority ticket that was small enough to fit in the free
+> space currently in the space_info.
+> 
+> Consider the following scenario.  There is no more space to reclaim in
+> the fs without committing the transaction.  Assume there's 1mib of space
+> free in the space info, but there are pending normal tickets with 2mib
+> reservations.
+> 
+> Now a priority ticket comes in with a .5mib reservation.  Because we
+> have normal tickets pending we add ourselves to the priority list,
+> despite the fact that we could satisfy this reservation.
+> 
+> The flushing machinery now gets to the point where it wants to commit
+> the transaction, but because there's a .5mib ticket on the priority list
+> and we have 1mib of free space we assume the ticket will be granted
+> soon, so we bail without committing the transaction.
+> 
+> Meanwhile the priority flushing does not commit the transaction, and
+> eventually fails with an ENOSPC.  Then all other tickets are failed with
+> ENOSPC because we were never able to actually commit the transaction.
+> 
+> The fix for this is we should have simply granted the priority flusher
+> his reservation, because there was space to make the reservation.
+> Priority flushers by definition take priority, so they are allowed to
+> make their reservations before any previous normal tickets.  By not
+> adding this priority ticket to the list the normal flushing mechanisms
+> will then commit the transaction and everything will continue normally.
+> 
+> We still need to serialize ourselves with other priority tickets, so if
+> there are any tickets on the priority list then we need to add ourselves
+> to that list in order to maintain the serialization between priority
+> tickets.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
