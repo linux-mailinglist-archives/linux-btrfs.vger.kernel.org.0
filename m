@@ -2,73 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC07188F08
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 21:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B56A1890B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 22:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgCQUee (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 16:34:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37508 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726730AbgCQUee (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 16:34:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5E731ACE0;
-        Tue, 17 Mar 2020 20:34:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3DBAEDA72F; Tue, 17 Mar 2020 21:34:05 +0100 (CET)
-Date:   Tue, 17 Mar 2020 21:34:05 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Johannes.Thumshirn@wdc.com
-Subject: Re: [PATCH] btrfs-progs: Fix xxhash on big endian machines
-Message-ID: <20200317203405.GX12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, Johannes.Thumshirn@wdc.com
-References: <20200316090512.21519-1-nborisov@suse.com>
+        id S1726530AbgCQVm5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 17:42:57 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:41263 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgCQVm4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 17:42:56 -0400
+Received: by mail-wr1-f50.google.com with SMTP id f11so10923757wrp.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 14:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QVFYrpFR0oMouUJgN0zBItapwy5WhlESQhE9+NondGk=;
+        b=yFfzjQYFgeA0jGNhNZcVEDdQRCmTH/AsLfrKR/K25uVVDIHYpmTDDEVvMEp8siUd6B
+         OrOzNvE5VZ99klyLN9P9lSHIwJIHfIRn7N1sP56qvEOJHRff6cKRL+KCWxOH6OEow3Dt
+         KYWtUHN9RzSzfr9mfeEE20dNCZx/Ya8dlfPufFqDFXo35TstADIjnfyQCq+Sgfu1NE1S
+         Zi17X+MdA0IPlhW+MSGAao+Zm2CAmm0bSpdYkRXPD/FDbomrJonqMQFsUSpEksksqHVJ
+         WROY8EGfCi/UMrfC6FcgpKJ0XcMkoI9IYlV5iT81wnYgNhehSnTPoaI0MolEJYsw73LT
+         jdnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QVFYrpFR0oMouUJgN0zBItapwy5WhlESQhE9+NondGk=;
+        b=MizZrwFVmcExY4fbDhkHEozD7R2FVvBBUG5DE4lKxVFuuizm4nA2cLh5JYIJmK4fLY
+         uxn1GC6zouUkyAEb+uXcJL/vDHA7S5YpW5OZaL2u63tggtUjpnl0JB01Xs3aC0WEru28
+         tiH5ptC6ekB30JjJebhktvIB9TApOPkzL2Qczd1X/fJPRbF1UPUUydPDjazz8eokPgPO
+         g0r9VLBN2jhsUZB3MwK8DVaz4Dw2tojerVLDGMIkziTax6PwPYSbIlv3gJ9iMq3fEev0
+         1zEHsaNDm/kD3cJi+XOyD62lX9LpAm8cHnzhL59gs+VYcJ71grj/JTen2JmmE0XQ0Wdw
+         ObxQ==
+X-Gm-Message-State: ANhLgQ2SWKyngq1PnTAuYi81zDh/D+nLM0ysBcIzBsBZz6eWeISBizG1
+        0IQ73fnQtWoDroNdiVDShCDvJ6lSk3+FGsHtK2kLoA==
+X-Google-Smtp-Source: ADFU+vt4xxbKuNZTb5dLcEG+w2gTD8QIhhZggco8W//LMKCKxt+9N+Vxzo4sBClNlcr6uwnSngKgaP73lJBP75iFyxU=
+X-Received: by 2002:adf:f94f:: with SMTP id q15mr1044593wrr.65.1584481374699;
+ Tue, 17 Mar 2020 14:42:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200316090512.21519-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <1794842.PFUSC7HjHz@paca> <CAJCQCtRJV1ug8L1Q1pJ5ePJdnFP-osekbqzuDb8QSTQ5b0Tm1Q@mail.gmail.com>
+ <6003403.r5gNk4GDqt@paca>
+In-Reply-To: <6003403.r5gNk4GDqt@paca>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 17 Mar 2020 15:42:38 -0600
+Message-ID: <CAJCQCtTDRRzn1YPAogb7oeNXayj2+y4ZYmCbaBaxfVRjWgb55A@mail.gmail.com>
+Subject: Re: Errors after SATA hard resets: parent transid verify failed, csum
+ mismatch on free space cache
+To:     Stephen Conrad <conradsd@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 11:05:12AM +0200, Nikolay Borisov wrote:
-> xxhash's state and results are always in little, but in progs after the
-> hash was calculated it was copied to the final buffer via memcpy,
-> meaning it'd be parsed as a big endian number on big endian machines.
-> This is incompatible with the kernel implementation of xxhash which
-> results in erroneous "checksum didn't match" errors on mount.
-> 
-> Fix it by using put_unaligned_le64 which always ensures the resulting
-> checksum will be copied in little endian format as the kernel expects
-> it.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206835
-> Fixes: f070ece2e98f ("btrfs-progs: add xxhash64 to mkfs")
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  crypto/hash.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/crypto/hash.c b/crypto/hash.c
-> index 48623c798739..4009e84e8b2c 100644
-> --- a/crypto/hash.c
-> +++ b/crypto/hash.c
-> @@ -19,12 +19,7 @@ int hash_xxhash(const u8 *buf, size_t length, u8 *out)
->  	XXH64_hash_t hash;
-> 
->  	hash = XXH64(buf, length, 0);
-> -	/*
-> -	 * NOTE: we're not taking the canonical form here but the plain hash to
-> -	 * be compatible with the kernel implementation!
-> -	 */
-> -	memcpy(out, &hash, 8);
-> -
-> +	put_unaligned_le64(&hash, out);
+From the original email I see: btrfs-progs v4.20.1
 
-This does not work, the test mkfs/019 fails.
+Can you use something newer to do a btrfs check? v5.4.1 is current but
+I think v5.3 is probably adequate. Whereas btrfs-progs 4.20 is a year
+old. Please post the entire output of the btrfs check (without using
+repair).
+
+---
+Chris Murphy
