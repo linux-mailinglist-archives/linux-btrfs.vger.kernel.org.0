@@ -2,146 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE846187B03
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 09:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 333951882AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Mar 2020 12:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgCQINV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Mar 2020 04:13:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43326 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgCQINV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Mar 2020 04:13:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6A1C6ADA1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 08:13:19 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 39/39] btrfs: qgroup: Use backref cache to speed up old_roots search
-Date:   Tue, 17 Mar 2020 16:11:25 +0800
-Message-Id: <20200317081125.36289-40-wqu@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200317081125.36289-1-wqu@suse.com>
-References: <20200317081125.36289-1-wqu@suse.com>
+        id S1725962AbgCQL6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Mar 2020 07:58:03 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:37200 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgCQL6C (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Mar 2020 07:58:02 -0400
+Received: by mail-ua1-f65.google.com with SMTP id h32so7855994uah.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Mar 2020 04:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=OJjLNEYi0N54CCkywjNS+vTvrVGdsQBEPrK74YzmTbs=;
+        b=NhZnNQVYgATkXDKjBemP/2lV6exeobgm9AgW0KMQnXqlSBXZELgBhXNPmcnoa5ETn9
+         y6aIfSfbwesWOu7zXI4cgBH5KaYV3lkFQiZjuLJpFzZq3K5+CaTrogfsj7Om2KAtWy0N
+         3xUkdf5UfMdpb6gAlHInX0G0csoDsMzsLoK442nNpMFpELr3Pvj+HMoK59ZMY9BF3Bbw
+         BSrW/aoEemD6HwYqBN2vhm3nY3JOgrHO40AQBhYuQvlST6O8DAG4C4AjsCrWjDJYaiMy
+         8u6jq+6qEZjSBZffADzDtbbSJiXqrLchr4ojuIsjfImABXAD6/ZaEdgU1/4Lg7MWC9we
+         fX9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=OJjLNEYi0N54CCkywjNS+vTvrVGdsQBEPrK74YzmTbs=;
+        b=e1KU6tdV3Z6NaXZsbQ6R6zApcN6mEYDywLEJcwJjAVBPE/SUQVL8DndyJCCLqnNcf5
+         H1hXpUX4GDZniEkl6QMfWoSXEusaznWysPUx0vFYzOX+2zrP0hAeHNEUDbhiisvKsf44
+         UfiYMn2IiB+UFJv/2ZiuKdyW+zu794/gN1uWfTLpn6t1i1/7vbPoYhQAav83vESvg0PC
+         ylVKyBOipukTRiz9JopSCJbe6yYLSZsXtDJALJex6ywa94aXQ+ppsltBLoX56Fvtaspy
+         GV74OCuIdL68TwfxRxlZkCqbJP4O0sELi3Tu7LCXHqomw15SWgMvrUGTniWrl9GaYSbt
+         w3gQ==
+X-Gm-Message-State: ANhLgQ1gYBdUnc1n98zDWUxB4lCTrkh8oCAaTEkk38WmsEU96gCZ5JOD
+        buIH6hIh0gwNihS9gK+d0SkO/WdPnzjR/0JwUllqRw==
+X-Google-Smtp-Source: ADFU+vtFC7L7M84opPSJd8BO51sQmVe5zYqvszmyNYe5FHeatIzcUf+Ml4fORl5iXwZ4Zi2o0hwAczW0OUVPu1zAlCI=
+X-Received: by 2002:ab0:2917:: with SMTP id v23mr487730uap.83.1584446281993;
+ Tue, 17 Mar 2020 04:58:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200317063102.8869-1-robbieko@synology.com>
+In-Reply-To: <20200317063102.8869-1-robbieko@synology.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 17 Mar 2020 11:57:51 +0000
+Message-ID: <CAL3q7H7w-6PRzVnpnggHJexumLWaLekxJO-WquaNVedH8FxhTw@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: fix missing semaphore unlock
+To:     robbieko <robbieko@synology.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now use the backref cache backed backref walk mechanism.
+On Tue, Mar 17, 2020 at 6:41 AM robbieko <robbieko@synology.com> wrote:
+>
+> From: Robbie Ko <robbieko@synology.com>
+>
+> Fixes: aab15e8ec2576 ("Btrfs: fix rare chances for data loss when doing a=
+ fast fsync")
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
 
-This mechanism is trading memory usage for faster, and more qgroup
-specific backref walk.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Compared to original btrfs_find_all_roots(), it has the extra behavior
-difference:
-- Skip non-subvolume tress from the very beginning
-  Since only subvolume trees contribute to qgroup numbers, skipping them
-  would save us time.
+Looks good, thanks.
 
-- Skip reloc trees earlier
-  Reloc trees doesn't contribute to qgroup, and btrfs_find_all_roots()
-  also doesn't account them, thus we don't need to account them.
-  Here we use the detached nodes in backref cache to skip them faster
-  and earlier.
+> ---
+>  fs/btrfs/file.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index a16da274c9aa..ae903da21588 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2124,6 +2124,7 @@ int btrfs_sync_file(struct file *file, loff_t start=
+, loff_t end, int datasync)
+>          */
+>         ret =3D start_ordered_ops(inode, start, end);
+>         if (ret) {
+> +               up_write(&BTRFS_I(inode)->dio_sem);
+>                 inode_unlock(inode);
+>                 goto out;
+>         }
+> --
+> 2.17.1
+>
 
-- Cached results
-  Well, backref cache is obviously cached, right.
 
-The major performance improvement happens for backref walk in commit
-tree, one of the most obvious user is qgroup rescan.
+--=20
+Filipe David Manana,
 
-Here is a small script to test it:
-
-  mkfs.btrfs -f $dev
-  mount $dev -o space_cache=v2 $mnt
-
-  btrfs subvolume create $mnt/src
-
-  for ((i = 0; i < 64; i++)); do
-          for (( j = 0; j < 16; j++)); do
-                  xfs_io -f -c "pwrite 0 2k" $mnt/src/file_inline_$(($i * 16 + $j)) > /dev/null
-          done
-          xfs_io -f -c "pwrite 0 1M" $mnt/src/file_reg_$i > /dev/null
-          sync
-          btrfs subvol snapshot $mnt/src $mnt/snapshot_$i
-  done
-  sync
-
-  btrfs quota enable $mnt
-  btrfs quota rescan -w $mnt
-
-Here is the benchmark for above small tests.
-The performance material is the total execution time of get_old_roots()
-for patched kernel (*), and find_all_roots() for original kernel.
-
-*: With CONFIG_BTRFS_FS_CHECK_INTEGRITY disabled, as get_old_roots()
-   will call find_all_roots() to verify the result if that config is
-   enabled.
-
-		|  Number of calls | Total exec time |
-------------------------------------------------------
-find_all_roots()|  732		   | 529991034ns
-get_old_roots() |  732		   | 127998312ns
-------------------------------------------------------
-diff		|  0.00 %	   | -75.8 %
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/qgroup.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 58df89b03ce3..3db1a1f4ec1f 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2054,8 +2054,9 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_fs_info *fs_info,
- 	u64 bytenr = qrecord->bytenr;
- 	int ret;
- 
--	ret = btrfs_find_all_roots(NULL, fs_info, bytenr, 0, &old_root, false);
--	if (ret < 0) {
-+	old_root = get_old_roots(fs_info, bytenr);
-+	if (IS_ERR(old_root)) {
-+		ret = PTR_ERR(old_root);
- 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
- 		btrfs_warn(fs_info,
- "error accounting new delayed refs extent (err code: %d), quota inconsistent",
-@@ -3001,12 +3002,12 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 			 * extent record
- 			 */
- 			if (WARN_ON(!record->old_roots)) {
--				/* Search commit root to find old_roots */
--				ret = btrfs_find_all_roots(NULL, fs_info,
--						record->bytenr, 0,
--						&record->old_roots, false);
--				if (ret < 0)
-+				record->old_roots = get_old_roots(fs_info,
-+						record->bytenr);
-+				if (IS_ERR(record->old_roots)) {
-+					ret = PTR_ERR(record->old_roots);
- 					goto cleanup;
-+				}
- 			}
- 
- 			/* Free the reserved data space */
-@@ -3585,10 +3586,11 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
- 		else
- 			num_bytes = found.offset;
- 
--		ret = btrfs_find_all_roots(NULL, fs_info, found.objectid, 0,
--					   &roots, false);
--		if (ret < 0)
-+		roots = get_old_roots(fs_info, found.objectid);
-+		if (IS_ERR(roots)) {
-+			ret = PTR_ERR(roots);
- 			goto out;
-+		}
- 		/* For rescan, just pass old_roots as NULL */
- 		ret = btrfs_qgroup_account_extent(trans, found.objectid,
- 						  num_bytes, NULL, roots);
--- 
-2.25.1
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
