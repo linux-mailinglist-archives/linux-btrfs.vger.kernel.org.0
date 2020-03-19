@@ -2,75 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C406918BC7F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 17:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F86C18BDD2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 18:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgCSQ24 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 12:28:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50668 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728375AbgCSQ2w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 12:28:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7746CACC6;
-        Thu, 19 Mar 2020 16:28:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DAFCFDA70E; Thu, 19 Mar 2020 17:28:22 +0100 (CET)
-Date:   Thu, 19 Mar 2020 17:28:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Matthias Brugger <mbrugger@suse.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, u-boot@lists.denx.de,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] uboot: fs/btrfs: Fix LZO false decompression error
- caused by pending zero
-Message-ID: <20200319162822.GG12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Matthias Brugger <mbrugger@suse.com>,
-        Qu Wenruo <wqu@suse.com>, u-boot@lists.denx.de,
-        linux-btrfs@vger.kernel.org
-References: <20200319123006.37578-1-wqu@suse.com>
- <20200319123006.37578-3-wqu@suse.com>
- <49c5af50-8c09-9b49-ab44-ebe5eb9a652c@gmail.com>
- <20200319135641.GB12659@twin.jikos.cz>
- <46e58bc7-4a4c-fa2a-33cd-0e8df65d6bac@suse.com>
+        id S1727556AbgCSRTj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 13:19:39 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:34257 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727112AbgCSRTj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 13:19:39 -0400
+Received: by mail-qv1-f68.google.com with SMTP id o18so1443716qvf.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 10:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=jKE/tFJyW5ecNxjXx7zmLeInbveCDR3q3KzjetR7jkM=;
+        b=Ze00+1NhK/3a+rVLiPuatn7kSP1wp6CYNRt2TZpKT2CSAkxA7SMBVwFEQuGVeh/mWb
+         7snqE6NWVNVbWQ1nHOFC2AWEgEd1fTvjHd0fiP5uo/5GqVbzeSykQ4G5hnmFUTjnEAXQ
+         2+H6Q2eQlsT0xbNm9eXS7B/Dmin0hK3xt92ZmazK6kKAKVsg0TfVMiISZgzD/wZwor2E
+         Br1ns2tDR2fs9Aw6aVHflfSSqQXTioDAJ6MA93o884OwjsP5ZNxJWkDAxrLwD7h5gXbW
+         hF47B/BNWSbBWWeSufPXBfecr7S5XzVGunP1GhfnblvF0EmtdjJ7vrQWNlSHd+fYWkrf
+         PhSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jKE/tFJyW5ecNxjXx7zmLeInbveCDR3q3KzjetR7jkM=;
+        b=nYg8Q6pezMbIDnOE5udY9HNWapI80rU0yc2vvI5OjavoSMg26tXQX+SnOsyPs1r36x
+         LbnklEXAWoKf8uI/0CtmLCz5OTNtJQ4sV7aH+BiWiuMn31ExGcJjyZkwIzugp22ph6Ol
+         Ew+Jqv/zG//RbfYoMILPFMJv0OCJ8527V+ogmfASt3Qf04s+0AXHKitQrCiUEQzSd0W6
+         B+60bHyVqYvgNVoKw34uYZFTIrqtOGMUcIhzXZjJzTPvf31c+9rDkOk67md5F4xzJcDQ
+         9mqtoco46LdPo8RQKf5zzIuZCJyDzeRv+tHgw129LkhNVrf5o6qRhZPBPhWtrv5az8C9
+         uing==
+X-Gm-Message-State: ANhLgQ3Nhx2h3SMZUndaalBrCX8JoHnmI9zJ7Q68RCEq6wvxg5C1+5a5
+        aDxyI0kdi/sZ/sZwjLciRReSP+eMlG4=
+X-Google-Smtp-Source: ADFU+vvJ554jeacgAF98apiykXav9tNXgTmskUa5dTHxAqQO+lBW+HFsuagWFfG/JpE+q5QzDShFpA==
+X-Received: by 2002:a05:6214:12f1:: with SMTP id w17mr3875750qvv.132.1584638377529;
+        Thu, 19 Mar 2020 10:19:37 -0700 (PDT)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id e2sm1895118qkg.63.2020.03.19.10.19.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Mar 2020 10:19:36 -0700 (PDT)
+Subject: Re: [PATCH RFC 13/39] btrfs: relocation: Refactor the finishing part
+ of upper linkage into finish_upper_links()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200317081125.36289-1-wqu@suse.com>
+ <20200317081125.36289-14-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6b0aa6bb-4093-111d-5a1c-c2e6b7117ca0@toxicpanda.com>
+Date:   Thu, 19 Mar 2020 13:19:35 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46e58bc7-4a4c-fa2a-33cd-0e8df65d6bac@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200317081125.36289-14-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 03:34:12PM +0100, Matthias Brugger wrote:
+On 3/17/20 4:10 AM, Qu Wenruo wrote:
+> After handle_one_tree_backref(), all newly added (not cached) edges and
+> nodes have the following features:
 > 
+> - Only backref_edge::list[LOWER] is linked.
+>    This means, we can only iterate from botton to top, not the other
+>    direction.
 > 
-> On 19/03/2020 14:56, David Sterba wrote:
-> > On Thu, Mar 19, 2020 at 02:33:28PM +0100, Matthias Brugger wrote:
-> >>>  		dlen -= out_len;
-> >>>  
-> >>>  		res += out_len;
-> >>> +
-> >>> +		/*
-> >>> +		 * If the 4 bytes header does not fit to the rest of the page we
-> >>> +		 * have to move to next one, or we read some garbage.
-> >>> +		 */
-> >>> +		mod_page = tot_in % PAGE_SIZE;
-> >>
-> >> in U-Boot we use 4K page sizes, but the OS could use another page size (16K or
-> >> 64k). Would we need to adapt that code to reflect which page size is used on the
-> >> medium we want to access?
-> > 
-> > Yes, it is the 'sectorsize' as it's set up in fs_info or it's equivalent
-> > in uboot. For kernel the page size == sectorsize is kind of implicit and
-> > verified at mount time.
-> > 
+> - Newly added nodes are not added to cache rb_tree yet
 > 
-> Does this mean we would need to add a Kconfig option to set the sectorsize in
-> U-Boot?
+> So to finish the backref cache, we still need to finish the links and
+> add all nodes into backref cache rb_tree.
+> 
+> This patch will refactor the existing code into finish_upper_links(),
+> add more comments of each branch, and why we need to do all these works.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-No, the value depends on the filesystem so it can't be a config option.
-What I mean is btrfs_super_block::sectorsize, where the superblock is
-btrfs_info::sb.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
