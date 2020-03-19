@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9947A18BAE9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0832418BAF2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbgCSPVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 11:21:08 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38885 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727602AbgCSPVI (ORCPT
+        id S1727720AbgCSPVk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 11:21:40 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44841 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727540AbgCSPVk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 11:21:08 -0400
-Received: by mail-qk1-f196.google.com with SMTP id h14so3423538qke.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 08:21:05 -0700 (PDT)
+        Thu, 19 Mar 2020 11:21:40 -0400
+Received: by mail-qk1-f195.google.com with SMTP id j4so3370926qkc.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 08:21:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=GC24I1Eqdbe6U6PobXoclIDwj4HDIcy5KE6ih3Nq8+U=;
-        b=XqSm1Z7L92bhF0DDZx9NiYzc6svRE57ayttmWa3GrJhp8QmdiTkCskd0zI4eAfPbC3
-         upLKJVposc/CbkUkAxstqaOtnWubBRvgBfnCUbVM4OVltuZduG8j89VeDYn9Rof1gU52
-         NXkO4LlycaSZj1Z2CZEkHVl3iQfnC+bNal8xw5HRTsS7na+JpAmL1qVD/beW3hEhegvA
-         9GlUDpE4cucntxCmZ18pUcxnWJdK0Dv7zO+TfOe27W2GKYC4gfqOuBUw7CiLS880XxEe
-         ojbC2181pyh2vs7paEukSujIQxRqeBHKxoluJuUIcwQ9pUJmXMxTb6kGls0ngJhu/uKZ
-         kDfw==
+        bh=sgZzXc+fkyGS1iOY9jq5D2qifSOB5odT5Qi4UBhUYMk=;
+        b=K5aW5g0vMLE2SqPW35l2OR3uTXK5YyA+s2TpqcTo84ebRGZ+/2GogkXtehn3gDk1Z0
+         9KSo7lcpwLPlissbF6uGO8ftwgwcy+FTs+YFZ3HIbKUbwpqiTuB9wh1cpM8PDSq83psT
+         9Flwh115aEDIVstZlVswtH/h3/H06ta8zDlraAWNXSGk7kr5IP2nq0sEBc4Ld33QNF3g
+         abUYxQWB0ggpN75RtSCm73SHZmXgdZviRa5SOh2TBnnIhjLdymhWjCLu8jgPfY7cY9Us
+         GZutvpez4QbVIG1Z8zol8iSW2P++l17Yvf/Z9FlC0k7EiEASt/vZw5W4r8AKnLNqrLid
+         QOsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GC24I1Eqdbe6U6PobXoclIDwj4HDIcy5KE6ih3Nq8+U=;
-        b=g6Kd/GydjUl56C6c4tGphnjSEeA2y8JHiNvqL5P/hL+u/Xr+hxgP1TLqBKx22aO/Mh
-         Qvrn6EWi/1VsPMSuORSZmya1imXD7m88ynUQKSGkJVBVDpm69U2Kb4P7WN59+5mwtFH8
-         7ttvP6yOJJDLMuG6mKA6+NNgL+SMNVKds/vUgUqF7b/o9cKr1lIeVpN1KOKBMUuK6tm6
-         H3Ms69gKjfvno8SstEdu2Ho+7rgUOFCG37VcOHJ2QhbWdPVVt8gE1orbmi9IsXZPR5dz
-         Q1n1gz/Ly+iUGZZSbxDo9uUjo+MrcY2LplybYsHARzvtAn1e2IeIovcR0Irie6xX9ZO0
-         Unng==
-X-Gm-Message-State: ANhLgQ2fcDLTKOa8I04Y1rGFYaDKW/Stkh4gUI2PABlEoP3VKKCEKe9+
-        gngORoanQA6Bcf/LZXOeg5S4a3gocE0=
-X-Google-Smtp-Source: ADFU+vsu8+C/Fd24qH5KT0xC4I4W9bnqLnY1DUstbrTIXA7MEg5eddojNOnYfL1E70Ru7TlTMehOBQ==
-X-Received: by 2002:a37:9f58:: with SMTP id i85mr3373524qke.196.1584631264817;
-        Thu, 19 Mar 2020 08:21:04 -0700 (PDT)
+        bh=sgZzXc+fkyGS1iOY9jq5D2qifSOB5odT5Qi4UBhUYMk=;
+        b=HybnAFpk3cl0K9jAXPtMky8T1gq5+12YocoKt6MG2gJpartMAkY4BBFtsmtSB+adBm
+         XW4F8xaSXxFQ0rrI0fvOrMe/Xq9f4BpDChUaF6rL9hRjVdPO9G1SA/es1a6WuKPKfR6j
+         CX/ZvV9D4nPTBTD+EV4xiuRwiCG+8a6LxEwKsPkZBp+J92WEq/L9lTI1NJnugetDw4ql
+         Q4DPlbl4fJTOPzr4o2IGnuWwH54mlOakA0WAxpFpzKN9QKcHLkq3iNv8SAUUE/Ys43mY
+         wb7eJwNbBqAnOuqgyyiNYlmoyGno2DQiv8EUPlchaih2IWkRqOCoMZ3oG/SrvQlx7EVR
+         icnw==
+X-Gm-Message-State: ANhLgQ3xz73QxkRCUgG1z32S/GM2IsPF6fQAWsySyDBWp2fYYJjplpVM
+        xBNitWAg4Xs4xm6lUsaa0lGUM+FoDy0=
+X-Google-Smtp-Source: ADFU+vv+1n9qv06O5iZ3R0soBIiFZdpajmNGvmM3IgfNdpIvc0ZG3vsZK5Hw7nLBjvW4A9V6vucT5A==
+X-Received: by 2002:a37:aa4c:: with SMTP id t73mr3480198qke.300.1584631297953;
+        Thu, 19 Mar 2020 08:21:37 -0700 (PDT)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id d28sm1735602qkl.99.2020.03.19.08.21.03
+        by smtp.gmail.com with ESMTPSA id m1sm1853400qtm.22.2020.03.19.08.21.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 08:21:04 -0700 (PDT)
-Subject: Re: [PATCH RFC 05/39] btrfs: relocation: Add
- backref_cache::pending_edge and backref_cache::useless_node members
+        Thu, 19 Mar 2020 08:21:37 -0700 (PDT)
+Subject: Re: [PATCH RFC 06/39] btrfs: relocation: Add backref_cache::fs_info
+ member
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200317081125.36289-1-wqu@suse.com>
- <20200317081125.36289-6-wqu@suse.com>
+ <20200317081125.36289-7-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <268bc378-5f23-cf03-c4ef-24f185c92402@toxicpanda.com>
-Date:   Thu, 19 Mar 2020 11:21:03 -0400
+Message-ID: <7c242a07-396e-5313-989a-7e878da0b32e@toxicpanda.com>
+Date:   Thu, 19 Mar 2020 11:21:36 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200317081125.36289-6-wqu@suse.com>
+In-Reply-To: <20200317081125.36289-7-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,14 +67,8 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 3/17/20 4:10 AM, Qu Wenruo wrote:
-> These two new members will act the same as the existing local lists,
-> @useless and @list in build_backref_tree().
-> 
-> Currently build_backref_tree() is only executed serially, thus moving
-> such local list into backref_cache is still safe.
-> 
-> Also since we're here, use list_first_entry() to replace a lot of
-> list_entry() calls after !list_empty().
+> Add this member so that we can grab fs_info without the help from
+> reloc_control.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
@@ -83,4 +77,3 @@ Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Thanks,
 
 Josef
-
