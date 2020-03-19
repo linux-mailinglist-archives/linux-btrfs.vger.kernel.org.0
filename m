@@ -2,46 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E83C18AEE2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 10:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7339A18B117
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 11:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgCSJDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 05:03:39 -0400
-Received: from verein.lst.de ([213.95.11.211]:40823 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgCSJDj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 05:03:39 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 340E968BEB; Thu, 19 Mar 2020 10:03:36 +0100 (CET)
-Date:   Thu, 19 Mar 2020 10:03:36 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 15/15] btrfs: unify buffered and direct I/O read repair
-Message-ID: <20200319090336.GA1577@lst.de>
-References: <cover.1583789410.git.osandov@fb.com> <7c593decda73deb58515d94e979db6a68527970b.1583789410.git.osandov@fb.com> <37bf11cc-92b3-2b15-ee87-0cbe8c662cc7@suse.com>
+        id S1727065AbgCSKUj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 06:20:39 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:54118 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbgCSKUi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 06:20:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ntJd7dUM0sZh65THRmkRhW0Z2X4v3bgEZxiGC8V87b0=; b=NPdqfWZQW7ok68F99nZSWB4EiC
+        iwCmPSaRU9YsXGBoldjY8WpNe37PvEZaNdwkLE3rFLqoiUMNDjhE9jkFexjMOPz/qBKa2JNDLDFP8
+        VCNf4Go22JyscS7ePxXqYnql/ku5lrMhaj+rksUXN32t5uX1cDb8pk9Y+j4S57mNTCoQu8p15MGm4
+        tmvLubpFBME8Ch87n5HtF2Js/k4HiXz0WzM3tA1LPvQSUfaPtAZdH/LH5uMVg8tpX7UiAEAEC7BxR
+        aWnrppdR6e34JZBtLBap/q0wWpU1vRGQZFswa+BDAOmBy0xEFQYnQY5lnkECNrJkFChlgqQDEGnwO
+        zjla2clQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jEsI2-0004IT-Ep; Thu, 19 Mar 2020 10:20:38 +0000
+Date:   Thu, 19 Mar 2020 03:20:38 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v8 00/25] Change readahead API
+Message-ID: <20200319102038.GE3590@infradead.org>
+References: <20200225214838.30017-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37bf11cc-92b3-2b15-ee87-0cbe8c662cc7@suse.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200225214838.30017-1-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 10:53:22AM +0200, Nikolay Borisov wrote:
-> Is this correct though, in case of buffered reads we are always called
-> with bi_status != BLK_STS_OK (we are called from end_bio_extent_readpage
-> in case uptodate is false,  which happens if failed_bio->bi_status is
-> non-zero. Additionally the bio is guaranteed to not be cloned because
-> there is : ASSERT(!bio_flagged(bio, BIO_CLONED));
-
-> If I understand this correctly this is the "this is a DIO " branch. IMO
-> it'd be clearer if you had bool is_dio = bio_flagged(failed_bio,
-> BIO_CLONED) at the top of the function and you used that.
-
-The non-fragile way would be to pass an explicit is_bio argument.
-The is cloned thing is just a side effect of the weird cloning done
-in the bio path, which hopefully won't survive too long.
+Any plans to resend this with the little nitpicks fixed?  I'd love to
+get this series into 5.7..
