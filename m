@@ -2,129 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F1B18C0A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 20:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB40F18C0F7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 21:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgCSTpY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 15:45:24 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:35642 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgCSTpY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 15:45:24 -0400
-Received: by mail-wm1-f45.google.com with SMTP id m3so3795379wmi.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 12:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WL8A32uv39P04mnohuFjgpwkaFen+Ceu1g3CD4m72pI=;
-        b=oHnNPCtfS+ShenLzJ36o36hEIk5QvPJqWooRDXWER0lhNz04zXwngHx5p7Go2IQLFX
-         0KaTcRSRFBdCfftg3f6Fl6wNYaNarqskE0DrfY9cxpPosxk80UkmsklCx7x54gYXxLQn
-         aEED0HHgfb/ZNXhjo+yN2x8tw66gUTBrLs0JAX1wv48ipY2VTppgC+1HWoQ1zkvkQI+3
-         r2iO6Ed+XzdG3oK9cHaUFmJZvFVkxxMQyU908POhXjfA14SIY7WyUakJDJ/rAV7Z65Hp
-         XLdfgKtxOnIOXrkuiO0MKVR67u76bcKseieoe06EsgTLFeZ8CAvwYZHQuEume4Z/sugI
-         mY/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WL8A32uv39P04mnohuFjgpwkaFen+Ceu1g3CD4m72pI=;
-        b=ta/Rz+wcrGV7cezRRGtefHdqBL06chEA35e0qDjNuheDYrlxxYVMSH4TRU9kHHK04c
-         xwtwkbwROF/JMqNXTHqN4tIbTJlVpnxC4pxswnYLHTu4U425DUeQOtTVLi0wvolV7RxV
-         lzxevQdxsbvCy2MlwhfjJXuKvG5SQXEB4zUCWc1NelotE2ewn9GTem2PbvGtA+oSFbwV
-         gTgsng0mwKGqe6EPeICIM7kBW1NvBWLpIuormIazkbs5qS+2ywtB+pYBnhV2d9/J5hMT
-         t5JBYVQWH6F0B8OnnU01G6Nadr8PbNy45qeUb3/LPu6QLZr1GNN/EXwXK9J/tqMKO1vr
-         yXig==
-X-Gm-Message-State: ANhLgQ2G6gv+tvrq1V4wUfv9kGr6aGeS7cwN41/Ms/kQxpqLh3iv6MCL
-        NATzHWkm93pXj4jYNHhUdAOvAZN5fylXu/cbR6TqQA==
-X-Google-Smtp-Source: ADFU+vvCBq854YRX+M4Qt5tl792nmg8mGFCU63WrzR8WpIemQqTtXSEKanMF+f52fYmCfUVS6quQHGdm5QNNxnHoFYc=
-X-Received: by 2002:a05:600c:2f1a:: with SMTP id r26mr5715031wmn.11.1584647122577;
- Thu, 19 Mar 2020 12:45:22 -0700 (PDT)
+        id S1726825AbgCSUDG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 16:03:06 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:53658 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725747AbgCSUDF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 16:03:05 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Mar 2020 16:03:04 EDT
+Received: from venice.bhome ([84.220.24.82])
+        by smtp-32.iol.local with ESMTPA
+        id F1FmjMokSa1lLF1Fmjn0A5; Thu, 19 Mar 2020 20:54:54 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1584647694; bh=rq3NyhbGyHT5EsKDs/TKxlk/Z3sEArfiG4o+iBtGCFE=;
+        h=From;
+        b=ZP9XpLq7cNBn1FDQR0KAWF9V64REw9qjKfiGbcjZsS91iN2eVkUGz9p0rOJRJ38QF
+         hZ9LOj2L+6O3EKd49xIZWF0zTyoq2Rg5EkY25VhAKLffhy/QoszTw60XH6MQAIqCpV
+         yTV7AL3SAM/d1grilpwFtKErweGkkMPF4NN2sjk/bRUSVq/3IzP5kp+6/Tf79ZA/fz
+         2PScyL5oHiRn1e6K4waNgsqZ17ftyIINa7VuJGN9v7zqyNhMHnCtcAJNajLgSF389Z
+         K9wwgh/7d0R2cJD/2AwA9y1uGvxbb+KYNVP5aB1cBi7I3BSda+nU+QXHkwOV3Tvtgx
+         1QO7qJ8clph6A==
+X-CNFS-Analysis: v=2.3 cv=IOJ89TnG c=1 sm=1 tr=0
+ a=ijacSk0KxWtIQ5WY4X6b5g==:117 a=ijacSk0KxWtIQ5WY4X6b5g==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=9nAILHoIlc5t56OExrwA:9
+ a=N8zUKh_Qyy9kX79e:21 a=vHMWM28cgbhlxPgr:21 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH RFC v2] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200319180527.4266-1-kreijack@libero.it>
+ <20200319180527.4266-2-kreijack@libero.it>
+ <07b8103c-bae1-5baf-8892-94d289cef4ab@toxicpanda.com>
+ <baef0390-9a9d-7fba-3a6d-378083f0d83a@libero.it>
+ <5efe5d08-b1bb-674b-eb7e-97586efaf744@toxicpanda.com>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <78dab278-2d61-031c-146e-ae1deb16d62e@inwind.it>
+Date:   Thu, 19 Mar 2020 20:54:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
-In-Reply-To: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 19 Mar 2020 13:45:06 -0600
-Message-ID: <CAJCQCtTGo_phSJ+rw4Y6nqsDrcmQdLDMX4osQ=4kZe5yZc21Ug@mail.gmail.com>
-Subject: Re: How do damaged root trees happen and how to protect against power cut?
-To:     Carsten Behling <carsten.behling@googlemail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5efe5d08-b1bb-674b-eb7e-97586efaf744@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfCGMOGY2iR/WDfNBosDDPb0gYdfcJMR5O/VC15gxnLOYqz1XlBRwkTpRmH/1KUz+/OOpv4RqmN4PwbwKnTqriuLjQeAg5/0Ibkgwc/4ixAbHhuBK0LCR
+ xqwxfu0Fm4oqqnfVBOCd8BRb5ArRxzw7a4JvwJWM0YM3jiXtQtvFG9RhdzJuG/Xuzt77TCyDrbnfqxoFhYDGxatdP510iW7mhHw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 9:14 AM Carsten Behling
-<carsten.behling@googlemail.com> wrote:
->
-> Hi,
->
-> the investigation of damaged root trees are already discussed in the
-> thread starting with
->
-> https://www.spinics.net/lists/linux-btrfs/msg74019.html
->
-> However, one point wasn't discussed at the end:
->
-> > I thought so too. Is there a reason why they ended up being colocated?
-> > I'm surprised with all the redundancies btrfs is capable of, this can
-> > happen. Was it because the volume was starting to become full? (This
-> > whole exercise of turning on mirroring was because we're migrating to
-> > bigger disks)
->
-> Because I have the same issue on an embedded system, after a power
-> cut, where none of the root tree copies are usable anymore, I'd also
-> like to know :
->
-> - How can we end up in that recoverable state?
-> - Why can't we protect the fs against the unrecoverable state?
-> - Why is that error is so hard to recover?
+On 3/19/20 7:50 PM, Josef Bacik wrote:
+> On 3/19/20 2:44 PM, Goffredo Baroncelli wrote:
+>> Hi Josef,
+>>
+>> On 3/19/20 7:15 PM, Josef Bacik wrote:
+>>> On 3/19/20 2:05 PM, Goffredo Baroncelli wrote:
+>>>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>>>
+>>>> Add a new ioctl to get info about chunk without requiring the root privileges.
+>>>> This allow to a non root user to know how the space of the filesystem is
+>>>> allocated.
+>>>>
+>>>> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+>>>> ---
+>>>>   fs/btrfs/ioctl.c           | 211 +++++++++++++++++++++++++++++++++++++
+>>>>   include/uapi/linux/btrfs.h |  38 +++++++
+>>>>   2 files changed, 249 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>>>> index 40b729dce91c..e9231d597422 100644
+>>>> --- a/fs/btrfs/ioctl.c
+>>>> +++ b/fs/btrfs/ioctl.c
+>>>> @@ -2234,6 +2234,215 @@ static noinline int btrfs_ioctl_tree_search_v2(struct file *file,
+>>>>       return ret;
+>>>>   }
+>>>> +/*
+>>>> + * Return:
+>>>> + *    0        -> copied all data, possible further data
+>>>> + *    1        -> copied all data, no further data
+>>>> + *    -EAGAIN        -> not enough space, restart it
+>>>> + *    -EFAULT        -> the user passed an invalid address/size pair
+>>>> + */
+>>>> +static noinline int copy_chunk_info(struct btrfs_path *path,
+>>>> +                   char __user *ubuf,
+>>>> +                   size_t buf_size,
+>>>> +                   u64 *used_buf,
+>>>> +                   int *num_found,
+>>>> +                   u64 *offset)
+>>>> +{
+>>>> +    struct extent_buffer *leaf;
+>>>> +    unsigned long item_off;
+>>>> +    unsigned long item_len;
+>>>> +    int nritems;
+>>>> +    int i;
+>>>> +    int slot;
+>>>> +    struct btrfs_key key;
+>>>> +
+>>>> +    leaf = path->nodes[0];
+>>>> +    slot = path->slots[0];
+>>>> +    nritems = btrfs_header_nritems(leaf);
+>>>> +
+>>>> +    for (i = slot; i < nritems; i++) {
+>>>> +        u64 destsize;
+>>>> +        struct btrfs_chunk_info ci;
+>>>> +        struct btrfs_chunk chunk;
+>>>> +        int j, chunk_size;
+>>>> +
+>>>> +        item_off = btrfs_item_ptr_offset(leaf, i);
+>>>> +        item_len = btrfs_item_size_nr(leaf, i);
+>>>> +
+>>>> +        btrfs_item_key_to_cpu(leaf, &key, i);
+>>>> +        /*
+>>>> +         * we are not interested in other items type
+>>>> +         */
+>>>> +        if (key.type != BTRFS_CHUNK_ITEM_KEY)
+>>>> +            return 1;
+>>>> +
+>>>
+>>> We'll leak this to user space, this should probably be handled differently right?  Thanks,
+>>
+>> Likely I am missing something obvious, but I can't understand what can be leaked and why. Could you be so kindly to elaborate your answer ?
+>> Many thanks
+>>
+> 
+> we return 1 here
+> 
+> +               ret = copy_chunk_info(path, ubuf, buf_size,
+> +                                     &used_buf, items_count, offset);
+> +
+> +               btrfs_release_path(path);
+> +               if (ret)
+> +                       break;
+> 
+> this bit breaks and we return ret
+> 
+> +       ret = search_chunk_info(inode, &arg.offset, &arg.items_count,
+> +                       argp + data_offset, buf_size - data_offset);
+> +
+> +       if (copy_to_user(argp, &arg, data_offset))
+> +               return -EFAULT;
+> +
+> +       return ret;
+> 
+> and we return ret here.  So we'd return 1 to userspace.  Thanks,
+> 
+> Josef
 
-I'm interested in this too. Also I want to know whether and what Btrfs
-debug or consistency check flags are applicable in discovering these
-problems as near to the time as they occur; whether they're Btrfs,
-block layer, or device problems.
+Good catch !
+Thanks for the review. I updated the patch and now I am testing it.
 
-
-> Furthermore, I'd like to know what would be the best solution for an
-> embedded system where power cuts are unavoidable (because of a missing
-> circuit). I'm thinking of using a read-only rootfs with a separate
-> data partition to ensure at least a booting system. But anyway, the
-> data partition could end up in the same state.
->
-> I'm not sure if it would be also a good option working with snapshots.
-> My space on the embedded device is limited to 8GB. The OS already
-> takes about 4GB.
-
-Seed device?
-
-Create a Btrfs file system, use space_cache v2,
-compress-force=zstd:16, and write the root image. Resize the file
-system to minimum. Set the seed flag. That's the base image. Part of
-the provisioning will be to 'btrfs device add' a 2nd partition, and
-remount read-write. This means two Btrfs file systems exist, each with
-their own UUID. You can reference the read-only seed by its UUID; and
-you can reference the read-write volume by its own UUID. On-disk
-metadata for this read-write volume points to both the read-only seed
-devid1, and the writable 2nd device devid2.
-
-Make sure write cache on the physical media is disabled.
-
-It might be true that 'flushoncommit' and 'notreelog' reduce
-complexity for recovery following a crash; at the expense of losing
-some data in the latter case. (It's been suggested before in the
-archives, but I have no good way to test if results in less instance
-of crash/powerfail recoveries because I personally haven't hit any
-problems with the default mount options, despite hundreds of
-intentional force power offs while writing.)
-
-For embedded systems, consider using industrial flash. They are slower
-but more reliable, especially in the case of a power cut. SD Cards are
-notorious for corruption and going permanently read-only when power is
-cut; but I've had this problem with USB sticks too.
+BR
+G.Baroncelli
 
 
 -- 
-Chris Murphy
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
