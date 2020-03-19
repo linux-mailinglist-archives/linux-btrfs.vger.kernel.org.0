@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3EE18B9A1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 15:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253D018B9AD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 15:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727279AbgCSOmh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 10:42:37 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38323 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727217AbgCSOmg (ORCPT
+        id S1727217AbgCSOqr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 10:46:47 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41343 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727095AbgCSOqq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 10:42:36 -0400
-Received: by mail-qk1-f196.google.com with SMTP id h14so3264554qke.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 07:42:35 -0700 (PDT)
+        Thu, 19 Mar 2020 10:46:46 -0400
+Received: by mail-qt1-f195.google.com with SMTP id i26so1970854qtq.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 07:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I5Z0gGSiDCPjqqbknOVjDdQbdBaDQLgBRywern8Cn5U=;
-        b=t40h6xT9LZXmA3x/VEctwFPWAsatHFsVNxVzLXzoiyh0Dk2nLeKLTrmeSjMXlNSTwC
-         Iz/85B1T8MVTb6dix9R3omZ+LngM6nvzSCxW3Xm5kOf5/Xv09iko1NtkR/+GG00Z70h7
-         wQhrRodViX9dXN/yuDVOTO5VJ9bPiWOkSwSIkWzOqf/yXjRareTH4vQ6O2JEzyvtg9fs
-         qkVqgDU2qyRJDjkkai+QKYW6qQSJFijLeJhkoi0zyDJYxkplZkxl9eIE/TFDmYE4pG2a
-         lz2khWvJ71G7Zdjb78MFTScludbOsIbwM89e4uOYKqoR9DtohyTCS/uxiBndrUJVFawT
-         rbjg==
+        bh=dqAf51mxC+S9i3OmpPb1VcGsCSSDzscvq3qaHihWBdY=;
+        b=m5I6ojkWMz7Ag1ZeGmVPvOGtasauuhgKuQm4M6niUiuN8wZP0Rz2S01Y6AOfp555K1
+         Tfz6ZvlV6pX/KLpSPX9Ovg9RuCgiAPVvDPEmTYt4uZu14TvjEWy9dnMZd/mjjbdee3rc
+         qw/SOKuIa44jVKXxUvcxNk2RX+pmtvT3jZtWHMOrvLvXl6gaMxU2PRDGOfSIgGYIwJZw
+         7QXkBud5GNnX2oMQZyptdBDF7PhxjukwOXkc4tVBQxUxLvpFn39xUFYY4lFkNXfyijDk
+         Pl0Dq4mhfyCpEI35FXrYC82cslhhnAi631SPvEcN507VrIBht7k2gAPB5rdOUxgL8+zT
+         F3Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=I5Z0gGSiDCPjqqbknOVjDdQbdBaDQLgBRywern8Cn5U=;
-        b=GzniSp2pqyH+YmjekHgvH59PfhxG1cBv3u0+boWOO9AV6eMpB8JSBDgwGsdi5e01pk
-         TkHrVzHoSAt7WhOyd030yDkSom14sFHzpg26zFChAkuatP/xqHBkJSrs8fswbxxoVAL/
-         oWUrR1SEoGkBE7w/A8yIiIJybd8vUzNyxp1mwsxi7DzaukQZXC67JQvTyp6uS/HoWPK7
-         j8rsMwQWFAtNJg+fDDfip0dlBWoZ8F8tNIyEftusPr3AIIxy76K+ly7sBAHa+hHcAkHz
-         ADViyM9ssYyb0/nOsnz4hfZRXifDv+WJz1J3oC2YtsNJsp66lQYr/9cYLKNiPTxlb9d/
-         cDpg==
-X-Gm-Message-State: ANhLgQ3FE/8lElZWxihHhaczTfhwtCrXs2+0flboyneVCbKcO6Mt5yoK
-        QceE5tV0/As+slOMiIHlH9wqNQ==
-X-Google-Smtp-Source: ADFU+vuR40o0S4+ufE8nvUgG5uIbs7NSZ4fTBd4lmNXrtXpATHpJVyffg2IEEvnfXmk5PWSx/4ahxA==
-X-Received: by 2002:ae9:e88c:: with SMTP id a134mr3311397qkg.183.1584628954834;
-        Thu, 19 Mar 2020 07:42:34 -0700 (PDT)
+        bh=dqAf51mxC+S9i3OmpPb1VcGsCSSDzscvq3qaHihWBdY=;
+        b=YhVb15AAWYIAhRTNxhqTmDecWzG9EzeX/N8OGbkuKL+9mcKxcZJDD9aSQ5Hj5HmVw3
+         0b2EFzn2QHg2oewULnhH/KpdL2LsYqww2e/BCHHH53oIS+w3LwUolGtwLsQ1RkTqtbMV
+         OO4hhAJuxkrV0VEKEYxW41vnYwbbUveqSF3ONl7CEBmoB2JmYVAKXZo0VHlQOrWhrKED
+         WMSG6E7O9Ap/HwbEfajoOhqf4Qs5eIFBNjgFtbFPcB6UFLSBVKhrPv3IS27jN1F+xkoA
+         CYByLesqleXHZ47w2gV84Pa4qiftOwjHbE3QWCabjvM7iKP7YsWlWm1ItHBJEE3maQwD
+         BY2w==
+X-Gm-Message-State: ANhLgQ15z33mnaqofeRPGIbRWl4vwKqtwZ6OwG1ypYzHiIzF4MVE2qu+
+        k8FI5r9ycHNTq3Oa+X1J3y3upA==
+X-Google-Smtp-Source: ADFU+vvW21ddSk2zql9w2CIuApm6ZCr+roIqnSumZVDHYvpf+BxbLYvdtLug2QM/6A6YOQVQkTJqWA==
+X-Received: by 2002:ac8:304e:: with SMTP id g14mr3289032qte.376.1584629205786;
+        Thu, 19 Mar 2020 07:46:45 -0700 (PDT)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id x51sm1726709qtj.82.2020.03.19.07.42.33
+        by smtp.gmail.com with ESMTPSA id b6sm1598076qtj.15.2020.03.19.07.46.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 07:42:34 -0700 (PDT)
-Subject: Re: [PATCH] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-To:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Cc:     Goffredo Baroncelli <kreijack@inwind.it>
-References: <20200315152418.7784-1-kreijack@libero.it>
- <20200315152418.7784-2-kreijack@libero.it>
+        Thu, 19 Mar 2020 07:46:45 -0700 (PDT)
+Subject: Re: [PATCH RFC 01/39] btrfs: backref: Introduce the skeleton of
+ btrfs_backref_iter
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20200317081125.36289-1-wqu@suse.com>
+ <20200317081125.36289-2-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e7d0eb8a-82f0-0d6c-00f4-de74c37d27a7@toxicpanda.com>
-Date:   Thu, 19 Mar 2020 10:42:33 -0400
+Message-ID: <3b73dcf6-0383-016e-887a-c6fa8830f049@toxicpanda.com>
+Date:   Thu, 19 Mar 2020 10:46:44 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200315152418.7784-2-kreijack@libero.it>
+In-Reply-To: <20200317081125.36289-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,202 +67,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/15/20 11:24 AM, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
+On 3/17/20 4:10 AM, Qu Wenruo wrote:
+> Due to the complex nature of btrfs extent tree, when we want to iterate
+> all backrefs of one extent, it involves quite a lot of work, like
+> searching the EXTENT_ITEM/METADATA_ITEM, iteration through inline and keyed
+> backrefs.
 > 
-> Add a new ioctl to get info about chunk without requiring the root privileges.
-> This allow to a non root user to know how the space of the filesystem is
-> allocated.
+> Normally this would result pretty complex code, something like:
+>    btrfs_search_slot()
+>    /* Ensure we are at EXTENT_ITEM/METADATA_ITEM */
+>    while (1) {	/* Loop for extent tree items */
+> 	while (ptr < end) { /* Loop for inlined items */
+> 		/* REAL WORK HERE */
+> 	}
+>    next:
+>    	ret = btrfs_next_item()
+> 	/* Ensure we're still at keyed item for specified bytenr */
+>    }
 > 
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+> The idea of btrfs_backref_iter is to avoid such complex and hard to
+> read code structure, but something like the following:
+> 
+>    iter = btrfs_backref_iter_alloc();
+>    ret = btrfs_backref_iter_start(iter, bytenr);
+>    if (ret < 0)
+> 	goto out;
+>    for (; ; ret = btrfs_backref_iter_next(iter)) {
+> 	/* REAL WORK HERE */
+>    }
+>    out:
+>    btrfs_backref_iter_free(iter);
+> 
+> This patch is just the skeleton + btrfs_backref_iter_start() code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/ioctl.c           | 215 +++++++++++++++++++++++++++++++++++++
->   include/uapi/linux/btrfs.h |  38 +++++++
->   2 files changed, 253 insertions(+)
+>   fs/btrfs/backref.c | 111 +++++++++++++++++++++++++++++++++++++++++++++
+>   fs/btrfs/backref.h |  39 ++++++++++++++++
+>   2 files changed, 150 insertions(+)
 > 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 173758d86feb..fbe8c86f0de6 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2282,6 +2282,219 @@ static noinline int btrfs_ioctl_tree_search_v2(struct file *file,
->   	return ret;
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index 327e4480957b..33fec39bf5ef 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -2299,3 +2299,114 @@ void free_ipath(struct inode_fs_paths *ipath)
+>   	kvfree(ipath->fspath);
+>   	kfree(ipath);
 >   }
->   
-> +/*
-> + * Return:
-> + *	0		-> copied all data, possible further data
-> + *	1		-> copied all data, no further data
-> + *	-EAGAIN		-> not enough space, restart it
-> + *	-EFAULT		-> the user passed an invalid address/size pair
-> + */
-> +static noinline int copy_chunk_info(struct btrfs_path *path,
-> +			       char __user *ubuf,
-> +			       size_t buf_size,
-> +			       u64 *used_buf,
-> +			       int *num_found,
-> +			       u64 *offset)
+> +
+> +struct btrfs_backref_iter *btrfs_backref_iter_alloc(
+> +		struct btrfs_fs_info *fs_info, gfp_t gfp_flag)
 > +{
-> +	struct extent_buffer *leaf;
-> +	unsigned long item_off;
-> +	unsigned long item_len;
-> +	int nritems;
-> +	int i;
-> +	int slot;
-> +	int ret = 0;
-> +	struct btrfs_key key;
+> +	struct btrfs_backref_iter *ret;
 > +
-> +	leaf = path->nodes[0];
-> +	slot = path->slots[0];
-> +	nritems = btrfs_header_nritems(leaf);
+> +	ret = kzalloc(sizeof(*ret), gfp_flag);
+> +	if (!ret)
+> +		return NULL;
 > +
-> +	for (i = slot; i < nritems; i++) {
-> +		u64 destsize;
-> +		struct btrfs_chunk_info ci;
-> +		struct btrfs_chunk chunk;
-> +		int j, chunk_size;
-> +
-> +		item_off = btrfs_item_ptr_offset(leaf, i);
-> +		item_len = btrfs_item_size_nr(leaf, i);
-> +
-> +		btrfs_item_key_to_cpu(leaf, &key, i);
-> +		/*
-> +		 * we are not interested in other items type
-> +		 */
-> +		if (key.type != BTRFS_CHUNK_ITEM_KEY) {
-> +			ret = 1;
-> +			goto out;
-
-out doesn't clean anything up, just return 1;
-
-> +		}
-> +
-> +		/*
-> +		 * In any case, the next search must start from here
-> +		 */
-> +		*offset = key.offset;
-> +		read_extent_buffer(leaf, &chunk, item_off, sizeof(chunk));
-> +
-> +		/*
-> +		 * chunk.num_stripes-1 is correct, because btrfs_chunk includes
-> +		 * already a stripe
-> +		 */
-> +		destsize = sizeof(struct btrfs_chunk_info) +
-> +			(chunk.num_stripes - 1) * sizeof(struct btrfs_stripe);
-> +
-> +		BUG_ON(destsize > item_len);
-
-We should be EIO'ing at search slot time if this happens so I think this is 
-redundant, however if we're going to catch corruption lets return an error, so 
-do something like
-
-if (destsize > item_len) {
-	ASSERT(0);
-	return -EINVAL;
-}
-
-The assert will catch developers if they make a mistake, and if there's fs 
-corruption it'll just return an error.
-
-> +
-> +		if (buf_size < destsize + *used_buf) {
-> +			if (*num_found)
-> +				/* try onother time */
-> +				ret = -EAGAIN;
-> +			else
-> +				/* in any case the buffer is too small */
-> +				ret = -EOVERFLOW;
-> +			goto out;
-
-Again, just return, we're not cleaning anything.
-
-> +		}
-> +
-> +		/* copy chunk */
-> +		chunk_size = offsetof(struct btrfs_chunk_info, stripes);
-> +		memset(&ci, 0, chunk_size);
-> +		ci.length = btrfs_stack_chunk_length(&chunk);
-> +		ci.stripe_len = btrfs_stack_chunk_stripe_len(&chunk);
-> +		ci.type = btrfs_stack_chunk_type(&chunk);
-> +		ci.num_stripes = btrfs_stack_chunk_num_stripes(&chunk);
-> +		ci.sub_stripes = btrfs_stack_chunk_sub_stripes(&chunk);
-> +		ci.offset = key.offset;
-> +
-> +		if (copy_to_user(ubuf + *used_buf, &ci, chunk_size)) {
-> +			ret = -EFAULT;
-> +			goto out;
-
-Same here.
-
-> +		}
-> +		*used_buf += chunk_size;
-> +
-> +		/* copy stripes */
-> +		for (j = 0 ; j < chunk.num_stripes ; j++) {
-> +			struct btrfs_stripe chunk_stripe;
-> +			struct btrfs_chunk_info_stripe csi;
-> +
-> +			/*
-> +			 * j-1 is correct, because btrfs_chunk includes already
-> +			 * a stripe
-> +			 */
-> +			read_extent_buffer(leaf, &chunk_stripe,
-> +					item_off + sizeof(struct btrfs_chunk) +
-> +						sizeof(struct btrfs_stripe) *
-> +						(j - 1), sizeof(chunk_stripe));
-> +
-> +			memset(&csi, 0, sizeof(csi));
-> +
-> +			csi.devid = btrfs_stack_stripe_devid(&chunk_stripe);
-> +			csi.offset = btrfs_stack_stripe_offset(&chunk_stripe);
-> +			memcpy(csi.dev_uuid, chunk_stripe.dev_uuid,
-> +				sizeof(chunk_stripe.dev_uuid));
-> +			if (copy_to_user(ubuf + *used_buf, &csi, sizeof(csi))) {
-> +				ret = -EFAULT;
-> +				goto out;
-> +			}
-> +			*used_buf += sizeof(csi);
-> +		}
-> +
-> +		++(*num_found);
+> +	ret->path = btrfs_alloc_path();
+> +	if (!ret) {
+> +		kfree(ret);
+> +		return NULL;
 > +	}
 > +
-> +	ret = 0;
-> +	if (*offset < (u64)-1)
-> +		++(*offset);
-> +out:
+> +	/* Current backref iterator only supports iteration in commit root */
+> +	ret->path->search_commit_root = 1;
+> +	ret->path->skip_locking = 1;
+> +	ret->path->reada = READA_FORWARD;
 
-Drop out.
+Lets kill this by default, the backref stuff is going to be random reads almost 
+always.
 
-> +	return ret;
-> +}
-> +
-> +static noinline int search_chunk_info(struct inode *inode, u64 *offset,
-> +				      int *items_count,
-> +				      char __user *ubuf, u64 buf_size)
-> +{
-> +	struct btrfs_fs_info *info = btrfs_sb(inode->i_sb);
-> +	struct btrfs_root *root;
-> +	struct btrfs_key key;
-> +	struct btrfs_path *path;
-> +	int ret;
-> +	u64 used_buf = 0;
-> +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	/* search for BTRFS_CHUNK_TREE_OBJECTID tree */
-> +	key.objectid = BTRFS_CHUNK_TREE_OBJECTID;
-> +	key.type = BTRFS_ROOT_ITEM_KEY;
-> +	key.offset = (u64)-1;
-> +	root = btrfs_read_fs_root_no_name(info, &key);
-> +	if (IS_ERR(root)) {
-> +		btrfs_err(info, "could not find root\n");
-> +		btrfs_free_path(path);
-> +		return -ENOENT;
-> +	}
+<snip>
 
-This will need to be rebased onto misc-next, as we now hold refs on roots we're 
-looking up.  I don't mind the overall concept, just needs to be cleaned up.  Thanks,
+> +
+> +	/*
+> +	 * Only support iteration on tree backref yet.
+> +	 *
+> +	 * This is extra precaustion for non skinny-metadata, where
+
+precaution
+
+Thanks,
 
 Josef
