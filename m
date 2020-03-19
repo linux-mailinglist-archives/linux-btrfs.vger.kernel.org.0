@@ -2,98 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC7118BA84
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EF718BABD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgCSPIA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 11:08:00 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.119]:30116 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727002AbgCSPIA (ORCPT
+        id S1727788AbgCSPOV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 11:14:21 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:44274 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727761AbgCSPOV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 11:08:00 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id C4995A72B4
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 10:07:59 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id Ewm7jpswd1s2xEwm7jYJUl; Thu, 19 Mar 2020 10:07:59 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tR+EP+xci3Uwfa8x+ZQJeeUhSaDAWTKVQaqaYbkRaRI=; b=ta3r3oxiyyMli2htL3P/OYC+62
-        TDJ9fQDwmau3GCJL0ZhckatMxOoOQNpbM6L6/tDcRnP6RNcavM3VHlGpvgGKkjMte3dy7G/7MWiCD
-        AsmBhj6gh/EdNrE6+IZ3lw3Gbwaw4H+XlMVDxHk63EAtXZ66/LQW+eOanCchULLIMb/iTSUID9qMZ
-        FL+olG+kAf7nkvsEjFdJQpb9/fg8FdKqHAyOxkAK3Uuak2LRHDEWV2hkaZiEDCCQiyMeTUgwBlisJ
-        v+3jUKouFVcknXTANBWLnSF5HG5TKeiAOA5C8Pgre6A15SaGgM+XMkE8JDnPc+xc1iKFEGC9pBbGE
-        MGQHkprA==;
-Received: from [191.249.66.103] (port=60064 helo=hephaestus.prv.suse.net)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jEwm7-000DCD-8h; Thu, 19 Mar 2020 12:07:59 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: restore: Avoid SYMLINK messages
-Date:   Thu, 19 Mar 2020 12:10:36 -0300
-Message-Id: <20200319151036.11723-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.25.0
+        Thu, 19 Mar 2020 11:14:21 -0400
+Received: by mail-lf1-f45.google.com with SMTP id y2so1915489lfe.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 08:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=oR4lumHf3DWZTy7FPnCop9jzCcqACSNhB918dyl8gFg=;
+        b=lN0UqgQFu50v3PD0JQ/NF6oYS/lfSNi1zTdZv+xgq7ecRM20AjNozzyRxnKzqTsDTg
+         W0A9FhD6swBRbynCUOuT/FsVScEr3FQcJowQrAml5bxqz/DsoYbhlU7B7fFZhiTifyCo
+         1mjtLEiVcCAecLogGy+hjvrOS/7bEu4+rcKmad9yZeNdPgDU64disxoLXy35oLbkqVNC
+         /L1yjGUwqMp8RDUk3RBPbeCj3If0l2bM2LtADaNaaE67YbgveXuy3vaCuc5XHFsZgCAA
+         h663/mQvT6A8yhHmgysg1RQ9Q1yU+xZ1IssBoAGk2lo14RZyzHdfUZLjbhcbLaFY+7k1
+         ycWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=oR4lumHf3DWZTy7FPnCop9jzCcqACSNhB918dyl8gFg=;
+        b=pCUBq2yzY3h19rQe4gSul2Md2JHFjWVJxixSxRo+5D2qcjfh4WUvLdUjcIvrpZgGGZ
+         fOjFngKt8dHOa1hpS8897i+kI/QYYSAhf8rS0HH4TL4PGD6abHj9k5w2O7Av4tQrIJc5
+         ohsfJfn3b2unX0UQVGjfaldkcE8Aq6O9ZzvnskRJak6zc6OcvRvFaWlVRTw7YyJKnoSO
+         kTDoDJq/InlS1msJ8GxJIbwSOantXIxfXiE+GdN/DS3vUn2e8NIUHNDsDBHVId4xdEM0
+         zY/rEHsDnKv2SfVNLf2buJWr5iAXAi5toJb08iTzFackSbta3ofrSNhjx1T74TSwL9zB
+         EU3Q==
+X-Gm-Message-State: ANhLgQ0UFDEY1xwlIpQw753lUgWNMZ8SbCn7gjqmBznlT4ZlLtAeN+Cl
+        C0b7lCYEMh45MgGochvvrZdebwpLjgpe029pGbduWPPS
+X-Google-Smtp-Source: ADFU+vuu6NpcRTLtQCATQHaHxkK9Xt4deAgR0I9diYq/mk67+WEkHA/EuQGwL/BznprA0XQoufRPF+Cjy/KYKgzUKrc=
+X-Received: by 2002:ac2:54a4:: with SMTP id w4mr2445570lfk.48.1584630858141;
+ Thu, 19 Mar 2020 08:14:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 191.249.66.103
-X-Source-L: No
-X-Exim-ID: 1jEwm7-000DCD-8h
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.prv.suse.net) [191.249.66.103]:60064
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 7
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+From:   Carsten Behling <carsten.behling@googlemail.com>
+Date:   Thu, 19 Mar 2020 16:14:07 +0100
+Message-ID: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
+Subject: How do damaged root trees happen and how to protect against power cut?
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Hi,
 
-Some scripts can still rely in this message, so make it available only
-if --verbose was informed.
+the investigation of damaged root trees are already discussed in the
+thread starting with
 
-Fixes: #127
+https://www.spinics.net/lists/linux-btrfs/msg74019.html
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- cmds/restore.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+However, one point wasn't discussed at the end:
 
-diff --git a/cmds/restore.c b/cmds/restore.c
-index 8eaafd60..73a464c3 100644
---- a/cmds/restore.c
-+++ b/cmds/restore.c
-@@ -898,7 +898,9 @@ static int copy_symlink(struct btrfs_root *root, struct btrfs_key *key,
- 			goto out;
- 		}
- 	}
--	printf("SYMLINK: '%s' => '%s'\n", path_name, symlink_target);
-+
-+	if (verbose)
-+		printf("SYMLINK: '%s' => '%s'\n", path_name, symlink_target);
- 
- 	ret = 0;
- 	if (!restore_metadata)
--- 
-2.25.0
+> I thought so too. Is there a reason why they ended up being colocated?
+> I'm surprised with all the redundancies btrfs is capable of, this can
+> happen. Was it because the volume was starting to become full? (This
+> whole exercise of turning on mirroring was because we're migrating to
+> bigger disks)
 
+Because I have the same issue on an embedded system, after a power
+cut, where none of the root tree copies are usable anymore, I'd also
+like to know :
+
+- How can we end up in that recoverable state?
+- Why can't we protect the fs against the unrecoverable state?
+- Why is that error is so hard to recover?
+
+Furthermore, I'd like to know what would be the best solution for an
+embedded system where power cuts are unavoidable (because of a missing
+circuit). I'm thinking of using a read-only rootfs with a separate
+data partition to ensure at least a booting system. But anyway, the
+data partition could end up in the same state.
+
+I'm not sure if it would be also a good option working with snapshots.
+My space on the embedded device is limited to 8GB. The OS already
+takes about 4GB.
+
+Best regards
+Carsten
