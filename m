@@ -2,167 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED23418BFA7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 19:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F1B18C0A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 20:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgCSSuu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 14:50:50 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36751 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgCSSuu (ORCPT
+        id S1725817AbgCSTpY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 15:45:24 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:35642 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgCSTpY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 14:50:50 -0400
-Received: by mail-qk1-f196.google.com with SMTP id d11so4284723qko.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 11:50:49 -0700 (PDT)
+        Thu, 19 Mar 2020 15:45:24 -0400
+Received: by mail-wm1-f45.google.com with SMTP id m3so3795379wmi.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 12:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uoro3RQ0NH1PWjVf5Voxl9ATmDMM6d9BArmqUEGS9w8=;
-        b=m2XqyvxLKNgRZ0HDvvkR7ZpoEf5QmvVxA4J7nkzP9JaEZ6GiXX6Ni9L7ozGdcs1OTc
-         6LhhxCH03hcjXsnB2dZAPts5x1NHbcZoSNz09rZLYASc4HBd5tzCbaUD8ig72oQaRoNn
-         11MRyP8Oazn9uiKfgg4WplRtGBBoVwtbn/8T1Ibzj6H14zrBOZ2aAt+wM+3ethN8IG/Y
-         6pi+gggRwWANntGOmHnrFFXnLzlLcl27a8+JN5YIZiKCV7BaThfoZBHt513a6d9uCksR
-         yHJE/NjsPZdZGJ8uYFwNgqoI+Avmgn+145Z6/L26rZor/Iz56qbsAxfrtnG33sCntnlN
-         YLTA==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WL8A32uv39P04mnohuFjgpwkaFen+Ceu1g3CD4m72pI=;
+        b=oHnNPCtfS+ShenLzJ36o36hEIk5QvPJqWooRDXWER0lhNz04zXwngHx5p7Go2IQLFX
+         0KaTcRSRFBdCfftg3f6Fl6wNYaNarqskE0DrfY9cxpPosxk80UkmsklCx7x54gYXxLQn
+         aEED0HHgfb/ZNXhjo+yN2x8tw66gUTBrLs0JAX1wv48ipY2VTppgC+1HWoQ1zkvkQI+3
+         r2iO6Ed+XzdG3oK9cHaUFmJZvFVkxxMQyU908POhXjfA14SIY7WyUakJDJ/rAV7Z65Hp
+         XLdfgKtxOnIOXrkuiO0MKVR67u76bcKseieoe06EsgTLFeZ8CAvwYZHQuEume4Z/sugI
+         mY/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uoro3RQ0NH1PWjVf5Voxl9ATmDMM6d9BArmqUEGS9w8=;
-        b=KP5oqjIxhXJyLR/6atUYt+FU3PrzwHJwoP3/a0ZoXSK0/PfWd6AEGupMjOWs8V5Vsr
-         bnM9iUYAE3DwlvvRaNjc4YB1BR7DicW/jbrqn0n78IBpLbHJS2UA186TEB6XLMbzuG1V
-         xq91zfQDl/Beyea8vKlMHrp0J03psB4pJLFSgRMlSbnU0rB+3YFQPE5DV5QhJ0t+qEHj
-         M50KJvWL8yQB2dBykagRg6TLJaBH5d2Gtkm5cN7HLHTVcoFvsvW51FTgT4NRXl7oQvfI
-         mD0o7u06YsZBTPAafvypH9eINzMs1jzzH+1yfwNcPcHD2ZbI05DzIMZMpwzyVcguiDXe
-         xKkQ==
-X-Gm-Message-State: ANhLgQ2UeDJYO6Y124hPqyAz0GwTkkFAgXHAasHZORQwYktisFd7+bzr
-        qhv+Z8WaDKc9v69cQcdgYSorYFbloGM=
-X-Google-Smtp-Source: ADFU+vtJ99ikEUEiZy0+EHg8Xv5SHio+ScAMjZKWIXKMwHE3bjnLV8cNX5dVli/r8u21QraxbBkvaQ==
-X-Received: by 2002:a05:620a:12a3:: with SMTP id x3mr4576239qki.367.1584643848038;
-        Thu, 19 Mar 2020 11:50:48 -0700 (PDT)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id r3sm2211897qkd.3.2020.03.19.11.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 11:50:47 -0700 (PDT)
-Subject: Re: [PATCH RFC v2] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-To:     kreijack@inwind.it
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200319180527.4266-1-kreijack@libero.it>
- <20200319180527.4266-2-kreijack@libero.it>
- <07b8103c-bae1-5baf-8892-94d289cef4ab@toxicpanda.com>
- <baef0390-9a9d-7fba-3a6d-378083f0d83a@libero.it>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5efe5d08-b1bb-674b-eb7e-97586efaf744@toxicpanda.com>
-Date:   Thu, 19 Mar 2020 14:50:46 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WL8A32uv39P04mnohuFjgpwkaFen+Ceu1g3CD4m72pI=;
+        b=ta/Rz+wcrGV7cezRRGtefHdqBL06chEA35e0qDjNuheDYrlxxYVMSH4TRU9kHHK04c
+         xwtwkbwROF/JMqNXTHqN4tIbTJlVpnxC4pxswnYLHTu4U425DUeQOtTVLi0wvolV7RxV
+         lzxevQdxsbvCy2MlwhfjJXuKvG5SQXEB4zUCWc1NelotE2ewn9GTem2PbvGtA+oSFbwV
+         gTgsng0mwKGqe6EPeICIM7kBW1NvBWLpIuormIazkbs5qS+2ywtB+pYBnhV2d9/J5hMT
+         t5JBYVQWH6F0B8OnnU01G6Nadr8PbNy45qeUb3/LPu6QLZr1GNN/EXwXK9J/tqMKO1vr
+         yXig==
+X-Gm-Message-State: ANhLgQ2G6gv+tvrq1V4wUfv9kGr6aGeS7cwN41/Ms/kQxpqLh3iv6MCL
+        NATzHWkm93pXj4jYNHhUdAOvAZN5fylXu/cbR6TqQA==
+X-Google-Smtp-Source: ADFU+vvCBq854YRX+M4Qt5tl792nmg8mGFCU63WrzR8WpIemQqTtXSEKanMF+f52fYmCfUVS6quQHGdm5QNNxnHoFYc=
+X-Received: by 2002:a05:600c:2f1a:: with SMTP id r26mr5715031wmn.11.1584647122577;
+ Thu, 19 Mar 2020 12:45:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <baef0390-9a9d-7fba-3a6d-378083f0d83a@libero.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
+In-Reply-To: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 19 Mar 2020 13:45:06 -0600
+Message-ID: <CAJCQCtTGo_phSJ+rw4Y6nqsDrcmQdLDMX4osQ=4kZe5yZc21Ug@mail.gmail.com>
+Subject: Re: How do damaged root trees happen and how to protect against power cut?
+To:     Carsten Behling <carsten.behling@googlemail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/19/20 2:44 PM, Goffredo Baroncelli wrote:
-> Hi Josef,
-> 
-> On 3/19/20 7:15 PM, Josef Bacik wrote:
->> On 3/19/20 2:05 PM, Goffredo Baroncelli wrote:
->>> From: Goffredo Baroncelli <kreijack@inwind.it>
->>>
->>> Add a new ioctl to get info about chunk without requiring the root privileges.
->>> This allow to a non root user to know how the space of the filesystem is
->>> allocated.
->>>
->>> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
->>> ---
->>>   fs/btrfs/ioctl.c           | 211 +++++++++++++++++++++++++++++++++++++
->>>   include/uapi/linux/btrfs.h |  38 +++++++
->>>   2 files changed, 249 insertions(+)
->>>
->>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>> index 40b729dce91c..e9231d597422 100644
->>> --- a/fs/btrfs/ioctl.c
->>> +++ b/fs/btrfs/ioctl.c
->>> @@ -2234,6 +2234,215 @@ static noinline int btrfs_ioctl_tree_search_v2(struct 
->>> file *file,
->>>       return ret;
->>>   }
->>> +/*
->>> + * Return:
->>> + *    0        -> copied all data, possible further data
->>> + *    1        -> copied all data, no further data
->>> + *    -EAGAIN        -> not enough space, restart it
->>> + *    -EFAULT        -> the user passed an invalid address/size pair
->>> + */
->>> +static noinline int copy_chunk_info(struct btrfs_path *path,
->>> +                   char __user *ubuf,
->>> +                   size_t buf_size,
->>> +                   u64 *used_buf,
->>> +                   int *num_found,
->>> +                   u64 *offset)
->>> +{
->>> +    struct extent_buffer *leaf;
->>> +    unsigned long item_off;
->>> +    unsigned long item_len;
->>> +    int nritems;
->>> +    int i;
->>> +    int slot;
->>> +    struct btrfs_key key;
->>> +
->>> +    leaf = path->nodes[0];
->>> +    slot = path->slots[0];
->>> +    nritems = btrfs_header_nritems(leaf);
->>> +
->>> +    for (i = slot; i < nritems; i++) {
->>> +        u64 destsize;
->>> +        struct btrfs_chunk_info ci;
->>> +        struct btrfs_chunk chunk;
->>> +        int j, chunk_size;
->>> +
->>> +        item_off = btrfs_item_ptr_offset(leaf, i);
->>> +        item_len = btrfs_item_size_nr(leaf, i);
->>> +
->>> +        btrfs_item_key_to_cpu(leaf, &key, i);
->>> +        /*
->>> +         * we are not interested in other items type
->>> +         */
->>> +        if (key.type != BTRFS_CHUNK_ITEM_KEY)
->>> +            return 1;
->>> +
->>
->> We'll leak this to user space, this should probably be handled differently 
->> right?  Thanks,
-> 
-> Likely I am missing something obvious, but I can't understand what can be leaked 
-> and why. Could you be so kindly to elaborate your answer ?
-> Many thanks
-> 
+On Thu, Mar 19, 2020 at 9:14 AM Carsten Behling
+<carsten.behling@googlemail.com> wrote:
+>
+> Hi,
+>
+> the investigation of damaged root trees are already discussed in the
+> thread starting with
+>
+> https://www.spinics.net/lists/linux-btrfs/msg74019.html
+>
+> However, one point wasn't discussed at the end:
+>
+> > I thought so too. Is there a reason why they ended up being colocated?
+> > I'm surprised with all the redundancies btrfs is capable of, this can
+> > happen. Was it because the volume was starting to become full? (This
+> > whole exercise of turning on mirroring was because we're migrating to
+> > bigger disks)
+>
+> Because I have the same issue on an embedded system, after a power
+> cut, where none of the root tree copies are usable anymore, I'd also
+> like to know :
+>
+> - How can we end up in that recoverable state?
+> - Why can't we protect the fs against the unrecoverable state?
+> - Why is that error is so hard to recover?
 
-we return 1 here
+I'm interested in this too. Also I want to know whether and what Btrfs
+debug or consistency check flags are applicable in discovering these
+problems as near to the time as they occur; whether they're Btrfs,
+block layer, or device problems.
 
-+               ret = copy_chunk_info(path, ubuf, buf_size,
-+                                     &used_buf, items_count, offset);
-+
-+               btrfs_release_path(path);
-+               if (ret)
-+                       break;
 
-this bit breaks and we return ret
+> Furthermore, I'd like to know what would be the best solution for an
+> embedded system where power cuts are unavoidable (because of a missing
+> circuit). I'm thinking of using a read-only rootfs with a separate
+> data partition to ensure at least a booting system. But anyway, the
+> data partition could end up in the same state.
+>
+> I'm not sure if it would be also a good option working with snapshots.
+> My space on the embedded device is limited to 8GB. The OS already
+> takes about 4GB.
 
-+       ret = search_chunk_info(inode, &arg.offset, &arg.items_count,
-+                       argp + data_offset, buf_size - data_offset);
-+
-+       if (copy_to_user(argp, &arg, data_offset))
-+               return -EFAULT;
-+
-+       return ret;
+Seed device?
 
-and we return ret here.  So we'd return 1 to userspace.  Thanks,
+Create a Btrfs file system, use space_cache v2,
+compress-force=zstd:16, and write the root image. Resize the file
+system to minimum. Set the seed flag. That's the base image. Part of
+the provisioning will be to 'btrfs device add' a 2nd partition, and
+remount read-write. This means two Btrfs file systems exist, each with
+their own UUID. You can reference the read-only seed by its UUID; and
+you can reference the read-write volume by its own UUID. On-disk
+metadata for this read-write volume points to both the read-only seed
+devid1, and the writable 2nd device devid2.
 
-Josef
+Make sure write cache on the physical media is disabled.
+
+It might be true that 'flushoncommit' and 'notreelog' reduce
+complexity for recovery following a crash; at the expense of losing
+some data in the latter case. (It's been suggested before in the
+archives, but I have no good way to test if results in less instance
+of crash/powerfail recoveries because I personally haven't hit any
+problems with the default mount options, despite hundreds of
+intentional force power offs while writing.)
+
+For embedded systems, consider using industrial flash. They are slower
+but more reliable, especially in the case of a power cut. SD Cards are
+notorious for corruption and going permanently read-only when power is
+cut; but I've had this problem with USB sticks too.
+
+
+-- 
+Chris Murphy
