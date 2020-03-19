@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D5718BB26
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7C818BB2A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 16:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727462AbgCSPaf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 11:30:35 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:42226 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbgCSPae (ORCPT
+        id S1727632AbgCSPbR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 11:31:17 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40915 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727064AbgCSPbQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 11:30:34 -0400
-Received: by mail-qt1-f194.google.com with SMTP id g16so2119177qtp.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 08:30:33 -0700 (PDT)
+        Thu, 19 Mar 2020 11:31:16 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i9so1499894qtw.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 08:31:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=piJgabZNNEBZJmGwRlg29lvqD2YkWgECpmEuTsKGPMQ=;
-        b=PLN5XIkkmM5UljdP3U5m6EgUq7UW4paH4uqmUYf9KSQMOTAm7wNaMRh8DZBKF4Nacp
-         gRzrFI4EmNz0EsluOs409ErTONuUL17znElvtPGfee2hNkW7mLlZ/HFMp5rWuxAgU9dc
-         3hs/zE1HWRe/TzBNppEq/Jk70qtHuvsVdXQvzkCC4uv54/EKspzImhDc3jRqV6VFaqCS
-         jctHDO0ryq7xTDnQWXwGpN0vSZ5YwhPc8FA/DTtnEPh3lsdGl5mhLyXYm/vdFMvaxqbx
-         2MWxScl8I9ZTXXoY8ciD1kSsRFLYP+tAPjfJLJPcc4lXzb3y2sw29PLFRa583pMGpfgp
-         hdvg==
+        bh=jrcq++KPrbUZwOC7/t1C6reoLQM0bgXpW6tlpD2Lkjk=;
+        b=uU4gJMXC25oxm0QpGWSztseY69APBLG9GQ3BVIq/SIDHhRh4kPkflIzkFKvx5qzg4Z
+         24QMcoNaar79bWdwfzrL+LhgNMdJqsyEWxWdg/Z/HLWXVLleDFrtaeQwmd7ctlWcUteC
+         WJCrPl+0r+0Vd2bMng5XCbF7RgHWDAigm9/YLmeB78isvkbitFmAbvs7ai1bZVh3jVRU
+         vpLjL4uTX0ckWMfVrWSF6Mb9oyL336f5m27ri3ZsC3WvnOKHmaGcnBMfXPyMGGvOCnC7
+         KMkT6QSLpv/iosCL0wCZx6QuR4PV9J3yXswzi6Ru6Bq3ezWGS6Djsfk65a6AKVURjWb0
+         4V0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=piJgabZNNEBZJmGwRlg29lvqD2YkWgECpmEuTsKGPMQ=;
-        b=cuhMUU+bxd/SuGhwqn1vJAn4p4Hj8KTatqbvJNjW3wF9DCatXbgaSP/dFThGbnoL2+
-         MQbiRgQUnz3lGss5Stq6jlAebKPVBsx7Bh4PDUL18MRYkZ8IuIaA/lsaMsYjxo9oE4v4
-         utflaukzhFr437SeEy63I1qmUqt6ks1AaQ/gC2KWhnFQALqvbR75xutC6kxFY6hMkORZ
-         0LZ4JUYrkl2MSEZH76gEejHqYMCx+0zLcAU403Nb5ROMup23KR4ZZT7egaj8JvkY+gfY
-         7nd4CxH9smzzAci3Ue3AZkPjlWvyj8ZjbcrgMnHRlXjMApE25zNF32zowXX8wyaUiYBM
-         ymBQ==
-X-Gm-Message-State: ANhLgQ3LPzHFNQi3O//8veu2RDSGWILarFkMTOC+v5FAwdPhRS3/aL7Z
-        e8FqaI6xe2O3QACQCiVV4Pz1JcPIAJg=
-X-Google-Smtp-Source: ADFU+vuMX8C2fy2dHCtbdbjGJ2QyzEdZ+Vs2TLSZ8KPxIouptrW6wWtbPvRTvkmqb9KnM/NIkOLqsA==
-X-Received: by 2002:ac8:5395:: with SMTP id x21mr3305766qtp.321.1584631832700;
-        Thu, 19 Mar 2020 08:30:32 -0700 (PDT)
+        bh=jrcq++KPrbUZwOC7/t1C6reoLQM0bgXpW6tlpD2Lkjk=;
+        b=JTCWlHU/De1knOqAW7JbjkbYSaam8zCGbBEQGkROR2kDPJVeh3VMKO2ioUDFupxq4r
+         YoMuy95RPIANc1T1lT6F/u8vI0qYPFOsr2AqcXMDgVDZHtUU+otPGgz1+quqdPUFlXnQ
+         h1fHXVWIyzk8Z1yQ0VgN6BDDBkAkbYgz7iVOaqpkCzyrkAK1qaioTBhhVOMM0A1GTlEw
+         KeCUmLBZph4Gm+SMwiFgKuwDAV7/kldqrO0zznTAmAN9CwGN0tuGTK03+67CwMpLjtJE
+         G9Jjxio8xeXup7b03tcmQ44CyiLGaQfRUvbQq7tRT/TcCrgYcWLKYiEE23x+baRiSM5c
+         OhgQ==
+X-Gm-Message-State: ANhLgQ3VfPqTddmVvKCvvWx1tr3ZEs6KcgMStLUpk6wLdJvQ5M57DvvY
+        m9+T4VjlQWEOLUMWxIYa7chJRiUcT/M=
+X-Google-Smtp-Source: ADFU+vsoCqoM+11c2kL1kYkf/QhDRwSYgLk0wMME/BjIwoPCzqScq6ihtnSm1H8FchLy4ny4PctoxQ==
+X-Received: by 2002:ac8:4787:: with SMTP id k7mr3501827qtq.267.1584631874987;
+        Thu, 19 Mar 2020 08:31:14 -0700 (PDT)
 Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 69sm1662672qki.131.2020.03.19.08.30.31
+        by smtp.gmail.com with ESMTPSA id y27sm1655047qky.121.2020.03.19.08.31.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 08:30:32 -0700 (PDT)
-Subject: Re: [PATCH RFC 07/39] btrfs: relocation: Make reloc root search
- specific for relocation backref cache
+        Thu, 19 Mar 2020 08:31:14 -0700 (PDT)
+Subject: Re: [PATCH RFC 08/39] btrfs: relocation: Refactor direct tree backref
+ processing into its own function
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200317081125.36289-1-wqu@suse.com>
- <20200317081125.36289-8-wqu@suse.com>
+ <20200317081125.36289-9-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <dcfc1749-e351-402d-aa17-6a6f829fb3cd@toxicpanda.com>
-Date:   Thu, 19 Mar 2020 11:30:30 -0400
+Message-ID: <f0cef203-83ae-348d-9f45-a4436fe0dc6a@toxicpanda.com>
+Date:   Thu, 19 Mar 2020 11:31:13 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200317081125.36289-8-wqu@suse.com>
+In-Reply-To: <20200317081125.36289-9-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,31 +67,15 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 3/17/20 4:10 AM, Qu Wenruo wrote:
-> find_reloc_root() searches reloc_control::reloc_root_tree to find the
-> reloc root.
-> This behavior is only useful for relocation backref cache.
+> For BTRFS_SHARED_BLOCK_REF_KEY, its processing is straightforward, as we
+> now the parent node bytenr directly.
 > 
-> For the incoming more generic purposed backref cache, we don't care
-> about who owns the reloc root, but only care if it's a reloc root.
+> If the parent is already cached, or a root, call it a day.
+> If the parent is not cached, add it pending list.
 > 
-> So this patch makes the following modifications to make the reloc root
-> search more specific to relocation backref:
-> - Add backref_node::is_reloc_root
->    This will be an extra indicator for generic purposed backref cache.
->    User doesn't need to read root key from backref_node::root to
->    determine if it's a reloc root.
->    Also for reloc tree root, it's useless and will be queued to useless
->    list.
-> 
-> - Add backref_cache::is_reloc
->    This will allow backref cache code to do different behavior for
->    generic purposed backref cache and relocation backref cache.
-> 
-> - Make find_reloc_root() to accept fs_info
->    Just a personal taste.
-> 
-> - Export find_reloc_root()
->    So backref.c can utilize this function.
+> This patch will just refactor this part into its own function,
+> handle_direct_tree_backref() and add some comment explaining the
+> @ref_key parameter.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
