@@ -2,136 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E75218BF24
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 19:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D707718BF90
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 19:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgCSSPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 14:15:40 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37349 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbgCSSPk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 14:15:40 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d12so235580qtj.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Mar 2020 11:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yeqJzzTdtZ4KfLFAQvd8sHQ5G9vBWdJXspcLRhNJtYQ=;
-        b=zytqnbEnP6Il8sVzDvjLtxTgrkKvhRTd5LpUvnZs4/jOmp56bDp5VsoPdx5lo3Apad
-         2FD5Bm0iQXI1EI3kz4KifJI93kVJX4g6k4URfAeMZTm1j13MVexK0R7pTpO8Dz1JDyHP
-         VCBftLKiBbgW7H6ZPtcEqZPA70COiH1hx2cQRPcdOc3Gr21OdKPIXF3HUzso6DblVmiU
-         GL/T12NNI/m7YLSK3CoF/PffqbRads0/sAxWYNoAXEDIOszvOV1ssfBUoRlEf/PXuecR
-         CUa+nHgtmSqxJnHkLcO9M+zc92fJ6gnQ0qXyc5JUOt4lcf3rdDzc6ptenqEJORp43I0/
-         2AXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yeqJzzTdtZ4KfLFAQvd8sHQ5G9vBWdJXspcLRhNJtYQ=;
-        b=eT9CGxrVRfInaUkAIVd/qetqQiXp7oY4Vc7XQNbrkpALp1gVq99KxpmgYoZMVQAVEG
-         pr+ZnePhdNE6ffRcbA2mhUgRGO4FOkAOC1poWBJt9y9kpC13+gFnQaGvunIJmh3QB7ga
-         6f/52dIKuiFurm/E+rZ1w18WTAiuOj/LIhuNgpGQUGyAygRlFLf3FIsZ9NoDqZs5osps
-         IsEkH4YtK+hRY/hlO8xCqgdstEjimGUti5kqeeDbafqtOMWHS5LJODE9e35CCXy+p/02
-         h4yoXiL6dBUFqR2/Bcfq42TzRBXdB5OV3ddSxtzcWlLR4n4ctlvlIemtFa3sUKnzbBnh
-         Ipew==
-X-Gm-Message-State: ANhLgQ07ZTaG1SP1GujOs6pCIMQx6ORpznoW4GIbbM37La3bbRFMtgy+
-        zjg3p5ZD34k0bT5/u8Xzpfknkg==
-X-Google-Smtp-Source: ADFU+vv1w7N+keL2PIpInhNkAHL4Hh+BehzOJfw/479gsRUlbdQZ54BBpgWWYqtZ144Bo7hxiifJLw==
-X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr4348236qtv.378.1584641737637;
-        Thu, 19 Mar 2020 11:15:37 -0700 (PDT)
-Received: from [192.168.1.106] ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id k15sm2240053qta.74.2020.03.19.11.15.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Mar 2020 11:15:36 -0700 (PDT)
+        id S1726975AbgCSSol (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 14:44:41 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:58721 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726867AbgCSSol (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 14:44:41 -0400
+Received: from venice.bhome ([84.220.24.82])
+        by smtp-32.iol.local with ESMTPA
+        id F09mjMNnha1lLF09mjmiEI; Thu, 19 Mar 2020 19:44:38 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1584643478; bh=BrzQeUuVth0YdigYmtwZa4jbG+FefFcUgZB3SpRmRl4=;
+        h=From;
+        b=fTbwSYp/7UHzbDc/nGEfGOEaY89KtRDKXamUXVmYwRJ886imxCYcVAyILt6ZT0KmA
+         SbBSnAfhJa7utvXDvwRdeF2agzZ7Nk3Ywl+CTWoKKZVfSli3fLvf88c70qfsHIAjWh
+         +4Nrin9OY7ra9FBaK420qGzES1PsSBIynSmscJhuny2nGfpfZd+0kJIw5Xt19GIM0K
+         js6HV3ceuHV+srEXv6Fl+d6/b6qGzfb0UUY/5fL/1fhTMEXDIyguFSs/bpMlihSQLH
+         WjL/P0yCozujyploz0e4jI47sqSB9XQu+CUUijZxqeYuIZ7fo9RA6mCzFCphCNuFFc
+         OyZcutFnoBVSQ==
+X-CNFS-Analysis: v=2.3 cv=IOJ89TnG c=1 sm=1 tr=0
+ a=ijacSk0KxWtIQ5WY4X6b5g==:117 a=ijacSk0KxWtIQ5WY4X6b5g==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=F0g-YP2QzlFsH_K13GYA:9
+ a=aeghs33Uv5Xjk97t:21 a=DnEvch0qcm0SMtuT:21 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
 Subject: Re: [PATCH RFC v2] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-To:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Cc:     Goffredo Baroncelli <kreijack@inwind.it>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Goffredo Baroncelli <kreijack@inwind.it>
 References: <20200319180527.4266-1-kreijack@libero.it>
  <20200319180527.4266-2-kreijack@libero.it>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <07b8103c-bae1-5baf-8892-94d289cef4ab@toxicpanda.com>
-Date:   Thu, 19 Mar 2020 14:15:35 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+ <07b8103c-bae1-5baf-8892-94d289cef4ab@toxicpanda.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <baef0390-9a9d-7fba-3a6d-378083f0d83a@libero.it>
+Date:   Thu, 19 Mar 2020 19:44:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200319180527.4266-2-kreijack@libero.it>
+In-Reply-To: <07b8103c-bae1-5baf-8892-94d289cef4ab@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfOUIt1xxSGOMGMbiKxf23rmXnt4s1T+FiKB76xRBlwa49Cg+WdsuIJQcqYdXR8aL+VTTkuse+9Q7eDJQYCJ2WkEGzJfBrPyMqQB/kBaQetPxF57JjebE
+ 2I1ZDh7FhXXIjHuNek3VyCyy94xH6VC0e4VNU+8NfgNE/7ttCVoguic0BSe6bJgLHq5m/54llbJF+HOxGJcNfBe2U7k+G821UdKiJjMhp8Z/o/5zxEhRo7p8
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/19/20 2:05 PM, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
-> 
-> Add a new ioctl to get info about chunk without requiring the root privileges.
-> This allow to a non root user to know how the space of the filesystem is
-> allocated.
-> 
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->   fs/btrfs/ioctl.c           | 211 +++++++++++++++++++++++++++++++++++++
->   include/uapi/linux/btrfs.h |  38 +++++++
->   2 files changed, 249 insertions(+)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 40b729dce91c..e9231d597422 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2234,6 +2234,215 @@ static noinline int btrfs_ioctl_tree_search_v2(struct file *file,
->   	return ret;
->   }
->   
-> +/*
-> + * Return:
-> + *	0		-> copied all data, possible further data
-> + *	1		-> copied all data, no further data
-> + *	-EAGAIN		-> not enough space, restart it
-> + *	-EFAULT		-> the user passed an invalid address/size pair
-> + */
-> +static noinline int copy_chunk_info(struct btrfs_path *path,
-> +			       char __user *ubuf,
-> +			       size_t buf_size,
-> +			       u64 *used_buf,
-> +			       int *num_found,
-> +			       u64 *offset)
-> +{
-> +	struct extent_buffer *leaf;
-> +	unsigned long item_off;
-> +	unsigned long item_len;
-> +	int nritems;
-> +	int i;
-> +	int slot;
-> +	struct btrfs_key key;
-> +
-> +	leaf = path->nodes[0];
-> +	slot = path->slots[0];
-> +	nritems = btrfs_header_nritems(leaf);
-> +
-> +	for (i = slot; i < nritems; i++) {
-> +		u64 destsize;
-> +		struct btrfs_chunk_info ci;
-> +		struct btrfs_chunk chunk;
-> +		int j, chunk_size;
-> +
-> +		item_off = btrfs_item_ptr_offset(leaf, i);
-> +		item_len = btrfs_item_size_nr(leaf, i);
-> +
-> +		btrfs_item_key_to_cpu(leaf, &key, i);
-> +		/*
-> +		 * we are not interested in other items type
-> +		 */
-> +		if (key.type != BTRFS_CHUNK_ITEM_KEY)
-> +			return 1;
-> +
+Hi Josef,
 
-We'll leak this to user space, this should probably be handled differently 
-right?  Thanks,
+On 3/19/20 7:15 PM, Josef Bacik wrote:
+> On 3/19/20 2:05 PM, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>
+>> Add a new ioctl to get info about chunk without requiring the root privileges.
+>> This allow to a non root user to know how the space of the filesystem is
+>> allocated.
+>>
+>> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+>> ---
+>>   fs/btrfs/ioctl.c           | 211 +++++++++++++++++++++++++++++++++++++
+>>   include/uapi/linux/btrfs.h |  38 +++++++
+>>   2 files changed, 249 insertions(+)
+>>
+>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>> index 40b729dce91c..e9231d597422 100644
+>> --- a/fs/btrfs/ioctl.c
+>> +++ b/fs/btrfs/ioctl.c
+>> @@ -2234,6 +2234,215 @@ static noinline int btrfs_ioctl_tree_search_v2(struct file *file,
+>>       return ret;
+>>   }
+>> +/*
+>> + * Return:
+>> + *    0        -> copied all data, possible further data
+>> + *    1        -> copied all data, no further data
+>> + *    -EAGAIN        -> not enough space, restart it
+>> + *    -EFAULT        -> the user passed an invalid address/size pair
+>> + */
+>> +static noinline int copy_chunk_info(struct btrfs_path *path,
+>> +                   char __user *ubuf,
+>> +                   size_t buf_size,
+>> +                   u64 *used_buf,
+>> +                   int *num_found,
+>> +                   u64 *offset)
+>> +{
+>> +    struct extent_buffer *leaf;
+>> +    unsigned long item_off;
+>> +    unsigned long item_len;
+>> +    int nritems;
+>> +    int i;
+>> +    int slot;
+>> +    struct btrfs_key key;
+>> +
+>> +    leaf = path->nodes[0];
+>> +    slot = path->slots[0];
+>> +    nritems = btrfs_header_nritems(leaf);
+>> +
+>> +    for (i = slot; i < nritems; i++) {
+>> +        u64 destsize;
+>> +        struct btrfs_chunk_info ci;
+>> +        struct btrfs_chunk chunk;
+>> +        int j, chunk_size;
+>> +
+>> +        item_off = btrfs_item_ptr_offset(leaf, i);
+>> +        item_len = btrfs_item_size_nr(leaf, i);
+>> +
+>> +        btrfs_item_key_to_cpu(leaf, &key, i);
+>> +        /*
+>> +         * we are not interested in other items type
+>> +         */
+>> +        if (key.type != BTRFS_CHUNK_ITEM_KEY)
+>> +            return 1;
+>> +
+> 
+> We'll leak this to user space, this should probably be handled differently right?  Thanks,
 
-Josef
+Likely I am missing something obvious, but I can't understand what can be leaked and why. Could you be so kindly to elaborate your answer ?
+Many thanks
+
+> 
+> Josef
+
+BR
+G.Baroncelli
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
