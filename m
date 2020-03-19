@@ -2,56 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C496218B2CC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 12:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7F418B373
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 13:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgCSL5C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 07:57:02 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:37120 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgCSL5B (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 07:57:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zSKNJpg3bSHQZrR6eSGgkELs7AnAMsGUFTR84vG8N+Q=; b=taEbISgvSjSBP5vFWW8bUzGpnP
-        MKArSkuRIrMUVzeknqF5IG82BQ0rRpdBkhyPwGJUstzncqnKATxyqnIPY7+1YlPamettzIY62SIOe
-        NjePxFuSuYvIN1CyExl08KgCgVOKlBp6PwGzsLBofMZTKcaPyXK6XFyVMrgf7MonLR3osphoWenlX
-        sundTKrs1nNxBZQfX9U36K6/ARMpgehcUsyKFiio1oi1/7QqJNa7OAtqjBW7hTx52h5XWExEECCbA
-        ybmTAPaH80ciWSV+Cg1RcHvxXwu291GiNoqQjE6jJmuU2a2XkiCwZXJKbC6saBE1jZ5T2EQuOpNT9
-        kqks7pWQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jEtnJ-0000ue-IU; Thu, 19 Mar 2020 11:57:01 +0000
-Date:   Thu, 19 Mar 2020 04:57:01 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 00/25] Change readahead API
-Message-ID: <20200319115701.GJ22433@bombadil.infradead.org>
-References: <20200225214838.30017-1-willy@infradead.org>
- <20200319102038.GE3590@infradead.org>
+        id S1726975AbgCSMaN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 08:30:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39918 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726589AbgCSMaN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 08:30:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id EA8BBAAB8;
+        Thu, 19 Mar 2020 12:30:11 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] uboot: fs/btrfs: Fix read error on LZO compressed extents
+Date:   Thu, 19 Mar 2020 20:30:04 +0800
+Message-Id: <20200319123006.37578-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200319102038.GE3590@infradead.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 03:20:38AM -0700, Christoph Hellwig wrote:
-> Any plans to resend this with the little nitpicks fixed?  I'd love to
-> get this series into 5.7..
+There is a bug that uboot can't load LZO compressed data extent while
+kernel can handle it without any problem.
 
-The only nitpick I see left is the commit comment in the btrfs patch,
-and a note from Dave Sterba that he intends to review it.  I can collect
-up the additional Reviewed-by tags and repost the series.
+It turns out to be a page boundary case. The 2nd patch is the proper
+fix, backported from btrfs-progs.
 
-I'm assuming it'll go through Andrew's tree?
+The first patch is just to make my eyes less hurt.
+
+I guess it's time to backport proper code from btrfs-progs, other than
+using tons of immediate numbers.
+
+Qu Wenruo (2):
+  uboot: fs/btrfs: Use LZO_LEN to replace immediate number
+  uboot: fs/btrfs: Fix LZO false decompression error caused by pending
+    zero
+
+ fs/btrfs/compression.c | 42 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
+
