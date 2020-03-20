@@ -2,97 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 067C918D66B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 19:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9085118D676
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 19:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgCTSAU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 14:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57472 "EHLO mail.kernel.org"
+        id S1726986AbgCTSCQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 14:02:16 -0400
+Received: from smtp205.alice.it ([82.57.200.101]:62554 "EHLO smtp205.alice.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgCTSAU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 14:00:20 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 678A120739;
-        Fri, 20 Mar 2020 18:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584727219;
-        bh=AOHcFFqPmmUrKkBgj3LGw8anyo9Fi+nPIa1g3zqyqMs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NZ9HU316DvAVNcUxlvzbNwg+y2txH2gpkS3rUJxhCWe7t2TNzS4cSz0aP9oXCmCeZ
-         lA62gX2HF5PTlSZ1WRtHNFeEZvmAX/Jupq9oBbL1ohyHNdGKoAs/qCozdPyM6IUdHI
-         QNBy8s3jas9smKOGMMh5TBeJx1mwdzpN9wtLUJa0=
-Date:   Fri, 20 Mar 2020 11:00:17 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v9 12/25] mm: Move end_index check out of readahead loop
-Message-ID: <20200320180017.GE851@sol.localdomain>
-References: <20200320142231.2402-1-willy@infradead.org>
- <20200320142231.2402-13-willy@infradead.org>
- <20200320165828.GB851@sol.localdomain>
- <20200320173040.GB4971@bombadil.infradead.org>
+        id S1726666AbgCTSCP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 14:02:15 -0400
+X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Mar 2020 14:02:13 EDT
+Received: from venice.bhome (84.220.24.82) by smtp205.alice.it (8.6.060.28) (authenticated as kreijack@alice.it)
+        id 5E177A8C11B75E30 for linux-btrfs@vger.kernel.org; Fri, 20 Mar 2020 18:56:38 +0100
+Reply-To: kreijack@inwind.it
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Goffredo Baroncelli <kreijack@alice.it>
+Subject: Question: how understand the raid profile of a btrfs filesystem
+Message-ID: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
+Date:   Fri, 20 Mar 2020 18:56:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320173040.GB4971@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 10:30:40AM -0700, Matthew Wilcox wrote:
-> On Fri, Mar 20, 2020 at 09:58:28AM -0700, Eric Biggers wrote:
-> > On Fri, Mar 20, 2020 at 07:22:18AM -0700, Matthew Wilcox wrote:
-> > > +	/* Avoid wrapping to the beginning of the file */
-> > > +	if (index + nr_to_read < index)
-> > > +		nr_to_read = ULONG_MAX - index + 1;
-> > > +	/* Don't read past the page containing the last byte of the file */
-> > > +	if (index + nr_to_read >= end_index)
-> > > +		nr_to_read = end_index - index + 1;
-> > 
-> > There seem to be a couple off-by-one errors here.  Shouldn't it be:
-> > 
-> > 	/* Avoid wrapping to the beginning of the file */
-> > 	if (index + nr_to_read < index)
-> > 		nr_to_read = ULONG_MAX - index;
-> 
-> I think it's right.  Imagine that index is ULONG_MAX.  We should read one
-> page (the one at ULONG_MAX).  That would be ULONG_MAX - ULONG_MAX + 1.
-> 
-> > 	/* Don't read past the page containing the last byte of the file */
-> > 	if (index + nr_to_read > end_index)
-> > 		nr_to_read = end_index - index + 1;
-> > 
-> > I.e., 'ULONG_MAX - index' rather than 'ULONG_MAX - index + 1', so that
-> > 'index + nr_to_read' is then ULONG_MAX rather than overflowed to 0.
-> > 
-> > Then 'index + nr_to_read > end_index' rather 'index + nr_to_read >= end_index',
-> > since otherwise nr_to_read can be increased by 1 rather than decreased or stay
-> > the same as expected.
-> 
-> Ooh, I missed the overflow case here.  It should be:
-> 
-> +	if (index + nr_to_read - 1 > end_index)
-> +		nr_to_read = end_index - index + 1;
-> 
+Hi all,
 
-But then if someone passes index=0 and nr_to_read=0, this underflows and the
-entire file gets read.
+for a btrfs filesystem, how an user can understand which is the {data,mmetadata,system} [raid] profile in use ? E.g. the next chunk which profile will have ?
+For simple filesystem it is easy looking at the output of (e.g)  "btrfs fi df" or "btrfs fi us". But what if the filesystem is not simple ?
 
-The page cache isn't actually supposed to contain a page at index ULONG_MAX,
-since MAX_LFS_FILESIZE is at most ((loff_t)ULONG_MAX << PAGE_SHIFT), right?  So
-I don't think we need to worry about reading the page with index ULONG_MAX.
-I.e. I think it's fine to limit nr_to_read to 'ULONG_MAX - index', if that makes
-it easier to avoid an overflow or underflow in the next check.
+btrfs fi us t/.
+Overall:
+     Device size:		  40.00GiB
+     Device allocated:		  19.52GiB
+     Device unallocated:		  20.48GiB
+     Device missing:		     0.00B
+     Used:			  16.75GiB
+     Free (estimated):		  12.22GiB	(min: 8.27GiB)
+     Data ratio:			      1.90
+     Metadata ratio:		      2.00
+     Global reserve:		   9.06MiB	(used: 0.00B)
 
-- Eric
+Data,single: Size:1.00GiB, Used:512.00MiB (50.00%)
+    /dev/loop0	   1.00GiB
+
+Data,RAID5: Size:3.00GiB, Used:2.48GiB (82.56%)
+    /dev/loop1	   1.00GiB
+    /dev/loop2	   1.00GiB
+    /dev/loop3	   1.00GiB
+    /dev/loop0	   1.00GiB
+
+Data,RAID6: Size:4.00GiB, Used:3.71GiB (92.75%)
+    /dev/loop1	   2.00GiB
+    /dev/loop2	   2.00GiB
+    /dev/loop3	   2.00GiB
+    /dev/loop0	   2.00GiB
+
+Data,RAID1C3: Size:2.00GiB, Used:1.88GiB (93.76%)
+    /dev/loop1	   2.00GiB
+    /dev/loop2	   2.00GiB
+    /dev/loop3	   2.00GiB
+
+Metadata,RAID1: Size:256.00MiB, Used:9.14MiB (3.57%)
+    /dev/loop2	 256.00MiB
+    /dev/loop3	 256.00MiB
+
+System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+    /dev/loop2	   8.00MiB
+    /dev/loop3	   8.00MiB
+
+Unallocated:
+    /dev/loop1	   5.00GiB
+    /dev/loop2	   4.74GiB
+    /dev/loop3	   4.74GiB
+    /dev/loop0	   6.00GiB
+
+This is an example of a strange but valid filesystem. So the question is: the next chunk which profile will have ?
+Is there any way to understand what will happens ?
+
+I expected that the next chunk will be allocated as the last "convert". However I discovered that this is not true.
+
+Looking at the code it seems to me that the logic is the following (from btrfs_reduce_alloc_profile())
+
+         if (allowed & BTRFS_BLOCK_GROUP_RAID6)
+                 allowed = BTRFS_BLOCK_GROUP_RAID6;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
+                 allowed = BTRFS_BLOCK_GROUP_RAID5;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
+                 allowed = BTRFS_BLOCK_GROUP_RAID10;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
+                 allowed = BTRFS_BLOCK_GROUP_RAID1;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
+                 allowed = BTRFS_BLOCK_GROUP_RAID0;
+
+         flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
+
+So in the case above the profile will be RAID6. And in the general if a RAID6 chunk is a filesystem, it wins !
+
+But I am not sure.. Moreover I expected to see also reference to DUP and/or RAID1C[34] ...
+
+Does someone have any suggestion ?
+
+BR
+G.Baroncelli
+
