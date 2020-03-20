@@ -2,78 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 728C018D306
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 16:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED93618D520
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 17:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgCTPfd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 11:35:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34710 "EHLO mx2.suse.de"
+        id S1727428AbgCTQ6b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 12:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgCTPfd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 11:35:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D2A7DACB5;
-        Fri, 20 Mar 2020 15:35:31 +0000 (UTC)
-Date:   Fri, 20 Mar 2020 10:35:28 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
-        riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
-        darrick.wong@oracle.com, willy@infradead.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
- iomap_dio_bio_actor
-Message-ID: <20200320153528.theulg3fuzmdjhgl@fiona>
-References: <20200319150805.uaggnfue5xgaougx@fiona>
- <20200320140538.GA27895@infradead.org>
- <02209ec3-62b4-595f-b84e-2cd8838ac41b@toxicpanda.com>
- <20200320143500.GA16143@infradead.org>
+        id S1727101AbgCTQ6b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 12:58:31 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6434C20753;
+        Fri, 20 Mar 2020 16:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584723510;
+        bh=AxLDPN4LwuxzW4xjwlSgsVf6rtc0JFVKxbo5//wmPgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cRbat8REA7EmmJnmLCrWxRoNW5LgyCKm+4EsNDf5E4lY0nLcYrSE6Jyr+LkCnKmyi
+         n3W2x46nv8ZHmzqeZMc86Mj56kXxAhIEwG1PHXCTucYL5iivPYgJLLRVtDE0DPEV3X
+         iA5d4+HsRZ/BNe0ydHe/SfLeiRxRKGyEVqIcRkok=
+Date:   Fri, 20 Mar 2020 09:58:28 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs@vger.kernel.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v9 12/25] mm: Move end_index check out of readahead loop
+Message-ID: <20200320165828.GB851@sol.localdomain>
+References: <20200320142231.2402-1-willy@infradead.org>
+ <20200320142231.2402-13-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200320143500.GA16143@infradead.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200320142231.2402-13-willy@infradead.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  7:35 20/03, Christoph Hellwig wrote:
-> On Fri, Mar 20, 2020 at 10:23:43AM -0400, Josef Bacik wrote:
-> > I'm not sure what you're looking at specifically wrt error handling, but I
-> > can explain __endio_write_update_ordered.
-> > 
-> > Btrfs has ordered extents to keep track of an extent that currently has IO
-> > being done on it.  Generally that IO takes multiple bio's, so we keep track
-> > of the outstanding size of the IO being done, and each bio completes and
-> > thus removes its size from the pending size.  If any one of those bios has
-> > an error we need to make sure we discard the whole ordered extent, as part
-> > of it won't be valid. Just a cursory look at the current code I assume
-> > that's what's confusing you, we call this when we have an error in the
-> > O_DIRECT code.  This is just so we get the proper cleanup for the ordered
-> > extent.  People will wait on the ordered extent to be completed, so if we've
-> > started an ordered extent and aren't able to complete the range we need to
-> > do __endio_write_update_ordered() so that the ordered extent is finished and
-> > we wakeup any waiters.
-> > 
-> > Does this help?  If I need to I can context switch into whatever you're
-> > looking at, but I'm going to avoid looking and hope I can just shout useful
-> > information in your direction ;).  Thanks,
+On Fri, Mar 20, 2020 at 07:22:18AM -0700, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Yes, this helps a lot.  This is about the patches from Goldwyn to
-> convert btrfs to use the iomap direct I/O code.  And in that series
-> he currently calls __endio_write_update_ordered from the ->iomap_end
-> method, which for direct I/O is called after all bios are submitted
-> to complete ordered extents for a range after an I/O error, that
-> is one that no I/O has been submitted to, and the accounting for that
-> is a little complicated..
+> By reducing nr_to_read, we can eliminate this check from inside the loop.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> ---
+>  mm/readahead.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index d01531ef9f3c..a37b68f66233 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -167,8 +167,6 @@ void __do_page_cache_readahead(struct address_space *mapping,
+>  		unsigned long lookahead_size)
+>  {
+>  	struct inode *inode = mapping->host;
+> -	struct page *page;
+> -	unsigned long end_index;	/* The last page we want to read */
+>  	LIST_HEAD(page_pool);
+>  	loff_t isize = i_size_read(inode);
+>  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
+> @@ -178,22 +176,29 @@ void __do_page_cache_readahead(struct address_space *mapping,
+>  		._index = index,
+>  	};
+>  	unsigned long i;
+> +	pgoff_t end_index;	/* The last page we want to read */
+>  
+>  	if (isize == 0)
+>  		return;
+>  
+> -	end_index = ((isize - 1) >> PAGE_SHIFT);
+> +	end_index = (isize - 1) >> PAGE_SHIFT;
+> +	if (index > end_index)
+> +		return;
+> +	/* Avoid wrapping to the beginning of the file */
+> +	if (index + nr_to_read < index)
+> +		nr_to_read = ULONG_MAX - index + 1;
+> +	/* Don't read past the page containing the last byte of the file */
+> +	if (index + nr_to_read >= end_index)
+> +		nr_to_read = end_index - index + 1;
 
-I think you meant "some" instead of "no".
+There seem to be a couple off-by-one errors here.  Shouldn't it be:
 
-Yes, keeping the information in iomap->private and setting in
-btrfs_submit_direct() would be better. I will modify the code and
-re-test. Thanks!
+	/* Avoid wrapping to the beginning of the file */
+	if (index + nr_to_read < index)
+		nr_to_read = ULONG_MAX - index;
+	/* Don't read past the page containing the last byte of the file */
+	if (index + nr_to_read > end_index)
+		nr_to_read = end_index - index + 1;
 
--- 
-Goldwyn
+I.e., 'ULONG_MAX - index' rather than 'ULONG_MAX - index + 1', so that
+'index + nr_to_read' is then ULONG_MAX rather than overflowed to 0.
+
+Then 'index + nr_to_read > end_index' rather 'index + nr_to_read >= end_index',
+since otherwise nr_to_read can be increased by 1 rather than decreased or stay
+the same as expected.
+
+- Eric
