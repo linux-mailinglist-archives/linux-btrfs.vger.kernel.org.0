@@ -2,63 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA27018CFAF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 15:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406D618CFC1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 15:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgCTOFk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 10:05:40 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:52268 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgCTOFk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 10:05:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n/bVoNnai1Z8EXWktYzvjCdfjvG9IjTbEvaQWdguc00=; b=KGA9sdjQ6eq6QDNOVK8h4ctiJ1
-        /gV7+CS9MAOMaFFmpVVrRlxA2A1cNVTAH9Sq5UJPx/qrYuBmi1Cn0SvgaJ9d4i3ro7AOicxt8v2t4
-        RFWU+EulSXyA+okLM07zYfw4iM+Y5zW5srrU+S2L6xBeL5TXTsDCeAVmB2Ka1HEqzbb8NhjYostj4
-        +iautOBEwNfRV1kHmqzd5AeLbM0CYkK5fanTBby5q9JQHfRWJVf2vAPyXSQbayIfL6e5U+wLDCp8h
-        XuAiN304YJULVS0U4+uWWstaw97IsQcQ/+N9AJcUOANkwXJYfhC/KB2FU1ES0mz6wp6FFLAe+e6c2
-        Ic9Q557A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jFIHK-0002Cq-37; Fri, 20 Mar 2020 14:05:38 +0000
-Date:   Fri, 20 Mar 2020 07:05:38 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, riteshh@linux.ibm.com,
-        linux-ext4@vger.kernel.org, hch@infradead.org,
-        darrick.wong@oracle.com, willy@infradead.org,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
- iomap_dio_bio_actor
-Message-ID: <20200320140538.GA27895@infradead.org>
-References: <20200319150805.uaggnfue5xgaougx@fiona>
+        id S1726897AbgCTOKp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 10:10:45 -0400
+Received: from verein.lst.de ([213.95.11.211]:47776 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726866AbgCTOKp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:10:45 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C1A2E68B05; Fri, 20 Mar 2020 15:10:42 +0100 (CET)
+Date:   Fri, 20 Mar 2020 15:10:41 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 00/15] btrfs: read repair/direct I/O improvements
+Message-ID: <20200320141041.GA25256@lst.de>
+References: <cover.1583789410.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200319150805.uaggnfue5xgaougx@fiona>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <cover.1583789410.git.osandov@fb.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I spent a fair amount of time looking over this change, and I am
-starting to feel very bad about it.  iomap_apply() has pretty clear
-semantics of either return an error, or return the bytes processed,
-and in general these semantics work just fine.
+Btw, while you touch this code:
 
-The thing that breaks this concept is the btrfs submit_bio hook,
-which allows the file system to keep state for each bio actually
-submitted.  But I think you can simply keep the length internally
-in btrfs - use the space in iomap->private as a counter of how
-much was allocated, pass the iomap to the submit_io hook, and
-update it there, and then deal with the rest in ->iomap_end.
-
-That assumes ->iomap_end actually is the right place - can someone
-explain what the expected call site for __endio_write_update_ordered
-is?  It kinda sorta looks to me like something that would want to
-be called after I/O completion, not after I/O submission, but maybe
-I misunderstand the code.
+It seems like btrfs_dio_private.subio_endio is rather pointless,
+as it is always set to one function for reads and otherwise never
+set.  De-virtualizing this call could help making the code a little
+faster and easier to understand.
