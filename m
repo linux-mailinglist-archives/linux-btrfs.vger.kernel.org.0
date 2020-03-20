@@ -2,84 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C6318D633
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 18:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CEB818D651
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 18:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgCTRsu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 13:48:50 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:51296 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgCTRsu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 13:48:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=REJDSQBSjlxGvUa9yFvVpoZkbE4uGtyMxtUffkDr/yg=; b=h1KzauchMVn1GcHidDQlLm4NDv
-        aK4kqaKyat0c5S0apNaFmVi2M8lBpKqc6HcaPGEx+FFNw4NjYR32w5n0WAiLlaQiNyEfedB+7qoTL
-        E/THmbYmMV4oouS6HA97h/6mPTqu5anVComDHxmPW4cHFSSyakaX+gQtXZhMNNfMHvVSjwaoJ0h2L
-        OUdg+DUV4zfIM1jYNB9gSyndXuMPQpPpoePO6Xnc1zLjP/inzuV8mvsbNGEKjizrXkCo/5ONaqRd7
-        SqjRvCtsua+M1JEUo9eCXIRJNJsizFMS59zha5v/io1cPAKUeptHjpuXzj4A/3UtnQK12YL/XylLS
-        RApjCAiA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jFLlI-0000w5-Ps; Fri, 20 Mar 2020 17:48:48 +0000
-Date:   Fri, 20 Mar 2020 10:48:48 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v9 20/25] ext4: Convert from readpages to readahead
-Message-ID: <20200320174848.GC4971@bombadil.infradead.org>
-References: <20200320142231.2402-1-willy@infradead.org>
- <20200320142231.2402-21-willy@infradead.org>
- <20200320173734.GD851@sol.localdomain>
+        id S1726880AbgCTR6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 13:58:33 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:39953 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725446AbgCTR6d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 13:58:33 -0400
+Received: from venice.bhome ([84.220.24.82])
+        by smtp-32.iol.local with ESMTPA
+        id FLugjbi9la1lLFLugjsimX; Fri, 20 Mar 2020 18:58:30 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1584727110; bh=01Ax8n7U4bRhmIsNRyCvYlT0TD8CJsZdnZD3Z0DkWWo=;
+        h=From;
+        b=k+1ic9KA5w6jnYk48ajVSxOGMq9Dji3vdDRS4f++oV5FyFTIVr8UxgWsCChpbAEA+
+         1kOAlvRfGF92+C1yr2hXyd9CtEMi/sHXEw4PwmjaCDrrdNBmleQVM/oOtbCCcRTdm6
+         WquAVyIqnLCGvybGgyk1nCN2T/SuANog6CSO0boCJbpLOzEUJ7xhW6y8oK4O9lBQ0o
+         H2aSY3E2PxN9vp6qFhjRV0lNwrJYNI9FqBdU07dIeElk9v/DqoWHKUwKUmT9jeHc5H
+         af4n/67atCR0UOdJ2WECVLWOtpunN4fAl3iw8q20dzvQOXTCt/HOmoDNIXcGzNn8xi
+         7j19XOO5NlyDw==
+X-CNFS-Analysis: v=2.3 cv=IOJ89TnG c=1 sm=1 tr=0
+ a=ijacSk0KxWtIQ5WY4X6b5g==:117 a=ijacSk0KxWtIQ5WY4X6b5g==:17
+ a=IkcTkHD0fZMA:10 a=MmNk3RdkI8dpj1ibvDMA:9 a=QEXdDO2ut3YA:10
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Subject: Question: how understand the raid profile of a btrfs filesystem
+Reply-To: kreijack@inwind.it
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <5c5cabd2-8dae-f390-99fb-22fc7a7f1b7f@libero.it>
+Date:   Fri, 20 Mar 2020 18:58:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320173734.GD851@sol.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfB1nId61oetf7r6KtZtliESQJHVWI0FcK1o/AzakqI+wBdA8FTQ8sfv8e822XUx/8XNz62qdbWflBrel/bWyj2C2uUG9PasFtaF5luDb08SqJdkBKjqy
+ c14WJNPReetxh0FQHFn7UfFDChbCFQyDd0wYMvFQmN+B032SRPUlU4aPgRjDrj73Kl5L9AYvNvxwJw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 10:37:34AM -0700, Eric Biggers wrote:
-> On Fri, Mar 20, 2020 at 07:22:26AM -0700, Matthew Wilcox wrote:
-> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > 
-> > Use the new readahead operation in ext4
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-> > ---
-> >  fs/ext4/ext4.h     |  3 +--
-> >  fs/ext4/inode.c    | 21 +++++++++------------
-> >  fs/ext4/readpage.c | 22 ++++++++--------------
-> >  3 files changed, 18 insertions(+), 28 deletions(-)
-> > 
-> 
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> 
-> > +		if (rac) {
-> > +			page = readahead_page(rac);
-> >  			prefetchw(&page->flags);
-> > -			list_del(&page->lru);
-> > -			if (add_to_page_cache_lru(page, mapping, page->index,
-> > -				  readahead_gfp_mask(mapping)))
-> > -				goto next_page;
-> >  		}
-> 
-> Maybe the prefetchw(&page->flags) should be included in readahead_page()?
-> Most of the callers do it.
+Hi all,
 
-I did notice that a lot of callers do that.  I wonder whether it (still)
-helps or whether it's just cargo-cult programming.  It can't possibly
-have helped before because we did list_del(&page->lru) as the very next
-instruction after prefetchw(), and they're in the same cacheline.  It'd
-be interesting to take it out and see what happens to performance.
+for a btrfs filesystem, how an user can understand which is the {data,mmetadata,system} [raid] profile in use ? E.g. the next chunk which profile will have ?
+For simple filesystem it is easy looking at the output of (e.g)  "btrfs fi df" or "btrfs fi us". But what if the filesystem is not simple ?
+
+btrfs fi us t/.
+Overall:
+     Device size:		  40.00GiB
+     Device allocated:		  19.52GiB
+     Device unallocated:		  20.48GiB
+     Device missing:		     0.00B
+     Used:			  16.75GiB
+     Free (estimated):		  12.22GiB	(min: 8.27GiB)
+     Data ratio:			      1.90
+     Metadata ratio:		      2.00
+     Global reserve:		   9.06MiB	(used: 0.00B)
+
+Data,single: Size:1.00GiB, Used:512.00MiB (50.00%)
+    /dev/loop0	   1.00GiB
+
+Data,RAID5: Size:3.00GiB, Used:2.48GiB (82.56%)
+    /dev/loop1	   1.00GiB
+    /dev/loop2	   1.00GiB
+    /dev/loop3	   1.00GiB
+    /dev/loop0	   1.00GiB
+
+Data,RAID6: Size:4.00GiB, Used:3.71GiB (92.75%)
+    /dev/loop1	   2.00GiB
+    /dev/loop2	   2.00GiB
+    /dev/loop3	   2.00GiB
+    /dev/loop0	   2.00GiB
+
+Data,RAID1C3: Size:2.00GiB, Used:1.88GiB (93.76%)
+    /dev/loop1	   2.00GiB
+    /dev/loop2	   2.00GiB
+    /dev/loop3	   2.00GiB
+
+Metadata,RAID1: Size:256.00MiB, Used:9.14MiB (3.57%)
+    /dev/loop2	 256.00MiB
+    /dev/loop3	 256.00MiB
+
+System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+    /dev/loop2	   8.00MiB
+    /dev/loop3	   8.00MiB
+
+Unallocated:
+    /dev/loop1	   5.00GiB
+    /dev/loop2	   4.74GiB
+    /dev/loop3	   4.74GiB
+    /dev/loop0	   6.00GiB
+
+This is an example of a strange but valid filesystem. So the question is: the next chunk which profile will have ?
+Is there any way to understand what will happens ?
+
+I expected that the next chunk will be allocated as the last "convert". However I discovered that this is not true.
+
+Looking at the code it seems to me that the logic is the following (from btrfs_reduce_alloc_profile())
+
+         if (allowed & BTRFS_BLOCK_GROUP_RAID6)
+                 allowed = BTRFS_BLOCK_GROUP_RAID6;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
+                 allowed = BTRFS_BLOCK_GROUP_RAID5;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
+                 allowed = BTRFS_BLOCK_GROUP_RAID10;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
+                 allowed = BTRFS_BLOCK_GROUP_RAID1;
+         else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
+                 allowed = BTRFS_BLOCK_GROUP_RAID0;
+
+         flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
+
+So in the case above the profile will be RAID6. And in the general if a RAID6 chunk is a filesystem, it wins !
+
+But I am not sure.. Moreover I expected to see also reference to DUP and/or RAID1C[34] ...
+
+Does someone have any suggestion ?
+
+BR
+G.Baroncelli
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
