@@ -2,77 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6741B18DA3E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 22:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA5918DB4A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 23:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgCTVaA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 17:30:00 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:44382 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgCTV3z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 17:29:55 -0400
-Received: by mail-pf1-f193.google.com with SMTP id b72so3938438pfb.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Mar 2020 14:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5+9zGrQ63CqtIzhh7bKa95qKO+lKCM2KjvyD/2FANt0=;
-        b=n17IHZo54GA8j1mh/lwUVawpph1ZF849YEMUD/I8yYakbW0YYPkJMC+K1HoATUBIrB
-         BzI83H3NFwdxAZ6Ou5Veg8qxh8TAIK2gcRiokoIrfwKzFLtcMVaWa2xLs+udWYlW1iRs
-         Dirsfzx9bqXoNxQ/vbl53KFXaMT3NwORGYe0GtfG9c9GjowMNDjI+J0ez+pfgrcazPkz
-         7tym1WJKrZ59xujrUQZwzCXIzEL2kYkVTv90d1nEaDCTj3ePB46shoQjg3azLf0GdNNI
-         b3mqRYtrGcRnvHUDQAme2qBvbskO6gvtWrpVu36yx3KfcihYsEY0Rlr8bvVKnBTeUIZx
-         uXJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5+9zGrQ63CqtIzhh7bKa95qKO+lKCM2KjvyD/2FANt0=;
-        b=G/yJBbxiQZbz2FgbT6paR+G8bfFsBtm5DL9TPkUcNF+BNVRYEGXDEuBW24D4IiMtNI
-         VNV+U1LKkB8pY7MfaPYMiYA/Mwb7oJG2Mso9UC3AhggTtzLSaxSZT3qe+7iBYEDOhx9u
-         VNYADUclhoWbRPzMl9W1CAGoe3Lp3vDNdPVhsB165fGALXt8R25RMn0YohGCoeUsjkDZ
-         E6AGiKMDOb3dbOsr7ncCccfSWxrNHXJOHgC8wg4ZMoxVioeif84z6gXBrtyhDi+suzX/
-         8v/5CR6xbEBPqp62QAvB5F9tjmYSdmsvZrISeLXjrzQb9WY/Nlc1kSWSPBy2r3TYmkWT
-         RuFQ==
-X-Gm-Message-State: ANhLgQ2gXkhFXoVDbYyYlQZh/mK2AvIPxS962rEEEMM7ICFF7zPdYOod
-        reya0B+HLZciu9Gy1nEIedsBww==
-X-Google-Smtp-Source: ADFU+vt6mdc+WIjC3GNlWOUxYuAk1SF+lEaYgiyV1K97hmNwU1vCwRb2Js+jVBG8c0oNRvth3+f3/g==
-X-Received: by 2002:a63:7148:: with SMTP id b8mr10476998pgn.143.1584739793627;
-        Fri, 20 Mar 2020 14:29:53 -0700 (PDT)
-Received: from vader ([2620:10d:c090:400::5:c783])
-        by smtp.gmail.com with ESMTPSA id q123sm6699887pfb.54.2020.03.20.14.29.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Mar 2020 14:29:53 -0700 (PDT)
-Date:   Fri, 20 Mar 2020 14:29:51 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 00/15] btrfs: read repair/direct I/O improvements
-Message-ID: <20200320212951.GE32817@vader>
-References: <cover.1583789410.git.osandov@fb.com>
- <20200318220733.GA12659@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200318220733.GA12659@twin.jikos.cz>
+        id S1726982AbgCTWpm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 18:45:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60678 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726666AbgCTWpm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 18:45:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6E7C0ADC9;
+        Fri, 20 Mar 2020 22:45:39 +0000 (UTC)
+Date:   Fri, 20 Mar 2020 23:45:39 +0100
+Message-ID: <s5hfte2r6gc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     dsterba@suse.cz
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: sysfs: Use scnprintf() for avoiding potential buffer overflow
+In-Reply-To: <20200320212633.GJ12659@twin.jikos.cz>
+References: <20200311093323.24955-1-tiwai@suse.de>
+        <20200311191023.GH12659@twin.jikos.cz>
+        <s5hzhcm64t5.wl-tiwai@suse.de>
+        <20200320212633.GJ12659@twin.jikos.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 11:07:33PM +0100, David Sterba wrote:
-> On Mon, Mar 09, 2020 at 02:32:26PM -0700, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > This series includes several fixes, cleanups, and improvements to direct
-> > I/O and read repair. It's preparation for adding read repair to my
-> > RWF_ENCODED series [1], but it can go in independently.
+On Fri, 20 Mar 2020 22:26:33 +0100,
+David Sterba wrote:
 > 
-> Overall it looks good, but also scary. There are some comments to
-> address, I haven't reviewed it thoroughly yes so please don't resend
-> unless there's something that would harm testing. I'll put the branch to
-> for-next for some coverage.
+> On Wed, Mar 11, 2020 at 08:59:34PM +0100, Takashi Iwai wrote:
+> > On Wed, 11 Mar 2020 20:10:23 +0100,
+> > David Sterba wrote:
+> > > 
+> > > On Wed, Mar 11, 2020 at 10:33:23AM +0100, Takashi Iwai wrote:
+> > > > Since snprintf() returns the would-be-output size instead of the
+> > > > actual output size, the succeeding calls may go beyond the given
+> > > > buffer limit.  Fix it by replacing with scnprintf().
+> > > 
+> > > Is this a mechanical conversion or is there actually a potential
+> > > overflow in the code?
+> > 
+> > It's rather a result of pattern matching.
+> > 
+> > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > > ---
+> > > >  fs/btrfs/sysfs.c | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> > > > index 93cf76118a04..d3dc069789a5 100644
+> > > > --- a/fs/btrfs/sysfs.c
+> > > > +++ b/fs/btrfs/sysfs.c
+> > > > @@ -310,12 +310,12 @@ static ssize_t supported_checksums_show(struct kobject *kobj,
+> > > >  		 * This "trick" only works as long as 'enum btrfs_csum_type' has
+> > > >  		 * no holes in it
+> > > >  		 */
+> > > > -		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
+> > > > +		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
+> > > >  				(i == 0 ? "" : " "), btrfs_super_csum_name(i));
+> > > 
+> > > Loop count is a constant, each iteration filling with two %s of constant
+> > > length, buffer size is PAGE_SIZE.
+> > 
+> > Yes, it's likely OK with the current code, but then snprintf() usage
+> > is utterly bogus.
+> 
+> I'm not sure what exactly are you calling bogus.
 
-Thanks! The only thing so far that might affect testing is the
-uninitialized geom.len ASSERT that Nikolay pointed out.
+Heh, this shows the exact problem of snprintf() :)
+
+Actually, the snprintf() usage in btrfs/sysfs.c is harmful because it
+looks as if it were safer than plain sprintf() although it doesn't
+protect correctly.
+
+For example, try to run the code below (better to compile with -O
+option):
+
+-- 8< --
+#include <stdio.h>
+
+#define SIZE	128
+int main()
+{
+	char buf[SIZE];
+	int i, len = 0;
+
+	for (i = 0; i < 1000; i++)
+		len += snprintf(buf + len, SIZE - len, "%d", i);
+	printf("%d, %s\n", len, buf);
+	return 0;
+}
+-- 8< --
+				    
+The code looks as if correct, limiting the buffer to the given size;
+but it'll lead to either a segfault or a totally bogus output.
+
+And when you compare the above with the code in btrfs/sysfs.c, you'll
+see the same logic, and see why snprintf() usage there is harmful.
+
+
+> > > > @@ -992,7 +992,7 @@ char *btrfs_printable_features(enum btrfs_feature_set set, u64 flags)
+> > > >  			continue;
+> > > >  
+> > > >  		name = btrfs_feature_attrs[set][i].kobj_attr.attr.name;
+> > > > -		len += snprintf(str + len, bufsize - len, "%s%s",
+> > > > +		len += scnprintf(str + len, bufsize - len, "%s%s",
+> > > >  				len ? "," : "", name);
+> > > 
+> > > Similar, compile-time constant for number of loops, filling with strings
+> > > of bounded length.
+> > > 
+> > > If the patch is a precaution, then ok, but I don't see what it's trying
+> > > to fix.
+> > 
+> > Take it rather a precaution, yes.
+> > 
+> > The problem is that the usage like
+> > 
+> > 	pos += snprintf(buf + pos, len - pos, ...);
+> > 
+> > to append strings is already wrong per design unless it has a return
+> > value check right after each call.  It might work if the string really
+> > doesn't go over the limit; but then it makes no sense to use
+> > snprintf(), you can use the plain sprintf().
+> 
+> I'm afraid that when we use snprintf, somebody comes that it's unsafe
+> because that's what some code scanning tool said that, without looking
+> at the context of use. The code can simply use strcat and be fine, but
+> that I don't want to encourage to be used, when code is copied to
+> similar functions.
+
+That's why scnprintf() was proposed in a decade ago.  It's definitely
+less confusing than snprintf() and leads to more expected results.
+
+> I'm fine with scnprintf as this should make everybody happy, while
+> there would be effectively no change, just that the changelog should be
+> worded accordingly.
+
+I'm fine for rephrasing the changelog if you agree with applying the
+code change.  I've done similarly rephrasing for some other patches
+already.
+
+
+thanks,
+
+Takashi
