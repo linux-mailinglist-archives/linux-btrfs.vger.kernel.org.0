@@ -2,117 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4132318C214
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Mar 2020 22:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9ED18C459
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 01:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgCSVJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Mar 2020 17:09:44 -0400
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:38713 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725787AbgCSVJn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Mar 2020 17:09:43 -0400
-Received: from venice.bhome ([84.220.24.82])
-        by smtp-32.iol.local with ESMTPA
-        id F2Q7jNHyNa1lLF2Q7jnHJg; Thu, 19 Mar 2020 22:09:40 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1584652180; bh=nB/ZWL/zKFq1ZILPv6hbLwHc0CXaydNrUx25EvB90Og=;
-        h=From;
-        b=fy3Jn1ggK1uk1Sgl4rcdiAIkvaOQwloiVo+yYGychUtXlgekgh3lYJjhqFTFs46NA
-         oaf/McucUPLmWT6dMHSF+EXXPRi+6XLxGCozWuqBBL8Y58Z7+FBb9+hAoI7grGEzNH
-         IWCxM/3JoEZsQ9LuxkvTH13XxLWqqEP1PteTzkwStNypEVJ7HmCp20iSAv0ZJROu45
-         H3yXeGGCnn5zUVm30Ldv2E2Axgt4P1VU1YHvyp0UlJPMGkmUeIgN3P4G+yTjnAcVuh
-         EKdV32G2oYQ2rt91AOpcEC56jP121R96YD6HLbXTgwj26ECl5t/oQj2J2LKVLSObTC
-         ahizfowvCbU1g==
-X-CNFS-Analysis: v=2.3 cv=IOJ89TnG c=1 sm=1 tr=0
- a=ijacSk0KxWtIQ5WY4X6b5g==:117 a=ijacSk0KxWtIQ5WY4X6b5g==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=F0g-YP2QzlFsH_K13GYA:9
- a=qlx1Y0SffcSBXFsO:21 a=ZHI5yrzk5xzKKoRi:21 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Cc:     Goffredo Baroncelli <kreijack@inwind.it>
-References: <20200319203913.3103-1-kreijack@libero.it>
- <20200319203913.3103-2-kreijack@libero.it>
- <88960b6d-88dd-a1cd-05d5-46bf94f53230@toxicpanda.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <a9d95ded-7563-0a0d-f9f4-914bce343661@libero.it>
-Date:   Thu, 19 Mar 2020 22:09:39 +0100
+        id S1726867AbgCTAq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Mar 2020 20:46:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37309 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725787AbgCTAq0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Mar 2020 20:46:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1584665182;
+        bh=CfPKDtd4IxjuHHF0EznrrQrWz1rWXyABevI3Sl4et8o=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=E21oXLEIb70Q+m8OFcmD5WgoC1Nt7CleeLIKgAFnGigxz8677VSHTTrTRnz5s4oae
+         jrRWfUTL8BocASAli/3a6BzYy4ZC2iZ/YPgcvxXguKQqR61SSkyLb2dcGvzvcqfPfT
+         Ca2gY3MGgX2PZhDZ9spOufd6Tgs9jFQkoF3YWQXA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvsEn-1jWct02OIR-00syYF; Fri, 20
+ Mar 2020 01:46:22 +0100
+Subject: Re: How do damaged root trees happen and how to protect against power
+ cut?
+To:     Carsten Behling <carsten.behling@googlemail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <bd84944c-2851-87bb-4415-ad988b7e807f@gmx.com>
+Date:   Fri, 20 Mar 2020 08:46:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <88960b6d-88dd-a1cd-05d5-46bf94f53230@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfImruLL+yw1fPJa/BVu1asU7bHBM+ODN3/QYplJqZ2x4YvTfoCHutpLAzLvtjmxSRyH3XUzA19oARga1m465nJ1Yi/NJ9KpXBPPKor2ot58GCrtQ/72T
- ZVtojJHh7/WWtvfb51SWXv90pmIur7GWzH06g6BGMVq4LQujSQDpxOPo7xCQFzZyt8YEO1RXYdLZN1AWp7jNaeFE9Y1dZqOBqr5I0GxRR0gXu8JBrz6wxC4s
+In-Reply-To: <CAPuGWB8Aqvr6po0-nJskh_5W3rUv1+y2P2U-pYMAJ_wwKnLjkA@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YDBAePzq0nbl98w0hC6cfBFLaP1V1Ne04"
+X-Provags-ID: V03:K1:bUuanP5b0KqGW4wvPaTfkd6qHlM2GnCHqfv1tX+HXNl8KPQFxYk
+ 073O+Enp6dv0Voe7PFyphgPYM4KkpH/NrlK0s3zEvJ3cshXbb1tOd5snAljGRtIHDFq9Mrn
+ E8jOPWFnmBJ/knh/D033RqxUk4k4FFcHHxvaBhzrUONvlPjpwxGc1QM6t4XjaZvFtdY6yxO
+ e9hfUIkpA+XLe98wDoKqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:njl/LTP1zUQ=:vhbqGZICmmq2l80emj7C7e
+ Mx3VTfQrdXAsdM+FbxacMiRLmaBT1A0BV4gBdSAWNNClyIVg/vsWPW3H5CuX2QTPINiijE4wy
+ 4EFetIpOyyt4gWR1jHqNrA6JHUEr6cnExfl9rdAKhvbjOH5nnezTgVxjrGP5fgMi6Mfq1hDBP
+ AMuZlNRvqTu8bAM5C+aZOx+lI6kHHSuhhIdxZnbphmZ6mZdPURhJTbQzM4EK9A5bys37odERp
+ oXTcpoJlaZ2bpvvDdxFrD2z7BaNsvTBMiyIuEeS8OFCtMUguVUZFhBLANIwjVjaEe7ic9R6sZ
+ OkLD/cuqg4vDaJ3uxqOQvb6D+fb1Qg9VNm6IRXFyPAJrFNZWU4Mvlglu5Lhcn3PFPELRD1Nc/
+ PZBNOAG7IM//aPaPCPu7gM8Tl+kb6niR5V9yNvV4uwHRYpJYNnxY41r6CTI8TZSudd64zg0wP
+ 06K9hOWy5G2qaUDIKmUffemyzBxQoYc/hYCWDzTm2OTnUJRfdA4LSHMNZ1WtmpbUptkDqNZzV
+ gPtkUIRFkuQ8pYYPUk7mZqbFOBYfDG6ttTD+LQ+ezeoceMeQTvfqmERbLwUO37EFUa3A3nu83
+ lmwKmPcv9McsnNpF7SUhGmK5TUDY7zmhdRMKTsGp6s+6HL0AmOYm6WoM7C8hkSioK4npBl2/R
+ GKrX/WXB/oxvotHgla7kQt3Vx7OXB1c5XHmyaGE0ECSbZeEd/S67i92mniDaY+06/TUsw/sZG
+ sjpw0y+ssOpAYKm+Uedrd3TeoCsDK4v0DSY+c4jQSNRX3SMQZmJXzIG3rW4FAYW+MXTpxyESr
+ MvhM6c7z3/zQkg2usBSQYLYg3Xm7CSAjfjMKL1svo3xMfdkiAzLxgLgcWLaQfXB4OJfQOPCL8
+ kKNXLLaMkXTijpNcUGEXCkIXgkGxAXpsRM/m1r6CVJh1+MoSCvEUNmya8RN9jDZJX/AMGQJiu
+ dkuI+culqjDDmJ9rEp7mltRv2WZvdYWCgsmjarzl/89sn2PsGa7TH1TEQmjuAH/xt7IDJ/lpT
+ OfHZZ5/dSOPYJ3euL3jDsGgYQC6baqoyndiIlsqyVg1omsuk3FXRKhKvCBVNpgKyqG1HEmspT
+ VehQVvZSTyOB4SexTDKTZiYNp9ag1ZLlBs0waFZ7BuJjF788tKwXoyV1CWQckvjv6KYLubdAR
+ viT/J59KB14wSyGPkfFzkh7Yv7rwfcftAKv897GOeBwIVsHLhwrUVKIY0dLHbI4bEvAkfWFZc
+ DLgxEKNcXUAwR1Bc9
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/19/20 9:59 PM, Josef Bacik wrote:
-> On 3/19/20 4:39 PM, Goffredo Baroncelli wrote:
->> From: Goffredo Baroncelli <kreijack@inwind.it>
->>
->> Add a new ioctl to get info about chunk without requiring the root
->> privileges. This allow to a non root user to know how the space of the
->> filesystem is allocated.
->>
->> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
->> ---
->>   fs/btrfs/ioctl.c           | 211 +++++++++++++++++++++++++++++++++++++
->>   include/uapi/linux/btrfs.h |  38 +++++++
->>   2 files changed, 249 insertions(+)
->>
->> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->> index 40b729dce91c..b3296a479bf6 100644
->> --- a/fs/btrfs/ioctl.c
->> +++ b/fs/btrfs/ioctl.c
->> @@ -2234,6 +2234,215 @@ static noinline int btrfs_ioctl_tree_search_v2(struct file *file,
->>       return ret;
->>   }
->> +/*
->> + * Return:
->> + *    1        -> copied all data, possible further data
->> + *    0        -> copied all data, no further data
->> + *    -EAGAIN        -> not enough space, restart it
->> + *    -EFAULT        -> the user passed an invalid address/size pair
->> + */
->> +static noinline int copy_chunk_info(struct btrfs_path *path,
->> +                   char __user *ubuf,
->> +                   size_t buf_size,
->> +                   u64 *used_buf,
->> +                   int *num_found,
->> +                   u64 *offset)
->> +{
->> +    struct extent_buffer *leaf;
-[...]
->> +
->> +static noinline int btrfs_ioctl_get_chunk_info(struct file *file,
->> +                           void __user *argp)
->> +{
->> +    struct btrfs_ioctl_chunk_info arg;
->> +    struct inode *inode;
->> +    int ret;
->> +    size_t buf_size;
->> +    u64 data_offset;
->> +    const size_t buf_limit = SZ_16M;
->> +
->> +
->> +    data_offset = sizeof(struct btrfs_ioctl_chunk_info);
-> 
-> I think I'm missing something, but since we have a single btrfs_chunk_info_stripe at the end, this will point to the next slot, so we're just copying in starting at slot 1, not slot 0, because you pass in argp + data_offset below.  This looks wonky to me, thanks,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YDBAePzq0nbl98w0hC6cfBFLaP1V1Ne04
+Content-Type: multipart/mixed; boundary="lhvyf1xgXO9WPcOi0olV4RZfL2yyPGoix"
 
-I think that you are confunsing  "struct btrfs_ioctl_chunk_info" with "struct btrfs_chunk_info". Only the second one has the single "struct btrfs_chunk_info_stripe" at the end. May be ?
+--lhvyf1xgXO9WPcOi0olV4RZfL2yyPGoix
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
-> 
-> Josef
+On 2020/3/19 =E4=B8=8B=E5=8D=8811:14, Carsten Behling wrote:
+> Hi,
+>=20
+> the investigation of damaged root trees are already discussed in the
+> thread starting with
+>=20
+> https://www.spinics.net/lists/linux-btrfs/msg74019.html
+>=20
+> However, one point wasn't discussed at the end:
+>=20
+>> I thought so too. Is there a reason why they ended up being colocated?=
+
+>> I'm surprised with all the redundancies btrfs is capable of, this can
+>> happen. Was it because the volume was starting to become full? (This
+>> whole exercise of turning on mirroring was because we're migrating to
+>> bigger disks)
+>=20
+> Because I have the same issue on an embedded system, after a power
+> cut, where none of the root tree copies are usable anymore, I'd also
+> like to know :
+>=20
+> - How can we end up in that recoverable state?
+
+There are two main reasons:
+- Btrfs bug
+  The most recent one is between v5.2.0~v5.2.14.
+  There may be some more in older kernels.
+
+- Bad storage stack below btrfs
+  The critical part is the FLUSH/FUA behavior.
+  The spec requires FLUSH/FUA return after all data is written to
+  storage or non volatile cache.
+
+  Btrfs heavily depends on metadata COW to keep it corruption free
+  against power loss.
+  If FLUSH/FUA is not working correctly, then btrfs is completely
+  doomed.
+
+> - Why can't we protect the fs against the unrecoverable state?
+
+If it's hardware, we have no way to protect.
+
+> - Why is that error is so hard to recover?
+
+As the only safety net is broken, there is no way to recover from such
+deadly corruption.
+
+>=20
+> Furthermore, I'd like to know what would be the best solution for an
+> embedded system where power cuts are unavoidable (because of a missing
+> circuit). I'm thinking of using a read-only rootfs with a separate
+> data partition to ensure at least a booting system. But anyway, the
+> data partition could end up in the same state.
+
+Since if it's hardware related, I recommend to do a power loss test
+using latest kernel.
+
+If it's the sdcard's problem, under heavy btrfs write load and powerloss
+it would be pretty easy to corrupt the fs.
+
+Then you can try other sdcard until find a good one, or prove it's
+kernel's fault and we can address it.
+
+Thanks,
+Qu
+
+>=20
+> I'm not sure if it would be also a good option working with snapshots.
+> My space on the embedded device is limited to 8GB. The OS already
+> takes about 4GB.
+>=20
+> Best regards
+> Carsten
+>=20
 
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+--lhvyf1xgXO9WPcOi0olV4RZfL2yyPGoix--
+
+--YDBAePzq0nbl98w0hC6cfBFLaP1V1Ne04
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl50ElkACgkQwj2R86El
+/qgnrwgAnXT+25rE+jzAJ0vAXMXLJjyZTqbgRxEGzp/Psd4VgPcZWKAIzOPe0/YK
+5PcknJTkKQwMZKN7isOt6H78lvtfNLVkA6RnoMCjVNY1todpLbmh8SiBr4Fhyshh
+hj0dwZwIqDn7XCLBZMDvKaeY/EDp/CZU6ge5jxmX95/GkOi1w71yYJ090hdDTEk6
+5JLimXXUtwACWwEpBbm9txOpmnRK0Pyge6GnXVlRzY/6Yxi5KRtZhIqr8UN6iHsd
+AjBk8RvIOfeK85HENUoIDKgtnkZz9rwOAc8wg0nBNu1qWjdPlcVaMhOlqeMTxDvd
+IuQvryvnmAeWH0r8SPluXTkci27crw==
+=SnBi
+-----END PGP SIGNATURE-----
+
+--YDBAePzq0nbl98w0hC6cfBFLaP1V1Ne04--
