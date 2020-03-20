@@ -2,125 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 183A218D6DB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 19:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3D318D713
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Mar 2020 19:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgCTSY4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 14:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727439AbgCTSYz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 14:24:55 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E406F20767;
-        Fri, 20 Mar 2020 18:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584728694;
-        bh=iXk1jLxqgPXgnR9ja2pvER1tlxPb7y75DLTL+2ZEEvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w2Kwf2qrgq9mF3e+Y3DstRvcRM3IPcP1rBsX2IFVwGk7IR9XNsgwueVzsL3c0gBZe
-         +MuPXs0V8pB0UpnbySniOTBsbDmUlJD9DiQwI2PQqZKV0rdBr17ai4ecQWWo63ilaO
-         umg5VrnjKfVftfBjPZrbhNTs/LLm4csl2Am6T0gA=
-Date:   Fri, 20 Mar 2020 11:24:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v9 12/25] mm: Move end_index check out of readahead loop
-Message-ID: <20200320182452.GF851@sol.localdomain>
-References: <20200320142231.2402-1-willy@infradead.org>
- <20200320142231.2402-13-willy@infradead.org>
- <20200320165828.GB851@sol.localdomain>
- <20200320173040.GB4971@bombadil.infradead.org>
- <20200320180017.GE851@sol.localdomain>
- <20200320181132.GD4971@bombadil.infradead.org>
+        id S1726783AbgCTSel (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Mar 2020 14:34:41 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:43558 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbgCTSel (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 14:34:41 -0400
+Received: by mail-qt1-f175.google.com with SMTP id l13so5782516qtv.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Mar 2020 11:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ZtxYcVBbiSEGwPLAXRpHwl7QnjCdZyo87e0eoYDyvo=;
+        b=qQz0u3TzWywvMD7VoKd+9xKuXhT8beGMiKN8jtZOc115DDafCg//OaxESCFWEqRIyI
+         eJzzr910tPTEVeLgGBrIGf9guBN+bgBeCc5cksbDT5/1lMOnzHlHD5cUP2sZbRwt38yT
+         svYzqKJgTY4PmSnZVa2eT2FomC+5YkX9IvTHaPftvHz6v4aIToZDUHKiplEJEA/LwnvS
+         Bj8KipUsHzxMkOMcy5ZOE1dM/0nCHUD0/fiw5JNeP5xglo9nc1XYXRxOCFWngR1ax158
+         0u+rZfn9t+DN313Y5PUg2SAcm+YMTYPpfODzbCNZDwF3lJ5y1LVUHLWL3Y+8LpHbxrA7
+         dSrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ZtxYcVBbiSEGwPLAXRpHwl7QnjCdZyo87e0eoYDyvo=;
+        b=W438EnloDSaH4c13hz3VAa/15FzdnIYrTv+BRmJIccKJV/iQsSgxYfJR3RL25MoijX
+         7Hw5hIo2EXDDfb3A9SZBK+3iyl9THKBUZ5J+D6tsNr8DkQjnhG0JYtXs9Q2Iwxa6wThq
+         r3oQVTcxVe29YmDQ85X2FbCyQMXeRSIK8JZc3llal3IPPIC6fHeCr/JcCO8GjsTyZj5o
+         WAYOoLD4WpA1pasL5tj0DU8gATqRToiGfdgYPFcShZs3HbhXMCuXDaENcwRIlDj9OE5K
+         cm+Ym8t/jX+O8fnH+oJkXfcnZo25KjUPIYeaPOF4u1vJr6Qz49ArPmqbc+4FG6kj880+
+         awpw==
+X-Gm-Message-State: ANhLgQ2VbXk8KNemDrWtcMQYUZQu/OUwh+IpCqhQq8hhXJayikuUyEnd
+        QXA7iXv5uzL2//gnIpJnOaM3o0FHY+quzA==
+X-Google-Smtp-Source: ADFU+vvpq2EYtA26k3FKdaq3lYBMcckqIrCZiMb3N91n3qng94Dn3bBNckJ9yo+yHMI8Ywv6iVwfbQ==
+X-Received: by 2002:ac8:72d4:: with SMTP id o20mr9960675qtp.23.1584729279769;
+        Fri, 20 Mar 2020 11:34:39 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id f93sm5151327qtd.26.2020.03.20.11.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2020 11:34:39 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/5][v2] Relocation and backref resolution fixes
+Date:   Fri, 20 Mar 2020 14:34:31 -0400
+Message-Id: <20200320183436.16908-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320181132.GD4971@bombadil.infradead.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 11:11:32AM -0700, Matthew Wilcox wrote:
-> On Fri, Mar 20, 2020 at 11:00:17AM -0700, Eric Biggers wrote:
-> > On Fri, Mar 20, 2020 at 10:30:40AM -0700, Matthew Wilcox wrote:
-> > > On Fri, Mar 20, 2020 at 09:58:28AM -0700, Eric Biggers wrote:
-> > > > On Fri, Mar 20, 2020 at 07:22:18AM -0700, Matthew Wilcox wrote:
-> > > > > +	/* Avoid wrapping to the beginning of the file */
-> > > > > +	if (index + nr_to_read < index)
-> > > > > +		nr_to_read = ULONG_MAX - index + 1;
-> > > > > +	/* Don't read past the page containing the last byte of the file */
-> > > > > +	if (index + nr_to_read >= end_index)
-> > > > > +		nr_to_read = end_index - index + 1;
-> > > > 
-> > > > There seem to be a couple off-by-one errors here.  Shouldn't it be:
-> > > > 
-> > > > 	/* Avoid wrapping to the beginning of the file */
-> > > > 	if (index + nr_to_read < index)
-> > > > 		nr_to_read = ULONG_MAX - index;
-> > > 
-> > > I think it's right.  Imagine that index is ULONG_MAX.  We should read one
-> > > page (the one at ULONG_MAX).  That would be ULONG_MAX - ULONG_MAX + 1.
-> > > 
-> > > > 	/* Don't read past the page containing the last byte of the file */
-> > > > 	if (index + nr_to_read > end_index)
-> > > > 		nr_to_read = end_index - index + 1;
-> > > > 
-> > > > I.e., 'ULONG_MAX - index' rather than 'ULONG_MAX - index + 1', so that
-> > > > 'index + nr_to_read' is then ULONG_MAX rather than overflowed to 0.
-> > > > 
-> > > > Then 'index + nr_to_read > end_index' rather 'index + nr_to_read >= end_index',
-> > > > since otherwise nr_to_read can be increased by 1 rather than decreased or stay
-> > > > the same as expected.
-> > > 
-> > > Ooh, I missed the overflow case here.  It should be:
-> > > 
-> > > +	if (index + nr_to_read - 1 > end_index)
-> > > +		nr_to_read = end_index - index + 1;
-> > > 
-> > 
-> > But then if someone passes index=0 and nr_to_read=0, this underflows and the
-> > entire file gets read.
-> 
-> nr_to_read == 0 doesn't make sense ... I thought we filtered that out
-> earlier, but I can't find anywhere that does that right now.  I'd
-> rather return early from __do_page_cache_readahead() to fix that.
-> 
-> > The page cache isn't actually supposed to contain a page at index ULONG_MAX,
-> > since MAX_LFS_FILESIZE is at most ((loff_t)ULONG_MAX << PAGE_SHIFT), right?  So
-> > I don't think we need to worry about reading the page with index ULONG_MAX.
-> > I.e. I think it's fine to limit nr_to_read to 'ULONG_MAX - index', if that makes
-> > it easier to avoid an overflow or underflow in the next check.
-> 
-> I think we can get a page at ULONG_MAX on 32-bit systems?  I mean, we can buy
-> hard drives which are larger than 16TiB these days:
-> https://www.pcmag.com/news/seagate-will-ship-18tb-and-20tb-hard-drives-in-2020
-> (even ignoring RAID devices)
+v1->v2:
+- reworded the first patch.
+- Added "btrfs: restart snapshot delete if we have to end the transaction".
+  Zygo still was able to hit the backref walking+snapshot delete deadlock
+  because the original fix is still a little racey.  We can already restart
+  snapshot deletes, just drop our path if we have to end the transaction so
+  we're not holding locks across trans handles.
 
-The max file size is ((loff_t)ULONG_MAX << PAGE_SHIFT) which means the maximum
-page *index* is ULONG_MAX - 1, not ULONG_MAX.
+===================== Original email =====================================
+These are standalone fixes that came out of my debugging Zygo's problems.  The
+first two address a problem with how we handle restarting relocation.
+Previously this rarely happened, because if it had people would have complained.
+The restart logic was broken in a few subtle ways, and these two patches address
+those issues.
 
-Anyway, I think we may be making this much too complicated.  How about just:
+The third patch just boggles my mind.  We were recording reloc roots based on
+their current bytenr.  This worked fine if we never restarted, but broke if we
+had to lookup a ref to a reloc root that we found on the tree.  This is because
+that would point at the commit root of the reloc root, but if we had modified
+the reloc root we'd no longer be able to find it.
 
-	pgoff_t i_nrpages = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+And finally the last one was a weird deadlock that Zygo's insane test rig found,
+as he runs the dedup thing while balancing and deleting snapshots, which made
+this thing fall out.  Thanks,
 
-	if (index >= i_nrpages)
-		return;
-	/* Don't read past the end of the file */
-	nr_to_read = min(nr_to_read, i_nrpages - index);
+Josef
 
-That's 2 branches instead of 4.  (Note that assigning to i_nrpages can't
-overflow, since the max number of pages is ULONG_MAX not ULONG_MAX + 1.)
-
-- Eric
