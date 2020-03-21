@@ -2,173 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 634A818DD84
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Mar 2020 02:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2CF18DDC9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Mar 2020 04:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgCUBn3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Mar 2020 21:43:29 -0400
-Received: from mout.gmx.net ([212.227.17.20]:59863 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgCUBn2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Mar 2020 21:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1584755004;
-        bh=QXWYnUyfsLupJ45vNhVnxutzSLeTg9O4i5mgMlBWGs8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZB+flwuKL2VM2epWn4vZBKkzPsb3Rg+Oc9W8yRJhcwgZcelKkM/vZn7z+a5ljAHQf
-         bSx0x/WR5p8O/iVeiiWBeTibp3ZcBolaV8iCwFfeKrojmKcRjgfvYgvZ+4y4i0O+Ww
-         eUnwrPbsBrFEl5+y7UauJVFSL4lw0UenFWbOMr9A=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Ux-1jSzsG3tKt-00wFi5; Sat, 21
- Mar 2020 02:43:24 +0100
-Subject: Re: [PATCH] Btrfs: fix removal of raid[56|1c34} incompat flags after
- removing block group
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200320184348.845248-1-fdmanana@kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8107ef53-5317-327c-674e-d5bd1b9d1e4d@gmx.com>
-Date:   Sat, 21 Mar 2020 09:43:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727319AbgCUD3M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 20 Mar 2020 23:29:12 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:48620 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgCUD3M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Mar 2020 23:29:12 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 57ADC62072B; Fri, 20 Mar 2020 23:29:11 -0400 (EDT)
+Date:   Fri, 20 Mar 2020 23:29:11 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     kreijack@inwind.it
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Question: how understand the raid profile of a btrfs filesystem
+Message-ID: <20200321032911.GR13306@hungrycats.org>
+References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
 MIME-Version: 1.0
-In-Reply-To: <20200320184348.845248-1-fdmanana@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MeEpO1oCISjlHzIY0OhpRtvxAVBbf148T"
-X-Provags-ID: V03:K1:L3xbgbeE18c61wCeqFiYHVImQ5k48fMR36+VONIpt6EFG2eCmP3
- /qxElVKSDuAKWdClTByuesUny8CmuyAImWZ24GAQgkXBiqArJ2jBB6nTYlSIUNgY7z6KuxP
- Cy0kVrIDLUMnoZU71d4rCe4mCjgQYU4u9a7CxBuK6h7TOIxuEJnCtIf7E1qh7HR9vWdG6bL
- QqCm3+XepEw6sE12+SDPw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Fw3N0ZxuURE=:T0qVoGkjIm1ocgfxpRKEvv
- KRuANv0OBqN4VnFppz0bI2qpUj7oHIO2gkI7b6B2Ah+gBgwEniI9hHpnI728/LGdnvXJj0baO
- 1OhgFgWktjG2c+VUfQJnP/SE74DeYBiM8K0VZ5frTOvPGR1ewhZ1Z2mmRNYLW2R83OmWAWWjq
- 0cJuAGrWIQik1NDxM0Dhxb7ZorTpf98YHxWG31JwfcDQKd9eXusdUjGPo5KJ7qOUWs0W+/gjE
- 9G8qnm2z2a+MfrQzuK92OxswQa0vGy1VBBZdLg0XRy3G5xZB0M/AhDFI+i4TueCssexC4MgHa
- z9Sax9j0RLL30xLlNgyKrYa92Yb2lhx45VgMqyjcF+O6u/Tz9l1jn2kKeGcdH80Px74tmVkLz
- SU73v2c7aOs+7pNrYo+ogVm6k2BgQxNeRkpogET/EnrsDlHag3Vc+Zqe8P1hbwVIR751G1NSn
- 3D37eLXl19LsappKsU8atF+hjVdMpLvTY52zayaLejAFLEuY172rqk/by0cKUJ6uzYlU8Iunr
- QB7KiM8z3Z878DLZ2qAsjC+l8ppMz1jHNxEWl/FDkDtDK1Su2gKkfZOz+IH13NdO+bw38NkXV
- 5z96c2SM54Jn/fRS2kDaLWbKgGWCka0t5mZqrvdxALLMr1HUzb+5n3IsQPDz5/LOsPvEa9TW5
- rbtV1Ryn+eivNJTwoLqxzTV/a01xiICvEo4kOqbzqB/Zx7S3RMD9zA4Z8piEkM1fI+ImULedf
- oWOTl2JsrC+byiLx6FN9yobkIxX5yNcla3IVgBw1JMK3vkedA9sCHZWEqE3FONps55750JjRf
- bU09dL8jCpSADqvEKw4E3ew5bTc+Xj36jbemwaRKdELaaxQXJdsE1Z4blCI11KPy9aedIe9/o
- pk0YIWfO3S1/NSlxoy8iRx2NaRTG4BxMdxx6ZU78ONQwRzvHohqs029M/13mYhi8pzhJ4ghby
- EdIlGxYKF3t7mEOOFZek9cVxUFiVAW7WJT4BD93ZIJMoGcK0ED7UnMQ3eQpGw5fE2AXzpYNSh
- loqPLCH+8utZsK+v6QOmndKRIg7gGGUBnh3Ojs55DnoiF6O0dxDvU6F+DQIYdyojYZ+IAMsvO
- 1Dp2rttlkLkQhCLhsqpdjYp5dfJNUirp4Vi4dU4Gh6u4eb7573B+eQJOM8qHeCiUqLSSRXzGW
- o2fLl3976g2Cx9Kjv2XPbHKlxKZZMKYFZl+tbEMXR4A2FbFJQdo9F4Xo48LpeCUD9CjvdQc2Z
- noqyC827ofJPs1pGb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MeEpO1oCISjlHzIY0OhpRtvxAVBbf148T
-Content-Type: multipart/mixed; boundary="UdOHNT0Oi4zcG3clQ3dFHzHnl2GgbaJnS"
+On Fri, Mar 20, 2020 at 06:56:38PM +0100, Goffredo Baroncelli wrote:
+> Hi all,
+> 
+> for a btrfs filesystem, how an user can understand which is the {data,mmetadata,system} [raid] profile in use ? E.g. the next chunk which profile will have ?
 
---UdOHNT0Oi4zcG3clQ3dFHzHnl2GgbaJnS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+It's the profile used by the highest-numbered block group for the
+allocation type (one for data, one for metadata/system).  There
+are two profiles to consider, one for data and one for metadata.
+'btrfs fi df', 'btrfs fi us', or 'btrfs dev usage' will all indicate
+which profiles these are.
 
+It is valid for the two profiles to be different, and different profile
+combinations have different use cases.  In most cases the only one that
+matters is the data profile, as that's the one POSIX 'df' reports and
+data block writes consume, and the one that typically occupies more than
+99% of the total space.  Adminstrators and system designers have to be
+more aware of metadata usage when filesystems become extremely full or
+extremely small (less than 16 GB).  Users (without root or CAP_SYS_ADMIN)
+generally can't do anything about metadata usage, except as a tiny
+side-effect of their data usage.
 
+> For simple filesystem it is easy looking at the output of (e.g)  "btrfs fi df" or "btrfs fi us". But what if the filesystem is not simple ?
 
-On 2020/3/21 =E4=B8=8A=E5=8D=882:43, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> We are incorrectly dropping the raid56 and raid1c34 incompat flags when=
+"Not simple" is not a normal operating mode for btrfs.  The filesystem
+allows multiple profiles to be active, so the filesystem can be
+converted to a new profile while old data is still accessible; however,
+the conversion is expected to end at some point, and all block groups
+will use the same profile when that happens.
 
-> there are still raid56 and raid1c34 block groups, not when we do not an=
-y
-> of those anymore. The logic just got unintentionally broken after addin=
-g
-> the support for the raid1c34 modes.
->=20
-> Fix this by clear the flags only if we do not have block groups with th=
-e
-> respective profiles.
->=20
-> Fixes: 9c907446dce3 ("btrfs: drop incompat bit for raid1c34 after last =
-block group is gone")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+The allocator will only use one RAID profile, and will ignore free
+space in block groups of other profiles, while 'df' reports the total
+space on the filesystem in each profile, and metadata allocation does
+something else.  'btrfs fi us' reports a mess and can't give any accurate
+free space estimate.  Disk space will apparently be free while writes
+fail with ENOSPC.
 
-The fix is OK.
+This is not a problem if a conversion is running to eliminate all the
+"competing" profiles, but if the conversion stops, you can expect some
+problems with space until it resumes again.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+> btrfs fi us t/.
+> Overall:
+>     Device size:		  40.00GiB
+>     Device allocated:		  19.52GiB
+>     Device unallocated:		  20.48GiB
+>     Device missing:		     0.00B
+>     Used:			  16.75GiB
+>     Free (estimated):		  12.22GiB	(min: 8.27GiB)
+>     Data ratio:			      1.90
+>     Metadata ratio:		      2.00
+>     Global reserve:		   9.06MiB	(used: 0.00B)
+> 
+> Data,single: Size:1.00GiB, Used:512.00MiB (50.00%)
+>    /dev/loop0	   1.00GiB
+> 
+> Data,RAID5: Size:3.00GiB, Used:2.48GiB (82.56%)
+>    /dev/loop1	   1.00GiB
+>    /dev/loop2	   1.00GiB
+>    /dev/loop3	   1.00GiB
+>    /dev/loop0	   1.00GiB
+> 
+> Data,RAID6: Size:4.00GiB, Used:3.71GiB (92.75%)
+>    /dev/loop1	   2.00GiB
+>    /dev/loop2	   2.00GiB
+>    /dev/loop3	   2.00GiB
+>    /dev/loop0	   2.00GiB
+> 
+> Data,RAID1C3: Size:2.00GiB, Used:1.88GiB (93.76%)
+>    /dev/loop1	   2.00GiB
+>    /dev/loop2	   2.00GiB
+>    /dev/loop3	   2.00GiB
+> 
+> Metadata,RAID1: Size:256.00MiB, Used:9.14MiB (3.57%)
+>    /dev/loop2	 256.00MiB
+>    /dev/loop3	 256.00MiB
+> 
+> System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+>    /dev/loop2	   8.00MiB
+>    /dev/loop3	   8.00MiB
+> 
+> Unallocated:
+>    /dev/loop1	   5.00GiB
+>    /dev/loop2	   4.74GiB
+>    /dev/loop3	   4.74GiB
+>    /dev/loop0	   6.00GiB
+> 
+> This is an example of a strange but valid filesystem. 
 
-Just interesting do we really need to remove such flags?
-To me, keep the flag is completely sane.
+Valid, but the filesystem is in a state designed for temporary use during
+conversions, and you will want to exit that state as soon as possible.
 
-Thanks,
-Qu
-> ---
->  fs/btrfs/block-group.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 7b003a2df79e..b8f39a679064 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -856,9 +856,9 @@ static void clear_incompat_bg_bits(struct btrfs_fs_=
-info *fs_info, u64 flags)
->  				found_raid1c34 =3D true;
->  			up_read(&sinfo->groups_sem);
->  		}
-> -		if (found_raid56)
-> +		if (!found_raid56)
->  			btrfs_clear_fs_incompat(fs_info, RAID56);
-> -		if (found_raid1c34)
-> +		if (!found_raid1c34)
->  			btrfs_clear_fs_incompat(fs_info, RAID1C34);
->  	}
->  }
->=20
+> So the question is: the next chunk which profile will have ?
+> Is there any way to understand what will happens ?
+> 
+> I expected that the next chunk will be allocated as the last "convert". However I discovered that this is not true.
 
+That's correct in most cases--a convert will create a new block group,
+which will have the highest bytenr in the filesystem, and its profile
+will be used to allocate new data, thus converting the filesystem to
+the new profile; however, if you pause the convert and delete all the
+files in the new block group, it's possible that the new block group gets
+deleted too, and then the filesystem reverts to the previous RAID profile.
+Again, not a problem if you run the convert until it completely removes
+all old block groups!
 
---UdOHNT0Oi4zcG3clQ3dFHzHnl2GgbaJnS--
+> Looking at the code it seems to me that the logic is the following (from btrfs_reduce_alloc_profile())
+> 
+>         if (allowed & BTRFS_BLOCK_GROUP_RAID6)
+>                 allowed = BTRFS_BLOCK_GROUP_RAID6;
+>         else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
+>                 allowed = BTRFS_BLOCK_GROUP_RAID5;
+>         else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
+>                 allowed = BTRFS_BLOCK_GROUP_RAID10;
+>         else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
+>                 allowed = BTRFS_BLOCK_GROUP_RAID1;
+>         else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
+>                 allowed = BTRFS_BLOCK_GROUP_RAID0;
+> 
+>         flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
+> 
+> So in the case above the profile will be RAID6. And in the general if a RAID6 chunk is a filesystem, it wins !
 
---MeEpO1oCISjlHzIY0OhpRtvxAVBbf148T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This code is used to determine whether a conversion reduces the level of
+redundancy, e.g. you are going from raid6 (2 redundant disks) to raid5
+(1 redundant disk) or raid0 (0 redundant disks).  There are warnings and
+a force flag required when that happens.  It doesn't determine the raid
+profile of the next block group--that's just a straight copy of the raid
+profile of the last block group.
 
------BEGIN PGP SIGNATURE-----
+> But I am not sure.. Moreover I expected to see also reference to DUP and/or RAID1C[34] ...
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl51cTkACgkQwj2R86El
-/qg8FQf9HKLJmeEnUFbgYawOrWhVZ4/lw7DEdvRcLFXZiUS592wRGk3Yt+OgxLEH
-Fsur/OcOUKiU/5P83bB/XzauNf1uoIhkVkxNG/6XX7Akt2dznwfvHAfTClPCoPjC
-96/fiBCoXULr0FhPysBx+SCCXe/D7AiDA1+Na0XbCsh3Kd3kAoN1XjpFSkSwtOgM
-qPVhB9dwUWlAyD8N5XZIE0lEMyNEXR6WP7OtOMcoeCUcA0i7qZx6LkguPFJbFoKV
-1RP6kpH7sZtmbmzHjxcR6EaFeSpva7KwUxbCRtZbNbQ0hdUYFY4DbrTJ0lE3DVGX
-mkGiJFOmSnzcrRZGEU3SJ6wg+t62ew==
-=ImHi
------END PGP SIGNATURE-----
+If you get through that 'if' statement without hitting any of the
+branches, then you're equal to raid0 (0 redundant disks) but raid0
+is a special case because it requires 2 disks for allocation.  'dup'
+(0 redundant disks) and 'single' (which is the absence of any profile
+bits) also have 0 redundant disks and require only 1 disk for allocation,
+there is no need to treat them differently.
 
---MeEpO1oCISjlHzIY0OhpRtvxAVBbf148T--
+raid1c[34] probably should be there.  Patches welcome.
+
+> Does someone have any suggestion ?
+> 
+> BR
+> G.Baroncelli
+> 
