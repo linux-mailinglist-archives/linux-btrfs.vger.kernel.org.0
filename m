@@ -2,68 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C18D618E37B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Mar 2020 18:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FF718E433
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Mar 2020 21:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgCURqZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Mar 2020 13:46:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55188 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgCURqY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Mar 2020 13:46:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BBBB6AB8F;
-        Sat, 21 Mar 2020 17:46:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E97A8DA70B; Sat, 21 Mar 2020 18:45:53 +0100 (CET)
-Date:   Sat, 21 Mar 2020 18:45:53 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix removal of raid[56|1c34} incompat flags after
- removing block group
-Message-ID: <20200321174553.GK12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200320184348.845248-1-fdmanana@kernel.org>
- <8107ef53-5317-327c-674e-d5bd1b9d1e4d@gmx.com>
+        id S1726997AbgCUUXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Mar 2020 16:23:12 -0400
+Received: from magic.merlins.org ([209.81.13.136]:52102 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgCUUXM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 21 Mar 2020 16:23:12 -0400
+Received: from svh-gw.merlins.org ([173.11.111.145]:42366 helo=saruman.merlins.org)
+        by mail1.merlins.org with esmtps 
+        (Cipher TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.92 #3)
+        id 1jFkeC-0002yc-1C; Sat, 21 Mar 2020 13:23:10 -0700
+Received: from merlin by saruman.merlins.org with local (Exim 4.80)
+        (envelope-from <marc@merlins.org>)
+        id 1jFkeB-0004pz-NT; Sat, 21 Mar 2020 13:23:07 -0700
+Date:   Sat, 21 Mar 2020 13:23:07 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Message-ID: <20200321202307.GA15906@merlins.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8107ef53-5317-327c-674e-d5bd1b9d1e4d@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 173.11.111.145
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Checker-Version: SpamAssassin 3.4.4-rc1-mmrules_20121111 (2020-01-18)
+        on magic.merlins.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=7.0 tests=GREYLIST_ISWHITE,
+        KHOP_HELO_FCRDNS,SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.4-rc1-mmrules_20121111
+X-Spam-Report: *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: merlins.org]
+        *  1.0 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  1.0 KHOP_HELO_FCRDNS Relay HELO differs from its IP's reverse DNS
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this receipient and sender
+Subject: 5.4.20: cannot mount device that blipped off the bus: duplicate
+ device fsid:devid for
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Mar 21, 2020 at 09:43:21AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/3/21 上午2:43, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > We are incorrectly dropping the raid56 and raid1c34 incompat flags when
-> > there are still raid56 and raid1c34 block groups, not when we do not any
-> > of those anymore. The logic just got unintentionally broken after adding
-> > the support for the raid1c34 modes.
-> > 
-> > Fix this by clear the flags only if we do not have block groups with the
-> > respective profiles.
-> > 
-> > Fixes: 9c907446dce3 ("btrfs: drop incompat bit for raid1c34 after last block group is gone")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> 
-> The fix is OK.
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-> Just interesting do we really need to remove such flags?
-> To me, keep the flag is completely sane.
+/dev/sde blipped off the bus (hardware issue?) and came
+back as /dev/sdq.
+Except btrfs won't let me scan or mount it.
 
-So you'd suggest to keep a flag for a feature that's not used on the
-filesystem so it's not possible to mount the filesystem on an older
-kernel?
+I was able to btrfs check it though and that came back clean.
+
+gargamel:~# ls -l /dev/sde
+ls: cannot access '/dev/sde': No such file or directory
+
+
+gargamel:~# mount /dev/sdq1 /mnt/mnt
+mount: /mnt/mnt: mount(2) system call failed: File exists.
+gargamel:~# dmesg |tail -1
+[2560371.195249] BTRFS warning (device sde1): duplicate device fsid:devid for 727c7ba3-f6f9-462a-8472-453dd7d46d8a:1 old:/dev/sde1 new:/dev/sdq1
+
+gargamel:~# btrfs device scan
+Scanning for Btrfs filesystems
+ERROR: device scan failed on '/dev/sdq1': File exists
+ERROR: there are 1 errors while registering devices
+gargamel:~# dmesg |tail -1
+[2560416.434529] BTRFS warning (device sde1): duplicate device fsid:devid for 727c7ba3-f6f9-462a-8472-453dd7d46d8a:1 old:/dev/sde1 new:/dev/sdq1
+
+gargamel:~# grep sde /proc/mounts 
+cgroup2 /sys/fs/cgroup/unified cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0
+gargamel:~# 
+
+gargamel:~# lsblk -f |grep 727c7ba3-f6f9-462a-8472-453dd7d46d8a
+└─sdq1                            btrfs             btrfs_space                 727c7ba3-f6f9-462a-8472-453dd7d46d8a   
+gargamel:~# 
+
+So, that FS isn't a duplicate anymore and I see to have no way out except reboot
+which I'll do now.
+
+Was there another way around it? Obviously this is not desirable
+behaviour, in the past, I was able to remount the device when it came
+back.
+
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
