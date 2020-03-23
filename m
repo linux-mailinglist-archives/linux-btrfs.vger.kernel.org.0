@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6237A18F2C8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 11:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F82018F2C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 11:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgCWK0K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Mar 2020 06:26:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39622 "EHLO mx2.suse.de"
+        id S1728045AbgCWK0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Mar 2020 06:26:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39652 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728024AbgCWK0K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Mar 2020 06:26:10 -0400
+        id S1728024AbgCWK0N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Mar 2020 06:26:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 279F8AEB9
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Mar 2020 10:26:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1DBB3AE89
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Mar 2020 10:26:11 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 38/40] btrfs: qgroup: Introduce verification for function to ensure old roots ulist matches btrfs_find_all_roots() result
-Date:   Mon, 23 Mar 2020 18:24:14 +0800
-Message-Id: <20200323102416.112862-39-wqu@suse.com>
+Subject: [PATCH 39/40] btrfs: qgroup: Introduce a new function to get old_roots ulist using backref cache
+Date:   Mon, 23 Mar 2020 18:24:15 +0800
+Message-Id: <20200323102416.112862-40-wqu@suse.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200323102416.112862-1-wqu@suse.com>
 References: <20200323102416.112862-1-wqu@suse.com>
@@ -30,102 +30,160 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will introduce a new function, verify_old_roots(), for qgroup
-to verify the backref cache based result and old btrfs_find_all_roots()
-result.
+The new function, get_old_roots() will replace the old
+btrfs_find_all_roots() to do a backref cache based search for all
+referring roots.
 
-Since it will impact performance heavily as we are doing two different
-backref walk, this verification will only be enabled for
-CONFIG_BTRFS_FS_CHECK_INTEGRITY.
+The workflow includes:
+- Search the extent tree to get basic tree info
+  Including: first key, level and owner (from btrfs_header).
+
+- Skip all non-subvolume tree blocks
+  Since non-subvolume tree blocks will never be shared with subvolume
+  trees, skipping them would speed up the procedure.
+
+- Build backref cache for the tree block
+  Either we get the backref_node inserted into the cache, or it's
+  referred exclusively by reloc tree which doesn't contribute to qgroup.
+
+- Find all roots using the return backref_node
+  It's a simple iterative depth-first search. The result will be stored
+  into a ulist, just like old btrfs_find_all_roots().
+
+- Verify the cached result with old btrfs_find_all_roots() for DEBUG
+  build
+  If we enabled CONFIG_BTRFS_FS_CHECK_INTEGRITY, we again call
+  btrfs_find_all_roots() just as what we used to do.
+  Then verify the result against the result from backref cache.
+
+  This is very performance heavy as it kills all the benefit we get from
+  backref cache, thus should only be enabled for DEBUG build.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ fs/btrfs/qgroup.c | 109 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 109 insertions(+)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 3c25e17f0979..19d68e8397d0 100644
+index 19d68e8397d0..b58821323512 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1831,6 +1831,78 @@ static int get_tree_info(struct btrfs_fs_info *fs_info,
+@@ -1943,6 +1943,115 @@ static int iterate_all_roots(struct btrfs_backref_node *node,
  	return ret;
  }
  
-+#ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
-+/*
-+ * Compare the result with old btrfs_find_all_roots() to ensure the new backref
-+ * cache based result is correct.
-+ */
-+static int verify_old_roots(struct btrfs_fs_info *fs_info,
-+			    struct ulist *result, u64 bytenr)
++static struct ulist *get_old_roots(struct btrfs_fs_info *fs_info, u64 bytenr)
 +{
-+	struct ulist *old;
++	struct ulist *tree_blocks = NULL;
++	struct btrfs_path *path = NULL;
++	struct btrfs_key key;
 +	struct ulist_iterator uiter;
 +	struct ulist_node *unode;
-+	bool not_fstree = false;
-+	int ret = 0;
++	struct ulist *ret_ulist;
++	u64 extent_flag;
++	int ret;
 +
-+	ret = btrfs_find_all_roots(NULL, fs_info, bytenr, 0, &old, true);
++	ret_ulist = ulist_alloc(GFP_NOFS);
++	if (!ret_ulist)
++		return ERR_PTR(-ENOMEM);
++
++	path = btrfs_alloc_path();
++	if (!path) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	path->search_commit_root = 1;
++	path->skip_locking = 1;
++
++	ret = extent_from_logical(fs_info, bytenr, path, &key, &extent_flag);
++	if (ret == -ENOENT) {
++		/* No backref for this extent, returning empty old_root */
++		ret = 0;
++		goto out;
++	}
 +	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * Check the first node, as find_all_roots() will also return
-+	 * non-subvolume tree owner.
-+	 * Since subvolume tree block won't be shared with non-subvolume
-+	 * trees, if we find a non-subolume tree root, we don't need
-+	 * to verify at all.
-+	 */
-+	ULIST_ITER_INIT(&uiter);
-+	while ((unode = ulist_next(old, &uiter))) {
-+		if (!is_fstree(unode->val))
-+			not_fstree = true;
-+		break;
-+	}
-+
-+	if (not_fstree && result->nnodes != 0) {
-+		btrfs_err(fs_info,
-+"qgroup backref cached error, bytenr=%llu found cached node for non-fs tree",
-+			  bytenr);
-+		ret = -EUCLEAN;
-+		goto out;
-+	}
-+	if (not_fstree)
 +		goto out;
 +
-+	if (result->nnodes != old->nnodes) {
-+		btrfs_err(fs_info,
-+"qgroup backref cache error, bytenr=%llu nr nodes mismatch, old method=%lu cache method=%lu",
-+			  bytenr, old->nnodes, result->nnodes);
-+		ret = -EUCLEAN;
-+		goto out;
-+	}
-+	ULIST_ITER_INIT(&uiter);
-+	while ((unode = ulist_next(result, &uiter))) {
-+		/*
-+		 * @result and @old have the same amount of nodes, so if we
-+		 * delete each @result node from @old, we either delete all
-+		 * nodes from @old (verification pass), or we will hit
-+		 * a missing node (verification failure).
-+		 */
-+		ret = ulist_del(old, unode->val, 0);
-+		if (ret) {
-+			btrfs_err(fs_info,
-+	"qgroup backref cache error, bytenr=%llu root %llu not found in cached result",
-+				  bytenr, unode->val);
-+			ret = -EUCLEAN;
++	if (extent_flag & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++		tree_blocks = ulist_alloc(GFP_NOFS);
++		if (!tree_blocks) {
++			ret = -ENOMEM;
 +			goto out;
 +		}
++
++		ret = ulist_add(tree_blocks, bytenr, 0, GFP_NOFS);
++		if (ret < 0)
++			goto out;
++	} else {
++		ret = btrfs_find_all_leafs(NULL, fs_info, bytenr, 0,
++				&tree_blocks, NULL, true);
++		if (ret < 0)
++			goto out;
++	}
++	btrfs_release_path(path);
++
++	/*
++	 * Add all related tree blocks to backref cache and get all roots
++	 * from each iteration
++	 */
++	ULIST_ITER_INIT(&uiter);
++	while ((unode = ulist_next(tree_blocks, &uiter))) {
++		struct btrfs_backref_node *node;
++		struct btrfs_key node_key;
++		u64 owner;
++		u8 tree_level;
++
++		ret = get_tree_info(fs_info, path, unode->val,
++				&node_key, &owner, &tree_level);
++		if (ret < 0)
++			goto out;
++
++		/* Isn't a subvolume tree, direct exist */
++		if (!is_fstree(owner))
++			goto out;
++
++		mutex_lock(&fs_info->qgroup_backref_lock);
++		/*
++		 * This can happen when rescan worker is running while qgroup
++		 * is being disabled.
++		 * Just exit without verification, qgroup will cleanup itself.
++		 */
++		if (!fs_info->qgroup_backref_cache) {
++			mutex_unlock(&fs_info->qgroup_backref_lock);
++			goto out_no_verify;
++		}
++
++		node = qgroup_backref_cache_build(fs_info, &node_key,
++				tree_level, unode->val, owner);
++		if (IS_ERR(node)) {
++			ret = PTR_ERR(node);
++			mutex_unlock(&fs_info->qgroup_backref_lock);
++			goto out;
++		}
++		if (node)
++			ret = iterate_all_roots(node, ret_ulist);
++		mutex_unlock(&fs_info->qgroup_backref_lock);
++		if (ret < 0)
++			goto out;
 +	}
 +out:
-+	ulist_free(old);
-+	return ret;
++	if (IS_ENABLED(CONFIG_BTRFS_FS_CHECK_INTEGRITY) && !ret) {
++		ret = verify_old_roots(fs_info, ret_ulist, bytenr);
++		WARN_ON(ret < 0);
++	}
++out_no_verify:
++	btrfs_free_path(path);
++	ulist_free(tree_blocks);
++	if (ret < 0) {
++		ulist_free(ret_ulist);
++		return ERR_PTR(ret);
++	}
++	return ret_ulist;
 +}
-+#endif
 +
- /* Iterate all roots in the backref_cache, and add root objectid into @roots */
- static int iterate_all_roots(struct btrfs_backref_node *node,
- 			     struct ulist *roots)
+ int btrfs_qgroup_trace_extent_post(struct btrfs_fs_info *fs_info,
+ 				   struct btrfs_qgroup_extent_record *qrecord)
+ {
 -- 
 2.25.2
 
