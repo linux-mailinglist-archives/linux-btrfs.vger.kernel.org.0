@@ -2,101 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5218FE67
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 21:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9347A18FF47
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 21:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgCWUBq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Mar 2020 16:01:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54312 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgCWUBq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Mar 2020 16:01:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1A0F9AB6D;
-        Mon, 23 Mar 2020 20:01:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 74AC5DA811; Mon, 23 Mar 2020 21:01:14 +0100 (CET)
-Date:   Mon, 23 Mar 2020 21:01:14 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Filipe Manana <fdmanana@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH RESEND v2 3/3] btrfs-progs: tests: add test for receiving
- clone from duplicate subvolume
-Message-ID: <20200323200114.GP12659@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Filipe Manana <fdmanana@gmail.com>,
-        Filipe Manana <fdmanana@suse.com>
-References: <cover.1583914311.git.osandov@fb.com>
- <999924f436ccad26b30f555ee106a131dff015c9.1583914311.git.osandov@fb.com>
+        id S1727241AbgCWUXG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Mar 2020 16:23:06 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:36890 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727227AbgCWUXF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Mar 2020 16:23:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=V1eefm7+tUeHaHuTxbGk814oLnmWJiAQchm+XRCXUUE=; b=swlmD4odmFk1KHStttzDuF3zzh
+        ZTmDxayXcnSOqZScWFJUqfVoLmSe21S70QSppPLOi7Jz7AnIOMICfH7WrNWyucEgnONVhPv+SiPtT
+        oHmq5Bp6zz8W5ID4VuR/g+suhKMgv+2aRMM+cTEZXc2viwtnos1JrC6H36OkSkbERN3IMpYb8xJDX
+        YKbTHrNByuySY9Lvmj2i+1Ugt47P+l+rMn9O22tU++gN8EvfYFqjoBi0v6Np4Q86R3QHeT+9ThbRo
+        v3pDL/g0bG/9TSLby74s8JJ2rBA9qmzxhfE0Bvm9OgTDmD/OXZycmnpnteVDjBrqn8LwdBled+fjh
+        6uSecDAQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jGTbB-0003US-CA; Mon, 23 Mar 2020 20:23:01 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: [PATCH v10 00/25] Change readahead API
+Date:   Mon, 23 Mar 2020 13:22:34 -0700
+Message-Id: <20200323202259.13363-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <999924f436ccad26b30f555ee106a131dff015c9.1583914311.git.osandov@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 01:17:11AM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> This test case is the reproducer for the previous fix.
-> 
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->  .../test.sh                                   | 34 +++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100755 tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
-> 
-> diff --git a/tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh b/tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
-> new file mode 100755
-> index 00000000..be648605
-> --- /dev/null
-> +++ b/tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
-> @@ -0,0 +1,34 @@
-> +#!/bin/bash
-> +# Test that when receiving a subvolume whose received UUID already exists in
-> +# the filesystem, we clone from the correct source (the subvolume that we are
-> +# receiving, not the existing subvolume). This is a regression test for
-> +# "btrfs-progs: receive: don't lookup clone root for received subvolume".
-> +
-> +source "$TEST_TOP/common"
-> +
-> +check_prereq btrfs
-> +check_prereq mkfs.btrfs
-> +
-> +setup_root_helper
-> +
-> +rm -f disk
-> +run_check truncate -s 1G disk
-> +chmod a+w disk
-> +run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f disk
-> +run_check $SUDO_HELPER mount -o loop disk "$TEST_MNT"
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-I don't see any special reason to use the loop device (like an
-additional one to the default), so I think this should be fine using the
-default image and the common helpers.
+This series adds a readahead address_space operation to replace the
+readpages operation.  The key difference is that pages are added to the
+page cache as they are allocated (and then looked up by the filesystem)
+instead of passing them on a list to the readpages operation and having
+the filesystem add them to the page cache.  It's a net reduction in
+code for each implementation, more efficient than walking a list, and
+solves the direct-write vs buffered-read problem reported by yu kuai at
+https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 
+The only unconverted filesystems are those which use fscache.  Their
+conversion is pending Dave Howells' rewrite which will make the conversion
+substantially easier.  This should be completed by the end of the year.
 
-> +run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subvol"
-> +run_check $SUDO_HELPER dd if=/dev/urandom of="$TEST_MNT/subvol/foo" \
-> +	bs=1M count=1 status=none
-> +run_check $SUDO_HELPER cp --reflink "$TEST_MNT/subvol/foo" "$TEST_MNT/subvol/bar"
-> +run_check $SUDO_HELPER mkdir "$TEST_MNT/subvol/dir"
-> +run_check $SUDO_HELPER mv "$TEST_MNT/subvol/foo" "$TEST_MNT/subvol/dir"
-> +run_check $SUDO_HELPER "$TOP/btrfs" property set "$TEST_MNT/subvol" ro true
-> +run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data "$TEST_MNT/subvol"
-> +
-> +run_check $SUDO_HELPER mkdir "$TEST_MNT/first" "$TEST_MNT/second"
-> +run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "$TEST_MNT/first"
-> +run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "$TEST_MNT/second"
+I want to thank the reviewers/testers; Dave Chinner, John Hubbard,
+Eric Biggers, Johannes Thumshirn, Dave Sterba, Zi Yan and Christoph
+Hellwig have done a marvellous job of providing constructive criticism.
 
-All paths are inside $TEST_MNT, so a 'cd' into the directory would save
-some typing. I'll fix it.
+These patches pass an xfstests run on ext4, xfs & btrfs with no
+regressions that I can tell (some of the tests seem a little flaky before
+and remain flaky afterwards).
+
+This series can also be found at
+http://git.infradead.org/users/willy/linux-dax.git/shortlog/refs/tags/readahead_v10
+
+v10: Rebased on linux-next 20200323
+ - Collected some more reviewed-by tags
+ - Simplify nr_to_read limits (Eric Biggers)
+ - Convert fs/exfat instead of drivers/staging/exfat (Namjae Jeon)
+ - Explicitly convert a pointer to a boolean in f2fs (Eric Biggers)
+
+v9: No code changes.  Fixed a changelog and added some reviewed-by tags.
+
+v8:
+ - btrfs, ext4 and xfs all survive an xfstests run (thanks to Kent Overstreet
+   for providing the ktest framework)
+ - iomap restructuring dropped due to Christoph's opposition and the
+   redesign of readahead_page() meaning it wasn't needed any more.
+ - f2fs_mpage_readpages() made static again
+ - Made iomap_readahead() comment more useful
+ - Added kernel-doc for the entire readahead_control API
+ - Conditionally zero batch_count in readahead_page() (requested by John)
+ - Hold RCU read lock while iterating over the xarray in readahead_page_batch()
+ - Iterate over the correct pages in readahead_page_batch()
+ - Correct the return type of readahead_index() (spotted by Zi Yan)
+ - Added a 'skip_page' parameter to read_pages for better documentation
+   purposes and so we can reuse the readahead_control higher in the call
+   chain in future.
+ - Removed the use_list bool (requested by Christoph)
+ - Removed the explicit initialisation of _nr_pages to 0 (requested by
+   Christoph & John)
+ - Add comments explaining why nr_to_read is being capped (requested by John)
+ - Reshuffled some of the patches:
+   - Split out adding the readahead_control API from the three patches which
+     added it piecemeal
+   - Shift the final two mm patches to be with the other mm patches
+   - Split the f2fs "pass the inode" patch from the "convert to readahead"
+     patch, like ext4
+
+v7:
+ - Now passes an xfstests run on ext4!
+ - Documentation improvements
+ - Move the readahead prototypes out of mm.h (new patch)
+ - readahead_for_each* iterators are gone; replaced with readahead_page()
+   and readahead_page_batch()
+ - page_cache_readahead_limit() renamed to page_cache_readahead_unbounded()
+   and arguments changed
+ - iomap_readahead_actor() restructured differently
+ - The readahead code no longer uses the word 'offset' to reduce ambiguity
+ - read_pages() now maintains the rac so we can just call it and continue
+   instead of mucking around with branches
+ - More assertions
+ - More readahead functions return void
+
+v6:
+ - Name the private members of readahead_control with a leading underscore
+   (suggested by Christoph Hellwig)
+ - Fix whitespace in rst file
+ - Remove misleading comment in btrfs patch
+ - Add readahead_next() API and use it in iomap
+ - Add iomap_readahead kerneldoc.
+ - Fix the mpage_readahead kerneldoc
+ - Make various readahead functions return void
+ - Keep readahead_index() and readahead_offset() pointing to the start of
+   this batch through the body.  No current user requires this, but it's
+   less surprising.
+ - Add kerneldoc for page_cache_readahead_limit
+ - Make page_idx an unsigned long, and rename it to just 'i'
+ - Get rid of page_offset local variable
+ - Add patch to call memalloc_nofs_save() before allocating pages (suggested
+   by Michal Hocko)
+ - Resplit a lot of patches for more logical progression and easier review
+   (suggested by John Hubbard)
+ - Added sign-offs where received, and I deemed still relevant
+
+v5 switched to passing a readahead_control struct (mirroring the
+writepages_control struct passed to writepages).  This has a number of
+advantages:
+ - It fixes a number of bugs in various implementations, eg forgetting to
+   increment 'start', an off-by-one error in 'nr_pages' or treating 'start'
+   as a byte offset instead of a page offset.
+ - It allows us to change the arguments without changing all the
+   implementations of ->readahead which just call mpage_readahead() or
+   iomap_readahead()
+ - Figuring out which pages haven't been attempted by the implementation
+   is more natural this way.
+ - There's less code in each implementation.
+
+Matthew Wilcox (Oracle) (25):
+  mm: Move readahead prototypes from mm.h
+  mm: Return void from various readahead functions
+  mm: Ignore return value of ->readpages
+  mm: Move readahead nr_pages check into read_pages
+  mm: Add new readahead_control API
+  mm: Use readahead_control to pass arguments
+  mm: Rename various 'offset' parameters to 'index'
+  mm: rename readahead loop variable to 'i'
+  mm: Remove 'page_offset' from readahead loop
+  mm: Put readahead pages in cache earlier
+  mm: Add readahead address space operation
+  mm: Move end_index check out of readahead loop
+  mm: Add page_cache_readahead_unbounded
+  mm: Document why we don't set PageReadahead
+  mm: Use memalloc_nofs_save in readahead path
+  fs: Convert mpage_readpages to mpage_readahead
+  btrfs: Convert from readpages to readahead
+  erofs: Convert uncompressed files from readpages to readahead
+  erofs: Convert compressed files from readpages to readahead
+  ext4: Convert from readpages to readahead
+  ext4: Pass the inode to ext4_mpage_readpages
+  f2fs: Convert from readpages to readahead
+  f2fs: Pass the inode to f2fs_mpage_readpages
+  fuse: Convert from readpages to readahead
+  iomap: Convert from readpages to readahead
+
+ Documentation/filesystems/locking.rst |   6 +-
+ Documentation/filesystems/vfs.rst     |  15 ++
+ block/blk-core.c                      |   1 +
+ fs/block_dev.c                        |   7 +-
+ fs/btrfs/extent_io.c                  |  43 ++--
+ fs/btrfs/extent_io.h                  |   3 +-
+ fs/btrfs/inode.c                      |  16 +-
+ fs/erofs/data.c                       |  39 ++--
+ fs/erofs/zdata.c                      |  29 +--
+ fs/exfat/inode.c                      |   7 +-
+ fs/ext2/inode.c                       |  10 +-
+ fs/ext4/ext4.h                        |   5 +-
+ fs/ext4/inode.c                       |  21 +-
+ fs/ext4/readpage.c                    |  25 +--
+ fs/ext4/verity.c                      |  35 +---
+ fs/f2fs/data.c                        |  50 ++---
+ fs/f2fs/f2fs.h                        |   3 -
+ fs/f2fs/verity.c                      |  35 +---
+ fs/fat/inode.c                        |   7 +-
+ fs/fuse/file.c                        |  46 ++---
+ fs/gfs2/aops.c                        |  23 +--
+ fs/hpfs/file.c                        |   7 +-
+ fs/iomap/buffered-io.c                |  92 +++------
+ fs/iomap/trace.h                      |   2 +-
+ fs/isofs/inode.c                      |   7 +-
+ fs/jfs/inode.c                        |   7 +-
+ fs/mpage.c                            |  38 ++--
+ fs/nilfs2/inode.c                     |  15 +-
+ fs/ocfs2/aops.c                       |  34 ++--
+ fs/omfs/file.c                        |   7 +-
+ fs/qnx6/inode.c                       |   7 +-
+ fs/reiserfs/inode.c                   |   8 +-
+ fs/udf/inode.c                        |   7 +-
+ fs/xfs/xfs_aops.c                     |  13 +-
+ fs/zonefs/super.c                     |   7 +-
+ include/linux/fs.h                    |   2 +
+ include/linux/iomap.h                 |   3 +-
+ include/linux/mm.h                    |  19 --
+ include/linux/mpage.h                 |   4 +-
+ include/linux/pagemap.h               | 151 ++++++++++++++
+ include/trace/events/erofs.h          |   6 +-
+ include/trace/events/f2fs.h           |   6 +-
+ mm/fadvise.c                          |   6 +-
+ mm/internal.h                         |  12 +-
+ mm/migrate.c                          |   2 +-
+ mm/readahead.c                        | 275 ++++++++++++++++----------
+ 46 files changed, 575 insertions(+), 588 deletions(-)
+
+base-commit: 5149100c3aebe5e640d6ff68e0b5e5a7eb8638e0
+-- 
+2.25.1
