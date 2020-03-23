@@ -2,118 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A39518ED5C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 00:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8118EEA6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 04:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgCVXtf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 22 Mar 2020 19:49:35 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40402 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgCVXtf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Mar 2020 19:49:35 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 9764F62716C; Sun, 22 Mar 2020 19:49:34 -0400 (EDT)
-Date:   Sun, 22 Mar 2020 19:49:34 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Question: how understand the raid profile of a btrfs filesystem
-Message-ID: <20200322234934.GE2693@hungrycats.org>
-References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
- <20200321032911.GR13306@hungrycats.org>
- <fd306b0b-8987-e1e7-dee5-4502e34902c3@inwind.it>
- <20200321232638.GD2693@hungrycats.org>
- <3fb93a14-3608-0f64-cf5c-ca37869a76ef@inwind.it>
- <d472962c-c669-3004-7ab4-be65a6ed72ba@inwind.it>
+        id S1727217AbgCWDxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Mar 2020 23:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgCWDxr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 22 Mar 2020 23:53:47 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C9F32070A;
+        Mon, 23 Mar 2020 03:53:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584935626;
+        bh=JZ9FfTQC5hyfKYp2Fe1Ul7ymAHFUkesL0z+aqbPk+0k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wuviUgzOZ9I/ZxR0Qe6UoYpguDtb5vojJwuqb15B1ybVXKf98oY0z1TX6lmXfukQO
+         GrFi7ly/HkosHLTiJjGp0HGiSSzpm7VLLduKNUyObGN0l5d1IvMgJGRKB9ZIFBs6l4
+         K/+ERiSC/J11ea857uMzNfIHBmBogvwEAROQ2s+8=
+Date:   Sun, 22 Mar 2020 20:53:46 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs@vger.kernel.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v9 23/25] f2fs: Pass the inode to
+ f2fs_mpage_readpages
+Message-ID: <20200323035346.GA147648@google.com>
+References: <20200320142231.2402-1-willy@infradead.org>
+ <20200320142231.2402-24-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <d472962c-c669-3004-7ab4-be65a6ed72ba@inwind.it>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200320142231.2402-24-willy@infradead.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 22, 2020 at 09:38:30AM +0100, Goffredo Baroncelli wrote:
-> On 3/22/20 9:34 AM, Goffredo Baroncelli wrote:
+On 03/20, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> > 
-> > To me it seems complicated to
-> [sorry I push the send button too early]
+> This function now only uses the mapping argument to look up the inode,
+> and both callers already have the inode, so just pass the inode instead
+> of the mapping.
 > 
-> To me it seems too complicated (and error prone) to derive the target profile from an analysis of the filesystem.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+
+Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+
+> ---
+>  fs/f2fs/data.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> Any thoughts ?
-
-I still don't understand the use case you are trying to support.
-
-There are 3 states for a btrfs filesystem:
-
-	1.  All block groups use the same profile.  Pick any one,
-	use its profile for future block groups.  Avoid deleting the
-	last one.  Simple and easy to implement.
-
-	2.  A conversion is in progress.  Look in fs_info->balance_ctl
-	for a 'convert' filter.  If there is one, that's the profile for
-	new block groups.  Old block groups will be emptied and destroyed
-	by conversion, and then we automatically go back to state #1.
-
-	3.  A conversion is interrupted prior to completion.  Sysadmin is
-	expected to proceed immediately back to state #2, possibly after
-	taking any necessary recovery actions that triggered entry into
-	state #3.  It doesn't really matter what the current allocation
-	profile is, since it is likely to change before we allocate
-	any more block groups.
-
-You seem to be trying to sustain or support a filesystem in state #3 for
-a prolonged period of time.  Why would we do that?  If your use case is
-providing information or guidance to a user, tell them how to get back
-to state #2 ASAP, so that they can then return to state #1 where they
-should be.
-
-Suppose your use case does involve staying in state #3 for a prolonged
-period of time--let's say e.g. you want to be able to use file attributes
-to put some file data on single profile while putting other files on raid5
-profile.  That use case would need to come with a bunch of infrastructure
-to support it, i.e. you'd need to define what the attributes are, and
-how btrfs could map those to device subsets and raid profiles.  None of
-this exists, and even if it did, it would conflict with the "store the
-[singular] target profile on disk" idea.
-
-There could be a warning message in dmesg if we enter state #3.
-This message would appear after a converting balance is cancelled or
-aborted, and on mount when we scan block groups (which we would still need
-to do even after we added a "target profile" field to the superblock).
-Userspace like 'btrfs fi df' could also put out a warning like "multiple
-allocation profiles detected, but conversion is not in progress.  Please
-finish conversion at your earliest convenience to avoid disappointment."
-I don't see the need to do anything more about it.
-
-We only get to state #3 if the automation has already failed, or has
-been explicitly cancelled at sysadmin request.  It is better to wait
-for the sysadmin to decide what to do next, especially if the sysadmin's
-prior choice led to us entering this state (e.g. not enough space to
-complete a conversion to the target profile, so we can no longer use
-the target profile for new allocations).  Picking a target profile
-at random (from the set of profiles already used in the filesystem)
-is no better or worse than any deterministic algorithm--it will always
-be wrong in some situations, and a good choice in other situations.
-
-I'd even consider removing the heuristics that are already there for
-prioritizing profiles.  They are just surprising and undocumented
-behavior, and it would be better to document it as "random, BTW you
-should finish your conversion now."  It doesn't help if e.g. you
-want to convert from raid6 to raid1, since the heuristic assumes you
-only want to go the other way.
-
-
-> BR
-> G.Baroncelli
-> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 237dff36fe73..c8b042979fc4 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -2159,12 +2159,11 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+>   * use ->readpage() or do the necessary surgery to decouple ->readpages()
+>   * from read-ahead.
+>   */
+> -static int f2fs_mpage_readpages(struct address_space *mapping,
+> +static int f2fs_mpage_readpages(struct inode *inode,
+>  		struct readahead_control *rac, struct page *page)
+>  {
+>  	struct bio *bio = NULL;
+>  	sector_t last_block_in_bio = 0;
+> -	struct inode *inode = mapping->host;
+>  	struct f2fs_map_blocks map;
+>  #ifdef CONFIG_F2FS_FS_COMPRESSION
+>  	struct compress_ctx cc = {
+> @@ -2276,7 +2275,7 @@ static int f2fs_read_data_page(struct file *file, struct page *page)
+>  	if (f2fs_has_inline_data(inode))
+>  		ret = f2fs_read_inline_data(inode, page);
+>  	if (ret == -EAGAIN)
+> -		ret = f2fs_mpage_readpages(page_file_mapping(page), NULL, page);
+> +		ret = f2fs_mpage_readpages(inode, NULL, page);
+>  	return ret;
+>  }
+>  
+> @@ -2293,7 +2292,7 @@ static void f2fs_readahead(struct readahead_control *rac)
+>  	if (f2fs_has_inline_data(inode))
+>  		return;
+>  
+> -	f2fs_mpage_readpages(rac->mapping, rac, NULL);
+> +	f2fs_mpage_readpages(inode, rac, NULL);
+>  }
+>  
+>  int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
 > -- 
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> 2.25.1
 > 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
