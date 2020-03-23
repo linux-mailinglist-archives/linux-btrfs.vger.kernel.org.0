@@ -2,233 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F2B18EEAC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 04:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B44518F2A0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Mar 2020 11:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbgCWDzQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Mar 2020 23:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        id S1727868AbgCWKY3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Mar 2020 06:24:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37252 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726983AbgCWDzP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Mar 2020 23:55:15 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04B1020714;
-        Mon, 23 Mar 2020 03:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584935714;
-        bh=OBh+ukoepnmNeA3oMd1EdG4Mc4HasSJLB13qq51fjOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2RIgaoUzayp3K2mrLmxEfpZnPBGYXfecqHr2qwjblMK4RPe+BMbLPE/aBbutEpaIu
-         Tpfbqcy/uitSMVJ30uYS3Gpj/Uw3uEZsPyE+cFcFce6x3Z0haNwq7b+TJcLJZJboQo
-         AMtD2tgQpg1UuWaN1hPX/huPUg6p+S40+z68Px34=
-Date:   Sun, 22 Mar 2020 20:55:13 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v9 22/25] f2fs: Convert from readpages to
- readahead
-Message-ID: <20200323035513.GB147648@google.com>
-References: <20200320142231.2402-1-willy@infradead.org>
- <20200320142231.2402-23-willy@infradead.org>
+        id S1727810AbgCWKY3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Mar 2020 06:24:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A8B2AADF1
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Mar 2020 10:24:25 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/40] btrfs: qgroup: Use backref cache based backref walk for commit roots
+Date:   Mon, 23 Mar 2020 18:23:36 +0800
+Message-Id: <20200323102416.112862-1-wqu@suse.com>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320142231.2402-23-willy@infradead.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/20, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Use the new readahead operation in f2fs
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+This patchset is based on an OLD misc-next branch, please inform me
+before trying to merge, so I can rebase it to latest misc-next.
+(There will be tons of conflicts)
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+The branch can be fetched from github for review/testing.
+https://github.com/adam900710/linux/tree/backref_cache_all
 
-> ---
->  fs/f2fs/data.c              | 47 +++++++++++++++----------------------
->  include/trace/events/f2fs.h |  6 ++---
->  2 files changed, 22 insertions(+), 31 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 8e9aa2254490..237dff36fe73 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2160,8 +2160,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->   * from read-ahead.
->   */
->  static int f2fs_mpage_readpages(struct address_space *mapping,
-> -			struct list_head *pages, struct page *page,
-> -			unsigned nr_pages, bool is_readahead)
-> +		struct readahead_control *rac, struct page *page)
->  {
->  	struct bio *bio = NULL;
->  	sector_t last_block_in_bio = 0;
-> @@ -2179,6 +2178,7 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  		.nr_cpages = 0,
->  	};
->  #endif
-> +	unsigned nr_pages = rac ? readahead_count(rac) : 1;
->  	unsigned max_nr_pages = nr_pages;
->  	int ret = 0;
->  
-> @@ -2192,15 +2192,9 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  	map.m_may_create = false;
->  
->  	for (; nr_pages; nr_pages--) {
-> -		if (pages) {
-> -			page = list_last_entry(pages, struct page, lru);
-> -
-> +		if (rac) {
-> +			page = readahead_page(rac);
->  			prefetchw(&page->flags);
-> -			list_del(&page->lru);
-> -			if (add_to_page_cache_lru(page, mapping,
-> -						  page_index(page),
-> -						  readahead_gfp_mask(mapping)))
-> -				goto next_page;
->  		}
->  
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
-> @@ -2210,7 +2204,7 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  				ret = f2fs_read_multi_pages(&cc, &bio,
->  							max_nr_pages,
->  							&last_block_in_bio,
-> -							is_readahead);
-> +							rac);
->  				f2fs_destroy_compress_ctx(&cc);
->  				if (ret)
->  					goto set_error_page;
-> @@ -2233,7 +2227,7 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  #endif
->  
->  		ret = f2fs_read_single_page(inode, page, max_nr_pages, &map,
-> -					&bio, &last_block_in_bio, is_readahead);
-> +					&bio, &last_block_in_bio, rac);
->  		if (ret) {
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
->  set_error_page:
-> @@ -2242,8 +2236,10 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  			zero_user_segment(page, 0, PAGE_SIZE);
->  			unlock_page(page);
->  		}
-> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->  next_page:
-> -		if (pages)
-> +#endif
-> +		if (rac)
->  			put_page(page);
->  
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
-> @@ -2253,16 +2249,15 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
->  				ret = f2fs_read_multi_pages(&cc, &bio,
->  							max_nr_pages,
->  							&last_block_in_bio,
-> -							is_readahead);
-> +							rac);
->  				f2fs_destroy_compress_ctx(&cc);
->  			}
->  		}
->  #endif
->  	}
-> -	BUG_ON(pages && !list_empty(pages));
->  	if (bio)
->  		__submit_bio(F2FS_I_SB(inode), bio, DATA);
-> -	return pages ? 0 : ret;
-> +	return ret;
->  }
->  
->  static int f2fs_read_data_page(struct file *file, struct page *page)
-> @@ -2281,28 +2276,24 @@ static int f2fs_read_data_page(struct file *file, struct page *page)
->  	if (f2fs_has_inline_data(inode))
->  		ret = f2fs_read_inline_data(inode, page);
->  	if (ret == -EAGAIN)
-> -		ret = f2fs_mpage_readpages(page_file_mapping(page),
-> -						NULL, page, 1, false);
-> +		ret = f2fs_mpage_readpages(page_file_mapping(page), NULL, page);
->  	return ret;
->  }
->  
-> -static int f2fs_read_data_pages(struct file *file,
-> -			struct address_space *mapping,
-> -			struct list_head *pages, unsigned nr_pages)
-> +static void f2fs_readahead(struct readahead_control *rac)
->  {
-> -	struct inode *inode = mapping->host;
-> -	struct page *page = list_last_entry(pages, struct page, lru);
-> +	struct inode *inode = rac->mapping->host;
->  
-> -	trace_f2fs_readpages(inode, page, nr_pages);
-> +	trace_f2fs_readpages(inode, readahead_index(rac), readahead_count(rac));
->  
->  	if (!f2fs_is_compress_backend_ready(inode))
-> -		return 0;
-> +		return;
->  
->  	/* If the file has inline data, skip readpages */
->  	if (f2fs_has_inline_data(inode))
-> -		return 0;
-> +		return;
->  
-> -	return f2fs_mpage_readpages(mapping, pages, NULL, nr_pages, true);
-> +	f2fs_mpage_readpages(rac->mapping, rac, NULL);
->  }
->  
->  int f2fs_encrypt_one_page(struct f2fs_io_info *fio)
-> @@ -3784,7 +3775,7 @@ static void f2fs_swap_deactivate(struct file *file)
->  
->  const struct address_space_operations f2fs_dblock_aops = {
->  	.readpage	= f2fs_read_data_page,
-> -	.readpages	= f2fs_read_data_pages,
-> +	.readahead	= f2fs_readahead,
->  	.writepage	= f2fs_write_data_page,
->  	.writepages	= f2fs_write_data_pages,
->  	.write_begin	= f2fs_write_begin,
-> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> index 67a97838c2a0..d72da4a33883 100644
-> --- a/include/trace/events/f2fs.h
-> +++ b/include/trace/events/f2fs.h
-> @@ -1375,9 +1375,9 @@ TRACE_EVENT(f2fs_writepages,
->  
->  TRACE_EVENT(f2fs_readpages,
->  
-> -	TP_PROTO(struct inode *inode, struct page *page, unsigned int nrpage),
-> +	TP_PROTO(struct inode *inode, pgoff_t start, unsigned int nrpage),
->  
-> -	TP_ARGS(inode, page, nrpage),
-> +	TP_ARGS(inode, start, nrpage),
->  
->  	TP_STRUCT__entry(
->  		__field(dev_t,	dev)
-> @@ -1389,7 +1389,7 @@ TRACE_EVENT(f2fs_readpages,
->  	TP_fast_assign(
->  		__entry->dev	= inode->i_sb->s_dev;
->  		__entry->ino	= inode->i_ino;
-> -		__entry->start	= page->index;
-> +		__entry->start	= start;
->  		__entry->nrpage	= nrpage;
->  	),
->  
-> -- 
-> 2.25.1
-> 
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+The patchset survives all the existing qgroup tests.
+
+
+=== BACKGROUND ===
+One of the biggest problem for qgroup is its performance impact.
+Although we have improved it in since v5.0 kernel, there is still
+something slowing down qgroup, the backref walk.
+
+Before this patchset, we use btrfs_find_all_roots() to iterate all roots
+referring to one extent.
+That function is doing a pretty good job, but it doesn't has any cache,
+which means even we're looking up the same extent, we still need to do
+the full backref walk.
+
+On the other hand, relocation is doing its own backref cache, and
+provides a much faster backref walk.
+
+So the patchset is mostly trying to make qgroup backref walk (at least
+commit root backref walk) to use the same mechanism provided by
+relocation.
+
+=== BENCHMARK ===
+For the performance improvement, the last patch has a benchmark.
+The following content is completely copied from that patch:
+------
+Here is a small script to test it:
+
+  mkfs.btrfs -f $dev
+  mount $dev -o space_cache=v2 $mnt
+
+  btrfs subvolume create $mnt/src
+
+  for ((i = 0; i < 64; i++)); do
+          for (( j = 0; j < 16; j++)); do
+                  xfs_io -f -c "pwrite 0 2k" $mnt/src/file_inline_$(($i * 16 + $j)) > /dev/null
+          done
+          xfs_io -f -c "pwrite 0 1M" $mnt/src/file_reg_$i > /dev/null
+          sync
+          btrfs subvol snapshot $mnt/src $mnt/snapshot_$i
+  done
+  sync
+
+  btrfs quota enable $mnt
+  btrfs quota rescan -w $mnt
+
+Here is the benchmark for above small tests.
+The performance material is the total execution time of get_old_roots()
+for patched kernel (*), and find_all_roots() for original kernel.
+
+*: With CONFIG_BTRFS_FS_CHECK_INTEGRITY disabled, as get_old_roots()
+   will call find_all_roots() to verify the result if that config is
+   enabled.
+
+		|  Number of calls | Total exec time |
+------------------------------------------------------
+find_all_roots()|  732		   | 529991034ns
+get_old_roots() |  732		   | 127998312ns
+------------------------------------------------------
+diff		|  0.00 %	   | -75.8 %
+------
+
+
+=== PATCHSET STRUCTURE ===
+Patch 01~14 are refactors of relocation backref.
+Patch 15~31 are code move.
+Patch 32 is the patch that is already in misc-next.
+Patch 33 is the final preparation for qgroup backref.
+Patch 34~40 are the qgroup backref cache implementation.
+
+=== CHANGELOG ===
+v1:
+- Use btrfs_backref_ prefix for exported structure/function
+- Add one extra patch to rename backref_(node/edge/cache)
+  The renaming itself is not small, thus better to do the rename
+  first then move them to backref.[ch].
+- Add extra Reviewed-by tags.
+
+Qu Wenruo (40):
+  btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+  btrfs: backref: Implement btrfs_backref_iter_next()
+  btrfs: relocation: Use btrfs_backref_iter infrastructure
+  btrfs: relocation: Rename mark_block_processed() and
+    __mark_block_processed()
+  btrfs: relocation: Add backref_cache::pending_edge and
+    backref_cache::useless_node members
+  btrfs: relocation: Add backref_cache::fs_info member
+  btrfs: relocation: Make reloc root search specific for relocation
+    backref cache
+  btrfs: relocation: Refactor direct tree backref processing into its
+    own function
+  btrfs: relocation: Refactor indirect tree backref processing into its
+    own function
+  btrfs: relocation: Use wrapper to replace open-coded edge linking
+  btrfs: relocation: Specify essential members for alloc_backref_node()
+  btrfs: relocation: Remove the open-coded goto loop for breadth-first
+    search
+  btrfs: relocation: Refactor the finishing part of upper linkage into
+    finish_upper_links()
+  btrfs: relocation: Refactor the useless nodes handling into its own
+    function
+  btrfs: relocation: Add btrfs_ prefix for backref_node/edge/cache
+  btrfs: Move btrfs_backref_(node|edge|cache) structures to backref.h
+  btrfs: Rename tree_entry to simple_node and export it
+  btrfs: Rename backref_cache_init() to btrfs_backref_cache_init() and
+    move it to backref.c
+  btrfs: Rename alloc_backref_node() to btrfs_backref_alloc_node() and
+    move it backref.c
+  btrfs: Rename alloc_backref_edge() to btrfs_backref_alloc_edge() and
+    move it backref.c
+  btrfs: Rename link_backref_edge() to btrfs_backref_link_edge() and
+    move it backref.h
+  btrfs: Rename free_backref_(node|edge) to
+    btrfs_backref_free_(node|edge) and move them to backref.h
+  btrfs: Rename drop_backref_node() to btrfs_backref_drop_node() and
+    move its needed facilities to backref.h
+  btrfs: Rename remove_backref_node() to btrfs_backref_cleanup_node()
+    and move it to backref.c
+  btrfs: Rename backref_cache_cleanup() to btrfs_backref_release_cache()
+    and move it to backref.c
+  btrfs: Rename backref_tree_panic() to btrfs_backref_panic(), and move
+    it to backref.c
+  btrfs: Rename should_ignore_root() to btrfs_should_ignore_reloc_root()
+    and export it
+  btrfs: relocation: Open-code read_fs_root() for
+    handle_indirect_tree_backref()
+  btrfs: Rename handle_one_tree_block() to btrfs_backref_add_tree_node()
+    and move it to backref.c
+  btrfs: Rename finish_upper_links() to
+    btrfs_backref_finish_upper_links()  and move it to backref.c
+  btrfs: relocation: Move error handling of build_backref_tree() to
+    backref.c
+  btrfs: relocation: Use btrfs_find_all_leaves() to locate parent tree
+    leaves of a data extent
+  btrfs: backref: Only ignore reloc roots for indrect backref resolve if
+    the backref cache is for reloction purpose
+  btrfs: qgroup: Introduce qgroup backref cache
+  btrfs: qgroup: Introduce qgroup_backref_cache_build() function
+  btrfs: qgroup: Introduce a function to iterate through backref_cache
+    to find all parents for specified node
+  btrfs: qgroup: Introduce helpers to get needed tree block info
+  btrfs: qgroup: Introduce verification for function to ensure old roots
+    ulist matches btrfs_find_all_roots() result
+  btrfs: qgroup: Introduce a new function to get old_roots ulist using
+    backref cache
+  btrfs: qgroup: Use backref cache to speed up old_roots search
+
+ fs/btrfs/backref.c    |  817 +++++++++++++++++++++-
+ fs/btrfs/backref.h    |  323 +++++++++
+ fs/btrfs/ctree.h      |    5 +
+ fs/btrfs/disk-io.c    |    1 +
+ fs/btrfs/misc.h       |   54 ++
+ fs/btrfs/qgroup.c     |  516 +++++++++++++-
+ fs/btrfs/relocation.c | 1499 ++++++++---------------------------------
+ 7 files changed, 1991 insertions(+), 1224 deletions(-)
+
+-- 
+2.25.2
+
