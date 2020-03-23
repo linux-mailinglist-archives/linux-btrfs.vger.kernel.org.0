@@ -2,157 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CD31901C1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 00:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340201901CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 00:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgCWXP5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Mar 2020 19:15:57 -0400
-Received: from mout.gmx.net ([212.227.15.19]:58465 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726955AbgCWXP5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Mar 2020 19:15:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585005351;
-        bh=DGFLRPD88Dr6RU0SM8hO16iEZy1mHrYcLKEPmSokG94=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=g0bB+CsobZPPhceoiMbQSyniqwiE+XbxE1hyEKrJN4/BSo5hLxYg42ivG7GMYgiUY
-         gSgvMT04EBABlh1y+kV2B2N3oQlttOg7pzMbpBB8IRzw38Wj+5Qod0ONKW3hiAs8O/
-         +oR/2GAbeMt2ZlRfo6SqI/h+cyUdFrEjuqa9CMNs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9dwd-1jLrvf3mYH-015W9L; Tue, 24
- Mar 2020 00:15:51 +0100
-Subject: Re: [PATCH] btrfs-progs: check/lowmem: Fix a false alert caused by
- hole beyond isize check
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200321010303.124708-1-wqu@suse.com>
- <20200323193826.GN12659@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <23f1c445-8a0d-b0b4-a557-51e602d58db7@gmx.com>
-Date:   Tue, 24 Mar 2020 07:15:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726955AbgCWXU7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 23 Mar 2020 19:20:59 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:48842 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbgCWXU6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Mar 2020 19:20:58 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id EB1D862A6D6; Mon, 23 Mar 2020 19:18:51 -0400 (EDT)
+Date:   Mon, 23 Mar 2020 19:18:51 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     kreijack@inwind.it
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Question: how understand the raid profile of a btrfs filesystem
+Message-ID: <20200323231851.GT13306@hungrycats.org>
+References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
+ <20200321032911.GR13306@hungrycats.org>
+ <fd306b0b-8987-e1e7-dee5-4502e34902c3@inwind.it>
+ <20200321232638.GD2693@hungrycats.org>
+ <3fb93a14-3608-0f64-cf5c-ca37869a76ef@inwind.it>
+ <d472962c-c669-3004-7ab4-be65a6ed72ba@inwind.it>
+ <20200322234934.GE2693@hungrycats.org>
+ <a15a47f1-9465-dd5c-4b70-04f1a14e6a96@libero.it>
 MIME-Version: 1.0
-In-Reply-To: <20200323193826.GN12659@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Mu9EXvutNesGO9W1IqlWyijJNpiBJDNG5"
-X-Provags-ID: V03:K1:C3l9x/S9XRBaBA5CxsgF7zllMktBk/RPr8k3Zs061wzdOvlFRAY
- PLQcUrJ5925g4VG8gMtRpHrrBx4xqFmPfwouMUju/bpDb4mgzrc+uI7VfA1/S4STIhyj1GX
- kPjrl3uP6K84ZJXHHGuYrarkAG2ZxJ0sZ7fwL9J+vIjtnCduYQmOCJBCWjQNd+ubmU3n8xF
- FFCUw7VB7PCqJnf2cMDeg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wakHYvhjg48=:gMo1TenIyTn2QTgklMN25x
- 6Cacs+uQAFWss0dlHK3Cim/uFGUlJN5ObXe3B12jLcU2cXxnJpnhmIyAaZ7I7G6X9VDDz2IyK
- a8+scJS5x+PLQok8dsJ18pSKttUHVfc1DRAv1vGhX8DNnKy4GvxUp2cwWQSancwIuYS1L5ivp
- CBPfI1WFTVczkvl/Vjlz6rBwD1kVgM+xccCeyh1SFWVRT0ewM6MsQsLqiTq+c4l1mhMSxNXVv
- MSm6Q6bTLq1rFD62P59HhnswO3Fo9hCEcjw1qgYRl/aodfABWVa7oLjXwwtHi3BVpG0ht0rIW
- u5ePt5NjylKLcA23atS2nzN0dsXBD72syyrHNpd86LnPbpLSek+wIu3t2rXuHPqWbD7A3Ss3Z
- b5Gggy7fr+A6ch8oh7NMegD7wG18gqVOL+C2HYLw+HaobnTcQMa80qCRKGWmLRp0ndhjcj2/A
- JOQykVzWxCJRZ0/f5KqUtbSiSXdwFzUlzmA1vb3ksPli8QMrM08HB26xKVNSUzyaVkfqA+L/T
- p2EFqMDz9++Wqe4jpfNizDcj3QOqahlmSsmw7LrxBEK2R5zx/QiCphGJaka+LmAXpsCq3B8Oy
- DBbENXI7O8pFxNRmT5bWYUfkWf5Ns12hoqWjkWKhJSOn0d4z1aW3ziB7mt1UOoszs8nqPpZsC
- r6r60ss1p+t2uToEUZPo/mHgCGi5PrZ0/4vFovyFvM7HkrhCVjszmbkycBd1bKesLOtNOyLXD
- 46sAwZB11JE+PH4lsMauALNXBD8Yf3Yc0dAXUBX1bW4EqjbYWs0sNqlSBDHHjwenA7H1kuZ2y
- /8hbcFYwuVJyCSF2PZ0+Yrk3pDW2zxLuMbTAZnZOgHKDUFFeBBvNIQAhVi1Qf3Zyoe7YjLt93
- oQSEUCYSfgF1u89jtZGd2W+KsVO3/KnEGbR2Xsx8SA6JBuALZzbWymvULfPm9hzMKYqMKiLyz
- 7Dc7Wu0u/D1+y3Q/6zilhL3Ozovux8fbQ0Xx8blp6X/X3nhlkxkZaTcSKssHGJj6BeDCQxYrP
- 8bpZJe1VpPvQPPNvaf70hamtzmW9sgDupG43wLsj0uxtL/RlWDceVvKmNDqRVUrax4vdG6g0P
- lCQC1Zhaa59Hvh99jrSyxKuurAULcGyndg5ar/kiTyF3BOWB46p+p/rgatwswS3bXmZWhKVqw
- fLZ7U+jRxgQYrRfA8n2m/lVEXBotKe9QlO2/bT/7Oz6axSLwCNQN8rUt9SK/bT5ioYrBm7cxx
- Kiz1f0r5BVXQCqvqV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <a15a47f1-9465-dd5c-4b70-04f1a14e6a96@libero.it>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Mu9EXvutNesGO9W1IqlWyijJNpiBJDNG5
-Content-Type: multipart/mixed; boundary="eAFv5GbzsZt0yAZJmc8HBS4yckuPiVwGr"
+On Mon, Mar 23, 2020 at 09:50:03PM +0100, Goffredo Baroncelli wrote:
+> On 3/23/20 12:49 AM, Zygo Blaxell wrote:
+> > On Sun, Mar 22, 2020 at 09:38:30AM +0100, Goffredo Baroncelli wrote:
+> > > On 3/22/20 9:34 AM, Goffredo Baroncelli wrote:
+> > > 
+> > > > 
+> > > > To me it seems complicated to
+> > > [sorry I push the send button too early]
+> > > 
+> > > To me it seems too complicated (and error prone) to derive the target profile from an analysis of the filesystem.
+> > > 
+> > > Any thoughts ?
+> > 
+> > I still don't understand the use case you are trying to support.
+> > 
+> > There are 3 states for a btrfs filesystem:
+> > 
+> [...]
+> > 
+> > 	3.  A conversion is interrupted prior to completion.  Sysadmin is
+> > 	expected to proceed immediately back to state #2, possibly after
+> > 	taking any necessary recovery actions that triggered entry into
+> > 	state #3.  It doesn't really matter what the current allocation
+> > 	profile is, since it is likely to change before we allocate
+> > 	any more block groups.
+> > 
+> > You seem to be trying to sustain or support a filesystem in state #3 for
+> > a prolonged period of time.  Why would we do that?  If your use case is
+> > providing information or guidance to a user, tell them how to get back
+> > to state #2 ASAP, so that they can then return to state #1 where they
+> > should be.
+> 
+> Believe me: I *don't want* to sustain #3 at all; btrfs is already too
+> complex. Supporting multiple profile is the worst thing that we can do.
+> However #3 exists and it could cause unexpected results. I think that on
+> this we agree.
+> > 
+> [...]
+> 
+> > There could be a warning message in dmesg if we enter state #3.
+> > This message would appear after a converting balance is cancelled or
+> > aborted, and on mount when we scan block groups (which we would still need
+> > to do even after we added a "target profile" field to the superblock).
+> > Userspace like 'btrfs fi df' could also put out a warning like "multiple
+> > allocation profiles detected, but conversion is not in progress.  Please
+> > finish conversion at your earliest convenience to avoid disappointment."
+> > I don't see the need to do anything more about it.
+> 
+> It would help that every btrfs command should warn the users about an
+> "un-wanted" state like this.
 
---eAFv5GbzsZt0yAZJmc8HBS4yckuPiVwGr
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Patches welcome...
 
+> > been explicitly cancelled at sysadmin request.
+> > 
+> Not only, you can enter in state #3 if you do something like:
+> 
+> $ sudo btrfs balance start -dconvert=single,usage=50 t/.
+> 
+> where you convert some chunk but not other.
 
+Sure, but now you're intentionally doing weird (or sufficiently advanced)
+stuff.  Given a combination of balance flags like that (convert + other
+restrictions), we should assume the user knows what they're doing, and
+stay out of the way.
 
-On 2020/3/24 =E4=B8=8A=E5=8D=883:38, David Sterba wrote:
-> On Sat, Mar 21, 2020 at 09:03:03AM +0800, Qu Wenruo wrote:
->> Commit 91a12c0ddb00 ("btrfs-progs: fix lowmem check's handling of
->> holes") makes lowmem mode check to skip hole detection after isize.
->>
->> However it also skipped the extent end update if the extent ends just =
-at
->> isize.
->>
->> This caused fsck-test/001 to fail with false hole error report.
->>
->> Fix it by updating the @end parameter if we have an extent ends at ino=
-de
->> size.
->>
->> Fixes: 91a12c0ddb00 ("btrfs-progs: fix lowmem check's handling of hole=
-s")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> David, please fold the fix into the original patch.
->=20
-> Folded, thanks for the fix. The lowmem mode tests still don't pass for
-> me, have been failing since 5.1. I've now added a make target for it so=
+The existing code that inserts 'usage=90' when resuming a balance,
+though highly questionable, still presumes the user knows what they're
+doing when a balance has a convert in it, and doesn't modify the usage
+filter setting in that case.
 
-> it's easier to run them without setting up the env variables.
->=20
+It's fairly normal to want to run something like this when changing
+RAID profiles on a big array:
 
-Mind to provide the fsck-test-result.txt for me to further investigate
-the problem?
+	# Make lots of free space quickly
+	for x in $(seq 0 100); do
+		btrfs balance start -dconvert=single,soft,usage=$x t/.
+	done
+	# OK now do the full BGs, will be slow
+	btrfs balance start -dconvert=single,soft t/.
 
-Thanks,
-Qu
+Should that print 101 warnings as it runs?  What if the user is using
+python-btrfs (e.g. to order the block groups by usage) and not the
+btrfs-progs tools, or some other UI?  Do we write warnings from inside
+the kernel?  Will there be a "--quiet" option that suppresses the warning?
+(I suppose if the answer to the last two questions is "yes" then we just
+need patches to get it done).
 
+> This is the point: we can consider the "failed automation" an unexpected
+> event, however doing "btrfs bal stop" or the command above cannot be
+> considered as unexpected event.
 
---eAFv5GbzsZt0yAZJmc8HBS4yckuPiVwGr--
+Balance cancel is always unexpected.
 
---Mu9EXvutNesGO9W1IqlWyijJNpiBJDNG5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+"balance cancel" is a sysadmin forcing balance to exit using the error
+recovery code.  If early termination of a conversion was _expected_,
+the sysadmin would have used 'limit' or 'vrange' or 'usage' or 'devid'
+or some other filter parameter so that balance does what it was told
+to do _without being cancelled_.
 
------BEGIN PGP SIGNATURE-----
+> [...]
+> 
+> > I'd even consider removing the heuristics that are already there for
+> > prioritizing profiles.  They are just surprising and undocumented
+> > behavior, and it would be better to document it as "random, BTW you
+> > should finish your conversion now."
+> 
+> I agree that we should remove this kind of heuristic.
+> Doing so I think that, with moderate effort, btrfs can track what is the
+> wanted profile (i.e. the one at the mkfs time or the one specified in last balance
+> w/convert [*]) and uses it. To me it seems the natural thing to do. Noting more
+> nothing less.
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl55QyMACgkQwj2R86El
-/qh3jgf7BSGJPwIkUW6SyTi0XLCnqX+RiB4IfQukxeKdNm1mgjyA8sgrYmTpjZKw
-o3OCtuC3H6nviZ4Fhf06hh3qQ4JEjd8sa1f17VgCN1nH3fEqc5luhjK4xQLBDtEX
-852ArFzvv+PV5+0/T1kbwtocLcU6ouibKSIU1AE2Gr7k2UyOIa5CU++fFTuKptc9
-sR7Hxsg1y2OkKT3iz+lNlpTKn85iImMFnpCivwLthiT+XeGroDUhmHR7nIFhVMw7
-PaEjilwXVt8rgSg6F9NhmvK9UVVq0f+hEVHSgHmMD+pJDxWJqiwGSH2jVTOwO6tX
-wgU6TGp/mcwyIOOvsEs+P3igJEEaPg==
-=ymX+
------END PGP SIGNATURE-----
+It already kind of does--the balance convert parameters are stored on
+disk so it can be resumed after a umount or pause.  "Pause" implies
+resuming later, and saving all the state required to do so.  "Cancel"
+says something different, "forget what you were doing and wait for new
+instructions," so cancel wipes out the conversion target profile.
 
---Mu9EXvutNesGO9W1IqlWyijJNpiBJDNG5--
+> We can't prevent a mixed profile filesystem (it has to be allowed the
+> possibility to stop a long activity like the balance), but we should
+> prevent the unexpected behavior: if we change the profile and something
+> goes wrong, the next chunk allocation should be clear. The user don't have
+> to read the code to understand what will happen.
+>  [*] we can argue which would be the expected profile after an interrupted balance:
+> the former one or the latter one ?
+
+If we can argue about it, then there's no right answer, and the status
+quo is fine (or we need a more complete solution).
+
+> BR
+> G.Baroncelli
+> 
+> -- 
+> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
