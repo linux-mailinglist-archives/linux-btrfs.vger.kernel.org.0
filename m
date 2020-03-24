@@ -2,170 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02171904B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 05:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D73B91905FF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 08:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgCXEzw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 00:55:52 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39422 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbgCXEzw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 00:55:52 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02O4n5M1107405;
-        Tue, 24 Mar 2020 04:55:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=7e981U1JecT+gU66a0MEXsJILPFvPYbXyFxj9eBd7nA=;
- b=l3igSXPYnNExacYMpiLS+74OxOIcHNfL5eSiJ5kPsPBQIvQtp6PW4s3PKqWa1j1R7544
- gj4AI9vFJJnc/JN3qwHtIWASqXNtoFQrc/blzIcZeWv2jKFEHlnVzUK2T/d1PmotvD8Z
- 0B1Tup661QNPR5iEJUWWV3daAKOKYacD0pMWWTIzMti9+q+Rz9m3o3jmmLiTkzCZOeE9
- Luq5hwUbiaHbToQ508NGxpjNOzDX9LldAVAnmfPdc63tgXduOi5Ps8/j3OIEvxIzFesH
- GAwJvFphXwpGOzemMgZfSxLcIHRTMbZeop1kf7pKjxIhJ/m/VnI4LFN25ddQ+iFS5wnK 5w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2ywavm24c0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Mar 2020 04:55:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02O4o5GY048468;
-        Tue, 24 Mar 2020 04:55:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2yy5k53yeb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Mar 2020 04:55:46 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 02O4tiIB012205;
-        Tue, 24 Mar 2020 04:55:45 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Mar 2020 21:55:44 -0700
-Subject: Re: Question: how understand the raid profile of a btrfs filesystem
-To:     kreijack@inwind.it, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <2c7f2844-b97d-0e15-6ae6-40c9c935aa77@oracle.com>
-Date:   Tue, 24 Mar 2020 12:55:31 +0800
+        id S1727400AbgCXHDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 03:03:43 -0400
+Received: from mout.gmx.net ([212.227.17.20]:47009 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgCXHDn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 03:03:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1585033414;
+        bh=jWGV+ZfiryDNMnxcUWltCaKKruavwjud1wXCuKHPTWQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=KWyrhpZCQ/4elRgiPZbzaa4BsjQ/tAWyepPpEpiKPuf241M6yZqAlb+AP1x8YxMrV
+         hZuvxzya5GoBEKGU9w9XbM8xFQ/0vgdS067jUgeAlupnbA34btigeQ4hsGojTWnp99
+         I0gRRQLrn+w51Tm3mU0duLwadEyOevXtElGLWDU0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIx3C-1ixT5T2xII-00KQ3V; Tue, 24
+ Mar 2020 08:03:34 +0100
+Subject: Re: [PATCH] Btrfs: fix removal of raid[56|1c34} incompat flags after
+ removing block group
+To:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200320184348.845248-1-fdmanana@kernel.org>
+ <8107ef53-5317-327c-674e-d5bd1b9d1e4d@gmx.com>
+ <20200321174553.GK12659@twin.jikos.cz>
+ <9eac14a3-b6fc-87e5-097e-b8aca1043398@gmx.com>
+ <20200323192841.GM12659@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <74562983-4312-c08d-e0ed-73cbea194f20@gmx.com>
+Date:   Tue, 24 Mar 2020 15:03:29 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9569 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2003240023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9569 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1011 impostorscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2003240023
+In-Reply-To: <20200323192841.GM12659@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="f0dkLCsk3B5jryrcv2d83YW7H73liNynV"
+X-Provags-ID: V03:K1:LkVGS2J41LuOSIJ0h2b+EtOFBBRzyQi2e+4naWo8rRbVONJIUn/
+ tMNwEnthrhhk5Lf1rRODJEWyRPR80Ol8WVq+yKKIBrPaIPyT5LAF7yIt7e/JmnYPODRA8NT
+ 6gPgS/Me6GHSsnOL3PLyOBTLPDZFVUMqzsCG+FK04fD6shua9P+Yu+Ma1Cl8OIt9arJgqDh
+ 91fYG9mYCsMdbTwlwYJvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ALfONMEsN7Y=:UuNA23vM/+elRbz5Sd93v+
+ XZOFwg+T3KyOGOTACBD3sa9dinXBRRgY4paM6UvAWrcCdI35cTQnLCGb01ah+KzYs7L+WRz8k
+ rHS1AnRnZSmJ2/Frwk2BAThFbPokBN/zdKQKP8cJearOrWXDUENxXbvrIzUgwYMc/3o3K/+Vw
+ X5lODY4UvAqVOuQyjsc/qyviuZpT0jC7CWvcjg2eJg33kYQhWcw8JCIN3zThS8lTuFwadojaE
+ bySAEKnIFBcf6YBKWwCBY49CEWieWyNwpFlTsTskWZb/oKXsS0Yz3n6o900jXDK6asiEPlEr9
+ 5xlO/XodfQeimviCyEZFUyZR8p0BowgxJgYLugUA0UjAMTfjPtTxf8LCo0l5+SBO+w+egfL38
+ OcD6Q2J3HtROaZYr/8K+3Bd8hE4yDBoHLyFwc8Koa+3ymfpQou9kKcmgG+vRPUCNmIGCqnekz
+ Uk3iDcqi9CPyfjk44fUyNCol/q3p82rFeVLH7tHYg0pF5EgZxgNQntaEGH91Id5Ldc54WW6yZ
+ DcHM2s6hiW5a1sbSvuIVO0jCII1WBxI0GpfqTZp4N6iV1od5cSGDjqhiZK0M0gDBgto9pVV/W
+ F+M72MBvwG1HE6/tQ5bHncNAP7VDCNeT1t01MiEVcC1bhYd/AL6AgoPvhpvUhG9hoTrG9iYmd
+ y6634AXaYtFI2RCeQn3SAwzYfgJNtNw4AnYsVLq8nxnBz9Tlj6h9EjG7dJNSS0B8RQ9FJEzgQ
+ NmX9urgY8zzuSxdd7eDf2t+3b9vUhQ6nZzxQMGxZbDdovUq7j0J0zZBTcHpwUKnQGBpsoMQpf
+ 2fy5zJx0lGYxdLfuv6rVDsLgy7841akV0Rb+CcdhhH1rSIM7/dqxhUPfAOTk28hY1hUDL+7dX
+ eMPqURRW7uQnhkgtBt53aBHDjNQpp96m5HLkdH0EMmeMiNmVvlybZKZjE21WszydSwqfAYqYz
+ 8rjp+A/ahVD8pg/qcDX3clIDz/PH0oAOR/Zaz4F04Uk7Mmavk6P2k7s7zIQ2TPlhpqCN5t0ak
+ L7lfYgUvJxVw70Ig+vEVqht8BBbZxpaBmY0DMxy23fwvm0JaTMYXWRVuibsgu6/RzAgVGUPRP
+ 7OJa+frcdu6vCLBzEpsRLRvsUrmbyC6Tab52JHe4joM7RPqiaL6uSG3uLsMASserCHavheYXI
+ SPbwZ9pa3Lm+CvcO7dBliJyx8GUjtuKjv+3cx82ipqapjdN5oSpu+hWwNb12QOTFeOB7ugXlK
+ Vm3wkZzxUooAZWx7+
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/21/20 1:56 AM, Goffredo Baroncelli wrote:
-> Hi all,
-> 
-> for a btrfs filesystem, how an user can understand which is the 
-> {data,mmetadata,system} [raid] profile in use ? E.g. the next chunk 
-> which profile will have ?
-> For simple filesystem it is easy looking at the output of (e.g)  "btrfs 
-> fi df" or "btrfs fi us". But what if the filesystem is not simple ?
-> 
-> btrfs fi us t/.
-> Overall:
->      Device size:          40.00GiB
->      Device allocated:          19.52GiB
->      Device unallocated:          20.48GiB
->      Device missing:             0.00B
->      Used:              16.75GiB
->      Free (estimated):          12.22GiB    (min: 8.27GiB)
->      Data ratio:                  1.90
->      Metadata ratio:              2.00
->      Global reserve:           9.06MiB    (used: 0.00B)
-> 
-> Data,single: Size:1.00GiB, Used:512.00MiB (50.00%)
->     /dev/loop0       1.00GiB
-> 
-> Data,RAID5: Size:3.00GiB, Used:2.48GiB (82.56%)
->     /dev/loop1       1.00GiB
->     /dev/loop2       1.00GiB
->     /dev/loop3       1.00GiB
->     /dev/loop0       1.00GiB
-> 
-> Data,RAID6: Size:4.00GiB, Used:3.71GiB (92.75%)
->     /dev/loop1       2.00GiB
->     /dev/loop2       2.00GiB
->     /dev/loop3       2.00GiB
->     /dev/loop0       2.00GiB
-> 
-> Data,RAID1C3: Size:2.00GiB, Used:1.88GiB (93.76%)
->     /dev/loop1       2.00GiB
->     /dev/loop2       2.00GiB
->     /dev/loop3       2.00GiB
-> 
-> Metadata,RAID1: Size:256.00MiB, Used:9.14MiB (3.57%)
->     /dev/loop2     256.00MiB
->     /dev/loop3     256.00MiB
-> 
-> System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
->     /dev/loop2       8.00MiB
->     /dev/loop3       8.00MiB
-> 
-> Unallocated:
->     /dev/loop1       5.00GiB
->     /dev/loop2       4.74GiB
->     /dev/loop3       4.74GiB
->     /dev/loop0       6.00GiB
-> 
-> This is an example of a strange but valid filesystem. So the question 
-> is: the next chunk which profile will have ?
-> Is there any way to understand what will happens ?
-> 
-> I expected that the next chunk will be allocated as the last "convert". 
-> However I discovered that this is not true.
-> 
-> Looking at the code it seems to me that the logic is the following (from 
-> btrfs_reduce_alloc_profile())
-> 
->          if (allowed & BTRFS_BLOCK_GROUP_RAID6)
->                  allowed = BTRFS_BLOCK_GROUP_RAID6;
->          else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
->                  allowed = BTRFS_BLOCK_GROUP_RAID5;
->          else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
->                  allowed = BTRFS_BLOCK_GROUP_RAID10;
->          else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
->                  allowed = BTRFS_BLOCK_GROUP_RAID1;
->          else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
->                  allowed = BTRFS_BLOCK_GROUP_RAID0;
-> 
->          flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
-> 
-> So in the case above the profile will be RAID6. And in the general if a 
-> RAID6 chunk is a filesystem, it wins !
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--f0dkLCsk3B5jryrcv2d83YW7H73liNynV
+Content-Type: multipart/mixed; boundary="NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8"
 
-  That's arbitrary and doesn't make sense to me, IMO mkfs should save
-  default profile in the super-block (which can be changed using ioctl)
-  and kernel can create chunks based on the default profile. This
-  approach also fixes chunk size inconsistency between progs and kernel
-  as reported/fixed here
-    https://patchwork.kernel.org/patch/11431405/
+--NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, Anand
 
-> But I am not sure.. Moreover I expected to see also reference to DUP 
-> and/or RAID1C[34] ...
-> 
-> Does someone have any suggestion ?
-> 
-> BR
-> G.Baroncelli
-> 
 
+On 2020/3/24 =E4=B8=8A=E5=8D=883:28, David Sterba wrote:
+> On Sun, Mar 22, 2020 at 08:42:20AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/3/22 =E4=B8=8A=E5=8D=881:45, David Sterba wrote:
+>>> On Sat, Mar 21, 2020 at 09:43:21AM +0800, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2020/3/21 =E4=B8=8A=E5=8D=882:43, fdmanana@kernel.org wrote:
+>>>>> From: Filipe Manana <fdmanana@suse.com>
+>>>>>
+>>>>> We are incorrectly dropping the raid56 and raid1c34 incompat flags =
+when
+>>>>> there are still raid56 and raid1c34 block groups, not when we do no=
+t any
+>>>>> of those anymore. The logic just got unintentionally broken after a=
+dding
+>>>>> the support for the raid1c34 modes.
+>>>>>
+>>>>> Fix this by clear the flags only if we do not have block groups wit=
+h the
+>>>>> respective profiles.
+>>>>>
+>>>>> Fixes: 9c907446dce3 ("btrfs: drop incompat bit for raid1c34 after l=
+ast block group is gone")
+>>>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>>>>
+>>>> The fix is OK.
+>>>>
+>>>> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>>>>
+>>>> Just interesting do we really need to remove such flags?
+>>>> To me, keep the flag is completely sane.
+>>>
+>>> So you'd suggest to keep a flag for a feature that's not used on the
+>>> filesystem so it's not possible to mount the filesystem on an older
+>>> kernel?
+>>>
+>> If user is using this feature, they aren't expecting mounting it on
+>> older kernel either.
+>=20
+> Before we go in a loop throwing single statements, let me take a broade=
+r
+> look.
+>=20
+> First thing, the removal of incompat bit was asked for by users, Hugo i=
+s
+> as reporter in the commit 6d58a55a894e863.
+>=20
+> https://lore.kernel.org/linux-btrfs/20190610144806.GB21016@carfax.org.u=
+k/
+>=20
+>   "   We've had a couple of cases in the past where people have tried o=
+ut
+>   a new feature on a new kernel, then turned it off again and not been
+>   able to go back to an earlier kernel. Particularly in this case, I ca=
+n
+>   see people being surprised at the trapdoor. "I don't have any RAID13C=
+
+>   on this filesystem: why can't I go back to 5.2?"
+>=20
+> That itself is a strong sign to me that there's a need or usecase or a
+> good idea. Though we have a lot of them, this one was simple to
+> implement and made sense to me. For the raid56 it's a simple check,
+> unlike for other features that would need to go through significant
+> portion of metadata.
+>=20
+> Booting older kernel might sound like, why would anybody want to do
+> that, but if the bit is there preventing boot/mount, then it's an
+> unnecessary complication. In rescue environmnents it's gold.
+>=20
+> Usability improvements tend to be boring from code POV but it is
+> something that users can observe and make use of.
+>=20
+Thanks for the full picture.
+
+That makes sense.
+
+Thanks,
+Qu
+
+
+--NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8--
+
+--f0dkLCsk3B5jryrcv2d83YW7H73liNynV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl55sMEACgkQwj2R86El
+/qjOxAf/X+R9cbmQpYI/sCoaMZ1mEE7SW6za0yRVFoKyCVrJL6dxSrTRniuiF6HE
+aYWwb6kTMmfJNNQ1TU8xTTDbB+9E4vTh5iebCtzTELi+EY+RTfZ7MJERlrHs620G
+0BSTwTML3qVFACqPOGnGOiDd7sUGIVsLiyB8iytKY3jd1rRpP+0lk3eqcd6BYuib
+SNvL5MBWgxMV+irTbGPLs7oClaLWPCKe5ZMqwKtyskFoEITW2e8+X0fOlFmGfq/0
+zg0EKblZRpOWhak/0jg8F5e8F7Ufi1kYDGXKxXIgrVQ7VQMiEngKUvBLJ+d3Pz1Q
+W4mY4C7MGZN1SMWzo2TxEwOUk6uTSw==
+=BM0i
+-----END PGP SIGNATURE-----
+
+--f0dkLCsk3B5jryrcv2d83YW7H73liNynV--
