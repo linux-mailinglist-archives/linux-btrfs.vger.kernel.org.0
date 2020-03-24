@@ -2,60 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F32191A6B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 21:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1047191D30
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 00:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgCXUAE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 16:00:04 -0400
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:57019 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726560AbgCXUAE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 16:00:04 -0400
-Received: from venice.bhome ([84.220.24.82])
-        by smtp-32.iol.local with ESMTPA
-        id GpiSjILgLa1lLGpiTjGnjj; Tue, 24 Mar 2020 21:00:01 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1585080001; bh=PFHp31sdzHRXIJBIB0fxzXTkw3uVzgqeTAXJxKSUOXE=;
-        h=From;
-        b=iR0XYwbV7wq8UGwY5jRWdJYRsulzoX47ZlwMvAIMcjYObPKVu1/BLgMsgDdQeGNqw
-         LRkiMVcZP2vcmEgha+i3fVSLiSuV9Yyk+dYPMWLsiOl162ImiB8275Z9hl7yq/AskU
-         Nom/A4Uk1kPXKh3HpUGxW6s8x/k3gErcW3tPRV4z6TYGMD3A4FuJ3a0XPZ+b63lnN+
-         0JLbAdH6vPMshDp5w8xpn2KjUpSKy8apaxFcHd3JaASnqq4vgXrkghimmoItDMnq32
-         1x8nyQgdAZrzfxACWS8FXKD4+MHv0OxSaaKytG7Ai2utQr9QJx7btlmzmJ1bdI8h+N
-         W9XfvCGRiKflA==
-X-CNFS-Analysis: v=2.3 cv=IOJ89TnG c=1 sm=1 tr=0
- a=ijacSk0KxWtIQ5WY4X6b5g==:117 a=ijacSk0KxWtIQ5WY4X6b5g==:17
- a=IkcTkHD0fZMA:10 a=moNAUu42ALSoEGsHl9UA:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Subject: btrfs-progs: RAID1C3/C4 missing some info in btrfs_raid_array
-Message-ID: <2f5db5cd-001f-449d-d370-697f3494ed34@libero.it>
-Date:   Tue, 24 Mar 2020 21:00:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727389AbgCXXBc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 19:01:32 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:38809 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727324AbgCXXBc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 19:01:32 -0400
+Received: by mail-il1-f178.google.com with SMTP id m7so143785ilg.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Mar 2020 16:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=kBJiFoP62Btw7m40L9NG8bWoeKz+V+mxbzRagCLUY50=;
+        b=rv0KuQT4ucSYivBoGOiMerSORkttxuOCqyhq+177zLf64OM/XPw/avLpvoGVd01S52
+         mzke/pLeKcZCvanNAQ5tCEpDo4llTcOtkXFiSMxbCf4r7xNjd7NNjMeM0d+vWfrqgQth
+         K3530WtNPUArCaZCm3h1Dc7d+NyqR1gQdWzgi/9JXjYRFazjqcR1llGm9vgdHa5RSXbm
+         13boBRUI4thbmS3wdFwiIf5gp9G7NkJ+4L446TVpyy3AA6pdV2sVmFonLI3kngdNQanR
+         FHA81FO5eoezONnTYdazD7mrs17N7qALy6GNSpVKXgNFxiSicKanQqsVg8XnuiY2yyR8
+         fjaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=kBJiFoP62Btw7m40L9NG8bWoeKz+V+mxbzRagCLUY50=;
+        b=CeLs/heWv836oUrPbSPBTQYKNqYmjcNkCA/flhEyRj5TOW4aKcIQSiuXSVQKgAHgbA
+         sjhNguaP4ky+I7TeUuSxQJJprKBGFmyjtqQgeDPtUbcaT12U+7MRafyRP4OD/QTAzl0H
+         bN3/LbC0SRsQkOkogCIxsBFlgCrsOqm2GllR6QYJ5AwV6a4hQBb7NJgWxyyjvwPOq8KQ
+         zUsujHHAUGeuMQngpLmlhCEn/MZrhIbKZ6FfkQx5dilO5cAb8tl7ZGM4EmCozPJVeKIf
+         ThctX5AGJeEz7ReAjVB6Vx/yw53TZ7iu2FUwmZejz1+YNrwUo469WRfFXoh32hQOimdq
+         5Gug==
+X-Gm-Message-State: ANhLgQ0ROv7YhpG4fVDQycG2QX9VjO//z1tqw2qY8SCbZK7Nk72RvktU
+        44LapaSNalbUjwUiTszpOa/71O+XpOydv+8qjwy9a8mH
+X-Google-Smtp-Source: ADFU+vs+XZ+/Io2A656mG89BPk3S9OrTsTqJ0tfzq9PSW5tK6NmqXDisvixipuAOGvqEDnme15QbGL2DyTBvDmDHipA=
+X-Received: by 2002:a92:c004:: with SMTP id q4mr716412ild.248.1585090891204;
+ Tue, 24 Mar 2020 16:01:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfPsoEs3U8wZfQnz0/dkC0p8vtCgnSCrODhZJN2hoKvrJ7KVXlxTI3qlNvZqr+q3Fe9S0rJKchPZVI1fqk3Pdp8/vXX2TybMrpAyUSWQTd8qilr23dQyE
- Fib4goFlRyuJ9ZkXU0gy3wcfmFhSNrEaigkqiZBLvpN+xfvOJrqEDkDHlauEavjkEg40fE0J0mDSZYxebhk9i+/cFmtWNPo0CpI=
+From:   Ganesh Sangle <sayganesha@gmail.com>
+Date:   Tue, 24 Mar 2020 16:01:20 -0700
+Message-ID: <CAJiQAnAJS-mSvQcC+8BActs53TZ6id+rc-CCO+DMWD9yJ810Ug@mail.gmail.com>
+Subject: extent generation_id
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
+hi,
+i am new to the email list - and i have a question. Please let me know
+if this is not the right forum for this question.
 
-I noticed that in btrfs-progs - volumes.c in the array "btrfs_raid_array", the info
-raid_name and bg_flag are missing for the item BTRFS_RAID_RAID1C3 and BTRFS_RAID_RAID1C4.
+While iterating the extents for a subvolume, btrfs_file_extent_item
+returns a generation_id - which is the "transaction id that created
+this extent".
+Is it safe to assume that every pwrite syscall will endup a generating
+new generation id for an extent, regardless if it is over-writing an
+existing extent (offset) or writing to a new never written (offset) ?
+In other words, can we assume that if we have generation id associated
+with all extents of a snapshot (S1) of a volume, then we delete this
+snapshot, and then do some i/o(write/discard) to the volume and create
+a new snapshot (S2) from this volume, if we iterate over the extents
+of this new snapshot (S2) we will see a different generation id
+(compared to the one we got from the snapshot (S1)) if the i/o
+(write/discard) happened at an offset in that extent ?
 
-Is it wanted ? Which is the reason to do that ?
-
-BR
-G.Baroncelli
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Thanks for the help !
