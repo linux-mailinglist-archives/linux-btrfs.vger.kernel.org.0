@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC853190B8D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 11:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68349190B8E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 11:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbgCXKxZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 06:53:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33732 "EHLO mx2.suse.de"
+        id S1727443AbgCXKx1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 06:53:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33768 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727314AbgCXKxZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 06:53:25 -0400
+        id S1727314AbgCXKx1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 06:53:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A7CA6AF39
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Mar 2020 10:53:24 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7E3D6AF43
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Mar 2020 10:53:26 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/6] btrfs-progs: check/original: Fix uninitialized memory for newly allocated data_backref
-Date:   Tue, 24 Mar 2020 18:53:12 +0800
-Message-Id: <20200324105315.136569-4-wqu@suse.com>
+Subject: [PATCH 4/6] btrfs-progs: check/original: Fix uninitialized return value from btrfs_write_dirty_block_groups()
+Date:   Tue, 24 Mar 2020 18:53:13 +0800
+Message-Id: <20200324105315.136569-5-wqu@suse.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200324105315.136569-1-wqu@suse.com>
 References: <20200324105315.136569-1-wqu@suse.com>
@@ -31,48 +31,45 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-Valgrind reports the following error for fsck/002 (which only supports
-original mode):
-  ==97088== Conditional jump or move depends on uninitialised value(s)
-  ==97088==    at 0x15BFF6: add_data_backref (main.c:4884)
-  ==97088==    by 0x16025C: run_next_block (main.c:6452)
-  ==97088==    by 0x165539: deal_root_from_list (main.c:8471)
-  ==97088==    by 0x166040: check_chunks_and_extents (main.c:8753)
-  ==97088==    by 0x166441: do_check_chunks_and_extents (main.c:8842)
-  ==97088==    by 0x169D13: cmd_check (main.c:10324)
-  ==97088==    by 0x11CDC6: cmd_execute (commands.h:125)
-  ==97088==    by 0x11D712: main (btrfs.c:386)
+Valgrind reports the following error for fsck/007, which is only
+repairable for original mode:
+  ==97599== Conditional jump or move depends on uninitialised value(s)
+  ==97599==    at 0x1D4A42: btrfs_commit_transaction (transaction.c:207)
+  ==97599==    by 0x16475C: check_extent_refs (main.c:8097)
+  ==97599==    by 0x166199: check_chunks_and_extents (main.c:8786)
+  ==97599==    by 0x166441: do_check_chunks_and_extents (main.c:8842)
+  ==97599==    by 0x169D13: cmd_check (main.c:10324)
+  ==97599==    by 0x11CDC6: cmd_execute (commands.h:125)
+  ==97599==    by 0x11D712: main (btrfs.c:386)
+  ==97599==
 
 [CAUSE]
-In alloc_data_backref(), only ref->node is set to 0.
-While ref->disk_bytenr is not initialized at all.
-
-And then in add_data_backref(), if @back is a newly allocated data
-backref, we use the garbage from back->disk_bytenr to determine if we
-should reset them.
+If btrfs_write_dirty_block_groups() get called with no block group
+dirtied (no dirty extents created), the return value of it is
+uninitialized, as the stack @ret is not initialized at all.
 
 [FIX]
-Fix it by initialize the whole data_backref structure in
-alloc_data_backref().
+Initialize @ret to 0 for btrfs_write_dirty_block_groups() as if there is
+no dirty block groups, we do nothing and shouldn't fail.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c | 2 +-
+ extent-tree.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/check/main.c b/check/main.c
-index d8181249e394..37c5b35a36bd 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -4516,7 +4516,7 @@ static struct data_backref *alloc_data_backref(struct extent_record *rec,
+diff --git a/extent-tree.c b/extent-tree.c
+index dc4b052c1666..f0cb9faa4da6 100644
+--- a/extent-tree.c
++++ b/extent-tree.c
+@@ -1564,7 +1564,7 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ {
+ 	struct btrfs_block_group_cache *cache;
+ 	struct btrfs_path *path;
+-	int ret;
++	int ret = 0;
  
- 	if (!ref)
- 		return NULL;
--	memset(&ref->node, 0, sizeof(ref->node));
-+	memset(ref, 0, sizeof(*ref));
- 	ref->node.is_data = 1;
- 
- 	if (parent > 0) {
+ 	path = btrfs_alloc_path();
+ 	if (!path)
 -- 
 2.25.2
 
