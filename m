@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D73B91905FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 08:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A8119060E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Mar 2020 08:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727400AbgCXHDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 03:03:43 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47009 "EHLO mout.gmx.net"
+        id S1726129AbgCXHHj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 03:07:39 -0400
+Received: from mout.gmx.net ([212.227.15.18]:51789 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbgCXHDn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 03:03:43 -0400
+        id S1725869AbgCXHHi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 03:07:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585033414;
-        bh=jWGV+ZfiryDNMnxcUWltCaKKruavwjud1wXCuKHPTWQ=;
+        s=badeba3b8450; t=1585033652;
+        bh=iO4kmoj0RqdmLWMjfdEYNQ0rPuGStJizcQ2THYeuRrE=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=KWyrhpZCQ/4elRgiPZbzaa4BsjQ/tAWyepPpEpiKPuf241M6yZqAlb+AP1x8YxMrV
-         hZuvxzya5GoBEKGU9w9XbM8xFQ/0vgdS067jUgeAlupnbA34btigeQ4hsGojTWnp99
-         I0gRRQLrn+w51Tm3mU0duLwadEyOevXtElGLWDU0=
+        b=AzZn5S25RuH3QbpFfD6e/WCZ7R5/PfbOxCJCx60of5Nh2xUOigMC5q8jOUNXnMOa9
+         FdG3W5nlVWhfEcEEAzJMxIvNkJESH09CfehdgpStOwKw8l0Khad+/CG8myIKsOjeNw
+         60LSGquATNKDnV4lmlvvgig0LvtvaOu4XspoJzDc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIx3C-1ixT5T2xII-00KQ3V; Tue, 24
- Mar 2020 08:03:34 +0100
-Subject: Re: [PATCH] Btrfs: fix removal of raid[56|1c34} incompat flags after
- removing block group
-To:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200320184348.845248-1-fdmanana@kernel.org>
- <8107ef53-5317-327c-674e-d5bd1b9d1e4d@gmx.com>
- <20200321174553.GK12659@twin.jikos.cz>
- <9eac14a3-b6fc-87e5-097e-b8aca1043398@gmx.com>
- <20200323192841.GM12659@twin.jikos.cz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3UZ6-1jHBtB39ve-000asx; Tue, 24
+ Mar 2020 08:07:32 +0100
+Subject: Re: [PATCH] btrfs-progs: check/lowmem: Fix a false alert caused by
+ hole beyond isize check
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200321010303.124708-1-wqu@suse.com>
+ <20200323193826.GN12659@twin.jikos.cz>
+ <23f1c445-8a0d-b0b4-a557-51e602d58db7@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,154 +54,126 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <74562983-4312-c08d-e0ed-73cbea194f20@gmx.com>
-Date:   Tue, 24 Mar 2020 15:03:29 +0800
+Message-ID: <bc273897-6fa0-a315-0292-bc1de42939a2@gmx.com>
+Date:   Tue, 24 Mar 2020 15:07:28 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200323192841.GM12659@twin.jikos.cz>
+In-Reply-To: <23f1c445-8a0d-b0b4-a557-51e602d58db7@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="f0dkLCsk3B5jryrcv2d83YW7H73liNynV"
-X-Provags-ID: V03:K1:LkVGS2J41LuOSIJ0h2b+EtOFBBRzyQi2e+4naWo8rRbVONJIUn/
- tMNwEnthrhhk5Lf1rRODJEWyRPR80Ol8WVq+yKKIBrPaIPyT5LAF7yIt7e/JmnYPODRA8NT
- 6gPgS/Me6GHSsnOL3PLyOBTLPDZFVUMqzsCG+FK04fD6shua9P+Yu+Ma1Cl8OIt9arJgqDh
- 91fYG9mYCsMdbTwlwYJvQ==
+ boundary="mZoqq4VKK8zIMzkDh28hfSKLUamnJ9AGL"
+X-Provags-ID: V03:K1:MFwAoLON1scpyUsRjrudNKBfNwcLncZgr+il1iZRMY8O6F7AWEb
+ 4nlYDiTrlH4a2N6JqRLDSY0fvWinlFJBjeo0n4WaPAdNfTf6YRt8dCE5xeqfcwTWL0fVttv
+ giixJCFXtWR+9Vv/9qvM4Di39BNMozrNEzuhQjalG0bfxWD4kOZrz7j4wN9/5RteaqcpN42
+ hlrNbhrA+74Gx7/2ypAMQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ALfONMEsN7Y=:UuNA23vM/+elRbz5Sd93v+
- XZOFwg+T3KyOGOTACBD3sa9dinXBRRgY4paM6UvAWrcCdI35cTQnLCGb01ah+KzYs7L+WRz8k
- rHS1AnRnZSmJ2/Frwk2BAThFbPokBN/zdKQKP8cJearOrWXDUENxXbvrIzUgwYMc/3o3K/+Vw
- X5lODY4UvAqVOuQyjsc/qyviuZpT0jC7CWvcjg2eJg33kYQhWcw8JCIN3zThS8lTuFwadojaE
- bySAEKnIFBcf6YBKWwCBY49CEWieWyNwpFlTsTskWZb/oKXsS0Yz3n6o900jXDK6asiEPlEr9
- 5xlO/XodfQeimviCyEZFUyZR8p0BowgxJgYLugUA0UjAMTfjPtTxf8LCo0l5+SBO+w+egfL38
- OcD6Q2J3HtROaZYr/8K+3Bd8hE4yDBoHLyFwc8Koa+3ymfpQou9kKcmgG+vRPUCNmIGCqnekz
- Uk3iDcqi9CPyfjk44fUyNCol/q3p82rFeVLH7tHYg0pF5EgZxgNQntaEGH91Id5Ldc54WW6yZ
- DcHM2s6hiW5a1sbSvuIVO0jCII1WBxI0GpfqTZp4N6iV1od5cSGDjqhiZK0M0gDBgto9pVV/W
- F+M72MBvwG1HE6/tQ5bHncNAP7VDCNeT1t01MiEVcC1bhYd/AL6AgoPvhpvUhG9hoTrG9iYmd
- y6634AXaYtFI2RCeQn3SAwzYfgJNtNw4AnYsVLq8nxnBz9Tlj6h9EjG7dJNSS0B8RQ9FJEzgQ
- NmX9urgY8zzuSxdd7eDf2t+3b9vUhQ6nZzxQMGxZbDdovUq7j0J0zZBTcHpwUKnQGBpsoMQpf
- 2fy5zJx0lGYxdLfuv6rVDsLgy7841akV0Rb+CcdhhH1rSIM7/dqxhUPfAOTk28hY1hUDL+7dX
- eMPqURRW7uQnhkgtBt53aBHDjNQpp96m5HLkdH0EMmeMiNmVvlybZKZjE21WszydSwqfAYqYz
- 8rjp+A/ahVD8pg/qcDX3clIDz/PH0oAOR/Zaz4F04Uk7Mmavk6P2k7s7zIQ2TPlhpqCN5t0ak
- L7lfYgUvJxVw70Ig+vEVqht8BBbZxpaBmY0DMxy23fwvm0JaTMYXWRVuibsgu6/RzAgVGUPRP
- 7OJa+frcdu6vCLBzEpsRLRvsUrmbyC6Tab52JHe4joM7RPqiaL6uSG3uLsMASserCHavheYXI
- SPbwZ9pa3Lm+CvcO7dBliJyx8GUjtuKjv+3cx82ipqapjdN5oSpu+hWwNb12QOTFeOB7ugXlK
- Vm3wkZzxUooAZWx7+
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N2oCZoTkKnY=:cHICVid2An7oBDlZfuWcmY
+ ho6sjz+bwKEGWOlsiYr55Q9SOnFxmZZmSk49sUlRjyroRE+tYmwEqyvPoYYKCnbAZRQyxX0nr
+ uSKt1k0Lu/roAMrHHtc5E3TSFA01Ul6zbV/o6hanpsynzXvpbpGGyNrQXRmn8uM0KX29TubVg
+ cpfOzNnJRCMTYTfyPmVKH6JerQt/tib3RCRJzp6ck6PsYQvcLdGJahMZUJXLw5V7Ypi7rAW/J
+ uenlxJJrRtQs98yLFDNpW9Fiv2H/lk9lBAmOzo6UV5qO2dfrQ5d4UBm5pyPWfAqWpYGs3Y9MO
+ j6QHNE39NmI1wMdulv+zvYycfFaGRGUgLJzo4Be9TXpyg7rYIr8gc2JsDVCJsbCHpciPDpLqx
+ Xu7YgsCVEppH6RtHL0faKUtuGg5jhk346JmEwuYu+wY3EJhfKrUS9FjOKZMIFEuqMpzMmmskr
+ LwWl2WVBRILkHFnWxwFCvhOqFcP+Upl9rAuDVoIMP8SubICNtqLGG1yUQNGqw0c/XL3XbfpSm
+ /RaGJv7fdRbpdBB5azxBBRMcEl9hOo3AYkINYEXl0fGW0EsLcQkTNeEeg/NobOICo96eVKevo
+ egVyieWpf+P/pGvSZJ09ehT3bgM1zLdJwmqWqDGMZe2sGP/zPU+mKSbRCgER2nMxsGfSzPAL5
+ R0oqgptvzuzL1kGKxrmNFYMGb/KbUqgumqX0SZW24SUumTPALIBqc4Tk9/C1k1Ihbkwq4OwHL
+ U1DLYQunOfVXguTI9yLrlrm4mI1TqMNEugwXehA9vravz6DgaHf05E7zazZF9lJudAqw7eLe1
+ KFitpFWIqbOxQV2FrCvlyCk1LEcVHNJ52HviCNkhoiwpPIz+d1gO0sFeBEJLE0h8QVmz3Y/tg
+ Cms+BCE+qMll2sXdetTjQ4DXqRO3EvEiytDS9XbK58i9cEkzLFJwyxXKRyXUG6Aa8PditP1hw
+ ygLE6GgaZLHFIaRQ8vnAhZOAUg75VRFz6MRqqaQXYi/d+HM4//+Xn2cO+KSJxhdG+bG1t/H/u
+ nZimQPsgZh9oxKste1x6MLgpDTn0HXnOUZyrHwXUr84A1mQf0adDv3MomQ99q7n5eJ85sccXv
+ sFNd0+HZIGLXf+qlSNGvt0qGcXC9A2Mi8fccBxAtH5MCQEBuU/MnyDym8omH+ccBgtNi387Y5
+ Drfzw4vJOtd4+SBIZ0ZTGflHjxXggrdXvhP4d99K531vTPFV297hQGNo8+ea6J213I8qBdB+E
+ B1F3DDnFW6+fs+Van
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---f0dkLCsk3B5jryrcv2d83YW7H73liNynV
-Content-Type: multipart/mixed; boundary="NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8"
+--mZoqq4VKK8zIMzkDh28hfSKLUamnJ9AGL
+Content-Type: multipart/mixed; boundary="UODuPuzNMUJK9YubokQNjP2ytd4OK6l8b"
 
---NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8
+--UODuPuzNMUJK9YubokQNjP2ytd4OK6l8b
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/3/24 =E4=B8=8A=E5=8D=883:28, David Sterba wrote:
-> On Sun, Mar 22, 2020 at 08:42:20AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2020/3/22 =E4=B8=8A=E5=8D=881:45, David Sterba wrote:
->>> On Sat, Mar 21, 2020 at 09:43:21AM +0800, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2020/3/21 =E4=B8=8A=E5=8D=882:43, fdmanana@kernel.org wrote:
->>>>> From: Filipe Manana <fdmanana@suse.com>
->>>>>
->>>>> We are incorrectly dropping the raid56 and raid1c34 incompat flags =
-when
->>>>> there are still raid56 and raid1c34 block groups, not when we do no=
-t any
->>>>> of those anymore. The logic just got unintentionally broken after a=
-dding
->>>>> the support for the raid1c34 modes.
->>>>>
->>>>> Fix this by clear the flags only if we do not have block groups wit=
-h the
->>>>> respective profiles.
->>>>>
->>>>> Fixes: 9c907446dce3 ("btrfs: drop incompat bit for raid1c34 after l=
-ast block group is gone")
->>>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>>>
->>>> The fix is OK.
->>>>
->>>> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>>>
->>>> Just interesting do we really need to remove such flags?
->>>> To me, keep the flag is completely sane.
+On 2020/3/24 =E4=B8=8A=E5=8D=887:15, Qu Wenruo wrote:
+>=20
+>=20
+> On 2020/3/24 =E4=B8=8A=E5=8D=883:38, David Sterba wrote:
+>> On Sat, Mar 21, 2020 at 09:03:03AM +0800, Qu Wenruo wrote:
+>>> Commit 91a12c0ddb00 ("btrfs-progs: fix lowmem check's handling of
+>>> holes") makes lowmem mode check to skip hole detection after isize.
 >>>
->>> So you'd suggest to keep a flag for a feature that's not used on the
->>> filesystem so it's not possible to mount the filesystem on an older
->>> kernel?
+>>> However it also skipped the extent end update if the extent ends just=
+ at
+>>> isize.
 >>>
->> If user is using this feature, they aren't expecting mounting it on
->> older kernel either.
->=20
-> Before we go in a loop throwing single statements, let me take a broade=
-r
-> look.
->=20
-> First thing, the removal of incompat bit was asked for by users, Hugo i=
-s
-> as reporter in the commit 6d58a55a894e863.
->=20
-> https://lore.kernel.org/linux-btrfs/20190610144806.GB21016@carfax.org.u=
-k/
->=20
->   "   We've had a couple of cases in the past where people have tried o=
-ut
->   a new feature on a new kernel, then turned it off again and not been
->   able to go back to an earlier kernel. Particularly in this case, I ca=
-n
->   see people being surprised at the trapdoor. "I don't have any RAID13C=
+>>> This caused fsck-test/001 to fail with false hole error report.
+>>>
+>>> Fix it by updating the @end parameter if we have an extent ends at in=
+ode
+>>> size.
+>>>
+>>> Fixes: 91a12c0ddb00 ("btrfs-progs: fix lowmem check's handling of hol=
+es")
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>> David, please fold the fix into the original patch.
+>>
+>> Folded, thanks for the fix. The lowmem mode tests still don't pass for=
 
->   on this filesystem: why can't I go back to 5.2?"
+>> me, have been failing since 5.1. I've now added a make target for it s=
+o
+>> it's easier to run them without setting up the env variables.
+>>
 >=20
-> That itself is a strong sign to me that there's a need or usecase or a
-> good idea. Though we have a lot of them, this one was simple to
-> implement and made sense to me. For the raid56 it's a simple check,
-> unlike for other features that would need to go through significant
-> portion of metadata.
->=20
-> Booting older kernel might sound like, why would anybody want to do
-> that, but if the bit is there preventing boot/mount, then it's an
-> unnecessary complication. In rescue environmnents it's gold.
->=20
-> Usability improvements tend to be boring from code POV but it is
-> something that users can observe and make use of.
->=20
-Thanks for the full picture.
+> Mind to provide the fsck-test-result.txt for me to further investigate
+> the problem?
 
-That makes sense.
+My bad, I didn't catch the problem in the pull request, and my test
+environments all failed to catch the problem.
+
+The lack of diversity makes it pretty hard to detect it, as it looks
+like all machines tends to zero the unintialized stack structure.
+
+Anyway, the proper fix for that long existing v5.1 bug is here:
+https://patchwork.kernel.org/patch/11454395/
+
+And I'll look into the possibility to auto use valgrind in selftests to
+avoid similar bug to sneak in.
 
 Thanks,
 Qu
+>=20
+> Thanks,
+> Qu
+>=20
 
 
---NKOv6Z3mOpInY7blzbe1vc6fexpWJ08q8--
+--UODuPuzNMUJK9YubokQNjP2ytd4OK6l8b--
 
---f0dkLCsk3B5jryrcv2d83YW7H73liNynV
+--mZoqq4VKK8zIMzkDh28hfSKLUamnJ9AGL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl55sMEACgkQwj2R86El
-/qjOxAf/X+R9cbmQpYI/sCoaMZ1mEE7SW6za0yRVFoKyCVrJL6dxSrTRniuiF6HE
-aYWwb6kTMmfJNNQ1TU8xTTDbB+9E4vTh5iebCtzTELi+EY+RTfZ7MJERlrHs620G
-0BSTwTML3qVFACqPOGnGOiDd7sUGIVsLiyB8iytKY3jd1rRpP+0lk3eqcd6BYuib
-SNvL5MBWgxMV+irTbGPLs7oClaLWPCKe5ZMqwKtyskFoEITW2e8+X0fOlFmGfq/0
-zg0EKblZRpOWhak/0jg8F5e8F7Ufi1kYDGXKxXIgrVQ7VQMiEngKUvBLJ+d3Pz1Q
-W4mY4C7MGZN1SMWzo2TxEwOUk6uTSw==
-=BM0i
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl55sbAACgkQwj2R86El
+/qh1Igf/Yn2bJjlYTtFjahxR8JAuBBC5VZoJ6J1uz4ytBMUo4Xfa90O5NF7Ae2zy
+jtNfFtwtvEuf4b+NzeGV9tY+Hh/9ghtLpSYWqczYvh7wFXiXU2+fNLtMI2c9BVbv
+jFYS2LnTl86VHSArjn61fYQLo74T6BjgIrivkX5gRPvFa//Wr9tsLupBeB+ErRBx
+sG1gvN1bB9ZaKG8zKxVzTRmqXHXi87kCtOB8//npOYfvl0bA7PE+7hNDiVQE64Y0
+0W8HdMcYKTpcouaq5EVTHFBNTe1MMMpCLF8ISWTPFmCWBr07BIIJ0nJg+174CvxL
+kTTbSrRHOc5ItdT/bLDtvX2llChWeA==
+=KnMi
 -----END PGP SIGNATURE-----
 
---f0dkLCsk3B5jryrcv2d83YW7H73liNynV--
+--mZoqq4VKK8zIMzkDh28hfSKLUamnJ9AGL--
