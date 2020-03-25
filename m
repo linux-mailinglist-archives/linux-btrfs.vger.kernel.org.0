@@ -2,254 +2,366 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BA4191EBD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 02:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945A3191FDB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 04:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbgCYB46 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 21:56:58 -0400
-Received: from mout.gmx.net ([212.227.17.21]:47341 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727196AbgCYB46 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 21:56:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585101398;
-        bh=3q4Skcp1uuejpP4vLIlXa8IwxSa7x3xfyurREyB1ViE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=B9O5/sqYXHsFv2c3siEwlDSQL4BI6Eqn8yd0cg3vI78vt4OJaKM6SRLKs6JofJdM7
-         gqMJiDltL0nfgZow474+3TB10YiSxIw1SJaTou+MqOMcLIJ98nHeQ9lMDxWZP341Q6
-         PKu3Dwq14px0WpcJvngyA8KyOtAsrQf8C5KZ/1gM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiTt-1ipjMe3kz7-00TyZ5; Wed, 25
- Mar 2020 02:56:38 +0100
-Subject: Re: [PATCH RFC] btrfs: send: Emit all xattr of an inode if the
- uid/gid changed
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, wqu@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200325015251.28838-1-marcos@mpdesouza.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <598cd0e6-a49b-7ca1-623e-991567c4259e@gmx.com>
-Date:   Wed, 25 Mar 2020 09:56:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726658AbgCYDx7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 24 Mar 2020 23:53:59 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:32936 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgCYDx7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 23:53:59 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id C2ECD62EDEC; Tue, 24 Mar 2020 23:53:57 -0400 (EDT)
+Date:   Tue, 24 Mar 2020 23:53:57 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     halfdog <me@halfdog.net>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: FIDEDUPERANGE woes may continue (or unrelated issue?)
+Message-ID: <20200325035357.GU13306@hungrycats.org>
+References: <2442-1582352330.109820@YWu4.f8ka.f33u>
+ <31deea37-053d-1c8e-0205-549238ced5ac@gmx.com>
+ <1560-1582396254.825041@rTOD.AYhR.XHry>
+ <13266-1585038442.846261@8932.E3YE.qSfc>
 MIME-Version: 1.0
-In-Reply-To: <20200325015251.28838-1-marcos@mpdesouza.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="wkeq1ERD1MivdJoP8a0d2G1w1qXVlyTP1"
-X-Provags-ID: V03:K1:A/h6dz2QqHvKdX6b/ySEZXtwXVcjvfQjIhO2ZXN2EoGtOSAoFjW
- sN36w6IzSV9vpj6ejzL1eVgVMTGUKP1i+nWC5mSl/HpcrwOf8LPgPf82raU28zZajvIpGYb
- dCTJicO75J0GJQSl5eZsZDyTR2X5DhvUQAsnsC9lxhed0xQbJnEkMH/hoQqNODLgRq5UBry
- m5lgqGrUv6rIHCOQrWzAg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vGjwX4kTjQo=:qP8GdFLswxMpV/tlfSE5Gi
- mfHIXMgeWWHrNGNYaJIu5Q2LoFrYYAMbEYGMDSwji4WFoZ651esTsBpdfD2oMwlgEakNX+fsO
- KUoaaXHwQusObWz6ez67a5RV7IAun6myq3n8WfZ2DolTp7E+YMw1bSqytqnBAd6UX2sN1Lh9F
- XUVGOZZM5bpm3NPCN8q8gVxvEbaCcSkDDBaSaVKuuL9fADMgj1YLuWYMeAseh2Ju1rq2N+gvt
- EjcvAy4bIjB6yIIIM/iz/XdJItYqN+J7EobNFGLZJ5WlucEnwST91Stifi03vG9Z646iyp/zY
- HiTskZGslse8bDMgspNhAGMHpTGtyaVvG/ZCHncdjetZq1slVkQSkpISCO90QvSLJv4YStqJ0
- 5ZBRrtClUyEHWR7PGHJNmMML1Pv5JcYbfy/c/rHgYM2fFeENT6Ho2dUM8HTAxEO6eUcDJKzYw
- 1zNU40C89QzY2ox84WQFHh8/Udi/JKolex+xj8OI84vqjzcaJSH2KbX4C1ac3AuuUbLFeHsaM
- DrKspjc0T13SynL68huw9a/zhNc/Bqy8oftZJ9yrxg/ZlWFoIAckokBZxeI/rcrWO6PhlXoeq
- 0oKvRU46eFl2latCG1EqSK2fbGr/TrT0ZGRI0emz5AAoz9VzV9WfVW82727z5HKCuhoR2JmT+
- xgZSlmgqet6EKwolj0HF5j5hqxRJ84w9tcnzFhDCn4pFry2qjepzdERBZ27W6isz9Y4BIDdSs
- feMGfQudl/ZdGKaC6pWBGpPlsgbqxpUU+t1hHZMWlK2jDfpj5obfBk1mKFJjLeyLl30uaChRc
- nWtq8w4QNNtQdtCa8VF+RMx9WfwnQqPlPzhe0tbwo5WqArgHj2rhnuNAtPPd9fYKyoO5Zic+f
- eeTBwZwWfk751wq5lOGYsp9CXduRtVjP85QwTNmpMXld38IwDpJZtF3yLm2AN+08nvOFgV/bO
- SUt67/58mzYnMEYlOc0YRsMWmXT8GXEHmiDrpNJb8i8Wt40V/Nx0AmNcde94SlSf7OnIaVGY8
- Q0K2KB0N+W3DS6psw3XhACl8Atf2nZTYE9X8sEaoQlTQvyBMEIplLNIBxkt40d73Hbl1EoIUM
- 3mz66eLDcI5CMxAT8IMlCD05Y/l3gySNrvUnqW3Kx1YM+p0A4Sx9bz5TZ/VRS+8tK519ovAJC
- omRgPpubI0SCSa+IkTLQkVMy8fB5tdq9JTIMB5jwhBd7J7ZjU7ohSMCViTkVWZlEkTojkiEAC
- sgaIWV6pqR82zK33q
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <13266-1585038442.846261@8932.E3YE.qSfc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wkeq1ERD1MivdJoP8a0d2G1w1qXVlyTP1
-Content-Type: multipart/mixed; boundary="4lt6ZXygdyUm9YCPlsflmw8zRrsUcsdYV"
+On Tue, Mar 24, 2020 at 08:27:22AM +0000, halfdog wrote:
+> Hello list,
+> 
+> It seems the woes really continued ... After trashing the old,
+> corrupted filesystem (see old message below) I started rebuilding
+> the storage. Synchronization from another (still working) storage
+> roughly should have performed the same actions as during initial
+> build (minus count and time of mounts/unmounts, transfer interrupts,
+> ...).
+> 
+> It does not seem to be a mere coincidence, that the corruption
+> occured when deduplicating the exact same file as last time.
+> While corruption last time made disk completely inaccessible,
+> this time it just was mounted readonly with a different error
+> message:
+> 
+> [156603.177699] BTRFS error (device dm-1): parent transid verify failed on 6680428544 wanted 12947 found 12945
+> [156603.177707] BTRFS: error (device dm-1) in __btrfs_free_extent:3080: errno=-5 IO failure
+> [156603.177708] BTRFS info (device dm-1): forced readonly
+> [156603.177711] BTRFS: error (device dm-1) in btrfs_run_delayed_refs:2188: errno=-5 IO failure
 
---4lt6ZXygdyUm9YCPlsflmw8zRrsUcsdYV
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Normally those messages mean your hardware is dropping writes somewhere;
+however, you previously reported running kernels 5.3.0 and 5.3.9, so
+there may be another explanation.
 
+Try kernel 4.19.x, 5.4.19, 5.5.3, or later.  Definitely do not use kernels
+from 5.1-rc1 to 5.4.13 inclusive unless backported fixes are included.
 
+I mention 5.5.3 and 5.4.19 instead of 5.5.0 and 5.4.14 because the
+later ones include the EOF dedupe fix.  4.19 avoids the regressions of
+later kernels.
 
-On 2020/3/25 =E4=B8=8A=E5=8D=889:52, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->=20
-> [PROBLEM]
-> When doing incremental send with a file with capabilities, there is a
-> situation where the capability can be lost in the receiving side. The
-> sequence of actions bellow show the problem:
->=20
-> $ mount /dev/sda fs1
-> $ mount /dev/sdb fs2
->=20
-> $ touch fs1/foo.bar
-> $ setcap cap_sys_nice+ep fs1/foo.bar
-> $ btrfs subvol snap -r fs1 fs1/snap_init
-> $ btrfs send fs1/snap_init | btrfs receive fs2
->=20
-> $ chgrp adm fs1/foo.bar
-> $ setcap cap_sys_nice+ep fs1/foo.bar
->=20
-> $ btrfs subvol snap -r fs1 fs1/snap_complete
-> $ btrfs subvol snap -r fs1 fs1/snap_incremental
->=20
-> $ btrfs send fs1/snap_complete | btrfs receive fs2
-> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
->=20
-> At this point fs/snap_increment/foo.bar lost the capability, since a
-> chgrp was emitted by "btrfs send". The current code only checks for the=
+> As it seems that the bug here is somehow reproducible, I would
+> like to try to develop a reproducer exploit and fix for that
+> bug as an excercise. Unfortunately the fault occurs only after
+> transfering and deduplicating ~20TB of data.
+> 
+> Are there any recommendations e.g. how to "bisect" that problem?
 
-> items that changed, and as the XATTR kept the value only the chgrp chan=
-ge
-> is emitted.
->=20
-> [FIX]
-> In order to fix this issue, check if the uid/gid of the inode change,
-> and if yes, emit all XATTR again, including the capability.
->=20
-> Fixes: https://github.com/kdave/btrfs-progs/issues/202
->=20
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->  I'm posting this patch as a RFC because I had some questions
->  * Is this the correct place to fix?
->  * Also, emitting all XATTR of the inode seems overkill...
->  * Should it be fixed in userspace?
+Find someone who has already done it and ask.  ;)
 
-+1 for fixing it in userspace.
+Upgrade straight from 5.0.21 to 5.4.14 (or 5.4.19 if you want the dedupe
+fix too).  Don't run any kernel in between for btrfs.
 
-To me, although not an expert in send, the send stream looks more like a
-diff between two subvolumes, other than instructions to rebuild a subvolu=
-me.
+There was a bug introduced in 5.1-rc1, fixed in 5.4.14, which corrupts
+metadata.  It's a UAF bug, so its behavior can be unpredictable, but quite
+often the symptom is corrupted metadata or write-time tree-checker errors.
+Sometimes you just get a harmless NULL dereference crash, or some noise
+warnings.
 
-So in above case, since the XATTR is not changed, not sending the XATTR
-is OK.
-Thus it's the receiver side to workaround the missing XATTR.
+There are at least two other filesystem corrupting bugs with lifetimes
+overlapping that range of kernel versions; however both of those were
+fixed by 5.3.
 
-And it shouldn't be that complex for user space to backup the XATTR, and
-restore it after gid/uid change.
+> Is there a way (switch or source code modification) to log all
+> internal btrfs state transitions for later analysis? 
 
-Although the main chanllege is how to distinguish plain uid/gid change
-(with XATTR dropped) and uid/gid change with XATTR restored.
+There are (e.g. the dm write logger), but most bugs that would be
+found in unit tests by such tools have been fixed by the time a kernel
+is released, and they'll only tell you that btrfs did something wrong,
+not why.
 
-Thanks,
-Qu
+Also, there can be tens of thousands of btrfs state transitions per
+second during dedupe, so the volume of logs themselves can present data
+wrangling challenges.
 
->=20
->  fs/btrfs/send.c | 29 +++++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index c5f41bd86765..5cffe5da91cf 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -6187,6 +6187,14 @@ static int changed_inode(struct send_ctx *sctx,
->  		sctx->cur_inode_mode =3D btrfs_inode_mode(
->  				sctx->right_path->nodes[0], right_ii);
->  	} else if (result =3D=3D BTRFS_COMPARE_TREE_CHANGED) {
-> +		u64 left_uid =3D btrfs_inode_uid(sctx->left_path->nodes[0],
-> +					left_ii);
-> +		u64 left_gid =3D btrfs_inode_gid(sctx->left_path->nodes[0],
-> +					left_ii);
-> +		u64 right_uid =3D btrfs_inode_uid(sctx->right_path->nodes[0],
-> +					right_ii);
-> +		u64 right_gid =3D btrfs_inode_gid(sctx->right_path->nodes[0],
-> +					right_ii);
->  		/*
->  		 * We need to do some special handling in case the inode was
->  		 * reported as changed with a changed generation number. This
-> @@ -6236,15 +6244,12 @@ static int changed_inode(struct send_ctx *sctx,=
+The more invasively you try to track internal btrfs state, the more the
+tools become _part_ of that state, and introduce additional problems.
+e.g. there is the ref verifier, and the _bug fix history_ of the ref
+verifier...
 
->  			sctx->send_progress =3D sctx->cur_ino + 1;
-> =20
->  			/*
-> -			 * Now process all extents and xattrs of the inode as if
-> +			 * Now process all extents of the inode as if
->  			 * they were all new.
->  			 */
->  			ret =3D process_all_extents(sctx);
->  			if (ret < 0)
->  				goto out;
-> -			ret =3D process_all_new_xattrs(sctx);
-> -			if (ret < 0)
-> -				goto out;
->  		} else {
->  			sctx->cur_inode_gen =3D left_gen;
->  			sctx->cur_inode_new =3D 0;
-> @@ -6255,6 +6260,22 @@ static int changed_inode(struct send_ctx *sctx,
->  			sctx->cur_inode_mode =3D btrfs_inode_mode(
->  					sctx->left_path->nodes[0], left_ii);
->  		}
-> +
-> +		/*
-> +		 * Process all XATTR of the inode if the generation or owner
-> +		 * changed.
-> +		 *
-> +		 * If the inode changed it's uid/gid, but kept a
-> +		 * security.capability xattr, only the uid/gid will be emitted,
-> +		 * causing the related xattr to deleted. For this reason always
-> +		 * emit the XATTR when an inode has changed.
-> +		 */
-> +		if (sctx->cur_inode_new_gen || left_uid !=3D right_uid ||
-> +		    left_gid !=3D right_gid) {
-> +			ret =3D process_all_new_xattrs(sctx);
-> +			if (ret < 0)
-> +				goto out;
-> +		}
->  	}
-> =20
->  out:
->=20
+> Other ideas for debugging that?
 
+Run dedupe on a test machine with a few TB test corpus (or whatever your
+workload is) on a debug-enabled kernel, report every bug that kills the
+box or hurts the data, update the kernel to get fixes for the bugs that
+were reported.  Repeat until the box stops crapping itself, then use the
+kernel it stopped on (5.4.14 in this case).  Do that for every kernel
+upgrade because regressions are a thing.
 
---4lt6ZXygdyUm9YCPlsflmw8zRrsUcsdYV--
+> Just creating the same number of snapshots
+> and putting just that single file into each of them did not trigger
+> the bug during deduplication.
 
---wkeq1ERD1MivdJoP8a0d2G1w1qXVlyTP1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Dedupe itself is fine, but some of the supporting ioctls a deduper has to
+use to get information about the filesystem structure triggered a lot of
+bugs.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl56ulEACgkQwj2R86El
-/qjSBgf/ZerpWWN+pSWVPdS3z+IU2VB6ondy6RXaCZzq4pN/Vnqtgnd/cIZWHrxV
-6J1Pq4QRu/VCyN6vZJ5RAXkQSmNfHXP7A69da6j+JiR9YfwmclWhpAWbnanfUzzp
-IHWivw2TELfbt68dFYrSWF/myAm/C9qJyxskq7e4TdllluHnMH7mjSIPOa2Zc6u6
-fvVEdlY2Oq5DGfiiS+F6mKPw9SOAy/udud89HWmR6QAUKJm18rJ4exfKMKXEqrBH
-CAgCsDY86jKHbZ8GAo2Qr4NBmfZtiIg5zyJTsssaFErcG9Fb6q2qMt/vDC3EMSeM
-gfo1oCeXzdf9T/wn74FF9aTgFV0Zaw==
-=MDLm
------END PGP SIGNATURE-----
-
---wkeq1ERD1MivdJoP8a0d2G1w1qXVlyTP1--
+> Kind regards,
+> hd
+> 
+> 
+> 
+> halfdog writes:
+> > Qu Wenruo writes:
+> >> On 2020/2/22 下午2:18, halfdog wrote:
+> >>> Hello list,
+> >>>
+> >>> Thanks for the fix to the bug reported in "FIDEDUPERANGE
+> >>> woes".
+> >>>
+> >>> I now got a kernel including that fix. I verified, that
+> >>> deduplication now also worked on file ends. Deduplication
+> >>> also picked up the unfragmented version of a file in cases,
+> >>> where the second file was fragmented due to the bug having
+> >>> a single tail block extent.
+> >>>
+> >>> Looking now at the statistics, I noticed that the "duperemove"
+> >>> did not submit all small files to deduplication for unknown
+> >>> reason (also not relevant for the current problem).
+> >>>
+> >>> So I modified the process to submit all identical files and
+> >>> started to run it on a drive with bad fragmentation of small
+> >>> files due to earlier bug. This procedure terminated middle
+> >>> of night with following errors:
+> >>>
+> >>> [53011.819395] BTRFS error (device dm-1): bad tree block
+> >>> start, want 90184380416 have 5483876589805514108 [53011.819426]
+> >>> BTRFS: error (device dm-1) in __btrfs_free_extent:3080: errno=-5
+> >>> IO failure
+> >>
+> >> Extent tree already screwed up.
+> >>
+> >> This means your fs is already screwed up.
+> >
+> > This is what I assumed. It is just a funny coincidence, that
+> > this happened exactly using the disk the first time after a
+> > fsck to run massive deduplication on a filesystem with approximately
+> > each file existing in 20x copies, with at least one duplicated
+> > copy for each set of same files.
+> >
+> >>> [53011.819434] BTRFS info (device dm-1): forced readonly
+> >>> [53011.819441] BTRFS: error (device dm-1) in
+> >>> btrfs_run_delayed_refs:2188: errno=-5 IO failure [53624.948618]
+> >>> BTRFS error (device dm-1): parent transid verify failed on
+> >>> 67651596288 wanted 27538 found 27200 [53651.093717] BTRFS
+> >>> error (device dm-1): parent transid verify failed on 67651596288
+> >>> wanted 27538 found 27200 [53706.250680] BTRFS error (device
+> >>> dm-1): parent transid verify failed on 67651596288 wanted
+> >>> 27538 found 27200
+> >>
+> >> Transid error is not a good sign either.
+> >>
+> >>>
+> >>> Could this be related to the previous fix or is this more
+> >>> likely just a random hardware/software bug at a weird time?
+> >>
+> >> Not sure, but I don't think the reflink-beyond-eof fix is
+> >> related to the bug, as the main problem is the tree block
+> >> COW.
+> >>
+> >> Normally such transid corruption is related to extent tree
+> >> corruption, which matches the result from btrfs check.
+> >
+> > So it seems, but the reason is unclear. At least there were
+> > no hardware failures (SMART, ECC, processor temperature) reported,
+> > no bus transfer errors, so this might be a software fault.
+> >
+> > As the data on the disk is not really needed, the disk is currently
+> > cold without any need to bring it online soon, this would allow
+> > to use it for debugging the cause of corruption.
+> >
+> > If there is any interest in that, I could try to assist, e.g.
+> > creating VM with trunk kernel/tools for debugging and execute
+> > the tests. Otherwise I would just flatten the filesystem and
+> > initialize the disk anew.
+> >
+> >
+> >>> I also tried to apply the btrfs-check to that, but it fails
+> >>> opening the device, thus not attempting to repair it ...
+> >>>
+> >>> # btrfs check --progress --clear-space-cache v1
+> >>> --clear-space-cache v2 --super 1 [device] using SB copy 1,
+> >>> bytenr 67108864 Opening filesystem to check... checksum verify
+> >>> failed on 90184388608 found 00000000 wanted FFFFFF96 checksum
+> >>> verify failed on 90184388608 found 00000000 wanted FFFFFF96
+> >>> bad tree block 90184388608, bytenr mismatch, want=90184388608,
+> >>> have=15484548251864346855 ERROR: failed to read block groups:
+> >>> Input/output error ERROR: cannot open file system
+> >>>
+> >>> Any ideas?
+> >>>
+> >>>
+> >>> PS: I have a database of all file checksums on another drive
+> >>> for comparison of file content, if useful.
+> >>>
+> >>>
+> >>> Filipe Manana writes:
+> >>>> On Sat, Dec 14, 2019 at 5:46 AM Zygo Blaxell
+> >>>> <ce3g8jdj@umail.furryterror.org> wrote:
+> >>>>>
+> >>>>> On Fri, Dec 13, 2019 at 05:32:14PM +0800, Qu Wenruo wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2019/12/13 =E4=B8=8A=E5=8D=8812:15, halfdog wrote:
+> >>>>>>> Hello list,
+> >>>>>>>
+> >>>>>>> Using btrfs on
+> >>>>>>>
+> >>>>>>> Linux version 5.3.0-2-amd64 (debian-kernel@lists.debian.org)
+> >>>>>>> (gcc ver=
+> >>>> sion 9.2.1 20191109 (Debian 9.2.1-19)) #1 SMP Debian 5.3.9-3
+> >>>> (2019-11-19)
+> >>>>>>>
+> >>>>>>> the FIDEDUPERANGE exposes weird behaviour on two identical
+> >>>>>>> but not too large files that seems to be depending on
+> >>>>>>> the file size. Before FIDEDUPERANGE both files have a
+> >>>>>>> single extent, afterwards first file is still single
+> >>>>>>> extent, second file has all bytes sharing with the extent
+> >>>>>>> of the first file except for the last 4096 bytes.
+> >>>>>>>
+> >>>>>>> Is there anything known about a bug fixed since the above
+> >>>>>>> mentioned kernel version?
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> If no, does following reproducer still show the same
+> >>>>>>> behaviour on current Linux kernel (my Python test tools
+> >>>>>>> also attached)?
+> >>>>>>>
+> >>>>>>>> dd if=3D/dev/zero bs=3D1M count=3D32 of=3Ddisk mkfs.btrfs
+> >>>>>>>> --mixed --metadata single --data single --nodesize 4096
+> >>>>>>>> d=
+> >>>> isk
+> >>>>>>>> mount disk /mnt/test mkdir /mnt/test/x dd bs=3D1
+> >>>>>>>> count=3D155489 if=3D/dev/urandom of=3D/mnt/test/x/file-0
+> >>>>>>
+> >>>>>> 155489 is not sector size aligned, thus the last extent
+> >>>>>> will be padded with zero.
+> >>>>>>
+> >>>>>>>> cat /mnt/test/x/file-0 > /mnt/test/x/file-1
+> >>>>>>
+> >>>>>> Same for the new file.
+> >>>>>>
+> >>>>>> For the tailing padding part, it's not aligned, and it's
+> >>>>>> smaller than the inode size.
+> >>>>>>
+> >>>>>> Thus we won't dedupe that tailing part.
+> >>>>>
+> >>>>> We definitely *must* dedupe the tailing part on btrfs;
+> >>>>> otherwise, we can'=
+> >>>> t
+> >>>>> eliminate the reference to the last (partial) block in
+> >>>>> the last extent of the file, and there is no way to dedupe
+> >>>>> the _entire_ file in this example=
+> >>>> .
+> >>>>> It does pretty bad things to dedupe hit rates on uncompressed
+> >>>>> contiguous files, where you can lose an average of 64MB
+> >>>>> of space per file.
+> >>>>>
+> >>>>> I had been wondering why dedupe scores seemed so low on
+> >>>>> recent kernels, and this bug would certainly contribute
+> >>>>> to that.
+> >>>>>
+> >>>>> It worked in 4.20, broken in 5.0.  My guess is commit
+> >>>>> 34a28e3d77535efc7761aa8d67275c07d1fe2c58 ("Btrfs: use
+> >>>>> generic_remap_file_range_prep() for cloning and deduplication")
+> >>>>> but I haven't run a test to confirm.
+> >>>>
+> >>>> The problem comes from the generic (vfs) code, which always
+> >>>> rounds down the deduplication length to a multiple of the
+> >>>> filesystem's sector size. That should be done only when
+> >>>> the destination range's end does not match the destination's
+> >>>> file size, to avoid the corruption I found over a year ago
+> >>>> [1]. For some odd reason it has the correct behavior for
+> >>>> cloning, it only rounds down the destination range's end
+> >>>> is less then the destination's file size.
+> >>>>
+> >>>> I'll see if I get that fixed next week.
+> >>>>
+> >>>> [1]
+> >>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+> >>>> it/?id=3Dde02b9f6bb65a6a1848f346f7a3617b7a9b930c0
+> >>>>
+> >>>>>
+> >>>>>
+> >>>>>> Thanks, Qu
+> >>>>>>
+> >>>>>>>
+> >>>>>>>> ./SimpleIndexer x > x.json ./IndexDeduplicationAnalyzer
+> >>>>>>>> --IndexFile /mnt/test/x.json /mnt/test/=
+> >>>> x > dedup.list
+> >>>>>>> Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)],
+> >>>>>>> b'/mnt/test=
+> >>>> /x/file-1': [(0, 5472256, 155648)]}
+> >>>>>>> ...
+> >>>>>>>> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0
+> >>>>>>>> 0 /mnt/t=
+> >>>> est/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> >>>>>>> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE,
+> >>>>>>> {src_offset=3D0=
+> >>>> , src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4,
+> >>>> dest_offset=3D= 0}]} =3D> {info=3D[{bytes_deduped=3D155489,
+> >>>> status=3D0}]}) =3D 0
+> >>>>>>>> ./IndexDeduplicationAnalyzer --IndexFile /mnt/test/x.json
+> >>>>>>>> /mnt/test/=
+> >>>> x > dedup.list
+> >>>>>>> Got dict: {b'/mnt/test/x/file-0': [(0, 5316608, 155648)],
+> >>>>>>> b'/mnt/test=
+> >>>> /x/file-1': [(0, 5316608, 151552), (151552, 5623808, 4096)]}
+> >>>>>>> ...
+> >>>>>>>> strace -s256 -f btrfs-extent-same 155489 /mnt/test/x/file-0
+> >>>>>>>> 0 /mnt/t=
+> >>>> est/x/file-1 0 2>&1 | grep -E -e FIDEDUPERANGE
+> >>>>>>> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE,
+> >>>>>>> {src_offset=3D0=
+> >>>> , src_length=3D155489, dest_count=3D1, info=3D[{dest_fd=3D4,
+> >>>> dest_offset=3D= 0}]} =3D> {info=3D[{bytes_deduped=3D155489,
+> >>>> status=3D0}]}) =3D 0
+> >>>>>>>> strace -s256 -f btrfs-extent-same 4096 /mnt/test/x/file-0
+> >>>>>>>> 151552 /mn=
+> >>>> t/test/x/file-1 151552 2>&1 | grep -E -e FIDEDUPERANGE
+> >>>>>>> ioctl(3, BTRFS_IOC_FILE_EXTENT_SAME or FIDEDUPERANGE,
+> >>>>>>> {src_offset=3D1=
+> >>>> 51552, src_length=3D4096, dest_count=3D1, info=3D[{dest_fd=3D4,
+> >>>> dest_offset= =3D151552}]}) =3D -1 EINVAL (Invalid argument)
+> >>>>>>>
+> >>>>>>
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>
+> >>>>
+> >>>> --=20 Filipe David Manana,
+> >>>>
+> >>>> =E2=80=9CWhether you think you can, or you think you can't
+> >>>> =E2=80=94 you're= right.=E2=80=9D
+> >>>
+> >>
+> 
