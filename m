@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5152C1931A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 21:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4CA1931A6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 21:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgCYUKs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 16:10:48 -0400
-Received: from smtp-16.italiaonline.it ([213.209.10.16]:37916 "EHLO libero.it"
+        id S1727420AbgCYUKr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 16:10:47 -0400
+Received: from smtp-16.italiaonline.it ([213.209.10.16]:41708 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727389AbgCYUKs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 16:10:48 -0400
+        id S1727275AbgCYUKr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 16:10:47 -0400
 Received: from venice.bhome ([94.37.173.46])
         by smtp-16.iol.local with ESMTPA
-        id HCMOjh5MEjfNYHCMPjKIfT; Wed, 25 Mar 2020 21:10:45 +0100
+        id HCMOjh5MEjfNYHCMPjKIfe; Wed, 25 Mar 2020 21:10:46 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1585167045; bh=yjCKfiupFowMkGoaheuWChMhWQmQxEakxoyLtSkw+QM=;
+        t=1585167046; bh=bpZ4/tTRQsQ1WNRSrCe2Uslib9zT+AD10AVxSlUUxo0=;
         h=From;
-        b=OPrAyUU5m6L516H3MVMwQmmBu3wQpzLD3bGu5es2RePu/p8K4dbvh6uK0V2oHrc9Z
-         N7LHA0nvLd9c0KA8oi3+sf4yAQ6PnTv1wV4M9hnWGKcYnBhhpChCPDgznND2kCR5RI
-         p0TEAHYlaiIQgXIJan7ko6nprhVad5qwKxFjaiwnZF/TKrEFD48aFhnH2H+L007YmR
-         Szx9s7XUAgrbKrZETEKXnlnHR8QqrFGleiJlpbYFQ1bP9/MgPSzHqwx30HliVFAoXC
-         lnBHig/AUVcmhUPuGCmOH07ucNDuj+GeK7wv7WZyGQOqIjspEF0WQ/tdxj7vuGjSP5
-         f/wsCHqEqpT1A==
+        b=CUHRH/dw2uL37dcCVs90e1wB8PKe9GTJ578sC//nhChezARb76AiyUG2Ofh0mxXmA
+         7gMegIWvCQq70QZKv7X0Wqb/d7f12kEyxTsw8LqKzQsSkUw5N2E3h2OniH2jCZdcNJ
+         Ya5TOz5As3wAd3sPLW3VkhmaFJe9FdkOVSOtKw6f28STGS9p0ny/4+iGSpxgfH05ec
+         XQvJItjLMwGyfSnD5tGmrjwnwqaYupzExnUsDMo4a7649NFAhq38jpp5nnJp9dSaRK
+         7Q/cxeE6ZJmY4pF/9Tl5uJf6nF0RukqNQYko5M12saqLN06b2C/kETe6Q2IewJMGEM
+         pXoXbHbdJ3bTg==
 X-CNFS-Analysis: v=2.3 cv=av7M9hRV c=1 sm=1 tr=0
  a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=LKmzqrTVISSj5QACPwEA:9
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=fdgFY_N7qoPLzqVp-50A:9
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 1/4] btrfs-progs: Add missing fields to btrfs_raid_array[] for raid1c[34].
-Date:   Wed, 25 Mar 2020 21:10:39 +0100
-Message-Id: <20200325201042.190332-2-kreijack@libero.it>
+Subject: [PATCH 2/4] btrfs-progs: Add BTRFS_EXTENDED_PROFILE_MASK mask.
+Date:   Wed, 25 Mar 2020 21:10:40 +0100
+Message-Id: <20200325201042.190332-3-kreijack@libero.it>
 X-Mailer: git-send-email 2.26.0.rc2
 In-Reply-To: <20200325201042.190332-1-kreijack@libero.it>
 References: <20200325201042.190332-1-kreijack@libero.it>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfEuCnovtdD+TRoeabWypWzplUOR+GkQayJ7V99CQYO85L74ziUcBkhKEpmAheyuIWsJLjTH4xPCec77502nddjJO1i3YdjhU/zRctjhI8g7IdiRAsFz7
- Ld9XB5oxruih8lvRlDt4unHGhNrd8uVKSMfKPgHXyqUIt02gTmRBXhw730zQPI5/KUlFH5iysPuetaOYmS5GnJD/+5iMn6eL/3VeZK8LKGVs1ZMK/1jLGIwR
- 5BdJp6JXJquA/jRJz0x4ow==
+X-CMAE-Envelope: MS4wfGkYcP/Y0c4qDFI5CyhfgKhAV9x4PrkfrfGxzSAkIbUt7yhQbguy7KdkSX9Lfi9dlZZlWkPGO4CWTvZoJ7dRC800nf3ZrGgrHItlj0Hn4XOtc7wuUh+P
+ QdDKcPBN8Y4bJLHIfN+NZ9efykl50U0PIxwuBzVfTLRM5AeEr15cQ8/G7KaZNZiGVIfAY5EDMsDSlrZTpw/utLY1AgBzUYBy24j080Wz7AiQuJaxg3Rqg4jt
+ FnlI9KkkOaiqfjgBkZKHrA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -49,33 +49,28 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goffredo Baroncelli <kreijack@inwind.it>
 
+Add BTRFS_EXTENDED_PROFILE_MASK to consider also the
+BTRFS_AVAIL_ALLOC_BIT_SINGLE bit.
+
 Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
 ---
- volumes.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ ctree.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/volumes.c b/volumes.c
-index b46bf598..9e37f986 100644
---- a/volumes.c
-+++ b/volumes.c
-@@ -65,6 +65,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
- 		.tolerated_failures = 2,
- 		.devs_increment	= 3,
- 		.ncopies	= 3,
-+		.raid_name	= "raid1c3",
-+		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1C3,
- 	},
- 	[BTRFS_RAID_RAID1C4] = {
- 		.sub_stripes	= 1,
-@@ -74,6 +76,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
- 		.tolerated_failures = 3,
- 		.devs_increment	= 4,
- 		.ncopies	= 4,
-+		.raid_name	= "raid1c4",
-+		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1C4,
- 	},
- 	[BTRFS_RAID_DUP] = {
- 		.sub_stripes	= 1,
+diff --git a/ctree.h b/ctree.h
+index 36f62732..017ac067 100644
+--- a/ctree.h
++++ b/ctree.h
+@@ -1005,6 +1005,9 @@ enum btrfs_raid_types {
+ /* used in struct btrfs_balance_args fields */
+ #define BTRFS_AVAIL_ALLOC_BIT_SINGLE	(1ULL << 48)
+ 
++#define BTRFS_EXTENDED_PROFILE_MASK	(BTRFS_BLOCK_GROUP_PROFILE_MASK | \
++					 BTRFS_AVAIL_ALLOC_BIT_SINGLE)
++
+ /*
+  * GLOBAL_RSV does not exist as a on-disk block group type and is used
+  * internally for exporting info about global block reserve from space infos
 -- 
 2.26.0.rc2
 
