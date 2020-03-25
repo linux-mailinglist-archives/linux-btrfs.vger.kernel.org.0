@@ -2,51 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C95DC192B66
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 15:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466CF192C95
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 16:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgCYOnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 10:43:16 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:43861 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727731AbgCYOnP (ORCPT
+        id S1727772AbgCYPcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 11:32:31 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:53644 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727491AbgCYPca (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 10:43:15 -0400
-Received: by mail-io1-f67.google.com with SMTP id n21so2423059ioo.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Mar 2020 07:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BYoi0GgKGrZ5Iy05aE5oc1zP5UUaQTjapju/izAR4hI=;
-        b=YUccMzib2IwajwEuyLBHygiEi2x+yWevlxfsequqpaIt/Mza/TxUmFkitS3U4FkfKx
-         P1XwXxBJ8Cx5HEmhYoBLdWFHhmr6xou5YR2utppkELKcqyaDd4EOavtJNBW3boLnPkzx
-         WgZmdQ9YRsyheNZWEZrba/miSYKYdDAaziYyc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BYoi0GgKGrZ5Iy05aE5oc1zP5UUaQTjapju/izAR4hI=;
-        b=r7vdgLsuLM353CdZemkf/w0RbzL8P3TnD2KHHOn8nHHXFLnWieHvT4DhOqK0RREpFE
-         EZpDjX5v1PAch/wr1ANNglDEv4xYrODzqhoAVZuXwTvx8sXSB72oReJcUQ+znV2RPV8y
-         J7/EOq5pGheJMRvgvwSy1FiaAVq6BagE3SAQIHVq+IHNn8geXdJS07a3+ABmw/s50g1a
-         efqaPH7eLIA/9nk467bBfjXRV8oa5150w6TDp8xq0phlkLvlzZG1KZ8sT3E52N/HqNK5
-         1WP/mO9IcCosQ/+ymsfy5oSqWsmjS2KXhKbDHvsFKD99hceG5VY+oOGGdCRK627gxD/b
-         PCGw==
-X-Gm-Message-State: ANhLgQ24H/5QBG1Q8R9VfXjLCwgqPhFekZ9hJpx2UnuzJ7+P7mXq0exi
-        /3MEngDrswrNzUOrqsZJJX/9/hozcUi4E1PV/67WYm2F
-X-Google-Smtp-Source: ADFU+vsgMMqodCZqPGFNfCT+HdNRTtLLlUdy5AMnDcVBoatxWj+vZY48emoAVNd+HvHliFjTkg/kdF6pmkOGcZxuC6s=
-X-Received: by 2002:a6b:3a07:: with SMTP id h7mr3235359ioa.191.1585147393572;
- Wed, 25 Mar 2020 07:43:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200323202259.13363-1-willy@infradead.org> <20200323202259.13363-25-willy@infradead.org>
- <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com> <20200325120254.GA22483@bombadil.infradead.org>
-In-Reply-To: <20200325120254.GA22483@bombadil.infradead.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 25 Mar 2020 15:43:02 +0100
-Message-ID: <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
-Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
-To:     Matthew Wilcox <willy@infradead.org>
+        Wed, 25 Mar 2020 11:32:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L8UzQwxATOZdjWZ+3tNM04b2mH/5tj4IRSDfIFAnCq4=; b=nwr8fvcCAKrcOHuwe8r/p16lMc
+        bZh3DEdAU9aGBWN3F5ynv1Ne93Ij03ZhftdP2p/j/SwKFdDbTLj5/ZaltpVeKwhDVOtZpmt6dBgOM
+        Y5kNAkTDyJM9LmxIOgZivD4BtHVK41PC4z2UtEwA8qUzMYjVHQwzjfESuvsJdyTL91AdLqA/lHmDm
+        b4ONx8n6tUgKbzMesC9PHNx/tJe345Szba01BQVbNkeQ4aBKyS9/rqkTgJMFlzt5JsbGeTzjBPG19
+        tW79XBGQHh8i08Okr8byBxVFG1QH7u5q9rAcay5PaTaRDoWupoIchhUNkRzhk4f/AQVLTP2rNvR7K
+        5pnTChzQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jH816-0004oZ-U3; Wed, 25 Mar 2020 15:32:28 +0000
+Date:   Wed, 25 Mar 2020 08:32:28 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -55,42 +35,80 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
         Dave Chinner <dchinner@redhat.com>,
         William Kucharski <william.kucharski@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
+Message-ID: <20200325153228.GB22483@bombadil.infradead.org>
+References: <20200323202259.13363-1-willy@infradead.org>
+ <20200323202259.13363-25-willy@infradead.org>
+ <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com>
+ <20200325120254.GA22483@bombadil.infradead.org>
+ <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 1:02 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Mar 25, 2020 at 10:42:56AM +0100, Miklos Szeredi wrote:
-> > > +       while ((page = readahead_page(rac))) {
-> > > +               if (fuse_readpages_fill(&data, page) != 0)
+On Wed, Mar 25, 2020 at 03:43:02PM +0100, Miklos Szeredi wrote:
 > >
-> > Shouldn't this unlock + put page on error?
->
-> We're certainly inconsistent between the two error exits from
-> fuse_readpages_fill().  But I think we can simplify the whole thing
-> ... how does this look to you?
+> > -       while ((page = readahead_page(rac))) {
+> > -               if (fuse_readpages_fill(&data, page) != 0)
+> > +               nr_pages = min(readahead_count(rac), fc->max_pages);
+> 
+> Missing fc->max_read clamp.
 
-Nice, overall.
+Yeah, I realised that.  I ended up doing ...
 
->
-> -       while ((page = readahead_page(rac))) {
-> -               if (fuse_readpages_fill(&data, page) != 0)
-> +               nr_pages = min(readahead_count(rac), fc->max_pages);
++       unsigned int i, max_pages, nr_pages = 0;
+...
++       max_pages = min(fc->max_pages, fc->max_read / PAGE_SIZE);
 
-Missing fc->max_read clamp.
+> > +               ia = fuse_io_alloc(NULL, nr_pages);
+> > +               if (!ia)
+> >                         return;
+> > +               ap = &ia->ap;
+> > +               __readahead_batch(rac, ap->pages, nr_pages);
+> 
+> nr_pages = __readahead_batch(...)?
 
-> +               ia = fuse_io_alloc(NULL, nr_pages);
-> +               if (!ia)
->                         return;
-> +               ap = &ia->ap;
-> +               __readahead_batch(rac, ap->pages, nr_pages);
+That's the other bug ... this was designed for btrfs which has a fixed-size
+buffer.  But you want to dynamically allocate fuse_io_args(), so we need to
+figure out the number of pages beforehand, which is a little awkward.  I've
+settled on this for the moment:
 
-nr_pages = __readahead_batch(...)?
+        for (;;) {
+               struct fuse_io_args *ia;
+                struct fuse_args_pages *ap;
 
-This will give consecutive pages, right?
+                nr_pages = readahead_count(rac) - nr_pages;
+                if (nr_pages > max_pages)
+                        nr_pages = max_pages;
+                if (nr_pages == 0)
+                        break;
+                ia = fuse_io_alloc(NULL, nr_pages);
+                if (!ia)
+                        return;
+                ap = &ia->ap;
+                __readahead_batch(rac, ap->pages, nr_pages);
+                for (i = 0; i < nr_pages; i++) {
+                        fuse_wait_on_page_writeback(inode,
+                                                    readahead_index(rac) + i);
+                        ap->descs[i].length = PAGE_SIZE;
+                }
+                ap->num_pages = nr_pages;
+                fuse_send_readpages(ia, rac->file);
+        }
 
-Thanks,
-Miklos
+but I'm not entirely happy with that either.  Pondering better options.
+
+> This will give consecutive pages, right?
+
+readpages() was already being called with consecutive pages.  Several
+filesystems had code to cope with the pages being non-consecutive, but
+that wasn't how the core code worked; if there was a discontiguity it
+would send off the pages that were consecutive and start a new batch.
+
+__readahead_batch() can't return fewer than nr_pages, so you don't need
+to check for that.
