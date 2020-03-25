@@ -2,24 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0AC192011
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 05:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DB719202D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 05:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgCYEJx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 25 Mar 2020 00:09:53 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35074 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725263AbgCYEJw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 00:09:52 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 350AA62EE62; Wed, 25 Mar 2020 00:09:51 -0400 (EDT)
-Date:   Wed, 25 Mar 2020 00:09:50 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Question: how understand the raid profile of a btrfs filesystem
-Message-ID: <20200325040950.GV13306@hungrycats.org>
+        id S1725909AbgCYEaV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 00:30:21 -0400
+Received: from mail-eopbgr1370050.outbound.protection.outlook.com ([40.107.137.50]:8224
+        "EHLO AUS01-SY3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725781AbgCYEaV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 00:30:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mT4ZaoZDn79W2GQT7parmZiFhCAhIpSAZdJDG7rwGhq7txktOvB3gUTCLGG2FQzk+KH/BZ0uWHF9nNdWiWgMmjw4ZGXfMZ+WqTL/VdtS1eQHWN1gy/kyMwHM+eB6UTX8NoP5nkm+ShFHanAoAnb+BVwBGtko3qG9oX72HTSwVh+26tsFdEbZK0kzY7bkwYkKdjNiiROkB+a9A04bqil4FrZMxtPToJptALkHMorNxfVlBV1gT9msiM+8i7dgAZ0AVyEQ685Jd2dD2MERNz4yYVFraU7DWK1woT7ejfK3CCqG9NiJungE5U06FcbGI+LiFzjg6w6FN+mLInxwCKCZzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ooco78fKYV2xovCcubUfyY7k8E5C3YsCqkTZf3+MtYk=;
+ b=E3qZV4YCoQasK6vhm90dE2vhNaoYXXjbWzdVm5DTYFW2RuFH1bZWefWslB6y+SUQWUKvnlgXWsryDe9mMfuXuKt8HIjNydP1Q6Q5FHhjD9p/4H543vAtlQLN4QNaKz6dNGqxG8tvSrwOkiv28Mvi3sr+CTLDJ8tgYBSekjQ/+Y52pRorWKUblFPTTsjcL/tzYNBrTqY+yM1X2BcvD4csRRNQ979hlxrnaGIZhhrCQDxcwUKljlXpuqKQejDFDaCBEyHLDJu58Qh3j12eHYiOJtfJzq+DHaCDcOSc1Gzzsil4sAHWOkcwol0NJWiIUMTH58ig6EKYYpN5fqJbZqJbTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ooco78fKYV2xovCcubUfyY7k8E5C3YsCqkTZf3+MtYk=;
+ b=LUP6j2dRrr5isJoYwB1l68XH4YzpZxRd98wQF4Le8+RErItvyqg2TQbWmMfQOXys/csIGTKCD+dqfna+CeYyPPEaPDVBPMGTJG8zI93u2tbKlwcBjdnO4q41VQ1U5PzIls8O8pYPB4M1qoRqNDKz4htMxgOHlM0wcJO9fojQAcA=
+Received: from SYBPR01MB3897.ausprd01.prod.outlook.com (20.177.136.214) by
+ SYBPR01MB4764.ausprd01.prod.outlook.com (20.178.191.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2835.19; Wed, 25 Mar 2020 04:30:17 +0000
+Received: from SYBPR01MB3897.ausprd01.prod.outlook.com
+ ([fe80::790e:69fb:3a25:5092]) by SYBPR01MB3897.ausprd01.prod.outlook.com
+ ([fe80::790e:69fb:3a25:5092%5]) with mapi id 15.20.2835.021; Wed, 25 Mar 2020
+ 04:30:17 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Graham Cobb <g.btrfs@cobb.uk.net>
+CC:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: RE: Question: how understand the raid profile of a btrfs filesystem
+Thread-Topic: Question: how understand the raid profile of a btrfs filesystem
+Thread-Index: AQHWAVSkooa6FDNgjUanL7QrcK3ORKhWx78AgAHsDACAAAIGAA==
+Date:   Wed, 25 Mar 2020 04:30:16 +0000
+Message-ID: <SYBPR01MB38972C6A31FA985B0D9494109ECE0@SYBPR01MB3897.ausprd01.prod.outlook.com>
 References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
  <20200321032911.GR13306@hungrycats.org>
  <fd306b0b-8987-e1e7-dee5-4502e34902c3@inwind.it>
@@ -29,110 +54,90 @@ References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
  <20200322234934.GE2693@hungrycats.org>
  <a15a47f1-9465-dd5c-4b70-04f1a14e6a96@libero.it>
  <28ddb178-674b-fab7-afa4-18a575299c1d@cobb.uk.net>
+ <20200325040950.GV13306@hungrycats.org>
+In-Reply-To: <20200325040950.GV13306@hungrycats.org>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=paul@pauljones.id.au; 
+x-originating-ip: [60.240.33.147]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b69e66ee-d99e-4781-7ece-08d7d0753859
+x-ms-traffictypediagnostic: SYBPR01MB4764:
+x-microsoft-antispam-prvs: <SYBPR01MB4764A780454A986CD2C5C7019ECE0@SYBPR01MB4764.ausprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-forefront-prvs: 0353563E2B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(376002)(39830400003)(396003)(366004)(136003)(6506007)(4326008)(53546011)(186003)(55016002)(9686003)(71200400001)(26005)(5660300002)(76116006)(110136005)(2906002)(52536014)(86362001)(508600001)(66556008)(7696005)(66476007)(8936002)(316002)(33656002)(64756008)(81156014)(8676002)(66446008)(66946007)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:SYBPR01MB4764;H:SYBPR01MB3897.ausprd01.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
+received-spf: None (protection.outlook.com: pauljones.id.au does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lnBn9RPrEYf9UCPuwbMRnpWDF+REDACCMtd2uv5Gn7pU2EnfhaDck0GnKUWZVF/vzgAcEhkr2IJUhUUh09OPiho52cLRTVx/OxeFtIEKxFNXM73VubmzndmDj6k0+Wc4kbEWF8KSV06NUA+WiJFztyJAx4L6SY6tsK5IqpQk/R2GA4NYSScRKhtkyYLT3cFGEo6TzSuhAlH7X1VcXZ6t6R1GRACCNJ/JvuH3DmWtGDMprsjIZehd9DVLAtlkkI0GCI3KZZxTpQCg/JlYsYXYqVfgin8t0c/u1xB4oU5e5rAmBkGK4cNYsu1azOrZF15HKCIVGymoPlfi+F+fDX/msPZaDCHBV/yZRvr9b/4htnig8VHuH4lnLwzMXdPCbfNN1+wyGJexNHmw6spgA7z7vmvMXThUYxg5nqIzn1WdB1qaGYak+P7b6LlK5O3nk+OL
+x-ms-exchange-antispam-messagedata: YqrkSWkM3CNyXD+X2j7/K+pVMgJB4qsgvPfYKeYO4y16LevMYJaWIalbm7Hj6JEvNjyMl72LyLZiBxJ52lXYysoliGrH6bzhUaOGORrGJ5bAE/kD5T6GDcwGB2qN90HY2mlO7P8d5BmLZ5MVb6BPWg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <28ddb178-674b-fab7-afa4-18a575299c1d@cobb.uk.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-Network-Message-Id: b69e66ee-d99e-4781-7ece-08d7d0753859
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2020 04:30:17.0225
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RXI9T5rmr9+ysGeM7NAVsJF4mvIy2NlBUBTdB801v/cqllOkurlpUA+xXtwm3n1pWQPh41cxRkD7jmLgnsX1oQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB4764
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 10:48:44PM +0000, Graham Cobb wrote:
-> On 23/03/2020 20:50, Goffredo Baroncelli wrote:
-> > On 3/23/20 12:49 AM, Zygo Blaxell wrote:
-> >> On Sun, Mar 22, 2020 at 09:38:30AM +0100, Goffredo Baroncelli wrote:
-> >>> On 3/22/20 9:34 AM, Goffredo Baroncelli wrote:
-> >>>
-> >>>>
-> >>>> To me it seems complicated to
-> >>> [sorry I push the send button too early]
-> >>>
-> >>> To me it seems too complicated (and error prone) to derive the target
-> >>> profile from an analysis of the filesystem.
-> >>>
-> >>> Any thoughts ?
-> >>
-> >> I still don't understand the use case you are trying to support.
-> >>
-> >> There are 3 states for a btrfs filesystem:
-> >>
-> > [...]
-> >>
-> >>     3.  A conversion is interrupted prior to completion.  Sysadmin is
-> >>     expected to proceed immediately back to state #2, possibly after
-> >>     taking any necessary recovery actions that triggered entry into
-> >>     state #3.  It doesn't really matter what the current allocation
-> >>     profile is, since it is likely to change before we allocate
-> >>     any more block groups.
-> >>
-> >> You seem to be trying to sustain or support a filesystem in state #3 for
-> >> a prolonged period of time.  Why would we do that?  
-> 
-> In real life situations (particularly outside a commercial datacentre)
-> this situation can persist for quite a while.  I recently found myself
-> in a real-life situation where this situation was not only in existence
-> for weeks but was, at some times, getting worse (I was getting further
-> away from my target configuration, not closer).
-> 
-> In this case, the original trigger was a disk in a well over 10TB
-> filesystem beginning to go bad. My strategy for handling that was to
-> replace the failing disk asap, and then rearrange the disk usage on the
-> system later. In order to handle the immediate emergency, I made use of
-> existing free space in LVM volume groups to replace the failing disk,
-> but that meant I had some user data and backups on the same physical
-> disk for a while (although I have plenty of other backups available I
-> like to keep my first-tier backups on separate local disks).
+> -----Original Message-----
+> From: linux-btrfs-owner@vger.kernel.org <linux-btrfs-
+> owner@vger.kernel.org> On Behalf Of Zygo Blaxell
+> Sent: Wednesday, 25 March 2020 3:10 PM
+> To: Graham Cobb <g.btrfs@cobb.uk.net>
+> Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+> Subject: Re: Question: how understand the raid profile of a btrfs filesys=
+tem
 
-I've done those.  And the annoying thing about them was...
+> Disk removes are where the current system breaks down.  'btrfs device
+> remove' is terrible:
+>=20
+> 	- can't cancel a remove except by rebooting or forcing ENOSPC
+>=20
+> 	- can't resume automatically after a reboot (probably a good
+> 	thing for now, given there's no cancel)
+>=20
+> 	- can't coexist with a balance, even when paused--device remove
+> 	requires the balance to be _cancelled_ first
+>=20
+> 	- doesn't have any equivalent to the 'convert' filter raid
+> 	profile target in balance info
+>=20
+> so if you need to remove a device while you're changing profiles, you hav=
+e to
+> abort the profile change and then relocate a whole lot of data without be=
+ing
+> able to specify the correct target profile.
+>=20
+> The proper fix would be to reimplement 'btrfs dev remove' using pieces of
+> the balance infrastructure (it kind of is now, except where it's not), an=
+d so
+> 'device remove' can keep the 'convert=3D' target.  Then you don't have to=
+ lose
+> the target profile while doing removes (and fix the other problems too).
 
-> So, once the immediate crisis was over, I needed to move disks around
-> between the filesystems. It was weeks before I had managed to do
-> sufficient disk adds, removes 
+I've often thought it would be handy to be able to forcefully set the disk =
+size or free space to zero, like how it is reported by 'btrfs fi sh' during=
+ a remove operation. That way a balance operation can be used for various t=
+hings like profile changes or multiple disk removals (like replacing 4x1T d=
+rives with 1x4T drive) without unintentionally writing a bunch of data to a=
+ disk you don't want to write to anymore.
+It would also allow for a more gradual removal for disks that need replacin=
+g but not as an emergency, as data will gradually migrate itself to other d=
+iscs as it is COWed.
 
-Disk removes are where the current system breaks down.  'btrfs device
-remove' is terrible:
-
-	- can't cancel a remove except by rebooting or forcing ENOSPC
-
-	- can't resume automatically after a reboot (probably a good
-	thing for now, given there's no cancel)
-
-	- can't coexist with a balance, even when paused--device remove
-	requires the balance to be _cancelled_ first
-
-	- doesn't have any equivalent to the 'convert' filter raid
-	profile target in balance info
-
-so if you need to remove a device while you're changing profiles, you
-have to abort the profile change and then relocate a whole lot of data
-without being able to specify the correct target profile.
-
-The proper fix would be to reimplement 'btrfs dev remove' using pieces of
-the balance infrastructure (it kind of is now, except where it's not),
-and so 'device remove' can keep the 'convert=' target.  Then you don't
-have to lose the target profile while doing removes (and fix the other
-problems too).
-
-Or just move it from the balance info to the superblock, as suggested
-elsewhere in the thread (none of these changes can be done without
-changing something in the on-disk format).  But definitely don't have
-the target profile in both places!
-
-> and replaces to have all the filesystems
-> back to having data and backups on separate disks and all the data and
-> metadata in the profiles I wanted. Just doing a replace for one disk
-> took many days for the system to physically copy the data from one disk
-> to the other.
-> 
-> As this system was still in heavy use, this was made worse by btrfs
-> deciding to store data in profiles I did not want (at that point in the
-> manipulation) and forcing me to rebalance the data that had been written
-> during the last disk change before I could start on the next one.
-> 
-> Bottom line: although not the top priority in btrfs development, a
-> simple way to control the profile to be used for new data and metadata
-> allocations would have real benefit to overstretched sysadmins.
-> 
+Paul.
