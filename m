@@ -2,29 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F2E191DE8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 01:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9C0191DE9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 01:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgCYAMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 20:12:14 -0400
-Received: from mout.gmx.net ([212.227.15.18]:41225 "EHLO mout.gmx.net"
+        id S1727190AbgCYANA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 20:13:00 -0400
+Received: from mout.gmx.net ([212.227.15.18]:57497 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727113AbgCYAMN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 20:12:13 -0400
+        id S1727103AbgCYANA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Mar 2020 20:13:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585095131;
-        bh=pVZ2xnC3aud0tAC4naVea2RunZ69rgA13ud5tIZt22c=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=EpfaEiOuyiGdFy9WtE7cgu+V2yN9p1lFphpScwwgqSBTPe5Mzs/Vd7qWKrGcVGgYB
-         svEMX4O4Ur+g2Z503AdYDgAATN7pIVuv2n6X/LXaDUd6CtRohmUUz5L8Qo2Tv4SxK6
-         Ye/iX3lQN8afHMYRbAKPRRVocGJOtSIr5KV++9SI=
+        s=badeba3b8450; t=1585095178;
+        bh=Gkq4pMqlMvM3jEMngy0BB5xddezddbkuCRxB0dCZE3M=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=F8ZWjNgwit+CnAcSEqjWS3AJaT338CxR9YWRO75xnkB/ZEErkGYv6g4csS4OJPwmW
+         Ss5UnMDWcncY54A32uGTOGU1wkU0gyzmrKAKloxAwr32qqbaeNgwKGpfDXWlXKl4BF
+         rng4zGxyALBMDd0SoJvRBwQpaaePOjanwCbH/Ink=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPGRz-1iuAdD3EHV-00Ph17; Wed, 25
- Mar 2020 01:12:11 +0100
-Subject: Re: extent generation_id
-To:     Ganesh Sangle <sayganesha@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAJiQAnAJS-mSvQcC+8BActs53TZ6id+rc-CCO+DMWD9yJ810Ug@mail.gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3UUy-1jGLQx2tgA-000btC; Wed, 25
+ Mar 2020 01:12:58 +0100
+Subject: Re: btrfs-progs: RAID1C3/C4 missing some info in btrfs_raid_array
+To:     kreijack@inwind.it, David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <2f5db5cd-001f-449d-d370-697f3494ed34@libero.it>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,123 +51,91 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5b73f866-3917-ee20-1787-7f410d27fa23@gmx.com>
-Date:   Wed, 25 Mar 2020 08:12:08 +0800
+Message-ID: <cf046899-7a7b-a93b-2340-c996cbfbc6ac@gmx.com>
+Date:   Wed, 25 Mar 2020 08:12:54 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAJiQAnAJS-mSvQcC+8BActs53TZ6id+rc-CCO+DMWD9yJ810Ug@mail.gmail.com>
+In-Reply-To: <2f5db5cd-001f-449d-d370-697f3494ed34@libero.it>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="vPo2EKX54oMYVg45HluMz3q2OwkXMcAy6"
-X-Provags-ID: V03:K1:VB7Nc6jKbtvKctHpoY6klWUNZTpOb3o4NSd/RJmyD9kfXw5JG+3
- o++6+x50dX7TwvDyl/yFO+k1vXJmkapxmPjbLgEzFXWxl8Y3SLcTrrCKQZ/kH0FjUKV8kMq
- a5He94JovB7CXYcftGUJX6vv3sspU16+Kf6l0ajfQmEWrM2GqhEcDTnEIgybbfiQO2BXBsL
- BsZHU3DZoKf4sej5EN4eA==
+ boundary="QtgTFA1rwHtnRjndoU2BwE1v4WjIS1a1B"
+X-Provags-ID: V03:K1:k010b+JHtW+Tv97uRYQzu0IMBI0Ili4l+rc/f3YKFw4z+DM96Pd
+ oRUc4WD9chA6XRF4IR3q6yUtVKfdhNXcZMkbKKJhA8VCjWwuEEBDIJ1qRlATBlyTnMeVUHL
+ jpF0YQqHCdLlDHxHFXeoX6Xc8MYAaRjNNW+RbHVVyQWd3xe+fziekaOQ1WDHi9bypGm2KUu
+ BxJv/QSU7acRft7tknAGQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:G1pZ2QrOCaE=:cgrY1lr3NN5ChQWxqjzHcb
- My+QUgwrx8TvU6PyAkf+mEnSucLb1ptDo1o258S+rGys48fv7wUPYAU6VKDCxYnuFHYjqlgj3
- vri/2nASjhGTjO91qFkAGy4B67A63Vu6WrlU6F/VDb8UEnPxTZCgtq16fEIc1LWNuY6KwP/sw
- wUvtWByNTWsS/I6/VNHk2UrRrM6baCF8ULB9MJa4jNR9QYdJ58+iBk9vrB1/a90E5mbhQH1El
- hLZclN1L1ee+Nph09EIyh6E5ftui/Y7/tRA9xcKihc9JVRDuvjS8bhAxYvrzHwrBDgaU4gEnv
- k8eFvYLK8KiPM0R9+CqmqKcfw0nUQb1zHLz7Cq+aPePKOj7m62u1sol9Ys3ylgQZXRtSa1+6W
- beIBLq+Exrop1s38fpk5ShOOR/f2nUDyNdqvMVKPhJ6fWuUK+Z5C4U07i10zqETLc//8KwwcV
- AxZPJMZBHWFCbQIX4Poh8aFwx7ktpVtQXVkGJDnm2BsU62NIESZXWSm0ooDvZBG/pUTuI2uyS
- rjh5KhQfY/gcb4d1D99xW3p3ykti97mQWIVUv3a7NJIrb7JXO04HqogwdDC8eKf8LdYLiNk+k
- faUuSg41sLq3zz70YSPgsU3sxzFiH7txnb7OEWxvJQfk7cBs/gXPJG7R+TWjVrsKUqvXCWptc
- jP//fCkJ2Y+UrO7nMzeF29FnIj1PhznUIfhxxKDbwVSPbg6PQvS6m2WnzzrTlKmO54mP4ZnJj
- YsdM8cdygme+A+sqOnErZ3/H5PZ0Eg3sCdYSDnqLiuTtV/NOYTsiYyjG/L5Lx0T6ZcjOD1WGn
- WHOZvCu95K+QiDoSiDTONqO3nlenaODbv4BB6yJuOkOsa9cL59MHu/lh1IjvUePnXVfUZW6Fk
- r/Ctk+Zsj93zztyfLP2wImj0GF3Lqbe94JMCjEEtzChW9Iw5NyW6m5H6pJXNrv4FnJBN2VyLC
- 3xKxF87mGmQ5jDN8E8dPfWLjfgCtHCDzCobDNdQHIdIE4hO2os60nDizTWiYB7UXvZuTRUb1d
- GBQHx4gL0QuHBaMgSgsB3Z5LERxuQA8X5Hz1P3ci+jYTaEgJZ2dRXwO8QqG7vwtBpajjXG5Kx
- bZamRFixlebH4oTknB6aMjTrhp4aVd3rP3SLOsW9ylM8Ze6CD+wKxRa460tJLrp+dO/xymVsU
- aIXjmfQejlPmFoZtkunS9gCcjWhQhjHxPL6ZFX6dOF6XEOGMMWeHTkusCpOSYVTbIm9myW9fj
- Io49F3XgFbqnA5PkY
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yjArE68GJ+4=:TQw7PDX5xfp8R3DLATCU/H
+ aJ0ROdSdES60szlUiI76i7WPxCktg3d56XsW/1SunvjV9AHaSZmVx0k6761oEqQ3G40AUAcsU
+ k3tm5icpfZdmbR76jAt6TiCudjMcvdmdVmBzcfQnhu5nZ+WjMQvuBIB0u8G2TVB9J+YewgjFH
+ q6RxaWhGTrFlyP6ri3DfMTOseBjVP2JoE1R6HpFN8HmeFx/wtS9B1+bCnB1SWhbwE6aDS8NKI
+ wVxYeoRFLych+FZxIxUZkJe0Jc2reZ2KlWcf8t0mhJ0pEv5I0nMMYYN1FBzSGocXCbDzXDZgY
+ NOOYewuldP1AOTbaz7DXn7La/lK/MJl9nYt4CceaZIhWG63qjc6Bux5LQswg6TOGXCMdQocf6
+ Xl5+/Ujf/o17LU3EIZBYcx3HrZLkaDc2BNb9wSzn5Xfb8aQMPGg2YW5/VHyknGEd4mHJB+1NJ
+ x3Vu4x+HitLg9wu/9KRwy8fQxM39yhsgfNaxuNupqMss9o5+o9XrgMPWh1CTw0RUN7tu0T0Hl
+ rGoEdwg8TVZvPtp56Ix75T3Qk6i6YVgDNBlAlE1DNSMixyO7s+58Yoxq5QhuR3zJcOL/aWVdY
+ Ap57Qf732JzUbIwlSTEGZmwC7efMmguZiM1UYl0jCZt3nF+h60DCS6xTdkRhw+eva6IU2Jdv1
+ u7HPoq4VCYKk6l98L0fW6BhYSHtwC3cXIZXYb+E8JGG81Xm+1L6EEsKJHlz+I87Bk0G1NC6ji
+ 3HgyGq3MOmc8y7FRlveuo7uKHvz+h5yqOqaXhHXwNXsw9SS6p+G4ssCzmtUrgdiLcCCs9wQ5r
+ R1MLq7Rr62e18WBe6p5RKkk7IdzGVqf/wCaMZ6SEOWQbjybX8yJg39cbfsG7jGa8zHcqsovpv
+ X/zksYHBvUTEOMKOVZlg5M80JMcPtGID2wyoZSYHK1C05k0fNLkMXX2DZepjvFFcHL94bPm1J
+ DiLd9WgDpKOsbTxGP1yKV4IyKArotrs+JkqozJvN1/174D/nwy0Z/ePMsbPjqqg3Ps/xmCVv3
+ /QlEsuhGvQxXGVGUtzZQox7CuEl9phArmcbav7lxkhfhCftM98+4/mF5HlrVVMVrqYqdRWOIA
+ qUg/7B1ZioenxMsn3nUqk4s2aj4x8OYOw1vtcRTqTtINd1LJz7gYcF1YoI4rH1MrGoeNRnNKG
+ 2vhWSIkORKMJBoaUUoMuY2i7xALnhW3uc96lhhLWD88oNwNs3QjKfmcxrNekfou9zp146gx76
+ 4+Xtx2D8mgO+43Fic
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vPo2EKX54oMYVg45HluMz3q2OwkXMcAy6
-Content-Type: multipart/mixed; boundary="2nQxJ6IkgKpKPL9tbaB3ZQQ5vQ1PsHeHA"
+--QtgTFA1rwHtnRjndoU2BwE1v4WjIS1a1B
+Content-Type: multipart/mixed; boundary="j5YhEj9uZKaJUe3QkWl9axXlu6aK9ks8j"
 
---2nQxJ6IkgKpKPL9tbaB3ZQQ5vQ1PsHeHA
+--j5YhEj9uZKaJUe3QkWl9axXlu6aK9ks8j
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/3/25 =E4=B8=8A=E5=8D=887:01, Ganesh Sangle wrote:
-> hi,
-> i am new to the email list - and i have a question. Please let me know
-> if this is not the right forum for this question.
+On 2020/3/25 =E4=B8=8A=E5=8D=884:00, Goffredo Baroncelli wrote:
+> Hi David,
 >=20
-> While iterating the extents for a subvolume, btrfs_file_extent_item
-> returns a generation_id - which is the "transaction id that created
-> this extent".
-> Is it safe to assume that every pwrite syscall will endup a generating
-> new generation id for an extent, regardless if it is over-writing an
-> existing extent (offset) or writing to a new never written (offset) ?
+> I noticed that in btrfs-progs - volumes.c in the array
+> "btrfs_raid_array", the info
+> raid_name and bg_flag are missing for the item BTRFS_RAID_RAID1C3 and
+> BTRFS_RAID_RAID1C4.
 
-For data cow (the default behavior), all data writes, no matter buffered
-(including pwrite) or direct IO, will lead to new extents, thus a new
-generation.
-
-Furthermore, even if we overwrite the whole existing extent, we won't
-write directly into the existing extent, we will keep the existing
-extent until current transaction is committed.
-This is proper COW behavior, to ensure even we had a power loss, we will
-either see the old data (and metadata) or new data (and metadata)
-
-For no data cow case, overwriting existing extent won't update the
-extent item, thus not update the generation (which skips some metadata
-IO, and improves performance).
-
-But no data cow case is limited in btrfs, even a file has NODATACOW bit
-set, if there is a snapshot referring to that file, we will still do COW.=
-
-
-> In other words, can we assume that if we have generation id associated
-> with all extents of a snapshot (S1) of a volume, then we delete this
-> snapshot, and then do some i/o(write/discard) to the volume and create
-> a new snapshot (S2) from this volume, if we iterate over the extents
-> of this new snapshot (S2) we will see a different generation id
-> (compared to the one we got from the snapshot (S1)) if the i/o
-> (write/discard) happened at an offset in that extent ?
-
-Since the write happens after S1 is deleted, there is no guarantee that
-CoW will still happen for NODATACOW files.
-Thus we can overwrite existing extents, thus it's possible that no new
-generation id generated.
+In devel branch, it's between RAID_DUP and RAID_1.
 
 Thanks,
 Qu
-
 >=20
-> Thanks for the help !
+> Is it wanted ? Which is the reason to do that ?
 >=20
+> BR
+> G.Baroncelli
 
 
---2nQxJ6IkgKpKPL9tbaB3ZQQ5vQ1PsHeHA--
+--j5YhEj9uZKaJUe3QkWl9axXlu6aK9ks8j--
 
---vPo2EKX54oMYVg45HluMz3q2OwkXMcAy6
+--QtgTFA1rwHtnRjndoU2BwE1v4WjIS1a1B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl56odgACgkQwj2R86El
-/qiOFAf/YTJMVq/4iYwM8LnkGPbNklk0iNBDUdXtfcRk/HkIJZCrkHAjvrvodBDF
-VGHXoZJNXjoW+oZP/SOZrm7CHPhrwl6zFUoynBf96s/IyTS5moMl6lAPb0pOH4v0
-hHpYRLJA4WZR763ZfGfYzajqglzRs32o69a27ci5bL/8ww7BSXcKfqtZaycpM4nf
-GDjmyQQ4BybceJDGt0JHGepXmRWLSSHyS32RxI5U03ek+YykMR7ZKuOACBBleaMN
-sF8hg3zdW2h3+EWIg76Ro1/VbVF9TG/HmRHj7WVBSWRHj5jw2Uoyuy52s5TFSMSS
-iAdDkVRTw9tgUyA26p/pSqjwslymqA==
-=Z59R
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl56ogYACgkQwj2R86El
+/qjtdQgAnMkIxVucQPgGtBKgS2NQAbvZ1vPpSeI9AFNydrIfHD4PIX5rZI1mdBeF
+GKzba9nFxZdJ+qIqbJri2lzIuFEjp9DQmOsRWb7LwSm4Pk0jtTtz8SssMrj0MIbk
+MxAXSdilscMacq+1HVuIVxPLF0VQKxK4wwK58geyuUA7ayWB7emNMDm1MNjsxH/W
+CFQDqRUwvwSqPO5gTjkuL4GL7X+d8Wb28/kZn2bBTC4RTCPdIOxNFjz1Ou9f471s
+xDRNM6Vvd5Qw2s015VlJqKiZSNB4LJK4ssgIMQJXjUuN3JUv6JihAY/8KhrtNQWu
+FmX6XNNFMni/wLnKp1B8EAzc+wJiIA==
+=UPUN
 -----END PGP SIGNATURE-----
 
---vPo2EKX54oMYVg45HluMz3q2OwkXMcAy6--
+--QtgTFA1rwHtnRjndoU2BwE1v4WjIS1a1B--
