@@ -2,75 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF76192B5F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 15:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95DC192B66
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 15:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgCYOmu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 10:42:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39562 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbgCYOmu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 10:42:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F34A3ACF0;
-        Wed, 25 Mar 2020 14:42:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 131FEDA7EB; Wed, 25 Mar 2020 15:42:18 +0100 (CET)
-Date:   Wed, 25 Mar 2020 15:42:17 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] btrfs-progs: Fixes for valgrind errors during
- fsck-tests
-Message-ID: <20200325144217.GD5920@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200324105315.136569-1-wqu@suse.com>
+        id S1727880AbgCYOnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 10:43:16 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43861 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727731AbgCYOnP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 10:43:15 -0400
+Received: by mail-io1-f67.google.com with SMTP id n21so2423059ioo.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Mar 2020 07:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BYoi0GgKGrZ5Iy05aE5oc1zP5UUaQTjapju/izAR4hI=;
+        b=YUccMzib2IwajwEuyLBHygiEi2x+yWevlxfsequqpaIt/Mza/TxUmFkitS3U4FkfKx
+         P1XwXxBJ8Cx5HEmhYoBLdWFHhmr6xou5YR2utppkELKcqyaDd4EOavtJNBW3boLnPkzx
+         WgZmdQ9YRsyheNZWEZrba/miSYKYdDAaziYyc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BYoi0GgKGrZ5Iy05aE5oc1zP5UUaQTjapju/izAR4hI=;
+        b=r7vdgLsuLM353CdZemkf/w0RbzL8P3TnD2KHHOn8nHHXFLnWieHvT4DhOqK0RREpFE
+         EZpDjX5v1PAch/wr1ANNglDEv4xYrODzqhoAVZuXwTvx8sXSB72oReJcUQ+znV2RPV8y
+         J7/EOq5pGheJMRvgvwSy1FiaAVq6BagE3SAQIHVq+IHNn8geXdJS07a3+ABmw/s50g1a
+         efqaPH7eLIA/9nk467bBfjXRV8oa5150w6TDp8xq0phlkLvlzZG1KZ8sT3E52N/HqNK5
+         1WP/mO9IcCosQ/+ymsfy5oSqWsmjS2KXhKbDHvsFKD99hceG5VY+oOGGdCRK627gxD/b
+         PCGw==
+X-Gm-Message-State: ANhLgQ24H/5QBG1Q8R9VfXjLCwgqPhFekZ9hJpx2UnuzJ7+P7mXq0exi
+        /3MEngDrswrNzUOrqsZJJX/9/hozcUi4E1PV/67WYm2F
+X-Google-Smtp-Source: ADFU+vsgMMqodCZqPGFNfCT+HdNRTtLLlUdy5AMnDcVBoatxWj+vZY48emoAVNd+HvHliFjTkg/kdF6pmkOGcZxuC6s=
+X-Received: by 2002:a6b:3a07:: with SMTP id h7mr3235359ioa.191.1585147393572;
+ Wed, 25 Mar 2020 07:43:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200324105315.136569-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20200323202259.13363-1-willy@infradead.org> <20200323202259.13363-25-willy@infradead.org>
+ <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com> <20200325120254.GA22483@bombadil.infradead.org>
+In-Reply-To: <20200325120254.GA22483@bombadil.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 25 Mar 2020 15:43:02 +0100
+Message-ID: <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
+Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 06:53:09PM +0800, Qu Wenruo wrote:
-> This patchset can be fetched from github:
-> https://github.com/adam900710/btrfs-progs/tree/valgrind_fixes
-> 
-> Inspired by that long-existing-but-I-can't-reproduce v5.1 bug, I will
-> never trust D=asan/D=uban anymore, and run valgrind on all fsck-tests.
-> 
-> The patchset is the result from the latest valgrind runs.
-> 
-> The first patch is to make "make INSTRUMENT=valgrind test-fsck" run
-> smoothly without false alerts due to mount/umount failure with valgrind.
+On Wed, Mar 25, 2020 at 1:02 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Mar 25, 2020 at 10:42:56AM +0100, Miklos Szeredi wrote:
+> > > +       while ((page = readahead_page(rac))) {
+> > > +               if (fuse_readpages_fill(&data, page) != 0)
+> >
+> > Shouldn't this unlock + put page on error?
+>
+> We're certainly inconsistent between the two error exits from
+> fuse_readpages_fill().  But I think we can simplify the whole thing
+> ... how does this look to you?
 
-Thanks, that's great. In addition to that, all commands that use the
-SUDO_HELPER/root_helper won't pass through valgrind. For maximum
-coverage we might want to remove the helper from the subcommands of
-'btrfs'. From a quick scan I found a lot of them and I'm not sure that
-all are required. There's a lot of copy&paste in the tests, so that
-would have to be cleaned up, or we leave it as it is and run the whole
-tests under root.
+Nice, overall.
 
-> With this patchset applied (along with that fix for v5.1), fsck tests
-> all passes without valgrind error except mentioned fsck/012 above.
-> 
-> Qu Wenruo (6):
->   btrfs-progs: tests/common: Don't call INSTRUMENT on mount command
->   btrfs-progs: check/original: Fix uninitialized stack memory access for
->     deal_root_from_list()
->   btrfs-progs: check/original: Fix uninitialized memory for newly
->     allocated data_backref
->   btrfs-progs: check/original: Fix uninitialized return value from
->     btrfs_write_dirty_block_groups()
->   btrfs-progs: check/original: Fix uninitialized extent buffer contents
->   btrfs-progs: extent-tree: Fix wrong post order rb tree cleanup for
->     block groups
+>
+> -       while ((page = readahead_page(rac))) {
+> -               if (fuse_readpages_fill(&data, page) != 0)
+> +               nr_pages = min(readahead_count(rac), fc->max_pages);
 
-Added to devel.
+Missing fc->max_read clamp.
+
+> +               ia = fuse_io_alloc(NULL, nr_pages);
+> +               if (!ia)
+>                         return;
+> +               ap = &ia->ap;
+> +               __readahead_batch(rac, ap->pages, nr_pages);
+
+nr_pages = __readahead_batch(...)?
+
+This will give consecutive pages, right?
+
+Thanks,
+Miklos
