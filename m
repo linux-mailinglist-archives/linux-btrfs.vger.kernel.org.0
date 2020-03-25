@@ -2,114 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E5F191E14
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 01:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E98191EBA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 02:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbgCYA2b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Mar 2020 20:28:31 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:35257 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgCYA2b (ORCPT
+        id S1727228AbgCYBu4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Mar 2020 21:50:56 -0400
+Received: from gateway30.websitewelcome.com ([192.185.197.25]:46418 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727189AbgCYBu4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Mar 2020 20:28:31 -0400
-Received: by mail-io1-f53.google.com with SMTP id h8so578370iob.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Mar 2020 17:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Q8sfHcbBEYcyxhJQGf3bdQbeioXNY9P2M6Dgp7zdLvA=;
-        b=cEfdES3ztur7x7dphxummnNc9JlP9kA3MXumjkboH/fR0l9GsC5alIn9cfbnCjFRyy
-         lT8DSdqAnKYA7RBCFjMjGZkk4xl0A22igIMvTpDVgKaNW0jNvgJrohxzJwXVn/zwrsSV
-         VivhWQuyd+55FnPU1RMqXnANzeHrH9poEyNFZI/Hxuiq9RvOnDmq3iLO1d2w75GiNOqi
-         Kk8e+i8tVA6vkIk2qjWGOv/C2Nwz5Yr8hKCOXm8jPtoOBB19Ty+Vx+UjCbGvwD0qF+XE
-         4i7+GplQJkXZj9C8dDUusY3Bk5GPGJ5Z5uJ0kJOIqhwGkylks9omFYOnlbiykXrYTrJG
-         GeYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Q8sfHcbBEYcyxhJQGf3bdQbeioXNY9P2M6Dgp7zdLvA=;
-        b=eeRHUENyPpgxJtcpIfmNQBeFIZUNR1w5UXwiruBkHPWtXEKBZSHmw5eVV/3TKcL76p
-         KIZ5beyAHFzFIpiUTMGMgi/Wm0ntVNksTh3gMB1CBBuoR+BtAyZTvnLqEqJwBnV+H+P3
-         NfU3GVjNflhsVP87Ba1qBaJD4/0hBJ2GobyrU84sVoeE3UemGbyniudo+UnyJDs14EWv
-         DAGFaIDw83IdOsBJlnmTLcjn7xsRjiOZFJu4ENew/PocPKZASNbhIZfuHz1akvn39cP8
-         fP1XFr2ztCRj0D3Wf4WCHalt7wYu+l3MIDgymcJCX+fI/d1aaPPywBCU7oDki0eq3rnt
-         eXxQ==
-X-Gm-Message-State: ANhLgQ3MqJq6Tl+Zn2jEy7qfWXrUNsy0kSY6FXJDqjduR7grC+KAnMpP
-        t+vtqdp6YXn4A/U+tfoYkwRibN4MuGAkl8auyqWrsw==
-X-Google-Smtp-Source: ADFU+vs0NdPPqWQETTOrg+cKzuZsLisr7hXngYqSXIr6ogHRNO8/CFeEGagnpxQXSi+G41iIoYFYal//Bg3MEyWjVUo=
-X-Received: by 2002:a6b:4409:: with SMTP id r9mr609168ioa.75.1585096109846;
- Tue, 24 Mar 2020 17:28:29 -0700 (PDT)
+        Tue, 24 Mar 2020 21:50:56 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id CE77979DB
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Mar 2020 20:50:52 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id GvC0jsVwu1s2xGvC0jZzk8; Tue, 24 Mar 2020 20:50:52 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MXPjJWe03glsfP+xATizEKIBHpyrnpQI14WXaAujnYc=; b=DNvWeE6/MSx6HQ5ZezsXhxbfyl
+        u+RwoACY3Yi0jipxyfNC6XLJhoCwi4eRA1niZHNTG27sZCyzr4tYfL8waWze0bfJa1/twYYJ6rVGV
+        5qwTeQVeov/WzfLD/5T7u8G+LezmWyXcgQGQJlmJ/95jHpd2b0RV/4mTrnRK0bUWXGCZSPMbBa3W3
+        3RDeERumJv7dUzit3CV+dPDHZJFKs5dWUuMkzCld2vikbFlDy9kHxOlCkSkHu0QvXv7FYA1F4+T/E
+        u9S0Y1VsV1mmy2GT33qbMr00OwRXBlkXQCx3L/yUa4TgaD8AOG/wEKluNgTwPYgK0UyMEl573eDYV
+        jcVpiJnw==;
+Received: from 200.146.53.142.dynamic.dialup.gvt.net.br ([200.146.53.142]:46144 helo=hephaestus.prv.suse.net)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jGvC0-00070M-6Z; Tue, 24 Mar 2020 22:50:52 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     linux-btrfs@vger.kernel.org, dsterba@suse.com, wqu@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH RFC] btrfs: send: Emit all xattr of an inode if the uid/gid changed
+Date:   Tue, 24 Mar 2020 22:52:51 -0300
+Message-Id: <20200325015251.28838-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAJiQAnAJS-mSvQcC+8BActs53TZ6id+rc-CCO+DMWD9yJ810Ug@mail.gmail.com>
- <5b73f866-3917-ee20-1787-7f410d27fa23@gmx.com>
-In-Reply-To: <5b73f866-3917-ee20-1787-7f410d27fa23@gmx.com>
-From:   Ganesh Sangle <sayganesha@gmail.com>
-Date:   Tue, 24 Mar 2020 17:28:19 -0700
-Message-ID: <CAJiQAnCJL+K+SpTT7qweAf4HLg+FB=mDZPDXqtkPDj1onC=5yw@mail.gmail.com>
-Subject: Re: extent generation_id
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 200.146.53.142
+X-Source-L: No
+X-Exim-ID: 1jGvC0-00070M-6Z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 200.146.53.142.dynamic.dialup.gvt.net.br (hephaestus.prv.suse.net) [200.146.53.142]:46144
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 4
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you for the confirmation and explanation.
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-On Tue, Mar 24, 2020 at 5:12 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/3/25 =E4=B8=8A=E5=8D=887:01, Ganesh Sangle wrote:
-> > hi,
-> > i am new to the email list - and i have a question. Please let me know
-> > if this is not the right forum for this question.
-> >
-> > While iterating the extents for a subvolume, btrfs_file_extent_item
-> > returns a generation_id - which is the "transaction id that created
-> > this extent".
-> > Is it safe to assume that every pwrite syscall will endup a generating
-> > new generation id for an extent, regardless if it is over-writing an
-> > existing extent (offset) or writing to a new never written (offset) ?
->
-> For data cow (the default behavior), all data writes, no matter buffered
-> (including pwrite) or direct IO, will lead to new extents, thus a new
-> generation.
->
-> Furthermore, even if we overwrite the whole existing extent, we won't
-> write directly into the existing extent, we will keep the existing
-> extent until current transaction is committed.
-> This is proper COW behavior, to ensure even we had a power loss, we will
-> either see the old data (and metadata) or new data (and metadata)
->
-> For no data cow case, overwriting existing extent won't update the
-> extent item, thus not update the generation (which skips some metadata
-> IO, and improves performance).
->
-> But no data cow case is limited in btrfs, even a file has NODATACOW bit
-> set, if there is a snapshot referring to that file, we will still do COW.
->
-> > In other words, can we assume that if we have generation id associated
-> > with all extents of a snapshot (S1) of a volume, then we delete this
-> > snapshot, and then do some i/o(write/discard) to the volume and create
-> > a new snapshot (S2) from this volume, if we iterate over the extents
-> > of this new snapshot (S2) we will see a different generation id
-> > (compared to the one we got from the snapshot (S1)) if the i/o
-> > (write/discard) happened at an offset in that extent ?
->
-> Since the write happens after S1 is deleted, there is no guarantee that
-> CoW will still happen for NODATACOW files.
-> Thus we can overwrite existing extents, thus it's possible that no new
-> generation id generated.
->
-> Thanks,
-> Qu
->
-> >
-> > Thanks for the help !
-> >
->
+[PROBLEM]
+When doing incremental send with a file with capabilities, there is a
+situation where the capability can be lost in the receiving side. The
+sequence of actions bellow show the problem:
+
+$ mount /dev/sda fs1
+$ mount /dev/sdb fs2
+
+$ touch fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
+$ btrfs subvol snap -r fs1 fs1/snap_init
+$ btrfs send fs1/snap_init | btrfs receive fs2
+
+$ chgrp adm fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
+
+$ btrfs subvol snap -r fs1 fs1/snap_complete
+$ btrfs subvol snap -r fs1 fs1/snap_incremental
+
+$ btrfs send fs1/snap_complete | btrfs receive fs2
+$ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+
+At this point fs/snap_increment/foo.bar lost the capability, since a
+chgrp was emitted by "btrfs send". The current code only checks for the
+items that changed, and as the XATTR kept the value only the chgrp change
+is emitted.
+
+[FIX]
+In order to fix this issue, check if the uid/gid of the inode change,
+and if yes, emit all XATTR again, including the capability.
+
+Fixes: https://github.com/kdave/btrfs-progs/issues/202
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ I'm posting this patch as a RFC because I had some questions
+ * Is this the correct place to fix?
+ * Also, emitting all XATTR of the inode seems overkill...
+ * Should it be fixed in userspace?
+
+ fs/btrfs/send.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index c5f41bd86765..5cffe5da91cf 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6187,6 +6187,14 @@ static int changed_inode(struct send_ctx *sctx,
+ 		sctx->cur_inode_mode = btrfs_inode_mode(
+ 				sctx->right_path->nodes[0], right_ii);
+ 	} else if (result == BTRFS_COMPARE_TREE_CHANGED) {
++		u64 left_uid = btrfs_inode_uid(sctx->left_path->nodes[0],
++					left_ii);
++		u64 left_gid = btrfs_inode_gid(sctx->left_path->nodes[0],
++					left_ii);
++		u64 right_uid = btrfs_inode_uid(sctx->right_path->nodes[0],
++					right_ii);
++		u64 right_gid = btrfs_inode_gid(sctx->right_path->nodes[0],
++					right_ii);
+ 		/*
+ 		 * We need to do some special handling in case the inode was
+ 		 * reported as changed with a changed generation number. This
+@@ -6236,15 +6244,12 @@ static int changed_inode(struct send_ctx *sctx,
+ 			sctx->send_progress = sctx->cur_ino + 1;
+ 
+ 			/*
+-			 * Now process all extents and xattrs of the inode as if
++			 * Now process all extents of the inode as if
+ 			 * they were all new.
+ 			 */
+ 			ret = process_all_extents(sctx);
+ 			if (ret < 0)
+ 				goto out;
+-			ret = process_all_new_xattrs(sctx);
+-			if (ret < 0)
+-				goto out;
+ 		} else {
+ 			sctx->cur_inode_gen = left_gen;
+ 			sctx->cur_inode_new = 0;
+@@ -6255,6 +6260,22 @@ static int changed_inode(struct send_ctx *sctx,
+ 			sctx->cur_inode_mode = btrfs_inode_mode(
+ 					sctx->left_path->nodes[0], left_ii);
+ 		}
++
++		/*
++		 * Process all XATTR of the inode if the generation or owner
++		 * changed.
++		 *
++		 * If the inode changed it's uid/gid, but kept a
++		 * security.capability xattr, only the uid/gid will be emitted,
++		 * causing the related xattr to deleted. For this reason always
++		 * emit the XATTR when an inode has changed.
++		 */
++		if (sctx->cur_inode_new_gen || left_uid != right_uid ||
++		    left_gid != right_gid) {
++			ret = process_all_new_xattrs(sctx);
++			if (ret < 0)
++				goto out;
++		}
+ 	}
+ 
+ out:
+-- 
+2.25.1
+
