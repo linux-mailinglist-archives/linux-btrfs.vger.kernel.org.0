@@ -2,113 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 466CF192C95
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 16:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7099192D63
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 16:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgCYPcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 11:32:31 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:53644 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727491AbgCYPca (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 11:32:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L8UzQwxATOZdjWZ+3tNM04b2mH/5tj4IRSDfIFAnCq4=; b=nwr8fvcCAKrcOHuwe8r/p16lMc
-        bZh3DEdAU9aGBWN3F5ynv1Ne93Ij03ZhftdP2p/j/SwKFdDbTLj5/ZaltpVeKwhDVOtZpmt6dBgOM
-        Y5kNAkTDyJM9LmxIOgZivD4BtHVK41PC4z2UtEwA8qUzMYjVHQwzjfESuvsJdyTL91AdLqA/lHmDm
-        b4ONx8n6tUgKbzMesC9PHNx/tJe345Szba01BQVbNkeQ4aBKyS9/rqkTgJMFlzt5JsbGeTzjBPG19
-        tW79XBGQHh8i08Okr8byBxVFG1QH7u5q9rAcay5PaTaRDoWupoIchhUNkRzhk4f/AQVLTP2rNvR7K
-        5pnTChzQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jH816-0004oZ-U3; Wed, 25 Mar 2020 15:32:28 +0000
-Date:   Wed, 25 Mar 2020 08:32:28 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
-Message-ID: <20200325153228.GB22483@bombadil.infradead.org>
-References: <20200323202259.13363-1-willy@infradead.org>
- <20200323202259.13363-25-willy@infradead.org>
- <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com>
- <20200325120254.GA22483@bombadil.infradead.org>
- <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
+        id S1727771AbgCYPvE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 11:51:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48308 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727592AbgCYPvE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 11:51:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A4806AE4D;
+        Wed, 25 Mar 2020 15:51:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 716B6DA730; Wed, 25 Mar 2020 16:50:31 +0100 (CET)
+Date:   Wed, 25 Mar 2020 16:50:31 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/5][v2] Deal with a few ENOSPC corner cases
+Message-ID: <20200325155031.GE5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200313195809.141753-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
+In-Reply-To: <20200313195809.141753-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 03:43:02PM +0100, Miklos Szeredi wrote:
-> >
-> > -       while ((page = readahead_page(rac))) {
-> > -               if (fuse_readpages_fill(&data, page) != 0)
-> > +               nr_pages = min(readahead_count(rac), fc->max_pages);
-> 
-> Missing fc->max_read clamp.
+On Fri, Mar 13, 2020 at 03:58:04PM -0400, Josef Bacik wrote:
+> v1->v2:
+> - Dropped "btrfs: only take normal tickets into account in
+>   may_commit_transaction" because "btrfs: only check priority tickets for
+>   priority flushing" should actually fix the problem, and Nikolay pointed out
+>   that evict uses the priority list but is allowed to commit, so we need to take
+>   into account priority tickets sometimes.
+> - Added "btrfs: allow us to use up to 90% of the global rsv for" so that the
+>   global rsv change was separate from the serialization patch.
+> - Fixed up some changelogs.
+> - Dropped an extra trace_printk that made it into v2.
 
-Yeah, I realised that.  I ended up doing ...
+The patchset seems to be based on some other, code I think it's the
+tickets for data chunks. The compilation fails because
+BTRFS_RESERVE_FLUSH_DATA is not defined, but it's mentioned in several
+patches.
 
-+       unsigned int i, max_pages, nr_pages = 0;
-...
-+       max_pages = min(fc->max_pages, fc->max_read / PAGE_SIZE);
-
-> > +               ia = fuse_io_alloc(NULL, nr_pages);
-> > +               if (!ia)
-> >                         return;
-> > +               ap = &ia->ap;
-> > +               __readahead_batch(rac, ap->pages, nr_pages);
-> 
-> nr_pages = __readahead_batch(...)?
-
-That's the other bug ... this was designed for btrfs which has a fixed-size
-buffer.  But you want to dynamically allocate fuse_io_args(), so we need to
-figure out the number of pages beforehand, which is a little awkward.  I've
-settled on this for the moment:
-
-        for (;;) {
-               struct fuse_io_args *ia;
-                struct fuse_args_pages *ap;
-
-                nr_pages = readahead_count(rac) - nr_pages;
-                if (nr_pages > max_pages)
-                        nr_pages = max_pages;
-                if (nr_pages == 0)
-                        break;
-                ia = fuse_io_alloc(NULL, nr_pages);
-                if (!ia)
-                        return;
-                ap = &ia->ap;
-                __readahead_batch(rac, ap->pages, nr_pages);
-                for (i = 0; i < nr_pages; i++) {
-                        fuse_wait_on_page_writeback(inode,
-                                                    readahead_index(rac) + i);
-                        ap->descs[i].length = PAGE_SIZE;
-                }
-                ap->num_pages = nr_pages;
-                fuse_send_readpages(ia, rac->file);
-        }
-
-but I'm not entirely happy with that either.  Pondering better options.
-
-> This will give consecutive pages, right?
-
-readpages() was already being called with consecutive pages.  Several
-filesystems had code to cope with the pages being non-consecutive, but
-that wasn't how the core code worked; if there was a discontiguity it
-would send off the pages that were consecutive and start a new batch.
-
-__readahead_batch() can't return fewer than nr_pages, so you don't need
-to check for that.
+If the base patchset is a hard requirement then both would need to go in
+at the same time, otherwise if it's possible to refresh this branch I
+could add it to for-next now.
