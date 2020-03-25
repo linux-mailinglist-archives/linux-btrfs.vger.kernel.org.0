@@ -2,139 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CB9192D7F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 16:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A320192EFE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 18:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgCYPy4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 11:54:56 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:39682 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgCYPyz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 11:54:55 -0400
-Received: by mail-io1-f65.google.com with SMTP id c19so2730867ioo.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Mar 2020 08:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WUvTsX9+jdPoLTOSHShSbaoohqGvLnmJWJx3goFYuLM=;
-        b=PotvV1Ev6OzVSaF6m2X5tC6JwxVWHxAGf6FLW8AjKTGJyK/QJ8dyn6xJiqfkSFaAqz
-         OCdtBX9daql7+1gX8+5dT3S5uMqemNZ36FP4ZPoQpwuOHn42a4uh+PVPR7d5d59NuA3a
-         t2/cRclIFAps/zNhsd7jyIV2vHIEY2rkQ4dM0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WUvTsX9+jdPoLTOSHShSbaoohqGvLnmJWJx3goFYuLM=;
-        b=Ss6JYKAeijgNZ0leyFMGuW0t/1JH3NtXJiJTwtBJ9rvFY9L4OoB5ieOvka3n3cQT1V
-         TNLhXQXbjqagsoKSqgT/1/3cM7S1SFpQGIzVGzVG9TRqoBJCfJef4NEFoojjsNg3mBim
-         AluJhn0XWBu+PAjiVybgIvfKkczSkij+tS0fobTNwdG/6sTnhjTnMxS0mAKMqQVNvI1W
-         wROHVZb9GRhfQ2CuhzCmSebC1elWIbv8sdcKVZUU+yMgCZS1kmf8H/At1X80jW8JV128
-         JRrlxnQnhhJ9/cLuMeS+0HInJpkGXNlkZF/+iD4SPX3nzTxhMM0YMpXudX45phlcxEAZ
-         dCgQ==
-X-Gm-Message-State: ANhLgQ0vCYJ7By7PAX14QmX1lm/RMj+gwk5Y4AJd6+JyrpCnqJKfDmMZ
-        zs0xOZGJuj/808MSMA0f3FEZO68BhHgOY4EL+ghIvw==
-X-Google-Smtp-Source: ADFU+vtWPrSX9gO9pLLxpavehCkl/CaKr8w3OI8WID1sZHiGcDBmq2nlMdLwxJGUo5kQXivDvVBrGhSFup9s33zQy+o=
-X-Received: by 2002:a5d:9142:: with SMTP id y2mr3418704ioq.185.1585151694868;
- Wed, 25 Mar 2020 08:54:54 -0700 (PDT)
+        id S1727508AbgCYROJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 13:14:09 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:56961 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726102AbgCYROJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 13:14:09 -0400
+Received: from venice.bhome ([94.37.173.46])
+        by smtp-35.iol.local with ESMTPA
+        id H9bSjkcFSMAUpH9bSjT1a0; Wed, 25 Mar 2020 18:14:06 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1585156446; bh=GfSjRyv4kTEZwV9AvIVlF1km0IP+KCSqTOVCA3KubzE=;
+        h=From;
+        b=gT4hDOUupRX0DBMPonEh9/COA6TcYJXo6lgADUIr4/xTG+rrZvov1W12dQhUbtaEU
+         8gYTPcdKL0locpkgmSGTRff9jjSN4oUTY1irDOPuqR7/pt/qUUxjqfe4bIseP6T2L0
+         mzv3ffITjvlnEbNE+BJVqYlt+Yhp1fRIShmMGQJLEucA36XVVWlong+LxYSHFKaFLH
+         DfO69yd1Fsz3bEPXxyM0oSQhIAY/d1q0xIzqR4aznuiPJ8wpBBCqTdX8AHGx0Sj5Cq
+         3ShGfgVtdxiiX3DOSFiokVNuQxjlyBpPr/9gqySl0OoaJNZBhxHA3CDYW//l44WX3E
+         JH56b9b7n66HA==
+X-CNFS-Analysis: v=2.3 cv=B/fHL9lM c=1 sm=1 tr=0
+ a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8
+ a=-6_MQ69qAAAA:8 a=Sbk1kuCJgygMCedwgYkA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=XQXUbi2rnRmgx9BCZzrv:22
+Reply-To: kreijack@inwind.it
+Subject: Re: Question: how understand the raid profile of a btrfs filesystem
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <517dac49-5f57-2754-2134-92d716e50064@alice.it>
+ <2c7f2844-b97d-0e15-6ae6-40c9c935aa77@oracle.com>
+ <8977ac3d-7af6-65a7-5515-caab07983672@inwind.it>
+ <8a53cf8d-980d-8c41-e35d-c8b70db1bbdc@gmail.com>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <3dfbf173-7ac2-887f-d3eb-ec1b6c610d01@inwind.it>
+Date:   Wed, 25 Mar 2020 18:14:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200323202259.13363-1-willy@infradead.org> <20200323202259.13363-25-willy@infradead.org>
- <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com>
- <20200325120254.GA22483@bombadil.infradead.org> <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
- <20200325153228.GB22483@bombadil.infradead.org>
-In-Reply-To: <20200325153228.GB22483@bombadil.infradead.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 25 Mar 2020 16:54:43 +0100
-Message-ID: <CAJfpegtrhGamoSqD-3Svfj3-iTdAbfD8TP44H_o+HE+g+CAnCA@mail.gmail.com>
-Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        William Kucharski <william.kucharski@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8a53cf8d-980d-8c41-e35d-c8b70db1bbdc@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfBqdCKtMGNFG7FS1Zo2ByXyITk+mhYPoulfew4HuNprkv9WbrAguF+nCOxXzAfMsS4fb38gkiVmSLeLc67MHDUiCpa8wKHus7T5yAoj3VapdMNyGg0Re
+ yRLgn2cBP5q4/mG5lTrOmCidsOD0b0Oh0AhWsHEpVdzsuXhIJFp6q9c6bljsHt0W2G1BS1EQvGr98bJRy+Rhcq8G/N4tRrHYWdUAxFYLvqIHO5+u8eqRS/+a
+ AyzmA9N7OXA9lyrAyM7E9RfoNSCpskcFNKVrkq61xKU9jwFwHz/n57+gRvgKq47Y
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 4:32 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Mar 25, 2020 at 03:43:02PM +0100, Miklos Szeredi wrote:
-> > >
-> > > -       while ((page = readahead_page(rac))) {
-> > > -               if (fuse_readpages_fill(&data, page) != 0)
-> > > +               nr_pages = min(readahead_count(rac), fc->max_pages);
-> >
-> > Missing fc->max_read clamp.
->
-> Yeah, I realised that.  I ended up doing ...
->
-> +       unsigned int i, max_pages, nr_pages = 0;
-> ...
-> +       max_pages = min(fc->max_pages, fc->max_read / PAGE_SIZE);
->
-> > > +               ia = fuse_io_alloc(NULL, nr_pages);
-> > > +               if (!ia)
-> > >                         return;
-> > > +               ap = &ia->ap;
-> > > +               __readahead_batch(rac, ap->pages, nr_pages);
-> >
-> > nr_pages = __readahead_batch(...)?
->
-> That's the other bug ... this was designed for btrfs which has a fixed-size
-> buffer.  But you want to dynamically allocate fuse_io_args(), so we need to
-> figure out the number of pages beforehand, which is a little awkward.  I've
-> settled on this for the moment:
->
->         for (;;) {
->                struct fuse_io_args *ia;
->                 struct fuse_args_pages *ap;
->
->                 nr_pages = readahead_count(rac) - nr_pages;
->                 if (nr_pages > max_pages)
->                         nr_pages = max_pages;
->                 if (nr_pages == 0)
->                         break;
->                 ia = fuse_io_alloc(NULL, nr_pages);
->                 if (!ia)
->                         return;
->                 ap = &ia->ap;
->                 __readahead_batch(rac, ap->pages, nr_pages);
->                 for (i = 0; i < nr_pages; i++) {
->                         fuse_wait_on_page_writeback(inode,
->                                                     readahead_index(rac) + i);
->                         ap->descs[i].length = PAGE_SIZE;
->                 }
->                 ap->num_pages = nr_pages;
->                 fuse_send_readpages(ia, rac->file);
->         }
->
-> but I'm not entirely happy with that either.  Pondering better options.
+On 3/25/20 5:09 AM, Andrei Borzenkov wrote:
+> 24.03.2020 20:59, Goffredo Baroncelli пишет:
+>> On 3/24/20 5:55 AM, Anand Jain wrote:
+>>> On 3/21/20 1:56 AM, Goffredo Baroncelli wrote:
+>>>> Hi all,
+>> [..]
+>>>> Looking at the code it seems to me that the logic is the following
+>>>> (from btrfs_reduce_alloc_profile())
+>>>>
+>>>>           if (allowed & BTRFS_BLOCK_GROUP_RAID6)
+>>>>                   allowed = BTRFS_BLOCK_GROUP_RAID6;
+>>>>           else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
+>>>>                   allowed = BTRFS_BLOCK_GROUP_RAID5;
+>>>>           else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
+>>>>                   allowed = BTRFS_BLOCK_GROUP_RAID10;
+>>>>           else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
+>>>>                   allowed = BTRFS_BLOCK_GROUP_RAID1;
+>>>>           else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
+>>>>                   allowed = BTRFS_BLOCK_GROUP_RAID0;
+>>>>
+>>>>           flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
+>>>>
+>>>> So in the case above the profile will be RAID6. And in the general if
+>>>> a RAID6 chunk is a filesystem, it wins !
+>>>
+>>>    That's arbitrary and doesn't make sense to me, IMO mkfs should save
+>>>    default profile in the super-block (which can be changed using ioctl)
+>>>    and kernel can create chunks based on the default profile.
+>>
+>> I'm working on this idea (storing the target profile in super-block).
+> 
+> What about per-subvolume profile? This comes up every now and then, like
+> 
+> https://lore.kernel.org/linux-btrfs/cd82d247-5c95-18cd-a290-a911ff69613c@dirtcellar.net/
+> 
+> May be it could be subvolume property?
 
-I think that's fine.   Note how the original code possibly
-over-allocates the the page array, because it doesn't know the batch
-size beforehand.  So this is already better.
 
->
-> > This will give consecutive pages, right?
->
-> readpages() was already being called with consecutive pages.  Several
-> filesystems had code to cope with the pages being non-consecutive, but
-> that wasn't how the core code worked; if there was a discontiguity it
-> would send off the pages that were consecutive and start a new batch.
->
-> __readahead_batch() can't return fewer than nr_pages, so you don't need
-> to check for that.
+The idea is nice. However I fear the mess that it could cause. Even now, with a
+more simpler system where there is a "per filesystem" profile, there are a lot of corner
+cases when something goes wrong (an interrupted balance, or a disk failed).
+In case of multiple profiles on sub-volume basis there is no simple answer in situation like:
+- when I make a snapshot of a sub-volumes, and then I change the profile of the original one,
+which is the profile of the files contained in the snapshot and in the original subvolumes ?
 
-That's far from obvious.
+Frankly speaking, if you want different profiles you need different filesystem...
 
-I'd put a WARN_ON at least to make document the fact.
+BR
+G.Baroncelli
 
-Thanks,
-Miklos
+> 
+>> Of
+>> course this increase the consistency, but
+>> doesn't prevent the possibility that a mixed profiles filesystem could
+>> happen. And in this case is the user that
+>> has to solve the issue.
+>>
+>> Zygo, suggested also to add a mixed profile warning to btrfs (prog). And
+>> I agree with him. I think that we can use
+>> the space info ioctl (which doesn't require root privileges).
+>>
+>> BR
+>> G.Baroncelli
+>>
+>>> This
+>>>    approach also fixes chunk size inconsistency between progs and kernel
+>>>    as reported/fixed here
+>>>      https://patchwork.kernel.org/patch/11431405/
+>>>
+>>> Thanks, Anand
+>>>
+>>>> But I am not sure.. Moreover I expected to see also reference to DUP
+>>>> and/or RAID1C[34] ...
+>>>>
+>>>> Does someone have any suggestion ?
+>>>>
+>>>> BR
+>>>> G.Baroncelli
+>>>>
+>>>
+>>
+>>
+> 
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
