@@ -2,130 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC0B1930BA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 19:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457151931A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Mar 2020 21:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727306AbgCYS5Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 14:57:16 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:37477 "EHLO libero.it"
+        id S1727401AbgCYUKt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Mar 2020 16:10:49 -0400
+Received: from smtp-16.italiaonline.it ([213.209.10.16]:49843 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727174AbgCYS5Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 14:57:16 -0400
+        id S1727391AbgCYUKs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 16:10:48 -0400
 Received: from venice.bhome ([94.37.173.46])
-        by smtp-35.iol.local with ESMTPA
-        id HBDFjlHqUMAUpHBDFjTaPk; Wed, 25 Mar 2020 19:57:13 +0100
+        by smtp-16.iol.local with ESMTPA
+        id HCMOjh5MEjfNYHCMOjKIfG; Wed, 25 Mar 2020 21:10:45 +0100
 x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1585162633; bh=MqytIApy0/yXUj5567nYIrWE+SAJGvUFw5OaGjLoqCY=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1585167045; bh=cAxVH6hLWzDRu/JCKHeQjQOhNxzp9oNLDmVQr13rN0E=;
         h=From;
-        b=lKCWE/ORjgeVbcSj4eEzaMAr6WB86nfcaZ7APd1uIHwUb4T0cL8ClKLC/as6ukyww
-         eEt4GMD/OQIBk8ozJOqMfv6fUeB9W1BIhuJfCMvMPm53TohR1tlg0CxLzRbXB2qAvE
-         Z3q/04fQCMvA0JlMXuXRctJaiHqJ+72riIWVwHgH8da7e3FqP8KMpWI+8RZp1a3tjt
-         lEeq2vahbYvK5OeRgu+57yMWJVMvcwp0xCREimnbwhhKOjjcxjtrr/8yvJBf1iGKWA
-         O9Imhq+LdjqDfbUT2+u+ew5DuMhaTzdGXh6eOKOiwpCt9RIQ9FNDH9EFOLt9E7yHjq
-         dZP9L7DgYrcPw==
-X-CNFS-Analysis: v=2.3 cv=B/fHL9lM c=1 sm=1 tr=0
+        b=mBqpTKxr1zJ/aITeQ5F71+mdYGazifanI1F0mJjgcEA+QnizbYYEddBhBJ+sTN1rc
+         NtzgnMoMWlXrc2yCcpqHaPRe2v5Fvgu3y3E4QpprMAP74KdGNNqu9HUvwvSP6ETodo
+         jNfGwacyAQTmjOCg6ubwiCM7kwBQoj0YFmaGcLnloPrtAtQhstEqJuV53eYOT2l0dF
+         wvN2Lcfq86FUgKN/+lf9C8RiwIRQ5gEPwCY8BgesdOTuGYA2B8G71y8tAhC0Uq6P8B
+         5tkNuUBaoqdp4vVZ5u7MbCCQvAGevpvXDFiWDU3R0aVl9pG1ZOtZ4Wg7WK/07D2M36
+         GohQ9kRY7kRWg==
+X-CNFS-Analysis: v=2.3 cv=av7M9hRV c=1 sm=1 tr=0
  a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=rCvdS46E3op-ld_S1B0A:9
- a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: btrfs-progs: RAID1C3/C4 missing some info in btrfs_raid_array
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <2f5db5cd-001f-449d-d370-697f3494ed34@libero.it>
- <cf046899-7a7b-a93b-2340-c996cbfbc6ac@gmx.com>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-Message-ID: <b8b874d0-a60e-2a4c-f3eb-e54539bddc8d@inwind.it>
-Date:   Wed, 25 Mar 2020 19:57:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ a=X8O9t2tcqu8mHWPlI2QA:9
+From:   Goffredo Baroncelli <kreijack@libero.it>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Subject: [RFC][PATCH] btrfs-progs: add warning for mixed prfofiles filesystem
+Date:   Wed, 25 Mar 2020 21:10:38 +0100
+Message-Id: <20200325201042.190332-1-kreijack@libero.it>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <cf046899-7a7b-a93b-2340-c996cbfbc6ac@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfCq86WPXRyidPZ1Q3mawyM++wfBboCrD5ry+DYf4YgOQ1tak5YPTFH+WWC6Xryw2oyhXLXEv9pZmnuvNSAYkZVXJBpXnZJzApCaMWw4UolABsyhaxNd4
- cMNPmp7h51j9JoiUmQ3noamHrLf6HM9y/Yx/OZvcotp+27ckq9qkzNIkAV9ppnwtryqtLeVG4b6FIk0F1omtlcmHJNFSbF1RM+Yh7Kc8fEDebo3MPc5o7SK8
+X-CMAE-Envelope: MS4wfEuCnovtdD+TRoeabWypWzplUOR+GkQayJ7V99CQYO85L74ziUcBkhKEpmAheyuIWsJLjTH4xPCec77502nddjJO1i3YdjhU/zRctjhI8g7IdiRAsFz7
+ Ld9XB5oxruih8lCZ98VZVF+dW0G66Y90aZGvPLGotlKEWhD9uUTCSPJ6jd9gRsFeDElpw53O1SLvnQ77+7PmxVbQulvNAOj0weXuSebh9mia8c5X7r3XAX8H
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
 
-On 3/25/20 1:12 AM, Qu Wenruo wrote:
-> 
-> 
-> On 2020/3/25 上午4:00, Goffredo Baroncelli wrote:
->> Hi David,
->>
->> I noticed that in btrfs-progs - volumes.c in the array
->> "btrfs_raid_array", the info
->> raid_name and bg_flag are missing for the item BTRFS_RAID_RAID1C3 and
->> BTRFS_RAID_RAID1C4.
-> 
-> In devel branch, it's between RAID_DUP and RAID_1.
+Hi all,
 
-Sorry I cant find it. In the devel branch (last commit be952386cab3973b3e15434495d0070d5479516f) I found
-$ cat volumes.c
-[...]
-	[BTRFS_RAID_RAID1] = {
-		.sub_stripes	= 1,
-		.dev_stripes	= 1,
-		.devs_max	= 2,
-		.devs_min	= 2,
-		.tolerated_failures = 1,
-		.devs_increment	= 2,
-		.ncopies	= 2,
-		.nparity        = 0,
-		.raid_name	= "raid1",
-		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1,
-		.mindev_error	= BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET,
-	},
-	[BTRFS_RAID_RAID1C3] = {
-		.sub_stripes	= 1,
-		.dev_stripes	= 1,
-		.devs_max	= 3,
-		.devs_min	= 3,
-		.tolerated_failures = 2,
-		.devs_increment	= 3,
-		.ncopies	= 3,
-	},
-	[BTRFS_RAID_RAID1C4] = {
-		.sub_stripes	= 1,
-		.dev_stripes	= 1,
-		.devs_max	= 4,
-		.devs_min	= 4,
-		.tolerated_failures = 3,
-		.devs_increment	= 4,
-		.ncopies	= 4,
-	},
-	[BTRFS_RAID_DUP] = {
-[...]
+the aim of this patch set is to issue a warning when a mixed profiles
+filesystem is detected. This happens when the filesystems contains
+(i.e.) raid1c3 and single chunk for data.
 
-As you can see the items BTRFS_RAID_RAID1C3 and BTRFS_RAID_RAID1C4, missed of the fields '.raid_name' and '.bg_flag';
-if you look at BTRFS_RAID_RAID1 item, it has both the fields filled with "raid1" and "BTRFS_BLOCK_GROUP_RAID1".
+BTRFS has the capability to support a filesystem with mixed profiles.
+However this could lead to an unexpected behavior when a new chunk is
+allocated (i.e. the chunk profile is not what is wanted). Moreover
+if the user is not aware of this, he could assume a redundancy which
+doesn't exist (for example because there is some 'single' chunk when
+it is expected the filesystem to be full raid1).
+A possible cause of a mixed profiles filesystem is an interrupted
+balance operation or a not fully balance due to very specific filter.
 
-Am I missing something ?
+In this first attempt the check is only added to the 'btrfs fi us'
+command. I hope to receive suggestion about which commands should
+have this check (I think all the commands which interact with a
+mounted filesystem).
 
-I am asking that because I need these fields. I don't have problem to issue a patch about that, however I want to be
-sure that these fields are not missing for a some valid reason.
+Example of output:
+
+$ sudo ./btrfs fi us /tmp/t/
+WARNING: ------------------------------------------------------
+WARNING: Detection of multiple profiles for a block group type:
+WARNING:
+WARNING: * DATA ->          [raid1c3, single]
+WARNING: * METADATA ->      [raid1, single]
+WARNING:
+WARNING: Please consider using 'btrfs balance ...' commands set
+WARNING: to solve this issue.
+WARNING: ------------------------------------------------------
+Overall:
+    Device size:		  30.00GiB
+    Device allocated:		   7.78GiB
+    Device unallocated:		  22.22GiB
+    Device missing:		     0.00B
+    Used:			   1.84GiB
+    Free (estimated):		  11.93GiB	(min: 9.82GiB)
+    Data ratio:			      2.33
+    Metadata ratio:		      1.50
+    Global reserve:		   3.25MiB	(used: 0.00B)
+
+Data,single: Size:1.00GiB, Used:1023.91MiB (99.99%)
+   /dev/loop0	   1.00GiB
+
+Data,RAID1C3: Size:2.00GiB, Used:128.90MiB (6.29%)
+   /dev/loop0	   2.00GiB
+   /dev/loop1	   2.00GiB
+   /dev/loop2	   2.00GiB
+
+Metadata,single: Size:256.00MiB, Used:88.67MiB (34.64%)
+   /dev/loop1	 256.00MiB
+
+Metadata,RAID1: Size:256.00MiB, Used:194.28MiB (75.89%)
+   /dev/loop1	 256.00MiB
+   /dev/loop2	 256.00MiB
+
+System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+   /dev/loop2	  32.00MiB
+
+Unallocated:
+   /dev/loop0	   7.00GiB
+   /dev/loop1	   7.50GiB
+   /dev/loop2	   7.72GiB
+
+
+In this case there are two kind of chunks for data (raid1c3 and single)
+and metadata (raid1, single).
+
+Patch #1 and #2 are preparatory ones.
+Patch #3 contains the code for the check.
+Patch #4 adds the check to the command 'btrfs fi us'
+
+Comments are welcome
 
 BR
 G.Baroncelli
 
-> 
-> Thanks,
-> Qu
->>
->> Is it wanted ? Which is the reason to do that ?
->>
->> BR
->> G.Baroncelli
-> 
-
-
 -- 
 gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
 Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
