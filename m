@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE8A193B0E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADE2193B0F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgCZIet (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 04:34:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50262 "EHLO mx2.suse.de"
+        id S1727928AbgCZIev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 04:34:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50286 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727928AbgCZIes (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 04:34:48 -0400
+        id S1727933AbgCZIev (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 04:34:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0652BAC69
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 08:34:47 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C089EAC46
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 08:34:48 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 38/39] btrfs: qgroup: Introduce a new function to get old_roots ulist using backref cache
-Date:   Thu, 26 Mar 2020 16:33:15 +0800
-Message-Id: <20200326083316.48847-39-wqu@suse.com>
+Subject: [PATCH v2 39/39] btrfs: qgroup: Use backref cache to speed up old_roots search
+Date:   Thu, 26 Mar 2020 16:33:16 +0800
+Message-Id: <20200326083316.48847-40-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200326083316.48847-1-wqu@suse.com>
 References: <20200326083316.48847-1-wqu@suse.com>
@@ -30,160 +30,119 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new function, get_old_roots() will replace the old
-btrfs_find_all_roots() to do a backref cache based search for all
-referring roots.
+Now use the backref cache backed backref walk mechanism.
 
-The workflow includes:
-- Search the extent tree to get basic tree info
-  Including: first key, level and owner (from btrfs_header).
+This mechanism is trading memory usage for faster, and more qgroup
+specific backref walk.
 
-- Skip all non-subvolume tree blocks
-  Since non-subvolume tree blocks will never be shared with subvolume
-  trees, skipping them would speed up the procedure.
+Compared to original btrfs_find_all_roots(), it has the extra behavior
+difference:
+- Skip non-subvolume tress from the very beginning
+  Since only subvolume trees contribute to qgroup numbers, skipping them
+  would save us time.
 
-- Build backref cache for the tree block
-  Either we get the backref_node inserted into the cache, or it's
-  referred exclusively by reloc tree which doesn't contribute to qgroup.
+- Skip reloc trees earlier
+  Reloc trees doesn't contribute to qgroup, and btrfs_find_all_roots()
+  also doesn't account them, thus we don't need to account them.
+  Here we use the detached nodes in backref cache to skip them faster
+  and earlier.
 
-- Find all roots using the return backref_node
-  It's a simple iterative depth-first search. The result will be stored
-  into a ulist, just like old btrfs_find_all_roots().
+- Cached results
+  Well, backref cache is obviously cached, right.
 
-- Verify the cached result with old btrfs_find_all_roots() for DEBUG
-  build
-  If we enabled CONFIG_BTRFS_FS_CHECK_INTEGRITY, we again call
-  btrfs_find_all_roots() just as what we used to do.
-  Then verify the result against the result from backref cache.
+The major performance improvement happens for backref walk in commit
+tree, one of the most obvious user is qgroup rescan.
 
-  This is very performance heavy as it kills all the benefit we get from
-  backref cache, thus should only be enabled for DEBUG build.
+Here is a small script to test it:
+
+  mkfs.btrfs -f $dev
+  mount $dev -o space_cache=v2 $mnt
+
+  btrfs subvolume create $mnt/src
+
+  for ((i = 0; i < 64; i++)); do
+          for (( j = 0; j < 16; j++)); do
+                  xfs_io -f -c "pwrite 0 2k" \
+			$mnt/src/file_inline_$(($i * 16 + $j)) > /dev/null
+          done
+          xfs_io -f -c "pwrite 0 1M" $mnt/src/file_reg_$i > /dev/null
+          sync
+          btrfs subvol snapshot $mnt/src $mnt/snapshot_$i
+  done
+  sync
+
+  btrfs quota enable $mnt
+  btrfs quota rescan -w $mnt
+
+Here is the benchmark for above small tests.
+The performance material is the total execution time of get_old_roots()
+for patched kernel (*), and find_all_roots() for original kernel.
+
+*: With CONFIG_BTRFS_FS_CHECK_INTEGRITY disabled, as get_old_roots()
+   will call find_all_roots() to verify the result if that config is
+   enabled.
+
+		|  Number of calls | Total exec time |
+------------------------------------------------------
+find_all_roots()|  732		   | 529991034ns
+get_old_roots() |  732		   | 127998312ns
+------------------------------------------------------
+diff		|  0.00 %	   | -75.8 %
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 109 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
+ fs/btrfs/qgroup.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 07a0101836ff..ab19b2bfa112 100644
+index ab19b2bfa112..4f36206a96aa 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1938,6 +1938,115 @@ static int iterate_all_roots(struct btrfs_backref_node *node,
- 	return ret;
- }
+@@ -2054,8 +2054,9 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_fs_info *fs_info,
+ 	u64 bytenr = qrecord->bytenr;
+ 	int ret;
  
-+static struct ulist *get_old_roots(struct btrfs_fs_info *fs_info, u64 bytenr)
-+{
-+	struct ulist *tree_blocks = NULL;
-+	struct btrfs_path *path = NULL;
-+	struct btrfs_key key;
-+	struct ulist_iterator uiter;
-+	struct ulist_node *unode;
-+	struct ulist *ret_ulist;
-+	u64 extent_flag;
-+	int ret;
-+
-+	ret_ulist = ulist_alloc(GFP_NOFS);
-+	if (!ret_ulist)
-+		return ERR_PTR(-ENOMEM);
-+
-+	path = btrfs_alloc_path();
-+	if (!path) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	path->search_commit_root = 1;
-+	path->skip_locking = 1;
-+
-+	ret = extent_from_logical(fs_info, bytenr, path, &key, &extent_flag);
-+	if (ret == -ENOENT) {
-+		/* No backref for this extent, returning empty old_root */
-+		ret = 0;
-+		goto out;
-+	}
-+	if (ret < 0)
-+		goto out;
-+
-+	if (extent_flag & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
-+		tree_blocks = ulist_alloc(GFP_NOFS);
-+		if (!tree_blocks) {
-+			ret = -ENOMEM;
-+			goto out;
+-	ret = btrfs_find_all_roots(NULL, fs_info, bytenr, 0, &old_root, false);
+-	if (ret < 0) {
++	old_root = get_old_roots(fs_info, bytenr);
++	if (IS_ERR(old_root)) {
++		ret = PTR_ERR(old_root);
+ 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+ 		btrfs_warn(fs_info,
+ "error accounting new delayed refs extent (err code: %d), quota inconsistent",
+@@ -3001,12 +3002,12 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
+ 			 * extent record
+ 			 */
+ 			if (WARN_ON(!record->old_roots)) {
+-				/* Search commit root to find old_roots */
+-				ret = btrfs_find_all_roots(NULL, fs_info,
+-						record->bytenr, 0,
+-						&record->old_roots, false);
+-				if (ret < 0)
++				record->old_roots = get_old_roots(fs_info,
++						record->bytenr);
++				if (IS_ERR(record->old_roots)) {
++					ret = PTR_ERR(record->old_roots);
+ 					goto cleanup;
++				}
+ 			}
+ 
+ 			/* Free the reserved data space */
+@@ -3585,10 +3586,11 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
+ 		else
+ 			num_bytes = found.offset;
+ 
+-		ret = btrfs_find_all_roots(NULL, fs_info, found.objectid, 0,
+-					   &roots, false);
+-		if (ret < 0)
++		roots = get_old_roots(fs_info, found.objectid);
++		if (IS_ERR(roots)) {
++			ret = PTR_ERR(roots);
+ 			goto out;
 +		}
-+
-+		ret = ulist_add(tree_blocks, bytenr, 0, GFP_NOFS);
-+		if (ret < 0)
-+			goto out;
-+	} else {
-+		ret = btrfs_find_all_leafs(NULL, fs_info, bytenr, 0,
-+				&tree_blocks, NULL, true);
-+		if (ret < 0)
-+			goto out;
-+	}
-+	btrfs_release_path(path);
-+
-+	/*
-+	 * Add all related tree blocks to backref cache and get all roots
-+	 * from each iteration
-+	 */
-+	ULIST_ITER_INIT(&uiter);
-+	while ((unode = ulist_next(tree_blocks, &uiter))) {
-+		struct btrfs_backref_node *node;
-+		struct btrfs_key node_key;
-+		u64 owner;
-+		u8 tree_level;
-+
-+		ret = get_tree_info(fs_info, path, unode->val,
-+				&node_key, &owner, &tree_level);
-+		if (ret < 0)
-+			goto out;
-+
-+		/* Isn't a subvolume tree, direct exist */
-+		if (!is_fstree(owner))
-+			goto out;
-+
-+		mutex_lock(&fs_info->qgroup_backref_lock);
-+		/*
-+		 * This can happen when rescan worker is running while qgroup
-+		 * is being disabled.
-+		 * Just exit without verification, qgroup will cleanup itself.
-+		 */
-+		if (!fs_info->qgroup_backref_cache) {
-+			mutex_unlock(&fs_info->qgroup_backref_lock);
-+			goto out_no_verify;
-+		}
-+
-+		node = qgroup_backref_cache_build(fs_info, &node_key,
-+				tree_level, unode->val, owner);
-+		if (IS_ERR(node)) {
-+			ret = PTR_ERR(node);
-+			mutex_unlock(&fs_info->qgroup_backref_lock);
-+			goto out;
-+		}
-+		if (node)
-+			ret = iterate_all_roots(node, ret_ulist);
-+		mutex_unlock(&fs_info->qgroup_backref_lock);
-+		if (ret < 0)
-+			goto out;
-+	}
-+out:
-+	if (IS_ENABLED(CONFIG_BTRFS_FS_CHECK_INTEGRITY) && !ret) {
-+		ret = verify_old_roots(fs_info, ret_ulist, bytenr);
-+		WARN_ON(ret < 0);
-+	}
-+out_no_verify:
-+	btrfs_free_path(path);
-+	ulist_free(tree_blocks);
-+	if (ret < 0) {
-+		ulist_free(ret_ulist);
-+		return ERR_PTR(ret);
-+	}
-+	return ret_ulist;
-+}
-+
- int btrfs_qgroup_trace_extent_post(struct btrfs_fs_info *fs_info,
- 				   struct btrfs_qgroup_extent_record *qrecord)
- {
+ 		/* For rescan, just pass old_roots as NULL */
+ 		ret = btrfs_qgroup_account_extent(trans, found.objectid,
+ 						  num_bytes, NULL, roots);
 -- 
 2.26.0
 
