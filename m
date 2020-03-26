@@ -2,134 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C2319357B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 02:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8995D193631
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 03:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgCZB7p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Mar 2020 21:59:45 -0400
-Received: from mout.gmx.net ([212.227.15.18]:39931 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727576AbgCZB7p (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Mar 2020 21:59:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585187980;
-        bh=R612dwK/ZEIZ8Gc9vN6spAfIbNpp0QBsEcwfbfG4l+o=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=VPqI2dMFmewVTAX7OHAcIt1oKWBb/lZqTn3D8PVrn251tsMiB2DN0hhLT99v93Xw8
-         wqBN21lqzVeJKJUSDPh/OVp4hEl8Ru37x9di2vxlzwQFn6awT0I8A7I1p9Vy6dNW6j
-         tCcU4vK0HWZmBplEgtCq309i5Yaivqqf5wkoFCnM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1wlv-1jOOTC3385-012HPs; Thu, 26
- Mar 2020 02:59:40 +0100
-Subject: Re: [PATCH 1/4] btrfs-progs: Add missing fields to btrfs_raid_array[]
- for raid1c[34].
-To:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-References: <20200325201042.190332-1-kreijack@libero.it>
- <20200325201042.190332-2-kreijack@libero.it>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <484bec80-2469-b638-b80b-8811a0e8e9ff@gmx.com>
-Date:   Thu, 26 Mar 2020 09:59:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727600AbgCZCwG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 25 Mar 2020 22:52:06 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:39064 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727560AbgCZCwF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Mar 2020 22:52:05 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 6E1A4633AA4; Wed, 25 Mar 2020 22:51:56 -0400 (EDT)
+Date:   Wed, 25 Mar 2020 22:51:56 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Paul Jones <paul@pauljones.id.au>
+Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: Question: how understand the raid profile of a btrfs filesystem
+Message-ID: <20200326025156.GW13306@hungrycats.org>
+References: <20200321032911.GR13306@hungrycats.org>
+ <fd306b0b-8987-e1e7-dee5-4502e34902c3@inwind.it>
+ <20200321232638.GD2693@hungrycats.org>
+ <3fb93a14-3608-0f64-cf5c-ca37869a76ef@inwind.it>
+ <d472962c-c669-3004-7ab4-be65a6ed72ba@inwind.it>
+ <20200322234934.GE2693@hungrycats.org>
+ <a15a47f1-9465-dd5c-4b70-04f1a14e6a96@libero.it>
+ <28ddb178-674b-fab7-afa4-18a575299c1d@cobb.uk.net>
+ <20200325040950.GV13306@hungrycats.org>
+ <SYBPR01MB38972C6A31FA985B0D9494109ECE0@SYBPR01MB3897.ausprd01.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200325201042.190332-2-kreijack@libero.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+otY3IIaL4tSnlZSABwzCAqXGhMayTsZ3j5J8mzvCRJIjOciXf3
- sZhQCXY5I7Cy0iW/2J6UoTIrAKDIdWaqof8SMfxVQ90IltNATdCbhoCYEleNjWXy5PpkuM7
- oh1OTAuHw8nTO4JdcMt9lYnIVDuFSpJLHLiyWV7KvseTyNMBWHdvr7oUjMJQo8kkG0K/N7G
- W7u8aaF4FANkzosbksp7A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oYBtsA3tUVY=:y/pCE3XMGJX/Y1usaJTKrG
- z2VfFsuZyPbWhd3nOgW3lhm0DWv3hPCJIWA/mqeuBvn35MBwibm4bFJ6v/xCGKZuerzkMt5zS
- fPNM0kytdvmkXtutv+KQ8bWn/uJlxsZDX78tvHIz8xVU5KXUCeTzu0B9wtj8EqRo3B2HiZpKK
- 8PEwi/2+wlg4agFwoVs3yuVfh6RNLbEYuaiLWcqlmH2SOiG+ndwvspBY/YQ3g2T/mzoNd7RPA
- HgMspHTRYHPr1xypO7Q9pFkxqhiIeE1emNUyv6eu26042n52EJCl8oNXtHIvVNcGoZHmSSFRI
- XbITWhnw3/9jLZgqWx02iQXHN61WesLn3LVjidhj7Yytq7nMB08K1EkqhspUuDb0vX1jb7xhE
- 163QKel5SkSximNZAV3p7sYSut+Sn4qyYw83vI+za9EZisS6kcwOH1lTymO39IRdr1bEo2Pto
- XWcaaGAPLX5mTQqwAQXxzs/1l/QiZ3u0reZd7BLrXau7Fygkb7NHdfe7L4ho9tvp+jcPpDMJd
- Ggw94yR88lO8ocRMr8SG4dHD7tgt9YqcjUHb4ve9DbfwA74FIwo/TIc/bvJrQZzToMePBho/7
- 1Au/AputvpYKTQRbJ1MeHP8/jFQlA1/NVHrhGTpP2dnpRHASQvMaKbEibBpjhVV2I7lRHVL7m
- E1S4xprdteseqR5wnbbPRnWqulLioRrxRm/5weCjH769Ii6Buic/7EgUce+VEPqIhx76FKkOH
- U8lRxCfq8IgXsJ26YcTNqTgLKAGzJ59EU0Y9fr4ZUlISpWFzBrtdaVXUcPKJP4P9onQqjyQyO
- mWLtNpR4xplKs/BC/vcg9Is+K7/2gNKh8cUiFQLPicy0lOmtWWywGWVDqyny7RtyRdFsKoaaU
- O7digOf3W6tvFT9vMACgYwjaT7xK+0AOjaXMMCH0hQKB8TEL/lzeebrbkSHkMpt2169F0FXTt
- DazorkEzasE+yi1YwbZT5aT3HvXLxvuYX4Mvt/QY35EcxrtWbYaLiYKVcnEA3/8KHLaQ3tvYl
- u/JWcZQbHys+OJW0FfZKwUuhwdTUlaCmOaD7zAZHsrITXiLhzyjy26ihpqT15d5gvvItV7E52
- BP9vSb2x5idbprkVhZNER7qGvqn8zOfEuWGGQD82h5IQn0ryo4DRzO5tspTQ+uoZF8ZIKs6yj
- 8M2Vj/5e+y5ZTDDg295ExBamW8fiHgxoTzSg/55K+b0h+EfvF8kWiNn1APx33uxSQDTZKklb+
- 8o1nY6p2nlLS50sMt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <SYBPR01MB38972C6A31FA985B0D9494109ECE0@SYBPR01MB3897.ausprd01.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Mar 25, 2020 at 04:30:16AM +0000, Paul Jones wrote:
+> > -----Original Message-----
+> > From: linux-btrfs-owner@vger.kernel.org <linux-btrfs-
+> > owner@vger.kernel.org> On Behalf Of Zygo Blaxell
+> > Sent: Wednesday, 25 March 2020 3:10 PM
+> > To: Graham Cobb <g.btrfs@cobb.uk.net>
+> > Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+> > Subject: Re: Question: how understand the raid profile of a btrfs filesystem
+> 
+> > Disk removes are where the current system breaks down.  'btrfs device
+> > remove' is terrible:
+> > 
+> > 	- can't cancel a remove except by rebooting or forcing ENOSPC
+> > 
+> > 	- can't resume automatically after a reboot (probably a good
+> > 	thing for now, given there's no cancel)
+> > 
+> > 	- can't coexist with a balance, even when paused--device remove
+> > 	requires the balance to be _cancelled_ first
+> > 
+> > 	- doesn't have any equivalent to the 'convert' filter raid
+> > 	profile target in balance info
+> > 
+> > so if you need to remove a device while you're changing profiles, you have to
+> > abort the profile change and then relocate a whole lot of data without being
+> > able to specify the correct target profile.
+> > 
+> > The proper fix would be to reimplement 'btrfs dev remove' using pieces of
+> > the balance infrastructure (it kind of is now, except where it's not), and so
+> > 'device remove' can keep the 'convert=' target.  Then you don't have to lose
+> > the target profile while doing removes (and fix the other problems too).
+> 
+> I've often thought it would be handy to be able to forcefully set the
+> disk size or free space to zero, like how it is reported by 'btrfs
+> fi sh' during a remove operation. That way a balance operation can be
+> used for various things like profile changes or multiple disk removals
+> (like replacing 4x1T drives with 1x4T drive) without unintentionally
+> writing a bunch of data to a disk you don't want to write to anymore.
 
+I forgot "can only remove one disk at a time" in the list above.  We can
+add multiple disks at once (well, add one at a time, then use balance to
+do all the relocation at once), but the opposite operation isn't possible.
 
-On 2020/3/26 =E4=B8=8A=E5=8D=884:10, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
->
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  volumes.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/volumes.c b/volumes.c
-> index b46bf598..9e37f986 100644
-> --- a/volumes.c
-> +++ b/volumes.c
-> @@ -65,6 +65,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR=
-_RAID_TYPES] =3D {
->  		.tolerated_failures =3D 2,
->  		.devs_increment	=3D 3,
->  		.ncopies	=3D 3,
-> +		.raid_name	=3D "raid1c3",
-> +		.bg_flag	=3D BTRFS_BLOCK_GROUP_RAID1C3,
+That is an elegant way to set up balances to do a device delete/shrink,
+too.
 
-Since you're here, mind to also add .mindev_error?
-
-Thanks,
-Qu
->  	},
->  	[BTRFS_RAID_RAID1C4] =3D {
->  		.sub_stripes	=3D 1,
-> @@ -74,6 +76,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR=
-_RAID_TYPES] =3D {
->  		.tolerated_failures =3D 3,
->  		.devs_increment	=3D 4,
->  		.ncopies	=3D 4,
-> +		.raid_name	=3D "raid1c4",
-> +		.bg_flag	=3D BTRFS_BLOCK_GROUP_RAID1C4,
->  	},
->  	[BTRFS_RAID_DUP] =3D {
->  		.sub_stripes	=3D 1,
->
+> It would also allow for a more gradual removal for disks that need
+> replacing but not as an emergency, as data will gradually migrate
+> itself to other discs as it is COWed.
+> 
+> Paul.
