@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F77D193AE3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291C4193AE4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgCZIdf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 04:33:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49070 "EHLO mx2.suse.de"
+        id S1727708AbgCZIdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 04:33:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49082 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727685AbgCZIdf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 04:33:35 -0400
+        id S1727685AbgCZIdi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 04:33:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 88911AE24;
-        Thu, 26 Mar 2020 08:33:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C6942AD08;
+        Thu, 26 Mar 2020 08:33:36 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2 06/39] btrfs: relocation: Add backref_cache::fs_info member
-Date:   Thu, 26 Mar 2020 16:32:43 +0800
-Message-Id: <20200326083316.48847-7-wqu@suse.com>
+Subject: [PATCH v2 07/39] btrfs: relocation: Make reloc root search specific for relocation backref cache
+Date:   Thu, 26 Mar 2020 16:32:44 +0800
+Message-Id: <20200326083316.48847-8-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200326083316.48847-1-wqu@suse.com>
 References: <20200326083316.48847-1-wqu@suse.com>
@@ -31,52 +31,164 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add this member so that we can grab fs_info without the help from
-reloc_control.
+find_reloc_root() searches reloc_control::reloc_root_tree to find the
+reloc root.
+This behavior is only useful for relocation backref cache.
+
+For the incoming more generic purposed backref cache, we don't care
+about who owns the reloc root, but only care if it's a reloc root.
+
+So this patch makes the following modifications to make the reloc root
+search more specific to relocation backref:
+- Add backref_node::is_reloc_root
+  This will be an extra indicator for generic purposed backref cache.
+  User doesn't need to read root key from backref_node::root to
+  determine if it's a reloc root.
+  Also for reloc tree root, it's useless and will be queued to useless
+  list.
+
+- Add backref_cache::is_reloc
+  This will allow backref cache code to do different behavior for
+  generic purposed backref cache and relocation backref cache.
+
+- Make find_reloc_root() to accept fs_info
+  Just a personal taste.
+
+- Export find_reloc_root()
+  So backref.c can utilize this function.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/btrfs/ctree.h      |  2 ++
+ fs/btrfs/relocation.c | 50 +++++++++++++++++++++++++++++++++----------
+ 2 files changed, 41 insertions(+), 11 deletions(-)
 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8aa7b9dac405..1e8a0a513e73 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3381,6 +3381,8 @@ void btrfs_reloc_pre_snapshot(struct btrfs_pending_snapshot *pending,
+ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_pending_snapshot *pending);
+ int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info);
++struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info,
++				   u64 bytenr);
+ 
+ /* scrub.c */
+ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 108ea3d428bc..eb117f2138cb 100644
+index eb117f2138cb..72eb2b52d14a 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -164,6 +164,8 @@ struct backref_cache {
- 
- 	/* The list of useless backref nodes during backref cache build */
- 	struct list_head useless_node;
+@@ -122,6 +122,12 @@ struct backref_node {
+ 	 * backref node.
+ 	 */
+ 	unsigned int detached:1;
 +
-+	struct btrfs_fs_info *fs_info;
++	/*
++	 * For generic purpose backref cache, where we only care if it's a reloc
++	 * root, doesn't care the source subvolid.
++	 */
++	unsigned int is_reloc_root:1;
  };
  
  /*
-@@ -266,7 +268,8 @@ static void mapping_tree_init(struct mapping_tree *tree)
- 	spin_lock_init(&tree->lock);
+@@ -166,6 +172,14 @@ struct backref_cache {
+ 	struct list_head useless_node;
+ 
+ 	struct btrfs_fs_info *fs_info;
++
++	/*
++	 * Whether this cache is for relocation
++	 *
++	 * Reloction backref cache require more info for reloc root compared
++	 * to generic backref cache.
++	 */
++	unsigned int is_reloc;
+ };
+ 
+ /*
+@@ -269,7 +283,7 @@ static void mapping_tree_init(struct mapping_tree *tree)
  }
  
--static void backref_cache_init(struct backref_cache *cache)
-+static void backref_cache_init(struct btrfs_fs_info *fs_info,
-+			       struct backref_cache *cache)
+ static void backref_cache_init(struct btrfs_fs_info *fs_info,
+-			       struct backref_cache *cache)
++			       struct backref_cache *cache, int is_reloc)
  {
  	int i;
  	cache->rb_root = RB_ROOT;
-@@ -277,6 +280,7 @@ static void backref_cache_init(struct backref_cache *cache)
- 	INIT_LIST_HEAD(&cache->leaves);
+@@ -281,6 +295,7 @@ static void backref_cache_init(struct btrfs_fs_info *fs_info,
  	INIT_LIST_HEAD(&cache->pending_edge);
  	INIT_LIST_HEAD(&cache->useless_node);
-+	cache->fs_info = fs_info;
+ 	cache->fs_info = fs_info;
++	cache->is_reloc = is_reloc;
  }
  
  static void backref_cache_cleanup(struct backref_cache *cache)
-@@ -4172,7 +4176,7 @@ static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *fs_info)
+@@ -653,13 +668,14 @@ static int should_ignore_root(struct btrfs_root *root)
+ /*
+  * find reloc tree by address of tree root
+  */
+-static struct btrfs_root *find_reloc_root(struct reloc_control *rc,
+-					  u64 bytenr)
++struct btrfs_root *find_reloc_root(struct btrfs_fs_info *fs_info, u64 bytenr)
+ {
++	struct reloc_control *rc = fs_info->reloc_ctl;
+ 	struct rb_node *rb_node;
+ 	struct mapping_node *node;
+ 	struct btrfs_root *root = NULL;
+ 
++	ASSERT(rc);
+ 	spin_lock(&rc->reloc_root_tree.lock);
+ 	rb_node = tree_search(&rc->reloc_root_tree.rb_root, bytenr);
+ 	if (rb_node) {
+@@ -703,6 +719,7 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ {
+ 	struct btrfs_backref_iter *iter;
+ 	struct backref_cache *cache = &rc->backref_cache;
++	struct btrfs_fs_info *fs_info = cache->fs_info;
+ 	struct btrfs_path *path; /* For searching parent of TREE_BLOCK_REF */
+ 	struct btrfs_root *root;
+ 	struct backref_node *cur;
+@@ -824,13 +841,24 @@ struct backref_node *build_backref_tree(struct reloc_control *rc,
+ 		/* SHARED_BLOCK_REF means key.offset is the parent bytenr */
+ 		if (key.type == BTRFS_SHARED_BLOCK_REF_KEY) {
+ 			if (key.objectid == key.offset) {
+-				/*
+-				 * Only root blocks of reloc trees use backref
+-				 * pointing to itself.
+-				 */
+-				root = find_reloc_root(rc, cur->bytenr);
+-				ASSERT(root);
+-				cur->root = root;
++				cur->is_reloc_root = 1;
++				/* Only reloc backref cache cares exact root */
++				if (cache->is_reloc) {
++					root = find_reloc_root(fs_info,
++							cur->bytenr);
++					if (WARN_ON(!root)) {
++						err = -ENOENT;
++						goto out;
++					}
++					cur->root = root;
++				} else {
++					/*
++					 * For generic purpose backref cache,
++					 * reloc root node is useless.
++					 */
++					list_add(&cur->list,
++						&cache->useless_node);
++				}
+ 				break;
+ 			}
+ 
+@@ -4176,7 +4204,7 @@ static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *fs_info)
  
  	INIT_LIST_HEAD(&rc->reloc_roots);
  	INIT_LIST_HEAD(&rc->dirty_subvol_roots);
--	backref_cache_init(&rc->backref_cache);
-+	backref_cache_init(fs_info, &rc->backref_cache);
+-	backref_cache_init(fs_info, &rc->backref_cache);
++	backref_cache_init(fs_info, &rc->backref_cache, 1);
  	mapping_tree_init(&rc->reloc_root_tree);
  	extent_io_tree_init(fs_info, &rc->processed_blocks,
  			    IO_TREE_RELOC_BLOCKS, NULL);
