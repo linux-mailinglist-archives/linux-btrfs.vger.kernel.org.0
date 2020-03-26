@@ -2,26 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DC11937E9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 06:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9EA1937EA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 06:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbgCZFgC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 01:36:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50928 "EHLO mx2.suse.de"
+        id S1726175AbgCZFgF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 01:36:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50978 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgCZFgC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 01:36:02 -0400
+        id S1725819AbgCZFgF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 01:36:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 27E26AB98;
-        Thu, 26 Mar 2020 05:36:01 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D7DA0ADEB;
+        Thu, 26 Mar 2020 05:36:03 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     u-boot@lists.denx.de
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH U-BOOT v2 0/3] fs: btrfs: Fix false LZO decompression error due to missing page boundary check
-Date:   Thu, 26 Mar 2020 13:35:53 +0800
-Message-Id: <20200326053556.20492-1-wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Marek Behun <marek.behun@nic.cz>
+Subject: [PATCH U-BOOT v2 1/3] fs: btrfs: Use LZO_LEN to replace immediate number
+Date:   Thu, 26 Mar 2020 13:35:54 +0800
+Message-Id: <20200326053556.20492-2-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200326053556.20492-1-wqu@suse.com>
+References: <20200326053556.20492-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,38 +31,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a bug that uboot can't load LZO compressed data extent while
-kernel can handle it without any problem.
+Just a cleanup. These immediate numbers make my eyes hurt.
 
-It turns out to be a page boundary case. The 3nd patch is the proper
-fix, cross-ported from btrfs-progs.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Cc: Marek Behun <marek.behun@nic.cz>
+---
+ fs/btrfs/compression.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-The first patch is just to make my eyes less hurt.
-The second patch is to make sure the driver will reject sector size not
-matching PAGE_SIZE.
-This keeps the behavior the same as kernel, even in theory we could do
-better in U-boot. This is just a temporary fix, before better btrfs
-driver implemented.
-
-I guess it's time to backport proper code from btrfs-progs, other than
-using tons of immediate codes.
-
-Changelog:
-v2:
-- Fix code style problems
-- Add a new patch to reject non-page-sized sector size
-  Since kernel does the same thing, and non-4K page size u-boot boards
-  are really rare, it shouldn't be a big problem.
-
-Qu Wenruo (3):
-  fs: btrfs: Use LZO_LEN to replace immediate number
-  fs: btrfs: Reject fs with sector size other than PAGE_SIZE
-  fs: btrfs: Fix LZO false decompression error caused by pending zero
-
- fs/btrfs/compression.c | 42 +++++++++++++++++++++++++++++++-----------
- fs/btrfs/super.c       |  8 ++++++++
- 2 files changed, 39 insertions(+), 11 deletions(-)
-
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 346875d45a1b..4ef44ce11485 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -12,36 +12,38 @@
+ #include <u-boot/zlib.h>
+ #include <asm/unaligned.h>
+ 
++/* Header for each segment, LE32, recording the compressed size */
++#define LZO_LEN		4
+ static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8 *dbuf, u32 dlen)
+ {
+ 	u32 tot_len, in_len, res;
+ 	size_t out_len;
+ 	int ret;
+ 
+-	if (clen < 4)
++	if (clen < LZO_LEN)
+ 		return -1;
+ 
+ 	tot_len = le32_to_cpu(get_unaligned((u32 *)cbuf));
+-	cbuf += 4;
+-	clen -= 4;
+-	tot_len -= 4;
++	cbuf += LZO_LEN;
++	clen -= LZO_LEN;
++	tot_len -= LZO_LEN;
+ 
+ 	if (tot_len == 0 && dlen)
+ 		return -1;
+-	if (tot_len < 4)
++	if (tot_len < LZO_LEN)
+ 		return -1;
+ 
+ 	res = 0;
+ 
+-	while (tot_len > 4) {
++	while (tot_len > LZO_LEN) {
+ 		in_len = le32_to_cpu(get_unaligned((u32 *)cbuf));
+-		cbuf += 4;
+-		clen -= 4;
++		cbuf += LZO_LEN;
++		clen -= LZO_LEN;
+ 
+-		if (in_len > clen || tot_len < 4 + in_len)
++		if (in_len > clen || tot_len < LZO_LEN + in_len)
+ 			return -1;
+ 
+-		tot_len -= 4 + in_len;
++		tot_len -= (LZO_LEN + in_len);
+ 
+ 		out_len = dlen;
+ 		ret = lzo1x_decompress_safe(cbuf, in_len, dbuf, &out_len);
 -- 
 2.26.0
 
