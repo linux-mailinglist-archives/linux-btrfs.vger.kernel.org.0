@@ -2,178 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2279193B72
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 10:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2C0193C55
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 10:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgCZJDX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 05:03:23 -0400
-Received: from mail.nic.cz ([217.31.204.67]:34918 "EHLO mail.nic.cz"
+        id S1727729AbgCZJy2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 26 Mar 2020 05:54:28 -0400
+Received: from mail.halfdog.net ([37.186.9.82]:62776 "EHLO mail.halfdog.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726359AbgCZJDX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 05:03:23 -0400
-Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id A9CC4142F70;
-        Thu, 26 Mar 2020 10:03:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1585213401; bh=B+yrrJyOjQAzfO3LFkEcPEy0hFVSrWmIa3NVGHnCHq4=;
-        h=Date:From:To;
-        b=sRyDoPXZV1rwYwRWynvcF1U1918e1nRs/c+aCz2bs3R83WHwPZomuGNgRi/ftGtlp
-         bS5Q3hpcqDLv8sUGHf5XAY0p1Am4KzbwolvadNKHYHAsPDRT6RDiRYA8gcCguXdaaW
-         IHEvI1IixRn8wF+q+CzFrisqEaDSiktQ5AWqJg08=
-Date:   Thu, 26 Mar 2020 10:03:21 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH U-BOOT v2 3/3] fs: btrfs: Fix LZO false decompression
- error caused by pending zero
-Message-ID: <20200326100321.6a854808@nic.cz>
-In-Reply-To: <20200326053556.20492-4-wqu@suse.com>
-References: <20200326053556.20492-1-wqu@suse.com>
-        <20200326053556.20492-4-wqu@suse.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726318AbgCZJy2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 05:54:28 -0400
+Received: from [37.186.9.82] (helo=localhost)
+        by mail.halfdog.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <me@halfdog.net>)
+        id 1jHPDW-0003dI-Fq
+        for linux-btrfs@vger.kernel.org; Thu, 26 Mar 2020 09:54:26 +0000
+From:   halfdog <me@halfdog.net>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: FIDEDUPERANGE woes may continue (or unrelated issue?)
+In-reply-to: <20200325035357.GU13306@hungrycats.org>
+References: <2442-1582352330.109820@YWu4.f8ka.f33u> <31deea37-053d-1c8e-0205-549238ced5ac@gmx.com> <1560-1582396254.825041@rTOD.AYhR.XHry> <13266-1585038442.846261@8932.E3YE.qSfc> <20200325035357.GU13306@hungrycats.org>
+Comments: In-reply-to Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+   message dated "Tue, 24 Mar 2020 23:53:57 -0400."
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.101.4 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Date:   Thu, 26 Mar 2020 09:53:08 +0000
+Message-ID: <3552-1585216388.633914@1bS6.I8MI.I0Ki>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 26 Mar 2020 13:35:56 +0800
-Qu Wenruo <wqu@suse.com> wrote:
+Thanks for your lengthy reply!
 
-> For certain btrfs files with compressed file extent, uboot will fail to
-> load it:
->=20
->   btrfs_read_extent_reg: disk_bytenr=3D14229504 disk_len=3D73728 offset=
-=3D0 nr_bytes=3D131
->   072
->   decompress_lzo: tot_len=3D70770
->   decompress_lzo: in_len=3D1389
->   decompress_lzo: in_len=3D2400
->   decompress_lzo: in_len=3D3002
->   decompress_lzo: in_len=3D1379
->   decompress_lzo: in_len=3D88539136
->   decompress_lzo: header error, in_len=3D88539136 clen=3D65534 tot_len=3D=
-62580
->=20
-> NOTE: except the last line, all other lines are debug output.
->=20
-> Btrfs lzo compression uses its own format to record compressed size
-> (segment header, LE32).
->=20
-> However to make decompression easier, we never put such segment header
-> across page boundary.
->=20
-> In above case, the xxd dump of the lzo compressed data looks like this:
->=20
-> 00001fe0: 4cdc 02fc 0bfd 02c0 dc02 0d13 0100 0001  L...............
-> 00001ff0: 0000 0008 0300 0000 0000 0011 0000|0000  ................
-> 00002000: 4705 0000 0001 cc02 0000 0000 0000 1e01  G...............
->=20
-> '|' is the "expected" segment header start position.
->=20
-> But in that page, there are only 2 bytes left, can't contain the 4 bytes
-> segment header.
->=20
-> So btrfs compression will skip that 2 bytes, put the segment header in
-> next page directly.
->=20
-> Uboot doesn't have such check, and read the header with 2 bytes offset,
-> result 0x05470000 (88539136), other than the expected result
-> 0x00000547 (1351), resulting above error.
->=20
-> Follow the btrfs-progs restore implementation, by introducing tot_in to
-> record total processed bytes (including headers), and do proper page
-> boundary skip to fix it.
->=20
-> Please note that, current code base doesn't parse fs_info thus we can't
-> grab sector size easily, so it uses PAGE_SIZE, and relying on fs open
-> time check to exclude unsupported sector size.
->=20
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Cc: Marek Behun <marek.behun@nic.cz>
-> ---
->  fs/btrfs/compression.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 4ef44ce11485..b1884fc15ee0 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -9,6 +9,7 @@
->  #include <malloc.h>
->  #include <linux/lzo.h>
->  #include <linux/zstd.h>
-> +#include <linux/compat.h>
->  #include <u-boot/zlib.h>
->  #include <asm/unaligned.h>
-> =20
-> @@ -16,7 +17,7 @@
->  #define LZO_LEN		4
->  static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8 *dbuf, u32 dlen)
->  {
-> -	u32 tot_len, in_len, res;
-> +	u32 tot_len, tot_in, in_len, res;
->  	size_t out_len;
->  	int ret;
-> =20
-> @@ -24,9 +25,11 @@ static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8=
- *dbuf, u32 dlen)
->  		return -1;
-> =20
->  	tot_len =3D le32_to_cpu(get_unaligned((u32 *)cbuf));
-> +	tot_in =3D 0;
->  	cbuf +=3D LZO_LEN;
->  	clen -=3D LZO_LEN;
->  	tot_len -=3D LZO_LEN;
-> +	tot_in +=3D LZO_LEN;
-> =20
->  	if (tot_len =3D=3D 0 && dlen)
->  		return -1;
-> @@ -36,6 +39,8 @@ static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8 =
-*dbuf, u32 dlen)
->  	res =3D 0;
-> =20
->  	while (tot_len > LZO_LEN) {
-> +		u32 rem_page;
-> +
->  		in_len =3D le32_to_cpu(get_unaligned((u32 *)cbuf));
->  		cbuf +=3D LZO_LEN;
->  		clen -=3D LZO_LEN;
-> @@ -44,6 +49,7 @@ static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8 =
-*dbuf, u32 dlen)
->  			return -1;
-> =20
->  		tot_len -=3D (LZO_LEN + in_len);
-> +		tot_in +=3D (LZO_LEN + in_len);
-> =20
->  		out_len =3D dlen;
->  		ret =3D lzo1x_decompress_safe(cbuf, in_len, dbuf, &out_len);
-> @@ -56,6 +62,18 @@ static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8=
- *dbuf, u32 dlen)
->  		dlen -=3D out_len;
-> =20
->  		res +=3D out_len;
-> +
-> +		/*
-> +		 * If the 4 bytes header does not fit to the rest of the page we
-> +		 * have to move to next one, or we read some garbage.
-> +		 */
-> +		rem_page =3D PAGE_SIZE - (tot_in % PAGE_SIZE);
-> +		if (rem_page < LZO_LEN) {
-> +			cbuf +=3D rem_page;
-> +			tot_in +=3D rem_page;
-> +			clen -=3D rem_page;
-> +			tot_len -=3D rem_page;
-> +		}
->  	}
-> =20
->  	return res;
+Zygo Blaxell writes:
+> On Tue, Mar 24, 2020 at 08:27:22AM +0000, halfdog wrote:
+>> Hello list,
+>>
+>> It seems the woes really continued ... After trashing the
+>> old, corrupted filesystem (see old message below) I started
+>> rebuilding the storage. Synchronization from another (still
+>> working) storage roughly should have performed the same actions
+>> as during initial build (minus count and time of mounts/unmounts,
+>> transfer interrupts, ...).
+>>
+>> It does not seem to be a mere coincidence, that the corruption
+>> occured when deduplicating the exact same file as last time.
+>> While corruption last time made disk completely inaccessible,
+>> this time it just was mounted readonly with a different error
+>> message:
+>>
+>> [156603.177699] BTRFS error (device dm-1): parent transid
+>> verify failed on 6680428544 wanted 12947 found 12945
+>> [156603.177707] BTRFS: error (device dm-1) in
+>> __btrfs_free_extent:3080: errno=-5 IO failure [156603.177708]
+>> BTRFS info (device dm-1): forced readonly [156603.177711]
+>> BTRFS: error (device dm-1) in btrfs_run_delayed_refs:2188:
+>> errno=-5 IO failure
+>
+> Normally those messages mean your hardware is dropping writes
+> somewhere; however, you previously reported running kernels
+> 5.3.0 and 5.3.9, so there may be another explanation.
+>
+> Try kernel 4.19.x, 5.4.19, 5.5.3, or later.  Definitely do
+> not use kernels from 5.1-rc1 to 5.4.13 inclusive unless backported
+> fixes are included.
 
-Reviewed-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
+Sorry, I forgot to update on that: I used the old kernel but also
+managed t reproduce on
+ii  linux-image-5.4.0-4-amd64            5.4.19-1                            amd64        Linux 5.4 for 64-bit PCs (signed)
+Linux version 5.4.0-4-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20200203 (Debian 9.2.1-28)) #1 SMP Debian 5.4.19-1 (2020-02-13)
+
+> I mention 5.5.3 and 5.4.19 instead of 5.5.0 and 5.4.14 because
+> the later ones include the EOF dedupe fix.  4.19 avoids the
+> regressions of later kernels.
+
+5.4.19-1 matches your spec, but as latest Debian experimental
+is "linux-signed-amd64 (5.5~rc5+1~exp1)", which is also above
+your  5.5.3 recommendation, should I try again with that kernel
+or even use the "5.5~rc5+1~exp1" config to apply it to yesterays
+5.5.13 LTS and build an own kernel?
+
+>> As it seems that the bug here is somehow reproducible, I would
+>> like to try to develop a reproducer exploit and fix for that
+>> bug as an excercise. Unfortunately the fault occurs only after
+>> transfering and deduplicating ~20TB of data.
+>>
+>> Are there any recommendations e.g. how to "bisect" that problem?
+>
+> Find someone who has already done it and ask.  ;)
+
+Seems I found someone with good recommendations already :)
+
+Thank you!
+
+> Upgrade straight from 5.0.21 to 5.4.14 (or 5.4.19 if you want
+> the dedupe fix too).  Don't run any kernel in between for btrfs.
+>
+> There was a bug introduced in 5.1-rc1, fixed in 5.4.14, which
+> corrupts metadata.  It's a UAF bug, so its behavior can be
+> unpredictable, but quite often the symptom is corrupted metadata
+> or write-time tree-checker errors. Sometimes you just get a
+> harmless NULL dereference crash, or some noise warnings.
+>
+> There are at least two other filesystem corrupting bugs with
+> lifetimes overlapping that range of kernel versions; however
+> both of those were fixed by 5.3.
+
+So maybe leaving my 5.4.19-1 to the 5.5+ series sounds like recommended
+anyway?
+
+>> Is there a way (switch or source code modification) to log
+>> all internal btrfs state transitions for later analysis?
+>
+> There are (e.g. the dm write logger), but most bugs that would
+> be found in unit tests by such tools have been fixed by the
+> time a kernel is released, and they'll only tell you that btrfs
+> did something wrong, not why.
+
+As IO seems sane, the error reported "verify failed on 6680428544
+wanted 12947 found 12945" seems not to point to a data structure
+problem at a sector/page/block boundary (12947==0x3293), I would
+also guess, that basic IO/paging is not involved in it, but that
+the data structure is corrupted in memory and used directly or
+written/reread ... therefore I would deem write logs also as
+not the first way to go ..
+
+> Also, there can be tens of thousands of btrfs state transitions
+> per second during dedupe, so the volume of logs themselves
+> can present data wrangling challenges.
+
+Yes, that's why me asking. Maybe someone has already taken up
+that challenge as such a tool-chain (generic transaction logging
+with userspace stream compression, analysis) might be quite
+handy for such task, but hell effort to build ...
+
+> The more invasively you try to track internal btrfs state,
+> the more the tools become _part_ of that state, and introduce
+> additional problems. e.g. there is the ref verifier, and the
+> _bug fix history_ of the ref verifier...
+
+That is right. Therefore I hoped, that some minimal invasive
+toolsets might be available already for kernel or maybe could
+be written, e.g.
+
+* Install an alternative kernel page fault handler
+* Set breakpoints on btrfs functions
+  * When entering the function, record return address, stack
+    and register arguments, send to userspace
+  * Strip write bits kernel from page table for most pages
+    exept those needed by page fault handler
+  * Continue execution
+* For each pagefault, the pagefault flips back to original
+  page table, sends information about write fault (what, where)
+  to userspace, performs the faulted instruction before switching
+  back to read-only page table and continuing btrfs function
+* When returning from the last btrfs function, also switch back
+  to standard page table.
+
+By being completely btrfs-agnostic, such tool should not introduce
+any btrfs-specific issues due to the analysis process. Does someone
+know about such a tool or a simplified version of it?
+
+Doing similar over qemu/kernel debugging tools might be easier
+to implement but too slow to handle that huge amount of data.
+
+>> Other ideas for debugging that?
+>
+> Run dedupe on a test machine with a few TB test corpus (or
+> whatever your workload is) on a debug-enabled kernel, report
+> every bug that kills the box or hurts the data, update the
+> kernel to get fixes for the bugs that were reported.  Repeat
+> until the box stops crapping itself, then use the kernel it
+> stopped on (5.4.14 in this case).  Do that for every kernel
+> upgrade because regressions are a thing.
+
+Well, that seems like overkill. My btrfs is not haunted by a
+load of bugs, just one that corrupted the filesystem two times
+when trying to deduplicate the same set of files.
+
+As desccribed, just creating a btrfs with only that file did
+not trigger the corruption. If this is not a super-rare coincidence,
+then something in the other 20TB of transferred files has to
+have corrupted the file system or at least brought it to a state,
+where then deduplication of exact that problematic set of files
+triggered the final fault.
+
+>> Just creating the same number of snapshots and putting just
+>> that single file into each of them did not trigger the bug
+>> during deduplication.
+>
+> Dedupe itself is fine, but some of the supporting ioctls a
+> deduper has to use to get information about the filesystem
+> structure triggered a lot of bugs.
+
+To get rid of that, I already ripped out quite some of the userspace
+deduping part. I now do the extent queries in a Python tool
+using ctypes, split the dedup request into smaller chunks (to
+improve logging granularity) and just use the deduper to do
+that single FIDEDUPERANGE call (I was to lazy to ctype that
+in Python too).
+
+Still deduplicating the same files caused corruption again.
+
+hd
+
+> ...
+
