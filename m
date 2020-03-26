@@ -2,147 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADE2193B0F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C32193B48
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgCZIev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 04:34:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727933AbgCZIev (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 04:34:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C089EAC46
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 08:34:48 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 39/39] btrfs: qgroup: Use backref cache to speed up old_roots search
-Date:   Thu, 26 Mar 2020 16:33:16 +0800
-Message-Id: <20200326083316.48847-40-wqu@suse.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200326083316.48847-1-wqu@suse.com>
-References: <20200326083316.48847-1-wqu@suse.com>
+        id S1726354AbgCZIs0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 04:48:26 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:38287 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgCZIs0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 04:48:26 -0400
+Received: by mail-ua1-f65.google.com with SMTP id h35so1821712uae.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 01:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=Pdr09OqDCxaS6kxdInvAosUxxNdqt0/Zh3BWLp90rxfdNcAPsph15NKZwd3wfkTZTm
+         qzQYChmx5W0Wunv9vhngHdS0RD7uZckQcl7zXz0ZE3YDojFtAhH1J5pO8oT3+LG+KbJY
+         4Jc32I//Avw2fBLqn517aKbpsoLMnr2AW7fdDLiYNfvwRRxa0cfsz9cT666ZRznaYr8c
+         nIWfvA92h5j2xxP0adZimNVVbWfOh1Lavv7XpupLul+4QVrL9KD5UJt5Qd1hWXt4mJ1+
+         zEI3s10R2ZDgBkDWd2Z7LD3ZPOg143zf/aOSxDFeNWYbhSJM23B/gF3l4zgKWowp/eWP
+         cqKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=X0OZAIYKnAZyYpChPgTJl9gvMhOXjjfMDPrxH0YSXtQPRLK3NWgiejo6+G74A9zjCN
+         u6yAPrAKRDc4UvPjv9axGbotUc1aqspXU0UlpQ0BT7/UNI8Q7TNMavTEtOrUD1VGmZ5n
+         KiVcM0Nmj3fQooXMS7UjzbhqgimPI5LYW8js0EoJVtJqXw6WQlK115WG+7HVIr2OxzAy
+         DS8KEPjlnBjyfZFNd8fza2zzY0ZbthXhi9ulZQhClJFMMePXBDiViS5zvfbRSRDDxH4e
+         eMFoljn+XJrPTYaxfzPwewZIR2rgmy6XgUdzJEZMMN3bRHSeGouLSofPvX18oXisR6Ve
+         Slqg==
+X-Gm-Message-State: ANhLgQ2WzU8drUqE7USg/awnmR0WXbl0b57H6+8e0MajJm8gUzgHszo6
+        k1XXZJK3lX4X5y5GVfB4FRm0oDHjGlB3N8/hlfw=
+X-Google-Smtp-Source: ADFU+vvlSdadq2T7Z94wxYdWR5tXm/x0xyQKdNjDSej6ZA3g+2eAIJg/KE5hL6EFaeqRsV685uu1jR6jbddsIMmQjjY=
+X-Received: by 2002:ab0:4502:: with SMTP id r2mr5697400uar.63.1585212504163;
+ Thu, 26 Mar 2020 01:48:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a67:fc57:0:0:0:0:0 with HTTP; Thu, 26 Mar 2020 01:48:22
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   Aisha Gddafi <aishagddafi68@gmail.com>
+Date:   Thu, 26 Mar 2020 01:48:22 -0700
+Message-ID: <CAKJgomEP0JjR9hPqgC-4BcDKN6zxZXyezTPi7OmekyWZNQH0mg@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now use the backref cache backed backref walk mechanism.
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-This mechanism is trading memory usage for faster, and more qgroup
-specific backref walk.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Compared to original btrfs_find_all_roots(), it has the extra behavior
-difference:
-- Skip non-subvolume tress from the very beginning
-  Since only subvolume trees contribute to qgroup numbers, skipping them
-  would save us time.
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-- Skip reloc trees earlier
-  Reloc trees doesn't contribute to qgroup, and btrfs_find_all_roots()
-  also doesn't account them, thus we don't need to account them.
-  Here we use the detached nodes in backref cache to skip them faster
-  and earlier.
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-- Cached results
-  Well, backref cache is obviously cached, right.
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
 
-The major performance improvement happens for backref walk in commit
-tree, one of the most obvious user is qgroup rescan.
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
 
-Here is a small script to test it:
-
-  mkfs.btrfs -f $dev
-  mount $dev -o space_cache=v2 $mnt
-
-  btrfs subvolume create $mnt/src
-
-  for ((i = 0; i < 64; i++)); do
-          for (( j = 0; j < 16; j++)); do
-                  xfs_io -f -c "pwrite 0 2k" \
-			$mnt/src/file_inline_$(($i * 16 + $j)) > /dev/null
-          done
-          xfs_io -f -c "pwrite 0 1M" $mnt/src/file_reg_$i > /dev/null
-          sync
-          btrfs subvol snapshot $mnt/src $mnt/snapshot_$i
-  done
-  sync
-
-  btrfs quota enable $mnt
-  btrfs quota rescan -w $mnt
-
-Here is the benchmark for above small tests.
-The performance material is the total execution time of get_old_roots()
-for patched kernel (*), and find_all_roots() for original kernel.
-
-*: With CONFIG_BTRFS_FS_CHECK_INTEGRITY disabled, as get_old_roots()
-   will call find_all_roots() to verify the result if that config is
-   enabled.
-
-		|  Number of calls | Total exec time |
-------------------------------------------------------
-find_all_roots()|  732		   | 529991034ns
-get_old_roots() |  732		   | 127998312ns
-------------------------------------------------------
-diff		|  0.00 %	   | -75.8 %
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/qgroup.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index ab19b2bfa112..4f36206a96aa 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2054,8 +2054,9 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_fs_info *fs_info,
- 	u64 bytenr = qrecord->bytenr;
- 	int ret;
- 
--	ret = btrfs_find_all_roots(NULL, fs_info, bytenr, 0, &old_root, false);
--	if (ret < 0) {
-+	old_root = get_old_roots(fs_info, bytenr);
-+	if (IS_ERR(old_root)) {
-+		ret = PTR_ERR(old_root);
- 		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
- 		btrfs_warn(fs_info,
- "error accounting new delayed refs extent (err code: %d), quota inconsistent",
-@@ -3001,12 +3002,12 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 			 * extent record
- 			 */
- 			if (WARN_ON(!record->old_roots)) {
--				/* Search commit root to find old_roots */
--				ret = btrfs_find_all_roots(NULL, fs_info,
--						record->bytenr, 0,
--						&record->old_roots, false);
--				if (ret < 0)
-+				record->old_roots = get_old_roots(fs_info,
-+						record->bytenr);
-+				if (IS_ERR(record->old_roots)) {
-+					ret = PTR_ERR(record->old_roots);
- 					goto cleanup;
-+				}
- 			}
- 
- 			/* Free the reserved data space */
-@@ -3585,10 +3586,11 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
- 		else
- 			num_bytes = found.offset;
- 
--		ret = btrfs_find_all_roots(NULL, fs_info, found.objectid, 0,
--					   &roots, false);
--		if (ret < 0)
-+		roots = get_old_roots(fs_info, found.objectid);
-+		if (IS_ERR(roots)) {
-+			ret = PTR_ERR(roots);
- 			goto out;
-+		}
- 		/* For rescan, just pass old_roots as NULL */
- 		ret = btrfs_qgroup_account_extent(trans, found.objectid,
- 						  num_bytes, NULL, roots);
--- 
-2.26.0
-
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
