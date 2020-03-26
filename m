@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C311A19382B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 06:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEA0193ADD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 09:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgCZFyJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 01:54:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54518 "EHLO mx2.suse.de"
+        id S1726346AbgCZIdX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 04:33:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48950 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgCZFyJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 01:54:09 -0400
+        id S1726292AbgCZIdX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 04:33:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 79818AB8F
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 05:54:07 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E3362AD08
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 08:33:19 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: Only require sector size alignment for parent eb bytenr
-Date:   Thu, 26 Mar 2020 13:54:03 +0800
-Message-Id: <20200326055403.22748-1-wqu@suse.com>
+Subject: [PATCH v2 00/39] btrfs: qgroup: Use backref cache based backref walk for commit roots
+Date:   Thu, 26 Mar 2020 16:32:37 +0800
+Message-Id: <20200326083316.48847-1-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -28,152 +28,168 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-A completely sane converted fs will cause kernel warning at balance
-time:
+This patchset is based on misc-5.7 branch.
 
-[ 1557.188633] BTRFS info (device sda7): relocating block group 8162107392 flags data
-[ 1563.358078] BTRFS info (device sda7): found 11722 extents
-[ 1563.358277] BTRFS info (device sda7): leaf 7989321728 gen 95 total ptrs 213 free space 3458 owner 2
-[ 1563.358280] 	item 0 key (7984947200 169 0) itemoff 16250 itemsize 33
-[ 1563.358281] 		extent refs 1 gen 90 flags 2
-[ 1563.358282] 		ref#0: tree block backref root 4
-[ 1563.358285] 	item 1 key (7985602560 169 0) itemoff 16217 itemsize 33
-[ 1563.358286] 		extent refs 1 gen 93 flags 258
-[ 1563.358287] 		ref#0: shared block backref parent 7985602560
-[ 1563.358288] 			(parent 7985602560 is NOT ALIGNED to nodesize 16384)
-[ 1563.358290] 	item 2 key (7985635328 169 0) itemoff 16184 itemsize 33
-...
-[ 1563.358995] BTRFS error (device sda7): eb 7989321728 invalid extent inline ref type 182
-[ 1563.358996] ------------[ cut here ]------------
-[ 1563.359005] WARNING: CPU: 14 PID: 2930 at 0xffffffff9f231766
+The branch can be fetched from github for review/testing.
+https://github.com/adam900710/linux/tree/backref_cache_all
 
-Then with transaction abort, and obviously failed to balance the fs.
+The patchset survives all the existing qgroup/volume/replace/balance tests.
 
-[CAUSE]
-That mentioned inline ref type 182 is completely sane, it's
-BTRFS_SHARED_BLOCK_REF_KEY, it's some extra check making kernel to
-believe it's invalid.
 
-Commit 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref
-type") introduced extra checks for backref type.
+=== BACKGROUND ===
+One of the biggest problem for qgroup is its performance impact.
+Although we have improved it in since v5.0 kernel, there is still
+something slowing down qgroup, the backref walk.
 
-One of the requirement is, parent bytenr must be aligned to node size,
-which is not correct, especially for converted fs.
+Before this patchset, we use btrfs_find_all_roots() to iterate all roots
+referring to one extent.
+That function is doing a pretty good job, but it doesn't has any cache,
+which means even we're looking up the same extent, we still need to do
+the full backref walk.
 
-As converted fs could created metadata chunk at bytenr aligned to sector
-size, but not aligned to node size.
-Then new metadata extents in that chunk would only be aligned to sector
-size, with only offset inside the chunk is aligned to node size.
+On the other hand, relocation is doing its own backref cache, and
+provides a much faster backref walk.
 
-One tree block can start at any bytenr aligned to sector size. Node size
-should never be an alignment requirement.
-Thus such bad check is causing above bug.
+So the patchset is mostly trying to make qgroup backref walk (at least
+commit root backref walk) to use the same mechanism provided by
+relocation.
 
-[FIX]
-Change the alignment requirement from node size alignment to sector size
-alignment.
+=== BENCHMARK ===
+For the performance improvement, the last patch has a benchmark.
+The following content is completely copied from that patch:
+------
+Here is a small script to test it:
 
-Also, to make our lives a little easier, also output @iref when
-btrfs_get_extent_inline_ref_type() failed, so we can locate the item
-easier.
+  mkfs.btrfs -f $dev
+  mount $dev -o space_cache=v2 $mnt
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=205475
-Fixes: 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref type")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
+  btrfs subvolume create $mnt/src
+
+  for ((i = 0; i < 64; i++)); do
+          for (( j = 0; j < 16; j++)); do
+                  xfs_io -f -c "pwrite 0 2k" $mnt/src/file_inline_$(($i * 16 + $j)) > /dev/null
+          done
+          xfs_io -f -c "pwrite 0 1M" $mnt/src/file_reg_$i > /dev/null
+          sync
+          btrfs subvol snapshot $mnt/src $mnt/snapshot_$i
+  done
+  sync
+
+  btrfs quota enable $mnt
+  btrfs quota rescan -w $mnt
+
+Here is the benchmark for above small tests.
+The performance material is the total execution time of get_old_roots()
+for patched kernel (*), and find_all_roots() for original kernel.
+
+*: With CONFIG_BTRFS_FS_CHECK_INTEGRITY disabled, as get_old_roots()
+   will call find_all_roots() to verify the result if that config is
+   enabled.
+
+		|  Number of calls | Total exec time |
+------------------------------------------------------
+find_all_roots()|  732		   | 529991034ns
+get_old_roots() |  732		   | 127998312ns
+------------------------------------------------------
+diff		|  0.00 %	   | -75.8 %
+------
+
+
+=== PATCHSET STRUCTURE ===
+Patch 01~14 are refactors of relocation backref.
+Patch 15~31 are code move.
+Patch 32 is the patch that is already in misc-next.
+Patch 33 is the final preparation for qgroup backref.
+Patch 34~40 are the qgroup backref cache implementation.
+
+=== CHANGELOG ===
+v1:
+- Use btrfs_backref_ prefix for exported structure/function
+- Add one extra patch to rename backref_(node/edge/cache)
+  The renaming itself is not small, thus better to do the rename
+  first then move them to backref.[ch].
+- Add extra Reviewed-by tags.
+
 v2:
-- Update commit message
-  Remove the mention for mixed fs, as it's not the cause.
-  Add more explanation on how converted fs is causing the problem.
+- Rebased to misc-next branch
+- Add new reviewed-by tags from v1.
 
-- Fix print-tree comment and alignment check
----
- fs/btrfs/extent-tree.c | 13 +++++++------
- fs/btrfs/print-tree.c  | 18 ++++++++++--------
- 2 files changed, 17 insertions(+), 14 deletions(-)
+Qu Wenruo (39):
+  btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+  btrfs: backref: Implement btrfs_backref_iter_next()
+  btrfs: relocation: Use btrfs_backref_iter infrastructure
+  btrfs: relocation: Rename mark_block_processed() and
+    __mark_block_processed()
+  btrfs: relocation: Add backref_cache::pending_edge and
+    backref_cache::useless_node members
+  btrfs: relocation: Add backref_cache::fs_info member
+  btrfs: relocation: Make reloc root search specific for relocation
+    backref cache
+  btrfs: relocation: Refactor direct tree backref processing into its
+    own function
+  btrfs: relocation: Refactor indirect tree backref processing into its
+    own function
+  btrfs: relocation: Use wrapper to replace open-coded edge linking
+  btrfs: relocation: Specify essential members for alloc_backref_node()
+  btrfs: relocation: Remove the open-coded goto loop for breadth-first
+    search
+  btrfs: relocation: Refactor the finishing part of upper linkage into
+    finish_upper_links()
+  btrfs: relocation: Refactor the useless nodes handling into its own
+    function
+  btrfs: relocation: Add btrfs_ prefix for backref_node/edge/cache
+  btrfs: Move btrfs_backref_(node|edge|cache) structures to backref.h
+  btrfs: Rename tree_entry to simple_node and export it
+  btrfs: Rename backref_cache_init() to btrfs_backref_cache_init() and
+    move it to backref.c
+  btrfs: Rename alloc_backref_node() to btrfs_backref_alloc_node() and
+    move it backref.c
+  btrfs: Rename alloc_backref_edge() to btrfs_backref_alloc_edge() and
+    move it backref.c
+  btrfs: Rename link_backref_edge() to btrfs_backref_link_edge() and
+    move it backref.h
+  btrfs: Rename free_backref_(node|edge) to
+    btrfs_backref_free_(node|edge) and move them to backref.h
+  btrfs: Rename drop_backref_node() to btrfs_backref_drop_node() and
+    move its needed facilities to backref.h
+  btrfs: Rename remove_backref_node() to btrfs_backref_cleanup_node()
+    and move it to backref.c
+  btrfs: Rename backref_cache_cleanup() to btrfs_backref_release_cache()
+    and move it to backref.c
+  btrfs: Rename backref_tree_panic() to btrfs_backref_panic(), and move
+    it to backref.c
+  btrfs: Rename should_ignore_root() to btrfs_should_ignore_reloc_root()
+    and export it
+  btrfs: relocation: Open-code read_fs_root() for
+    handle_indirect_tree_backref()
+  btrfs: Rename handle_one_tree_block() to btrfs_backref_add_tree_node()
+    and move it to backref.c
+  btrfs: Rename finish_upper_links() to
+    btrfs_backref_finish_upper_links() and move it to backref.c
+  btrfs: relocation: Move error handling of build_backref_tree() to
+    backref.c
+  btrfs: backref: Only ignore reloc roots for indrect backref resolve if
+    the backref cache is for reloction purpose
+  btrfs: qgroup: Introduce qgroup backref cache
+  btrfs: qgroup: Introduce qgroup_backref_cache_build() function
+  btrfs: qgroup: Introduce a function to iterate through backref_cache
+    to find all parents for specified node
+  btrfs: qgroup: Introduce helpers to get needed tree block info
+  btrfs: qgroup: Introduce verification for function to ensure old roots
+    ulist matches btrfs_find_all_roots() result
+  btrfs: qgroup: Introduce a new function to get old_roots ulist using
+    backref cache
+  btrfs: qgroup: Use backref cache to speed up old_roots search
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 54a64d1e18c6..6b9e7e050995 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -401,10 +401,10 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 				/*
- 				 * Every shared one has parent tree
- 				 * block, which must be aligned to
--				 * nodesize.
-+				 * sector size.
- 				 */
- 				if (offset &&
--				    IS_ALIGNED(offset, eb->fs_info->nodesize))
-+				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
- 					return type;
- 			}
- 		} else if (is_data == BTRFS_REF_TYPE_DATA) {
-@@ -415,10 +415,10 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 				/*
- 				 * Every shared one has parent tree
- 				 * block, which must be aligned to
--				 * nodesize.
-+				 * sector size.
- 				 */
- 				if (offset &&
--				    IS_ALIGNED(offset, eb->fs_info->nodesize))
-+				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
- 					return type;
- 			}
- 		} else {
-@@ -428,8 +428,9 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 	}
- 
- 	btrfs_print_leaf((struct extent_buffer *)eb);
--	btrfs_err(eb->fs_info, "eb %llu invalid extent inline ref type %d",
--		  eb->start, type);
-+	btrfs_err(eb->fs_info,
-+		  "eb %llu iref 0x%lu invalid extent inline ref type %d",
-+		  eb->start, (unsigned long)iref, type);
- 	WARN_ON(1);
- 
- 	return BTRFS_REF_TYPE_INVALID;
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 61f44e78e3c9..aa1636abde90 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -93,11 +93,12 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
- 			pr_cont("shared block backref parent %llu\n", offset);
- 			/*
- 			 * offset is supposed to be a tree block which
--			 * must be aligned to nodesize.
-+			 * must be aligned to sector size.
- 			 */
--			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
--				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
--					offset, (unsigned long long)eb->fs_info->nodesize);
-+			if (!IS_ALIGNED(offset, eb->fs_info->sectorsize))
-+				pr_info(
-+		"\t\t\t(parent %llu is NOT ALIGNED to sectorsize %u)\n",
-+					offset, eb->fs_info->sectorsize);
- 			break;
- 		case BTRFS_EXTENT_DATA_REF_KEY:
- 			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
-@@ -109,11 +110,12 @@ static void print_extent_item(struct extent_buffer *eb, int slot, int type)
- 			       offset, btrfs_shared_data_ref_count(eb, sref));
- 			/*
- 			 * offset is supposed to be a tree block which
--			 * must be aligned to nodesize.
-+			 * must be aligned to sector size.
- 			 */
--			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
--				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
--				     offset, (unsigned long long)eb->fs_info->nodesize);
-+			if (!IS_ALIGNED(offset, eb->fs_info->sectorsize))
-+				pr_info(
-+		"\t\t\t(parent %llu is NOT ALIGNED to sectorsize %u)\n",
-+				     offset, eb->fs_info->sectorsize);
- 			break;
- 		default:
- 			pr_cont("(extent %llu has INVALID ref type %d)\n",
+ fs/btrfs/backref.c    |  808 ++++++++++++++++++++++++++++
+ fs/btrfs/backref.h    |  319 +++++++++++
+ fs/btrfs/ctree.h      |    5 +
+ fs/btrfs/disk-io.c    |    1 +
+ fs/btrfs/misc.h       |   54 ++
+ fs/btrfs/qgroup.c     |  516 +++++++++++++++++-
+ fs/btrfs/relocation.c | 1187 ++++++++---------------------------------
+ 7 files changed, 1925 insertions(+), 965 deletions(-)
+
 -- 
 2.26.0
 
