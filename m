@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88984193B6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 10:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622B5193B70
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 10:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbgCZJCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 05:02:48 -0400
-Received: from lists.nic.cz ([217.31.204.67]:34720 "EHLO mail.nic.cz"
+        id S1727666AbgCZJDP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 05:03:15 -0400
+Received: from lists.nic.cz ([217.31.204.67]:34878 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726359AbgCZJCr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 05:02:47 -0400
+        id S1726359AbgCZJDP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 05:03:15 -0400
 Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id BE312142776;
-        Thu, 26 Mar 2020 10:02:45 +0100 (CET)
+        by mail.nic.cz (Postfix) with ESMTPSA id 30E32142F70;
+        Thu, 26 Mar 2020 10:03:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1585213365; bh=Jja1pDZixewgXbcTva8Ibx0vV0/qZF0GjxafVrfgjD4=;
+        t=1585213393; bh=GxcFqwVa86C4LeBYRn8TQrt01rLrI9paWKjZnPW4YAQ=;
         h=Date:From:To;
-        b=s/I1vWYH96NFlhdXonasWsOCrkkDALm9criFPrw+RT4PtH/EC0D9DokL3yUJClDrD
-         JYTC0Zb6nJAzX6/ZNmWNbpLXIfvVcc+YeGZmlggAtFClb/sAPM9Cq1m8SAVWdFGnwh
-         cZC5Zj7ND2+U7ZHejP2klvnmeMPp3BLqE7gbIdTo=
-Date:   Thu, 26 Mar 2020 10:02:45 +0100
+        b=q2gOy1vFXs7WoEF9DTuKa9E6jBtA3eBK4Lip25vz/iAfFgDMFiDqCsDqv9D+78YcL
+         HebWFCVG6Cgu9X4VZY/fchExhhn5PCturSUYAKWaJST1iNeHUAZdc977UwCKhmbuFH
+         JgoBzBHzzNua2Fel4SgV7Htufjm7082cJP4XYadw=
+Date:   Thu, 26 Mar 2020 10:03:12 +0100
 From:   Marek Behun <marek.behun@nic.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH U-BOOT v2 1/3] fs: btrfs: Use LZO_LEN to replace
- immediate number
-Message-ID: <20200326100245.730679aa@nic.cz>
-In-Reply-To: <20200326053556.20492-2-wqu@suse.com>
+Subject: Re: [PATCH U-BOOT v2 2/3] fs: btrfs: Reject fs with sector size
+ other than PAGE_SIZE
+Message-ID: <20200326100312.32cbae6f@nic.cz>
+In-Reply-To: <20200326053556.20492-3-wqu@suse.com>
 References: <20200326053556.20492-1-wqu@suse.com>
-        <20200326053556.20492-2-wqu@suse.com>
+        <20200326053556.20492-3-wqu@suse.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +44,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 26 Mar 2020 13:35:54 +0800
+On Thu, 26 Mar 2020 13:35:55 +0800
 Qu Wenruo <wqu@suse.com> wrote:
 
-> Just a cleanup. These immediate numbers make my eyes hurt.
+> Although in theory u-boot fs driver could easily support more sector
+> sizes, current code base doesn't have good enough way to grab sector
+> size yet.
+>=20
+> This would cause problem for later LZO fixes which rely on sector size.
+>=20
+> And considering that most u-boot boards are using 4K page size, which is
+> also the most common sector size for btrfs, rejecting fs with
+> non-page-sized sector size shouldn't cause much problem.
+>=20
+> This should only be a quick fix before we implement better sector size
+> support.
 >=20
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Cc: Marek Behun <marek.behun@nic.cz>
 > ---
->  fs/btrfs/compression.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+>  fs/btrfs/super.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >=20
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 346875d45a1b..4ef44ce11485 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -12,36 +12,38 @@
->  #include <u-boot/zlib.h>
->  #include <asm/unaligned.h>
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 2dc4a6fcd7a3..b693a073fc0b 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -7,6 +7,7 @@
 > =20
-> +/* Header for each segment, LE32, recording the compressed size */
-> +#define LZO_LEN		4
->  static u32 decompress_lzo(const u8 *cbuf, u32 clen, u8 *dbuf, u32 dlen)
->  {
->  	u32 tot_len, in_len, res;
->  	size_t out_len;
->  	int ret;
+>  #include "btrfs.h"
+>  #include <memalign.h>
+> +#include <linux/compat.h>
 > =20
-> -	if (clen < 4)
-> +	if (clen < LZO_LEN)
+>  #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN	\
+>  				 | BTRFS_HEADER_FLAG_RELOC	\
+> @@ -232,6 +233,13 @@ int btrfs_read_superblock(void)
 >  		return -1;
+>  	}
 > =20
->  	tot_len =3D le32_to_cpu(get_unaligned((u32 *)cbuf));
-> -	cbuf +=3D 4;
-> -	clen -=3D 4;
-> -	tot_len -=3D 4;
-> +	cbuf +=3D LZO_LEN;
-> +	clen -=3D LZO_LEN;
-> +	tot_len -=3D LZO_LEN;
-> =20
->  	if (tot_len =3D=3D 0 && dlen)
->  		return -1;
-> -	if (tot_len < 4)
-> +	if (tot_len < LZO_LEN)
->  		return -1;
-> =20
->  	res =3D 0;
-> =20
-> -	while (tot_len > 4) {
-> +	while (tot_len > LZO_LEN) {
->  		in_len =3D le32_to_cpu(get_unaligned((u32 *)cbuf));
-> -		cbuf +=3D 4;
-> -		clen -=3D 4;
-> +		cbuf +=3D LZO_LEN;
-> +		clen -=3D LZO_LEN;
-> =20
-> -		if (in_len > clen || tot_len < 4 + in_len)
-> +		if (in_len > clen || tot_len < LZO_LEN + in_len)
->  			return -1;
-> =20
-> -		tot_len -=3D 4 + in_len;
-> +		tot_len -=3D (LZO_LEN + in_len);
-> =20
->  		out_len =3D dlen;
->  		ret =3D lzo1x_decompress_safe(cbuf, in_len, dbuf, &out_len);
+> +	if (sb->sectorsize !=3D PAGE_SIZE) {
+> +		printf(
+> +	"%s: Unsupported sector size (%u), only supports %u as sector size\n",
+> +			__func__, sb->sectorsize, PAGE_SIZE);
+> +		return -1;
+> +	}
+> +
+>  	if (btrfs_info.sb.num_devices !=3D 1) {
+>  		printf("%s: Unsupported number of devices (%lli). This driver "
+>  		       "only supports filesystem on one device.\n", __func__,
 
 Reviewed-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
