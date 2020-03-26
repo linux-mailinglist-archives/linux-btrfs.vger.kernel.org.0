@@ -2,256 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0161193FA2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 14:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ED6194058
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Mar 2020 14:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgCZNXI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 26 Mar 2020 09:23:08 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:42040 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgCZNXI (ORCPT
+        id S1727593AbgCZNve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 09:51:34 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:33277 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726359AbgCZNvd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 09:23:08 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id EC53E637107; Thu, 26 Mar 2020 09:23:06 -0400 (EDT)
-Date:   Thu, 26 Mar 2020 09:23:06 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     halfdog <me@halfdog.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: FIDEDUPERANGE woes may continue (or unrelated issue?)
-Message-ID: <20200326132306.GG2693@hungrycats.org>
-References: <2442-1582352330.109820@YWu4.f8ka.f33u>
- <31deea37-053d-1c8e-0205-549238ced5ac@gmx.com>
- <1560-1582396254.825041@rTOD.AYhR.XHry>
- <13266-1585038442.846261@8932.E3YE.qSfc>
- <20200325035357.GU13306@hungrycats.org>
- <3552-1585216388.633914@1bS6.I8MI.I0Ki>
+        Thu, 26 Mar 2020 09:51:33 -0400
+Received: by mail-vs1-f67.google.com with SMTP id y138so3877408vsy.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Mar 2020 06:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=6eNlm4u0hFFS2Z0SlwlkENMEKenje0kyY7uBD4RBXME=;
+        b=OuXeh9jVxiKs0Nwsz41vhkE+mXCoSE/IinZjgKgo93wD+zgfc8e0Y1+MZFReLCs+Zs
+         BIjEoNJDvAIITXbn9Sdw9vo2oDBWcXDE3OkNy/RuTlGIZnw/uU+QCDPkIRZs3WbREfi0
+         HlIlO0QknjktDRMoaj4UgAKde6eUe3YPt5JF4vaAsP3OUtuZenWI9/tKSzjZhWxHaRhB
+         QLaG9UlILg68oSLl0ENQeoIT7J8dZTCSykuR0lQwQ+wA8EZ5gl1+IET6pN8PK+rYLXVY
+         LOLkt7sku6yRjCbk7vWIt7Stgq8dSpZXZFJ32lnER2j506Q3Kwrrzn3bBGO1MV3sKXGd
+         JLRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=6eNlm4u0hFFS2Z0SlwlkENMEKenje0kyY7uBD4RBXME=;
+        b=OWQ4OGsG0mOz/RTFbEVtup6KWH4cDXdb9DubcLk8uQXcqq75fJZYCDjBLRndZdFwUe
+         u34TM2QV3q8A1Y7C1QdR0Em3l5uiOvUYXWmM6Ifhm+ecB11lpnj2J45naO9IU3DwmFy8
+         4OKdiWnPPSvuoxABgqh//dGpUyWGOAA78Es2sKCEkHuAcD4zNsUNi0xbhQewe3D+GPx9
+         VpWZg9uXy38uGSJ9Wpnp0r6esATSOxeuJHJjf3czURAEnYzDgHcXLiu/fDebWjuATThs
+         7sSNZbmnyXqtTQLfh3UVfM/HhwhJoHuBk+kqjW6jNcuhUgDo6FmDQ67q/v0IjZBn4uo7
+         OowA==
+X-Gm-Message-State: ANhLgQ2pGPg8n63vqZNlrjsoy8VVo8duX0BxWNvqIDhpFLtAkAQZhEix
+        fsj7A87Wjkoe86QbIldhry0wl7rvycFTz8PDl04=
+X-Google-Smtp-Source: ADFU+vtm5OTmSYW6LOyq7ghR65dNCiDEE1EBHe8BZflayhFJgQ5q2BxU1mE6Itps3leH02WArng5kyoAiDZawQAqJVI=
+X-Received: by 2002:a67:7c8f:: with SMTP id x137mr6182829vsc.99.1585230691891;
+ Thu, 26 Mar 2020 06:51:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <3552-1585216388.633914@1bS6.I8MI.I0Ki>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200325015251.28838-1-marcos@mpdesouza.com>
+In-Reply-To: <20200325015251.28838-1-marcos@mpdesouza.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 26 Mar 2020 13:51:20 +0000
+Message-ID: <CAL3q7H5y_i1czDe9ftp5U-SNFO1fOG8DJPoNToaMLJwjX-D-kw@mail.gmail.com>
+Subject: Re: [PATCH RFC] btrfs: send: Emit all xattr of an inode if the
+ uid/gid changed
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 09:53:08AM +0000, halfdog wrote:
-> Thanks for your lengthy reply!
-> 
-> Zygo Blaxell writes:
-> > On Tue, Mar 24, 2020 at 08:27:22AM +0000, halfdog wrote:
-> >> Hello list,
-> >>
-> >> It seems the woes really continued ... After trashing the
-> >> old, corrupted filesystem (see old message below) I started
-> >> rebuilding the storage. Synchronization from another (still
-> >> working) storage roughly should have performed the same actions
-> >> as during initial build (minus count and time of mounts/unmounts,
-> >> transfer interrupts, ...).
-> >>
-> >> It does not seem to be a mere coincidence, that the corruption
-> >> occured when deduplicating the exact same file as last time.
-> >> While corruption last time made disk completely inaccessible,
-> >> this time it just was mounted readonly with a different error
-> >> message:
-> >>
-> >> [156603.177699] BTRFS error (device dm-1): parent transid
-> >> verify failed on 6680428544 wanted 12947 found 12945
-> >> [156603.177707] BTRFS: error (device dm-1) in
-> >> __btrfs_free_extent:3080: errno=-5 IO failure [156603.177708]
-> >> BTRFS info (device dm-1): forced readonly [156603.177711]
-> >> BTRFS: error (device dm-1) in btrfs_run_delayed_refs:2188:
-> >> errno=-5 IO failure
-> >
-> > Normally those messages mean your hardware is dropping writes
-> > somewhere; however, you previously reported running kernels
-> > 5.3.0 and 5.3.9, so there may be another explanation.
-> >
-> > Try kernel 4.19.x, 5.4.19, 5.5.3, or later.  Definitely do
-> > not use kernels from 5.1-rc1 to 5.4.13 inclusive unless backported
-> > fixes are included.
-> 
-> Sorry, I forgot to update on that: I used the old kernel but also
-> managed t reproduce on
-> ii  linux-image-5.4.0-4-amd64            5.4.19-1                            amd64        Linux 5.4 for 64-bit PCs (signed)
-> Linux version 5.4.0-4-amd64 (debian-kernel@lists.debian.org) (gcc version 9.2.1 20200203 (Debian 9.2.1-28)) #1 SMP Debian 5.4.19-1 (2020-02-13)
-> 
-> > I mention 5.5.3 and 5.4.19 instead of 5.5.0 and 5.4.14 because
-> > the later ones include the EOF dedupe fix.  4.19 avoids the
-> > regressions of later kernels.
-> 
-> 5.4.19-1 matches your spec, but as latest Debian experimental
-> is "linux-signed-amd64 (5.5~rc5+1~exp1)", which is also above
-> your  5.5.3 recommendation, should I try again with that kernel
-> or even use the "5.5~rc5+1~exp1" config to apply it to yesterays
-> 5.5.13 LTS and build an own kernel?
+On Wed, Mar 25, 2020 at 1:52 AM Marcos Paulo de Souza
+<marcos@mpdesouza.com> wrote:
+>
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>
+> [PROBLEM]
+> When doing incremental send with a file with capabilities, there is a
+> situation where the capability can be lost in the receiving side. The
+> sequence of actions bellow show the problem:
+>
+> $ mount /dev/sda fs1
+> $ mount /dev/sdb fs2
+>
+> $ touch fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> $ btrfs subvol snap -r fs1 fs1/snap_init
+> $ btrfs send fs1/snap_init | btrfs receive fs2
+>
+> $ chgrp adm fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+>
+> $ btrfs subvol snap -r fs1 fs1/snap_complete
+> $ btrfs subvol snap -r fs1 fs1/snap_incremental
+>
+> $ btrfs send fs1/snap_complete | btrfs receive fs2
+> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+>
+> At this point fs/snap_increment/foo.bar lost the capability, since a
+> chgrp was emitted by "btrfs send". The current code only checks for the
+> items that changed, and as the XATTR kept the value only the chgrp change
+> is emitted.
 
-I would try a mainline kernel just to make sure Debian didn't backport
-something they shouldn't have.
+So, the explanation could be a bit more clear.
 
-> >> As it seems that the bug here is somehow reproducible, I would
-> >> like to try to develop a reproducer exploit and fix for that
-> >> bug as an excercise. Unfortunately the fault occurs only after
-> >> transfering and deduplicating ~20TB of data.
-> >>
-> >> Are there any recommendations e.g. how to "bisect" that problem?
-> >
-> > Find someone who has already done it and ask.  ;)
-> 
-> Seems I found someone with good recommendations already :)
-> 
-> Thank you!
-> 
-> > Upgrade straight from 5.0.21 to 5.4.14 (or 5.4.19 if you want
-> > the dedupe fix too).  Don't run any kernel in between for btrfs.
-> >
-> > There was a bug introduced in 5.1-rc1, fixed in 5.4.14, which
-> > corrupts metadata.  It's a UAF bug, so its behavior can be
-> > unpredictable, but quite often the symptom is corrupted metadata
-> > or write-time tree-checker errors. Sometimes you just get a
-> > harmless NULL dereference crash, or some noise warnings.
-> >
-> > There are at least two other filesystem corrupting bugs with
-> > lifetimes overlapping that range of kernel versions; however
-> > both of those were fixed by 5.3.
-> 
-> So maybe leaving my 5.4.19-1 to the 5.5+ series sounds like recommended
-> anyway?
+First the send stream emits a "chown" command (and not a "chgrp"
+command), that's what is used to change both users and groups.
 
-I've logged an order of magnitude more testing hours on 5.4.x than
-on 5.5.x, so I can't recommend one over the other due to lack of
-symmetrical data.
+Then mentioning that changing the group of a file causes the
+capability xattr to be deleted is crucial - that's why the receiving
+side ends up losing the capability, because we send an operation to
+change the group but we don't send an operation to set the capability
+xattr, since the value of the xattr is the same in both snapshots.
 
-I'd really like to know if you can reproduce this on 4.19 or 5.0.21.
-Those kernels predate the 5.1.x reloc_root lifespan change that we
-are still debugging to this day (in addition to metadata corruption,
-that change also seems to cause the recent looping balance issue and
-possibly other issues that haven't been identified yet).
+>
+> [FIX]
+> In order to fix this issue, check if the uid/gid of the inode change,
+> and if yes, emit all XATTR again, including the capability.
+>
+> Fixes: https://github.com/kdave/btrfs-progs/issues/202
 
-> >> Is there a way (switch or source code modification) to log
-> >> all internal btrfs state transitions for later analysis?
-> >
-> > There are (e.g. the dm write logger), but most bugs that would
-> > be found in unit tests by such tools have been fixed by the
-> > time a kernel is released, and they'll only tell you that btrfs
-> > did something wrong, not why.
-> 
-> As IO seems sane, the error reported "verify failed on 6680428544
-> wanted 12947 found 12945" seems not to point to a data structure
-> problem at a sector/page/block boundary (12947==0x3293), I would
-> also guess, that basic IO/paging is not involved in it, but that
-> the data structure is corrupted in memory and used directly or
-> written/reread ... therefore I would deem write logs also as
-> not the first way to go ..
+The Fixes: tag is used to identify commits, in the kernel, that
+introduced some problem.
+A "Link:" tag is more appropriate to point to the btrfs-progs github issue.
 
-transids are _timestamps_ not _positions_.  The message is saying while
-walking the tree, we were expecting to read a block that was written at
-time 12947 (the reference item's timestamp), but we found one that was
-written at an earlier time 12945 (the referred block's timestamp) instead.
+>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  I'm posting this patch as a RFC because I had some questions
+>  * Is this the correct place to fix?
 
-This check is normally used to detect firmware bugs where the drive said
-sectors were written (so we wrote the referring block) but the sectors
-were not in fact written (so the referenced block contains old data with
-a good csum and some other check fields).
+Nop, see below.
 
-transid verify also detects split-brain raid1 failures:  drive A completed
-write 12945 but drive B did not, then later we read drive B and due to
-the transid verify check, we can know that drive B is wrong and copy
-replacement data from drive A to correct drive B.
+>  * Also, emitting all XATTR of the inode seems overkill...
 
-You can also get transid verify from host memory corruption, either
-due to RAM failure or kernel bug.  RAM failure is not usually so
-repeatable, but a kernel bug could be.
+Yes, but I wouldn't worry much - first it's not common for files to
+have many xattrs, second they are small values and are layed out
+sequentially in the btree, and above all, uids/gids are mostly static
+and don't change often.
+But that can be avoided, see below.
 
-> > Also, there can be tens of thousands of btrfs state transitions
-> > per second during dedupe, so the volume of logs themselves
-> > can present data wrangling challenges.
-> 
-> Yes, that's why me asking. Maybe someone has already taken up
-> that challenge as such a tool-chain (generic transaction logging
-> with userspace stream compression, analysis) might be quite
-> handy for such task, but hell effort to build ...
-> 
-> > The more invasively you try to track internal btrfs state,
-> > the more the tools become _part_ of that state, and introduce
-> > additional problems. e.g. there is the ref verifier, and the
-> > _bug fix history_ of the ref verifier...
-> 
-> That is right. Therefore I hoped, that some minimal invasive
-> toolsets might be available already for kernel or maybe could
-> be written, e.g.
-> 
-> * Install an alternative kernel page fault handler
-> * Set breakpoints on btrfs functions
->   * When entering the function, record return address, stack
->     and register arguments, send to userspace
->   * Strip write bits kernel from page table for most pages
->     exept those needed by page fault handler
->   * Continue execution
-> * For each pagefault, the pagefault flips back to original
->   page table, sends information about write fault (what, where)
->   to userspace, performs the faulted instruction before switching
->   back to read-only page table and continuing btrfs function
-> * When returning from the last btrfs function, also switch back
->   to standard page table.
-> 
-> By being completely btrfs-agnostic, such tool should not introduce
-> any btrfs-specific issues due to the analysis process. Does someone
-> know about such a tool or a simplified version of it?
-> 
-> Doing similar over qemu/kernel debugging tools might be easier
-> to implement but too slow to handle that huge amount of data.
-> 
-> >> Other ideas for debugging that?
-> >
-> > Run dedupe on a test machine with a few TB test corpus (or
-> > whatever your workload is) on a debug-enabled kernel, report
-> > every bug that kills the box or hurts the data, update the
-> > kernel to get fixes for the bugs that were reported.  Repeat
-> > until the box stops crapping itself, then use the kernel it
-> > stopped on (5.4.14 in this case).  Do that for every kernel
-> > upgrade because regressions are a thing.
-> 
-> Well, that seems like overkill. My btrfs is not haunted by a
-> load of bugs, just one that corrupted the filesystem two times
-> when trying to deduplicate the same set of files.
-> 
-> As desccribed, just creating a btrfs with only that file did
-> not trigger the corruption. If this is not a super-rare coincidence,
-> then something in the other 20TB of transferred files has to
-> have corrupted the file system or at least brought it to a state,
-> where then deduplication of exact that problematic set of files
-> triggered the final fault.
+>  * Should it be fixed in userspace?
 
-The above is a description of my standard test setup, which in turn
-is a more compact version of production workloads.  I haven't seen
-a 5.4.x filesystem splat since 5.4.14, but OTOH that's only 2 months.
+No.
 
-You could be finding something new here, but we have to make sure there's
-nothing wrong with your test setup.  Running a test with an older kernel
-would help with that.
+Send should emit a sequence of operations that produces correct
+results in the receiving side. It should never result in any data or
+metadata loss, crashes, etc.
 
-> >> Just creating the same number of snapshots and putting just
-> >> that single file into each of them did not trigger the bug
-> >> during deduplication.
-> >
-> > Dedupe itself is fine, but some of the supporting ioctls a
-> > deduper has to use to get information about the filesystem
-> > structure triggered a lot of bugs.
-> 
-> To get rid of that, I already ripped out quite some of the userspace
-> deduping part. I now do the extent queries in a Python tool
-> using ctypes, split the dedup request into smaller chunks (to
-> improve logging granularity) and just use the deduper to do
-> that single FIDEDUPERANGE call (I was to lazy to ctype that
-> in Python too).
-> 
-> Still deduplicating the same files caused corruption again.
-> 
-> hd
-> 
-> > ...
-> 
-> 
+This is no different from rename dependencies for example, where we
+make send change the order of rename and other operations so that the
+receiving side doesn't fail - otherwise we would have to add a lot of
+intelligence and complicated code to btrfs receive in progs - which
+brings us to another point - any consumer of a send stream would have
+to be changed - btrfs receive from btrfs-progs, is the most well
+known, and very few people will use anything else, but there may be
+other consumers of send streams out there.
+
+>
+>  fs/btrfs/send.c | 29 +++++++++++++++++++++++++----
+>  1 file changed, 25 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index c5f41bd86765..5cffe5da91cf 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -6187,6 +6187,14 @@ static int changed_inode(struct send_ctx *sctx,
+>                 sctx->cur_inode_mode =3D btrfs_inode_mode(
+>                                 sctx->right_path->nodes[0], right_ii);
+>         } else if (result =3D=3D BTRFS_COMPARE_TREE_CHANGED) {
+> +               u64 left_uid =3D btrfs_inode_uid(sctx->left_path->nodes[0=
+],
+> +                                       left_ii);
+> +               u64 left_gid =3D btrfs_inode_gid(sctx->left_path->nodes[0=
+],
+> +                                       left_ii);
+> +               u64 right_uid =3D btrfs_inode_uid(sctx->right_path->nodes=
+[0],
+> +                                       right_ii);
+> +               u64 right_gid =3D btrfs_inode_gid(sctx->right_path->nodes=
+[0],
+> +                                       right_ii);
+>                 /*
+>                  * We need to do some special handling in case the inode =
+was
+>                  * reported as changed with a changed generation number. =
+This
+> @@ -6236,15 +6244,12 @@ static int changed_inode(struct send_ctx *sctx,
+>                         sctx->send_progress =3D sctx->cur_ino + 1;
+>
+>                         /*
+> -                        * Now process all extents and xattrs of the inod=
+e as if
+> +                        * Now process all extents of the inode as if
+>                          * they were all new.
+>                          */
+>                         ret =3D process_all_extents(sctx);
+>                         if (ret < 0)
+>                                 goto out;
+> -                       ret =3D process_all_new_xattrs(sctx);
+> -                       if (ret < 0)
+> -                               goto out;
+>                 } else {
+>                         sctx->cur_inode_gen =3D left_gen;
+>                         sctx->cur_inode_new =3D 0;
+> @@ -6255,6 +6260,22 @@ static int changed_inode(struct send_ctx *sctx,
+>                         sctx->cur_inode_mode =3D btrfs_inode_mode(
+>                                         sctx->left_path->nodes[0], left_i=
+i);
+>                 }
+> +
+> +               /*
+> +                * Process all XATTR of the inode if the generation or ow=
+ner
+> +                * changed.
+> +                *
+> +                * If the inode changed it's uid/gid, but kept a
+> +                * security.capability xattr, only the uid/gid will be em=
+itted,
+> +                * causing the related xattr to deleted. For this reason =
+always
+> +                * emit the XATTR when an inode has changed.
+> +                */
+> +               if (sctx->cur_inode_new_gen || left_uid !=3D right_uid ||
+> +                   left_gid !=3D right_gid) {
+> +                       ret =3D process_all_new_xattrs(sctx);
+
+So the correct place for fixing this issue is at
+send.c:finish_inode_if_needed(), in the following place:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/=
+btrfs/send.c?h=3Dv5.6-rc7#n6000
+
+If a chown operation is sent, then just send the xattr - and instead
+if sending all xattrs, just send the xattr with the name
+"security.capability" - check first if there are any other
+capabilities that use other xattr names - if there are, just emit
+set_xattr operations for all xattrs with a "security." prefix in their
+name.
+
+Thanks.
+
+
+> +                       if (ret < 0)
+> +                               goto out;
+> +               }
+>         }
+>
+>  out:
+> --
+> 2.25.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
