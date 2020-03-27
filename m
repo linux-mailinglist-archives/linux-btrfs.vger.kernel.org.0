@@ -2,83 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 210B0194D19
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 00:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7807194E36
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 01:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgCZX3B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Mar 2020 19:29:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgCZXYX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Mar 2020 19:24:23 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EDAA20719;
-        Thu, 26 Mar 2020 23:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585265063;
-        bh=ugF1C5/vF94YwU2OV9TAX2LV23Lfxd+eXmOauT11yTw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ng01d3FS/SB7hl1mg7H5P6dqdR43ZqI+QKEy+OH/bk5xJxYMuEjOvtVKBlmCp8SrG
-         n/Kc9p6/J1nyJ4sPjwrn4KiAbxtOWbpa+eWFi4KY8/0tyyVN1BFDUFBeNXGZmXZEgb
-         NFTSl0eMPM4GGA4vA5w04v85ME3DNfKA6SzOfMEA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 22/28] btrfs: fix removal of raid[56|1c34} incompat flags after removing block group
-Date:   Thu, 26 Mar 2020 19:23:51 -0400
-Message-Id: <20200326232357.7516-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200326232357.7516-1-sashal@kernel.org>
-References: <20200326232357.7516-1-sashal@kernel.org>
+        id S1727720AbgC0AzR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Mar 2020 20:55:17 -0400
+Received: from tartarus.angband.pl ([54.37.238.230]:33334 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727722AbgC0AzR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Mar 2020 20:55:17 -0400
+Received: from [2a02:a31c:853f:a300::4] (helo=valinor.angband.pl)
+        by tartarus.angband.pl with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1jHdHE-0004x4-Cx; Fri, 27 Mar 2020 01:55:14 +0100
+Received: from kilobyte by valinor.angband.pl with local (Exim 4.93)
+        (envelope-from <kilobyte@valinor.angband.pl>)
+        id 1jHdHD-000Wvd-VB; Fri, 27 Mar 2020 01:55:11 +0100
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Adam Borowski <kilobyte@angband.pl>
+Date:   Fri, 27 Mar 2020 01:55:05 +0100
+Message-Id: <20200327005505.126534-1-kilobyte@angband.pl>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a02:a31c:853f:a300::4
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tartarus.angband.pl
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=8.0 tests=BAYES_00=-1.9,RDNS_NONE=0.793,
+        SPF_PASS=-0.001 autolearn=no autolearn_force=no languages=en da
+Subject: [PATCH] btrfs-progs: check: typo in an error message: "boudnary"
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on tartarus.angband.pl)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
-
-[ Upstream commit d8e6fd5c7991033037842b32c9774370a038e902 ]
-
-We are incorrectly dropping the raid56 and raid1c34 incompat flags when
-there are still raid56 and raid1c34 block groups, not when we do not any
-of those anymore. The logic just got unintentionally broken after adding
-the support for the raid1c34 modes.
-
-Fix this by clear the flags only if we do not have block groups with the
-respective profiles.
-
-Fixes: 9c907446dce3 ("btrfs: drop incompat bit for raid1c34 after last block group is gone")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
 ---
- fs/btrfs/block-group.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ check/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 6934a5b8708fe..acf0b7d879bc0 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -849,9 +849,9 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
- 				found_raid1c34 = true;
- 			up_read(&sinfo->groups_sem);
+diff --git a/check/main.c b/check/main.c
+index 4115049a..484b0729 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -8640,7 +8640,7 @@ static int check_dev_extents(struct btrfs_fs_info *fs_info)
  		}
--		if (found_raid56)
-+		if (!found_raid56)
- 			btrfs_clear_fs_incompat(fs_info, RAID56);
--		if (found_raid1c34)
-+		if (!found_raid1c34)
- 			btrfs_clear_fs_incompat(fs_info, RAID1C34);
- 	}
- }
+ 		if (physical_offset + physical_len > dev->total_bytes) {
+ 			error(
+-"dev extent devid %llu physical offset %llu len %llu is beyond device boudnary %llu",
++"dev extent devid %llu physical offset %llu len %llu is beyond device boundary %llu",
+ 			      devid, physical_offset, physical_len,
+ 			      dev->total_bytes);
+ 			ret = -EUCLEAN;
 -- 
-2.20.1
+2.26.0
 
