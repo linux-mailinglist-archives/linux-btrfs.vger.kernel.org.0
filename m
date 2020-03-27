@@ -2,86 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D789C195543
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 11:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44622195646
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 12:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgC0K35 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Mar 2020 06:29:57 -0400
-Received: from mail.itouring.de ([188.40.134.68]:55052 "EHLO mail.itouring.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgC0K35 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Mar 2020 06:29:57 -0400
-Received: from tux.applied-asynchrony.com (p5B07E2B3.dip0.t-ipconnect.de [91.7.226.179])
-        by mail.itouring.de (Postfix) with ESMTPSA id CAE284161B3D;
-        Fri, 27 Mar 2020 11:29:55 +0100 (CET)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 7E4E5F01604;
-        Fri, 27 Mar 2020 11:29:52 +0100 (CET)
-Subject: Re: Q: what exactly does SSD mode still do?
-To:     Hans van Kranenburg <hans@knorrie.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <8dcb2f1b-7cb4-cfd4-04ba-7fe4f3c3940b@applied-asynchrony.com>
- <6f49d2cc-c0e4-6d1d-f10d-834089698528@knorrie.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <116cfdc1-410a-5e09-2fb2-5da2c0fa428a@applied-asynchrony.com>
-Date:   Fri, 27 Mar 2020 11:29:52 +0100
+        id S1727247AbgC0LYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Mar 2020 07:24:44 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:46622 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726750AbgC0LYo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Mar 2020 07:24:44 -0400
+Received: by mail-io1-f66.google.com with SMTP id i3so231225ioo.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Mar 2020 04:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=Ea7cF5/+AsE7IPQyECQiAhCUY+q/N13cKyCJF3mwm9Vi4HabnmgIqQ4QyjH+JlwM9v
+         xZHA4bOsxI8UslkPpIZihM+eVFaRQMqxdVM8JbFnRA+N6sobNQEsjq0UYeJYwNupwVHb
+         ywS9m5zd0UIlo5TyEE41jytKwXw3JvNX3AjvEvwmEmoe1Nne3IpuZS1wKzHgxdf7pZAu
+         2n5C2xEROLWZhgzV6ONpn9FrUNX/S9vI7dOkn/F/Kg7RUEvLALXgSI3cDsCwvr0R09IP
+         1lpDc3e7+n9RMv7KaEsNMabims232RzUTWhAcpcfn96ZFZxMbRhAqPB/W6UQND8/xglR
+         UDrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=C7d+0AgbyzjYSrOcII6pwamqvoGw9km6dBoX5pWsI/OjM8J+q1ZRl1qx2tLvhOxCtg
+         HdeWUIE+abXrndd23aYF/sSWhukuETuUmtjeaQoRXy9yjOvYCUFAaTVVzZw6SqvXvWOR
+         UEZLQf/wEFX/0iU4YD0Hy+Yn6SKoOZ8mPsFrv42RhILu+EpSC6nikkL9ISfZsQJic9lv
+         0JDOVI395GbRjkCcOr8xr3mmn78sb9VTsqSAaYFNrenVvWWE+JoSfpjho5+V87U2y+CR
+         9/zqOGEL8O4v4e12xZ47CFwl3ZsbYH5ZbHpv5gge9YP6rsqOasHK5d9oTa6XCGOWvgfJ
+         /oOg==
+X-Gm-Message-State: ANhLgQ2boANTOMAaD5koM9AhY3IsRL6ehHA1lKtVVmUVFGdzIp8JeBmu
+        FX5hvi36oYuUTShde49X/DCYJv6tQ4UYHAOYzeI=
+X-Google-Smtp-Source: ADFU+vuZIALPtUsute2sZ3/+DG+O/vzm/0ZExyFauRZph0QLbb/H7SzRY0oc/BBfPnxNel62uD4oi4yld9lGIFA+2TA=
+X-Received: by 2002:a6b:1451:: with SMTP id 78mr12458932iou.23.1585308280225;
+ Fri, 27 Mar 2020 04:24:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6f49d2cc-c0e4-6d1d-f10d-834089698528@knorrie.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6e02:10c:0:0:0:0 with HTTP; Fri, 27 Mar 2020 04:24:39
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mrzakirhossain458@gmail.com>
+Date:   Fri, 27 Mar 2020 04:24:39 -0700
+Message-ID: <CAE_Gep1mqvRkLcURgKabc_fVeM9fr70hz5A7noOPPFSxwGJyBQ@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/26/20 11:21 PM, Hans van Kranenburg wrote:
-> Hi!
-> 
-> On 3/26/20 7:16 PM, Holger Hoffstätte wrote:
->>
->> could someone explain what SSD mode *actually* still does? Not ssd_spread,
->> that's clear and unrelated. A recent commit removed the thread-offloaded
->> bio submission (avoiding context switches etc.)
-> 
-> Can you share the commit id?
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-[1] followed by [2].
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
->> - which I thought was the
->> reason for SSD mode? - and looking through the code I couldn't find any
->> bits that helped clarify the difference.
-> 
-> After the change in 2017 to change the extent allocator in ssd mode for
-> data to behave like nossd already did before, there are two differences
-> between ssd and nossd left:
-> 
-> 1) This if statement in tree-log.c:
-> 
-> cd354ad613a39 (Chris Mason  2011-10-20 15:45:37 -0400 3042)
->     /* when we're on an ssd, just kick the log commit out */
-> 0b246afa62b0c (Jeff Mahoney 2016-06-22 18:54:23 -0400 3043)
->     if (!btrfs_test_opt(fs_info, SSD) &&
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-Ah yes, multi-writer batching - a common DB optimization technique.
-I wonder how much of a difference that actually still makes, but
-it sounds like a good idea.
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-> 2) Metadata "cluster allocator" write behavior:
-> 
-> *empty_cluster = SZ_64K  # nossd
-> *empty_cluster = SZ_2M  # ssd
-> 
-> This happens in extent-tree.c.
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
 
-2M used to be a common erase block size on SSDs. Or maybe it's just
-a nice round number..  ¯\(ツ)/¯
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
 
-cheers,
-Holger
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=08635bae0b4ceb08fe4c156a11c83baec397d36d
-
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ba8a9d07954397f0645cf62bcc1ef536e8e7ba24
-
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
