@@ -2,93 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A964C1952AE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 09:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D789C195543
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 11:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgC0IQl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Mar 2020 04:16:41 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:53848 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgC0IQk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Mar 2020 04:16:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cNdrpQwmyS3uQrgIgsHnJvWAJmst3fXZVtdYl7P4jb8=; b=bL2cL6AGPA7+AUNiSvlo48PBk8
-        ZEdfZR8xhWlakZDaHolZymSoBEirY+b97lMVKX4vp/8/gi/M8i/qTPLZSUzgb+P9CtBOr5WY3bRa3
-        JhyZw+r1evQucv3+z2eqgSI/su1VS2WmIFHtjTtZaDAWbzh+ckD7Kq4ZJmFUmewptkVr3Zk33eujh
-        20+c8G9DkzaqLpwdDglJMCxrGxBAq2Lsjykk48Rizotm4sr6BWVcGNR9PryMCoCXAnCvoraqcb+1Y
-        PGU2CBowmiBlsuYe1NkvufcnNyBAacmZZYLX2/X/fJ+2owVaZZflQbxrbtgHv0BLPgXolZQTRDtSb
-        lcd81V3w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jHkAS-0001ME-6r; Fri, 27 Mar 2020 08:16:40 +0000
-Date:   Fri, 27 Mar 2020 01:16:40 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 5/9] btrfs: Use ->iomap_end() instead of btrfs_dio_data
-Message-ID: <20200327081640.GB24827@infradead.org>
-References: <20200326210254.17647-1-rgoldwyn@suse.de>
- <20200326210254.17647-6-rgoldwyn@suse.de>
+        id S1726333AbgC0K35 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Mar 2020 06:29:57 -0400
+Received: from mail.itouring.de ([188.40.134.68]:55052 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726002AbgC0K35 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Mar 2020 06:29:57 -0400
+Received: from tux.applied-asynchrony.com (p5B07E2B3.dip0.t-ipconnect.de [91.7.226.179])
+        by mail.itouring.de (Postfix) with ESMTPSA id CAE284161B3D;
+        Fri, 27 Mar 2020 11:29:55 +0100 (CET)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 7E4E5F01604;
+        Fri, 27 Mar 2020 11:29:52 +0100 (CET)
+Subject: Re: Q: what exactly does SSD mode still do?
+To:     Hans van Kranenburg <hans@knorrie.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <8dcb2f1b-7cb4-cfd4-04ba-7fe4f3c3940b@applied-asynchrony.com>
+ <6f49d2cc-c0e4-6d1d-f10d-834089698528@knorrie.org>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <116cfdc1-410a-5e09-2fb2-5da2c0fa428a@applied-asynchrony.com>
+Date:   Fri, 27 Mar 2020 11:29:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326210254.17647-6-rgoldwyn@suse.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <6f49d2cc-c0e4-6d1d-f10d-834089698528@knorrie.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 04:02:50PM -0500, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On 3/26/20 11:21 PM, Hans van Kranenburg wrote:
+> Hi!
 > 
-> Use iomap->iomap_end() to check for failed or incomplete writes and call
-> __endio_write_update_ordered(). We don't need btrfs_dio_data anymore so
-> remove that. The bonus is we don't abuse current->journal_info anymore.
+> On 3/26/20 7:16 PM, Holger Hoffstätte wrote:
+>>
+>> could someone explain what SSD mode *actually* still does? Not ssd_spread,
+>> that's clear and unrelated. A recent commit removed the thread-offloaded
+>> bio submission (avoiding context switches etc.)
 > 
-> A new structure btrfs_iomap is used to keep a count of submitted I/O
-> for writes.
+> Can you share the commit id?
 
-I don't think you need a new structure.  As writes are limited to a
-size_t (aka long) you can just case iomap->private.  That is a little
-ugly, but we can just switch the private field to an union, something
-like the patch below.  If I'm missing a reason why it has to be 64-bit
-even on 32-bit kernels we can also grow the size a little on 32-bit
-kernels, but right now I don't think that is needed unless I'm missing
-something.
+[1] followed by [2].
 
----
-From e496cd3db3e7420050be19c5fe68e4675f5a2abc Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Fri, 27 Mar 2020 09:14:34 +0100
-Subject: iomap: turn iomap->private into an union
+>> - which I thought was the
+>> reason for SSD mode? - and looking through the code I couldn't find any
+>> bits that helped clarify the difference.
+> 
+> After the change in 2017 to change the extent allocator in ssd mode for
+> data to behave like nossd already did before, there are two differences
+> between ssd and nossd left:
+> 
+> 1) This if statement in tree-log.c:
+> 
+> cd354ad613a39 (Chris Mason  2011-10-20 15:45:37 -0400 3042)
+>     /* when we're on an ssd, just kick the log commit out */
+> 0b246afa62b0c (Jeff Mahoney 2016-06-22 18:54:23 -0400 3043)
+>     if (!btrfs_test_opt(fs_info, SSD) &&
 
-Make using the union a little easier for scalar values.
+Ah yes, multi-writer batching - a common DB optimization technique.
+I wonder how much of a difference that actually still makes, but
+it sounds like a good idea.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/iomap.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> 2) Metadata "cluster allocator" write behavior:
+> 
+> *empty_cluster = SZ_64K  # nossd
+> *empty_cluster = SZ_2M  # ssd
+> 
+> This happens in extent-tree.c.
 
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 8b09463dae0d..61fea687d93d 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -85,7 +85,10 @@ struct iomap {
- 	struct block_device	*bdev;	/* block device for I/O */
- 	struct dax_device	*dax_dev; /* dax_dev for dax operations */
- 	void			*inline_data;
--	void			*private; /* filesystem private */
-+	union {				/* filesystem private data */
-+		void		*ptr;
-+		uintptr_t	uint;
-+	} private;
- 	const struct iomap_page_ops *page_ops;
- };
- 
--- 
-2.25.1
+2M used to be a common erase block size on SSDs. Or maybe it's just
+a nice round number..  ¯\(ツ)/¯
+
+cheers,
+Holger
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=08635bae0b4ceb08fe4c156a11c83baec397d36d
+
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ba8a9d07954397f0645cf62bcc1ef536e8e7ba24
 
