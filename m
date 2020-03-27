@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44622195646
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 12:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6974195830
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 14:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgC0LYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Mar 2020 07:24:44 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:46622 "EHLO
+        id S1726959AbgC0Nke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Mar 2020 09:40:34 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:33183 "EHLO
         mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726750AbgC0LYo (ORCPT
+        with ESMTP id S1726540AbgC0Nke (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Mar 2020 07:24:44 -0400
-Received: by mail-io1-f66.google.com with SMTP id i3so231225ioo.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Mar 2020 04:24:42 -0700 (PDT)
+        Fri, 27 Mar 2020 09:40:34 -0400
+Received: by mail-io1-f66.google.com with SMTP id o127so9853842iof.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Mar 2020 06:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=Ea7cF5/+AsE7IPQyECQiAhCUY+q/N13cKyCJF3mwm9Vi4HabnmgIqQ4QyjH+JlwM9v
-         xZHA4bOsxI8UslkPpIZihM+eVFaRQMqxdVM8JbFnRA+N6sobNQEsjq0UYeJYwNupwVHb
-         ywS9m5zd0UIlo5TyEE41jytKwXw3JvNX3AjvEvwmEmoe1Nne3IpuZS1wKzHgxdf7pZAu
-         2n5C2xEROLWZhgzV6ONpn9FrUNX/S9vI7dOkn/F/Kg7RUEvLALXgSI3cDsCwvr0R09IP
-         1lpDc3e7+n9RMv7KaEsNMabims232RzUTWhAcpcfn96ZFZxMbRhAqPB/W6UQND8/xglR
-         UDrQ==
+        bh=uIvUjlehSVigkxhw02yxSAS/Jekd0JL8sbxoZE/mhG8=;
+        b=eWYqV4HHtsSXc5gYX+hhppWBYu45C5BkYR/jKAbQSAnzuymxd52kcJtbvkNFVwd60s
+         nGsdd4qZIIijT93Udc8iQOcI1lqMdde2CSUCmwmQYLq/JRJdshaiXsx4rlsXzkpZp7cX
+         VK59SumHRw1o6fy2qXN4U3gYe4RLoWgDt8qu/bThRjHxefhM2lXc7nr7VTRI8gMl4qX5
+         5hjiSzw3on7ayBL/MZfxSbq4lpWYgBEeZsNgz9EWn5Q+yr4J13iaTExQOrH0BBJs6pFt
+         A7J18Dch1+/vjf7G7MXJZlua55NE3kGyGkAZm4K3B4cNiL1LX0wTRBuQ2gwGg7dgJiM0
+         mCaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=C7d+0AgbyzjYSrOcII6pwamqvoGw9km6dBoX5pWsI/OjM8J+q1ZRl1qx2tLvhOxCtg
-         HdeWUIE+abXrndd23aYF/sSWhukuETuUmtjeaQoRXy9yjOvYCUFAaTVVzZw6SqvXvWOR
-         UEZLQf/wEFX/0iU4YD0Hy+Yn6SKoOZ8mPsFrv42RhILu+EpSC6nikkL9ISfZsQJic9lv
-         0JDOVI395GbRjkCcOr8xr3mmn78sb9VTsqSAaYFNrenVvWWE+JoSfpjho5+V87U2y+CR
-         9/zqOGEL8O4v4e12xZ47CFwl3ZsbYH5ZbHpv5gge9YP6rsqOasHK5d9oTa6XCGOWvgfJ
-         /oOg==
-X-Gm-Message-State: ANhLgQ2boANTOMAaD5koM9AhY3IsRL6ehHA1lKtVVmUVFGdzIp8JeBmu
-        FX5hvi36oYuUTShde49X/DCYJv6tQ4UYHAOYzeI=
-X-Google-Smtp-Source: ADFU+vuZIALPtUsute2sZ3/+DG+O/vzm/0ZExyFauRZph0QLbb/H7SzRY0oc/BBfPnxNel62uD4oi4yld9lGIFA+2TA=
-X-Received: by 2002:a6b:1451:: with SMTP id 78mr12458932iou.23.1585308280225;
- Fri, 27 Mar 2020 04:24:40 -0700 (PDT)
+        bh=uIvUjlehSVigkxhw02yxSAS/Jekd0JL8sbxoZE/mhG8=;
+        b=PTC3L0KMI7i6gDvvmmkZjmjxGKuwOJibrWyNkwOQvlt9DO9WrNak5A1ax9Mv9uOxMO
+         c5fDcOxRwe1IYJMWeFkigv18R3YmsK3HJFtGCekn/PAzqisxCofQ83oAtQGH73RRJQq0
+         GUB/Xhk58yWWNt2scNVZslGEcQV6cJQ7QBtOBT5xQAK2FNvyMjsboSCnNiYuICWSDGEt
+         ApP/qLESRZ5OC9000Zhhe8V3FfUFb4KSuj0Tk1r4psdsjPBEdXRQ2OgjY+eEzMx+X4cy
+         /e2JOxM2jsOMArBRvlXQvYlawt+GJqihqDLg657KgRglvqwXt6uonR3nsCRvOJZ/ohoW
+         T5ig==
+X-Gm-Message-State: ANhLgQ1PfL6/vsMc3TGtqpxP1UPA9WnSauO1UzB7GcZxKmfm0y1h3C67
+        YiCLbqbxXi7YhEfxCj7C6MtsWP5z06sv0OG1+uU=
+X-Google-Smtp-Source: ADFU+vtTFsoARaZWRKd8iLGgsVfH5ScQ7/bdWhIENBrQWZq/hIuZSde+inML2kzhZHeNVSvb/xvLt2lThzkHdQYelCU=
+X-Received: by 2002:a6b:8d50:: with SMTP id p77mr12772197iod.143.1585316432083;
+ Fri, 27 Mar 2020 06:40:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:10c:0:0:0:0 with HTTP; Fri, 27 Mar 2020 04:24:39
+Received: by 2002:a5e:8817:0:0:0:0:0 with HTTP; Fri, 27 Mar 2020 06:40:31
  -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mrzakirhossain458@gmail.com>
-Date:   Fri, 27 Mar 2020 04:24:39 -0700
-Message-ID: <CAE_Gep1mqvRkLcURgKabc_fVeM9fr70hz5A7noOPPFSxwGJyBQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
+Reply-To: officework_progress@yahoo.com
+From:   Andrew Ede <consumingfirechurch4@gmail.com>
+Date:   Fri, 27 Mar 2020 15:40:31 +0200
+Message-ID: <CAK6CGFcrNMCW_JxW_K-4O7y3gaOF1rsqEjCH3U5u7r_tKVoGSg@mail.gmail.com>
+Subject: HOW ARE YOU?
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -57,41 +57,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+Good day.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+My reason of contacting you is that I and my colleagues working in our
+country=E2=80=99s National Petroleum Corporation want to buy any existing
+modern crude oil refinery in any part of the world.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+We are ready to buy any available land to build the Refinery or buy
+the existing one anywhere outside Africa. We will make you our foreign
+partner abroad with some percentage shareholding if you will be
+interested to work with us on this project.
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+We have the sum of ($600 Million Dollars) Six Hundred Million Dollars
+for this project.
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+Meanwhile, this amount of ($600 Million Dollars) will be accessible
+through Foreign Contract Purchase Fund. We are going to clarify what
+we meant by Foreign Contract Purchase Fund as soon as we hear from you
+for better understanding and the way forward.
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+However, in case you are not capable to handle this project with us,
+please kindly connect us to any capable person or company that would
+handle the project with us in order to enable us proceed at once.
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+We hope to hear you in no distance time through this e-mail address
+at: officework_progress@yahoo.com, for immediate communication and
+more facts on how to go on.
+
+With respect
+
+Best Regards
+
+Andrew Ede and Co,,
