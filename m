@@ -2,52 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF40195A4D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 16:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B868195A65
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Mar 2020 16:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgC0PwQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Mar 2020 11:52:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42180 "EHLO mx2.suse.de"
+        id S1727242AbgC0P5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Mar 2020 11:57:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44474 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgC0PwQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Mar 2020 11:52:16 -0400
+        id S1726515AbgC0P5T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Mar 2020 11:57:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 74232ACE3;
-        Fri, 27 Mar 2020 15:52:15 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 12B49ACE3
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Mar 2020 15:57:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 87522DA72D; Fri, 27 Mar 2020 16:51:43 +0100 (CET)
-Date:   Fri, 27 Mar 2020 16:51:43 +0100
+        id 4E381DA72D; Fri, 27 Mar 2020 16:56:46 +0100 (CET)
+Date:   Fri, 27 Mar 2020 16:56:46 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/39] btrfs: qgroup: Use backref cache based backref
- walk for commit roots
-Message-ID: <20200327155143.GO5920@twin.jikos.cz>
+Subject: Re: [PATCH 0/9 v7] btrfs direct-io using iomap
+Message-ID: <20200327155646.GP5920@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
         linux-btrfs@vger.kernel.org
-References: <20200326083316.48847-1-wqu@suse.com>
+References: <20200326210254.17647-1-rgoldwyn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200326083316.48847-1-wqu@suse.com>
+In-Reply-To: <20200326210254.17647-1-rgoldwyn@suse.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 04:32:37PM +0800, Qu Wenruo wrote:
-> This patchset is based on misc-5.7 branch.
-> 
-> The branch can be fetched from github for review/testing.
-> https://github.com/adam900710/linux/tree/backref_cache_all
-> 
-> The patchset survives all the existing qgroup/volume/replace/balance tests.
+On Thu, Mar 26, 2020 at 04:02:45PM -0500, Goldwyn Rodrigues wrote:
+> Changes since v6
+> - Fixed hangs due to underlying device failures
+> - Removed the patch to wait while releasing pages
 
-Thanks for the rebase, the whole patchset passed fstests so I'll start
-merging it. The backref cache (patches 33-39) still need review but
-because the tests pass it can be in for-next. The cleanup part 1-32
-seems safe so that'll go to misc-next soonish, once I go through the
-patches, there are some minor style issues.
+There were no hangs and all tests finished, but there were some failures
+that seem to be caused by the patchset. I'll send you the logs.
