@@ -2,180 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E38A71963DF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Mar 2020 06:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1261964EC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Mar 2020 11:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgC1FsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Mar 2020 01:48:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:37776 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgC1FsJ (ORCPT
+        id S1726045AbgC1KBg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Mar 2020 06:01:36 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37591 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgC1KBg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Mar 2020 01:48:09 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02S5hqdA079096;
-        Sat, 28 Mar 2020 05:48:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- references : message-id : date : mime-version : in-reply-to : content-type
- : content-transfer-encoding; s=corp-2020-01-29;
- bh=fP/hcis8YtSR+9fKvciwApZhel6QSXK/vCAWmEhsorU=;
- b=Q+oLuWxzpetq/fc9sO7aI4I4vvEBEQkgbqR0y9MXRFcvL4djWLnu3JU3DIvbFVov9uqp
- 6rLse7R9dG+8KvvRWlEs2ctD6GeF/NsM0sesQde+ITm/DMn7B7ipabQ2wVdUX1H7UgRR
- UnMIQwUMUf724f0hIikQiLJIonROpJj2iipzBySGNCFJU0gMrm//+6LijyaCQ1pIZdhf
- 9rVcZLrF9X7oMbwqKwFoeTE6oua3EsBed3wPE1wovVow+9INvwr4XR2UTpsW/Q7f5Bq9
- fb8AqXMtzfzM6FogPcyKXDdGvD7w1CwbNNsWBiM51q7bLKiPQAObzpWt9rWcsbh52mGX QQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 301x0qr6hr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 28 Mar 2020 05:48:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02S5m5xA106112;
-        Sat, 28 Mar 2020 05:48:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 301vm88pw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 28 Mar 2020 05:48:05 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 02S5m33k004690;
-        Sat, 28 Mar 2020 05:48:04 GMT
-Received: from [192.168.1.119] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 27 Mar 2020 22:48:03 -0700
-Subject: Re: [PATCH v7 0/5] readmirror feature (sysfs and in-memory only
- approach; with new read_policy device)
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <20200221061538.4508-1-anand.jain@oracle.com>
-Message-ID: <1a97735c-b71d-2b19-2f55-f92deb7ccfa0@oracle.com>
-Date:   Sat, 28 Mar 2020 13:48:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        Sat, 28 Mar 2020 06:01:36 -0400
+Received: by mail-qk1-f196.google.com with SMTP id x3so13643226qki.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Mar 2020 03:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=nWMSRgKsRSjmKKowg2RAIa3TxulMKfRibguEq2kyJfM=;
+        b=A9jFZDt4mbhT0VDe8h8byE/vfuVarVMs/iVeTCqxhxjepHw5L5geVHGKXVwb8OLKlv
+         aXHDpR2u72kXL/R4bvCD05Y6USzZmQF8JkvuBH6KNIMhxwCmbuK4pFfLoZIlpDjC5A8h
+         hVn9FAA4eTGEoVil33NkVqeP7ScuzcfoTOwcuYd2TqITVWbgHSyAwOOKgmigdxC+Kqqs
+         jyoP95adk+KZi+oZLbVG1OW7c12vKZa9qU2UT+rpkG2DdD4DQWUk/QTrtl1irR3hF/X+
+         ETXhomdBmkqntgI1EjW8YDlOTSdo6iWLiOANa2HpfATpAfrNzFaEJfbwSc+IbpZEoKWr
+         oqyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=nWMSRgKsRSjmKKowg2RAIa3TxulMKfRibguEq2kyJfM=;
+        b=DRRxWKvRXH89y0NzNmiDAECTLgldYCY7NKTwXBkqu6LAaNKNPKJBTGhScnIeuSBl68
+         pK/54qo6ObGNRoZ/bxJA8hvEKAbOBbO7DdaWJ9LXakzlL7RP5SUD0tfrjkN9+QbKQK+J
+         fjSiOLGnlaFFpRlt0NuRLzoZHwy2sOrBmpFN87n0pyACWM3+5jCbv0TAhJ1l77u6lvuM
+         bdc7QUdZ4ybDmeGM9E/CMlyiyIH8i5peR309/y5twT78iiUGDetc6F5cDAzk2o2JgC1Q
+         aFh99A2B8DB7Ht4lQRGv/Y3J1g/RhzxnMEhePk3/2ngOkJ2HMZBH1arnD9mNHAcYeZQD
+         XUrA==
+X-Gm-Message-State: ANhLgQ3GSeFgVtO215bUPw6G2c7owh5aE0SsY9D0zurioG5+dmRDPY5O
+        kMXf3Ev/nVQtLDtT+ce4r2i3TxdnnIIaKCzEmH8=
+X-Google-Smtp-Source: ADFU+vtnwLz4uHj1gWOG5XZGhx85ZNOQtxEn4TveRpjPFnNOlj/f04baux16Nj7N3N5YKwPBt+bCYoKlzcumW8HkjxM=
+X-Received: by 2002:ae9:ed45:: with SMTP id c66mr3125587qkg.488.1585389693855;
+ Sat, 28 Mar 2020 03:01:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200221061538.4508-1-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9573 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003280052
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9573 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- clxscore=1015 adultscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003280051
+Received: by 2002:aed:2de5:0:0:0:0:0 with HTTP; Sat, 28 Mar 2020 03:01:33
+ -0700 (PDT)
+Reply-To: cyeden1@gmail.com
+From:   CY Eden <baka.mephisto@gmail.com>
+Date:   Sat, 28 Mar 2020 10:01:33 +0000
+Message-ID: <CALraLT0WYHk5o44LCgShbdy_gFZBFhXCJCiRajXvxSuaevjpxw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-  Could I ping you on this?
-
-Thanks, Anand
-
-
-
-On 21/2/20 2:15 PM, Anand Jain wrote:
-> v7:
-> Fix switch's fall through warning. Changle logs updates where necessary.
-> 
-> v6:
-> Patch 4/5 - If there is no change in device's read prefer then don't log
-> Patch 4/5 - Add pid to the logs
-> Patch 5/5 - If there isn't read preferred device in the chunk don't reset
-> read policy to default, instead just use stripe 0. As this is in
-> the read path it avoids going through the device list to find
-> read preferred device. So inline to this drop to check if there
-> is read preferred device before setting read policy to device.
-> 
-> __ Original email: __
-> 
-> v5:
-> Worked on review comments as received in its previous version.
-> Please refer to individual patches for the specific changes.
-> Introduces the new read_policy 'device'.
-> 
-> v4:
-> Rename readmirror attribute to read_policy. Drop separate kobj for
-> readmirror instead create read_policy attribute in fsid kobj.
-> merge v2:2/3 and v2:3/3 into v4:2/2. Patch titles have changed.
->   
-> v3:
-> v2:
-> Mainly fixes the fs_devices::readmirror declaration type from atomic_t
-> to u8. (Thanks Josef).
-> 
-> v1:
-> As of now we use only %pid method to read stripped mirrored data. So
-> application's process id determines the stripe id to be read. This type
-> of routing typically helps in a system with many small independent
-> applications tying to read random data. On the other hand the %pid
-> based read IO distribution policy is inefficient if there is a single
-> application trying to read large data as because the overall disk
-> bandwidth would remains under utilized.
-> 
-> One type of readmirror policy isn't good enough and other choices are
-> routing the IO based on device's waitqueue or manual when we have a
-> read-preferred device or a readmirror policy based on the target storage
-> caching. So this patch-set introduces a framework where we could add more
-> readmirror policies.
-> 
-> This policy is a filesystem wide policy as of now, and though the
-> readmirror policy at the subvolume level is a novel approach as it
-> provides maximum flexibility in the data center, but as of now its not
-> practical to implement such a granularity as you can't really ensure
-> reflinked extents will be read from the stripe of its desire and so
-> there will be more limitations and it can be assessed separately.
-> 
-> The approach in this patch-set is sys interface with in-memory policy.
-> And does not add any new readmirror type in this set, which can be add
-> once we are ok with the framework. Also the default policy remains %pid.
-> 
-> Previous works:
-> ----------------------------------------------------------------------
-> There were few RFCs [1] before, mainly to figure out storage
-> (or in memory only) for the readmirror policy and the interface needed.
-> 
-> [1]
-> https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg86368.html
-> 
-> https://lore.kernel.org/linux-btrfs/20190826090438.7044-1-anand.jain@oracle.com/
-> 
-> https://lore.kernel.org/linux-btrfs/5fcf9c23-89b5-b167-1f80-a0f4ac107d0b@oracle.com/
-> 
-> https://patchwork.kernel.org/cover/10859213/
-> 
-> Mount -o:
-> In the first trial it was attempted to use the mount -o option to carry
-> the readmirror policy, this is good for debugging which can make sure
-> even the mount thread metadata tree blocks are read from the disk desired.
-> It was very effective in testing radi1/raid10 write-holes.
-> 
-> Extended attribute:
-> As extended attribute is associated with the inode, to implement this
-> there is bit of extended attribute abuse or else makes it mandatory to
-> mount the rootid 5. Its messy unless readmirror policy is applied at the
-> subvol level which is not possible as of now.
-> 
-> An item type:
-> The proposed patch was to create an item to hold the readmirror policy,
-> it makes sense when compared to the abusive extended attribute approach
-> but introduces a new item and so no backward compatibility.
-> -----------------------------------------------------------------------
-> 
-> Anand Jain (5):
->    btrfs: add btrfs_strmatch helper
->    btrfs: create read policy framework
->    btrfs: create read policy sysfs attribute, pid
->    btrfs: introduce new device-state read_preferred
->    btrfs: introduce new read_policy device
-> 
->   fs/btrfs/sysfs.c   | 128 +++++++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/volumes.c |  39 +++++++++++++-
->   fs/btrfs/volumes.h |  16 ++++++
->   3 files changed, 182 insertions(+), 1 deletion(-)
-> 
-
+Hello I have an important information from UNITED NATIONS for you,reply
