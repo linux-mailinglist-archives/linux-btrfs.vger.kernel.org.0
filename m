@@ -2,101 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ADA19683C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Mar 2020 18:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AB0196866
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Mar 2020 19:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgC1RsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Mar 2020 13:48:25 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:33211 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgC1RsZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Mar 2020 13:48:25 -0400
-Received: by mail-lf1-f65.google.com with SMTP id x200so3334061lff.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Mar 2020 10:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gl8m333ia74OFZpNmB4o7kIcYlvQPFpoCsxlN0OXKb0=;
-        b=DJ0INciCqMyLn2JJsRcL/QUJt9KxZYdI1rQ8A8FUmndPDq5M9UIrn7iDSrxuoi82v0
-         nL+kne3iX5Fae9UFRyuAlVjWPkHKRDRyl8gSCCPahSkeadAatgYiNtpRNj7MzXDf1W1Z
-         pHnjDbYv4q3fOTJmHvTk3AOout33COXowBUu7ZkFgxboe0IZoivkISRqkShOOXkmVqE1
-         efujoJ/TQc9CQNtzgqjiEzJxi/bIIzbFgLSBQL2bFwaqsrCmNHSyQHZMCy7e9lOhwYnn
-         c7mHqjKDsyF67jgKtx4aY+y5hnkwYlQbkZgVEcjn9Nmbyr24L5xHdz8ZYwFF+W2bqSMZ
-         9/7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gl8m333ia74OFZpNmB4o7kIcYlvQPFpoCsxlN0OXKb0=;
-        b=EV1BrxRTI7VbUypsVyZRmgt1Z81j7RXMuIE/ST0G2goYAZJplBEJgmip2VXMFzmKkK
-         ZqH+09J+jzFdDmrtn/mFXR05c8oU1544Ih47MdplHBK/4TR4rborYC8CqxfQrGRvpfJ2
-         f4cLGRfmMxo3b0D5H/SykcpLN0Az0y3XScEo/4cAlGKySRdKPvy4nrzwkICX4j8id4cx
-         mJVL+go4tqF/l4YE/IYHQh2TG0GH9fjssTIg1Sf3XNMIAZIsTqZrkJZckdNpt2ye9hrD
-         fO4zm1x8Nu8Z8C3PyXB86oq0tpIXOK7xTQSpFY9AENseV0Aoyt+E5JYcycIEjbZ9S80f
-         ewng==
-X-Gm-Message-State: AGi0PuZv2F+2XHZCkioQiaQLNH/GLSr+8aaJARmAlSmvMI4pWDi5QKe4
-        BQkjo+Q7TXJLYd7Q8kMedhTN4G+uOR6tNedNIU0=
-X-Google-Smtp-Source: APiQypJ8iyC9m0p6AnJQW4fDJcmnCeTFcXDF7YlDYtm962GZ5vRQEhuq3wTCg/BrYP9RK1whe1JMPJANi4VeiyLee5Y=
-X-Received: by 2002:ac2:5ede:: with SMTP id d30mr3097282lfq.157.1585417702884;
- Sat, 28 Mar 2020 10:48:22 -0700 (PDT)
+        id S1727176AbgC1S06 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Mar 2020 14:26:58 -0400
+Received: from 4brad.ctyme.com ([184.105.182.90]:46640 "EHLO 4brad.ctyme.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727115AbgC1S06 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 28 Mar 2020 14:26:58 -0400
+Received: from [192.168.123.14] (c-76-102-119-11.hsd1.ca.comcast.net [76.102.119.11])
+        by 4brad.ctyme.com (Postfix) with ESMTPSA id BF7336340A37
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Mar 2020 14:26:57 -0400 (EDT)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   Brad Templeton <4brad@templetons.com>
+Subject: btrfs-transacti hangs system for several seconds every few minutes
+Organization: http://www.templetons.com/brad
+Message-ID: <7c0a1398-322f-400a-abe4-dfea98fd46e1@templetons.com>
+Date:   Sat, 28 Mar 2020 11:26:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Received: by 2002:a05:651c:298:0:0:0:0 with HTTP; Sat, 28 Mar 2020 10:48:21
- -0700 (PDT)
-Reply-To: RevWrightWatson@yandex.com
-From:   "Rev.Wright Watson" <tinasalama02@gmail.com>
-Date:   Sat, 28 Mar 2020 18:48:21 +0100
-Message-ID: <CALGyKSCa_08ckEWJg8474EuosKoNL-nskvr2UHTsxQ=UGS=0oQ@mail.gmail.com>
-Subject: Dear Beloved,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Beloved,
+I have a decent sized 3 disk Raid 1 that I have had on btrfs for many
+years. Over time, a serious problem has emerged, in that from time to
+time all I/O will pause, freezing any programs attempting to use the
+btrfs filesystem.   Performance has degraded over the years as well, so
+that just browsing around in directories with 300 or so files often
+takes many seconds just to autocomplete a filename or do an ls.
 
-I'm Reverend Wright Watson, I was born in USA, 1945, I was ordained
-into the Catholic Priesthood.
+But the big problem is that during periods of active but not heavy use,
+every few minutes the i/o system will hang for periods of 1 to 10
+seconds.   During these hangs, btrfs-transacti is doing very heavy I/O.
+  Programs waiting on I/O block -- the most frustrating is typing in vi
+and having the echo stop.  It's getting close to unusable and may be
+time to leave btrfs after many years for a different FS.
 
-Please take your time to read this message, although we have never met
-before, this is no spam, It's a real message sent to you. I know also
-that you will be amazed at the level of trust that I am willing to
-place in a person that I have never seen nor spoken with. If I can
-receive favor from someone I barely know, its not bad entrusting this
-project to unknown person as long as my spirit directed me to you.
+During these incidents iotop will look like this:
 
-I have been a catholic priest for over 22 years. I spent about 10
-years serving at Africa, Burkina Faso to be precise, I spend most time
-in Ouagadougou Cathedral.
-Presently, I had a heart surgery on the 23-11-2018 and the Doctors
-have informed me that I cannot live longer; I had a serious bleeding
-after the operation.
-Before I left Ouagadougou to my country for the surgery, a priest
-friend of mine visited me from Netherlands with three companion, when
-they went back, one among his companion Transferred 10M$ in my
-personal account with Bank of Africa and advised that I use the money
-to help the poor, handicaps and less privileges because he saw the
-level hardship then.
+Total DISK READ :     499.57 K/s | Total DISK WRITE :    1639.00 K/s
+Actual DISK READ:     492.73 K/s | Actual DISK WRITE:       0.00 B/s
+  TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND
+  882 be/4 root      499.57 K/s 1604.78 K/s  0.00 % 98.60 %
+[btrfs-transacti]
+21829 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.23 %
+[kworker/u32:1-btrfs-endio-meta]
+14662 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.17 %
+[kworker/u32:0-btrfs-endio-meta]
+22184 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.11 %
+[kworker/u32:3-events_freezable_power_]
+13063 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.06 %
+[kworker/u32:6-events_freezable_power_]
+  486 be/3 root        0.00 B/s    6.84 K/s  0.00 %  0.00 % systemd-journald
+22213 be/4 brad        0.00 B/s    6.84 K/s  0.00 %  0.00 % chrome
+--no-startup-window [ThreadPoolForeg]
 
-Because of my present health condition, I cannot live to proceed with
-the projects, therefore, I have decided to appoint you to reclaim the
-money which total sum of $10,970,000.00 (Ten million Nine Hundred and
-seventy Thousand US DOLLARS).
+A way to reliably generate it, I have found, is to quickly skim through
+my large video collection  (looking for videos) I would be hitting
+"next" every second or so -- lots of read, but very little write.
+After doing about 40 seconds of this, it is sure to hang.
 
-I want you to use this sum to make the world a better place for the
-poor and less privileged, help the needy and also help your family
-members.
+I am running kernel 5.3.0 on Ubuntu 18.04.4, but have seen this problem
+gong back into much older kernels.
 
-I took this decision because I was raised in an Orphanage so I don't
-have relatives and presently, I'm still in the hospital, where I am
-undergoing treatment. That's why I have decided to contact you so that
-you can contact my account manager in Bank of Africa, reclaim the
-money and make good use of it.
+My array looks like this:
 
-then you can contact me through private email
-addres(RevWrightWatson@yandex.com)
+/dev/sda, ID: 2
+   Device size:             3.64TiB
+   Device slack:              0.00B
+   Data,RAID1:              1.79TiB
+   Metadata,RAID1:          8.00GiB
+   Unallocated:             1.84TiB
 
-Regards,
-Rev.Wright Watson
+/dev/sdg, ID: 1
+   Device size:             9.10TiB
+   Device slack:              0.00B
+   Data,RAID1:              7.21TiB
+   Metadata,RAID1:         14.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             1.87TiB
+
+/dev/sdh, ID: 3
+   Device size:             7.28TiB
+   Device slack:          344.00KiB
+   Data,RAID1:              5.43TiB
+   Metadata,RAID1:          8.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             1.84TiB
+
+/dev/sdg on /home type btrfs
+(rw,relatime,space_cache,subvolid=256,subvol=/home)
+
+I have 16gb of ram with 16gb of swap on a flash drive, the swap is in use
+
+KiB Mem : 16393944 total,   398800 free, 13538088 used,  2457056 buff/cache
+KiB Swap: 16777212 total,  6804352 free,  9972860 used.  2045812 avail Mem
+
+
+What other information would be useful in attempting to diagnose or fix
+this?   I like a number of things about BTFS.  One of them that I don't
+want to give up is the ability to do RAID with different sized disks,
+which seems like the only way it should work.  Switching to ZFS or mdadm
+again would involve disk upgrades and a very large amount of time
+copying this much data, but I'll have to do it if I can't diagnose this.
+
+
