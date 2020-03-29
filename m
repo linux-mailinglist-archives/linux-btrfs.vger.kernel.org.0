@@ -2,243 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BADC7196E81
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Mar 2020 18:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8E1196EF5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Mar 2020 19:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgC2Qkz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Mar 2020 12:40:55 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:45725 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727903AbgC2Qkz (ORCPT
+        id S1728426AbgC2RkA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Mar 2020 13:40:00 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40968 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728041AbgC2RkA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Mar 2020 12:40:55 -0400
-Received: by mail-yb1-f195.google.com with SMTP id g6so7627416ybh.12
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Mar 2020 09:40:54 -0700 (PDT)
+        Sun, 29 Mar 2020 13:40:00 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i3so13157609qtv.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Mar 2020 10:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LSM1MUqQEkuJkwfHKr560ghWS1gpF61Zq+WPOuuFVHI=;
-        b=rWrNP4YO10VxFPDrtgWOaADGYQYAR1Nxe9bQ84DCQPaZqyZUaQPBc5BwHvRhrBGgC3
-         vWpH6FLHVxf45QXztxYjGGgXN9TTzjXgIebeKAQjSeFYmDnzZuTZwJ16/mP/BGS/neiU
-         Exqi+WvrSgawAVcOtWx5BtBMKw+Numn/5cpy/zgqWiaeSDgRiYrA/Hm0645uK7UqPEqZ
-         DJbmWqEgUzpP90blewzHLtYXoHBkNbPq0nqKaWh6YpyRdI3UT5KCIHEukQYBOkTRDgVw
-         Jdx6zPioTYlFLOzgWCUMquXjLBxla+GopaHDZx8pzBTBzcL5hEblGcHefPBDb8ULRWk8
-         TRWw==
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=B+FOZjOxhk6FJAXJvnJt8viyEZyIDfMZC32DYZSGTEM=;
+        b=iffZx9N6Pc/Liqoy1bNngHFA6p1K+e0p0dvN7BmTAuUbZ0IVzfqp0ogm/dgkcYVK8F
+         as482vDfVhMiFlOBwlnqodJpensdQxWX2H7d6y5jFN0Zsaz2MQ1y538RHQ/z9UdO5T1n
+         ikdw5bAbAgKu2coqOHwJGbgB2482CUClV3ZPFbwP62uc0Pq0VbqFEc3W36xrV5Q/4r2t
+         ZM5IEgSm7QkN87vyOo0dnkQhTI8ADZMaDCvqoN7qGnkI3cQAUst1/jFgppmYwGjH2mDJ
+         vpY0SB8EYlHp8uf59NMUx15+fC1s1Sv5dn+ao6KoU8unh+8/pg+HXBZaK69OJKePz8i1
+         vt7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LSM1MUqQEkuJkwfHKr560ghWS1gpF61Zq+WPOuuFVHI=;
-        b=iqjW89qivZIHaqdPSLj3NT4CskOLeUYdhUMU7UKxPTT+why3t3Mf2NU6O8KWFRsCrp
-         oenMGFfeP6bKyw4AN6p7y5x25efTij/9/hb/o70fvXpGf7ksATZfItQT81FZnrcwEil4
-         T7KeJpIw/5Ms0sh9eoY3wtrgjQOt6I1KetqOj7HbeXDC74DHwh58KL6I79VgYeWenbqT
-         wmHiU3DzaAvCja2WjNmNpx3Y0Xegtk4nIIYt/jzamG1wLH0c+5c8igF9DfRNuOk4PHj+
-         2MFAmQ/zW4jRVOwl0Ddg3Ck4nryqF0tXkcEv+1Sn51TiKa3X38LXm9bAPqlYa1BEM1wg
-         zPDA==
-X-Gm-Message-State: ANhLgQ1+eZ3dCQsWfI5iYRyXuMH6RfaJhDyjuuSoy8xOZXqYz0LLelmo
-        oYUwGDfV9/UeOsrzNNcbi2YeRilF+pqeEQIwQJ50Dg==
-X-Google-Smtp-Source: ADFU+vtlxQ4/303fzcWTbqgfieqRaIKJGGt8DKvXBLm2qhGC48yIRvv5yJau40NHHz1dS2gNF91F7MllRQYGNPfxj+Q=
-X-Received: by 2002:a25:df0b:: with SMTP id w11mr13465057ybg.195.1585500053292;
- Sun, 29 Mar 2020 09:40:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <B7A6E37C-C10A-49C3-B98A-0D659CA4E33B@clarafamily.com>
-In-Reply-To: <B7A6E37C-C10A-49C3-B98A-0D659CA4E33B@clarafamily.com>
-From:   Steven Fosdick <stevenfosdick@gmail.com>
-Date:   Sun, 29 Mar 2020 17:40:41 +0100
-Message-ID: <CAG_8rEfmJrCtkgpBnUjnWwVuzJNkyM=u1vaBbX-3+UnvQ9Vizw@mail.gmail.com>
-Subject: Re: Device Delete Stuck
-To:     Jason Clara <jason@clarafamily.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=B+FOZjOxhk6FJAXJvnJt8viyEZyIDfMZC32DYZSGTEM=;
+        b=QC5O2dbfptNOmVIHFGr7yMLdh3m3DSGuOxZ9jyAJF3glc53uXjaXWO+NXKC6g3sxkn
+         z85XaF+auX5FLRRfPEyA563L6xgf3weqwgdEOnodo1ytt71Bh/Jt5hex8Je5enVdt43d
+         tkfjnqZzLq7w0Jn/XSxPQSsc8q8W9Z95BsP79hu4P+6J9GccSHLettkR98dfvppyk6uC
+         pmilq1pjBJS/5gCadbZ9wT5/qF+Lmx05GpHdlkBJORlkJABxsgs+kbTr4TmaM6r+NlMn
+         mQJMjROHPbmLoZVFJCr3sx7s58SxyjZyJqU5vjH2Fp0uYLIYaRaCxe4Ich6Emis0vDDD
+         V67w==
+X-Gm-Message-State: ANhLgQ1V3yMXEwuqVu/GpzLaYchxruSE5Y1bgyNi6AeSn1otLZetFzex
+        egAqiR/rGaTzcHw3Yq2wwrX+NxRN
+X-Google-Smtp-Source: ADFU+vsdRCSBcc/xuQS835++ZQHQMefRB4owJm6sreF6lxpvM13/j2rjBnORMBzKm6DaL4etvSB6vQ==
+X-Received: by 2002:ac8:4e8a:: with SMTP id 10mr8452920qtp.244.1585503599294;
+        Sun, 29 Mar 2020 10:39:59 -0700 (PDT)
+Received: from ?IPv6:2604:6000:1014:c7c6:edde:350d:ed67:f9ae? ([2604:6000:1014:c7c6:edde:350d:ed67:f9ae])
+        by smtp.gmail.com with ESMTPSA id f13sm9173964qte.53.2020.03.29.10.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Mar 2020 10:39:58 -0700 (PDT)
+Message-ID: <c2f9a2d8f99d2f07f00ba12f871f31fe85d88427.camel@gmail.com>
+Subject: Re: BUG_ON in btrfs check & fs/btrfs/extent-tree.c:3071
+From:   Cebtenzzre <cebtenzzre@gmail.com>
+To:     Matt Corallo <linux@bluematt.me>, linux-btrfs@vger.kernel.org
+Date:   Sun, 29 Mar 2020 13:39:57 -0400
+In-Reply-To: <57f3f3bb-b3cb-df2d-9ce6-7b546200c009@bluematt.me>
+References: <57f3f3bb-b3cb-df2d-9ce6-7b546200c009@bluematt.me>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Jason,
+On Fri, 2020-01-24 at 18:57 +0000, Matt Corallo wrote:
+> In a 10 disk spinning-rust array on top of dm-crypt thats pretty old
+> (was built year ago, most recently running on 4.20 with no issues for
+> quite some time), I had a drive fail. Let btrfs device remove $(devid)
+> run for some time, spewing errors to dmesg cause the backing device is
+> gone but btrfs still hands dm the I/Os. After about a day of this, I
+> got
+> in a new drive, and had to reshuffle some things to install it, so the
+> machine got shut down during the device remove, upgrading to 5.4 in
+> the
+> process.
 
-I am not a btrfs developer but I had he same problem as you.  In my
-case the problem went away when I used the mount option to clear the
-free space cache.  From my own experience, whatever is going wrong
-that causes the checksum error also corrupts this cache but that does
-no long term harm as, once it is cleared on mount, it gets rebuilt.
+I am in a similar situation, except without device mapper, with
+seemingly healthy disks that mount without -o degraded, and on kernel
+5.5.13 (with btrfs-progs v5.4).
 
-Steve.
+> Boot it back up on 5.4, mount -odegraded, balance -mdevid=$(missing),
+> let it run for a while, then I get a series of corrupt leafs, ala:
+> 
+> [ 6754.454755] BTRFS critical (device dm-6): corrupt leaf:
+> block=55800649400320 slot=149 extent bytenr=41634764488704
+> len=1007496932043095647 invalid extent data ref hash, item has
+> 0x0dfb591f2ab97e5e key has 0x0dfb591f2ab97e5f
 
-On Sun, 29 Mar 2020 at 15:15, Jason Clara <jason@clarafamily.com> wrote:
->
-> I had a previous post about when trying to do a device delete that it wou=
-ld cause my whole system to hang.  I seem to have got past that issue.
->
-> For that, it seems like even though all the SCRUBs finished without any e=
-rrors I still had a problem with some files.  By forcing a read of every si=
-ngle file I was able to detect the bad files in DMESG.  Not sure though why=
- SCRUB didn=E2=80=99t detect this.
-> BTRFS warning (device sdd1): csum failed root 5 ino 14654354 off 16385228=
-8 csum 0
->
->
-> But now when I attempt to delete a device from the array it seems to get =
-stuck.  Normally it will show in the log that it has found some extents and=
- then another message saying they were relocated.
->
-> But for the last few days it has just been repeating the same found value=
- and never relocating anything, and the usage of the device doesn=E2=80=99t=
- change at all.
->
-> This line has now been repeating for more then 24 hours, and the previous=
- attempt was similar.
-> [Sun Mar 29 09:59:50 2020] BTRFS info (device sdd1): found 133 extents
->
-> Prior to this run I had tried with an earlier kernel (5.5.10) and had the=
- same results.  It starts with finding and then relocating, but then reloca=
-ting.  So I upgraded my kernel to see if that would help, and it has not.
->
-> System Info
-> Ubuntu 18.04
-> btrfs-progs v5.4.1
-> Linux FileServer 5.5.13-050513-generic #202003251631 SMP Wed Mar 25 16:35=
-:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
->
-> DEVICE USAGE
-> /dev/sdd1, ID: 1
->    Device size:             2.73TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:            888.43GiB
->    Unallocated:             1.00MiB
->
-> /dev/sdb1, ID: 2
->    Device size:             2.73TiB
->    Device slack:            2.73TiB
->    Data,RAID6:            188.67GiB
->    Data,RAID6:            508.82GiB
->    Data,RAID6:              2.00GiB
->    Unallocated:          -699.50GiB
->
-> /dev/sdc1, ID: 3
->    Device size:             2.73TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:            888.43GiB
->    Unallocated:             1.00MiB
->
-> /dev/sdi1, ID: 5
->    Device size:             2.73TiB
->    Device slack:            1.36TiB
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.18TiB
->    Unallocated:             1.00MiB
->
-> /dev/sdh1, ID: 6
->    Device size:             4.55TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:              1.23TiB
->    Data,RAID6:            888.43GiB
->    Data,RAID6:              2.00GiB
->    Metadata,RAID1:          2.00GiB
->    Unallocated:           601.01GiB
->
-> /dev/sda1, ID: 7
->    Device size:             7.28TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:              1.23TiB
->    Data,RAID6:            888.43GiB
->    Data,RAID6:              2.00GiB
->    Metadata,RAID1:          2.00GiB
->    System,RAID1:           32.00MiB
->    Unallocated:             3.32TiB
->
-> /dev/sdf1, ID: 8
->    Device size:             7.28TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:              1.23TiB
->    Data,RAID6:            888.43GiB
->    Data,RAID6:              2.00GiB
->    Metadata,RAID1:          8.00GiB
->    Unallocated:             3.31TiB
->
-> /dev/sdj1, ID: 9
->    Device size:             7.28TiB
->    Device slack:              0.00B
->    Data,RAID6:            188.67GiB
->    Data,RAID6:              1.68TiB
->    Data,RAID6:              1.23TiB
->    Data,RAID6:            888.43GiB
->    Data,RAID6:              2.00GiB
->    Metadata,RAID1:          8.00GiB
->    System,RAID1:           32.00MiB
->    Unallocated:             3.31TiB
->
->
-> FI USAGE
-> WARNING: RAID56 detected, not implemented
-> Overall:
->     Device size:                  33.20TiB
->     Device allocated:             20.06GiB
->     Device unallocated:           33.18TiB
->     Device missing:                  0.00B
->     Used:                         19.38GiB
->     Free (estimated):                0.00B      (min: 8.00EiB)
->     Data ratio:                       0.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
->
-> Data,RAID6: Size:15.42TiB, Used:15.18TiB (98.44%)
->    /dev/sdd1       2.73TiB
->    /dev/sdb1     699.50GiB
->    /dev/sdc1       2.73TiB
->    /dev/sdi1       1.36TiB
->    /dev/sdh1       3.96TiB
->    /dev/sda1       3.96TiB
->    /dev/sdf1       3.96TiB
->    /dev/sdj1       3.96TiB
->
-> Metadata,RAID1: Size:10.00GiB, Used:9.69GiB (96.90%)
->    /dev/sdh1       2.00GiB
->    /dev/sda1       2.00GiB
->    /dev/sdf1       8.00GiB
->    /dev/sdj1       8.00GiB
->
-> System,RAID1: Size:32.00MiB, Used:1.19MiB (3.71%)
->    /dev/sda1      32.00MiB
->    /dev/sdj1      32.00MiB
->
-> Unallocated:
->    /dev/sdd1       1.00MiB
->    /dev/sdb1    -699.50GiB
->    /dev/sdc1       1.00MiB
->    /dev/sdi1       1.00MiB
->    /dev/sdh1     601.01GiB
->    /dev/sda1       3.32TiB
->    /dev/sdf1       3.31TiB
->    /dev/sdj1       3.31TiB
->
->
-> FI SHOW
-> Label: 'Pool1'  uuid: 99935e27-4922-4efa-bf76-5787536dd71f
->         Total devices 8 FS bytes used 15.19TiB
->         devid    1 size 2.73TiB used 2.73TiB path /dev/sdd1
->         devid    2 size 0.00B used 699.50GiB path /dev/sdb1
->         devid    3 size 2.73TiB used 2.73TiB path /dev/sdc1
->         devid    5 size 1.36TiB used 1.36TiB path /dev/sdi1
->         devid    6 size 4.55TiB used 3.96TiB path /dev/sdh1
->         devid    7 size 7.28TiB used 3.96TiB path /dev/sda1
->         devid    8 size 7.28TiB used 3.97TiB path /dev/sdf1
->         devid    9 size 7.28TiB used 3.97TiB path /dev/sdj1
->
-> FI DF
-> Data, RAID6: total=3D15.42TiB, used=3D15.18TiB
-> System, RAID1: total=3D32.00MiB, used=3D1.19MiB
-> Metadata, RAID1: total=3D10.00GiB, used=3D9.69GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+I ran btrfs scrub and saw a similar error several times in dmesg:
+
+[ 3518.440710] BTRFS critical (device sdh): corrupt leaf: block=4648795504640 slot=186 extent bytenr=437043331072 len=1007496933515149455 invalid extent data ref hash, item has 0x0dfb591f8277408e key has 0x0dfb591f8277408f
+[ 3518.440712] BTRFS error (device sdh): block=4648795504640 read time tree block corruption detected
+
+As far as I can tell, there is only one corrupt block.
+
+> (note only the low bit in the key is different, this is true for all
+> the
+> similar issues, with  different block, but the same bytenr for several
+> attempts)
+
+This is the same in my case. I probably screwed up a btrfs device remove
+some time ago.
+
+> All of the dumping of the blocks that show up show only as extent data
+> backref root FS_TREE, so unmount and btrfs check -p --clear-space-
+> cache
+> v1...oops:
+> 
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/bigraid1_crypt
+> UUID: bde0d0ab-31e6-47b8-8d7f-eef17af4f37e
+> Failed to find [22566682869760, 168, 16384]
+> btrfs unable to find ref byte nr 22566682869760 parent 0 root 2  owner
+> 0
+> offset 0
+> transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` triggered,
+> value -5
+> btrfs(+0x45718)[0x117ad5718]
+> btrfs(btrfs_commit_transaction+0x13c)[0x117ad5c58]
+> btrfs(btrfs_clear_free_space_cache+0x144)[0x117ac8fd0]
+> btrfs(+0x59564)[0x117ae9564]
+> btrfs(cmd_check+0x6c8)[0x117af5690]
+> btrfs(main+0xc0)[0x117aa4660]
+> /lib/powerpc64le-linux-gnu/libc.so.6(+0x28328)[0x3fff86e97328]
+> /lib/powerpc64le-linux-
+> gnu/libc.so.6(__libc_start_main+0xd4)[0x3fff86e97524]
+> Aborted
+
+Seeing this is why I chose not to attempt a btrfs check. I guess much of
+the kernel code is upset by tree checker errors in a way that can cause
+even more harm to the filesystem?
+
+> now if I mount it tries to replay the transaction and gets the same
+> from
+> the kernel:
+> 
+> [70990.689101] ------------[ cut here ]------------
+
+[long traces snipped]
+
+> [70990.689928] ---[ end trace 336665b21c6bbe65 ]---
+> [70990.689931] BTRFS: error (device dm-7) in __btrfs_free_extent:3077:
+> errno=-2 No such entry
+> [70990.689951] BTRFS info (device dm-7): forced readonly
+> [70990.689953] BTRFS: error (device dm-7) in
+> btrfs_run_delayed_refs:2188: errno=-2 No such entry
+> [70990.689965] BTRFS warning (device dm-7): Skipping commit of aborted
+> transaction.
+> [70990.689967] BTRFS: error (device dm-7) in cleanup_transaction:1828:
+> errno=-2 No such entry
+> [70990.778203] BTRFS info (device dm-7): balance: resume
+> -dusage=90,devid=9,vrange=0..41634339225599
+> [70990.816444] BTRFS info (device dm-7): balance: ended with status: 0
+
+On my filesystem, trying to truncate the affected files (found using
+btrfs insp dump-tree -b 4648795504640) results in the tree checker
+errors mentioned before, plus this afterwards:
+
+[  +0.000008] BTRFS: error
+(device sdh) in __btrfs_free_extent:3100: errno=-5 IO failure
+[  +0.000002] BTRFS info (device sdh): forced readonly
+[  +0.000002] BTRFS: error (device sdh) in btrfs_run_delayed_refs:2209: errno=-5 IO failure
+[  +0.000265] BTRFS warning (device sdh): failed setting block group ro: -30
+[  +0.000002] BTRFS warning (device sdh): failed setting block group ro: -30
+
+I'm glad that btrfs is able to detect and report errors like this, but
+it seems like the only thing btrfs can recover from safely without
+wiping the entire filesystem and starting over is file data corruption.
+I don't really want to spend days rebuilding this filesystem.
+-- 
+Cebtenzzre <cebtenzzre@gmail.com>
+
