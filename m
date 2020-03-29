@@ -2,180 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BED196D96
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Mar 2020 15:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12D7196DD7
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Mar 2020 16:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgC2NPC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Mar 2020 09:15:02 -0400
-Received: from mout.gmx.net ([212.227.15.19]:48993 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbgC2NPC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Mar 2020 09:15:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585487687;
-        bh=2Qss9zLC5HP5KnEksDYHt4oz9FFn6P89vFH4cOlISSU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=PX0U3RlYAnF8C1czhOw0IfsWNVZtZCNuHXBc9EGbv4OUqbluIiGsoq3cf1oDYKQ7m
-         J56USxLR3Qk1Dcu45VGs2nwNIa8HVPfO7kztJxBACqB22L8seHR8UoGT0wcbddypoC
-         ygdvLc3e+BEZL+zA+jOZmpMr1JOH5oqLKH6nRbPs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNKm0-1jhKhA3jqc-00Oq49; Sun, 29
- Mar 2020 15:14:47 +0200
-Subject: Re: btrfs-transacti hangs system for several seconds every few
- minutes
-To:     Brad Templeton <4brad@templetons.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <c8513b49-1408-3d99-b1ff-95c36de2ef67@templetons.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <38a47c1a-d5b1-43c5-e026-10c2d4a9c039@gmx.com>
-Date:   Sun, 29 Mar 2020 21:14:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <c8513b49-1408-3d99-b1ff-95c36de2ef67@templetons.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="n8RTvi23YsMU9B6S0P1exWVTm49ZS7eMj"
-X-Provags-ID: V03:K1:lbpo26ug+pIT5yKKx+nerpr0vRIRZt9A7eJAO0RKWQUWP8M2i6C
- 4QavhE/gJOuHxXaK9KSDJoZH3vLfZk8aeydQaj9GS4paJSXKUQ4XRzvtxd+n9egioee94CX
- m4o08HGVtZ5j2d8pqPLrnjuR1ul4XHk503wmaeFn8O1WpQpXdWMDk4UUbWqDBn33Qik+Wo2
- KkvR/vt2hwP52U/4n0g/g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/xEmxbvWPn4=:/MIlfVQV0VIc9aCdn+B+oE
- F66GUgkDyQ+fMG8ejqEMrkNHcdbizPII0V2a3w6okAyetxko+f3LzeYcGD7Nax2tBxEStHW2n
- m0pFCrklwwM4BnONebWdebuF/c7PU+/rjF0+71ECHToJBYKULffoeC9/PN3nhCZ2BFRAigtkY
- jI4uxZvG+5WK+EQzyuFVtGN8+FJTQ2jf38Ps0j5I2JYisAtLfcblGeBGMJ99xt3j+d+7/bvFA
- M2JqRDu26O5SEHmOu6gErtvk8tT28I4c8kQnx73a7pP31a+9poTt9HeVt/hu5AKngpvuOaqaT
- Py3PatAHTxHxj8DbbQJjLhsAsH+fouse3gyIxXK0a88sjTm8xbhL/YtORYBLzOVdfYnFAOlip
- ny94/yzbYL2hS7uXtBaFKZPNkdvrsr6ri4to6vFL1SIsHHx8xwSvxKvP18OpUThADVJE5XtQm
- qyVJK5x5+NSQv17YpbZjBcPjh1wBxMVLybtWuh2sXXGUyI4SeRqUzqnWwZ7J/0SpFbMBB0HgV
- b/tMSMMoi3MPJdhzkZHPugsio8RXrDudg35zEtya67kjQ+abDXwQht9MajnZT+gPEYab9OrQQ
- OD1vfuL58LC6VbPZu8bFY+LX9PzIu+emr0UAOOOyUKwxiKn5MXi+GFcmW/zLgdmHPT5PDEZiI
- g3qA72HZzo4PZEat/8uzszcTFQxhqye8G+NwwiDiHgLcWvWTMiZRIz6rdlZHSjPbLvsr1kZjX
- kzf6mJnI5oV1DbDuIHKiO9eEuUqaP7fyq7iXjIzlQEUXYhNOQPqCNUttej/dTzrHqomYqDmx2
- ikW3pzoJfRVqcEfsLp4dlQePPHysTcmoCo+7ylLfCwFdvieeH7w9JyOiqkV2um7b0peub7Nlz
- /8M6zMrat7WK50FMUD82tAEEpiGatcjHzm0017dV0ea+jsnMOrJAN3nRYysJYp8mEo9P/hF3I
- Nt07PxOPZ9HQH2kC2zXzHUiT1LL7XAv5wJvTn2xnpc1pC1c298uF4s/H6TeBCW/vwkkNVLkga
- 8dHdYek4f34qYx4fYI33iiskU/RLDvIMEX4HBI2K7jdr3Fx5kPIqvZLHuMu1kkOfGaWMZc/JD
- fauunQWsedP2oiyZW8LMepSs46+DGCUBCfzOuiDecBpcY+Vm6rVGGtLQGo5GFtCz8WdCRM0bh
- ZcgBTfROxVbu2g/xCaTmlQMSq0ya8NmpB9CrzibE2tGlXQbZGOIIbMvS/Lgpv/vjrcK0CwZb2
- 477iBNjOGQyHnLTMh
+        id S1728236AbgC2ONJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Mar 2020 10:13:09 -0400
+Received: from mail-qt1-f169.google.com ([209.85.160.169]:36568 "EHLO
+        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728112AbgC2ONJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 29 Mar 2020 10:13:09 -0400
+Received: by mail-qt1-f169.google.com with SMTP id m33so12883720qtb.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Mar 2020 07:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=clarafamily.com; s=google;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :to;
+        bh=R0Fp7PQTXPdKm4ELa+ntm9yyAwC+pPccJyumUYx98Hs=;
+        b=WTukTiM3V5sZBOXx0Y/sA+ORXjKvhml7xO1km6Phiih2DuNwsiktV1vMzNb5dVQbdC
+         K5jzrH/QjP3DzJ0gNHiJFDbKEsUu9JM7M6b7/PYf5lA1A+3cV4ehNStXUIbQGOE7jiHn
+         72uWAnt+n1Ld52rU7ufwfTHr60hAvXcLixceQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:to;
+        bh=R0Fp7PQTXPdKm4ELa+ntm9yyAwC+pPccJyumUYx98Hs=;
+        b=K4xMc2j+G9ym6BZO1TmdOFg7m0ZkmmBMOghEmc6boImDhUC7Hc5fUaPtE3Drkqt5q+
+         9qGMv8WAA//OI9crWm115gOR178EVoer1gBWdEzZNqk06aVlRcoX2XiBjOi83r3t9nlf
+         sT3VoOdQf2FRs9ofp1yN55I3f+eOfBrGdTEAlLnomgwGeDe1ygtjO4jSjpEa0LZs+7sR
+         X8jtcV43H/BtrVsGW1o1dlX+VE2AS7ORm0OMpCQun1sNzv9179G76mqjctaFFg7+Lyk9
+         RmiF7iYy9ugcgE4DUxjg0/P/My4YZ/22bmzl+Jna6RVNedTV4tMQdR5YZPuvDg5Bghyi
+         TLQg==
+X-Gm-Message-State: ANhLgQ14XwgvAJI832nocfVCcFoYQGlfnSz4zxyQqT4eWm5heuYr4hJI
+        hg3RFcUMdr5Raz4zxXYgHBcf+9N+uofDSA==
+X-Google-Smtp-Source: ADFU+vtJ/yTRDxuP16gG96/wKs3vProQp9y4P/FhF+y5aOqP23jrEbZfWkAV5GUr9Grg0o69MwntUw==
+X-Received: by 2002:ac8:310b:: with SMTP id g11mr7901930qtb.128.1585491186533;
+        Sun, 29 Mar 2020 07:13:06 -0700 (PDT)
+Received: from macbookpro.clara (CPE40623100049e-CM9050cac9ddf0.cpe.net.cable.rogers.com. [99.247.249.188])
+        by smtp.gmail.com with ESMTPSA id 18sm7608737qkk.84.2020.03.29.07.13.05
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 29 Mar 2020 07:13:06 -0700 (PDT)
+From:   Jason Clara <jason@clarafamily.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Device Delete Stuck
+Message-Id: <B7A6E37C-C10A-49C3-B98A-0D659CA4E33B@clarafamily.com>
+Date:   Sun, 29 Mar 2020 10:13:05 -0400
+To:     linux-btrfs@vger.kernel.org
+X-Mailer: Apple Mail (2.3445.9.1)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---n8RTvi23YsMU9B6S0P1exWVTm49ZS7eMj
-Content-Type: multipart/mixed; boundary="Xw9HwbayI92ftTFHM01o2ayKFEgLiNzrv"
+I had a previous post about when trying to do a device delete that it =
+would cause my whole system to hang.  I seem to have got past that =
+issue. =20
 
---Xw9HwbayI92ftTFHM01o2ayKFEgLiNzrv
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/3/29 =E4=B8=8B=E5=8D=8812:03, Brad Templeton wrote:
-> Not using qgroups.  Not doing snapshots.    Did a reboot with the
-> options to upgrade to v2 -- it failed,
-
-What did you mean about "it failed"
-
-It failed to mount or something else showed up?
-
-If failed to mount, would you like to shared the dmesg of that mount
-failure?
-
-> in that the disk check took more
-> than 6 minutes,
-
-Please be aware that, btrfs check, unlike e2fsck, will always check all
-metadata of the fs, no matter if the fs is clean unmounted or not.
-
-In fact, btrfs unlike other journal based fs, has no clear way to
-determine if an fs is unmounted cleanly or not.
-(Log tree is one method, but not a reliable one).
-
-6 min looks completely valid to me.
-
-> but it worked, and the second time I was able to boot,
-> and -- knock on wood -- so far it has not hung.
-
-If you hit the hang, you could try to use 'perf' command to try to probe
-the runtime of btrfs_commit_transaction() and its major components.
-
-It would be super helpful if we could determine which is the major cause.=
+For that, it seems like even though all the SCRUBs finished without any =
+errors I still had a problem with some files.  By forcing a read of =
+every single file I was able to detect the bad files in DMESG.  Not sure =
+though why SCRUB didn=E2=80=99t detect this.
+BTRFS warning (device sdd1): csum failed root 5 ino 14654354 off =
+163852288 csum 0
 
 
->=20
-> I wonder why they put 5.3.0 as the standard advanced Kernel in Ubuntu
-> LTS if it has a data corruption bug.   I don't know if I've seen any
-> release of 5.4.14 in a PPA yet -- manual kernel install is such a pain
-> the few times I have done it.  I could revert, but the reason I switche=
-d
-> to 5.3, not long ago, was another problem with sound drivers.
->=20
-> BTW, even though it now works, it still takes 90 seconds every boot
-> doing a disk check, even after what I think is a clean shutdown.   I
-> presume that is not normal, any clues on what may cause that?
->=20
-Another thing I found is, in your initial report, your swap is heavily us=
-ed.
+But now when I attempt to delete a device from the array it seems to get =
+stuck.  Normally it will show in the log that it has found some extents =
+and then another message saying they were relocated.
 
-I guess it may be related to the memory pressure, where every metadata
-write needs to do a lot of metadata read before it can do anything.
+But for the last few days it has just been repeating the same found =
+value and never relocating anything, and the usage of the device =
+doesn=E2=80=99t change at all.
 
-If that's the case, it would be good to keep an eye on the memory
-pressure to make sure fs can still have enough metadata cache without
-triggering too much IO in its critical section.
+This line has now been repeating for more then 24 hours, and the =
+previous attempt was similar.
+[Sun Mar 29 09:59:50 2020] BTRFS info (device sdd1): found 133 extents
 
-Thanks,
-Qu
+Prior to this run I had tried with an earlier kernel (5.5.10) and had =
+the same results.  It starts with finding and then relocating, but then =
+relocating.  So I upgraded my kernel to see if that would help, and it =
+has not.
+
+System Info
+Ubuntu 18.04
+btrfs-progs v5.4.1
+Linux FileServer 5.5.13-050513-generic #202003251631 SMP Wed Mar 25 =
+16:35:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+DEVICE USAGE
+/dev/sdd1, ID: 1
+   Device size:             2.73TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:            888.43GiB
+   Unallocated:             1.00MiB
+
+/dev/sdb1, ID: 2
+   Device size:             2.73TiB
+   Device slack:            2.73TiB
+   Data,RAID6:            188.67GiB
+   Data,RAID6:            508.82GiB
+   Data,RAID6:              2.00GiB
+   Unallocated:          -699.50GiB
+
+/dev/sdc1, ID: 3
+   Device size:             2.73TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:            888.43GiB
+   Unallocated:             1.00MiB
+
+/dev/sdi1, ID: 5
+   Device size:             2.73TiB
+   Device slack:            1.36TiB
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.18TiB
+   Unallocated:             1.00MiB
+
+/dev/sdh1, ID: 6
+   Device size:             4.55TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:              1.23TiB
+   Data,RAID6:            888.43GiB
+   Data,RAID6:              2.00GiB
+   Metadata,RAID1:          2.00GiB
+   Unallocated:           601.01GiB
+
+/dev/sda1, ID: 7
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:              1.23TiB
+   Data,RAID6:            888.43GiB
+   Data,RAID6:              2.00GiB
+   Metadata,RAID1:          2.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             3.32TiB
+
+/dev/sdf1, ID: 8
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:              1.23TiB
+   Data,RAID6:            888.43GiB
+   Data,RAID6:              2.00GiB
+   Metadata,RAID1:          8.00GiB
+   Unallocated:             3.31TiB
+
+/dev/sdj1, ID: 9
+   Device size:             7.28TiB
+   Device slack:              0.00B
+   Data,RAID6:            188.67GiB
+   Data,RAID6:              1.68TiB
+   Data,RAID6:              1.23TiB
+   Data,RAID6:            888.43GiB
+   Data,RAID6:              2.00GiB
+   Metadata,RAID1:          8.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             3.31TiB
 
 
---Xw9HwbayI92ftTFHM01o2ayKFEgLiNzrv--
+FI USAGE
+WARNING: RAID56 detected, not implemented
+Overall:
+    Device size:		  33.20TiB
+    Device allocated:		  20.06GiB
+    Device unallocated:		  33.18TiB
+    Device missing:		     0.00B
+    Used:			  19.38GiB
+    Free (estimated):		     0.00B	(min: 8.00EiB)
+    Data ratio:			      0.00
+    Metadata ratio:		      2.00
+    Global reserve:		 512.00MiB	(used: 0.00B)
 
---n8RTvi23YsMU9B6S0P1exWVTm49ZS7eMj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Data,RAID6: Size:15.42TiB, Used:15.18TiB (98.44%)
+   /dev/sdd1	   2.73TiB
+   /dev/sdb1	 699.50GiB
+   /dev/sdc1	   2.73TiB
+   /dev/sdi1	   1.36TiB
+   /dev/sdh1	   3.96TiB
+   /dev/sda1	   3.96TiB
+   /dev/sdf1	   3.96TiB
+   /dev/sdj1	   3.96TiB
 
------BEGIN PGP SIGNATURE-----
+Metadata,RAID1: Size:10.00GiB, Used:9.69GiB (96.90%)
+   /dev/sdh1	   2.00GiB
+   /dev/sda1	   2.00GiB
+   /dev/sdf1	   8.00GiB
+   /dev/sdj1	   8.00GiB
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6An0AACgkQwj2R86El
-/qhBcggAkzEXqZCNvEPUWzIOaaWs0kw2DksCPNiopTnpb/LrFVP7l4kpXQKXGNXC
-2b8e/v1i5kirAUnBpEDz2Z6TG3rmw4lNDIQwG1zzhbj+/IFONGKiK6o3QyM9dbnY
-gyKlYilllnLWKAvXpExg7UpH+K1mLb42IMPLf8+TSWTolfmjCOXqoEOQWdNqGaDI
-fWCWuV4lq1uL1aT8RM/QqtZKnAwFYllCjXv9VLYVYENlc3PBOFFKOdTM3twHfolE
-XFJmaSMaTTeFV3SJWrdRq33Pt1jcNYQlo4ou3Ly1UedAuVYz4EcC25ewGKqBWkh/
-VofE4FmbYYkdsGIEabzqa6Y/IHhmow==
-=qBMe
------END PGP SIGNATURE-----
+System,RAID1: Size:32.00MiB, Used:1.19MiB (3.71%)
+   /dev/sda1	  32.00MiB
+   /dev/sdj1	  32.00MiB
 
---n8RTvi23YsMU9B6S0P1exWVTm49ZS7eMj--
+Unallocated:
+   /dev/sdd1	   1.00MiB
+   /dev/sdb1	-699.50GiB
+   /dev/sdc1	   1.00MiB
+   /dev/sdi1	   1.00MiB
+   /dev/sdh1	 601.01GiB
+   /dev/sda1	   3.32TiB
+   /dev/sdf1	   3.31TiB
+   /dev/sdj1	   3.31TiB
+
+
+FI SHOW
+Label: 'Pool1'  uuid: 99935e27-4922-4efa-bf76-5787536dd71f
+	Total devices 8 FS bytes used 15.19TiB
+	devid    1 size 2.73TiB used 2.73TiB path /dev/sdd1
+	devid    2 size 0.00B used 699.50GiB path /dev/sdb1
+	devid    3 size 2.73TiB used 2.73TiB path /dev/sdc1
+	devid    5 size 1.36TiB used 1.36TiB path /dev/sdi1
+	devid    6 size 4.55TiB used 3.96TiB path /dev/sdh1
+	devid    7 size 7.28TiB used 3.96TiB path /dev/sda1
+	devid    8 size 7.28TiB used 3.97TiB path /dev/sdf1
+	devid    9 size 7.28TiB used 3.97TiB path /dev/sdj1
+
+FI DF
+Data, RAID6: total=3D15.42TiB, used=3D15.18TiB
+System, RAID1: total=3D32.00MiB, used=3D1.19MiB
+Metadata, RAID1: total=3D10.00GiB, used=3D9.69GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B=
