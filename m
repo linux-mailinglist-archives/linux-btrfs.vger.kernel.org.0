@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95395197639
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Mar 2020 10:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCA219768F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Mar 2020 10:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729589AbgC3ILl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Mar 2020 04:11:41 -0400
-Received: from 4brad.ctyme.com ([184.105.182.90]:47272 "EHLO 4brad.ctyme.com"
+        id S1729594AbgC3Ifk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Mar 2020 04:35:40 -0400
+Received: from mail.virtall.com ([46.4.129.203]:43864 "EHLO mail.virtall.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgC3ILl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Mar 2020 04:11:41 -0400
-Received: from [192.168.123.14] (c-76-102-119-11.hsd1.ca.comcast.net [76.102.119.11])
-        by 4brad.ctyme.com (Postfix) with ESMTPSA id 7D83A6340A35;
-        Mon, 30 Mar 2020 04:11:41 -0400 (EDT)
+        id S1726017AbgC3Ifk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Mar 2020 04:35:40 -0400
+Received: from mail.virtall.com (localhost [127.0.0.1])
+        by mail.virtall.com (Postfix) with ESMTP id 4F08541AB137;
+        Mon, 30 Mar 2020 08:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wpkg.org; s=default;
+        t=1585557338; bh=BtaotMGC5ftKqYkicayOtAVFEV2xiW11H26G0V/jb2Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=CX3klUiGUdx1MoNvrn5CvBeue+KsjViQx6wC0pam/h15JTDLu565YtB6TiNBrWLx1
+         MPIoNeBzR3UFN8rUQmk+4IchdJutkfqSlk0tQLmfssG4KkyhPl9KWYXGzaHRu06w3D
+         2j6M3ao2l9vEz5CtQOxVdtwlZyfi1uqHAOkWKyMpOvJA6xbVoZCfLZeKme8dANNh5b
+         SAEpSKQzTOFHFDO5dBNuIcTMskuvQQBTfnmEskcCzX8vCRzfKGvIXQ/SIPQWm39Uot
+         f514rueB5Ec0PG8F2+nyv0L6avSmm9RB4MzfCOIRcGW2pkz67n83am5ABKiSYN4OXj
+         XsRcyiJEhnsqw==
+X-Fuglu-Suspect: eb9396513f6443cba73c5d70abd148bc
+X-Fuglu-Spamstatus: NO
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.virtall.com
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no
+Received: from localhost (localhost [127.0.0.1]) (Authenticated sender: tch@virtall.com)
+        by mail.virtall.com (Postfix) with ESMTPSA;
+        Mon, 30 Mar 2020 08:35:37 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 30 Mar 2020 17:35:34 +0900
+From:   Tomasz Chmielewski <mangoo@wpkg.org>
+To:     Brad Templeton <4brad@templetons.com>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Subject: Re: btrfs-transacti hangs system for several seconds every few
  minutes
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Tomasz Chmielewski <mangoo@wpkg.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+In-Reply-To: <b71b10f8-6410-4d32-f89c-9b3f20d9b2f2@templetons.com>
 References: <94d08f2b57dd2df746436a0d6bb5f51e@wpkg.org>
  <8703e779-d31b-37c1-672b-dea482e8a491@gmail.com>
-From:   Brad Templeton <4brad@templetons.com>
-Organization: http://www.templetons.com/brad
-Message-ID: <b71b10f8-6410-4d32-f89c-9b3f20d9b2f2@templetons.com>
-Date:   Mon, 30 Mar 2020 01:11:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <8703e779-d31b-37c1-672b-dea482e8a491@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+ <b71b10f8-6410-4d32-f89c-9b3f20d9b2f2@templetons.com>
+Message-ID: <7128ae496fcc9187920cb27de1a80584@wpkg.org>
+X-Sender: mangoo@wpkg.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Also, isn't it 4 debs -- image, modules, headers and architecture
-independent headers?
+On 2020-03-30 17:11, Brad Templeton wrote:
+> Also, isn't it 4 debs -- image, modules, headers and architecture
+> independent headers?
 
-Still, I am surprised that the ubuntu team, with a data corruption
-issue, would not make a priority to install a fixed kernel or at least
-backport btrfs modules into the current kernel.
+You don't have to install header debs (unless compiling the modules 
+yourself etc.).
 
-On 3/29/20 10:56 PM, Andrei Borzenkov wrote:
-> 30.03.2020 05:29, Tomasz Chmielewski пишет:
->>> I wonder why they put 5.3.0 as the standard advanced Kernel in Ubuntu
->>> LTS if it has a data corruption bug.   I don't know if I've seen any
->>> release of 5.4.14 in a PPA yet -- manual kernel install is such a pain
->>> the few times I have done it.
->>
->> You have all kernels compiled as packages here (for Ubuntu):
->>
->> https://kernel.ubuntu.com/~kernel-ppa/mainline/
->>
->> So just download two deb packages, dpkg -i, and done.
->>
-> 
-> Beware that it is not exactly the same as distribution kernel (both in
-> terms of included patches and enabled configuration options). Also
-> matching linux-tools is not provided which means perf, cpupower,
-> turbostat and some other tools stop working.
-> 
+
+Tomasz Chmielewski
+https://lxadm.com
