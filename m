@@ -2,55 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9763319740C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Mar 2020 07:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD769197423
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Mar 2020 07:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgC3Fq2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Mar 2020 01:46:28 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:40976 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgC3Fq2 (ORCPT
+        id S1728671AbgC3F4u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Mar 2020 01:56:50 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:44729 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728571AbgC3F4u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Mar 2020 01:46:28 -0400
-Received: by mail-lf1-f54.google.com with SMTP id z23so13086222lfh.8
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Mar 2020 22:46:27 -0700 (PDT)
+        Mon, 30 Mar 2020 01:56:50 -0400
+Received: by mail-lj1-f196.google.com with SMTP id p14so16707256lji.11
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Mar 2020 22:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MI231/Wm7j9ZHcooU1cuyI9AWUvM/mLf9NWba8GlJQk=;
-        b=pWylv5xngSHlP61NpMvBCQVVjz1i+XxwgzoUw3IfEXPtHPRNDU0f3TTu1ZS7C/8TVD
-         iMx1HKQpM+c1nynJNhnqebWdzD8RmT/UEctfMEYAUUniJNAj19Gbal5bLBySbsK2OzUJ
-         yy6R5r95En1W9TyI9pTIXKc/9d2xJqHj3An7L7T+CuPRJbMNJGsQVdXe/6Kfb2XHQ0oT
-         IIYVPKO22ziJfIXKcFcGBdaG6h4j+6vA40eecwKNIxucMLJQDj+YtQrdl2X6tP+hYBe1
-         jIg1X7NvhOBIBM+4VIyccRTcBHTsYTdLE35yuxde+rFpjmwYm3iZ/lvgeSfMiakOkANb
-         UIdQ==
+        bh=5YO2EXO9bP8Pykvs0ftrZcRN7lL8tcNZsipSwTW/GjY=;
+        b=fy3dNDjioTPJlV7uyGQ3Ob8SgQlg2CQ4iOZtI5fUS0u+agQ9x4TkFyzGnEOjdZMsv3
+         x5LQhhX0zEYYxaGZc6VpYhfXl0/GxZL0nf7txfFm+qBBe8EjermyuPdkRBhYgmqg3Wyb
+         yMw7Op4FbZtpyiGAIoZmNnHdIhbvpjPAroTDwSVOJ+FfX351kfW6RYi/ndXDDJk/AG8v
+         8fpQ2e517Q4Npf/LSZPLeaTDBU+1Hg1EkOQfOi0zzDCJ60v8indruO/+vIAsU/30R0iW
+         bEA5QOfmD2lY7Pq3mkYjUs0vORq1aXLph6tcRu7bzSEhH01cWuYddUa+OkJEGXzd29Lk
+         Xe+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MI231/Wm7j9ZHcooU1cuyI9AWUvM/mLf9NWba8GlJQk=;
-        b=PuX4sIeMyeXV4yM/cJAS3BiiOit8pzIZ689QNo7eVO1rQGpB5/zfM94/M3Hh107N6G
-         E71M0qg8CFP5XMdLilwVsUVDLvhwSaSGo8ETeBsXt3SGVOr8Esdr3THTeN6wNSS30a1q
-         aP78tzxuxd+Iy2Uzz+ibebVk1skO5bK9ebUHsF9x98U/UEjHk8pnkGXpvmLHgKgXRG11
-         kW1Ayz3hfczmUnkWdXjg1BTXmz4MnnSNhYOLXMthq9ciNvCCghJeGXZojtK5SlcKUabE
-         3178TrjYJKzn/BwxHDw2st7Il2wf1Xdz1yHu9MSjY4eEGLG1HsewUIBpgZjJjc/FDHfp
-         c5YA==
-X-Gm-Message-State: AGi0PuYm1Qe70R05B7AgsaKDJeFLfFP0u5JEltyhynZpc2EvVbGTCAE+
-        rlEyg4VHWtAtllYlldUhUrIkXTQC
-X-Google-Smtp-Source: APiQypJlb3U3f8t/IJ7psmd4By6xow6n0zQNzpceTsobG+Sq8F01FRItq2Bo+gr9oR8ScOEbHeXAvQ==
-X-Received: by 2002:ac2:414f:: with SMTP id c15mr2161785lfi.2.1585547185907;
-        Sun, 29 Mar 2020 22:46:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=5YO2EXO9bP8Pykvs0ftrZcRN7lL8tcNZsipSwTW/GjY=;
+        b=udmMZsiHKpJ4MaeKALhFQ1kpVNDBcOhDV+PJT2AZYWGKJFTpwEupxzmARESgu6ppDT
+         /3PQoDxtfVbu+qLdJ5IW9hu0W51U+g3oyxHD4A40sIScnjwgwWv1lmnHA27Tdb0dxX80
+         dx2x+ucuJxAkbDK488tWr5uaYAkn32fqhNUDyGB53eXCWVMKZ4lRqGchOPO30YH/7AxV
+         8AVrOKTelza2KfS003dkdFZpJn4sCiEigsd5BSohIWwjuMZZlPj1wjXdaesDRHMzhxPY
+         sfY/Nm70wjhdkW472pCnGz0VEa4oGfmJCWpQS6L9KKEmjUzp2sAPE8ZGc+HWz0jwIxJw
+         /ZFQ==
+X-Gm-Message-State: AGi0Pua78rEVidpbDs+BCDxbCQMyljb9H+05QaiQNYptIC7id697xZn2
+        Hde8f7vUTV4JF2hA53Pkz7s=
+X-Google-Smtp-Source: APiQypJAWEFElMxi6l9p3CsU/ZaVV1aHYM7YKS77EHw/BNKGW7fMaZDkHQyhxuICl4w3eKGEGJObYQ==
+X-Received: by 2002:a2e:97cd:: with SMTP id m13mr6366651ljj.20.1585547807837;
+        Sun, 29 Mar 2020 22:56:47 -0700 (PDT)
 Received: from ?IPv6:2a00:1370:812d:ea69:5e88:dcf1:68f5:44ed? ([2a00:1370:812d:ea69:5e88:dcf1:68f5:44ed])
-        by smtp.gmail.com with ESMTPSA id 4sm6296172lja.56.2020.03.29.22.46.24
+        by smtp.gmail.com with ESMTPSA id f24sm2988338lfa.17.2020.03.29.22.56.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Mar 2020 22:46:25 -0700 (PDT)
-Subject: Re: Using Intel Optane to accelerate a BTRFS array? (equivalent of
- ZLOG/SIL for ZFS?)
-To:     Victor Hooi <victorhooi@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAMnnoULAX9Oc+O3gRbVow54H2p_aAENr8daAtyLR_0wi8Tx7xg@mail.gmail.com>
+        Sun, 29 Mar 2020 22:56:47 -0700 (PDT)
+Subject: Re: btrfs-transacti hangs system for several seconds every few
+ minutes
+To:     Tomasz Chmielewski <mangoo@wpkg.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     4brad@templetons.com
+References: <94d08f2b57dd2df746436a0d6bb5f51e@wpkg.org>
 From:   Andrei Borzenkov <arvidjaar@gmail.com>
 Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
@@ -70,12 +71,12 @@ Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
  vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
  AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <a9b73920-65d5-b973-8578-9659717434b5@gmail.com>
-Date:   Mon, 30 Mar 2020 08:46:23 +0300
+Message-ID: <8703e779-d31b-37c1-672b-dea482e8a491@gmail.com>
+Date:   Mon, 30 Mar 2020 08:56:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAMnnoULAX9Oc+O3gRbVow54H2p_aAENr8daAtyLR_0wi8Tx7xg@mail.gmail.com>
+In-Reply-To: <94d08f2b57dd2df746436a0d6bb5f51e@wpkg.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,41 +85,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-30.03.2020 01:30, Victor Hooi пишет:
-> Hi,
+30.03.2020 05:29, Tomasz Chmielewski пишет:
+>> I wonder why they put 5.3.0 as the standard advanced Kernel in Ubuntu
+>> LTS if it has a data corruption bug.   I don't know if I've seen any
+>> release of 5.4.14 in a PPA yet -- manual kernel install is such a pain
+>> the few times I have done it.
 > 
-> I have a small 12-bay SuperMicro server I'm using as a local NAS, with
-> FreeNAS/ZFS.
+> You have all kernels compiled as packages here (for Ubuntu):
 > 
-> Each drive is a 12TB HDD.
+> https://kernel.ubuntu.com/~kernel-ppa/mainline/
 > 
-> I'm in the process of moving it to Linux - and I thought this might be
-> a good chance to try out BTRFS again =).
-> 
-> (I'd previously tried BTRFS many years a go, and hit some issues -
-> it's possible this may have been made worse by my inexperience with
-> BTRFS at the time - e.g.
-> https://www.spinics.net/lists/linux-btrfs/msg04240.html)
-> 
-> Anyhow - currently the server has a 750GB Intel Optane drive, that
-> we're using as a ZLOG/SIL drive:
+> So just download two deb packages, dpkg -i, and done.
 > 
 
-Do you mean ZIL/SLOG? ZIL == ZFS Intent Log, SLOG == SSD Log.
+Beware that it is not exactly the same as distribution kernel (both in
+terms of included patches and enabled configuration options). Also
+matching linux-tools is not provided which means perf, cpupower,
+turbostat and some other tools stop working.
 
-> https://www.ixsystems.com/community/threads/how-best-to-use-960gb-optane-in-freenas-build.75798/#post-527264
-> 
-> My question is - what's the equivalent in BTRFS-land?
-> 
-
-Not on btrfs level. I guess using bcache on top of btrfs may achieve
-some similar effects.
-
-> Or what is the best way to use an ultra-fast Intel Optane drive to
-> accelerate reads/writes on a BTRFS array?
-> 
-
-
-ZIL is *write* intent log, it does not directly accelerates reads. ZFS
-supports SSD as second-level read cache, but as far as I remember it is
-physically separate from ZIL.
