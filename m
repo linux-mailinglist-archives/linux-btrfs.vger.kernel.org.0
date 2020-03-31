@@ -2,139 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87349199EB2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 21:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2C6199ECE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 21:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgCaTKy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Mar 2020 15:10:54 -0400
-Received: from smtp-16.italiaonline.it ([213.209.10.16]:56339 "EHLO libero.it"
+        id S1727575AbgCaTSA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Mar 2020 15:18:00 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:37502 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727575AbgCaTKy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Mar 2020 15:10:54 -0400
+        id S1726315AbgCaTSA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Mar 2020 15:18:00 -0400
 Received: from venice.bhome ([94.37.173.46])
-        by smtp-16.iol.local with ESMTPA
-        id JMHijXV70jfNYJMHkj3qIq; Tue, 31 Mar 2020 21:10:52 +0200
+        by smtp-35.iol.local with ESMTPA
+        id JMObjTkn6MAUpJMOcjzy8u; Tue, 31 Mar 2020 21:17:58 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1585681852; bh=at9o5w250skn0GTKQQ8ooc9pRYpcGLL8iMwCqqqupEM=;
+        t=1585682278; bh=RUxfr7e+L1ztTuGglTkJA2bHgaQ9eNTd3vd9VDmGS+g=;
         h=From;
-        b=hu6AkePhRX5wDSlFr440yrGGMmMoJZCaq+kc9uFA3Z1504M2zo2ykDcGpor/CZLmg
-         1OGApe7IcPsJjaqzlUydao13Qwbp0EYWoyNz+fO/SPSzGTO2zlywsLzE3cS9wyell0
-         5A4ljqGYykyFODJ6TH0rE0jjUihG8SvVkWBuSfk27REQR4gTdyiLTCraoVAxj2TeL6
-         fkjfRgq7nuJFTD8iZnHG9dLuLdaH48JmWuaEo2Z2kPfGBkzrv+/r7FwtDMDH0YLsNT
-         xj2pVGb6TaaclcTUguF260pOQ0rd4HF8U7XM3nuH+zXQZqGmKbuDEbvGcDGHnvi+Bz
-         q8t7DJ7wYK9Iw==
-X-CNFS-Analysis: v=2.3 cv=av7M9hRV c=1 sm=1 tr=0
+        b=nD/HFTWFYItYz0vPo1mUeyLSl7/W1LmrElD7nYp8Nmg/J7rT8Cwfi93XUQNedyFGO
+         Lh4fQywqgurVFqD+0/pzteu2AJ/Vmv5i0jLnSVnCi9jAJC0neQemido1Ojy3772CqO
+         npnld2wI4X93w8WVoIVUA0J4bBk4Y/d7lnKudOhVORJqmISI/Gpa4UyMQEAMsxqF+/
+         QFVLfjOMYuwfzjvSC3SQCr4NbIu5w459cipfG9JyymRG0Wz/668W68UbmnEX1wYKkL
+         BPdXfV4BPAFNeT5gmv0w/ZK3p01U/vO/DhjVBRfLjrZQP1KCH32TihJGAaVyvh8IyI
+         d86W+u+XE5spw==
+X-CNFS-Analysis: v=2.3 cv=B/fHL9lM c=1 sm=1 tr=0
  a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=mUxrmllu26sYn3iLKTUA:9
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=5OyekcXyWqhWBhKfEzMA:9
+ a=QEXdDO2ut3YA:10
+Subject: Re: [RFC] btrfs-progs: use the new ioctl BTRFS_IOC_GET_CHUNK_INFO
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>,
-        Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 4/4] btrfs-progs: Add mixed profiles check to some btrfs sub-commands.
-Date:   Tue, 31 Mar 2020 21:10:45 +0200
-Message-Id: <20200331191045.8991-5-kreijack@libero.it>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200331191045.8991-1-kreijack@libero.it>
-References: <20200331191045.8991-1-kreijack@libero.it>
+References: <20200315152430.7532-1-kreijack@libero.it>
+Message-ID: <9d251951-4fc4-b8a5-2f08-e66d82ed1088@libero.it>
+Date:   Tue, 31 Mar 2020 21:17:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfDNnDyr6Or4O2Gr6C/oqRlRS2OV+OrtORSLl/djSPY53+IHTiAnavn0FwbDscIeMzoXxMMrYcHUZAY9up/WvQt6khxHQXHEFQehJ9EMYlK8bqb3HXmF2
- bYaXZRjSpuZ2yoEadSBCxEAkZKZYSqFgoN0umsdY83rSbIj5GiPzcBbK6NjasLLVjZ/BcNtwpBNJGaGEsqc2ZkZNeK3NofeMbQTz4EafrrPosH0acWRLRJ5Z
- AXsLJppxXx72MWLQE/gyY6SznOMN9Ad1ZBcwWsVEVLh36zG0JxKvxocVEudzWa8d8D5SlPfDZm+lu99FyZK7NQ==
+In-Reply-To: <20200315152430.7532-1-kreijack@libero.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBI0TF/KEv4DdNCxPl6WtNLS+3ji4fklzOZcPmtEpGhGnn6E3gW+QpUC5QUlm6yhiFwuQGv2Zl/HO4y3JFppHafTulr5iauDV3Qtik7gOBDCV1NvJzPy
+ oQEmjSy7CyaDVXRgvoURV3hb+tbKU1iM9NigdM+gSf1kXEQKI7ClEUsimGwQf/H10Q8vYoBC1XPrJA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goffredo Baroncelli <kreijack@inwind.it>
+Gentle ping.
 
-Add a check in some btrfs subcommands to detect if a filesystem
-has mixed profiles for data/metadata/system. In this case
-a warning is showed.
+BR
+G.Baroncelli
 
-Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
----
- cmds/balance.c          | 2 ++
- cmds/device.c           | 3 +++
- cmds/filesystem-usage.c | 1 +
- cmds/filesystem.c       | 1 +
- 4 files changed, 7 insertions(+)
+On 3/15/20 4:24 PM, Goffredo Baroncelli wrote:> > Hi,> 
+> this is a repost of an old patch (~2017). At the time it din't received
+> any feedback. I repost it hoping that it still be interested.
+> 
+> This patch set is the btrfs-prog related one; another one related to the
+> kernel is send separately.
+> 
+> This patch set createa a new ioctl BTRFS_IOC_GET_CHUNK_INFO.
+> The aim is to replace the BTRFS_IOC_TREE_SEARCH ioctl
+> used by "btrfs fi usage" to obtain information about the
+> chunks/block groups.
+> 
+> The problems in using the BTRFS_IOC_TREE_SEARCH is that it access
+> the very low data structure of BTRFS. This means:
+> 1) this would be complicated a possible change of the disk format
+> 2) it requires the root privileges
+> 
+> The BTRFS_IOC_GET_CHUNK_INFO ioctl can be called even from a not root
+> user: I think that the data exposed are not sensibile data.
+> 
+> These patches allow to use "btrfs fi usage" without root privileges.
+> 
+> before:
+> -------------------------------------------
+> 
+> $ btrfs fi us /
+> WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
+> Overall:
+>      Device size:		 100.00GiB
+>      Device allocated:		  26.03GiB
+>      Device unallocated:		  73.97GiB
+>      Device missing:		     0.00B
+>      Used:			  17.12GiB
+>      Free (estimated):		  80.42GiB	(min: 80.42GiB)
+>      Data ratio:			      1.00
+>      Metadata ratio:		      1.00
+>      Global reserve:		  53.12MiB	(used: 0.00B)
+> 
+> Data,single: Size:23.00GiB, Used:16.54GiB (71.93%)
+> 
+> Metadata,single: Size:3.00GiB, Used:588.94MiB (19.17%)
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+> 
+> after:
+> -----------------------------------------------
+> $ ./btrfs fi us /
+> Overall:
+>      Device size:		 100.00GiB
+>      Device allocated:		  26.03GiB
+>      Device unallocated:		  73.97GiB
+>      Device missing:		     0.00B
+>      Used:			  17.12GiB
+>      Free (estimated):		  80.42GiB	(min: 80.42GiB)
+>      Data ratio:			      1.00
+>      Metadata ratio:		      1.00
+>      Global reserve:		  53.12MiB	(used: 0.00B)
+> 
+> Data,single: Size:23.00GiB, Used:16.54GiB (71.93%)
+>     /dev/sdd3	  23.00GiB
+> 
+> Metadata,single: Size:3.00GiB, Used:588.94MiB (19.17%)
+>     /dev/sdd3	   3.00GiB
+> 
+> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
+>     /dev/sdd3	  32.00MiB
+> 
+> Unallocated:
+>     /dev/sdd3	  73.97GiB
+> 
+> Comments are welcome
+> BR
+> G.Baroncelli
+> 
+> 
 
-diff --git a/cmds/balance.c b/cmds/balance.c
-index 5392a604..20d0ebc1 100644
---- a/cmds/balance.c
-+++ b/cmds/balance.c
-@@ -716,6 +716,7 @@ static int cmd_balance_pause(const struct cmd_struct *cmd,
- 			ret = 1;
- 	}
- 
-+	btrfs_check_for_mixed_profiles_by_fd(fd);
- 	close_file_or_dir(fd, dirstream);
- 	return ret;
- }
-@@ -756,6 +757,7 @@ static int cmd_balance_cancel(const struct cmd_struct *cmd,
- 			ret = 1;
- 	}
- 
-+	btrfs_check_for_mixed_profiles_by_fd(fd);
- 	close_file_or_dir(fd, dirstream);
- 	return ret;
- }
-diff --git a/cmds/device.c b/cmds/device.c
-index 24158308..d83f92a7 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -143,6 +143,7 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 	}
- 
- error_out:
-+	btrfs_check_for_mixed_profiles_by_fd(fdmnt);
- 	close_file_or_dir(fdmnt, dirstream);
- 	return !!ret;
- }
-@@ -225,6 +226,7 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
- 		}
- 	}
- 
-+	btrfs_check_for_mixed_profiles_by_fd(fdmnt);
- 	close_file_or_dir(fdmnt, dirstream);
- 	return !!ret;
- }
-@@ -659,6 +661,7 @@ static int cmd_device_usage(const struct cmd_struct *cmd, int argc, char **argv)
- 		}
- 
- 		ret = _cmd_device_usage(fd, argv[i], unit_mode);
-+		btrfs_check_for_mixed_profiles_by_fd(fd);
- 		close_file_or_dir(fd, dirstream);
- 
- 		if (ret)
-diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-index aa7065d5..ce07d80f 100644
---- a/cmds/filesystem-usage.c
-+++ b/cmds/filesystem-usage.c
-@@ -1043,6 +1043,7 @@ static int cmd_filesystem_usage(const struct cmd_struct *cmd,
- 		ret = print_filesystem_usage_by_chunk(fd, chunkinfo, chunkcount,
- 				devinfo, devcount, argv[i], unit_mode, tabular);
- cleanup:
-+		btrfs_check_for_mixed_profiles_by_fd(fd);
- 		close_file_or_dir(fd, dirstream);
- 		free(chunkinfo);
- 		free(devinfo);
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index 4f22089a..c4bb13dd 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -111,6 +111,7 @@ static int cmd_filesystem_df(const struct cmd_struct *cmd,
- 		error("get_df failed: %m");
- 	}
- 
-+	btrfs_check_for_mixed_profiles_by_fd(fd);
- 	close_file_or_dir(fd, dirstream);
- 	return !!ret;
- }
+
 -- 
-2.26.0
-
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
