@@ -2,259 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 342BB19A103
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 23:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB78B19A126
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 23:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbgCaVog (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Mar 2020 17:44:36 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:52490 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728245AbgCaVog (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Mar 2020 17:44:36 -0400
-Received: from venice.bhome ([94.37.173.46])
-        by smtp-35.iol.local with ESMTPA
-        id JOgTjUQt8MAUpJOgTj0PFX; Tue, 31 Mar 2020 23:44:33 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1585691073; bh=ohw04wA2mUHMalrbBsP5elzx8Go/Y7tUV50bZXCfYZE=;
-        h=From;
-        b=D+z7Z23kBWkgUtgNMXKrXDXw8VAsqtfg/oVeusq/Utj4LWrbG82IB6JRCxdK2g8r/
-         F4Mvt0ppU99D06rbs+/GqGzLfKFUUhcWNTY5+nSsJOvrRPj+BmA5h0D0H5+jgcl3lS
-         uYh1oMYtFuUR7irAcTwpFF5WBade1IRi15xdJldXctXyb4Haxh+NlHvaEeJRXn2Y8e
-         9FzoUAv+QEWL2LZDrhCgTNoYFvNB5pP5CI75BqwnHUJw1QQvjGC6t6X5Bfwpe2X2bx
-         dURtkPzquJh1F3QRRUSu9i9hma28gyaPdDR3ayQauB3Ym6/6gcTT84eewYC1IhwtIG
-         ovAuPv3vBJi5g==
-X-CNFS-Analysis: v=2.3 cv=B/fHL9lM c=1 sm=1 tr=0
- a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=GwDSwHl4fVUIJdfQ4YkA:9
- a=m-oCZ9z6dGNkJnxN:21 a=d1HI2Um4TxgDsxMD:21 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: Using Intel Optane to accelerate a BTRFS array? (equivalent of
- ZLOG/SIL for ZFS?)
-From:   Goffredo Baroncelli <kreijack@libero.it>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Eli V <eliventer@gmail.com>, Paul Jones <paul@pauljones.id.au>
-Cc:     Victor Hooi <victorhooi@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAMnnoULAX9Oc+O3gRbVow54H2p_aAENr8daAtyLR_0wi8Tx7xg@mail.gmail.com>
- <a9b73920-65d5-b973-8578-9659717434b5@gmail.com>
- <SYBPR01MB38978D6654705941C50AF95E9ECB0@SYBPR01MB3897.ausprd01.prod.outlook.com>
- <CAJtFHUSjwBKGyjSQfB-aZwsvV=4AcnG+-h5uF_4zmBOESxd=hA@mail.gmail.com>
- <2ff672d4-875b-5242-96d6-1e248e2aa57a@gmail.com>
- <b6f8ec3a-cd58-bbce-fdd6-a5001a92b3b1@libero.it>
-Message-ID: <46389af8-0587-3773-8582-d25ea6be778f@libero.it>
-Date:   Tue, 31 Mar 2020 23:44:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1731331AbgCaVqb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Mar 2020 17:46:31 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:53066 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731511AbgCaVqa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Mar 2020 17:46:30 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 1400B9C424; Tue, 31 Mar 2020 22:46:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1585691188;
+        bh=/dnW5+HJh1JvqT+S0yKdDqJ8+1MNb2vgeycksza5Keg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LrJ7UEvlRDlnns2el4rNu5IXft/B44wiUb1FyJOFa7lFO/pnK+IC9yZ+/7Qrc+0lS
+         8z0sztRvWzrvimt4APZoa+ZdvbaHKqp7wyP497hjnxkBSPUuSvMpd9mu6NKCbffV/A
+         I24Bl+ShMu/o8UGfAbhcBLCTeSGJRcosuioqcJ1OMKtadVOqJdAe6YYzPCjjJ8wPQq
+         +JedO8XWXQYVuOjufCu7a9gpkCbr4VTMT5e/NKEdJCl13bGkHP4tTIuf8ee5+FCB20
+         EQEz7f7zSWhPUQkuPKL6FtTYDbsiXyfoyPkUCWVEMp+dOvvPi87/QDt07teVibjr6s
+         v3gmycb2WA8gQ==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 75C4F9B92E;
+        Tue, 31 Mar 2020 22:46:19 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1585691179;
+        bh=/dnW5+HJh1JvqT+S0yKdDqJ8+1MNb2vgeycksza5Keg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=bgpmTutTb1JfuMPL8JfSq08mnfVzcjgAsSMPEj8xUyf73vYxF55jJwpITa65SVDm9
+         JDNCrPxue1NU9mD7ikGgBLPmKzzBAco/o8KLP705BULFzshmPjRzXXfDTJt6y16H9v
+         4CwXcoZrKwDxbhuVMfFwuFDBcSvsMyltoqIpFgN4Qcs2Re9i/Ej0I1SZsKHWWhOiNL
+         5ln+keTbqMtyahN79c84a2DntTtuGwiYqW200YRChFH49zTHfAoW4kvqdP4TGC577+
+         IhTQaOxrF41RWmErIha5qW7eYKpOHfPh9RgiQxoThMsxAQooAnbFqENTEXtCvzxCgH
+         x1df+5TDbfJ5g==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 1D4D8DAD03;
+        Tue, 31 Mar 2020 22:46:18 +0100 (BST)
+Subject: Re: [PATCH v2] btrfs-progs: add warning for mixed profiles filesystem
+To:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>
+References: <20200331191045.8991-1-kreijack@libero.it>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <97ec9f13-8d8d-1df9-f725-44a2a0ecc438@cobb.uk.net>
+Date:   Tue, 31 Mar 2020 22:46:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <b6f8ec3a-cd58-bbce-fdd6-a5001a92b3b1@libero.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfAqUzckEwKBm+z9IX26c/6LP0+FK8bmGezvN1dSzWNbVRa1EDjlqNHC2BBXi6W1vDmFITEF88gS0keYnFLzDDeBpK2i9ILoBdB3pHqOwztW27Eu9V/eR
- sxJVJWSC+5HRGIKRlTyKkd9OWYiRSHA/cPGkb1DbEstdP74MN9Fm2zVRz5smoboLgvJyoZI9b8Gv6BTh3G4bfzLB4g759YWSJEKv0CvBJRvOfxyAfDKdrQXy
- QAsE7X0cDgDfZJjSxfG1eOoEq2yOxgZhHDA07vGPqYy68E4CrsiKNsu/v0CjLEso
+In-Reply-To: <20200331191045.8991-1-kreijack@libero.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/31/20 10:08 PM, Goffredo Baroncelli wrote:
-> On 3/31/20 7:09 PM, Andrei Borzenkov wrote:
->> 31.03.2020 20:01, Eli V пишет:
->>>
->>> Another option is to put the 12TB drives in an mdadm RAID, and then
->>> use the mdadm raid & the ssd for btrfs RAID1 metadata, with SINGLE
->>> data on the the array.
->>
->> How do you restrict specific device for metadata only?
-> 
-> I never tried, but I don't think that it would be so complicated.
-> 
-> When BTRFS has to allocate a new chunk, it collects all the available
-> free spaces on the disks; it sorts all these free spaces on the basis of
-> criterion like the largest contiguous area and how the disk is full
-> and pick the top one.
-> 
-> It could be sufficient to add another criteria to the sorting algorithm,
-> something like that
-> - if the chunk is a metadata one, an SSD has an higher priority
-> - if the chunk is a data one, an SSD has a lower priority
-> 
-> So the metadata will have an higher likelihood to be on the SSD,
-> instead the data will have an higher  likelihood to be a NON SSD disk.
-> 
-> Of course this is a soft constraint, when a kind of disk is full, it will
-> be possible to use the other kind, only with a lower priority.
-> 
+On 31/03/2020 20:10, Goffredo Baroncelli wrote:
+> WARNING: ------------------------------------------------------
+> WARNING: Detection of multiple profiles for a block group type:
+> WARNING:
+> WARNING: * DATA ->          [raid1c3, single]
+> WARNING: * METADATA ->      [raid1, single]
+> WARNING:
+> WARNING: Please consider using 'btrfs balance ...' commands set
+> WARNING: to solve this issue.
+> WARNING: ------------------------------------------------------
 
-This is only to give an idea. In order to enable the feature, it must be mounted
-with the flag ssd_metadata:
+The check is a good a idea but I think the warning is too strong. I
+would prefer that the word "Warning" is reserved for cases and
+operations that may actually damage data (such as reformating a
+filesystem). [Note: in a previous job, my employer decided that the word
+Warning was ONLY to be used if there was a risk of harm to a human - for
+example, electrical safety]
 
-# mount -o ssd_metadata /dev/sdX /mnt/test
+Also, btrfs fi usage is something that I routinely run continuously in a
+window (using watch) when a remove/replace/balance operation is in
+progress to monitor at a glance what is happening - I don't want to
+waste all that space on the screen. To say nothing of the annoyance of
+having it shouting at me for weeks on end while **I AM TRYING TO FIX THE
+DAMN PROBLEM!**.
 
-(don't try at home !)
+I would suggest a more compact layout and factual tone. Something like:
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2e9f938508e9..0f3c09cc4863 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1187,6 +1187,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
-  #define BTRFS_MOUNT_FREE_SPACE_TREE	(1 << 26)
-  #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
-  #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
-+#define BTRFS_MOUNT_SSD_METADATA	(1 << 29)
-  
-  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
-  #define BTRFS_DEFAULT_MAX_INLINE	(2048)
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index c6557d44907a..d0a5cf496f90 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -346,6 +346,7 @@ enum {
-  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
-  	Opt_ref_verify,
-  #endif
-+	Opt_ssd_metadata,
-  	Opt_err,
-  };
-  
-@@ -416,6 +417,7 @@ static const match_table_t tokens = {
-  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
-  	{Opt_ref_verify, "ref_verify"},
-  #endif
-+	{Opt_ssd_metadata, "ssd_metadata"},
-  	{Opt_err, NULL},
-  };
-  
-@@ -853,6 +855,10 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
-  			btrfs_set_opt(info->mount_opt, REF_VERIFY);
-  			break;
-  #endif
-+		case Opt_ssd_metadata:
-+			btrfs_set_and_info(info, SSD_METADATA,
-+					"enabling ssd_metadata");
-+			break;
-  		case Opt_err:
-  			btrfs_info(info, "unrecognized mount option '%s'", p);
-  			ret = -EINVAL;
-@@ -1369,6 +1375,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
-  #endif
-  	if (btrfs_test_opt(info, REF_VERIFY))
-  		seq_puts(seq, ",ref_verify");
-+	if (btrfs_test_opt(info, SSD_METADATA))
-+		seq_puts(seq, ",ssd_metadata");
-  	seq_printf(seq, ",subvolid=%llu",
-  		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
-  	seq_puts(seq, ",subvol=");
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a8b71ded4d21..43bb5d98a8cb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4758,6 +4758,67 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
-  	return 0;
-  }
-  
-+/*
-+ * sort the devices in descending order by rotational,
-+ * max_avail, total_avail
-+ */
-+static int btrfs_cmp_device_info_metadata(const void *a, const void *b)
-+{
-+	const struct btrfs_device_info *di_a = a;
-+	const struct btrfs_device_info *di_b = b;
-+	const int nrot_a = test_bit(QUEUE_FLAG_NONROT,
-+			&(bdev_get_queue(di_a->dev->bdev)->queue_flags));
-+
-+	const int nrot_b = test_bit(QUEUE_FLAG_NONROT,
-+			&(bdev_get_queue(di_b->dev->bdev)->queue_flags));
-+
-+	/* metadata -> non rotational first */
-+	if (nrot_a && !nrot_b)
-+		return -1;
-+	if (!nrot_a && nrot_b)
-+		return 1;
-+	if (di_a->max_avail > di_b->max_avail)
-+		return -1;
-+	if (di_a->max_avail < di_b->max_avail)
-+		return 1;
-+	if (di_a->total_avail > di_b->total_avail)
-+		return -1;
-+	if (di_a->total_avail < di_b->total_avail)
-+		return 1;
-+	return 0;
-+}
-+
-+/*
-+ * sort the devices in descending order by !rotational,
-+ * max_avail, total_avail
-+ */
-+static int btrfs_cmp_device_info_data(const void *a, const void *b)
-+{
-+	const struct btrfs_device_info *di_a = a;
-+	const struct btrfs_device_info *di_b = b;
-+	const int nrot_a = test_bit(QUEUE_FLAG_NONROT,
-+			&(bdev_get_queue(di_a->dev->bdev)->queue_flags));
-+	const int nrot_b = test_bit(QUEUE_FLAG_NONROT,
-+			&(bdev_get_queue(di_b->dev->bdev)->queue_flags));
-+
-+	/* data -> non rotational last */
-+	if (nrot_a && !nrot_b)
-+		return 1;
-+	if (!nrot_a && nrot_b)
-+		return -1;
-+	if (di_a->max_avail > di_b->max_avail)
-+		return -1;
-+	if (di_a->max_avail < di_b->max_avail)
-+		return 1;
-+	if (di_a->total_avail > di_b->total_avail)
-+		return -1;
-+	if (di_a->total_avail < di_b->total_avail)
-+		return 1;
-+	return 0;
-+}
-+
-+
-+
-  static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
-  {
-  	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
-@@ -4917,9 +4978,17 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
-  	/*
-  	 * now sort the devices by hole size / available space
-  	 */
--	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
--	     btrfs_cmp_device_info, NULL);
--
-+	if (((type & BTRFS_BLOCK_GROUP_DATA) &&
-+	     (type & BTRFS_BLOCK_GROUP_METADATA)) ||
-+	    !btrfs_test_opt(info, SSD_METADATA))
-+		sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-+			     btrfs_cmp_device_info, NULL);
-+	else if (type & BTRFS_BLOCK_GROUP_DATA)
-+		sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-+			     btrfs_cmp_device_info_data, NULL);
-+	else
-+		sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-+			     btrfs_cmp_device_info_metadata, NULL);
-  	/*
-  	 * Round down to number of usable stripes, devs_increment can be any
-  	 * number so we can't use round_down()
+Caution: This filesystem has multiple profiles for a block group type
+so new block groups will have unpredictable profiles.
+ * DATA ->          [raid1c3, single]
+ * METADATA ->      [raid1, single]
+Use of 'btrfs balance' is recommended as soon as possible to move all
+blocks to a single profile for each of data and metadata.
 
-
->>
->>> Currently, this will make roughly half of the
->>> meta data lookups run at SSD speed, but there is a pending patch to
->>> allow all the metadata reads to go to the SSD. This option is, of
->>> course, only useful for speeding up metadata operations. It can make
->>> large btrfs filesystems feel much more responsive in interactive use
->>> however.
->>>
->>
-> 
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
