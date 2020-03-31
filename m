@@ -2,64 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC67419886F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 01:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A2D198ACC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Mar 2020 06:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgC3Xme (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Mar 2020 19:42:34 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:46700 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728980AbgC3Xme (ORCPT
+        id S1725809AbgCaEEm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 31 Mar 2020 00:04:42 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36846 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgCaEEm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Mar 2020 19:42:34 -0400
-Received: by mail-wr1-f46.google.com with SMTP id j17so23678499wru.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Mar 2020 16:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bg8X9SsoHCL2o+280KBP6YZbX3GkuitMC9YyN53K2F8=;
-        b=LiZNf9SDvxEoHbKao5sarRphv9PTZmGocHRCTuf7Kez6Y6olvQOvZ0mV/Qb6B8rNPJ
-         lvoH+kZxLpihMT5jPGLg1KxrG76mStB7kukAW7pcrGfIwj1plKkj7KxC3OFAzzz4qaA1
-         Ktitg+CXEvaStTZW0QddlSPMKP2nECLbviWTsN8YTxEyMJjwP26xYX48JV3NEj9mOEHd
-         5J8LmrzZ/fDCkEGl62isSTMoqqWnIiQdqN38GP2lf4HPpkfw+mNYG+R7S1Mr+BnV2LhT
-         gHQEBRqcf7EWTUsQ2fEft/YDxBiOYBYPzykNbZ7UNjC3S7wiHEBFbV61NufMVF+gWNjP
-         wF1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bg8X9SsoHCL2o+280KBP6YZbX3GkuitMC9YyN53K2F8=;
-        b=qpy54SOgVFJKlMearVtjwAJGxvl8kyKXai+/rTkozHJjTS6qgydmPVb46xMvhMbgkG
-         sReDi9MTZc8+SJ0KXzS6VmBY5x7P6ik8H0dsZrTruik0FZsk3Ql/ZD1RWEceuelk4uRY
-         9bOC/+ImTUvAa+4G2PlExC4A7M+70lXSChRFBKrQdwA0eqDSfCWYAaqBO3cBGA17mppP
-         WnMzY9m4zpB+MxhTaMQFrWYpyuNIQoF7Z7utcF2Vq1R4oC8Y84EoNutyPGmfuNesYZha
-         0CWZtXHI+VU3Pmb9HoppONbxuO2arRU+VYoa0uiXbx/1+wy2z+7FZ7WH63yn5SRMT3Mh
-         trdw==
-X-Gm-Message-State: ANhLgQ0pUAEbep7GEq3hWJcl4aEln9RpsTzcInS8NJWTTyBQ+R1cpVMF
-        ZzlHdtY+bdTcj6ToUCXoPDJJ8l4udVWJCEC9GWBJSj8GR/E=
-X-Google-Smtp-Source: ADFU+vuIsfqPRJdoIaG4vjoyYiEOqGMvSyWFj5uMdYtblc9gnp6L9296olgmRqxqeSoaU4d2Iei6eqj9UwkBttAOoFM=
-X-Received: by 2002:a05:6000:4:: with SMTP id h4mr16938768wrx.236.1585611751157;
- Mon, 30 Mar 2020 16:42:31 -0700 (PDT)
+        Tue, 31 Mar 2020 00:04:42 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 0F107642BDC; Tue, 31 Mar 2020 00:04:40 -0400 (EDT)
+Date:   Tue, 31 Mar 2020 00:04:40 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Brad Templeton <4brad@templetons.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: btrfs-transacti hangs system for several seconds every few
+ minutes
+Message-ID: <20200331040440.GH2693@hungrycats.org>
+References: <7c0a1398-322f-400a-abe4-dfea98fd46e1@templetons.com>
+ <20200328212021.GA13306@hungrycats.org>
+ <7778ece0-67d4-8d1c-b773-35f07d81dcbe@templetons.com>
+ <20200329064216.GB13306@hungrycats.org>
+ <CAJCQCtQjjHWunKi7T2GC4MN708sF5RPJmx+w1o8Y_LDzdK3RXQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAOH-_yXQD9D1emP6bPw1vO3SYfxxVqy8D5ONRXnZTbBeEgyPrw@mail.gmail.com>
-In-Reply-To: <CAOH-_yXQD9D1emP6bPw1vO3SYfxxVqy8D5ONRXnZTbBeEgyPrw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 30 Mar 2020 17:42:15 -0600
-Message-ID: <CAJCQCtSzJdO5LpwUww=eBX1v_A9UcoqujR_BefH1t4MXmsedtA@mail.gmail.com>
-Subject: Re: Corrupted btrfs after cpu overheat
-To:     carlos ortega <carlosortega0113z@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAJCQCtQjjHWunKi7T2GC4MN708sF5RPJmx+w1o8Y_LDzdK3RXQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-And also
+On Mon, Mar 30, 2020 at 04:14:46PM -0600, Chris Murphy wrote:
+> On Sun, Mar 29, 2020 at 12:42 AM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
+> >
+> > 90 seconds sounds about right for the block group scan when mounting on
+> > a 10TB filesystem.  There's a feature called block group tree in kernel
+> > 5.5 that helps with that:  it lays out block group items on disk closer
+> > together so they can be read in milliseconds.  This is an on-disk format
+> > change, so once you enable that feature, you wouldn't be able to mount
+> > the filesystem on an older kernel.  This can be a problem if your
+> > sound drivers have regressions.  You might want to wait a few kernel
+> > releases to be sure you don't need to downgrade.
+> 
+> I'm not seeing anything about block group tree in btrfs/super.c.
+> 
+> There is block_group_cache_tree but I'm not seeing anything about it
+> in 'man 5 btrfs' using btrfs-progs 5.4, or in the devel branch.
+> 
+> So I'm not sure what mount option or btrfstune option this would be,
+> seems to be automatic?
+> https://github.com/kdave/btrfs-progs/commit/2eaf862f46b3ccb6b7248a0417ebf7096bc93b80
 
-# btrfs insp dump-t -b 37978112 /dev/
+Sorry, my mistake...it was in one of the misc-next branches, but seems to
+have been dropped.  Maybe not finished yet?
 
-
---
-Chris Murphy
+> 
+> --
+> Chris Murphy
+> 
