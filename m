@@ -2,116 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 543A219A406
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Apr 2020 05:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C55019A59B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Apr 2020 08:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731630AbgDADrr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Mar 2020 23:47:47 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34630 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731611AbgDADrq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Mar 2020 23:47:46 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0313iAG3133192;
-        Wed, 1 Apr 2020 03:47:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=/e7i7eS2Uv0HYThUgvcHpdXJicyanl7pU5SYdZx2O3c=;
- b=f6LCVmsnIX/c4Rv3oR+XFV9VeC0wgFaWjvPY/1HTMnDg5novRnqMoPO3QmLyNXim24YT
- MSu8czWb3luHL6j1EBofyGciyYJteCNkiyph8hm8FrFE5ugNxv49iSW8o1LYsvWLrag+
- TE1+gKw7g4AYBqKFqV3YP1GM+sQp8+oow+LR6hySR3ob4eSkjFwzeJFbjqF4l2lMTcxY
- Q+g0eUNoprOLhpF9Nn8sC0RP0o+SDU+LSqOhwmDee0rFwbrxmsEh5sOTNtuEnb7G0SGM
- De9aT91LnkeFWfTRI98kPQC6nBbtDCTyIPdzYb6hVBvfKqTJZFkiLNEOwf7MILNSW6eq bQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 303cev317t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Apr 2020 03:47:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0313gE4n061337;
-        Wed, 1 Apr 2020 03:47:40 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 302g4ss7py-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Apr 2020 03:47:40 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0313lddV022667;
-        Wed, 1 Apr 2020 03:47:39 GMT
-Received: from localhost.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 31 Mar 2020 20:47:38 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.cz
-Subject: [PATCH 2/2 v2] btrfs-progs: fix misc-test/029 provide device for mount
-Date:   Wed,  1 Apr 2020 11:47:34 +0800
-Message-Id: <20200401034734.4119-1-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <1585125129-11224-2-git-send-email-anand.jain@oracle.com>
-References: <1585125129-11224-2-git-send-email-anand.jain@oracle.com>
+        id S1731947AbgDAGru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Apr 2020 02:47:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731889AbgDAGru (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Apr 2020 02:47:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 43A4DAAC7;
+        Wed,  1 Apr 2020 06:47:48 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: re-instantiate the removed
+ BTRFS_SUBVOL_CREATE_ASYNC definition
+To:     Eugene Syromiatnikov <esyr@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>
+References: <20200401032650.GA24378@asgard.redhat.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e2dfba81-e6c6-b04f-7260-281c29808327@suse.com>
+Date:   Wed, 1 Apr 2020 09:47:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200401032650.GA24378@asgard.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9577 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=1
- mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004010033
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9577 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- suspectscore=1 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004010033
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The mount fails with 'file exists' error. Fix it by providing the device
-name.
 
-$ make TEST=029\* test-misc
-    [TEST]   misc-tests.sh
-    [TEST/misc]   029-send-p-different-mountpoints
-failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-test failed for case 029-send-p-different-mountpoints
-make: *** [test-misc] Error 1
 
-====== RUN CHECK mount -t btrfs -o subvol=subv1
-/btrfs-progs/tests//test.img
-/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-mount: mount /dev/loop1 on
-/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-failed: File exists
-failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img
-/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-test failed for case 029-send-p-different-mountpoints
+On 1.04.20 г. 6:26 ч., Eugene Syromiatnikov wrote:
+> The commit 9c1036fdb1d1ff1b ("btrfs: Remove BTRFS_SUBVOL_CREATE_ASYNC
+> support") breaks strace build with the kernel headers from git:
+> 
+>     btrfs.c: In function "btrfs_test_subvol_ioctls":
+>     btrfs.c:531:23: error: "BTRFS_SUBVOL_CREATE_ASYNC" undeclared (first use
+>     in this function)
+>        vol_args_v2.flags = BTRFS_SUBVOL_CREATE_ASYNC;
+> 
+> Moreover, it is improper to break UAPI anyway.
+> 
+> Restore the macro definition and put it under "#ifndef __KERNEL__"
+> in order to prevent inadvertent in-kernel usage.
+> 
+> Fixes: 9c1036fdb1d1ff1b ("btrfs: Remove BTRFS_SUBVOL_CREATE_ASYNC support")
+> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
+Ops, sorry about that:
 
-v2: use readlink to sanitize the TEST_DEV path
-    update change log
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
- tests/misc-tests/029-send-p-different-mountpoints/test.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tests/misc-tests/029-send-p-different-mountpoints/test.sh b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-index a478b3d26495..0ab98f93416d 100755
---- a/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-+++ b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-@@ -19,8 +19,9 @@ run_mayfail $SUDO_HELPER mkdir -p "$SUBVOL_MNT" ||
- run_check_mkfs_test_dev
- run_check_mount_test_dev
- 
-+lodev=$(losetup  | grep $(readlink -f ${TEST_DEV}) | awk '{print $1}')
- run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subv1"
--run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$TEST_DEV" "$SUBVOL_MNT"
-+run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$lodev" "$SUBVOL_MNT"
- 
- run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/test-subvol"
- run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r \
--- 
-1.8.3.1
-
+> ---
+>  include/uapi/linux/btrfs.h | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index 8134924..e6b6cb0f 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -36,12 +36,10 @@ struct btrfs_ioctl_vol_args {
+>  #define BTRFS_DEVICE_PATH_NAME_MAX	1024
+>  #define BTRFS_SUBVOL_NAME_MAX 		4039
+>  
+> -/*
+> - * Deprecated since 5.7:
+> - *
+> - * BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+> - */
+> -
+> +#ifndef __KERNEL__
+> +/* Deprecated since 5.7 */
+> +# define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
+> +#endif
+>  #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
+>  #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
+>  
+> 
