@@ -2,96 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5202D19A3F9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Apr 2020 05:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543A219A406
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Apr 2020 05:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731713AbgDAD0s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Mar 2020 23:26:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25751 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731592AbgDAD0r (ORCPT
+        id S1731630AbgDADrr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Mar 2020 23:47:47 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34630 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731611AbgDADrq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Mar 2020 23:26:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585711606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=PnKmZsecfPV+baV27QWBqw+5G9m6xrl4SA6APZwxQl0=;
-        b=S/973Q/fHhs1Z/qbP7Q5olEioUY2Dp07DRTZY3DBRwJjLhtQ4nQyGK59ZrKAvzrbec+/8F
-        zOiCD/voFWNqjscg/x1MqVReY34OmNYgAszZbEJLQKcrTldLWmdk/7UExs1H2bq5x9+drT
-        R1eWAOJTUCJTi5Tfvkai9YbObicwWSU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-FG66sx5nNjC05pwwMZPSoQ-1; Tue, 31 Mar 2020 23:26:43 -0400
-X-MC-Unique: FG66sx5nNjC05pwwMZPSoQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 798F318B9FC1;
-        Wed,  1 Apr 2020 03:26:41 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E63715C1C5;
-        Wed,  1 Apr 2020 03:26:38 +0000 (UTC)
-Date:   Wed, 1 Apr 2020 05:26:50 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: [PATCH] btrfs: re-instantiate the removed BTRFS_SUBVOL_CREATE_ASYNC
- definition
-Message-ID: <20200401032650.GA24378@asgard.redhat.com>
+        Tue, 31 Mar 2020 23:47:46 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0313iAG3133192;
+        Wed, 1 Apr 2020 03:47:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=/e7i7eS2Uv0HYThUgvcHpdXJicyanl7pU5SYdZx2O3c=;
+ b=f6LCVmsnIX/c4Rv3oR+XFV9VeC0wgFaWjvPY/1HTMnDg5novRnqMoPO3QmLyNXim24YT
+ MSu8czWb3luHL6j1EBofyGciyYJteCNkiyph8hm8FrFE5ugNxv49iSW8o1LYsvWLrag+
+ TE1+gKw7g4AYBqKFqV3YP1GM+sQp8+oow+LR6hySR3ob4eSkjFwzeJFbjqF4l2lMTcxY
+ Q+g0eUNoprOLhpF9Nn8sC0RP0o+SDU+LSqOhwmDee0rFwbrxmsEh5sOTNtuEnb7G0SGM
+ De9aT91LnkeFWfTRI98kPQC6nBbtDCTyIPdzYb6hVBvfKqTJZFkiLNEOwf7MILNSW6eq bQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 303cev317t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Apr 2020 03:47:40 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0313gE4n061337;
+        Wed, 1 Apr 2020 03:47:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 302g4ss7py-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Apr 2020 03:47:40 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0313lddV022667;
+        Wed, 1 Apr 2020 03:47:39 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 31 Mar 2020 20:47:38 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.cz
+Subject: [PATCH 2/2 v2] btrfs-progs: fix misc-test/029 provide device for mount
+Date:   Wed,  1 Apr 2020 11:47:34 +0800
+Message-Id: <20200401034734.4119-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <1585125129-11224-2-git-send-email-anand.jain@oracle.com>
+References: <1585125129-11224-2-git-send-email-anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9577 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=1
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004010033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9577 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ suspectscore=1 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004010033
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The commit 9c1036fdb1d1ff1b ("btrfs: Remove BTRFS_SUBVOL_CREATE_ASYNC
-support") breaks strace build with the kernel headers from git:
+The mount fails with 'file exists' error. Fix it by providing the device
+name.
 
-    btrfs.c: In function "btrfs_test_subvol_ioctls":
-    btrfs.c:531:23: error: "BTRFS_SUBVOL_CREATE_ASYNC" undeclared (first use
-    in this function)
-       vol_args_v2.flags = BTRFS_SUBVOL_CREATE_ASYNC;
+$ make TEST=029\* test-misc
+    [TEST]   misc-tests.sh
+    [TEST/misc]   029-send-p-different-mountpoints
+failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
+test failed for case 029-send-p-different-mountpoints
+make: *** [test-misc] Error 1
 
-Moreover, it is improper to break UAPI anyway.
+====== RUN CHECK mount -t btrfs -o subvol=subv1
+/btrfs-progs/tests//test.img
+/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
+mount: mount /dev/loop1 on
+/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
+failed: File exists
+failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img
+/btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
+test failed for case 029-send-p-different-mountpoints
 
-Restore the macro definition and put it under "#ifndef __KERNEL__"
-in order to prevent inadvertent in-kernel usage.
-
-Fixes: 9c1036fdb1d1ff1b ("btrfs: Remove BTRFS_SUBVOL_CREATE_ASYNC support")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- include/uapi/linux/btrfs.h | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 8134924..e6b6cb0f 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -36,12 +36,10 @@ struct btrfs_ioctl_vol_args {
- #define BTRFS_DEVICE_PATH_NAME_MAX	1024
- #define BTRFS_SUBVOL_NAME_MAX 		4039
+v2: use readlink to sanitize the TEST_DEV path
+    update change log
+
+ tests/misc-tests/029-send-p-different-mountpoints/test.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/misc-tests/029-send-p-different-mountpoints/test.sh b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
+index a478b3d26495..0ab98f93416d 100755
+--- a/tests/misc-tests/029-send-p-different-mountpoints/test.sh
++++ b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
+@@ -19,8 +19,9 @@ run_mayfail $SUDO_HELPER mkdir -p "$SUBVOL_MNT" ||
+ run_check_mkfs_test_dev
+ run_check_mount_test_dev
  
--/*
-- * Deprecated since 5.7:
-- *
-- * BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
-- */
--
-+#ifndef __KERNEL__
-+/* Deprecated since 5.7 */
-+# define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
-+#endif
- #define BTRFS_SUBVOL_RDONLY		(1ULL << 1)
- #define BTRFS_SUBVOL_QGROUP_INHERIT	(1ULL << 2)
++lodev=$(losetup  | grep $(readlink -f ${TEST_DEV}) | awk '{print $1}')
+ run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subv1"
+-run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$TEST_DEV" "$SUBVOL_MNT"
++run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$lodev" "$SUBVOL_MNT"
  
+ run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/test-subvol"
+ run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r \
 -- 
-2.1.4
+1.8.3.1
 
