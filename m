@@ -2,148 +2,312 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D4419CC21
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Apr 2020 22:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C768519CC35
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Apr 2020 23:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390131AbgDBUz0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Apr 2020 16:55:26 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:44731 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389956AbgDBUzX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Apr 2020 16:55:23 -0400
-Received: by mail-lj1-f195.google.com with SMTP id p14so4732077lji.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Apr 2020 13:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=XhpCWHFp5u10QH7CUINeHjfNbQrwjCIcWBG9SNSh0yQ=;
-        b=pG8tKfG9uCU7/Yf7nmDNsZz0TnU+ygGHUYG0NwUdd85PuB7sMxO3lJaxo+QPADXTIs
-         cWXkZsQXHZDjYJjiFnvLXduG7ZPnAiEa+K5z+ZCEf9b5zFtMJjWKkGxSBudYhPRgdl1B
-         8m2+/VHLvYck4A5vZXnKR87U+ZlFLwdyAxe7SaIMqKJn9Pbpd9PwD4Wiu0hkguv1GGIt
-         pgBYhUoBfl3nwihB77scibFX6PDLBypGkhcQ5vUea6iIdk9O2ckhEpT3vjWfsILedumY
-         VNKynIbj+zBUhMGe6A2QojHjVGlgluF4b0d2cqzNatFcZve5sxy74PsTMuNNO7Zc7nlH
-         jAnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=XhpCWHFp5u10QH7CUINeHjfNbQrwjCIcWBG9SNSh0yQ=;
-        b=tScL4LKBusFbL01eeLX9u3X2/3MChDiJTDQqhAZXDWCTwT5c4mUwH8EWb0suHb4dpr
-         B+OwDtwa6/ny3WfzTFZup8bJQahKa3Xos00nKbi/q2cypYvwjaAEanQBrRurHa0ZTzUm
-         P9Vk2WwMRWu/sfw4Cfw5SCd6NxlyMTZStdoygvS5PD7IeeIrshhZnz6AUMGE65G26tbf
-         EWDlbyDqu+qC5AjHmZJSFK8t9NUUGzVTeC6vjgrbWN3fd8b9X0iBb/rTY7cgLuL/M/s9
-         T9ay8yr/6Xvk94y0Xs6xk01wnFIjt9tIVwANg1SKWeSp+0CRb3S+JWLra4NUbM75FDpa
-         CS0w==
-X-Gm-Message-State: AGi0PuZ8xxBQ+W9jZWLgXqfkTrHyowymrzrUpO8Zp14lDAHKI/ajf8/T
-        ZuvkdKlIxASq5WkFyIHJrSMgaJwtj0G7tnomCv7a6YGb73E=
-X-Google-Smtp-Source: APiQypLCIoWSy1xcH19bq9iBbY0Qwp7ipoCSRshSZnZDTEA8PfmBJdNdLtfIemTeIs4b3ji891iTuU734qmnhClXRoM=
-X-Received: by 2002:a2e:8699:: with SMTP id l25mr3101379lji.156.1585860920668;
- Thu, 02 Apr 2020 13:55:20 -0700 (PDT)
+        id S1732600AbgDBVC5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 2 Apr 2020 17:02:57 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:39754 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727412AbgDBVC4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Apr 2020 17:02:56 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 1841D64B583; Thu,  2 Apr 2020 17:02:54 -0400 (EDT)
+Date:   Thu, 2 Apr 2020 17:02:54 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: RAID5/6 permanent corruption of metadata and data extents
+Message-ID: <20200402210254.GG13306@hungrycats.org>
+References: <CAL3q7H4oa70DUhOFE7kot62KjxcbvvZKxu62VfLpAcmgsinBFw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Helper Son <helperson2000@gmail.com>
-Date:   Thu, 2 Apr 2020 17:55:08 -0300
-Message-ID: <CANs+87QtdRhxx8gSsHzweMfbznJXLXRdn3SQDPd5uv-K-BZM=w@mail.gmail.com>
-Subject: btrfs filesystem takes too long to mount, fails the first time it
- attempts during system boot
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAL3q7H4oa70DUhOFE7kot62KjxcbvvZKxu62VfLpAcmgsinBFw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Thu, Apr 02, 2020 at 11:08:55AM +0000, Filipe Manana wrote:
+> Hi,
+> 
+> Recently I was looking at why the test case btrfs/125 from fstests often fails.
+> Typically when it fails we have something like the following in dmesg/syslog:
+> 
+>  (...)
+>  BTRFS error (device sdc): space cache generation (7) does not match inode (9)
+>  BTRFS warning (device sdc): failed to load free space cache for block
+> group 38797312, rebuilding it now
+>  BTRFS info (device sdc): balance: start -d -m -s
+>  BTRFS info (device sdc): relocating block group 754581504 flags data|raid5
+>  BTRFS error (device sdc): bad tree block start, want 39059456 have 0
+>  BTRFS info (device sdc): read error corrected: ino 0 off 39059456
+> (dev /dev/sde sector 18688)
+>  BTRFS info (device sdc): read error corrected: ino 0 off 39063552
+> (dev /dev/sde sector 18696)
+>  BTRFS info (device sdc): read error corrected: ino 0 off 39067648
+> (dev /dev/sde sector 18704)
+>  BTRFS info (device sdc): read error corrected: ino 0 off 39071744
+> (dev /dev/sde sector 18712)
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1376256
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1380352
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1445888
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1384448
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1388544
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1392640
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1396736
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1400832
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1404928
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS warning (device sdc): csum failed root -9 ino 257 off 1409024
+> csum 0x8941f998 expected csum 0x93413794 mirror 1
+>  BTRFS info (device sdc): read error corrected: ino 257 off 1380352
+> (dev /dev/sde sector 718728)
+>  BTRFS info (device sdc): read error corrected: ino 257 off 1376256
+> (dev /dev/sde sector 718720)
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS error (device sdc): bad tree block start, want 39043072 have 0
+>  BTRFS info (device sdc): balance: ended with status: -5
+>  (...)
+> 
+> So I finally looked into it to figure out why that happens.
+> 
+> Consider the following scenario and steps that explain how we end up
+> with a metadata extent
+> permanently corrupt and unrecoverable (when it shouldn't be possible).
+> 
+> * We have a RAID5 filesystem consisting of three devices, with device
+> IDs of 1, 2 and 3;
+> 
+> * The filesystem's nodesize is 16Kb (the default of mkfs.btrfs);
+> 
+> * We have a single metadata block group that starts at logical offset
+> 38797312 and has a
+>   length of 715784192 bytes.
+> 
+> The following steps lead to a permanent corruption of a metadata extent:
+> 
+> 1) We make device 3 unavailable and mount the filesystem in degraded
+> mode, so only
+>    devices 1 and 2 are online;
+> 
+> 2) We allocate a new extent buffer with logical address of 39043072, this falls
+>    within the full stripe that starts at logical address 38928384, which is
+>    composed of 3 stripes, each with a size of 64Kb:
+> 
+>    [ stripe 1, offset 38928384 ] [ stripe 2, offset 38993920 ] [
+> stripe 3, offset 39059456 ]
+>    (the offsets are logical addresses)
+> 
+>    stripe 1 is in device 2
+>    stripe 2 is in device 3
+>    stripe 3 is in device 1  (this is the parity stripe)
+> 
+>    Our extent buffer 39043072 falls into stripe 2, starting at page
+> with index 12
+>    of that stripe and ending at page with index 15;
+> 
+> 3) When writing the new extent buffer at address 39043072 we obviously
+> don't write
+>    the second stripe since device 3 is missing and we are in degraded
+> mode. We write
+>    only the stripes for devices 1 and 2, which are enough to recover
+> stripe 2 content
+>    when it's needed to read it (by XORing stripes 1 and 3, we produce
+> the correct
+>    content of stripe 2);
+> 
+> 4) We unmount the filesystem;
+> 
+> 5) We make device 3 available and then mount the filesystem in
+> non-degraded mode;
+> 
+> 6) Due to some write operation (such as relocation like btrfs/125
+> does), we allocate
+>    a new extent buffer at logical address 38993920. This belongs to
+> the same full
+>    stripe as the extent buffer we allocated before in degraded mode (39043072),
+>    and it's mapped to stripe 2 of that full stripe as well,
+> corresponding to page
+>    indexes from 0 to 3 of that stripe;
+> 
+> 7) When we do the actual write of this stripe, because it's a partial
+> stripe write
+>    (we aren't writing to all the pages of all the stripes of the full
+> stripe), we
+>    need to read the remaining pages of stripe 2 (page indexes from 4 to 15) and
+>    all the pages of stripe 1 from disk in order to compute the content for the
+>    parity stripe. So we submit bios to read those pages from the corresponding
+>    devices (we do this at raid56.c:raid56_rmw_stripe()). The problem is that we
+>    assume whatever we read from the devices is valid - in this case what we read
+>    from device 3, to which stripe 2 is mapped, is invalid since in the degraded
+>    mount we haven't written extent buffer 39043072 to it - so we get
+> garbage from
+>    that device (either a stale extent, a bunch of zeroes due to trim/discard or
+>    anything completely random). Then we compute the content for the
+> parity stripe
+>    based on that invalid content we read from device 3 and write the
+> parity stripe
+>    (and the other two stripes) to disk;
+> 
+> 8) We later try to read extent buffer 39043072 (the one we allocated while in
+>    degraded mode), but what we get from device 3 is invalid (this extent buffer
+>    belongs to a stripe of device 3, remember step 2), so
+> btree_read_extent_buffer_pages()
+>    triggers a recovery attempt - this happens through:
+> 
+>    btree_read_extent_buffer_pages() -> read_extent_buffer_pages() ->
+>      -> submit_one_bio() -> btree_submit_bio_hook() -> btrfs_map_bio() ->
+>        -> raid56_parity_recover()
+> 
+>    This attempts to rebuild stripe 2 based on stripe 1 and stripe 3 (the parity
+>    stripe) by XORing the content of these last two. However the parity
+> stripe was
+>    recomputed at step 7 using invalid content from device 3 for stripe 2, so the
+>    rebuilt stripe 2 still has invalid content for the extent buffer 39043072.
+> 
+> This results in the impossibility to recover an extent buffer and
+> getting permanent
+> metadata corruption. If the read of the extent buffer 39043072
+> happened before the
+> write of extent buffer 38993920, we would have been able to recover it since the
+> parity stripe reflected correct content, it matched what was written in degraded
+> mode at steps 2 and 3.
+> 
+> The same type of issue happens for data extents as well.
+> 
+> Since the stripe size is currently fixed at 64Kb, the issue doesn't happen only
+> if the node size and sector size are 64Kb (systems with a 64Kb page size).
+> 
+> And we don't need to do writes in degraded mode and then mount in non-degraded
+> mode with the previously missing device for this to happen (I gave the example
+> of degraded mode because that's what btrfs/125 exercises).
+> 
+> Any scenario where the on disk content for an extent changed (some bit flips for
+> example) can result in a permanently unrecoverable metadata or data extent if we
+> have the bad luck of having a partial stripe write happen before an attempt to
+> read and recover a corrupt extent in the same stripe.
+> 
+> Zygo had a report some months ago where he experienced this as well:
+> 
+> https://lore.kernel.org/linux-btrfs/20191119040827.GC22121@hungrycats.org/
+> 
+> Haven't tried his script to reproduce, but it's very likely it's due to this
+> issue caused by partial stripe writes before reads and recovery attempts.
 
-I'm running a fully updated Manjaro install on kernel
-5.5.13-1-MANJARO, but this problem occurs on other kernel versions as
-well. I believe I tried 5.4 and 5.6.
+Well, I don't mean to pick a nit, but I don't see how the same effect is
+at work here.  My repro script tries very hard to avoid concurrent writing
+and reading to keep the bugs that it may find as simple as possible.
+It does the data writes first, then sync, then corruption, then sync,
+then reads.
 
-I have a btrfs filesystem that looks like this:
+Certainly, if btrfs is occasionally reading data blocks without checking
+sums even in the ordinary read path, then everything that follows that
+point will lead to similar corruption.  But maybe there are two separate
+bugs here.
 
-Overall:
-    Device size:                  14.55TiB
-    Device allocated:             10.75TiB
-    Device unallocated:            3.80TiB
-    Device missing:                  0.00B
-    Used:                         10.74TiB
-    Free (estimated):              3.81TiB      (min: 1.91TiB)
-    Data ratio:                       1.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
+> This is a problem that has been around since raid5/6 support was added, and it
+> seems to me it's something that was not thought about in the initial design.
+> 
+> The validation/check of an extent (both metadata and data) happens at a higher
+> layer than the raid5/6 layer, and it's the higher layer that orders the lower
+> layer (raid56.{c,h}) to attempt recover/repair after it reads an extent that
+> fails validation.
 
-Data,single: Size:10.71TiB, Used:10.70TiB (99.92%)
-   /dev/sda        5.35TiB
-   /dev/sdb        5.36TiB
+Can raid5/6 call back into just the csum validation?  It doesn't need
+to look at the current transaction--committed data is fine (if it wasn't
+committed, it wouldn't be on disk to have a csum in the first place).
 
-Metadata,RAID1: Size:21.00GiB, Used:20.12GiB (95.82%)
-   /dev/sda       21.00GiB
-   /dev/sdb       21.00GiB
+In practice you have to have those parts of the csum tree in RAM
+already--if you don't, the modifications you're making will force you
+read the csum tree pages so you can insert new csum items anyway.  A
+csum lookup on every adjacent block won't affect performance very much
+(i.e. it's terrible already, we're not going to make it much worse).
 
-System,RAID1: Size:32.00MiB, Used:1.22MiB (3.81%)
-   /dev/sda       32.00MiB
-   /dev/sdb       32.00MiB
+For metadata blocks it's similar except you need to follow some backrefs
+to verify parent transid and level.  It's not enough to check the metadata
+block csum.
 
-Unallocated:
-   /dev/sda        1.90TiB
-   /dev/sdb        1.90TiB
+I admit I don't know all the details here.  If it's possible for one
+transaction in flight to free space that can be consumed by another
+transaction also in flight, then my suggestions above are probably doomed.
 
-Label: 'data'  uuid: 3b1f936a-62d0-4d5e-a5e3-e751ce332100
-        Total devices 2 FS bytes used 10.72TiB
-        devid    2 size 7.28TiB used 5.37TiB path /dev/sda
-        devid    3 size 7.28TiB used 5.38TiB path /dev/sdb
+> I'm not seeing a reasonable way to fix this at the moment, initial thoughts all
+> imply:
+> 
+> 1) Attempts to validate all extents of a stripe before doing a partial write,
+> which not only would be a performance killer and terribly complex, ut would
+> also be very messy to organize this in respect to proper layering of
+> responsabilities;
+> 
+> 2) Maybe changing the allocator to work in a special way for raid5/6 such that
+> it never allocates an extent from a stripe that already has extents that were
+> allocated by past transactions. However data extent allocation is currently
+> done without holding a transaction open (and forgood reasons) during
+> writeback. Would need more thought to see how viable it is, but not trivial
+> either.
 
-Data, single: total=10.71TiB, used=10.70TiB
-System, RAID1: total=32.00MiB, used=1.22MiB
-Metadata, RAID1: total=21.00GiB, used=20.12GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+IMHO the allocator should never be allocating anything in a partially
+filled RAID5/6 stripe, except if the stripe went from empty to partially
+filled in the current transaction.  This makes RAID5/6 stripes effectively
+read-only while they have committed data in them, becoming read-write
+again only when they are completely empty.
 
-And a fstab entry that looks like this:
+If you allow allocations within partially filled stripes, then you get
+write hole and other problems like this one where CoW expectations and
+RMW reality collide.  If you disallow RMW, all the other problems go
+away and btrfs gets faster (than other software raid5 implementations
+with stripe update journalling) because it's not doing RMW any more.
+The cost is having to balance or defrag more often for some workloads.
 
-UUID=3b1f936a-62d0-4d5e-a5e3-e751ce332100    /data    btrfs
-noatime,nofail,nossd,autodefrag,compress-force=lzo 0 0
+The allocator doesn't need to know the full details of the current
+transaction.  It could look for raid-stripe-aligned free space clusters
+(similar to what the ssd "clustering" does now, but looking at the
+block group to figure out how to get exact raid5/6 stripe alignment
+instead of blindly using SZ_2M).  The allocator can cache the last
+(few) partially-filled cluster(s) for small allocations, and put big
+allocations on stripe-aligned boundaries.  If the allocator was told
+that a new transaction started, it would discard its cached partially
+filled clusters and start over looking for empty stripe-width ones.
 
-When the system was at only a couple terabytes of usage, everything
-was fine. But, as it got progressively filled with more data, it
-started to take longer to mount during bootup. At one point it
-extrapolated the 90 second limit and the system failed to boot because
-of that; I then added nofail to the fstab entry so boot would continue
-while the system mounted.
+The result is a lot more free space fragmentation, but balance can
+solve that.  Maybe create a new balance filter optimized to relocate
+data only from partial stripes (packing them into new full-width ones)
+and leave other data alone.
 
-However, even after taking around two minutes to mount, it still fails:
+I'm ignoring nodatacow above because it's an entirely separate worm
+can: nodatacow probably needs a full stripe update journal to work,
+which eliminates most of the benefit of nodatacow.  If you place
+nodatasum extents in the same raid stripes as datasum extents, you end
+up potentially corrupting the datasum extents.  I don't know of a way to
+fix this, except to say "nodatacow on raid5 will eat your data, sorry,
+that's the price for nodatasum", and make sure nodatasum files are
+never allocated in the same raid5 stripe as datasum files.
 
-[    4.446819] BTRFS: device label data devid 2 transid 66582 /dev/sda
-scanned by systemd-udevd (444)
-[    4.446864] BTRFS: device label data devid 3 transid 66582 /dev/sdb
-scanned by systemd-udevd (417)
-[    4.590357] BTRFS info (device sda): enabling auto defrag
-[    4.590365] BTRFS info (device sda): force lzo compression, level 0
-[    4.590372] BTRFS info (device sda): using free space tree
-[    4.590375] BTRFS info (device sda): has skinny extents
-[  129.164306] BTRFS error (device sda): open_ctree failed
-
-After this happens, I issue a sudo mount -a command. It takes another
-two minutes to run, but the filesystem mounts successfully this time.
-
-This shows up as soon as I issue the mount -a command, and about two
-minutes later the filesystem is available.
-
-[  241.330917] BTRFS info (device sda): enabling auto defrag
-[  241.330920] BTRFS info (device sda): force lzo compression, level 0
-[  241.330922] BTRFS info (device sda): using free space tree
-[  241.330922] BTRFS info (device sda): has skinny extents
-
-I have run full balance operations (-musage=95 -dusage=95), a couple
-full scrubs and even a full defrag with absolutely no problems or
-errors. All the data is there and working properly and I have no
-issues accessing it. If I unmount the filesystem and try to mount it
-again it takes another two minutes to finish again, but works fine
-otherwise.
-
-Is there anything I can do to fix this? Other than running balances,
-scrubs and defrags I also tried converting my free space cache to v2
-(space_cache=v2) but nothing changed. I don't have a problem with the
-filesystem taking a long time to mount (even though it is annoying)
-since I only do that once per boot up, but I'd prefer it didn't and
-specially don't like to have to mount it manually after the automatic
-mount fails.
-
-Any ideas?
+> Any thoughts? Perhaps someone else was already aware of this problem and
+> had thought about this before. Josef?
+> 
+> Thanks.
+> 
+> 
+> -- 
+> Filipe David Manana,
+> 
+> “Whether you think you can, or you think you can't — you're right.”
