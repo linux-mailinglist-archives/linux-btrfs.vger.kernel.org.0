@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF0B19D95B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC84C19D968
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391066AbgDCOnz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 10:43:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45464 "EHLO mx2.suse.de"
+        id S2403962AbgDCOqK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 10:46:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45988 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390954AbgDCOnz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:43:55 -0400
+        id S2403953AbgDCOqK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:46:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 49AF6AC62;
-        Fri,  3 Apr 2020 14:43:53 +0000 (UTC)
-Subject: Re: [PATCH 4/5] btrfs: run delayed refs less often in
- commit_cowonly_roots
+        by mx2.suse.de (Postfix) with ESMTP id 0232BAB76;
+        Fri,  3 Apr 2020 14:46:08 +0000 (UTC)
+Subject: Re: [PATCH 5/5] btrfs: stop running all delayed refs during snapshot
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313211220.148772-1-josef@toxicpanda.com>
- <20200313211220.148772-5-josef@toxicpanda.com>
+ <20200313211220.148772-6-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5322569a-1d3b-bedf-2f32-9da56ff8957a@suse.com>
-Date:   Fri, 3 Apr 2020 17:43:52 +0300
+Message-ID: <6204a1da-02f9-b2e0-8fb8-e41f4b408a40@suse.com>
+Date:   Fri, 3 Apr 2020 17:46:07 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313211220.148772-5-josef@toxicpanda.com>
+In-Reply-To: <20200313211220.148772-6-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,66 +80,70 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.03.20 г. 23:12 ч., Josef Bacik wrote:
-> We love running delayed refs in commit_cowonly_roots, but it is a bit
+> This was added a very long time ago to work around issues with delayed
+> refs and with qgroups.  Both of these issues have since been properly
+> fixed, so all this does is cause a lot of lock contention with anybody
+> else who is running delayed refs.
 
-You refer to commit_cowonly_roots but in fact are changing
-create_pending_snapshot. Between calling
-create_pending_snapshots->create_pending_snapshot and
-commit_cowonly_roots we have 2 calls to btrfs_run_delayed_refs. My point
-is by the time commit_cowonly_roots is called we've already long flushed
-the delayed refs generated from create_pending_snapshot. IMO referring
-to commit_cowonly_roots in this commit is wrong?
-
-
-> excessive.  I was seeing cases of running 3 or 4 refs a few times in a
-> row during this time.  Instead simply update all of the roots first,
-By "simply update all of the roots" I assume you meant the call to
-commit_fs_roots or the changes happening to the snapshoted roots in
-create_pending_snapshot? If it's the latter I'd rather you made the text
-more explicit by referring to the fact the refs are generated from
-snapshots e.g.
-
-Instead simply run all snapshot-related work, then drain delayed refs
-resulting from this ...
-
-> then run delayed refs, then handle the empty block groups case, and then
-> if we have any more dirty roots do the whole thing again.  This allows
-> us to be much more efficient with our delayed ref running, as we can
-> batch a few more operations at once.
+Oh I see, the changelog for this and the previous patch got switched, no ?
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/transaction.c | 12 ------------
->  1 file changed, 12 deletions(-)
+>  fs/btrfs/transaction.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
 > 
 > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 3e7fd8a934c1..c3b3b524b8c3 100644
+> index c3b3b524b8c3..8d34d7e0adb6 100644
 > --- a/fs/btrfs/transaction.c
 > +++ b/fs/btrfs/transaction.c
-> @@ -1646,12 +1646,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
->  		goto fail;
+> @@ -1184,10 +1184,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+>  	btrfs_tree_unlock(eb);
+>  	free_extent_buffer(eb);
+>  
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1205,10 +1201,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+>  	if (ret)
+>  		return ret;
+>  
+> -	/* run_qgroups might have added some more refs */
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> -	if (ret)
+> -		return ret;
+>  again:
+>  	while (!list_empty(&fs_info->dirty_cowonly_roots)) {
+>  		struct btrfs_root *root;
+> @@ -1223,15 +1215,24 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
+>  		ret = update_cowonly_root(trans, root);
+>  		if (ret)
+>  			return ret;
+> -		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> -		if (ret)
+> -			return ret;
 >  	}
 >  
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		btrfs_abort_transaction(trans, ret);
-> -		goto fail;
-> -	}
-> -
->  	/*
->  	 * Do special qgroup accounting for snapshot, as we do some qgroup
->  	 * snapshot hack to do fast snapshot.
-> @@ -1698,12 +1692,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
->  		}
->  	}
->  
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		btrfs_abort_transaction(trans, ret);
-> -		goto fail;
-> -	}
-> -
->  fail:
->  	pending->error = ret;
->  dir_item_existed:
+> +	/* Now flush any delayed refs generated by updating all of the roots. */
+> +	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> +	if (ret)
+> +		return ret;
+> +
+>  	while (!list_empty(dirty_bgs) || !list_empty(io_bgs)) {
+>  		ret = btrfs_write_dirty_block_groups(trans);
+>  		if (ret)
+>  			return ret;
+> +
+> +		/*
+> +		 * We're writing the dirty block groups, which could generate
+> +		 * delayed refs, which could generate more dirty block groups,
+> +		 * so we want to keep this flushing in this loop to make sure
+> +		 * everything gets run.
+> +		 */
+>  		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+>  		if (ret)
+>  			return ret;
 > 
