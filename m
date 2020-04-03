@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E9D19D923
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8178D19D933
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390807AbgDCObK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 10:31:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39492 "EHLO mx2.suse.de"
+        id S2390924AbgDCOeo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 10:34:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41554 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbgDCObK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:31:10 -0400
+        id S2390784AbgDCOeo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:34:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3384EACC3;
-        Fri,  3 Apr 2020 14:31:08 +0000 (UTC)
-Subject: Re: [PATCH 2/5] btrfs: delayed refs pre-flushing should only run the
- heads we have
+        by mx2.suse.de (Postfix) with ESMTP id 61A64AC1D;
+        Fri,  3 Apr 2020 14:34:40 +0000 (UTC)
+Subject: Re: [PATCH 3/5] btrfs: only run delayed refs once before committing
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313211220.148772-1-josef@toxicpanda.com>
- <20200313211220.148772-3-josef@toxicpanda.com>
+ <20200313211220.148772-4-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <8497c96d-8371-ad59-df9c-058c95545e33@suse.com>
-Date:   Fri, 3 Apr 2020 17:31:07 +0300
+Message-ID: <c6578cd7-3490-4ff0-87da-3734289a15a0@suse.com>
+Date:   Fri, 3 Apr 2020 17:34:40 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313211220.148772-3-josef@toxicpanda.com>
+In-Reply-To: <20200313211220.148772-4-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,44 +80,41 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.03.20 г. 23:12 ч., Josef Bacik wrote:
-> Previously our delayed ref running used the total number of items as the
-> items to run.  However we changed that to number of heads to run with
-> the delayed_refs_rsv, as generally we want to run all of the operations
-> for one bytenr.
+> We try to pre-flush the delayed refs when committing, because we want to
+> do as little work as possible in the critical section of the transaction
+> commit.
 > 
-> But with btrfs_run_delayed_refs(trans, 0) we set our count to 2x the
-> number of items that we have.  This is generally fine, but if we have
-> some operation generation loads of delayed refs while we're doing this
-> pre-flushing in the transaction commit, we'll just spin forever doing
-> delayed refs.
+> However doing this twice can lead to very long transaction commit delays
+> as other threads are allowed to continue to generate more delayed refs,
+> which potentially delays the commit by multiple minutes in very extreme
+> cases.
 > 
-> Fix this to simply pick the number of delayed refs we currently have,
-> that way we do not end up doing a lot of extra work that's being
-> generated in other threads.
-
-Indeed there is a mismatch between delayed_refs->num_entries and what we
-account in __btrfs_run_delayed_refs. In the function we count on a
-per-head (which can include multiple delayed refs ops) granularity not
-on per-refs-per-head. So this fix makes sense.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> So simply stick to one pre-flush, and then continue the rest of the
+> transaction commit.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
->  fs/btrfs/extent-tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/btrfs/transaction.c | 6 ------
+>  1 file changed, 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 8e5b49baad98..2925b3ad77a1 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2196,7 +2196,7 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index cff767722a75..3e7fd8a934c1 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -2057,12 +2057,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
 >  
->  	delayed_refs = &trans->transaction->delayed_refs;
->  	if (count == 0)
-> -		count = atomic_read(&delayed_refs->num_entries) * 2;
-> +		count = delayed_refs->num_heads_ready;
+>  	btrfs_create_pending_block_groups(trans);
 >  
->  again:
->  #ifdef SCRAMBLE_DELAYED_REFS
+> -	ret = btrfs_run_delayed_refs(trans, 0);
+> -	if (ret) {
+> -		btrfs_end_transaction(trans);
+> -		return ret;
+> -	}
+> -
+>  	if (!test_bit(BTRFS_TRANS_DIRTY_BG_RUN, &cur_trans->flags)) {
+>  		int run_it = 0;
+>  
 > 
