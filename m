@@ -2,76 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FC719D7CE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 15:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EFD19D7CF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 15:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390930AbgDCNki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 09:40:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39410 "EHLO mx2.suse.de"
+        id S2390949AbgDCNkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 09:40:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39418 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390789AbgDCNki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S2390849AbgDCNki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 3 Apr 2020 09:40:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CD741AC92;
-        Fri,  3 Apr 2020 13:40:36 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 10447ADA3;
+        Fri,  3 Apr 2020 13:40:37 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [RESEND PATCH 1/2] btrfs: Read stripe len directly in btrfs_rmap_block
-Date:   Fri,  3 Apr 2020 16:40:34 +0300
-Message-Id: <20200403134035.8875-1-nborisov@suse.com>
+Subject: [RESEND PATCH 2/2] btrfs: Remove dead code exclude_super_stripes
+Date:   Fri,  3 Apr 2020 16:40:35 +0300
+Message-Id: <20200403134035.8875-2-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200403134035.8875-1-nborisov@suse.com>
+References: <20200403134035.8875-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-extent_map::orig_block_len contains the size of a physical stripe when
-it's used to describe block groups (calculated in read_one_chunk via
-calc_stripe_length or calculated in decide_stripe_size and then assigned to
-extent_map::orig_block_len in create_chunk). Exploit this fact to get the
-size directly rather than opencoding the calculations. No functional changes.
+Adresses held in 'logical' array are always guaranteed to fall within
+the boundaries of the block group. That is, 'start' can never be
+smaller than cache->start. This invariant follows from the way the
+address are calculated in btrfs_rmap_block:
+
+    stripe_nr = physical - map->stripes[i].physical;
+    stripe_nr = div64_u64(stripe_nr, map->stripe_len);
+    bytenr = chunk_start + stripe_nr * io_stripe_size;
+
+I.e it's always some IO stripe within the given chunk.
+
+Exploit this invariant to simplify the body of the loop by removing the
+unnecessary 'if' since its 'else' part is the one always executed.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
-
-Hello David,
-
-You had some reservations for this patch but now I've expanded the changelog to
-explain why it's safe to do so.
-
-
- fs/btrfs/block-group.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ fs/btrfs/block-group.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 786849fcc319..d0dbaa470b88 100644
+index d0dbaa470b88..7b96ded820f9 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -1628,19 +1628,12 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 		return -EIO;
+@@ -1712,25 +1712,12 @@ static int exclude_super_stripes(struct btrfs_block_group *cache)
+ 			return ret;
 
- 	map = em->map_lookup;
--	data_stripe_length = em->len;
-+	data_stripe_length = em->orig_block_len;
- 	io_stripe_size = map->stripe_len;
+ 		while (nr--) {
+-			u64 start, len;
+-
+-			if (logical[nr] > cache->start + cache->length)
+-				continue;
+-
+-			if (logical[nr] + stripe_len <= cache->start)
+-				continue;
+-
+-			start = logical[nr];
+-			if (start < cache->start) {
+-				start = cache->start;
+-				len = (logical[nr] + stripe_len) - start;
+-			} else {
+-				len = min_t(u64, stripe_len,
+-					    cache->start + cache->length - start);
+-			}
++			u64 len = min_t(u64, stripe_len,
++				cache->start + cache->length - logical[nr]);
 
--	if (map->type & BTRFS_BLOCK_GROUP_RAID10)
--		data_stripe_length = div_u64(data_stripe_length,
--					     map->num_stripes / map->sub_stripes);
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
--		data_stripe_length = div_u64(data_stripe_length, map->num_stripes);
--	else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--		data_stripe_length = div_u64(data_stripe_length,
--					     nr_data_stripes(map));
-+	/* For raid5/6 adjust to a full IO stripe length */
-+	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
- 		io_stripe_size = map->stripe_len * nr_data_stripes(map);
--	}
-
- 	buf = kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
- 	if (!buf) {
+ 			cache->bytes_super += len;
+-			ret = btrfs_add_excluded_extent(fs_info, start, len);
++			ret = btrfs_add_excluded_extent(fs_info, logical[nr],
++							len);
+ 			if (ret) {
+ 				kfree(logical);
+ 				return ret;
 --
 2.17.1
 
