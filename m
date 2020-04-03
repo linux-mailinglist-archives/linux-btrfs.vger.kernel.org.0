@@ -2,154 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1804219DBDC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 18:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1F519DBE4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 18:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390874AbgDCQkt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 12:40:49 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:42365 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgDCQks (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Apr 2020 12:40:48 -0400
-Received: by mail-ua1-f46.google.com with SMTP id m18so2951389uap.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Apr 2020 09:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=SmlscXw7fPshbnF/2ivHD9L2MI+bbMtBtPSQDHVmWxs=;
-        b=XNix54QoD5W+KUWMYwh/I2aOBSdDM4EQHJMWy6TDahaAZnjF4q9U0KQXIjm3HvciMx
-         IJ6qvgZrHlzBYXfACZwEg2T9eNO6J02cTrrvguYAM9KaC2f/eTy6IqNBaVol/65m1l7S
-         6hjDkOljktXlQ8idk+umUcSjt+eiQcRI08tQfKmqBPU8fCYfaLg7F86RJEBpoYFEu/bB
-         XQsZHUnJhDyV6r0nBP5NwWKsrPz4IOIBKPd8//1+YC2geLLDHGx1a+EZRBCi7Uvge6hv
-         QdtAbocgV1Y6VidvHDpQo/KytUsjEjVJKTDiTz1aAZ3fRLena9yGd/uZanQditT9WZ4L
-         JdGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=SmlscXw7fPshbnF/2ivHD9L2MI+bbMtBtPSQDHVmWxs=;
-        b=dHRh9Mr4/9Knz1qj4jr2pvceyKITjs2Dl90LYHkvX5DhKOLUc4+u6IpKxQoFOBrA7/
-         yLcz1SO3tfKmOnl33S317z76Al3c/af2LvWburIY8/mZui9PcdsSOLh1nES6pwFmaJsI
-         8S0/16jnPxsY6LzO1d8xyIwBEXZHxRwJLhoY6uG/y/3aaD/l0+sfdX/Y7LUVBT086fOU
-         2VfUolv7AXfPVrlo2IadQug/PSRX3ZsrQCl48/kdfu6Z5nIIpZsQ+4KUnJ9wMdP5MnQf
-         bLaW1FD5qYquzUuGCibnS4gAN4MkFsu5aGicY4inng+RvA62F6ZX6NXfgoH/zZh2OZYj
-         gqBQ==
-X-Gm-Message-State: AGi0PuZZMV7biuwLGeL/sOaby9qIbmn5Bdj3TSPM0Wj67Zx9QCb3g0B4
-        Md1A8OkL3Dgbq3xiyq5XjIww845m7c7sxiNEMfs=
-X-Google-Smtp-Source: APiQypI4CZ25U+k+hikOjj6fJvgON0Askux/Kx6BBNvb4C1x/akj20U4XoVrasUu6o0FJAa2PccO8dbZt72mgXwrXJQ=
-X-Received: by 2002:ab0:e5:: with SMTP id 92mr7270494uaj.83.1585932047307;
- Fri, 03 Apr 2020 09:40:47 -0700 (PDT)
+        id S2404574AbgDCQl2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 12:41:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39690 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728381AbgDCQl2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 12:41:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id DE907AA7C;
+        Fri,  3 Apr 2020 16:41:25 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 19F9ADA727; Fri,  3 Apr 2020 18:40:51 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 18:40:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 13/15] btrfs: simplify direct I/O read repair
+Message-ID: <20200403164050.GH5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Christoph Hellwig <hch@lst.de>
+References: <cover.1583789410.git.osandov@fb.com>
+ <38cea444fa3f88ca514d161bd979d004c254e969.1583789410.git.osandov@fb.com>
 MIME-Version: 1.0
-References: <CAL3q7H4oa70DUhOFE7kot62KjxcbvvZKxu62VfLpAcmgsinBFw@mail.gmail.com>
- <7b4f5744-0e22-3691-6470-b35908ab2c2c@gmx.com> <CAL3q7H5sBk0kmtSQ_nuDnh1jWVTPfmWHbw7+UhJZ=NLgW0a0MA@mail.gmail.com>
- <fdec5521-d2a1-1a51-cd42-10fa5d006c91@gmx.com> <CAL3q7H6FCA2gW-0LS1Zh9Dnq29KCY6JhFJwPrEm_Ohvc+6r79A@mail.gmail.com>
- <c683620d-b817-f406-3a8e-7abbfcad14a0@gmx.com> <CAL3q7H7GXpnaK-jPQybi3PfoMJtr7gJQ0tha9fYG-he0vrzdXw@mail.gmail.com>
- <fb1a7773-8166-6ed5-8a63-d3ec86e1a70c@gmx.com> <f77f715b-2220-b65d-d42a-7aae81f274f9@gmx.com>
-In-Reply-To: <f77f715b-2220-b65d-d42a-7aae81f274f9@gmx.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 3 Apr 2020 16:40:35 +0000
-Message-ID: <CAL3q7H7z4OCY8zx4Y6TyMif_vHvtFXu-D1VCpoMpt+zkZ_ceow@mail.gmail.com>
-Subject: Re: RAID5/6 permanent corruption of metadata and data extents
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38cea444fa3f88ca514d161bd979d004c254e969.1583789410.git.osandov@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 1:16 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
-> OK, attempt number 2.
->
-> Now this time, without zero writing.
->
-> The workflow would look like: (raid5 example)
-> - Partial stripe write triggered
->
-> - Raid56 reads out all data stripe and parity stripe
->   So far, the same routine as my previous purposal.
->
-> - Re-calculate parity and compare.
->   If matches, the full stripe is fine, continue partial stripe update
->   routine.
->
->   If not matches, block any further write on the full stripe, inform
->   upper layer to start a scrub on the logical range of the full stripe.
->   Wait for that scrub to finish, then continue partial stripe update.
->
->   ^^^ This part is the most complex part AFAIK.
+On Mon, Mar 09, 2020 at 02:32:39PM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Direct I/O read repair is an over-complicated mess. There is major code
+> duplication between __btrfs_subio_endio_read() (checks checksums and
+> handles I/O errors for files with checksums),
+> __btrfs_correct_data_nocsum() (handles I/O errors for files without
+> checksums), btrfs_retry_endio() (checks checksums and handles I/O errors
+> for retries of files with checksums), and btrfs_retry_endio_nocsum()
+> (handles I/O errors for retries of files without checksum). If it sounds
+> like these should be one function, that's because they should.
+> 
+> After the previous commit getting rid of orig_bio, we can reuse the same
+> endio callback for repair I/O and the original I/O, we just need to
+> track the file offset and original iterator in the repair bio. We can
+> also unify the handling of files with and without checksums and replace
+> the atrocity that was probably the inspiration for "Go To Statement
+> Considered Harmful" with normal loops. We also no longer have to wait
+> for each repair I/O to complete one by one.
 
-Since scrub figures out which extents are allocated for a stripe and
-then does the checksum verification (for both metadata and data), it
-triggers the same recovery path (raid56_parity_recover()) as the
-regular read path when the validation fails (and it includes
-validating the fsid on metadata extents, chunk tree uuid, bytenr). So
-scrub should work out fine.
+This patch looks like a revert of 8b110e393c5a ("Btrfs: implement repair
+function when direct read fails"), that probably added the extra layer
+you're removing.
 
-My initial idea, was actually only for the case of making the
-previously missing device available again and then mount the fs in
-non-degraded mode.
-Every time a partial write was attempted, if it detected a device with
-a generation (taken from the superblock in the device when the fs is
-mounted)
-lower than the generation of the other devices, we know it's a device
-that was previously missing, and so trigger the recovery through the
-same
-API that is used by the validation path (raid56_parity_recover()),
-which just reads the stripes of the other devices and reconstructs the
-one for the
-bad (previously missing) device. We have a stripe cache that caches
-stripes for a while, so it wouldn't be too bad all the time.
+So instead of the funny remarks, I'd rather see some analysis that the
+issues in the original patch are not coming back.  Quoting from the
+changelog:
 
-The problem was for the case where we never mounted in degraded mode,
-the stripe just got corrupted somehow, figuring out which stripe/s
-is/are bad is just not possible. So it wasn't a complete solution.
+- When we find the data is not right, we try to read the data from the other
+  mirror.
+- When the io on the mirror ends, we will insert the endio work into the
+  dedicated btrfs workqueue, not common read endio workqueue, because the
+  original endio work is still blocked in the btrfs endio workqueue, if we
+  insert the endio work of the io on the mirror into that workqueue, deadlock
+  would happen.
+- After we get right data, we write it back to the corrupted mirror.
+- And if the data on the new mirror is still corrupted, we will try next
+  mirror until we read right data or all the mirrors are traversed.
+- After the above work, we set the uptodate flag according to the result.
 
-Doing as you suggest, is a much better approach than any suggested before.
-Sometimes it will be less expensive, when the stripes are in the cache
-due to some previous write, leaving only the parity calculation and
-check to do.
-
-Running the scrub for the full stripe's range might work indeed. On my
-previous tests (a modified btrfs/125) running a full scrub right after
-the mount and before doing anything else seems to fix the problem.
-
->
->
-> For full stripe update, we just update without any verification.
->
-> Despite the complex in the repair routine, another problem is when we do
-> partial stripe update on untouched range.
->
-> In that case, we will trigger a scrub for every new full stripe, and
-> downgrade the performance heavily.
->
-> Ideas on this crazy idea number 2?
-
-It's a much less crazy idea.
-
-It brings some complications however, if a partial write is triggered
-through a transaction commit and we need to run the scrub on the full
-stripe, we need to take special care to not deadlock, since the
-transaction pauses scrub. Would need to deal with the case of an
-already running scrub, but this would likely be easier but slow
-(request to pause and unpause after the repair).
-
-Thanks
-
->
-> Thanks,
-> Qu
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+It's not too detailed either, but what immediatelly looks suspicious is
+the extra workqueue that was added to avoid deadlocks. That is now going
+to be removed. This seems like a high level change even for such an old
+code (2014) so that its effects are not affected by some other changes
+in the dio code.
