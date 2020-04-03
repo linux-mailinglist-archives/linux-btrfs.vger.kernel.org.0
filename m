@@ -2,191 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA2D19D812
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 15:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E9D19D923
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391010AbgDCN5D convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 3 Apr 2020 09:57:03 -0400
-Received: from mailgw-02.dd24.net ([193.46.215.43]:36164 "EHLO
-        mailgw-02.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390883AbgDCN5D (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Apr 2020 09:57:03 -0400
-Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-02.live.igb.homer.key-systems.net [192.168.1.27])
-        by mailgw-02.dd24.net (Postfix) with ESMTP id C1ACC5FF9E;
-        Fri,  3 Apr 2020 13:57:00 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at
-        mailpolicy-02.live.igb.homer.key-systems.net
-Received: from smtp.dd24.net ([192.168.1.36])
-        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-02.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10236)
-        with ESMTP id nzvGUdDl1q3E; Fri,  3 Apr 2020 13:56:58 +0000 (UTC)
-Received: from heisenberg.fritz.box (ppp-46-244-252-139.dynamic.mnet-online.de [46.244.252.139])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.dd24.net (Postfix) with ESMTPSA;
-        Fri,  3 Apr 2020 13:56:58 +0000 (UTC)
-Message-ID: <8a6a94ea37db805426575fdbec6df342dc00ff03.camel@scientia.net>
-Subject: Re: Btrfs transid corruption (and a possible bug when doing scrub
- on ro device)
-From:   Christoph Anton Mitterer <calestyo@scientia.net>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Date:   Fri, 03 Apr 2020 15:56:57 +0200
-In-Reply-To: <96081d73-5426-0b4e-0fd8-9eac83b06b1b@toxicpanda.com>
-References: <800B6BF0-64AA-45F5-A539-9D2868C2835C@scientia.net>
-         <a8a1e614-d5f0-d4b6-2f0b-626a34761758@toxicpanda.com>
-         <2FA13CAC-C259-41BF-BA9E-F9032DFA185C@scientia.net>
-         <c0e5cc1b-ddfa-270e-2934-a6470584193e@toxicpanda.com>
-         <360ca434f26ced5eca6821294719c463a2dcd910.camel@scientia.net>
-         <96081d73-5426-0b4e-0fd8-9eac83b06b1b@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-1 
+        id S2390807AbgDCObK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 10:31:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39492 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727431AbgDCObK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:31:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3384EACC3;
+        Fri,  3 Apr 2020 14:31:08 +0000 (UTC)
+Subject: Re: [PATCH 2/5] btrfs: delayed refs pre-flushing should only run the
+ heads we have
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200313211220.148772-1-josef@toxicpanda.com>
+ <20200313211220.148772-3-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <8497c96d-8371-ad59-df9c-058c95545e33@suse.com>
+Date:   Fri, 3 Apr 2020 17:31:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200313211220.148772-3-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey Josef.
 
-Thanks for your explanations.
 
-On Thu, 2020-04-02 at 14:28 -0400, Josef Bacik wrote:
-> This was just a corruption of the log tree, so it won't affect your
-> actual data 
-> thankfully.
+On 13.03.20 г. 23:12 ч., Josef Bacik wrote:
+> Previously our delayed ref running used the total number of items as the
+> items to run.  However we changed that to number of heads to run with
+> the delayed_refs_rsv, as generally we want to run all of the operations
+> for one bytenr.
 > 
-> As for how this happened, well we had a very long standing problem
-> that I fixed 
-> in 5.4 where we could mistakenly update the tree log with the wrong
-> block and 
-> thus get transid mismatches.  But if this happened while on a 5.5
-> kernel then I 
-> don't know what went wrong.  I'll go poke around and see if there's
-> any other 
-> related ways we could make the same mistake.
+> But with btrfs_run_delayed_refs(trans, 0) we set our count to 2x the
+> number of items that we have.  This is generally fine, but if we have
+> some operation generation loads of delayed refs while we're doing this
+> pre-flushing in the transaction commit, we'll just spin forever doing
+> delayed refs.
+> 
+> Fix this to simply pick the number of delayed refs we currently have,
+> that way we do not end up doing a lot of extra work that's being
+> generated in other threads.
 
-Well it seemed to have happened during the --clear-space-cache v1 ...
-so maybe something is fishy there.
+Indeed there is a mismatch between delayed_refs->num_entries and what we
+account in __btrfs_run_delayed_refs. In the function we count on a
+per-head (which can include multiple delayed refs ops) granularity not
+on per-refs-per-head. So this fix makes sense.
 
-
-
-
-Also during the "recovery" works I found another possible bug... what I
-did was:
-1) Create an image of the SSD with the corrupted fs via dd onto an
-external HDD with btrfs as fs.
-
-2) rw-mounted the external HDD's btrfs
-3) btrfs rescue zero-log <the image file>
-
-4) ro-mounted the external HDD's btrfs
-5) Set up a loop device for the SSD image file, mounted the btrfs on
-the loop device's partition (actually there's a layer of dm-crypt in
-between, but I guess that shouldn't matter).
-
-6) Run btrfs scrub -rB on that mountpoint (i.e. scrub the recovered
-btrfs fs within the image file on the external HDD)
-
-7) This seemed to have actually ran for a while but then:
-
-[  266.870236] BTRFS info (device sdb5): disk space caching is enabled
-[  310.896296] usb 2-3.4: new SuperSpeed Gen 1 USB device number 4 using xhci_hcd
-[  310.917580] usb 2-3.4: New USB device found, idVendor=174c, idProduct=55aa, bcdDevice= 1.00
-[  310.917752] usb 2-3.4: New USB device strings: Mfr=2, Product=3, SerialNumber=1
-[  310.917889] usb 2-3.4: Product: ASMT1053
-[  310.917969] usb 2-3.4: Manufacturer: asmedia
-[  310.918054] usb 2-3.4: SerialNumber: 123456789012
-[  310.920834] usb-storage 2-3.4:1.0: USB Mass Storage device detected
-[  310.921336] usb-storage 2-3.4:1.0: Quirks match for vid 174c pid 55aa: 400000
-[  310.921701] scsi host4: usb-storage 2-3.4:1.0
-[  311.949066] scsi 4:0:0:0: Direct-Access     ASMT     2105             0    PQ: 0 ANSI: 6
-[  311.950470] sd 4:0:0:0: Attached scsi generic sg2 type 0
-[  311.951786] sd 4:0:0:0: [sdc] Spinning up disk...
-[  312.972204] ..................ready
-[  330.382251] sd 4:0:0:0: [sdc] 15628053168 512-byte logical blocks: (8.00 TB/7.28 TiB)
-[  330.382420] sd 4:0:0:0: [sdc] 4096-byte physical blocks
-[  330.382868] sd 4:0:0:0: [sdc] Write Protect is off
-[  330.382979] sd 4:0:0:0: [sdc] Mode Sense: 43 00 00 00
-[  330.383293] sd 4:0:0:0: [sdc] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-[  330.446814]  sdc: sdc1 sdc2
-[  330.449601] sd 4:0:0:0: [sdc] Attached SCSI disk
-[  330.665639] BTRFS: device label data-e1-meta devid 1 transid 6 /dev/sdc2 scanned by systemd-udevd (937)
-[  437.752822] device-mapper: uevent: version 1.0.3
-[  437.753367] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
-[  505.673435] BTRFS: device label data-e1 devid 1 transid 1399 /dev/dm-0 scanned by systemd-udevd (998)
-[  558.913428] loop: module loaded
-[  657.260808] BTRFS info (device dm-0): disk space caching is enabled
-[  657.261047] BTRFS info (device dm-0): has skinny extents
-[  772.280239]  loop0: p1 p2
-[  805.426119] BTRFS info (device sdb3): disk space caching is enabled
-[  805.426347] BTRFS info (device sdb3): has skinny extents
-[  884.549544] BTRFS: device label system devid 1 transid 1453259 /dev/dm-1 scanned by systemd-udevd (1265)
-[ 1237.467710] BTRFS info (device dm-0): disk space caching is enabled
-[ 1237.484092] BTRFS info (device dm-0): has skinny extents
-[ 1260.227007]  loop0: p1 p2
-[ 1285.470611] BTRFS info (device sdb3): disk space caching is enabled
-[ 1285.476850] BTRFS info (device sdb3): has skinny extents
-[ 3103.000947] BTRFS info (device dm-1): disk space caching is enabled
-[ 3103.000973] BTRFS info (device dm-1): has skinny extents
-[ 3103.053189] BTRFS info (device dm-1): enabling ssd optimizations
-[ 3209.105586] BTRFS info (device dm-1): disk space caching is enabled
-[ 3209.105638] BTRFS info (device dm-1): has skinny extents
-[ 3209.152815] BTRFS info (device dm-1): enabling ssd optimizations
-[ 3230.518528] BTRFS info (device dm-1): scrub: started on devid 1
-[ 3269.170542] BTRFS warning (device dm-1): Skipping commit of aborted transaction.
-[ 3269.175985] ------------[ cut here ]------------
-[ 3269.181325] BTRFS: Transaction aborted (error -28)
-[ 3269.181519] WARNING: CPU: 2 PID: 1583 at fs/btrfs/transaction.c:1894 cleanup_transaction+0x61/0xc0 [btrfs]
-[ 3269.186947] Modules linked in: loop(E) dm_crypt(E) dm_mod(E) snd_hda_codec_hdmi(E) snd_hda_codec_realtek(E) snd_hda_codec_generic(E) ledtrig_audio(E) snd_soc_skl(E) snd_soc_hdac_hda(E) snd_hda_ext_core(E) i915(E) snd_soc_sst_ipc(E) intel_rapl_msr(E) intel_rapl_common(E) snd_soc_sst_dsp(E) snd_soc_acpi_intel_match(E) x86_pkg_temp_thermal(E) snd_soc_acpi(E) intel_powerclamp(E) snd_soc_core(E) btusb(E) coretemp(E) btrtl(E) btbcm(E) snd_compress(E) kvm_intel(E) btintel(E) snd_hda_intel(E) kvm(E) bluetooth(E) snd_intel_dspcfg(E) iwlwifi(E) snd_usb_audio(E) snd_hda_codec(E) uvcvideo(E) videobuf2_vmalloc(E) snd_usbmidi_lib(E) cdc_mbim(E) cdc_wdm(E) snd_hda_core(E) cfg80211(E) videobuf2_memops(E) videobuf2_v4l2(E) drbg(E) mei_wdt(E) irqbypass(E) snd_rawmidi(E) drm_kms_helper(E) intel_cstate(E) snd_seq_device(E) ansi_cprng(E) snd_hwdep(E) cdc_ncm(E) videobuf2_common(E) intel_uncore(E) videodev(E) ecdh_generic(E) usbnet(E) snd_pcm(E) iTCO_wdt(E) ecc(E) drm(E) mii(E) snd_timer(E)
-[ 3269.187012]  iTCO_vendor_support(E) serio_raw(E) intel_rapl_perf(E) rfkill(E) crc16(E) snd(E) pcspkr(E) watchdog(E) sg(E) mc(E) mei_me(E) joydev(E) intel_wmi_thunderbolt(E) tpm_crb(E) evdev(E) soundcore(E) mei(E) tpm_tis(E) i2c_algo_bit(E) tpm_tis_core(E) fujitsu_laptop(E) tpm(E) sparse_keymap(E) rng_core(E) button(E) acpi_pad(E) ac(E) ip_tables(E) x_tables(E) autofs4(E) hid_generic(E) usbhid(E) hid(E) btrfs(E) blake2b_generic(E) zstd_decompress(E) zstd_compress(E) raid10(E) raid456(E) async_raid6_recov(E) async_memcpy(E) async_pq(E) async_xor(E) async_tx(E) xor(E) raid6_pq(E) libcrc32c(E) crc32c_generic(E) raid1(E) raid0(E) multipath(E) linear(E) md_mod(E) uas(E) usb_storage(E) sd_mod(E) crct10dif_pclmul(E) crc32_pclmul(E) crc32c_intel(E) ghash_clmulni_intel(E) i2c_designware_platform(E) i2c_designware_core(E) aesni_intel(E) crypto_simd(E) cryptd(E) glue_helper(E) psmouse(E) sdhci_pci(E) e1000e(E) ahci(E) cqhci(E) libahci(E) ptp(E) sdhci(E) i2c_i801(E) pps_core(E) mmc_core(E) xhci_pci(E)
-[ 3269.206367]  libata(E) xhci_hcd(E) scsi_mod(E) intel_lpss_pci(E) intel_lpss(E) idma64(E) usbcore(E) mfd_core(E) usb_common(E) wmi(E) battery(E) video(E)
-[ 3269.221661] CPU: 2 PID: 1583 Comm: btrfs-transacti Tainted: G            E     5.5.0-1-amd64 #1 Debian 5.5.13-2
-[ 3269.224261] Hardware name: FUJITSU LIFEBOOK U757/FJNB2A5, BIOS Version 1.21 03/19/2018
-[ 3269.226812] RIP: 0010:cleanup_transaction+0x61/0xc0 [btrfs]
-[ 3269.228920] Code: 77 66 f0 49 0f ba ad 28 17 00 00 02 72 1e 41 83 fc fb 75 07 0f 1f 44 00 00 eb 11 44 89 e6 48 c7 c7 88 2d 79 c0 e8 31 0b 3a f4 <0f> 0b 44 89 e1 ba 66 07 00 00 49 8d 5e 28 48 89 ef 48 c7 c6 50 65
-[ 3269.231126] RSP: 0018:ffffa713c05ebde8 EFLAGS: 00010282
-[ 3269.233061] RAX: 0000000000000000 RBX: 00000000ffffffe4 RCX: 0000000000000007
-[ 3269.234932] RDX: 0000000000000007 RSI: 0000000000000086 RDI: ffff9332fdd19a40
-[ 3269.236769] RBP: ffff9332f0c99ea0 R08: 00000000000003fa R09: 0000000000000007
-[ 3269.238495] R10: 0000000000000000 R11: 0000000000000001 R12: 00000000ffffffe4
-[ 3269.240217] R13: ffff9330b0b74000 R14: ffff9330d981ae00 R15: ffff9332f0c99df0
-[ 3269.241920] FS:  0000000000000000(0000) GS:ffff9332fdd00000(0000) knlGS:0000000000000000
-[ 3269.243654] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3269.245381] CR2: 00007f70da503070 CR3: 000000066cc0a006 CR4: 00000000003606e0
-[ 3269.247091] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 3269.248800] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 3269.250519] Call Trace:
-[ 3269.252243]  btrfs_commit_transaction+0x2a8/0xa20 [btrfs]
-[ 3269.253945]  ? start_transaction+0xbb/0x4c0 [btrfs]
-[ 3269.255637]  transaction_kthread+0x13c/0x180 [btrfs]
-[ 3269.257298]  kthread+0xf9/0x130
-[ 3269.258962]  ? btrfs_cleanup_transaction+0x5c0/0x5c0 [btrfs]
-[ 3269.260613]  ? kthread_park+0x90/0x90
-[ 3269.262278]  ret_from_fork+0x35/0x40
-[ 3269.263931] ---[ end trace 7995a24b0c8fd82a ]---
-[ 3269.265580] BTRFS: error (device dm-1) in cleanup_transaction:1894: errno=-28 No space left
-[ 3269.268117] BTRFS info (device dm-1): delayed_refs has NO entry
-[ 3270.142115] BTRFS info (device dm-1): scrub: not finished on devid 1 with status: -125
-
-
-In the past there used to be several similar bugs wrt to read-only
-block devices (e.g. send from a ro-device caused a kernel trace).
-So maybe another one of these bugs?
-
-
-Also, the foreground btrfs-scrub seemed to not properly detect the
-failure.
-While it showed that only some GB or so where actually checked, it said
-"Error summary:    no errors found"
-which is strictly speaking correct, but obviously misleading.
-
-It should say something like "scrub not finished, no errors found in
-what was checked".
-
-Unfortunately I've missed to check for the exit status, whether it was
-non-zero.
-
-
-Cheers,
-Chris
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/extent-tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 8e5b49baad98..2925b3ad77a1 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2196,7 +2196,7 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
+>  
+>  	delayed_refs = &trans->transaction->delayed_refs;
+>  	if (count == 0)
+> -		count = atomic_read(&delayed_refs->num_entries) * 2;
+> +		count = delayed_refs->num_heads_ready;
+>  
+>  again:
+>  #ifdef SCRAMBLE_DELAYED_REFS
+> 
