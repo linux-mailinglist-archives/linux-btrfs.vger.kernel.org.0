@@ -2,120 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAF319D1DE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 10:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4CE19D2B4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 10:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390453AbgDCILo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 04:11:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54556 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgDCILo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Apr 2020 04:11:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03388xkn013294;
-        Fri, 3 Apr 2020 08:11:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=u968l2Em+r6GuiKpi6wiM3+ZUFqrxHHSMRytsW+IVKg=;
- b=kfctrsyZv5dMvFCJ2q7h3GioVV5nyA7mc7J0tK7wpQuzcIy/MEyPO/ZxAJWaHosF1pyR
- ErwMLmcFeLg0CdHt+yhDpk48VWs3IfR/xoI3q7e2mV2yMx5wahOlsk6uaZJXvf24MUD0
- mDk0JRb3ogJnNN3+sX3RQu7BcxnUourQj5nv/3BHmQqg+3bEwnqWXgV6xHarOE9KNQ7U
- zZfIhXsobhPz3bCsZzRgjtQPj833Q0sYmfflUFgR7+6jMT8FJOfDluJMZj01OCEVy+zy
- 0qisic3ozNsOGexsYjkl8CWEMvufQMXiuPxDFcMuzfZJObDQ+Yzii3iNCRTCi8d3XUAg 8g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 303aqj03cj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 08:11:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0338789X039940;
-        Fri, 3 Apr 2020 08:11:38 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 302g2mbukp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 08:11:38 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0338BbVp031622;
-        Fri, 3 Apr 2020 08:11:37 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 03 Apr 2020 01:11:37 -0700
-Date:   Fri, 3 Apr 2020 11:11:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Qu Wenruo <wqu@suse.com>
-Cc:     kbuild-all@lists.01.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: Only require sector size alignment for parent
- eb bytenr
-Message-ID: <20200403081131.GV2001@kadam>
+        id S1727868AbgDCIug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 04:50:36 -0400
+Received: from server.roznica.com.ua ([80.90.224.56]:37304 "EHLO
+        server.roznica.com.ua" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727829AbgDCIug (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Apr 2020 04:50:36 -0400
+X-Greylist: delayed 414 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Apr 2020 04:50:35 EDT
+Received: from work.roznica.com.ua (h244.onetel95.onetelecom.od.ua [91.196.95.244])
+        by server.roznica.com.ua (Postfix) with ESMTP id 66E5577207B;
+        Fri,  3 Apr 2020 11:43:40 +0300 (EEST)
+Subject: Re: [PATCH] btrfs: add ssd_metadata mode
+To:     Steven Davies <btrfs-list@steev.me.uk>,
+        Goffredo Baroncelli <kreijack@libero.it>
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>
+References: <20200401200316.9917-1-kreijack@libero.it>
+ <20200401200316.9917-2-kreijack@libero.it>
+ <236b9155-c2e1-3ed6-f2c7-b71e3c86ac2c@steev.me.uk>
+From:   Michael <mclaud@roznica.com.ua>
+Message-ID: <cac4903c-7559-93bc-d2a3-cbb8bc223a34@roznica.com.ua>
+Date:   Fri, 3 Apr 2020 11:43:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326055403.22748-1-wqu@suse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030068
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030069
+In-Reply-To: <236b9155-c2e1-3ed6-f2c7-b71e3c86ac2c@steev.me.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+02.04.2020 12:33, Steven Davies пишет:
+> On 01/04/2020 21:03, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>
+>> When this mode is enabled, the allocation policy of the chunk
+>> is so modified:
+>> - when a metadata chunk is allocated, priority is given to
+>> ssd disk.
+>> - When a data chunk is allocated, priority is given to a
+>> rotational disk.
+>>
+>> When a striped profile is involved (like RAID0,5,6), the logic
+>> is a bit more complex. If there are enough disks, the data profiles
+>> are stored on the rotational disks only; the metadata profiles
+>> are stored on the non rotational disk only.
+>> If the disks are not enough, then the profiles is stored on all
+>> the disks.
+>>
+>> Example: assuming that sda, sdb, sdc are ssd disks, and sde, sdf are
+>> rotational ones.
+>> A data profile raid5, will be stored on sda, sdb, sdc, sde, sdf (sde
+>> and sdf are not enough to host a raid5 profile).
+>> A metadata profile raid5, will be stored on sda, sdb, sdc (these
+>> are enough to host a raid5 profile).
+>>
+>> To enable this mode pass -o ssd_metadata at mount time.
+>>
+>> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+>
+> The idea of this sounds similar to what Anand has been working on with 
+> the readmirror patchset[1] which was originally designed to prefer 
+> reading from SSD devices in a RAID1 configuration but has evolved into 
+> allowing the read policy to be configured through sysfs, at least 
+> partly because detecting SSDs correctly is not an exact science. Also, 
+> there may be more considerations than just HDD or SSD: for example in 
+> my system I use a SATA SSD and an NVMe SSD in RAID1 where the NVMe 
+> device is twice the speed of the SSD.
+May be something like -o 
+metadata_preferred_devices=device_id,[device_id,[device_id]]... ?
+>
+> I would therefore vote for configurability of this rather than always 
+> choosing SSD over HDD.
+>
+> [1] https://patchwork.kernel.org/project/linux-btrfs/list/?series=245121
+>
 
-url:    https://github.com/0day-ci/linux/commits/Qu-Wenruo/btrfs-Only-require-sector-size-alignment-for-parent-eb-bytenr/20200327-034045
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mason/linux-btrfs.git next
-
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-New smatch warnings:
-fs/btrfs/extent-tree.c:1178 btrfs_get_extent_inline_ref_type() warn: '0x' prefix is confusing together with '%lu' specifier
-fs/btrfs/extent-tree.c:1178 btrfs_get_extent_inline_ref_type() warn: argument 4 to %lu specifier is cast from pointer
-
-Old smatch warnings:
-fs/btrfs/extent-tree.c:6343 update_block_group() warn: inconsistent indenting
-fs/btrfs/extent-tree.c:7620 find_free_extent() warn: inconsistent indenting
-
-# https://github.com/0day-ci/linux/commit/8a07080e7e5051c75e67e30bf635fc230b2ab720
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout 8a07080e7e5051c75e67e30bf635fc230b2ab720
-vim +1178 fs/btrfs/extent-tree.c
-
-64ecdb647ddb83 Liu Bo    2017-08-18  1166  				 */
-64ecdb647ddb83 Liu Bo    2017-08-18  1167  				if (offset &&
-8a07080e7e5051 Qu Wenruo 2020-03-26  1168  				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
-64ecdb647ddb83 Liu Bo    2017-08-18  1169  					return type;
-64ecdb647ddb83 Liu Bo    2017-08-18  1170  			}
-167ce953ca55bd Liu Bo    2017-08-18  1171  		} else {
-167ce953ca55bd Liu Bo    2017-08-18  1172  			ASSERT(is_data == BTRFS_REF_TYPE_ANY);
-167ce953ca55bd Liu Bo    2017-08-18  1173  			return type;
-167ce953ca55bd Liu Bo    2017-08-18  1174  		}
-167ce953ca55bd Liu Bo    2017-08-18  1175  	}
-167ce953ca55bd Liu Bo    2017-08-18  1176  
-167ce953ca55bd Liu Bo    2017-08-18  1177  	btrfs_print_leaf((struct extent_buffer *)eb);
-8a07080e7e5051 Qu Wenruo 2020-03-26 @1178  	btrfs_err(eb->fs_info,
-8a07080e7e5051 Qu Wenruo 2020-03-26  1179  		  "eb %llu iref 0x%lu invalid extent inline ref type %d",
-                                                                        ^^^^^
-
-8a07080e7e5051 Qu Wenruo 2020-03-26  1180  		  eb->start, (unsigned long)iref, type);
-                                                                     ^^^^^^^^^^^^^^^^^^^
-0x indicates hex, but this is decimal.  But use %p for pointers so that
-the can be hidden to people without enough privilege.  #kernelHardenning
-
-167ce953ca55bd Liu Bo    2017-08-18  1181  	WARN_ON(1);
-167ce953ca55bd Liu Bo    2017-08-18  1182  
-167ce953ca55bd Liu Bo    2017-08-18  1183  	return BTRFS_REF_TYPE_INVALID;
-167ce953ca55bd Liu Bo    2017-08-18  1184  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+С уважением, Михаил
+067-786-11-75
