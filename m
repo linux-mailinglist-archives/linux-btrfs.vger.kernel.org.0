@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8178D19D933
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF0B19D95B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390924AbgDCOeo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 10:34:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41554 "EHLO mx2.suse.de"
+        id S2391066AbgDCOnz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 10:43:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390784AbgDCOeo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:34:44 -0400
+        id S2390954AbgDCOnz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:43:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 61A64AC1D;
-        Fri,  3 Apr 2020 14:34:40 +0000 (UTC)
-Subject: Re: [PATCH 3/5] btrfs: only run delayed refs once before committing
+        by mx2.suse.de (Postfix) with ESMTP id 49AF6AC62;
+        Fri,  3 Apr 2020 14:43:53 +0000 (UTC)
+Subject: Re: [PATCH 4/5] btrfs: run delayed refs less often in
+ commit_cowonly_roots
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200313211220.148772-1-josef@toxicpanda.com>
- <20200313211220.148772-4-josef@toxicpanda.com>
+ <20200313211220.148772-5-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c6578cd7-3490-4ff0-87da-3734289a15a0@suse.com>
-Date:   Fri, 3 Apr 2020 17:34:40 +0300
+Message-ID: <5322569a-1d3b-bedf-2f32-9da56ff8957a@suse.com>
+Date:   Fri, 3 Apr 2020 17:43:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200313211220.148772-4-josef@toxicpanda.com>
+In-Reply-To: <20200313211220.148772-5-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,41 +81,66 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.03.20 г. 23:12 ч., Josef Bacik wrote:
-> We try to pre-flush the delayed refs when committing, because we want to
-> do as little work as possible in the critical section of the transaction
-> commit.
-> 
-> However doing this twice can lead to very long transaction commit delays
-> as other threads are allowed to continue to generate more delayed refs,
-> which potentially delays the commit by multiple minutes in very extreme
-> cases.
-> 
-> So simply stick to one pre-flush, and then continue the rest of the
-> transaction commit.
+> We love running delayed refs in commit_cowonly_roots, but it is a bit
+
+You refer to commit_cowonly_roots but in fact are changing
+create_pending_snapshot. Between calling
+create_pending_snapshots->create_pending_snapshot and
+commit_cowonly_roots we have 2 calls to btrfs_run_delayed_refs. My point
+is by the time commit_cowonly_roots is called we've already long flushed
+the delayed refs generated from create_pending_snapshot. IMO referring
+to commit_cowonly_roots in this commit is wrong?
+
+
+> excessive.  I was seeing cases of running 3 or 4 refs a few times in a
+> row during this time.  Instead simply update all of the roots first,
+By "simply update all of the roots" I assume you meant the call to
+commit_fs_roots or the changes happening to the snapshoted roots in
+create_pending_snapshot? If it's the latter I'd rather you made the text
+more explicit by referring to the fact the refs are generated from
+snapshots e.g.
+
+Instead simply run all snapshot-related work, then drain delayed refs
+resulting from this ...
+
+> then run delayed refs, then handle the empty block groups case, and then
+> if we have any more dirty roots do the whole thing again.  This allows
+> us to be much more efficient with our delayed ref running, as we can
+> batch a few more operations at once.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/transaction.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  fs/btrfs/transaction.c | 12 ------------
+>  1 file changed, 12 deletions(-)
 > 
 > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index cff767722a75..3e7fd8a934c1 100644
+> index 3e7fd8a934c1..c3b3b524b8c3 100644
 > --- a/fs/btrfs/transaction.c
 > +++ b/fs/btrfs/transaction.c
-> @@ -2057,12 +2057,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> @@ -1646,12 +1646,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+>  		goto fail;
+>  	}
 >  
->  	btrfs_create_pending_block_groups(trans);
->  
-> -	ret = btrfs_run_delayed_refs(trans, 0);
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
 > -	if (ret) {
-> -		btrfs_end_transaction(trans);
-> -		return ret;
+> -		btrfs_abort_transaction(trans, ret);
+> -		goto fail;
 > -	}
 > -
->  	if (!test_bit(BTRFS_TRANS_DIRTY_BG_RUN, &cur_trans->flags)) {
->  		int run_it = 0;
+>  	/*
+>  	 * Do special qgroup accounting for snapshot, as we do some qgroup
+>  	 * snapshot hack to do fast snapshot.
+> @@ -1698,12 +1692,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+>  		}
+>  	}
 >  
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> -	if (ret) {
+> -		btrfs_abort_transaction(trans, ret);
+> -		goto fail;
+> -	}
+> -
+>  fail:
+>  	pending->error = ret;
+>  dir_item_existed:
 > 
