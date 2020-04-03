@@ -2,148 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC84C19D968
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 16:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6F719DA74
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Apr 2020 17:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403962AbgDCOqK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Apr 2020 10:46:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45988 "EHLO mx2.suse.de"
+        id S1728188AbgDCPpU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Apr 2020 11:45:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46076 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403953AbgDCOqK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:46:10 -0400
+        id S1727998AbgDCPpU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Apr 2020 11:45:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0232BAB76;
-        Fri,  3 Apr 2020 14:46:08 +0000 (UTC)
-Subject: Re: [PATCH 5/5] btrfs: stop running all delayed refs during snapshot
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200313211220.148772-1-josef@toxicpanda.com>
- <20200313211220.148772-6-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <6204a1da-02f9-b2e0-8fb8-e41f4b408a40@suse.com>
-Date:   Fri, 3 Apr 2020 17:46:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        by mx2.suse.de (Postfix) with ESMTP id D8F88ABF4;
+        Fri,  3 Apr 2020 15:45:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 82236DA727; Fri,  3 Apr 2020 17:44:43 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 17:44:43 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/39] btrfs: qgroup: Use backref cache based backref
+ walk for commit roots
+Message-ID: <20200403154443.GE5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200326083316.48847-1-wqu@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200313211220.148772-6-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326083316.48847-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Mar 26, 2020 at 04:32:37PM +0800, Qu Wenruo wrote:
+> Qu Wenruo (39):
+>   btrfs: backref: Introduce the skeleton of btrfs_backref_iter
+>   btrfs: backref: Implement btrfs_backref_iter_next()
+>   btrfs: relocation: Use btrfs_backref_iter infrastructure
+>   btrfs: relocation: Rename mark_block_processed() and
+>     __mark_block_processed()
+>   btrfs: relocation: Add backref_cache::pending_edge and
+>     backref_cache::useless_node members
+>   btrfs: relocation: Add backref_cache::fs_info member
+>   btrfs: relocation: Make reloc root search specific for relocation
+>     backref cache
+>   btrfs: relocation: Refactor direct tree backref processing into its
+>     own function
+>   btrfs: relocation: Refactor indirect tree backref processing into its
+>     own function
+>   btrfs: relocation: Use wrapper to replace open-coded edge linking
+>   btrfs: relocation: Specify essential members for alloc_backref_node()
+>   btrfs: relocation: Remove the open-coded goto loop for breadth-first
+>     search
+>   btrfs: relocation: Refactor the finishing part of upper linkage into
+>     finish_upper_links()
+>   btrfs: relocation: Refactor the useless nodes handling into its own
+>     function
+>   btrfs: relocation: Add btrfs_ prefix for backref_node/edge/cache
+>   btrfs: Move btrfs_backref_(node|edge|cache) structures to backref.h
+>   btrfs: Rename tree_entry to simple_node and export it
+>   btrfs: Rename backref_cache_init() to btrfs_backref_cache_init() and
+>     move it to backref.c
+>   btrfs: Rename alloc_backref_node() to btrfs_backref_alloc_node() and
+>     move it backref.c
+>   btrfs: Rename alloc_backref_edge() to btrfs_backref_alloc_edge() and
+>     move it backref.c
+>   btrfs: Rename link_backref_edge() to btrfs_backref_link_edge() and
+>     move it backref.h
+>   btrfs: Rename free_backref_(node|edge) to
+>     btrfs_backref_free_(node|edge) and move them to backref.h
+>   btrfs: Rename drop_backref_node() to btrfs_backref_drop_node() and
+>     move its needed facilities to backref.h
+>   btrfs: Rename remove_backref_node() to btrfs_backref_cleanup_node()
+>     and move it to backref.c
+>   btrfs: Rename backref_cache_cleanup() to btrfs_backref_release_cache()
+>     and move it to backref.c
+>   btrfs: Rename backref_tree_panic() to btrfs_backref_panic(), and move
+>     it to backref.c
+>   btrfs: Rename should_ignore_root() to btrfs_should_ignore_reloc_root()
+>     and export it
+>   btrfs: relocation: Open-code read_fs_root() for
+>     handle_indirect_tree_backref()
+>   btrfs: Rename handle_one_tree_block() to btrfs_backref_add_tree_node()
+>     and move it to backref.c
+>   btrfs: Rename finish_upper_links() to
+>     btrfs_backref_finish_upper_links() and move it to backref.c
+>   btrfs: relocation: Move error handling of build_backref_tree() to
+>     backref.c
+>   btrfs: backref: Only ignore reloc roots for indrect backref resolve if
+>     the backref cache is for reloction purpose
 
-
-On 13.03.20 г. 23:12 ч., Josef Bacik wrote:
-> This was added a very long time ago to work around issues with delayed
-> refs and with qgroups.  Both of these issues have since been properly
-> fixed, so all this does is cause a lot of lock contention with anybody
-> else who is running delayed refs.
-
-Oh I see, the changelog for this and the previous patch got switched, no ?
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/transaction.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index c3b3b524b8c3..8d34d7e0adb6 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -1184,10 +1184,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
->  	btrfs_tree_unlock(eb);
->  	free_extent_buffer(eb);
->  
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
->  	if (ret)
->  		return ret;
->  
-> @@ -1205,10 +1201,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
->  	if (ret)
->  		return ret;
->  
-> -	/* run_qgroups might have added some more refs */
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret)
-> -		return ret;
->  again:
->  	while (!list_empty(&fs_info->dirty_cowonly_roots)) {
->  		struct btrfs_root *root;
-> @@ -1223,15 +1215,24 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
->  		ret = update_cowonly_root(trans, root);
->  		if (ret)
->  			return ret;
-> -		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -		if (ret)
-> -			return ret;
->  	}
->  
-> +	/* Now flush any delayed refs generated by updating all of the roots. */
-> +	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> +	if (ret)
-> +		return ret;
-> +
->  	while (!list_empty(dirty_bgs) || !list_empty(io_bgs)) {
->  		ret = btrfs_write_dirty_block_groups(trans);
->  		if (ret)
->  			return ret;
-> +
-> +		/*
-> +		 * We're writing the dirty block groups, which could generate
-> +		 * delayed refs, which could generate more dirty block groups,
-> +		 * so we want to keep this flushing in this loop to make sure
-> +		 * everything gets run.
-> +		 */
->  		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
->  		if (ret)
->  			return ret;
-> 
+Patches 1-32 are in misc-next.
