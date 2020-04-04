@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4842219E48A
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Apr 2020 12:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D318119E489
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Apr 2020 12:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgDDKcU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 4 Apr 2020 06:32:20 -0400
-Received: from smtp-16.italiaonline.it ([213.209.10.16]:40101 "EHLO libero.it"
+        id S1726222AbgDDKcT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 4 Apr 2020 06:32:19 -0400
+Received: from smtp-16.italiaonline.it ([213.209.10.16]:48447 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726077AbgDDKcT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726112AbgDDKcT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Sat, 4 Apr 2020 06:32:19 -0400
 Received: from venice.bhome ([94.37.173.46])
         by smtp-16.iol.local with ESMTPA
-        id Kg63jDxJE6Q7RKg65jI6W0; Sat, 04 Apr 2020 12:32:17 +0200
+        id Kg63jDxJE6Q7RKg65jI6WI; Sat, 04 Apr 2020 12:32:17 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1585996337; bh=59BuvjRcLOL1x6GYkCxK9VYmBAAs5KwXXoMRs59x1do=;
+        t=1585996337; bh=v5GXkAYXlRDB+G3QchwUz/DqODtZF0Pxm8NMl7Q+/uU=;
         h=From;
-        b=TBZ+KxJV1zcXrqCe6rn8oM5MFo2seTwf9vlNQmXpWERcxStWC3EflJsT1goKAJq+H
-         7pdX0UuirCr5O9dqAnZiaNZ3fEHEINh459Ab+7GtyFIhXdmwBUMthJQECmTtXUryWL
-         yfyzstjqbEF76Le2BNw4qnkITalzytPX3KENt82uEnJtkqseXyb3IHAJqGuqUyoEZz
-         ykL5tr5ni/oZA4COmcXyPcJFNxuY3Hz1XfKIJtl79hFkBfNrVuC2uCBRzwybAoCX7C
-         /oL6lF1KBYK+3giTDQw/HLVGjKmiObPKuojYLpz5bdPKbOF5ecOdX3+2oasgYFyIq4
-         vOs6YDgvt97aw==
+        b=TWIF6FhVGMQXgzXf2UgSBlkoEliTTdRcKoz6OL8mjmtn+J1Vey3LhScYgeRGZWqKo
+         spyqndp1/hL3lfw95zhmyeg3xHL2CiJ2QHPv6gbc66ftsgnSosaIoljjmHzBu52K9b
+         XDGEB6zrny10z9Fta5u1vJYPN3qFCAU6HI+lb2pgzwgRFhQ6wjRHih3PhEO9xxLVtD
+         WsdlInyiUVwpWNCFBjNRSqfMPqhTCBotCZ1jLbX4EnsaR+rEuY2RuxeIismzQIhPtH
+         GymsauiJDY5EMvnpe/Z0UQVRWiPe0IoNek8GXK6iao4tMlsUjcenXmH4Wwvcj4gyBF
+         rUnqSlKWSrBmA==
 X-CNFS-Analysis: v=2.3 cv=LelCFQXi c=1 sm=1 tr=0
  a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=VPATK8qPJ3NAqgEWvUUA:9
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=k2A2CUVQ5W2PnF00lrAA:9
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
@@ -34,9 +34,9 @@ Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         David Sterba <dsterba@suse.com>,
         Graham Cobb <g.btrfs@cobb.uk.net>,
         Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 2/5] btrfs-progs: Add mixed profiles check to some btrfs sub-commands.
-Date:   Sat,  4 Apr 2020 12:32:09 +0200
-Message-Id: <20200404103212.40986-3-kreijack@libero.it>
+Subject: [PATCH 3/5] Add check for multiple profile in btrfs fi us
+Date:   Sat,  4 Apr 2020 12:32:10 +0200
+Message-Id: <20200404103212.40986-4-kreijack@libero.it>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200404103212.40986-1-kreijack@libero.it>
 References: <20200404103212.40986-1-kreijack@libero.it>
@@ -52,56 +52,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Add a check in some btrfs subcommands to detect if a filesystem
-has mixed profiles for data/metadata/system. In this case
-a warning is showed.
+A new line in the "Overall" section is added to inform that a 
+'Multiple profile' is present.
 
 Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
 ---
- cmds/balance.c | 2 ++
- cmds/device.c  | 2 ++
- 2 files changed, 4 insertions(+)
+ cmds/filesystem-usage.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/cmds/balance.c b/cmds/balance.c
-index 5392a604..20d0ebc1 100644
---- a/cmds/balance.c
-+++ b/cmds/balance.c
-@@ -716,6 +716,7 @@ static int cmd_balance_pause(const struct cmd_struct *cmd,
- 			ret = 1;
- 	}
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index aa7065d5..742b4ea4 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -492,6 +492,11 @@ static int print_filesystem_usage_overall(int fd, struct chunk_info *chunkinfo,
+ 	printf("    Global reserve:\t\t%*s\t(used: %s)\n", width,
+ 		pretty_size_mode(l_global_reserve, unit_mode),
+ 		pretty_size_mode(l_global_reserve_used, unit_mode));
++	if (btrfs_test_for_mixed_profiles_by_fd(fd) > 0)
++		printf("    Multiple profile:\t\t%*s\n", width, "YES");
++	else
++		printf("    Multiple profile:\t\t%*s\n", width, "no");
++
  
-+	btrfs_check_for_mixed_profiles_by_fd(fd);
- 	close_file_or_dir(fd, dirstream);
- 	return ret;
- }
-@@ -756,6 +757,7 @@ static int cmd_balance_cancel(const struct cmd_struct *cmd,
- 			ret = 1;
- 	}
+ exit:
  
-+	btrfs_check_for_mixed_profiles_by_fd(fd);
- 	close_file_or_dir(fd, dirstream);
- 	return ret;
- }
-diff --git a/cmds/device.c b/cmds/device.c
-index 24158308..401b32b9 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -143,6 +143,7 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 	}
- 
- error_out:
-+	btrfs_check_for_mixed_profiles_by_fd(fdmnt);
- 	close_file_or_dir(fdmnt, dirstream);
- 	return !!ret;
- }
-@@ -225,6 +226,7 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
- 		}
- 	}
- 
-+	btrfs_check_for_mixed_profiles_by_fd(fdmnt);
- 	close_file_or_dir(fdmnt, dirstream);
- 	return !!ret;
- }
 -- 
 2.26.0
 
