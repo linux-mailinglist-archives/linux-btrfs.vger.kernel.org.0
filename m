@@ -2,196 +2,275 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 267FD19E9E6
+	by mail.lfdr.de (Postfix) with ESMTP id 97C0319E9E7
 	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Apr 2020 10:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgDEI0m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Apr 2020 04:26:42 -0400
-Received: from smtp-16.italiaonline.it ([213.209.10.16]:51623 "EHLO libero.it"
+        id S1726474AbgDEI0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Apr 2020 04:26:43 -0400
+Received: from smtp-16.italiaonline.it ([213.209.10.16]:41152 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726396AbgDEI0m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Apr 2020 04:26:42 -0400
+        id S1726397AbgDEI0n (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 Apr 2020 04:26:43 -0400
 Received: from venice.bhome ([94.37.173.46])
         by smtp-16.iol.local with ESMTPA
-        id L0c2jLXg66Q7RL0c2jMMfh; Sun, 05 Apr 2020 10:26:39 +0200
+        id L0c2jLXg66Q7RL0c3jMMgM; Sun, 05 Apr 2020 10:26:40 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1586075199; bh=GuWUdcKk6Vtx+ezlQyPyD9p0I+VKm0h4Cu94APRx1+I=;
+        t=1586075200; bh=/BXr8591p4PK/phE+gfior2koorzXXDfHeDpQ4lsseo=;
         h=From;
-        b=mSB/UmVWjZKFSfcTz0mdpn1DXGdC5NbDdpwQkjp1ieG30pCsYT1ArHLP+gcXjLNDC
-         TpYbluUtZT3qaPNkId/o9FH3Nr4ThhCTU/0uUkXjq8s1voPy2sVLx60ShMD7XJ50af
-         AaWXFZy6OhuP0wv+1Jq5hLXHjzRzGQndfGAGMDO9PTgweJQDMQQSbOEwAY0YbWJ0vV
-         ziOhRFkjHs3JhZhkfBgc1rke3QU4ZwW0knY4VkV/U0cWVQIJSJgzE+u37HJ9ToocO+
-         c6VALoLDMPF3VIhzOsGtVZK9D2P+ez08cT4HyoZeLwzcdfF2wSvFq4LOPYI7xrSL9+
-         a57yt7DVtFB8g==
+        b=MKVVk1O9POZLneOBg3DO69KNNNM9sMZOyRZtAm2B+MRBys6lH2jwcVVO9trKV+zk5
+         frkuMJ7PW7XCXe8u7SyphxpNUBZObi2q2lyIq04y1MoRU6tn/tM0YcC1KDEt3dQqDA
+         dAsp9RuD7bth6A7nXAdvmWefVp2KJY/HuP37os+2xxfHj9s4MLLoJvZTulHi6t61jq
+         /czz4yDiSVxZEar1r2YZSgGiFjxIdp3A/YIwU8HeNNxnidvgglpv/b/vw4qo8BdH8t
+         HWY8DzcG+Ba0P/VCd9O8MdQye52vM9U/lEVqejX4NPTI9Nfr+RNNS/qFQ1Ry3Wr+Em
+         2y8xDqRy69xIA==
 X-CNFS-Analysis: v=2.3 cv=LelCFQXi c=1 sm=1 tr=0
  a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
- a=SUZbtVg7ItgD6HU_gz4A:9
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=DCztETCGzjQpL7YV058A:9
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
         Martin Svec <martin.svec@zoner.cz>,
-        Wang Yugui <wangyugui@e16-tech.com>
-Subject: [RFC][PATCH V3] btrfs: ssd_metadata: storing metadata on SSD
-Date:   Sun,  5 Apr 2020 10:26:35 +0200
-Message-Id: <20200405082636.18016-1-kreijack@libero.it>
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: [PATCH] btrfs: add ssd_metadata mode
+Date:   Sun,  5 Apr 2020 10:26:36 +0200
+Message-Id: <20200405082636.18016-2-kreijack@libero.it>
 X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200405082636.18016-1-kreijack@libero.it>
+References: <20200405082636.18016-1-kreijack@libero.it>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfLfFHoahbHwyEmaQTMhT6tzbeu1o9HdX7yD8kbRrpJUdueIrP8tk5pOkYAVx2pwMsxQ4IcQMl9tJ/eQw85O9rJOAVIERyBuFbl3pCdxMZNMwbwMoGAiF
- lnCHro1zg3JNFlQYgJ+6V1kJ/G4avBPPhgdhdrd8OYYPbKUCfssKjZTVrcttdYJNYPFoNizNh9a4wbr3J8D32a93L+wMm9qkqRf4XtPBc3TYG0TFclEoMyfC
- 3d2RU/SilDjcNyKX03nc9EMNM7uvxqUbXsX+1Y7xhYBRtuZJD0LdP63r/XlIj5TtGBaG4aG8+MXBcd2gW21mEQ==
+X-CMAE-Envelope: MS4wfJV1vPs7lfH28JFZAwpqMcOAakIbcOw1a7X9mMEabdJZrObkvw86L0Vyvm/OmLTXBy1OsEb/bUk/0oHenJLhVskldVjtJUGjpp5PVPu6wImkLeBcpfGU
+ FcBkEaXEAk7Jx5U7nwORp0S/Is82fyBaOZ/Vu3jDHkAQL0236cYNYNYH+eTh7opFinGF1nBY6iUXOy0LjERNWnKfQ8dauUyS3W2j96J6g7mUk43oXIlbnGYX
+ yzFCcUxshI/k5smn3WoMo4YaohZ0ovUX/Mfiwi6ZHWc6vd2cn7BVQpXXQBDBXZfVyG2V9xLpCw6/Lakk5PyUHnI8MaFhZvGxirJhJeX8MfU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Hi all,
+When this mode is enabled, the allocation policy of the chunk
+is so modified:
+- allocation of metadata chunk: priority is given to ssd disk.
+- allocation of data chunk: priority is given to a rotational disk.
 
-This is an RFC; I wrote this patch because I find the idea interesting
-even though it adds more complication to the chunk allocator.
+When a striped profile is involved (like RAID0,5,6), the logic
+is a bit more complex. If there are enough disks, the data profiles
+are stored on the rotational disks only; instead the metadata profiles
+are stored on the non rotational disk only.
+If the disks are not enough, then the profiles is stored on all
+the disks.
 
-The core idea is to store the metadata on the ssd and to leave the data
-on the rotational disks. BTRFS looks at the rotational flags to
-understand the kind of disks.
+Example: assuming that sda, sdb, sdc are ssd disks, and sde, sdf are
+rotational ones.
+A data profile raid6, will be stored on sda, sdb, sdc, sde, sdf (sde
+and sdf are not enough to host a raid5 profile).
+A metadata profile raid6, will be stored on sda, sdb, sdc (these
+are enough to host a raid6 profile).
 
-This new mode is enabled passing the option ssd_metadata at mount time.
-This policy of allocation is the "preferred" one. If this doesn't permit
-a chunk allocation, the "classic" one is used.
+To enable this mode pass -o ssd_metadata at mount time.
 
-Some examples: (/dev/sd[abc] are ssd, and /dev/sd[ef] are rotational)
+Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
+---
+ fs/btrfs/ctree.h   |  1 +
+ fs/btrfs/super.c   |  8 +++++
+ fs/btrfs/volumes.c | 89 ++++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/volumes.h |  1 +
+ 4 files changed, 97 insertions(+), 2 deletions(-)
 
-Non striped profile: metadata->raid1, data->raid1
-The data is stored on /dev/sd[ef], metadata is stored on /dev/sd[abc].
-When /dev/sd[ef] are full, then the data chunk is allocated also on
-/dev/sd[abc].
-
-Striped profile: metadata->raid6, data->raid6
-raid6 requires 3 disks at minimum, so /dev/sd[ef] are not enough for a
-data profile raid6. To allow a data chunk allocation, the data profile raid6
-will be stored on all the disks /dev/sd[abcdef].
-Instead the metadata profile raid6 will be allocated on /dev/sd[abc],
-because these are enough to host this chunk.
-
-Changelog:
-v1: - first issue
-v2: - rebased to v5.6.2
-    - correct the comparison about the rotational disks (>= instead of >)
-    - add the flag rotational to the struct btrfs_device_info to
-      simplify the comparison function (btrfs_cmp_device_info*() )
-v3: - correct the collision between BTRFS_MOUNT_DISCARD_ASYNC and
-      BTRFS_MOUNT_SSD_METADATA.
-
-Below I collected some data to highlight the performance increment.
-
-Test setup:
-I performed as test a "dist-upgrade" of a Debian from stretch to buster.
-The test consisted in an image of a Debian stretch[1]  with the packages
-needed under /var/cache/apt/archives/ (so no networking was involved).
-For each test I formatted the filesystem from scratch, un-tar-red the
-image and the ran "apt-get dist-upgrade" [2]. For each disk(s)/filesystem
-combination I measured the time of apt dist-upgrade with and
-without the flag "force-unsafe-io" which reduce the using of sync(2) and
-flush(2). The ssd was 20GB big, the hdd was 230GB big,
-
-I considered the following scenarios:
-- btrfs over ssd
-- btrfs over ssd + hdd with my patch enabled
-- btrfs over bcache over hdd+ssd
-- btrfs over hdd (very, very slow....)
-- ext4 over ssd
-- ext4 over hdd
-
-The test machine was an "AMD A6-6400K" with 4GB of ram, where 3GB was used
-as cache/buff.
-
-Data analysis:
-
-Of course btrfs is slower than ext4 when a lot of sync/flush are involved. Using
-apt on a rotational was a dramatic experience. And IMHO  this should be replaced
-by using the btrfs snapshot capabilities. But this is another (not easy) story.
-
-Unsurprising bcache performs better than my patch. But this is an expected
-result because it can cache also the data chunk (the read can goes directly to
-the ssd). bcache perform about +60% slower when there are a lot of sync/flush
-and only +20% in the other case.
-
-Regarding the test with force-unsafe-io (fewer sync/flush), my patch reduce the
-time from +256% to +113%  than the hdd-only . Which I consider a good
-results considering how small is the patch.
-
-
-Raw data:
-The data below is the "real" time (as return by the time command) consumed by
-apt
-
-
-Test description         real (mmm:ss)	Delta %
---------------------     -------------  -------
-btrfs hdd w/sync	   142:38	+533%
-btrfs ssd+hdd w/sync        81:04	+260%
-ext4 hdd w/sync	            52:39	+134%
-btrfs bcache w/sync	    35:59	 +60%
-btrfs ssd w/sync	    22:31	reference
-ext4 ssd w/sync	            12:19	 -45%
-
-
-
-Test description         real (mmm:ss)	Delta %
---------------------     -------------  -------
-btrfs hdd	             56:2	+256%
-ext4 hdd	            51:32	+228%
-btrfs ssd+hdd	            33:30	+113%
-btrfs bcache	            18:57	 +20%
-btrfs ssd	            15:44	reference
-ext4 ssd	            11:49	 -25%
-
-
-[1] I created the image, using "debootrap stretch", then I installed a set
-of packages using the commands:
-
-  # debootstrap stretch test/
-  # chroot test/
-  # mount -t proc proc proc
-  # mount -t sysfs sys sys
-  # apt --option=Dpkg::Options::=--force-confold \
-        --option=Dpkg::options::=--force-unsafe-io \
-	install mate-desktop-environment* xserver-xorg vim \
-        task-kde-desktop task-gnome-desktop
-
-Then updated the release from stretch to buster changing the file /etc/apt/source.list
-Then I download the packages for the dist upgrade:
-
-  # apt-get update
-  # apt-get --download-only dist-upgrade
-
-Then I create a tar of this image.
-Before the dist upgrading the space used was about 7GB of space with 2281
-packages. After the dist-upgrade, the space used was 9GB with 2870 packages.
-The upgrade installed/updated about 2251 packages.
-
-
-[2] The command was a bit more complex, to avoid an interactive session
-
-  # mkfs.btrfs -m single -d single /dev/sdX
-  # mount /dev/sdX test/
-  # cd test
-  # time tar xzf ../image.tgz
-  # chroot .
-  # mount -t proc proc proc
-  # mount -t sysfs sys sys
-  # export DEBIAN_FRONTEND=noninteractive
-  # time apt-get -y --option=Dpkg::Options::=--force-confold \
-	--option=Dpkg::options::=--force-unsafe-io dist-upgrade
-
-
-BR
-G.Baroncelli
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 36df977b64d9..773c7f8b0b0d 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1236,6 +1236,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+ #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
+ #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
+ #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
++#define BTRFS_MOUNT_SSD_METADATA	(1 << 30)
+ 
+ #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+ #define BTRFS_DEFAULT_MAX_INLINE	(2048)
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 67c63858812a..4ad14b0a57b3 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -350,6 +350,7 @@ enum {
+ #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+ 	Opt_ref_verify,
+ #endif
++	Opt_ssd_metadata,
+ 	Opt_err,
+ };
+ 
+@@ -421,6 +422,7 @@ static const match_table_t tokens = {
+ #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+ 	{Opt_ref_verify, "ref_verify"},
+ #endif
++	{Opt_ssd_metadata, "ssd_metadata"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -872,6 +874,10 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			btrfs_set_opt(info->mount_opt, REF_VERIFY);
+ 			break;
+ #endif
++		case Opt_ssd_metadata:
++			btrfs_set_and_info(info, SSD_METADATA,
++					"enabling ssd_metadata");
++			break;
+ 		case Opt_err:
+ 			btrfs_info(info, "unrecognized mount option '%s'", p);
+ 			ret = -EINVAL;
+@@ -1390,6 +1396,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ #endif
+ 	if (btrfs_test_opt(info, REF_VERIFY))
+ 		seq_puts(seq, ",ref_verify");
++	if (btrfs_test_opt(info, SSD_METADATA))
++		seq_puts(seq, ",ssd_metadata");
+ 	seq_printf(seq, ",subvolid=%llu",
+ 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
+ 	seq_puts(seq, ",subvol=");
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9cfc668f91f4..ffb2bc912c43 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4761,6 +4761,58 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
+ 	return 0;
+ }
+ 
++/*
++ * sort the devices in descending order by rotational,
++ * max_avail, total_avail
++ */
++static int btrfs_cmp_device_info_metadata(const void *a, const void *b)
++{
++	const struct btrfs_device_info *di_a = a;
++	const struct btrfs_device_info *di_b = b;
++
++	/* metadata -> non rotational first */
++	if (!di_a->rotational && di_b->rotational)
++		return -1;
++	if (di_a->rotational && !di_b->rotational)
++		return 1;
++	if (di_a->max_avail > di_b->max_avail)
++		return -1;
++	if (di_a->max_avail < di_b->max_avail)
++		return 1;
++	if (di_a->total_avail > di_b->total_avail)
++		return -1;
++	if (di_a->total_avail < di_b->total_avail)
++		return 1;
++	return 0;
++}
++
++/*
++ * sort the devices in descending order by !rotational,
++ * max_avail, total_avail
++ */
++static int btrfs_cmp_device_info_data(const void *a, const void *b)
++{
++	const struct btrfs_device_info *di_a = a;
++	const struct btrfs_device_info *di_b = b;
++
++	/* data -> non rotational last */
++	if (!di_a->rotational && di_b->rotational)
++		return 1;
++	if (di_a->rotational && !di_b->rotational)
++		return -1;
++	if (di_a->max_avail > di_b->max_avail)
++		return -1;
++	if (di_a->max_avail < di_b->max_avail)
++		return 1;
++	if (di_a->total_avail > di_b->total_avail)
++		return -1;
++	if (di_a->total_avail < di_b->total_avail)
++		return 1;
++	return 0;
++}
++
++
++
+ static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
+ {
+ 	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+@@ -4808,6 +4860,7 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 	int i;
+ 	int j;
+ 	int index;
++	int nr_rotational;
+ 
+ 	BUG_ON(!alloc_profile_is_valid(type, 0));
+ 
+@@ -4863,6 +4916,7 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 	 * about the available holes on each device.
+ 	 */
+ 	ndevs = 0;
++	nr_rotational = 0;
+ 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
+ 		u64 max_avail;
+ 		u64 dev_offset;
+@@ -4914,14 +4968,45 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 		devices_info[ndevs].max_avail = max_avail;
+ 		devices_info[ndevs].total_avail = total_avail;
+ 		devices_info[ndevs].dev = device;
++		devices_info[ndevs].rotational = !test_bit(QUEUE_FLAG_NONROT,
++				&(bdev_get_queue(device->bdev)->queue_flags));
++		if (devices_info[ndevs].rotational)
++			nr_rotational++;
+ 		++ndevs;
+ 	}
+ 
++	BUG_ON(nr_rotational > ndevs);
+ 	/*
+ 	 * now sort the devices by hole size / available space
+ 	 */
+-	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+-	     btrfs_cmp_device_info, NULL);
++	if (((type & BTRFS_BLOCK_GROUP_DATA) &&
++	     (type & BTRFS_BLOCK_GROUP_METADATA)) ||
++	    !btrfs_test_opt(info, SSD_METADATA)) {
++		/* mixed bg or SSD_METADATA not set */
++		sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
++			     btrfs_cmp_device_info, NULL);
++	} else {
++		/*
++		 * if SSD_METADATA is set, sort the device considering also the
++		 * kind (ssd or not). Limit the availables devices to the ones
++		 * of the same kind, to avoid that a striped profile like raid5
++		 * spread to all kind of devices (ssd and rotational).
++		 * It is allowed to use different kinds of devices if the ones
++		 * of the same kind are not enough alone.
++		 */
++		if (type & BTRFS_BLOCK_GROUP_DATA) {
++			sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
++				     btrfs_cmp_device_info_data, NULL);
++			if (nr_rotational >= devs_min)
++				ndevs = nr_rotational;
++		} else {
++			int nr_norot = ndevs - nr_rotational;
++			sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
++				     btrfs_cmp_device_info_metadata, NULL);
++			if (nr_norot >= devs_min)
++				ndevs = nr_norot;
++		}
++	}
+ 
+ 	/*
+ 	 * Round down to number of usable stripes, devs_increment can be any
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index f01552a0785e..285d71d54a03 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -343,6 +343,7 @@ struct btrfs_device_info {
+ 	u64 dev_offset;
+ 	u64 max_avail;
+ 	u64 total_avail;
++	int rotational:1;
+ };
+ 
+ struct btrfs_raid_attr {
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
-
+2.26.0
 
