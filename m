@@ -2,126 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0972819EEF9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 02:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5511519EF4B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 04:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbgDFA5U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Apr 2020 20:57:20 -0400
-Received: from mail-eopbgr1370087.outbound.protection.outlook.com ([40.107.137.87]:30517
-        "EHLO AUS01-SY3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727833AbgDFA5U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Apr 2020 20:57:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XDnWjLklOMM5qbcZJuz79DrWmObIx28PwWgqUuufbKndxSWucRx8PdYtJRStOKScqxqc2iv9VXuUnBC195Hj4q5as8sJf1Kndl0S1cmLFN53SK/uiktRbYuMCdy6t9WBRQd6OxBYQ7rtpjppfMh0943EQlMIGtXG1bye8UMQSXFPqmSlvww4n54yPV+eIDO9dYdxGE8FQBlVW7mF3+f96lVHmA4CrNn0hj/oIWGYpamSYCFfLppfnS8p7TBbPyAwiqqf3uqV8r59LhcqpjCJu1S00wV2Caw5fzT8IrjcRQfzuvZzDqqq8p+ON1TEu972SJUT4BAUoUCCC2sgFtzkmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPMlTVTjj3InXCX2yl+sxm1PA5SbVOth+rf6vgdG4zQ=;
- b=Vsm7tLY9nfw/FRXAnULPE4aO4MZ2woL6N+4SRKwQr8Dk1k7HrIu3ptiggQrnG2Fou/hEhSLHYtpdrsx9/pkC7wOJ6LSQ3arda5qcJWey3Urz69dDkRNb3F6Vbd2AxXoyWoKhCQcypB8+SKs6+ykZnp0wX/Fmr/5z4Y2s3X3KZNWSTvfTapgKXrbZBvHXA4SoeltvHJd8/tY/AJdsXglOJEaz6xGGKvqm9P0AG03Q0tTyy1iqukfNAPq2KodfHvqyQnCA/DZMw5qI70mSWdjXyq5pAc2GeXZ7SM81/l08UH+c5IAv72AZm+uvekDGMXHTSx6bmkdDcZ2U59izo3ulXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPMlTVTjj3InXCX2yl+sxm1PA5SbVOth+rf6vgdG4zQ=;
- b=WJj1DAHR6E61VMVVkXDgs3M8mXbL79dhBLWsXtRFUjgOoykEDTIWaWSmPotbDBZ6xM3RUL8zmqTFtiRPGj+KSqPHC3DfxruiLUMLjZBw6T8VRzkI3lOAt2iEN99gLF2/yQbvXRotxsQYoPav8TkCWxtV0oIn+p5gYFL5SSFIWiw=
-Received: from SYBPR01MB3897.ausprd01.prod.outlook.com (20.177.136.214) by
- SYBPR01MB3417.ausprd01.prod.outlook.com (20.177.137.211) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2878.15; Mon, 6 Apr 2020 00:57:12 +0000
-Received: from SYBPR01MB3897.ausprd01.prod.outlook.com
- ([fe80::995d:971d:a82:4664]) by SYBPR01MB3897.ausprd01.prod.outlook.com
- ([fe80::995d:971d:a82:4664%4]) with mapi id 15.20.2878.017; Mon, 6 Apr 2020
- 00:57:12 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     "kreijack@inwind.it" <kreijack@inwind.it>,
-        Achim Gratz <Stromeko@nexgo.de>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: [RFC][PATCH v2] btrfs: ssd_metadata: storing metadata on SSD
-Thread-Topic: [RFC][PATCH v2] btrfs: ssd_metadata: storing metadata on SSD
-Thread-Index: AQHWCxqborxCmya2DUuYHJ+f/OvY2ahqSQFigACarICAAGCtoA==
-Date:   Mon, 6 Apr 2020 00:57:11 +0000
-Message-ID: <SYBPR01MB389757DD12E86E1899B788099EC20@SYBPR01MB3897.ausprd01.prod.outlook.com>
-References: <20200405071943.6902-1-kreijack@libero.it>
- <87o8s6bavr.fsf@Rainer.invalid>
- <c5aaf7df-f5a7-d319-976f-ee203a6f4d9b@libero.it>
-In-Reply-To: <c5aaf7df-f5a7-d319-976f-ee203a6f4d9b@libero.it>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=paul@pauljones.id.au; 
-x-originating-ip: [110.175.198.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f21509b9-a9b7-4b3a-2b3a-08d7d9c570d6
-x-ms-traffictypediagnostic: SYBPR01MB3417:
-x-microsoft-antispam-prvs: <SYBPR01MB3417435562AC0E4BCA8375029EC20@SYBPR01MB3417.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0365C0E14B
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYBPR01MB3897.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(346002)(39830400003)(396003)(136003)(376002)(366004)(66946007)(33656002)(52536014)(186003)(316002)(7696005)(86362001)(110136005)(55016002)(5660300002)(76116006)(66556008)(53546011)(2906002)(9686003)(71200400001)(66476007)(26005)(6506007)(81166006)(66446008)(64756008)(8676002)(8936002)(81156014)(508600001);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: pauljones.id.au does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qvoXCmlfnjsLTjHZPZrfwaT0Ct5ii+qgX1rEckJS+q5kBuHr+A9KCTq3DoLXn2QR78LquNXWE630M2GJE3bvbilnAAbkxe1OTvPoL76+dr5gj4UnK2i91JmT64MnTq5yH2xmxq4TDzRs2P8+ZEo/wv9+EghFfmt+51UPljg29RCjoghuFDpEW/U5izqwS8gMoRGq46HnTiuZ/FhAXh7d7ZkKH95y4vucp9HbNV7OugBY3xc2GSrzvqUEEk0yO+60sheZvEHFkm5r721jqONpEl8IfDeXto1AS2riwqPUZtHKN/AHk5zyU0INAkmC1EEoq7RbeC8+T019xo1jqCyFTJemcemdavHMzQWr5Y2n1TOyCLVJzqCZiFZ8o9f2qCYKh+lPR0L1z9gWCXvAC8D5DsVgHm7veAfFQsxuLWo6he4Fcq28uGYaHuqw1rX/NhbI
-x-ms-exchange-antispam-messagedata: g2VXk3r6VXpKvp6/4Y2SS/QjwHMQwczC5Buumev7GTtWEYDuGOZTksVplxpPyxu1R7IkMInjrlMk/J16+zt7oapRZWCoZv3oCzXGeADKKHxhTiBBke/zdHj3eglxgQLb62ZF+dpzbp0xBP5GUnmdGA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726475AbgDFCYo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 5 Apr 2020 22:24:44 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33418 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgDFCYn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Apr 2020 22:24:43 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 119B06567D6; Sun,  5 Apr 2020 22:24:41 -0400 (EDT)
+Date:   Sun, 5 Apr 2020 22:24:41 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC][PATCH V3] btrfs: ssd_metadata: storing metadata on SSD
+Message-ID: <20200406022441.GM13306@hungrycats.org>
+References: <20200405082636.18016-1-kreijack@libero.it>
+ <58e315a1-0307-9a26-8fb4-fd5220c1d5a6@cobb.uk.net>
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-Network-Message-Id: f21509b9-a9b7-4b3a-2b3a-08d7d9c570d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2020 00:57:11.9833
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QqsII8WQ7KYr0jrGXxFkouuzPrFB2EFcPOIOvOAX5T5OMG/4h/BEV1l4TjQqCnd7RviztR9oIxN1t1WNtFT0Uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB3417
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <58e315a1-0307-9a26-8fb4-fd5220c1d5a6@cobb.uk.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBsaW51eC1idHJmcy1vd25lckB2
-Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWJ0cmZzLQ0KPiBvd25lckB2Z2VyLmtlcm5lbC5vcmc+IE9u
-IEJlaGFsZiBPZiBHb2ZmcmVkbyBCYXJvbmNlbGxpDQo+IFNlbnQ6IE1vbmRheSwgNiBBcHJpbCAy
-MDIwIDU6MDQgQU0NCj4gVG86IEFjaGltIEdyYXR6IDxTdHJvbWVrb0BuZXhnby5kZT47IGxpbnV4
-LWJ0cmZzQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1JGQ11bUEFUQ0ggdjJdIGJ0
-cmZzOiBzc2RfbWV0YWRhdGE6IHN0b3JpbmcgbWV0YWRhdGEgb24gU1NEDQo+IA0KPiBPbiA0LzUv
-MjAgMTA6MjIgQU0sIEFjaGltIEdyYXR6IHdyb3RlOg0KPiA+IEdvZmZyZWRvIEJhcm9uY2VsbGkg
-d3JpdGVzOg0KPiA+PiBUaGlzIGlzIGFuIFJGQzsgSSB3cm90ZSB0aGlzIHBhdGNoIGJlY2F1c2Ug
-SSBmaW5kIHRoZSBpZGVhDQo+ID4+IGludGVyZXN0aW5nIGV2ZW4gdGhvdWdoIGl0IGFkZHMgbW9y
-ZSBjb21wbGljYXRpb24gdG8gdGhlIGNodW5rIGFsbG9jYXRvci4NCj4gPj4NCj4gPj4gVGhlIGNv
-cmUgaWRlYSBpcyB0byBzdG9yZSB0aGUgbWV0YWRhdGEgb24gdGhlIHNzZCBhbmQgdG8gbGVhdmUg
-dGhlDQo+ID4+IGRhdGEgb24gdGhlIHJvdGF0aW9uYWwgZGlza3MuIEJUUkZTIGxvb2tzIGF0IHRo
-ZSByb3RhdGlvbmFsIGZsYWdzIHRvDQo+ID4+IHVuZGVyc3RhbmQgdGhlIGtpbmQgb2YgZGlza3Mu
-DQo+ID4NCj4gPiBNeSBjb21tZW50IHJlYWxseSBpcyBvbmx5IGFib3V0IGhpcyBhc3BlY3Qgb2Yg
-eW91ciBwcm9wb3NhbDogSSB3b3VsZA0KPiA+IGNvbnNpZGVyIGEgbW9yZSBnZW5lcmFsIHdheSBv
-ZiBpbnRyb2R1Y2luZyBhIHRpZXJpbmcgb2YgZGlza3Mgc28gdGhhdA0KPiA+IG9uZSBjYW4gZGlz
-Y2VybiBiZXR3ZWVuIHNsb3dlciBhbmQgZmFzdGVyIFNTRCBhcyB3ZWxsLg0KPiANCj4gVGhpcyBp
-cyBhIGZ1cnRoZXIgc3RlcC4gSSBkaWRuJ3QgbWluZCB0byBhIHRpZXJpbmcgb2YgZmFzdCAoTlZN
-ID8pIGFuZCBzbG93IFNTRC4NCj4gRm9yIHRoYXQgdGhlcmUgYXJlIHNvbWUgdW51c2VkIGZpZWxk
-cyBpbiB0aGUgc3VwZXJibG9jayB3aGljaCBjYW4gYmUgdXNlZC4NCj4gDQo+IEhvd2V2ZXIgbm93
-IG15IGZpcnN0IGNvbmNlcm4gaXMgaWYgdGhpcyBpcw0KPiBhKSByZWFsbHkgdXNlZnVsDQo+IGIp
-IEkgaW50cm9kdWNlZCBzb21lIGZ1bmN0aW9uYWwgcmVncmVzc2lvbg0KPiANCj4gUmVnYXJkaW5n
-IGEpLCB0aGVyZSBpcyBhbiBpbmNyZW1lbnQgb2YgcGVyZm9ybWFuY2U7IGhvd2V2ZXIgc3RhY2tp
-bmcgYnRyZnMNCj4gb3ZlciBiY2FjaGUgbGVhZHMgdG8gYW4gZXZlbiBiaWdnZXIgZ2Fpbjsgb2Yg
-Y291cnNlIHN0YWNraW5nIGJ0cmZzIG92ZXINCj4gYmNhY2hlIGNvbXBsaWNhdGVzIHRoZSBjb25m
-aWd1cmF0aW9uIGZvciB0aGUgcmFpZCBzZXR1cA0KPiANCj4gUmVnYXJkaW5nIGIpIHRoZSBvbmx5
-IHJlZ3Jlc3Npb24gdGhhdCBJIGZvdW5kIGlzIHRoYXQgdGhlIGxvZ2ljIGJlaGluZCB0aGUNCj4g
-YWxsb2NhdGlvbiBvZiBkaXNrcyBpbiBSQUlENS9SQUlENiBiZWNhbWUgbW9yZSBjb21wbGV4LiBC
-dXQgSSBhbSBub3Qgc3VyZSBpZg0KPiB0aGlzIGNhbiBiZSBjYWxsZWQgcmVncmVzc2lvbi4NCg0K
-VGhpcyBpcyBkZWZpbml0ZWx5IHVzZWZ1bCBmb3IgbWUuIEkndmUgYmVlbiBtZWFuaW5nIHRvIGlt
-cGxlbWVudCBpdCBmb3IgYWdlcywgYnV0IHdhcyBhIGJpdCBhZnJhaWQgdG8gdHJ5IGFzIGtlcm5l
-bCBkZXZlbG9wbWVudCBpcyBub3QgbXkgYXJlYS4NCkkndmUgYWxzbyBiZWVuIHRoaW5raW5nIGFi
-b3V0IHRyeWluZyBiY2FjaGUsIGJ1dCBJIHJlbWVtYmVyIGhlYXJpbmcgYWJvdXQgcGVvcGxlIGhh
-dmluZyBjb3JydXB0aW9uIGlzc3VlcyB3aGVuIHVzZWQgd2l0aCBidHJmcy4gVGhhdCB3YXMgYSB3
-aGlsZSBhZ28sIHNvIEkgcHJlc3VtZSB0aGV5IGFyZSBmaXhlZCBub3cuDQpDcmF6eSBpZGVhIC0g
-aXMgdGhlcmUgYSB3YXkgYnRyZnMgY291bGQgaG9vayBpbnRvIGJjYWNoZSBvciBkbS1jYWNoZSBk
-aXJlY3RseT8gSSBrbm93IHRoYXQncyBhIGxheWVyaW5nIHZpb2xhdGlvbiwgYnV0IGJ0cmZzIGRv
-ZXNuJ3QgdXNlIHRoZSBub3JtYWwgbGF5ZXJpbmcgcGFyYWRpZ20gYW55d2F5Lg0KDQpQYXVsLg0K
+On Sun, Apr 05, 2020 at 11:57:49AM +0100, Graham Cobb wrote:
+> On 05/04/2020 09:26, Goffredo Baroncelli wrote:
+> ...
+> 
+> > I considered the following scenarios:
+> > - btrfs over ssd
+> > - btrfs over ssd + hdd with my patch enabled
+> > - btrfs over bcache over hdd+ssd
+> > - btrfs over hdd (very, very slow....)
+> > - ext4 over ssd
+> > - ext4 over hdd
+> > 
+> > The test machine was an "AMD A6-6400K" with 4GB of ram, where 3GB was used
+> > as cache/buff.
+> > 
+> > Data analysis:
+> > 
+> > Of course btrfs is slower than ext4 when a lot of sync/flush are involved. Using
+> > apt on a rotational was a dramatic experience. And IMHO  this should be replaced
+> > by using the btrfs snapshot capabilities. But this is another (not easy) story.
+
+flushoncommit and eatmydata work reasonably well...once you patch out the
+noise warnings from fs-writeback.
+
+> > Unsurprising bcache performs better than my patch. But this is an expected
+> > result because it can cache also the data chunk (the read can goes directly to
+> > the ssd). bcache perform about +60% slower when there are a lot of sync/flush
+> > and only +20% in the other case.
+> > 
+> > Regarding the test with force-unsafe-io (fewer sync/flush), my patch reduce the
+> > time from +256% to +113%  than the hdd-only . Which I consider a good
+> > results considering how small is the patch.
+> > 
+> > 
+> > Raw data:
+> > The data below is the "real" time (as return by the time command) consumed by
+> > apt
+> > 
+> > 
+> > Test description         real (mmm:ss)	Delta %
+> > --------------------     -------------  -------
+> > btrfs hdd w/sync	   142:38	+533%
+> > btrfs ssd+hdd w/sync        81:04	+260%
+> > ext4 hdd w/sync	            52:39	+134%
+> > btrfs bcache w/sync	    35:59	 +60%
+> > btrfs ssd w/sync	    22:31	reference
+> > ext4 ssd w/sync	            12:19	 -45%
+> 
+> Interesting data but it seems to be missing the case of btrfs ssd+hdd
+> w/sync without your patch in order to tell what difference your patch
+> made. Or am I confused?
+
+Goffredo's test was using profile 'single' for both data and metadata,
+so the unpatched allocator would use the biggest device (hdd) for all
+block groups and ignore the smaller one (ssd).  The result should be
+the same as plain btrfs hdd, give or take a few superblock updates.
+
+Of course, no one should ever use 'single' profile for metadata, except
+on disposable filesystems like the ones people use for benchmarks.  ;)
