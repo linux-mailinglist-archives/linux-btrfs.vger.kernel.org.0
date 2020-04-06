@@ -2,321 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9304B19F046
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 08:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E30D19F3D8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgDFGLQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Apr 2020 02:11:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42788 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgDFGLP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Apr 2020 02:11:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 64FC0AD4D
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Apr 2020 06:11:13 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs-progs: tests: Introduce expand_command() to inject aruguments more accurately
-Date:   Mon,  6 Apr 2020 14:11:06 +0800
-Message-Id: <20200406061106.596190-3-wqu@suse.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200406061106.596190-1-wqu@suse.com>
-References: <20200406061106.596190-1-wqu@suse.com>
+        id S1726926AbgDFKvU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Apr 2020 06:51:20 -0400
+Received: from mail-vk1-f194.google.com ([209.85.221.194]:38545 "EHLO
+        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFKvU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Apr 2020 06:51:20 -0400
+Received: by mail-vk1-f194.google.com with SMTP id n128so3836469vke.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 03:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=p+WQF0Sc0cs/0vlIjQLudmPD+sYaaBr7oTqIFHNiF+w=;
+        b=uIpufd1g1/VrQL8Ubo27eRUzVP9h60Y8tpYu96NqwyWNdcrzuaYtCGjawZ6vi5nqI1
+         jR4e9sF/zTuip/xcSHq80K52FgmbI5f6Oe/r1P8atcIp0OswCDrb5y+jUc1K3krNfRWy
+         OJ4DG91TYNq9IhUWo4CyQfRQMGqCf7VHAw1rCOpEOf0cCzWEnJBNrqf9yoV5XGbph1HW
+         JIRI8gdpAtordbXDpj/wGTugiD4J8DfJOd3x+uzKzL9HK+xIlzT7Rfw3tBzatlqX8vkn
+         XyqZ+NRTd1pqIp7PB1F14xO6sWARpWrXsD0ukjtBC51L2ScNdDbxz7GPHKzBZ3s5Aa36
+         Qdig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=p+WQF0Sc0cs/0vlIjQLudmPD+sYaaBr7oTqIFHNiF+w=;
+        b=q8Q4CU8HOvtztHIp4WrTGK+DIC4WdWLFoUN2fl3m6qXOXeNKcYkInzvy5H+k6FDHLY
+         ewIi1OzVpzmwfM1xo9R2ioboQFQkVYp3qvMb5ZHeRkbYYXEyVJo1GALMFa97O+n00OVi
+         lfRKyZhH9swpIlgXBcTzlIh/NShfi7N8JT0nl8fXD+Din761MD2IAzVlbhrkXVsne2rS
+         5A/piCRqwwZsFVNtCEamPMKmMMfeMFc5aFm5X5339X6pPh4/biQRElRQHSxvUkM+EiJc
+         WRB35nM3YKFRoqPO/qW58lSzfdCM1OhnX2abOBMWx/sysc587LGA/bL0dsT5Ux+6dH2/
+         ZvHg==
+X-Gm-Message-State: AGi0PuboJyiyu19fHuSnPioLOC3EzlJL0Uwkp6satWsP32bPODYyoTEJ
+        qiMk/IUtXzmLUilRyVcheZqYNryMb9pbonKT5uAdjA==
+X-Google-Smtp-Source: APiQypJhFfz17uzqoLp7GbciLn37aQ5OcRfifx4m2S1DgVlngG3HUYyNMH85sJsIHWX2Jcu7kIieR1Qyn/PaO01PQ1o=
+X-Received: by 2002:ac5:ccb9:: with SMTP id p25mr14359871vkm.69.1586170279171;
+ Mon, 06 Apr 2020 03:51:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200404193846.GA432065@latitude> <CAL3q7H4xya8EuBhGsX4gs8V6xdNWpJhjhJj0-KdUJhMnDjHjXQ@mail.gmail.com>
+ <20200405145121.GA952734@latitude>
+In-Reply-To: <20200405145121.GA952734@latitude>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 6 Apr 2020 11:51:08 +0100
+Message-ID: <CAL3q7H6zYuCw8e7Ufn7iiAhys85rHQhFBr2EeK62jyhF1yShMA@mail.gmail.com>
+Subject: Re: unexpected truncated files
+To:     Johannes Hirte <johannes.hirte@datenkhaos.de>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-We want to inject $INSTRUMENT (mostly valgrind) before btrfs command but
-after root_helper.
+On Sun, Apr 5, 2020 at 3:51 PM Johannes Hirte
+<johannes.hirte@datenkhaos.de> wrote:
+>
+> On 2020 Apr 04, Filipe Manana wrote:
+> > On Sat, Apr 4, 2020 at 8:52 PM Johannes Hirte
+> > <johannes.hirte@datenkhaos.de> wrote:
+> > >
+> > > While testing with the current 5.7 development kernel, I've encounter=
+ed
+> > > some strange behaviour. I'm using Gentoo linux, and during updating t=
+he
+> > > system I got some unexpected errors. It looked like some files were
+> > > missing. Some investigations showed me, that files from shortly
+> > > installed packages were truncated to zero. So for example the config
+> > > files for apache webserver were affected. I've reinstalled apache,
+> > > verified that the config was ok and continued the system update with =
+the
+> > > next package. After this, the apache config files were truncated agai=
+n.
+> > > I've found several files from different packages that were affed too,
+> > > but only text files (configs, cmake-files, headers). Files which were
+> > > writen, are truncated by some other write operation to the filesystem=
+.
+> > >
+> > > I'm not sure, if this is really caused by btrfs, but it's the most
+> > > obvious candidate. After switching back to 5.6-kernel, the truncation
+> > > stopped und I was able to (re-)install the packages without any troub=
+le.
+> > >
+> > > Has anyone ideas what could cause this behaviour?
+> >
+> > It's likely due to file cloning.
+> >
+> > I found this out yesterday but hadn't sent a patch yet, was waiting
+> > for monday morning.
+> > I've just sent the patch to the list:
+> > https://patchwork.kernel.org/patch/11474453/
+> >
+> > Since you are only getting this with small files, it's likely the
+> > cloning of inline extents causing it, due to some changes in 5.7 that
+> > changed the file size update logic.
+> >
+> > Can you try it?
+> >
+> > Thanks.
+>
+> Yes, this was it. Installing the second package for triggering the
+> truncation was a coincidence. Installing the first package (appache
+> here) and rebooting triggered the error reliable. With portage (the packa=
+ge
+> manager from Gentoo) everything is compiled and installed to a a
+> location on /tmp. After this, the content is copied to the target
+> location and seems to be done with cloning. With your patch the problem
+> doesn't occur anymore.
 
-Currently we won't inject $INSTRUMENT at all if we are using
-root_helper.
-This means the coverage is not good enough.
+Thanks for testing it.
+I'll add reported-by and test-by tags to the patch.
 
-[FIX]
-This patch introduce a new function, expand_command(), to handle all
-parameter/argument injection, including existing 'btrfs check' inject.
+>
+> --
+> Regards,
+>   Johannes Hirte
+>
 
-This function will:
-- Detect where to inject $INSTRUMENT
-  If we have root_helper and the command is target command
-  (btrfs/mkfs.btrfs/btrfs-convert), then we inject $INSTRUMENT after
-  root_helper.
-  If we don't have root_helper, and the command is target command,
-  we inject $INSTRUMENT before the command.
-  Or we don't inject $INSTRUMENT (it's not the target command).
 
-- Use existing spec facility to inject extra arguments
+--=20
+Filipe David Manana,
 
-- Use an array to restore to result
-  To avoid bash interpret the IFS inside path/commands.
-
-Now we can make sure no matter if we use root_helper, $INSTRUMENT is
-always injected corrected.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/common | 176 +++++++++++++++++++++++++--------------------------
- 1 file changed, 87 insertions(+), 89 deletions(-)
-
-diff --git a/tests/common b/tests/common
-index a040a1b803c4..ae8e1a231c4c 100644
---- a/tests/common
-+++ b/tests/common
-@@ -3,6 +3,9 @@
- # Common routines for all tests
- #
- 
-+# Temporary command array for building real command
-+declare -a cmd_array
-+
- # assert that argument is not empty and is an existing path (file or directory)
- _assert_path()
- {
-@@ -135,6 +138,60 @@ _cmd_spec()
- 	fi
- }
- 
-+_is_target_command()
-+{
-+	[[ $1 =~ /btrfs$ ]] && return 0
-+	[[ $1 =~ /mkfs.btrfs$ ]] && return 0
-+	[[ $1 =~ /btrfs-convert$ ]] && return 0
-+	[[ $1 =~ /btrfs-corrupt-block$ ]] && return 0
-+	[[ $1 =~ /btrfs-image$ ]] && return 0
-+	[[ $1 =~ /btrfs-select-super$ ]] && return 0
-+	[[ $1 =~ /btrfs-find-root$ ]] && return 0
-+	[[ $1 =~ /btrfstune$ ]] && return 0
-+	return 1
-+}
-+
-+# Expanding extra commands/options for current command string
-+# This function is responsible for inserting the following things:
-+# - @INSTRUMENT before btrfs commands
-+#   To ensure that @INSTRUMENT is not executed for things like sudo/mount
-+#   which normally has setuid/setgid which will not be traced.
-+#
-+# - Add extra arguments for 'btrfs check'/'mkfs.btrfs'/'btrfs-convert'
-+#   This allows us to test certain function like lowmem mode for btrfs check
-+expand_command()
-+{
-+	local command_index
-+	local ins
-+	local spec
-+	local i
-+
-+	ins=$(_get_spec_ins "$@")
-+	spec=$(($ins-1))
-+	spec=$(_cmd_spec "${@:$spec}")
-+	cmd_array=()
-+
-+	if [ "$1" = 'root_helper' ] && _is_target_command "$2" ; then
-+		command_index=2
-+	elif _is_target_command "$1"  ; then
-+		command_index=1
-+	else
-+		# Since we iterate from offset 1, this never get hit,
-+		# thus we won't insert $INSTRUMENT
-+		command_index=0
-+	fi
-+
-+	for ((i = 1; i <= $#; i++ )); do
-+		if [ $i -eq $command_index -a ! -z "$INSTRUMENT" ]; then
-+			cmd_array+=($INSTRUMENT)
-+		fi
-+		if [ $i -eq $ins -a ! -z "$spec" ]; then
-+			cmd_array+=("$spec")
-+		fi
-+		cmd_array+=("${!i}")
-+	done
-+}
-+
- # Argument passing magic:
- # the command passed to run_* helpers is inspected, if there's 'btrfs command'
- # found and there are defined additional arguments, they're inserted just after
-@@ -145,26 +202,11 @@ _cmd_spec()
- 
- run_check()
- {
--	local spec
--	local ins
-+	expand_command "$@"
-+	echo "====== RUN CHECK ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD: ${cmd_array[@]}" > /dev/tty; fi
- 
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN CHECK $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD: $@" > /dev/tty; fi
--
--	# If the command is `root_helper` or mount/umount, don't call INSTRUMENT
--	# as most profiling tool like valgrind can't handle setuid/setgid/setcap
--	# which mount normally has.
--	# And since mount/umount is only called with run_check(), we don't need
--	# to do the same check on other run_*() functions.
--	if [ "$1" = 'root_helper' -o "$1" = 'mount' -o "$1" = 'umount' ]; then
--		"$@" >> "$RESULTS" 2>&1 || _fail "failed: $@"
--	else
--		$INSTRUMENT "$@" >> "$RESULTS" 2>&1 || _fail "failed: $@"
--	fi
-+	"${cmd_array[@]}" >> "$RESULTS" 2>&1 || _fail "failed: ${cmd_array[@]}"
- }
- 
- # same as run_check but the stderr+stdout output is duplicated on stdout and
-@@ -174,20 +216,11 @@ run_check()
- #	filter the output, as INSTRUMENT can easily pollute the output.
- run_check_stdout()
- {
--	local spec
--	local ins
--
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN CHECK $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(stdout): $@" > /dev/tty; fi
--	if [ "$1" = 'root_helper' ]; then
--		"$@" 2>&1 | tee -a "$RESULTS"
--	else
--		$INSTRUMENT "$@" 2>&1 | tee -a "$RESULTS"
--	fi
-+	expand_command "$@"
-+	echo "====== RUN CHECK ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(stdout): ${cmd_array[@]}" \
-+		> /dev/tty; fi
-+	"${cmd_array[@]}" 2>&1 | tee -a "$RESULTS"
- 	if [ ${PIPESTATUS[0]} -ne 0 ]; then
- 		_fail "failed: $@"
- 	fi
-@@ -198,21 +231,11 @@ run_check_stdout()
- # output is logged
- run_mayfail()
- {
--	local spec
--	local ins
--	local ret
--
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN MAYFAIL $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mayfail): $@" > /dev/tty; fi
--	if [ "$1" = 'root_helper' ]; then
--		"$@" >> "$RESULTS" 2>&1
--	else
--		$INSTRUMENT "$@" >> "$RESULTS" 2>&1
--	fi
-+	expand_command "$@"
-+	echo "====== RUN MAYFAIL ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mayfail): ${cmd_array[@]}" \
-+		> /dev/tty; fi
-+	"${cmd_array[@]}" >> "$RESULTS" 2>&1
- 	ret=$?
- 	if [ $ret != 0 ]; then
- 		echo "failed (ignored, ret=$ret): $@" >> "$RESULTS"
-@@ -234,23 +257,13 @@ run_mayfail()
- # store the output to a variable for further processing.
- run_mayfail_stdout()
- {
--	local spec
--	local ins
--	local ret
--
- 	tmp_output=$(mktemp --tmpdir btrfs-progs-test--mayfail-stdtout.XXXXXX)
- 
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN MAYFAIL $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mayfail): $@" > /dev/tty; fi
--	if [ "$1" = 'root_helper' ]; then
--		"$@" 2>&1 > "$tmp_output"
--	else
--		$INSTRUMENT "$@" 2>&1 > "$tmp_output"
--	fi
-+	expand_command "$@"
-+	echo "====== RUN MAYFAIL ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mayfail): ${cmd_array[@]}" \
-+		> /dev/tty; fi
-+	"${cmd_array[@]}" 2>&1 > "$tmp_output"
- 	ret=$?
- 
- 	cat "$tmp_output" >> "$RESULTS"
-@@ -275,8 +288,6 @@ run_mayfail_stdout()
- # same as run_check but expects the command to fail, output is logged
- run_mustfail()
- {
--	local spec
--	local ins
- 	local msg
- 
- 	msg="$1"
-@@ -287,17 +298,12 @@ run_mustfail()
- 		exit 1
- 	fi
- 
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN MUSTFAIL $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mustfail): $@" > /dev/tty; fi
--	if [ "$1" = 'root_helper' ]; then
--		"$@" >> "$RESULTS" 2>&1
--	else
--		$INSTRUMENT "$@" >> "$RESULTS" 2>&1
--	fi
-+
-+	expand_command "$@"
-+	echo "====== RUN MUSTFAIL ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mustfail): ${cmd_array[@]}" \
-+		> /dev/tty; fi
-+	"${cmd_array[@]}" >> "$RESULTS" 2>&1
- 	if [ $? != 0 ]; then
- 		echo "failed (expected): $@" >> "$RESULTS"
- 		return 0
-@@ -315,8 +321,6 @@ run_mustfail()
- # So it doesn't support pipeline in the @cmd
- run_mustfail_stdout()
- {
--	local spec
--	local ins
- 	local msg
- 	local ret
- 	local tmp_output
-@@ -331,17 +335,11 @@ run_mustfail_stdout()
- 		exit 1
- 	fi
- 
--	ins=$(_get_spec_ins "$@")
--	spec=$(($ins-1))
--	spec=$(_cmd_spec "${@:$spec}")
--	set -- "${@:1:$(($ins-1))}" $spec "${@: $ins}"
--	echo "====== RUN MUSTFAIL $@" >> "$RESULTS" 2>&1
--	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mustfail): $@" > /dev/tty; fi
--	if [ "$1" = 'root_helper' ]; then
--		"$@" 2>&1 > "$tmp_output"
--	else
--		$INSTRUMENT "$@" 2>&1 > "$tmp_output"
--	fi
-+	expand_command "$@"
-+	echo "====== RUN MUSTFAIL ${cmd_array[@]}" >> "$RESULTS" 2>&1
-+	if [[ $TEST_LOG =~ tty ]]; then echo "CMD(mustfail): ${cmd_array[@]}" \
-+		> /dev/tty; fi
-+	"${cmd_array[@]}" 2>&1 > "$tmp_output"
- 	ret=$?
- 
- 	cat "$tmp_output" >> "$RESULTS"
--- 
-2.26.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
