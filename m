@@ -2,167 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5796E19F52B
+	by mail.lfdr.de (Postfix) with ESMTP id C8BFB19F52C
 	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 13:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgDFLvj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Apr 2020 07:51:39 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60732 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgDFLvj (ORCPT
+        id S1727806AbgDFLvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Apr 2020 07:51:40 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40696 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727717AbgDFLvj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Apr 2020 07:51:39 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BlgAG078970
-        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:37 GMT
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BmsVE027369
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=EcATJ5oaElG740C/SLF1CHMX2B7HfhpTjWfGX7OL3vw=;
- b=RV3omNjqeM+5D4OrIyyDTNu5lmpEIvGpKWfJHmtwcVSyAQN7VavOXI97xvb2yVpJ2vsF
- QVO/PL4sv52da0bJ+rREimsZGhXhOqQ+MWrt0tedrMlfC7uhGNjtLhhT1NvzEZBrXZWq
- rpnW+yx2br409Z3PUlyNcyLIXFdmNMlvvUK/9yXOM2NUlHLFdLbmD9RSFaQjTC4ANP9h
- hrcI2D53AcOVpC4dNjccD0v9Xwv5pDZXE6vwEeAABIbxrL63gztiuHcN/ifIMc1ZVDjT
- npeA4fLlbxtA7WSIiKqD23U2EMELRw5hkj0G2nGBxupV59G63mG/bq1a7wmDIugocOqT /A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 306j6m6arn-1
+ bh=667cYBjl1Ex8+r7OzuZZfGNo9GXxKqYez6IrgT8bItY=;
+ b=gyvKjkoRPUShGzml12mfegD3Stij0dmvp6fgAeANEKTMtSkR2gxFNuT/NVC253ymh0Ai
+ 5mOC2OsxrGL/XaKUfbd3if6nA6akRNyMVVO6Kh7OunOSRiM7cUZilWu4lHG8BsWEXvA3
+ oLk0+09lcqeMzrRQyA3ytJtgiBGPQRpHRbi2gC/UkBlr80lRScM4P8t5HuVW+CUsLKkX
+ VjCV0Gn9T9q0dVkd2dOWwg09LBx00ynr9I+tSo3fGAw/dr0YC89dLk55XZ871rgaPBUe
+ jkt1MYQAvgbWAGDBU4HLeRX1DoZzT1QG2IaV05RLHhRGJfjzCGx3YEQvru5rrdytEEkS Tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 306jvmx8ev-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:51:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BmPro007355
-        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:36 GMT
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:51:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BlOvq044059
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:38 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 30839ptwaa-1
+        by aserp3020.oracle.com with ESMTP id 30741a96qn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:51:36 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:51:38 +0000
 Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036BpZZT025403
-        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:35 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036Bpb5R025445
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:37 GMT
 Received: from tp.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Apr 2020 04:51:35 -0700
+        with ESMTP ; Mon, 06 Apr 2020 04:51:37 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v7 3/5] btrfs: create read policy sysfs attribute, pid
-Date:   Mon,  6 Apr 2020 19:51:09 +0800
-Message-Id: <1586173871-5559-4-git-send-email-anand.jain@oracle.com>
+Subject: [PATCH v7 4/5] btrfs: introduce new device-state read_preferred
+Date:   Mon,  6 Apr 2020 19:51:10 +0800
+Message-Id: <1586173871-5559-5-git-send-email-anand.jain@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
 References: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=1 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060104
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004060104
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 suspectscore=1 lowpriorityscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060104
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=1
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004060104
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add
+This is a preparatory patch and introduces a new device flag
+'read_preferred', and is a generic flag which along with the read_policy
+'device' in the following patch the user can route the read IO to the
+device of choice.
 
- /sys/fs/btrfs/UUID/read_policy
-
-attribute so that the read policy for the raid1 and raid10 chunks can be
-tuned.
-
-When this attribute is read, it shall show all available policies, with
-active policy being with in [ ]. The read_policy attribute can be written
-using one of the items listed in there.
-
-For example:
-  $cat /sys/fs/btrfs/UUID/read_policy
-  [pid]
-  $echo pid > /sys/fs/btrfs/UUID/read_policy
+This also provides a sysfs interface to set the device state as
+read_preferred.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v5: 
-  Title rename: old: btrfs: sysfs, add read_policy attribute
-  Uses the btrfs_strmatch() helper (BTRFS_READ_POLICY_NAME_MAX dropped).
-  Use the table for the policy names.
-  Rename len to ret.
-  Use a simple logic to prefix space in btrfs_read_policy_show()
-  Reviewed-by: Josef Bacik <josef@toxicpanda.com> dropped.
+v7: Change log updated.
+v6: If there is no change in device's read prefer then don't log. 
+    Add pid to the logs.
+v5: born
 
-v4:-
-v3: rename [by_pid] to [pid]
-v2: v2: check input len before strip and kstrdup
-
- fs/btrfs/sysfs.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ fs/btrfs/sysfs.c   | 55 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h |  1 +
+ 2 files changed, 56 insertions(+)
 
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 7bb68cef98ab..c9a8850b186a 100644
+index c9a8850b186a..72daaedb7b04 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -832,6 +832,54 @@ static int btrfs_strmatch(const char *given, const char *golden)
- 	return -EINVAL;
+@@ -1317,11 +1317,66 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
  }
+ BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
  
-+static const char* const btrfs_read_policy_name[] = { "pid" };
-+
-+static ssize_t btrfs_read_policy_show(struct kobject *kobj,
-+				      struct kobj_attribute *a, char *buf)
++static ssize_t btrfs_devinfo_read_pref_show(struct kobject *kobj,
++					    struct kobj_attribute *a, char *buf)
 +{
-+	int i;
-+	ssize_t ret = 0;
-+	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
 +
-+	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
-+		if (fs_devices->read_policy == i)
-+			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s[%s]",
-+					(ret == 0 ? "" : " "),
-+					btrfs_read_policy_name[i]);
-+		else
-+			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-+					(ret == 0 ? "" : " "),
-+					btrfs_read_policy_name[i]);
-+	}
++	val = !!test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
 +
-+	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+
-+	return ret;
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
 +}
 +
-+static ssize_t btrfs_read_policy_store(struct kobject *kobj,
-+				       struct kobj_attribute *a,
-+				       const char *buf, size_t len)
++static ssize_t btrfs_devinfo_read_pref_store(struct kobject *kobj,
++					     struct kobj_attribute *a,
++					     const char *buf, size_t len)
 +{
-+	int i;
-+	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++	int ret;
++	unsigned long val;
++	struct btrfs_device *device;
 +
-+	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
-+		if (btrfs_strmatch(buf, btrfs_read_policy_name[i]) == 0) {
-+			if (i != fs_devices->read_policy) {
-+				fs_devices->read_policy = i;
-+				btrfs_info(fs_devices->fs_info,
-+					   "read policy set to '%s'",
-+					   btrfs_read_policy_name[i]);
-+			}
-+			return len;
-+		}
++	ret = kstrtoul(skip_spaces(buf), 0, &val);
++	if (ret)
++		return ret;
++
++	if (val != 0 && val != 1)
++		return -EINVAL;
++
++	/*
++	 * lock is not required, the btrfs_device struct can't be freed while
++	 * its kobject btrfs_device::devid_kobj is still open.
++	 */
++	device = container_of(kobj, struct btrfs_device, devid_kobj);
++
++	if (val &&
++	    ! test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state)) {
++
++		set_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
++		btrfs_info(device->fs_devices->fs_info,
++			   "set read preferred on devid %llu (%d)",
++			   device->devid, task_pid_nr(current));
++	} else if (!val &&
++		   test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state)) {
++
++		clear_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
++		btrfs_info(device->fs_devices->fs_info,
++			   "reset read preferred on devid %llu (%d)",
++			   device->devid, task_pid_nr(current));
 +	}
 +
-+	return -EINVAL;
++	return len;
 +}
-+BTRFS_ATTR_RW(, read_policy, btrfs_read_policy_show, btrfs_read_policy_store);
++BTRFS_ATTR_RW(devid, read_preferred, btrfs_devinfo_read_pref_show,
++	      btrfs_devinfo_read_pref_store);
 +
- static const struct attribute *btrfs_attrs[] = {
- 	BTRFS_ATTR_PTR(, label),
- 	BTRFS_ATTR_PTR(, nodesize),
-@@ -840,6 +888,7 @@ static const struct attribute *btrfs_attrs[] = {
- 	BTRFS_ATTR_PTR(, quota_override),
- 	BTRFS_ATTR_PTR(, metadata_uuid),
- 	BTRFS_ATTR_PTR(, checksum),
-+	BTRFS_ATTR_PTR(, read_policy),
- 	NULL,
+ static struct attribute *devid_attrs[] = {
+ 	BTRFS_ATTR_PTR(devid, in_fs_metadata),
+ 	BTRFS_ATTR_PTR(devid, missing),
+ 	BTRFS_ATTR_PTR(devid, replace_target),
+ 	BTRFS_ATTR_PTR(devid, writeable),
++	BTRFS_ATTR_PTR(devid, read_preferred),
+ 	NULL
  };
+ ATTRIBUTE_GROUPS(devid);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 1775d35706ab..487a54c3140e 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -50,6 +50,7 @@ struct btrfs_io_geometry {
+ #define BTRFS_DEV_STATE_MISSING		(2)
+ #define BTRFS_DEV_STATE_REPLACE_TGT	(3)
+ #define BTRFS_DEV_STATE_FLUSH_SENT	(4)
++#define BTRFS_DEV_STATE_READ_PREFERRED	(5)
  
+ struct btrfs_device {
+ 	struct list_head dev_list; /* device_list_mutex */
 -- 
 2.23.0
 
