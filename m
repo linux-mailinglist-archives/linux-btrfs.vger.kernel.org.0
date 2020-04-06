@@ -2,82 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C66719FC25
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 19:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D4E19FE5B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 21:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgDFR54 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Apr 2020 13:57:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55568 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbgDFR54 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Apr 2020 13:57:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D54ECAB8B;
-        Mon,  6 Apr 2020 17:57:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2629ADA726; Mon,  6 Apr 2020 19:57:18 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 19:57:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Goffredo Baroncelli <kreijack@libero.it>
-Cc:     linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>,
-        Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: [PATCH v3] btrfs-progs: add warning for mixed profiles filesystem
-Message-ID: <20200406175717.GR5920@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
-        Graham Cobb <g.btrfs@cobb.uk.net>
-References: <20200404103212.40986-1-kreijack@libero.it>
+        id S1726084AbgDFTrE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Apr 2020 15:47:04 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:40996 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgDFTrD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Apr 2020 15:47:03 -0400
+Received: by mail-il1-f178.google.com with SMTP id t6so699901ilj.8;
+        Mon, 06 Apr 2020 12:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=nGsbs2a7yXinNzlofEw+863mjB1jB5rZqB8WFUgCZKA=;
+        b=RzVCG7Wg7gEXXRF5ZsJkOf7YYI+Uf6XzrJpyGMsP9INdTFzY3tTHVbW+5Fj///KoS/
+         jPFctMm1tteGfhpSI8I08HGivlJRJKG41pN4If6KplHnR30IzmW29T7M6MLnT6l/X4F0
+         VCPyi/VtHdlXSKtdPyguPh8reNHjCBdRy/FXSXxToMMhUoedfCiTSOSBBZtreNzNjhW/
+         dMj0WNpRhLlforQVYjtvcjyUh5zoEywkCeY0Dezg341k7Q8IeJvD6dj61IcZKwKfBxwh
+         lkINU+VayYKs8Ueu2P4NcloH3PjoGY2LYvGkG8sVbhhGk8PbodqfGIIltOKWkeK+AqIQ
+         OdmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=nGsbs2a7yXinNzlofEw+863mjB1jB5rZqB8WFUgCZKA=;
+        b=RlEZcbur+oSRCrm3ZpJVC4UlGofSHf5SDMa6fQJcYqxJVD65LIOlJkxOyA96ae3atZ
+         E67cZenEnJ8PLHWGYZgBCi03+miXfQ8wcS62HzjpCl6xjGmi3DdKaZZhaO7I7g+qtPde
+         uabZy2qoP+ByQmPNXN5FQKP4I9rwSuJtlZSWSZF6dV/IYqVCJ++UGW0D5Hqe6xCk/Jy8
+         Aa9GrMFa5vYz62GnoRNSEp5uJwB26h6Yfqo8B5LYB0Errt4z52u+9pJ7dGQItuRmiGFn
+         fpiAM9oiuSBHo8n90BT51jNh9aGmvxUWCQ9nmUFPpA3RpLy0WQ/c3DjdImpWe2wG0kGD
+         HmmA==
+X-Gm-Message-State: AGi0PuZ21UcwCbddGk7MWQKqK8MeWXIxisAhsHIpAaMKuBBK7pHY1mOs
+        uvf15XA11q5pY0cyOirSExgmFDd0dy71Mb1l49ggg5nlCw==
+X-Google-Smtp-Source: APiQypL1DFH0DFa2iqagxrpbY6ST23Tz+OfdvNbX8iqcgfqqevPv/QzrNI/pZNJ7epkEYKU1E4ykdCwL3PbBkD5i6kQ=
+X-Received: by 2002:a92:d347:: with SMTP id a7mr1054377ilh.289.1586202422365;
+ Mon, 06 Apr 2020 12:47:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200404103212.40986-1-kreijack@libero.it>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   Arvind Raghavan <raghavan.arvind@gmail.com>
+Date:   Mon, 6 Apr 2020 14:46:51 -0500
+Message-ID: <CAM2wg3Sqw_a3dwjh6nQn8h-SsyM3v=43Oqce7Eq0U-Jcb7EaaA@mail.gmail.com>
+Subject: Strange sync/fsync behavior in btrfs
+To:     linux-btrfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org, Vijay Chidambaram <vijay@cs.utexas.edu>,
+        Jayashree Mohan <jayashree2912@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 04, 2020 at 12:32:07PM +0200, Goffredo Baroncelli wrote:
-> the aim of this patch set is to issue a warning when a mixed profiles
-> filesystem is detected. This happens when the filesystems contains
-> (i.e.) raid1c3 and single chunk for data.
-> 
-> BTRFS has the capability to support a filesystem with mixed profiles.
-> However this could lead to an unexpected behavior when a new chunk is
-> allocated (i.e. the chunk profile is not what is wanted). Moreover
-> if the user is not aware of this, he could assume a redundancy which
-> doesn't exist (for example because there is some 'single' chunk when
-> it is expected the filesystem to be full raid1).
-> A possible cause of a mixed profiles filesystem is an interrupted
-> balance operation or a not fully balance due to very specific filter.
-> 
-> The check is added to the following btrfs commands:
-> - btrfs balance pause
-> - btrfs balance cancel
-> - btrfs device add
-> - btrfs device del
-> 
-> The warning is shorter than the before one. Below an example and
-> it is printed after the normal output of the command.
-> 
->    WARNING: Multiple profiles detected.  See 'man btrfs(5)'.
->    WARNING: data -> [raid1c3, single], metadata -> [raid1, single]
-> 
-> The command "btrfs fi us" doesn't show the warning above, instead
-> it was added a further line in the "Overall" section. The output now
-> is this:
-> 
->     Multiple profile:		       YES
+Hi!
 
-Yeah the summary section seems suitable, I think this could be more
-specific, for which profile type it applies, eg. 'data, metadata', or
-just one of them.
+I am Arvind Raghavan, an undergraduate student at the Unversity
+of Texas at Austin, working with Prof. Vijay Chidambaram. I've
+been working on the Crashmonkey [1] project, which is a test
+harness for file system crash consistency checks. Specifically,
+we've been working on making a fuzzer to find new bugs, and we
+discovered some weird behavior. Given the following workload:
 
-I'll add the patches to devel so we can see how it works in practice.
+mkdir A
+mkdir B
+mkdir A/C
+creat B/foo
+sync (1)
+link B/foo A/C/foo
+fsync A (2)
+<crash>
+
+Running on Linux 5.5.2, upon recovering the filesystem, the hard
+linked file A/C/foo is not present. However, if we replace (1)
+with "fsync B/foo", then upon recovery the link persists. This
+behavior seems strange, as intuitively it seems that sync should
+have at least as strong effect as fsync. In addition, it seems
+that Chris Mason's definition of fsync guarantees here [2] might
+require this workload to pass.
+
+It is important to note that even if we skip the final fsync (2),
+the result is the same. Thus, the behavior is coming only from
+the syncing operation at line (1). However, we were also curious
+to know whether an fsync of the directory A here (2) should
+persist the file A/C/foo. Chris mentions [2] that an fsync
+of a directory means that "all the files/subdirs will exist".
+Should this apply to files created in subdirectories?
+
+
+Thanks!
+Arvind
+
+[1] https://www.github.com/utsaslab/crashmonkey
+[2] https://www.spinics.net/lists/linux-btrfs/msg77330.html
