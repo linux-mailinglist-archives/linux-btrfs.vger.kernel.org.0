@@ -2,178 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C53F819F3DA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 12:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93D119F533
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 13:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgDFKvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Apr 2020 06:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726841AbgDFKvk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:51:40 -0400
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 305D620678;
-        Mon,  6 Apr 2020 10:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586170298;
-        bh=Ca5AY7KsqNITjQOHY21bYkfRx1xXHnlK/a6mqp/qpPc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Geg0e20D/JSBdo5V153kYXLMr87UvS44iarqoy/JFYyz3KXc0+0YB0vPMowS1fcsk
-         pfu6vDdgb3DeBcu+zuq8008+IQvkfJO62Zso7ZIi6HWlrCBtq7lZgfEc/otF048GyH
-         q9ca+ppsgrP4bRwMgzCA/8agx6Mmr56JF/LjqD8g=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: check that cloning an inline extent does not lead to data loss
-Date:   Mon,  6 Apr 2020 11:51:34 +0100
-Message-Id: <20200406105134.2233-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1727489AbgDFLxc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Apr 2020 07:53:32 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34214 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgDFLxc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Apr 2020 07:53:32 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036Blfvv078926
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:53:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2020-01-29;
+ bh=0rtjslhY8mSKNkHG4Rj96Lp2huNXxcgmDcxkfnMn39Q=;
+ b=qDP0Sb+02M2yyZn/3CSUcutPCtNMWSPyZ7yNfeQskAp2bDOSMq3/44hkrU9jrIYoQnyW
+ nc5mGZy+ATzvzyFJX3UYVfu8liR7S7ExaGORFEFxSagg+jDNNrUuiyCH8iNyUmUncMF5
+ fKRoHkERyOxNZFtcMNyxezXCSb5+V6trGSXermMW2RSPZRbtWgJf2XDmpylWnV2Gtyjd
+ hWV9dqbKe/5RLf4LMTicaPqW/xsbZjfw4PMFv4Npzl3CxnQf3tlWZjMrLJlBpFOk+ZMy
+ JhnI+aaNtmKqSLoVQbGBATqnH5HPi5p4OZKU8Z4iGBrGGXEtNhaGDvJtlpC4OYofaf5v jg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 306j6m6b0u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:53:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BlDxK064678
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:30 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3073qcw4qw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 11:51:30 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 036BpTlT009203
+        for <linux-btrfs@vger.kernel.org>; Mon, 6 Apr 2020 11:51:29 GMT
+Received: from tp.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 06 Apr 2020 04:51:28 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v7 rebased 0/5] readmirror feature (sysfs and in-memory only approach; with new read_policy device)
+Date:   Mon,  6 Apr 2020 19:51:06 +0800
+Message-Id: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004060104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004060104
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+v7:
+Fix switch's fall through warning. Changle logs updates where necessary.
 
-We have a bug in the current kernel merge window (for 5.7) that results
-in data loss when cloning an inline extent into a new file (or an empty
-file. This change adds a test for such case into the existing test case
-btrfs/205, because it's the test case that tests all the supported
-scenarios for cloning inline extents in btrfs.
+v6:
+Patch 4/5 - If there is no change in device's read prefer then don't log
+Patch 4/5 - Add pid to the logs
+Patch 5/5 - If there isn't read preferred device in the chunk don't reset
+read policy to default, instead just use stripe 0. As this is in
+the read path it avoids going through the device list to find
+read preferred device. So inline to this drop to check if there
+is read preferred device before setting read policy to device.
 
-The btrfs patch for the linux kernel that fixes the regression has the
-following sibject:
+__ Original email: __
 
-  "Btrfs: fix lost i_size update after cloning inline extent"
+v5:
+Worked on review comments as received in its previous version.
+Please refer to individual patches for the specific changes.
+Introduces the new read_policy 'device'.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/205     | 13 +++++++++++++
- tests/btrfs/205.out | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+)
+v4:
+Rename readmirror attribute to read_policy. Drop separate kobj for
+readmirror instead create read_policy attribute in fsid kobj.
+merge v2:2/3 and v2:3/3 into v4:2/2. Patch titles have changed.
+ 
+v3:
+v2:
+Mainly fixes the fs_devices::readmirror declaration type from atomic_t
+to u8. (Thanks Josef).
 
-diff --git a/tests/btrfs/205 b/tests/btrfs/205
-index 9bec2bfa..66355678 100755
---- a/tests/btrfs/205
-+++ b/tests/btrfs/205
-@@ -128,6 +128,18 @@ run_tests()
- 
-     echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
- 
-+    # File foo3 a single inline extent of 500 bytes.
-+    echo "Creating file foo3"
-+    $XFS_IO_PROG -f -c "pwrite -S 0xbf 0 500" $SCRATCH_MNT/foo3 | _filter_xfs_io
-+
-+    # File bar7 is an empty file, has no extents.
-+    touch $SCRATCH_MNT/bar7
-+
-+    echo "Cloning foo3 into bar7"
-+    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo3" $SCRATCH_MNT/bar7 | _filter_xfs_io
-+
-+    echo "File bar7 digest = $(_md5_checksum $SCRATCH_MNT/bar7)"
-+
-     # Unmount and mount again the filesystem. We want to verify the reflink
-     # operations were durably persisted.
-     _scratch_cycle_mount
-@@ -139,6 +151,7 @@ run_tests()
-     echo "File bar4 digest = $(_md5_checksum $SCRATCH_MNT/bar4)"
-     echo "File bar5 digest = $(_md5_checksum $SCRATCH_MNT/bar5)"
-     echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
-+    echo "File bar7 digest = $(_md5_checksum $SCRATCH_MNT/bar7)"
- }
- 
- _scratch_mkfs "-O ^no-holes" >>$seqres.full 2>&1
-diff --git a/tests/btrfs/205.out b/tests/btrfs/205.out
-index 948e0634..d9932fc0 100644
---- a/tests/btrfs/205.out
-+++ b/tests/btrfs/205.out
-@@ -52,6 +52,13 @@ Cloning foo1 into bar6
- linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+Creating file foo3
-+wrote 500/500 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Cloning foo3 into bar7
-+linked 0/0 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- File digests after mounting again the filesystem:
- File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
- File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-@@ -59,6 +66,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
- File bar4 digest = 4b48829714d20a4e73a0cf1565270076
- File bar5 digest = 4b48829714d20a4e73a0cf1565270076
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- 
- Testing with -o compress
- 
-@@ -112,6 +120,13 @@ Cloning foo1 into bar6
- linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+Creating file foo3
-+wrote 500/500 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Cloning foo3 into bar7
-+linked 0/0 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- File digests after mounting again the filesystem:
- File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
- File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-@@ -119,6 +134,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
- File bar4 digest = 4b48829714d20a4e73a0cf1565270076
- File bar5 digest = 4b48829714d20a4e73a0cf1565270076
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- 
- Testing with -o nodatacow
- 
-@@ -172,6 +188,13 @@ Cloning foo1 into bar6
- linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+Creating file foo3
-+wrote 500/500 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Cloning foo3 into bar7
-+linked 0/0 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- File digests after mounting again the filesystem:
- File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
- File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-@@ -179,6 +202,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
- File bar4 digest = 4b48829714d20a4e73a0cf1565270076
- File bar5 digest = 4b48829714d20a4e73a0cf1565270076
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- 
- Testing with -O no-holes
- 
-@@ -232,6 +256,13 @@ Cloning foo1 into bar6
- linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+Creating file foo3
-+wrote 500/500 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Cloning foo3 into bar7
-+linked 0/0 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File bar7 digest = 67679afda6f846539ca7138452de0171
- File digests after mounting again the filesystem:
- File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
- File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-@@ -239,3 +270,4 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
- File bar4 digest = 4b48829714d20a4e73a0cf1565270076
- File bar5 digest = 4b48829714d20a4e73a0cf1565270076
- File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-+File bar7 digest = 67679afda6f846539ca7138452de0171
+v1:
+As of now we use only %pid method to read stripped mirrored data. So
+application's process id determines the stripe id to be read. This type
+of routing typically helps in a system with many small independent
+applications tying to read random data. On the other hand the %pid
+based read IO distribution policy is inefficient if there is a single
+application trying to read large data as because the overall disk
+bandwidth would remains under utilized.
+
+One type of readmirror policy isn't good enough and other choices are
+routing the IO based on device's waitqueue or manual when we have a
+read-preferred device or a readmirror policy based on the target storage
+caching. So this patch-set introduces a framework where we could add more
+readmirror policies.
+
+This policy is a filesystem wide policy as of now, and though the
+readmirror policy at the subvolume level is a novel approach as it
+provides maximum flexibility in the data center, but as of now its not
+practical to implement such a granularity as you can't really ensure
+reflinked extents will be read from the stripe of its desire and so
+there will be more limitations and it can be assessed separately.
+
+The approach in this patch-set is sys interface with in-memory policy.
+And does not add any new readmirror type in this set, which can be add
+once we are ok with the framework. Also the default policy remains %pid.
+
+Previous works:
+----------------------------------------------------------------------
+There were few RFCs [1] before, mainly to figure out storage
+(or in memory only) for the readmirror policy and the interface needed.
+
+[1]
+https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg86368.html
+
+https://lore.kernel.org/linux-btrfs/20190826090438.7044-1-anand.jain@oracle.com/
+
+https://lore.kernel.org/linux-btrfs/5fcf9c23-89b5-b167-1f80-a0f4ac107d0b@oracle.com/
+
+https://patchwork.kernel.org/cover/10859213/
+
+Mount -o:
+In the first trial it was attempted to use the mount -o option to carry
+the readmirror policy, this is good for debugging which can make sure
+even the mount thread metadata tree blocks are read from the disk desired.
+It was very effective in testing radi1/raid10 write-holes.
+
+Extended attribute:
+As extended attribute is associated with the inode, to implement this
+there is bit of extended attribute abuse or else makes it mandatory to
+mount the rootid 5. Its messy unless readmirror policy is applied at the
+subvol level which is not possible as of now. 
+
+An item type:
+The proposed patch was to create an item to hold the readmirror policy,
+it makes sense when compared to the abusive extended attribute approach
+but introduces a new item and so no backward compatibility.
+-----------------------------------------------------------------------
+
+Anand Jain (5):
+  btrfs: add btrfs_strmatch helper
+  btrfs: create read policy framework
+  btrfs: create read policy sysfs attribute, pid
+  btrfs: introduce new device-state read_preferred
+  btrfs: introduce new read_policy device
+
+ fs/btrfs/sysfs.c   | 128 +++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c |  39 +++++++++++++-
+ fs/btrfs/volumes.h |  16 ++++++
+ 3 files changed, 182 insertions(+), 1 deletion(-)
+
 -- 
-2.11.0
+2.23.0
 
