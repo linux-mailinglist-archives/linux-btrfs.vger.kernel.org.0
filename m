@@ -2,129 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E30D19F3D8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 12:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05C119F3D9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Apr 2020 12:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgDFKvU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Apr 2020 06:51:20 -0400
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:38545 "EHLO
-        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgDFKvU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Apr 2020 06:51:20 -0400
-Received: by mail-vk1-f194.google.com with SMTP id n128so3836469vke.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 03:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=p+WQF0Sc0cs/0vlIjQLudmPD+sYaaBr7oTqIFHNiF+w=;
-        b=uIpufd1g1/VrQL8Ubo27eRUzVP9h60Y8tpYu96NqwyWNdcrzuaYtCGjawZ6vi5nqI1
-         jR4e9sF/zTuip/xcSHq80K52FgmbI5f6Oe/r1P8atcIp0OswCDrb5y+jUc1K3krNfRWy
-         OJ4DG91TYNq9IhUWo4CyQfRQMGqCf7VHAw1rCOpEOf0cCzWEnJBNrqf9yoV5XGbph1HW
-         JIRI8gdpAtordbXDpj/wGTugiD4J8DfJOd3x+uzKzL9HK+xIlzT7Rfw3tBzatlqX8vkn
-         XyqZ+NRTd1pqIp7PB1F14xO6sWARpWrXsD0ukjtBC51L2ScNdDbxz7GPHKzBZ3s5Aa36
-         Qdig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=p+WQF0Sc0cs/0vlIjQLudmPD+sYaaBr7oTqIFHNiF+w=;
-        b=q8Q4CU8HOvtztHIp4WrTGK+DIC4WdWLFoUN2fl3m6qXOXeNKcYkInzvy5H+k6FDHLY
-         ewIi1OzVpzmwfM1xo9R2ioboQFQkVYp3qvMb5ZHeRkbYYXEyVJo1GALMFa97O+n00OVi
-         lfRKyZhH9swpIlgXBcTzlIh/NShfi7N8JT0nl8fXD+Din761MD2IAzVlbhrkXVsne2rS
-         5A/piCRqwwZsFVNtCEamPMKmMMfeMFc5aFm5X5339X6pPh4/biQRElRQHSxvUkM+EiJc
-         WRB35nM3YKFRoqPO/qW58lSzfdCM1OhnX2abOBMWx/sysc587LGA/bL0dsT5Ux+6dH2/
-         ZvHg==
-X-Gm-Message-State: AGi0PuboJyiyu19fHuSnPioLOC3EzlJL0Uwkp6satWsP32bPODYyoTEJ
-        qiMk/IUtXzmLUilRyVcheZqYNryMb9pbonKT5uAdjA==
-X-Google-Smtp-Source: APiQypJhFfz17uzqoLp7GbciLn37aQ5OcRfifx4m2S1DgVlngG3HUYyNMH85sJsIHWX2Jcu7kIieR1Qyn/PaO01PQ1o=
-X-Received: by 2002:ac5:ccb9:: with SMTP id p25mr14359871vkm.69.1586170279171;
- Mon, 06 Apr 2020 03:51:19 -0700 (PDT)
+        id S1727003AbgDFKvc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Apr 2020 06:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726841AbgDFKvc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:51:32 -0400
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED89120678
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Apr 2020 10:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586170292;
+        bh=fM/cSC6/USDpOc5vk66xXdyE/0V3c1fJk29Y3Khxldk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DfXdYVMsTBk4NhYpjquvIo8P0J9C2CM1K0pjWCOLUVFzXJ88nzWejJuHYThK/rFwa
+         HuSecEVuZgoSD1O0FlVwniCcsJRs4ewwSb1s4S1AfpGDg3pmE1DLLcrLZVu3fvpm/X
+         keEWTLS8zyFzK9rMdV5IlvD7uOBKr8l+VEmrguAE=
+Received: by mail-vs1-f45.google.com with SMTP id s10so9457211vsi.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 03:51:31 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYvNfjKvwTRGlbRJhnwKLsxbvCOKixQfFl9QmTP23UzvzfqgdVv
+        wU5atsK4GwVC4ivc41uyuXA6c5ztEin+nnAjQFE=
+X-Google-Smtp-Source: APiQypKfFQMjDRbBfOhqT3qIQ5OnK3cYM6k6JwQWzT9xFvYU7P4y7H44IPYYUCwpcmyelxS/1KVU/vgrXBIwH+u6/To=
+X-Received: by 2002:a67:7c8f:: with SMTP id x137mr13157951vsc.99.1586170291051;
+ Mon, 06 Apr 2020 03:51:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200404193846.GA432065@latitude> <CAL3q7H4xya8EuBhGsX4gs8V6xdNWpJhjhJj0-KdUJhMnDjHjXQ@mail.gmail.com>
- <20200405145121.GA952734@latitude>
-In-Reply-To: <20200405145121.GA952734@latitude>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 6 Apr 2020 11:51:08 +0100
-Message-ID: <CAL3q7H6zYuCw8e7Ufn7iiAhys85rHQhFBr2EeK62jyhF1yShMA@mail.gmail.com>
-Subject: Re: unexpected truncated files
-To:     Johannes Hirte <johannes.hirte@datenkhaos.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20200404202022.30192-1-fdmanana@kernel.org>
+In-Reply-To: <20200404202022.30192-1-fdmanana@kernel.org>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 6 Apr 2020 11:51:20 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6cZS7mq7d6aHPxMPnng_P7nuMHaBi=F4L86CoHhFZVJg@mail.gmail.com>
+Message-ID: <CAL3q7H6cZS7mq7d6aHPxMPnng_P7nuMHaBi=F4L86CoHhFZVJg@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: fix lost i_size update after cloning inline extent
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     Johannes Hirte <johannes.hirte@datenkhaos.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 5, 2020 at 3:51 PM Johannes Hirte
-<johannes.hirte@datenkhaos.de> wrote:
+On Sat, Apr 4, 2020 at 9:21 PM <fdmanana@kernel.org> wrote:
 >
-> On 2020 Apr 04, Filipe Manana wrote:
-> > On Sat, Apr 4, 2020 at 8:52 PM Johannes Hirte
-> > <johannes.hirte@datenkhaos.de> wrote:
-> > >
-> > > While testing with the current 5.7 development kernel, I've encounter=
-ed
-> > > some strange behaviour. I'm using Gentoo linux, and during updating t=
-he
-> > > system I got some unexpected errors. It looked like some files were
-> > > missing. Some investigations showed me, that files from shortly
-> > > installed packages were truncated to zero. So for example the config
-> > > files for apache webserver were affected. I've reinstalled apache,
-> > > verified that the config was ok and continued the system update with =
-the
-> > > next package. After this, the apache config files were truncated agai=
-n.
-> > > I've found several files from different packages that were affed too,
-> > > but only text files (configs, cmake-files, headers). Files which were
-> > > writen, are truncated by some other write operation to the filesystem=
-.
-> > >
-> > > I'm not sure, if this is really caused by btrfs, but it's the most
-> > > obvious candidate. After switching back to 5.6-kernel, the truncation
-> > > stopped und I was able to (re-)install the packages without any troub=
-le.
-> > >
-> > > Has anyone ideas what could cause this behaviour?
-> >
-> > It's likely due to file cloning.
-> >
-> > I found this out yesterday but hadn't sent a patch yet, was waiting
-> > for monday morning.
-> > I've just sent the patch to the list:
-> > https://patchwork.kernel.org/patch/11474453/
-> >
-> > Since you are only getting this with small files, it's likely the
-> > cloning of inline extents causing it, due to some changes in 5.7 that
-> > changed the file size update logic.
-> >
-> > Can you try it?
-> >
-> > Thanks.
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> Yes, this was it. Installing the second package for triggering the
-> truncation was a coincidence. Installing the first package (appache
-> here) and rebooting triggered the error reliable. With portage (the packa=
-ge
-> manager from Gentoo) everything is compiled and installed to a a
-> location on /tmp. After this, the content is copied to the target
-> location and seems to be done with cloning. With your patch the problem
-> doesn't occur anymore.
+> When not using the NO_HOLES feature we were not marking the destination's
+> file range as written after cloning an inline extent into it. This can
+> lead to a data loss if the current destination file size is smaller than
+> the source file's size.
+>
+> Example:
+>
+>   $ mkfs.btrfs -f -O ^no-holes /dev/sdc
+>   $ mount /mnt/sdc /mnt
+>
+>   $ echo "hello world" > /mnt/foo
+>   $ cp --reflink=always /mnt/foo /mnt/bar
+>   $ rm -f /mnt/foo
+>   $ umount /mnt
+>
+>   $ mount /mnt/sdc /mnt
+>   $ cat /mnt/bar
+>   $
+>   $ stat -c %s /mnt/bar
+>   0
+>
+>   # -> the file is empty, since we deleted foo, the data lost is forever
+>
+> Fix that by calling btrfs_inode_set_file_extent_range() after cloning an
+> inline extent.
+>
+> A test case for fstests will follow soon.
+>
+> Fixes: 9ddc959e802bf ("btrfs: use the file extent tree infrastructure")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks for testing it.
-I'll add reported-by and test-by tags to the patch.
+Reported-by: Johannes Hirte <johannes.hirte@datenkhaos.de>
+Link: https://lore.kernel.org/linux-btrfs/20200404193846.GA432065@latitude/
+Tested-by: Johannes Hirte <johannes.hirte@datenkhaos.de>
 
+> ---
+>  fs/btrfs/reflink.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
+> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> index d1973141d3bb..040009d1cc31 100644
+> --- a/fs/btrfs/reflink.c
+> +++ b/fs/btrfs/reflink.c
+> @@ -264,6 +264,7 @@ static int clone_copy_inline_extent(struct inode *dst,
+>                             size);
+>         inode_add_bytes(dst, datal);
+>         set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &BTRFS_I(dst)->runtime_flags);
+> +       ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, aligned_end);
+>  out:
+>         if (!ret && !trans) {
+>                 /*
 > --
-> Regards,
->   Johannes Hirte
+> 2.11.0
 >
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
