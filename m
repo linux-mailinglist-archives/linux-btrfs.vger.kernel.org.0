@@ -2,80 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9941A0647
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Apr 2020 07:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624FD1A0812
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Apr 2020 09:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgDGFMy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Apr 2020 01:12:54 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:38602 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgDGFMm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Apr 2020 01:12:42 -0400
-Received: by mail-ua1-f67.google.com with SMTP id g10so844422uae.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Apr 2020 22:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=m9m/DCsFRus/zRmIuphflM5sHyenmkMN/TOEnECOGthbLJHVg8u2+iqtFZpNbyb2/k
-         2tLF//qwyXGtNVJKRleGUy+KbEtVjN+06Aw6FbGL98d5M/QEqB9c9SHaIsBPFlQYoUCh
-         Lj+P9EPUGdvyQRip4KeH3oSvDVhqDTV0IJcbcI66BzYP/b9Y/1y4LF++1q0teLhPl3GM
-         v15gBTxOBB8qvH4CNaCnwdm2sugBL+St8qIlm7SqBWweWj6hdsos1F0mjeWO8qJt64R9
-         xl3tya8AfljNAFdSOkZ4tC7INitomO8JQPFHHcp+JAODUsaup01At9KIYDntXEoTQZb0
-         DmdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=nRA86doJG/DwLuuPpxXpGUjfnZoVB3WO+arGnjynEzoPo8uSPm2OmQxNWR2mIKcQib
-         +i4UOaTKtgpkYywGRVaA87gunCzuLoXUIZ+PalO7uVhfP/86CD/ORuhhL+xVjSbTEGVg
-         g6ZVyZVsA1A60uT376J+skj/wtV6wnAZjRtSaW/C/8VX/isUQq7zxpl+mSnYl/XnhCo2
-         GadjXSLIY37ph2MHiTtoJFDNOL6O/jmgiAI4MrsEKlNAExHCgVOETy85KrxZMvZj//ES
-         TWO+XmEbEJDIozFye0zUNfDb1z0w0s4MgjOjxuV+MJYftf4L4/wBFtKI1tUdRDSppZ0T
-         ftMw==
-X-Gm-Message-State: AGi0PuaCilXYiJ3mY3gnG+IPdac8sgIlKFnQ2CVEPsJMQjSrMEXKFHU5
-        ZlhCB3XVN7glg+8t1Uh+5gQSc+4yUEZWeWQABpg=
-X-Google-Smtp-Source: APiQypIYXniGQUHEpASwiGNjKth4Cu9ElCz4yjrJ2uXbYBYunhfz0887D/TRydUbTstl7MwaeVftG8QxF1P80ST3qos=
-X-Received: by 2002:ab0:a9:: with SMTP id 38mr504317uaj.61.1586236361040; Mon,
- 06 Apr 2020 22:12:41 -0700 (PDT)
+        id S1726808AbgDGHSz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Apr 2020 03:18:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47096 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726591AbgDGHSy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Apr 2020 03:18:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 40EC5AC92
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Apr 2020 07:18:53 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/2] btrfs-progs: tests: Enahance INSTRUMENT coverage
+Date:   Tue,  7 Apr 2020 15:18:43 +0800
+Message-Id: <20200407071845.29428-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Received: by 2002:ab0:4929:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 22:12:40 -0700 (PDT)
-From:   SANDRA DEWI <dewisandra154@gmail.com>
-Date:   Tue, 7 Apr 2020 05:12:40 +0000
-Message-ID: <CABRVPWys0xe4CWBkaU0ZXQW+4d=tjDOjyo8cKohc5-VFkWPkcA@mail.gmail.com>
-Subject: whether this is your correct email address or not
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear ,Pastor
+This patchset will enhance INSTRUMENT coverage for all btrfs related
+commands.
+
+Since now INSTRUMENT would also cover a lot of btrfs inspect-dump
+comands, fix some test cases where INSTRUMENT output could easily
+pollute them.
 
 
+Now fsck/convert/misc/mkfs all pass with
+INSTRUMENT="valgrind --leak-check=full".
 
-I have a client who is an oil business man and he made a fixed deposit
-of $26 million USD in my bank, where I am the director of the branch,
-My client died with his entire family in Jordanian
+Changelog:
+v2:
+- Pass INSTRUMENT as space split command
 
-50% of the fund will be for the church  for the work of God,the
-balance 50% we share it in the ratio of 50/50. Meaning 50% to you and
-50% for me
+- Unset previous cmmd_array in expand_command()
+  Instead of unsetting it.
 
-intervention in the Syrian Civil War 2014 leaving behind no next of
-kin. I Propose to present you as next of kin to claim the funds, if
-interested reply me for full details and how we are to
+- Use local variable @i in expand_command()
+  To fix misc/004
 
+- Add extra commands for INSTRUMENT coverage
+  This incldues btrfstune, btrfs-corrupt-block, btrfs-image,
+  btrfs-select-super, btrfs-find-root.
 
+- Fix test cases which uses run_check_stdout without filtering
 
-proceed to close this deal.
+v3:
+- Adding proper filtering for run_check_stdout() callers
+  Instead of removing run_check_stdout(), to keep the coverage the same.
 
+Qu Wenruo (2):
+  btrfs-progs: tests: Filter output for run_check_stdout
+  btrfs-progs: tests: Introduce expand_command() to inject aruguments
+    more accurately
 
+ tests/common                                  | 189 +++++++++---------
+ tests/misc-tests/004-shrink-fs/test.sh        |  11 +-
+ .../009-subvolume-sync-must-wait/test.sh      |   2 +-
+ .../013-subvolume-sync-crash/test.sh          |   2 +-
+ .../024-inspect-internal-rootid/test.sh       |  21 +-
+ .../031-qgroup-parent-child-relation/test.sh  |   4 +-
+ 6 files changed, 120 insertions(+), 109 deletions(-)
 
+-- 
+2.26.0
 
-Mrs. Sandra Dewi
-
-
-
-Email  mrsdewi@gmx.com
