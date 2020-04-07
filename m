@@ -2,93 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A741A0EF3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Apr 2020 16:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F741A0FC5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Apr 2020 16:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgDGOOs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Apr 2020 10:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42414 "EHLO mail.kernel.org"
+        id S1729276AbgDGO64 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Apr 2020 10:58:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42086 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728596AbgDGOOs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:14:48 -0400
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F4037206F7
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Apr 2020 14:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586268888;
-        bh=fOJFhH3O7KhSpBGJhyOdbG1Hzf7l44jNAgm21oTrXvQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W0zepVOuxG4pJEnoQ8VHDuBlyJ4Y+e4DLOxdSO/oz5QUQ3al0VZdjBB+uyhMQSmR7
-         M3EEzblLFDsCiJ7v1qtj4nqk1AjYa3edSj0zmaorD40VjEa+NV6WDwDUOxEYg5l1a4
-         bLO4pxMNS/L/gdlfPdKEjdprX87SLO6wkD/X8cj4=
-Received: by mail-ua1-f46.google.com with SMTP id f9so1305698uaq.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Apr 2020 07:14:47 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaHNF66i+PGwRZnIOuHWBzPelZ13dW6Y5dfVUIWMO4PHxd6JBSO
-        gnIkXLuscVMB9W7S7klR7QhVKfvSPHqOeOFOCT0=
-X-Google-Smtp-Source: APiQypL5GTdMP/fN1dgTARh+ozxZvY1ELq8kctG5xU+dlBQQLUquE0dYMIsmjovrAqnuOPjo0xjvS5JBVWb+KUfe6AI=
-X-Received: by 2002:ab0:158b:: with SMTP id i11mr1889818uae.123.1586268887086;
- Tue, 07 Apr 2020 07:14:47 -0700 (PDT)
+        id S1729211AbgDGO64 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Apr 2020 10:58:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9457CAE95;
+        Tue,  7 Apr 2020 14:58:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7CE9DDA727; Tue,  7 Apr 2020 16:57:52 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 16:57:52 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Move on-disk structure definition to btrfs_tree.h
+Message-ID: <20200407145752.GU5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200407084434.46143-1-wqu@suse.com>
+ <20200407131414.GS5920@twin.jikos.cz>
+ <2751ebbf-dfc4-b453-b807-17e86be43929@gmx.com>
 MIME-Version: 1.0
-References: <20200407103858.31029-1-fdmanana@kernel.org> <e460bb78-20e7-f792-eb3c-0bd3944319d8@suse.com>
-In-Reply-To: <e460bb78-20e7-f792-eb3c-0bd3944319d8@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 7 Apr 2020 15:14:35 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H45q8Ct_SOO1-zzrGHcDAS4yFeEoQc+8CgzbLPG2miBPw@mail.gmail.com>
-Message-ID: <CAL3q7H45q8Ct_SOO1-zzrGHcDAS4yFeEoQc+8CgzbLPG2miBPw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Btrfs: remove pointless assertion on reclaim_size counter
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2751ebbf-dfc4-b453-b807-17e86be43929@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 12:32 PM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 7.04.20 =D0=B3. 13:38 =D1=87., fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > The reclaim_size counter of a space_info object is unsigned. So its val=
-ue
-> > can never be negative, it's pointless to have an assertion that checks
-> > its value is >=3D 0, therefore remove it.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> True,
->
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com> I guess this could be
-> squashed.
+On Tue, Apr 07, 2020 at 09:43:12PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2020/4/7 下午9:14, David Sterba wrote:
+> > On Tue, Apr 07, 2020 at 04:44:33PM +0800, Qu Wenruo wrote:
+> >> These structures all are on-disk format. Move them to btrfs_tree.h
+> >>
+> >> This move includes:
+> >> - btrfs magic
+> >>   It's a surprise that it's not even definied in btrfs_tree.h
+> >>
+> >> - tree block max level
+> >>   Move it before btrfs_header definition.
+> >>
+> >> - tree block backref revision
+> >> - btrfs_header structure
+> >> - btrfs_root_backup structure
+> >> - btrfs_super_block structure
+> >> - BTRFS_FEATURE_* flags
+> >>
+> >> - btrfs_item structure
+> >> - btrfs_leaf structure
+> >> - btrfs_key_ptr structure
+> >> - btrfs_node structure
+> >>
+> >> - BTRFS_INODE_* flags
+> >>   Move them before btrfs_inode_item definition.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> This moved btree_tree.h is more appropriate for btrfs-progs to reuse.
+> > 
+> > This actually answers 'why' the change is made so this should be in the
+> > changelog but I still want to know the reason to move it to the header.
+> > Do you mean that progs from git would be built #including this header
+> > directly?
+> > 
+> No. As you answered a long long time before, btrfs-progs shouldn't
+> include global kernel header directly.
+> 
+> Your answer was for case like building btrfs-progs on older kernel, and
+> I still believe you're right.
 
-Despite being a trivial and small change, I don't think it should be
-squashed into the previous patch, as it's not part of the bug fix
-regarding the counter leak.
-Different changes and unrelated changes should be separate patches.
+Yes, this still holds.
 
-Thanks.
+> For btrfs-progs, I will just cross-port (copy) the header to btrfs-progs.
+> 
+> The re-use part doesn't only limit to btrfs-progs.
+> In fact, there are already two more projects which can benefit from such
+> move: grub and u-boot.
+> 
+> This patch is the base stone for later u-boot cross ports.
+> The idea is to use kernel headers (copy them to related projects), then
+> re-use a subset of btrfs-progs to implement a full read-only btrfs code
+> base in u-boot.
 
->
-> > ---
-> >  fs/btrfs/space-info.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> > index ff17a4420358..88d7dea215ff 100644
-> > --- a/fs/btrfs/space-info.c
-> > +++ b/fs/btrfs/space-info.c
-> > @@ -1198,7 +1198,6 @@ static int __reserve_metadata_bytes(struct btrfs_=
-fs_info *fs_info,
-> >        * the list and we will do our own flushing further down.
-> >        */
-> >       if (ret && flush !=3D BTRFS_RESERVE_NO_FLUSH) {
-> > -             ASSERT(space_info->reclaim_size >=3D 0);
-> >               ticket.bytes =3D orig_bytes;
-> >               ticket.error =3D 0;
-> >               space_info->reclaim_size +=3D ticket.bytes;
-> >
+Ok, I understand the motivation, copying and syncing header from one
+source is what we want.
