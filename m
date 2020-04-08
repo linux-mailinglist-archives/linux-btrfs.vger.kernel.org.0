@@ -2,140 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6951A1FB1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Apr 2020 13:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4268A1A2241
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Apr 2020 14:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgDHLRa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Apr 2020 07:17:30 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:59256 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgDHLR3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Apr 2020 07:17:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1586344650; x=1617880650;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=fGf1CQVTfBr1/sdRumE7KfFF5qOCAoX5RkqtjbcZdwM=;
-  b=cp8NY7zwDR79ygBeUmHcG62UTN2wrR1Aeb9IxKH0ljYRoMdQSgcPROEj
-   fWufFJueO+zCuN1s0Mrsn9BlnW8WnTiMy/UipgJGhq1XWp8iYF4UAKmrf
-   jF2UmrdiKVdhgivBo3c/SFKHDzbNxXzDYibWycBT+37bKqnOy8lHEFWq7
-   qheNeGin4GyNiEhP00FeShUGCzqcBmfe0yJcRVmTgojST5QSBZwSHohY2
-   VkJk6bRvjf6Dd+6UxbZZQYKw2dfsOspXl+cmMbU9IC0dQHknXbLbokjUs
-   vVLN87ZQM9Sh2rYeeNVihZTQs3dd7wlwBSnvL/ma8oWXyXpK0M1g/7mTB
-   g==;
-IronPort-SDR: nWrYT7ENlAd2tVeFTloov2WHhcgQaz6bRilunG4VM7kghgDXkiTB16by/zQkaKTV1HeRITFgs7
- nnK7Ziu9WizxC2jA4QlQXCiw9hmfzg1VD+3PKYGWof6P/NGXpsqQI1ZDNfeotZq5gGnOrZAIEE
- vsftgKF5YkJfUvoMtEWLMAI+wS5/6tNr3iKliDobOcVx0RynagPmeQOGPU20/JjO52AoTpLcLc
- Afii6dnL7divLY8iEIiuMMZjKvpTPb61fqWkyVtrQWX8d+CySdGHsxooIs+H0rzXVVWC2t8Fi2
- 5io=
-X-IronPort-AV: E=Sophos;i="5.72,358,1580745600"; 
-   d="scan'208";a="136314214"
-Received: from mail-bl2nam02lp2057.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.57])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Apr 2020 19:17:25 +0800
+        id S1728070AbgDHMpF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Apr 2020 08:45:05 -0400
+Received: from m4a0073g.houston.softwaregrp.com ([15.124.2.131]:55276 "EHLO
+        m4a0073g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728003AbgDHMpF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Apr 2020 08:45:05 -0400
+Received: FROM m4a0073g.houston.softwaregrp.com (15.120.17.146) BY m4a0073g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Wed,  8 Apr 2020 12:42:55 +0000
+Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Wed, 8 Apr 2020 12:36:33 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (15.124.72.12) by
+ M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Wed, 8 Apr 2020 12:36:33 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J6j8Tf4Zha0v6oKK6c8nIfcbBLSm2oJcKu7cYRHe5mTKUJGqxSr3oSbu2DQhuelFk61zD1lhIWrYkX3D0Z/7dt6LaVJKVRajw/WHAarr6smApZw5gQfoFibJr4kJ4BBdXaKOZaHAHbair96De4JWNMg2Fjy2fpApdanNNRgPuJ1aF/150Mz8xDxeLXJhmt5WDaxYms4TEQnlWZPmHtw+GIs2lik5wuceYxatnJSCpzQjHZgELGVYMjKijmo0qV9OqjoKm6ae3SK1cZVTpfKhPx8HT9wo99bJMaqB1NDk4O+LGwFlZQ7gLaMjD2h0KaP1+h2nYjeTAKN3G6RfkFZ6vA==
+ b=bu2F44zoRpZPnhfxtackdIzmUp15Vl9Eko7bvyMqBDaW5Vl6ps/IMgdTZSjN5Mf03BQZpE+8hI3bis+X+sQtln2whTq/ZpX/6Hcw9VlsqXSgYF/08dOb8nv/ZlMEAADRWAtMYuIpHik2mk6RlxPTqvTkxDL0Af7dgC/aHlBM2x0dxpeNHn1J0ELvQzbObW4A9ZkkQBqvzULBSaXLmb6euqfNm/gArVPAoiIKSUTMi0gu3bVXGMbVZEqJgIhJBPZqdH4T0OA3WusRiID/fhk0APdYJo++7pc63l0ZRzWwkoZzjLNiha3QScfoz9QTgU7DmTixm/sF4TzUyscgbe14pQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o4PUGOHEQgslMahW8Jvvov5B2kJunwSEi8w9b2jhXoI=;
- b=ZE5rU6SrnEgWVn6EwHXsqQq3M5nT3/aef5IRb5zYoxEy5o44bzSOoOJQDGj1qwoBnhLpamzRyDJcvjmhKvVMg4lclrxCO4ofusiJBJzV3+uH7iuns3rGYlac0rohEPbSGd5GlW8vkdEE68zGAGj+1NTakJ51wUD2MqYj8LbY8GW0EbEBE6+F0AzfD7v5KFhWDr14U7xw1jarpxZuQAdYy1u+rQK7wC097o5xipPcwPAFSjtKqCJs/r3NJLFVRe7k/zhjH3bPISXdXq0h/B191bSgq6xXPB5uxQwKV0jlHiyTAQ3hX5EKCeNROtQFfAjoJgya3GoF1bBltstv7LDRGw==
+ bh=uYWW7dJUX5h2pF0cJncPC1GJKDwXbA2E9VhE/5yxfTk=;
+ b=OgwwKF0T5mLNEVoKYPm6zYwwipIle2WnLIk07x4xDlv/iN5IuhnoxQyeZpfN+heQMRCt2YhKuXguEAzex8lz9JcXEhcRScYocAsCvNBPfnqFWsyCiTFCDU4sQN4XYkkzQR4jVHWtKi47UovK8zCooaqYUjVMzmproolGzbhUO0+U3u6foCuUi7j5J6Mm6BPmafYZ69takhrwWRQufm7QGnzAk/PkxOxWuCFDJduCQjVe6xAHmh51NH18A/wVmwyxV/C1a/UQ939jKc6vBvuR9tmlS2zwP/7/YRVFj9pMe28bYwWjO2V6EkT5wTbety1MTYEy3w/hCeMmlXXlZ6o0pA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o4PUGOHEQgslMahW8Jvvov5B2kJunwSEi8w9b2jhXoI=;
- b=kxjhnJQwcESre3A9OalZXjyaypq+p8rIVV3PFgSkPpZD19wuHCNumObs+ULMA9raKRzfjUhN4JvMZzdbey0A3i5ECIbBOj11zCYGlAk4cWXSgYog3+1n8m9WgZZJROfVOVMikGMnUoh1+VDPfMi/dRJE0hzczScJ9EwfNzgwLxY=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3630.namprd04.prod.outlook.com
- (2603:10b6:803:47::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.20; Wed, 8 Apr
- 2020 11:17:21 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2878.018; Wed, 8 Apr 2020
- 11:17:21 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-CC:     "jth@kernel.org" <jth@kernel.org>
-Subject: Re: authenticated file systems using HMAC(SHA256)
-Thread-Topic: authenticated file systems using HMAC(SHA256)
-Thread-Index: AQHWDQbERVNaVh/cw0i4WbDgZROyhA==
-Date:   Wed, 8 Apr 2020 11:17:21 +0000
-Message-ID: <SN4PR0401MB35987317CD0E2B97CD5A499E9BC00@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <CAJCQCtSLOgj7MHKNeGOHu1DPa=xC=sR7cZzR88hN1y_mTYRFKw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0fdce155-afd3-4aa4-9f99-08d7dbae6831
-x-ms-traffictypediagnostic: SN4PR0401MB3630:
-x-microsoft-antispam-prvs: <SN4PR0401MB363008B578B97DBDCDA84A189BC00@SN4PR0401MB3630.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0367A50BB1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(86362001)(8936002)(110136005)(966005)(66556008)(81156014)(4326008)(64756008)(8676002)(66946007)(26005)(316002)(66476007)(76116006)(91956017)(7696005)(66446008)(33656002)(478600001)(186003)(2906002)(81166007)(71200400001)(6506007)(53546011)(9686003)(55016002)(5660300002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4jv7ksyAV5wzGPyDdto9bsrQ5OKwstLZ2cQYdGbgyc4ULOKhFYppnwZOWnCkKOnLq7fEmfkTwcXszCQRUtiZKY+TLa2r9Ntvkoujx+cq8W9aVo9kY6J/If5W7Ajwdyd9xzTSWeIsWZJVul5zUZYndZTtdyrAnkcigAUj0kD8VygWE50ks8+m/9Hv2OICU2YUYF9QLzTxUE+Ix9lUImd2lX1N2IVcME3F2Z9K0XLSQYyKDpeYeCjKZyqUV3rfHIrIVcqQHl5EdP7pZFouuxNECtquHCeNfzfygE/lWjX6EL+JslJ2yxRPxoJXZ9b1EMvXrxAjNxzYCtz7u3cr9jr00xJHAGGfw7GfcbUAg6thYy1TDKje3+DJkg2ibkUapY2BTAB3pPHSy1Z1K+nQtd3t+4us4Kd9muPP5d9tK5OG2upyTB6HwaemL8Pi+aGyx3I7UCKrNvpWlqxH706zHro1nAptP02wfJrjmzp9T+0T0sPFnYxzc+nlx3l6l67NjuPnBL0ZudHU9CTE2bfdp8irhg==
-x-ms-exchange-antispam-messagedata: mGQ9aIfpRSLqolh+RUpIiZuMUPmyiKQfDZQXZHFJ7M5QPCNdvVL7Kz/5udenb6XHu+0hh+Is1+ZbwbGI/ekemyH+ebUgO75QNkTTMwFfSs5nV51bHdCan5h6afCYpn496vPHkgksB5f54HC4N+8Qdw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+Received: from BY5PR18MB3427.namprd18.prod.outlook.com (2603:10b6:a03:195::32)
+ by BY5PR18MB3299.namprd18.prod.outlook.com (2603:10b6:a03:1ac::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Wed, 8 Apr
+ 2020 12:36:32 +0000
+Received: from BY5PR18MB3427.namprd18.prod.outlook.com
+ ([fe80::2870:1e96:c53e:b1f9]) by BY5PR18MB3427.namprd18.prod.outlook.com
+ ([fe80::2870:1e96:c53e:b1f9%4]) with mapi id 15.20.2878.022; Wed, 8 Apr 2020
+ 12:36:32 +0000
+Subject: Re: [PATCH] btrfs: qgroup: Mark qgroup inconsistent if we're
+ inherting snapshot to a new qgroup
+From:   Qu Wenruo <wqu@suse.com>
+To:     <linux-btrfs@vger.kernel.org>
+References: <20200402063735.32808-1-wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <288d0020-380f-717e-ab05-3fe6dbc64cd5@suse.com>
+Date:   Wed, 8 Apr 2020 20:36:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+In-Reply-To: <20200402063735.32808-1-wqu@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature";
+        boundary="OliwSLZGnqb34Z7uNcoiA81sRZPPDfjSs"
+X-ClientProxiedBy: BY5PR13CA0012.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::25) To BY5PR18MB3427.namprd18.prod.outlook.com
+ (2603:10b6:a03:195::32)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fdce155-afd3-4aa4-9f99-08d7dbae6831
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2020 11:17:21.3490
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BY5PR13CA0012.namprd13.prod.outlook.com (2603:10b6:a03:180::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.6 via Frontend Transport; Wed, 8 Apr 2020 12:36:31 +0000
+X-Originating-IP: [149.28.201.231]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9eaf224e-617d-4b02-4091-08d7dbb977ad
+X-MS-TrafficTypeDiagnostic: BY5PR18MB3299:
+X-Microsoft-Antispam-PRVS: <BY5PR18MB32999FA04AD3BBDB3AC79C20D6C00@BY5PR18MB3299.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0367A50BB1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR18MB3427.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(5660300002)(478600001)(6486002)(66476007)(66556008)(21480400003)(235185007)(16526019)(956004)(16576012)(81166007)(316002)(6666004)(26005)(186003)(66946007)(8936002)(8676002)(86362001)(31696002)(33964004)(81156014)(36756003)(31686004)(2616005)(6916009)(6706004)(2906002)(52116002)(78286006);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zpzfiQRIxHjbEQBuHTDo6IMzyiTDViyqhUZy9ArZ+D1iP4kNtuqjSPa/0218++YIWTII4Lbrjxe9ae+op83jWRehoX3uJ3c0ept+ip+mCKvgAYjk3ckAgDZd3yr4YjUr3LwL7M00+/fxCmjJDXrva16G7FnkZnopEy+/c+L2gg6Db/UaWhG9zRNrVMQlaL0hdJB3uI0B2KWwDROxn/uELYGB/FJFuFx0SaFEzcgcY+7vVX2tBCBUsnn0/878lnfOnbkmU9dtgKptjBQUM1MDxLNt9P0/VRoW4brsBbl6yKCwJlqCAy9MHCISqPSeyv0EZZxqpEk8GoqAp3lLLgISdnICMBTPsKpvOc5Rrx5TaVylc3xweuo/mxixkWnWNQuUPIWV+ERrsezgku7uGsi5vdVVplbFjWiBbrj+D0+Bvq2ix5yqE91m+CQEf64j/H5GXIzd6MsILu6oOFadWb9RdX1xqm78ZhRsRRxIFtvQ3uqFYdDkkDHHgQTQZc91WAc1NG7g4BuqMCg6X26vlvG/VOy496F/cmrm1sTdWYGLX/I=
+X-MS-Exchange-AntiSpam-MessageData: S1QskiRedqCv1OHVrjzr1n1lKkPyT/WoH/ZDuefvWR67zO7F64kA8ZrCwg+5KBntmG3/CdmpgUyYHaWnZvn+LRtr8yzSKV/Il2q7WchBiKgId1P5Tc2rGrOP+ef0IwITfYBiAJSr0/yUfNYvZLHZWQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9eaf224e-617d-4b02-4091-08d7dbb977ad
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2020 12:36:32.2798
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6MXgP5L7W/D4dSL9ucimdF47/KwnsZgwJZN3xUUcWr/EJ0r9tNhA5o9r5DVbSJzZE93cClXyqhYA4FvGew2WPIpjs66LEnr7XSYABUvkufs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3630
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q835zYJCdkdoCyRkmWTI0/a4ZVbnjSVUJE/wu7+u8UQy6TKz8wSLiJtMbuMPZU2H
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3299
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/04/2020 20:02, Chris Murphy wrote:=0A=
-> Hi,=0A=
-> =0A=
-> What's the status of this work?=0A=
-> https://lore.kernel.org/linux-btrfs/20191015121405.19066-1-jthumshirn@sus=
-e.de/=0A=
-=0A=
-It's done but no-one was interested in it and as I haven't received any =0A=
-answers from Dave if he's going to merge it, I did not bring it to =0A=
-attention again. After all it was for a specific use-case SUSE has/had =0A=
-and I left the company.=0A=
-=0A=
-> Also I'm curious if it could use blake2b as an option? It's a bit=0A=
-> faster I guess.=0A=
-=0A=
-Probably yes, I haven't researched if blake2b can be used in a HMAC =0A=
-context, but from what I can see there should be no problem. SHA-256 was =
-=0A=
-chooses because SUSE Product Management needed SHA for their use-case.=0A=
-=0A=
-If there is still interest in this work I can re-base my branches [1][2] =
-=0A=
-and add blake2b as well, this /should/ be trivially done.=0A=
-=0A=
-[1] =0A=
-https://git.kernel.org/pub/scm/linux/kernel/git/jth/linux.git/log/?h=3Dbtrf=
-s-integrity=0A=
-[2] https://github.com/morbidrsa/btrfs-progs/tree/mkfs-hmac=0A=
-=0A=
-I just don't want to spend time on it again when it's not going to be =0A=
-merged in the end (for what ever reason).=0A=
-=0A=
-Byte,=0A=
-	Johannes=0A=
+--OliwSLZGnqb34Z7uNcoiA81sRZPPDfjSs
+Content-Type: multipart/mixed; boundary="q3vkiNmHnkLMNfFmb82sQteCDG6X7A4mE"
+
+--q3vkiNmHnkLMNfFmb82sQteCDG6X7A4mE
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Forgot to mention, although this doesn't cause any data corruption, it
+breaks snapper, which has some kind of "space aware cleaner algorithm",
+which put all newly created snapshots into 1/0, but not the current root
+subvolume.
+
+And since snapper uses snapshot ioctl to assign qgroup relationship
+directly, without using qgrou assign ioctl, it has no way to detect such
+problem.
+
+Hopes we can get this patch into current release cycle.
+
+Thanks,
+Qu
+
+On 2020/4/2 =E4=B8=8B=E5=8D=882:37, Qu Wenruo wrote:
+> [BUG]
+> For the following operation, qgroup is guaranteed to be screwed up due
+> to snapshot adding to a new qgroup:
+>=20
+>   # mkfs.btrfs -f $dev
+>   # mount $dev $mnt
+>   # btrfs qgroup en $mnt
+>   # btrfs subv create $mnt/src
+>   # xfs_io -f -c "pwrite 0 1m" $mnt/src/file
+>   # sync
+>   # btrfs qgroup create 1/0 $mnt/src
+>   # btrfs subv snapshot -i 1/0 $mnt/src $mnt/snapshot
+>   # btrfs qgroup show -prce $mnt/src
+>   qgroupid         rfer         excl     max_rfer     max_excl parent  =
+child
+>   --------         ----         ----     --------     -------- ------  =
+-----
+>   0/5          16.00KiB     16.00KiB         none         none ---     =
+---
+>   0/257         1.02MiB     16.00KiB         none         none ---     =
+---
+>   0/258         1.02MiB     16.00KiB         none         none 1/0     =
+---
+>   1/0             0.00B        0.00B         none         none ---     =
+0/258
+> 	        ^^^^^^^^^^^^^^^^^^^^
+>=20
+> [CAUSE]
+> The problem is in btrfs_qgroup_inherit(), we don't have good enough
+> check to determine if the new relation ship would break the existing
+> accounting.
+>=20
+> Unlike btrfs_add_qgroup_relation(), which has proper check to determine=
+
+> if we can do quick update without a rescan, in btrfs_qgroup_inherit() w=
+e
+> can even assign a snapshot to multiple qgroups.
+>=20
+> [FIX]
+> Fix the problem by manually marking qgroup inconsistent for snapshot
+> inheritance.
+>=20
+> For subvolume creation, since all its extents are exclusively owned by
+> itself, we don't need to rescan.
+>=20
+> In theory, we should call relationship check like quick_update_accounti=
+ng()
+> when doing qgroup inheritance and inform user about qgroup inconsistent=
+=2E
+>=20
+> But we don't have good enough mechanism to inform user in the snapshot
+> creation context, thus we can only silently mark the qgroup
+> inconsistent.
+>=20
+> Anyway, user shouldn't use qgroup inheritance during snapshot creation,=
+
+> and should add qgroup relationship after snapshot creation by 'btrfs
+> qgroup assign', which has a much better UI to inform user about qgroup
+> inconsistent and kick in rescan automatically.
+>=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/qgroup.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>=20
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index c3888fb367e7..81b2efca48b4 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -2622,6 +2622,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handl=
+e *trans, u64 srcid,
+>  	struct btrfs_root *quota_root;
+>  	struct btrfs_qgroup *srcgroup;
+>  	struct btrfs_qgroup *dstgroup;
+> +	bool need_rescan =3D false;
+>  	u32 level_size =3D 0;
+>  	u64 nums;
+> =20
+> @@ -2765,6 +2766,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_hand=
+le *trans, u64 srcid,
+>  				goto unlock;
+>  		}
+>  		++i_qgroups;
+> +
+> +		/*
+> +		 * If we're doing a snapshot, and adding the snapshot to a new
+> +		 * qgroup, the numbers are guaranteed to be incorrect.
+> +		 */
+> +		if (srcid)
+> +			need_rescan =3D true;
+>  	}
+> =20
+>  	for (i =3D 0; i <  inherit->num_ref_copies; ++i, i_qgroups +=3D 2) {
+> @@ -2784,6 +2792,9 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handl=
+e *trans, u64 srcid,
+> =20
+>  		dst->rfer =3D src->rfer - level_size;
+>  		dst->rfer_cmpr =3D src->rfer_cmpr - level_size;
+> +
+> +		/* Manually tweaking numbers? No way to keep qgroup sane */
+> +		need_rescan =3D true;
+>  	}
+>  	for (i =3D 0; i <  inherit->num_excl_copies; ++i, i_qgroups +=3D 2) {=
+
+>  		struct btrfs_qgroup *src;
+> @@ -2802,6 +2813,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handl=
+e *trans, u64 srcid,
+> =20
+>  		dst->excl =3D src->excl + level_size;
+>  		dst->excl_cmpr =3D src->excl_cmpr + level_size;
+> +		need_rescan =3D true;
+>  	}
+> =20
+>  unlock:
+> @@ -2809,6 +2821,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handl=
+e *trans, u64 srcid,
+>  out:
+>  	if (!committing)
+>  		mutex_unlock(&fs_info->qgroup_ioctl_lock);
+> +	if (need_rescan)
+> +		fs_info->qgroup_flags |=3D BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+>  	return ret;
+>  }
+> =20
+>=20
+
+
+--q3vkiNmHnkLMNfFmb82sQteCDG6X7A4mE--
+
+--OliwSLZGnqb34Z7uNcoiA81sRZPPDfjSs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6NxUsACgkQwj2R86El
+/qhj5gf/VO5CO103ux4eqZO+mqmONfkUTww95G7u3jMGsD1kqS+1amW8MtqV9qJl
+1nPWLO4WD3z+zCLtEqnUHqCV/ywvQaF8wi3GIT2ymVWn7sp0fcWTef8JXdUbsnRF
+ax0U5cuqG4ABJ5otsIaGp7bogwwa+nqs+DUFuPix7BO80YhjXEl8XDiBCCsIiCIi
+wtqOr07tgg28vOsylSUvfTzk5oUe5cA9oP2Gq7CS72og36vZc88pcTxkSPVXeXwD
+WwM8YPVf62tKofb8eYO0pRtKZvvj6GEzDO5DGstgjtSVsT1f+d+eh0fCdTYVSAKn
+DY2SA9rKE0/eK9NitNXqmKvDV/sbmw==
+=AA2S
+-----END PGP SIGNATURE-----
+
+--OliwSLZGnqb34Z7uNcoiA81sRZPPDfjSs--
