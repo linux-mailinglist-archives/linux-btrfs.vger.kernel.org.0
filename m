@@ -2,150 +2,594 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 205271A1835
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Apr 2020 00:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6F51A1B9A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Apr 2020 07:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgDGWaH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Apr 2020 18:30:07 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34270 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgDGWaG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Apr 2020 18:30:06 -0400
-Received: by mail-wr1-f65.google.com with SMTP id 65so5693058wrl.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Apr 2020 15:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nx+hSrvSzrfSTkCadja1qhveADTwSvyZ63RDj9Yn6dc=;
-        b=kdSBkY+PlgDaAl+XViMtbvesS5lrmzGfr/RTA7MXg1gB0bMzEAx2iEtNkeMGZF2A47
-         UG2x3od3qTY+OHl1LKXe5ovD6nONxuMvRYrJFG2XqJN9aYZLJNo8N7Q9+VCJzA6z6/L1
-         53zPiNiIafyRNWK/r30tuadge7h6uiiyHCAevdN3XxVMfpJyNCMpt/Ymk6byNOCcz3PV
-         q1V/XVO5l7N7w/whKEil0ZyewjcO/vlDZxGWpO0uslcGMQxIYVhjq1SodzEQn8UVNSZE
-         KOeoU83Yl/O3YkmH3ShpHb0g520ArGKomPJWyZLtLhI5t7MM1wqLcUKa/ORX16wHcZUT
-         anzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nx+hSrvSzrfSTkCadja1qhveADTwSvyZ63RDj9Yn6dc=;
-        b=rj1ay51+HKjHXzCqJOJRjykXJ4q2TEVQjoiX77Z7Dxpk2b0i2A78ZZ8VQi6zhBO+ft
-         4my2w3flIN3X05Uwl9UEabf+VP3JZY2ruDXqWFA/glgCIq42vUFS6nsJ9SKQ90taxmkJ
-         RCbZDgVBD05G5/BLpBTxsZd6GM41L5euttN4qqfcYY7drrJi0ZnGALLwJnzPTjXhGsVg
-         BJB2Iea2EPtwlSzDNe453GCpWfeuVml86KqF8qT5ZzTX5vrVePHq2CCy7v8hZIg/9M4z
-         uMAMSBYzxbLTBGYr0pyV7keMRFbUjwOrxpF1Pp337OfxuWO3yo0ZmoW1SEVjnt4Dfr1i
-         rxqg==
-X-Gm-Message-State: AGi0PuaRjrJWs6KIAdPH1NYR+7xWQHw1z749kPgL0YLZ3Cm9UEvtIFwf
-        kucfu+VjVG+XXM79WuOyB3g=
-X-Google-Smtp-Source: APiQypIXGfTqff7O5Bi0HkqcOEukUus5IRv+1nRXndsNP05fTRmEFN2QrLlEbVCT4I3REIRAGfekaA==
-X-Received: by 2002:adf:90ea:: with SMTP id i97mr4853769wri.123.1586298603947;
-        Tue, 07 Apr 2020 15:30:03 -0700 (PDT)
-Received: from ?IPv6:2001:984:3171:0:126:e139:19f1:9a46? ([2001:984:3171:0:126:e139:19f1:9a46])
-        by smtp.gmail.com with ESMTPSA id a67sm4393300wmc.30.2020.04.07.15.30.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 15:30:03 -0700 (PDT)
-Subject: Re: btrfs freezing on writes
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <6a1c8ce0-ce2a-698d-dcc6-0657a125dae4@gmail.com>
- <CAJCQCtRcTzL9LQZppvCj4zg2NpvGUri0QS58wY3E_PG+o0Jchg@mail.gmail.com>
- <CAJCQCtQ6C4kvBQaKMaoPBo8jbj-abNEYh_63-d-EkHVgWq6iPg@mail.gmail.com>
- <4ef177eb-4b06-3b76-bf5c-5cf6df3221f7@gmail.com>
- <CAJCQCtTJQOZ-t6RZuG2ifPMFtEeHRjP6h6SeTc5ysHi-ekMTbQ@mail.gmail.com>
-From:   kjansen387 <kjansen387@gmail.com>
-Message-ID: <6c75deea-cdf5-ad2f-1244-c6016baa9dfd@gmail.com>
-Date:   Wed, 8 Apr 2020 00:30:02 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726146AbgDHFnt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Apr 2020 01:43:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37332 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbgDHFnt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Apr 2020 01:43:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8C7CFACB8
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Apr 2020 05:43:44 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: Move on-disk structure definition to btrfs_tree.h
+Date:   Wed,  8 Apr 2020 13:43:40 +0800
+Message-Id: <20200408054340.22498-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTJQOZ-t6RZuG2ifPMFtEeHRjP6h6SeTc5ysHi-ekMTbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ah, true, sync -f does a syncfs.
+These structures all are on-disk format. Move them to btrfs_tree.h
 
-sync without -f on an existing file is always fast. But when I strace 
-vim, fsync is slow (sometimes >10 seconds) because it needs to write 
-something.
+This allows us to sync the header to different projects, who need to
+read btrfs filesystem, like U-boot, grub.
 
-Hopefully a developer can reply - thanks so far!
+With this modification, all on-disk format is definite in btrfs_tree.h,
+and can be easily synced to other projects.
 
+This move includes:
+- btrfs magic
+  It's a surprise that it's not even definied in btrfs_tree.h
 
+- tree block max level
+  Move it before btrfs_header definition.
 
-On 08-Apr-20 00:11, Chris Murphy wrote:
-> On Tue, Apr 7, 2020 at 2:39 PM kjansen387 <kjansen387@gmail.com> wrote:
-> 
-> 
-> 
->> $ grep /export /etc/fstab
->> UUID=8ce9e167-57ea-4cf8-8678-3049ba028c12 /export       btrfs
->> device=/dev/sde,device=/dev/sdf    0 2
-> 
-> I'd use only noatime for options. There's no advantage of specifying
-> devices. And also fs_passno can be 0. fsck.btrfs is a no op anyway, so
-> it doesn't hurt anything to leave it at 2.
-> 
-> 
-> 
->> I've attached sysstat info of my disks. What's obvious is that 2 disks
->> have the load (one is written to, the other one is the mirror), and 3
->> are pretty idle. But, it's 2.4MB per second - that's not much!
-> 
-> Lots of small file writes maybe? What's iostat show for utilization?
-> Or vmstat for io? Hard drives of course have limited IO per second.
-> 
->> I've just changed the space_cache to v2, but it doesn't seem to help
->> much. 'sync -f /export/tmp' still takes very long at times (just took 22
->> seconds!)
-> 
-> I just did a strace on this command and it uses syncfs, not fsync. I'm
-> pretty sure on Btrfs this is a full filesystem sync, which is
-> expensive, all data and metadata. So if it's very dirty, yeah it could
-> take some time to flush everything to disk.
-> 
-> Try it without -f and you'll get fsync.
-> 
-> 
->> Any way we can find the cause, before I move everything into subvolumes
->> ? I'd like to avoid that if possible. Sounds a bit overkill for 2.4MB/s
->> writes, and I think most of it is going to one influxdb database anyway.
-> 
->  From the sysrq...
-> [937013.794093] mysqld          D    0 10400      1 0x00004000
-> [937013.794240]  do_fsync+0x38/0x70
-> 
-> [937013.794253] mysqld          D    0 10412      1 0x00004000
-> [937013.794297]  do_fsync+0x38/0x70
-> 
-> [937013.794306] mysqld          D    0 10421      1 0x00004000
-> [937013.794353]  do_fsync+0x38/0x70
-> 
-> [937013.794788] WTJourn.Flusher D    0 1186978 1186954 0x00004320
-> [937013.794894]  do_fsync+0x38/0x70
-> 
-> [937013.794903] ftdc            D    0 1186980 1186954 0x00000320
-> [937013.794951]  ? btrfs_create+0x200/0x200 [btrfs]
-> 
-> [937013.795022] influxd         D    0 2082782      1 0x00004000
-> [937013.795086]  do_fsync+0x38/0x70
-> 
-> [937013.795098] influxd         D    0 2082804      1 0x00004000
-> [937013.795143]  do_fsync+0x38/0x70
-> 
-> [937013.795191] vim             D    0 2228648 2223845 0x00004000
-> [937013.795286]  do_fsync+0x38/0x70
-> 
-> Quite a lot of fsync all at once.
-> 
-> But I'm not very good at parsing kernel output. Maybe a developer will
-> have input.
-> 
-> 
-> 
+- tree block backref revision
+- btrfs_header structure
+- btrfs_root_backup structure
+- btrfs_super_block structure
+- BTRFS_FEATURE_* flags
+
+- btrfs_item structure
+- btrfs_leaf structure
+- btrfs_key_ptr structure
+- btrfs_node structure
+
+- BTRFS_INODE_* flags
+  Move them before btrfs_inode_item definition.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Add the reason why we move the code
+---
+ fs/btrfs/ctree.h                | 234 --------------------------------
+ include/uapi/linux/btrfs_tree.h | 234 ++++++++++++++++++++++++++++++++
+ 2 files changed, 234 insertions(+), 234 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8aa7b9dac405..627b88b0eb08 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -49,8 +49,6 @@ extern struct kmem_cache *btrfs_free_space_bitmap_cachep;
+ struct btrfs_ordered_sum;
+ struct btrfs_ref;
+ 
+-#define BTRFS_MAGIC 0x4D5F53665248425FULL /* ascii _BHRfS_M, no null */
+-
+ /*
+  * Maximum number of mirrors that can be available for all profiles counting
+  * the target device of dev-replace as one. During an active device replace
+@@ -62,8 +60,6 @@ struct btrfs_ref;
+  */
+ #define BTRFS_MAX_MIRRORS (4 + 1)
+ 
+-#define BTRFS_MAX_LEVEL 8
+-
+ #define BTRFS_OLDEST_GENERATION	0ULL
+ 
+ /*
+@@ -148,203 +144,6 @@ enum {
+ 	BTRFS_FS_STATE_DUMMY_FS_INFO,
+ };
+ 
+-#define BTRFS_BACKREF_REV_MAX		256
+-#define BTRFS_BACKREF_REV_SHIFT		56
+-#define BTRFS_BACKREF_REV_MASK		(((u64)BTRFS_BACKREF_REV_MAX - 1) << \
+-					 BTRFS_BACKREF_REV_SHIFT)
+-
+-#define BTRFS_OLD_BACKREF_REV		0
+-#define BTRFS_MIXED_BACKREF_REV		1
+-
+-/*
+- * every tree block (leaf or node) starts with this header.
+- */
+-struct btrfs_header {
+-	/* these first four must match the super block */
+-	u8 csum[BTRFS_CSUM_SIZE];
+-	u8 fsid[BTRFS_FSID_SIZE]; /* FS specific uuid */
+-	__le64 bytenr; /* which block this node is supposed to live in */
+-	__le64 flags;
+-
+-	/* allowed to be different from the super from here on down */
+-	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
+-	__le64 generation;
+-	__le64 owner;
+-	__le32 nritems;
+-	u8 level;
+-} __attribute__ ((__packed__));
+-
+-/*
+- * this is a very generous portion of the super block, giving us
+- * room to translate 14 chunks with 3 stripes each.
+- */
+-#define BTRFS_SYSTEM_CHUNK_ARRAY_SIZE 2048
+-
+-/*
+- * just in case we somehow lose the roots and are not able to mount,
+- * we store an array of the roots from previous transactions
+- * in the super.
+- */
+-#define BTRFS_NUM_BACKUP_ROOTS 4
+-struct btrfs_root_backup {
+-	__le64 tree_root;
+-	__le64 tree_root_gen;
+-
+-	__le64 chunk_root;
+-	__le64 chunk_root_gen;
+-
+-	__le64 extent_root;
+-	__le64 extent_root_gen;
+-
+-	__le64 fs_root;
+-	__le64 fs_root_gen;
+-
+-	__le64 dev_root;
+-	__le64 dev_root_gen;
+-
+-	__le64 csum_root;
+-	__le64 csum_root_gen;
+-
+-	__le64 total_bytes;
+-	__le64 bytes_used;
+-	__le64 num_devices;
+-	/* future */
+-	__le64 unused_64[4];
+-
+-	u8 tree_root_level;
+-	u8 chunk_root_level;
+-	u8 extent_root_level;
+-	u8 fs_root_level;
+-	u8 dev_root_level;
+-	u8 csum_root_level;
+-	/* future and to align */
+-	u8 unused_8[10];
+-} __attribute__ ((__packed__));
+-
+-/*
+- * the super block basically lists the main trees of the FS
+- * it currently lacks any block count etc etc
+- */
+-struct btrfs_super_block {
+-	/* the first 4 fields must match struct btrfs_header */
+-	u8 csum[BTRFS_CSUM_SIZE];
+-	/* FS specific UUID, visible to user */
+-	u8 fsid[BTRFS_FSID_SIZE];
+-	__le64 bytenr; /* this block number */
+-	__le64 flags;
+-
+-	/* allowed to be different from the btrfs_header from here own down */
+-	__le64 magic;
+-	__le64 generation;
+-	__le64 root;
+-	__le64 chunk_root;
+-	__le64 log_root;
+-
+-	/* this will help find the new super based on the log root */
+-	__le64 log_root_transid;
+-	__le64 total_bytes;
+-	__le64 bytes_used;
+-	__le64 root_dir_objectid;
+-	__le64 num_devices;
+-	__le32 sectorsize;
+-	__le32 nodesize;
+-	__le32 __unused_leafsize;
+-	__le32 stripesize;
+-	__le32 sys_chunk_array_size;
+-	__le64 chunk_root_generation;
+-	__le64 compat_flags;
+-	__le64 compat_ro_flags;
+-	__le64 incompat_flags;
+-	__le16 csum_type;
+-	u8 root_level;
+-	u8 chunk_root_level;
+-	u8 log_root_level;
+-	struct btrfs_dev_item dev_item;
+-
+-	char label[BTRFS_LABEL_SIZE];
+-
+-	__le64 cache_generation;
+-	__le64 uuid_tree_generation;
+-
+-	/* the UUID written into btree blocks */
+-	u8 metadata_uuid[BTRFS_FSID_SIZE];
+-
+-	/* future expansion */
+-	__le64 reserved[28];
+-	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
+-	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
+-} __attribute__ ((__packed__));
+-
+-/*
+- * Compat flags that we support.  If any incompat flags are set other than the
+- * ones specified below then we will fail to mount
+- */
+-#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
+-#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
+-#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
+-
+-#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
+-	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+-	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
+-
+-#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
+-#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
+-
+-#define BTRFS_FEATURE_INCOMPAT_SUPP			\
+-	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
+-	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
+-	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
+-	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
+-	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
+-	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
+-	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
+-	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
+-	 BTRFS_FEATURE_INCOMPAT_RAID1C34)
+-
+-#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
+-	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
+-#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
+-
+-/*
+- * A leaf is full of items. offset and size tell us where to find
+- * the item in the leaf (relative to the start of the data area)
+- */
+-struct btrfs_item {
+-	struct btrfs_disk_key key;
+-	__le32 offset;
+-	__le32 size;
+-} __attribute__ ((__packed__));
+-
+-/*
+- * leaves have an item area and a data area:
+- * [item0, item1....itemN] [free space] [dataN...data1, data0]
+- *
+- * The data is separate from the items to get the keys closer together
+- * during searches.
+- */
+-struct btrfs_leaf {
+-	struct btrfs_header header;
+-	struct btrfs_item items[];
+-} __attribute__ ((__packed__));
+-
+-/*
+- * all non-leaf blocks are nodes, they hold only keys and pointers to
+- * other blocks
+- */
+-struct btrfs_key_ptr {
+-	struct btrfs_disk_key key;
+-	__le64 blockptr;
+-	__le64 generation;
+-} __attribute__ ((__packed__));
+-
+-struct btrfs_node {
+-	struct btrfs_header header;
+-	struct btrfs_key_ptr ptrs[];
+-} __attribute__ ((__packed__));
+-
+ /*
+  * btrfs_paths remember the path taken from the root down to the leaf.
+  * level 0 is always the leaf, and nodes[1...BTRFS_MAX_LEVEL] will point
+@@ -1307,39 +1106,6 @@ do {                                                                   \
+        }                                                               \
+ } while(0)
+ 
+-/*
+- * Inode flags
+- */
+-#define BTRFS_INODE_NODATASUM		(1 << 0)
+-#define BTRFS_INODE_NODATACOW		(1 << 1)
+-#define BTRFS_INODE_READONLY		(1 << 2)
+-#define BTRFS_INODE_NOCOMPRESS		(1 << 3)
+-#define BTRFS_INODE_PREALLOC		(1 << 4)
+-#define BTRFS_INODE_SYNC		(1 << 5)
+-#define BTRFS_INODE_IMMUTABLE		(1 << 6)
+-#define BTRFS_INODE_APPEND		(1 << 7)
+-#define BTRFS_INODE_NODUMP		(1 << 8)
+-#define BTRFS_INODE_NOATIME		(1 << 9)
+-#define BTRFS_INODE_DIRSYNC		(1 << 10)
+-#define BTRFS_INODE_COMPRESS		(1 << 11)
+-
+-#define BTRFS_INODE_ROOT_ITEM_INIT	(1 << 31)
+-
+-#define BTRFS_INODE_FLAG_MASK						\
+-	(BTRFS_INODE_NODATASUM |					\
+-	 BTRFS_INODE_NODATACOW |					\
+-	 BTRFS_INODE_READONLY |						\
+-	 BTRFS_INODE_NOCOMPRESS |					\
+-	 BTRFS_INODE_PREALLOC |						\
+-	 BTRFS_INODE_SYNC |						\
+-	 BTRFS_INODE_IMMUTABLE |					\
+-	 BTRFS_INODE_APPEND |						\
+-	 BTRFS_INODE_NODUMP |						\
+-	 BTRFS_INODE_NOATIME |						\
+-	 BTRFS_INODE_DIRSYNC |						\
+-	 BTRFS_INODE_COMPRESS |						\
+-	 BTRFS_INODE_ROOT_ITEM_INIT)
+-
+ struct btrfs_map_token {
+ 	const struct extent_buffer *eb;
+ 	char *kaddr;
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index 8e322e2c7e78..a20a9e53a40a 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -5,6 +5,8 @@
+ #include <linux/btrfs.h>
+ #include <linux/types.h>
+ 
++#define BTRFS_MAGIC 0x4D5F53665248425FULL /* ascii _BHRfS_M, no null */
++
+ /*
+  * This header contains the structure definitions and constants used
+  * by file system objects that can be retrieved using
+@@ -559,6 +561,39 @@ struct btrfs_timespec {
+ 	__le32 nsec;
+ } __attribute__ ((__packed__));
+ 
++/*
++ * Inode flags
++ */
++#define BTRFS_INODE_NODATASUM		(1 << 0)
++#define BTRFS_INODE_NODATACOW		(1 << 1)
++#define BTRFS_INODE_READONLY		(1 << 2)
++#define BTRFS_INODE_NOCOMPRESS		(1 << 3)
++#define BTRFS_INODE_PREALLOC		(1 << 4)
++#define BTRFS_INODE_SYNC		(1 << 5)
++#define BTRFS_INODE_IMMUTABLE		(1 << 6)
++#define BTRFS_INODE_APPEND		(1 << 7)
++#define BTRFS_INODE_NODUMP		(1 << 8)
++#define BTRFS_INODE_NOATIME		(1 << 9)
++#define BTRFS_INODE_DIRSYNC		(1 << 10)
++#define BTRFS_INODE_COMPRESS		(1 << 11)
++
++#define BTRFS_INODE_ROOT_ITEM_INIT	(1 << 31)
++
++#define BTRFS_INODE_FLAG_MASK						\
++	(BTRFS_INODE_NODATASUM |					\
++	 BTRFS_INODE_NODATACOW |					\
++	 BTRFS_INODE_READONLY |						\
++	 BTRFS_INODE_NOCOMPRESS |					\
++	 BTRFS_INODE_PREALLOC |						\
++	 BTRFS_INODE_SYNC |						\
++	 BTRFS_INODE_IMMUTABLE |					\
++	 BTRFS_INODE_APPEND |						\
++	 BTRFS_INODE_NODUMP |						\
++	 BTRFS_INODE_NOATIME |						\
++	 BTRFS_INODE_DIRSYNC |						\
++	 BTRFS_INODE_COMPRESS |						\
++	 BTRFS_INODE_ROOT_ITEM_INIT)
++
+ struct btrfs_inode_item {
+ 	/* nfs style generation number */
+ 	__le64 generation;
+@@ -985,4 +1020,203 @@ struct btrfs_qgroup_limit_item {
+ 	__le64 rsv_excl;
+ } __attribute__ ((__packed__));
+ 
++/*
++ * just in case we somehow lose the roots and are not able to mount,
++ * we store an array of the roots from previous transactions
++ * in the super.
++ */
++#define BTRFS_NUM_BACKUP_ROOTS 4
++struct btrfs_root_backup {
++	__le64 tree_root;
++	__le64 tree_root_gen;
++
++	__le64 chunk_root;
++	__le64 chunk_root_gen;
++
++	__le64 extent_root;
++	__le64 extent_root_gen;
++
++	__le64 fs_root;
++	__le64 fs_root_gen;
++
++	__le64 dev_root;
++	__le64 dev_root_gen;
++
++	__le64 csum_root;
++	__le64 csum_root_gen;
++
++	__le64 total_bytes;
++	__le64 bytes_used;
++	__le64 num_devices;
++	/* future */
++	__le64 unused_64[4];
++
++	u8 tree_root_level;
++	u8 chunk_root_level;
++	u8 extent_root_level;
++	u8 fs_root_level;
++	u8 dev_root_level;
++	u8 csum_root_level;
++	/* future and to align */
++	u8 unused_8[10];
++} __attribute__ ((__packed__));
++
++/*
++ * this is a very generous portion of the super block, giving us
++ * room to translate 14 chunks with 3 stripes each.
++ */
++#define BTRFS_SYSTEM_CHUNK_ARRAY_SIZE 2048
++
++/*
++ * the super block basically lists the main trees of the FS
++ * it currently lacks any block count etc etc
++ */
++struct btrfs_super_block {
++	/* the first 4 fields must match struct btrfs_header */
++	u8 csum[BTRFS_CSUM_SIZE];
++	/* FS specific UUID, visible to user */
++	u8 fsid[BTRFS_FSID_SIZE];
++	__le64 bytenr; /* this block number */
++	__le64 flags;
++
++	/* allowed to be different from the btrfs_header from here own down */
++	__le64 magic;
++	__le64 generation;
++	__le64 root;
++	__le64 chunk_root;
++	__le64 log_root;
++
++	/* this will help find the new super based on the log root */
++	__le64 log_root_transid;
++	__le64 total_bytes;
++	__le64 bytes_used;
++	__le64 root_dir_objectid;
++	__le64 num_devices;
++	__le32 sectorsize;
++	__le32 nodesize;
++	__le32 __unused_leafsize;
++	__le32 stripesize;
++	__le32 sys_chunk_array_size;
++	__le64 chunk_root_generation;
++	__le64 compat_flags;
++	__le64 compat_ro_flags;
++	__le64 incompat_flags;
++	__le16 csum_type;
++	u8 root_level;
++	u8 chunk_root_level;
++	u8 log_root_level;
++	struct btrfs_dev_item dev_item;
++
++	char label[BTRFS_LABEL_SIZE];
++
++	__le64 cache_generation;
++	__le64 uuid_tree_generation;
++
++	/* the UUID written into btree blocks */
++	u8 metadata_uuid[BTRFS_FSID_SIZE];
++
++	/* future expansion */
++	__le64 reserved[28];
++	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
++	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
++} __attribute__ ((__packed__));
++
++/*
++ * Compat flags that we support.  If any incompat flags are set other than the
++ * ones specified below then we will fail to mount
++ */
++#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
++#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
++#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
++
++#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
++	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
++	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
++
++#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
++#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
++
++#define BTRFS_FEATURE_INCOMPAT_SUPP			\
++	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
++	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
++	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
++	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
++	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
++	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
++	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
++	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
++	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
++	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
++	 BTRFS_FEATURE_INCOMPAT_RAID1C34)
++
++#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
++	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
++#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
++
++#define BTRFS_BACKREF_REV_MAX		256
++#define BTRFS_BACKREF_REV_SHIFT		56
++#define BTRFS_BACKREF_REV_MASK		(((u64)BTRFS_BACKREF_REV_MAX - 1) << \
++					 BTRFS_BACKREF_REV_SHIFT)
++
++#define BTRFS_OLD_BACKREF_REV		0
++#define BTRFS_MIXED_BACKREF_REV		1
++
++#define BTRFS_MAX_LEVEL 8
++
++/*
++ * every tree block (leaf or node) starts with this header.
++ */
++struct btrfs_header {
++	/* these first four must match the super block */
++	u8 csum[BTRFS_CSUM_SIZE];
++	u8 fsid[BTRFS_FSID_SIZE]; /* FS specific uuid */
++	__le64 bytenr; /* which block this node is supposed to live in */
++	__le64 flags;
++
++	/* allowed to be different from the super from here on down */
++	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
++	__le64 generation;
++	__le64 owner;
++	__le32 nritems;
++	u8 level;
++} __attribute__ ((__packed__));
++
++/*
++ * A leaf is full of items. offset and size tell us where to find
++ * the item in the leaf (relative to the start of the data area)
++ */
++struct btrfs_item {
++	struct btrfs_disk_key key;
++	__le32 offset;
++	__le32 size;
++} __attribute__ ((__packed__));
++
++/*
++ * leaves have an item area and a data area:
++ * [item0, item1....itemN] [free space] [dataN...data1, data0]
++ *
++ * The data is separate from the items to get the keys closer together
++ * during searches.
++ */
++struct btrfs_leaf {
++	struct btrfs_header header;
++	struct btrfs_item items[];
++} __attribute__ ((__packed__));
++
++/*
++ * all non-leaf blocks are nodes, they hold only keys and pointers to
++ * other blocks
++ */
++struct btrfs_key_ptr {
++	struct btrfs_disk_key key;
++	__le64 blockptr;
++	__le64 generation;
++} __attribute__ ((__packed__));
++
++struct btrfs_node {
++	struct btrfs_header header;
++	struct btrfs_key_ptr ptrs[];
++} __attribute__ ((__packed__));
++
+ #endif /* _BTRFS_CTREE_H_ */
+-- 
+2.26.0
+
