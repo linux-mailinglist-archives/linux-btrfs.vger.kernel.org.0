@@ -2,87 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4BD1A37EA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 18:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C371A380E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 18:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgDIQYT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Apr 2020 12:24:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60984 "EHLO mx2.suse.de"
+        id S1727007AbgDIQaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Apr 2020 12:30:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34852 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgDIQYS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Apr 2020 12:24:18 -0400
+        id S1726720AbgDIQaY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Apr 2020 12:30:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C7532AB7F;
-        Thu,  9 Apr 2020 16:24:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E5EFEAC53;
+        Thu,  9 Apr 2020 16:30:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1CB0DDA70B; Thu,  9 Apr 2020 18:23:41 +0200 (CEST)
-Date:   Thu, 9 Apr 2020 18:23:40 +0200
+        id 267AFDA70B; Thu,  9 Apr 2020 18:29:46 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 18:29:45 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
-Subject: Re: [PATCH v3 4/4] btrfs-progs: fix misc-test/029 provide device for
- mount
-Message-ID: <20200409162340.GE5920@twin.jikos.cz>
+Subject: Re: [PATCH 3/4] btrfs-progs: test clean start after failures
+Message-ID: <20200409162945.GF5920@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
         linux-btrfs@vger.kernel.org
 References: <1585879843-17731-1-git-send-email-anand.jain@oracle.com>
- <1585879843-17731-5-git-send-email-anand.jain@oracle.com>
+ <1585879843-17731-4-git-send-email-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585879843-17731-5-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1585879843-17731-4-git-send-email-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 10:10:43AM +0800, Anand Jain wrote:
-> The mount fails with 'file exists' error. Fix it by providing the device
-> name.
+On Fri, Apr 03, 2020 at 10:10:42AM +0800, Anand Jain wrote:
+> After a failure it fails for a different reason
 > 
-> $ make TEST=029\* test-misc
->     [TEST]   misc-tests.sh
->     [TEST/misc]   029-send-p-different-mountpoints
-> failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-> test failed for case 029-send-p-different-mountpoints
-> make: *** [test-misc] Error 1
-> 
-> ====== RUN CHECK mount -t btrfs -o subvol=subv1
-> /btrfs-progs/tests//test.img
+> === START TEST
+> /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints
+> $TEST_DEV not given, using /btrfs-progs/tests/test.img as fallback
+> ====== RUN MAYFAIL mkdir -p
 > /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-> mount: mount /dev/loop1 on
-> /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-> failed: File exists
-> failed: mount -t btrfs -o subvol=subv1 /btrfs-progs/tests//test.img
-> /btrfs-progs/tests/misc-tests/029-send-p-different-mountpoints/subvol_mnt
-> test failed for case 029-send-p-different-mountpoints
+> ====== RUN CHECK /btrfs-progs/mkfs.btrfs -f /btrfs-progs/tests/test.img
+> ERROR: /btrfs-progs/tests/test.img is mounted <====
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v2: use readlink to sanitize the TEST_DEV path
-> v3: readlink for TEST_DEV is not needed drop it
-> 
->  tests/misc-tests/029-send-p-different-mountpoints/test.sh | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tests/misc-tests/029-send-p-different-mountpoints/test.sh b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-> index a478b3d26495..b05e4172ca0f 100755
-> --- a/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-> +++ b/tests/misc-tests/029-send-p-different-mountpoints/test.sh
-> @@ -20,7 +20,8 @@ run_check_mkfs_test_dev
->  run_check_mount_test_dev
+> Add clean_start() helper to unmount.
+
+The testsuite is designed to stop on first failure and it's up the user
+to investigate and clean it up before starting it again. For that
+there's the test-clean make target. In some cases it might not clean up
+the environment completely, but that's typically if the test image is
+not unmoutnable due to some process having the directory open.
+
+> +# add all the cleanups here
+> +clean_start()
+> +{
+> +	grep -q $TEST_MNT /proc/self/mounts && umount $TEST_MNT
+> +}
+> +
+>  init_env()
+>  {
+>  	TEST_MNT="${TEST_MNT:-$TEST_TOP/mnt}"
+> diff --git a/tests/misc-tests.sh b/tests/misc-tests.sh
+> index 3b49ab012e78..3dc96f258540 100755
+> --- a/tests/misc-tests.sh
+> +++ b/tests/misc-tests.sh
+> @@ -40,6 +40,7 @@ export IMAGE
+>  export TEST_DEV
 >  
->  run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subv1"
-> -run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$TEST_DEV" "$SUBVOL_MNT"
-> +lodev=$(losetup  | grep ${TEST_DEV} | awk '{print $1}')
-> +run_check $SUDO_HELPER mount -t btrfs -o subvol=subv1 "$lodev" "$SUBVOL_MNT"
+>  rm -f "$RESULTS"
+> +clean_start
 
-The test dev is not necessarily a loop device, yes by default it is, but
-TEST_DEV can be set externally.
+Instead of this I'd rather make it a hard stop if there's some problem
+with the environment, like the mountpoint still mounted, or more loop
+devices from the specific tests still set up as loop devices etc.
 
-I still wonder why the test fails for you because it does not for me and
-without more information it's not clear what is mount reporting as
-'File exists', which is EEXIST.
+When I get to this situation I fix it manually (checkint mount output,
+losetup -D), but it'd be nice to have that automated.
