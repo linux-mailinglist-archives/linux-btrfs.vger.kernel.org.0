@@ -2,168 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1990C1A34D8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 15:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188BA1A3604
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 16:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgDIN0b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Apr 2020 09:26:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgDIN0b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Apr 2020 09:26:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 49F60AF6E;
-        Thu,  9 Apr 2020 13:26:27 +0000 (UTC)
-Subject: Re: [PATCH 07/13] btrfs: kick off async delayed ref flushing if we
- are over time budget
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200313212330.149024-1-josef@toxicpanda.com>
- <20200313212330.149024-8-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <e55347cd-d107-65cd-ce78-e959dada6aac@suse.com>
-Date:   Thu, 9 Apr 2020 16:26:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727528AbgDIOej (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Apr 2020 10:34:39 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:39846 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727104AbgDIOei (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Apr 2020 10:34:38 -0400
+Received: by mail-ed1-f45.google.com with SMTP id a43so13555826edf.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Apr 2020 07:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=IxNBayIOKJX6+q7dr9bav3myRIO6JFNxDzIUsk+fPVE=;
+        b=S2rROVYe9CIzie/40uE/r3GNWCfZGUdsfH5SjS8hjbqG31ECx5Xq/mUjViavIx7sCc
+         4ZWwrrwcCNQRvd3ewPP1jpSRJ4w41TzERxQ8rxjM30Yt2tAe4iLBtkZJFEm+ZK48k541
+         YbpRh5DtGvYJD9NrylaKay1xE7/kWuuG8vCUNHdXimHfbaLAhYVuzGXwAb4dMqz/j/9b
+         jicm3v6s/dS+Cewesvv21TStkzgq3KIXOKJtadREI17+bqAh1O2tbfGwPIGpGMmQcaXp
+         fc7scuKNjC5oEJw4G8c1O5qVtoQDC0DPojGaMAEO2bN4Jusms1vpp8VdHC0lb5u4c8LS
+         ufZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=IxNBayIOKJX6+q7dr9bav3myRIO6JFNxDzIUsk+fPVE=;
+        b=VVhJnUwsUhiyr0uOocuhi1x4aTbMJhYBOtEHiTB/xTVz0r79wBolXL/M0kZEROSgQT
+         ePH/KGOzrIyHPe94uYmqIY4t3m3nwivaZjWx/zWaHfhRjNwBSjkgh/2bEW9S02AwuYcg
+         eMjnV48Vsjz5i7MwrXhXf43a8ldBt5N1Wn5Q7S7lyhUUVnHhpwDWvpvprOCmqqCrxvJG
+         m9gQOAHzttzpjX0EL9KPXzwbZ00/Q6eM1476TSSj42FatHLq7zmMYzbSomRjr1xAjYWi
+         apfJlvbUIaEEJqIcy+4Lpj+KF5fySohPEDYlFuK42y0+Urnu6ikeF/QEw/0U0p9UhUtQ
+         Z58g==
+X-Gm-Message-State: AGi0Pua6F5PuPIm7wfdmrXLLWNeymzKLeT6pXV4QVbTR7SK/Yk7vEnSu
+        AOKoO9PZQYB0vpgEIhiIVUy/4Ypa1CIhzc1YhWNxv8EU
+X-Google-Smtp-Source: APiQypJMOSaGFWz387+dziyS6IEGpYHL2rvbC+ohZGEr0nupk9PWm0ZREqccQPR9EthtuQC6XpA6xYkTNUsLQchGQHo=
+X-Received: by 2002:a50:cfc6:: with SMTP id i6mr294423edk.314.1586442874710;
+ Thu, 09 Apr 2020 07:34:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200313212330.149024-8-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAG_uc2NkAOAnZtW=+cAR3YfH4frfqooJugjzCDZX161wnKDnqg@mail.gmail.com>
+In-Reply-To: <CAG_uc2NkAOAnZtW=+cAR3YfH4frfqooJugjzCDZX161wnKDnqg@mail.gmail.com>
+From:   Zak Lantz <zakodewald@gmail.com>
+Date:   Thu, 9 Apr 2020 10:34:24 -0400
+Message-ID: <CAG_uc2ORzb0uessFHTBLiMcdEtGxVtEZEJw_UXEX2EOSMq-quw@mail.gmail.com>
+Subject: Re: btrfs pool failure - bad superblock
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+I recently had a drive fail in my btrfs pool. I rebooted to pull the
+bad drive. Upon boot, I can no longer mount the remaining drive's
+partition. I have tried btrfs restore as well and both complain about
+a bad superblock as well as the backup superblock.
+If I try and run a super-recover, all supers display as being good.
+Any help would be appreciated.
+
+Thanks
+
+root@stylophora:~# mount -o degraded,usebackuproot,ro /dev/sdc1
+/mnt/user/btrfsbackup
+mount: /mnt/user/btrfsbackup: wrong fs type, bad option, bad
+superblock on /dev/sdc1, missing codepage or helper program, or other
+error.
+root@stylophora:~# btrfs restore -v -u 1 /dev/sdc1 /mnt/user/Backup/cachebc=
+k
+warning, device 2 is missing
+bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=3D0
+ERROR: cannot read chunk root
+Could not open root, trying backup super
+warning, device 2 is missing
+bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=3D0
+ERROR: cannot read chunk root
+Could not open root, trying backup super
+root@stylophora:~# btrfs rescue super-recover -v /dev/sdc1
+All Devices:
+        Device: id =3D 3, name =3D /dev/sdc1
+
+Before Recovering:
+        [All good supers]:
+                device name =3D /dev/sdc1
+                superblock bytenr =3D 65536
+
+                device name =3D /dev/sdc1
+                superblock bytenr =3D 67108864
+
+                device name =3D /dev/sdc1
+                superblock bytenr =3D 274877906944
+
+        [All bad supers]:
+
+All supers are valid, no need to recover
+root@stylophora:~# uname -a
+  btrfs --version
+Linux stylophora 4.19.98-Unraid #1 SMP Sun Feb 2 20:47:34 GMT 2020
+x86_64 Intel(R) Xeon(R) CPU           X5680  @ 3.33GHz GenuineIntel
+GNU/Linux
+root@stylophora:~#   btrfs --version
+btrfs-progs v5.4
+root@stylophora:~#   btrfs fi show
+Label: none  uuid: fe361bb0-4606-4eb0-a18f-f741b163c052
+        Total devices 1 FS bytes used 376.00KiB
+        devid    1 size 50.00GiB used 536.00MiB path /dev/loop2
+
+Label: none  uuid: aea70e3c-11b6-43f9-b08d-c4c38dda2887
+        Total devices 1 FS bytes used 332.00KiB
+        devid    1 size 1.00GiB used 126.38MiB path /dev/loop3
+
+warning, device 2 is missing
+bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=3D0
+ERROR: cannot read chunk root
+Label: none  uuid: eccae6e7-e489-4019-9e4d-501445eff3d8
+        Total devices 2 FS bytes used 507.73GiB
+        devid    3 size 931.51GiB used 523.00GiB path /dev/sdc1
+        *** Some devices missing
 
 
-On 13.03.20 г. 23:23 ч., Josef Bacik wrote:
-> For very large file systems we cannot rely on the space reservation
-> system to provide enough pressure to flush delayed refs in a timely
-> manner.  We have the infrastructure in place to keep track of how much
-> theoretical time it'll take to run our outstanding delayed refs, but
-> unfortunately I ripped all of that out when I added the delayed refs
-> rsv.  This code originally was added to address the problem of too many
-> delayed refs building up and thus causing transaction commits to take
-> several minutes to finish.
-> 
-> Fix this by adding back the ability to flush delayed refs based on the
-> time budget for them.  We want to limit to around 1 seconds worth of
-> delayed refs to be pending at any given time.  In order to keep up with
-> demand we will start the async flusher once we are at the 500ms mark,
-> and the async flusher will attempt to keep us in this ballpark.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/ctree.h       |  4 ++++
->  fs/btrfs/disk-io.c     |  3 +++
->  fs/btrfs/extent-tree.c | 44 ++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/transaction.c |  8 ++++++++
->  4 files changed, 59 insertions(+)
-> 
-
-<snip>
-
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 645ae95f465e..0e81990b57e0 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2249,6 +2249,50 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
->  	return 0;
->  }
->  
-> +static void btrfs_async_run_delayed_refs(struct work_struct *work)
-> +{
-> +	struct btrfs_fs_info *fs_info;
-> +	struct btrfs_trans_handle *trans;
-> +
-> +	fs_info = container_of(work, struct btrfs_fs_info,
-> +			       async_delayed_ref_work);
-> +
-> +	while (!btrfs_fs_closing(fs_info)) {
-> +		unsigned long count;
-> +		int ret;
-> +
-> +		trans = btrfs_attach_transaction(fs_info->extent_root);
-> +		if (IS_ERR(trans))
-> +			break;
-> +
-> +		smp_rmb();
-
-What is this barrier ordering? IMO its usage is bogus here, because in
-btrfs_should_end_transaction we use a full barrier and here only an RMB.
-Further more in btrfs_should_end_transaction we don't have any memory
-accesses preceding the check of the flushing state. Looking at the
-callers of btrfs_should_end_transaction I also don't see any ordering
-guaranteed i.e I think it could be removed altogether. Or perhahps we
-really want acquire/release semantics e.g. accesses to
-delayed_refs.flushing should be done via
-smp_load_acquire/smp_store_release functions?
-
-
-> +		if (trans->transaction->delayed_refs.flushing) {
-> +			btrfs_end_transaction(trans);
-> +			break;
-> +		}
-> +
-> +		/* No longer over our threshold, lets bail. */
-> +		if (!btrfs_should_throttle_delayed_refs(trans, true)) {
-> +			btrfs_end_transaction(trans);
-> +			break;
-> +		}
-> +
-> +		count = atomic_read(&trans->transaction->delayed_refs.num_entries);
-> +		count >>= 2;
-> +
-> +		ret = btrfs_run_delayed_refs(trans, count);
-> +		btrfs_end_transaction(trans);
-> +		if (ret < 0)
-> +			break;
-> +	}
-> +}
-> +
-
-<snip>
+On Thu, Apr 9, 2020 at 10:16 AM Zak Lantz <zakodewald@gmail.com> wrote:
+>
+> Hello,
+>
+> I recently had a drive fail in my btrfs pool. I rebooted to pull the bad =
+drive. Upon boot, I can no longer mount the remaining drive's partition. I =
+have tried btrfs restore as well and both complain about a bad superblock a=
+s well as the backup superblock.
+> If I try and run a super-recover, all supers display as being good.
+> Any help would be appreciated.
+>
+> Thanks
+>
+> root@stylophora:~# mount -o degraded,usebackuproot,ro /dev/sdc1 /mnt/user=
+/btrfsbackup
+> mount: /mnt/user/btrfsbackup: wrong fs type, bad option, bad superblock o=
+n /dev/sdc1, missing codepage or helper program, or other error.
+> root@stylophora:~# btrfs restore -v -u 1 /dev/sdc1 /mnt/user/Backup/cache=
+bck
+> warning, device 2 is missing
+> bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=
+=3D0
+> ERROR: cannot read chunk root
+> Could not open root, trying backup super
+> warning, device 2 is missing
+> bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=
+=3D0
+> ERROR: cannot read chunk root
+> Could not open root, trying backup super
+> root@stylophora:~# btrfs rescue super-recover -v /dev/sdc1
+> All Devices:
+>         Device: id =3D 3, name =3D /dev/sdc1
+>
+> Before Recovering:
+>         [All good supers]:
+>                 device name =3D /dev/sdc1
+>                 superblock bytenr =3D 65536
+>
+>                 device name =3D /dev/sdc1
+>                 superblock bytenr =3D 67108864
+>
+>                 device name =3D /dev/sdc1
+>                 superblock bytenr =3D 274877906944
+>
+>         [All bad supers]:
+>
+> All supers are valid, no need to recover
+> root@stylophora:~# uname -a
+>   btrfs --version
+> Linux stylophora 4.19.98-Unraid #1 SMP Sun Feb 2 20:47:34 GMT 2020 x86_64=
+ Intel(R) Xeon(R) CPU           X5680  @ 3.33GHz GenuineIntel GNU/Linux
+> root@stylophora:~#   btrfs --version
+> btrfs-progs v5.4
+> root@stylophora:~#   btrfs fi show
+> Label: none  uuid: fe361bb0-4606-4eb0-a18f-f741b163c052
+>         Total devices 1 FS bytes used 376.00KiB
+>         devid    1 size 50.00GiB used 536.00MiB path /dev/loop2
+>
+> Label: none  uuid: aea70e3c-11b6-43f9-b08d-c4c38dda2887
+>         Total devices 1 FS bytes used 332.00KiB
+>         devid    1 size 1.00GiB used 126.38MiB path /dev/loop3
+>
+> warning, device 2 is missing
+> bad tree block 578836021248, bytenr mismatch, want=3D578836021248, have=
+=3D0
+> ERROR: cannot read chunk root
+> Label: none  uuid: eccae6e7-e489-4019-9e4d-501445eff3d8
+>         Total devices 2 FS bytes used 507.73GiB
+>         devid    3 size 931.51GiB used 523.00GiB path /dev/sdc1
+>         *** Some devices missing
