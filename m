@@ -2,73 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 537501A33C2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 14:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186C31A34A3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Apr 2020 15:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgDIMGC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Apr 2020 08:06:02 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:38555 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgDIMGC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Apr 2020 08:06:02 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f20so3936677wmh.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 09 Apr 2020 05:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=qqXhwO7BswN1RQtad6JgvWy+YXto6m5fjOMwAyjsWJc=;
-        b=VsJeGOb9aZtFvi6qRvJOUx9s7TZv1cPmJTBkzTtke8Fe1Q/8FOsfGMS/JJu5PYM4ms
-         lOGrwkYMNspnEEUnsOQ4PE+yRAXO/hFiEHasF4/bc8zMa0u8NtVrfFjmSJgYx/RnEKy2
-         O8rI8Y3S2DXaBfO16mL3TnJ/s7fuiJxQRMS4TJkwmkaoI47YzEkGe5Gg2txcybpyYmpu
-         /YgswAw88pFsK5CSQXb9OAySNHrYK1K4+2RqmFQ0FmrVLLHeWBJ9q5wzO8rcAQaOUXf3
-         76kNrTUdjuzapnR64LzvlJuWTe4EYm3ZRy88fgwjsR/izyb5WR24xZIJfiRYEFuwTnzi
-         wB7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=qqXhwO7BswN1RQtad6JgvWy+YXto6m5fjOMwAyjsWJc=;
-        b=chL7+SZpL3n67URqgPO1RRMqPA0lPjmgOQ2rTkoB61oElalSlF7BTDxFNqvmLcheUx
-         vXHH74/Tkb0g0DGsGM+BHMeoKUJ83h8kah59gvL6y4Lbz2mNJsDxCL8CgbdlOB28Cp07
-         J/QLhtM6kWIAg2fwvU1EGxxgOBrvfrXXIfjbP6FyOc6SdK7CYnLKuO3m1ziCIlBUnTMQ
-         LJTK9EVEDTAT1OZma6+5cNmpyGbhHRoANrtJPTTwtmaMK7gHPsVo968sdrVIseqrQJoO
-         eFMDmUllFQr5vfsKvIaQ4W1CVAXEEzysf8lGmzeARRqn+QuD70wNfeLWIsmFyXIEowwS
-         vT/A==
-X-Gm-Message-State: AGi0PuZrpDNPTlLic0aAR0sFKa0EVyBEfkL3iM/Z3CZGqol6fplDVD78
-        YCQZLgi6YWAaRAA0QLaH3wdGdOR3CRV5f8aPOdU=
-X-Google-Smtp-Source: APiQypKBi0bAIoW5RfM00S19JHRdKYBra0nhegRqp6YfXbm+NoBPFG+7df8Ezq4SQUWP4j8vEWrR0C68JvPvq691pE4=
-X-Received: by 2002:a1c:3105:: with SMTP id x5mr10318095wmx.51.1586433961744;
- Thu, 09 Apr 2020 05:06:01 -0700 (PDT)
+        id S1726723AbgDINLa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Apr 2020 09:11:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55608 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726632AbgDINL3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Apr 2020 09:11:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 34718B16F;
+        Thu,  9 Apr 2020 13:11:27 +0000 (UTC)
+Subject: Re: [PATCH 07/13] btrfs: kick off async delayed ref flushing if we
+ are over time budget
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200313212330.149024-1-josef@toxicpanda.com>
+ <20200313212330.149024-8-josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <7b611adf-3bba-a2d3-d6eb-592bb15ce97e@suse.com>
+Date:   Thu, 9 Apr 2020 16:11:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Received: by 2002:adf:a341:0:0:0:0:0 with HTTP; Thu, 9 Apr 2020 05:06:01 -0700 (PDT)
-Reply-To: philipmicheal809@gmail.com
-From:   philipmicheal <brianjesse401@gmail.com>
-Date:   Thu, 9 Apr 2020 13:06:01 +0100
-Message-ID: <CAJRpr_kxS6aKBStVXhjLpOr8cXzcy9-4xm2kG_bbOGyAhzag8A@mail.gmail.com>
-Subject: Hl
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200313212330.149024-8-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo, bitte seien Sie informiert, dass diese E-Mail, die an Ihre
-Mailbox kam, nicht ist
-ein Fehler, der jedoch speziell an Sie gerichtet wurde. UND
-Ich habe einen Vorschlag von ($ 7.500.000.00) von meinem verstorbenen
-Kunden Engineer Carlos hinterlassen
-der bei Ihnen den gleichen Namen tr=C3=A4gt, der hier in Lom=C3=A9 gearbeit=
-et
-und gelebt hat
-Gehen. Mein verstorbener Kunde und meine Familie waren in einen
-Autounfall verwickelt
-Ihr Leben. Ich kontaktiere Sie als n=C3=A4chsten Angeh=C3=B6rigen des
-Verstorbenen, also Sie
-k=C3=B6nnte die Mittel auf Anspr=C3=BCche erhalten. Auf Ihre schnelle Antwo=
-rt werde ich
-Informieren Sie mich =C3=BCber die Art und Weise der Ausf=C3=BChrung dieses
-Bundes. Kontaktieren Sie mich diesbez=C3=BCglich
-E-Mails (philipmicheal809@gmail.com)
+
+
+On 13.03.20 г. 23:23 ч., Josef Bacik wrote:
+> For very large file systems we cannot rely on the space reservation
+> system to provide enough pressure to flush delayed refs in a timely
+> manner.  We have the infrastructure in place to keep track of how much
+> theoretical time it'll take to run our outstanding delayed refs, but
+> unfortunately I ripped all of that out when I added the delayed refs
+> rsv.  This code originally was added to address the problem of too many
+> delayed refs building up and thus causing transaction commits to take
+> several minutes to finish.
+> 
+> Fix this by adding back the ability to flush delayed refs based on the
+> time budget for them.  We want to limit to around 1 seconds worth of
+> delayed refs to be pending at any given time.  In order to keep up with
+> demand we will start the async flusher once we are at the 500ms mark,
+> and the async flusher will attempt to keep us in this ballpark.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/ctree.h       |  4 ++++
+>  fs/btrfs/disk-io.c     |  3 +++
+>  fs/btrfs/extent-tree.c | 44 ++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/transaction.c |  8 ++++++++
+>  4 files changed, 59 insertions(+)
+> 
+
+<snip>
+
+>  
+> +static void btrfs_async_run_delayed_refs(struct work_struct *work)
+> +{
+> +	struct btrfs_fs_info *fs_info;
+> +	struct btrfs_trans_handle *trans;
+> +
+> +	fs_info = container_of(work, struct btrfs_fs_info,
+> +			       async_delayed_ref_work);
+> +
+> +	while (!btrfs_fs_closing(fs_info)) {
+> +		unsigned long count;
+> +		int ret;
+> +
+> +		trans = btrfs_attach_transaction(fs_info->extent_root);
+> +		if (IS_ERR(trans))
+> +			break;
+> +
+> +		smp_rmb();
+> +		if (trans->transaction->delayed_refs.flushing) {
+> +			btrfs_end_transaction(trans);
+> +			break;
+> +		}
+> +
+> +		/* No longer over our threshold, lets bail. */
+> +		if (!btrfs_should_throttle_delayed_refs(trans, true)) {
+> +			btrfs_end_transaction(trans);
+> +			break;
+> +		}
+> +
+> +		count = atomic_read(&trans->transaction->delayed_refs.num_entries);
+
+Don't you want to actually read num_heads_ready rather than num_entries,
+i.e isn't this introducing the same issues as the one fixed by:
+
+[PATCH 2/5] btrfs: delayed refs pre-flushing should only run the heads
+we have
+
+
+> +		count >>= 2;
+> +
+> +		ret = btrfs_run_delayed_refs(trans, count);
+> +		btrfs_end_transaction(trans);
+> +		if (ret < 0)
+> +			break;
+> +	}
+> +}
+
+<snip>
