@@ -2,61 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 688981A4502
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Apr 2020 12:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17F81A47EF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Apr 2020 17:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgDJKJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Apr 2020 06:09:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgDJKJp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Apr 2020 06:09:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 86C23AB5F;
-        Fri, 10 Apr 2020 10:09:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 965AEDA72D; Fri, 10 Apr 2020 12:09:06 +0200 (CEST)
-Date:   Fri, 10 Apr 2020 12:09:06 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.6 64/68] btrfs: hold a ref on the root in
- btrfs_recover_relocation
-Message-ID: <20200410100906.GH5920@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200410034634.7731-1-sashal@kernel.org>
- <20200410034634.7731-64-sashal@kernel.org>
+        id S1726598AbgDJPmv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Apr 2020 11:42:51 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44068 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgDJPmv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Apr 2020 11:42:51 -0400
+Received: by mail-qk1-f196.google.com with SMTP id j4so2467213qkc.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Apr 2020 08:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kWuF8/K5yV7++n/KrsD8j3cLJLPqBW8N6607wBDXXbI=;
+        b=OzIVFC75vP9r/Xm1XZX+xaI1QIx1tzcO6wQmJIQ1204u/anvNgwmChiTcNY7Zki/2q
+         M52OHqb/10T/Na7tjNp950vgJbKZn4thty76ghIwAThzdLleeNB1pD+mYcCksOJCAbBd
+         XL1yl2pqq6/fz9eDkiClQi1WDqiAzg2L3XqiWyPZiDRx/RBM/hbPK7IObcb+GSoC6A3K
+         VeiVG7ObDtt22cn5xP4KSf5XAMaNmGpvBDMfS5D6JRvyUfcXIDGcdzDYPl+PE1QoDx3q
+         fZavkpxjVEHlCVj8QYrIG/QTOTbstKGqocH839Y8PQ7cuveXkrMBfQs0yvpm/4CDBgk8
+         x18g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kWuF8/K5yV7++n/KrsD8j3cLJLPqBW8N6607wBDXXbI=;
+        b=MAxErr9KA8yCQ+lMqStkakEvM2QEsnXyJEaK9opE3jh2mxYuOq9hlesm2yBzJedAsy
+         448PlWYbzBAwLsneaN7qJri08rOQntBXDuigDBhA00miYVctsOwnOCojdyzfeFWPU2NY
+         3MqUC5MQYqhC+hseg7KY85OiuJdsIj3dsv8g7de+nDHQ7EiAmJZy2ksdcfmkBl4DSCM6
+         EBgcvip6+54un6gXmQL3LrO+8fycNePQibQ8dTbshmXL4KqxBaxqpEbr8nKklDHqoljL
+         P2cUAuvNN3wlGbA46EPkqJbDuTIVvuVc3UOAk5MA/emLMy+81OVunvjqdF5PI78gmiYO
+         PZRg==
+X-Gm-Message-State: AGi0Pub3/JfDTN3KjlcZOHoiKL9UPWJ4YGPpBftlh1vfQebrJBcq5kDk
+        ubEXGR4tNbmVG1HDnIkqPg6xuFsgPVArpA==
+X-Google-Smtp-Source: APiQypJ1ZH9MtqtM5xCVNGkO/uDVZgcXNqFFDkSfl2UY9oIEiKyM4pP3FHVba9hlPXRwmRs2TajNxg==
+X-Received: by 2002:a37:a4d1:: with SMTP id n200mr4563268qke.156.1586533371020;
+        Fri, 10 Apr 2020 08:42:51 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id o128sm1780123qkf.116.2020.04.10.08.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 08:42:50 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: fix setting last_trans for reloc roots
+Date:   Fri, 10 Apr 2020 11:42:48 -0400
+Message-Id: <20200410154248.2646406-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200410034634.7731-64-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 11:46:29PM -0400, Sasha Levin wrote:
-> From: Josef Bacik <josef@toxicpanda.com>
-> 
-> [ Upstream commit 932fd26df8125a5b14438563c4d3e33f59ba80f7 ]
-> 
-> We look up the fs root in various places in here when recovering from a
-> crashed relcoation.  Make sure we hold a ref on the root whenever we
-> look them up.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+I made a mistake with my previous fix, I assumed that we didn't need to
+mess with the reloc roots once we were out of the part of relocation
+where we are actually moving the extents.
 
-Please drop this patch from all stable versions. It's part of a
-larger series that is preparatory switching from SRCU to refcounts, so
-the patch on itself does not fix anything.
+The subtle thing that I missed is that btrfs_init_reloc_root() also
+updates the last_trans for the reloc root when we do
+btrfs_record_root_in_trans() for the corresponding fs_root.  I've added
+a comment to make sure future me doesn't make this mistake again.
+
+This showed up as a WARN_ON() in btrfs_copy_root() because our
+last_trans didn't == the current transid.  This could happen if we
+snapshotted a fs root with a reloc root after we set
+rc->create_reloc_tree = 0, but before we actually merge the reloc root.
+
+Fixes: 2abc726ab4b8 ("btrfs: do not init a reloc root if we aren't relocating")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/relocation.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index d4734337127a..76bfb524bf3e 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -830,8 +830,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 	int clear_rsv = 0;
+ 	int ret;
+ 
+-	if (!rc || !rc->create_reloc_tree ||
+-	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
++	if (!rc)
+ 		return 0;
+ 
+ 	/*
+@@ -841,12 +840,28 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 	if (reloc_root_is_dead(root))
+ 		return 0;
+ 
++	/*
++	 * This is subtle but important.  We do not do
++	 * record_root_in_transaction for reloc roots, instead we record their
++	 * corresponding fs root, and then here we update the last trans for the
++	 * reloc root.  This means that we have to do this for the entire life
++	 * of the reloc root, regardless of which stage of the relocation we are
++	 * in.
++	 */
+ 	if (root->reloc_root) {
+ 		reloc_root = root->reloc_root;
+ 		reloc_root->last_trans = trans->transid;
+ 		return 0;
+ 	}
+ 
++	/*
++	 * We are merging reloc roots, we do not need new reloc trees.  Also
++	 * reloc trees never need their own reloc tree.
++	 */
++	if (!rc->create_reloc_tree ||
++	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
++		return 0;
++
+ 	if (!trans->reloc_reserved) {
+ 		rsv = trans->block_rsv;
+ 		trans->block_rsv = rc->block_rsv;
+-- 
+2.24.1
+
