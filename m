@@ -2,74 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 452401A5398
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 21:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCD61A53A4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 22:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgDKT7c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Apr 2020 15:59:32 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:39425 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgDKT7c (ORCPT
+        id S1726659AbgDKUVf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 11 Apr 2020 16:21:35 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:40700 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgDKUVe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Apr 2020 15:59:32 -0400
-Received: by mail-wm1-f52.google.com with SMTP id y24so6002390wma.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Apr 2020 12:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2EIxb7bqRyMzgnz51nm8IqOq2zxJo84+mVYBGP8lfYs=;
-        b=fgk4RXk+vTQ7jTN70UqGweIHYkaTGSgpY31kc1E4NpQeoqb6UdTBWbFlXSlVREcwNa
-         3PIhvEbmH8PYLrxzcigWVVweq8N4uTXFnigSPXCY+cgdFgJIWlQ0VF4qe8UeMLBiiPDm
-         H2BxMI7etWmnxoV8chV6g/mf7vEFy2+p6TRCNC96xddcV6HunxwQunV61zI2Om9NwFqa
-         fwrhNomfi9ABbaqkCjfxeh2vxXcmFUpKnoT3U/dnqna1R6GmTLbbozknQ1JrAWyNOu6b
-         VH0OKCdlzCd9zVrWZPDqk9ozGHBCcqpyxxqgS/LDpHOGrA+R1R+aGC+nhpiFBamlegRU
-         NaoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2EIxb7bqRyMzgnz51nm8IqOq2zxJo84+mVYBGP8lfYs=;
-        b=aOmlkkQIqhw1mMUVnOH1GW/BOMxq9S+IEeObvcvWYKQELZdagoHCPGEYE2eQnxMO3i
-         u2DmQtDUkSx7u3jAaeGY/SlgJKM4nk+TSscVkeDgVZrR78IsF+gTUxL6Z/H35rq5Sc5g
-         xWICAO+ukVe9yeZ/P62pBp+tn8ebv2W5pi8aPueE7khIdFhRQ1cjGb2gg7LyheDmaixo
-         E9JMMaaA001z6pXGRIhZm808jtEycPTeRJTNrXzViMNw23pEdZcgTahKLn04aBvSxnKj
-         ynWmql+kykGsKccmTDa4Kz6zgtHWLD9yMtp7hq/++EDkT6noDQaTS57mHU5RytocfHzL
-         2TLQ==
-X-Gm-Message-State: AGi0PuZxjQjJ6/Oz6S3L/aO2DBmzGWYYwT13z/9dvjAiOYFa22zutqqp
-        46LajRwypOzJ57Q/fhRsnO2/QjQ1Boo/mlTfGGtBbQ==
-X-Google-Smtp-Source: APiQypI+N1Li9MPpsKkR7TeW16Rb7J5Mib36XcX/HhEz7QiFDhK+6FsnrD7vS8EmMJ/QZ2GzfhZ+3IEJBQbXT4ViAj8=
-X-Received: by 2002:a1c:6455:: with SMTP id y82mr3833273wmb.128.1586635169184;
- Sat, 11 Apr 2020 12:59:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <6a1c8ce0-ce2a-698d-dcc6-0657a125dae4@gmail.com>
- <20200409043245.GO13306@hungrycats.org> <e1ed482f-158a-650a-f586-d8ad0310157d@gmail.com>
- <20200409230724.GM2693@hungrycats.org> <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
-In-Reply-To: <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 11 Apr 2020 13:59:13 -0600
-Message-ID: <CAJCQCtRGOJQrQf-QhXDnHf5P32ihixZ=8_D8+Bu+vxSUdj4oNQ@mail.gmail.com>
-Subject: Re: btrfs freezing on writes
+        Sat, 11 Apr 2020 16:21:34 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 9AEA366510F; Sat, 11 Apr 2020 16:21:34 -0400 (EDT)
+Date:   Sat, 11 Apr 2020 16:21:34 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     kjansen387 <kjansen387@gmail.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs freezing on writes
+Message-ID: <20200411202134.GN2693@hungrycats.org>
+References: <6a1c8ce0-ce2a-698d-dcc6-0657a125dae4@gmail.com>
+ <20200409043245.GO13306@hungrycats.org>
+ <e1ed482f-158a-650a-f586-d8ad0310157d@gmail.com>
+ <20200409230724.GM2693@hungrycats.org>
+ <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I don't know how much the size of the metadata chunk matters with
-this, but I see 256M, 512M, and 1G metadata chunks on my file systems.
+On Sat, Apr 11, 2020 at 09:46:43PM +0200, kjansen387 wrote:
+> I have tried to rebalance metadata..
+> 
+> Starting point:
+> # btrfs fi usage /storage
+> Overall:
+>     Device size:                  10.92TiB
+>     Device allocated:              7.45TiB
+>     Device unallocated:            3.47TiB
+>     Device missing:                  0.00B
+>     Used:                          7.35TiB
+>     Free (estimated):              1.78TiB      (min: 1.78TiB)
+>     Data ratio:                       2.00
+>     Metadata ratio:                   2.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+> 
+> Data,RAID1: Size:3.72TiB, Used:3.67TiB (98.74%)
+>    /dev/sdc        2.81TiB
+>    /dev/sdb        2.81TiB
+>    /dev/sda     1017.00GiB
+>    /dev/sdd      840.00GiB
+> 
+> Metadata,RAID1: Size:6.00GiB, Used:5.09GiB (84.86%)
+>    /dev/sdc        3.00GiB
+>    /dev/sdb        3.00GiB
+>    /dev/sda        1.00GiB
+>    /dev/sdd        5.00GiB
+> 
+> System,RAID1: Size:32.00MiB, Used:608.00KiB (1.86%)
+>    /dev/sdb       32.00MiB
+>    /dev/sdd       32.00MiB
+> 
+> Unallocated:
+>    /dev/sdc      845.02GiB
+>    /dev/sdb      845.99GiB
+>    /dev/sda      845.02GiB
+>    /dev/sdd     1017.99GiB
+>
+> I did:
+> # btrfs fi resize 4:-2g /storage/
+> # btrfs balance start -mdevid=4 /storage
+> # btrfs fi resize 4:max /storage/
+> 
+> but the distribution of metadata ended up like before.
+> 
+> I also tried (to match the free space of the other disks):
+> # btrfs fi resize 4:-172g /storage/
+> # btrfs balance start -mdevid=4 /storage
+> # btrfs fi resize 4:max /storage/
+> 
+> again, the distribution of metadata ended up like before..
+> 
+> Any other tips to rebalance metadata ?
 
-Try this for length only, which is in bytes:
-$ sudo btrfs insp dump-t -t chunk /dev/nvme0n1p7 | grep METADATA
+The purpose of resize -2g was to make a little less unallocated space
+on one drive compared to all the others, starting with all the drives
+having equal unallocated space.  The purpose of resize -172g was to
+make the extra unallocated space on sdd go away, so it would be equal to
+the other 3 drives.  You have to do _both_ of those before the balance.
+Or just add the two numbers, i.e. resize -174g.
 
-This will show the entire item, A5 might be needed to show both
-devuuids, since you're using raid1, and might want to know on which
-device the chunk is located; the devuuid is found in the superblock.
-$ sudo btrfs insp dump-t -t chunk /dev/nvme0n1p7 | grep -A4 -B1 METADATA
+If you really want to be sure, resize by -200g (far more than necessary),
+then balance start -mlimit=4,devid=4.  The balance is "I know there are
+exactly 5 block groups now, and I want to leave exactly one behind,"
+and the resize is "I want no possibility of new block groups on sdd for
+some time."
 
-
-
-Chris Murphy
+> On 10-Apr-20 01:07, Zygo Blaxell wrote:
+> > On Thu, Apr 09, 2020 at 11:53:00PM +0200, kjansen387 wrote:
+> > > btrfs fi resize 1:-1g /export;           # Assuming 4GB metadata
+> > > btrfs fi resize 2:-2g /export;           # Assuming 5GB metadata
+> > 
+> > Based on current data, yes; however, it's possible that the device remove
+> > you are already running might balance the metadata as a side-effect.
+> > Redo the math with the values you get after the device remove is done.
+> > You may not need to balance anything.
+> > 
+> > > btrfs balance start -mdevid=1 /export;   # Why only devid 1, and not 2 ?
+> > 
+> > We want balance to relocate metadata block groups that are on both
+> > devids 1 and 2, i.e. the BG has a chunk on both drives at the same time.
+> > Balance filters only allow one devid to be specified, but in this case
+> > 'devid=1' or 'devid=2' is close enough.  All we want to do here is filter
+> > out block groups where one mirror chunk is already on devid 3, 4, or 5,
+> > since that would just place the metadata somewhere else on the same disks.
+> > 
+> > > btrfs fi resize 1:max /export;
+> > > btrfs fi resize 2:max /export;
+> > > 
+> > > Thanks!
+> > > 
+> > > 
+> 
