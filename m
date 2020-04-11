@@ -2,141 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C87D1A4AF4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Apr 2020 22:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0754C1A4F07
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 11:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgDJUQN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Apr 2020 16:16:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41066 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgDJUQM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:16:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8BF01AC6E;
-        Fri, 10 Apr 2020 20:16:10 +0000 (UTC)
-Subject: Re: [RESEND PATCH 1/2] btrfs: Read stripe len directly in
- btrfs_rmap_block
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20200403134035.8875-1-nborisov@suse.com>
- <f9492306-0d43-a79b-3e67-51e8508d2d32@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <4e6cea3c-52b9-40ae-73ff-50bf7fa761a9@suse.com>
-Date:   Fri, 10 Apr 2020 23:16:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726091AbgDKJNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Apr 2020 05:13:30 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:45061 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgDKJNa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 11 Apr 2020 05:13:30 -0400
+Received: by mail-vs1-f67.google.com with SMTP id j65so2633838vsd.12
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Apr 2020 02:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=Gt3DiC+nhjmp5/rTVNxeiHO33vOd/SvD+GynJfcMSG3PymeLX+Nu0Ww38MYLCEtzJo
+         79/n6dyuuyqiM/w35KJ1fggprzriRyD2KD2QhHvPHILfYj1tc3IRURCNz5qBscHDfhOv
+         OiHOQcqaR55PJOtyA24YHdmEOCF10MmVN21YMU7JUu0ghjamXmWCwNujpP+5+femewcU
+         PaqL6R9RKmrJb9dDFZHcp8W71cJoWtH4b5JsF1lnVq1V+bsIiVHGS4XldzwkpXReHXSu
+         RViIXMC0oD72T/O20SeUqp8yOmMEaBZW7f8a4nBo1quW10KFXX74E7pyJgq5Vj0aC/bA
+         ABwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=ouUJ4lYqbN0hj7EJegXkWY2//i1z3C3tseKvMLKgUpMCLSsJoy0ldGGAa24a6MuMzC
+         Jf81tj+akg6sv1/nYcSyU0/d+TJNwitRYKJwk9Lbz3pGiV38qqCJgmiu5kK6tWm3XScF
+         k+angGjF3e/TSd5AGIdW4l2vQeadJhcPxOMMtffp0lN3YPo3f9SCuL7jUMEbd45YX9nP
+         NIbEYHc39wmM//q04c8KtnYkHH7XueASpyuLjUUIAGmVibR5Gm7duCbq7GBcTUJl4S+V
+         uepPgaw1+A7gBfCaW2J1chxse8SAjbJvJSvxmU4JhMXqHDgeWH79tdEJiPMbou9eyX3/
+         Ia9A==
+X-Gm-Message-State: AGi0Pubn6PaYxW9sXilB+tVyK1hP+VTNVJDNALYfVI31LSjMhpuwbghB
+        g6nLJyr0fQCjU0iwuSBMOwW2CismCgBGWdv67/s=
+X-Google-Smtp-Source: APiQypJCMYInU0ui7v5xBnimCjGgIX4FG0uLSrq2ygPInHhcdBQBvLqWGdTyEm9hRgnog36n4kunja8x7KGtUeCiRGM=
+X-Received: by 2002:a67:fbc3:: with SMTP id o3mr6213485vsr.173.1586596409652;
+ Sat, 11 Apr 2020 02:13:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f9492306-0d43-a79b-3e67-51e8508d2d32@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:3005:0:0:0:0:0 with HTTP; Sat, 11 Apr 2020 02:13:28
+ -0700 (PDT)
+Reply-To: idrisomar259@gmail.com
+From:   Idris Omar <customs.agents.offices.in.fran@gmail.com>
+Date:   Sat, 11 Apr 2020 02:13:28 -0700
+Message-ID: <CALDQqkJp9=yYKgWXryVzcDM_eSTakUhH6sdCv5=Sc3PbtcgTOA@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+-- 
+Sir / Madam,
 
+Hi Friend I am the accountant and auditing manager of the
+International Finance Bank Plc bf I want to transfer an abandoned sum
+of 10.5 millions USD  to your account.50% will be for you. No risk
+involved.
 
-On 10.04.20 г. 22:29 ч., Josef Bacik wrote:
-> On 4/3/20 9:40 AM, Nikolay Borisov wrote:
->> extent_map::orig_block_len contains the size of a physical stripe when
->> it's used to describe block groups (calculated in read_one_chunk via
->> calc_stripe_length or calculated in decide_stripe_size and then
->> assigned to
->> extent_map::orig_block_len in create_chunk). Exploit this fact to get the
->> size directly rather than opencoding the calculations. No functional
->> changes.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>
->> Hello David,
->>
->> You had some reservations for this patch but now I've expanded the
->> changelog to
->> explain why it's safe to do so.
->>
->>
->>   fs/btrfs/block-group.c | 13 +++----------
->>   1 file changed, 3 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index 786849fcc319..d0dbaa470b88 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -1628,19 +1628,12 @@ int btrfs_rmap_block(struct btrfs_fs_info
->> *fs_info, u64 chunk_start,
->>           return -EIO;
->>
->>       map = em->map_lookup;
->> -    data_stripe_length = em->len;
->> +    data_stripe_length = em->orig_block_len;
->>       io_stripe_size = map->stripe_len;
->>
->> -    if (map->type & BTRFS_BLOCK_GROUP_RAID10)
->> -        data_stripe_length = div_u64(data_stripe_length,
->> -                         map->num_stripes / map->sub_stripes);
->> -    else if (map->type & BTRFS_BLOCK_GROUP_RAID0)
->> -        data_stripe_length = div_u64(data_stripe_length,
->> map->num_stripes);
->> -    else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
->> -        data_stripe_length = div_u64(data_stripe_length,
->> -                         nr_data_stripes(map));
->> +    /* For raid5/6 adjust to a full IO stripe length */
->> +    if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->>           io_stripe_size = map->stripe_len * nr_data_stripes(map);
->> -    }
->>
-> 
-> So now data_stripe_length is different in the RAID1 case and the RAID1C*
-> case, right?  Is that ok?  I *think* it is, but I'm a little drunk and
-> can't really reason it out well.  Thanks,
+Contact me for more details.
 
-The stripe for RAID1C* is calculated in decide_stripe_size_regular based
-on the data in btrfs_raid_array. This patch only gets whatever was
-calculated at chunk allocation time.
+Kindly reply me back to my alternative email address (
+idrisomar259@gmail.com  )
 
-> 
-> Josef
+Thanks,
+
+Mr Idris Omar
