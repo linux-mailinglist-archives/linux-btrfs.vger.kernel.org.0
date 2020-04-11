@@ -2,130 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCD61A53A4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 22:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246DF1A53C7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 23:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgDKUVf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 11 Apr 2020 16:21:35 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40700 "EHLO
+        id S1726563AbgDKVOW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Apr 2020 17:14:22 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46328 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgDKUVe (ORCPT
+        with ESMTP id S1726182AbgDKVOW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Apr 2020 16:21:34 -0400
+        Sat, 11 Apr 2020 17:14:22 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 9AEA366510F; Sat, 11 Apr 2020 16:21:34 -0400 (EDT)
-Date:   Sat, 11 Apr 2020 16:21:34 -0400
+        id 5E7C0665223; Sat, 11 Apr 2020 17:14:22 -0400 (EDT)
+Date:   Sat, 11 Apr 2020 17:14:21 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     kjansen387 <kjansen387@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs freezing on writes
-Message-ID: <20200411202134.GN2693@hungrycats.org>
-References: <6a1c8ce0-ce2a-698d-dcc6-0657a125dae4@gmail.com>
- <20200409043245.GO13306@hungrycats.org>
- <e1ed482f-158a-650a-f586-d8ad0310157d@gmail.com>
- <20200409230724.GM2693@hungrycats.org>
- <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Balance loops: what we know so far
+Message-ID: <20200411211414.GP13306@hungrycats.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="8S8xwCNhfXjuHwS7"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <a4c5fcd2-c6cd-71e2-560e-9c7290e0c47d@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 09:46:43PM +0200, kjansen387 wrote:
-> I have tried to rebalance metadata..
-> 
-> Starting point:
-> # btrfs fi usage /storage
-> Overall:
->     Device size:                  10.92TiB
->     Device allocated:              7.45TiB
->     Device unallocated:            3.47TiB
->     Device missing:                  0.00B
->     Used:                          7.35TiB
->     Free (estimated):              1.78TiB      (min: 1.78TiB)
->     Data ratio:                       2.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
-> 
-> Data,RAID1: Size:3.72TiB, Used:3.67TiB (98.74%)
->    /dev/sdc        2.81TiB
->    /dev/sdb        2.81TiB
->    /dev/sda     1017.00GiB
->    /dev/sdd      840.00GiB
-> 
-> Metadata,RAID1: Size:6.00GiB, Used:5.09GiB (84.86%)
->    /dev/sdc        3.00GiB
->    /dev/sdb        3.00GiB
->    /dev/sda        1.00GiB
->    /dev/sdd        5.00GiB
-> 
-> System,RAID1: Size:32.00MiB, Used:608.00KiB (1.86%)
->    /dev/sdb       32.00MiB
->    /dev/sdd       32.00MiB
-> 
-> Unallocated:
->    /dev/sdc      845.02GiB
->    /dev/sdb      845.99GiB
->    /dev/sda      845.02GiB
->    /dev/sdd     1017.99GiB
->
-> I did:
-> # btrfs fi resize 4:-2g /storage/
-> # btrfs balance start -mdevid=4 /storage
-> # btrfs fi resize 4:max /storage/
-> 
-> but the distribution of metadata ended up like before.
-> 
-> I also tried (to match the free space of the other disks):
-> # btrfs fi resize 4:-172g /storage/
-> # btrfs balance start -mdevid=4 /storage
-> # btrfs fi resize 4:max /storage/
-> 
-> again, the distribution of metadata ended up like before..
-> 
-> Any other tips to rebalance metadata ?
 
-The purpose of resize -2g was to make a little less unallocated space
-on one drive compared to all the others, starting with all the drives
-having equal unallocated space.  The purpose of resize -172g was to
-make the extra unallocated space on sdd go away, so it would be equal to
-the other 3 drives.  You have to do _both_ of those before the balance.
-Or just add the two numbers, i.e. resize -174g.
+--8S8xwCNhfXjuHwS7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you really want to be sure, resize by -200g (far more than necessary),
-then balance start -mlimit=4,devid=4.  The balance is "I know there are
-exactly 5 block groups now, and I want to leave exactly one behind,"
-and the resize is "I want no possibility of new block groups on sdd for
-some time."
+Since 5.1, btrfs has been prone to getting stuck in semi-infinite loops
+in balance and device shrink/remove:
 
-> On 10-Apr-20 01:07, Zygo Blaxell wrote:
-> > On Thu, Apr 09, 2020 at 11:53:00PM +0200, kjansen387 wrote:
-> > > btrfs fi resize 1:-1g /export;           # Assuming 4GB metadata
-> > > btrfs fi resize 2:-2g /export;           # Assuming 5GB metadata
-> > 
-> > Based on current data, yes; however, it's possible that the device remove
-> > you are already running might balance the metadata as a side-effect.
-> > Redo the math with the values you get after the device remove is done.
-> > You may not need to balance anything.
-> > 
-> > > btrfs balance start -mdevid=1 /export;   # Why only devid 1, and not 2 ?
-> > 
-> > We want balance to relocate metadata block groups that are on both
-> > devids 1 and 2, i.e. the BG has a chunk on both drives at the same time.
-> > Balance filters only allow one devid to be specified, but in this case
-> > 'devid=1' or 'devid=2' is close enough.  All we want to do here is filter
-> > out block groups where one mirror chunk is already on devid 3, 4, or 5,
-> > since that would just place the metadata somewhere else on the same disks.
-> > 
-> > > btrfs fi resize 1:max /export;
-> > > btrfs fi resize 2:max /export;
-> > > 
-> > > Thanks!
-> > > 
-> > > 
-> 
+	[Sat Apr 11 16:59:32 2020] BTRFS info (device dm-0): found 29 extents, stage: update data pointers
+	[Sat Apr 11 16:59:33 2020] BTRFS info (device dm-0): found 29 extents, stage: update data pointers
+	[Sat Apr 11 16:59:34 2020] BTRFS info (device dm-0): found 29 extents, stage: update data pointers
+	[Sat Apr 11 16:59:34 2020] BTRFS info (device dm-0): found 29 extents, stage: update data pointers
+	[Sat Apr 11 16:59:35 2020] BTRFS info (device dm-0): found 29 extents, stage: update data pointers
+
+This is a block group while it's looping, as seen by python-btrfs:
+
+	# share/python-btrfs/examples/show_block_group_contents.py 1934913175552 /media/testfs/
+	block group vaddr 1934913175552 length 1073741824 flags DATA used 939167744 used_pct 87
+	extent vaddr 1934913175552 length 134217728 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585767972864 count 1
+	extent vaddr 1935047393280 length 5591040 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769349120 count 1
+	extent vaddr 1935052984320 length 134217728 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769349120 count 1
+	extent vaddr 1935187202048 length 122064896 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769349120 count 1
+	extent vaddr 1935309266944 length 20414464 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769365504 count 1
+	extent vaddr 1935329681408 length 60555264 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769365504 count 1
+	extent vaddr 1935390236672 length 9605120 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769381888 count 1
+	extent vaddr 1935399841792 length 4538368 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769381888 count 1
+	extent vaddr 1935404380160 length 24829952 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769381888 count 1
+	extent vaddr 1935429210112 length 7999488 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769398272 count 1
+	extent vaddr 1935437209600 length 6426624 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769627648 count 1
+	extent vaddr 1935443636224 length 28676096 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769644032 count 1
+	extent vaddr 1935472312320 length 8101888 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769644032 count 1
+	extent vaddr 1935480414208 length 20455424 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769644032 count 1
+	extent vaddr 1935500869632 length 10215424 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769660416 count 1
+	extent vaddr 1935511085056 length 10792960 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769676800 count 1
+	extent vaddr 1935521878016 length 6066176 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769709568 count 1
+	extent vaddr 1935527944192 length 80896000 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769725952 count 1
+	extent vaddr 1935608840192 length 134217728 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769742336 count 1
+	extent vaddr 1935743057920 length 106102784 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769742336 count 1
+	extent vaddr 1935849160704 length 3125248 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769742336 count 1
+	extent vaddr 1935852285952 length 57344 refs 1 gen 113299 flags DATA
+	    inline shared data backref parent 1585769742336 count 1
+
+All of the extent data backrefs are removed by the balance, but the
+loop keeps trying to get rid of the shared data backrefs.  It has
+no effect on them, but keeps trying anyway.
+
+This is "semi-infinite" because it is possible for the balance to
+terminate if something removes those 29 extents (e.g. by looking up the
+extent vaddrs with 'btrfs ins log' then feeding the references to 'btrfs
+fi defrag' will reduce the number of inline shared data backref objects.
+When it's reduced all the way to zero, balance starts up again, usually
+promptly getting stuck on the very next block group.  If the _only_
+thing running on the filesystem is balance, it will not stop looping.
+
+Bisection points to commit d2311e698578 "btrfs: relocation: Delay reloc
+tree deletion after merge_reloc_roots" as the first commit where the
+balance loops can be reproduced.
+
+I tested with commit 59b2c371052c "btrfs: check commit root generation
+in should_ignore_root" as well as the rest of misc-next, but the balance
+loops are still easier to reproduce than to avoid.
+
+Once it starts happening on a filesystem, it seems to happen very
+frequently.  It is not possible to reshape a RAID array of more than a
+few hundred GB on kernels after 5.0.  I can get maybe 50-100 block groups
+completed in a resize or balance after a fresh boot, then balance gets
+stuck in loops after that.  With the fast balance cancel patches it's
+possibly to recover from the loop, but futile, since the next balance
+will almost always also loop, even if it is passed a different block
+group.  I've had to downgrade to 5.0 or 4.19 to complete any RAID
+reshaping work.
+
+--8S8xwCNhfXjuHwS7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXpIzIQAKCRCB+YsaVrMb
+nJYPAJ4tbSrlIXJRkrCyfvegNQimTULJ2wCgrXx1elHMt22pxtkqo/c2mp0yj20=
+=BFz4
+-----END PGP SIGNATURE-----
+
+--8S8xwCNhfXjuHwS7--
