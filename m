@@ -2,72 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0754C1A4F07
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 11:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2F81A52A3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Apr 2020 17:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgDKJNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Apr 2020 05:13:30 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:45061 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgDKJNa (ORCPT
+        id S1726124AbgDKPsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Apr 2020 11:48:03 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7575 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgDKPsD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Apr 2020 05:13:30 -0400
-Received: by mail-vs1-f67.google.com with SMTP id j65so2633838vsd.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Apr 2020 02:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=Gt3DiC+nhjmp5/rTVNxeiHO33vOd/SvD+GynJfcMSG3PymeLX+Nu0Ww38MYLCEtzJo
-         79/n6dyuuyqiM/w35KJ1fggprzriRyD2KD2QhHvPHILfYj1tc3IRURCNz5qBscHDfhOv
-         OiHOQcqaR55PJOtyA24YHdmEOCF10MmVN21YMU7JUu0ghjamXmWCwNujpP+5+femewcU
-         PaqL6R9RKmrJb9dDFZHcp8W71cJoWtH4b5JsF1lnVq1V+bsIiVHGS4XldzwkpXReHXSu
-         RViIXMC0oD72T/O20SeUqp8yOmMEaBZW7f8a4nBo1quW10KFXX74E7pyJgq5Vj0aC/bA
-         ABwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=ouUJ4lYqbN0hj7EJegXkWY2//i1z3C3tseKvMLKgUpMCLSsJoy0ldGGAa24a6MuMzC
-         Jf81tj+akg6sv1/nYcSyU0/d+TJNwitRYKJwk9Lbz3pGiV38qqCJgmiu5kK6tWm3XScF
-         k+angGjF3e/TSd5AGIdW4l2vQeadJhcPxOMMtffp0lN3YPo3f9SCuL7jUMEbd45YX9nP
-         NIbEYHc39wmM//q04c8KtnYkHH7XueASpyuLjUUIAGmVibR5Gm7duCbq7GBcTUJl4S+V
-         uepPgaw1+A7gBfCaW2J1chxse8SAjbJvJSvxmU4JhMXqHDgeWH79tdEJiPMbou9eyX3/
-         Ia9A==
-X-Gm-Message-State: AGi0Pubn6PaYxW9sXilB+tVyK1hP+VTNVJDNALYfVI31LSjMhpuwbghB
-        g6nLJyr0fQCjU0iwuSBMOwW2CismCgBGWdv67/s=
-X-Google-Smtp-Source: APiQypJCMYInU0ui7v5xBnimCjGgIX4FG0uLSrq2ygPInHhcdBQBvLqWGdTyEm9hRgnog36n4kunja8x7KGtUeCiRGM=
-X-Received: by 2002:a67:fbc3:: with SMTP id o3mr6213485vsr.173.1586596409652;
- Sat, 11 Apr 2020 02:13:29 -0700 (PDT)
+        Sat, 11 Apr 2020 11:48:03 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85e91e69f3a8-16554; Sat, 11 Apr 2020 23:47:43 +0800 (CST)
+X-RM-TRANSID: 2ee85e91e69f3a8-16554
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.104.145.126])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e91e69cf7b-7c289;
+        Sat, 11 Apr 2020 23:47:42 +0800 (CST)
+X-RM-TRANSID: 2ee35e91e69cf7b-7c289
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] btrfs: Fix backref.c selftest compilation warning
+Date:   Sat, 11 Apr 2020 23:49:15 +0800
+Message-Id: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Received: by 2002:ab0:3005:0:0:0:0:0 with HTTP; Sat, 11 Apr 2020 02:13:28
- -0700 (PDT)
-Reply-To: idrisomar259@gmail.com
-From:   Idris Omar <customs.agents.offices.in.fran@gmail.com>
-Date:   Sat, 11 Apr 2020 02:13:28 -0700
-Message-ID: <CALDQqkJp9=yYKgWXryVzcDM_eSTakUhH6sdCv5=Sc3PbtcgTOA@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Fix missing braces compilation warning in the ARM
+compiler environment:
+    fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
+    fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
+      struct prelim_ref target = {0};
+    fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
+
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+---
+ fs/btrfs/backref.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 9c380e7..0cc0257 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
+ 	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
+ 	struct rb_node *parent = NULL;
+ 	struct prelim_ref *ref = NULL;
+-	struct prelim_ref target = {0};
++	struct prelim_ref target = {};
+ 	int result;
+ 
+ 	target.parent = bytenr;
 -- 
-Sir / Madam,
+2.7.4
 
-Hi Friend I am the accountant and auditing manager of the
-International Finance Bank Plc bf I want to transfer an abandoned sum
-of 10.5 millions USD  to your account.50% will be for you. No risk
-involved.
 
-Contact me for more details.
 
-Kindly reply me back to my alternative email address (
-idrisomar259@gmail.com  )
-
-Thanks,
-
-Mr Idris Omar
