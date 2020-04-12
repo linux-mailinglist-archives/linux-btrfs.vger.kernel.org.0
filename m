@@ -2,193 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 508FC1A5CDF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Apr 2020 07:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362171A5D9C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Apr 2020 10:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgDLFE7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Apr 2020 01:04:59 -0400
-Received: from mout.gmx.net ([212.227.15.15]:41501 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgDLFE7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Apr 2020 01:04:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586667876;
-        bh=rB3tUbQ0M2gM3foxNXYYIEyOnjZlq9lSpj55UJ6yr4g=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=a/Lrq3KZlmOYFSzy95X5l9IHgbGGRimI5cIJcyXFKvhoFKD/XG4d32E28GEB1JfKA
-         z1d3rImFLpm7qarfGPbdJUwbcxqNPOtAxknim1sE20nlatFz44hh+WvsFw2fBUe6pM
-         KuI14TG11uEOoC6YuZLYRN/LHxY2q+AC208nMgnM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MxUs7-1j3vcA44zZ-00xrVQ; Sun, 12
- Apr 2020 07:04:36 +0200
-Subject: Re: [PATCH] btrfs: Fix backref.c selftest compilation warning
-To:     Tang Bin <tangbin@cmss.chinamobile.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
- <ea85377e-4648-c174-2827-53173587777c@gmx.com>
- <4b1e57b3-ca0d-f3e0-f4c4-72cdfe943d7a@cmss.chinamobile.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b1298579-8b24-344d-00cb-b922d6e4a398@gmx.com>
-Date:   Sun, 12 Apr 2020 13:04:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1725878AbgDLI5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Apr 2020 04:57:18 -0400
+Received: from mail-qt1-f182.google.com ([209.85.160.182]:33335 "EHLO
+        mail-qt1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbgDLI5S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 Apr 2020 04:57:18 -0400
+Received: by mail-qt1-f182.google.com with SMTP id x2so4993762qtr.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 12 Apr 2020 01:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=6pD3nrZnTMZ7AVuyl49L1slWpdN/MQYroJhleW81+V8=;
+        b=oWRZDqFHpNTdnUH2diNJrhj5eCIkc48TZzFPnpRfpW+au/VSNJMpcb1RxeqbYt97U1
+         rDxg9JZ45IAqZXwwZTVS1rxq11yLH/3siHEwWfPLtq8z/oa8Jsi+VW3NygpokkYTUQWA
+         cxAuqYLkdESaV7mfGZKomDjZBYuxxbLCZvChwMtTEu5igDHlCtprFSXL4sphDb0H+DlK
+         6uAi40/4aXXqYCzULTFFM4BkRTniv61l3GjlrNC35zcTj/s/K9GS5lVTgPBHNaKHG7Dt
+         TVK1MSBLWvjg/SdzUOdpbVhEhaRCynWHWXL32cVKmpooR2ckMmv2NrwJ+1lvrvp0LUFb
+         qwsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=6pD3nrZnTMZ7AVuyl49L1slWpdN/MQYroJhleW81+V8=;
+        b=tEu0JI9kZR23abJMyq/tlBOva4xVDsOme/iWi/OCpAjvGGhVBpA1rz9xCrfm281IqN
+         ZOTBUABR0X0TbigtRMfIJeuAfB4i4/bRJRVk2eJLB6n1W2f8Ox+Cxu0F/TlxLcxVBWp2
+         Q66w4ULuhNoTcc92ToRBAFOr0sXcHbX2PLiGOwFvj47uZJvfw3k8Ftq2oH8n1MZmZWlG
+         4jVyG1P9xDdtrdwJbHm9CrM7SsVg2SNsP8vTSArmuKXDKHcV9EMt5pP9PRUbfT4uruBA
+         q7ENjPZNxu3iwespMp+oDTeluvpXrRLKmAkwIM7EtsYtvSykxhr9Pn2VDCQ9CME5P3Th
+         bLpQ==
+X-Gm-Message-State: AGi0PubWyprucEYXlYOn40MiA27AzW6ZFN20kG4gtFiNtFJQ0cqzvUtA
+        +V3HKQQ/7rUjpDya8zYxcnoPWnTTPWM9EJoyfxV0hB5eTXk=
+X-Google-Smtp-Source: APiQypI8QXsKaMlqzQLoCbJ+4/GF2UEP11+4w236PXQvdGHC0XRzyRgm8DIchAPNo96Zvv7zmP4or1t+o3ParIPiRC8=
+X-Received: by 2002:ac8:1b70:: with SMTP id p45mr6656749qtk.258.1586681835206;
+ Sun, 12 Apr 2020 01:57:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4b1e57b3-ca0d-f3e0-f4c4-72cdfe943d7a@cmss.chinamobile.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MUDCRRcwo0eNNbk73S3sYUzPZTRiylwO1"
-X-Provags-ID: V03:K1:l3mGqGvc98XzmVBfizvzQcXu6C/pkbGaaZchkPPy4C2eRBFqDSx
- nEu3EvgafTihJT/OXKni6XC2M4DCZLVGG2ikYI95qc37U7KkiViKyz8+qKLU9s4bb6060cD
- zzbgvcVaAAX1+jORU+Dm3LwTsRofWMwCeSH9xd2gVBx+MNqap/Y9/RGSdHJXP1LyNx9eoVk
- elraSOagUeKcaVEG6fbhA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FydJrNllGfA=:fT9DGcYdsBVQW00wCpviYe
- a/kxF5mewOfh7k76LJqqytc30HGuPCBhAbjWnZ1XhJXaEYBKSOxtr2dHgUE/vDyShBzKIa5+Q
- Ma4nC6qEvCHe/NhKb1KprUxQ6eACUErTdOD0a165mxwglnpnhf1Rit/rC1tLgavzBJ8R4oeX8
- 2nk1ekPuAuSK/r2J31jVmRoF9fNVkdQGf6D0ZcqSKEpIdEIje7uQcx2I2z4Bss2AlarrFBiFz
- uqab/uz+LqcSqjtWk7YUWLJUvPHSiVX1j2oq4K2GSN9YoN50hjn2Jk1eoZLmHP/Spb7wwpvKh
- lnEKQk5bg4rWKQ5epTbssVgxA3z6l3q2nF2OinFUv4bhpH5eFmGY9VOl7sDrEga9zY11qnTDA
- rkWo9nHbTou99DrtLBF0CvvB7cvfFBlVhoP5bkRM1HL0VvyHfQtqLOG1UwDR7wtlVtLNkXK3k
- rvyykE84NtVunBd8N3KogMWx7mpSt18wLkJKwCK9BOGz6GG51TA4K6wxe0hKMRRwjA4aAzxyc
- SvpasTyCjOqEDF1/jI1fxztIZuCHKRv8BaE5ThXK30s9ocUeXGtI295Z6ZEXjRAc6Qio4KuqA
- Ju1G1jyN+Ydd6LfDYXVCZuQDnHkxrEGgVJoSX1SVDNv50RHxjJzsgIXGqpHMaCjyZcAOo/OPj
- WY+DFyqgpSGZAEBBXipDgpT2G4OK/UXOscGAKpeQ69i1KtzfmoLiIIsG8kkAD9kcv9QC5rMcE
- VIwEZFEgciuZAqmFVZjSeggSNotpHc4CE46vj8c2qh0XP2U55ByoNFyntvE7TdmiyvVztePg0
- 15AQ+XyBRbNci3fCv++OZpnqfHQvPWDYzgTAd0smgfbY5YmoaA/oQYq9f5pkxLXmGXyAo1jfr
- fjzwPs/ZpK2HZYAo8V4uGzvBsVju6qRNxo+g7xEG7tn0dL49awBns0PP0BEtjCvKIVxpcmq9K
- afpProc07wuTZSM2v1GMS+G1ydxMou7Up9jVhggVXiYXzfx3eMV44wyStKvnBapFVBedQTHGW
- 2XUO6NTcV9ErkbMrcSqEBQ0DWYMj9dlwul3UkVx8Djh8+cRDAi/wEjcVNOQfJnQo90ush7gkU
- 2xrR//mlnH+yDS4aG9YgJrf+/bMdPRWZx2QF0Qd0yOhnvqah7t0DxOg17KETfMnOMxXaWYz08
- AG1dBu6sZoR8S9hH4ltz1yaBkeEHSphimAf6E+Mkp1pTysB5nhcglyQkHjvP8DQGE1W3K9fzu
- zFXYRB2UBUo2bXBLi
+From:   stijn rutjens <rutjensstijn@gmail.com>
+Date:   Sun, 12 Apr 2020 10:57:03 +0200
+Message-ID: <CA+UfgrWR1rn-VbHHcK0+2cN08m0C529NtY-ofUMNX3mM4NoTaw@mail.gmail.com>
+Subject: [PATCH] btrfs: allow setting per extent compression
+To:     linux-btrfs@vger.kernel.org
+Content-Type: multipart/mixed; boundary="00000000000028e51e05a3142712"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MUDCRRcwo0eNNbk73S3sYUzPZTRiylwO1
-Content-Type: multipart/mixed; boundary="dryZrHRxVOTPI2NxyibNxzHfHavl919QM"
+--00000000000028e51e05a3142712
+Content-Type: text/plain; charset="UTF-8"
 
---dryZrHRxVOTPI2NxyibNxzHfHavl919QM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hi all,
+As mentioned in https://github.com/kdave/btrfs-progs/issues/184 it
+would be nice to be able to set the compression level per extent (or
+file) from the IOCTL interface.
+I'm not sure how submitting patches to mailing lists works, but I have
+attached a patch which implements this. Any and all feedback is
+appreciated.
+Kind regards,
+Stijn Rutjens
 
+--00000000000028e51e05a3142712
+Content-Type: text/x-patch; charset="US-ASCII"; name="allow-per-extent-compression.patch"
+Content-Disposition: attachment; 
+	filename="allow-per-extent-compression.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k8wta1rr0>
+X-Attachment-Id: f_k8wta1rr0
 
-
-On 2020/4/12 =E4=B8=8A=E5=8D=8811:21, Tang Bin wrote:
-> Hi Qu:
->=20
-> On 2020/4/12 8:52, Qu Wenruo wrote:
->>
->> On 2020/4/11 =E4=B8=8B=E5=8D=8811:49, Tang Bin wrote:
->>> Fix missing braces compilation warning in the ARM
->>> compiler environment:
->>> =C2=A0=C2=A0=C2=A0=C2=A0 fs/btrfs/backref.c: In function =E2=80=98is_=
-shared_data_backref=E2=80=99:
->>> =C2=A0=C2=A0=C2=A0=C2=A0 fs/btrfs/backref.c:394:9: warning: missing b=
-races around
->>> initializer [-Wmissing-braces]
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct prelim_ref target =3D {0}=
-;
->>> =C2=A0=C2=A0=C2=A0=C2=A0 fs/btrfs/backref.c:394:9: warning: (near ini=
-tialization for
->>> =E2=80=98target.rbnode=E2=80=99) [-Wmissing-braces]
->> GCC version please.
->>
->> It looks like you're using an older GCC, as it's pretty common certain=
-
->> prebuild tool chain is still using outdated GCC.
->>
->> In my environment with GCC 9.2.0 natively (on aarch64) it's completely=
-
->> fine.
->> Thus personally I recommend to build your own tool chain using
->> buildroot, or run it natively, other than rely on prebuilt one.
->=20
-> My environment:
->=20
-> =C2=A0 PC : Ubuntu 16.04
->=20
-> =C2=A0 Hardware : I.MX6ULL
->=20
-> =C2=A0 Tool Chain : arm-linux-gnueabihf-gcc (Linaro GCC 4.9-2017.01) 4.=
-9.4
-
-That's pretty old.
-
-You'd better fetch the newer version, as newer kernel may require higher
-version gcc.
-
-Or even build your own using tools like buildroot.
-
-Thanks,
-Qu
-
->=20
->>
->> In fact your fix could cause problem, as the original code is
->> initializing all members to 0, but now it's uninitialized.
->>
->> You need to locate the root cause other than blindly follow the warnin=
-g.
->=20
-> In hardware experiment, this approach is feasible.
->=20
-> Thanks.
->=20
-> Tang Bin
->=20
->>
->>
->=20
->=20
-
-
---dryZrHRxVOTPI2NxyibNxzHfHavl919QM--
-
---MUDCRRcwo0eNNbk73S3sYUzPZTRiylwO1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6SoV0ACgkQwj2R86El
-/qjTSggAg8hB2i+/2hO2cjJZwJF+WIrYOgLYco54Wm3L1YiHfAoRWZSo5Xu3bDLu
-cxMdYFs1qXYhfMYEzo8sD6CUBi7qzSZgI89Jp2FtlQ3XM9W+thH9wT55fp76/dTZ
-I1U5ip9eV59nF5Or6RZNTmI0ySbO4bnTw/JofDq7O3Os5oviEv8PJoo8j7gWRpMp
-W0g5qkKYzFJnbyY2dIkc2FH5bAVCWSRUe91PteY0nTAOyQ3NDfxK+CkaxaSML4xa
-OvBWbtIlakHZfshx32RgSoe5/cOT6NXGEKfgT46jlyjmk4nDl5tFvVfDNXx5J/+N
-WTXr7BW7XUn37gBr5KsmKONtTkdOPw==
-=K/Nc
------END PGP SIGNATURE-----
-
---MUDCRRcwo0eNNbk73S3sYUzPZTRiylwO1--
+ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2ZpbGUtaXRlbS5jIGIvZnMvYnRyZnMvZmlsZS1pdGVtLmMK
+aW5kZXggYmIzNzQwNDJkLi5lMTYwM2UxY2YgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZzL2ZpbGUtaXRl
+bS5jCisrKyBiL2ZzL2J0cmZzL2ZpbGUtaXRlbS5jCkBAIC02Nyw3ICs2Nyw3IEBAIGludCBidHJm
+c19pbnNlcnRfZmlsZV9leHRlbnQoc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJhbnMsCiAJ
+YnRyZnNfc2V0X2ZpbGVfZXh0ZW50X3JhbV9ieXRlcyhsZWFmLCBpdGVtLCByYW1fYnl0ZXMpOwog
+CWJ0cmZzX3NldF9maWxlX2V4dGVudF9nZW5lcmF0aW9uKGxlYWYsIGl0ZW0sIHRyYW5zLT50cmFu
+c2lkKTsKIAlidHJmc19zZXRfZmlsZV9leHRlbnRfdHlwZShsZWFmLCBpdGVtLCBCVFJGU19GSUxF
+X0VYVEVOVF9SRUcpOwotCWJ0cmZzX3NldF9maWxlX2V4dGVudF9jb21wcmVzc2lvbihsZWFmLCBp
+dGVtLCBjb21wcmVzc2lvbik7CisJYnRyZnNfc2V0X2ZpbGVfZXh0ZW50X2NvbXByZXNzaW9uKGxl
+YWYsIGl0ZW0sIGNvbXByZXNzaW9uICYgMHhGKTsKIAlidHJmc19zZXRfZmlsZV9leHRlbnRfZW5j
+cnlwdGlvbihsZWFmLCBpdGVtLCBlbmNyeXB0aW9uKTsKIAlidHJmc19zZXRfZmlsZV9leHRlbnRf
+b3RoZXJfZW5jb2RpbmcobGVhZiwgaXRlbSwgb3RoZXJfZW5jb2RpbmcpOwogCmRpZmYgLS1naXQg
+YS9mcy9idHJmcy9pbm9kZS5jIGIvZnMvYnRyZnMvaW5vZGUuYwppbmRleCBkYmM5YmNhZjUuLjMy
+ODVkNGJkMyAxMDA2NDQKLS0tIGEvZnMvYnRyZnMvaW5vZGUuYworKysgYi9mcy9idHJmcy9pbm9k
+ZS5jCkBAIC0yMjcsNyArMjI3LDcgQEAgc3RhdGljIGludCBpbnNlcnRfaW5saW5lX2V4dGVudChz
+dHJ1Y3QgYnRyZnNfdHJhbnNfaGFuZGxlICp0cmFucywKIAkJCWNvbXByZXNzZWRfc2l6ZSAtPSBj
+dXJfc2l6ZTsKIAkJfQogCQlidHJmc19zZXRfZmlsZV9leHRlbnRfY29tcHJlc3Npb24obGVhZiwg
+ZWksCi0JCQkJCQkgIGNvbXByZXNzX3R5cGUpOworCQkJCQkJICBjb21wcmVzc190eXBlICYgMFhG
+KTsKIAl9IGVsc2UgewogCQlwYWdlID0gZmluZF9nZXRfcGFnZShpbm9kZS0+aV9tYXBwaW5nLAog
+CQkJCSAgICAgc3RhcnQgPj4gUEFHRV9TSElGVCk7CkBAIC01NzMsMTQgKzU3MywzMSBAQCBzdGF0
+aWMgbm9pbmxpbmUgaW50IGNvbXByZXNzX2ZpbGVfcmFuZ2Uoc3RydWN0IGFzeW5jX2NodW5rICph
+c3luY19jaHVuaykKIAkJfQogCiAJCS8qIENvbXByZXNzaW9uIGxldmVsIGlzIGFwcGxpZWQgaGVy
+ZSBhbmQgb25seSBoZXJlICovCi0JCXJldCA9IGJ0cmZzX2NvbXByZXNzX3BhZ2VzKAotCQkJY29t
+cHJlc3NfdHlwZSB8IChmc19pbmZvLT5jb21wcmVzc19sZXZlbCA8PCA0KSwKLQkJCQkJICAgaW5v
+ZGUtPmlfbWFwcGluZywgc3RhcnQsCi0JCQkJCSAgIHBhZ2VzLAotCQkJCQkgICAmbnJfcGFnZXMs
+Ci0JCQkJCSAgICZ0b3RhbF9pbiwKLQkJCQkJICAgJnRvdGFsX2NvbXByZXNzZWQpOwotCisJCS8q
+CisJCSAqIENoZWNrIGlmIHRoZSB1cHBlciBiaXRzIGFyZSBzZXQsIGFuZCBpZiBzbywKKwkJICog
+dGFrZSB0aGVtIGFzIHRoZSBjb21wcmVzc2lvbiBsZXZlbC4KKwkJICogdGhlIGlub2RlIGNvbXBy
+ZXNzaW9uIGxldmVsIHRha2VzIHByZWNlbmRlbmNlLCBpZiBzZXQKKwkJICovCisJCWlmICgoY29t
+cHJlc3NfdHlwZSAmIDB4RikgPT0gY29tcHJlc3NfdHlwZSkgeworCQkJcmV0ID0gYnRyZnNfY29t
+cHJlc3NfcGFnZXMoCisJCQkJY29tcHJlc3NfdHlwZSB8IChmc19pbmZvLT5jb21wcmVzc19sZXZl
+bCA8PCA0KSwKKwkJCQkJCWlub2RlLT5pX21hcHBpbmcsIHN0YXJ0LAorCQkJCQkJcGFnZXMsCisJ
+CQkJCQkmbnJfcGFnZXMsCisJCQkJCQkmdG90YWxfaW4sCisJCQkJCQkmdG90YWxfY29tcHJlc3Nl
+ZCk7CisJCX0gZWxzZSB7CisJCQlpbnQgY29tcHJlc3NfbGV2ZWwgPSBidHJmc19jb21wcmVzc19z
+ZXRfbGV2ZWwoCisJCQkJCQljb21wcmVzc190eXBlICYgMHhGLAorCQkJCQkJY29tcHJlc3NfdHlw
+ZT4+NCk7CisJCQlyZXQgPSBidHJmc19jb21wcmVzc19wYWdlcygKKwkJCQljb21wcmVzc190eXBl
+IHwgKGNvbXByZXNzX2xldmVsIDw8IDQpLAorCQkJCWlub2RlLT5pX21hcHBpbmcsIHN0YXJ0LAor
+CQkJCXBhZ2VzLAorCQkJCSZucl9wYWdlcywKKwkJCQkmdG90YWxfaW4sCisJCQkJJnRvdGFsX2Nv
+bXByZXNzZWQpOworCQl9CiAJCWlmICghcmV0KSB7CiAJCQl1bnNpZ25lZCBsb25nIG9mZnNldCA9
+IG9mZnNldF9pbl9wYWdlKHRvdGFsX2NvbXByZXNzZWQpOwogCQkJc3RydWN0IHBhZ2UgKnBhZ2Ug
+PSBwYWdlc1tucl9wYWdlcyAtIDFdOwpAQCAtMjM2Miw3ICsyMzc5LDcgQEAgc3RhdGljIGludCBp
+bnNlcnRfcmVzZXJ2ZWRfZmlsZV9leHRlbnQoc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJh
+bnMsCiAJYnRyZnNfc2V0X2ZpbGVfZXh0ZW50X29mZnNldChsZWFmLCBmaSwgMCk7CiAJYnRyZnNf
+c2V0X2ZpbGVfZXh0ZW50X251bV9ieXRlcyhsZWFmLCBmaSwgbnVtX2J5dGVzKTsKIAlidHJmc19z
+ZXRfZmlsZV9leHRlbnRfcmFtX2J5dGVzKGxlYWYsIGZpLCByYW1fYnl0ZXMpOwotCWJ0cmZzX3Nl
+dF9maWxlX2V4dGVudF9jb21wcmVzc2lvbihsZWFmLCBmaSwgY29tcHJlc3Npb24pOworCWJ0cmZz
+X3NldF9maWxlX2V4dGVudF9jb21wcmVzc2lvbihsZWFmLCBmaSwgY29tcHJlc3Npb24gJiAweEYp
+OwogCWJ0cmZzX3NldF9maWxlX2V4dGVudF9lbmNyeXB0aW9uKGxlYWYsIGZpLCBlbmNyeXB0aW9u
+KTsKIAlidHJmc19zZXRfZmlsZV9leHRlbnRfb3RoZXJfZW5jb2RpbmcobGVhZiwgZmksIG90aGVy
+X2VuY29kaW5nKTsKIApkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvaW9jdGwuYyBiL2ZzL2J0cmZzL2lv
+Y3RsLmMKaW5kZXggMGZhMWMzODZkLi4yYTljMWYzMTIgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZzL2lv
+Y3RsLmMKKysrIGIvZnMvYnRyZnMvaW9jdGwuYwpAQCAtMTQxNCw3ICsxNDE0LDExIEBAIGludCBi
+dHJmc19kZWZyYWdfZmlsZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZSwK
+IAkJcmV0dXJuIC1FSU5WQUw7CiAKIAlpZiAoZG9fY29tcHJlc3MpIHsKLQkJaWYgKHJhbmdlLT5j
+b21wcmVzc190eXBlID49IEJUUkZTX05SX0NPTVBSRVNTX1RZUEVTKQorCQkvKgorCQkqIFRoZSBi
+b3R0b20gNCBiaXRzIG9mIGNvbXByZXNzX3R5cGUgYXJlIGZvciB1c2VkIGZvciB0aGUKKwkJKiBj
+b21wcmVzc2lvbiB0eXBlLCB0aGUgb3RoZXIgYml0cyBmb3IgdGhlIGNvbXByZXNzaW9uIGxldmVs
+CisJCSovCisJCWlmICgocmFuZ2UtPmNvbXByZXNzX3R5cGUgJiAweEYpID49IEJUUkZTX05SX0NP
+TVBSRVNTX1RZUEVTKQogCQkJcmV0dXJuIC1FSU5WQUw7CiAJCWlmIChyYW5nZS0+Y29tcHJlc3Nf
+dHlwZSkKIAkJCWNvbXByZXNzX3R5cGUgPSByYW5nZS0+Y29tcHJlc3NfdHlwZTsKQEAgLTE1NzIs
+OSArMTU3Niw5IEBAIGludCBidHJmc19kZWZyYWdfZmlsZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBz
+dHJ1Y3QgZmlsZSAqZmlsZSwKIAkJCWZpbGVtYXBfZmx1c2goaW5vZGUtPmlfbWFwcGluZyk7CiAJ
+fQogCi0JaWYgKHJhbmdlLT5jb21wcmVzc190eXBlID09IEJUUkZTX0NPTVBSRVNTX0xaTykgewor
+CWlmICgocmFuZ2UtPmNvbXByZXNzX3R5cGUgJiAweEYpID09IEJUUkZTX0NPTVBSRVNTX0xaTykg
+ewogCQlidHJmc19zZXRfZnNfaW5jb21wYXQoZnNfaW5mbywgQ09NUFJFU1NfTFpPKTsKLQl9IGVs
+c2UgaWYgKHJhbmdlLT5jb21wcmVzc190eXBlID09IEJUUkZTX0NPTVBSRVNTX1pTVEQpIHsKKwl9
+IGVsc2UgaWYgKChyYW5nZS0+Y29tcHJlc3NfdHlwZSAmIDB4RikgPT0gQlRSRlNfQ09NUFJFU1Nf
+WlNURCkgewogCQlidHJmc19zZXRfZnNfaW5jb21wYXQoZnNfaW5mbywgQ09NUFJFU1NfWlNURCk7
+CiAJfQogCg==
+--00000000000028e51e05a3142712--
