@@ -2,248 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9762F1A653F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Apr 2020 12:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC1B1A6611
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Apr 2020 13:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgDMKfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Apr 2020 06:35:53 -0400
-Received: from forward106o.mail.yandex.net ([37.140.190.187]:35666 "EHLO
-        forward106o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727806AbgDMKfw (ORCPT
+        id S1729203AbgDML7Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Apr 2020 07:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgDMLtr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:35:52 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 06:35:49 EDT
-Received: from mxback21o.mail.yandex.net (mxback21o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::72])
-        by forward106o.mail.yandex.net (Yandex) with ESMTP id D2791506122D;
-        Mon, 13 Apr 2020 13:28:12 +0300 (MSK)
-Received: from iva8-6403930b9beb.qloud-c.yandex.net (iva8-6403930b9beb.qloud-c.yandex.net [2a02:6b8:c0c:2c9a:0:640:6403:930b])
-        by mxback21o.mail.yandex.net (mxback/Yandex) with ESMTP id ET2F0DGp10-SCI0cSpn;
-        Mon, 13 Apr 2020 13:28:12 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1586773692;
-        bh=I1zzQUmKPRJYTU9XROOKYqI3DDBDNCsfRxVgD0TFzbI=;
-        h=In-Reply-To:Subject:To:From:Cc:References:Date:Message-ID;
-        b=lF21Cxpvbbe8Imj725FqlmG6tis6GME2RfV6HLINtUC8MaQZp2ciTmbVMXcwHtTtA
-         ppnVVW9hWW/zYgmcqRVg1ulK7nA5a+q3/EjiCHrirVHHt41jGnuYSTeTauQx+a+/DM
-         5Xz4ABFGOFvFBzBuUm7rHaGNRYoD/Z9+cpaIyTPk=
-Authentication-Results: mxback21o.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by iva8-6403930b9beb.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id D6ZQVmjGKd-SBWqivne;
-        Mon, 13 Apr 2020 13:28:11 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Joshua Houghton <joshua.houghton@yandex.ru>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Goffredo Baroncelli <kreijack@libero.it>,
-        DanglingPointer <danglingpointerexception@gmail.com>,
-        Torstein Eide <torsteine@gmail.com>
-Subject: Re: [PATCH] btrfs-progs: add RAID5/6 support to btrfs fi us
-Date:   Mon, 13 Apr 2020 10:28:10 +0000
-Message-ID: <2017238.irdbgypaU6@arch>
-In-Reply-To: <4521727.GXAFRqVoOG@arch>
-References: <20200318211157.11090-1-kreijack@libero.it> <4521727.GXAFRqVoOG@arch>
+        Mon, 13 Apr 2020 07:49:47 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE4C008623
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e4so5884299ils.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=HxOaFJZljqXQIeSLw7dw+YeTIVe76Yo57NkC3rYQjPPsruaWLZEetJYgTw7mDA7iYw
+         4KM/sQKuVdxfTyBgHy0QGrcgvhBAp/s2WR+7lhwMEms7c5U3ARzlxX4w9gHN6kyIVCTo
+         InVjjBwajQbgYMLlLr/dGAnfAOq75HLmi2bmQShdg5UrDH6ZNHdmpjirCjsFE3E+W3lI
+         4HPNdhIk9GHy3wOVy8qt79oLhQ3V0WJ+l2R8YfTk5No8OB207Mc1ssyzLdiNdU6iDIon
+         HSnId1sWR9JHq8BkscMOY+TVCS7WuDDdfTSRJRDObUGUY3pKdsd/NGq97n4qtv5szVJr
+         IEMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=grnzxawnSq9ITeh0+MGgt77EQueuxwQqvccL5I3SqzL53hTvLG5PbGmEeDmSZvfHC1
+         QOQjEWixaBgUhQgnP5t23THmBEtigQSkb+mX9HEQn4cHKo7xc4ptOHnvZbdCxIuqqZY3
+         wPgxEnh/3dSLZ4ensVG8MFRH/MUaVhFvq6cnyZkr7BzeEJwMnvh9KdrwMNZsI6HW8veG
+         N/6I7/xRTQAsu9tTCawOmdUYIws46XHSa7XTY/7FNHVVlhK8RwQRXD57ZIorDRfdBwm5
+         yEkLhs8F4R6vztTghFvXAAAf8UC/ausNEmuXRBNbC5e7ilk4gVZRWFbzBkRw6KTLspsl
+         0Dcg==
+X-Gm-Message-State: AGi0PubGhYL3a7EuMlvroRGsFsz7J4mpHxxU0OLQvVaF0aq/oa4J/KhR
+        rIHybc4w8pYZbYe7ZlUG+XB59k5YQ2GOOCo2Qg==
+X-Google-Smtp-Source: APiQypJ8Xf5JZIaJmuakcegBHklRN/w3ObzOY1fG2hZhiF0393fUgrxf6qaSVcLD5pLEm/4TEQgoj9oGK8tQ5EeyGAU=
+X-Received: by 2002:a05:6e02:c8f:: with SMTP id b15mr14965961ile.35.1586778068198;
+ Mon, 13 Apr 2020 04:41:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: by 2002:a02:5e49:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:41:07
+ -0700 (PDT)
+Reply-To: mgbenin903@gmail.com
+From:   Barrister Robert Richter UN-Attorney at Law Court-Benin 
+        <info.zennitbankplcnigerian@gmail.com>
+Date:   Mon, 13 Apr 2020 13:41:07 +0200
+Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw@mail.gmail.com>
+Subject: I have already sent you first payment US$5000.00 this morning through
+ MONEY Gram service.it is available to pick up in address now.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Monday, 13 April 2020 10:08:50 UTC Joshua Houghton wrote:
-> On Wednesday, 18 March 2020 21:11:56 UTC Goffredo Baroncelli wrote:
-> > Hi all,
-> > 
-> > this patch adds support for the raid5/6 profiles in the command
-> > 'btrfs filesystem usage'.
-> > 
-> > Until now the problem was that the value r_{data,metadata}_used is not
-> > easy to get for a RAID5/6, because it depends by the number of disks.
-> > And in a filesystem it is possible to have several raid5/6 chunks with a
-> > different number of disks.
-> > 
-> > In order to bypass this issue, I reworked the code to get rid of these
-> > values where possible and to use the l_{data,metadata}_used ones.
-> > Notably the biggest differences is in how the free space estimation
-> > 
-> > is computed. Before it was:
-> > 	free_estimated = (r_data_chunks - r_data_used) / data_ratio;
-> > 
-> > After it is:
-> > 	free_estimated = l_data_chunks - l_data_used;
-> > 
-> > which give the same results when there is no mixed raid level, but a
-> > better result in the other case. I have to point out that before in the
-> > code there was a comment that said the opposite.
-> > 
-> > The other place where the r_{data,metadata}_used are use is for the
-> > "Used:" field. For this case I estimated these values using the
-> > 
-> > following formula (only for raid5/6 profiles):
-> > 	r_data_used += (double)r_data_chunks * l_data_used /
-> > 	
-> >                                l_data_chunks;
-> > 
-> > Note that this is not fully accurate. Eg. suppose to have two raid5
-> > chunks,
-> > the first one with 3 disks, the second one with 4 disks, and that each
-> > chunk is 1GB.
-> > r_data_chunks_r56, l_data_used_r56, l_data_chunks_r56 are completely
-> > defined, but real r_data_used is completely different in these two cases:
-> > - the first chunk is full and the second one id empty
-> > - the first chunk is full empty and the second one is full
-> > However now this error affect only the "Used:" field.
-> > 
-> > 
-> > So now if you run btrfs fi us in a raid6 filesystem you get:
-> > 
-> > $ sudo btrfs fi us /
-> > 
-> > Overall:
-> >     Device size:		  40.00GiB
-> >     Device allocated:		   8.28GiB
-> >     Device unallocated:		  31.72GiB
-> >     Device missing:		     0.00B
-> >     Used:			   5.00GiB
-> >     Free (estimated):		  17.36GiB	(min: 17.36GiB)
-> >     Data ratio:			      2.00
-> >     Metadata ratio:		      0.00
-> >     Global reserve:		   3.25MiB	(used: 0.00B)
-> > 
-> > Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
-> > [...]
-> > 
-> > Instead before:
-> > 
-> > $ sudo btrfs fi us /
-> > WARNING: RAID56 detected, not implemented
-> > WARNING: RAID56 detected, not implemented
-> > WARNING: RAID56 detected, not implemented
-> > 
-> > Overall:
-> >     Device size:		  40.00GiB
-> >     Device allocated:		     0.00B
-> >     Device unallocated:		  40.00GiB
-> >     Device missing:		     0.00B
-> >     Used:			     0.00B
-> >     Free (estimated):		     0.00B	(min: 8.00EiB)
-> >     Data ratio:			      0.00
-> >     Metadata ratio:		      0.00
-> >     Global reserve:		   3.25MiB	(used: 0.00B)
-> > 
-> > Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
-> > [...]
-> > 
-> > 
-> > I want to point out that this patch should be compatible with my
-> > previous patches set (the ones related to the new ioctl
-> > BTRFS_IOC_GET_CHUNK_INFO). If both are merged we will have a 'btrfs fi us'
-> > commands with full support a raid5/6 filesystem without needing root
-> > capability.
-> > 
-> > Comments are welcome.
-> > BR
-> > G.Baroncelli
-> 
-> Hi Goffredo
-> 
-> Thanks you for this. It's something I've been wanting for a while. Do
-> you know why I get significantly different results in the overall summary
-> when I do not run it as root. I'm not sure if this is a bug or a
-> limitation.
-> 
-> When I run it as root it looks to be showing the correct values.
-> 
-> joshua@r2400g:~/development/btrfs-progs$ colordiff -u <(./btrfs fi us
-> /mnt/raid/) <(sudo ./btrfs fi us /mnt/raid/) WARNING: cannot read detailed
-> chunk info, per-device usage will not be shown, run as root --- /dev/fd/63 
-> 2020-04-13 10:54:26.833747190 +0100
-> +++ /dev/fd/62  2020-04-13 10:54:26.843746984 +0100
-> @@ -1,17 +1,32 @@
->  Overall:
->      Device size:                 29.11TiB
-> -    Device allocated:           284.06GiB
-> -    Device unallocated:                  28.83TiB
-> -    Device missing:              29.11TiB
-> -    Used:                       280.99GiB
-> -    Free (estimated):               0.00B      (min: 14.95TiB)
-> -    Data ratio:                              0.00
-> +    Device allocated:            19.39TiB
-> +    Device unallocated:                   9.72TiB
-> +    Device missing:                 0.00B
-> +    Used:                        18.67TiB
-> +    Free (estimated):             7.82TiB      (min: 5.39TiB)
-> +    Data ratio:                              1.33
->      Metadata ratio:                  2.00
->      Global reserve:             512.00MiB      (used: 0.00B)
-> 
->  Data,RAID5: Size:14.33TiB, Used:13.80TiB (96.27%)
-> +   /dev/mapper/traid3     4.78TiB
-> +   /dev/mapper/traid1     4.78TiB
-> +   /dev/mapper/traid2     4.78TiB
-> +   /dev/mapper/traid4     4.78TiB
-> 
->  Metadata,RAID1: Size:142.00GiB, Used:140.49GiB (98.94%)
-> +   /dev/mapper/traid3    63.00GiB
-> +   /dev/mapper/traid1    64.00GiB
-> +   /dev/mapper/traid2    63.00GiB
-> +   /dev/mapper/traid4    94.00GiB
-> 
->  System,RAID1: Size:32.00MiB, Used:1.00MiB (3.12%)
-> +   /dev/mapper/traid1    32.00MiB
-> +   /dev/mapper/traid4    32.00MiB
-> 
-> +Unallocated:
-> +   /dev/mapper/traid3     2.44TiB
-> +   /dev/mapper/traid1     2.44TiB
-> +   /dev/mapper/traid2     2.44TiB
-> +   /dev/mapper/traid4     2.41TiB
-> 
-> 
-> This is in contrast to raid1 which seems to be mostly correct, irrespective
-> of what user I run as.
-> 
-> 
-> joshua@arch:/var/joshua$ colordiff -u <(btrfs fi us raid/) <(sudo btrfs fi
-> us raid/) WARNING: cannot read detailed chunk info, per-device usage will
-> not be shown, run as root --- /dev/fd/63  2020-04-13 09:52:54.630750079
-> +0000
-> +++ /dev/fd/62  2020-04-13 09:52:54.637416835 +0000
-> @@ -2,7 +2,7 @@
->      Device size:                  8.00GiB
->      Device allocated:             1.32GiB
->      Device unallocated:                   6.68GiB
-> -    Device missing:               8.00GiB
-> +    Device missing:                 0.00B
->      Used:                       383.40MiB
->      Free (estimated):             3.55GiB      (min: 3.55GiB)
->      Data ratio:                              2.00
-> @@ -10,8 +10,17 @@
->      Global reserve:               3.25MiB      (used: 0.00B)
-> 
->  Data,RAID1: Size:409.56MiB, Used:191.28MiB (46.70%)
-> +   /dev/loop0   409.56MiB
-> +   /dev/loop1   409.56MiB
-> 
->  Metadata,RAID1: Size:256.00MiB, Used:416.00KiB (0.16%)
-> +   /dev/loop0   256.00MiB
-> +   /dev/loop1   256.00MiB
-> 
->  System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
-> +   /dev/loop0     8.00MiB
-> +   /dev/loop1     8.00MiB
-> 
-> +Unallocated:
-> +   /dev/loop0     3.34GiB
-> +   /dev/loop1     3.34GiB
-> 
-> Does anyone know if this is something we can fix? I'm happy to take a look.
-> 
-> Joshua Houghton
+ATTN DEAR BENEFICIARY.
 
-Sorry missed this last bit never mind
+GOOD NEWS.
 
-> If both are merged we will have a 'btrfs fi us'
-> commands with full support a raid5/6 filesystem without needing root
-> capability.
+I have already sent you first payment US$5000.00 this morning through
+MONEY Gram service.it is available to pick up in address now.
+
+So we advise you to Contact This Money Gram office to pick up your
+transfer $US5000.00 today.
 
 
+Note that your compensation payment funds is total amount $US2.800,000
+Million Dollars.We have instructed the Money Gram Agent,Mr. James
+Gadner to keep sending the transfer to you daily, but the maximum
+amount you will be receiving everyday is US$5000.00. Contact Agent now
+to pick up your first payment $US5000.00 immediately.
 
+Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
+Email: mgbenin903@gmail.com
+Telephone Numbers: +229 62819378/ +229 98477762
+
+HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
+
+Track View Website link:
+https://secure.moneygram.com/track
+Sender=E2=80=99s First name: David
+Sender=E2=80=99s Last Name: Joiner
+Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
+
+Contact the Mmoney Gram Urgent and reconfirm your address to the
+office before, they will allow you to pick up the transfer today.
+
+HERE IS WHAT REQUIRED OF YOU.
+
+YOUR FULL NAME---------
+ADDRESS--------------
+COUNTRY-----------------------------
+TELEPHONE NUMBERS-----------------
+
+Note, I paid the transfer fee for you, but only you are required to
+send to the office is $75 only,Been Your Payment File activation fee,
+Send once you contact the office,before you can able to pick up your
+transfer today.
+
+Let me know once you pick up first payment today.
+
+Barrister Robert Richter UN-Attorney at Law Court-Benin
