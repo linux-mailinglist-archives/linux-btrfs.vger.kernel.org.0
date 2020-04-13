@@ -2,110 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC1B1A6611
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Apr 2020 13:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308461A6AED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Apr 2020 19:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729203AbgDML7Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Apr 2020 07:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgDMLtr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:49:47 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE4C008623
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e4so5884299ils.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
-        b=HxOaFJZljqXQIeSLw7dw+YeTIVe76Yo57NkC3rYQjPPsruaWLZEetJYgTw7mDA7iYw
-         4KM/sQKuVdxfTyBgHy0QGrcgvhBAp/s2WR+7lhwMEms7c5U3ARzlxX4w9gHN6kyIVCTo
-         InVjjBwajQbgYMLlLr/dGAnfAOq75HLmi2bmQShdg5UrDH6ZNHdmpjirCjsFE3E+W3lI
-         4HPNdhIk9GHy3wOVy8qt79oLhQ3V0WJ+l2R8YfTk5No8OB207Mc1ssyzLdiNdU6iDIon
-         HSnId1sWR9JHq8BkscMOY+TVCS7WuDDdfTSRJRDObUGUY3pKdsd/NGq97n4qtv5szVJr
-         IEMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
-        b=grnzxawnSq9ITeh0+MGgt77EQueuxwQqvccL5I3SqzL53hTvLG5PbGmEeDmSZvfHC1
-         QOQjEWixaBgUhQgnP5t23THmBEtigQSkb+mX9HEQn4cHKo7xc4ptOHnvZbdCxIuqqZY3
-         wPgxEnh/3dSLZ4ensVG8MFRH/MUaVhFvq6cnyZkr7BzeEJwMnvh9KdrwMNZsI6HW8veG
-         N/6I7/xRTQAsu9tTCawOmdUYIws46XHSa7XTY/7FNHVVlhK8RwQRXD57ZIorDRfdBwm5
-         yEkLhs8F4R6vztTghFvXAAAf8UC/ausNEmuXRBNbC5e7ilk4gVZRWFbzBkRw6KTLspsl
-         0Dcg==
-X-Gm-Message-State: AGi0PubGhYL3a7EuMlvroRGsFsz7J4mpHxxU0OLQvVaF0aq/oa4J/KhR
-        rIHybc4w8pYZbYe7ZlUG+XB59k5YQ2GOOCo2Qg==
-X-Google-Smtp-Source: APiQypJ8Xf5JZIaJmuakcegBHklRN/w3ObzOY1fG2hZhiF0393fUgrxf6qaSVcLD5pLEm/4TEQgoj9oGK8tQ5EeyGAU=
-X-Received: by 2002:a05:6e02:c8f:: with SMTP id b15mr14965961ile.35.1586778068198;
- Mon, 13 Apr 2020 04:41:08 -0700 (PDT)
+        id S1732361AbgDMRFy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Apr 2020 13:05:54 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:58114 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732378AbgDMRFm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Apr 2020 13:05:42 -0400
+Received: from venice.bhome ([94.37.173.46])
+        by smtp-35.iol.local with ESMTPA
+        id O2WhjE1uBMAUpO2Whj8dwi; Mon, 13 Apr 2020 19:05:39 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1586797539; bh=bzh69x2C/btQ9qaVecF/INaIz+UAyJUdtwVPccWNhNY=;
+        h=From;
+        b=ffrwfna348QOVmRNyHwjRNtR/V4zvv6HYtAbQiCovRZzliqXvAioqwpusa37mjyW7
+         oE3qCgA+RsZJLb0fJ3IUVToJ0dGZuXkRRPtREwvsmYJdRWfbzi59CQKYv75nFyKidR
+         v3BVSqNjbr0FGdxaCggElxE1Kbi5n5lWxOEa18smRFBjyxXZutQVZzoKAaIPfBTe6w
+         GxBKc9vVUseh6QN7vPSl40zupX55HnyVKERF1a+kP29QNgqyi+JIip1v/H8vnntg7U
+         b71TBsdk1/fWdeeL+vVBmTmxMz7DBbBFPY0sECqCyj/avbr+3MOUMdXN+bjjxZQDVk
+         lczT8MWvh2wvw==
+X-CNFS-Analysis: v=2.3 cv=B/fHL9lM c=1 sm=1 tr=0
+ a=TpQr5eyM7/bznjVQAbUtjA==:117 a=TpQr5eyM7/bznjVQAbUtjA==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=iY6COnj-0Yg3XHqBsK4A:9
+ a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: add RAID5/6 support to btrfs fi us
+To:     Joshua Houghton <joshua.houghton@yandex.ru>,
+        linux-btrfs@vger.kernel.org
+Cc:     DanglingPointer <danglingpointerexception@gmail.com>,
+        Torstein Eide <torsteine@gmail.com>
+References: <20200318211157.11090-1-kreijack@libero.it>
+ <4521727.GXAFRqVoOG@arch> <2017238.irdbgypaU6@arch>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <913f6db9-29a5-5b13-eef0-5924503bd935@libero.it>
+Date:   Mon, 13 Apr 2020 19:05:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Received: by 2002:a02:5e49:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:41:07
- -0700 (PDT)
-Reply-To: mgbenin903@gmail.com
-From:   Barrister Robert Richter UN-Attorney at Law Court-Benin 
-        <info.zennitbankplcnigerian@gmail.com>
-Date:   Mon, 13 Apr 2020 13:41:07 +0200
-Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw@mail.gmail.com>
-Subject: I have already sent you first payment US$5000.00 this morning through
- MONEY Gram service.it is available to pick up in address now.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2017238.irdbgypaU6@arch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBUTU3eRHdZcH8bahJPOmqIPM9LOvPFb6tb1y8MblN3N+YeHXfUCz9EX34zclmYG3ioBXdXt5kgeGf3eSSPqdNsOyRdk9fmR5TziX2v4gLrTmj1lcP/W
+ If+lVcQ1fSsLbeirhxPurWaWbxID3YlFMKS91IXr+tazKrGFIYY7dE2QeJDDdr8Tsj1jH0NlaT5hDqbZxlvu183ys5YnnPMxTtKclJGDGHdcnaNAGF06CFrO
+ wvtksBQbm8paLHVncfeKxXkNe6NrCgIhAGokay5RFbmIRoGy0GLmmJo+m9vmampQ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-ATTN DEAR BENEFICIARY.
+On 4/13/20 12:28 PM, Joshua Houghton wrote:
+> On Monday, 13 April 2020 10:08:50 UTC Joshua Houghton wrote:
+>> On Wednesday, 18 March 2020 21:11:56 UTC Goffredo Baroncelli wrote:
+>>> Hi all,
+>>>
+>>> this patch adds support for the raid5/6 profiles in the command
+>>> 'btrfs filesystem usage'.
+[...]
+[...]
+>>
+>> Hi Goffredo
+>>
+>> Thanks you for this. It's something I've been wanting for a while. Do
+>> you know why I get significantly different results in the overall summary
+>> when I do not run it as root. I'm not sure if this is a bug or a
+>> limitation.
+>>
+>> When I run it as root it looks to be showing the correct values.
+>>
+>> joshua@r2400g:~/development/btrfs-progs$ colordiff -u <(./btrfs fi us
+>> /mnt/raid/) <(sudo ./btrfs fi us /mnt/raid/) WARNING: cannot read detailed
+>> chunk info, per-device usage will not be shown, run as root --- /dev/fd/63
+>> 2020-04-13 10:54:26.833747190 +0100
+>> +++ /dev/fd/62  2020-04-13 10:54:26.843746984 +0100
+>> @@ -1,17 +1,32 @@
+>>   Overall:
+>>       Device size:                 29.11TiB
+>> -    Device allocated:           284.06GiB
+>> -    Device unallocated:                  28.83TiB
+>> -    Device missing:              29.11TiB
+>> -    Used:                       280.99GiB
+>> -    Free (estimated):               0.00B      (min: 14.95TiB)
+>> -    Data ratio:                              0.00
+>> +    Device allocated:            19.39TiB
+>> +    Device unallocated:                   9.72TiB
+>> +    Device missing:                 0.00B
+>> +    Used:                        18.67TiB
+>> +    Free (estimated):             7.82TiB      (min: 5.39TiB)
+>> +    Data ratio:                              1.33
+>>       Metadata ratio:                  2.00
+>>       Global reserve:             512.00MiB      (used: 0.00B)
+>>
+>>   Data,RAID5: Size:14.33TiB, Used:13.80TiB (96.27%)
+>> +   /dev/mapper/traid3     4.78TiB
+>> +   /dev/mapper/traid1     4.78TiB
+>> +   /dev/mapper/traid2     4.78TiB
+>> +   /dev/mapper/traid4     4.78TiB
+>>
+>>   Metadata,RAID1: Size:142.00GiB, Used:140.49GiB (98.94%)
+>> +   /dev/mapper/traid3    63.00GiB
+>> +   /dev/mapper/traid1    64.00GiB
+>> +   /dev/mapper/traid2    63.00GiB
+>> +   /dev/mapper/traid4    94.00GiB
+>>
+>>   System,RAID1: Size:32.00MiB, Used:1.00MiB (3.12%)
+>> +   /dev/mapper/traid1    32.00MiB
+>> +   /dev/mapper/traid4    32.00MiB
+>>
+>> +Unallocated:
+>> +   /dev/mapper/traid3     2.44TiB
+>> +   /dev/mapper/traid1     2.44TiB
+>> +   /dev/mapper/traid2     2.44TiB
+>> +   /dev/mapper/traid4     2.41TiB
+>>
+>>
+>> This is in contrast to raid1 which seems to be mostly correct, irrespective
+>> of what user I run as.
+>>
+>>
+>> joshua@arch:/var/joshua$ colordiff -u <(btrfs fi us raid/) <(sudo btrfs fi
+>> us raid/) WARNING: cannot read detailed chunk info, per-device usage will
+>> not be shown, run as root --- /dev/fd/63  2020-04-13 09:52:54.630750079
+>> +0000
+>> +++ /dev/fd/62  2020-04-13 09:52:54.637416835 +0000
+>> @@ -2,7 +2,7 @@
+>>       Device size:                  8.00GiB
+>>       Device allocated:             1.32GiB
+>>       Device unallocated:                   6.68GiB
+>> -    Device missing:               8.00GiB
+>> +    Device missing:                 0.00B
+>>       Used:                       383.40MiB
+>>       Free (estimated):             3.55GiB      (min: 3.55GiB)
+>>       Data ratio:                              2.00
+>> @@ -10,8 +10,17 @@
+>>       Global reserve:               3.25MiB      (used: 0.00B)
+>>
+>>   Data,RAID1: Size:409.56MiB, Used:191.28MiB (46.70%)
+>> +   /dev/loop0   409.56MiB
+>> +   /dev/loop1   409.56MiB
+>>
+>>   Metadata,RAID1: Size:256.00MiB, Used:416.00KiB (0.16%)
+>> +   /dev/loop0   256.00MiB
+>> +   /dev/loop1   256.00MiB
+>>
+>>   System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+>> +   /dev/loop0     8.00MiB
+>> +   /dev/loop1     8.00MiB
+>>
+>> +Unallocated:
+>> +   /dev/loop0     3.34GiB
+>> +   /dev/loop1     3.34GiB
+>>
+>> Does anyone know if this is something we can fix? I'm happy to take a look.
+>>
+>> Joshua Houghton
+> 
+> Sorry missed this last bit never mind
+> 
+>> If both are merged we will have a 'btrfs fi us'
+>> commands with full support a raid5/6 filesystem without needing root
+>> capability.
+> 
 
-GOOD NEWS.
+Unfortunately we need root to access the chunks information.
+Thanks for giving an eye to that. I will "ping" the status of this patch
 
-I have already sent you first payment US$5000.00 this morning through
-MONEY Gram service.it is available to pick up in address now.
+BR
+G.Baroncelli
 
-So we advise you to Contact This Money Gram office to pick up your
-transfer $US5000.00 today.
+> 
 
 
-Note that your compensation payment funds is total amount $US2.800,000
-Million Dollars.We have instructed the Money Gram Agent,Mr. James
-Gadner to keep sending the transfer to you daily, but the maximum
-amount you will be receiving everyday is US$5000.00. Contact Agent now
-to pick up your first payment $US5000.00 immediately.
-
-Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
-Email: mgbenin903@gmail.com
-Telephone Numbers: +229 62819378/ +229 98477762
-
-HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
-
-Track View Website link:
-https://secure.moneygram.com/track
-Sender=E2=80=99s First name: David
-Sender=E2=80=99s Last Name: Joiner
-Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
-
-Contact the Mmoney Gram Urgent and reconfirm your address to the
-office before, they will allow you to pick up the transfer today.
-
-HERE IS WHAT REQUIRED OF YOU.
-
-YOUR FULL NAME---------
-ADDRESS--------------
-COUNTRY-----------------------------
-TELEPHONE NUMBERS-----------------
-
-Note, I paid the transfer fee for you, but only you are required to
-send to the office is $75 only,Been Your Payment File activation fee,
-Send once you contact the office,before you can able to pick up your
-transfer today.
-
-Let me know once you pick up first payment today.
-
-Barrister Robert Richter UN-Attorney at Law Court-Benin
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
