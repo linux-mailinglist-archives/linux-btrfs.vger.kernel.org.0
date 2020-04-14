@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FF91A8493
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 18:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985821A8495
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 18:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391409AbgDNQXQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 12:23:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33034 "EHLO mail.kernel.org"
+        id S2391415AbgDNQXb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 12:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391396AbgDNQW1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:22:27 -0400
+        id S2391397AbgDNQWh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 12:22:37 -0400
 Received: from debian7.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D1072075E;
-        Tue, 14 Apr 2020 16:22:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 812682076B;
+        Tue, 14 Apr 2020 16:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586881346;
-        bh=X0mVgGhZ5fIp1Ig39iIPNq9eDAB8AgMq1l2XIOF86yM=;
+        s=default; t=1586881356;
+        bh=Jrxe5Ju5EM6611mYFGycw0G1t6aEjxxaaAUNSk9UV/c=;
         h=From:To:Cc:Subject:Date:From;
-        b=bLFmiaahzUJ3SatExvbeihSGYh8DF+jlVBOguz+GfCLt1HDYy7GbwthGsM/UpWf1k
-         6fpdk19mKDxu6pdbBRn5Hp5tsmh2CFX5oT3CZHoziaQt3HE1SmZD9EciUZIh6rD2Dn
-         GxCoCY7N8PQs2EOZqQSbUMUJY6wnjR7kFAq2Q0PY=
+        b=EuQoDj2DD0aVFHVwqJlabkdHr4rtJlEl7YP7GrSxWItIlhr2AFSiens6HA2xRGA6m
+         RVX231ZVTjhU7T8RW5p67qoAUfUmi91NEHCzKhBwC4oaKXnvSG+eXLCvXzbPu1nMuH
+         TJa9NtOQsA96DKIDMj/HY3xgr2qL1b7+3EQhRNcg=
 From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/3] btrfs: add several test to the balance group
-Date:   Tue, 14 Apr 2020 17:22:21 +0100
-Message-Id: <20200414162221.24357-1-fdmanana@kernel.org>
+Subject: [PATCH 2/3] fstests: stop using run_check in _run_btrfs_balance_start
+Date:   Tue, 14 Apr 2020 17:22:32 +0100
+Message-Id: <20200414162232.24407-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -37,70 +37,72 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Some tests exercise balance but are not included in the 'balance' group,
-so just add them to that group.
+The use of run_check() immediately stops a test because it calls the
+_fail() function when execution of its argument fails. This is generally
+not encouraged in fstests as it prevents a test from detecting further
+problems after that failure. Since the next patch in this series updates
+other tests to use _run_btrfs_balance_start() for which a failure to
+run balance can be expected (btrfs/187 for example), remove the use of
+run_check() from _run_btrfs_balance_start(). Existing tests that use
+_run_btrfs_balance_start() now redirect standard output to the test's
+.full file for debugging purposes. In case balance fails the tests will
+fail due to unexpected output from the standard error.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/group | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ common/btrfs    | 2 +-
+ tests/btrfs/124 | 2 +-
+ tests/btrfs/177 | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 657ec548..b5cd90c1 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -5,7 +5,7 @@
- #
- 001 auto quick subvol snapshot
- 002 auto snapshot
--003 auto replace volume
-+003 auto replace volume balance
- 004 auto rw metadata
- 005 auto defrag
- 006 auto quick volume
-@@ -104,7 +104,7 @@
- 099 auto quick qgroup limit
- 100 auto replace volume eio
- 101 auto replace volume eio
--102 auto quick metadata enospc
-+102 auto quick metadata enospc balance
- 103 auto quick clone compress
- 104 auto qgroup
- 105 auto quick send
-@@ -125,9 +125,9 @@
- 120 auto quick snapshot metadata log
- 121 auto quick snapshot qgroup
- 122 auto quick snapshot qgroup
--123 auto quick qgroup
--124 auto replace volume
--125 auto replace volume
-+123 auto quick qgroup balance
-+124 auto replace volume balance
-+125 auto replace volume balance
- 126 auto quick qgroup limit
- 127 auto quick send
- 128 auto quick send
-@@ -156,9 +156,9 @@
- 151 auto quick volume
- 152 auto quick metadata qgroup send
- 153 auto quick qgroup limit
--154 auto quick volume
-+154 auto quick volume balance
- 155 auto quick send
--156 auto quick trim
-+156 auto quick trim balance
- 157 auto quick raid
- 158 auto quick raid scrub
- 159 auto quick punch log
-@@ -197,7 +197,7 @@
- 192 auto replay snapshot stress
- 193 auto quick qgroup enospc limit
- 194 auto volume
--195 auto volume
-+195 auto volume balance
- 196 auto metadata log volume
- 197 auto quick volume
- 198 auto quick volume
+diff --git a/common/btrfs b/common/btrfs
+index 7971c046..b43932df 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -382,7 +382,7 @@ _run_btrfs_balance_start()
+ 	$BTRFS_UTIL_PROG balance start --help | grep -q "full-balance"
+ 	(( $? == 0 )) && bal_opt="--full-balance"
+ 
+-	run_check $BTRFS_UTIL_PROG balance start $bal_opt $*
++	$BTRFS_UTIL_PROG balance start $bal_opt $*
+ }
+ 
+ #return the sector size of the btrfs scratch fs
+diff --git a/tests/btrfs/124 b/tests/btrfs/124
+index 0686a3b5..0600ae50 100755
+--- a/tests/btrfs/124
++++ b/tests/btrfs/124
+@@ -114,7 +114,7 @@ _run_btrfs_util_prog device scan
+ _scratch_mount >> $seqres.full 2>&1
+ _run_btrfs_util_prog filesystem show
+ echo >> $seqres.full
+-_run_btrfs_balance_start ${SCRATCH_MNT}
++_run_btrfs_balance_start ${SCRATCH_MNT} >>$seqres.full
+ 
+ checkpoint2=`md5sum $SCRATCH_MNT/tf2`
+ echo $checkpoint2 >> $seqres.full 2>&1
+diff --git a/tests/btrfs/177 b/tests/btrfs/177
+index 69b9a539..ec715c21 100755
+--- a/tests/btrfs/177
++++ b/tests/btrfs/177
+@@ -44,7 +44,7 @@ _scratch_mount
+ # Create a small file and run balance so we shall deal with the chunk
+ # size as allocated by the kernel, mkfs allocated chunks are smaller.
+ dd if=/dev/zero of="$SCRATCH_MNT/fill" bs=4096 count=1 >> $seqres.full 2>&1
+-_run_btrfs_balance_start "$SCRATCH_MNT"
++_run_btrfs_balance_start "$SCRATCH_MNT" >>$seqres.full
+ 
+ # Now fill it up.
+ dd if=/dev/zero of="$SCRATCH_MNT/refill" bs=4096 >> $seqres.full 2>&1
+@@ -63,7 +63,7 @@ rm -f "$SCRATCH_MNT/refill"
+ 
+ # Get rid of empty block groups and also make sure that balance skips block
+ # groups containing active swap files.
+-_run_btrfs_balance_start "$SCRATCH_MNT"
++_run_btrfs_balance_start "$SCRATCH_MNT" >>$seqres.full
+ 
+ # Try to shrink away the area occupied by the swap file, which should fail.
+ $BTRFS_UTIL_PROG filesystem resize 1G "$SCRATCH_MNT" 2>&1 | grep -o "Text file busy"
 -- 
 2.11.0
 
