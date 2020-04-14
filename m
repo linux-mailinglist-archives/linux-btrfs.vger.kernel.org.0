@@ -2,117 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644A51A7594
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 10:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B829E1A7638
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 10:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407051AbgDNIMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 04:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2407026AbgDNIM0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:12:26 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47FC0A3BDC
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Apr 2020 01:12:26 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id o127so12350864iof.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 Apr 2020 01:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Dghx157mbbjpuuYCnrHtiHxwUzHEmcMeip8ZsNyZh10=;
-        b=nzw2vhKyN3lYDtB3RHxND0Yq4JtbgWJvwRzIFAYO1BX++MO46Q3R/pNN6KC6/Tt+AB
-         oDCTKCcOKuvJSwHhYE9a0GwWVYwvGj30IsQ6mryRSVb7dTCPZz25g1pmyWcAfsyirb5h
-         fqPrEMKx+SIHCmnhgDYUgXirkObVqZv8n+mlXBrW4yEphjqUtbYn2z0S2ZPIjC64ZWXx
-         bG3CKnFifb/qBcvGnfNWL+6PAJWlnyQs3VvYscWPtxH4ip43QKt0xEeiEpDj/sRwBx1G
-         pzd432f6sTHEsE2GZlngeOUqV/IA8jD+6c0l+BcqV0FtLRYUPsUh8/cPXWewuY7G+hsP
-         fisw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Dghx157mbbjpuuYCnrHtiHxwUzHEmcMeip8ZsNyZh10=;
-        b=Vy0bd5EW4lZbkLGui/6Z4EO7vmjQxvjIBkbFWStjChgZsX3L08uDCHOoD9p6+eilrm
-         NLBCfWqD+JhMuI6FQTnh9mumaTNHhmec4kr9a14l+E4at2CLcMEKP0rMWpmPVlsMNbe9
-         RM1/hiwoDD3JY7XxMRGRGM+9uFg+gARRjcLJt8SdgHNzARPijmT1xmTk6oALYPVMF3Wm
-         G5cZGPi+y7ccDJRHbDR9MM4RpmD3ixgZSquwZmJcQjrgRNuTtU1jAqomsNU7j8S+PUnC
-         ZMtV1cYt7S0Ftfo5tDeAsqTp4UjpbuLhm1AACdCwesWaMlWKIKFMhnsllMU1XMH6rPCQ
-         AaKQ==
-X-Gm-Message-State: AGi0PuaK/iDVesligUAkD0eBgtqToUYugwVvM1xcf45JlQSFPti4jaIX
-        hoKQ8Qf8QCsvc0CoVuVhigSFlN7Mwa9kPE/Z/AjqmaQB
-X-Google-Smtp-Source: APiQypISvlyaiNweBo62IBHL4QvgjRY3oKYT3HqPBM9lilUgAtSrNIByS2HSsnKDL2+OYyO3VtLt/VcKM42lndCLfhg=
-X-Received: by 2002:a6b:7f48:: with SMTP id m8mr20569166ioq.142.1586851945005;
- Tue, 14 Apr 2020 01:12:25 -0700 (PDT)
+        id S2436881AbgDNIcS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 04:32:18 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:52379 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436826AbgDNIcL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 04:32:11 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 9d220a78;
+        Tue, 14 Apr 2020 08:22:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=subject:to:cc
+        :references:from:message-id:date:mime-version:in-reply-to
+        :content-type:content-transfer-encoding; s=mail; bh=Bn42dUX94nPZ
+        VI2aresTt2verm4=; b=sx6IKJIxzuEOA3MDWmGK5eH/64R8mpMYlG8WURWdfzRD
+        XFeah0rjLnpfJ/wNxDNPuLqvGkOXg2tTc6/J9yxFJV/B/IyVASTm/xV1AWFh8sOT
+        E+Zkl2VUcl4Y0wf6Mu5iapMmn3g8Ztyi36JLXdlWN66PEuOJynjCGScQFzOu0tep
+        4+h/FZal3et8UceGQF9vqtL2mbwwUOtzAFh6NniwZkygh5iiMorXd4zwhnYD2AoL
+        UBjxDBvR+PqwgLJDDNN43HRxAe1Ka1ICHvrV5FNQIfjCNS9xZTJzxiJXAqnsHyrN
+        w3BT8jw4OmracAotC1L9+6WCZMUQn8YWdWOjpIB/Jw==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e4f42b92 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 14 Apr 2020 08:22:18 +0000 (UTC)
+Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
+To:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
+        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+References: <20200413211550.8307-1-longman@redhat.com>
+ <20200413211550.8307-2-longman@redhat.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Message-ID: <4babf834-c531-50ba-53f6-e88410b15ce3@zx2c4.com>
+Date:   Tue, 14 Apr 2020 02:32:03 -0600
 MIME-Version: 1.0
-References: <CABzOi+cT5_Bx=U41U8_4gg2wLVg+M3FaCDqs2Sea_Mkrm1we8g@mail.gmail.com>
-In-Reply-To: <CABzOi+cT5_Bx=U41U8_4gg2wLVg+M3FaCDqs2Sea_Mkrm1we8g@mail.gmail.com>
-From:   Jan Beranek <jan233321@gmail.com>
-Date:   Tue, 14 Apr 2020 10:12:13 +0200
-Message-ID: <CABzOi+cwLmquRuTzBG_opmOZ+pMkHzgczpKT7yFhCe=99+k+xw@mail.gmail.com>
-Subject: Fwd: BTRFS error (device sdb1): open_ctree failed
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear all,
-after incorrectly unmounted SSD disc (which I use as portable and I
-just by mistake unplug it) I've finished with partly crashed
-partition.
+On 4/13/20 3:15 PM, Waiman Long wrote:
+> As said by Linus:
+> 
+>    A symmetric naming is only helpful if it implies symmetries in use.
+>    Otherwise it's actively misleading.
+> 
+>    In "kzalloc()", the z is meaningful and an important part of what the
+>    caller wants.
+> 
+>    In "kzfree()", the z is actively detrimental, because maybe in the
+>    future we really _might_ want to use that "memfill(0xdeadbeef)" or
+>    something. The "zero" part of the interface isn't even _relevant_.
+> 
+> The main reason that kzfree() exists is to clear sensitive information
+> that should not be leaked to other future users of the same memory
+> objects.
+> 
+> Rename kzfree() to kfree_sensitive() to follow the example of the
+> recently added kvfree_sensitive() and make the intention of the API
+> more explicit. 
 
-Symptoms: impossible to mount RW/ possible to mount RO.
+Seems reasonable to me. One bikeshed, that you can safely discard and 
+ignore as a mere bikeshed: kfree_memzero or kfree_scrub or 
+kfree_{someverb} seems like a better function name, as it describes what 
+the function does, rather than "_sensitive" that suggests something 
+about the data maybe but who knows what that entails. If you disagree, 
+not a big deal either way.
 
-uname -a
-Linux linux-foir 5.6.0-1-default #1 SMP Mon Mar 30 08:00:44 UTC 2020
-(4de1111) x86_64 x86_64 x86_64 GNU/Linux
--------------------
-dmesg when trying to mount rw:
-[169971.382641] usb-storage 1-2:1.0: USB Mass Storage device detected
-[169971.382942] scsi host3: usb-storage 1-2:1.0
-[169972.396884] scsi 3:0:0:0: Direct-Access     ASMT     2115
-   0    PQ: 0 ANSI: 6
-[169972.397613] sd 3:0:0:0: Attached scsi generic sg1 type 0
-[169972.399899] sd 3:0:0:0: [sdb] Spinning up disk...
-[169973.419852] ...ready
-[169975.468874] sd 3:0:0:0: [sdb] 250069680 512-byte logical blocks:
-(128 GB/119 GiB)
-[169975.469626] sd 3:0:0:0: [sdb] Write Protect is off
-[169975.469633] sd 3:0:0:0: [sdb] Mode Sense: 43 00 00 00
-[169975.470311] sd 3:0:0:0: [sdb] Write cache: enabled, read cache:
-enabled, doesn't support DPO or FUA
-[169975.486356]  sdb: sdb1
-[169975.488448] sd 3:0:0:0: [sdb] Attached SCSI disk
-[169979.980390] BTRFS info (device sdb1): disk space caching is enabled
-[169979.980399] BTRFS info (device sdb1): has skinny extents
-[169980.094949] BTRFS warning (device sdb1): chunk 13631488 missing 1
-devices, max tolerance is 0 for writable mount
-[169980.094954] BTRFS warning (device sdb1): writable mount is not
-allowed due to too many missing devices
-[169980.115969] BTRFS error (device sdb1): open_ctree failed
-------------------
-btrfs --version
-btrfs-progs v5.4.1
--------------------
-btrfs fi show
-Label: none  uuid: 17e5780b-2196-46e0-9cba-5c896a2eaa3d
-Total devices 1 FS bytes used 108.44GiB
-devid    1 size 119.24GiB used 111.02GiB path /dev/sdb1
---------------------
-when mounted ro then
-btrfs fi df brt/
-Data, single: total=109.01GiB, used=108.29GiB
-System, DUP: total=8.00MiB, used=16.00KiB
-Metadata, DUP: total=1.00GiB, used=150.80MiB
-GlobalReserve, single: total=124.33MiB, used=0.00B
------------------------
+ > In addition, memzero_explicit() is used to clear the
+ > memory to make sure that it won't get optimized away by the compiler.
 
-Any ideas how to remount it RW? We can test anything on the disc...
-(there are valuable data and I have backup).
-Information about used data seems to be wrong as well...
-
-Thanks!
-Best Regards
-
-Jan.
+This had occurred to me momentarily a number of years ago, but I was 
+under the impression that the kernel presumes extern function calls to 
+always imply a compiler barrier, making it difficult for the compiler to 
+reason about what happens in/after kfree, in order to be able to 
+optimize out the preceding memset. With LTO, that rule obviously 
+changes. I guess new code should be written with cross-object 
+optimizations in mind now a days? [Meanwhile, it would be sort of 
+interesting to teach gcc about kfree to enable additional scary 
+optimizations...]
