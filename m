@@ -2,124 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84591A751E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 09:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644A51A7594
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 10:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406876AbgDNHoy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 03:44:54 -0400
-Received: from smtp.mujha-vel.cz ([81.30.225.246]:51447 "EHLO
-        smtp.mujha-vel.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406802AbgDNHox (ORCPT
+        id S2407051AbgDNIMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 04:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407026AbgDNIM0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 03:44:53 -0400
-X-Greylist: delayed 2143 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Apr 2020 03:44:52 EDT
-Received: from [81.30.250.3] (helo=[172.16.1.2])
-        by smtp.mujha-vel.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <jn@forever.cz>)
-        id 1jOFgu-00086f-La; Tue, 14 Apr 2020 09:09:05 +0200
-Subject: balance canceling was: Re: slow single -> raid1 conversion (heavy
- write to original LVM volume)
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <107f8e94-78bc-f891-0e1b-2db7903e8bde@forever.cz>
- <424ffd2a-2a9b-1cef-c3ac-ad2814f037a1@gmx.com>
-From:   jakub nantl <jn@forever.cz>
-Message-ID: <ccd87fca-56f2-3fc8-81c0-bdfb2f4aa9f8@forever.cz>
-Date:   Tue, 14 Apr 2020 09:09:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 04:12:26 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47FC0A3BDC
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Apr 2020 01:12:26 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id o127so12350864iof.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Apr 2020 01:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Dghx157mbbjpuuYCnrHtiHxwUzHEmcMeip8ZsNyZh10=;
+        b=nzw2vhKyN3lYDtB3RHxND0Yq4JtbgWJvwRzIFAYO1BX++MO46Q3R/pNN6KC6/Tt+AB
+         oDCTKCcOKuvJSwHhYE9a0GwWVYwvGj30IsQ6mryRSVb7dTCPZz25g1pmyWcAfsyirb5h
+         fqPrEMKx+SIHCmnhgDYUgXirkObVqZv8n+mlXBrW4yEphjqUtbYn2z0S2ZPIjC64ZWXx
+         bG3CKnFifb/qBcvGnfNWL+6PAJWlnyQs3VvYscWPtxH4ip43QKt0xEeiEpDj/sRwBx1G
+         pzd432f6sTHEsE2GZlngeOUqV/IA8jD+6c0l+BcqV0FtLRYUPsUh8/cPXWewuY7G+hsP
+         fisw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Dghx157mbbjpuuYCnrHtiHxwUzHEmcMeip8ZsNyZh10=;
+        b=Vy0bd5EW4lZbkLGui/6Z4EO7vmjQxvjIBkbFWStjChgZsX3L08uDCHOoD9p6+eilrm
+         NLBCfWqD+JhMuI6FQTnh9mumaTNHhmec4kr9a14l+E4at2CLcMEKP0rMWpmPVlsMNbe9
+         RM1/hiwoDD3JY7XxMRGRGM+9uFg+gARRjcLJt8SdgHNzARPijmT1xmTk6oALYPVMF3Wm
+         G5cZGPi+y7ccDJRHbDR9MM4RpmD3ixgZSquwZmJcQjrgRNuTtU1jAqomsNU7j8S+PUnC
+         ZMtV1cYt7S0Ftfo5tDeAsqTp4UjpbuLhm1AACdCwesWaMlWKIKFMhnsllMU1XMH6rPCQ
+         AaKQ==
+X-Gm-Message-State: AGi0PuaK/iDVesligUAkD0eBgtqToUYugwVvM1xcf45JlQSFPti4jaIX
+        hoKQ8Qf8QCsvc0CoVuVhigSFlN7Mwa9kPE/Z/AjqmaQB
+X-Google-Smtp-Source: APiQypISvlyaiNweBo62IBHL4QvgjRY3oKYT3HqPBM9lilUgAtSrNIByS2HSsnKDL2+OYyO3VtLt/VcKM42lndCLfhg=
+X-Received: by 2002:a6b:7f48:: with SMTP id m8mr20569166ioq.142.1586851945005;
+ Tue, 14 Apr 2020 01:12:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <424ffd2a-2a9b-1cef-c3ac-ad2814f037a1@gmx.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CABzOi+cT5_Bx=U41U8_4gg2wLVg+M3FaCDqs2Sea_Mkrm1we8g@mail.gmail.com>
+In-Reply-To: <CABzOi+cT5_Bx=U41U8_4gg2wLVg+M3FaCDqs2Sea_Mkrm1we8g@mail.gmail.com>
+From:   Jan Beranek <jan233321@gmail.com>
+Date:   Tue, 14 Apr 2020 10:12:13 +0200
+Message-ID: <CABzOi+cwLmquRuTzBG_opmOZ+pMkHzgczpKT7yFhCe=99+k+xw@mail.gmail.com>
+Subject: Fwd: BTRFS error (device sdb1): open_ctree failed
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15. 01. 20 4:26,  Qu Wenruo wrote:
-> And due to another bug in balance canceling, we can't cancel it.
->
-> For the unable to cancel part, there are patches to address it, and
-> would get upstream in v5.6 release.
+Dear all,
+after incorrectly unmounted SSD disc (which I use as portable and I
+just by mistake unplug it) I've finished with partly crashed
+partition.
 
-Hello,
+Symptoms: impossible to mount RW/ possible to mount RO.
 
-looks like balance canceling is still not 100% in 5.6.x:
+uname -a
+Linux linux-foir 5.6.0-1-default #1 SMP Mon Mar 30 08:00:44 UTC 2020
+(4de1111) x86_64 x86_64 x86_64 GNU/Linux
+-------------------
+dmesg when trying to mount rw:
+[169971.382641] usb-storage 1-2:1.0: USB Mass Storage device detected
+[169971.382942] scsi host3: usb-storage 1-2:1.0
+[169972.396884] scsi 3:0:0:0: Direct-Access     ASMT     2115
+   0    PQ: 0 ANSI: 6
+[169972.397613] sd 3:0:0:0: Attached scsi generic sg1 type 0
+[169972.399899] sd 3:0:0:0: [sdb] Spinning up disk...
+[169973.419852] ...ready
+[169975.468874] sd 3:0:0:0: [sdb] 250069680 512-byte logical blocks:
+(128 GB/119 GiB)
+[169975.469626] sd 3:0:0:0: [sdb] Write Protect is off
+[169975.469633] sd 3:0:0:0: [sdb] Mode Sense: 43 00 00 00
+[169975.470311] sd 3:0:0:0: [sdb] Write cache: enabled, read cache:
+enabled, doesn't support DPO or FUA
+[169975.486356]  sdb: sdb1
+[169975.488448] sd 3:0:0:0: [sdb] Attached SCSI disk
+[169979.980390] BTRFS info (device sdb1): disk space caching is enabled
+[169979.980399] BTRFS info (device sdb1): has skinny extents
+[169980.094949] BTRFS warning (device sdb1): chunk 13631488 missing 1
+devices, max tolerance is 0 for writable mount
+[169980.094954] BTRFS warning (device sdb1): writable mount is not
+allowed due to too many missing devices
+[169980.115969] BTRFS error (device sdb1): open_ctree failed
+------------------
+btrfs --version
+btrfs-progs v5.4.1
+-------------------
+btrfs fi show
+Label: none  uuid: 17e5780b-2196-46e0-9cba-5c896a2eaa3d
+Total devices 1 FS bytes used 108.44GiB
+devid    1 size 119.24GiB used 111.02GiB path /dev/sdb1
+--------------------
+when mounted ro then
+btrfs fi df brt/
+Data, single: total=109.01GiB, used=108.29GiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=1.00GiB, used=150.80MiB
+GlobalReserve, single: total=124.33MiB, used=0.00B
+-----------------------
 
+Any ideas how to remount it RW? We can test anything on the disc...
+(there are valuable data and I have backup).
+Information about used data seems to be wrong as well...
 
-# btrfs balance status /data/
-Balance on '/data/' is running, cancel requested
-0 out of about 16 chunks balanced (9 considered), 100% left
+Thanks!
+Best Regards
 
-
-Apr 13 23:30:52 sopa kernel: [ 6983.625318] BTRFS info (device dm-0):
-balance: start -dusage=100,limit=16
-Apr 13 23:30:52 sopa kernel: [ 6983.627286] BTRFS info (device dm-0):
-relocating block group 5572244013056 flags data|raid1
-Apr 13 23:31:05 sopa kernel: [ 6996.237814] BTRFS info (device dm-0):
-relocating block group 5569073119232 flags data|raid1
-Apr 13 23:31:40 sopa kernel: [ 7032.178175] BTRFS info (device dm-0):
-found 17 extents, stage: move data extents
-Apr 13 23:31:46 sopa kernel: [ 7037.711119] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 13 23:31:49 sopa kernel: [ 7040.767052] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 13 23:32:00 sopa kernel: [ 7051.885977] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-..
-
-..
-
-Apr 14 06:26:06 sopa kernel: [31897.468487] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 14 06:26:08 sopa kernel: [31900.034563] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 14 06:26:10 sopa kernel: [31901.719655] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 14 06:26:12 sopa kernel: [31903.334506] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-Apr 14 06:26:12 sopa kernel: [31903.856791] BTRFS info (device dm-0):
-found 17 extents, stage: update data pointers
-
-
-Linux sopa 5.6.4-050604-generic #202004131234 SMP Mon Apr 13 12:36:46
-UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
-
-# btrfs fi us /data/
-Overall:
-    Device size:           3.71TiB
-    Device allocated:           3.71TiB
-    Device unallocated:           2.00MiB
-    Device missing:             0.00B
-    Used:               3.30TiB
-    Free (estimated):         209.16GiB    (min: 209.16GiB)
-    Data ratio:                  2.00
-    Metadata ratio:              2.00
-    Global reserve:         512.00MiB    (used: 0.00B)
-
-Data,RAID1: Size:1.85TiB, Used:1.64TiB
-   /dev/mapper/sopa-data       1.85TiB
-   /dev/sdb3       1.85TiB
-
-Metadata,RAID1: Size:6.11GiB, Used:4.77GiB
-   /dev/mapper/sopa-data       6.11GiB
-   /dev/sdb3       6.11GiB
-
-System,RAID1: Size:32.00MiB, Used:304.00KiB
-   /dev/mapper/sopa-data      32.00MiB
-   /dev/sdb3      32.00MiB
-
-Unallocated:
-   /dev/mapper/sopa-data       1.00MiB
-   /dev/sdb3       1.00MiB
-
-# btrfs fi show /data/
-Label: 'SOPADATA'  uuid: 37b8a62c-68e8-44e4-a3b2-eb572385c3e8
-    Total devices 2 FS bytes used 1.65TiB
-    devid    1 size 1.86TiB used 1.85TiB path /dev/mapper/sopa-data
-    devid    2 size 1.86TiB used 1.85TiB path /dev/sdb3
-
-jn
-
+Jan.
