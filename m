@@ -2,91 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C74C1A8B96
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 21:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AC81A8DF0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 23:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505272AbgDNT4p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 15:56:45 -0400
-Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:34122 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2505250AbgDNTz5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:55:57 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id D5D591802CCB4;
-        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9E3611802B57F;
-        Tue, 14 Apr 2020 19:47:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3872:3874:4321:4385:5007:6742:6743:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30045:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: coal59_5a1e7cc02a463
-X-Filterd-Recvd-Size: 2796
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 14 Apr 2020 19:46:59 +0000 (UTC)
-Message-ID: <2a58f592879cf67b4c6b8e859ce87e1f9652902a.camel@perches.com>
-Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
-From:   Joe Perches <joe@perches.com>
-To:     Waiman Long <longman@redhat.com>,
-        Michal =?ISO-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Date:   Tue, 14 Apr 2020 12:44:49 -0700
-In-Reply-To: <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
-References: <20200413211550.8307-1-longman@redhat.com>
-         <20200413222846.24240-1-longman@redhat.com>
-         <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
-         <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
-         <20200414191601.GZ25468@kitsune.suse.cz>
-         <578fe9b6-1ccd-2698-60aa-96c3f2dd2c31@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        id S2634079AbgDNVny (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 17:43:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39836 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2634069AbgDNVno (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:43:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8494DAC7F;
+        Tue, 14 Apr 2020 21:43:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 29471DA823; Tue, 14 Apr 2020 23:43:00 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 23:43:00 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs: Move on-disk structure definition to
+ btrfs_tree.h
+Message-ID: <20200414214300.GW5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200408070608.41099-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408070608.41099-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 2020-04-14 at 15:37 -0400, Waiman Long wrote:
-> OK, I can change it to clear the key length when the allocation failed
-> which isn't likely.
+On Wed, Apr 08, 2020 at 03:06:08PM +0800, Qu Wenruo wrote:
+> These structures all are on-disk format. Move them to btrfs_tree.h
+> 
+> This allows us to sync the header to different projects, who need to
+> read btrfs filesystem, like U-boot, grub.
+> 
+> With this modification, all on-disk format is definite in btrfs_tree.h,
+> and can be easily synced to other projects.
+> 
+> This move includes:
+> - btrfs magic
+>   It's a surprise that it's not even definied in btrfs_tree.h
 
+There was no need for it so far, blkid has its own definition and f_type
+in stat provides the raw bytes. I don't find it surprising :)
 
-Perhaps:
+> - tree block max level
+>   Move it before btrfs_header definition.
+> 
+> - tree block backref revision
+> - btrfs_header structure
+> - btrfs_root_backup structure
+> - btrfs_super_block structure
+> - BTRFS_FEATURE_* flags
+> - BTRFS_(FSID|UUID|LABEL)_SIZE macros
+> - BTRFS_MAX_METADATA_BLOCKSIZE macro
+> - BTRFS_NAME_LEN macro
+> 
+> - btrfs_item structure
+> - btrfs_leaf structure
+> - btrfs_key_ptr structure
+> - btrfs_node structure
+> 
+> - btrfs_dev_stat_values
+>   Since on-disk format btrfs_dev_stats_item needs it.
+> 
+> - BTRFS_INODE_* flags
+> - BTRFS_QGROUP_LIMIT_* flags
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Add the reason why we move the code
+> 
+> v3:
+> - Move more flags/enum shared with ioctl to btrfs_btree.h
+>   This makes ioctl header to rely on btree_btree.h.
+>   But this makes btrfs_tree.h completely self-consistent.
+>   This problem is mostly exposed when syncing the header to btrfs-progs.
+> ---
+>  fs/btrfs/ctree.h                | 246 ------------------------
+>  include/uapi/linux/btrfs.h      |  74 +------
+>  include/uapi/linux/btrfs_tree.h | 329 +++++++++++++++++++++++++++++++-
+>  3 files changed, 327 insertions(+), 322 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 8aa7b9dac405..4d787d749315 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -49,8 +49,6 @@ extern struct kmem_cache *btrfs_free_space_bitmap_cachep;
+>  struct btrfs_ordered_sum;
+>  struct btrfs_ref;
+>  
+> -#define BTRFS_MAGIC 0x4D5F53665248425FULL /* ascii _BHRfS_M, no null */
+> -
+>  /*
+>   * Maximum number of mirrors that can be available for all profiles counting
+>   * the target device of dev-replace as one. During an active device replace
+> @@ -62,22 +60,8 @@ struct btrfs_ref;
+>   */
+>  #define BTRFS_MAX_MIRRORS (4 + 1)
+>  
+> -#define BTRFS_MAX_LEVEL 8
+> -
+>  #define BTRFS_OLDEST_GENERATION	0ULL
+>  
+> -/*
+> - * the max metadata block size.  This limit is somewhat artificial,
+> - * but the memmove costs go through the roof for larger blocks.
+> - */
+> -#define BTRFS_MAX_METADATA_BLOCKSIZE 65536
 
-	kfree_sensitive(op->key);
-	op->key = NULL;
-	op->keylen = 0;
-
-but I don't know that it impacts any possible state.
-
-
+So lots of comments and defines get moved, please take the opportunity
+to actually unify the formatting to the current preferred style.
