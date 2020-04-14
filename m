@@ -2,127 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0C91A701A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 02:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70AA1AB692
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Apr 2020 06:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390479AbgDNAaC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Apr 2020 20:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390461AbgDNAaB (ORCPT
+        id S2391733AbgDPESE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Apr 2020 00:18:04 -0400
+Received: from magic.merlins.org ([209.81.13.136]:33196 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389455AbgDPESC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Apr 2020 20:30:01 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD228C00860E
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 17:30:00 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id i3so1209891pgk.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Apr 2020 17:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=GtP40NBc6K+wY7TevCqJVJVyGGxw6eyhk3x6njvRZbI=;
-        b=PMRE9MFBjRNguCLZJxvQ0tC6cbj5HN/L0mNJHOjg1H5naWvyPaji8Uw6CjXqOQ2azW
-         MhWs/LuNrHlvICFisvb7Cy6SJ3VKQrmiHJlokad5hGoOXcGXzDY3vorrrgpyAZrAVUDE
-         dUN76VdbMCLvs9G10TRyVoj/R2uKEUPKhrkRhwWPh9Qq6Oj8zqhrDAXwnWHye+K8R3ym
-         lDZQumSHVx6+RupP9U0o1EyjztcXPr7zTXefIIyzd+nYkxQBJg3bKkumuWN4k6N/hrZC
-         eN210smaNX58gX6QVglgalvDGfi5xzWfnOSt7/cWPG1d3xQeaexIo7gZ03EO3NRYAH/8
-         2wUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=GtP40NBc6K+wY7TevCqJVJVyGGxw6eyhk3x6njvRZbI=;
-        b=Y/s3A+4Lc720pYGOyvbL8W56Oq7Z83ZdYzB2JrQzo96vQb4IUCAtQ+TlyhPmDHsIAL
-         U8rnqRNQoCzcK0PzyVJhS8zTbY4C87os7ytwY7Ean2uaDCyQ5+rb8ZwhS4hGi8lP8Fnz
-         zzUiBTBm0ST24In//dbeSSZlWV0AtOtUX5/cbIIco/wBECWqOETobPE9Q2G0vG9Ix6rU
-         kBiWEZQda76QH67PImcGJkqvUsZ/Fw3tKrznt8nyqops2jzhgJz7cQhwAheG4GzaICZ+
-         Gl0O3DkKMxb3hBQgmmoL7qsjrcXYDC1ve5F9RZUTKILmVeH725dM2gqxKo0o6K68Q6e/
-         pWPg==
-X-Gm-Message-State: AGi0PubDRHcYBvlfjZInDLOafIxUgn9yy+UzgLG0WKGnDftWI4B0Z+N2
-        NkM+DtAaDMcdJuUKbA2FeLEFMw==
-X-Google-Smtp-Source: APiQypL5W5g7xmsU3GZXO1UecYYPwVLK1dPD412glciRM3pdZ8NSkRu/LjnNHn8Pg6Fxg4L/cgCpIw==
-X-Received: by 2002:a62:dd48:: with SMTP id w69mr10144721pff.86.1586824199909;
-        Mon, 13 Apr 2020 17:29:59 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id g11sm10055136pjs.17.2020.04.13.17.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 17:29:59 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 17:29:58 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Waiman Long <longman@redhat.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm, treewide: Rename kzfree() to kfree_sensitive()
-In-Reply-To: <20200413211550.8307-2-longman@redhat.com>
-Message-ID: <alpine.DEB.2.21.2004131729410.260270@chino.kir.corp.google.com>
-References: <20200413211550.8307-1-longman@redhat.com> <20200413211550.8307-2-longman@redhat.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 16 Apr 2020 00:18:02 -0400
+Received: from svh-gw.merlins.org ([173.11.111.145]:33684 helo=saruman.merlins.org)
+        by mail1.merlins.org with esmtps 
+        (Cipher TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.92 #3)
+        id 1jOvyK-0007UA-IA; Wed, 15 Apr 2020 21:17:55 -0700
+Received: from merlin by saruman.merlins.org with local (Exim 4.80)
+        (envelope-from <marc@merlins.org>)
+        id 1jO9bK-0005I0-JS; Mon, 13 Apr 2020 17:38:54 -0700
+Date:   Mon, 13 Apr 2020 17:38:54 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Message-ID: <20200414003854.GA6639@merlins.org>
+References: <20200321202307.GA15906@merlins.org>
+ <1aaae706-0029-be4f-9f6f-194b03087b35@suse.com>
+ <20200325201455.GO29461@merlins.org>
+ <a9dd1b1a-b38e-a0f4-91e1-b89063e8ae1e@oracle.com>
+ <20200326013007.GS15123@merlins.org>
+ <0d2ea8e2-cbe8-ca64-d0d4-fa70b8cad8b1@oracle.com>
+ <20200326042624.GT15123@merlins.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200326042624.GT15123@merlins.org>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 173.11.111.145
+X-SA-Exim-Mail-From: marc@merlins.org
+X-Spam-Checker-Version: SpamAssassin 3.4.4-rc1-mmrules_20121111 (2020-01-18)
+        on magic.merlins.org
+X-Spam-Level: **
+X-Spam-Status: No, score=2.5 required=7.0 tests=GREYLIST_ISWHITE,
+        KHOP_HELO_FCRDNS,SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.4-rc1-mmrules_20121111
+X-Spam-Report: *  2.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: merlins.org]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  1.0 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
+        *  1.0 KHOP_HELO_FCRDNS Relay HELO differs from its IP's reverse DNS
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this receipient and sender
+Subject: Re: 5.4.20: cannot mount device that blipped off the bus: duplicate
+ device fsid:devid for
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 13 Apr 2020, Waiman Long wrote:
+Anaud, I had this happen agin with 5.5.11, and it was impossible to do
+anything to fix it, I had to reboot again.
+btrfs device scan --forget 
+did nothing.
 
-> As said by Linus:
-> 
->   A symmetric naming is only helpful if it implies symmetries in use.
->   Otherwise it's actively misleading.
-> 
->   In "kzalloc()", the z is meaningful and an important part of what the
->   caller wants.
-> 
->   In "kzfree()", the z is actively detrimental, because maybe in the
->   future we really _might_ want to use that "memfill(0xdeadbeef)" or
->   something. The "zero" part of the interface isn't even _relevant_.
-> 
-> The main reason that kzfree() exists is to clear sensitive information
-> that should not be leaked to other future users of the same memory
-> objects.
-> 
-> Rename kzfree() to kfree_sensitive() to follow the example of the
-> recently added kvfree_sensitive() and make the intention of the API
-> more explicit. In addition, memzero_explicit() is used to clear the
-> memory to make sure that it won't get optimized away by the compiler.
-> 
-> The renaming is done by using the command sequence:
-> 
->   git grep -w --name-only kzfree |\
->   xargs sed -i 's/\bkzfree\b/kfree_sensitive/'
-> 
-> followed by some editing of the kfree_sensitive() kerneldoc and the
-> use of memzero_explicit() instead of memset().
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+See details:
+BTRFS: device label btrfs_space devid 1 transid 35178413 /dev/sde1
+BTRFS info (device sde1): use lzo compression, level 0
+BTRFS info (device sde1): disk space caching is enabled
+BTRFS info (device sde1): has skinny extents
+BTRFS info (device sde1): enabling ssd optimizations
+sd 6:1:3:0: [sde] tag#642 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s  
+sd 6:1:3:0: [sde] tag#640 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s
+sd 6:1:3:0: [sde] tag#702 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s
+sd 6:1:3:0: [sde] tag#702 CDB: Write(16) 8a 00 00 00 00 00 f1 a7 3a 68 00 00 01 f0 00 00  
+blk_update_request: I/O error, dev sde, sector 4054268520 op 0x1:(WRITE) flags 0x100000 phys_seg 62 prio class 0
+sd 6:1:3:0: [sde] tag#701 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s
+sd 6:1:3:0: [sde] tag#701 CDB: Write(16) 8a 00 00 00 00 00 f1 a7 38 68 00 00 02 00 00 00  
+blk_update_request: I/O error, dev sde, sector 4054268008 op 0x1:(WRITE) flags 0x104000 phys_seg 64 prio class 0
+sd 6:1:3:0: [sde] tag#700 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=2s
+sd 6:1:3:0: [sde] tag#700 CDB: Write(16) 8a 00 00 00 00 00 f1 a7 36 68 00 00 02 00 00 00  
+blk_update_request: I/O error, dev sde, sector 4054267496 op 0x1:(WRITE) flags 0x104000 phys_seg 64 prio class 0
+BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+sd 6:1:3:0: [sde] tag#641 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=10s
+sd 6:1:3:0: [sde] tag#641 CDB: Unmap/Read sub-channel 42 00 00 00 00 00 00 00 18 00  
+BTRFS info (device sde1): forced readonly
+BTRFS warning (device sde1): Skipping commit of aborted transaction.  
+BTRFS: error (device sde1) in cleanup_transaction:1894: errno=-5 IO failure
+BTRFS info (device sde1): delayed_refs has NO entry
+btrfs_dev_stat_print_on_error: 244 callbacks suppressed
 
-Acked-by: David Rientjes <rientjes@google.com>
+
+gargamel:~# dmtail 3
+[1887142.765448] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4529, flush 0, corrupt 0, gen 0
+[1887142.795820] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4530, flush 0, corrupt 0, gen 0
+[1887142.826176] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4531, flush 0, corrupt 0, gen 0
+gargamel:~# cat /proc/partitions  |grep sd[ep]
+   8      240 3750738264 sdp
+   8      241 3750737223 sdp1
+gargamel:~# mount | grep sde
+/dev/sde1 on /mnt/btrfs_space type btrfs (ro,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=5,subvol=/)
+/dev/sde1 on /var/local/space type btrfs (ro,noexec,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=257,subvol=/varlocalspace)
+/dev/sde1 on /var/cache/zoneminder type btrfs (ro,nosuid,nodev,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=257,subvol=/varlocalspace/zoneminder)
+/dev/sde1 on /var/lib/mysql type btrfs (ro,nosuid,nodev,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=3648,subvol=/mysql)
+gargamel:~# umount /mnt/btrfs_space; umount /var/local/space; umount /var/cache/zoneminder; umount /var/lib/mysql
+gargamel:~# mount | grep sde
+
+gargamel:~# mount /dev/sdp1 /mnt/mnt
+mount: /mnt/mnt: mount(2) system call failed: File exists.
+gargamel:~# dmtail 2
+[1887142.826176] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4531, flush 0, corrupt 0, gen 0
+[1887453.610947] BTRFS warning (device sde1): duplicate device fsid:devid for 727c7ba3-f6f9-462a-8472-453dd7d46d8a:1 old:/dev/sde1 new:/dev/sdp1
+
+gargamel:/usr/local/bin# btrfs device scan --forget 
+gargamel:/usr/local/bin# mount /dev/sdp1 /mnt/mnt
+mount: /mnt/mnt: mount(2) system call failed: File exists.
+
+
+After reboot, I made sure sde is not used by anything weird, just simple mounts:
+gargamel:~# lsblk  | grep sde
+sde                                 8:64   1 931.5G  0 disk  
+├─sde1                              8:65   1 488.3M  0 part  
+├─sde2                              8:66   1  14.9G  0 part  
+├─sde3                              8:67   1    80G  0 part  
+└─sde4                              8:68   1 836.1G  0 part 
+
+Any ideas?
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
