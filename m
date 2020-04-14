@@ -2,24 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F7D1A8AE5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 21:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7241A8AC2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 21:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504870AbgDNTeq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 15:34:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504805AbgDNTdv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:33:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 63506AC2C;
-        Tue, 14 Apr 2020 19:16:04 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 21:16:01 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S2504793AbgDNTaC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 15:30:02 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44493 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504786AbgDNTaA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 15:30:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586892599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=4nt9rcH2RnKfJzDA58agnsCRn6rTIqNaptR/6NgozyU=;
+        b=TmBQD0Cnhi97wuS+XJSLFilq6/WfEO7bI3aZn9qaIu4O/EeUhBxspf5vauRN49iFGFwCmD
+        4h7uGVv1okTokBqdAtN6K5AXDEO1smBYNV/bRT9zYReBlHbMVTiIXbaUxJ0U4UcrT+lw1f
+        FhEBN8qvwhPNMgRij4sLmbch7IE9D5E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-Xc2oPvfjP7mbYjWGtjiEGA-1; Tue, 14 Apr 2020 15:29:55 -0400
+X-MC-Unique: Xc2oPvfjP7mbYjWGtjiEGA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6723C107ACC9;
+        Tue, 14 Apr 2020 19:29:52 +0000 (UTC)
+Received: from llong.com (ovpn-118-173.rdu2.redhat.com [10.10.118.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F1F4419C70;
+        Tue, 14 Apr 2020 19:29:46 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
         David Howells <dhowells@redhat.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         James Morris <jmorris@namei.org>,
@@ -27,107 +41,49 @@ Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Joe Perches <joe@perches.com>,
         Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-crypto@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
-Message-ID: <20200414191601.GZ25468@kitsune.suse.cz>
+        David Rientjes <rientjes@google.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 3/3] btrfs: Use kfree() in btrfs_ioctl_get_subvol_info()
+Date:   Tue, 14 Apr 2020 15:29:33 -0400
+Message-Id: <20200414192933.26846-1-longman@redhat.com>
+In-Reply-To: <20200413211550.8307-1-longman@redhat.com>
 References: <20200413211550.8307-1-longman@redhat.com>
- <20200413222846.24240-1-longman@redhat.com>
- <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
- <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e194a51f-a5e5-a557-c008-b08cac558572@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 12:24:36PM -0400, Waiman Long wrote:
-> On 4/14/20 2:08 AM, Christophe Leroy wrote:
-> >
-> >
-> > Le 14/04/2020 à 00:28, Waiman Long a écrit :
-> >> Since kfree_sensitive() will do an implicit memzero_explicit(), there
-> >> is no need to call memzero_explicit() before it. Eliminate those
-> >> memzero_explicit() and simplify the call sites. For better correctness,
-> >> the setting of keylen is also moved down after the key pointer check.
-> >>
-> >> Signed-off-by: Waiman Long <longman@redhat.com>
-> >> ---
-> >>   .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 19 +++++-------------
-> >>   .../allwinner/sun8i-ss/sun8i-ss-cipher.c      | 20 +++++--------------
-> >>   drivers/crypto/amlogic/amlogic-gxl-cipher.c   | 12 +++--------
-> >>   drivers/crypto/inside-secure/safexcel_hash.c  |  3 +--
-> >>   4 files changed, 14 insertions(+), 40 deletions(-)
-> >>
-> >> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-> >> b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-> >> index aa4e8fdc2b32..8358fac98719 100644
-> >> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-> >> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
-> >> @@ -366,10 +366,7 @@ void sun8i_ce_cipher_exit(struct crypto_tfm *tfm)
-> >>   {
-> >>       struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
-> >>   -    if (op->key) {
-> >> -        memzero_explicit(op->key, op->keylen);
-> >> -        kfree(op->key);
-> >> -    }
-> >> +    kfree_sensitive(op->key);
-> >>       crypto_free_sync_skcipher(op->fallback_tfm);
-> >>       pm_runtime_put_sync_suspend(op->ce->dev);
-> >>   }
-> >> @@ -391,14 +388,11 @@ int sun8i_ce_aes_setkey(struct crypto_skcipher
-> >> *tfm, const u8 *key,
-> >>           dev_dbg(ce->dev, "ERROR: Invalid keylen %u\n", keylen);
-> >>           return -EINVAL;
-> >>       }
-> >> -    if (op->key) {
-> >> -        memzero_explicit(op->key, op->keylen);
-> >> -        kfree(op->key);
-> >> -    }
-> >> -    op->keylen = keylen;
-> >> +    kfree_sensitive(op->key);
-> >>       op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
-> >>       if (!op->key)
-> >>           return -ENOMEM;
-> >> +    op->keylen = keylen;
-> >
-> > Does it matter at all to ensure op->keylen is not set when of->key is
-> > NULL ? I'm not sure.
-> >
-> > But if it does, then op->keylen should be set to 0 when freeing op->key. 
-> 
-> My thinking is that if memory allocation fails, we just don't touch
-> anything and return an error code. I will not explicitly set keylen to 0
-> in this case unless it is specified in the API documentation.
-You already freed the key by now so not touching anything is not
-possible. The key is set to NULL on allocation failure so setting keylen
-to 0 should be redundant. However, setting keylen to 0 is consisent with
-not having a key, and it avoids the possibility of leaking the length
-later should that ever cause any problem.
+In btrfs_ioctl_get_subvol_info(), there is a classic case where kzalloc()
+was incorrectly paired with kzfree(). According to David Sterba, there
+isn't any sensitive information in the subvol_info that needs to be
+cleared before freeing. So kfree_sensitive() isn't really needed,
+use kfree() instead.
 
-Thanks
+Reported-by: David Sterba <dsterba@suse.cz>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/btrfs/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Michal
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index eab3f8510426..5070bd2436b7 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2691,7 +2691,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
+ 	btrfs_put_root(root);
+ out_free:
+ 	btrfs_free_path(path);
+-	kfree_sensitive(subvol_info);
++	kfree(subvol_info);
+ 	return ret;
+ }
+ 
+-- 
+2.18.1
+
