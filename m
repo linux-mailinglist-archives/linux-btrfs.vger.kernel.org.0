@@ -2,237 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319A21A76FB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 11:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B8D1A7709
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 11:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437394AbgDNJH4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 05:07:56 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50681 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437383AbgDNJHw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 05:07:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586855260;
-        bh=cOTqHZQE3uoSa8lWvyhRSZ007KCeumoWEhXhnJ2iS/c=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lX6kqfg3sR41bg+XpazxLvMNLH/mphiMqDOu1Q6XzonTV8qKFRjlpQ6zl+O5D0pHe
-         D4lb2ROEZpeo39vOaEGVT07dCw1pWt9Zp00onJwGy7LWKvPCkM+ySC3bY9HE9zNK1d
-         WVbELF3aOMvrf6jpBbKz2bEOPmqGiVmaDrmgpqYE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCsUC-1jX2z60gtc-008rij; Tue, 14
- Apr 2020 11:07:40 +0200
-Subject: Re: balance canceling was: Re: slow single -> raid1 conversion (heavy
- write to original LVM volume)
-To:     jakub nantl <jn@forever.cz>, linux-btrfs@vger.kernel.org
-References: <107f8e94-78bc-f891-0e1b-2db7903e8bde@forever.cz>
- <424ffd2a-2a9b-1cef-c3ac-ad2814f037a1@gmx.com>
- <ccd87fca-56f2-3fc8-81c0-bdfb2f4aa9f8@forever.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d9d65223-c1ee-afc1-dc25-158bc5e83b12@gmx.com>
-Date:   Tue, 14 Apr 2020 17:07:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2437434AbgDNJLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 05:11:00 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:15989 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437407AbgDNJK6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 05:10:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1586855458; x=1618391458;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=c2e2oFDDpgqBikKJVn0WIS0PvmaUeTAU56Umwo7Nfjc=;
+  b=kn9e+nAZZSD8bDasFRJ9ag968AfNEqhOn9v6hKXLw90F3rcXkhue13aZ
+   IN3HlFgKcTa6fWFdeKLhg0MRMoV3ID9RKZ5Ub+O7EhJnKZfioPHnadxvr
+   k7v+SqX15Yg3UPfUCL/2QMlRnLCSe/HT3LqgyNQyYGK9hV/jPz/iQ9Zt0
+   oCHXQK3JueONzBzdshRiFeeSpF11pfI1zYaAKY6Sa2nU4zUcfZ/TiLsQN
+   uJyxA+aPTG34alhBos964InsFWfF3dTkgVsg1NXb4aUYtoQpL2e6idtEX
+   3W03QizLFlJ262hLPnknyRcdWA5jATX1/BSzvZoR3FT7Y5B10ImvuRJv4
+   Q==;
+IronPort-SDR: 4cS4xV50/sHNnOk5Iol+4m9cZFeFae9ejNxL5DEBiJo6WdZLzOnpTfrpoplUSPaNzR3HvQ6Djc
+ kwe+PjInqqEgCs4VsSfGwE01kacK5Pvat+IFX0Hrq+kyHupcoItn6P0mDAvXteID2n1F96e5bQ
+ x8r0Tk/5jIMzb7phtmkFJb5s2yI17ZM3fjNBjDLpeGisjlw1feLr3QLCGqwbiHmgMHIgMsUdB0
+ JDV7OqQB2nz2QB5jbyKGRQuckMe6UeyM2IFhoBbY1UaBgi6lGlzoI5VqxlbSsedUSQiIg36yWM
+ jmA=
+X-IronPort-AV: E=Sophos;i="5.72,382,1580745600"; 
+   d="scan'208";a="135598495"
+Received: from mail-co1nam11lp2176.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.176])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Apr 2020 17:10:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mjkviFiK0VTQzIAxSaQocJsPyVjXmlZmQuUce8WorgjVNx+vUz6TRJQBI1l5j9N4E7Y0VK/DVC8It0JQFGp7Xv7Vj572ZwgFK5dZlXXy3RgDhSkxdV7N+frDbKxbuTHbM3X5RZc2Wb+nKBszdd2bUqsd00XxptPXI3sCMW1Db5us1c4sD/LaVNCMVe1jHuoox6N4T8622yBx1SxDPfQc+xBjOasUYiCtlrqjqwd41MOKRn2tGbzk53Z0N2n3ZAhefG0SRIMrwarMrLakL2TgVnlVb1b9pl8nKRhugF5MMb1QDjJnr6xbXpUhRYwlfEbHV30JpokAjbNss1xKsfNlwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qCYge1jKE2qi/DIHAvlPAGoYVVFo7DNtv6EpFcqaHIQ=;
+ b=TJ+Tf6/q+oAoUahim72GM3q2MyhadvxSyIXete1mhwUcU9T6mobixs8Fip0fDtnrQyLJIxboak7pjJX+Jp7EwgFUr2BCgnddKxS6BvfTBiI4HnkGJ48GRnODMF6vnkZXkEaUvLUqYEphgMKed2Pk1zqvFbokHCROQuotwXzih/hMlkB8DcQr15e9pIpYd1TSzvayBt4vh5KQmd04noD/ZcBTRM1jGen9fov4tw5FD5Wnk2o4PFVVMRUv1HvzCXzMJWk1M9Mn5fVmiX8x+S7YMia/jx6UUUu/LLksAvtoUGY24YVVYpa/kO4Ufd626axEQK3//mFYC6iTnphDMtE9og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qCYge1jKE2qi/DIHAvlPAGoYVVFo7DNtv6EpFcqaHIQ=;
+ b=WYP251+ikT9w1mtGxq908Mdq5k9/aNLJH04I22W3JEa1U7uc6jTNbkv84ODbwwqMyxN0zSSTWNdGxGOclQyf6J6s7LgG3CN/APsPcswNsM9VtuO+GQ3WxJAZF1PnMy9TASxueFuYWH8ds30o6xS1xn88KDyTnLKQdBM4omQEEKI=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3534.namprd04.prod.outlook.com
+ (2603:10b6:803:46::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Tue, 14 Apr
+ 2020 09:10:54 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 09:10:54 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Anton Mitterer <calestyo@scientia.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: authenticated file systems using HMAC(SHA256)
+Thread-Topic: authenticated file systems using HMAC(SHA256)
+Thread-Index: AQHWDQbERVNaVh/cw0i4WbDgZROyhA==
+Date:   Tue, 14 Apr 2020 09:10:54 +0000
+Message-ID: <SN4PR0401MB3598C956CF4247472D1409019BDA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <CAJCQCtSLOgj7MHKNeGOHu1DPa=xC=sR7cZzR88hN1y_mTYRFKw@mail.gmail.com>
+ <SN4PR0401MB35987317CD0E2B97CD5A499E9BC00@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <CAJCQCtRtxqy7eMPg+eWoz36MMNBM48-mec8h182p4HmQqX-48Q@mail.gmail.com>
+ <SN4PR0401MB3598FDECC128D251AB7B73459BC10@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <732225b51548301c700868165ae644df608e7b9a.camel@scientia.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4d5d8efc-6f1e-4c68-2d61-08d7e053bc65
+x-ms-traffictypediagnostic: SN4PR0401MB3534:
+x-microsoft-antispam-prvs: <SN4PR0401MB3534249BF9CAC0D6AD3313089BDA0@SN4PR0401MB3534.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0373D94D15
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(6506007)(55016002)(478600001)(52536014)(86362001)(66446008)(64756008)(66556008)(66476007)(66946007)(91956017)(76116006)(110136005)(81156014)(7696005)(8936002)(316002)(9686003)(33656002)(5660300002)(8676002)(2906002)(53546011)(26005)(71200400001)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rZZ6+/TQqGu6g1lxt5EhYwqM5eoO3x1crC0U/bts/4iotTPv98Asz81NtJzZyoKnA+IYoMxsLyT4KDeblssN1s87FQfDdTW5wDvBVqEj/dauZjJC4u59QB2xHX8XfFByyzs0PZhfPbH8Nnn1Y0bJt1Sm/L2xFefQpETYeoorFwGo7bvEZOGYEQqRFhJXRqGvNmpaQUMc/oQXZ8CEfTy0j9k5nB1OFFi09AKmX7KtUaB58W3Cll6zW7Xgt6Dzz19lCgl64G6rAaBvtFLWBM2b/7C9SeVBS6koCWL5wfan97ifFFbEHPt6gUGy4n4NJJy4+0bYsJQHSSqcLYxrig7uRhJ3YfLNxKepiOx0KSzQKAmJLRAv1lWsrLP4mjpIMvykucvNnQKU7ucnZprdw56qbRkXsSvi2RqFCPs8bQ0+rSpYI/vXRUwnWDLFitYPIcek
+x-ms-exchange-antispam-messagedata: croLQnr+oZ+C16fyREOYZUQNoclXFhv6vHW6EMNAjiX+GgIMD+ROl0tBijmQMUGfWNkqMwUy7NZwdKUy3KK9QYIx965guH5gbHb9bkvBWqxRylelMWlTgvdJustaCi21FDdjEcfmng3qr5nQm9WyhQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <ccd87fca-56f2-3fc8-81c0-bdfb2f4aa9f8@forever.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="JXzaQHCR8ViAPtgv9HA1u9j8JsvBONyRo"
-X-Provags-ID: V03:K1:MXvvxiyERgx9TgUpaPrUB7JSrQOJgAZr5ukgh2xHlx9A/x4l5bi
- zNoGtqo+WZMaEXOMfBRywT8wAidE+k1a2JY5+8GoFz53UTp0nuq9hPvb0OYP6nY7o66BhRn
- n93DpVfnfoXVgkH8dEN+y7jPxn7jqh0mxcZ1ZA/j2xYrYf+GkXyRL4GRRKHTFwx1+DC+yAd
- CjasjQLgEFuAXa2PE04ww==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TleNxkfVVQk=:ZzZAtaGIYWhDAvQHGhvRGC
- kAHzip/hLOBPX/gWXq0YURfYDJLpyS4aGWCCzJEA+SQDtfgvLwWD6G/tAEtXdGj8UvCf/5I42
- LaRKqVT5rZxnYpSwnMRl1PBLL1S7sdM+gKw78CoPtvREE+LRSrsaQ46PxCX5s21qlVJRBudfO
- fOOC5IORUV+t/imt0t2OUQbSh3BpfWAdIoYHEXErm67I3Tg6AAdaNs+NyVy56sjFrNc41GfHN
- lgSCC1FmZW21HvXyVps3JVdnueUW568J8gr2wkNsRmxiM7k18x02iYjEd89Pj1BDx5WtIqvoI
- ZUUf5fEt0VzXT7zOh8ZQe1THh/U2fmn7lFA42uKhbe08luTtNxEcpzCyAiKbksTu2vXRjbCBz
- 5A6CgGyw61KV40/pqzM6OahbhRlMJzpsGbXK0x+usQwUL1Hy7QDyu+c7bj4JjcMYXSEzDPaSJ
- ++spykJhrIvW4hwrX1xm8U8NVLYHxh2tPCvksaBhahs5HPeejnA3Mp0GhrBLvjdSng59ntL/U
- wJm2bBJXxltx/5/k9BT1QN9VucVQqn/xvCL2N7WVe6/pLFbWRfHR+PMbtN+q+4V913cZUxOVC
- diOamV0MyIaNW74FEt1NgYEM4F7VKqYq51bkICaUS5BzvKpqM7n4KlOy+yuAb25BvXezGK8jT
- 4VGueqNlhpnkh1kWQWhgP4fn51Kj3t/ld9YkVhB4slRn/uBK3+kJrh66hzbrv4wvOL35f+krO
- 19PFmTKNWN0b+JWGZd0SLRy9zuQLm56t0oEBnLQWxq2bjJqYHp/dGzyP/jd9tkJqCBrLrAoHc
- q87AHNEExiDbwTuylc4nuyWFZIU3ndBHskZDIJJNnoSnzHz0PvHwGCsA9MnWVlh+YJu6d471H
- b2mQQaT978xSruPcZBzI8RIAVqtDYASzddG2UrvgR1fwqalsJctK9kfwhoxMAs/9+ZEXnwcUF
- T6yHgsB5KewJr+EGYu863KfewpFXwCWAcwIPkEfxJmLMgsHotONAR6gwVeKElJL+hIOO+wJYO
- 86CD9Dmy04c6aGwN13H9NJlet8EdCaLPTLxqG5Jmr292YmOO7twcRDBWndauDxsIfZ+AYq5+u
- Y0ZoY14ChGRVWcCd8dkGBhKc+nx8IQgLuTPIKx5wSas/yB0+GjaLxdqwMblVgTdLpsNQhH6rC
- sdpAQHG+i8FuiXoTFinbjHc+M3KwB+hJR787u9K1ytU1aXsj4WCLHDaQqG4uLppOItlP324aq
- omSHZ9rCaviIHZu9S
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d5d8efc-6f1e-4c68-2d61-08d7e053bc65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 09:10:54.3199
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A+kh5Cu5mSEIlySOQBNX91GppOFdI/9PR1f4vgoz6LXAekOFs5T0skT7xHJHg1WEO/kEAzuE0LF435Y5PHjU5Ge4fgZkkZET1rssME8MnQs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3534
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JXzaQHCR8ViAPtgv9HA1u9j8JsvBONyRo
-Content-Type: multipart/mixed; boundary="wQlacSIiJVruUQBOuzAWokaDwtAnexaau"
-
---wQlacSIiJVruUQBOuzAWokaDwtAnexaau
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/4/14 =E4=B8=8B=E5=8D=883:09, jakub nantl wrote:
-> On 15. 01. 20 4:26,=C2=A0 Qu Wenruo wrote:
->> And due to another bug in balance canceling, we can't cancel it.
->>
->> For the unable to cancel part, there are patches to address it, and
->> would get upstream in v5.6 release.
->=20
-> Hello,
->=20
-> looks like balance canceling is still not 100% in 5.6.x:
->=20
->=20
-> # btrfs balance status /data/
-> Balance on '/data/' is running, cancel requested
-> 0 out of about 16 chunks balanced (9 considered), 100% left
->=20
->=20
-> Apr 13 23:30:52 sopa kernel: [ 6983.625318] BTRFS info (device dm-0):
-> balance: start -dusage=3D100,limit=3D16
-> Apr 13 23:30:52 sopa kernel: [ 6983.627286] BTRFS info (device dm-0):
-> relocating block group 5572244013056 flags data|raid1
-> Apr 13 23:31:05 sopa kernel: [ 6996.237814] BTRFS info (device dm-0):
-> relocating block group 5569073119232 flags data|raid1
-> Apr 13 23:31:40 sopa kernel: [ 7032.178175] BTRFS info (device dm-0):
-> found 17 extents, stage: move data extents
-> Apr 13 23:31:46 sopa kernel: [ 7037.711119] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 13 23:31:49 sopa kernel: [ 7040.767052] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 13 23:32:00 sopa kernel: [ 7051.885977] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> ..
->=20
-> ..
->=20
-> Apr 14 06:26:06 sopa kernel: [31897.468487] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 14 06:26:08 sopa kernel: [31900.034563] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 14 06:26:10 sopa kernel: [31901.719655] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 14 06:26:12 sopa kernel: [31903.334506] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
-> Apr 14 06:26:12 sopa kernel: [31903.856791] BTRFS info (device dm-0):
-> found 17 extents, stage: update data pointers
->=20
-
-Thanks for the report, this means one of my original patch is still neede=
-d.
-
-And since that patch failed to pass review where I can't explain under
-which case that can happen.
-Now it has been proven that we still need that one.
-
-And let me check under which condition that happened.
-
-Thanks,
-Qu
->=20
-> Linux sopa 5.6.4-050604-generic #202004131234 SMP Mon Apr 13 12:36:46
-> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
->=20
-> # btrfs fi us /data/
-> Overall:
-> =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=
-=A0=C2=A0 3.71TiB
-> =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
- =C2=A0=C2=A0 3.71TiB
-> =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
-=A0 =C2=A0=C2=A0 2.00MiB
-> =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
- =C2=A0=C2=A0=C2=A0=C2=A0 0.00B
-> =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=
-=A0=C2=A0 =C2=A0=C2=A0 3.30TiB
-> =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
- =C2=A0209.16GiB=C2=A0=C2=A0=C2=A0 (min: 209.16GiB)
-> =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=
-=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
-> =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
-> =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
- =C2=A0512.00MiB=C2=A0=C2=A0=C2=A0 (used: 0.00B)
->=20
-> Data,RAID1: Size:1.85TiB, Used:1.64TiB
-> =C2=A0=C2=A0 /dev/mapper/sopa-data=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.85T=
-iB
-> =C2=A0=C2=A0 /dev/sdb3=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.85TiB
->=20
-> Metadata,RAID1: Size:6.11GiB, Used:4.77GiB
-> =C2=A0=C2=A0 /dev/mapper/sopa-data=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 6.11G=
-iB
-> =C2=A0=C2=A0 /dev/sdb3=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 6.11GiB
->=20
-> System,RAID1: Size:32.00MiB, Used:304.00KiB
-> =C2=A0=C2=A0 /dev/mapper/sopa-data=C2=A0=C2=A0=C2=A0 =C2=A0 32.00MiB
-> =C2=A0=C2=A0 /dev/sdb3=C2=A0=C2=A0=C2=A0 =C2=A0 32.00MiB
->=20
-> Unallocated:
-> =C2=A0=C2=A0 /dev/mapper/sopa-data=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.00M=
-iB
-> =C2=A0=C2=A0 /dev/sdb3=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.00MiB
->=20
-> # btrfs fi show /data/
-> Label: 'SOPADATA'=C2=A0 uuid: 37b8a62c-68e8-44e4-a3b2-eb572385c3e8
-> =C2=A0=C2=A0=C2=A0 Total devices 2 FS bytes used 1.65TiB
-> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 size 1.86TiB used 1.85TiB =
-path /dev/mapper/sopa-data
-> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 size 1.86TiB used 1.85TiB =
-path /dev/sdb3
->=20
-> jn
->=20
-
-
---wQlacSIiJVruUQBOuzAWokaDwtAnexaau--
-
---JXzaQHCR8ViAPtgv9HA1u9j8JsvBONyRo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6VfVgACgkQwj2R86El
-/qiamwf/Wd87iMNtofhCYNMv/ruufY9+kdXBRniUtzGwLDQPg7KXRacp34x1aezW
-jeZAJdV2eJz0aZZZjWeNqXena1BGw/MIhSRBllvQHFE+LhwiwQ4oTahS2xRJXx2q
-VusLyyCZLKKY0A/Gjai/cYxjHLoIoVm6zsKFpVmfVq5TYSsZdy3u558lpYVk4Epe
-nNEmud17Z8WpO8n2dNWbW0dheTjseQZyv04gPdRfidHWI0dneP/JkP11w7uSrtma
-SnfbYDR6K4gp6VGHZmeD+u3wteZxD41VuerxiP199aEnEWppg9xqfs2L3SxS0d8P
-L+VHV/sPAA5XzcRwRYgk3kdlbqRZjQ==
-=oBmH
------END PGP SIGNATURE-----
-
---JXzaQHCR8ViAPtgv9HA1u9j8JsvBONyRo--
+On 14/04/2020 06:06, Christoph Anton Mitterer wrote:=0A=
+> On Thu, 2020-04-09 at 08:50 +0000, Johannes Thumshirn wrote:=0A=
+>> Maybe having someone in the community being interested in this work=0A=
+>> can=0A=
+>> accelerate it's upstream acceptance.=0A=
+> =0A=
+> I think it would be great having something like this in btrfs.=0A=
+> =0A=
+> =0A=
+> If this was to be merged, it would perhaps make sense to have it=0A=
+> audited by a number of crypto experts.=0A=
+=0A=
+Sure.=0A=
+=0A=
+> And also, to clearly specify what it can to and what not:=0A=
+> - like how it behaves with other features of btrfs (compression, raid,=0A=
+>    repair, etc.)=0A=
+> - limitations (e.g. fs-verity was just read-only, wasn't it?!)=0A=
+=0A=
+Yes fs-verify is read-only, this btrfs version of it is read-write if =0A=
+you have the key as it (ab)uses btrfs' internal checksums for the =0A=
+protection information and does not relay on merkle trees in extended =0A=
+attributes or other additional on-disk data.=0A=
+=0A=
+> - what exactly does it protect?=0A=
+>    - "just" the content of files (i.e. a file with invalid HMAC will be=
+=0A=
+>      detected)=0A=
+>    - file metadata (dates, names, permissions, owners, xattrs, etc)=0A=
+>    - the file hirarchy (location of the files in the tree)=0A=
+>    - would files removed/added (by an attacker) be detected=0A=
+=0A=
+It protects the file's contents as well as the metadata. Btrfs uses =0A=
+'struct btrfs_header' as a start of every tree block. This header starts =
+=0A=
+with a checksum, so the contents of every tree block are verified. The =0A=
+super-block also has a checksum, which is generated by the same scheme. =0A=
+Furthermore every data block (file content) is added to the checksum =0A=
+tree which also uses this checksum scheme. By exchanging the checksum to =
+=0A=
+a keyed hash, one would need the key to make any modification to the =0A=
+file-system and as checksums are a first class citizen in btrfs no =0A=
+changes are needed to other features. If you mount your file system with =
+=0A=
+nodatasum, you loose data verification though, but that's kind of obvious.=
+=0A=
+=0A=
+Byte,=0A=
+	Johannes=0A=
