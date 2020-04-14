@@ -2,133 +2,282 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179FE1A72F5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 07:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1202A1A7353
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Apr 2020 08:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405492AbgDNFZC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 01:25:02 -0400
-Received: from mail-eopbgr1360089.outbound.protection.outlook.com ([40.107.136.89]:13824
-        "EHLO AUS01-ME1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726552AbgDNFZA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 01:25:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWqCrDKnVaP2nAkXvtqiBwiDw2CR4EIL/zQUaSBmgydxUJ+uTx70zT0rQabAh4/UZQlAa1TlrLNG1x3D0sP76oY4wjw7FWZz8hDpaOWuvvhg1X81MrYT15QciqxQ0m6b8eyaOLchqGqW2BugxBylDBrfVknCuuUAsiykKZSJh3iVOr4bnO5JHBdvxqFXKf6//DCkHzpay34AEpCxAqDkVNKAMRreFXcNcnB7B2B+XUhuHyvPBd6JydDb5z4XfMdy3vb/wkA0j3AhqOfcHjH9HajHUc6ShKDzv7g/6Z9SZxJA7mVyOj/kqMMZMI/Yt8Pz2AZeK2cBfmTgXfuLbbWcQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q8y5DOPHWrlH36xON0o6vFrsNfA2xV+vvZ9UfHAKSFY=;
- b=Ufc5H75bLig7bqOu9vnWaAQk+og8hhW8LiCvZ+PxIerleMg85nH2jXlQdBqvagjp26H4B0FwRLMkGEa+UaPWN08iGFfwIO6f0oGhqLQsh4+7J9+yI+/Y3i1T45m4xlCYIKfQgJRKtFEInNdFEl7PNHPaP26OU7d7Rrl/0Q9BgNzrkiRAj1TOcTh60RbQPLW8bjU6haPInqBpIgQcjXsVQBVPIV5C3rSYFCFJBfQG1y6tnlV4AMCf2YbMVQcaTdcQ2et4Z6E2mGqfKMOJyH3zK1bD86quxR/4cUKlE2D96RrIsFY6W3uuNjZgQ5IwquNQkKtvqCcBYxahULukfaDQQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q8y5DOPHWrlH36xON0o6vFrsNfA2xV+vvZ9UfHAKSFY=;
- b=m8jnUyW3zUzNGO9ttpUg6EQuL0aTM2SepzYfTH7yCjzkbYX2JNKTclbUBc4HiJcD1AowFI28HpvIAYw1OUflg+g5TpEZPaScHfAKATgKMQ9FIgS0DovFLrVdZ8gJOVqjSzxPb/UVklnSGm5afm+IZgYAbHaaqPEPZU71NKYtHnM=
-Received: from SYBPR01MB3897.ausprd01.prod.outlook.com (20.177.136.214) by
- SYBPR01MB4987.ausprd01.prod.outlook.com (20.178.194.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2900.24; Tue, 14 Apr 2020 05:24:57 +0000
-Received: from SYBPR01MB3897.ausprd01.prod.outlook.com
- ([fe80::995d:971d:a82:4664]) by SYBPR01MB3897.ausprd01.prod.outlook.com
- ([fe80::995d:971d:a82:4664%4]) with mapi id 15.20.2878.023; Tue, 14 Apr 2020
- 05:24:57 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     Goffredo Baroncelli <kreijack@libero.it>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: [PATCH] btrfs: add ssd_metadata mode
-Thread-Topic: [PATCH] btrfs: add ssd_metadata mode
-Thread-Index: AQHWCyPyrAVs+dijZkOOeChAwp/e4qh4Iy+Q
-Date:   Tue, 14 Apr 2020 05:24:57 +0000
-Message-ID: <SYBPR01MB38971513AF598BFF169A676A9EDA0@SYBPR01MB3897.ausprd01.prod.outlook.com>
-References: <20200405082636.18016-1-kreijack@libero.it>
- <20200405082636.18016-2-kreijack@libero.it>
-In-Reply-To: <20200405082636.18016-2-kreijack@libero.it>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=paul@pauljones.id.au; 
-x-originating-ip: [60.241.229.7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b90bf609-58e4-473a-cb28-08d7e0342ba1
-x-ms-traffictypediagnostic: SYBPR01MB4987:
-x-microsoft-antispam-prvs: <SYBPR01MB498707895D0BF4457BC0F63D9EDA0@SYBPR01MB4987.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0373D94D15
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYBPR01MB3897.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(396003)(136003)(39830400003)(376002)(346002)(366004)(66446008)(64756008)(508600001)(66476007)(66556008)(52536014)(6506007)(316002)(110136005)(71200400001)(86362001)(76116006)(53546011)(186003)(7696005)(5660300002)(33656002)(55016002)(26005)(66946007)(81156014)(8936002)(9686003)(2906002)(8676002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: pauljones.id.au does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0lr31RZPT+emsLY8g53wUxHZWaDRjrFoehGHaeDUBPFT/0Qry3PoxjsAnDZWrvGFrZnolpXKfAEMIL7suGFF1SNK4A8yNh8BPcxUwcMIbxBPR+IrVRcbb2D5KnraRLrLNopeCesUq9h/nqIjFhq/MxUDqZ9KBtxJrGrjRK/iucLHGhnJ3DA+qyoCeY6HQv1HqOF4INENcHlfm2ep2RGLrffon0skeEb7fhau62nIO0EqcUAvzZZSCemCquElUCRMWIpfJhn96PFDYNUSwILyH6s2FPyRqv3Pu3JHzJWin5aA1rvulJ9c/iQZ7UrAHpXnltOqHm/S0TTotojqZ4EFsqQXs1gJhzXHoEaPfU/WBS7B25o7XsBnOHCWoWAMVmOgEQhMpqncWgUj7zH4keR5oVz+9pGBMmHma7Yrktke/xAo4Gipi90hhmdmrMFwwXUX
-x-ms-exchange-antispam-messagedata: akGyK7G8Xul93TFPdCOwvBGOvIsiA1XqEsY0oXX0vNbb44yr5NEQbx0bQJ7sXEcdCjGuRakpyxhZLscgeYHJwfRZdcm7lhll/099gEDLCxyc+2lCBqmM0Wu2lij9bQJmJb/zeTdiTy5QEA9RF4GmIg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2405776AbgDNGIm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 02:08:42 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:51680 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405711AbgDNGIj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Apr 2020 02:08:39 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 491Zmc64yLz9txkH;
+        Tue, 14 Apr 2020 08:08:32 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=swLCNyX7; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4yni2YpdXT3P; Tue, 14 Apr 2020 08:08:32 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 491Zmc4L0Rz9txkG;
+        Tue, 14 Apr 2020 08:08:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586844512; bh=AyML/oaUiIiNPJKHTIdsIrbz6fYQpNyy/73cMAJtVGI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=swLCNyX719PsbdWXJyAjua3tpVkuZHN/PgaRAzIUI6j3FuSDm374UPnlGZYSrGzxT
+         ndt6dm09KOl8ksmzmfqqYKRuIRIOuM5gK03jv/9oM2sodvHG7ZsAdW0K43bNG1m7AR
+         C9uF0GCYNnsgDDdT0CCsxA/cfFfbv77mzxAhptqM=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B4A48B77D;
+        Tue, 14 Apr 2020 08:08:33 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IsbJC8uJ2iOV; Tue, 14 Apr 2020 08:08:33 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 997728B752;
+        Tue, 14 Apr 2020 08:08:30 +0200 (CEST)
+Subject: Re: [PATCH v2 2/2] crypto: Remove unnecessary memzero_explicit()
+To:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-ppp@vger.kernel.org,
+        wireguard@lists.zx2c4.com, linux-wireless@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        cocci@systeme.lip6.fr, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+References: <20200413211550.8307-1-longman@redhat.com>
+ <20200413222846.24240-1-longman@redhat.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <eca85e0b-0af3-c43a-31e4-bd5c3f519798@c-s.fr>
+Date:   Tue, 14 Apr 2020 08:08:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-Network-Message-Id: b90bf609-58e4-473a-cb28-08d7e0342ba1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 05:24:57.0579
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 08elP8VyHqJOfqDQRerz6VtbAdPaFMaQyAjGsn/rmi+NlvIX0F5BwW66SdPvtrYmpLUotkvR30D/+mbk8CF7gQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB4987
+In-Reply-To: <20200413222846.24240-1-longman@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> -----Original Message-----
-> From: linux-btrfs-owner@vger.kernel.org <linux-btrfs-
-> owner@vger.kernel.org> On Behalf Of Goffredo Baroncelli
-> Sent: Sunday, 5 April 2020 6:27 PM
-> To: linux-btrfs@vger.kernel.org
-> Cc: Michael <mclaud@roznica.com.ua>; Hugo Mills <hugo@carfax.org.uk>;
-> Martin Svec <martin.svec@zoner.cz>; Wang Yugui <wangyugui@e16-
-> tech.com>; Goffredo Baroncelli <kreijack@inwind.it>
-> Subject: [PATCH] btrfs: add ssd_metadata mode
->=20
-> From: Goffredo Baroncelli <kreijack@inwind.it>
->=20
-> When this mode is enabled, the allocation policy of the chunk is so modif=
-ied:
-> - allocation of metadata chunk: priority is given to ssd disk.
-> - allocation of data chunk: priority is given to a rotational disk.
->=20
-> When a striped profile is involved (like RAID0,5,6), the logic is a bit m=
-ore
-> complex. If there are enough disks, the data profiles are stored on the
-> rotational disks only; instead the metadata profiles are stored on the no=
-n
-> rotational disk only.
-> If the disks are not enough, then the profiles is stored on all the disks=
-.
->=20
-> Example: assuming that sda, sdb, sdc are ssd disks, and sde, sdf are rota=
-tional
-> ones.
-> A data profile raid6, will be stored on sda, sdb, sdc, sde, sdf (sde and =
-sdf are
-> not enough to host a raid5 profile).
-> A metadata profile raid6, will be stored on sda, sdb, sdc (these are enou=
-gh to
-> host a raid6 profile).
->=20
-> To enable this mode pass -o ssd_metadata at mount time.
->=20
-> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-
-Tested-By: Paul Jones <paul@pauljones.id.au>
-
-Using raid 1. Makes a surprising difference in speed, nearly as fast as whe=
-n I was using dm-cache
 
 
-Paul.
+Le 14/04/2020 à 00:28, Waiman Long a écrit :
+> Since kfree_sensitive() will do an implicit memzero_explicit(), there
+> is no need to call memzero_explicit() before it. Eliminate those
+> memzero_explicit() and simplify the call sites. For better correctness,
+> the setting of keylen is also moved down after the key pointer check.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>   .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 19 +++++-------------
+>   .../allwinner/sun8i-ss/sun8i-ss-cipher.c      | 20 +++++--------------
+>   drivers/crypto/amlogic/amlogic-gxl-cipher.c   | 12 +++--------
+>   drivers/crypto/inside-secure/safexcel_hash.c  |  3 +--
+>   4 files changed, 14 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> index aa4e8fdc2b32..8358fac98719 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> @@ -366,10 +366,7 @@ void sun8i_ce_cipher_exit(struct crypto_tfm *tfm)
+>   {
+>   	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
+>   
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> +	kfree_sensitive(op->key);
+>   	crypto_free_sync_skcipher(op->fallback_tfm);
+>   	pm_runtime_put_sync_suspend(op->ce->dev);
+>   }
+> @@ -391,14 +388,11 @@ int sun8i_ce_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>   		dev_dbg(ce->dev, "ERROR: Invalid keylen %u\n", keylen);
+>   		return -EINVAL;
+>   	}
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> -	op->keylen = keylen;
+> +	kfree_sensitive(op->key);
+>   	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+>   	if (!op->key)
+>   		return -ENOMEM;
+> +	op->keylen = keylen;
+
+Does it matter at all to ensure op->keylen is not set when of->key is 
+NULL ? I'm not sure.
+
+But if it does, then op->keylen should be set to 0 when freeing op->key.
+
+>   
+>   	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
+>   	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
+> @@ -416,14 +410,11 @@ int sun8i_ce_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>   	if (err)
+>   		return err;
+>   
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> -	op->keylen = keylen;
+> +	kfree_sensitive(op->key);
+>   	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+>   	if (!op->key)
+>   		return -ENOMEM;
+> +	op->keylen = keylen;
+
+Same comment as above.
+
+>   
+>   	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
+>   	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
+> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+> index 5246ef4f5430..0495fbc27fcc 100644
+> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-cipher.c
+> @@ -249,7 +249,6 @@ static int sun8i_ss_cipher(struct skcipher_request *areq)
+>   			offset = areq->cryptlen - ivsize;
+>   			if (rctx->op_dir & SS_DECRYPTION) {
+>   				memcpy(areq->iv, backup_iv, ivsize);
+> -				memzero_explicit(backup_iv, ivsize);
+>   				kfree_sensitive(backup_iv);
+>   			} else {
+>   				scatterwalk_map_and_copy(areq->iv, areq->dst, offset,
+> @@ -367,10 +366,7 @@ void sun8i_ss_cipher_exit(struct crypto_tfm *tfm)
+>   {
+>   	struct sun8i_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
+>   
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> +	kfree_sensitive(op->key);
+>   	crypto_free_sync_skcipher(op->fallback_tfm);
+>   	pm_runtime_put_sync(op->ss->dev);
+>   }
+> @@ -392,14 +388,11 @@ int sun8i_ss_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>   		dev_dbg(ss->dev, "ERROR: Invalid keylen %u\n", keylen);
+>   		return -EINVAL;
+>   	}
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> -	op->keylen = keylen;
+> +	kfree_sensitive(op->key);
+>   	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+>   	if (!op->key)
+>   		return -ENOMEM;
+> +	op->keylen = keylen;
+
+Same comment as above.
+
+>   
+>   	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
+>   	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
+> @@ -418,14 +411,11 @@ int sun8i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> -	op->keylen = keylen;
+> +	kfree_sensitive(op->key);
+>   	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+>   	if (!op->key)
+>   		return -ENOMEM;
+> +	op->keylen = keylen;
+
+Same comment as above.
+
+>   
+>   	crypto_sync_skcipher_clear_flags(op->fallback_tfm, CRYPTO_TFM_REQ_MASK);
+>   	crypto_sync_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
+> diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> index fd1269900d67..6aa9ce7bbbd4 100644
+> --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
+> @@ -341,10 +341,7 @@ void meson_cipher_exit(struct crypto_tfm *tfm)
+>   {
+>   	struct meson_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
+>   
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> +	kfree_sensitive(op->key);
+>   	crypto_free_sync_skcipher(op->fallback_tfm);
+>   }
+>   
+> @@ -368,14 +365,11 @@ int meson_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
+>   		dev_dbg(mc->dev, "ERROR: Invalid keylen %u\n", keylen);
+>   		return -EINVAL;
+>   	}
+> -	if (op->key) {
+> -		memzero_explicit(op->key, op->keylen);
+> -		kfree(op->key);
+> -	}
+> -	op->keylen = keylen;
+> +	kfree_sensitive(op->key);
+>   	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
+>   	if (!op->key)
+>   		return -ENOMEM;
+> +	op->keylen = keylen;
+
+Same comment as above.
+
+>   
+>   	return crypto_sync_skcipher_setkey(op->fallback_tfm, key, keylen);
+>   }
+> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+> index 43962bc709c6..4a2d162914de 100644
+> --- a/drivers/crypto/inside-secure/safexcel_hash.c
+> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
+> @@ -1081,8 +1081,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
+>   		}
+>   
+>   		/* Avoid leaking */
+> -		memzero_explicit(keydup, keylen);
+> -		kfree(keydup);
+> +		kfree_sensitive(keydup);
+>   
+>   		if (ret)
+>   			return ret;
+> 
+
+
+Christophe
