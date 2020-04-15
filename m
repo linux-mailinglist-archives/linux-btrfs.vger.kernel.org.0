@@ -2,101 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EE81A9057
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 03:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2061A90D7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 04:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392495AbgDOBVM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Apr 2020 21:21:12 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:12034 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392479AbgDOBVK (ORCPT
+        id S2392914AbgDOCST (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Apr 2020 22:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732702AbgDOCSQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Apr 2020 21:21:10 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45e966162f67-5b220; Wed, 15 Apr 2020 09:20:34 +0800 (CST)
-X-RM-TRANSID: 2ee45e966162f67-5b220
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25e9661610ba-4593e;
-        Wed, 15 Apr 2020 09:20:33 +0800 (CST)
-X-RM-TRANSID: 2ee25e9661610ba-4593e
-Subject: Re: [PATCH] btrfs: Fix backref.c selftest compilation warning
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-References: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
- <20200414151931.GU5920@twin.jikos.cz> <20200414152233.GV5920@twin.jikos.cz>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <f292429f-6b4e-4b2e-db5a-9bf02a3cde0e@cmss.chinamobile.com>
-Date:   Wed, 15 Apr 2020 09:22:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Apr 2020 22:18:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A68C061A0C;
+        Tue, 14 Apr 2020 19:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9KHPxu7QAhV1u3S2ZqCIoyxy4Ym3v0RLTChLW2Oikv4=; b=b6QEUePWGS20adBA91jd/5eoL3
+        1qB1boh/lSdpZeSbJhBYeTpNJWWSCLq/Ywu3dBodJxi69s/hE26m1v0lWCZh7exlrHGttrDxBld0R
+        o0U22RBR4IM2REf02o5LLzkjtrvAsrb1SUhVA+XUN1jZuoZiPyNDNgaCQZNFu+XzGieExeS3WoTq2
+        HzrFZ6dcg3d7xLfboVDKIEwwlftwgdF2HBHdSLAnbd4RZD6VJwLdDQuDS9fhums2rjg8iZoJwG8r3
+        xi29XIpXU8O6p96+bY4jKHquY1oQY/ApSWHiG2HS0U86jqAf8CD/BieGTpXmH+rAb1cb1EZx8mhzT
+        VkdvlHpQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOXcu-0000tf-4k; Wed, 15 Apr 2020 02:18:11 +0000
+Date:   Tue, 14 Apr 2020 19:18:08 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v11 05/25] mm: Add new readahead_control API
+Message-ID: <20200415021808.GA5820@bombadil.infradead.org>
+References: <20200414150233.24495-1-willy@infradead.org>
+ <20200414150233.24495-6-willy@infradead.org>
+ <20200414181705.bfc4c0087092051a9475141e@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20200414152233.GV5920@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414181705.bfc4c0087092051a9475141e@linux-foundation.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David:
+On Tue, Apr 14, 2020 at 06:17:05PM -0700, Andrew Morton wrote:
+> On Tue, 14 Apr 2020 08:02:13 -0700 Matthew Wilcox <willy@infradead.org> wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > 
+> > Filesystems which implement the upcoming ->readahead method will get
+> > their pages by calling readahead_page() or readahead_page_batch().
+> > These functions support large pages, even though none of the filesystems
+> > to be converted do yet.
+> > 
+> > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > +static inline unsigned int __readahead_batch(struct readahead_control *rac,
+> > +		struct page **array, unsigned int array_sz)
+> 
+> These are large functions.  Was it correct to inline them?
 
-On 2020/4/14 23:22, David Sterba wrote:
-> On Tue, Apr 14, 2020 at 05:19:31PM +0200, David Sterba wrote:
->> On Sat, Apr 11, 2020 at 11:49:15PM +0800, Tang Bin wrote:
->>> Fix missing braces compilation warning in the ARM
->>> compiler environment:
->>>      fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
->>>      fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
->>>        struct prelim_ref target = {0};
->>>      fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
->>>
->>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->>> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
->>> ---
->>>   fs/btrfs/backref.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
->>> index 9c380e7..0cc0257 100644
->>> --- a/fs/btrfs/backref.c
->>> +++ b/fs/btrfs/backref.c
->>> @@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
->>>   	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
->>>   	struct rb_node *parent = NULL;
->>>   	struct prelim_ref *ref = NULL;
->>> -	struct prelim_ref target = {0};
->>> +	struct prelim_ref target = {};
->> I wonder why this initialization is a problem while there are about 20
->> other uses of "{0}". The warning is about the embedded rbnode, but why
->> does a more recent compiler not warn about that? Is this a missing fix
->> from the one you use?
->>
->> I don't mind fixing compiler warnings as long as it bothers enough
->> people, eg. we have fixes reported by gcc 7 but I'm hesitant to fix
->> anything older without a good reason.
-> This seems to be the bug report
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
-> "Bug 53119 - -Wmissing-braces wrongly warns about universal zero
-> initializer {0} "
+Hmm.  They don't seem that big to me.
 
-Thank you for your reply. My tool chain is 
-"arm-linux-gnueabihf-gcc(Linaro GCC 4.9-2017.01) 4.9.4".
+readahead_page, stripped of its sanity checks:
 
-I was trying to do an experiment on the hardware so I compiled it and 
-there was a warning. Maybe as Qu Wenruo said possible tools are old?
++       rac->_nr_pages -= rac->_batch_count;
++       rac->_index += rac->_batch_count;
++       if (!rac->_nr_pages) {
++               rac->_batch_count = 0;
++               return NULL;
++       }
++       page = xa_load(&rac->mapping->i_pages, rac->_index);
++       rac->_batch_count = hpage_nr_pages(page);
 
-Thank you for your patience,
+__readahead_batch is much bigger, but it's only used by btrfs and fuse,
+and it seemed unfair to make everybody pay the cost for a function only
+used by two filesystems.
 
-Tang Bin
+> The batching API only appears to be used by fuse?  If so, do we really
+> need it?  Does it provide some functional need, or is it a performance
+> thing?  If the latter, how significant is it?
 
+I must confess to not knowing the performance impact.  If the code uses
+xa_load() repeatedly, it costs O(log n) each time as we walk down the tree
+(mitigated to a large extent by cache, of course).  Using xas_for_each()
+keeps us at the bottom of the tree and each iteration is O(1).
+I'm interested to see if filesystem maintainers start to use the batch
+function or if they're happier sticking with the individual lookups.
 
+The batch API was originally written for use with btrfs, but it was a
+significant simplification to convert fuse to use it.
 
+> The code adds quite a few (inlined!) VM_BUG_ONs.  Can we plan to remove
+> them at some stage?  Such as, before Linus shouts at us :)
 
-
-
+I'd be happy to remove them.  Various reviewers said things like "are you
+sure this can't happen?"
 
