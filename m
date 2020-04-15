@@ -2,85 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550791A9C11
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 13:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA131AA367
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896907AbgDOLWp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Apr 2020 07:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896897AbgDOLWS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:22:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4600C061A0C;
-        Wed, 15 Apr 2020 04:22:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p5k96MLyrJ0Kc/9UM6Xw8FfLDEnTX/dVH39aK5qAXAA=; b=ClQLKHw92puBJhU2nimC3BH8wA
-        355osRMfVxhDQVssm7Zm9jE6v3E3dRGs+Oc5jFRy3/jQbyNAsfVORzBRmGEfW7/HIf4gbDH2d4DT2
-        gL3rNu+X2XBNBJ3NpW/Bx0FlYJMdgdadGJM/y2cHwCtDUUl9b+KcgcTHyz2DkqV52KYqOQaeHmfVH
-        s2D+J2WiHScmuPaZ+HVg8gSTWAFyV0P0cKjdmyQFi/TapX8CRjBU8aFB/npLmiZAvjPQMvj6Rpgij
-        Vy0bfVHN0vosqBiQDXjyzG7mDrHdrpJGmw7wYW8mNvb2TBTAiSuOkc9Tu/G2eouAmkldMad/NLN38
-        jgC7ixKA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOg7U-0004jU-L2; Wed, 15 Apr 2020 11:22:16 +0000
-Date:   Wed, 15 Apr 2020 04:22:16 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 05/25] mm: Add new readahead_control API
-Message-ID: <20200415112216.GC5820@bombadil.infradead.org>
-References: <20200414150233.24495-1-willy@infradead.org>
- <20200414150233.24495-6-willy@infradead.org>
- <20200414181705.bfc4c0087092051a9475141e@linux-foundation.org>
- <20200415021808.GA5820@bombadil.infradead.org>
- <20200414215616.f665d12f8549f52606784d1e@linux-foundation.org>
+        id S2504108AbgDONJ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Apr 2020 09:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897046AbgDOLfr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:35:47 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEAF92166E;
+        Wed, 15 Apr 2020 11:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586950544;
+        bh=Ei7sJHbTUMMZtJhOvk3ipWf8WtSAiJzcufzicYNEPww=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=berBmtTSSJBM6Hcf0L4nVVCXrFlLKJ6RryQ3fMqrrVOLJkbYRHH5tUfIc2s4qvdaK
+         IBfvE9L2zIqBGC3HWAxDoFzbrc9qTv2waOQFCkZYnJQtYJMdjgx3igTiDv3i/NeJZD
+         KKpB3GthDxu1PzCBgAsQK/mVcJtQEfP2G9LBAdgs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 051/129] btrfs: handle NULL roots in btrfs_put/btrfs_grab_fs_root
+Date:   Wed, 15 Apr 2020 07:33:26 -0400
+Message-Id: <20200415113445.11881-51-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200415113445.11881-1-sashal@kernel.org>
+References: <20200415113445.11881-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414215616.f665d12f8549f52606784d1e@linux-foundation.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:56:16PM -0700, Andrew Morton wrote:
-> On Tue, 14 Apr 2020 19:18:08 -0700 Matthew Wilcox <willy@infradead.org> wrote:
-> > Hmm.  They don't seem that big to me.
-> 
-> They're really big!
+From: Josef Bacik <josef@toxicpanda.com>
 
-v5.7-rc1:	11636	    636	    224	  12496	   30d0	fs/iomap/buffered-io.o
-readahead_v11:	11528	    636	    224	  12388	   3064	fs/iomap/buffered-io.o
+[ Upstream commit 4cdfd93002cb84471ed85b4999cd38077a317873 ]
 
-> > __readahead_batch is much bigger, but it's only used by btrfs and fuse,
-> > and it seemed unfair to make everybody pay the cost for a function only
-> > used by two filesystems.
-> 
-> Do we expect more filesystems to use these in the future?
+We want to use this for dropping all roots, and in some error cases we
+may not have a root, so handle this to make the cleanup code easier.
+Make btrfs_grab_fs_root the same so we can use it in cases where the
+root may not exist (like the quota root).
 
-I'm honestly not sure.  I think it'd be nice to be able to fill a bvec
-from the page cache directly, but I haven't tried to write that function
-yet.  If so, then it'd be appropriate to move that functionality into
-the core.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/disk-io.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> > > The code adds quite a few (inlined!) VM_BUG_ONs.  Can we plan to remove
-> > > them at some stage?  Such as, before Linus shouts at us :)
-> > 
-> > I'd be happy to remove them.  Various reviewers said things like "are you
-> > sure this can't happen?"
-> 
-> Yeah, these things tend to live for ever.  Please add a todo to remove
-> them after the code has matured?
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 8c2d6cf1ce596..424c9c97b1ce8 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -97,6 +97,8 @@ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
+  */
+ static inline struct btrfs_root *btrfs_grab_fs_root(struct btrfs_root *root)
+ {
++	if (!root)
++		return NULL;
+ 	if (refcount_inc_not_zero(&root->refs))
+ 		return root;
+ 	return NULL;
+@@ -104,6 +106,8 @@ static inline struct btrfs_root *btrfs_grab_fs_root(struct btrfs_root *root)
+ 
+ static inline void btrfs_put_fs_root(struct btrfs_root *root)
+ {
++	if (!root)
++		return;
+ 	if (refcount_dec_and_test(&root->refs))
+ 		kfree(root);
+ }
+-- 
+2.20.1
 
-Sure!  I'm touching this code some more in the large pages patch set, so
-I can get rid of it there.
