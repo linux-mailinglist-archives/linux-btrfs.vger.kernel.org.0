@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCC11A9FBB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 14:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAF61A9F0B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 14:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409771AbgDOMP4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Apr 2020 08:15:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
+        id S2409350AbgDOLr3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Apr 2020 07:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409298AbgDOLqf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:46:35 -0400
+        id S2897629AbgDOLrW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:47:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FC95206A2;
-        Wed, 15 Apr 2020 11:46:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FE1321707;
+        Wed, 15 Apr 2020 11:47:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586951194;
-        bh=2UZ857xxFxryFMRb+KzkcCwdAD5jNdtdJqTv50+fnOo=;
+        s=default; t=1586951242;
+        bh=p5ddbxDhA1jc54Gx4CCIbQNlqIrl5vm5oi2x7eDQN8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kKHJ+ZVVZJOv9/FPgCju9obWC7R0qOJyqmVYOe6YV4bKe9T5V81aDFR5N8LBkUnkV
-         pCTfTLyquzdt8TXvae90dY5MN+m8t7GDqrJ3MH4OHJ7fFgVNPay1sGAKwta8NeLpNm
-         hNyMFen7Qpx0JFGL9j/P8lOokgvU6ajV0KaEQyBU=
+        b=nSESNmeJSQQVr5vbVWTFaY6hQu5RjB7uz/5s6XhflqGCfcixI9s42swnCD/g5Cw24
+         boUKVYpy1bPi0hyL0VN1+4YeZW76r+zmKndwlnHZCjiwCRRLUjjk00eZBzinTD83ni
+         eioR9Y916H4RZmoCy/rVGvEJ2PZ5UsNcksx/PGgQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 09/40] btrfs: handle NULL roots in btrfs_put/btrfs_grab_fs_root
-Date:   Wed, 15 Apr 2020 07:45:52 -0400
-Message-Id: <20200415114623.14972-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 09/30] btrfs: handle NULL roots in btrfs_put/btrfs_grab_fs_root
+Date:   Wed, 15 Apr 2020 07:46:50 -0400
+Message-Id: <20200415114711.15381-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114623.14972-1-sashal@kernel.org>
-References: <20200415114623.14972-1-sashal@kernel.org>
+In-Reply-To: <20200415114711.15381-1-sashal@kernel.org>
+References: <20200415114711.15381-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -63,10 +63,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 7a4a60f26dbf9..4f2d99fdf1e0c 100644
+index 7f7c35d6347a3..4066220a980b2 100644
 --- a/fs/btrfs/disk-io.h
 +++ b/fs/btrfs/disk-io.h
-@@ -100,6 +100,8 @@ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
+@@ -109,6 +109,8 @@ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
   */
  static inline struct btrfs_root *btrfs_grab_fs_root(struct btrfs_root *root)
  {
@@ -75,7 +75,7 @@ index 7a4a60f26dbf9..4f2d99fdf1e0c 100644
  	if (refcount_inc_not_zero(&root->refs))
  		return root;
  	return NULL;
-@@ -107,6 +109,8 @@ static inline struct btrfs_root *btrfs_grab_fs_root(struct btrfs_root *root)
+@@ -116,6 +118,8 @@ static inline struct btrfs_root *btrfs_grab_fs_root(struct btrfs_root *root)
  
  static inline void btrfs_put_fs_root(struct btrfs_root *root)
  {
