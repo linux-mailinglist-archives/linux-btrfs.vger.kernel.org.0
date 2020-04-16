@@ -2,388 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051591AB2F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Apr 2020 23:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141FA1AB4D3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Apr 2020 02:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442205AbgDOUym (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Apr 2020 16:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
+        id S2404380AbgDPAcK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Apr 2020 20:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2442190AbgDOUyk (ORCPT
+        by vger.kernel.org with ESMTP id S2404155AbgDPAcD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:54:40 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646D4C061A0C
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Apr 2020 13:54:39 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d17so535870pgo.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 Apr 2020 13:54:39 -0700 (PDT)
+        Wed, 15 Apr 2020 20:32:03 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FB3C061A0C
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Apr 2020 17:32:02 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id v2so682125plp.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Apr 2020 17:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yhfm3G2KaVuGQbPaYn1tfgdaI+7EfW6erFaHGWEwg5M=;
-        b=z6dXbgCYRWe7TD4iiyAsgWXM2rb2RbHNHqvDiqzw9EMqS2zunakOiG9Xke4zs/9IZe
-         TD01zheJc8N5skhIhrIoDAEz9QH8TdbRkWy1Ga58mA+IHlUoIIiA+E+d8REq5nD5QnMB
-         nGLLxNBJ0ohFLGEBZV+zrwPWT/nYKn4/j4Av0/VI8FFdZCiAAA5TLYAY7ms7IBR12TFJ
-         sFcnauBxam7hOZQRwtPNXx0/2ICESaci6l0EHdZPm7W+Ebdv0hS1jcKkLHiUaHsMyhD0
-         rzqxbSveXOTMnJUwJVO1/Tok0wwlOG3XL2OLw/W8JMaNWBXdnZeosnbiKMET61ZH8Wie
-         dKWw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=gnj9iCo7L54WYunG3/3l1pdtUyEGUOMLqw1I52a04zY=;
+        b=PDknfNKa5zNauJbFzMQa7Z2qtb90v/ui3OA0/f9/XEXvfQGYSctFLpK7Cb2EFDjrv+
+         86ckbohr/ozxAp+iR/7QyGTDALacQJUDdfBGZpKQm6bQ5/5RIC569VRSPahhpJkVIGge
+         K9PQNZI7edMux5Vn4Zzj60r03RUYeU3VANTWHsmyE3aVmxAlhcihVWmxyGtCUSjxNOOj
+         utYAkNW+OdR2/9+k3afQW7S6V6OgpRpHPk3KZNfxedT8lCr5SQV4yCx8eH18kXfKlI0Y
+         mkoHNyGiFsW4dX45FPT6QVXl4lfKdF9X6/Oa5ycvsGTJ0YoFcu+ordsNNO5Ppcsj3dNB
+         CBpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yhfm3G2KaVuGQbPaYn1tfgdaI+7EfW6erFaHGWEwg5M=;
-        b=bkdnxYg2ojvZVF7ZrOg7kL6dQhFgTxvL5PyIwvxWQpy2uYk9Nq5VoIXuuhYRk3FvV3
-         vvb3tmKAs0gn4aPPJOXy2wvdom8tEBVI3st1U9iV0EA2UjK1vqWMms+m8JUjNCS2IKgV
-         X3tvAaHWOiYI+UgW8KfRR55Szvg5BQFqO05adBlYsg+oOzzAKv0Lw5XRaJp0mg0H/0cU
-         bCnxkTskmvYhN7l+XLvfZLJB2CULgpILHwpMdOkWIT1dTu+5xoJG+FUTuicvmy3DZ8bx
-         evPtTTq/utMzpOWC0BxeA/N8IKvBsRfaz5veXtov0IUpUuBUT9IT/TxfLNm63RX3Kb0a
-         4xQg==
-X-Gm-Message-State: AGi0PuZk7lQqynHK6AjEhCJdCbVuXzQu2qNnfniHDZwGgNa/3tzghtEx
-        9//N27PeXqbI2OnzY3GwAkTCkw==
-X-Google-Smtp-Source: APiQypIJ+qmg9l+aWYiYhmqF8V7OLUbkSmFpEBLuDXqsueCnMys6wSxW24TjbdIVN59EbID7Wni5AQ==
-X-Received: by 2002:a63:d143:: with SMTP id c3mr27726805pgj.171.1586984078406;
-        Wed, 15 Apr 2020 13:54:38 -0700 (PDT)
-Received: from vader.tfbnw.net ([2620:10d:c090:400::5:b0c6])
-        by smtp.gmail.com with ESMTPSA id w134sm14753393pfd.41.2020.04.15.13.54.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=gnj9iCo7L54WYunG3/3l1pdtUyEGUOMLqw1I52a04zY=;
+        b=eQ+c6/ZlaTMCxx0nGZDxAJWbpQpMdfDUg1iBmNnw/yo9GGtz5H+vxns+JpIR5ka1KI
+         R2A/ZBY+/eTs568FxR6rEmRGghklf1AtCx4R7KdVCyK0xSgwijbUSfv/2lyj1IACn5q3
+         8l9bMCc1w5BjdIvUBilLlmeDYiRZV3Gymy7+pNC385PzX5VVZMO3eUyw87jeUc/iXXn5
+         g2iTxPoPdjdvTeZAvNg+X03590nDo4bAKsGnfc2YIuZxj5fGqh+Ir7T0mdjMjvq1zBkr
+         BxhSWSpD/GLTv5IFuj/xhH8D6fTFDpFT+BOcw7wtyGlZRybYjPDq/PfmXfcQeu9ra7nu
+         8lCw==
+X-Gm-Message-State: AGi0PuY2nCdzQdUAdxpURypCkjzjDC62bswH/mdqJHf17eKa8PI1fgqU
+        P7l9/p6IRmKusdweWc2ZfuZBfB23Mhs=
+X-Google-Smtp-Source: APiQypKsWsxeigVobKApffk8IRl7f+pmsyS3ZrVr7t8TU8J9DS9kgze1RchOW1h7nh/9GKytEcHqvw==
+X-Received: by 2002:a17:902:d716:: with SMTP id w22mr7662173ply.200.1586997121740;
+        Wed, 15 Apr 2020 17:32:01 -0700 (PDT)
+Received: from ryzen3950 (c-73-71-89-135.hsd1.ca.comcast.net. [73.71.89.135])
+        by smtp.gmail.com with ESMTPSA id a13sm2637992pfo.96.2020.04.15.17.31.59
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 13:54:37 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     fstests@vger.kernel.org
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH fstests] btrfs/14{2,3}: use dm-dust instead of fail_make_request
-Date:   Wed, 15 Apr 2020 13:54:31 -0700
-Message-Id: <d992390752c612acd0893ee3db929e77affded2b.1586983958.git.osandov@fb.com>
-X-Mailer: git-send-email 2.26.1
+        Wed, 15 Apr 2020 17:32:00 -0700 (PDT)
+From:   Matt Huszagh <huszaghmatt@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Backup failing with "failed to clone extents" error
+Date:   Wed, 15 Apr 2020 17:31:57 -0700
+Message-ID: <87blnsuv7m.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+I'm attempting to perform a backup to an external hard drive. Both the
+native drive and external drive use a BTRFS filesystem. I do this by
+first creating a read-only snapshot of my home directory:
 
-These two tests test direct I/O and buffered read repair, respectively,
-with fail_make_request. However, by using "fail_make_request/times",
-they rely on repair having a specific I/O pattern. My pending Btrfs
-direct I/O refactoring patch series changes this I/O pattern and thus
-breaks this test.
+# btrfs subvolume snapshot -r /home /.snapshots/home/BACKUP
 
-The dm-dust target (added in v5.2) emulates a device with bad blocks
-that are fixed when written to (like a device that remaps bad blocks).
-This is exactly what we want for testing repair. Add some common dm-dust
-helpers and update the tests to use dm-dust.
+Followed by a send/receive to the backup drive:
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- common/dmdust   | 35 +++++++++++++++++++
- tests/btrfs/142 | 88 +++++++++++------------------------------------
- tests/btrfs/143 | 90 +++++++++++--------------------------------------
- 3 files changed, 73 insertions(+), 140 deletions(-)
- create mode 100644 common/dmdust
+# btrfs send /.snapshots/home/BACKUP | btrfs receive /.backup/home
 
-diff --git a/common/dmdust b/common/dmdust
-new file mode 100644
-index 00000000..56fcc0e0
---- /dev/null
-+++ b/common/dmdust
-@@ -0,0 +1,35 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Facebook.  All Rights Reserved.
-+#
-+# common functions for setting up and tearing down a dmdust device
-+
-+_init_dust()
-+{
-+	local DEV_SIZE=`blockdev --getsz $SCRATCH_DEV`
-+	DUST_DEV=/dev/mapper/dust-test
-+	DUST_TABLE="0 $DEV_SIZE dust $SCRATCH_DEV 0 512"
-+	_dmsetup_create dust-test --table "$DUST_TABLE" || \
-+		_fatal "failed to create dust device"
-+}
-+
-+_mount_dust()
-+{
-+	_scratch_options mount
-+	_mount -t $FSTYP `_common_dev_mount_options $*` $SCRATCH_OPTIONS \
-+		$DUST_DEV $SCRATCH_MNT
-+}
-+
-+_unmount_dust()
-+{
-+	$UMOUNT_PROG $SCRATCH_MNT
-+}
-+
-+_cleanup_dust()
-+{
-+	# If dmsetup load fails then we need to make sure to do resume here
-+	# otherwise the umount will hang
-+	$DMSETUP_PROG resume dust-test > /dev/null 2>&1
-+	$UMOUNT_PROG $SCRATCH_MNT > /dev/null 2>&1
-+	_dmsetup_remove dust-test
-+}
-diff --git a/tests/btrfs/142 b/tests/btrfs/142
-index db0a3377..e495c2c6 100755
---- a/tests/btrfs/142
-+++ b/tests/btrfs/142
-@@ -30,6 +30,7 @@ _cleanup()
- # get standard environment, filters and checks
- . ./common/rc
- . ./common/filter
-+. ./common/dmdust
- 
- # remove previous $seqres.full before test
- rm -f $seqres.full
-@@ -39,55 +40,12 @@ rm -f $seqres.full
- # Modify as appropriate.
- _supported_fs btrfs
- _supported_os Linux
--_require_fail_make_request
- _require_scratch_dev_pool 2
-+_require_dm_target dust
- 
- _require_btrfs_command inspect-internal dump-tree
- _require_command "$FILEFRAG_PROG" filefrag
- 
--get_physical()
--{
--	local logical=$1
--	local stripe=$2
--	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
--		grep $logical -A 6 | \
--		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$6 }"
--}
--
--get_devid()
--{
--	local logical=$1
--	local stripe=$2
--	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
--		grep $logical -A 6 | \
--		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$4 }"
--}
--
--get_device_path()
--{
--	local devid=$1
--	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
--}
--
--start_fail()
--{
--	local sysfs_bdev="$1"
--	echo 100 > $DEBUGFS_MNT/fail_make_request/probability
--	echo 2 > $DEBUGFS_MNT/fail_make_request/times
--	echo 1 > $DEBUGFS_MNT/fail_make_request/task-filter
--	echo 0 > $DEBUGFS_MNT/fail_make_request/verbose
--	echo 1 > $sysfs_bdev/make-it-fail
--}
--
--stop_fail()
--{
--	local sysfs_bdev="$1"
--	echo 0 > $DEBUGFS_MNT/fail_make_request/probability
--	echo 0 > $DEBUGFS_MNT/fail_make_request/times
--	echo 0 > $DEBUGFS_MNT/fail_make_request/task-filter
--	echo 0 > $sysfs_bdev/make-it-fail
--}
--
- _scratch_dev_pool_get 2
- # step 1, create a raid1 btrfs which contains one 128k file.
- echo "step 1......mkfs.btrfs" >>$seqres.full
-@@ -107,42 +65,34 @@ echo "step 2......corrupt file extent" >>$seqres.full
- 
- ${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
- logical_in_btrfs=`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | cut -d '#' -f 1`
--physical=`get_physical ${logical_in_btrfs} 1`
--devid=$(get_devid ${logical_in_btrfs} 1)
--target_dev=$(get_device_path $devid)
-+echo "Logical offset is $logical_in_btrfs" >>$seqres.full
-+_scratch_unmount
- 
--SYSFS_BDEV=`_sysfs_dev $target_dev`
-+read -r stripe physical < <(
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 "$SCRATCH_DEV" |
-+	grep "$logical_in_btrfs" -A 6 |
-+	$AWK_PROG '$1 == "stripe" && $3 == "devid" && $4 == 1 { print $2 " " $6; exit }')
-+echo "Physical offset of stripe $stripe is $physical on devid 1" >> $seqres.full
- 
--_scratch_unmount
--$BTRFS_UTIL_PROG ins dump-tree -t 3 $SCRATCH_DEV | \
--	grep $logical_in_btrfs -A 6 >> $seqres.full
--echo "Corrupt stripe 1 devid $devid devpath $target_dev physical $physical" \
--	>> $seqres.full
--$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $target_dev > /dev/null
-+$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" "$SCRATCH_DEV" > /dev/null
- 
--_scratch_mount -o nospace_cache
-+_init_dust
-+_mount_dust
- 
- # step 3, 128k dio read (this read can repair bad copy)
- echo "step 3......repair the bad copy" >>$seqres.full
- 
--# since raid1 consists of two copies, and the bad copy was put on stripe #1
--# while the good copy lies on stripe #0, the bad copy only gets access when the
--start_fail $SYSFS_BDEV
--while [[ -z ${result} ]]; do
--	# enable task-filter only fails the following dio read so the repair is
--	# supposed to work.
--	result=$(bash -c "
--	if [[ \$((\$\$ % 2)) -eq 1 ]]; then
--		echo 1 > /proc/\$\$/make-it-fail
--		exec $XFS_IO_PROG -d -c \"pread -b 128K 0 128K\" \"$SCRATCH_MNT/foobar\"
--	fi");
-+$DMSETUP_PROG message dust-test 0 addbadblock $((physical / 512))
-+$DMSETUP_PROG message dust-test 0 enable
-+while [[ -z $( (( BASHPID % 2 == stripe )) &&
-+	       exec $XFS_IO_PROG -d -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar") ]]; do
-+	:
- done
--stop_fail $SYSFS_BDEV
- 
--_scratch_unmount
-+_cleanup_dust
- 
- # check if the repair works
--$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $target_dev | \
-+$XFS_IO_PROG -c "pread -v -b 512 $physical 512" "$SCRATCH_DEV" |
- 	_filter_xfs_io_offset
- 
- _scratch_dev_pool_put
-diff --git a/tests/btrfs/143 b/tests/btrfs/143
-index 0388a528..07040eb3 100755
---- a/tests/btrfs/143
-+++ b/tests/btrfs/143
-@@ -37,6 +37,7 @@ _cleanup()
- # get standard environment, filters and checks
- . ./common/rc
- . ./common/filter
-+. ./common/dmdust
- 
- # remove previous $seqres.full before test
- rm -f $seqres.full
-@@ -46,58 +47,12 @@ rm -f $seqres.full
- # Modify as appropriate.
- _supported_fs btrfs
- _supported_os Linux
--_require_fail_make_request
- _require_scratch_dev_pool 2
-+_require_dm_target dust
- 
- _require_btrfs_command inspect-internal dump-tree
- _require_command "$FILEFRAG_PROG" filefrag
- 
--get_physical()
--{
--	local logical=$1
--	local stripe=$2
--	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
--		grep $logical -A 6 | \
--		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$6 }"
--}
--
--get_devid()
--{
--	local logical=$1
--	local stripe=$2
--	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
--		grep $logical -A 6 | \
--		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /$stripe/) { print \$4 }"
--}
--
--get_device_path()
--{
--	local devid=$1
--	echo "$SCRATCH_DEV_POOL" | $AWK_PROG "{print \$$devid}"
--}
--
--SYSFS_BDEV=`_sysfs_dev $SCRATCH_DEV`
--
--start_fail()
--{
--	local sysfs_bdev="$1"
--	echo 100 > $DEBUGFS_MNT/fail_make_request/probability
--	# the 1st one fails the first bio which is reading 4k (or more due to
--	# readahead), and the 2nd one fails the retry of validation so that it
--	# triggers read-repair
--	echo 2 > $DEBUGFS_MNT/fail_make_request/times
--	echo 0 > $DEBUGFS_MNT/fail_make_request/verbose
--	echo 1 > $sysfs_bdev/make-it-fail
--}
--
--stop_fail()
--{
--	local sysfs_bdev="$1"
--	echo 0 > $DEBUGFS_MNT/fail_make_request/probability
--	echo 0 > $DEBUGFS_MNT/fail_make_request/times
--	echo 0 > $sysfs_bdev/make-it-fail
--}
--
- _scratch_dev_pool_get 2
- # step 1, create a raid1 btrfs which contains one 128k file.
- echo "step 1......mkfs.btrfs" >>$seqres.full
-@@ -117,41 +72,34 @@ echo "step 2......corrupt file extent" >>$seqres.full
- 
- ${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar >> $seqres.full
- logical_in_btrfs=`${FILEFRAG_PROG} -v $SCRATCH_MNT/foobar | _filter_filefrag | cut -d '#' -f 1`
--physical=`get_physical ${logical_in_btrfs} 1`
--devid=$(get_devid ${logical_in_btrfs} 1)
--target_dev=$(get_device_path $devid)
--
--SYSFS_BDEV=`_sysfs_dev $target_dev`
-+echo "Logical offset is $logical_in_btrfs" >>$seqres.full
- _scratch_unmount
- 
--echo "corrupt stripe 1 devid $devid devpath $target_dev physical $physical" \
--	>> $seqres.full
--$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" $target_dev > /dev/null
-+read -r stripe physical < <(
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 "$SCRATCH_DEV" |
-+	grep "$logical_in_btrfs" -A 6 |
-+	$AWK_PROG '$1 == "stripe" && $3 == "devid" && $4 == 1 { print $2 " " $6; exit }')
-+echo "Physical offset of stripe $stripe is $physical on devid 1" >> $seqres.full
- 
--_scratch_mount -o nospace_cache
-+$XFS_IO_PROG -d -c "pwrite -S 0xbb -b 64K $physical 64K" "$SCRATCH_DEV" > /dev/null
-+
-+_init_dust
-+_mount_dust
- 
- # step 3, 128k buffered read (this read can repair bad copy)
- echo "step 3......repair the bad copy" >>$seqres.full
- 
--# since raid1 consists of two copies, and the bad copy was put on stripe #1
--# while the good copy lies on stripe #0, the bad copy only gets access when the
--# reader's pid % 2 == 1 is true
--while [[ -z ${result} ]]; do
--    # invalidate the page cache.
--    _scratch_cycle_mount
--
--    start_fail $SYSFS_BDEV
--    result=$(bash -c "
--        if [[ \$((\$\$ % 2)) -eq 1 ]]; then
--                exec $XFS_IO_PROG -c \"pread 0 4K\" \"$SCRATCH_MNT/foobar\"
--        fi");
--    stop_fail $SYSFS_BDEV
-+$DMSETUP_PROG message dust-test 0 addbadblock $((physical / 512))
-+$DMSETUP_PROG message dust-test 0 enable
-+while [[ -z $( (( BASHPID % 2 == stripe )) &&
-+	       exec $XFS_IO_PROG -c "pread -b 128K 0 128K" "$SCRATCH_MNT/foobar") ]]; do
-+	:
- done
- 
--_scratch_unmount
-+_cleanup_dust
- 
- # check if the repair works
--$XFS_IO_PROG -c "pread -v -b 512 $physical 512" $target_dev |\
-+$XFS_IO_PROG -c "pread -v -b 512 $physical 512" "$SCRATCH_DEV" |
- 	_filter_xfs_io_offset
- 
- _scratch_dev_pool_put
--- 
-2.26.1
+I get this output:
 
+At subvol /.snapshots/home/BACKUP
+At subvol BACKUP
+ERROR: failed to clone extents to matt/.local/share/Anki2/Matt/collection.anki2: Invalid argument
+
+There several files that trigger this error (most of them .sqlite
+files). I can delete the offending files, which causes the backup to
+work. However, new offending files are created that recreate the error
+(e.g. Firefox generates lots of offending .sqlite files).
+
+I performed
+
+# btrfs scrub start -B /
+
+which exited without errors and failed to resolve the issue and I even
+ran check --repair on my filesystem unmounted:
+
+# btrfs check --repair /dev/mapper/...
+
+which didn't make a difference.
+
+uname -a:
+Linux ryzen3950 5.5.0 #1-NixOS SMP Mon Jan 27 00:23:03 UTC 2020 x86_64 GNU/Linux
+
+btrfs --version
+btrfs-progs v5.4.1
+
+btrfs fi show
+Label: 'btrfs'  uuid: d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b
+        Total devices 2 FS bytes used 737.53GiB
+        devid    1 size 931.01GiB used 853.03GiB path /dev/mapper/cryptnvme
+        devid    2 size 931.50GiB used 853.03GiB path /dev/mapper/cryptnvme1
+
+Label: 'backup'  uuid: 0bd10808-0330-4736-9425-059d4a0a300e
+        Total devices 2 FS bytes used 473.34GiB
+        devid    1 size 1.82TiB used 475.01GiB path /dev/mapper/cryptsda1
+        devid    2 size 1.82TiB used 475.01GiB path /dev/mapper/cryptsdb1
+
+btrfs fi df /
+Data, RAID0: total=1.44TiB, used=730.13GiB
+System, RAID1: total=32.00MiB, used=144.00KiB
+Metadata, RAID1: total=20.00GiB, used=7.40GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+Here's the output of dmesg. I've only taken the lines containing
+dmesg. Please let me know if this is insufficient and I'll provide the
+full log.
+
+[    1.168132] stage-1-init: loading module btrfs...
+[    1.442869] Btrfs loaded, crc32c=crc32c-intel
+[   14.552850] BTRFS: device label backup devid 2 transid 303 /dev/mapper/cryptsdb1 scanned by btrfs (857)
+[   14.553396] BTRFS: device label backup devid 1 transid 303 /dev/mapper/cryptsda1 scanned by btrfs (857)
+[   14.553487] BTRFS: device label btrfs devid 2 transid 409463 /dev/mapper/cryptnvme1 scanned by btrfs (857)
+[   14.553573] BTRFS: device label btrfs devid 1 transid 409463 /dev/mapper/cryptnvme scanned by btrfs (857)
+[   14.553634] stage-1-init: Scanning for Btrfs filesystems
+[   14.561445] BTRFS info (device dm-0): use lzo compression, level 0
+[   14.561447] BTRFS info (device dm-0): enabling ssd optimizations
+[   14.561447] BTRFS info (device dm-0): disk space caching is enabled
+[   14.561448] BTRFS info (device dm-0): has skinny extents
+[   14.637769] BTRFS info (device dm-0): checking UUID tree
+[   14.786327] BTRFS info (device dm-0): disk space caching is enabled
+[   15.926714] BTRFS info (device dm-0): device fsid d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b devid 1 moved old:/dev/mapper/cryptnvme new:/dev/dm-0
+[   15.926763] BTRFS info (device dm-0): device fsid d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b devid 2 moved old:/dev/disk/by-uuid/d31878d6-3a77-4f0f-9fdd-bb9a2c4e578b new:/dev/dm-1
+[   16.043567] BTRFS info (device dm-0): disk space caching is enabled
+[   16.074722] BTRFS info (device dm-2): use lzo compression, level 0
+[   16.074723] BTRFS info (device dm-2): disk space caching is enabled
+[   16.074724] BTRFS info (device dm-2): has skinny extents
+[27057.785935] BTRFS info (device dm-0): scrub: started on devid 1
+[27057.800078] BTRFS info (device dm-0): scrub: started on devid 2
+[27107.287558] BTRFS info (device dm-0): scrub: not finished on devid 1 with status: -125
+[27107.316437] BTRFS info (device dm-0): scrub: not finished on devid 2 with status: -125
+[27109.542589] BTRFS info (device dm-0): scrub: started on devid 1
+[27109.556751] BTRFS info (device dm-0): scrub: started on devid 2
+[27243.975463] BTRFS info (device dm-0): scrub: finished on devid 1 with status: 0
+[27247.857511] BTRFS info (device dm-0): scrub: finished on devid 2 with status: 0
+[250470.993201] [  23284]     0 23284     3204       25    45056        0             0 btrfs
+[250470.993203] [  23286]     0 23286     1155       53    40960        0             0 btrfs
+
+Thanks!
+Matt
