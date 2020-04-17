@@ -2,173 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABB31AE4B3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 20:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985071AE746
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 23:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbgDQSZl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Apr 2020 14:25:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23396 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730425AbgDQSZl (ORCPT
+        id S1727817AbgDQVJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Apr 2020 17:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgDQVJB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:25:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587147939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mL6LCJXOQsfqumZAUw0JwQAY0OlXOlQJgvbivjqLgMY=;
-        b=bMFnp5qF7ZDZd+o88plDEB3nwtsJAa6A27vLnoFXobFdr9o/m+SclxcNxJDvY2jCiOIL8i
-        rwOZrMjUfHsX5aIW4XnFbwxZgSR0Lg+QWwXpMs//cBPEoRixvcddWKRw35Maqj26E1PXJW
-        5O7vfHIQZde3dRkgG4I4Jcx3ZowynbA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-F8OZmsR4OpuBW6EfMqdDTQ-1; Fri, 17 Apr 2020 14:25:38 -0400
-X-MC-Unique: F8OZmsR4OpuBW6EfMqdDTQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 094BA801F85;
-        Fri, 17 Apr 2020 18:25:37 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58C235DA7C;
-        Fri, 17 Apr 2020 18:25:36 +0000 (UTC)
-Date:   Fri, 17 Apr 2020 14:25:34 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 1/4] fsx: add missing file size update on zero range
- operations
-Message-ID: <20200417182534.GH13463@bfoster>
-References: <20200408103552.11339-1-fdmanana@kernel.org>
- <20200417171020.GB13463@bfoster>
- <CAL3q7H5nxP5tt8i=i0uQoG7VBs94O=ZkcAz8khS-DGCTTQG1=g@mail.gmail.com>
- <20200417172606.GF13463@bfoster>
- <CAL3q7H5YSrV6Z+aB=ncSQiUfbACWgMArVRB9xu0Dhx0mTp3bZA@mail.gmail.com>
- <20200417174752.GG13463@bfoster>
- <CAL3q7H6bS1dL2pUawmc0z3ZXop7xg0P5O8rBkqbP11V9D+295Q@mail.gmail.com>
+        Fri, 17 Apr 2020 17:09:01 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82268C061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Apr 2020 14:09:01 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id l13so3219491qtr.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Apr 2020 14:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Q7k9KCiyhFjpyyKNXEKkIn6qVz4rr3hsae8WKs7E59w=;
+        b=g6Ls8mf++G/+shcZYvKrXHamlbCSnIKqjWX4khcBCTWjCkat+iB01HhBsd7SQ5e5xV
+         JA0szS36BqXdLwG52dZOCnTQ+umPVf38DVE8vLgoFoo7KOB+d3l0j2PAnfNo4klpsIvW
+         o40ubjIBd9zodEEHz4zhAyGn6lYmAh4sf4CAA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Q7k9KCiyhFjpyyKNXEKkIn6qVz4rr3hsae8WKs7E59w=;
+        b=Y01Sap0fGXwZDUIRbPkJZ14bJu5FJGmGWS3wn63bQN29XIQ/8uDHAOzyrlcre5fkmv
+         eONtdwX1Vro5eefwuOfe9+5G0c23JXjspvshhoIPN2atHXyEK6DfJyYuWBwDCLR2LDYe
+         CSLO5kSdHwKNj0neAOPbDW9dHW3v/ma0hZuk9y5CqI0PIkSMONenlz/JUDWk2b6YYd97
+         VU+3jlhuurZwp9Wz4m78xs3AvvMBycBVqJL82qeNChMbZzcLwbk3fYIEoGLmwmoqWUNT
+         GH5QuKeweKy+3vpdjvyD5NubBnY5kPTaXlA1udl0UktIYZyh/IZfKA6Vhst1XpXSH/XM
+         VLFg==
+X-Gm-Message-State: AGi0PuZTLvc3FPznzemh/XonY7S2VcCz1FRQUz2IAe5x5S9RPDBcby+y
+        WmG6d8nSM41J+xz/goh/uZBnhJi6N/I=
+X-Google-Smtp-Source: APiQypJZB2j1PNvsuoYq15qpo+zEZhMAOwUQ3bIi0oKe1T2Geo7w4M4zyx790TVVKDJWR81WASV1jw==
+X-Received: by 2002:ac8:44aa:: with SMTP id a10mr5181511qto.230.1587157740460;
+        Fri, 17 Apr 2020 14:09:00 -0700 (PDT)
+Received: from bill-the-cat (2606-a000-1401-826f-4058-2b78-ede2-0695.inf6.spectrum.com. [2606:a000:1401:826f:4058:2b78:ede2:695])
+        by smtp.gmail.com with ESMTPSA id e133sm329132qkb.128.2020.04.17.14.08.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Apr 2020 14:08:59 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 17:08:57 -0400
+From:   Tom Rini <trini@konsulko.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
+        Marek Behun <marek.behun@nic.cz>
+Subject: Re: [PATCH U-BOOT v2 1/3] fs: btrfs: Use LZO_LEN to replace
+ immediate number
+Message-ID: <20200417210857.GN4555@bill-the-cat>
+References: <20200326053556.20492-1-wqu@suse.com>
+ <20200326053556.20492-2-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="je2i5r69C8+2chMc"
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H6bS1dL2pUawmc0z3ZXop7xg0P5O8rBkqbP11V9D+295Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200326053556.20492-2-wqu@suse.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 06:53:27PM +0100, Filipe Manana wrote:
-> On Fri, Apr 17, 2020 at 6:48 PM Brian Foster <bfoster@redhat.com> wrote:
-> >
-> > On Fri, Apr 17, 2020 at 06:32:03PM +0100, Filipe Manana wrote:
-> > > On Fri, Apr 17, 2020 at 6:26 PM Brian Foster <bfoster@redhat.com> wrote:
-> > > >
-> > > > On Fri, Apr 17, 2020 at 06:20:24PM +0100, Filipe Manana wrote:
-> > > > > On Fri, Apr 17, 2020 at 6:10 PM Brian Foster <bfoster@redhat.com> wrote:
-> > > > > >
-> > > > > > On Wed, Apr 08, 2020 at 11:35:52AM +0100, fdmanana@kernel.org wrote:
-> > > > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > > > >
-> > > > > > > When a zero range operation increases the size of the test file we were
-> > > > > > > not updating the global variable 'file_size' which tracks the current
-> > > > > > > size of the test file. This variable is used to for example compute the
-> > > > > > > offset for a source range of clone, dedupe and copy file range operations.
-> > > > > > >
-> > > > > > > So just fix it by updating the 'file_size' global variable whenever a zero
-> > > > > > > range operation does not use the keep size flag and its range goes beyond
-> > > > > > > the current file size.
-> > > > > > >
-> > > > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > > > > > ---
-> > > > > > >  ltp/fsx.c | 2 ++
-> > > > > > >  1 file changed, 2 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/ltp/fsx.c b/ltp/fsx.c
-> > > > > > > index 9d598a4f..fa383c94 100644
-> > > > > > > --- a/ltp/fsx.c
-> > > > > > > +++ b/ltp/fsx.c
-> > > > > > > @@ -1212,6 +1212,8 @@ do_zero_range(unsigned offset, unsigned length, int keep_size)
-> > > > > > >       }
-> > > > > > >
-> > > > > > >       end_offset = keep_size ? 0 : offset + length;
-> > > > > > > +     if (!keep_size && end_offset > file_size)
-> > > > > > > +             file_size = end_offset;
-> > > > > >
-> > > > > > Should this ever happen if the caller uses TRIM_OFF_LEN() on the
-> > > > > > offset and length?
-> > > > >
-> > > > > TRIM_OFF_LEN only trims the range, not the file_size.
-> > > > > Or did I miss something?
-> > > > >
-> > > >
-> > > > Right, but TRIM_LEN() does:
-> > > >
-> > > >         if ((off) + (len) > (size))             \
-> > > >                 (len) = (size) - (off);         \
-> > > >
-> > > > ... where size is file_size. Hm?
-> > >
-> > > That only updates the range's length, not the file_size.
-> > >
-> >
-> > Yes, but it caps the range to within file_size.
-> 
-> Yes.
-> 
-> The problem I'm trying to solve is that because the file_size is not
-> updated by zero range operations,
-> a following clone/dedupe/copy_range call will not be able to use a
-> range that crosses the old file size and goes up to the new file size.
-> 
-> I.e. I'm not solving a problem where the range for those operations
-> (or any others) incorrectly crosses eof - that doesn't happen because
-> of the TRIM_* macros.
-> 
-> Does it make sense now?
-> 
 
-Not really. When is end_offset > file_size ever true in do_zero_range()?
+--je2i5r69C8+2chMc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Brian
+On Thu, Mar 26, 2020 at 01:35:54PM +0800, Qu Wenruo wrote:
 
-> Thanks.
-> 
-> 
-> >
-> > > Also, if you check the global style, you'll see that in the function
-> > > for every operation that can change file size we do update file_size
-> > > explicitly (e.g. do_preallocate(), and we call TRIM_OFF_LEN before
-> > > calling it as well).
-> > >
-> >
-> > do_preallocate() (fallocate) passes maxfilelen instead of file_size, as
-> > does write and mapwrite. Insert range uses TRIM_LEN() directly but also
-> > passes maxfilelen.
-> >
-> > Brian
-> >
-> > > Thanks.
-> > >
-> > > >
-> > > > Brian
-> > > >
-> > > > > Thanks.
-> > > > >
-> > > > > >
-> > > > > > Brian
-> > > > > >
-> > > > > > >
-> > > > > > >       if (end_offset > biggest) {
-> > > > > > >               biggest = end_offset;
-> > > > > > > --
-> > > > > > > 2.11.0
-> > > > > > >
-> > > > > >
-> > > > >
-> > > >
-> > >
-> >
-> 
+> Just a cleanup. These immediate numbers make my eyes hurt.
+>=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Cc: Marek Behun <marek.behun@nic.cz>
+> Reviewed-by: Marek Beh=FAn <marek.behun@nic.cz>
 
+Applied to u-boot/master, thanks!
+
+--=20
+Tom
+
+--je2i5r69C8+2chMc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAl6aGukACgkQFHw5/5Y0
+tyw54Qv/cDPBq1WovDEeH/c7i3Z7thAeIpZY3X4y5kodhtkPiXRqLhgZiKOvcRwL
+doC2JQAjIgxtMJpZj6nyqmobv1NNE9I+/U5kQvt+ZAi2GhRL47l/n0FllrdZ+ose
+/h0H8AL8wx3CpVbV9OkOGkzY5WxMNmER+dS8rR3PLCpNIYooUUJet+Gdi86xU3IB
+p+NPd2E9crD77pISfZZYbMP6ll6l7CJDNdsXHU1zQ8gmwcMBDT2vj214OFwRnSLR
+usijq6S8/H/i/8Df3TDMFrSAbSBxrn7jD3YO0qW4SfhLh9AYT29FBAvMCM4by+6x
+fFwwnuZRuCXATkp4wRQDXN8LB8hdEGuoRnty6Wne+sbcee2tLSgftciUeT5Qd/sU
+Cl5q94QECQ0EeQG3E5eK0tX1Yos5zyPvDxVhyewaSln+4V0GsRw6WVY0xrXg4sIj
+zITKoDRUB0/zshhWVe2sYr0u4ZKqOD9y8/b1a8F5QAUsgAcN6W16WnfGn6/fEcR+
+gGBsvoE3
+=dJKd
+-----END PGP SIGNATURE-----
+
+--je2i5r69C8+2chMc--
