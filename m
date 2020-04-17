@@ -2,57 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C831ADE52
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 15:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F81AE00D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 16:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730655AbgDQNak (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Apr 2020 09:30:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36900 "EHLO mx2.suse.de"
+        id S1727967AbgDQOkQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Apr 2020 10:40:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730610AbgDQNaj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Apr 2020 09:30:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A7911AC94;
-        Fri, 17 Apr 2020 13:30:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 789BDDA727; Fri, 17 Apr 2020 15:29:57 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.7-rc2
-Date:   Fri, 17 Apr 2020 15:29:54 +0200
-Message-Id: <cover.1587129870.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726151AbgDQOkP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Apr 2020 10:40:15 -0400
+Received: from debian7.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F403220936
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Apr 2020 14:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587134415;
+        bh=zVi+xdcCjsdT+WdBA2EH6WzUCrqpN2iIm386h0Rf3qI=;
+        h=From:To:Subject:Date:From;
+        b=JbeKc7i9PknFep668JogDsuTNbrMWVJvrV/6YtBSexb+RrpBHUCTF+BRlv43Db41u
+         60uGRAdrxBt0c/gSRgSBxumwTJEuyOz9WB6AbLYTNP0g5N96GrQzU3G3LvqJR8n5Pw
+         UeuCKS1+qNkPtvD9EgBCMku5xheO9fzMptW2Lea4=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/2] Btrfs: fix memory leak of transaction when deleting unused block group
+Date:   Fri, 17 Apr 2020 15:40:12 +0100
+Message-Id: <20200417144012.9269-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+From: Filipe Manana <fdmanana@suse.com>
 
-please pull a regression fix for a warning caused by running balance and
-snapshot creation in parallel. Thanks.
+When cleaning pinned extents right before deleting an unused block group,
+we check if there's still a previous transaction running and if so we
+increment its reference count before using it for cleaning pinned ranges
+in its pinned extents iotree. However we ended up never decrementing the
+reference count after using the transaction, resulting in a memory leak.
 
-----------------------------------------------------------------
-The following changes since commit 34c51814b2b87cb2e5a98c92fe957db2ee8e27f4:
+Fix it by decrementing the reference count.
 
-  btrfs: re-instantiate the removed BTRFS_SUBVOL_CREATE_ASYNC definition (2020-04-10 18:48:27 +0200)
+Fixes: fe119a6eeb6705 ("btrfs: switch to per-transaction pinned extents")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/block-group.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-are available in the Git repository at:
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 47f66c6a7d7f..93c180ffcb80 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1288,11 +1288,15 @@ static bool clean_pinned_extents(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		goto err;
+ 	mutex_unlock(&fs_info->unused_bg_unpin_mutex);
++	if (prev_trans)
++		refcount_dec(&prev_trans->use_count);
+ 
+ 	return true;
+ 
+ err:
+ 	mutex_unlock(&fs_info->unused_bg_unpin_mutex);
++	if (prev_trans)
++		refcount_dec(&prev_trans->use_count);
+ 	btrfs_dec_block_group_ro(bg);
+ 	return false;
+ }
+-- 
+2.11.0
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc1-tag
-
-for you to fetch changes up to aec7db3b13a07d515c15ada752a7287a44a79ea0:
-
-  btrfs: fix setting last_trans for reloc roots (2020-04-17 15:20:08 +0200)
-
-----------------------------------------------------------------
-Josef Bacik (1):
-      btrfs: fix setting last_trans for reloc roots
-
- fs/btrfs/relocation.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
