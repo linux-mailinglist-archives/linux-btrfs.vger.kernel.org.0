@@ -2,130 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678FB1ADB3C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 12:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FB41ADBD2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 13:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgDQKhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Apr 2020 06:37:20 -0400
-Received: from mout.gmx.net ([212.227.17.21]:60803 "EHLO mout.gmx.net"
+        id S1729964AbgDQLDw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Apr 2020 07:03:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38380 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgDQKhS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Apr 2020 06:37:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587119828;
-        bh=oDEQvYKxjhKzmg/weJvIkF9pFJJXP/6CzHZckGmAqGI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=BDBCMnoqpaoTD4Il1zxt5N5j5xN2J1EZFOhJQP4qbcHrqBUatuUxVNGiyzdGASqQB
-         0CDup5xWEvE9iXq/Hln9murnGH4b69xzq2zGh3jP2e91qjSkjP5L/hguamp78HkNio
-         fb6vvx83Z0PpucA/aaUz8+Te7zgJehAsoMBvDWT0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwbp-1jVlEY2KWf-00BH0g; Fri, 17
- Apr 2020 12:37:08 +0200
-Subject: Re: [PATCH] btrfs: Remove the duplicated @level parameter for
- btrfs_bin_search()
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     Marek Behun <marek.behun@nic.cz>
-References: <20200417070821.65806-1-wqu@suse.com>
- <288c5af4-7d5e-4618-2a29-6a871e667dd3@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b577ab05-49e1-b1d9-18ae-578d5ebe3bc9@gmx.com>
-Date:   Fri, 17 Apr 2020 18:37:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729468AbgDQLDw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:03:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 45275AA55;
+        Fri, 17 Apr 2020 11:03:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BE963DA727; Fri, 17 Apr 2020 13:03:09 +0200 (CEST)
+Date:   Fri, 17 Apr 2020 13:03:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 00/15] btrfs: read repair/direct I/O improvements
+Message-ID: <20200417110309.GO5920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
+References: <cover.1587072977.git.osandov@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <288c5af4-7d5e-4618-2a29-6a871e667dd3@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M3LqD+rL1cgHPKpaTgpu/uZ235ldCG5qOM0UBivvFOOOyyZ1oZK
- PzyGndBgqlwRdB6vz2epOJIrIenr4E21NrasdeWtyNLa6uyqwuX8oWSCyK1iTHj3TD01d3Y
- mPKbPt3MNJjLADrZ8aNu1w8vwv64WiVQklXWHdRSwxSG6KgQblkbw5cvAWUa1Y7SDgc7Kph
- jolTIUO3ylB6QvPQaAa3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+E/EMbOtNC8=:A54mVSDmtyvOi1B93VPw8n
- kAOHvd4CljxrIFPuiQlzJpNx5fw8BnfQsMm+6F4uBu+4PRh4LOh3C7kZIh/9d3tptIIsbz5uC
- KLl0MGT29w+fM0WTwaprmJMK40EoFSELh4b3eoulf9Fm29sNm0RnUHQqJkb2xUnL39jhloKZg
- heZVLEAGE95WX4wqTzvcpnlwYv9RJDCQlMFM8xdVwYGJPxsm289sLuxPl7vlVtPvd8MP2A9Ct
- uA/1PVlJVJuDlTzN88pUebXrDmfYMXFii85zWlwrFKMqiPTnPR/gyx7ZtCFUUo4sBAqxTwoZB
- OsJ7VNOrSVUbIFL22C+rvvxWX1unUe9B/gQ2mI5NBlpU6gdpTTU9cV0NxAyQYfkF+d5FFV74L
- VB9oADYU+ePrhksVu1UGfktk0+JOQ+qj6YXQ3Zv0R3h7taKKZd5Cc7CmffxcaqTGnBp2OCJoS
- 4ifnSnQ2I0RlQGkdJAv9GMPYiGXxQAq9H/25MzXh+F9cA8CfwDXMd7GzGA3bIKbZZ4U3RXezE
- lPzdrqmHmftEz7SX3d5UWYBOQFyzPAxjuG1N+TUEb4cJrpEQGNNMfuywDVcqtFxo/rLvGTgLQ
- BE8VCmczYXI2LQkfWpkDqvmggXCEdqDSMduu4weL8H0AN1W0jSu5tnUd6D8T/GD/fKKJNP0/d
- Ms6EbghhyiAVUYABLbKzD9HHkTlvo1A2XjBnrDz+9effIA5Y03/zgt4MJxeWSx3wD111zNPoC
- FaNOi/S52kLz23EZYj8xsuOUahtuSjc8/7UES0yOvwroXqaQbA22Z0ys7O6e4GuKR11sHrzkz
- Wbts3AwFKwG+s1YhyoB82JnMzXE469n+Z8dE8a2ATNPQuzN+C2GDa1Y3n9hVNMjxDqLANn2Mn
- bRBzkZ9iInHC/8BjsQpUxeYpX4xoehD58FucxPADbDI3VI7uAHCSSFccvG08tEumRP4Jb/GxK
- nlQ4wcutilaiXJGdAAfNNBtTtXMoQBkhqL4XQjtSGzgkViQAjKd7NU+p5qhZFRsIMflnyhxRH
- 88RZaBNkoAKP8xr8i9XgUaBOplKeHmJNhzTMHYypFMFLESMgs5rhIJcSSIt1ln+J3ztMw/vG+
- Yvtzo8unC1rusEJWtTaRK3cOS6U8vOa2EOjWNOkUjrpl+EGTNh3gEc0nqhPQoyssczNNVYLVw
- gfMECAvQb8qVNvBPS/l054YY7YGdKH2IifxdGJpsTCBziHbOiCFX9aBWJbl562pdTPWsmHBHT
- 0tSdmZVF9lZg0MzzC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1587072977.git.osandov@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Apr 16, 2020 at 02:46:10PM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Hi,
+> 
+> This is version 2 of my series of fixes, cleanups, and improvements to
+> direct I/O and read repair. It's preparation for adding read repair to
+> my RWF_ENCODED series [1], but it can go in independently.
+> 
+> Patch 1 adds a new bio helper needed for patch 4. Patches 2 and 3 are
+> direct I/O error handling fixes. Patch 4 is a buffered read repair fix.
+> Patch 5 is a buffered read repair improvement. Patches 6-9 are trivial
+> cleanups. Patch 10 converts direct I/O to use refcount_t, which would've
+> helped catch the bug fixed by patch 2. Patches 11-14 drastically
+> simplify the direct I/O code. Patch 15 unifies buffered and direct I/O
+> read repair, which also makes direct I/O repair actually do validation
+> for large failed reads instead of rewriting the whole thing.
+> 
+> Overall, this is net about -350 lines of code and actually makes direct
+> I/O more functional.
+> 
+> Note that this series causes btrfs/142 to fail. This is a bug in the
+> test, as it assumes that direct I/O doesn't do read validation. This is
+> fixed by the fstests patch "btrfs/14{2,3}: use dm-dust instead of
+> fail_make_request" which I sent up yesterday [2].
+> 
+> Jens and Christoph are cc'd for patches 1 and 4. Instead of looking at
+> the bio internals like I did in v1, I added a new
+> bio_for_each_bvec_all() helper.
+> 
+> Changes from v1 [3]:
+> 
+> * Added patch 1 with bio_for_each_bvec_all() helper
+> * Dropped patch 8 which moved struct definition
+> * Fixed performance regression [4] in patch 13 caused by accidentally
+>   making all direct I/O submission asynchronous
+> * Fixed uninitialized assert in patch 12
+> * Fixed misplaced assert in btrfs_check_read_dio_bio in patch 13
+> * Added reviewed-bys
+> * Refactored btrfs_submit_direct() and btrfs_submit_direct_hook() in
+>   patch 2 (I didn't add Nikolay's reviewed-by to that one because the
+>   new patch looks fairly different from patch 1 in v1)
+> * Rewrapped csum calculations in patch 10 for easier readability
+> * Clarified several commit messages and comments
 
-
-On 2020/4/17 =E4=B8=8B=E5=8D=885:03, Nikolay Borisov wrote:
->
->
-> On 17.04.20 =D0=B3. 10:08 =D1=87., Qu Wenruo wrote:
->> We can easily get the level from @eb parameter, thus the level is not
->> needed.
->>
->> This is inspired by the work of Marek in U-boot.
->>
->> Cc: Marek Behun <marek.behun@nic.cz>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
->
-> <snip>
->
->> @@ -2953,8 +2952,7 @@ static int do_relocation(struct btrfs_trans_handl=
-e *trans,
->>  			slot =3D path->slots[upper->level];
->>  			btrfs_release_path(path);
->>  		} else {
->> -			ret =3D btrfs_bin_search(upper->eb, key, upper->level,
->> -					       &slot);
->> +			ret =3D btrfs_bin_search(upper->eb, key, &slot);
->
-> nit: By the same token why does btrfs_backref_node need an explicit
-> level member if its level is always equal to that of eb->level ?
-
-I guess because btrfs_backref_node::eb is not always ensured to exist.
-
-Thanks,
-Qu
->
-> <snip>
->>
+Thanks, I haven't read the changes yet but fstests passed. There are
+some conflicts with the dio-iomap patches, all seem to be in the
+expected range and solvable.
