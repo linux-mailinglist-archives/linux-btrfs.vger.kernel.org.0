@@ -2,112 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665EA1AE359
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 19:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283811AE3B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 19:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgDQRLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Apr 2020 13:11:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39659 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729350AbgDQRK6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Apr 2020 13:10:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587143457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+N8iSV4CcAixGpnySNgzkeWh3Se0n8oT2tg3cvIwiLU=;
-        b=XqN7LIVw1uKvfAsXX+704id+aRPvuyohbBLpYcVj2I5wA5GAsRF9DenAUp3lQmSD5gdoc4
-        03SuC93OV54ipo7GKhTH/fXPjw0lxgkVLEb4HV/zXLeL03g+1fwkhLm6ejV106qMA45cvS
-        0NOVr9qCJzKKBTI9wASggOifP/hvFO8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-y8LvMLQGOLy0qAmyO13PZg-1; Fri, 17 Apr 2020 13:10:54 -0400
-X-MC-Unique: y8LvMLQGOLy0qAmyO13PZg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728816AbgDQRUh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Apr 2020 13:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728162AbgDQRUh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Apr 2020 13:20:37 -0400
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0A15107ACC7;
-        Fri, 17 Apr 2020 17:10:52 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4793A116D92;
-        Fri, 17 Apr 2020 17:10:52 +0000 (UTC)
-Date:   Fri, 17 Apr 2020 13:10:50 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v2 4/4] fsx: move range generation logic into a common
- helper
-Message-ID: <20200417171050.GE13463@bfoster>
-References: <20200408103627.11514-1-fdmanana@kernel.org>
- <20200408181208.12054-1-fdmanana@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BB0A2220A;
+        Fri, 17 Apr 2020 17:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587144036;
+        bh=5mn3qkEDquYu7MDOlaQUJuzkfYxdpXX7QLcA+PCWU6Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QM/bDmnIx5yBARUWGMPTDqQQsnxAdI0GD6V0tufd4UAYSwIQa3oBs5wRKeBaFOhJO
+         3l67egkHUB26xGv+br0I1KQMMNJ/oQ/oDyCrCM2v0Am2vp1mbPri+fVRZKEcyg3xdl
+         I/11Ml/NID5XkwbeO5aG3KVUaPdih8OuKGk+A7c0=
+Received: by mail-vs1-f54.google.com with SMTP id y185so1637270vsy.8;
+        Fri, 17 Apr 2020 10:20:36 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZn7+1Bkh2OpKDUFtrvQfLRSN9RJrvca6vTLYTU5lE8Q9fpXXy7
+        ub8BgSq+msSeCdQN+S/r5Z8gXWskG+DVwEl9otk=
+X-Google-Smtp-Source: APiQypLjw118BZltqiW/lmLeiA+5pqVIcY5m5hSispV2ndV8Dt4OEO+Hey+FIiLqIt/iDKyPTvv/WFK4tZv+7CxNI9Q=
+X-Received: by 2002:a05:6102:5c4:: with SMTP id v4mr3107969vsf.95.1587144035303;
+ Fri, 17 Apr 2020 10:20:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408181208.12054-1-fdmanana@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200408103552.11339-1-fdmanana@kernel.org> <20200417171020.GB13463@bfoster>
+In-Reply-To: <20200417171020.GB13463@bfoster>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 17 Apr 2020 18:20:24 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5nxP5tt8i=i0uQoG7VBs94O=ZkcAz8khS-DGCTTQG1=g@mail.gmail.com>
+Message-ID: <CAL3q7H5nxP5tt8i=i0uQoG7VBs94O=ZkcAz8khS-DGCTTQG1=g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] fsx: add missing file size update on zero range operations
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 07:12:08PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> We have very similar code that generates the destination range for clone,
-> dedupe and copy_file_range operations, so avoid duplicating the code three
-> times and move it into a helper function.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-> 
-> V2: Turned the first parameter of the helper into a boolean as Darrick suggested.
-> 
->  ltp/fsx.c | 91 +++++++++++++++++++++++++--------------------------------------
->  1 file changed, 36 insertions(+), 55 deletions(-)
-> 
-> diff --git a/ltp/fsx.c b/ltp/fsx.c
-> index 89a5f60e..9bfc98e0 100644
-> --- a/ltp/fsx.c
-> +++ b/ltp/fsx.c
-...
-> @@ -2004,63 +2034,14 @@ test(void)
->  			keep_size = random() % 2;
->  		break;
-...
->  	case OP_COPY_RANGE:
-> -		{
-> -			int tries = 0;
-> -
-> -			TRIM_OFF_LEN(offset, size, file_size);
-> -			offset -= offset % readbdy;
-> -			if (o_direct)
-> -				size -= size % readbdy;
-> -			do {
-> -				if (tries++ >= 30) {
-> -					size = 0;
-> -					break;
-> -				}
-> -				offset2 = random();
-> -				TRIM_OFF(offset2, maxfilelen);
-> -				offset2 -= offset2 % writebdy;
+On Fri, Apr 17, 2020 at 6:10 PM Brian Foster <bfoster@redhat.com> wrote:
+>
+> On Wed, Apr 08, 2020 at 11:35:52AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > When a zero range operation increases the size of the test file we were
+> > not updating the global variable 'file_size' which tracks the current
+> > size of the test file. This variable is used to for example compute the
+> > offset for a source range of clone, dedupe and copy file range operations.
+> >
+> > So just fix it by updating the 'file_size' global variable whenever a zero
+> > range operation does not use the keep size flag and its range goes beyond
+> > the current file size.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  ltp/fsx.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/ltp/fsx.c b/ltp/fsx.c
+> > index 9d598a4f..fa383c94 100644
+> > --- a/ltp/fsx.c
+> > +++ b/ltp/fsx.c
+> > @@ -1212,6 +1212,8 @@ do_zero_range(unsigned offset, unsigned length, int keep_size)
+> >       }
+> >
+> >       end_offset = keep_size ? 0 : offset + length;
+> > +     if (!keep_size && end_offset > file_size)
+> > +             file_size = end_offset;
+>
+> Should this ever happen if the caller uses TRIM_OFF_LEN() on the
+> offset and length?
 
-It looks like this writebdy bit is lost in the new helper...
+TRIM_OFF_LEN only trims the range, not the file_size.
+Or did I miss something?
 
-Brian
+Thanks.
 
-> -			} while (range_overlaps(offset, offset2, size) ||
-> -				 offset2 + size > maxfilelen);
-> -			break;
-> -		}
-> +		generate_dest_range(true, maxfilelen, &offset, &size, &offset2);
-> +		break;
->  	}
->  
->  have_op:
-> -- 
-> 2.11.0
-> 
-
+>
+> Brian
+>
+> >
+> >       if (end_offset > biggest) {
+> >               biggest = end_offset;
+> > --
+> > 2.11.0
+> >
+>
