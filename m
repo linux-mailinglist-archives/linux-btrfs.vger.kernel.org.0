@@ -2,113 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F0D1AE43F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 20:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABB31AE4B3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Apr 2020 20:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgDQSGd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Apr 2020 14:06:33 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:19378 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730236AbgDQSGc (ORCPT
+        id S1730697AbgDQSZl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Apr 2020 14:25:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23396 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730425AbgDQSZl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Apr 2020 14:06:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1587146855; x=1618682855;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=EkhNe9vmlkTSnMcW2nAYnD8b9CcpzKORCy7B+WT5v2kJXyhZtYL+f9xh
-   OiPXIdPE6YjhHkMV5TGl0TMplB+WlhFVbP2TV0+kqI2adY9K3EVO126PO
-   0PuaBCM+7Piji28XipFhTHVzCqRc8sUHCLqZZ9cTZq44n8ezp8bgGCJkk
-   sZm8jHmwTXm8QOcSATwMM3LXI1IilBEsNKkdVJ3BsjNa6G5kRjDEB59VR
-   /zc5n8AKdD7R2zJ2DAXpTneuYuZdROsrdNndBVD9WcyeT8kQaExKh0pV5
-   UtKJpVXy8joJXz6MHQDdCHDKsOf54oU2rBKmircaYKivP84fbNvTz7Giy
-   g==;
-IronPort-SDR: +TADz9XOF0avOpIErrYiE8poAODVApTCIduUt6sX5eSXd7lLdv6bzubIazF1GIWx3UQweLnpC9
- 7U2CheRpZ+PKg0iQjo+SyZtkeHNSE7pcxJOxL3Pzw6t0OEw+wmPWc64hMtY+AelcHa2sqBXC1Z
- lVdJbdzmxZKjVjxx4249p0EG5Pdvu3ngsJp2p1GO84G6aSsQow6+Hiq9/xAKMffeMp7U+MQMP7
- IaQ8YyEObb4cvH1FkY5iwzule+PYuFnCZGxDTRJdiM6RbexIHiu/+g83z/3iYf322iV/kPNZS+
- 8Zw=
-X-IronPort-AV: E=Sophos;i="5.72,395,1580745600"; 
-   d="scan'208";a="238011821"
-Received: from mail-dm6nam11lp2170.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.170])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Apr 2020 02:07:34 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m7Ka9BGvJ33bmeJhBms7Cy2sCnqGudfR7iDRjiBnn1y0tQ8raM0tVdWDUiV/q8EnXBlwt7GOKXbDXm9Zhj+5UdcEjcvnE1vEVDDB2RS02he7ee4ralUzkSnAe+4XMfwFvKyd0orqmj4NKpagNO2vsJTTt4ifr7vxcdYS7XrscFq7OM4Wd4+VweJQfc9g4VCvWZMS6E8dX0tE9+SJ9n23UvCm6srF9ybdfZUNzoopgaU09LNNlgqhlrOlPkadBoxu/46LgUxs103flwixnrxByhsbg7KFhdE1ft3vt01Fnl2iVgl/Fhr8lgZfw+XIWLFMDW1/O/j4Xm/NZ3HBAdEo1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=GoAHmNl3jhcmaPNkxlypdAAbq2UWJSB2YnPA/LAB+AHgmV9wrpIdyh/eSGNGqCOJWz4Si8tENQC1C12lH0ZQ/x+ItNiTr4H/OzKnoJ2EUpoE4o5ela/VtQtAhQcKbBYBSBlnRENW9OUR1MfaDbIE/G3TbfLHgeYOM9wU5hSMKtHb+lkft2MKihc7sKSzBtsNNI7BkFWxh79VhJQf3OYBfxLM1oxhpkvknryr6m5eTFdeIm5RMMGFZ7I7z2jZpYH2J6rQ+J8wgsytM/QuzHt/Fguz+suUQBPaaCAd3CQMOw9hfW/nPj7DB4e/ibmwZ/QkEUVFcj+XplT1pY0DLDFzAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=K/X3XRrV7/uTZmo/O8frPBXlsmDzUYvyeEGvvmMcagRGHG2DPg2YE4XGsTEeonPMHGekeMqM+H04jBNex9sszCg2IiFodPD2TgTUi9W5+00BlDbl4qqWJctdPrUCdyI2uNuTDmU6gmG6r9ymvyKYPxsGJUi03qDxT5bI/totG+g=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3615.namprd04.prod.outlook.com
- (2603:10b6:803:47::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Fri, 17 Apr
- 2020 18:06:30 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2921.027; Fri, 17 Apr 2020
- 18:06:30 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Omar Sandoval <osandov@osandov.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "kernel-team@fb.com" <kernel-team@fb.com>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 11/15] btrfs: put direct I/O checksums in
- btrfs_dio_private instead of bio
-Thread-Topic: [PATCH v2 11/15] btrfs: put direct I/O checksums in
- btrfs_dio_private instead of bio
-Thread-Index: AQHWFDizexTa5IH9yEa4V/z8eqCHNQ==
-Date:   Fri, 17 Apr 2020 18:06:30 +0000
-Message-ID: <SN4PR0401MB3598EAC75ED309DE944271329BD90@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1587072977.git.osandov@fb.com>
- <c6a8fd5e2811e07532c63cec0aee48047b8f32a2.1587072977.git.osandov@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 87b1514a-75bb-439d-f13f-08d7e2fa0e14
-x-ms-traffictypediagnostic: SN4PR0401MB3615:
-x-microsoft-antispam-prvs: <SN4PR0401MB36152DCD46D0B190272CF8BC9BD90@SN4PR0401MB3615.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0376ECF4DD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(346002)(39860400002)(366004)(376002)(136003)(396003)(6506007)(316002)(76116006)(66446008)(64756008)(91956017)(66476007)(26005)(66946007)(478600001)(8936002)(19618925003)(7696005)(81156014)(2906002)(71200400001)(86362001)(54906003)(8676002)(66556008)(52536014)(55016002)(110136005)(4270600006)(186003)(9686003)(5660300002)(4326008)(33656002)(558084003);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PLN7m/tgW9YFpmo8HZ1ZvKJibTeCmm+vPQpyJlSU39ywKjv/X3RKgKAvSR9unbvEy9S+CGE9b9PMkT00Dch8DM1AHgFB0qipEMbS70kkioTCipLIs5phKX39iSmmxIj/mtrB58hPEyGTTrD7ODkkVxmn235ZyMXqwlUPTFTh/cP5mkPYtcmnSX+5J5Csvj4v/KyQwPcIgGvg0eLiwKI26467AiFpOBcZAFAL02njbldly8ofhdRYOto8QXRVNprNT5SFm7UMlr4TRY7wa1rADk9oq3kRpMVJVGa9nEOMig1x6xbYSccox8PNF16tWcO17RrAntEZhsGBYT5s6QmubN8shiv2IT6IdpWLToDd+qHHlIUkbL5WD0DLxvB4yfUGdnKoCt+0GFA++OBxuEOBarhycZ1mRKktRysqMVsdOVfECHdf+xwu05pGVlEy1S4X
-x-ms-exchange-antispam-messagedata: I1C1ETGjXbLu7K1/8l+ZuT6j8oN3aH/2gmU1PwZoEVyDVsKalhOkKf6uKX/bnjyEjKurj75som71Zn55iUsNWnDQWk8OK+F1zzmW/QZeb3hhvJZ21ELx7T7x7lF5P9OMXYBIzpnli75IC7CLM3qLAQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 17 Apr 2020 14:25:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587147939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mL6LCJXOQsfqumZAUw0JwQAY0OlXOlQJgvbivjqLgMY=;
+        b=bMFnp5qF7ZDZd+o88plDEB3nwtsJAa6A27vLnoFXobFdr9o/m+SclxcNxJDvY2jCiOIL8i
+        rwOZrMjUfHsX5aIW4XnFbwxZgSR0Lg+QWwXpMs//cBPEoRixvcddWKRw35Maqj26E1PXJW
+        5O7vfHIQZde3dRkgG4I4Jcx3ZowynbA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-F8OZmsR4OpuBW6EfMqdDTQ-1; Fri, 17 Apr 2020 14:25:38 -0400
+X-MC-Unique: F8OZmsR4OpuBW6EfMqdDTQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 094BA801F85;
+        Fri, 17 Apr 2020 18:25:37 +0000 (UTC)
+Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58C235DA7C;
+        Fri, 17 Apr 2020 18:25:36 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 14:25:34 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 1/4] fsx: add missing file size update on zero range
+ operations
+Message-ID: <20200417182534.GH13463@bfoster>
+References: <20200408103552.11339-1-fdmanana@kernel.org>
+ <20200417171020.GB13463@bfoster>
+ <CAL3q7H5nxP5tt8i=i0uQoG7VBs94O=ZkcAz8khS-DGCTTQG1=g@mail.gmail.com>
+ <20200417172606.GF13463@bfoster>
+ <CAL3q7H5YSrV6Z+aB=ncSQiUfbACWgMArVRB9xu0Dhx0mTp3bZA@mail.gmail.com>
+ <20200417174752.GG13463@bfoster>
+ <CAL3q7H6bS1dL2pUawmc0z3ZXop7xg0P5O8rBkqbP11V9D+295Q@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87b1514a-75bb-439d-f13f-08d7e2fa0e14
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2020 18:06:30.1226
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +RptgcT2QDbtYGDpuqjTJkFKW7ztYinsw1+qqUD11ayaqZTiPopKrVbG3A+4LiLdTd4auQApexxr1zDMU/JYxawomPTfKWn948nNeSSMVkU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3615
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H6bS1dL2pUawmc0z3ZXop7xg0P5O8rBkqbP11V9D+295Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Fri, Apr 17, 2020 at 06:53:27PM +0100, Filipe Manana wrote:
+> On Fri, Apr 17, 2020 at 6:48 PM Brian Foster <bfoster@redhat.com> wrote:
+> >
+> > On Fri, Apr 17, 2020 at 06:32:03PM +0100, Filipe Manana wrote:
+> > > On Fri, Apr 17, 2020 at 6:26 PM Brian Foster <bfoster@redhat.com> wrote:
+> > > >
+> > > > On Fri, Apr 17, 2020 at 06:20:24PM +0100, Filipe Manana wrote:
+> > > > > On Fri, Apr 17, 2020 at 6:10 PM Brian Foster <bfoster@redhat.com> wrote:
+> > > > > >
+> > > > > > On Wed, Apr 08, 2020 at 11:35:52AM +0100, fdmanana@kernel.org wrote:
+> > > > > > > From: Filipe Manana <fdmanana@suse.com>
+> > > > > > >
+> > > > > > > When a zero range operation increases the size of the test file we were
+> > > > > > > not updating the global variable 'file_size' which tracks the current
+> > > > > > > size of the test file. This variable is used to for example compute the
+> > > > > > > offset for a source range of clone, dedupe and copy file range operations.
+> > > > > > >
+> > > > > > > So just fix it by updating the 'file_size' global variable whenever a zero
+> > > > > > > range operation does not use the keep size flag and its range goes beyond
+> > > > > > > the current file size.
+> > > > > > >
+> > > > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > > > > > ---
+> > > > > > >  ltp/fsx.c | 2 ++
+> > > > > > >  1 file changed, 2 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/ltp/fsx.c b/ltp/fsx.c
+> > > > > > > index 9d598a4f..fa383c94 100644
+> > > > > > > --- a/ltp/fsx.c
+> > > > > > > +++ b/ltp/fsx.c
+> > > > > > > @@ -1212,6 +1212,8 @@ do_zero_range(unsigned offset, unsigned length, int keep_size)
+> > > > > > >       }
+> > > > > > >
+> > > > > > >       end_offset = keep_size ? 0 : offset + length;
+> > > > > > > +     if (!keep_size && end_offset > file_size)
+> > > > > > > +             file_size = end_offset;
+> > > > > >
+> > > > > > Should this ever happen if the caller uses TRIM_OFF_LEN() on the
+> > > > > > offset and length?
+> > > > >
+> > > > > TRIM_OFF_LEN only trims the range, not the file_size.
+> > > > > Or did I miss something?
+> > > > >
+> > > >
+> > > > Right, but TRIM_LEN() does:
+> > > >
+> > > >         if ((off) + (len) > (size))             \
+> > > >                 (len) = (size) - (off);         \
+> > > >
+> > > > ... where size is file_size. Hm?
+> > >
+> > > That only updates the range's length, not the file_size.
+> > >
+> >
+> > Yes, but it caps the range to within file_size.
+> 
+> Yes.
+> 
+> The problem I'm trying to solve is that because the file_size is not
+> updated by zero range operations,
+> a following clone/dedupe/copy_range call will not be able to use a
+> range that crosses the old file size and goes up to the new file size.
+> 
+> I.e. I'm not solving a problem where the range for those operations
+> (or any others) incorrectly crosses eof - that doesn't happen because
+> of the TRIM_* macros.
+> 
+> Does it make sense now?
+> 
+
+Not really. When is end_offset > file_size ever true in do_zero_range()?
+
+Brian
+
+> Thanks.
+> 
+> 
+> >
+> > > Also, if you check the global style, you'll see that in the function
+> > > for every operation that can change file size we do update file_size
+> > > explicitly (e.g. do_preallocate(), and we call TRIM_OFF_LEN before
+> > > calling it as well).
+> > >
+> >
+> > do_preallocate() (fallocate) passes maxfilelen instead of file_size, as
+> > does write and mapwrite. Insert range uses TRIM_LEN() directly but also
+> > passes maxfilelen.
+> >
+> > Brian
+> >
+> > > Thanks.
+> > >
+> > > >
+> > > > Brian
+> > > >
+> > > > > Thanks.
+> > > > >
+> > > > > >
+> > > > > > Brian
+> > > > > >
+> > > > > > >
+> > > > > > >       if (end_offset > biggest) {
+> > > > > > >               biggest = end_offset;
+> > > > > > > --
+> > > > > > > 2.11.0
+> > > > > > >
+> > > > > >
+> > > > >
+> > > >
+> > >
+> >
+> 
+
