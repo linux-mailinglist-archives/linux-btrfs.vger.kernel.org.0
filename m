@@ -2,160 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D577D1AF5B4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 00:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959861AF641
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 04:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbgDRWve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Apr 2020 18:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgDRWvc (ORCPT
+        id S1725903AbgDSCJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Apr 2020 22:09:03 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:33258 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgDSCJD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Apr 2020 18:51:32 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F7C061A0F
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Apr 2020 15:51:31 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id d16so4088455edv.8
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Apr 2020 15:51:31 -0700 (PDT)
+        Sat, 18 Apr 2020 22:09:03 -0400
+X-Greylist: delayed 575 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 Apr 2020 22:09:03 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 494Y0v5jDZz9vLGg
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Apr 2020 01:59:27 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id sXzfVqkvJh0A for <linux-btrfs@vger.kernel.org>;
+        Sat, 18 Apr 2020 20:59:27 -0500 (CDT)
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 494Y0v4gX4z9vLGb
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Apr 2020 20:59:27 -0500 (CDT)
+Received: by mail-qv1-f69.google.com with SMTP id z14so6405960qvv.6
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Apr 2020 18:59:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=w0luk3914pNV5Z2D7FYXeVI+e9BK/K/Gjo+01ZBjbXw=;
-        b=O73MuiYGbH+46Zl86nDDirPeDGYbeg/MIxxMvueibpPnSdgLygy21X46HZ+Xf+goJq
-         Qiucm8uTgdm1kKgVo4DDDd7YY8SijdSg6Ax/MdtPlPdqE8e2yoMqCt7rMn8ZVpK7mnyQ
-         IYNz76+sHMe+LQFguG/J9+Uqmkh2GgQIUjH6anVaqN8C50hJ5CunSmFkVu4BvJ8uDm1y
-         erUzcARK+PvWzcnMS8dorPNIJB4WUWCgUGJN6eP+RvCutj5InHUcSXU9Zq8GvsOSSH1R
-         w1fsukDzIl11L0Fr6Q/yUJPl4/Vty1soCKCJErN96BQ1VgMrWPtiNNyssaOOomsXQ020
-         FGwg==
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HCfuU4zQnI9WCXY6MChIEAisAu9Dg1DyD5OyLd8lpYc=;
+        b=jKF9s+D4Xw9nQXeOdQAsoViL4u27zSmj8Kjb7O1Y3EzSvQVIZ/H+mt0eBHZZJ9iTHH
+         LVcgO9mKBaSme1yH8UceImOwq8EGLKBN24nmPtvEDxhPeHWCulzh8r7Sf6V2p8YlYHU9
+         /EqvDNGPjxLEzRYqoF5DsBUI+moKivt+NmRVCW65rXn491MIbJNz0MNthccGLGf9hYU0
+         TirscioFQaCNzXkthh2DM0Jeiuu0vSnau5mLcHY6+kdk9TBQbc5p9akE1pbaxQnIDjXA
+         /otr2SPZ3lDy8h/JP5dsw9T65s38Ic6RT5iB3fplMBsaSUSFi9yhjRDA45/SA6ehe/zQ
+         3w4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=w0luk3914pNV5Z2D7FYXeVI+e9BK/K/Gjo+01ZBjbXw=;
-        b=mPKz7QPJ2HDBMbHrcsFlXBNvUc9vWZl3n7YOpvZJhgFZOnUFgTshIlrqVahSDS6tWr
-         JcP+PQTdYmJx+JzuvDz0g24wQeSMMRidVxEJK9MZlDe1EhSOfuizYjrWvVniXeUkDB7y
-         KqIdhc2XnCWaSHEwE4TbNnitv1ezxCVYgVFhT20713Euaet6BDTt/WVFn6WRniRZ6o3T
-         BgYaNUyXer5mMt63e8n+02x+tLY/MkvQ3SbsipHwA5s7OGt4DIwCk0UUsZIVc5mqONBL
-         scrR7qaVsiM3U6j7qgwG5tYHgjWZgU/dMmVTfCxF46wNMkq9IxtpgfoWiSM6unE+ilB8
-         kYCw==
-X-Gm-Message-State: AGi0PuYCCyFqT51BwuLWPsheIKv9+JiB/k0ejh7GjIOz0nOZOaHwofDa
-        pq/cZL1exPZ2vVME0vz4F7y0JQ==
-X-Google-Smtp-Source: APiQypJjvw0Gub6G6MI63rFhPdm4CjFtb+5QNO1gPvUdj5qsoRBqC0pSuXpDMCdrmXWe3sl4cjp9BA==
-X-Received: by 2002:aa7:cd6a:: with SMTP id ca10mr8572866edb.332.1587250289576;
-        Sat, 18 Apr 2020 15:51:29 -0700 (PDT)
-Received: from ls00508.pb.local ([2001:1438:4010:2540:6c58:b8bc:cdc6:2e2d])
-        by smtp.gmail.com with ESMTPSA id g21sm2616767ejm.79.2020.04.18.15.51.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HCfuU4zQnI9WCXY6MChIEAisAu9Dg1DyD5OyLd8lpYc=;
+        b=naoWoJMpQQWqMiNBl1fc6CiriiYGf1Om2fTxgWB1qvZeBcomYVU6MbTOkDNTPJiFoh
+         sCPGrBqRrEpAmPBwNp/Cz99xAZH18t8SOTnXoggJiyph2bmzLZwdjy8VQVOPd2dckGzz
+         ti1Q3OnECexS7LjxKZYv3d519S3jZv6ym3toXqhvi8n8M0NCIdQZj/I02x4+1Ri/Nh5a
+         QYIHAErT0dL2P8IAWFYnK30mm26EuIfxwvZzIYbk4ew+UIjvuFVaahMtlihHHpVcvIN2
+         KovxuzpJcIyEPvmbRwNXDHQ+elAf7BJmjMhmcudzFS872zXW5LkYOzfeUDmfCoAq8aPO
+         vf6A==
+X-Gm-Message-State: AGi0PuZhTdLXmCo65Syj9hE/udfg8dCLyx0UWNeKtJ3chFoPg2EdbVD8
+        wl3ITaJnlwbAk3/WUbKNoNbtIzKOuoqIdRlnpOALzzO8cznAtBgtCKwtebB63JWEz1bsrwBZpJH
+        1p1bKiSbjLZcaHkR3E9uGQuPL4vI=
+X-Received: by 2002:ac8:5513:: with SMTP id j19mr10360618qtq.319.1587261566960;
+        Sat, 18 Apr 2020 18:59:26 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLgSkYtVsc/li5EASyRidgZ/WEugX1aTxdMnZBtEG2fLb6S8mwIxoHNoGFODlBr9i9KEvypGQ==
+X-Received: by 2002:ac8:5513:: with SMTP id j19mr10360605qtq.319.1587261566568;
+        Sat, 18 Apr 2020 18:59:26 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id c6sm19814298qka.58.2020.04.18.18.59.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2020 15:51:28 -0700 (PDT)
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/5] btrfs: call __clear_page_buffers to simplify code
-Date:   Sun, 19 Apr 2020 00:51:20 +0200
-Message-Id: <20200418225123.31850-3-guoqing.jiang@cloud.ionos.com>
+        Sat, 18 Apr 2020 18:59:25 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjlu@umn.edu, wu000273@umn.edu
+Subject: [PATCH] btrfs: fix a potential racy
+Date:   Sat, 18 Apr 2020 20:59:07 -0500
+Message-Id: <20200419015907.15503-1-wu000273@umn.edu>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200418225123.31850-1-guoqing.jiang@cloud.ionos.com>
-References: <20200418225123.31850-1-guoqing.jiang@cloud.ionos.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Some places can be replaced with __clear_page_buffers after the function
-is exported.
+From: Qiushi Wu <wu000273@umn.edu>
 
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+In function reada_find_extent and reada_extent_put, kref_get(&zone->refcnt)
+are not called in a lock context. Potential racy may happen. It's possible
+that thread1 decreases the kref to 0, and thread2 increases the kref to 1,
+then thread1 releases the pointer.
+
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 ---
- fs/btrfs/disk-io.c   |  5 ++---
- fs/btrfs/extent_io.c |  6 ++----
- fs/btrfs/inode.c     | 14 ++++----------
- 3 files changed, 8 insertions(+), 17 deletions(-)
+ fs/btrfs/reada.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index a6cb5cbbdb9f..0f1e5690e8a4 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -17,6 +17,7 @@
- #include <linux/error-injection.h>
- #include <linux/crc32c.h>
- #include <linux/sched/mm.h>
-+#include <linux/buffer_head.h>
- #include <asm/unaligned.h>
- #include <crypto/hash.h>
- #include "ctree.h"
-@@ -980,9 +981,7 @@ static void btree_invalidatepage(struct page *page, unsigned int offset,
- 		btrfs_warn(BTRFS_I(page->mapping->host)->root->fs_info,
- 			   "page private not zero on page %llu",
- 			   (unsigned long long)page_offset(page));
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
-+		__clear_page_buffers(page);
- 	}
- }
+diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+index 243a2e44526e..4b90d04f7a0a 100644
+--- a/fs/btrfs/reada.c
++++ b/fs/btrfs/reada.c
+@@ -361,13 +361,15 @@ static struct reada_extent *reada_find_extent(struct btrfs_fs_info *fs_info,
+ 		zone = reada_find_zone(dev, logical, bbio);
+ 		if (!zone)
+ 			continue;
+-
++		spin_lock(&fs_info->reada_lock);
+ 		re->zones[re->nzones++] = zone;
+ 		spin_lock(&zone->lock);
+ 		if (!zone->elems)
+ 			kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
+ 		++zone->elems;
+ 		spin_unlock(&zone->lock);
++
+ 		spin_lock(&fs_info->reada_lock);
+ 		kref_put(&zone->refcnt, reada_zone_release);
+ 		spin_unlock(&fs_info->reada_lock);
+@@ -458,8 +460,11 @@ static struct reada_extent *reada_find_extent(struct btrfs_fs_info *fs_info,
+ 	for (nzones = 0; nzones < re->nzones; ++nzones) {
+ 		struct reada_zone *zone;
  
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 39e45b8a5031..317a1cdc7d3e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -13,6 +13,7 @@
- #include <linux/pagevec.h>
- #include <linux/prefetch.h>
- #include <linux/cleancache.h>
-+#include <linux/buffer_head.h>
- #include "extent_io.h"
- #include "extent-io-tree.h"
- #include "extent_map.h"
-@@ -4929,10 +4930,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- 			 * We need to make sure we haven't be attached
- 			 * to a new eb.
- 			 */
--			ClearPagePrivate(page);
--			set_page_private(page, 0);
--			/* One for the page private */
--			put_page(page);
-+			__clear_page_buffers(page);
- 		}
++		spin_lock(&fs_info->reada_lock);
+ 		zone = re->zones[nzones];
+ 		kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
++
+ 		spin_lock(&zone->lock);
+ 		--zone->elems;
+ 		if (zone->elems == 0) {
+@@ -502,9 +507,11 @@ static void reada_extent_put(struct btrfs_fs_info *fs_info,
+ 	spin_unlock(&fs_info->reada_lock);
  
- 		if (mapped)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 320d1062068d..95886202c74f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8303,11 +8303,8 @@ btrfs_readpages(struct file *file, struct address_space *mapping,
- static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	int ret = try_release_extent_mapping(page, gfp_flags);
--	if (ret == 1) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
-+	if (ret == 1)
-+		__clear_page_buffers(page);
- 	return ret;
- }
- 
-@@ -8458,11 +8455,8 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	}
- 
- 	ClearPageChecked(page);
--	if (PagePrivate(page)) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
-+	if (PagePrivate(page))
-+		__clear_page_buffers(page);
- }
- 
- /*
+ 	for (i = 0; i < re->nzones; ++i) {
++		spin_lock(&fs_info->reada_lock);
+ 		struct reada_zone *zone = re->zones[i];
+-
+ 		kref_get(&zone->refcnt);
++		spin_unlock(&fs_info->reada_lock);
++
+ 		spin_lock(&zone->lock);
+ 		--zone->elems;
+ 		if (zone->elems == 0) {
 -- 
 2.17.1
 
