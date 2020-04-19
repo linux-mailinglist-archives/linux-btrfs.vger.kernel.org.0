@@ -2,53 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99CD1AFA80
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 15:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616751AFB6D
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 16:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgDSN0e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 19 Apr 2020 09:26:34 -0400
-Received: from mail.ac.gov.br ([179.252.114.240]:33588 "EHLO
-        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgDSN0d (ORCPT
+        id S1726036AbgDSOgx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Apr 2020 10:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgDSOgw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Apr 2020 09:26:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id 6F35D2B4E8F8;
-        Sun, 19 Apr 2020 05:24:42 -0500 (ACT)
-Received: from srvifs070.ac.gov.br ([127.0.0.1])
-        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id JVL7PTclZNoQ; Sun, 19 Apr 2020 05:24:41 -0500 (ACT)
-Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id 8983D2B4E919;
-        Sun, 19 Apr 2020 05:24:40 -0500 (ACT)
-Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id BDF032B4E8ED;
-        Sun, 19 Apr 2020 05:24:08 -0500 (ACT)
-Date:   Sun, 19 Apr 2020 06:24:08 -0400 (AMT)
-From:   Morgan Stanley <angela.magalhaes@ac.gov.br>
-Reply-To: Morgan Stanley <finance-@mail-customercaremarketing.com>
-Message-ID: <1363712629.631357.1587291848561.JavaMail.zimbra@ac.gov.br>
-Subject: =?utf-8?Q?M=C3=B6chten_Sie_mehr_Geld_verdienen=3F_?=
- =?utf-8?Q?Investieren_Sie_noch_heute_bei_uns?=
+        Sun, 19 Apr 2020 10:36:52 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88993C061A0C;
+        Sun, 19 Apr 2020 07:36:52 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t9so1268986pjw.0;
+        Sun, 19 Apr 2020 07:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=IDIECCisquzaV8ZCzfD3JDX13iNAOofTEfjuBz5AXHs=;
+        b=GoZcy8G1ywtTQai2IObTXbl++Y9rRnRU3A0UVS9ItQ2F3pYP12laql/O2+D0uUnnAs
+         INkylgOVCm7RYiMtbuSf9+6v1tN1eZRJWhubmClUmht5XC6YN0/i4jJFrIWlPF9BtDE7
+         JD7hsWIPd1SmgO4b/y4Vq4ZGmGhsxcZoFViqKI7a89hamwjefuh9CjAj4HH6AHZ0YNhO
+         OYuhSdUacmlppvSFoHMdEJyJAxg8m2p1c4Gk12t7f+ifLrCi1Ui5UHWx/SdnjO/SGPF7
+         pAWirrJQU3QczQtFALznAhRuR/aMEUaGX+ld7z7FAiagzw7UUjodpEDhoxcJsJYkZqs5
+         1wTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=IDIECCisquzaV8ZCzfD3JDX13iNAOofTEfjuBz5AXHs=;
+        b=tqNBpFnfVTfJC3T2EXWdpFhRDwet+i/PNFOtWH0qtFK8obZxgBrpjBRn66oE1OXVLO
+         YsgOtaRIRGIq8bMYY6ySSTA4JLf6/4Aa+aA1pbN5gsGvLqlcoIsPO6xKXMKKip7UvDN1
+         NlUIMQnUMB9M17twhfW3Iv7yhDQS3sYWpaDEJWPI5uBETnxvRpAXVn1ertc3wc1hBuNI
+         BxQR3s3OyeNWESoCWYXCJ8hL5tq04WNk1VcPG6LUlTlDeSxGyXh8MgKXRrAm2gnIAnMB
+         WcrefbvTIFpmIgN+Z4cpRRkPXxti5MsWfluqm8Gt0jtNYzYxS9p0/mFgxt7VPhWnUBGj
+         2QBw==
+X-Gm-Message-State: AGi0Pubzs5GPt4Gakj99Qxduz137Z843FIRb9MgsKwDXx1Sy5+KuG4gd
+        tJ1I+TRpfMaivTV3am8h7r4=
+X-Google-Smtp-Source: APiQypLX6UyHOrp4l0hfC8oGW73twHo8Vy3OBCU5kUBGmwSiZ357qU52NzltC7QC4kWIJmEV7EpfQQ==
+X-Received: by 2002:a17:90a:2bc9:: with SMTP id n9mr10246750pje.131.1587307011956;
+        Sun, 19 Apr 2020 07:36:51 -0700 (PDT)
+Received: from nishad ([106.51.232.103])
+        by smtp.gmail.com with ESMTPSA id g2sm24672403pfh.193.2020.04.19.07.36.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 19 Apr 2020 07:36:51 -0700 (PDT)
+Date:   Sun, 19 Apr 2020 20:06:44 +0530
+From:   Nishad Kamdar <nishadkamdar@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Joe Perches <joe@perches.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: Use the correct style for SPDX License Identifier
+Message-ID: <20200419143640.GA8776@nishad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [102.167.49.247]
-X-Mailer: Zimbra 8.0.6_GA_5922 (ZimbraWebClient - GC80 (Win)/8.0.6_GA_5922)
-Thread-Topic: =?utf-8?Q?M=C3=B6chten?= Sie mehr Geld verdienen? Investieren Sie noch heute bei uns
-Thread-Index: aoqlIUYOvIs38TxpteCE7t9HEvzKrQ==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This patch corrects the SPDX License Identifier style in
+header file related to Btrfs File System support.
+For C header files Documentation/process/license-rules.rst
+mandates C-like comments (opposed to C source files where
+C++ style should be used).
 
+Changes made by using a script provided by Joe Perches here:
+https://lkml.org/lkml/2019/2/7/46.
 
-Guten Tag Meine Damen und Herren
-Morgan Stanley hat ein tolles Angebot für Sie. Investieren Sie einen Kapitalbetrag von 500 Euro in Morgan Stanley online Global Market Trading und verdienen Sie 5.000 Euro innerhalb von fünf Arbeitstagen. Dieser Trade wird von Morgan Stanley Digital durchgeführt. Um mehr über uns zu erfahren, erreichen Sie uns bitte unter: (finance-@mail-customercaremarketing.com)
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+---
+ fs/btrfs/discard.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Morgan Stanley has a great offer for you.  Invest a capital amount of 500 euros with Morgan Stanley online Global Market Trading and make 5000 euros within five working days, this trade is run by Morgan Stanley Digital expertise, to know more about us kindly reach us at: (finance-@mail-customercaremarketing.com)
-
+diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
+index 21a15776dac4..353228d62f5a 100644
+--- a/fs/btrfs/discard.h
++++ b/fs/btrfs/discard.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++/* SPDX-License-Identifier: GPL-2.0 */
+ 
+ #ifndef BTRFS_DISCARD_H
+ #define BTRFS_DISCARD_H
+-- 
+2.17.1
 
