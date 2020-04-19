@@ -2,188 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426D21AFBB9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 17:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE5A1AFD4B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 21:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgDSPdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Apr 2020 11:33:39 -0400
-Received: from out20-39.mail.aliyun.com ([115.124.20.39]:42541 "EHLO
-        out20-39.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgDSPdj (ORCPT
+        id S1726407AbgDSTNJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Apr 2020 15:13:09 -0400
+Received: from magic.merlins.org ([209.81.13.136]:52952 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgDSTNJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Apr 2020 11:33:39 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436565|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0128-0.00200576-0.985194;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03296;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.HJsaaFC_1587310414;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.HJsaaFC_1587310414)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Sun, 19 Apr 2020 23:33:34 +0800
-Date:   Sun, 19 Apr 2020 23:34:41 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: check that cloning an inline extent does not lead
- to data loss
-Message-ID: <20200419153441.GG388005@desktop>
-References: <20200406105134.2233-1-fdmanana@kernel.org>
+        Sun, 19 Apr 2020 15:13:09 -0400
+Received: from svh-gw.merlins.org ([173.11.111.145]:56478 helo=saruman.merlins.org)
+        by mail1.merlins.org with esmtps 
+        (Cipher TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.92 #3)
+        id 1jQFNI-0002wE-KS; Sun, 19 Apr 2020 12:13:04 -0700
+Received: from merlin by saruman.merlins.org with local (Exim 4.80)
+        (envelope-from <marc@merlins.org>)
+        id 1jQFNI-0008NX-AX; Sun, 19 Apr 2020 12:13:04 -0700
+Date:   Sun, 19 Apr 2020 12:13:04 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: 5.4.20: cannot mount device that blipped off the bus: duplicate
+ device fsid:devid for
+Message-ID: <20200419191304.GR21716@merlins.org>
+References: <20200321202307.GA15906@merlins.org>
+ <1aaae706-0029-be4f-9f6f-194b03087b35@suse.com>
+ <20200325201455.GO29461@merlins.org>
+ <a9dd1b1a-b38e-a0f4-91e1-b89063e8ae1e@oracle.com>
+ <20200326013007.GS15123@merlins.org>
+ <0d2ea8e2-cbe8-ca64-d0d4-fa70b8cad8b1@oracle.com>
+ <20200326042624.GT15123@merlins.org>
+ <20200414003854.GA6639@merlins.org>
+ <f85fccf5-eeb4-28ef-4dc4-500cf9221619@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406105134.2233-1-fdmanana@kernel.org>
+In-Reply-To: <f85fccf5-eeb4-28ef-4dc4-500cf9221619@oracle.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 173.11.111.145
+X-SA-Exim-Mail-From: marc@merlins.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 11:51:34AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Apr 16, 2020 at 06:43:39PM +0800, Anand Jain wrote:
+> > BTRFS info (device sde1): forced readonly
 > 
-> We have a bug in the current kernel merge window (for 5.7) that results
-> in data loss when cloning an inline extent into a new file (or an empty
-> file. This change adds a test for such case into the existing test case
-> btrfs/205, because it's the test case that tests all the supported
-> scenarios for cloning inline extents in btrfs.
-> 
-> The btrfs patch for the linux kernel that fixes the regression has the
-> following sibject:
-> 
->   "Btrfs: fix lost i_size update after cloning inline extent"
+> Unfortunately that's the only thing we do as of now.
+ 
+Of course, and that's fine, but I don't understand why after unmounting
+the filesystem cleanly, the references aren't freed.
+That part really seems like a bug to me.
 
-The patch has been merged now, I updated the commit log to refer to the
-patch with commit id as
-
-4fdb688c7071 ("btrfs: fix lost i_size update after cloning inline
-extent")
-
-Thanks,
-Eryu
-
+> So the same device reappears as sdp. But btrfs does not close a failed
+> device yet (patches are in the mailing list) the old path sde
+> is still in the block layer and opened. I guess /proc/partitions
+> doesn't show non working sde.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  tests/btrfs/205     | 13 +++++++++++++
->  tests/btrfs/205.out | 32 ++++++++++++++++++++++++++++++++
->  2 files changed, 45 insertions(+)
+Correct on all points
+
+> > gargamel:~# mount | grep sde
+> better to have grep-ed sdp also, here.
+
+it was not mounted yet, I checked that.
+
+> And /proc/self/mounts will be more accurate as it probes the fs module.
+
+Noted.
+
+> > [1887142.826176] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4531, flush 0, corrupt 0, gen 0
+> > [1887453.610947] BTRFS warning (device sde1): duplicate device fsid:devid for 727c7ba3-f6f9-462a-8472-453dd7d46d8a:1 old:/dev/sde1 new:/dev/sdp1
 > 
-> diff --git a/tests/btrfs/205 b/tests/btrfs/205
-> index 9bec2bfa..66355678 100755
-> --- a/tests/btrfs/205
-> +++ b/tests/btrfs/205
-> @@ -128,6 +128,18 @@ run_tests()
->  
->      echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
->  
-> +    # File foo3 a single inline extent of 500 bytes.
-> +    echo "Creating file foo3"
-> +    $XFS_IO_PROG -f -c "pwrite -S 0xbf 0 500" $SCRATCH_MNT/foo3 | _filter_xfs_io
-> +
-> +    # File bar7 is an empty file, has no extents.
-> +    touch $SCRATCH_MNT/bar7
-> +
-> +    echo "Cloning foo3 into bar7"
-> +    $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo3" $SCRATCH_MNT/bar7 | _filter_xfs_io
-> +
-> +    echo "File bar7 digest = $(_md5_checksum $SCRATCH_MNT/bar7)"
-> +
->      # Unmount and mount again the filesystem. We want to verify the reflink
->      # operations were durably persisted.
->      _scratch_cycle_mount
-> @@ -139,6 +151,7 @@ run_tests()
->      echo "File bar4 digest = $(_md5_checksum $SCRATCH_MNT/bar4)"
->      echo "File bar5 digest = $(_md5_checksum $SCRATCH_MNT/bar5)"
->      echo "File bar6 digest = $(_md5_checksum $SCRATCH_MNT/bar6)"
-> +    echo "File bar7 digest = $(_md5_checksum $SCRATCH_MNT/bar7)"
->  }
->  
->  _scratch_mkfs "-O ^no-holes" >>$seqres.full 2>&1
-> diff --git a/tests/btrfs/205.out b/tests/btrfs/205.out
-> index 948e0634..d9932fc0 100644
-> --- a/tests/btrfs/205.out
-> +++ b/tests/btrfs/205.out
-> @@ -52,6 +52,13 @@ Cloning foo1 into bar6
->  linked 131072/131072 bytes at offset 0
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +Creating file foo3
-> +wrote 500/500 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Cloning foo3 into bar7
-> +linked 0/0 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  File digests after mounting again the filesystem:
->  File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
->  File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-> @@ -59,6 +66,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
->  File bar4 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar5 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  
->  Testing with -o compress
->  
-> @@ -112,6 +120,13 @@ Cloning foo1 into bar6
->  linked 131072/131072 bytes at offset 0
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +Creating file foo3
-> +wrote 500/500 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Cloning foo3 into bar7
-> +linked 0/0 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  File digests after mounting again the filesystem:
->  File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
->  File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-> @@ -119,6 +134,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
->  File bar4 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar5 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  
->  Testing with -o nodatacow
->  
-> @@ -172,6 +188,13 @@ Cloning foo1 into bar6
->  linked 131072/131072 bytes at offset 0
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +Creating file foo3
-> +wrote 500/500 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Cloning foo3 into bar7
-> +linked 0/0 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  File digests after mounting again the filesystem:
->  File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
->  File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-> @@ -179,6 +202,7 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
->  File bar4 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar5 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  
->  Testing with -O no-holes
->  
-> @@ -232,6 +256,13 @@ Cloning foo1 into bar6
->  linked 131072/131072 bytes at offset 0
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +Creating file foo3
-> +wrote 500/500 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Cloning foo3 into bar7
-> +linked 0/0 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
->  File digests after mounting again the filesystem:
->  File bar1 digest = e9d03fb5fff30baf3c709f2384dfde67
->  File bar2 digest = 85678cf32ed48f92ca42ad06d0b63f2a
-> @@ -239,3 +270,4 @@ File bar3 digest = 85678cf32ed48f92ca42ad06d0b63f2a
->  File bar4 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar5 digest = 4b48829714d20a4e73a0cf1565270076
->  File bar6 digest = 4b48829714d20a4e73a0cf1565270076
-> +File bar7 digest = 67679afda6f846539ca7138452de0171
-> -- 
-> 2.11.0
+> Unmount wasn't successful above. Or it was remounted by automount? just
+> guessing.
+
+umount was successful and automount does not handle this device.
+/dev/sde was not mounted for sure and /dev/sdp was unmountable 
+
+> > gargamel:/usr/local/bin# btrfs device scan --forget
+> > gargamel:/usr/local/bin# mount /dev/sdp1 /mnt/mnt
+> > mount: /mnt/mnt: mount(2) system call failed: File exists.
 > 
+>  Can you please send a complete kernel logs.
+ 
+They contain a lot of crap that wouldn't fit on the list, but I pasted
+everything relevant.
+
+>  sde disappears.
+>  btrfs does not close the device.
+
+it remounts the mountpoints read only, which is fine (they can't be
+unmounted because they are in use).
+
+>  block layer creates sdp when the disappeared device reappears.
+>  unmount of sde was tried but it might not have completely successful we
+> don't have sufficient logs to prove it.
+
+umount looked complete on my side, there is nothing in the logs that
+shows otherwise, but as you said, unmount does not log anything.
+
+>  mount of sdp fails per log indicates that sde is still mounted.
+
+correct.
+
+> So thing(s) to fix is/are:
+>  The root of the issue - When sde fails we need to close the device
+>  so that block layer can reuse sde when it reappears (not sdp).
+>  In btrfs as we have closed the failed device btrfs dev scan --forget
+>  can work to cleanup the stale entries left behind during unmount.
+
+ideally "btrfs dev scan --forget" should be automatic. It feels like
+a weird command for an admin to know or have to use. Other filesystems
+do not need it.
+
+>  We can do something better here:
+>  When two different device with same fsid uuid and devid and one of it
+>  is mounted we have to fail the scan/mount of the newer device for
+>  obvious reasons. That's when we get the log - 'duplicate device fsid'.
+>  But here the case it bit skewed that both are same device with same
+>  major number but different minor number (sde sdp). I need to figure
+>  out a way so that we don't treat these two device paths as different
+>  device. Probably should check the guid/wwid assigned by the block
+>  layer which should be same for both of these devices, or in the
+>  last resort check scsi inquiry_VPD page and get the serial number
+>  but its going too much beyond what FS should do. Let me check with
+>  block layer experts what they suggest.
+
+defense in depth sounds great here, if any of those can work too, that'd
+be great.
+
+> Still unknown:
+>  unmount is successful? And mount logs shows that device sde still exists in
+> btrfs.
+ 
+It failed while mountpoints were still it use, and after the correct
+fuser -kvm /path
+umount worked great and the device disappeared from /proc/mounts.
+As you said, there are no kernel logs on unmount, so it's hard to say
+more.
+If you want me to apply a patch that puts more logging on unmount
+(against 5.5 or 5.6), please let me know, but of course, it could be
+weeks or months before I get that blip again.
+I think this could be reproduced by simply having a drive mounted, and
+unplugging it while the machine is live, and plugging it back in at
+runtime. I could technically do it with my hardware, but it happens on a 
+a database I don't really want to lose or corrupt.
+
+> Sorry I was diverted into other stuffs when you reported last time, let me
+> take a fresh look.
+
+No worries, we've all been there :)
+Also, it's not like I can get a refund on my support contract I don't have ;)
+
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
