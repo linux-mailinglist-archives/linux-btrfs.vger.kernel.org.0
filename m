@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7521B1312
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 19:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF531B1333
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 19:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgDTRb0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 13:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        id S1726296AbgDTReT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 13:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726067AbgDTRbY (ORCPT
+        by vger.kernel.org with ESMTP id S1725784AbgDTReT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:31:24 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C84C061A0C;
-        Mon, 20 Apr 2020 10:31:23 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id u12so3959640uau.10;
-        Mon, 20 Apr 2020 10:31:23 -0700 (PDT)
+        Mon, 20 Apr 2020 13:34:19 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DF3C061A0C;
+        Mon, 20 Apr 2020 10:34:19 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id f59so3562261uaf.9;
+        Mon, 20 Apr 2020 10:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=iVY0Hpczvi7L5kCeZ6+GsOel+foAxGUdGDubvBbDcLM=;
-        b=mnzjP+p9p62Tt54In3kvaFAsTqnLkSsb5asmMvniKCgik1yjX1iITdNKYt2Qm+oRzJ
-         jsXH/q59g0GI7zHllzSqUzT03sasDSEXNQoGbIaIT6eK6wEEv4r6t1eDwsDRAeOhcnNj
-         JwfkB+U/0S/XAn37mHtcuZb/fvyVBETYBphzLmV5sK9vTdG1VCRvbwV3eeO/8cg0EXNo
-         HK/5ZepmYFiyakWP5dh4ME64kCyKg4zn+BocuG5z/uG/Z3S9u/TLatGIzckMDc0dw3VG
-         98dPTPxeqfKPc5IiH1tfa3TR3kOc5vYvMctJXysAW8AtJx2SvmcZhzLHuXRMa1lmN0w8
-         HhNQ==
+        bh=gcB23t+jScaSb8EiQ7ZHe/5VkN2VlLAEfN9UOZ8SFc0=;
+        b=YkcOT4mjV3/A2UoHDoE9luwx2zPUDK2aNbV1JyfOBa61OpBYzbxxQYtP29Y0UPSfII
+         f4fZcvqZz0UBDUKQmUzYg8c0ciBtUduKgfj9GH9LfQLSxHYVSbrVdiaepqm7lPibNmlf
+         OaYpAiHYup4Ip9SHpQZ2SDalm1jlq+MrppsymQ/rGlqs0hVTS3L1ObZ1uW4YTe9SgK5t
+         /3k6sbyHk1JJzVOJvEXEpKSXEYaae9evx+VNdKViJ2GW9aQ8C66TnrFPaIdUKM+e6l1W
+         dTkn37zEB9A3+VgAlAUmQS8C+cD8O/PQoGBXXs1kso4v2xvjwgct/H/2CCRMiYj0VYPn
+         hhgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=iVY0Hpczvi7L5kCeZ6+GsOel+foAxGUdGDubvBbDcLM=;
-        b=oJCLipl46E46Ib8hUA7Vt0Svl3BvAkYN5HmBMdG8qMzX5N4CvVpoji18nhrMR5E9ai
-         0L46B79YZOur0WjMtPnZRuns4PlbFT3ECjtw3k/hfQAccVLyxW+R8bRFQnq6gaG7obNe
-         h1Abq1JHxxLNTWBD0ckqjGWTvc2FkB1ZizsJw7apTbdqE6f0UndfXKuLZy/jMjUeidj9
-         oMIRixV8l16rGsFuIbpLE8rKo0Mk/wiyeEvrKYk4FexaD7o2uN+quKXiZjIClIppmfKf
-         vZKQl/Gmr2W/1k5YXZ27oO1scmF0/tNCjRTKqs3eYXhyDtBNL/kNcQ+GIIf5C3cSLn50
-         UC0g==
-X-Gm-Message-State: AGi0PuZ6i7aPwfX8CGApVa2bBOwBUJl2XRdD7/jDvtjY5lbDB8XTm9dr
-        wJ0loNFMcgEBQBoPxtYO/FiP7pEid+z19XGLxHg=
-X-Google-Smtp-Source: APiQypL7+rXbzmdtDdBy5m419OAA82863CHZRkkuwAJ3GNdtPTpcRgl6s5lOBursmCBzXmMfTpd2F/AnsCiLZeFTjqk=
-X-Received: by 2002:ab0:b88:: with SMTP id c8mr7756282uak.0.1587403882279;
- Mon, 20 Apr 2020 10:31:22 -0700 (PDT)
+        bh=gcB23t+jScaSb8EiQ7ZHe/5VkN2VlLAEfN9UOZ8SFc0=;
+        b=EZMPbPDML/knpHV9rYReEzWR5grXgrEXXbUvjJ4886e53EHkFVk3CkqFQMnywAdneV
+         TMrD3pfm7NYtVTe43ZEe9K/4fZEyW4iNw+Bed6AB0pGqEJadb9yJhJ6B9EQkVTRjdp15
+         VoSrh+aBukaRxcOYRp2vzpXt3dLyfScqSol8vhFf2I9d/fE8n1eja96z4B3Ae4hthLgF
+         QvXahtJGKoiIyvmgBsVihT2aQRcXprRhotcRVBFSI600TyxbQ55lEi2mSddh5mqsRuqO
+         y1uSMhGLnCu8FKCk5xCynVmd2LZNmdJjZRIOlPIzyBGBQI+Vgh6kxFwTssI/cQ9n8qsW
+         w1yA==
+X-Gm-Message-State: AGi0PuaYo2JbPx19IqqdnI0i/L2IgrjSH+dciJZczcIqgZ3/fQxR8r/2
+        VhpIt3A3kcU3X6Zv9nVIvQ82yvQr+1UL+9Ww9p0=
+X-Google-Smtp-Source: APiQypLNysbe9yuR0MbpWcNR+bPpOu7NAeI/3OFly57qrqiEolZbBiK8TkDqIjBP+5bAYnjml937X9skdZSZ0GofJj8=
+X-Received: by 2002:ab0:5bcc:: with SMTP id z12mr8937701uae.135.1587404058411;
+ Mon, 20 Apr 2020 10:34:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
-In-Reply-To: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+References: <1587361180-83334-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1587361180-83334-1-git-send-email-xiyuyang19@fudan.edu.cn>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 20 Apr 2020 18:31:11 +0100
-Message-ID: <CAL3q7H4wE48Uqu6xLA-FYGy9qxov+26wnpXsjG=Ragi1UJx21Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+Date:   Mon, 20 Apr 2020 18:34:07 +0100
+Message-ID: <CAL3q7H4hoSF6=S_ZqTCiKNed0NkFymemGZh4vrRNQ3Nrf9xwkA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Fix refcnt leak in btrfs_recover_relocation
 To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        David Sterba <dsterba@suse.com>, Jeff Mahoney <jeffm@suse.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
         linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
         kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
@@ -65,112 +65,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 6:48 AM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
+On Mon, Apr 20, 2020 at 6:50 AM Xiyu Yang <xiyuyang19@fudan.edu.cn> wrote:
 >
-> btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
-> returns a local reference of the blcok group that contains the given
-> bytenr to "block_group" with increased refcount.
+> btrfs_recover_relocation() invokes btrfs_join_transaction(), which joins
+> a btrfs_trans_handle object into transactions and returns a reference of
+> it with increased refcount to "trans".
 >
-> When btrfs_remove_block_group() returns, "block_group" becomes invalid,
-> so the refcount should be decreased to keep refcount balanced.
+> When btrfs_recover_relocation() returns, "trans" becomes invalid, so the
+> refcount should be decreased to keep refcount balanced.
 >
-> The reference counting issue happens in several exception handling paths
-> of btrfs_remove_block_group(). When those error scenarios occur such as
-> btrfs_alloc_path() returns NULL, the function forgets to decrease its
-> refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+> The reference counting issue happens in one exception handling path of
+> btrfs_recover_relocation(). When read_fs_root() failed, the refcnt
+> increased by btrfs_join_transaction() is not decreased, causing a refcnt
 > leak.
 >
-> Fix this issue by jumping to "out_put_group" label and calling
-> btrfs_put_block_group() when those error scenarios occur.
+> Fix this issue by calling btrfs_end_transaction() on this error path
+> when read_fs_root() failed.
 >
+> Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error
+> handling")
 > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Seems correct to me.
-I would change the subject to something more clear like: "btrfs: fix
-block group leak after failure to remove it"
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-One more suggestion below.
+Looks good, thanks.
 
 > ---
->  fs/btrfs/block-group.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+>  fs/btrfs/relocation.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 404e050ce8ee..d9f432bd3329 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -916,7 +916,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handl=
-e *trans,
->         path =3D btrfs_alloc_path();
->         if (!path) {
->                 ret =3D -ENOMEM;
-> -               goto out;
-> +               goto out_put_group;
->         }
->
->         /*
-> @@ -954,7 +954,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handl=
-e *trans,
->                 ret =3D btrfs_orphan_add(trans, BTRFS_I(inode));
->                 if (ret) {
->                         btrfs_add_delayed_iput(inode);
-> -                       goto out;
-> +                       goto out_put_group;
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 995d4b8b1cfd..46a451594c7a 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -4606,6 +4606,7 @@ int btrfs_recover_relocation(struct btrfs_root *roo=
+t)
+>                 if (IS_ERR(fs_root)) {
+>                         err =3D PTR_ERR(fs_root);
+>                         list_add_tail(&reloc_root->root_list, &reloc_root=
+s);
+> +                       btrfs_end_transaction(trans);
+>                         goto out_free;
 >                 }
->                 clear_nlink(inode);
->                 /* One for the block groups ref */
-> @@ -977,13 +977,13 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
-dle *trans,
 >
->         ret =3D btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
->         if (ret < 0)
-> -               goto out;
-> +               goto out_put_group;
->         if (ret > 0)
->                 btrfs_release_path(path);
->         if (ret =3D=3D 0) {
->                 ret =3D btrfs_del_item(trans, tree_root, path);
->                 if (ret)
-> -                       goto out;
-> +                       goto out_put_group;
->                 btrfs_release_path(path);
->         }
->
-> @@ -1102,7 +1102,7 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
-dle *trans,
->
->         ret =3D remove_block_group_free_space(trans, block_group);
->         if (ret)
-> -               goto out;
-> +               goto out_put_group;
->
->         btrfs_put_block_group(block_group);
->         btrfs_put_block_group(block_group);
-> @@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
-dle *trans,
->                 btrfs_delayed_refs_rsv_release(fs_info, 1);
->         btrfs_free_path(path);
->         return ret;
-> +out_put_group:
-> +       btrfs_put_block_group(block_group);
-> +       goto out;
-
-Instead of this double goto, which tends to be error prone and harder to fo=
-llow,
-I suggest placing a call to btrfs_put_block_group() right after the
-'out' label, with a comment
-above it saying something like "once for the lookup reference" and
-removing one of the btrfs_put_block_group()
-calls right after calling remove_block_group_free_space(), and leaving
-a comment above the other one saying "once for the block groups
-rbtree".
-
-Thanks.
-
->  }
->
->  struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
 > --
 > 2.7.4
 >
