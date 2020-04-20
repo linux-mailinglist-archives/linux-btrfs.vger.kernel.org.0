@@ -2,192 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052441B0D51
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 15:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC611B0E23
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 16:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbgDTNsn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 09:48:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42811 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726451AbgDTNsi (ORCPT
+        id S1728517AbgDTOS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 10:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727890AbgDTOS7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 09:48:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587390517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g7y4WU1T9l13UE4AeSAMeV0dvLVDo/1wJoF790VrkXE=;
-        b=MjROekO0eJQYdahTnITYjsf30ZZtcQjDLV0W3qbOSfWc7rEFKCdyVOsLe+xA4KEf15rvTR
-        qOx4x5/cqn2UmQ495TJGzl9GgcpRwyND4gTMCaERDRlvhyV5JdWzisYc/aLYdEe071Ooya
-        3oRRZpnvVFfPKKI2fAxDvSyfiLiBDTs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-N9UYrC5qPM-27Q4o2iNAMA-1; Mon, 20 Apr 2020 09:48:34 -0400
-X-MC-Unique: N9UYrC5qPM-27Q4o2iNAMA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D87F190D343;
-        Mon, 20 Apr 2020 13:48:33 +0000 (UTC)
-Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6011312656B;
-        Mon, 20 Apr 2020 13:48:32 +0000 (UTC)
-Subject: Re: [PATCH 2/2 V2] man2: New page documenting filesystem get/set
- label ioctls
-To:     mtk.manpages@gmail.com, Eric Sandeen <sandeen@sandeen.net>
-Cc:     fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-References: <d2979d75-5e45-b145-9ca5-2c315d8ead9c@redhat.com>
- <708b8e2a-2bc2-df38-ec9c-c605203052b5@sandeen.net>
- <7d74cc3b-52cc-be60-0a69-1a5ee1499f47@sandeen.net>
- <CAKgNAkgLekaA6jBtUYTD2F=7u_GgBbXDvq-jc8RCBswYvvZmtg@mail.gmail.com>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <5ac17186-4463-4f61-4733-125f2af9b73d@redhat.com>
-Date:   Mon, 20 Apr 2020 08:48:31 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Mon, 20 Apr 2020 10:18:59 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2289C061A0C
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 07:18:58 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d17so12354755wrg.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 07:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:mail-followup-to:date:message-id:user-agent:mime-version;
+        bh=918h+4DCGhPy2wPhXAThICSYSxFuHN1aXiG2zqgqH1w=;
+        b=dc3EUw9mxHG1TCzWbtPVVqJzso6/gZfkVsaeP3L6KfoHIlE7P8UpKAONtlpPmpJqil
+         wGcc4pXl0rR4X/znKOG2DwdKHLpvRQ09ZAo2tMlW9SWJVMbgNNxWZBlQ10bif6/7qgsW
+         bPAzJPGcRcTvJJ6hVnxhI+Loj46z0oHbK+E1K9xW3ZlxoYtrwVBt+DVN13xeamwZOf7V
+         y6qJEQukYm0RoY5n1Xz+AuynU0C6/3kH9/Cie/flWl8FUFh2Jq17WJG7L62AO2rX42n/
+         JepGQyN7pFugCpRPw3M80e+B1gp4Xw7F/exntJ0FHShkwFTNIGwzfVQ3kEqTr/Z204Dg
+         jC5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:mail-followup-to:date:message-id
+         :user-agent:mime-version;
+        bh=918h+4DCGhPy2wPhXAThICSYSxFuHN1aXiG2zqgqH1w=;
+        b=YYpwuEGWkFEFEoS1/k6/IalTARHdb7R+TlS095vlQsSzaNlI6mj8pEX/bs+ZlGJSY7
+         jRc5PiVXnX0xpyhH1LmoLQLe/0IML6sMGo3lusSqCuveuM5ROcPbcUj9w7G45c6EozYt
+         3FPUhTMRHutFs7plRnpG4U4HpmMLcHu4T6lCphFDGgEzKzLFjKcYBswqxXF0Xyl4kD0a
+         Yjhre8PiMgVgvq/AkNmF8gjwXTL17sjJaocULLFOAgL08ksw5kq8ind5i6U1Bw+NWmxR
+         K3dANBoDMwSxSaZqxZ8UztZcK5VIAHLobs4VnvVNk0Pe0Q0sVbltACbxSJLicLcSWBy/
+         brpQ==
+X-Gm-Message-State: AGi0PuYePSljXy41Gu4L3uMTUYc7ZsaYbeowg7eNk2c/NMS0vVOYB9Iu
+        l/o+RQug77QTaV5A6Pfx12CupoD4
+X-Google-Smtp-Source: APiQypJhQ1VgcV1ggf+M4+9jct4E4yX9c73DiP471G/lovYrEB5RfYhFbl8yKLAnC4y3SwZWPZnBWw==
+X-Received: by 2002:adf:e58d:: with SMTP id l13mr19824724wrm.187.1587392337401;
+        Mon, 20 Apr 2020 07:18:57 -0700 (PDT)
+Received: from MSI ([82.132.184.245])
+        by smtp.gmail.com with ESMTPSA id n2sm1609750wrq.74.2020.04.20.07.18.55
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Apr 2020 07:18:56 -0700 (PDT)
+From:   Dekks Herton <dekkzz78@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+Date:   Mon, 20 Apr 2020 15:18:47 +0100
+Message-ID: <86mu76i6k8.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (windows-nt)
 MIME-Version: 1.0
-In-Reply-To: <CAKgNAkgLekaA6jBtUYTD2F=7u_GgBbXDvq-jc8RCBswYvvZmtg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; format=flowed
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/20/20 7:04 AM, Michael Kerrisk (man-pages) wrote:
-> Hello Eric,
-> 
-> So it seems like this feature eventually got merged in Linux 4.18. Is
-> this page up to date with what went into the kernel?
-
-Yes, I believe that it's all still accurate.
-
-Thanks,
--Eric
-
-> Thanks,
-> 
-> Michael
-> 
-> On Thu, 10 May 2018 at 19:29, Eric Sandeen <sandeen@sandeen.net> wrote:
->>
->> This documents the proposed new vfs-level ioctls which can
->> get or set a mounted filesytem's label.
->>
->> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
->> ---
->>
->> V2: make primary file ioctl_getfslabel, link ioctl_setfslabel to it
->>     note that getfslabel requires CAP_SYS_ADMIN
->>
->> diff --git a/man2/ioctl_getfslabel.2 b/man2/ioctl_getfslabel.2
->> new file mode 100644
->> index 0000000..2c3375c
->> --- /dev/null
->> +++ b/man2/ioctl_getfslabel.2
->> @@ -0,0 +1,87 @@
->> +.\" Copyright (c) 2018, Red Hat, Inc.  All rights reserved.
->> +.\"
->> +.\" %%%LICENSE_START(GPLv2+_DOC_FULL)
->> +.\" This is free documentation; you can redistribute it and/or
->> +.\" modify it under the terms of the GNU General Public License as
->> +.\" published by the Free Software Foundation; either version 2 of
->> +.\" the License, or (at your option) any later version.
->> +.\"
->> +.\" The GNU General Public License's references to "object code"
->> +.\" and "executables" are to be interpreted as the output of any
->> +.\" document formatting or typesetting system, including
->> +.\" intermediate and printed output.
->> +.\"
->> +.\" This manual is distributed in the hope that it will be useful,
->> +.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> +.\" GNU General Public License for more details.
->> +.\"
->> +.\" You should have received a copy of the GNU General Public
->> +.\" License along with this manual; if not, see
->> +.\" <http://www.gnu.org/licenses/>.
->> +.\" %%%LICENSE_END
->> +.TH IOCTL-FSLABEL 2 2018-05-02 "Linux" "Linux Programmer's Manual"
->> +.SH NAME
->> +ioctl_fslabel \- get or set a filesystem label
->> +.SH SYNOPSIS
->> +.br
->> +.B #include <sys/ioctl.h>
->> +.br
->> +.B #include <linux/fs.h>
->> +.sp
->> +.BI "int ioctl(int " fd ", FS_IOC_GETFSLABEL, char " label [FSLABEL_MAX]);
->> +.br
->> +.BI "int ioctl(int " fd ", FS_IOC_SETFSLABEL, char " label [FSLABEL_MAX]);
->> +.SH DESCRIPTION
->> +If a filesystem supports online label manipulation, these
->> +.BR ioctl (2)
->> +operations can be used to get or set the filesystem label for the filesystem
->> +on which
->> +.B fd
->> +resides.
->> +The
->> +.B FS_IOC_SETFSLABEL
->> +operation requires privilege
->> +.RB ( CAP_SYS_ADMIN ).
->> +.SH RETURN VALUE
->> +On success zero is returned.  On error, \-1 is returned, and
->> +.I errno
->> +is set to indicate the error.
->> +.PP
->> +.SH ERRORS
->> +Error codes can be one of, but are not limited to, the following:
->> +.TP
->> +.B EINVAL
->> +The specified label exceeds the maximum label length for the filesystem.
->> +.TP
->> +.B ENOTTY
->> +This can appear if the filesystem does not support online label manipulation.
->> +.TP
->> +.B EPERM
->> +The calling process does not have sufficient permissions to set the label.
->> +.TP
->> +.B EFAULT
->> +.I label
->> +references an inaccessible memory area.
->> +.SH VERSIONS
->> +These ioctl operations first appeared in Linux 4.18.
->> +They were previously known as
->> +.B BTRFS_IOC_GET_FSLABEL
->> +and
->> +.B BTRFS_IOC_SET_FSLABEL
->> +and were private to Btrfs.
->> +.SH CONFORMING TO
->> +This API is Linux-specific.
->> +.SH NOTES
->> +The maximum string length for this interface is
->> +.BR FSLABEL_MAX ,
->> +including the terminating null byte (\(aq\\0\(aq).
->> +Filesystems have differing maximum label lengths, which may or
->> +may not include the terminating null.  The string provided to
->> +.B FS_IOC_SETFSLABEL
->> +must always be null-terminated, and the string returned by
->> +.B FS_IOC_GETFSLABEL
->> +will always be null-terminated.
->> +.SH SEE ALSO
->> +.BR ioctl (2),
->> +.BR blkid (8)
->> diff --git a/man2/ioctl_setfslabel.2 b/man2/ioctl_setfslabel.2
->> new file mode 100644
->> index 0000000..2119835
->> --- /dev/null
->> +++ b/man2/ioctl_setfslabel.2
->> @@ -0,0 +1 @@
->> +.so man2/ioctl_getfslabel.2
->>
-> 
-> 
-
+unsubscribe linux-btrfs
