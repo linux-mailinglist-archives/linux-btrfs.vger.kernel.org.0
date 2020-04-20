@@ -2,193 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC86D1B0E77
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 16:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD851B0EFD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 16:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgDTOeF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 10:34:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59794 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726895AbgDTOeF (ORCPT
+        id S1729626AbgDTO5G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 10:57:06 -0400
+Received: from magic.merlins.org ([209.81.13.136]:35246 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgDTO5G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:34:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587393244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpVbr6tSMcRmTg3645/1+FPULSloVrxfzPfzAFBRWS0=;
-        b=RhkySmNoCArHWpevDP0x1lDHpmYJK12u8hJaaZTzIwN49uy7N3fFMoW/0khxKahmnFypOC
-        SK7Wrve7YxhjqR3A22meqrJGklV2iX9oOtYkma8axyygXYBz5q5JcKM/USGY01CDZ1TBLL
-        8KrRjZ1WKjeTgN5yaPSqQsWJeY+VLPY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-71-n9SG6eiKM5Ww_gzN2n39Kg-1; Mon, 20 Apr 2020 10:34:02 -0400
-X-MC-Unique: n9SG6eiKM5Ww_gzN2n39Kg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F361113784B;
-        Mon, 20 Apr 2020 14:34:01 +0000 (UTC)
-Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE6AF27BD8;
-        Mon, 20 Apr 2020 14:34:00 +0000 (UTC)
-Date:   Mon, 20 Apr 2020 10:33:59 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 4/4] fsx: move range generation logic into a common helper
-Message-ID: <20200420143359.GL27516@bfoster>
-References: <20200408103627.11514-1-fdmanana@kernel.org>
- <20200417173221.6380-1-fdmanana@kernel.org>
+        Mon, 20 Apr 2020 10:57:06 -0400
+Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
+        id 1jQXr2-000773-08 by authid <merlin>; Mon, 20 Apr 2020 07:57:00 -0700
+Date:   Mon, 20 Apr 2020 07:56:59 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: 5.4.20: cannot mount device that blipped off the bus: duplicate
+ device fsid:devid for
+Message-ID: <20200420145659.GA26389@merlins.org>
+References: <20200321202307.GA15906@merlins.org>
+ <1aaae706-0029-be4f-9f6f-194b03087b35@suse.com>
+ <20200325201455.GO29461@merlins.org>
+ <a9dd1b1a-b38e-a0f4-91e1-b89063e8ae1e@oracle.com>
+ <20200326013007.GS15123@merlins.org>
+ <0d2ea8e2-cbe8-ca64-d0d4-fa70b8cad8b1@oracle.com>
+ <20200326042624.GT15123@merlins.org>
+ <20200414003854.GA6639@merlins.org>
+ <07166dd6-4554-a545-9774-a622890095a7@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417173221.6380-1-fdmanana@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <07166dd6-4554-a545-9774-a622890095a7@oracle.com>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: marc@merlins.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 06:32:21PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> We have very similar code that generates the destination range for clone,
-> dedupe and copy_file_range operations, so avoid duplicating the code three
-> times and move it into a helper function.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
-> 
-> V2: Turned the first parameter of the helper into a boolean as Darrick suggested.
-> V3: Added destination offset align by writebdy when bdy_align is true.
-> 
->  ltp/fsx.c | 94 ++++++++++++++++++++++++++-------------------------------------
->  1 file changed, 39 insertions(+), 55 deletions(-)
-> 
-> diff --git a/ltp/fsx.c b/ltp/fsx.c
-> index 89a5f60e..2e51169b 100644
-> --- a/ltp/fsx.c
-> +++ b/ltp/fsx.c
-> @@ -1930,6 +1930,39 @@ range_overlaps(
->  	return llabs((unsigned long long)off1 - off0) < size;
->  }
->  
-> +static void generate_dest_range(bool bdy_align,
-> +				unsigned long max_range_end,
-> +				unsigned long *src_offset,
-> +				unsigned long *size,
-> +				unsigned long *dst_offset)
-> +{
-> +	int tries = 0;
-> +
-> +	TRIM_OFF_LEN(*src_offset, *size, file_size);
-> +	if (bdy_align) {
-> +		*src_offset -= *src_offset % readbdy;
-> +		if (o_direct)
-> +			*size -= *size % readbdy;
-> +	} else {
-> +		*src_offset = *src_offset & ~(block_size - 1);
-> +		*size = *size & ~(block_size - 1);
-> +	}
-> +
-> +	do {
-> +		if (tries++ >= 30) {
-> +			*size = 0;
-> +			break;
-> +		}
-> +		*dst_offset = random();
-> +		TRIM_OFF(*dst_offset, max_range_end);
-> +		if (bdy_align)
-> +			*dst_offset = *dst_offset & writebdy;
+On Mon, Apr 20, 2020 at 07:10:24PM +0800, Anand Jain wrote:
+> The steps below are they in the chronological order?
+ 
+That is my recollection, yes.
 
-That still doesn't look right (and either way we might as well use
-consistent logic for readbdy and writebdy).
+>  Before and after --forget command
+>     btrfs fi show -m
+>  could have told us what devices are still mounted.
+ 
+Oh, I didn't know about this. If/when it happens next, I'll 
+run this to show btrfs' understanding of what's mounted instead of
+the kernel's understanding (/proc/self/mounts)
 
-Brian
+> I will send a boilerplate code to dump device list from the kernel it will
+> help to debug. As of now this boilderplate code which I have been using is
+> too localized needs a lot of cleanups, will take sometime.
 
-> +		else
-> +			*dst_offset = *dst_offset & ~(block_size - 1);
-> +	} while (range_overlaps(*src_offset, *dst_offset, *size) ||
-> +		 *dst_offset + *size > max_range_end);
-> +}
-> +
->  int
->  test(void)
->  {
-> @@ -2004,63 +2037,14 @@ test(void)
->  			keep_size = random() % 2;
->  		break;
->  	case OP_CLONE_RANGE:
-> -		{
-> -			int tries = 0;
-> -
-> -			TRIM_OFF_LEN(offset, size, file_size);
-> -			offset = offset & ~(block_size - 1);
-> -			size = size & ~(block_size - 1);
-> -			do {
-> -				if (tries++ >= 30) {
-> -					size = 0;
-> -					break;
-> -				}
-> -				offset2 = random();
-> -				TRIM_OFF(offset2, maxfilelen);
-> -				offset2 = offset2 & ~(block_size - 1);
-> -			} while (range_overlaps(offset, offset2, size) ||
-> -				 offset2 + size > maxfilelen);
-> -			break;
-> -		}
-> +		generate_dest_range(false, maxfilelen, &offset, &size, &offset2);
-> +		break;
->  	case OP_DEDUPE_RANGE:
-> -		{
-> -			int tries = 0;
-> -
-> -			TRIM_OFF_LEN(offset, size, file_size);
-> -			offset = offset & ~(block_size - 1);
-> -			size = size & ~(block_size - 1);
-> -			do {
-> -				if (tries++ >= 30) {
-> -					size = 0;
-> -					break;
-> -				}
-> -				offset2 = random();
-> -				TRIM_OFF(offset2, file_size);
-> -				offset2 = offset2 & ~(block_size - 1);
-> -			} while (range_overlaps(offset, offset2, size) ||
-> -				 offset2 + size > file_size);
-> -			break;
-> -		}
-> +		generate_dest_range(false, file_size, &offset, &size, &offset2);
-> +		break;
->  	case OP_COPY_RANGE:
-> -		{
-> -			int tries = 0;
-> -
-> -			TRIM_OFF_LEN(offset, size, file_size);
-> -			offset -= offset % readbdy;
-> -			if (o_direct)
-> -				size -= size % readbdy;
-> -			do {
-> -				if (tries++ >= 30) {
-> -					size = 0;
-> -					break;
-> -				}
-> -				offset2 = random();
-> -				TRIM_OFF(offset2, maxfilelen);
-> -				offset2 -= offset2 % writebdy;
-> -			} while (range_overlaps(offset, offset2, size) ||
-> -				 offset2 + size > maxfilelen);
-> -			break;
-> -		}
-> +		generate_dest_range(true, maxfilelen, &offset, &size, &offset2);
-> +		break;
->  	}
->  
->  have_op:
-> -- 
-> 2.11.0
-> 
-
+Sounds good.
+ 
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/  
