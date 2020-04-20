@@ -2,63 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC611B0E23
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 16:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC86D1B0E77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 16:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgDTOS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 10:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727890AbgDTOS7 (ORCPT
+        id S1728028AbgDTOeF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 10:34:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59794 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726895AbgDTOeF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:18:59 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2289C061A0C
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 07:18:58 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d17so12354755wrg.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 07:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:mail-followup-to:date:message-id:user-agent:mime-version;
-        bh=918h+4DCGhPy2wPhXAThICSYSxFuHN1aXiG2zqgqH1w=;
-        b=dc3EUw9mxHG1TCzWbtPVVqJzso6/gZfkVsaeP3L6KfoHIlE7P8UpKAONtlpPmpJqil
-         wGcc4pXl0rR4X/znKOG2DwdKHLpvRQ09ZAo2tMlW9SWJVMbgNNxWZBlQ10bif6/7qgsW
-         bPAzJPGcRcTvJJ6hVnxhI+Loj46z0oHbK+E1K9xW3ZlxoYtrwVBt+DVN13xeamwZOf7V
-         y6qJEQukYm0RoY5n1Xz+AuynU0C6/3kH9/Cie/flWl8FUFh2Jq17WJG7L62AO2rX42n/
-         JepGQyN7pFugCpRPw3M80e+B1gp4Xw7F/exntJ0FHShkwFTNIGwzfVQ3kEqTr/Z204Dg
-         jC5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:mail-followup-to:date:message-id
-         :user-agent:mime-version;
-        bh=918h+4DCGhPy2wPhXAThICSYSxFuHN1aXiG2zqgqH1w=;
-        b=YYpwuEGWkFEFEoS1/k6/IalTARHdb7R+TlS095vlQsSzaNlI6mj8pEX/bs+ZlGJSY7
-         jRc5PiVXnX0xpyhH1LmoLQLe/0IML6sMGo3lusSqCuveuM5ROcPbcUj9w7G45c6EozYt
-         3FPUhTMRHutFs7plRnpG4U4HpmMLcHu4T6lCphFDGgEzKzLFjKcYBswqxXF0Xyl4kD0a
-         Yjhre8PiMgVgvq/AkNmF8gjwXTL17sjJaocULLFOAgL08ksw5kq8ind5i6U1Bw+NWmxR
-         K3dANBoDMwSxSaZqxZ8UztZcK5VIAHLobs4VnvVNk0Pe0Q0sVbltACbxSJLicLcSWBy/
-         brpQ==
-X-Gm-Message-State: AGi0PuYePSljXy41Gu4L3uMTUYc7ZsaYbeowg7eNk2c/NMS0vVOYB9Iu
-        l/o+RQug77QTaV5A6Pfx12CupoD4
-X-Google-Smtp-Source: APiQypJhQ1VgcV1ggf+M4+9jct4E4yX9c73DiP471G/lovYrEB5RfYhFbl8yKLAnC4y3SwZWPZnBWw==
-X-Received: by 2002:adf:e58d:: with SMTP id l13mr19824724wrm.187.1587392337401;
-        Mon, 20 Apr 2020 07:18:57 -0700 (PDT)
-Received: from MSI ([82.132.184.245])
-        by smtp.gmail.com with ESMTPSA id n2sm1609750wrq.74.2020.04.20.07.18.55
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 Apr 2020 07:18:56 -0700 (PDT)
-From:   Dekks Herton <dekkzz78@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Mail-Followup-To: linux-btrfs@vger.kernel.org
-Date:   Mon, 20 Apr 2020 15:18:47 +0100
-Message-ID: <86mu76i6k8.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (windows-nt)
+        Mon, 20 Apr 2020 10:34:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587393244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DpVbr6tSMcRmTg3645/1+FPULSloVrxfzPfzAFBRWS0=;
+        b=RhkySmNoCArHWpevDP0x1lDHpmYJK12u8hJaaZTzIwN49uy7N3fFMoW/0khxKahmnFypOC
+        SK7Wrve7YxhjqR3A22meqrJGklV2iX9oOtYkma8axyygXYBz5q5JcKM/USGY01CDZ1TBLL
+        8KrRjZ1WKjeTgN5yaPSqQsWJeY+VLPY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-71-n9SG6eiKM5Ww_gzN2n39Kg-1; Mon, 20 Apr 2020 10:34:02 -0400
+X-MC-Unique: n9SG6eiKM5Ww_gzN2n39Kg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F361113784B;
+        Mon, 20 Apr 2020 14:34:01 +0000 (UTC)
+Received: from bfoster (dhcp-41-2.bos.redhat.com [10.18.41.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE6AF27BD8;
+        Mon, 20 Apr 2020 14:34:00 +0000 (UTC)
+Date:   Mon, 20 Apr 2020 10:33:59 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 4/4] fsx: move range generation logic into a common helper
+Message-ID: <20200420143359.GL27516@bfoster>
+References: <20200408103627.11514-1-fdmanana@kernel.org>
+ <20200417173221.6380-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417173221.6380-1-fdmanana@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-unsubscribe linux-btrfs
+On Fri, Apr 17, 2020 at 06:32:21PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> We have very similar code that generates the destination range for clone,
+> dedupe and copy_file_range operations, so avoid duplicating the code three
+> times and move it into a helper function.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+> 
+> V2: Turned the first parameter of the helper into a boolean as Darrick suggested.
+> V3: Added destination offset align by writebdy when bdy_align is true.
+> 
+>  ltp/fsx.c | 94 ++++++++++++++++++++++++++-------------------------------------
+>  1 file changed, 39 insertions(+), 55 deletions(-)
+> 
+> diff --git a/ltp/fsx.c b/ltp/fsx.c
+> index 89a5f60e..2e51169b 100644
+> --- a/ltp/fsx.c
+> +++ b/ltp/fsx.c
+> @@ -1930,6 +1930,39 @@ range_overlaps(
+>  	return llabs((unsigned long long)off1 - off0) < size;
+>  }
+>  
+> +static void generate_dest_range(bool bdy_align,
+> +				unsigned long max_range_end,
+> +				unsigned long *src_offset,
+> +				unsigned long *size,
+> +				unsigned long *dst_offset)
+> +{
+> +	int tries = 0;
+> +
+> +	TRIM_OFF_LEN(*src_offset, *size, file_size);
+> +	if (bdy_align) {
+> +		*src_offset -= *src_offset % readbdy;
+> +		if (o_direct)
+> +			*size -= *size % readbdy;
+> +	} else {
+> +		*src_offset = *src_offset & ~(block_size - 1);
+> +		*size = *size & ~(block_size - 1);
+> +	}
+> +
+> +	do {
+> +		if (tries++ >= 30) {
+> +			*size = 0;
+> +			break;
+> +		}
+> +		*dst_offset = random();
+> +		TRIM_OFF(*dst_offset, max_range_end);
+> +		if (bdy_align)
+> +			*dst_offset = *dst_offset & writebdy;
+
+That still doesn't look right (and either way we might as well use
+consistent logic for readbdy and writebdy).
+
+Brian
+
+> +		else
+> +			*dst_offset = *dst_offset & ~(block_size - 1);
+> +	} while (range_overlaps(*src_offset, *dst_offset, *size) ||
+> +		 *dst_offset + *size > max_range_end);
+> +}
+> +
+>  int
+>  test(void)
+>  {
+> @@ -2004,63 +2037,14 @@ test(void)
+>  			keep_size = random() % 2;
+>  		break;
+>  	case OP_CLONE_RANGE:
+> -		{
+> -			int tries = 0;
+> -
+> -			TRIM_OFF_LEN(offset, size, file_size);
+> -			offset = offset & ~(block_size - 1);
+> -			size = size & ~(block_size - 1);
+> -			do {
+> -				if (tries++ >= 30) {
+> -					size = 0;
+> -					break;
+> -				}
+> -				offset2 = random();
+> -				TRIM_OFF(offset2, maxfilelen);
+> -				offset2 = offset2 & ~(block_size - 1);
+> -			} while (range_overlaps(offset, offset2, size) ||
+> -				 offset2 + size > maxfilelen);
+> -			break;
+> -		}
+> +		generate_dest_range(false, maxfilelen, &offset, &size, &offset2);
+> +		break;
+>  	case OP_DEDUPE_RANGE:
+> -		{
+> -			int tries = 0;
+> -
+> -			TRIM_OFF_LEN(offset, size, file_size);
+> -			offset = offset & ~(block_size - 1);
+> -			size = size & ~(block_size - 1);
+> -			do {
+> -				if (tries++ >= 30) {
+> -					size = 0;
+> -					break;
+> -				}
+> -				offset2 = random();
+> -				TRIM_OFF(offset2, file_size);
+> -				offset2 = offset2 & ~(block_size - 1);
+> -			} while (range_overlaps(offset, offset2, size) ||
+> -				 offset2 + size > file_size);
+> -			break;
+> -		}
+> +		generate_dest_range(false, file_size, &offset, &size, &offset2);
+> +		break;
+>  	case OP_COPY_RANGE:
+> -		{
+> -			int tries = 0;
+> -
+> -			TRIM_OFF_LEN(offset, size, file_size);
+> -			offset -= offset % readbdy;
+> -			if (o_direct)
+> -				size -= size % readbdy;
+> -			do {
+> -				if (tries++ >= 30) {
+> -					size = 0;
+> -					break;
+> -				}
+> -				offset2 = random();
+> -				TRIM_OFF(offset2, maxfilelen);
+> -				offset2 -= offset2 % writebdy;
+> -			} while (range_overlaps(offset, offset2, size) ||
+> -				 offset2 + size > maxfilelen);
+> -			break;
+> -		}
+> +		generate_dest_range(true, maxfilelen, &offset, &size, &offset2);
+> +		break;
+>  	}
+>  
+>  have_op:
+> -- 
+> 2.11.0
+> 
+
