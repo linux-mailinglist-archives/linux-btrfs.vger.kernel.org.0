@@ -2,96 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B57E1AFE3E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Apr 2020 22:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4423A1B011F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 07:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgDSU4O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Apr 2020 16:56:14 -0400
-Received: from sonic305-3.consmr.mail.bf2.yahoo.com ([74.6.133.42]:37421 "EHLO
-        sonic305-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725848AbgDSU4O (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Apr 2020 16:56:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1587329772; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tHyTde+3+3uaznQtYcXqicn/j29cXPCPqmyC5L2Rqpb6J2MyZT2NH+nytlTZe/N3+fPZ5fkZ28IceuEGRE+xEobjDao/O9DREO6lJ//poofWQkC+AuUqTb7VMe5epHvyXY4ihjmY/UCVAoJQAQRu5Lf292Z7gOTQxinEEIXejIU4QZjtRQkRzAYYPkwmqjaYDQJfld8zSTpQTOtnqNWxtHgeYLkWMNnYSxIRGtZGKe9EP34PB3vJR7y+BjYCFMkV6QGpNrDwXJWtQ4/W0858h3U4KZAh9ORuNlXw2jKkqCdaL5re4pBVsPkQyif651D4Wf1xp71Q0SrFccv/FIZDsA==
-X-YMail-OSG: CoaqYOoVM1nxq5wSi3YbLd4C2TaWBuNpS27FlFzk1OB217IhmU.df7r26_6Aqmp
- ZFuVv3PHfdTScdhaiRb.Ojtv5nIQVMckRknzGmjKdfVoOTWO410e1Ndhk5YeML1uDHZQ4MohKApQ
- bVvKTVsq6AqONjfVTEM9ijy8U7CmrkmIdQnWuLu1gifbIj_8kvs0Ghkb4F3YdQyXwGq9p6TtwDTn
- _6KOqFf2oghhXjU3emCZrDPyuCcaPmqgI_tRL4uLQJdWA5fR_kMinIEpN6EVBL5Ug19wG1IevHOs
- k4D.qjkM8hacO6ZlU_cKmOqHXlcgfHqLvgUFuCCpacMYSii6bjSBBJP26QYPNNETSKGB_C_KSP0s
- g_4dAM0RFsSS2uPSnFUOxYT60kQ7lb74RADfyA4FajW3plrZItmS8dpL9if82jFgn6qvP7TJaID.
- fo4xUfoR_nnSzgJQjtKYRUHOq8Do6kUVFj9UeIsGVrcaBuLOl_R_KIkDWhjdoIewYGi.ZG5gYOt8
- qT3wHt7pQt7dBZk_uLqPurU8sGcuxH_JGDsyXOErM.Q0q7Io_MDLALeXgCWdjuCnzi3gISLVpOTE
- PVUcT0WfXSQrjrfszH0zPOXxfG20ex7aLOINO7KsuapJw8QMTjV85muDfP.FAmr6h45otHZqT6N6
- e_6JU6wg7Lpz3D2wR9lo35jgzIdtFPOhi43jycuyfd47GJ67ab5_hTW7684tc4kct0MIwREtE0N0
- qG.Z6RRLUCSb6oa_VOi4Rz386pMFzVHMdIxdB.dAPQuQQucXd6TlPFEjL8VJ9Urnx8gHDokcwKjB
- yZKIHP7oyeMixB6b2UT.ralbIe93QonVsLANTxBnA0MX1dd6fkeYh3cmTWS04uWToCD8B0eLU2cu
- rNKPkkhQwjNVdgCl7fTaRE_Fg_fLgrFLbCb4N26gw5BiTymphpV.mg4VK6exM8nOmmYQOCHQT_h1
- KVergKtIFm6FYhZXqm3SpQkhJwbgVBgn4wahaHwSrXEa0DrHMwU.VIzWtLQR.Un8oMiFM_DKKaEc
- JOxQ25rlufP9AXw9YPm9v5oSoft4rQKI5ZhQX3euEJV6d273YP.71zDsOb7Das4kXRGpbQKJ2EC9
- Y1zKf6r1F6Td4j.Gq_f5aTNzz1m73at21Rka_T_0Xy8nU0nJnN6HRS4Ykr5cWfJUo_sA0s2nK7CQ
- PZlS2QoWPUgB58pNJu9rfP7a_I1xXAybgbbfNyRzKDKnku.odW8sqYHlPjnNel2eNP_pvMygoHjW
- PNAxH_dcTnEcYIkIm7tRekSNGk257JOWM.7v2X87TWwNQRdOQrpiYM7Pc6M160JdK87M7pCVaKnV
- Y
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Sun, 19 Apr 2020 20:56:12 +0000
-Date:   Sun, 19 Apr 2020 20:56:10 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
-Reply-To: mrs.minaabrunel2021@aol.com
-Message-ID: <750112310.2114577.1587329770804@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <750112310.2114577.1587329770804.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15651 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0
-To:     unlisted-recipients:; (no To-header on input)
+        id S1725994AbgDTFrG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 01:47:06 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:41039 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725379AbgDTFrF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Apr 2020 01:47:05 -0400
+X-Greylist: delayed 470 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 01:47:04 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=7jeYy+0kw+BDwc27sM9Qazk8Eah3Qmvz5cfU906WJME=; b=l
+        eDBAAKMySPKhlRK1SN0tEEU24/SP82dlmZf7+5N8hjRjQxDg2/Si8IBY+xsuJmuM
+        FOaC01foEiZ9nTDfw7w1M5n1ZyYPU1McSpYJnk3p8ZcVbLYShYJ8d/dC9ebwLMPh
+        MoNKSV/JinuCkUSCOzU5u2z/DHcTlpDw6F3sDek2J0=
+Received: from localhost.localdomain (unknown [61.129.42.58])
+        by app2 (Coremail) with SMTP id XQUFCgCXn+N3NZ1elfUdAA--.15497S3;
+        Mon, 20 Apr 2020 13:39:04 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
+Date:   Mon, 20 Apr 2020 13:38:40 +0800
+Message-Id: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgCXn+N3NZ1elfUdAA--.15497S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4DuF48Jw4fXFyDJw1DWrg_yoW5GFW3pr
+        yDKFs0gr1rCr1qva1xG390qw1Fg3WkGw4UGr98Crsaqw43JwnxZF9Iy3WYyry5tFWfXrZr
+        Xa1Yv34UAF9FkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUXTmhUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
+returns a local reference of the blcok group that contains the given
+bytenr to "block_group" with increased refcount.
 
+When btrfs_remove_block_group() returns, "block_group" becomes invalid,
+so the refcount should be decreased to keep refcount balanced.
 
-My Dear in the lord
+The reference counting issue happens in several exception handling paths
+of btrfs_remove_block_group(). When those error scenarios occur such as
+btrfs_alloc_path() returns NULL, the function forgets to decrease its
+refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
+leak.
 
+Fix this issue by jumping to "out_put_group" label and calling
+btrfs_put_block_group() when those error scenarios occur.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
-e capital city of Italy in Southern Europe. The money was from the sale of =
-his company and death benefits payment and entitlements of my deceased husb=
-and by his company.
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ fs/btrfs/block-group.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 404e050ce8ee..d9f432bd3329 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -916,7 +916,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto out_put_group;
+ 	}
+ 
+ 	/*
+@@ -954,7 +954,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_orphan_add(trans, BTRFS_I(inode));
+ 		if (ret) {
+ 			btrfs_add_delayed_iput(inode);
+-			goto out;
++			goto out_put_group;
+ 		}
+ 		clear_nlink(inode);
+ 		/* One for the block groups ref */
+@@ -977,13 +977,13 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
+ 	if (ret < 0)
+-		goto out;
++		goto out_put_group;
+ 	if (ret > 0)
+ 		btrfs_release_path(path);
+ 	if (ret == 0) {
+ 		ret = btrfs_del_item(trans, tree_root, path);
+ 		if (ret)
+-			goto out;
++			goto out_put_group;
+ 		btrfs_release_path(path);
+ 	}
+ 
+@@ -1102,7 +1102,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	ret = remove_block_group_free_space(trans, block_group);
+ 	if (ret)
+-		goto out;
++		goto out_put_group;
+ 
+ 	btrfs_put_block_group(block_group);
+ 	btrfs_put_block_group(block_group);
+@@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		btrfs_delayed_refs_rsv_release(fs_info, 1);
+ 	btrfs_free_path(path);
+ 	return ret;
++out_put_group:
++	btrfs_put_block_group(block_group);
++	goto out;
+ }
+ 
+ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+-- 
+2.7.4
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
