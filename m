@@ -2,104 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6031B19B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 00:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36091B19D5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 00:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgDTWoA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 18:44:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54312 "EHLO mx2.suse.de"
+        id S1726919AbgDTW5d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 18:57:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56794 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgDTWoA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 18:44:00 -0400
+        id S1726006AbgDTW5d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Apr 2020 18:57:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6F52CAC53;
-        Mon, 20 Apr 2020 22:43:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D6236AD94;
+        Mon, 20 Apr 2020 22:57:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E6951DA72D; Tue, 21 Apr 2020 00:43:15 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 00:43:15 +0200
+        id 626ADDA72D; Tue, 21 Apr 2020 00:56:50 +0200 (CEST)
+Date:   Tue, 21 Apr 2020 00:56:50 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
-        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
-Message-ID: <20200420224315.GI18421@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, osandov@osandov.com
+Subject: Re: [PATCH v3] btrfs-progs: Remove support for
+ BTRFS_SUBVOL_CREATE_ASYNC
+Message-ID: <20200420225650.GJ18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xin Tan <tanxin.ctf@gmail.com>
-References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, osandov@osandov.com
+References: <20200402123147.18894-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <20200402123147.18894-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 01:38:40PM +0800, Xiyu Yang wrote:
-> btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
-> returns a local reference of the blcok group that contains the given
-> bytenr to "block_group" with increased refcount.
+On Thu, Apr 02, 2020 at 03:31:47PM +0300, Nikolay Borisov wrote:
+> Kernel has removed support for this feature in 5.7 so let's remove
+> support from progs as well.
 > 
-> When btrfs_remove_block_group() returns, "block_group" becomes invalid,
-> so the refcount should be decreased to keep refcount balanced.
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> Reviewed-by: Omar Sandoval <osandov@fb.com>
+> ---
+> Changelog V3:
+>  * Deleted unnecessary function documentation (Omar)
+>  * Decapitalize some words (Omar)
 > 
-> The reference counting issue happens in several exception handling paths
-> of btrfs_remove_block_group(). When those error scenarios occur such as
-> btrfs_alloc_path() returns NULL, the function forgets to decrease its
-> refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
-> leak.
+> Changelog v2:
+>  * Removed async mentions in README.md
+>  * Changed docs in libbtrfsutil/btrfsutil.h to mention async is unused.
+>  * Removed tests using async_
+>  * Changed python module's doc to mention the async_ parameter is unused.
+>  ioctl.h                                     |  4 +--
+>  libbtrfsutil/README.md                      | 14 ++------
+>  libbtrfsutil/btrfs.h                        |  4 +--
+>  libbtrfsutil/btrfsutil.h                    | 23 +++++--------
+>  libbtrfsutil/python/module.c                |  6 ++--
+>  libbtrfsutil/python/tests/test_subvolume.py | 12 ++-----
+>  libbtrfsutil/subvolume.c                    | 38 ++++++---------------
+>  7 files changed, 29 insertions(+), 72 deletions(-)
 > 
-> Fix this issue by jumping to "out_put_group" label and calling
-> btrfs_put_block_group() when those error scenarios occur.
+> diff --git a/ioctl.h b/ioctl.h
+> index ade6dcb91044..b63391f904c4 100644
+> --- a/ioctl.h
+> +++ b/ioctl.h
+> @@ -49,15 +49,13 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_vol_args) == 4096);
 > 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+>  #define BTRFS_DEVICE_PATH_NAME_MAX 1024
+> 
+> -#define BTRFS_SUBVOL_CREATE_ASYNC	(1ULL << 0)
 
-Thanks for the fix. May I ask if this was found by code inspection or by
-some analysis tool?
-
-> @@ -1132,6 +1132,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  		btrfs_delayed_refs_rsv_release(fs_info, 1);
->  	btrfs_free_path(path);
->  	return ret;
-> +out_put_group:
-> +	btrfs_put_block_group(block_group);
-> +	goto out;
-
-As Filipe noted, the trailing gotos are not a great pattern, what we'd
-like to do is a more linear sequence where the resource
-allocation/freeing nesting is obvious, like:
-
-
-	x = allocate(X);
-	if (!x)
-		goto out;
-	...
-	y = allocate(Y);
-	if (!y)
-		goto out_free_x;
-	z = allocate(Z);
-	if (!z)
-		goto out_free_y;
-	...
-	free(z);
-out_free_y:
-	free(y);
-out_free_x:
-	free(x);
-out:
-	return;
-
-
-(where allocate/free can be refcount inc/dec and similar). Sometimes
-it's not that straightforward and the freeing block needs conditionals,
-but from code reading perspective this is still better than potentially
-wild gotos.
+We got the report that removing the symbol breaks compilation, and ioctl.h is
+exported to libbtrfs. I'm not aware of any 3rd party tool using this symbol, we
+may want to make it more relaxed and keep the definition, but warn if is
+used in any of the public interfaces.
