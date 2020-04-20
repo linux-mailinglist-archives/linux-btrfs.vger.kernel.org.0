@@ -2,136 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D5D1B0710
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 13:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100AD1B071D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Apr 2020 13:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725886AbgDTLKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Apr 2020 07:10:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:36036 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgDTLKn (ORCPT
+        id S1726173AbgDTLOb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Apr 2020 07:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726083AbgDTLOa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Apr 2020 07:10:43 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KB8lLw126388;
-        Mon, 20 Apr 2020 11:10:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=nhFPBHdqpClRcBQb5/ebAAEUD8Y6uH2IzVqpT5bNk3I=;
- b=em3+VVzF6BkwwfZkxzcBmu8Jn2ViCfjeP5ELAMNZEUvB85WGpL/jhQzXL8XLSHXX/1mu
- krZJa95CbH6lmZzgQBOBrPF47Ew+590/XulBNshTeYe6U8VZ/xhW4/YpQtRefk5Dflnf
- kyBf/7z27WaU8z1+5m+IbF8UO2lHsiult11pIvRl7IbiBD70XJysB8Ljoi/2vICWXrVZ
- lTYc1hwYcDAMxOohK1r6Wre+C7dfWwOtGOGgqZZvQlKfSFJ0Csb9ikq0meuEStkWfReW
- xNA1IALuPrTpinq/bWuhe1sHL5fGIjizB1EBEp05OXTxdPpGqEh9qCvz7A+mjxmrqtha 3g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30ft6mxdy3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Apr 2020 11:10:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03KB7amK095178;
-        Mon, 20 Apr 2020 11:10:33 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30gb3q8w14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Apr 2020 11:10:33 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03KBAT5B002371;
-        Mon, 20 Apr 2020 11:10:29 GMT
-Received: from [10.191.37.168] (/10.191.37.168)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 20 Apr 2020 04:10:29 -0700
-Subject: Re: 5.4.20: cannot mount device that blipped off the bus: duplicate
- device fsid:devid for
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200321202307.GA15906@merlins.org>
- <1aaae706-0029-be4f-9f6f-194b03087b35@suse.com>
- <20200325201455.GO29461@merlins.org>
- <a9dd1b1a-b38e-a0f4-91e1-b89063e8ae1e@oracle.com>
- <20200326013007.GS15123@merlins.org>
- <0d2ea8e2-cbe8-ca64-d0d4-fa70b8cad8b1@oracle.com>
- <20200326042624.GT15123@merlins.org> <20200414003854.GA6639@merlins.org>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <07166dd6-4554-a545-9774-a622890095a7@oracle.com>
-Date:   Mon, 20 Apr 2020 19:10:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 20 Apr 2020 07:14:30 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F49CC061A0F
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 04:14:30 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id s9so7605386eju.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Apr 2020 04:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=okPBkG9vtS/wVdJh/KDIc+hdg6krV+bND5agW6vUaRM=;
+        b=IDveWlOS7Tzhrdb36+hZpTST6wjOAPrAj2jj5uib3vbWbabqwzW9IWuAtw8h4eTBNA
+         9a9lkdgEJOm6Eb3fwCtOVTxrVmphaH2PGWy9bhlS9QBo4VsFK/CUgj6vV9uyCovU0arA
+         5Kj1tMT4D5sNr37XYcPWFQo9UnIzxN1guBg1w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=okPBkG9vtS/wVdJh/KDIc+hdg6krV+bND5agW6vUaRM=;
+        b=tR+L6idu4I3eobpmnJIqiweE1M7otbwRa/UwBMdYWSTCo+SNXMJrfUZCo3jE1vCQea
+         3lKqRATaH1pxsPSKweVBaCxjyye/f9VuCwJX2ipmhSYAg62kvAD8uKge5OIg8O8erP8v
+         HDmAxEkaYou2u2wMuz8ASSrRAC5m4l1LQgXlG+B38qBexuoyczdtq6jUtgfjXIflBlCp
+         8B9rjMs49jv73tnbWLRuZgpfkDPwPnNwkdHr8rk97CZlcaJq8mSzfQX3+snVYsuqikAP
+         y89mkxMmKAL69h3nBziWC7Vw3aB3AOwP4Ewbymj3jcOPdkYF2ojjfA+Ui1GfmGqP+7yC
+         4GDg==
+X-Gm-Message-State: AGi0PuarE1JiiyjaNYkb8DDxP9OVl7TOKvZV8SVW6XkUeUNciSeZzq74
+        LPrHUhQhowgJZddJfiWJng84ak7UYI85eHMZbDAO7Dgu
+X-Google-Smtp-Source: APiQypIVhtjPPYqBEymAM1SkD4SYcU1V6bmTKvyt+63wSYT0tOjvuXxym8edoJZS6GcpMs4Nq+7PF2DextVY/K9Ax1g=
+X-Received: by 2002:a17:906:841a:: with SMTP id n26mr16038100ejx.43.1587381268754;
+ Mon, 20 Apr 2020 04:14:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200414003854.GA6639@merlins.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004200100
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9596 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004200100
+References: <20200414150233.24495-1-willy@infradead.org> <20200414150233.24495-25-willy@infradead.org>
+In-Reply-To: <20200414150233.24495-25-willy@infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 20 Apr 2020 13:14:17 +0200
+Message-ID: <CAJfpegsZF=TFQ67vABkE5ghiZoTZF+=_u8tM5U_P6jZeAmv23A@mail.gmail.com>
+Subject: Re: [PATCH v11 24/25] fuse: Convert from readpages to readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Apr 14, 2020 at 5:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>
+> Implement the new readahead operation in fuse by using __readahead_batch()
+> to fill the array of pages in fuse_args_pages directly.  This lets us
+> inline fuse_readpages_fill() into fuse_readahead().
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> ---
+>  fs/fuse/file.c | 99 ++++++++++++++------------------------------------
+>  1 file changed, 27 insertions(+), 72 deletions(-)
+>
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index 9d67b830fb7a..db82fb29dd39 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -915,84 +915,39 @@ static void fuse_send_readpages(struct fuse_io_args *ia, struct file *file)
+>         fuse_readpages_end(fc, &ap->args, err);
+>  }
+>
+> -struct fuse_fill_data {
+> -       struct fuse_io_args *ia;
+> -       struct file *file;
+> -       struct inode *inode;
+> -       unsigned int nr_pages;
+> -       unsigned int max_pages;
+> -};
+> -
+> -static int fuse_readpages_fill(void *_data, struct page *page)
+> +static void fuse_readahead(struct readahead_control *rac)
+>  {
+> -       struct fuse_fill_data *data = _data;
+> -       struct fuse_io_args *ia = data->ia;
+> -       struct fuse_args_pages *ap = &ia->ap;
+> -       struct inode *inode = data->inode;
+> +       struct inode *inode = rac->mapping->host;
+>         struct fuse_conn *fc = get_fuse_conn(inode);
+> +       unsigned int i, max_pages, nr_pages = 0;
+>
+> -       fuse_wait_on_page_writeback(inode, page->index);
+> -
+> -       if (ap->num_pages &&
+> -           (ap->num_pages == fc->max_pages ||
+> -            (ap->num_pages + 1) * PAGE_SIZE > fc->max_read ||
+> -            ap->pages[ap->num_pages - 1]->index + 1 != page->index)) {
+> -               data->max_pages = min_t(unsigned int, data->nr_pages,
+> -                                       fc->max_pages);
+> -               fuse_send_readpages(ia, data->file);
+> -               data->ia = ia = fuse_io_alloc(NULL, data->max_pages);
+> -               if (!ia) {
+> -                       unlock_page(page);
+> -                       return -ENOMEM;
+> -               }
+> -               ap = &ia->ap;
+> -       }
+> -
+> -       if (WARN_ON(ap->num_pages >= data->max_pages)) {
+> -               unlock_page(page);
+> -               fuse_io_free(ia);
+> -               return -EIO;
+> -       }
+> -
+> -       get_page(page);
+> -       ap->pages[ap->num_pages] = page;
+> -       ap->descs[ap->num_pages].length = PAGE_SIZE;
+> -       ap->num_pages++;
+> -       data->nr_pages--;
+> -       return 0;
+> -}
+> -
+> -static int fuse_readpages(struct file *file, struct address_space *mapping,
+> -                         struct list_head *pages, unsigned nr_pages)
+> -{
+> -       struct inode *inode = mapping->host;
+> -       struct fuse_conn *fc = get_fuse_conn(inode);
+> -       struct fuse_fill_data data;
+> -       int err;
+> -
+> -       err = -EIO;
+>         if (is_bad_inode(inode))
+> -               goto out;
+> +               return;
+>
+> -       data.file = file;
+> -       data.inode = inode;
+> -       data.nr_pages = nr_pages;
+> -       data.max_pages = min_t(unsigned int, nr_pages, fc->max_pages);
+> -;
+> -       data.ia = fuse_io_alloc(NULL, data.max_pages);
+> -       err = -ENOMEM;
+> -       if (!data.ia)
+> -               goto out;
+> +       max_pages = min(fc->max_pages, fc->max_read / PAGE_SIZE);
+>
+> -       err = read_cache_pages(mapping, pages, fuse_readpages_fill, &data);
+> -       if (!err) {
+> -               if (data.ia->ap.num_pages)
+> -                       fuse_send_readpages(data.ia, file);
+> -               else
+> -                       fuse_io_free(data.ia);
+> +       for (;;) {
+> +               struct fuse_io_args *ia;
+> +               struct fuse_args_pages *ap;
+> +
+> +               nr_pages = readahead_count(rac) - nr_pages;
 
+Hmm.  I see what's going on here, but it's confusing.   Why is
+__readahead_batch() decrementing the readahead count at the start,
+rather than at the end?
 
+At the very least it needs a comment about why nr_pages is calculated this way.
 
-The steps below are they in the chronological order?
+> +               if (nr_pages > max_pages)
+> +                       nr_pages = max_pages;
+> +               if (nr_pages == 0)
+> +                       break;
+> +               ia = fuse_io_alloc(NULL, nr_pages);
+> +               if (!ia)
+> +                       return;
+> +               ap = &ia->ap;
+> +               nr_pages = __readahead_batch(rac, ap->pages, nr_pages);
+> +               for (i = 0; i < nr_pages; i++) {
+> +                       fuse_wait_on_page_writeback(inode,
+> +                                                   readahead_index(rac) + i);
 
-> gargamel:~# dmtail 3
-> [1887142.765448] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4529, flush 0, corrupt 0, gen 0
-> [1887142.795820] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4530, flush 0, corrupt 0, gen 0
-> [1887142.826176] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4531, flush 0, corrupt 0, gen 0
-> gargamel:~# cat /proc/partitions  |grep sd[ep]
->     8      240 3750738264 sdp
->     8      241 3750737223 sdp1
-> gargamel:~# mount | grep sde
-> /dev/sde1 on /mnt/btrfs_space type btrfs (ro,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=5,subvol=/)
-> /dev/sde1 on /var/local/space type btrfs (ro,noexec,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=257,subvol=/varlocalspace)
-> /dev/sde1 on /var/cache/zoneminder type btrfs (ro,nosuid,nodev,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=257,subvol=/varlocalspace/zoneminder)
-> /dev/sde1 on /var/lib/mysql type btrfs (ro,nosuid,nodev,noatime,compress=lzo,ssd,discard,space_cache,skip_balance,subvolid=3648,subvol=/mysql)
-> gargamel:~# umount /mnt/btrfs_space; umount /var/local/space; umount /var/cache/zoneminder; umount /var/lib/mysql
-> gargamel:~# mount | grep sde
-> 
-> gargamel:~# mount /dev/sdp1 /mnt/mnt
-> mount: /mnt/mnt: mount(2) system call failed: File exists.
-> gargamel:~# dmtail 2
-> [1887142.826176] BTRFS error (device sde1): bdev /dev/sde1 errs: wr 1038, rd 4531, flush 0, corrupt 0, gen 0
-> [1887453.610947] BTRFS warning (device sde1): duplicate device fsid:devid for 727c7ba3-f6f9-462a-8472-453dd7d46d8a:1 old:/dev/sde1 new:/dev/sdp1
+What's wrong with ap->pages[i]->index?  Are we trying to wean off using ->index?
 
-
-  Before and after --forget command
-     btrfs fi show -m
-  could have told us what devices are still mounted.
-
-I will send a boilerplate code to dump device list from the kernel it 
-will help to debug. As of now this boilderplate code which I have been 
-using is too localized needs a lot of cleanups, will take sometime.
-
-
-> gargamel:/usr/local/bin# btrfs device scan --forget
-> gargamel:/usr/local/bin# mount /dev/sdp1 /mnt/mnt
-> mount: /mnt/mnt: mount(2) system call failed: File exists.
-
-
-Thanks, Anand
-
-> 
-> After reboot, I made sure sde is not used by anything weird, just simple mounts:
-> gargamel:~# lsblk  | grep sde
-> sde                                 8:64   1 931.5G  0 disk
-> ├─sde1                              8:65   1 488.3M  0 part
-> ├─sde2                              8:66   1  14.9G  0 part
-> ├─sde3                              8:67   1    80G  0 part
-> └─sde4                              8:68   1 836.1G  0 part
-> 
-> Any ideas?
-> 
-> Marc
-> 
+Thanks,
+Miklos
