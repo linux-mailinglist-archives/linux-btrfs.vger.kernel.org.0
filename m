@@ -2,119 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C4A1B26B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 14:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D7A1B26FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 15:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbgDUMtc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 21 Apr 2020 08:49:32 -0400
-Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:34788 "EHLO
-        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728698AbgDUMtc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:49:32 -0400
-Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.191) BY m9a0013g.houston.softwaregrp.com WITH ESMTP;
- Tue, 21 Apr 2020 12:48:41 +0000
-Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
- M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 21 Apr 2020 12:48:39 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (15.124.8.10) by
- M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Tue, 21 Apr 2020 12:48:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EQPVlDet7Fz9I81GW1w2tnsgWGpgWA4I+a95vynTabHLwEWZW4WznzhBlBxNVMK0hXsolebE+okGGP8rYDDP0NVCY5VDnRKMI6T4b48TQzJAjUQCg4T7UkctFRPFTNa/DOgazYrD7REPO4rHb4PSJxbRjbq3bwy8umBaJ5fl51eVKcrQeKIwNKnEK4Cj+NppdXbkpj9opuRdD8Jp12Assc5PsDFZJmlX+yUkqicRh0mL6Okk78yoCnZjc0qnLbINYlp2NwNldI9ZJ8RLmsve1XX1EVCi7GaJyYCRynjllGGHlqEfBYYWqHn5uP71Cu7Etcb4HamFFM9SErZgPSdQMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TZmOUvglyY4R8efk25qw+Q9cnlWQeQuxwO4KW9yw0Tg=;
- b=Og2LA/+o7S2VnwLyJYNEAJOzL3qUwb975Q6Kc9PRCCvqVSWQ0ry/KfGXtGFI1ZfBcfNR6Dp2Apq6jhjzlW4ucPoMFx0s+okSai1a1Sv9+Y9PMLGLqKJwsLCPkpU0+O87CukEignbjqH9bVz+kJZ3r6x6FL9Yt52zMOBj9/YbmJiudYE9mc1XO/WAPQWf3p26ygJ4SUDqDG8xxHH723+RyVgE5rriBy2E+ogt+AD3ToZlPIHIft1dH7l5zL6MVApcpD7deaS9XKmOZGi1i7No1iJJFHRoBDL49T8Nx6fuYGa3GongX3YNy7tYgJURXKHOGBuHKhH8yEoZPxsWstx1aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-Received: from MN2PR18MB2416.namprd18.prod.outlook.com (2603:10b6:208:a9::25)
- by MN2PR18MB3118.namprd18.prod.outlook.com (2603:10b6:208:166::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Tue, 21 Apr
- 2020 12:48:35 +0000
-Received: from MN2PR18MB2416.namprd18.prod.outlook.com
- ([fe80::8cf0:641e:631d:7a6]) by MN2PR18MB2416.namprd18.prod.outlook.com
- ([fe80::8cf0:641e:631d:7a6%4]) with mapi id 15.20.2921.030; Tue, 21 Apr 2020
- 12:48:35 +0000
-Subject: Re: [PATCH][next] btrfs: fix check for memory allocation failure of
- ret->path
-To:     Colin King <colin.king@canonical.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        <linux-btrfs@vger.kernel.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200421124703.149466-1-colin.king@canonical.com>
-From:   Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <a6b24f6e-1611-91a9-2f02-ff852af0b51a@suse.com>
-Date:   Tue, 21 Apr 2020 20:48:28 +0800
+        id S1728626AbgDUNBA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Apr 2020 09:01:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40356 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726780AbgDUNA7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:00:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CF569ABC7;
+        Tue, 21 Apr 2020 13:00:56 +0000 (UTC)
+Subject: Re: [PATCH v2 12/15] btrfs: get rid of one layer of bios in direct
+ I/O
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>
+References: <cover.1587072977.git.osandov@fb.com>
+ <bd8015bf0064f084c371ceee399383d791c807db.1587072977.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f5e024ae-b148-a54b-c6ba-d875a16757b9@suse.com>
+Date:   Tue, 21 Apr 2020 16:00:56 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
-In-Reply-To: <20200421124703.149466-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: BYAPR11CA0054.namprd11.prod.outlook.com
- (2603:10b6:a03:80::31) To MN2PR18MB2416.namprd18.prod.outlook.com
- (2603:10b6:208:a9::25)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR11CA0054.namprd11.prod.outlook.com (2603:10b6:a03:80::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Tue, 21 Apr 2020 12:48:32 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4bdaf68-e914-459f-1b71-08d7e5f24dcb
-X-MS-TrafficTypeDiagnostic: MN2PR18MB3118:
-X-LD-Processed: 856b813c-16e5-49a5-85ec-6f081e13b527,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR18MB3118F8F55A08EC139255142FD6D50@MN2PR18MB3118.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-Forefront-PRVS: 038002787A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR18MB2416.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(39860400002)(376002)(136003)(366004)(346002)(396003)(52116002)(5660300002)(186003)(66476007)(66556008)(6706004)(2906002)(956004)(81156014)(16576012)(8676002)(2616005)(4326008)(316002)(26005)(8936002)(66946007)(16526019)(478600001)(86362001)(31696002)(36756003)(6666004)(6486002)(110136005)(4744005)(31686004)(78286006);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Swa24krwbSvexWc+SEDUQt5Mns28bJyXW4XUUuhikMYhIt7ktjmKT/xN9djyKfjoVndTSDxr20ZRaJqkkoI0Cb6Zk13ISaaJolsirwmThqyexk+HPFxLcYMPJzYEA29x8IHx6EK1kjAQN9y6pmVUAAEZg9mgBUHFKhXhJBr988GlxdBMaaTcudSzV/nHxWnChn0UMZTkkC3nCaIHAgHDl/cqQHmJiJKWTLQjd9cw4WPT3flWs6gCvof7pElViirMdRQT/m43728gA9ChrPAod4EouwLqfId+0SDCwDEGV7sSQT/zp9FhRnBWRxkhodRG8nOIWz++iAiay4mHaGS1Y0TyNBecjBybIyRbJsJl8l1oKrxqRsJc8B96m1JNemt1A80BpZBLXDrjojn8yuTzuIjlsODkxDT+WMIBWVtIWrntGZq7VG2otPQC+R3VfdE+teKJyZ7svOwtjtsL8IVkVzUr1DF9TJQrVRplhbZyzaVvl9OlJzcZoS7tnE5MtEpcRcliNiYuqkL3KYitgTR72jhd4pbbZVzJHdRnuqDS/Jc=
-X-MS-Exchange-AntiSpam-MessageData: cgg0pRxajhhzbLsSW46F00HhN6RZCdYGj3r5/HBjjYwM6tPzvJsefsjSnU1NMvVeiqGte3hyt0V9eBAPTM19Ducv2WlVQ8J07Wct0ES3MawqN4MEtL8PsWjB+0sF9w/mtkZpJRjFueul1KZJoob5Iw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4bdaf68-e914-459f-1b71-08d7e5f24dcb
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2020 12:48:34.7886
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iLZG4aZ0nwrDJXB0+upC1LEhfNQVbZWcv5W3f9QuJgmcGPjddtXu5I1bgimyvuiR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3118
-X-OriginatorOrg: suse.com
+In-Reply-To: <bd8015bf0064f084c371ceee399383d791c807db.1587072977.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -122,38 +81,86 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/4/21 下午8:47, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 17.04.20 г. 0:46 ч., Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> Currently the memory allocation failure check for ret->path is checking
-> that ret is null rather than ret->path.  Fix this by checking ret->path
-> instead.
+> In the worst case, there are _4_ layers of bios in the Btrfs direct I/O
+> path:
 > 
-> Addresses-Coverity: ("Dereference null return")
-> Fixes: bd8bdc532152 ("btrfs: backref: introduce the skeleton of btrfs_backref_iter")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 1. The bio created by the generic direct I/O code (dio_bio).
+> 2. A clone of dio_bio we create in btrfs_submit_direct() to represent
+>    the entire direct I/O range (orig_bio).
+> 3. A partial clone of orig_bio limited to the size of a RAID stripe that
+>    we create in btrfs_submit_direct_hook().
+> 4. Clones of each of those split bios for each RAID stripe that we
+>    create in btrfs_map_bio().
+> 
+> As of the previous commit, the second layer (orig_bio) is no longer
+> needed for anything: we can split dio_bio instead, and complete dio_bio
+> directly when all of the cloned bios complete. This lets us clean up a
+> bunch of cruft, including dip->subio_endio and dip->errors (we can use
+> dio_bio->bi_status instead). It also enables the next big cleanup of
+> direct I/O read repair.
 
-My bad.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
+nit: Please explicitly mention that btrfs_dio_private_put is now not
+only putting a structure and doing cleanups but also serves as the io
+completion routine for dio_bio. Given the name of the function and its
+purpose I find this a bit counter-intuitive. But since this is rather
+subjective I'd like to ask David if he also sees it as a bit surprising?
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 > ---
->  fs/btrfs/backref.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/btrfs/btrfs_inode.h |  16 ----
+>  fs/btrfs/inode.c       | 185 +++++++++++++++--------------------------
+>  2 files changed, 65 insertions(+), 136 deletions(-)
 > 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 60a69f7c0b36..78e6c9a64212 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2307,7 +2307,7 @@ struct btrfs_backref_iter *btrfs_backref_iter_alloc(
->  		return NULL;
+
+<snip>
+
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index fe87c465b13c..79b884d2f3ed 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7356,6 +7356,29 @@ static int btrfs_get_blocks_direct(struct inode *inode, sector_t iblock,
+>  	return ret;
+>  }
 >  
->  	ret->path = btrfs_alloc_path();
-> -	if (!ret) {
-> +	if (!ret->path) {
->  		kfree(ret);
->  		return NULL;
->  	}
-> 
+> +static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
+> +{
+
+The way you've structured the code is proliferating something which has
+been identified as bad practice, namely - asymmetry between  "refcount
+get" and "refcount put" operations. The put is nicely encapsulated
+behind an aptly named function, however getting the reference is really
+an open-coded refcount_inc. This has lead to at least 1 bug in the past
+(recently fixed by Filipe) since transaction's refcount management is
+similar. So I'd rather have the refcount_inc(dip->refs) be encapsulated
+behind a simple btrfs_dio_private_get() helper.
+
+> +	/*
+> +	 * This implies a barrier so that stores to dio_bio->bi_status before
+> +	 * this and loads of dio_bio->bi_status after this are fully ordered.
+> +	 */
+> +	if (!refcount_dec_and_test(&dip->refs))
+> +		return;
+> +
+> +	if (bio_op(dip->dio_bio) == REQ_OP_WRITE) {
+> +		__endio_write_update_ordered(dip->inode, dip->logical_offset,
+> +					     dip->bytes,
+> +					     !dip->dio_bio->bi_status);
+> +	} else {
+> +		unlock_extent(&BTRFS_I(dip->inode)->io_tree,
+> +			      dip->logical_offset,
+> +			      dip->logical_offset + dip->bytes - 1);
+> +	}
+> +
+> +	dio_end_io(dip->dio_bio);
+> +	kfree(dip);
+> +}
+> +
+>  static inline blk_status_t submit_dio_repair_bio(struct inode *inode,
+>  						 struct bio *bio,
+>  						 int mirror_num)
+
+<snip>
