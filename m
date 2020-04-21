@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBFA1B2421
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 12:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64331B24D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 13:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728434AbgDUKo3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Apr 2020 06:44:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47862 "EHLO mx2.suse.de"
+        id S1728671AbgDULRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Apr 2020 07:17:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43784 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgDUKo3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Apr 2020 06:44:29 -0400
+        id S1728533AbgDULRR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Apr 2020 07:17:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 84843ADCE;
-        Tue, 21 Apr 2020 10:44:26 +0000 (UTC)
-Subject: Re: [PATCH v2 03/15] btrfs: fix double __endio_write_update_ordered
- in direct I/O
+        by mx2.suse.de (Postfix) with ESMTP id 7766AAE64;
+        Tue, 21 Apr 2020 11:17:14 +0000 (UTC)
+Subject: Re: [PATCH v2 06/15] btrfs: clarify btrfs_lookup_bio_sums
+ documentation
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@lst.de>
 References: <cover.1587072977.git.osandov@fb.com>
- <594c8cb6dd64cebdf5e01016ce823e1be00fc7ab.1587072977.git.osandov@fb.com>
+ <51f9f9b917ded1057f1d24f7bbf7546492f3ea98.1587072977.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <251a02c2-b6b9-7b31-38dc-a56abc2e0f77@suse.com>
-Date:   Tue, 21 Apr 2020 13:44:25 +0300
+Message-ID: <a2cfcced-f733-502f-c276-44eada3d1cb8@suse.com>
+Date:   Tue, 21 Apr 2020 14:17:14 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <594c8cb6dd64cebdf5e01016ce823e1be00fc7ab.1587072977.git.osandov@fb.com>
+In-Reply-To: <51f9f9b917ded1057f1d24f7bbf7546492f3ea98.1587072977.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,107 +84,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 17.04.20 г. 0:46 ч., Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> In btrfs_submit_direct(), if we fail to allocate the btrfs_dio_private,
-> we complete the ordered extent range. However, we don't mark that the
-> range doesn't need to be cleaned up from btrfs_direct_IO() until later.
-> Therefore, if we fail to allocate the btrfs_dio_private, we complete the
-> ordered extent range twice. We could fix this by updating
-> unsubmitted_oe_range earlier, but it's cleaner to reorganize the code so
-> that creating the btrfs_dio_private and submitting the bios are
-> separate, and once the btrfs_dio_private is created, cleanup always
-> happens through the btrfs_dio_private.
+> Fix a couple of issues in the btrfs_lookup_bio_sums documentation:
 > 
-> Fixes: f28a49287817 ("Btrfs: fix leaking of ordered extents after direct IO write error")
+> * The bio doesn't need to be a btrfs_io_bio if dst was provided. Move
+>   the declaration in the code to make that clear, too.
+> * dst must be large enough to hold nblocks * csum_size, not just
+>   csum_size.
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Generally looks ok, so :
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>, however please see
-below for some remarks on the logic around unsubmitted_oe_range_start/end
-
-> ---
->  fs/btrfs/inode.c | 174 ++++++++++++++++++-----------------------------
->  1 file changed, 66 insertions(+), 108 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b628c319a5b6..f6ce9749adb6 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7903,14 +7903,60 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
->  	return ret;
->  }
->  
-> -static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
-> +/*
-> + * If this succeeds, the btrfs_dio_private is responsible for cleaning up locked
-> + * or ordered extents whether or not we submit any bios.
-> + */
-> +static struct btrfs_dio_private *btrfs_create_dio_private(struct bio *dio_bio,
-> +							  struct inode *inode,
-> +							  loff_t file_offset)
->  {
-> -	struct inode *inode = dip->inode;
-> +	const bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
-> +	struct btrfs_dio_private *dip;
-> +	struct bio *bio;
-> +
-> +	dip = kzalloc(sizeof(*dip), GFP_NOFS);
-> +	if (!dip)
-> +		return NULL;
-> +
-> +	bio = btrfs_bio_clone(dio_bio);
-> +	bio->bi_private = dip;
-> +	btrfs_io_bio(bio)->logical = file_offset;
-> +
-> +	dip->private = dio_bio->bi_private;
-> +	dip->inode = inode;
-> +	dip->logical_offset = file_offset;
-> +	dip->bytes = dio_bio->bi_iter.bi_size;
-> +	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
-> +	dip->orig_bio = bio;
-> +	dip->dio_bio = dio_bio;
-> +	atomic_set(&dip->pending_bios, 1);
-> +
-> +	if (write) {
-> +		struct btrfs_dio_data *dio_data = current->journal_info;
-> +
-> +		dio_data->unsubmitted_oe_range_end = dip->logical_offset +
-> +			dip->bytes;
-> +		dio_data->unsubmitted_oe_range_start =
-> +			dio_data->unsubmitted_oe_range_end;
-
-The logic around those 2 members is really subtle. We really have the
-following:
-
-1. btrfs_direct_IO sets those two to the same value.
-
-2. When we call __blockdev_direct_IO unless
-btrfs_get_blocks_direct->btrfs_get_blocks_direct_write is called to
-modify unsubmitted_oe_range_start so that start < end. Cleanup won't
-happen.
-
-3. We come into btrfs_submit_direct - if it dip allocation fails we'd
-return with oe_range_end now modified so cleanup will happen.
-
-4. If we manage to allocate the dip we reset the unsubmitted range
-members to be equal so that cleanup happens from btrfs_endio_direct_write.
-
-This 4-step logic is not really obvious, especially given it's scattered
-across 3 functions. Perhaps a comment saying that having the 2 members
-being equal means cleanup in btrfs_DIRECT_io is disabled.
-
-I'd rather have it spelled out in the changelog, I guess David can also
-do that ?
-
-> +
-> +		bio->bi_end_io = btrfs_endio_direct_write;
-> +	} else {
-> +		bio->bi_end_io = btrfs_endio_direct_read;
-> +		dip->subio_endio = btrfs_subio_endio_read;
-> +	}
-> +	return dip;
-> +}
-> +
-
-<snip>
 
