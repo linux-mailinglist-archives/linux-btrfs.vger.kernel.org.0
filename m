@@ -2,86 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECCA1B2351
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 11:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248FB1B23B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Apr 2020 12:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgDUJx5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Apr 2020 05:53:57 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:48785 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726874AbgDUJx4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Apr 2020 05:53:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:References:MIME-Version:Content-Type:
-        Content-Disposition:In-Reply-To; bh=hvdiuPl0KIHv2INqIIAEKyZp2lS6
-        iCXMohdB936WJOg=; b=Rvix9lKbxZ76GRlzsowkAXD1+NRZCwEcTPCwo2VRIy4h
-        4rIwDYNeRtMV681t3Q1OnPwjcyEwHxJckDLdqdhkJBXMHAhuu2pDmp4kG+0Cqfks
-        bO28oyEI5/zanPyOPyfydz6iDnL5O+L4BbyGpdrFDufRBRINFnpzbgcsLYyut3A=
-Received: from localhost (unknown [120.229.255.67])
-        by app1 (Coremail) with SMTP id XAUFCgAXHaGhwp5elmElAA--.192S2;
-        Tue, 21 Apr 2020 17:53:39 +0800 (CST)
-Date:   Tue, 21 Apr 2020 17:53:37 +0800
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
-        kjlu@umn.edu, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] btrfs: Fix btrfs_block_group refcnt leak
-Message-ID: <20200421095337.GA88633@sherlly>
-References: <1587361120-83160-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20200420224315.GI18421@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420224315.GI18421@twin.jikos.cz>
-X-CM-TRANSID: XAUFCgAXHaGhwp5elmElAA--.192S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7JFyxAr4xKw4kWr48Zr4DCFg_yoW8JrWUpr
-        WDKayj9r98Kr17ta1xJ3yYv3WFka97Gw18Jrn8CrWxX343X343AFZ2gr15Zryj9F1fAryI
-        q3WYvFW5C3ZI9FUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x2
-        0xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18Mc
-        Ij6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1iihUUUUU=
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        id S1726403AbgDUKZZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Apr 2020 06:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725920AbgDUKZY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Apr 2020 06:25:24 -0400
+Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8FB22064A
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Apr 2020 10:25:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587464724;
+        bh=Bd9+mSOkOIlVq+UL8SXD4yWJjmSKl5od7AZF9BmsYW4=;
+        h=From:To:Subject:Date:From;
+        b=mcoGRrPEe+AoHKbfnZzSjS71x/dcW3I71Sb5SKewSQcaIrkK6YTgbUzBEPWsuNJHs
+         kyhaXNXpwZHxGmMA+R/ajIiJxLk/IIPss0Rjndk/SlUD+resBw1KUCbqAGw0CvTzN4
+         SxHOEy/trIClvOqOVd0pO11FK2uE+HIQwwdIDN08=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: fix partial loss of prealloc extent past i_size after fsync
+Date:   Tue, 21 Apr 2020 11:25:20 +0100
+Message-Id: <20200421102520.14686-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 12:43:15AM +0200, David Sterba wrote:
-> On Mon, Apr 20, 2020 at 01:38:40PM +0800, Xiyu Yang wrote:
-> > btrfs_remove_block_group() invokes btrfs_lookup_block_group(), which
-> > returns a local reference of the blcok group that contains the given
-> > bytenr to "block_group" with increased refcount.
-> > 
-> > When btrfs_remove_block_group() returns, "block_group" becomes invalid,
-> > so the refcount should be decreased to keep refcount balanced.
-> > 
-> > The reference counting issue happens in several exception handling paths
-> > of btrfs_remove_block_group(). When those error scenarios occur such as
-> > btrfs_alloc_path() returns NULL, the function forgets to decrease its
-> > refcnt increased by btrfs_lookup_block_group() and will cause a refcnt
-> > leak.
-> > 
-> > Fix this issue by jumping to "out_put_group" label and calling
-> > btrfs_put_block_group() when those error scenarios occur.
-> > 
-> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> 
-> Thanks for the fix. May I ask if this was found by code inspection or by
-> some analysis tool?
+From: Filipe Manana <fdmanana@suse.com>
 
-Thanks for your advice about the patch! We are looking for some automated ways
-to find this kind of bug.
+When we have an inode with a prealloc extent that starts at an offset
+lower than the i_size and there is another prealloc extent that starts at
+an offset beyond i_size, we can end up losing part of the first prealloc
+extent (the part that starts at i_size) and have an implicit hole if we
+fsync the file and then have a power failure.
+
+Consider the following example with comments explaining how and why it
+happens.
+
+  $ mkfs.btrfs -f /dev/sdb
+  $ mount /dev/sdb /mnt
+
+  # Create our test file with 2 consecutive prealloc extents, each with a
+  # size of 128Kb, and covering the range from 0 to 256Kb, with a file
+  # size of 0.
+  $ xfs_io -f -c "falloc -k 0 128K" /mnt/foo
+  $ xfs_io -c "falloc -k 128K 128K" /mnt/foo
+
+  # Fsync the file to record both extents in the log tree.
+  $ xfs_io -c "fsync" /mnt/foo
+
+  # Now do a redudant extent allocation for the range from 0 to 64Kb.
+  # This will merely increase the file size from 0 to 64Kb. Instead we
+  # could also do a truncate to set the file size to 64Kb.
+  $ xfs_io -c "falloc 0 64K" /mnt/foo
+
+  # Fsync the file, so we update the inode item in the log tree with the
+  # new file size (64Kb). This also ends up setting the number of bytes
+  # for the first prealloc extent to 64Kb. This is done by the truncation
+  # at btrfs_log_prealloc_extents().
+  # This means that if a power failure happens after this, a write into
+  # the file range 64Kb to 128Kb will not use the prealloc extent and
+  # will result in allocation of a new extent.
+  $ xfs_io -c "fsync" /mnt/foo
+
+  # Now set the file size to 256K with a truncate and then fsync the file.
+  # Since no changes happened to the extents, the fsync only updates the
+  # i_size in the inode item at the log tree. This results in an implicit
+  # hole for the file range from 64Kb to 128Kb, something which fsck will
+  # complain when not using the NO_HOLES feature if we replay the log
+  # after a power failure.
+  $ xfs_io -c "truncate 256K" -c "fsync" /mnt/foo
+
+So instead of always truncating the log to the inode's current i_size at
+btrfs_log_prealloc_extents(), check first if there's a prealloc extent
+that starts at an offset lower than the i_size and with a length that
+crosses the i_size - if there is one, just make sure we truncate to a
+size that corresponds to the end offset of that prealloc extent, so
+that we don't lose the part of that extent that starts at i_size if a
+power failure happens.
+
+A test case for fstests follows soon.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 4272610d7472..9761e6d538fb 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4226,6 +4226,9 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	const u64 ino = btrfs_ino(inode);
+ 	struct btrfs_path *dst_path = NULL;
+ 	bool dropped_extents = false;
++	u64 truncate_offset = i_size;
++	struct extent_buffer *leaf;
++	int slot;
+ 	int ins_nr = 0;
+ 	int start_slot;
+ 	int ret;
+@@ -4240,9 +4243,43 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	if (ret < 0)
+ 		goto out;
+ 
++	/*
++	 * We must check if there is a prealloc extent that starts before the
++	 * i_size and crosses the i_size boundary. This is to ensure later we
++	 * truncate down to the end of that extent and not to the i_size, as
++	 * otherwise we end up losing part of the prealloc extent after a log
++	 * replay and with an implicit hole if there is another prealloc extent
++	 * that starts at an offset beyond i_size.
++	 */
++	ret = btrfs_previous_item(root, path, ino, BTRFS_EXTENT_DATA_KEY);
++	if (ret < 0)
++		goto out;
++
++	if (ret == 0) {
++		struct btrfs_file_extent_item *ei;
++
++		leaf = path->nodes[0];
++		slot = path->slots[0];
++		ei = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
++
++		if (btrfs_file_extent_type(leaf, ei) ==
++		    BTRFS_FILE_EXTENT_PREALLOC) {
++			u64 extent_end;
++
++			btrfs_item_key_to_cpu(leaf, &key, slot);
++			extent_end = key.offset +
++				btrfs_file_extent_disk_num_bytes(leaf, ei);
++
++			if (extent_end > i_size)
++				truncate_offset = extent_end;
++		}
++	} else {
++		ret = 0;
++	}
++
+ 	while (true) {
+-		struct extent_buffer *leaf = path->nodes[0];
+-		int slot = path->slots[0];
++		leaf = path->nodes[0];
++		slot = path->slots[0];
+ 
+ 		if (slot >= btrfs_header_nritems(leaf)) {
+ 			if (ins_nr > 0) {
+@@ -4280,7 +4317,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 				ret = btrfs_truncate_inode_items(trans,
+ 							 root->log_root,
+ 							 &inode->vfs_inode,
+-							 i_size,
++							 truncate_offset,
+ 							 BTRFS_EXTENT_DATA_KEY);
+ 			} while (ret == -EAGAIN);
+ 			if (ret)
+-- 
+2.11.0
 
