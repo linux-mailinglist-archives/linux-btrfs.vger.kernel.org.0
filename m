@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5007A1B37EE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 08:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5DD1B37F3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 08:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgDVGv3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 02:51:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51718 "EHLO mx2.suse.de"
+        id S1726532AbgDVGvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 02:51:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51774 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgDVGv3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 02:51:29 -0400
+        id S1726519AbgDVGvc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Apr 2020 02:51:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 67F3DAD9F;
-        Wed, 22 Apr 2020 06:51:26 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7916BAA4F;
+        Wed, 22 Apr 2020 06:51:29 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         u-boot@lists.denx.de
 Cc:     marek.behun@nic.cz
-Subject: [PATCH U-BOOT 21/26] fs: btrfs: Rename btrfs_file_read() and its callees to avoid name conflicts
-Date:   Wed, 22 Apr 2020 14:50:04 +0800
-Message-Id: <20200422065009.69392-22-wqu@suse.com>
+Subject: [PATCH U-BOOT 22/26] fs: btrfs: Introduce btrfs_read_extent_inline() and btrfs_read_extent_reg()
+Date:   Wed, 22 Apr 2020 14:50:05 +0800
+Message-Id: <20200422065009.69392-23-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200422065009.69392-1-wqu@suse.com>
 References: <20200422065009.69392-1-wqu@suse.com>
@@ -32,100 +32,273 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+These two functions are used to do sector aligned read, which will be
+later used to implement btrfs_file_read().
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/btrfs.c     | 2 +-
- fs/btrfs/btrfs.h     | 6 +++---
- fs/btrfs/extent-io.c | 4 ++--
- fs/btrfs/inode.c     | 6 +++---
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/ctree.h   |   5 ++
+ fs/btrfs/disk-io.c |  36 ++++++++++
+ fs/btrfs/disk-io.h |   2 +
+ fs/btrfs/inode.c   | 162 +++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 205 insertions(+)
 
-diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
-index 8d1dee2f73c4..3916696ab909 100644
---- a/fs/btrfs/btrfs.c
-+++ b/fs/btrfs/btrfs.c
-@@ -275,7 +275,7 @@ int btrfs_read(const char *file, void *buf, loff_t offset, loff_t len,
- 	if (len > inode.size - offset)
- 		len = inode.size - offset;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index fe6966e896a1..602f99b5e593 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1293,6 +1293,11 @@ int btrfs_iter_dir(struct btrfs_root *root, u64 ino,
+ int btrfs_lookup_path(struct btrfs_root *root, u64 ino, const char *filename,
+ 			struct btrfs_root **root_ret, u64 *ino_ret,
+ 			u8 *type_ret, int symlink_limit);
++int btrfs_read_extent_inline(struct btrfs_path *path,
++			     struct btrfs_file_extent_item *fi, char *dest);
++int btrfs_read_extent_reg(struct btrfs_path *path,
++			  struct btrfs_file_extent_item *fi, u64 offset,
++			  int len, char *dest);
  
--	rd = btrfs_file_read(&root, inr, offset, len, buf);
-+	rd = __btrfs_file_read(&root, inr, offset, len, buf);
- 	if (rd == -1ULL) {
- 		printf("An error occured while reading file %s\n", file);
- 		return -1;
-diff --git a/fs/btrfs/btrfs.h b/fs/btrfs/btrfs.h
-index eb32eb2006a8..025cf4007503 100644
---- a/fs/btrfs/btrfs.h
-+++ b/fs/btrfs/btrfs.h
-@@ -58,16 +58,16 @@ int __btrfs_readlink(const struct __btrfs_root *, u64, char *);
- int btrfs_readlink(struct btrfs_root *root, u64 ino, char *target);
- u64 __btrfs_lookup_path(struct __btrfs_root *, u64, const char *, u8 *,
- 		       struct btrfs_inode_item *, int);
--u64 btrfs_file_read(const struct __btrfs_root *, u64, u64, u64, char *);
-+u64 __btrfs_file_read(const struct __btrfs_root *, u64, u64, u64, char *);
- 
- /* subvolume.c */
- u64 btrfs_get_default_subvol_objectid(void);
- 
- /* extent-io.c */
--u64 btrfs_read_extent_inline(struct __btrfs_path *,
-+u64 __btrfs_read_extent_inline(struct __btrfs_path *,
- 			      struct btrfs_file_extent_item *, u64, u64,
- 			      char *);
--u64 btrfs_read_extent_reg(struct __btrfs_path *, struct btrfs_file_extent_item *,
-+u64 __btrfs_read_extent_reg(struct __btrfs_path *, struct btrfs_file_extent_item *,
- 			   u64, u64, char *);
- 
- #endif /* !__BTRFS_BTRFS_H__ */
-diff --git a/fs/btrfs/extent-io.c b/fs/btrfs/extent-io.c
-index 456b8776ef67..2af710f0dd32 100644
---- a/fs/btrfs/extent-io.c
-+++ b/fs/btrfs/extent-io.c
-@@ -13,7 +13,7 @@
- #include "extent-io.h"
- #include "disk-io.h"
- 
--u64 btrfs_read_extent_inline(struct __btrfs_path *path,
-+u64 __btrfs_read_extent_inline(struct __btrfs_path *path,
- 			     struct btrfs_file_extent_item *extent, u64 offset,
- 			     u64 size, char *out)
- {
-@@ -65,7 +65,7 @@ err:
- 	return -1ULL;
+ /* ctree.c */
+ int btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 8dc816f7a8c9..be2c26d323f6 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -565,6 +565,42 @@ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 	return ERR_PTR(ret);
  }
  
--u64 btrfs_read_extent_reg(struct __btrfs_path *path,
-+u64 __btrfs_read_extent_reg(struct __btrfs_path *path,
- 			  struct btrfs_file_extent_item *extent, u64 offset,
- 			  u64 size, char *out)
++int read_extent_data(struct btrfs_fs_info *fs_info, char *data, u64 logical,
++		     u64 *len, int mirror)
++{
++	u64 offset = 0;
++	struct btrfs_multi_bio *multi = NULL;
++	struct btrfs_device *device;
++	int ret = 0;
++	u64 max_len = *len;
++
++	ret = btrfs_map_block(fs_info, READ, logical, len, &multi, mirror,
++			      NULL);
++	if (ret) {
++		fprintf(stderr, "Couldn't map the block %llu\n",
++				logical + offset);
++		goto err;
++	}
++	device = multi->stripes[0].dev;
++
++	if (*len > max_len)
++		*len = max_len;
++	if (!device->desc || !device->part) {
++		ret = -EIO;
++		goto err;
++	}
++
++	ret = __btrfs_devread(device->desc, device->part, data, *len,
++			      multi->stripes[0].physical);
++	if (ret != *len)
++		ret = -EIO;
++	else
++		ret = 0;
++err:
++	kfree(multi);
++	return ret;
++}
++
+ void btrfs_setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
+ 		      u64 objectid)
  {
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index d8f6f827550a..7c321d842561 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -18,6 +18,8 @@ int read_whole_eb(struct btrfs_fs_info *info, struct extent_buffer *eb, int mirr
+ struct extent_buffer* read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 		u64 parent_transid);
+ 
++int read_extent_data(struct btrfs_fs_info *fs_info, char *data, u64 logical,
++		     u64 *len, int mirror);
+ struct extent_buffer* btrfs_find_create_tree_block(
+ 		struct btrfs_fs_info *fs_info, u64 bytenr);
+ struct extent_buffer *btrfs_find_tree_block(struct btrfs_fs_info *fs_info,
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ff411d5251e9..797063449ca6 100644
+index 797063449ca6..986b9347b012 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -587,7 +587,7 @@ u64 __btrfs_lookup_path(struct __btrfs_root *root, u64 inr, const char *path,
- 	return inr;
+@@ -5,9 +5,12 @@
+  * 2017 Marek Behun, CZ.NIC, marek.behun@nic.cz
+  */
+ 
++#include <linux/kernel.h>
+ #include <malloc.h>
++#include <memalign.h>
+ #include "btrfs.h"
+ #include "disk-io.h"
++#include "volumes.h"
+ 
+ u64 __btrfs_lookup_inode_ref(struct __btrfs_root *root, u64 inr,
+ 			   struct btrfs_inode_ref *refp, char *name)
+@@ -652,3 +655,162 @@ out:
+ 	__btrfs_free_path(&path);
+ 	return rd_all;
  }
- 
--u64 btrfs_file_read(const struct __btrfs_root *root, u64 inr, u64 offset,
-+u64 __btrfs_file_read(const struct __btrfs_root *root, u64 inr, u64 offset,
- 		    u64 size, char *buf)
- {
- 	struct __btrfs_path path;
-@@ -622,11 +622,11 @@ u64 btrfs_file_read(const struct __btrfs_root *root, u64 inr, u64 offset,
- 
- 		if (extent->type == BTRFS_FILE_EXTENT_INLINE) {
- 			btrfs_file_extent_item_to_cpu_inl(extent);
--			rd = btrfs_read_extent_inline(&path, extent, offset,
-+			rd = __btrfs_read_extent_inline(&path, extent, offset,
- 						      size, buf);
- 		} else {
- 			btrfs_file_extent_item_to_cpu(extent);
--			rd = btrfs_read_extent_reg(&path, extent, offset, size,
-+			rd = __btrfs_read_extent_reg(&path, extent, offset, size,
- 						   buf);
- 		}
- 
++
++/*
++ * Read out inline extent.
++ *
++ * Since inline extent should only exist for offset 0, no need for extra
++ * parameters.
++ * Truncating should be handled by the caller.
++ *
++ * Return the number of bytes read.
++ * Return <0 for error.
++ */
++int btrfs_read_extent_inline(struct btrfs_path *path,
++			     struct btrfs_file_extent_item *fi, char *dest)
++{
++	struct extent_buffer *leaf = path->nodes[0];
++	int slot = path->slots[0];
++	char *cbuf = NULL;
++	char *dbuf = NULL;
++	u32 csize;
++	u32 dsize;
++	int ret;
++
++	csize = btrfs_file_extent_inline_item_len(leaf, btrfs_item_nr(slot));
++	if (btrfs_file_extent_compression(leaf, fi) == BTRFS_COMPRESS_NONE) {
++		/* Uncompressed, just read it out */
++		read_extent_buffer(leaf, dest,
++				btrfs_file_extent_inline_start(fi),
++				csize);
++		return csize;
++	}
++
++	/* Compressed extent, prepare the compressed and data buffer */
++	dsize = btrfs_file_extent_ram_bytes(leaf, fi);
++	cbuf = malloc(csize);
++	dbuf = malloc(dsize);
++	if (!cbuf || !dbuf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	read_extent_buffer(leaf, cbuf, btrfs_file_extent_inline_start(fi),
++			   csize);
++	ret = btrfs_decompress(btrfs_file_extent_compression(leaf, fi),
++			       cbuf, csize, dbuf, dsize);
++	if (ret < 0 || ret != dsize) {
++		ret = -EIO;
++		goto out;
++	}
++	memcpy(dest, dbuf, dsize);
++	ret = dsize;
++out:
++	free(cbuf);
++	free(dbuf);
++	return ret;
++}
++
++/*
++ * Read out regular extent.
++ *
++ * Truncating should be handled by the caller.
++ *
++ * @offset and @len should not cross the extent boundary.
++ * Return the number of bytes read.
++ * Return <0 for error.
++ */
++int btrfs_read_extent_reg(struct btrfs_path *path,
++			  struct btrfs_file_extent_item *fi, u64 offset,
++			  int len, char *dest)
++{
++	struct extent_buffer *leaf = path->nodes[0];
++	struct btrfs_fs_info *fs_info = leaf->fs_info;
++	struct btrfs_key key;
++	u64 extent_num_bytes;
++	u64 disk_bytenr;
++	u64 read;
++	char *cbuf = NULL;
++	char *dbuf = NULL;
++	u32 csize;
++	u32 dsize;
++	bool finished = false;
++	int num_copies;
++	int i;
++	int slot = path->slots[0];
++	int ret;
++
++	btrfs_item_key_to_cpu(leaf, &key, slot);
++	extent_num_bytes = btrfs_file_extent_num_bytes(leaf, fi);
++	ASSERT(IS_ALIGNED(offset, fs_info->sectorsize) &&
++	       IS_ALIGNED(len, fs_info->sectorsize));
++	ASSERT(offset >= key.offset &&
++	       offset + len <= key.offset + extent_num_bytes);
++
++	/* Preallocated or hole , fill @dest with zero */
++	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_PREALLOC ||
++	    btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
++		memset(dest, 0, len);
++		return len;
++	}
++
++	if (btrfs_file_extent_compression(leaf, fi) == BTRFS_COMPRESS_NONE) {
++		u64 logical;
++
++		logical = btrfs_file_extent_disk_bytenr(leaf, fi) +
++			  btrfs_file_extent_offset(leaf, fi) +
++			  offset - key.offset;
++		read = len;
++
++		num_copies = btrfs_num_copies(fs_info, logical, len);
++		for (i = 1; i <= num_copies; i++) {
++			ret = read_extent_data(fs_info, dest, logical, &read, i);
++			if (ret < 0 || read != len)
++				continue;
++			finished = true;
++			break;
++		}
++		if (!finished)
++			return -EIO;
++		return len;
++	}
++
++	csize = btrfs_file_extent_disk_num_bytes(leaf, fi);
++	dsize = btrfs_file_extent_ram_bytes(leaf, fi);
++	disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
++	num_copies = btrfs_num_copies(fs_info, disk_bytenr, csize);
++
++	cbuf = malloc_cache_aligned(csize);
++	dbuf = malloc_cache_aligned(dsize);
++	if (!cbuf || !dbuf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	/* For compressed extent, we must read the whole on-disk extent */
++	for (i = 1; i <= num_copies; i++) {
++		read = csize;
++		ret = read_extent_data(fs_info, cbuf, disk_bytenr,
++				       &read, i);
++		if (ret < 0 || read != csize)
++			continue;
++		finished = true;
++		break;
++	}
++	if (!finished) {
++		ret = -EIO;
++		goto out;
++	}
++
++	ret = btrfs_decompress(btrfs_file_extent_compression(leaf, fi), cbuf,
++			       csize, dbuf, dsize);
++	if (ret != dsize) {
++		ret = -EIO;
++		goto out;
++	}
++	/* Then copy the needed part */
++	memcpy(dest, dbuf + btrfs_file_extent_offset(leaf, fi), len);
++	ret = len;
++out:
++	free(cbuf);
++	free(dbuf);
++	return ret;
++}
 -- 
 2.26.0
 
