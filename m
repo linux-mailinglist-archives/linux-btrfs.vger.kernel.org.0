@@ -2,66 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A613A1B4357
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 13:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6021B4700
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 16:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgDVLe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 07:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725808AbgDVLe3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 07:34:29 -0400
-Received: from wp558.webpack.hosteurope.de (wp558.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8250::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF6AC03C1A8
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 04:34:29 -0700 (PDT)
-Received: from mail1.i-concept.de ([130.180.70.237] helo=[192.168.122.235]); authenticated
-        by wp558.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1jRDe5-0000pa-E0; Wed, 22 Apr 2020 13:34:26 +0200
-Subject: Re: RAID 1 | Newbie Question
-To:     Hugo Mills <hugo@carfax.org.uk>, linux-btrfs@vger.kernel.org
-References: <be4ee7ea-f032-ee63-2486-030b2f270baa@peter-speer.de>
- <20200422104403.GE32577@savella.carfax.org.uk>
- <d59a8a2e-2aae-0177-a0a8-6c238776814a@peter-speer.de>
- <20200422110646.GF32577@savella.carfax.org.uk>
-From:   Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
-Message-ID: <e000c0cc-132d-04ad-dcfd-d808efbff76d@peter-speer.de>
-Date:   Wed, 22 Apr 2020 13:34:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725648AbgDVOSO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 10:18:14 -0400
+Received: from mout.gmx.net ([212.227.15.18]:47725 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725839AbgDVOSN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Apr 2020 10:18:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1587565082;
+        bh=Hg/HQqlDxBFdehgeQupDAUc+Q+5qlvDzjlMIIhgLMO8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:References:In-reply-to:Date;
+        b=FUzZPmk+QXmVNxRhVVuK5hrjsHvmG+prAnXSpw7jxcbaHYXoVZpi/ppdo9tHsRQc2
+         PA4cTbvvtxxWH8Ux8vyNeEpttoYowNkb811Jg42xPjw6zmWX+PaiCrVMMl+jZtFKTT
+         Ap0XlvRitMQaE/xyQ8XHOzTcDQx0bHLuGwQRHABw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from nas ([34.92.246.95]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MEFzr-1jJsLt4C4T-00AFy5; Wed, 22
+ Apr 2020 16:18:01 +0200
+From:   Su Yue <Damenly_Su@gmx.com>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, u-boot@lists.denx.de
+Subject: Re: [PATCH U-BOOT 18/26] fs: btrfs: Implement btrfs_lookup_path()
+References: <20200422065009.69392-1-wqu@suse.com> <20200422065009.69392-19-wqu@suse.com> <368vvoni.fsf@gmx.com> <20200422120451.5864d812@nic.cz>
+User-agent: mu4e 1.2.0; emacs 26.3
+In-reply-to: <20200422120451.5864d812@nic.cz>
+Date:   Wed, 22 Apr 2020 22:17:53 +0800
+Message-ID: <h7xbob8u.fsf@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <20200422110646.GF32577@savella.carfax.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;stefanie.leisestreichler@peter-speer.de;1587555269;518696f0;
-X-HE-SMSGID: 1jRDe5-0000pa-E0
+Content-Type: text/plain; format=flowed
+X-Provags-ID: V03:K1:MWOOJ/nAh1E907d+q0y+J+akvYgFZjrtfA5DebJWyILLR49MeDf
+ qCk6rHsJOhhEvfGUM0N9nov8Q5mSBa8nzAv9NRxEfZCZxbII80Ay8gchUyWd0RWhvS2uffC
+ apDs1k4uREmH35XAGvLuW3pTeEZkT1iJHFJ6JbZi6MtVOVXXly06vUhGLsI4PkGfGmV8ctd
+ BM/SKovW4b/n6SlD6J3vg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Q71B+uHMjyw=:V1uklrH/I/262yZEGQXtcR
+ 4NIsnDYNMzpYMeSszZB2mLQuloLbK1/+1Bb3yx5Sn6hUWaKdL32+iymcn6SzcsvJLRvvnSkAI
+ 42ldZ5XKPOKOvspkwKx7i/fISt1prufXRAdjhqhWb/sfBCkG6pMohmR+VLCuOI8ShEz3BWCCS
+ YbBguhSkQv9i4x6yopIxl7GJhZtgXtAigeS9Y378xdmAz7cVcKmWGqpMKojyaCnBpcIXG0Zqj
+ iSZyrtJNlwFMtDTz7SOuBoxpvG8wa8Hmi3+l1vR57Pq6Sy+lRfz5zR71elL1SnNK8QsdjzXZ4
+ 9/CwNWF7zVZ80EwN+g7i5IXimp89NJ6efPz4epXolk716b3WEnPDhB56+5CPt0GbmpaYaEseL
+ Nlj2q5gnJptrwQptBjHD9h5niZ8hXfF1gCBwU+2YxsYy0M3MrAH/y8vl8/HOJBIWYA6ChlUax
+ Yu5eE83ffBjlOWR9/N0/bAWXRyEyOw8xMjIAlhoovPmUW0xNtBwL73Dxtmho8pgg7syzDTEH5
+ UM45w6x7hvOKNzIeQ+fV1h8a+A9oEVaIZDTehPMjmRZo3vYmlsK9Xr03iD0/90e64Hq+rRjtX
+ mMi5SmjoWwlrl3ZN2rxSQpBPpWxBS9mg5FJ9Y22fXMlLSeksQTu5xsSphXFkVTJO7gInKOBCa
+ ZpQA3bTZZgRuxzrDEmpCJJQ39a3evI0dk0y4dw3CJmLpsTFj26hRUJdJEDLa1EHaAeplRQlzX
+ S5yX5NgCD6O5oaQiJAnMLHjagbdZdGLi7T0DgM3vZiHV+sGxEipBv9c39BrjE59QnnR0LgZ5J
+ Gx1EHxaU8ZUMXFRfx+QKt7X5FIHljIzl3S31V0w6D9uZ+Q4AJSklzbvAjdWUpEDC2/nY1bgws
+ /Skv4D49VHdE2o8DgIXG2XmTnM7ZRX59DR2RMVKACDOTbWWe25tk/GlpXh5K/yFVfDBrVxCpa
+ NnWPqTFTUoFH/1jA4IwP72J2pp7RLwBavnMt1Idsfzi2Qy2lkq+rr2hY9VneisSi+17cYF+28
+ YkzPT6TAQ0mRCHkhRhfCQeaj6jHDMocPbdpxh9u/WPeJtsIKle1yHYG2DOcWrn3qENY4yaYRd
+ I+mQRskLaM8Aysc2ePPjMTyAIl+nselxcZcWC4AfXEnxkYPgHOxHfpZE1NhjgYerzcGn70GVy
+ firuA3DfA6Ih0gv+BcAaG5RWnkcUnWJ7rgNfm2M2k5agiPGQ71zWhsLJndJgf5NmDstxa5+aL
+ mzZF4xjcHusRe4ObU
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Wed 22 Apr 2020 at 18:04, Marek Behun <marek.behun@nic.cz>
+wrote:
 
-On 22.04.20 13:06, Hugo Mills wrote:
->> "It is possible with all of the descriptions below, to construct a RAID-1
->> array from two or more devices, and have those devices live on the same
->> physical drive. This configuration does not offer any form of redundancy for
->> your data."
->     There's a difference between "device" and "disk" here. If you make
-> two partitions on one device, and that device fails, then there's no
-> (disk) redundancy.
-> 
->     If you make two partitions on one disk and one partition on another
-> disk, and use all three partitions (block devices) to make a RAID-1,
-> then you're still going to lose the filesystem if the disk with two
-> partitions on it fails.
+> On Wed, 22 Apr 2020 17:46:25 +0800 Su Yue <Damenly_Su@gmx.com>
+> wrote:
+>
+>> > +	while (*cur !=3D '\0') { + +		cur =3D
+>> > skip_current_directories(cur); +		len =3D
+>> > next_length(cur); +		if (len > BTRFS_NAME_LEN) {
+>>  next_length() promises @len <=3D BTRFS_NAME_LEN, so the check is
+>> trivial.
+>
 
+Okay.
+> Hmm. This is a bug in next_length. I meant for next_length to
+> return len > BTRFS_NAME_LEN in case of too long name. Thanks for
+> noticing.
+>
+>> > +			ret =3D btrfs_readlink(root, ino, target); +
+>> > if (ret < 0) { +				free(target); +
+>> > return ret; +			} +			target[ret] =3D '\0';
+>>  It was done in btrfs_readlink() already.
+>
+> It is in old btrfs_readlink, but is it even after this patches?
+> I don't see it in the new implementation.
+>
 
-OK, this makes sense to me and cleared things up.
-I still do not get the clue why it is explicitly mentioned in the wiki 
-that there will be no redundany for the data if one uses just one disk 
-in case of a disk failure. This is pretty obvious instead.
+You are right. The thing changed in the 17th patch.
+btrfs_readlink()
+doesn't set the null byte now.
 
-Thanks,
-Steffi
+=2D-
+Su
+>> > +
+>> > +			ret =3D btrfs_lookup_path(root, ino, target, &next_root,
+>> > +						&next_ino, &next_type,
+>> > +						symlink_limit);
+>>
+>> Just notify gentlely this is a recursive call here. I don't know
+>> whether uboot cares about stack things. But, recursion makes coding sim=
+pler :).
+>
+> It is limited by symlink_limit. Until somebody complains about stack
+> issues I would like to keep it simple.
+
