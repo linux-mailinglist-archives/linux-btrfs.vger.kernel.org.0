@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583FA1B3971
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 09:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9952C1B397E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 09:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgDVHwo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 03:52:44 -0400
-Received: from mout.gmx.net ([212.227.17.22]:49991 "EHLO mout.gmx.net"
+        id S1726494AbgDVH4V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 03:56:21 -0400
+Received: from mout.gmx.net ([212.227.15.18]:49989 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726078AbgDVHwm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 03:52:42 -0400
+        id S1726030AbgDVH4V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Apr 2020 03:56:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1587541952;
-        bh=09fw0tQo5OnyHQWIBQqNIl8Egw3RUXoDDBFdUtne7LI=;
+        s=badeba3b8450; t=1587542171;
+        bh=p7XgU4VesE+9wyk7jgxgz8x98/lXl7tA4n7k5fSIAK0=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=QAW6y+UPNjVlp4BB0ZUpcKeB6YXvNUnn6xZrgUgAwAL7Wl9outGOvb29p9sHvejKP
-         fsfNXlQiEOyLbfgJLSD/ub/KyUSwIjggDq9azThuKzxuFvFR2cVEqt32qI9xEYF5R8
-         JxyMWEv4PprDRpU+ZZ28BX8pm/2etK7F98gBPVUE=
+        b=ciKHUv7HSgbfw22RplZBbvdXARRc/a9xRVBKwuXqH41wPhxs8rhwQFfZauZciweWD
+         L1x4fLhqQX9W1dldg4P29wynFCRUUaFf7/IF2izNd97lefd3QgnB8DLmqIbA3j7pka
+         0s5g8uw/HVZCrpiSI1BvLlPcJmKCz35JI6EOGlOo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4Jqb-1jQt4A3bph-000JVV; Wed, 22
- Apr 2020 09:52:32 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlw7V-1izlur496h-00j2SF; Wed, 22
+ Apr 2020 09:56:11 +0200
 Subject: Re: [PATCH U-BOOT 00/26] fs: btrfs: Re-implement btrfs support using
  the more widely used extent buffer base code
 To:     Marek Behun <marek.behun@nic.cz>, Qu Wenruo <wqu@suse.com>
@@ -29,6 +29,7 @@ Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         u-boot@lists.denx.de
 References: <20200422065009.69392-1-wqu@suse.com>
  <20200422094607.1797ce2e@nic.cz>
+ <fa3177ef-c264-2fc0-4793-d35209d05d2b@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,120 +55,135 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fa3177ef-c264-2fc0-4793-d35209d05d2b@gmx.com>
-Date:   Wed, 22 Apr 2020 15:52:25 +0800
+Message-ID: <fc78b14b-ea71-80e0-f0cc-6f476860d6c6@gmx.com>
+Date:   Wed, 22 Apr 2020 15:56:05 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200422094607.1797ce2e@nic.cz>
+In-Reply-To: <fa3177ef-c264-2fc0-4793-d35209d05d2b@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="1VIq5kFMnmbGpKyoi2UenbvDucHUTOiBF"
-X-Provags-ID: V03:K1:H8yHkruEhcjGaBgw7Yl2dmL+a+N0VHfi3m7A1hDXecYhsB+pR5Y
- chN94KMiKkppFnbNWsrYwgV2z8JAfGwjKy4x3ygVySmlJay74v00UqM8IMw9bATU7MGUB7Y
- Vf4x//DdqGnSNsIOePtH7ykmRWJVzrksapv1FePKL/LRxgfAXfIGC4g6Uwx9btIpQb/kCLq
- SgRjVA3EJ6+sFC913j8RA==
+ boundary="VJvFv34DU6knf4hy0EhZJX2Uw7YxzPpdJ"
+X-Provags-ID: V03:K1:+s8X3HAVrlVAd4r34X8G39FE60tBRKa/N/DiWcYw0kkIkCNaYP+
+ P8cxt8cW0Rhr4W9ccqwDS/hIXLF7w9wQrHrWT3w7ma6GT5icEo1LLheIMLouoNcrei07bZf
+ OnxZ6nHO7/XDk24s3qOYm8NrD0SAvxwwbMnNm3eBIOxsy285SVtnWK5PoUKcncfyyQfExC7
+ iVfU7bQUqNfPg6wDp2XaQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CjE0ZG5Imzw=:S9o0FLS45KYF+iqO4hm2c/
- 1I5oPPsvlMZdK09GEZ3QqTDpRI9fk8LPtNYXXm5lHoscbEEDYF96tNVfjt4l+XBE8hrggdjuT
- ZBD7DVmSvFe4HRMrS8o8s5Say5cyyEqteUtDRiBLewDR0vsOge26Qa5zXqqKdHCRnHCwhFMH6
- fr4CBS/I8h6JB2xbRfiec/f4FxNhwm2hFafHub14HEc47X9RVQ3nDpuviY8HU7SFQrF4lCv1g
- UaW+3lHP95MyX6U+uQWepU3JLxK6XM8GBww//X0p85XhVRVxn+8fXDl5O6hj+PeyUklUpKk8C
- v083daJwo/sy645styZ8BVnVD2jVy/BtmGD0aq0JjULn9y2UxLF5qaKTr+JexnMkEpvR3b9z1
- nqDoF/CJ2vcrzLPxHj438X4ebz9UBhIj44ruyBPeChvXgTDP+4/uffxE76FCTS06l1MonuRL5
- abGsEx1qEVMursnzfHipYQBGYqgwOsQlEu4e75OfTfbf04/5KsWdfrtTFMHM/aSvy38e+6mjK
- 5DsKPiDI597wrY7OsIP1Ihne1DKGNxEOu7AuuEtINobuum72P1jxln3LfIuLtfYCvt892pS84
- zmwTFXGWjuo7h8fU8ym6SKSit1yYtw5IUEz6EcqJfjDQ6NKevixvLqZnWt5nAorazQC179Mja
- CcTpWYGXRpBrTirzdwE1NnWOdaIhrC4jpyuK2QL+7djVYRMuZr5H90C6bDSf+IUBGROF2Koss
- NcfBiG4RHBnlMOLzLvltxmJ3nILkuFZnaFICqUH4UGSYi7XD+UxXJbJ8y72iKSiITSZUnIfyM
- G8P4DuqCniyaaNVyn9bAdFPv/CLCem7T4cBwMVQlHK9g7YSYNfRo9fuc2xOBlW/p1pvtCPkwI
- SZcUSIqmRLFwwrLxwmXF+Xpqbf1nWPjuj2KCvjuHZoKlkH0VW+qH0JghE7HSIDyysDJOUzwWo
- jQmyv6ZSDrL9O8S0ZL4N+zT4OF/Plq/sG+Yyhi60ctLMaVJIsSQ7Qe6/fyWu7+1vFtG7fz0c4
- 7/4hotkyGYve2j6dth+HGzQYSx+nYXreMbDBSSQtMAIfRUs76Q4r5L4P61dBeSVF31Xc8IyB4
- UsyAPlRsZS8n82uhUOjHzfKsSqpH+LgNFBvDlZW0HIr8HO+l9FnsAytGjJbPbCtQT5RIYaW/q
- DRZ07qKf2MMlfk9EG25nbmKYfWQ7FJzXCtHY6GQSpnhvBN4vQ/adBzMFW64nNIsdC3s+T9/XZ
- e8NjHqMpWlHSWxSMq
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FxGIk7k9IsM=:uzmJ+dLrCKWndUKde723A4
+ G6fyGir7EdnI5krfDpEcI/6RBD7oJ7lnfF7M3IFWYmPHWUY+6aXntNrdLct9wd5fvetoRBpym
+ +A32z2Lzazakstp1svjpx7mUnJCPU4c//1gVoARil7yTuJYyAKB7FFwgPuf28Ovk9tD+AdkCm
+ GRDNJ26R4/qb35TIO6WJhUIV6PnAfHrp1HHAOsmpMEGk8zDW/FHJE1KtZ7xPK1l7EoQaStsno
+ 3U+2CVmcu19ZS6wmiaeTiFRAQ48H4o2CDZW9ndOQ8o1WzfMj9MTw71nIkofpnt7yRoYkZ0Q9P
+ TmDMy04KpipwXPPOg1gajc8GkN2QyWZKLo637sE7dlubvc5NZF2BqGnREuj2+sLEIoQ9F9loy
+ eGvANmpwvGBDLxlVlig1Nb6ZzJkOnB6pnMYtW4GUxKvXRPOOQpD9cLBPoejOlz+cYYZWcx7s0
+ QnYFsTFDr1G2dkmWrNKylSnwRd16VS5ZMOUsLDROI5STh+OGmHp1XzIASJmTHna6nukp1+oOG
+ Q0mbFEXjsS4ElWDpd7N9fxG4ocR2kzJDfObVhOU8077EbpqtqXPJN9507NDWmmA663Ocn+Lxv
+ 8oYtwJINIaZTUvnunXJqi2uNC8CbL6/5oEobuOka1G1BDy3PlCG44n5u31vhKyxYbjaxfkwsO
+ s9c0ZcBvB/VuNKA10IuaNzu8AhhGpLBGxRfqH3DiDCelSdky8UJx2C8GP/tTcOtAfLtyI9tUR
+ oKLZ33QiD58WWlOKK3V/NIFm4Fzt6xRiRH8yCC0F+/ifniHVbgD8HUesHPFQXdRfbV/Nx8IcP
+ vnU5O410ToOoJpyKAu87k2Y/MDTa6HUqyOoYzmBJDlGjafr+dCKJNL0dHUPuUHWx/6E5aoXLY
+ kS0IfiQGXCLJUXUlnUBm3dGpafVIPS/f2ClLinPOvpjnGIfeTT3HKSAUo+uVD506Ri03U9Egj
+ wD3+Irh1Q3yylAxl7b01zm3hHnf7Tv04ZMNwlXjmpeg0oFpm7cWBN6QVuGbTlSVQNhdHpqwKZ
+ 2eaXBVOV1nMIy3SdSGwmOYVg3BQOaLWE8+XbhviQFtuai47gTViAe8RGebbF8l54l8opuT2Wl
+ maVeAIhRyi5VaB+4MsDq8e3becJC6SLkHz2ZF/Z550BjfaFzw8FQoO+PKcniAWAeMk3IEQe70
+ qZGjst5OeGA6xkZ1dGs4D+YAC/6BQuqeRb4hdX4BDhrQ5EDOliEmCMeXNM6KPaR7lTk7oTzZi
+ xMj6ipQ2s12rdypYB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1VIq5kFMnmbGpKyoi2UenbvDucHUTOiBF
-Content-Type: multipart/mixed; boundary="KoYagtIPqWd2VIV9Yd41qybbUOILSHC0u"
+--VJvFv34DU6knf4hy0EhZJX2Uw7YxzPpdJ
+Content-Type: multipart/mixed; boundary="aST7akugqk6Oz0Gz9RVUIBNim9RvrDPGn"
 
---KoYagtIPqWd2VIV9Yd41qybbUOILSHC0u
+--aST7akugqk6Oz0Gz9RVUIBNim9RvrDPGn
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/4/22 =E4=B8=8B=E5=8D=883:46, Marek Behun wrote:
-> On Wed, 22 Apr 2020 14:49:43 +0800
-> Qu Wenruo <wqu@suse.com> wrote:
+On 2020/4/22 =E4=B8=8B=E5=8D=883:52, Qu Wenruo wrote:
 >=20
-> Hi Qu,
 >=20
->> The current btrfs code in U-boot is using a creative way to read on-di=
-sk
->> data.
->> It's pretty simple, involving the least amount of code, but pretty
->> different from btrfs-progs nor kernel, making it pretty hard to sync
->> code between different projects.
->=20
-> do you think maybe btrfs-progs / kernel would be interested if I
-> tried to convert their code to this "simpler to use" implementation of
-> conversion functions?
+> On 2020/4/22 =E4=B8=8B=E5=8D=883:46, Marek Behun wrote:
+>> On Wed, 22 Apr 2020 14:49:43 +0800
+>> Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> Hi Qu,
+>>
+>>> The current btrfs code in U-boot is using a creative way to read on-d=
+isk
+>>> data.
+>>> It's pretty simple, involving the least amount of code, but pretty
+>>> different from btrfs-progs nor kernel, making it pretty hard to sync
+>>> code between different projects.
+>>
+>> do you think maybe btrfs-progs / kernel would be interested if I
+>> tried to convert their code to this "simpler to use" implementation of=
 
-I don't think so, the problem is kernel and btrfs-progs all need to
-modify extent buffer, which make the read time conversion become a
-burden in write path.
-
+>> conversion functions?
 >=20
->> Thus only the following 5 patches need extra review attention:
->> - Patch 0017
->> - Patch 0018
->> - Patch 0022
->> - Patch 0023
->> - Patch 0024
+> I don't think so, the problem is kernel and btrfs-progs all need to
+> modify extent buffer, which make the read time conversion become a
+> burden in write path.
 >=20
-> Anyway, this patch series does not apply cleanly on u-boot/master. I
-> tried with the first 3 patches and then gave up :(
-> Sorry about this but I will review and test if you send a series that
-> applies cleanly.
+>>
+>>> Thus only the following 5 patches need extra review attention:
+>>> - Patch 0017
+>>> - Patch 0018
+>>> - Patch 0022
+>>> - Patch 0023
+>>> - Patch 0024
+>>
+>> Anyway, this patch series does not apply cleanly on u-boot/master. I
+>> tried with the first 3 patches and then gave up :(
+>> Sorry about this but I will review and test if you send a series that
+>> applies cleanly.
+>=20
+> That's strange, the branch is originally based on an older master, as
+> you can find in the github.
+>=20
+> I guess there are some more btrfs related code change since then, I'll
+> rebase them to latest master, and update the github repo then.
 
-That's strange, the branch is originally based on an older master, as
-you can find in the github.
+Git repo updated.
+You can fetch that branch.
 
-I guess there are some more btrfs related code change since then, I'll
-rebase them to latest master, and update the github repo then.
+Only two small conflicts during rebase, and since it compiles I haven't
+re-done the full test, but it looks pretty OK.
 
 Thanks,
 Qu
 
 >=20
-> Marek
+> Thanks,
+> Qu
+>=20
+>>
+>> Marek
+>>
 >=20
 
 
---KoYagtIPqWd2VIV9Yd41qybbUOILSHC0u--
+--aST7akugqk6Oz0Gz9RVUIBNim9RvrDPGn--
 
---1VIq5kFMnmbGpKyoi2UenbvDucHUTOiBF
+--VJvFv34DU6knf4hy0EhZJX2Uw7YxzPpdJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6f97oACgkQwj2R86El
-/qhJDgf+IX9yCRSL8SJYO7dLuk5GgnDdntjM3R7LqMbMfVPfp5ZDb7P0hsj9ixGm
-/tCNfsvHUYK0xBCedM0m6HnpPmwjIt6tAt/vaxKvX9Hi6NdyCmk7NfkuphDuGiCJ
-odzd+ozR8vCL2HS2i2N8KXDw3S5OJAm/pCqG6S6gLW3+E+DmIyf3ScRe8FfYZwYO
-Q/erOFTLvcXILLLtls1Pr95J27Zi0dM+Ysa0iKDIVVhQhfHI37HgFaL0h3UM2/EZ
-ZdDw7tyKbN8KLsLcSCKWieR0++cWgnjKg2VUTFtkyTwK5VYEEfkvmk2aIfpfh8nj
-BhKKkZbg0KS+We7+4Pu7i7AGd3xnog==
-=26+b
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6f+JUACgkQwj2R86El
+/qh9yAf9HxmpFFqyYMkZmo/3mI1VNbGxNOU3xmCDTmcl4aiTTTG1xPzXuJXrtb74
+m7EMKu2cQbUIvKP7ozbGMC8u+OscDzvpPmnY21WX8q++VC3x2CiTjb4R3wwXof4i
+tzZZHlVl8hzu6Rn1D6YuPf0RV0/knKYV2S9ZNU9ORs5uINSpHTOSxwSOOglbVs9t
+hm4/V+KTRSNQHH/UsHWNw4mzlSPyjv7eRrZVJIUqAYwpSYVn5YnMal4DZEfVm27x
+Uwa77fI5Za5T8NtHZ0QmJ5Jggni+Rx78Q7645Kh+Xv2+MmlE0dYPyC7PelQK2FoX
+DK5pRkPSE0964QdDePWoHKAH+M4lGQ==
+=DEaq
 -----END PGP SIGNATURE-----
 
---1VIq5kFMnmbGpKyoi2UenbvDucHUTOiBF--
+--VJvFv34DU6knf4hy0EhZJX2Uw7YxzPpdJ--
