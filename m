@@ -2,58 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDB61B4EC5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 23:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713BD1B4EF5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 23:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbgDVVFv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 17:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        id S1726681AbgDVVNj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 17:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgDVVFu (ORCPT
+        with ESMTP id S1726161AbgDVVNi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 17:05:50 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E693C03C1A9
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:05:50 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i10so4265512wrv.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:05:50 -0700 (PDT)
+        Wed, 22 Apr 2020 17:13:38 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678D4C03C1AA
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:13:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g13so4291072wrb.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y03eZNqKh5E0nzPHQsFJ+IZan55U+YgiZM9G4HnQHBs=;
-        b=TyVUbOqhgDGTn2sDOZLp03OZ4J2Sc76cIbhs7way9B2ESDmboF1QvBJGiAopRVf4Va
-         qD4UTpJGRx6EPoTxvaZXI8R1TtIsIT3NRhiZPjTbC5sgmSuIwNzn71MW+BeNNZ/29BQf
-         jjFIBvXWrtkwukbWMyahw99PNpuh9/Uqey6Nnw4YTdMjq3zQphudiXs8nk0S5X4LKVhb
-         9GVcUC7SJRTG+RHGjHcA966oCk0Si+t6bqGfZ7MeYGFjXvkwQqQwl1g4YljEHWVUTioG
-         bceyz8c1VbB6o+tQbRERHr/OP3231j/lT3o1r7pHWleYuFDQKkYLeijs33yN1lVqRHLJ
-         9eiA==
+        bh=aMbo1hfv7672r6Y1gjIi8DM9ub3GdR5lVUEkM+9248Q=;
+        b=vdbricFV7pWpLLiE4mmIDhqI3ffQJYbo/idS/FoK13Q57CLN0IFxe7BoISBFOSmM6L
+         bS9cV+50Qd4Fim9UIrrWzYKNu3vuqS9bN0XbIeIGexvpXhmAlSa+xL7kMXNPzXowMQy1
+         7Or7gjqRDrR7rEDTRs3XajbWnWSWHG0L/jcMoMl/SvA9w2xakrGi+rWwQYRB/UUe4xOh
+         iWtOatsP8OsUO1PNgU1mucMNEFhq/kF5FVP5MwfpQEL136xodwAoNd3PksADbML8wpp4
+         JUeO1dIz55G3rqsRRXWnnM/zpx/jAJrVxZBRXawMyDtq0HyqZV+rqcDVkaldfKs+5Lb6
+         JjQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y03eZNqKh5E0nzPHQsFJ+IZan55U+YgiZM9G4HnQHBs=;
-        b=iZ1J0f3+XUNhr00M4djROtofyTuDQ27mshU8NOe6Uh7DfwzmUeSkGM/4eHRj70S47l
-         WUP/RnH8Gcrffg0e593aXcU4c6VVH2tV5KiS2Mkt3P0HuVRVq9SZylqOX1+vjaj4VhqG
-         NDXvdawc3Vy0mcWASZoiWuA8XWKNT4TDNL0x1gtbAkb+sc0pMRMQhGH4bJtuMkYh944N
-         q8jCTwgyc7WfsjBeyK427h4qkU3eYGnJPXl/US3HE4GoZ51J2JPxMARosiQM1fuD23Of
-         jEja6oWQA7n5v0U82LUC8Gi1j/eTh1HPEv6yI+dD0vn9i42q09pGi562EVkUDfXa5bhb
-         /IQQ==
-X-Gm-Message-State: AGi0Pua3/lIeMDiQq09/4QVpeO+Szt2TeJCH0/PiGRRK8DLYT+y80knc
-        sXmsnh+XnhMCelC3rVFX8uRXjPqqmudgFeZsV7apJWZG
-X-Google-Smtp-Source: APiQypK29nYQZJ/ZcJvrZ7JU+CrpVhUsfVX57df7H7Hz8TK4bGeCObsw+ngIgkvz3NDvddrut+B6VnNuCfmaXbCE/fg=
-X-Received: by 2002:a05:6000:1242:: with SMTP id j2mr1033239wrx.274.1587589549090;
- Wed, 22 Apr 2020 14:05:49 -0700 (PDT)
+        bh=aMbo1hfv7672r6Y1gjIi8DM9ub3GdR5lVUEkM+9248Q=;
+        b=nV5ZKjxCrnqSu8IzuKv6+awIPiq0HBMlpjWTiZOZA3D3OsI+Skm8jLM262OItkYAHh
+         Ub4aQ5auZ9PVnZSCsw4a5htDZrwqyFY56UmzHiBXz0lDkzH5AqtRuiwCn/tspJwziiIf
+         2JSfCRsOMBsOYZAS8Wk8ZFyvelvG8sKrqkhUISJjUjd1dYgYS8s+KGZO+wr4f0Ltkcd5
+         Um0U72Af0O9hi4sk6aEmoQAkAbzWp0W1EvBHkSCKvZMBgz/oIiM1Zd+yX9Z4hJED7jy0
+         17TMjrIpM3bwRNP8vVmYwytdC4WLZBUoYysRnYdN74z6kIAFjNZR2ngpeoSO36OZbLlL
+         i+ug==
+X-Gm-Message-State: AGi0PubquUpKzUXlMQddJLu7YgLZn77PSmJmjeF/yWUvkwxwYNXmmc8S
+        MKdAsgdjmAeIrypcWh0a9opR0JgwNuhTt6bTstbn7M+MWM4=
+X-Google-Smtp-Source: APiQypKxbXItcHN8RXafuqa2mD7GekOcxQXK3D5o3KmcITjpK0KbB7ysIVhh4t/Pv/Go4P3Ivk6hiQBzXZrZDuu+In0=
+X-Received: by 2002:a05:6000:1242:: with SMTP id j2mr1063523wrx.274.1587590016064;
+ Wed, 22 Apr 2020 14:13:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200422205209.0e2efd53@nic.cz> <CAJCQCtTDGb1hAAdp1-ph0wzFcfQNyAh-+hNMipdRmK0iTZA8Xw@mail.gmail.com>
- <CAJCQCtTEY347CwHGz3QKaBfxvPg0pTz_CF+OaiZNaCEGcnLfYA@mail.gmail.com> <20200422225851.3d031d88@nic.cz>
-In-Reply-To: <20200422225851.3d031d88@nic.cz>
+References: <be4ee7ea-f032-ee63-2486-030b2f270baa@peter-speer.de>
+ <20200422104403.GE32577@savella.carfax.org.uk> <d59a8a2e-2aae-0177-a0a8-6c238776814a@peter-speer.de>
+ <20200422110646.GF32577@savella.carfax.org.uk> <e000c0cc-132d-04ad-dcfd-d808efbff76d@peter-speer.de>
+In-Reply-To: <e000c0cc-132d-04ad-dcfd-d808efbff76d@peter-speer.de>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 22 Apr 2020 15:05:33 -0600
-Message-ID: <CAJCQCtR1pY-W7Bfj-gMnof_xNWiPn=EoSVxqksm9FdNbuRGB+A@mail.gmail.com>
-Subject: Re: when does btrfs create sparse extents?
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Chris Murphy <lists@colorremedies.com>,
+Date:   Wed, 22 Apr 2020 15:13:20 -0600
+Message-ID: <CAJCQCtTrRshj-oQrJEgaAR=wmuUtTT0fYsFAM0W6QtwUBBgw-Q@mail.gmail.com>
+Subject: Re: RAID 1 | Newbie Question
+To:     Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
+Cc:     Hugo Mills <hugo@carfax.org.uk>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,45 +62,26 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 2:58 PM Marek Behun <marek.behun@nic.cz> wrote:
->
-> On Wed, 22 Apr 2020 14:44:46 -0600
-> Chris Murphy <lists@colorremedies.com> wrote:
->
-> > e.g. from a 10m file created with truncate on two Btrfs file systems
-> >
-> > original holes format (default)
-> >
-> >     item 6 key (257 EXTENT_DATA 0) itemoff 15768 itemsize 53
-> >         generation 7412 type 1 (regular)
-> >         extent data disk byte 0 nr 0
-> >         extent data offset 0 nr 10485760 ram 10485760
-> >         extent compression 0 (none)
-> >
-> > On a file system with no-holes feature set, this item simply doesn't
-> > exist. I think basically it works by inference. Both kinds of files
-> > have size in the INODE_ITEM, e.g.
-> >
-> >     item 4 key (257 INODE_ITEM 0) itemoff 32245 itemsize 160
-> >         generation 889509 transid 889509 size 10485760 nbytes 0
-> >
-> > Sparse extents are explicitly stated in the original format with disk
-> > byte 0 in an EXTENT_DATA item; whereas in the newer format, sparse
-> > extents exist whenever EXTENT_DATA items don't completely describe the
-> > file's size.
->
-> Ok this means that U-Boot currently gained support for the original
-> sparse extents.
->
-> I fear that current u-boot does not handle the new no-holes feature.
+I haven't looked at the wiki in a bit so I'm not sure if it points out
+two common gotchas:
 
-I'd advise it should support it, I think it's expected to become the
-default. But I don't know the time frame for that.
+Mismatch between SCT ERC and SCSI driver (used by libata and maybe
+also usb) timeouts. Btrfs needs explicit read errors on bad sectors to
+do automatic fix ups, same as md.
+https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
 
-Also, when the no-holes feature flag is not set, you can be certain
-only the original hole type is used. But when no-holes feature is set,
-it's possible for both types of holes to exist, because no-holes can
-be set after mkfs time by btrfstune.
+There's no automatic degraded state for Btrfs. And it is not a good
+idea to add the degraded mount option to fstab, as it can result in a
+kind of "split brain" corruption. In the case of member device
+failure, at startup time the mount will fail and you'll need to
+manually mount degraded and fix the problem resulting in the need to
+mount degraded. An alternative is maybe modifying the current btrfs
+udev rule, to timeout after a decently long period of time to ensure
+it's really a case of needing degraded mount, rather than merely a
+slow or transient effect that just needs a delay so that all member
+devices are available when mount is called. But I don't know if udev
+has a concept of waiting. For mdadm this is done in the initramfs.
 
--- 
+
+--
 Chris Murphy
