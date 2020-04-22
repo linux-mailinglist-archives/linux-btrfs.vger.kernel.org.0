@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35851B37E8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 08:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AA01B37EB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 08:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgDVGvS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 02:51:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51562 "EHLO mx2.suse.de"
+        id S1726508AbgDVGvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 02:51:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51608 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726066AbgDVGvR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 02:51:17 -0400
+        id S1726066AbgDVGvW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Apr 2020 02:51:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D4AC7AA4F;
-        Wed, 22 Apr 2020 06:51:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 2D920AC1D;
+        Wed, 22 Apr 2020 06:51:17 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
         u-boot@lists.denx.de
 Cc:     marek.behun@nic.cz
-Subject: [PATCH U-BOOT 17/26] fs: btrfs: Use btrfs_readlink() to implement __btrfs_readlink()
-Date:   Wed, 22 Apr 2020 14:50:00 +0800
-Message-Id: <20200422065009.69392-18-wqu@suse.com>
+Subject: [PATCH U-BOOT 18/26] fs: btrfs: Implement btrfs_lookup_path()
+Date:   Wed, 22 Apr 2020 14:50:01 +0800
+Message-Id: <20200422065009.69392-19-wqu@suse.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200422065009.69392-1-wqu@suse.com>
 References: <20200422065009.69392-1-wqu@suse.com>
@@ -32,162 +32,417 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The existing __btrfs_readlink() can be easily re-implemented using the
-extent buffer based btrfs_readlink().
+This is the extent buffer based path lookup routine.
 
-This should be the first step to re-implement u-boot btrfs code.
+To implement this, btrfs_lookup_dir_item() is cross ported from
+btrfs-progs, and implement btrfs_lookup_path() from scratch.
+
+Unlike the existing __btrfs_lookup_path(), since btrfs_read_fs_root()
+will check whether a root is orphan at read time, there is no need to
+check root backref, this make the code a little easier to read.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/btrfs.h |   1 +
- fs/btrfs/inode.c | 100 +++++++++++++++++++++++++++++------------------
- 2 files changed, 64 insertions(+), 37 deletions(-)
+ fs/btrfs/ctree.h    |   4 +
+ fs/btrfs/dir-item.c | 106 +++++++++++++++++++
+ fs/btrfs/inode.c    | 245 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 355 insertions(+)
 
-diff --git a/fs/btrfs/btrfs.h b/fs/btrfs/btrfs.h
-index e561d27944fc..9057f2476526 100644
---- a/fs/btrfs/btrfs.h
-+++ b/fs/btrfs/btrfs.h
-@@ -60,6 +60,7 @@ u64 __btrfs_lookup_inode_ref(struct __btrfs_root *, u64, struct btrfs_inode_ref
- int __btrfs_lookup_inode(const struct __btrfs_root *, struct btrfs_key *,
- 		        struct btrfs_inode_item *, struct __btrfs_root *);
- int __btrfs_readlink(const struct __btrfs_root *, u64, char *);
-+int btrfs_readlink(struct btrfs_root *root, u64 ino, char *target);
- u64 __btrfs_lookup_path(struct __btrfs_root *, u64, const char *, u8 *,
- 		       struct btrfs_inode_item *, int);
- u64 btrfs_file_read(const struct __btrfs_root *, u64, u64, u64, char *);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index f702eaff293c..78f7746d1f32 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1284,6 +1284,10 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 					     struct btrfs_path *path, u64 dir,
+ 					     const char *name, int name_len,
+ 					     int mod);
++/* inode.c */
++int btrfs_lookup_path(struct btrfs_root *root, u64 ino, const char *filename,
++			struct btrfs_root **root_ret, u64 *ino_ret,
++			u8 *type_ret, int symlink_limit);
+ 
+ /* ctree.c */
+ int btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
+diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
+index aea621c72bb3..4bf45c2fa925 100644
+--- a/fs/btrfs/dir-item.c
++++ b/fs/btrfs/dir-item.c
+@@ -8,6 +8,112 @@
+ #include "btrfs.h"
+ #include "disk-io.h"
+ 
++static int verify_dir_item(struct btrfs_root *root,
++		    struct extent_buffer *leaf,
++		    struct btrfs_dir_item *dir_item)
++{
++	u16 namelen = BTRFS_NAME_LEN;
++	u8 type = btrfs_dir_type(leaf, dir_item);
++
++	if (type == BTRFS_FT_XATTR)
++		namelen = XATTR_NAME_MAX;
++
++	if (btrfs_dir_name_len(leaf, dir_item) > namelen) {
++		fprintf(stderr, "invalid dir item name len: %u\n",
++		       (unsigned)btrfs_dir_data_len(leaf, dir_item));
++		return 1;
++	}
++
++	/* BTRFS_MAX_XATTR_SIZE is the same for all dir items */
++	if ((btrfs_dir_data_len(leaf, dir_item) +
++	     btrfs_dir_name_len(leaf, dir_item)) >
++			BTRFS_MAX_XATTR_SIZE(root->fs_info)) {
++		fprintf(stderr, "invalid dir item name + data len: %u + %u\n",
++		       (unsigned)btrfs_dir_name_len(leaf, dir_item),
++		       (unsigned)btrfs_dir_data_len(leaf, dir_item));
++		return 1;
++	}
++
++	return 0;
++}
++
++struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_root *root,
++			      struct btrfs_path *path,
++			      const char *name, int name_len)
++{
++	struct btrfs_dir_item *dir_item;
++	unsigned long name_ptr;
++	u32 total_len;
++	u32 cur = 0;
++	u32 this_len;
++	struct extent_buffer *leaf;
++
++	leaf = path->nodes[0];
++	dir_item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_dir_item);
++	total_len = btrfs_item_size_nr(leaf, path->slots[0]);
++	if (verify_dir_item(root, leaf, dir_item))
++		return NULL;
++
++	while(cur < total_len) {
++		this_len = sizeof(*dir_item) +
++			btrfs_dir_name_len(leaf, dir_item) +
++			btrfs_dir_data_len(leaf, dir_item);
++		if (this_len > (total_len - cur)) {
++			fprintf(stderr, "invalid dir item size\n");
++			return NULL;
++		}
++
++		name_ptr = (unsigned long)(dir_item + 1);
++
++		if (btrfs_dir_name_len(leaf, dir_item) == name_len &&
++		    memcmp_extent_buffer(leaf, name, name_ptr, name_len) == 0)
++			return dir_item;
++
++		cur += this_len;
++		dir_item = (struct btrfs_dir_item *)((char *)dir_item +
++						     this_len);
++	}
++	return NULL;
++}
++
++struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
++					     struct btrfs_root *root,
++					     struct btrfs_path *path, u64 dir,
++					     const char *name, int name_len,
++					     int mod)
++{
++	int ret;
++	struct btrfs_key key;
++	int ins_len = mod < 0 ? -1 : 0;
++	int cow = mod != 0;
++	struct btrfs_key found_key;
++	struct extent_buffer *leaf;
++
++	key.objectid = dir;
++	key.type = BTRFS_DIR_ITEM_KEY;
++
++	key.offset = btrfs_name_hash(name, name_len);
++
++	ret = btrfs_search_slot(trans, root, &key, path, ins_len, cow);
++	if (ret < 0)
++		return ERR_PTR(ret);
++	if (ret > 0) {
++		if (path->slots[0] == 0)
++			return NULL;
++		path->slots[0]--;
++	}
++
++	leaf = path->nodes[0];
++	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
++
++	if (found_key.objectid != dir ||
++	    found_key.type != BTRFS_DIR_ITEM_KEY ||
++	    found_key.offset != key.offset)
++		return NULL;
++
++	return btrfs_match_dir_item_name(root, path, name, name_len);
++}
++
+ static int __verify_dir_item(struct btrfs_dir_item *item, u32 start, u32 total)
+ {
+ 	u16 max_len = BTRFS_NAME_LEN;
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index eb34f546b57f..df2f6590bb40 100644
+index df2f6590bb40..af4f30bbd50c 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -5,8 +5,9 @@
-  * 2017 Marek Behun, CZ.NIC, marek.behun@nic.cz
-  */
- 
--#include "btrfs.h"
- #include <malloc.h>
-+#include "btrfs.h"
-+#include "disk-io.h"
- 
- u64 __btrfs_lookup_inode_ref(struct __btrfs_root *root, u64 inr,
- 			   struct btrfs_inode_ref *refp, char *name)
-@@ -83,56 +84,81 @@ out:
- 	return res;
+@@ -161,6 +161,115 @@ int __btrfs_readlink(const struct __btrfs_root *root, u64 inr, char *target)
+ 	return 0;
  }
  
--int __btrfs_readlink(const struct __btrfs_root *root, u64 inr, char *target)
-+/*
-+ * Read the content of symlink inode @ino of @root, into @target.
-+ *
-+ * Return the number of read data.
-+ * Return <0 for error.
-+ */
-+int btrfs_readlink(struct btrfs_root *root, u64 ino, char *target)
- {
--	struct __btrfs_path path;
++static int lookup_root_ref(struct btrfs_fs_info *fs_info,
++			   u64 rootid, u64 *root_ret, u64 *dir_ret)
++{
++	struct btrfs_root *root = fs_info->tree_root;
++	struct btrfs_root_ref *root_ref;
 +	struct btrfs_path path;
- 	struct btrfs_key key;
--	struct btrfs_file_extent_item *extent;
--	const char *data_ptr;
--	int res = -1;
-+	struct btrfs_file_extent_item *fi;
++	struct btrfs_key key;
 +	int ret;
- 
--	key.objectid = inr;
-+	key.objectid = ino;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = 0;
++
 +	btrfs_init_path(&path);
- 
--	if (btrfs_search_tree(root, &key, &path))
--		return -1;
--
--	if (__btrfs_comp_keys(&key, btrfs_path_leaf_key(&path)))
--		goto out;
--
--	extent = btrfs_path_item_ptr(&path, struct btrfs_file_extent_item);
--	if (extent->type != BTRFS_FILE_EXTENT_INLINE) {
--		printf("%s: Extent for symlink %llu not of INLINE type\n",
--		       __func__, inr);
++	key.objectid = rootid;
++	key.type = BTRFS_ROOT_BACKREF_KEY;
++	key.offset = (u64)-1;
++
 +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
 +	if (ret < 0)
 +		return ret;
++	/* Should not happen */
++	if (ret == 0) {
++		ret = -EUCLEAN;
++		goto out;
++	}
++	ret = btrfs_previous_item(root, &path, rootid, BTRFS_ROOT_BACKREF_KEY);
++	if (ret < 0)
++		goto out;
 +	if (ret > 0) {
 +		ret = -ENOENT;
- 		goto out;
- 	}
--
--	btrfs_file_extent_item_to_cpu_inl(extent);
--
--	if (extent->compression != BTRFS_COMPRESS_NONE) {
--		printf("%s: Symlink %llu extent data compressed!\n", __func__,
--		       inr);
-+	fi = btrfs_item_ptr(path.nodes[0], path.slots[0],
-+			    struct btrfs_file_extent_item);
-+	if (btrfs_file_extent_type(path.nodes[0], fi) !=
-+	    BTRFS_FILE_EXTENT_INLINE) {
-+		ret = -EUCLEAN;
-+		printf("Extent for symlink %llu must be INLINE type\n", ino);
- 		goto out;
--	} else if (extent->encryption != 0) {
--		printf("%s: Symlink %llu extent data encrypted!\n", __func__,
--		       inr);
++		goto out;
 +	}
-+	if (btrfs_file_extent_compression(path.nodes[0], fi) !=
-+	    BTRFS_COMPRESS_NONE) {
-+		ret = -EUCLEAN;
-+		printf("Symlink %llu extent data compressed!\n", ino);
- 		goto out;
--	} else if (extent->ram_bytes >= btrfs_info.sb.sectorsize) {
--		printf("%s: Symlink %llu extent data too long (%llu)!\n",
--		       __func__, inr, extent->ram_bytes);
-+	}
-+	if (btrfs_file_extent_ram_bytes(path.nodes[0], fi) >=
-+	    root->fs_info->sectorsize) {
-+		ret = -EUCLEAN;
-+		printf("Symlink %llu extent data too large (%llu)!\n",
-+			ino, btrfs_file_extent_ram_bytes(path.nodes[0], fi));
- 		goto out;
- 	}
-+	read_extent_buffer(path.nodes[0], target,
-+			btrfs_file_extent_inline_start(fi),
-+			btrfs_file_extent_ram_bytes(path.nodes[0], fi));
-+	ret = btrfs_file_extent_ram_bytes(path.nodes[0], fi);
++	btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
++	root_ref = btrfs_item_ptr(path.nodes[0], path.slots[0],
++				  struct btrfs_root_ref);
++	*root_ret = key.offset;
++	*dir_ret = btrfs_root_ref_dirid(path.nodes[0], root_ref);
 +out:
 +	btrfs_release_path(&path);
 +	return ret;
 +}
- 
--	data_ptr = (const char *) extent
--		   + offsetof(struct btrfs_file_extent_item, disk_bytenr);
-+int __btrfs_readlink(const struct __btrfs_root *root, u64 inr, char *target)
++
++/*
++ * To get the parent inode of @ino of @root.
++ *
++ * @root_ret and @ino_ret will be filled.
++ *
++ * NOTE: This function is not reliable. It can only get one parent inode.
++ * The get the proper parent inode, we need a full VFS inodes stack to
++ * resolve properly.
++ */
++static int get_parent_inode(struct btrfs_root *root, u64 ino,
++			    struct btrfs_root **root_ret, u64 *ino_ret)
 +{
-+	struct btrfs_root *subvolume;
-+	struct btrfs_fs_info *fs_info = current_fs_info;
++	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_path path;
 +	struct btrfs_key key;
 +	int ret;
 +
-+	ASSERT(fs_info);
-+	key.objectid = root->objectid;
-+	key.type = BTRFS_ROOT_ITEM_KEY;
++	if (ino == BTRFS_FIRST_FREE_OBJECTID) {
++		u64 parent_root;
++
++		/* It's top level already, no more parent */
++		if (root->root_key.objectid == BTRFS_FS_TREE_OBJECTID) {
++			*root_ret = fs_info->fs_root;
++			*ino_ret = BTRFS_FIRST_FREE_OBJECTID;
++			return 0;
++		}
++
++		ret = lookup_root_ref(fs_info, root->root_key.objectid,
++				      &parent_root, ino_ret);
++		if (ret < 0)
++			return ret;
++
++		key.objectid = parent_root;
++		key.type = BTRFS_ROOT_ITEM_KEY;
++		key.offset = (u64)-1;
++		*root_ret = btrfs_read_fs_root(fs_info, &key);
++		if (IS_ERR(*root_ret))
++			return PTR_ERR(*root_ret);
++
++		return 0;
++	}
++
++	btrfs_init_path(&path);
++	key.objectid = ino;
++	key.type = BTRFS_INODE_REF_KEY;
 +	key.offset = (u64)-1;
-+	subvolume = btrfs_read_fs_root(fs_info, &key);
-+	if (IS_ERR(subvolume))
-+		return -1;
- 
--	memcpy(target, data_ptr, extent->ram_bytes);
--	target[extent->ram_bytes] = '\0';
--	res = 0;
--out:
--	__btrfs_free_path(&path);
--	return res;
-+	ret = btrfs_readlink(subvolume, inr, target);
++
++	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
 +	if (ret < 0)
-+		return -1;
-+	target[ret] = '\0';
-+	return 0;
++		return ret;
++	/* Should not happen */
++	if (ret == 0) {
++		ret = -EUCLEAN;
++		goto out;
++	}
++	ret = btrfs_previous_item(root, &path, ino, BTRFS_INODE_REF_KEY);
++	if (ret < 0)
++		goto out;
++	if (ret > 0) {
++		ret = -ENOENT;
++		goto out;
++	}
++	btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
++	*root_ret = root;
++	*ino_ret = key.offset;
++out:
++	btrfs_release_path(&path);
++	return ret;
++}
++
+ /* inr must be a directory (for regular files with multiple hard links this
+    function returns only one of the parents of the file) */
+ static u64 __get_parent_inode(struct __btrfs_root *root, u64 inr,
+@@ -235,6 +344,142 @@ static inline const char *skip_current_directories(const char *cur)
+ 	return cur;
  }
  
- /* inr must be a directory (for regular files with multiple hard links this
++/*
++ * Resolve one filename of @ino of @root.
++ *
++ * key_ret:	The child key (either INODE_ITEM or ROOT_ITEM type)
++ * type_ret:	BTRFS_FT_* of the child inode.
++ *
++ * Return 0 with above members filled.
++ * Return <0 for error.
++ */
++static int resolve_one_filename(struct btrfs_root *root, u64 ino,
++				const char *name, int namelen,
++				struct btrfs_key *key_ret, u8 *type_ret)
++{
++	struct btrfs_dir_item *dir_item;
++	struct btrfs_path path;
++	int ret = 0;
++
++	btrfs_init_path(&path);
++
++	dir_item = btrfs_lookup_dir_item(NULL, root, &path, ino, name,
++					 namelen, 0);
++	if (IS_ERR(dir_item)) {
++		ret = PTR_ERR(dir_item);
++		goto out;
++	}
++
++	btrfs_dir_item_key_to_cpu(path.nodes[0], dir_item, key_ret);
++	*type_ret = btrfs_dir_type(path.nodes[0], dir_item);
++out:
++	btrfs_release_path(&path);
++	return ret;
++}
++
++/*
++ * Resolve a full path @filename. The start point is @ino of @root.
++ *
++ * The result will be filled into @root_ret, @ino_ret and @type_ret.
++ */
++int btrfs_lookup_path(struct btrfs_root *root, u64 ino, const char *filename,
++			struct btrfs_root **root_ret, u64 *ino_ret,
++			u8 *type_ret, int symlink_limit)
++{
++	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_root *next_root;
++	struct btrfs_key key;
++	const char *cur = filename;
++	u64 next_ino;
++	u8 next_type;
++	u8 type;
++	int len;
++	int ret = 0;
++
++	/* If the path is absolute path, also search from fs root */
++	if (*cur == '/') {
++		root = fs_info->fs_root;
++		ino = btrfs_root_dirid(&root->root_item);
++		type = BTRFS_FT_DIR;
++	}
++
++	while (*cur != '\0') {
++
++		cur = skip_current_directories(cur);
++		len = next_length(cur);
++		if (len > BTRFS_NAME_LEN) {
++			printf("%s: Name too long at \"%.*s\"\n", __func__,
++			       BTRFS_NAME_LEN, cur);
++			return -ENAMETOOLONG;
++		}
++		if (len == 1 && cur[0] == '.')
++			break;
++		/* Go one level up */
++		if (len == 2 && cur[0] == '.' && cur[1] == '.') {
++			ret = get_parent_inode(root, ino, &next_root, &next_ino);
++			if (ret < 0)
++				return ret;
++			root = next_root;
++			ino = next_ino;
++			goto next;
++		}
++		if (!*cur)
++			break;
++
++		ret = resolve_one_filename(root, ino, cur, len, &key, &type);
++		if (ret < 0)
++			return ret;
++		/* Child inode is a subvolume */
++		if (key.type == BTRFS_ROOT_ITEM_KEY) {
++
++			next_root = btrfs_read_fs_root(fs_info, &key);
++			if (IS_ERR(next_root))
++				return PTR_ERR(next_root);
++			root = next_root;
++			ino = btrfs_root_dirid(&root->root_item);
++			goto next;
++		}
++		/* Child inode is a symlink */
++		if (type == BTRFS_FT_SYMLINK && symlink_limit >= 0) {
++			char *target;
++
++			if (symlink_limit == 0) {
++				printf("%s: Too much symlinks!\n", __func__);
++				return -EMLINK;
++			}
++			target = malloc(fs_info->sectorsize);
++			if (!target)
++				return -ENOMEM;
++			ret = btrfs_readlink(root, ino, target);
++			if (ret < 0) {
++				free(target);
++				return ret;
++			}
++			target[ret] = '\0';
++
++			ret = btrfs_lookup_path(root, ino, target, &next_root,
++						&next_ino, &next_type,
++						symlink_limit);
++			if (ret < 0)
++				return ret;
++			root = next_root;
++			ino = next_ino;
++			type = next_type;
++			goto next;
++		}
++		/* Child inode is an inode */
++		ino = key.objectid;
++next:
++		cur += len;
++	}
++	if (!ret) {
++		*root_ret = root;
++		*ino_ret = ino;
++		*type_ret = type;
++	}
++	return ret;
++}
++
+ u64 __btrfs_lookup_path(struct __btrfs_root *root, u64 inr, const char *path,
+ 		      u8 *type_p, struct btrfs_inode_item *inode_item_p,
+ 		      int symlink_limit)
 -- 
 2.26.0
 
