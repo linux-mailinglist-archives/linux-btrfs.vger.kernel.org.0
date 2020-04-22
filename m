@@ -2,86 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6C51B3C58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 12:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EF41B4034
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 12:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgDVKE6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 06:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726596AbgDVKE4 (ORCPT
+        id S1731500AbgDVKoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 06:44:18 -0400
+Received: from savella.carfax.org.uk ([85.119.84.138]:60162 "EHLO
+        savella.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731523AbgDVKoJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:04:56 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EC4C03C1A8;
-        Wed, 22 Apr 2020 03:04:55 -0700 (PDT)
-Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id 2811A14088B;
-        Wed, 22 Apr 2020 12:04:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1587549893; bh=wwTHWAA9E3wrvopb0/Q15y7NVHabmvXLjzRlaQnJhH0=;
-        h=Date:From:To;
-        b=mUtpTGhFVAgHMSd4KqmJUW9YqSx22n5pxbBQFB2fuyo3oSwNzVRvJ9CjTvrvvnFbX
-         hc7I1eoSwhlf9laDlCYSRfL0/9zztT/57n+1jLAOHNOcdvb5SEDPtk8lS97o8c8Yzl
-         xk62TaLMeNr61caXobiH32Q12i2Ln2zWwlAJYHQ0=
-Date:   Wed, 22 Apr 2020 12:04:51 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Su Yue <Damenly_Su@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, u-boot@lists.denx.de
-Subject: Re: [PATCH U-BOOT 18/26] fs: btrfs: Implement btrfs_lookup_path()
-Message-ID: <20200422120451.5864d812@nic.cz>
-In-Reply-To: <368vvoni.fsf@gmx.com>
-References: <20200422065009.69392-1-wqu@suse.com>
-        <20200422065009.69392-19-wqu@suse.com>
-        <368vvoni.fsf@gmx.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 22 Apr 2020 06:44:09 -0400
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1jRCrL-0002aS-Ml; Wed, 22 Apr 2020 11:44:03 +0100
+Date:   Wed, 22 Apr 2020 11:44:03 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: RAID 1 | Newbie Question
+Message-ID: <20200422104403.GE32577@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>,
+        linux-btrfs@vger.kernel.org
+References: <be4ee7ea-f032-ee63-2486-030b2f270baa@peter-speer.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.101.4 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be4ee7ea-f032-ee63-2486-030b2f270baa@peter-speer.de>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 22 Apr 2020 17:46:25 +0800
-Su Yue <Damenly_Su@gmx.com> wrote:
-
-> > +	while (*cur != '\0') {
-> > +
-> > +		cur = skip_current_directories(cur);
-> > +		len = next_length(cur);
-> > +		if (len > BTRFS_NAME_LEN) {  
+On Wed, Apr 22, 2020 at 11:58:41AM +0200, Stefanie Leisestreichler wrote:
+> Hi.
+> I might be a first time user with btrfs for a new system I will set up.
 > 
-> next_length() promises @len <= BTRFS_NAME_LEN, so the check is trivial.
+> Just want to make sure: As I read the docs, the note about RAID 1 and that
+> there will be no redundant data is true only, if the RAID, which is
+> possible, is set up to use only 1 physical device, right?
 
-Hmm. This is a bug in next_length. I meant for next_length to return
-len > BTRFS_NAME_LEN in case of too long name. Thanks for noticing.
+   You can't set up btrfs RAID-1 to use only one device. It's only
+possible to end up like that if you set up a 2-device RAID-1 and then
+unplug a device and mount it in degraded mode.
 
-> > +			ret = btrfs_readlink(root, ino, target);
-> > +			if (ret < 0) {
-> > +				free(target);
-> > +				return ret;
-> > +			}
-> > +			target[ret] = '\0';  
-> 
-> It was done in btrfs_readlink() already.
+> If RAID 1 using btrfs is defined to use two seperate disk, say /dev/sda2 and
+> /dev/sdb2, I will have the same redundancy like using md. Is this correct?
 
-It is in old btrfs_readlink, but is it even after this patches? I don't
-see it in the new implementation.
+   You'll have two copies, so one device redundancy, regardless of the
+number of devices. Traditional RAID-1 will use as many copies as
+devices; btrfs RAID-1 is two copies. (Although there are 3-copy and
+4-copy variations in the latest kernels).
 
-> > +
-> > +			ret = btrfs_lookup_path(root, ino, target, &next_root,
-> > +						&next_ino, &next_type,
-> > +						symlink_limit);  
-> 
-> Just notify gentlely this is a recursive call here. I don't know
-> whether uboot cares about stack things. But, recursion makes coding simpler :).
+   Hugo.
 
-It is limited by symlink_limit. Until somebody complains about stack
-issues I would like to keep it simple.
+-- 
+Hugo Mills             | You can play with your friends' privates, but you
+hugo@... carfax.org.uk | can't play with your friends' childrens' privates.
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                                       C++ coding rule
