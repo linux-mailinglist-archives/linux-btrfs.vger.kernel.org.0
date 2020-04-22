@@ -2,130 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC831B4EC0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 23:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDB61B4EC5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Apr 2020 23:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgDVVDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Apr 2020 17:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        id S1726373AbgDVVFv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Apr 2020 17:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgDVVDx (ORCPT
+        with ESMTP id S1725779AbgDVVFu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Apr 2020 17:03:53 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACA7C03C1A9
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:03:52 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s10so4302249wrr.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:03:51 -0700 (PDT)
+        Wed, 22 Apr 2020 17:05:50 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E693C03C1A9
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:05:50 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id i10so4265512wrv.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 14:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bZWlcFWeuKxfBPfxujCGUcJROpA4Wgo9zS8JOmQWvOI=;
-        b=LxJ3EhV6giVuYnqA0GoDlkNlZSOpCk3Yea2IPDRx2JTQo9Naxzb14TTBmOUNj4/0+6
-         grhpuaBarzLpa5xvq4QAef5XcdZrplW4FPXQ+bkzkWF6zu1UCgF9tLpHANAXhdY0zLT9
-         2B1FauRKc59++JaKU6YgeIqDRonyOpUbvLUTrS1XJEpFcpo4OXRon6bJ0BlBnhLOdENy
-         LgV8djMa+6ReP9C0VSNj/1Kwk/u98R22Ccjzg48sA8K2xWk60nLzRA9D6p4HFpZla5Rj
-         lVhgHJNuscbDECY2jcNXtP7RyBCPxSiNeCu9qmFT6CEhZRnLhmaZKuKWIfwfSDmZu4JC
-         xcbg==
+        bh=Y03eZNqKh5E0nzPHQsFJ+IZan55U+YgiZM9G4HnQHBs=;
+        b=TyVUbOqhgDGTn2sDOZLp03OZ4J2Sc76cIbhs7way9B2ESDmboF1QvBJGiAopRVf4Va
+         qD4UTpJGRx6EPoTxvaZXI8R1TtIsIT3NRhiZPjTbC5sgmSuIwNzn71MW+BeNNZ/29BQf
+         jjFIBvXWrtkwukbWMyahw99PNpuh9/Uqey6Nnw4YTdMjq3zQphudiXs8nk0S5X4LKVhb
+         9GVcUC7SJRTG+RHGjHcA966oCk0Si+t6bqGfZ7MeYGFjXvkwQqQwl1g4YljEHWVUTioG
+         bceyz8c1VbB6o+tQbRERHr/OP3231j/lT3o1r7pHWleYuFDQKkYLeijs33yN1lVqRHLJ
+         9eiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bZWlcFWeuKxfBPfxujCGUcJROpA4Wgo9zS8JOmQWvOI=;
-        b=DmwgjhImo9IFknFfZJSSNmEB/wYj+PJD7E7767EM1sn8fbqYhZy40X3IyRWJ+OFRMG
-         0BIkentqQoqeYq6M+xw9YTjhJf3/bI2QqqRBmotXy5/gZpJ1jdBFNnr2sNpS/mOPBCt1
-         +GSjkrtz0QMXjuv0h9HwWAGHXOxOdSKAtRaUgX5KTEGVceJxPuxMdoUgGkUP8xbLomAS
-         1orddAEImgs6gRHfffxtExAYrvPNf+ZmIxcQU2Wed7wPyoc9k3xPWP82CgxHsvj1CuJv
-         x5kgH3eA95sgoUQTWpGTKTWq0j1ZzLR1fon8Cj8wJusVCAn3QEcM4qSC9UEu0bjOO/TH
-         cntg==
-X-Gm-Message-State: AGi0PubY3LmURY6uwqFR7ftVBq33GiUJPdpZ2pIhhWZa5LImeUiCdSM3
-        vFub8upeX9GHOTN0XBh26DffgHhEdZ2GnIwDfFWZaxmc
-X-Google-Smtp-Source: APiQypKNGZU3WPSG41fFVg0W4E1FMu39JxzFEA57ywn/QZlMtTTXiY2WiL/3h9lK7+0O2igrIdeOu095RTa0hVoTqVI=
-X-Received: by 2002:adf:84c2:: with SMTP id 60mr1009638wrg.65.1587589430722;
- Wed, 22 Apr 2020 14:03:50 -0700 (PDT)
+        bh=Y03eZNqKh5E0nzPHQsFJ+IZan55U+YgiZM9G4HnQHBs=;
+        b=iZ1J0f3+XUNhr00M4djROtofyTuDQ27mshU8NOe6Uh7DfwzmUeSkGM/4eHRj70S47l
+         WUP/RnH8Gcrffg0e593aXcU4c6VVH2tV5KiS2Mkt3P0HuVRVq9SZylqOX1+vjaj4VhqG
+         NDXvdawc3Vy0mcWASZoiWuA8XWKNT4TDNL0x1gtbAkb+sc0pMRMQhGH4bJtuMkYh944N
+         q8jCTwgyc7WfsjBeyK427h4qkU3eYGnJPXl/US3HE4GoZ51J2JPxMARosiQM1fuD23Of
+         jEja6oWQA7n5v0U82LUC8Gi1j/eTh1HPEv6yI+dD0vn9i42q09pGi562EVkUDfXa5bhb
+         /IQQ==
+X-Gm-Message-State: AGi0Pua3/lIeMDiQq09/4QVpeO+Szt2TeJCH0/PiGRRK8DLYT+y80knc
+        sXmsnh+XnhMCelC3rVFX8uRXjPqqmudgFeZsV7apJWZG
+X-Google-Smtp-Source: APiQypK29nYQZJ/ZcJvrZ7JU+CrpVhUsfVX57df7H7Hz8TK4bGeCObsw+ngIgkvz3NDvddrut+B6VnNuCfmaXbCE/fg=
+X-Received: by 2002:a05:6000:1242:: with SMTP id j2mr1033239wrx.274.1587589549090;
+ Wed, 22 Apr 2020 14:05:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <03fdc397-4fca-335f-03d8-f93a96d92105@peter-speer.de>
-In-Reply-To: <03fdc397-4fca-335f-03d8-f93a96d92105@peter-speer.de>
+References: <20200422205209.0e2efd53@nic.cz> <CAJCQCtTDGb1hAAdp1-ph0wzFcfQNyAh-+hNMipdRmK0iTZA8Xw@mail.gmail.com>
+ <CAJCQCtTEY347CwHGz3QKaBfxvPg0pTz_CF+OaiZNaCEGcnLfYA@mail.gmail.com> <20200422225851.3d031d88@nic.cz>
+In-Reply-To: <20200422225851.3d031d88@nic.cz>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 22 Apr 2020 15:03:34 -0600
-Message-ID: <CAJCQCtTnA6Dro2XwEm0S7ohUnf_CMGb7giHsBfh4_KtWE4vR6g@mail.gmail.com>
-Subject: Re: Recommended Partitioning & Subvolume Layout | Newbie Question
-To:     Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Wed, 22 Apr 2020 15:05:33 -0600
+Message-ID: <CAJCQCtR1pY-W7Bfj-gMnof_xNWiPn=EoSVxqksm9FdNbuRGB+A@mail.gmail.com>
+Subject: Re: when does btrfs create sparse extents?
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:42 AM Stefanie Leisestreichler
-<stefanie.leisestreichler@peter-speer.de> wrote:
+On Wed, Apr 22, 2020 at 2:58 PM Marek Behun <marek.behun@nic.cz> wrote:
 >
-> Hi.
-> I wonder how to partition my Disks when I want to use btrfs in a RAID 1
-> configuration.
-> I have /dev/sda1 and /dev/sdb1 for UEFI/ESP (no btrfs) and think about
-> using just 1 more GPT-Partition on each disk /dev/sd[a|b]2 for btrfs. I
-> am planing to create a btrfs-RAID 1 on those two partitions.
+> On Wed, 22 Apr 2020 14:44:46 -0600
+> Chris Murphy <lists@colorremedies.com> wrote:
 >
->
-> This is what the wiki says about partitioning:
-> > Do it the old fashioned way, and create a number of partitions according to your needs? Or create one big btrfs partition and use subvolumes where you would normally create different partitions?
+> > e.g. from a 10m file created with truncate on two Btrfs file systems
 > >
-> > What are the considerations for doing it either way?
+> > original holes format (default)
+> >
+> >     item 6 key (257 EXTENT_DATA 0) itemoff 15768 itemsize 53
+> >         generation 7412 type 1 (regular)
+> >         extent data disk byte 0 nr 0
+> >         extent data offset 0 nr 10485760 ram 10485760
+> >         extent compression 0 (none)
+> >
+> > On a file system with no-holes feature set, this item simply doesn't
+> > exist. I think basically it works by inference. Both kinds of files
+> > have size in the INODE_ITEM, e.g.
+> >
+> >     item 4 key (257 INODE_ITEM 0) itemoff 32245 itemsize 160
+> >         generation 889509 transid 889509 size 10485760 nbytes 0
+> >
+> > Sparse extents are explicitly stated in the original format with disk
+> > byte 0 in an EXTENT_DATA item; whereas in the newer format, sparse
+> > extents exist whenever EXTENT_DATA items don't completely describe the
+> > file's size.
 >
-> My use case is a KVM Host running Arch Linux with 3-4 Virtual Machines.
-> I want to have the ability to take snapshots when my system will be
-> updated to restore a running system if something is broken by the
-> update. I read about the mount option which disables CoW for database
-> and VM images.
+> Ok this means that U-Boot currently gained support for the original
+> sparse extents.
 >
-> About the subvolume layout and partitioning I am unsure even I read the
-> wiki. What do people familar with btrfs recommend for such setup?
+> I fear that current u-boot does not handle the new no-holes feature.
 
-The gotcha with Btrfs is that it's very flexible, so there are no
-strict rules, only consequences to any decision :D
+I'd advise it should support it, I think it's expected to become the
+default. But I don't know the time frame for that.
 
-One example is to install openSUSE using defaults, and see how they do
-it with roughly a dozen subvolumes to carve out what does and does not
-get snapshot and rolled back.
-
-Another example is on Fedora where only boot, root, and home
-subvolumes are created and mounted at /boot, /, /home accordingly.
-It's fairly easy to do snapshots and rollbacks manually, because you
-only need to rollback the root subvolume (if there were no kernel
-updates). e.g.
-
-## mount the top level file system and cd to it
-# mv root rootold
-# btrfs sub snap root.20200420 root
-# reboot
-
-It's that simple. The system doesn't care that you're renaming a
-currently booted 'root' subvolume to 'rootold' and then creating a new
-'root' from a prior snapshotted 'root'. And now grub and fstab don't
-need modification because you've merely substituted an older subvolume
-of the same name that they're looking for anyway.
-
-What's the gotcha? Well, my /var has been rolled back, and also the
-systemd journal. OK so I could make /var/lib/libvirt and /var/log
-subvolumes so they don't get snapshot and rolled back. What I tend to
-do is put those in the top level of the file system, and have fstab
-entries to mount them to the proper location during startup, that way
-I don't have to worry about manually fixing things on a rollback.
-
-The more carving you do, the more help you're likely to want when
-making snapshots and rollbacks. Something like snapper, found on
-opensuse by default, or something like timeshift on Mint/Ubuntu.
-
-For throw away test machines, I tend to go with the very simple
-approach, few subvolumes, and just accept that any rollback means a
-kind of data loss for logs and other things in /var. These tend to be
-VMs, so I don't really care about the journal being rolled back, and I
-don't have nested VMs. To some degree, such a workflow is better
-served by containers, but it just depends on your use case and what
-tools you're familiar with.
+Also, when the no-holes feature flag is not set, you can be certain
+only the original hole type is used. But when no-holes feature is set,
+it's possible for both types of holes to exist, because no-holes can
+be set after mkfs time by btrfstune.
 
 -- 
 Chris Murphy
