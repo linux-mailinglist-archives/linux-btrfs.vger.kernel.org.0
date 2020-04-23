@@ -2,89 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BA61B547D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 07:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C121B54D4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 08:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgDWF6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Apr 2020 01:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725854AbgDWF6C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Apr 2020 01:58:02 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A995C03C1AB
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 22:58:02 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y4so4918041ljn.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Apr 2020 22:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=7CbXBzhofKvOV0rxlp9vvH0c+xAID6u4EaPorNjHEso=;
-        b=hEh1/2UaI0RHvaYGnLwH03Ng3wQuTN/DruIYAbHl5ulLjttfdpxRlvpoLKDSjYLRAU
-         CED4fL7Q3M/O3gQrqxxuzCneuLeF2sXdRFpk0ezYd/g355pxA0HwR46ykTs7/b3VmNn4
-         dorPIoyLUVKGrVv5vGBCxhmpYZjgyLBVTcpHfjFLtqskET0C9PtL71UD5TqsPCKlFx4E
-         DHMpF0/F5mzsGN6FRYAUSWThajMz5qiS/RWJVfyB/DS1YNX1JMpN92nMJH6SfwlPN+CT
-         1DqEaDSw69IXWu3oI/4OW7yWMT5oJBHGNNAw87oFKaWm3J/27KE+3n6zWkDmVI63IfW8
-         5tHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7CbXBzhofKvOV0rxlp9vvH0c+xAID6u4EaPorNjHEso=;
-        b=DXXwD4mbtOLmb4swVyoZX/kpmIwTsQuBdedZOHI0tUvVjbkD4OAwVoqbL+BUhBFj31
-         u5C8GEaxwp3tX1RBCgz5cQLOsi8LWuP5AR5oAGqW+JzOulCCmo4My4TeyGIOmEXebkGk
-         nn1hmK20bql6jmrdB/I2/K2gTWXUlv0ttksRfx74QN9jVEpC0mwHv1SIaKhxl/WfBruz
-         8zAUdTizOOGwtpwWo7tM/O3FF8L3BV0wDOWhw3IczfiBZlihuxjU79Qx0Z0tP4+q9HwD
-         6lShQxKEY/lfuLv329weE9cNa0kkQFYJpoo2BHP66XX1zKNK7G4x2d7KBbppbmqXYlls
-         eBOg==
-X-Gm-Message-State: AGi0PuaPTGjlxZscwt1GRd5hxVwwHm54jR/1FvU5Im/0Ra1sledfPbjB
-        uN3TeNE28bIV0+sDgGRi2j1HCQfg
-X-Google-Smtp-Source: APiQypLB6aPDgNzdYOwcNs0yXThlt72XVsHCeKgBkiXus1s1L8LRyu7zukynUoCtQBqb8UZgWIkQ6Q==
-X-Received: by 2002:a05:651c:2002:: with SMTP id s2mr1214167ljo.285.1587621480476;
-        Wed, 22 Apr 2020 22:58:00 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:48ee:3630:6817:757e:9dcf? ([2a00:1370:812d:48ee:3630:6817:757e:9dcf])
-        by smtp.gmail.com with ESMTPSA id e186sm842207lfd.83.2020.04.22.22.57.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 22:57:59 -0700 (PDT)
+        id S1726027AbgDWGp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Apr 2020 02:45:28 -0400
+Received: from lists.nic.cz ([217.31.204.67]:48052 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgDWGp2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Apr 2020 02:45:28 -0400
+Received: from localhost (unknown [172.20.6.135])
+        by mail.nic.cz (Postfix) with ESMTPSA id 538E1141357;
+        Thu, 23 Apr 2020 08:45:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1587624326; bh=/PcD3tg0VT8rpqDZb/DwBImC7BKWUEdivatN5l55dL4=;
+        h=Date:From:To;
+        b=EF9zwzXpX/AVephQXga0Hn40K02c3RbmGt1ISn4D9RWVamksZ6AEs1aQYB+jQ1pPR
+         RGEsEzlMG1RVoKtxMF/URHqZn2oOtaHiyAlP85QkJS/RCykt18mTJcTTzDefm51QuV
+         G3+ZniRhbDIIwakeAMf7qIsgm0eeY+6gvoUvui8E=
+Date:   Thu, 23 Apr 2020 08:45:25 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: when does btrfs create sparse extents?
-To:     Marek Behun <marek.behun@nic.cz>, linux-btrfs@vger.kernel.org
+Message-ID: <20200423084525.6885e978@nic.cz>
+In-Reply-To: <9f96fe0c-cbe5-12c8-67f5-2981c9273c5d@gmail.com>
 References: <20200422205209.0e2efd53@nic.cz>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <9f96fe0c-cbe5-12c8-67f5-2981c9273c5d@gmail.com>
-Date:   Thu, 23 Apr 2020 08:57:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        <9f96fe0c-cbe5-12c8-67f5-2981c9273c5d@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200422205209.0e2efd53@nic.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.101.4 at mail
+X-Virus-Status: Clean
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-22.04.2020 21:52, Marek Behun пишет:
-> Hello,
-> 
-> there was a bug fixed recently in U-Boot's btrfs driver - the driver
-> failed to read files with sparse extents. This causes that sometimes
-> device failes to boot Linux, since the kernel fails to load from
-> storage.
-> 
+On Thu, 23 Apr 2020 08:57:59 +0300
+Andrei Borzenkov <arvidjaar@gmail.com> wrote:
 
-Do you mean that kernel image (vmlinuz?) had holes? Or there were some
-other files that caused U-Boot to fail?
+> 22.04.2020 21:52, Marek Behun =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Hello,
+> >=20
+> > there was a bug fixed recently in U-Boot's btrfs driver - the driver
+> > failed to read files with sparse extents. This causes that sometimes
+> > device failes to boot Linux, since the kernel fails to load from
+> > storage.
+> >  =20
+>=20
+> Do you mean that kernel image (vmlinuz?) had holes? Or there were some
+> other files that caused U-Boot to fail?
 
-> So when does kernel's btrfs driver write sparse extents? Is it always
-> when it finds a PAGE_SIZEd and aligned all-zeros block? Or is it more
-> complicated?
-> 
-> Thanks.
-> 
-> Marek
-> 
-
+Kernel image (non-compressed Image for arm64) had ~200 PAGE_SIZEd
+all-zero blocks.
