@@ -2,63 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0A1B5B96
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 14:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F631B5BD5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 14:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgDWMjv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Apr 2020 08:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S1728427AbgDWMyg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Apr 2020 08:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726117AbgDWMju (ORCPT
+        by vger.kernel.org with ESMTP id S1726503AbgDWMyf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Apr 2020 08:39:50 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8505BC08E934
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 05:39:49 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id z1so1189608pfn.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 05:39:49 -0700 (PDT)
+        Thu, 23 Apr 2020 08:54:35 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73C3C08E934
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 05:54:34 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id m2so4648080lfo.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 05:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=YWEYk5CIpEC0NGFaZvf5WuiZBOimQdihoVj9pRN+jyU=;
-        b=D4mVDZz2CzCfKHZLu0iZw2WcGtDY5IFdcv9dxFdssPj4pVD+0jlNtGi76j+gRjVumZ
-         P7UjSVdA01PKohz4fKlmvzD0Qgz/n/kpL99ZpCf92twJXe1GLXCtZfr6HHAKH6B6BoWh
-         d+piznN0748Wgi69lGM4dmz3PwAVyxwtjt+pucdza645ovjcu6ZygJULU0Eutdb6pnhs
-         RWNXbonZmwHklr4maOKXxOUcYzOHmWVSZ3aVxVbOT7XmzFDS2No6ENIC16gj6Y/5XY1i
-         NZSqxA0WwFIJNxrQvvKSHT9UgS6eWlF43H/8IHOadfcbgI3lLyqhhl3IIsE98AsoCoNJ
-         BmVw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=gG7lw7mXEbmvucH0DxXcB6NxtbrjyPgLHDIKieMESCw=;
+        b=GKTzsoXl67nBYmlULlubyzPr/y415CtX6jt22/5DSO+MW18gks+VAvf+jjq9uym5hS
+         3eb3LKNgk8qv4bYeE5X2Son3/J9Qjrc2+GwNipeUNj45+t+TmrCyv48r8xby6ivhCM9p
+         FqUJfPvgjeD6GOgGnah3ywWNRNRM0BEy7F7cMZgeYclCLxTEeYxecHlH7HYl4HcTrkTw
+         zTGdo6tZLtvgCpOhE+DlSNkyfDIVBbQx4eKYx6S+Pf9DcaywtJWZbSOcuMCubjxDP2TZ
+         K+2TsRPlFb8X9wqXOt+R0AHkbRsraZcY87girxW5SkWEfuPA1mE6rO6a3Jw4p1r6iIp5
+         PdPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=YWEYk5CIpEC0NGFaZvf5WuiZBOimQdihoVj9pRN+jyU=;
-        b=AMbXM4rnx6dgeGM7raYx4FpmX1Dlu5WD24iBbsX3h+Iw1tj6D+UGBCB6ySD6JdBlIC
-         50Km/alC6qw0LIjTrrb7zxjIdml/YMkP9clF9McHFf6Rx+EjTcjTnodjeCS+G7P45rso
-         l4n+sU9HQflDelEYXjFRVuLHbCgnZ+gl/vaC/qaav1+9sRxZkJLrbUGLMqZTmmnx5oDl
-         bxk9dhDT9hT3zfOTkgLfzkP/MRvvexf28MStCuppme+xH+qvNNNugDCeLz5myThFnT1n
-         boSuQEPIvchlb83Eo1B+LjtoBD0JigMWZSga4nBD/GSXOw+8Qq9OSt1qsKk7CKRlD0MK
-         j3tA==
-X-Gm-Message-State: AGi0PuZJBgbeRRJ3iYJY6AFNx2/FJwwX6xU8xElGFbAmCKRAcIyQifyY
-        spHgiYuTAtf6mBGUrk5c79zrXG1y12e/S+xbhEo/Nw==
-X-Google-Smtp-Source: APiQypII4j9A2x1uKZUz2BaAS0H/M5yaGDMdx5COatq64somFZH49ONsOQP20eL1+XwQ3ceEBupIwLMTj6A8L6D55jU=
-X-Received: by 2002:a05:6102:308b:: with SMTP id l11mr2781099vsb.14.1587645587589;
- Thu, 23 Apr 2020 05:39:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=gG7lw7mXEbmvucH0DxXcB6NxtbrjyPgLHDIKieMESCw=;
+        b=t2kVWWxVJ2zYggQj45LS7f1Ef+diHHTQwDws+U16p9zlWD6mLL0jgInuOWYN+teLBC
+         yvAupygCbSkQr1Y7pLuZ/gamOPTmw+Pbz4xHzOcTW0CG4fYxhdgF2pLnF1JPSirdDxuD
+         RONfDyrtdxaO65qHBmQUZFcXMSkyBc0+M1hU6tfnVRmqA6E2VMMwHtVqbzWc4ryjPBEA
+         Bac/+PAoxph+2rX0R0Sgc5bLnlpvb1Cavz0I4JYL92IBUOeDGZybqu8FSsh+l8pexG3u
+         46DHWRWPKXYC/fuAeNhhGDZp73TNHqDbn6lW88vNFUBSAV1BYwmrr/GA13bBIN8UTEdy
+         dvqg==
+X-Gm-Message-State: AGi0PubIH41ZIrAfuwU/kSk4Zqf9Vuvwck+glDxllBAzKNbw6u8/yX/y
+        nF7qcMsjzAw3Vw5epbGWx0qWKN+yl7SXGYa1pzs=
+X-Google-Smtp-Source: APiQypLB2RWCS88kWsUKDL28nzzdW/XJzmRyKCEW5nCCpDSumDvtaoR66fdElD2gd2OtGq2MK0WbE7eSgKwmyaQEDso=
+X-Received: by 2002:ac2:5235:: with SMTP id i21mr2335679lfl.73.1587646473417;
+ Thu, 23 Apr 2020 05:54:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200422205209.0e2efd53@nic.cz> <CAJCQCtTDGb1hAAdp1-ph0wzFcfQNyAh-+hNMipdRmK0iTZA8Xw@mail.gmail.com>
- <CAJCQCtTEY347CwHGz3QKaBfxvPg0pTz_CF+OaiZNaCEGcnLfYA@mail.gmail.com>
- <20200422225851.3d031d88@nic.cz> <CAL3q7H7eE4wFi95JaTYRPOrTQiihOSEqV-W4hT1t-9-ptUHGrg@mail.gmail.com>
- <20200423134248.458cd87c@nic.cz> <CAL3q7H41C6do6SdBCfCmA==TT1nPJQ4dB0vTi_jsm0tYuvvsUA@mail.gmail.com>
- <20200423140559.2762bb0c@nic.cz>
-In-Reply-To: <20200423140559.2762bb0c@nic.cz>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 23 Apr 2020 13:39:36 +0100
-Message-ID: <CAL3q7H4Vx0-vfxCHpdhwg0rSby6rphxVnDFYX=NnfJ_96gEfdQ@mail.gmail.com>
-Subject: Re: when does btrfs create sparse extents?
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Received: by 2002:ab3:66ca:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 05:54:33
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   Michelle Goodman <sarahtage24@gmail.com>
+Date:   Thu, 23 Apr 2020 12:54:33 +0000
+Message-ID: <CAK7Gz5xw15hLF+Q5uQFphnnsS5tybHCY73CrNcb88inq0TDxpg@mail.gmail.com>
+Subject: Hallo
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -66,32 +60,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 1:06 PM Marek Behun <marek.behun@nic.cz> wrote:
->
-> On Thu, 23 Apr 2020 12:51:32 +0100
-> Filipe Manana <fdmanana@gmail.com> wrote:
->
-> > There's nothing in btrfs that converts a sequence of zeroes
-> > automatically to a hole.
-> >
-> > It always has to be done by user space, either by writes that leave
-> > holes intentionally (e.g. create file, write 64K to offset 0, write 4K
-> > to offset 128, leaves a hole from range 64K to 128K) or by hole
-> > punching through fallocate().
->
-> Thanks for this information. If you ever come to Prague, let me know,
-> we can have a beer :D
-
-Noted! (Through it will be a long while until travel is allowed and safe)
-
-Another case I forgot is a hole created by truncation - truncate a
-file to a larger size, then you get a hole for the range that goes
-from the old file size to the new file size.
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Hallo Liebes, bitte hoffe du erh=C3=A4ltst meine Nachricht bitte ich brauch=
+e deine
+dringende Antwort jetzt
+Vielen Dank
+Michelle
