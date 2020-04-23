@@ -2,166 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408EC1B5D01
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 15:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF631B5F37
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 17:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgDWN5p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Apr 2020 09:57:45 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:49406 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgDWN5o (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Apr 2020 09:57:44 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 5A23B9C3CB; Thu, 23 Apr 2020 14:57:38 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1587650258;
-        bh=8Ntzt/t4sO91fe6qTSIkwOuBb94Sa0XQNYESL37bOoY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ElQYzUmqs8R2sIUmisb80qlW8dD1WeHK2e9zY8roJ9WIrC3WEKTWP2nBpWt8TH58a
-         9GQyRizng9BLMcdsBxvAOBqSWW6Ui9RC9DAles9fb74wRmkidy13DJ5Ftw78JY5bgS
-         BTwwIsIyf2MNH5jsJguBQuCDb/KCNdKWyprTmUY8TyJbcaPSltDR5leLP0vkQLmpAY
-         ybH58WzqVJRX1FUyUsl/H7+Rb4TcHH0MTVVyXLk7Mor+Z5rJiuJ3YxfrcVrVc0B1z9
-         KBzIcRHVs6yztGl6IEQ3sGh7AilzoPSzdclaLLu1iv6GWPbrl8s2HA3cM+dWBe2oN/
-         HBYZHebvFXMGw==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id ED9259BBB7;
-        Thu, 23 Apr 2020 14:57:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1587650255;
-        bh=8Ntzt/t4sO91fe6qTSIkwOuBb94Sa0XQNYESL37bOoY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=RZrl2+pQrJd+Uc/Melevy03onmkcEJf+4KHiGoJUugrdFkvAQ/6dLvsPwts75vNWw
-         2jXFV0SOY6skzHlEKZ0qqqLO8jEl4VyJGNwZNiiJrdzJhcQHJUyiJ1mZV30SsZUjaD
-         mkzCTFzXM+mR23ybewKeEEwaYqC5SkTLrt3G0d/BHWPAE4KRIG4P8rps29iRhvTlBC
-         4eyyf2lNE3Vpoj+2UBd40tGBV4GRy+1VZks/+o3kolysLckztP74b8mv7SYugxEQ4k
-         oRCK42C9AzNFnilm5MowIf9GjqbCfbfCuv/o+XgTJY2YDmr3ljhhYeMt91lz4nnJY0
-         Vz0MBEvIYEQTw==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id A646AF3979;
-        Thu, 23 Apr 2020 14:57:34 +0100 (BST)
-Subject: Re: Recommended Partitioning & Subvolume Layout | Newbie Question
-To:     Stefanie Leisestreichler 
-        <stefanie.leisestreichler@peter-speer.de>,
-        Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <03fdc397-4fca-335f-03d8-f93a96d92105@peter-speer.de>
- <CAJCQCtTnA6Dro2XwEm0S7ohUnf_CMGb7giHsBfh4_KtWE4vR6g@mail.gmail.com>
- <7019baf9-5064-4d16-a09a-5dc5672672de@peter-speer.de>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <af3bc48a-4752-345e-e245-828c27b1d5fe@cobb.uk.net>
-Date:   Thu, 23 Apr 2020 14:57:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <7019baf9-5064-4d16-a09a-5dc5672672de@peter-speer.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1729119AbgDWPa6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Apr 2020 11:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729081AbgDWPa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:30:58 -0400
+Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04A1E2071E
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 15:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587655857;
+        bh=7P9HgkOEe7L9g8TFGTxkvYAlAdQXFi41vk4mlogoCrU=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=usTY4wyVGUvS/rUK98/sfdUbIZAC3hvI2RYIexkElr8rY7T2tIYrGO2CbuBbRK9le
+         sQM1Vdax4RvBij1jSaunxxetw6MldR3uB3xKW3jH/1D04yVnRgQ8HpvWxKbuIeDQcX
+         hHzYrUe3C9vFTz/ExBsq9K31UN2ysxKqJl3WNJl0=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] Btrfs: fix partial loss of prealloc extent past i_size after fsync
+Date:   Thu, 23 Apr 2020 16:30:53 +0100
+Message-Id: <20200423153053.25956-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200421102520.14686-1-fdmanana@kernel.org>
+References: <20200421102520.14686-1-fdmanana@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23/04/2020 10:39, Stefanie Leisestreichler wrote:
-> On 22.04.20 23:03, Chris Murphy wrote:
->> What's the gotcha? Well, my /var has been rolled back, and also the
->> systemd journal. OK so I could make /var/lib/libvirt and /var/log
->> subvolumes so they don't get snapshot and rolled back. What I tend to
->> do is put those in the top level of the file system, and have fstab
->> entries to mount them to the proper location during startup, that way
->> I don't have to worry about manually fixing things on a rollback.
-> 
-> Thanks for your time and answer.
-> 
-> I tend to lean on the fedora layout as far as my limited knowledge
-> allows to calculate the impacts so far :-(
-> 
-> I do not understand what is meant by the statement:> What I tend to do
-> is put those in the top level of the file system
-> 
-> I guess the storage for the snapshots is meant. So if I understand right
-> you have a directory /snapshots in the dir tree where they will be
-> stored. I know about the fact that a nested subvolume (subvolume in
-> another subvolume) will not get snapshotted. But it is not clear to me
-> if you are using this fact in your layout (make i.e. /var/log a separate
-> subvolume) or not. Also it is not clear to me, why you put the snapshots
-> in the top level of your filesystem.
+From: Filipe Manana <fdmanana@suse.com>
 
-I can't speak for Chris, who is much more experienced than I am. But
-what I do (for all my btrfs filesystems, not just the root disk) is that
-in the top level directory of the filesystem I only put subvolumes. No
-files or ordinary directories. Those subvolumes are then mounted into
-the correct places in the filesystem. The top level is mounted somewhere
-else for maintenance activities.
+When we have an inode with a prealloc extent that starts at an offset
+lower than the i_size and there is another prealloc extent that starts at
+an offset beyond i_size, we can end up losing part of the first prealloc
+extent (the part that starts at i_size) and have an implicit hole if we
+fsync the file and then have a power failure.
 
-So, for example, take my root disk. I create the filesystem, mount it
-somewhere temporarily (let's say it is on /mnt/rootdisk) and create
-subvoumes for /mnt/rootdisk/rootfs and /mnt/rootdisk/varfs. I also set
-rootfs to be the default subvolume that is mounted if no subvolume is
-specified.
+Consider the following example with comments explaining how and why it
+happens.
 
-I can then mount the filesystem somewhere else (say /mnt/newroot) by
-mounting the rootfs subvolume, creating var as a directory and mounting
-the varfs subvolume into that. That can then be installed in the normal way.
+  $ mkfs.btrfs -f /dev/sdb
+  $ mount /dev/sdb /mnt
 
-In the fstab on the new filesystem, I have entries like (leaving out
-unimportant stuff):
+  # Create our test file with 2 consecutive prealloc extents, each with a
+  # size of 128Kb, and covering the range from 0 to 256Kb, with a file
+  # size of 0.
+  $ xfs_io -f -c "falloc -k 0 128K" /mnt/foo
+  $ xfs_io -c "falloc -k 128K 128K" /mnt/foo
 
-LABEL=root / btrfs defaults,noatime,nodiratime
-LABEL=root /var btrfs defaults,noatime,nodiratime,subvol=/varfs
-LABEL=root /mnt/rootdisk btrfs defaults,noatime,nodiratime,subvolid=5
+  # Fsync the file to record both extents in the log tree.
+  $ xfs_io -c "fsync" /mnt/foo
 
-So, the result is that the root and /var appear set up as normal but the
-actual filesystem toplevel directory is mounted at /mnt/rootdisk. This
-is really useful if you want to be able to (temporarily or permanently)
-replace one of those subvolumes with a different snapshot.
+  # Now do a redudant extent allocation for the range from 0 to 64Kb.
+  # This will merely increase the file size from 0 to 64Kb. Instead we
+  # could also do a truncate to set the file size to 64Kb.
+  $ xfs_io -c "falloc 0 64K" /mnt/foo
 
-I do the same for data disks (so the top level is mounted at
-/mnt/datadisk, the homefs subvolume is mounted at /home, the fred
-subvolume is mounted at /home/fred, etc).
+  # Fsync the file, so we update the inode item in the log tree with the
+  # new file size (64Kb). This also ends up setting the number of bytes
+  # for the first prealloc extent to 64Kb. This is done by the truncation
+  # at btrfs_log_prealloc_extents().
+  # This means that if a power failure happens after this, a write into
+  # the file range 64Kb to 128Kb will not use the prealloc extent and
+  # will result in allocation of a new extent.
+  $ xfs_io -c "fsync" /mnt/foo
+
+  # Now set the file size to 256K with a truncate and then fsync the file.
+  # Since no changes happened to the extents, the fsync only updates the
+  # i_size in the inode item at the log tree. This results in an implicit
+  # hole for the file range from 64Kb to 128Kb, something which fsck will
+  # complain when not using the NO_HOLES feature if we replay the log
+  # after a power failure.
+  $ xfs_io -c "truncate 256K" -c "fsync" /mnt/foo
+
+So instead of always truncating the log to the inode's current i_size at
+btrfs_log_prealloc_extents(), check first if there's a prealloc extent
+that starts at an offset lower than the i_size and with a length that
+crosses the i_size - if there is one, just make sure we truncate to a
+size that corresponds to the end offset of that prealloc extent, so
+that we don't lose the part of that extent that starts at i_size if a
+power failure happens.
+
+A test case for fstests follows soon.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+V2: Fixed a bug where we could end up with overlapping extents due to use
+    of btrfs_file_extent_disk_num_bytes() instead of btrfs_file_extent_num_bytes().
+    Fixed that to use btrfs_file_extent_num_bytes(), which was the original intention.
+    Detected with fsstress.
+
+ fs/btrfs/tree-log.c | 43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 4272610d7472..8dd4ed5b9e17 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4226,6 +4226,9 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	const u64 ino = btrfs_ino(inode);
+ 	struct btrfs_path *dst_path = NULL;
+ 	bool dropped_extents = false;
++	u64 truncate_offset = i_size;
++	struct extent_buffer *leaf;
++	int slot;
+ 	int ins_nr = 0;
+ 	int start_slot;
+ 	int ret;
+@@ -4240,9 +4243,43 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	if (ret < 0)
+ 		goto out;
+ 
++	/*
++	 * We must check if there is a prealloc extent that starts before the
++	 * i_size and crosses the i_size boundary. This is to ensure later we
++	 * truncate down to the end of that extent and not to the i_size, as
++	 * otherwise we end up losing part of the prealloc extent after a log
++	 * replay and with an implicit hole if there is another prealloc extent
++	 * that starts at an offset beyond i_size.
++	 */
++	ret = btrfs_previous_item(root, path, ino, BTRFS_EXTENT_DATA_KEY);
++	if (ret < 0)
++		goto out;
++
++	if (ret == 0) {
++		struct btrfs_file_extent_item *ei;
++
++		leaf = path->nodes[0];
++		slot = path->slots[0];
++		ei = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
++
++		if (btrfs_file_extent_type(leaf, ei) ==
++		    BTRFS_FILE_EXTENT_PREALLOC) {
++			u64 extent_end;
++
++			btrfs_item_key_to_cpu(leaf, &key, slot);
++			extent_end = key.offset +
++				btrfs_file_extent_num_bytes(leaf, ei);
++
++			if (extent_end > i_size)
++				truncate_offset = extent_end;
++		}
++	} else {
++		ret = 0;
++	}
++
+ 	while (true) {
+-		struct extent_buffer *leaf = path->nodes[0];
+-		int slot = path->slots[0];
++		leaf = path->nodes[0];
++		slot = path->slots[0];
+ 
+ 		if (slot >= btrfs_header_nritems(leaf)) {
+ 			if (ins_nr > 0) {
+@@ -4280,7 +4317,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 				ret = btrfs_truncate_inode_items(trans,
+ 							 root->log_root,
+ 							 &inode->vfs_inode,
+-							 i_size,
++							 truncate_offset,
+ 							 BTRFS_EXTENT_DATA_KEY);
+ 			} while (ret == -EAGAIN);
+ 			if (ret)
+-- 
+2.11.0
 
