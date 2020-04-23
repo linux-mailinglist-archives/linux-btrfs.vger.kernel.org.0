@@ -2,61 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C121B54D4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 08:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747881B5855
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 11:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgDWGp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Apr 2020 02:45:28 -0400
-Received: from lists.nic.cz ([217.31.204.67]:48052 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgDWGp2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Apr 2020 02:45:28 -0400
-Received: from localhost (unknown [172.20.6.135])
-        by mail.nic.cz (Postfix) with ESMTPSA id 538E1141357;
-        Thu, 23 Apr 2020 08:45:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1587624326; bh=/PcD3tg0VT8rpqDZb/DwBImC7BKWUEdivatN5l55dL4=;
-        h=Date:From:To;
-        b=EF9zwzXpX/AVephQXga0Hn40K02c3RbmGt1ISn4D9RWVamksZ6AEs1aQYB+jQ1pPR
-         RGEsEzlMG1RVoKtxMF/URHqZn2oOtaHiyAlP85QkJS/RCykt18mTJcTTzDefm51QuV
-         G3+ZniRhbDIIwakeAMf7qIsgm0eeY+6gvoUvui8E=
-Date:   Thu, 23 Apr 2020 08:45:25 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: when does btrfs create sparse extents?
-Message-ID: <20200423084525.6885e978@nic.cz>
-In-Reply-To: <9f96fe0c-cbe5-12c8-67f5-2981c9273c5d@gmail.com>
-References: <20200422205209.0e2efd53@nic.cz>
-        <9f96fe0c-cbe5-12c8-67f5-2981c9273c5d@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726783AbgDWJjb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Apr 2020 05:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgDWJjb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Apr 2020 05:39:31 -0400
+Received: from wp558.webpack.hosteurope.de (wp558.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8250::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD55C03C1AF
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 02:39:31 -0700 (PDT)
+Received: from mail1.i-concept.de ([130.180.70.237] helo=[192.168.122.235]); authenticated
+        by wp558.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1jRYKP-0007nu-KW; Thu, 23 Apr 2020 11:39:29 +0200
+Subject: Re: Recommended Partitioning & Subvolume Layout | Newbie Question
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <03fdc397-4fca-335f-03d8-f93a96d92105@peter-speer.de>
+ <CAJCQCtTnA6Dro2XwEm0S7ohUnf_CMGb7giHsBfh4_KtWE4vR6g@mail.gmail.com>
+From:   Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
+Message-ID: <7019baf9-5064-4d16-a09a-5dc5672672de@peter-speer.de>
+Date:   Thu, 23 Apr 2020 11:39:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.101.4 at mail
-X-Virus-Status: Clean
+In-Reply-To: <CAJCQCtTnA6Dro2XwEm0S7ohUnf_CMGb7giHsBfh4_KtWE4vR6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;stefanie.leisestreichler@peter-speer.de;1587634771;ebc7d34b;
+X-HE-SMSGID: 1jRYKP-0007nu-KW
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 23 Apr 2020 08:57:59 +0300
-Andrei Borzenkov <arvidjaar@gmail.com> wrote:
 
-> 22.04.2020 21:52, Marek Behun =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Hello,
-> >=20
-> > there was a bug fixed recently in U-Boot's btrfs driver - the driver
-> > failed to read files with sparse extents. This causes that sometimes
-> > device failes to boot Linux, since the kernel fails to load from
-> > storage.
-> >  =20
->=20
-> Do you mean that kernel image (vmlinuz?) had holes? Or there were some
-> other files that caused U-Boot to fail?
 
-Kernel image (non-compressed Image for arm64) had ~200 PAGE_SIZEd
-all-zero blocks.
+On 22.04.20 23:03, Chris Murphy wrote:
+> What's the gotcha? Well, my /var has been rolled back, and also the
+> systemd journal. OK so I could make /var/lib/libvirt and /var/log
+> subvolumes so they don't get snapshot and rolled back. What I tend to
+> do is put those in the top level of the file system, and have fstab
+> entries to mount them to the proper location during startup, that way
+> I don't have to worry about manually fixing things on a rollback.
+
+Thanks for your time and answer.
+
+I tend to lean on the fedora layout as far as my limited knowledge 
+allows to calculate the impacts so far :-(
+
+I do not understand what is meant by the statement:> What I tend to do 
+is put those in the top level of the file system
+
+I guess the storage for the snapshots is meant. So if I understand right 
+you have a directory /snapshots in the dir tree where they will be 
+stored. I know about the fact that a nested subvolume (subvolume in 
+another subvolume) will not get snapshotted. But it is not clear to me 
+if you are using this fact in your layout (make i.e. /var/log a separate 
+subvolume) or not. Also it is not clear to me, why you put the snapshots 
+in the top level of your filesystem.
