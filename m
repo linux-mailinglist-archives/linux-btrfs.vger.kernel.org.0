@@ -2,93 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB2A1B710C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Apr 2020 11:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C591B7129
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Apr 2020 11:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgDXJhR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Apr 2020 05:37:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726298AbgDXJhR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:37:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 66C81AC4D;
-        Fri, 24 Apr 2020 09:37:14 +0000 (UTC)
+        id S1726698AbgDXJqb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Apr 2020 05:46:31 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:4625 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDXJqb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Apr 2020 05:46:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1587721593; x=1619257593;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=/7QTLNYMjcrjM23zruiAOAddYl3znjS1dHavYNZyWPI=;
+  b=b3U9kfFXPDlq8wALLhHPETOhcDtLuWK7xglNdZYx5YFUgrpMRNVUf0o1
+   Bmpb30NafDwEanbDzhQeeDaoUKUpR26U+Xogf1MK/BxJ+Zs35u1YSbLsN
+   x0S/cPBOUUnaEJ+QG1XDDziy9o7h8jfseDH/pLn5ZIwHdqmuBjgTdMCuX
+   H6JJ2e9ee0fMA0Oy7tbzx9SnvXpMMrnzn+sAATIGM2hxB005GByUTcWm+
+   DZ7tEe84TtjQrSNhaUhlO1hSwo/XUPSn+k+vJovN4ynkWdvXaZ4JXFHVM
+   wFrIBH1uhK4/HpQ41dh9+4o+/jzuuI/67r55LURSiO7k1gYrWSA6q4WO6
+   A==;
+IronPort-SDR: xJXiPIg43EooX11AyUbQlARBAOfBoF9eSGd3V19YoAVWVqBBEUHR2InzCoMbRiSUuXyaCAgkRE
+ GczCFC/HjtuF8kxl5cqFENDAx8JjPERm1v8LKBBTYljDrltnz7GTpOZEhl5/3LvjPT5RqY04J/
+ xvrBLI2zlWr+sjXi3fbqos5jhgtduv9Nr9pYjw+9A8+uovKnnS7j9WsJ5Gzu30PKoufoJjIgn+
+ srNTjJqgc2NoRzw5Kg096VWJbAYDabMyfXyuYFVHweJPkRXX4n1Caut6nH+szEz7N+8LUXrdDa
+ HO0=
+X-IronPort-AV: E=Sophos;i="5.73,311,1583164800"; 
+   d="scan'208";a="238560546"
+Received: from mail-mw2nam10lp2105.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.105])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Apr 2020 17:46:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NFXdGIxHcfBVspARRXWL45KgH1HOJeucCQYwWEUzc3Qwx2/dbHHK/OYZ+bz8wXy392UklDcaSlE1ZKmunZ2bPASVL1krS7/Vme3YHOSzCRidn5KJdiKZhNE4d5F4DKpdn2B3QpoiFWPJ8zawB5bFFs6TZmqsEA6KT9akln2ZjYWdNRmhRicbplKVPTPiIG9RWVw9TBWCbRqYA6TTp82JIJVs3NMsaDrmPHlKK/epoKfwR9oNEOoTG9lV7IldTZH2+1+KZ86U9XMJigGw3GN+v/nT2sMi8ZOQ87EncP5lcneztSY/hsEvnrPGbuyq069xE+CZt7izLoIINkR2Cb9YGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/7QTLNYMjcrjM23zruiAOAddYl3znjS1dHavYNZyWPI=;
+ b=aBbUO6SNTSycAbPBVbfvXp9xE00WmxyTclJIMfhB45eRNCV4SXkW1H3/iT3I18kuFvAMnM1o3+6j/dztX2ne3uhuo0vuZ6kBOK1PPbSUZ7mxtPi+P2DXqf728cvONNhaYCbmee/0n+pfHJ1rJcx5qlL38HWh4hNSP9RY1lBChsh3YN/myiaWuBLQQzoNmZD1jRl0/focOL1KmHhMpk6BtE2oh199BI9oTNfkUln/edgKpObH2o35TS6LDvlJBp+qHm22mN87RGgihRxqKlkIvIODUDAflGuFfDylU/irUusxuu3hOU2wR6KF97YGMkqXMhLk/b6FZSdQr4DUIqQBPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/7QTLNYMjcrjM23zruiAOAddYl3znjS1dHavYNZyWPI=;
+ b=ucttUlVmksaB4FSGvK11PkwT2gVZEcmGSvBGhE0pVwAZlZ3lnv1qOwU5vHpMjAMgnG+i5WUbWgCTa445+G74Hay52x69KUXRrW1p8l1T/MO8dXkOos4Xlze3dDTgCcg371noxARY1+pAc/3TOoBsTqGQ09N0IiEkX8kHzjhFZR4=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3520.namprd04.prod.outlook.com
+ (2603:10b6:803:4e::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.29; Fri, 24 Apr
+ 2020 09:46:28 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2921.036; Fri, 24 Apr 2020
+ 09:46:28 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "jth@kernel.org" <jth@kernel.org>
 Subject: Re: authenticated file systems using HMAC(SHA256)
-To:     dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, jth@kernel.org
+Thread-Topic: authenticated file systems using HMAC(SHA256)
+Thread-Index: AQHWDQbERVNaVh/cw0i4WbDgZROyhA==
+Date:   Fri, 24 Apr 2020 09:46:28 +0000
+Message-ID: <SN4PR0401MB35983186789556125B384B249BD00@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <CAJCQCtSLOgj7MHKNeGOHu1DPa=xC=sR7cZzR88hN1y_mTYRFKw@mail.gmail.com>
  <20200416142405.GM5920@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <2de48aa4-979d-dc05-8c58-1aa1661c6332@suse.com>
-Date:   Fri, 24 Apr 2020 12:37:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200416142405.GM5920@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+ <2de48aa4-979d-dc05-8c58-1aa1661c6332@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0fa0eaa2-1018-45b2-fec7-08d7e8345c9b
+x-ms-traffictypediagnostic: SN4PR0401MB3520:
+x-microsoft-antispam-prvs: <SN4PR0401MB35203EFFAE0E8DDB339D8A949BD00@SN4PR0401MB3520.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(39860400002)(396003)(136003)(346002)(376002)(366004)(6506007)(53546011)(52536014)(86362001)(478600001)(8676002)(26005)(64756008)(66556008)(8936002)(66446008)(81156014)(7696005)(33656002)(316002)(2906002)(55016002)(110136005)(76116006)(91956017)(186003)(9686003)(71200400001)(4744005)(5660300002)(66946007)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YbnZkfsDblY5CjcaoykgjrPLZ6hvSdC1Z1whrdcEiau1tFBmHsKBLHkBQ8izzrOVK2s1o5wgAhF2yAQikcMk3ZDCaTEtL+oOy46420yCr0nPQpD01fcfb42eJ4O86XWheHIsPkjMsGYR5TTNgIMAzUSR1idd9AZpgj0j9ORiclPOtTF/YUN8NhkjZZYtAGrJ9vkEjJQx+eXd9lH2cpBm3lCNGTSihaFA8uLPUdB1/L0l04qnWRKqnVzn2ygK9/nGUDNfZ4mf5ccQ72m7ftixbElUZR2ZVuwFvVtYPv7tgnewU/XS8x2IFZcSSvwJiLBah7ESv3n5H2yL4mdbvjMwzGg5eFh57Ur4PV6Krqag7buCCE+ed1krlIwo3xiq9DNM7XSMswCE+NFRdiFauaJ+iZP79GCgOLlWrqS39+n6nOkXtmoqnDYLUpwEr5gbE5+E
+x-ms-exchange-antispam-messagedata: BRnk+ubU/jXkPe3UIcwm8vmY6ihOhtp1+nwXYMFXZYindSNts3kLTyryPvN3IamTyhpQB14H00cqwjhDYuzfF2UH936catJKupDsSFMwwAEV0EN3Rb4wm6nYg3l3fZm6A7odGny9w9rBuw0FjDxKWQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fa0eaa2-1018-45b2-fec7-08d7e8345c9b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 09:46:28.3115
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tRz850nx85DrrEbDTv2XQBU8VyCi6odhgzyEz/B9IoPLfDymTYMum8Ajjao/zMIuIf/WAH1yA+ifz+N0tQNBwLi3JqOglq+utTYar9nSuQs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3520
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 16.04.20 г. 17:24 ч., David Sterba wrote:
-> naming of the new checksums (hmac-sha256 or hmac-blake2 should be ok)> - key specification via mount option
-
-But the key shouldn't really be visible in /proc/mounts since it's
-readable by ordinary users, god knows how many more pseudo files there
-are which can provide the same situation. If the specification of the
-key is a reference to a loaded key then yes but otherwise I think that's
-a security risk, unless it's possible to hide passed options from
-/proc/mounts i.e pass it but make it internal to the filesystem ?
-
-
-> - all progs must work with filesystems with the keyed hash, so how to
->   specify the auth key in a consistent way
+On 24/04/2020 11:37, Nikolay Borisov wrote:=0A=
+> =0A=
+> =0A=
+> On 16.04.20 =C7. 17:24 =DE., David Sterba wrote:=0A=
+>> naming of the new checksums (hmac-sha256 or hmac-blake2 should be ok)> -=
+ key specification via mount option=0A=
+> =0A=
+> But the key shouldn't really be visible in /proc/mounts since it's=0A=
+> readable by ordinary users, god knows how many more pseudo files there=0A=
+> are which can provide the same situation. If the specification of the=0A=
+> key is a reference to a loaded key then yes but otherwise I think that's=
+=0A=
+> a security risk, unless it's possible to hide passed options from=0A=
+> /proc/mounts i.e pass it but make it internal to the filesystem ?=0A=
+=0A=
+No the key won't ever be passed to the mount command, only the key id:=0A=
+=0A=
+keyctl add logon btrfs:foo 0123456 @u=0A=
+mount -t btrfs -o auth_key=3Dbtrfs:foo /dev/disk /mnt/point=0A=
+=0A=
+So /proc/mounts would only show the key id anyways.=0A=
+=0A=
+I think this is fine.=0A=
