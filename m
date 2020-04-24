@@ -2,167 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ACB1B65BC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Apr 2020 22:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286521B70D7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Apr 2020 11:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgDWUtc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Apr 2020 16:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgDWUtb (ORCPT
+        id S1726665AbgDXJa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Apr 2020 05:30:26 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:8358 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgDXJa0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Apr 2020 16:49:31 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3501BC09B042
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 13:49:30 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id d17so8237494wrg.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Apr 2020 13:49:30 -0700 (PDT)
+        Fri, 24 Apr 2020 05:30:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1587720625; x=1619256625;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=eWi+DQO3/i1Kth2ougsIi2nyCFOvBuWtUSiVRHYvswQ=;
+  b=EeIX38VTITO4YGUpx9LivR0NWhFd0YCJSrEBc+uVMFmRPqizJe++qrz6
+   lEevH3TMnynhhLvLOES+8/3+IzJeyVrTbme+khS7k62nFsONCvWdAJJ8e
+   HUjloK3aHjGDzxImi9VhUIMbo4josGiTbEtKj8kSH7wonvf0xj/cdpJzZ
+   inWzod02NkFr9lRVn0pWnOpHVuaeb+1OMFhjK0X7qUja5JumxvamYFpCr
+   s31BY03f/QkxM1xcI4LbzvTZhJ+jz/tvu33vHoLLD8DqboyD+0+wEeTJC
+   yctc06//pt15RzvOYSdpQg37yTc/kMK0Tb2dwSRa8zsV4TDo8RKyqiVq4
+   A==;
+IronPort-SDR: MWLFqcwmReyBk1srH/KS4dzi040CV2oWOKszjkjwe+KISmt5ip7FX/LIiEK4Hop1yHgFoj9CyU
+ mfATN3zNlj5nHeXgR6SC7mUKWRC5W7px7m2IFpyxnwnzYkKWczBwCXeygyGudB1rSX6/Ffqakn
+ Q8pGbqgj6kKJUtedav9MGf7qOD+OocUHSTaqtnbgriXXjAObmRZsWvZjVxLNYjrv6m5YaQDmhW
+ tLZ0iQBIZ8ZXoeRA1h/N/lWo+bp+tBS2yaJ/iYygLLLZAzO+P20qlKAuEcVnEm5V3b3WhFN1fW
+ JeI=
+X-IronPort-AV: E=Sophos;i="5.73,311,1583164800"; 
+   d="scan'208";a="137491909"
+Received: from mail-bl2nam02lp2051.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.51])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Apr 2020 17:30:24 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DZYOOcpvTg3VHIuiHy80WKEmGMzBVgW3ubMth9O4C3pasOf7tkT4c6GC3fvx2dgaIkqNhrqRzDVdWEneDu3iEIJa8NoJD+7JSDSHF9A3MKpcGUfZdQ06M4C/e6qBO97SpoiDm5VwJPtaw+ZiZIsgHOem4b5UGbSEbWpm99WOey741ZkdRYz0JMtyXfuLMt37dz8mCPcnnOTcUd/XACy2Xob7A2SFNqg6LQ0eu0Z8KeVb3wWkdCJotujVuj2C6wcDu90tGV9NSzEqRkuPkd7tNJtUTXCg5SMoHK+5XotSVg2SOrjEABxVmVzjsN+1wsOQNtnH3vxKeOhK2w5IQB4FJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MrC0SyWN+6i6aEOJpAs2Dl1QNL/VXTuoQ40v/smqc78=;
+ b=DKAJQ4KYUu8svuU1qjy+Zj+pnttGFfE5pOZsvfGv95OnHuMJHSYPWvgUsGEcAlQVlXVWggsRB20srCvLK2ayOOm37yaDWjPAPk36ZSZbYJId+32A89I+5CjXp2FcR3KmhLJFRVR6elQMQm5h8CGPMjsFyX59mD+cpCN221xn9sakdS1T7FPqGrJBdO5BOCZX7m0/pXKSICzdy3ZXKDd8rATEibTe+0UnkfTiDFt/S3nFhPYPEuxyz52+4pulL+DavFzGrwFFK0IQfZDrXCU9P9u800zypxUYxQLdVs7g8v/8Wa7VbOXcl3Q8RGp9HmKHU42CVtTdHU5UiVRiTvFlZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f9agCalkskiilLE2UQ06QqFhKWDs0RXLWHCAYgagDj0=;
-        b=XwOpQ2JAMxyodp6iBykpwkrkVPdZTE0Mkf1JUF5SJt5fjkbApj7AHb35YP/43ebxmU
-         lLakHN0bYkUIEI6GVAxlemDHBODQrmQMpeb/gXXxxfKqGGnzwPijI0RjRYZoRZ/JkSqb
-         BOra0wWUIG63RQSYgIeIJ+Mb7xg1D8lOBvu0aywUjwptg3TzhcOn0TjCrpCEig8qQ9hR
-         Lj0DXyMUyVWpVRM4tns0gBhv8GRDp3kt5KV+FRqCyzkrKMl5DnRKzzihZZ7d5cdWdcu1
-         7e3w5N2J5m3Uw+SoiM94SLHwKW3qUoNk5yMQqUXMTyKsm+745j+OMwWzWSCtmq2tUcqy
-         2U9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9agCalkskiilLE2UQ06QqFhKWDs0RXLWHCAYgagDj0=;
-        b=GHJwuMT6ZIEePrL1d/qqPyE+YEvP0kyE2Iat0VlRjoEwa0uwIPrboV4ZRLeHTrYqUH
-         eAaS21bI3rHvYQCLsMJgQ1z1y4B++sRSj+M94E+y1HjhtM8vOjYL/2ZRee9TwSxhWv55
-         LTQBzxVq1V+OhjsTSm7g2nbbe9OpGbEma61tnDVnEbtAyIRzHJm2tJZ/sf/Tq1UMtg0R
-         I+0s4HYojQDx1d18TyFMcnnynKROzEvpSSOKyDQUIRFGvwAfZ/MyWXbDX56JDvtqkwrN
-         WPqDiOCcYqx9NlDRF09AQbbD1BB6pDd2hqB9rVCPKr9RsXROpbPSuGRsO7exq3B4+Vz3
-         wmKg==
-X-Gm-Message-State: AGi0PuayYFBgg0cJC/OlprsclOIUGUocxysspAWYBB2oKwyguFSsqvVP
-        TPtbAqhKILGCwvsd3/oTnNOx9iYY0TloyON4aXgeqg==
-X-Google-Smtp-Source: APiQypI6cw7rT24K8JmnVpTw8J/TqenGpMeMPh4gcRDJnHMnGKCzDiTmjbU3T7qwoJSpKo/ExM7eXWdhxWnLn/cYEtM=
-X-Received: by 2002:a5d:5273:: with SMTP id l19mr7020096wrc.42.1587674968828;
- Thu, 23 Apr 2020 13:49:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <03fdc397-4fca-335f-03d8-f93a96d92105@peter-speer.de>
- <CAJCQCtTnA6Dro2XwEm0S7ohUnf_CMGb7giHsBfh4_KtWE4vR6g@mail.gmail.com> <7019baf9-5064-4d16-a09a-5dc5672672de@peter-speer.de>
-In-Reply-To: <7019baf9-5064-4d16-a09a-5dc5672672de@peter-speer.de>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 23 Apr 2020 14:49:12 -0600
-Message-ID: <CAJCQCtRnRnvBkpoa+x4GXy83eya-z6bdDj0GgMkEhTHONuF7gg@mail.gmail.com>
-Subject: Re: Recommended Partitioning & Subvolume Layout | Newbie Question
-To:     Stefanie Leisestreichler <stefanie.leisestreichler@peter-speer.de>
-Cc:     Chris Murphy <lists@colorremedies.com>,
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MrC0SyWN+6i6aEOJpAs2Dl1QNL/VXTuoQ40v/smqc78=;
+ b=kM8OJZOXYtI/Fe0tIvs2xSPQt+nsRbHScGn2a5y+n+kRP6jxZpx6bdx6liQf0LD6f7SvaqcOMwjT0cDv7ovN+TwkR5xqfM9vJYMmAWCAHL5OUowyj0IOrjvzjLRYPlhpBlV5bM8oRVYsEUw/IAJV0CMgq/hXqvi9hFHkaYxww08=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3582.namprd04.prod.outlook.com
+ (2603:10b6:803:4c::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.30; Fri, 24 Apr
+ 2020 09:30:23 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2921.036; Fri, 24 Apr 2020
+ 09:30:22 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Chris Murphy <lists@colorremedies.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+CC:     "jth@kernel.org" <jth@kernel.org>
+Subject: Re: authenticated file systems using HMAC(SHA256)
+Thread-Topic: authenticated file systems using HMAC(SHA256)
+Thread-Index: AQHWDQbERVNaVh/cw0i4WbDgZROyhA==
+Date:   Fri, 24 Apr 2020 09:30:22 +0000
+Message-ID: <SN4PR0401MB359826F559608829968D667F9BD00@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <CAJCQCtSLOgj7MHKNeGOHu1DPa=xC=sR7cZzR88hN1y_mTYRFKw@mail.gmail.com>
+ <SN4PR0401MB35987317CD0E2B97CD5A499E9BC00@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [46.244.206.168]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8c0d0835-861c-402a-d9a2-08d7e8321cf9
+x-ms-traffictypediagnostic: SN4PR0401MB3582:
+x-microsoft-antispam-prvs: <SN4PR0401MB35826B164587AB1804A721DF9BD00@SN4PR0401MB3582.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 03838E948C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(71200400001)(5660300002)(26005)(53546011)(4326008)(2906002)(186003)(86362001)(478600001)(110136005)(6506007)(316002)(52536014)(33656002)(9686003)(55016002)(64756008)(8676002)(76116006)(66476007)(81156014)(66946007)(66556008)(91956017)(8936002)(66446008)(4744005)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6KS0jzomp1dO7SKvFFHnBuIc3hoQcwndIoX7YbGW/HFg/JaBABzB0YV9NA04Av6pGvUZynWufl2+DTq0KzW6zJa2rz+kyw1+zjARufUGEgIc6oTNDbImSSLvXpwpOjy0OsICxnT1xGZjmhU9VrARXR3AXzJ9SBJaR9mluARez8C2pL0Xp1ST9nrK7XoF/IDz9vOULpdEK6+ws5en1UVADDpudea5WA47HmZbd3OQir94LESwMUZkDvfia2pozdvFLYdgXPpr5qqTNWVIrHAphqwksoibedkRXvh7Vpt5L4gDJbarYAcQI/XLo01BCWGuerTSx+TO3BER96HCsY0vvNnvTz+a69iz+yyx0fIgED1uLvmgJ3izd1VlQSpZ+5Z1T7GD+Eszf4VYOOO8BBdMC+szjIceX7Bmbw2WzNq2syfBIWbLPuQh4gvnYSrsKS5m
+x-ms-exchange-antispam-messagedata: 8IsBalD1rxGSDFD6uGnK+8z3naXqJlo2tNuSnS9PdCTtM6jjnQEYZUW/LHtLeC5ndkdnuynoUsRj7CT+mHO6A0q2pYpDftvYrgLVdEx/g2y37yEdgg3Cm5ntE62h2GbZwZZOFyButYUJUErZy7CAng==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c0d0835-861c-402a-d9a2-08d7e8321cf9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2020 09:30:22.6762
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FutnfUW1QOXEccjlqd3YdnfI+UMubEliLdhi6eS3Hiu0n/VUeSqgSCOaE0IDwoKJRaGQouLVjy3G4tFLwsPCvpEkGXHAmLzXF9aIufXs8g0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3582
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 3:39 AM Stefanie Leisestreichler
-<stefanie.leisestreichler@peter-speer.de> wrote:
->
->
->
-> On 22.04.20 23:03, Chris Murphy wrote:
-> > What's the gotcha? Well, my /var has been rolled back, and also the
-> > systemd journal. OK so I could make /var/lib/libvirt and /var/log
-> > subvolumes so they don't get snapshot and rolled back. What I tend to
-> > do is put those in the top level of the file system, and have fstab
-> > entries to mount them to the proper location during startup, that way
-> > I don't have to worry about manually fixing things on a rollback.
->
-> Thanks for your time and answer.
->
-> I tend to lean on the fedora layout as far as my limited knowledge
-> allows to calculate the impacts so far :-(
->
-> I do not understand what is meant by the statement:> What I tend to do
-> is put those in the top level of the file system
-
-Practical answer: the top level of a Btrfs file system is what's
-mounted without mount options. I usually put all subvolumes and
-snapshots there, instead of nesting them. With exceptions.
-
-Technical answer:
-Following mkfs.btrfs, the default default subvolume is ID=5 (aliased
-to ID=0). It's possible to change the default subvolume, so that mount
-will instead directly mount a chosen subvolume. But by default, it's
-ID 5, and this unnamed, undeletable, unmovable, but still
-snapshottable subvolume is called the top-level of a Btrfs file system
-because it's created at mkfs time and can't ever be moved or deleted.
-
-
-> I guess the storage for the snapshots is meant. So if I understand right
-> you have a directory /snapshots in the dir tree where they will be
-> stored.
-
-My usual preference is to keep any system snapshots outside the search
-path of its parent. So I tend to not like the approach where snapshots
-are stored in a hidden (begins with dot) directory.
-
-Conversely, I recognize that for snapshots of *user* directories,
-nesting might actually be really useful for the purpose of rollback,
-or even "undelete" by reflink copying from a hidden snapshot.
-
-Also, snapshot recursion on Btrfs ends at subvolumes. So even if you
-don't intend to snapshot something, it can be useful to use a
-subvolume instead of a directory. e.g. if /home/chris is a subvolume,
-I might also create /home/chris/.cache as a subvolume (I don't usually
-do this but I have done it, works fine). I would never snapshot
-/home/chris/.cache so why make it a subvolume? When I snapshot
-/home/chris, the resulting snapshot will not contain anything in
-/home/chris/.cache because it is a subvolume. Therefore incremental
-btrfs send/receive of /home/chris is smaller, because it omits the
-cache directory (which happens to be a subvolume in this example).
-
-This is a case where I do sometimes nest. If I ever had to rollback
-/home/chris though, /home/chris/.cache is now a directory so I'd have
-to remember to create a new .cache subvolume if I want to be
-consistent about the strategy. Often I'm not consistent, hence I tend
-toward not nesting.
-
-There's no Btrfs performance or on-disk format reason for not nesting.
-It's purely organizational and user space consequences.
-
-
->I know about the fact that a nested subvolume (subvolume in
-> another subvolume) will not get snapshotted. But it is not clear to me
-> if you are using this fact in your layout (make i.e. /var/log a separate
-> subvolume) or not.
-
-Sometimes. I'm not super consistent about it. Depends on the use case.
-On the system that I use for a lot of testing and VM work, I tend to
-make two adjustments to the default Fedora layout where only root and
-home are on subvolumes.
-
-a. I create a subvolume at the top level 'libvirtimages' with the
-proper permission and selinux label; and then in fstab I use
-subvol=libvirtimages to mount it at /var/lib/libvirt/images
-b. Create a 'logs' subvolum at the top level and also use fstab to
-mount it at /var/logs/
-
-This way when I snapshot root, these things are not snapshot. When I
-rollback root, these things automatically continue to mount in their
-present state without respect to the rollback of root. Yes other
-things do rollback still like everything in /etc, but i usually don't
-care about that.
-
-Also I usually keep /boot as a directory on the root subvolume, so it
-gets rolled back at the same time. I've messed around with separate
-boot subvolumes, and I think it's more useful for the use case where
-you don't want a persistently mounted /boot and /boot/efi for security
-reasons.
-
->Also it is not clear to me, why you put the snapshots
-> in the top level of your filesystem.
-
-If I nest them instead, I have to move them back into place if I do a
-rollback, instead of letting fstab always put assembling things
-correctly and automatically.
-
-
--- 
-Chris Murphy
+On 08/04/2020 13:17, Johannes Thumshirn wrote:=0A=
+>> Also I'm curious if it could use blake2b as an option? It's a bit=0A=
+>> faster I guess.=0A=
+> Probably yes, I haven't researched if blake2b can be used in a HMAC=0A=
+> context, but from what I can see there should be no problem. SHA-256 was=
+=0A=
+> chooses because SUSE Product Management needed SHA for their use-case.=0A=
+> =0A=
+> If there is still interest in this work I can re-base my branches [1][2]=
+=0A=
+> and add blake2b as well, this/should/  be trivially done.=0A=
+=0A=
+So I've re-based my kernel and btrfs-progs branches and saw that David =0A=
+added support for libgcrypt and libsodium as optional crypto =0A=
+implementations (awesome btw, thanks David!).=0A=
+=0A=
+I've provided a libsodium based hmac(sha256) version in progs as well =0A=
+now. But a hmac(blake2b) is neither implemented in libgcrypt nor in =0A=
+libsodium and I think we don't want to roll our own crypto in btrfs-progs.=
+=0A=
