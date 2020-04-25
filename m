@@ -2,56 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D251D1B893A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Apr 2020 22:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E073B1B89AF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Apr 2020 23:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgDYUF5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Apr 2020 16:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
+        id S1726232AbgDYVzL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Apr 2020 17:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgDYUF5 (ORCPT
+        with ESMTP id S1726015AbgDYVzL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Apr 2020 16:05:57 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50FFC09B04D
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Apr 2020 13:05:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x25so15120060wmc.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Apr 2020 13:05:55 -0700 (PDT)
+        Sat, 25 Apr 2020 17:55:11 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D74C09B04D
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Apr 2020 14:55:10 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id l78so14181148qke.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Apr 2020 14:55:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eA99YnEDPOtzwv689Hbi49Lfo/Gj8daHQF6dVQiqHtA=;
-        b=ypCwu79tVo7RTolLaxeBYDRmy+GRnDqTFbsOJoeQMDFnFchbgGVSP8pDaV1G+AOXqa
-         8u/DYv8nYKKRZIC2ZQ0bKofhNm+I/Sb0DKVQ6wRCpVa5sLROt6Sb02Te2EQT2PWL4wGn
-         rK3apsOxHkx5mCakoiCW3BEwk3SLQECOnhYjOOq/6S79AT2xIkP0N2YCTg4fGBXbfKK8
-         i7cPX9VtxRK/AklILm9i8iA4YtBcZ9p56EtEqzPiSO/oQvSj0pamYbqA5WG5ZjyjnbE+
-         yO4Yvq1jrvtxaA7eKq0CBkqJgnD6B5PmpRMg9JUEIzEq08E8/tQWd+Es5G0IPS320Bkm
-         lo6g==
+        bh=mmKxcQX/9eMu6RxPN8hk7+g/66cfuo7MRDWG3aaMjRQ=;
+        b=WNAkkKdQLF3ep2nbaBlbkgx/F58Wi8JjfsmLqXuUBNrYNOUBFfbIckxJiBjIXwtNzN
+         tDOR27Z5eY+YVnyAwX0Lrp299JsSsQyylid5Nv0n19ZD1YKVXNONcS0vBjKC3e05zKll
+         7Q6ia5YZbF9RCsdrrSWplz1OW7dHHkiBJvOgVXhEmRX4UZXkBWkR019Uavu7WL2Ar/EH
+         GrTVadUsWM4uSThRdmrnC9MKIW4tLYhr20nurQ1tEAN5FzYED3FyMNQy3LRFnNE+ZP7d
+         /RsaEXlLcAhnvFo/UuzDjU+np8+rgVDBagUFXDSTrhfqpAjXlH9GQY4JHkbdz6fgAKAc
+         jlIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eA99YnEDPOtzwv689Hbi49Lfo/Gj8daHQF6dVQiqHtA=;
-        b=moW1dJIClBk3OUlQDsI/BWRRRHuKvOsquMRocI32bZH4rs97Nn/Ks8yGavWVzxPpNX
-         mzpIxFGqrqqdc+4pZLFMCSW1aHeTFWlQsVEPxDmQu1uv5HFCkpxd2SbfGMwtu5049BvT
-         4asCXOfqG7JjXT3UDQQ2HTd/rriBmM+e4avD6HC3lj1raXdmBJ2rbaBC6sDQ5LHpvI5R
-         Xyodq9O1LNsK2j195ZjrswE8ILR6W+jmE6ZasqM/yu52M4h3zkll50HwYuBaU9zNFsXq
-         KzhijqRRmpIfOEJKaJN6GltcRl6DImIpecpUJ4/ekgMPGm5wOGURJdpw0f3M47j02AYw
-         cJbw==
-X-Gm-Message-State: AGi0PubHKTr7q/NpDPJbwblhXl7pcx+AKII9849xv4L5O9TiB7z7u6TN
-        A3cPNQV2WtrX/3/rsXEGTP7KOsD+oeuwmyvjSWIU0Hx9
-X-Google-Smtp-Source: APiQypK/8GeKXcU0Zvukqn1JG20dFJ4vTnQvJcvFdl6UOdCmxITqHArkcC0xZvDS92C/gVcyAru3bwNdewuZUzaqTto=
-X-Received: by 2002:a1c:1b0b:: with SMTP id b11mr18219706wmb.182.1587845154504;
- Sat, 25 Apr 2020 13:05:54 -0700 (PDT)
+        bh=mmKxcQX/9eMu6RxPN8hk7+g/66cfuo7MRDWG3aaMjRQ=;
+        b=kyTsOANmzboo/V52Xx9DqxgSfpmgEXamx1Jg5ljes5apI11s5hP7Rzd0kQWrlaYc+5
+         pY4887hVDFMT8Y6k5uR2B3sQUejfC2Rk4ZDCfagoMf9xb0zK/8i0LernLKs3y4aJkHyz
+         bkepd/Fvq2YOH7PNpgCrjpKOi+EJ1phXazsEJeuY6K7r9/M6yJxpOErlFzKrSWZfZRpb
+         OEDzSP5m5F5wbIMP88e/lez7yZxidfcT5Mg1FtMLO6nonhMJPPdODdqMmwBVWFpE1FHv
+         T/HDf57e1SwSk9iavHtnRr2+PaRj0AzENr+qvVrG1sVjPLxPtE/CkaCNCusyb5KDmbES
+         sp+A==
+X-Gm-Message-State: AGi0PuaJKb7PM1vy2jP+bOdzCmIkjn/+sYx6p7iGC1r/pPiwgEEsJ1jd
+        Jvqzu6VR7TUFT8TnUvpgz043qvKEj+C5aFHrFBU=
+X-Google-Smtp-Source: APiQypLSEyldEoH03mmjjO3VStI6hPDAHlvohgs/zhkzij1eMOZ3SX3g6I26pOyIDvkmbgJRfIRBANH5Xl60b3vM1XU=
+X-Received: by 2002:a37:9ad0:: with SMTP id c199mr14689045qke.472.1587851710002;
+ Sat, 25 Apr 2020 14:55:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAP7ccd__ozu0xvp5yiFW8CuyDBPhD4jOV1auXE5U-z9oBKmn-g@mail.gmail.com>
-In-Reply-To: <CAP7ccd__ozu0xvp5yiFW8CuyDBPhD4jOV1auXE5U-z9oBKmn-g@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 25 Apr 2020 14:05:38 -0600
-Message-ID: <CAJCQCtTdghbU1au1AOpeF2v_YxZoh_d1JZpu2Jf7s_xMdT=+rQ@mail.gmail.com>
+ <CAJCQCtTdghbU1au1AOpeF2v_YxZoh_d1JZpu2Jf7s_xMdT=+rQ@mail.gmail.com>
+In-Reply-To: <CAJCQCtTdghbU1au1AOpeF2v_YxZoh_d1JZpu2Jf7s_xMdT=+rQ@mail.gmail.com>
+From:   Yegor Yegorov <gochkin@gmail.com>
+Date:   Sun, 26 Apr 2020 00:54:58 +0300
+Message-ID: <CAP7ccd8u-pStGzCau+bcYEVjRy+SPE+JQz169i_2NiY8dfUXuQ@mail.gmail.com>
 Subject: Re: Help needed to recover from partition resize/move
-To:     Yegor Yegorov <gochkin@gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -59,164 +60,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 4:24 AM Yegor Yegorov <gochkin@gmail.com> wrote:
+> You need to fix the partition/filesystem size mismatch first.
 >
-> Hi, I have been stupid enough to try to move and extend my btrfs
-> partition using a GUI software of my distro. The operation ended with
-> an error. From the logs of the operation, I understood that the
-> movement of the partition succeeded, but some finishing operation is
-> failed. I don't have this log anymore, so I can't provide further
-> information on that.
->
-> Now I ended up with btrfs partition that can't be mounted. Here the
-> output of the various system and btrfs tools:
->
-> $> mount -t btrfs /dev/nvme0n1p3 /mnt/
-> mount: /mnt/: wrong fs type, bad option, bad superblock on
-> /dev/nvme0n1p3, missing codepage or helper program, or other error.
->
-> $>dmesg | tail
-> [11637.931751] BTRFS info (device nvme0n1p3): disk space caching is enabled
-> [11637.931754] BTRFS info (device nvme0n1p3): has skinny extents
-> [11637.936339] BTRFS error (device nvme0n1p3): bad tree block start,
-> want 1048576 have 6267530653245814412
-> [11637.936350] BTRFS error (device nvme0n1p3): failed to read chunk root
-> [11637.950289] BTRFS error (device nvme0n1p3): open_ctree failed
-> [11637.950893] audit: type=1106 audit(1587809374.388:663): pid=14229
-> uid=0 auid=1000 ses=2 msg='op=PAM:session_close
-> grantors=pam_limits,pam_unix,pam_permit acct="root"
-> exe="/usr/bin/sudo" hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11637.951039] audit: type=1104 audit(1587809374.388:664): pid=14229
-> uid=0 auid=1000 ses=2 msg='op=PAM:setcred
-> grantors=pam_unix,pam_permit,pam_env acct="root" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.981082] audit: type=1101 audit(1587809411.415:665): pid=14277
-> uid=1000 auid=1000 ses=2 msg='op=PAM:accounting
-> grantors=pam_unix,pam_permit,pam_time acct="go4a" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.981423] audit: type=1110 audit(1587809411.415:666): pid=14277
-> uid=0 auid=1000 ses=2 msg='op=PAM:setcred
-> grantors=pam_unix,pam_permit,pam_env acct="root" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.985959] audit: type=1105 audit(1587809411.422:667): pid=14277
-> uid=0 auid=1000 ses=2 msg='op=PAM:session_open
-> grantors=pam_limits,pam_unix,pam_permit acct="root"
-> exe="/usr/bin/sudo" hostname=? addr=? terminal=/dev/pts/1 res=success'
->
-> $> btrfs check /dev/nvme0n1p3
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
->
-> $> btrfs restore /dev/nvme0n1p3 /mnt/
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> Could not open root, trying backup super
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> Could not open root, trying backup super
-> ERROR: superblock bytenr 274877906944 is larger than device size 188743680000
+> fdisk -l /dev/sda
+> btrfs insp dump-s /dev/sdaN
 
+Hi Chris, thank you for taking the time to help me.
 
-This suggests the partition was changed (shrunk) before the file
-system shrink had succeeded; or that the partition was changed even
-after file system shrink failed. At this point it's required to make
-no changes to the file system, including repairs, until the partition
-size matches the file system size as reported by the superblock.
+The reason I performed all those actions is that those are the actions
+that are suggested in order to recover btrfs mount failures. I tried
+to perform them in order from the least to the most dangerous and only
+tried the next one after the previous one didn't help. In any case, I
+did have dumped the failed btrfs partition to .img file in case the
+things will go terribly wrong. I was hoping that I could just restore
+it if to much damage were introduced. But I did take an image only of
+the failed partition and not the entire drive, so now I'm afraid that
+maybe the data needed to restore the partition is gone or overwritten,
+because this data may be in the area outside the partition itself as
+you suggested.
 
+In any case, here are the outputs of the commands that you asked for:
 
-> Could not open root, trying backup super
->
-> $> btrfs rescue chunk-recover /dev/nvme0n1p3
-> Scanning: DONE in dev0
-> Check chunks successfully with no orphans
-> Chunk tree recovered successfully
+$> fdisk -l /dev/nvme0n1
+Disk /dev/nvme0n1: 476.96 GiB, 512110190592 bytes, 1000215216 sectors
+Disk model: SAMSUNG MZVLW512HMJP-000H1
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 63C1ED58-4B39-428F-90F1-9CA561B96111
 
+Device             Start        End   Sectors   Size Type
+/dev/nvme0n1p1      2048     309247    307200   150M EFI System
+/dev/nvme0n1p2 775952384  796432383  20480000   9.8G Linux swap
+/dev/nvme0n1p3    309248  368949247 368640000 175.8G Linux filesystem
+/dev/nvme0n1p7 796432384 1000214527 203782144  97.2G Linux filesystem
 
-My suspicion is this might have made things worse. I don't see how
-chunk-recover can do the right thing, if the partition is wrong. And
-further I think that all of the Btrfs tools should do an early check
-that the partition size matches file system size, and if that fails,
-it should warn and stop.
-
-
-
->
-> $>btrfs rescue super-recover /dev/nvme0n1p3
-> All supers are valid, no need to recover
-
-True only in the narrow case that their checksum matches contents,
-sanity tests, and they match each other. But I still think even this
-tool should confirm/deny the very basic thing: partition size (or
-block device size) matches file system size.
-
-
->
-> $>btrfs rescue zero-log /dev/nvme0n1p3
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: could not open ctree
-
-OK sorry but now you're just throwing spaghetti at a wall. It's
-desperation, which is a great way to cause further damage to a file
-system. Fortunately the log is not critical, it just means it's
-possible to lose the most recent data being written and fsync'd.
-
-
-
->
-> $>btrfs-find-root /dev/nvme0n1p3
-> WARNING: cannot read chunk root, continue anyway
-> Superblock thinks the generation is 49
-> Superblock thinks the level is 1
->
-> $>btrfs check --repair /dev/nvme0n1p3
-> Starting repair.
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-
-The want and have are way far apart, the file system is damaged. And I
-don't see how it can be fixed when the partition is smaller than the
-file system. Too much is missing and repair is impossible.
-
-Doing a repair in this case will make things worse. But again, I argue
-check even with --repair should quickly fail if there's a block device
-size and file system size mismatch, specifically the case where block
-device size is smaller than file system size, as in this case.
-
-
-> $> btrfs check --repair --init-csum-tree --init-extent-tree /dev/nvme0n1p3
-> Starting repair.
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-
-The heavy hammer. Again, likely to make things worse, but luckily it
-can't find enough to proceed with the repair.
-
-You need to fix the partition/filesystem size mismatch first.
-
-fdisk -l /dev/sda
-btrfs insp dump-s /dev/sdaN
-
-where N is the partition for this file system
-
-
--- 
-Chris Murphy
+$> btrfs insp dump-s /dev/nvme0n1p3
+superblock: bytenr=65536, device=/dev/nvme0n1p3
+---------------------------------------------------------
+csum_type               0 (crc32c)
+csum_size               4
+csum                    0x043ea018 [match]
+bytenr                  65536
+flags                   0x1
+                        ( WRITTEN )
+magic                   _BHRfS_M [match]
+fsid                    90e9d74c-3606-4028-9e72-c10e76f44a7c
+metadata_uuid           90e9d74c-3606-4028-9e72-c10e76f44a7c
+label                   data
+generation              49
+root                    8612052992
+sys_array_size          97
+chunk_root_generation   46
+root_level              1
+chunk_root              1048576
+chunk_root_level        1
+log_root                0
+log_root_transid        0
+log_root_level          0
+total_bytes             188743680000
+bytes_used              182011633664
+sectorsize              4096
+nodesize                16384
+leafsize (deprecated)   16384
+stripesize              4096
+root_dir                6
+num_devices             1
+compat_flags            0x0
+compat_ro_flags         0x0
+incompat_flags          0x161
+                        ( MIXED_BACKREF |
+                          BIG_METADATA |
+                          EXTENDED_IREF |
+                          SKINNY_METADATA )
+cache_generation        48
+uuid_tree_generation    48
+dev_item.uuid           e2815a2c-6ec8-45c6-baae-7f429a5f0f78
+dev_item.fsid           90e9d74c-3606-4028-9e72-c10e76f44a7c [match]
+dev_item.type           0
+dev_item.total_bytes    188743680000
+dev_item.bytes_used     184704565248
+dev_item.io_align       4096
+dev_item.io_width       4096
+dev_item.sector_size    4096
+dev_item.devid          1
+dev_item.dev_group      0
+dev_item.seek_speed     0
+dev_item.bandwidth      0
+dev_item.generation     0
