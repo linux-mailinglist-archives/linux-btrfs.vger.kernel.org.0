@@ -2,76 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E6A1B90BF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555A1B90D1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 16:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgDZNyq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Apr 2020 09:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgDZNyq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:54:46 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2203C061A0F
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 06:54:45 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id e17so8642252qtp.7
-        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 06:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=CPS1qe/syAqQ7n3ofZgL9EnuUUhmHXAQsd0xbvpYWp8=;
-        b=XvFamCiaN1tNSLNxAqdiQ3ZQ4fgEQvw6uIVYvpkFB5jD5nCeHOsXJqXSLTiAIsUsHi
-         Gl3CeQJ47aisYrwXJlU8LyZ+iP7fTvULkknEE9Y5xoVlK21Z0jAdbai1g0BibEFPpDX7
-         r/7P5orAj4lWXFmy7P6dNdVgfkuSUR2yVvF9SIDd5zeqAFZ8Krc5Fh2fN03hyLII9pju
-         uVleeSpuFdh82J9fywBRmJurC18Zwm6xUculyiok0o9pUriDjKlzGebXAyWtRT+1fdde
-         Y2oziMq9YLt0+lKFJcdlJh11P3GJeTqzK4Z/qkSCuFNWP2SR41vb/EbiYXqycOWDtXlk
-         he/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=CPS1qe/syAqQ7n3ofZgL9EnuUUhmHXAQsd0xbvpYWp8=;
-        b=IFKA+b1JiX75ZS/nq+23KvPhxAMnOPtMVO20dPerDZgi3/YwGoQC0RgEUVAkfKKVfO
-         3HeVBK4B4flfKUe/LxKjPeeKnVLcur/PcHmLRI5oybA8weS2VbrhMF+4nBFyZ9mLEEAv
-         uKDzDqcBKiPhAwIOS/s7XAmTy+LGRJFKmy6fS48jfZOEXim2d3dXse43Lp+gSmWExkPF
-         zb5hw5TenPei2FaORvCedZPkNvcEiEJuVFl6+IDuP3X8m77+/iPIRhkaKb2k0wDpL8ih
-         13KnUARoMBT3SGAYzjHwe4EbbZVX++HahAtTYjTvPz6zHltdEeCUJrAYY2P9duqCoxEO
-         O68Q==
-X-Gm-Message-State: AGi0PuaZqqHK1MlYSJm2WJivhZnlj8rXQCqL+ao8ZUoC18VmfDIkTNHP
-        UOem+sgL9VeH6nMCLGpyHOa1J+twvRBHN4BQIDSse2L5Vv0=
-X-Google-Smtp-Source: APiQypKknDQRxjvdN4WxBV7E634Sb0SX8RRdZh3bsxGL2DXyCRv/ksbvk1OiEdsh7QAUTOxcoS2xpU925ZpR4JFqVnk=
-X-Received: by 2002:ac8:2a70:: with SMTP id l45mr19015442qtl.232.1587909284466;
- Sun, 26 Apr 2020 06:54:44 -0700 (PDT)
-MIME-Version: 1.0
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Sun, 26 Apr 2020 09:54:08 -0400
-Message-ID: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
-Subject: Btrfs native encryption
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        id S1726156AbgDZOOu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Apr 2020 10:14:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47588 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgDZOOt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 26 Apr 2020 10:14:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1157DAD60;
+        Sun, 26 Apr 2020 14:14:46 +0000 (UTC)
+Subject: Re: Btrfs native encryption
+To:     Neal Gompa <ngompa13@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Cc:     Mark Harmstone <mark@harmstone.com>,
         Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <59e1e1e4-b856-8784-3c4d-3fbd7a724cf8@suse.com>
+Date:   Sun, 26 Apr 2020 17:14:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey,
 
-I was looking into encryption in filesystems (for supporting sane full
-disk encryption), and I noticed that there was some work last year on
-this: https://lore.kernel.org/linux-btrfs/20190109012701.26441-1-mark@harms=
-tone.com/
 
-What is the current state of this work? Is it just the same as back
-then, or has there been changes?
+On 26.04.20 г. 16:54 ч., Neal Gompa wrote:
+> Hey,
+> 
+> I was looking into encryption in filesystems (for supporting sane full
+> disk encryption), and I noticed that there was some work last year on
+> this: https://lore.kernel.org/linux-btrfs/20190109012701.26441-1-mark@harmstone.com/
+> 
+> What is the current state of this work? Is it just the same as back
+> then, or has there been changes?
 
-Best regards,
-Neal
+No changes, btrfs currently doesn't support encryption.
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+> 
+> Best regards,
+> Neal
+> 
