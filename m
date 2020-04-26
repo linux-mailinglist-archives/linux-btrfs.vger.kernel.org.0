@@ -2,97 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9555A1B90D1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 16:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2277F1B90D8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 16:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgDZOOu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Apr 2020 10:14:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47588 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgDZOOt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Apr 2020 10:14:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1157DAD60;
-        Sun, 26 Apr 2020 14:14:46 +0000 (UTC)
+        id S1726194AbgDZOZs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Apr 2020 10:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgDZOZs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 26 Apr 2020 10:25:48 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C244DC061A0F
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 07:25:47 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e26so16605000wmk.5
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 07:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KHbdadN8LRBy/kAo+cYS+PNqS+7Rmu7w94Y8iv4BVSw=;
+        b=gbnP8CydQx1+RWL8iKJwl/ih5jmIxa5hZhUYdyMEU0uXNDvgM1c42OqDCJxpriXtli
+         KOtCNcw1VdN9PyPAR9gbEFc+X95mYShVrmhFVImLZmYYBHi9IFHZg4HXKplt3YdVrm0O
+         Bayq0u81nKKS8O5yz2dPGwb1kaynyzoQ/e391CERiJASuG4B6EOMzrdEyj0RcBDVw+Qh
+         e+DWljKHdyHK5wb2KrbRQIJQFAuo/3kz2scvxWipkWQf0RwjDz2pr+3/R2bx9yZ6S0ZR
+         PpAGuaMPjghxoHbnmjQ9Njx/kC/U1VW/3MIKY+06R4mdSxuuQ8s7G5kRoKD3K8nL0SzL
+         KUTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=KHbdadN8LRBy/kAo+cYS+PNqS+7Rmu7w94Y8iv4BVSw=;
+        b=GEY3Z5IhughxMntDwUcS048Q+lO7dSWX0ZoZMkt1AtEbogDtw+L5hZuNTfrQ1QNOjm
+         HBHnIBr8jOTCQ8+aCH1++5w+3R6KkytNizH1bEXS8Oz2c1rnD2T0QqEweMzjaF/Ha5mj
+         73OLCzMvDWO2ozkGeyudzuU7enEEGQAePgiNPmHi0blbgflH1SGXV2LlRNJefQ6U/hEk
+         XofaIrDxp77nnsqyFjrHrTfAQYbI4zRjxY2YOi+RrFpZrIFVhwQz84vfdtAKIvTobhg3
+         te9nMMlx50ciWzD72q3lkOvxZGsiRrl/b4RI9d+cK/qJrkGLJ2i5HigWUaQKnbpKE4D6
+         cv5A==
+X-Gm-Message-State: AGi0PuYaw/YL+QUs11XkPIqZQ/TUNQMSiK5mXHPcp8BdY29iqRTijbUm
+        Uwti2j8DXWZbCJNH/cHm6szwD5li
+X-Google-Smtp-Source: APiQypK1qr9yQjrPMLu4zbxd/cjlIJ5tJm/RBeduWwl6OFr/Hxh3Dre9PLkTMwHL++0UtVHxm7RlGg==
+X-Received: by 2002:a1c:1f8e:: with SMTP id f136mr20613122wmf.166.1587911146539;
+        Sun, 26 Apr 2020 07:25:46 -0700 (PDT)
+Received: from ?IPv6:2a02:8010:64ea:0:fad1:11ff:fead:57db? ([2a02:8010:64ea:0:fad1:11ff:fead:57db])
+        by smtp.googlemail.com with ESMTPSA id v16sm11395863wml.30.2020.04.26.07.25.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Apr 2020 07:25:45 -0700 (PDT)
 Subject: Re: Btrfs native encryption
-To:     Neal Gompa <ngompa13@gmail.com>,
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Neal Gompa <ngompa13@gmail.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Mark Harmstone <mark@harmstone.com>,
-        Chris Murphy <lists@colorremedies.com>
+Cc:     Chris Murphy <lists@colorremedies.com>
 References: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <59e1e1e4-b856-8784-3c4d-3fbd7a724cf8@suse.com>
-Date:   Sun, 26 Apr 2020 17:14:46 +0300
+ <59e1e1e4-b856-8784-3c4d-3fbd7a724cf8@suse.com>
+From:   Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+ /dLFIhf2zxRylN1xq27M9P2t1xfQFocuYToPsVk=
+Message-ID: <7512bb89-65b1-edcb-9572-6afa2e07fd2e@harmstone.com>
+Date:   Sun, 26 Apr 2020 15:25:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
+In-Reply-To: <59e1e1e4-b856-8784-3c4d-3fbd7a724cf8@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Last thing I heard was that Omar Sandoval at Facebook was looking into it. I never heard anything back about my patches, though.
 
+Mark
 
-On 26.04.20 г. 16:54 ч., Neal Gompa wrote:
-> Hey,
-> 
-> I was looking into encryption in filesystems (for supporting sane full
-> disk encryption), and I noticed that there was some work last year on
-> this: https://lore.kernel.org/linux-btrfs/20190109012701.26441-1-mark@harmstone.com/
-> 
-> What is the current state of this work? Is it just the same as back
-> then, or has there been changes?
+On 26/4/20 3:14 pm, Nikolay Borisov wrote:
+>
+> On 26.04.20 г. 16:54 ч., Neal Gompa wrote:
+>> Hey,
+>>
+>> I was looking into encryption in filesystems (for supporting sane full
+>> disk encryption), and I noticed that there was some work last year on
+>> this: https://lore.kernel.org/linux-btrfs/20190109012701.26441-1-mark@harmstone.com/
+>>
+>> What is the current state of this work? Is it just the same as back
+>> then, or has there been changes?
+> No changes, btrfs currently doesn't support encryption.
+>
+>> Best regards,
+>> Neal
+>>
 
-No changes, btrfs currently doesn't support encryption.
-
-> 
-> Best regards,
-> Neal
-> 
