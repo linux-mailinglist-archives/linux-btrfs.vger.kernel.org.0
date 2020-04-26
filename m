@@ -2,182 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E9A1B8F66
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 13:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79B1B9020
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Apr 2020 14:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgDZLUY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Apr 2020 07:20:24 -0400
-Received: from mailfilter04-out30.webhostingserver.nl ([195.211.73.156]:47133
-        "EHLO mailfilter04-out30.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726122AbgDZLUY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Apr 2020 07:20:24 -0400
-X-Greylist: delayed 962 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Apr 2020 07:20:21 EDT
-X-Halon-ID: ac0a17f5-87ad-11ea-8ec5-001a4a4cb95f
-Received: from s198.webhostingserver.nl (unknown [195.211.72.171])
-        by mailfilter04.webhostingserver.nl (Halon) with ESMTPSA
-        id ac0a17f5-87ad-11ea-8ec5-001a4a4cb95f;
-        Sun, 26 Apr 2020 13:04:17 +0200 (CEST)
-Received: from cust-178-250-146-69.breedbanddelft.nl ([178.250.146.69] helo=[10.8.0.6])
-        by s198.webhostingserver.nl with esmtpa (Exim 4.92.3)
-        (envelope-from <fntoth@gmail.com>)
-        id 1jSf57-003CWr-8Q; Sun, 26 Apr 2020 13:04:17 +0200
-Subject: Re: Help needed to recover from partition resize/move
-To:     Yegor Yegorov <gochkin@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAP7ccd__ozu0xvp5yiFW8CuyDBPhD4jOV1auXE5U-z9oBKmn-g@mail.gmail.com>
-From:   Ferry Toth <fntoth@gmail.com>
-Message-ID: <74123781-3080-6742-5088-57b7bbc83158@gmail.com>
-Date:   Sun, 26 Apr 2020 13:04:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726142AbgDZMqP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 26 Apr 2020 08:46:15 -0400
+Received: from mail.nethype.de ([5.9.56.24]:46981 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgDZMqP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 26 Apr 2020 08:46:15 -0400
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1jSgfl-000Prw-Ge
+        for linux-btrfs@vger.kernel.org; Sun, 26 Apr 2020 12:46:13 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1jSgfl-0000u7-Co
+        for linux-btrfs@vger.kernel.org; Sun, 26 Apr 2020 12:46:13 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1jSgfl-0001aT-CU
+        for linux-btrfs@vger.kernel.org; Sun, 26 Apr 2020 14:46:13 +0200
+Date:   Sun, 26 Apr 2020 14:46:13 +0200
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: experiment: suboptimal behaviour with write errors and multi-device
+ filesystems
+Message-ID: <20200426124613.GA5331@schmorp.de>
 MIME-Version: 1.0
-In-Reply-To: <CAP7ccd__ozu0xvp5yiFW8CuyDBPhD4jOV1auXE5U-z9oBKmn-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Op 25-04-2020 om 12:24 schreef Yegor Yegorov:
-> Hi, I have been stupid enough to try to move and extend my btrfs
-> partition using a GUI software of my distro. The operation ended with
-> an error. From the logs of the operation, I understood that the
-> movement of the partition succeeded, but some finishing operation is
-> failed. I don't have this log anymore, so I can't provide further
-> information on that.
+Hi!
 
-Which GUI software did you use?
+I made an experiment whose results I would like to share with you, in the
+hope of possible behaviour improvement in the future.
 
-I had already 2x (yeah, but to my defense there was a long time in 
-between) a similar problem with partitionmanager (KDE Partition 
-Manager). In that case I only did a move (overlapping), which took hours.
+Summary: A disk was physically removed for a multi-device filesystem while
+copying large amounts of data to the fs. btrfs continued writing half a
+TB of data without signalling an error - it probably would have continued
+like that forever, which I think is suboptimal behaviour.
 
-When it apparently succeeded and I tried to mount btrfs complains 
-similar to your tail below..
+And here the longer version:
 
-In both cases the fix was the same: I restored partition start/end with 
-fdisk - and that was all. No data was lost.
+I created a multi-device fs with data=single and meta=raid1 and copied
+about 8TB of data to it. After copying roughly 7.5TB of data I powercycled
+the disk, which caused the raid controller to remove the device
+semi-permanently.
 
-Then used gparted (Gnome Partition Manager) to do the same - that worked.
+Since the partitions were on LVM, this didn't cause btrfs to see a rmeoved
+device (if btrfs can even do that) - it did get EIO on every write, but
+btrfs f u for example did display the device even though it was physically
+missing, liekly as the device-mapper device was still there.
 
-Crazy.
+While the write errors kept increasing (altogether over 300000) in the
+kernel log, no other indications hsowed anything out of the ordinary -
+mkdir/file writes still worked.
 
-> Now I ended up with btrfs partition that can't be mounted. Here the
-> output of the various system and btrfs tools:
-> 
-> $> mount -t btrfs /dev/nvme0n1p3 /mnt/
-> mount: /mnt/: wrong fs type, bad option, bad superblock on
-> /dev/nvme0n1p3, missing codepage or helper program, or other error.
-> 
-> $>dmesg | tail
-> [11637.931751] BTRFS info (device nvme0n1p3): disk space caching is enabled
-> [11637.931754] BTRFS info (device nvme0n1p3): has skinny extents
-> [11637.936339] BTRFS error (device nvme0n1p3): bad tree block start,
-> want 1048576 have 6267530653245814412
-> [11637.936350] BTRFS error (device nvme0n1p3): failed to read chunk root
-> [11637.950289] BTRFS error (device nvme0n1p3): open_ctree failed
-> [11637.950893] audit: type=1106 audit(1587809374.388:663): pid=14229
-> uid=0 auid=1000 ses=2 msg='op=PAM:session_close
-> grantors=pam_limits,pam_unix,pam_permit acct="root"
-> exe="/usr/bin/sudo" hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11637.951039] audit: type=1104 audit(1587809374.388:664): pid=14229
-> uid=0 auid=1000 ses=2 msg='op=PAM:setcred
-> grantors=pam_unix,pam_permit,pam_env acct="root" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.981082] audit: type=1101 audit(1587809411.415:665): pid=14277
-> uid=1000 auid=1000 ses=2 msg='op=PAM:accounting
-> grantors=pam_unix,pam_permit,pam_time acct="go4a" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.981423] audit: type=1110 audit(1587809411.415:666): pid=14277
-> uid=0 auid=1000 ses=2 msg='op=PAM:setcred
-> grantors=pam_unix,pam_permit,pam_env acct="root" exe="/usr/bin/sudo"
-> hostname=? addr=? terminal=/dev/pts/1 res=success'
-> [11674.985959] audit: type=1105 audit(1587809411.422:667): pid=14277
-> uid=0 auid=1000 ses=2 msg='op=PAM:session_open
-> grantors=pam_limits,pam_unix,pam_permit acct="root"
-> exe="/usr/bin/sudo" hostname=? addr=? terminal=/dev/pts/1 res=success'
-> 
-> $> btrfs check /dev/nvme0n1p3
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-> 
-> $> btrfs restore /dev/nvme0n1p3 /mnt/
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> Could not open root, trying backup super
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> Could not open root, trying backup super
-> ERROR: superblock bytenr 274877906944 is larger than device size 188743680000
-> Could not open root, trying backup super
-> 
-> $> btrfs rescue chunk-recover /dev/nvme0n1p3
-> Scanning: DONE in dev0
-> Check chunks successfully with no orphans
-> Chunk tree recovered successfully
-> 
-> $>btrfs rescue super-recover /dev/nvme0n1p3
-> All supers are valid, no need to recover
-> 
-> $>btrfs rescue zero-log /dev/nvme0n1p3
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: could not open ctree
-> 
-> $>btrfs-find-root /dev/nvme0n1p3
-> WARNING: cannot read chunk root, continue anyway
-> Superblock thinks the generation is 49
-> Superblock thinks the level is 1
-> 
-> $>btrfs check --repair /dev/nvme0n1p3
-> Starting repair.
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-> 
-> 
-> $> btrfs check --repair --init-csum-tree --init-extent-tree /dev/nvme0n1p3
-> Starting repair.
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> checksum verify failed on 1048576 found 00000067 wanted 0000006E
-> bad tree block 1048576, bytenr mismatch, want=1048576, have=6267530653245814412
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-> 
-> 
-> 
-> 
-> $> uname -a
-> Linux go4a-HP-Spectre 5.7.0-1-MANJARO #1 SMP PREEMPT Tue Apr 21
-> 20:48:43 UTC 2020 x86_64 GNU/Linux
-> 
-> $> btrfs --version
-> btrfs-progs v5.6
-> 
-> $>  btrfs fi show
-> Label: none  uuid: 1e1d4296-9d34-4070-9d8b-18d5dfbad486
->          Total devices 1 FS bytes used 85.02GiB
->          devid    1 size 97.17GiB used 97.17GiB path /dev/nvme0n1p7
-> 
-> Label: 'data'  uuid: 90e9d74c-3606-4028-9e72-c10e76f44a7c
->          Total devices 1 FS bytes used 169.51GiB
->          devid    1 size 175.78GiB used 172.02GiB path /dev/nvme0n1p3
-> 
+After restoring the missing disk rebooting, I was able to mount the the
+filesystem without any special options. Accessing the data got  a lot of:
 
+Apr 24 21:01:53 doom kernel: [   83.515375] BTRFS error (device dm-32): bad tree block start, want 35423883739136 have 15380345110528
+Apr 24 21:01:53 doom kernel: [   83.534174] BTRFS info (device dm-32): read error corrected: ino 0 off 35423883743232 (dev /dev/mapper/xmnt-faulty sector 14241833192)
+Apr 24 21:01:53 doom kernel: [   83.849524] BTRFS error (device dm-32): parent transid verify failed on 34293446770688 wanted 2575 found 2539
+
+While btrfs seemed to be able to repair most, amybe all, of the metadata
+errors, I did get lots of inaccessible files and directories, which is of
+course expected.
+
+I tried to balance the metadata to simulate a metadata-only btrfs scrub
+(which I wish would exist :), but the balance kept erroring out with
+repeated ENOSPC errors and switched the device to read-only, which was
+unexpected due to using raid1.
+
+I finally rebalanced the metadata to dup profile and back to raid1, which
+seemed to have the expected effect of reparing the metadata errors.
+
+At remounting and unmounting the device, I got a number of these messages
+as well:
+
+Apr 24 21:30:48 doom kernel: [ 1818.523929] BTRFS warning (device dm-32): page private not zero on page 32786264244224
+Apr 24 21:30:48 doom kernel: [ 1818.523931] BTRFS warning (device dm-32): page private not zero on page 32786264248320
+Apr 24 21:30:48 doom kernel: [ 1818.523932] BTRFS warning (device dm-32): page private not zero on page 32786264252416
+
+I then deleted all directories written while the disk was gone, did a
+btrfs scrub (no errors) and some other tests (all remaining files were
+readable and had correct contents) and it seems btrfs completely recovered
+from this accident, which is a very positive change compared to older
+kernel versions (I did this with 4.9 and the fs was effectively lost).
+
+Discussion:
+
+The reason I think the write-error behaviour is suboptimal is because
+btrfs seems to not be bothered by a disk that loudly throws away all data
+- it keeps writing to it and it never signals userspace about it. In my
+case, 500GB were written "successfully" before I stopped it.
+
+While signalling userspace for writes is hard (as the EIO comes too
+late to signal userspace directly), I nevertheless am suprised by btrfs
+not only effectively ignoring all write errors, but also not signaling
+errors where it could - for example, a number of subdirectories were
+gone or unreadable after the reboot (as they at least partially were on
+the missing disk) which were written without error even though they were
+multiple times larger than the memory size, i.e. it was almost certainly
+writing to directories long _after_ btrfs got an EIO for the respective
+directory blocks. This is substantiated by the fact that I was able to
+list the directories before rebooting, but not afterwards, so some info
+lived in blocks which were not writtem but were still cached.
+
+I can't say with confidence how to improve this behaviour - I could
+understand writing some gigabytes of data that are still in the cache,
+or writing new files, but I think btrfs should not simply pretend an I/O
+error means "successfully written" to the extent it does now.
+
+On the other hand, kicking out a disk because it had a single write error
+might not be the best behaviour either, but at least with normal disks,
+an EIO on write rarely means that the block has a problem (as disk cache
+usually enusres that write errors are silent), but usually indicates
+a much worse condition, so cosnidering a diskunusable after EIO (or a
+certain number of EIO errors) might be better, especially if there is a
+way to get the disk back into the filesystem.
+
+I hope this mail comes in useful.
+
+-- 
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
