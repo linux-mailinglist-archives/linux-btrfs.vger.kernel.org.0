@@ -2,105 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E938E1B94AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 02:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4971B9645
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 06:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgD0ADl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Apr 2020 20:03:41 -0400
-Received: from smtp.domeneshop.no ([194.63.252.55]:51649 "EHLO
-        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgD0ADl (ORCPT
+        id S1726198AbgD0Etp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Apr 2020 00:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726172AbgD0Etp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Apr 2020 20:03:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Reply-To:To:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qTTSDwK3vjcdgX17NV60CV+alYQllfB4YiOo/5Ir9qE=; b=jDWNEZBCZSv1RRe8jaWwyzYCKD
-        /YP3CfM2yW3i/yBqWQifo1bvt7oabKvTNxumW/v50+Z+Yp+ijv5MzqtSb1M9CbnNvMWywrZhgFUuv
-        sPQGWRiCeW/m8EVyos5c8IRcd7v0PXLqC294o3SKj+VJ2OmgQix2svY1XT/WOckLI6alXpo0eqaHp
-        8eFQzFlBYP270OIel+dxW0Fc+AiTHTX5fEkKqFofxsolq+pDUNIahMxJ2YlNg/KzhflL+RtaZkhHr
-        cQlFA8b61l1TwEaUnDS/SY1LcFX7XbH/gRDR/QNhUpmZ4APr0wyGlMW0rR2PoOLNWcZ7RXqQiLIqk
-        MFtDrQFA==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:3994 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1jSrFJ-0001t2-9j
-        for linux-btrfs@vger.kernel.org; Mon, 27 Apr 2020 02:03:37 +0200
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Reply-To: waxhead@dirtcellar.net
-From:   waxhead <waxhead@dirtcellar.net>
-Subject: BTRFS Status wiki
-Message-ID: <eec575f0-ec23-655e-488c-fba0223503a0@dirtcellar.net>
-Date:   Mon, 27 Apr 2020 02:03:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.1
+        Mon, 27 Apr 2020 00:49:45 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DC9C061A0F
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 21:49:44 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x4so18022207wmj.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Apr 2020 21:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3tIdklTNZyDahkb7M6hBQXwSZ6YcalTTFlV13UI8MVw=;
+        b=iPDYXk8UE3i/mOqCtcFuSV3aAUKc5hxRvmSdZfcgJ6g4cBDhoeYheqSvbQcEhlPcgc
+         g3+yFcSIZdkWugr8WMY10nDp8mtGK4GAByQiWScvNuczCPSy92Ychi/KdcGSrmu8iP0u
+         MBnaD8a7V2Hc/J0tecxV80daGAScHVPIYOXV5ZY25Q1UAsaY8ZTdQEKvlKCMnr+2VgB+
+         IxeGHyT7p7BS4voqMGUagNzTumpBJkkKyE5BtAT7jHeiWT8dRZ+DcB2+aZqbJqfJab1D
+         z6B1DwBTry03HGes8FBQ89nLoNMgm/WzEVJQL5cAIFbScxn665haI+cWLw7itTb650E1
+         Jyfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3tIdklTNZyDahkb7M6hBQXwSZ6YcalTTFlV13UI8MVw=;
+        b=f7EZpek1xHbLnHvLpFny71ilXt4RWTef/ll9Yn2WXcBNbC5lhHMZGXhpNOb9HwCa4N
+         bFKo7suoAH6LimqVjY8RS5n7peRUloxVbYl3phnFcuz4VM/hZRMNVqQsVwnlLkS5pSZ3
+         rrlBdpIO/XhpXBqhL6UdSrpxwqSvY3YtN9nVVIBPvu37wJy2xNvcUBE6BYNQtr37jceE
+         QWfWZJFIIenbAIEudwg2Zs0/Q6aWrSPxKdIq9AKolONyntQkNcZ3s0GJVzO8zwbYvPnX
+         fuUbkZBJP/ZZxulz8haM6M2iD+sJ14Cm3jrGYtURPaZ/rHubNq1AppB8uNlYrq+9zfv8
+         3dKw==
+X-Gm-Message-State: AGi0PuZkHS5Gf0zZuzMeaXb3DJwZkpeaMRBfi3Y/Is2HCu73WuptiELT
+        oyUOZ/9Fw+Ee41jItMJqS3vQi601rQ2xctzEtEnCbg==
+X-Google-Smtp-Source: APiQypKBBEcgT8HSAcYYPYd2wiMk3wKOu+6Nyu35rM43Vq5PZvZRLx81J/3dSY/7YE5l6B5PHFK/hpgTtc8qs+bqxcg=
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr23773362wmc.124.1587962983459;
+ Sun, 26 Apr 2020 21:49:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAEg-Je8zM4xq7GEG+cphKkR6wjquwG3jv9bbJ88chzrZUEzuYg@mail.gmail.com>
+ <59e1e1e4-b856-8784-3c4d-3fbd7a724cf8@suse.com> <7512bb89-65b1-edcb-9572-6afa2e07fd2e@harmstone.com>
+In-Reply-To: <7512bb89-65b1-edcb-9572-6afa2e07fd2e@harmstone.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 26 Apr 2020 22:49:27 -0600
+Message-ID: <CAJCQCtRbSyoRy+mb-bqvqWqOuNs+81xfuqMyGgQnwtuFm9TjZQ@mail.gmail.com>
+Subject: Re: Btrfs native encryption
+To:     Mark Harmstone <mark@harmstone.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Omar Sandoval <osandov@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Howdy,
+On Sun, Apr 26, 2020 at 8:25 AM Mark Harmstone <mark@harmstone.com> wrote:
+>
+> Last thing I heard was that Omar Sandoval at Facebook was looking into it. I never heard anything back about my patches, though.
 
-Being the random dude that pushed for the status page in the wiki in the 
-first place I do have a few suggestion for improvements.
+I think the biggest difficulty with that patchset isn't as much the
+patchset, but the bandwidth of people who can review it. It was a
+complex patchset and didn't use fscrypt. (For reasons that are
+explained, but then also at least originally the Btrfs maintainers
+wanted to initially implement an fscrypt/VFS approach. Maybe it's too
+difficult.)
 
-Right now the "status since" column is not very useful, and the table 
-does not give any visibility if a feature has "gone sour" over the 
-years. e.g. something that was ok in kernel 4.13 might have been working 
-great out of pure luck, and may not be recommended to use at all.
+I'm curious whether Omar is working on something and what the time
+frame could plausibly be. In the meantime, other approaches are being
+explored, based on LUKS encrypted loop mounted files, as in
+https://systemd.io/HOME_DIRECTORY/
 
-Instead of tracking every single kernel release I think it would have 
-been good if the status page can focus on the current kernel and the 
-last n LTS kernels
+Btrfs has advantages here, including asynd discards and online fs
+resize, in case someone wants to attempt to manage the ensuing fantasy
+of sparse backing files. The loss of dedup and reflink doesn't seem to
+be a problem because it can't be done with encrypted extents anyway.
 
-I took the liberty of firing up SeaMonkey's composer and did a 10 minute 
-(ugly) mockup of my suggestion which can be found here:
-
-http://www.dirtcellar.net/test/BTRFS_alt_status_suggestion.html
-
-For those with URLophobia it essentially is all about trying to 
-restructure things a bit - so I am thinking along the lines of something 
-like shown below in this mail.
-
-I think something along the lines of what I am suggesting here would 
-make it easier to decide if you want to try out things or not - 
-especially if you are on a older kernel and not bleeding edge.
-
-
-
-Legend:
-
-- Stability tags
-* [0] = [Green]  OK (no known bugs)
-* [1] = [Yellow] OK mostly (some non fatal issues)
-* [2] = [Orange] RISKY (some non-fatal bugs, minimally tested features)
-* [X] = [Red]    UNSTABLE (bugs that may ruin the filesystem)
-
-- Other tags
-* [P] = [Purple] PERFORMANCE problems - see notes
-* [L] = [Blue]   LAYERING issue - see notes
-
-
-+--------------------+----------+---------+-----------------
-| Feature            | LTS 4.19 | LTS 5.4 | Current | Notes
-+--------------------+----------+---------+-------------
-| Magic feature X    | [X]      | [1]     | [0]     | #1
-| Super feature Y    | [2][P]   | [1][P]  | [0][P]  | #2
-| Amazing function Z | [2][L]   | [0]     | [0]     | #3
-
-Note
-1)
-Blah blah
-
-2)
-Yada yada
-
-3)
-Meh meh...
+-- 
+Chris Murphy
