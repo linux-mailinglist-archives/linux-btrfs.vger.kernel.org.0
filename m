@@ -2,94 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AD61B996D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 10:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A584B1B9982
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 10:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgD0IKd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Apr 2020 04:10:33 -0400
-Received: from mail.synology.com ([211.23.38.101]:37460 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726003AbgD0IKd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:10:33 -0400
-X-Greylist: delayed 366 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 04:10:31 EDT
-Received: from localhost.localdomain (unknown [10.17.32.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 6A8C8CE78131;
-        Mon, 27 Apr 2020 16:04:24 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1587974664; bh=ohRWGymqR6IvTQDQEBvAAhchYypdY6tm8sqdnM6hlPE=;
-        h=From:To:Cc:Subject:Date;
-        b=aWMW7GwZW2G8Ks7BhoBGabXB7ApAONZfbzKczePZZ9aqpYzp0M1L0QHl3ODuRllJ3
-         WYKYY/CDNICsGVNuLWRgM1hxe9B3inchSmJowH1dvNVTpmWf0ao0BdZRNz6aXSj8Ge
-         0zLmNMIafAwKj28Ln6Wt/dsZUPbW/YwfTjkOYaNU=
-From:   robbieko <robbieko@synology.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Robbie Ko <robbieko@synology.com>
-Subject: [PATCH] Btrfs : improve the speed of compare orphan item and dead roots with tree root when mount
-Date:   Mon, 27 Apr 2020 16:04:11 +0800
-Message-Id: <20200427080411.13273-1-robbieko@synology.com>
-X-Mailer: git-send-email 2.17.1
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1726750AbgD0IOY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Apr 2020 04:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgD0IOW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:14:22 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8ADC061A41
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Apr 2020 01:14:20 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id d17so19390605wrg.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Apr 2020 01:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=f6CJ5aFyM4fKRrqTopc0jdq9pjjYqi1LoBaq/GKwyZs=;
+        b=YPBiRy+nSq7IDK5dHSxRvySgNwZeUbkN5WsiUUOGc2HJOCgjuglFRT7b8nnu6y1HnQ
+         uJLTaudaJm20tSJnrFLETUfVRHfPX5SHg3OOqC6acpYCvnp4vRi1MigN6eQVbYxWmmye
+         gPe+mDLZa8/oUy3/BebhPUF4BoNh4+pqsUTk5bLhd57BfaLYPYCBzh/SLmcasKUeycIf
+         otN07fP1OXNprz5X7YG8TikAyBD69M/8guh6JxDV/OraipfOUQ2vNjvipHAjvd2u6l6V
+         Cz4nJgQw3zPh8lGc4aWL4e/2/Hdny3j1yiLswyUHv9GvTBbQ7CfBGt6gw4VtIlvPAlQc
+         XXMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=f6CJ5aFyM4fKRrqTopc0jdq9pjjYqi1LoBaq/GKwyZs=;
+        b=iLtRni6ouygmLlotHh+XPfy0cwCu10e1ggjwkvP7OmGTD8suJYOrSbF8/wNJ3dUbsu
+         9GxwelksgIMuvitNEWsv6axH+wTzZSFsXbwuAy7UMUmK1z2vvF1VErmTMmNI/qaAMVya
+         WgreFhK4e+w5deqFJzSCorAhSIf+n0Zy+38qfuOXAl9C/LvRkgbjibMEh9sQ5Hj1XQtt
+         4wn+o1fBtDFic273mXvm8YBG/d48mLxp2U6J/RcAxKqKS7FEPc6rNcnkAcJnbs0yK78G
+         mcFREETuqZFNKW9Lvx64ul03qj/v5VG5H8LBnkLLeytn/rhrc+lIQfbmweTVuYSoEzrv
+         eW7g==
+X-Gm-Message-State: AGi0PuaggG3hEtFX4r0kwrfMqEG44y2JCkbL6ggXpxh43sJVjcAwHSOa
+        t14p0sIhBYS4uNYoEqy1028oIPrJD06IVPJ/
+X-Google-Smtp-Source: APiQypKDr9PH7j2xW1VNF+k9cYxYrb4mxRqEK1bORvBgVs2xSEuJvac87v7oyXbhb5xVW4Y6gEaDNg==
+X-Received: by 2002:adf:f187:: with SMTP id h7mr26406493wro.331.1587975259110;
+        Mon, 27 Apr 2020 01:14:19 -0700 (PDT)
+Received: from ?IPv6:2001:16b8:4886:8400:6d4b:554:cd7c:6b19? ([2001:16b8:4886:8400:6d4b:554:cd7c:6b19])
+        by smtp.gmail.com with ESMTPSA id r17sm19610415wrn.43.2020.04.27.01.14.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 01:14:18 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/9] btrfs: use set/clear_fs_page_private
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@infradead.org, willy@infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
+ <20200426214925.10970-4-guoqing.jiang@cloud.ionos.com>
+ <20200426222054.GA2005@dread.disaster.area>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <f0471728-6a03-3e44-f0cc-adb1a6bd3470@cloud.ionos.com>
+Date:   Mon, 27 Apr 2020 10:14:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200426222054.GA2005@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+On 4/27/20 12:20 AM, Dave Chinner wrote:
+> On Sun, Apr 26, 2020 at 11:49:19PM +0200, Guoqing Jiang wrote:
+>> Since the new pair function is introduced, we can call them to clean the
+>> code in btrfs.
+>>
+>> Cc: Chris Mason <clm@fb.com>
+>> Cc: Josef Bacik <josef@toxicpanda.com>
+>> Cc: David Sterba <dsterba@suse.com>
+>> Cc: linux-btrfs@vger.kernel.org
+>> Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+> ....
+>
+>>   void set_page_extent_mapped(struct page *page)
+>>   {
+>> -	if (!PagePrivate(page)) {
+>> -		SetPagePrivate(page);
+>> -		get_page(page);
+>> -		set_page_private(page, EXTENT_PAGE_PRIVATE);
+>> -	}
+>> +	if (!PagePrivate(page))
+>> +		set_fs_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
+> Change the definition of EXTENT_PAGE_PRIVATE so the cast is not
+> needed? Nothing ever reads EXTENT_PAGE_PRIVATE; it's only there to
+> set the private flag for other code to check and release the extent
+> mapping reference to the page...
 
-When mounting, we handle deleted subvol and orphan items.
-First, find add orphan roots, then add them to fs_root radix tree.
-Second, in tree-root, process each orphan item, skip if it is dead root.
+Not know the code well, so I just make the cast ...
 
-The original algorithm is based on the list of dead_roots,
-one by one to visit and check whether the objectid is consistent,
-the time complexity is O (n ^ 2).
-When processing 50000 deleted subvols, it takes about 120s.
+>> @@ -8331,11 +8328,9 @@ static int btrfs_migratepage(struct address_space *mapping,
+>>   
+>>   	if (page_has_private(page)) {
+>>   		ClearPagePrivate(page);
+>> -		get_page(newpage);
+>> -		set_page_private(newpage, page_private(page));
+>> +		set_fs_page_private(newpage, (void *)page_private(page));
+>>   		set_page_private(page, 0);
+>>   		put_page(page);
+>> -		SetPagePrivate(newpage);
+>>   	}
+> This is just:
+> 		set_fs_page_private(newpage, clear_fs_page_private(page));
+>
 
-We can quickly check whether the orphan item is dead root
-through the fs_roots radix tree.
+Thanks a lot! It is more better.
 
-Signed-off-by: Robbie Ko <robbieko@synology.com>
----
- fs/btrfs/inode.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 320d1062068d..1becf5c63e5a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3000,18 +3000,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 			 * orphan must not get deleted.
- 			 * find_dead_roots already ran before us, so if this
- 			 * is a snapshot deletion, we should find the root
--			 * in the dead_roots list
-+			 * in the fs_roots radix tree.
- 			 */
--			spin_lock(&fs_info->trans_lock);
--			list_for_each_entry(dead_root, &fs_info->dead_roots,
--					    root_list) {
--				if (dead_root->root_key.objectid ==
--				    found_key.objectid) {
--					is_dead_root = 1;
--					break;
--				}
--			}
--			spin_unlock(&fs_info->trans_lock);
-+
-+			spin_lock(&fs_info->fs_roots_radix_lock);
-+			dead_root = radix_tree_lookup(&fs_info->fs_roots_radix,
-+							 (unsigned long)found_key.objectid);
-+			if (dead_root && btrfs_root_refs(&dead_root->root_item) == 0)
-+				is_dead_root = 1;
-+			spin_unlock(&fs_info->fs_roots_radix_lock);
-+
- 			if (is_dead_root) {
- 				/* prevent this orphan from being found again */
- 				key.offset = found_key.objectid - 1;
--- 
-2.17.1
-
+Thanks,
+Guoqing
