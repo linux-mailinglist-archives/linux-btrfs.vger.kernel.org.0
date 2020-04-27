@@ -2,70 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3351B96D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 07:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE261B97BF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Apr 2020 08:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgD0Fy3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Apr 2020 01:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726221AbgD0Fy3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Apr 2020 01:54:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E6BC061A0F;
-        Sun, 26 Apr 2020 22:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VIbo6voS8su7pBgW6QNQX9T1AnhQ/gr6+hSotvAjdrw=; b=VNo0SLzA18Ne9P9sHHtq9QWzV/
-        caSidokmLnLyClnfmsnhtgIJ3o3r94Cw7yjxpQsHG0zgqqyoXWY0ew2Zn7vOtJYxKbNGRTeBgvTbn
-        CgmwUIHiZy/D0rBviqHyNz5EW9BFpFAgfY5sB61+1xTN4KSIKmdyjkSIbHrDRbmbg0Ni95cNaWTCx
-        3uDFhtflbYzYcQNAfwjCa6xWCozXDEdvOamkrQg26/M/WNWOxh1/5wy8c63YA1dAAMbNy4vQA+40g
-        cIOiVIElQnx/Oj1On16HRtNgcgQccVybdfcdccPDZmxjsrdMvpsNyVEMcVu3cRKH73BVRr+gzKdru
-        ix92/ZvQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jSwiq-0005BE-Af; Mon, 27 Apr 2020 05:54:28 +0000
-Date:   Sun, 26 Apr 2020 22:54:28 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org, willy@infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 3/9] btrfs: use set/clear_fs_page_private
-Message-ID: <20200427055428.GB16709@infradead.org>
-References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
- <20200426214925.10970-4-guoqing.jiang@cloud.ionos.com>
- <20200426222054.GA2005@dread.disaster.area>
+        id S1726589AbgD0GuV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Apr 2020 02:50:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58270 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726246AbgD0GuU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Apr 2020 02:50:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 56EE4AC85
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Apr 2020 06:50:18 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: transaction: Avoid deadlock due to bad initialization timing of fs_info::journal_info
+Date:   Mon, 27 Apr 2020 14:50:14 +0800
+Message-Id: <20200427065014.46502-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426222054.GA2005@dread.disaster.area>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 08:20:54AM +1000, Dave Chinner wrote:
-> >  void set_page_extent_mapped(struct page *page)
-> >  {
-> > -	if (!PagePrivate(page)) {
-> > -		SetPagePrivate(page);
-> > -		get_page(page);
-> > -		set_page_private(page, EXTENT_PAGE_PRIVATE);
-> > -	}
-> > +	if (!PagePrivate(page))
-> > +		set_fs_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
-> 
-> Change the definition of EXTENT_PAGE_PRIVATE so the cast is not
-> needed? Nothing ever reads EXTENT_PAGE_PRIVATE; it's only there to
-> set the private flag for other code to check and release the extent
-> mapping reference to the page...
+[BUG]
+One run of btrfs/063 triggered the following lockdep:
+  ============================================
+  WARNING: possible recursive locking detected
+  5.6.0-rc7-custom+ #48 Not tainted
+  --------------------------------------------
+  kworker/u24:0/7 is trying to acquire lock:
+  ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
 
-IIRC there as a patch on the btrfs list to remove EXTENT_PAGE_PRIVATE,
-it might be better to not bother changing it.  Maybe the btrfs
-maintainers remember this better.
+  but task is already holding lock:
+  ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
+
+  other info that might help us debug this:
+   Possible unsafe locking scenario:
+
+         CPU0
+         ----
+    lock(sb_internal#2);
+    lock(sb_internal#2);
+
+   *** DEADLOCK ***
+
+   May be due to missing lock nesting notation
+
+  4 locks held by kworker/u24:0/7:
+   #0: ffff88817b495948 ((wq_completion)btrfs-endio-write){+.+.}, at: process_one_work+0x557/0xb80
+   #1: ffff888189ea7db8 ((work_completion)(&work->normal_work)){+.+.}, at: process_one_work+0x557/0xb80
+   #2: ffff88817d3a46e0 (sb_internal#2){.+.+}, at: start_transaction+0x66c/0x890 [btrfs]
+   #3: ffff888174ca4da8 (&fs_info->reloc_mutex){+.+.}, at: btrfs_record_root_in_trans+0x83/0xd0 [btrfs]
+
+  stack backtrace:
+  CPU: 0 PID: 7 Comm: kworker/u24:0 Not tainted 5.6.0-rc7-custom+ #48
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+  Call Trace:
+   dump_stack+0xc2/0x11a
+   __lock_acquire.cold+0xce/0x214
+   lock_acquire+0xe6/0x210
+   __sb_start_write+0x14e/0x290
+   start_transaction+0x66c/0x890 [btrfs]
+   btrfs_join_transaction+0x1d/0x20 [btrfs]
+   find_free_extent+0x1504/0x1a50 [btrfs]
+   btrfs_reserve_extent+0xd5/0x1f0 [btrfs]
+   btrfs_alloc_tree_block+0x1ac/0x570 [btrfs]
+   btrfs_copy_root+0x213/0x580 [btrfs]
+   create_reloc_root+0x3bd/0x470 [btrfs]
+   btrfs_init_reloc_root+0x2d2/0x310 [btrfs]
+   record_root_in_trans+0x191/0x1d0 [btrfs]
+   btrfs_record_root_in_trans+0x90/0xd0 [btrfs]
+   start_transaction+0x16e/0x890 [btrfs]
+   btrfs_join_transaction+0x1d/0x20 [btrfs]
+   btrfs_finish_ordered_io+0x55d/0xcd0 [btrfs]
+   finish_ordered_fn+0x15/0x20 [btrfs]
+   btrfs_work_helper+0x116/0x9a0 [btrfs]
+   process_one_work+0x632/0xb80
+   worker_thread+0x80/0x690
+   kthread+0x1a3/0x1f0
+   ret_from_fork+0x27/0x50
+
+It's pretty hard to reproduce, only one hit so far.
+
+[CAUSE]
+This is because we're calling btrfs_join_transaction() without re-using
+the current running one:
+
+btrfs_finish_ordered_io()
+|- btrfs_join_transaction()		<<< Call #1
+   |- btrfs_record_root_in_trans()
+      |- btrfs_reserve_extent()
+	 |- btrfs_join_transaction()	<<< Call #2
+
+Normally such btrfs_join_transaction() call should re-use the existing
+one, without trying to re-start a transaction.
+
+But the problem is, in btrfs_join_transaction() call #1, we call
+btrfs_record_root_in_trans() before initializing current::journal_info.
+
+And in btrfs_join_transaction() call #2, we're relying on
+current::journal_info to avoid such deadlock.
+
+[FIX]
+Call btrfs_record_root_in_trans() after we have initialized
+current::journal_info.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/transaction.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 8cede6eb9843..132bf2f1aa0d 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -662,10 +662,19 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 	}
+ 
+ got_it:
+-	btrfs_record_root_in_trans(h, root);
+-
+ 	if (!current->journal_info)
+ 		current->journal_info = h;
++
++	/*
++	 * btrfs_record_root_in_trans() need to alloc new extents, and may
++	 * call btrfs_join_transaction() while we're also starting a
++	 * transaction.
++	 *
++	 * Thus it need to be called after current->journal_info initialized,
++	 * or we can deadlock.
++	 */
++	btrfs_record_root_in_trans(h, root);
++
+ 	return h;
+ 
+ join_fail:
+-- 
+2.26.2
+
