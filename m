@@ -2,73 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7AD1BC398
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 17:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3B41BC79D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 20:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgD1P1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Apr 2020 11:27:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56318 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgD1P1i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:27:38 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SFIugJ062174;
-        Tue, 28 Apr 2020 15:27:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=jVJDunWLz+Xcykb4FZHQ3k/pcx9Ztn20GwEppCiHnKs=;
- b=cQZXFsmqt6q3R3Iy1gSlI4ejVi7zuw+WTJvrusFRlmQsIzd52aP4UNRnaDRZ121K/shN
- YJJCQgNQs+jIVbl9EFwbbzqXik+w02ND1zdiCGgbrgy2Z0XyHrHCTCjmhx1ruduDamfE
- UJyg3HzWDpqYePYTuHG+hxWONFjtf2tjFMqHt05Pg+s7bbRaGCE6Ls87poHY5Y43RBRp
- sSTFqWYiI0J9z3xFqZIVt+dSumCkeFqonrwLNS7HCYcxtT67r8O2TRviI/RFuEORG4Aw
- VFd/Kyar/bEL4wQhjeLbsonmRu76VNOLuodDjea6Nw+Fn9hoRD843cr1iz8RSams2ZZU MA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 30nucg0p2j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 15:27:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SFD1x4134100;
-        Tue, 28 Apr 2020 15:27:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 30my0desh0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 15:27:28 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03SFRRbe013087;
-        Tue, 28 Apr 2020 15:27:27 GMT
-Received: from [192.168.1.119] (/39.109.243.230)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 Apr 2020 08:27:26 -0700
-Subject: Re: [PATCH 2/2] btrfs: add more codes to decoder table
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1588086487.git.dsterba@suse.com>
- <7557462b9680ecf965016165e100ae57f67d1182.1588086487.git.dsterba@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <5300a752-2fd6-a0de-2c2b-04a9f0df09d3@oracle.com>
-Date:   Tue, 28 Apr 2020 23:27:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1728442AbgD1SOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Apr 2020 14:14:40 -0400
+Received: from mail.nethype.de ([5.9.56.24]:45481 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727827AbgD1SOk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:14:40 -0400
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1jTUkf-002bz3-2S; Tue, 28 Apr 2020 18:14:37 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1jTUke-0004hs-OC; Tue, 28 Apr 2020 18:14:36 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1jTUke-0001du-Nm; Tue, 28 Apr 2020 20:14:36 +0200
+Date:   Tue, 28 Apr 2020 20:14:36 +0200
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: experiment: suboptimal behaviour with write errors and
+ multi-device filesystems
+Message-ID: <20200428181436.GA5402@schmorp.de>
+References: <20200426124613.GA5331@schmorp.de>
+ <20200428061959.GB10769@hungrycats.org>
 MIME-Version: 1.0
-In-Reply-To: <7557462b9680ecf965016165e100ae57f67d1182.1588086487.git.dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280120
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428061959.GB10769@hungrycats.org>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Hi, thanks for your reply!
+
+On Tue, Apr 28, 2020 at 02:19:59AM -0400, Zygo Blaxell <ce3g8jdj@umail.furryterror.org> wrote:
+> That is _not_ expected.  Directories in btrfs are stored entirely in
+> metadata as btrfs items.  They do not have data blocks in data block
+> groups.
+
+Ah, ok, yes, I agree then. I wrongly assumed directory data would be
+stored as file data. I am actually very happy to be wrong about this, as
+it makes me even more confident when facing a missing disk in production,
+which is bound to happen.
+
+That is strange then - I was able to delete the directories (and obviously
+the files inside) though, but I did that _after_ "regenerating" the
+metadata by balancing.
+
+The only other inconsistency is that
+
+   btrfs ba start -musage=100 -mdevid=2
+
+kept failing with ENOSPC after doing some work, and
+
+   btrfa ba start -mconvert=dup
+
+worked flawlessly and apparently fixed all errors (other than missing file
+data). Maybe the difference is the -mdevid=2 - although the disk had more
+than 100G of unallocated space, so that alone wouldn't epxlain the enospc.
+
+Just FYI, here are example kernel messages for such a failed balance with
+only -musage:
+
+Apr 24 22:08:01 doom kernel: [ 4051.894190] BTRFS info (device dm-32): balance: start -musage=100,devid=2
+Apr 24 22:08:02 doom kernel: [ 4052.194964] BTRFS info (device dm-32): relocating block group 35508773191680 flags metadata|raid1
+Apr 24 22:08:02 doom kernel: [ 4052.296436] BTRFS info (device dm-32): relocating block group 35507699449856 flags metadata|raid1
+Apr 24 22:08:02 doom kernel: [ 4052.410760] BTRFS info (device dm-32): relocating block group 35506625708032 flags metadata|raid1
+Apr 24 22:08:02 doom kernel: [ 4052.552481] BTRFS info (device dm-32): relocating block group 35505551966208 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4052.940950] BTRFS info (device dm-32): relocating block group 35504478224384 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4053.047505] BTRFS info (device dm-32): relocating block group 35503404482560 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4053.128938] BTRFS info (device dm-32): relocating block group 35502330740736 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4053.218385] BTRFS info (device dm-32): relocating block group 35501256998912 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4053.326941] BTRFS info (device dm-32): relocating block group 35500183257088 flags metadata|raid1
+Apr 24 22:08:03 doom kernel: [ 4053.432318] BTRFS info (device dm-32): relocating block group 35499109515264 flags metadata|raid1
+Apr 24 22:08:22 doom kernel: [ 4072.112133] BTRFS info (device dm-32): found 50845 extents
+Apr 24 22:08:27 doom kernel: [ 4077.002724] BTRFS info (device dm-32): 3 enospc errors during balance
+Apr 24 22:08:27 doom kernel: [ 4077.002727] BTRFS info (device dm-32): balance: ended with status: -28
+
+> > multiple times larger than the memory size, i.e. it was almost certainly
+> > writing to directories long _after_ btrfs got an EIO for the respective
+> > directory blocks. 
+> 
+> There would be a surviving mirror copy of the directory, because it's in
+> raid1 metadata, so that should be a successful write in degraded mode.
+> 
+> Uncorrectable EIO on metadata triggers a hard shutdown of all writes to
+> the filesystem.  Userspace will definitely be informed when that happens.
+> It's something we'd want to avoid with raid1.
+
+Does "Uncorrectable EIO" also mean writes, though? I know from experience
+that I get EIO when btrfs hits a metadata error, and that nowadays it is
+very successfull in correcting metadata errors (which is a relatively new
+thing).
+
+My main takeaway from this experiment was that a) I did get my filesystem
+back without having to reformat, which is admirable, and b) I can write a
+surprising amount of data to a missing disk without seeing anything more
+than kernel messages. In my stupidity I can well imagine having a disk
+falling out of the "array" and me not noticing it for days.
+
+Arguably, that is how it is though - a write error does not cause btrfs to
+dismiss the whole disk, and most write errors cannot be reported back to
+userspace, so btrfs would somehow have to correlate write errors and decide
+when enough is enough.
+
+OTOH, write errors are very rare on normal disks, and raid controllers
+usually immediately kick out a disk on write errors so maybe marking
+the disk bad (until a remount or so) might be a good idea - with modenr
+drives, write errors are almost alwyays a symptom of something very bad
+happening that is usually not directly associated with a specific block -
+for example, an SSD disk mightr be end-of-life and switch to read-onyl, or
+a conventional disk might have run out of spare blocks.
+
+i.e. maybe btrfs shouldn't treat write errors as less bad than read
+errors - not sure.
+
+> > This is substantiated by the fact that I was able to
+> > list the directories before rebooting, but not afterwards, so some info
+> > lived in blocks which were not writtem but were still cached.
+> 
+> It sounds like you hit some other kind of failure there (this and the
+> "page private not zero" messages.  What kernel was this?
+
+5.4.28 from mainline-ppa (https://kernel.ubuntu.com/~kernel-ppa/mainline/).
+
+-- 
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
