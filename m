@@ -2,143 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3B41BC79D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 20:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C7F1BCC68
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 21:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbgD1SOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Apr 2020 14:14:40 -0400
-Received: from mail.nethype.de ([5.9.56.24]:45481 "EHLO mail.nethype.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727827AbgD1SOk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:14:40 -0400
-Received: from [10.0.0.5] (helo=doom.schmorp.de)
-        by mail.nethype.de with esmtp (Exim 4.92)
-        (envelope-from <schmorp@schmorp.de>)
-        id 1jTUkf-002bz3-2S; Tue, 28 Apr 2020 18:14:37 +0000
-Received: from [10.0.0.1] (helo=cerebro.laendle)
-        by doom.schmorp.de with esmtp (Exim 4.92)
-        (envelope-from <schmorp@schmorp.de>)
-        id 1jTUke-0004hs-OC; Tue, 28 Apr 2020 18:14:36 +0000
-Received: from root by cerebro.laendle with local (Exim 4.92)
-        (envelope-from <root@schmorp.de>)
-        id 1jTUke-0001du-Nm; Tue, 28 Apr 2020 20:14:36 +0200
-Date:   Tue, 28 Apr 2020 20:14:36 +0200
-From:   Marc Lehmann <schmorp@schmorp.de>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: experiment: suboptimal behaviour with write errors and
- multi-device filesystems
-Message-ID: <20200428181436.GA5402@schmorp.de>
-References: <20200426124613.GA5331@schmorp.de>
- <20200428061959.GB10769@hungrycats.org>
+        id S1728512AbgD1TbO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Apr 2020 15:31:14 -0400
+Received: from smtp-18.italiaonline.it ([213.209.10.18]:48456 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728474AbgD1TbO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Apr 2020 15:31:14 -0400
+Received: from venice.bhome ([94.37.199.41])
+        by smtp-18.iol.local with ESMTPA
+        id TVwkjWzC574wTTVwkjWMpS; Tue, 28 Apr 2020 21:31:11 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1588102272; bh=EaKQkKzf9oUck3J3MKJMqJ/eIEMdHBEVMMyZuP+lb+k=;
+        h=From;
+        b=GrFXWZwBz5SYyoy1PdrlXNa7CKSw9PkLLLWtdlxOSR+EcHBfLUuHyrRMcZ1WjNaSe
+         NfaU4s5KpuNn0Hmi8G0pTrJzwz/hQBUSHhKjf0hIBk9OOiAfi5Wzt6Idt0DWJEqikL
+         NBiyv9H9ZrXAVUumthxi6KLIpqN67ewWb6Yb16DsTozNbUVkOaUtJEVgei+qT0DoVm
+         sso1DnsLtIawjj6teoueRYL4WQtqEzv0yxOprPEdA5upTAb9te65t3EN5mH5ZKavkG
+         lf8t7eU+zMk93N7Ght0AYHwW+IdED5w5RiTpmVuYosfNWtICuPMo+qgYQVDhzjjP9O
+         r1ffWhFqxD6Iw==
+X-CNFS-Analysis: v=2.3 cv=N5ZX6F1B c=1 sm=1 tr=0
+ a=U11oJHogBuzgux+Lqyl0bQ==:117 a=U11oJHogBuzgux+Lqyl0bQ==:17
+ a=IkcTkHD0fZMA:10 a=zcrMXTUVjB-az8DntskA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][PATCH V3] btrfs: ssd_metadata: storing metadata on SSD
+To:     Torstein Eide <torsteine@gmail.com>
+Cc:     hugo@carfax.org.uk, linux-btrfs@vger.kernel.org,
+        martin.svec@zoner.cz, mclaud@roznica.com.ua, wangyugui@e16-tech.com
+References: <CAL5DHTHbdXz03XUu2EjadStDWTMBsyawTnkbnXhgN=hAXMFN2w@mail.gmail.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <935f0a14-a47f-4edf-4b29-63e078148457@libero.it>
+Date:   Tue, 28 Apr 2020 21:31:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428061959.GB10769@hungrycats.org>
-OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
- url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
+In-Reply-To: <CAL5DHTHbdXz03XUu2EjadStDWTMBsyawTnkbnXhgN=hAXMFN2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfK6Udz9oK1f43n6GP8Th6mdQbKlC97nOlFScekb0OnND3rJp1TSqpGYKqsCevovLd8U2s835MzPR3oO9E8D/cx+T6OSjDjp74e4AUSgkInQ1umPVv8iJ
+ 68dXRiZcj/zpKcQywBn+WOMDR1ycDlBHR3Ie4zQxX7vYg20hGflDkeVjUWKnfB1vtT0BbhwZbykVPTRWjtHJMzAY14RVAcnEzpqPQ8lLmY/EL9QbAC5gdOcv
+ WHUr2bBRdf+e8K/AByzl2fvZek86bN28+vys2w/g8wgNbMAzs4E6847JGLwd4DDmUnW6jMF3ogdyB4y+/1JkGdAU85buk5k7SqVp5OgpKk0=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, thanks for your reply!
-
-On Tue, Apr 28, 2020 at 02:19:59AM -0400, Zygo Blaxell <ce3g8jdj@umail.furryterror.org> wrote:
-> That is _not_ expected.  Directories in btrfs are stored entirely in
-> metadata as btrfs items.  They do not have data blocks in data block
-> groups.
-
-Ah, ok, yes, I agree then. I wrongly assumed directory data would be
-stored as file data. I am actually very happy to be wrong about this, as
-it makes me even more confident when facing a missing disk in production,
-which is bound to happen.
-
-That is strange then - I was able to delete the directories (and obviously
-the files inside) though, but I did that _after_ "regenerating" the
-metadata by balancing.
-
-The only other inconsistency is that
-
-   btrfs ba start -musage=100 -mdevid=2
-
-kept failing with ENOSPC after doing some work, and
-
-   btrfa ba start -mconvert=dup
-
-worked flawlessly and apparently fixed all errors (other than missing file
-data). Maybe the difference is the -mdevid=2 - although the disk had more
-than 100G of unallocated space, so that alone wouldn't epxlain the enospc.
-
-Just FYI, here are example kernel messages for such a failed balance with
-only -musage:
-
-Apr 24 22:08:01 doom kernel: [ 4051.894190] BTRFS info (device dm-32): balance: start -musage=100,devid=2
-Apr 24 22:08:02 doom kernel: [ 4052.194964] BTRFS info (device dm-32): relocating block group 35508773191680 flags metadata|raid1
-Apr 24 22:08:02 doom kernel: [ 4052.296436] BTRFS info (device dm-32): relocating block group 35507699449856 flags metadata|raid1
-Apr 24 22:08:02 doom kernel: [ 4052.410760] BTRFS info (device dm-32): relocating block group 35506625708032 flags metadata|raid1
-Apr 24 22:08:02 doom kernel: [ 4052.552481] BTRFS info (device dm-32): relocating block group 35505551966208 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4052.940950] BTRFS info (device dm-32): relocating block group 35504478224384 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4053.047505] BTRFS info (device dm-32): relocating block group 35503404482560 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4053.128938] BTRFS info (device dm-32): relocating block group 35502330740736 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4053.218385] BTRFS info (device dm-32): relocating block group 35501256998912 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4053.326941] BTRFS info (device dm-32): relocating block group 35500183257088 flags metadata|raid1
-Apr 24 22:08:03 doom kernel: [ 4053.432318] BTRFS info (device dm-32): relocating block group 35499109515264 flags metadata|raid1
-Apr 24 22:08:22 doom kernel: [ 4072.112133] BTRFS info (device dm-32): found 50845 extents
-Apr 24 22:08:27 doom kernel: [ 4077.002724] BTRFS info (device dm-32): 3 enospc errors during balance
-Apr 24 22:08:27 doom kernel: [ 4077.002727] BTRFS info (device dm-32): balance: ended with status: -28
-
-> > multiple times larger than the memory size, i.e. it was almost certainly
-> > writing to directories long _after_ btrfs got an EIO for the respective
-> > directory blocks. 
-> 
-> There would be a surviving mirror copy of the directory, because it's in
-> raid1 metadata, so that should be a successful write in degraded mode.
-> 
-> Uncorrectable EIO on metadata triggers a hard shutdown of all writes to
-> the filesystem.  Userspace will definitely be informed when that happens.
-> It's something we'd want to avoid with raid1.
-
-Does "Uncorrectable EIO" also mean writes, though? I know from experience
-that I get EIO when btrfs hits a metadata error, and that nowadays it is
-very successfull in correcting metadata errors (which is a relatively new
-thing).
-
-My main takeaway from this experiment was that a) I did get my filesystem
-back without having to reformat, which is admirable, and b) I can write a
-surprising amount of data to a missing disk without seeing anything more
-than kernel messages. In my stupidity I can well imagine having a disk
-falling out of the "array" and me not noticing it for days.
-
-Arguably, that is how it is though - a write error does not cause btrfs to
-dismiss the whole disk, and most write errors cannot be reported back to
-userspace, so btrfs would somehow have to correlate write errors and decide
-when enough is enough.
-
-OTOH, write errors are very rare on normal disks, and raid controllers
-usually immediately kick out a disk on write errors so maybe marking
-the disk bad (until a remount or so) might be a good idea - with modenr
-drives, write errors are almost alwyays a symptom of something very bad
-happening that is usually not directly associated with a specific block -
-for example, an SSD disk mightr be end-of-life and switch to read-onyl, or
-a conventional disk might have run out of spare blocks.
-
-i.e. maybe btrfs shouldn't treat write errors as less bad than read
-errors - not sure.
-
-> > This is substantiated by the fact that I was able to
-> > list the directories before rebooting, but not afterwards, so some info
-> > lived in blocks which were not writtem but were still cached.
-> 
-> It sounds like you hit some other kind of failure there (this and the
-> "page private not zero" messages.  What kernel was this?
-
-5.4.28 from mainline-ppa (https://kernel.ubuntu.com/~kernel-ppa/mainline/).
+On 4/27/20 5:06 PM, Torstein Eide wrote:
+> How will affect sleep of disk? will it reduce the number of wake up
+> call, to the HDD?
+No; this patch put the metadata on the SSD, leaving data in the HDD;
+this means that if you add data to a file both the HDD and the SSD will be used.
+  
+BR
+G.Baroncelli
 
 -- 
-                The choice of a       Deliantra, the free code+content MORPG
-      -----==-     _GNU_              http://www.deliantra.net
-      ----==-- _       generation
-      ---==---(_)__  __ ____  __      Marc Lehmann
-      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
-      -=====/_/_//_/\_,_/ /_/\_\
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
