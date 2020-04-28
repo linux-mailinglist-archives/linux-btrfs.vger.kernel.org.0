@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2171BB58A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 06:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE8C1BB666
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Apr 2020 08:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgD1EzH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Apr 2020 00:55:07 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:43610 "EHLO
+        id S1726307AbgD1GUB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Apr 2020 02:20:01 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36820 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgD1EzH (ORCPT
+        with ESMTP id S1726286AbgD1GUB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Apr 2020 00:55:07 -0400
+        Tue, 28 Apr 2020 02:20:01 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id E3713694ADF; Tue, 28 Apr 2020 00:55:00 -0400 (EDT)
-Date:   Tue, 28 Apr 2020 00:55:00 -0400
+        id 5119E694C80; Tue, 28 Apr 2020 02:19:59 -0400 (EDT)
+Date:   Tue, 28 Apr 2020 02:19:59 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Marc Lehmann <schmorp@schmorp.de>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Balance loops: what we know so far
-Message-ID: <20200428045500.GA10769@hungrycats.org>
-References: <20200411211414.GP13306@hungrycats.org>
- <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
+Subject: Re: experiment: suboptimal behaviour with write errors and
+ multi-device filesystems
+Message-ID: <20200428061959.GB10769@hungrycats.org>
+References: <20200426124613.GA5331@schmorp.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+        protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
 Content-Disposition: inline
-In-Reply-To: <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
+In-Reply-To: <20200426124613.GA5331@schmorp.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -34,241 +34,148 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=utf-8
+--nVMJ2NtxeReIH9PS
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 27, 2020 at 03:07:29PM +0800, Qu Wenruo wrote:
+On Sun, Apr 26, 2020 at 02:46:13PM +0200, Marc Lehmann wrote:
+> Hi!
 >=20
+> I made an experiment whose results I would like to share with you, in the
+> hope of possible behaviour improvement in the future.
 >=20
-> On 2020/4/12 =E4=B8=8A=E5=8D=885:14, Zygo Blaxell wrote:
-> > Since 5.1, btrfs has been prone to getting stuck in semi-infinite loops
-> > in balance and device shrink/remove:
-> >=20
-> > 	[Sat Apr 11 16:59:32 2020] BTRFS info (device dm-0): found 29 extents,=
- stage: update data pointers
-> > 	[Sat Apr 11 16:59:33 2020] BTRFS info (device dm-0): found 29 extents,=
- stage: update data pointers
-> > 	[Sat Apr 11 16:59:34 2020] BTRFS info (device dm-0): found 29 extents,=
- stage: update data pointers
-> > 	[Sat Apr 11 16:59:34 2020] BTRFS info (device dm-0): found 29 extents,=
- stage: update data pointers
-> > 	[Sat Apr 11 16:59:35 2020] BTRFS info (device dm-0): found 29 extents,=
- stage: update data pointers
-> >=20
-> > This is a block group while it's looping, as seen by python-btrfs:
-> >=20
-> > 	# share/python-btrfs/examples/show_block_group_contents.py 19349131755=
-52 /media/testfs/
-> > 	block group vaddr 1934913175552 length 1073741824 flags DATA used 9391=
-67744 used_pct 87
-> > 	extent vaddr 1934913175552 length 134217728 refs 1 gen 113299 flags DA=
-TA
-> > 	    inline shared data backref parent 1585767972864 count 1
-> > 	extent vaddr 1935047393280 length 5591040 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769349120 count 1
-> > 	extent vaddr 1935052984320 length 134217728 refs 1 gen 113299 flags DA=
-TA
-> > 	    inline shared data backref parent 1585769349120 count 1
-> > 	extent vaddr 1935187202048 length 122064896 refs 1 gen 113299 flags DA=
-TA
-> > 	    inline shared data backref parent 1585769349120 count 1
-> > 	extent vaddr 1935309266944 length 20414464 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769365504 count 1
-> > 	extent vaddr 1935329681408 length 60555264 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769365504 count 1
-> > 	extent vaddr 1935390236672 length 9605120 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769381888 count 1
-> > 	extent vaddr 1935399841792 length 4538368 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769381888 count 1
-> > 	extent vaddr 1935404380160 length 24829952 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769381888 count 1
-> > 	extent vaddr 1935429210112 length 7999488 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769398272 count 1
-> > 	extent vaddr 1935437209600 length 6426624 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769627648 count 1
-> > 	extent vaddr 1935443636224 length 28676096 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769644032 count 1
-> > 	extent vaddr 1935472312320 length 8101888 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769644032 count 1
-> > 	extent vaddr 1935480414208 length 20455424 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769644032 count 1
-> > 	extent vaddr 1935500869632 length 10215424 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769660416 count 1
-> > 	extent vaddr 1935511085056 length 10792960 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769676800 count 1
-> > 	extent vaddr 1935521878016 length 6066176 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769709568 count 1
-> > 	extent vaddr 1935527944192 length 80896000 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769725952 count 1
-> > 	extent vaddr 1935608840192 length 134217728 refs 1 gen 113299 flags DA=
-TA
-> > 	    inline shared data backref parent 1585769742336 count 1
-> > 	extent vaddr 1935743057920 length 106102784 refs 1 gen 113299 flags DA=
-TA
-> > 	    inline shared data backref parent 1585769742336 count 1
-> > 	extent vaddr 1935849160704 length 3125248 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769742336 count 1
-> > 	extent vaddr 1935852285952 length 57344 refs 1 gen 113299 flags DATA
-> > 	    inline shared data backref parent 1585769742336 count 1
-> >=20
-> > All of the extent data backrefs are removed by the balance, but the
-> > loop keeps trying to get rid of the shared data backrefs.  It has
-> > no effect on them, but keeps trying anyway.
+> Summary: A disk was physically removed for a multi-device filesystem while
+> copying large amounts of data to the fs. btrfs continued writing half a
+> TB of data without signalling an error - it probably would have continued
+> like that forever, which I think is suboptimal behaviour.
 >=20
-> I guess this shows a pretty good clue.
+> And here the longer version:
 >=20
-> I was always thinking about the reloc tree, but in your case, it's data
-> reloc tree owning them.
-
-In that case, yes.  Metadata balances loop too, in the "move data extents"
-stage while data balances loop in the "update data pointers" stage.
-
-> In that case, data reloc tree is only cleaned up at the end of
-> btrfs_relocate_block_group().
+> I created a multi-device fs with data=3Dsingle and meta=3Draid1 and copied
+> about 8TB of data to it. After copying roughly 7.5TB of data I powercycled
+> the disk, which caused the raid controller to remove the device
+> semi-permanently.
 >=20
-> Thus it is never cleaned up until we exit the balance loop.
+> Since the partitions were on LVM, this didn't cause btrfs to see a rmeoved
+> device (if btrfs can even do that) - it did get EIO on every write, but
+> btrfs f u for example did display the device even though it was physically
+> missing, liekly as the device-mapper device was still there.
 >=20
-> I'm not sure why this is happening only after I extended the lifespan of
-> reloc tree (not data reloc tree).
-
-I have been poking around with printk to trace what it's doing in the
-looping and non-looping cases.  It seems to be very similar up to
-calling merge_reloc_root, merge_reloc_roots, unset_reloc_control,
-btrfs_block_rsv_release, btrfs_commit_transaction, clean_dirty_subvols,
-btrfs_free_block_rsv.  In the looping cases, everything up to those
-functions seems the same on every loop except the first one.
-
-In the non-looping cases, those functions do something different than
-the looping cases:  the extents disappear in the next loop, and the
-balance finishes.
-
-I haven't figured out _what_ is different yet.  I need more cycles to
-look at it.
-
-Your extend-the-lifespan-of-reloc-tree patch moves one of the
-functions--clean_dirty_subvols (or btrfs_drop_snapshot)--to a different
-place in the call sequence.  It was in merge_reloc_roots before the
-transaction commit, now it's in relocate_block_group after transaction
-commit.  My guess is that the problem lies somewhere in how the behavior
-of these functions has been changed by calling them in a different
-sequence.
-
-> But anyway, would you like to give a try of the following patch?
-> https://patchwork.kernel.org/patch/11511241/
-
-I'm not sure how this patch could work.  We are hitting the found_extents
-counter every time through the loop.  It's returning thousands of extents
-each time.
-
-> It should make us exit the the balance so long as we have no extra
-> extent to relocate.
-
-The problem is not that we have no extents to relocate.  The problem is
-that we don't successfully get rid of the extents we do find, so we keep
-finding them over and over again.
-
-In testing, the patch has no effect:
-
-	[Mon Apr 27 23:36:15 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:21 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:27 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:32 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:38 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:44 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:50 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:36:56 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:01 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:07 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:13 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:19 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:24 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-	[Mon Apr 27 23:37:30 2020] BTRFS info (device dm-0): found 4800 extents, s=
-tage: update data pointers
-
-The above is the tail end of 3320 loops on a single block group.
-
-I switched to a metadata block group and it's on the 9th loop:
-
-	# btrfs balance start -mconvert=3Draid1 /media/testfs/
-	[Tue Apr 28 00:09:47 2020] BTRFS info (device dm-0): found 34977 extents, =
-stage: move data extents
-	[Tue Apr 28 00:12:24 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:18:46 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:23:24 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:25:54 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:28:17 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:30:35 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:32:45 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-	[Tue Apr 28 00:37:01 2020] BTRFS info (device dm-0): found 26475 extents, =
-stage: move data extents
-
-
-> Thanks,
-> Qu
+> While the write errors kept increasing (altogether over 300000) in the
+> kernel log, no other indications hsowed anything out of the ordinary -
+> mkdir/file writes still worked.
 >=20
-> >=20
-> > This is "semi-infinite" because it is possible for the balance to
-> > terminate if something removes those 29 extents (e.g. by looking up the
-> > extent vaddrs with 'btrfs ins log' then feeding the references to 'btrfs
-> > fi defrag' will reduce the number of inline shared data backref objects.
-> > When it's reduced all the way to zero, balance starts up again, usually
-> > promptly getting stuck on the very next block group.  If the _only_
-> > thing running on the filesystem is balance, it will not stop looping.
-> >=20
-> > Bisection points to commit d2311e698578 "btrfs: relocation: Delay reloc
-> > tree deletion after merge_reloc_roots" as the first commit where the
-> > balance loops can be reproduced.
-> >=20
-> > I tested with commit 59b2c371052c "btrfs: check commit root generation
-> > in should_ignore_root" as well as the rest of misc-next, but the balance
-> > loops are still easier to reproduce than to avoid.
-> >=20
-> > Once it starts happening on a filesystem, it seems to happen very
-> > frequently.  It is not possible to reshape a RAID array of more than a
-> > few hundred GB on kernels after 5.0.  I can get maybe 50-100 block grou=
-ps
-> > completed in a resize or balance after a fresh boot, then balance gets
-> > stuck in loops after that.  With the fast balance cancel patches it's
-> > possibly to recover from the loop, but futile, since the next balance
-> > will almost always also loop, even if it is passed a different block
-> > group.  I've had to downgrade to 5.0 or 4.19 to complete any RAID
-> > reshaping work.
-> >=20
+> After restoring the missing disk rebooting, I was able to mount the the
+> filesystem without any special options. Accessing the data got  a lot of:
 >=20
+> Apr 24 21:01:53 doom kernel: [   83.515375] BTRFS error (device dm-32): b=
+ad tree block start, want 35423883739136 have 15380345110528
+> Apr 24 21:01:53 doom kernel: [   83.534174] BTRFS info (device dm-32): re=
+ad error corrected: ino 0 off 35423883743232 (dev /dev/mapper/xmnt-faulty s=
+ector 14241833192)
+> Apr 24 21:01:53 doom kernel: [   83.849524] BTRFS error (device dm-32): p=
+arent transid verify failed on 34293446770688 wanted 2575 found 2539
+>=20
+> While btrfs seemed to be able to repair most, amybe all, of the metadata
+> errors, I did get lots of inaccessible files and directories, which is of
+> course expected.
 
+That is _not_ expected.  Directories in btrfs are stored entirely in
+metadata as btrfs items.  They do not have data blocks in data block
+groups.
 
+With metadata=3Draid1 and a surviving uncorrupted disk, you should have
+been able to enumerate and stat() every file on the filesystem, even
+the ones where the data inside the files was lost.
 
+> I tried to balance the metadata to simulate a metadata-only btrfs scrub
+> (which I wish would exist :), but the balance kept erroring out with
+> repeated ENOSPC errors and switched the device to read-only, which was
+> unexpected due to using raid1.
+>=20
+> I finally rebalanced the metadata to dup profile and back to raid1, which
+> seemed to have the expected effect of reparing the metadata errors.
+>=20
+> At remounting and unmounting the device, I got a number of these messages
+> as well:
+>=20
+> Apr 24 21:30:48 doom kernel: [ 1818.523929] BTRFS warning (device dm-32):=
+ page private not zero on page 32786264244224
+> Apr 24 21:30:48 doom kernel: [ 1818.523931] BTRFS warning (device dm-32):=
+ page private not zero on page 32786264248320
+> Apr 24 21:30:48 doom kernel: [ 1818.523932] BTRFS warning (device dm-32):=
+ page private not zero on page 32786264252416
+>=20
+> I then deleted all directories written while the disk was gone, did a
+> btrfs scrub (no errors) and some other tests (all remaining files were
+> readable and had correct contents) and it seems btrfs completely recovered
+> from this accident, which is a very positive change compared to older
+> kernel versions (I did this with 4.9 and the fs was effectively lost).
+>=20
+> Discussion:
+>=20
+> The reason I think the write-error behaviour is suboptimal is because
+> btrfs seems to not be bothered by a disk that loudly throws away all data
+> - it keeps writing to it and it never signals userspace about it. In my
+> case, 500GB were written "successfully" before I stopped it.
+>=20
+> While signalling userspace for writes is hard (as the EIO comes too
+> late to signal userspace directly), I nevertheless am suprised by btrfs
+> not only effectively ignoring all write errors, but also not signaling
+> errors where it could - for example, a number of subdirectories were
+> gone or unreadable after the reboot (as they at least partially were on
+> the missing disk) which were written without error even though they were
+> multiple times larger than the memory size, i.e. it was almost certainly
+> writing to directories long _after_ btrfs got an EIO for the respective
+> directory blocks.=20
 
---SUOF0GtieIMvvwua
+There would be a surviving mirror copy of the directory, because it's in
+raid1 metadata, so that should be a successful write in degraded mode.
+
+Uncorrectable EIO on metadata triggers a hard shutdown of all writes to
+the filesystem.  Userspace will definitely be informed when that happens.
+It's something we'd want to avoid with raid1.
+
+> This is substantiated by the fact that I was able to
+> list the directories before rebooting, but not afterwards, so some info
+> lived in blocks which were not writtem but were still cached.
+
+It sounds like you hit some other kind of failure there (this and the
+"page private not zero" messages.  What kernel was this?
+
+> I can't say with confidence how to improve this behaviour - I could
+> understand writing some gigabytes of data that are still in the cache,
+> or writing new files, but I think btrfs should not simply pretend an I/O
+> error means "successfully written" to the extent it does now.
+>=20
+> On the other hand, kicking out a disk because it had a single write error
+> might not be the best behaviour either, but at least with normal disks,
+> an EIO on write rarely means that the block has a problem (as disk cache
+> usually enusres that write errors are silent), but usually indicates
+> a much worse condition, so cosnidering a diskunusable after EIO (or a
+> certain number of EIO errors) might be better, especially if there is a
+> way to get the disk back into the filesystem.
+>=20
+> I hope this mail comes in useful.
+>=20
+> --=20
+>                 The choice of a       Deliantra, the free code+content MO=
+RPG
+>       -----=3D=3D-     _GNU_              http://www.deliantra.net
+>       ----=3D=3D-- _       generation
+>       ---=3D=3D---(_)__  __ ____  __      Marc Lehmann
+>       --=3D=3D---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+>       -=3D=3D=3D=3D=3D/_/_//_/\_,_/ /_/\_\
+
+--nVMJ2NtxeReIH9PS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXqe3IAAKCRCB+YsaVrMb
-nPv1AKDYfaHVxZtPakLue1AB7lSiyoeo7gCffpwI8EXU1vHDKwPG3+pnYPPiH5A=
-=Tppg
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXqfLCwAKCRCB+YsaVrMb
+nDrDAJ0fodrzo7jq9ckIbH88mdQbh6vTQACfdesHlEdwu33eO7k53/H0+0KwYM0=
+=m6XV
 -----END PGP SIGNATURE-----
 
---SUOF0GtieIMvvwua--
+--nVMJ2NtxeReIH9PS--
