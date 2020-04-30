@@ -2,109 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597CC1C0A32
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 00:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E967F1C0A59
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 00:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgD3WNq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 18:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgD3WNq (ORCPT
+        id S1727057AbgD3WXy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 18:23:54 -0400
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:36973 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726898AbgD3WXy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 18:13:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC367C035494;
-        Thu, 30 Apr 2020 15:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bd0ZsvJx0qN41jGJdx6Q3uDOBTPr2hBuuON/tmj1OPE=; b=Xh5T5/zf36Iun9lfkNlEeXo/27
-        qpj6KB4345/Cc/m+7HWNU07yHSitTsHNxf43w29pLdFOLHOfVTYjI9tDCKGec6cEk83PJ5GqWyrFw
-        xCVrZDz49/b0wB7Yapm/GbhfIo0w0D60cKkNHaoxbLCv70va07R3hB3AxdrLrli8dB87fDS0Ndm9j
-        m+USiBB+G6dkvHAgLi3/Sy2qxmHFNVeKf9RAg+FPui7Hgtq0Ig17TaGN1/AGUg4WEKCDRMHpCrK7u
-        9rIqjC7QpANlp3+ie8aKQDzn2D4NAtlZhS85GUMY3G9CNKyyxd/3mIlLD0DRHnazAYqhFC6STfv7G
-        vA7SVRlQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUHR4-0007zt-IY; Thu, 30 Apr 2020 22:13:38 +0000
-Date:   Thu, 30 Apr 2020 15:13:38 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org, david@fromorbit.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Yafang Shao <laoar.shao@gmail.com>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        devel@lists.orangefs.org, Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Roman Gushchin <guro@fb.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [RFC PATCH V2 1/9] include/linux/pagemap.h: introduce
- attach/clear_page_private
-Message-ID: <20200430221338.GY29705@bombadil.infradead.org>
-References: <20200430214450.10662-1-guoqing.jiang@cloud.ionos.com>
- <20200430214450.10662-2-guoqing.jiang@cloud.ionos.com>
+        Thu, 30 Apr 2020 18:23:54 -0400
+Received: by mail-ua1-f67.google.com with SMTP id s5so3157081uad.4;
+        Thu, 30 Apr 2020 15:23:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6zNCoweAOaTHQK115+b2oJjIZJeyrUxI9RbZEeQ0t38=;
+        b=Nl9jKJPnqu8bxXGmd/fg7ItjhviUtVDYhlZBOiuEsSXpNlJt2U8bAA92Yl4YMmlAmA
+         XBJ28GcRSlFyciFclmxePOarfkKzEkSazAS7xnT5XFfEoUmmplbQzMctSQifexwu2X2w
+         aaJCB2k0OQR4q9vkkmFOth8xvsCRQYRsS4hq14QGWz6Tl1iLxqIm3Cy1GKcHOGY7hBmK
+         EsoaWZurlFMxSq6Qf/lPDrowpWBQteAyGM0VUepZYMz0qgh+gG66NpNuHLmGKUGDF2Vv
+         P/hetxAhY+qHtmkpARj9XHGFVo/xmhNjDqhYFbrmgkB+/ybrePLccwlS0okN4WBN/Qdb
+         lk0A==
+X-Gm-Message-State: AGi0Pubpx49YT+bOOF0hzTwdfChPUaq1O/tj9dy1TwakKp9IlnDGHatE
+        ctQwURLKgfsNuOB1g1jOXVfFOmuY
+X-Google-Smtp-Source: APiQypLNvQTFk79922E/NOe1BWAd7Mvdk4sJ5qDzLZOce97xmW+K33M2X6OjUhReBqgbsNp/EM146w==
+X-Received: by 2002:ab0:2095:: with SMTP id r21mr860426uak.92.1588285432586;
+        Thu, 30 Apr 2020 15:23:52 -0700 (PDT)
+Received: from google.com (69.104.231.35.bc.googleusercontent.com. [35.231.104.69])
+        by smtp.gmail.com with ESMTPSA id s74sm308968vkb.48.2020.04.30.15.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 15:23:48 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 22:23:47 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     fdmanana@kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dennis@kernel.org, tj@kernel.org,
+        cl@linux.com, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] percpu: make pcpu_alloc() aware of current gfp context
+Message-ID: <20200430222347.GA164259@google.com>
+References: <20200430164356.15543-1-fdmanana@kernel.org>
+ <20200430144018.c855f031b321d68e5c89b30c@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200430214450.10662-2-guoqing.jiang@cloud.ionos.com>
+In-Reply-To: <20200430144018.c855f031b321d68e5c89b30c@linux-foundation.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:44:42PM +0200, Guoqing Jiang wrote:
-> +/**
-> + * attach_page_private - attach data to page's private field and set PG_private.
-> + * @page: page to be attached and set flag.
-> + * @data: data to attach to page's private field.
-> + *
-> + * Need to take reference as mm.h said "Setting PG_private should also increment
-> + * the refcount".
-> + */
+On Thu, Apr 30, 2020 at 02:40:18PM -0700, Andrew Morton wrote:
+> On Thu, 30 Apr 2020 17:43:56 +0100 fdmanana@kernel.org wrote:
+> 
+> > From: Filipe Manana <fdmanana@suse.com>
+> > 
+> > Since 5.7-rc1, on btrfs we have a percpu counter initialization for which
+> > we always pass a GFP_KERNEL gfp_t argument (this happens since commit
+> > 2992df73268f78 ("btrfs: Implement DREW lock")).  That is safe in some
+> > contextes but not on others where allowing fs reclaim could lead to a
+> > deadlock because we are either holding some btrfs lock needed for a
+> > transaction commit or holding a btrfs transaction handle open.  Because
+> > of that we surround the call to the function that initializes the percpu
+> > counter with a NOFS context using memalloc_nofs_save() (this is done at
+> > btrfs_init_fs_root()).
+> > 
+> > However it turns out that this is not enough to prevent a possible
+> > deadlock because percpu_alloc() determines if it is in an atomic context
+> > by looking exclusively at the gfp flags passed to it (GFP_KERNEL in this
+> > case) and it is not aware that a NOFS context is set.  Because it thinks
+> > it is in a non atomic context it locks the pcpu_alloc_mutex, which can
+> > result in a btrfs deadlock when pcpu_balance_workfn() is running, has
+> > acquired that mutex and is waiting for reclaim, while the btrfs task that
+> > called percpu_counter_init() (and therefore percpu_alloc()) is holding
+> > either the btrfs commit_root semaphore or a transaction handle (done at
+> > fs/btrfs/backref.c:iterate_extent_inodes()), which prevents reclaim from
+> > finishing as an attempt to commit the current btrfs transaction will
+> > deadlock.
+> > 
+> 
+> Patch looks good and seems sensible, thanks.
+> 
 
-I don't think this will read well when added to the API documentation.
-Try this:
+Acked-by: Dennis Zhou <dennis@kernel.org>
 
-/**
- * attach_page_private - Attach private data to a page.
- * @page: Page to attach data to.
- * @data: Data to attach to page.
- *
- * Attaching private data to a page increments the page's reference count.
- * The data must be detached before the page will be freed.
- */
+> But why did btrfs use memalloc_nofs_save()/restore() rather than
+> s/GFP_KERNEL/GFP_NOFS/?
 
-> +/**
-> + * clear_page_private - clear page's private field and PG_private.
-> + * @page: page to be cleared.
-> + *
-> + * The counterpart function of attach_page_private.
-> + * Return: private data of page or NULL if page doesn't have private data.
-> + */
+I would also like to know.
 
-Seems to me that the opposite of "attach" is "detach", not "clear".
-
-/**
- * detach_page_private - Detach private data from a page.
- * @page: Page to detach data from.
- *
- * Removes the data that was previously attached to the page and decrements
- * the refcount on the page.
- *
- * Return: Data that was attached to the page.
- */
+Thanks,
+Dennis
