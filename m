@@ -2,156 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566E41BF55E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 12:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912781BF75E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 13:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgD3K2o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 06:28:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60564 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgD3K2o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:28:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C4AE1AC5B;
-        Thu, 30 Apr 2020 10:28:41 +0000 (UTC)
-Subject: Re: [PATCH v3 REBASED 0/3] btrfs: fix issues due to alien device
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, josef@toxicpanda.com
-References: <20200428152227.8331-1-anand.jain@oracle.com>
- <55a5fd3a-dddb-df52-7f22-01e3407c0325@suse.com>
- <36da56d2-2384-87fb-8003-814e9c72ddbb@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <547c4cc1-fe6b-8bcd-ff98-c45293ec7ce9@suse.com>
-Date:   Thu, 30 Apr 2020 13:28:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726737AbgD3L5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 07:57:54 -0400
+Received: from mail-40140.protonmail.ch ([185.70.40.140]:40005 "EHLO
+        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbgD3L5x (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Apr 2020 07:57:53 -0400
+X-Greylist: delayed 991 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 07:57:52 EDT
+Date:   Thu, 30 Apr 2020 11:41:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1588246880;
+        bh=7Dh71GXpxRwmOc6c55DET0/8AWBDsHrSFyKs7YIw3Xw=;
+        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:From;
+        b=UYxpl+lP/QN6HZjMsMIHNax0caKFIyzU23U6xRU0ulRr9LU+rIInVTo9OIoQtoeOx
+         m97lTFD1NlTPUACKBK3VC6UgvBh9WIcxTd3pZCU6DMcRoGMNoz3bBsMtos72UvyoOj
+         ZCsxTgksktMU4Un5nqLwvFimjZd1igu+Cg6uw+7c=
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Nouts <nouts@protonmail.com>
+Reply-To: Nouts <nouts@protonmail.com>
+Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read block groups
+Message-ID: <5oMc__tPC-OFYhHTtUghYtHMzySzDXlSlYC_S5_WjIFiA8eXfvsSxQpfaglOag0sNz7qtvMUzhCqdRzBOMokxeo2dFrfkWrLbBmmuWvME5s=@protonmail.com>
+In-Reply-To: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
+References: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <36da56d2-2384-87fb-8003-814e9c72ddbb@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello again,
+I'm not familiar with mailing list. Should I expect an answer sooner or lat=
+er ?
+As I need to get back on track as soon as possible, I would like to know if=
+ it's too complicated to get an answer quickly from you.
+I don't want to be rude, I just want to know if I should wait long enough f=
+or an answer that might save my day and my data. Or I'm doomed and I should=
+ have wipe my drive already ?
 
+I'll take any answer :)
+Thank you
 
-On 30.04.20 г. 20:54 ч., Anand Jain wrote:
-> 
-> 
-> On 30/4/20 2:05 pm, Nikolay Borisov wrote:
->>
->>
->> On 28.04.20 г. 18:22 ч., Anand Jain wrote:
->>> v3 REBASED: Based on the latest misc-next. for for-5.8.
->>>     Dropped the following patches as there were concerns about the usage
->>>     of error code -EUCLEAN
->>>     btrfs: remove identified alien device in open_fs_devices
->>>     btrfs: remove identified alien btrfs device in open_fs_devices
->>>
->>>     Rmaining 3 patches here have obtained reviewed-by. With this pathset
->>>     the pertaining fstests btrfs/197 and btrfs/198 (which tests 3 bugs)
->>>     would pass as the patch 2/3 fixed a bug and 3/3 fixed the trigger
->>>     of 2 other bugs (patch 1/3 is just a cleanup). Further at the moment
->>>     I am not sure if there is any other trigger where it could again
->>> leave
->>>     an alien device in the fs_devices leading to the same/similar bugs.
->>>
->>> ==== original email ====
->>> v3: Fix alien device is due to wipefs in Patch4.
->>>      Fix a nit in Patch3.
->>>      Patches are reordered.
->>>
->>> Alien device is a device in fs_devices list having a different fsid than
->>> the expected fsid or no btrfs_magic. This patch set fixes issues
->>> found due
->>> to the same.
->>>
->>> Patch1: is a cleanup patch, not related.
->>> Patch2: fixes failing to mount a degraded RAIDs (RAID1/5/6/10), by
->>>     hardening the function btrfs_free_extra_devids().
->>> Patch3: fixes the missing device (due to alien btrfs-device) not
->>> missing in
->>>     the userland, by hardening the function btrfs_open_one_device().
->>> Patch4: fixes the missing device (due to alien device) not missing in
->>>     the userland, by returning EUCLEAN in btrfs_read_dev_one_super().
->>> Patch5: eliminates the source of the alien device in the fs_devices.
->>>
->>> PS: Fundamentally its wrong approach that btrfs-progs deduces the device
->>> missing state in the userland instead of obtaining it from the kernel.
->>> I remember objecting on the btrfs-progs patch which did that, but still
->>> it got merged, bugs in p3 and p4 are its side effects. I wrote
->>> patches to read device_state from the kernel using ioctl, procfs and
->>> sysfs but it didn't get the due attention till a merger.
->>>
->>> Anand Jain (3):
->>>    btrfs: drop useless goto in open_fs_devices
->>>    btrfs: include non-missing as a qualifier for the latest_bdev
->>>    btrfs: free alien device due to device add
->>>
->>>   fs/btrfs/volumes.c | 30 ++++++++++++++++++++++--------
->>>   1 file changed, 22 insertions(+), 8 deletions(-)
->>>
->>
->>
->> One thing I'm not clear is how can we get into a situation of an alien
->> device. I.e devices should be in fs_devices iff they are part of the>
->> filesystem, no ?
->>
-> 
-> I think you are missing the point that, when the devices (of a
-> raid1/raid5/raid6) are unmounted, we don't free any of their
-> fs_devices::device. So in this situation if one of those devices is
-> added to any another fsid (using btrfs device add) or wiped using wipefs
-> -a, we still don't free the device's former fs_devices::device entry in
-> the kernel and it acts as an alien device among its former partners when
-> it is mounting.
+Nouts
 
-So it could happen only due to a deliberate action by the user
-and not during normal operation. In this case is it not the user's
-responsibility to remove/forget the device from that file system?
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+On Tuesday, April 28, 2020 11:26 AM, Nouts <nouts@protonmail.com> wrote:
+
+> Hello,
+>
+> I am having issue with a RAID1 btrfs pool "failed to read block groups". =
+I was advised to send information to this mailing list, as someone might be=
+ interested in debug logs and might also help solve my issue.
+>
+> I have a 3 drive RAID1 pool (2x3TB + 1x6TB), mounted as /home.
+>
+> My system became really slow while doing nothing, and after a reboot my /=
+home pool can't mount.This is the error I got :
+>
+> [ 4645.402880] BTRFS info (device sdb): disk space caching is enabled
+> [ 4645.405687] BTRFS info (device sdb): has skinny extents
+> [ 4645.451484] BTRFS error (device sdb): failed to read block groups: -11=
+7
+> [ 4645.472062] BTRFS error (device sdb): open_ctree failed
+> mount: wrong fs type, bad option, bad superblock on /dev/sdb,missing code=
+page or helper program, or other error
+> In some cases useful info is found in syslog - trydmesg | tail or so.
+>
+> I attached you the smartctl result from the day before and the last scrub=
+ report I got from a month ago. From my understanding, it was ok.
+> I use hardlink (on the same partition/pool) and I deleted some data just =
+the day before. I suspect my daily scrub routine triggered something that n=
+ight and next day /home was gone.
+>
+> I can't scrub anymore as it's not mounted. Mounting with usebackuproot or=
+ degraded or ro produce the same error.
+> I tried "btrfs check /dev/sda" :
+> checking extents
+> leaf parent key incorrect 5909107507200
+> bad block 5909107507200
+> Errors found in extent allocation tree or chunk allocation
+> Checking filesystem on /dev/sda
+> UUID: 3720251f-ef92-4e21-bad0-eae1c97cff03
+>
+> Then "btrfs rescue super-recover /dev/sda" :
+> All supers are valid, no need to recover
+>
+> Then "btrfs rescue zero-log /dev/sda", which produced a weird stacktrace.=
+..
+> Unable to find block group for 0
+> extent-tree.c:289: find_search_start: Assertion '1' failed.
+> btrfs[0x43e418]
+> btrfs(btrfs_reserve_extent+0x5c9)[0x4425df]
+> btrfs(btrfs_alloc_free_block+0x63[0x44297c]
+> btrfs(__btrfs_cow_block+0xfc[0x436636]
+> btrfs(btrfs_cow_block+0x8b)[0x436bd8]
+> btrfs[0x43ad82]
+> btrfs(btrfs_commit_transaction+0xb8)[0x43c5dc]
+> btrfs[0x42c0d4]btrfs(main+0x12f)[0x40a341]/lib/x86_64-linux-gnu/libc.so.6=
+(__libc_start_main+0xf1)[0x7f1462d712e1]
+> btrfs(_start+0x2a)[0x40a37a]
+> Clearing log on /dev/sda, previous log_root 0, level 0
+>
+> Finally I tried "btrfs rescue chunk-recover /dev/sda", which run on all 3=
+ drives at the same time during 8+ hours...
+> It asks to rebuild some metadata tree, which I accepted (I did not saved =
+the full output sorry) and it ended with the same stacktrace as above.
+>
+> The only command left is "btrfs check --repair" but I afraid it might do =
+more bad than good.
+>
+> I'm running Debian 9 (still, because of some dependencies). My kernel is =
+already backported : 4.19.0-0.bpo.6-amd64 #1 SMP Debian 4.19.67-2+deb10u2~b=
+po9+1 (2019-11-12) x86_64 GNU/Linux
+> btrfs version : v4.7.3
+> I originally posted on reddit : https://www.reddit.com/r/btrfs/comments/g=
+99v4v/nas_raid1_not_mounting_failed_to_read_block_groups/
+>
+> Let me know if you need more information.
+>
+> Nouts
+
 
