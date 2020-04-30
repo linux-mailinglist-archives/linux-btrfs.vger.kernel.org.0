@@ -2,108 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4811C032F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 18:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A41C0365
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 19:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgD3Qyl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 12:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        id S1726433AbgD3RBV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 13:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726272AbgD3Qyk (ORCPT
+        by vger.kernel.org with ESMTP id S1726333AbgD3RBV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:54:40 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5F8C035494;
-        Thu, 30 Apr 2020 09:54:40 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id i68so5590670qtb.5;
-        Thu, 30 Apr 2020 09:54:40 -0700 (PDT)
+        Thu, 30 Apr 2020 13:01:21 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDC8C035494
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 10:01:20 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id e26so115760otr.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 10:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u0otRQ4HRB+YKeilmTal/RUC4w+MjwFliS0R169CA7s=;
-        b=O/5SFX3PPa5GnoITINqhhqhgSQx66i9Vr9eYEtt/dHcuqLd/AOHvW3QLuX+7DeqG31
-         GslwjmCdLPuQneMgsHDTtJ/bnlSZ25zwDS0MsgunToxCICZR7/uk8UTaNwv6JpUmQ805
-         YgJR0Nl0vne392X5jSeHJa6URY2mqfdOcK1I69vww560N54VbCYjt71K8PrUM7f0Chxa
-         YWL4h4KBf+zi8iWhtQoWQUc2/C1a8+HpHg9fYZAkMfYGpIVzg/iVmbJZ4gAG/DgWUISS
-         qEWHbunlq8x7yS0U1Io7sm1VB9nPh3mjwbzhr0uIbiaCo3pmRIOJ/0opojQU34prGTh+
-         q7UA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=CQPj5qM+tdudsr2kqqrtSJscfnFWKBZVeMmZgNW+UHk=;
+        b=L0JfmW40UGypW9y0GsJcov/J4cMhEGRCTACW5bLKYGdYLjxE7elNN2FuugBBfQ72Xg
+         QqaSGEnu9krQtHFWT7LLtlJGsfKLuLBDjpTRth4oLvYnKMRti+xJ+oUtXWTA0JHIpeF2
+         /1KiVU1yUGfC764ymp3AXMEVVG5t7/BJjqaR564YUiuw/Ej1MrkbF7a9B5tvcKN3AQFb
+         ibdAYw9LnCUOj+VNqXzQyVea9kVardA20gZtyGOiwzvXYTIw9v60OzUFOvoXn3sUb6Dy
+         leU31waaYhalYY70tM0BJDGpHFqK/Nd4M/wEaJKSkDd+URVMd1UAc7UCkI5nDpZTl7BN
+         D/qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=u0otRQ4HRB+YKeilmTal/RUC4w+MjwFliS0R169CA7s=;
-        b=h3jlXj0PCLBo/hbIJof0pPCT51BeSbeL9FQ3uoxgCDDL1fzVKigV6CWtMHQqEWsuHD
-         ctdholj+A0yq6JJ/JMo8p5AjNFZ+pHWmC0qb+2Wq76g9Dat8InyzY34P91th2aajdG67
-         cwySnuYEiGbNVE5ealZceaeGt5bm/eSw6LpBtmQPsFF5aBtwqOLdApZal6QH0dtTO4mH
-         VvY0rz5GmBavLw6on61uzxloCG5SpxYACKTr/uSc/15gquD/ZQ7NPz7cKi6culphyDjY
-         QwM6jw75IKFvWMZ6k+yQU+mnfH/aK6aOLTyCdx6c9prAkYdRNfz7gwpEHFc1hkH9z/27
-         Lj+A==
-X-Gm-Message-State: AGi0PuakFk6tnGkf952NugjKQwb5g7iTk7eN8paMX6AOuai8p9ijGLD6
-        4XjrX+f88tyn06wbiitrPps=
-X-Google-Smtp-Source: APiQypJQTeHAEnS3J65bj3d5lEQgh6haVB0NClBsAbTwosD6YRCd9HZoVfbdmACo+8rNsGkAqoy3Zw==
-X-Received: by 2002:ac8:fee:: with SMTP id f43mr4727473qtk.376.1588265679714;
-        Thu, 30 Apr 2020 09:54:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:f989])
-        by smtp.gmail.com with ESMTPSA id i6sm414723qkk.123.2020.04.30.09.54.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 09:54:39 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 12:54:37 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     fdmanana@kernel.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dennis@kernel.org, cl@linux.com, akpm@linux-foundation.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] percpu: make pcpu_alloc() aware of current gfp context
-Message-ID: <20200430165437.GF5462@mtj.thefacebook.com>
-References: <20200430164356.15543-1-fdmanana@kernel.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=CQPj5qM+tdudsr2kqqrtSJscfnFWKBZVeMmZgNW+UHk=;
+        b=ISxJuRWu0733VCe36MbYgoTiVxgHJs0XXYlk7ajrs4DU/3XQiwl1i3MqQqw03aICdV
+         Y2jQYm8T2cKZNgTuAT4kZ6l7mH20RHiW+jElULa51P86bdO3Hs4G6FJurVg/WpuaRR7B
+         8gqJiypSivQJijBRy2qfuWA5Kj4n7TRnYocXCm+h4nw6duEzoo6EyeUWE+ZxqHxianvK
+         f59uBSCqVmuD9qKYRJkhrpD5PfcvR7X05g2GJy4cm1i7bN04hGAOf+r91t+fB5MLL9XW
+         sqq1ktyjDvid+12jIgf+w8hHZ+tUxYzeLdADJicwmusJP5eA7Oybe2Lr6ksbPvbh0mYb
+         dc8g==
+X-Gm-Message-State: AGi0PuZUZtkT3UQsNAbp54KwImyLjU9S2HmYr7c5q+v8tCiaceu37BkE
+        1T4rpDRBIg3Xrq/rEtYayA/GAbGVaQ1NCIkdIr25oD/i628=
+X-Google-Smtp-Source: APiQypLbhsXxqU7CSYLEwSD0BNrKXw4fzNIndbvon1MSgAp/1jjDR+OzOZ5LF7mYl/6MnPH2obYIu4XzXprYM639EUU=
+X-Received: by 2002:a9d:7390:: with SMTP id j16mr27135otk.43.1588266078598;
+ Thu, 30 Apr 2020 10:01:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430164356.15543-1-fdmanana@kernel.org>
+From:   Rollo ro <rollodroid@gmail.com>
+Date:   Thu, 30 Apr 2020 19:00:43 +0200
+Message-ID: <CAAhjAp1zrjrizrswo3BF1-cTXArpZ5XFUPbd-OR_Nu1N05pdSQ@mail.gmail.com>
+Subject: raid56 write hole
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 05:43:56PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Since 5.7-rc1, on btrfs we have a percpu counter initialization for which
-> we always pass a GFP_KERNEL gfp_t argument (this happens since commit
-> 2992df73268f78 ("btrfs: Implement DREW lock")).  That is safe in some
-> contextes but not on others where allowing fs reclaim could lead to a
-> deadlock because we are either holding some btrfs lock needed for a
-> transaction commit or holding a btrfs transaction handle open.  Because
-> of that we surround the call to the function that initializes the percpu
-> counter with a NOFS context using memalloc_nofs_save() (this is done at
-> btrfs_init_fs_root()).
-> 
-> However it turns out that this is not enough to prevent a possible
-> deadlock because percpu_alloc() determines if it is in an atomic context
-> by looking exclusively at the gfp flags passed to it (GFP_KERNEL in this
-> case) and it is not aware that a NOFS context is set.  Because it thinks
-> it is in a non atomic context it locks the pcpu_alloc_mutex, which can
-> result in a btrfs deadlock when pcpu_balance_workfn() is running, has
-> acquired that mutex and is waiting for reclaim, while the btrfs task that
-> called percpu_counter_init() (and therefore percpu_alloc()) is holding
-> either the btrfs commit_root semaphore or a transaction handle (done at
-> fs/btrfs/backref.c:iterate_extent_inodes()), which prevents reclaim from
-> finishing as an attempt to commit the current btrfs transaction will
-> deadlock.
-...
-> This could be fixed by making btrfs pass GFP_NOFS instead of GFP_KERNEL to
-> percpu_counter_init() in contextes where it is not reclaim safe, however
-> that type of approach is discouraged since memalloc_[nofs|noio]_save()
-> were introduced.  Therefore this change makes pcpu_alloc() look up into
-> an existing nofs/noio context before deciding whether it is in an atomic
-> context or not.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Hi, I read about the write hole and want to share my thoughts. I'm not
+sure if I got it in full depth but as far as I understand, the issue
+is about superblocks on disks, the superblocks containing addresses of
+tree roots and if the trees are changed using copy on write, we have a
+new root and it's address needs to be written into the superblock.
+That leads to inconsistent data if one address is updated but another
+one is not. Is this about right? (I'm not sure whether we are talking
+here about a discrepancy between two root adresses in one superblock,
+or between two superblocks on different disks or possibly both)
 
-Acked-by: Tejun Heo <tj@kernel.org>
+In my opinion, it's mandatory to have a consistent filesystem at _any_
+point in time, so it can't be relied on flush to write all new
+addresses!
 
-Thanks.
+I propose that the superblock should not contain the one single root
+address for each tree that is hopefully correct, but it should contain
+an array of addresses of tree root _candidates_. Also, the addresses
+in the superblocks are written on filesystem creation, but not in
+usual operation anymore. In usual operation, when we want to switch to
+a new tree version, only _one_ of the root candidates is written with
+new content, so there will be the latest root but also some older
+roots. Now the point is, if there is a power outage or crash during
+flush, we have all information needed to roll back to the last
+consistent version.
 
--- 
-tejun
+We just need to find out which root candidate to use. (This is why I
+call them candidates) To achieve that, the root candidates have an
+additional attribute that's something like a version counter and we
+also have a version counter variable in RAM. On a transition we
+overwrite the oldest root candidate for each tree with all needed
+information, it's counter with our current counter variable, and a
+checksum. The counter variable is incremented after that. At some
+point it will overflow, hence we need to consider that when we search
+the latest one. Let's say we use 8 candidates, then the superblock
+will contain something like:
+
+LogicalAdress_t AddressRootCandidatesMetaData[8]
+LogicalAdress_t AddressRootCandidatesData[8]
+
+(just as an example)
+
+While mounting, we read all '8 x number of trees x disks' root
+candidates, lookup their version counters and check their checksums.
+We have a struct like
+
+typedef struct
+{
+    uint8_t Version;
+    CheckResult_te CeckResult; /* enum INVALID = 0, VALID = 1 */
+} VersionWithCheckResult_t
+
+and build an array with that:
+
+enum {ARRAY_SIZE = 8};
+VersionWithCheckResult_t VersionWithCheckResult[ARRAY_SIZE];
+
+and write it in a loop. For example we get:
+
+{3, VALID}, {4, VALID}, {253, VALID}, {254, VALID}, {255, VALID}, {0,
+VALID}, {1, VALID}, {2, VALID}
+(-> Second entry is the most recent valid one)
+
+We'd like to get this from all disks for all trees, but there was a
+crash so some disks may have not written the new root candidate at
+all:
+
+{3, VALID}, {252, VALID}, {253, VALID}, {254, VALID}, {255, VALID},
+{0, VALID}, {1, VALID}, {2, VALID}
+(-> First entry is the most recent valid one, as the second entry has
+not been updated)
+
+or even left a corrupted one, which we will recognize by the checksum:
+(-> First entry is the most recent valid one, as the second entry has
+been corrupted)
+
+{3, VALID}, {123, INVALID}, {253, VALID}, {254, VALID}, {255, VALID},
+{0, VALID}, {1, VALID}, {2, VALID}
+
+Then we walk through that array, first searching the first valid
+entry, and then look if there are more recent, valid entries, like:
+
+uint8_t IndexOfMostRecentValidEntry = 0xFF;
+uint8_t i = 0;
+while ((i < ARRAY_SIZE) && (IndexOfMostRecentValidEntry == 0xFF))
+{
+    if (VersionWithCheckResult[i].CheckResult == VALID)
+    {
+        IndexOfMostRecentValidEntry = i;
+    }
+}
+
+for (i = 0, i < ARRAY_SIZE, i++)
+{
+    uint8_t IndexNext = CalcIndexNext(IndexOfMostRecentValidEntry); /*
+Function calculates next index with respect to wrap around */
+    uint8_t MoreRecentExpectedVersion =
+VersionWithCheckResult[IndexOfMostRecentValidEntry].Version + 1u; /*
+Overflows from 0xFF to 0 just like on-disk version numbers */
+    if ((VersionWithCheckResult[IndexNext].Version ==
+MoreRecentExpectedVersion) &&
+(VersionWithCheckResult[IndexNext].CheckResult == VALID))
+    {
+        IndexOfMostRecentValidEntry = IndexNext;
+    }
+}
+
+Then we build another array that will be aligned to the entry we found:
+
+VersionWithCheckResultSorted[ARRAY_SIZE] = {0}; /* All elements inited
+as 0 (INVALID) */
+uint8_t Index = IndexOfMostRecentValidEntry;
+for (i = 0, i < ARRAY_SIZE, i++)
+{
+    VersionWithCheckResultSorted[i] = VersionWithCheckResult[Index];
+    Index = CalcIndexPrevious(Index); /* Function calculates previous
+index with respect to wrap around */;
+}
+
+With the 3 example datasets from above, we get:
+
+{4, VALID}, {3, VALID}, {2, VALID}, {1, VALID}, {0, VALID}, {255,
+VALID}, {254, VALID}, {253, VALID}
+{3, VALID}, {2, VALID}, {1, VALID}, {0, VALID}, {255, VALID}, {254,
+VALID}, {253, VALID}, {252, VALID},
+{3, VALID}, {2, VALID}, {1, VALID}, {0, VALID}, {255, VALID}, {254,
+VALID}, {253, VALID}, {123, INVALID},
+
+Now the versions are prioritized from left to right. It's easy to
+figure out that the latest version we can use is 3. We just fall back
+to the latest version for that we found a valid root candidate for
+every tree. In this example, it's index = 0 in the superblock array.
+So we use that to mount and set the counter variable to 1 for the next
+writes.
+
+As a consequence, there is no write hole, because we always fall back
+to the latest state that is consistently available and discard the
+last write if it has not been finished correctly for all trees.
+
+notes:
+- It's required that also the parity data is organized as COW trees. I
+don't know if it's done that way now.
+- For now I assumed that a root candidate is properly written or not.
+One could think of skipping one position and go to the next canditate
+in case of a recognized write error, but this is not covered in this
+example. Hence, if there is an invalid entry, the lookup loop does not
+look for further valid entries.
+- All data that all 8 root canditates point to need to be kept because
+we don't know which one will be used on the next mount. The data can
+be discarded after a root candidate has been overwritten.
+- ARRAY_SIZE basically could be 2. I just thought we could have some more
+
+What do you think?
