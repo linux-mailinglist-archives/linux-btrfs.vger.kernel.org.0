@@ -2,134 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912781BF75E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 13:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8F01BF916
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 15:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgD3L5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 07:57:54 -0400
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:40005 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbgD3L5x (ORCPT
+        id S1726842AbgD3NSg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 09:18:36 -0400
+Received: from forward103o.mail.yandex.net ([37.140.190.177]:55731 "EHLO
+        forward103o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726841AbgD3NSg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:57:53 -0400
-X-Greylist: delayed 991 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 07:57:52 EDT
-Date:   Thu, 30 Apr 2020 11:41:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1588246880;
-        bh=7Dh71GXpxRwmOc6c55DET0/8AWBDsHrSFyKs7YIw3Xw=;
-        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:From;
-        b=UYxpl+lP/QN6HZjMsMIHNax0caKFIyzU23U6xRU0ulRr9LU+rIInVTo9OIoQtoeOx
-         m97lTFD1NlTPUACKBK3VC6UgvBh9WIcxTd3pZCU6DMcRoGMNoz3bBsMtos72UvyoOj
-         ZCsxTgksktMU4Un5nqLwvFimjZd1igu+Cg6uw+7c=
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Nouts <nouts@protonmail.com>
-Reply-To: Nouts <nouts@protonmail.com>
-Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read block groups
-Message-ID: <5oMc__tPC-OFYhHTtUghYtHMzySzDXlSlYC_S5_WjIFiA8eXfvsSxQpfaglOag0sNz7qtvMUzhCqdRzBOMokxeo2dFrfkWrLbBmmuWvME5s=@protonmail.com>
-In-Reply-To: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
-References: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
+        Thu, 30 Apr 2020 09:18:36 -0400
+X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 09:18:34 EDT
+Received: from mxback29g.mail.yandex.net (mxback29g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:329])
+        by forward103o.mail.yandex.net (Yandex) with ESMTP id 5C1BA5F81686;
+        Thu, 30 Apr 2020 16:12:45 +0300 (MSK)
+Received: from sas8-6bf5c5d991b2.qloud-c.yandex.net (sas8-6bf5c5d991b2.qloud-c.yandex.net [2a02:6b8:c1b:2a1f:0:640:6bf5:c5d9])
+        by mxback29g.mail.yandex.net (mxback/Yandex) with ESMTP id kwMaMc4Ucq-CjZOvOPE;
+        Thu, 30 Apr 2020 16:12:45 +0300
+Received: by sas8-6bf5c5d991b2.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id bUWSzJjuHL-CieKeiXC;
+        Thu, 30 Apr 2020 16:12:44 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: many csum warning/errors on qemu guests using btrfs
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Chris Murphy <lists@colorremedies.com>
+References: <0ee3844d-830f-9f29-2cd5-61e3c9744979@yandex.pl>
+ <76ec883b-3e44-fcda-d981-93a9e120f56d@yandex.pl>
+ <CAJCQCtTxGRqA4SZFnC+G+=b0bK2ahpym+9eG31pRTv9FH1_-3w@mail.gmail.com>
+ <cc0b6672-a65a-5c7b-d561-21cc585ead62@gmx.com>
+From:   Michal Soltys <msoltyspl@yandex.pl>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <e531aed2-74f9-8eeb-4a56-9baadb782311@yandex.pl>
+Date:   Thu, 30 Apr 2020 15:12:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+In-Reply-To: <cc0b6672-a65a-5c7b-d561-21cc585ead62@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello again,
-I'm not familiar with mailing list. Should I expect an answer sooner or lat=
-er ?
-As I need to get back on track as soon as possible, I would like to know if=
- it's too complicated to get an answer quickly from you.
-I don't want to be rude, I just want to know if I should wait long enough f=
-or an answer that might save my day and my data. Or I'm doomed and I should=
- have wipe my drive already ?
+On 4/30/20 3:46 AM, Qu Wenruo wrote:
+> 
+> 
+> On 2020/4/30 上午3:21, Chris Murphy wrote:
+>> On Wed, Apr 29, 2020 at 9:45 AM Michal Soltys <msoltyspl@yandex.pl> wrote:
+>>>
+>>> Short update:
+>>>
+>>> 1) turned out to not be btrfs fault in any way or form, as we recreated
+>>> the same issue with ext4 while manually checksumming the files; so if
+>>> anything, btrfs told us we have actual issues somewhere =)
+> 
+> Is that related to mixing buffered write with DIO write?
+> 
+> If so, maybe changing the qemu cache mode may help?
+> 
+> Thanks,
+> Qu
+> 
 
-I'll take any answer :)
-Thank you
+Well, we initially thought the issue was with VMs only - but we also 
+managed to hit the problem with host machine directly. As for VMs - they 
+are all on separate lvm volumes (raw, not as images via filesystem - if 
+that's what you meant in context of mixing writing modes).
 
-Nouts
+The without-qemu stack looks like this:
 
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Tuesday, April 28, 2020 11:26 AM, Nouts <nouts@protonmail.com> wrote:
+- on the bottom 24 disk backplane connected to lsi 2308 controller (v20 
+firwmare - for the record I found some tidbits, that this particular 
+firmware versions proved problematic for some people)
+- md raid5 - 4 mechanical disks using write-back journal (the journal 
+device is md raid1 (2 ssds in the same backplane))
+- the above raid device is added to lvm vg as a pv
+- this pv is used for thin pool's data and 2 other ssds (mirrored on lvm 
+level, physically not in backplane) are used for thin pool's metadata
 
-> Hello,
->
-> I am having issue with a RAID1 btrfs pool "failed to read block groups". =
-I was advised to send information to this mailing list, as someone might be=
- interested in debug logs and might also help solve my issue.
->
-> I have a 3 drive RAID1 pool (2x3TB + 1x6TB), mounted as /home.
->
-> My system became really slow while doing nothing, and after a reboot my /=
-home pool can't mount.This is the error I got :
->
-> [ 4645.402880] BTRFS info (device sdb): disk space caching is enabled
-> [ 4645.405687] BTRFS info (device sdb): has skinny extents
-> [ 4645.451484] BTRFS error (device sdb): failed to read block groups: -11=
-7
-> [ 4645.472062] BTRFS error (device sdb): open_ctree failed
-> mount: wrong fs type, bad option, bad superblock on /dev/sdb,missing code=
-page or helper program, or other error
-> In some cases useful info is found in syslog - trydmesg | tail or so.
->
-> I attached you the smartctl result from the day before and the last scrub=
- report I got from a month ago. From my understanding, it was ok.
-> I use hardlink (on the same partition/pool) and I deleted some data just =
-the day before. I suspect my daily scrub routine triggered something that n=
-ight and next day /home was gone.
->
-> I can't scrub anymore as it's not mounted. Mounting with usebackuproot or=
- degraded or ro produce the same error.
-> I tried "btrfs check /dev/sda" :
-> checking extents
-> leaf parent key incorrect 5909107507200
-> bad block 5909107507200
-> Errors found in extent allocation tree or chunk allocation
-> Checking filesystem on /dev/sda
-> UUID: 3720251f-ef92-4e21-bad0-eae1c97cff03
->
-> Then "btrfs rescue super-recover /dev/sda" :
-> All supers are valid, no need to recover
->
-> Then "btrfs rescue zero-log /dev/sda", which produced a weird stacktrace.=
-..
-> Unable to find block group for 0
-> extent-tree.c:289: find_search_start: Assertion '1' failed.
-> btrfs[0x43e418]
-> btrfs(btrfs_reserve_extent+0x5c9)[0x4425df]
-> btrfs(btrfs_alloc_free_block+0x63[0x44297c]
-> btrfs(__btrfs_cow_block+0xfc[0x436636]
-> btrfs(btrfs_cow_block+0x8b)[0x436bd8]
-> btrfs[0x43ad82]
-> btrfs(btrfs_commit_transaction+0xb8)[0x43c5dc]
-> btrfs[0x42c0d4]btrfs(main+0x12f)[0x40a341]/lib/x86_64-linux-gnu/libc.so.6=
-(__libc_start_main+0xf1)[0x7f1462d712e1]
-> btrfs(_start+0x2a)[0x40a37a]
-> Clearing log on /dev/sda, previous log_root 0, level 0
->
-> Finally I tried "btrfs rescue chunk-recover /dev/sda", which run on all 3=
- drives at the same time during 8+ hours...
-> It asks to rebuild some metadata tree, which I accepted (I did not saved =
-the full output sorry) and it ended with the same stacktrace as above.
->
-> The only command left is "btrfs check --repair" but I afraid it might do =
-more bad than good.
->
-> I'm running Debian 9 (still, because of some dependencies). My kernel is =
-already backported : 4.19.0-0.bpo.6-amd64 #1 SMP Debian 4.19.67-2+deb10u2~b=
-po9+1 (2019-11-12) x86_64 GNU/Linux
-> btrfs version : v4.7.3
-> I originally posted on reddit : https://www.reddit.com/r/btrfs/comments/g=
-99v4v/nas_raid1_not_mounting_failed_to_read_block_groups/
->
-> Let me know if you need more information.
->
-> Nouts
+Then it's a matter of simple mkfs.ext4 or mkfs.btrfs on a lv created in 
+the above pool. Then a 16gb file created with e.g.:
 
+dcfldd textpattern=$(hexdump -v -n 8192 -e '1/4 "%08X"' /dev/urandom) 
+hash=md5 hashlog=./test.bin bs=262144 count=$((16*4096)) of=test.md5 
+totalhashformat="#hash#"
+
+Will usually (though not always) produce image that will read back 
+(after dropping caches) with different checksum (ext4 case) or will have 
+btrfs scrub complaining (btrfs case).
+
+The culprits in the file will be one - few 4kb pieces with junk in them. 
+This is also unlike any other sizes used across the stack (md raid - 
+default 512kb chunk (1.5m stripe), lvm extents: 120m, thin-pool chunks: 
+1.5m).
+
+While trying to get the issue replicated, what didn't work:
+
+- I put 4 other disks in the backlane and created another raid5 in the 
+same way - using the same ssds as above for its journal - no issues
+- used the new md raid as lvm linear volume - no issues either
+- used the new md raid for lvm thin pool (using same ssds as earlier) - 
+no issues either
+- used the old (!?!) md raid (the one giving issues) but creating a 
+linear volume on it - no issues
+
+By "no issue" I mean the above dcfldd running in a loop for 3-6 hours, 
+interleaved with sync/fstrim/drop_caches as appropriate.
+
+By "issue" I mean 1-3 runs are enough to create file with silent 
+corruptions.
+
+What's worse, the "working" and "non-working" cases weirdly overlap with 
+each other, making it hard to even reasonably pinpoint the reason (as 
+for example, "it always happens if I use X").
+
+While I realize it turned out not to be exactly btrfs mailing list 
+material - I'll appreciate any suggestions. For now I'm planning to drop 
+the firmware from 20 to 19 and update kernel - and see if that happens 
+to help.
+
+
+>>>
+>>> 2) qemu/vm scenario is also not to be blamed, as we recreated the issue
+>>> directly on the host as well
+>>>
+>>> So as far as I can see, both of the above narrows the potential culprits
+>>> to either faulty/buggy hardware/firmware somewhere - or - some subtle
+>>> lvm/md/kernel issues. Though so far pinpointing the issue is proving
+>>> rather frustrating.
+>>>
+>>>
+>>> Anyway, sorry for the noise.
+>>
+>> It's not noise. I think it's useful to see how Btrfs can help isolate
+>> such cases.
+>>
+> 
 
