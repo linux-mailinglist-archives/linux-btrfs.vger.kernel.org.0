@@ -2,128 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4131C0571
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 20:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6ABA1C0516
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 20:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgD3S7C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 14:59:02 -0400
-Received: from mail-40137.protonmail.ch ([185.70.40.137]:10479 "EHLO
-        mail-40137.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgD3S7B (ORCPT
+        id S1726366AbgD3SrH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 14:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgD3SrG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 14:59:01 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 14:58:59 EDT
-Date:   Thu, 30 Apr 2020 18:40:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1588272033;
-        bh=rCVj53QwszqZZr8EVUCceN7F1ONvTFvgMsssjv5OVzI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=cfdpLp4qK8LyWnHEoES6KmT8vSsw2g3n8vVimw7xh8Dafb/gS2ZcrMDKkiRwU3vyQ
-         O91pTc5QzFBkYTYHgQ5dqAP35BJ3oDQZN/GZ2rfvgS2KDYfeBFbnxP/4kq9C3SOoyU
-         GY0G0M6CXD1znlWVTdsGpVRv4gFw5X0FGVgV0090=
-To:     Chris Murphy <lists@colorremedies.com>
-From:   Nouts <nouts@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Reply-To: Nouts <nouts@protonmail.com>
-Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read block groups
-Message-ID: <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
-In-Reply-To: <CAJCQCtT0mSYvN7FeCavsmKP9j_69JmZ0JdGz8ommhqag=GiM=Q@mail.gmail.com>
+        Thu, 30 Apr 2020 14:47:06 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EC5C035494
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:47:06 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f13so8302234wrm.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=flWxytFlfc2AalJWVP79qDFwQqQhnDLWc16EGX+Tc0g=;
+        b=QWWXJg6DH82OkAHWZU6Sqy1N/SLsj+LzTK9xmKXG6fLYIehQxoKA9GITfb9Xkpck69
+         4YPST21Yk0vnSnX/UM5Wq/britC2YOsfQlJd1zG0h7YC01q+jdnXSzvuziZ1QD/vNT/3
+         ezlm2lMFQ6EfY0GrRRHxq+mY3cC70QCErBcebOFqM1LHIQLl0NajLnF5t6eBAXME27wu
+         t2fX7iNjCzerfzwdxXZoxIQ0VLArJaRJ3mb7ALn1D/FOInxofy4fooNhZ4Auw07lrKbK
+         SouMs92lWsvgxNElrJVModr+IJmgWqz1V9e3Te3MlabbJOF6nYjSKsn7MO/lGcY4f6Tt
+         OuFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=flWxytFlfc2AalJWVP79qDFwQqQhnDLWc16EGX+Tc0g=;
+        b=kfCW093VaTo8K5X8PjhiYa1Um3lS2BwxcviERCk0fpGNU6T2tg5CeEZKtsGAv8kvFI
+         WJE14w/kvs0FoBIqj6iWs1avjimHggFcsbTykVV+W8XnOO1vWqyZ6JhtQMv7bqUdlK2b
+         8F9Bj3u8GbVZZAOYa3MVO/RVF0D34bHIDrOHdiSY6OaBdNlN206+DUNRMHigJ8n00qfs
+         xOC4Q0S7QN4f+OvSS4SXvWNNSNqAlRXJhlgmelsc0+m/FOAdJVGNb/9RE3paMe2OHyuz
+         BrJSbA1u4qwNUEfxgEq9q6lefXTnmziYwvlhkcYPbVxWy4qUdo4zX5ubcEsBb2g+K8zX
+         1DxA==
+X-Gm-Message-State: AGi0Pua3Iga3sbfDOv9poCgM+4Ch8yJ44ET/m5/vfVebhN4JFaGvt4oF
+        DteQyvEEIuoKwe4lyqAeG/BJvjgiegljCHgeExQMF9U0V+A=
+X-Google-Smtp-Source: APiQypKbclfoQxwCDpEyK03pfy+EaF1Xj901771Ec9CJN7BzUB82y3rdnYISRk32MGnvQjvXum9AS/IfPDXJ7teGm44=
+X-Received: by 2002:a5d:6148:: with SMTP id y8mr5337882wrt.236.1588272425307;
+ Thu, 30 Apr 2020 11:47:05 -0700 (PDT)
+MIME-Version: 1.0
 References: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
  <5oMc__tPC-OFYhHTtUghYtHMzySzDXlSlYC_S5_WjIFiA8eXfvsSxQpfaglOag0sNz7qtvMUzhCqdRzBOMokxeo2dFrfkWrLbBmmuWvME5s=@protonmail.com>
- <CAJCQCtT0mSYvN7FeCavsmKP9j_69JmZ0JdGz8ommhqag=GiM=Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+ <CAJCQCtT0mSYvN7FeCavsmKP9j_69JmZ0JdGz8ommhqag=GiM=Q@mail.gmail.com> <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
+In-Reply-To: <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 30 Apr 2020 12:46:49 -0600
+Message-ID: <CAJCQCtRWdovSOQd8r7YzxsQa4fxT9feB_R-nvG7BjvB-u1m2ew@mail.gmail.com>
+Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read
+ block groups
+To:     Nouts <nouts@protonmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks for your help. I compiled btrfs-progs v5.6 from github.
+On Thu, Apr 30, 2020 at 12:40 PM Nouts <nouts@protonmail.com> wrote:
+>
+> Thanks for your help. I compiled btrfs-progs v5.6 from github.
+>
+> Here is the dump from /dev/sda : https://pastebin.com/e3YZxxsZ
+>
+> And btrfs check returned an error instantly :
+> Opening filesystem to check...
+> ERROR: child eb corrupted: parent bytenr=5923702292480 item=2 parent level=2 child level=0
+> ERROR: failed to read block groups: Input/output error
+> ERROR: cannot open file system
 
-Here is the dump from /dev/sda : https://pastebin.com/e3YZxxsZ
+Ok try:
+btrfs insp dump-t -b 5923702292480 --follow /dev/sda
 
-And btrfs check returned an error instantly :
-Opening filesystem to check...
-ERROR: child eb corrupted: parent bytenr=3D5923702292480 item=3D2 parent le=
-vel=3D2 child level=3D0
-ERROR: failed to read block groups: Input/output error
-ERROR: cannot open file system
+Qu might have an idea. But in the meantime, my suggestion is to try to
+mount with a newer kernel. In order try:
 
+normal mount
+mount -o ro
+mount -o ro,degraded
+mount -o ro,degraded,usebackuproot
 
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Thursday, April 30, 2020 7:38 PM, Chris Murphy <lists@colorremedies.com>=
- wrote:
-
-> On Thu, Apr 30, 2020 at 5:57 AM Nouts nouts@protonmail.com wrote:
->
-> > > [ 4645.402880] BTRFS info (device sdb): disk space caching is enabled
-> > > [ 4645.405687] BTRFS info (device sdb): has skinny extents
-> > > [ 4645.451484] BTRFS error (device sdb): failed to read block groups:=
- -117
-> > > [ 4645.472062] BTRFS error (device sdb): open_ctree failed
-> > > mount: wrong fs type, bad option, bad superblock on /dev/sdb,missing =
-codepage or helper program, or other error
-> > > In some cases useful info is found in syslog - trydmesg | tail or so.
->
-> > > I attached you the smartctl result from the day before and the last s=
-crub report I got from a month ago. From my understanding, it was ok.
-> > > I use hardlink (on the same partition/pool) and I deleted some data j=
-ust the day before. I suspect my daily scrub routine triggered something th=
-at night and next day /home was gone.
-> > > I can't scrub anymore as it's not mounted. Mounting with usebackuproo=
-t or degraded or ro produce the same error.
-> > > I tried "btrfs check /dev/sda" :
-> > > checking extents
-> > > leaf parent key incorrect 5909107507200
-> > > bad block 5909107507200
-> > > Errors found in extent allocation tree or chunk allocation
-> > > Checking filesystem on /dev/sda
-> > > UUID: 3720251f-ef92-4e21-bad0-eae1c97cff03
->
-> What do you get for:
->
-> btrfs insp dump-t -b 5909107507200 /dev/sda
->
-> > > Then "btrfs rescue zero-log /dev/sda", which produced a weird stacktr=
-ace...
->
-> btrfs-progs is really old
->
-> > > Finally I tried "btrfs rescue chunk-recover /dev/sda", which run on a=
-ll 3 drives at the same time during 8+ hours...
-> > > It asks to rebuild some metadata tree, which I accepted (I did not sa=
-ved the full output sorry) and it ended with the same stacktrace as above.
-> > > The only command left is "btrfs check --repair" but I afraid it might=
- do more bad than good.
->
-> With that version of btrfs-progs it's not advised.
->
-> > > I'm running Debian 9 (still, because of some dependencies). My kernel=
- is already backported : 4.19.0-0.bpo.6-amd64 #1 SMP Debian 4.19.67-2+deb10=
-u2~bpo9+1 (2019-11-12) x86_64 GNU/Linux
-> > > btrfs version : v4.7.3
->
-> I suggest finding newer btrfs-progs, 5.4 or better, or compiling it from =
-git.
-> https://github.com/kdave//btrfs-progs
->
-> And then run:
->
-> btrfs check /dev/sda
->
-> Let's see what that says.
->
->
-> -------------------------------------------------------------------------=
----------------------------------------------------------------------------=
------------------------------------
->
-> Chris Murphy
+And if any works, at least you can update backups in case this file
+system can't be fixed.
 
 
+-- 
+Chris Murphy
