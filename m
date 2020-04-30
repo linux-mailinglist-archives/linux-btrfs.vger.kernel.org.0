@@ -2,149 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8CD1BEF6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 06:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4793B1BEF84
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 07:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgD3Evg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 30 Apr 2020 00:51:36 -0400
-Received: from mail.halfdog.net ([37.186.9.82]:65071 "EHLO mail.halfdog.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD3Evg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 00:51:36 -0400
-Received: from [37.186.9.82] (helo=localhost)
-        by mail.halfdog.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <me@halfdog.net>)
-        id 1jU1Ad-0001TR-0k
-        for linux-btrfs@vger.kernel.org; Thu, 30 Apr 2020 04:51:35 +0000
-From:   halfdog <me@halfdog.net>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: FIDEDUPERANGE woes may continue (or unrelated issue?)
-In-reply-to: <20200401233109.GF13306@hungrycats.org>
-References: <2442-1582352330.109820@YWu4.f8ka.f33u> <31deea37-053d-1c8e-0205-549238ced5ac@gmx.com> <1560-1582396254.825041@rTOD.AYhR.XHry> <13266-1585038442.846261@8932.E3YE.qSfc> <20200325035357.GU13306@hungrycats.org> <3552-1585216388.633914@1bS6.I8MI.I0Ki> <20200326132306.GG2693@hungrycats.org> <1911-1585557446.708051@Hw65.Ct0P.Jhsr> <3800-1585642410.029742@bHdF.V1R4.bmTu> <20200401233109.GF13306@hungrycats.org>
-Comments: In-reply-to Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-   message dated "Wed, 01 Apr 2020 19:31:09 -0400."
+        id S1726435AbgD3FCK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 01:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726180AbgD3FCJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Apr 2020 01:02:09 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2E9C035494
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Apr 2020 22:02:08 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k12so335661wmj.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Apr 2020 22:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kXC8G6O6JixBl3JI0rRKZaf4kuq6YdVBWVGORaUzCfM=;
+        b=bF5zBkkrv9RRGxXYXCRHDhGpSuqhq1NmG+QtR/GGiGwnr6reO2j6yrtjRKFrF6tk2f
+         Z4Ing79cvoLOEX3r/CtnciwCnVT6WTZDh0aH4tY6G8uKGqOPw53LyPOBsMqTmfYniyS/
+         ew31GjfGLGsnGt2hwDF2hJKSCskewNeoCFxw5WYtHu5C9D2SXYStTdQOmQVRRRd9h1Pu
+         PgvvdQOB4GvFeiIDgpNgWZo3TrCfB2kjAvBobEdmjpZUEjDLYfmrc9riPZG7+WhXytwG
+         sED8YZz/tXKLvvk9+f1jzw4Cye1nSDmGpdo2kUfxYHeNqtPc5NNGH3ZvouY+9dePPTKO
+         RobA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kXC8G6O6JixBl3JI0rRKZaf4kuq6YdVBWVGORaUzCfM=;
+        b=ntCQKy08WygmGuICyxaV0qMQH7LeXF5VlD26WKZs9MTukTh1amw0NyYqr6YMTb0IMw
+         49E6AxeG6Bl5AZ2L7M2XcPouA14VpTMTgaHydEhzscJXPMpmdpbbudMVsk65YSHhiP3l
+         EIYufYolhuJ8iP963hIAry97WMGPgp3Z9NdQIO0xt2EcnCUbz/ksbOZSitHT884MWwHN
+         mP5JS2Nc8jdEKfDgmWwNELChvAlKydBsZbcamqgMqpl52UAZe6DUUHpHihJw+y9UTYku
+         EsYE/1Lb90t51/huZtk8s6Uxl4SDdFAg6sOaMwhzQ/YZaonvBRrfdCl6fi0Kgpq6WEYJ
+         DJsQ==
+X-Gm-Message-State: AGi0PuacuGL9fb2Qo0i86ujR2M1Azj8vNyNgJ8M5YPjwdCC+Zw4l8Clf
+        YOY1AuAI/7F01Jq17epQcBHTIoOWY7jCQhkLTObf/h3c
+X-Google-Smtp-Source: APiQypKTNioyXjihKPBUBvz3DWizLZCFCxpRKnSvoD0DyfrXqDoRUaOZLv/JoSROToN4xt9Vu3Ph8GmYZlYSP5B5ZXQ=
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr799470wmc.124.1588222927312;
+ Wed, 29 Apr 2020 22:02:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Date:   Thu, 30 Apr 2020 04:49:38 +0000
-Message-ID: <931-1588222178.700169@TiJM.Dd4o.D3m->
+References: <0ee3844d-830f-9f29-2cd5-61e3c9744979@yandex.pl>
+ <76ec883b-3e44-fcda-d981-93a9e120f56d@yandex.pl> <CAJCQCtTxGRqA4SZFnC+G+=b0bK2ahpym+9eG31pRTv9FH1_-3w@mail.gmail.com>
+ <cc0b6672-a65a-5c7b-d561-21cc585ead62@gmx.com>
+In-Reply-To: <cc0b6672-a65a-5c7b-d561-21cc585ead62@gmx.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 29 Apr 2020 23:01:51 -0600
+Message-ID: <CAJCQCtTwH54CEhcGwv1S9P-i8JOgSHZFg3sKkQxAL1ppeG1cwQ@mail.gmail.com>
+Subject: Re: many csum warning/errors on qemu guests using btrfs
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Michal Soltys <msoltyspl@yandex.pl>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Zygo Blaxell writes:
-> On Tue, Mar 31, 2020 at 08:13:30AM +0000, halfdog wrote:
->> halfdog writes:
->>> Zygo Blaxell writes:
->>>> ... I would try a mainline kernel just to make sure Debian
->>>> didn't backport something they shouldn't have.
->>>
->>> OK, so let's go for that... If I got you right, you mentioned
->>> two scenarios, that might yield relevant information:
->>>
->>> * Try a mainline kernel prior to "reloc_root" to see if the
->>> bug could already be reproduced with that one. * Try a new
->>> 5.5.3 or later to see if the bug still can be reproduced.
->>>
->>> Which of both would be or higher value to you for the first
->>> test?
->>>
->>> Could you please share a kernel.org link to the exact tarball
->>> that should be tested? If there is a specific kernel configuration
->>> you deem superior for tests, that would be useful too. Otherwise
->>> I would use one from a Debian package with a kernel version
->>> quite close and adapt it to the given kernel.
->>
->> Yesterday I started preparing test infrastructure and to see
->> if my old test documentation still works with current software.
->> I ran a modified trinity test on a 128MB btrfs loop mount.
->> The test started at 12:02, at 14:30 trinity was OOM killed.
->> As I did not monitor the virtual machine, over the next hours
->> without trinity running any more also other processes were
->> killed one after another until at 21:13 finally also init
->> was killed.
->>
->> As I run similar tests for many days on ext4 filesystems,
->> could this be related to a btrfs memory leak even leaking
->> just due to the btrfs kernel workers?
+On Wed, Apr 29, 2020 at 7:46 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
-> How big is the test VM?  I run btrfs on machines as small as
-> 512M, but no smaller--and I don't try to do memory-hungry things
-> like dedupe or balance on such machines.  Some kernel debug
-> options use a lot of memory too, or break it up into pieces
-> too small to use (e.g. KASAN and the btrfs ref verifier).
-
-Sorry, I failed to run more VM test since my last mail. My VM
-is also 512MB...
-
->> If so, when compiling a test kernel, is there any option you
->> recommend setting to verify/rule out/ pin-point btrfs leakage
->> with trinity?
 >
-> There is kmemleak.
-
-I will try to run/analyze this, when there is more time, as I
-assume to be quite slow due to being unexperienced.
-
-> You can also run 'slabtop' and just watch the numbers grow.
-> 'slabtop' usually names the thing that is leaking.
 >
-> If the thing you've got too much of is btrfs_delayed_ref_head,
-> you should definitely go back to 4.19 for now.
+> On 2020/4/30 =E4=B8=8A=E5=8D=883:21, Chris Murphy wrote:
+> > On Wed, Apr 29, 2020 at 9:45 AM Michal Soltys <msoltyspl@yandex.pl> wro=
+te:
+> >>
+> >> Short update:
+> >>
+> >> 1) turned out to not be btrfs fault in any way or form, as we recreate=
+d
+> >> the same issue with ext4 while manually checksumming the files; so if
+> >> anything, btrfs told us we have actual issues somewhere =3D)
 >
->>> ...
->>
+> Is that related to mixing buffered write with DIO write?
+>
+> If so, maybe changing the qemu cache mode may help?
 
-What I had time for (as all the steps were scripted already from
-previous testing) was to rerun the deduplication tests after Debian
-released a new kernel:
+I thought this would only happen if the host is Btrfs? Maybe it's a
+bit crazy but these days I only use Btrfs on Btrfs with cache=3Dunsafe.
+I do lots of VM force quits, never see any problems. I haven't tested
+it, but I think unsafe is quite unsafe if the host crashes/power fails
+while the guest is active. Performance is much better though.
 
-Linux version 5.5.0-1-amd64 (debian-kernel@lists.debian.org) (gcc version 9.3.0 (Debian 9.3.0-8)) #1 SMP Debian 5.5.13-2 (2020-03-30)
-ii  linux-image-5.5.0-1-amd64            5.5.13-2                            amd64        Linux 5.5 for 64-bit PCs (signed)
 
-As I noticed last time, that the deduplication process died quite hard
-and might not flush stderr/stdout in that situation, I added
-flush instructions after each successful file deduplication.
-
-Result this time:
-
-[39391.950277] BTRFS error (device dm-1): bad tree block start, want 1723369025536 have 17869752742738540124
-[39391.950291] BTRFS: error (device dm-1) in btrfs_start_dirty_block_groups:2472: errno=-5 IO failure
-[39391.950294] BTRFS info (device dm-1): forced readonly
-[39392.021961] BTRFS warning (device dm-1): Skipping commit of aborted transaction.
-
-want: 0x19140cc7000 (1723369025536) vs 0xf7fe1d7106fe365c (17869752742738540124)
-
-The deduplication failure happened after more than 100hrs of deduplication
-IO. With improvements from flushing/logging it could be pinpointed
-to have happened exactly some seconds AFTER the very same file,
-that cause the last 3 file system corruption events.
-
-With the old logging structure, the logging would have reported the
-exact same file as with all the previous events.
-
-Currently I am running a tool to search for the source of the
-"0xf7fe1d7106fe365c" value on disk and in file content as it
-does not seem to be kernel or userspace address, machine code,
-... Maybe this give a hint, what had happened. Is this value
-a stored hashsum of a block/entry?
-
-The "want" value is found easly (multiple tree/superblocks?):
-
-Searching for 2 patterns, maximum length 8.
-0x13ff0459e: found want
-0x14032a59e: found want
-0x192d401d4: found want
-
-Just weird is the page/block/sector-wise alignment: 0x59e vs 0x1d4
-
-As it seems, that the crash happens after deduping ~100 small files
-after that large one, I will try to create a test case with same
-structure. Last time my test case was just to emulate the situation
-with the large file, which did not trigger any filesystem corruption.
-
-hd
-
+--=20
+Chris Murphy
