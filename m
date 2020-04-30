@@ -2,181 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429EE1BED62
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 03:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566E41BF55E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 12:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgD3BEi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Apr 2020 21:04:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54916 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbgD3BEh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:04:37 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U131Jf018331;
-        Thu, 30 Apr 2020 01:04:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- references : cc : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GblXpjhWUDuwNKY33m2UNS52qSQxUHZqS0OQPCiW5hs=;
- b=opH0YXxYpKRhiZNxSQAVVV89zEuV4l3FV2uU1/oPXwY3/lohrmKtVWmp6zIUWPlIV8go
- cEimY5QwlOnr3TAjSuFVjaFfCmMs8j9Bc6Zj4T1M8jf5IEHyz3BhXc8Jecg1qgLH13Tn
- xUIX8QsEdq5REzc0Wdut2T4p0GpHiIOSt0v5X/0lUyXnB2PEGb8RS2WYBUfHmkl1atvV
- dS2C22SV3d7YNRPY++gc+O7m1dz2ub3LBXd5vi8rVcGlyX8fywd70Ie23pTLtbE5gnUf
- JENCwtWDjrD/aH5F7hkNBdNINlthqerCdpBuo9LVkQsGqBqAOnZbdP9AbxtIUdoDbM5r 3g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 30nucg8rht-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 01:04:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U127Ys140697;
-        Thu, 30 Apr 2020 01:02:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30pvd29545-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 01:02:32 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03U12VMU017203;
-        Thu, 30 Apr 2020 01:02:31 GMT
-Received: from [192.168.1.102] (/39.109.243.230)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 01:02:31 +0000
-Subject: Re: [PATCH v7 rebased 0/5] readmirror feature (sysfs and in-memory
- only approach; with new read_policy device)
-From:   Anand Jain <anand.jain@oracle.com>
-To:     dsterba@suse.com
-References: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Message-ID: <a963d6c8-f0ec-7d41-ff0a-26d3ef9d013d@oracle.com>
-Date:   Thu, 30 Apr 2020 17:02:27 +0800
+        id S1726736AbgD3K2o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 06:28:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60564 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726127AbgD3K2o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Apr 2020 06:28:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C4AE1AC5B;
+        Thu, 30 Apr 2020 10:28:41 +0000 (UTC)
+Subject: Re: [PATCH v3 REBASED 0/3] btrfs: fix issues due to alien device
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, josef@toxicpanda.com
+References: <20200428152227.8331-1-anand.jain@oracle.com>
+ <55a5fd3a-dddb-df52-7f22-01e3407c0325@suse.com>
+ <36da56d2-2384-87fb-8003-814e9c72ddbb@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <547c4cc1-fe6b-8bcd-ff98-c45293ec7ce9@suse.com>
+Date:   Thu, 30 Apr 2020 13:28:41 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <36da56d2-2384-87fb-8003-814e9c72ddbb@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300003
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300003
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-David,
 
-  I am not sure if this will be integrated in 5.8 and worth the time to
-  rebase. Kindly suggest.
+On 30.04.20 г. 20:54 ч., Anand Jain wrote:
+> 
+> 
+> On 30/4/20 2:05 pm, Nikolay Borisov wrote:
+>>
+>>
+>> On 28.04.20 г. 18:22 ч., Anand Jain wrote:
+>>> v3 REBASED: Based on the latest misc-next. for for-5.8.
+>>>     Dropped the following patches as there were concerns about the usage
+>>>     of error code -EUCLEAN
+>>>     btrfs: remove identified alien device in open_fs_devices
+>>>     btrfs: remove identified alien btrfs device in open_fs_devices
+>>>
+>>>     Rmaining 3 patches here have obtained reviewed-by. With this pathset
+>>>     the pertaining fstests btrfs/197 and btrfs/198 (which tests 3 bugs)
+>>>     would pass as the patch 2/3 fixed a bug and 3/3 fixed the trigger
+>>>     of 2 other bugs (patch 1/3 is just a cleanup). Further at the moment
+>>>     I am not sure if there is any other trigger where it could again
+>>> leave
+>>>     an alien device in the fs_devices leading to the same/similar bugs.
+>>>
+>>> ==== original email ====
+>>> v3: Fix alien device is due to wipefs in Patch4.
+>>>      Fix a nit in Patch3.
+>>>      Patches are reordered.
+>>>
+>>> Alien device is a device in fs_devices list having a different fsid than
+>>> the expected fsid or no btrfs_magic. This patch set fixes issues
+>>> found due
+>>> to the same.
+>>>
+>>> Patch1: is a cleanup patch, not related.
+>>> Patch2: fixes failing to mount a degraded RAIDs (RAID1/5/6/10), by
+>>>     hardening the function btrfs_free_extra_devids().
+>>> Patch3: fixes the missing device (due to alien btrfs-device) not
+>>> missing in
+>>>     the userland, by hardening the function btrfs_open_one_device().
+>>> Patch4: fixes the missing device (due to alien device) not missing in
+>>>     the userland, by returning EUCLEAN in btrfs_read_dev_one_super().
+>>> Patch5: eliminates the source of the alien device in the fs_devices.
+>>>
+>>> PS: Fundamentally its wrong approach that btrfs-progs deduces the device
+>>> missing state in the userland instead of obtaining it from the kernel.
+>>> I remember objecting on the btrfs-progs patch which did that, but still
+>>> it got merged, bugs in p3 and p4 are its side effects. I wrote
+>>> patches to read device_state from the kernel using ioctl, procfs and
+>>> sysfs but it didn't get the due attention till a merger.
+>>>
+>>> Anand Jain (3):
+>>>    btrfs: drop useless goto in open_fs_devices
+>>>    btrfs: include non-missing as a qualifier for the latest_bdev
+>>>    btrfs: free alien device due to device add
+>>>
+>>>   fs/btrfs/volumes.c | 30 ++++++++++++++++++++++--------
+>>>   1 file changed, 22 insertions(+), 8 deletions(-)
+>>>
+>>
+>>
+>> One thing I'm not clear is how can we get into a situation of an alien
+>> device. I.e devices should be in fs_devices iff they are part of the>
+>> filesystem, no ?
+>>
+> 
+> I think you are missing the point that, when the devices (of a
+> raid1/raid5/raid6) are unmounted, we don't free any of their
+> fs_devices::device. So in this situation if one of those devices is
+> added to any another fsid (using btrfs device add) or wiped using wipefs
+> -a, we still don't free the device's former fs_devices::device entry in
+> the kernel and it acts as an alien device among its former partners when
+> it is mounting.
 
--Anand
+So it could happen only due to a deliberate action by the user
+and not during normal operation. In this case is it not the user's
+responsibility to remove/forget the device from that file system?
 
-On 6/4/20 7:51 pm, Anand Jain wrote:
-> v7:
-> Fix switch's fall through warning. Changle logs updates where necessary.
-> 
-> v6:
-> Patch 4/5 - If there is no change in device's read prefer then don't log
-> Patch 4/5 - Add pid to the logs
-> Patch 5/5 - If there isn't read preferred device in the chunk don't reset
-> read policy to default, instead just use stripe 0. As this is in
-> the read path it avoids going through the device list to find
-> read preferred device. So inline to this drop to check if there
-> is read preferred device before setting read policy to device.
-> 
-> __ Original email: __
-> 
-> v5:
-> Worked on review comments as received in its previous version.
-> Please refer to individual patches for the specific changes.
-> Introduces the new read_policy 'device'.
-> 
-> v4:
-> Rename readmirror attribute to read_policy. Drop separate kobj for
-> readmirror instead create read_policy attribute in fsid kobj.
-> merge v2:2/3 and v2:3/3 into v4:2/2. Patch titles have changed.
->   
-> v3:
-> v2:
-> Mainly fixes the fs_devices::readmirror declaration type from atomic_t
-> to u8. (Thanks Josef).
-> 
-> v1:
-> As of now we use only %pid method to read stripped mirrored data. So
-> application's process id determines the stripe id to be read. This type
-> of routing typically helps in a system with many small independent
-> applications tying to read random data. On the other hand the %pid
-> based read IO distribution policy is inefficient if there is a single
-> application trying to read large data as because the overall disk
-> bandwidth would remains under utilized.
-> 
-> One type of readmirror policy isn't good enough and other choices are
-> routing the IO based on device's waitqueue or manual when we have a
-> read-preferred device or a readmirror policy based on the target storage
-> caching. So this patch-set introduces a framework where we could add more
-> readmirror policies.
-> 
-> This policy is a filesystem wide policy as of now, and though the
-> readmirror policy at the subvolume level is a novel approach as it
-> provides maximum flexibility in the data center, but as of now its not
-> practical to implement such a granularity as you can't really ensure
-> reflinked extents will be read from the stripe of its desire and so
-> there will be more limitations and it can be assessed separately.
-> 
-> The approach in this patch-set is sys interface with in-memory policy.
-> And does not add any new readmirror type in this set, which can be add
-> once we are ok with the framework. Also the default policy remains %pid.
-> 
-> Previous works:
-> ----------------------------------------------------------------------
-> There were few RFCs [1] before, mainly to figure out storage
-> (or in memory only) for the readmirror policy and the interface needed.
-> 
-> [1]
-> https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg86368.html
-> 
-> https://lore.kernel.org/linux-btrfs/20190826090438.7044-1-anand.jain@oracle.com/
-> 
-> https://lore.kernel.org/linux-btrfs/5fcf9c23-89b5-b167-1f80-a0f4ac107d0b@oracle.com/
-> 
-> https://patchwork.kernel.org/cover/10859213/
-> 
-> Mount -o:
-> In the first trial it was attempted to use the mount -o option to carry
-> the readmirror policy, this is good for debugging which can make sure
-> even the mount thread metadata tree blocks are read from the disk desired.
-> It was very effective in testing radi1/raid10 write-holes.
-> 
-> Extended attribute:
-> As extended attribute is associated with the inode, to implement this
-> there is bit of extended attribute abuse or else makes it mandatory to
-> mount the rootid 5. Its messy unless readmirror policy is applied at the
-> subvol level which is not possible as of now.
-> 
-> An item type:
-> The proposed patch was to create an item to hold the readmirror policy,
-> it makes sense when compared to the abusive extended attribute approach
-> but introduces a new item and so no backward compatibility.
-> -----------------------------------------------------------------------
-> 
-> Anand Jain (5):
->    btrfs: add btrfs_strmatch helper
->    btrfs: create read policy framework
->    btrfs: create read policy sysfs attribute, pid
->    btrfs: introduce new device-state read_preferred
->    btrfs: introduce new read_policy device
-> 
->   fs/btrfs/sysfs.c   | 128 +++++++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/volumes.c |  39 +++++++++++++-
->   fs/btrfs/volumes.h |  16 ++++++
->   3 files changed, 182 insertions(+), 1 deletion(-)
-> 
