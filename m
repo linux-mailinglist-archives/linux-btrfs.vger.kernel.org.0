@@ -2,92 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ABA1C0516
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 20:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259D91C055A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Apr 2020 20:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgD3SrH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Apr 2020 14:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        id S1726377AbgD3S4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgD3SrG (ORCPT
+        with ESMTP id S1726272AbgD3S4W (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 14:47:06 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EC5C035494
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:47:06 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f13so8302234wrm.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:47:06 -0700 (PDT)
+        Thu, 30 Apr 2020 14:56:22 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1403CC035494
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:56:22 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id o27so3078736wra.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Apr 2020 11:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=flWxytFlfc2AalJWVP79qDFwQqQhnDLWc16EGX+Tc0g=;
-        b=QWWXJg6DH82OkAHWZU6Sqy1N/SLsj+LzTK9xmKXG6fLYIehQxoKA9GITfb9Xkpck69
-         4YPST21Yk0vnSnX/UM5Wq/britC2YOsfQlJd1zG0h7YC01q+jdnXSzvuziZ1QD/vNT/3
-         ezlm2lMFQ6EfY0GrRRHxq+mY3cC70QCErBcebOFqM1LHIQLl0NajLnF5t6eBAXME27wu
-         t2fX7iNjCzerfzwdxXZoxIQ0VLArJaRJ3mb7ALn1D/FOInxofy4fooNhZ4Auw07lrKbK
-         SouMs92lWsvgxNElrJVModr+IJmgWqz1V9e3Te3MlabbJOF6nYjSKsn7MO/lGcY4f6Tt
-         OuFg==
+        bh=mjgFmu6mPXxgjkPtgS0yFvSj3QbA8zkO219ueyTvEHw=;
+        b=nIW+hwLrvytp8l7qujahd1Rm0wUXU1/HE01V2bKsXkCEM9sAmrmdwOnvfoVlsKTlaK
+         U9cLCnCe9cXoTteQ1n/j+n2BXbBSB/tUTD4UluD/QPkJVVClo89lTwEWn4BofBGQ7ZqC
+         VySl4NhlMuErGqllH3HOBTk6q5VoMZCfcqPSk8FcL9ddEheQ3LH7c54oeNrK7pCtxICi
+         7r3KMTmkDQqctaw58vyOqB2Fk+hhTO8fIJY6M/j9ao1qna44fCUgucY/s89Qr4BBqL7E
+         9QuXoUi8u5RhDu/Mk6dFUDhoH5jjGy0UJ9sZE8RPCbBGoIwVwbDs6NA02Pu/xSgefez0
+         gAPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=flWxytFlfc2AalJWVP79qDFwQqQhnDLWc16EGX+Tc0g=;
-        b=kfCW093VaTo8K5X8PjhiYa1Um3lS2BwxcviERCk0fpGNU6T2tg5CeEZKtsGAv8kvFI
-         WJE14w/kvs0FoBIqj6iWs1avjimHggFcsbTykVV+W8XnOO1vWqyZ6JhtQMv7bqUdlK2b
-         8F9Bj3u8GbVZZAOYa3MVO/RVF0D34bHIDrOHdiSY6OaBdNlN206+DUNRMHigJ8n00qfs
-         xOC4Q0S7QN4f+OvSS4SXvWNNSNqAlRXJhlgmelsc0+m/FOAdJVGNb/9RE3paMe2OHyuz
-         BrJSbA1u4qwNUEfxgEq9q6lefXTnmziYwvlhkcYPbVxWy4qUdo4zX5ubcEsBb2g+K8zX
-         1DxA==
-X-Gm-Message-State: AGi0Pua3Iga3sbfDOv9poCgM+4Ch8yJ44ET/m5/vfVebhN4JFaGvt4oF
-        DteQyvEEIuoKwe4lyqAeG/BJvjgiegljCHgeExQMF9U0V+A=
-X-Google-Smtp-Source: APiQypKbclfoQxwCDpEyK03pfy+EaF1Xj901771Ec9CJN7BzUB82y3rdnYISRk32MGnvQjvXum9AS/IfPDXJ7teGm44=
-X-Received: by 2002:a5d:6148:: with SMTP id y8mr5337882wrt.236.1588272425307;
- Thu, 30 Apr 2020 11:47:05 -0700 (PDT)
+        bh=mjgFmu6mPXxgjkPtgS0yFvSj3QbA8zkO219ueyTvEHw=;
+        b=LAIyKhp8R0edcs7+8FpS5IXS9nJM1Fl5+SqLsGRdU9snEyrfxjWx0FB6ob1Ez4ZJX/
+         DW6ReAJYFZi4tE54U93Gg2yA/Oi93KDDIGUTSL+mYNXT/SiERI+HaHWHZAoO/cBLRCmF
+         8WnrCN/XfqziO6vkUeoY5o0MdaPJQLfwZFqLXaReXQ9cVrtr/W9/FDDFdys2N8rc2NtU
+         xzxTPfXiVnG9heJi4nYCepIHENklHFODkjLz9E3HH0Os+Jr3Tb2ExzLiJb3IayRM1BYr
+         jJ4sn5MYFaZekETQxSuSJG8+uzwSX9ClnRD5pt7/4W5KMIwxEeg5fSDwV6M+q8mEdTBc
+         qKIA==
+X-Gm-Message-State: AGi0PubQlisdt+nAeNpO6TFsArXQW8nxaG8mcZkvu8EOiPyn1kAz5Vwr
+        pBxtRY2BVE7VbPv1gKWNt5RgBqkQb1XqRCBQ9w7umQ==
+X-Google-Smtp-Source: APiQypLfjzP6nKlKLD3PEzO8twwX03/AZ036MV/MIyDDPIu2E1YqpDoJC7cDhEkoj3FV39j3rKrFIDUinfBySkmKWM4=
+X-Received: by 2002:adf:e702:: with SMTP id c2mr5671638wrm.252.1588272980686;
+ Thu, 30 Apr 2020 11:56:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
- <5oMc__tPC-OFYhHTtUghYtHMzySzDXlSlYC_S5_WjIFiA8eXfvsSxQpfaglOag0sNz7qtvMUzhCqdRzBOMokxeo2dFrfkWrLbBmmuWvME5s=@protonmail.com>
- <CAJCQCtT0mSYvN7FeCavsmKP9j_69JmZ0JdGz8ommhqag=GiM=Q@mail.gmail.com> <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
-In-Reply-To: <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
+References: <8B7A1A74-4AFC-4B85-AF99-5EEDBB3B94ED@cisco.com>
+In-Reply-To: <8B7A1A74-4AFC-4B85-AF99-5EEDBB3B94ED@cisco.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 30 Apr 2020 12:46:49 -0600
-Message-ID: <CAJCQCtRWdovSOQd8r7YzxsQa4fxT9feB_R-nvG7BjvB-u1m2ew@mail.gmail.com>
-Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read
- block groups
-To:     Nouts <nouts@protonmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date:   Thu, 30 Apr 2020 12:56:04 -0600
+Message-ID: <CAJCQCtRSt5pi=H5Ohy=zv-pu71Cbc9vWjnQeJSX80HDvkiaLhg@mail.gmail.com>
+Subject: Re: Can I create a new fileystem, using Read-only Seed device, to
+ change the ownership of the files in the seed device.
+To:     "Saravanan Shanmugham (sarvi)" <sarvi@cisco.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 12:40 PM Nouts <nouts@protonmail.com> wrote:
+On Thu, Apr 30, 2020 at 12:44 PM Saravanan Shanmugham (sarvi)
+<sarvi@cisco.com> wrote:
 >
-> Thanks for your help. I compiled btrfs-progs v5.6 from github.
+> I have a problem that needs solving and I am trying to understand if BTRFS can solve it.
 >
-> Here is the dump from /dev/sda : https://pastebin.com/e3YZxxsZ
+> I have diskimage(currently using ext4).  And I am considering btrfs for,
+> Lets call this filesystemA
+> This contains a software build tree done by userA and hence all files are owned by userA
 >
-> And btrfs check returned an error instantly :
-> Opening filesystem to check...
-> ERROR: child eb corrupted: parent bytenr=5923702292480 item=2 parent level=2 child level=0
-> ERROR: failed to read block groups: Input/output error
-> ERROR: cannot open file system
+> I want an almost instantaneous way to create or copy or clone or seed a new filesystem or directory tree filesystem B, with all the content in filesystem A but is owned by userB
+>
+> Question:
+> 1. if I created fileSystemA in btrfs and used it as a seed device in creating filesystem B, What file ownership does the filesystem B have?
 
-Ok try:
-btrfs insp dump-t -b 5923702292480 --follow /dev/sda
+You mean unix owner and group? It will still be userA. The only thing
+that changes when making a sprout file system is the volume and device
+UUIDs.
 
-Qu might have an idea. But in the meantime, my suggestion is to try to
-mount with a newer kernel. In order try:
+> 2. Can that be changed to userB with any option.
 
-normal mount
-mount -o ro
-mount -o ro,degraded
-mount -o ro,degraded,usebackuproot
+Yes, you can use chown. The seed is not changed, just the sprout (the
+read write device).
 
-And if any works, at least you can update backups in case this file
-system can't be fixed.
+
+> 3. What happens when userB tries to modify a fileX on filesystemB that was seeded with filesystemA and has fileX owned by userA
+
+userB needs permission to make the change, unix owner or group or ACL,
+same as any file.
+
+
+> 3. I understand btrfs supports snapshots and clones. Does the cloned volume and all its files keep the original owners as in the original volume/snapshot, or can it be specified as part of the cloning process.
+
+It's unchanged, you can change it before or after removing the seed device.
+
 
 
 -- 
