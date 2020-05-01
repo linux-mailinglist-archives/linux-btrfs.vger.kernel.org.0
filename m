@@ -2,192 +2,284 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CC81C0C46
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 04:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA561C0CAA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 05:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgEACr5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 30 Apr 2020 22:47:57 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:46456 "EHLO
+        id S1728126AbgEADhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Apr 2020 23:37:22 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36000 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728024AbgEACr4 (ORCPT
+        with ESMTP id S1727889AbgEADhW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Apr 2020 22:47:56 -0400
+        Thu, 30 Apr 2020 23:37:22 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id DDA5369CBFD; Thu, 30 Apr 2020 22:47:53 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 22:47:53 -0400
+        id 7CE0269CD11; Thu, 30 Apr 2020 23:37:20 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 23:37:20 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Phil Karn <karn@ka9q.net>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Extremely slow device removals
-Message-ID: <20200501024753.GE10769@hungrycats.org>
-References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
- <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
- <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
- <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net>
+To:     Marc Lehmann <schmorp@schmorp.de>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: experiment: suboptimal behaviour with write errors and
+ multi-device filesystems
+Message-ID: <20200501033720.GF10769@hungrycats.org>
+References: <20200426124613.GA5331@schmorp.de>
+ <20200428061959.GB10769@hungrycats.org>
+ <20200428181436.GA5402@schmorp.de>
+ <20200428213551.GC10796@hungrycats.org>
+ <20200501015520.GA8491@schmorp.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net>
+In-Reply-To: <20200501015520.GA8491@schmorp.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 12:59:29PM -0700, Phil Karn wrote:
-> On 4/30/20 11:40, Chris Murphy wrote:
-> > It could be any number of things. Each drive has at least 3
-> > partitions so what else is on these drives? Are those other partitions
-> > active with other things going on at the same time? How are the drives
-> > connected to the computer? Direct SATA/SAS connection? Via USB
-> > enclosures? How many snapshots? Are quotas enabled? There's nothing in
-> > dmesg for 5 days? Anything for the most recent hour? i.e. journalctl
-> > -k --since=-1h
+On Fri, May 01, 2020 at 03:55:20AM +0200, Marc Lehmann wrote:
+> On Tue, Apr 28, 2020 at 05:35:51PM -0400, Zygo Blaxell <ce3g8jdj@umail.furryterror.org> wrote:
+> > > worked flawlessly and apparently fixed all errors (other than missing file
+> > > data). Maybe the difference is the -mdevid=2 - although the disk had more
+> > > than 100G of unallocated space, so that alone wouldn't epxlain the enospc.
+> > 
+> > I'm not sure, but my guess is the allocator may have noticed you have
+> > only one disk in degraded mode, and will not be able to allocate more
+> > raid1 block groups (which require 2 disks).  A similar thing happens
+> > when raid5 arrays degrade--allocation continues on remaining disks,
+> > in new block groups.
 > 
-> Nothing else is going on with these drives. Those other partitions
-> include things like EFI, manual backups of the root file system on my
-> SSD, and swap (which is barely used, verified with iostat and swapon -s).
-> 
-> The drives are connected internally with SATA at 3.0 Gb/s (this is an
-> old motherboard). Still, this is 375 MB/s, much faster than the drives'
-> sustained read/write speeds.
-> 
-> I did get rid of a lot of read-only snapshots while this was running in
-> hopes this might speed things up. I'm down to 8, and willing to go
-> lower. No obvious improvement. Would I expect this to help right away,
-> or does it take time for btrfs to reclaim the space and realize it
-> doesn't have to be copied?
-> 
-> I've never used quotas; I'm the only user.
-> 
-> There are plenty of messages in dmesg of the form
-> 
-> [482089.101264] BTRFS info (device sdd3): relocating block group
-> 9016340119552 flags data|raid1
-> [482118.545044] BTRFS info (device sdd3): found 1115 extents
-> [482297.404024] BTRFS info (device sdd3): found 1115 extents
-> 
-> These appear to be routinely generated by the copy operation. I know
-> what extents are, but these messages don't really tell me much.
+> There were at least 2 other disks with some unallocated data available. Could
+> the -mdevid=2 have limited the allocation or reading somehow?
 
-If it keeps repeating "found 1115 extents" over and over (say 5 or
-more times) then you're hitting the balance looping bug in kernel 5.1
-and later.  Every N block groups (N seems to vary by user, I've heard
-reports from 3 to over 6000) the kernel will get stuck in a loop and
-will need to reboot to recover.  Even if you cancel the balance, it will
-just loop again until rebooted, and there's no cancel for device delete
-so if you start looping there you can just skip directly to the reboot.
-For a non-trivial filesystem the probability of successfully deleting
-or resizing a device is more or less zero.
+It shouldn't.  Balance will happily copy data to a different location on the
+same device, and if you have at least 2 disks with unallocated then
+raid1 allocation should always succeed.  Doesn't mean there isn't a
+bug there though.  The btrfs allocator is full of 5-year-old bugs,
+a few get fixed every month.
 
-There is no fix for that regression yet.  Kernel 4.19 doesn't have the
-regression and does have other relevant bug fixes for balance, so it
-can be used as a workaround.
+> > > > the filesystem.  Userspace will definitely be informed when that happens.
+> > > > It's something we'd want to avoid with raid1.
+> > > 
+> > > Does "Uncorrectable EIO" also mean writes, though? I know from experience
+> > > that I get EIO when btrfs hits a metadata error, and that nowadays it is
+> > > very successfull in correcting metadata errors (which is a relatively new
+> > > thing).
+> > 
+> > Either.  EIO is the result of _two_ read or write failures (for raid1).
+> 
+> But then btrfs doesn't correct underlying EIO errors on write in raid1,
+> i.e. it gets EIO from the block write, and doesn't fix it.
 
-> The copy operation appears to be proceeding normally, it's just
-> extremely, painfully slow. And it's doing an awful lot of writing to the
-> drive I'm removing, which doesn't seem to make sense. Looking at
-> 'iostat', those writes are almost always done in parallel with another
-> drive, a pattern I often see (and expect) with raid-1.
+Fixing it would mean repeating the same write--btrfs doesn't feed back
+into the allocator to try to reallocate the data on a block group with
+at least one chunk disk online.  Nothing to do there.
+
+> > > My main takeaway from this experiment was that a) I did get my filesystem
+> > > back without having to reformat, which is admirable, and b) I can write a
+> > > surprising amount of data to a missing disk without seeing anything more
+> > > than kernel messages. In my stupidity I can well imagine having a disk
+> > > falling out of the "array" and me not noticing it for days.
+> > 
+> > It's critical to continuously monitor btrfs raids by polling 'btrfs
+> > dev stats'.  Ideally there would be an ioctl or something that would
+> > block until they change, so an alert can be generated without polling.
 > 
-> >
-> > It's an old kernel by this list's standards. Mostly this list is
-> > active development on mainline and stable kernels, not LTS kernels
-> > which - you might have found a bug. But there's thousands of changes
-> > throughout the storage stack in the kernel since then, thousands just
-> > in Btrfs between 4.19 and 5.7 and 5.8 being worked on now. It's a 20+
-> > month development difference.
-> >
-> > It's pretty much just luck if an upstream Btrfs developer sees this
-> > and happens to know why it's slow and that it was fixed in X kernel
-> > version or maybe it's a really old bug that just hasn't yet gotten a
-> > good enough bug report still, and hasn't been fixed. That's why it's
-> > common advice to "try with a newer kernel" because the problem might
-> > not happen, and if it does, then chances are it's a bug.
-> I used to routinely build and install the latest kernels but I got tired
-> of that. But I could easily do so here if you think it would make a
-> difference. It would force me to reboot, of course. As long as I'm not
-> likely to corrupt my file system, I'm willing to do that.
+> Right, that might be helpful.
 > 
-> >> I started the operation 5 days ago, and of right now I still have 2.18
-> >> TB to move off the drive I'm trying to replace. I think it started
-> >> around 3.5 TB.
-> > Issue sysrq+t and post the output from 'journalctl -k --since=-10m'
-> > in something like pastebin or in a text file on nextcloud/dropbox etc.
-> > It's probably too big to email and usually the formatting gets munged
-> > anyway and is hard to read.
-> >
-> > Someone might have an idea why it's slow from sysrq+t but it's a long shot.
+> > This is true of most raid implementations.  The whole point of a RAID1
+> > is to _not_ report correctable errors on individual drives to userspace
+> > applications.  There is usually(*) a side-channel for monitoring error
+> > rates, and producing alert notifications when those are not zero.
 > 
-> I'm operating headless at the moment, but here's journalctl:
+> Well, the data wasn't raid1, but single, and no error was ever reported.
+
+The metadata was raid1, that's all that should matter.
+
+> My concern is that btrfs will happily, continously and mostly silently loose
+> data practically forever by assuming a disk that gives an error on every
+> access is still there and able to hold data.
 > 
-> -- Logs begin at Fri 2020-04-24 21:49:22 PDT, end at Thu 2020-04-30
-> 12:07:12 PDT. --
-> Apr 30 12:04:26 homer.ka9q.net kernel: BTRFS info (device sdd3): found
-> 1997 extents
-> Apr 30 12:04:33 homer.ka9q.net kernel: BTRFS info (device sdd3):
-> relocating block group 9019561345024 flags data|raid1
-> Apr 30 12:05:21 homer.ka9q.net kernel: BTRFS info (device sdd3): found
-> 6242 extents
+> That behaviour is very different to other "raid" implementations.
+
+Be careful what you ask for:  you have configured a filesystem that can
+tolerate metadata write failures (raid1 insists on continuous operation
+in degraded mode).  Fine, btrfs checks for metadata write failures, and
+handles them by forcing itself read-only.  Data block async write failures
+are not normally reported to userspace unless reports are explicitly
+requested, so it doesn't matter that the single profile data block writes
+are failing, there's nowhere to report those errors.  So it's going to
+tolerate all the failures in metadata because that's what you asked for,
+and ignore all the failures in data because that's what you asked for.
+
+If your applications didn't call fsync() or use O_SYNC or O_DIRECT or
+any of the other weird and wonderful ways to ask the filesystem to tell
+you about data block write errors, then userspace won't learn anything
+about data block write errors on most Linux filesystems.  The system
+calls will exit before the disk is even touched, so there's no way to
+tell the application that a delalloc extent write, which maybe happens
+30 seconds after the application closed the file, didn't work.  Nor is it
+reasonable to shut down the entire filesystem because of a deferred
+non-metadata write failure (well, maybe it's reasonable if btrfs had a
+'errors=remount-ro' option like ext4's).
+
+If you contrive a test case where other filesystems are able to write
+their metadata without error, but all data block writes (excluding
+directory block writes) fail with EIO, they will do the same thing as btrfs.
+It's a simple experiment with a USB stick (make sure to defeat your distro
+which might be mounting with 'sync'):  write a multi-megabyte file to a
+filesystem on the USB stick with 'cat', and let cat finish the write and
+close the file without error.  Then immediately pull the USB stick out
+before writeback starts.  Result:  the application sees write success,
+the file is gone (or, depending on the filesystem, contains garbage),
+and the only indication of failure is a handful of kernel messages about
+the lost USB device.
+
+If you write a file and you do call fsync() on btrfs, and fsync() doesn't
+report an IO error, that's...possibly?...a bug.  If fsync writes the data
+to metadata block groups then there will be no error because a failure
+did not happen, but if fsync writes the data to data block groups then
+a failure does happen and fsync should report it.  So e.g. a small file
+that becomes an inline extent won't trigger an error (and won't be lost)
+but a larger file will.
+
+Other "raid" implementations for the most part don't support "care about
+some data but not others" operating modes like the ones btrfs has.
+There's nothing like data-single/metadata-raid1 in any standard RAID
+configuration.  Each profile is operating correctly according to its
+rules, even if the combination of those rules doesn't make much sense
+in terms of real-world use cases.
+
+> > 'scrub' will repair it in-place (bad: doesn't work on nodatacow files,
+> > and only works 99.999999925% of the time with crc32c csums).
 > 
-> > If there's anything important on this file system, you should make a
-> > copy now. Update backups. You should be prepared to lose the whole
-> > thing before proceeding further.
-> Already done. Kinda goes without saying...
-> > KB
-> > Next, disable the write cache on all the drives. This can be done with
-> > hdparm -W (cap W, lowercase w is dangerous, see man page). This should
-> > improve the chance of the file system on all drives being consistent
-> > if you have to force reboot - i.e. the reboot might hang so you should
-> > be prepared to issue sysrq+s followed by sysrq+b. Better than power
-> > reset.
-> I did try disabling the write caches. Interestingly there was no obvious
-> change in write speeds. I turned them back on, but I'll remember to turn
-> them off before rebooting. Good suggestion.
-> > Boot, leave all drives connected, make sure the write caches are
-> > disabled, then make sure there's no SCT ERC mismatch, i.e.
-> > https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+> I assume that calculations assumes random bit errors - but that is rarely
+> the case. In this case, for example, there were no crc32 errors, all
+> detection came from other layers ("parent transid failed" etc.).
+
+Parent transid verification happens after csum checks.  For metadata, the
+csum is stored inline in the block, so any older version of the metadata
+(e.g. a page that was previously present but failed to be overwritten)
+will pass the csum check but fail the later checks on level and transid.
+
+> > Cheap SSDs (and some NAS HDDs) corrupt data randomly without any
+> [...]
+> > All that said, from what you've described, it sounds like there are still
 > 
-> All drives support SCT. The timeouts *are* different: 10 sec for the new
-> 16TB drives, 7 sec for the older 6 TB drives.
+> I'm not sure I can follow you here completely - form what you write, it
+> sounds like "some disks fail silently, so btrfs doesn't care when disks fail
+> loudly".
 > 
-> But this shouldn't matter because I'm quite sure all my drives are
-> healthy. I regularly run both short and long smart tests, and they've
-> always passed. No drive I/O errors in dmesg, no evidence of any retries
-> or timeouts. Just lots of small apparently random reads and writes that
-> execute very slowly. By "small" I mean the ratio of KB_read/s to tps in
-> 'iostat' is small, usually less than 10 KB and often just 4KB.
+> I mean, in the case described, there were no silent failures except maybe in
+> the split second before the disk disconnected (and not even then when the
+> raid controller keeps the cache and writes it later).
 > 
-> Yes, my partitions are properly aligned on 8-LBA (4KB) boundaries.
+> All failures were properly reported (by device-mapper ion this case), i.e.
+> every read and write caused an EIO to be reported to btrfs from the block
+> layer.
 > 
-> >
-> > And then do a scrub with all the drives attached. And then assess the
-> > next step only after that completes. It'll either fix something or
-> > not. You can do this same thing with kernel 4.19. It should work. But
-> > until the health of the file system is known, I can't recommend doing
-> > any device replacements or removals. It must be completely healthy
-> > first.
-> I run manual scrubs every month or so. They've always passed with zero
-> errors. I don't run them automatically because they take a day and
-> there's a very noticeable hit on performance. Btrfs (at least the
-> version I'm running) doesn't seem to know how to run stuff like this at
-> low priority (yes, I know that's much harder with I/O than with CPU).
-> >
-> > I personally would only do the device removal (either remove while
-> > still connected or remove while missing) with 5.6.8 or 5.7rc3 because
-> > if I have a problem, I'm reporting it on this list as a bug. With 4.19
-> > it's just too old I think for this list, it's pure luck if anyone
-> > knows for sure what's going on.
+> Just because some disks behave bad doesn't seem like sufficient reason to
+> me to completely ignore cases whwre errors _are_ being reported.
 > 
-> I can always try the latest kernel (5.6.8 is on kernel.org) as long as
-> I'm not likely to lose data by rebooting. I do have backups but I'd like
-> to avoid the lengthy hassle of rebuilding everything from scratch.
+> I don't think my case is very unlikely - it's basically how linux behaves
+> when lvm is used and, say, one of your disks has a temporary outage - the
+> device node might go away and all accesses will rersult in EIO.
+
+Were the read accesses not returning EIO?  That would be a bug.
+
+Asynchronous writes have terrible reporting facilities on all Linux
+filesystems.  btrfs is not inconsistent here.
+
+> Other filesystems can get around this by not supporting multiple devices and
+> relying on underlying systems (e.g. software or hardware raid) to make the
+> disks appear a single device.
+
+Indeed, this is contributing to the difference between your expectations
+and reality.
+
+> I do think btrfs would need more robust error handling for such cases -
+> I don't know *any* raid implementation that ignores write errors, for
+> example, and I don't think there is any raid implementation that ignores
+> missing disks.
+
+Most RAID implementations have a mode that allows data recovery when the
+array has exceeded maximum tolerated failures (e.g. lvm "partial" mode,
+or mdadm --force --run).  This is currently the only mode btrfs has.
+Until we get some better management tools (kick a device out of the
+array, reintegrate a previously disconnected device into an aray, all
+while online) we're stuck permanently in partial mode.
+
+> > failures even on the stuff btrfs does well?  e.g. there should not have
+> > been a directory search problem at _any_ time with that setup.
 > 
-> Thanks for the suggestions!
+> That was my expectation, although I am well aware that this is still under
+> development. I am already positively surprised that I was able to get an
+> (apparently) fully functional filesystem back after something so drastic,
+> with relatively little effort (metadata profile conversion).
+
+RAID1 passed my test cases for the first time in 2016 (after some NULL
+deref bugs were fixed).  If it's not working today, there has been
+a _regression_.
+
+> Tooling is not so much of an issue for me, the biggest issue would be
+> detecting which files are on the missing disk, and if I can't come up with
+> something better (e.g. ioctls to query the data block location), I can
+> always read all files and see which of them error out and restore them.
 > 
-> Phil
+> > (*) Read errors are super important though--even the ones not reported
+> > to userspace--as they are direct evidence of drive failure.
 > 
+> Under what conditions are write errors not even more direct evidence
+> of drive failure (usually, but not exclusively, indicating far bigger
+> problems than single block errors)?
+
+Well, this is why you monitor dev stats for write errors (or, for
+that matter, the raw disk devices).  The monitor can remount the
+filesystem read-only or kill all the applications with open files if
+that's what you'd prefer.
+
+> > Since 5.0, btrfs silently ignores some of those, and this even got
+> > backported to 4.19 and earlier LTS kernels. >:-(
 > 
+> eh, cool, uh :)
 > 
+> Well, I assume that my case of concern - single disk failure - is not
+> something that will escape my attention forever, so doing a manual
+> metadata balance is fully viable for me.
+
+Remember that data-single metadata-raid1 is a weird case--you're
+essentially saying that if a disk fails, you want the filesystem to be
+read-only forever (btrfs won't mount it read-write without the missing
+disk), and you don't care about which data disappears (since there's
+no facility to control which files go on which disks).  I'd say being
+confused about when Linux decides to return to EIO to userspace--already
+well understood on other filesystems--is the least of your problems.  ;)
+
+> My concern is merely that btrfs stubbornly insists a completely missing
+> disk is totally fine to write to, essentially forever :)
+
+That's an administrator decision, but btrfs does currently lack the tool
+to implement the "remove the failing device" decision.  A workaround is
+'echo 1 > /sys/block/sdX/dev/delete'.
+
+> I'm not saying alerting userspace is required in some way. But maybe
+> btrfs should not consider an obviously badly broken disk as healthy. I
+> would have expected btrfs to stop writing to a disk when it is told in no
+> unclear terms that the write failed, at leats at some point.
+
+The trouble is that it's a continuum--disks aren't "good" at 0 errors
+and "bad" at 1 or write errors.  Even mdadm isn't that strict--they have
+maximum error counts, retries, mechanisms to do partial resyncs if disks
+come back.  In btrfs this is all block-level stuff, every individual
+block has its own sync state and data integrity.
+
+lvm completely ignores _read_ errors during pvmove, a feature I use to
+expedite the recovery of broken filesystems (and btrfs ends up not even
+being broken).
+
+> -- 
+>                 The choice of a       Deliantra, the free code+content MORPG
+>       -----==-     _GNU_              http://www.deliantra.net
+>       ----==-- _       generation
+>       ---==---(_)__  __ ____  __      Marc Lehmann
+>       --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+>       -=====/_/_//_/\_,_/ /_/\_\
