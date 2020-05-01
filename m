@@ -2,206 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05FF1C1E26
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 21:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A287D1C11D1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 14:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgEAT7G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 May 2020 15:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgEAT7F (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 May 2020 15:59:05 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1D0C061A0C
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 12:59:05 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id q204so975993ooq.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 12:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9o41ZOZdkZnmDCeb+txJzc+aYR3RspfDqQSNyPkD7kE=;
-        b=L7xAyv94YKqs0toEJ+HmVusGtjfHxxYXIldS7b6icMsteBbKSIVhjJKOMeVf7nTwee
-         jjg2e2tYpqNT+cNJZKyeZy03ue5PZtbeOR7tjQgaP8Q0mqsSRiaxuUBU4qFMQBMECTj2
-         w3MXB9Px17fNpqtJ5QjAthmrarN5Iabxv7c3Lc+zeXNZOATdByE/VCxPJpzKsTSan3Iy
-         U+27wYk/YRnjeq+vssz5iawKdFu7BhhIk5klz3v8SAHJ4vGzhRA0yPqU3qp+32k1NZpP
-         Qqykg5hqmc7AZs3jVTxVk0QgXU2m8hPyZwzLBl5r8C6DquRFi3BPa5+psYbpOIn/TEgu
-         UNpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9o41ZOZdkZnmDCeb+txJzc+aYR3RspfDqQSNyPkD7kE=;
-        b=jteElSyc2/ojH5xeq7QyQ4niPUYdeM5HREXYP+P1f6HHbQZKDL7fFsACDB6LW6O/XO
-         9Syv+biN5uxxcLOfkv7O5fQhOV9vvF0irKx+ZUfU/CLSGiFvfpnkllmjxVh8JDcGYSAm
-         aUYoUzFOtYgiPhJMk5L/gSUP5JSaaYaCkTEW3L9lKKJ/BaNGCsNA0LdK7S3OFeMjR/eF
-         DQaUdwB70p2kmokXfJ394mYI69RH1UNP6O7EcS9++Mcpa6uA22+UUBA1vKpPxLx7ouRJ
-         Fm2JJJDLhbnrqJhESNKLuBgIa7BmlPaCBJU6Hb0fDo0AWKrGJ4pVB+VsowgVA5/YVj5L
-         ZjAw==
-X-Gm-Message-State: AGi0PubXaB3gO0mXZ0la5CH69iIWBjHPeAGi4n/Uh5XEarX28y0QEqMV
-        jLA1LjbC4iiR5zoeS/XCMP8SDJh925Iu9A+nvLkCx1t5w5U=
-X-Google-Smtp-Source: APiQypLowKwX6KD+NnxXO/psUcIDyLjchn3GxGnAMHjoNRCUf93c4s4vOG1QdBNqLPY8E71VJ0xsHW3LygNUHttU7t4=
-X-Received: by 2002:a4a:ea91:: with SMTP id r17mr1847265ooh.18.1588363144965;
- Fri, 01 May 2020 12:59:04 -0700 (PDT)
+        id S1728653AbgEAMD6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 May 2020 08:03:58 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37206 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728585AbgEAMD6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 May 2020 08:03:58 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 041C2xo9151758;
+        Fri, 1 May 2020 12:03:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=6+lWGoZN1WaaPkACnaadGK7eaF4ZAyO1fxIKRwe4rYo=;
+ b=FIZQqsvVKvMISQlF1XMc8OqDItyKLjkPT7omM7chKomcQLQkq9R2wJXXwi3FTfkOVJX2
+ fxq6Mvra3YYAPJmk+9oEjdhtizMlsv2GgOmdDbRzAseoJlNIODxRwTUdda1yRa283quL
+ OziHYqM41rWAKUA8vPa86VbdZRAN1J6eVHWlgWhFcZP+TbUy8G505iDFMWgEeeFKKFSC
+ xZEuB7xANye8+wsBUIaqydFkcS8fOhfwkLeBeO2taTofiyxhbc0g7Egafea3XzfTSuzE
+ 9cQQq2wbqLbIc7uQsNFijpoHV++LG8/JpWEMwn59ElTn5YtQT7Xv0rTMe1VPODD9b1x7 CA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30r7f3hx1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 12:03:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 041BqVcB079130;
+        Fri, 1 May 2020 12:01:50 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30r7f3swpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 12:01:50 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 041C1nXA023159;
+        Fri, 1 May 2020 12:01:49 GMT
+Received: from [192.168.1.102] (/39.109.243.230)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 01 May 2020 05:01:49 -0700
+Subject: Re: [PATCH 3/3] btrfs: free alien device due to device add
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        nborisov@suse.com, josef@toxicpanda.com
+References: <20200428152227.8331-1-anand.jain@oracle.com>
+ <20200428152227.8331-4-anand.jain@oracle.com>
+ <20200430133111.GL18421@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <af735fb7-e03d-b143-5eef-5b1b32c283bd@oracle.com>
+Date:   Sat, 2 May 2020 04:01:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAAhjAp1zghNnRpbA2WypBU9+Azeui8kTQiTj+DfbK-iX-z71WQ@mail.gmail.com>
- <CAJCQCtS7mbjEVchwbJS86ujAW+TrKHBk23oYtTNQnruiUr0XSg@mail.gmail.com>
-In-Reply-To: <CAJCQCtS7mbjEVchwbJS86ujAW+TrKHBk23oYtTNQnruiUr0XSg@mail.gmail.com>
-From:   Rollo ro <rollodroid@gmail.com>
-Date:   Fri, 1 May 2020 21:58:29 +0200
-Message-ID: <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com>
-Subject: Re: Can't repair raid 1 array after drive failure
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200430133111.GL18421@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 phishscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005010093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=2
+ phishscore=0 mlxlogscore=999 impostorscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005010094
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Fr., 1. Mai 2020 um 19:52 Uhr schrieb Chris Murphy <lists@colorremedies.com>:
->
-> On Fri, May 1, 2020 at 11:02 AM Rollo ro <rollodroid@gmail.com> wrote:
-> >
-> > Hi again,
-> > I'm still running into problems with btrfs. For testing purposes, I
-> > created a raid 1 filesystem yesterday and let the computer copy a ton
-> > of data on it over night:
-> >
-> > Label: 'BTRFS1'  uuid: 61e5aba9-6811-46ae-9396-35a72d3b1117
-> >         Total devices 3 FS bytes used 1.15TiB
-> >         devid    1 size 5.46TiB used 1.16TiB path /dev/sdc1
-> >         devid    3 size 698.64GiB used 10.00GiB path /dev/sdf
-> >         devid    4 size 1.82TiB used 1.15TiB path /dev/sde
-> >
-> > Today I started scrub and looked at the status some hours later, which
-> > gave thousands of errors on drive 4:
->
-> What happened to devid 2?
 
-I added number 3 and removed 2 earlier. That worked without problems.
 
->
-> >
-> > root@OMV:/var# btrfs scrub status /srv/dev-disk-by-label-BTRFS1/
-> > scrub status for 61e5aba9-6811-46ae-9396-35a72d3b1117
-> >         scrub started at Fri May  1 11:37:36 2020, running for 04:37:48
-> >         total bytes scrubbed: 1.58TiB with 75751000 errors
-> >         error details: read=75751000
-> >         corrected errors: 0, uncorrectable errors: 75750996,
-> > unverified errors: 0
-> >
-> > (Not shown here that it was drive 4, but it was)
-> >
-> > Then found that the drive is missing:
-> >
-> > Label: 'BTRFS1'  uuid: 61e5aba9-6811-46ae-9396-35a72d3b1117
-> >         Total devices 3 FS bytes used 1.15TiB
-> >         devid    1 size 5.46TiB used 1.16TiB path /dev/sdc1
-> >         devid    3 size 698.64GiB used 10.00GiB path /dev/sdf
-> >         *** Some devices missing
-> >
-> > Canceled scrub:
-> > root@OMV:/var# btrfs scrub cancel /srv/dev-disk-by-label-BTRFS1/
-> > scrub cancelled
-> >
-> > Stats showing lots of error on sde, which is the missing drive:
-> > root@OMV:/var# btrfs device stats /srv/dev-disk-by-label-BTRFS1/
-> > [/dev/sdc1].write_io_errs    0
-> > [/dev/sdc1].read_io_errs     0
-> > [/dev/sdc1].flush_io_errs    0
-> > [/dev/sdc1].corruption_errs  0
-> > [/dev/sdc1].generation_errs  0
-> > [/dev/sdf].write_io_errs    0
-> > [/dev/sdf].read_io_errs     0
-> > [/dev/sdf].flush_io_errs    0
-> > [/dev/sdf].corruption_errs  0
-> > [/dev/sdf].generation_errs  0
-> > [/dev/sde].write_io_errs    154997860
-> > [/dev/sde].read_io_errs     77170574
-> > [/dev/sde].flush_io_errs    310
-> > [/dev/sde].corruption_errs  0
-> > [/dev/sde].generation_errs  0
-> >
-> >
-> > I tried to replace
-> > root@OMV:/var# btrfs replace start 2 /dev/sdb /srv/dev-disk-by-label-BTRFS1/ &
-> > [1] 1809
-> > root@OMV:/var# ERROR: '2' is not a valid devid for filesystem
-> > '/srv/dev-disk-by-label-BTRFS1/'
-> >
-> > --> That's inconsistent with the device remove syntax, as it allows to
-> > use a non-existing number? I try again using the /dev/sdx syntax, but
-> > as sde is gone, I rescan and now it's sdi!
->
-> devid 2 was missing from the very start of the email, so it is not a
-> valid source for removal.
+On 30/4/20 9:31 pm, David Sterba wrote:
+> On Tue, Apr 28, 2020 at 11:22:27PM +0800, Anand Jain wrote:
+>> When the old device has new fsid through btrfs device add -f <dev> our
+>> fs_devices list has an alien device in one of the fs_devices. So this is
+>> a trigger and not the root cause of the issue. This patch fixes the trigger.
+>>
+>> By having an alien device in fs_devices, we have two issues so far
+>>
+>> 1. missing device is not shows as missing in the userland
+>>
+>> Which is due to cracks in the function btrfs_open_one_device() and
+>> hardened by the pending patches in the ml.
+>>   btrfs: remove identified alien device in open_fs_devices
+>>   btrfs: remove identified alien btrfs device in open_fs_devices
+>>
+>> 2. mount of a degraded fs_devices fails
+>>
+>> Which is due to cracks in the function btrfs_free_extra_devids() and
+>> hardened by patch (included in the set).
+>>   btrfs: include non-missing as a qualifier for the latest_bdev
+>>
+>> Now the trigger for both of this issue is that there is an alien (does not
+>> contain the intended fsid/btrfs_magic) device in the fs_devices.
+>>
+>> We know a device can be scanned/added through
+>> btrfs-control::BTRFS_IOC_SCAN_DEV|BTRFS_IOC_DEVICES_READY
+>> or by
+>> ioctl::BTRFS_IOC_ADD_DEV
+>>
+>> And device coming through btrfs-control is checked against the all other
+>> devices in btrfs kernel but not coming through BTRFS_IOC_ADD_DEV.
+>>
+>> This patch checks if the device add is alienating any other scanned
+>> device and deletes it.
+>>
+>> In fact, this patch fixes both the issues 1 and 2 (above) by eliminating
+>> the trigger of the issue, but still they have their own patch as well
+>> because its the right way to harden the functions and fill the cracks.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>> v3-rebased: change log updated.
+>>
+>>   fs/btrfs/volumes.c | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index a67af16d960d..300ee5f0bfa2 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -2665,6 +2665,19 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>   
+>>   	/* Update ctime/mtime for libblkid */
+>>   	update_dev_time(device_path);
+>> +
+>> +	/*
+>> +	 * Now that we have written a new sb into this device, check all other
+>> +	 * fs_devices list if it alienates any scanned device.
+>> +	 */
+>> +	mutex_lock(&uuid_mutex);
+>> +	/*
+>> +	 * Ignore the return as we are successfull in the core task - to added
+>> +	 * the device
+>> +	 */
+>> +	btrfs_free_stale_devices(device_path, NULL);
+> 
+> So this is open coding btrfs_forget_devices, so the helper should be
+> used.
+> 
 
-OK, I thought that any non-existing number can be used.
+  Ah. I didn't notice that. Will fix.
 
->
-> And devices vanishing and reappearing as other nodes suggests they're
-> on a flakey or transient bus. Are these SATA drives in USB enclosures?
-> And if so how are they connected?
+> As there's NULL passed, 
 
-No, all the hard drives are internal drives connected to the
-mainboard's SATA connectors. Additionaly there is an USB flash drive
-for booting but that is not used for btrfs.
+  NULL is passed to the 2nd argument skip_device
 
->
-> A complete dmesg please (not trimmed, starting at boot) would be useful.
+> all stale devices will be removed from the list,
 
-dmesg is spammed with btrfs warnings and errors, so all earlier
-content is already gone. I can increase the buffer in grub
-configuration and provide the complete dmesg next time.
+  No, It means it does not have any particular device to skip.
+  Added device is already part of mounted fs_device list,
+  the loop skips its check. So no need to skip_device.
 
->
-> One device is missing, and another one vanished and reappeared, I
-> don't know whether Btrfs can really handle this case perfectly.
+> but we can remove just the device being added, no?
 
-But the first device I have removed, which worked without problems. I
-had a healthy raid 1 of two disks then. I don't know why the other
-drive got a new device name, but that may cause some extra problems.
-Meanwhile I read about the timeout mismatch and will add the small
-script from https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
-Maybe this prevents the drive to disappear in first place.
+  It does exactly that.
+  btrfs_free_stale_devices(device_path, NULL);
 
->
-> > Version info:
-> > btrfs-progs v4.20.1
-> > Kernel 5.4.0-0.bpo.4-amd64
->
-> It's probably not related to the problem, which seems to be hardware
-> related.
+  It removes the device from all other fs_devices which are _unmounted_.
 
-I also guess there could be hardware problems. This is for testing and
-practicing now. Later I will only keep the 6TB drive of my old drives
-and get two new drives. And new cables.
+> And before the whole
+> operation starts, not after. 
 
-> But btrfs-progs v4.20.1 is ~16 months development behind v5.6
-> which is current. And thousands of changes in the kernel just for
-> Btrfs.
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/diff/?id=v5.6.8&id2=v5.4&dt=2
+  What if the add fails? Then we have to add scanned device back to avoid
+  that mess. why not remove after we have successfully add the device
+  to the mounted fsid.
 
-I use a Debian based NAS distribution (OpenMediaVault) that doesn't
-provide a more recent version. I havn't figured out yet how to get a
-more recent version as my Linux knowledge is quite limited.
+> The closest moment is before
+> btrfs_commit_transaction, that's where the superblock gets overwritten.
+> 
 
-While looking at dmesg I found this:
-[Fri May  1 16:25:15 2020] BTRFS warning (device sdc1): lost page
-write due to IO error on /dev/sde
-[Fri May  1 16:25:15 2020] BTRFS error (device sdc1): error writing
-primary super block to device 4
-[Fri May  1 16:25:15 2020] BTRFS info (device sdc1): disk added /dev/sdb
-[Fri May  1 16:25:49 2020] BUG: kernel NULL pointer dereference,
-address: 0000000000000000
+Thanks, Anand
 
-So I guess things are really messed up now. Maybe adding sdb has not
-even worked correctly. I will increase the dmesg buffer and the fix of
-the timeout problem and start again with a new filesystem.
-Thanks for your help so far!
 
->
->
-> --
-> Chris Murphy
+>> +	mutex_unlock(&uuid_mutex);
+>> +
+>>   	return ret;
+>>   
+>>   error_sysfs:
+>> -- 
+>> 2.23.0
