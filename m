@@ -2,106 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265441C0E22
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 08:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CFB1C0E36
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 08:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgEAGaq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 May 2020 02:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S1728294AbgEAGbv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 May 2020 02:31:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40044 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728328AbgEAGap (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 May 2020 02:30:45 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D927A208C3;
-        Fri,  1 May 2020 06:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588314645;
-        bh=MJTLu1cJAHN/uBGEMZzaAEqBgoS//oQBGNisllNh6fo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pmohH6JF597Rj3VBcENhxfZskISJDvXqKGnZUWK0d92GBsFzuk97DMn8SjGNS3T8N
-         TmiSsEZmtj5LmmVW+CzG2wJX9FMI1mUC6vRdXDqyNdt32zS7hnQOINVuNM1mdWsFRj
-         3c+GdnWv+JHnrJOD9ZOQkRAXbRZbMxAF/l8KOd9s=
-Date:   Thu, 30 Apr 2020 23:30:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Johannes Thumshirn <jth@kernel.org>
-Cc:     David Sterba <dsterba@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
-Message-ID: <20200501063043.GE1003@sol.localdomain>
-References: <20200428105859.4719-1-jth@kernel.org>
- <20200428105859.4719-2-jth@kernel.org>
- <20200501053908.GC1003@sol.localdomain>
+        id S1728229AbgEAGbu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 May 2020 02:31:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1436AAD71
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 06:31:49 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs-progs: Sync code for btrfs_block_group
+Date:   Fri,  1 May 2020 14:31:35 +0800
+Message-Id: <20200501063138.474044-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501053908.GC1003@sol.localdomain>
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 10:39:08PM -0700, Eric Biggers wrote:
-> On Tue, Apr 28, 2020 at 12:58:58PM +0200, Johannes Thumshirn wrote:
-> > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > 
-> > Add authentication support for a BTRFS file-system.
-> > 
-> > This works, because in BTRFS every meta-data block as well as every
-> > data-block has a own checksum. For meta-data the checksum is in the
-> > meta-data node itself. For data blocks, the checksums are stored in the
-> > checksum tree.
-> > 
-> > When replacing the checksum algorithm with a keyed hash, like HMAC(SHA256),
-> > a key is needed to mount a verified file-system. This key also needs to be
-> > used at file-system creation time.
-> > 
-> > We have to used a keyed hash scheme, in contrast to doing a normal
-> > cryptographic hash, to guarantee integrity of the file system, as a
-> > potential attacker could just replay file-system operations and the
-> > changes would go unnoticed.
-> > 
-> > Having a keyed hash only on the topmost Node of a tree or even just in the
-> > super-block and using cryptographic hashes on the normal meta-data nodes
-> > and checksum tree entries doesn't work either, as the BTRFS B-Tree's Nodes
-> > do not include the checksums of their respective child nodes, but only the
-> > block pointers and offsets where to find them on disk.
-> > 
-> > Also note, we do not need a incompat R/O flag for this, because if an old
-> > kernel tries to mount an authenticated file-system it will fail the
-> > initial checksum type verification and thus refuses to mount.
-> > 
-> > The key has to be supplied by the kernel's keyring and the method of
-> > getting the key securely into the kernel is not subject of this patch.
-> 
-> This is a good idea, but can you explain exactly what security properties you
-> aim to achieve?
-> 
-> As far as I can tell, btrfs hashes each data block individually.  There's no
-> contextual information about where eaech block is located or which file(s) it
-> belongs to.  So, with this proposal, an attacker can still replace any data
-> block with any other data block.  Is that what you have in mind?  Have you
-> considered including contextual information in the hashes, to prevent this?
-> 
-> What about metadata blocks -- how well are they authenticated?  Can they be
-> moved around?  And does this proposal authenticate *everything* on the
-> filesystem, or is there any part that is missed?  What about the superblock?
-> 
-> You also mentioned preventing replay of filesystem operations, which suggests
-> you're trying to achieve rollback protection.  But actually this scheme doesn't
-> provide rollback protection.  For one, an attacker can always just rollback the
-> entire filesystem to a previous state.
-> 
-> This feature would still be useful even with the above limitations.  But what is
-> your goal exactly?  Can this be made better?
+This patchset mostly make btrfs_block_group structure to sync with
+kernel, providing the basis for later modification. (Hint: skinny bg
+tree)
 
-btrfs also has an inode flag BTRFS_INODE_NODATASUM, which looks scary as it
-results in the file being unauthenticated.  Presumably the authentication of the
-filesystem metadata is supposed to prevent this flag from being maliciously
-cleared?  It might be a good idea to forbid this flag if the filesystem is using
-the authentication feature.
+Qu Wenruo (3):
+  btrfs-progs: Kill block_group_cache::key
+  btrfs-progs: Remove the unused btrfs_block_group_cache::cache
+  btrfs-progs: Rename btrfs_block_group_cache to btrfs_block_group
 
-- Eric
+ check/main.c                    |  43 ++++---
+ check/mode-common.c             |   4 +-
+ check/mode-lowmem.c             |  10 +-
+ cmds/rescue-chunk-recover.c     |   6 +-
+ convert/main.c                  |   8 +-
+ convert/source-fs.c             |   4 +-
+ ctree.h                         |  21 ++--
+ extent-tree.c                   | 209 ++++++++++++++++----------------
+ free-space-cache.c              |  32 ++---
+ free-space-cache.h              |  12 +-
+ image/main.c                    |   2 +-
+ kernel-shared/free-space-tree.c | 117 +++++++++---------
+ kernel-shared/free-space-tree.h |   6 +-
+ mkfs/main.c                     |  12 +-
+ transaction.h                   |   2 +-
+ volumes.h                       |   4 +-
+ 16 files changed, 247 insertions(+), 245 deletions(-)
+
+-- 
+2.26.2
+
