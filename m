@@ -2,93 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0056A1C0DB8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 07:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E7B1C0DD5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 May 2020 07:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgEAFaC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 May 2020 01:30:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51578 "EHLO mx2.suse.de"
+        id S1728159AbgEAFjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 May 2020 01:39:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgEAFaC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 May 2020 01:30:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ABF08AEFD
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 05:30:00 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: Don't abuse READA_* for extent tree search
-Date:   Fri,  1 May 2020 13:29:56 +0800
-Message-Id: <20200501052956.29354-1-wqu@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726452AbgEAFjK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 May 2020 01:39:10 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EB8F2073E;
+        Fri,  1 May 2020 05:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588311549;
+        bh=EmHczoYX1gH+WJOEfLomOHaDIvsOJKfq7lv+knH4aj8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kpjhOY8nWbejt3yw6PAEswI/MenT6OCoaSS/I4K2EfaSeVjPzSy0OtWr9DzEqHvO9
+         PAScSPEh0I5Ud4bdntPCcyHVUrNOq1jDuapUJoUDJQxWzWjaAJrgTA8Y5woYqGrX+8
+         v3KK860ubuW1fSoVKE4/UT+Dw4e87u8f2xIx5AHY=
+Date:   Thu, 30 Apr 2020 22:39:08 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Johannes Thumshirn <jth@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+Message-ID: <20200501053908.GC1003@sol.localdomain>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428105859.4719-2-jth@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For extent tree search, we are only search two things: either
-EXTENT_ITEM/METADATA_ITEM (inlined) or SHARED_BLOCK_REF/SHARED_DATA_REF
-(keyed).
+On Tue, Apr 28, 2020 at 12:58:58PM +0200, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> Add authentication support for a BTRFS file-system.
+> 
+> This works, because in BTRFS every meta-data block as well as every
+> data-block has a own checksum. For meta-data the checksum is in the
+> meta-data node itself. For data blocks, the checksums are stored in the
+> checksum tree.
+> 
+> When replacing the checksum algorithm with a keyed hash, like HMAC(SHA256),
+> a key is needed to mount a verified file-system. This key also needs to be
+> used at file-system creation time.
+> 
+> We have to used a keyed hash scheme, in contrast to doing a normal
+> cryptographic hash, to guarantee integrity of the file system, as a
+> potential attacker could just replay file-system operations and the
+> changes would go unnoticed.
+> 
+> Having a keyed hash only on the topmost Node of a tree or even just in the
+> super-block and using cryptographic hashes on the normal meta-data nodes
+> and checksum tree entries doesn't work either, as the BTRFS B-Tree's Nodes
+> do not include the checksums of their respective child nodes, but only the
+> block pointers and offsets where to find them on disk.
+> 
+> Also note, we do not need a incompat R/O flag for this, because if an old
+> kernel tries to mount an authenticated file-system it will fail the
+> initial checksum type verification and thus refuses to mount.
+> 
+> The key has to be supplied by the kernel's keyring and the method of
+> getting the key securely into the kernel is not subject of this patch.
 
-Except certain situation like cache_block_group(), we never read tree
-blocks in a forward or backward sequence.
+This is a good idea, but can you explain exactly what security properties you
+aim to achieve?
 
-So remove those reada abuse.
+As far as I can tell, btrfs hashes each data block individually.  There's no
+contextual information about where eaech block is located or which file(s) it
+belongs to.  So, with this proposal, an attacker can still replace any data
+block with any other data block.  Is that what you have in mind?  Have you
+considered including contextual information in the hashes, to prevent this?
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- extent-tree.c | 8 --------
- 1 file changed, 8 deletions(-)
+What about metadata blocks -- how well are they authenticated?  Can they be
+moved around?  And does this proposal authenticate *everything* on the
+filesystem, or is there any part that is missed?  What about the superblock?
 
-diff --git a/extent-tree.c b/extent-tree.c
-index 4af8f4ba8a47..732f90207b25 100644
---- a/extent-tree.c
-+++ b/extent-tree.c
-@@ -1247,8 +1247,6 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
- 	if (!path)
- 		return -ENOMEM;
- 
--	path->reada = READA_BACK;
--
- 	ret = insert_inline_extent_backref(trans, root->fs_info->extent_root,
- 					   path, bytenr, num_bytes, parent,
- 					   root_objectid, owner, offset, 1);
-@@ -1268,8 +1266,6 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
- 	btrfs_mark_buffer_dirty(leaf);
- 	btrfs_release_path(path);
- 
--	path->reada = READA_BACK;
--
- 	/* now insert the actual backref */
- 	ret = insert_extent_backref(trans, root->fs_info->extent_root,
- 				    path, bytenr, parent, root_objectid,
-@@ -1303,7 +1299,6 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
--	path->reada = READA_BACK;
- 
- 	key.objectid = bytenr;
- 	key.offset = offset;
-@@ -1383,7 +1378,6 @@ int btrfs_set_block_flags(struct btrfs_trans_handle *trans, u64 bytenr,
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
--	path->reada = READA_BACK;
- 
- 	key.objectid = bytenr;
- 	if (skinny_metadata) {
-@@ -1928,8 +1922,6 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 	if (!path)
- 		return -ENOMEM;
- 
--	path->reada = READA_BACK;
--
- 	is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
- 	if (is_data)
- 		skinny_metadata = 0;
--- 
-2.26.2
+You also mentioned preventing replay of filesystem operations, which suggests
+you're trying to achieve rollback protection.  But actually this scheme doesn't
+provide rollback protection.  For one, an attacker can always just rollback the
+entire filesystem to a previous state.
 
+This feature would still be useful even with the above limitations.  But what is
+your goal exactly?  Can this be made better?
+
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index d10c7be10f3b..fe403fb62178 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/error-injection.h>
+>  #include <linux/crc32c.h>
+>  #include <linux/sched/mm.h>
+> +#include <keys/user-type.h>
+>  #include <asm/unaligned.h>
+>  #include <crypto/hash.h>
+>  #include "ctree.h"
+> @@ -339,6 +340,7 @@ static bool btrfs_supported_super_csum(u16 csum_type)
+>  	case BTRFS_CSUM_TYPE_XXHASH:
+>  	case BTRFS_CSUM_TYPE_SHA256:
+>  	case BTRFS_CSUM_TYPE_BLAKE2:
+> +	case BTRFS_CSUM_TYPE_HMAC_SHA256:
+>  		return true;
+>  	default:
+>  		return false;
+> @@ -2187,6 +2189,9 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+>  {
+>  	struct crypto_shash *csum_shash;
+>  	const char *csum_driver = btrfs_super_csum_driver(csum_type);
+> +	struct key *key;
+> +	const struct user_key_payload *ukp;
+> +	int err = 0;
+>  
+>  	csum_shash = crypto_alloc_shash(csum_driver, 0, 0);
+>  
+> @@ -2198,7 +2203,53 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+>  
+>  	fs_info->csum_shash = csum_shash;
+>  
+> -	return 0;
+> +	/*
+> +	 * if we're not doing authentication, we're done by now. Still we have
+> +	 * to validate the possible combinations of BTRFS_MOUNT_AUTH_KEY and
+> +	 * keyed hashes.
+> +	 */
+> +	if (csum_type == BTRFS_CSUM_TYPE_HMAC_SHA256 &&
+> +	    !btrfs_test_opt(fs_info, AUTH_KEY)) {
+> +		crypto_free_shash(fs_info->csum_shash);
+> +		return -EINVAL;
+
+Seems there should be an error message here that says that a key is needed.
+
+> +	} else if (btrfs_test_opt(fs_info, AUTH_KEY)
+> +		   && csum_type != BTRFS_CSUM_TYPE_HMAC_SHA256) {
+> +		crypto_free_shash(fs_info->csum_shash);
+> +		return -EINVAL;
+
+The hash algorithm needs to be passed as a mount option.  Otherwise the attacker
+gets to choose it for you among all the supported keyed hash algorithms, as soon
+as support for a second one is added.  Maybe use 'auth_hash_name' like UBIFS
+does?
+
+> +	} else if (!btrfs_test_opt(fs_info, AUTH_KEY)) {
+> +		/*
+> +		 * This is the normal case, if noone want's authentication and
+> +		 * doesn't have a keyed hash, we're done.
+> +		 */
+> +		return 0;
+> +	}
+> +
+> +	key = request_key(&key_type_logon, fs_info->auth_key_name, NULL);
+> +	if (IS_ERR(key))
+> +		return PTR_ERR(key);
+
+Seems this should print an error message if the key can't be found.
+
+Also, this should enforce that the key description uses a service prefix by
+formatting it as kasprintf("btrfs:%s", fs_info->auth_key_name).  Otherwise
+people can abuse this feature to use keys that were added for other kernel
+features.  (This already got screwed up elsewhere, which makes the "logon" key
+type a bit of a disaster.  But there's no need to make it worse.)
+
+- Eric
