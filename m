@@ -2,113 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881311C274B
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 19:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3C41C2750
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 19:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgEBRhk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 May 2020 13:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S1728384AbgEBRsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 13:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728412AbgEBRhk (ORCPT
+        by vger.kernel.org with ESMTP id S1728343AbgEBRsg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 2 May 2020 13:37:40 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ECAC061A0C
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 10:37:40 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id r25so2761626oij.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 10:37:40 -0700 (PDT)
+        Sat, 2 May 2020 13:48:36 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F710C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 10:48:36 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id h4so3599011wmb.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 10:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nJQsW2vWhqQ2RFvOtYRWtaH0BQ48UdP3fyFpFnXDnAo=;
-        b=DctRVU2YdGm872YBL6UyMNQQHmXtjZ9rjY6P3FJ4Dfk4Zkzc0CS3pO56pFAHaoLJZd
-         ovMM7gNrCKzLF8VZWPzVzDK4Tpo/gU/BlYLyLLfYbDcYOMp0T+qtVs1ZyNopeFmN0K4U
-         j5x2uVm6QJIwngcLetRHAXHOpsv5JvP0CFgdOOFI3OXerpYoyxBPb3VLNfm19JmveDDq
-         J9RaT+biz4PluNJLERDLcBC3E16R1KMU4q9qwjtvFMySpfenRJ9ZGZTBjLEW4uVN0uOC
-         5jSPoW0K7GYz8Q98Uyvtku2K76Qb8hjj5UjdYJC2mo0Yf6a5tzuWFmwvYcoqT+p3u4i4
-         0byA==
+        bh=u3sKNqROg+ZeWmz7mSpvZqTVPoKnG+ikgPL5nuH9NrU=;
+        b=kau06bg3RcMMoEwiBwt+u6we+8o+qddxaTV/9C6N8qpbYAVWzAHP8nU5IBRtzGMSbC
+         YvHPzTz5+s1by+8xGkCzxwiNyOE+KvpPjIITIlCy6po41uQgR+2bP49sCqi0Zi0edELK
+         IFqyFZuf39gsQEb5g+DVMeineR4GlL267chTg8Z8phPOHMb95Fs7x5qVYzmTCUoeMRh2
+         BHdmFJf2QfVN/syJ5ER2xE9Fs4wY6B2yjDE5Yo8+nDDfumvqo/LCKfyJLU7lTtcj6WLa
+         liLx2KOauoggDlF2QCQSk9var5MmJtFu/JemRD78Odjr75HYW5TL3mkOSxRFoXhU1RTu
+         JpSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nJQsW2vWhqQ2RFvOtYRWtaH0BQ48UdP3fyFpFnXDnAo=;
-        b=YyvIF0EWlnQuzl6sZmw0DOk3Ztnbr7iRVpdTjS7sI3mBEc4ZY2aL0vAU4AcapFcVXw
-         pCIVCONX2JLIOfqdXEeyifsXXMveZfCdDg1CWnSK5skCXdVGDyouq8078iyI2UCUXmx6
-         dpV22pjKY8WVqyU++lNMUYzW+XdkattCQ2xAFdf1EaJ/CqaS/jhE9RTPNLAzxtcF5Jmw
-         vJJq+powD9nRgRGOJ4nDGF3UsT4f2hNrPeuGR6HnIigCP3qrXkaMWUccgzCZ+DHg8dY+
-         bj7didNW+9N3cgpQKaYD+Y6cbV2vSl4x8TzIJ9lR2Ue9SINr6qqmBrVipubg1lgMQaTC
-         FgYA==
-X-Gm-Message-State: AGi0Pua3/a2kRrPGlL5MRFMZOGN3V3BFShB2QZoi1Ioy19dC2Ilof+u+
-        mAj1ET2uI0wqNdsHl7Lamo122SUX1DWnTFYkSucolgk7
-X-Google-Smtp-Source: APiQypLqC04f+regXYdNRfb1j8ityOmKAl7t3xoPm8wWBp4zZdb92EEC07Nr+Zk/DpEOBeKUXP3ylQscqjBkL60/Irs=
-X-Received: by 2002:a05:6808:5c5:: with SMTP id d5mr3809572oij.8.1588441059369;
- Sat, 02 May 2020 10:37:39 -0700 (PDT)
+        bh=u3sKNqROg+ZeWmz7mSpvZqTVPoKnG+ikgPL5nuH9NrU=;
+        b=Tbjbiljnf6gWTaiAcGVIFHMwqY/kwSJN55WTCmD2o8oqXHrf0pTPQiBTEpWblDlhTm
+         140QGdVQyP7OoAt4RiRvXIE8PiqbAebycZAfvbPkyuj3wy8xUQ35yGB0TH+8ygrisoHt
+         ViK7PJyLpfpsZcoBJD/eeLiAJ7XG6ewM3qf3L6HJf7IhBKVcq00qBLPOJxf6TkJb6KE9
+         o9RON4mYYSxAmdeNMAEfRxYJhIWJmgpy7HoCcm+ipJg+OOZjNkbY5RhAxUrUOejKXcr9
+         JmwrVvi2CtB0hviocRz97YGiBlHOGUpHra1iXtuEAiFCvUvC5mtRea+GBeE0IE7axvGz
+         a07g==
+X-Gm-Message-State: AGi0PuafV01DOyIG7Gx1lTkEiJljMmXFmxc56CtbmAVesE3o3bATB0Ix
+        FNUOzWdCpPA0pW2p3YRNYlLlNZRMeVooBnVA7Z29Vg==
+X-Google-Smtp-Source: APiQypJnl+MCOtJGvDlCHmhtXNJG8DRHLw+2dTb9BloQ3hAmQu1WPszzUmDPUJejFc30P9quh8LWrCnNQMnk6srkzl8=
+X-Received: by 2002:a1c:6455:: with SMTP id y82mr5459086wmb.128.1588441714712;
+ Sat, 02 May 2020 10:48:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAAhjAp1zghNnRpbA2WypBU9+Azeui8kTQiTj+DfbK-iX-z71WQ@mail.gmail.com>
- <CAJCQCtS7mbjEVchwbJS86ujAW+TrKHBk23oYtTNQnruiUr0XSg@mail.gmail.com>
- <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com> <CAJCQCtTTwD1Dq0h3JMPXi1z+yTA8SGFbvft+VLAk_24pGDp0Pg@mail.gmail.com>
-In-Reply-To: <CAJCQCtTTwD1Dq0h3JMPXi1z+yTA8SGFbvft+VLAk_24pGDp0Pg@mail.gmail.com>
-From:   Rollo ro <rollodroid@gmail.com>
-Date:   Sat, 2 May 2020 19:37:04 +0200
-Message-ID: <CAAhjAp34JdG_Ciu7Obt3OxVFQeZj2GKKDdYAnB-Xzqote=_xBg@mail.gmail.com>
-Subject: Re: Can't repair raid 1 array after drive failure
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
+ <r8f4gb$8qt$1@ciao.gmane.io> <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net>
+ <20200502033509.GG10769@hungrycats.org> <SYBPR01MB3897D20A8185249BF2A26B139EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
+ <20200502060038.GK10769@hungrycats.org> <SYBPR01MB389730010988EC44E7D109EE9EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
+ <CAMwB8mhGkcM3DCTusuHAi-cQcr-FrA5cq4hVYfv+65zn_QjAig@mail.gmail.com>
+ <20200502074237.GM10769@hungrycats.org> <CAMwB8mg5npwzxFrBw8gdBt7KPbTb=M8d_MAGtbQbCoJS0GoMgA@mail.gmail.com>
+ <20200502090946.GO10769@hungrycats.org>
+In-Reply-To: <20200502090946.GO10769@hungrycats.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 2 May 2020 11:48:18 -0600
+Message-ID: <CAJCQCtTGg+Rmisw9QAj4SMaDcZ5e_2h_83-3Hjd=FDC5krgjCg@mail.gmail.com>
+Subject: Re: Extremely slow device removals
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Phil Karn <karn@ka9q.net>, Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Sa., 2. Mai 2020 um 09:56 Uhr schrieb Chris Murphy <lists@colorremedies.com>:
+On Sat, May 2, 2020 at 3:09 AM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
 >
-> On Fri, May 1, 2020 at 1:59 PM Rollo ro <rollodroid@gmail.com> wrote:
-> >
-> > Am Fr., 1. Mai 2020 um 19:52 Uhr schrieb Chris Murphy <lists@colorremedies.com>:
-> > >
-> > > A complete dmesg please (not trimmed, starting at boot) would be useful.
-> >
-> > dmesg is spammed with btrfs warnings and errors, so all earlier
-> > content is already gone. I can increase the buffer in grub
-> > configuration and provide the complete dmesg next time.
->
-> For the current boot:
-> # journalctl -k
-> For previous boot:
-> # journalctl -b -1 -k
+> On SD/MMC and below-$50 SSDs, silent data corruption is the most common
+> failure mode.  I don't think these disks are capable of detecting or
+> reporting individual sector errors.  I've never seen it happen.  They
+> either fall off the bus or they have a catastrophic failure and give
+> an error on every single access.
 
-That doesn't work on my setup. As it boots from the usb flash drive,
-there have been taken actions to avoid all writes to not wear it out.
+I'm still curious about the allocator to use for this device class. SD
+Cards usually self-report rotational=0. Whereas USB sticks report
+rotational=1. The man page seems to suggest nossd or ssd_spread.
 
->
-> > While looking at dmesg I found this:
-> > [Fri May  1 16:25:15 2020] BTRFS warning (device sdc1): lost page
-> > write due to IO error on /dev/sde
-> > [Fri May  1 16:25:15 2020] BTRFS error (device sdc1): error writing
-> > primary super block to device 4
-> > [Fri May  1 16:25:15 2020] BTRFS info (device sdc1): disk added /dev/sdb
-> > [Fri May  1 16:25:49 2020] BUG: kernel NULL pointer dereference,
-> > address: 0000000000000000
->
-> This might be related to the device vanishing. The actual problem(s)
-> happened before this. This is just the consequence of the problem.
->
+In my very limited sample size from a single vendor, I've only seen SD
+Card fail by becoming read only. i.e. hardware read-only, with the
+kernel spewing sd/mmc related debugging info about the card (or card's
+firmware). Maybe that's a good example? I suppose it's better to go
+read-only with data still readable, and insofar as Btrfs was concerned
+the data was correct, rather than start returning transiently bad
+data. However, I only knew this due to data checksums.
 
-I won't find out anymore what has gone wrong. I made a new filesystem
-with the same two drives, saved about 1 TB on it and now it is running
-scrub. It's at about 50% progress now and no errors or warnings yet!
-Maybe the wrong timeout values, which are fixed now, have caused much
-trouble last time. I'm quite happy about how it's working at the
-moment. Now I have an additional installation running on a virtual
-machine. The nice thing is, that the VirtualBox project and the
-virtual disks are stored via a shared folder on the btrfs filesystem.
-Hence, I can mess with that, try if I can get more recent btrfs progs
-etc and completely revert the virtual machine if I need to, thanks to
-the snapshots! :-)
 
-Thanks for your help!
-
->
-> --
-> Chris Murphy
+-- 
+Chris Murphy
