@@ -2,87 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EE11C2327
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 07:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6811C232E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 07:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgEBFBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 May 2020 01:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S1726486AbgEBFZL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 01:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726058AbgEBFBL (ORCPT
+        by vger.kernel.org with ESMTP id S1726468AbgEBFZL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 2 May 2020 01:01:11 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F36EC061A0C
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 22:01:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id s9so180322lfp.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 22:01:11 -0700 (PDT)
+        Sat, 2 May 2020 01:25:11 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B9BC061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 22:25:09 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id d7so1980272ioq.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 22:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tT/Vy4B7qaNslTQscfoHOR35JRcZ9zwtO5MDs6ZmA9c=;
-        b=vmt7CXN8gkENJbml4aFrQjgN1wDb/6cXjI+2u1x0s0M4QlcJvAo2k2Kv60jjrIAxW+
-         Vvj2S6tS0qBWr/jK8fEaeLj9M+000H+1a0jP+BBO25bdcgqqAlSRKj88I3EQypCpianC
-         Qc/Q9RI4b+pJyD3BThqF358i3g8EM/T/9JevtzgAFgJrch2Ew8WN/6ab9Y5SKMMBdMeD
-         ED7WjdMvnbRKp7uNbyL5mmhE+Rdt0BJP/DqhgcjOt9R6N2m4pO1QInUJnkKuqvAvLPV7
-         yqANLH++3R6IUS4BNe1mOrIKBAP9VXEe4BsBoejW98ZikYT3ugYimRKhbbE+T5RnGwwX
-         WFqA==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=3f4iWG5DutksgF6f391QTum3LAEAyFwOwgED5PjZn4I=;
+        b=V7a/Fc+Fu1RqGbtQezYLZoUVEvCcXGfJ8ClLNBJpH3cPKbOBtRyhaEJWP46md6UMr7
+         HlfSywhGvHNOzB/l30V1C2Y8aHH+Jy5mjmfujYzkoskr0gZAbE1n+6TK3NudxOQEb+4q
+         64fQIWe9fQGJtXZiUHiC6FykLAgeryBWpXXvpCc0Qz/Y0kLMM/FkDJuyjZHcQAHBhDtq
+         eRqBdxziZECtho09fnoDIP5SufMhpsV/0pAa65rG/qAoLM4OKvt783QOs3F0q/5Bgo6W
+         1osVczC25dnUo0xHXnHb64vtOt5JyR9TAuwGmGetgUuL6v1O7uOnj4es/Ah6hmz4jqGB
+         gFjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tT/Vy4B7qaNslTQscfoHOR35JRcZ9zwtO5MDs6ZmA9c=;
-        b=pO5p8XaYOcUaVH+fVUOO5HenmSDFQzjfAbWkAol+UfpENuOHeEVBgP2seKBmjrmGtj
-         tV8xBpHpDoaKFTIXvMCyot5X9AIhxbXGbpii0jCJP2C2QdZI/SRMXPj/VC55/qlx2PKP
-         ooR3FNL3hdJpL0j5AYeKfZv4yQbjIC/5hZIosbBPEwseVE6grXr6UW1MdL/ZUjy7pmHk
-         odBq5fWWvl0SYY+jxBSyZo5RY8gjeL7d/pfP7/zDtav3TAm8lmv3XAHWCEBde/cMHLCG
-         CsCLdMHiZvHPn8oPdYOhy7NOIZo6Hu6LKx1Ax6IUYsy3Y9rtyvUaWH0jcUc3cR23Ca/2
-         VYqw==
-X-Gm-Message-State: AGi0Pubd0C4a50JsJQeEzTOWSZbIm8IBtBragymw50IosRfzQ+4xOcAN
-        rGeNbYUU2VndWMrhqolXKhQ+xkMRbjJeL06O+Boh7A==
-X-Google-Smtp-Source: APiQypImE+obSGjLS83cjShNnNdd498AV6IhgaynNZIgoprKhaqW9saf5TTJP2l9i3FI93/GeTqkYsWw7f85Z3J18VE=
-X-Received: by 2002:a19:ee06:: with SMTP id g6mr4654970lfb.90.1588395669624;
- Fri, 01 May 2020 22:01:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=3f4iWG5DutksgF6f391QTum3LAEAyFwOwgED5PjZn4I=;
+        b=i1hOvLXEj027lfHNsKPgz5gFD2znO6m38txOepxOuGInCaDDO6boEmgJAeMPN7qp59
+         FiJFv7nqScFZsUtHq2vLIlTTTgLeGHkeV7LNmue1rKBu1DcSU3UwrYjBFXT4sViDuCSj
+         O++g3tceT6TvSr20S+VsNWWVmwQx+74tbUxysYmyndLwHWjBKleQrc3Y/MbxZd7bnkP2
+         C8Qq2UN/JRJ1FVzgszym653KrBh0G3RJxGjQq6bu63IJGWO0VATJqW7ctmeGDJbwrtYq
+         X2wK0S3cDzvJQMgCjzJLchZtUie0cziqEbsiBW0sFG7OXh5pc0AVoMUCRmZJ+BNQq8qI
+         E7LA==
+X-Gm-Message-State: AGi0PuY4vDsDtM8Jxnn4OAJHM+sEI027yhxNmf2pzZaluuX5xRUVWKrP
+        rEiNHBY3Fd+YDpx3VYg0Q88KU3gYWw/HCcKFkYXOZw==
+X-Google-Smtp-Source: APiQypIQXjSb57ezwCL+1JhYUyx3P7eCncXjCgs3lc+NXNGjQ2ruuwHVCy3LJZX97jIfzvh+S9H9H4uXgBmxZ74Ah+A=
+X-Received: by 2002:a05:6602:5db:: with SMTP id w27mr7003623iox.152.1588397108600;
+ Fri, 01 May 2020 22:25:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
- <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net> <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
- <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net> <20200501024753.GE10769@hungrycats.org>
- <b2cd0c70-b955-197c-d68b-cf77e102690c@ka9q.net> <6F06C333-0C27-482A-9AE4-3C0123CC550A@dordea.net>
- <bc37ccb3-119e-24da-4852-56962c93fd2d@ka9q.net> <20200502041826.GH10769@hungrycats.org>
-In-Reply-To: <20200502041826.GH10769@hungrycats.org>
-From:   Phil Karn <karn@ka9q.net>
-Date:   Fri, 1 May 2020 22:00:58 -0700
-Message-ID: <CAMwB8mj+XtCG5bRZuS_2+x_9duNnsy=Zafz8KPusbLFVOvXbbA@mail.gmail.com>
-Subject: Re: Extremely slow device removals
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Alexandru Dordea <alex@dordea.net>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   Rich Rauenzahn <rrauenza@gmail.com>
+Date:   Fri, 1 May 2020 22:24:57 -0700
+Message-ID: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
+Subject: Western Digital Red's SMR and btrfs?
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> So even if you use 100% of a 256MB drive's on-board RAM as write cache, the following gigabytes of
-> a large metadata update won't get much benefit from caching.  The drive
-> will be stuck a quarter gigabyte behind the host, trying to catch up
-> all the time.
+Has there been any btrfs discussion off the list (I haven't seen any
+SMR/shingled mails in the archive since 2016 or so) regarding the news
+that WD's Red drives are actually SMR?
 
-Well, at least in theory the cache should still make the drive go
-faster by reordering the writes to minimize seek and rotational
-latency. Only the drive knows its own layout and latencies, so only
-the drive can do this optimization. I suppose that for a long time you
-can assume that writes to LBAs with large absolute differences would
-be slower than writes to LBAs with small ones, but I'm not so sure
-even that's true anymore. Especially with shingled drives (though my
-drives are not shingled, and I know that's a whole other discussion).
-In any event, only the drive knows for sure.
+I'm using these reds in my btrfs setup (which is 2-3 drives in RAID1
+configuration, not parity based RAIDs.)   I had noticed that adding a
+new drive took a long time, but other than than, I haven't had any
+issues that I know of.  They've lasted quite a long time, although I
+think my NAS would be considered more of a cold storage/archival.
+Photos and Videos.
 
-Oh, question about transaction queuing: can each transaction on the
-queue consist of any number of LBAs as long as they're consecutive? I
-am trying to figure out if 4Kn (4Kb native sectors) buys you anything
-over I/O on a 512e drive in multiples of 8 properly aligned LBAs. If
-each transaction can be of any number of LBAs, it's hard to see any
-real benefit to 4Kn except that it saves 3 bits in the LBA number.
+Is btrfs raid1 going to be the sweet spot on these drives?
+
+If I start swapping these out -- is there a recommended low power
+drive?  I'd buy the red pro's, but they spin faster and produce more
+heat and noise.
+
+Rich
