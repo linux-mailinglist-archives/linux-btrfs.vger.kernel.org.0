@@ -2,138 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651461C22EF
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 06:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CC61C231A
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 06:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgEBEbj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 2 May 2020 00:31:39 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48280 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgEBEbj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 May 2020 00:31:39 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 90FC069F964; Sat,  2 May 2020 00:31:34 -0400 (EDT)
-Date:   Sat, 2 May 2020 00:31:34 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Phil Karn <karn@ka9q.net>
-Cc:     Jean-Denis Girard <jd.girard@sysnux.pf>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Extremely slow device removals
-Message-ID: <20200502043134.GI10769@hungrycats.org>
-References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
- <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
- <r8f4gb$8qt$1@ciao.gmane.io>
- <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net>
- <20200502033509.GG10769@hungrycats.org>
- <CAMwB8mjUw+KV8mxg8ynPsv0sj5vSpwG7_khw=oP5n+SnPYzumQ@mail.gmail.com>
+        id S1726473AbgEBEsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 00:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726463AbgEBEsf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 2 May 2020 00:48:35 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895C4C061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 21:48:35 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u15so4455221ljd.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 21:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=opLaQVYQs6wk/ck/hRA+etLgvzw1B+XX9xQGjMXUpHA=;
+        b=dzkI3YjlULiqcS3xTwMKF4Q0uc6AqL6TluCXc2ZPg4eW1BMQX7PvV5q6Y+yZo0y2co
+         TjIzr/0Qk+CW3zVpm7k0kCm6AL50PknlQf5co6Z4kBzxhf+qL2aQq8jBLEJtOLR++liE
+         vgsDkkJGE8CyL4hluakOBtuxAaOqJJnOhXFsxbUVZzGMFL3X8Pl/5bAGwB/LofCepBBt
+         7u8jTJ3phoSTGtg5l6bqN0L0dASIbyz2NmrCLJSuIHRKISwHSneTIeLKW4nLCOoJUNwH
+         Q6F4mwGaVaA5e9b5wBs8a/seQlE1a8ddRktHKPfEd6F/c4VPxisDGpRB1/zl+OTg7uh6
+         /01A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=opLaQVYQs6wk/ck/hRA+etLgvzw1B+XX9xQGjMXUpHA=;
+        b=AHJ3Vu29S65ZQFZl8M9UWKz7eCbL3tRGFcvhwRHTEXuutziNFT7xoPHg4VzqlbMMXN
+         qgOwxEjr4EViMOU10xFm0oXPfMuym2FSI+pDX5fo05sJjy+i5xiNclrwDRH6ytV1uVwJ
+         /r2s9CUq9WRBVs8GAdtYYjZawRRLVhUGxW2hROBV/AErjr+mIJ8ZtE6SOMAvwtWWhPe2
+         hONZijX/utfxyEWDw/xYvoJdSxCzmfEVvfeiQkakHqEZQMb3n2upp8BgRAhb/AR0hicG
+         tMq2Htg5FVqIGfJc1HAk5TCh04ol5z6OTO5/Y1d/rKuUjrTryJt4YvycRa4R5j65ACNI
+         plcg==
+X-Gm-Message-State: AGi0PuZQoazAw39HpFc9KbLW9VPq1NWG655jUuZbMewFd6cSn0gruKzI
+        qma7LnvNPOoUXK+Nbtc6lwatRN6E11qGhQ0AF2NvQw==
+X-Google-Smtp-Source: APiQypLjAiV4abia0Dnf3bo5bT/gHLq6xTg5I9BLkRDylpCrsUtmjiGyajHs/PnbgoW+xlys9HhRNmwb4RI80fmY1tE=
+X-Received: by 2002:a2e:2245:: with SMTP id i66mr4232627lji.191.1588394913955;
+ Fri, 01 May 2020 21:48:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAMwB8mjUw+KV8mxg8ynPsv0sj5vSpwG7_khw=oP5n+SnPYzumQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
+ <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net> <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
+ <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net> <20200501024753.GE10769@hungrycats.org>
+ <b2cd0c70-b955-197c-d68b-cf77e102690c@ka9q.net> <6F06C333-0C27-482A-9AE4-3C0123CC550A@dordea.net>
+ <bc37ccb3-119e-24da-4852-56962c93fd2d@ka9q.net> <20200502041826.GH10769@hungrycats.org>
+In-Reply-To: <20200502041826.GH10769@hungrycats.org>
+From:   Phil Karn <karn@ka9q.net>
+Date:   Fri, 1 May 2020 21:48:22 -0700
+Message-ID: <CAMwB8mifO8kbLUHarY-nZRPwmK6YUEFTCY5AE_JVcuH38P8oZg@mail.gmail.com>
+Subject: Re: Extremely slow device removals
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Alexandru Dordea <alex@dordea.net>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 01, 2020 at 09:12:11PM -0700, Phil Karn wrote:
->    Thanks for the explanations of what replace and delete ("remove"?)
->    actually do; that's helpful. I'm still puzzled as to why there was so much
->    write activity to the drive I was removing; can you explain that?
->    My hand was ultimately forced today. The device remove running since last
->    weekend bombed out with a "no space" message in the kernel log despite
->    there being plenty of free space on all devices. The file system had been
+Thanks for the additional information. I know it's inherently hard to
+recover from some errors when caching is enabled, like an acknowledged
+write that can't later be flushed to stable storage. But I had no idea
+that some drives do gratuitous stuff like dropping the whole write
+cache on a read error. That does seem pretty indefensible. Has anybody
+gotten a response from the vendors? Does anybody keep a list of the
+drives and firmware versions that do this?
 
-Debugging metadata space reservations is an activity that was started 7
-years ago and has maybe 2-5 years of debugging left.  (half-;)
+(Resending because the list requires plain text)
 
->    remounted read-only. When I brought it back up, the mount system call
->    blocked while it underwent what was apparently a lengthy file system
->    check. (I got one message about a block group free space cache being
->    rebuilt). 
-
-OK, you aren't using space_cache=v2 yet.  Unmount the filesystem and
-mount with -o space_cache=v2.  It will take a long time to build the
-cache (up to an hour per TB), but once it has, it should get a lot faster.
-
->    It really doesn't seem like such a good idea for a really basic
->    system call like "mount" to block indefinitely during system boot. 
-
-mount has to take apart any relocation tree that may have been in
-progress during shutdown (up to one block group's worth of metadata),
-so it can take an arbitrary amount of time (though not usually more than
-40 minutes, unless you're mounting with space_cache=v2 for the first time).
-
->    systemd
->    eventually gives up, but it does take a while. Lots and lots of stack
->    traces in dmesg about system calls blocking for more than 120 sec. Usually
->    mount, but also sd-sync when trying to shut the system down gracefully.
->    Eventually I was forced to hit hard reset.
->    These blocking mounts make it kinda painful to get a root shell just so
->    you can see what's going on. This is why I'll never put a root filesystem
->    on btrfs. I keep my root filesystems in XFS or ext4 on a SSD so I can at
->    least pull all the other drives and boot up single user fairly quickly.
-
-I had a few systems configured that way--then some disk failures happened,
-and it turns out that in the real world, ext4 is as fragile as btrfs but
-lacks the integrity measurement and self-repair features.  So now I just
-put two root filesystems on each machine, then if something bad happens
-to the primary, the secondary root can be easily selected from a grub
-"rescue" option.
-
->    I'll manually rsync the root file system onto a spare disk partition as a
->    backup.
->    Before rebooting I physically pulled the drive I was trying to replace and
->    set noauto in /etc/fstab on the btrfs fs. Back in multi-user mode at last,
->    I did a mount with degraded enabled and got the expected message about the
->    missing device (confirming I pulled the right one). It's still madly doing
->    I/O, but since it's not telling me what's going on (and the mount has not
->    completed) I have to assume from the I/O patterns that it's continuing the
->    device remove without it being physically present. I guess if I'm lucky
->    I'll be able to use my filesystem in a week or so. I do have a backup but
->    I'd rather not touch it except as a last resort.
->    On Fri, May 1, 2020 at 8:35 PM Zygo Blaxell
->    <[1]ce3g8jdj@umail.furryterror.org> wrote:
-> 
->      On Fri, May 01, 2020 at 01:05:20AM -0700, Phil Karn wrote:
->      > On 4/30/20 11:13, Jean-Denis Girard wrote:
->      > >
->      > > Hi Phil,
->      > >
->      > > I did something similar one month ago. It took less than 4 hours for
->      > > 1.71 TiB of data:
->      > >
->      > > [xxx@taina ~]$ sudo btrfs replace status /home/SysNux
->      > > Started on 21.Mar 11:13:20, finished on 21.Mar 15:06:33, 0 write
->      errs, 0
->      > > uncorr. read errs
->      >
->      > I just realized you did a *replace* rather than a *remove*. When I did
->      a
->      > replace on another drive, it also went much faster. It must copy the
->      > data from the old drive to the new one in larger and/or more
->      contiguous
->      > chunks. It's only the remove operation that's painfully slow.
-> 
->      "Replace" is a modified form of scrub which assumes that you want to
->      reconstruct an entire drive instead of verifying an existing one.
->      It reads and writes all the blocks roughly in physical disk order,
->      and doesn't need to update any metadata since it's not changing any of
->      the data as it passes through.
-> 
->      "Delete" is resize to 0 followed by remove the empty device.  Resize
->      requires relocating all data onto other disks--or other locations on
->      the same disk--one extent at a time, and updating all of the reference
->      pointers in the filesystem.
-> 
->      The difference in speed can be several orders of magnitude.
-> 
->      > Phil
->      >
->      >
-> 
-> References
-> 
->    Visible links
->    1. mailto:ce3g8jdj@umail.furryterror.org
+--Phil
