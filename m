@@ -2,59 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B11C1C231C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 06:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EE11C2327
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 07:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgEBEuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 May 2020 00:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S1727029AbgEBFBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 01:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726439AbgEBEuA (ORCPT
+        by vger.kernel.org with ESMTP id S1726058AbgEBFBL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 2 May 2020 00:50:00 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADD9C061A0C
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 21:49:59 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a21so4403559ljb.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 21:49:59 -0700 (PDT)
+        Sat, 2 May 2020 01:01:11 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F36EC061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 May 2020 22:01:11 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id s9so180322lfp.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 May 2020 22:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ka9q-net.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sv6DxC3FNiZxFuNuuUlk6s6AH/L1eW9mPJcCrlTXTu8=;
-        b=U1d5wDvXuzdbXhw9AgM+YEkWWVvYSsZsDgJ5BSzxtQqeX+iIgIp2DxR2n9soPxFjTD
-         82PTp0keSbv3ZY9v4Pgm+T7YSR/ncR6rF79PLJijsmxHF3V/N5jq2Tdz8uxGFf0cXTzP
-         C3gcJpYXfNqpyfxAr3W7T9ZvYF0M6r5e850m6v7qEZpd+ayx8IzmN25A1+Dj6t7LqmU4
-         vbHwIy9webpbUoD1vaArKY9jPBLmZwdf2U4jJl9bQM4MOzK4E03ScbTvMCQBN/MKph/M
-         C3+WPh+zquzaqfJzCpaa6sfCPOXktv7FRTaImEunewXHAcEXa9x9Ug4TrfV4f1FOyUBh
-         7RaA==
+        bh=tT/Vy4B7qaNslTQscfoHOR35JRcZ9zwtO5MDs6ZmA9c=;
+        b=vmt7CXN8gkENJbml4aFrQjgN1wDb/6cXjI+2u1x0s0M4QlcJvAo2k2Kv60jjrIAxW+
+         Vvj2S6tS0qBWr/jK8fEaeLj9M+000H+1a0jP+BBO25bdcgqqAlSRKj88I3EQypCpianC
+         Qc/Q9RI4b+pJyD3BThqF358i3g8EM/T/9JevtzgAFgJrch2Ew8WN/6ab9Y5SKMMBdMeD
+         ED7WjdMvnbRKp7uNbyL5mmhE+Rdt0BJP/DqhgcjOt9R6N2m4pO1QInUJnkKuqvAvLPV7
+         yqANLH++3R6IUS4BNe1mOrIKBAP9VXEe4BsBoejW98ZikYT3ugYimRKhbbE+T5RnGwwX
+         WFqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sv6DxC3FNiZxFuNuuUlk6s6AH/L1eW9mPJcCrlTXTu8=;
-        b=VgRkY/gWAhikHiEnp62T5sEdLW4egddEEkS3gAm0bPSSirOvPqZvTKl8lIKLTJtQmB
-         1YGYbM6miguKAdQzoW+XuDv+2QUA9u151ObQm0XE/bMLDsKvzzObu3uJ17OArgF3lLRX
-         2HCkYBZ/Eg89K+8/wQqNp2XVgxElEnvZ9Kw0wKEMTUJ2IE2ekKtjNy7BCpZWRCpSyJ2g
-         8q/9Es6P3sE2LCkcJJanerBrXkwZkGEUd0TuaVo9HF3f0glTaTgM1P6a/UGd8AcJXv20
-         ukuLVQ/DZQQBx+jIprWUXLfwEf6hAi/zBgPCiZD9qB8F9mf8lxTlRPKLR7K8wIqfiQL0
-         S0Ww==
-X-Gm-Message-State: AGi0PuaAqcj9BNE/Kef1gGcZECwnXRWmEMZdUedz9z3arMJvVdY7IBbx
-        OL1Xkcc2Ziaa50Rcmh3BEj9txhW67bIDsJ+V8DNvjQ==
-X-Google-Smtp-Source: APiQypLuvgZfXRU5v2aZrqbnvtt5I71UMwDsP1lpY5/rIV6egACapnnVBTFEGVZqU8aThIfMNopopWsFw9yBBL0i90c=
-X-Received: by 2002:a2e:87d3:: with SMTP id v19mr3931965ljj.176.1588394997909;
- Fri, 01 May 2020 21:49:57 -0700 (PDT)
+        bh=tT/Vy4B7qaNslTQscfoHOR35JRcZ9zwtO5MDs6ZmA9c=;
+        b=pO5p8XaYOcUaVH+fVUOO5HenmSDFQzjfAbWkAol+UfpENuOHeEVBgP2seKBmjrmGtj
+         tV8xBpHpDoaKFTIXvMCyot5X9AIhxbXGbpii0jCJP2C2QdZI/SRMXPj/VC55/qlx2PKP
+         ooR3FNL3hdJpL0j5AYeKfZv4yQbjIC/5hZIosbBPEwseVE6grXr6UW1MdL/ZUjy7pmHk
+         odBq5fWWvl0SYY+jxBSyZo5RY8gjeL7d/pfP7/zDtav3TAm8lmv3XAHWCEBde/cMHLCG
+         CsCLdMHiZvHPn8oPdYOhy7NOIZo6Hu6LKx1Ax6IUYsy3Y9rtyvUaWH0jcUc3cR23Ca/2
+         VYqw==
+X-Gm-Message-State: AGi0Pubd0C4a50JsJQeEzTOWSZbIm8IBtBragymw50IosRfzQ+4xOcAN
+        rGeNbYUU2VndWMrhqolXKhQ+xkMRbjJeL06O+Boh7A==
+X-Google-Smtp-Source: APiQypImE+obSGjLS83cjShNnNdd498AV6IhgaynNZIgoprKhaqW9saf5TTJP2l9i3FI93/GeTqkYsWw7f85Z3J18VE=
+X-Received: by 2002:a19:ee06:: with SMTP id g6mr4654970lfb.90.1588395669624;
+ Fri, 01 May 2020 22:01:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
- <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net> <r8f4gb$8qt$1@ciao.gmane.io>
- <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net> <20200502033509.GG10769@hungrycats.org>
-In-Reply-To: <20200502033509.GG10769@hungrycats.org>
+ <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net> <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
+ <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net> <20200501024753.GE10769@hungrycats.org>
+ <b2cd0c70-b955-197c-d68b-cf77e102690c@ka9q.net> <6F06C333-0C27-482A-9AE4-3C0123CC550A@dordea.net>
+ <bc37ccb3-119e-24da-4852-56962c93fd2d@ka9q.net> <20200502041826.GH10769@hungrycats.org>
+In-Reply-To: <20200502041826.GH10769@hungrycats.org>
 From:   Phil Karn <karn@ka9q.net>
-Date:   Fri, 1 May 2020 21:49:46 -0700
-Message-ID: <CAMwB8mgM+KMC=3aLTWXbUX7GzzHPr7s=8Lbt0jv6J66+8gHT6A@mail.gmail.com>
+Date:   Fri, 1 May 2020 22:00:58 -0700
+Message-ID: <CAMwB8mj+XtCG5bRZuS_2+x_9duNnsy=Zafz8KPusbLFVOvXbbA@mail.gmail.com>
 Subject: Re: Extremely slow device removals
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Jean-Denis Girard <jd.girard@sysnux.pf>,
+Cc:     Alexandru Dordea <alex@dordea.net>,
+        Chris Murphy <lists@colorremedies.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -62,36 +65,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My hand was ultimately forced today. The device remove running since
-last weekend bombed out with a "no space" message in the kernel log
-despite there being plenty of free space on all devices. The file
-system had been remounted read-only. When I brought it back up, the
-mount system call blocked while it underwent what was apparently a
-lengthy file system check. (I got one message about a block group free
-space cache being rebuilt). It really doesn't seem like such a good
-idea for a really basic system call like "mount" to block indefinitely
-during system boot. systemd eventually gives up, but it does take a
-while. Lots and lots of stack traces in dmesg about system calls
-blocking for more than 120 sec. Usually mount, but also sd-sync when
-trying to shut the system down gracefully. Eventually I was forced to
-hit hard reset.
+> So even if you use 100% of a 256MB drive's on-board RAM as write cache, the following gigabytes of
+> a large metadata update won't get much benefit from caching.  The drive
+> will be stuck a quarter gigabyte behind the host, trying to catch up
+> all the time.
 
-These blocking mounts make it kinda painful to get a root shell just
-so you can see what's going on. This is why I'll never put a root
-filesystem on btrfs. I keep my root filesystems in XFS or ext4 on a
-SSD so I can at least pull all the other drives and boot up single
-user fairly quickly. I'll manually rsync the root file system onto a
-spare disk partition as a backup.
+Well, at least in theory the cache should still make the drive go
+faster by reordering the writes to minimize seek and rotational
+latency. Only the drive knows its own layout and latencies, so only
+the drive can do this optimization. I suppose that for a long time you
+can assume that writes to LBAs with large absolute differences would
+be slower than writes to LBAs with small ones, but I'm not so sure
+even that's true anymore. Especially with shingled drives (though my
+drives are not shingled, and I know that's a whole other discussion).
+In any event, only the drive knows for sure.
 
-Before rebooting I physically pulled the drive I was trying to replace
-and set noauto in /etc/fstab on the btrfs fs. Back in multi-user mode
-at last, I did a mount with degraded enabled and got the expected
-message about the missing device (confirming I pulled the right one).
-It's still madly doing I/O, but since it's not telling me what's going
-on (and the mount has not completed) I have to assume from the I/O
-patterns that it's continuing the device remove without it being
-physically present. I guess if I'm lucky I'll be able to use my
-filesystem in a week or so. I do have a backup but I'd rather not
-touch it except as a last resort.
-(resending)
---Phil
+Oh, question about transaction queuing: can each transaction on the
+queue consist of any number of LBAs as long as they're consecutive? I
+am trying to figure out if 4Kn (4Kb native sectors) buys you anything
+over I/O on a 512e drive in multiples of 8 properly aligned LBAs. If
+each transaction can be of any number of LBAs, it's hard to see any
+real benefit to 4Kn except that it saves 3 bits in the LBA number.
