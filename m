@@ -2,92 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAD51C23F5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 09:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7607F1C23FD
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 10:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgEBH4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 May 2020 03:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        id S1726574AbgEBIWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 04:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726741AbgEBH4B (ORCPT
+        by vger.kernel.org with ESMTP id S1725785AbgEBIWl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 2 May 2020 03:56:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAB8C061A0C
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 00:56:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k1so14517614wrx.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 00:56:01 -0700 (PDT)
+        Sat, 2 May 2020 04:22:41 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8792C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 01:22:40 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id f18so4642247lja.13
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 01:22:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0j+Xh4CjW5ElVZzS7RRjztVExT/WMDWx3UfbLAIyv0I=;
-        b=xL3OK+QXgtHg0Fr0cK/Ygfyq24tDbc9mtq04BHW/fVBqAKsBVOAMJ2uxtu6KObUEzL
-         npAl56R3xuFCAKO2oViGzzfF1ja7/oxyTkmwiKOOy/3C7YAd/VgnZ9xuiTK/yp5KFlZZ
-         70WhqctAPTP7YNDR+LhusZcRXsZtbLMLutnJKWdaOzEZlg0QOPpQtJmPX1YzICBLSUk1
-         SAiUDWurFEA3SNfpgdF84Oup8WVPCPUdWvHHybcf+ncGjQ4yd6dQscd45s1jKWnBvxr+
-         JvcqjDyQDd7tYiCs8vko/LjHHLiTpi/thJ7oq6P6yybzVDgTaSiYAHFytuPdIioeEaOQ
-         y8ow==
+        bh=mv6SlC0tt3Xm1WfE2et8HtHDgz6QBYaaxT03onjAGpI=;
+        b=jgzq3TV0yUVNQI5jcq6iowPz/1uZPleMq5bdnlxKW69jJNT+cA0hh+HDA8qYGcsCHH
+         gqEzQezi/ZQaJRDVdNmzpDSwD9uVHgccxulqmkfnMMF7cb/SAYkOZqEMA4guFcPCC/I3
+         JVyrzzMuFBABuPcGzaI8mrr2Vch2VjefdZTjWB5viM8wlZXuKBwDwM6rLTJkDrDMZHDa
+         a42mWTPMlm0yjeRUOhydj1+jNl0i4SyBdWaGqff8lWR9y399ibVDN3Pac8amgcjgXhuB
+         f820w0LQTqV16WEC4SHSIFeGQiGRNBujW9TYjjFGMN3Neb+tpL7+ZOQccx8Y16bVIcvD
+         x8Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0j+Xh4CjW5ElVZzS7RRjztVExT/WMDWx3UfbLAIyv0I=;
-        b=WqxTZeEQ6qrkMAwupxsJJvY7JqqnsLfNJ2bFwqXf2dvBIVsA/0j5xA4SB/yoNg0TOt
-         /o1bMH6fS8ydf0Fxso1HMso3vMhOF8jUu3pRyIu7H83Z+O6k+GC1gk2/q4AN90bfCSz6
-         aXhgudv0NWc3ZQC+LYQvmcH4frzi6bJgavmggoa4ba7ZNFtHq6MbLE4wpOjqsUaINTga
-         D6XB6qy8b3myVZMdEXj1Om6kD0bfoC4a3nL8mTHAxPurEPPKyKYO42mAMgcWZMsFg/np
-         aUkY+geXZZ15VsTtSaFHcKrIKaIRrSIISKzshubthkYYafj3pC5OPv5mRrA6idpStRaF
-         ntOQ==
-X-Gm-Message-State: AGi0PuY/YXZ7/Ae6Q2HguXQO46/6OAFt4Pqa9OLRVARRmjaSUz8zTyYZ
-        RKZDBfH86pJZMVMTqFUEpFNME51AE/XIljtB0JVJMTwp
-X-Google-Smtp-Source: APiQypLzicTRwdexF8tMb5Ud9mLgpDlSuX+eLkH7p6fT7xioefa+8hU+CPD1ztckBiP7xJNbDnBa0FXaTMlb82WH1nc=
-X-Received: by 2002:a5d:6148:: with SMTP id y8mr7927737wrt.236.1588406160116;
- Sat, 02 May 2020 00:56:00 -0700 (PDT)
+        bh=mv6SlC0tt3Xm1WfE2et8HtHDgz6QBYaaxT03onjAGpI=;
+        b=qJQY/ZyYEmMDmP4Pgha1tpaps7lDyQMnryNBxexszqoWglctriqJKY5995WO2VPUH3
+         qIck7oUXw11Tizt1AV6ohn3EdI26SBGsBjxExkZWkVbn6WUyjeVNs6VPARUTVWsjJyHk
+         JJkmj2RUzFen9Nev6FtDG0SbSlc0pM5WjoaCLtU7Mf85TPRbcCxpL/A0M9ZnvHFSRlNa
+         n9hdxHYIVUGhnEjQKwkeTsLwY/VQf+lUX4kQjuKR9IqmouSXqRNNTl+Pqf69z2O+uftN
+         37iJjgvPtZJm82i+vn2W6Pnhcpwj4NQbKzHzXN9/O/uW4baua/ue2ZT6a46Gbg+YLbiD
+         TEaA==
+X-Gm-Message-State: AGi0PuZesRy2+9T/7dsebqs5gQrIGVvxqTbFMTDFP5prv4krADJ2TT3Y
+        IK+V+p0dTmf1BB/jQEln6kABHmKXnotug8em3uxoog==
+X-Google-Smtp-Source: APiQypItarhibzRLB50mgBYkxNyE2xibC65mcGSvcgaIwcgXuD034xGB1SQqaCyhsaZmqN6rPNrmSR2BktovqGerGR8=
+X-Received: by 2002:a2e:87d3:: with SMTP id v19mr4328973ljj.176.1588407757887;
+ Sat, 02 May 2020 01:22:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAAhjAp1zghNnRpbA2WypBU9+Azeui8kTQiTj+DfbK-iX-z71WQ@mail.gmail.com>
- <CAJCQCtS7mbjEVchwbJS86ujAW+TrKHBk23oYtTNQnruiUr0XSg@mail.gmail.com> <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com>
-In-Reply-To: <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 2 May 2020 01:55:43 -0600
-Message-ID: <CAJCQCtTTwD1Dq0h3JMPXi1z+yTA8SGFbvft+VLAk_24pGDp0Pg@mail.gmail.com>
-Subject: Re: Can't repair raid 1 array after drive failure
-To:     Rollo ro <rollodroid@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
+ <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net> <r8f4gb$8qt$1@ciao.gmane.io>
+ <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net> <20200502033509.GG10769@hungrycats.org>
+ <SYBPR01MB3897D20A8185249BF2A26B139EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
+ <20200502060038.GK10769@hungrycats.org> <SYBPR01MB389730010988EC44E7D109EE9EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
+ <CAMwB8mhGkcM3DCTusuHAi-cQcr-FrA5cq4hVYfv+65zn_QjAig@mail.gmail.com> <20200502074237.GM10769@hungrycats.org>
+In-Reply-To: <20200502074237.GM10769@hungrycats.org>
+From:   Phil Karn <karn@ka9q.net>
+Date:   Sat, 2 May 2020 01:22:25 -0700
+Message-ID: <CAMwB8mg5npwzxFrBw8gdBt7KPbTb=M8d_MAGtbQbCoJS0GoMgA@mail.gmail.com>
+Subject: Re: Extremely slow device removals
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Paul Jones <paul@pauljones.id.au>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 1, 2020 at 1:59 PM Rollo ro <rollodroid@gmail.com> wrote:
->
-> Am Fr., 1. Mai 2020 um 19:52 Uhr schrieb Chris Murphy <lists@colorremedies.com>:
-> >
-> > A complete dmesg please (not trimmed, starting at boot) would be useful.
->
-> dmesg is spammed with btrfs warnings and errors, so all earlier
-> content is already gone. I can increase the buffer in grub
-> configuration and provide the complete dmesg next time.
+On Sat, May 2, 2020 at 12:42 AM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
 
-For the current boot:
-# journalctl -k
-For previous boot:
-# journalctl -b -1 -k
+> If you use btrfs replace to move data between drives then you get all
+> the advantages you describe.  Don't do 'device remove' if you can possibly
+> avoid it.
 
-> While looking at dmesg I found this:
-> [Fri May  1 16:25:15 2020] BTRFS warning (device sdc1): lost page
-> write due to IO error on /dev/sde
-> [Fri May  1 16:25:15 2020] BTRFS error (device sdc1): error writing
-> primary super block to device 4
-> [Fri May  1 16:25:15 2020] BTRFS info (device sdc1): disk added /dev/sdb
-> [Fri May  1 16:25:49 2020] BUG: kernel NULL pointer dereference,
-> address: 0000000000000000
+But I had to use replace to do what I originally wanted to do: replace
+four 6TB drives with two 16TB drives.  I could replace two but I'd
+still have to remove two more. I may give up on that latter part for
+now, but my original hope was to move everything to a smaller and
+especially quieter box than the 10-year-old 4U server I have now
+that's banished to the garage because of the noise. (Working on its
+console in single-user is much less pleasant than retiring to the
+house and using my laptop.) I also wanted to retire all four 6 TB
+drives because they have over 35K hours (four years) of continuous run
+time. They keep passing their SMART checks but I didn't want to keep
+pushing my luck.
 
-This might be related to the device vanishing. The actual problem(s)
-happened before this. This is just the consequence of the problem.
+> If there's data corruption on one disk, btrfs can detect it and replace
+> the lost data from the good copy.
 
+That's a very good point I should have remembered. FS-agnostic RAID
+depends on drive-level error detection, and being an early TCP/IP guy
+I have always been a fan of end-to-end checks. That said, I can't
+remember EVER having one of my drives silently corrupt data. When one
+failed, I knew it. (Boy, did I know it.)  I can detect silent
+corruption even in my ext4 or xfs file systems because I've been
+experimenting for years with stashing SHA file hashes in an extended
+attribute and periodically verifying them. This originated as a simple
+deduplication tool with the attributes used only as a cache. But I
+became intrigued by other uses for file-level hashes, like looking for
+a file on a heterogeneous collection of machines by multicasting its
+hash, and the aforementioned check for silent corruption. (Yes, I know
+btrfs checks automatically, but I won't represent what I'm doing as
+anything but purely experimental.)
 
--- 
-Chris Murphy
+I've never seen a btrfs scrub produce errors either except very
+quickly on one system with faulty RAM, so I was never going to trust
+it with real data anyway. (BTW, I believe strongly in ECC RAM. I can't
+understand why it isn't universal given that it costs little more.)
+
+I'm beginning to think I should look at some of the less tightly
+coupled ways to provide redundant storage, such as gluster.
