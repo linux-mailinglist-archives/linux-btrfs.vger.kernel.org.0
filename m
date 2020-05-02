@@ -2,80 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1270A1C23EE
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 09:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAD51C23F5
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 May 2020 09:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgEBHwf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 2 May 2020 03:52:35 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:39824 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgEBHwf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 May 2020 03:52:35 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id D5EFC69FD92; Sat,  2 May 2020 03:52:33 -0400 (EDT)
-Date:   Sat, 2 May 2020 03:52:33 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Phil Karn <karn@ka9q.net>
-Cc:     Paul Jones <paul@pauljones.id.au>,
-        Jean-Denis Girard <jd.girard@sysnux.pf>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Extremely slow device removals
-Message-ID: <20200502075233.GN10769@hungrycats.org>
-References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
- <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
- <r8f4gb$8qt$1@ciao.gmane.io>
- <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net>
- <20200502033509.GG10769@hungrycats.org>
- <SYBPR01MB3897D20A8185249BF2A26B139EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
- <CAMwB8mi62y+9BfXYSmS0-VStGFnqDi8_UkskrdfPg5LsexaRNQ@mail.gmail.com>
- <20200502072053.GL10769@hungrycats.org>
- <CAMwB8miVfp_vpJaak=W_PK-xYtb=Py1zqqVYXWo_3NN4a9Dk7Q@mail.gmail.com>
+        id S1726762AbgEBH4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 03:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726741AbgEBH4B (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 2 May 2020 03:56:01 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAB8C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 00:56:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k1so14517614wrx.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 00:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0j+Xh4CjW5ElVZzS7RRjztVExT/WMDWx3UfbLAIyv0I=;
+        b=xL3OK+QXgtHg0Fr0cK/Ygfyq24tDbc9mtq04BHW/fVBqAKsBVOAMJ2uxtu6KObUEzL
+         npAl56R3xuFCAKO2oViGzzfF1ja7/oxyTkmwiKOOy/3C7YAd/VgnZ9xuiTK/yp5KFlZZ
+         70WhqctAPTP7YNDR+LhusZcRXsZtbLMLutnJKWdaOzEZlg0QOPpQtJmPX1YzICBLSUk1
+         SAiUDWurFEA3SNfpgdF84Oup8WVPCPUdWvHHybcf+ncGjQ4yd6dQscd45s1jKWnBvxr+
+         JvcqjDyQDd7tYiCs8vko/LjHHLiTpi/thJ7oq6P6yybzVDgTaSiYAHFytuPdIioeEaOQ
+         y8ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0j+Xh4CjW5ElVZzS7RRjztVExT/WMDWx3UfbLAIyv0I=;
+        b=WqxTZeEQ6qrkMAwupxsJJvY7JqqnsLfNJ2bFwqXf2dvBIVsA/0j5xA4SB/yoNg0TOt
+         /o1bMH6fS8ydf0Fxso1HMso3vMhOF8jUu3pRyIu7H83Z+O6k+GC1gk2/q4AN90bfCSz6
+         aXhgudv0NWc3ZQC+LYQvmcH4frzi6bJgavmggoa4ba7ZNFtHq6MbLE4wpOjqsUaINTga
+         D6XB6qy8b3myVZMdEXj1Om6kD0bfoC4a3nL8mTHAxPurEPPKyKYO42mAMgcWZMsFg/np
+         aUkY+geXZZ15VsTtSaFHcKrIKaIRrSIISKzshubthkYYafj3pC5OPv5mRrA6idpStRaF
+         ntOQ==
+X-Gm-Message-State: AGi0PuY/YXZ7/Ae6Q2HguXQO46/6OAFt4Pqa9OLRVARRmjaSUz8zTyYZ
+        RKZDBfH86pJZMVMTqFUEpFNME51AE/XIljtB0JVJMTwp
+X-Google-Smtp-Source: APiQypLzicTRwdexF8tMb5Ud9mLgpDlSuX+eLkH7p6fT7xioefa+8hU+CPD1ztckBiP7xJNbDnBa0FXaTMlb82WH1nc=
+X-Received: by 2002:a5d:6148:: with SMTP id y8mr7927737wrt.236.1588406160116;
+ Sat, 02 May 2020 00:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAMwB8miVfp_vpJaak=W_PK-xYtb=Py1zqqVYXWo_3NN4a9Dk7Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAAhjAp1zghNnRpbA2WypBU9+Azeui8kTQiTj+DfbK-iX-z71WQ@mail.gmail.com>
+ <CAJCQCtS7mbjEVchwbJS86ujAW+TrKHBk23oYtTNQnruiUr0XSg@mail.gmail.com> <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com>
+In-Reply-To: <CAAhjAp33Kan3Aco1CWBVh54tatexNs3w=qJqLHq6yQjxzRjjjQ@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 2 May 2020 01:55:43 -0600
+Message-ID: <CAJCQCtTTwD1Dq0h3JMPXi1z+yTA8SGFbvft+VLAk_24pGDp0Pg@mail.gmail.com>
+Subject: Re: Can't repair raid 1 array after drive failure
+To:     Rollo ro <rollodroid@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 02, 2020 at 12:27:27AM -0700, Phil Karn wrote:
-> > deleted the originals in logical extent order.  Sometimes people call this
-> > "defrag free space" but the use of the word "defrag" can be confusing.
+On Fri, May 1, 2020 at 1:59 PM Rollo ro <rollodroid@gmail.com> wrote:
+>
+> Am Fr., 1. Mai 2020 um 19:52 Uhr schrieb Chris Murphy <lists@colorremedies.com>:
 > >
-> > balance is not btrfs defrag.  defrag is concerned with making data extents
-> > contiguous, while balance is concerned with making free space contiguous.
-> 
-> Got it. I actually would have understood "defrag free space" and that
-> it differed from file defragmentation (btrfs defrag, xfs_fsr,
-> e4defrag, etc).  "Balance" confused me.
-> 
-> How do you balance free space when you've got drives of unequal sizes,
-> like my (current) case of a 4-drive array consisting of two 16-TB
-> drives and two 6-TB drives?
+> > A complete dmesg please (not trimmed, starting at boot) would be useful.
+>
+> dmesg is spammed with btrfs warnings and errors, so all earlier
+> content is already gone. I can increase the buffer in grub
+> configuration and provide the complete dmesg next time.
 
-Depends on the RAID profile.  For single, dup, raid1, raid1c3, and raid1c4,
-the drives with the most unallocated space are filled first, using devid
-to break ties.  For raid0, raid5, and raid6, drives with free space are
-filled equally.  raid10 fills disks in even-numbered groups of 4 or more
-drives at a time, filling disks with the most unallocated space first.
-There are some other rules (e.g. at most 10 disks are used in a single
-block group) but they're not relevant at this scale.
+For the current boot:
+# journalctl -k
+For previous boot:
+# journalctl -b -1 -k
 
-raid1 and single profiles would fill the 16TB drives first, until there
-was only 6 TB remaining.  At this point all the drives would have equal
-free space, then all drives fill equally until they are all full.
+> While looking at dmesg I found this:
+> [Fri May  1 16:25:15 2020] BTRFS warning (device sdc1): lost page
+> write due to IO error on /dev/sde
+> [Fri May  1 16:25:15 2020] BTRFS error (device sdc1): error writing
+> primary super block to device 4
+> [Fri May  1 16:25:15 2020] BTRFS info (device sdc1): disk added /dev/sdb
+> [Fri May  1 16:25:49 2020] BUG: kernel NULL pointer dereference,
+> address: 0000000000000000
 
-raid0 and raid5 would fill all the disks at first, until the 6TB drives are
-full and the 16TB drives have 10TB of free space, then they'd fill the
-16TB drives the rest of the way.
+This might be related to the device vanishing. The actual problem(s)
+happened before this. This is just the consequence of the problem.
 
-raid1c3, raid1c4, raid6 and raid10 would fill all the drives at first,
-then stop with ENOSPC when the 6TB disks are full and the 16TB disks
-have 10TB of free space.  These profiles have a minimum of 3 or more
-disks, and you don't have that number of the largest size disks.
-Once all the smaller disks are full no further allocation can be done.
 
-> Phil
+-- 
+Chris Murphy
