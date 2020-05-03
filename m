@@ -2,287 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6347D1C293F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 May 2020 02:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3A91C2965
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 May 2020 04:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgECAkm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 May 2020 20:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
+        id S1726736AbgECC3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 May 2020 22:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726570AbgECAkm (ORCPT
+        by vger.kernel.org with ESMTP id S1726544AbgECC27 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 2 May 2020 20:40:42 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD798C061A0C
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 17:40:41 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id e20so5742694otk.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 17:40:41 -0700 (PDT)
+        Sat, 2 May 2020 22:28:59 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87B3C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 May 2020 19:28:59 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id f8so5339802plt.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 May 2020 19:28:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+f6Rl2yClYI6q6C4PTmmKq0H4Y2Ol5FMle4UupFzRlY=;
-        b=WriWNVhUrJFXdiI9j0PSdspyN/DEIjIAlk6LBMF8Y300XO1SmDf/IO2QVdIF4H9FZA
-         e6Ov5pQhTcQKjeYIQZ9J/fsXedWsd2OdNe5fGeeCLlMg2CI9f+uElaburhcA3LpBJGW5
-         C+CU+uDgHraGAcYOG10fAnc//kdeW2FlSlqDhcqmlW8bBoka0czxs5JX9RC+QsRY+LLM
-         cXaOOv09NNwJwEpLaUdNyySn5oKhAtMbJDIs8Dp9XCfoUr9KPVU99c3Eiq34SNHetzTp
-         ZzWOHA27TjS5EWI4bc9wWgpsQsAIpRGg1EIDxJQ7vNe6CY4IxzA5LR07WdZcmI8OgUr5
-         QLkQ==
+        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=u+XnCy7+6Zp6eFo/6HxaetusSiv7fv+3YD7tpdTlr9g=;
+        b=b384xmkJh2bY7dKvMV1MRo0pRr5FOTcb6f8Is6fvMIzvUJFcWCygvlmaVa9dutKaCh
+         Fht1Jq2d0Pe5iPHXwMe7pCNbx6jSiGYWdxmQ/kA/zg7D/KA2GzQ5V4iqoLghKXmTHPKw
+         cVbpoCn+gUrOAomOG7OMkkezirsDLoYeGRyAqpyxXuhetw+Nc72Frdo2ldzSXcxRvIDk
+         ACCQKK4Aw1Jm+7VdwDB9SL2ji8x1JGTLf005zKrLs6+MYvJdk26j8qVcRqvY0/MLNmWz
+         TCu1b5/sck+efzE3w1otvT87MZTDRpLOjGca9bshYYj9XFi3n7evrAhH7EU5kblKpK4P
+         k5gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+f6Rl2yClYI6q6C4PTmmKq0H4Y2Ol5FMle4UupFzRlY=;
-        b=YEJ5yrIjY+dLtlrPx34UVXQmi1895qYaJNwVyixgcGW4nGFu0BVB+/ncljiVG+DWjb
-         TgIjJV0rKsyhVI3mCbgn5rWZgNSr/DiOW+NBZH3Yo3/P4xw7e//t0DbRyVrlm3AQrVx+
-         6b2zKAUpJWd+XaUgsDqbC4an+FLIA+9yJLpPZ/7Qc/yi/Y5M2ZJoYP2y7PS1veowS+rv
-         pV0xeuaN0UwxqMu8R/FGg3425/Z88tpECkaiLK4QO1jOKYQaUpHrnjG3HNdzbK6Q4ocn
-         5S4YHD7A9M0yAPY3TKN6tqyeAvjIhG/tHMHhGz5kyqjqshP+BR7YjJyXOoKbYIxX0yJl
-         qM7A==
-X-Gm-Message-State: AGi0PuZAiW8gAZIbx2BNSpXrXa5CIF3xIgZ/HmUN3njYMhVePtuPrWeX
-        NDbKKblloICB+HCtvabKmJtuc6UHxGl6lMS/pdybyBJH0gg=
-X-Google-Smtp-Source: APiQypIEtWI+ZdZaEhhIxNURXRwwtCC55/O7I6lXwP74cI+Mmyfyt+ImMmNEI2uDl5W4OjhcLj0kzeYzNllVEGcgvto=
-X-Received: by 2002:a05:6830:108b:: with SMTP id y11mr8872135oto.88.1588466440948;
- Sat, 02 May 2020 17:40:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAAhjAp1zrjrizrswo3BF1-cTXArpZ5XFUPbd-OR_Nu1N05pdSQ@mail.gmail.com>
- <20200501023029.GD10769@hungrycats.org> <CAAhjAp0xitJN0S7T9DPEO84ELAYyWi1-k7ZRZSd1vddT4ozbTA@mail.gmail.com>
- <20200502055654.GJ10769@hungrycats.org>
-In-Reply-To: <20200502055654.GJ10769@hungrycats.org>
-From:   Rollo ro <rollodroid@gmail.com>
-Date:   Sun, 3 May 2020 02:40:05 +0200
-Message-ID: <CAAhjAp1mg-KF+YY=y_t-KEYHp-0uST84vS1z1=mEG858DzWX4w@mail.gmail.com>
-Subject: Re: raid56 write hole
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=u+XnCy7+6Zp6eFo/6HxaetusSiv7fv+3YD7tpdTlr9g=;
+        b=HjvpnQXF08V3BkUYJkCzdyFwcdSeGw8s7oRSx8vawSUhL4yZ3T/qSb3OoKvQ7Q7zqV
+         ys21YnZUCyekd6Z9pTzz6SUfDG24Z97a2eqPdXt+Ljof9Vn2Hwtxiq1gDJ/95LiJt6SY
+         TX4dk39aw/yUu+I7pZ6KEt1EahXi+VOjeR1omyTSrP5aLo5MDI5FlyO8QXOxB17PzoYl
+         zOYaWSKl5OoLhbtjMv1roIcTVFd/5SdcJTjs6nvfSWpECaXAXc2PCRATXSMw6EwT+3w5
+         VRbS0kRcK63dEQefpR3Pwd6zLScIwYNlqUOpQjI61oBeBqwjbZ2PGlNBXLgAa4t4mFpt
+         wqDw==
+X-Gm-Message-State: AGi0PuZ0lt86EH2EUogWU4L2riS51vx46pSZgR2OoKneaaZzUGhAjXXB
+        DYRN8fh2rcHE498NzT4U0oItltHNAqtIEw==
+X-Google-Smtp-Source: APiQypK/NgXO1BN4Z81q0DFXEtEOYXIiBjoKINAiKq/ibnFeiMkfrJhwRtDK3Pz2vy1NEW1OVxQJew==
+X-Received: by 2002:a17:90a:23e2:: with SMTP id g89mr9014261pje.105.1588472939067;
+        Sat, 02 May 2020 19:28:59 -0700 (PDT)
+Received: from selma.local ([2605:e000:1c0e:43f7:55e4:6827:c5ab:4f6f])
+        by smtp.gmail.com with ESMTPSA id q14sm4888150pgq.60.2020.05.02.19.28.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 May 2020 19:28:57 -0700 (PDT)
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Alexandru Dordea <alex@dordea.net>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
+ <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
+ <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
+ <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net>
+ <20200501024753.GE10769@hungrycats.org>
+ <b2cd0c70-b955-197c-d68b-cf77e102690c@ka9q.net>
+ <6F06C333-0C27-482A-9AE4-3C0123CC550A@dordea.net>
+ <bc37ccb3-119e-24da-4852-56962c93fd2d@ka9q.net>
+ <20200502041826.GH10769@hungrycats.org>
+From:   Phil Karn <karn@ka9q.net>
+Autocrypt: addr=karn@ka9q.net; keydata=
+ mQENBEw2mJ4BCADELiPsLFHDwapoSU7d2xNHxmwzzrFUCZWhO34kM6G5+o9GUNmGgMQ0BmXp
+ I6hx77HHnrj9FC6kWh/bxBt3+o8HW+NTWzJSvf6kW7ThaNt7v9iewkS23JOMarAZs4qy6MhT
+ 1RW1/yWY7RimWxrmkKPTKKa0Ad4CWT6fcP3t+doqGslSQIeoTh0C33ZT+LY59Wcr224iXohN
+ 4Uu/nFe4yAHjtA+4Sesveo3Tyi8cbOgkcO6vij+pXesCcuhtGMlnE2dxRqbenrfVGLUVxNug
+ LkQdLWezaGGm+dcjWYk1xjtaDnsCpVaYCMsfYNADQPJAjAFu37pVdoXhseVXfzOUN2EXABEB
+ AAG0GVBoaWwgS2FybiA8a2FybkBrYTlxLm5ldD6JATgEEwECACIFAkw2mJ4CGwMGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAAAoJEPFOQ1TtRjRGU98H/Atsb/N4lNbzNdzdIRcHD9XgCEa1
+ UdR4mxgjwvLxS1nYRNdHwfTxvA5nxWfMx/0CB26VaNFdI3lkg/S0vYsSUu6M7l8Zb8v4JMyU
+ 4B4yvkFHZ3II5oilzIMa3e2cMfDz7TSwO1JcXyI5y9vHnvH65/LQF+QojDgzf3vXKiNdTXJp
+ 3nEa5IgMAB0rcSNsXFx8xbHi8s5niL9+1I7XTPvVMeXrMe8h4AG1nM/dK96WwmV+tLyXKYXn
+ xVeb9F4X9CNQbkn/xAH+egvKHHT3V7K9cAhrDfu9Qwpo7zKk/akBpLWG2kmkTOfhXjm3UQhv
+ MVgDmpeQIYa1HgAsKrsDQMzrIFm5AQ0ETDaYngEIAJmFdm0MmENzLEosD1FvGPJleWDYb0ah
+ 8dOk4XUug1RhW40f7AsugT75pKs9PolXt92920GdU727X3Jpgdj4kLDtIQA0KZrOXiEOZjIZ
+ WcROAyvTGyMs/P7Um1AGNM161Ga6/Wtlc076FN7EUQtzPbthH26M3lGWUX0Ccls/8Ep4qbnF
+ IrMRBxjaxKbqfKPTeU10pDykzA7s5hiNe7qaegvqD6YLseZ+6FqCn988YnLiIaFeNbWxUY5G
+ spjAsfesnAmpn5vhUqAGiizkNlAMIN31xvpLd93oM4/vORszIuN1UP2RlxL3s30BncZl2XOd
+ Mk1/59Sy70zVqF1ANyMrA18AEQEAAYkBHwQYAQIACQUCTDaYngIbDAAKCRDxTkNU7UY0Rszt
+ B/9ZPH9xw47lPkVJRbhgf0G7fdsxsyiuouAqOKklUNFSy4+qeGomjwE6YvdMybwGtaUGla7t
+ 2mDzrva+7Gzb0inXIgmahQPmM16F3GVxGoFL+QJ+7gD8Hco6e0/2kju7ZREDE7SOEwKb3lhD
+ eNLccfX2AqAHfCT/LVLbgBpMRmwUJQThM+33Z2L9BqIM3awj2mOTmeDumpxiDfroU90mGc9c
+ pXe4YrNIkL/N8eMzLe1bpu+mpPCiIrEO+dFA7N8jjVcOCQ4Lr8sU6cOsEdkaACZiNFKT99eb
+ NkKigK8sEkDZc/AKhPCEsnaZpwBZPScOL88LLi7FHj9Osznt+uhWfbLe
+Subject: Re: Extremely slow device removals
+Message-ID: <f8435e33-686c-e9c0-313e-a00e526a2b49@ka9q.net>
+Date:   Sat, 2 May 2020 19:28:56 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200502041826.GH10769@hungrycats.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Sa., 2. Mai 2020 um 07:56 Uhr schrieb Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org>:
+On 5/1/20 21:18, Zygo Blaxell wrote:
 >
-> On Fri, May 01, 2020 at 03:57:20PM +0200, Rollo ro wrote:
-> > Am Fr., 1. Mai 2020 um 04:30 Uhr schrieb Zygo Blaxell
-> > <ce3g8jdj@umail.furryterror.org>:
+> Also, in large delete operations, half of the IOs are random _reads_,
+> which can't be optimized by write caching.  The writes are mostly
+> sequential, so they take less IO time.  So, say, 1% of the IO time
+> is made 80% faster by write caching, for a net benefit of 0.8% (not rea=
+l
+> numbers).  Write caching helps fsync() performance and not much else.
+Thanks for everyone's help, but listening to everyone else also talk
+about taking weeks or months to delete a drive, with terrible
+performance for other applications because of all the background I/O, it
+really looks to me that despite the many theoretical advantages of
+integrating raid into btrfs, it simply doesn't work in the real world
+with real spinning disk drives with real and significant seek latencies.
+Btrfs is too far ahead of the technology; its drive management features
+look great until you actually try to use them.
+
+Maybe I can revisit this in a few years when SSDs have displaced
+spinning drives and have made seek latencies a thing of the past.
+Spinning drives seem to have pretty much hit their technology limits
+while SSDs are still making good progress in both size and price.
+
+In the meantime I think I'll return to what I used to use before I tried
+btrfs several years ago: XFS over LVM, with LVM working in large
+contiguous allocation chunks that can be efficiently copied, moved and
+resized on real spinning disks regardless of how the file system above
+them allocates and uses them.
+
+I do give btrfs considerable credit for not (yet) losing any of my data
+through all this. But that's what offline backups and LVM snapshots are
+also for.
+
+Phil
 
 
->
-> None of the superblocks are updated before all of the new trees are
-> flushed.  So either the old or new state is acceptable.  I believe the
-> current btrfs implementation will try to choose the newer one.
->
 
-Yes I understood that first the trees are finished and only after that
-the superblocks updated to point to the new tree version. But now this
-superblockupdate write command is sent to both drives. Drive 1 writes
-it correctly but drive 2 has problems and keeps trying for 7 seconds
-(depending on drive model and settings) before it will report an
-error. Now a power outage hits in this 7 seconds period. On the next
-boot we have drive 1 with the new version and drive 2 with the old
-version. Drive 2 could be updated with information from drive 1, but
-we lost redundancy then. Hence, I'd let both drives use the old
-version. It seems acceptable for me to lose the very last writes.
-
-> If all your drives lie about completing flushes, unrecoverable data loss
-> may occur.  If only one of your drives lies, btrfs will repair (*) any lost
-> data on the bad drive by copying it from the good drive.
->
-> (*) except nodatasum data and data with a csum collision between good and
-> bad data.
->
-
-Is this a thing in real drives? And if yes, how can one find out which
-drive models are affected?
-
-
->
-> If a superblock write fails, it either leaves old data (with an old transid)
-> or it fails a csum check (and the whole device is likely ignored).  Picking
-> the highest transid with a valid superblock csum would suffice.
-
-Yes, hence I think it's not a good idea to write it all the time. I
-noticed that there are other attributes that need to be updated
-frequently, but think that should be in what I called candidates. The
-superblock is ideally written only once during filesystem creation and
-for repairing if needed, and contains two (or more) addresses to go
-on. The roots at these two (or more) addresses are then written
-alternately.
-
->
-> If the superblocks have the same generation but different addresses that's
-> a bug in btrfs, or both halves of split-brain raid1 were reunited after
-> they were mounted separately.  btrfs doesn't handle the latter case
-> at all well--it destroys the filesystem.
-
-Good to know. At least that can't happen by itself, because it won't
-mount without the degraded option.
-
->  mdadm has a solution there,
-> they put a timestamp (a random nonce will do) on each drive so that a
-> reunited split-brain raid1 won't come online with both drives.
->
-
->
-> As far as I know, no.  It's typically used in cases where the latest root
-> passes sanity checks but turns out to be bad later on.
->
-
->
-> Writes can continue on all drives as long as 1) superblocks always
-> refer to fully complete trees, 2) superblocks are updated in lockstep,
-> at most one transid apart, and 3) when userspace explicitly requests
-> synchronization (e.g. fsync), the call blocks until the associated trees
-> and superblocks are completely flushed on all drives.
->
-> Note that this relies on the CoW update mechanism, so there is no
-> guarantee of data integrity with nodatacow files (they do have write
-> hole problems at every raid level).
->
-> In the kernel it's a bit less flexible--there's only one active
-> transaction per filesystem, and it must fully complete before a new
-> transaction can begin.  This results in latency spikes around the
-> commit operation.
->
-
->
-> The write ordering does cover crash and power outage.  What else could it
-> be for?  Mounting with -o nobarrier turns off the write ordering, and
-> makes the filesystem unlikely to survive a power failure.
-
-That's clear. If we want the sequence:
-Write some data on disk --> Write the data's address into superblock
-a drive could change the sequence to save time and then there is a
-period during that the data is missing. To prevent that, we do:
-Write some data on disk --> barrier --> Write the data's address into superblock
-
-But it doesn't help if we have two drives and one finishes the
-sequence, but the other drive not, because of power outage.
-
->
-> During kernel and hardware qualification tests we hook up a prospective
-> new server build to a software-controlled power switch and give it 50
-> randomly-spaced power failures a week.  It has to run btrfs stress
-> tests for a month to pass.
->
-
-That will in most cases miss a problem that the system is vulnerable
-to for 10ms every 10s for example. Good test, though.
-
->
-> Maybe it does, but upstream btrfs doesn't use it.
->
->
-> If you have enough drives in your topology, you can join the devices in
-> the same failure domain together as mdadm or lvm JBOD devices and then
-> btrfs raid1 the JBOD arrays.
->
-
-Good idea!
-
-> > So for now, I'll be limited to 4 drives
-> > and if I need more, I'll probalby get an additional PCIe SATA card.
->
-> Usually I trace that kind of problem back to the power supply, not
-> the SATA card.  Sure, there are some terrible SATA controller chips out
-> there, but even good power supplies will turn bad after just a few years.
-> We replace power supplies on a maintenance schedule whether they are
-> failing or not.
->
-> Sometimes when spinning drives fail, they pull down hard on power rails
-> or even feed kinetic energy from the motors back into the power supply.
-> This can disrupt operation and even break other devices.  This gets worse
-> if the power supply is aging and can't fight the big current flows.
->
-
-Yes that's possible. I still suspect the SATA port more, as it was
-always on one controller.
-
-
->
-> ...and you let this continue?  raid1 is 2-device mirroring.  If you
-> have simultaneous 2-device failures the filesystem will die.  It's right
-> there in the spec.
->
-
-It's not real usage yet. I'm just evaluating. I know that it can only
-cope with one drive failure. Did'n expect that the other drive also
-will be affected.
-
->
-> One failure is fine.
-
-Not with this particular failure I was refering to, that "auto-fails"
-another drive.
-
->  You can mitigate that risk by building arrays out
-> of diverse vendor models, and even ages if possible (we also rotate
-> disks out of live arrays on a schedule, whether they're failing or
-> not).
-
-I learned that when I was like 16 years old. Saved all my money to buy
-4 IBM DTLA. And then they failed faster than I could replace and the
-replaced drives failed again.
-
->
-> Two or more failures are always possible.  That's where backups become
-> useful.
-
-I'd really like to use raid 6, though, if it only had not this problem.
-
->
-
->
-> This is maybe true of drives that are multiple years past their warranty
-> end date, where almost any activity--even carefully moving the server
-> across the room--will physically break the drive.  It's certainly not true
-> of drives that are in-warranty (*)--we run scrubs biweekly on those for
-> years, in between heavy read-write IO loads that sometimes run for months.
->
-> People who say things are often surprised when they don't run a scrub
-> for a year and suddenly discover all the errors that have been slowly
-> accumulating on their drives for months, and they think that it's the
-> scrub _causing_ the problem, instead of merely _reporting_ problems that
-> occurred months earlier.
-
-Well, that function is one of the main reasons to use zfs/btrfs. I'm
-wondering why people use it and don't scrub. And then scrub but don't
-know why.
-
->
-> Run a scrub so you'll know how your drives behave under load.  Run a
-> scrub every month (every day if you can, though that's definitely more
-> than necessary) so you'll know if your drives' behavior is changing as
-> they age, and also whether your host system in general is going to be
-> able to survive any kind of RAID failure.  If the system can't cope with
-> a scrub when disks are healthy, it's definitely not going to be able to
-> recover from disk failures.  Drives that are going to break in scrub are
-> going to break during RAID recovery too.  You want to discover those
-> problems as soon as possible so you can replace the faulty components
-> before any data is lost.
-
-True!
-
->
-> (*) except Seagate Barracudas manufactured between 2011 and 2014.
->
->
-> If this occurs, and is reported to btrfs, then btrfs aborts all future
-> writes as well, as a critical disk update failed.  If it occurs without
-> reporting then it's just another case of silent data corruption for btrfs
-> to clean up with self-repair later on.  If the one sector on your disk
-> that is unreadable after a crash is the one 64K offset from the start
-> of your btrfs, but the rest of the disk is still usable, you've hit the
-> one-in-a-billion target (a 4 TB drive has a billion 4K sectors on it).
->
-> There are lots of other ways disks can fail, but they mostly reduce to
-> integrity failures that btrfs handles easily with raid1 and at most one
-> disk failure.
->
-
->
-> Yes, btrfs is very conservative there.  btrfs requires explicitly
-> authorizing a degraded array read-write mount too.
->
