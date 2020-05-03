@@ -2,52 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114081C2E87
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 May 2020 20:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE081C2F86
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 May 2020 23:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgECSfJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 May 2020 14:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52830 "EHLO mail.kernel.org"
+        id S1729117AbgECVpb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 3 May 2020 17:45:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45900 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728863AbgECSfJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 3 May 2020 14:35:09 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.7-rc4, part 2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588530908;
-        bh=BTwl0Y8+VKc741Os+C0DSxED2lISWaGLB8OF40Emuyk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=bAz9YIgKwxqsv+DkbqKSh6NV6Z3Pqyd8H8LnLCSxnpaXPc3ZspkNjX/acsLIkdIzL
-         /5IKxsK0GRng52R/aXTDAi4Yoc77CdyV70KR1JDeQo9rIMBbfxKk0QPBr55yRxWdxY
-         ZbrK+fSL1OfV9CZc67FWUcRC1PXtEQDsnmnW26rk=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1588522631.git.dsterba@suse.com>
-References: <cover.1588522631.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1588522631.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc3-tag
-X-PR-Tracked-Commit-Id: eb91db63a90d8f8e8768b82fcb2cae5f7198cf6b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 262f7a6b8317a06e7d51befb690f0bca06a473ea
-Message-Id: <158853090878.15713.16382357327351730130.pr-tracker-bot@kernel.org>
-Date:   Sun, 03 May 2020 18:35:08 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1729109AbgECVpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 3 May 2020 17:45:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5B6A8AE2B;
+        Sun,  3 May 2020 21:45:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DF662DA70B; Sun,  3 May 2020 23:44:42 +0200 (CEST)
+Date:   Sun, 3 May 2020 23:44:42 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: use crypto_shash_digest()
+Message-ID: <20200503214442.GS18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Eric Biggers <ebiggers@kernel.org>,
+        linux-btrfs@vger.kernel.org
+References: <20200501065159.738746-1-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200501065159.738746-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sun,  3 May 2020 18:25:37 +0200:
+On Thu, Apr 30, 2020 at 11:51:59PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Use crypto_shash_digest() instead of crypto_shash_init() +
+> crypto_shash_update() + crypto_shash_final().  This is more efficient.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc3-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/262f7a6b8317a06e7d51befb690f0bca06a473ea
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Added to devel queue, thanks.
